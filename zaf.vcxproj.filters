@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="zaf">
+      <UniqueIdentifier>{fad741c3-0785-492f-aef3-d9e612b565e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\internal">
+      <UniqueIdentifier>{26b1cccc-783c-4610-9da2-d06ef04bc784}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\internal\theme">
+      <UniqueIdentifier>{07703d34-1473-4b35-943d-65a750fedd8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\internal\theme\vs2013">
+      <UniqueIdentifier>{60cf5050-df80-4fd1-b07f-8c3090fbade3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\zaf\application.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\button.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\canvas.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\color.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rect.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\renderer.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\conversion.cpp">
+      <Filter>zaf\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\redirect_std_stream.cpp">
+      <Filter>zaf\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\theme\vs2013\palette.cpp">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\theme\theme.cpp">
+      <Filter>zaf\internal\theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\theme\vs2013\button_painter.cpp">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\label.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\theme\vs2013\label_painter.cpp">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\anchor_layouter.cpp">
+      <Filter>zaf\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\scroll_bar.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\theme\vs2013\scroll_bar_painter.cpp">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\timer.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\scrollable_control.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\theme\vs2013\single_color_painter.cpp">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\zaf\application.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\button.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\canvas.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\color.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\enum.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\event.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\painter.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\point.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rect.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\renderer.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\size.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\conversion.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\log.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\redirect_std_stream.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\window_state.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\zaf.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\theme\theme.h">
+      <Filter>zaf\internal\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\theme\painter.h">
+      <Filter>zaf\internal\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\theme\vs2013\theme.h">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\theme\vs2013\palette.h">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\theme\vs2013\button_painter.h">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\font.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\direct2d.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\label.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\theme\vs2013\label_painter.h">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\scrollable_control.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\anchor_layouter.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\scroll_bar.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\layouter.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\theme\vs2013\scroll_bar_painter.h">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\timer.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\theme\vs2013\single_color_painter.h">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
