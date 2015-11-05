@@ -133,6 +133,17 @@ void ScrollableControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
+void ScrollableControl::MouseWheel(const Point& position, bool is_horizontal, int distance, WPARAM wParam, LPARAM lParam) {
+
+    if (is_horizontal) {
+        horizontal_scroll_bar_->Wheel(distance);
+    }
+    else {
+        vertical_scroll_bar_->Wheel(distance);
+    }
+}
+
+
 void ScrollableControl::ScrollBarScroll(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
 	Rect content_rect = content_control_->GetRect();

@@ -169,6 +169,8 @@ public:
 		ChangeValueRange(min_value, max_value, false);
 	}
 
+    void Wheel(int distance);
+
 public:
 	ScrollEvent::Proxy OnScroll;
 

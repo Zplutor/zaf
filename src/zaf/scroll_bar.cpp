@@ -182,6 +182,21 @@ void ScrollBar::ChangeValueRange(int min_value, int max_value, bool max_value_ha
 }
 
 
+void ScrollBar::Wheel(int distance) {
+
+    int major_distance = distance / WHEEL_DELTA;
+
+    int minor_distance = 0;
+    if (distance % WHEEL_DELTA != 0) {
+        minor_distance = distance > 0 ? 1 : -1;
+    }
+
+    int direction = is_horizontal_ ? 1 : -1;
+
+    SetValue(value_ + (major_distance + minor_distance) * direction);
+}
+
+
 void ScrollBar::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	internal::theme::GetTheme()->GetScrollBarPainter()->Paint(canvas, dirty_rect, *this);
 }
@@ -387,16 +402,7 @@ void ScrollBar::MouseWheel(const Point& position, bool is_horizontal, int distan
 		return;
 	}
 	
-	int major_distance = distance / WHEEL_DELTA;
-	
-	int minor_distance = 0;
-	if (distance % WHEEL_DELTA != 0) {
-		minor_distance = distance > 0 ? 1 : -1;
-	}
-
-	int direction = is_horizontal ? 1 : -1;
-
-	SetValue(value_ + (major_distance + minor_distance) * direction);
+    Wheel(distance);
 }
 
 
