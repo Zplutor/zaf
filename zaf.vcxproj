@@ -102,7 +102,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)src;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)out\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)immediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)intermediate\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
