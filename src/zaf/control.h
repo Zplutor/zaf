@@ -115,22 +115,6 @@ public:
 		NeedRepaint();
 	}
 
-private:
-	friend class Window;
-
-	void SetWindow(const std::shared_ptr<Window>& window) {
-		window_ = window;
-	}
-
-	void IsHoveredChanged(bool is_hovered);
-	void IsCapturingMouseChanged(bool is_capturing_mouse) {
-		is_capturing_mouse_ = is_capturing_mouse;
-	}
-	void IsFocusedChanged(bool is_focused);
-
-	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
-	virtual void RouteMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam);
-
 protected:
 	/**
 	 Initialize the control.
@@ -142,15 +126,12 @@ protected:
 
 	void NeedRepaint();
 	void NeedRepaintRect(const Rect& rect);
-
 	virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
 
 	void NeedRelayout();
-
 	virtual void Layout(const Rect& previous_rect);
 
-	void CaptureMouse();
-	void ReleaseMouse();
+	void NeedCaptureMouse(bool capture);
 	bool IsCapturingMouse() const {
 		return is_capturing_mouse_;
 	}
@@ -161,9 +142,25 @@ protected:
 	virtual void MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam);
 	virtual void MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam);
 	virtual void MouseWheel(const Point& position, bool is_horizontal, int distance, WPARAM wParam, LPARAM lParam);
+	virtual void MouseCapture();
+	virtual void MouseRelease();
 
 	virtual void FocusGain();
 	virtual void FocusLose();
+
+private:
+	friend class Window;
+
+	void SetWindow(const std::shared_ptr<Window>& window) {
+		window_ = window;
+	}
+
+	void IsHoveredChanged(bool is_hovered);
+	void IsCapturingMouseChanged(bool is_capturing_mouse);
+	void IsFocusedChanged(bool is_focused);
+
+	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
+	virtual void RouteMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
 	void CheckInitialized();

@@ -374,20 +374,24 @@ void Control::IsHoveredChanged(bool is_hovered) {
 }
 
 
-void Control::CaptureMouse() {
+void Control::NeedCaptureMouse(bool capture) {
 
 	auto window = GetWindow();
 	if (window != nullptr) {
-		window->SetCaptureMouseControl(this->shared_from_this(), false);
+		window->SetCaptureMouseControl(this->shared_from_this(), ! capture);
 	}
 }
 
 
-void Control::ReleaseMouse() {
+void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
 
-	auto window = GetWindow();
-	if (window != nullptr) {
-		window->SetCaptureMouseControl(this->shared_from_this(), true);
+	is_capturing_mouse_ = is_capturing_mouse;
+
+	if (is_capturing_mouse_) {
+		MouseCapture();
+	}
+	else {
+		MouseRelease();
 	}
 }
 
@@ -435,6 +439,16 @@ void Control::MouseWheel(const Point& position, bool is_horizontal, int distance
 	if (parent != nullptr) {
 		parent->MouseWheel(position, is_horizontal, distance, wParam, lParam);
 	}
+}
+
+
+void Control::MouseCapture() {
+
+}
+
+
+void Control::MouseRelease() {
+
 }
 
 

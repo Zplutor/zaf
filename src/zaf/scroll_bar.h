@@ -40,8 +40,8 @@ public:
 	protected:
 		void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 
-		void MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
-		void MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
+		void MouseCapture() override;
+		void MouseRelease() override;
 
 	private:
 		Direction direction_;
@@ -78,8 +78,8 @@ public:
 	protected:
 		void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 
-		void MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
-		void MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
+		void MouseCapture() override;
+		void MouseRelease() override;
 		void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) override;
 
 	private:
@@ -183,6 +183,8 @@ protected:
 	void MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
 	void MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
 	void MouseWheel(const Point& position, bool is_horizontal, int distance, WPARAM wParam, LPARAM lParam) override;
+	void MouseCapture() override;
+	void MouseRelease() override;
 
 private:
 	enum class TimerEvent {

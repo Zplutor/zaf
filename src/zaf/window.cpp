@@ -58,6 +58,10 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message, WPARAM wParam,
 		window->ReceiveMouseMessage(message, wParam, lParam);
 		return 0;
 
+	case WM_KILLFOCUS:
+		window->LostFocus();
+		return 0;
+
 	default:
 		return CallWindowProc(DefWindowProc, hwnd, message, wParam, lParam);
 	}
@@ -194,6 +198,14 @@ void Window::Resize(UINT width, UINT height) {
 
 	renderer_->GetHandle()->Resize(D2D1::SizeU(width, height));
 	root_control_->SetRect(Rect(0, 0, static_cast<float>(width), static_cast<float>(height)));
+}
+
+
+void Window::LostFocus() {
+
+	if (hovered_control_ != nullptr && hovered_control_->IsCapturingMouse()) {
+		SetCaptureMouseControl(hovered_control_, true);
+	}
 }
 
 

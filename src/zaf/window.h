@@ -74,6 +74,7 @@ private:
 	void CheckCreate();
 	void Repaint();
 	void Resize(UINT width, UINT height);
+	void LostFocus();
 	void ReceiveMouseMessage(UINT message, WPARAM wParam, LPARAM lParam);
 
 	Window(const Window&) = delete;

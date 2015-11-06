@@ -32,7 +32,7 @@ void Button::MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) {
 void Button::MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
 
 	if (button == MouseButton::Left) {
-		CaptureMouse();
+		NeedCaptureMouse(true);
 		SetIsFocused(true);
 		CheckIsPressed(position, wParam);
 	}
@@ -43,7 +43,7 @@ void Button::MouseUp(const Point& position, MouseButton button, WPARAM wParam, L
 
 	if (button == MouseButton::Left) {
 
-		ReleaseMouse();
+		NeedCaptureMouse(false);
 
 		if (IsPressed()) {
 			click_event_.Trigger(std::dynamic_pointer_cast<Button>(shared_from_this()));

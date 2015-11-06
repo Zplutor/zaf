@@ -281,8 +281,7 @@ void ScrollBar::ChangeVerticalRectToHorizontalRect(Rect& rect) {
 void ScrollBar::MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
 
 	if (button == MouseButton::Left) {
-		CaptureMouse();
-		BeginTimer(TimerEvent::PageRoll);
+		NeedCaptureMouse(true);
 	}
 }
 
@@ -290,9 +289,18 @@ void ScrollBar::MouseDown(const Point& position, MouseButton button, WPARAM wPar
 void ScrollBar::MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
 
 	if (button == MouseButton::Left) {
-		ReleaseMouse();
-		timer_.reset();
+		NeedCaptureMouse(false);
 	}
+}
+
+
+void ScrollBar::MouseCapture() {
+	BeginTimer(TimerEvent::PageRoll);
+}
+
+
+void ScrollBar::MouseRelease() {
+	timer_.reset();
 }
 
 
@@ -495,23 +503,19 @@ void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-void ScrollBar::Arrow::MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
+void ScrollBar::Arrow::MouseCapture() {
 
-	Button::MouseDown(position, button, wParam, lParam);
+	Button::MouseCapture();
 
-	if (button == MouseButton::Left) {
-		begin_press_event_.Trigger(std::dynamic_pointer_cast<Arrow>(this->shared_from_this()));
-	}
+	begin_press_event_.Trigger(std::dynamic_pointer_cast<Arrow>(this->shared_from_this()));
 }
 
 
-void ScrollBar::Arrow::MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
+void ScrollBar::Arrow::MouseRelease() {
 
-	Button::MouseUp(position, button, wParam, lParam);
+	Button::MouseRelease();
 
-	if (button == MouseButton::Left) {
-		end_press_event_.Trigger(std::dynamic_pointer_cast<Arrow>(this->shared_from_this()));
-	}
+	end_press_event_.Trigger(std::dynamic_pointer_cast<Arrow>(this->shared_from_this()));
 }
 
 
@@ -533,25 +537,21 @@ void ScrollBar::Thumb::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-void ScrollBar::Thumb::MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
+void ScrollBar::Thumb::MouseCapture() {
 
-	Button::MouseDown(position, button, wParam, lParam);
+	Button::MouseCapture();
 
-	if (button == MouseButton::Left) {
-		is_dragging_ = true;
-		begin_drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));
-	}
+	is_dragging_ = true;
+	begin_drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));
 }
 
 
-void ScrollBar::Thumb::MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
+void ScrollBar::Thumb::MouseRelease() {
 
-	Button::MouseUp(position, button, wParam, lParam);
+	Button::MouseRelease();
 
-	if (button == MouseButton::Left) {
-		is_dragging_ = false;
-		end_drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));
-	}
+	is_dragging_ = false;
+	end_drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));
 }
 
 
