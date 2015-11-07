@@ -26,6 +26,8 @@ protected:
 	void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) override;
 	void MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
 	void MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
+	void MouseCapture() override;
+	void MouseRelease() override;
 
 private:
 	void CheckIsPressed(const Point& position, WPARAM wParam);

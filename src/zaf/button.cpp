@@ -34,7 +34,6 @@ void Button::MouseDown(const Point& position, MouseButton button, WPARAM wParam,
 	if (button == MouseButton::Left) {
 		NeedCaptureMouse(true);
 		SetIsFocused(true);
-		CheckIsPressed(position, wParam);
 	}
 }
 
@@ -43,14 +42,26 @@ void Button::MouseUp(const Point& position, MouseButton button, WPARAM wParam, L
 
 	if (button == MouseButton::Left) {
 
+		bool is_pressed = IsPressed();
+
 		NeedCaptureMouse(false);
 
-		if (IsPressed()) {
+		if (is_pressed) {
 			click_event_.Trigger(std::dynamic_pointer_cast<Button>(shared_from_this()));
-			is_pressed_ = false;
-			NeedRepaint();
 		}
 	}
+}
+
+
+void Button::MouseCapture() {
+	is_pressed_ = true;
+	NeedRepaint();
+}
+
+
+void Button::MouseRelease() {
+	is_pressed_ = false;
+	NeedRepaint();
 }
 
 
