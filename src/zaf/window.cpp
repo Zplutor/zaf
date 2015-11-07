@@ -58,6 +58,11 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message, WPARAM wParam,
 		window->ReceiveMouseMessage(message, wParam, lParam);
 		return 0;
 
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+		window->ReceiveKeyMessage(message, wParam, lParam);
+		return 0;
+
 	case WM_KILLFOCUS:
 		window->LostFocus();
 		return 0;
@@ -254,6 +259,24 @@ void Window::ReceiveMouseMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 	else {
 		
 		root_control_->RouteMessage(point, message, wParam, lParam);
+	}
+}
+
+
+void Window::ReceiveKeyMessage(UINT message, WPARAM wParam, LPARAM lParam) {
+
+	switch (message) {
+	case WM_KEYDOWN:
+		if (focused_control_ != nullptr) {
+			focused_control_->KeyDown(wParam, lParam);
+		}
+		break;
+
+	case WM_KEYUP:
+		if (focused_control_ != nullptr) {
+			focused_control_->KeyUp(wParam, lParam);
+		}
+		break;
 	}
 }
 

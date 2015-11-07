@@ -76,6 +76,7 @@ private:
 	void Resize(UINT width, UINT height);
 	void LostFocus();
 	void ReceiveMouseMessage(UINT message, WPARAM wParam, LPARAM lParam);
+	void ReceiveKeyMessage(UINT message, WPARAM wParam, LPARAM lParam);
 
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;

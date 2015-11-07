@@ -378,7 +378,14 @@ void Control::NeedCaptureMouse(bool capture) {
 
 	auto window = GetWindow();
 	if (window != nullptr) {
-		window->SetCaptureMouseControl(this->shared_from_this(), ! capture);
+
+		auto shared_this = shared_from_this();
+
+		if (capture && ! IsHovered()) {
+			window->SetHoveredControl(shared_this);
+		}
+
+		window->SetCaptureMouseControl(shared_this, ! capture);
 	}
 }
 
@@ -449,6 +456,24 @@ void Control::MouseCapture() {
 
 void Control::MouseRelease() {
 
+}
+
+
+void Control::KeyDown(WPARAM wParam, LPARAM lParam) {
+
+	auto parent = GetParent();
+	if (parent != nullptr) {
+		parent->KeyDown(wParam, lParam);
+	}
+}
+
+
+void Control::KeyUp(WPARAM wParam, LPARAM lParam) {
+
+	auto parent = GetParent();
+	if (parent != nullptr) {
+		parent->KeyUp(wParam, lParam);
+	}
 }
 
 

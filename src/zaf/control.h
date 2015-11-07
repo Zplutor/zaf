@@ -145,6 +145,9 @@ protected:
 	virtual void MouseCapture();
 	virtual void MouseRelease();
 
+	virtual void KeyDown(WPARAM wParam, LPARAM lParam);
+	virtual void KeyUp(WPARAM wParam, LPARAM lParam);
+
 	virtual void FocusGain();
 	virtual void FocusLose();
 
