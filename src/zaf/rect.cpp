@@ -47,6 +47,15 @@ void Rect::Union(const Rect& other) {
 }
 
 
+void Rect::Inflate(float x, float y) {
+
+	position.x -= x;
+	position.y -= y;
+	size.width += x * 2;
+	size.height += y * 2;
+}
+
+
 bool Rect::Contain(const Point& point) const {
 
 	if ( (point.x < position.x) ||

@@ -78,6 +78,15 @@
     <ClCompile Include="src\zaf\internal\theme\vs2013\single_color_painter.cpp">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\check_box.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\clickable_control.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\theme\vs2013\check_box_painter.cpp">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -180,6 +189,15 @@
       <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\theme\vs2013\single_color_painter.h">
+      <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\check_box.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\clickable_control.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\theme\vs2013\check_box_painter.h">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClInclude>
   </ItemGroup>

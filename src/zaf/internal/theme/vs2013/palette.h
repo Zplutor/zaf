@@ -14,6 +14,9 @@ extern const Color kButtonHoveredBackgroundColor;
 extern const Color kButtonHoveredBorderColor;
 extern const Color kButtonHoveredPressedBackgroundColor;
 
+extern const Color kCheckBoxFrameColor;
+extern const Color kCheckBoxHoveredFrameColor;
+
 extern const Color kScrollBarBackgroundColor;
 extern const Color kScrollBarArrowColor;
 extern const Color kScrollBarArrowHoveredColor;

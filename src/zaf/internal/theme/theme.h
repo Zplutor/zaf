@@ -24,6 +24,13 @@ public:
 		return button_painter_;
 	}
 
+	const std::shared_ptr<Painter> GetCheckBoxPainter() {
+		if (check_box_painter_ == nullptr) {
+			check_box_painter_ = CreateCheckBoxPainter();
+		}
+		return check_box_painter_;
+	}
+
 	const std::shared_ptr<Painter> GetLabelPainter() {
 		if (label_painter_ == nullptr) {
 			label_painter_ = CreateLabelPainter();
@@ -62,6 +69,7 @@ public:
 protected:
 	virtual std::shared_ptr<Painter> CreateDefaultPainter() = 0;
 	virtual std::shared_ptr<Painter> CreateButtonPainter() = 0;
+	virtual std::shared_ptr<Painter> CreateCheckBoxPainter() = 0;
 	virtual std::shared_ptr<Painter> CreateLabelPainter() = 0;
 	virtual std::shared_ptr<Painter> CreateScrollBarPainter() = 0;
 	virtual std::shared_ptr<Painter> CreateScrollBarArrowPainter() = 0;
@@ -71,6 +79,7 @@ protected:
 private:
 	std::shared_ptr<Painter> default_painter_;
 	std::shared_ptr<Painter> button_painter_;
+	std::shared_ptr<Painter> check_box_painter_;
 	std::shared_ptr<Painter> label_painter_;
 	std::shared_ptr<Painter> scroll_bar_painter_;
 	std::shared_ptr<Painter> scroll_bar_arrow_painter_;

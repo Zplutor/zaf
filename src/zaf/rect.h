@@ -25,6 +25,7 @@ public:
 	bool HasIntersection(const Rect& other) const;
 	void Intersect(const Rect& other);
 	void Union(const Rect& other);
+	void Inflate(float x, float y);
 	bool Contain(const Point& point) const;
 
 	bool IsEmpty() const {

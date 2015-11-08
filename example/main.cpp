@@ -65,6 +65,11 @@ void OnBeginRun(Application&) {
 	control4->SetText(L"Black");
 	control3->AddChild(control4);
 
+	auto check_box = std::make_shared<CheckBox>();
+	check_box->SetRect(Rect(100, 70, 100, 30));
+	check_box->SetText(L"CheckBox");
+	content_control->AddChild(check_box);
+
 	auto disabled_button = std::make_shared<Button>();
 	disabled_button->SetText(L"½ûÓÃµÄ°´Å¥");
 	disabled_button->SetIsEnabled(false);
@@ -75,7 +80,7 @@ void OnBeginRun(Application&) {
 	button->SetRect(Rect(200, 200, 100, 30));
 	button->SetText(L"Button");
 	button->AddAnchor(Control::Anchor::Bottom);
-	button->OnClick.AddListener([window, disabled_button](const std::shared_ptr<Button>&) {
+	button->OnClick.AddListener([window, disabled_button](const std::shared_ptr<ClickableControl>&) {
 
 		auto new_control = std::make_shared<Label>();
 		new_control->SetRect(Rect(0, g_position_y, 40, 10));

@@ -12,6 +12,9 @@ const Color kButtonHoveredBackgroundColor(0xFDF4BF);
 const Color kButtonHoveredBorderColor(0xE5C365);
 const Color kButtonHoveredPressedBackgroundColor(0xFFF29D);
 
+const Color kCheckBoxFrameColor(0x000000);
+const Color kCheckBoxHoveredFrameColor(0x007acc);
+
 const Color kScrollBarBackgroundColor(0xE8E8EC);
 const Color kScrollBarArrowColor(0x868999);
 const Color kScrollBarArrowHoveredColor(0x1C97EA);

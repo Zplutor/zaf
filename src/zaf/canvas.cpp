@@ -76,6 +76,8 @@ void Canvas::DrawSingleLineText(const Rect& rect, const std::wstring& text, cons
 		ToD2dRect(rect),
 		renderer_->GetSolidBrush()
 	);
+
+	text_format->Release();
 }
 
 

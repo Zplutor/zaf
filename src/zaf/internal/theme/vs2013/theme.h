@@ -2,6 +2,7 @@
 
 #include <zaf/internal/theme/theme.h>
 #include <zaf/internal/theme/vs2013/button_painter.h>
+#include <zaf/internal/theme/vs2013/check_box_painter.h>
 #include <zaf/internal/theme/vs2013/label_painter.h>
 #include <zaf/internal/theme/vs2013/palette.h>
 #include <zaf/internal/theme/vs2013/scroll_bar_painter.h>
@@ -20,6 +21,10 @@ protected:
 
 	std::shared_ptr<Painter> CreateButtonPainter() override {
 		return std::make_shared<ButtonPainter>();
+	}
+
+	std::shared_ptr<Painter> CreateCheckBoxPainter() override {
+		return std::make_shared<CheckBoxPainter>();
 	}
 
 	std::shared_ptr<Painter> CreateLabelPainter() override {

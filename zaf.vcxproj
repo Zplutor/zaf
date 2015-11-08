@@ -14,12 +14,15 @@
     <ClCompile Include="src\zaf\application.cpp" />
     <ClCompile Include="src\zaf\button.cpp" />
     <ClCompile Include="src\zaf\canvas.cpp" />
+    <ClCompile Include="src\zaf\check_box.cpp" />
+    <ClCompile Include="src\zaf\clickable_control.cpp" />
     <ClCompile Include="src\zaf\color.cpp" />
     <ClCompile Include="src\zaf\control.cpp" />
     <ClCompile Include="src\zaf\internal\anchor_layouter.cpp" />
     <ClCompile Include="src\zaf\internal\conversion.cpp" />
     <ClCompile Include="src\zaf\internal\redirect_std_stream.cpp" />
     <ClCompile Include="src\zaf\internal\theme\theme.cpp" />
+    <ClCompile Include="src\zaf\internal\theme\vs2013\check_box_painter.cpp" />
     <ClCompile Include="src\zaf\internal\theme\vs2013\single_color_painter.cpp" />
     <ClCompile Include="src\zaf\internal\theme\vs2013\button_painter.cpp" />
     <ClCompile Include="src\zaf\internal\theme\vs2013\label_painter.cpp" />
@@ -37,6 +40,8 @@
     <ClInclude Include="src\zaf\application.h" />
     <ClInclude Include="src\zaf\button.h" />
     <ClInclude Include="src\zaf\canvas.h" />
+    <ClInclude Include="src\zaf\check_box.h" />
+    <ClInclude Include="src\zaf\clickable_control.h" />
     <ClInclude Include="src\zaf\color.h" />
     <ClInclude Include="src\zaf\control.h" />
     <ClInclude Include="src\zaf\enum.h" />
@@ -50,6 +55,7 @@
     <ClInclude Include="src\zaf\internal\redirect_std_stream.h" />
     <ClInclude Include="src\zaf\internal\theme\painter.h" />
     <ClInclude Include="src\zaf\internal\theme\theme.h" />
+    <ClInclude Include="src\zaf\internal\theme\vs2013\check_box_painter.h" />
     <ClInclude Include="src\zaf\internal\theme\vs2013\single_color_painter.h" />
     <ClInclude Include="src\zaf\internal\theme\vs2013\button_painter.h" />
     <ClInclude Include="src\zaf\internal\theme\vs2013\label_painter.h" />
