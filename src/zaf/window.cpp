@@ -229,6 +229,9 @@ void Window::ReceiveMouseMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 				is_tracking_mouse_ = true;
 			}
 		}
+		if (! is_capturing_mouse_) {
+			root_control_->RouteHoverMessage(point);
+		}
 		break;
 	}
 	case WM_MOUSELEAVE:

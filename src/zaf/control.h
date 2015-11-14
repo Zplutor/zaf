@@ -168,6 +168,8 @@ private:
 	void IsCapturingMouseChanged(bool is_capturing_mouse);
 	void IsFocusedChanged(bool is_focused);
 
+	void RouteHoverMessage(const Point& position);
+
 	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
 	virtual void RouteMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -178,13 +180,14 @@ private:
 		parent_ = parent;
 	}
 
+	std::shared_ptr<Control> FindChildAtPosition(const Point& position) const;
+
 	/**
 	 Called when a child's rect has changed.
 	 */
 	void ChildRectChanged(const std::shared_ptr<Control>& child, const Rect& previous_rect);
 
 	void InterpretMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam);
-	void InterpretMouseMove(const Point& position, WPARAM wParam, LPARAM lParam);
 
 	/**
 	 Translate a point to which in parent's coordinate system.

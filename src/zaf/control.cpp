@@ -10,6 +10,7 @@
 
 namespace zaf {
 
+static Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child);
 
 Control::Control() : 
 	is_initialized_(false),
@@ -298,44 +299,68 @@ void Control::Layout(const Rect& previous_rect) {
 }
 
 
+void Control::RouteHoverMessage(const Point& position) {
+
+	auto child = FindChildAtPosition(position);
+	if (child != nullptr) {
+		child->RouteHoverMessage(ToChildPoint(position, child));
+	}
+	else {
+
+		auto window = GetWindow();
+		if (window != nullptr) {
+
+			if (IsEnabled()) {
+				window->SetHoveredControl(shared_from_this());
+			}
+			else {
+				window->SetHoveredControl(nullptr);
+			}
+		}
+	}
+}
+
+
 void Control::RouteMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam) {
 
-	bool is_found = false;
+	auto child = FindChildAtPosition(position);
+	if (child != nullptr) {
+		child->RouteMessage(ToChildPoint(position, child), message, wParam, lParam);
+	}
+	else {
+
+		if (IsEnabled()) {
+			InterpretMessage(position, message, wParam, lParam);
+		}
+	}
+}
+
+
+std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) const {
 
 	for (auto iterator = children_.rbegin(); iterator != children_.rend(); ++iterator) {
 
-		auto child = *iterator;
+		const auto& child = *iterator;
 
-		if (! child->IsEnabled() || ! child->IsVisible()) {
+		if (! child->IsVisible()) {
 			continue;
 		}
 
 		const Rect& child_rect = child->GetRect();
 		if (child_rect.Contain(position)) {
-
-			//Translate the position in child's coordinate system
-			Point position_in_child = position;
-			position_in_child.x -= child_rect.position.x;
-			position_in_child.y -= child_rect.position.y;
-			child->RouteMessage(position_in_child, message, wParam, lParam);
-
-			is_found = true;
-			break;
+			return child;
 		}
 	}
 
-	if (! is_found) {
-		InterpretMessage(position, message, wParam, lParam);
-	}
+	return nullptr;
 }
 
 
 void Control::InterpretMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam) {
 
 	switch (message) {
-
 	case WM_MOUSEMOVE:
-		InterpretMouseMove(position, wParam, lParam);
+		MouseMove(position, wParam, lParam);
 		break;
 
 	case WM_LBUTTONDOWN:
@@ -368,19 +393,6 @@ void Control::InterpretMessage(const Point& position, UINT message, WPARAM wPara
 	default:
 		break;
 	}
-}
-
-
-void Control::InterpretMouseMove(const Point& position, WPARAM wParam, LPARAM lParam) {
-	
-	if (! is_hovered_) {
-		auto window = GetWindow();
-		if (window != nullptr) {
-			window->SetHoveredControl(this->shared_from_this());
-		}
-	}
-
-	MouseMove(position, wParam, lParam);
 }
 
 
@@ -551,6 +563,15 @@ void Control::FocusGain() {
 
 void Control::FocusLose() {
 
+}
+
+
+static Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) {
+
+	Point point_in_child = point;
+	point_in_child.x -= child->GetRect().position.x;
+	point_in_child.y -= child->GetRect().position.y;
+	return point_in_child;
 }
 
 }
