@@ -67,6 +67,12 @@ public:
 
 	void SetIsEnabled(bool is_enabled);
 
+	bool IsVisible() const {
+		return is_visible_;
+	}
+
+	void SetIsVisible(bool is_visible);
+
 	/**
 	 Get the absolute rect in window.
 	 */
@@ -200,6 +206,7 @@ private:
 	bool is_focused_;
 	bool can_focused_;
 	bool is_enabled_;
+	bool is_visible_;
 
 	Rect rect_;
 	std::set<Anchor> anchors_;

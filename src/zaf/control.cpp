@@ -17,7 +17,8 @@ Control::Control() :
 	is_capturing_mouse_(false),
 	is_focused_(false),
 	can_focused_(false),
-	is_enabled_(true) {
+	is_enabled_(true),
+	is_visible_(true) {
 
 }
 
@@ -191,6 +192,30 @@ void Control::SetIsEnabled(bool is_enabled) {
 }
 
 
+void Control::SetIsVisible(bool is_visible) {
+
+	if (is_visible_ = is_visible) {
+		return;
+	}
+
+	if (IsHovered()) {
+		auto window = GetWindow();
+		if (window != nullptr) {
+			window->SetHoveredControl(nullptr);
+		}
+	}
+
+	SetIsFocused(false);
+
+	is_visible_ = is_visible;
+	NeedRepaint();
+
+	for (auto& each_child : children_) {
+		each_child->SetIsVisible(is_visible);
+	}
+}
+
+
 void Control::NeedRepaint() {
 	NeedRepaintRect(Rect(Point(), rect_.size));
 }
@@ -221,6 +246,10 @@ void Control::NeedRepaintRect(const Rect& rect) {
 
 
 void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
+
+	if (! IsVisible()) {
+		return;
+	}
 
 	canvas.BeginPaint();
 	Paint(canvas, dirty_rect);
@@ -277,7 +306,7 @@ void Control::RouteMessage(const Point& position, UINT message, WPARAM wParam, L
 
 		auto child = *iterator;
 
-		if (! child->IsEnabled()) {
+		if (! child->IsEnabled() || ! child->IsVisible()) {
 			continue;
 		}
 

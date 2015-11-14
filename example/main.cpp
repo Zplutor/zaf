@@ -76,11 +76,17 @@ void OnBeginRun(Application&) {
 	disabled_button->SetRect(Rect(100, 30, 100, 30));
 	content_control->AddChild(disabled_button);
 
+	auto invisible_button = std::make_shared<Button>();
+	invisible_button->SetText(L"不可见的按钮");
+	invisible_button->SetIsVisible(true);
+	invisible_button->SetRect(Rect(200, 30, 100, 30));
+	content_control->AddChild(invisible_button);
+
 	auto button = std::make_shared<Button>();
 	button->SetRect(Rect(200, 200, 100, 30));
 	button->SetText(L"Button");
 	button->AddAnchor(Control::Anchor::Bottom);
-	button->OnClick.AddListener([window, disabled_button](const std::shared_ptr<ClickableControl>&) {
+	button->OnClick.AddListener([window, disabled_button, invisible_button](const std::shared_ptr<ClickableControl>&) {
 
 		auto new_control = std::make_shared<Label>();
 		new_control->SetRect(Rect(0, g_position_y, 40, 10));
@@ -90,6 +96,7 @@ void OnBeginRun(Application&) {
 		g_position_y += 11;
 
 		disabled_button->SetIsEnabled(! disabled_button->IsEnabled());
+		invisible_button->SetIsVisible(! invisible_button->IsVisible());
 	});
 	content_control->AddChild(button);
 }
