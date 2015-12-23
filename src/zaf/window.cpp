@@ -1,9 +1,10 @@
-#include "window.h"
+#include <zaf/window.h>
 #include <Windowsx.h>
-#include "application.h"
-#include "canvas.h"
-#include "renderer.h"
-#include "internal/conversion.h"
+#include <zaf/application.h>
+#include <zaf/canvas.h>
+#include <zaf/caret.h>
+#include <zaf/renderer.h>
+#include <zaf/internal/conversion.h>
 #include <zaf/internal/log.h>
 
 namespace zaf {
@@ -45,6 +46,14 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message, WPARAM wParam,
 		window->Resize(LOWORD(lParam), HIWORD(lParam));
 		return 0;
 
+	case WM_SETCURSOR: {
+		bool is_changed = window->ChangeMouseCursor(wParam, lParam);		
+		if (is_changed) {
+			return TRUE;
+		}
+		break;
+	}
+
 	case WM_MOUSEMOVE:
 	case WM_MOUSELEAVE:
 	case WM_LBUTTONDOWN:
@@ -60,6 +69,7 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message, WPARAM wParam,
 
 	case WM_KEYDOWN:
 	case WM_KEYUP:
+	case WM_CHAR:
 		window->ReceiveKeyMessage(message, wParam, lParam);
 		return 0;
 
@@ -68,8 +78,10 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message, WPARAM wParam,
 		return 0;
 
 	default:
-		return CallWindowProc(DefWindowProc, hwnd, message, wParam, lParam);
+		break;
 	}
+
+	return CallWindowProc(DefWindowProc, hwnd, message, wParam, lParam);
 }
 
 
@@ -134,9 +146,12 @@ void Window::CheckCreate() {
 	);
 
 	ID2D1HwndRenderTarget* renderer_handle = nullptr;
-
+	D2D1_RENDER_TARGET_PROPERTIES properties = D2D1::RenderTargetProperties();
+	properties.usage |= D2D1_RENDER_TARGET_USAGE_GDI_COMPATIBLE;
+	properties.pixelFormat.alphaMode = D2D1_ALPHA_MODE_PREMULTIPLIED;
+	properties.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	Application::GetInstance().GetD2DFactory()->CreateHwndRenderTarget(
-		D2D1::RenderTargetProperties(),
+		properties,
 		D2D1::HwndRenderTargetProperties(handle_, client_size),
 		&renderer_handle
 	);
@@ -171,6 +186,8 @@ const Point Window::GetMousePosition() const {
 
 void Window::NeedRepaintRect(const Rect& rect) {
 
+	//LOG() << "NeedRepaint";
+
 	RECT win32_rect = ToWin32Rect(rect);
 	InvalidateRect(handle_, &win32_rect, FALSE);
 }
@@ -192,6 +209,13 @@ void Window::Repaint() {
 
 	Canvas canvas(renderer_, root_control_->GetRect(), dirty_rect);
 	root_control_->Repaint(canvas, dirty_rect);
+	
+	if (caret_ != nullptr) {
+		const Rect& caret_rect = caret_->GetRect();
+		if (caret_rect.HasIntersection(dirty_rect)) {
+			caret_->Paint(canvas);
+		}
+	}
 
 	renderer_->EndRender();
 
@@ -211,6 +235,18 @@ void Window::LostFocus() {
 	if (hovered_control_ != nullptr && hovered_control_->IsCapturingMouse()) {
 		SetCaptureMouseControl(hovered_control_, true);
 	}
+}
+
+
+bool Window::ChangeMouseCursor(WPARAM wParam, LPARAM lParam) {
+
+	bool is_changed = false;
+
+	if (hovered_control_ != nullptr) {
+		hovered_control_->ChangeMouseCursor(wParam, lParam, is_changed);
+	}
+
+	return is_changed;
 }
 
 
@@ -268,17 +304,21 @@ void Window::ReceiveMouseMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 
 void Window::ReceiveKeyMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 
+	if (focused_control_ == nullptr) {
+		return;
+	}
+
 	switch (message) {
 	case WM_KEYDOWN:
-		if (focused_control_ != nullptr) {
-			focused_control_->KeyDown(wParam, lParam);
-		}
+		focused_control_->KeyDown(wParam, lParam);
 		break;
 
 	case WM_KEYUP:
-		if (focused_control_ != nullptr) {
-			focused_control_->KeyUp(wParam, lParam);
-		}
+		focused_control_->KeyUp(wParam, lParam);
+		break;
+
+	case WM_CHAR:
+		focused_control_->CharInput(wParam, lParam);
 		break;
 	}
 }
@@ -361,5 +401,14 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& focused_control) 
 	}
 }
 
+
+const std::shared_ptr<Caret>& Window::GetCaret() {
+
+	if (caret_ == nullptr) {
+		caret_ = std::make_shared<Caret>();
+		caret_->SetWindow(shared_from_this());
+	}
+	return caret_;
+}
 
 }

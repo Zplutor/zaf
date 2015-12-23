@@ -8,6 +8,7 @@
 
 namespace zaf {
 
+class Caret;
 class Renderer;
 
 class Window : public std::enable_shared_from_this<Window> {
@@ -34,6 +35,8 @@ public:
 		return focused_control_;
 	}
 
+	const std::shared_ptr<Caret>& GetCaret();
+
 	const Rect GetRect() const {
 		return state_->GetRect();
 	}
@@ -54,11 +57,20 @@ public:
 	void Hide();
 	void Close();
 
+	HWND GetHandle() const {
+		return handle_;
+	}
+
+	const std::shared_ptr<Renderer>& GetRenderer() const {
+		return renderer_;
+	}
+
 public:
 	CloseEvent::Proxy OnClose;
 
 private:
 	friend class Application;
+	friend class Caret;
 	friend class Control;
 
 	static bool RegisterDefaultClass();
@@ -75,6 +87,7 @@ private:
 	void Repaint();
 	void Resize(UINT width, UINT height);
 	void LostFocus();
+	bool ChangeMouseCursor(WPARAM wParam, LPARAM lParam);
 	void ReceiveMouseMessage(UINT message, WPARAM wParam, LPARAM lParam);
 	void ReceiveKeyMessage(UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -91,6 +104,7 @@ private:
 	std::shared_ptr<Control> root_control_;
 	std::shared_ptr<Control> hovered_control_;
 	std::shared_ptr<Control> focused_control_;
+	std::shared_ptr<Caret> caret_;
 
 	CloseEvent close_event_;
 };

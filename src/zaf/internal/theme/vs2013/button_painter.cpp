@@ -14,13 +14,13 @@ void ButtonPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const Control&
 	const Button& button = dynamic_cast<const Button&>(control);
 
 	canvas.SetBrushColor(GetBackgroundColor(button));
-	canvas.DrawRectangle(Rect(Point(), control.GetRect().size));
+	canvas.DrawRectangle(Rect(Point(), button.GetRect().size));
 
 	canvas.SetBrushColor(GetBorderColor(button));
-	canvas.DrawRectangleFrame(Rect(Point(), control.GetRect().size), 1);
+	canvas.DrawRectangleFrame(Rect(Point(), button.GetRect().size), 1);
 
-	canvas.SetBrushColor(control.IsEnabled() ? kTextColor : kDisabledTextColor);
-	canvas.DrawSingleLineText(Rect(Point(), control.GetRect().size), control.GetText(), kDefaultFont);
+	canvas.SetBrushColor(button.IsEnabled() ? kTextColor : kDisabledTextColor);
+	canvas.DrawSingleLineText(Rect(Point(), button.GetRect().size), button.GetText(), kDefaultFont);
 }
 
 

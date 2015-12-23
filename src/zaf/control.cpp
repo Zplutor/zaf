@@ -113,12 +113,21 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 }
 
 
-bool Control::HasChild(const std::shared_ptr<Control>& child) const {
+bool Control::IsParentOf(const std::shared_ptr<Control>& child) const {
+	return child->GetParent().get() == this;
+}
 
-	for (const auto& each_child : children_) {
-		if (each_child == child) {
+
+bool Control::IsAncestorOf(const std::shared_ptr<Control>& child) const {
+
+	auto ancestor = child->GetParent();
+	while (ancestor != nullptr) {
+
+		if (ancestor.get() == this) {
 			return true;
 		}
+
+		ancestor = ancestor->GetParent();
 	}
 
 	return false;
@@ -143,10 +152,22 @@ const Rect Control::GetAbsoluteRect() const {
 
 void Control::SetRect(const Rect& rect) {
 
-	Rect previous_rect = rect_;
+	Rect previous_rect = GetRect();
 	rect_ = rect;
 
 	Layout(previous_rect);
+
+	//The focused control need to be notified while its absolute position changed, 
+	//so that it can relayout its elements, if needed.
+	auto window = GetWindow();
+	if (window != nullptr) {
+		auto focused_control = window->GetFocusedControl();
+		if (focused_control != nullptr) {
+			if (IsAncestorOf(focused_control)) {
+				focused_control->NeedRelayout();
+			}
+		}
+	}
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
@@ -410,8 +431,6 @@ void Control::IsHoveredChanged(bool is_hovered) {
 	else {
 		MouseLeave();
 	}
-
-	NeedRepaint();
 }
 
 
@@ -440,6 +459,15 @@ void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
 	}
 	else {
 		MouseRelease();
+	}
+}
+
+
+void Control::ChangeMouseCursor(WPARAM wParam, LPARAM lParam, bool& is_changed) {
+
+	auto parent = GetParent();
+	if (parent != nullptr) {
+		parent->ChangeMouseCursor(wParam, lParam, is_changed);
 	}
 }
 
@@ -518,6 +546,15 @@ void Control::KeyUp(WPARAM wParam, LPARAM lParam) {
 }
 
 
+void Control::CharInput(WPARAM wParam, LPARAM lParam) {
+
+	auto parent = GetParent(); 
+	if (parent != nullptr) {
+		parent->CharInput(wParam, lParam);
+	}
+}
+
+
 void Control::SetIsFocused(bool is_focused) {
 
 	if (! CanFocused()) {
@@ -551,8 +588,6 @@ void Control::IsFocusedChanged(bool is_focused) {
 	else {
 		FocusLose();
 	}
-
-	NeedRepaint();
 }
 
 

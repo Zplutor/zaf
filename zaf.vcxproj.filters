@@ -87,6 +87,12 @@
     <ClCompile Include="src\zaf\internal\theme\vs2013\check_box_painter.cpp">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\text_box.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\caret.cpp">
+      <Filter>zaf</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -199,6 +205,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\theme\vs2013\check_box_painter.h">
       <Filter>zaf\internal\theme\vs2013</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\text_box.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\caret.h">
+      <Filter>zaf</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

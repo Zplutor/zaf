@@ -20,6 +20,16 @@ ClickableControl::~ClickableControl() {
 }
 
 
+void ClickableControl::MouseEnter() {
+	NeedRepaint();
+}
+
+
+void ClickableControl::MouseLeave() {
+	NeedRepaint();
+}
+
+
 void ClickableControl::MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) {
 
 	CheckIsMousePressed(position, wParam);

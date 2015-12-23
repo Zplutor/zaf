@@ -37,6 +37,7 @@ public:
 	void DrawRectangleFrame(const Rect& rect, float strokeWidth);
 
 private:
+	friend class Caret;
 	friend class Control;
 
 	void BeginPaint();

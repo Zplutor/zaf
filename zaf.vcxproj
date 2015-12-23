@@ -14,6 +14,7 @@
     <ClCompile Include="src\zaf\application.cpp" />
     <ClCompile Include="src\zaf\button.cpp" />
     <ClCompile Include="src\zaf\canvas.cpp" />
+    <ClCompile Include="src\zaf\caret.cpp" />
     <ClCompile Include="src\zaf\check_box.cpp" />
     <ClCompile Include="src\zaf\clickable_control.cpp" />
     <ClCompile Include="src\zaf\color.cpp" />
@@ -33,6 +34,7 @@
     <ClCompile Include="src\zaf\renderer.cpp" />
     <ClCompile Include="src\zaf\scrollable_control.cpp" />
     <ClCompile Include="src\zaf\scroll_bar.cpp" />
+    <ClCompile Include="src\zaf\text_box.cpp" />
     <ClCompile Include="src\zaf\timer.cpp" />
     <ClCompile Include="src\zaf\window.cpp" />
   </ItemGroup>
@@ -40,6 +42,7 @@
     <ClInclude Include="src\zaf\application.h" />
     <ClInclude Include="src\zaf\button.h" />
     <ClInclude Include="src\zaf\canvas.h" />
+    <ClInclude Include="src\zaf\caret.h" />
     <ClInclude Include="src\zaf\check_box.h" />
     <ClInclude Include="src\zaf\clickable_control.h" />
     <ClInclude Include="src\zaf\color.h" />
@@ -71,6 +74,7 @@
     <ClInclude Include="src\zaf\scrollable_control.h" />
     <ClInclude Include="src\zaf\scroll_bar.h" />
     <ClInclude Include="src\zaf\size.h" />
+    <ClInclude Include="src\zaf\text_box.h" />
     <ClInclude Include="src\zaf\timer.h" />
     <ClInclude Include="src\zaf\window.h" />
     <ClInclude Include="src\zaf\zaf.h" />

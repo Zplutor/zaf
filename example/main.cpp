@@ -99,4 +99,9 @@ void OnBeginRun(Application&) {
 		invisible_button->SetIsVisible(! invisible_button->IsVisible());
 	});
 	content_control->AddChild(button);
+
+	auto text_box = std::make_shared<TextBox>();
+	text_box->SetRect(Rect(10, 10, 100, 40));
+	text_box->SetText(L"TextBox нд╠╬©Р");
+	content_control->AddChild(text_box);
 }

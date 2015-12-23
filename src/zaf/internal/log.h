@@ -9,7 +9,7 @@ namespace internal {
 class LogEntry {
 public:
 	~LogEntry() {
-		std::wcout << stream_.str() << std::endl;
+		std::wcout << GetTickCount() << ' ' << stream_.str() << std::endl;
 	}
 
 	std::wostringstream& GetStream() {

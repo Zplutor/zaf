@@ -41,7 +41,8 @@ public:
 	}
 	void AddChild(const std::shared_ptr<Control>& child);
 	void RemoveChild(const std::shared_ptr<Control>& child);
-	bool HasChild(const std::shared_ptr<Control>& child) const;
+	bool IsParentOf(const std::shared_ptr<Control>& child) const;
+	bool IsAncestorOf(const std::shared_ptr<Control>& child) const;
 
 	bool IsHovered() const {
 		return is_hovered_;
@@ -88,8 +89,16 @@ public:
 		return rect_.position;
 	}
 
+	void SetPosition(const Point& position) {
+		SetRect(Rect(position, GetRect().size));
+	}
+
 	const Size& GetSize() const {
 		return rect_.size;
+	}
+
+	void SetSize(const Size& size) {
+		SetRect(Rect(GetRect().position, size));
 	}
 
 	float GetWidth() const {
@@ -112,15 +121,6 @@ public:
 		anchors_.erase(anchor);
 	}
 
-	const std::wstring& GetText() const {
-		return text_;
-	}
-
-	void SetText(const std::wstring& text) {
-		text_ = text;
-		NeedRepaint();
-	}
-
 protected:
 	/**
 	 Initialize the control.
@@ -132,6 +132,7 @@ protected:
 
 	void NeedRepaint();
 	void NeedRepaintRect(const Rect& rect);
+	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
 	virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
 
 	void NeedRelayout();
@@ -142,6 +143,7 @@ protected:
 		return is_capturing_mouse_;
 	}
 
+	virtual void ChangeMouseCursor(WPARAM wParam, LPARAM lParam, bool& is_changed);
 	virtual void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam);
 	virtual void MouseEnter();
 	virtual void MouseLeave();
@@ -153,6 +155,7 @@ protected:
 
 	virtual void KeyDown(WPARAM wParam, LPARAM lParam);
 	virtual void KeyUp(WPARAM wParam, LPARAM lParam);
+	virtual void CharInput(WPARAM wParam, LPARAM lParam);
 
 	virtual void FocusGain();
 	virtual void FocusLose();
@@ -169,9 +172,7 @@ private:
 	void IsFocusedChanged(bool is_focused);
 
 	void RouteHoverMessage(const Point& position);
-
-	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
-	virtual void RouteMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam);
+	void RouteMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
 	void CheckInitialized();
@@ -213,7 +214,6 @@ private:
 
 	Rect rect_;
 	std::set<Anchor> anchors_;
-	std::wstring text_;
 };
 
 }

@@ -17,10 +17,21 @@ public:
 		return is_pressed_;
 	}
 
+	const std::wstring& GetText() const {
+		return text_;
+	}
+
+	void SetText(const std::wstring& text) {
+		text_ = text;
+		NeedRepaint();
+	}
+
 public:
 	ClickEvent::Proxy OnClick;
 
 protected:
+	void MouseEnter() override;
+	void MouseLeave() override;
 	void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) override;
 	void MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
 	void MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
@@ -46,6 +57,7 @@ private:
 	bool is_pressed_;
 	bool is_mouse_press_;
 	bool is_key_press_;
+	std::wstring text_;
 	ClickEvent click_event_;
 };
 
