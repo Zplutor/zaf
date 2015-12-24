@@ -13,6 +13,9 @@
     <Filter Include="zaf\internal\theme\vs2013">
       <UniqueIdentifier>{60cf5050-df80-4fd1-b07f-8c3090fbade3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\base">
+      <UniqueIdentifier>{52ca2341-45e3-46d9-8a05-84664f8cede4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -28,9 +31,6 @@
       <Filter>zaf</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control.cpp">
-      <Filter>zaf</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\rect.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\renderer.cpp">
@@ -93,6 +93,9 @@
     <ClCompile Include="src\zaf\caret.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\base\rect.cpp">
+      <Filter>zaf\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -119,16 +122,7 @@
     <ClInclude Include="src\zaf\painter.h">
       <Filter>zaf</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\point.h">
-      <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rect.h">
-      <Filter>zaf</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\renderer.h">
-      <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\size.h">
       <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window.h">
@@ -211,6 +205,18 @@
     </ClInclude>
     <ClInclude Include="src\zaf\caret.h">
       <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\point.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\rect.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\size.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\event.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

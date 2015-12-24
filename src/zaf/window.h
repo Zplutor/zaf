@@ -2,8 +2,8 @@
 
 #include <Windows.h>
 #include "control.h"
-#include "event.h"
-#include "rect.h"
+#include <zaf/base/event.h>
+#include <zaf/base/rect.h>
 #include "internal/window_state.h"
 
 namespace zaf {

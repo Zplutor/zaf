@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <zaf/rect.h>
+#include <zaf/base/rect.h>
 
 namespace zaf {
 

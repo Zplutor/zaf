@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 #include <vector>
-#include "../rect.h"
+#include <zaf/base/rect.h>
 
 namespace zaf {
 namespace internal {

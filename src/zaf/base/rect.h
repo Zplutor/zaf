@@ -1,7 +1,7 @@
 #pragma once
 
-#include "point.h"
-#include "size.h"
+#include <zaf/base/point.h>
+#include <zaf/base/size.h>
 
 namespace zaf {
 

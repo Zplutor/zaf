@@ -1,6 +1,6 @@
-#include "rect.h"
+#include <zaf/base/rect.h>
 #include <Windows.h>
-#include "internal/conversion.h"
+#include <zaf/internal/conversion.h>
 
 namespace zaf {
 

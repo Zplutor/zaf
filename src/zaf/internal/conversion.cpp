@@ -1,6 +1,6 @@
 #include <zaf/internal/conversion.h>
-#include <zaf/point.h>
-#include <zaf/rect.h>
+#include <zaf/base/point.h>
+#include <zaf/base/rect.h>
 
 namespace zaf {
 

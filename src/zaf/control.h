@@ -7,7 +7,7 @@
 #include <vector>
 #include "color.h"
 #include "enum.h"
-#include "rect.h"
+#include <zaf/base/rect.h>
 
 namespace zaf {
 

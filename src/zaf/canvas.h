@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 #include "color.h"
-#include "rect.h"
+#include <zaf/base/rect.h>
 
 namespace zaf {
 

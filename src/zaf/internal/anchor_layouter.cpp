@@ -1,6 +1,6 @@
 #include <zaf/internal/anchor_layouter.h>
 #include <zaf/control.h>
-#include <zaf/rect.h>
+#include <zaf/base/rect.h>
 
 namespace zaf {
 namespace internal {
