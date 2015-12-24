@@ -4,29 +4,6 @@
 
 namespace zaf {
 
-RECT ToWin32Rect(const Rect& rect) {
-
-	RECT win32_rect;
-	win32_rect.left = rect.position.x;
-	win32_rect.top = rect.position.y;
-	win32_rect.right = rect.position.x + rect.size.width;
-	win32_rect.bottom = rect.position.y + rect.size.height;
-
-	return win32_rect;
-}
-
-
-Rect FromWin32Rect(const RECT& win32_rect) {
-
-	return Rect(
-		win32_rect.left, 
-		win32_rect.top, 
-		win32_rect.right - win32_rect.left,
-		win32_rect.bottom - win32_rect.top
-	);
-}
-
-
 POINT ToWin32Point(const Point& point) {
 
 	POINT win32_point;

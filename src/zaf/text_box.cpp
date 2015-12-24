@@ -105,7 +105,7 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	}
 
 	BeginPath(hdc);
-	RECT path_rect = ToWin32Rect(canvas.GetAbsoluteDirtyRect());
+	RECT path_rect = canvas.GetAbsoluteDirtyRect().ToRECT();
 	//Clip path not include the tail edges of rectangle, 
 	//so increase the right and bottom values.
 	path_rect.right += 1;
@@ -114,7 +114,7 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	EndPath(hdc);
 	SelectClipPath(hdc, RGN_COPY);
 
-	RECT win32_absolute_rect = ToWin32Rect(canvas.GetAbsoluteRect());
+	RECT win32_absolute_rect = canvas.GetAbsoluteRect().ToRECT();
 
 	text_service_->TxDraw(
 		DVASPECT_CONTENT,
@@ -528,7 +528,7 @@ HRESULT TextBox::TextHost::TxGetClientRect(LPRECT prc) {
 		rect = text_box->GetAbsoluteRect();	
 	}
 
-	*prc = ToWin32Rect(rect);
+	*prc = rect.ToRECT();
 	return S_OK;
 }
 

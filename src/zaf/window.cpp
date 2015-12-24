@@ -188,7 +188,7 @@ void Window::NeedRepaintRect(const Rect& rect) {
 
 	//LOG() << "NeedRepaint";
 
-	RECT win32_rect = ToWin32Rect(rect);
+	RECT win32_rect = rect.ToRECT();
 	InvalidateRect(handle_, &win32_rect, FALSE);
 }
 
@@ -199,7 +199,7 @@ void Window::Repaint() {
 
 	RECT win32_rect;
 	if (GetUpdateRect(handle_, &win32_rect, TRUE)) {
-		dirty_rect = FromWin32Rect(win32_rect);
+		dirty_rect = Rect::FromRECT(win32_rect);
 	}
 	else {
 		dirty_rect = root_control_->GetRect();
