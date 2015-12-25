@@ -59,11 +59,6 @@ public:
 	Rect(const Point& position, const Size& size) : position(position), size(size) { }
 
 	/**
-	 Initialize the instance that has zero positon and specified size.
-	 */
-	explicit Rect(const Size& size) : position(), size(size) { }
-
-	/**
 	 Initialize the instance that has specified x-coordinate, y-coordinate, width and height.
   	 */
 	Rect(float x, float y, float width, float height) : position(x, y), size(width, height) { }
