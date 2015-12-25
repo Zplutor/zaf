@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp" />
-    <ClCompile Include="src\zaf\base\rect.cpp" />
     <ClCompile Include="src\zaf\button.cpp" />
     <ClCompile Include="src\zaf\canvas.cpp" />
     <ClCompile Include="src\zaf\caret.cpp" />

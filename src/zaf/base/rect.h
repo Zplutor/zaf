@@ -24,8 +24,23 @@ public:
 		);
 	}
 
-	static Rect Intersect(const Rect& rect1, const Rect& rect2);
-	static Rect Union(const Rect& rect1, const Rect& rect2);
+	/**
+	 Create a Rect instance that has the intersection rectangle of other two instances.
+	 */
+	static Rect Intersect(const Rect& rect1, const Rect& rect2) {
+		Rect result = rect1;
+		result.Intersect(rect2);
+		return result;
+	}
+
+	/**
+	 Create a Rect instance that has the union rectangle of other two instances.
+	 */
+	static Rect Union(const Rect& rect1, const Rect& rect2) {
+		Rect result = rect1;
+		result.Union(rect2);
+		return result;
+	}
 
 public:
 	/**
@@ -62,15 +77,46 @@ public:
 		return *this;
 	}
 
-	bool HasIntersection(const Rect& other) const;
-	void Intersect(const Rect& other);
-	void Union(const Rect& other);
+	/**
+	 Determine whether the rectangle has intersection with another Rect.
+	 */
+	bool HasIntersection(const Rect& other) const {
+		Rect result = Intersect(*this, other);
+		return !result.IsEmpty();
+	}
 
-	void Inflate(float x, float y) {
-		position.x -= x;
-		position.y -= y;
-		size.width += x * 2;
-		size.height += y * 2;
+	/**
+	 Make an intersection rectangle with another Rect.
+	 */
+	void Intersect(const Rect& other) {
+
+		RECT rect1 = this->ToRECT();
+		RECT rect2 = other.ToRECT();
+		RECT result = { 0 };
+		IntersectRect(&result, &rect1, &rect2);
+		*this = Rect::FromRECT(result);
+	}
+
+	/**
+	 Make an union rectangle with another Rect.
+	 */
+	void Union(const Rect& other) {
+
+		RECT rect1 = this->ToRECT();
+		RECT rect2 = other.ToRECT();
+		RECT result = { 0 };
+		UnionRect(&result, &rect1, &rect2);
+		*this = Rect::FromRECT(result);
+	}
+
+	/**
+	 Modify the size of the rectangle in-place.
+	 */
+	void Inflate(float width, float height) {
+		position.x -= width;
+		position.y -= height;
+		size.width += width * 2;
+		size.height += height * 2;
 	}
 
 	/**

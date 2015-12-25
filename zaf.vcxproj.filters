@@ -93,9 +93,6 @@
     <ClCompile Include="src\zaf\caret.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\rect.cpp">
-      <Filter>zaf\base</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
