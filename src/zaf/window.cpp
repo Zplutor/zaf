@@ -281,9 +281,9 @@ void Window::ReceiveMouseMessage(UINT message, WPARAM wParam, LPARAM lParam) {
 	case WM_MOUSEHWHEEL: {
 		//The cursor position in these two messages is in screen coordinate.
 		//Translate it to window coordinate.
-		POINT cursor_point = ToWin32Point(point);
+		POINT cursor_point = point.ToPOINT();
 		ScreenToClient(handle_, &cursor_point);
-		point = FromWin32Point(cursor_point);
+		point = Point::FromPOINT(cursor_point);
 		break;
 	}
 	}

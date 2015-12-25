@@ -108,6 +108,7 @@ public:
 	 Modify the size of the rectangle in-place.
 	 */
 	void Inflate(float width, float height) {
+
 		position.x -= width;
 		position.y -= height;
 		size.width += width * 2;
@@ -142,6 +143,7 @@ public:
 	 Convert to RECT structure.
 	 */
 	RECT ToRECT() const {
+
 		RECT rect;
 		rect.left = static_cast<LONG>(position.x);
 		rect.top = static_cast<LONG>(position.y);
