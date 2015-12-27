@@ -1,6 +1,6 @@
 #include <zaf/application.h>
-#include <zaf/window.h>
 #include <zaf/internal/theme/vs2013/theme.h>
+#include <zaf/window/window.h>
 
 namespace zaf {
 

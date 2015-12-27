@@ -1,10 +1,10 @@
 #pragma once
 
 #include <Windows.h>
-#include "control.h"
+#include <zaf/control.h>
 #include <zaf/base/event.h>
 #include <zaf/base/rect.h>
-#include "internal/window_state.h"
+#include <zaf/window/window_state.h>
 
 namespace zaf {
 

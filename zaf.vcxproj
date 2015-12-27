@@ -16,7 +16,6 @@
     <ClCompile Include="src\zaf\base\timer.cpp" />
     <ClCompile Include="src\zaf\button.cpp" />
     <ClCompile Include="src\zaf\canvas.cpp" />
-    <ClCompile Include="src\zaf\caret.cpp" />
     <ClCompile Include="src\zaf\check_box.cpp" />
     <ClCompile Include="src\zaf\clickable_control.cpp" />
     <ClCompile Include="src\zaf\color.cpp" />
@@ -34,7 +33,8 @@
     <ClCompile Include="src\zaf\scrollable_control.cpp" />
     <ClCompile Include="src\zaf\scroll_bar.cpp" />
     <ClCompile Include="src\zaf\text_box.cpp" />
-    <ClCompile Include="src\zaf\window.cpp" />
+    <ClCompile Include="src\zaf\window\caret.cpp" />
+    <ClCompile Include="src\zaf\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h" />
@@ -47,7 +47,6 @@
     <ClInclude Include="src\zaf\base\timer.h" />
     <ClInclude Include="src\zaf\button.h" />
     <ClInclude Include="src\zaf\canvas.h" />
-    <ClInclude Include="src\zaf\caret.h" />
     <ClInclude Include="src\zaf\check_box.h" />
     <ClInclude Include="src\zaf\clickable_control.h" />
     <ClInclude Include="src\zaf\color.h" />
@@ -65,14 +64,15 @@
     <ClInclude Include="src\zaf\internal\theme\vs2013\palette.h" />
     <ClInclude Include="src\zaf\internal\theme\vs2013\scroll_bar_painter.h" />
     <ClInclude Include="src\zaf\internal\theme\vs2013\theme.h" />
-    <ClInclude Include="src\zaf\internal\window_state.h" />
     <ClInclude Include="src\zaf\label.h" />
     <ClInclude Include="src\zaf\painter.h" />
     <ClInclude Include="src\zaf\renderer.h" />
     <ClInclude Include="src\zaf\scrollable_control.h" />
     <ClInclude Include="src\zaf\scroll_bar.h" />
     <ClInclude Include="src\zaf\text_box.h" />
-    <ClInclude Include="src\zaf\window.h" />
+    <ClInclude Include="src\zaf\window\caret.h" />
+    <ClInclude Include="src\zaf\window\window.h" />
+    <ClInclude Include="src\zaf\window\window_state.h" />
     <ClInclude Include="src\zaf\zaf.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

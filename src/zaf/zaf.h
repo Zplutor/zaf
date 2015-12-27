@@ -8,4 +8,4 @@
 #include <zaf/scroll_bar.h>
 #include <zaf/scrollable_control.h>
 #include <zaf/text_box.h>
-#include <zaf/window.h>
+#include <zaf/window/window.h>

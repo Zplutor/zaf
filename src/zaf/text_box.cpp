@@ -1,10 +1,10 @@
 #include <zaf/text_box.h>
 #include <cassert>
 #include <zaf/canvas.h>
-#include <zaf/caret.h>
 #include <zaf/renderer.h>
-#include <zaf/window.h>
 #include <zaf/base/log.h>
+#include <zaf/window/caret.h>
+#include <zaf/window/window.h>
 
 EXTERN_C const IID IID_ITextServices = {
 	0x8d33f740,

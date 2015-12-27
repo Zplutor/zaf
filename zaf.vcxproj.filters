@@ -16,6 +16,9 @@
     <Filter Include="zaf\base">
       <UniqueIdentifier>{52ca2341-45e3-46d9-8a05-84664f8cede4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\window">
+      <UniqueIdentifier>{f5574f1e-9d81-416f-85f5-666dddb83155}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -34,9 +37,6 @@
       <Filter>zaf</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\renderer.cpp">
-      <Filter>zaf</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\window.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\theme\vs2013\palette.cpp">
@@ -81,14 +81,17 @@
     <ClCompile Include="src\zaf\text_box.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\caret.cpp">
-      <Filter>zaf</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\timer.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\base\log.cpp">
       <Filter>zaf\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\caret.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\window.cpp">
+      <Filter>zaf\window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -115,12 +118,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\renderer.h">
       <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\window.h">
-      <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\window_state.h">
-      <Filter>zaf\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\zaf.h">
       <Filter>zaf</Filter>
@@ -179,9 +176,6 @@
     <ClInclude Include="src\zaf\text_box.h">
       <Filter>zaf</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\caret.h">
-      <Filter>zaf</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\point.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
@@ -202,6 +196,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\direct2d.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\caret.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\window.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\window_state.h">
+      <Filter>zaf\window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

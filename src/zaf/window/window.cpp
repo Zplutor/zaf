@@ -1,10 +1,10 @@
-#include <zaf/window.h>
+#include <zaf/window/window.h>
 #include <Windowsx.h>
 #include <zaf/application.h>
 #include <zaf/canvas.h>
-#include <zaf/caret.h>
 #include <zaf/renderer.h>
 #include <zaf/base/log.h>
+#include <zaf/window/caret.h>
 
 namespace zaf {
 
