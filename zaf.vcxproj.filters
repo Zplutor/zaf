@@ -39,9 +39,6 @@
     <ClCompile Include="src\zaf\window.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\conversion.cpp">
-      <Filter>zaf\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\internal\theme\vs2013\palette.cpp">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClCompile>
@@ -122,9 +119,6 @@
     <ClInclude Include="src\zaf\window.h">
       <Filter>zaf</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\conversion.h">
-      <Filter>zaf\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\internal\window_state.h">
       <Filter>zaf\internal</Filter>
     </ClInclude>
@@ -148,9 +142,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\font.h">
       <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\direct2d.h">
-      <Filter>zaf\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\label.h">
       <Filter>zaf</Filter>
@@ -207,6 +198,9 @@
       <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\log.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\direct2d.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>

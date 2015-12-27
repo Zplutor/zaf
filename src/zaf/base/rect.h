@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <zaf/base/direct2d.h>
 #include <zaf/base/point.h>
 #include <zaf/base/size.h>
 
@@ -21,6 +22,19 @@ public:
 			static_cast<float>(rect.top),
 			static_cast<float>(rect.right - rect.left),
 			static_cast<float>(rect.bottom - rect.top)
+		);
+	}
+
+	/**
+	 Convert a specified D2D1_RECT_F structure to Rect.
+	 */
+	static Rect FromD2D1RECTF(const D2D1_RECT_F& rect) {
+
+		return Rect(
+			rect.left,
+			rect.top,
+			rect.right - rect.left,
+			rect.bottom - rect.top
 		);
 	}
 
@@ -149,6 +163,19 @@ public:
 		rect.top = static_cast<LONG>(position.y);
 		rect.right = static_cast<LONG>(position.x + size.width);
 		rect.bottom = static_cast<LONG>(position.y + size.height);
+		return rect;
+	}
+	
+	/**
+	 Convert to D2D1_RECT_F structure.
+	 */
+	D2D1_RECT_F ToD2D1RECTF() const{
+
+		D2D1_RECT_F rect;
+		rect.left = position.x;
+		rect.top = position.y;
+		rect.right = position.x + size.width;
+		rect.bottom = position.y + size.height;
 		return rect;
 	}
 

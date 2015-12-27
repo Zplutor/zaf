@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/internal/direct2d.h>
+#include <zaf/base/direct2d.h>
 #include <zaf/base/point.h>
 #include <zaf/base/size.h>
 

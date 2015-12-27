@@ -2,7 +2,6 @@
 #include <zaf/application.h>
 #include <zaf/font.h>
 #include <zaf/renderer.h>
-#include <zaf/internal/conversion.h>
 
 namespace zaf {
 
@@ -37,7 +36,7 @@ void Canvas::BeginPaint() {
 	related_dirty_rect.position.y -= absolute_rect_.position.y; 
 
 	renderer_->GetHandle()->PushLayer(
-		D2D1::LayerParameters(ToD2dRect(related_dirty_rect)),
+		D2D1::LayerParameters(related_dirty_rect.ToD2D1RECTF()),
 		renderer_->GetLayer()
 	);
 }
@@ -73,7 +72,7 @@ void Canvas::DrawSingleLineText(const Rect& rect, const std::wstring& text, cons
 		text.c_str(), 
 		text.length(), 
 		text_format, 
-		ToD2dRect(rect),
+		rect.ToD2D1RECTF(),
 		renderer_->GetSolidBrush()
 	);
 
@@ -91,13 +90,13 @@ void Canvas::DrawLine(const Point& from_point, const Point& to_point) {
 
 void Canvas::DrawRectangle(const Rect& rect) {
 
-	renderer_->GetHandle()->FillRectangle(ToD2dRect(rect), renderer_->GetSolidBrush());
+	renderer_->GetHandle()->FillRectangle(rect.ToD2D1RECTF(), renderer_->GetSolidBrush());
 }
 
 
 void Canvas::DrawRectangleFrame(const Rect& rect, float strokeWidth) {
 
-	renderer_->GetHandle()->DrawRectangle(ToD2dRect(rect), renderer_->GetSolidBrush(), strokeWidth);
+	renderer_->GetHandle()->DrawRectangle(rect.ToD2D1RECTF(), renderer_->GetSolidBrush(), strokeWidth);
 }
 
 

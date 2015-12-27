@@ -4,8 +4,8 @@
 #include <dwrite.h>
 #include <memory>
 #include <set>
+#include <zaf/base/direct2d.h>
 #include <zaf/base/event.h>
-#include <zaf/internal/direct2d.h>
 
 namespace zaf {
 

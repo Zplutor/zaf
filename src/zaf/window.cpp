@@ -5,7 +5,6 @@
 #include <zaf/caret.h>
 #include <zaf/renderer.h>
 #include <zaf/base/log.h>
-#include <zaf/internal/conversion.h>
 
 namespace zaf {
 

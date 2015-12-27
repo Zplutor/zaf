@@ -5,7 +5,6 @@
 #include <zaf/renderer.h>
 #include <zaf/window.h>
 #include <zaf/base/log.h>
-#include <zaf/internal/conversion.h>
 
 EXTERN_C const IID IID_ITextServices = {
 	0x8d33f740,
