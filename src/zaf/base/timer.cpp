@@ -1,4 +1,4 @@
-#include <zaf/timer.h>
+#include <zaf/base/timer.h>
 
 namespace zaf {
 
@@ -26,8 +26,8 @@ static void CheckInitialize() {
 }
 
 
-Timer::Timer(int interval_ms, const Callback& callback) :
-	interval_(interval_ms),
+Timer::Timer(Interval interval, const Callback& callback) :
+	interval_(interval),
 	callback_(callback) {
 
 }
@@ -66,7 +66,10 @@ void Timer::TimerProcedure(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 
 
 void Timer::Trigger() {
-	callback_(*this);
+
+	if (callback_ != nullptr) {
+		callback_(*this);
+	}
 }
 
 

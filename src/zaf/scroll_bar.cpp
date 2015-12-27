@@ -1,6 +1,6 @@
 #include <zaf/scroll_bar.h>
-#include <zaf/timer.h>
 #include <zaf/window.h>
+#include <zaf/base/timer.h>
 #include <zaf/internal/theme/painter.h>
 #include <zaf/internal/theme/theme.h>
 #include <zaf/internal/log.h>

@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp" />
+    <ClCompile Include="src\zaf\base\timer.cpp" />
     <ClCompile Include="src\zaf\button.cpp" />
     <ClCompile Include="src\zaf\canvas.cpp" />
     <ClCompile Include="src\zaf\caret.cpp" />
@@ -34,7 +35,6 @@
     <ClCompile Include="src\zaf\scrollable_control.cpp" />
     <ClCompile Include="src\zaf\scroll_bar.cpp" />
     <ClCompile Include="src\zaf\text_box.cpp" />
-    <ClCompile Include="src\zaf\timer.cpp" />
     <ClCompile Include="src\zaf\window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +43,7 @@
     <ClInclude Include="src\zaf\base\point.h" />
     <ClInclude Include="src\zaf\base\rect.h" />
     <ClInclude Include="src\zaf\base\size.h" />
+    <ClInclude Include="src\zaf\base\timer.h" />
     <ClInclude Include="src\zaf\button.h" />
     <ClInclude Include="src\zaf\canvas.h" />
     <ClInclude Include="src\zaf\caret.h" />
@@ -51,7 +52,6 @@
     <ClInclude Include="src\zaf\color.h" />
     <ClInclude Include="src\zaf\control.h" />
     <ClInclude Include="src\zaf\enum.h" />
-    <ClInclude Include="src\zaf\event.h" />
     <ClInclude Include="src\zaf\font.h" />
     <ClInclude Include="src\zaf\internal\anchor_layouter.h" />
     <ClInclude Include="src\zaf\internal\conversion.h" />
@@ -75,7 +75,6 @@
     <ClInclude Include="src\zaf\scrollable_control.h" />
     <ClInclude Include="src\zaf\scroll_bar.h" />
     <ClInclude Include="src\zaf\text_box.h" />
-    <ClInclude Include="src\zaf\timer.h" />
     <ClInclude Include="src\zaf\window.h" />
     <ClInclude Include="src\zaf\zaf.h" />
   </ItemGroup>

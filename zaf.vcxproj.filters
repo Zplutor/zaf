@@ -69,9 +69,6 @@
     <ClCompile Include="src\zaf\internal\theme\vs2013\scroll_bar_painter.cpp">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\timer.cpp">
-      <Filter>zaf</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\scrollable_control.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
@@ -93,6 +90,9 @@
     <ClCompile Include="src\zaf\caret.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\base\timer.cpp">
+      <Filter>zaf\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -111,9 +111,6 @@
       <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\enum.h">
-      <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\event.h">
       <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\painter.h">
@@ -182,9 +179,6 @@
     <ClInclude Include="src\zaf\internal\theme\vs2013\scroll_bar_painter.h">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\timer.h">
-      <Filter>zaf</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\internal\theme\vs2013\single_color_painter.h">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClInclude>
@@ -213,6 +207,9 @@
       <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\event.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\timer.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
