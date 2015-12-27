@@ -1,9 +1,9 @@
 #include <zaf/window/window.h>
 #include <Windowsx.h>
 #include <zaf/application.h>
-#include <zaf/canvas.h>
-#include <zaf/renderer.h>
 #include <zaf/base/log.h>
+#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/renderer.h>
 #include <zaf/window/caret.h>
 
 namespace zaf {

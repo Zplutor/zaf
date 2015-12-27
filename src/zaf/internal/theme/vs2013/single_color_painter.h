@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/color.h>
+#include <zaf/graphic/color.h>
 #include <zaf/internal/theme/painter.h>
 
 namespace zaf {

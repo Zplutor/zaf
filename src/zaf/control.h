@@ -5,9 +5,9 @@
 #include <set>
 #include <string>
 #include <vector>
-#include "color.h"
 #include "enum.h"
 #include <zaf/base/rect.h>
+#include <zaf/graphic/color.h>
 
 namespace zaf {
 

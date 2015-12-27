@@ -1,7 +1,7 @@
 #include <zaf/internal/theme/vs2013/label_painter.h>
-#include <zaf/canvas.h>
 #include <zaf/control.h>
 #include <zaf/label.h>
+#include <zaf/graphic/canvas.h>
 #include <zaf/internal/theme/vs2013/palette.h>
 
 namespace zaf {

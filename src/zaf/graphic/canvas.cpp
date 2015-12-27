@@ -1,7 +1,7 @@
-#include "canvas.h"
+#include <zaf/graphic/canvas.h>
 #include <zaf/application.h>
-#include <zaf/font.h>
-#include <zaf/renderer.h>
+#include <zaf/graphic/font.h>
+#include <zaf/graphic/renderer.h>
 
 namespace zaf {
 

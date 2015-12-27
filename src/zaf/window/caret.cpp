@@ -1,6 +1,6 @@
 #include <zaf/window/caret.h>
-#include <zaf/canvas.h>
 #include <zaf/base/timer.h>
+#include <zaf/graphic/canvas.h>
 #include <zaf/window/window.h>
 
 namespace zaf {

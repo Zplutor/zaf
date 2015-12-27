@@ -1,6 +1,6 @@
 #include <zaf/internal/theme/vs2013/palette.h>
-#include <zaf/color.h>
-#include <zaf/font.h>
+#include <zaf/graphic/color.h>
+#include <zaf/graphic/font.h>
 
 namespace zaf {
 namespace internal {

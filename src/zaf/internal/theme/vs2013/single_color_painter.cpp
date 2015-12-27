@@ -1,6 +1,6 @@
 #include <zaf/internal/theme/vs2013/single_color_painter.h>
-#include <zaf/canvas.h>
 #include <zaf/control.h>
+#include <zaf/graphic/canvas.h>
 #include <zaf/internal/theme/vs2013/palette.h>
 
 namespace zaf {

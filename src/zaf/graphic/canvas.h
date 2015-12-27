@@ -2,8 +2,8 @@
 
 #include <memory>
 #include <string>
-#include "color.h"
 #include <zaf/base/rect.h>
+#include <zaf/graphic/color.h>
 
 namespace zaf {
 

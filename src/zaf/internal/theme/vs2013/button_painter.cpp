@@ -1,7 +1,7 @@
 #include <zaf/internal/theme/vs2013/button_painter.h>
 #include <zaf/button.h>
-#include <zaf/canvas.h>
-#include <zaf/font.h>
+#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/font.h>
 #include <zaf/internal/theme/vs2013/palette.h>
 
 namespace zaf {

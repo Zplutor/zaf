@@ -1,8 +1,8 @@
 #include <zaf/text_box.h>
 #include <cassert>
-#include <zaf/canvas.h>
-#include <zaf/renderer.h>
 #include <zaf/base/log.h>
+#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/renderer.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/window.h>
 

@@ -1,8 +1,8 @@
 #include "control.h"
 #include <algorithm>
 #include "application.h"
-#include "canvas.h"
 #include <zaf/base/log.h>
+#include <zaf/graphic/canvas.h>
 #include <zaf/internal/anchor_layouter.h>
 #include <zaf/internal/theme/painter.h>
 #include <zaf/internal/theme/theme.h>

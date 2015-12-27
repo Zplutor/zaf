@@ -1,7 +1,7 @@
 #include <zaf/internal/theme/vs2013/scroll_bar_painter.h>
-#include <zaf/canvas.h>
 #include <zaf/control.h>
 #include <zaf/scroll_bar.h>
+#include <zaf/graphic/canvas.h>
 #include <zaf/internal/theme/vs2013/palette.h>
 
 namespace zaf {
