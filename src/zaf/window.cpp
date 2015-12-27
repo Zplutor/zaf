@@ -4,8 +4,8 @@
 #include <zaf/canvas.h>
 #include <zaf/caret.h>
 #include <zaf/renderer.h>
+#include <zaf/base/log.h>
 #include <zaf/internal/conversion.h>
-#include <zaf/internal/log.h>
 
 namespace zaf {
 
@@ -185,8 +185,6 @@ const Point Window::GetMousePosition() const {
 
 
 void Window::NeedRepaintRect(const Rect& rect) {
-
-	//LOG() << "NeedRepaint";
 
 	RECT win32_rect = rect.ToRECT();
 	InvalidateRect(handle_, &win32_rect, FALSE);

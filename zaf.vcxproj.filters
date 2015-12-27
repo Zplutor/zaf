@@ -42,9 +42,6 @@
     <ClCompile Include="src\zaf\internal\conversion.cpp">
       <Filter>zaf\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\redirect_std_stream.cpp">
-      <Filter>zaf\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\internal\theme\vs2013\palette.cpp">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClCompile>
@@ -93,6 +90,9 @@
     <ClCompile Include="src\zaf\base\timer.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\base\log.cpp">
+      <Filter>zaf\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -123,12 +123,6 @@
       <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\conversion.h">
-      <Filter>zaf\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\log.h">
-      <Filter>zaf\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\redirect_std_stream.h">
       <Filter>zaf\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\window_state.h">
@@ -210,6 +204,9 @@
       <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\timer.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\log.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>

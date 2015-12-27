@@ -4,8 +4,8 @@
 #include <zaf/caret.h>
 #include <zaf/renderer.h>
 #include <zaf/window.h>
+#include <zaf/base/log.h>
 #include <zaf/internal/conversion.h>
-#include <zaf/internal/log.h>
 
 EXTERN_C const IID IID_ITextServices = {
 	0x8d33f740,
@@ -408,7 +408,7 @@ void TextBox::TextHost::TxViewChange(BOOL fUpdate) {
 
 BOOL TextBox::TextHost::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) {
 
-	//LOG() << "CreateCaret: " << hbmp << ',' << xWidth << ',' << yHeight;
+	//ZAFLOG() << "CreateCaret: " << hbmp << ',' << xWidth << ',' << yHeight;
 	//return CreateCaret(GetWindowHandle(), hbmp, xWidth, yHeight);
 
 	auto window = GetWindow();
@@ -424,7 +424,7 @@ BOOL TextBox::TextHost::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) {
 BOOL TextBox::TextHost::TxShowCaret(BOOL fShow) {
 
 	/*
-	LOG() << "ShowCaret: " << fShow;
+	ZAFLOG() << "ShowCaret: " << fShow;
 	if (fShow) {
 		return ShowCaret(GetWindowHandle());
 	}
@@ -451,7 +451,7 @@ BOOL TextBox::TextHost::TxShowCaret(BOOL fShow) {
 
 BOOL TextBox::TextHost::TxSetCaretPos(INT x, INT y) {
 
-	//LOG() << "SetCaretPos: " << x << ',' << y;
+	//ZAFLOG() << "SetCaretPos: " << x << ',' << y;
 	//return SetCaretPos(x, y);
 
 	auto window = GetWindow();

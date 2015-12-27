@@ -3,7 +3,7 @@
 #include "application.h"
 #include "canvas.h"
 #include "window.h"
-#include "internal/log.h"
+#include <zaf/base/log.h>
 #include <zaf/internal/anchor_layouter.h>
 #include <zaf/internal/theme/painter.h>
 #include <zaf/internal/theme/theme.h>
@@ -578,7 +578,7 @@ void Control::IsFocusedChanged(bool is_focused) {
 		return;
 	}
 
-	LOG() << "IsFocusedChanged: " << is_focused;
+	ZAFLOG() << "IsFocusedChanged: " << is_focused;
 
 	is_focused_ = is_focused;
 

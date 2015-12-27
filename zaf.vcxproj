@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp" />
+    <ClCompile Include="src\zaf\base\log.cpp" />
     <ClCompile Include="src\zaf\base\timer.cpp" />
     <ClCompile Include="src\zaf\button.cpp" />
     <ClCompile Include="src\zaf\canvas.cpp" />
@@ -22,7 +23,6 @@
     <ClCompile Include="src\zaf\control.cpp" />
     <ClCompile Include="src\zaf\internal\anchor_layouter.cpp" />
     <ClCompile Include="src\zaf\internal\conversion.cpp" />
-    <ClCompile Include="src\zaf\internal\redirect_std_stream.cpp" />
     <ClCompile Include="src\zaf\internal\theme\theme.cpp" />
     <ClCompile Include="src\zaf\internal\theme\vs2013\check_box_painter.cpp" />
     <ClCompile Include="src\zaf\internal\theme\vs2013\single_color_painter.cpp" />
@@ -40,6 +40,7 @@
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h" />
     <ClInclude Include="src\zaf\base\event.h" />
+    <ClInclude Include="src\zaf\base\log.h" />
     <ClInclude Include="src\zaf\base\point.h" />
     <ClInclude Include="src\zaf\base\rect.h" />
     <ClInclude Include="src\zaf\base\size.h" />
@@ -57,8 +58,6 @@
     <ClInclude Include="src\zaf\internal\conversion.h" />
     <ClInclude Include="src\zaf\internal\direct2d.h" />
     <ClInclude Include="src\zaf\internal\layouter.h" />
-    <ClInclude Include="src\zaf\internal\log.h" />
-    <ClInclude Include="src\zaf\internal\redirect_std_stream.h" />
     <ClInclude Include="src\zaf\internal\theme\painter.h" />
     <ClInclude Include="src\zaf\internal\theme\theme.h" />
     <ClInclude Include="src\zaf\internal\theme\vs2013\check_box_painter.h" />

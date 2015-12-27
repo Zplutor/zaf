@@ -1,6 +1,5 @@
 #include <Windows.h>
 #include <zaf/zaf.h>
-#include <zaf/internal/log.h>
 
 using namespace zaf;
 

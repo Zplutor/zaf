@@ -1,6 +1,5 @@
 #include <zaf/application.h>
 #include <zaf/window.h>
-#include <zaf/internal/redirect_std_stream.h>
 #include <zaf/internal/theme/vs2013/theme.h>
 
 namespace zaf {
@@ -24,8 +23,6 @@ Application::Application() :
 
 
 bool Application::Initialize() {
-
-	internal::RedirectStandardStream();
 
 	if (! SUCCEEDED(CoInitialize(nullptr))) {
 		return false;

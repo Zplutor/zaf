@@ -1,9 +1,9 @@
 #include <zaf/scroll_bar.h>
 #include <zaf/window.h>
+#include <zaf/base/log.h>
 #include <zaf/base/timer.h>
 #include <zaf/internal/theme/painter.h>
 #include <zaf/internal/theme/theme.h>
-#include <zaf/internal/log.h>
 
 namespace zaf {
 
