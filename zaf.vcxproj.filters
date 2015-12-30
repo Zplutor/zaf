@@ -22,6 +22,9 @@
     <Filter Include="zaf\graphic">
       <UniqueIdentifier>{d45474f1-c5c4-40c0-a6e8-8d393e1f96bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\brush">
+      <UniqueIdentifier>{a3b014e0-ac1c-44fb-b20f-f4f77ebee9d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -208,6 +211,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\renderer.h">
       <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\brush\brush.h">
+      <Filter>zaf\graphic\brush</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h">
+      <Filter>zaf\graphic\brush</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

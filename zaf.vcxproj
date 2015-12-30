@@ -50,6 +50,8 @@
     <ClInclude Include="src\zaf\clickable_control.h" />
     <ClInclude Include="src\zaf\control.h" />
     <ClInclude Include="src\zaf\enum.h" />
+    <ClInclude Include="src\zaf\graphic\brush\brush.h" />
+    <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h" />
     <ClInclude Include="src\zaf\graphic\canvas.h" />
     <ClInclude Include="src\zaf\graphic\color.h" />
     <ClInclude Include="src\zaf\graphic\font.h" />
