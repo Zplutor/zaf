@@ -1,9 +1,9 @@
 #include <zaf/application.h>
 #include <zaf/internal/theme/vs2013/theme.h>
+#include <zaf/graphic/renderer_factory.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
-
 
 Application& Application::GetInstance() {
 	static Application instance;
@@ -12,8 +12,6 @@ Application& Application::GetInstance() {
 
 
 Application::Application() : 
-	d2d_factory_(nullptr),
-	dwrite_factory_(nullptr),
 	begin_run_event_(),
 	end_run_event_(),
 	OnBeginRun(begin_run_event_),
@@ -22,38 +20,16 @@ Application::Application() :
 }
 
 
-bool Application::Initialize() {
+void Application::Run() {
 
-	if (! SUCCEEDED(CoInitialize(nullptr))) {
-		return false;
-	}
+	CoInitialize(nullptr);
 
-	if (! SUCCEEDED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2d_factory_))) {
-		return false;
-	}
+	Window::RegisterDefaultClass();
 
-	HRESULT result = DWriteCreateFactory(
-		DWRITE_FACTORY_TYPE_SHARED, 
-		__uuidof(IDWriteFactory), 
-		reinterpret_cast<IUnknown**>(&dwrite_factory_)
-	);
-
-	if (! SUCCEEDED(result)) {
-		return false;
-	}
-
-	if (! Window::RegisterDefaultClass()) {
-		return false;
-	}
+	renderer_factory_ = std::make_shared<RendererFactory>();
 
 	auto theme = std::make_shared<internal::theme::vs2013::Theme>();
 	internal::theme::SetTheme(theme);
-
-	return true;
-}
-
-
-void Application::Run() {
 
 	begin_run_event_.Trigger(*this);
 
@@ -64,12 +40,6 @@ void Application::Run() {
 	}
 
 	end_run_event_.Trigger(*this);
-
-	dwrite_factory_->Release();
-	dwrite_factory_ = nullptr;
-
-	d2d_factory_->Release();
-	d2d_factory_ = nullptr;
 
 	CoUninitialize();
 }
@@ -86,16 +56,5 @@ void Application::WindowClosed(const std::shared_ptr<Window>& window) {
 
 	windows_.erase(window);
 }
-
-
-ID2D1Factory* Application::GetD2DFactory() {
-	return d2d_factory_;
-}
-
-
-IDWriteFactory* Application::GetDWriteFactory() {
-	return dwrite_factory_;
-}
-
 
 }

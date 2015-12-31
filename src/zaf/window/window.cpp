@@ -4,6 +4,7 @@
 #include <zaf/base/log.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer.h>
+#include <zaf/graphic/renderer_factory.h>
 #include <zaf/window/caret.h>
 
 namespace zaf {
@@ -136,29 +137,11 @@ void Window::CheckCreate() {
 	SetWindowLongPtr(handle_, GWLP_USERDATA, reinterpret_cast<ULONG_PTR>(this));
 	state_ = std::make_shared<internal::WindowCreatedState>(handle_);
 
-	RECT rc;
-	GetClientRect(handle_, &rc);
-
-	D2D1_SIZE_U client_size = D2D1::SizeU(
-		rc.right - rc.left,
-		rc.bottom - rc.top
-	);
-
-	ID2D1HwndRenderTarget* renderer_handle = nullptr;
-	D2D1_RENDER_TARGET_PROPERTIES properties = D2D1::RenderTargetProperties();
-	properties.usage |= D2D1_RENDER_TARGET_USAGE_GDI_COMPATIBLE;
-	properties.pixelFormat.alphaMode = D2D1_ALPHA_MODE_PREMULTIPLIED;
-	properties.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
-	Application::GetInstance().GetD2DFactory()->CreateHwndRenderTarget(
-		properties,
-		D2D1::HwndRenderTargetProperties(handle_, client_size),
-		&renderer_handle
-	);
+	renderer_ = Application::GetInstance().GetRendererFactory()->CreateRenderer(handle_);
 
 	root_control_->CheckInitialized();
 	root_control_->SetWindow(this->shared_from_this());
-	renderer_ = std::make_shared<Renderer>(renderer_handle);
-
+	
 	Application::GetInstance().RegisterWindow(shared_from_this());
 }
 
@@ -202,7 +185,7 @@ void Window::Repaint() {
 		dirty_rect = root_control_->GetRect();
 	}
 
-	renderer_->BeginRender();
+	renderer_->BeginDraw();
 
 	Canvas canvas(renderer_, root_control_->GetRect(), dirty_rect);
 	root_control_->Repaint(canvas, dirty_rect);
@@ -214,7 +197,7 @@ void Window::Repaint() {
 		}
 	}
 
-	renderer_->EndRender();
+	renderer_->EndDraw();
 
 	ValidateRect(handle_, nullptr);
 }
@@ -222,8 +205,10 @@ void Window::Repaint() {
 
 void Window::Resize(UINT width, UINT height) {
 
-	renderer_->GetHandle()->Resize(D2D1::SizeU(width, height));
-	root_control_->SetRect(Rect(0, 0, static_cast<float>(width), static_cast<float>(height)));
+	Size size(static_cast<float>(width), static_cast<float>(height));
+
+	renderer_->Resize(size);
+	root_control_->SetRect(Rect(Point(), size));
 }
 
 

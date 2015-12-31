@@ -1,13 +1,13 @@
 #pragma once
 
 #include <Windows.h>
-#include <dwrite.h>
 #include <memory>
 #include <set>
-#include <zaf/base/direct2d.h>
 #include <zaf/base/event.h>
 
 namespace zaf {
+
+class RendererFactory;
 
 class Application {
 public:
@@ -17,11 +17,11 @@ public:
 public:
 	static Application& GetInstance();
 
-	bool Initialize();
 	void Run();
 
-	ID2D1Factory* GetD2DFactory();
-	IDWriteFactory* GetDWriteFactory();
+	const std::shared_ptr<RendererFactory>& GetRendererFactory() const {
+		return renderer_factory_;
+	}
 
 public:
 	BeginRunEvent::Proxy OnBeginRun;
@@ -41,9 +41,7 @@ private:
 	Application& operator=(const Application&) = delete;
 
 private:
-	ID2D1Factory* d2d_factory_;
-	IDWriteFactory* dwrite_factory_;
-
+	std::shared_ptr<RendererFactory> renderer_factory_;
 	std::set<std::shared_ptr<Window>> windows_;
 
 	BeginRunEvent begin_run_event_;

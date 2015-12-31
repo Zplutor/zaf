@@ -1,32 +1,55 @@
 #pragma once
 
+#include <memory>
 #include <zaf/base/direct2d.h>
-#include <zaf/base/point.h>
-#include <zaf/base/size.h>
+#include <zaf/base/rect.h>
+#include <zaf/graphic/brush/brush.h>
 
 namespace zaf {
+
+class Brush;
+class SolidColorBrush;
 
 class Renderer {
 public:
 	explicit Renderer(ID2D1HwndRenderTarget* handle);
 	~Renderer();
 
-	ID2D1HwndRenderTarget* GetHandle() const {
-		return handle_;
+	void Resize(const Size& size) {
+		handle_->Resize(size.ToD2D1SIZEU());
 	}
 
-	/**
-	 Begin rendering content.
-	 */
-	void BeginRender() {
+	const std::shared_ptr<SolidColorBrush> CreateSolidColorBrush();
+
+	void BeginDraw() {
 		handle_->BeginDraw();
 	}
 
-	/**
-	 End rendering content.
-	 */
-	void EndRender() {
+	void EndDraw() {
 		handle_->EndDraw();
+	}
+
+	void DrawLine(
+		const Point& from_point, 
+		const Point& to_point, 
+		const std::shared_ptr<Brush>& brush,
+		float stroke_width
+	) {
+
+		handle_->DrawLine(
+			from_point.ToD2D1POINT2F(), 
+			to_point.ToD2D1POINT2F(),
+			brush->GetHandle(),
+			stroke_width
+		);
+	}
+
+	void DrawRectangle(const Rect& rect, const std::shared_ptr<Brush>& brush) {
+		handle_->FillRectangle(rect.ToD2D1RECTF(), brush->GetHandle());
+	}
+
+	void DrawRectangleFrame(const Rect& rect, const std::shared_ptr<Brush>& brush, float stroke_width) {
+		handle_->DrawRectangle(rect.ToD2D1RECTF(), brush->GetHandle(), stroke_width);
 	}
 
 	void Clear() {
@@ -45,12 +68,8 @@ public:
 		return layer_;
 	}
 
-	/**
-	 Get the size of render area.
-	 */
-	const Size GetSize() const {
-		auto size = handle_->GetSize();
-		return Size(size.width, size.height);
+	ID2D1HwndRenderTarget* GetHandle() const {
+		return handle_;
 	}
 
 private:

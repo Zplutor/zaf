@@ -1,4 +1,6 @@
 #include <zaf/graphic/renderer.h>
+#include <zaf/graphic/color.h>
+#include <zaf/graphic/brush/solid_color_brush.h>
 
 namespace zaf {
 
@@ -30,5 +32,18 @@ Renderer::~Renderer() {
 	handle_->Release();
 }
 
+
+const std::shared_ptr<SolidColorBrush> Renderer::CreateSolidColorBrush() {
+
+	ID2D1SolidColorBrush* brush_handle = nullptr;
+	LRESULT result = handle_->CreateSolidColorBrush(Color().ToD2D1COLORF(), &solid_brush_);
+
+	if (SUCCEEDED(result)) {
+		return std::make_shared<SolidColorBrush>(brush_handle);
+	}
+	else {
+		return nullptr;
+	}
+}
 
 }

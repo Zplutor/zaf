@@ -6,8 +6,6 @@ namespace zaf {
 
 class Brush {
 public:
-	Brush(ID2D1Brush* handle) : handle_(handle) { }
-
 	virtual ~Brush() {
 
 		if (handle_ != nullptr) {
@@ -15,9 +13,20 @@ public:
 		}
 	}
 
+	float GetOpacity() const {
+		return handle_->GetOpacity();
+	}
+
+	void SetOpacity(float opacity) {
+		handle_->SetOpacity(opacity);
+	}
+
 	ID2D1Brush* GetHandle() const {
 		return handle_;
 	}
+
+protected:
+	explicit Brush(ID2D1Brush* handle) : handle_(handle) { }
 
 private:
 	Brush(const Brush&) = delete;

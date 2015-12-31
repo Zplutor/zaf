@@ -20,6 +20,13 @@ public:
 		);
 	}
 
+	/**
+     Convert a specified D2D1_POINT_2F structure to Point.
+	 */
+	static Point FromD2D1POINT2F(const D2D1_POINT_2F& point) {
+		return Point(point.x, point.y);
+	}
+
 public:
 	/**
 	 Initialize the instance that has zero x-coordinate and y-coordinate.
@@ -54,6 +61,17 @@ public:
 		POINT point;
 		point.x = static_cast<LONG>(x);
 		point.y = static_cast<LONG>(y);
+		return point;
+	}
+
+	/**
+	 Convert to D2D1_POINT_2F structure.
+	 */
+	D2D1_POINT_2F ToD2D1POINT2F() const {
+
+		D2D1_POINT_2F point;
+		point.x = x;
+		point.y = y;
 		return point;
 	}
 

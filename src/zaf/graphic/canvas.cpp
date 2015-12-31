@@ -1,7 +1,9 @@
 #include <zaf/graphic/canvas.h>
+#include <dwrite.h>
 #include <zaf/application.h>
 #include <zaf/graphic/font.h>
 #include <zaf/graphic/renderer.h>
+#include <zaf/graphic/renderer_factory.h>
 
 namespace zaf {
 
@@ -50,7 +52,7 @@ void Canvas::EndPaint() {
 
 void Canvas::DrawSingleLineText(const Rect& rect, const std::wstring& text, const Font& font) {
 
-	auto dwrite_factory = Application::GetInstance().GetDWriteFactory();
+	auto dwrite_factory = Application::GetInstance().GetRendererFactory()->GetDirectWriteFactoryHandle();
 
 	IDWriteTextFormat* text_format = nullptr;
 	dwrite_factory->CreateTextFormat(

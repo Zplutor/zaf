@@ -7,7 +7,7 @@ namespace zaf {
 
 class SolidColorBrush : public Brush {
 public:
-	SolidColorBrush(ID2D1SolidColorBrush* handle) : 
+	explicit SolidColorBrush(ID2D1SolidColorBrush* handle) : 
 		Brush(handle),
 		handle_(handle) { }
 
