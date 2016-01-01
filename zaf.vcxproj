@@ -59,6 +59,7 @@
     <ClInclude Include="src\zaf\graphic\font.h" />
     <ClInclude Include="src\zaf\graphic\renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer_factory.h" />
+    <ClInclude Include="src\zaf\graphic\stroke.h" />
     <ClInclude Include="src\zaf\internal\anchor_layouter.h" />
     <ClInclude Include="src\zaf\internal\layouter.h" />
     <ClInclude Include="src\zaf\internal\theme\painter.h" />

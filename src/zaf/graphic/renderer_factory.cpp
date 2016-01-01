@@ -63,4 +63,9 @@ const std::shared_ptr<Renderer> RendererFactory::CreateRenderer(HWND window_hand
 	}
 }
 
+
+const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const Stroke::Properties& properties) {
+    return nullptr;
+}
+
 }

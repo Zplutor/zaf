@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <zaf/base/direct2d.h>
+#include <zaf/graphic/stroke.h>
 
 namespace zaf {
 
@@ -16,6 +17,8 @@ public:
 	~RendererFactory();
 	
 	const std::shared_ptr<Renderer> CreateRenderer(HWND window_handle);
+
+    const std::shared_ptr<Stroke> CreateStroke(const Stroke::Properties& properties);
 
 	ID2D1Factory* GetDirect2dFactoryHandle() const {
 		return d2d_factory_handle_;

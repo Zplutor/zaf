@@ -227,5 +227,8 @@
     <ClInclude Include="src\zaf\graphic\renderer_factory.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\graphic\stroke.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
