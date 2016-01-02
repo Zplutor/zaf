@@ -97,6 +97,10 @@ public:
         return dash_pattern;
     }
 
+	ID2D1StrokeStyle* GetHandle() const {
+		return handle_;
+	}
+
 private:
     ID2D1StrokeStyle* handle_;
 };

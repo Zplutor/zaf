@@ -57,6 +57,7 @@
     <ClInclude Include="src\zaf\graphic\canvas.h" />
     <ClInclude Include="src\zaf\graphic\color.h" />
     <ClInclude Include="src\zaf\graphic\font.h" />
+    <ClInclude Include="src\zaf\graphic\layer.h" />
     <ClInclude Include="src\zaf\graphic\renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer_factory.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />

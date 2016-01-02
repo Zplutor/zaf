@@ -65,7 +65,30 @@ const std::shared_ptr<Renderer> RendererFactory::CreateRenderer(HWND window_hand
 
 
 const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const Stroke::Properties& properties) {
-    return nullptr;
+    
+	D2D1_STROKE_STYLE_PROPERTIES d2d_properties;
+	d2d_properties.startCap = static_cast<D2D1_CAP_STYLE>(properties.start_cap_style);
+	d2d_properties.endCap = static_cast<D2D1_CAP_STYLE>(properties.end_cap_style);
+	d2d_properties.dashCap = static_cast<D2D1_CAP_STYLE>(properties.dash_cap_style);
+	d2d_properties.lineJoin = static_cast<D2D1_LINE_JOIN>(properties.line_join_style);
+	d2d_properties.miterLimit = properties.miter_limit;
+	d2d_properties.dashOffset = properties.dash_offset;
+	d2d_properties.dashStyle = static_cast<D2D1_DASH_STYLE>(properties.dash_style);
+
+	ID2D1StrokeStyle* handle = nullptr;
+	LRESULT result = d2d_factory_handle_->CreateStrokeStyle(
+		d2d_properties, 
+		properties.dash_pattern.data(),
+		properties.dash_pattern.size(), 
+		&handle
+	);
+
+	if (SUCCEEDED(result)) {
+		return std::make_shared<Stroke>(handle);
+	}
+	else {
+		return nullptr;
+	}
 }
 
 }

@@ -10,6 +10,13 @@ namespace zaf {
 class Size {
 public:
 	/**
+	 Convert a specified D2D1_SIZE_F structure to Size.
+	 */
+	static Size FromD2D1SIZEF(const D2D1_SIZE_F& size) {
+		return Size(size.width, size.height);
+	}
+
+	/**
 	 Convert a specified D2D1_SIZE_U structure to Size.
 	 */
 	static Size FromD2D1SIZEU(const D2D1_SIZE_U& size) {
@@ -44,6 +51,17 @@ public:
 		width = other.width;
 		height = other.height;
 		return *this;
+	}
+
+	/**
+	 Convert to D2D1_SIZE_F structure.
+	 */
+	D2D1_SIZE_F ToD2D1SIZEF() const {
+
+		D2D1_SIZE_F size;
+		size.width = width;
+		size.height = height;
+		return size;
 	}
 
 	/**

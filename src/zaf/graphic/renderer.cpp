@@ -33,10 +33,10 @@ Renderer::~Renderer() {
 }
 
 
-const std::shared_ptr<SolidColorBrush> Renderer::CreateSolidColorBrush() {
+const std::shared_ptr<SolidColorBrush> Renderer::CreateSolidColorBrush(const Color& color) {
 
 	ID2D1SolidColorBrush* brush_handle = nullptr;
-	LRESULT result = handle_->CreateSolidColorBrush(Color().ToD2D1COLORF(), &solid_brush_);
+	LRESULT result = handle_->CreateSolidColorBrush(color.ToD2D1COLORF(), &solid_brush_);
 
 	if (SUCCEEDED(result)) {
 		return std::make_shared<SolidColorBrush>(brush_handle);
@@ -44,6 +44,36 @@ const std::shared_ptr<SolidColorBrush> Renderer::CreateSolidColorBrush() {
 	else {
 		return nullptr;
 	}
+}
+
+
+const std::shared_ptr<Layer> Renderer::CreateLayer(const Size& size) {
+
+	ID2D1Layer* layer_handle = nullptr;
+	LRESULT result = handle_->CreateLayer(size.ToD2D1SIZEF(), &layer_handle);
+
+	if (SUCCEEDED(result)) {
+		return std::make_shared<Layer>(layer_handle);
+	}
+	else {
+		return nullptr;
+	}
+}
+
+
+void Renderer::PushLayer(const Layer::Parameters& parameters, const std::shared_ptr<Layer>& layer) {
+
+	D2D1_LAYER_PARAMETERS d2d_parameters = D2D1::LayerParameters();
+	d2d_parameters.contentBounds = parameters.content_bounds.ToD2D1RECTF();
+	d2d_parameters.opacity = parameters.opacity;
+
+	handle_->PushLayer(d2d_parameters, layer->GetHandle());
+}
+
+
+void Renderer::PopLayer() {
+
+	handle_->PopLayer();
 }
 
 }
