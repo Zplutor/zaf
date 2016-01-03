@@ -38,7 +38,7 @@ private:
 		window_ = window;
 	}
 
-	void Paint(Canvas& canvas);
+	void Repaint(Canvas& canvas);
 
 private:
 	bool IsShown() const {

@@ -52,7 +52,7 @@ public:
     };
 
 public:
-    Stroke(ID2D1StrokeStyle* handle) : handle_(handle) { }
+    explicit Stroke(ID2D1StrokeStyle* handle) : handle_(handle) { }
 
     ~Stroke() {
         if (handle_ != nullptr) {

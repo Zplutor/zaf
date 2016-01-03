@@ -277,6 +277,8 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	Paint(canvas, dirty_rect);
 	canvas.EndPaint();
 
+	Rect paintable_rect = canvas.GetAbsolutePaintableRect();
+
 	for (const auto& child : children_) {
 
 		const Rect& child_rect = child->GetRect();
@@ -290,15 +292,14 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 		}
 
 		const Rect& child_canvas_absolute_rect = child->GetAbsoluteRect();
-		Canvas child_canvas(
-			canvas.GetRenderer(),
+		canvas.SetRects(
 			child_canvas_absolute_rect, 
-			Rect::Intersect(canvas.GetAbsoluteDirtyRect(), child_canvas_absolute_rect)
+			Rect::Intersect(paintable_rect, child_canvas_absolute_rect)
 		);
 
 		child_dirty_rect.position.x -= child_rect.position.x;
 		child_dirty_rect.position.y -= child_rect.position.y;
-		child->Repaint(child_canvas, child_dirty_rect);
+		child->Repaint(canvas, child_dirty_rect);
 	}
 }
 

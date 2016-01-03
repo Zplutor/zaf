@@ -13,10 +13,10 @@ void LabelPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const Control& 
 
 	const auto& label = dynamic_cast<const Label&>(control);
 
-	canvas.SetBrushColor(kControlBackgroundColor);
+	canvas.SetBrushWithColor(kControlBackgroundColor);
 	canvas.DrawRectangle(Rect(Point(), label.GetSize()));
 
-	canvas.SetBrushColor(label.IsEnabled() ? kTextColor : kDisabledTextColor);
+	canvas.SetBrushWithColor(label.IsEnabled() ? kTextColor : kDisabledTextColor);
 	canvas.DrawSingleLineText(Rect(Point(), label.GetSize()), label.GetText(), kDefaultFont);
 }
 

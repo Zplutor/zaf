@@ -104,7 +104,7 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	}
 
 	BeginPath(hdc);
-	RECT path_rect = canvas.GetAbsoluteDirtyRect().ToRECT();
+	RECT path_rect = canvas.GetAbsolutePaintableRect().ToRECT();
 	//Clip path not include the tail edges of rectangle, 
 	//so increase the right and bottom values.
 	path_rect.right += 1;

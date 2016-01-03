@@ -16,7 +16,7 @@ public:
 	};
 
 public:
-	Layer(ID2D1Layer* handle) : handle_(handle) { }
+	explicit Layer(ID2D1Layer* handle) : handle_(handle) { }
 
 	~Layer() {
 		if (handle_ != nullptr) {

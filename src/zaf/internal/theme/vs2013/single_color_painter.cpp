@@ -10,7 +10,7 @@ namespace vs2013 {
 
 void SingleColorPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const Control& control) {
 
-	canvas.SetBrushColor(color_);
+	canvas.SetBrushWithColor(color_);
 	canvas.DrawRectangle(Rect(Point(), control.GetRect().size));
 }
 

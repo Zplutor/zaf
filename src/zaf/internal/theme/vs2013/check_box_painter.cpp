@@ -19,18 +19,18 @@ void CheckBoxPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const Contro
 	frame_rect.position.y = (control.GetSize().height - kBoxFrameSize) / 2;
 	frame_rect.size.width = kBoxFrameSize;
 	frame_rect.size.height = kBoxFrameSize;
-	canvas.SetBrushColor(check_box.IsHovered() ? kCheckBoxHoveredFrameColor : kCheckBoxFrameColor);
+	canvas.SetBrushWithColor(check_box.IsHovered() ? kCheckBoxHoveredFrameColor : kCheckBoxFrameColor);
 	canvas.DrawRectangleFrame(frame_rect, 1);
 
 	if (check_box.IsChecked()) {
 		frame_rect.Inflate(-2, -2);
-		canvas.SetBrushColor(Color::Black);
+		canvas.SetBrushWithColor(Color::Black);
 		canvas.DrawRectangle(frame_rect);
 	}
 
 	Rect text_rect(Point(), check_box.GetSize());
 	text_rect.Inflate(-kBoxFrameSize, 0);
-	canvas.SetBrushColor(Color::Black);
+	canvas.SetBrushWithColor(Color::Black);
 	canvas.DrawSingleLineText(text_rect, check_box.GetText(), kDefaultFont);
 }
 

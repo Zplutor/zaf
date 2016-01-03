@@ -68,14 +68,14 @@ void Caret::NeedRepaint(bool bling_visible) {
 }
 
 
-void Caret::Paint(Canvas& canvas) {
+void Caret::Repaint(Canvas& canvas) {
 
 	if (! is_visible_) {
 		return;
 	}
 
 	canvas.BeginPaint();
-	canvas.SetBrushColor(Color::Black);
+	canvas.SetBrushWithColor(Color::Black);
 	canvas.DrawRectangle(GetRect());
 	canvas.EndPaint();
 }

@@ -11,7 +11,7 @@ namespace vs2013 {
 
 void ScrollBarPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const Control& control) {
 
-	canvas.SetBrushColor(kScrollBarBackgroundColor);
+	canvas.SetBrushWithColor(kScrollBarBackgroundColor);
 	canvas.DrawRectangle(Rect(Point(), control.GetSize()));
 }
 
@@ -22,7 +22,7 @@ void ScrollBarArrowPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const 
 
 	Rect arrow_block_rect(Point(), button.GetSize());
 
-	canvas.SetBrushColor(kScrollBarBackgroundColor);
+	canvas.SetBrushWithColor(kScrollBarBackgroundColor);
 	canvas.DrawRectangle(arrow_block_rect);
 
 	Rect arrow_rect(arrow_block_rect);
@@ -40,7 +40,7 @@ void ScrollBarArrowPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const 
 		color = kScrollBarArrowPressedColor;
 	}
 
-	canvas.SetBrushColor(color);
+	canvas.SetBrushWithColor(color);
 	canvas.DrawRectangle(arrow_rect);
 }
 
@@ -50,7 +50,7 @@ void ScrollBarThumbPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const 
 	const auto& thumb = dynamic_cast<const ScrollBar::Thumb&>(control);
 
 	Rect slot_rect(Point(), thumb.GetSize());
-	canvas.SetBrushColor(kScrollBarBackgroundColor);
+	canvas.SetBrushWithColor(kScrollBarBackgroundColor);
 	canvas.DrawRectangle(slot_rect);
 
 	Rect thumb_rect = slot_rect;
@@ -72,7 +72,7 @@ void ScrollBarThumbPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const 
 		color = kScrollBarThumbPressedColor;
 	}
 
-	canvas.SetBrushColor(color);
+	canvas.SetBrushWithColor(color);
 	canvas.DrawRectangle(thumb_rect);
 }
 
