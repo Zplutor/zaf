@@ -43,6 +43,7 @@
     <ClInclude Include="src\zaf\base\direct2d.h" />
     <ClInclude Include="src\zaf\base\event.h" />
     <ClInclude Include="src\zaf\base\log.h" />
+    <ClInclude Include="src\zaf\base\nullable.h" />
     <ClInclude Include="src\zaf\base\point.h" />
     <ClInclude Include="src\zaf\base\rect.h" />
     <ClInclude Include="src\zaf\base\size.h" />

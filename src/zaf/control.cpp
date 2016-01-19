@@ -602,6 +602,21 @@ void Control::FocusLose() {
 }
 
 
+const Color Control::GetBackgroundColor() const {
+
+	if (background_color_.HasValue()) {
+		return background_color_.GetValue();
+	}
+
+	auto parent = GetParent();
+	if (parent != nullptr) {
+		return parent->GetBackgroundColor();
+	}
+
+	return GetDefaultBackgroundColor();
+}
+
+
 static Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) {
 
 	Point point_in_child = point;

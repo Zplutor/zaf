@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "enum.h"
+#include <zaf/base/nullable.h>
 #include <zaf/base/rect.h>
 #include <zaf/graphic/color.h>
 
@@ -23,6 +24,11 @@ public:
 		Right,
 		Bottom,
 	};
+
+public:
+	static const Color GetDefaultBackgroundColor() {
+		return Color::White;
+	}
 
 public:
 	Control();
@@ -121,6 +127,71 @@ public:
 		anchors_.erase(anchor);
 	}
 
+	const Color GetBackgroundColor() const;
+	
+	void SetBackgroundColor(const Color& color) {
+		SetColor(background_color_, color);
+	}
+
+	const Color GetHoveredBackgroundColor() const {
+		return GetSpecialBackgroundColor(hovered_background_color_);
+	}
+
+	void SetHoveredBackgroundColor(const Color& color) {
+		SetColor(hovered_background_color_, color);
+	}
+
+	const Color GetFocusedBackgroundColor(const Color& color) const {
+		return GetSpecialBackgroundColor(focused_background_color_);
+	}
+
+	void SetFocusedBackgroundColor(const Color& color) {
+		SetColor(focused_background_color_, color);
+	}
+
+	const Color GetDisabledBackgroundColor() const {
+		return GetSpecialBackgroundColor(disabled_background_color_);
+	}
+
+	void SetDisabledBackgroundColor(const Color& color) {
+		SetColor(disabled_background_color_, color);
+	}
+
+	const Color GetBorderColor() const {
+		if (border_color_.HasValue()) {
+			return border_color_.GetValue();
+		}
+		return GetBackgroundColor();
+	}
+
+	void SetBorderColor(const Color& color) {
+		SetColor(border_color_, color);
+	}
+
+	const Color GetHoveredBorderColor() const {
+		return GetSpecialBorderColor(hovered_border_color_);
+	}
+
+	void SetHoveredBorderColor(const Color& color) {
+		SetColor(hovered_border_color_, color);
+	}
+
+	const Color GetFocusedBorderColor() const {
+		return GetSpecialBorderColor(focused_border_color_);
+	}
+
+	void SetFocusedBorderColor(const Color& color) {
+		SetColor(focused_border_color_, color);
+	}
+
+	const Color GetDisabledBorderColor() const {
+		return GetSpecialBorderColor(disabled_border_color_);
+	}
+
+	void SetDisabledBorderColor(const Color& color) {
+		SetColor(disabled_border_color_, color);
+	}
+
 protected:
 	/**
 	 Initialize the control.
@@ -197,6 +268,25 @@ private:
 		return Point(point.x + rect_.position.x, point.y + rect_.position.y);
 	}
 
+	const Color GetSpecialBackgroundColor(const Nullable<Color>& color) const {
+		if (color.HasValue()) {
+			return color.GetValue();
+		}
+		return GetBackgroundColor();
+	}
+
+	const Color GetSpecialBorderColor(const Nullable<Color>& color) const {
+		if (color.HasValue()) {
+			return color.GetValue();
+		}
+		return GetBorderColor();
+	}
+
+	void SetColor(Nullable<Color>& color, const Color& new_color) {
+		color = new_color;
+		NeedRepaint();
+	}
+
 	Control(const Control&) = delete;
 	Control& operator=(const Control&) = delete;
 
@@ -214,6 +304,16 @@ private:
 
 	Rect rect_;
 	std::set<Anchor> anchors_;
+
+	Nullable<Color> background_color_;
+	Nullable<Color> hovered_background_color_;
+	Nullable<Color> focused_background_color_;
+	Nullable<Color> disabled_background_color_;
+
+	Nullable<Color> border_color_;
+	Nullable<Color> hovered_border_color_;
+	Nullable<Color> focused_border_color_;
+	Nullable<Color> disabled_border_color_;
 };
 
 }
