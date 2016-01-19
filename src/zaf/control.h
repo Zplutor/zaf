@@ -26,8 +26,18 @@ public:
 	};
 
 public:
+	/**
+	 Get the default background color.
+	 */
 	static const Color GetDefaultBackgroundColor() {
 		return Color::White;
+	}
+
+	/**
+	 Get the default foreground color.
+	 */
+	static const Color GetDefaultForegroundColor() {
+		return Color::Black;
 	}
 
 public:
@@ -45,6 +55,7 @@ public:
 	const std::vector<std::shared_ptr<Control>>& GetChildren() const {
 		return children_;
 	}
+
 	void AddChild(const std::shared_ptr<Control>& child);
 	void RemoveChild(const std::shared_ptr<Control>& child);
 	bool IsParentOf(const std::shared_ptr<Control>& child) const;
@@ -155,6 +166,36 @@ public:
 
 	void SetDisabledBackgroundColor(const Color& color) {
 		SetColor(disabled_background_color_, color);
+	}
+
+	const Color GetForegroundColor() const;
+
+	void SetForegroundColor(const Color& color) {
+		SetColor(foreground_color_, color);
+	}
+
+	const Color GetHoveredForegroundColor() const {
+		return GetSpecialForegroundColor(hovered_foreground_color_);
+	}
+
+	void SetHoveredForegroundColor(const Color& color) {
+		SetColor(hovered_foreground_color_, color);
+	}
+
+	const Color GetFocusedForegroundColor() const {
+		return GetSpecialForegroundColor(focused_foreground_color_);
+	}
+
+	void SetFocusedForegroundColor(const Color& color) {
+		SetColor(focused_foreground_color_, color);
+	}
+
+	const Color GetDisabledForegroundColor() const {
+		return GetSpecialForegroundColor(disabled_foreground_color_);
+	}
+
+	void SetDisabledForegroundColor(const Color& color) {
+		SetColor(disabled_foreground_color_, color);
 	}
 
 	const Color GetBorderColor() const {
@@ -275,6 +316,13 @@ private:
 		return GetBackgroundColor();
 	}
 
+	const Color GetSpecialForegroundColor(const Nullable<Color>& color) const {
+		if (color.HasValue()) {
+			return color.GetValue();
+		}
+		return GetForegroundColor();
+	}
+
 	const Color GetSpecialBorderColor(const Nullable<Color>& color) const {
 		if (color.HasValue()) {
 			return color.GetValue();
@@ -309,6 +357,11 @@ private:
 	Nullable<Color> hovered_background_color_;
 	Nullable<Color> focused_background_color_;
 	Nullable<Color> disabled_background_color_;
+	
+	Nullable<Color> foreground_color_;
+	Nullable<Color> hovered_foreground_color_;
+	Nullable<Color> focused_foreground_color_;
+	Nullable<Color> disabled_foreground_color_;
 
 	Nullable<Color> border_color_;
 	Nullable<Color> hovered_border_color_;

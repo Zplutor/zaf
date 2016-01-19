@@ -617,6 +617,16 @@ const Color Control::GetBackgroundColor() const {
 }
 
 
+const Color Control::GetForegroundColor() const {
+
+	if (foreground_color_.HasValue()) {
+		return foreground_color_.GetValue();
+	}
+
+	return GetDefaultForegroundColor();
+}
+
+
 static Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) {
 
 	Point point_in_child = point;
