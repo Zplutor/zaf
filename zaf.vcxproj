@@ -17,7 +17,7 @@
     <ClCompile Include="src\zaf\button.cpp" />
     <ClCompile Include="src\zaf\check_box.cpp" />
     <ClCompile Include="src\zaf\clickable_control.cpp" />
-    <ClCompile Include="src\zaf\control.cpp" />
+    <ClCompile Include="src\zaf\control\control.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer.cpp" />
@@ -51,7 +51,7 @@
     <ClInclude Include="src\zaf\button.h" />
     <ClInclude Include="src\zaf\check_box.h" />
     <ClInclude Include="src\zaf\clickable_control.h" />
-    <ClInclude Include="src\zaf\control.h" />
+    <ClInclude Include="src\zaf\control\control.h" />
     <ClInclude Include="src\zaf\enum.h" />
     <ClInclude Include="src\zaf\graphic\brush\brush.h" />
     <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h" />

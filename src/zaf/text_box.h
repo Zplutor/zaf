@@ -3,7 +3,7 @@
 #include <atlbase.h>
 #include <Richedit.h>
 #include <TextServ.h>
-#include <zaf/control.h>
+#include <zaf/control/control.h>
 
 namespace zaf {
 

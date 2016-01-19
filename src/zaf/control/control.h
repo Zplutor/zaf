@@ -5,7 +5,7 @@
 #include <set>
 #include <string>
 #include <vector>
-#include "enum.h"
+#include <zaf/enum.h>
 #include <zaf/base/nullable.h>
 #include <zaf/base/rect.h>
 #include <zaf/graphic/color.h>

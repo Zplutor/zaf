@@ -1,5 +1,5 @@
 #include <zaf/internal/theme/vs2013/label_painter.h>
-#include <zaf/control.h>
+#include <zaf/control/control.h>
 #include <zaf/label.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/theme/vs2013/palette.h>

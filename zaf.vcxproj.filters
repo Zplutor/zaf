@@ -25,15 +25,15 @@
     <Filter Include="zaf\graphic\brush">
       <UniqueIdentifier>{a3b014e0-ac1c-44fb-b20f-f4f77ebee9d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control">
+      <UniqueIdentifier>{c624bfa0-8cda-4e20-9245-dde86f21842b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\button.cpp">
-      <Filter>zaf</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\theme\vs2013\palette.cpp">
@@ -102,15 +102,15 @@
     <ClCompile Include="src\zaf\graphic\renderer_factory.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\control.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
       <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\button.h">
-      <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control.h">
       <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\enum.h">
@@ -235,6 +235,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\nullable.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\control.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
