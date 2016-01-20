@@ -12,7 +12,7 @@ class Painter {
 public:
 	virtual ~Painter() { }
 
-	virtual void Paint(Canvas& canvas, const Rect& dirty_rect, const std::shared_ptr<const Control>& control);
+	virtual void Paint(Canvas& canvas, const Rect& dirty_rect, const Control& control) = 0;
 };
 
 }

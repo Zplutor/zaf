@@ -14,6 +14,7 @@ namespace zaf {
 
 class Canvas;
 class Layouter;
+class Painter;
 class Window;
 
 class Control : public std::enable_shared_from_this<Control> {
@@ -29,16 +30,12 @@ public:
 	/**
 	 Get the default background color.
 	 */
-	static const Color GetDefaultBackgroundColor() {
-		return Color::White;
-	}
+	static const Color GetDefaultBackgroundColor();
 
 	/**
 	 Get the default foreground color.
 	 */
-	static const Color GetDefaultForegroundColor() {
-		return Color::Black;
-	}
+	static const Color GetDefaultForegroundColor();
 
 public:
 	Control();
@@ -126,6 +123,15 @@ public:
 		return rect_.size.height;
 	}
 
+	float GetBorderWidth() const {
+		return border_width_;
+	}
+
+	void SetBorderWith(float width) {
+		border_width_ = width;
+		NeedRepaint();
+	}
+
 	const std::set<Anchor>& GetAnchors() const {
 		return anchors_;
 	}
@@ -137,6 +143,14 @@ public:
 	void RemoveAnchor(Anchor anchor) {
 		anchors_.erase(anchor);
 	}
+
+	/**
+	 Set the painter that used to draw the control.
+
+	 The default painter is an instance of ControlPainter.
+	 Pass nullptr will reset to the default.
+	 */
+	void SetPainter(const std::shared_ptr<Painter>& painter);
 
 	const Color GetBackgroundColor() const;
 	
@@ -152,7 +166,7 @@ public:
 		SetColor(hovered_background_color_, color);
 	}
 
-	const Color GetFocusedBackgroundColor(const Color& color) const {
+	const Color GetFocusedBackgroundColor() const {
 		return GetSpecialBackgroundColor(focused_background_color_);
 	}
 
@@ -240,7 +254,7 @@ protected:
 	 Derived classes can override this method to do some initialization, 
 	 such as adding child controls. The same method of base class must be called.
 	 */
-	virtual void Initialize() { }
+	virtual void Initialize();
 
 	void NeedRepaint();
 	void NeedRepaintRect(const Rect& rect);
@@ -351,7 +365,10 @@ private:
 	bool is_visible_;
 
 	Rect rect_;
+	float border_width_;
 	std::set<Anchor> anchors_;
+
+	std::shared_ptr<Painter> painter_;
 
 	Nullable<Color> background_color_;
 	Nullable<Color> hovered_background_color_;

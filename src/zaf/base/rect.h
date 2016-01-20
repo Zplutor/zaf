@@ -119,7 +119,14 @@ public:
 	}
 
 	/**
-	 Modify the size of the rectangle in-place.
+	 Infalte the rectangle with specified size.
+	 */
+	void Inflate(float size) {
+		Inflate(size, size);
+	}
+
+	/**
+	 Infalte the rectangle with specified width and height.
 	 */
 	void Inflate(float width, float height) {
 

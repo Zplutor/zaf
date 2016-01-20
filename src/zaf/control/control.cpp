@@ -2,10 +2,9 @@
 #include <algorithm>
 #include <zaf/application.h>
 #include <zaf/base/log.h>
+#include <zaf/control/control_painter.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/anchor_layouter.h>
-#include <zaf/internal/theme/painter.h>
-#include <zaf/internal/theme/theme.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -43,6 +42,12 @@ void Control::CheckInitialized() {
 	for (auto& each_child : children_) {
 		each_child->CheckInitialized();
 	}
+}
+
+
+void Control::Initialize() {
+
+	painter_ = ControlPainter::GetInstance();
 }
 
 
@@ -305,7 +310,7 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 
 
 void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
-	internal::theme::GetTheme()->GetDefaultPainter()->Paint(canvas, dirty_rect, *this);
+	painter_->Paint(canvas, dirty_rect, *this);
 }
 
 
@@ -599,6 +604,30 @@ void Control::FocusGain() {
 
 void Control::FocusLose() {
 
+}
+
+
+void Control::SetPainter(const std::shared_ptr<Painter>& painter) {
+
+	if (painter == nullptr) {
+		painter_ = ControlPainter::GetInstance();
+	}
+	else {
+		painter_ = painter;
+	}
+
+	NeedRepaint();
+}
+
+
+const Color Control::GetDefaultBackgroundColor() {
+	static const Color default_background_color = Color::FromRGB(0xCFD6E5);
+	return default_background_color;
+}
+
+
+const Color Control::GetDefaultForegroundColor() {
+	return Color::Black;
 }
 
 

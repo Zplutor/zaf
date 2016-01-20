@@ -105,6 +105,9 @@
     <ClCompile Include="src\zaf\control\control.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\control_painter.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -114,9 +117,6 @@
       <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\enum.h">
-      <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\painter.h">
       <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\zaf.h">
@@ -237,6 +237,12 @@
       <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\control.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\painter.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\control_painter.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
