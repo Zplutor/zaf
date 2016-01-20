@@ -286,6 +286,11 @@ protected:
 	virtual void FocusGain();
 	virtual void FocusLose();
 
+	void SetColor(Nullable<Color>& color, const Color& new_color) {
+		color = new_color;
+		NeedRepaint();
+	}
+
 private:
 	friend class Window;
 
@@ -342,11 +347,6 @@ private:
 			return color.GetValue();
 		}
 		return GetBorderColor();
-	}
-
-	void SetColor(Nullable<Color>& color, const Color& new_color) {
-		color = new_color;
-		NeedRepaint();
 	}
 
 	Control(const Control&) = delete;

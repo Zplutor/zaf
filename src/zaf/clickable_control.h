@@ -26,6 +26,39 @@ public:
 		NeedRepaint();
 	}
 
+	const Color GetPressedBackgroundColor() const {
+		if (pressed_background_color_.HasValue()) {
+			return pressed_background_color_.GetValue();
+		}
+		return GetHoveredBackgroundColor();
+	}
+
+	void SetPressedBackgroundColor(const Color& color) {
+		SetColor(pressed_background_color_, color);
+	}
+
+	const Color GetPressedForegroundColor() const {
+		if (pressed_foreground_color_.HasValue()) {
+			return pressed_foreground_color_.GetValue();
+		}
+		return GetHoveredForegroundColor();
+	}
+
+	void SetPressedForegroundColor(const Color& color) {
+		SetColor(pressed_foreground_color_, color);
+	}
+
+	const Color GetPressedBorderColor() const {
+		if (pressed_border_color_.HasValue()) {
+			return pressed_border_color_.GetValue();
+		}
+		return GetHoveredBorderColor();
+	}
+
+	void SetPressedBorderColor(const Color& color) {
+		SetColor(pressed_border_color_, color);
+	}
+
 public:
 	ClickEvent::Proxy OnClick;
 
@@ -57,7 +90,13 @@ private:
 	bool is_pressed_;
 	bool is_mouse_press_;
 	bool is_key_press_;
+
 	std::wstring text_;
+
+	Nullable<Color> pressed_background_color_;
+	Nullable<Color> pressed_foreground_color_;
+	Nullable<Color> pressed_border_color_;
+
 	ClickEvent click_event_;
 };
 
