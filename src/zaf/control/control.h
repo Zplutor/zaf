@@ -14,7 +14,6 @@ namespace zaf {
 
 class Canvas;
 class Layouter;
-class Painter;
 class Window;
 
 class Control : public std::enable_shared_from_this<Control> {
@@ -127,7 +126,7 @@ public:
 		return border_width_;
 	}
 
-	void SetBorderWith(float width) {
+	void SetBorderWidth(float width) {
 		border_width_ = width;
 		NeedRepaint();
 	}
@@ -143,14 +142,6 @@ public:
 	void RemoveAnchor(Anchor anchor) {
 		anchors_.erase(anchor);
 	}
-
-	/**
-	 Set the painter that used to draw the control.
-
-	 The default painter is an instance of ControlPainter.
-	 Pass nullptr will reset to the default.
-	 */
-	void SetPainter(const std::shared_ptr<Painter>& painter);
 
 	const Color GetBackgroundColor() const;
 	
@@ -248,6 +239,13 @@ public:
 	}
 
 protected:
+	enum class PaintComponent {
+		Background,
+		Border,
+		Foreground,
+	};
+
+protected:
 	/**
 	 Initialize the control.
 
@@ -260,6 +258,25 @@ protected:
 	void NeedRepaintRect(const Rect& rect);
 	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
 	virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
+
+	/**
+	 Paint text in the control.
+
+	 The text is not painted by default. Derived classes should call this method
+	 within its Paint method to display text.
+	 */
+	void PaintText(Canvas& canvas, const Rect& dirty_rect);
+
+	/**
+	 Get the current color of specified paint component.
+
+	 This method is called while painting particular component, to get its color.
+
+	 The default implementation returns color according to the control's state, 
+	 including normal, hovered, focused and disabled. Derived classes can override
+	 this method if they need a different color in some case.
+	 */
+	virtual const Color GetPaintColor(PaintComponent component) const;
 
 	void NeedRelayout();
 	virtual void Layout(const Rect& previous_rect);
@@ -367,8 +384,6 @@ private:
 	Rect rect_;
 	float border_width_;
 	std::set<Anchor> anchors_;
-
-	std::shared_ptr<Painter> painter_;
 
 	Nullable<Color> background_color_;
 	Nullable<Color> hovered_background_color_;

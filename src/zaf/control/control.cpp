@@ -1,8 +1,8 @@
 #include <zaf/control/control.h>
 #include <algorithm>
 #include <zaf/application.h>
+#include <zaf/base/assert.h>
 #include <zaf/base/log.h>
-#include <zaf/control/control_painter.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/anchor_layouter.h>
 #include <zaf/window/window.h>
@@ -18,7 +18,8 @@ Control::Control() :
 	is_focused_(false),
 	can_focused_(false),
 	is_enabled_(true),
-	is_visible_(true) {
+	is_visible_(true),
+	border_width_(0) {
 
 }
 
@@ -47,7 +48,6 @@ void Control::CheckInitialized() {
 
 void Control::Initialize() {
 
-	painter_ = ControlPainter::GetInstance();
 }
 
 
@@ -310,7 +310,71 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 
 
 void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
-	painter_->Paint(canvas, dirty_rect, *this);
+	
+	Rect paint_rect(Point(), GetSize());
+	canvas.SetBrushWithColor(GetPaintColor(PaintComponent::Background));
+	canvas.DrawRectangle(paint_rect);
+
+	canvas.SetBrushWithColor(GetPaintColor(PaintComponent::Border));
+	canvas.DrawRectangleFrame(paint_rect, GetBorderWidth());
+}
+
+
+void Control::PaintText(Canvas& canvas, const Rect& dirty_rect) {
+
+
+}
+
+
+const Color Control::GetPaintColor(PaintComponent component) const {
+
+	typedef const Color(Control::*GetColorMethod)() const;
+
+	GetColorMethod get_normal_color = nullptr;
+	GetColorMethod get_hovered_color = nullptr;
+	GetColorMethod get_focused_color = nullptr;
+	GetColorMethod get_disabled_color = nullptr;
+
+	switch (component) {
+		case PaintComponent::Background:
+			get_normal_color = &Control::GetBackgroundColor;
+			get_hovered_color = &Control::GetHoveredBackgroundColor;
+			get_focused_color = &Control::GetFocusedBackgroundColor;
+			get_disabled_color = &Control::GetDisabledBackgroundColor;
+			break;
+
+		case PaintComponent::Border:
+			get_normal_color = &Control::GetBorderColor;
+			get_hovered_color = &Control::GetHoveredBorderColor;
+			get_focused_color = &Control::GetFocusedBorderColor;
+			get_disabled_color = &Control::GetDisabledBorderColor;
+			break;
+
+		case PaintComponent::Foreground:
+			get_normal_color = &Control::GetForegroundColor;
+			get_hovered_color = &Control::GetHoveredForegroundColor;
+			get_focused_color = &Control::GetFocusedForegroundColor;
+			get_disabled_color = &Control::GetDisabledForegroundColor;
+			break;
+
+		default:
+			ZAFFAIL();
+			return Color();
+	}
+
+	if (! IsEnabled()) {
+		return (this->*get_disabled_color)();
+	}
+
+	if (IsHovered()) {
+		return (this->*get_hovered_color)();
+	}
+
+	if (IsFocused()) {
+		return (this->*get_focused_color)();
+	}
+
+	return (this->*get_normal_color)();
 }
 
 
@@ -604,19 +668,6 @@ void Control::FocusGain() {
 
 void Control::FocusLose() {
 
-}
-
-
-void Control::SetPainter(const std::shared_ptr<Painter>& painter) {
-
-	if (painter == nullptr) {
-		painter_ = ControlPainter::GetInstance();
-	}
-	else {
-		painter_ = painter;
-	}
-
-	NeedRepaint();
 }
 
 

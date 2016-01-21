@@ -1,6 +1,6 @@
-#include <zaf/clickable_control.h>
-#include <zaf/internal/theme/painter.h>
-#include <zaf/internal/theme/theme.h>
+#include <zaf/control/clickable_control.h>
+#include <zaf/base/assert.h>
+#include <zaf/graphic/canvas.h>
 
 namespace zaf {
 
@@ -17,6 +17,46 @@ ClickableControl::ClickableControl() :
 
 ClickableControl::~ClickableControl() {
 
+}
+
+
+const Color ClickableControl::GetPaintColor(PaintComponent component) const {
+
+	typedef const Color(ClickableControl::*GetColorMethod)() const;
+
+	GetColorMethod get_hovered_color = nullptr;
+	GetColorMethod get_pressed_color = nullptr;
+
+	switch (component) {
+		case PaintComponent::Background:
+			get_hovered_color = &ClickableControl::GetHoveredBackgroundColor;
+			get_pressed_color = &ClickableControl::GetPressedBackgroundColor;
+			break;
+
+		case PaintComponent::Border:
+			get_hovered_color = &ClickableControl::GetHoveredBorderColor;
+			get_pressed_color = &ClickableControl::GetPressedBorderColor;
+			break;
+
+		case PaintComponent::Foreground:
+			get_hovered_color = &ClickableControl::GetHoveredForegroundColor;
+			get_pressed_color = &ClickableControl::GetPressedForegroundColor;
+			break;
+
+		default:
+			ZAFFAIL();
+			return Color();
+	}
+
+	if (IsHovered() && IsPressed()) {
+		return (this->*get_pressed_color)();
+	}
+	
+	if (IsHovered() ^ IsPressed()) {
+		return (this->*get_hovered_color)();
+	}
+	
+	return Control::GetPaintColor(component);
 }
 
 

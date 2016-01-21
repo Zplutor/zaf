@@ -63,6 +63,8 @@ public:
 	ClickEvent::Proxy OnClick;
 
 protected:
+	const Color GetPaintColor(PaintComponent component) const override;
+
 	void MouseEnter() override;
 	void MouseLeave() override;
 	void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) override;
@@ -82,6 +84,11 @@ private:
 	};
 
 private:
+	const Color GetPaintColor(
+		const Color(ClickableControl::*get_pressed_color)() const,
+		const Color(Control::*get_base_color)() const
+	) const;
+
 	void BeginPress(PressType press_type);
 	void EndPress(PressType press_type);
 	void CheckIsMousePressed(const Point& position, WPARAM wParam);

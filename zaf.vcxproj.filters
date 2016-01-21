@@ -33,9 +33,6 @@
     <ClCompile Include="src\zaf\application.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\button.cpp">
-      <Filter>zaf</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\internal\theme\vs2013\palette.cpp">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClCompile>
@@ -67,9 +64,6 @@
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\check_box.cpp">
-      <Filter>zaf</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\clickable_control.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\theme\vs2013\check_box_painter.cpp">
@@ -105,15 +99,15 @@
     <ClCompile Include="src\zaf\control\control.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\control_painter.cpp">
+    <ClCompile Include="src\zaf\control\clickable_control.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\button.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
-      <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\button.h">
       <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\enum.h">
@@ -162,9 +156,6 @@
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\check_box.h">
-      <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\clickable_control.h">
       <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\theme\vs2013\check_box_painter.h">
@@ -239,10 +230,10 @@
     <ClInclude Include="src\zaf\control\control.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\painter.h">
+    <ClInclude Include="src\zaf\control\clickable_control.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\control_painter.h">
+    <ClInclude Include="src\zaf\control\button.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>

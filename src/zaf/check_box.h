@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/clickable_control.h>
+#include <zaf/control/clickable_control.h>
 
 namespace zaf {
 
