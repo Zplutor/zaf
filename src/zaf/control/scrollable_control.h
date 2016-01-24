@@ -28,7 +28,6 @@ public:
 protected:
 	void Initialize() override;
 	void Layout(const Rect& previous_rect) override;
-	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 
     void MouseWheel(const Point& position, bool is_horizontal, int distance, WPARAM wParam, LPARAM lParam) override;
 

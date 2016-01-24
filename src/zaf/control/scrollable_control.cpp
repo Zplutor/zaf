@@ -1,7 +1,5 @@
-#include <zaf/scrollable_control.h>
+#include <zaf/control/scrollable_control.h>
 #include <zaf/control/scroll_bar.h>
-#include <zaf/internal/theme/painter.h>
-#include <zaf/internal/theme/theme.h>
 
 namespace zaf {
 
@@ -125,11 +123,6 @@ void ScrollableControl::AdjustScrollBarValues() {
 
 	vertical_scroll_bar_->SetValueRange(0, content_size.height - content_container_size.height);
 	horizontal_scroll_bar_->SetValueRange(0, content_size.width - content_container_size.width);
-}
-
-
-void ScrollableControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
-	internal::theme::GetTheme()->GetScrollableControlPainter()->Paint(canvas, dirty_rect, *this);
 }
 
 
