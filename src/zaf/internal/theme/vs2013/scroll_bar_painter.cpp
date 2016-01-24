@@ -1,6 +1,6 @@
 #include <zaf/internal/theme/vs2013/scroll_bar_painter.h>
 #include <zaf/control/control.h>
-#include <zaf/scroll_bar.h>
+#include <zaf/control/scroll_bar.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/theme/vs2013/palette.h>
 
@@ -18,7 +18,7 @@ void ScrollBarPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const Contr
 
 void ScrollBarArrowPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const Control& control) {
 	
-	const Button& button = dynamic_cast<const Button&>(control);
+	const ClickableControl& button = dynamic_cast<const ClickableControl&>(control);
 
 	Rect arrow_block_rect(Point(), button.GetSize());
 

@@ -1,7 +1,5 @@
-#include <zaf/scroll_bar.h>
+#include <zaf/control/scroll_bar.h>
 #include <zaf/base/timer.h>
-#include <zaf/internal/theme/painter.h>
-#include <zaf/internal/theme/theme.h>
 
 namespace zaf {
 
@@ -22,6 +20,7 @@ ScrollBar::ScrollBar() :
 	scroll_event_(),
 	OnScroll(scroll_event_) {
 
+	SetBackgroundColor(Color::FromRGB(0xE8E8EC));
 }
 
 
@@ -192,11 +191,6 @@ void ScrollBar::Wheel(int distance) {
     int direction = is_horizontal_ ? 1 : -1;
 
     SetValue(value_ + (major_distance + minor_distance) * direction);
-}
-
-
-void ScrollBar::Paint(Canvas& canvas, const Rect& dirty_rect) {
-	internal::theme::GetTheme()->GetScrollBarPainter()->Paint(canvas, dirty_rect, *this);
 }
 
 
@@ -493,17 +487,23 @@ ScrollBar::Arrow::Arrow() :
 	OnEndPress(end_press_event_) {
 
 	SetCanFocused(false);
+	SetBorderWidth(8);
+	SetBorderColor(Color::FromRGB(0xE8E8EC));
+	SetBackgroundColor(Color::FromRGB(0x868999));
+	SetHoveredBackgroundColor(Color::FromRGB(0x1C97EA));
+	SetPressedBackgroundColor(Color::FromRGB(0x007ACC));
 }
 
 
 void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
-	internal::theme::GetTheme()->GetScrollBarArrowPainter()->Paint(canvas, dirty_rect, *this);
+	
+	ClickableControl::Paint(canvas, dirty_rect);
 }
 
 
 void ScrollBar::Arrow::MouseCapture() {
 
-	Button::MouseCapture();
+	ClickableControl::MouseCapture();
 
 	begin_press_event_.Trigger(std::dynamic_pointer_cast<Arrow>(this->shared_from_this()));
 }
@@ -511,7 +511,7 @@ void ScrollBar::Arrow::MouseCapture() {
 
 void ScrollBar::Arrow::MouseRelease() {
 
-	Button::MouseRelease();
+	ClickableControl::MouseRelease();
 
 	end_press_event_.Trigger(std::dynamic_pointer_cast<Arrow>(this->shared_from_this()));
 }
@@ -527,17 +527,17 @@ ScrollBar::Thumb::Thumb() :
 	OnEndDrag(end_drag_event_) {
 
 	SetCanFocused(false);
-}
-
-
-void ScrollBar::Thumb::Paint(Canvas& canvas, const Rect& dirty_rect) {
-	internal::theme::GetTheme()->GetScrollBarThumbPainter()->Paint(canvas, dirty_rect, *this);
+	SetBorderWidth(8);
+	SetBorderColor(Color::FromRGB(0xE8E8EC));
+	SetBackgroundColor(Color::FromRGB(0xD0D1D7));
+	SetHoveredBackgroundColor(Color::FromRGB(0x888888));
+	SetPressedBackgroundColor(Color::FromRGB(0x6A6A6A));
 }
 
 
 void ScrollBar::Thumb::MouseCapture() {
 
-	Button::MouseCapture();
+	ClickableControl::MouseCapture();
 
 	is_dragging_ = true;
 	begin_drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));
@@ -546,7 +546,7 @@ void ScrollBar::Thumb::MouseCapture() {
 
 void ScrollBar::Thumb::MouseRelease() {
 
-	Button::MouseRelease();
+	ClickableControl::MouseRelease();
 
 	is_dragging_ = false;
 	end_drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));
@@ -555,7 +555,7 @@ void ScrollBar::Thumb::MouseRelease() {
 
 void ScrollBar::Thumb::MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) {
 
-	Button::MouseMove(position, wParam, lParam);
+	ClickableControl::MouseMove(position, wParam, lParam);
 
 	if (is_dragging_) {
 		drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));

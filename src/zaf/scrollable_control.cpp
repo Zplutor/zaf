@@ -1,5 +1,5 @@
 #include <zaf/scrollable_control.h>
-#include <zaf/scroll_bar.h>
+#include <zaf/control/scroll_bar.h>
 #include <zaf/internal/theme/painter.h>
 #include <zaf/internal/theme/theme.h>
 

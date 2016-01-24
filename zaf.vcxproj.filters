@@ -48,9 +48,6 @@
     <ClCompile Include="src\zaf\internal\anchor_layouter.cpp">
       <Filter>zaf\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\scroll_bar.cpp">
-      <Filter>zaf</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\internal\theme\vs2013\scroll_bar_painter.cpp">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClCompile>
@@ -105,6 +102,9 @@
     <ClCompile Include="src\zaf\control\label.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\scroll_bar.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -139,9 +139,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\anchor_layouter.h">
       <Filter>zaf\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\scroll_bar.h">
-      <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\layouter.h">
       <Filter>zaf\internal</Filter>
@@ -234,6 +231,9 @@
       <Filter>zaf\control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\label.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\scroll_bar.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>

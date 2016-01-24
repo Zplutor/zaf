@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/control/button.h>
+#include <zaf/control/clickable_control.h>
 #include <zaf/base/event.h>
 
 namespace zaf {
@@ -9,7 +9,7 @@ class Timer;
 
 class ScrollBar : public Control {
 public:
-	class Arrow : public Button {
+	class Arrow : public ClickableControl {
 	public:
 		enum class Direction {
 			Left,
@@ -39,7 +39,6 @@ public:
 
 	protected:
 		void Paint(Canvas& canvas, const Rect& dirty_rect) override;
-
 		void MouseCapture() override;
 		void MouseRelease() override;
 
@@ -49,7 +48,7 @@ public:
 		EndPressEvent end_press_event_;
 	};
 
-	class Thumb : public Button {
+	class Thumb : public ClickableControl {
 	public:
 		typedef Event<const std::shared_ptr<Thumb>&> BeginDragEvent;
 		typedef Event<const std::shared_ptr<Thumb>&> DragEvent;
@@ -76,8 +75,6 @@ public:
 		EndDragEvent::Proxy OnEndDrag;
 
 	protected:
-		void Paint(Canvas& canvas, const Rect& dirty_rect) override;
-
 		void MouseCapture() override;
 		void MouseRelease() override;
 		void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) override;
@@ -178,7 +175,6 @@ protected:
 	void Initialize() override;
 
 	void Layout(const Rect& previous_rect) override;
-	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 
 	void MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
 	void MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
