@@ -1,4 +1,4 @@
-#include <zaf/check_box.h>
+#include <zaf/control/check_box.h>
 #include <zaf/internal/theme/painter.h>
 #include <zaf/internal/theme/theme.h>
 

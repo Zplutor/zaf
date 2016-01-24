@@ -1,5 +1,5 @@
 #include <zaf/internal/theme/vs2013/check_box_painter.h>
-#include <zaf/check_box.h>
+#include <zaf/control/check_box.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/theme/vs2013/palette.h>
 
