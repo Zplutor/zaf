@@ -60,9 +60,6 @@
     <ClCompile Include="src\zaf\internal\theme\vs2013\check_box_painter.cpp">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\text_box.cpp">
-      <Filter>zaf</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\timer.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
@@ -103,6 +100,9 @@
       <Filter>zaf\control</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\scrollable_control.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\text_box.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
   </ItemGroup>
@@ -151,9 +151,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\theme\vs2013\check_box_painter.h">
       <Filter>zaf\internal\theme\vs2013</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\text_box.h">
-      <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\point.h">
       <Filter>zaf\base</Filter>
@@ -234,6 +231,9 @@
       <Filter>zaf\control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\scrollable_control.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\text_box.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>

@@ -7,5 +7,5 @@
 #include <zaf/control/label.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scrollable_control.h>
-#include <zaf/text_box.h>
+#include <zaf/control/text_box.h>
 #include <zaf/window/window.h>

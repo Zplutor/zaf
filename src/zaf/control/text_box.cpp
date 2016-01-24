@@ -1,4 +1,4 @@
-#include <zaf/text_box.h>
+#include <zaf/control/text_box.h>
 #include <cassert>
 #include <zaf/base/log.h>
 #include <zaf/graphic/canvas.h>
