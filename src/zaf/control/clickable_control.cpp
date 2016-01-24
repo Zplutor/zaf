@@ -4,6 +4,10 @@
 
 namespace zaf {
 
+static const wchar_t* const kPressedBackgroundColorPropertyName = L"PressedBackgroundColor";
+static const wchar_t* const kPressedBorderColorPropertyName = L"PressedBorderColor";
+static const wchar_t* const kPressedForegroundColorPropertyName = L"PressedForegroundColor";
+
 ClickableControl::ClickableControl() :
 	is_pressed_(false),
 	is_mouse_press_(false),
@@ -17,6 +21,33 @@ ClickableControl::ClickableControl() :
 
 ClickableControl::~ClickableControl() {
 
+}
+
+
+const Color ClickableControl::GetPressedBackgroundColor() const {
+	return GetSpecialColor(kPressedBackgroundColorPropertyName, &Control::GetHoveredBackgroundColor);
+}
+
+void ClickableControl::SetPressedBackgroundColor(const Color& color) {
+	SetColor(kPressedBackgroundColorPropertyName, color);
+}
+
+
+const Color ClickableControl::GetPressedForegroundColor() const {
+	return GetSpecialColor(kPressedForegroundColorPropertyName, &Control::GetHoveredForegroundColor);
+}
+
+void ClickableControl::SetPressedForegroundColor(const Color& color) {
+	SetColor(kPressedForegroundColorPropertyName, color);
+}
+
+
+const Color ClickableControl::GetPressedBorderColor() const {
+	return GetSpecialColor(kPressedBorderColorPropertyName, &Control::GetHoveredBorderColor);
+}
+
+void ClickableControl::SetPressedBorderColor(const Color& color) {
+	SetColor(kPressedBorderColorPropertyName, color);
 }
 
 

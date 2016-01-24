@@ -26,7 +26,7 @@ const Color kScrollBarThumbPressedColor = Color::FromRGB(0x6A6A6A);
 const Color kTextColor = Color::FromRGB(0x000000);
 const Color kDisabledTextColor = Color::FromRGB(0x808080);
 
-const Font kDefaultFont(L"Î¢ÈíÑÅºÚ", 14);
+const Font kDefaultFont;
 
 }
 }

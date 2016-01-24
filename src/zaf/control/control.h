@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <map>
 #include <memory>
 #include <set>
 #include <string>
@@ -8,6 +9,7 @@
 #include <zaf/enum.h>
 #include <zaf/base/nullable.h>
 #include <zaf/base/rect.h>
+#include <zaf/base/variant.h>
 #include <zaf/graphic/color.h>
 
 namespace zaf {
@@ -144,116 +146,88 @@ public:
 	}
 
 	const Color GetBackgroundColor() const;
-	
-	void SetBackgroundColor(const Color& color) {
-		SetColor(background_color_, color);
-	}
+	void SetBackgroundColor(const Color& color);
 
-	const Color GetHoveredBackgroundColor() const {
-		return GetSpecialBackgroundColor(hovered_background_color_);
-	}
+	const Color GetHoveredBackgroundColor() const;
+	void SetHoveredBackgroundColor(const Color& color);
 
-	void SetHoveredBackgroundColor(const Color& color) {
-		SetColor(hovered_background_color_, color);
-	}
+	const Color GetFocusedBackgroundColor() const;
+	void SetFocusedBackgroundColor(const Color& color);
 
-	const Color GetFocusedBackgroundColor() const {
-		return GetSpecialBackgroundColor(focused_background_color_);
-	}
-
-	void SetFocusedBackgroundColor(const Color& color) {
-		SetColor(focused_background_color_, color);
-	}
-
-	const Color GetDisabledBackgroundColor() const {
-		return GetSpecialBackgroundColor(disabled_background_color_);
-	}
-
-	void SetDisabledBackgroundColor(const Color& color) {
-		SetColor(disabled_background_color_, color);
-	}
+	const Color GetDisabledBackgroundColor() const;
+	void SetDisabledBackgroundColor(const Color& color);
 
 	const Color GetForegroundColor() const;
+	void SetForegroundColor(const Color& color);
 
-	void SetForegroundColor(const Color& color) {
-		SetColor(foreground_color_, color);
-	}
+	const Color GetHoveredForegroundColor() const;
+	void SetHoveredForegroundColor(const Color& color);
 
-	const Color GetHoveredForegroundColor() const {
-		return GetSpecialForegroundColor(hovered_foreground_color_);
-	}
+	const Color GetFocusedForegroundColor() const;
+	void SetFocusedForegroundColor(const Color& color);
 
-	void SetHoveredForegroundColor(const Color& color) {
-		SetColor(hovered_foreground_color_, color);
-	}
+	const Color GetDisabledForegroundColor() const;
+	void SetDisabledForegroundColor(const Color& color);
 
-	const Color GetFocusedForegroundColor() const {
-		return GetSpecialForegroundColor(focused_foreground_color_);
-	}
+	const Color GetBorderColor() const;
+	void SetBorderColor(const Color& color);
 
-	void SetFocusedForegroundColor(const Color& color) {
-		SetColor(focused_foreground_color_, color);
-	}
+	const Color GetHoveredBorderColor() const;
+	void SetHoveredBorderColor(const Color& color);
 
-	const Color GetDisabledForegroundColor() const {
-		return GetSpecialForegroundColor(disabled_foreground_color_);
-	}
+	const Color GetFocusedBorderColor() const;
+	void SetFocusedBorderColor(const Color& color);
 
-	void SetDisabledForegroundColor(const Color& color) {
-		SetColor(disabled_foreground_color_, color);
-	}
+	const Color GetDisabledBorderColor() const;
+	void SetDisabledBorderColor(const Color& color);
 
-	const Color GetBorderColor() const {
-		if (border_color_.HasValue()) {
-			return border_color_.GetValue();
-		}
-		return GetBackgroundColor();
-	}
-
-	void SetBorderColor(const Color& color) {
-		SetColor(border_color_, color);
-	}
-
-	const Color GetHoveredBorderColor() const {
-		return GetSpecialBorderColor(hovered_border_color_);
-	}
-
-	void SetHoveredBorderColor(const Color& color) {
-		SetColor(hovered_border_color_, color);
-	}
-
-	const Color GetFocusedBorderColor() const {
-		return GetSpecialBorderColor(focused_border_color_);
-	}
-
-	void SetFocusedBorderColor(const Color& color) {
-		SetColor(focused_border_color_, color);
-	}
-
-	const Color GetDisabledBorderColor() const {
-		return GetSpecialBorderColor(disabled_border_color_);
-	}
-
-	void SetDisabledBorderColor(const Color& color) {
-		SetColor(disabled_border_color_, color);
-	}
+	const std::wstring GetName() const;
+	void SetName(const std::wstring& name);
 
 	/**
 	 Get the text value.
 	 */
-	virtual const std::wstring GetText() const {
-		return text_;
-	}
+	virtual const std::wstring GetText() const;
 
 	/**
 	 Set the text value.
 	 */
-	virtual void SetText(const std::wstring& text) {
-		text_ = text;
-		NeedRepaint();
-	}
+	virtual void SetText(const std::wstring& text);
 
 protected:
+	class PropertyMap {
+	public:
+		template<typename PropertyType>
+		const PropertyType* TryGetProperty(const std::wstring& property_name) const {
+
+			auto iterator = properties_.find(property_name);
+			if (iterator == properties_.end()) {
+				return nullptr;
+			}
+
+			return iterator->second.TryCast<PropertyType>();
+		}
+
+		template<typename PropertyType>
+		const PropertyType GetProperty(const std::wstring& property_name) const {
+
+			auto property = TryGetProperty<PropertyType>(property_name);
+			if (property == nullptr) {
+				return PropertyType();
+			}
+
+			return *property;
+		}
+
+		template<typename PropertyType>
+		void SetProperty(const std::wstring& property_name, const PropertyType& property_value) {
+			properties_[property_name] = Variant(property_value);
+		}
+
+	private:
+		std::map<std::wstring, Variant> properties_;
+	};
+
 	enum class PaintComponent {
 		Background,
 		Border,
@@ -275,7 +249,7 @@ protected:
 	virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
 
 	/**
-	 Paint text in the control.
+	 Paint text in specified rect.
 
 	 The text is not painted by default. Derived classes should call this method
 	 within its Paint method to display text.
@@ -292,6 +266,14 @@ protected:
 	 this method if they need a different color in some case.
 	 */
 	virtual const Color GetPaintColor(PaintComponent component) const;
+
+	const PropertyMap& GetPropertyMap() const {
+		return property_map_;
+	}
+
+	PropertyMap& GetPropertyMap() {
+		return property_map_;
+	}
 
 	void NeedRelayout();
 	virtual void Layout(const Rect& previous_rect);
@@ -318,8 +300,21 @@ protected:
 	virtual void FocusGain();
 	virtual void FocusLose();
 
-	void SetColor(Nullable<Color>& color, const Color& new_color) {
-		color = new_color;
+	const Color GetSpecialColor(
+		const std::wstring& property_name,
+		const Color(Control::*get_default_color)() const
+	) const {
+
+		auto color = property_map_.TryGetProperty<Color>(property_name);
+		if (color != nullptr) {
+			return *color;
+		}
+
+		return (this->*get_default_color)();
+	}
+
+	void SetColor(const std::wstring& property_name, const Color& new_color) {
+		property_map_.SetProperty(property_name, new_color);
 		NeedRepaint();
 	}
 
@@ -360,27 +355,6 @@ private:
 		return Point(point.x + rect_.position.x, point.y + rect_.position.y);
 	}
 
-	const Color GetSpecialBackgroundColor(const Nullable<Color>& color) const {
-		if (color.HasValue()) {
-			return color.GetValue();
-		}
-		return GetBackgroundColor();
-	}
-
-	const Color GetSpecialForegroundColor(const Nullable<Color>& color) const {
-		if (color.HasValue()) {
-			return color.GetValue();
-		}
-		return GetForegroundColor();
-	}
-
-	const Color GetSpecialBorderColor(const Nullable<Color>& color) const {
-		if (color.HasValue()) {
-			return color.GetValue();
-		}
-		return GetBorderColor();
-	}
-
 	Control(const Control&) = delete;
 	Control& operator=(const Control&) = delete;
 
@@ -400,22 +374,7 @@ private:
 	float border_width_;
 	std::set<Anchor> anchors_;
 
-	Nullable<Color> background_color_;
-	Nullable<Color> hovered_background_color_;
-	Nullable<Color> focused_background_color_;
-	Nullable<Color> disabled_background_color_;
-	
-	Nullable<Color> foreground_color_;
-	Nullable<Color> hovered_foreground_color_;
-	Nullable<Color> focused_foreground_color_;
-	Nullable<Color> disabled_foreground_color_;
-
-	Nullable<Color> border_color_;
-	Nullable<Color> hovered_border_color_;
-	Nullable<Color> focused_border_color_;
-	Nullable<Color> disabled_border_color_;
-
-	std::wstring text_;
+	PropertyMap property_map_;
 };
 
 }

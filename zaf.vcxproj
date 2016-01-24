@@ -48,6 +48,7 @@
     <ClInclude Include="src\zaf\base\rect.h" />
     <ClInclude Include="src\zaf\base\size.h" />
     <ClInclude Include="src\zaf\base\timer.h" />
+    <ClInclude Include="src\zaf\base\variant.h" />
     <ClInclude Include="src\zaf\control\button.h" />
     <ClInclude Include="src\zaf\control\check_box.h" />
     <ClInclude Include="src\zaf\control\clickable_control.h" />

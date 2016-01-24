@@ -12,6 +12,21 @@ namespace zaf {
 
 static Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child);
 
+static const wchar_t* const kBackgroundColorPropertyName = L"BackgroundColor";
+static const wchar_t* const kBorderColorPropertyName = L"BorderColor";
+static const wchar_t* const kDisabledBackgroundColorPropertyName = L"DisabledBackgroundColor";
+static const wchar_t* const kDisabledBorderColorPropertyName = L"DisabledBorderColor";
+static const wchar_t* const kDisabledForegroundColorPropertyName = L"DisabledForegroundColor";
+static const wchar_t* const kForegroundColorPropertyName = L"ForegroundColor";
+static const wchar_t* const kFocusedBackgroundColorPropertyName = L"FocusedBackgroundColor";
+static const wchar_t* const kFocusedBorderColorPropertyName = L"FocusedBorderColor";
+static const wchar_t* const kFocusedForegroundColorPropertyName = L"FocusedForegroundColor";
+static const wchar_t* const kHoveredBackgroundColorPropertyName = L"HoveredBackgroundColor";
+static const wchar_t* const kHoveredBorderColorPropertyName = L"HoveredBorderColor";
+static const wchar_t* const kHoveredForegroundColorPropertyName = L"HoveredForegroundColor";
+static const wchar_t* const kNamePropertyName = L"Name";
+static const wchar_t* const kTextPropertyName = L"Text";
+
 Control::Control() : 
 	is_initialized_(false),
 	is_hovered_(false), 
@@ -328,7 +343,9 @@ void Control::PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text
 		return;
 	}
 
-	Font font(L"Î¢ÈíÑÅºÚ", 11);
+	Font font;
+	font.SetFamilyName(L"Î¢ÈíÑÅºÚ");
+	font.SetSize(13);
 	
 	canvas.SetBrushWithColor(GetPaintColor(PaintComponent::Foreground));
 	canvas.DrawSingleLineText(text_rect, text, font);
@@ -693,8 +710,9 @@ const Color Control::GetDefaultForegroundColor() {
 
 const Color Control::GetBackgroundColor() const {
 
-	if (background_color_.HasValue()) {
-		return background_color_.GetValue();
+	auto color = property_map_.TryGetProperty<Color>(kBackgroundColorPropertyName);
+	if (color != nullptr) {
+		return *color;
 	}
 
 	auto parent = GetParent();
@@ -705,14 +723,139 @@ const Color Control::GetBackgroundColor() const {
 	return GetDefaultBackgroundColor();
 }
 
+void Control::SetBackgroundColor(const Color& color) {
+	SetColor(kBackgroundColorPropertyName, color);
+}
+
+
+const Color Control::GetHoveredBackgroundColor() const {
+	return GetSpecialColor(kHoveredBackgroundColorPropertyName, &Control::GetBackgroundColor);
+}
+
+void Control::SetHoveredBackgroundColor(const Color& color) {
+	SetColor(kHoveredBackgroundColorPropertyName, color);
+}
+
+
+const Color Control::GetFocusedBackgroundColor() const {
+	return GetSpecialColor(kFocusedBackgroundColorPropertyName, &Control::GetBackgroundColor);
+}
+
+void Control::SetFocusedBackgroundColor(const Color& color) {
+	SetColor(kFocusedBackgroundColorPropertyName, color);
+}
+
+
+const Color Control::GetDisabledBackgroundColor() const {
+	return GetSpecialColor(kDisabledBackgroundColorPropertyName, &Control::GetBackgroundColor);
+}
+
+void Control::SetDisabledBackgroundColor(const Color& color) {
+	SetColor(kDisabledBackgroundColorPropertyName, color);
+}
+
 
 const Color Control::GetForegroundColor() const {
 
-	if (foreground_color_.HasValue()) {
-		return foreground_color_.GetValue();
+	auto color = property_map_.TryGetProperty<Color>(kForegroundColorPropertyName);
+	if (color != nullptr) {
+		return *color;
 	}
 
 	return GetDefaultForegroundColor();
+}
+
+void Control::SetForegroundColor(const Color& color) {
+	SetColor(kForegroundColorPropertyName, color);
+}
+
+
+const Color Control::GetHoveredForegroundColor() const {
+	return GetSpecialColor(kHoveredForegroundColorPropertyName, &Control::GetForegroundColor);
+}
+
+void Control::SetHoveredForegroundColor(const Color& color) {
+	SetColor(kHoveredForegroundColorPropertyName, color);
+}
+
+
+const Color Control::GetFocusedForegroundColor() const {
+	return GetSpecialColor(kFocusedForegroundColorPropertyName, &Control::GetForegroundColor);
+}
+
+void Control::SetFocusedForegroundColor(const Color& color) {
+	SetColor(kFocusedForegroundColorPropertyName, color);
+}
+
+
+const Color Control::GetDisabledForegroundColor() const {
+	return GetSpecialColor(kDisabledForegroundColorPropertyName, &Control::GetForegroundColor);
+}
+
+void Control::SetDisabledForegroundColor(const Color& color) {
+	SetColor(kDisabledForegroundColorPropertyName, color);
+}
+
+
+const Color Control::GetBorderColor() const {
+
+	auto color = property_map_.TryGetProperty<Color>(kBorderColorPropertyName);
+	if (color != nullptr) {
+		return *color;
+	}
+
+	return GetBackgroundColor();
+}
+
+void Control::SetBorderColor(const Color& color) {
+	SetColor(kBorderColorPropertyName, color);
+}
+
+
+const Color Control::GetHoveredBorderColor() const {
+	return GetSpecialColor(kHoveredBorderColorPropertyName, &Control::GetBorderColor);
+}
+
+
+void Control::SetHoveredBorderColor(const Color& color) {
+	SetColor(kHoveredBorderColorPropertyName, color);
+}
+
+
+const Color Control::GetFocusedBorderColor() const {
+	return GetSpecialColor(kFocusedBorderColorPropertyName, &Control::GetBorderColor);
+}
+
+void Control::SetFocusedBorderColor(const Color& color) {
+	SetColor(kFocusedBorderColorPropertyName, color);
+}
+
+
+const Color Control::GetDisabledBorderColor() const {
+	return GetSpecialColor(kDisabledBorderColorPropertyName, &Control::GetBorderColor);
+}
+
+void Control::SetDisabledBorderColor(const Color& color) {
+	SetColor(kDisabledBorderColorPropertyName, color);
+}
+
+
+const std::wstring Control::GetName() const {
+	return property_map_.GetProperty<std::wstring>(kNamePropertyName);
+}
+
+void Control::SetName(const std::wstring& name) {
+	property_map_.SetProperty(kNamePropertyName, name);
+}
+
+
+const std::wstring Control::GetText() const {
+	return property_map_.GetProperty<std::wstring>(kTextPropertyName);
+}
+
+void Control::SetText(const std::wstring& text) {
+	property_map_.SetProperty(kTextPropertyName, text);
+	NeedRepaint();
 }
 
 
