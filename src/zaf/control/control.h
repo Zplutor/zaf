@@ -238,6 +238,21 @@ public:
 		SetColor(disabled_border_color_, color);
 	}
 
+	/**
+	 Get the text value.
+	 */
+	virtual const std::wstring GetText() const {
+		return text_;
+	}
+
+	/**
+	 Set the text value.
+	 */
+	virtual void SetText(const std::wstring& text) {
+		text_ = text;
+		NeedRepaint();
+	}
+
 protected:
 	enum class PaintComponent {
 		Background,
@@ -265,7 +280,7 @@ protected:
 	 The text is not painted by default. Derived classes should call this method
 	 within its Paint method to display text.
 	 */
-	void PaintText(Canvas& canvas, const Rect& dirty_rect);
+	void PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect);
 
 	/**
 	 Get the current color of specified paint component.
@@ -399,6 +414,8 @@ private:
 	Nullable<Color> hovered_border_color_;
 	Nullable<Color> focused_border_color_;
 	Nullable<Color> disabled_border_color_;
+
+	std::wstring text_;
 };
 
 }

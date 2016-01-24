@@ -17,15 +17,6 @@ public:
 		return is_pressed_;
 	}
 
-	const std::wstring& GetText() const {
-		return text_;
-	}
-
-	void SetText(const std::wstring& text) {
-		text_ = text;
-		NeedRepaint();
-	}
-
 	const Color GetPressedBackgroundColor() const {
 		if (pressed_background_color_.HasValue()) {
 			return pressed_background_color_.GetValue();
@@ -97,8 +88,6 @@ private:
 	bool is_pressed_;
 	bool is_mouse_press_;
 	bool is_key_press_;
-
-	std::wstring text_;
 
 	Nullable<Color> pressed_background_color_;
 	Nullable<Color> pressed_foreground_color_;

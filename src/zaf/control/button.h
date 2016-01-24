@@ -8,6 +8,9 @@ class Button : public ClickableControl {
 public:
 	Button();
 	~Button();
+
+protected:
+	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 };
 
 }

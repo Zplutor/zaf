@@ -4,6 +4,7 @@
 #include <zaf/base/assert.h>
 #include <zaf/base/log.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/graphic/font.h>
 #include <zaf/internal/anchor_layouter.h>
 #include <zaf/window/window.h>
 
@@ -320,9 +321,17 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-void Control::PaintText(Canvas& canvas, const Rect& dirty_rect) {
+void Control::PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect) {
 
+	std::wstring text = GetText();
+	if (text.empty()) {
+		return;
+	}
 
+	Font font(L"Î¢ÈíÑÅºÚ", 11);
+	
+	canvas.SetBrushWithColor(GetPaintColor(PaintComponent::Foreground));
+	canvas.DrawSingleLineText(text_rect, text, font);
 }
 
 
