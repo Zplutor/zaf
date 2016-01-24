@@ -18,6 +18,7 @@
     <ClCompile Include="src\zaf\control\button.cpp" />
     <ClCompile Include="src\zaf\control\clickable_control.cpp" />
     <ClCompile Include="src\zaf\control\control.cpp" />
+    <ClCompile Include="src\zaf\control\label.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer.cpp" />
@@ -30,7 +31,6 @@
     <ClCompile Include="src\zaf\internal\theme\vs2013\label_painter.cpp" />
     <ClCompile Include="src\zaf\internal\theme\vs2013\palette.cpp" />
     <ClCompile Include="src\zaf\internal\theme\vs2013\scroll_bar_painter.cpp" />
-    <ClCompile Include="src\zaf\label.cpp" />
     <ClCompile Include="src\zaf\scrollable_control.cpp" />
     <ClCompile Include="src\zaf\scroll_bar.cpp" />
     <ClCompile Include="src\zaf\text_box.cpp" />
@@ -52,6 +52,7 @@
     <ClInclude Include="src\zaf\control\button.h" />
     <ClInclude Include="src\zaf\control\clickable_control.h" />
     <ClInclude Include="src\zaf\control\control.h" />
+    <ClInclude Include="src\zaf\control\label.h" />
     <ClInclude Include="src\zaf\enum.h" />
     <ClInclude Include="src\zaf\graphic\brush\brush.h" />
     <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h" />
@@ -73,7 +74,6 @@
     <ClInclude Include="src\zaf\internal\theme\vs2013\palette.h" />
     <ClInclude Include="src\zaf\internal\theme\vs2013\scroll_bar_painter.h" />
     <ClInclude Include="src\zaf\internal\theme\vs2013\theme.h" />
-    <ClInclude Include="src\zaf\label.h" />
     <ClInclude Include="src\zaf\scrollable_control.h" />
     <ClInclude Include="src\zaf\scroll_bar.h" />
     <ClInclude Include="src\zaf\text_box.h" />
