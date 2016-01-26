@@ -42,6 +42,7 @@
     <ClInclude Include="src\zaf\base\assert.h" />
     <ClInclude Include="src\zaf\base\direct2d.h" />
     <ClInclude Include="src\zaf\base\event.h" />
+    <ClInclude Include="src\zaf\base\flag_enum.h" />
     <ClInclude Include="src\zaf\base\log.h" />
     <ClInclude Include="src\zaf\base\nullable.h" />
     <ClInclude Include="src\zaf\base\point.h" />

@@ -239,5 +239,8 @@
     <ClInclude Include="src\zaf\base\variant.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\flag_enum.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

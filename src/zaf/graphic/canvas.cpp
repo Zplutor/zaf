@@ -43,8 +43,8 @@ void Canvas::DrawSingleLineText(const Rect& rect, const std::wstring& text, cons
 	dwrite_factory->CreateTextFormat(
 		font.GetFamilyName().c_str(), 
 		nullptr, 
-		DWRITE_FONT_WEIGHT_REGULAR,
-		DWRITE_FONT_STYLE_NORMAL,
+		static_cast<DWRITE_FONT_WEIGHT>(font.GetWeight()),
+		(font.GetStyle() & Font::Style::Italic) == Font::Style::Italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL,
 		DWRITE_FONT_STRETCH_NORMAL,
 		font.GetSize(),
 		L"",
