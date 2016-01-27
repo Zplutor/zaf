@@ -698,8 +698,7 @@ void Control::FocusLose() {
 
 
 const Color Control::GetDefaultBackgroundColor() {
-	static const Color default_background_color = Color::FromRGB(0xCFD6E5);
-	return default_background_color;
+	return Color::White;
 }
 
 

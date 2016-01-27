@@ -41,8 +41,11 @@ protected:
 	void MouseRelease() override;
 	void KeyDown(WPARAM wParam, LPARAM lParam) override;
 	void KeyUp(WPARAM wParam, LPARAM lParam) override;
-
+	
 	virtual void MouseClick();
+
+	void FocusGain() override;
+	void FocusLose() override;
 
 private:
 	enum class PressType {

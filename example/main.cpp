@@ -89,6 +89,7 @@ void OnBeginRun(Application&) {
 		auto new_control = std::make_shared<Label>();
 		new_control->SetRect(Rect(0, g_position_y, 40, 10));
 		new_control->SetText(std::to_wstring(g_position_y));
+		new_control->SetIsEnabled(g_position_y % 2 == 0);
 		window->GetRootControl()->AddChild(new_control);
 
 		g_position_y += 11;

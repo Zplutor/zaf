@@ -239,4 +239,14 @@ void ClickableControl::MouseClick() {
 
 }
 
+
+void ClickableControl::FocusGain() {
+	NeedRepaint();
+}
+
+
+void ClickableControl::FocusLose() {
+	NeedRepaint();
+}
+
 }
