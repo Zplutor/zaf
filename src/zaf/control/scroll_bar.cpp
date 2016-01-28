@@ -20,7 +20,7 @@ ScrollBar::ScrollBar() :
 	scroll_event_(),
 	OnScroll(scroll_event_) {
 
-	SetBackgroundColor(Color::FromRGB(0xE8E8EC));
+	SetBorderWidth(1);
 }
 
 
@@ -487,11 +487,7 @@ ScrollBar::Arrow::Arrow() :
 	OnEndPress(end_press_event_) {
 
 	SetCanFocused(false);
-	SetBorderWidth(8);
-	SetBorderColor(Color::FromRGB(0xE8E8EC));
-	SetBackgroundColor(Color::FromRGB(0x868999));
-	SetHoveredBackgroundColor(Color::FromRGB(0x1C97EA));
-	SetPressedBackgroundColor(Color::FromRGB(0x007ACC));
+	SetBorderWidth(6);
 }
 
 
@@ -528,10 +524,6 @@ ScrollBar::Thumb::Thumb() :
 
 	SetCanFocused(false);
 	SetBorderWidth(8);
-	SetBorderColor(Color::FromRGB(0xE8E8EC));
-	SetBackgroundColor(Color::FromRGB(0xD0D1D7));
-	SetHoveredBackgroundColor(Color::FromRGB(0x888888));
-	SetPressedBackgroundColor(Color::FromRGB(0x6A6A6A));
 }
 
 

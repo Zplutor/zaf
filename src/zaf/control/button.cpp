@@ -6,17 +6,17 @@ Button::Button() {
 
 	SetBorderWidth(1);
 
-	SetHoveredBackgroundColor(Color::FromRGB(0xF0F8FF));
-	SetPressedBackgroundColor(Color::FromRGB(0xB0C4DE));
-	SetDisabledForegroundColor(Color::Gray);
+	SetColor(PaintComponent::Background, Control::PaintState::Hovered, Color::FromRGB(0xF0F8FF));
+	SetColor(PaintComponent::Background, PaintState::Pressed, Color::FromRGB(0xB0C4DE));
+	SetColor(PaintComponent::Foreground, Control::PaintState::Disabled, Color::Gray);
 
 	Color active_border_color = Color::FromRGB(0x4169E1);
 
-	SetBorderColor(Color::Black);
-	SetHoveredBorderColor(active_border_color);
-	SetFocusedBorderColor(active_border_color);
-	SetPressedBorderColor(active_border_color);
-	SetDisabledBorderColor(Color::Gray);
+	SetColor(PaintComponent::Border, Control::PaintState::Normal, Color::Black);
+	SetColor(PaintComponent::Border, Control::PaintState::Hovered, active_border_color);
+	SetColor(PaintComponent::Border, Control::PaintState::Focused, active_border_color);
+	SetColor(PaintComponent::Border, PaintState::Pressed, active_border_color);
+	SetColor(PaintComponent::Border, Control::PaintState::Disabled, Color::Gray);
 }
 
 

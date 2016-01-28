@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <functional>
 #include <map>
 #include <memory>
 #include <set>
@@ -20,6 +21,29 @@ class Window;
 
 class Control : public std::enable_shared_from_this<Control> {
 public:
+	class PaintComponent {
+	public:
+		static const int Background = 0;
+		static const int Foreground = 1;
+		static const int Border = 2;
+		static const int Custom = 100;
+
+	private:
+		PaintComponent() { }
+	};
+
+	class PaintState {
+	public:
+		static const int Normal = 0;
+		static const int Hovered = 1;
+		static const int Focused = 2;
+		static const int Disabled = 3;
+		static const int Custom = 100;
+
+	private:
+		PaintState() { }
+	};
+
 	enum class Anchor {
 		Left,
 		Top,
@@ -28,110 +52,245 @@ public:
 	};
 
 public:
-	/**
-	 Get the default background color.
-	 */
-	static const Color GetDefaultBackgroundColor();
-
-	/**
-	 Get the default foreground color.
-	 */
-	static const Color GetDefaultForegroundColor();
-
-public:
 	Control();
 	virtual ~Control();
 
-	const Point GetMousePosition() const;
-
-	const std::shared_ptr<Window> GetWindow() const;
-
-	const std::shared_ptr<Control> GetParent() const {
-		return parent_.lock();
-	}
-
-	const std::vector<std::shared_ptr<Control>>& GetChildren() const {
-		return children_;
-	}
-
-	void AddChild(const std::shared_ptr<Control>& child);
-	void RemoveChild(const std::shared_ptr<Control>& child);
-	bool IsParentOf(const std::shared_ptr<Control>& child) const;
-	bool IsAncestorOf(const std::shared_ptr<Control>& child) const;
-
-	bool IsHovered() const {
-		return is_hovered_;
-	}
-
-	bool IsFocused() const {
-		return is_focused_;
-	}
-
-	void SetIsFocused(bool is_focused);
-
-	bool CanFocused() const {
-		return can_focused_;
-	}
-
-	void SetCanFocused(bool can_focused) {
-		can_focused_ = can_focused;
-	}
-
-	bool IsEnabled() const {
-		return is_enabled_;
-	}
-
-	void SetIsEnabled(bool is_enabled);
-
-	bool IsVisible() const {
-		return is_visible_;
-	}
-
-	void SetIsVisible(bool is_visible);
-
 	/**
-	 Get the absolute rect in window.
+	 Get the control's absolute rect which is related to the coordinate system of 
+	 window's content area.
+
+	 If the control is not yet placed in a window, am empty rect is returned.
 	 */
 	const Rect GetAbsoluteRect() const;
 
+	/**
+	 Get the control's rect which is related to the coordinate system of parent's
+	 content area.
+
+	 The default rect is empty.
+	 */
 	const Rect& GetRect() const {
 		return rect_;
 	}
 
+	/**
+	 Set the control's rect.
+
+	 See also GetRect.
+	 */
 	void SetRect(const Rect& rect);
 
+	/**
+	 Get the control's position which is related to the coordinate system of 
+	 parent content area.
+	 */
 	const Point& GetPosition() const {
 		return rect_.position;
 	}
 
+	/**
+	 Set the control's position.
+
+	 See also GetPosition.
+	 */
 	void SetPosition(const Point& position) {
 		SetRect(Rect(position, GetRect().size));
 	}
 
+	/**
+	 Get the control's size.
+	 */
 	const Size& GetSize() const {
 		return rect_.size;
 	}
 
+	/**
+	 Set the control's size;
+	 */
 	void SetSize(const Size& size) {
 		SetRect(Rect(GetRect().position, size));
 	}
 
+	/**
+	 Get the control's width.
+	 */
 	float GetWidth() const {
 		return rect_.size.width;
 	}
 
+	/**
+	 Get the control's height.
+	 */
 	float GetHeight() const {
 		return rect_.size.height;
 	}
 
+	/**
+	 Get the control's border width.
+
+	 The border is not included in control's content area.
+	 The default bordr width is 0.
+	 */
 	float GetBorderWidth() const {
 		return border_width_;
 	}
 
+	/**
+	 Set the control's border width.
+
+	 See also GetBorderWidth.
+	 */
 	void SetBorderWidth(float width) {
 		border_width_ = width;
 		NeedRepaint();
 	}
+
+	/**
+	 Get the color of specified component while in specified state.
+	 */
+	virtual const Color GetColor(int paint_component, int paint_state) const;
+
+	/**
+	 Set the color of specified component while in specified state.
+	 */
+	virtual void SetColor(int paint_component, int paint_state, const Color& color);
+
+	/**
+	 Get the control's text value.
+	 */
+	virtual const std::wstring GetText() const;
+
+	/**
+	 Set the control's text value.
+	 */
+	virtual void SetText(const std::wstring& text);
+
+	/**
+	 Get the control's children.
+	 */
+	const std::vector<std::shared_ptr<Control>>& GetChildren() const {
+		return children_;
+	}
+
+	/**
+	 Add specified child to the control.
+	 */
+	void AddChild(const std::shared_ptr<Control>& child);
+
+	/**
+	 Remoe specified child from the control.
+	 */
+	void RemoveChild(const std::shared_ptr<Control>& child);
+
+	/**
+	 Determinte whether the control is the direct parent of specified control.
+	 */
+	bool IsParentOf(const std::shared_ptr<Control>& child) const;
+
+	/**
+	 Determinte whether the control is the ancestor of specified control.
+	 */
+	bool IsAncestorOf(const std::shared_ptr<Control>& child) const;
+
+	/**
+	 Get the control's parent.
+
+	 Return nullptr if the control does not have parent.
+	 */
+	const std::shared_ptr<Control> GetParent() const {
+		return parent_.lock();
+	}
+
+	/**
+	 Get the control's name.
+
+	 The name is used to identify a child in control. Multiple 
+	 children may have the same name. The default name is empty.
+	 */
+	const std::wstring GetName() const;
+
+	/**
+	 Set the control's name.
+
+	 See also GetName.
+	 */
+	void SetName(const std::wstring& name);
+
+	/**
+	 Get the window where the control locates.
+
+	 Return nullptr if the controls does not locates in any window.
+	 */
+	const std::shared_ptr<Window> GetWindow() const;
+
+	/**
+	 Get a value indicating that whether the control is visible.
+
+	 The default value is true.
+	 */
+	bool IsVisible() const {
+		return is_visible_;
+	}
+
+	/**
+	 Set a value indicating that whether the control is visible.
+
+	 See also IsVisible. 
+	 */
+	void SetIsVisible(bool is_visible);
+
+	/**
+	 Get a value indicating that whether the control is enabled.
+
+	 The default value is true.
+	 */
+	bool IsEnabled() const {
+		return is_enabled_;
+	}
+
+	/**
+	 Set a value indicating that whether the control is enabled.
+
+	 See also IsEnabled.
+	 */
+	void SetIsEnabled(bool is_enabled);
+
+	/**
+	 Get a value indicating that whether the control is hovered.
+	 */
+	bool IsHovered() const {
+		return is_hovered_;
+	}
+
+	/**
+	 Get a value indicating that whether the control can be focused.
+
+	 The default value is false.
+	 */
+	bool CanFocused() const {
+		return can_focused_;
+	}
+
+	/**
+	 Set a value indicating that whether the control can be focused.
+
+	 See also CanFocused.
+	 */
+	void SetCanFocused(bool can_focused) {
+		can_focused_ = can_focused;
+	}
+
+	/**
+	 Get a value indicating that whether the control is focused.
+	 */
+	bool IsFocused() const {
+		return is_focused_;
+	}
+
+	/**
+	 Set a value indicating that whether the control is focused.
+	 */
+	void SetIsFocused(bool is_focused);
 
 	const std::set<Anchor>& GetAnchors() const {
 		return anchors_;
@@ -145,54 +304,7 @@ public:
 		anchors_.erase(anchor);
 	}
 
-	const Color GetBackgroundColor() const;
-	void SetBackgroundColor(const Color& color);
-
-	const Color GetHoveredBackgroundColor() const;
-	void SetHoveredBackgroundColor(const Color& color);
-
-	const Color GetFocusedBackgroundColor() const;
-	void SetFocusedBackgroundColor(const Color& color);
-
-	const Color GetDisabledBackgroundColor() const;
-	void SetDisabledBackgroundColor(const Color& color);
-
-	const Color GetForegroundColor() const;
-	void SetForegroundColor(const Color& color);
-
-	const Color GetHoveredForegroundColor() const;
-	void SetHoveredForegroundColor(const Color& color);
-
-	const Color GetFocusedForegroundColor() const;
-	void SetFocusedForegroundColor(const Color& color);
-
-	const Color GetDisabledForegroundColor() const;
-	void SetDisabledForegroundColor(const Color& color);
-
-	const Color GetBorderColor() const;
-	void SetBorderColor(const Color& color);
-
-	const Color GetHoveredBorderColor() const;
-	void SetHoveredBorderColor(const Color& color);
-
-	const Color GetFocusedBorderColor() const;
-	void SetFocusedBorderColor(const Color& color);
-
-	const Color GetDisabledBorderColor() const;
-	void SetDisabledBorderColor(const Color& color);
-
-	const std::wstring GetName() const;
-	void SetName(const std::wstring& name);
-
-	/**
-	 Get the text value.
-	 */
-	virtual const std::wstring GetText() const;
-
-	/**
-	 Set the text value.
-	 */
-	virtual void SetText(const std::wstring& text);
+	const Point GetMousePosition() const;
 
 protected:
 	class PropertyMap {
@@ -228,12 +340,6 @@ protected:
 		std::map<std::wstring, Variant> properties_;
 	};
 
-	enum class PaintComponent {
-		Background,
-		Border,
-		Foreground,
-	};
-
 protected:
 	/**
 	 Initialize the control.
@@ -257,15 +363,11 @@ protected:
 	void PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect);
 
 	/**
-	 Get the current color of specified paint component.
+	 Get the current paint state.
 
-	 This method is called while painting particular component, to get its color.
-
-	 The default implementation returns color according to the control's state, 
-	 including normal, hovered, focused and disabled. Derived classes can override
-	 this method if they need a different color in some case.
+	 This method is called while painting the control, to get its state.
 	 */
-	virtual const Color GetPaintColor(PaintComponent component) const;
+	virtual int GetPaintState() const;
 
 	const PropertyMap& GetPropertyMap() const {
 		return property_map_;
@@ -300,26 +402,16 @@ protected:
 	virtual void FocusGain();
 	virtual void FocusLose();
 
-	const Color GetSpecialColor(
-		const std::wstring& property_name,
-		const Color(Control::*get_default_color)() const
-	) const {
-
-		auto color = property_map_.TryGetProperty<Color>(property_name);
-		if (color != nullptr) {
-			return *color;
-		}
-
-		return (this->*get_default_color)();
-	}
-
-	void SetColor(const std::wstring& property_name, const Color& new_color) {
-		property_map_.SetProperty(property_name, new_color);
-		NeedRepaint();
-	}
-
 private:
 	friend class Window;
+
+	const Color GetBackgroundColor(int paint_state) const;
+	const Color GetForegroundColor(int paint_state) const;
+	const Color GetBorderColor(int paint_state) const;
+	const Color GetPropertyColor(
+		const std::wstring& color_property_name, 
+		const std::function<const Color()>& get_default_color
+	) const;
 
 	void SetWindow(const std::shared_ptr<Window>& window) {
 		window_ = window;

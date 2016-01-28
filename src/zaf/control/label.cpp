@@ -4,7 +4,7 @@ namespace zaf {
 
 Label::Label() {
 
-	SetDisabledForegroundColor(Color::Gray);
+	SetColor(PaintComponent::Foreground, PaintState::Disabled, Color::Gray);
 }
 
 

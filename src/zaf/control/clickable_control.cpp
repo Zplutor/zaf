@@ -24,70 +24,86 @@ ClickableControl::~ClickableControl() {
 }
 
 
-const Color ClickableControl::GetPressedBackgroundColor() const {
-	return GetSpecialColor(kPressedBackgroundColorPropertyName, &Control::GetHoveredBackgroundColor);
-}
+const Color ClickableControl::GetColor(int paint_component, int paint_state) const {
 
-void ClickableControl::SetPressedBackgroundColor(const Color& color) {
-	SetColor(kPressedBackgroundColorPropertyName, color);
-}
+	if (paint_state == PaintState::Pressed) {
 
+		auto get_pressed_color = [paint_component, this](const std::wstring& property_name) {
 
-const Color ClickableControl::GetPressedForegroundColor() const {
-	return GetSpecialColor(kPressedForegroundColorPropertyName, &Control::GetHoveredForegroundColor);
-}
+			auto color = GetPropertyMap().TryGetProperty<Color>(property_name);
+			if (color != nullptr) {
+				return *color;
+			}
 
-void ClickableControl::SetPressedForegroundColor(const Color& color) {
-	SetColor(kPressedForegroundColorPropertyName, color);
-}
+			return Control::GetColor(paint_component, Control::PaintState::Hovered);
+		};
 
+		switch (paint_component) {
 
-const Color ClickableControl::GetPressedBorderColor() const {
-	return GetSpecialColor(kPressedBorderColorPropertyName, &Control::GetHoveredBorderColor);
-}
+			case PaintComponent::Background: 
+				return get_pressed_color(kPressedBackgroundColorPropertyName);
+				
+			case PaintComponent::Foreground: 
+				return get_pressed_color(kPressedForegroundColorPropertyName);
 
-void ClickableControl::SetPressedBorderColor(const Color& color) {
-	SetColor(kPressedBorderColorPropertyName, color);
-}
+			case PaintComponent::Border:
+				return get_pressed_color(kPressedBorderColorPropertyName);
 
-
-const Color ClickableControl::GetPaintColor(PaintComponent component) const {
-
-	typedef const Color(ClickableControl::*GetColorMethod)() const;
-
-	GetColorMethod get_hovered_color = nullptr;
-	GetColorMethod get_pressed_color = nullptr;
-
-	switch (component) {
-		case PaintComponent::Background:
-			get_hovered_color = &ClickableControl::GetHoveredBackgroundColor;
-			get_pressed_color = &ClickableControl::GetPressedBackgroundColor;
-			break;
-
-		case PaintComponent::Border:
-			get_hovered_color = &ClickableControl::GetHoveredBorderColor;
-			get_pressed_color = &ClickableControl::GetPressedBorderColor;
-			break;
-
-		case PaintComponent::Foreground:
-			get_hovered_color = &ClickableControl::GetHoveredForegroundColor;
-			get_pressed_color = &ClickableControl::GetPressedForegroundColor;
-			break;
-
-		default:
-			ZAFFAIL();
-			return Color();
+			default:
+				break;
+		}
 	}
+	
+	return Control::GetColor(paint_component, paint_state);
+}
+
+
+void ClickableControl::SetColor(int paint_component, int paint_state, const Color& color) {
+
+	if (paint_state == PaintState::Pressed) {
+
+		std::wstring property_name;
+
+		switch (paint_component) {
+
+			case PaintComponent::Background:
+				property_name = kPressedBackgroundColorPropertyName;
+				break;
+
+			case PaintComponent::Foreground:
+				property_name = kPressedForegroundColorPropertyName;
+				break;
+
+			case PaintComponent::Border:
+				property_name= kPressedBorderColorPropertyName;
+				break;
+
+			default:
+				break;
+		}
+
+		if (! property_name.empty()) {
+			GetPropertyMap().SetProperty(property_name, color);
+			NeedRepaint();
+			return;
+		}
+	}
+
+	Control::SetColor(paint_component, paint_state, color);
+}
+
+
+int ClickableControl::GetPaintState() const {
 
 	if (IsHovered() && IsPressed()) {
-		return (this->*get_pressed_color)();
+		return PaintState::Pressed;
 	}
-	
+
 	if (IsHovered() ^ IsPressed()) {
-		return (this->*get_hovered_color)();
+		return Control::PaintState::Hovered;
 	}
-	
-	return Control::GetPaintColor(component);
+
+	return Control::GetPaintState();
 }
 
 

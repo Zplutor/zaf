@@ -7,6 +7,15 @@ namespace zaf {
 
 class ClickableControl : public Control {
 public:
+	class PaintState {
+	public:
+		static const int Pressed = Control::PaintState::Custom + 0;
+		static const int Custom = Control::PaintState::Custom + 100;
+
+	private:
+		PaintState() { }
+	};
+
 	typedef Event<const std::shared_ptr<ClickableControl>&> ClickEvent;
 
 public:
@@ -17,20 +26,14 @@ public:
 		return is_pressed_;
 	}
 
-	const Color GetPressedBackgroundColor() const;
-	void SetPressedBackgroundColor(const Color& color);
-
-	const Color GetPressedForegroundColor() const;
-	void SetPressedForegroundColor(const Color& color);
-
-	const Color GetPressedBorderColor() const;
-	void SetPressedBorderColor(const Color& color);
+	const Color GetColor(int paint_component, int paint_state) const override;
+	void SetColor(int paint_component, int paint_state, const Color& color) override;
 
 public:
 	ClickEvent::Proxy OnClick;
 
 protected:
-	const Color GetPaintColor(PaintComponent component) const override;
+	int GetPaintState() const override;
 
 	void MouseEnter() override;
 	void MouseLeave() override;
