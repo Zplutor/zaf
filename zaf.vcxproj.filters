@@ -45,9 +45,6 @@
     <ClCompile Include="src\zaf\internal\theme\vs2013\label_painter.cpp">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\anchor_layouter.cpp">
-      <Filter>zaf\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\internal\theme\vs2013\scroll_bar_painter.cpp">
       <Filter>zaf\internal\theme\vs2013</Filter>
     </ClCompile>
@@ -133,12 +130,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\theme\vs2013\label_painter.h">
       <Filter>zaf\internal\theme\vs2013</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\anchor_layouter.h">
-      <Filter>zaf\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\layouter.h">
-      <Filter>zaf\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\theme\vs2013\scroll_bar_painter.h">
       <Filter>zaf\internal\theme\vs2013</Filter>
@@ -241,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\flag_enum.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\anchor.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

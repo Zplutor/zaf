@@ -26,7 +26,6 @@
     <ClCompile Include="src\zaf\graphic\color.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer_factory.cpp" />
-    <ClCompile Include="src\zaf\internal\anchor_layouter.cpp" />
     <ClCompile Include="src\zaf\internal\theme\theme.cpp" />
     <ClCompile Include="src\zaf\internal\theme\vs2013\check_box_painter.cpp" />
     <ClCompile Include="src\zaf\internal\theme\vs2013\single_color_painter.cpp" />
@@ -50,6 +49,7 @@
     <ClInclude Include="src\zaf\base\size.h" />
     <ClInclude Include="src\zaf\base\timer.h" />
     <ClInclude Include="src\zaf\base\variant.h" />
+    <ClInclude Include="src\zaf\control\anchor.h" />
     <ClInclude Include="src\zaf\control\button.h" />
     <ClInclude Include="src\zaf\control\check_box.h" />
     <ClInclude Include="src\zaf\control\clickable_control.h" />
@@ -68,8 +68,6 @@
     <ClInclude Include="src\zaf\graphic\renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer_factory.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
-    <ClInclude Include="src\zaf\internal\anchor_layouter.h" />
-    <ClInclude Include="src\zaf\internal\layouter.h" />
     <ClInclude Include="src\zaf\internal\theme\painter.h" />
     <ClInclude Include="src\zaf\internal\theme\theme.h" />
     <ClInclude Include="src\zaf\internal\theme\vs2013\check_box_painter.h" />

@@ -5,13 +5,13 @@
 #include <zaf/base/log.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font.h>
-#include <zaf/internal/anchor_layouter.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
 
 static Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child);
 
+static const wchar_t* const kAnchorPropertyName = L"Anchor";
 static const wchar_t* const kBackgroundColorPropertyName = L"BackgroundColor";
 static const wchar_t* const kBorderColorPropertyName = L"BorderColor";
 static const wchar_t* const kDisabledBackgroundColorPropertyName = L"DisabledBackgroundColor";
@@ -196,8 +196,79 @@ void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const Rect
 
 void Control::Layout(const Rect& previous_rect) {
 
-	internal::AnchorLayouter layouter;
-	layouter.Layout(*this, previous_rect);
+	for (auto& child : children_) {
+		LayoutChild(child, previous_rect);
+	}
+}
+
+
+void Control::LayoutChild(const std::shared_ptr<Control>& child, const Rect& previous_rect) {
+
+	auto change_single_dimension_with_anchor = [](
+		bool has_front_anchor,
+		bool has_back_anchor,
+		float parent_old_size,
+		float parent_new_size,
+		float old_position,
+		float old_size,
+		float& new_position,
+		float& new_size
+	) {
+
+		if (has_front_anchor && ! has_back_anchor) {
+			new_position = old_position;
+			new_size = old_size;
+		}
+		else if (! has_front_anchor && has_back_anchor) {
+			float old_back = parent_old_size - old_position - old_size;
+			new_position = parent_new_size - old_back - old_size;
+			new_size = old_size;
+		}
+		else if (has_front_anchor && has_back_anchor) {
+			new_position = old_position;
+			float old_back = parent_old_size - old_position - old_size;
+			new_size = parent_new_size - old_back - new_position;
+		}
+		else {
+			new_position = old_position;
+			new_size = old_size;
+		}
+	};
+
+	const Rect& current_rect = GetRect();
+
+	Anchor anchor = child->GetAnchor();
+	bool has_left_anchor = (anchor & Anchor::Left) == Anchor::Left;
+	bool has_right_anchor = (anchor & Anchor::Right) == Anchor::Right;
+	bool has_top_anchor = (anchor & Anchor::Top) == Anchor::Top;
+	bool has_bottom_anchor = (anchor & Anchor::Bottom) == Anchor::Bottom;
+	
+	const Rect& child_old_rect = child->GetRect();
+	Rect child_new_rect;
+
+	change_single_dimension_with_anchor(
+		has_left_anchor,
+		has_right_anchor,
+		previous_rect.size.width,
+		current_rect.size.width,
+		child_old_rect.position.x,
+		child_old_rect.size.width,
+		child_new_rect.position.x,
+		child_new_rect.size.width
+	);
+
+	change_single_dimension_with_anchor(
+		has_top_anchor,
+		has_bottom_anchor,
+		previous_rect.size.height,
+		current_rect.size.height,
+		child_old_rect.position.y,
+		child_old_rect.size.height,
+		child_new_rect.position.y,
+		child_new_rect.size.height
+	);
+
+	child->SetRect(child_new_rect);
 }
 
 
@@ -251,6 +322,21 @@ void Control::SetRect(const Rect& rect) {
 	if (parent != nullptr) {
 		parent->ChildRectChanged(this->shared_from_this(), previous_rect);
 	}
+}
+
+
+Anchor Control::GetAnchor() const {
+
+	auto anchor = property_map_.TryGetProperty<Anchor>(kAnchorPropertyName);
+	if (anchor != nullptr) {
+		return *anchor;
+	}
+	return Anchor::None;
+}
+
+
+void Control::SetAnchor(Anchor anchor) {
+	property_map_.SetProperty(kAnchorPropertyName, anchor);
 }
 
 

@@ -11,8 +11,7 @@ ScrollableControl::ScrollableControl() :
 	vertical_scroll_bar_(std::make_shared<ScrollBar>()),
 	horizontal_scroll_bar_(std::make_shared<ScrollBar>()) {
 
-	content_control_->AddAnchor(Anchor::Left);
-	content_control_->AddAnchor(Anchor::Top);
+	content_control_->SetAnchor(Anchor::Left | Anchor::Top);
 
 	content_container_control_->AddChild(content_control_);
 

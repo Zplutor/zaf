@@ -11,6 +11,7 @@
 #include <zaf/base/nullable.h>
 #include <zaf/base/rect.h>
 #include <zaf/base/variant.h>
+#include <zaf/control/anchor.h>
 #include <zaf/graphic/color.h>
 
 namespace zaf {
@@ -42,13 +43,6 @@ public:
 
 	private:
 		PaintState();
-	};
-
-	enum class Anchor {
-		Left,
-		Top,
-		Right,
-		Bottom,
 	};
 
 public:
@@ -124,6 +118,9 @@ public:
 	float GetHeight() const {
 		return rect_.size.height;
 	}
+
+	Anchor GetAnchor() const;
+	void SetAnchor(Anchor anchor);
 
 	/**
 	 Get the control's border width.
@@ -292,18 +289,6 @@ public:
 	 */
 	void SetIsFocused(bool is_focused);
 
-	const std::set<Anchor>& GetAnchors() const {
-		return anchors_;
-	}
-
-	void AddAnchor(Anchor anchor) {
-		anchors_.insert(anchor);
-	}
-
-	void RemoveAnchor(Anchor anchor) {
-		anchors_.erase(anchor);
-	}
-
 	const Point GetMousePosition() const;
 
 protected:
@@ -419,6 +404,8 @@ private:
 private:
 	void CheckInitialized();
 
+	void LayoutChild(const std::shared_ptr<Control>& child, const Rect& previous_rect);
+
 	const Color GetBackgroundColor(int paint_state) const;
 	const Color GetForegroundColor(int paint_state) const;
 	const Color GetBorderColor(int paint_state) const;
@@ -464,7 +451,6 @@ private:
 
 	Rect rect_;
 	float border_width_;
-	std::set<Anchor> anchors_;
 
 	PropertyMap property_map_;
 };

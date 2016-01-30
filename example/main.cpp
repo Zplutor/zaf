@@ -34,10 +34,7 @@ void OnBeginRun(Application&) {
 
 	auto scrollable_control = std::make_shared<ScrollableControl>();
 	scrollable_control->SetRect(Rect(Point(), root_control->GetSize()));
-	scrollable_control->AddAnchor(Control::Anchor::Left);
-	scrollable_control->AddAnchor(Control::Anchor::Top);
-	scrollable_control->AddAnchor(Control::Anchor::Right);
-	scrollable_control->AddAnchor(Control::Anchor::Bottom);
+	scrollable_control->SetAnchor(Anchor::Left | Anchor::Top | Anchor::Right | Anchor::Bottom);
 	scrollable_control->SetContentSize(Size(500, 500));
 	window->GetRootControl()->AddChild(scrollable_control);
 
@@ -83,7 +80,7 @@ void OnBeginRun(Application&) {
 	auto button = std::make_shared<Button>();
 	button->SetRect(Rect(200, 200, 100, 30));
 	button->SetText(L"Button");
-	button->AddAnchor(Control::Anchor::Bottom);
+	button->SetAnchor(Anchor::Bottom);
 	button->OnClick.AddListener([window, disabled_button, invisible_button](const std::shared_ptr<ClickableControl>&) {
 
 		auto new_control = std::make_shared<Label>();
