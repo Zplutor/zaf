@@ -29,7 +29,7 @@ public:
 		static const int Custom = 100;
 
 	private:
-		PaintComponent() { }
+		PaintComponent();
 	};
 
 	class PaintState {
@@ -41,7 +41,7 @@ public:
 		static const int Custom = 100;
 
 	private:
-		PaintState() { }
+		PaintState();
 	};
 
 	enum class Anchor {
@@ -349,10 +349,15 @@ protected:
 	 */
 	virtual void Initialize();
 
-	void NeedRepaint();
-	void NeedRepaintRect(const Rect& rect);
 	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
 	virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
+
+	/**
+	 Get the current paint state.
+
+	 This method is called while painting the control, to get its state.
+	 */
+	virtual int GetPaintState() const;
 
 	/**
 	 Paint text in specified rect.
@@ -362,12 +367,11 @@ protected:
 	 */
 	void PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect);
 
-	/**
-	 Get the current paint state.
+	void NeedRepaint();
+	void NeedRepaintRect(const Rect& rect);
 
-	 This method is called while painting the control, to get its state.
-	 */
-	virtual int GetPaintState() const;
+	virtual void Layout(const Rect& previous_rect);
+	void NeedRelayout();
 
 	const PropertyMap& GetPropertyMap() const {
 		return property_map_;
@@ -377,13 +381,11 @@ protected:
 		return property_map_;
 	}
 
-	void NeedRelayout();
-	virtual void Layout(const Rect& previous_rect);
-
-	void NeedCaptureMouse(bool capture);
 	bool IsCapturingMouse() const {
 		return is_capturing_mouse_;
 	}
+
+	void NeedCaptureMouse(bool capture);
 
 	virtual void ChangeMouseCursor(WPARAM wParam, LPARAM lParam, bool& is_changed);
 	virtual void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam);
@@ -394,38 +396,36 @@ protected:
 	virtual void MouseWheel(const Point& position, bool is_horizontal, int distance, WPARAM wParam, LPARAM lParam);
 	virtual void MouseCapture();
 	virtual void MouseRelease();
-
 	virtual void KeyDown(WPARAM wParam, LPARAM lParam);
 	virtual void KeyUp(WPARAM wParam, LPARAM lParam);
 	virtual void CharInput(WPARAM wParam, LPARAM lParam);
-
 	virtual void FocusGain();
 	virtual void FocusLose();
 
 private:
 	friend class Window;
 
-	const Color GetBackgroundColor(int paint_state) const;
-	const Color GetForegroundColor(int paint_state) const;
-	const Color GetBorderColor(int paint_state) const;
-	const Color GetPropertyColor(
-		const std::wstring& color_property_name, 
-		const std::function<const Color()>& get_default_color
-	) const;
-
 	void SetWindow(const std::shared_ptr<Window>& window) {
 		window_ = window;
 	}
 
 	void IsHoveredChanged(bool is_hovered);
-	void IsCapturingMouseChanged(bool is_capturing_mouse);
 	void IsFocusedChanged(bool is_focused);
+	void IsCapturingMouseChanged(bool is_capturing_mouse);
 
 	void RouteHoverMessage(const Point& position);
 	void RouteMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
 	void CheckInitialized();
+
+	const Color GetBackgroundColor(int paint_state) const;
+	const Color GetForegroundColor(int paint_state) const;
+	const Color GetBorderColor(int paint_state) const;
+	const Color GetPropertyColor(
+		const std::wstring& color_property_name,
+		const std::function<const Color()>& get_default_color
+	) const;
 
 	void SetParent(const std::shared_ptr<Control>& parent) {
 		parent_ = parent;

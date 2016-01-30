@@ -7,13 +7,10 @@ namespace zaf {
 
 class ClickableControl : public Control {
 public:
-	class PaintState {
+	class PaintState : public Control::PaintState {
 	public:
 		static const int Pressed = Control::PaintState::Custom + 0;
 		static const int Custom = Control::PaintState::Custom + 100;
-
-	private:
-		PaintState() { }
 	};
 
 	typedef Event<const std::shared_ptr<ClickableControl>&> ClickEvent;

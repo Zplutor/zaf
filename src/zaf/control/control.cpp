@@ -67,6 +67,193 @@ void Control::Initialize() {
 }
 
 
+void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
+
+	if (!IsVisible()) {
+		return;
+	}
+
+	canvas.BeginPaint();
+	Paint(canvas, dirty_rect);
+	canvas.EndPaint();
+
+	Rect paintable_rect = canvas.GetAbsolutePaintableRect();
+
+	for (const auto& child : children_) {
+
+		const Rect& child_rect = child->GetRect();
+
+		Rect child_dirty_rect = dirty_rect;
+		child_dirty_rect.Intersect(child_rect);
+
+		if (child_dirty_rect.IsEmpty()) {
+			//No need to repaint child if it doesn't locate in dirty rect
+			continue;
+		}
+
+		const Rect& child_canvas_absolute_rect = child->GetAbsoluteRect();
+		canvas.SetRects(
+			child_canvas_absolute_rect,
+			Rect::Intersect(paintable_rect, child_canvas_absolute_rect)
+		);
+
+		child_dirty_rect.position.x -= child_rect.position.x;
+		child_dirty_rect.position.y -= child_rect.position.y;
+		child->Repaint(canvas, child_dirty_rect);
+	}
+}
+
+
+void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
+
+	int paint_state = GetPaintState();
+
+	Rect paint_rect(Point(), GetSize());
+	canvas.SetBrushWithColor(GetColor(PaintComponent::Background, paint_state));
+	canvas.DrawRectangle(paint_rect);
+
+	canvas.SetBrushWithColor(GetColor(PaintComponent::Border, paint_state));
+	canvas.DrawRectangleFrame(paint_rect, GetBorderWidth());
+}
+
+
+int Control::GetPaintState() const {
+
+	if (!IsEnabled()) {
+		return PaintState::Disabled;
+	}
+
+	if (IsHovered()) {
+		return PaintState::Hovered;
+	}
+
+	if (IsFocused()) {
+		return PaintState::Focused;
+	}
+
+	return PaintState::Normal;
+}
+
+
+void Control::PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect) {
+
+	std::wstring text = GetText();
+	if (text.empty()) {
+		return;
+	}
+
+	Font font;
+	font.SetFamilyName(L"Î¢ÈíÑÅºÚ");
+	font.SetSize(13);
+
+	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
+	canvas.DrawSingleLineText(text_rect, text, font);
+}
+
+
+void Control::NeedRepaint() {
+	NeedRepaintRect(Rect(Point(), rect_.size));
+}
+
+
+void Control::NeedRepaintRect(const Rect& rect) {
+
+	Rect bound_rect(Point(), rect_.size);
+	Rect repaint_rect = Rect::Intersect(bound_rect, rect);
+	if (repaint_rect.IsEmpty()) {
+		return;
+	}
+
+	auto window = window_.lock();
+	if (window != nullptr) {
+		window->NeedRepaintRect(repaint_rect);
+		return;
+	}
+
+	auto parent = GetParent();
+	if (parent == nullptr) {
+		return;
+	}
+
+	Rect repaint_rect_in_parent(ToParentPoint(repaint_rect.position), repaint_rect.size);
+	parent->NeedRepaintRect(repaint_rect_in_parent);
+}
+
+
+void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const Rect& previous_rect) {
+
+	const Rect& new_rect = child->GetRect();
+
+	if (new_rect.HasIntersection(previous_rect)) {
+		NeedRepaintRect(Rect::Union(new_rect, previous_rect));
+	}
+	else {
+		NeedRepaintRect(new_rect);
+		NeedRepaintRect(previous_rect);
+	}
+}
+
+
+void Control::Layout(const Rect& previous_rect) {
+
+	internal::AnchorLayouter layouter;
+	layouter.Layout(*this, previous_rect);
+}
+
+
+void Control::NeedRelayout() {
+	Layout(GetRect());
+}
+
+
+const Rect Control::GetAbsoluteRect() const {
+
+	auto window = GetWindow();
+	if (window == nullptr) {
+		return Rect();
+	}
+
+	auto parent = GetParent();
+	if (parent == nullptr) {
+		return rect_;
+	}
+
+	Rect parent_absolute_rect = parent->GetAbsoluteRect();
+	return Rect(
+		parent_absolute_rect.position.x + rect_.position.x,
+		parent_absolute_rect.position.y + rect_.position.y,
+		rect_.size.width,
+		rect_.size.height
+	);
+}
+
+
+void Control::SetRect(const Rect& rect) {
+
+	Rect previous_rect = GetRect();
+	rect_ = rect;
+
+	Layout(previous_rect);
+
+	//The focused control need to be notified while its absolute position changed, 
+	//so that it can relayout its elements, if needed.
+	auto window = GetWindow();
+	if (window != nullptr) {
+		auto focused_control = window->GetFocusedControl();
+		if (focused_control != nullptr) {
+			if (IsAncestorOf(focused_control)) {
+				focused_control->NeedRelayout();
+			}
+		}
+	}
+
+	auto parent = GetParent();
+	if (parent != nullptr) {
+		parent->ChildRectChanged(this->shared_from_this(), previous_rect);
+	}
+}
+
+
 const Color Control::GetColor(int paint_component, int paint_state) const {
 
 	switch (paint_component) {
@@ -262,29 +449,14 @@ void Control::SetColor(int paint_component, int paint_state, const Color& color)
 }
 
 
-const Point Control::GetMousePosition() const {
-
-	auto window = GetWindow();
-	if (window == nullptr) {
-		return Point();
-	}
-	
-	Point mouse_position = window->GetMousePosition();
-	Point absolute_position = GetAbsoluteRect().position;
-	mouse_position.x -= absolute_position.x;
-	mouse_position.y -= absolute_position.y;
-	return mouse_position;
+const std::wstring Control::GetText() const {
+	return property_map_.GetProperty<std::wstring>(kTextPropertyName);
 }
 
 
-const std::shared_ptr<Window> Control::GetWindow() const {
-
-	auto parent = GetParent();
-	if (parent == nullptr) {
-		return window_.lock();
-	}
-
-	return parent->GetWindow();
+void Control::SetText(const std::wstring& text) {
+	property_map_.SetProperty(kTextPropertyName, text);
+	NeedRepaint();
 }
 
 
@@ -309,7 +481,7 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
 
 	child->SetParent(this->shared_from_this());
 	children_.push_back(child);
-	
+
 	NeedRepaintRect(child->GetRect());
 }
 
@@ -325,7 +497,7 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 	child->SetParent(nullptr);
 	children_.erase(std::remove(children_.begin(), children_.end(), child));
 
-	NeedRepaintRect(child->GetRect()); 
+	NeedRepaintRect(child->GetRect());
 }
 
 
@@ -350,58 +522,47 @@ bool Control::IsAncestorOf(const std::shared_ptr<Control>& child) const {
 }
 
 
-const Rect Control::GetAbsoluteRect() const {
+const std::wstring Control::GetName() const {
+	return property_map_.GetProperty<std::wstring>(kNamePropertyName);
+}
+
+
+void Control::SetName(const std::wstring& name) {
+	property_map_.SetProperty(kNamePropertyName, name);
+}
+
+
+const std::shared_ptr<Window> Control::GetWindow() const {
 
 	auto parent = GetParent();
 	if (parent == nullptr) {
-		return rect_;
+		return window_.lock();
 	}
 
-	Rect parent_absolute_rect = parent->GetAbsoluteRect();
-	return Rect(
-		parent_absolute_rect.position.x + rect_.position.x,
-		parent_absolute_rect.position.y + rect_.position.y,
-		rect_.size.width,
-		rect_.size.height);
+	return parent->GetWindow();
 }
 
 
-void Control::SetRect(const Rect& rect) {
+void Control::SetIsVisible(bool is_visible) {
 
-	Rect previous_rect = GetRect();
-	rect_ = rect;
+	if (is_visible_ = is_visible) {
+		return;
+	}
 
-	Layout(previous_rect);
-
-	//The focused control need to be notified while its absolute position changed, 
-	//so that it can relayout its elements, if needed.
-	auto window = GetWindow();
-	if (window != nullptr) {
-		auto focused_control = window->GetFocusedControl();
-		if (focused_control != nullptr) {
-			if (IsAncestorOf(focused_control)) {
-				focused_control->NeedRelayout();
-			}
+	if (IsHovered()) {
+		auto window = GetWindow();
+		if (window != nullptr) {
+			window->SetHoveredControl(nullptr);
 		}
 	}
 
-	auto parent = GetParent();
-	if (parent != nullptr) {
-		parent->ChildRectChanged(this->shared_from_this(), previous_rect);
-	}
-}
+	SetIsFocused(false);
 
+	is_visible_ = is_visible;
+	NeedRepaint();
 
-void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const Rect& previous_rect) {
-
-	const Rect& new_rect = child->GetRect();
-
-	if (new_rect.HasIntersection(previous_rect)) {
-		NeedRepaintRect(Rect::Union(new_rect, previous_rect));
-	}
-	else {
-		NeedRepaintRect(new_rect);
-		NeedRepaintRect(previous_rect);
+	for (auto& each_child : children_) {
+		each_child->SetIsVisible(is_visible);
 	}
 }
 
@@ -430,152 +591,100 @@ void Control::SetIsEnabled(bool is_enabled) {
 }
 
 
-void Control::SetIsVisible(bool is_visible) {
+void Control::IsHoveredChanged(bool is_hovered) {
 
-	if (is_visible_ = is_visible) {
+	if (is_hovered_ == is_hovered) {
 		return;
 	}
 
-	if (IsHovered()) {
-		auto window = GetWindow();
-		if (window != nullptr) {
-			window->SetHoveredControl(nullptr);
-		}
+	is_hovered_ = is_hovered;
+
+	if (is_hovered_) {
+		MouseEnter();
 	}
-
-	SetIsFocused(false);
-
-	is_visible_ = is_visible;
-	NeedRepaint();
-
-	for (auto& each_child : children_) {
-		each_child->SetIsVisible(is_visible);
+	else {
+		MouseLeave();
 	}
 }
 
 
-void Control::NeedRepaint() {
-	NeedRepaintRect(Rect(Point(), rect_.size));
-}
+void Control::SetIsFocused(bool is_focused) {
 
-
-void Control::NeedRepaintRect(const Rect& rect) {
-
-	Rect bound_rect(Point(), rect_.size);
-	Rect repaint_rect = Rect::Intersect(bound_rect, rect);
-	if (repaint_rect.IsEmpty()) {
+	if (!CanFocused()) {
 		return;
 	}
 
-	auto window = window_.lock();
+	if (IsFocused() == is_focused) {
+		return;
+	}
+
+	auto window = GetWindow();
 	if (window != nullptr) {
-		window->NeedRepaintRect(repaint_rect);
-		return;
+		window->SetFocusedControl(is_focused ? shared_from_this() : nullptr);
 	}
-
-	auto parent = GetParent();
-	if (parent == nullptr) {
-		return;
-	}
-
-	Rect repaint_rect_in_parent(ToParentPoint(repaint_rect.position), repaint_rect.size);
-	parent->NeedRepaintRect(repaint_rect_in_parent);
 }
 
 
-void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
+void Control::IsFocusedChanged(bool is_focused) {
 
-	if (! IsVisible()) {
+	if (is_focused_ == is_focused) {
 		return;
 	}
 
-	canvas.BeginPaint();
-	Paint(canvas, dirty_rect);
-	canvas.EndPaint();
+	ZAFLOG() << "IsFocusedChanged: " << is_focused;
 
-	Rect paintable_rect = canvas.GetAbsolutePaintableRect();
+	is_focused_ = is_focused;
 
-	for (const auto& child : children_) {
+	if (is_focused_) {
+		FocusGain();
+	}
+	else {
+		FocusLose();
+	}
+}
 
-		const Rect& child_rect = child->GetRect();
 
-		Rect child_dirty_rect = dirty_rect;
-		child_dirty_rect.Intersect(child_rect);
+void Control::NeedCaptureMouse(bool capture) {
 
-		if (child_dirty_rect.IsEmpty()) {
-			//No need to repaint child if it doesn't locate in dirty rect
-			continue;
+	auto window = GetWindow();
+	if (window != nullptr) {
+
+		auto shared_this = shared_from_this();
+
+		if (capture && !IsHovered()) {
+			window->SetHoveredControl(shared_this);
 		}
 
-		const Rect& child_canvas_absolute_rect = child->GetAbsoluteRect();
-		canvas.SetRects(
-			child_canvas_absolute_rect, 
-			Rect::Intersect(paintable_rect, child_canvas_absolute_rect)
-		);
-
-		child_dirty_rect.position.x -= child_rect.position.x;
-		child_dirty_rect.position.y -= child_rect.position.y;
-		child->Repaint(canvas, child_dirty_rect);
+		window->SetCaptureMouseControl(shared_this, !capture);
 	}
 }
 
 
-void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
+
+	is_capturing_mouse_ = is_capturing_mouse;
+
+	if (is_capturing_mouse_) {
+		MouseCapture();
+	}
+	else {
+		MouseRelease();
+	}
+}
+
+
+const Point Control::GetMousePosition() const {
+
+	auto window = GetWindow();
+	if (window == nullptr) {
+		return Point();
+	}
 	
-	int paint_state = GetPaintState();
-
-	Rect paint_rect(Point(), GetSize());
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Background, paint_state));
-	canvas.DrawRectangle(paint_rect);
-
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Border, paint_state));
-	canvas.DrawRectangleFrame(paint_rect, GetBorderWidth());
-}
-
-
-void Control::PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect) {
-
-	std::wstring text = GetText();
-	if (text.empty()) {
-		return;
-	}
-
-	Font font;
-	font.SetFamilyName(L"Î¢ÈíÑÅºÚ");
-	font.SetSize(13);
-
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
-	canvas.DrawSingleLineText(text_rect, text, font);
-}
-
-
-int Control::GetPaintState() const {
-
-	if (! IsEnabled()) {
-		return PaintState::Disabled;
-	}
-
-	if (IsHovered()) {
-		return PaintState::Hovered;
-	}
-
-	if (IsFocused()) {
-		return PaintState::Focused;
-	}
-
-	return PaintState::Normal;
-}
-
-
-void Control::NeedRelayout() {
-	Layout(GetRect());
-}
-
-
-void Control::Layout(const Rect& previous_rect) {
-
-	internal::AnchorLayouter layouter;
-	layouter.Layout(*this, previous_rect);
+	Point mouse_position = window->GetMousePosition();
+	Point absolute_position = GetAbsoluteRect().position;
+	mouse_position.x -= absolute_position.x;
+	mouse_position.y -= absolute_position.y;
+	return mouse_position;
 }
 
 
@@ -676,52 +785,6 @@ void Control::InterpretMessage(const Point& position, UINT message, WPARAM wPara
 }
 
 
-void Control::IsHoveredChanged(bool is_hovered) {
-
-	if (is_hovered_ == is_hovered) {
-		return;
-	}
-
-	is_hovered_ = is_hovered;
-
-	if (is_hovered_) {
-		MouseEnter();
-	}
-	else {
-		MouseLeave();
-	}
-}
-
-
-void Control::NeedCaptureMouse(bool capture) {
-
-	auto window = GetWindow();
-	if (window != nullptr) {
-
-		auto shared_this = shared_from_this();
-
-		if (capture && ! IsHovered()) {
-			window->SetHoveredControl(shared_this);
-		}
-
-		window->SetCaptureMouseControl(shared_this, ! capture);
-	}
-}
-
-
-void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
-
-	is_capturing_mouse_ = is_capturing_mouse;
-
-	if (is_capturing_mouse_) {
-		MouseCapture();
-	}
-	else {
-		MouseRelease();
-	}
-}
-
-
 void Control::ChangeMouseCursor(WPARAM wParam, LPARAM lParam, bool& is_changed) {
 
 	auto parent = GetParent();
@@ -814,42 +877,6 @@ void Control::CharInput(WPARAM wParam, LPARAM lParam) {
 }
 
 
-void Control::SetIsFocused(bool is_focused) {
-
-	if (! CanFocused()) {
-		return;
-	}
-
-	if (IsFocused() == is_focused) {
-		return;
-	}
-
-	auto window = GetWindow();
-	if (window != nullptr) {
-		window->SetFocusedControl(is_focused ? shared_from_this() : nullptr);
-	}
-}
-
-
-void Control::IsFocusedChanged(bool is_focused) {
-
-	if (is_focused_ == is_focused) {
-		return;
-	}
-
-	ZAFLOG() << "IsFocusedChanged: " << is_focused;
-
-	is_focused_ = is_focused;
-
-	if (is_focused_) {
-		FocusGain();
-	}
-	else {
-		FocusLose();
-	}
-}
-
-
 void Control::FocusGain() {
 
 }
@@ -857,25 +884,6 @@ void Control::FocusGain() {
 
 void Control::FocusLose() {
 
-}
-
-
-const std::wstring Control::GetName() const {
-	return property_map_.GetProperty<std::wstring>(kNamePropertyName);
-}
-
-void Control::SetName(const std::wstring& name) {
-	property_map_.SetProperty(kNamePropertyName, name);
-}
-
-
-const std::wstring Control::GetText() const {
-	return property_map_.GetProperty<std::wstring>(kTextPropertyName);
-}
-
-void Control::SetText(const std::wstring& text) {
-	property_map_.SetProperty(kTextPropertyName, text);
-	NeedRepaint();
 }
 
 
