@@ -69,7 +69,7 @@ void Control::Initialize() {
 
 void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 
-	if (!IsVisible()) {
+	if (! IsVisible()) {
 		return;
 	}
 
@@ -77,13 +77,20 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	Paint(canvas, dirty_rect);
 	canvas.EndPaint();
 
-	Rect paintable_rect = canvas.GetAbsolutePaintableRect();
+	float border_width = GetBorderWidth();
 
+	Rect absolute_paintable_rect = canvas.GetAbsolutePaintableRect();
+	absolute_paintable_rect.Inflate(-border_width);
+
+	Rect content_rect = GetContentRect();
+	
 	for (const auto& child : children_) {
 
 		const Rect& child_rect = child->GetRect();
 
-		Rect child_dirty_rect = dirty_rect;
+		Rect child_dirty_rect = Rect::Intersect(content_rect, dirty_rect);
+		child_dirty_rect.position.x -= border_width;
+		child_dirty_rect.position.y -= border_width;
 		child_dirty_rect.Intersect(child_rect);
 
 		if (child_dirty_rect.IsEmpty()) {
@@ -94,7 +101,7 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 		const Rect& child_canvas_absolute_rect = child->GetAbsoluteRect();
 		canvas.SetRects(
 			child_canvas_absolute_rect,
-			Rect::Intersect(paintable_rect, child_canvas_absolute_rect)
+			Rect::Intersect(absolute_paintable_rect, child_canvas_absolute_rect)
 		);
 
 		child_dirty_rect.position.x -= child_rect.position.x;
@@ -286,13 +293,14 @@ const Rect Control::GetAbsoluteRect() const {
 
 	auto parent = GetParent();
 	if (parent == nullptr) {
-		return rect_;
+		return Rect();
 	}
 
 	Rect parent_absolute_rect = parent->GetAbsoluteRect();
+	float parent_border_width = parent->GetBorderWidth();
 	return Rect(
-		parent_absolute_rect.position.x + rect_.position.x,
-		parent_absolute_rect.position.y + rect_.position.y,
+		parent_absolute_rect.position.x + parent_border_width + rect_.position.x,
+		parent_absolute_rect.position.y + parent_border_width + rect_.position.y,
 		rect_.size.width,
 		rect_.size.height
 	);
@@ -337,6 +345,22 @@ Anchor Control::GetAnchor() const {
 
 void Control::SetAnchor(Anchor anchor) {
 	property_map_.SetProperty(kAnchorPropertyName, anchor);
+}
+
+
+void Control::SetBorderWidth(float width) {
+
+	border_width_ = width;
+	NeedRelayout();
+	NeedRepaint();
+}
+
+
+const Rect Control::GetContentRect() const {
+
+	Rect content_rect = Rect(Point(), GetSize());
+	content_rect.Inflate(-GetBorderWidth());
+	return content_rect;
 }
 
 

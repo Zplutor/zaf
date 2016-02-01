@@ -51,7 +51,7 @@ public:
 
 	/**
 	 Get the control's absolute rect which is related to the coordinate system of 
-	 window's content area.
+	 window's content rect.
 
 	 If the control is not yet placed in a window, am empty rect is returned.
 	 */
@@ -59,7 +59,7 @@ public:
 
 	/**
 	 Get the control's rect which is related to the coordinate system of parent's
-	 content area.
+	 content rect.
 
 	 The default rect is empty.
 	 */
@@ -76,7 +76,7 @@ public:
 
 	/**
 	 Get the control's position which is related to the coordinate system of 
-	 parent content area.
+	 parent content rect.
 	 */
 	const Point& GetPosition() const {
 		return rect_.position;
@@ -125,7 +125,7 @@ public:
 	/**
 	 Get the control's border width.
 
-	 The border is not included in control's content area.
+	 The border is not included in control's content rect.
 	 The default bordr width is 0.
 	 */
 	float GetBorderWidth() const {
@@ -137,10 +137,12 @@ public:
 
 	 See also GetBorderWidth.
 	 */
-	void SetBorderWidth(float width) {
-		border_width_ = width;
-		NeedRepaint();
-	}
+	void SetBorderWidth(float width);
+
+	/**
+	 Get the control's content rect, related to its coordinate system.
+	 */
+	const Rect GetContentRect() const;
 
 	/**
 	 Get the color of specified component while in specified state.

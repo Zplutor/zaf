@@ -54,7 +54,7 @@ public:
 	void DrawSingleLineText(const Rect& rect, const std::wstring& text, const Font& font);
 
 	void DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
-		renderer_->DrawLine(from_point, to_point, set_brush_, stroke_width, set_stroke_);
+		renderer_->DrawLine(from_point, to_point, set_brush_, ToRenderStrokeWidth(stroke_width), set_stroke_);
 	}
 
 	void DrawRectangle(const Rect& rect) {
@@ -62,7 +62,7 @@ public:
 	}
 
 	void DrawRectangleFrame(const Rect& rect, float stroke_width) {
-		renderer_->DrawRectangleFrame(rect, set_brush_, stroke_width, set_stroke_);
+		renderer_->DrawRectangleFrame(rect, set_brush_, ToRenderStrokeWidth(stroke_width), set_stroke_);
 	}
 
 private:
@@ -79,6 +79,10 @@ private:
 	void EndPaint();
 
 private:
+	static float ToRenderStrokeWidth(float stroke_width) {
+		return stroke_width * 2;
+	}
+
 	Canvas(Canvas&) = delete;
 	Canvas& operator=(const Canvas&) = delete;
 

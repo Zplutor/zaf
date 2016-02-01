@@ -97,7 +97,7 @@ void OnBeginRun(Application&) {
 	content_control->AddChild(button);
 
 	auto text_box = std::make_shared<TextBox>();
-	text_box->SetRect(Rect(10, 10, 100, 40));
+	text_box->SetRect(Rect(150, 250, 100, 40));
 	text_box->SetText(L"TextBox нд╠╬©Р");
 	content_control->AddChild(text_box);
 }
