@@ -78,11 +78,15 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	canvas.EndPaint();
 
 	float border_width = GetBorderWidth();
+	Rect content_rect = GetContentRect();
+
+	const Rect& absolute_rect = canvas.GetAbsoluteRect();
+	Rect absolute_content_rect = content_rect;
+	absolute_content_rect.position.x += absolute_rect.position.x;
+	absolute_content_rect.position.y += absolute_rect.position.y;
 
 	Rect absolute_paintable_rect = canvas.GetAbsolutePaintableRect();
-	absolute_paintable_rect.Inflate(-border_width);
-
-	Rect content_rect = GetContentRect();
+	absolute_paintable_rect.Intersect(absolute_content_rect);
 	
 	for (const auto& child : children_) {
 
@@ -845,7 +849,9 @@ std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) con
 			continue;
 		}
 
-		const Rect& child_rect = child->GetRect();
+		Rect child_rect = child->GetRect();
+		child_rect.Intersect(GetContentRect());
+
 		if (child_rect.Contain(position)) {
 			return child;
 		}
