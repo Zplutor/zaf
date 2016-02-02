@@ -75,6 +75,8 @@ public:
 		EndDragEvent::Proxy OnEndDrag;
 
 	protected:
+		int GetPaintState() const override;
+
 		void MouseCapture() override;
 		void MouseRelease() override;
 		void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) override;

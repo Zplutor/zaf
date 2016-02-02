@@ -3,7 +3,7 @@
 
 namespace zaf {
 
-static const float kScrollBarThickness = 14;
+static const float kScrollBarThickness = 12;
 
 ScrollableControl::ScrollableControl() :
 	content_control_(std::make_shared<Control>()),

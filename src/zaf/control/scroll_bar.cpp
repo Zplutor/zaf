@@ -20,7 +20,7 @@ ScrollBar::ScrollBar() :
 	scroll_event_(),
 	OnScroll(scroll_event_) {
 
-	SetBorderWidth(1);
+	SetColor(PaintComponent::Background, PaintState::Normal, Color::White);
 }
 
 
@@ -487,7 +487,9 @@ ScrollBar::Arrow::Arrow() :
 	OnEndPress(end_press_event_) {
 
 	SetCanFocused(false);
-	SetBorderWidth(6);
+	SetBorderWidth(2);
+	SetColor(PaintComponent::Border, PaintState::Normal, Color::White);
+	SetColor(PaintComponent::Background, PaintState::Normal, Color::FromRGB(0xCECECE));
 }
 
 
@@ -523,7 +525,21 @@ ScrollBar::Thumb::Thumb() :
 	OnEndDrag(end_drag_event_) {
 
 	SetCanFocused(false);
-	SetBorderWidth(8);
+	SetBorderWidth(2);
+	SetColor(PaintComponent::Border, PaintState::Normal, Color::White);
+	SetColor(PaintComponent::Background, PaintState::Normal, Color::FromRGB(0xCECECE));
+	SetColor(PaintComponent::Background, PaintState::Hovered, Color::FromRGB(0xA9A9A9));
+	SetColor(PaintComponent::Background, PaintState::Pressed, Color::FromRGB(0x808080));
+}
+
+
+int ScrollBar::Thumb::GetPaintState() const {
+
+	if (IsDragging()) {
+		return PaintState::Pressed;
+	}
+
+	return __super::GetPaintState();
 }
 
 
