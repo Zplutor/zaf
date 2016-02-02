@@ -57,6 +57,7 @@
     <ClInclude Include="src\zaf\control\label.h" />
     <ClInclude Include="src\zaf\control\scrollable_control.h" />
     <ClInclude Include="src\zaf\control\scroll_bar.h" />
+    <ClInclude Include="src\zaf\control\text_alignment.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />
     <ClInclude Include="src\zaf\enum.h" />
     <ClInclude Include="src\zaf\graphic\brush\brush.h" />

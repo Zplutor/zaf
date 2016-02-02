@@ -236,5 +236,8 @@
     <ClInclude Include="src\zaf\control\anchor.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\control\text_alignment.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

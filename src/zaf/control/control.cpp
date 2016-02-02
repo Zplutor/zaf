@@ -25,7 +25,9 @@ static const wchar_t* const kHoveredBackgroundColorPropertyName = L"HoveredBackg
 static const wchar_t* const kHoveredBorderColorPropertyName = L"HoveredBorderColor";
 static const wchar_t* const kHoveredForegroundColorPropertyName = L"HoveredForegroundColor";
 static const wchar_t* const kNamePropertyName = L"Name";
+static const wchar_t* const kTextHorizontalAlignmentPropertyName = L"TextHorizontalAlignment";
 static const wchar_t* const kTextPropertyName = L"Text";
+static const wchar_t* const kTextVerticalAlignmentPropertyName = L"TextVerticalAlignment";
 
 Control::Control() : 
 	is_initialized_(false),
@@ -564,12 +566,40 @@ void Control::SetColor(int paint_component, int paint_state, const Color& color)
 
 
 const std::wstring Control::GetText() const {
-	return property_map_.GetProperty<std::wstring>(kTextPropertyName);
+	return property_map_.GetProperty<std::wstring>(kTextPropertyName, []() { return std::wstring(); });
 }
 
 
 void Control::SetText(const std::wstring& text) {
 	property_map_.SetProperty(kTextPropertyName, text);
+	NeedRepaint();
+}
+
+
+TextHorizontalAlignment Control::GetTextHorizontalAlignment() const {
+	return property_map_.GetProperty<TextHorizontalAlignment>(
+		kTextHorizontalAlignmentPropertyName, 
+		[]() { return TextHorizontalAlignment::Center; }
+	);
+}
+
+
+void Control::SetTextHorizontalAlignment(TextHorizontalAlignment alignment) {
+	property_map_.SetProperty(kTextHorizontalAlignmentPropertyName, alignment);
+	NeedRepaint();
+}
+
+
+TextVerticalAlignment Control::GetTextVerticalAlignment() const {
+	return property_map_.GetProperty<TextVerticalAlignment>(
+		kTextVerticalAlignmentPropertyName,
+		[]() { return TextVerticalAlignment::Middle; }
+	);
+}
+
+
+void Control::SetTextVerticalAlignment(TextVerticalAlignment alignment) {
+	property_map_.SetProperty(kTextVerticalAlignmentPropertyName, alignment);
 	NeedRepaint();
 }
 
@@ -637,7 +667,7 @@ bool Control::IsAncestorOf(const std::shared_ptr<Control>& child) const {
 
 
 const std::wstring Control::GetName() const {
-	return property_map_.GetProperty<std::wstring>(kNamePropertyName);
+	return property_map_.GetProperty<std::wstring>(kNamePropertyName, []() { return std::wstring(); });
 }
 
 

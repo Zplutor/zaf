@@ -12,6 +12,7 @@
 #include <zaf/base/rect.h>
 #include <zaf/base/variant.h>
 #include <zaf/control/anchor.h>
+#include <zaf/control/text_alignment.h>
 #include <zaf/graphic/color.h>
 
 namespace zaf {
@@ -164,6 +165,12 @@ public:
 	 */
 	virtual void SetText(const std::wstring& text);
 
+	TextHorizontalAlignment GetTextHorizontalAlignment() const;
+	void SetTextHorizontalAlignment(TextHorizontalAlignment alignment);
+
+	TextVerticalAlignment GetTextVerticalAlignment() const;
+	void SetTextVerticalAlignment(TextVerticalAlignment alignment);
+
 	/**
 	 Get the control's children.
 	 */
@@ -308,11 +315,14 @@ protected:
 		}
 
 		template<typename PropertyType>
-		const PropertyType GetProperty(const std::wstring& property_name) const {
+		const PropertyType GetProperty(
+			const std::wstring& property_name, 
+			const std::function<const PropertyType()>& get_default_property
+		) const {
 
 			auto property = TryGetProperty<PropertyType>(property_name);
 			if (property == nullptr) {
-				return PropertyType();
+				return get_default_property();
 			}
 
 			return *property;
