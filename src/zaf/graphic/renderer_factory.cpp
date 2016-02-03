@@ -1,7 +1,7 @@
 #include <zaf/graphic/renderer_factory.h>
 #include <dwrite.h>
-#include <zaf/graphic/font.h>
 #include <zaf/graphic/renderer.h>
+#include <zaf/graphic/text/font.h>
 #include <zaf/graphic/text/text_format.h>
 
 namespace zaf {

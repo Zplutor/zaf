@@ -4,7 +4,7 @@
 #include <zaf/base/assert.h>
 #include <zaf/base/log.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/font.h>
+#include <zaf/graphic/text/font.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
