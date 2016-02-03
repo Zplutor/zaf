@@ -38,6 +38,10 @@ public:
 		return Application::GetInstance().GetRendererFactory()->CreateStroke(properties);
 	}
 
+	const std::shared_ptr<TextFormat> CreateTextFormat(const Font& font) {
+		return Application::GetInstance().GetRendererFactory()->CreateTextFormat(font);
+	}
+
 	void SetBrush(const std::shared_ptr<Brush>& brush) {
 		set_brush_ = brush;
 	}
@@ -51,8 +55,6 @@ public:
 		set_stroke_ = stroke;
 	}
 
-	void DrawSingleLineText(const Rect& rect, const std::wstring& text, const Font& font);
-
 	void DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
 		renderer_->DrawLine(from_point, to_point, set_brush_, ToRenderStrokeWidth(stroke_width), set_stroke_);
 	}
@@ -63,6 +65,10 @@ public:
 
 	void DrawRectangleFrame(const Rect& rect, float stroke_width) {
 		renderer_->DrawRectangleFrame(rect, set_brush_, ToRenderStrokeWidth(stroke_width), set_stroke_);
+	}
+
+	void DrawText(const std::wstring& text, const std::shared_ptr<TextFormat>& text_format, const Rect& rect) {
+		renderer_->DrawText(text, text_format, rect, set_brush_);
 	}
 
 private:

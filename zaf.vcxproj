@@ -57,7 +57,6 @@
     <ClInclude Include="src\zaf\control\label.h" />
     <ClInclude Include="src\zaf\control\scrollable_control.h" />
     <ClInclude Include="src\zaf\control\scroll_bar.h" />
-    <ClInclude Include="src\zaf\control\text_alignment.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />
     <ClInclude Include="src\zaf\enum.h" />
     <ClInclude Include="src\zaf\graphic\brush\brush.h" />
@@ -69,6 +68,10 @@
     <ClInclude Include="src\zaf\graphic\renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer_factory.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
+    <ClInclude Include="src\zaf\graphic\text\paragraph_alignment.h" />
+    <ClInclude Include="src\zaf\graphic\text\text_alignment.h" />
+    <ClInclude Include="src\zaf\graphic\text\text_format.h" />
+    <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />
     <ClInclude Include="src\zaf\internal\theme\painter.h" />
     <ClInclude Include="src\zaf\internal\theme\theme.h" />
     <ClInclude Include="src\zaf\internal\theme\vs2013\check_box_painter.h" />

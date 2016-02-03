@@ -31,7 +31,6 @@ void CheckBoxPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const Contro
 	Rect text_rect(Point(), check_box.GetSize());
 	text_rect.Inflate(-kBoxFrameSize, 0);
 	canvas.SetBrushWithColor(Color::Black);
-	canvas.DrawSingleLineText(text_rect, check_box.GetText(), kDefaultFont);
 }
 
 }

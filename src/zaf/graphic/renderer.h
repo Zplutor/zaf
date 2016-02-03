@@ -6,6 +6,7 @@
 #include <zaf/graphic/layer.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/brush/brush.h>
+#include <zaf/graphic/text/text_format.h>
 
 namespace zaf {
 
@@ -72,6 +73,22 @@ public:
 			brush->GetHandle(), 
 			stroke_width,
 			stroke == nullptr ? nullptr : stroke->GetHandle()
+		);
+	}
+
+	void DrawText(
+		const std::wstring& text,
+		const std::shared_ptr<TextFormat>& text_format,
+		const Rect& rect,
+		const std::shared_ptr<Brush>& brush
+	) {
+
+		handle_->DrawText(
+			text.c_str(), 
+			text.length(),
+			text_format->GetHandle(),
+			rect.ToD2D1RECTF(),
+			brush->GetHandle()
 		);
 	}
 

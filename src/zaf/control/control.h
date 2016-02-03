@@ -12,8 +12,10 @@
 #include <zaf/base/rect.h>
 #include <zaf/base/variant.h>
 #include <zaf/control/anchor.h>
-#include <zaf/control/text_alignment.h>
 #include <zaf/graphic/color.h>
+#include <zaf/graphic/text/paragraph_alignment.h>
+#include <zaf/graphic/text/text_alignment.h>
+#include <zaf/graphic/text/word_wrapping.h>
 
 namespace zaf {
 
@@ -165,11 +167,14 @@ public:
 	 */
 	virtual void SetText(const std::wstring& text);
 
-	TextHorizontalAlignment GetTextHorizontalAlignment() const;
-	void SetTextHorizontalAlignment(TextHorizontalAlignment alignment);
+	TextAlignment GetTextAlignment() const;
+	void SetTextAlignment(TextAlignment alignment);
 
-	TextVerticalAlignment GetTextVerticalAlignment() const;
-	void SetTextVerticalAlignment(TextVerticalAlignment alignment);
+	ParagraphAlignment GetParagraphAlignment() const;
+	void SetParagraphAlignment(ParagraphAlignment alignment);
+
+	WordWrapping GetWordWrapping() const;
+	void SetWordWrapping(WordWrapping word_wrapping);
 
 	/**
 	 Get the control's children.

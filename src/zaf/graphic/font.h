@@ -45,9 +45,9 @@ public:
 	 Initialize the instance with default values.
 	 */
 	Font() : 
-		size_(14), 
-		weight_(Weight::Regular), 
-		style_(Style::Regular) { 
+		size(14), 
+		weight(Weight::Regular), 
+		style(Style::Regular) { 
 	
 	}
 
@@ -55,10 +55,10 @@ public:
 	 Initialize the instance that has the same values as another.
 	 */
 	Font(const Font& other) :
-		family_name_(other.family_name_),
-		size_(other.size_),
-		weight_(other.weight_),
-		style_(other.style_) {
+		family_name(other.family_name),
+		size(other.size),
+		weight(other.weight),
+		style(other.style) {
 
 	}
 
@@ -67,92 +67,43 @@ public:
 	 */
 	Font& operator=(const Font& other) {
 
-		family_name_ = other.family_name_;
-		size_ = other.size_;
-		weight_ = other.weight_;
-		style_ = other.style_;
+		family_name = other.family_name;
+		size = other.size;
+		weight = other.weight;
+		style = other.style;
 	}
 
+public:
 	/**
-	 Get the font family name.
-
-	 See also SetFamilyName.
-	 */
-	const std::wstring& GetFamilyName() const {
-		return family_name_;
-	}
-
-	/**
-	 Set the font family name.
+	 Font family name.
 
 	 The default family name is empty, means which font family is used
 	 is decided by the system.
 	 */
-	void SetFamilyName(const std::wstring& family_name) {
-		family_name_ = family_name;
-	}
+	std::wstring family_name;
 
 	/**
-	 Get the font size.
-
-	 See also SetFont.
-	 */
-	float GetSize() const {
-		return size_;
-	}
-
-	/**
-	 Set the font size.
+	 Font size.
 
 	 The default size is 14.
 	 */
-	void SetSize(float size) {
-		size_ = size;
-	}
+	float size;
 
 	/**
-	 Get the font weight.
+	 Font weight.
 
-	 See also SetWeight.
-	 */
-	int GetWeight() const {
-		return weight_;
-	}
-
-	/**
-	 Set the font weight.
-
-	 A valid value is between 1 and 999. There are predefined values 
-	 contained in class Weight. The default font weight value is 
+	 A valid value is between 1 and 999. There are predefined values
+	 contained in class Weight. The default font weight value is
 	 Weight::Regular.
-  	 */
-	void SetWeight(int weight) {
-		weight_ = weight;
-	}
-
-	/**
-	 Get the font style.
-
-	 See also SetStyle.
 	 */
-	Style GetStyle() const {
-		return style_;
-	}
+	int weight;
 
 	/**
-	 Set the font style.
+	 Font style.
 
 	 The default value is Style::Regular.
 	 */
-	void SetStyle(Style style) {
-		style_ = style;
-	}
-
-private:
-	std::wstring family_name_;
-	float size_;
-	int weight_;
-	Style style_;
+	Style style;
 };
 
 ZAF_ENABLE_FLAG_ENUM(Font::Style);

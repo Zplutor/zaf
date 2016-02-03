@@ -20,7 +20,6 @@ void ButtonPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const Control&
 	canvas.DrawRectangleFrame(Rect(Point(), button.GetRect().size), 1);
 
 	canvas.SetBrushWithColor(button.IsEnabled() ? kTextColor : kDisabledTextColor);
-	canvas.DrawSingleLineText(Rect(Point(), button.GetRect().size), button.GetText(), kDefaultFont);
 }
 
 

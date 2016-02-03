@@ -28,6 +28,9 @@
     <Filter Include="zaf\control">
       <UniqueIdentifier>{c624bfa0-8cda-4e20-9245-dde86f21842b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\text">
+      <UniqueIdentifier>{27b1fee3-ac73-4419-b095-24ff29ad3c11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -236,8 +239,17 @@
     <ClInclude Include="src\zaf\control\anchor.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\text_alignment.h">
-      <Filter>zaf\control</Filter>
+    <ClInclude Include="src\zaf\graphic\text\text_format.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\text_alignment.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\paragraph_alignment.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\word_wrapping.h">
+      <Filter>zaf\graphic\text</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

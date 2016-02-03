@@ -25,9 +25,10 @@ static const wchar_t* const kHoveredBackgroundColorPropertyName = L"HoveredBackg
 static const wchar_t* const kHoveredBorderColorPropertyName = L"HoveredBorderColor";
 static const wchar_t* const kHoveredForegroundColorPropertyName = L"HoveredForegroundColor";
 static const wchar_t* const kNamePropertyName = L"Name";
-static const wchar_t* const kTextHorizontalAlignmentPropertyName = L"TextHorizontalAlignment";
+static const wchar_t* const kParagraphAlignmentPropertyName = L"ParagraphAlignment";
+static const wchar_t* const kTextAlignmentPropertyName = L"TextAlignment";
 static const wchar_t* const kTextPropertyName = L"Text";
-static const wchar_t* const kTextVerticalAlignmentPropertyName = L"TextVerticalAlignment";
+static const wchar_t* const kWordWrappingPropertyName = L"WordWrapping";
 
 Control::Control() : 
 	is_initialized_(false),
@@ -156,11 +157,20 @@ void Control::PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text
 	}
 
 	Font font;
-	font.SetFamilyName(L"Î¢ÈíÑÅºÚ");
-	font.SetSize(13);
+	font.family_name = L"Î¢ÈíÑÅºÚ";
+	font.size = 13;
+
+	auto text_format = canvas.CreateTextFormat(font);
+	if (text_format == nullptr) {
+		return;
+	}
+
+	text_format->SetTextAlignment(GetTextAlignment());
+	text_format->SetParagraphAlignment(GetParagraphAlignment());
+	text_format->SetWordWrapping(GetWordWrapping());
 
 	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
-	canvas.DrawSingleLineText(text_rect, text, font);
+	canvas.DrawText(GetText(), text_format, text_rect);
 }
 
 
@@ -576,30 +586,44 @@ void Control::SetText(const std::wstring& text) {
 }
 
 
-TextHorizontalAlignment Control::GetTextHorizontalAlignment() const {
-	return property_map_.GetProperty<TextHorizontalAlignment>(
-		kTextHorizontalAlignmentPropertyName, 
-		[]() { return TextHorizontalAlignment::Center; }
+TextAlignment Control::GetTextAlignment() const {
+	return property_map_.GetProperty<TextAlignment>(
+		kTextAlignmentPropertyName, 
+		[]() { return TextAlignment::Center; }
 	);
 }
 
 
-void Control::SetTextHorizontalAlignment(TextHorizontalAlignment alignment) {
-	property_map_.SetProperty(kTextHorizontalAlignmentPropertyName, alignment);
+void Control::SetTextAlignment(TextAlignment alignment) {
+	property_map_.SetProperty(kTextAlignmentPropertyName, alignment);
 	NeedRepaint();
 }
 
 
-TextVerticalAlignment Control::GetTextVerticalAlignment() const {
-	return property_map_.GetProperty<TextVerticalAlignment>(
-		kTextVerticalAlignmentPropertyName,
-		[]() { return TextVerticalAlignment::Middle; }
+ParagraphAlignment Control::GetParagraphAlignment() const {
+	return property_map_.GetProperty<ParagraphAlignment>(
+		kParagraphAlignmentPropertyName,
+		[]() { return ParagraphAlignment::Center; }
 	);
 }
 
 
-void Control::SetTextVerticalAlignment(TextVerticalAlignment alignment) {
-	property_map_.SetProperty(kTextVerticalAlignmentPropertyName, alignment);
+void Control::SetParagraphAlignment(ParagraphAlignment alignment) {
+	property_map_.SetProperty(kParagraphAlignmentPropertyName, alignment);
+	NeedRepaint();
+}
+
+
+WordWrapping Control::GetWordWrapping() const {
+	return property_map_.GetProperty<WordWrapping>(
+		kWordWrappingPropertyName, 
+		[]() { return WordWrapping::NoWrap; }
+	);
+}
+
+
+void Control::SetWordWrapping(WordWrapping word_wrapping) {
+	property_map_.SetProperty(kWordWrappingPropertyName, word_wrapping);
 	NeedRepaint();
 }
 

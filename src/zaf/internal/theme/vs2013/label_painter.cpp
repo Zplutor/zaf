@@ -17,7 +17,6 @@ void LabelPainter::Paint(Canvas& canvas, const Rect& dirty_rect, const Control& 
 	canvas.DrawRectangle(Rect(Point(), label.GetSize()));
 
 	canvas.SetBrushWithColor(label.IsEnabled() ? kTextColor : kDisabledTextColor);
-	canvas.DrawSingleLineText(Rect(Point(), label.GetSize()), label.GetText(), kDefaultFont);
 }
 
 }

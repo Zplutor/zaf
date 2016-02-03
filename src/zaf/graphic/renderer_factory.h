@@ -6,7 +6,9 @@
 
 namespace zaf {
 
+class Font;
 class Renderer;
+class TextFormat;
 
 /**
  Represent a factory that creates renderer and renderer-independent resources.
@@ -19,6 +21,8 @@ public:
 	const std::shared_ptr<Renderer> CreateRenderer(HWND window_handle);
 
     const std::shared_ptr<Stroke> CreateStroke(const Stroke::Properties& properties);
+
+	const std::shared_ptr<TextFormat> CreateTextFormat(const Font& font);
 
 	ID2D1Factory* GetDirect2dFactoryHandle() const {
 		return d2d_factory_handle_;
