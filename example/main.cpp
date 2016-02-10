@@ -61,7 +61,7 @@ void OnBeginRun(Application&) {
 	control3->AddChild(control4);
 
 	auto check_box = std::make_shared<CheckBox>();
-	check_box->SetRect(Rect(100, 70, 100, 30));
+	check_box->SetRect(Rect(100, 80, 100, 30));
 	check_box->SetText(L"CheckBox");
 	content_control->AddChild(check_box);
 

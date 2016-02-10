@@ -123,11 +123,12 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	int paint_state = GetPaintState();
 
 	Rect paint_rect(Point(), GetSize());
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Background, paint_state));
+	canvas.SetBrushWithColor(GetColor(PaintComponent::Border, paint_state));
 	canvas.DrawRectangle(paint_rect);
 
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Border, paint_state));
-	canvas.DrawRectangleFrame(paint_rect, GetBorderWidth());
+	paint_rect.Inflate(-GetBorderWidth());
+	canvas.SetBrushWithColor(GetColor(PaintComponent::Background, paint_state));
+	canvas.DrawRectangle(paint_rect);
 }
 
 
