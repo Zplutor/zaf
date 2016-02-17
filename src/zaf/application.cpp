@@ -1,5 +1,4 @@
 #include <zaf/application.h>
-#include <zaf/internal/theme/vs2013/theme.h>
 #include <zaf/graphic/renderer_factory.h>
 #include <zaf/window/window.h>
 
@@ -27,9 +26,6 @@ void Application::Run() {
 	Window::RegisterDefaultClass();
 
 	renderer_factory_ = std::make_shared<RendererFactory>();
-
-	auto theme = std::make_shared<internal::theme::vs2013::Theme>();
-	internal::theme::SetTheme(theme);
 
 	begin_run_event_.Trigger(*this);
 
