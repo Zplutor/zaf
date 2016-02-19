@@ -24,6 +24,8 @@
     <ClCompile Include="src\zaf\control\text_box.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />
+    <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp" />
+    <ClCompile Include="src\zaf\graphic\geometry\path_geometry.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer_factory.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
@@ -56,6 +58,9 @@
     <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h" />
     <ClInclude Include="src\zaf\graphic\canvas.h" />
     <ClInclude Include="src\zaf\graphic\color.h" />
+    <ClInclude Include="src\zaf\graphic\geometry\geometry.h" />
+    <ClInclude Include="src\zaf\graphic\geometry\geometry_sink.h" />
+    <ClInclude Include="src\zaf\graphic\geometry\path_geometry.h" />
     <ClInclude Include="src\zaf\graphic\layer.h" />
     <ClInclude Include="src\zaf\graphic\renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer_factory.h" />

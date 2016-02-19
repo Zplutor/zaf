@@ -7,6 +7,7 @@
 namespace zaf {
 
 class Font;
+class PathGeometry;
 class Renderer;
 class TextFormat;
 
@@ -19,6 +20,8 @@ public:
 	~RendererFactory();
 	
 	const std::shared_ptr<Renderer> CreateRenderer(HWND window_handle);
+
+	const std::shared_ptr<PathGeometry> CreatePathGeometry();
 
     const std::shared_ptr<Stroke> CreateStroke(const Stroke::Properties& properties);
 

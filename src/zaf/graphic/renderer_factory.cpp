@@ -1,6 +1,7 @@
 #include <zaf/graphic/renderer_factory.h>
 #include <dwrite.h>
 #include <zaf/graphic/renderer.h>
+#include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/text/font.h>
 #include <zaf/graphic/text/text_format.h>
 
@@ -10,7 +11,7 @@ RendererFactory::RendererFactory() :
 	d2d_factory_handle_(nullptr),
 	dwrite_factory_handle_(nullptr) {
 
-	LRESULT result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2d_factory_handle_);
+	HRESULT result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2d_factory_handle_);
 	if (FAILED(result)) {
 		return;
 	}
@@ -51,7 +52,7 @@ const std::shared_ptr<Renderer> RendererFactory::CreateRenderer(HWND window_hand
 	renderer_properties.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
 
 	ID2D1HwndRenderTarget* renderer_handle = nullptr;
-	LRESULT result = d2d_factory_handle_->CreateHwndRenderTarget(
+	HRESULT result = d2d_factory_handle_->CreateHwndRenderTarget(
 		renderer_properties, 
 		D2D1::HwndRenderTargetProperties(window_handle, renderer_size),
 		&renderer_handle
@@ -59,6 +60,20 @@ const std::shared_ptr<Renderer> RendererFactory::CreateRenderer(HWND window_hand
 
 	if (SUCCEEDED(result)) {
 		return std::make_shared<Renderer>(renderer_handle);
+	}
+	else {
+		return nullptr;
+	}
+}
+
+
+const std::shared_ptr<PathGeometry> RendererFactory::CreatePathGeometry() {
+
+	ID2D1PathGeometry* handle = nullptr;
+	HRESULT result = d2d_factory_handle_->CreatePathGeometry(&handle);
+
+	if (SUCCEEDED(result)) {
+		return std::make_shared<PathGeometry>(handle);
 	}
 	else {
 		return nullptr;
@@ -78,7 +93,7 @@ const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const Stroke::Proper
 	d2d_properties.dashStyle = static_cast<D2D1_DASH_STYLE>(properties.dash_style);
 
 	ID2D1StrokeStyle* handle = nullptr;
-	LRESULT result = d2d_factory_handle_->CreateStrokeStyle(
+	HRESULT result = d2d_factory_handle_->CreateStrokeStyle(
 		d2d_properties, 
 		properties.dash_pattern.data(),
 		properties.dash_pattern.size(), 

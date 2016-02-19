@@ -22,6 +22,9 @@
     <Filter Include="zaf\graphic\text">
       <UniqueIdentifier>{27b1fee3-ac73-4419-b095-24ff29ad3c11}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\geometry">
+      <UniqueIdentifier>{588f47a2-5d14-49cc-95c1-251c2783efd8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -74,6 +77,12 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\check_box.cpp">
       <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\geometry\path_geometry.cpp">
+      <Filter>zaf\graphic\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp">
+      <Filter>zaf\graphic\geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +202,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\font.h">
       <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\geometry\geometry.h">
+      <Filter>zaf\graphic\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\geometry\path_geometry.h">
+      <Filter>zaf\graphic\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\geometry\geometry_sink.h">
+      <Filter>zaf\graphic\geometry</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

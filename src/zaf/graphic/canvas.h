@@ -34,6 +34,10 @@ public:
 		return renderer_->CreateSolidColorBrush(color);
 	}
 
+	const std::shared_ptr<PathGeometry> CreatePathGeometry() {
+		return Application::GetInstance().GetRendererFactory()->CreatePathGeometry();
+	}
+
 	const std::shared_ptr<Stroke> CreateStroke(const Stroke::Properties& properties) {
 		return Application::GetInstance().GetRendererFactory()->CreateStroke(properties);
 	}
