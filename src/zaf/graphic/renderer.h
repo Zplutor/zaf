@@ -6,6 +6,7 @@
 #include <zaf/graphic/layer.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/brush/brush.h>
+#include <zaf/graphic/geometry/geometry.h>
 #include <zaf/graphic/text/text_format.h>
 
 namespace zaf {
@@ -72,6 +73,34 @@ public:
 			rect.ToD2D1RECTF(),
 			brush->GetHandle(), 
 			stroke_width,
+			stroke == nullptr ? nullptr : stroke->GetHandle()
+		);
+	}
+
+	void DrawGeometry(
+		const std::shared_ptr<Geometry>& geometry,
+		const std::shared_ptr<Brush>& brush,
+		const std::shared_ptr<Brush>& opacity_brush
+	) {
+
+		handle_->FillGeometry(
+			geometry->GetHandle(),
+			brush->GetHandle(), 
+			opacity_brush == nullptr ? nullptr : opacity_brush->GetHandle()
+		);
+	}
+
+	void DrawGeometryFrame(
+		const std::shared_ptr<Geometry>& geometry,
+		const std::shared_ptr<Brush>& brush,
+		float stroke_width,
+		const std::shared_ptr<Stroke>& stroke
+	) {
+
+		handle_->DrawGeometry(
+			geometry->GetHandle(),
+			brush->GetHandle(),
+			stroke_width, 
 			stroke == nullptr ? nullptr : stroke->GetHandle()
 		);
 	}

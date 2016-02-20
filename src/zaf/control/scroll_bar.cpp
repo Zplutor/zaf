@@ -1,5 +1,8 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/base/timer.h>
+#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/geometry/geometry_sink.h>
+#include <zaf/graphic/geometry/path_geometry.h>
 
 namespace zaf {
 
@@ -487,15 +490,71 @@ ScrollBar::Arrow::Arrow() :
 	OnEndPress(end_press_event_) {
 
 	SetCanFocused(false);
-	SetBorderWidth(2);
-	SetColor(PaintComponent::Border, PaintState::Normal, Color::White);
-	SetColor(PaintComponent::Background, PaintState::Normal, Color::FromRGB(0xCECECE));
+	SetColor(PaintComponent::Foreground, PaintState::Normal, Color::FromRGB(0xCECECE));
+	SetColor(PaintComponent::Foreground, PaintState::Hovered, Color::FromRGB(0xA9A9A9));
+	SetColor(PaintComponent::Foreground, PaintState::Pressed, Color::FromRGB(0x808080));
 }
 
 
 void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	
 	ClickableControl::Paint(canvas, dirty_rect);
+
+	auto path = canvas.CreatePathGeometry();
+	if (path == nullptr) {
+		return;
+	}
+
+	auto path_sink = path->Open();
+	if (path_sink == nullptr) {
+		return;
+	}
+
+	Point top_point;
+	Point left_point;
+	Point right_point;
+	
+	const float space_width = 2;
+
+	auto direction = GetDirection();
+	switch (direction) {
+
+		case Direction::Left:
+			top_point = Point(space_width, GetHeight() / 2);
+			left_point = Point(GetWidth() - space_width, GetHeight() - space_width);
+			right_point = Point(GetWidth() - space_width, space_width);
+			break;
+
+		case Direction::Up:
+			top_point = Point(GetWidth() / 2, space_width);
+			left_point = Point(space_width, GetHeight() - space_width);
+			right_point = Point(GetWidth() - space_width, GetHeight() - space_width);
+			break;
+
+		case Direction::Right:
+			top_point = Point(GetWidth() - space_width, GetHeight() / 2);
+			left_point = Point(space_width, space_width);
+			right_point = Point(space_width, GetHeight() - space_width);
+			break;
+
+		case Direction::Down:
+			top_point = Point(GetWidth() / 2, GetHeight() - space_width);
+			left_point = Point(space_width, space_width);
+			right_point = Point(GetWidth() - space_width, space_width);
+			break;
+
+		default:
+			break;
+	}
+
+	path_sink->BeginFigure(top_point, GeometrySink::BeginFigureOption::Fill);
+	path_sink->AddLine(left_point);
+	path_sink->AddLine(right_point);
+	path_sink->EndFigure(GeometrySink::EndFigureOption::Close);
+	path_sink->Close();
+
+	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
+	canvas.DrawGeometry(path);
 }
 
 

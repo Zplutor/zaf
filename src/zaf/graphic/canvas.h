@@ -71,6 +71,14 @@ public:
 		renderer_->DrawRectangleFrame(rect, set_brush_, stroke_width, set_stroke_);
 	}
 
+	void DrawGeometry(const std::shared_ptr<Geometry>& geometry) {
+		renderer_->DrawGeometry(geometry, set_brush_, nullptr);
+	}
+
+	void DrawGeometryFrame(const std::shared_ptr<Geometry>& geometry, float stroke_width) {
+		renderer_->DrawGeometryFrame(geometry, set_brush_, stroke_width, set_stroke_);
+	}
+
 	void DrawText(const std::wstring& text, const std::shared_ptr<TextFormat>& text_format, const Rect& rect) {
 		renderer_->DrawText(text, text_format, rect, set_brush_);
 	}
