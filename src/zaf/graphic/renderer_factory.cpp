@@ -1,5 +1,4 @@
 #include <zaf/graphic/renderer_factory.h>
-#include <dwrite.h>
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/text/font.h>
@@ -7,20 +6,10 @@
 
 namespace zaf {
 
-RendererFactory::RendererFactory() : 
-	d2d_factory_handle_(nullptr),
-	dwrite_factory_handle_(nullptr) {
+RendererFactory::RendererFactory(ID2D1Factory* d2d_factory_handle, IDWriteFactory* dwrite_factory_handle) :
+	d2d_factory_handle_(d2d_factory_handle),
+	dwrite_factory_handle_(dwrite_factory_handle) {
 
-	HRESULT result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2d_factory_handle_);
-	if (FAILED(result)) {
-		return;
-	}
-
-	DWriteCreateFactory(
-		DWRITE_FACTORY_TYPE_SHARED, 
-		__uuidof(IDWriteFactory), 
-		reinterpret_cast<IUnknown**>(&dwrite_factory_handle_)
-	);
 }
 
 

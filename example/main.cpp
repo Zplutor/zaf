@@ -17,7 +17,9 @@ int WINAPI WinMain(
 	auto& application = Application::GetInstance();
 	application.OnBeginRun.AddListener(OnBeginRun);
 
-	application.Run();
+	if (application.Initialize()) {
+		application.Run();
+	}
 
 	return 0;
 }
