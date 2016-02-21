@@ -64,9 +64,6 @@ public:
 
 	/**
 	 Get the underlying ID2D1Factory instance.
-
-	 @return
-	 Return nullptr if the initialization failed.
 	 */
 	ID2D1Factory* GetDirect2dFactoryHandle() const {
 		return d2d_factory_handle_;
@@ -74,9 +71,6 @@ public:
 
 	/**
 	 Get the underlying IDWriteFactory instance.
-
-	 @return
-	 Return nullptr if the initialization failed.
 	 */
 	IDWriteFactory* GetDirectWriteFactoryHandle() const {
 		return dwrite_factory_handle_;
