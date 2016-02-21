@@ -170,21 +170,9 @@ public:
 	/**
 	 Get text alignment.
 
-	 If text alignment is not set, the return value of GetDefaultTextAlignment method 
-	 would be used.
+	 The default value is TextAlignment::Leading.
 	 */
 	TextAlignment GetTextAlignment() const;
-
-	/**
-	 Get the default text alignment.
-
-	 This method is called while text alignment is not set. The default return value 
-	 is TextAlignment::Leading, and dervied classes can override this method to provide
-	 different values.
-	 */
-	virtual TextAlignment GetDefaultTextAlignment() const {
-		return TextAlignment::Leading;
-	}
 
 	/**
 	 Set text alignment.
@@ -194,21 +182,9 @@ public:
 	/**
 	 Get paragraph alignemnt.
 
-	 If paragraph alignment is not set, the return value of GetDefaultParagraphAlignment 
-	 method would be used.
+	 The default value is ParagraphAlignment::Near;
 	 */
 	ParagraphAlignment GetParagraphAlignment() const;
-
-	/**
-	 Get the default paragraph alignment.
-
-	 This method is called while paragraph alignment is not set. The default return value
-	 is ParagraphAlignment::Near, and derivied classes can override this method to provide
-	 different values.
-	 */
-	virtual ParagraphAlignment GetDefaultParagraphAlignment() const {
-		return ParagraphAlignment::Near;
-	}
 
 	/**
 	 Set paragraph alignment. 

@@ -11,12 +11,14 @@ Button::Button() {
 	SetColor(PaintComponent::Foreground, Control::PaintState::Disabled, Color::Gray);
 
 	Color active_border_color = Color::FromRGB(0x4169E1);
-
 	SetColor(PaintComponent::Border, Control::PaintState::Normal, Color::Black);
 	SetColor(PaintComponent::Border, Control::PaintState::Hovered, active_border_color);
 	SetColor(PaintComponent::Border, Control::PaintState::Focused, active_border_color);
 	SetColor(PaintComponent::Border, PaintState::Pressed, active_border_color);
 	SetColor(PaintComponent::Border, Control::PaintState::Disabled, Color::Gray);
+
+	SetTextAlignment(TextAlignment::Center);
+	SetParagraphAlignment(ParagraphAlignment::Center);
 }
 
 

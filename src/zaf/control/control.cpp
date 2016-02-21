@@ -590,7 +590,7 @@ void Control::SetText(const std::wstring& text) {
 TextAlignment Control::GetTextAlignment() const {
 	return property_map_.GetProperty<TextAlignment>(
 		kTextAlignmentPropertyName, 
-		[this]() { return GetDefaultTextAlignment(); }
+		[]() { return TextAlignment::Leading; }
 	);
 }
 
@@ -604,7 +604,7 @@ void Control::SetTextAlignment(TextAlignment alignment) {
 ParagraphAlignment Control::GetParagraphAlignment() const {
 	return property_map_.GetProperty<ParagraphAlignment>(
 		kParagraphAlignmentPropertyName,
-		[this]() { return GetDefaultParagraphAlignment(); }
+		[]() { return ParagraphAlignment::Near; }
 	);
 }
 
