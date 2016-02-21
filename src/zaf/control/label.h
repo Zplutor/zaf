@@ -4,9 +4,19 @@
 
 namespace zaf {
 
+/**
+ Represents a label control that displays static text.	
+ */
 class Label : public Control {
 public:
+	/**
+	 Initialize the instance.
+	 */
 	Label();
+
+	/**
+	 Destroy the instance.
+	 */
 	~Label();
 
 protected:

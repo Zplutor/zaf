@@ -9,3 +9,6 @@
 #include <zaf/control/scrollable_control.h>
 #include <zaf/control/text_box.h>
 #include <zaf/window/window.h>
+
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "dwrite.lib")
