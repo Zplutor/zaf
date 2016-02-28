@@ -20,6 +20,7 @@
 namespace zaf {
 
 class Canvas;
+class Font;
 class Layouter;
 class Window;
 
@@ -166,6 +167,16 @@ public:
 	 Set the control's text value.
 	 */
 	virtual void SetText(const std::wstring& text);
+
+	/**
+	 Get the control's font.
+	 */
+	const Font GetFont() const;
+
+	/**
+	 Get the control's font.
+	 */
+	void SetFont(const Font& font);
 
 	/**
 	 Get text alignment.

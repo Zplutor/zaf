@@ -21,6 +21,7 @@ static const wchar_t* const kForegroundColorPropertyName = L"ForegroundColor";
 static const wchar_t* const kFocusedBackgroundColorPropertyName = L"FocusedBackgroundColor";
 static const wchar_t* const kFocusedBorderColorPropertyName = L"FocusedBorderColor";
 static const wchar_t* const kFocusedForegroundColorPropertyName = L"FocusedForegroundColor";
+static const wchar_t* const kFontPropertyname = L"Font";
 static const wchar_t* const kHoveredBackgroundColorPropertyName = L"HoveredBackgroundColor";
 static const wchar_t* const kHoveredBorderColorPropertyName = L"HoveredBorderColor";
 static const wchar_t* const kHoveredForegroundColorPropertyName = L"HoveredForegroundColor";
@@ -157,11 +158,7 @@ void Control::PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text
 		return;
 	}
 
-	Font font;
-	font.family_name = L"Î¢ÈíÑÅºÚ";
-	font.size = 13;
-
-	auto text_format = canvas.CreateTextFormat(font);
+	auto text_format = canvas.CreateTextFormat(GetFont());
 	if (text_format == nullptr) {
 		return;
 	}
@@ -584,6 +581,33 @@ const std::wstring Control::GetText() const {
 void Control::SetText(const std::wstring& text) {
 	property_map_.SetProperty(kTextPropertyName, text);
 	NeedRepaint();
+}
+
+
+const Font Control::GetFont() const {
+
+	return property_map_.GetProperty<Font>(
+		kFontPropertyname,
+		[this]() -> const Font { 
+
+			auto parent = GetParent();
+			if (parent != nullptr) {
+				return parent->GetFont();
+			}
+			else {
+				return Font(); 
+			}
+		}
+	);
+}
+
+
+void Control::SetFont(const Font& font) {
+
+	property_map_.SetProperty(kFontPropertyname, font);
+
+	//Need relayout because some control's layout rely on the font size.
+	NeedRelayout();
 }
 
 
