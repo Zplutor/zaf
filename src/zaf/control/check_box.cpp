@@ -1,17 +1,22 @@
 #include <zaf/control/check_box.h>
 #include <zaf/base/assert.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/graphic/geometry/geometry_sink.h>
+#include <zaf/graphic/geometry/path_geometry.h>
 
 namespace zaf {
 
-static const wchar_t* const kNormalBoxColorPropertyName = L"NormalBoxColor";
-static const wchar_t* const kHoveredBoxColorPropertyName = L"HoveredBoxColor";
-static const wchar_t* const kFocusedBoxColorPropertyName = L"FocusedBoxColor";
-static const wchar_t* const kPressedBoxColorPropertyName = L"PressedBoxColor";
+static const wchar_t* const kCanAutoChangeCheckStatePropertyName = L"CanAutoChangeCheckState";
+static const wchar_t* const kCanBeIndeterminatePropertyName = L"CanBeIndeterminate";
 static const wchar_t* const kDisabledBoxColorPropertyName = L"DisabledBoxColor";
+static const wchar_t* const kFocusedBoxColorPropertyName = L"FocusedBoxColor";
+static const wchar_t* const kHoveredBoxColorPropertyName = L"HoveredBoxColor";
+static const wchar_t* const kNormalBoxColorPropertyName = L"NormalBoxColor";
+static const wchar_t* const kPressedBoxColorPropertyName = L"PressedBoxColor";
 
 CheckBox::CheckBox() : 
-	is_checked_(false) {
+	check_state_(CheckState::Unchecked),
+	OnCheckStateChange(check_state_change_event_) {
 
 	SetTextAlignment(TextAlignment::Leading);
 
@@ -31,32 +36,80 @@ void CheckBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	
 	__super::Paint(canvas, dirty_rect);
 
-	const float kBoxSize = 12;
-	const float kBoxMargin = 5;
+	const float box_size = 12;
+	const float box_margin = 5;
 
-	//Draw the box frame.
-	Color box_color = GetColor(PaintComponent::Box, GetPaintState());
-
+	//Paint box.
 	Rect box_rect;
-	box_rect.position.x = kBoxMargin + 0.5;
-	box_rect.position.y = (GetHeight() - kBoxSize) / 2 + 0.5;
-	box_rect.size.width = kBoxSize;
-	box_rect.size.height = kBoxSize;
+	box_rect.position.x = box_margin + 0.5f;
+	box_rect.size.width = box_size;
+	box_rect.size.height = box_size;
 
+	auto paragraph_alignment = GetParagraphAlignment();
+	switch (paragraph_alignment) {
+		case ParagraphAlignment::Near:
+			box_rect.position.y = box_margin + 0.5f;
+			break;
+		case ParagraphAlignment::Center:
+			box_rect.position.y = (GetHeight() - box_size) / 2 + 0.5f;
+			break;
+		case ParagraphAlignment::Far:
+			box_rect.position.y = GetHeight() - box_size - box_margin + 0.5f;
+			break;
+	}
+
+	PaintBox(canvas, box_rect);
+
+	//Paint text.
+	Rect text_rect = GetContentRect();
+	text_rect.position.x += box_size + box_margin * 2;
+	text_rect.size.width -= box_size + box_margin * 2;
+	PaintText(canvas, dirty_rect, text_rect);
+}
+
+
+void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
+
+	//Paint the box frame.
+	Color box_color = GetColor(PaintComponent::Box, GetPaintState());
 	canvas.SetBrushWithColor(box_color);
 	canvas.DrawRectangleFrame(box_rect, 1);
 
-	//Draw the checked mark.
-	if (IsChecked()) {
-		box_rect.Inflate(-2.5);
-		canvas.DrawRectangle(box_rect);
-	}
+	//Paint the check state mark.
+	auto check_state = GetCheckState();
 
-	//Draw text.
-	Rect text_rect = GetContentRect();
-	text_rect.position.x += kBoxSize + kBoxMargin * 2;
-	text_rect.size.width -= kBoxSize + kBoxMargin * 2;
-	PaintText(canvas, dirty_rect, text_rect);
+	if (check_state == CheckState::Indeterminate) {
+		Rect mark_rect = box_rect;
+		mark_rect.Inflate(-2.5);
+		canvas.DrawRectangle(mark_rect);
+	}
+	else if (check_state == CheckState::Checked) {
+
+		auto path = canvas.CreatePathGeometry();
+		if (path == nullptr) {
+			return;
+		}
+
+		auto sink = path->Open();
+		if (sink == nullptr) {
+			return;
+		}
+
+		Rect mark_rect = box_rect;
+		mark_rect.Inflate(-2);
+
+		Point start_point(mark_rect.position.x + mark_rect.size.width, mark_rect.position.y);
+		Point middle_point(mark_rect.position.x + mark_rect.size.width * 0.4, mark_rect.position.y + mark_rect.size.height - 1);
+		Point end_point(mark_rect.position.x, mark_rect.position.y + mark_rect.size.height * 0.4);
+
+		sink->BeginFigure(start_point, GeometrySink::BeginFigureOption::Hollow);
+		sink->AddLine(middle_point);
+		sink->AddLine(end_point);
+		sink->EndFigure(GeometrySink::EndFigureOption::Open);
+		sink->Close();
+
+		canvas.DrawGeometryFrame(path, 1.5);
+	}
 }
 
 
@@ -126,19 +179,80 @@ std::wstring CheckBox::GetBoxColorPropertyName(int paint_state) const {
 }
 
 
-void CheckBox::SetIsChecked(bool is_checked) {
+bool CheckBox::CanAutoChangeCheckState() const {
 
-	if (is_checked_ == is_checked) {
+	return GetPropertyMap().GetProperty<bool>(
+		kCanAutoChangeCheckStatePropertyName,
+		[]() { return true; }
+	);
+}
+
+
+void CheckBox::SetCanAutoChangeCheckState(bool can_change) {
+	GetPropertyMap().SetProperty(kCanAutoChangeCheckStatePropertyName, can_change);
+}
+
+
+bool CheckBox::CanBeIndeterminate() const {
+
+	return GetPropertyMap().GetProperty<bool>(
+		kCanBeIndeterminatePropertyName,
+		[]() { return false; }
+	);
+}
+
+
+void CheckBox::SetCanBeIndeterminate(bool can_be_ndeterminate) {
+
+	GetPropertyMap().SetProperty(kCanBeIndeterminatePropertyName, can_be_ndeterminate);
+
+	if (! can_be_ndeterminate && (GetCheckState() == CheckState::Indeterminate)) {
+		SetCheckState(CheckState::Checked);
+	}
+}
+
+
+void CheckBox::SetCheckState(CheckState check_state) {
+
+	if (check_state_ == check_state) {
 		return;
 	}
 
-	is_checked_ = is_checked;
+	check_state_ = check_state;
 	NeedRepaint();
+
+	check_state_change_event_.Trigger(std::dynamic_pointer_cast<CheckBox>(shared_from_this()));
 }
 
 
 void CheckBox::MouseClick() {
-	is_checked_ = ! is_checked_;
+
+	if (! CanAutoChangeCheckState()) {
+		return;
+	}
+
+	CheckState new_check_state = CheckState::Unchecked;
+
+	switch (GetCheckState()) {
+
+		case CheckState::Unchecked:
+			new_check_state = CheckState::Checked;
+			break;
+
+		case CheckState::Checked:
+			new_check_state = CanBeIndeterminate() ? CheckState::Indeterminate : CheckState::Unchecked;
+			break;
+
+		case CheckState::Indeterminate:
+			new_check_state = CheckState::Unchecked;
+			break;
+
+		default:
+			ZAFFAIL();
+			break;
+	}
+
+	SetCheckState(new_check_state);
 }
 
 }

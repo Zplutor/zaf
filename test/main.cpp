@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <zaf/zaf.h>
+#include "test_check_box_window.h"
 #include "test_label_window.h"
 
 using namespace zaf;
@@ -33,19 +34,22 @@ void BeginRun(Application&) {
 	} show_window_function_map[] = {
 
 		L"Test label", ShowTestLabelWindow,
+		L"Test check box", ShowTestCheckBoxWindow,
 	};
 
 	auto root_control = window->GetRootControl();
 
+	float y = 0;
 	for (const auto& each_item : show_window_function_map) {
 
 		auto button = std::make_shared<Button>();
 		button->SetText(each_item.button_text);
-		button->SetRect(Rect(0, 0, 100, 30));
+		button->SetRect(Rect(0, y, 100, 30));
 		button->OnClick.AddListener([each_item](const std::shared_ptr<ClickableControl>&) {
 			each_item.show_window_function();
 		});
 		root_control->AddChild(button);
+		y += 30;
 	}
 
 	window->Show();

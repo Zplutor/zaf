@@ -82,9 +82,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="test\main.cpp" />
+    <ClCompile Include="test\test_check_box_window.cpp" />
     <ClCompile Include="test\test_label_window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="test\test_check_box_window.h" />
     <ClInclude Include="test\test_label_window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
