@@ -2,6 +2,7 @@
 
 #include <string>
 #include <zaf/base/flag_enum.h>
+#include <zaf/graphic/text/font_weight.h>
 
 namespace zaf {
 
@@ -10,27 +11,6 @@ namespace zaf {
  */
 class Font {
 public:
-	/**
-	 Contains predefined values of font weight.
-	 */
-	class Weight {
-	public:
-		static const int Thin = 100;
-		static const int ExtraLight = 200;
-		static const int Light = 300;
-		static const int SemiLight = 350;
-		static const int Regular = 400;
-		static const int Medium = 500;
-		static const int SemiBold = 600;
-		static const int Bold = 700;
-		static const int ExtraBold = 800;
-		static const int Black = 900;
-		static const int ExtraBlack = 950;
-
-	private:
-		Weight();
-	};
-
 	/**
 	 The style of font.
 	 */
@@ -46,7 +26,7 @@ public:
 	 */
 	Font() : 
 		size(14), 
-		weight(Weight::Regular), 
+		weight(FontWeight::Regular), 
 		style(Style::Regular) { 
 	
 	}

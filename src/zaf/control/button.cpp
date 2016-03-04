@@ -1,4 +1,5 @@
 #include <zaf/control/button.h>
+#include <zaf/control/text_properties.h>
 
 namespace zaf {
 
@@ -17,8 +18,9 @@ Button::Button() {
 	SetColor(PaintComponent::Border, PaintState::Pressed, active_border_color);
 	SetColor(PaintComponent::Border, Control::PaintState::Disabled, Color::Gray);
 
-	SetTextAlignment(TextAlignment::Center);
-	SetParagraphAlignment(ParagraphAlignment::Center);
+	TextProperties text_properties;
+	text_properties.text_alignment = TextAlignment::Center;
+	text_properties.paragraph_alignment = ParagraphAlignment::Center;
 }
 
 

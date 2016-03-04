@@ -20,8 +20,8 @@
 namespace zaf {
 
 class Canvas;
-class Font;
 class Layouter;
+class TextProperties;
 class Window;
 
 class Control : public std::enable_shared_from_this<Control> {
@@ -169,41 +169,18 @@ public:
 	virtual void SetText(const std::wstring& text);
 
 	/**
-	 Get the control's font.
+	 Get text properties.
+
+	 If text properties is not set, the font family name and the font size would use
+	 the same value as parent's. Other properties would be the default value.
 	 */
-	const Font GetFont() const;
+	virtual const TextProperties GetTextProperties() const;
 
 	/**
-	 Get the control's font.
+	 Set text properties.
 	 */
-	void SetFont(const Font& font);
+	virtual void SetTextProperties(const TextProperties& text_properties);
 
-	/**
-	 Get text alignment.
-
-	 The default value is TextAlignment::Leading.
-	 */
-	TextAlignment GetTextAlignment() const;
-
-	/**
-	 Set text alignment.
-	 */
-	void SetTextAlignment(TextAlignment alignment);
-
-	/**
-	 Get paragraph alignemnt.
-
-	 The default value is ParagraphAlignment::Near;
-	 */
-	ParagraphAlignment GetParagraphAlignment() const;
-
-	/**
-	 Set paragraph alignment. 
-	 */
-	void SetParagraphAlignment(ParagraphAlignment alignment);
-
-	WordWrapping GetWordWrapping() const;
-	void SetWordWrapping(WordWrapping word_wrapping);
 
 	/**
 	 Get the control's children.

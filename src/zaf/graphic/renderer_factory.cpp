@@ -1,8 +1,7 @@
 #include <zaf/graphic/renderer_factory.h>
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/geometry/path_geometry.h>
-#include <zaf/graphic/text/font.h>
-#include <zaf/graphic/text/text_format.h>
+#include <zaf/graphic/text/font_collection.h>
 
 namespace zaf {
 
@@ -98,16 +97,16 @@ const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const Stroke::Proper
 }
 
 
-const std::shared_ptr<TextFormat> RendererFactory::CreateTextFormat(const Font& font) {
+const std::shared_ptr<TextFormat> RendererFactory::CreateTextFormat(const TextFormat::Properties& properties) {
 
 	IDWriteTextFormat* handle = nullptr;
 	LRESULT result = dwrite_factory_handle_->CreateTextFormat(
-		font.family_name.c_str(),
-		nullptr,
-		static_cast<DWRITE_FONT_WEIGHT>(font.weight),
-		(font.style & Font::Style::Italic) == Font::Style::Italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL,
+		properties.font_family_name.c_str(),
+		properties.font_collection == nullptr ? nullptr : properties.font_collection->GetHandle(),
+		static_cast<DWRITE_FONT_WEIGHT>(properties.font_weight),
+		DWRITE_FONT_STYLE_NORMAL,
 		DWRITE_FONT_STRETCH_NORMAL,
-		font.size,
+		properties.font_size,
 		L"",
 		&handle
 	);

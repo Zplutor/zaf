@@ -11,7 +11,6 @@
 
 namespace zaf {
 
-class Font;
 class Layer;
 
 class Canvas {
@@ -42,8 +41,8 @@ public:
 		return Application::GetInstance().GetRendererFactory()->CreateStroke(properties);
 	}
 
-	const std::shared_ptr<TextFormat> CreateTextFormat(const Font& font) {
-		return Application::GetInstance().GetRendererFactory()->CreateTextFormat(font);
+	const std::shared_ptr<TextFormat> CreateTextFormat(const TextFormat::Properties& properties) {
+		return Application::GetInstance().GetRendererFactory()->CreateTextFormat(properties);
 	}
 
 	void SetBrush(const std::shared_ptr<Brush>& brush) {

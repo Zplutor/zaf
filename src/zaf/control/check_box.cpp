@@ -1,5 +1,6 @@
 #include <zaf/control/check_box.h>
 #include <zaf/base/assert.h>
+#include <zaf/control/text_properties.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
@@ -17,8 +18,6 @@ static const wchar_t* const kPressedBoxColorPropertyName = L"PressedBoxColor";
 CheckBox::CheckBox() : 
 	check_state_(CheckState::Unchecked),
 	OnCheckStateChange(check_state_change_event_) {
-
-	SetTextAlignment(TextAlignment::Leading);
 
 	SetColor(PaintComponent::Box, PaintState::Normal, Color::Black);
 	SetColor(PaintComponent::Box, PaintState::Hovered, Color::FromRGB(0x4169E1));
@@ -45,8 +44,8 @@ void CheckBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	box_rect.size.width = box_size;
 	box_rect.size.height = box_size;
 
-	auto paragraph_alignment = GetParagraphAlignment();
-	switch (paragraph_alignment) {
+	auto text_properties = GetTextProperties();
+	switch (text_properties.paragraph_alignment) {
 		case ParagraphAlignment::Near:
 			box_rect.position.y = box_margin + 0.5f;
 			break;

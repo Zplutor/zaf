@@ -84,6 +84,9 @@
     <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp">
       <Filter>zaf\graphic\geometry</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\text\font_collection.cpp">
+      <Filter>zaf\graphic\text</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -211,6 +214,18 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\geometry\geometry_sink.h">
       <Filter>zaf\graphic\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\font_collection.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\font_family.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\font_weight.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\text_properties.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,15 +7,25 @@
 
 namespace zaf {
 
+class FontCollection;
+
 class TextFormat {
+public:
+	class Properties {
+	public:
+		Properties() : font_size(0), font_weight(0) { }
+
+		std::shared_ptr<FontCollection> font_collection;
+		std::wstring font_family_name;
+		float font_size;
+		int font_weight;
+	};
+
 public:
 	explicit TextFormat(IDWriteTextFormat* handle) : handle_(handle) { }
 
 	~TextFormat() { 
-	
-		if (handle_ != nullptr) {
-			handle_->Release();
-		}
+		handle_->Release();
 	}
 
 	IDWriteTextFormat* GetHandle() const {

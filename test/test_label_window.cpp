@@ -15,8 +15,6 @@ void ShowTestLabelWindow() {
 	//label->SetColor(Label::PaintComponent::Border, Label::PaintState::Normal, Color::Black);
 	label->SetText(L"zaf的label控件测试zaf的label控件测试zaf的label控件测试");
 
-	label->SetWordWrapping(WordWrapping::NoWrap);
-
 	auto root_control = window->GetRootControl();
 	root_control->AddChild(label);
 	

@@ -4,13 +4,12 @@
 #include <memory>
 #include <zaf/base/direct2d.h>
 #include <zaf/graphic/stroke.h>
+#include <zaf/graphic/text/text_format.h>
 
 namespace zaf {
 
-class Font;
 class PathGeometry;
 class Renderer;
-class TextFormat;
 
 /**
  Represent a factory that creates renderers and renderer-independent resources.
@@ -55,12 +54,12 @@ public:
     const std::shared_ptr<Stroke> CreateStroke(const Stroke::Properties& properties);
 
 	/**
-	 Create a text format with specified font.
+	 Create a text format with specified properties.
 
 	 @return 
 	 Return nullptr if failed.
 	 */
-	const std::shared_ptr<TextFormat> CreateTextFormat(const Font& font);
+	const std::shared_ptr<TextFormat> CreateTextFormat(const TextFormat::Properties& properties);
 
 	/**
 	 Get the underlying ID2D1Factory instance.
