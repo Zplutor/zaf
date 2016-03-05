@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/control/check_state.h>
 #include <zaf/control/clickable_control.h>
 
 namespace zaf {
@@ -18,27 +19,6 @@ public:
 		 Box paint component.
 		 */
 		static const int Box = ClickableControl::PaintComponent::Custom + 1;
-	};
-
-	/**
-	 The check state of a check box.
-	 */
-	enum class CheckState {
-
-		/**
-		 The check box is unchecked.
-		 */
-		Unchecked,
-
-		/**
-		 The check box's check state is indeterminate.
-		 */
-		Indeterminate,
-
-		/**
-		 The check box is checked.
-		 */
-		Checked,
 	};
 
 	/**

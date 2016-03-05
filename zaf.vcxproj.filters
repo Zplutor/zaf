@@ -236,5 +236,8 @@
     <ClInclude Include="src\zaf\graphic\text\font_style.h">
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\control\check_state.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
