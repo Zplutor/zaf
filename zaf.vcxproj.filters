@@ -224,8 +224,17 @@
     <ClInclude Include="src\zaf\graphic\text\font_weight.h">
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\text_properties.h">
-      <Filter>zaf\control</Filter>
+    <ClInclude Include="src\zaf\graphic\stroke_properties.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\text_format_properties.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\font_properties.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\font_style.h">
+      <Filter>zaf\graphic\text</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -54,7 +54,6 @@
     <ClInclude Include="src\zaf\control\scrollable_control.h" />
     <ClInclude Include="src\zaf\control\scroll_bar.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />
-    <ClInclude Include="src\zaf\control\text_properties.h" />
     <ClInclude Include="src\zaf\enum.h" />
     <ClInclude Include="src\zaf\graphic\brush\brush.h" />
     <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h" />
@@ -67,13 +66,17 @@
     <ClInclude Include="src\zaf\graphic\renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer_factory.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
+    <ClInclude Include="src\zaf\graphic\stroke_properties.h" />
     <ClInclude Include="src\zaf\graphic\text\font.h" />
     <ClInclude Include="src\zaf\graphic\text\font_collection.h" />
     <ClInclude Include="src\zaf\graphic\text\font_family.h" />
+    <ClInclude Include="src\zaf\graphic\text\font_properties.h" />
+    <ClInclude Include="src\zaf\graphic\text\font_style.h" />
     <ClInclude Include="src\zaf\graphic\text\font_weight.h" />
     <ClInclude Include="src\zaf\graphic\text\paragraph_alignment.h" />
     <ClInclude Include="src\zaf\graphic\text\text_alignment.h" />
     <ClInclude Include="src\zaf\graphic\text\text_format.h" />
+    <ClInclude Include="src\zaf\graphic\text\text_format_properties.h" />
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />
     <ClInclude Include="src\zaf\window\caret.h" />
     <ClInclude Include="src\zaf\window\window.h" />

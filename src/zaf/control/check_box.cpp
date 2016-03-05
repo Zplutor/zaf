@@ -1,6 +1,5 @@
 #include <zaf/control/check_box.h>
 #include <zaf/base/assert.h>
-#include <zaf/control/text_properties.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
@@ -44,8 +43,7 @@ void CheckBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	box_rect.size.width = box_size;
 	box_rect.size.height = box_size;
 
-	auto text_properties = GetTextProperties();
-	switch (text_properties.paragraph_alignment) {
+	switch (GetParagraphAlignment()) {
 		case ParagraphAlignment::Near:
 			box_rect.position.y = box_margin + 0.5f;
 			break;

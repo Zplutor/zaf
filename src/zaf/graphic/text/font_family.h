@@ -16,8 +16,6 @@ public:
 		return handle_->GetFontCount();
 	}
 
-
-
 private:
 	FontFamily(const FontFamily&) = delete;
 	FontFamily& operator=(const FontFamily&) = delete;

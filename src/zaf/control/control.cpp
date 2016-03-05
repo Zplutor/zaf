@@ -3,8 +3,8 @@
 #include <zaf/application.h>
 #include <zaf/base/assert.h>
 #include <zaf/base/log.h>
-#include <zaf/control/text_properties.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/graphic/text/font_properties.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/window/window.h>
@@ -19,6 +19,7 @@ static const wchar_t* const kBorderColorPropertyName = L"BorderColor";
 static const wchar_t* const kDisabledBackgroundColorPropertyName = L"DisabledBackgroundColor";
 static const wchar_t* const kDisabledBorderColorPropertyName = L"DisabledBorderColor";
 static const wchar_t* const kDisabledForegroundColorPropertyName = L"DisabledForegroundColor";
+static const wchar_t* const kFontPropertiesPropertyName = L"FontProperties";
 static const wchar_t* const kForegroundColorPropertyName = L"ForegroundColor";
 static const wchar_t* const kFocusedBackgroundColorPropertyName = L"FocusedBackgroundColor";
 static const wchar_t* const kFocusedBorderColorPropertyName = L"FocusedBorderColor";
@@ -27,8 +28,10 @@ static const wchar_t* const kHoveredBackgroundColorPropertyName = L"HoveredBackg
 static const wchar_t* const kHoveredBorderColorPropertyName = L"HoveredBorderColor";
 static const wchar_t* const kHoveredForegroundColorPropertyName = L"HoveredForegroundColor";
 static const wchar_t* const kNamePropertyName = L"Name";
+static const wchar_t* const kParagraphAlignmentPropertyName = L"ParagraphAlignment";
+static const wchar_t* const kTextAlignmentPropertyName = L"TextAlignment";
 static const wchar_t* const kTextPropertyName = L"Text";
-static const wchar_t* const kTextPropertiesPropertyName = L"TextProperties";
+static const wchar_t* const kWordWrappingPropertyName = L"WordWrapping";
 
 Control::Control() : 
 	has_initialized_properties_(false),
@@ -158,21 +161,21 @@ void Control::PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text
 		return;
 	}
 
-	auto text_properties = GetTextProperties();
+	auto font_properties = GetFontProperties();
 
 	TextFormatProperties text_format_properties;
-	text_format_properties.font_family_name = text_properties.font_family_name;
-	text_format_properties.font_size = text_properties.font_size;
-	text_format_properties.font_weight = text_properties.font_weight;
+	text_format_properties.font_family_name = font_properties.family_name;
+	text_format_properties.font_size = font_properties.size;
+	text_format_properties.font_weight = font_properties.weight;
 
 	auto text_format = canvas.CreateTextFormat(text_format_properties);
 	if (text_format == nullptr) {
 		return;
 	}
 
-	text_format->SetTextAlignment(text_properties.text_alignment);
-	text_format->SetParagraphAlignment(text_properties.paragraph_alignment);
-	text_format->SetWordWrapping(text_properties.word_wrapping);
+	text_format->SetTextAlignment(GetTextAlignment());
+	text_format->SetParagraphAlignment(GetParagraphAlignment());
+	text_format->SetWordWrapping(GetWordWrapping());
 
 	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
 	canvas.DrawText(GetText(), text_format, text_rect);
@@ -602,31 +605,65 @@ void Control::SetText(const std::wstring& text) {
 }
 
 
-const TextProperties Control::GetTextProperties() const {
+const FontProperties Control::GetFontProperties() const {
 
-	return property_map_.GetProperty<TextProperties>(kTextPropertiesPropertyName, [this]() {
+	return GetPropertyMap().GetProperty<FontProperties>(kFontPropertiesPropertyName, [this]() -> FontProperties {
 	
-		TextProperties text_properties;
-
 		auto parent = GetParent();
 		if (parent != nullptr) {
-
-			auto parent_text_properties = parent->GetTextProperties();
-			text_properties.font_family_name = parent_text_properties.font_family_name;
-			text_properties.font_size = parent_text_properties.font_size;
+			return parent->GetFontProperties();
 		}
 
-		return text_properties;
+		return FontProperties();
 	});
 }
 
 
-void Control::SetTextProperties(const TextProperties& text_properties) {
+void Control::SetFontProeprties(const FontProperties& font_properties) {
+	GetPropertyMap().SetProperty(kFontPropertiesPropertyName, font_properties);
+	NeedRepaint();
+}
 
-	property_map_.SetProperty(kTextPropertiesPropertyName, text_properties);
 
-	//Need to relayout because some control's layout rely on text properties.
-	NeedRelayout();
+TextAlignment Control::GetTextAlignment() const {
+	return property_map_.GetProperty<TextAlignment>(
+		kTextAlignmentPropertyName,
+		[]() { return TextAlignment::Leading; }
+	);
+}
+
+
+void Control::SetTextAlignment(TextAlignment alignment) {
+	property_map_.SetProperty(kTextAlignmentPropertyName, alignment);
+	NeedRepaint();
+}
+
+
+ParagraphAlignment Control::GetParagraphAlignment() const {
+	return property_map_.GetProperty<ParagraphAlignment>(
+		kParagraphAlignmentPropertyName,
+		[]() { return ParagraphAlignment::Near; }
+	);
+}
+
+
+void Control::SetParagraphAlignment(ParagraphAlignment alignment) {
+	property_map_.SetProperty(kParagraphAlignmentPropertyName, alignment);
+	NeedRepaint();
+}
+
+
+WordWrapping Control::GetWordWrapping() const {
+	return property_map_.GetProperty<WordWrapping>(
+		kWordWrappingPropertyName,
+		[]() { return WordWrapping::NoWrap; }
+	);
+}
+
+
+void Control::SetWordWrapping(WordWrapping word_wrapping) {
+	property_map_.SetProperty(kWordWrappingPropertyName, word_wrapping);
+	NeedRepaint();
 }
 
 
