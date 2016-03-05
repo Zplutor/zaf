@@ -30,6 +30,8 @@ public:
 	ClickEvent::Proxy OnClick;
 
 protected:
+	void Initialize() override;
+
 	int GetPaintState() const override;
 
 	void MouseEnter() override;

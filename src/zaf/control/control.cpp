@@ -34,8 +34,7 @@ static const wchar_t* const kTextPropertyName = L"Text";
 static const wchar_t* const kWordWrappingPropertyName = L"WordWrapping";
 
 Control::Control() : 
-	has_initialized_properties_(false),
-	is_initialized_(false),
+	has_initialized_(false),
 	is_hovered_(false), 
 	is_capturing_mouse_(false),
 	is_focused_(false),
@@ -54,23 +53,16 @@ Control::~Control() {
 
 void Control::CheckInitialized() {
 
-	if (is_initialized_) {
+	if (has_initialized_) {
 		return;
 	}
+	has_initialized_ = true;
 
-	//This flag must be set before calling Initialize,
-	//because AddChild may be called in Initialize.
-	is_initialized_ = true;
 	Initialize();
 
 	for (auto& each_child : children_) {
 		each_child->CheckInitialized();
 	}
-}
-
-
-void Control::Initialize() {
-
 }
 
 
@@ -309,12 +301,7 @@ void Control::NeedRelayout() {
 
 
 Control::PropertyMap& Control::GetPropertyMap() {
-
-	if (! has_initialized_properties_) {
-		has_initialized_properties_ = true;
-		InitializeProperties();
-	}
-
+	CheckInitialized();
 	return property_map_;
 }
 
@@ -370,7 +357,7 @@ void Control::SetRect(const Rect& rect) {
 
 Anchor Control::GetAnchor() const {
 
-	auto anchor = property_map_.TryGetProperty<Anchor>(kAnchorPropertyName);
+	auto anchor = GetPropertyMap().TryGetProperty<Anchor>(kAnchorPropertyName);
 	if (anchor != nullptr) {
 		return *anchor;
 	}
@@ -379,7 +366,7 @@ Anchor Control::GetAnchor() const {
 
 
 void Control::SetAnchor(Anchor anchor) {
-	property_map_.SetProperty(kAnchorPropertyName, anchor);
+	GetPropertyMap().SetProperty(kAnchorPropertyName, anchor);
 }
 
 
@@ -517,7 +504,7 @@ const Color Control::GetPropertyColor(
 	const std::function<const Color()>& get_default_color
 ) const {
 
-	auto color = property_map_.TryGetProperty<Color>(color_property_name);
+	auto color = GetPropertyMap().TryGetProperty<Color>(color_property_name);
 	if (color != nullptr) {
 		return *color;
 	}
@@ -589,18 +576,18 @@ void Control::SetColor(int paint_component, int paint_state, const Color& color)
 		return;
 	}
 
-	property_map_.SetProperty(property_name, color);
+	GetPropertyMap().SetProperty(property_name, color);
 	NeedRepaint();
 }
 
 
 const std::wstring Control::GetText() const {
-	return property_map_.GetProperty<std::wstring>(kTextPropertyName, []() { return std::wstring(); });
+	return GetPropertyMap().GetProperty<std::wstring>(kTextPropertyName, []() { return std::wstring(); });
 }
 
 
 void Control::SetText(const std::wstring& text) {
-	property_map_.SetProperty(kTextPropertyName, text);
+	GetPropertyMap().SetProperty(kTextPropertyName, text);
 	NeedRepaint();
 }
 
@@ -626,7 +613,7 @@ void Control::SetFontProeprties(const FontProperties& font_properties) {
 
 
 TextAlignment Control::GetTextAlignment() const {
-	return property_map_.GetProperty<TextAlignment>(
+	return GetPropertyMap().GetProperty<TextAlignment>(
 		kTextAlignmentPropertyName,
 		[]() { return TextAlignment::Leading; }
 	);
@@ -634,13 +621,13 @@ TextAlignment Control::GetTextAlignment() const {
 
 
 void Control::SetTextAlignment(TextAlignment alignment) {
-	property_map_.SetProperty(kTextAlignmentPropertyName, alignment);
+	GetPropertyMap().SetProperty(kTextAlignmentPropertyName, alignment);
 	NeedRepaint();
 }
 
 
 ParagraphAlignment Control::GetParagraphAlignment() const {
-	return property_map_.GetProperty<ParagraphAlignment>(
+	return GetPropertyMap().GetProperty<ParagraphAlignment>(
 		kParagraphAlignmentPropertyName,
 		[]() { return ParagraphAlignment::Near; }
 	);
@@ -648,13 +635,13 @@ ParagraphAlignment Control::GetParagraphAlignment() const {
 
 
 void Control::SetParagraphAlignment(ParagraphAlignment alignment) {
-	property_map_.SetProperty(kParagraphAlignmentPropertyName, alignment);
+	GetPropertyMap().SetProperty(kParagraphAlignmentPropertyName, alignment);
 	NeedRepaint();
 }
 
 
 WordWrapping Control::GetWordWrapping() const {
-	return property_map_.GetProperty<WordWrapping>(
+	return GetPropertyMap().GetProperty<WordWrapping>(
 		kWordWrappingPropertyName,
 		[]() { return WordWrapping::NoWrap; }
 	);
@@ -662,7 +649,7 @@ WordWrapping Control::GetWordWrapping() const {
 
 
 void Control::SetWordWrapping(WordWrapping word_wrapping) {
-	property_map_.SetProperty(kWordWrappingPropertyName, word_wrapping);
+	GetPropertyMap().SetProperty(kWordWrappingPropertyName, word_wrapping);
 	NeedRepaint();
 }
 
@@ -682,7 +669,7 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
 	}
 
 	//Initialize the child if current control has initialized.
-	if (is_initialized_) {
+	if (has_initialized_) {
 		child->CheckInitialized();
 	}
 
@@ -730,12 +717,12 @@ bool Control::IsAncestorOf(const std::shared_ptr<Control>& child) const {
 
 
 const std::wstring Control::GetName() const {
-	return property_map_.GetProperty<std::wstring>(kNamePropertyName, []() { return std::wstring(); });
+	return GetPropertyMap().GetProperty<std::wstring>(kNamePropertyName, []() { return std::wstring(); });
 }
 
 
 void Control::SetName(const std::wstring& name) {
-	property_map_.SetProperty(kNamePropertyName, name);
+	GetPropertyMap().SetProperty(kNamePropertyName, name);
 }
 
 

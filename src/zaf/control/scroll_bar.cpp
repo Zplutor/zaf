@@ -23,14 +23,13 @@ ScrollBar::ScrollBar() :
 	scroll_event_(),
 	OnScroll(scroll_event_) {
 
-	SetColor(PaintComponent::Background, PaintState::Normal, Color::White);
 }
 
 
 void ScrollBar::Initialize() {
 
-	Control::Initialize();
-
+	__super::Initialize();
+	SetColor(PaintComponent::Background, PaintState::Normal, Color::White);
 	InitializeArrow(incremental_arrow_);
 	InitializeArrow(decremental_arrow_);
 	InitializeThumb(thumb_);
@@ -489,6 +488,12 @@ ScrollBar::Arrow::Arrow() :
 	end_press_event_(),
 	OnEndPress(end_press_event_) {
 
+}
+
+
+void ScrollBar::Arrow::Initialize() {
+
+	__super::Initialize();
 	SetCanFocused(false);
 	SetColor(PaintComponent::Foreground, PaintState::Normal, Color::FromRGB(0xCECECE));
 	SetColor(PaintComponent::Foreground, PaintState::Hovered, Color::FromRGB(0xA9A9A9));
@@ -583,6 +588,12 @@ ScrollBar::Thumb::Thumb() :
 	end_drag_event_(),
 	OnEndDrag(end_drag_event_) {
 
+}
+
+
+void ScrollBar::Thumb::Initialize() {
+
+	__super::Initialize();
 	SetCanFocused(false);
 	SetBorderWidth(2);
 	SetColor(PaintComponent::Border, PaintState::Normal, Color::White);

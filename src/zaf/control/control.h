@@ -366,20 +366,13 @@ protected:
 
 protected:
 	/**
-	 Initialize the control's properties.
-
-	 Derived classes override this method to set initial values of properties.
-	 Calling the base class version is optional.
-	 */
-	virtual void InitializeProperties() { }
-
-	/**
 	 Initialize the control.
 
 	 Derived classes can override this method to do some initialization, 
-	 such as adding child controls. The same method of base class must be called.
+	 such as setting initial property values, and adding child controls. 
+	 The same method of base class must be called.
 	 */
-	virtual void Initialize();
+	virtual void Initialize() { }
 
 	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
 	virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
@@ -483,8 +476,7 @@ private:
 	Control& operator=(const Control&) = delete;
 
 private:
-	bool has_initialized_properties_;
-	bool is_initialized_;
+	bool has_initialized_;
 	std::weak_ptr<Window> window_;
 	std::weak_ptr<Control> parent_;
 	std::vector<std::shared_ptr<Control>> children_;

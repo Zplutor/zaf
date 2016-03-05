@@ -18,15 +18,22 @@ CheckBox::CheckBox() :
 	check_state_(CheckState::Unchecked),
 	OnCheckStateChange(check_state_change_event_) {
 
-	SetColor(PaintComponent::Box, PaintState::Normal, Color::Black);
-	SetColor(PaintComponent::Box, PaintState::Hovered, Color::FromRGB(0x4169E1));
-	SetColor(PaintComponent::Box, PaintState::Pressed, Color::FromRGB(0x0000CD));
-	SetColor(PaintComponent::Box, PaintState::Disabled, Color::Gray);
 }
 
 
 CheckBox::~CheckBox() {
 
+}
+
+
+void CheckBox::Initialize() {
+
+	__super::Initialize();
+
+	SetColor(PaintComponent::Box, PaintState::Normal, Color::Black);
+	SetColor(PaintComponent::Box, PaintState::Hovered, Color::FromRGB(0x4169E1));
+	SetColor(PaintComponent::Box, PaintState::Pressed, Color::FromRGB(0x0000CD));
+	SetColor(PaintComponent::Box, PaintState::Disabled, Color::Gray);
 }
 
 

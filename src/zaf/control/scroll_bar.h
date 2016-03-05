@@ -38,6 +38,7 @@ public:
 		EndPressEvent::Proxy OnEndPress;
 
 	protected:
+		void Initialize() override;
 		void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 		void MouseCapture() override;
 		void MouseRelease() override;
@@ -75,6 +76,7 @@ public:
 		EndDragEvent::Proxy OnEndDrag;
 
 	protected:
+		void Initialize() override;
 		int GetPaintState() const override;
 
 		void MouseCapture() override;

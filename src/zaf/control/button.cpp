@@ -4,6 +4,18 @@ namespace zaf {
 
 Button::Button() {
 
+}
+
+
+Button::~Button() {
+
+}
+
+
+void Button::Initialize() {
+
+	__super::Initialize();
+
 	SetBorderWidth(1);
 
 	SetColor(PaintComponent::Background, Control::PaintState::Hovered, Color::FromRGB(0xF0F8FF));
@@ -19,11 +31,6 @@ Button::Button() {
 
 	SetTextAlignment(TextAlignment::Center);
 	SetParagraphAlignment(ParagraphAlignment::Center);
-}
-
-
-Button::~Button() {
-
 }
 
 

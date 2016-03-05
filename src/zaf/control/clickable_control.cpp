@@ -15,12 +15,17 @@ ClickableControl::ClickableControl() :
 	click_event_(),
 	OnClick(click_event_) {
 
-	SetCanFocused(true);
 }
 
 
 ClickableControl::~ClickableControl() {
 
+}
+
+
+void ClickableControl::Initialize() {
+	__super::Initialize();
+	SetCanFocused(true);
 }
 
 
