@@ -350,6 +350,14 @@ protected:
 
 protected:
 	/**
+	 Initialize the control's properties.
+
+	 Derived classes override this method to set initial values of properties.
+	 Calling the base class version is optional.
+	 */
+	virtual void InitializeProperties() { }
+
+	/**
 	 Initialize the control.
 
 	 Derived classes can override this method to do some initialization, 
@@ -381,12 +389,10 @@ protected:
 	virtual void Layout(const Rect& previous_rect);
 	void NeedRelayout();
 
-	const PropertyMap& GetPropertyMap() const {
-		return property_map_;
-	}
+	PropertyMap& GetPropertyMap();
 
-	PropertyMap& GetPropertyMap() {
-		return property_map_;
+	const PropertyMap& GetPropertyMap() const {
+		return const_cast<Control*>(this)->GetPropertyMap();
 	}
 
 	bool IsCapturingMouse() const {
@@ -461,6 +467,7 @@ private:
 	Control& operator=(const Control&) = delete;
 
 private:
+	bool has_initialized_properties_;
 	bool is_initialized_;
 	std::weak_ptr<Window> window_;
 	std::weak_ptr<Control> parent_;

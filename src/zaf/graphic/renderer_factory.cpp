@@ -1,7 +1,11 @@
 #include <zaf/graphic/renderer_factory.h>
 #include <zaf/graphic/renderer.h>
+#include <zaf/graphic/stroke.h>
+#include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/text/font_collection.h>
+#include <zaf/graphic/text/text_format.h>
+#include <zaf/graphic/text/text_format_properties.h>
 
 namespace zaf {
 
@@ -69,7 +73,7 @@ const std::shared_ptr<PathGeometry> RendererFactory::CreatePathGeometry() {
 }
 
 
-const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const Stroke::Properties& properties) {
+const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const StrokeProperties& properties) {
     
 	D2D1_STROKE_STYLE_PROPERTIES d2d_properties;
 	d2d_properties.startCap = static_cast<D2D1_CAP_STYLE>(properties.start_cap_style);
@@ -97,7 +101,7 @@ const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const Stroke::Proper
 }
 
 
-const std::shared_ptr<TextFormat> RendererFactory::CreateTextFormat(const TextFormat::Properties& properties) {
+const std::shared_ptr<TextFormat> RendererFactory::CreateTextFormat(const TextFormatProperties& properties) {
 
 	IDWriteTextFormat* handle = nullptr;
 	LRESULT result = dwrite_factory_handle_->CreateTextFormat(

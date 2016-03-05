@@ -30,34 +30,11 @@ public:
         Custom = 5,
     };
 
-    class Properties {
-    public:
-        Properties() : 
-            start_cap_style(CapStyle::Flat),
-            end_cap_style(CapStyle::Flat),
-            dash_cap_style(CapStyle::Flat),
-            line_join_style(LineJoinStyle::Miter),
-            miter_limit(0),
-            dash_style(DashStyle::Solid),
-            dash_offset(0) { }
-
-        CapStyle start_cap_style;
-        CapStyle end_cap_style;
-        CapStyle dash_cap_style;
-        LineJoinStyle line_join_style;
-        float miter_limit;
-        DashStyle dash_style;
-        float dash_offset;
-        std::vector<float> dash_pattern;
-    };
-
 public:
     explicit Stroke(ID2D1StrokeStyle* handle) : handle_(handle) { }
 
     ~Stroke() {
-        if (handle_ != nullptr) {
-            handle_->Release();
-        }
+        handle_->Release();
     }
 
     CapStyle GetStartCapStyle() const {

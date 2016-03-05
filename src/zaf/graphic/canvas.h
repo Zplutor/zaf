@@ -37,11 +37,11 @@ public:
 		return Application::GetInstance().GetRendererFactory()->CreatePathGeometry();
 	}
 
-	const std::shared_ptr<Stroke> CreateStroke(const Stroke::Properties& properties) {
+	const std::shared_ptr<Stroke> CreateStroke(const StrokeProperties& properties) {
 		return Application::GetInstance().GetRendererFactory()->CreateStroke(properties);
 	}
 
-	const std::shared_ptr<TextFormat> CreateTextFormat(const TextFormat::Properties& properties) {
+	const std::shared_ptr<TextFormat> CreateTextFormat(const TextFormatProperties& properties) {
 		return Application::GetInstance().GetRendererFactory()->CreateTextFormat(properties);
 	}
 

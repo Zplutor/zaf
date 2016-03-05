@@ -5,6 +5,8 @@
 #include <zaf/base/log.h>
 #include <zaf/control/text_properties.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/graphic/text/text_format.h>
+#include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -29,6 +31,7 @@ static const wchar_t* const kTextPropertyName = L"Text";
 static const wchar_t* const kTextPropertiesPropertyName = L"TextProperties";
 
 Control::Control() : 
+	has_initialized_properties_(false),
 	is_initialized_(false),
 	is_hovered_(false), 
 	is_capturing_mouse_(false),
@@ -157,7 +160,7 @@ void Control::PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text
 
 	auto text_properties = GetTextProperties();
 
-	TextFormat::Properties text_format_properties;
+	TextFormatProperties text_format_properties;
 	text_format_properties.font_family_name = text_properties.font_family_name;
 	text_format_properties.font_size = text_properties.font_size;
 	text_format_properties.font_weight = text_properties.font_weight;
@@ -299,6 +302,17 @@ void Control::LayoutChild(const std::shared_ptr<Control>& child, const Rect& pre
 
 void Control::NeedRelayout() {
 	Layout(GetRect());
+}
+
+
+Control::PropertyMap& Control::GetPropertyMap() {
+
+	if (! has_initialized_properties_) {
+		has_initialized_properties_ = true;
+		InitializeProperties();
+	}
+
+	return property_map_;
 }
 
 
