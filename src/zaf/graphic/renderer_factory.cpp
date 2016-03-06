@@ -2,8 +2,8 @@
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/stroke_properties.h>
+#include <zaf/graphic/font/font_collection.h>
 #include <zaf/graphic/geometry/path_geometry.h>
-#include <zaf/graphic/text/font_collection.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_format_properties.h>
 

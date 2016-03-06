@@ -24,11 +24,13 @@
     <ClCompile Include="src\zaf\control\text_box.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />
+    <ClCompile Include="src\zaf\graphic\font\font_collection.cpp" />
+    <ClCompile Include="src\zaf\graphic\font\font_face.cpp" />
     <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp" />
     <ClCompile Include="src\zaf\graphic\geometry\path_geometry.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer_factory.cpp" />
-    <ClCompile Include="src\zaf\graphic\text\font_collection.cpp" />
+    <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
     <ClCompile Include="src\zaf\window\window.cpp" />
   </ItemGroup>
@@ -60,6 +62,12 @@
     <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h" />
     <ClInclude Include="src\zaf\graphic\canvas.h" />
     <ClInclude Include="src\zaf\graphic\color.h" />
+    <ClInclude Include="src\zaf\graphic\font\font_collection.h" />
+    <ClInclude Include="src\zaf\graphic\font\font_face.h" />
+    <ClInclude Include="src\zaf\graphic\font\font_family.h" />
+    <ClInclude Include="src\zaf\graphic\font\font.h" />
+    <ClInclude Include="src\zaf\graphic\font\font_style.h" />
+    <ClInclude Include="src\zaf\graphic\font\font_weight.h" />
     <ClInclude Include="src\zaf\graphic\geometry\geometry.h" />
     <ClInclude Include="src\zaf\graphic\geometry\geometry_sink.h" />
     <ClInclude Include="src\zaf\graphic\geometry\path_geometry.h" />
@@ -68,16 +76,12 @@
     <ClInclude Include="src\zaf\graphic\renderer_factory.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
     <ClInclude Include="src\zaf\graphic\stroke_properties.h" />
-    <ClInclude Include="src\zaf\graphic\text\font.h" />
-    <ClInclude Include="src\zaf\graphic\text\font_collection.h" />
-    <ClInclude Include="src\zaf\graphic\text\font_family.h" />
-    <ClInclude Include="src\zaf\graphic\text\font_properties.h" />
-    <ClInclude Include="src\zaf\graphic\text\font_style.h" />
-    <ClInclude Include="src\zaf\graphic\text\font_weight.h" />
     <ClInclude Include="src\zaf\graphic\text\paragraph_alignment.h" />
     <ClInclude Include="src\zaf\graphic\text\text_alignment.h" />
     <ClInclude Include="src\zaf\graphic\text\text_format.h" />
     <ClInclude Include="src\zaf\graphic\text\text_format_properties.h" />
+    <ClInclude Include="src\zaf\graphic\text\text_layout.h" />
+    <ClInclude Include="src\zaf\graphic\text\text_range.h" />
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />
     <ClInclude Include="src\zaf\window\caret.h" />
     <ClInclude Include="src\zaf\window\window.h" />

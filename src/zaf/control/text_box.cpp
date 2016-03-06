@@ -407,9 +407,6 @@ void TextBox::TextHost::TxViewChange(BOOL fUpdate) {
 
 BOOL TextBox::TextHost::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) {
 
-	//ZAFLOG() << "CreateCaret: " << hbmp << ',' << xWidth << ',' << yHeight;
-	//return CreateCaret(GetWindowHandle(), hbmp, xWidth, yHeight);
-
 	auto window = GetWindow();
 	if (window == nullptr) {
 		return FALSE;
@@ -421,16 +418,6 @@ BOOL TextBox::TextHost::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) {
 
 
 BOOL TextBox::TextHost::TxShowCaret(BOOL fShow) {
-
-	/*
-	ZAFLOG() << "ShowCaret: " << fShow;
-	if (fShow) {
-		return ShowCaret(GetWindowHandle());
-	}
-	else {
-		return HideCaret(GetWindowHandle());
-	}
-	*/
 
 	auto window = GetWindow();
 	if (window == nullptr) {
@@ -449,9 +436,6 @@ BOOL TextBox::TextHost::TxShowCaret(BOOL fShow) {
 
 
 BOOL TextBox::TextHost::TxSetCaretPos(INT x, INT y) {
-
-	//ZAFLOG() << "SetCaretPos: " << x << ',' << y;
-	//return SetCaretPos(x, y);
 
 	auto window = GetWindow();
 	if (window == nullptr) {

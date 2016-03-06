@@ -20,7 +20,7 @@
 namespace zaf {
 
 class Canvas;
-class FontProperties;
+class Font;
 class Layouter;
 class Window;
 
@@ -168,8 +168,8 @@ public:
 	 */
 	virtual void SetText(const std::wstring& text);
 
-	const FontProperties GetFontProperties() const;
-	void SetFontProeprties(const FontProperties& font_properties);
+	const Font GetFont() const;
+	void SetFont(const Font& font);
 
 	/**
 	 Get text alignment.

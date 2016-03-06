@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dwrite.h>
+#include <zaf/base/assert.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/word_wrapping.h>
@@ -11,9 +12,11 @@ class FontCollection;
 
 class TextFormat {
 public:
-	explicit TextFormat(IDWriteTextFormat* handle) : handle_(handle) { }
+	explicit TextFormat(IDWriteTextFormat* handle) : handle_(handle) { 
+		ZAF_ASSERT(handle_ != nullptr);
+	}
 
-	~TextFormat() { 
+	virtual ~TextFormat() { 
 		handle_->Release();
 	}
 

@@ -1,19 +1,19 @@
 #pragma once
 
 #include <string>
-#include <zaf/graphic/text/font_weight.h>
+#include <zaf/graphic/font/font_weight.h>
 
 namespace zaf {
 
 /**
- Describes the appearance properties of a font.
+ Describes various properties of a font.
  */
-class FontProperties {
+class Font {
 public:
 	/**
 	 Initialize the instance.
 	 */
-	FontProperties() :
+	Font() :
 		size(14),
 		weight(FontWeight::Regular) {
 

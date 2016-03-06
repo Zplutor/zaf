@@ -28,12 +28,12 @@ public:
 }
 
 #ifdef NDEBUG
-#define IS_ZAFLOG_ENABLED false
+#define ZAF_IS_LOG_ENABLED false
 #else
-#define IS_ZAFLOG_ENABLED true
+#define ZAF_IS_LOG_ENABLED true
 #endif
 
 /**
  Write debug log to the output window.
  */
-#define ZAFLOG() ! IS_ZAFLOG_ENABLED ? (void)0 : zaf::internal::LogEntryVodify() & zaf::internal::LogEntry()
+#define ZAF_LOG() ! ZAF_IS_LOG_ENABLED ? (void)0 : zaf::internal::LogEntryVodify() & zaf::internal::LogEntry()

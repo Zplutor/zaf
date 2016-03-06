@@ -2,9 +2,8 @@
 #include <algorithm>
 #include <zaf/application.h>
 #include <zaf/base/assert.h>
-#include <zaf/base/log.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/text/font_properties.h>
+#include <zaf/graphic/font/font.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/window/window.h>
@@ -19,7 +18,7 @@ static const wchar_t* const kBorderColorPropertyName = L"BorderColor";
 static const wchar_t* const kDisabledBackgroundColorPropertyName = L"DisabledBackgroundColor";
 static const wchar_t* const kDisabledBorderColorPropertyName = L"DisabledBorderColor";
 static const wchar_t* const kDisabledForegroundColorPropertyName = L"DisabledForegroundColor";
-static const wchar_t* const kFontPropertiesPropertyName = L"FontProperties";
+static const wchar_t* const kFontPropertyName = L"Font";
 static const wchar_t* const kForegroundColorPropertyName = L"ForegroundColor";
 static const wchar_t* const kFocusedBackgroundColorPropertyName = L"FocusedBackgroundColor";
 static const wchar_t* const kFocusedBorderColorPropertyName = L"FocusedBorderColor";
@@ -153,12 +152,12 @@ void Control::PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text
 		return;
 	}
 
-	auto font_properties = GetFontProperties();
+	auto font = GetFont();
 
 	TextFormatProperties text_format_properties;
-	text_format_properties.font_family_name = font_properties.family_name;
-	text_format_properties.font_size = font_properties.size;
-	text_format_properties.font_weight = font_properties.weight;
+	text_format_properties.font_family_name = font.family_name;
+	text_format_properties.font_size = font.size;
+	text_format_properties.font_weight = font.weight;
 
 	auto text_format = canvas.CreateTextFormat(text_format_properties);
 	if (text_format == nullptr) {
@@ -400,7 +399,7 @@ const Color Control::GetColor(int paint_component, int paint_state) const {
 			return GetBorderColor(paint_state);
 
 		default:
-			ZAFFAIL();
+			ZAF_FAIL();
 			return GetBackgroundColor(PaintState::Normal);
 	}
 }
@@ -435,7 +434,7 @@ const Color Control::GetBackgroundColor(int paint_state) const {
 			return GetPropertyColor(kDisabledBackgroundColorPropertyName, get_normal_background_color);
 
 		default:
-			ZAFFAIL();
+			ZAF_FAIL();
 			return GetBackgroundColor(PaintState::Normal);
 	}
 }
@@ -464,7 +463,7 @@ const Color Control::GetForegroundColor(int paint_state) const {
 			return GetPropertyColor(kDisabledForegroundColorPropertyName, get_normal_foreground_color);
 
 		default:
-			ZAFFAIL();
+			ZAF_FAIL();
 			return GetForegroundColor(PaintState::Normal);
 	}
 }
@@ -493,7 +492,7 @@ const Color Control::GetBorderColor(int paint_state) const {
 			return GetPropertyColor(kDisabledBorderColorPropertyName, get_normal_border_color);
 
 		default:
-			ZAFFAIL();
+			ZAF_FAIL();
 			return GetBorderColor(PaintState::Normal);
 	}
 }
@@ -572,7 +571,7 @@ void Control::SetColor(int paint_component, int paint_state, const Color& color)
 	}
 
 	if (property_name.empty()) {
-		ZAFFAIL();
+		ZAF_FAIL();
 		return;
 	}
 
@@ -592,22 +591,22 @@ void Control::SetText(const std::wstring& text) {
 }
 
 
-const FontProperties Control::GetFontProperties() const {
+const Font Control::GetFont() const {
 
-	return GetPropertyMap().GetProperty<FontProperties>(kFontPropertiesPropertyName, [this]() -> FontProperties {
+	return GetPropertyMap().GetProperty<Font>(kFontPropertyName, [this]() -> Font {
 	
 		auto parent = GetParent();
 		if (parent != nullptr) {
-			return parent->GetFontProperties();
+			return parent->GetFont();
 		}
 
-		return FontProperties();
+		return Font();
 	});
 }
 
 
-void Control::SetFontProeprties(const FontProperties& font_properties) {
-	GetPropertyMap().SetProperty(kFontPropertiesPropertyName, font_properties);
+void Control::SetFont(const Font& font) {
+	GetPropertyMap().SetProperty(kFontPropertyName, font);
 	NeedRepaint();
 }
 
@@ -824,8 +823,6 @@ void Control::IsFocusedChanged(bool is_focused) {
 	if (is_focused_ == is_focused) {
 		return;
 	}
-
-	ZAFLOG() << "IsFocusedChanged: " << is_focused;
 
 	is_focused_ = is_focused;
 

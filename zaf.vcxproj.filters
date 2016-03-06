@@ -25,6 +25,9 @@
     <Filter Include="zaf\graphic\geometry">
       <UniqueIdentifier>{588f47a2-5d14-49cc-95c1-251c2783efd8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\font">
+      <UniqueIdentifier>{eb21b954-c3ad-4906-b14a-c400e7f6e3cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -84,7 +87,13 @@
     <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp">
       <Filter>zaf\graphic\geometry</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\text\font_collection.cpp">
+    <ClCompile Include="src\zaf\graphic\font\font_collection.cpp">
+      <Filter>zaf\graphic\font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\font\font_face.cpp">
+      <Filter>zaf\graphic\font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\text\text_layout.cpp">
       <Filter>zaf\graphic\text</Filter>
     </ClCompile>
   </ItemGroup>
@@ -203,9 +212,6 @@
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h">
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\font.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\geometry\geometry.h">
       <Filter>zaf\graphic\geometry</Filter>
     </ClInclude>
@@ -215,29 +221,38 @@
     <ClInclude Include="src\zaf\graphic\geometry\geometry_sink.h">
       <Filter>zaf\graphic\geometry</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\font_collection.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\font_family.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\font_weight.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\stroke_properties.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\text_format_properties.h">
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\font_properties.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\font_style.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\check_state.h">
       <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\font\font_collection.h">
+      <Filter>zaf\graphic\font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\font\font_family.h">
+      <Filter>zaf\graphic\font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\font\font_style.h">
+      <Filter>zaf\graphic\font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\font\font_weight.h">
+      <Filter>zaf\graphic\font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\font\font.h">
+      <Filter>zaf\graphic\font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\font\font_face.h">
+      <Filter>zaf\graphic\font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\text_layout.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\text_range.h">
+      <Filter>zaf\graphic\text</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

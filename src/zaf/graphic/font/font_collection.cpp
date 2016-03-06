@@ -1,5 +1,5 @@
-#include <zaf/graphic/text/font_collection.h>
-#include <zaf/graphic/text/font_family.h>
+#include <zaf/graphic/font/font_collection.h>
+#include <zaf/graphic/font/font_family.h>
 
 namespace zaf {
 

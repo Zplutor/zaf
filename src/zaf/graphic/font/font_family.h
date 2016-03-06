@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dwrite.h>
+#include <cstdint>
 
 namespace zaf {
 

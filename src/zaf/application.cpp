@@ -63,7 +63,7 @@ bool Application::Initialize() {
 void Application::Run() {
 
 	if (! is_initialized_) {
-		ZAFFAIL();
+		ZAF_FAIL();
 		return;
 	}
 

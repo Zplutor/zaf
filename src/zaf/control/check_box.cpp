@@ -177,7 +177,7 @@ std::wstring CheckBox::GetBoxColorPropertyName(int paint_state) const {
 			return kDisabledBoxColorPropertyName;
 
 		default:
-			ZAFFAIL();
+			ZAF_FAIL();
 			return std::wstring();
 	}
 }
@@ -252,7 +252,7 @@ void CheckBox::MouseClick() {
 			break;
 
 		default:
-			ZAFFAIL();
+			ZAF_FAIL();
 			break;
 	}
 
