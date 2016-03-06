@@ -42,32 +42,36 @@ void CheckBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	__super::Paint(canvas, dirty_rect);
 
 	const float box_size = 12;
-	const float box_margin = 5;
 
 	//Paint box.
 	Rect box_rect;
-	box_rect.position.x = box_margin + 0.5f;
+	box_rect.position.x = 0;
 	box_rect.size.width = box_size;
 	box_rect.size.height = box_size;
 
 	switch (GetParagraphAlignment()) {
 		case ParagraphAlignment::Near:
-			box_rect.position.y = box_margin + 0.5f;
+			box_rect.position.y = 0;
 			break;
 		case ParagraphAlignment::Center:
-			box_rect.position.y = (GetHeight() - box_size) / 2 + 0.5f;
+			box_rect.position.y = (GetHeight() - box_size) / 2;
 			break;
 		case ParagraphAlignment::Far:
-			box_rect.position.y = GetHeight() - box_size - box_margin + 0.5f;
+			box_rect.position.y = GetHeight() - box_size;
 			break;
 	}
 
+	box_rect.position.x += 0.5;
+	box_rect.position.y += 0.5;
 	PaintBox(canvas, box_rect);
 
 	//Paint text.
 	Rect text_rect = GetContentRect();
-	text_rect.position.x += box_size + box_margin * 2;
-	text_rect.size.width -= box_size + box_margin * 2;
+
+	float adjust_width = box_size + 5;
+	text_rect.position.x += adjust_width;
+	text_rect.size.width -= adjust_width;
+
 	PaintText(canvas, dirty_rect, text_rect);
 }
 
