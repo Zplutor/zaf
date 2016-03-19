@@ -19,11 +19,11 @@ public:
 	Canvas(const std::shared_ptr<Renderer>& renderer);
 
 	ClearEdgeOption GetClearEdgeOption() const {
-		return clear_edge_option_;
+		return GetCurrentState()->clear_edge_option;
 	}
 
 	void SetClearEdgeOption(ClearEdgeOption option) {
-		clear_edge_option_ = option;
+		GetCurrentState()->clear_edge_option = option;
 	}
 
 	const std::shared_ptr<Renderer>& GetRenderer() const {
@@ -59,56 +59,70 @@ public:
 	}
 
 	void SetBrush(const std::shared_ptr<Brush>& brush) {
-		set_brush_ = brush;
+		GetCurrentState()->brush = brush;
 	}
 
 	void SetBrushWithColor(const Color& color) {
-		solid_color_brush_->SetColor(color);
-		set_brush_ = solid_color_brush_;
+		SetBrush(CreateSolidColorBrush(color));
 	}
 
 	void SetStroke(const std::shared_ptr<Stroke>& stroke) {
-		set_stroke_ = stroke;
+		GetCurrentState()->stroke = stroke;
 	}
 
 	void DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
+		auto state = GetCurrentState();
 		renderer_->DrawLine(
 			from_point, 
 			to_point, 
-			set_brush_, 
+			state->brush, 
 			stroke_width,
-			set_stroke_
+			state->stroke
 		);
 	}
 
 	void DrawRectangle(const Rect& rect) {
-		renderer_->DrawRectangle(MakeClearEdgeRectForFill(rect, clear_edge_option_), set_brush_);
+		auto state = GetCurrentState();
+		renderer_->DrawRectangle(MakeClearEdgeRectForFill(rect, state->clear_edge_option), state->brush);
 	}
 
 	void DrawRectangleFrame(const Rect& rect, float stroke_width) {
+		auto state = GetCurrentState();
 		renderer_->DrawRectangleFrame(
-			MakeClearEdgeRectForLine(rect, stroke_width, clear_edge_option_),
-			set_brush_, 
+			MakeClearEdgeRectForLine(rect, stroke_width, state->clear_edge_option),
+			state->brush,
 			stroke_width, 
-			set_stroke_
+			state->stroke
 		);
 	}
 
 	void DrawGeometry(const std::shared_ptr<Geometry>& geometry) {
-		renderer_->DrawGeometry(geometry, set_brush_, nullptr);
+		renderer_->DrawGeometry(geometry, GetCurrentState()->brush, nullptr);
 	}
 
 	void DrawGeometryFrame(const std::shared_ptr<Geometry>& geometry, float stroke_width) {
-		renderer_->DrawGeometryFrame(geometry, set_brush_, stroke_width, set_stroke_);
+		auto state = GetCurrentState();
+		renderer_->DrawGeometryFrame(geometry, state->brush, stroke_width, state->stroke);
 	}
 
 	void DrawText(const std::wstring& text, const std::shared_ptr<TextFormat>& text_format, const Rect& rect) {
-		renderer_->DrawText(text, text_format, rect, set_brush_);
+		renderer_->DrawText(text, text_format, rect, GetCurrentState()->brush);
 	}
 
 	void DrawText(const std::shared_ptr<TextLayout>& text_layout, const Point& position) {
-		renderer_->DrawText(text_layout, position, set_brush_);
+		renderer_->DrawText(text_layout, position, GetCurrentState()->brush);
 	}
+
+private:
+	class State {
+	public:
+		State() : clear_edge_option(ClearEdgeOption::None) { } 
+
+	public:
+		ClearEdgeOption clear_edge_option;
+		std::shared_ptr<Brush> brush;
+		std::shared_ptr<Stroke> stroke;
+	};
 
 private:
 	friend class Caret;
@@ -123,20 +137,22 @@ private:
 	void BeginPaint();
 	void EndPaint();
 
+private:
+	void SaveState();
+	void RestoreState();
+	std::shared_ptr<State> GetCurrentState() const;
+
 	Canvas(Canvas&) = delete;
 	Canvas& operator=(const Canvas&) = delete;
 
 private:
-	ClearEdgeOption clear_edge_option_;
-
 	Rect absolute_rect_;
 	Rect absolute_paintable_rect_;
 
 	std::shared_ptr<Renderer> renderer_;
 	std::shared_ptr<Layer> layer_;
-	std::shared_ptr<Brush> set_brush_;
-	std::shared_ptr<Stroke> set_stroke_;
-	std::shared_ptr<SolidColorBrush> solid_color_brush_;
+	
+	std::vector<std::shared_ptr<State>> states_;
 };
 
 }

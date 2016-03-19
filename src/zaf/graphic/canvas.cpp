@@ -8,11 +8,9 @@
 namespace zaf {
 
 Canvas::Canvas(const std::shared_ptr<Renderer>& renderer) :
-	renderer_(renderer),
-	clear_edge_option_(ClearEdgeOption::None) {
+	renderer_(renderer) {
 
 	layer_ = renderer_->CreateLayer(Size());
-	solid_color_brush_ = renderer_->CreateSolidColorBrush(Color::Black);
 }
 
 
@@ -27,13 +25,48 @@ void Canvas::BeginPaint() {
 	Layer::Parameters layer_param;
 	layer_param.content_bounds = related_dirty_rect;
 	renderer_->PushLayer(layer_param, layer_);
+
+	SaveState();
 }
 
 
 void Canvas::EndPaint() {
 
 	renderer_->PopLayer();
+
+	RestoreState();
 }
 
+
+void Canvas::SaveState() {
+
+	auto new_state = std::make_shared<State>();
+	new_state->brush = renderer_->CreateSolidColorBrush(Color::White);
+
+	states_.push_back(new_state);
+}
+
+
+void Canvas::RestoreState() {
+
+	if (! states_.empty()) {
+		states_.pop_back();
+	}
+	else {
+		ZAF_FAIL();
+	}
+}
+
+
+std::shared_ptr<Canvas::State> Canvas::GetCurrentState() const {
+
+	if (! states_.empty()) {
+		return states_.back();
+	}
+	else {
+		ZAF_FAIL();
+		return nullptr;
+	}
+}
 
 }
