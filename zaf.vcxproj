@@ -28,6 +28,7 @@
     <ClCompile Include="src\zaf\graphic\font\font_face.cpp" />
     <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp" />
     <ClCompile Include="src\zaf\graphic\geometry\path_geometry.cpp" />
+    <ClCompile Include="src\zaf\graphic\clear_edge.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
@@ -72,15 +73,19 @@
     <ClInclude Include="src\zaf\graphic\geometry\geometry_sink.h" />
     <ClInclude Include="src\zaf\graphic\geometry\path_geometry.h" />
     <ClInclude Include="src\zaf\graphic\layer.h" />
+    <ClInclude Include="src\zaf\graphic\clear_edge.h" />
     <ClInclude Include="src\zaf\graphic\renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer_factory.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
     <ClInclude Include="src\zaf\graphic\stroke_properties.h" />
+    <ClInclude Include="src\zaf\graphic\text\line_metrics.h" />
     <ClInclude Include="src\zaf\graphic\text\paragraph_alignment.h" />
     <ClInclude Include="src\zaf\graphic\text\text_alignment.h" />
     <ClInclude Include="src\zaf\graphic\text\text_format.h" />
     <ClInclude Include="src\zaf\graphic\text\text_format_properties.h" />
     <ClInclude Include="src\zaf\graphic\text\text_layout.h" />
+    <ClInclude Include="src\zaf\graphic\text\text_layout_properties.h" />
+    <ClInclude Include="src\zaf\graphic\text\text_metrics.h" />
     <ClInclude Include="src\zaf\graphic\text\text_range.h" />
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />
     <ClInclude Include="src\zaf\window\caret.h" />

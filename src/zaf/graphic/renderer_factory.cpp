@@ -6,6 +6,8 @@
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_format_properties.h>
+#include <zaf/graphic/text/text_layout.h>
+#include <zaf/graphic/text/text_layout_properties.h>
 
 namespace zaf {
 
@@ -104,7 +106,7 @@ const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const StrokeProperti
 const std::shared_ptr<TextFormat> RendererFactory::CreateTextFormat(const TextFormatProperties& properties) {
 
 	IDWriteTextFormat* handle = nullptr;
-	LRESULT result = dwrite_factory_handle_->CreateTextFormat(
+	HRESULT result = dwrite_factory_handle_->CreateTextFormat(
 		properties.font_family_name.c_str(),
 		properties.font_collection == nullptr ? nullptr : properties.font_collection->GetHandle(),
 		static_cast<DWRITE_FONT_WEIGHT>(properties.font_weight),
@@ -117,6 +119,27 @@ const std::shared_ptr<TextFormat> RendererFactory::CreateTextFormat(const TextFo
 
 	if (SUCCEEDED(result)) {
 		return std::make_shared<TextFormat>(handle);
+	}
+	else {
+		return nullptr;
+	}
+}
+
+
+const std::shared_ptr<TextLayout> RendererFactory::CreateTextLayout(const TextLayoutProperties& properties) {
+
+	IDWriteTextLayout* handle = nullptr;
+	HRESULT result = dwrite_factory_handle_->CreateTextLayout(
+		properties.text.c_str(), 
+		properties.text.length(), 
+		properties.text_format->GetHandle(), 
+		properties.width, 
+		properties.height,
+		&handle
+	);
+
+	if (SUCCEEDED(result)) {
+		return std::make_shared<TextLayout>(handle);
 	}
 	else {
 		return nullptr;

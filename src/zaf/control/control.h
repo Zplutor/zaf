@@ -22,6 +22,8 @@ namespace zaf {
 class Canvas;
 class Font;
 class Layouter;
+class TextFormat;
+class TextLayout;
 class Window;
 
 class Control : public std::enable_shared_from_this<Control> {
@@ -391,6 +393,9 @@ protected:
 	 within its Paint method to display text.
 	 */
 	void PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect);
+
+	std::shared_ptr<TextFormat> CreateTextFormat() const;
+	std::shared_ptr<TextLayout> CreateTextLayout(const Size& layout_size) const;
 
 	void NeedRepaint();
 	void NeedRepaintRect(const Rect& rect);

@@ -8,7 +8,8 @@
 namespace zaf {
 
 Canvas::Canvas(const std::shared_ptr<Renderer>& renderer) :
-	renderer_(renderer) {
+	renderer_(renderer),
+	clear_edge_option_(ClearEdgeOption::None) {
 
 	layer_ = renderer_->CreateLayer(Size());
 	solid_color_brush_ = renderer_->CreateSolidColorBrush(Color::Black);

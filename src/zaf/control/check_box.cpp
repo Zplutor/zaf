@@ -41,38 +41,38 @@ void CheckBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	
 	__super::Paint(canvas, dirty_rect);
 
+	canvas.SetClearEdgeOption(ClearEdgeOption::Clear);
+
 	const float box_size = 12;
 
-	//Paint box.
-	Rect box_rect;
-	box_rect.position.x = 0;
-	box_rect.size.width = box_size;
-	box_rect.size.height = box_size;
+	Rect text_rect = GetContentRect();
+	float x_offset = box_size + 5;
+	text_rect.position.x += x_offset;
+	text_rect.size.width -= x_offset;
 
-	switch (GetParagraphAlignment()) {
-		case ParagraphAlignment::Near:
-			box_rect.position.y = 0;
-			break;
-		case ParagraphAlignment::Center:
-			box_rect.position.y = (GetHeight() - box_size) / 2;
-			break;
-		case ParagraphAlignment::Far:
-			box_rect.position.y = GetHeight() - box_size;
-			break;
+	auto text_layout = CreateTextLayout(text_rect.size);
+	if (text_layout == nullptr) {
+		return;
 	}
 
-	box_rect.position.x += 0.5;
-	box_rect.position.y += 0.5;
+	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
+	canvas.DrawText(text_layout, text_rect.position);
+
+	auto line_metrics = text_layout->GetLineMetrics(1);
+	if (line_metrics.empty()) {
+		return;
+	}
+
+	float box_y = line_metrics.front().height - box_size;
+	if (box_y != 0) {
+		box_y /= 2;
+	}
+
+	auto text_metrics = text_layout->GetMetrics();
+	box_y += text_metrics.top;
+
+	Rect box_rect(0, box_y, box_size, box_size);
 	PaintBox(canvas, box_rect);
-
-	//Paint text.
-	Rect text_rect = GetContentRect();
-
-	float adjust_width = box_size + 5;
-	text_rect.position.x += adjust_width;
-	text_rect.size.width -= adjust_width;
-
-	PaintText(canvas, dirty_rect, text_rect);
 }
 
 
@@ -88,7 +88,7 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
 
 	if (check_state == CheckState::Indeterminate) {
 		Rect mark_rect = box_rect;
-		mark_rect.Inflate(-2.5);
+		mark_rect.Inflate(-3);
 		canvas.DrawRectangle(mark_rect);
 	}
 	else if (check_state == CheckState::Checked) {
@@ -107,8 +107,8 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
 		mark_rect.Inflate(-2);
 
 		Point start_point(mark_rect.position.x + mark_rect.size.width, mark_rect.position.y);
-		Point middle_point(mark_rect.position.x + mark_rect.size.width * 0.4, mark_rect.position.y + mark_rect.size.height - 1);
-		Point end_point(mark_rect.position.x, mark_rect.position.y + mark_rect.size.height * 0.4);
+		Point middle_point(mark_rect.position.x + mark_rect.size.width * 0.4f, mark_rect.position.y + mark_rect.size.height - 1);
+		Point end_point(mark_rect.position.x, mark_rect.position.y + mark_rect.size.height * 0.4f);
 
 		sink->BeginFigure(start_point, GeometrySink::BeginFigureOption::Hollow);
 		sink->AddLine(middle_point);

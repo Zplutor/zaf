@@ -2,13 +2,14 @@
 
 #include <cstddef>
 #include <string>
+#include <vector>
 #include <zaf/graphic/font/font_style.h>
+#include <zaf/graphic/text/line_metrics.h>
 #include <zaf/graphic/text/text_format.h>
+#include <zaf/graphic/text/text_metrics.h>
 #include <zaf/graphic/text/text_range.h>
 
 namespace zaf {
-
-class TextRange;
 
 class TextLayout : public TextFormat {
 public:
@@ -17,6 +18,10 @@ public:
 		handle_(handle) { 
 	
 		ZAF_ASSERT(handle_ != nullptr);
+	}
+
+	IDWriteTextLayout* GetHandle() const {
+		return handle_;
 	}
 
 	std::wstring GetFontFamilyName(std::size_t position) const {
@@ -68,6 +73,10 @@ public:
 	void SetHasUnderline(const TextRange& range, bool has_underline) {
 		handle_->SetUnderline(has_underline ? TRUE : FALSE, range.ToDWRITETEXTRANGE());
 	}
+
+	std::vector<LineMetrics> GetLineMetrics(std::size_t max_line_count) const;
+
+	TextMetrics GetMetrics() const;
 
 private:
 	IDWriteTextLayout* handle_;

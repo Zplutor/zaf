@@ -4,6 +4,7 @@
 #include <string>
 #include <zaf/application.h>
 #include <zaf/base/rect.h>
+#include <zaf/graphic/clear_edge.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/renderer_factory.h>
@@ -16,6 +17,14 @@ class Layer;
 class Canvas {
 public:
 	Canvas(const std::shared_ptr<Renderer>& renderer);
+
+	ClearEdgeOption GetClearEdgeOption() const {
+		return clear_edge_option_;
+	}
+
+	void SetClearEdgeOption(ClearEdgeOption option) {
+		clear_edge_option_ = option;
+	}
 
 	const std::shared_ptr<Renderer>& GetRenderer() const {
 		return renderer_;
@@ -45,6 +54,10 @@ public:
 		return Application::GetInstance().GetRendererFactory()->CreateTextFormat(properties);
 	}
 
+	const std::shared_ptr<TextLayout> CreateTextLayout(const TextLayoutProperties& properties) {
+		return Application::GetInstance().GetRendererFactory()->CreateTextLayout(properties);
+	}
+
 	void SetBrush(const std::shared_ptr<Brush>& brush) {
 		set_brush_ = brush;
 	}
@@ -59,15 +72,26 @@ public:
 	}
 
 	void DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
-		renderer_->DrawLine(from_point, to_point, set_brush_, stroke_width, set_stroke_);
+		renderer_->DrawLine(
+			from_point, 
+			to_point, 
+			set_brush_, 
+			stroke_width,
+			set_stroke_
+		);
 	}
 
 	void DrawRectangle(const Rect& rect) {
-		renderer_->DrawRectangle(rect, set_brush_);
+		renderer_->DrawRectangle(MakeClearEdgeRectForFill(rect, clear_edge_option_), set_brush_);
 	}
 
 	void DrawRectangleFrame(const Rect& rect, float stroke_width) {
-		renderer_->DrawRectangleFrame(rect, set_brush_, stroke_width, set_stroke_);
+		renderer_->DrawRectangleFrame(
+			MakeClearEdgeRectForLine(rect, stroke_width, clear_edge_option_),
+			set_brush_, 
+			stroke_width, 
+			set_stroke_
+		);
 	}
 
 	void DrawGeometry(const std::shared_ptr<Geometry>& geometry) {
@@ -80,6 +104,10 @@ public:
 
 	void DrawText(const std::wstring& text, const std::shared_ptr<TextFormat>& text_format, const Rect& rect) {
 		renderer_->DrawText(text, text_format, rect, set_brush_);
+	}
+
+	void DrawText(const std::shared_ptr<TextLayout>& text_layout, const Point& position) {
+		renderer_->DrawText(text_layout, position, set_brush_);
 	}
 
 private:
@@ -95,11 +123,12 @@ private:
 	void BeginPaint();
 	void EndPaint();
 
-private:
 	Canvas(Canvas&) = delete;
 	Canvas& operator=(const Canvas&) = delete;
 
 private:
+	ClearEdgeOption clear_edge_option_;
+
 	Rect absolute_rect_;
 	Rect absolute_paintable_rect_;
 

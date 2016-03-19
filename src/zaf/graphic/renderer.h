@@ -8,6 +8,7 @@
 #include <zaf/graphic/brush/brush.h>
 #include <zaf/graphic/geometry/geometry.h>
 #include <zaf/graphic/text/text_format.h>
+#include <zaf/graphic/text/text_layout.h>
 
 namespace zaf {
 
@@ -119,6 +120,15 @@ public:
 			rect.ToD2D1RECTF(),
 			brush->GetHandle()
 		);
+	}
+
+	void DrawText(
+		const std::shared_ptr<TextLayout>& text_layout,
+		const Point& position,
+		const std::shared_ptr<Brush>& brush
+	) {
+
+		handle_->DrawTextLayout(position.ToD2D1POINT2F(), text_layout->GetHandle(), brush->GetHandle());
 	}
 
 	void PushLayer(const Layer::Parameters& parameters, const std::shared_ptr<Layer>& layer);

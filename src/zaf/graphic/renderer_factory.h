@@ -12,6 +12,8 @@ class Stroke;
 class StrokeProperties;
 class TextFormat;
 class TextFormatProperties;
+class TextLayout;
+class TextLayoutProperties;
 
 /**
  Represent a factory that creates renderers and renderer-independent resources.
@@ -62,6 +64,14 @@ public:
 	 Return nullptr if failed.
 	 */
 	const std::shared_ptr<TextFormat> CreateTextFormat(const TextFormatProperties& properties);
+
+	/**
+	 Create a text layout with specified properties.
+
+	 @return
+	 Return nullptr if failed.
+	 */
+	const std::shared_ptr<TextLayout> CreateTextLayout(const TextLayoutProperties& properties);
 
 	/**
 	 Get the underlying ID2D1Factory instance.

@@ -6,6 +6,8 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_format_properties.h>
+#include <zaf/graphic/text/text_layout.h>
+#include <zaf/graphic/text/text_layout_properties.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -152,24 +154,50 @@ void Control::PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text
 		return;
 	}
 
-	auto font = GetFont();
+	auto text_format = CreateTextFormat();
+	if (text_format == nullptr) {
+		return;
+	}
 
+	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
+	canvas.DrawText(GetText(), text_format, text_rect);
+}
+
+
+std::shared_ptr<TextFormat> Control::CreateTextFormat() const {
+
+	auto font = GetFont();
 	TextFormatProperties text_format_properties;
 	text_format_properties.font_family_name = font.family_name;
 	text_format_properties.font_size = font.size;
 	text_format_properties.font_weight = font.weight;
 
-	auto text_format = canvas.CreateTextFormat(text_format_properties);
+	auto text_format = Application::GetInstance().GetRendererFactory()->CreateTextFormat(text_format_properties);
 	if (text_format == nullptr) {
-		return;
+		return nullptr;
 	}
 
 	text_format->SetTextAlignment(GetTextAlignment());
 	text_format->SetParagraphAlignment(GetParagraphAlignment());
 	text_format->SetWordWrapping(GetWordWrapping());
 
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
-	canvas.DrawText(GetText(), text_format, text_rect);
+	return text_format;
+}
+
+
+std::shared_ptr<TextLayout> Control::CreateTextLayout(const Size& layout_size) const {
+
+	auto text_format = CreateTextFormat();
+	if (text_format == nullptr) {
+		return nullptr;
+	}
+
+	TextLayoutProperties text_layout_properties;
+	text_layout_properties.text = GetText();
+	text_layout_properties.text_format = text_format;
+	text_layout_properties.width = layout_size.width;
+	text_layout_properties.height = layout_size.height;
+	return Application::GetInstance().GetRendererFactory()->CreateTextLayout(text_layout_properties);
 }
 
 
