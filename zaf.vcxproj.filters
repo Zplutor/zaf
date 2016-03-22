@@ -99,6 +99,9 @@
     <ClCompile Include="src\zaf\graphic\clear_edge.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\radio_button.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -109,15 +112,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\zaf.h">
       <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\point.h">
-      <Filter>zaf\base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\rect.h">
-      <Filter>zaf\base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\size.h">
-      <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\event.h">
       <Filter>zaf\base</Filter>
@@ -267,6 +261,21 @@
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\clear_edge.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\radio_button.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\point.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\rect.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\size.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\ellipse.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
   </ItemGroup>

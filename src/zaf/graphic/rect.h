@@ -2,8 +2,8 @@
 
 #include <Windows.h>
 #include <zaf/base/direct2d.h>
-#include <zaf/base/point.h>
-#include <zaf/base/size.h>
+#include <zaf/graphic/point.h>
+#include <zaf/graphic/size.h>
 
 namespace zaf {
 

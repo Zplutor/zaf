@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 #include <zaf/application.h>
-#include <zaf/base/rect.h>
+#include <zaf/graphic/rect.h>
 #include <zaf/graphic/clear_edge.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/renderer.h>
@@ -94,6 +94,15 @@ public:
 			stroke_width, 
 			state->stroke
 		);
+	}
+
+	void DrawEllipse(const Ellipse& ellipse) {
+		renderer_->DrawEllipse(ellipse, GetCurrentState()->brush);
+	}
+
+	void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width) {
+		auto state = GetCurrentState();
+		renderer_->DrawEllipseFrame(ellipse, state->brush, stroke_width, state->stroke);
 	}
 
 	void DrawGeometry(const std::shared_ptr<Geometry>& geometry) {

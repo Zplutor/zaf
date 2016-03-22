@@ -9,7 +9,7 @@
 #include <vector>
 #include <zaf/enum.h>
 #include <zaf/base/nullable.h>
-#include <zaf/base/rect.h>
+#include <zaf/graphic/rect.h>
 #include <zaf/base/variant.h>
 #include <zaf/control/anchor.h>
 #include <zaf/graphic/color.h>

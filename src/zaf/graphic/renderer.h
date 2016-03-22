@@ -2,8 +2,9 @@
 
 #include <memory>
 #include <zaf/base/direct2d.h>
-#include <zaf/base/rect.h>
+#include <zaf/graphic/ellipse.h>
 #include <zaf/graphic/layer.h>
+#include <zaf/graphic/rect.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/brush/brush.h>
 #include <zaf/graphic/geometry/geometry.h>
@@ -74,6 +75,25 @@ public:
 			rect.ToD2D1RECTF(),
 			brush->GetHandle(), 
 			stroke_width,
+			stroke == nullptr ? nullptr : stroke->GetHandle()
+		);
+	}
+
+	void DrawEllipse(const Ellipse& ellipse, const std::shared_ptr<Brush>& brush) {
+		handle_->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush->GetHandle());
+	}
+
+	void DrawEllipseFrame(
+		const Ellipse& ellipse,
+		const std::shared_ptr<Brush>& brush,
+		float stroke_width,
+		const std::shared_ptr<Stroke>& stroke
+	) {
+
+		handle_->DrawEllipse(
+			ellipse.ToD2D1ELLIPSE(),
+			brush->GetHandle(),
+			stroke_width, 
 			stroke == nullptr ? nullptr : stroke->GetHandle()
 		);
 	}

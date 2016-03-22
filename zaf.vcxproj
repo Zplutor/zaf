@@ -19,6 +19,7 @@
     <ClCompile Include="src\zaf\control\clickable_control.cpp" />
     <ClCompile Include="src\zaf\control\control.cpp" />
     <ClCompile Include="src\zaf\control\label.cpp" />
+    <ClCompile Include="src\zaf\control\radio_button.cpp" />
     <ClCompile Include="src\zaf\control\scrollable_control.cpp" />
     <ClCompile Include="src\zaf\control\scroll_bar.cpp" />
     <ClCompile Include="src\zaf\control\text_box.cpp" />
@@ -43,9 +44,6 @@
     <ClInclude Include="src\zaf\base\flag_enum.h" />
     <ClInclude Include="src\zaf\base\log.h" />
     <ClInclude Include="src\zaf\base\nullable.h" />
-    <ClInclude Include="src\zaf\base\point.h" />
-    <ClInclude Include="src\zaf\base\rect.h" />
-    <ClInclude Include="src\zaf\base\size.h" />
     <ClInclude Include="src\zaf\base\timer.h" />
     <ClInclude Include="src\zaf\base\variant.h" />
     <ClInclude Include="src\zaf\control\anchor.h" />
@@ -55,6 +53,7 @@
     <ClInclude Include="src\zaf\control\clickable_control.h" />
     <ClInclude Include="src\zaf\control\control.h" />
     <ClInclude Include="src\zaf\control\label.h" />
+    <ClInclude Include="src\zaf\control\radio_button.h" />
     <ClInclude Include="src\zaf\control\scrollable_control.h" />
     <ClInclude Include="src\zaf\control\scroll_bar.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />
@@ -63,6 +62,7 @@
     <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h" />
     <ClInclude Include="src\zaf\graphic\canvas.h" />
     <ClInclude Include="src\zaf\graphic\color.h" />
+    <ClInclude Include="src\zaf\graphic\ellipse.h" />
     <ClInclude Include="src\zaf\graphic\font\font_collection.h" />
     <ClInclude Include="src\zaf\graphic\font\font_face.h" />
     <ClInclude Include="src\zaf\graphic\font\font_family.h" />
@@ -74,8 +74,11 @@
     <ClInclude Include="src\zaf\graphic\geometry\path_geometry.h" />
     <ClInclude Include="src\zaf\graphic\layer.h" />
     <ClInclude Include="src\zaf\graphic\clear_edge.h" />
+    <ClInclude Include="src\zaf\graphic\point.h" />
+    <ClInclude Include="src\zaf\graphic\rect.h" />
     <ClInclude Include="src\zaf\graphic\renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer_factory.h" />
+    <ClInclude Include="src\zaf\graphic\size.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
     <ClInclude Include="src\zaf\graphic\stroke_properties.h" />
     <ClInclude Include="src\zaf\graphic\text\line_metrics.h" />

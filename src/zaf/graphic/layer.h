@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/direct2d.h>
-#include <zaf/base/rect.h>
+#include <zaf/graphic/rect.h>
 
 namespace zaf {
 

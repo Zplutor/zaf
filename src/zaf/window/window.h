@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <zaf/control/control.h>
 #include <zaf/base/event.h>
-#include <zaf/base/rect.h>
+#include <zaf/graphic/rect.h>
 #include <zaf/window/window_state.h>
 
 namespace zaf {

@@ -3,7 +3,7 @@
 #include <functional>
 #include <utility>
 #include <zaf/base/assert.h>
-#include <zaf/base/rect.h>
+#include <zaf/graphic/rect.h>
 
 namespace zaf {
 

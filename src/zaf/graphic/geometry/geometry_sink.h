@@ -3,7 +3,7 @@
 #include <vector>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/flag_enum.h>
-#include <zaf/base/point.h>
+#include <zaf/graphic/point.h>
 
 namespace zaf {
 
