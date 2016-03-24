@@ -1,5 +1,6 @@
 #include <zaf/control/check_box.h>
 #include <zaf/base/assert.h>
+#include <zaf/control/paint_utility.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
@@ -41,38 +42,24 @@ void CheckBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	
 	__super::Paint(canvas, dirty_rect);
 
-	canvas.SetClearEdgeOption(ClearEdgeOption::Clear);
-
-	const float box_size = 12;
-
-	Rect text_rect = GetContentRect();
-	float x_offset = box_size + 5;
-	text_rect.position.x += x_offset;
-	text_rect.size.width -= x_offset;
-
-	auto text_layout = CreateTextLayout(text_rect.size);
+	auto text_layout = CreateTextLayout(Size());
 	if (text_layout == nullptr) {
 		return;
 	}
 
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
-	canvas.DrawText(text_layout, text_rect.position);
+	canvas.SetClearEdgeOption(ClearEdgeOption::Clear);
 
-	auto line_metrics = text_layout->GetLineMetrics(1);
-	if (line_metrics.empty()) {
-		return;
-	}
-
-	float box_y = line_metrics.front().height - box_size;
-	if (box_y != 0) {
-		box_y /= 2;
-	}
-
-	auto text_metrics = text_layout->GetMetrics();
-	box_y += text_metrics.top;
-
-	Rect box_rect(0, box_y, box_size, box_size);
-	PaintBox(canvas, box_rect);
+	PaintTextWithIcon(
+		canvas,
+		GetContentRect(), 
+		text_layout, 
+		12,
+		[this](Canvas& canvas, const Rect& text_rect, const std::shared_ptr<TextLayout>& text_layout) {
+			canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
+			canvas.DrawText(text_layout, text_rect.position);
+		},
+		std::bind(&CheckBox::PaintBox, this, std::placeholders::_1, std::placeholders::_2)
+	);
 }
 
 

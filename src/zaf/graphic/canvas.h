@@ -97,12 +97,18 @@ public:
 	}
 
 	void DrawEllipse(const Ellipse& ellipse) {
-		renderer_->DrawEllipse(ellipse, GetCurrentState()->brush);
+		auto state = GetCurrentState();
+		renderer_->DrawEllipse(MakeClearEdgeEllipseForFill(ellipse, state->clear_edge_option), state->brush);
 	}
 
 	void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width) {
 		auto state = GetCurrentState();
-		renderer_->DrawEllipseFrame(ellipse, state->brush, stroke_width, state->stroke);
+		renderer_->DrawEllipseFrame(
+			MakeClearEdgeEllipseForLine(ellipse, stroke_width, state->clear_edge_option), 
+			state->brush,
+			stroke_width,
+			state->stroke
+		);
 	}
 
 	void DrawGeometry(const std::shared_ptr<Geometry>& geometry) {

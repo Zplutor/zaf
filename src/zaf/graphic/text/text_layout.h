@@ -24,6 +24,22 @@ public:
 		return handle_;
 	}
 
+	float GetMaxWidth() const {
+		return handle_->GetMaxWidth();
+	}
+
+	void SetMaxWidth(float max_width) {
+		handle_->SetMaxWidth(max_width);
+	}
+
+	float GetMaxHeight() const {
+		return handle_->GetMaxHeight();
+	}
+
+	void SetMaxHeight(float max_height) {
+		handle_->SetMaxHeight(max_height);
+	}
+
 	std::wstring GetFontFamilyName(std::size_t position) const {
 		return GetFontFamilyName(position, nullptr);
 	}
@@ -74,9 +90,9 @@ public:
 		handle_->SetUnderline(has_underline ? TRUE : FALSE, range.ToDWRITETEXTRANGE());
 	}
 
-	std::vector<LineMetrics> GetLineMetrics(std::size_t max_line_count) const;
+	const std::vector<LineMetrics> GetLineMetrics(std::size_t max_line_count) const;
 
-	TextMetrics GetMetrics() const;
+	const TextMetrics GetMetrics() const;
 
 private:
 	IDWriteTextLayout* handle_;

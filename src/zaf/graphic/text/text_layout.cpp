@@ -81,7 +81,7 @@ bool TextLayout::HasUnderline(std::size_t position, TextRange* range) const {
 }
 
 
-std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_count) const {
+const std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_count) const {
 
 	auto dwrite_line_metrics = std::make_unique<DWRITE_LINE_METRICS[]>(max_line_count);
 	std::size_t actual_line_count = 0;
@@ -112,7 +112,7 @@ std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_count) 
 }
 
 
-TextMetrics TextLayout::GetMetrics() const {
+const TextMetrics TextLayout::GetMetrics() const {
 
 	DWRITE_TEXT_METRICS dwrite_text_metrics = { 0 };
 	handle_->GetMetrics(&dwrite_text_metrics);

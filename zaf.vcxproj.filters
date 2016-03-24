@@ -102,6 +102,9 @@
     <ClCompile Include="src\zaf\control\radio_button.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\paint_utility.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -277,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\ellipse.h">
       <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\paint_utility.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
