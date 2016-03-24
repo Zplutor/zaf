@@ -503,7 +503,9 @@ void ScrollBar::Arrow::Initialize() {
 
 void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	
-	ClickableControl::Paint(canvas, dirty_rect);
+	__super::Paint(canvas, dirty_rect);
+
+	Canvas::StateGuard state_guard(canvas);
 
 	auto path = canvas.CreatePathGeometry();
 	if (path == nullptr) {

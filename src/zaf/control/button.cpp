@@ -1,4 +1,5 @@
 #include <zaf/control/button.h>
+#include <zaf/graphic/canvas.h>
 
 namespace zaf {
 
@@ -36,7 +37,9 @@ void Button::Initialize() {
 
 void Button::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
-	ClickableControl::Paint(canvas, dirty_rect);
+	__super::Paint(canvas, dirty_rect);
+
+	Canvas::StateGuard state_guard(canvas);
 	PaintText(canvas, dirty_rect, GetContentRect());
 }
 

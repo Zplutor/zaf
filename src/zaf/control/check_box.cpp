@@ -42,6 +42,8 @@ void CheckBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	
 	__super::Paint(canvas, dirty_rect);
 
+	Canvas::StateGuard state_guard(canvas);
+
 	auto text_layout = CreateTextLayout(Size());
 	if (text_layout == nullptr) {
 		return;

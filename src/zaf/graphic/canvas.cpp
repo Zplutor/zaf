@@ -11,6 +11,7 @@ Canvas::Canvas(const std::shared_ptr<Renderer>& renderer) :
 	renderer_(renderer) {
 
 	layer_ = renderer_->CreateLayer(Size());
+	SaveState();
 }
 
 
@@ -25,16 +26,12 @@ void Canvas::BeginPaint() {
 	Layer::Parameters layer_param;
 	layer_param.content_bounds = related_dirty_rect;
 	renderer_->PushLayer(layer_param, layer_);
-
-	SaveState();
 }
 
 
 void Canvas::EndPaint() {
 
 	renderer_->PopLayer();
-
-	RestoreState();
 }
 
 

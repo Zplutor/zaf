@@ -16,15 +16,26 @@ class Layer;
 
 class Canvas {
 public:
+	class StateGuard {
+	public:
+		StateGuard(Canvas& canvas) : canvas_(canvas) {
+			canvas_.SaveState();
+		}
+
+		~StateGuard() {
+			canvas_.RestoreState();
+		}
+
+	private:
+		StateGuard(StateGuard&) = delete;
+		StateGuard& operator=(const StateGuard&) = delete;
+
+	private:
+		Canvas& canvas_;
+	};
+
+public:
 	Canvas(const std::shared_ptr<Renderer>& renderer);
-
-	ClearEdgeOption GetClearEdgeOption() const {
-		return GetCurrentState()->clear_edge_option;
-	}
-
-	void SetClearEdgeOption(ClearEdgeOption option) {
-		GetCurrentState()->clear_edge_option = option;
-	}
 
 	const std::shared_ptr<Renderer>& GetRenderer() const {
 		return renderer_;
@@ -38,24 +49,15 @@ public:
 		return absolute_paintable_rect_;
 	}
 
-	const std::shared_ptr<Brush> CreateSolidColorBrush(const Color& color) {
-		return renderer_->CreateSolidColorBrush(color);
+	void SaveState();
+	void RestoreState();
+
+	ClearEdgeOption GetClearEdgeOption() const {
+		return GetCurrentState()->clear_edge_option;
 	}
 
-	const std::shared_ptr<PathGeometry> CreatePathGeometry() {
-		return Application::GetInstance().GetRendererFactory()->CreatePathGeometry();
-	}
-
-	const std::shared_ptr<Stroke> CreateStroke(const StrokeProperties& properties) {
-		return Application::GetInstance().GetRendererFactory()->CreateStroke(properties);
-	}
-
-	const std::shared_ptr<TextFormat> CreateTextFormat(const TextFormatProperties& properties) {
-		return Application::GetInstance().GetRendererFactory()->CreateTextFormat(properties);
-	}
-
-	const std::shared_ptr<TextLayout> CreateTextLayout(const TextLayoutProperties& properties) {
-		return Application::GetInstance().GetRendererFactory()->CreateTextLayout(properties);
+	void SetClearEdgeOption(ClearEdgeOption option) {
+		GetCurrentState()->clear_edge_option = option;
 	}
 
 	void SetBrush(const std::shared_ptr<Brush>& brush) {
@@ -128,6 +130,26 @@ public:
 		renderer_->DrawText(text_layout, position, GetCurrentState()->brush);
 	}
 
+	const std::shared_ptr<Brush> CreateSolidColorBrush(const Color& color) {
+		return renderer_->CreateSolidColorBrush(color);
+	}
+
+	const std::shared_ptr<PathGeometry> CreatePathGeometry() {
+		return Application::GetInstance().GetRendererFactory()->CreatePathGeometry();
+	}
+
+	const std::shared_ptr<Stroke> CreateStroke(const StrokeProperties& properties) {
+		return Application::GetInstance().GetRendererFactory()->CreateStroke(properties);
+	}
+
+	const std::shared_ptr<TextFormat> CreateTextFormat(const TextFormatProperties& properties) {
+		return Application::GetInstance().GetRendererFactory()->CreateTextFormat(properties);
+	}
+
+	const std::shared_ptr<TextLayout> CreateTextLayout(const TextLayoutProperties& properties) {
+		return Application::GetInstance().GetRendererFactory()->CreateTextLayout(properties);
+	}
+
 private:
 	class State {
 	public:
@@ -153,8 +175,6 @@ private:
 	void EndPaint();
 
 private:
-	void SaveState();
-	void RestoreState();
 	std::shared_ptr<State> GetCurrentState() const;
 
 	Canvas(Canvas&) = delete;

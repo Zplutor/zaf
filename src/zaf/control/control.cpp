@@ -117,6 +117,8 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 
 void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
+	Canvas::StateGuard state_guard(canvas);
+
 	int paint_state = GetPaintState();
 
 	Rect paint_rect(Point(), GetSize());
