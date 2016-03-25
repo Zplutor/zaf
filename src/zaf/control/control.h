@@ -386,14 +386,6 @@ protected:
 	 */
 	virtual int GetPaintState() const;
 
-	/**
-	 Paint text in specified rect.
-
-	 The text is not painted by default. Derived classes should call this method
-	 within its Paint method to display text.
-	 */
-	void PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect);
-
 	std::shared_ptr<TextFormat> CreateTextFormat() const;
 	std::shared_ptr<TextLayout> CreateTextLayout(const Size& layout_size) const;
 

@@ -138,23 +138,6 @@ int Control::GetPaintState() const {
 }
 
 
-void Control::PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect) {
-
-	std::wstring text = GetText();
-	if (text.empty()) {
-		return;
-	}
-
-	auto text_format = CreateTextFormat();
-	if (text_format == nullptr) {
-		return;
-	}
-
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
-	canvas.DrawText(GetText(), text_format, text_rect);
-}
-
-
 std::shared_ptr<TextFormat> Control::CreateTextFormat() const {
 
 	auto font = GetFont();
