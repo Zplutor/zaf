@@ -23,9 +23,6 @@ public:
 		return is_pressed_;
 	}
 
-	const Color GetColor(int paint_component, int paint_state) const override;
-	void SetColor(int paint_component, int paint_state, const Color& color) override;
-
 public:
 	ClickEvent::Proxy OnClick;
 
@@ -33,6 +30,8 @@ protected:
 	void Initialize() override;
 
 	int GetPaintState() const override;
+
+	const Color GetDefaultColor(int paint_component, int paint_state) const override;
 
 	void MouseEnter() override;
 	void MouseLeave() override;

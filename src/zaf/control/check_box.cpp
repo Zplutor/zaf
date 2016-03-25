@@ -9,11 +9,6 @@ namespace zaf {
 
 static const wchar_t* const kCanAutoChangeCheckStatePropertyName = L"CanAutoChangeCheckState";
 static const wchar_t* const kCanBeIndeterminatePropertyName = L"CanBeIndeterminate";
-static const wchar_t* const kDisabledBoxColorPropertyName = L"DisabledBoxColor";
-static const wchar_t* const kFocusedBoxColorPropertyName = L"FocusedBoxColor";
-static const wchar_t* const kHoveredBoxColorPropertyName = L"HoveredBoxColor";
-static const wchar_t* const kNormalBoxColorPropertyName = L"NormalBoxColor";
-static const wchar_t* const kPressedBoxColorPropertyName = L"PressedBoxColor";
 
 CheckBox::CheckBox() : 
 	check_state_(CheckState::Unchecked),
@@ -34,6 +29,7 @@ void CheckBox::Initialize() {
 	SetColor(PaintComponent::Box, PaintState::Normal, Color::Black);
 	SetColor(PaintComponent::Box, PaintState::Hovered, Color::FromRGB(0x4169E1));
 	SetColor(PaintComponent::Box, PaintState::Pressed, Color::FromRGB(0x0000CD));
+	SetColor(PaintComponent::Box, PaintState::Focused, Color::FromRGB(0x0000CD));
 	SetColor(PaintComponent::Box, PaintState::Disabled, Color::Gray);
 }
 
@@ -106,72 +102,6 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
 		sink->Close();
 
 		canvas.DrawGeometryFrame(path, 1.5);
-	}
-}
-
-
-const Color CheckBox::GetColor(int paint_component, int paint_state) const {
-
-	if (paint_component == PaintComponent::Box) {
-
-		return GetPropertyMap().GetProperty<Color>(
-			GetBoxColorPropertyName(paint_state), 
-			[this, paint_state]() {
-
-				if (paint_state == PaintState::Normal) {
-					return GetColor(PaintComponent::Foreground, PaintState::Normal);
-				}
-				else if (paint_state == PaintState::Pressed) {
-					return GetColor(PaintComponent::Box, PaintState::Hovered);
-				}
-				else {
-					return GetColor(PaintComponent::Box, PaintState::Normal);
-				}
-			}
-		);
-	}
-	else {
-
-		return __super::GetColor(paint_component, paint_state);
-	}
-}
-
-
-void CheckBox::SetColor(int paint_component, int paint_state, const Color& new_color) {
-
-	if (paint_component == PaintComponent::Box) {
-
-		GetPropertyMap().SetProperty(GetBoxColorPropertyName(paint_state), new_color);
-	}
-	else {
-
-		__super::SetColor(paint_component, paint_state, new_color);
-	}
-}
-
-
-std::wstring CheckBox::GetBoxColorPropertyName(int paint_state) const {
-
-	switch (paint_state) {
-
-		case PaintState::Normal:
-			return kNormalBoxColorPropertyName;
-
-		case PaintState::Hovered:
-			return kHoveredBoxColorPropertyName;
-
-		case PaintState::Focused:
-			return kFocusedBoxColorPropertyName;
-
-		case PaintState::Pressed:
-			return kPressedBoxColorPropertyName;
-
-		case PaintState::Disabled:
-			return kDisabledBoxColorPropertyName;
-
-		default:
-			ZAF_FAIL();
-			return std::wstring();
 	}
 }
 

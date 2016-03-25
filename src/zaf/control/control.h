@@ -153,12 +153,12 @@ public:
 	/**
 	 Get the color of specified component while in specified state.
 	 */
-	virtual const Color GetColor(int paint_component, int paint_state) const;
+	const Color GetColor(int paint_component, int paint_state) const;
 
 	/**
 	 Set the color of specified component while in specified state.
 	 */
-	virtual void SetColor(int paint_component, int paint_state, const Color& color);
+	void SetColor(int paint_component, int paint_state, const Color& color);
 
 	/**
 	 Get the control's text value.
@@ -409,6 +409,8 @@ protected:
 		return const_cast<Control*>(this)->GetPropertyMap();
 	}
 
+	virtual const Color GetDefaultColor(int paint_component, int paint_state) const;
+
 	bool IsCapturingMouse() const {
 		return is_capturing_mouse_;
 	}
@@ -449,13 +451,9 @@ private:
 
 	void LayoutChild(const std::shared_ptr<Control>& child, const Rect& previous_rect);
 
-	const Color GetBackgroundColor(int paint_state) const;
-	const Color GetForegroundColor(int paint_state) const;
-	const Color GetBorderColor(int paint_state) const;
-	const Color GetPropertyColor(
-		const std::wstring& color_property_name,
-		const std::function<const Color()>& get_default_color
-	) const;
+	const Color GetDefaultBackgroundColor(int paint_state) const;
+	const Color GetDefaultForegroundColor(int paint_state) const;
+	const Color GetDefaultBorderColor(int paint_state) const;
 
 	void SetParent(const std::shared_ptr<Control>& parent) {
 		parent_ = parent;

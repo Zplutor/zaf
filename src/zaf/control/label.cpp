@@ -14,7 +14,9 @@ Label::~Label() {
 
 
 void Label::Initialize() {
+
 	__super::Initialize();
+
 	SetColor(PaintComponent::Foreground, PaintState::Disabled, Color::Gray);
 }
 

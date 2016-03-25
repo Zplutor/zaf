@@ -4,10 +4,6 @@
 
 namespace zaf {
 
-static const wchar_t* const kPressedBackgroundColorPropertyName = L"PressedBackgroundColor";
-static const wchar_t* const kPressedBorderColorPropertyName = L"PressedBorderColor";
-static const wchar_t* const kPressedForegroundColorPropertyName = L"PressedForegroundColor";
-
 ClickableControl::ClickableControl() :
 	is_pressed_(false),
 	is_mouse_press_(false),
@@ -29,72 +25,13 @@ void ClickableControl::Initialize() {
 }
 
 
-const Color ClickableControl::GetColor(int paint_component, int paint_state) const {
+const Color ClickableControl::GetDefaultColor(int paint_component, int paint_state) const {
 
 	if (paint_state == PaintState::Pressed) {
-
-		auto get_pressed_color = [paint_component, this](const std::wstring& property_name) {
-
-			auto color = GetPropertyMap().TryGetProperty<Color>(property_name);
-			if (color != nullptr) {
-				return *color;
-			}
-
-			return Control::GetColor(paint_component, Control::PaintState::Hovered);
-		};
-
-		switch (paint_component) {
-
-			case PaintComponent::Background: 
-				return get_pressed_color(kPressedBackgroundColorPropertyName);
-				
-			case PaintComponent::Foreground: 
-				return get_pressed_color(kPressedForegroundColorPropertyName);
-
-			case PaintComponent::Border:
-				return get_pressed_color(kPressedBorderColorPropertyName);
-
-			default:
-				break;
-		}
-	}
-	
-	return Control::GetColor(paint_component, paint_state);
-}
-
-
-void ClickableControl::SetColor(int paint_component, int paint_state, const Color& color) {
-
-	if (paint_state == PaintState::Pressed) {
-
-		std::wstring property_name;
-
-		switch (paint_component) {
-
-			case PaintComponent::Background:
-				property_name = kPressedBackgroundColorPropertyName;
-				break;
-
-			case PaintComponent::Foreground:
-				property_name = kPressedForegroundColorPropertyName;
-				break;
-
-			case PaintComponent::Border:
-				property_name= kPressedBorderColorPropertyName;
-				break;
-
-			default:
-				break;
-		}
-
-		if (! property_name.empty()) {
-			GetPropertyMap().SetProperty(property_name, color);
-			NeedRepaint();
-			return;
-		}
+		return GetColor(paint_component, PaintState::Hovered);
 	}
 
-	Control::SetColor(paint_component, paint_state, color);
+	return __super::GetDefaultColor(paint_component, paint_state);
 }
 
 

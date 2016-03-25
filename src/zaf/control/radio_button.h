@@ -34,9 +34,6 @@ public:
 	RadioButton();
 	~RadioButton();
 
-	const Color GetColor(int paint_component, int paint_state) const override;
-	void SetColor(int paint_component, int paint_state, const Color& new_color) override;
-
 	const std::shared_ptr<Group>& GetGroup() const {
 		return group_;
 	}
@@ -68,8 +65,6 @@ private:
 	void SetUnselected() {
 		SetIsSelected(false);
 	}
-
-	std::wstring GetRadioColorPropertyName(int paint_state) const;
 
 	void SetIsSelected(bool is_selected);
 

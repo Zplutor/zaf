@@ -7,11 +7,6 @@
 namespace zaf {
 
 static const wchar_t* const kCanAutoSelectPropertyName = L"CanAutoSelect";
-static const wchar_t* const kDisabledRadioColorPropertyName = L"DisabledRadioColor";
-static const wchar_t* const kFocusedRadioColorPropertyName = L"FocusedRadioColor";
-static const wchar_t* const kHoveredRadioColorPropertyName = L"HoveredRadioColor";
-static const wchar_t* const kNormalRadioColorPropertyName = L"NormalRadioColor";
-static const wchar_t* const kPressedRadioColorPropertyName = L"PressedRadioColor";
 
 RadioButton::RadioButton() : 
 	is_selected_(true),
@@ -32,6 +27,7 @@ void RadioButton::Initialize() {
 	SetColor(PaintComponent::Radio, PaintState::Normal, Color::Black);
 	SetColor(PaintComponent::Radio, PaintState::Hovered, Color::FromRGB(0x4169E1));
 	SetColor(PaintComponent::Radio, PaintState::Pressed, Color::FromRGB(0x0000CD));
+	SetColor(PaintComponent::Radio, PaintState::Focused, Color::FromRGB(0x0000CD));
 	SetColor(PaintComponent::Radio, PaintState::Disabled, Color::Gray);
 }
 
@@ -81,70 +77,6 @@ void RadioButton::PaintRadio(Canvas& canvas, const Rect& radio_rect) {
 	if (IsSelected()) {
 		ellipse.Inflate(-3);
 		canvas.DrawEllipse(ellipse);
-	}
-}
-
-
-const Color RadioButton::GetColor(int paint_component, int paint_state) const {
-
-	if (paint_component == PaintComponent::Radio) {
-
-		return GetPropertyMap().GetProperty<Color>(
-			GetRadioColorPropertyName(paint_state), 
-			[this, paint_state]() {
-				
-				if (paint_state == PaintState::Normal) {
-					return GetColor(PaintComponent::Foreground, PaintState::Normal);
-				}
-				else if (paint_state == PaintState::Pressed) {
-					return GetColor(PaintComponent::Radio, PaintState::Hovered);
-				}
-				else {
-					return GetColor(PaintComponent::Radio, PaintState::Normal);
-				}
-			}
-		);
-	}
-	else {
-
-		return __super::GetColor(paint_component, paint_state);
-	}
-}
-
-
-void RadioButton::SetColor(int paint_component, int paint_state, const Color& new_color) {
-	
-	if (paint_component == PaintComponent::Radio) {
-		GetPropertyMap().SetProperty(GetRadioColorPropertyName(paint_state), new_color);
-	}
-	else {
-		__super::SetColor(paint_component, paint_state, new_color);
-	}
-}
-
-
-std::wstring RadioButton::GetRadioColorPropertyName(int paint_state) const {
-
-	switch (paint_state) {
-
-		case PaintState::Normal:
-			return kNormalRadioColorPropertyName;
-
-		case PaintState::Hovered:
-			return kHoveredRadioColorPropertyName;
-
-		case PaintState::Pressed:
-			return kPressedRadioColorPropertyName;
-
-		case PaintState::Focused:
-			return kFocusedRadioColorPropertyName;
-
-		case PaintState::Disabled:
-			return kDisabledRadioColorPropertyName;
-
-		default:
-			ZAF_FAIL();
-			return std::wstring();
 	}
 }
 

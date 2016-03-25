@@ -38,16 +38,6 @@ public:
 	~CheckBox();
 
 	/**
-	 Override. Add support for the color of box paint component.
-	 */
-	const Color GetColor(int paint_component, int paint_state) const override;
-
-	/**
-	 Override. Add support for the color of box paint component.
-	 */
-	void SetColor(int paint_component, int paint_state, const Color& new_color) override;
-
-	/**
 	 Get a value indicating that whether the check box changes its check state when 
 	 it is clicked.
 
@@ -129,8 +119,6 @@ protected:
 
 private:
 	void PaintBox(Canvas& canvas, const Rect& box_rect) const;
-
-	std::wstring GetBoxColorPropertyName(int paint_state) const;
 
 private:
 	CheckState check_state_;
