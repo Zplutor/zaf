@@ -68,16 +68,19 @@ public:
 		return renderer_factory_;
 	}
 
-public:
 	/**
-	 The application began run event.
+	 Get the application began run event.
 	 */
-	BeginRunEvent::Proxy OnBeginRun;
+	BeginRunEvent::Proxy GetBeginRunEvent() {
+		return BeginRunEvent::Proxy(begin_run_event_);
+	}
 
 	/**
-	 The application will end run event.
+	 Get the application will end run event.
 	 */
-	EndRunEvent::Proxy OnEndRun;
+	EndRunEvent::Proxy GetEndRunEvent() {
+		return EndRunEvent::Proxy(end_run_event_);
+	}
 	
 private:
 	friend class Window;

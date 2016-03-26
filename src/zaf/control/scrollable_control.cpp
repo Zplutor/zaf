@@ -35,10 +35,10 @@ void ScrollableControl::Initialize() {
 
 	auto scroll_event_listener = std::bind(&ScrollableControl::ScrollBarScroll, this, std::placeholders::_1);
 
-	vertical_scroll_bar_->OnScroll.AddListenerWithTag(scroll_event_listener, this);
+	vertical_scroll_bar_->GetScrollEvent().AddListener(scroll_event_listener, this);
 	AddChild(vertical_scroll_bar_);
 
-	horizontal_scroll_bar_->OnScroll.AddListenerWithTag(scroll_event_listener, this);
+	horizontal_scroll_bar_->GetScrollEvent().AddListener(scroll_event_listener, this);
 	AddChild(horizontal_scroll_bar_);
 }
 

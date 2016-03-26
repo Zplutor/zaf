@@ -12,12 +12,7 @@ Application& Application::GetInstance() {
 }
 
 
-Application::Application() : 
-	is_initialized_(false),
-	begin_run_event_(),
-	end_run_event_(),
-	OnBeginRun(begin_run_event_),
-	OnEndRun(end_run_event_) {
+Application::Application() : is_initialized_(false) {
 
 }
 

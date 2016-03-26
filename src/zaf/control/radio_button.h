@@ -28,7 +28,7 @@ public:
 		static const int Radio = ClickableControl::PaintComponent::Custom + 1;
 	};
 
-	typedef Event<const std::shared_ptr<RadioButton>&> SelectStateChangedEvent;
+	typedef Event<const std::shared_ptr<RadioButton>&> SelectStateChangeEvent;
 
 public:
 	RadioButton();
@@ -51,8 +51,7 @@ public:
 		SetIsSelected(true);
 	}
 
-public:
-	SelectStateChangedEvent::Proxy OnSelectStateChange;
+	SelectStateChangeEvent::Proxy GetSelectStateChangeEvent();
 
 protected:
 	void Initialize() override;
@@ -71,7 +70,6 @@ private:
 private:
 	bool is_selected_;
 	std::shared_ptr<Group> group_;
-	SelectStateChangedEvent select_state_change_event_;
 };
 
 }

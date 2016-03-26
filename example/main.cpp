@@ -15,7 +15,7 @@ int WINAPI WinMain(
 	) {
 	
 	auto& application = Application::GetInstance();
-	application.OnBeginRun.AddListener(OnBeginRun);
+	application.GetBeginRunEvent().AddListener(OnBeginRun);
 
 	if (application.Initialize()) {
 		application.Run();
@@ -83,7 +83,7 @@ void OnBeginRun(Application&) {
 	button->SetRect(Rect(200, 200, 100, 30));
 	button->SetText(L"Button");
 	button->SetAnchor(Anchor::Bottom);
-	button->OnClick.AddListener([window, disabled_button, invisible_button](const std::shared_ptr<ClickableControl>&) {
+	button->GetClickEvent().AddListener([window, disabled_button, invisible_button](const std::shared_ptr<ClickableControl>&) {
 
 		auto new_control = std::make_shared<Label>();
 		new_control->SetRect(Rect(0, g_position_y, 40, 10));

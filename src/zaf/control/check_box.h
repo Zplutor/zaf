@@ -106,11 +106,7 @@ public:
 		}
 	}
 
-public:
-	/**
-	 The check state has changed event.
-	 */
-	CheckStateChangeEvent::Proxy OnCheckStateChange;
+	CheckStateChangeEvent::Proxy GetCheckStateChangeEvent();
 
 protected:
 	void Initialize() override;
@@ -122,8 +118,6 @@ private:
 
 private:
 	CheckState check_state_;
-	
-	CheckStateChangeEvent check_state_change_event_;
 };
 
 }

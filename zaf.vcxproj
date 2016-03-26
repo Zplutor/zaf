@@ -45,6 +45,7 @@
     <ClInclude Include="src\zaf\base\flag_enum.h" />
     <ClInclude Include="src\zaf\base\log.h" />
     <ClInclude Include="src\zaf\base\nullable.h" />
+    <ClInclude Include="src\zaf\base\property_map.h" />
     <ClInclude Include="src\zaf\base\timer.h" />
     <ClInclude Include="src\zaf\base\variant.h" />
     <ClInclude Include="src\zaf\control\anchor.h" />

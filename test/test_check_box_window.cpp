@@ -20,7 +20,7 @@ void ShowTestCheckBoxWindow() {
 	can_auto_change_check_state->SetRect(Rect(0, 100, 300, 30));
 	can_auto_change_check_state->SetText(L"Can auto change check state");
 	can_auto_change_check_state->SetIsChecked(check_box->CanAutoChangeCheckState());
-	can_auto_change_check_state->OnCheckStateChange.AddListener([check_box](const std::shared_ptr<CheckBox>&) {
+	can_auto_change_check_state->GetCheckStateChangeEvent().AddListener([check_box](const std::shared_ptr<CheckBox>&) {
 		check_box->SetCanAutoChangeCheckState(!check_box->CanAutoChangeCheckState());
 	});
 	root_control->AddChild(can_auto_change_check_state);
@@ -29,7 +29,7 @@ void ShowTestCheckBoxWindow() {
 	can_be_indeterminate->SetRect(Rect(0, 130, 300, 30));
 	can_be_indeterminate->SetText(L"Can be indeterminate");
 	can_be_indeterminate->SetIsChecked(check_box->CanBeIndeterminate());
-	can_be_indeterminate->OnCheckStateChange.AddListener([check_box](const std::shared_ptr<CheckBox>){
+	can_be_indeterminate->GetCheckStateChangeEvent().AddListener([check_box](const std::shared_ptr<CheckBox>){
 		check_box->SetCanBeIndeterminate(!check_box->CanBeIndeterminate());
 	});
 	root_control->AddChild(can_be_indeterminate);

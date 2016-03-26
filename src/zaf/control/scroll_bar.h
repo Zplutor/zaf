@@ -33,9 +33,13 @@ public:
 			NeedRepaint();
 		}
 
-	public:
-		BeginPressEvent::Proxy OnBeginPress;
-		EndPressEvent::Proxy OnEndPress;
+		BeginPressEvent::Proxy GetBeginPressEvent() {
+			return BeginPressEvent::Proxy(begin_press_event_);
+		}
+
+		EndPressEvent::Proxy GetEndPressEvent() {
+			return EndPressEvent::Proxy(end_press_event_);
+		}
 
 	protected:
 		void Initialize() override;
@@ -45,6 +49,7 @@ public:
 
 	private:
 		Direction direction_;
+
 		BeginPressEvent begin_press_event_;
 		EndPressEvent end_press_event_;
 	};
@@ -71,9 +76,17 @@ public:
 		}
 
 	public:
-		BeginDragEvent::Proxy OnBeginDrag;
-		DragEvent::Proxy OnDrag;
-		EndDragEvent::Proxy OnEndDrag;
+		BeginDragEvent::Proxy GetBeginDragEvent() {
+			return BeginDragEvent::Proxy(begin_drag_event_);
+		}
+
+		DragEvent::Proxy GetDragEvent() {
+			return DragEvent::Proxy(drag_event_);
+		}
+
+		EndDragEvent::Proxy GetEndDragEvent() {
+			return EndDragEvent::Proxy(end_drag_event_);
+		}
 
 	protected:
 		void Initialize() override;
@@ -172,8 +185,7 @@ public:
 
     void Wheel(int distance);
 
-public:
-	ScrollEvent::Proxy OnScroll;
+	ScrollEvent::Proxy GetScrollEvent();
 
 protected:
 	void Initialize() override;
@@ -237,8 +249,6 @@ private:
 
 	std::unique_ptr<Timer> timer_;
 	TimerEvent timer_event_;
-
-	ScrollEvent scroll_event_;
 };
 
 }

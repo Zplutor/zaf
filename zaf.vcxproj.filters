@@ -284,5 +284,8 @@
     <ClInclude Include="src\zaf\control\paint_utility.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\property_map.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -16,7 +16,7 @@ int WINAPI WinMain(
 ) {
 
 	auto& application = Application::GetInstance();
-	application.OnBeginRun.AddListener(BeginRun);
+	application.GetBeginRunEvent().AddListener(BeginRun);
 	if (application.Initialize()) {
 		application.Run();
 	}
@@ -47,7 +47,7 @@ void BeginRun(Application&) {
 		auto button = std::make_shared<Button>();
 		button->SetText(each_item.button_text);
 		button->SetRect(Rect(0, y, 100, 30));
-		button->OnClick.AddListener([each_item](const std::shared_ptr<ClickableControl>&) {
+		button->GetClickEvent().AddListener([each_item](const std::shared_ptr<ClickableControl>&) {
 			each_item.show_window_function();
 		});
 		root_control->AddChild(button);

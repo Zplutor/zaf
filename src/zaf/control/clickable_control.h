@@ -23,8 +23,7 @@ public:
 		return is_pressed_;
 	}
 
-public:
-	ClickEvent::Proxy OnClick;
+	ClickEvent::Proxy GetClickEvent();
 
 protected:
 	void Initialize() override;
@@ -68,8 +67,6 @@ private:
 	bool is_pressed_;
 	bool is_mouse_press_;
 	bool is_key_press_;
-
-	ClickEvent click_event_;
 };
 
 }

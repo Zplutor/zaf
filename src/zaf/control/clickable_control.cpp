@@ -4,12 +4,12 @@
 
 namespace zaf {
 
+static const wchar_t* const kClickEventPropertyName = L"ClickEvent";
+
 ClickableControl::ClickableControl() :
 	is_pressed_(false),
 	is_mouse_press_(false),
-	is_key_press_(false),
-	click_event_(),
-	OnClick(click_event_) {
+	is_key_press_(false) {
 
 }
 
@@ -46,6 +46,13 @@ int ClickableControl::GetPaintState() const {
 	}
 
 	return Control::GetPaintState();
+}
+
+
+ClickableControl::ClickEvent::Proxy ClickableControl::GetClickEvent() {
+
+	auto& event = GetPropertyMap().GetProperty<ClickEvent>(kClickEventPropertyName);
+	return ClickEvent::Proxy(event);
 }
 
 
@@ -156,8 +163,13 @@ void ClickableControl::EndPress(PressType press_type) {
 	NeedCaptureMouse(false);
 
 	if (is_pressed) {
+
 		MouseClick();
-		click_event_.Trigger(std::dynamic_pointer_cast<ClickableControl>(shared_from_this()));
+
+		auto click_event = GetPropertyMap().TryGetProperty<ClickEvent>(kClickEventPropertyName);
+		if (click_event != nullptr) {
+			click_event->Trigger(std::dynamic_pointer_cast<ClickableControl>(shared_from_this()));
+		}
 	}
 }
 

@@ -301,7 +301,7 @@ void Control::NeedRelayout() {
 }
 
 
-Control::PropertyMap& Control::GetPropertyMap() {
+PropertyMap& Control::GetPropertyMap() {
 	CheckInitialized();
 	return property_map_;
 }
@@ -492,7 +492,14 @@ void Control::SetColor(int paint_component, int paint_state, const Color& color)
 
 
 const std::wstring Control::GetText() const {
-	return GetPropertyMap().GetProperty<std::wstring>(kTextPropertyName, []() { return std::wstring(); });
+
+	auto text = GetPropertyMap().TryGetProperty<std::wstring>(kTextPropertyName);
+	if (text != nullptr) {
+		return *text;
+	}
+	else {
+		return std::wstring();
+	}
 }
 
 
@@ -504,15 +511,19 @@ void Control::SetText(const std::wstring& text) {
 
 const Font Control::GetFont() const {
 
-	return GetPropertyMap().GetProperty<Font>(kFontPropertyName, [this]() -> Font {
-	
+	auto font = GetPropertyMap().TryGetProperty<Font>(kFontPropertyName);
+	if (font != nullptr) {
+		return *font;
+	}
+	else {
+
 		auto parent = GetParent();
 		if (parent != nullptr) {
 			return parent->GetFont();
 		}
 
 		return Font();
-	});
+	};
 }
 
 
@@ -523,10 +534,14 @@ void Control::SetFont(const Font& font) {
 
 
 TextAlignment Control::GetTextAlignment() const {
-	return GetPropertyMap().GetProperty<TextAlignment>(
-		kTextAlignmentPropertyName,
-		[]() { return TextAlignment::Leading; }
-	);
+
+	auto text_alignment = GetPropertyMap().TryGetProperty<TextAlignment>(kTextAlignmentPropertyName);
+	if (text_alignment != nullptr) {
+		return *text_alignment;
+	}
+	else {
+		return TextAlignment::Leading;
+	}
 }
 
 
@@ -537,10 +552,14 @@ void Control::SetTextAlignment(TextAlignment alignment) {
 
 
 ParagraphAlignment Control::GetParagraphAlignment() const {
-	return GetPropertyMap().GetProperty<ParagraphAlignment>(
-		kParagraphAlignmentPropertyName,
-		[]() { return ParagraphAlignment::Near; }
-	);
+
+	auto paragraph_alignment = GetPropertyMap().TryGetProperty<ParagraphAlignment>(kParagraphAlignmentPropertyName);
+	if (paragraph_alignment != nullptr) {
+		return *paragraph_alignment;
+	}
+	else {
+		return ParagraphAlignment::Near;
+	}
 }
 
 
@@ -551,10 +570,14 @@ void Control::SetParagraphAlignment(ParagraphAlignment alignment) {
 
 
 WordWrapping Control::GetWordWrapping() const {
-	return GetPropertyMap().GetProperty<WordWrapping>(
-		kWordWrappingPropertyName,
-		[]() { return WordWrapping::NoWrap; }
-	);
+
+	auto word_wrapping = GetPropertyMap().TryGetProperty<WordWrapping>(kWordWrappingPropertyName);
+	if (word_wrapping != nullptr) {
+		return *word_wrapping;
+	}
+	else {
+		return WordWrapping::NoWrap;
+	}
 }
 
 
@@ -627,7 +650,14 @@ bool Control::IsAncestorOf(const std::shared_ptr<Control>& child) const {
 
 
 const std::wstring Control::GetName() const {
-	return GetPropertyMap().GetProperty<std::wstring>(kNamePropertyName, []() { return std::wstring(); });
+
+	auto name = GetPropertyMap().TryGetProperty<std::wstring>(kNamePropertyName);
+	if (name != nullptr) {
+		return *name;
+	}
+	else {
+		return std::wstring();
+	}
 }
 
 

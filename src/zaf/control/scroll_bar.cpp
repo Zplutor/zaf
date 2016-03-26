@@ -6,6 +6,7 @@
 
 namespace zaf {
 
+static const wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
 static int kTimerInitialInterval = 300;
 static int kTimerContinuousInterval = 50;
 
@@ -19,9 +20,7 @@ ScrollBar::ScrollBar() :
 	max_value_(0), 
 	value_(0),
 	begin_drag_value_(0),
-	timer_event_(TimerEvent::Increment),
-	scroll_event_(),
-	OnScroll(scroll_event_) {
+	timer_event_(TimerEvent::Increment) {
 
 }
 
@@ -39,12 +38,12 @@ void ScrollBar::Initialize() {
 
 void ScrollBar::InitializeArrow(const std::shared_ptr<Arrow>& arrow) {
 
-	arrow->OnBeginPress.AddListenerWithTag(
+	arrow->GetBeginPressEvent().AddListener(
 		std::bind(&ScrollBar::ArrowBeginPress, this, std::placeholders::_1), 
 		this
 	);
 
-	arrow->OnEndPress.AddListenerWithTag(
+	arrow->GetEndPressEvent().AddListener(
 		std::bind(&ScrollBar::ArrowEndPress, this, std::placeholders::_1),
 		this
 	);
@@ -55,25 +54,25 @@ void ScrollBar::InitializeArrow(const std::shared_ptr<Arrow>& arrow) {
 
 void ScrollBar::UninitializeArrow(const std::shared_ptr<Arrow>& arrow) {
 
-	arrow->OnBeginPress.RemoveListenersWithTag(this);
-	arrow->OnEndPress.RemoveListenersWithTag(this);
+	arrow->GetBeginPressEvent().RemoveListeners(this);
+	arrow->GetEndPressEvent().RemoveListeners(this);
 	RemoveChild(arrow);
 }
 
 
 void ScrollBar::InitializeThumb(const std::shared_ptr<Thumb>& thumb) {
 
-	thumb->OnBeginDrag.AddListenerWithTag(
+	thumb->GetBeginDragEvent().AddListener(
 		std::bind(&ScrollBar::ThumbBeginDrag, this, std::placeholders::_1),
 		this
 	);
 
-	thumb->OnDrag.AddListenerWithTag(
+	thumb->GetDragEvent().AddListener(
 		std::bind(&ScrollBar::ThumbDrag, this, std::placeholders::_1),
 		this
 	);
 
-	thumb->OnEndDrag.AddListenerWithTag(
+	thumb->GetEndDragEvent().AddListener(
 		std::bind(&ScrollBar::ThumbEndDrag, this, std::placeholders::_1),
 		this
 	);
@@ -84,9 +83,9 @@ void ScrollBar::InitializeThumb(const std::shared_ptr<Thumb>& thumb) {
 
 void ScrollBar::UninitializeThumb(const std::shared_ptr<Thumb>& thumb) {
 
-	thumb->OnBeginDrag.RemoveListenersWithTag(this);
-	thumb->OnDrag.RemoveListenersWithTag(this);
-	thumb->OnEndDrag.RemoveListenersWithTag(this);
+	thumb->GetBeginDragEvent().RemoveListeners(this);
+	thumb->GetDragEvent().RemoveListeners(this);
+	thumb->GetEndDragEvent().RemoveListeners(this);
 	RemoveChild(thumb);
 }
 
@@ -155,8 +154,13 @@ void ScrollBar::SetValue(int value) {
 	}
 
 	if (previous_value != value_) {
+
 		NeedRelayout();
-		scroll_event_.Trigger(std::dynamic_pointer_cast<ScrollBar>(shared_from_this()));
+
+		auto event = GetPropertyMap().TryGetProperty<ScrollEvent>(kScrollEventPropertyName);
+		if (event != nullptr) {
+			event->Trigger(std::dynamic_pointer_cast<ScrollBar>(shared_from_this()));
+		}
 	}
 }
 
@@ -269,6 +273,13 @@ void ScrollBar::ChangeVerticalRectToHorizontalRect(Rect& rect) {
 
 	std::swap(rect.position.x, rect.position.y);
 	std::swap(rect.size.width, rect.size.height);
+}
+
+
+ScrollBar::ScrollEvent::Proxy ScrollBar::GetScrollEvent() {
+
+	auto& event = GetPropertyMap().GetProperty<ScrollEvent>(kScrollEventPropertyName);
+	return ScrollEvent::Proxy(event);
 }
 
 
@@ -481,12 +492,7 @@ int ScrollBar::GetValuesPerThumbSlotPoint() {
 }
 
 
-ScrollBar::Arrow::Arrow() : 
-	direction_(Direction::Up),
-	begin_press_event_(),
-	OnBeginPress(begin_press_event_),
-	end_press_event_(),
-	OnEndPress(end_press_event_) {
+ScrollBar::Arrow::Arrow() : direction_(Direction::Up) {
 
 }
 
@@ -581,14 +587,7 @@ void ScrollBar::Arrow::MouseRelease() {
 }
 
 
-ScrollBar::Thumb::Thumb() : 
-	is_dragging_(false),
-	begin_drag_event_(),
-	OnBeginDrag(begin_drag_event_),
-	drag_event_(),
-	OnDrag(drag_event_),
-	end_drag_event_(),
-	OnEndDrag(end_drag_event_) {
+ScrollBar::Thumb::Thumb() : is_dragging_(false) {
 
 }
 

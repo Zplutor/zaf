@@ -8,11 +8,10 @@
 #include <string>
 #include <vector>
 #include <zaf/enum.h>
-#include <zaf/base/nullable.h>
-#include <zaf/graphic/rect.h>
-#include <zaf/base/variant.h>
+#include <zaf/base/property_map.h>
 #include <zaf/control/anchor.h>
 #include <zaf/graphic/color.h>
+#include <zaf/graphic/rect.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/word_wrapping.h>
@@ -328,43 +327,6 @@ public:
 	void SetIsFocused(bool is_focused);
 
 	const Point GetMousePosition() const;
-
-protected:
-	class PropertyMap {
-	public:
-		template<typename PropertyType>
-		const PropertyType* TryGetProperty(const std::wstring& property_name) const {
-
-			auto iterator = properties_.find(property_name);
-			if (iterator == properties_.end()) {
-				return nullptr;
-			}
-
-			return iterator->second.TryCast<PropertyType>();
-		}
-
-		template<typename PropertyType>
-		const PropertyType GetProperty(
-			const std::wstring& property_name, 
-			const std::function<const PropertyType()>& get_default_property
-		) const {
-
-			auto property = TryGetProperty<PropertyType>(property_name);
-			if (property == nullptr) {
-				return get_default_property();
-			}
-
-			return *property;
-		}
-
-		template<typename PropertyType>
-		void SetProperty(const std::wstring& property_name, const PropertyType& property_value) {
-			properties_[property_name] = Variant(property_value);
-		}
-
-	private:
-		std::map<std::wstring, Variant> properties_;
-	};
 
 protected:
 	/**

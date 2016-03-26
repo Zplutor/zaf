@@ -7,10 +7,9 @@
 namespace zaf {
 
 static const wchar_t* const kCanAutoSelectPropertyName = L"CanAutoSelect";
+static const wchar_t* const kSelectStateChangeEventProprtyName = L"SelectStateChangeEvent";
 
-RadioButton::RadioButton() : 
-	is_selected_(true),
-	OnSelectStateChange(select_state_change_event_) {
+RadioButton::RadioButton() : is_selected_(true) {
 
 }
 
@@ -101,10 +100,14 @@ void RadioButton::SetGroup(const std::shared_ptr<Group>& group) {
 
 
 bool RadioButton::CanAutoSelect() const {
-	return GetPropertyMap().GetProperty<bool>(
-		kCanAutoSelectPropertyName,
-		[]() { return true; }
-	);
+
+	auto value = GetPropertyMap().TryGetProperty<bool>(kCanAutoSelectPropertyName);
+	if (value != nullptr) {
+		return *value;
+	}
+	else {
+		return true;
+	}
 }
 
 
@@ -128,7 +131,17 @@ void RadioButton::SetIsSelected(bool is_selected) {
 		group_->RadioButtonSelected(shared_this);
 	}
 
-	select_state_change_event_.Trigger(shared_this);
+	auto event = GetPropertyMap().TryGetProperty<SelectStateChangeEvent>(kSelectStateChangeEventProprtyName);
+	if (event != nullptr) {
+		event->Trigger(shared_this);
+	}
+}
+
+
+RadioButton::SelectStateChangeEvent::Proxy RadioButton::GetSelectStateChangeEvent() {
+
+	auto& event = GetPropertyMap().GetProperty<SelectStateChangeEvent>(kSelectStateChangeEventProprtyName);
+	return SelectStateChangeEvent::Proxy(event);
 }
 
 

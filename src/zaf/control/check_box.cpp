@@ -9,10 +9,9 @@ namespace zaf {
 
 static const wchar_t* const kCanAutoChangeCheckStatePropertyName = L"CanAutoChangeCheckState";
 static const wchar_t* const kCanBeIndeterminatePropertyName = L"CanBeIndeterminate";
+static const wchar_t* const kCheckStateChangeEventPropertyName = L"CheckStateChangeEvent";
 
-CheckBox::CheckBox() : 
-	check_state_(CheckState::Unchecked),
-	OnCheckStateChange(check_state_change_event_) {
+CheckBox::CheckBox() : check_state_(CheckState::Unchecked) {
 
 }
 
@@ -108,10 +107,13 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
 
 bool CheckBox::CanAutoChangeCheckState() const {
 
-	return GetPropertyMap().GetProperty<bool>(
-		kCanAutoChangeCheckStatePropertyName,
-		[]() { return true; }
-	);
+	auto value = GetPropertyMap().TryGetProperty<bool>(kCanAutoChangeCheckStatePropertyName);
+	if (value != nullptr) {
+		return *value;
+	}
+	else {
+		return true;
+	}
 }
 
 
@@ -122,10 +124,13 @@ void CheckBox::SetCanAutoChangeCheckState(bool can_change) {
 
 bool CheckBox::CanBeIndeterminate() const {
 
-	return GetPropertyMap().GetProperty<bool>(
-		kCanBeIndeterminatePropertyName,
-		[]() { return false; }
-	);
+	auto value = GetPropertyMap().TryGetProperty<bool>(kCanBeIndeterminatePropertyName);
+	if (value != nullptr) {
+		return *value;
+	}
+	else {
+		return false;
+	}
 }
 
 
@@ -148,7 +153,17 @@ void CheckBox::SetCheckState(CheckState check_state) {
 	check_state_ = check_state;
 	NeedRepaint();
 
-	check_state_change_event_.Trigger(std::dynamic_pointer_cast<CheckBox>(shared_from_this()));
+	auto event = GetPropertyMap().TryGetProperty<CheckStateChangeEvent>(kCheckStateChangeEventPropertyName);
+	if (event != nullptr) {
+		event->Trigger(std::dynamic_pointer_cast<CheckBox>(shared_from_this()));
+	}
+}
+
+
+CheckBox::CheckStateChangeEvent::Proxy CheckBox::GetCheckStateChangeEvent() {
+
+	auto& event = GetPropertyMap().GetProperty<CheckStateChangeEvent>(kCheckStateChangeEventPropertyName);
+	return CheckStateChangeEvent::Proxy(event);
 }
 
 
