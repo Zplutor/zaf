@@ -31,5 +31,14 @@ void ShowTestRadioButtonWindow() {
 	radio_button2->SetGroup(radio_button_group);
 	radio_button3->SetGroup(radio_button_group);
 
+	auto auto_select_check_box = std::make_shared<CheckBox>();
+	auto_select_check_box->SetText(L"Can auto select");
+	auto_select_check_box->SetRect(Rect(0, 100, 100, 30));
+	auto_select_check_box->SetIsChecked(radio_button1->CanAutoSelect());
+	auto_select_check_box->GetCheckStateChangeEvent().AddListener([radio_button1](const std::shared_ptr<CheckBox>& check_box) {
+		radio_button1->SetCanAutoSelect(check_box->IsChecked());
+	});
+	root_control->AddChild(auto_select_check_box);
+
 	window->Show();
 }

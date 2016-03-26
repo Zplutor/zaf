@@ -106,6 +106,9 @@ public:
 		}
 	}
 
+	/**
+	 Get the check state change event.
+	 */
 	CheckStateChangeEvent::Proxy GetCheckStateChangeEvent();
 
 protected:
