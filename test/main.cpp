@@ -3,6 +3,7 @@
 #include "test_check_box_window.h"
 #include "test_label_window.h"
 #include "test_radio_button_window.h"
+#include "test_text_box_window.h"
 
 using namespace zaf;
 
@@ -37,6 +38,7 @@ void BeginRun(Application&) {
 		L"Test label", ShowTestLabelWindow,
 		L"Test check box", ShowTestCheckBoxWindow,
 		L"Test radio button", ShowTestRadioButtonWindow,
+		L"Test text box", ShowTestTextBoxWindow,
 	};
 
 	auto root_control = window->GetRootControl();

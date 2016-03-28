@@ -3,20 +3,29 @@
 #include <atlbase.h>
 #include <Richedit.h>
 #include <TextServ.h>
+#include <zaf/base/event.h>
 #include <zaf/control/control.h>
 
 namespace zaf {
 
 class TextBox : public Control {
 public:
+	typedef Event<const std::shared_ptr<TextBox>&> TextChangeEvent;
+
+public:
 	TextBox();
 	~TextBox();
+
+	std::uint32_t GetMaximumLength() const;
+	void SetMaximumLength(std::uint32_t max_length);
 
 	bool IsReadOnly() const;
 	void SetIsReadOnly(bool is_read_only);
 
-	const std::wstring GetText() const;
-	void SetText(const std::wstring& text);
+	const std::wstring GetText() const override;
+	void SetText(const std::wstring& text) override;
+
+	TextChangeEvent::Proxy GetTextChangeEvent();
 
 protected:
 	void Initialize() override;
@@ -103,9 +112,11 @@ private:
 
 		DWORD property_bits;
 		std::wstring text;
+		std::uint32_t max_length;
 	};
 
 private:
+	const Rect GetAbsoluteContentRect() const;
 	bool ChangeMouseCursor();
 	bool HasPropertyBit(DWORD bit) const;
 	void ChangePropertyBit(DWORD bit, bool is_set);

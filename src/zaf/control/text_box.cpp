@@ -3,8 +3,11 @@
 #include <zaf/base/log.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer.h>
+#include <zaf/graphic/font/font.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/window.h>
+
+#undef max
 
 EXTERN_C const IID IID_ITextServices = {
 	0x8d33f740,
@@ -19,6 +22,11 @@ EXTERN_C const IID IID_ITextHost = {
 	0x11ce,
 	{ 0xa8, 0x9e, 0x00, 0xaa, 0x00, 0x6c, 0xad, 0xc5 }
 };
+
+static const wchar_t* const kMaximumLengthPropertyName = L"MaximumLength";
+static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
+
+static const std::uint32_t kDefaultMaximumLength = std::numeric_limits<std::uint32_t>::max();
 
 namespace zaf {
 
@@ -35,6 +43,11 @@ TextBox::~TextBox() {
 
 
 void TextBox::Initialize() {
+
+	__super::Initialize();
+
+	SetBorderWidth(1);
+	SetColor(PaintComponent::Border, PaintState::Normal, Color::Black);
 
 	text_host_ = std::make_shared<TextHost>(
 		std::dynamic_pointer_cast<TextBox>(shared_from_this()),
@@ -67,6 +80,7 @@ void TextBox::Initialize() {
 
 	text_service_->OnTxInPlaceActivate(nullptr);
 	text_service_->TxSetText(not_initialized_state_->text.c_str());
+	text_service_->TxSendMessage(EM_SETEVENTMASK, 0, ENM_CHANGE, nullptr);
 
 	not_initialized_state_ = nullptr;
 }
@@ -84,12 +98,9 @@ void TextBox::Layout(const Rect& previous_rect) {
 
 void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 
-	if (text_service_ == nullptr) {
-		return;
-	}
+	__super::Repaint(canvas, dirty_rect);
 
-	auto parent = GetParent();
-	if (parent == nullptr) {
+	if (text_service_ == nullptr) {
 		return;
 	}
 
@@ -113,8 +124,9 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	EndPath(hdc);
 	SelectClipPath(hdc, RGN_COPY);
 
-	RECT win32_absolute_rect = canvas.GetAbsoluteRect().ToRECT();
+	Rect absolute_rect = GetAbsoluteContentRect();
 
+	RECT win32_absolute_rect = absolute_rect.ToRECT();
 	text_service_->TxDraw(
 		DVASPECT_CONTENT,
 		0,
@@ -131,13 +143,150 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	);
 
 	gdi_interop_render_target->ReleaseDC(nullptr);
-
-	Control::Repaint(canvas, dirty_rect);
 }
 
 
 void TextBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
+	__super::Paint(canvas, dirty_rect);
+}
+
+
+const Rect TextBox::GetAbsoluteContentRect() const {
+
+	auto rect = GetAbsoluteRect();
+	rect.Inflate(-GetBorderWidth());
+	return rect;
+}
+
+
+std::uint32_t TextBox::GetMaximumLength() const {
+
+	if (not_initialized_state_ != nullptr) {
+		return not_initialized_state_->max_length;
+	}
+
+	auto max_length = GetPropertyMap().TryGetProperty<std::uint32_t>(kMaximumLengthPropertyName);
+	if (max_length != nullptr) {
+		return *max_length;
+	}
+	else {
+		return kDefaultMaximumLength;
+	}
+}
+
+
+void TextBox::SetMaximumLength(std::uint32_t max_length) {
+
+	if (not_initialized_state_ != nullptr) {
+		not_initialized_state_->max_length = max_length;
+	}
+	else {
+
+		GetPropertyMap().SetProperty(kMaximumLengthPropertyName, max_length);
+
+		if (text_service_ != nullptr) {
+			text_service_->OnTxPropertyBitsChange(TXTBIT_MAXLENGTHCHANGE, TXTBIT_MAXLENGTHCHANGE);
+		}
+	}
+}
+
+
+bool TextBox::IsReadOnly() const {
+	return HasPropertyBit(TXTBIT_READONLY);
+}
+
+
+void TextBox::SetIsReadOnly(bool is_read_only) {
+	ChangePropertyBit(TXTBIT_READONLY, is_read_only);
+}
+
+
+const std::wstring TextBox::GetText() const {
+
+	if (not_initialized_state_ != nullptr) {
+		return not_initialized_state_->text;
+	}
+
+	std::wstring text;
+	if (text_service_ != nullptr) {
+
+		BSTR text_buffer = nullptr;
+		HRESULT result = text_service_->TxGetText(&text_buffer);
+		if (SUCCEEDED(result) && text_buffer != nullptr) {
+
+			text.assign(text_buffer);
+			SysFreeString(text_buffer);
+		}
+	}
+
+	return text;
+}
+
+
+void TextBox::SetText(const std::wstring& text) {
+
+	if (not_initialized_state_ != nullptr) {
+		not_initialized_state_->text = text;
+	}
+	else {
+		if (text_service_ != nullptr) {
+			text_service_->TxSetText(text.c_str());
+		}
+	}
+}
+
+
+bool TextBox::HasPropertyBit(DWORD bit) const {
+
+	DWORD property_bits = 0;
+
+	if (not_initialized_state_ != nullptr) {
+		property_bits = not_initialized_state_->property_bits;
+	}
+	else {
+		if (text_host_ != nullptr) {
+			property_bits = text_host_->property_bits;
+		}
+	}
+
+	return (property_bits & bit) != 0;
+}
+
+
+void TextBox::ChangePropertyBit(DWORD bit, bool is_set) {
+
+	DWORD* property_bits = nullptr;
+
+	if (not_initialized_state_ != nullptr) {
+		property_bits = &not_initialized_state_->property_bits;
+	}
+	else {
+		if (text_host_ != nullptr) {
+			property_bits = &text_host_->property_bits;
+		}
+	}
+
+	if (property_bits != nullptr) {
+
+		if (is_set) {
+			*property_bits |= bit;
+		}
+		else {
+			*property_bits &= ~bit;
+		}
+
+		if (text_service_ != nullptr) {
+			text_service_->OnTxPropertyBitsChange(bit, *property_bits);
+		}
+	}
+}
+
+
+TextBox::TextChangeEvent::Proxy TextBox::GetTextChangeEvent() {
+
+	auto& event = GetPropertyMap().GetProperty<TextChangeEvent>(kTextChangeEventPropertyName);
+	return TextChangeEvent::Proxy(event);
 }
 
 
@@ -245,97 +394,6 @@ void TextBox::FocusLose() {
 
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_KILLFOCUS, 0, 0, nullptr);
-	}
-}
-
-
-bool TextBox::IsReadOnly() const {
-	return HasPropertyBit(TXTBIT_READONLY);
-}
-
-
-void TextBox::SetIsReadOnly(bool is_read_only) {
-	ChangePropertyBit(TXTBIT_READONLY, is_read_only);
-}
-
-
-const std::wstring TextBox::GetText() const {
-
-	if (not_initialized_state_ != nullptr) {
-		return not_initialized_state_->text;
-	}
-
-	std::wstring text;
-	if (text_service_ != nullptr) {
-
-		BSTR text_buffer = nullptr;
-		HRESULT result = text_service_->TxGetText(&text_buffer);
-		if (SUCCEEDED(result) && text_buffer != nullptr) {
-		
-			text.assign(text_buffer);
-			SysFreeString(text_buffer);
-		}
-	}
-
-	return text;
-}
-
-
-void TextBox::SetText(const std::wstring& text) {
-
-	if (not_initialized_state_ != nullptr) {
-		not_initialized_state_->text = text;
-	}
-	else {
-		if (text_service_ != nullptr) {
-			text_service_->TxSetText(text.c_str());
-		}
-	}
-}
-
-
-bool TextBox::HasPropertyBit(DWORD bit) const {
-
-	DWORD property_bits = 0;
-
-	if (not_initialized_state_ != nullptr) {
-		property_bits = not_initialized_state_->property_bits;
-	}
-	else {
-		if (text_host_ != nullptr) {
-			property_bits = text_host_->property_bits;
-		}
-	}
-
-	return (property_bits & bit) != 0;
-}
-
-
-void TextBox::ChangePropertyBit(DWORD bit, bool is_set) {
-
-	DWORD* property_bits = nullptr;
-
-	if (not_initialized_state_ != nullptr) {
-		property_bits = &not_initialized_state_->property_bits;
-	}
-	else {
-		if (text_host_ != nullptr) {
-			property_bits = &text_host_->property_bits;
-		}	
-	}
-
-	if (property_bits != nullptr) {
-
-		if (is_set) {
-			*property_bits |= bit;
-		}
-		else {
-			*property_bits &= ~bit;
-		}
-
-		if (text_service_ != nullptr) {
-			text_service_->OnTxPropertyBitsChange(bit, *property_bits);
-		}
 	}
 }
 
@@ -508,7 +566,7 @@ HRESULT TextBox::TextHost::TxGetClientRect(LPRECT prc) {
 
 	auto text_box = text_box_.lock();
 	if (text_box != nullptr) {
-		rect = text_box->GetAbsoluteRect();	
+		rect = text_box->GetAbsoluteContentRect();
 	}
 
 	*prc = rect.ToRECT();
@@ -525,8 +583,23 @@ HRESULT TextBox::TextHost::TxGetViewInset(LPRECT prc) {
 HRESULT TextBox::TextHost::TxGetCharFormat(const CHARFORMATW **ppCF) {
 
 	if (char_format_ == nullptr) {
+
 		char_format_ = std::make_unique<CHARFORMATW>();
 		char_format_->cbSize = sizeof(CHARFORMATW);
+		char_format_->dwMask = 0;
+
+		auto text_box = text_box_.lock();
+		if (text_box != nullptr) { 
+
+			auto font = text_box->GetFont();
+
+			char_format_->dwMask |= CFM_FACE;
+			wcscpy_s(char_format_->szFaceName, font.family_name.c_str());
+
+			char_format_->dwMask |= CFM_SIZE;
+			char_format_->yHeight = font.size;
+		}
+
 		/*
 		char_format_->dwMask = CFM_SIZE | CFM_COLOR | CFM_FACE | CFM_CHARSET | CFM_OFFSET;
 		char_format_->yHeight = 500;
@@ -568,19 +641,28 @@ COLORREF TextBox::TextHost::TxGetSysColor(int nIndex) {
 
 
 HRESULT TextBox::TextHost::TxGetBackStyle(TXTBACKSTYLE *pstyle) {
-	*pstyle = TXTBACK_OPAQUE;
+	*pstyle = TXTBACK_TRANSPARENT;
 	return S_OK;
 }
 
 
 HRESULT TextBox::TextHost::TxGetMaxLength(DWORD *plength) {
-	*plength = INFINITE;
+
+	auto text_box = text_box_.lock();
+	if (text_box != nullptr) {
+		*plength = text_box->GetMaximumLength();
+	}
+	else {
+		*plength = kDefaultMaximumLength;
+	}
+
 	return S_OK;
 }
 
 
 HRESULT TextBox::TextHost::TxGetScrollBars(DWORD *pdwScrollBar) {
-	return E_NOTIMPL;
+	*pdwScrollBar = ES_AUTOVSCROLL | ES_AUTOHSCROLL;
+	return S_OK;
 }
 
 
@@ -616,6 +698,22 @@ HRESULT TextBox::TextHost::TxGetPropertyBits(DWORD dwMask, DWORD *pdwBits) {
 
 
 HRESULT TextBox::TextHost::TxNotify(DWORD iNotify, void *pv) {
+
+	switch (iNotify) {
+
+		case EN_CHANGE: {
+			auto text_box = text_box_.lock();
+			if (text_box != nullptr) {
+
+				auto event = text_box->GetPropertyMap().TryGetProperty<TextBox::TextChangeEvent>(kTextChangeEventPropertyName);
+				if (event != nullptr) {
+					event->Trigger(text_box);
+				}
+			}
+			break;
+		}
+	}
+
 	return S_OK;
 }
 
@@ -658,7 +756,8 @@ HWND TextBox::TextHost::GetWindowHandle() const {
 
 
 TextBox::NotInitializedState::NotInitializedState() :
-	property_bits(TXTBIT_ALLOWBEEP) {
+	property_bits(TXTBIT_ALLOWBEEP),
+	max_length(kDefaultMaximumLength) {
 
 }
 

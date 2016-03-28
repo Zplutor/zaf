@@ -5,10 +5,12 @@
     <ClCompile Include="test\test_label_window.cpp" />
     <ClCompile Include="test\test_check_box_window.cpp" />
     <ClCompile Include="test\test_radio_button_window.cpp" />
+    <ClCompile Include="test\test_text_box_window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test\test_label_window.h" />
     <ClInclude Include="test\test_check_box_window.h" />
     <ClInclude Include="test\test_radio_button_window.h" />
+    <ClInclude Include="test\test_text_box_window.h" />
   </ItemGroup>
 </Project>
