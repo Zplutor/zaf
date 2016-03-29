@@ -44,5 +44,34 @@ void ShowTestTextBoxWindow() {
 	});
 	root_control->AddChild(max_length_check_box);
 
+	auto use_password_char_check_box = std::make_shared<CheckBox>();
+	use_password_char_check_box->SetText(L"Use password character");
+	use_password_char_check_box->SetRect(Rect(0, 160, 100, 30));
+	use_password_char_check_box->SetIsChecked(text_box->UsePasswordCharacter());
+	use_password_char_check_box->GetCheckStateChangeEvent().AddListener([text_box](const std::shared_ptr<CheckBox>& check_box) {
+		text_box->SetUsePasswordCharacter(check_box->IsChecked());
+	});
+	root_control->AddChild(use_password_char_check_box);
+
+	auto password_char_text_box = std::make_shared<TextBox>();
+	password_char_text_box->SetRect(Rect(100, 160, 100, 30));
+	password_char_text_box->SetMaximumLength(1);
+	password_char_text_box->GetTextChangeEvent().AddListener([text_box](const std::shared_ptr<TextBox>& password_char_text_box) {
+		auto text = password_char_text_box->GetText();
+		if (! text.empty()) {
+			text_box->SetPasswordCharacter(text[0]);
+		}
+	});
+	root_control->AddChild(password_char_text_box);
+
+	auto multiline_check_box = std::make_shared<CheckBox>();
+	multiline_check_box->SetText(L"Multiline");
+	multiline_check_box->SetRect(Rect(0, 190, 100, 30));
+	multiline_check_box->SetIsChecked(text_box->IsMultiline());
+	multiline_check_box->GetCheckStateChangeEvent().AddListener([text_box](const std::shared_ptr<CheckBox>& check_box) {
+		text_box->SetIsMultiline(check_box->IsChecked());
+	});
+	root_control->AddChild(multiline_check_box);
+
 	window->Show();
 }

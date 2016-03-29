@@ -24,9 +24,11 @@ EXTERN_C const IID IID_ITextHost = {
 };
 
 static const wchar_t* const kMaximumLengthPropertyName = L"MaximumLength";
+static const wchar_t* const kPasswordCharacterPropertyName = L"PasswordCharacter";
 static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
 
 static const std::uint32_t kDefaultMaximumLength = std::numeric_limits<std::uint32_t>::max();
+static const wchar_t kDefaultPasswordCharacter = L'*';
 
 namespace zaf {
 
@@ -192,10 +194,58 @@ void TextBox::SetMaximumLength(std::uint32_t max_length) {
 }
 
 
+bool TextBox::UsePasswordCharacter() const {
+	return HasPropertyBit(TXTBIT_USEPASSWORD);
+}
+
+void TextBox::SetUsePasswordCharacter(bool use_password_char) {
+	ChangePropertyBit(TXTBIT_USEPASSWORD, use_password_char);
+}
+
+
+wchar_t TextBox::GetPasswordCharacter() const {
+	
+	if (not_initialized_state_ != nullptr) {
+		return not_initialized_state_->password_char;
+	}
+
+	auto password_char = GetPropertyMap().TryGetProperty<wchar_t>(kPasswordCharacterPropertyName);
+	if (password_char != nullptr) {
+		return *password_char;
+	}
+	else {
+		return kDefaultPasswordCharacter;
+	}
+}
+
+void TextBox::SetPasswordCharacter(wchar_t password_char) {
+
+	if (not_initialized_state_ != nullptr) {
+		not_initialized_state_->password_char = password_char;
+	}
+	else {
+
+		GetPropertyMap().SetProperty(kPasswordCharacterPropertyName, password_char);
+
+		if ((text_service_ != nullptr) && UsePasswordCharacter()) {
+			text_service_->OnTxPropertyBitsChange(TXTBIT_USEPASSWORD, TXTBIT_USEPASSWORD);
+		}
+	}
+}
+
+
+bool TextBox::IsMultiline() const {
+	return HasPropertyBit(TXTBIT_MULTILINE);
+}
+
+void TextBox::SetIsMultiline(bool is_multiline) {
+	ChangePropertyBit(TXTBIT_MULTILINE, is_multiline);
+}
+
+
 bool TextBox::IsReadOnly() const {
 	return HasPropertyBit(TXTBIT_READONLY);
 }
-
 
 void TextBox::SetIsReadOnly(bool is_read_only) {
 	ChangePropertyBit(TXTBIT_READONLY, is_read_only);
@@ -667,7 +717,16 @@ HRESULT TextBox::TextHost::TxGetScrollBars(DWORD *pdwScrollBar) {
 
 
 HRESULT TextBox::TextHost::TxGetPasswordChar(_Out_ TCHAR *pch) {
-	return E_NOTIMPL;
+
+	auto text_box = text_box_.lock();
+	if (text_box != nullptr) {
+		*pch = text_box->GetPasswordCharacter();
+	}
+	else {
+		*pch = kDefaultPasswordCharacter;
+	}
+
+	return S_OK;
 }
 
 
@@ -757,7 +816,8 @@ HWND TextBox::TextHost::GetWindowHandle() const {
 
 TextBox::NotInitializedState::NotInitializedState() :
 	property_bits(TXTBIT_ALLOWBEEP),
-	max_length(kDefaultMaximumLength) {
+	max_length(kDefaultMaximumLength),
+	password_char(kDefaultPasswordCharacter) {
 
 }
 

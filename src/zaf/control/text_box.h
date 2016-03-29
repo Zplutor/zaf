@@ -19,6 +19,15 @@ public:
 	std::uint32_t GetMaximumLength() const;
 	void SetMaximumLength(std::uint32_t max_length);
 
+	bool UsePasswordCharacter() const;
+	void SetUsePasswordCharacter(bool use_password_char);
+
+	wchar_t GetPasswordCharacter() const;
+	void SetPasswordCharacter(wchar_t password_char);
+
+	bool IsMultiline() const;
+	void SetIsMultiline(bool is_multiline);
+
 	bool IsReadOnly() const;
 	void SetIsReadOnly(bool is_read_only);
 
@@ -113,6 +122,7 @@ private:
 		DWORD property_bits;
 		std::wstring text;
 		std::uint32_t max_length;
+		wchar_t password_char;
 	};
 
 private:
