@@ -24,7 +24,6 @@ static const wchar_t* const kTextPropertyName = L"Text";
 static const wchar_t* const kWordWrappingPropertyName = L"WordWrapping";
 
 Control::Control() : 
-	has_initialized_(false),
 	is_hovered_(false), 
 	is_capturing_mouse_(false),
 	is_focused_(false),
@@ -38,21 +37,6 @@ Control::Control() :
 
 Control::~Control() {
 
-}
-
-
-void Control::CheckInitialized() {
-
-	if (has_initialized_) {
-		return;
-	}
-	has_initialized_ = true;
-
-	Initialize();
-
-	for (auto& each_child : children_) {
-		each_child->CheckInitialized();
-	}
 }
 
 
@@ -298,12 +282,6 @@ void Control::LayoutChild(const std::shared_ptr<Control>& child, const Rect& pre
 
 void Control::NeedRelayout() {
 	Layout(GetRect());
-}
-
-
-PropertyMap& Control::GetPropertyMap() {
-	CheckInitialized();
-	return property_map_;
 }
 
 
@@ -599,11 +577,6 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
 	if (previous_parent != nullptr) {
 		//Remove child from previous parent
 		previous_parent->RemoveChild(child);
-	}
-
-	//Initialize the child if current control has initialized.
-	if (has_initialized_) {
-		child->CheckInitialized();
 	}
 
 	child->SetParent(this->shared_from_this());

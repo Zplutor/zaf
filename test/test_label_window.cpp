@@ -9,7 +9,7 @@ void ShowTestLabelWindow() {
 	window->SetTitle(L"label testing");
 	window->SetRect(Rect(0, 0, 300, 300));
 
-	auto label = std::make_shared<Label>();
+	auto label = CreateControl<Label>();
 	label->SetRect(Rect(10, 10, 100, 60));
 	//label->SetBorderWidth(1);
 	//label->SetColor(Label::PaintComponent::Border, Label::PaintState::Normal, Color::Black);

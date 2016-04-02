@@ -19,6 +19,8 @@ public:
 	ClickableControl();
 	~ClickableControl();
 
+	void Initialize() override;
+
 	bool IsPressed() const {
 		return is_pressed_;
 	}
@@ -26,8 +28,6 @@ public:
 	ClickEvent::Proxy GetClickEvent();
 
 protected:
-	void Initialize() override;
-
 	int GetPaintState() const override;
 
 	const Color GetDefaultColor(int paint_component, int paint_state) const override;

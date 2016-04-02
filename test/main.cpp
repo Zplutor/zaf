@@ -46,7 +46,7 @@ void BeginRun(Application&) {
 	float y = 0;
 	for (const auto& each_item : show_window_function_map) {
 
-		auto button = std::make_shared<Button>();
+		auto button = CreateControl<Button>();
 		button->SetText(each_item.button_text);
 		button->SetRect(Rect(0, y, 100, 30));
 		button->GetClickEvent().AddListener([each_item](const std::shared_ptr<ClickableControl>&) {

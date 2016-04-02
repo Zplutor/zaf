@@ -55,6 +55,15 @@ public:
 	virtual ~Control();
 
 	/**
+	 Initialize the control.
+
+	 Derived classes can override this method to do some initialization,
+	 such as setting initial property values, and adding child controls.
+	 The same method of base class must be called.
+	 */
+	virtual void Initialize() { }
+
+	/**
 	 Get the control's absolute rect which is related to the coordinate system of 
 	 window's content rect.
 
@@ -329,15 +338,6 @@ public:
 	const Point GetMousePosition() const;
 
 protected:
-	/**
-	 Initialize the control.
-
-	 Derived classes can override this method to do some initialization, 
-	 such as setting initial property values, and adding child controls. 
-	 The same method of base class must be called.
-	 */
-	virtual void Initialize() { }
-
 	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
 	virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
 
@@ -357,10 +357,12 @@ protected:
 	virtual void Layout(const Rect& previous_rect);
 	void NeedRelayout();
 
-	PropertyMap& GetPropertyMap();
+	PropertyMap& GetPropertyMap() {
+		return property_map_;
+	}
 
 	const PropertyMap& GetPropertyMap() const {
-		return const_cast<Control*>(this)->GetPropertyMap();
+		return property_map_;
 	}
 
 	virtual const Color GetDefaultColor(int paint_component, int paint_state) const;
@@ -401,8 +403,6 @@ private:
 	void RouteMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
-	void CheckInitialized();
-
 	void LayoutChild(const std::shared_ptr<Control>& child, const Rect& previous_rect);
 
 	const Color GetDefaultBackgroundColor(int paint_state) const;
@@ -433,7 +433,6 @@ private:
 	Control& operator=(const Control&) = delete;
 
 private:
-	bool has_initialized_;
 	std::weak_ptr<Window> window_;
 	std::weak_ptr<Control> parent_;
 	std::vector<std::shared_ptr<Control>> children_;

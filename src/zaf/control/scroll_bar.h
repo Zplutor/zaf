@@ -24,6 +24,8 @@ public:
 	public:
 		Arrow();
 
+		void Initialize() override;
+
 		Direction GetDirection() const {
 			return direction_;
 		}
@@ -42,7 +44,6 @@ public:
 		}
 
 	protected:
-		void Initialize() override;
 		void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 		void MouseCapture() override;
 		void MouseRelease() override;
@@ -62,6 +63,8 @@ public:
 
 	public:
 		Thumb();
+
+		void Initialize() override;
 
 		bool IsHorizontal() const {
 			return is_horizontal_;
@@ -89,7 +92,6 @@ public:
 		}
 
 	protected:
-		void Initialize() override;
 		int GetPaintState() const override;
 
 		void MouseCapture() override;
@@ -108,6 +110,8 @@ public:
 
 public:
 	ScrollBar();
+
+	void Initialize() override;
 
 	/**
 	 Set a new control for the incremental arrow.
@@ -188,8 +192,6 @@ public:
 	ScrollEvent::Proxy GetScrollEvent();
 
 protected:
-	void Initialize() override;
-
 	void Layout(const Rect& previous_rect) override;
 
 	void MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;

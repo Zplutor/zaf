@@ -16,6 +16,8 @@ public:
 	TextBox();
 	~TextBox();
 
+	void Initialize() override;
+
 	std::uint32_t GetMaximumLength() const;
 	void SetMaximumLength(std::uint32_t max_length);
 
@@ -37,7 +39,6 @@ public:
 	TextChangeEvent::Proxy GetTextChangeEvent();
 
 protected:
-	void Initialize() override;
 	void Layout(const Rect& previous_rect) override;
 	void Repaint(Canvas& canvas, const Rect& dirty_rect) override;
 	void Paint(Canvas& canvas, const Rect& dirty_rect) override;

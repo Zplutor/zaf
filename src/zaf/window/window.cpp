@@ -2,6 +2,7 @@
 #include <Windowsx.h>
 #include <zaf/application.h>
 #include <zaf/base/log.h>
+#include <zaf/control/creation.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/renderer_factory.h>
@@ -90,7 +91,7 @@ Window::Window() :
 	state_(std::make_shared<internal::WindowNotCreatedState>()),
 	is_tracking_mouse_(false),
 	is_capturing_mouse_(false),
-	root_control_(std::make_shared<Control>()),
+	root_control_(CreateControl<Control>()),
 	close_event_(),
 	OnClose(close_event_) {
 
@@ -139,7 +140,6 @@ void Window::CheckCreate() {
 
 	renderer_ = Application::GetInstance().GetRendererFactory()->CreateRenderer(handle_);
 
-	root_control_->CheckInitialized();
 	root_control_->SetWindow(this->shared_from_this());
 	
 	Application::GetInstance().RegisterWindow(shared_from_this());

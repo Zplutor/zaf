@@ -1,4 +1,5 @@
 #include <zaf/control/scrollable_control.h>
+#include <zaf/control/creation.h>
 #include <zaf/control/scroll_bar.h>
 
 namespace zaf {
@@ -6,10 +7,10 @@ namespace zaf {
 static const float kScrollBarThickness = 12;
 
 ScrollableControl::ScrollableControl() :
-	content_control_(std::make_shared<Control>()),
-	content_container_control_(std::make_shared<Control>()),
-	vertical_scroll_bar_(std::make_shared<ScrollBar>()),
-	horizontal_scroll_bar_(std::make_shared<ScrollBar>()) {
+	content_control_(CreateControl<Control>()),
+	content_container_control_(CreateControl<Control>()),
+	vertical_scroll_bar_(CreateControl<ScrollBar>()),
+	horizontal_scroll_bar_(CreateControl<ScrollBar>()) {
 
 	content_control_->SetAnchor(Anchor::Left | Anchor::Top);
 

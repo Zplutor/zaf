@@ -37,6 +37,8 @@ public:
 	 */
 	~CheckBox();
 
+	void Initialize() override;
+
 	/**
 	 Get a value indicating that whether the check box changes its check state when 
 	 it is clicked.
@@ -112,7 +114,6 @@ public:
 	CheckStateChangeEvent::Proxy GetCheckStateChangeEvent();
 
 protected:
-	void Initialize() override;
 	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 	void MouseClick() override;
 

@@ -11,17 +11,17 @@ void ShowTestRadioButtonWindow() {
 
 	auto root_control = window->GetRootControl();
 
-	auto radio_button1 = std::make_shared<RadioButton>();
+	auto radio_button1 = CreateControl<RadioButton>();
 	radio_button1->SetRect(Rect(0, 0, 100, 60));
 	radio_button1->SetText(L"RadioButton1");
 	root_control->AddChild(radio_button1);
 
-	auto radio_button2 = std::make_shared<RadioButton>();
+	auto radio_button2 = CreateControl<RadioButton>();
 	radio_button2->SetRect(Rect(100, 0, 100, 60));
 	radio_button2->SetText(L"RadioButton2");
 	root_control->AddChild(radio_button2);
 
-	auto radio_button3 = std::make_shared<RadioButton>();
+	auto radio_button3 = CreateControl<RadioButton>();
 	radio_button3->SetRect(Rect(200, 0, 100, 60));
 	radio_button3->SetText(L"RadioButton3");
 	root_control->AddChild(radio_button3);
@@ -31,7 +31,7 @@ void ShowTestRadioButtonWindow() {
 	radio_button2->SetGroup(radio_button_group);
 	radio_button3->SetGroup(radio_button_group);
 
-	auto auto_select_check_box = std::make_shared<CheckBox>();
+	auto auto_select_check_box = CreateControl<CheckBox>();
 	auto_select_check_box->SetText(L"Can auto select");
 	auto_select_check_box->SetRect(Rect(0, 100, 100, 30));
 	auto_select_check_box->SetIsChecked(radio_button1->CanAutoSelect());

@@ -62,6 +62,8 @@ public:
 	 */
 	~RadioButton();
 
+	void Initialize() override;
+
 	/**
 	 Get the associated group.
 
@@ -118,7 +120,6 @@ public:
 	SelectStateChangeEvent::Proxy GetSelectStateChangeEvent();
 
 protected:
-	void Initialize() override;
 	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 	void MouseClick() override;
 

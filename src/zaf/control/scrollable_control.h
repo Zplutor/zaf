@@ -12,6 +12,8 @@ public:
 	ScrollableControl();
 	~ScrollableControl();
 
+	void Initialize() override;
+
 	void SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
 	void SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
 
@@ -26,7 +28,6 @@ public:
 	void SetContentSize(const Size& size);
 
 protected:
-	void Initialize() override;
 	void Layout(const Rect& previous_rect) override;
 
     void MouseWheel(const Point& position, bool is_horizontal, int distance, WPARAM wParam, LPARAM lParam) override;

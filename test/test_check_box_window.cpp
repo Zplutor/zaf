@@ -11,12 +11,12 @@ void ShowTestCheckBoxWindow() {
 
 	auto root_control = window->GetRootControl();
 
-	auto check_box = std::make_shared<CheckBox>();
+	auto check_box = CreateControl<CheckBox>();
 	check_box->SetRect(Rect(0, 0, 100, 60));
 	check_box->SetText(L"zaf²âÊÔµÄCheckBox zaf²âÊÔµÄCheckBox");
 	root_control->AddChild(check_box);
 
-	auto can_auto_change_check_state = std::make_shared<CheckBox>();
+	auto can_auto_change_check_state = CreateControl<CheckBox>();
 	can_auto_change_check_state->SetRect(Rect(0, 100, 300, 30));
 	can_auto_change_check_state->SetText(L"Can auto change check state");
 	can_auto_change_check_state->SetIsChecked(check_box->CanAutoChangeCheckState());
@@ -25,7 +25,7 @@ void ShowTestCheckBoxWindow() {
 	});
 	root_control->AddChild(can_auto_change_check_state);
 
-	auto can_be_indeterminate = std::make_shared<CheckBox>();
+	auto can_be_indeterminate = CreateControl<CheckBox>();
 	can_be_indeterminate->SetRect(Rect(0, 130, 300, 30));
 	can_be_indeterminate->SetText(L"Can be indeterminate");
 	can_be_indeterminate->SetIsChecked(check_box->CanBeIndeterminate());
