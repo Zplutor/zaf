@@ -5,22 +5,24 @@
 
 using namespace zaf;
 
+static void InitializeTextAlignmentControls(const std::shared_ptr<TextBox>& text_box, const std::shared_ptr<Control>& root_control);
+
 void ShowTestTextBoxWindow() {
 
 	auto window = std::make_shared<Window>();
 	window->SetTitle(L"test text box");
-	window->SetRect(Rect(0, 0, 300, 300));
+	window->SetRect(Rect(0, 0, 500, 500));
 
 	auto root_control = window->GetRootControl();
 
 	auto text_box = CreateControl<TextBox>();
-	text_box->SetRect(Rect(0, 0, 100, 100));
+	text_box->SetRect(Rect(0, 0, 200, 100));
 	text_box->SetText(L"TextBoxÎÄ±¾¿ò");
 	root_control->AddChild(text_box);
 
 	auto text_label = CreateControl<Label>();
 	text_label->SetText(text_box->GetText());
-	text_label->SetRect(Rect(100, 0, 100, 100));
+	text_label->SetRect(Rect(200, 0, 100, 100));
 	text_box->GetTextChangeEvent().AddListener([text_label](const std::shared_ptr<TextBox>& text_box) {
 		text_label->SetText(text_box->GetText());
 	});
@@ -73,5 +75,60 @@ void ShowTestTextBoxWindow() {
 	});
 	root_control->AddChild(multiline_check_box);
 
+	InitializeTextAlignmentControls(text_box, root_control);
+
+	auto word_wrap_check_box = CreateControl<CheckBox>();
+	word_wrap_check_box->SetText(L"Word wrap");
+	word_wrap_check_box->SetRect(Rect(0, 250, 100, 30));
+	word_wrap_check_box->SetIsChecked(text_box->GetWordWrapping() != WordWrapping::NoWrap);
+	word_wrap_check_box->GetCheckStateChangeEvent().AddListener([text_box](const std::shared_ptr<CheckBox>& check_box) {
+		text_box->SetWordWrapping(check_box->IsChecked() ? WordWrapping::Wrap : WordWrapping::NoWrap);
+	});
+	root_control->AddChild(word_wrap_check_box);
+
 	window->Show();
+}
+
+
+static void InitializeTextAlignmentControls(const std::shared_ptr<TextBox>& text_box, const std::shared_ptr<Control>& root_control) {
+
+	auto label = CreateControl<Label>();
+	label->SetText(L"TextAlignemnt: ");
+	label->SetRect(Rect(0, 220, 100, 30));
+	root_control->AddChild(label);
+
+	auto select_change_event_callback = [text_box](const std::shared_ptr<RadioButton>& radio_button, TextAlignment text_alignment) {
+		if (radio_button->IsSelected()) {
+			text_box->SetTextAlignment(text_alignment);
+		}
+	};
+
+	auto group = std::make_shared<RadioButton::Group>();
+
+	auto left_radio_button = CreateControl<RadioButton>();
+	left_radio_button->SetText(L"Left");
+	left_radio_button->SetGroup(group);
+	left_radio_button->SetRect(Rect(100, 220, 100, 30));
+	left_radio_button->GetSelectStateChangeEvent().AddListener(
+		std::bind(select_change_event_callback, std::placeholders::_1, TextAlignment::Leading)
+	);
+	root_control->AddChild(left_radio_button);
+
+	auto center_radio_button = CreateControl<RadioButton>();
+	center_radio_button->SetText(L"Center");
+	center_radio_button->SetGroup(group);
+	center_radio_button->SetRect(Rect(200, 220, 100, 30));
+	center_radio_button->GetSelectStateChangeEvent().AddListener(
+		std::bind(select_change_event_callback, std::placeholders::_1, TextAlignment::Center)
+	);
+	root_control->AddChild(center_radio_button);
+
+	auto right_radio_button = CreateControl<RadioButton>();
+	right_radio_button->SetText(L"Right");
+	right_radio_button->SetGroup(group);
+	right_radio_button->SetRect(Rect(300, 220, 100, 30));
+	right_radio_button->GetSelectStateChangeEvent().AddListener(
+		std::bind(select_change_event_callback, std::placeholders::_1, TextAlignment::Tailing)
+	);
+	root_control->AddChild(right_radio_button);
 }

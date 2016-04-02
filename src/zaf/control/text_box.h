@@ -33,11 +33,20 @@ public:
 	bool IsReadOnly() const;
 	void SetIsReadOnly(bool is_read_only);
 
+	bool AllowBeep() const;
+	void SetAllowBeep(bool allow_beep);
+
 	const std::wstring GetText() const override;
 	void SetText(const std::wstring& text) override;
 
-	bool AllowBeep() const;
-	void SetAllowBeep(bool allow_beep);
+	const Font GetFont() const override;
+	void SetFont(const Font& font) override;
+
+	TextAlignment GetTextAlignment() const override;
+	void SetTextAlignment(TextAlignment alignment) override;
+
+	WordWrapping GetWordWrapping() const override;
+	void SetWordWrapping(WordWrapping word_wrapping) override;
 
 	TextChangeEvent::Proxy GetTextChangeEvent();
 
@@ -111,12 +120,10 @@ private:
 
 	private:
 		std::weak_ptr<TextBox> text_box_;
-
-		std::unique_ptr<CHARFORMATW> char_format_;
-		std::unique_ptr<PARAFORMAT> para_format_;
 	};
 
 private:
+	void InitializeTextService();
 	const Rect GetAbsoluteContentRect() const;
 	bool ChangeMouseCursor();
 	bool HasPropertyBit(DWORD bit) const;
@@ -126,8 +133,8 @@ private:
 	std::shared_ptr<TextHostBridge> text_host_bridge_;
 	CComPtr<ITextServices> text_service_;
 	DWORD property_bits_;
-	std::shared_ptr<CHARFORMATW> character_format_;
-	std::shared_ptr<PARAFORMAT> paragraph_format_;
+	CHARFORMATW character_format_;
+	PARAFORMAT paragraph_format_;
 };
 
 }

@@ -25,6 +25,8 @@ EXTERN_C const IID IID_ITextHost = {
 
 namespace zaf {
 
+static ITextServices* CreateTextService(ITextHost* text_host);
+
 static const wchar_t* const kMaximumLengthPropertyName = L"MaximumLength";
 static const wchar_t* const kPasswordCharacterPropertyName = L"PasswordCharacter";
 static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
@@ -33,8 +35,13 @@ static const DWORD kDefaultPropertyBits = TXTBIT_ALLOWBEEP;
 static const std::uint32_t kDefaultMaximumLength = std::numeric_limits<std::uint32_t>::max();
 static const wchar_t kDefaultPasswordCharacter = L'*';
 
-TextBox::TextBox() : property_bits_(kDefaultPropertyBits) {
+TextBox::TextBox() : 
+	property_bits_(kDefaultPropertyBits),
+	character_format_(),
+	paragraph_format_() {
 
+	character_format_.cbSize = sizeof(character_format_);
+	paragraph_format_.cbSize = sizeof(paragraph_format_);
 }
 
 
@@ -50,30 +57,20 @@ void TextBox::Initialize() {
 	SetCanFocused(true);
 	SetBorderWidth(1);
 	SetColor(PaintComponent::Border, PaintState::Normal, Color::Black);
+	SetFont(Font());
+	SetTextAlignment(TextAlignment::Leading);
+	SetWordWrapping(WordWrapping::NoWrap);
+
+	InitializeTextService();
+}
+
+
+void TextBox::InitializeTextService() {
 
 	auto shared_this = std::dynamic_pointer_cast<TextBox>(shared_from_this());
 	text_host_bridge_ = std::make_shared<TextHostBridge>(shared_this);
 
-	HMODULE module_handle = LoadLibrary(L"riched20.dll");
-	if (module_handle == nullptr) {
-		return;
-	}
-		
-	typedef HRESULT(_stdcall*CreateTextServicesFunction)(IUnknown*, ITextHost*, IUnknown**);
-	CreateTextServicesFunction create_text_services = reinterpret_cast<CreateTextServicesFunction>(
-		GetProcAddress(module_handle, "CreateTextServices")
-	);
-	if (create_text_services == nullptr) {
-		return;
-	}
-
- 	CComPtr<IUnknown> service;
-	HRESULT result = create_text_services(nullptr, text_host_bridge_.get(), &service);
-	if (FAILED(result)) {
-		return;
-	}
-
-	service->QueryInterface(IID_ITextServices, reinterpret_cast<void**>(&text_service_));
+	text_service_ = CreateTextService(text_host_bridge_.get());
 	if (text_service_ == nullptr) {
 		return;
 	}
@@ -85,7 +82,7 @@ void TextBox::Initialize() {
 
 void TextBox::Layout(const Rect& previous_rect) {
 
-	if (text_service_ == nullptr) {
+	if (text_service_ != nullptr) {
 		text_service_->OnTxPropertyBitsChange(TXTBIT_CLIENTRECTCHANGE, TXTBIT_CLIENTRECTCHANGE);
 	}
 }
@@ -219,6 +216,15 @@ void TextBox::SetIsReadOnly(bool is_read_only) {
 }
 
 
+bool TextBox::AllowBeep() const {
+	return HasPropertyBit(TXTBIT_ALLOWBEEP);
+}
+
+void TextBox::SetAllowBeep(bool allow_beep) {
+	ChangePropertyBit(TXTBIT_ALLOWBEEP, allow_beep);
+}
+
+
 const std::wstring TextBox::GetText() const {
 
 	std::wstring text;
@@ -236,7 +242,6 @@ const std::wstring TextBox::GetText() const {
 	return text;
 }
 
-
 void TextBox::SetText(const std::wstring& text) {
 
 	if (text_service_ != nullptr) {
@@ -245,13 +250,73 @@ void TextBox::SetText(const std::wstring& text) {
 }
 
 
-bool TextBox::AllowBeep() const {
-	return HasPropertyBit(TXTBIT_ALLOWBEEP);
+const Font TextBox::GetFont() const {
+
+	Font font;
+	font.family_name = character_format_.szFaceName;
+	font.size = character_format_.yHeight;
+	return font;
+}
+
+void TextBox::SetFont(const Font& font) {
+
+	character_format_.dwMask |= CFM_FACE;
+	wcscpy_s(character_format_.szFaceName, font.family_name.c_str());
+
+	character_format_.dwMask |= CFM_SIZE;
+	character_format_.yHeight = font.size;
+
+	if (text_service_ != nullptr) {
+		text_service_->OnTxPropertyBitsChange(TXTBIT_CHARFORMATCHANGE, TXTBIT_CHARFORMATCHANGE);
+	}
 }
 
 
-void TextBox::SetAllowBeep(bool allow_beep) {
-	ChangePropertyBit(TXTBIT_ALLOWBEEP, allow_beep);
+TextAlignment TextBox::GetTextAlignment() const {
+
+	switch (paragraph_format_.wAlignment) {
+		case PFA_CENTER:
+			return TextAlignment::Center;
+		case PFA_LEFT:
+			return TextAlignment::Leading;
+		case PFA_RIGHT:
+			return TextAlignment::Tailing;
+		default:
+			return TextAlignment::Leading;
+	}
+}
+
+void TextBox::SetTextAlignment(TextAlignment alignment) {
+
+	paragraph_format_.dwMask |= PFM_ALIGNMENT;
+
+	switch (alignment) {
+		case TextAlignment::Center:
+			paragraph_format_.wAlignment = PFA_CENTER;
+			break;
+		case TextAlignment::Leading:
+			paragraph_format_.wAlignment = PFA_LEFT;
+			break;
+		case TextAlignment::Tailing:
+			paragraph_format_.wAlignment = PFA_RIGHT;
+			break;
+		default:
+			ZAF_FAIL();
+			break;
+	}
+
+	if (text_service_ != nullptr) {
+		text_service_->OnTxPropertyBitsChange(TXTBIT_PARAFORMATCHANGE, TXTBIT_PARAFORMATCHANGE);
+	}
+}
+
+
+WordWrapping TextBox::GetWordWrapping() const {
+	return HasPropertyBit(TXTBIT_WORDWRAP) ? WordWrapping::Wrap : WordWrapping::NoWrap;
+}
+
+void TextBox::SetWordWrapping(WordWrapping word_wrapping) {
+	ChangePropertyBit(TXTBIT_WORDWRAP, word_wrapping != WordWrapping::NoWrap);
 }
 
 
@@ -573,56 +638,27 @@ HRESULT TextBox::TextHostBridge::TxGetViewInset(LPRECT prc) {
 
 HRESULT TextBox::TextHostBridge::TxGetCharFormat(const CHARFORMATW **ppCF) {
 
-	if (char_format_ == nullptr) {
-
-		char_format_ = std::make_unique<CHARFORMATW>();
-		char_format_->cbSize = sizeof(CHARFORMATW);
-		char_format_->dwMask = 0;
-
-		auto text_box = text_box_.lock();
-		if (text_box != nullptr) { 
-
-			auto font = text_box->GetFont();
-
-			char_format_->dwMask |= CFM_FACE;
-			wcscpy_s(char_format_->szFaceName, font.family_name.c_str());
-
-			char_format_->dwMask |= CFM_SIZE;
-			char_format_->yHeight = font.size;
-		}
-
-		/*
-		char_format_->dwMask = CFM_SIZE | CFM_COLOR | CFM_FACE | CFM_CHARSET | CFM_OFFSET;
-		char_format_->yHeight = 500;
-		char_format_->yOffset = 0;
-		//char_format_->dwEffects = CFE_AUTOCOLOR;
-		char_format_->crTextColor = RGB(1, 1, 1);
-		char_format_->bCharSet = DEFAULT_CHARSET;
-		char_format_->bPitchAndFamily = DEFAULT_PITCH;
-		wcscpy_s(char_format_->szFaceName, L"Î¢ÈíÑÅºÚ");
-		*/
+	auto text_box = text_box_.lock(); 
+	if (text_box != nullptr) {
+		*ppCF = &(text_box->character_format_);
+		return S_OK;
 	}
-
-	*ppCF = char_format_.get();
-	return S_OK;
+	else {
+		return E_NOTIMPL;
+	}
 }
 
 
 HRESULT TextBox::TextHostBridge::TxGetParaFormat(const PARAFORMAT **ppPF) {
 
-	if (para_format_ == nullptr) {
-		para_format_ = std::make_unique<PARAFORMAT>();
-		para_format_->cbSize = sizeof(PARAFORMAT);
-		/*
-		para_format_->dwMask = PFM_ALL;
-		para_format_->wAlignment = PFA_LEFT;
-		para_format_->cTabCount = 1;
-		para_format_->rgxTabs[0] = lDefaultTab;
-		*/
+	auto text_box = text_box_.lock();
+	if (text_box != nullptr) {
+		*ppPF = &(text_box->paragraph_format_);
+		return S_OK;
 	}
-
-	*ppPF = para_format_.get();
-	return S_OK;
+	else {
+		return E_NOTIMPL;
+	}
 }
 
 
@@ -760,6 +796,33 @@ HWND TextBox::TextHostBridge::GetWindowHandle() const {
 	}
 
 	return window->GetHandle();
+}
+
+
+static ITextServices* CreateTextService(ITextHost* text_host) {
+
+	HMODULE module_handle = LoadLibrary(L"riched20.dll");
+	if (module_handle == nullptr) {
+		return nullptr;
+	}
+
+	typedef HRESULT(_stdcall*CreateTextServicesFunction)(IUnknown*, ITextHost*, IUnknown**);
+	auto create_text_services = reinterpret_cast<CreateTextServicesFunction>(
+		GetProcAddress(module_handle, "CreateTextServices")
+	);
+	if (create_text_services == nullptr) {
+		return nullptr;
+	}
+
+	CComPtr<IUnknown> service;
+	HRESULT result = create_text_services(nullptr, text_host, &service);
+	if (FAILED(result)) {
+		return nullptr;
+	}
+
+	ITextServices* text_service = nullptr;
+	service->QueryInterface(IID_ITextServices, reinterpret_cast<void**>(&text_service));
+	return text_service;
 }
 
 

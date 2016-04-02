@@ -178,35 +178,35 @@ public:
 	 */
 	virtual void SetText(const std::wstring& text);
 
-	const Font GetFont() const;
-	void SetFont(const Font& font);
+	virtual const Font GetFont() const;
+	virtual void SetFont(const Font& font);
 
 	/**
 	 Get text alignment.
 
 	 The default value is TextAlignment::Leading.
 	 */
-	TextAlignment GetTextAlignment() const;
+	virtual TextAlignment GetTextAlignment() const;
 
 	/**
 	 Set text alignment.
 	 */
-	void SetTextAlignment(TextAlignment alignment);
+	virtual void SetTextAlignment(TextAlignment alignment);
 
 	/**
 	 Get paragraph alignemnt.
 	
 	 The default value is ParagraphAlignment::Near;
 	 */
-	ParagraphAlignment GetParagraphAlignment() const;
+	virtual ParagraphAlignment GetParagraphAlignment() const;
 
 	/**
 	 Set paragraph alignment.
 	 */
-	void SetParagraphAlignment(ParagraphAlignment alignment);
+	virtual void SetParagraphAlignment(ParagraphAlignment alignment);
 
-	WordWrapping GetWordWrapping() const;
-	void SetWordWrapping(WordWrapping word_wrapping);
+	virtual WordWrapping GetWordWrapping() const;
+	virtual void SetWordWrapping(WordWrapping word_wrapping);
 
 	/**
 	 Get the control's children.
