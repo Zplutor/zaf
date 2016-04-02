@@ -36,12 +36,14 @@ public:
 	const std::wstring GetText() const override;
 	void SetText(const std::wstring& text) override;
 
+	bool AllowBeep() const;
+	void SetAllowBeep(bool allow_beep);
+
 	TextChangeEvent::Proxy GetTextChangeEvent();
 
 protected:
 	void Layout(const Rect& previous_rect) override;
 	void Repaint(Canvas& canvas, const Rect& dirty_rect) override;
-	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 
 	void ChangeMouseCursor(WPARAM wParam, LPARAM lParam, bool& is_changed) override;
 	void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) override;
@@ -56,9 +58,9 @@ protected:
 	void FocusLose() override;
 
 private:
-	class TextHost : public ITextHost {
+	class TextHostBridge : public ITextHost {
 	public:
-		TextHost(const std::shared_ptr<TextBox>& text_box, DWORD property_bits);
+		TextHostBridge(const std::shared_ptr<TextBox>& text_box);
 
 		HRESULT __stdcall QueryInterface(REFIID riid, void** ppvObject) override;
 		ULONG __stdcall AddRef(void) override { return 0; }
@@ -103,27 +105,15 @@ private:
 		void TxImmReleaseContext(HIMC himc) override;
 		HRESULT	TxGetSelectionBarWidth(LONG *lSelBarWidth) override;
 
-	public:
-		DWORD property_bits;
-
 	private:
 		std::shared_ptr<Window> GetWindow() const;
 		HWND GetWindowHandle() const;
 
 	private:
 		std::weak_ptr<TextBox> text_box_;
+
 		std::unique_ptr<CHARFORMATW> char_format_;
 		std::unique_ptr<PARAFORMAT> para_format_;
-	};
-
-	class NotInitializedState {
-	public:
-		NotInitializedState();
-
-		DWORD property_bits;
-		std::wstring text;
-		std::uint32_t max_length;
-		wchar_t password_char;
 	};
 
 private:
@@ -133,9 +123,11 @@ private:
 	void ChangePropertyBit(DWORD bit, bool is_set);
 
 private:
-	std::shared_ptr<TextHost> text_host_;
+	std::shared_ptr<TextHostBridge> text_host_bridge_;
 	CComPtr<ITextServices> text_service_;
-	std::unique_ptr<NotInitializedState> not_initialized_state_;
+	DWORD property_bits_;
+	std::shared_ptr<CHARFORMATW> character_format_;
+	std::shared_ptr<PARAFORMAT> paragraph_format_;
 };
 
 }

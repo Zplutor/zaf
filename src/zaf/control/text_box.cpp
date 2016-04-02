@@ -23,19 +23,18 @@ EXTERN_C const IID IID_ITextHost = {
 	{ 0xa8, 0x9e, 0x00, 0xaa, 0x00, 0x6c, 0xad, 0xc5 }
 };
 
+namespace zaf {
+
 static const wchar_t* const kMaximumLengthPropertyName = L"MaximumLength";
 static const wchar_t* const kPasswordCharacterPropertyName = L"PasswordCharacter";
 static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
 
+static const DWORD kDefaultPropertyBits = TXTBIT_ALLOWBEEP;
 static const std::uint32_t kDefaultMaximumLength = std::numeric_limits<std::uint32_t>::max();
 static const wchar_t kDefaultPasswordCharacter = L'*';
 
-namespace zaf {
+TextBox::TextBox() : property_bits_(kDefaultPropertyBits) {
 
-TextBox::TextBox() :
-	not_initialized_state_(std::make_unique<NotInitializedState>()) {
-
-	SetCanFocused(true);
 }
 
 
@@ -48,13 +47,12 @@ void TextBox::Initialize() {
 
 	__super::Initialize();
 
+	SetCanFocused(true);
 	SetBorderWidth(1);
 	SetColor(PaintComponent::Border, PaintState::Normal, Color::Black);
 
-	text_host_ = std::make_shared<TextHost>(
-		std::dynamic_pointer_cast<TextBox>(shared_from_this()),
-		not_initialized_state_->property_bits
-	);
+	auto shared_this = std::dynamic_pointer_cast<TextBox>(shared_from_this());
+	text_host_bridge_ = std::make_shared<TextHostBridge>(shared_this);
 
 	HMODULE module_handle = LoadLibrary(L"riched20.dll");
 	if (module_handle == nullptr) {
@@ -70,7 +68,7 @@ void TextBox::Initialize() {
 	}
 
  	CComPtr<IUnknown> service;
-	HRESULT result = create_text_services(nullptr, text_host_.get(), &service);
+	HRESULT result = create_text_services(nullptr, text_host_bridge_.get(), &service);
 	if (FAILED(result)) {
 		return;
 	}
@@ -81,20 +79,15 @@ void TextBox::Initialize() {
 	}
 
 	text_service_->OnTxInPlaceActivate(nullptr);
-	text_service_->TxSetText(not_initialized_state_->text.c_str());
 	text_service_->TxSendMessage(EM_SETEVENTMASK, 0, ENM_CHANGE, nullptr);
-
-	not_initialized_state_ = nullptr;
 }
 
 
 void TextBox::Layout(const Rect& previous_rect) {
 
 	if (text_service_ == nullptr) {
-		return;
+		text_service_->OnTxPropertyBitsChange(TXTBIT_CLIENTRECTCHANGE, TXTBIT_CLIENTRECTCHANGE);
 	}
-
-	text_service_->OnTxPropertyBitsChange(TXTBIT_CLIENTRECTCHANGE, TXTBIT_CLIENTRECTCHANGE);
 }
 
 
@@ -148,12 +141,6 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-void TextBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
-
-	__super::Paint(canvas, dirty_rect);
-}
-
-
 const Rect TextBox::GetAbsoluteContentRect() const {
 
 	auto rect = GetAbsoluteRect();
@@ -163,10 +150,6 @@ const Rect TextBox::GetAbsoluteContentRect() const {
 
 
 std::uint32_t TextBox::GetMaximumLength() const {
-
-	if (not_initialized_state_ != nullptr) {
-		return not_initialized_state_->max_length;
-	}
 
 	auto max_length = GetPropertyMap().TryGetProperty<std::uint32_t>(kMaximumLengthPropertyName);
 	if (max_length != nullptr) {
@@ -180,16 +163,10 @@ std::uint32_t TextBox::GetMaximumLength() const {
 
 void TextBox::SetMaximumLength(std::uint32_t max_length) {
 
-	if (not_initialized_state_ != nullptr) {
-		not_initialized_state_->max_length = max_length;
-	}
-	else {
+	GetPropertyMap().SetProperty(kMaximumLengthPropertyName, max_length);
 
-		GetPropertyMap().SetProperty(kMaximumLengthPropertyName, max_length);
-
-		if (text_service_ != nullptr) {
-			text_service_->OnTxPropertyBitsChange(TXTBIT_MAXLENGTHCHANGE, TXTBIT_MAXLENGTHCHANGE);
-		}
+	if (text_service_ != nullptr) {
+		text_service_->OnTxPropertyBitsChange(TXTBIT_MAXLENGTHCHANGE, TXTBIT_MAXLENGTHCHANGE);
 	}
 }
 
@@ -205,10 +182,6 @@ void TextBox::SetUsePasswordCharacter(bool use_password_char) {
 
 wchar_t TextBox::GetPasswordCharacter() const {
 	
-	if (not_initialized_state_ != nullptr) {
-		return not_initialized_state_->password_char;
-	}
-
 	auto password_char = GetPropertyMap().TryGetProperty<wchar_t>(kPasswordCharacterPropertyName);
 	if (password_char != nullptr) {
 		return *password_char;
@@ -220,16 +193,10 @@ wchar_t TextBox::GetPasswordCharacter() const {
 
 void TextBox::SetPasswordCharacter(wchar_t password_char) {
 
-	if (not_initialized_state_ != nullptr) {
-		not_initialized_state_->password_char = password_char;
-	}
-	else {
+	GetPropertyMap().SetProperty(kPasswordCharacterPropertyName, password_char);
 
-		GetPropertyMap().SetProperty(kPasswordCharacterPropertyName, password_char);
-
-		if ((text_service_ != nullptr) && UsePasswordCharacter()) {
-			text_service_->OnTxPropertyBitsChange(TXTBIT_USEPASSWORD, TXTBIT_USEPASSWORD);
-		}
+	if ((text_service_ != nullptr) && UsePasswordCharacter()) {
+		text_service_->OnTxPropertyBitsChange(TXTBIT_USEPASSWORD, TXTBIT_USEPASSWORD);
 	}
 }
 
@@ -254,10 +221,6 @@ void TextBox::SetIsReadOnly(bool is_read_only) {
 
 const std::wstring TextBox::GetText() const {
 
-	if (not_initialized_state_ != nullptr) {
-		return not_initialized_state_->text;
-	}
-
 	std::wstring text;
 	if (text_service_ != nullptr) {
 
@@ -276,59 +239,38 @@ const std::wstring TextBox::GetText() const {
 
 void TextBox::SetText(const std::wstring& text) {
 
-	if (not_initialized_state_ != nullptr) {
-		not_initialized_state_->text = text;
-	}
-	else {
-		if (text_service_ != nullptr) {
-			text_service_->TxSetText(text.c_str());
-		}
+	if (text_service_ != nullptr) {
+		text_service_->TxSetText(text.c_str());
 	}
 }
 
 
+bool TextBox::AllowBeep() const {
+	return HasPropertyBit(TXTBIT_ALLOWBEEP);
+}
+
+
+void TextBox::SetAllowBeep(bool allow_beep) {
+	ChangePropertyBit(TXTBIT_ALLOWBEEP, allow_beep);
+}
+
+
 bool TextBox::HasPropertyBit(DWORD bit) const {
-
-	DWORD property_bits = 0;
-
-	if (not_initialized_state_ != nullptr) {
-		property_bits = not_initialized_state_->property_bits;
-	}
-	else {
-		if (text_host_ != nullptr) {
-			property_bits = text_host_->property_bits;
-		}
-	}
-
-	return (property_bits & bit) != 0;
+	return (property_bits_ & bit) != 0;
 }
 
 
 void TextBox::ChangePropertyBit(DWORD bit, bool is_set) {
 
-	DWORD* property_bits = nullptr;
-
-	if (not_initialized_state_ != nullptr) {
-		property_bits = &not_initialized_state_->property_bits;
+	if (is_set) {
+		property_bits_ |= bit;
 	}
 	else {
-		if (text_host_ != nullptr) {
-			property_bits = &text_host_->property_bits;
-		}
+		property_bits_ &= ~bit;
 	}
 
-	if (property_bits != nullptr) {
-
-		if (is_set) {
-			*property_bits |= bit;
-		}
-		else {
-			*property_bits &= ~bit;
-		}
-
-		if (text_service_ != nullptr) {
-			text_service_->OnTxPropertyBitsChange(bit, *property_bits);
-		}
+	if (text_service_ != nullptr) {
+		text_service_->OnTxPropertyBitsChange(bit, property_bits_);
 	}
 }
 
@@ -448,14 +390,13 @@ void TextBox::FocusLose() {
 }
 
 
-TextBox::TextHost::TextHost(const std::shared_ptr<TextBox>& text_box, DWORD property_bits) :
-	text_box_(text_box),
-	property_bits(property_bits) {
+TextBox::TextHostBridge::TextHostBridge(const std::shared_ptr<TextBox>& text_box) :
+	text_box_(text_box) {
 
 }
 
 
-HRESULT TextBox::TextHost::QueryInterface(REFIID riid, void** ppvObject) {
+HRESULT TextBox::TextHostBridge::QueryInterface(REFIID riid, void** ppvObject) {
 
 	if (ppvObject == nullptr) {
 		return E_POINTER;
@@ -471,37 +412,37 @@ HRESULT TextBox::TextHost::QueryInterface(REFIID riid, void** ppvObject) {
 }
 
 
-HDC TextBox::TextHost::TxGetDC() {
+HDC TextBox::TextHostBridge::TxGetDC() {
 	return GetDC(GetWindowHandle());
 }
 
 
-INT TextBox::TextHost::TxReleaseDC(HDC hdc) {
+INT TextBox::TextHostBridge::TxReleaseDC(HDC hdc) {
 	return ReleaseDC(GetWindowHandle(), hdc);
 }
 
 
-BOOL TextBox::TextHost::TxShowScrollBar(INT fnBar, BOOL fShow) {
+BOOL TextBox::TextHostBridge::TxShowScrollBar(INT fnBar, BOOL fShow) {
 	return FALSE;
 }
 
 
-BOOL TextBox::TextHost::TxEnableScrollBar(INT fuSBFlags, INT fuArrowflags) {
+BOOL TextBox::TextHostBridge::TxEnableScrollBar(INT fuSBFlags, INT fuArrowflags) {
 	return FALSE;
 }
 
 
-BOOL TextBox::TextHost::TxSetScrollRange(INT fnBar, LONG nMinPos, INT nMaxPos, BOOL fRedraw) {
+BOOL TextBox::TextHostBridge::TxSetScrollRange(INT fnBar, LONG nMinPos, INT nMaxPos, BOOL fRedraw) {
 	return FALSE;
 }
 
 
-BOOL TextBox::TextHost::TxSetScrollPos(INT fnBar, INT nPos, BOOL fRedraw) {
+BOOL TextBox::TextHostBridge::TxSetScrollPos(INT fnBar, INT nPos, BOOL fRedraw) {
 	return FALSE;
 }
 
 
-void TextBox::TextHost::TxInvalidateRect(LPCRECT prc, BOOL fMode) {
+void TextBox::TextHostBridge::TxInvalidateRect(LPCRECT prc, BOOL fMode) {
 	auto text_box = text_box_.lock();
 	if (text_box != nullptr) {
 		text_box->NeedRepaint();
@@ -509,11 +450,11 @@ void TextBox::TextHost::TxInvalidateRect(LPCRECT prc, BOOL fMode) {
 }
 
 
-void TextBox::TextHost::TxViewChange(BOOL fUpdate) {
+void TextBox::TextHostBridge::TxViewChange(BOOL fUpdate) {
 }
 
 
-BOOL TextBox::TextHost::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) {
+BOOL TextBox::TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) {
 
 	auto window = GetWindow();
 	if (window == nullptr) {
@@ -525,7 +466,7 @@ BOOL TextBox::TextHost::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) {
 }
 
 
-BOOL TextBox::TextHost::TxShowCaret(BOOL fShow) {
+BOOL TextBox::TextHostBridge::TxShowCaret(BOOL fShow) {
 
 	auto window = GetWindow();
 	if (window == nullptr) {
@@ -543,7 +484,7 @@ BOOL TextBox::TextHost::TxShowCaret(BOOL fShow) {
 }
 
 
-BOOL TextBox::TextHost::TxSetCaretPos(INT x, INT y) {
+BOOL TextBox::TextHostBridge::TxSetCaretPos(INT x, INT y) {
 
 	auto window = GetWindow();
 	if (window == nullptr) {
@@ -556,20 +497,20 @@ BOOL TextBox::TextHost::TxSetCaretPos(INT x, INT y) {
 }
 
 
-BOOL TextBox::TextHost::TxSetTimer(UINT idTimer, UINT uTimeout) {
+BOOL TextBox::TextHostBridge::TxSetTimer(UINT idTimer, UINT uTimeout) {
 	return FALSE;
 }
 
 
-void TextBox::TextHost::TxKillTimer(UINT idTimer) {
+void TextBox::TextHostBridge::TxKillTimer(UINT idTimer) {
 }
 
 
-void TextBox::TextHost::TxScrollWindowEx(INT dx, INT dy, LPCRECT lprcScroll, LPCRECT lprcClip, HRGN hrgnUpdate, LPRECT lprcUpdate, UINT fuScroll) {
+void TextBox::TextHostBridge::TxScrollWindowEx(INT dx, INT dy, LPCRECT lprcScroll, LPCRECT lprcClip, HRGN hrgnUpdate, LPRECT lprcUpdate, UINT fuScroll) {
 }
 
 
-void TextBox::TextHost::TxSetCapture(BOOL fCapture) {
+void TextBox::TextHostBridge::TxSetCapture(BOOL fCapture) {
 
 	auto text_box = text_box_.lock();
 	if (text_box == nullptr) {
@@ -580,37 +521,37 @@ void TextBox::TextHost::TxSetCapture(BOOL fCapture) {
 }
 
 
-void TextBox::TextHost::TxSetFocus() {
+void TextBox::TextHostBridge::TxSetFocus() {
 	
 }
 
 
-void TextBox::TextHost::TxSetCursor(HCURSOR hcur, BOOL fText) {
+void TextBox::TextHostBridge::TxSetCursor(HCURSOR hcur, BOOL fText) {
 	SetCursor(hcur);
 }
 
 
-BOOL TextBox::TextHost::TxScreenToClient(LPPOINT lppt) {
+BOOL TextBox::TextHostBridge::TxScreenToClient(LPPOINT lppt) {
 	return FALSE;
 }
 
 
-BOOL TextBox::TextHost::TxClientToScreen(LPPOINT lppt) {
+BOOL TextBox::TextHostBridge::TxClientToScreen(LPPOINT lppt) {
 	return FALSE;
 }
 
 
-HRESULT TextBox::TextHost::TxActivate(LONG * plOldState) {
+HRESULT TextBox::TextHostBridge::TxActivate(LONG * plOldState) {
 	return E_NOTIMPL;
 }
 
 
-HRESULT TextBox::TextHost::TxDeactivate(LONG lNewState) {
+HRESULT TextBox::TextHostBridge::TxDeactivate(LONG lNewState) {
 	return E_NOTIMPL;
 }
 
 
-HRESULT TextBox::TextHost::TxGetClientRect(LPRECT prc) {
+HRESULT TextBox::TextHostBridge::TxGetClientRect(LPRECT prc) {
 
 	Rect rect;
 
@@ -624,13 +565,13 @@ HRESULT TextBox::TextHost::TxGetClientRect(LPRECT prc) {
 }
 
 
-HRESULT TextBox::TextHost::TxGetViewInset(LPRECT prc) {
+HRESULT TextBox::TextHostBridge::TxGetViewInset(LPRECT prc) {
 	*prc = RECT();
 	return S_OK;
 }
 
 
-HRESULT TextBox::TextHost::TxGetCharFormat(const CHARFORMATW **ppCF) {
+HRESULT TextBox::TextHostBridge::TxGetCharFormat(const CHARFORMATW **ppCF) {
 
 	if (char_format_ == nullptr) {
 
@@ -667,7 +608,7 @@ HRESULT TextBox::TextHost::TxGetCharFormat(const CHARFORMATW **ppCF) {
 }
 
 
-HRESULT TextBox::TextHost::TxGetParaFormat(const PARAFORMAT **ppPF) {
+HRESULT TextBox::TextHostBridge::TxGetParaFormat(const PARAFORMAT **ppPF) {
 
 	if (para_format_ == nullptr) {
 		para_format_ = std::make_unique<PARAFORMAT>();
@@ -685,18 +626,18 @@ HRESULT TextBox::TextHost::TxGetParaFormat(const PARAFORMAT **ppPF) {
 }
 
 
-COLORREF TextBox::TextHost::TxGetSysColor(int nIndex) {
+COLORREF TextBox::TextHostBridge::TxGetSysColor(int nIndex) {
 	return GetSysColor(nIndex);
 }
 
 
-HRESULT TextBox::TextHost::TxGetBackStyle(TXTBACKSTYLE *pstyle) {
+HRESULT TextBox::TextHostBridge::TxGetBackStyle(TXTBACKSTYLE *pstyle) {
 	*pstyle = TXTBACK_TRANSPARENT;
 	return S_OK;
 }
 
 
-HRESULT TextBox::TextHost::TxGetMaxLength(DWORD *plength) {
+HRESULT TextBox::TextHostBridge::TxGetMaxLength(DWORD *plength) {
 
 	auto text_box = text_box_.lock();
 	if (text_box != nullptr) {
@@ -710,13 +651,13 @@ HRESULT TextBox::TextHost::TxGetMaxLength(DWORD *plength) {
 }
 
 
-HRESULT TextBox::TextHost::TxGetScrollBars(DWORD *pdwScrollBar) {
+HRESULT TextBox::TextHostBridge::TxGetScrollBars(DWORD *pdwScrollBar) {
 	*pdwScrollBar = ES_AUTOVSCROLL | ES_AUTOHSCROLL;
 	return S_OK;
 }
 
 
-HRESULT TextBox::TextHost::TxGetPasswordChar(_Out_ TCHAR *pch) {
+HRESULT TextBox::TextHostBridge::TxGetPasswordChar(_Out_ TCHAR *pch) {
 
 	auto text_box = text_box_.lock();
 	if (text_box != nullptr) {
@@ -730,33 +671,41 @@ HRESULT TextBox::TextHost::TxGetPasswordChar(_Out_ TCHAR *pch) {
 }
 
 
-HRESULT TextBox::TextHost::TxGetAcceleratorPos(LONG *pcp) {
+HRESULT TextBox::TextHostBridge::TxGetAcceleratorPos(LONG *pcp) {
 	return E_NOTIMPL;
 }
 
 
-HRESULT TextBox::TextHost::TxGetExtent(LPSIZEL lpExtent) {
+HRESULT TextBox::TextHostBridge::TxGetExtent(LPSIZEL lpExtent) {
 	return E_NOTIMPL;
 }
 
 
-HRESULT TextBox::TextHost::OnTxCharFormatChange(const CHARFORMATW * pCF) {
+HRESULT TextBox::TextHostBridge::OnTxCharFormatChange(const CHARFORMATW * pCF) {
 	return E_NOTIMPL;
 }
 
 
-HRESULT TextBox::TextHost::OnTxParaFormatChange(const PARAFORMAT * pPF) {
+HRESULT TextBox::TextHostBridge::OnTxParaFormatChange(const PARAFORMAT * pPF) {
 	return E_NOTIMPL;
 }
 
 
-HRESULT TextBox::TextHost::TxGetPropertyBits(DWORD dwMask, DWORD *pdwBits) {
-	*pdwBits = dwMask & property_bits;
+HRESULT TextBox::TextHostBridge::TxGetPropertyBits(DWORD dwMask, DWORD *pdwBits) {
+
+	auto text_box = text_box_.lock();
+	if (text_box != nullptr) {
+		*pdwBits = dwMask & text_box->property_bits_;
+	}
+	else {
+		*pdwBits = kDefaultPropertyBits;
+	}
+	
 	return S_OK;
 }
 
 
-HRESULT TextBox::TextHost::TxNotify(DWORD iNotify, void *pv) {
+HRESULT TextBox::TextHostBridge::TxNotify(DWORD iNotify, void *pv) {
 
 	switch (iNotify) {
 
@@ -777,22 +726,22 @@ HRESULT TextBox::TextHost::TxNotify(DWORD iNotify, void *pv) {
 }
 
 
-HIMC TextBox::TextHost::TxImmGetContext() {
+HIMC TextBox::TextHostBridge::TxImmGetContext() {
 	return nullptr;
 }
 
 
-void TextBox::TextHost::TxImmReleaseContext(HIMC himc) {
+void TextBox::TextHostBridge::TxImmReleaseContext(HIMC himc) {
 }
 
 
-HRESULT TextBox::TextHost::TxGetSelectionBarWidth(LONG *lSelBarWidth) {
+HRESULT TextBox::TextHostBridge::TxGetSelectionBarWidth(LONG *lSelBarWidth) {
 	*lSelBarWidth = 0;
 	return S_OK;
 }
 
 
-std::shared_ptr<Window> TextBox::TextHost::GetWindow() const {
+std::shared_ptr<Window> TextBox::TextHostBridge::GetWindow() const {
 
 	auto text_box = text_box_.lock();
 	if (text_box == nullptr) {
@@ -803,7 +752,7 @@ std::shared_ptr<Window> TextBox::TextHost::GetWindow() const {
 }
 
 
-HWND TextBox::TextHost::GetWindowHandle() const {
+HWND TextBox::TextHostBridge::GetWindowHandle() const {
 
 	auto window = GetWindow();
 	if (window == nullptr) {
@@ -813,12 +762,5 @@ HWND TextBox::TextHost::GetWindowHandle() const {
 	return window->GetHandle();
 }
 
-
-TextBox::NotInitializedState::NotInitializedState() :
-	property_bits(TXTBIT_ALLOWBEEP),
-	max_length(kDefaultMaximumLength),
-	password_char(kDefaultPasswordCharacter) {
-
-}
 
 }
