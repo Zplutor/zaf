@@ -18,6 +18,8 @@
     <ClCompile Include="src\zaf\control\check_box.cpp" />
     <ClCompile Include="src\zaf\control\clickable_control.cpp" />
     <ClCompile Include="src\zaf\control\control.cpp" />
+    <ClCompile Include="src\zaf\control\layout\anchor_layouter.cpp" />
+    <ClCompile Include="src\zaf\control\layout\tile_layouter.cpp" />
     <ClCompile Include="src\zaf\control\paint_utility.cpp" />
     <ClCompile Include="src\zaf\control\label.cpp" />
     <ClCompile Include="src\zaf\control\radio_button.cpp" />
@@ -56,6 +58,9 @@
     <ClInclude Include="src\zaf\control\clickable_control.h" />
     <ClInclude Include="src\zaf\control\control.h" />
     <ClInclude Include="src\zaf\control\creation.h" />
+    <ClInclude Include="src\zaf\control\layout\anchor_layouter.h" />
+    <ClInclude Include="src\zaf\control\layout\layouter.h" />
+    <ClInclude Include="src\zaf\control\layout\tile_layouter.h" />
     <ClInclude Include="src\zaf\control\paint_utility.h" />
     <ClInclude Include="src\zaf\control\label.h" />
     <ClInclude Include="src\zaf\control\radio_button.h" />

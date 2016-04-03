@@ -42,6 +42,7 @@ void BeginRun(Application&) {
 	};
 
 	auto root_control = window->GetRootControl();
+	root_control->SetLayouter(GetVerticalTileLayouter());
 
 	float y = 0;
 	for (const auto& each_item : show_window_function_map) {

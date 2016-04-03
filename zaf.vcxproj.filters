@@ -28,6 +28,9 @@
     <Filter Include="zaf\graphic\font">
       <UniqueIdentifier>{eb21b954-c3ad-4906-b14a-c400e7f6e3cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\layout">
+      <UniqueIdentifier>{71859885-25bf-4217-93fc-5e753da7627c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -104,6 +107,12 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\paint_utility.cpp">
       <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\layout\anchor_layouter.cpp">
+      <Filter>zaf\control\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\layout\tile_layouter.cpp">
+      <Filter>zaf\control\layout</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +301,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\range.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\layout\layouter.h">
+      <Filter>zaf\control\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\layout\anchor_layouter.h">
+      <Filter>zaf\control\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\layout\tile_layouter.h">
+      <Filter>zaf\control\layout</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

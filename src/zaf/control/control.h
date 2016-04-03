@@ -10,6 +10,7 @@
 #include <zaf/enum.h>
 #include <zaf/base/property_map.h>
 #include <zaf/control/anchor.h>
+#include <zaf/control/layout/layouter.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
@@ -20,7 +21,6 @@ namespace zaf {
 
 class Canvas;
 class Font;
-class Layouter;
 class TextFormat;
 class TextLayout;
 class Window;
@@ -207,6 +207,9 @@ public:
 
 	virtual WordWrapping GetWordWrapping() const;
 	virtual void SetWordWrapping(WordWrapping word_wrapping);
+
+	const Layouter GetLayouter() const;
+	void SetLayouter(const Layouter& layouter);
 
 	/**
 	 Get the control's children.
@@ -403,8 +406,6 @@ private:
 	void RouteMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
-	void LayoutChild(const std::shared_ptr<Control>& child, const Rect& previous_rect);
-
 	const Color GetDefaultBackgroundColor(int paint_state) const;
 	const Color GetDefaultForegroundColor(int paint_state) const;
 	const Color GetDefaultBorderColor(int paint_state) const;
