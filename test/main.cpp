@@ -44,17 +44,14 @@ void BeginRun(Application&) {
 	auto root_control = window->GetRootControl();
 	root_control->SetLayouter(GetVerticalTileLayouter());
 
-	float y = 0;
 	for (const auto& each_item : show_window_function_map) {
 
 		auto button = CreateControl<Button>();
 		button->SetText(each_item.button_text);
-		button->SetRect(Rect(0, y, 100, 30));
 		button->GetClickEvent().AddListener([each_item](const std::shared_ptr<ClickableControl>&) {
 			each_item.show_window_function();
 		});
 		root_control->AddChild(button);
-		y += 30;
 	}
 
 	window->Show();
