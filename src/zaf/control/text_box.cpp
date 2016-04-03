@@ -59,7 +59,6 @@ void TextBox::Initialize() {
 	SetColor(PaintComponent::Border, PaintState::Normal, Color::Black);
 	SetFont(Font());
 	SetTextAlignment(TextAlignment::Leading);
-	SetWordWrapping(WordWrapping::NoWrap);
 
 	InitializeTextService();
 }
@@ -254,7 +253,7 @@ const Font TextBox::GetFont() const {
 
 	Font font;
 	font.family_name = character_format_.szFaceName;
-	font.size = character_format_.yHeight;
+	font.size = static_cast<float>(character_format_.yHeight);
 	return font;
 }
 
@@ -264,7 +263,7 @@ void TextBox::SetFont(const Font& font) {
 	wcscpy_s(character_format_.szFaceName, font.family_name.c_str());
 
 	character_format_.dwMask |= CFM_SIZE;
-	character_format_.yHeight = font.size;
+	character_format_.yHeight = static_cast<LONG>(font.size);
 
 	if (text_service_ != nullptr) {
 		text_service_->OnTxPropertyBitsChange(TXTBIT_CHARFORMATCHANGE, TXTBIT_CHARFORMATCHANGE);
@@ -379,8 +378,8 @@ bool TextBox::ChangeMouseCursor() {
 		nullptr,
 		nullptr,
 		nullptr,
-		mouse_position.x,
-		mouse_position.y
+		static_cast<INT>(mouse_position.x),
+		static_cast<INT>(mouse_position.y)
 	);
 
 	if (FAILED(result)) {
@@ -526,7 +525,7 @@ BOOL TextBox::TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeigh
 		return FALSE;
 	}
 
-	window->GetCaret()->SetSize(Size(xWidth, yHeight));
+	window->GetCaret()->SetSize(Size(static_cast<float>(xWidth), static_cast<float>(yHeight)));
 	return TRUE;
 }
 
@@ -557,7 +556,7 @@ BOOL TextBox::TextHostBridge::TxSetCaretPos(INT x, INT y) {
 	}
 
 	const auto& caret = window->GetCaret();
-	caret->SetPosition(Point(x, y));
+	caret->SetPosition(Point(static_cast<float>(x), static_cast<float>(y)));
 	return TRUE;
 }
 
