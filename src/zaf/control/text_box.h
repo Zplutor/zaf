@@ -4,6 +4,7 @@
 #include <Richedit.h>
 #include <TextServ.h>
 #include <zaf/base/event.h>
+#include <zaf/base/range.h>
 #include <zaf/control/control.h>
 
 namespace zaf {
@@ -11,6 +12,7 @@ namespace zaf {
 class TextBox : public Control {
 public:
 	typedef Event<const std::shared_ptr<TextBox>&> TextChangeEvent;
+	typedef Event<const std::shared_ptr<TextBox>&> SelectionChangeEvent;
 
 public:
 	TextBox();
@@ -36,6 +38,9 @@ public:
 	bool AllowBeep() const;
 	void SetAllowBeep(bool allow_beep);
 
+	const Range GetSelectionRange() const;
+	void SetSelectionRange(const Range& range);
+
 	const std::wstring GetText() const override;
 	void SetText(const std::wstring& text) override;
 
@@ -49,6 +54,7 @@ public:
 	void SetWordWrapping(WordWrapping word_wrapping) override;
 
 	TextChangeEvent::Proxy GetTextChangeEvent();
+	SelectionChangeEvent::Proxy GetSelectionChangeEvent();
 
 protected:
 	void Layout(const Rect& previous_rect) override;

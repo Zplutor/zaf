@@ -290,5 +290,8 @@
     <ClInclude Include="src\zaf\control\creation.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\range.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

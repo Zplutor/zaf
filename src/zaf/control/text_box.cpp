@@ -29,6 +29,7 @@ static ITextServices* CreateTextService(ITextHost* text_host);
 
 static const wchar_t* const kMaximumLengthPropertyName = L"MaximumLength";
 static const wchar_t* const kPasswordCharacterPropertyName = L"PasswordCharacter";
+static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
 static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
 
 static const DWORD kDefaultPropertyBits = TXTBIT_ALLOWBEEP;
@@ -75,7 +76,7 @@ void TextBox::InitializeTextService() {
 	}
 
 	text_service_->OnTxInPlaceActivate(nullptr);
-	text_service_->TxSendMessage(EM_SETEVENTMASK, 0, ENM_CHANGE, nullptr);
+	text_service_->TxSendMessage(EM_SETEVENTMASK, 0, ENM_CHANGE | ENM_SELCHANGE, nullptr);
 }
 
 
@@ -224,6 +225,36 @@ void TextBox::SetAllowBeep(bool allow_beep) {
 }
 
 
+const Range TextBox::GetSelectionRange() const {
+
+	Range range;
+
+	if (text_service_ != nullptr) {
+
+		CHARRANGE char_range = { 0 };
+		text_service_->TxSendMessage(EM_EXGETSEL, 0, reinterpret_cast<LPARAM>(&char_range), nullptr);
+
+		range.position = char_range.cpMin < 0 ? 0 : char_range.cpMin;
+		auto length = char_range.cpMax - char_range.cpMin;
+		range.length = length < 0 ? std::numeric_limits<std::size_t>::max() : length;
+	}
+
+	return range;
+}
+
+void TextBox::SetSelectionRange(const Range& range) {
+
+	if (text_service_ == nullptr) {
+		return;
+	}
+
+	CHARRANGE char_range = { 0 };
+	char_range.cpMin = range.position;
+	char_range.cpMax = range.position + range.length;
+	text_service_->TxSendMessage(EM_EXSETSEL, 0, reinterpret_cast<LPARAM>(&char_range), nullptr);
+}
+
+
 const std::wstring TextBox::GetText() const {
 
 	std::wstring text;
@@ -343,6 +374,13 @@ TextBox::TextChangeEvent::Proxy TextBox::GetTextChangeEvent() {
 
 	auto& event = GetPropertyMap().GetProperty<TextChangeEvent>(kTextChangeEventPropertyName);
 	return TextChangeEvent::Proxy(event);
+}
+
+
+TextBox::SelectionChangeEvent::Proxy TextBox::GetSelectionChangeEvent() {
+
+	auto& event = GetPropertyMap().GetProperty<SelectionChangeEvent>(kSelectionChangeEventPropertyName);
+	return SelectionChangeEvent::Proxy(event);
 }
 
 
@@ -742,16 +780,25 @@ HRESULT TextBox::TextHostBridge::TxGetPropertyBits(DWORD dwMask, DWORD *pdwBits)
 
 HRESULT TextBox::TextHostBridge::TxNotify(DWORD iNotify, void *pv) {
 
+	auto text_box = text_box_.lock();
+	if (text_box == nullptr) {
+		return S_OK;
+	}
+
 	switch (iNotify) {
 
 		case EN_CHANGE: {
-			auto text_box = text_box_.lock();
-			if (text_box != nullptr) {
+			auto event = text_box->GetPropertyMap().TryGetProperty<TextBox::TextChangeEvent>(kTextChangeEventPropertyName);
+			if (event != nullptr) {
+				event->Trigger(text_box);
+			}
+			break;
+		}
 
-				auto event = text_box->GetPropertyMap().TryGetProperty<TextBox::TextChangeEvent>(kTextChangeEventPropertyName);
-				if (event != nullptr) {
-					event->Trigger(text_box);
-				}
+		case EN_SELCHANGE: {
+			auto event = text_box->GetPropertyMap().TryGetProperty<TextBox::SelectionChangeEvent>(kSelectionChangeEventPropertyName);
+			if (event != nullptr) {
+				event->Trigger(text_box);
 			}
 			break;
 		}
