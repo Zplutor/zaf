@@ -97,14 +97,7 @@ public:
 	/**
 	 Make an intersection rectangle with another Rect.
 	 */
-	void Intersect(const Rect& other) {
-
-		RECT rect1 = this->ToRECT();
-		RECT rect2 = other.ToRECT();
-		RECT result = { 0 };
-		IntersectRect(&result, &rect1, &rect2);
-		*this = Rect::FromRECT(result);
-	}
+	void Intersect(const Rect& other);
 
 	/**
 	 Make an union rectangle with another Rect.
