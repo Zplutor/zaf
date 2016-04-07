@@ -114,6 +114,9 @@
     <ClCompile Include="src\zaf\control\layout\tile_layouter.cpp">
       <Filter>zaf\control\layout</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\rect.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

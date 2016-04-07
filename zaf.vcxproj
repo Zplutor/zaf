@@ -33,6 +33,7 @@
     <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp" />
     <ClCompile Include="src\zaf\graphic\geometry\path_geometry.cpp" />
     <ClCompile Include="src\zaf\graphic\clear_edge.cpp" />
+    <ClCompile Include="src\zaf\graphic\rect.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
