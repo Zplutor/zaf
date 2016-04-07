@@ -4,6 +4,7 @@
 #include <zaf/base/log.h>
 #include <zaf/control/creation.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/graphic/clear_edge.h>
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/renderer_factory.h>
 #include <zaf/window/caret.h>
@@ -168,7 +169,7 @@ const Point Window::GetMousePosition() const {
 
 void Window::NeedRepaintRect(const Rect& rect) {
 
-	RECT win32_rect = rect.ToRECT();
+	RECT win32_rect = MakeClearEdgeRectForFill(rect, ClearEdgeOption::Clear).ToRECT();
 	InvalidateRect(handle_, &win32_rect, FALSE);
 }
 

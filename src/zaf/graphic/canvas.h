@@ -153,7 +153,7 @@ public:
 private:
 	class State {
 	public:
-		State() : clear_edge_option(ClearEdgeOption::None) { } 
+		State() : clear_edge_option(ClearEdgeOption::Clear) { } 
 
 	public:
 		ClearEdgeOption clear_edge_option;

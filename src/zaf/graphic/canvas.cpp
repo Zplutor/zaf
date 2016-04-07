@@ -17,14 +17,15 @@ Canvas::Canvas(const std::shared_ptr<Renderer>& renderer) :
 
 void Canvas::BeginPaint() {
 
-	renderer_->Translate(absolute_rect_.position);
+	Rect adjusted_absolute_rect = MakeClearEdgeRectForFill(absolute_rect_, ClearEdgeOption::Clear);
+	renderer_->Translate(adjusted_absolute_rect.position);
 
-	Rect related_dirty_rect = absolute_paintable_rect_;
-	related_dirty_rect.position.x -= absolute_rect_.position.x;
-	related_dirty_rect.position.y -= absolute_rect_.position.y; 
+	Rect adjusted_absolute_paintable_rect = MakeClearEdgeRectForFill(absolute_paintable_rect_, ClearEdgeOption::Clear);
+	adjusted_absolute_paintable_rect.position.x -= adjusted_absolute_rect.position.x;
+	adjusted_absolute_paintable_rect.position.y -= adjusted_absolute_rect.position.y;
 
 	Layer::Parameters layer_param;
-	layer_param.content_bounds = related_dirty_rect;
+	layer_param.content_bounds = adjusted_absolute_paintable_rect;
 	renderer_->PushLayer(layer_param, layer_);
 }
 
