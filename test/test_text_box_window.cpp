@@ -20,7 +20,7 @@ private:
 	void CreateTextBoxContainer() {
 
 		text_box_container_ = CreateControl<Control>();
-		text_box_container_->SetLayouter(GetHorizontalTileLayouter());
+		text_box_container_->SetLayouter(GetHorizontalArrayLayouter());
 		text_box_container_->SetRect(Rect(0, 0, GetRect().size.width, 200));
 		GetRootControl()->AddChild(text_box_container_);
 
@@ -40,7 +40,7 @@ private:
 	void CreateOptionsContainer() {
 
 		options_container_ = CreateControl<Control>();
-		options_container_->SetLayouter(GetVerticalTileLayouter());
+		options_container_->SetLayouter(GetVerticalArrayLayouter());
 		options_container_->SetRect(Rect(0, 200, GetRect().size.width, 200));
 		GetRootControl()->AddChild(options_container_);
 
@@ -81,7 +81,7 @@ private:
 	void CreatePasswordCharOption() {
 
 		auto container = CreateControl<Control>();
-		container->SetLayouter(GetHorizontalTileLayouter());
+		container->SetLayouter(GetHorizontalArrayLayouter());
 		options_container_->AddChild(container);
 
 		auto use_password_char_check_box = CreateControl<CheckBox>();
@@ -119,7 +119,7 @@ private:
 	void CreateTextAlignmentOption() {
 
 		auto container = CreateControl<Control>();
-		container->SetLayouter(GetHorizontalTileLayouter());
+		container->SetLayouter(GetHorizontalArrayLayouter());
 		options_container_->AddChild(container);
 
 		auto label = CreateControl<Label>();
@@ -175,7 +175,7 @@ private:
 	void CreateSelectionRangeOption() {
 
 		auto container = CreateControl<Control>();
-		container->SetLayouter(GetHorizontalTileLayouter());
+		container->SetLayouter(GetHorizontalArrayLayouter());
 		options_container_->AddChild(container);
 
 		auto label = CreateControl<Label>();

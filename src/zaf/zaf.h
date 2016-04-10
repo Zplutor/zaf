@@ -11,7 +11,7 @@
 #include <zaf/control/scrollable_control.h>
 #include <zaf/control/text_box.h>
 #include <zaf/control/layout/anchor_layouter.h>
-#include <zaf/control/layout/tile_layouter.h>
+#include <zaf/control/layout/array_layouter.h>
 #include <zaf/window/window.h>
 
 #pragma comment(lib, "d2d1.lib")

@@ -1,26 +1,26 @@
-#include <zaf/control/layout/tile_layouter.h>
+#include <zaf/control/layout/array_layouter.h>
 #include <zaf/control/control.h>
 
 namespace zaf {
 
-static void LayoutWithTile(
+static void LayoutWithArray(
 	const std::shared_ptr<Control>& parent,
 	const Rect& preivous_rect,
 	const std::vector<std::shared_ptr<Control>>& children,
 	bool is_vertical
 );
 
-const Layouter GetHorizontalTileLayouter() {
-	return std::bind(LayoutWithTile, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, false);
+const Layouter GetHorizontalArrayLayouter() {
+	return std::bind(LayoutWithArray, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, false);
 }
 
 
-const Layouter GetVerticalTileLayouter() {
-	return std::bind(LayoutWithTile, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, true);
+const Layouter GetVerticalArrayLayouter() {
+	return std::bind(LayoutWithArray, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, true);
 }
 
 
-static void LayoutWithTile(
+static void LayoutWithArray(
 	const std::shared_ptr<Control>& parent,
 	const Rect& preivous_rect,
 	const std::vector<std::shared_ptr<Control>>& children,
