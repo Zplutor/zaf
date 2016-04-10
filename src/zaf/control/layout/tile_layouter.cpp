@@ -31,26 +31,32 @@ static void LayoutWithTile(
 		return;
 	}
 
-	Point children_position;
-	Size children_size = parent->GetSize();
+	std::vector<float> expected_positions;
+	expected_positions.reserve(children.size() + 1);
 
-	if (is_vertical) {
-		children_size.height /= children.size();
-	}
-	else {
-		children_size.width /= children.size();
+	float expected_size = (is_vertical ? parent->GetHeight() : parent->GetWidth()) / children.size();
+	for (std::size_t count = 0; count <= children.size(); ++count) {
+		expected_positions.push_back(count * expected_size);
 	}
 	
-	for (const auto& each_child : children) {
+	float actual_position = 0;
+	std::size_t index = 0;
+	while (index < children.size()) {
 
-		each_child->SetRect(Rect(children_position, children_size));
+		float actual_size = std::round(expected_positions[index + 1]) - std::round(expected_positions[index]);
 
+		Rect new_rect;
 		if (is_vertical) {
-			children_position.y += children_size.height;
+			new_rect = Rect(0, actual_position, parent->GetWidth(), actual_size);
 		}
 		else {
-			children_position.x += children_size.width;
+			new_rect = Rect(actual_position, 0, actual_size, parent->GetHeight());
 		}
+
+		children[index]->SetRect(new_rect);
+
+		actual_position += actual_size;
+		++index;
 	}
 }
 
