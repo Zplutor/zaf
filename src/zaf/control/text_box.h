@@ -5,11 +5,11 @@
 #include <TextServ.h>
 #include <zaf/base/event.h>
 #include <zaf/base/range.h>
-#include <zaf/control/control.h>
+#include <zaf/control/textual_control.h>
 
 namespace zaf {
 
-class TextBox : public Control {
+class TextBox : public TextualControl {
 public:
 	typedef Event<const std::shared_ptr<TextBox>&> TextChangeEvent;
 	typedef Event<const std::shared_ptr<TextBox>&> SelectionChangeEvent;
@@ -57,8 +57,9 @@ public:
 	SelectionChangeEvent::Proxy GetSelectionChangeEvent();
 
 protected:
+    void Repaint(Canvas& canvas, const Rect& dirty_rect) override;
+    const Rect GetTextRect() const override;
 	void Layout(const Rect& previous_rect) override;
-	void Repaint(Canvas& canvas, const Rect& dirty_rect) override;
 
 	void ChangeMouseCursor(WPARAM wParam, LPARAM lParam, bool& is_changed) override;
 	void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) override;

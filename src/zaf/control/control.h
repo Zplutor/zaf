@@ -14,16 +14,10 @@
 #include <zaf/control/layout/layouter.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/graphic/text/paragraph_alignment.h>
-#include <zaf/graphic/text/text_alignment.h>
-#include <zaf/graphic/text/word_wrapping.h>
 
 namespace zaf {
 
 class Canvas;
-class Font;
-class TextFormat;
-class TextLayout;
 class Window;
 
 class Control : public std::enable_shared_from_this<Control> {
@@ -146,52 +140,6 @@ public:
 	}
 	const ColorPicker GetBorderColorPicker() const;
 	void SetBorderColorPicker(const ColorPicker& color_picker);
-
-	const Color GetTextColor() const {
-		return GetTextColorPicker()(*this);
-	}
-	const ColorPicker GetTextColorPicker() const;
-	void SetTextColorPicker(const ColorPicker& color_picker);
-
-	/**
-	 Get the control's text value.
-	 */
-	virtual const std::wstring GetText() const;
-
-	/**
-	 Set the control's text value.
-	 */
-	virtual void SetText(const std::wstring& text);
-
-	virtual const Font GetFont() const;
-	virtual void SetFont(const Font& font);
-
-	/**
-	 Get text alignment.
-
-	 The default value is TextAlignment::Leading.
-	 */
-	virtual TextAlignment GetTextAlignment() const;
-
-	/**
-	 Set text alignment.
-	 */
-	virtual void SetTextAlignment(TextAlignment alignment);
-
-	/**
-	 Get paragraph alignemnt.
-	
-	 The default value is ParagraphAlignment::Near;
-	 */
-	virtual ParagraphAlignment GetParagraphAlignment() const;
-
-	/**
-	 Set paragraph alignment.
-	 */
-	virtual void SetParagraphAlignment(ParagraphAlignment alignment);
-
-	virtual WordWrapping GetWordWrapping() const;
-	virtual void SetWordWrapping(WordWrapping word_wrapping);
 
 	const Layouter GetLayouter() const;
 	void SetLayouter(const Layouter& layouter);
@@ -328,9 +276,6 @@ public:
 protected:
 	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
 	virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
-
-	std::shared_ptr<TextFormat> CreateTextFormat() const;
-	std::shared_ptr<TextLayout> CreateTextLayout(const Size& layout_size) const;
 
 	void NeedRepaint();
 	void NeedRepaintRect(const Rect& rect);

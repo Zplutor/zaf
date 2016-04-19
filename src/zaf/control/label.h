@@ -1,13 +1,13 @@
 #pragma once
 
-#include <zaf/control/control.h>
+#include <zaf/control/textual_control.h>
 
 namespace zaf {
 
 /**
  Represents a label control that displays static text.	
  */
-class Label : public Control {
+class Label : public TextualControl {
 public:
 	/**
 	 Initialize the instance.
@@ -20,9 +20,6 @@ public:
 	~Label();
 
 	void Initialize() override;
-
-protected:
-	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 };
 
 }

@@ -141,6 +141,11 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
+const Rect TextBox::GetTextRect() const {
+    return Rect();
+}
+
+
 const Rect TextBox::GetAbsoluteContentRect() const {
 
 	auto rect = GetAbsoluteRect();

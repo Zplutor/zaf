@@ -122,6 +122,11 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
 }
 
 
+const Rect CheckBox::GetTextRect() const {
+    return Rect();
+}
+
+
 const ColorPicker CheckBox::GetBoxColorPicker() const {
 
 	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBoxColorPickerPropertyName);

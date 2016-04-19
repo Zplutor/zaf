@@ -97,6 +97,11 @@ void RadioButton::PaintRadio(Canvas& canvas, const Rect& radio_rect) {
 }
 
 
+const Rect RadioButton::GetTextRect() const {
+    return Rect();
+}
+
+
 const ColorPicker RadioButton::GetRadioColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kRadioColorPickerPropertyName);

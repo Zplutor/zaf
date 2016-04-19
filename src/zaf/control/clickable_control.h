@@ -1,11 +1,11 @@
 #pragma once
 
-#include <zaf/control/control.h>
+#include <zaf/control/textual_control.h>
 #include <zaf/base/event.h>
 
 namespace zaf {
 
-class ClickableControl : public Control {
+class ClickableControl : public TextualControl {
 public:
 	typedef Event<const std::shared_ptr<ClickableControl>&> ClickEvent;
 

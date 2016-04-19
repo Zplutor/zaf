@@ -110,6 +110,7 @@ public:
 
 protected:
 	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+    const Rect GetTextRect() const override;
 	void MouseClick() override;
 
 private:

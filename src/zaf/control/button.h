@@ -10,9 +10,6 @@ public:
 	~Button();
 
 	void Initialize() override;
-
-protected:
-	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 };
 
 }

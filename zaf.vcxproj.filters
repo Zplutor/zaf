@@ -117,6 +117,9 @@
     <ClCompile Include="src\zaf\control\layout\array_layouter.cpp">
       <Filter>zaf\control\layout</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\textual_control.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -315,6 +318,9 @@
       <Filter>zaf\control\layout</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\color_picker.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\textual_control.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
