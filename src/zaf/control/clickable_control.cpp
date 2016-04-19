@@ -25,30 +25,6 @@ void ClickableControl::Initialize() {
 }
 
 
-const Color ClickableControl::GetDefaultColor(int paint_component, int paint_state) const {
-
-	if (paint_state == PaintState::Pressed) {
-		return GetColor(paint_component, PaintState::Hovered);
-	}
-
-	return __super::GetDefaultColor(paint_component, paint_state);
-}
-
-
-int ClickableControl::GetPaintState() const {
-
-	if (IsHovered() && IsPressed()) {
-		return PaintState::Pressed;
-	}
-
-	if (IsHovered() ^ IsPressed()) {
-		return Control::PaintState::Hovered;
-	}
-
-	return Control::GetPaintState();
-}
-
-
 ClickableControl::ClickEvent::Proxy ClickableControl::GetClickEvent() {
 
 	auto& event = GetPropertyMap().GetProperty<ClickEvent>(kClickEventPropertyName);

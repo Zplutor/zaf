@@ -14,14 +14,16 @@
 namespace zaf {
 
 static Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child);
-static std::wstring CreateColorPropertyName(int paint_component, int paint_state);
 
 static const wchar_t* const kAnchorPropertyName = L"Anchor";
+static const wchar_t* const kBackgroundColorPickerPropertyName = L"BackgroundColorPicker";
+static const wchar_t* const kBorderColorPickerPropertyName = L"BorderColorPicker";
 static const wchar_t* const kFontPropertyName = L"Font";
 static const wchar_t* const kLayouterPropertyName = L"Layouter";
 static const wchar_t* const kNamePropertyName = L"Name";
 static const wchar_t* const kParagraphAlignmentPropertyName = L"ParagraphAlignment";
 static const wchar_t* const kTextAlignmentPropertyName = L"TextAlignment";
+static const wchar_t* const kTextColorPickerPropertyName = L"TextColorPicker";
 static const wchar_t* const kTextPropertyName = L"Text";
 static const wchar_t* const kWordWrappingPropertyName = L"WordWrapping";
 
@@ -94,33 +96,13 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 	Canvas::StateGuard state_guard(canvas);
 
-	int paint_state = GetPaintState();
-
 	Rect paint_rect(Point(), GetSize());
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Border, paint_state));
-	canvas.DrawRectangle(paint_rect);
+	canvas.SetBrushWithColor(GetBorderColor());
+	canvas.DrawRectangleFrame(paint_rect, GetBorderWidth());
 
 	paint_rect.Inflate(-GetBorderWidth());
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Background, paint_state));
+	canvas.SetBrushWithColor(GetBackgroundColor());
 	canvas.DrawRectangle(paint_rect);
-}
-
-
-int Control::GetPaintState() const {
-
-	if (!IsEnabled()) {
-		return PaintState::Disabled;
-	}
-
-	if (IsHovered()) {
-		return PaintState::Hovered;
-	}
-
-	if (IsFocused()) {
-		return PaintState::Focused;
-	}
-
-	return PaintState::Normal;
 }
 
 
@@ -298,106 +280,62 @@ const Rect Control::GetContentRect() const {
 }
 
 
-const Color Control::GetColor(int paint_component, int paint_state) const {
+const ColorPicker Control::GetBackgroundColorPicker() const {
 
-	auto color_property_name = CreateColorPropertyName(paint_component, paint_state);
-	auto color = GetPropertyMap().TryGetProperty<Color>(color_property_name);
-	if (color != nullptr) {
-		return *color;
+	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBackgroundColorPickerPropertyName);
+	if ((color_picker != nullptr) && (*color_picker != nullptr)) {
+		return *color_picker;
 	}
 
-	return GetDefaultColor(paint_component, paint_state);
+	return [](const Control&) {
+		return Color::Transparent;
+	};
 }
 
 
-const Color Control::GetDefaultColor(int paint_component, int paint_state) const {
+void Control::SetBackgroundColorPicker(const ColorPicker& color_picker) {
 
-	switch (paint_component) {
-
-		case PaintComponent::Background:
-			return GetDefaultBackgroundColor(paint_state);
-
-		case PaintComponent::Foreground:
-			return GetDefaultForegroundColor(paint_state);
-
-		case PaintComponent::Border:
-			return GetDefaultBorderColor(paint_state);
-
-		default:
-			ZAF_FAIL();
-			return GetDefaultBackgroundColor(paint_state);
-	}
+	GetPropertyMap().SetProperty(kBackgroundColorPickerPropertyName, color_picker);
+	NeedRepaint();
 }
 
 
-const Color Control::GetDefaultBackgroundColor(int paint_state) const {
+const ColorPicker Control::GetBorderColorPicker() const {
 
-	switch (paint_state) {
-
-		case PaintState::Normal: {
-
-			auto parent = GetParent();
-			if (parent != nullptr) {
-				return parent->GetColor(PaintComponent::Background, PaintState::Normal);
-			}
-
-			return Color::White;
-		}
-
-		case PaintState::Hovered: 
-		case PaintState::Focused:
-		case PaintState::Disabled:
-			return GetColor(PaintComponent::Background, PaintState::Normal);
-
-		default:
-			ZAF_FAIL();
-			return GetColor(PaintComponent::Background, PaintState::Normal);
+	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBorderColorPickerPropertyName);
+	if ((color_picker != nullptr) && (*color_picker != nullptr)) {
+		return *color_picker;
 	}
+
+	return [](const Control& control) {
+		return control.GetBackgroundColorPicker()(control);
+	};
 }
 
 
-const Color Control::GetDefaultForegroundColor(int paint_state) const {
+void Control::SetBorderColorPicker(const ColorPicker& color_picker) {
 
-	switch (paint_state) {
-
-		case PaintState::Normal: 
-			return Color::Black;
-
-		case PaintState::Hovered:
-		case PaintState::Focused:
-		case PaintState::Disabled:
-			return GetColor(PaintComponent::Foreground, PaintState::Normal);
-			
-		default:
-			ZAF_FAIL();
-			return GetColor(PaintComponent::Foreground, PaintState::Normal);
-	}
+	GetPropertyMap().SetProperty(kBorderColorPickerPropertyName, color_picker);
+	NeedRepaint();
 }
 
 
-const Color Control::GetDefaultBorderColor(int paint_state) const {
+const ColorPicker Control::GetTextColorPicker() const {
 
-	switch (paint_state) {
-
-		case PaintState::Normal:
-			return GetColor(PaintComponent::Background, PaintState::Normal);
-
-		case PaintState::Hovered:
-		case PaintState::Focused:
-		case PaintState::Disabled:
-			return GetColor(PaintComponent::Border, PaintState::Normal);
-
-		default:
-			ZAF_FAIL();
-			return GetColor(PaintComponent::Border, PaintState::Normal);
+	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kTextColorPickerPropertyName);
+	if ((color_picker != nullptr) && (*color_picker != nullptr)) {
+		return *color_picker;
 	}
+
+	return [](const Control&) {
+		return Color::Black;
+	};
 }
 
 
-void Control::SetColor(int paint_component, int paint_state, const Color& color) {
+void Control::SetTextColorPicker(const ColorPicker& color_picker) {
 
-	auto color_property_name = CreateColorPropertyName(paint_component, paint_state);
-	GetPropertyMap().SetProperty(color_property_name, color);
+	GetPropertyMap().SetProperty(kTextColorPickerPropertyName, color_picker);
 	NeedRepaint();
 }
 
@@ -951,14 +889,5 @@ static Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& ch
 	return point_in_child;
 }
 
-
-static std::wstring CreateColorPropertyName(int paint_component, int paint_state) {
-
-	std::wstring color_property_name(L"Color_");
-	color_property_name.append(std::to_wstring(paint_component));
-	color_property_name.append(1, L'_');
-	color_property_name.append(std::to_wstring(paint_state));
-	return color_property_name;
-}
 
 }

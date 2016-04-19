@@ -10,6 +10,7 @@
 #include <zaf/enum.h>
 #include <zaf/base/property_map.h>
 #include <zaf/control/anchor.h>
+#include <zaf/control/color_picker.h>
 #include <zaf/control/layout/layouter.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/rect.h>
@@ -26,30 +27,6 @@ class TextLayout;
 class Window;
 
 class Control : public std::enable_shared_from_this<Control> {
-public:
-	class PaintComponent {
-	public:
-		static const int Background = 0;
-		static const int Foreground = 1;
-		static const int Border = 2;
-		static const int Custom = 100;
-
-	private:
-		PaintComponent();
-	};
-
-	class PaintState {
-	public:
-		static const int Normal = 0;
-		static const int Hovered = 1;
-		static const int Focused = 2;
-		static const int Disabled = 3;
-		static const int Custom = 100;
-
-	private:
-		PaintState();
-	};
-
 public:
 	Control();
 	virtual ~Control();
@@ -158,15 +135,23 @@ public:
 	 */
 	const Rect GetContentRect() const;
 
-	/**
-	 Get the color of specified component while in specified state.
-	 */
-	const Color GetColor(int paint_component, int paint_state) const;
+	const Color GetBackgroundColor() const {
+		return GetBackgroundColorPicker()(*this);
+	}
+	const ColorPicker GetBackgroundColorPicker() const;
+	void SetBackgroundColorPicker(const ColorPicker& color_picker);
 
-	/**
-	 Set the color of specified component while in specified state.
-	 */
-	void SetColor(int paint_component, int paint_state, const Color& color);
+	const Color GetBorderColor() const {
+		return GetBorderColorPicker()(*this);
+	}
+	const ColorPicker GetBorderColorPicker() const;
+	void SetBorderColorPicker(const ColorPicker& color_picker);
+
+	const Color GetTextColor() const {
+		return GetTextColorPicker()(*this);
+	}
+	const ColorPicker GetTextColorPicker() const;
+	void SetTextColorPicker(const ColorPicker& color_picker);
 
 	/**
 	 Get the control's text value.
@@ -344,13 +329,6 @@ protected:
 	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
 	virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
 
-	/**
-	 Get the current paint state.
-
-	 This method is called while painting the control, to get its state.
-	 */
-	virtual int GetPaintState() const;
-
 	std::shared_ptr<TextFormat> CreateTextFormat() const;
 	std::shared_ptr<TextLayout> CreateTextLayout(const Size& layout_size) const;
 
@@ -367,8 +345,6 @@ protected:
 	const PropertyMap& GetPropertyMap() const {
 		return property_map_;
 	}
-
-	virtual const Color GetDefaultColor(int paint_component, int paint_state) const;
 
 	bool IsCapturingMouse() const {
 		return is_capturing_mouse_;
@@ -406,10 +382,6 @@ private:
 	void RouteMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
-	const Color GetDefaultBackgroundColor(int paint_state) const;
-	const Color GetDefaultForegroundColor(int paint_state) const;
-	const Color GetDefaultBorderColor(int paint_state) const;
-
 	void SetParent(const std::shared_ptr<Control>& parent) {
 		parent_ = parent;
 	}

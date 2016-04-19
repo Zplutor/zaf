@@ -11,17 +11,6 @@ namespace zaf {
 class CheckBox : public ClickableControl {
 public:
 	/**
-	 Override. Add the box paint component.
-	 */
-	class PaintComponent : public ClickableControl::PaintComponent {
-	public:
-		/**
-		 Box paint component.
-		 */
-		static const int Box = ClickableControl::PaintComponent::Custom + 1;
-	};
-
-	/**
 	 Type of check state changed event.
 	 */
 	typedef Event<const std::shared_ptr<CheckBox>&> CheckStateChangeEvent;
@@ -38,6 +27,12 @@ public:
 	~CheckBox();
 
 	void Initialize() override;
+
+	const Color GetBoxColor() const {
+		return GetBoxColorPicker()(*this);
+	}
+	const ColorPicker GetBoxColorPicker() const;
+	void SetBoxColorPicker(const ColorPicker& color_picker);
 
 	/**
 	 Get a value indicating that whether the check box changes its check state when 

@@ -7,6 +7,7 @@
 
 namespace zaf {
 
+static const wchar_t* const kArrowColorPickerPropertyName = L"ArrowColorPicker";
 static const wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
 static int kTimerInitialInterval = 300;
 static int kTimerContinuousInterval = 50;
@@ -29,11 +30,15 @@ ScrollBar::ScrollBar() :
 void ScrollBar::Initialize() {
 
 	__super::Initialize();
-	SetColor(PaintComponent::Background, PaintState::Normal, Color::White);
+
 	InitializeArrow(incremental_arrow_);
 	InitializeArrow(decremental_arrow_);
 	InitializeThumb(thumb_);
 	ApplyOrientationToChildren();
+
+    SetBackgroundColorPicker([](const Control&) {
+        return Color::White;
+    });
 }
 
 
@@ -501,10 +506,23 @@ ScrollBar::Arrow::Arrow() : direction_(Direction::Up) {
 void ScrollBar::Arrow::Initialize() {
 
 	__super::Initialize();
+
 	SetCanFocused(false);
-	SetColor(PaintComponent::Foreground, PaintState::Normal, Color::FromRGB(0xCECECE));
-	SetColor(PaintComponent::Foreground, PaintState::Hovered, Color::FromRGB(0xA9A9A9));
-	SetColor(PaintComponent::Foreground, PaintState::Pressed, Color::FromRGB(0x808080));
+
+    SetArrowColorPicker([](const Control& control) {
+    
+        const auto& arrow = dynamic_cast<const Arrow&>(control);
+
+        if (arrow.IsPressed()) {
+            return Color::FromRGB(0x808080);
+        }
+
+        if (arrow.IsHovered()) {
+            return Color::FromRGB(0xA9A9A9);
+        }
+
+        return Color::FromRGB(0xCECECE);
+    });
 }
 
 
@@ -567,8 +585,28 @@ void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	path_sink->EndFigure(GeometrySink::EndFigureOption::Close);
 	path_sink->Close();
 
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
+	canvas.SetBrushWithColor(GetArrowColor());
 	canvas.DrawGeometry(path);
+}
+
+
+const ColorPicker ScrollBar::Arrow::GetArrowColorPicker() const {
+
+    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kArrowColorPickerPropertyName);
+    if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
+        return *color_picker;
+    }
+
+    return [](const Control&) {
+        return Color::Black;
+    };
+}
+
+
+void ScrollBar::Arrow::SetArrowColorPicker(const ColorPicker& color_picker) {
+
+    GetPropertyMap().SetProperty(kArrowColorPickerPropertyName, color_picker);
+    NeedRepaint();
 }
 
 
@@ -596,22 +634,28 @@ ScrollBar::Thumb::Thumb() : is_dragging_(false) {
 void ScrollBar::Thumb::Initialize() {
 
 	__super::Initialize();
+
 	SetCanFocused(false);
 	SetBorderWidth(2);
-	SetColor(PaintComponent::Border, PaintState::Normal, Color::White);
-	SetColor(PaintComponent::Background, PaintState::Normal, Color::FromRGB(0xCECECE));
-	SetColor(PaintComponent::Background, PaintState::Hovered, Color::FromRGB(0xA9A9A9));
-	SetColor(PaintComponent::Background, PaintState::Pressed, Color::FromRGB(0x808080));
-}
 
+    SetBorderColorPicker([](const Control&) { 
+        return Color::White; 
+    });
 
-int ScrollBar::Thumb::GetPaintState() const {
+    SetBackgroundColorPicker([](const Control& control) {
+    
+        const auto& thumb = dynamic_cast<const Thumb&>(control);
 
-	if (IsDragging()) {
-		return PaintState::Pressed;
-	}
+        if (thumb.IsPressed()) {
+            return Color::FromRGB(0x808080);
+        }
 
-	return __super::GetPaintState();
+        if (thumb.IsHovered()) {
+            return Color::FromRGB(0xA9A9A9);
+        }
+
+        return Color::FromRGB(0xCECECE);
+    });
 }
 
 

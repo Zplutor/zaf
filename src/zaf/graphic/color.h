@@ -13,21 +13,21 @@ public:
 	/**
 	 Convert a specified D2D1_COLOR_F structure to Color.
 	 */
-	static Color FromD2D1COLORF(const D2D1_COLOR_F& color) {
+	static const Color FromD2D1COLORF(const D2D1_COLOR_F& color) {
 		return Color(color.r, color.g, color.b, color.a);
 	}
 
 	/**
 	 Convert a specified RGB value to Color, which alpha is 1.
 	 */
-	static Color FromRGB(std::uint32_t rgb) {
+	static const Color FromRGB(std::uint32_t rgb) {
 		return FromRGB(rgb, 1);
 	}
 
 	/**
 	 Convert specified RGB value and alpha to Color.
 	 */
-	static Color FromRGB(std::uint32_t rgb, float alpha) {
+	static const Color FromRGB(std::uint32_t rgb, float alpha) {
 
 		float r = ((rgb & 0x00ff0000) >> 16) / 255.f;
 		float g = ((rgb & 0x0000ff00) >> 8) / 255.f;
@@ -75,6 +75,11 @@ public:
 	 A color which RGB is 1, 0, 0, and alpha is 1.
 	 */
 	static const Color Red;
+
+	/**
+	 A color which RGB is 0, 0, 0, and alpha is 0.
+	 */
+	static const Color Transparent;
 
 	/**
 	 A color which RGB is 1, 1, 1, and alpha is 1.

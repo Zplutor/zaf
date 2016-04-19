@@ -314,5 +314,8 @@
     <ClInclude Include="src\zaf\control\layout\array_layouter.h">
       <Filter>zaf\control\layout</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\control\color_picker.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

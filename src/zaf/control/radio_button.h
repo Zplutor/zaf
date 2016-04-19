@@ -36,17 +36,6 @@ public:
 	};
 
 	/**
-	 Override. Add the radio paint component.
-	 */
-	class PaintComponent : public ClickableControl::PaintComponent {
-	public:
-		/**
-		 Radio paint component.
-		 */
-		static const int Radio = ClickableControl::PaintComponent::Custom + 1;
-	};
-
-	/**
 	 Type of select state change event.
 	 */
 	typedef Event<const std::shared_ptr<RadioButton>&> SelectStateChangeEvent;
@@ -63,6 +52,12 @@ public:
 	~RadioButton();
 
 	void Initialize() override;
+
+    const Color GetRadioColor() const {
+        return GetRadioColorPicker()(*this);
+    }
+    const ColorPicker GetRadioColorPicker() const;
+    void SetRadioColorPicker(const ColorPicker& color_picker);
 
 	/**
 	 Get the associated group.

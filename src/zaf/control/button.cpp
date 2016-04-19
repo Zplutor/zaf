@@ -19,16 +19,46 @@ void Button::Initialize() {
 
 	SetBorderWidth(1);
 
-	SetColor(PaintComponent::Background, Control::PaintState::Hovered, Color::FromRGB(0xF0F8FF));
-	SetColor(PaintComponent::Background, PaintState::Pressed, Color::FromRGB(0xB0C4DE));
-	SetColor(PaintComponent::Foreground, Control::PaintState::Disabled, Color::Gray);
+	SetBackgroundColorPicker([](const Control& control) {
+	
+		const auto& button = dynamic_cast<const Button&>(control);
 
-	Color active_border_color = Color::FromRGB(0x4169E1);
-	SetColor(PaintComponent::Border, Control::PaintState::Normal, Color::Black);
-	SetColor(PaintComponent::Border, Control::PaintState::Hovered, active_border_color);
-	SetColor(PaintComponent::Border, Control::PaintState::Focused, active_border_color);
-	SetColor(PaintComponent::Border, PaintState::Pressed, active_border_color);
-	SetColor(PaintComponent::Border, Control::PaintState::Disabled, Color::Gray);
+		if (button.IsPressed()) {
+			return Color::FromRGB(0xB0C4DE);
+		}
+
+		if (button.IsHovered()) {
+			return Color::FromRGB(0xF0F8FF);
+		}
+
+		return Color::White;
+	});
+
+	SetBorderColorPicker([](const Control& control) {
+	
+		const auto& button = dynamic_cast<const Button&>(control);
+
+		if (! button.IsEnabled()) {
+			return Color::Gray;
+		}
+
+		if (button.IsPressed() ||
+			button.IsHovered() ||
+			button.IsFocused()) {
+			return Color::FromRGB(0x4169E1);
+		}
+
+		return Color::Black;
+	});
+
+	SetTextColorPicker([](const Control& control) {
+		
+		if (! control.IsEnabled()) {
+			return Color::Gray;
+		}
+
+		return Color::Black;
+	});
 
 	SetTextAlignment(TextAlignment::Center);
 	SetParagraphAlignment(ParagraphAlignment::Center);
@@ -48,7 +78,7 @@ void Button::Paint(Canvas& canvas, const Rect& dirty_rect) {
 		return;
 	}
 
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
+	canvas.SetBrushWithColor(GetTextColor());
 	canvas.DrawText(text_layout, content_rect.position);
 }
 

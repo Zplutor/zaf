@@ -57,9 +57,12 @@ void TextBox::Initialize() {
 
 	SetCanFocused(true);
 	SetBorderWidth(1);
-	SetColor(PaintComponent::Border, PaintState::Normal, Color::Black);
 	SetFont(Font());
 	SetTextAlignment(TextAlignment::Leading);
+
+    SetBorderColorPicker([](const Control&) {
+        return Color::Black;
+    });
 
 	InitializeTextService();
 }

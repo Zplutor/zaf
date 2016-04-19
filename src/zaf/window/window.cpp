@@ -142,6 +142,9 @@ void Window::CheckCreate() {
 	renderer_ = Application::GetInstance().GetRendererFactory()->CreateRenderer(handle_);
 
 	root_control_->SetWindow(this->shared_from_this());
+	root_control_->SetBackgroundColorPicker([](const Control&) { 
+		return Color::White; 
+	});
 	
 	Application::GetInstance().RegisterWindow(shared_from_this());
 }

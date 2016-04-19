@@ -17,7 +17,15 @@ void Label::Initialize() {
 
 	__super::Initialize();
 
-	SetColor(PaintComponent::Foreground, PaintState::Disabled, Color::Gray);
+	SetTextColorPicker([](const Control& control) {
+
+		if (control.IsEnabled()) {
+			return Color::Black;
+		}
+		else {
+			return Color::Gray;
+		}
+	});
 }
 
 
@@ -34,7 +42,7 @@ void Label::Paint(Canvas& canvas, const Rect& dirty_rect) {
 		return;
 	}
 
-	canvas.SetBrushWithColor(GetColor(PaintComponent::Foreground, GetPaintState()));
+	canvas.SetBrushWithColor(GetTextColor());
 	canvas.DrawText(text_layout, content_rect.position);
 }
 

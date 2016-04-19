@@ -26,6 +26,12 @@ public:
 
 		void Initialize() override;
 
+        const Color GetArrowColor() const {
+            return GetArrowColorPicker()(*this);
+        }
+        const ColorPicker GetArrowColorPicker() const;
+        void SetArrowColorPicker(const ColorPicker& color_picker);
+
 		Direction GetDirection() const {
 			return direction_;
 		}
@@ -92,8 +98,6 @@ public:
 		}
 
 	protected:
-		int GetPaintState() const override;
-
 		void MouseCapture() override;
 		void MouseRelease() override;
 		void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) override;
