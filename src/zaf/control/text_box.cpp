@@ -64,6 +64,17 @@ void TextBox::Initialize() {
         return Color::Black;
     });
 
+    SetBackgroundColorPicker([](const Control& control) {
+
+        const auto& text_box = dynamic_cast<const TextBox&>(control);
+
+        if (text_box.IsReadOnly()) {
+            return Color::FromRGB(0xEEEEEE);;
+        }
+
+        return Color::White;
+    });
+
 	InitializeTextService();
 }
 
@@ -221,6 +232,7 @@ bool TextBox::IsReadOnly() const {
 
 void TextBox::SetIsReadOnly(bool is_read_only) {
 	ChangePropertyBit(TXTBIT_READONLY, is_read_only);
+    NeedRepaint();
 }
 
 

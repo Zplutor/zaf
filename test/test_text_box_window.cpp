@@ -51,6 +51,7 @@ private:
 		CreateTextAlignmentOption();
 		CreateWordWrapingOption();
 		CreateSelectionRangeOption();
+        CreateAllowBeepOption();
 	}
 
 
@@ -212,6 +213,18 @@ private:
 		});
 		container->AddChild(button);
 	}
+
+
+    void CreateAllowBeepOption() {
+
+        auto allow_beep_check_box = CreateControl<CheckBox>();
+        allow_beep_check_box->SetText(L"Allow beep");
+        allow_beep_check_box->SetIsChecked(text_box_->AllowBeep());
+        allow_beep_check_box->GetCheckStateChangeEvent().AddListener([this](const std::shared_ptr<CheckBox>& check_box) {
+            text_box_->SetAllowBeep(check_box->IsChecked());
+        });
+        options_container_->AddChild(allow_beep_check_box);
+    }
 
 private:
 	std::shared_ptr<Control> text_box_container_;
