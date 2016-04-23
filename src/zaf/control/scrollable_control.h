@@ -5,6 +5,7 @@
 namespace zaf {
 
 class ScrollBar;
+class SelfScrollingControl;
 class Size;
 
 class ScrollableControl : public Control {
@@ -14,18 +15,32 @@ public:
 
 	void Initialize() override;
 
-	void SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
-	void SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
+    const std::shared_ptr<ScrollBar>& GetVerticalScrollBar() const {
+        return vertical_scroll_bar_;
+    }
 
-	const std::shared_ptr<Control>& GetContentControl() const {
-		return content_control_;
+    void SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
+
+    const std::shared_ptr<ScrollBar>& GetHorizontalScrollBar() const {
+        return horizontal_scroll_bar_;
+    }
+
+    void SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
+
+	const std::shared_ptr<Control>& GetScrolledControl() const {
+        return scrolled_control_;
 	}
 
-	const Size& GetContentSize() const {
-		return content_control_->GetSize();
-	}
+    void SetScrolledControl(const std::shared_ptr<Control>& control);
 
-	void SetContentSize(const Size& size);
+    float GetScrollBarThickness() const;
+    void SetScrollBarThickness(float thickness);
+
+    const Size& GetScrollAreaSize() const {
+        return scrolled_control_->GetSize();
+    }
+
+    void SetScrollAreaSize(const Size& size);
 
 protected:
 	void Layout(const Rect& previous_rect) override;
@@ -35,18 +50,31 @@ protected:
 	void ScrollBarScroll(const std::shared_ptr<ScrollBar>& scroll_bar);
 
 private:
+    void InitializeVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
+    void InitializeHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
+    void InitializeScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
+
+    void InitializeScrolledControl(const std::shared_ptr<Control>& control);
+
 	void LayoutScrollBars();
-	void LayoutContentContainerControl();
-	void AdjustContentControlSize();
+	void LayoutScrollAreaControl();
+
+	void AdjustScrolledControlSize();
+    void AdjustGeneralScrolledControlSize();
+    void AdjustSelfScrollingControlSize();
+
 	void AdjustScrollBarValues();
+    void AdjustScrollBarValuesWithGeneralScrolledControl();
+    void AdjustScrollBarValuesWithSelfScrollingControl();
 
 private:
-	std::shared_ptr<Control> content_control_;
-	std::shared_ptr<Control> content_container_control_;
-	std::shared_ptr<ScrollBar> vertical_scroll_bar_;
-	std::shared_ptr<ScrollBar> horizontal_scroll_bar_;
+    std::shared_ptr<ScrollBar> vertical_scroll_bar_;
+    std::shared_ptr<ScrollBar> horizontal_scroll_bar_;
+    std::shared_ptr<Control> scroll_area_control_;
+	std::shared_ptr<Control> scrolled_control_;
+    SelfScrollingControl* self_scrolling_control_;
 
-	Size content_size_;
+	Size expected_scroll_area_size_;
 };
 
 }

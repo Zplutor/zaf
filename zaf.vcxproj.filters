@@ -323,5 +323,8 @@
     <ClInclude Include="src\zaf\control\textual_control.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\control\self_scrolling_control.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -37,10 +37,10 @@ void OnBeginRun(Application&) {
 	auto scrollable_control = CreateControl<ScrollableControl>();
 	scrollable_control->SetRect(Rect(Point(), root_control->GetSize()));
 	scrollable_control->SetAnchor(Anchor::Left | Anchor::Top | Anchor::Right | Anchor::Bottom);
-	scrollable_control->SetContentSize(Size(500, 500));
+	scrollable_control->SetScrollAreaSize(Size(500, 500));
 	window->GetRootControl()->AddChild(scrollable_control);
 
-	auto content_control = scrollable_control->GetContentControl();
+	auto content_control = scrollable_control->GetScrolledControl();
 
 	auto control1 = CreateControl<Button>();
 	control1->SetRect(Rect(-50, 10, 100, 50));

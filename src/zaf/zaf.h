@@ -9,6 +9,7 @@
 #include <zaf/control/radio_button.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scrollable_control.h>
+#include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/text_box.h>
 #include <zaf/control/layout/anchor_layouter.h>
 #include <zaf/control/layout/array_layouter.h>

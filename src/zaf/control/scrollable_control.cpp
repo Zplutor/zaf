@@ -1,27 +1,15 @@
 #include <zaf/control/scrollable_control.h>
 #include <zaf/control/creation.h>
 #include <zaf/control/scroll_bar.h>
+#include <zaf/control/self_scrolling_control.h>
 
 namespace zaf {
 
-static const float kScrollBarThickness = 12;
+static const wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness";
 
 ScrollableControl::ScrollableControl() :
-	content_control_(CreateControl<Control>()),
-	content_container_control_(CreateControl<Control>()),
-	vertical_scroll_bar_(CreateControl<ScrollBar>()),
-	horizontal_scroll_bar_(CreateControl<ScrollBar>()) {
+    self_scrolling_control_(nullptr) {
 
-	content_control_->SetAnchor(Anchor::Left | Anchor::Top);
-
-	content_container_control_->AddChild(content_control_);
-
-	vertical_scroll_bar_->SetArrowLength(kScrollBarThickness);
-	vertical_scroll_bar_->SetRect(Rect(0, 0, kScrollBarThickness, 0));
-
-	horizontal_scroll_bar_->SetIsHorizontal(true);
-	horizontal_scroll_bar_->SetArrowLength(kScrollBarThickness);
-	horizontal_scroll_bar_->SetRect(Rect(0, 0, 0, kScrollBarThickness));
 }
 
 
@@ -32,97 +20,220 @@ ScrollableControl::~ScrollableControl() {
 
 void ScrollableControl::Initialize() {
 
-	AddChild(content_container_control_);
+    InitializeVerticalScrollBar(CreateControl<ScrollBar>());
+    InitializeHorizontalScrollBar(CreateControl<ScrollBar>());
 
-	auto scroll_event_listener = std::bind(&ScrollableControl::ScrollBarScroll, this, std::placeholders::_1);
+    scroll_area_control_ = CreateControl<Control>();
+    AddChild(scroll_area_control_);
 
-	vertical_scroll_bar_->GetScrollEvent().AddListener(scroll_event_listener, this);
-	AddChild(vertical_scroll_bar_);
-
-	horizontal_scroll_bar_->GetScrollEvent().AddListener(scroll_event_listener, this);
-	AddChild(horizontal_scroll_bar_);
+    InitializeScrolledControl(CreateControl<Control>());
 }
 
 
-void ScrollableControl::SetContentSize(const Size& size) {
+void ScrollableControl::InitializeVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
-	content_size_ = size;
-	NeedRelayout();
+    vertical_scroll_bar_ = scroll_bar;
+    InitializeScrollBar(vertical_scroll_bar_);
+}
+
+
+void ScrollableControl::InitializeHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
+
+    horizontal_scroll_bar_ = scroll_bar;
+    horizontal_scroll_bar_->SetIsHorizontal(true);
+    InitializeScrollBar(horizontal_scroll_bar_);
+}
+
+
+void ScrollableControl::InitializeScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
+
+    AddChild(scroll_bar);
+    scroll_bar->GetScrollEvent().AddListener(std::bind(&ScrollableControl::ScrollBarScroll, this, std::placeholders::_1));
+}
+
+
+void ScrollableControl::InitializeScrolledControl(const std::shared_ptr<Control>& control) {
+
+    scrolled_control_ = control;
+    scroll_area_control_->AddChild(scrolled_control_);
+
+    self_scrolling_control_ = dynamic_cast<SelfScrollingControl*>(control.get());
 }
 
 
 void ScrollableControl::Layout(const Rect& previous_rect) {
 
-	LayoutScrollBars();
-	LayoutContentContainerControl();
-	AdjustContentControlSize();
-	AdjustScrollBarValues();
+    LayoutScrollBars();
+    LayoutScrollAreaControl();
+    AdjustScrolledControlSize();
+    AdjustScrollBarValues();
 }
 
 
 void ScrollableControl::LayoutScrollBars() {
 
-	const Size& size = GetSize();
-
-	float vertical_scroll_bar_thickness = vertical_scroll_bar_->GetSize().width;
-	float horizontal_scroll_bar_thickness = horizontal_scroll_bar_->GetSize().height;
+    auto content_rect = GetContentRect();
+    float scroll_bar_thickness = GetScrollBarThickness();
 
 	Rect vertical_scroll_bar_rect(
-		size.width - vertical_scroll_bar_thickness,
-		0,
-		vertical_scroll_bar_thickness,
-		size.height - horizontal_scroll_bar_thickness
+        content_rect.position.x + content_rect.size.width - scroll_bar_thickness,
+		content_rect.position.y,
+        scroll_bar_thickness,
+        content_rect.size.height - scroll_bar_thickness
 	);
 	vertical_scroll_bar_->SetRect(vertical_scroll_bar_rect);
 
 	Rect horizontal_scroll_bar_rect(
-		0,
-		size.height - horizontal_scroll_bar_thickness,
-		size.width - vertical_scroll_bar_thickness,
-		horizontal_scroll_bar_thickness
+		content_rect.position.x,
+        content_rect.position.y + content_rect.size.height - scroll_bar_thickness,
+        content_rect.size.width - scroll_bar_thickness,
+        scroll_bar_thickness
 	);
 	horizontal_scroll_bar_->SetRect(horizontal_scroll_bar_rect);
 }
 
 
-void ScrollableControl::LayoutContentContainerControl() {
+void ScrollableControl::LayoutScrollAreaControl() {
 
-	Size size = GetSize();
-	size.width -= vertical_scroll_bar_->GetWidth();
-	size.height -= horizontal_scroll_bar_->GetHeight();
+	auto rect = GetContentRect();
+	rect.size.width -= vertical_scroll_bar_->GetWidth();
+	rect.size.height -= horizontal_scroll_bar_->GetHeight();
 
-	content_container_control_->SetRect(Rect(Point(), size));
+	scroll_area_control_->SetRect(rect);
 }
 
 
-void ScrollableControl::AdjustContentControlSize() {
+void ScrollableControl::AdjustScrolledControlSize() {
 
-	const Size& content_container_size = content_container_control_->GetSize();
-	
-	Rect content_rect = content_control_->GetRect();
-	content_rect.size = content_size_;
+    if (self_scrolling_control_ == nullptr) {
+        AdjustGeneralScrolledControlSize();
+    }
+    else {
+        AdjustSelfScrollingControlSize();
+    }
+}
 
-	if (content_rect.size.width < content_container_size.width) {
-		content_rect.size.width = content_container_size.width;
-		content_rect.position.x = 0;
-	}
 
-	if (content_rect.size.height < content_container_size.height) {
-		content_rect.size.height = content_container_size.height;
-		content_rect.position.y = 0;
-	}
+void ScrollableControl::AdjustGeneralScrolledControlSize() {
 
-	content_control_->SetRect(content_rect);
+    const Size& min_scroll_area_size = scroll_area_control_->GetSize();
+
+    Rect new_rect = scrolled_control_->GetRect();
+    new_rect.size = expected_scroll_area_size_;
+
+    if (new_rect.size.width < min_scroll_area_size.width) {
+        new_rect.size.width = min_scroll_area_size.width;
+        new_rect.position.x = 0;
+    }
+
+    if (new_rect.size.height < min_scroll_area_size.height) {
+        new_rect.size.height = min_scroll_area_size.height;
+        new_rect.position.y = 0;
+    }
+
+    scrolled_control_->SetRect(new_rect);
+}
+
+
+void ScrollableControl::AdjustSelfScrollingControlSize() {
+    scrolled_control_->SetRect(Rect(Point(), scroll_area_control_->GetSize()));
 }
 
 
 void ScrollableControl::AdjustScrollBarValues() {
 
-	const Size& content_size = content_control_->GetSize();
-	const Size& content_container_size = content_container_control_->GetSize();
+    if (self_scrolling_control_ == nullptr) {
+        AdjustScrollBarValuesWithGeneralScrolledControl();
+    }
+    else {
+        AdjustScrollBarValuesWithSelfScrollingControl();
+    }
+}
 
-	vertical_scroll_bar_->SetValueRange(0, content_size.height - content_container_size.height);
-	horizontal_scroll_bar_->SetValueRange(0, content_size.width - content_container_size.width);
+
+void ScrollableControl::AdjustScrollBarValuesWithGeneralScrolledControl() {
+
+    const Size& content_size = scrolled_control_->GetSize();
+    const Size& content_container_size = scroll_area_control_->GetSize();
+
+    int vertical_scroll_value_range = static_cast<int>(content_size.height - content_container_size.height);
+    vertical_scroll_bar_->SetValueRange(0, vertical_scroll_value_range);
+
+    int horizontal_scroll_value_range = static_cast<int>(content_size.width - content_container_size.width);
+    horizontal_scroll_bar_->SetValueRange(0, horizontal_scroll_value_range);
+}
+
+
+void ScrollableControl::AdjustScrollBarValuesWithSelfScrollingControl() {
+
+    ScrollInformation vertical_scroll_info;
+    self_scrolling_control_->GetVerticalScrollInformation(vertical_scroll_info);
+    vertical_scroll_bar_->SetValueRange(vertical_scroll_info.minimum_value, vertical_scroll_info.maximum_value);
+    vertical_scroll_bar_->SetValue(vertical_scroll_info.current_value);
+
+    ScrollInformation horizontal_scroll_info;
+    self_scrolling_control_->GetHorizontalScrollInformation(horizontal_scroll_info);
+    horizontal_scroll_bar_->SetValueRange(horizontal_scroll_info.minimum_value, horizontal_scroll_info.maximum_value);
+    horizontal_scroll_bar_->SetValue(horizontal_scroll_info.current_value);
+}
+
+
+void ScrollableControl::SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
+
+    if (vertical_scroll_bar_ != nullptr) {
+        RemoveChild(vertical_scroll_bar_);
+    }
+
+    InitializeVerticalScrollBar(scroll_bar);
+    NeedRelayout();
+}
+
+
+void ScrollableControl::SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
+
+    if (horizontal_scroll_bar_ != nullptr) {
+        RemoveChild(horizontal_scroll_bar_);
+    }
+
+    InitializeHorizontalScrollBar(scroll_bar);
+    NeedRelayout();
+}
+
+
+void ScrollableControl::SetScrolledControl(const std::shared_ptr<Control>& control) {
+
+    if (scrolled_control_ != nullptr) {
+        scroll_area_control_->RemoveChild(scrolled_control_);
+    }
+
+    InitializeScrolledControl(control);
+    NeedRelayout();
+}
+
+
+float ScrollableControl::GetScrollBarThickness() const {
+
+    auto thickness = GetPropertyMap().TryGetProperty<float>(kScrollBarThicknessPropertyName);
+    if (thickness != nullptr) {
+        return *thickness;
+    }
+    else {
+        return 12;
+    }
+}
+
+
+void ScrollableControl::SetScrollBarThickness(float thickness) {
+
+    GetPropertyMap().SetProperty(kScrollBarThicknessPropertyName, thickness);
+    NeedRelayout();
+}
+
+
+void ScrollableControl::SetScrollAreaSize(const Size& size) {
+
+    expected_scroll_area_size_ = size;
+    NeedRelayout();
 }
 
 
@@ -139,16 +250,16 @@ void ScrollableControl::MouseWheel(const Point& position, bool is_horizontal, in
 
 void ScrollableControl::ScrollBarScroll(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
-	Rect content_rect = content_control_->GetRect();
+	Rect content_rect = scrolled_control_->GetRect();
 
 	if (scroll_bar == vertical_scroll_bar_) {
-		content_rect.position.y = -scroll_bar->GetValue();
+		content_rect.position.y = static_cast<float>(-scroll_bar->GetValue());
 	}
 	else if (scroll_bar == horizontal_scroll_bar_) {
-		content_rect.position.x = -scroll_bar->GetValue();
+		content_rect.position.x = static_cast<float>(-scroll_bar->GetValue());
 	}
 
-	content_control_->SetRect(content_rect);
+    scrolled_control_->SetRect(content_rect);
 }
 
 
