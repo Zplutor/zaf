@@ -285,6 +285,7 @@ const Layouter Control::GetLayouter() const {
 
 void Control::SetLayouter(const Layouter& layouter) {
 	GetPropertyMap().SetProperty(kLayouterPropertyName, layouter);
+    NeedRelayout();
 }
 
 
@@ -375,7 +376,7 @@ const std::shared_ptr<Window> Control::GetWindow() const {
 
 void Control::SetIsVisible(bool is_visible) {
 
-	if (is_visible_ = is_visible) {
+	if (is_visible_ == is_visible) {
 		return;
 	}
 

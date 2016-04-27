@@ -5,6 +5,9 @@
 
 namespace zaf {
 
+static const wchar_t* const kAllowHorizontalScrollPropertyName = L"AllowHorizontalScroll";
+static const wchar_t* const kAllowVerticalScrollPropertyName = L"AllowVerticalScroll";
+static const wchar_t* const kAutoHideScrollBarsPropertyName = L"AutoHideScrollBars";
 static const wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness";
 
 ScrollableControl::ScrollableControl() :
@@ -23,8 +26,8 @@ void ScrollableControl::Initialize() {
     InitializeVerticalScrollBar(CreateControl<ScrollBar>());
     InitializeHorizontalScrollBar(CreateControl<ScrollBar>());
 
-    scroll_area_control_ = CreateControl<Control>();
-    AddChild(scroll_area_control_);
+    scroll_container_control_ = CreateControl<Control>();
+    AddChild(scroll_container_control_);
 
     InitializeScrolledControl(CreateControl<Control>());
 }
@@ -55,7 +58,7 @@ void ScrollableControl::InitializeScrollBar(const std::shared_ptr<ScrollBar>& sc
 void ScrollableControl::InitializeScrolledControl(const std::shared_ptr<Control>& control) {
 
     scrolled_control_ = control;
-    scroll_area_control_->AddChild(scrolled_control_);
+    scroll_container_control_->AddChild(scrolled_control_);
 
     self_scrolling_control_ = dynamic_cast<SelfScrollingControl*>(control.get());
 }
@@ -63,50 +66,125 @@ void ScrollableControl::InitializeScrolledControl(const std::shared_ptr<Control>
 
 void ScrollableControl::Layout(const Rect& previous_rect) {
 
-    LayoutScrollBars();
-    LayoutScrollAreaControl();
-    AdjustScrolledControlSize();
+    bool can_show_vertical_scroll_bar = false;
+    bool can_show_horizontal_scroll_bar = false;
+    CanShowScrollBars(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
+
+    LayoutScrollBars(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
+    LayoutScrollContainerControl(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
+
+    AdjustScrolledControlSize(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     AdjustScrollBarValues();
 }
 
 
-void ScrollableControl::LayoutScrollBars() {
+void ScrollableControl::CanShowScrollBars(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar) const {
+
+    if (self_scrolling_control_ == nullptr) {
+        CanShowScrollBarsWithGeneralScrolledControl(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
+    }
+    else {
+        CanShowScrollBarsWithSelScrollingControl(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
+    }
+}
+
+
+void ScrollableControl::CanShowScrollBarsWithGeneralScrolledControl(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar) const {
+
+    Rect content_rect = GetContentRect();
+    float content_width = content_rect.size.width;
+    float content_height = content_rect.size.height;
+
+    bool allow_vertical_scroll = AllowVerticalScroll();
+    bool allow_horizontal_scroll = AllowHorizontalScroll();
+
+    bool auto_hide_scroll_bars = AutoHideScrollBars();
+
+    auto determine = [auto_hide_scroll_bars](bool allow, float expected, float actual) {
+        return allow && (!auto_hide_scroll_bars || (expected > actual));
+    };
+
+    can_show_vertical_scroll_bar = determine(allow_vertical_scroll, expected_scroll_area_size_.height, content_height);
+    can_show_horizontal_scroll_bar = determine(allow_horizontal_scroll, expected_scroll_area_size_.width, content_width);
+
+    float scroll_bar_thickness = GetScrollBarThickness();
+
+    if (can_show_vertical_scroll_bar) {
+        can_show_horizontal_scroll_bar = determine(
+            allow_horizontal_scroll,
+            expected_scroll_area_size_.width,
+            content_width - scroll_bar_thickness
+        );
+    }
+
+    if (can_show_horizontal_scroll_bar) {
+        can_show_vertical_scroll_bar = determine(
+            allow_vertical_scroll,
+            expected_scroll_area_size_.height,
+            content_height - scroll_bar_thickness
+        );
+    }
+}
+
+
+void ScrollableControl::CanShowScrollBarsWithSelScrollingControl(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar) const {
+
+
+}
+
+
+void ScrollableControl::LayoutScrollBars(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
+
+    vertical_scroll_bar_->SetIsVisible(can_show_vertical_scroll_bar);
+    horizontal_scroll_bar_->SetIsVisible(can_show_horizontal_scroll_bar);
 
     auto content_rect = GetContentRect();
     float scroll_bar_thickness = GetScrollBarThickness();
 
-	Rect vertical_scroll_bar_rect(
-        content_rect.position.x + content_rect.size.width - scroll_bar_thickness,
-		content_rect.position.y,
-        scroll_bar_thickness,
-        content_rect.size.height - scroll_bar_thickness
-	);
-	vertical_scroll_bar_->SetRect(vertical_scroll_bar_rect);
+    if (can_show_vertical_scroll_bar) {
 
-	Rect horizontal_scroll_bar_rect(
-		content_rect.position.x,
-        content_rect.position.y + content_rect.size.height - scroll_bar_thickness,
-        content_rect.size.width - scroll_bar_thickness,
-        scroll_bar_thickness
-	);
-	horizontal_scroll_bar_->SetRect(horizontal_scroll_bar_rect);
+	    Rect vertical_scroll_bar_rect(
+            content_rect.position.x + content_rect.size.width - scroll_bar_thickness,
+		    content_rect.position.y,
+            scroll_bar_thickness,
+            content_rect.size.height - scroll_bar_thickness
+	    );
+	    vertical_scroll_bar_->SetRect(vertical_scroll_bar_rect);
+    }
+
+    if (can_show_horizontal_scroll_bar) {
+
+	    Rect horizontal_scroll_bar_rect(
+		    content_rect.position.x,
+            content_rect.position.y + content_rect.size.height - scroll_bar_thickness,
+            content_rect.size.width - scroll_bar_thickness,
+            scroll_bar_thickness
+	    );
+	    horizontal_scroll_bar_->SetRect(horizontal_scroll_bar_rect);
+    }
 }
 
 
-void ScrollableControl::LayoutScrollAreaControl() {
+void ScrollableControl::LayoutScrollContainerControl(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
 
 	auto rect = GetContentRect();
-	rect.size.width -= vertical_scroll_bar_->GetWidth();
-	rect.size.height -= horizontal_scroll_bar_->GetHeight();
 
-	scroll_area_control_->SetRect(rect);
+    if (can_show_vertical_scroll_bar) {
+	    rect.size.width -= vertical_scroll_bar_->GetWidth();
+    }
+
+    if (can_show_horizontal_scroll_bar) {
+	    rect.size.height -= horizontal_scroll_bar_->GetHeight();
+    }
+
+	scroll_container_control_->SetRect(rect);
 }
 
 
-void ScrollableControl::AdjustScrolledControlSize() {
+void ScrollableControl::AdjustScrolledControlSize(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
 
     if (self_scrolling_control_ == nullptr) {
-        AdjustGeneralScrolledControlSize();
+        AdjustGeneralScrolledControlSize(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     }
     else {
         AdjustSelfScrollingControlSize();
@@ -114,20 +192,20 @@ void ScrollableControl::AdjustScrolledControlSize() {
 }
 
 
-void ScrollableControl::AdjustGeneralScrolledControlSize() {
+void ScrollableControl::AdjustGeneralScrolledControlSize(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
 
-    const Size& min_scroll_area_size = scroll_area_control_->GetSize();
+    const Size& min_size = scroll_container_control_->GetSize();
 
     Rect new_rect = scrolled_control_->GetRect();
     new_rect.size = expected_scroll_area_size_;
 
-    if (new_rect.size.width < min_scroll_area_size.width) {
-        new_rect.size.width = min_scroll_area_size.width;
+    if (! can_show_horizontal_scroll_bar || new_rect.size.width < min_size.width) {
+        new_rect.size.width = min_size.width;
         new_rect.position.x = 0;
     }
 
-    if (new_rect.size.height < min_scroll_area_size.height) {
-        new_rect.size.height = min_scroll_area_size.height;
+    if (! can_show_vertical_scroll_bar || new_rect.size.height < min_size.height) {
+        new_rect.size.height = min_size.height;
         new_rect.position.y = 0;
     }
 
@@ -136,7 +214,7 @@ void ScrollableControl::AdjustGeneralScrolledControlSize() {
 
 
 void ScrollableControl::AdjustSelfScrollingControlSize() {
-    scrolled_control_->SetRect(Rect(Point(), scroll_area_control_->GetSize()));
+    scrolled_control_->SetRect(Rect(Point(), scroll_container_control_->GetSize()));
 }
 
 
@@ -154,27 +232,92 @@ void ScrollableControl::AdjustScrollBarValues() {
 void ScrollableControl::AdjustScrollBarValuesWithGeneralScrolledControl() {
 
     const Size& content_size = scrolled_control_->GetSize();
-    const Size& content_container_size = scroll_area_control_->GetSize();
+    const Size& content_container_size = scroll_container_control_->GetSize();
 
     int vertical_scroll_value_range = static_cast<int>(content_size.height - content_container_size.height);
     vertical_scroll_bar_->SetValueRange(0, vertical_scroll_value_range);
+    if (vertical_scroll_value_range == 0) {
+        vertical_scroll_bar_->SetIsEnabled(false);
+    }
 
     int horizontal_scroll_value_range = static_cast<int>(content_size.width - content_container_size.width);
     horizontal_scroll_bar_->SetValueRange(0, horizontal_scroll_value_range);
+    if (horizontal_scroll_value_range == 0) {
+        horizontal_scroll_bar_->SetIsEnabled(false);
+    }
 }
 
 
 void ScrollableControl::AdjustScrollBarValuesWithSelfScrollingControl() {
 
-    ScrollInformation vertical_scroll_info;
-    self_scrolling_control_->GetVerticalScrollInformation(vertical_scroll_info);
-    vertical_scroll_bar_->SetValueRange(vertical_scroll_info.minimum_value, vertical_scroll_info.maximum_value);
-    vertical_scroll_bar_->SetValue(vertical_scroll_info.current_value);
+    int current_value = 0;
+    int min_value = 0;
+    int max_value = 0;
 
-    ScrollInformation horizontal_scroll_info;
-    self_scrolling_control_->GetHorizontalScrollInformation(horizontal_scroll_info);
-    horizontal_scroll_bar_->SetValueRange(horizontal_scroll_info.minimum_value, horizontal_scroll_info.maximum_value);
-    horizontal_scroll_bar_->SetValue(horizontal_scroll_info.current_value);
+    self_scrolling_control_->GetVerticalScrollValues(current_value, min_value, max_value);
+    vertical_scroll_bar_->SetValueRange(min_value, max_value);
+    vertical_scroll_bar_->SetValue(current_value);
+
+    self_scrolling_control_->GetHorizontalScrollValues(current_value, min_value, max_value);
+    horizontal_scroll_bar_->SetValueRange(min_value, max_value);
+    horizontal_scroll_bar_->SetValue(current_value);
+}
+
+
+bool ScrollableControl::AllowVerticalScroll() const {
+
+    auto allow_scroll = GetPropertyMap().TryGetProperty<bool>(kAllowVerticalScrollPropertyName);
+    if (allow_scroll != nullptr) {
+        return *allow_scroll;
+    }
+    else {
+        return true;
+    }
+}
+
+
+void ScrollableControl::SetAllowVerticalScroll(bool allow_scroll) {
+
+    GetPropertyMap().SetProperty(kAllowVerticalScrollPropertyName, allow_scroll);
+    NeedRelayout();
+}
+
+
+bool ScrollableControl::AllowHorizontalScroll() const {
+
+    auto allow_scroll = GetPropertyMap().TryGetProperty<bool>(kAllowHorizontalScrollPropertyName);
+    if (allow_scroll != nullptr) {
+        return *allow_scroll;
+    }
+    else {
+        return true;
+    }
+}
+
+
+void ScrollableControl::SetAllowHorizontalScroll(bool allow_scroll) {
+
+    GetPropertyMap().SetProperty(kAllowHorizontalScrollPropertyName, allow_scroll);
+    NeedRelayout();
+}
+
+
+bool ScrollableControl::AutoHideScrollBars() const {
+
+    auto always_show = GetPropertyMap().TryGetProperty<bool>(kAutoHideScrollBarsPropertyName);
+    if (always_show != nullptr) {
+        return *always_show;
+    }
+    else {
+        return false;
+    }
+}
+
+
+void ScrollableControl::SetAutoHideScrollBars(bool always_show) {
+
+    GetPropertyMap().SetProperty(kAutoHideScrollBarsPropertyName, always_show);
+    NeedRelayout();
 }
 
 
@@ -203,7 +346,7 @@ void ScrollableControl::SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>&
 void ScrollableControl::SetScrolledControl(const std::shared_ptr<Control>& control) {
 
     if (scrolled_control_ != nullptr) {
-        scroll_area_control_->RemoveChild(scrolled_control_);
+        scroll_container_control_->RemoveChild(scrolled_control_);
     }
 
     InitializeScrolledControl(control);

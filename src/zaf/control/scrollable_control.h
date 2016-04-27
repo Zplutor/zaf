@@ -15,6 +15,15 @@ public:
 
 	void Initialize() override;
 
+    bool AllowVerticalScroll() const;
+    void SetAllowVerticalScroll(bool allow_scroll);
+
+    bool AllowHorizontalScroll() const;
+    void SetAllowHorizontalScroll(bool allow_scroll);
+
+    bool AutoHideScrollBars() const;
+    void SetAutoHideScrollBars(bool always_show);
+
     const std::shared_ptr<ScrollBar>& GetVerticalScrollBar() const {
         return vertical_scroll_bar_;
     }
@@ -56,11 +65,15 @@ private:
 
     void InitializeScrolledControl(const std::shared_ptr<Control>& control);
 
-	void LayoutScrollBars();
-	void LayoutScrollAreaControl();
+    void CanShowScrollBars(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar) const;
+    void CanShowScrollBarsWithGeneralScrolledControl(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar) const;
+    void CanShowScrollBarsWithSelScrollingControl(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar) const;
 
-	void AdjustScrolledControlSize();
-    void AdjustGeneralScrolledControlSize();
+    void LayoutScrollBars(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
+    void LayoutScrollContainerControl(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
+
+    void AdjustScrolledControlSize(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
+    void AdjustGeneralScrolledControlSize(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
     void AdjustSelfScrollingControlSize();
 
 	void AdjustScrollBarValues();
@@ -70,7 +83,7 @@ private:
 private:
     std::shared_ptr<ScrollBar> vertical_scroll_bar_;
     std::shared_ptr<ScrollBar> horizontal_scroll_bar_;
-    std::shared_ptr<Control> scroll_area_control_;
+    std::shared_ptr<Control> scroll_container_control_;
 	std::shared_ptr<Control> scrolled_control_;
     SelfScrollingControl* self_scrolling_control_;
 
