@@ -29,17 +29,21 @@ static ITextServices* CreateTextService(ITextHost* text_host);
 
 static const wchar_t* const kMaximumLengthPropertyName = L"MaximumLength";
 static const wchar_t* const kPasswordCharacterPropertyName = L"PasswordCharacter";
+static const wchar_t* const kScrollBarChangeEventPropertyName = L"ScrollBarChangeEvent";
+static const wchar_t* const kScrollValuesChangeEventPropertyName = L"ScrollValuesChangeEvent";
 static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
 static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
 
 static const DWORD kDefaultPropertyBits = TXTBIT_ALLOWBEEP;
 static const std::uint32_t kDefaultMaximumLength = std::numeric_limits<std::uint32_t>::max();
 static const wchar_t kDefaultPasswordCharacter = L'*';
+static const DWORD kDefaultScrollBarProperty = ES_AUTOVSCROLL | ES_AUTOHSCROLL | WS_VSCROLL | WS_HSCROLL;
 
 TextBox::TextBox() : 
 	property_bits_(kDefaultPropertyBits),
 	character_format_(),
-	paragraph_format_() {
+	paragraph_format_(),
+    scroll_bar_property_(kDefaultScrollBarProperty) {
 
 	character_format_.cbSize = sizeof(character_format_);
 	paragraph_format_.cbSize = sizeof(paragraph_format_);
@@ -390,6 +394,107 @@ void TextBox::ChangePropertyBit(DWORD bit, bool is_set) {
 }
 
 
+void TextBox::SetAllowVerticalScroll(bool allow) {
+    ChangeScrollBarPropertyBits(ES_AUTOVSCROLL | WS_VSCROLL, allow);
+}
+
+
+void TextBox::SetAllowHorizontalScroll(bool allow) {
+    ChangeScrollBarPropertyBits(ES_AUTOHSCROLL | WS_HSCROLL, allow);
+}
+
+
+void TextBox::SetAutoHideScrollBars(bool auto_hide) {
+    ChangeScrollBarPropertyBits(ES_DISABLENOSCROLL, ! auto_hide);
+}
+
+
+void TextBox::ChangeScrollBarPropertyBits(DWORD bits, bool is_set) {
+
+    if (is_set) {
+        scroll_bar_property_ |= bits;
+    }
+    else {
+        scroll_bar_property_ &= ~bits;
+    }
+
+    if (text_service_ != nullptr) {
+        text_service_->OnTxPropertyBitsChange(TXTBIT_SCROLLBARCHANGE, TXTBIT_SCROLLBARCHANGE);
+    }
+}
+
+
+bool TextBox::CanShowVerticalScrollBar() {
+    return CanEnableVerticalScrollBar() || (scroll_bar_property_ & ES_DISABLENOSCROLL);
+}
+
+
+bool TextBox::CanShowHorizontalScrollBar() {
+    return CanEnableHorizontalScrollBar() || (scroll_bar_property_ & ES_DISABLENOSCROLL);
+}
+
+
+bool TextBox::CanEnableVerticalScrollBar() {
+
+    BOOL is_enabled = FALSE;
+
+    if (text_service_ != nullptr) {
+        text_service_->TxGetVScroll(nullptr, nullptr, nullptr, nullptr, &is_enabled);
+    }
+
+    return (is_enabled != FALSE);
+}
+
+
+bool TextBox::CanEnableHorizontalScrollBar() {
+
+    BOOL is_enabled = FALSE;
+
+    if (text_service_ != nullptr) {
+        text_service_->TxGetHScroll(nullptr, nullptr, nullptr, nullptr, &is_enabled);
+    }
+
+    return (is_enabled != FALSE);
+}
+
+
+void TextBox::GetVerticalScrollValues(int& current_value, int& min_value, int& max_value) {
+    GetScrollValues(false, current_value, min_value, max_value);
+}
+
+
+void TextBox::GetHorizontalScrollValues(int& current_value, int& min_value, int& max_value) {
+    GetScrollValues(true, current_value, min_value, max_value);
+}
+
+
+void TextBox::GetScrollValues(bool is_horizontal, int& current_value, int& min_value, int& max_value) {
+
+    if (text_service_ == nullptr) {
+        return;
+    }
+
+    LONG current = 0;
+    LONG min = 0;
+    LONG max = 0;
+    LONG page = 0;
+    HRESULT result = 0;
+    
+    if (is_horizontal) {
+        result = text_service_->TxGetHScroll(&min, &max, &current, &page, nullptr);
+    }
+    else {
+        result = text_service_->TxGetVScroll(&min, &max, &current, &page, nullptr);
+    }
+
+    if (SUCCEEDED(result)) {
+        current_value = current;
+        min_value = min;
+        max_value = max - page;
+    }
+}
+
+
 TextBox::TextChangeEvent::Proxy TextBox::GetTextChangeEvent() {
 
 	auto& event = GetPropertyMap().GetProperty<TextChangeEvent>(kTextChangeEventPropertyName);
@@ -401,6 +506,20 @@ TextBox::SelectionChangeEvent::Proxy TextBox::GetSelectionChangeEvent() {
 
 	auto& event = GetPropertyMap().GetProperty<SelectionChangeEvent>(kSelectionChangeEventPropertyName);
 	return SelectionChangeEvent::Proxy(event);
+}
+
+
+TextBox::ScrollBarChangeEvent::Proxy TextBox::GetScrollBarChangeEvent() {
+
+    auto& event = GetPropertyMap().GetProperty<ScrollBarChangeEvent>(kScrollBarChangeEventPropertyName);
+    return ScrollBarChangeEvent::Proxy(event);
+}
+
+
+TextBox::ScrollValuesChangeEvent::Proxy TextBox::GetScrollValuesChangeEvent() {
+
+    auto& event = GetPropertyMap().GetProperty<ScrollValuesChangeEvent>(kScrollValuesChangeEventPropertyName);
+    return ScrollValuesChangeEvent::Proxy(event);
 }
 
 
@@ -512,6 +631,45 @@ void TextBox::FocusLose() {
 }
 
 
+void TextBox::VerticallyScroll(int new_value) {
+    Scroll(false, new_value);
+}
+
+
+void TextBox::HorizontallyScroll(int new_value) {
+    Scroll(true, new_value);
+}
+
+
+void TextBox::Scroll(bool is_horizontal, int new_value) {
+
+    if (text_service_ == nullptr) {
+        return;
+    }
+
+    UINT message = is_horizontal ? WM_HSCROLL : WM_VSCROLL;
+    text_service_->TxSendMessage(message, MAKEWPARAM(SB_THUMBPOSITION, new_value), 0, nullptr);
+}
+
+
+void TextBox::ScrollBarChange() {
+
+    auto event = GetPropertyMap().TryGetProperty<ScrollBarChangeEvent>(kScrollBarChangeEventPropertyName);
+    if (event != nullptr) {
+        event->Trigger(*this);
+    }
+}
+
+
+void TextBox::ScrollValuesChange(bool is_horizontal) {
+
+    auto event = GetPropertyMap().TryGetProperty<ScrollValuesChangeEvent>(kScrollValuesChangeEventPropertyName);
+    if (event != nullptr) {
+        event->Trigger(*this, is_horizontal);
+    }
+}
+
+
 TextBox::TextHostBridge::TextHostBridge(const std::shared_ptr<TextBox>& text_box) :
 	text_box_(text_box) {
 
@@ -545,22 +703,42 @@ INT TextBox::TextHostBridge::TxReleaseDC(HDC hdc) {
 
 
 BOOL TextBox::TextHostBridge::TxShowScrollBar(INT fnBar, BOOL fShow) {
-	return FALSE;
+
+    auto text_box = text_box_.lock();
+    if (text_box != nullptr) {
+        text_box->ScrollBarChange();
+    }
+	return TRUE;
 }
 
 
 BOOL TextBox::TextHostBridge::TxEnableScrollBar(INT fuSBFlags, INT fuArrowflags) {
-	return FALSE;
+
+    auto text_box = text_box_.lock();
+    if (text_box != nullptr) {
+        text_box->ScrollBarChange();
+    }
+    return TRUE;
 }
 
 
 BOOL TextBox::TextHostBridge::TxSetScrollRange(INT fnBar, LONG nMinPos, INT nMaxPos, BOOL fRedraw) {
-	return FALSE;
+
+    auto text_box = text_box_.lock();
+    if (text_box != nullptr) {
+        text_box->ScrollValuesChange(fnBar == SB_HORZ);
+    }
+	return TRUE;
 }
 
 
 BOOL TextBox::TextHostBridge::TxSetScrollPos(INT fnBar, INT nPos, BOOL fRedraw) {
-	return FALSE;
+
+    auto text_box = text_box_.lock();
+    if (text_box != nullptr) {
+        text_box->ScrollValuesChange(fnBar == SB_HORZ);
+    }
+    return TRUE;
 }
 
 
@@ -745,7 +923,15 @@ HRESULT TextBox::TextHostBridge::TxGetMaxLength(DWORD *plength) {
 
 
 HRESULT TextBox::TextHostBridge::TxGetScrollBars(DWORD *pdwScrollBar) {
-	*pdwScrollBar = ES_AUTOVSCROLL | ES_AUTOHSCROLL;
+
+    auto text_box = text_box_.lock();
+    if (text_box != nullptr) {
+        *pdwScrollBar = text_box->scroll_bar_property_;
+    }
+    else {
+        *pdwScrollBar = kDefaultScrollBarProperty;
+    }
+
 	return S_OK;
 }
 

@@ -5,41 +5,34 @@
 
 namespace zaf {
 
-class ScrollableControl;
-
-class ScrollInformation {
-public:
-    ScrollInformation() : 
-        is_enabled(false),
-        current_value(0), 
-        maximum_value(0), 
-        minimum_value(0) {
-    
-    }
-
-    bool is_enabled;
-    int current_value;
-    int maximum_value;
-    int minimum_value;
-};
-
 class SelfScrollingControl {
 public:
-    typedef Event<SelfScrollingControl&> ScrollInformationChangeEvent;
+    typedef Event<SelfScrollingControl&> ScrollBarChangeEvent;
+    typedef Event<SelfScrollingControl&, bool> ScrollValuesChangeEvent;
 
 public:
+    SelfScrollingControl() { } 
     virtual ~SelfScrollingControl() { }
 
-    virtual void SetIsVerticalScrollEnabled(bool is_enabled) = 0;
-    virtual void SetIsHorizontalScrollEnabled(bool is_enabled) = 0;
+    virtual void SetAllowVerticalScroll(bool allow) = 0;
+    virtual void SetAllowHorizontalScroll(bool allow) = 0;
 
-    virtual void GetVerticalScrollInformation(ScrollInformation& information) = 0;
-    virtual void GetHorizontalScrollInformation(ScrollInformation& information) = 0;
+    virtual void SetAutoHideScrollBars(bool auto_hide) = 0;
 
-    virtual ScrollInformationChangeEvent::Proxy GetScrollInformationChangeEvent() = 0;
+    virtual bool CanShowVerticalScrollBar() = 0;
+    virtual bool CanShowHorizontalScrollBar() = 0;
 
-    virtual void VerticallyScroll(int value_changed) = 0;
-    virtual void HorizontallyScroll(int value_changed) = 0;
+    virtual bool CanEnableVerticalScrollBar() = 0;
+    virtual bool CanEnableHorizontalScrollBar() = 0;
+
+    virtual void GetVerticalScrollValues(int& current_value, int& min_value, int& max_value) = 0;
+    virtual void GetHorizontalScrollValues(int& current_value, int& min_value, int& max_value) = 0;
+
+    virtual ScrollBarChangeEvent::Proxy GetScrollBarChangeEvent() = 0;
+    virtual ScrollValuesChangeEvent::Proxy GetScrollValuesChangeEvent() = 0;
+
+    virtual void VerticallyScroll(int new_value) = 0;
+    virtual void HorizontallyScroll(int new_value) = 0;
 
 private:
     SelfScrollingControl(const SelfScrollingControl&) = delete;

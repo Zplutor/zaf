@@ -5,11 +5,12 @@
 #include <TextServ.h>
 #include <zaf/base/event.h>
 #include <zaf/base/range.h>
+#include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/textual_control.h>
 
 namespace zaf {
 
-class TextBox : public TextualControl {
+class TextBox : public TextualControl, public SelfScrollingControl {
 public:
 	typedef Event<const std::shared_ptr<TextBox>&> TextChangeEvent;
 	typedef Event<const std::shared_ptr<TextBox>&> SelectionChangeEvent;
@@ -53,8 +54,27 @@ public:
 	WordWrapping GetWordWrapping() const override;
 	void SetWordWrapping(WordWrapping word_wrapping) override;
 
+    void SetAllowVerticalScroll(bool allow) override;
+    void SetAllowHorizontalScroll(bool allow) override;
+
+    void SetAutoHideScrollBars(bool auto_hide) override;
+
+    bool CanShowVerticalScrollBar() override;
+    bool CanShowHorizontalScrollBar() override;
+
+    bool CanEnableVerticalScrollBar() override;
+    bool CanEnableHorizontalScrollBar() override;
+
+    void GetVerticalScrollValues(int& current_value, int& min_value, int& max_value) override;
+    void GetHorizontalScrollValues(int& current_value, int& min_value, int& max_value) override;
+
 	TextChangeEvent::Proxy GetTextChangeEvent();
 	SelectionChangeEvent::Proxy GetSelectionChangeEvent();
+    ScrollBarChangeEvent::Proxy GetScrollBarChangeEvent() override;
+    ScrollValuesChangeEvent::Proxy GetScrollValuesChangeEvent() override;
+
+    void VerticallyScroll(int new_value) override;
+    void HorizontallyScroll(int new_value) override;
 
 protected:
     void Repaint(Canvas& canvas, const Rect& dirty_rect) override;
@@ -135,6 +155,11 @@ private:
 	bool ChangeMouseCursor();
 	bool HasPropertyBit(DWORD bit) const;
 	void ChangePropertyBit(DWORD bit, bool is_set);
+    void ChangeScrollBarPropertyBits(DWORD bits, bool is_set);
+    void GetScrollValues(bool is_horizontal, int& current_value, int& min_value, int& max_value);
+    void Scroll(bool is_horizontal, int new_value);
+    void ScrollBarChange();
+    void ScrollValuesChange(bool is_horizontal);
 
 private:
 	std::shared_ptr<TextHostBridge> text_host_bridge_;
@@ -142,6 +167,7 @@ private:
 	DWORD property_bits_;
 	CHARFORMATW character_format_;
 	PARAFORMAT paragraph_format_;
+    DWORD scroll_bar_property_;
 };
 
 }

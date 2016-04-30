@@ -26,7 +26,10 @@ private:
 
 		text_box_ = CreateControl<TextBox>();
 		text_box_->SetText(L"TextBoxÎÄ±¾¿ò");
-		text_box_container_->AddChild(text_box_);
+
+        text_box_scroll_container_ = CreateControl<ScrollableControl>();
+        text_box_scroll_container_->SetScrolledControl(text_box_);
+        text_box_container_->AddChild(text_box_scroll_container_);
 
 		auto text_label = CreateControl<Label>();
 		text_label->SetText(text_box_->GetText());
@@ -229,6 +232,7 @@ private:
 private:
 	std::shared_ptr<Control> text_box_container_;
 	std::shared_ptr<Control> options_container_;
+    std::shared_ptr<ScrollableControl> text_box_scroll_container_;
 	std::shared_ptr<TextBox> text_box_;
 };
 

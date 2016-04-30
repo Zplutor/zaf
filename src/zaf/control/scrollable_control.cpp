@@ -11,7 +11,8 @@ static const wchar_t* const kAutoHideScrollBarsPropertyName = L"AutoHideScrollBa
 static const wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness";
 
 ScrollableControl::ScrollableControl() :
-    self_scrolling_control_(nullptr) {
+    self_scrolling_control_(nullptr),
+    is_self_scrolling_(false) {
 
 }
 
@@ -51,7 +52,7 @@ void ScrollableControl::InitializeHorizontalScrollBar(const std::shared_ptr<Scro
 void ScrollableControl::InitializeScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
     AddChild(scroll_bar);
-    scroll_bar->GetScrollEvent().AddListener(std::bind(&ScrollableControl::ScrollBarScroll, this, std::placeholders::_1));
+    scroll_bar->GetScrollEvent().AddListener(std::bind(&ScrollableControl::ScrollBarScroll, this, std::placeholders::_1), this);
 }
 
 
@@ -61,10 +62,37 @@ void ScrollableControl::InitializeScrolledControl(const std::shared_ptr<Control>
     scroll_container_control_->AddChild(scrolled_control_);
 
     self_scrolling_control_ = dynamic_cast<SelfScrollingControl*>(control.get());
+    if (self_scrolling_control_ != nullptr) {
+
+        self_scrolling_control_->SetAllowVerticalScroll(AllowVerticalScroll());
+        self_scrolling_control_->SetAllowHorizontalScroll(AllowHorizontalScroll());
+        self_scrolling_control_->SetAutoHideScrollBars(AutoHideScrollBars());
+
+        self_scrolling_control_->GetScrollBarChangeEvent().AddListener(
+            std::bind(&ScrollableControl::SelfScrollingControlScrollBarChange, this, std::placeholders::_1), 
+            this
+        );
+
+        self_scrolling_control_->GetScrollValuesChangeEvent().AddListener(
+            std::bind(&ScrollableControl::SelfScrollingControlScrollValuesChange, this, std::placeholders::_1, std::placeholders::_2),
+            this
+        );
+    }
 }
 
 
 void ScrollableControl::Layout(const Rect& previous_rect) {
+
+    if (self_scrolling_control_ == nullptr) {
+        LayoutWithGeneralScrolledControl();
+    }
+    else {
+        LayoutWithSelfScrollingControl();
+    }
+}
+
+
+void ScrollableControl::LayoutWithGeneralScrolledControl() {
 
     bool can_show_vertical_scroll_bar = false;
     bool can_show_horizontal_scroll_bar = false;
@@ -72,24 +100,12 @@ void ScrollableControl::Layout(const Rect& previous_rect) {
 
     LayoutScrollBars(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     LayoutScrollContainerControl(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
-
-    AdjustScrolledControlSize(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
+    LayoutScrolledControlSize(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     AdjustScrollBarValues();
 }
 
 
 void ScrollableControl::CanShowScrollBars(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar) const {
-
-    if (self_scrolling_control_ == nullptr) {
-        CanShowScrollBarsWithGeneralScrolledControl(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
-    }
-    else {
-        CanShowScrollBarsWithSelScrollingControl(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
-    }
-}
-
-
-void ScrollableControl::CanShowScrollBarsWithGeneralScrolledControl(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar) const {
 
     Rect content_rect = GetContentRect();
     float content_width = content_rect.size.width;
@@ -124,12 +140,6 @@ void ScrollableControl::CanShowScrollBarsWithGeneralScrolledControl(bool& can_sh
             content_height - scroll_bar_thickness
         );
     }
-}
-
-
-void ScrollableControl::CanShowScrollBarsWithSelScrollingControl(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar) const {
-
-
 }
 
 
@@ -181,18 +191,7 @@ void ScrollableControl::LayoutScrollContainerControl(bool can_show_vertical_scro
 }
 
 
-void ScrollableControl::AdjustScrolledControlSize(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
-
-    if (self_scrolling_control_ == nullptr) {
-        AdjustGeneralScrolledControlSize(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
-    }
-    else {
-        AdjustSelfScrollingControlSize();
-    }
-}
-
-
-void ScrollableControl::AdjustGeneralScrolledControlSize(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
+void ScrollableControl::LayoutScrolledControlSize(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
 
     const Size& min_size = scroll_container_control_->GetSize();
 
@@ -213,23 +212,7 @@ void ScrollableControl::AdjustGeneralScrolledControlSize(bool can_show_vertical_
 }
 
 
-void ScrollableControl::AdjustSelfScrollingControlSize() {
-    scrolled_control_->SetRect(Rect(Point(), scroll_container_control_->GetSize()));
-}
-
-
 void ScrollableControl::AdjustScrollBarValues() {
-
-    if (self_scrolling_control_ == nullptr) {
-        AdjustScrollBarValuesWithGeneralScrolledControl();
-    }
-    else {
-        AdjustScrollBarValuesWithSelfScrollingControl();
-    }
-}
-
-
-void ScrollableControl::AdjustScrollBarValuesWithGeneralScrolledControl() {
 
     const Size& content_size = scrolled_control_->GetSize();
     const Size& content_container_size = scroll_container_control_->GetSize();
@@ -248,19 +231,14 @@ void ScrollableControl::AdjustScrollBarValuesWithGeneralScrolledControl() {
 }
 
 
-void ScrollableControl::AdjustScrollBarValuesWithSelfScrollingControl() {
+void ScrollableControl::LayoutWithSelfScrollingControl() {
 
-    int current_value = 0;
-    int min_value = 0;
-    int max_value = 0;
+    bool can_show_vertical_scroll_bar = AllowVerticalScroll() && self_scrolling_control_->CanShowVerticalScrollBar();
+    bool can_show_horizontal_scroll_bar = AllowHorizontalScroll() && self_scrolling_control_->CanShowHorizontalScrollBar();
 
-    self_scrolling_control_->GetVerticalScrollValues(current_value, min_value, max_value);
-    vertical_scroll_bar_->SetValueRange(min_value, max_value);
-    vertical_scroll_bar_->SetValue(current_value);
-
-    self_scrolling_control_->GetHorizontalScrollValues(current_value, min_value, max_value);
-    horizontal_scroll_bar_->SetValueRange(min_value, max_value);
-    horizontal_scroll_bar_->SetValue(current_value);
+    LayoutScrollBars(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
+    LayoutScrollContainerControl(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
+    scrolled_control_->SetRect(Rect(Point(), scroll_container_control_->GetSize()));
 }
 
 
@@ -279,6 +257,11 @@ bool ScrollableControl::AllowVerticalScroll() const {
 void ScrollableControl::SetAllowVerticalScroll(bool allow_scroll) {
 
     GetPropertyMap().SetProperty(kAllowVerticalScrollPropertyName, allow_scroll);
+
+    if (self_scrolling_control_ != nullptr) {
+        self_scrolling_control_->SetAllowVerticalScroll(allow_scroll);
+    }
+
     NeedRelayout();
 }
 
@@ -298,6 +281,11 @@ bool ScrollableControl::AllowHorizontalScroll() const {
 void ScrollableControl::SetAllowHorizontalScroll(bool allow_scroll) {
 
     GetPropertyMap().SetProperty(kAllowHorizontalScrollPropertyName, allow_scroll);
+
+    if (self_scrolling_control_ != nullptr) {
+        self_scrolling_control_->SetAllowHorizontalScroll(allow_scroll);
+    }
+
     NeedRelayout();
 }
 
@@ -314,9 +302,14 @@ bool ScrollableControl::AutoHideScrollBars() const {
 }
 
 
-void ScrollableControl::SetAutoHideScrollBars(bool always_show) {
+void ScrollableControl::SetAutoHideScrollBars(bool auto_hide) {
 
-    GetPropertyMap().SetProperty(kAutoHideScrollBarsPropertyName, always_show);
+    GetPropertyMap().SetProperty(kAutoHideScrollBarsPropertyName, auto_hide);
+
+    if (self_scrolling_control_ != nullptr) {
+        self_scrolling_control_->SetAutoHideScrollBars(auto_hide);
+    }
+
     NeedRelayout();
 }
 
@@ -324,6 +317,7 @@ void ScrollableControl::SetAutoHideScrollBars(bool always_show) {
 void ScrollableControl::SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
     if (vertical_scroll_bar_ != nullptr) {
+        vertical_scroll_bar_->GetScrollEvent().RemoveListeners(this);
         RemoveChild(vertical_scroll_bar_);
     }
 
@@ -335,6 +329,7 @@ void ScrollableControl::SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& s
 void ScrollableControl::SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
     if (horizontal_scroll_bar_ != nullptr) {
+        horizontal_scroll_bar_->GetScrollEvent().RemoveListeners(this);
         RemoveChild(horizontal_scroll_bar_);
     }
 
@@ -347,6 +342,11 @@ void ScrollableControl::SetScrolledControl(const std::shared_ptr<Control>& contr
 
     if (scrolled_control_ != nullptr) {
         scroll_container_control_->RemoveChild(scrolled_control_);
+    }
+
+    if (self_scrolling_control_ != nullptr) {
+        self_scrolling_control_->GetScrollBarChangeEvent().RemoveListeners(this);
+        self_scrolling_control_->GetScrollValuesChangeEvent().RemoveListeners(this);
     }
 
     InitializeScrolledControl(control);
@@ -393,16 +393,77 @@ void ScrollableControl::MouseWheel(const Point& position, bool is_horizontal, in
 
 void ScrollableControl::ScrollBarScroll(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
-	Rect content_rect = scrolled_control_->GetRect();
+    if (self_scrolling_control_ == nullptr) {
+        ScrollGeneralScrolledControl(scroll_bar);
+    }
+    else {
+        ScrollSelfScrollingControl(scroll_bar);
+    }
+}
 
-	if (scroll_bar == vertical_scroll_bar_) {
-		content_rect.position.y = static_cast<float>(-scroll_bar->GetValue());
-	}
-	else if (scroll_bar == horizontal_scroll_bar_) {
-		content_rect.position.x = static_cast<float>(-scroll_bar->GetValue());
-	}
+
+void ScrollableControl::ScrollGeneralScrolledControl(const std::shared_ptr<ScrollBar>& scroll_bar) {
+
+    Rect content_rect = scrolled_control_->GetRect();
+
+    if (scroll_bar == vertical_scroll_bar_) {
+        content_rect.position.y = static_cast<float>(-scroll_bar->GetValue());
+    }
+    else if (scroll_bar == horizontal_scroll_bar_) {
+        content_rect.position.x = static_cast<float>(-scroll_bar->GetValue());
+    }
 
     scrolled_control_->SetRect(content_rect);
+}
+
+
+void ScrollableControl::ScrollSelfScrollingControl(const std::shared_ptr<ScrollBar>& scroll_bar) {
+
+    if (is_self_scrolling_) {
+        return;
+    }
+
+    int value = scroll_bar->GetValue();
+    if (scroll_bar->IsHorizontal()) {
+        self_scrolling_control_->HorizontallyScroll(value);
+    }
+    else {
+        self_scrolling_control_->VerticallyScroll(value);
+    }
+}
+
+
+void ScrollableControl::SelfScrollingControlScrollBarChange(SelfScrollingControl& self_scrolling_control) {
+
+    LayoutWithSelfScrollingControl();
+
+    vertical_scroll_bar_->SetIsEnabled(self_scrolling_control_->CanEnableVerticalScrollBar());
+    horizontal_scroll_bar_->SetIsEnabled(self_scrolling_control_->CanEnableHorizontalScrollBar());
+}
+
+
+void ScrollableControl::SelfScrollingControlScrollValuesChange(SelfScrollingControl& self_scrolling_control, bool is_horizontal) {
+
+    is_self_scrolling_ = true;
+
+    int current_value = 0;
+    int min_value = 0;
+    int max_value = 0;
+    std::shared_ptr<ScrollBar> scroll_bar;
+
+    if (is_horizontal) {
+        self_scrolling_control_->GetHorizontalScrollValues(current_value, min_value, max_value);
+        scroll_bar = horizontal_scroll_bar_;
+    }
+    else {
+        self_scrolling_control_->GetVerticalScrollValues(current_value, min_value, max_value);
+        scroll_bar = vertical_scroll_bar_;
+    }
+
+    scroll_bar->SetValueRange(min_value, max_value);
+    scroll_bar->SetValue(current_value);
+
+    is_self_scrolling_ = false;
 }
 
 
