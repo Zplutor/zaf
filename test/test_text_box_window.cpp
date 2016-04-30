@@ -10,7 +10,7 @@ public:
 	void Initialize() {
 
 		SetTitle(L"test text box");
-		SetRect(Rect(0, 0, 500, 500));
+		SetRect(Rect(0, 0, 500, 700));
 
 		CreateTextBoxContainer();
 		CreateOptionsContainer();
@@ -44,7 +44,7 @@ private:
 
 		options_container_ = CreateControl<Control>();
 		options_container_->SetLayouter(GetVerticalArrayLayouter());
-		options_container_->SetRect(Rect(0, 200, GetRect().size.width, 200));
+		options_container_->SetRect(Rect(0, 200, GetRect().size.width, 300));
 		GetRootControl()->AddChild(options_container_);
 
 		CreateReadOnlyOption();
@@ -55,6 +55,8 @@ private:
 		CreateWordWrapingOption();
 		CreateSelectionRangeOption();
         CreateAllowBeepOption();
+        CreateAllowScrollOption();
+        CreateAutoHideScrollbarOption();
 	}
 
 
@@ -227,6 +229,42 @@ private:
             text_box_->SetAllowBeep(check_box->IsChecked());
         });
         options_container_->AddChild(allow_beep_check_box);
+    }
+
+
+    void CreateAllowScrollOption() {
+
+        auto container = CreateControl<Control>();
+        container->SetLayouter(GetHorizontalArrayLayouter());
+        options_container_->AddChild(container);
+
+        auto allow_vertical_scroll = CreateControl<CheckBox>();
+        allow_vertical_scroll->SetText(L"Allow vertical scroll");
+        allow_vertical_scroll->SetIsChecked(text_box_scroll_container_->AllowVerticalScroll());
+        allow_vertical_scroll->GetCheckStateChangeEvent().AddListener([this](const std::shared_ptr<CheckBox>& check_box) {
+            text_box_scroll_container_->SetAllowVerticalScroll(check_box->IsChecked());
+        });
+        container->AddChild(allow_vertical_scroll);
+
+        auto allow_horizontal_scroll = CreateControl<CheckBox>();
+        allow_horizontal_scroll->SetText(L"Allow horizontal scroll");
+        allow_horizontal_scroll->SetIsChecked(text_box_scroll_container_->AllowHorizontalScroll());
+        allow_horizontal_scroll->GetCheckStateChangeEvent().AddListener([this](const std::shared_ptr<CheckBox>& check_box) {
+            text_box_scroll_container_->SetAllowHorizontalScroll(check_box->IsChecked());
+        });
+        container->AddChild(allow_horizontal_scroll);
+    }
+
+
+    void CreateAutoHideScrollbarOption() {
+
+        auto check_box = CreateControl<CheckBox>();
+        check_box->SetText(L"Auto hide scroll bars");
+        check_box->SetIsChecked(text_box_scroll_container_->AutoHideScrollBars());
+        check_box->GetCheckStateChangeEvent().AddListener([this](const std::shared_ptr<CheckBox>& check_box) {
+            text_box_scroll_container_->SetAutoHideScrollBars(check_box->IsChecked());
+        });
+        options_container_->AddChild(check_box);
     }
 
 private:

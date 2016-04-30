@@ -157,7 +157,7 @@ void ScrollableControl::LayoutScrollBars(bool can_show_vertical_scroll_bar, bool
             content_rect.position.x + content_rect.size.width - scroll_bar_thickness,
 		    content_rect.position.y,
             scroll_bar_thickness,
-            content_rect.size.height - scroll_bar_thickness
+            content_rect.size.height - (can_show_horizontal_scroll_bar ? scroll_bar_thickness : 0)
 	    );
 	    vertical_scroll_bar_->SetRect(vertical_scroll_bar_rect);
     }
@@ -167,7 +167,7 @@ void ScrollableControl::LayoutScrollBars(bool can_show_vertical_scroll_bar, bool
 	    Rect horizontal_scroll_bar_rect(
 		    content_rect.position.x,
             content_rect.position.y + content_rect.size.height - scroll_bar_thickness,
-            content_rect.size.width - scroll_bar_thickness,
+            content_rect.size.width - (can_show_vertical_scroll_bar ? scroll_bar_thickness : 0),
             scroll_bar_thickness
 	    );
 	    horizontal_scroll_bar_->SetRect(horizontal_scroll_bar_rect);
@@ -382,11 +382,17 @@ void ScrollableControl::SetScrollAreaSize(const Size& size) {
 
 void ScrollableControl::MouseWheel(const Point& position, bool is_horizontal, int distance, WPARAM wParam, LPARAM lParam) {
 
+    std::shared_ptr<ScrollBar> scroll_bar;
+
     if (is_horizontal) {
-        horizontal_scroll_bar_->Wheel(distance);
+        scroll_bar = horizontal_scroll_bar_;   
     }
     else {
-        vertical_scroll_bar_->Wheel(distance);
+        scroll_bar = vertical_scroll_bar_;
+    }
+
+    if (scroll_bar->IsVisible() && scroll_bar->IsEnabled()) {
+        scroll_bar->Wheel(distance);
     }
 }
 
