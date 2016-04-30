@@ -151,19 +151,15 @@ public:
 	/**
 	 Get the length of arrow buttons.
 
-	 The default length is zero, use SetArrowLength method to change it.
+	 The default length is the same as scroll bar's thickness, 
+     use SetArrowLength method to change it.
 	 */
-	float GetArrowLength() const {
-		return arrow_length_;
-	}
+	float GetArrowLength() const;
 
 	/**
 	 Set the length of arrow length.
 	 */
-	void SetArrowLength(float length) {
-		arrow_length_ = length;
-		NeedRelayout();
-	}
+	void SetArrowLength(float length);
 
 	int GetValue() const {
 		return value_;
@@ -244,7 +240,6 @@ private:
 	std::shared_ptr<Thumb> thumb_;
 
 	bool is_horizontal_;
-	float arrow_length_;
 
 	int min_value_;
 	int max_value_;

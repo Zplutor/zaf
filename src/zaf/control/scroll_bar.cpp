@@ -7,8 +7,10 @@
 
 namespace zaf {
 
+static const wchar_t* const kArrowLengthPropertyName = L"ArrowLength";
 static const wchar_t* const kArrowColorPickerPropertyName = L"ArrowColorPicker";
 static const wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
+
 static int kTimerInitialInterval = 300;
 static int kTimerContinuousInterval = 50;
 
@@ -17,7 +19,6 @@ ScrollBar::ScrollBar() :
 	decremental_arrow_(CreateControl<Arrow>()),
 	thumb_(CreateControl<Thumb>()),
 	is_horizontal_(false),
-	arrow_length_(0),
 	min_value_(0), 
 	max_value_(0), 
 	value_(0),
@@ -147,6 +148,29 @@ void ScrollBar::SetThumb(const std::shared_ptr<ScrollBar::Thumb>& thumb) {
 }
 
 
+float ScrollBar::GetArrowLength() const {
+
+    auto length = GetPropertyMap().TryGetProperty<float>(kArrowLengthPropertyName);
+    if (length != nullptr) {
+        return *length;
+    }
+        
+    if (IsHorizontal()) {
+        return GetHeight();
+    }
+    else {
+        return GetWidth();
+    }
+}
+
+
+void ScrollBar::SetArrowLength(float length) {
+
+    GetPropertyMap().SetProperty(kArrowLengthPropertyName, length);
+    NeedRelayout();
+}
+
+
 void ScrollBar::SetValue(int value) {
 
 	int previous_value = value_;
@@ -222,15 +246,16 @@ void ScrollBar::Layout(const Rect& previous_rect) {
 		bar_length = rect.size.height;
 	}
 
-	Size arrow_size(bar_thickness, arrow_length_);
+    float arrow_length = GetArrowLength();
+	Size arrow_size(bar_thickness, arrow_length);
 	Rect decremental_arrow_rect(Rect(Point(), arrow_size));
-	Rect incremental_arrow_rect(Rect(Point(0, bar_length - arrow_length_), arrow_size));
+    Rect incremental_arrow_rect(Rect(Point(0, bar_length - arrow_length), arrow_size));
 
 	float thumb_position = 0;
 	float thumb_length = 0;
-	CalculateThumbPositionAndLength(bar_length - arrow_length_ * 2, thumb_position, thumb_length);
+    CalculateThumbPositionAndLength(bar_length - arrow_length * 2, thumb_position, thumb_length);
 
-	Rect thumb_rect(0, thumb_position + arrow_length_, bar_thickness, thumb_length);
+    Rect thumb_rect(0, thumb_position + arrow_length, bar_thickness, thumb_length);
 
 	if (is_horizontal_) {
 		ChangeVerticalRectToHorizontalRect(incremental_arrow_rect);
@@ -491,7 +516,7 @@ int ScrollBar::GetValuesPerThumbSlotPoint() {
 	else {
 		thumb_scroll_length = bar_size.height - thumb_size.height;
 	}
-	thumb_scroll_length -= arrow_length_ * 2;
+    thumb_scroll_length -= GetArrowLength() * 2;
 
 	int value_range = max_value_ - min_value_;
 	return value_range / thumb_scroll_length;
