@@ -7,6 +7,8 @@
 namespace zaf {
 
 class PathGeometry;
+class RectangleGeometry;
+class Rect;
 class Renderer;
 class Stroke;
 class StrokeProperties;
@@ -40,6 +42,14 @@ public:
 	 Return nullptr if failed.
 	 */
 	const std::shared_ptr<Renderer> CreateRenderer(HWND window_handle);
+
+    /**
+     Create a rectangle geometry with specified rect.
+
+     @return
+     Return nullptr if failed.
+     */
+    const std::shared_ptr<RectangleGeometry> CreateRectangleGeometry(const Rect& rect);
 
 	/**
 	 Create a path geometry.

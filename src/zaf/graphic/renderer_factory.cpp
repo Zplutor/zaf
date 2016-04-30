@@ -4,6 +4,7 @@
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/font/font_collection.h>
 #include <zaf/graphic/geometry/path_geometry.h>
+#include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/graphic/text/text_layout.h>
@@ -58,6 +59,20 @@ const std::shared_ptr<Renderer> RendererFactory::CreateRenderer(HWND window_hand
 	else {
 		return nullptr;
 	}
+}
+
+
+const std::shared_ptr<RectangleGeometry> RendererFactory::CreateRectangleGeometry(const Rect& rect) {
+
+    ID2D1RectangleGeometry* handle = nullptr;
+    HRESULT result = d2d_factory_handle_->CreateRectangleGeometry(rect.ToD2D1RECTF(), &handle);
+
+    if (SUCCEEDED(result)) {
+        return std::make_shared<RectangleGeometry>(handle);
+    }
+    else {
+        return nullptr;
+    }
 }
 
 

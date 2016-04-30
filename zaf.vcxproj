@@ -87,6 +87,7 @@
     <ClInclude Include="src\zaf\graphic\geometry\geometry.h" />
     <ClInclude Include="src\zaf\graphic\geometry\geometry_sink.h" />
     <ClInclude Include="src\zaf\graphic\geometry\path_geometry.h" />
+    <ClInclude Include="src\zaf\graphic\geometry\rectangle_geometry.h" />
     <ClInclude Include="src\zaf\graphic\layer.h" />
     <ClInclude Include="src\zaf\graphic\clear_edge.h" />
     <ClInclude Include="src\zaf\graphic\point.h" />

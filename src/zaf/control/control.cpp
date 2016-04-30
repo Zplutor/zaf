@@ -4,6 +4,8 @@
 #include <zaf/control/layout/anchor_layouter.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/graphic/geometry/path_geometry.h>
+#include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -85,13 +87,23 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 	Canvas::StateGuard state_guard(canvas);
 
-	Rect paint_rect(Point(), GetSize());
-	canvas.SetBrushWithColor(GetBorderColor());
-	canvas.DrawRectangleFrame(paint_rect, GetBorderWidth());
+    Rect border_rect(Point(), GetSize());
+  
+    Rect background_rect = border_rect;
+    background_rect.Inflate(-GetBorderWidth());
+    canvas.SetBrushWithColor(GetBackgroundColor());
+    canvas.DrawRectangle(background_rect);
 
-	paint_rect.Inflate(-GetBorderWidth());
-	canvas.SetBrushWithColor(GetBackgroundColor());
-	canvas.DrawRectangle(paint_rect);
+    auto border_geometry = canvas.CreateRectangleGeometry(border_rect);
+    auto background_geometry = canvas.CreateRectangleGeometry(background_rect);
+    
+    auto path_geometry = canvas.CreatePathGeometry();
+    auto sink = path_geometry->Open();
+    Geometry::Combine(border_geometry, background_geometry, Geometry::CombineMode::Exclude, sink);
+    sink->Close();
+
+	canvas.SetBrushWithColor(GetBorderColor());
+    canvas.DrawGeometry(path_geometry);
 }
 
 

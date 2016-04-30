@@ -134,6 +134,10 @@ public:
 		return renderer_->CreateSolidColorBrush(color);
 	}
 
+    const std::shared_ptr<RectangleGeometry> CreateRectangleGeometry(const Rect& rect) {
+        return Application::GetInstance().GetRendererFactory()->CreateRectangleGeometry(rect);
+    }
+
 	const std::shared_ptr<PathGeometry> CreatePathGeometry() {
 		return Application::GetInstance().GetRendererFactory()->CreatePathGeometry();
 	}
