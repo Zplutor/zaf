@@ -148,16 +148,16 @@ void ScrollableControl::LayoutScrollBars(bool can_show_vertical_scroll_bar, bool
     vertical_scroll_bar_->SetIsVisible(can_show_vertical_scroll_bar);
     horizontal_scroll_bar_->SetIsVisible(can_show_horizontal_scroll_bar);
 
-    auto content_rect = GetContentRect();
+    auto content_size = GetContentSize();
     float scroll_bar_thickness = GetScrollBarThickness();
 
     if (can_show_vertical_scroll_bar) {
 
 	    Rect vertical_scroll_bar_rect(
-            content_rect.position.x + content_rect.size.width - scroll_bar_thickness,
-		    content_rect.position.y,
+            content_size.width - scroll_bar_thickness,
+		    0,
             scroll_bar_thickness,
-            content_rect.size.height - (can_show_horizontal_scroll_bar ? scroll_bar_thickness : 0)
+            content_size.height - (can_show_horizontal_scroll_bar ? scroll_bar_thickness : 0)
 	    );
 	    vertical_scroll_bar_->SetRect(vertical_scroll_bar_rect);
     }
@@ -165,9 +165,9 @@ void ScrollableControl::LayoutScrollBars(bool can_show_vertical_scroll_bar, bool
     if (can_show_horizontal_scroll_bar) {
 
 	    Rect horizontal_scroll_bar_rect(
-		    content_rect.position.x,
-            content_rect.position.y + content_rect.size.height - scroll_bar_thickness,
-            content_rect.size.width - (can_show_vertical_scroll_bar ? scroll_bar_thickness : 0),
+		    0,
+            content_size.height - scroll_bar_thickness,
+            content_size.width - (can_show_vertical_scroll_bar ? scroll_bar_thickness : 0),
             scroll_bar_thickness
 	    );
 	    horizontal_scroll_bar_->SetRect(horizontal_scroll_bar_rect);
@@ -177,7 +177,7 @@ void ScrollableControl::LayoutScrollBars(bool can_show_vertical_scroll_bar, bool
 
 void ScrollableControl::LayoutScrollContainerControl(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
 
-	auto rect = GetContentRect();
+	Rect rect(Point(), GetContentSize());
 
     if (can_show_vertical_scroll_bar) {
 	    rect.size.width -= vertical_scroll_bar_->GetWidth();
@@ -219,15 +219,11 @@ void ScrollableControl::AdjustScrollBarValues() {
 
     int vertical_scroll_value_range = static_cast<int>(content_size.height - content_container_size.height);
     vertical_scroll_bar_->SetValueRange(0, vertical_scroll_value_range);
-    if (vertical_scroll_value_range == 0) {
-        vertical_scroll_bar_->SetIsEnabled(false);
-    }
+    vertical_scroll_bar_->SetIsEnabled(vertical_scroll_value_range != 0);
 
     int horizontal_scroll_value_range = static_cast<int>(content_size.width - content_container_size.width);
     horizontal_scroll_bar_->SetValueRange(0, horizontal_scroll_value_range);
-    if (horizontal_scroll_value_range == 0) {
-        horizontal_scroll_bar_->SetIsEnabled(false);
-    }
+    horizontal_scroll_bar_->SetIsEnabled(horizontal_scroll_value_range != 0);
 }
 
 

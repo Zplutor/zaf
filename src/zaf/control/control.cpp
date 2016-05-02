@@ -131,7 +131,13 @@ void Control::NeedRepaintRect(const Rect& rect) {
 		return;
 	}
 
-	Rect repaint_rect_in_parent(ToParentPoint(repaint_rect.position), repaint_rect.size);
+    Point position_in_parent = ToParentPoint(repaint_rect.position);
+    float parent_border_width = parent->GetBorderWidth();
+    position_in_parent.x += parent_border_width;
+    position_in_parent.y += parent_border_width;
+
+	Rect repaint_rect_in_parent(position_in_parent, repaint_rect.size);
+    repaint_rect_in_parent.Intersect(parent->GetContentRect());
 	parent->NeedRepaintRect(repaint_rect_in_parent);
 }
 

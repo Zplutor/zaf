@@ -11,6 +11,8 @@ public:
 
         scrollable_control_ = CreateControl<ScrollableControl>();
         scrollable_control_->SetRect(Rect(0, 0, 300, 300));
+        scrollable_control_->SetBorderWidth(2);
+        scrollable_control_->SetBorderColorPicker([](const Control&) { return Color::Black; });
         scrollable_control_->SetScrollAreaSize(Size(500, 500));
         scrollable_control_->SetAnchor(Anchor::Left | Anchor::Top | Anchor::Right);
         scrollable_control_->SetScrolledControl(CreateGeneralScrolledControl());

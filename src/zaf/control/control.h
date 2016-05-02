@@ -129,6 +129,13 @@ public:
 	 */
 	const Rect GetContentRect() const;
 
+    /**
+     Get the control's content size.
+     */
+    const Size GetContentSize() const {
+        return GetContentRect().size;
+    }
+
 	const Color GetBackgroundColor() const {
 		return GetBackgroundColorPicker()(*this);
 	}
