@@ -73,6 +73,15 @@ public:
     ScrollBarChangeEvent::Proxy GetScrollBarChangeEvent() override;
     ScrollValuesChangeEvent::Proxy GetScrollValuesChangeEvent() override;
 
+    void ScrollUpByLine();
+    void ScrollDownByLine();
+
+    void ScrollUpByPage();
+    void ScrollDownByPage();
+
+    void ScrollToBegin();
+    void ScrollToEnd();
+
     void VerticallyScroll(int new_value) override;
     void HorizontallyScroll(int new_value) override;
 
@@ -157,6 +166,7 @@ private:
 	void ChangePropertyBit(DWORD bit, bool is_set);
     void ChangeScrollBarPropertyBits(DWORD bits, bool is_set);
     void GetScrollValues(bool is_horizontal, int& current_value, int& min_value, int& max_value);
+    void SendScrollMessage(WORD scroll_type);
     void Scroll(bool is_horizontal, int new_value);
     void ScrollBarChange();
     void ScrollValuesChange(bool is_horizontal);

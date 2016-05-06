@@ -57,6 +57,7 @@ private:
         CreateAllowBeepOption();
         CreateAllowScrollOption();
         CreateAutoHideScrollbarOption();
+        CreateScrollOptions();
 	}
 
 
@@ -265,6 +266,56 @@ private:
             text_box_scroll_container_->SetAutoHideScrollBars(check_box->IsChecked());
         });
         options_container_->AddChild(check_box);
+    }
+
+
+    void CreateScrollOptions() {
+
+        auto container = CreateControl<Control>();
+        container->SetLayouter(GetHorizontalArrayLayouter());
+        options_container_->AddChild(container);
+
+        auto line_up_button = CreateControl<Button>();
+        line_up_button->SetText(L"Line up");
+        line_up_button->GetClickEvent().AddListener([this](const std::shared_ptr<ClickableControl>&) {
+            text_box_->ScrollUpByLine();
+        });
+        container->AddChild(line_up_button);
+
+        auto line_down_button = CreateControl<Button>();
+        line_down_button->SetText(L"Line down");
+        line_down_button->GetClickEvent().AddListener([this](const std::shared_ptr<ClickableControl>&) {
+            text_box_->ScrollDownByLine();
+        });
+        container->AddChild(line_down_button);
+
+        auto page_up_button = CreateControl<Button>();
+        page_up_button->SetText(L"Page up");
+        page_up_button->GetClickEvent().AddListener([this](const std::shared_ptr<ClickableControl>&) {
+            text_box_->ScrollUpByPage();
+        });
+        container->AddChild(page_up_button);
+
+        auto page_down_button = CreateControl<Button>();
+        page_down_button->SetText(L"Page down");
+        page_down_button->GetClickEvent().AddListener([this](const std::shared_ptr<ClickableControl>&) {
+            text_box_->ScrollDownByPage();
+        });
+        container->AddChild(page_down_button);
+
+        auto to_begin_button = CreateControl<Button>();
+        to_begin_button->SetText(L"To begin");
+        to_begin_button->GetClickEvent().AddListener([this](const std::shared_ptr<ClickableControl>&) {
+            text_box_->ScrollToBegin();
+        });
+        container->AddChild(to_begin_button);
+
+        auto to_end_button = CreateControl<Button>();
+        to_end_button->SetText(L"To end");
+        to_end_button->GetClickEvent().AddListener([this](const std::shared_ptr<ClickableControl>&) {
+            text_box_->ScrollToEnd();
+        });
+        container->AddChild(to_end_button);
     }
 
 private:

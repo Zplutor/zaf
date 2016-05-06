@@ -640,6 +640,44 @@ void TextBox::FocusLose() {
 }
 
 
+void TextBox::ScrollUpByLine() {
+    SendScrollMessage(SB_LINEUP);
+}
+
+
+void TextBox::ScrollDownByLine() {
+    SendScrollMessage(SB_LINEDOWN);
+}
+
+
+void TextBox::ScrollUpByPage() {
+    SendScrollMessage(SB_PAGEUP);
+}
+
+
+void TextBox::ScrollDownByPage() {
+    SendScrollMessage(SB_PAGEDOWN);
+}
+
+
+void TextBox::ScrollToBegin() {
+    SendScrollMessage(SB_TOP);
+}
+
+
+void TextBox::ScrollToEnd() {
+    SendScrollMessage(SB_BOTTOM);
+}
+
+
+void TextBox::SendScrollMessage(WORD scroll_type) {
+
+    if (text_service_ != nullptr) {
+        text_service_->TxSendMessage(WM_VSCROLL, MAKEWPARAM(scroll_type, 0), 0, nullptr);
+    }
+}
+
+
 void TextBox::VerticallyScroll(int new_value) {
     Scroll(false, new_value);
 }
