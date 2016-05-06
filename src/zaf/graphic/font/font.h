@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Windows.h>
 #include <string>
 #include <zaf/graphic/font/font_weight.h>
 
@@ -10,11 +11,22 @@ namespace zaf {
  */
 class Font {
 public:
+    /**
+     Get the default font from system setting.
+     */
+    static const Font GetDefault();
+
+    /**
+     Convert a specified LOGFONT structure to Font.
+     */
+    static const Font FromLOGFONT(const LOGFONT& logfont);
+
+public:
 	/**
 	 Initialize the instance.
 	 */
 	Font() :
-		size(14),
+		size(0),
 		weight(FontWeight::Regular) {
 
 	}
@@ -30,7 +42,7 @@ public:
 	/**
 	 Font size.
 
-	 The default size is 14.
+	 The default size is 0.
 	 */
 	float size;
 

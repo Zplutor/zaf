@@ -29,6 +29,7 @@
     <ClCompile Include="src\zaf\control\text_box.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />
+    <ClCompile Include="src\zaf\graphic\font\font.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_collection.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_face.cpp" />
     <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp" />

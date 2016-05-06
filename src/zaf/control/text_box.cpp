@@ -61,7 +61,7 @@ void TextBox::Initialize() {
 
 	SetCanFocused(true);
 	SetBorderWidth(1);
-	SetFont(Font());
+	SetFont(Font::GetDefault());
 	SetTextAlignment(TextAlignment::Leading);
 
     SetBorderColorPicker([](const Control&) {
@@ -308,7 +308,8 @@ const Font TextBox::GetFont() const {
 
 	Font font;
 	font.family_name = character_format_.szFaceName;
-	font.size = static_cast<float>(character_format_.yHeight);
+	font.size = static_cast<float>(character_format_.yHeight) / 15;
+    font.weight = (character_format_.dwEffects & CFE_BOLD) ? FontWeight::Bold : FontWeight::Regular;
 	return font;
 }
 
@@ -318,7 +319,15 @@ void TextBox::SetFont(const Font& font) {
 	wcscpy_s(character_format_.szFaceName, font.family_name.c_str());
 
 	character_format_.dwMask |= CFM_SIZE;
-	character_format_.yHeight = static_cast<LONG>(font.size);
+	character_format_.yHeight = static_cast<LONG>(font.size * 15);
+
+    character_format_.dwMask |= CFM_BOLD;
+    if (font.weight > FontWeight::Bold) {
+        character_format_.dwEffects |= CFE_BOLD;
+    }
+    else {
+        character_format_.dwEffects &= ~CFE_BOLD;
+    }
 
 	if (text_service_ != nullptr) {
 		text_service_->OnTxPropertyBitsChange(TXTBIT_CHARFORMATCHANGE, TXTBIT_CHARFORMATCHANGE);

@@ -68,6 +68,16 @@ public:
 		return renderer_factory_;
 	}
 
+    /**
+     Get the current DPI.
+
+     Initialize method must be called before calling this method.
+
+     @return 
+        The first value is the horizontal DPI; and the second is the vertical DPI.
+     */
+    const std::pair<float, float> GetDpi() const;
+
 	/**
 	 Get the application began run event.
 	 */

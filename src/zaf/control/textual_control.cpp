@@ -95,7 +95,7 @@ const Font TextualControl::GetFont() const {
         return *font;
     }
     else {
-        return Font();
+        return Font::GetDefault();
     };
 }
 

@@ -7,6 +7,7 @@ namespace zaf {
  */
 class FontWeight {
 public:
+    static const int Minimum = 1;
 	static const int Thin = 100;
 	static const int ExtraLight = 200;
 	static const int Light = 300;
@@ -18,6 +19,7 @@ public:
 	static const int ExtraBold = 800;
 	static const int Black = 900;
 	static const int ExtraBlack = 950;
+    static const int Maximum = 999;
 
 private:
 	FontWeight();

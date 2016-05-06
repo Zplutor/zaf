@@ -120,6 +120,9 @@
     <ClCompile Include="src\zaf\control\textual_control.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\font\font.cpp">
+      <Filter>zaf\graphic\font</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
