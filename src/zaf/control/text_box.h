@@ -73,6 +73,9 @@ public:
     ScrollBarChangeEvent::Proxy GetScrollBarChangeEvent() override;
     ScrollValuesChangeEvent::Proxy GetScrollValuesChangeEvent() override;
 
+    bool Undo();
+    bool Redo();
+
     void ScrollUpByLine();
     void ScrollDownByLine();
 

@@ -58,6 +58,7 @@ private:
         CreateAllowScrollOption();
         CreateAutoHideScrollbarOption();
         CreateScrollOptions();
+        CreateUndoOptions();
 	}
 
 
@@ -316,6 +317,28 @@ private:
             text_box_->ScrollToEnd();
         });
         container->AddChild(to_end_button);
+    }
+
+
+    void CreateUndoOptions() {
+
+        auto container = CreateControl<Control>();
+        container->SetLayouter(GetHorizontalArrayLayouter());
+        options_container_->AddChild(container);
+
+        auto undo_button = CreateControl<Button>();
+        undo_button->SetText(L"Undo");
+        undo_button->GetClickEvent().AddListener([this](const std::shared_ptr<ClickableControl>&) {
+            text_box_->Undo();
+        });
+        container->AddChild(undo_button);
+
+        auto redo_button = CreateControl<Button>();
+        redo_button->SetText(L"Redo");
+        redo_button->GetClickEvent().AddListener([this](const std::shared_ptr<ClickableControl>&) {
+            text_box_->Redo();
+        });
+        container->AddChild(redo_button);
     }
 
 private:

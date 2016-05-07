@@ -640,6 +640,32 @@ void TextBox::FocusLose() {
 }
 
 
+bool TextBox::Undo() {
+
+    if (text_service_ != nullptr) {
+        LRESULT undo_result = FALSE;
+        text_service_->TxSendMessage(EM_UNDO, 0, 0, &undo_result);
+        return undo_result != FALSE;
+    }
+    else {
+        return false;
+    }
+}
+
+
+bool TextBox::Redo() {
+
+    if (text_service_ != nullptr) {
+        LRESULT redo_result = FALSE;
+        text_service_->TxSendMessage(EM_REDO, 0, 0, &redo_result);
+        return redo_result != FALSE;
+    }
+    else {
+        return false;
+    }
+}
+
+
 void TextBox::ScrollUpByLine() {
     SendScrollMessage(SB_LINEUP);
 }
@@ -815,6 +841,18 @@ BOOL TextBox::TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeigh
 
 BOOL TextBox::TextHostBridge::TxShowCaret(BOOL fShow) {
 
+    auto text_box = text_box_.lock();
+    if (text_box == nullptr) {
+        return FALSE;
+    }
+
+    //Sometimes TxShowCaret would be called even when the 
+    //text box is unfocused. This would mess up the caret,
+    //so only response to this method while focused.
+    if (! text_box->IsFocused()) {
+        return FALSE;
+    }
+
 	auto window = GetWindow();
 	if (window == nullptr) {
 		return FALSE;
@@ -869,7 +907,7 @@ void TextBox::TextHostBridge::TxSetCapture(BOOL fCapture) {
 
 
 void TextBox::TextHostBridge::TxSetFocus() {
-	
+    
 }
 
 
