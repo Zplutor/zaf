@@ -59,6 +59,7 @@ private:
         CreateAutoHideScrollbarOption();
         CreateScrollOptions();
         CreateUndoOptions();
+        CreateNumberOnlyOptions();
 	}
 
 
@@ -339,6 +340,18 @@ private:
             text_box_->Redo();
         });
         container->AddChild(redo_button);
+    }
+
+
+    void CreateNumberOnlyOptions() {
+
+        auto check_box = CreateControl<CheckBox>();
+        check_box->SetText(L"Numbers only");
+        check_box->SetIsChecked(false);
+        check_box->GetCheckStateChangeEvent().AddListener([this](const std::shared_ptr<CheckBox>& check_box) {
+            text_box_->SetTextValidator(check_box->IsChecked() ? GetNumberTextValidator() : nullptr);
+        });
+        options_container_->AddChild(check_box);
     }
 
 private:

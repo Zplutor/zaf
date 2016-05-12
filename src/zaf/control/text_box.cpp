@@ -33,6 +33,7 @@ static const wchar_t* const kScrollBarChangeEventPropertyName = L"ScrollBarChang
 static const wchar_t* const kScrollValuesChangeEventPropertyName = L"ScrollValuesChangeEvent";
 static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
 static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
+static const wchar_t* const kTextValidatorPropertyName = L"TextValidator";
 
 static const DWORD kDefaultPropertyBits = TXTBIT_ALLOWBEEP;
 static const std::uint32_t kDefaultMaximumLength = std::numeric_limits<std::uint32_t>::max();
@@ -94,7 +95,7 @@ void TextBox::InitializeTextService() {
 	}
 
 	text_service_->OnTxInPlaceActivate(nullptr);
-	text_service_->TxSendMessage(EM_SETEVENTMASK, 0, ENM_CHANGE | ENM_SELCHANGE, nullptr);
+	text_service_->TxSendMessage(EM_SETEVENTMASK, 0, ENM_CHANGE | ENM_SELCHANGE | ENM_PROTECTED, nullptr);
 }
 
 
@@ -304,6 +305,22 @@ void TextBox::SetText(const std::wstring& text) {
 }
 
 
+const TextValidator TextBox::GetTextValidator() const {
+
+    auto validator = GetPropertyMap().TryGetProperty<TextValidator>(kTextValidatorPropertyName);
+    if (validator != nullptr) {
+        return *validator;
+    }
+
+    return nullptr;
+}
+
+void TextBox::SetTextValidator(const TextValidator& validator) {
+
+    GetPropertyMap().SetProperty(kTextValidatorPropertyName, validator);
+}
+
+
 const Font TextBox::GetFont() const {
 
 	Font font;
@@ -314,6 +331,9 @@ const Font TextBox::GetFont() const {
 }
 
 void TextBox::SetFont(const Font& font) {
+
+    character_format_.dwMask |= CFM_PROTECTED;
+    character_format_.dwEffects |= CFM_PROTECTED;
 
 	character_format_.dwMask |= CFM_FACE;
 	wcscpy_s(character_format_.szFaceName, font.family_name.c_str());
@@ -1083,7 +1103,7 @@ HRESULT TextBox::TextHostBridge::TxNotify(DWORD iNotify, void *pv) {
 			if (event != nullptr) {
 				event->Trigger(text_box);
 			}
-			break;
+            return S_OK;
 		}
 
 		case EN_SELCHANGE: {
@@ -1091,11 +1111,68 @@ HRESULT TextBox::TextHostBridge::TxNotify(DWORD iNotify, void *pv) {
 			if (event != nullptr) {
 				event->Trigger(text_box);
 			}
-			break;
+            return S_OK;
 		}
-	}
 
-	return S_OK;
+        case EN_PROTECTED: {
+            bool allowed = NotifyProtected(*reinterpret_cast<ENPROTECTED*>(pv));
+            return allowed ? S_OK : S_FALSE;
+        }
+
+        default:
+            return S_OK;
+	}
+}
+
+
+bool TextBox::TextHostBridge::NotifyProtected(const ENPROTECTED& info) const {
+
+    auto text_box = text_box_.lock();
+    if (text_box == nullptr) {
+        return true;
+    }
+
+    auto validator = text_box->GetTextValidator();
+    if (validator == nullptr) {
+        return true;
+    }
+
+    auto get_new_text = [&info](std::wstring& new_text) -> bool {
+    
+        if (info.msg == WM_CHAR) {
+            new_text.assign(1, static_cast<wchar_t>(info.wParam));
+            return true;
+        }
+        
+        if (info.msg == WM_PASTE) {
+
+            BOOL is_succeeded = OpenClipboard(nullptr);
+            if (! is_succeeded) {
+                return false;
+            }
+
+            bool result = false;
+            HANDLE data = GetClipboardData(CF_UNICODETEXT);
+            if (data != nullptr) {
+                new_text.assign(reinterpret_cast<wchar_t*>(data));
+                result = true;
+            }
+
+            CloseClipboard();
+            return result;
+        }
+
+        return false;
+    };
+
+    std::wstring new_text;
+    bool has_got_new_text = get_new_text(new_text);
+    if (has_got_new_text) {
+        return validator(*text_box, new_text);
+    }
+    else {
+        return true;
+    }
 }
 
 

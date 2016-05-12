@@ -6,6 +6,7 @@
 #include <zaf/base/event.h>
 #include <zaf/base/range.h>
 #include <zaf/control/self_scrolling_control.h>
+#include <zaf/control/text_validator.h>
 #include <zaf/control/textual_control.h>
 
 namespace zaf {
@@ -44,6 +45,9 @@ public:
 
 	const std::wstring GetText() const override;
 	void SetText(const std::wstring& text) override;
+
+    const TextValidator GetTextValidator() const;
+    void SetTextValidator(const TextValidator& validator);
 
 	const Font GetFont() const override;
 	void SetFont(const Font& font) override;
@@ -156,6 +160,8 @@ private:
 	private:
 		std::shared_ptr<Window> GetWindow() const;
 		HWND GetWindowHandle() const;
+
+        bool NotifyProtected(const ENPROTECTED& info) const;
 
 	private:
 		std::weak_ptr<TextBox> text_box_;

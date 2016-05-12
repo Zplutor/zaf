@@ -27,6 +27,7 @@
     <ClCompile Include="src\zaf\control\scroll_bar.cpp" />
     <ClCompile Include="src\zaf\control\textual_control.cpp" />
     <ClCompile Include="src\zaf\control\text_box.cpp" />
+    <ClCompile Include="src\zaf\control\text_validator.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font.cpp" />
@@ -73,6 +74,7 @@
     <ClInclude Include="src\zaf\control\scroll_bar.h" />
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />
+    <ClInclude Include="src\zaf\control\text_validator.h" />
     <ClInclude Include="src\zaf\enum.h" />
     <ClInclude Include="src\zaf\graphic\brush\brush.h" />
     <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h" />

@@ -123,6 +123,9 @@
     <ClCompile Include="src\zaf\graphic\font\font.cpp">
       <Filter>zaf\graphic\font</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\text_validator.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -331,6 +334,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\geometry\rectangle_geometry.h">
       <Filter>zaf\graphic\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\text_validator.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
