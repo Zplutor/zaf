@@ -250,9 +250,9 @@ void TextBox::SetAllowBeep(bool allow_beep) {
 }
 
 
-const Range TextBox::GetSelectionRange() const {
+const TextRange TextBox::GetSelectionRange() const {
 
-	Range range;
+	TextRange range;
 
 	if (text_service_ != nullptr) {
 
@@ -267,7 +267,7 @@ const Range TextBox::GetSelectionRange() const {
 	return range;
 }
 
-void TextBox::SetSelectionRange(const Range& range) {
+void TextBox::SetSelectionRange(const TextRange& range) {
 
 	if (text_service_ == nullptr) {
 		return;

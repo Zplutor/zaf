@@ -4,10 +4,10 @@
 #include <Richedit.h>
 #include <TextServ.h>
 #include <zaf/base/event.h>
-#include <zaf/base/range.h>
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/text_validator.h>
 #include <zaf/control/textual_control.h>
+#include <zaf/graphic/text/text_range.h>
 
 namespace zaf {
 
@@ -40,8 +40,8 @@ public:
 	bool AllowBeep() const;
 	void SetAllowBeep(bool allow_beep);
 
-	const Range GetSelectionRange() const;
-	void SetSelectionRange(const Range& range);
+	const TextRange GetSelectionRange() const;
+	void SetSelectionRange(const TextRange& range);
 
 	const std::wstring GetText() const override;
 	void SetText(const std::wstring& text) override;

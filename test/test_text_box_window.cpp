@@ -193,14 +193,14 @@ private:
 
 		auto selection_position_text_box = CreateControl<TextBox>();
 		text_box_->GetSelectionChangeEvent().AddListener([selection_position_text_box](const std::shared_ptr<TextBox>& text_box) {
-			Range selection_range = text_box->GetSelectionRange();
+			TextRange selection_range = text_box->GetSelectionRange();
 			selection_position_text_box->SetText(std::to_wstring(selection_range.position));
 		});
 		container->AddChild(selection_position_text_box);
 
 		auto selection_length_text_box = CreateControl<TextBox>();
 		text_box_->GetSelectionChangeEvent().AddListener([selection_length_text_box](const std::shared_ptr<TextBox>& text_box) {
-			Range selection_range = text_box->GetSelectionRange();
+			TextRange selection_range = text_box->GetSelectionRange();
 			selection_length_text_box->SetText(std::to_wstring(selection_range.length));
 		});
 		container->AddChild(selection_length_text_box);
@@ -209,7 +209,7 @@ private:
 		button->SetText(L"OK");
 		button->GetClickEvent().AddListener([this, selection_position_text_box, selection_length_text_box](const std::shared_ptr<ClickableControl>& button) {
 			
-			Range new_range;
+			TextRange new_range;
 
 			auto position_string = selection_position_text_box->GetText();
 			new_range.position = wcstoul(position_string.c_str(), nullptr, 10);

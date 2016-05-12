@@ -311,9 +311,6 @@
     <ClInclude Include="src\zaf\control\creation.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\range.h">
-      <Filter>zaf\base</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\layout\layouter.h">
       <Filter>zaf\control\layout</Filter>
     </ClInclude>
