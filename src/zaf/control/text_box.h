@@ -77,7 +77,10 @@ public:
     ScrollBarChangeEvent::Proxy GetScrollBarChangeEvent() override;
     ScrollValuesChangeEvent::Proxy GetScrollValuesChangeEvent() override;
 
+    bool CanUndo() const;
     bool Undo();
+
+    bool CanRedo() const;
     bool Redo();
 
     void ScrollUpByLine();

@@ -660,12 +660,38 @@ void TextBox::FocusLose() {
 }
 
 
+bool TextBox::CanUndo() const {
+
+    if (text_service_ != nullptr) {
+        LRESULT can_undo = FALSE;
+        text_service_->TxSendMessage(EM_CANUNDO, 0, 0, &can_undo);
+        return can_undo != FALSE;
+    }
+    else {
+        return false;
+    }
+}
+
+
 bool TextBox::Undo() {
 
     if (text_service_ != nullptr) {
         LRESULT undo_result = FALSE;
         text_service_->TxSendMessage(EM_UNDO, 0, 0, &undo_result);
         return undo_result != FALSE;
+    }
+    else {
+        return false;
+    }
+}
+
+
+bool TextBox::CanRedo() const {
+
+    if (text_service_ != nullptr) {
+        LRESULT can_redo = FALSE;
+        text_service_->TxSendMessage(EM_CANREDO, 0, 0, &can_redo);
+        return can_redo != FALSE;
     }
     else {
         return false;

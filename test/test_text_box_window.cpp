@@ -340,6 +340,23 @@ private:
             text_box_->Redo();
         });
         container->AddChild(redo_button);
+
+        auto can_undo_check_box = CreateControl<CheckBox>();
+        can_undo_check_box->SetText(L"Can undo");
+        can_undo_check_box->SetIsEnabled(false);
+        can_undo_check_box->SetIsChecked(text_box_->CanUndo());
+        container->AddChild(can_undo_check_box);
+
+        auto can_redo_check_box = CreateControl<CheckBox>();
+        can_redo_check_box->SetText(L"Can redo");
+        can_redo_check_box->SetIsEnabled(false);
+        can_redo_check_box->SetIsChecked(text_box_->CanRedo());
+        container->AddChild(can_redo_check_box);
+
+        text_box_->GetTextChangeEvent().AddListener([can_undo_check_box, can_redo_check_box](const std::shared_ptr<TextBox>& text_box) {
+            can_undo_check_box->SetIsChecked(text_box->CanUndo());
+            can_redo_check_box->SetIsChecked(text_box->CanRedo());
+        });
     }
 
 
