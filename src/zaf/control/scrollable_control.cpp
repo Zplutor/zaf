@@ -2,6 +2,7 @@
 #include <zaf/control/creation.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/self_scrolling_control.h>
+#include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
 
@@ -376,11 +377,11 @@ void ScrollableControl::SetScrollAreaSize(const Size& size) {
 }
 
 
-void ScrollableControl::MouseWheel(const Point& position, bool is_horizontal, int distance, WPARAM wParam, LPARAM lParam) {
+void ScrollableControl::MouseWheel(const MouseWheelMessage& message) {
 
     std::shared_ptr<ScrollBar> scroll_bar;
 
-    if (is_horizontal) {
+    if (message.is_horizontal) {
         scroll_bar = horizontal_scroll_bar_;   
     }
     else {
@@ -388,7 +389,7 @@ void ScrollableControl::MouseWheel(const Point& position, bool is_horizontal, in
     }
 
     if (scroll_bar->IsVisible() && scroll_bar->IsEnabled()) {
-        scroll_bar->Wheel(distance);
+        scroll_bar->Wheel(message.distance);
     }
 }
 

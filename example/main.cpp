@@ -86,7 +86,7 @@ void OnBeginRun(Application&) {
 	button->GetClickEvent().AddListener([window, disabled_button, invisible_button](const std::shared_ptr<ClickableControl>&) {
 
 		auto new_control = CreateControl<Label>();
-		new_control->SetRect(Rect(0, g_position_y, 40, 10));
+		new_control->SetRect(Rect(0, g_position_y, 40., 10.));
 		new_control->SetText(std::to_wstring(g_position_y));
 		new_control->SetIsEnabled(g_position_y % 2 == 0);
 		window->GetRootControl()->AddChild(new_control);
