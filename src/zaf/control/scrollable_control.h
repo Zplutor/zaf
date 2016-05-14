@@ -54,7 +54,7 @@ public:
 protected:
 	void Layout(const Rect& previous_rect) override;
 
-    void MouseWheel(const Point& position, bool is_horizontal, int distance, WPARAM wParam, LPARAM lParam) override;
+    void MouseWheel(const MouseWheelMessage& message) override;
 
 private:
     void InitializeVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);

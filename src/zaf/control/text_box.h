@@ -100,14 +100,14 @@ protected:
     const Rect GetTextRect() const override;
 	void Layout(const Rect& previous_rect) override;
 
-	void ChangeMouseCursor(WPARAM wParam, LPARAM lParam, bool& is_changed) override;
-	void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) override;
-	void MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
-	void MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) override;
+	void ChangeMouseCursor(const Message& message, bool& is_changed) override;
+    void MouseMove(const MouseMessage& message) override;
+    void MouseDown(const MouseMessage& message) override;
+    void MouseUp(const MouseMessage& message) override;
 
-	void KeyDown(WPARAM wParam, LPARAM lParam) override;
-	void KeyUp(WPARAM wParam, LPARAM lParam) override;
-	void CharInput(WPARAM wParam, LPARAM lParam) override;
+    void KeyDown(const Message& message) override;
+    void KeyUp(const Message& message) override;
+    void CharInput(const Message& message) override;
 
 	void FocusGain() override;
 	void FocusLose() override;
