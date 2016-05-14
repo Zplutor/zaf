@@ -31,9 +31,6 @@
     <Filter Include="zaf\control\layout">
       <UniqueIdentifier>{71859885-25bf-4217-93fc-5e753da7627c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\window\message">
-      <UniqueIdentifier>{bf88a0a8-590c-4f2b-9c03-0dc2754fec2e}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -129,12 +126,12 @@
     <ClCompile Include="src\zaf\control\text_validator.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\window\message\creation.cpp">
-      <Filter>zaf\window\message</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\enum.h">
       <Filter>zaf</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\zaf.h">
@@ -337,15 +334,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\text_validator.h">
       <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\window\message\message.h">
-      <Filter>zaf\window\message</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\window\message\mouse_message.h">
-      <Filter>zaf\window\message</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\window\message\creation.h">
-      <Filter>zaf\window\message</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

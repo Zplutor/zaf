@@ -8,9 +8,6 @@
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/renderer_factory.h>
 #include <zaf/window/caret.h>
-#include <zaf/window/message/creation.h>
-#include <zaf/window/message/message.h>
-#include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
 
@@ -37,24 +34,56 @@ bool Window::RegisterDefaultClass() {
 }
 
 
-LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
 
 	LONG_PTR user_data = GetWindowLongPtr(hwnd, GWLP_USERDATA);
 	Window* window = reinterpret_cast<Window*>(user_data);
 
-    if (window != nullptr) {
+	switch (message) {
+	case WM_PAINT:
+		window->Repaint();
+		return 0;
 
-        auto message = CreateMessage(hwnd, message_id, wParam, lParam);
-        if (message != nullptr) {
+	case WM_SIZE:
+		window->Resize(LOWORD(lParam), HIWORD(lParam));
+		return 0;
 
-            LRESULT result = 0;
-            if (window->ReceiveMessage(*message, result)) {
-                return result;    
-            }
-        }
-    }
+	case WM_SETCURSOR: {
+		bool is_changed = window->ChangeMouseCursor(wParam, lParam);		
+		if (is_changed) {
+			return TRUE;
+		}
+		break;
+	}
 
-	return CallWindowProc(DefWindowProc, hwnd, message_id, wParam, lParam);
+	case WM_MOUSEMOVE:
+	case WM_MOUSELEAVE:
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MOUSEWHEEL:
+	case WM_MOUSEHWHEEL:
+		window->ReceiveMouseMessage(message, wParam, lParam);
+		return 0;
+
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+	case WM_CHAR:
+		window->ReceiveKeyMessage(message, wParam, lParam);
+		return 0;
+
+	case WM_KILLFOCUS:
+		window->LostFocus();
+		return 0;
+
+	default:
+		break;
+	}
+
+	return CallWindowProc(DefWindowProc, hwnd, message, wParam, lParam);
 }
 
 
@@ -67,143 +96,12 @@ Window::Window() :
 	close_event_(),
 	OnClose(close_event_) {
 
+
 }
 
 
 Window::~Window() {
 
-}
-
-
-bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
-
-    switch (message.id) {
-    case WM_PAINT:
-        Repaint();
-        return true;
-
-    case WM_SIZE:
-        Resize(LOWORD(message.lParam), HIWORD(message.lParam));
-        return true;
-
-    case WM_SETCURSOR: {
-        bool is_changed = ChangeMouseCursor(message);
-        if (is_changed) {
-            result = TRUE;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    case WM_MOUSEMOVE:
-    case WM_MOUSELEAVE:
-    case WM_LBUTTONDOWN:
-    case WM_LBUTTONUP:
-    case WM_MBUTTONDOWN:
-    case WM_MBUTTONUP:
-    case WM_RBUTTONDOWN:
-    case WM_RBUTTONUP:
-    case WM_MOUSEWHEEL:
-    case WM_MOUSEHWHEEL:
-        ReceiveMouseMessage(dynamic_cast<const MouseMessage&>(message));
-        return true;
-
-    case WM_KEYDOWN:
-    case WM_KEYUP:
-    case WM_CHAR:
-        ReceiveKeyMessage(message);
-        return true;
-
-    case WM_KILLFOCUS:
-        LostFocus();
-        return true;
-
-    default:
-        return false;
-    }
-}
-
-
-void Window::ReceiveMouseMessage(const MouseMessage& message) {
-
-    if (message.id == WM_MOUSEMOVE) {
-
-        if (!is_tracking_mouse_) {
-
-            TRACKMOUSEEVENT track_mouse_event_param = { 0 };
-            track_mouse_event_param.cbSize = sizeof(track_mouse_event_param);
-            track_mouse_event_param.dwFlags = TME_LEAVE;
-            track_mouse_event_param.hwndTrack = handle_;
-            if (TrackMouseEvent(&track_mouse_event_param)) {
-                is_tracking_mouse_ = true;
-            }
-        }
-
-        if (!is_capturing_mouse_) {
-            root_control_->RouteHoverMessage(message.position);
-        }
-    }
-    else if (message.id == WM_MOUSELEAVE) {
-
-        is_tracking_mouse_ = false;
-        if (!is_capturing_mouse_) {
-            SetHoveredControl(nullptr);
-        }    
-    }
-
-    if (is_capturing_mouse_) {
-
-        //Send message to the hovering control directly.
-        Rect control_rect = hovered_control_->GetAbsoluteRect();
-        Point related_position(
-            message.position.x - control_rect.position.x,
-            message.position.y - control_rect.position.y
-        );
-
-        MouseMessage new_message = message;
-        new_message.position = related_position;
-        hovered_control_->InterpretMessage(new_message);
-    }
-    else {
-
-        root_control_->RouteMessage(message);
-    }
-}
-
-
-void Window::ReceiveKeyMessage(const Message& message) {
-
-    if (focused_control_ == nullptr) {
-        return;
-    }
-
-    switch (message.id) {
-    case WM_KEYDOWN:
-        focused_control_->KeyDown(message);
-        break;
-
-    case WM_KEYUP:
-        focused_control_->KeyUp(message);
-        break;
-
-    case WM_CHAR:
-        focused_control_->CharInput(message);
-        break;
-    }
-}
-
-
-bool Window::ChangeMouseCursor(const Message& message) {
-
-    bool is_changed = false;
-
-    if (hovered_control_ != nullptr) {
-        hovered_control_->ChangeMouseCursor(message, is_changed);
-    }
-
-    return is_changed;
 }
 
 
@@ -324,6 +222,92 @@ void Window::LostFocus() {
 
 	if (hovered_control_ != nullptr && hovered_control_->IsCapturingMouse()) {
 		SetCaptureMouseControl(hovered_control_, true);
+	}
+}
+
+
+bool Window::ChangeMouseCursor(WPARAM wParam, LPARAM lParam) {
+
+	bool is_changed = false;
+
+	if (hovered_control_ != nullptr) {
+		hovered_control_->ChangeMouseCursor(wParam, lParam, is_changed);
+	}
+
+	return is_changed;
+}
+
+
+void Window::ReceiveMouseMessage(UINT message, WPARAM wParam, LPARAM lParam) {
+
+	Point point(static_cast<float>(GET_X_LPARAM(lParam)), static_cast<float>(GET_Y_LPARAM(lParam)));
+
+	switch (message) {
+	case WM_MOUSEMOVE: {
+		if (! is_tracking_mouse_) {
+			TRACKMOUSEEVENT track_mouse_event_param = { 0 };
+			track_mouse_event_param.cbSize = sizeof(track_mouse_event_param);
+			track_mouse_event_param.dwFlags = TME_LEAVE;
+			track_mouse_event_param.hwndTrack = handle_;
+			if (TrackMouseEvent(&track_mouse_event_param)) {
+				is_tracking_mouse_ = true;
+			}
+		}
+		if (! is_capturing_mouse_) {
+			root_control_->RouteHoverMessage(point);
+		}
+		break;
+	}
+	case WM_MOUSELEAVE:
+		is_tracking_mouse_ = false;
+		if (! is_capturing_mouse_) {
+			SetHoveredControl(nullptr);
+		}
+		break;
+
+	case WM_MOUSEWHEEL:
+	case WM_MOUSEHWHEEL: {
+		//The cursor position in these two messages is in screen coordinate.
+		//Translate it to window coordinate.
+		POINT cursor_point = point.ToPOINT();
+		ScreenToClient(handle_, &cursor_point);
+		point = Point::FromPOINT(cursor_point);
+		break;
+	}
+	}
+
+	if (is_capturing_mouse_) {
+
+		//Send message to the hovering control directly.
+		Rect control_rect = hovered_control_->GetAbsoluteRect();
+		Point related_point(point.x - control_rect.position.x, point.y - control_rect.position.y);
+		hovered_control_->InterpretMessage(related_point, message, wParam, lParam);
+	}
+	else {
+		
+		root_control_->RouteMessage(point, message, wParam, lParam);
+	}
+}
+
+
+void Window::ReceiveKeyMessage(UINT message, WPARAM wParam, LPARAM lParam) {
+
+	if (focused_control_ == nullptr) {
+		return;
+	}
+
+	switch (message) {
+	case WM_KEYDOWN:
+		focused_control_->KeyDown(wParam, lParam);
+		break;
+
+	case WM_KEYUP:
+		focused_control_->KeyUp(wParam, lParam);
+		break;
+
+	case WM_CHAR:
+		focused_control_->CharInput(wParam, lParam);
+		break;
 	}
 }
 

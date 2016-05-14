@@ -7,6 +7,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <zaf/enum.h>
 #include <zaf/base/property_map.h>
 #include <zaf/control/anchor.h>
 #include <zaf/control/color_picker.h>
@@ -17,9 +18,6 @@
 namespace zaf {
 
 class Canvas;
-class Message;
-class MouseMessage;
-class MouseWheelMessage;
 class Window;
 
 class Control : public std::enable_shared_from_this<Control> {
@@ -306,18 +304,18 @@ protected:
 
 	void NeedCaptureMouse(bool capture);
 
-	virtual void ChangeMouseCursor(const Message& message, bool& is_changed);
-    virtual void MouseMove(const MouseMessage& message);
+	virtual void ChangeMouseCursor(WPARAM wParam, LPARAM lParam, bool& is_changed);
+	virtual void MouseMove(const Point& position, WPARAM wParam, LPARAM lParam);
 	virtual void MouseEnter();
 	virtual void MouseLeave();
-    virtual void MouseDown(const MouseMessage& message);
-    virtual void MouseUp(const MouseMessage& message);
-    virtual void MouseWheel(const MouseWheelMessage& message);
+	virtual void MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam);
+	virtual void MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam);
+	virtual void MouseWheel(const Point& position, bool is_horizontal, int distance, WPARAM wParam, LPARAM lParam);
 	virtual void MouseCapture();
 	virtual void MouseRelease();
-    virtual void KeyDown(const Message& message);
-    virtual void KeyUp(const Message& message);
-    virtual void CharInput(const Message& message);
+	virtual void KeyDown(WPARAM wParam, LPARAM lParam);
+	virtual void KeyUp(WPARAM wParam, LPARAM lParam);
+	virtual void CharInput(WPARAM wParam, LPARAM lParam);
 	virtual void FocusGain();
 	virtual void FocusLose();
 
@@ -333,8 +331,7 @@ private:
 	void IsCapturingMouseChanged(bool is_capturing_mouse);
 
 	void RouteHoverMessage(const Point& position);
-	void RouteMessage(const MouseMessage& message);
-    void InterpretMessage(const MouseMessage& message);
+	void RouteMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
 	void SetParent(const std::shared_ptr<Control>& parent) {
@@ -347,6 +344,8 @@ private:
 	 Called when a child's rect has changed.
 	 */
 	void ChildRectChanged(const std::shared_ptr<Control>& child, const Rect& previous_rect);
+
+	void InterpretMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam);
 
 	/**
 	 Translate a point to which in parent's coordinate system.

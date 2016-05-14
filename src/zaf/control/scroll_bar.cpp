@@ -4,7 +4,6 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
-#include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
 
@@ -315,17 +314,17 @@ ScrollBar::ScrollEvent::Proxy ScrollBar::GetScrollEvent() {
 }
 
 
-void ScrollBar::MouseDown(const MouseMessage& message) {
+void ScrollBar::MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
 
-	if (message.button == MouseButton::Left) {
+	if (button == MouseButton::Left) {
 		NeedCaptureMouse(true);
 	}
 }
 
 
-void ScrollBar::MouseUp(const MouseMessage& message) {
+void ScrollBar::MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
 
-	if (message.button == MouseButton::Left) {
+	if (button == MouseButton::Left) {
 		NeedCaptureMouse(false);
 	}
 }
@@ -441,13 +440,13 @@ Rect ScrollBar::GetThumbSlotRect() const {
 }
 
 
-void ScrollBar::MouseWheel(const MouseWheelMessage& message) {
+void ScrollBar::MouseWheel(const Point& position, bool is_horizontal, int distance, WPARAM wParam, LPARAM lParam) {
 
-	if (message.is_horizontal != IsHorizontal()) {
+	if (is_horizontal != IsHorizontal()) {
 		return;
 	}
 	
-    Wheel(message.distance);
+    Wheel(distance);
 }
 
 
@@ -703,9 +702,9 @@ void ScrollBar::Thumb::MouseRelease() {
 }
 
 
-void ScrollBar::Thumb::MouseMove(const MouseMessage& message) {
+void ScrollBar::Thumb::MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) {
 
-	ClickableControl::MouseMove(message);
+	ClickableControl::MouseMove(position, wParam, lParam);
 
 	if (is_dragging_) {
 		drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));

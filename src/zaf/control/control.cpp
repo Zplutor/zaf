@@ -6,8 +6,6 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
-#include <zaf/window/message/message.h>
-#include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -559,19 +557,16 @@ void Control::RouteHoverMessage(const Point& position) {
 }
 
 
-void Control::RouteMessage(const MouseMessage& message) {
+void Control::RouteMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam) {
 
-	auto child = FindChildAtPosition(message.position);
+	auto child = FindChildAtPosition(position);
 	if (child != nullptr) {
-
-        MouseMessage new_message = message;
-        new_message.position = ToChildPoint(message.position, child);
-		child->RouteMessage(new_message);
+		child->RouteMessage(ToChildPoint(position, child), message, wParam, lParam);
 	}
 	else {
 
 		if (IsEnabled()) {
-			InterpretMessage(message);
+			InterpretMessage(position, message, wParam, lParam);
 		}
 	}
 }
@@ -599,53 +594,60 @@ std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) con
 }
 
 
-void Control::InterpretMessage(const MouseMessage& message) {
+void Control::InterpretMessage(const Point& position, UINT message, WPARAM wParam, LPARAM lParam) {
 
-	switch (message.id) {
-	    case WM_MOUSEMOVE:
-		    MouseMove(message);
-		    break;
+	switch (message) {
+	case WM_MOUSEMOVE:
+		MouseMove(position, wParam, lParam);
+		break;
 
-	    case WM_LBUTTONDOWN:
-	    case WM_MBUTTONDOWN:
-	    case WM_RBUTTONDOWN:
-            MouseDown(message);
-		    break;
+	case WM_LBUTTONDOWN:
+		MouseDown(position, MouseButton::Left, wParam, lParam);
+		break;
+	case WM_MBUTTONDOWN:
+		MouseDown(position, MouseButton::Middle, wParam, lParam);
+		break;
+	case WM_RBUTTONDOWN:
+		MouseDown(position, MouseButton::Right, wParam, lParam);
+		break;
 
-	    case WM_LBUTTONUP:
-	    case WM_MBUTTONUP:
-	    case WM_RBUTTONUP:
-            MouseUp(message);
-		    break;
+	case WM_LBUTTONUP:
+		MouseUp(position, MouseButton::Left, wParam, lParam);
+		break;
+	case WM_MBUTTONUP:
+		MouseUp(position, MouseButton::Middle, wParam, lParam);
+		break;
+	case WM_RBUTTONUP:
+		MouseUp(position, MouseButton::Right, wParam, lParam);
+		break;
 
-	    case WM_MOUSEWHEEL:
-	    case WM_MOUSEHWHEEL:
-            MouseWheel(dynamic_cast<const MouseWheelMessage&>(message));
-		    break;
+	case WM_MOUSEWHEEL:
+		MouseWheel(position, false, static_cast<short>(HIWORD(wParam)), wParam, lParam);
+		break;
+	case WM_MOUSEHWHEEL:
+		MouseWheel(position, true, static_cast<short>(HIWORD(wParam)), wParam, lParam);
+		break;
 
-	    default:
-		    break;
+	default:
+		break;
 	}
 }
 
 
-void Control::ChangeMouseCursor(const Message& message, bool& is_changed) {
+void Control::ChangeMouseCursor(WPARAM wParam, LPARAM lParam, bool& is_changed) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-		parent->ChangeMouseCursor(message, is_changed);
+		parent->ChangeMouseCursor(wParam, lParam, is_changed);
 	}
 }
 
 
-void Control::MouseMove(const MouseMessage& message) {
+void Control::MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-
-        MouseMessage new_message = message;
-        new_message.position = ToParentPoint(message.position);
-		parent->MouseMove(new_message);
+		parent->MouseMove(ToParentPoint(position), wParam, lParam);
 	}
 }
 
@@ -660,38 +662,29 @@ void Control::MouseLeave() {
 }
 
 
-void Control::MouseDown(const MouseMessage& message) {
+void Control::MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-
-        MouseMessage new_message = message;
-        new_message.position = ToParentPoint(message.position);
-		parent->MouseDown(new_message);
+		parent->MouseDown(ToParentPoint(position), button, wParam, lParam);
 	}
 }
 
 
-void Control::MouseUp(const MouseMessage& message) {
+void Control::MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-
-        MouseMessage new_message = message;
-        new_message.position = ToParentPoint(message.position);
-        parent->MouseUp(new_message);
+		parent->MouseUp(ToParentPoint(position), button, wParam, lParam);
 	}
 }
 
 
-void Control::MouseWheel(const MouseWheelMessage& message) {
+void Control::MouseWheel(const Point& position, bool is_horizontal, int distance, WPARAM wParam, LPARAM lParam) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-
-        MouseWheelMessage new_message = message;
-        new_message.position = ToParentPoint(message.position);
-		parent->MouseWheel(new_message);
+		parent->MouseWheel(position, is_horizontal, distance, wParam, lParam);
 	}
 }
 
@@ -706,29 +699,29 @@ void Control::MouseRelease() {
 }
 
 
-void Control::KeyDown(const Message& message) {
+void Control::KeyDown(WPARAM wParam, LPARAM lParam) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-		parent->KeyDown(message);
+		parent->KeyDown(wParam, lParam);
 	}
 }
 
 
-void Control::KeyUp(const Message& message) {
+void Control::KeyUp(WPARAM wParam, LPARAM lParam) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-		parent->KeyUp(message);
+		parent->KeyUp(wParam, lParam);
 	}
 }
 
 
-void Control::CharInput(const Message& message) {
+void Control::CharInput(WPARAM wParam, LPARAM lParam) {
 
 	auto parent = GetParent(); 
 	if (parent != nullptr) {
-		parent->CharInput(message);
+		parent->CharInput(wParam, lParam);
 	}
 }
 
