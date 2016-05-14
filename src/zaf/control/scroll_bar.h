@@ -100,7 +100,7 @@ public:
 	protected:
 		void MouseCapture() override;
 		void MouseRelease() override;
-		void MouseMove(const MouseMessage& message) override;
+        void MouseMove(const Point& position, const MouseMessage& message) override;
 
 	private:
 		bool is_horizontal_;
@@ -194,9 +194,9 @@ public:
 protected:
 	void Layout(const Rect& previous_rect) override;
 
-	void MouseDown(const MouseMessage& message) override;
-    void MouseUp(const MouseMessage& message) override;
-    void MouseWheel(const MouseWheelMessage& message) override;
+    void MouseDown(const Point& position, const MouseMessage& message) override;
+    void MouseUp(const Point& position, const MouseMessage& message) override;
+    void MouseWheel(const Point& position, const MouseWheelMessage& message) override;
 	void MouseCapture() override;
 	void MouseRelease() override;
 

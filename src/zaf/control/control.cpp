@@ -559,19 +559,16 @@ void Control::RouteHoverMessage(const Point& position) {
 }
 
 
-void Control::RouteMessage(const MouseMessage& message) {
+void Control::RouteMessage(const Point& position, const MouseMessage& message) {
 
-	auto child = FindChildAtPosition(message.position);
+	auto child = FindChildAtPosition(position);
 	if (child != nullptr) {
-
-        MouseMessage new_message = message;
-        new_message.position = ToChildPoint(message.position, child);
-		child->RouteMessage(new_message);
+        child->RouteMessage(ToChildPoint(position, child), message);
 	}
 	else {
 
 		if (IsEnabled()) {
-			InterpretMessage(message);
+            InterpretMessage(position, message);
 		}
 	}
 }
@@ -599,28 +596,28 @@ std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) con
 }
 
 
-void Control::InterpretMessage(const MouseMessage& message) {
+void Control::InterpretMessage(const Point& position, const MouseMessage& message) {
 
 	switch (message.id) {
 	    case WM_MOUSEMOVE:
-		    MouseMove(message);
+		    MouseMove(position, message);
 		    break;
 
 	    case WM_LBUTTONDOWN:
 	    case WM_MBUTTONDOWN:
 	    case WM_RBUTTONDOWN:
-            MouseDown(message);
+            MouseDown(position, message);
 		    break;
 
 	    case WM_LBUTTONUP:
 	    case WM_MBUTTONUP:
 	    case WM_RBUTTONUP:
-            MouseUp(message);
+            MouseUp(position, message);
 		    break;
 
 	    case WM_MOUSEWHEEL:
 	    case WM_MOUSEHWHEEL:
-            MouseWheel(dynamic_cast<const MouseWheelMessage&>(message));
+            MouseWheel(position, dynamic_cast<const MouseWheelMessage&>(message));
 		    break;
 
 	    default:
@@ -638,14 +635,11 @@ void Control::ChangeMouseCursor(const Message& message, bool& is_changed) {
 }
 
 
-void Control::MouseMove(const MouseMessage& message) {
+void Control::MouseMove(const Point& position, const MouseMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-
-        MouseMessage new_message = message;
-        new_message.position = ToParentPoint(message.position);
-		parent->MouseMove(new_message);
+        parent->MouseMove(ToParentPoint(message.position), message);
 	}
 }
 
@@ -660,38 +654,29 @@ void Control::MouseLeave() {
 }
 
 
-void Control::MouseDown(const MouseMessage& message) {
+void Control::MouseDown(const Point& position, const MouseMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-
-        MouseMessage new_message = message;
-        new_message.position = ToParentPoint(message.position);
-		parent->MouseDown(new_message);
+        parent->MouseDown(ToParentPoint(message.position), message);
 	}
 }
 
 
-void Control::MouseUp(const MouseMessage& message) {
+void Control::MouseUp(const Point& position, const MouseMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-
-        MouseMessage new_message = message;
-        new_message.position = ToParentPoint(message.position);
-        parent->MouseUp(new_message);
+        parent->MouseUp(ToParentPoint(message.position), message);
 	}
 }
 
 
-void Control::MouseWheel(const MouseWheelMessage& message) {
+void Control::MouseWheel(const Point& position, const MouseWheelMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-
-        MouseWheelMessage new_message = message;
-        new_message.position = ToParentPoint(message.position);
-		parent->MouseWheel(new_message);
+		parent->MouseWheel(ToParentPoint(position), message);
 	}
 }
 

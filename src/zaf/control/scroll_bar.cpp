@@ -315,7 +315,7 @@ ScrollBar::ScrollEvent::Proxy ScrollBar::GetScrollEvent() {
 }
 
 
-void ScrollBar::MouseDown(const MouseMessage& message) {
+void ScrollBar::MouseDown(const Point& position, const MouseMessage& message) {
 
 	if (message.button == MouseButton::Left) {
 		NeedCaptureMouse(true);
@@ -323,7 +323,7 @@ void ScrollBar::MouseDown(const MouseMessage& message) {
 }
 
 
-void ScrollBar::MouseUp(const MouseMessage& message) {
+void ScrollBar::MouseUp(const Point& position, const MouseMessage& message) {
 
 	if (message.button == MouseButton::Left) {
 		NeedCaptureMouse(false);
@@ -441,7 +441,7 @@ Rect ScrollBar::GetThumbSlotRect() const {
 }
 
 
-void ScrollBar::MouseWheel(const MouseWheelMessage& message) {
+void ScrollBar::MouseWheel(const Point& position, const MouseWheelMessage& message) {
 
 	if (message.is_horizontal != IsHorizontal()) {
 		return;
@@ -703,9 +703,9 @@ void ScrollBar::Thumb::MouseRelease() {
 }
 
 
-void ScrollBar::Thumb::MouseMove(const MouseMessage& message) {
+void ScrollBar::Thumb::MouseMove(const Point& position, const MouseMessage& message) {
 
-	ClickableControl::MouseMove(message);
+	ClickableControl::MouseMove(position, message);
 
 	if (is_dragging_) {
 		drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));

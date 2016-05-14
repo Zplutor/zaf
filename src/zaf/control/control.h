@@ -307,12 +307,12 @@ protected:
 	void NeedCaptureMouse(bool capture);
 
 	virtual void ChangeMouseCursor(const Message& message, bool& is_changed);
-    virtual void MouseMove(const MouseMessage& message);
+    virtual void MouseMove(const Point& position, const MouseMessage& message);
 	virtual void MouseEnter();
 	virtual void MouseLeave();
-    virtual void MouseDown(const MouseMessage& message);
-    virtual void MouseUp(const MouseMessage& message);
-    virtual void MouseWheel(const MouseWheelMessage& message);
+    virtual void MouseDown(const Point& position, const MouseMessage& message);
+    virtual void MouseUp(const Point& position, const MouseMessage& message);
+    virtual void MouseWheel(const Point& position, const MouseWheelMessage& message);
 	virtual void MouseCapture();
 	virtual void MouseRelease();
     virtual void KeyDown(const Message& message);
@@ -333,8 +333,8 @@ private:
 	void IsCapturingMouseChanged(bool is_capturing_mouse);
 
 	void RouteHoverMessage(const Point& position);
-	void RouteMessage(const MouseMessage& message);
-    void InterpretMessage(const MouseMessage& message);
+    void RouteMessage(const Point& position, const MouseMessage& message);
+    void InterpretMessage(const Point& position, const MouseMessage& message);
 
 private:
 	void SetParent(const std::shared_ptr<Control>& parent) {

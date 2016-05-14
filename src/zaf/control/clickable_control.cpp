@@ -43,23 +43,23 @@ void ClickableControl::MouseLeave() {
 }
 
 
-void ClickableControl::MouseMove(const MouseMessage& message) {
+void ClickableControl::MouseMove(const Point& position, const MouseMessage& message) {
 
-	CheckIsMousePressed(message.position, message.wParam);
+	CheckIsMousePressed(position, message.wParam);
 }
 
 
-void ClickableControl::MouseDown(const MouseMessage& message) {
+void ClickableControl::MouseDown(const Point& position, const MouseMessage& message) {
 
 	if (message.button == MouseButton::Left) {
 		SetIsFocused(true);
 		BeginPress(PressType::Mouse);
-		CheckIsMousePressed(message.position, message.wParam);
+		CheckIsMousePressed(position, message.wParam);
 	}
 }
 
 
-void ClickableControl::MouseUp(const MouseMessage& message) {
+void ClickableControl::MouseUp(const Point& position, const MouseMessage& message) {
 
 	if (message.button == MouseButton::Left) {
 		EndPress(PressType::Mouse);

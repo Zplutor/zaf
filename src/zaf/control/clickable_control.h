@@ -24,9 +24,9 @@ public:
 protected:
 	void MouseEnter() override;
 	void MouseLeave() override;
-    void MouseMove(const MouseMessage& message) override;
-    void MouseDown(const MouseMessage& message) override;
-    void MouseUp(const MouseMessage& message) override;
+    void MouseMove(const Point& position, const MouseMessage& message) override;
+    void MouseDown(const Point& position, const MouseMessage& message) override;
+    void MouseUp(const Point& position, const MouseMessage& message) override;
 	void MouseCapture() override;
 	void MouseRelease() override;
     void KeyDown(const Message& message) override;

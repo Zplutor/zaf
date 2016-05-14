@@ -598,14 +598,14 @@ bool TextBox::ChangeMouseCursor() {
 }
 
 
-void TextBox::MouseMove(const MouseMessage& message) {
+void TextBox::MouseMove(const Point& position, const MouseMessage& message) {
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_MOUSEMOVE, message.wParam, message.lParam, nullptr);
 	}
 }
 
 
-void TextBox::MouseDown(const MouseMessage& message) {
+void TextBox::MouseDown(const Point& position, const MouseMessage& message) {
 	SetIsFocused(true);
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_LBUTTONDOWN, message.wParam, message.lParam, nullptr);
@@ -613,7 +613,7 @@ void TextBox::MouseDown(const MouseMessage& message) {
 }
 
 
-void TextBox::MouseUp(const MouseMessage& message) {
+void TextBox::MouseUp(const Point& position, const MouseMessage& message) {
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_LBUTTONUP, message.wParam, message.lParam, nullptr);
 	}

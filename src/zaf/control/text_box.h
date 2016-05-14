@@ -101,9 +101,9 @@ protected:
 	void Layout(const Rect& previous_rect) override;
 
 	void ChangeMouseCursor(const Message& message, bool& is_changed) override;
-    void MouseMove(const MouseMessage& message) override;
-    void MouseDown(const MouseMessage& message) override;
-    void MouseUp(const MouseMessage& message) override;
+    void MouseMove(const Point& position, const MouseMessage& message) override;
+    void MouseDown(const Point& position, const MouseMessage& message) override;
+    void MouseUp(const Point& position, const MouseMessage& message) override;
 
     void KeyDown(const Message& message) override;
     void KeyUp(const Message& message) override;

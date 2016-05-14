@@ -162,13 +162,11 @@ void Window::ReceiveMouseMessage(const MouseMessage& message) {
             message.position.y - control_rect.position.y
         );
 
-        MouseMessage new_message = message;
-        new_message.position = related_position;
-        hovered_control_->InterpretMessage(new_message);
+        hovered_control_->InterpretMessage(related_position, message);
     }
     else {
 
-        root_control_->RouteMessage(message);
+        root_control_->RouteMessage(message.position, message);
     }
 }
 
