@@ -9,6 +9,7 @@
 namespace zaf {
 
 class Caret;
+class MouseMessage;
 class Renderer;
 
 class Window : public std::enable_shared_from_this<Window> {
@@ -17,7 +18,7 @@ public:
 
 public:
 	Window();
-	~Window();
+	virtual ~Window();
 
 	/**
 	 Get position of the mouse cursor in current window's coordinate system.
@@ -83,13 +84,17 @@ private:
 private:
 	static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
+    bool ReceiveMessage(const Message& message, LRESULT& result);
+    void ReceiveMouseMessage(const MouseMessage& message);
+    void ReceiveKeyMessage(const Message& message);
+    bool ChangeMouseCursor(const Message& message);
+
 	void CheckCreate();
 	void Repaint();
 	void Resize(UINT width, UINT height);
 	void LostFocus();
-	bool ChangeMouseCursor(WPARAM wParam, LPARAM lParam);
-	void ReceiveMouseMessage(UINT message, WPARAM wParam, LPARAM lParam);
-	void ReceiveKeyMessage(UINT message, WPARAM wParam, LPARAM lParam);
+	
+	
 
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
