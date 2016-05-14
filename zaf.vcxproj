@@ -41,7 +41,6 @@
     <ClCompile Include="src\zaf\graphic\renderer_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
-    <ClCompile Include="src\zaf\window\message\creation.cpp" />
     <ClCompile Include="src\zaf\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +74,7 @@
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />
     <ClInclude Include="src\zaf\control\text_validator.h" />
+    <ClInclude Include="src\zaf\enum.h" />
     <ClInclude Include="src\zaf\graphic\brush\brush.h" />
     <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h" />
     <ClInclude Include="src\zaf\graphic\canvas.h" />
@@ -110,9 +110,6 @@
     <ClInclude Include="src\zaf\graphic\text\text_range.h" />
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />
     <ClInclude Include="src\zaf\window\caret.h" />
-    <ClInclude Include="src\zaf\window\message\creation.h" />
-    <ClInclude Include="src\zaf\window\message\message.h" />
-    <ClInclude Include="src\zaf\window\message\mouse_message.h" />
     <ClInclude Include="src\zaf\window\window.h" />
     <ClInclude Include="src\zaf\window\window_state.h" />
     <ClInclude Include="src\zaf\zaf.h" />

@@ -1,7 +1,6 @@
 #include <zaf/control/clickable_control.h>
 #include <zaf/base/assert.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
 
@@ -43,25 +42,25 @@ void ClickableControl::MouseLeave() {
 }
 
 
-void ClickableControl::MouseMove(const MouseMessage& message) {
+void ClickableControl::MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) {
 
-	CheckIsMousePressed(message.position, message.wParam);
+	CheckIsMousePressed(position, wParam);
 }
 
 
-void ClickableControl::MouseDown(const MouseMessage& message) {
+void ClickableControl::MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
 
-	if (message.button == MouseButton::Left) {
+	if (button == MouseButton::Left) {
 		SetIsFocused(true);
 		BeginPress(PressType::Mouse);
-		CheckIsMousePressed(message.position, message.wParam);
+		CheckIsMousePressed(position, wParam);
 	}
 }
 
 
-void ClickableControl::MouseUp(const MouseMessage& message) {
+void ClickableControl::MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
 
-	if (message.button == MouseButton::Left) {
+	if (button == MouseButton::Left) {
 		EndPress(PressType::Mouse);
 	}
 }
@@ -79,17 +78,17 @@ void ClickableControl::MouseRelease() {
 }
 
 
-void ClickableControl::KeyDown(const Message& message) {
+void ClickableControl::KeyDown(WPARAM wParam, LPARAM lParam) {
 
-	if (message.wParam == VK_SPACE) {
+	if (wParam == VK_SPACE) {
 		BeginPress(PressType::Key);
 	}
 }
 
 
-void ClickableControl::KeyUp(const Message& message) {
+void ClickableControl::KeyUp(WPARAM wParam, LPARAM lParam) {
 
-	if (message.wParam == VK_SPACE) {
+	if (wParam == VK_SPACE) {
 		EndPress(PressType::Key);
 	}
 }

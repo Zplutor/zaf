@@ -5,8 +5,6 @@
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/window/caret.h>
-#include <zaf/window/message/message.h>
-#include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window.h>
 
 #undef max
@@ -554,13 +552,13 @@ TextBox::ScrollValuesChangeEvent::Proxy TextBox::GetScrollValuesChangeEvent() {
 }
 
 
-void TextBox::ChangeMouseCursor(const Message& message, bool& is_changed) {
+void TextBox::ChangeMouseCursor(WPARAM wParam, LPARAM lParam, bool& is_changed) {
 
 	if (ChangeMouseCursor()) {
 		is_changed = true;
 	}
 	else {
-		__super::ChangeMouseCursor(message, is_changed);
+		Control::ChangeMouseCursor(wParam, lParam, is_changed);
 	}
 }
 
@@ -598,45 +596,45 @@ bool TextBox::ChangeMouseCursor() {
 }
 
 
-void TextBox::MouseMove(const MouseMessage& message) {
+void TextBox::MouseMove(const Point& position, WPARAM wParam, LPARAM lParam) {
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_MOUSEMOVE, message.wParam, message.lParam, nullptr);
+		text_service_->TxSendMessage(WM_MOUSEMOVE, wParam, lParam, nullptr);
 	}
 }
 
 
-void TextBox::MouseDown(const MouseMessage& message) {
+void TextBox::MouseDown(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
 	SetIsFocused(true);
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_LBUTTONDOWN, message.wParam, message.lParam, nullptr);
+		text_service_->TxSendMessage(WM_LBUTTONDOWN, wParam, lParam, nullptr);
 	}
 }
 
 
-void TextBox::MouseUp(const MouseMessage& message) {
+void TextBox::MouseUp(const Point& position, MouseButton button, WPARAM wParam, LPARAM lParam) {
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_LBUTTONUP, message.wParam, message.lParam, nullptr);
+		text_service_->TxSendMessage(WM_LBUTTONUP, wParam, lParam, nullptr);
 	}
 }
 
 
-void TextBox::KeyDown(const Message& message) {
+void TextBox::KeyDown(WPARAM wParam, LPARAM lParam) {
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_KEYDOWN, message.wParam, message.lParam, nullptr);
+		text_service_->TxSendMessage(WM_KEYDOWN, wParam, lParam, nullptr);
 	}
 }
 
 
-void TextBox::KeyUp(const Message& message) {
+void TextBox::KeyUp(WPARAM wParam, LPARAM lParam) {
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_KEYUP, message.wParam, message.lParam, nullptr);
+		text_service_->TxSendMessage(WM_KEYUP, wParam, lParam, nullptr);
 	}
 }
 
 
-void TextBox::CharInput(const Message& message) {
+void TextBox::CharInput(WPARAM wParam, LPARAM lParam) {
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_CHAR, message.wParam, message.lParam, nullptr);
+		text_service_->TxSendMessage(WM_CHAR, wParam, lParam, nullptr);
 	}
 }
 
