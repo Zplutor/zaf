@@ -1,7 +1,7 @@
 #pragma once
 
 #include <dwrite.h>
-#include <cstddef>
+#include <zaf/base/define.h>
 
 namespace zaf {
 
@@ -12,19 +12,19 @@ public:
 	}
 
 public:
-	TextRange() : position(0), length(0) { }
-	TextRange(std::size_t position, std::size_t length) : position(position), length(length) { }
+	TextRange() : index(kInvalidIndex), length(0) { }
+	TextRange(std::size_t index, std::size_t length) : index(index), length(length) { }
 
 	DWRITE_TEXT_RANGE ToDWRITETEXTRANGE() const {
 
 		DWRITE_TEXT_RANGE text_range;
-		text_range.startPosition = position;
+		text_range.startPosition = index;
 		text_range.length = length;
 		return text_range;
 	}
 
 public:
-	std::size_t position;
+	std::size_t index;
 	std::size_t length;
 };
 

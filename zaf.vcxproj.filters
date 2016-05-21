@@ -132,6 +132,9 @@
     <ClCompile Include="src\zaf\window\message\creation.cpp">
       <Filter>zaf\window\message</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\list_box.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -346,6 +349,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\message\creation.h">
       <Filter>zaf\window\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\list_box.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\define.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

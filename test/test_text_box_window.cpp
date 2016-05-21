@@ -194,7 +194,7 @@ private:
 		auto selection_position_text_box = CreateControl<TextBox>();
 		text_box_->GetSelectionChangeEvent().AddListener([selection_position_text_box](const std::shared_ptr<TextBox>& text_box) {
 			TextRange selection_range = text_box->GetSelectionRange();
-			selection_position_text_box->SetText(std::to_wstring(selection_range.position));
+			selection_position_text_box->SetText(std::to_wstring(selection_range.index));
 		});
 		container->AddChild(selection_position_text_box);
 
@@ -212,7 +212,7 @@ private:
 			TextRange new_range;
 
 			auto position_string = selection_position_text_box->GetText();
-			new_range.position = wcstoul(position_string.c_str(), nullptr, 10);
+			new_range.index = wcstoul(position_string.c_str(), nullptr, 10);
 			
 			auto length_string = selection_length_text_box->GetText();
 			new_range.length = wcstoul(length_string.c_str(), nullptr, 10);

@@ -261,7 +261,7 @@ const TextRange TextBox::GetSelectionRange() const {
 		CHARRANGE char_range = { 0 };
 		text_service_->TxSendMessage(EM_EXGETSEL, 0, reinterpret_cast<LPARAM>(&char_range), nullptr);
 
-		range.position = char_range.cpMin < 0 ? 0 : char_range.cpMin;
+		range.index = char_range.cpMin < 0 ? 0 : char_range.cpMin;
 		auto length = char_range.cpMax - char_range.cpMin;
 		range.length = length < 0 ? std::numeric_limits<std::size_t>::max() : length;
 	}
@@ -276,8 +276,8 @@ void TextBox::SetSelectionRange(const TextRange& range) {
 	}
 
 	CHARRANGE char_range = { 0 };
-	char_range.cpMin = range.position;
-	char_range.cpMax = range.position + range.length;
+	char_range.cpMin = range.index;
+	char_range.cpMax = range.index + range.length;
 	text_service_->TxSendMessage(EM_EXSETSEL, 0, reinterpret_cast<LPARAM>(&char_range), nullptr);
 }
 

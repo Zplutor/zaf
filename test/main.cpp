@@ -2,6 +2,7 @@
 #include <zaf/zaf.h>
 #include "test_check_box_window.h"
 #include "test_label_window.h"
+#include "test_list_box_window.h"
 #include "test_radio_button_window.h"
 #include "test_scrollable_control_window.h"
 #include "test_text_box_window.h"
@@ -41,6 +42,7 @@ void BeginRun(Application&) {
 		L"Test radio button", ShowTestRadioButtonWindow,
 		L"Test text box", ShowTestTextBoxWindow,
         L"Test scrollable control", ShowTestScrollableControlWindow,
+        L"Test list box", ShowTestListBoxWindow,
 	};
 
 	auto root_control = window->GetRootControl();

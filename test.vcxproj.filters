@@ -7,6 +7,7 @@
     <ClCompile Include="test\test_radio_button_window.cpp" />
     <ClCompile Include="test\test_text_box_window.cpp" />
     <ClCompile Include="test\test_scrollable_control_window.cpp" />
+    <ClCompile Include="test\test_list_box_window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test\test_label_window.h" />
@@ -14,5 +15,6 @@
     <ClInclude Include="test\test_radio_button_window.h" />
     <ClInclude Include="test\test_text_box_window.h" />
     <ClInclude Include="test\test_scrollable_control_window.h" />
+    <ClInclude Include="test\test_list_box_window.h" />
   </ItemGroup>
 </Project>
