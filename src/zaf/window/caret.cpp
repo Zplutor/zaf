@@ -18,8 +18,11 @@ Caret::~Caret() {
 
 void Caret::SetRect(const Rect& rect) {
 
-	Rect previous_rect = GetRect();
 	rect_ = rect;
+
+    if (IsShown()) {
+        CreateSystemCaret();
+    }
 }
 
 
@@ -43,6 +46,27 @@ void Caret::Show() {
 		}
 	);
 	blink_timer_->Start();
+
+    CreateSystemCaret();
+}
+
+
+void Caret::CreateSystemCaret() {
+
+    auto window = window_.lock();
+    if (window == nullptr) {
+        return;
+    }
+
+    const auto& caret_rect = GetRect();
+    CreateCaret(
+        window->GetHandle(), 
+        nullptr, 
+        static_cast<int>(caret_rect.size.width),
+        static_cast<int>(caret_rect.size.height)
+    );
+
+    SetCaretPos(caret_rect.position.x, caret_rect.position.y);
 }
 
 
@@ -54,6 +78,13 @@ void Caret::Hide() {
 
 	blink_timer_.reset();
 	NeedRepaint(false);
+
+    DestroySystemCaret();
+}
+
+
+void Caret::DestroySystemCaret() {
+    DestroyCaret();
 }
 
 

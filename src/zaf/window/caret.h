@@ -45,6 +45,9 @@ private:
 		return blink_timer_ != nullptr;
 	}
 
+    void CreateSystemCaret();
+    void DestroySystemCaret();
+
 	void NeedRepaint(bool bling_visible);
 
 private:
