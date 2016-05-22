@@ -105,9 +105,9 @@ protected:
     void MouseDown(const Point& position, const MouseMessage& message) override;
     void MouseUp(const Point& position, const MouseMessage& message) override;
 
-    void KeyDown(const Message& message) override;
-    void KeyUp(const Message& message) override;
-    void CharInput(const Message& message) override;
+    void KeyDown(const KeyMessage& message) override;
+    void KeyUp(const KeyMessage& message) override;
+    void CharInput(const KeyMessage& message) override;
 
 	void FocusGain() override;
 	void FocusLose() override;

@@ -9,6 +9,7 @@
 #include <zaf/graphic/renderer_factory.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/creation.h>
+#include <zaf/window/message/key_message.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -113,7 +114,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
     case WM_KEYDOWN:
     case WM_KEYUP:
     case WM_CHAR:
-        ReceiveKeyMessage(message);
+        ReceiveKeyMessage(dynamic_cast<const KeyMessage&>(message));
         return true;
 
     case WM_KILLFOCUS:
@@ -171,7 +172,7 @@ void Window::ReceiveMouseMessage(const MouseMessage& message) {
 }
 
 
-void Window::ReceiveKeyMessage(const Message& message) {
+void Window::ReceiveKeyMessage(const KeyMessage& message) {
 
     if (focused_control_ == nullptr) {
         return;

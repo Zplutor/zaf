@@ -86,7 +86,7 @@ private:
 
     bool ReceiveMessage(const Message& message, LRESULT& result);
     void ReceiveMouseMessage(const MouseMessage& message);
-    void ReceiveKeyMessage(const Message& message);
+    void ReceiveKeyMessage(const KeyMessage& message);
     bool ChangeMouseCursor(const Message& message);
 
 	void CheckCreate();

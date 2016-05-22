@@ -1,6 +1,7 @@
 #include <zaf/control/clickable_control.h>
 #include <zaf/base/assert.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/window/message/key_message.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -79,7 +80,7 @@ void ClickableControl::MouseRelease() {
 }
 
 
-void ClickableControl::KeyDown(const Message& message) {
+void ClickableControl::KeyDown(const KeyMessage& message) {
 
 	if (message.wParam == VK_SPACE) {
 		BeginPress(PressType::Key);
@@ -87,7 +88,7 @@ void ClickableControl::KeyDown(const Message& message) {
 }
 
 
-void ClickableControl::KeyUp(const Message& message) {
+void ClickableControl::KeyUp(const KeyMessage& message) {
 
 	if (message.wParam == VK_SPACE) {
 		EndPress(PressType::Key);

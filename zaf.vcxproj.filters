@@ -356,5 +356,8 @@
     <ClInclude Include="src\zaf\base\define.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\window\message\key_message.h">
+      <Filter>zaf\window\message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

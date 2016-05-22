@@ -5,6 +5,7 @@
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/window/caret.h>
+#include <zaf/window/message/key_message.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window.h>
@@ -620,21 +621,21 @@ void TextBox::MouseUp(const Point& position, const MouseMessage& message) {
 }
 
 
-void TextBox::KeyDown(const Message& message) {
+void TextBox::KeyDown(const KeyMessage& message) {
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_KEYDOWN, message.wParam, message.lParam, nullptr);
 	}
 }
 
 
-void TextBox::KeyUp(const Message& message) {
+void TextBox::KeyUp(const KeyMessage& message) {
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_KEYUP, message.wParam, message.lParam, nullptr);
 	}
 }
 
 
-void TextBox::CharInput(const Message& message) {
+void TextBox::CharInput(const KeyMessage& message) {
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_CHAR, message.wParam, message.lParam, nullptr);
 	}

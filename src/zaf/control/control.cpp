@@ -691,7 +691,7 @@ void Control::MouseRelease() {
 }
 
 
-void Control::KeyDown(const Message& message) {
+void Control::KeyDown(const KeyMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
@@ -700,7 +700,7 @@ void Control::KeyDown(const Message& message) {
 }
 
 
-void Control::KeyUp(const Message& message) {
+void Control::KeyUp(const KeyMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
@@ -709,7 +709,7 @@ void Control::KeyUp(const Message& message) {
 }
 
 
-void Control::CharInput(const Message& message) {
+void Control::CharInput(const KeyMessage& message) {
 
 	auto parent = GetParent(); 
 	if (parent != nullptr) {

@@ -114,6 +114,7 @@
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />
     <ClInclude Include="src\zaf\window\caret.h" />
     <ClInclude Include="src\zaf\window\message\creation.h" />
+    <ClInclude Include="src\zaf\window\message\key_message.h" />
     <ClInclude Include="src\zaf\window\message\message.h" />
     <ClInclude Include="src\zaf\window\message\mouse_message.h" />
     <ClInclude Include="src\zaf\window\window.h" />
