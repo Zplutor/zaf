@@ -28,12 +28,19 @@ public:
 	 Convert specified RGB value and alpha to Color.
 	 */
 	static const Color FromRGB(std::uint32_t rgb, float alpha) {
-
-		float r = ((rgb & 0x00ff0000) >> 16) / 255.f;
-		float g = ((rgb & 0x0000ff00) >> 8) / 255.f;
-		float b = ((rgb & 0x000000ff)) / 255.f;
-		return Color(r, g, b, alpha);
+        return FromD2D1COLORF(D2D1::ColorF(rgb, alpha));
 	}
+
+    /**
+     Convert specified COLORREF value to Color.
+     */
+    static const Color FromCOLORREF(COLORREF color) {
+        return Color(
+            static_cast<float>(GetRValue(color)) / 255,
+            static_cast<float>(GetGValue(color)) / 255,
+            static_cast<float>(GetBValue(color)) / 255
+        );
+    }
 
 public:
 	/**
