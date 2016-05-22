@@ -32,6 +32,7 @@ public:
 
         InitializeAddItemWithTextOptions();
         InitializeRemoveItemWithTextOptions();
+        InitializeFirstSelectedIndexOptions();
     }
 
 
@@ -76,6 +77,26 @@ public:
         });
         container->AddChild(remove_button);
         container->AddChild(label);
+    }
+
+
+    void InitializeFirstSelectedIndexOptions() {
+
+        auto container = CreateControl<Control>();
+        container->SetLayouter(GetHorizontalArrayLayouter());
+        options_container_->AddChild(container);
+
+        auto label = CreateControl<Label>();
+        label->SetText(L"First selected index");
+        container->AddChild(label);
+
+        auto text_box = CreateControl<TextBox>();
+        text_box->SetText(std::to_wstring(list_box_->GetFirstSelectedItemIndex()));
+        container->AddChild(text_box);
+
+        list_box_->GetSelectionChangeEvent().AddListener([text_box](const std::shared_ptr<ListBox>& list_box) {
+            text_box->SetText(std::to_wstring(list_box->GetFirstSelectedItemIndex()));
+        });
     }
 
 private:

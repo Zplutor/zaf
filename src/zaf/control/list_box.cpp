@@ -2,11 +2,15 @@
 #include <algorithm>
 #include <zaf/base/assert.h>
 #include <zaf/base/define.h>
+#include <zaf/control/creation.h>
+#include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
 
+static const wchar_t* const kAllowMultiSelectPropertyName = L"AllowMultiSelect";
 static const wchar_t* const kItemCreatorPropertyName = L"ItemCreator";
 static const wchar_t* const kItemHeightPropertyName = L"ItemHeight";
+static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
 
 ListBox::ListBox() {
 
@@ -25,30 +29,8 @@ void ListBox::Initialize() {
     SetBorderWidth(1);
     SetBorderColorPicker([](const Control&) { return Color::Black; });
 
-    GetScrolledControl()->SetLayouter(std::bind(
-        &ListBox::ItemLayouter, 
-        this,
-        std::placeholders::_1,
-        std::placeholders::_2,
-        std::placeholders::_3
-    ));
-}
-
-
-void ListBox::ItemLayouter(
-    const std::shared_ptr<Control>& scrolled_control,
-    const Rect& preivous_rect,
-    const std::vector<std::shared_ptr<Control>>& children
-) {
-
-    float width = scrolled_control->GetWidth();
-    float height = GetItemHeight();
-    Rect item_rect(0, 0, width, height);
-    
-    for (const auto& each_item : items_) {
-        each_item->SetRect(item_rect);
-        item_rect.position.y += height;
-    }
+    item_container_ = CreateControl<ItemContainer>(std::dynamic_pointer_cast<ListBox>(shared_from_this()));
+    SetScrolledControl(item_container_);
 }
 
 
@@ -86,7 +68,7 @@ const ListBox::ItemCreator ListBox::GetItemCreator() const {
     }
     else {
         return [](const ListBox&) {
-            return std::make_shared<Item>();
+            return CreateControl<Item>();
         };
     }
 }
@@ -94,6 +76,45 @@ const ListBox::ItemCreator ListBox::GetItemCreator() const {
 void ListBox::SetItemCreator(const ItemCreator& creator) {
 
     GetPropertyMap().SetProperty(kItemCreatorPropertyName, creator);
+}
+
+
+bool ListBox::AllowMultiSelect() const {
+
+    auto allow = GetPropertyMap().TryGetProperty<bool>(kAllowMultiSelectPropertyName);
+    if (allow != nullptr) {
+        return *allow;
+    }
+    else {
+        return false;
+    }
+}
+
+void ListBox::SetAllowMultiSelect(bool allow) {
+
+    GetPropertyMap().SetProperty(kAllowMultiSelectPropertyName, allow);
+
+    if (! allow) {
+        bool has_selection = false;
+        for (const auto& each_item : items_) {
+
+            if (each_item->IsSelected()) {
+                if (has_selection) {
+                    each_item->SetIsSelected(false);
+                }
+                else {
+                    has_selection = true;
+                }
+            }
+        }
+    }
+}
+
+
+ListBox::SelectionChangeEvent::Proxy ListBox::GetSelectionChangeEvent() {
+
+    auto& event = GetPropertyMap().GetProperty<SelectionChangeEvent>(kSelectionChangeEventPropertyName);
+    return SelectionChangeEvent::Proxy(event);
 }
 
 
@@ -143,7 +164,7 @@ std::size_t ListBox::RemoveItemWithText(const std::wstring& item_text) {
     std::size_t removed_index = std::distance(items_.begin(), erase_iterator);
     items_.erase(erase_iterator);
 
-    RemoveItemFromScrolledControl(removed_item);
+    RemoveItemFromContainer(removed_item);
 
     return removed_index;
 }
@@ -162,15 +183,19 @@ bool ListBox::RemoveItemAtIndex(std::size_t index) {
 
     items_.erase(erase_iterator);
 
-    RemoveItemFromScrolledControl(removed_item);
+    RemoveItemFromContainer(removed_item);
     return true;
 }
 
 
-void ListBox::RemoveItemFromScrolledControl(const std::shared_ptr<Item>& item) {
+void ListBox::RemoveItemFromContainer(const std::shared_ptr<Item>& item) {
 
     GetScrolledControl()->RemoveChild(item);
     UpdateScrollAreaSize();
+
+    if (item->IsSelected()) {
+        SelectionChange();
+    }
 }
 
 
@@ -181,6 +206,197 @@ const std::wstring ListBox::GetItemTextAtIndex(std::size_t index) {
     }
 
     return items_[index]->GetText();
+}
+
+
+std::size_t ListBox::GetFirstSelectedItemIndex() const {
+
+    auto iterator = std::find_if(
+        items_.begin(), 
+        items_.end(), 
+        [](const std::shared_ptr<Item>& item) {
+            return item->IsSelected();
+        }
+    );
+
+    if (iterator == items_.end()) {
+        return kInvalidIndex;
+    }
+
+    return std::distance(items_.begin(), iterator);
+}
+
+
+const std::wstring ListBox::GetFirstSelectedItemText() const {
+
+    for (const auto& each_item : items_) {
+        if (each_item->IsSelected()) {
+            return each_item->GetText();
+        }
+    }
+
+    return std::wstring();
+}
+
+
+const std::vector<std::size_t> ListBox::GetSelectedItemIndexes() const {
+
+    std::vector<std::size_t> indexes;
+
+    for (std::size_t index = 0; index < items_.size(); ++index) {
+        if (items_[index]->IsSelected()) {
+            indexes.push_back(index);
+        }
+    }
+
+    return indexes;
+}
+
+
+const std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
+
+    std::vector<std::wstring> texts;
+
+    for (const auto& each_item : items_) {
+        if (each_item->IsSelected()) {
+            texts.push_back(each_item->GetText());
+        }
+    }
+
+    return texts;
+}
+
+
+void ListBox::SelectionChange() {
+
+    auto event = GetPropertyMap().TryGetProperty<SelectionChangeEvent>(kSelectionChangeEventPropertyName);
+    if (event != nullptr) {
+        event->Trigger(std::dynamic_pointer_cast<ListBox>(shared_from_this()));
+    }
+}
+
+
+void ListBox::Item::Initialize() {
+
+    SetBackgroundColorPicker([](const Control& control) {
+    
+        const auto& item = dynamic_cast<const Item&>(control);
+        if (item.IsSelected()) {
+            return Color::Blue;
+        }
+        else {
+            return Color::White;
+        }
+    });
+
+    SetTextColorPicker([](const Control& control) { 
+    
+        const auto& item = dynamic_cast<const Item&>(control);
+        if (item.IsSelected()) {
+            return Color::White;
+        }
+        else {
+            return Color::Black;
+        }
+    });
+}
+
+
+void ListBox::ItemContainer::Initialize() {
+
+    SetLayouter(std::bind(
+        &ListBox::ItemContainer::LayoutItems,
+        this, 
+        std::placeholders::_1,
+        std::placeholders::_2,
+        std::placeholders::_3)
+    );
+}
+
+
+void ListBox::ItemContainer::LayoutItems(
+    const std::shared_ptr<Control>&,
+    const Rect& preivous_rect,
+    const std::vector<std::shared_ptr<Control>>& children
+) {
+
+    auto list_box = list_box_.lock();
+    if (list_box == nullptr) {
+        return;
+    }
+
+    float width = this->GetWidth();
+    float height = list_box->GetItemHeight();
+    Rect item_rect(0, 0, width, height);
+
+    for (const auto& each_item : list_box->items_) {
+        each_item->SetRect(item_rect);
+        item_rect.position.y += height;
+    }
+}
+
+
+void ListBox::ItemContainer::MouseDown(const Point& position, const MouseMessage& message) {
+
+    if (message.button != MouseButton::Left) {
+        return;
+    }
+
+    NeedCaptureMouse(true);
+    SelectItemAtPosition(position);
+}
+
+
+void ListBox::ItemContainer::MouseUp(const Point& position, const MouseMessage& message) {
+
+    if (message.button != MouseButton::Left) {
+        return;
+    }
+
+    NeedCaptureMouse(false);
+
+    if (selecting_item_ != nullptr) {
+
+        auto list_box = list_box_.lock();
+        if (list_box != nullptr) {
+            list_box->SelectionChange();
+        }
+    }
+
+    selecting_item_ = nullptr;
+}
+
+
+void ListBox::ItemContainer::MouseMove(const Point& position, const MouseMessage& message) {
+
+    if (IsCapturingMouse()) {
+        SelectItemAtPosition(position);
+    }
+}
+
+
+void ListBox::ItemContainer::SelectItemAtPosition(const Point& position) {
+
+    auto child = FindChildAtPosition(position);
+    auto item = std::dynamic_pointer_cast<Item>(child);
+    if (item == nullptr) {
+        return;
+    }
+
+    auto list_box = list_box_.lock();
+    if (list_box == nullptr) {
+        return;
+    }
+
+    //Unselect other selected items.
+    for (const auto& each_item : list_box->items_) {
+        if (each_item->IsSelected() && (each_item != item)) {
+            each_item->SetIsSelected(false);
+        }
+    }
+
+    item->SetIsSelected(true);
+    selecting_item_ = item;
 }
 
 }

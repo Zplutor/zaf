@@ -345,6 +345,28 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 }
 
 
+const std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) const {
+
+    for (auto iterator = children_.rbegin(); iterator != children_.rend(); ++iterator) {
+
+        const auto& child = *iterator;
+
+        if (! child->IsVisible()) {
+            continue;
+        }
+
+        Rect child_rect = child->GetRect();
+        child_rect.Intersect(GetContentRect());
+
+        if (child_rect.Contain(position)) {
+            return child;
+        }
+    }
+
+    return nullptr;
+}
+
+
 bool Control::IsParentOf(const std::shared_ptr<Control>& child) const {
 	return child->GetParent().get() == this;
 }
@@ -574,28 +596,6 @@ void Control::RouteMessage(const Point& position, const MouseMessage& message) {
 }
 
 
-std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) const {
-
-	for (auto iterator = children_.rbegin(); iterator != children_.rend(); ++iterator) {
-
-		const auto& child = *iterator;
-
-		if (! child->IsVisible()) {
-			continue;
-		}
-
-		Rect child_rect = child->GetRect();
-		child_rect.Intersect(GetContentRect());
-
-		if (child_rect.Contain(position)) {
-			return child;
-		}
-	}
-
-	return nullptr;
-}
-
-
 void Control::InterpretMessage(const Point& position, const MouseMessage& message) {
 
 	switch (message.id) {
@@ -658,7 +658,7 @@ void Control::MouseDown(const Point& position, const MouseMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-        parent->MouseDown(ToParentPoint(message.position), message);
+        parent->MouseDown(ToParentPoint(position), message);
 	}
 }
 
@@ -667,7 +667,7 @@ void Control::MouseUp(const Point& position, const MouseMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-        parent->MouseUp(ToParentPoint(message.position), message);
+        parent->MouseUp(ToParentPoint(position), message);
 	}
 }
 

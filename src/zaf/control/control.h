@@ -170,6 +170,8 @@ public:
 	 */
 	void RemoveChild(const std::shared_ptr<Control>& child);
 
+    const std::shared_ptr<Control> FindChildAtPosition(const Point& position) const;
+
 	/**
 	 Determinte whether the control is the direct parent of specified control.
 	 */
@@ -340,8 +342,6 @@ private:
 	void SetParent(const std::shared_ptr<Control>& parent) {
 		parent_ = parent;
 	}
-
-	std::shared_ptr<Control> FindChildAtPosition(const Point& position) const;
 
 	/**
 	 Called when a child's rect has changed.
