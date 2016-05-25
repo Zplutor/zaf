@@ -3,6 +3,7 @@
 #include <zaf/base/assert.h>
 #include <zaf/base/define.h>
 #include <zaf/control/creation.h>
+#include <zaf/window/message/key_message.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -267,11 +268,56 @@ const std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
 }
 
 
+bool ListBox::SelectItemAtIndex(std::size_t index) {
+
+    if (index >= items_.size()) {
+        return false;
+    }
+
+    auto item = items_[index];
+    SelectItem(item);
+    ScrollToItem(item);
+    SelectionChange();
+    return true;
+}
+
+
+void ListBox::SelectItem(const std::shared_ptr<Item>& item) {
+
+    for (const auto& each_item : items_) {
+        if (each_item->IsSelected() && (each_item != item)) {
+            each_item->SetIsSelected(false);
+        }
+    }
+
+    item->SetIsSelected(true);
+}
+
+
 void ListBox::SelectionChange() {
 
     auto event = GetPropertyMap().TryGetProperty<SelectionChangeEvent>(kSelectionChangeEventPropertyName);
     if (event != nullptr) {
         event->Trigger(std::dynamic_pointer_cast<ListBox>(shared_from_this()));
+    }
+}
+
+
+void ListBox::ScrollToItem(const std::shared_ptr<Item>& item) {
+
+    Rect visible_scroll_area_rect = GetVisibleScrollAreaRect();
+    Rect item_rect = item->GetRect();
+
+    if (item_rect.position.y < visible_scroll_area_rect.position.y) {
+        ScrollToScrollAreaPosition(item_rect.position);
+    }
+    else if (item_rect.position.y + item_rect.size.height > 
+             visible_scroll_area_rect.position.y + visible_scroll_area_rect.size.height) {
+
+        Point scroll_to_position;
+        scroll_to_position.x = 0;
+        scroll_to_position.y = item_rect.position.y + item_rect.size.height - visible_scroll_area_rect.size.height;
+        ScrollToScrollAreaPosition(scroll_to_position);
     }
 }
 
@@ -304,6 +350,7 @@ void ListBox::Item::Initialize() {
 
 void ListBox::ItemContainer::Initialize() {
 
+    SetCanFocused(true);
     SetLayouter(std::bind(
         &ListBox::ItemContainer::LayoutItems,
         this, 
@@ -337,6 +384,8 @@ void ListBox::ItemContainer::LayoutItems(
 
 
 void ListBox::ItemContainer::MouseDown(const Point& position, const MouseMessage& message) {
+
+    SetIsFocused(true);
 
     if (message.button != MouseButton::Left) {
         return;
@@ -375,6 +424,54 @@ void ListBox::ItemContainer::MouseMove(const Point& position, const MouseMessage
 }
 
 
+void ListBox::ItemContainer::KeyDown(const KeyMessage& message) {
+
+    auto list_box = list_box_.lock();
+    if (list_box == nullptr) {
+        return;
+    }
+
+    if (list_box->AllowMultiSelect()) {
+        return;
+    }
+
+    std::size_t index = list_box->GetFirstSelectedItemIndex();
+
+    switch (message.wParam) {
+        case VK_DOWN:
+            if (index == kInvalidIndex) {
+                index = 0;
+            }
+            else {
+                ++index;
+            }
+            break;
+    
+        case VK_UP:
+            if (index == kInvalidIndex) {
+                index = list_box->items_.size() - 1;
+            }
+            else {
+                --index;
+            }
+            break;
+    
+        case VK_HOME:
+            index = 0;
+            break;
+
+        case VK_END:
+            index = list_box->items_.size() - 1;
+            break;
+
+        default:
+            return;
+    }
+    
+    list_box->SelectItemAtIndex(index);
+}
+
+
 void ListBox::ItemContainer::SelectItemAtPosition(const Point& position) {
 
     auto child = FindChildAtPosition(position);
@@ -384,18 +481,10 @@ void ListBox::ItemContainer::SelectItemAtPosition(const Point& position) {
     }
 
     auto list_box = list_box_.lock();
-    if (list_box == nullptr) {
-        return;
+    if (list_box != nullptr) {
+        list_box->SelectItem(item);
     }
 
-    //Unselect other selected items.
-    for (const auto& each_item : list_box->items_) {
-        if (each_item->IsSelected() && (each_item != item)) {
-            each_item->SetIsSelected(false);
-        }
-    }
-
-    item->SetIsSelected(true);
     selecting_item_ = item;
 }
 

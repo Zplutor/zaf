@@ -56,6 +56,9 @@ protected:
 
     void MouseWheel(const Point& position, const MouseWheelMessage& message) override;
 
+    const Rect GetVisibleScrollAreaRect() const;
+    void ScrollToScrollAreaPosition(const Point& position);
+
 private:
     void InitializeVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
     void InitializeHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);

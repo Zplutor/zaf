@@ -470,4 +470,35 @@ void ScrollableControl::SelfScrollingControlScrollValuesChange(SelfScrollingCont
 }
 
 
+const Rect ScrollableControl::GetVisibleScrollAreaRect() const {
+
+    if (self_scrolling_control_ != nullptr) {
+        return scroll_container_control_->GetRect();
+    }
+
+    Rect rect;
+    rect.position = scrolled_control_->GetPosition();
+    rect.position.x *= -1;
+    rect.position.y *= -1;
+    rect.size = scroll_container_control_->GetSize();
+    return rect;
+}
+
+
+void ScrollableControl::ScrollToScrollAreaPosition(const Point& position) {
+
+    if (self_scrolling_control_ != nullptr) {
+        return;
+    }
+
+    if (AllowHorizontalScroll() && horizontal_scroll_bar_->IsEnabled()) {
+        horizontal_scroll_bar_->SetValue(position.x);
+    }
+
+    if (AllowVerticalScroll() && vertical_scroll_bar_->IsEnabled()) {
+        vertical_scroll_bar_->SetValue(position.y);
+    }
+}
+
+
 }

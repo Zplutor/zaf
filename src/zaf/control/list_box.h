@@ -70,6 +70,8 @@ public:
     const std::vector<std::size_t> GetSelectedItemIndexes() const;
     const std::vector<std::wstring> GetSelectedItemTexts() const;
 
+    bool SelectItemAtIndex(std::size_t index);
+
 private:
     class ItemContainer : public Control {
     public:
@@ -81,6 +83,7 @@ private:
         void MouseDown(const Point& position, const MouseMessage& message) override;
         void MouseUp(const Point& position, const MouseMessage& message) override;
         void MouseMove(const Point& position, const MouseMessage& message) override;
+        void KeyDown(const KeyMessage& message) override;
 
     private:
         void LayoutItems(
@@ -98,6 +101,8 @@ private:
 
     void UpdateScrollAreaSize();
     void RemoveItemFromContainer(const std::shared_ptr<Item>& item);
+    void SelectItem(const std::shared_ptr<Item>& item);
+    void ScrollToItem(const std::shared_ptr<Item>& item);
     void SelectionChange();
 
 private:
