@@ -32,6 +32,7 @@ public:
 
         InitializeAddItemWithTextOptions();
         InitializeRemoveItemWithTextOptions();
+        InitializeSelectOptionOptions();
         InitializeFirstSelectedIndexOptions();
     }
 
@@ -77,6 +78,52 @@ public:
         });
         container->AddChild(remove_button);
         container->AddChild(label);
+    }
+
+
+    void InitializeSelectOptionOptions() {
+
+        auto container = CreateControl<Control>();
+        container->SetLayouter(GetHorizontalArrayLayouter());
+        options_container_->AddChild(container);
+
+        auto group = std::make_shared<RadioButton::Group>();
+
+        auto single_select_radio_button = CreateControl<RadioButton>();
+        single_select_radio_button->SetText(L"Single select");
+        single_select_radio_button->SetGroup(group);
+        single_select_radio_button->GetSelectStateChangeEvent().AddListener([this](const std::shared_ptr<RadioButton>&) {
+            list_box_->SetSelectOption(ListBox::SelectOption::SingleSelect);
+        });
+        container->AddChild(single_select_radio_button);
+
+        auto simple_multi_select_radio_button = CreateControl<RadioButton>();
+        simple_multi_select_radio_button->SetText(L"Simple multi select");
+        simple_multi_select_radio_button->SetGroup(group);
+        simple_multi_select_radio_button->GetSelectStateChangeEvent().AddListener([this](const std::shared_ptr<RadioButton>&) {
+            list_box_->SetSelectOption(ListBox::SelectOption::SimpleMultiSelect);
+        });
+        container->AddChild(simple_multi_select_radio_button);
+
+        auto extended_multi_select_radio_button = CreateControl<RadioButton>();
+        extended_multi_select_radio_button->SetText(L"Extended multi select");
+        extended_multi_select_radio_button->SetGroup(group);
+        extended_multi_select_radio_button->GetSelectStateChangeEvent().AddListener([this](const std::shared_ptr<RadioButton>&) {
+            list_box_->SetSelectOption(ListBox::SelectOption::ExtendedMultiSelect);
+        });
+        container->AddChild(extended_multi_select_radio_button);
+
+        switch (list_box_->GetSelectOption()) {
+            case ListBox::SelectOption::SingleSelect:
+                single_select_radio_button->SetSelected();
+                break;
+            case ListBox::SelectOption::SimpleMultiSelect:
+                simple_multi_select_radio_button->SetSelected();
+                break;
+            case ListBox::SelectOption::ExtendedMultiSelect:
+                simple_multi_select_radio_button->SetSelected();
+                break;
+        }
     }
 
 

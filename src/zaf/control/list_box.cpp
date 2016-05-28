@@ -1,17 +1,19 @@
 #include <zaf/control/list_box.h>
 #include <algorithm>
 #include <zaf/base/assert.h>
-#include <zaf/base/define.h>
 #include <zaf/control/creation.h>
 #include <zaf/window/message/key_message.h>
 #include <zaf/window/message/mouse_message.h>
 
+#undef max
+#undef min
+
 namespace zaf {
 
-static const wchar_t* const kAllowMultiSelectPropertyName = L"AllowMultiSelect";
 static const wchar_t* const kItemCreatorPropertyName = L"ItemCreator";
 static const wchar_t* const kItemHeightPropertyName = L"ItemHeight";
 static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
+static const wchar_t* const kSelectOptionPropertyName = L"SelectOption";
 
 ListBox::ListBox() {
 
@@ -80,22 +82,24 @@ void ListBox::SetItemCreator(const ItemCreator& creator) {
 }
 
 
-bool ListBox::AllowMultiSelect() const {
+ListBox::SelectOption ListBox::GetSelectOption() const {
 
-    auto allow = GetPropertyMap().TryGetProperty<bool>(kAllowMultiSelectPropertyName);
-    if (allow != nullptr) {
-        return *allow;
+    auto select_option = GetPropertyMap().TryGetProperty<SelectOption>(kSelectOptionPropertyName);
+    if (select_option != nullptr) {
+        return *select_option;
     }
     else {
-        return false;
+        return SelectOption::SingleSelect;
     }
 }
 
-void ListBox::SetAllowMultiSelect(bool allow) {
 
-    GetPropertyMap().SetProperty(kAllowMultiSelectPropertyName, allow);
+void ListBox::SetSelectOption(SelectOption select_option) {
 
-    if (! allow) {
+    GetPropertyMap().SetProperty(kSelectOptionPropertyName, select_option);
+
+    if (select_option == SelectOption::SingleSelect) {
+
         bool has_selection = false;
         for (const auto& each_item : items_) {
 
@@ -165,8 +169,7 @@ std::size_t ListBox::RemoveItemWithText(const std::wstring& item_text) {
     std::size_t removed_index = std::distance(items_.begin(), erase_iterator);
     items_.erase(erase_iterator);
 
-    RemoveItemFromContainer(removed_item);
-
+    RemoveItem(removed_item);
     return removed_index;
 }
 
@@ -184,14 +187,14 @@ bool ListBox::RemoveItemAtIndex(std::size_t index) {
 
     items_.erase(erase_iterator);
 
-    RemoveItemFromContainer(removed_item);
+    RemoveItem(removed_item);
     return true;
 }
 
 
-void ListBox::RemoveItemFromContainer(const std::shared_ptr<Item>& item) {
+void ListBox::RemoveItem(const std::shared_ptr<Item>& item) {
 
-    GetScrolledControl()->RemoveChild(item);
+    item_container_->RemoveItem(item);
     UpdateScrollAreaSize();
 
     if (item->IsSelected()) {
@@ -275,30 +278,36 @@ bool ListBox::SelectItemAtIndex(std::size_t index) {
     }
 
     auto item = items_[index];
-    SelectItem(item);
-    ScrollToItem(item);
+    SelectItem(item, ! CanMultiSelect(), true);
     SelectionChange();
     return true;
 }
 
 
-void ListBox::SelectItem(const std::shared_ptr<Item>& item) {
+void ListBox::SelectItem(const std::shared_ptr<Item>& item, bool unselect_others, bool scroll_to_it) {
 
-    for (const auto& each_item : items_) {
-        if (each_item->IsSelected() && (each_item != item)) {
-            each_item->SetIsSelected(false);
+    if (unselect_others) {
+        for (const auto& each_item : items_) {
+            if (each_item->IsSelected() && (each_item != item)) {
+                each_item->SetIsSelected(false);
+            }
         }
     }
 
     item->SetIsSelected(true);
+
+    if (scroll_to_it) {
+        ScrollToItem(item);
+    }
 }
 
 
-void ListBox::SelectionChange() {
+void ListBox::UnselectItem(const std::shared_ptr<Item>& item, bool scroll_to_it) {
 
-    auto event = GetPropertyMap().TryGetProperty<SelectionChangeEvent>(kSelectionChangeEventPropertyName);
-    if (event != nullptr) {
-        event->Trigger(std::dynamic_pointer_cast<ListBox>(shared_from_this()));
+    item->SetIsSelected(false);
+
+    if (scroll_to_it) {
+        ScrollToItem(item);
     }
 }
 
@@ -311,13 +320,34 @@ void ListBox::ScrollToItem(const std::shared_ptr<Item>& item) {
     if (item_rect.position.y < visible_scroll_area_rect.position.y) {
         ScrollToScrollAreaPosition(item_rect.position);
     }
-    else if (item_rect.position.y + item_rect.size.height > 
+    else if (item_rect.position.y + item_rect.size.height >
              visible_scroll_area_rect.position.y + visible_scroll_area_rect.size.height) {
 
         Point scroll_to_position;
         scroll_to_position.x = 0;
         scroll_to_position.y = item_rect.position.y + item_rect.size.height - visible_scroll_area_rect.size.height;
         ScrollToScrollAreaPosition(scroll_to_position);
+    }
+}
+
+
+std::size_t ListBox::GetItemIndex(const std::shared_ptr<Item>& item) const {
+
+    auto iterator = std::find(items_.begin(), items_.end(), item);
+    if (iterator == items_.end()) {
+        return kInvalidIndex;
+    }
+    else {
+        return std::distance(items_.begin(), iterator);
+    }
+}
+
+
+void ListBox::SelectionChange() {
+
+    auto event = GetPropertyMap().TryGetProperty<SelectionChangeEvent>(kSelectionChangeEventPropertyName);
+    if (event != nullptr) {
+        event->Trigger(std::dynamic_pointer_cast<ListBox>(shared_from_this()));
     }
 }
 
@@ -383,6 +413,27 @@ void ListBox::ItemContainer::LayoutItems(
 }
 
 
+void ListBox::ItemContainer::RemoveItem(const std::shared_ptr<Item>& item) {
+
+    RemoveChild(item);
+
+    if (last_item_ == item) {
+        UpdateLastItem(nullptr);
+    }
+
+    if (last_item_with_shift_key_ == item) {
+        last_item_with_shift_key_ = last_item_;
+    }
+
+    if (mouse_down_item_ == item) {
+        mouse_down_item_ = nullptr;
+        is_mouse_down_item_originally_selected_ = false;
+    }
+
+    originally_selected_items_.erase(item);
+}
+
+
 void ListBox::ItemContainer::MouseDown(const Point& position, const MouseMessage& message) {
 
     SetIsFocused(true);
@@ -392,7 +443,17 @@ void ListBox::ItemContainer::MouseDown(const Point& position, const MouseMessage
     }
 
     NeedCaptureMouse(true);
-    SelectItemAtPosition(position);
+
+    SelectItemAtPositionByMouseEvent(position, false);
+    is_changing_selection_ = true;
+}
+
+
+void ListBox::ItemContainer::MouseMove(const Point& position, const MouseMessage& message) {
+
+    if (IsCapturingMouse()) {
+        SelectItemAtPositionByMouseEvent(position, true);
+    }
 }
 
 
@@ -402,9 +463,11 @@ void ListBox::ItemContainer::MouseUp(const Point& position, const MouseMessage& 
         return;
     }
 
-    NeedCaptureMouse(false);
+    if (IsCapturingMouse()) {
+        NeedCaptureMouse(false);
+    }
 
-    if (selecting_item_ != nullptr) {
+    if (is_changing_selection_) {
 
         auto list_box = list_box_.lock();
         if (list_box != nullptr) {
@@ -412,15 +475,203 @@ void ListBox::ItemContainer::MouseUp(const Point& position, const MouseMessage& 
         }
     }
 
-    selecting_item_ = nullptr;
+    is_changing_selection_ = false;
+    mouse_down_item_ = nullptr;
+    is_mouse_down_item_originally_selected_ = false;
+    originally_selected_items_.clear();
 }
 
 
-void ListBox::ItemContainer::MouseMove(const Point& position, const MouseMessage& message) {
+void ListBox::ItemContainer::SelectItemAtPositionByMouseEvent(const Point& position, bool is_mouse_moving) {
 
-    if (IsCapturingMouse()) {
-        SelectItemAtPosition(position);
+    auto item = FindItemAtPosition(position);
+    if (item == nullptr) {
+        return;
     }
+
+    auto list_box = list_box_.lock();
+    if (list_box == nullptr) {
+        return;
+    }
+
+    switch (list_box->GetSelectOption()) {
+
+    case SelectOption::SingleSelect:
+        SingleSelectItemByMouseEvent(list_box, item);
+        break;
+
+    case SelectOption::SimpleMultiSelect:
+        SimpleMultiSelectItemByMouseEvent(list_box, item, is_mouse_moving);
+        break;
+
+    case SelectOption::ExtendedMultiSelect:
+        ExtendedMultiSelectItemByMouseEvent(list_box, item, is_mouse_moving);
+        break;
+
+    default:
+        ZAF_FAIL();
+        break;
+    }
+}
+
+
+void ListBox::ItemContainer::SingleSelectItemByMouseEvent(const std::shared_ptr<ListBox>& list_box, const std::shared_ptr<Item>& item) {
+    list_box->SelectItem(item, true, true);
+}
+
+
+void ListBox::ItemContainer::SimpleMultiSelectItemByMouseEvent(
+    const std::shared_ptr<ListBox>& list_box,
+    const std::shared_ptr<Item>& item,
+    bool is_mouse_moving) {
+
+    if (is_mouse_moving) {
+        return;
+    }
+
+    if (item->IsSelected()) {
+        list_box->UnselectItem(item, true);
+    }
+    else {
+        list_box->SelectItem(item, false, true);
+    }
+}
+
+
+void ListBox::ItemContainer::ExtendedMultiSelectItemByMouseEvent(
+    const std::shared_ptr<ListBox>& list_box,
+    const std::shared_ptr<Item>& item, 
+    bool is_mouse_moving
+) {
+
+    bool is_pressing_shift_key = GetKeyState(VK_SHIFT) < 0;
+    bool is_pressing_control_key = GetKeyState(VK_CONTROL) < 0;
+
+    if (is_pressing_shift_key && is_pressing_control_key) {
+        return;
+    }
+
+    if (is_pressing_shift_key) {
+        ExtendedMultiSelectItemWithShiftKey(list_box, item, is_mouse_moving);
+    }
+    else if (is_pressing_control_key) {
+        ExtendedMultiSelectItemWithControlKey(list_box, item, is_mouse_moving);
+    }
+    else {
+        ExtendedMultiSelectItemWithMouseOnly(list_box, item, is_mouse_moving);
+    }
+}
+
+
+void ListBox::ItemContainer::ExtendedMultiSelectItemWithMouseOnly(
+    const std::shared_ptr<ListBox>& list_box, 
+    const std::shared_ptr<Item>& item,
+    bool is_mouse_moving
+) {
+
+    if (! is_mouse_moving) {
+        UpdateLastItem(item);
+        mouse_down_item_ = item;
+    }
+
+    ChangeSelectionBetweenItems(list_box, mouse_down_item_, item, true, false);
+}
+
+
+void ListBox::ItemContainer::ExtendedMultiSelectItemWithShiftKey(
+    const std::shared_ptr<ListBox>& list_box,
+    const std::shared_ptr<Item>& item,
+    bool is_mouse_moving
+) {
+
+    if (! is_mouse_moving) {
+        mouse_down_item_ = last_item_;
+    }
+
+    ChangeSelectionBetweenItems(list_box, mouse_down_item_, item, true, false);
+}
+
+
+void ListBox::ItemContainer::ExtendedMultiSelectItemWithControlKey(
+    const std::shared_ptr<ListBox>& list_box,
+    const std::shared_ptr<Item>& item,
+    bool is_mouse_moving
+) {
+
+    if (! is_mouse_moving) {
+
+        UpdateLastItem(item);
+
+        mouse_down_item_ = item;
+        is_mouse_down_item_originally_selected_ = mouse_down_item_->IsSelected();
+
+        //Record all selected items.
+        originally_selected_items_.clear();
+        for (const auto& each_item : list_box->items_) {
+            if (each_item->IsSelected()) {
+                originally_selected_items_.insert(each_item);
+            }
+        }
+    }
+
+    ChangeSelectionBetweenItems(list_box, mouse_down_item_, item, ! is_mouse_down_item_originally_selected_, true);
+}
+
+
+void ListBox::ItemContainer::ChangeSelectionBetweenItems(
+    const std::shared_ptr<ListBox>& list_box,
+    const std::shared_ptr<Item>& begin_item,
+    const std::shared_ptr<Item>& end_item,
+    bool is_selecting,
+    bool only_change_items_in_range
+) {
+
+    std::size_t range_bound_count = begin_item == end_item ? 1 : 2;
+    bool is_in_range = false;
+
+    for (const auto& each_item : list_box->items_) {
+
+        if (each_item == begin_item || each_item == end_item) {
+            --range_bound_count;
+            is_in_range = true;
+        }
+        else if (range_bound_count <= 0) {
+            is_in_range = false;
+        }
+         
+        bool should_select = false;;
+
+        //Recover select state for those items not in range.
+        if (! is_in_range && only_change_items_in_range) {
+            
+            auto iterator = originally_selected_items_.find(each_item);
+            if (iterator == originally_selected_items_.end()) {
+                should_select = false;
+            }
+            else {
+                should_select = true;
+            }
+        }
+        else {
+            should_select = (is_in_range && is_selecting) || (! is_in_range && ! is_selecting);
+        }
+
+        if (should_select) {
+            list_box->SelectItem(each_item, false, false);
+        }
+        else {
+            list_box->UnselectItem(each_item, false);
+        }
+    }
+
+    list_box->ScrollToItem(end_item);
+}
+
+
+std::shared_ptr<ListBox::Item> ListBox::ItemContainer::FindItemAtPosition(const Point& position) const {
+
+    auto child = FindChildAtPosition(position);
+    return std::dynamic_pointer_cast<Item>(child);
 }
 
 
@@ -431,61 +682,72 @@ void ListBox::ItemContainer::KeyDown(const KeyMessage& message) {
         return;
     }
 
-    if (list_box->AllowMultiSelect()) {
+    SelectOption select_option = list_box->GetSelectOption();
+    if (select_option == SelectOption::SimpleMultiSelect) {
         return;
     }
 
-    std::size_t index = list_box->GetFirstSelectedItemIndex();
+    bool is_using_shift_key_feature = 
+        (select_option == SelectOption::ExtendedMultiSelect) &&
+        (GetKeyState(VK_SHIFT) < 0);
+
+    std::size_t index = kInvalidIndex;
+    if (is_using_shift_key_feature) {
+        index = list_box->GetItemIndex(last_item_with_shift_key_);
+    }
+
+    if (index == kInvalidIndex) {
+        index = list_box->GetItemIndex(last_item_);
+    }
 
     switch (message.wParam) {
-        case VK_DOWN:
-            if (index == kInvalidIndex) {
-                index = 0;
-            }
-            else {
-                ++index;
-            }
-            break;
-    
-        case VK_UP:
-            if (index == kInvalidIndex) {
-                index = list_box->items_.size() - 1;
-            }
-            else {
-                --index;
-            }
-            break;
-    
-        case VK_HOME:
+    case VK_DOWN:
+        if (index == kInvalidIndex) {
             index = 0;
-            break;
+        }
+        else if (index < list_box->items_.size() - 1) {
+            ++index;
+        }
+        break;
 
-        case VK_END:
+    case VK_UP:
+        if (index == kInvalidIndex) {
             index = list_box->items_.size() - 1;
-            break;
+        }
+        else if (index > 0) {
+            --index;
+        }
+        break;
 
-        default:
-            return;
-    }
-    
-    list_box->SelectItemAtIndex(index);
-}
+    case VK_HOME:
+        index = 0;
+        break;
 
+    case VK_END:
+        index = list_box->items_.size() - 1;
+        break;
 
-void ListBox::ItemContainer::SelectItemAtPosition(const Point& position) {
-
-    auto child = FindChildAtPosition(position);
-    auto item = std::dynamic_pointer_cast<Item>(child);
-    if (item == nullptr) {
+    default:
         return;
     }
 
-    auto list_box = list_box_.lock();
-    if (list_box != nullptr) {
-        list_box->SelectItem(item);
+    std::shared_ptr<Item> begin_item;
+    auto end_item = list_box->items_[index];
+
+    if (is_using_shift_key_feature) {
+
+        begin_item = last_item_;
+        last_item_with_shift_key_ = end_item;
+    }    
+    else {
+
+        begin_item = end_item;
+
+        //Update last item to the new selected item.
+        UpdateLastItem(end_item);
     }
 
-    selecting_item_ = item;
+    ChangeSelectionBetweenItems(list_box, begin_item, end_item, true, false);
 }
 
 }
