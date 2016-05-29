@@ -144,7 +144,14 @@ private:
             bool only_change_items_in_range
         );
 
-        std::shared_ptr<Item> FindItemAtPosition(const Point& position) const;
+        void SingleSelectItemByKeyEvent(const std::shared_ptr<ListBox>& list_box, const KeyMessage& key_message);
+        void ExtendedMultiSelectItemByKeyEvent(const std::shared_ptr<ListBox>& list_box, const KeyMessage& key_message);
+
+        std::size_t ChangeIndexWithKeyMessage(
+            const std::shared_ptr<ListBox>& list_box,
+            std::size_t previous_index, 
+            const KeyMessage& message
+        ) const;
 
         void UpdateLastItem(const std::shared_ptr<Item>& item) {
             last_item_ = item;
