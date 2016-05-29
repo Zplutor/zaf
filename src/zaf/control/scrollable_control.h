@@ -73,9 +73,10 @@ private:
     void LayoutScrollContainerControl(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
     void LayoutScrolledControlSize(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
 
-	void AdjustScrollBarValues();
+    void AdjustScrollBarValuesWithGeneralScrolledControl();
 
     void LayoutWithSelfScrollingControl();
+    void AdjustScrollBarValueWithSelfScrollingControl(bool is_horizontal);
     
     void ScrollBarScroll(const std::shared_ptr<ScrollBar>& scroll_bar);
     void ScrollGeneralScrolledControl(const std::shared_ptr<ScrollBar>& scroll_bar);

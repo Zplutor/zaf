@@ -21,6 +21,7 @@ static const wchar_t* const kLayouterPropertyName = L"Layouter";
 static const wchar_t* const kNamePropertyName = L"Name";
 
 Control::Control() : 
+    update_count_(0),
 	is_hovered_(false), 
 	is_capturing_mouse_(false),
 	is_focused_(false),
@@ -34,6 +35,27 @@ Control::Control() :
 
 Control::~Control() {
 
+}
+
+
+void Control::BeginUpdate() {
+    ++update_count_;
+}
+
+
+void Control::EndUpdate() {
+
+    if (update_count_ == 0) {
+        ZAF_FAIL();
+        return;
+    }
+
+    --update_count_;
+
+    if (update_count_ == 0) {
+        NeedRelayout();
+        NeedRepaint();
+    }
 }
 
 
@@ -116,6 +138,10 @@ void Control::NeedRepaint() {
 
 void Control::NeedRepaintRect(const Rect& rect) {
 
+    if (IsUpdating()) {
+        return;
+    }
+
 	Rect bound_rect(Point(), rect_.size);
 	Rect repaint_rect = Rect::Intersect(bound_rect, rect);
 	if (repaint_rect.IsEmpty()) {
@@ -168,7 +194,10 @@ void Control::Layout(const Rect& previous_rect) {
 
 
 void Control::NeedRelayout() {
-	Layout(GetRect());
+
+    if (! IsUpdating()) {
+	    Layout(GetRect());
+    }
 }
 
 
@@ -200,7 +229,10 @@ void Control::SetRect(const Rect& rect) {
 	Rect previous_rect = GetRect();
 	rect_ = rect;
 
-	Layout(previous_rect);
+    //Layout children if size is changed.
+    if (rect_.size != previous_rect.size) {
+	    Layout(previous_rect);
+    }
 
 	//The focused control need to be notified while its absolute position changed, 
 	//so that it can relayout its elements, if needed.
@@ -323,9 +355,10 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
 		previous_parent->RemoveChild(child);
 	}
 
-	child->SetParent(this->shared_from_this());
+	child->SetParent(shared_from_this());
 	children_.push_back(child);
 
+    NeedRelayout();
 	NeedRepaintRect(child->GetRect());
 }
 
@@ -341,6 +374,7 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 	child->SetParent(nullptr);
 	children_.erase(std::remove(children_.begin(), children_.end(), child));
 
+    NeedRelayout();
 	NeedRepaintRect(child->GetRect());
 }
 

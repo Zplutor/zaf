@@ -282,13 +282,18 @@ void Window::Repaint() {
 
 	Rect dirty_rect;
 
-	RECT win32_rect;
+    RECT win32_rect = { 0 };
 	if (GetUpdateRect(handle_, &win32_rect, TRUE)) {
 		dirty_rect = Rect::FromRECT(win32_rect);
 	}
 	else {
 		dirty_rect = root_control_->GetRect();
 	}
+
+    //The update rect must be validated before painting.
+    //Because some controls may call NeedRepaint while it is painting,
+    //and this may fails if there is a invalidated update rect.
+    ValidateRect(handle_, nullptr);
 
 	renderer_->BeginDraw();
 
@@ -305,8 +310,6 @@ void Window::Repaint() {
 	}
 
 	renderer_->EndDraw();
-
-	ValidateRect(handle_, nullptr);
 }
 
 

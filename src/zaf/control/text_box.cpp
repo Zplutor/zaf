@@ -522,7 +522,12 @@ void TextBox::GetScrollValues(bool is_horizontal, int& current_value, int& min_v
     if (SUCCEEDED(result)) {
         current_value = current;
         min_value = min;
-        max_value = max - page;
+        if (max < page) {
+            max_value = 0;
+        }
+        else {
+            max_value = max - page;
+        }
     }
 }
 

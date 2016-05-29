@@ -102,7 +102,7 @@ void ScrollableControl::LayoutWithGeneralScrolledControl() {
     LayoutScrollBars(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     LayoutScrollContainerControl(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     LayoutScrolledControlSize(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
-    AdjustScrollBarValues();
+    AdjustScrollBarValuesWithGeneralScrolledControl();
 }
 
 
@@ -213,7 +213,7 @@ void ScrollableControl::LayoutScrolledControlSize(bool can_show_vertical_scroll_
 }
 
 
-void ScrollableControl::AdjustScrollBarValues() {
+void ScrollableControl::AdjustScrollBarValuesWithGeneralScrolledControl() {
 
     const Size& content_size = scrolled_control_->GetSize();
     const Size& content_container_size = scroll_container_control_->GetSize();
@@ -236,6 +236,30 @@ void ScrollableControl::LayoutWithSelfScrollingControl() {
     LayoutScrollBars(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     LayoutScrollContainerControl(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     scrolled_control_->SetRect(Rect(Point(), scroll_container_control_->GetSize()));
+
+    AdjustScrollBarValueWithSelfScrollingControl(true);
+    AdjustScrollBarValueWithSelfScrollingControl(false);
+}
+
+
+void ScrollableControl::AdjustScrollBarValueWithSelfScrollingControl(bool is_horizontal) {
+
+    int current_value = 0;
+    int min_value = 0;
+    int max_value = 0;
+    std::shared_ptr<ScrollBar> scroll_bar;
+
+    if (is_horizontal) {
+        self_scrolling_control_->GetHorizontalScrollValues(current_value, min_value, max_value);
+        scroll_bar = horizontal_scroll_bar_;
+    }
+    else {
+        self_scrolling_control_->GetVerticalScrollValues(current_value, min_value, max_value);
+        scroll_bar = vertical_scroll_bar_;
+    }
+
+    scroll_bar->SetValueRange(min_value, max_value);
+    scroll_bar->SetValue(current_value);
 }
 
 
@@ -448,24 +472,7 @@ void ScrollableControl::SelfScrollingControlScrollBarChange(SelfScrollingControl
 void ScrollableControl::SelfScrollingControlScrollValuesChange(SelfScrollingControl& self_scrolling_control, bool is_horizontal) {
 
     is_self_scrolling_ = true;
-
-    int current_value = 0;
-    int min_value = 0;
-    int max_value = 0;
-    std::shared_ptr<ScrollBar> scroll_bar;
-
-    if (is_horizontal) {
-        self_scrolling_control_->GetHorizontalScrollValues(current_value, min_value, max_value);
-        scroll_bar = horizontal_scroll_bar_;
-    }
-    else {
-        self_scrolling_control_->GetVerticalScrollValues(current_value, min_value, max_value);
-        scroll_bar = vertical_scroll_bar_;
-    }
-
-    scroll_bar->SetValueRange(min_value, max_value);
-    scroll_bar->SetValue(current_value);
-
+    AdjustScrollBarValueWithSelfScrollingControl(is_horizontal);
     is_self_scrolling_ = false;
 }
 

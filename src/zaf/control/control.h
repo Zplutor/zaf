@@ -25,6 +25,25 @@ class Window;
 
 class Control : public std::enable_shared_from_this<Control> {
 public:
+    class UpdateGuard {
+    public:
+        UpdateGuard(Control& control) : control_(control) { 
+            control_.BeginUpdate();
+        }
+
+        ~UpdateGuard() {
+            control_.EndUpdate();
+        }
+
+    private:
+        UpdateGuard(const UpdateGuard&) = delete;
+        UpdateGuard& operator=(const UpdateGuard&) = delete;
+
+    private:
+        Control& control_;
+    };
+
+public:
 	Control();
 	virtual ~Control();
 
@@ -36,6 +55,9 @@ public:
 	 The same method of base class must be called.
 	 */
 	virtual void Initialize() { }
+
+    void BeginUpdate();
+    void EndUpdate();
 
 	/**
 	 Get the control's absolute rect which is related to the coordinate system of 
@@ -356,6 +378,10 @@ private:
 		return Point(point.x + rect_.position.x, point.y + rect_.position.y);
 	}
 
+    bool IsUpdating() const {
+        return update_count_ > 0;
+    }
+
 	Control(const Control&) = delete;
 	Control& operator=(const Control&) = delete;
 
@@ -363,6 +389,9 @@ private:
 	std::weak_ptr<Window> window_;
 	std::weak_ptr<Control> parent_;
 	std::vector<std::shared_ptr<Control>> children_;
+
+    std::size_t update_count_;
+
 	bool is_hovered_;
 	bool is_capturing_mouse_;
 	bool is_focused_;

@@ -13,7 +13,7 @@ void Rect::Intersect(const Rect& other) {
 	float right = std::min(position.x + size.width, other.position.x + other.size.width);
 	float bottom = std::min(position.y + size.height, other.position.y + other.size.height);
 
-	if ((left <= right) && (top <= bottom)) {
+	if ((left < right) && (top < bottom)) {
 		position.x = left;
 		position.y = top;
 		size.width = right - left;
