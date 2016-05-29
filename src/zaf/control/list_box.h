@@ -32,6 +32,7 @@ public:
     };
 
     enum class SelectOption {
+        NoSelect,
         SingleSelect,
         SimpleMultiSelect,
         ExtendedMultiSelect,
@@ -79,7 +80,11 @@ public:
     const std::vector<std::size_t> GetSelectedItemIndexes() const;
     const std::vector<std::wstring> GetSelectedItemTexts() const;
 
+    bool SelectAllItems();
+    void UnselectAllItems();
     bool SelectItemAtIndex(std::size_t index);
+
+    bool ScrollToItemAtIndex(std::size_t index);
 
 private:
     class ItemContainer : public Control {
@@ -108,7 +113,7 @@ private:
             const std::vector<std::shared_ptr<Control>>& children
         );
 
-        void SelectItemAtPositionByMouseEvent(const Point& position, bool is_mouse_moving);
+        bool SelectItemAtPositionByMouseEvent(const Point& position, bool is_mouse_moving);
         void SingleSelectItemByMouseEvent(const std::shared_ptr<ListBox>& list_box, const std::shared_ptr<Item>& item);
         void SimpleMultiSelectItemByMouseEvent(
             const std::shared_ptr<ListBox>& list_box,

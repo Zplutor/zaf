@@ -99,19 +99,10 @@ void ListBox::SetSelectOption(SelectOption select_option) {
     GetPropertyMap().SetProperty(kSelectOptionPropertyName, select_option);
 
     if (select_option == SelectOption::SingleSelect) {
-
-        bool has_selection = false;
-        for (const auto& each_item : items_) {
-
-            if (each_item->IsSelected()) {
-                if (has_selection) {
-                    each_item->SetIsSelected(false);
-                }
-                else {
-                    has_selection = true;
-                }
-            }
-        }
+        SelectItemAtIndex(GetFirstSelectedItemIndex());
+    }
+    else if (select_option == SelectOption::NoSelect) {
+        UnselectAllItems();
     }
 }
 
@@ -271,6 +262,46 @@ const std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
 }
 
 
+bool ListBox::SelectAllItems() {
+    
+    auto select_option = GetSelectOption();
+    if (select_option == SelectOption::NoSelect || select_option == SelectOption::SingleSelect) {
+        return false;
+    }
+
+    bool has_changed_selection = false;
+    for (const auto& each_item : items_) {
+
+        if (! each_item->IsSelected()) {
+            each_item->SetIsSelected(true);
+            has_changed_selection = true;
+        }
+    }
+
+    if (has_changed_selection) {
+        SelectionChange();
+    }
+    return true;
+}
+
+
+void ListBox::UnselectAllItems() {
+
+    bool has_changed_selection = false;
+    for (const auto& each_item : items_) {
+        
+        if (each_item->IsSelected()) {
+            each_item->SetIsSelected(false);
+            has_changed_selection = true;
+        }
+    }
+
+    if (has_changed_selection) {
+        SelectionChange();
+    }
+}
+
+
 bool ListBox::SelectItemAtIndex(std::size_t index) {
 
     if (index >= items_.size()) {
@@ -309,6 +340,18 @@ void ListBox::UnselectItem(const std::shared_ptr<Item>& item, bool scroll_to_it)
     if (scroll_to_it) {
         ScrollToItem(item);
     }
+}
+
+
+bool ListBox::ScrollToItemAtIndex(std::size_t index) {
+
+    if (index >= items_.size()) {
+        return false;
+    }
+
+    auto item = items_[index];
+    ScrollToItem(item);
+    return true;
 }
 
 
@@ -443,9 +486,7 @@ void ListBox::ItemContainer::MouseDown(const Point& position, const MouseMessage
     }
 
     NeedCaptureMouse(true);
-
-    SelectItemAtPositionByMouseEvent(position, false);
-    is_changing_selection_ = true;
+    is_changing_selection_ = SelectItemAtPositionByMouseEvent(position, false); 
 }
 
 
@@ -482,37 +523,42 @@ void ListBox::ItemContainer::MouseUp(const Point& position, const MouseMessage& 
 }
 
 
-void ListBox::ItemContainer::SelectItemAtPositionByMouseEvent(const Point& position, bool is_mouse_moving) {
+bool ListBox::ItemContainer::SelectItemAtPositionByMouseEvent(const Point& position, bool is_mouse_moving) {
 
     auto child = FindChildAtPosition(position);
     auto item = std::dynamic_pointer_cast<Item>(child);
     if (item == nullptr) {
-        return;
+        return false;
     }
 
     auto list_box = list_box_.lock();
     if (list_box == nullptr) {
-        return;
+        return false;
     }
 
     switch (list_box->GetSelectOption()) {
 
-    case SelectOption::SingleSelect:
-        SingleSelectItemByMouseEvent(list_box, item);
-        break;
+        case SelectOption::SingleSelect:
+            SingleSelectItemByMouseEvent(list_box, item);
+            break;
 
-    case SelectOption::SimpleMultiSelect:
-        SimpleMultiSelectItemByMouseEvent(list_box, item, is_mouse_moving);
-        break;
+        case SelectOption::SimpleMultiSelect:
+            SimpleMultiSelectItemByMouseEvent(list_box, item, is_mouse_moving);
+            break;
 
-    case SelectOption::ExtendedMultiSelect:
-        ExtendedMultiSelectItemByMouseEvent(list_box, item, is_mouse_moving);
-        break;
+        case SelectOption::ExtendedMultiSelect:
+            ExtendedMultiSelectItemByMouseEvent(list_box, item, is_mouse_moving);
+            break;
 
-    default:
-        ZAF_FAIL();
-        break;
+        case SelectOption::NoSelect:
+            return false;
+
+        default:
+            ZAF_FAIL();
+            return false;
     }
+
+    return true;
 }
 
 
@@ -688,6 +734,7 @@ void ListBox::ItemContainer::KeyDown(const KeyMessage& message) {
             break;
 
         case SelectOption::SimpleMultiSelect:
+        case SelectOption::NoSelect:
             break;
 
         default:

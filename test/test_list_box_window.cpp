@@ -89,6 +89,14 @@ public:
 
         auto group = std::make_shared<RadioButton::Group>();
 
+        auto no_select_radio_button = CreateControl<RadioButton>();
+        no_select_radio_button->SetText(L"No select");
+        no_select_radio_button->SetGroup(group);
+        no_select_radio_button->GetSelectStateChangeEvent().AddListener([this](const std::shared_ptr<RadioButton>&) {
+            list_box_->SetSelectOption(ListBox::SelectOption::NoSelect);
+        });
+        container->AddChild(no_select_radio_button);
+
         auto single_select_radio_button = CreateControl<RadioButton>();
         single_select_radio_button->SetText(L"Single select");
         single_select_radio_button->SetGroup(group);
@@ -114,6 +122,9 @@ public:
         container->AddChild(extended_multi_select_radio_button);
 
         switch (list_box_->GetSelectOption()) {
+            case ListBox::SelectOption::NoSelect:
+                no_select_radio_button->SetSelected();
+                break;
             case ListBox::SelectOption::SingleSelect:
                 single_select_radio_button->SetSelected();
                 break;
