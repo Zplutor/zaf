@@ -230,7 +230,8 @@ void Control::SetRect(const Rect& rect) {
 	rect_ = rect;
 
     //Layout children if size is changed.
-    if (rect_.size != previous_rect.size) {
+    if ((rect_.size.width != previous_rect.size.width) || 
+        (rect_.size.height != previous_rect.size.height)) {
 	    Layout(previous_rect);
     }
 
