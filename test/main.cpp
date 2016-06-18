@@ -6,6 +6,7 @@
 #include "test_radio_button_window.h"
 #include "test_scrollable_control_window.h"
 #include "test_text_box_window.h"
+#include "test_window_window.h"
 
 using namespace zaf;
 
@@ -26,9 +27,9 @@ int WINAPI WinMain(
 }
 
 
-void BeginRun(Application&) {
+void BeginRun(Application& application) {
 
-	auto window = std::make_shared<Window>();
+	auto window = Create<Window>();
 	window->SetTitle(L"zaf testing");
 	window->SetRect(Rect(200, 200, 500, 500));
 
@@ -43,6 +44,7 @@ void BeginRun(Application&) {
 		L"Test text box", ShowTestTextBoxWindow,
         L"Test scrollable control", ShowTestScrollableControlWindow,
         L"Test list box", ShowTestListBoxWindow,
+        L"Test window", ShowTestWindowWindow,
 	};
 
 	auto root_control = window->GetRootControl();
@@ -50,7 +52,7 @@ void BeginRun(Application&) {
 
 	for (const auto& each_item : show_window_function_map) {
 
-		auto button = CreateControl<Button>();
+		auto button = Create<Button>();
 		button->SetText(each_item.button_text);
 		button->GetClickEvent().AddListener([each_item](const std::shared_ptr<ClickableControl>&) {
 			each_item.show_window_function();
@@ -59,4 +61,5 @@ void BeginRun(Application&) {
 	}
 
 	window->Show();
+    application.SetMainWindow(window);
 }

@@ -74,6 +74,11 @@ void Application::Run() {
 }
 
 
+void Application::Terminate() {
+    PostQuitMessage(0);
+}
+
+
 const std::pair<float, float> Application::GetDpi() const {
 
     std::pair<float, float> dpi_pair;
@@ -90,15 +95,31 @@ const std::pair<float, float> Application::GetDpi() const {
 
 
 void Application::RegisterWindow(const std::shared_ptr<Window>& window) {
-
 	windows_.insert(window);
-	window->OnClose.AddListener(std::bind(&Application::WindowClosed, this, std::placeholders::_1));
 }
 
 
-void Application::WindowClosed(const std::shared_ptr<Window>& window) {
+void Application::UnregisterWindow(const std::shared_ptr<Window>& window) {
+    windows_.erase(window);
+}
 
-	windows_.erase(window);
+
+void Application::SetMainWindow(const std::shared_ptr<Window>& window) {
+
+    if (main_window_ != nullptr) {
+        main_window_->GetCloseEvent().RemoveListeners(this);
+    }
+
+    main_window_ = window;
+    
+    if (main_window_ != nullptr) {
+        main_window_->GetCloseEvent().AddListener(std::bind(&Application::MainWindowClosed, this, std::placeholders::_1), this);
+    }
+}
+
+
+void Application::MainWindowClosed(const std::shared_ptr<Window>& window) {
+    Terminate();
 }
 
 }

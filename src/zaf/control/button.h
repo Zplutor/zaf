@@ -10,6 +10,9 @@ public:
 	~Button();
 
 	void Initialize() override;
+
+    bool IsDefault() const;
+    void SetIsDefault(bool is_default);
 };
 
 }

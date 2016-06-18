@@ -1,7 +1,7 @@
 #include <zaf/control/scrollable_control.h>
-#include <zaf/control/creation.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/self_scrolling_control.h>
+#include <zaf/creation.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -25,13 +25,13 @@ ScrollableControl::~ScrollableControl() {
 
 void ScrollableControl::Initialize() {
 
-    InitializeVerticalScrollBar(CreateControl<ScrollBar>());
-    InitializeHorizontalScrollBar(CreateControl<ScrollBar>());
+    InitializeVerticalScrollBar(Create<ScrollBar>());
+    InitializeHorizontalScrollBar(Create<ScrollBar>());
 
-    scroll_container_control_ = CreateControl<Control>();
+    scroll_container_control_ = Create<Control>();
     AddChild(scroll_container_control_);
 
-    InitializeScrolledControl(CreateControl<Control>());
+    InitializeScrolledControl(Create<Control>());
 }
 
 

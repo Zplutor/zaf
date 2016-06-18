@@ -5,11 +5,11 @@ using namespace zaf;
 
 void ShowTestLabelWindow() {
 
-	auto window = std::make_shared<Window>();
+	auto window = Create<Window>();
 	window->SetTitle(L"label testing");
 	window->SetRect(Rect(0, 0, 300, 300));
 
-	auto label = CreateControl<Label>();
+	auto label = Create<Label>();
 	label->SetRect(Rect(10, 10, 100, 60));
 	label->SetIsEnabled(false);
 	//label->SetBorderWidth(1);

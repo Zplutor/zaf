@@ -2,7 +2,7 @@
 #include <Windowsx.h>
 #include <zaf/application.h>
 #include <zaf/base/log.h>
-#include <zaf/control/creation.h>
+#include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/clear_edge.h>
 #include <zaf/graphic/renderer.h>
@@ -16,6 +16,11 @@
 namespace zaf {
 
 static const wchar_t* const kDefaultWindowClassName = L"ZafDefaultWindowClass";
+
+static const wchar_t* const kCloseEventPropertyName = L"CloseEvent";
+static const wchar_t* const kCloseHandlerPropertyName = L"CloseHandler";
+static const wchar_t* const kOwnerPropertyName = L"Owner";
+static const wchar_t* const kTitlePropertyName = L"Title";
 
 bool Window::RegisterDefaultClass() {
 
@@ -45,6 +50,9 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wPar
 
     if (window != nullptr) {
 
+        //Keep the windows's life during message processing.
+        auto shared_ptr = window->shared_from_this();
+
         auto message = CreateMessage(hwnd, message_id, wParam, lParam);
         if (message != nullptr) {
 
@@ -60,19 +68,74 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wPar
 
 
 Window::Window() :
-	handle_(NULL),
-	state_(std::make_shared<internal::WindowNotCreatedState>()),
+	handle_(nullptr),
 	is_tracking_mouse_(false),
-	is_capturing_mouse_(false),
-	root_control_(CreateControl<Control>()),
-	close_event_(),
-	OnClose(close_event_) {
+	is_capturing_mouse_(false) {
 
 }
 
 
 Window::~Window() {
 
+    if (handle_ != nullptr) {
+        DestroyWindow(handle_);
+    }
+}
+
+
+void Window::Initialize() {
+
+    root_control_ = Create<Control>();
+    root_control_->SetWindow(shared_from_this());
+    root_control_->SetBackgroundColorPicker([](const Control&) {
+        return Color::White;
+    });
+
+    int screen_width = GetSystemMetrics(SM_CXSCREEN);
+    int screen_height = GetSystemMetrics(SM_CYSCREEN);
+    int window_width = screen_width / 2;
+    int window_height = screen_height / 2;
+    rect_.position.x = static_cast<float>((screen_width - window_width) / 2);
+    rect_.position.y = static_cast<float>((screen_height - window_height) / 2);
+    rect_.size.width = static_cast<float>(window_width);
+    rect_.size.height = static_cast<float>(window_height);
+}
+
+
+void Window::CreateWindowHandle() {
+
+    auto owner = GetOwner();
+    auto rect = GetRect();
+
+    handle_ = CreateWindowEx(
+        0,
+        kDefaultWindowClassName,
+        GetTitle().c_str(),
+        WS_OVERLAPPEDWINDOW,
+        static_cast<int>(rect.position.x),
+        static_cast<int>(rect.position.y),
+        static_cast<int>(rect.size.width),
+        static_cast<int>(rect.size.height),
+        owner == nullptr ? nullptr : owner->GetHandle(),
+        nullptr,
+        nullptr,
+        nullptr
+    );
+
+    SetWindowLongPtr(handle_, GWLP_USERDATA, reinterpret_cast<ULONG_PTR>(this));
+
+    renderer_ = Application::GetInstance().GetRendererFactory()->CreateRenderer(handle_);
+    Application::GetInstance().RegisterWindow(shared_from_this());
+
+    WindowCreate();
+}
+
+
+void Window::CheckCreateWindowHandle() {
+
+    if (IsClosed()) {
+        CreateWindowHandle();
+    }
 }
 
 
@@ -121,9 +184,71 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         LostFocus();
         return true;
 
+    case WM_CLOSE:
+        return ! ReceiveCloseMessage();
+
+    case WM_DESTROY:
+        ReceiveDestroyMessage();
+        return true;
+
+    case WM_NCDESTROY:
+        Application::GetInstance().UnregisterWindow(shared_from_this());
+        return true;
+
     default:
         return false;
     }
+}
+
+
+void Window::Repaint() {
+
+    Rect dirty_rect;
+
+    RECT win32_rect = { 0 };
+    if (GetUpdateRect(handle_, &win32_rect, TRUE)) {
+        dirty_rect = Rect::FromRECT(win32_rect);
+    }
+    else {
+        dirty_rect = root_control_->GetRect();
+    }
+
+    //The update rect must be validated before painting.
+    //Because some controls may call NeedRepaint while it is painting,
+    //and this may fails if there is a invalidated update rect.
+    ValidateRect(handle_, nullptr);
+
+    renderer_->BeginDraw();
+
+    Canvas canvas(renderer_);
+    canvas.SetRects(root_control_->GetRect(), dirty_rect);
+    root_control_->Repaint(canvas, dirty_rect);
+
+    if (caret_ != nullptr) {
+        const Rect& caret_rect = caret_->GetRect();
+        if (caret_rect.HasIntersection(dirty_rect)) {
+            canvas.SetRects(root_control_->GetRect(), dirty_rect);
+            caret_->Repaint(canvas);
+        }
+    }
+
+    renderer_->EndDraw();
+}
+
+
+void Window::NeedRepaintRect(const Rect& rect) {
+
+    RECT win32_rect = MakeClearEdgeRectForFill(rect, ClearEdgeOption::Clear).ToRECT();
+    InvalidateRect(handle_, &win32_rect, FALSE);
+}
+
+
+void Window::Resize(UINT width, UINT height) {
+
+    Size size(static_cast<float>(width), static_cast<float>(height));
+
+    renderer_->Resize(size);
+    root_control_->SetRect(Rect(Point(), size));
 }
 
 
@@ -206,127 +331,37 @@ bool Window::ChangeMouseCursor(const Message& message) {
 }
 
 
-void Window::Show() {
-
-	CheckCreate();
-	ShowWindow(handle_, SW_SHOW);
-}
-
-
-void Window::CheckCreate() {
-
-	if (handle_ != NULL) {
-		return;
-	}
-
-	Rect rect = GetRect();
-	std::wstring title = GetTitle();
-
-	handle_ = CreateWindowEx(
-		0,
-		kDefaultWindowClassName,
-		title.c_str(),
-		WS_OVERLAPPEDWINDOW,
-		static_cast<int>(rect.position.x), 
-		static_cast<int>(rect.position.y), 
-		static_cast<int>(rect.size.width), 
-		static_cast<int>(rect.size.height),
-		NULL,
-		NULL,
-		NULL,
-		nullptr
-	);
-
-	SetWindowLongPtr(handle_, GWLP_USERDATA, reinterpret_cast<ULONG_PTR>(this));
-	state_ = std::make_shared<internal::WindowCreatedState>(handle_);
-
-	renderer_ = Application::GetInstance().GetRendererFactory()->CreateRenderer(handle_);
-
-	root_control_->SetWindow(this->shared_from_this());
-	root_control_->SetBackgroundColorPicker([](const Control&) { 
-		return Color::White; 
-	});
-	
-	Application::GetInstance().RegisterWindow(shared_from_this());
-}
-
-
-void Window::Hide() {
-
-}
-
-
-void Window::Close() {
-
-}
-
-
-const Point Window::GetMousePosition() const {
-
-	POINT cursor_point = { 0 };
-	GetCursorPos(&cursor_point);
-	ScreenToClient(handle_, &cursor_point);
-
-	return Point(static_cast<float>(cursor_point.x), static_cast<float>(cursor_point.y));
-}
-
-
-void Window::NeedRepaintRect(const Rect& rect) {
-
-	RECT win32_rect = MakeClearEdgeRectForFill(rect, ClearEdgeOption::Clear).ToRECT();
-	InvalidateRect(handle_, &win32_rect, FALSE);
-}
-
-
-void Window::Repaint() {
-
-	Rect dirty_rect;
-
-    RECT win32_rect = { 0 };
-	if (GetUpdateRect(handle_, &win32_rect, TRUE)) {
-		dirty_rect = Rect::FromRECT(win32_rect);
-	}
-	else {
-		dirty_rect = root_control_->GetRect();
-	}
-
-    //The update rect must be validated before painting.
-    //Because some controls may call NeedRepaint while it is painting,
-    //and this may fails if there is a invalidated update rect.
-    ValidateRect(handle_, nullptr);
-
-	renderer_->BeginDraw();
-
-	Canvas canvas(renderer_);
-	canvas.SetRects(root_control_->GetRect(), dirty_rect);
-	root_control_->Repaint(canvas, dirty_rect);
-	
-	if (caret_ != nullptr) {
-		const Rect& caret_rect = caret_->GetRect();
-		if (caret_rect.HasIntersection(dirty_rect)) {
-			canvas.SetRects(root_control_->GetRect(), dirty_rect);
-			caret_->Repaint(canvas);
-		}
-	}
-
-	renderer_->EndDraw();
-}
-
-
-void Window::Resize(UINT width, UINT height) {
-
-	Size size(static_cast<float>(width), static_cast<float>(height));
-
-	renderer_->Resize(size);
-	root_control_->SetRect(Rect(Point(), size));
-}
-
-
 void Window::LostFocus() {
 
-	if (hovered_control_ != nullptr && hovered_control_->IsCapturingMouse()) {
-		SetCaptureMouseControl(hovered_control_, true);
-	}
+    if (hovered_control_ != nullptr && hovered_control_->IsCapturingMouse()) {
+        SetCaptureMouseControl(hovered_control_, true);
+    }
+}
+
+
+bool Window::ReceiveCloseMessage() {
+
+    bool can_close = GetCloseHandler()(*this);
+    if (can_close) {
+
+        auto close_event = GetPropertyMap().TryGetProperty<CloseEvent>(kCloseEventPropertyName);
+        if (close_event != nullptr) {
+            close_event->Trigger(shared_from_this());
+        }
+    }
+
+    return can_close;
+}
+
+
+void Window::ReceiveDestroyMessage() {
+
+    HWND old_handle = handle_;
+
+    handle_ = nullptr;
+    renderer_ = nullptr;
+
+    WindowDestroy(old_handle);
 }
 
 
@@ -408,13 +443,160 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& focused_control) 
 }
 
 
+const std::shared_ptr<Window> Window::GetOwner() const {
+
+    auto owner = GetPropertyMap().TryGetProperty<std::shared_ptr<Window>>(kOwnerPropertyName);
+    if (owner != nullptr) {
+        return *owner;
+    }
+    else {
+        return nullptr;
+    }
+}
+
+
+void Window::SetOwner(const std::shared_ptr<Window>& owner) {
+
+    if (IsClosed()) {
+        GetPropertyMap().SetProperty(kOwnerPropertyName, owner);
+    }
+}
+
+
+const Rect Window::GetRect() const {
+
+    if (IsClosed()) {
+        return rect_;
+    }
+    else {
+
+        RECT rect = { 0 };
+        GetWindowRect(handle_, &rect);
+        return Rect::FromRECT(rect);
+    }
+}
+
+
+void Window::SetRect(const Rect& rect) {
+
+    rect_ = rect;
+
+    SetWindowPos(
+        handle_,
+        nullptr,
+        static_cast<int>(rect_.position.x),
+        static_cast<int>(rect_.position.y),
+        static_cast<int>(rect_.size.width),
+        static_cast<int>(rect_.size.height),
+        SWP_NOZORDER
+    );
+}
+
+
+const Rect Window::GetClientRect() const {
+
+    RECT rect = { 0 };
+    ::GetClientRect(handle_, &rect);
+    return Rect::FromRECT(rect);
+}
+
+
+const std::wstring Window::GetTitle() const {
+
+    if (IsClosed()) {
+
+        auto title = GetPropertyMap().TryGetProperty<std::wstring>(kTitlePropertyName);
+        if (title != nullptr) {
+            return *title;
+        }
+        else {
+            return std::wstring();
+        }
+    }
+    else {
+
+        int title_length = GetWindowTextLength(handle_);
+        std::vector<wchar_t> buffer(title_length + 1);
+        GetWindowText(handle_, buffer.data(), buffer.size());
+        return buffer.data();
+    }
+}
+
+
+void Window::SetTitle(const std::wstring& title) {
+
+    GetPropertyMap().SetProperty(kTitlePropertyName, title);
+
+    if (! IsClosed()) {
+        SetWindowText(handle_, title.c_str());
+    }
+}
+
+
 const std::shared_ptr<Caret>& Window::GetCaret() {
 
-	if (caret_ == nullptr) {
-		caret_ = std::make_shared<Caret>();
-		caret_->SetWindow(shared_from_this());
-	}
-	return caret_;
+    if (caret_ == nullptr) {
+        caret_ = std::make_shared<Caret>();
+        caret_->SetWindow(shared_from_this());
+    }
+    return caret_;
 }
+
+
+const Window::CloseHandler Window::GetCloseHandler() const {
+
+    auto handler = GetPropertyMap().TryGetProperty<CloseHandler>(kCloseHandlerPropertyName);
+    if ((handler != nullptr) && (*handler != nullptr)) {
+        return *handler;
+    }
+    else {
+
+        return [](const Window&) {
+            return true;
+        };
+    }
+}
+
+
+void Window::SetCloseHandler(const CloseHandler& handler) {
+    GetPropertyMap().SetProperty(kCloseHandlerPropertyName, handler);
+}
+
+
+Window::CloseEvent::Proxy Window::GetCloseEvent() {
+
+    auto& event = GetPropertyMap().GetProperty<CloseEvent>(kCloseEventPropertyName);
+    return CloseEvent::Proxy(event);
+}
+
+
+const Point Window::GetMousePosition() const {
+
+    POINT cursor_point = { 0 };
+    GetCursorPos(&cursor_point);
+    ScreenToClient(handle_, &cursor_point);
+
+    return Point(static_cast<float>(cursor_point.x), static_cast<float>(cursor_point.y));
+}
+
+
+void Window::Show() {
+
+    CheckCreateWindowHandle();
+    ShowWindow(handle_, SW_SHOW);
+}
+
+
+void Window::Hide() {
+
+    ShowWindow(handle_, SW_HIDE);
+}
+
+
+void Window::Close() {
+
+    SendMessage(GetHandle(), WM_CLOSE, 0, 0);
+}
+
 
 }

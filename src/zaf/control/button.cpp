@@ -2,6 +2,8 @@
 
 namespace zaf {
 
+static const wchar_t* const kIsDefaultPropertyName = L"IsDefault";
+
 Button::Button() {
 
 }
@@ -61,6 +63,25 @@ void Button::Initialize() {
 
 	SetTextAlignment(TextAlignment::Center);
 	SetParagraphAlignment(ParagraphAlignment::Center);
+}
+
+
+bool Button::IsDefault() const {
+
+    auto is_default = GetPropertyMap().TryGetProperty<bool>(kIsDefaultPropertyName);
+    if (is_default != nullptr) {
+        return *is_default;
+    }
+    else {
+        return false;
+    }
+}
+
+
+void Button::SetIsDefault(bool is_default) {
+
+    GetPropertyMap().SetProperty(kIsDefaultPropertyName, is_default);
+    NeedRepaint();
 }
 
 

@@ -1,7 +1,7 @@
 #include <zaf/control/list_box.h>
 #include <algorithm>
 #include <zaf/base/assert.h>
-#include <zaf/control/creation.h>
+#include <zaf/creation.h>
 #include <zaf/window/message/key_message.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -32,7 +32,7 @@ void ListBox::Initialize() {
     SetBorderWidth(1);
     SetBorderColorPicker([](const Control&) { return Color::Black; });
 
-    item_container_ = CreateControl<ItemContainer>(std::dynamic_pointer_cast<ListBox>(shared_from_this()));
+    item_container_ = Create<ItemContainer>(std::dynamic_pointer_cast<ListBox>(shared_from_this()));
     SetScrolledControl(item_container_);
 }
 
@@ -71,7 +71,7 @@ const ListBox::ItemCreator ListBox::GetItemCreator() const {
     }
     else {
         return [](const ListBox&) {
-            return CreateControl<Item>();
+            return Create<Item>();
         };
     }
 }

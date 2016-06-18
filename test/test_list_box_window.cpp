@@ -7,10 +7,12 @@ class TestListBoxWindow : public Window {
 public:
     void Initialize() {
 
+        __super::Initialize();
+
         SetTitle(L"test list box");
         SetRect(Rect(0, 0, 500, 500));
 
-        list_box_ = CreateControl<ListBox>();
+        list_box_ = Create<ListBox>();
         list_box_->SetRect(Rect(0, 0, 200, 200));
         list_box_->AddItemWithText(L"Apple");
         list_box_->AddItemWithText(L"Boy");
@@ -25,7 +27,7 @@ public:
 
     void InitializeOptions() {
 
-        options_container_ = CreateControl<Control>();
+        options_container_ = Create<Control>();
         options_container_->SetRect(Rect(0, 200, 500, 300));
         options_container_->SetLayouter(GetVerticalArrayLayouter());
         GetRootControl()->AddChild(options_container_);
@@ -39,16 +41,16 @@ public:
 
     void InitializeAddItemWithTextOptions() {
 
-        auto container = CreateControl<Control>();
+        auto container = Create<Control>();
         container->SetLayouter(GetHorizontalArrayLayouter());
         options_container_->AddChild(container);
         
-        auto text_box = CreateControl<TextBox>();
+        auto text_box = Create<TextBox>();
         container->AddChild(text_box);
 
-        auto label = CreateControl<Label>();
+        auto label = Create<Label>();
 
-        auto add_button = CreateControl<Button>();
+        auto add_button = Create<Button>();
         add_button->SetText(L"Add item");
         add_button->GetClickEvent().AddListener([this, text_box, label](const std::shared_ptr<ClickableControl>& button) {
             auto index = list_box_->AddItemWithText(text_box->GetText());
@@ -61,16 +63,16 @@ public:
 
     void InitializeRemoveItemWithTextOptions() {
 
-        auto container = CreateControl<Control>();
+        auto container = Create<Control>();
         container->SetLayouter(GetHorizontalArrayLayouter());
         options_container_->AddChild(container);
 
-        auto text_box = CreateControl<TextBox>();
+        auto text_box = Create<TextBox>();
         container->AddChild(text_box);
 
-        auto label = CreateControl<Label>();
+        auto label = Create<Label>();
 
-        auto remove_button = CreateControl<Button>();
+        auto remove_button = Create<Button>();
         remove_button->SetText(L"Remove item");
         remove_button->GetClickEvent().AddListener([this, text_box, label](const std::shared_ptr<ClickableControl>& button) {
             auto index = list_box_->RemoveItemWithText(text_box->GetText());
@@ -83,13 +85,13 @@ public:
 
     void InitializeSelectOptionOptions() {
 
-        auto container = CreateControl<Control>();
+        auto container = Create<Control>();
         container->SetLayouter(GetHorizontalArrayLayouter());
         options_container_->AddChild(container);
 
         auto group = std::make_shared<RadioButton::Group>();
 
-        auto no_select_radio_button = CreateControl<RadioButton>();
+        auto no_select_radio_button = Create<RadioButton>();
         no_select_radio_button->SetText(L"No select");
         no_select_radio_button->SetGroup(group);
         no_select_radio_button->GetSelectStateChangeEvent().AddListener([this](const std::shared_ptr<RadioButton>&) {
@@ -97,7 +99,7 @@ public:
         });
         container->AddChild(no_select_radio_button);
 
-        auto single_select_radio_button = CreateControl<RadioButton>();
+        auto single_select_radio_button = Create<RadioButton>();
         single_select_radio_button->SetText(L"Single select");
         single_select_radio_button->SetGroup(group);
         single_select_radio_button->GetSelectStateChangeEvent().AddListener([this](const std::shared_ptr<RadioButton>&) {
@@ -105,7 +107,7 @@ public:
         });
         container->AddChild(single_select_radio_button);
 
-        auto simple_multi_select_radio_button = CreateControl<RadioButton>();
+        auto simple_multi_select_radio_button = Create<RadioButton>();
         simple_multi_select_radio_button->SetText(L"Simple multi select");
         simple_multi_select_radio_button->SetGroup(group);
         simple_multi_select_radio_button->GetSelectStateChangeEvent().AddListener([this](const std::shared_ptr<RadioButton>&) {
@@ -113,7 +115,7 @@ public:
         });
         container->AddChild(simple_multi_select_radio_button);
 
-        auto extended_multi_select_radio_button = CreateControl<RadioButton>();
+        auto extended_multi_select_radio_button = Create<RadioButton>();
         extended_multi_select_radio_button->SetText(L"Extended multi select");
         extended_multi_select_radio_button->SetGroup(group);
         extended_multi_select_radio_button->GetSelectStateChangeEvent().AddListener([this](const std::shared_ptr<RadioButton>&) {
@@ -140,15 +142,15 @@ public:
 
     void InitializeFirstSelectedIndexOptions() {
 
-        auto container = CreateControl<Control>();
+        auto container = Create<Control>();
         container->SetLayouter(GetHorizontalArrayLayouter());
         options_container_->AddChild(container);
 
-        auto label = CreateControl<Label>();
+        auto label = Create<Label>();
         label->SetText(L"First selected index");
         container->AddChild(label);
 
-        auto text_box = CreateControl<TextBox>();
+        auto text_box = Create<TextBox>();
         text_box->SetText(std::to_wstring(list_box_->GetFirstSelectedItemIndex()));
         container->AddChild(text_box);
 
@@ -164,7 +166,7 @@ private:
 
 void ShowTestListBoxWindow() {
 
-    auto window = std::make_shared<TestListBoxWindow>();
-    window->Initialize();
+    auto window = Create<TestListBoxWindow>();
+    window->SetOwner(Application::GetInstance().GetMainWindow());
     window->Show();
 }

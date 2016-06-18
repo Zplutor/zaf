@@ -8,6 +8,7 @@
 namespace zaf {
 
 class RendererFactory;
+class Window;
 
 /**
  Represents the application runtime instance.
@@ -58,6 +59,13 @@ public:
 	 */
 	void Run();
 
+    /**
+     Terminate the application.
+
+     After calling this method, the message loop ends, and the application exits normally.
+     */
+    void Terminate();
+
 	/**
 	 Get the default renderer factory.
 
@@ -91,16 +99,30 @@ public:
 	EndRunEvent::Proxy GetEndRunEvent() {
 		return EndRunEvent::Proxy(end_run_event_);
 	}
+
+    const std::shared_ptr<Window> GetMainWindow() const {
+        return main_window_;
+    }
+
+    /**
+     Set the main window.
+
+     The application would terminate after the main window closed.
+
+     The main window can be nullptr.
+     */
+    void SetMainWindow(const std::shared_ptr<Window>& window);
 	
 private:
 	friend class Window;
 
 	void RegisterWindow(const std::shared_ptr<Window>& window);
+    void UnregisterWindow(const std::shared_ptr<Window>& window);
 
 private:
 	Application();
 
-	void WindowClosed(const std::shared_ptr<Window>& window);
+	void MainWindowClosed(const std::shared_ptr<Window>& window);
 
 	Application(const Application&) = delete;
 	Application& operator=(const Application&) = delete;
@@ -109,6 +131,7 @@ private:
 	bool is_initialized_;
 
 	std::shared_ptr<RendererFactory> renderer_factory_;
+    std::shared_ptr<Window> main_window_;
 	std::set<std::shared_ptr<Window>> windows_;
 
 	BeginRunEvent begin_run_event_;

@@ -135,6 +135,9 @@
     <ClCompile Include="src\zaf\control\list_box.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\dialog.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -159,9 +162,6 @@
       <Filter>zaf\window</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\window.h">
-      <Filter>zaf\window</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\window\window_state.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\canvas.h">
@@ -314,9 +314,6 @@
     <ClInclude Include="src\zaf\base\property_map.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\creation.h">
-      <Filter>zaf\control</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\layout\layouter.h">
       <Filter>zaf\control\layout</Filter>
     </ClInclude>
@@ -358,6 +355,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\message\key_message.h">
       <Filter>zaf\window\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\creation.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\dialog_result.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\dialog.h">
+      <Filter>zaf\window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

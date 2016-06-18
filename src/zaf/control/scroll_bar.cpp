@@ -1,6 +1,6 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/base/timer.h>
-#include <zaf/control/creation.h>
+#include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
@@ -16,9 +16,9 @@ static int kTimerInitialInterval = 300;
 static int kTimerContinuousInterval = 50;
 
 ScrollBar::ScrollBar() : 
-	incremental_arrow_(CreateControl<Arrow>()),
-	decremental_arrow_(CreateControl<Arrow>()),
-	thumb_(CreateControl<Thumb>()),
+	incremental_arrow_(Create<Arrow>()),
+	decremental_arrow_(Create<Arrow>()),
+	thumb_(Create<Thumb>()),
 	is_horizontal_(false),
 	min_value_(0), 
 	max_value_(0), 
