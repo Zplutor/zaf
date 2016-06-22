@@ -1,5 +1,6 @@
 #include <zaf/control/check_box.h>
 #include <zaf/base/assert.h>
+#include <zaf/base/event_utility.h>
 #include <zaf/control/paint_utility.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
@@ -195,7 +196,7 @@ void CheckBox::SetCheckState(CheckState check_state) {
 	check_state_ = check_state;
 	NeedRepaint();
 
-	auto event = GetPropertyMap().TryGetProperty<CheckStateChangeEvent>(kCheckStateChangeEventPropertyName);
+    auto event = TryGetEventFromPropertyMap<CheckStateChangeEvent>(GetPropertyMap(), kCheckStateChangeEventPropertyName);
 	if (event != nullptr) {
 		event->Trigger(std::dynamic_pointer_cast<CheckBox>(shared_from_this()));
 	}
@@ -203,9 +204,7 @@ void CheckBox::SetCheckState(CheckState check_state) {
 
 
 CheckBox::CheckStateChangeEvent::Proxy CheckBox::GetCheckStateChangeEvent() {
-
-	auto& event = GetPropertyMap().GetProperty<CheckStateChangeEvent>(kCheckStateChangeEventPropertyName);
-	return CheckStateChangeEvent::Proxy(event);
+    return GetEventProxyFromPropertyMap<CheckStateChangeEvent>(GetPropertyMap(), kCheckStateChangeEventPropertyName);
 }
 
 

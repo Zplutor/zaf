@@ -1,5 +1,6 @@
 #include <zaf/control/clickable_control.h>
 #include <zaf/base/assert.h>
+#include <zaf/base/event_utility.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/window/message/key_message.h>
 #include <zaf/window/message/mouse_message.h>
@@ -28,9 +29,7 @@ void ClickableControl::Initialize() {
 
 
 ClickableControl::ClickEvent::Proxy ClickableControl::GetClickEvent() {
-
-	auto& event = GetPropertyMap().GetProperty<ClickEvent>(kClickEventPropertyName);
-	return ClickEvent::Proxy(event);
+    return GetEventProxyFromPropertyMap<ClickEvent>(GetPropertyMap(), kClickEventPropertyName);
 }
 
 
@@ -144,7 +143,7 @@ void ClickableControl::EndPress(PressType press_type) {
 
 		MouseClick();
 
-		auto click_event = GetPropertyMap().TryGetProperty<ClickEvent>(kClickEventPropertyName);
+		auto click_event = TryGetEventFromPropertyMap<ClickEvent>(GetPropertyMap(), kClickEventPropertyName);
 		if (click_event != nullptr) {
 			click_event->Trigger(std::dynamic_pointer_cast<ClickableControl>(shared_from_this()));
 		}

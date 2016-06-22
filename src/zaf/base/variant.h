@@ -18,6 +18,15 @@ public:
 
 	}
 
+    /**
+     Initialize the instance that has specified value.
+     */
+    template<typename ValueType>
+    Variant(ValueType&& value) :
+        holder_(std::make_unique<TypedValueHolder<ValueType>>(std::move(value))) {
+
+    }
+
 	/**
 	 Initialize the instance that has the same value as another.
 	 */
@@ -36,9 +45,18 @@ public:
 	 */
 	template<typename ValueType>
 	Variant& operator=(const ValueType& value) {
-		holder_ = std::make_unique<TypedValueHolder<ValueType>>(value);
+        holder_ = std::make_unique<TypedValueHolder<ValueType>>(value);
 		return *this;
 	}
+
+    /**
+     Assign the instance with specified value.
+     */
+    template<typename ValueType>
+    Variant& operator=(ValueType&& value) {
+        holder_ = std::make_unique<TypedValueHolder<ValueType>>(std::move(value));
+        return *this;
+    }
 
 	/**
 	 Assign the instance with another.
@@ -47,6 +65,14 @@ public:
 		holder_ = other.holder_ == nullptr ? nullptr : other.holder_->Clone();
 		return *this;
 	}
+
+    /**
+     Assign the instance that obtains value from another.
+     */
+    Variant& operator=(Variant&& other) {
+        holder_ = std::move(other.holder_);
+        return *this;
+    }
 
 	/**
 	 Try to cast the value to specified type.
@@ -79,6 +105,7 @@ private:
 	class TypedValueHolder : public ValueHolder {
 	public:
 		TypedValueHolder(const ValueType& value) : value_(value) { }
+        TypedValueHolder(ValueType&& value) : value_(std::move(value)) { }
 
 		std::unique_ptr<ValueHolder> Clone() const {
 			return std::make_unique<TypedValueHolder<ValueType>>(value_);

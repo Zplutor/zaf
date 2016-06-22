@@ -1,6 +1,7 @@
 #include <zaf/control/list_box.h>
 #include <algorithm>
 #include <zaf/base/assert.h>
+#include <zaf/base/event_utility.h>
 #include <zaf/creation.h>
 #include <zaf/window/message/key_message.h>
 #include <zaf/window/message/mouse_message.h>
@@ -108,9 +109,7 @@ void ListBox::SetSelectOption(SelectOption select_option) {
 
 
 ListBox::SelectionChangeEvent::Proxy ListBox::GetSelectionChangeEvent() {
-
-    auto& event = GetPropertyMap().GetProperty<SelectionChangeEvent>(kSelectionChangeEventPropertyName);
-    return SelectionChangeEvent::Proxy(event);
+    return GetEventProxyFromPropertyMap<SelectionChangeEvent>(GetPropertyMap(), kSelectionChangeEventPropertyName);
 }
 
 
@@ -388,7 +387,7 @@ std::size_t ListBox::GetItemIndex(const std::shared_ptr<Item>& item) const {
 
 void ListBox::SelectionChange() {
 
-    auto event = GetPropertyMap().TryGetProperty<SelectionChangeEvent>(kSelectionChangeEventPropertyName);
+    auto event = TryGetEventFromPropertyMap<SelectionChangeEvent>(GetPropertyMap(), kSelectionChangeEventPropertyName);
     if (event != nullptr) {
         event->Trigger(std::dynamic_pointer_cast<ListBox>(shared_from_this()));
     }

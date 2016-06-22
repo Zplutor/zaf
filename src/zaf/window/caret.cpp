@@ -66,7 +66,7 @@ void Caret::CreateSystemCaret() {
         static_cast<int>(caret_rect.size.height)
     );
 
-    SetCaretPos(caret_rect.position.x, caret_rect.position.y);
+    SetCaretPos(static_cast<int>(caret_rect.position.x), static_cast<int>(caret_rect.position.y));
 }
 
 

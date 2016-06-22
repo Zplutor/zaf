@@ -1,4 +1,5 @@
 #include <zaf/control/scroll_bar.h>
+#include <zaf/base/event_utility.h>
 #include <zaf/base/timer.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
@@ -46,12 +47,12 @@ void ScrollBar::Initialize() {
 
 void ScrollBar::InitializeArrow(const std::shared_ptr<Arrow>& arrow) {
 
-	arrow->GetBeginPressEvent().AddListener(
+    arrow->GetBeginPressEvent().AddListenerWithTag(
 		std::bind(&ScrollBar::ArrowBeginPress, this, std::placeholders::_1), 
 		this
 	);
 
-	arrow->GetEndPressEvent().AddListener(
+    arrow->GetEndPressEvent().AddListenerWithTag(
 		std::bind(&ScrollBar::ArrowEndPress, this, std::placeholders::_1),
 		this
 	);
@@ -62,25 +63,25 @@ void ScrollBar::InitializeArrow(const std::shared_ptr<Arrow>& arrow) {
 
 void ScrollBar::UninitializeArrow(const std::shared_ptr<Arrow>& arrow) {
 
-	arrow->GetBeginPressEvent().RemoveListeners(this);
-	arrow->GetEndPressEvent().RemoveListeners(this);
+	arrow->GetBeginPressEvent().RemoveListenersWithTag(this);
+	arrow->GetEndPressEvent().RemoveListenersWithTag(this);
 	RemoveChild(arrow);
 }
 
 
 void ScrollBar::InitializeThumb(const std::shared_ptr<Thumb>& thumb) {
 
-	thumb->GetBeginDragEvent().AddListener(
+	thumb->GetBeginDragEvent().AddListenerWithTag(
 		std::bind(&ScrollBar::ThumbBeginDrag, this, std::placeholders::_1),
 		this
 	);
 
-	thumb->GetDragEvent().AddListener(
+    thumb->GetDragEvent().AddListenerWithTag(
 		std::bind(&ScrollBar::ThumbDrag, this, std::placeholders::_1),
 		this
 	);
 
-	thumb->GetEndDragEvent().AddListener(
+    thumb->GetEndDragEvent().AddListenerWithTag(
 		std::bind(&ScrollBar::ThumbEndDrag, this, std::placeholders::_1),
 		this
 	);
@@ -91,9 +92,9 @@ void ScrollBar::InitializeThumb(const std::shared_ptr<Thumb>& thumb) {
 
 void ScrollBar::UninitializeThumb(const std::shared_ptr<Thumb>& thumb) {
 
-	thumb->GetBeginDragEvent().RemoveListeners(this);
-	thumb->GetDragEvent().RemoveListeners(this);
-	thumb->GetEndDragEvent().RemoveListeners(this);
+	thumb->GetBeginDragEvent().RemoveListenersWithTag(this);
+	thumb->GetDragEvent().RemoveListenersWithTag(this);
+	thumb->GetEndDragEvent().RemoveListenersWithTag(this);
 	RemoveChild(thumb);
 }
 
@@ -188,7 +189,7 @@ void ScrollBar::SetValue(int value) {
 
 		NeedRelayout();
 
-		auto event = GetPropertyMap().TryGetProperty<ScrollEvent>(kScrollEventPropertyName);
+        auto event = TryGetEventFromPropertyMap<ScrollEvent>(GetPropertyMap(), kScrollEventPropertyName);
 		if (event != nullptr) {
 			event->Trigger(std::dynamic_pointer_cast<ScrollBar>(shared_from_this()));
 		}
@@ -309,9 +310,7 @@ void ScrollBar::ChangeVerticalRectToHorizontalRect(Rect& rect) {
 
 
 ScrollBar::ScrollEvent::Proxy ScrollBar::GetScrollEvent() {
-
-	auto& event = GetPropertyMap().GetProperty<ScrollEvent>(kScrollEventPropertyName);
-	return ScrollEvent::Proxy(event);
+    return GetEventProxyFromPropertyMap<ScrollEvent>(GetPropertyMap(), kScrollEventPropertyName);
 }
 
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <map>
 #include <zaf/base/variant.h>
 
@@ -24,26 +25,24 @@ public:
 		return const_cast<PropertyType*>(property);
 	}
 
-	template<typename PropertyType>
-	PropertyType& GetProperty(const std::wstring& property_name) {
+    template<typename PropertyType>
+    PropertyType& GetProperty(const std::wstring& property_name, const std::function<PropertyType()>& property_creator) {
+    
+        auto property = TryGetProperty<PropertyType>(property_name);
+        if (property != nullptr) {
+            return *property;
+        }
 
-		auto property = TryGetProperty<PropertyType>(property_name);
-		if (property != nullptr) {
-			return *property;
-		}
+        auto iterator = properties_.find(property_name);
+        if (iterator == properties_.end()) {
+            iterator = properties_.insert(std::make_pair(property_name, property_creator())).first;
+        }
+        else {
+            iterator->second = property_creator();
+        }
 
-		PropertyType default_property;
-
-		auto iterator = properties_.find(property_name);
-		if (iterator == properties_.end()) {
-			iterator = properties_.insert(std::make_pair(property_name, default_property)).first;
-		}
-		else {
-			iterator->second = default_property;
-		}
-
-		return *iterator->second.TryCast<PropertyType>();
-	}
+        return *iterator->second.TryCast<PropertyType>();
+    }
 
 	template<typename PropertyType>
 	void SetProperty(const std::wstring& property_name, const PropertyType& property_value) {

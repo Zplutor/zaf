@@ -1,6 +1,7 @@
 #include <zaf/control/radio_button.h>
 #include <algorithm>
 #include <zaf/base/assert.h>
+#include <zaf/base/event_utility.h>
 #include <zaf/control/paint_utility.h>
 #include <zaf/graphic/canvas.h>
 
@@ -173,7 +174,7 @@ void RadioButton::SetIsSelected(bool is_selected) {
 		group_->RadioButtonSelected(shared_this);
 	}
 
-	auto event = GetPropertyMap().TryGetProperty<SelectStateChangeEvent>(kSelectStateChangeEventProprtyName);
+    auto event = TryGetEventFromPropertyMap<SelectStateChangeEvent>(GetPropertyMap(), kSelectStateChangeEventProprtyName);
 	if (event != nullptr) {
 		event->Trigger(shared_this);
 	}
@@ -181,9 +182,7 @@ void RadioButton::SetIsSelected(bool is_selected) {
 
 
 RadioButton::SelectStateChangeEvent::Proxy RadioButton::GetSelectStateChangeEvent() {
-
-	auto& event = GetPropertyMap().GetProperty<SelectStateChangeEvent>(kSelectStateChangeEventProprtyName);
-	return SelectStateChangeEvent::Proxy(event);
+    return GetEventProxyFromPropertyMap<SelectStateChangeEvent>(GetPropertyMap(), kSelectStateChangeEventProprtyName);
 }
 
 

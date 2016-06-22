@@ -14,7 +14,7 @@ Dialog::Dialog() :
 Dialog::~Dialog() {
 
     for (const auto& each_pair : dialog_buttons_) {
-        each_pair.first->GetClickEvent().RemoveListeners(this);
+        each_pair.first->GetClickEvent().RemoveListenersWithTag(this);
     }
 }
 
@@ -95,7 +95,7 @@ void Dialog::CloseWithResult(DialogResult result) {
 void Dialog::AddDialogButton(const std::shared_ptr<Button>& button, DialogResult dialog_result) {
 
     dialog_buttons_[button] = dialog_result;
-    button->GetClickEvent().RemoveListeners(this);
+    button->GetClickEvent().RemoveListenersWithTag(this);
 
     auto dialog_button_click_callback = [this](const std::shared_ptr<ClickableControl>& button) {
 
@@ -111,7 +111,7 @@ void Dialog::AddDialogButton(const std::shared_ptr<Button>& button, DialogResult
         CloseWithResult(iterator->second);
     };
 
-    button->GetClickEvent().AddListener(dialog_button_click_callback, this);
+    button->GetClickEvent().AddListenerWithTag(dialog_button_click_callback, this);
 }
 
 }

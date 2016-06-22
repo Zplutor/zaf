@@ -1,6 +1,7 @@
 #include <zaf/window/window.h>
 #include <Windowsx.h>
 #include <zaf/application.h>
+#include <zaf/base/event_utility.h>
 #include <zaf/base/log.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
@@ -344,7 +345,7 @@ bool Window::ReceiveCloseMessage() {
     bool can_close = GetCloseHandler()(*this);
     if (can_close) {
 
-        auto close_event = GetPropertyMap().TryGetProperty<CloseEvent>(kCloseEventPropertyName);
+        auto close_event = TryGetEventFromPropertyMap<CloseEvent>(GetPropertyMap(), kCloseEventPropertyName);
         if (close_event != nullptr) {
             close_event->Trigger(shared_from_this());
         }
@@ -565,8 +566,11 @@ void Window::SetCloseHandler(const CloseHandler& handler) {
 
 Window::CloseEvent::Proxy Window::GetCloseEvent() {
 
-    auto& event = GetPropertyMap().GetProperty<CloseEvent>(kCloseEventPropertyName);
-    return CloseEvent::Proxy(event);
+    auto& event = GetPropertyMap().GetProperty<std::shared_ptr<CloseEvent>>(
+        kCloseEventPropertyName,
+        []() { return std::make_shared<CloseEvent>(); }
+    );
+    return CloseEvent::Proxy(*event);
 }
 
 
