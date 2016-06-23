@@ -138,9 +138,6 @@
     <ClCompile Include="src\zaf\window\dialog.cpp">
       <Filter>zaf\window</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\event_utility.cpp">
-      <Filter>zaf\base</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

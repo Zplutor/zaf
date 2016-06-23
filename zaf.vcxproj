@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp" />
-    <ClCompile Include="src\zaf\base\event_utility.cpp" />
     <ClCompile Include="src\zaf\base\log.cpp" />
     <ClCompile Include="src\zaf\base\timer.cpp" />
     <ClCompile Include="src\zaf\control\button.cpp" />
