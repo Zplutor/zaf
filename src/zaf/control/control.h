@@ -35,7 +35,6 @@ public:
             control_.EndUpdate();
         }
 
-    private:
         UpdateGuard(const UpdateGuard&) = delete;
         UpdateGuard& operator=(const UpdateGuard&) = delete;
 
@@ -44,7 +43,14 @@ public:
     };
 
 public:
+    /**
+     Construct the instance.
+     */
 	Control();
+
+    /**
+     Destruct the instance.
+     */
 	virtual ~Control();
 
 	/**
@@ -56,7 +62,24 @@ public:
 	 */
 	virtual void Initialize() { }
 
+    /**
+     Begin updating the contol.
+
+     The control's update count pluses one while BeginUpdate is called, and subtract 
+     one while EndUpdate is called. The control would stop repainting and relayouting 
+     while its update count greater than zero, until the update count reaches zero.
+
+     It is recommended to use UpdateGuard to ensure that the callings of BeginUpdate/EndUpdate 
+     are matched.
+     */
     void BeginUpdate();
+
+    /**
+     End updating the control.
+
+     The control's update count would subtract one, and if it is zero, the control would
+     repaint and relayout immediately.
+     */
     void EndUpdate();
 
 	/**
