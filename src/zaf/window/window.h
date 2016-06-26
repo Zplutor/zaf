@@ -104,6 +104,7 @@ private:
 	static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
     void CreateWindowHandle();
+    void CreateRenderer();
     void CheckCreateWindowHandle();
 
     void Repaint();

@@ -125,10 +125,16 @@ void Window::CreateWindowHandle() {
 
     SetWindowLongPtr(handle_, GWLP_USERDATA, reinterpret_cast<ULONG_PTR>(this));
 
-    renderer_ = Application::GetInstance().GetRendererFactory()->CreateRenderer(handle_);
+    CreateRenderer();
     Application::GetInstance().RegisterWindow(shared_from_this());
 
     WindowCreate();
+}
+
+
+void Window::CreateRenderer() {
+
+    renderer_ = Application::GetInstance().GetRendererFactory()->CreateRenderer(handle_);
 }
 
 
@@ -233,7 +239,12 @@ void Window::Repaint() {
         }
     }
 
-    renderer_->EndDraw();
+    bool is_succeeded = renderer_->EndDraw();
+
+    //Recreate the renderer if error occurred.
+    if (! is_succeeded) {
+        CreateRenderer();
+    }
 }
 
 

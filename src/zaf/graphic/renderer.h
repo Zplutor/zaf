@@ -39,8 +39,9 @@ public:
 		handle_->BeginDraw();
 	}
 
-	void EndDraw() {
-		handle_->EndDraw();
+	bool EndDraw() {
+		HRESULT result = handle_->EndDraw();
+        return SUCCEEDED(result) ? true : false;
 	}
 
 	void DrawLine(
