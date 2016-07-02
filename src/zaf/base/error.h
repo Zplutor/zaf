@@ -58,4 +58,4 @@ inline bool IsSucceeded(const std::error_code& error_code) {
 }
 
 
-#define ZAF_CHECK_ERROR(error_code) ZAF_ASSERT(! zaf::IsSucceeded(error_code))
+#define ZAF_CHECK_ERROR(error_code) ZAF_ASSERT(zaf::IsSucceeded(error_code))
