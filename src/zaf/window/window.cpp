@@ -1,6 +1,7 @@
 #include <zaf/window/window.h>
 #include <Windowsx.h>
 #include <zaf/application.h>
+#include <zaf/base/error.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/base/log.h>
 #include <zaf/creation.h>
@@ -23,7 +24,7 @@ static const wchar_t* const kCloseHandlerPropertyName = L"CloseHandler";
 static const wchar_t* const kOwnerPropertyName = L"Owner";
 static const wchar_t* const kTitlePropertyName = L"Title";
 
-bool Window::RegisterDefaultClass() {
+void Window::RegisterDefaultClass(std::error_code& error_code) {
 
 	WNDCLASSEX default_class = { 0 };
 	default_class.cbSize = sizeof(default_class);
@@ -40,7 +41,12 @@ bool Window::RegisterDefaultClass() {
 	default_class.hIconSm = NULL;
 
 	ATOM atom = RegisterClassEx(&default_class);
-	return atom != 0;
+    if (atom != 0) {
+        error_code.clear();
+    }
+    else {
+        error_code = MakeSystemErrorCode(GetLastError());
+    }
 }
 
 
@@ -239,10 +245,10 @@ void Window::Repaint() {
         }
     }
 
-    bool is_succeeded = renderer_->EndDraw();
+    std::error_code error_code;
+    renderer_->EndDraw(error_code);
 
-    //Recreate the renderer if error occurred.
-    if (! is_succeeded) {
+    if (IsComErrorCode(error_code, D2DERR_RECREATE_TARGET)) {
         CreateRenderer();
     }
 }

@@ -1,6 +1,7 @@
 #include <zaf/application.h>
 #include <dwrite.h>
 #include <zaf/base/assert.h>
+#include <zaf/base/error.h>
 #include <zaf/graphic/renderer_factory.h>
 #include <zaf/window/window.h>
 
@@ -17,25 +18,29 @@ Application::Application() : is_initialized_(false) {
 }
 
 
-bool Application::Initialize() {
+void Application::Initialize(std::error_code& error_code) {
 
 	if (is_initialized_) {
-		return true;
+        error_code.clear();
+		return;
 	}
 
 	HRESULT result = CoInitialize(nullptr);
-	if (FAILED(result)) {
-		return false;
+    error_code = MakeComErrorCode(result);
+	if (! IsSucceeded(error_code)) {
+		return;
 	}
 
-	if (! Window::RegisterDefaultClass()) {
-		return false;
-	}
+	Window::RegisterDefaultClass(error_code);
+    if (! IsSucceeded(error_code)) {
+        return;
+    }
 
 	ID2D1Factory* d2d_factory_handle = nullptr;
 	result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2d_factory_handle);
-	if (FAILED(result)) {
-		return false;
+    error_code = MakeComErrorCode(result);
+	if (! IsSucceeded(error_code)) {
+		return;
 	}
 
 	IDWriteFactory* dwrite_factory_handle = nullptr;
@@ -44,14 +49,14 @@ bool Application::Initialize() {
 		__uuidof(IDWriteFactory),
 		reinterpret_cast<IUnknown**>(&dwrite_factory_handle)
 	);
-	if (FAILED(result)) {
+    error_code = MakeComErrorCode(result);
+	if (! IsSucceeded(error_code)) {
 		d2d_factory_handle->Release();
-		return false;
+		return;
 	}
 
 	renderer_factory_ = std::make_shared<RendererFactory>(d2d_factory_handle, dwrite_factory_handle);
 	is_initialized_ = true;
-	return true;
 }
 
 

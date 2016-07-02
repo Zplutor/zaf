@@ -21,9 +21,13 @@ int WINAPI WinMain(
 
 	auto& application = Application::GetInstance();
 	application.GetBeginRunEvent().AddListener(BeginRun);
-	if (application.Initialize()) {
-		application.Run();
-	}
+
+    std::error_code error_code;
+    application.Initialize(error_code);
+
+    if (IsSucceeded(error_code)) {
+        application.Run();
+    }
 }
 
 

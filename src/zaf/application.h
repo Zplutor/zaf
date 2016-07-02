@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <memory>
 #include <set>
+#include <system_error>
 #include <zaf/base/event.h>
 
 namespace zaf {
@@ -37,14 +38,11 @@ public:
 	/**
 	 Initialize the application.
 
-	 @return
-	 Return true if succeeded; otherwise return false.
-
 	 This mehtod must be called before Run method is called. If the initialization
 	 is failed, the application is unable to run, it should be terminated in 
 	 this case.
 	 */
-	bool Initialize();
+	void Initialize(std::error_code& error_code);
 
 	/**
 	 Make the application run.

@@ -368,5 +368,8 @@
     <ClInclude Include="src\zaf\base\event_utility.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\error.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

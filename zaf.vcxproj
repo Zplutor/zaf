@@ -50,6 +50,7 @@
     <ClInclude Include="src\zaf\application.h" />
     <ClInclude Include="src\zaf\base\assert.h" />
     <ClInclude Include="src\zaf\base\direct2d.h" />
+    <ClInclude Include="src\zaf\base\error.h" />
     <ClInclude Include="src\zaf\base\event.h" />
     <ClInclude Include="src\zaf\base\event_utility.h" />
     <ClInclude Include="src\zaf\base\flag_enum.h" />

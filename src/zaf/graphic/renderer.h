@@ -2,6 +2,8 @@
 
 #include <memory>
 #include <zaf/base/direct2d.h>
+#include <zaf/base/error.h>
+#include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
 #include <zaf/graphic/layer.h>
 #include <zaf/graphic/rect.h>
@@ -14,7 +16,6 @@
 namespace zaf {
 
 class Brush;
-class Color;
 class SolidColorBrush;
 
 class Renderer {
@@ -27,22 +28,49 @@ public:
 		}
 	}
 
-	void Resize(const Size& size) {
-		handle_->Resize(size.ToD2D1SIZEU());
-	}
+    void Resize(const Size& size, std::error_code& error_code) {
+        HRESULT result = handle_->Resize(size.ToD2D1SIZEU());
+        error_code = MakeComErrorCode(result);
+    }
 
-	const std::shared_ptr<SolidColorBrush> CreateSolidColorBrush(const Color& color);
+    void Resize(const Size& size) {
+        std::error_code error_code;
+        Resize(size, error_code);
+        ZAF_CHECK_ERROR(error_code);
+    }
 
-	const std::shared_ptr<Layer> CreateLayer(const Size& size);
+    const std::shared_ptr<SolidColorBrush> CreateSolidColorBrush(const Color& color, std::error_code& error_code);
+
+    const std::shared_ptr<SolidColorBrush> CreateSolidColorBrush(const Color& color) {
+        std::error_code error_code;
+        auto result = CreateSolidColorBrush(color, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+
+    const std::shared_ptr<Layer> CreateLayer(const Size& size, std::error_code& error_code);
+
+    const std::shared_ptr<Layer> CreateLayer(const Size& size) {
+        std::error_code error_code;
+        auto result = CreateLayer(size, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
 
 	void BeginDraw() {
 		handle_->BeginDraw();
 	}
 
-	bool EndDraw() {
-		HRESULT result = handle_->EndDraw();
-        return SUCCEEDED(result) ? true : false;
-	}
+    void EndDraw(std::error_code& error_code) {
+        HRESULT result = handle_->EndDraw();
+        error_code = MakeComErrorCode(result);
+    }
+
+    void EndDraw() {
+        std::error_code error_code;
+        EndDraw(error_code);
+        ZAF_CHECK_ERROR(error_code);
+    }
 
 	void DrawLine(
 		const Point& from_point, 
@@ -153,10 +181,13 @@ public:
 	}
 
 	void PushLayer(const Layer::Parameters& parameters, const std::shared_ptr<Layer>& layer);
-	void PopLayer();
 
-	void Clear() {
-		handle_->Clear(D2D1::ColorF(D2D1::ColorF::White));
+    void PopLayer() {
+        handle_->PopLayer();
+    }
+
+	void Clear(const Color& color) {
+		handle_->Clear(color.ToD2D1COLORF());
 	}
 
 	void Translate(const Point& point) {
@@ -167,7 +198,6 @@ public:
 		return handle_;
 	}
 
-private:
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
 

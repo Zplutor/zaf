@@ -31,10 +31,13 @@ RendererFactory::~RendererFactory() {
 }
 
 
-const std::shared_ptr<Renderer> RendererFactory::CreateRenderer(HWND window_handle) {
+const std::shared_ptr<Renderer> RendererFactory::CreateRenderer(HWND window_handle, std::error_code& error_code) {
 
 	RECT window_rect = { 0 };
-	GetClientRect(window_handle, &window_rect);
+    if (! GetClientRect(window_handle, &window_rect)) {
+        error_code = MakeSystemErrorCode(GetLastError());
+        return nullptr;
+    }
 
 	D2D1_SIZE_U renderer_size = D2D1::SizeU(
 		window_rect.right - window_rect.left,
@@ -53,7 +56,8 @@ const std::shared_ptr<Renderer> RendererFactory::CreateRenderer(HWND window_hand
 		&renderer_handle
 	);
 
-	if (SUCCEEDED(result)) {
+    error_code = MakeComErrorCode(result);
+	if (IsSucceeded(error_code)) {
 		return std::make_shared<Renderer>(renderer_handle);
 	}
 	else {
@@ -62,12 +66,13 @@ const std::shared_ptr<Renderer> RendererFactory::CreateRenderer(HWND window_hand
 }
 
 
-const std::shared_ptr<RectangleGeometry> RendererFactory::CreateRectangleGeometry(const Rect& rect) {
+const std::shared_ptr<RectangleGeometry> RendererFactory::CreateRectangleGeometry(const Rect& rect, std::error_code& error_code) {
 
     ID2D1RectangleGeometry* handle = nullptr;
     HRESULT result = d2d_factory_handle_->CreateRectangleGeometry(rect.ToD2D1RECTF(), &handle);
 
-    if (SUCCEEDED(result)) {
+    error_code = MakeComErrorCode(result);
+    if (IsSucceeded(error_code)) {
         return std::make_shared<RectangleGeometry>(handle);
     }
     else {
@@ -76,12 +81,13 @@ const std::shared_ptr<RectangleGeometry> RendererFactory::CreateRectangleGeometr
 }
 
 
-const std::shared_ptr<PathGeometry> RendererFactory::CreatePathGeometry() {
+const std::shared_ptr<PathGeometry> RendererFactory::CreatePathGeometry(std::error_code& error_code) {
 
 	ID2D1PathGeometry* handle = nullptr;
 	HRESULT result = d2d_factory_handle_->CreatePathGeometry(&handle);
 
-	if (SUCCEEDED(result)) {
+    error_code = MakeComErrorCode(result);
+	if (IsSucceeded(error_code)) {
 		return std::make_shared<PathGeometry>(handle);
 	}
 	else {
@@ -90,7 +96,7 @@ const std::shared_ptr<PathGeometry> RendererFactory::CreatePathGeometry() {
 }
 
 
-const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const StrokeProperties& properties) {
+const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const StrokeProperties& properties, std::error_code& error_code) {
     
 	D2D1_STROKE_STYLE_PROPERTIES d2d_properties;
 	d2d_properties.startCap = static_cast<D2D1_CAP_STYLE>(properties.start_cap_style);
@@ -109,7 +115,8 @@ const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const StrokeProperti
 		&handle
 	);
 
-	if (SUCCEEDED(result)) {
+    error_code = MakeComErrorCode(result);
+	if (IsSucceeded(error_code)) {
 		return std::make_shared<Stroke>(handle);
 	}
 	else {
@@ -118,7 +125,7 @@ const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const StrokeProperti
 }
 
 
-const std::shared_ptr<TextFormat> RendererFactory::CreateTextFormat(const TextFormatProperties& properties) {
+const std::shared_ptr<TextFormat> RendererFactory::CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code) {
 
 	IDWriteTextFormat* handle = nullptr;
 	HRESULT result = dwrite_factory_handle_->CreateTextFormat(
@@ -132,7 +139,8 @@ const std::shared_ptr<TextFormat> RendererFactory::CreateTextFormat(const TextFo
 		&handle
 	);
 
-	if (SUCCEEDED(result)) {
+    error_code = MakeComErrorCode(result);
+	if (IsSucceeded(error_code)) {
 		return std::make_shared<TextFormat>(handle);
 	}
 	else {
@@ -141,7 +149,7 @@ const std::shared_ptr<TextFormat> RendererFactory::CreateTextFormat(const TextFo
 }
 
 
-const std::shared_ptr<TextLayout> RendererFactory::CreateTextLayout(const TextLayoutProperties& properties) {
+const std::shared_ptr<TextLayout> RendererFactory::CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code) {
 
 	IDWriteTextLayout* handle = nullptr;
 	HRESULT result = dwrite_factory_handle_->CreateTextLayout(
@@ -153,7 +161,8 @@ const std::shared_ptr<TextLayout> RendererFactory::CreateTextLayout(const TextLa
 		&handle
 	);
 
-	if (SUCCEEDED(result)) {
+    error_code = MakeComErrorCode(result);
+	if (IsSucceeded(error_code)) {
 		return std::make_shared<TextLayout>(handle);
 	}
 	else {

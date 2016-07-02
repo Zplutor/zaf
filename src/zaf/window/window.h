@@ -93,7 +93,7 @@ private:
 	friend class Caret;
 	friend class Control;
 
-	static bool RegisterDefaultClass();
+	static void RegisterDefaultClass(std::error_code& error_code);
 
 	void NeedRepaintRect(const Rect& rect);
 	void SetHoveredControl(const std::shared_ptr<Control>& hovered_control);

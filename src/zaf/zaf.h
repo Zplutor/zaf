@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/application.h>
+#include <zaf/base/error.h>
 #include <zaf/control/button.h>
 #include <zaf/control/check_box.h>
 #include <zaf/control/control.h>

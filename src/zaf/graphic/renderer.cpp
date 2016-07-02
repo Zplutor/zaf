@@ -1,15 +1,15 @@
 #include <zaf/graphic/renderer.h>
-#include <zaf/graphic/color.h>
 #include <zaf/graphic/brush/solid_color_brush.h>
 
 namespace zaf {
 
-const std::shared_ptr<SolidColorBrush> Renderer::CreateSolidColorBrush(const Color& color) {
+const std::shared_ptr<SolidColorBrush> Renderer::CreateSolidColorBrush(const Color& color, std::error_code& error_code) {
 
 	ID2D1SolidColorBrush* brush_handle = nullptr;
 	LRESULT result = handle_->CreateSolidColorBrush(color.ToD2D1COLORF(), &brush_handle);
 
-	if (SUCCEEDED(result)) {
+    error_code = MakeComErrorCode(result);
+	if (IsSucceeded(error_code)) {
 		return std::make_shared<SolidColorBrush>(brush_handle);
 	}
 	else {
@@ -18,12 +18,13 @@ const std::shared_ptr<SolidColorBrush> Renderer::CreateSolidColorBrush(const Col
 }
 
 
-const std::shared_ptr<Layer> Renderer::CreateLayer(const Size& size) {
+const std::shared_ptr<Layer> Renderer::CreateLayer(const Size& size, std::error_code& error_code) {
 
 	ID2D1Layer* layer_handle = nullptr;
 	LRESULT result = handle_->CreateLayer(size.ToD2D1SIZEF(), &layer_handle);
 
-	if (SUCCEEDED(result)) {
+    error_code = MakeComErrorCode(result);
+	if (IsSucceeded(error_code)) {
 		return std::make_shared<Layer>(layer_handle);
 	}
 	else {
@@ -41,10 +42,5 @@ void Renderer::PushLayer(const Layer::Parameters& parameters, const std::shared_
 	handle_->PushLayer(d2d_parameters, layer->GetHandle());
 }
 
-
-void Renderer::PopLayer() {
-
-	handle_->PopLayer();
-}
 
 }
