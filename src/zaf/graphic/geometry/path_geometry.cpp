@@ -3,12 +3,13 @@
 
 namespace zaf {
 
-std::size_t PathGeometry::GetFigureCount() const {
+std::size_t PathGeometry::GetFigureCount(std::error_code& error_code) const {
 
 	std::size_t count = 0;
 	HRESULT result = handle_->GetFigureCount(&count);
 
-	if (SUCCEEDED(result)) {
+    error_code = MakeComErrorCode(result);
+	if (IsSucceeded(error_code)) {
 		return count;
 	}
 	else {
@@ -17,12 +18,13 @@ std::size_t PathGeometry::GetFigureCount() const {
 }
 
 
-std::size_t PathGeometry::GetSegmentCount() const {
+std::size_t PathGeometry::GetSegmentCount(std::error_code& error_code) const {
 
 	std::size_t count = 0;
 	HRESULT result = handle_->GetSegmentCount(&count);
 
-	if (SUCCEEDED(result)) {
+    error_code = MakeComErrorCode(result);
+	if (IsSucceeded(error_code)) {
 		return count;
 	}
 	else {
@@ -31,12 +33,13 @@ std::size_t PathGeometry::GetSegmentCount() const {
 }
 
 
-const std::shared_ptr<GeometrySink> PathGeometry::Open() {
+const std::shared_ptr<GeometrySink> PathGeometry::Open(std::error_code& error_code) {
 
 	ID2D1GeometrySink* sink_handle = nullptr;
 	HRESULT result = handle_->Open(&sink_handle);
 
-	if (SUCCEEDED(result)) {
+    error_code = MakeComErrorCode(result);
+	if (IsSucceeded(error_code)) {
 		return std::make_shared<GeometrySink>(sink_handle);
 	}
 	else {

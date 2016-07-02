@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <zaf/base/direct2d.h>
+#include <zaf/base/error.h>
 #include <zaf/base/flag_enum.h>
 #include <zaf/graphic/point.h>
 
@@ -61,9 +62,16 @@ public:
 
 	void AddLines(const std::vector<Point>& points);
 
-	bool Close() {
-		return SUCCEEDED(handle_->Close());
+	void Close() {
+        std::error_code error_code;
+        Close(error_code);
+        ZAF_CHECK_ERROR(error_code);
 	}
+
+    void Close(std::error_code& error_code) {
+        HRESULT result = handle_->Close();
+        error_code = MakeComErrorCode(result);
+    }
 
 	ID2D1GeometrySink* GetHandle() const {
 		return handle_;
