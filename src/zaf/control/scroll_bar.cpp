@@ -557,7 +557,7 @@ void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 	Canvas::StateGuard state_guard(canvas);
 
-	auto path = canvas.CreatePathGeometry();
+    auto path = Application::GetInstance().GetRendererFactory()->CreatePathGeometry();
 	if (path == nullptr) {
 		return;
 	}

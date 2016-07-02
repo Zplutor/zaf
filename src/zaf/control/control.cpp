@@ -118,10 +118,11 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
     canvas.SetBrushWithColor(GetBackgroundColor());
     canvas.DrawRectangle(background_rect);
 
-    auto border_geometry = canvas.CreateRectangleGeometry(border_rect);
-    auto background_geometry = canvas.CreateRectangleGeometry(background_rect);
+    auto renderer_factory = Application::GetInstance().GetRendererFactory();
+    auto border_geometry = renderer_factory->CreateRectangleGeometry(border_rect);
+    auto background_geometry = renderer_factory->CreateRectangleGeometry(background_rect);
     
-    auto path_geometry = canvas.CreatePathGeometry();
+    auto path_geometry = renderer_factory->CreatePathGeometry();
     auto sink = path_geometry->Open();
     Geometry::Combine(border_geometry, background_geometry, Geometry::CombineMode::Exclude, sink);
     sink->Close();

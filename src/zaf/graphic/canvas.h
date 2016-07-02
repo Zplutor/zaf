@@ -65,7 +65,8 @@ public:
 	}
 
 	void SetBrushWithColor(const Color& color) {
-		SetBrush(CreateSolidColorBrush(color));
+        auto brush = renderer_->CreateSolidColorBrush(color);
+		SetBrush(brush);
 	}
 
 	void SetStroke(const std::shared_ptr<Stroke>& stroke) {
@@ -128,30 +129,6 @@ public:
 
 	void DrawText(const std::shared_ptr<TextLayout>& text_layout, const Point& position) {
 		renderer_->DrawText(text_layout, position, GetCurrentState()->brush);
-	}
-
-	const std::shared_ptr<Brush> CreateSolidColorBrush(const Color& color) {
-		return renderer_->CreateSolidColorBrush(color);
-	}
-
-    const std::shared_ptr<RectangleGeometry> CreateRectangleGeometry(const Rect& rect) {
-        return Application::GetInstance().GetRendererFactory()->CreateRectangleGeometry(rect);
-    }
-
-	const std::shared_ptr<PathGeometry> CreatePathGeometry() {
-		return Application::GetInstance().GetRendererFactory()->CreatePathGeometry();
-	}
-
-	const std::shared_ptr<Stroke> CreateStroke(const StrokeProperties& properties) {
-		return Application::GetInstance().GetRendererFactory()->CreateStroke(properties);
-	}
-
-	const std::shared_ptr<TextFormat> CreateTextFormat(const TextFormatProperties& properties) {
-		return Application::GetInstance().GetRendererFactory()->CreateTextFormat(properties);
-	}
-
-	const std::shared_ptr<TextLayout> CreateTextLayout(const TextLayoutProperties& properties) {
-		return Application::GetInstance().GetRendererFactory()->CreateTextLayout(properties);
 	}
 
 private:
