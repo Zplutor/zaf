@@ -59,8 +59,12 @@ int WINAPI WinMain(
 
     auto& application = zaf::Application::GetInstance();
     application.GetBeginRunEvent().AddListener(ShowMainWindow);
-    application.Initialize();
-    application.Run();
+
+    std::error_code error_code;
+    application.Initialize(error_code);
+    if (zaf::IsSucceeded(error_code)) {
+        application.Run();
+    }
 }
 
 
