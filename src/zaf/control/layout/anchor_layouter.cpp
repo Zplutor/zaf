@@ -26,6 +26,12 @@ static void LayoutWithAnchor(
 	const std::vector<std::shared_ptr<Control>>& children
 ) {
 
+    //Do nothing when previous rect is empty, or the layouts of chilren
+    //are incorrect.
+    if (previous_rect.IsEmpty()) {
+        return;
+    }
+
 	for (const auto& child : children) {
 		LayoutChild(parent->GetRect(), previous_rect, child);
 	}
