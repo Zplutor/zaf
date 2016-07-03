@@ -144,6 +144,13 @@ void Window::CreateRenderer() {
 }
 
 
+void Window::RecreateRenderer() {
+
+    root_control_->ReleaseRendererResources();
+    CreateRenderer();
+}
+
+
 void Window::CheckCreateWindowHandle() {
 
     if (IsClosed()) {
@@ -249,7 +256,7 @@ void Window::Repaint() {
     renderer_->EndDraw(error_code);
 
     if (IsComErrorCode(error_code, D2DERR_RECREATE_TARGET)) {
-        CreateRenderer();
+        RecreateRenderer();
     }
 }
 

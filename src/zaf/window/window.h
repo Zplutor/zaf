@@ -105,6 +105,7 @@ private:
 
     void CreateWindowHandle();
     void CreateRenderer();
+    void RecreateRenderer();
     void CheckCreateWindowHandle();
 
     void Repaint();

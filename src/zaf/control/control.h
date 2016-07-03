@@ -21,6 +21,7 @@ class KeyMessage;
 class Message;
 class MouseMessage;
 class MouseWheelMessage;
+class Renderer;
 class Window;
 
 class Control : public std::enable_shared_from_this<Control> {
@@ -255,9 +256,17 @@ public:
 	/**
 	 Get the window where the control locates.
 
-	 Return nullptr if the controls does not locates in any window.
+	 Return nullptr if the control does not locates in any window.
 	 */
 	const std::shared_ptr<Window> GetWindow() const;
+
+    /**
+     Get the renderer from the window that the control locates.
+
+     Return nullptr if the control does not locates in any window, 
+     or the window is closed.
+     */
+    const std::shared_ptr<Renderer> GetRenderer() const;
 
 	/**
 	 Get a value indicating that whether the control is visible.
@@ -337,6 +346,8 @@ protected:
 	void NeedRepaint();
 	void NeedRepaintRect(const Rect& rect);
 
+    void ReleaseRendererResources();
+
 	virtual void Layout(const Rect& previous_rect);
 	void NeedRelayout();
 
@@ -385,9 +396,7 @@ private:
     void InterpretMessage(const Point& position, const MouseMessage& message);
 
 private:
-	void SetParent(const std::shared_ptr<Control>& parent) {
-		parent_ = parent;
-	}
+	void SetParent(const std::shared_ptr<Control>& parent);
 
 	/**
 	 Called when a child's rect has changed.

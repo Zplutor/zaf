@@ -171,6 +171,14 @@ void Control::NeedRepaintRect(const Rect& rect) {
 }
 
 
+void Control::ReleaseRendererResources() {
+
+    for (const auto& each_child : children_) {
+        each_child->ReleaseRendererResources();
+    }
+}
+
+
 void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const Rect& previous_rect) {
 
 	const Rect& new_rect = child->GetRect();
@@ -343,6 +351,40 @@ void Control::SetLayouter(const Layouter& layouter) {
 }
 
 
+void Control::SetParent(const std::shared_ptr<Control>& parent) {
+
+    auto need_release_renderer_resources = [this, &parent]() {
+
+        auto previous_parent = parent_.lock();
+        if (previous_parent == nullptr) {
+            return false;
+        }
+
+        if (parent == nullptr) {
+            return true;
+        }
+
+        auto previous_window = previous_parent->GetWindow();
+        if (previous_window == nullptr) {
+            return false;
+        }
+
+        auto new_window = parent->GetWindow();
+        if (new_window == nullptr) {
+            return true;
+        }
+
+        return previous_window != new_window;
+    };
+
+    if (need_release_renderer_resources()) {
+        ReleaseRendererResources();
+    }
+    
+    parent_ = parent;
+}
+
+
 void Control::AddChild(const std::shared_ptr<Control>& child) {
 
 	auto previous_parent = child->GetParent();
@@ -449,6 +491,18 @@ const std::shared_ptr<Window> Control::GetWindow() const {
 	}
 
 	return parent->GetWindow();
+}
+
+
+const std::shared_ptr<Renderer> Control::GetRenderer() const {
+
+    auto window = GetWindow();
+    if (window != nullptr) {
+        return window->GetRenderer();
+    }
+    else {
+        return nullptr;
+    }
 }
 
 
