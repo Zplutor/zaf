@@ -5,10 +5,13 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
+#include <zaf/internal/paint_utility.h>
+#include <zaf/internal/theme.h>
 
 namespace zaf {
 
-static const wchar_t* const kBoxColorPickerPropertyName = L"BoxColorPicker";
+static const wchar_t* const kBoxBackgroundColorPickerPropertyName = L"BoxBackgroundColorPicker";
+static const wchar_t* const kBoxBorderColorPickerPropertyName = L"BoxBorderColorPicker";
 static const wchar_t* const kCanAutoChangeCheckStatePropertyName = L"CanAutoChangeCheckState";
 static const wchar_t* const kCanBeIndeterminatePropertyName = L"CanBeIndeterminate";
 static const wchar_t* const kCheckStateChangeEventPropertyName = L"CheckStateChangeEvent";
@@ -27,7 +30,7 @@ void CheckBox::Initialize() {
 
 	__super::Initialize();
 
-	SetBoxColorPicker([](const Control& control) {
+	SetBoxBorderColorPicker([](const Control& control) {
 	
 		const auto& check_box = dynamic_cast<const CheckBox&>(control);
 
@@ -49,6 +52,10 @@ void CheckBox::Initialize() {
 
 		return Color::Black;
 	});
+
+    SetBoxBackgroundColorPicker([](const Control&) {
+        return internal::ControlContentColor;
+    });
 }
 
 
@@ -67,22 +74,20 @@ void CheckBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 	PaintTextWithIcon(
 		canvas,
-		GetContentRect(), 
+		*this,
 		text_layout, 
 		12,
-		[this](Canvas& canvas, const Rect& text_rect, const std::shared_ptr<TextLayout>& text_layout) {
-			canvas.SetBrushWithColor(GetTextColor());
-			canvas.DrawText(text_layout, text_rect.position);
-		},
-		std::bind(&CheckBox::PaintBox, this, std::placeholders::_1, std::placeholders::_2)
-	);
+		std::bind(&CheckBox::PaintBox, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 
 void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
 
-	//Paint the box frame.
-	canvas.SetBrushWithColor(GetBoxColor());
+	//Paint the box.
+    canvas.SetBrushWithColor(GetBoxBackgroundColor());
+    canvas.DrawRectangle(box_rect);
+
+	canvas.SetBrushWithColor(GetBoxBorderColor());
 	canvas.DrawRectangleFrame(box_rect, 1);
 
 	//Paint the check state mark.
@@ -128,23 +133,41 @@ const Rect CheckBox::GetTextRect() const {
 }
 
 
-const ColorPicker CheckBox::GetBoxColorPicker() const {
+const ColorPicker CheckBox::GetBoxBorderColorPicker() const {
 
-	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBoxColorPickerPropertyName);
+	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBoxBorderColorPickerPropertyName);
 	if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
 		return *color_picker;
 	}
-
-	return [](const Control&) {
-		return Color::Black;
-	};
+    else {
+	    return EmptyColorPicker;
+    }
 }
 
 
-void CheckBox::SetBoxColorPicker(const ColorPicker& color_picker) {
+void CheckBox::SetBoxBorderColorPicker(const ColorPicker& color_picker) {
 
-	GetPropertyMap().SetProperty(kBoxColorPickerPropertyName, color_picker);
+	GetPropertyMap().SetProperty(kBoxBorderColorPickerPropertyName, color_picker);
 	NeedRepaint();
+}
+
+
+const ColorPicker CheckBox::GetBoxBackgroundColorPicker() const {
+
+    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBoxBackgroundColorPickerPropertyName);
+    if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
+        return *color_picker;
+    }
+    else {
+        return EmptyColorPicker;
+    }
+}
+
+
+void CheckBox::SetBoxBackgroundColorPicker(const ColorPicker& color_picker) {
+
+    GetPropertyMap().SetProperty(kBoxBackgroundColorPickerPropertyName, color_picker);
+    NeedRepaint();
 }
 
 

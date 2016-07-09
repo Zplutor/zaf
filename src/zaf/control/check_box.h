@@ -28,11 +28,18 @@ public:
 
 	void Initialize() override;
 
-	const Color GetBoxColor() const {
-		return GetBoxColorPicker()(*this);
+	const Color GetBoxBorderColor() const {
+		return GetBoxBorderColorPicker()(*this);
 	}
-	const ColorPicker GetBoxColorPicker() const;
-	void SetBoxColorPicker(const ColorPicker& color_picker);
+	const ColorPicker GetBoxBorderColorPicker() const;
+	void SetBoxBorderColorPicker(const ColorPicker& color_picker);
+
+    const Color GetBoxBackgroundColor() const {
+        return GetBoxBackgroundColorPicker()(*this);
+    }
+
+    const ColorPicker GetBoxBackgroundColorPicker() const;
+    void SetBoxBackgroundColorPicker(const ColorPicker& color_picker);
 
 	/**
 	 Get a value indicating that whether the check box changes its check state when 

@@ -4,11 +4,14 @@
 #include <zaf/base/event_utility.h>
 #include <zaf/control/paint_utility.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/internal/paint_utility.h>
+#include <zaf/internal/theme.h>
 
 namespace zaf {
 
 static const wchar_t* const kCanAutoSelectPropertyName = L"CanAutoSelect";
-static const wchar_t* const kRadioColorPickerPropertyName = L"RadioColorPicker";
+static const wchar_t* const kRadioBackgroundColorPickerPropertyName = L"RadioBackgroundColorPicker";
+static const wchar_t* const kRadioBorderColorPickerPropertyName = L"RadioBorderColorPicker";
 static const wchar_t* const kSelectStateChangeEventProprtyName = L"SelectStateChangeEvent";
 
 RadioButton::RadioButton() : is_selected_(true) {
@@ -25,7 +28,7 @@ void RadioButton::Initialize() {
 
 	__super::Initialize();
 
-    SetRadioColorPicker([](const Control& control) {
+    SetRadioBorderColorPicker([](const Control& control) {
     
         const auto& radio_button = dynamic_cast<const RadioButton&>(control);
 
@@ -47,6 +50,10 @@ void RadioButton::Initialize() {
 
         return Color::Black;
     });
+
+    SetRadioBackgroundColorPicker([](const Control&) {
+        return internal::ControlContentColor;
+    });
 }
 
 
@@ -65,21 +72,14 @@ void RadioButton::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 	PaintTextWithIcon(
 		canvas,
-		GetContentRect(),
+		*this,
 		text_layout,
 		12, 
-		[this](Canvas& canvas, const Rect& text_rect, const std::shared_ptr<TextLayout>& text_layout) {
-			canvas.SetBrushWithColor(GetTextColor());
-			canvas.DrawText(text_layout, text_rect.position);
-		},
-		std::bind(&RadioButton::PaintRadio, this, std::placeholders::_1, std::placeholders::_2)
-	);
+		std::bind(&RadioButton::PaintRadio, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 
 void RadioButton::PaintRadio(Canvas& canvas, const Rect& radio_rect) {
-
-	canvas.SetBrushWithColor(GetRadioColor());
 
 	float ellipse_x_radius = radio_rect.size.width / 2;
 	float ellipse_y_radius = radio_rect.size.height / 2;
@@ -89,6 +89,11 @@ void RadioButton::PaintRadio(Canvas& canvas, const Rect& radio_rect) {
 	ellipse_position.y += ellipse_y_radius;
 
 	Ellipse ellipse(ellipse_position, ellipse_x_radius, ellipse_y_radius);
+
+    canvas.SetBrushWithColor(GetRadioBackgroundColor());
+    canvas.DrawEllipse(ellipse);
+
+    canvas.SetBrushWithColor(GetRadioBorderColor());
 	canvas.DrawEllipseFrame(ellipse, 1);
 	
 	if (IsSelected()) {
@@ -103,22 +108,40 @@ const Rect RadioButton::GetTextRect() const {
 }
 
 
-const ColorPicker RadioButton::GetRadioColorPicker() const {
+const ColorPicker RadioButton::GetRadioBorderColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kRadioColorPickerPropertyName);
+    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kRadioBorderColorPickerPropertyName);
     if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
         return *color_picker;
     }
-
-    return [](const Control&) {
-        return Color::Black;
-    };
+    else {
+        return EmptyColorPicker;
+    }
 }
 
 
-void RadioButton::SetRadioColorPicker(const ColorPicker& color_picker) {
+void RadioButton::SetRadioBorderColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(kRadioColorPickerPropertyName, color_picker);
+    GetPropertyMap().SetProperty(kRadioBorderColorPickerPropertyName, color_picker);
+    NeedRepaint();
+}
+
+
+const ColorPicker RadioButton::GetRadioBackgroundColorPicker() const {
+
+    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kRadioBackgroundColorPickerPropertyName);
+    if ((color_picker != nullptr) && (*color_picker != nullptr)) {
+        return *color_picker;
+    }
+    else {
+        return EmptyColorPicker;
+    }
+}
+
+
+void RadioButton::SetRadioBackgroundColorPicker(const ColorPicker& color_picker) {
+
+    GetPropertyMap().SetProperty(kRadioBackgroundColorPickerPropertyName, color_picker);
     NeedRepaint();
 }
 

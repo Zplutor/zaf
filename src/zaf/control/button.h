@@ -13,6 +13,9 @@ public:
 
     bool IsDefault() const;
     void SetIsDefault(bool is_default);
+
+protected:
+    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 };
 
 }

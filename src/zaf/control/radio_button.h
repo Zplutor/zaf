@@ -53,11 +53,17 @@ public:
 
 	void Initialize() override;
 
-    const Color GetRadioColor() const {
-        return GetRadioColorPicker()(*this);
+    const Color GetRadioBorderColor() const {
+        return GetRadioBorderColorPicker()(*this);
     }
-    const ColorPicker GetRadioColorPicker() const;
-    void SetRadioColorPicker(const ColorPicker& color_picker);
+    const ColorPicker GetRadioBorderColorPicker() const;
+    void SetRadioBorderColorPicker(const ColorPicker& color_picker);
+
+    const Color GetRadioBackgroundColor() {
+        return GetRadioBackgroundColorPicker()(*this);
+    }
+    const ColorPicker GetRadioBackgroundColorPicker() const;
+    void SetRadioBackgroundColorPicker(const ColorPicker& color_picker);
 
 	/**
 	 Get the associated group.

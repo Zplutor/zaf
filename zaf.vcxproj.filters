@@ -34,6 +34,9 @@
     <Filter Include="zaf\window\message">
       <UniqueIdentifier>{bf88a0a8-590c-4f2b-9c03-0dc2754fec2e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\internal">
+      <UniqueIdentifier>{b5920753-f112-4664-9370-9e9302bb837c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -137,6 +140,15 @@
     </ClCompile>
     <ClCompile Include="src\zaf\window\dialog.cpp">
       <Filter>zaf\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\theme.cpp">
+      <Filter>zaf\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\color_picker.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\paint_utility.cpp">
+      <Filter>zaf\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -370,6 +382,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\error.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\theme.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\paint_utility.h">
+      <Filter>zaf\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

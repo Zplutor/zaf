@@ -6,6 +6,7 @@
 #include <zaf/graphic/renderer_factory.h>
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/graphic/text/text_layout_properties.h>
+#include <zaf/internal/theme.h>
 
 namespace zaf {
 
@@ -23,6 +24,22 @@ TextualControl::TextualControl() {
 
 TextualControl::~TextualControl() {
 
+}
+
+
+void TextualControl::Initialize() {
+
+    __super::Initialize();
+
+    SetTextColorPicker([](const Control& control) {
+
+        if (control.IsEnabled()) {
+            return internal::ControlNormalTextColor;
+        }
+        else {
+            return internal::ControlDisabledTextColor;
+        }
+    });
 }
 
 
@@ -75,10 +92,9 @@ const ColorPicker TextualControl::GetTextColorPicker() const {
     if ((color_picker != nullptr) && (*color_picker != nullptr)) {
         return *color_picker;
     }
-
-    return [](const Control&) {
-        return Color::Black;
-    };
+    else {
+        return EmptyColorPicker;
+    }
 }
 
 void TextualControl::SetTextColorPicker(const ColorPicker& color_picker) {

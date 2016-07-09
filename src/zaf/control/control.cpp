@@ -300,10 +300,9 @@ const ColorPicker Control::GetBackgroundColorPicker() const {
 	if ((color_picker != nullptr) && (*color_picker != nullptr)) {
 		return *color_picker;
 	}
-
-	return [](const Control&) {
-		return Color::Transparent;
-	};
+    else {
+        return EmptyColorPicker;
+    }
 }
 
 
@@ -320,10 +319,9 @@ const ColorPicker Control::GetBorderColorPicker() const {
 	if ((color_picker != nullptr) && (*color_picker != nullptr)) {
 		return *color_picker;
 	}
-
-	return [](const Control& control) {
-		return control.GetBackgroundColorPicker()(control);
-	};
+    else {
+        return EmptyColorPicker;
+    }
 }
 
 

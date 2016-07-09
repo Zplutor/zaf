@@ -17,6 +17,7 @@
     <ClCompile Include="src\zaf\control\button.cpp" />
     <ClCompile Include="src\zaf\control\check_box.cpp" />
     <ClCompile Include="src\zaf\control\clickable_control.cpp" />
+    <ClCompile Include="src\zaf\control\color_picker.cpp" />
     <ClCompile Include="src\zaf\control\control.cpp" />
     <ClCompile Include="src\zaf\control\layout\anchor_layouter.cpp" />
     <ClCompile Include="src\zaf\control\layout\array_layouter.cpp" />
@@ -41,6 +42,8 @@
     <ClCompile Include="src\zaf\graphic\renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
+    <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
+    <ClCompile Include="src\zaf\internal\theme.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
     <ClCompile Include="src\zaf\window\dialog.cpp" />
     <ClCompile Include="src\zaf\window\message\creation.cpp" />
@@ -115,6 +118,8 @@
     <ClInclude Include="src\zaf\graphic\text\text_metrics.h" />
     <ClInclude Include="src\zaf\graphic\text\text_range.h" />
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />
+    <ClInclude Include="src\zaf\internal\paint_utility.h" />
+    <ClInclude Include="src\zaf\internal\theme.h" />
     <ClInclude Include="src\zaf\window\caret.h" />
     <ClInclude Include="src\zaf\window\dialog.h" />
     <ClInclude Include="src\zaf\window\dialog_result.h" />
@@ -170,6 +175,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)object\%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -186,6 +192,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)object\%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

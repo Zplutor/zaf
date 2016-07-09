@@ -9,6 +9,7 @@
 #include <zaf/graphic/clear_edge.h>
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/renderer_factory.h>
+#include <zaf/internal/theme.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/creation.h>
 #include <zaf/window/message/key_message.h>
@@ -95,7 +96,7 @@ void Window::Initialize() {
     root_control_ = Create<Control>();
     root_control_->SetWindow(shared_from_this());
     root_control_->SetBackgroundColorPicker([](const Control&) {
-        return Color::White;
+        return internal::WindowBackgroundColor;
     });
 
     int screen_width = GetSystemMetrics(SM_CXSCREEN);

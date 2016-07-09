@@ -136,4 +136,14 @@ private:
 	EndRunEvent end_run_event_;
 };
 
+
+inline Application& GetApplication() {
+    return Application::GetInstance();
+}
+
+
+inline const std::shared_ptr<RendererFactory> GetRendererFactory() {
+    return GetApplication().GetRendererFactory();
+}
+
 }

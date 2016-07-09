@@ -1,4 +1,6 @@
 #include <zaf/control/button.h>
+#include <zaf/control/paint_utility.h>
+#include <zaf/internal/theme.h>
 
 namespace zaf {
 
@@ -24,15 +26,19 @@ void Button::Initialize() {
 	
 		const auto& button = dynamic_cast<const Button&>(control);
 
+        if (! button.IsEnabled()) {
+            return internal::ButtonDisabledBackgroundColor;
+        }
+
 		if (button.IsPressed()) {
-			return Color::FromRGB(0xB0C4DE);
+			return internal::ButtonPressedBackgroundColor;
 		}
 
 		if (button.IsHovered()) {
-			return Color::FromRGB(0xF0F8FF);
+			return internal::ButtonHoveredBackgroundColor;
 		}
 
-		return Color::White;
+		return internal::ButtonNormalBackgroundColor;
 	});
 
 	SetBorderColorPicker([](const Control& control) {
@@ -52,17 +58,20 @@ void Button::Initialize() {
 		return Color::Black;
 	});
 
-	SetTextColorPicker([](const Control& control) {
-		
-		if (! control.IsEnabled()) {
-			return Color::Gray;
-		}
-
-		return Color::Black;
-	});
-
 	SetTextAlignment(TextAlignment::Center);
 	SetParagraphAlignment(ParagraphAlignment::Center);
+}
+
+
+void Button::Paint(Canvas& canvas, const Rect& dirty_rect) {
+
+    __super::Paint(canvas, dirty_rect);
+
+    if (IsFocused()) {
+        auto focus_rect = GetContentRect();
+        focus_rect.Inflate(-1);
+        DrawFocusRectangleFrame(canvas, focus_rect);
+    }
 }
 
 
