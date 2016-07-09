@@ -65,7 +65,7 @@ void TextBox::Initialize() {
 	__super::Initialize();
 
 	SetCanFocused(true);
-	SetBorderWidth(1);
+	SetBorderThickness(1);
 	SetFont(Font::GetDefault());
 	SetTextAlignment(TextAlignment::Leading);
 
@@ -169,7 +169,7 @@ const Rect TextBox::GetTextRect() const {
 const Rect TextBox::GetAbsoluteContentRect() const {
 
 	auto rect = GetAbsoluteRect();
-	rect.Inflate(-GetBorderWidth());
+	rect.Inflate(-GetBorderThickness());
 	return rect;
 }
 

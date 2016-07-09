@@ -12,7 +12,7 @@ void ShowTestLabelWindow() {
 	auto label = Create<Label>();
 	label->SetRect(Rect(10, 10, 100, 60));
 	label->SetIsEnabled(false);
-	//label->SetBorderWidth(1);
+	//label->SetBorderThickness(1);
 	//label->SetColor(Label::PaintComponent::Border, Label::PaintState::Normal, Color::Black);
 	label->SetText(L"zaf的label控件测试zaf的label控件测试zaf的label控件测试");
 

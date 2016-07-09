@@ -656,7 +656,7 @@ void ScrollBar::Thumb::Initialize() {
 	__super::Initialize();
 
 	SetCanFocused(false);
-    SetBorderWidth(4);
+    SetBorderThickness(4);
 
     SetBackgroundColorPicker([](const Control& control) {
     

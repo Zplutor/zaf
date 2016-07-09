@@ -30,7 +30,7 @@ void ListBox::Initialize() {
     
     __super::Initialize();
 
-    SetBorderWidth(1);
+    SetBorderThickness(1);
     SetBorderColorPicker([](const Control&) { return Color::Black; });
 
     item_container_ = Create<ItemContainer>(std::dynamic_pointer_cast<ListBox>(shared_from_this()));

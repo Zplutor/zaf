@@ -157,21 +157,21 @@ public:
 	void SetAnchor(Anchor anchor);
 
 	/**
-	 Get the control's border width.
+	 Get the control's border thickness.
 
 	 The border is not included in control's content rect.
-	 The default bordr width is 0.
+	 The default thickness is 0.
 	 */
-	float GetBorderWidth() const {
-		return border_width_;
+    float GetBorderThickness() const {
+		return border_thickness_;
 	}
 
 	/**
-	 Set the control's border width.
+	 Set the control's border thickness.
 
-	 See also GetBorderWidth.
+	 See also GetBorderThickness.
 	 */
-	void SetBorderWidth(float width);
+	void SetBorderThickness(float width);
 
 	/**
 	 Get the control's content rect, related to its coordinate system.
@@ -444,7 +444,7 @@ private:
 	bool is_visible_;
 
 	Rect rect_;
-	float border_width_;
+	float border_thickness_;
 
 	PropertyMap property_map_;
 };
