@@ -34,6 +34,9 @@ void ListBox::Initialize() {
     SetBorderColorPicker([](const Control&) { return Color::Black; });
 
     item_container_ = Create<ItemContainer>(std::dynamic_pointer_cast<ListBox>(shared_from_this()));
+    item_container_->SetBackgroundColorPicker([](const Control&) { 
+        return Color::White;
+    });
     SetScrolledControl(item_container_);
 }
 
@@ -403,7 +406,7 @@ void ListBox::Item::Initialize() {
             return Color::Blue;
         }
         else {
-            return Color::White;
+            return Color::Transparent;
         }
     });
 

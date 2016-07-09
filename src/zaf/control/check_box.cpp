@@ -30,31 +30,8 @@ void CheckBox::Initialize() {
 
 	__super::Initialize();
 
-	SetBoxBorderColorPicker([](const Control& control) {
-	
-		const auto& check_box = dynamic_cast<const CheckBox&>(control);
-
-		if (! check_box.IsEnabled()) {
-			return Color::Gray;
-		}
-
-		if (check_box.IsPressed()) {
-			return Color::FromRGB(0x0000CD);
-		}
-
-		if (check_box.IsHovered()) {
-			return Color::FromRGB(0x4169E1);
-		}
-
-		if (check_box.IsFocused()) {
-			return Color::FromRGB(0x0000CD);
-		}
-
-		return Color::Black;
-	});
-
-    SetBoxBackgroundColorPicker([](const Control&) {
-        return internal::ControlContentColor;
+    SetBackgroundColorPicker([](const Control&) {
+        return Color::Transparent;
     });
 }
 
@@ -140,7 +117,29 @@ const ColorPicker CheckBox::GetBoxBorderColorPicker() const {
 		return *color_picker;
 	}
     else {
-	    return EmptyColorPicker;
+
+        return [](const Control& control) {
+
+            const auto& check_box = dynamic_cast<const CheckBox&>(control);
+
+            if (!check_box.IsEnabled()) {
+                return Color::Gray;
+            }
+
+            if (check_box.IsPressed()) {
+                return Color::FromRGB(0x0000CD);
+            }
+
+            if (check_box.IsHovered()) {
+                return Color::FromRGB(0x4169E1);
+            }
+
+            if (check_box.IsFocused()) {
+                return Color::FromRGB(0x0000CD);
+            }
+
+            return Color::Black;
+        };
     }
 }
 
@@ -159,7 +158,25 @@ const ColorPicker CheckBox::GetBoxBackgroundColorPicker() const {
         return *color_picker;
     }
     else {
-        return EmptyColorPicker;
+
+        return [](const Control& control) {
+
+            const auto& check_box = dynamic_cast<const CheckBox&>(control);
+
+            if (!check_box.IsEnabled()) {
+                return internal::ButtonDisabledBackgroundColor;
+            }
+
+            if (check_box.IsPressed()) {
+                return internal::ButtonPressedBackgroundColor;
+            }
+
+            if (check_box.IsHovered()) {
+                return internal::ButtonHoveredBackgroundColor;
+            }
+
+            return Color::FromRGB(internal::ControlContentColorRGB);
+        };
     }
 }
 

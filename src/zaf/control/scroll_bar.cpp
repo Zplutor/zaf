@@ -5,6 +5,7 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
+#include <zaf/internal/theme.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -38,10 +39,6 @@ void ScrollBar::Initialize() {
 	InitializeArrow(decremental_arrow_);
 	InitializeThumb(thumb_);
 	ApplyOrientationToChildren();
-
-    SetBackgroundColorPicker([](const Control&) {
-        return Color::White;
-    });
 }
 
 
@@ -533,21 +530,6 @@ void ScrollBar::Arrow::Initialize() {
 	__super::Initialize();
 
 	SetCanFocused(false);
-
-    SetArrowColorPicker([](const Control& control) {
-    
-        const auto& arrow = dynamic_cast<const Arrow&>(control);
-
-        if (arrow.IsPressed()) {
-            return Color::FromRGB(0x808080);
-        }
-
-        if (arrow.IsHovered()) {
-            return Color::FromRGB(0xA9A9A9);
-        }
-
-        return Color::FromRGB(0xCECECE);
-    });
 }
 
 
@@ -571,7 +553,7 @@ void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	Point left_point;
 	Point right_point;
 	
-	const float space_width = 2;
+	const float space_width = 4;
 
 	auto direction = GetDirection();
 	switch (direction) {
@@ -621,10 +603,23 @@ const ColorPicker ScrollBar::Arrow::GetArrowColorPicker() const {
     if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
         return *color_picker;
     }
+    else {
 
-    return [](const Control&) {
-        return Color::Black;
-    };
+        return [](const Control& control) {
+
+            const auto& arrow = dynamic_cast<const Arrow&>(control);
+
+            if (arrow.IsPressed()) {
+                return Color::FromRGB(0x808080);
+            }
+
+            if (arrow.IsHovered()) {
+                return Color::FromRGB(0xA9A9A9);
+            }
+
+            return Color::FromRGB(0xCECECE);
+        };
+    }
 }
 
 
@@ -661,11 +656,7 @@ void ScrollBar::Thumb::Initialize() {
 	__super::Initialize();
 
 	SetCanFocused(false);
-	SetBorderWidth(2);
-
-    SetBorderColorPicker([](const Control&) { 
-        return Color::White; 
-    });
+    SetBorderWidth(4);
 
     SetBackgroundColorPicker([](const Control& control) {
     

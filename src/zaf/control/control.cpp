@@ -6,6 +6,7 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
+#include <zaf/internal/theme.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window.h>
@@ -301,7 +302,9 @@ const ColorPicker Control::GetBackgroundColorPicker() const {
 		return *color_picker;
 	}
     else {
-        return EmptyColorPicker;
+        return [](const Control&) {
+            return Color::FromRGB(internal::ControlBackgroundColorRGB);
+        };
     }
 }
 
@@ -320,7 +323,9 @@ const ColorPicker Control::GetBorderColorPicker() const {
 		return *color_picker;
 	}
     else {
-        return EmptyColorPicker;
+        return [](const Control&) {
+            return Color::FromRGB(internal::ControlBackgroundColorRGB);
+        };
     }
 }
 

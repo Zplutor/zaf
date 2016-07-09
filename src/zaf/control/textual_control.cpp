@@ -27,22 +27,6 @@ TextualControl::~TextualControl() {
 }
 
 
-void TextualControl::Initialize() {
-
-    __super::Initialize();
-
-    SetTextColorPicker([](const Control& control) {
-
-        if (control.IsEnabled()) {
-            return internal::ControlNormalTextColor;
-        }
-        else {
-            return internal::ControlDisabledTextColor;
-        }
-    });
-}
-
-
 void TextualControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
@@ -93,7 +77,15 @@ const ColorPicker TextualControl::GetTextColorPicker() const {
         return *color_picker;
     }
     else {
-        return EmptyColorPicker;
+
+        return [](const Control& control) {
+            if (control.IsEnabled()) {
+                return Color::FromRGB(internal::ControlNormalTextColorRGB);
+            }
+            else {
+                return Color::FromRGB(internal::ControlDisabledTextColorRGB);
+            }
+        };
     }
 }
 

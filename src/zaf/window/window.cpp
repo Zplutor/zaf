@@ -95,9 +95,6 @@ void Window::Initialize() {
 
     root_control_ = Create<Control>();
     root_control_->SetWindow(shared_from_this());
-    root_control_->SetBackgroundColorPicker([](const Control&) {
-        return internal::WindowBackgroundColor;
-    });
 
     int screen_width = GetSystemMetrics(SM_CXSCREEN);
     int screen_height = GetSystemMetrics(SM_CYSCREEN);

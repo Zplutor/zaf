@@ -13,8 +13,6 @@ public:
 
         scrollable_control_ = Create<ScrollableControl>();
         scrollable_control_->SetRect(Rect(0, 0, 300, 300));
-        scrollable_control_->SetBorderWidth(2);
-        scrollable_control_->SetBorderColorPicker([](const Control&) { return Color::Black; });
         scrollable_control_->SetScrollAreaSize(Size(500, 500));
         scrollable_control_->SetAnchor(Anchor::Left | Anchor::Top | Anchor::Right);
         scrollable_control_->SetScrolledControl(CreateGeneralScrolledControl());
@@ -29,6 +27,9 @@ private:
     std::shared_ptr<Control> CreateGeneralScrolledControl() {
 
         auto scrolled_control = Create<Control>();
+        scrolled_control->SetBackgroundColorPicker([](const Control&) {
+            return Color::White;
+        });
 
         auto left_top_corner_button = Create<Button>();
         left_top_corner_button->SetText(L"LeftTop");

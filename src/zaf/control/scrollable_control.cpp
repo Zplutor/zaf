@@ -2,6 +2,7 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/creation.h>
+#include <zaf/internal/theme.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -24,6 +25,12 @@ ScrollableControl::~ScrollableControl() {
 
 
 void ScrollableControl::Initialize() {
+
+    SetBorderWidth(1);
+
+    SetBorderColorPicker([](const Control&) {
+        return Color::Black;
+    });
 
     InitializeVerticalScrollBar(Create<ScrollBar>());
     InitializeHorizontalScrollBar(Create<ScrollBar>());
@@ -382,7 +389,7 @@ float ScrollableControl::GetScrollBarThickness() const {
         return *thickness;
     }
     else {
-        return 12;
+        return 16;
     }
 }
 

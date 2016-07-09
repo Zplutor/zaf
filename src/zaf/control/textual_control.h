@@ -16,8 +16,6 @@ public:
     TextualControl();
     ~TextualControl();
 
-    void Initialize() override;
-
     /**
      Get the control's text value.
      */

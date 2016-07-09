@@ -18,6 +18,8 @@ public:
 	 Destroy the instance.
 	 */
 	~Label();
+
+    void Initialize() override;
 };
 
 }
