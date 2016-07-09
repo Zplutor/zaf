@@ -188,13 +188,25 @@ public:
 	const Color GetBackgroundColor() const {
 		return GetBackgroundColorPicker()(*this);
 	}
+
 	const ColorPicker GetBackgroundColorPicker() const;
+
+    void SetBackgroundColor(const Color& color) {
+        SetBackgroundColorPicker(CreateColorPicker(color));
+    }
+
 	void SetBackgroundColorPicker(const ColorPicker& color_picker);
 
 	const Color GetBorderColor() const {
 		return GetBorderColorPicker()(*this);
 	}
+
 	const ColorPicker GetBorderColorPicker() const;
+
+    void SetBorderColor(const Color& color) {
+        SetBorderColorPicker(CreateColorPicker(color));
+    }
+
 	void SetBorderColorPicker(const ColorPicker& color_picker);
 
 	const Layouter GetLayouter() const;

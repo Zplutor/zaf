@@ -31,6 +31,11 @@ public:
     }
 
     const ColorPicker GetTextColorPicker() const;
+
+    void SetTextColor(const Color& color) {
+        SetTextColorPicker(CreateColorPicker(color));
+    }
+
     void SetTextColorPicker(const ColorPicker& color_picker);
 
     virtual const Font GetFont() const;

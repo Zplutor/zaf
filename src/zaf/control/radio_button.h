@@ -56,13 +56,25 @@ public:
     const Color GetRadioBorderColor() const {
         return GetRadioBorderColorPicker()(*this);
     }
+
     const ColorPicker GetRadioBorderColorPicker() const;
+
+    void SetRadioBorderColor(const Color& color) {
+        SetRadioBorderColorPicker(CreateColorPicker(color));
+    }
+
     void SetRadioBorderColorPicker(const ColorPicker& color_picker);
 
     const Color GetRadioBackgroundColor() {
         return GetRadioBackgroundColorPicker()(*this);
     }
+
     const ColorPicker GetRadioBackgroundColorPicker() const;
+
+    void SetRadioBackgroundColor(const Color& color) {
+        SetRadioBackgroundColorPicker(CreateColorPicker(color));
+    }
+
     void SetRadioBackgroundColorPicker(const ColorPicker& color_picker);
 
 	/**

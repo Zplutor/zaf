@@ -31,7 +31,13 @@ public:
 	const Color GetBoxBorderColor() const {
 		return GetBoxBorderColorPicker()(*this);
 	}
+
 	const ColorPicker GetBoxBorderColorPicker() const;
+
+    void SetBoxBorderColor(const Color& color) {
+        SetBoxBorderColorPicker(CreateColorPicker(color));
+    }
+
 	void SetBoxBorderColorPicker(const ColorPicker& color_picker);
 
     const Color GetBoxBackgroundColor() const {
@@ -39,6 +45,11 @@ public:
     }
 
     const ColorPicker GetBoxBackgroundColorPicker() const;
+
+    void SetBoxBackgroundColor(const Color& color) {
+        SetBoxBackgroundColorPicker(CreateColorPicker(color));
+    }
+
     void SetBoxBackgroundColorPicker(const ColorPicker& color_picker);
 
 	/**

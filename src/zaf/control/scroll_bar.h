@@ -29,7 +29,13 @@ public:
         const Color GetArrowColor() const {
             return GetArrowColorPicker()(*this);
         }
+
         const ColorPicker GetArrowColorPicker() const;
+
+        void SetArrowColor(const Color& color) {
+            SetArrowColorPicker(CreateColorPicker(color));
+        }
+
         void SetArrowColorPicker(const ColorPicker& color_picker);
 
 		Direction GetDirection() const {
