@@ -5,6 +5,7 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
+#include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/internal/theme.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -13,9 +14,10 @@ namespace zaf {
 static const wchar_t* const kArrowLengthPropertyName = L"ArrowLength";
 static const wchar_t* const kArrowColorPickerPropertyName = L"ArrowColorPicker";
 static const wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
+static const wchar_t* const kThumbColorPickerProeprtyName = L"ThumbColorPicker";
 
-static int kTimerInitialInterval = 300;
-static int kTimerContinuousInterval = 50;
+static const int kTimerInitialInterval = 300;
+static const int kTimerContinuousInterval = 50;
 
 ScrollBar::ScrollBar() : 
 	incremental_arrow_(Create<Arrow>()),
@@ -539,61 +541,60 @@ void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 	Canvas::StateGuard state_guard(canvas);
 
-    auto path = Application::GetInstance().GetRendererFactory()->CreatePathGeometry();
-	if (path == nullptr) {
+    //Firstly, create a geometry that describes an triangle arrow which direction is up,
+    //and then rotate the geometry according to the actual direction.
+
+    Direction direction = GetDirection();
+
+    float bottom_edge_length =
+        (direction == Direction::Up || direction == Direction::Down) ? GetWidth() : GetHeight();
+    bottom_edge_length /= 2;
+    float height = bottom_edge_length / 2;
+    float half_height =  height / 2;
+
+    Point center_point(GetWidth() / 2, GetHeight() / 2);
+
+    Point top_point(center_point.x, center_point.y - half_height);
+    Point left_point(center_point.x - height, center_point.y + half_height);
+    Point right_point(center_point.x + height, center_point.y + half_height);
+
+    auto triangle_geometry = GetRendererFactory()->CreatePathGeometry();
+    if (triangle_geometry == nullptr) {
 		return;
 	}
 
-	auto path_sink = path->Open();
-	if (path_sink == nullptr) {
+    auto triangle_geometry_sink = triangle_geometry->Open();
+    if (triangle_geometry_sink == nullptr) {
 		return;
 	}
 
-	Point top_point;
-	Point left_point;
-	Point right_point;
-	
-	const float space_width = 4;
+    triangle_geometry_sink->BeginFigure(top_point, GeometrySink::BeginFigureOption::Fill);
+    triangle_geometry_sink->AddLine(left_point);
+    triangle_geometry_sink->AddLine(right_point);
+    triangle_geometry_sink->EndFigure(GeometrySink::EndFigureOption::Close);
+    triangle_geometry_sink->Close();
 
-	auto direction = GetDirection();
-	switch (direction) {
+    float rotate_angle = 0;
+    switch (direction) {
+        case Direction::Left:
+            rotate_angle = 270;
+            break;
+        case Direction::Right:
+            rotate_angle = 90;
+            break;
+        case Direction::Down:
+            rotate_angle = 180;
+            break;
+        default:
+            break;
+    }
 
-		case Direction::Left:
-			top_point = Point(space_width, GetHeight() / 2);
-			left_point = Point(GetWidth() - space_width, GetHeight() - space_width);
-			right_point = Point(GetWidth() - space_width, space_width);
-			break;
-
-		case Direction::Up:
-			top_point = Point(GetWidth() / 2, space_width);
-			left_point = Point(space_width, GetHeight() - space_width);
-			right_point = Point(GetWidth() - space_width, GetHeight() - space_width);
-			break;
-
-		case Direction::Right:
-			top_point = Point(GetWidth() - space_width, GetHeight() / 2);
-			left_point = Point(space_width, space_width);
-			right_point = Point(space_width, GetHeight() - space_width);
-			break;
-
-		case Direction::Down:
-			top_point = Point(GetWidth() / 2, GetHeight() - space_width);
-			left_point = Point(space_width, space_width);
-			right_point = Point(GetWidth() - space_width, space_width);
-			break;
-
-		default:
-			break;
-	}
-
-	path_sink->BeginFigure(top_point, GeometrySink::BeginFigureOption::Fill);
-	path_sink->AddLine(left_point);
-	path_sink->AddLine(right_point);
-	path_sink->EndFigure(GeometrySink::EndFigureOption::Close);
-	path_sink->Close();
+    auto rotation_geometry = GetRendererFactory()->CreateTransformedGeometry(
+        triangle_geometry, 
+        TransformMatrix::Rotation(rotate_angle, center_point));
 
 	canvas.SetBrushWithColor(GetArrowColor());
-	canvas.DrawGeometry(path);
+	canvas.DrawGeometry(rotation_geometry);
 }
 
 
@@ -617,7 +618,7 @@ const ColorPicker ScrollBar::Arrow::GetArrowColorPicker() const {
                 return Color::FromRGB(0xA9A9A9);
             }
 
-            return Color::FromRGB(0xCECECE);
+            return Color::FromRGB(0x606060);
         };
     }
 }
@@ -656,22 +657,63 @@ void ScrollBar::Thumb::Initialize() {
 	__super::Initialize();
 
 	SetCanFocused(false);
-    SetBorderThickness(4);
+}
 
-    SetBackgroundColorPicker([](const Control& control) {
-    
-        const auto& thumb = dynamic_cast<const Thumb&>(control);
 
-        if (thumb.IsPressed()) {
-            return Color::FromRGB(0x808080);
-        }
+void ScrollBar::Thumb::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
-        if (thumb.IsHovered()) {
-            return Color::FromRGB(0xA9A9A9);
-        }
+    __super::Paint(canvas, dirty_rect);
 
-        return Color::FromRGB(0xCECECE);
-    });
+    if (! IsEnabled()) {
+        return;
+    }
+
+    Canvas::StateGuard state_guard(canvas);
+
+    auto thumb_rect = GetContentRect();
+    const float spacing = 2;
+    if (IsHorizontal()) {
+        thumb_rect.Inflate(0, -spacing);
+    }
+    else {
+        thumb_rect.Inflate(-spacing, 0);
+    }
+
+    canvas.SetBrushWithColor(GetThumbColor());
+    canvas.DrawRectangle(thumb_rect);
+}
+
+
+const ColorPicker ScrollBar::Thumb::GetThumbColorPicker() const {
+
+    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kThumbColorPickerProeprtyName);
+    if (color_picker != nullptr && *color_picker != nullptr) {
+        return *color_picker;
+    }
+    else {
+
+        return [](const Control& control) {
+
+            const auto& thumb = dynamic_cast<const Thumb&>(control);
+
+            if (thumb.IsPressed()) {
+                return Color::FromRGB(0x808080);
+            }
+
+            if (thumb.IsHovered()) {
+                return Color::FromRGB(0xA9A9A9);
+            }
+
+            return Color::FromRGB(0xCECECE);
+        };
+    }
+}
+
+
+void ScrollBar::Thumb::SetThumbColorPicker(const ColorPicker& color_picker) {
+
+    GetPropertyMap().SetProperty(kThumbColorPickerProeprtyName, color_picker);
+    NeedRepaint();
 }
 
 

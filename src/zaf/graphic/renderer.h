@@ -48,13 +48,20 @@ public:
         return result;
     }
 
-    const std::shared_ptr<Layer> CreateLayer(const Size& size, std::error_code& error_code);
+    const std::shared_ptr<Layer> CreateLayer(std::error_code& error_code) {
+        return InnerCreateLayer(nullptr, error_code);
+    }
+
+    const std::shared_ptr<Layer> CreateLayer() {
+        return InnerCreateLayer(nullptr);
+    }
+
+    const std::shared_ptr<Layer> CreateLayer(const Size& size, std::error_code& error_code) {
+        return InnerCreateLayer(&size, error_code);
+    }
 
     const std::shared_ptr<Layer> CreateLayer(const Size& size) {
-        std::error_code error_code;
-        auto result = CreateLayer(size, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
+        return InnerCreateLayer(&size);
     }
 
 	void BeginDraw() {
@@ -200,6 +207,16 @@ public:
 
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
+
+private:
+    const std::shared_ptr<Layer> InnerCreateLayer(const Size* size, std::error_code& error_code);
+
+    const std::shared_ptr<Layer> InnerCreateLayer(const Size* size) {
+        std::error_code error_code;
+        auto result = InnerCreateLayer(size, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
 
 private:
 	ID2D1HwndRenderTarget* handle_;

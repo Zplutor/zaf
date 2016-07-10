@@ -12,6 +12,13 @@ namespace zaf {
  */
 class Rect {
 public:
+    /**
+     Get an infinite rectangle.
+     */
+    static const Rect Infinite() {
+        return FromD2D1RECTF(D2D1::InfiniteRect());
+    }
+
 	/**
 	 Convert a specified RECT structure to Rect.
 	 */

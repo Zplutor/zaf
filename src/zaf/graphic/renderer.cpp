@@ -18,10 +18,16 @@ const std::shared_ptr<SolidColorBrush> Renderer::CreateSolidColorBrush(const Col
 }
 
 
-const std::shared_ptr<Layer> Renderer::CreateLayer(const Size& size, std::error_code& error_code) {
+const std::shared_ptr<Layer> Renderer::InnerCreateLayer(const Size* size, std::error_code& error_code) {
 
 	ID2D1Layer* layer_handle = nullptr;
-	LRESULT result = handle_->CreateLayer(size.ToD2D1SIZEF(), &layer_handle);
+	LRESULT result = 0;
+    if (size != nullptr) {
+        handle_->CreateLayer(size->ToD2D1SIZEF(), &layer_handle);
+    }
+    else {
+        handle_->CreateLayer(&layer_handle);
+    }
 
     error_code = MakeComErrorCode(result);
 	if (IsSucceeded(error_code)) {
@@ -37,6 +43,7 @@ void Renderer::PushLayer(const Layer::Parameters& parameters, const std::shared_
 
 	D2D1_LAYER_PARAMETERS d2d_parameters = D2D1::LayerParameters();
 	d2d_parameters.contentBounds = parameters.content_bounds.ToD2D1RECTF();
+    d2d_parameters.maskTransform = parameters.mask_transform.ToD2D1MATRIX3X2F();
 	d2d_parameters.opacity = parameters.opacity;
 
 	handle_->PushLayer(d2d_parameters, layer->GetHandle());

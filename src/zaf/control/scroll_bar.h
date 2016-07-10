@@ -78,6 +78,18 @@ public:
 
 		void Initialize() override;
 
+        const Color GetThumbColor() const {
+            return GetThumbColorPicker()(*this);
+        }
+
+        const ColorPicker GetThumbColorPicker() const;
+
+        void SetThumbColor(const Color& color) {
+            SetThumbColorPicker(CreateColorPicker(color));
+        }
+
+        void SetThumbColorPicker(const ColorPicker& color_picker);
+
 		bool IsHorizontal() const {
 			return is_horizontal_;
 		}
@@ -90,7 +102,6 @@ public:
 			return is_dragging_;
 		}
 
-	public:
 		BeginDragEvent::Proxy GetBeginDragEvent() {
 			return BeginDragEvent::Proxy(begin_drag_event_);
 		}
@@ -104,6 +115,7 @@ public:
 		}
 
 	protected:
+        void Paint(Canvas& canvas, const Rect& dirty_rect);
 		void MouseCapture() override;
 		void MouseRelease() override;
         void MouseMove(const Point& position, const MouseMessage& message) override;

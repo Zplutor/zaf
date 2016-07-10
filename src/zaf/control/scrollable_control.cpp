@@ -389,7 +389,7 @@ float ScrollableControl::GetScrollBarThickness() const {
         return *thickness;
     }
     else {
-        return 16;
+        return 17;
     }
 }
 

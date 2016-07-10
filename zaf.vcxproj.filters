@@ -386,5 +386,11 @@
     <ClInclude Include="src\zaf\internal\paint_utility.h">
       <Filter>zaf\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\graphic\matrix.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\geometry\transformed_geometry.h">
+      <Filter>zaf\graphic\geometry</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

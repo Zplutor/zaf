@@ -7,6 +7,7 @@
 
 namespace zaf {
 
+class Geometry;
 class PathGeometry;
 class RectangleGeometry;
 class Rect;
@@ -17,6 +18,8 @@ class TextFormat;
 class TextFormatProperties;
 class TextLayout;
 class TextLayoutProperties;
+class TransformedGeometry;
+class TransformMatrix;
 
 /**
  Represent a factory that creates renderers and renderer-independent resources.
@@ -77,6 +80,21 @@ public:
     const std::shared_ptr<PathGeometry> CreatePathGeometry() {
         std::error_code error_code;
         auto result = CreatePathGeometry(error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+
+    const std::shared_ptr<TransformedGeometry> CreateTransformedGeometry(
+        const std::shared_ptr<Geometry>& geometry,
+        const TransformMatrix& transform_matrix,
+        std::error_code& error_code);
+
+    const std::shared_ptr<TransformedGeometry> CreateTransformedGeometry(
+        const std::shared_ptr<Geometry>& geometry,
+        const TransformMatrix& transform_matrix) {
+
+        std::error_code error_code;
+        auto result = CreateTransformedGeometry(geometry, transform_matrix, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }

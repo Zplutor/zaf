@@ -5,6 +5,8 @@
 #include <zaf/graphic/font/font_collection.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
+#include <zaf/graphic/geometry/transformed_geometry.h>
+#include <zaf/graphic/matrix.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/graphic/text/text_layout.h>
@@ -93,6 +95,27 @@ const std::shared_ptr<PathGeometry> RendererFactory::CreatePathGeometry(std::err
 	else {
 		return nullptr;
 	}
+}
+
+
+const std::shared_ptr<TransformedGeometry> RendererFactory::CreateTransformedGeometry(
+    const std::shared_ptr<Geometry>& geometry,
+    const TransformMatrix& transform_matrix,
+    std::error_code& error_code) {
+
+    ID2D1TransformedGeometry* handle = nullptr;
+    HRESULT result = d2d_factory_handle_->CreateTransformedGeometry(
+        geometry->GetHandle(),
+        transform_matrix.ToD2D1MATRIX3X2F(),
+        &handle);
+
+    error_code = MakeComErrorCode(result);
+    if (IsSucceeded(error_code)) {
+        return std::make_shared<TransformedGeometry>(handle);
+    }
+    else {
+        return nullptr;
+    }
 }
 
 

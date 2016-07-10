@@ -47,6 +47,8 @@ public:
     }
 
 public:
+    explicit Geometry(ID2D1Geometry* handle) : handle_(handle) { }
+
 	virtual ~Geometry() {
 		if (handle_ != nullptr) {
 			handle_->Release();
@@ -56,9 +58,6 @@ public:
 	ID2D1Geometry* GetHandle() const {
 		return handle_;
 	}
-
-protected:
-	explicit Geometry(ID2D1Geometry* handle) : handle_(handle) { }
 
 private:
 	Geometry(const Geometry&) = delete;
