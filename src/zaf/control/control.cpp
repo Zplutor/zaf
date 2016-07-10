@@ -6,6 +6,7 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
+#include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
@@ -119,11 +120,11 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
     canvas.SetBrushWithColor(GetBackgroundColor());
     canvas.DrawRectangle(background_rect);
 
-    auto renderer_factory = Application::GetInstance().GetRendererFactory();
-    auto border_geometry = renderer_factory->CreateRectangleGeometry(border_rect);
-    auto background_geometry = renderer_factory->CreateRectangleGeometry(background_rect);
+    auto resource_factory = GetResourceFactory();
+    auto border_geometry = resource_factory->CreateRectangleGeometry(border_rect);
+    auto background_geometry = resource_factory->CreateRectangleGeometry(background_rect);
     
-    auto path_geometry = renderer_factory->CreatePathGeometry();
+    auto path_geometry = resource_factory->CreatePathGeometry();
     auto sink = path_geometry->Open();
     Geometry::Combine(border_geometry, background_geometry, Geometry::CombineMode::Exclude, sink);
     sink->Close();

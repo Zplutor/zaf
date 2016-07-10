@@ -5,6 +5,7 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
+#include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
 
@@ -77,7 +78,7 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
 	}
 	else if (check_state == CheckState::Checked) {
 
-		auto path = Application::GetInstance().GetRendererFactory()->CreatePathGeometry();
+		auto path = GetResourceFactory()->CreatePathGeometry();
 		if (path == nullptr) {
 			return;
 		}

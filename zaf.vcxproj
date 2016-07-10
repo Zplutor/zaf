@@ -39,7 +39,7 @@
     <ClCompile Include="src\zaf\graphic\clear_edge.cpp" />
     <ClCompile Include="src\zaf\graphic\rect.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer.cpp" />
-    <ClCompile Include="src\zaf\graphic\renderer_factory.cpp" />
+    <ClCompile Include="src\zaf\graphic\resource_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
     <ClCompile Include="src\zaf\internal\theme.cpp" />
@@ -104,7 +104,7 @@
     <ClInclude Include="src\zaf\graphic\point.h" />
     <ClInclude Include="src\zaf\graphic\rect.h" />
     <ClInclude Include="src\zaf\graphic\renderer.h" />
-    <ClInclude Include="src\zaf\graphic\renderer_factory.h" />
+    <ClInclude Include="src\zaf\graphic\resource_factory.h" />
     <ClInclude Include="src\zaf\graphic\size.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
     <ClInclude Include="src\zaf\graphic\stroke_properties.h" />

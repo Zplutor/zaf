@@ -6,6 +6,7 @@
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/transformed_geometry.h>
+#include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -558,7 +559,7 @@ void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
     Point left_point(center_point.x - height, center_point.y + half_height);
     Point right_point(center_point.x + height, center_point.y + half_height);
 
-    auto triangle_geometry = GetRendererFactory()->CreatePathGeometry();
+    auto triangle_geometry = GetResourceFactory()->CreatePathGeometry();
     if (triangle_geometry == nullptr) {
 		return;
 	}
@@ -589,7 +590,7 @@ void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
             break;
     }
 
-    auto rotation_geometry = GetRendererFactory()->CreateTransformedGeometry(
+    auto rotation_geometry = GetResourceFactory()->CreateTransformedGeometry(
         triangle_geometry, 
         TransformMatrix::Rotation(rotate_angle, center_point));
 

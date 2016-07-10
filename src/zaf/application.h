@@ -8,7 +8,7 @@
 
 namespace zaf {
 
-class RendererFactory;
+class ResourceFactory;
 class Window;
 
 /**
@@ -65,13 +65,13 @@ public:
     void Terminate();
 
 	/**
-	 Get the default renderer factory.
+	 Get the resource factory.
 
 	 @return
 	 Return nullptr if Initialize method is not called, or the initialization is failed.
 	 */
-	const std::shared_ptr<RendererFactory>& GetRendererFactory() const {
-		return renderer_factory_;
+	const std::shared_ptr<ResourceFactory>& GetResourceFactory() const {
+		return resource_factory_;
 	}
 
     /**
@@ -128,7 +128,7 @@ private:
 private:
 	bool is_initialized_;
 
-	std::shared_ptr<RendererFactory> renderer_factory_;
+    std::shared_ptr<ResourceFactory> resource_factory_;
     std::shared_ptr<Window> main_window_;
 	std::set<std::shared_ptr<Window>> windows_;
 
@@ -142,8 +142,8 @@ inline Application& GetApplication() {
 }
 
 
-inline const std::shared_ptr<RendererFactory> GetRendererFactory() {
-    return GetApplication().GetRendererFactory();
+inline const std::shared_ptr<ResourceFactory> GetResourceFactory() {
+    return GetApplication().GetResourceFactory();
 }
 
 }

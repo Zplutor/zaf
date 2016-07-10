@@ -63,9 +63,6 @@
     <ClCompile Include="src\zaf\graphic\renderer.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\renderer_factory.cpp">
-      <Filter>zaf\graphic</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\control.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
@@ -147,6 +144,9 @@
     <ClCompile Include="src\zaf\internal\paint_utility.cpp">
       <Filter>zaf\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\resource_factory.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -190,9 +190,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\assert.h">
       <Filter>zaf\base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\renderer_factory.h">
-      <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\stroke.h">
       <Filter>zaf\graphic</Filter>
@@ -391,6 +388,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\geometry\transformed_geometry.h">
       <Filter>zaf\graphic\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\resource_factory.h">
+      <Filter>zaf\graphic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

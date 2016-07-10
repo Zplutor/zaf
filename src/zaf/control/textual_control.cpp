@@ -3,7 +3,7 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/font/font.h>
-#include <zaf/graphic/renderer_factory.h>
+#include <zaf/graphic/resource_factory.h>
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/graphic/text/text_layout_properties.h>
 #include <zaf/internal/theme.h>
@@ -176,7 +176,7 @@ std::shared_ptr<TextFormat> TextualControl::CreateTextFormat() const {
     text_format_properties.font_size = font.size;
     text_format_properties.font_weight = font.weight;
 
-    auto text_format = Application::GetInstance().GetRendererFactory()->CreateTextFormat(text_format_properties);
+    auto text_format = GetResourceFactory()->CreateTextFormat(text_format_properties);
     if (text_format == nullptr) {
         return nullptr;
     }
@@ -201,7 +201,7 @@ std::shared_ptr<TextLayout> TextualControl::CreateTextLayout(const Size& layout_
     text_layout_properties.text_format = text_format;
     text_layout_properties.width = layout_size.width;
     text_layout_properties.height = layout_size.height;
-    return Application::GetInstance().GetRendererFactory()->CreateTextLayout(text_layout_properties);
+    return GetResourceFactory()->CreateTextLayout(text_layout_properties);
 }
 
 

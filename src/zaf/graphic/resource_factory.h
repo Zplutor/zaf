@@ -22,22 +22,22 @@ class TransformedGeometry;
 class TransformMatrix;
 
 /**
- Represent a factory that creates renderers and renderer-independent resources.
+ Represent a factory that creates graphic resources.
 
- There is no need to create RendererFactory instance by yourself, use Application::GetRendererFactory 
- method instead.
+ There is no need to create ResourceFactory instance by yourself, use GetResourceFactory
+ function instead.
  */
-class RendererFactory {
+class ResourceFactory {
 public:
 	/**
 	 Initialize the instance with specified underlying instances.
 	 */
-	RendererFactory(ID2D1Factory* d2d_factory_handle, IDWriteFactory* dwrite_factory_handle);
+    ResourceFactory(ID2D1Factory* d2d_factory_handle, IDWriteFactory* dwrite_factory_handle);
 
 	/**
 	 Destroy the instance.
 	 */
-	~RendererFactory();
+    ~ResourceFactory();
 	
     /**
      Create a renderer that associated with specified window.
@@ -158,8 +158,8 @@ public:
 		return dwrite_factory_handle_;
 	}
 
-	RendererFactory(const RendererFactory&) = delete;
-	RendererFactory& operator=(const RendererFactory&) = delete;
+    ResourceFactory(const ResourceFactory&) = delete;
+    ResourceFactory& operator=(const ResourceFactory&) = delete;
 
 private:
 	ID2D1Factory* d2d_factory_handle_;

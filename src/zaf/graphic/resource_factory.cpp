@@ -1,4 +1,4 @@
-#include <zaf/graphic/renderer_factory.h>
+#include <zaf/graphic/resource_factory.h>
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/stroke_properties.h>
@@ -14,14 +14,14 @@
 
 namespace zaf {
 
-RendererFactory::RendererFactory(ID2D1Factory* d2d_factory_handle, IDWriteFactory* dwrite_factory_handle) :
+ResourceFactory::ResourceFactory(ID2D1Factory* d2d_factory_handle, IDWriteFactory* dwrite_factory_handle) :
 	d2d_factory_handle_(d2d_factory_handle),
 	dwrite_factory_handle_(dwrite_factory_handle) {
 
 }
 
 
-RendererFactory::~RendererFactory() {
+ResourceFactory::~ResourceFactory() {
 
 	if (d2d_factory_handle_ != nullptr) {
 		d2d_factory_handle_->Release();
@@ -33,7 +33,7 @@ RendererFactory::~RendererFactory() {
 }
 
 
-const std::shared_ptr<Renderer> RendererFactory::CreateRenderer(HWND window_handle, std::error_code& error_code) {
+const std::shared_ptr<Renderer> ResourceFactory::CreateRenderer(HWND window_handle, std::error_code& error_code) {
 
 	RECT window_rect = { 0 };
     if (! GetClientRect(window_handle, &window_rect)) {
@@ -68,7 +68,7 @@ const std::shared_ptr<Renderer> RendererFactory::CreateRenderer(HWND window_hand
 }
 
 
-const std::shared_ptr<RectangleGeometry> RendererFactory::CreateRectangleGeometry(const Rect& rect, std::error_code& error_code) {
+const std::shared_ptr<RectangleGeometry> ResourceFactory::CreateRectangleGeometry(const Rect& rect, std::error_code& error_code) {
 
     ID2D1RectangleGeometry* handle = nullptr;
     HRESULT result = d2d_factory_handle_->CreateRectangleGeometry(rect.ToD2D1RECTF(), &handle);
@@ -83,7 +83,7 @@ const std::shared_ptr<RectangleGeometry> RendererFactory::CreateRectangleGeometr
 }
 
 
-const std::shared_ptr<PathGeometry> RendererFactory::CreatePathGeometry(std::error_code& error_code) {
+const std::shared_ptr<PathGeometry> ResourceFactory::CreatePathGeometry(std::error_code& error_code) {
 
 	ID2D1PathGeometry* handle = nullptr;
 	HRESULT result = d2d_factory_handle_->CreatePathGeometry(&handle);
@@ -98,7 +98,7 @@ const std::shared_ptr<PathGeometry> RendererFactory::CreatePathGeometry(std::err
 }
 
 
-const std::shared_ptr<TransformedGeometry> RendererFactory::CreateTransformedGeometry(
+const std::shared_ptr<TransformedGeometry> ResourceFactory::CreateTransformedGeometry(
     const std::shared_ptr<Geometry>& geometry,
     const TransformMatrix& transform_matrix,
     std::error_code& error_code) {
@@ -119,7 +119,7 @@ const std::shared_ptr<TransformedGeometry> RendererFactory::CreateTransformedGeo
 }
 
 
-const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const StrokeProperties& properties, std::error_code& error_code) {
+const std::shared_ptr<Stroke> ResourceFactory::CreateStroke(const StrokeProperties& properties, std::error_code& error_code) {
     
 	D2D1_STROKE_STYLE_PROPERTIES d2d_properties;
 	d2d_properties.startCap = static_cast<D2D1_CAP_STYLE>(properties.start_cap_style);
@@ -148,7 +148,7 @@ const std::shared_ptr<Stroke> RendererFactory::CreateStroke(const StrokeProperti
 }
 
 
-const std::shared_ptr<TextFormat> RendererFactory::CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code) {
+const std::shared_ptr<TextFormat> ResourceFactory::CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code) {
 
 	IDWriteTextFormat* handle = nullptr;
 	HRESULT result = dwrite_factory_handle_->CreateTextFormat(
@@ -172,7 +172,7 @@ const std::shared_ptr<TextFormat> RendererFactory::CreateTextFormat(const TextFo
 }
 
 
-const std::shared_ptr<TextLayout> RendererFactory::CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code) {
+const std::shared_ptr<TextLayout> ResourceFactory::CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code) {
 
 	IDWriteTextLayout* handle = nullptr;
 	HRESULT result = dwrite_factory_handle_->CreateTextLayout(

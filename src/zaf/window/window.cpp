@@ -8,7 +8,7 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/clear_edge.h>
 #include <zaf/graphic/renderer.h>
-#include <zaf/graphic/renderer_factory.h>
+#include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/creation.h>
@@ -138,7 +138,7 @@ void Window::CreateWindowHandle() {
 
 void Window::CreateRenderer() {
 
-    renderer_ = Application::GetInstance().GetRendererFactory()->CreateRenderer(handle_);
+    renderer_ = GetResourceFactory()->CreateRenderer(handle_);
 }
 
 
