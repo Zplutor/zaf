@@ -27,8 +27,8 @@ public:
         return TransformMatrix(matrix);
     }
 
-    static const TransformMatrix Translation(const Size& size) {
-        auto matrix = D2D1::Matrix3x2F::Translation(size.ToD2D1SIZEF());
+    static const TransformMatrix Translation(const Point& point) {
+        auto matrix = D2D1::Matrix3x2F::Translation(point.x, point.y);
         return TransformMatrix(matrix);
     }
 

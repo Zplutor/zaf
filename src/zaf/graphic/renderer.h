@@ -6,6 +6,7 @@
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
 #include <zaf/graphic/layer.h>
+#include <zaf/graphic/matrix.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/brush/brush.h>
@@ -197,8 +198,8 @@ public:
 		handle_->Clear(color.ToD2D1COLORF());
 	}
 
-	void Translate(const Point& point) {
-		handle_->SetTransform(D2D1::Matrix3x2F::Translation(point.x, point.y));
+	void Transform(const TransformMatrix& transform_matrix) {
+		handle_->SetTransform(transform_matrix.ToD2D1MATRIX3X2F());
 	}
 
 	ID2D1HwndRenderTarget* GetHandle() const {

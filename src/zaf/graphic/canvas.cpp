@@ -18,7 +18,7 @@ Canvas::Canvas(const std::shared_ptr<Renderer>& renderer) :
 void Canvas::BeginPaint() {
 
 	Rect adjusted_absolute_rect = MakeClearEdgeRectForFill(absolute_rect_, ClearEdgeOption::Clear);
-	renderer_->Translate(adjusted_absolute_rect.position);
+	renderer_->Transform(TransformMatrix::Translation(adjusted_absolute_rect.position));
 
 	Rect adjusted_absolute_paintable_rect = MakeClearEdgeRectForFill(absolute_paintable_rect_, ClearEdgeOption::Clear);
 	adjusted_absolute_paintable_rect.position.x -= adjusted_absolute_rect.position.x;
