@@ -26,9 +26,10 @@ static void CheckInitialize() {
 }
 
 
-Timer::Timer(Interval interval, const Callback& callback) :
-	interval_(interval),
-	callback_(callback) {
+Timer::Timer(Mode mode) :
+    mode_(mode),
+    interval_(MinimumInterval),
+    is_running_(false) {
 
 }
 
@@ -39,38 +40,79 @@ Timer::~Timer() {
 }
 
 
+void Timer::SetInterval(const Interval& interval) {
+
+    interval_ = interval;
+
+    if (IsRunning()) {
+        StopSystemTimer();
+        StartSystemTimer();
+    }
+}
+
+
 void Timer::Start() {
 
-	CheckInitialize();
-
-	SetTimer(
-		g_timer_window, 
-		reinterpret_cast<UINT_PTR>(this), 
-		interval_, 
-		Timer::TimerProcedure
-	);
+	is_running_ = true;
+    StartSystemTimer();
 }
 
 
 void Timer::Stop() {
 
-	KillTimer(g_timer_window, reinterpret_cast<UINT_PTR>(this));
+    StopSystemTimer();
+    is_running_ = false;
+}
+
+
+void Timer::StartSystemTimer() {
+
+    CheckInitialize();
+
+    SetTimer(
+        g_timer_window,
+        reinterpret_cast<UINT_PTR>(this),
+        interval_.count(),
+        Timer::TimerProcedure);
+}
+
+
+void Timer::StopSystemTimer() {
+
+    KillTimer(g_timer_window, reinterpret_cast<UINT_PTR>(this));
 }
 
 
 void Timer::TimerProcedure(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 
 	Timer* timer = reinterpret_cast<Timer*>(idEvent);
-	timer->Trigger();
+    auto shared_timer = timer->shared_from_this();
+    shared_timer->SystemTimerTrigger();
 }
 
 
-void Timer::Trigger() {
+void Timer::SystemTimerTrigger() {
 
-	if (callback_ != nullptr) {
-		callback_(*this);
-	}
+    switch (GetMode()) {
+        case Mode::OneShot:
+            Stop();
+            break;
+        case Mode::DeferredRepeated:
+            StopSystemTimer();
+            break;
+        default:
+            break;
+    }
+
+    trigger_event_.Trigger(*this);
+
+    if (IsRunning() && (GetMode() == Mode::DeferredRepeated)) {
+        StartSystemTimer();
+    }
 }
 
+
+const Timer::Interval Timer::MinimumInterval(std::chrono::milliseconds(USER_TIMER_MINIMUM));
+const Timer::Interval Timer::MaximumInterval(std::chrono::milliseconds(USER_TIMER_MAXIMUM));
 
 }

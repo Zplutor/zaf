@@ -1,52 +1,108 @@
 #pragma once
 
 #include <Windows.h>
-#include <functional>
+#include <chrono>
+#include <memory>
+#include <zaf/base/event.h>
 
 namespace zaf {
 
 /**
- Represent a repeating timer.
-
- An interval, in milliseconds, and a callback are required to create a timer.
- A new-created timer is stopped by default, and the Start method can be used to start it.
- The Stop method is used to stop the timer.
-
- Once the timer starts, it triggers at every interval, and its callback would be called.
-
- Timer is immutable, thus its interval and callback cannot be changed.
+ Represent a timer.
  */
-class Timer {
+class Timer : public std::enable_shared_from_this<Timer> {
+public:
+    /**
+     Defines the timer's working mode.
+     */
+    enum class Mode {
+
+        /**
+         The timer is repeated, which timeout begin counted after the previous trigger 
+         event has been processed.
+         */
+        DeferredRepeated,
+
+        /**
+         The timer is repeated, which timeout begin counted immediately withou waiting 
+         for processing the previous trigger event.
+         */
+        ImmediatelyRepeated,
+
+        /**
+         The timer is one-shot.
+         */
+        OneShot,
+    };
+
+    /**
+     The type of interval.
+     */
+    typedef std::chrono::milliseconds Interval;
+
+	/**
+	 The type of trigger event.
+	 */
+    typedef Event<Timer&> TriggerEvent;
+
+public:
+    /**
+     The minimum interval value.
+     */
+    static const Interval MinimumInterval;
+
+    /**
+     The maximum interval value.
+     */
+    static const Interval MaximumInterval;
+
 public:
 	/**
-	 Interval type.
-	 */
-	typedef std::size_t Interval;
+	 Initialize the timer that has specified working mode.
 
-	/**
-	 Callback prototype.
+     The working mode is immutable after creating the timer.
+     The interval has a minimum interval value by default.
 	 */
-	typedef std::function<void(Timer&)> Callback;
-
-public:
-	/**
-	 Initialize the timer that has specified interval and callback.
-
-	 callback can be nullptr, means doing nothing when the timer triggers.
-	 */
-	Timer(Interval interval, const Callback& callback);
+	Timer(Mode mode);
 
 	/**
 	 Destroy the timer.
+
+     The timer is stopped when it is destroyed.
 	 */
 	~Timer();
 
+    Mode GetMode() const {
+        return mode_;
+    }
+
 	/**
-	 Get the timer interval.
+	 Get the timer's interval.
 	 */
-	Interval GetInterval() const {
+	const Interval GetInterval() const {
 		return interval_;
 	}
+
+    /**
+     Set the timer's interval.
+
+     Setting the interval will restart the timer while it is running.
+     */
+    void SetInterval(const Interval& interval);
+
+    /**
+     Get the trigger event.
+     */
+    TriggerEvent::Proxy GetTriggerEvent() {
+        return TriggerEvent::Proxy(trigger_event_);
+    }
+
+    /**
+     Get a value indicating that whether the timer is running.
+     */
+    bool IsRunning() const {
+        return is_running_;
+    }
 
 	/**
 	 Start the timer.
@@ -60,11 +116,16 @@ public:
 
 private:
 	static void CALLBACK TimerProcedure(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
-	void Trigger();
+
+    void StartSystemTimer();
+    void StopSystemTimer();
+	void SystemTimerTrigger();
 
 private:
+    Mode mode_;
 	Interval interval_;
-	Callback callback_;
+	TriggerEvent trigger_event_;
+    bool is_running_;
 };
 
 }

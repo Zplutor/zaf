@@ -266,7 +266,7 @@ private:
 	int begin_drag_value_;
 	Point begin_drag_mouse_position_;
 
-	std::unique_ptr<Timer> timer_;
+	std::shared_ptr<Timer> timer_;
 	TimerEvent timer_event_;
 };
 

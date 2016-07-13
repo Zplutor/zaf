@@ -54,7 +54,7 @@ private:
 	std::weak_ptr<Window> window_;
 	Rect rect_;
 	bool is_visible_;
-	std::unique_ptr<Timer> blink_timer_;
+	std::shared_ptr<Timer> blink_timer_;
 };
 
 }
