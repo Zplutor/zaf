@@ -47,7 +47,7 @@ void RadioButton::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 	canvas.SetClearEdgeOption(ClearEdgeOption::Clear);
 
-	PaintTextWithIcon(
+	internal::PaintTextWithIcon(
 		canvas,
 		*this,
 		text_layout,
@@ -92,29 +92,7 @@ const ColorPicker RadioButton::GetRadioBorderColorPicker() const {
         return *color_picker;
     }
     else {
-
-        return [](const Control& control) {
-            
-            const auto& radio_button = dynamic_cast<const RadioButton&>(control);
-
-            if (!radio_button.IsEnabled()) {
-                return Color::Gray;
-            }
-
-            if (radio_button.IsPressed()) {
-                return Color::FromRGB(0x0000CD);
-            }
-
-            if (radio_button.IsHovered()) {
-                return Color::FromRGB(0x4169E1);
-            }
-
-            if (radio_button.IsFocused()) {
-                return Color::FromRGB(0x0000CD);
-            }
-
-            return Color::Black;
-        };
+        return internal::GetBoxBorderColorPicker();
     }
 }
 
@@ -133,9 +111,7 @@ const ColorPicker RadioButton::GetRadioBackgroundColorPicker() const {
         return *color_picker;
     }
     else {
-        return [](const Control&) {
-            return Color::FromRGB(internal::ControlContentColorRGB);
-        };
+        return internal::GetBoxBackgroundColorPicker();
     }
 }
 

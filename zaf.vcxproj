@@ -42,7 +42,6 @@
     <ClCompile Include="src\zaf\graphic\resource_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
-    <ClCompile Include="src\zaf\internal\theme.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
     <ClCompile Include="src\zaf\window\dialog.cpp" />
     <ClCompile Include="src\zaf\window\message\creation.cpp" />

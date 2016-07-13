@@ -1,10 +1,13 @@
 #include <zaf/control/paint_utility.h>
 #include <zaf/application.h>
+#include <zaf/control/clickable_control.h>
 #include <zaf/control/paint_utility.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/internal/theme.h>
 
 namespace zaf {
+namespace internal {
 
 void PaintTextWithIcon(
     Canvas& canvas,
@@ -47,4 +50,47 @@ void PaintTextWithIcon(
 }
 
 
+const ColorPicker GetBoxBackgroundColorPicker() {
+
+    return [](const Control& control) {
+
+        const auto& clickable_control = dynamic_cast<const ClickableControl&>(control);
+
+        if (!clickable_control.IsEnabled()) {
+            return Color::FromRGB(internal::ControlBackgroundColorRGB);
+        }
+
+        if (clickable_control.IsPressed()) {
+            return Color::FromRGB(internal::ButtonPressedBackgroundColorRGB);;
+        }
+
+        if (clickable_control.IsHovered()) {
+            return Color::FromRGB(internal::ButtonHoveredBackgroundColorRGB);
+        }
+
+        return Color::FromRGB(internal::ControlContentColorRGB);
+    };
+}
+
+
+const ColorPicker GetBoxBorderColorPicker() {
+
+    return [](const Control& control) {
+
+        const auto& clickable_control = dynamic_cast<const ClickableControl&>(control);
+
+        if (!clickable_control.IsEnabled()) {
+            return Color::Gray;
+        }
+
+        if (clickable_control.IsPressed() ||
+            clickable_control.IsHovered()) {
+            return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
+        }
+
+        return Color::Black;
+    };
+}
+
+}
 }

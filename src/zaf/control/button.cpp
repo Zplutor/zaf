@@ -27,18 +27,18 @@ void Button::Initialize() {
 		const auto& button = dynamic_cast<const Button&>(control);
 
         if (! button.IsEnabled()) {
-            return internal::ButtonDisabledBackgroundColor;
+            return Color::FromRGB(0xcccccc);
         }
 
 		if (button.IsPressed()) {
-			return internal::ButtonPressedBackgroundColor;
+			return Color::FromRGB(internal::ButtonPressedBackgroundColorRGB);
 		}
 
 		if (button.IsHovered()) {
-			return internal::ButtonHoveredBackgroundColor;
+			return Color::FromRGB(internal::ButtonHoveredBackgroundColorRGB);
 		}
 
-		return internal::ButtonNormalBackgroundColor;
+        return Color::FromRGB(0xe1e1e1);
 	});
 
 	SetBorderColorPicker([](const Control& control) {
@@ -46,16 +46,15 @@ void Button::Initialize() {
 		const auto& button = dynamic_cast<const Button&>(control);
 
 		if (! button.IsEnabled()) {
-			return Color::Gray;
+            return Color::FromRGB(0xbfbfbf);
 		}
 
 		if (button.IsPressed() ||
-			button.IsHovered() ||
-			button.IsFocused()) {
-			return Color::FromRGB(0x4169E1);
+			button.IsHovered()) {
+			return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
 		}
 
-		return Color::Black;
+		return Color::FromRGB(0xadadad);
 	});
 
 	SetTextAlignment(TextAlignment::Center);

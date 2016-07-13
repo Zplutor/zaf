@@ -138,9 +138,6 @@
     <ClCompile Include="src\zaf\window\dialog.cpp">
       <Filter>zaf\window</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\theme.cpp">
-      <Filter>zaf\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\internal\paint_utility.cpp">
       <Filter>zaf\internal</Filter>
     </ClCompile>
