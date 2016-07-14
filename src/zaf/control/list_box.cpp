@@ -118,14 +118,14 @@ ListBox::SelectionChangeEvent::Proxy ListBox::GetSelectionChangeEvent() {
 
 std::size_t ListBox::AddItemWithTextAtIndex(const std::wstring& item_text, std::size_t index) {
 
-    if (index == kInvalidIndex) {
-        return kInvalidIndex;
+    if (index == InvalidIndex) {
+        return InvalidIndex;
     }
 
     auto item = GetItemCreator()(*this);
     if (item == nullptr) {
         ZAF_FAIL();
-        return kInvalidIndex;
+        return InvalidIndex;
     }
 
     item->SetText(item_text);
@@ -154,7 +154,7 @@ std::size_t ListBox::RemoveItemWithText(const std::wstring& item_text) {
     );
 
     if (erase_iterator == items_.end()) {
-        return kInvalidIndex;
+        return InvalidIndex;
     }
 
     auto removed_item = *erase_iterator;
@@ -217,7 +217,7 @@ std::size_t ListBox::GetFirstSelectedItemIndex() const {
     );
 
     if (iterator == items_.end()) {
-        return kInvalidIndex;
+        return InvalidIndex;
     }
 
     return std::distance(items_.begin(), iterator);
@@ -380,7 +380,7 @@ std::size_t ListBox::GetItemIndex(const std::shared_ptr<Item>& item) const {
 
     auto iterator = std::find(items_.begin(), items_.end(), item);
     if (iterator == items_.end()) {
-        return kInvalidIndex;
+        return InvalidIndex;
     }
     else {
         return std::distance(items_.begin(), iterator);
@@ -750,7 +750,7 @@ void ListBox::ItemContainer::SingleSelectItemByKeyEvent(const std::shared_ptr<Li
 
     std::size_t previous_index = list_box->GetFirstSelectedItemIndex();
     std::size_t new_index = ChangeIndexWithKeyMessage(list_box, previous_index, key_message);
-    if (new_index != kInvalidIndex) {
+    if (new_index != InvalidIndex) {
         list_box->SelectItemAtIndex(new_index);
     }
 }
@@ -760,12 +760,12 @@ void ListBox::ItemContainer::ExtendedMultiSelectItemByKeyEvent(const std::shared
 
     bool is_pressing_shift_key = (GetKeyState(VK_SHIFT) < 0);
 
-    std::size_t previous_index = kInvalidIndex;
+    std::size_t previous_index = InvalidIndex;
     if (is_pressing_shift_key) {
         previous_index = list_box->GetItemIndex(last_item_with_shift_key_);
     }
 
-    if (previous_index == kInvalidIndex) {
+    if (previous_index == InvalidIndex) {
         previous_index = list_box->GetItemIndex(last_item_);
     }
 
@@ -801,7 +801,7 @@ std::size_t ListBox::ItemContainer::ChangeIndexWithKeyMessage(
 
     switch (message.wParam) {
         case VK_DOWN:
-            if (index == kInvalidIndex) {
+            if (index == InvalidIndex) {
                 index = 0;
             }
             else if (index < list_box->items_.size() - 1) {
@@ -810,7 +810,7 @@ std::size_t ListBox::ItemContainer::ChangeIndexWithKeyMessage(
             break;
 
         case VK_UP:
-            if (index == kInvalidIndex) {
+            if (index == InvalidIndex) {
                 index = list_box->items_.size() - 1;
             }
             else if (index > 0) {

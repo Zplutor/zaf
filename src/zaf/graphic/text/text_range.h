@@ -12,7 +12,7 @@ public:
 	}
 
 public:
-	TextRange() : index(kInvalidIndex), length(0) { }
+	TextRange() : index(InvalidIndex), length(0) { }
 	TextRange(std::size_t index, std::size_t length) : index(index), length(length) { }
 
 	DWRITE_TEXT_RANGE ToDWRITETEXTRANGE() const {

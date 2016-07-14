@@ -7,6 +7,6 @@
 
 namespace zaf {
 
-const std::size_t kInvalidIndex = std::numeric_limits<std::size_t>::max();
+const std::size_t InvalidIndex = std::numeric_limits<std::size_t>::max();
 
 }
