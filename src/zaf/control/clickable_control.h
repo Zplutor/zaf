@@ -29,8 +29,8 @@ protected:
     void MouseUp(const Point& position, const MouseMessage& message) override;
 	void MouseCapture() override;
 	void MouseRelease() override;
-    void KeyDown(const KeyMessage& message) override;
-    void KeyUp(const KeyMessage& message) override;
+    bool KeyDown(const KeyMessage& message) override;
+    bool KeyUp(const KeyMessage& message) override;
 	
 	virtual void MouseClick();
 

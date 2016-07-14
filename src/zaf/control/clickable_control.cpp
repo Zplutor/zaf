@@ -79,19 +79,25 @@ void ClickableControl::MouseRelease() {
 }
 
 
-void ClickableControl::KeyDown(const KeyMessage& message) {
+bool ClickableControl::KeyDown(const KeyMessage& message) {
 
 	if (message.wParam == VK_SPACE) {
 		BeginPress(PressType::Key);
+        return true;
 	}
+    
+    return __super::KeyDown(message);
 }
 
 
-void ClickableControl::KeyUp(const KeyMessage& message) {
+bool ClickableControl::KeyUp(const KeyMessage& message) {
 
 	if (message.wParam == VK_SPACE) {
 		EndPress(PressType::Key);
+        return true;
 	}
+
+    return __super::KeyUp(message);
 }
 
 

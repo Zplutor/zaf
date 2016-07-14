@@ -619,24 +619,33 @@ void TextBox::MouseUp(const Point& position, const MouseMessage& message) {
 }
 
 
-void TextBox::KeyDown(const KeyMessage& message) {
+bool TextBox::KeyDown(const KeyMessage& message) {
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_KEYDOWN, message.wParam, message.lParam, nullptr);
+        return true;
 	}
+    
+    return __super::KeyDown(message);
 }
 
 
-void TextBox::KeyUp(const KeyMessage& message) {
+bool TextBox::KeyUp(const KeyMessage& message) {
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_KEYUP, message.wParam, message.lParam, nullptr);
+        return true;
 	}
+    
+    return __super::KeyUp(message);
 }
 
 
-void TextBox::CharInput(const KeyMessage& message) {
+bool TextBox::CharInput(const KeyMessage& message) {
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_CHAR, message.wParam, message.lParam, nullptr);
+        return true;
 	}
+
+    return __super::CharInput(message);
 }
 
 

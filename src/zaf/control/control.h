@@ -337,6 +337,32 @@ public:
 		can_focused_ = can_focused;
 	}
 
+    /**
+     Get a value indicating that whether the control and its children can be focused 
+     using tab key.
+
+     The default value is true.
+     */
+    bool CanTabStop() const;
+
+    /**
+     Get a value indicating that whether the control and its children can be focused
+     using tab key.
+     */
+    void SetCanTabStop(bool can_tab_stop);
+
+    /**
+     Get the control's tab index within its parent.
+
+     The default value is InvalidIndex.
+     */
+    std::size_t GetTabIndex() const;
+
+    /**
+     Set the control's tab index within its parent.
+     */
+    void SetTabIndex(std::size_t tab_index);
+
 	/**
 	 Get a value indicating that whether the control is focused.
 	 */
@@ -386,9 +412,9 @@ protected:
     virtual void MouseWheel(const Point& position, const MouseWheelMessage& message);
 	virtual void MouseCapture();
 	virtual void MouseRelease();
-    virtual void KeyDown(const KeyMessage& message);
-    virtual void KeyUp(const KeyMessage& message);
-    virtual void CharInput(const KeyMessage& message);
+    virtual bool KeyDown(const KeyMessage& message);
+    virtual bool KeyUp(const KeyMessage& message);
+    virtual bool CharInput(const KeyMessage& message);
 	virtual void FocusGain();
 	virtual void FocusLose();
 

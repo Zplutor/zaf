@@ -19,8 +19,10 @@ static Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& ch
 static const wchar_t* const kAnchorPropertyName = L"Anchor";
 static const wchar_t* const kBackgroundColorPickerPropertyName = L"BackgroundColorPicker";
 static const wchar_t* const kBorderColorPickerPropertyName = L"BorderColorPicker";
+static const wchar_t* const kCanTabStopPropertyName = L"CanTabStop";
 static const wchar_t* const kLayouterPropertyName = L"Layouter";
 static const wchar_t* const kNamePropertyName = L"Name";
+static const wchar_t* const kTabIndexPropertyName = L"TabIndex";
 
 Control::Control() : 
     update_count_(0),
@@ -575,6 +577,42 @@ void Control::IsHoveredChanged(bool is_hovered) {
 }
 
 
+bool Control::CanTabStop() const {
+
+    auto can_tab_stop = GetPropertyMap().TryGetProperty<bool>(kCanTabStopPropertyName);
+    if (can_tab_stop != nullptr) {
+        return *can_tab_stop;
+    }
+    else {
+        return true;
+    }
+}
+
+
+void Control::SetCanTabStop(bool can_tab_stop) {
+
+    GetPropertyMap().SetProperty(kCanTabStopPropertyName, can_tab_stop);
+}
+
+
+std::size_t Control::GetTabIndex() const {
+
+    auto tab_index = GetPropertyMap().TryGetProperty<std::size_t>(kTabIndexPropertyName);
+    if (tab_index != nullptr) {
+        return *tab_index;
+    }
+    else {
+        return InvalidIndex;
+    }
+}
+
+
+void Control::SetTabIndex(std::size_t tab_index) {
+
+    GetPropertyMap().SetProperty(kTabIndexPropertyName, tab_index);
+}
+
+
 void Control::SetIsFocused(bool is_focused) {
 
 	if (!CanFocused()) {
@@ -785,30 +823,39 @@ void Control::MouseRelease() {
 }
 
 
-void Control::KeyDown(const KeyMessage& message) {
+bool Control::KeyDown(const KeyMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-		parent->KeyDown(message);
+		return parent->KeyDown(message);
 	}
+    else {
+        return false;
+    }
 }
 
 
-void Control::KeyUp(const KeyMessage& message) {
+bool Control::KeyUp(const KeyMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-		parent->KeyUp(message);
+		return parent->KeyUp(message);
 	}
+    else {
+        return false;
+    }
 }
 
 
-void Control::CharInput(const KeyMessage& message) {
+bool Control::CharInput(const KeyMessage& message) {
 
 	auto parent = GetParent(); 
 	if (parent != nullptr) {
-		parent->CharInput(message);
+		return parent->CharInput(message);
 	}
+    else {
+        return false;
+    }
 }
 
 

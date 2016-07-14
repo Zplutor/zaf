@@ -104,7 +104,7 @@ private:
         void MouseDown(const Point& position, const MouseMessage& message) override;
         void MouseMove(const Point& position, const MouseMessage& message) override;
         void MouseUp(const Point& position, const MouseMessage& message) override;
-        void KeyDown(const KeyMessage& message) override;
+        bool KeyDown(const KeyMessage& message) override;
 
     private:
         void LayoutItems(
@@ -149,13 +149,14 @@ private:
             bool only_change_items_in_range
         );
 
-        void SingleSelectItemByKeyEvent(const std::shared_ptr<ListBox>& list_box, const KeyMessage& key_message);
-        void ExtendedMultiSelectItemByKeyEvent(const std::shared_ptr<ListBox>& list_box, const KeyMessage& key_message);
+        bool SingleSelectItemByKeyEvent(const std::shared_ptr<ListBox>& list_box, const KeyMessage& key_message);
+        bool ExtendedMultiSelectItemByKeyEvent(const std::shared_ptr<ListBox>& list_box, const KeyMessage& key_message);
 
-        std::size_t ChangeIndexWithKeyMessage(
+        bool ChangeIndexWithKeyMessage(
             const std::shared_ptr<ListBox>& list_box,
             std::size_t previous_index, 
-            const KeyMessage& message
+            const KeyMessage& message,
+            std::size_t& new_index
         ) const;
 
         void UpdateLastItem(const std::shared_ptr<Item>& item) {

@@ -717,46 +717,60 @@ void ListBox::ItemContainer::ChangeSelectionBetweenItems(
 }
 
 
-void ListBox::ItemContainer::KeyDown(const KeyMessage& message) {
+bool ListBox::ItemContainer::KeyDown(const KeyMessage& message) {
+
+    bool is_handled = false;
 
     auto list_box = list_box_.lock();
-    if (list_box == nullptr) {
-        return;
+    if (list_box != nullptr) {
+        
+        SelectOption select_option = list_box->GetSelectOption();
+        switch (select_option) {
+
+            case SelectOption::SingleSelect:
+                is_handled = SingleSelectItemByKeyEvent(list_box, message);
+                break;
+        
+            case SelectOption::ExtendedMultiSelect:
+                is_handled = ExtendedMultiSelectItemByKeyEvent(list_box, message);
+                break;
+
+            case SelectOption::SimpleMultiSelect:
+            case SelectOption::NoSelect:
+                break;
+
+            default:
+                ZAF_FAIL();
+                break;
+        }
     }
 
-    SelectOption select_option = list_box->GetSelectOption();
-    switch (select_option) {
-
-        case SelectOption::SingleSelect:
-            SingleSelectItemByKeyEvent(list_box, message);
-            break;
-        
-        case SelectOption::ExtendedMultiSelect:
-            ExtendedMultiSelectItemByKeyEvent(list_box, message);
-            break;
-
-        case SelectOption::SimpleMultiSelect:
-        case SelectOption::NoSelect:
-            break;
-
-        default:
-            ZAF_FAIL();
-            break;
+    if (is_handled) {
+        return true;
+    }
+    else {
+        return __super::KeyDown(message);
     }
 }
 
 
-void ListBox::ItemContainer::SingleSelectItemByKeyEvent(const std::shared_ptr<ListBox>& list_box, const KeyMessage& key_message) {
+bool ListBox::ItemContainer::SingleSelectItemByKeyEvent(const std::shared_ptr<ListBox>& list_box, const KeyMessage& key_message) {
 
     std::size_t previous_index = list_box->GetFirstSelectedItemIndex();
-    std::size_t new_index = ChangeIndexWithKeyMessage(list_box, previous_index, key_message);
+    std::size_t new_index = 0;
+    bool is_changed = ChangeIndexWithKeyMessage(list_box, previous_index, key_message, new_index);
+    if (! is_changed) {
+        return false;
+    }
+
     if (new_index != InvalidIndex) {
         list_box->SelectItemAtIndex(new_index);
     }
+    return true;
 }
 
 
-void ListBox::ItemContainer::ExtendedMultiSelectItemByKeyEvent(const std::shared_ptr<ListBox>& list_box, const KeyMessage& key_message) {
+bool ListBox::ItemContainer::ExtendedMultiSelectItemByKeyEvent(const std::shared_ptr<ListBox>& list_box, const KeyMessage& key_message) {
 
     bool is_pressing_shift_key = (GetKeyState(VK_SHIFT) < 0);
 
@@ -769,7 +783,11 @@ void ListBox::ItemContainer::ExtendedMultiSelectItemByKeyEvent(const std::shared
         previous_index = list_box->GetItemIndex(last_item_);
     }
 
-    std::size_t new_index = ChangeIndexWithKeyMessage(list_box, previous_index, key_message);
+    std::size_t new_index = 0;
+    bool is_changed = ChangeIndexWithKeyMessage(list_box, previous_index, key_message, new_index);
+    if (! is_changed) {
+        return false;
+    }
 
     std::shared_ptr<Item> begin_select_item;
     auto end_select_item = list_box->items_[new_index];
@@ -788,49 +806,49 @@ void ListBox::ItemContainer::ExtendedMultiSelectItemByKeyEvent(const std::shared
     }
 
     ChangeSelectionBetweenItems(list_box, begin_select_item, end_select_item, true, false);
+    return true;
 }
 
 
-std::size_t ListBox::ItemContainer::ChangeIndexWithKeyMessage(
+bool ListBox::ItemContainer::ChangeIndexWithKeyMessage(
     const std::shared_ptr<ListBox>& list_box,
     std::size_t previous_index, 
-    const KeyMessage& message
+    const KeyMessage& message,
+    std::size_t& new_index
 ) const {
 
-    std::size_t index = previous_index;
+    new_index = previous_index;
 
     switch (message.wParam) {
         case VK_DOWN:
-            if (index == InvalidIndex) {
-                index = 0;
+            if (new_index == InvalidIndex) {
+                new_index = 0;
             }
-            else if (index < list_box->items_.size() - 1) {
-                ++index;
+            else if (new_index < list_box->items_.size() - 1) {
+                ++new_index;
             }
-            break;
+            return true;
 
         case VK_UP:
-            if (index == InvalidIndex) {
-                index = list_box->items_.size() - 1;
+            if (new_index == InvalidIndex) {
+                new_index = list_box->items_.size() - 1;
             }
-            else if (index > 0) {
-                --index;
+            else if (new_index > 0) {
+                --new_index;
             }
-            break;
+            return true;
 
         case VK_HOME:
-            index = 0;
-            break;
+            new_index = 0;
+            return true;
 
         case VK_END:
-            index = list_box->items_.size() - 1;
-            break;
+            new_index = list_box->items_.size() - 1;
+            return true;
 
         default:
-            break;
+            return false;
     }
-
-    return index;
 }
 
 }
