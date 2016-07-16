@@ -33,6 +33,17 @@ ClickableControl::ClickEvent::Proxy ClickableControl::GetClickEvent() {
 }
 
 
+void ClickableControl::Click() {
+
+    MouseClick();
+
+    auto click_event = TryGetEventFromPropertyMap<ClickEvent>(GetPropertyMap(), kClickEventPropertyName);
+    if (click_event != nullptr) {
+        click_event->Trigger(std::dynamic_pointer_cast<ClickableControl>(shared_from_this()));
+    }
+}
+
+
 void ClickableControl::MouseEnter() {
 	NeedRepaint();
 }
@@ -146,13 +157,7 @@ void ClickableControl::EndPress(PressType press_type) {
 	NeedCaptureMouse(false);
 
 	if (is_pressed) {
-
-		MouseClick();
-
-		auto click_event = TryGetEventFromPropertyMap<ClickEvent>(GetPropertyMap(), kClickEventPropertyName);
-		if (click_event != nullptr) {
-			click_event->Trigger(std::dynamic_pointer_cast<ClickableControl>(shared_from_this()));
-		}
+        Click();
 	}
 }
 

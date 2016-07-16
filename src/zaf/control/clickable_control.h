@@ -21,6 +21,11 @@ public:
 
 	ClickEvent::Proxy GetClickEvent();
 
+    /**
+     Perform a click action on the control.
+     */
+    void Click();
+
 protected:
 	void MouseEnter() override;
 	void MouseLeave() override;
