@@ -19,40 +19,6 @@ Dialog::~Dialog() {
 }
 
 
-bool Dialog::ReceiveMessage(const Message& message, LRESULT& result) {
-
-    bool return_value = __super::ReceiveMessage(message, result);
-
-    if (message.id == WM_KEYDOWN) {
-
-        if (message.wParam == VK_ESCAPE) {
-            CloseWithResult(DialogResult::Cancel);
-        }
-        else if (message.wParam == VK_RETURN) {
-
-            for (const auto& each_pair : dialog_buttons_) {
-                if (each_pair.first->IsDefault()) {
-                    CloseWithResult(each_pair.second);
-                    break;
-                }
-            }
-        }
-    }
-
-    return return_value;
-}
-
-
-void Dialog::WindowDestroy(HWND handle) {
-
-    __super::WindowDestroy(handle);
-
-    if (is_showing_modally_) {
-        PostQuitMessage(0);
-    }
-}
-
-
 void Dialog::ShowModally() {
 
     //Just show the window if already shown modally.
@@ -62,6 +28,7 @@ void Dialog::ShowModally() {
     }
 
     is_showing_modally_ = true;
+    dialog_result_ = DialogResult::None;
 
     auto owner = GetOwner();
     if (owner != nullptr) {
@@ -81,6 +48,9 @@ void Dialog::ShowModally() {
         SetForegroundWindow(owner->GetHandle());
     }
 
+    if (dialog_result_ == DialogResult::None) {
+        dialog_result_ = DialogResult::Cancel;
+    }
     is_showing_modally_ = false;
 }
 
@@ -92,10 +62,64 @@ void Dialog::CloseWithResult(DialogResult result) {
 }
 
 
+bool Dialog::ReceiveMessage(const Message& message, LRESULT& result) {
+
+    bool return_value = __super::ReceiveMessage(message, result);
+
+    if (message.id == WM_KEYDOWN) {
+
+        if (message.wParam == VK_ESCAPE) {
+            CloseWithResult(DialogResult::Cancel);
+        }
+        else if (message.wParam == VK_RETURN) {
+
+            if (current_default_button_ != nullptr) {
+                current_default_button_->Click();
+            }
+        }
+    }
+
+    return return_value;
+}
+
+
+void Dialog::WindowDestroy(HWND handle) {
+
+    __super::WindowDestroy(handle);
+
+    if (is_showing_modally_) {
+        PostQuitMessage(0);
+    }
+}
+
+
+void Dialog::WindowShow() {
+
+    __super::WindowShow();
+
+    SetCurrentDefaultButton(default_button_);
+}
+
+
+void Dialog::FocusedControlChange(const std::shared_ptr<Control>& previous_focused_control) {
+
+    __super::FocusedControlChange(previous_focused_control);
+
+    auto new_focused_button = std::dynamic_pointer_cast<Button>(GetFocusedControl());
+    if (new_focused_button != nullptr) {
+        SetCurrentDefaultButton(new_focused_button);
+    }
+    else {
+        SetCurrentDefaultButton(default_button_);
+    }
+}
+
+
 void Dialog::AddDialogButton(const std::shared_ptr<Button>& button, DialogResult dialog_result) {
 
-    dialog_buttons_[button] = dialog_result;
-    button->GetClickEvent().RemoveListenersWithTag(this);
+    RemoveDialogButton(button);
+
+    dialog_buttons_.insert(std::make_pair(button, dialog_result));
 
     auto dialog_button_click_callback = [this](const std::shared_ptr<ClickableControl>& button) {
 
@@ -112,6 +136,33 @@ void Dialog::AddDialogButton(const std::shared_ptr<Button>& button, DialogResult
     };
 
     button->GetClickEvent().AddListenerWithTag(dialog_button_click_callback, this);
+}
+
+
+bool Dialog::RemoveDialogButton(const std::shared_ptr<Button>& button) {
+
+    auto iterator = dialog_buttons_.find(button);
+    if (iterator == dialog_buttons_.end()) {
+        return false;
+    }
+
+    iterator->first->GetClickEvent().RemoveListenersWithTag(this);
+    dialog_buttons_.erase(iterator);
+    return true;
+}
+
+
+void Dialog::SetCurrentDefaultButton(const std::shared_ptr<Button>& button) {
+
+    if (current_default_button_ != nullptr) {
+        current_default_button_->SetIsDefault(false);
+    }
+
+    current_default_button_ = button;
+
+    if (current_default_button_ != nullptr) {
+        current_default_button_->SetIsDefault(true);
+    }
 }
 
 }

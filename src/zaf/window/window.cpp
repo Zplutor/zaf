@@ -460,33 +460,36 @@ void Window::SetCaptureMouseControl(const std::shared_ptr<Control>& control, boo
 }
 
 
-void Window::SetFocusedControl(const std::shared_ptr<Control>& focused_control) {
+void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_control) {
 
-	if (focused_control_ == focused_control) {
+    auto previous_focused_control = focused_control_;
+    if (previous_focused_control == new_focused_control) {
 		return;
 	}
 
-	if (focused_control != nullptr) {
+    if (new_focused_control != nullptr) {
 
-		if (! focused_control->IsEnabled()) {
+        if (!new_focused_control->IsEnabled()) {
 			return;
 		}
 
 		//The focused control must be contained in this window
-		if (focused_control->GetWindow().get() != this) {
+        if (new_focused_control->GetWindow().get() != this) {
 			return;
 		}
 	}
 
-	if (focused_control_ != nullptr) {
-		focused_control_->IsFocusedChanged(false);
+    if (previous_focused_control != nullptr) {
+        previous_focused_control->IsFocusedChanged(false);
 	}
 
-	focused_control_ = focused_control;
+    focused_control_ = new_focused_control;
 
-	if (focused_control_ != nullptr) {
-		focused_control_->IsFocusedChanged(true);
+    if (new_focused_control != nullptr) {
+        new_focused_control->IsFocusedChanged(true);
 	}
+
+    FocusedControlChange(previous_focused_control);
 }
 
 
@@ -634,6 +637,8 @@ void Window::Show() {
 
     CheckCreateWindowHandle();
     ShowWindow(handle_, SW_SHOW);
+
+    WindowShow();
 }
 
 

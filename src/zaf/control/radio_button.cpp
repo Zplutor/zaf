@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <zaf/base/assert.h>
 #include <zaf/base/event_utility.h>
-#include <zaf/control/paint_utility.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
@@ -47,7 +46,7 @@ void RadioButton::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 	canvas.SetClearEdgeOption(ClearEdgeOption::Clear);
 
-	internal::PaintTextWithIcon(
+	internal::DrawTextWithIcon(
 		canvas,
 		*this,
 		text_layout,

@@ -1,6 +1,7 @@
 #include <zaf/control/button.h>
-#include <zaf/control/paint_utility.h>
+#include <zaf/graphic/canvas.h>
 #include <zaf/internal/theme.h>
+#include <zaf/internal/paint_utility.h>
 
 namespace zaf {
 
@@ -66,10 +67,19 @@ void Button::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
+    if (IsDefault()) {
+
+        Canvas::StateGuard state_guard(canvas);
+        auto rect = GetContentRect();
+        rect.Inflate(-1);
+        canvas.SetBrushWithColor(Color::FromRGB(internal::ButtonActivedBorderColorRGB));
+        canvas.DrawRectangleFrame(rect, 2);
+    }
+    
     if (IsFocused()) {
         auto focus_rect = GetContentRect();
         focus_rect.Inflate(-1);
-        DrawFocusRectangleFrame(canvas, focus_rect);
+        internal::DrawFocusRectangleFrame(canvas, focus_rect);
     }
 }
 

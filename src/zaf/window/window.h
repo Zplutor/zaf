@@ -75,10 +75,11 @@ public:
 	void Close();
 
 protected:
+    virtual bool ReceiveMessage(const Message& message, LRESULT& result);
     virtual void WindowCreate() { }
     virtual void WindowDestroy(HWND handle) { }
-
-    virtual bool ReceiveMessage(const Message& message, LRESULT& result);
+    virtual void WindowShow() { }
+    virtual void FocusedControlChange(const std::shared_ptr<Control>& previous_focused_control) { }
 
     PropertyMap& GetPropertyMap() {
         return property_map_;
@@ -98,7 +99,7 @@ private:
 	void NeedRepaintRect(const Rect& rect);
 	void SetHoveredControl(const std::shared_ptr<Control>& hovered_control);
 	void SetCaptureMouseControl(const std::shared_ptr<Control>& hovered_control, bool is_releasing);
-	void SetFocusedControl(const std::shared_ptr<Control>& focused_control);
+	void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
 
 private:
 	static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);

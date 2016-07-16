@@ -12,6 +12,10 @@ public:
 	void Initialize() override;
 
     bool IsDefault() const;
+
+private:
+    friend class Dialog;
+
     void SetIsDefault(bool is_default);
 
 protected:

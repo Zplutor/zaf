@@ -19,9 +19,9 @@ void ShowTestWindowWindow() {
 
         auto ok_button = Create<Button>();
         ok_button->SetText(L"OK");
-        ok_button->SetIsDefault(true);
         dialog->GetRootControl()->AddChild(ok_button);
         dialog->AddDialogButton(ok_button, DialogResult::Ok);
+        dialog->SetDefaultButton(ok_button);
 
         auto cancel_button = Create<Button>();
         cancel_button->SetText(L"Cancel");
@@ -29,6 +29,7 @@ void ShowTestWindowWindow() {
         dialog->AddDialogButton(cancel_button, DialogResult::Cancel);
 
         dialog->ShowModally();
+        auto result = dialog->GetDialogResult();
     });
 
     window->GetRootControl()->SetLayouter(GetVerticalArrayLayouter());

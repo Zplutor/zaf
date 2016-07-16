@@ -1,15 +1,16 @@
-#include <zaf/control/paint_utility.h>
+#include <zaf/internal/paint_utility.h>
 #include <zaf/application.h>
 #include <zaf/control/clickable_control.h>
-#include <zaf/control/paint_utility.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/stroke_properties.h>
 #include <zaf/internal/theme.h>
 
 namespace zaf {
 namespace internal {
 
-void PaintTextWithIcon(
+void DrawTextWithIcon(
     Canvas& canvas,
     TextualControl& control,
     const std::shared_ptr<TextLayout>& text_layout,
@@ -47,6 +48,19 @@ void PaintTextWithIcon(
         Rect focus_rect(text_rect.position, Size(text_metrics.width, text_metrics.height));
         DrawFocusRectangleFrame(canvas, focus_rect);
     }
+}
+
+
+void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect) {
+
+    StrokeProperties stroke_properties;
+    stroke_properties.dash_style = Stroke::DashStyle::Dot;
+    stroke_properties.dash_cap_style = Stroke::CapStyle::Square;
+    auto stroke = GetResourceFactory()->CreateStroke(stroke_properties);
+
+    canvas.SetStroke(stroke);
+    canvas.SetBrushWithColor(Color::Black);
+    canvas.DrawRectangleFrame(rect, 1);
 }
 
 
@@ -91,6 +105,7 @@ const ColorPicker GetBoxBorderColorPicker() {
         return Color::Black;
     };
 }
+
 
 }
 }
