@@ -9,6 +9,7 @@
 #include <zaf/graphic/clear_edge.h>
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/resource_factory.h>
+#include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/creation.h>
@@ -322,22 +323,45 @@ void Window::ReceiveMouseMessage(const MouseMessage& message) {
 
 void Window::ReceiveKeyMessage(const KeyMessage& message) {
 
-    if (focused_control_ == nullptr) {
-        return;
+    switch (message.id) {
+        case WM_KEYDOWN: {
+
+            bool is_handled = false;
+            if (focused_control_ != nullptr) {
+                is_handled = focused_control_->KeyDown(message);   
+            }
+
+            if (!is_handled && message.wParam == VK_TAB) {
+                SwitchFocusedControlByTabKey();
+            }
+            break;
+        }
+
+        case WM_KEYUP:
+            if (focused_control_ != nullptr) {
+                focused_control_->KeyUp(message);
+            }
+            break;
+
+        case WM_CHAR:
+            if (focused_control_ != nullptr) {
+                focused_control_->CharInput(message);
+            }
+            break;
+    }
+}
+
+
+void Window::SwitchFocusedControlByTabKey() {
+
+    auto current_focused_control = focused_control_;
+    if (current_focused_control == nullptr) {
+        current_focused_control = root_control_;
     }
 
-    switch (message.id) {
-    case WM_KEYDOWN:
-        focused_control_->KeyDown(message);
-        break;
-
-    case WM_KEYUP:
-        focused_control_->KeyUp(message);
-        break;
-
-    case WM_CHAR:
-        focused_control_->CharInput(message);
-        break;
+    auto next_focused_control = internal::FindNextTabStopControl(current_focused_control);
+    if (next_focused_control != nullptr) {
+        SetFocusedControl(next_focused_control);
     }
 }
 
