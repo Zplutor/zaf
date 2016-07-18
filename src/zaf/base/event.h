@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <functional>
 #include <tuple>
 #include <vector>
@@ -47,8 +48,8 @@ public:
 		/**
 		 Add a listener associating with a tag to the event.
 		 */
-		ListenerId AddListenerWithTag(const ListenerType& listener, void* tag) {
-			return event_.AddListenerWithTag(listener, tag);
+        ListenerId AddListenerWithTag(std::uintptr_t tag, const ListenerType& listener) {
+			return event_.AddListenerWithTag(tag, listener);
 		}
 
 		/**
@@ -61,7 +62,7 @@ public:
 		/**
 		 Remove all listeners associate with specified tag.
 		 */
-		void RemoveListenersWithTag(void* tag) {
+		void RemoveListenersWithTag(std::uintptr_t tag) {
 			event_.RemoveListenersWithTag(tag);
 		}
 
@@ -102,7 +103,7 @@ public:
 	 Return a listener id identifies the listener being added.
 	 */
 	ListenerId AddListener(const ListenerType& listener) {
-		return AddListenerWithTag(listener, nullptr);
+		return AddListenerWithTag(0, listener);
 	}
 
 	/**
@@ -111,7 +112,7 @@ public:
 	 @return
 	 Return a listener id identifies the listener being added.
 	 */
-	ListenerId AddListenerWithTag(const ListenerType& listener, void* tag) {
+    ListenerId AddListenerWithTag(std::uintptr_t tag, const ListenerType& listener) {
 
 		ListenerId id = ++listener_id_seed_;
 		listeners_.push_back(std::make_tuple(id, listener, tag));
@@ -134,7 +135,7 @@ public:
 	/**
 	 Remove all listeners associate with specified tag.
 	 */
-	void RemoveListenersWithTag(void* tag) {
+	void RemoveListenersWithTag(std::uintptr_t tag) {
 
 		auto iterator = listeners_.begin();
 		while (iterator != listeners_.end()) {
@@ -162,7 +163,7 @@ public:
 	}
 
 private:
-	typedef std::tuple<ListenerId, ListenerType, void*> ListenerEntry;
+	typedef std::tuple<ListenerId, ListenerType, std::uintptr_t> ListenerEntry;
 
 private:
     Event(const Event&) = delete;

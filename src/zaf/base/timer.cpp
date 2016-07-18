@@ -72,7 +72,7 @@ void Timer::StartSystemTimer() {
     SetTimer(
         g_timer_window,
         reinterpret_cast<UINT_PTR>(this),
-        interval_.count(),
+        static_cast<UINT>(interval_.count()),
         Timer::TimerProcedure);
 }
 

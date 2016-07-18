@@ -14,7 +14,7 @@ Dialog::Dialog() :
 Dialog::~Dialog() {
 
     for (const auto& each_pair : dialog_buttons_) {
-        each_pair.first->GetClickEvent().RemoveListenersWithTag(this);
+        each_pair.first->GetClickEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
     }
 }
 
@@ -121,21 +121,22 @@ void Dialog::AddDialogButton(const std::shared_ptr<Button>& button, DialogResult
 
     dialog_buttons_.insert(std::make_pair(button, dialog_result));
 
-    auto dialog_button_click_callback = [this](const std::shared_ptr<ClickableControl>& button) {
+    button->GetClickEvent().AddListenerWithTag(
+        reinterpret_cast<std::uintptr_t>(this), 
+        [this](const std::shared_ptr<ClickableControl>& button) {
 
-        if (! GetRootControl()->IsAncestorOf(button)) {
-            return;
+            if (!GetRootControl()->IsAncestorOf(button)) {
+                return;
+            }
+
+            auto iterator = dialog_buttons_.find(std::dynamic_pointer_cast<Button>(button));
+            if (iterator == dialog_buttons_.end()) {
+                return;
+            }
+
+            CloseWithResult(iterator->second);
         }
-
-        auto iterator = dialog_buttons_.find(std::dynamic_pointer_cast<Button>(button));
-        if (iterator == dialog_buttons_.end()) {
-            return;
-        }
-
-        CloseWithResult(iterator->second);
-    };
-
-    button->GetClickEvent().AddListenerWithTag(dialog_button_click_callback, this);
+    );
 }
 
 
@@ -146,7 +147,7 @@ bool Dialog::RemoveDialogButton(const std::shared_ptr<Button>& button) {
         return false;
     }
 
-    iterator->first->GetClickEvent().RemoveListenersWithTag(this);
+    iterator->first->GetClickEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
     dialog_buttons_.erase(iterator);
     return true;
 }

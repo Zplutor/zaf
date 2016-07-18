@@ -48,13 +48,13 @@ void ScrollBar::Initialize() {
 void ScrollBar::InitializeArrow(const std::shared_ptr<Arrow>& arrow) {
 
     arrow->GetBeginPressEvent().AddListenerWithTag(
-		std::bind(&ScrollBar::ArrowBeginPress, this, std::placeholders::_1), 
-		this
+        reinterpret_cast<std::uintptr_t>(this),
+		std::bind(&ScrollBar::ArrowBeginPress, this, std::placeholders::_1) 
 	);
 
     arrow->GetEndPressEvent().AddListenerWithTag(
-		std::bind(&ScrollBar::ArrowEndPress, this, std::placeholders::_1),
-		this
+        reinterpret_cast<std::uintptr_t>(this),
+		std::bind(&ScrollBar::ArrowEndPress, this, std::placeholders::_1)
 	);
 
 	AddChild(arrow);
@@ -63,8 +63,8 @@ void ScrollBar::InitializeArrow(const std::shared_ptr<Arrow>& arrow) {
 
 void ScrollBar::UninitializeArrow(const std::shared_ptr<Arrow>& arrow) {
 
-	arrow->GetBeginPressEvent().RemoveListenersWithTag(this);
-	arrow->GetEndPressEvent().RemoveListenersWithTag(this);
+    arrow->GetBeginPressEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
+    arrow->GetEndPressEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
 	RemoveChild(arrow);
 }
 
@@ -72,18 +72,18 @@ void ScrollBar::UninitializeArrow(const std::shared_ptr<Arrow>& arrow) {
 void ScrollBar::InitializeThumb(const std::shared_ptr<Thumb>& thumb) {
 
 	thumb->GetBeginDragEvent().AddListenerWithTag(
-		std::bind(&ScrollBar::ThumbBeginDrag, this, std::placeholders::_1),
-		this
+        reinterpret_cast<std::uintptr_t>(this),
+		std::bind(&ScrollBar::ThumbBeginDrag, this, std::placeholders::_1)
 	);
 
     thumb->GetDragEvent().AddListenerWithTag(
-		std::bind(&ScrollBar::ThumbDrag, this, std::placeholders::_1),
-		this
+        reinterpret_cast<std::uintptr_t>(this),
+		std::bind(&ScrollBar::ThumbDrag, this, std::placeholders::_1)
 	);
 
     thumb->GetEndDragEvent().AddListenerWithTag(
-		std::bind(&ScrollBar::ThumbEndDrag, this, std::placeholders::_1),
-		this
+        reinterpret_cast<std::uintptr_t>(this),
+		std::bind(&ScrollBar::ThumbEndDrag, this, std::placeholders::_1)
 	);
 
 	AddChild(thumb);
@@ -92,9 +92,10 @@ void ScrollBar::InitializeThumb(const std::shared_ptr<Thumb>& thumb) {
 
 void ScrollBar::UninitializeThumb(const std::shared_ptr<Thumb>& thumb) {
 
-	thumb->GetBeginDragEvent().RemoveListenersWithTag(this);
-	thumb->GetDragEvent().RemoveListenersWithTag(this);
-	thumb->GetEndDragEvent().RemoveListenersWithTag(this);
+    auto tag = reinterpret_cast<std::uintptr_t>(this);
+    thumb->GetBeginDragEvent().RemoveListenersWithTag(tag);
+    thumb->GetDragEvent().RemoveListenersWithTag(tag);
+    thumb->GetEndDragEvent().RemoveListenersWithTag(tag);
 	RemoveChild(thumb);
 }
 

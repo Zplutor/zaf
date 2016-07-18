@@ -112,13 +112,15 @@ void Application::UnregisterWindow(const std::shared_ptr<Window>& window) {
 void Application::SetMainWindow(const std::shared_ptr<Window>& window) {
 
     if (main_window_ != nullptr) {
-        main_window_->GetCloseEvent().RemoveListenersWithTag(this);
+        main_window_->GetCloseEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
     }
 
     main_window_ = window;
     
     if (main_window_ != nullptr) {
-        main_window_->GetCloseEvent().AddListenerWithTag(std::bind(&Application::MainWindowClosed, this, std::placeholders::_1), this);
+        main_window_->GetCloseEvent().AddListenerWithTag(
+            reinterpret_cast<std::uintptr_t>(this), 
+            std::bind(&Application::MainWindowClosed, this, std::placeholders::_1));
     }
 }
 
