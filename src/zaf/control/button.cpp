@@ -51,7 +51,8 @@ void Button::Initialize() {
 		}
 
 		if (button.IsPressed() ||
-			button.IsHovered()) {
+			button.IsHovered() || 
+            button.IsDefault()) {
 			return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
 		}
 
@@ -70,10 +71,8 @@ void Button::Paint(Canvas& canvas, const Rect& dirty_rect) {
     if (IsDefault()) {
 
         Canvas::StateGuard state_guard(canvas);
-        auto rect = GetContentRect();
-        rect.Inflate(-1);
         canvas.SetBrushWithColor(Color::FromRGB(internal::ButtonActivedBorderColorRGB));
-        canvas.DrawRectangleFrame(rect, 2);
+        canvas.DrawRectangleFrame(GetContentRect(), 1);
     }
     
     if (IsFocused()) {
