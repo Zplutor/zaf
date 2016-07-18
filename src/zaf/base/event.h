@@ -103,7 +103,7 @@ public:
 	 Return a listener id identifies the listener being added.
 	 */
 	ListenerId AddListener(const ListenerType& listener) {
-		return AddListenerWithTag(0, listener);
+		return AddListener(nullptr, listener);
 	}
 
 	/**
@@ -113,10 +113,7 @@ public:
 	 Return a listener id identifies the listener being added.
 	 */
     ListenerId AddListenerWithTag(std::uintptr_t tag, const ListenerType& listener) {
-
-		ListenerId id = ++listener_id_seed_;
-		listeners_.push_back(std::make_tuple(id, listener, tag));
-		return id;
+        return AddListener(&tag, listener);
 	}
 
 	/**
@@ -140,7 +137,9 @@ public:
 		auto iterator = listeners_.begin();
 		while (iterator != listeners_.end()) {
 
-			if (std::get<2>(*iterator) == tag) {
+            const auto& entry = *iterator;
+
+			if (std::get<2>(entry) == true && std::get<3>(entry) == tag) {
 				iterator = listeners_.erase(iterator);
 			}
 			else {
@@ -163,7 +162,21 @@ public:
 	}
 
 private:
-	typedef std::tuple<ListenerId, ListenerType, std::uintptr_t> ListenerEntry;
+    ListenerId AddListener(const std::uintptr_t* tag, const ListenerType& listener) {
+
+        ListenerId id = ++listener_id_seed_;
+        bool has_tag = tag != nullptr;
+        listeners_.push_back(std::make_tuple(
+            id, 
+            listener,
+            has_tag, 
+            has_tag ? *tag : 0));
+
+        return id;
+    }
+
+private:
+	typedef std::tuple<ListenerId, ListenerType, bool, std::uintptr_t> ListenerEntry;
 
 private:
     Event(const Event&) = delete;
