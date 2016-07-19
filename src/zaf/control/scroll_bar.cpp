@@ -611,15 +611,19 @@ const ColorPicker ScrollBar::Arrow::GetArrowColorPicker() const {
 
             const auto& arrow = dynamic_cast<const Arrow&>(control);
 
+            if (! arrow.IsEnabled()) {
+                return Color::FromRGB(0xc0c0c0);
+            }
+
             if (arrow.IsPressed()) {
-                return Color::FromRGB(0x808080);
+                return Color::FromRGB(0x306DD9);
             }
 
             if (arrow.IsHovered()) {
-                return Color::FromRGB(0xA9A9A9);
+                return Color::FromRGB(0x5080ef);
             }
 
-            return Color::FromRGB(0x606060);
+            return Color::FromRGB(0x808080);
         };
     }
 }
