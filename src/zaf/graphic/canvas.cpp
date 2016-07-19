@@ -1,6 +1,7 @@
 #include <zaf/graphic/canvas.h>
 #include <dwrite.h>
 #include <zaf/application.h>
+#include <zaf/graphic/layer_parameters.h>
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/graphic/text/text_format.h>
@@ -24,7 +25,7 @@ void Canvas::BeginPaint() {
 	adjusted_absolute_paintable_rect.position.x -= adjusted_absolute_rect.position.x;
 	adjusted_absolute_paintable_rect.position.y -= adjusted_absolute_rect.position.y;
 
-	Layer::Parameters layer_param;
+	LayerParameters layer_param;
 	layer_param.content_bounds = adjusted_absolute_paintable_rect;
 	renderer_->PushLayer(layer_param, layer_);
 }

@@ -1,27 +1,11 @@
 #pragma once
 
 #include <zaf/base/direct2d.h>
-#include <zaf/graphic/matrix.h>
-#include <zaf/graphic/rect.h>
+#include <zaf/graphic/size.h>
 
 namespace zaf {
 
 class Layer {
-public:
-	class Parameters {
-	public:
-		Parameters() : 
-            content_bounds(Rect::Infinite()),
-            mask_transform(TransformMatrix::Identity()),
-            opacity(1) {
-        
-        }
-
-		Rect content_bounds;
-        TransformMatrix mask_transform;
-		float opacity;
-	};
-
 public:
 	explicit Layer(ID2D1Layer* handle) : handle_(handle) { }
 

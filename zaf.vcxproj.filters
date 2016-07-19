@@ -389,5 +389,8 @@
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h">
       <Filter>zaf\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\graphic\layer_parameters.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

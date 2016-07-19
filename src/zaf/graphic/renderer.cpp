@@ -1,5 +1,6 @@
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/brush/solid_color_brush.h>
+#include <zaf/graphic/layer_parameters.h>
 
 namespace zaf {
 
@@ -39,7 +40,7 @@ const std::shared_ptr<Layer> Renderer::InnerCreateLayer(const Size* size, std::e
 }
 
 
-void Renderer::PushLayer(const Layer::Parameters& parameters, const std::shared_ptr<Layer>& layer) {
+void Renderer::PushLayer(const LayerParameters& parameters, const std::shared_ptr<Layer>& layer) {
 
 	D2D1_LAYER_PARAMETERS d2d_parameters = D2D1::LayerParameters();
 	d2d_parameters.contentBounds = parameters.content_bounds.ToD2D1RECTF();

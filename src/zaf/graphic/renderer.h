@@ -17,6 +17,7 @@
 namespace zaf {
 
 class Brush;
+class LayerParameters;
 class SolidColorBrush;
 
 class Renderer {
@@ -188,7 +189,7 @@ public:
 		handle_->DrawTextLayout(position.ToD2D1POINT2F(), text_layout->GetHandle(), brush->GetHandle());
 	}
 
-	void PushLayer(const Layer::Parameters& parameters, const std::shared_ptr<Layer>& layer);
+	void PushLayer(const LayerParameters& parameters, const std::shared_ptr<Layer>& layer);
 
     void PopLayer() {
         handle_->PopLayer();
