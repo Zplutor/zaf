@@ -3,6 +3,7 @@
 #include <zaf/base/assert.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/creation.h>
+#include <zaf/internal/theme.h>
 #include <zaf/window/message/key_message.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -403,7 +404,7 @@ void ListBox::Item::Initialize() {
     
         const auto& item = dynamic_cast<const Item&>(control);
         if (item.IsSelected()) {
-            return Color::Blue;
+            return Color::FromRGB(internal::ControlSelectedColorRGB);
         }
         else {
             return Color::Transparent;
