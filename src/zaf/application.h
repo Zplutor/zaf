@@ -14,7 +14,9 @@ class Window;
 /**
  Represents the application runtime instance.
 
- There is only one instance of Application, use GetInstance method to get it.
+ Application manages the execution, and maintains global objects.
+
+ There is only one instance of Application, which can use GetInstance method to get.
  */
 class Application {
 public:
@@ -38,16 +40,19 @@ public:
 	/**
 	 Initialize the application.
 
-	 This mehtod must be called before Run method is called. If the initialization
-	 is failed, the application is unable to run, it should be terminated in 
-	 this case.
+     @param error_code
+        An output parameter indicating the result of initialization. You should check
+        this parameter to ensure that whether the initialization is succeeded.
+
+	 This mehtod must be called before calling Run method. If the initialization
+	 fails, the application is unable to run, it should be terminated in this case.
 	 */
 	void Initialize(std::error_code& error_code);
 
 	/**
 	 Make the application run.
 
-	 Before calling this method, Initialize method must be called, and it must return true.
+	 Before calling this method, Initialize method must be called, and it must succeeds.
 
 	 The application enters a message loop while running, so this method would not return
 	 until the message loop ends. 
@@ -68,7 +73,7 @@ public:
 	 Get the resource factory.
 
 	 @return
-	 Return nullptr if Initialize method is not called, or the initialization is failed.
+	    Return nullptr if Initialize method is not called, or it fails.
 	 */
 	const std::shared_ptr<ResourceFactory>& GetResourceFactory() const {
 		return resource_factory_;
@@ -86,6 +91,8 @@ public:
 
 	/**
 	 Get the application began run event.
+
+     Startup works can be done in this event, Such as creating and showing the main window.
 	 */
 	BeginRunEvent::Proxy GetBeginRunEvent() {
 		return BeginRunEvent::Proxy(begin_run_event_);
@@ -93,11 +100,16 @@ public:
 
 	/**
 	 Get the application will end run event.
+
+     Cleanup works can be done in this event.
 	 */
 	EndRunEvent::Proxy GetEndRunEvent() {
 		return EndRunEvent::Proxy(end_run_event_);
 	}
 
+    /**
+     Get the main window.
+     */
     const std::shared_ptr<Window> GetMainWindow() const {
         return main_window_;
     }

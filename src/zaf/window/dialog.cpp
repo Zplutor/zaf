@@ -74,7 +74,9 @@ bool Dialog::ReceiveMessage(const Message& message, LRESULT& result) {
         else if (message.wParam == VK_RETURN) {
 
             if (current_default_button_ != nullptr) {
-                current_default_button_->Click();
+                if (current_default_button_->GetWindow().get() == this) {
+                    current_default_button_->Click();
+                }
             }
         }
     }

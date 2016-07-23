@@ -12,57 +12,150 @@ class Caret;
 class MouseMessage;
 class Renderer;
 
+/**
+ Represents a top-level window.
+
+ You shoudl always use Create method to create a window.
+ */
 class Window : public std::enable_shared_from_this<Window> {
 public:
-    typedef std::function<bool(const Window&)> CloseHandler;
+    /**
+     The prototype of close handler.
 
+     @param window
+        The window instance which calls the close handler.
+
+     @return 
+        Return true means allowing to close the window; or false means
+        not allowing.
+     */
+    typedef std::function<bool(const Window& window)> CloseHandler;
+
+    /**
+     The type of close event.
+     */
 	typedef Event<const std::shared_ptr<Window>&> CloseEvent;
 
 public:
+    /**
+     Construct the instance.
+     */
 	Window();
+
+    /**
+     Destruct the instance.
+     */
 	virtual ~Window();
 
+    /**
+     Initialize the window.
+
+     This method must be called after creating a window instance. 
+     You can use the Create method to ensure that.
+     */
     virtual void Initialize();
 
+    /**
+     Get the owner window.
+     */
     const std::shared_ptr<Window> GetOwner() const;
+
+    /**
+     Set the owner window.
+
+     This method takes effect only when the window is closed, or the owner
+     window is not changed.
+     */
     void SetOwner(const std::shared_ptr<Window>& owner);
 
+    /**
+     Get window's rect.
+
+     If rect is not set, the default one is return, whose size is half a screen, 
+     and position is in the center.
+     */
     const Rect GetRect() const;
+
+    /**
+     Set window's rect.
+     */
     void SetRect(const Rect& rect);
 
+    /**
+     Get window's client rect.
+     */
     const Rect GetClientRect() const;
 
+    /**
+     Get window's title.
+
+     The default title is empty.
+     */
     const std::wstring GetTitle() const;
+
+    /**
+     Set window's title.
+     */
     void SetTitle(const std::wstring& title);
 
+    /**
+     Get window's root control.
+     */
 	const std::shared_ptr<Control>& GetRootControl() const {
 		return root_control_;
 	}
 
 	/**
-	 Get the control which has input focus in this window.
+	 Get the control which has input focus in the window.
  	 */
 	const std::shared_ptr<Control>& GetFocusedControl() const {
 		return focused_control_;
 	}
 
+    /**
+     Get the caret associates with the window.
+     */
 	const std::shared_ptr<Caret>& GetCaret();
 
+    /**
+     Get the renderer of the window.
+     */
     const std::shared_ptr<Renderer>& GetRenderer() const {
         return renderer_;
     }
 
+    /**
+     Get the window's handle.
+     */
     HWND GetHandle() const {
         return handle_;
     }
 
+    /**
+     Get a value indicating that whether the window is closed.
+     */
     bool IsClosed() const {
         return GetHandle() == nullptr;
     }
 
+    /**
+     Get the close handler.
+
+     If close handler is not set, the default one is return, which allows closing the window.
+     */
     const CloseHandler GetCloseHandler() const;
+
+    /**
+     Set the close handler.
+
+     The close handler is called before closing the window. You can use this handler to control
+     whether the window is allowed to close.
+     */
     void SetCloseHandler(const CloseHandler& handler);
 
+    /**
+     Get the close event.
+     */
     CloseEvent::Proxy GetCloseEvent();
 
     /**
@@ -70,21 +163,83 @@ public:
      */
     const Point GetMousePosition() const;
 
+    /**
+     Show the window.
+     */
 	void Show();
+
+    /**
+     Hide the window.
+     */
 	void Hide();
+
+    /**
+     Close the window.
+     */
 	void Close();
 
 protected:
+    /**
+     This method is called when the window receives a message.
+
+     @param message
+        Contains information of the message.
+
+     @param result
+        An output parameter stores the result of handling the message.
+
+     @return
+        Return true if the methods handles the message, otherwise return false.
+
+     Derived classes should always call the same method of super class if it doesn't handle 
+     the message.
+     */
     virtual bool ReceiveMessage(const Message& message, LRESULT& result);
+
+    /**
+     This method is called after the window created.
+
+     Dervied classes must call the same method of super class.
+     */
     virtual void WindowCreate() { }
+
+    /**
+     This method is called after the window destroyed.
+
+     @param handle
+        The handle of the window has been destroyed.
+
+     Derived classes must call the same method of super class.
+     */
     virtual void WindowDestroy(HWND handle) { }
+
+    /**
+     This method is called after the window shown.
+
+     Derived classes must call the same method of super class.
+     */
     virtual void WindowShow() { }
+
+    /**
+     This method is called after the focused control changed.
+
+     @param previous_focused_control
+        The previous focused control, may be nullptr.
+
+     Derived classes must call the same method of super class.
+     */
     virtual void FocusedControlChange(const std::shared_ptr<Control>& previous_focused_control) { }
 
+    /**
+     Get the window's property map.
+     */
     PropertyMap& GetPropertyMap() {
         return property_map_;
     }
 
+    /**
+     Get the window's property map.
+     */
     const PropertyMap& GetPropertyMap() const {
         return property_map_;
     }

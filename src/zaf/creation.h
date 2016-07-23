@@ -49,6 +49,15 @@ struct Creator {
 
 }
 
+/**
+ Create an object of specified type.
+
+ ObjectType is the type of object to create, and ArgumentTypes is the arguments passed 
+ to the constructor.
+
+ ObjectType can be any derived classes of Window or Control. You should always use this
+ method to create windows and controls.
+ */
 template<typename ObjectType, typename... ArgumentTypes>
 const std::shared_ptr<ObjectType> Create(ArgumentTypes&&... arguments) {
     return internal::Creator<ObjectType>::Type::Create(arguments...);
