@@ -23,6 +23,7 @@ static const wchar_t* const kDefaultWindowClassName = L"ZafDefaultWindowClass";
 
 static const wchar_t* const kCloseEventPropertyName = L"CloseEvent";
 static const wchar_t* const kCloseHandlerPropertyName = L"CloseHandler";
+static const wchar_t* const kInitialRectStylePropertyName = L"InitialRectStyle";
 static const wchar_t* const kOwnerPropertyName = L"Owner";
 static const wchar_t* const kTitlePropertyName = L"Title";
 
@@ -78,6 +79,7 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wPar
 
 Window::Window() :
 	handle_(nullptr),
+    rect_(0, 0, 640, 480),
 	is_tracking_mouse_(false),
 	is_capturing_mouse_(false) {
 
@@ -96,44 +98,66 @@ void Window::Initialize() {
 
     root_control_ = Create<Control>();
     root_control_->SetWindow(shared_from_this());
-
-    int screen_width = GetSystemMetrics(SM_CXSCREEN);
-    int screen_height = GetSystemMetrics(SM_CYSCREEN);
-    int window_width = screen_width / 2;
-    int window_height = screen_height / 2;
-    rect_.position.x = static_cast<float>((screen_width - window_width) / 2);
-    rect_.position.y = static_cast<float>((screen_height - window_height) / 2);
-    rect_.size.width = static_cast<float>(window_width);
-    rect_.size.height = static_cast<float>(window_height);
 }
 
 
 void Window::CreateWindowHandle() {
 
     auto owner = GetOwner();
-    auto rect = GetRect();
+    auto initial_rect = GetInitialRect();
 
     handle_ = CreateWindowEx(
         0,
         kDefaultWindowClassName,
         GetTitle().c_str(),
         WS_OVERLAPPEDWINDOW,
-        static_cast<int>(rect.position.x),
-        static_cast<int>(rect.position.y),
-        static_cast<int>(rect.size.width),
-        static_cast<int>(rect.size.height),
+        static_cast<int>(initial_rect.position.x),
+        static_cast<int>(initial_rect.position.y),
+        static_cast<int>(initial_rect.size.width),
+        static_cast<int>(initial_rect.size.height),
         owner == nullptr ? nullptr : owner->GetHandle(),
         nullptr,
         nullptr,
-        nullptr
-    );
+        nullptr);
 
     SetWindowLongPtr(handle_, GWLP_USERDATA, reinterpret_cast<ULONG_PTR>(this));
+    rect_ = initial_rect;
 
     CreateRenderer();
     Application::GetInstance().RegisterWindow(shared_from_this());
 
     WindowCreate();
+}
+
+
+const Rect Window::GetInitialRect() const {
+
+    auto initial_rect_style = GetInitialRectStyle();
+
+    if (initial_rect_style == InitialRectStyle::Custom) {
+        return rect_;
+    }
+
+    auto owner = GetOwner();
+
+    if ((initial_rect_style == InitialRectStyle::CenterInOwner) && 
+        (owner != nullptr)) {
+
+        auto owner_rect = owner->GetRect();
+        Point position(
+            owner_rect.position.x + (owner_rect.size.width - rect_.size.width) / 2,
+            owner_rect.position.y + (owner_rect.size.height - rect_.size.height) / 2);
+
+        return Rect(position, rect_.size);
+    }
+
+    int screen_width = GetSystemMetrics(SM_CXSCREEN);
+    int screen_height = GetSystemMetrics(SM_CYSCREEN);
+    Point position(
+        (screen_width - rect_.size.width) / 2,
+        (screen_height - rect_.size.height) / 2);
+
+    return Rect(position, rect_.size);
 }
 
 
@@ -513,6 +537,24 @@ void Window::SetOwner(const std::shared_ptr<Window>& owner) {
 }
 
 
+Window::InitialRectStyle Window::GetInitialRectStyle() const {
+
+    auto style = GetPropertyMap().TryGetProperty<InitialRectStyle>(kInitialRectStylePropertyName);
+    if (style != nullptr) {
+        return *style;
+    }
+    else {
+        return InitialRectStyle::CenterInScreen;
+    }
+}
+
+
+void Window::SetInitialRectStyle(InitialRectStyle initial_rect_style) {
+
+    GetPropertyMap().SetProperty(kInitialRectStylePropertyName, initial_rect_style);
+}
+
+
 const Rect Window::GetRect() const {
 
     if (IsClosed()) {
@@ -531,15 +573,17 @@ void Window::SetRect(const Rect& rect) {
 
     rect_ = rect;
 
-    SetWindowPos(
-        handle_,
-        nullptr,
-        static_cast<int>(rect_.position.x),
-        static_cast<int>(rect_.position.y),
-        static_cast<int>(rect_.size.width),
-        static_cast<int>(rect_.size.height),
-        SWP_NOZORDER
-    );
+    if (! IsClosed()) {
+
+        SetWindowPos(
+            handle_,
+            nullptr,
+            static_cast<int>(rect_.position.x),
+            static_cast<int>(rect_.position.y),
+            static_cast<int>(rect_.size.width),
+            static_cast<int>(rect_.size.height),
+            SWP_NOZORDER);
+    }
 }
 
 

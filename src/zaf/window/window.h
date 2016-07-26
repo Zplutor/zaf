@@ -20,6 +20,29 @@ class Renderer;
 class Window : public std::enable_shared_from_this<Window> {
 public:
     /**
+     The initial rect style of a window.
+     */
+    enum class InitialRectStyle {
+
+        /**
+         The window is centered whithin the screen, and has a specified size set by
+         the SetRect method.
+         */
+        CenterInScreen,
+
+        /**
+         The window is centered within its owner window, and has a specified size 
+         set by the SetRect method.
+         */
+        CenterInOwner,
+
+        /**
+         The window's rect is specifed by the SetRect method.
+         */
+        Custom, 
+    };
+
+    /**
      The prototype of close handler.
 
      @param window
@@ -69,15 +92,32 @@ public:
     void SetOwner(const std::shared_ptr<Window>& owner);
 
     /**
+     Get the window's initial rect style.
+
+     The default value is CenterInScreen.
+     */
+    InitialRectStyle GetInitialRectStyle() const;
+
+    /**
+     Set the window's initial rect style.
+     */
+    void SetInitialRectStyle(InitialRectStyle initial_rect_style);
+
+    /**
      Get window's rect.
 
-     If rect is not set, the default one is return, whose size is half a screen, 
-     and position is in the center.
+     This method returns the actual rect if the window has been created. Otherwise, 
+     it returns the rect set by SetRect method. If SetRect has not been called, the 
+     default rect (0, 0, 640, 480) is returned.
      */
     const Rect GetRect() const;
 
     /**
      Set window's rect.
+
+     If the window has been created, this method would change the rect immediately.
+     Otherwise, it just records the rect. When the window is being creatd, an appropriate
+     rect would be set according to the initial rect style property.
      */
     void SetRect(const Rect& rect);
 
@@ -260,6 +300,7 @@ private:
 	static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
     void CreateWindowHandle();
+    const Rect GetInitialRect() const;
     void CreateRenderer();
     void RecreateRenderer();
     void CheckCreateWindowHandle();
