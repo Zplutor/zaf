@@ -4,6 +4,9 @@
 
 namespace zaf {
 
+/**
+ Wraps information of a Win32 keyboard message.
+ */
 class KeyMessage : public Message {
 
 };

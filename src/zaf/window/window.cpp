@@ -316,7 +316,7 @@ void Window::ReceiveMouseMessage(const MouseMessage& message) {
         }
 
         if (!is_capturing_mouse_) {
-            root_control_->RouteHoverMessage(message.position);
+            root_control_->RouteHoverMessage(message.GetMousePosition());
         }
     }
     else if (message.id == WM_MOUSELEAVE) {
@@ -331,16 +331,17 @@ void Window::ReceiveMouseMessage(const MouseMessage& message) {
 
         //Send message to the hovering control directly.
         Rect control_rect = hovered_control_->GetAbsoluteRect();
+        Point mouse_position = message.GetMousePosition();
         Point related_position(
-            message.position.x - control_rect.position.x,
-            message.position.y - control_rect.position.y
+            mouse_position.x - control_rect.position.x,
+            mouse_position.y - control_rect.position.y
         );
 
         hovered_control_->InterpretMessage(related_position, message);
     }
     else {
 
-        root_control_->RouteMessage(message.position, message);
+        root_control_->RouteMessage(message.GetMousePosition(), message);
     }
 }
 

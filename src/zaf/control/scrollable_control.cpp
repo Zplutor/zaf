@@ -414,7 +414,7 @@ void ScrollableControl::MouseWheel(const Point& position, const MouseWheelMessag
 
     std::shared_ptr<ScrollBar> scroll_bar;
 
-    if (message.is_horizontal) {
+    if (message.IsHorizontalWheeling()) {
         scroll_bar = horizontal_scroll_bar_;   
     }
     else {
@@ -422,7 +422,7 @@ void ScrollableControl::MouseWheel(const Point& position, const MouseWheelMessag
     }
 
     if (scroll_bar->IsVisible() && scroll_bar->IsEnabled()) {
-        scroll_bar->Wheel(message.distance);
+        scroll_bar->Wheel(message.GetWheelingDistance());
     }
 }
 

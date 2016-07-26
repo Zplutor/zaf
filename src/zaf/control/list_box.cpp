@@ -484,7 +484,7 @@ void ListBox::ItemContainer::MouseDown(const Point& position, const MouseMessage
 
     SetIsFocused(true);
 
-    if (message.button != MouseButton::Left) {
+    if (message.GetMouseButton() != MouseButton::Left) {
         return;
     }
 
@@ -503,7 +503,7 @@ void ListBox::ItemContainer::MouseMove(const Point& position, const MouseMessage
 
 void ListBox::ItemContainer::MouseUp(const Point& position, const MouseMessage& message) {
 
-    if (message.button != MouseButton::Left) {
+    if (message.GetMouseButton() != MouseButton::Left) {
         return;
     }
 

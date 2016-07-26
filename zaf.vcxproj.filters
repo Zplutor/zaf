@@ -144,6 +144,9 @@
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp">
       <Filter>zaf\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\message\mouse_message.cpp">
+      <Filter>zaf\window\message</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

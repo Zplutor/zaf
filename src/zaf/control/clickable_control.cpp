@@ -62,7 +62,7 @@ void ClickableControl::MouseMove(const Point& position, const MouseMessage& mess
 
 void ClickableControl::MouseDown(const Point& position, const MouseMessage& message) {
 
-	if (message.button == MouseButton::Left) {
+	if (message.GetMouseButton() == MouseButton::Left) {
 		SetIsFocused(true);
 		BeginPress(PressType::Mouse);
 		CheckIsMousePressed(position, message.wParam);
@@ -72,7 +72,7 @@ void ClickableControl::MouseDown(const Point& position, const MouseMessage& mess
 
 void ClickableControl::MouseUp(const Point& position, const MouseMessage& message) {
 
-	if (message.button == MouseButton::Left) {
+    if (message.GetMouseButton() == MouseButton::Left) {
 		EndPress(PressType::Mouse);
 	}
 }

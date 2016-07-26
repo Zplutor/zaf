@@ -771,7 +771,7 @@ void Control::MouseMove(const Point& position, const MouseMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-        parent->MouseMove(ToParentPoint(message.position), message);
+        parent->MouseMove(ToParentPoint(position), message);
 	}
 }
 

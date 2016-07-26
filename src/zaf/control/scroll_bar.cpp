@@ -317,7 +317,7 @@ ScrollBar::ScrollEvent::Proxy ScrollBar::GetScrollEvent() {
 
 void ScrollBar::MouseDown(const Point& position, const MouseMessage& message) {
 
-	if (message.button == MouseButton::Left) {
+	if (message.GetMouseButton() == MouseButton::Left) {
 		NeedCaptureMouse(true);
 	}
 }
@@ -325,7 +325,7 @@ void ScrollBar::MouseDown(const Point& position, const MouseMessage& message) {
 
 void ScrollBar::MouseUp(const Point& position, const MouseMessage& message) {
 
-	if (message.button == MouseButton::Left) {
+	if (message.GetMouseButton() == MouseButton::Left) {
 		NeedCaptureMouse(false);
 	}
 }
@@ -442,11 +442,11 @@ Rect ScrollBar::GetThumbSlotRect() const {
 
 void ScrollBar::MouseWheel(const Point& position, const MouseWheelMessage& message) {
 
-	if (message.is_horizontal != IsHorizontal()) {
+	if (message.IsHorizontalWheeling() != IsHorizontal()) {
 		return;
 	}
 	
-    Wheel(message.distance);
+    Wheel(message.GetWheelingDistance());
 }
 
 

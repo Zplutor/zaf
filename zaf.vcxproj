@@ -45,6 +45,7 @@
     <ClCompile Include="src\zaf\window\caret.cpp" />
     <ClCompile Include="src\zaf\window\dialog.cpp" />
     <ClCompile Include="src\zaf\window\message\creation.cpp" />
+    <ClCompile Include="src\zaf\window\message\mouse_message.cpp" />
     <ClCompile Include="src\zaf\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
