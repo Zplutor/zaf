@@ -16,40 +16,57 @@ public:
 	typedef Event<const std::shared_ptr<CheckBox>&> CheckStateChangeEvent;
 
 public:
-	/**
-	 Initialize the instance.
-	 */
 	CheckBox();
-
-	/**
-	 Destroy the instance.
-	 */
 	~CheckBox();
 
 	void Initialize() override;
 
+    /**
+     Get the box border color.
+     */
 	const Color GetBoxBorderColor() const {
 		return GetBoxBorderColorPicker()(*this);
 	}
 
+    /**
+     Get the color picker of the box border.
+     */
 	const ColorPicker GetBoxBorderColorPicker() const;
 
+    /**
+     Set the box border color.
+     */
     void SetBoxBorderColor(const Color& color) {
         SetBoxBorderColorPicker(CreateColorPicker(color));
     }
 
+    /**
+     Set the color picker of the box border.
+     */
 	void SetBoxBorderColorPicker(const ColorPicker& color_picker);
 
+    /**
+     Get the box background color.
+     */
     const Color GetBoxBackgroundColor() const {
         return GetBoxBackgroundColorPicker()(*this);
     }
 
+    /**
+     Get the color picker of the box background.
+     */
     const ColorPicker GetBoxBackgroundColorPicker() const;
 
+    /**
+     Set the box background color.
+     */
     void SetBoxBackgroundColor(const Color& color) {
         SetBoxBackgroundColorPicker(CreateColorPicker(color));
     }
 
+    /**
+     Set the color picker of the box background.
+     */
     void SetBoxBackgroundColorPicker(const ColorPicker& color_picker);
 
 	/**

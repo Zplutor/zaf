@@ -4,6 +4,9 @@
 
 namespace zaf {
 
+/**
+ Represents a button control.   
+ */
 class Button : public ClickableControl {
 public:
 	Button();
@@ -11,6 +14,9 @@ public:
 
 	void Initialize() override;
 
+    /**
+     Get a value indicating that whether the button is the default button in a dialog.
+     */
     bool IsDefault() const;
 
 private:

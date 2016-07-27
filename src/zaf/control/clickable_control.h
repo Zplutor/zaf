@@ -5,8 +5,14 @@
 
 namespace zaf {
 
+/**
+ Represents a clickable control.   
+ */
 class ClickableControl : public TextualControl {
 public:
+    /**
+     Type of click event.
+     */
 	typedef Event<const std::shared_ptr<ClickableControl>&> ClickEvent;
 
 public:
@@ -15,10 +21,16 @@ public:
 
 	void Initialize() override;
 
+    /**
+     Get a value indicating that whether the control is being pressed.
+     */
 	bool IsPressed() const {
 		return is_pressed_;
 	}
 
+    /**
+     Get the click event.
+     */
 	ClickEvent::Proxy GetClickEvent();
 
     /**
