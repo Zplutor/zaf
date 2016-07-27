@@ -847,7 +847,7 @@ bool Control::KeyUp(const KeyMessage& message) {
 }
 
 
-bool Control::CharInput(const KeyMessage& message) {
+bool Control::CharInput(const CharMessage& message) {
 
 	auto parent = GetParent(); 
 	if (parent != nullptr) {

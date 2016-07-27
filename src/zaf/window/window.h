@@ -308,7 +308,6 @@ private:
     void Repaint();
     void Resize(UINT width, UINT height);
     void ReceiveMouseMessage(const MouseMessage& message);
-    void ReceiveKeyMessage(const KeyMessage& message);
     void SwitchFocusedControlByTabKey();
     bool ChangeMouseCursor(const Message& message);
 	void LostFocus();

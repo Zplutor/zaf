@@ -107,7 +107,7 @@ protected:
 
     bool KeyDown(const KeyMessage& message) override;
     bool KeyUp(const KeyMessage& message) override;
-    bool CharInput(const KeyMessage& message) override;
+    bool CharInput(const CharMessage& message) override;
 
 	void FocusGain() override;
 	void FocusLose() override;

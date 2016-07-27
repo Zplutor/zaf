@@ -1,5 +1,5 @@
 #include <zaf/window/message/creation.h>
-#include <zaf/window/message/key_message.h>
+#include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -28,8 +28,11 @@ std::shared_ptr<Message> CreateMessage(HWND hwnd, UINT id, WPARAM wParam, LPARAM
 
         case WM_KEYDOWN:
         case WM_KEYUP:
-        case WM_CHAR:
             message = std::make_shared<KeyMessage>();
+            break;
+
+        case WM_CHAR:
+            message = std::make_shared<CharMessage>();
             break;
 
         default: {

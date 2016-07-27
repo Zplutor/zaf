@@ -17,6 +17,7 @@
 namespace zaf {
 
 class Canvas;
+class CharMessage;
 class KeyMessage;
 class Message;
 class MouseMessage;
@@ -414,7 +415,7 @@ protected:
 	virtual void MouseRelease();
     virtual bool KeyDown(const KeyMessage& message);
     virtual bool KeyUp(const KeyMessage& message);
-    virtual bool CharInput(const KeyMessage& message);
+    virtual bool CharInput(const CharMessage& message);
 	virtual void FocusGain();
 	virtual void FocusLose();
 

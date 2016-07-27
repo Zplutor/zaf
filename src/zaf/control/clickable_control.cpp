@@ -2,7 +2,7 @@
 #include <zaf/base/assert.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/window/message/key_message.h>
+#include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {

@@ -6,7 +6,7 @@
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/window/caret.h>
-#include <zaf/window/message/key_message.h>
+#include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window.h>
@@ -639,7 +639,7 @@ bool TextBox::KeyUp(const KeyMessage& message) {
 }
 
 
-bool TextBox::CharInput(const KeyMessage& message) {
+bool TextBox::CharInput(const CharMessage& message) {
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_CHAR, message.wParam, message.lParam, nullptr);
         return true;

@@ -13,7 +13,7 @@
 #include <zaf/internal/theme.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/creation.h>
-#include <zaf/window/message/key_message.h>
+#include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -217,10 +217,28 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         ReceiveMouseMessage(dynamic_cast<const MouseMessage&>(message));
         return true;
 
-    case WM_KEYDOWN:
+    case WM_KEYDOWN: {
+        bool is_handled = false;
+        if (focused_control_ != nullptr) {
+            is_handled = focused_control_->KeyDown(dynamic_cast<const KeyMessage&>(message));
+        }
+
+        if (!is_handled && message.wParam == VK_TAB) {
+            SwitchFocusedControlByTabKey();
+        }
+        return true;
+    }
+
     case WM_KEYUP:
+        if (focused_control_ != nullptr) {
+            focused_control_->KeyUp(dynamic_cast<const KeyMessage&>(message));
+        }
+        return true;
+
     case WM_CHAR:
-        ReceiveKeyMessage(dynamic_cast<const KeyMessage&>(message));
+        if (focused_control_ != nullptr) {
+            focused_control_->CharInput(dynamic_cast<const CharMessage&>(message));
+        }
         return true;
 
     case WM_KILLFOCUS:
@@ -342,37 +360,6 @@ void Window::ReceiveMouseMessage(const MouseMessage& message) {
     else {
 
         root_control_->RouteMessage(message.GetMousePosition(), message);
-    }
-}
-
-
-void Window::ReceiveKeyMessage(const KeyMessage& message) {
-
-    switch (message.id) {
-        case WM_KEYDOWN: {
-
-            bool is_handled = false;
-            if (focused_control_ != nullptr) {
-                is_handled = focused_control_->KeyDown(message);   
-            }
-
-            if (!is_handled && message.wParam == VK_TAB) {
-                SwitchFocusedControlByTabKey();
-            }
-            break;
-        }
-
-        case WM_KEYUP:
-            if (focused_control_ != nullptr) {
-                focused_control_->KeyUp(message);
-            }
-            break;
-
-        case WM_CHAR:
-            if (focused_control_ != nullptr) {
-                focused_control_->CharInput(message);
-            }
-            break;
     }
 }
 

@@ -4,7 +4,7 @@
 #include <zaf/base/event_utility.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
-#include <zaf/window/message/key_message.h>
+#include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/mouse_message.h>
 
 #undef max
