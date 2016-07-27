@@ -12,13 +12,6 @@ namespace zaf {
  */
 class Rect {
 public:
-    /**
-     Get an infinite rectangle.
-     */
-    static const Rect Infinite() {
-        return FromD2D1RECTF(D2D1::InfiniteRect());
-    }
-
 	/**
 	 Convert a specified RECT structure to Rect.
 	 */
@@ -62,6 +55,11 @@ public:
 		result.Union(rect2);
 		return result;
 	}
+
+    /**
+     The infinite rectangle.
+     */
+    static const Rect Infinite;
 
 public:
 	/**
@@ -159,6 +157,11 @@ public:
 			(size.width == 0) && 
 			(size.height == 0);
 	}
+
+    /**
+     Determine whether the rectangle is infinite.
+     */
+    bool IsInfinite() const;
 
 	/**
 	 Convert to RECT structure.

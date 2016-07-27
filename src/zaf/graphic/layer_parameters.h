@@ -8,7 +8,7 @@ namespace zaf {
 class LayerParameters {
 public:
     LayerParameters() :
-        content_bounds(Rect::Infinite()),
+        content_bounds(Rect::Infinite),
         mask_transform(TransformMatrix::Identity()),
         opacity(1) {
 

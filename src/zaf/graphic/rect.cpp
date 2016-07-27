@@ -1,5 +1,6 @@
 #include <zaf/graphic/rect.h>
 #include <algorithm>
+#include <limits>
 
 #undef max
 #undef min
@@ -26,5 +27,25 @@ void Rect::Intersect(const Rect& other) {
 		size.height = 0;
 	}
 }
+
+
+bool Rect::IsInfinite() const {
+
+    float max_value = std::numeric_limits<float>::infinity();
+    float min_value = -max_value;
+
+    return 
+        position.x == min_value &&
+        position.y == min_value && 
+        size.width == max_value &&
+        size.height == max_value;
+}
+
+
+const Rect Rect::Infinite(
+    -std::numeric_limits<float>::infinity(),
+    -std::numeric_limits<float>::infinity(),
+    std::numeric_limits<float>::infinity(),
+    std::numeric_limits<float>::infinity());
 
 }
