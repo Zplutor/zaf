@@ -147,6 +147,9 @@
     <ClCompile Include="src\zaf\window\message\mouse_message.cpp">
       <Filter>zaf\window\message</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\matrix.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

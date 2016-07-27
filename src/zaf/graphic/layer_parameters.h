@@ -9,7 +9,7 @@ class LayerParameters {
 public:
     LayerParameters() :
         content_bounds(Rect::Infinite),
-        mask_transform(TransformMatrix::Identity()),
+        mask_transform(TransformMatrix::Identity),
         opacity(1) {
 
     }

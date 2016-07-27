@@ -8,10 +8,6 @@ namespace zaf {
 
 class TransformMatrix {
 public:
-    static const TransformMatrix Identity() {
-        return TransformMatrix(D2D1::Matrix3x2F::Identity());
-    }
-
     static const TransformMatrix Rotation(float angle, const Point& center_point) {
         auto matrix = D2D1::Matrix3x2F::Rotation(angle, center_point.ToD2D1POINT2F());
         return TransformMatrix(matrix);
@@ -35,6 +31,8 @@ public:
     static const TransformMatrix FromD2D1MATRIX3X2F(const D2D1::Matrix3x2F& matrix) {
         return TransformMatrix(matrix);
     }
+
+    static const TransformMatrix Identity;
 
 public:
     TransformMatrix() { }
