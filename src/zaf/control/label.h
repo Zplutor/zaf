@@ -5,18 +5,11 @@
 namespace zaf {
 
 /**
- Represents a label control that displays static text.	
+ Represents a label control.	
  */
 class Label : public TextualControl {
 public:
-	/**
-	 Initialize the instance.
-	 */
 	Label();
-
-	/**
-	 Destroy the instance.
-	 */
 	~Label();
 
     void Initialize() override;

@@ -25,14 +25,36 @@ class MouseWheelMessage;
 class Renderer;
 class Window;
 
+/**
+ Represents a control in a window.
+
+ This is the base class of all controls.
+ */
 class Control : public std::enable_shared_from_this<Control> {
 public:
+    /**
+     Provides a convenient way for automatically calling BeginUpdate/EndUpdate
+     of a control.
+
+     The control's BeginUpdate is called when the instance is created, and
+     the EndUpdate is called when the instance is destroyed.
+     */
     class UpdateGuard {
     public:
-        UpdateGuard(Control& control) : control_(control) { 
+        /**
+         Construct the instance with specified control.
+
+         The control's BeginUpdate method would be called.
+         */
+        explicit UpdateGuard(Control& control) : control_(control) { 
             control_.BeginUpdate();
         }
 
+        /**
+         Destruct the instance.
+
+         The control's EndUpdate method would be called.
+         */
         ~UpdateGuard() {
             control_.EndUpdate();
         }
@@ -45,14 +67,7 @@ public:
     };
 
 public:
-    /**
-     Construct the instance.
-     */
 	Control();
-
-    /**
-     Destruct the instance.
-     */
 	virtual ~Control();
 
 	/**
@@ -67,11 +82,11 @@ public:
     /**
      Begin updating the contol.
 
-     The control's update count pluses one while BeginUpdate is called, and subtract 
-     one while EndUpdate is called. The control would stop repainting and relayouting 
-     while its update count greater than zero, until the update count reaches zero.
+     This method increase the control's update count. The control would stop repainting 
+     and relayouting while its update count is greater than zero. 
 
-     It is recommended to use UpdateGuard to ensure that the callings of BeginUpdate/EndUpdate 
+     The method EndUpdate must be called in order to decrease the update count. It is 
+     recommended that using UpdateGuard to ensure that the callings of BeginUpdate/EndUpdate 
      are matched.
      */
     void BeginUpdate();
@@ -79,7 +94,7 @@ public:
     /**
      End updating the control.
 
-     The control's update count would subtract one, and if it is zero, the control would
+     This method decrease the control's udpate count, and if it reachs zero, the control would
      repaint and relayout immediately.
      */
     void EndUpdate();
@@ -154,7 +169,16 @@ public:
 		return rect_.size.height;
 	}
 
+    /**
+     Get the control's anchor.
+
+     The default value is Anchor::None.
+     */
 	Anchor GetAnchor() const;
+
+    /**
+     Set the control's anchor.
+     */
 	void SetAnchor(Anchor anchor);
 
 	/**
@@ -186,31 +210,64 @@ public:
         return GetContentRect().size;
     }
 
+    /**
+     Get background color.
+     */
 	const Color GetBackgroundColor() const {
 		return GetBackgroundColorPicker()(*this);
 	}
 
+    /**
+     Get the color picker of background.
+     */
 	const ColorPicker GetBackgroundColorPicker() const;
 
+    /**
+     Set background color.
+     */
     void SetBackgroundColor(const Color& color) {
         SetBackgroundColorPicker(CreateColorPicker(color));
     }
 
+    /**
+     Set the color picker of background.
+     */
 	void SetBackgroundColorPicker(const ColorPicker& color_picker);
 
+    /**
+     Get border color.
+     */
 	const Color GetBorderColor() const {
 		return GetBorderColorPicker()(*this);
 	}
 
+    /**
+     Get the color picker of border color.
+     */
 	const ColorPicker GetBorderColorPicker() const;
 
+    /**
+     Set border color.
+     */
     void SetBorderColor(const Color& color) {
         SetBorderColorPicker(CreateColorPicker(color));
     }
 
+    /**
+     Set the color picker of border.
+     */
 	void SetBorderColorPicker(const ColorPicker& color_picker);
 
+    /**
+     Get the layouter.
+     */
 	const Layouter GetLayouter() const;
+
+    /**
+     Set the layouter.
+
+     Setting the layouter would causes the control to relayout immediately.
+     */
 	void SetLayouter(const Layouter& layouter);
 
 	/**
@@ -376,47 +433,236 @@ public:
 	 */
 	void SetIsFocused(bool is_focused);
 
+    /**
+     The the mouse position in control's coordinate.
+     */
 	const Point GetMousePosition() const;
 
 protected:
+    /**
+     Repaint the control and its all children.
+
+     Do not override this method to paint, you should override Paint method
+     instead.
+     */
 	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
+
+    /**
+     Paint the control.
+
+     @param canvas
+        The canvas used to paint.
+
+     @param dirty_rect
+        The rectangle area needed to be repainted in the control.
+
+     Derived classes should override this method to paint the control,
+     and they must call the same method of super class.
+     */
 	virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
 
+    /**
+     Require the control to repaint.
+     */
 	void NeedRepaint();
+
+    /**
+     Require the control to repaint specified rectangle area.
+     */
 	void NeedRepaintRect(const Rect& rect);
 
-    void ReleaseRendererResources();
+    /**
+     Release the renderer-dependent resources.
 
+     This method is called when renderer-dependent resources need to be released, 
+     if they are being cached.
+
+     Derived classes must call the same method of base class.
+     */
+    virtual void ReleaseRendererResources();
+
+    /**
+     Layout the control's children.
+
+     @param previous_rect
+        The previous rect of the control.
+
+     Derived classes may not call the same method of base class if they do the layout 
+     by themself.
+     */
 	virtual void Layout(const Rect& previous_rect);
+
+    /**
+     Require the control to relayout its children.
+     */
 	void NeedRelayout();
 
+    /**
+     Get the mutable property map.
+     */
 	PropertyMap& GetPropertyMap() {
 		return property_map_;
 	}
 
+    /**
+     Get the immutable property map.
+     */
 	const PropertyMap& GetPropertyMap() const {
 		return property_map_;
 	}
 
+    /**
+     Get a value indicating that whether the control is capturing the mouse.
+     */
 	bool IsCapturingMouse() const {
 		return is_capturing_mouse_;
 	}
 
+    /**
+     Require the control to capture the mouse, or cancel the capturing.
+     */
 	void NeedCaptureMouse(bool capture);
 
+    /**
+     Change the mouse cursor.
+
+     @param message
+        Information about the WM_SETCURSOR message.
+
+     @param is_changed
+        An output parameter. If the cursor has been changed, it should be set to true.
+
+     This method is called when a WM_SETCURSOR message is received. Derived classes should 
+     call the same method of base class if they don't change the cursor.
+     */
 	virtual void ChangeMouseCursor(const Message& message, bool& is_changed);
+
+    /**
+     Process the mouse move notificaiton.
+
+     @param position
+        The mouse position in the control's coordinate.
+
+     @param message
+        Information about the WM_MOUSEMOVE message.
+
+     This method is called when a WM_MOUSEMOVE message is received. Derived classes should 
+     call the same method of base class if they don't process the notification.
+     */
     virtual void MouseMove(const Point& position, const MouseMessage& message);
+
+    /**
+     Process the mouse enter notification.
+
+     This method is called when the mouse has entered the control. Derived classes should 
+     call the same method of base class if they don't process the notification.
+     */
 	virtual void MouseEnter();
+
+    /**
+     Process the mouse leave notification.
+
+     This method is called when the mouse has left the control. Derived classes should 
+     call the same method of base class if they don't process the notifiction.
+     */
 	virtual void MouseLeave();
+
+    /**
+     Process the mouse down notification.
+
+     @param position
+        The mouse position in the control's coordinate.
+
+     @param message
+        Information about the mouse down message (e.g. WM_LBUTTONDOWN).
+
+     This method is called when a mouse button is pressed within the control. Derived classes 
+     should call the same method of base class if they don't process the notifiction.
+     */
     virtual void MouseDown(const Point& position, const MouseMessage& message);
+
+    /**
+     Process the mouse up notification.
+
+     @param position
+        The mouse position in the control's coordinate.
+
+     @param message
+        Information about the mouse up message (e.g. WM_LBUTTONUP).
+
+     This method is called when a mouse button is released within the control. Derived classes 
+     should call the same method of base class if they don't process the notifiction.
+     */
     virtual void MouseUp(const Point& position, const MouseMessage& message);
+
+    /**
+     Process the mouse wheel notification.
+
+     @param position
+        The mouse position in the control's coordinate.
+
+     @param message
+        Information about the mouse wheel message (e.g. WM_MOUSEWHEEL).
+
+     This method is called when the mouse wheel within the control. Derived classes
+     should call the same method of base class if they don't process the notification.
+     */
     virtual void MouseWheel(const Point& position, const MouseWheelMessage& message);
+
+    /**
+     Process the mouse capture notification.
+
+     This method is called when the control captured the mouse. Derived classes
+     should call the same method of base class if they don't process the notification.
+     */
 	virtual void MouseCapture();
+
+    /**
+     Process the mouse release notification.
+
+     This method is called when the control release the mouse. Derived classes
+     should call the same method of base class if they don't process the notification.
+     */
 	virtual void MouseRelease();
+
+    /**
+     Process the key down notification.
+
+     This method is called when a key is pressed at mean while the control is focused. Derived 
+     classes should call the same method of base class if they don't process the notification.
+     */
     virtual bool KeyDown(const KeyMessage& message);
+
+    /**
+     Process the key up notification.
+
+     This method is called when a key is released at mean while the control is focused. Derived 
+     classes should call the same method of base class if they don't process the notification.
+     */
     virtual bool KeyUp(const KeyMessage& message);
+
+    /**
+     Process the char input notification.
+
+     This method is called when a char is inputed at mean while the control is focused. Derived 
+     classes should call the same method of base class if they don't process the notification.
+     */
     virtual bool CharInput(const CharMessage& message);
+
+    /**
+     Process the focus gain notification.
+
+     This method is called when the control gained the focus. Derived classes should call the 
+     same method of base class if they don't process the notification.
+     */
 	virtual void FocusGain();
+
+    /**
+     Process the focus lose notification.
+
+     This method is called when the control lost the focus. Derived classes should call the 
+     same method of base class if they don't process the notification.
+     */
 	virtual void FocusLose();
 
 private:

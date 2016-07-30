@@ -7,6 +7,8 @@ namespace zaf {
 
 /**
  Represents a clickable control.   
+
+ This is the base class of all controls that support click action.
  */
 class ClickableControl : public TextualControl {
 public:
@@ -49,6 +51,12 @@ protected:
     bool KeyDown(const KeyMessage& message) override;
     bool KeyUp(const KeyMessage& message) override;
 	
+    /**
+     This method is called when a click action is performed on the control.
+
+     Derived classes should call the same method of super class if they don't 
+     handle the event.
+     */
 	virtual void MouseClick();
 
 	void FocusGain() override;

@@ -95,7 +95,7 @@ public:
         no_select_radio_button->SetText(L"No select");
         no_select_radio_button->SetGroup(group);
         no_select_radio_button->GetSelectStateChangeEvent().AddListener([this](const std::shared_ptr<RadioButton>&) {
-            list_box_->SetSelectOption(ListBox::SelectOption::NoSelect);
+            list_box_->SetSelectionMode(ListBox::SelectionMode::None);
         });
         container->AddChild(no_select_radio_button);
 
@@ -103,7 +103,7 @@ public:
         single_select_radio_button->SetText(L"Single select");
         single_select_radio_button->SetGroup(group);
         single_select_radio_button->GetSelectStateChangeEvent().AddListener([this](const std::shared_ptr<RadioButton>&) {
-            list_box_->SetSelectOption(ListBox::SelectOption::SingleSelect);
+            list_box_->SetSelectionMode(ListBox::SelectionMode::Single);
         });
         container->AddChild(single_select_radio_button);
 
@@ -111,7 +111,7 @@ public:
         simple_multi_select_radio_button->SetText(L"Simple multi select");
         simple_multi_select_radio_button->SetGroup(group);
         simple_multi_select_radio_button->GetSelectStateChangeEvent().AddListener([this](const std::shared_ptr<RadioButton>&) {
-            list_box_->SetSelectOption(ListBox::SelectOption::SimpleMultiSelect);
+            list_box_->SetSelectionMode(ListBox::SelectionMode::SimpleMultiple);
         });
         container->AddChild(simple_multi_select_radio_button);
 
@@ -119,21 +119,21 @@ public:
         extended_multi_select_radio_button->SetText(L"Extended multi select");
         extended_multi_select_radio_button->SetGroup(group);
         extended_multi_select_radio_button->GetSelectStateChangeEvent().AddListener([this](const std::shared_ptr<RadioButton>&) {
-            list_box_->SetSelectOption(ListBox::SelectOption::ExtendedMultiSelect);
+            list_box_->SetSelectionMode(ListBox::SelectionMode::ExtendedMultiple);
         });
         container->AddChild(extended_multi_select_radio_button);
 
-        switch (list_box_->GetSelectOption()) {
-            case ListBox::SelectOption::NoSelect:
+        switch (list_box_->GetSelectionMode()) {
+            case ListBox::SelectionMode::None:
                 no_select_radio_button->SetSelected();
                 break;
-            case ListBox::SelectOption::SingleSelect:
+            case ListBox::SelectionMode::Single:
                 single_select_radio_button->SetSelected();
                 break;
-            case ListBox::SelectOption::SimpleMultiSelect:
+            case ListBox::SelectionMode::SimpleMultiple:
                 simple_multi_select_radio_button->SetSelected();
                 break;
-            case ListBox::SelectOption::ExtendedMultiSelect:
+            case ListBox::SelectionMode::ExtendedMultiple:
                 simple_multi_select_radio_button->SetSelected();
                 break;
         }

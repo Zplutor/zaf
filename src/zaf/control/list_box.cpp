@@ -15,7 +15,7 @@ namespace zaf {
 static const wchar_t* const kItemCreatorPropertyName = L"ItemCreator";
 static const wchar_t* const kItemHeightPropertyName = L"ItemHeight";
 static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
-static const wchar_t* const kSelectOptionPropertyName = L"SelectOption";
+static const wchar_t* const kSelectionModePropertyName = L"SelectionMode";
 
 ListBox::ListBox() {
 
@@ -87,26 +87,26 @@ void ListBox::SetItemCreator(const ItemCreator& creator) {
 }
 
 
-ListBox::SelectOption ListBox::GetSelectOption() const {
+ListBox::SelectionMode ListBox::GetSelectionMode() const {
 
-    auto select_option = GetPropertyMap().TryGetProperty<SelectOption>(kSelectOptionPropertyName);
+    auto select_option = GetPropertyMap().TryGetProperty<SelectionMode>(kSelectionModePropertyName);
     if (select_option != nullptr) {
         return *select_option;
     }
     else {
-        return SelectOption::SingleSelect;
+        return SelectionMode::Single;
     }
 }
 
 
-void ListBox::SetSelectOption(SelectOption select_option) {
+void ListBox::SetSelectionMode(SelectionMode selection_mode) {
 
-    GetPropertyMap().SetProperty(kSelectOptionPropertyName, select_option);
+    GetPropertyMap().SetProperty(kSelectionModePropertyName, selection_mode);
 
-    if (select_option == SelectOption::SingleSelect) {
+    if (selection_mode == SelectionMode::Single) {
         SelectItemAtIndex(GetFirstSelectedItemIndex());
     }
-    else if (select_option == SelectOption::NoSelect) {
+    else if (selection_mode == SelectionMode::None) {
         UnselectAllItems();
     }
 }
@@ -267,8 +267,8 @@ const std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
 
 bool ListBox::SelectAllItems() {
     
-    auto select_option = GetSelectOption();
-    if (select_option == SelectOption::NoSelect || select_option == SelectOption::SingleSelect) {
+    auto select_option = GetSelectionMode();
+    if (select_option == SelectionMode::None || select_option == SelectionMode::Single) {
         return false;
     }
 
@@ -539,21 +539,21 @@ bool ListBox::ItemContainer::SelectItemAtPositionByMouseEvent(const Point& posit
         return false;
     }
 
-    switch (list_box->GetSelectOption()) {
+    switch (list_box->GetSelectionMode()) {
 
-        case SelectOption::SingleSelect:
+        case SelectionMode::Single:
             SingleSelectItemByMouseEvent(list_box, item);
             break;
 
-        case SelectOption::SimpleMultiSelect:
+        case SelectionMode::SimpleMultiple:
             SimpleMultiSelectItemByMouseEvent(list_box, item, is_mouse_moving);
             break;
 
-        case SelectOption::ExtendedMultiSelect:
+        case SelectionMode::ExtendedMultiple:
             ExtendedMultiSelectItemByMouseEvent(list_box, item, is_mouse_moving);
             break;
 
-        case SelectOption::NoSelect:
+        case SelectionMode::None:
             return false;
 
         default:
@@ -725,19 +725,19 @@ bool ListBox::ItemContainer::KeyDown(const KeyMessage& message) {
     auto list_box = list_box_.lock();
     if (list_box != nullptr) {
         
-        SelectOption select_option = list_box->GetSelectOption();
+        SelectionMode select_option = list_box->GetSelectionMode();
         switch (select_option) {
 
-            case SelectOption::SingleSelect:
+            case SelectionMode::Single:
                 is_handled = SingleSelectItemByKeyEvent(list_box, message);
                 break;
         
-            case SelectOption::ExtendedMultiSelect:
+            case SelectionMode::ExtendedMultiple:
                 is_handled = ExtendedMultiSelectItemByKeyEvent(list_box, message);
                 break;
 
-            case SelectOption::SimpleMultiSelect:
-            case SelectOption::NoSelect:
+            case SelectionMode::SimpleMultiple:
+            case SelectionMode::None:
                 break;
 
             default:
