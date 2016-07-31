@@ -508,11 +508,11 @@ void ScrollableControl::ScrollToScrollAreaPosition(const Point& position) {
     }
 
     if (AllowHorizontalScroll() && horizontal_scroll_bar_->IsEnabled()) {
-        horizontal_scroll_bar_->SetValue(position.x);
+        horizontal_scroll_bar_->SetValue(static_cast<int>(position.x));
     }
 
     if (AllowVerticalScroll() && vertical_scroll_bar_->IsEnabled()) {
-        vertical_scroll_bar_->SetValue(position.y);
+        vertical_scroll_bar_->SetValue(static_cast<int>(position.y));
     }
 }
 

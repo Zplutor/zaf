@@ -41,47 +41,64 @@ public:
 	typedef Event<const std::shared_ptr<RadioButton>&> SelectStateChangeEvent;
 
 public:
-	/**
-	 Construct the instance.
-	 */
 	RadioButton();
-
-	/**
-	 Destroy the instance.
-	 */
 	~RadioButton();
 
 	void Initialize() override;
 
+    /**
+     Get radio border color.
+     */
     const Color GetRadioBorderColor() const {
         return GetRadioBorderColorPicker()(*this);
     }
 
+    /**
+     Get the color picker of radio border.
+     */
     const ColorPicker GetRadioBorderColorPicker() const;
 
+    /**
+     Set radio border color.
+     */
     void SetRadioBorderColor(const Color& color) {
         SetRadioBorderColorPicker(CreateColorPicker(color));
     }
 
+    /**
+     Set the color picker of radio border.
+     */
     void SetRadioBorderColorPicker(const ColorPicker& color_picker);
 
+    /**
+     Get radio background color.
+     */
     const Color GetRadioBackgroundColor() {
         return GetRadioBackgroundColorPicker()(*this);
     }
 
+    /**
+     Get the color picker of radio background.
+     */
     const ColorPicker GetRadioBackgroundColorPicker() const;
 
+    /**
+     Set radio background color.
+     */
     void SetRadioBackgroundColor(const Color& color) {
         SetRadioBackgroundColorPicker(CreateColorPicker(color));
     }
 
+    /**
+     Set the color picker of radio background.
+     */
     void SetRadioBackgroundColorPicker(const ColorPicker& color_picker);
 
 	/**
 	 Get the associated group.
 
 	 @return
-	 Return nullptr if there is no associated group.
+	    Return nullptr if there is no associated group.
 	 */
 	const std::shared_ptr<Group>& GetGroup() const {
 		return group_;

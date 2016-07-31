@@ -7,18 +7,50 @@ namespace zaf {
 
 class Timer;
 
+/**
+ Represents a scroll bar control.
+ */
 class ScrollBar : public Control {
 public:
+    /**
+     Represents an arrow control in a scroll bar.
+     */
 	class Arrow : public ClickableControl {
 	public:
+        /**
+         Defines directions of an arrow.
+         */
 		enum class Direction {
+
+            /**
+             The arrow's direction is left.
+             */
 			Left,
+
+            /**
+             The arrow's direction is up.
+             */
 			Up,
+
+            /**
+             The arrow's direction is right.
+             */
 			Right,
+
+            /**
+             The arrow's direction is down.
+             */
 			Down,
 		};
 
+        /**
+         Type of begin press event.
+         */
 		typedef Event<const std::shared_ptr<Arrow>&> BeginPressEvent;
+
+        /**
+         Type of end press event.
+         */
 		typedef Event<const std::shared_ptr<Arrow>&> EndPressEvent;
 
 	public:
@@ -26,34 +58,64 @@ public:
 
 		void Initialize() override;
 
+        /**
+         Get arrow color.
+         */
         const Color GetArrowColor() const {
             return GetArrowColorPicker()(*this);
         }
 
+        /**
+         Get the color picker of arrow.
+         */
         const ColorPicker GetArrowColorPicker() const;
 
+        /**
+         Set arrow color.
+         */
         void SetArrowColor(const Color& color) {
             SetArrowColorPicker(CreateColorPicker(color));
         }
 
+        /**
+         Set the color picker of arrow.
+         */
         void SetArrowColorPicker(const ColorPicker& color_picker);
 
+        /**
+         Get the arrow's direction.
+
+         The default direction is up.
+         */
 		Direction GetDirection() const {
 			return direction_;
 		}
 
-		void SetDirection(Direction direction) {
-			direction_ = direction;
-			NeedRepaint();
-		}
+        /**
+         Get begin press event.
 
+         This event is raised when the mouse left button is pressed for a while. 
+         */
 		BeginPressEvent::Proxy GetBeginPressEvent() {
 			return BeginPressEvent::Proxy(begin_press_event_);
 		}
 
+        /**
+         Get end press event.
+
+         This event is raised when the mouse left button is released after being pressed for a while.
+         */
 		EndPressEvent::Proxy GetEndPressEvent() {
 			return EndPressEvent::Proxy(end_press_event_);
 		}
+
+    private:
+        friend class ScrollBar;
+
+        void SetDirection(Direction direction) {
+            direction_ = direction;
+            NeedRepaint();
+        }
 
 	protected:
 		void Paint(Canvas& canvas, const Rect& dirty_rect) override;
@@ -67,10 +129,24 @@ public:
 		EndPressEvent end_press_event_;
 	};
 
+    /**
+     Represents a thumb control in a control.
+     */
 	class Thumb : public ClickableControl {
 	public:
+        /**
+         Type of begin drag event.
+         */
 		typedef Event<const std::shared_ptr<Thumb>&> BeginDragEvent;
+
+        /**
+         Type of drag event.
+         */
 		typedef Event<const std::shared_ptr<Thumb>&> DragEvent;
+
+        /**
+         Type of end drag event.
+         */
 		typedef Event<const std::shared_ptr<Thumb>&> EndDragEvent;
 
 	public:
@@ -78,41 +154,79 @@ public:
 
 		void Initialize() override;
 
+        /**
+         Ge thumb color.
+         */
         const Color GetThumbColor() const {
             return GetThumbColorPicker()(*this);
         }
 
+        /**
+         Get the color picker of thumb.
+         */
         const ColorPicker GetThumbColorPicker() const;
 
+        /**
+         Set thumb color.
+         */
         void SetThumbColor(const Color& color) {
             SetThumbColorPicker(CreateColorPicker(color));
         }
 
+        /**
+         Set the color picker of thumb.
+         */
         void SetThumbColorPicker(const ColorPicker& color_picker);
 
+        /**
+         Get a value indicating that whether the thumb is horizontal.
+
+         The default value is false.
+         */
 		bool IsHorizontal() const {
 			return is_horizontal_;
 		}
 
-		void SetIsHorizontal(bool is_horizontal) {
-			is_horizontal_ = is_horizontal;
-		}
-
+        /**
+         Get a value indicating that whether the thumb is being dragged.
+         */
 		bool IsDragging() const {
 			return is_dragging_;
 		}
 
+        /**
+         Get begin drag event.
+
+         This event is raised when the thumb has begain being dragged.
+         */
 		BeginDragEvent::Proxy GetBeginDragEvent() {
 			return BeginDragEvent::Proxy(begin_drag_event_);
 		}
 
+        /**
+         Get drag event. 
+
+         This event is raised when the thumb is beging dragged.
+         */
 		DragEvent::Proxy GetDragEvent() {
 			return DragEvent::Proxy(drag_event_);
 		}
 
+        /**
+         Get end drag event. 
+
+         This event is raised when the thumb has ended being dragged.
+         */
 		EndDragEvent::Proxy GetEndDragEvent() {
 			return EndDragEvent::Proxy(end_drag_event_);
 		}
+
+    private:
+        friend class ScrollBar;
+
+        void SetIsHorizontal(bool is_horizontal) {
+            is_horizontal_ = is_horizontal;
+        }
 
 	protected:
         void Paint(Canvas& canvas, const Rect& dirty_rect);
@@ -128,6 +242,9 @@ public:
 		EndDragEvent end_drag_event_;
 	};
 
+    /**
+     Type of scroll event.
+     */
 	typedef Event<const std::shared_ptr<ScrollBar>&> ScrollEvent;
 
 public:
@@ -156,10 +273,18 @@ public:
 	 */
 	void SetThumb(const std::shared_ptr<Thumb>& thumb);
 
+    /**
+     Get a value indicating that whether the scroll bar is horizontal.
+
+     The default value is false.
+     */
 	bool IsHorizontal() const {
 		return is_horizontal_;
 	}
 
+    /**
+     Set a value indicating that whether the scroll bar is horizontal.
+     */
 	void SetIsHorizontal(bool is_horizontal) {
 		is_horizontal_ = is_horizontal;
 		ApplyOrientationToChildren();
@@ -167,7 +292,7 @@ public:
 	}
 
 	/**
-	 Get the length of arrow buttons.
+	 Get the length of arrow controls.
 
 	 The default length is the same as scroll bar's thickness, 
      use SetArrowLength method to change it.
@@ -175,38 +300,100 @@ public:
 	float GetArrowLength() const;
 
 	/**
-	 Set the length of arrow length.
+	 Set the length of arrow controls.
 	 */
 	void SetArrowLength(float length);
 
+    /**
+     Get the scroll value.
+
+     The default value is 0.
+     */
 	int GetValue() const {
 		return value_;
 	}
 
+    /**
+     Set the scroll value.
+
+     The value would be adjusted to the minimum or maximum if it exceeds the 
+     allowed range.
+
+     Settting the value would change the thumb's position immediately.
+     */
 	void SetValue(int value);
 
+    /**
+     Get minium scroll value.
+
+     The default value is 0.
+     */
 	int GetMinimumValue() const {
 		return min_value_;
 	}
 
+    /**
+     Set minimum scroll value.
+
+     The scroll value would be adjusted to the minimum if the current value
+     is less than it.
+     */
 	void SetMinimumValue(int value) {
 		ChangeValueRange(value, max_value_, false);
 	}
 
+    /**
+     Get maximum scroll value.
+
+     The default value is 0.
+     */
 	int GetMaximumValue() const {
 		return max_value_;
 	}
 
+    /**
+     Set maximum scroll value.
+
+     The scroll value would be adjusted to the maximum if the current value
+     is greater than it.
+     */
 	void SetMaximumValue(int value) {
 		ChangeValueRange(min_value_, value, true);
 	}
 
+    /**
+     Set allowed scroll value range.
+
+     @param min_value
+        The minimum scroll value.
+
+     @param max_value
+        The maximum scroll value.
+
+     This is a shortcut that can be used to set both minimum scroll value
+     and maximum scroll value.
+
+     Maximum value would be adjusted to the minimum if the maximum is less than
+     the minimum. The scroll value would be adjusted if the current value exceeds the 
+     allowed range.
+     */
 	void SetValueRange(int min_value, int max_value) {
 		ChangeValueRange(min_value, max_value, false);
 	}
 
+    /**
+     Perform a wheel action on the scroll bar.
+
+     @param distance
+        The wheeling distance.
+     */
     void Wheel(int distance);
 
+    /**
+     Get scroll event.
+
+     This event is raised when the scroll value is changed.
+     */
 	ScrollEvent::Proxy GetScrollEvent();
 
 protected:

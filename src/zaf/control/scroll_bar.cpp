@@ -494,7 +494,7 @@ void ScrollBar::ThumbDrag(const std::shared_ptr<Thumb>& thumb) {
 	else {
 		float mouse_offset = mouse_position_value - begin_drag_mouse_position_value;
 		int value_per_point = GetValuesPerThumbSlotPoint();
-		SetValue(begin_drag_value_ + mouse_offset * value_per_point);
+		SetValue(static_cast<int>(begin_drag_value_ + mouse_offset * value_per_point));
 	}
 }
 
@@ -519,7 +519,7 @@ int ScrollBar::GetValuesPerThumbSlotPoint() {
     thumb_scroll_length -= GetArrowLength() * 2;
 
 	int value_range = max_value_ - min_value_;
-	return value_range / thumb_scroll_length;
+	return static_cast<int>(value_range / thumb_scroll_length);
 }
 
 
