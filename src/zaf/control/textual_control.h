@@ -11,34 +11,60 @@ class Font;
 class TextFormat;
 class TextLayout;
 
+/**
+ Represents a textual control.
+
+ This is the base class of all controls that can display text.
+ */
 class TextualControl : public Control {
 public:
     TextualControl();
     ~TextualControl();
 
     /**
-     Get the control's text value.
+     Get text.
      */
     virtual const std::wstring GetText() const;
 
     /**
-     Set the control's text value.
+     Set text.
      */
     virtual void SetText(const std::wstring& text);
 
+    /**
+     Get text color.
+     */
     const Color GetTextColor() const {
         return GetTextColorPicker()(*this);
     }
 
+    /**
+     Get the color picker of text.
+     */
     const ColorPicker GetTextColorPicker() const;
 
+    /**
+     Set text color.
+     */
     void SetTextColor(const Color& color) {
         SetTextColorPicker(CreateColorPicker(color));
     }
 
+    /**
+     Set the color picker of text. 
+     */
     void SetTextColorPicker(const ColorPicker& color_picker);
 
+    /**
+     Get text font.
+
+     Return the default font if not been set.
+     */
     virtual const Font GetFont() const;
+
+    /**
+     Set text font.
+     */
     virtual void SetFont(const Font& font);
 
     /**
@@ -65,7 +91,16 @@ public:
      */
     virtual void SetParagraphAlignment(ParagraphAlignment alignment);
 
+    /**
+     Get word wrapping.
+
+     The default value is WordWrapping::NoWrap;
+     */
     virtual WordWrapping GetWordWrapping() const;
+
+    /**
+     Set word wrapping.
+     */
     virtual void SetWordWrapping(WordWrapping word_wrapping);
 
 protected:
