@@ -13,9 +13,9 @@ public:
 
         scrollable_control_ = Create<ScrollableControl>();
         scrollable_control_->SetRect(Rect(0, 0, 300, 300));
-        scrollable_control_->SetScrollAreaSize(Size(500, 500));
+        scrollable_control_->SetScrollContentSize(Size(500, 500));
         scrollable_control_->SetAnchor(Anchor::Left | Anchor::Top | Anchor::Right);
-        scrollable_control_->SetScrolledControl(CreateGeneralScrolledControl());
+        scrollable_control_->SetScrollContentControl(CreateGeneralScrolledControl());
         GetRootControl()->AddChild(scrollable_control_);
 
         auto options_container = CreateOptionsContainerControl();

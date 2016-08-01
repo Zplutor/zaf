@@ -38,7 +38,7 @@ void ListBox::Initialize() {
     item_container_->SetBackgroundColorPicker([](const Control&) { 
         return Color::White;
     });
-    SetScrolledControl(item_container_);
+    SetScrollContentControl(item_container_);
 }
 
 
@@ -46,7 +46,7 @@ void ListBox::UpdateScrollAreaSize() {
 
     float item_height = GetItemHeight();
     Size scroll_area_size(0, item_height * items_.size());
-    SetScrollAreaSize(scroll_area_size);
+    SetScrollContentSize(scroll_area_size);
 }
 
 
@@ -137,7 +137,7 @@ std::size_t ListBox::AddItemWithTextAtIndex(const std::wstring& item_text, std::
     std::advance(insert_iterator, revised_index);
     items_.insert(insert_iterator, item);
 
-    GetScrolledControl()->AddChild(item);
+    GetScrollContentControl()->AddChild(item);
     UpdateScrollAreaSize();
 
     return revised_index;
@@ -360,11 +360,11 @@ bool ListBox::ScrollToItemAtIndex(std::size_t index) {
 
 void ListBox::ScrollToItem(const std::shared_ptr<Item>& item) {
 
-    Rect visible_scroll_area_rect = GetVisibleScrollAreaRect();
+    Rect visible_scroll_area_rect = GetVisibleScrollContentRect();
     Rect item_rect = item->GetRect();
 
     if (item_rect.position.y < visible_scroll_area_rect.position.y) {
-        ScrollToScrollAreaPosition(item_rect.position);
+        ScrollToScrollContentPosition(item_rect.position);
     }
     else if (item_rect.position.y + item_rect.size.height >
              visible_scroll_area_rect.position.y + visible_scroll_area_rect.size.height) {
@@ -372,7 +372,7 @@ void ListBox::ScrollToItem(const std::shared_ptr<Item>& item) {
         Point scroll_to_position;
         scroll_to_position.x = 0;
         scroll_to_position.y = item_rect.position.y + item_rect.size.height - visible_scroll_area_rect.size.height;
-        ScrollToScrollAreaPosition(scroll_to_position);
+        ScrollToScrollContentPosition(scroll_to_position);
     }
 }
 

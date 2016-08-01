@@ -11,9 +11,19 @@
 
 namespace zaf {
 
+/**
+ Represents a text box control.   
+ */
 class TextBox : public TextualControl, public SelfScrollingControl {
 public:
+    /**
+     Type of text change event.
+     */
 	typedef Event<const std::shared_ptr<TextBox>&> TextChangeEvent;
+
+    /**
+     Type of selection change event.
+     */
 	typedef Event<const std::shared_ptr<TextBox>&> SelectionChangeEvent;
 
 public:
@@ -22,31 +32,104 @@ public:
 
 	void Initialize() override;
 
+    /**
+     Get the maximum length of text. 
+
+     The default value is the maximum of std::uint32_t.
+     */
 	std::uint32_t GetMaximumLength() const;
+
+    /**
+     Set the maximum length of text. 
+     */
 	void SetMaximumLength(std::uint32_t max_length);
 
+    /**
+     Get a value indicating that whether all characters is shown as password character.
+
+     The default value is false.
+     */
 	bool UsePasswordCharacter() const;
+    
+    /**
+     Set a value indicating that whether all characters is shown as password character.
+     */
 	void SetUsePasswordCharacter(bool use_password_char);
 
+    /**
+     Get the password character.
+
+     The default character is *.
+     */
 	wchar_t GetPasswordCharacter() const;
+
+    /**
+     Set the password character.
+     */
 	void SetPasswordCharacter(wchar_t password_char);
 
+    /**
+     Get a value indicating that whether the text box is multiline.
+
+     The default value is false.
+     */
 	bool IsMultiline() const;
+
+    /**
+     Set value indicating that whether the text box is multiline.
+     */
 	void SetIsMultiline(bool is_multiline);
 
+    /**
+     Get a value indicating that whether the text box is read only.
+
+     The default value is falsel
+     */
 	bool IsReadOnly() const;
+
+    /**
+     Set a value indicating that whether the text box is read only.
+     */
 	void SetIsReadOnly(bool is_read_only);
 
+    /**
+     Get a value indicating that whether the text box allows beep when an
+     invalid character is inputted.
+
+     The default value is true.
+     */
 	bool AllowBeep() const;
+
+    /**
+     Set a value indicating that whether the text box allows beep when an
+     invalid character is inputted.
+     */
 	void SetAllowBeep(bool allow_beep);
 
+    /**
+     Get the slected text range.
+     */
 	const TextRange GetSelectionRange() const;
+
+    /**
+     Set the slected text range.
+     */
 	void SetSelectionRange(const TextRange& range);
 
 	const std::wstring GetText() const override;
 	void SetText(const std::wstring& text) override;
 
+    /**
+     Get text validator.
+
+     The default validator is nullptr, means the text box accepts any
+     inputted text.
+     */
     const TextValidator GetTextValidator() const;
+
+    /**
+     Set the text validator.
+     */
     void SetTextValidator(const TextValidator& validator);
 
 	const Font GetFont() const override;
@@ -72,24 +155,76 @@ public:
     void GetVerticalScrollValues(int& current_value, int& min_value, int& max_value) override;
     void GetHorizontalScrollValues(int& current_value, int& min_value, int& max_value) override;
 
+    /**
+     Get text change event.
+
+     This event is raised when the text is changed.
+     */
 	TextChangeEvent::Proxy GetTextChangeEvent();
+
+    /**
+     Get selection change event.
+
+     This event is raise when selected text is changed.
+     */
 	SelectionChangeEvent::Proxy GetSelectionChangeEvent();
     ScrollBarChangeEvent::Proxy GetScrollBarChangeEvent() override;
     ScrollValuesChangeEvent::Proxy GetScrollValuesChangeEvent() override;
 
+    /**
+     Determine whether the text box can be undone.
+     */
     bool CanUndo() const;
+
+    /**
+     Undo the last operation.
+
+     @return
+        Return a value indicating that whether the undoing succeeds.
+     */
     bool Undo();
 
+    /**
+     Determine whether the text box can be redone.
+     */
     bool CanRedo() const;
+
+    /**
+     Redo the last undone operation.
+
+     @return 
+        Return a value indicating that whether the redoing succeeds.
+     */
     bool Redo();
 
+    /**
+     Scroll up by one line.
+     */
     void ScrollUpByLine();
+
+    /**
+     Scroll down by one line.
+     */
     void ScrollDownByLine();
 
+    /**
+     Scroll up by one page.
+     */
     void ScrollUpByPage();
+
+    /**
+     Scroll down by one page.
+     */
     void ScrollDownByPage();
 
+    /**
+     Scroll to the begin.
+     */
     void ScrollToBegin();
+
+    /**
+     Scroll to the end.
+     */
     void ScrollToEnd();
 
     void VerticallyScroll(int new_value) override;

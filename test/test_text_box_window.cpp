@@ -30,7 +30,7 @@ private:
 		text_box_->SetText(L"TextBoxÎÄ±¾¿ò");
 
         text_box_scroll_container_ = Create<ScrollableControl>();
-        text_box_scroll_container_->SetScrolledControl(text_box_);
+        text_box_scroll_container_->SetScrollContentControl(text_box_);
         text_box_container_->AddChild(text_box_scroll_container_);
 
 		auto text_label = Create<Label>();
