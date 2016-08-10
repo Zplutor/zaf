@@ -8,7 +8,7 @@ namespace zaf {
 /**
  Represents a solid color brush.
 
- You should create instance via Renderer::CreateSolidColorBrush.
+ You can create instances via Renderer::CreateSolidColorBrush.
  */
 class SolidColorBrush : public Brush {
 public:

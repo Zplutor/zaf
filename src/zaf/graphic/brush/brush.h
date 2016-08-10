@@ -7,7 +7,7 @@ namespace zaf {
 /**
  Represents a brush.
 
- This a base class of all concrete brush.
+ This is a base class of all concrete brush.
  */
 class Brush {
 public:
