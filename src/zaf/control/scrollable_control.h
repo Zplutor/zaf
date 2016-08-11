@@ -11,7 +11,19 @@ class Size;
 /**
  Represents a scrollable control.
 
- This is the base class of all scrollable control.
+ This is the base class of all scrollable control. 
+ 
+ The scrollable control contains a scroll content control, which would be scrolled when the scroll
+ bars changes. You can obatin this control by calling GetScrollContentControl method, and then add
+ children to it to build the scroll page. You can also set a custom scroll content control by calling
+ SetScrollContentControl method.
+
+ The size of scroll content control is set by SetScrollContentSize method. If the size is larger than
+ its scrollable control's visible area size, scroll bars are enabled; otherwise scroll bars are disabled.
+
+ The scroll content control can inherits SelfScrollingControl class. In this way, its scrollable control
+ doesn't scroll it anymore, instead, the scroll content control scrolls its own content and controls 
+ the scroll bars. For more information, see also SelfScrollingControl.
  */
 class ScrollableControl : public Control {
 public:
