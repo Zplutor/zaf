@@ -5,19 +5,31 @@
 
 namespace zaf {
 
+/**
+ Represents a family of related fonts.
+ */
 class FontFamily {
 public:
+    /**
+     Construct the instance with specified handle.
+
+     The instance takes over the lifetime of handle, and would release it when destroyed.
+     */
 	explicit FontFamily(IDWriteFontFamily* handle) : handle_(handle) { }
 
 	~FontFamily() {
-		handle_->Release();
+        if (handle_ != nullptr) {
+		    handle_->Release();
+        }
 	}
 
+    /**
+     Get the number of fonts.
+     */
 	std::size_t GetFontCount() const {
 		return handle_->GetFontCount();
 	}
 
-private:
 	FontFamily(const FontFamily&) = delete;
 	FontFamily& operator=(const FontFamily&) = delete;
 

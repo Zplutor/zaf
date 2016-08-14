@@ -20,13 +20,13 @@ public:
 	}
 
 public:
-	float  left;
-	float  top;
-	float  width;
-	float  height;
-	float  width_including_trailing_whitespace;
-	float  layout_width;
-	float  layout_height;
+	float left;
+	float top;
+	float width;
+	float height;
+	float width_including_trailing_whitespace;
+	float layout_width;
+	float layout_height;
 	std::uint32_t max_bidi_reordering_depth;
 	std::uint32_t line_count;
 };
