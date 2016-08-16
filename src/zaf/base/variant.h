@@ -2,6 +2,11 @@
 
 namespace zaf {
 
+/**
+ Represents a value that can store any type's instance.
+
+ The instance stored in Variant must be copyable.
+ */
 class Variant {
 public:
 	/**
