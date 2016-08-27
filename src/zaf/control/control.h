@@ -430,6 +430,8 @@ public:
 
 	/**
 	 Set a value indicating that whether the control is focused.
+
+     This methods takes effect only when the control is contained in a window.
 	 */
 	void SetIsFocused(bool is_focused);
 
