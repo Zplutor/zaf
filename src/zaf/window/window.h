@@ -122,6 +122,17 @@ public:
     void SetRect(const Rect& rect);
 
     /**
+     Set window's size.
+
+     This is a shortcut method for SetRect.
+
+     See also SetRect.
+     */
+    void SetSize(const Size& size) {
+        SetRect(Rect(Point(), size));
+    }
+
+    /**
      Get window's client rect.
      */
     const Rect GetClientRect() const;
