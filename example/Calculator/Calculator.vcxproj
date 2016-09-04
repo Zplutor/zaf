@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{922E2FAE-5B1B-45E2-9827-D2162E2E699B}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Calculator</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)src;$(ProjectDir)..\..\src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\..\out\$(Configuration);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)src;$(ProjectDir)..\..\src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\..\out\$(Configuration);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>zaf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>zaf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\logic\calculator.cpp" />
+    <ClCompile Include="src\logic\evaluate\operand_evaluator.cpp" />
+    <ClCompile Include="src\logic\evaluate\operator_evaluator.cpp" />
+    <ClCompile Include="src\logic\evaluate\value_evaluator.cpp" />
+    <ClCompile Include="src\logic\interpret\command_interpreter.cpp" />
+    <ClCompile Include="src\logic\interpret\controller\controller_interpreter.cpp" />
+    <ClCompile Include="src\logic\interpret\controller\format_interpreter.cpp" />
+    <ClCompile Include="src\logic\interpret\controller\length_interpreter.cpp" />
+    <ClCompile Include="src\logic\interpret\expression\binary_expression_interpreter.cpp" />
+    <ClCompile Include="src\logic\interpret\expression\expression_interpreter.cpp" />
+    <ClCompile Include="src\logic\interpret\expression\number_interpreter.cpp" />
+    <ClCompile Include="src\logic\interpret\expression\unary_expression_interpreter.cpp" />
+    <ClCompile Include="src\logic\interpret\literal_interpreter.cpp" />
+    <ClCompile Include="src\logic\interpret\non_terminal_interpreter.cpp" />
+    <ClCompile Include="src\logic\interpret\rule_interpreter.cpp" />
+    <ClCompile Include="src\logic\syntax_tree\syntax_tree_builder.cpp" />
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\logic\calculate_result.h" />
+    <ClInclude Include="src\logic\calculator.h" />
+    <ClInclude Include="src\logic\evaluate\evaluate_status.h" />
+    <ClInclude Include="src\logic\evaluate\operand_evaluator.h" />
+    <ClInclude Include="src\logic\evaluate\operator_evaluator.h" />
+    <ClInclude Include="src\logic\evaluate\value.h" />
+    <ClInclude Include="src\logic\evaluate\value_evaluator.h" />
+    <ClInclude Include="src\logic\interpret\command_interpreter.h" />
+    <ClInclude Include="src\logic\interpret\controller\controller_interpreter.h" />
+    <ClInclude Include="src\logic\interpret\controller\format_interpreter.h" />
+    <ClInclude Include="src\logic\interpret\controller\length_interpreter.h" />
+    <ClInclude Include="src\logic\interpret\expression\binary_expression_interpreter.h" />
+    <ClInclude Include="src\logic\interpret\expression\expression_interpreter.h" />
+    <ClInclude Include="src\logic\interpret\expression\number_interpreter.h" />
+    <ClInclude Include="src\logic\interpret\expression\unary_expression_interpreter.h" />
+    <ClInclude Include="src\logic\interpret\interpreter.h" />
+    <ClInclude Include="src\logic\interpret\interpret_context.h" />
+    <ClInclude Include="src\logic\interpret\interpret_status.h" />
+    <ClInclude Include="src\logic\interpret\literal_interpreter.h" />
+    <ClInclude Include="src\logic\interpret\non_terminal_interpreter.h" />
+    <ClInclude Include="src\logic\interpret\rule_interpreter.h" />
+    <ClInclude Include="src\logic\interpret\symbol_interpreter.h" />
+    <ClInclude Include="src\logic\interpret\terminal_interpreter.h" />
+    <ClInclude Include="src\logic\syntax_tree\format_node.h" />
+    <ClInclude Include="src\logic\syntax_tree\length_node.h" />
+    <ClInclude Include="src\logic\syntax_tree\operand_node.h" />
+    <ClInclude Include="src\logic\syntax_tree\operator_node.h" />
+    <ClInclude Include="src\logic\syntax_tree\syntax_node.h" />
+    <ClInclude Include="src\logic\syntax_tree\syntax_tree_builder.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

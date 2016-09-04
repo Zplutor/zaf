@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{66aa480a-fbc3-4e07-be54-9d3bc6acd2fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logic">
+      <UniqueIdentifier>{7033d8e3-f44e-4ae8-8ff6-b77b1a9e715d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logic\interpret">
+      <UniqueIdentifier>{adc3e7b9-edb6-48bd-862e-5da11883db5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logic\evaluate">
+      <UniqueIdentifier>{8e719dd3-efd4-4c1f-95dd-a0a1843f1073}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logic\syntax_tree">
+      <UniqueIdentifier>{882e6427-227f-40b3-a631-e850874261fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logic\interpret\controller">
+      <UniqueIdentifier>{55fd402a-71c3-42ea-a0fe-b768c6e07ebc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logic\interpret\expression">
+      <UniqueIdentifier>{8d81bbe6-87bf-4bcd-8ffa-3aaa30e4342f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\logic\interpret\command_interpreter.cpp">
+      <Filter>src\logic\interpret</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\evaluate\operand_evaluator.cpp">
+      <Filter>src\logic\evaluate</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\evaluate\operator_evaluator.cpp">
+      <Filter>src\logic\evaluate</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\evaluate\value_evaluator.cpp">
+      <Filter>src\logic\evaluate</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\syntax_tree\syntax_tree_builder.cpp">
+      <Filter>src\logic\syntax_tree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\calculator.cpp">
+      <Filter>src\logic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\interpret\non_terminal_interpreter.cpp">
+      <Filter>src\logic\interpret</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\interpret\rule_interpreter.cpp">
+      <Filter>src\logic\interpret</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\interpret\controller\controller_interpreter.cpp">
+      <Filter>src\logic\interpret\controller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\interpret\controller\format_interpreter.cpp">
+      <Filter>src\logic\interpret\controller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\interpret\controller\length_interpreter.cpp">
+      <Filter>src\logic\interpret\controller</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\interpret\literal_interpreter.cpp">
+      <Filter>src\logic\interpret</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\interpret\expression\binary_expression_interpreter.cpp">
+      <Filter>src\logic\interpret\expression</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\interpret\expression\expression_interpreter.cpp">
+      <Filter>src\logic\interpret\expression</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\interpret\expression\number_interpreter.cpp">
+      <Filter>src\logic\interpret\expression</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\interpret\expression\unary_expression_interpreter.cpp">
+      <Filter>src\logic\interpret\expression</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\logic\interpret\command_interpreter.h">
+      <Filter>src\logic\interpret</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\interpret_context.h">
+      <Filter>src\logic\interpret</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\interpret_status.h">
+      <Filter>src\logic\interpret</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\interpreter.h">
+      <Filter>src\logic\interpret</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\evaluate\evaluate_status.h">
+      <Filter>src\logic\evaluate</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\evaluate\operand_evaluator.h">
+      <Filter>src\logic\evaluate</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\evaluate\operator_evaluator.h">
+      <Filter>src\logic\evaluate</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\evaluate\value.h">
+      <Filter>src\logic\evaluate</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\evaluate\value_evaluator.h">
+      <Filter>src\logic\evaluate</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\syntax_tree\operand_node.h">
+      <Filter>src\logic\syntax_tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\syntax_tree\operator_node.h">
+      <Filter>src\logic\syntax_tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\syntax_tree\syntax_node.h">
+      <Filter>src\logic\syntax_tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\syntax_tree\syntax_tree_builder.h">
+      <Filter>src\logic\syntax_tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\calculator.h">
+      <Filter>src\logic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\calculate_result.h">
+      <Filter>src\logic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\terminal_interpreter.h">
+      <Filter>src\logic\interpret</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\non_terminal_interpreter.h">
+      <Filter>src\logic\interpret</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\symbol_interpreter.h">
+      <Filter>src\logic\interpret</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\rule_interpreter.h">
+      <Filter>src\logic\interpret</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\syntax_tree\format_node.h">
+      <Filter>src\logic\syntax_tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\controller\controller_interpreter.h">
+      <Filter>src\logic\interpret\controller</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\controller\format_interpreter.h">
+      <Filter>src\logic\interpret\controller</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\controller\length_interpreter.h">
+      <Filter>src\logic\interpret\controller</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\syntax_tree\length_node.h">
+      <Filter>src\logic\syntax_tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\literal_interpreter.h">
+      <Filter>src\logic\interpret</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\expression\binary_expression_interpreter.h">
+      <Filter>src\logic\interpret\expression</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\expression\expression_interpreter.h">
+      <Filter>src\logic\interpret\expression</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\expression\number_interpreter.h">
+      <Filter>src\logic\interpret\expression</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\interpret\expression\unary_expression_interpreter.h">
+      <Filter>src\logic\interpret\expression</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
