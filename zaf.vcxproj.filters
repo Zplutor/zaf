@@ -37,6 +37,9 @@
     <Filter Include="zaf\internal">
       <UniqueIdentifier>{b5920753-f112-4664-9370-9e9302bb837c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\base\string">
+      <UniqueIdentifier>{0575bb1f-2f46-4ee6-8d1b-25c742149b7f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -400,6 +403,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\message\char_message.h">
       <Filter>zaf\window\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\string\to_string.h">
+      <Filter>zaf\base\string</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\string\to_numeric.h">
+      <Filter>zaf\base\string</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
