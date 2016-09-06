@@ -43,6 +43,34 @@ public:
     };
 
     /**
+     The border style of a window.
+     */
+    enum class BorderStyle {
+
+        /**
+         The window has no border.
+         */
+        None,
+
+        /**
+         The window has a normal border.
+         */
+        Normal,
+
+        /**
+         The window has a dialog style border.
+         */
+        Dialog,
+
+        /**
+         The window has a tool window style border. 
+
+         Windows with this style do not appear in the taskbar.
+         */
+        ToolWindow,
+    };
+
+    /**
      The prototype of close handler.
 
      @param window
@@ -86,7 +114,7 @@ public:
     /**
      Set the owner window.
 
-     This method takes effect only when the window is closed, or the owner
+     This method takes effect only when the window is closed, otherwise the owner
      window is not changed.
      */
     void SetOwner(const std::shared_ptr<Window>& owner);
@@ -136,6 +164,81 @@ public:
      Get window's client rect.
      */
     const Rect GetClientRect() const;
+
+    /**
+     Get window's border style.
+
+     The default border style is Normal.
+     */
+    BorderStyle GetBorderStyle() const;
+
+    /**
+     Set window's border style.
+
+     This method tasks effect only when the window is closed, otherwise 
+     the style would not be changed.
+     */
+    void SetBorderStyle(BorderStyle border_style);
+
+    /**
+     Get a value indicating that whether the window is sizable.
+
+     If the border style is None, this method always return false.
+     For other border styles, the default value is true.
+     */
+    bool IsSizable() const;
+
+    /**
+     Set a value indicating that whether the window is sizable.
+
+     This method takes effect only when the border style is not None.
+     */
+    void SetIsSizable(bool is_sizable);
+
+    /**
+     Get a value indicating that whether the window has the system menu.
+
+     If the border style is None, this method always return false. For
+     other border styles, the default value is true.
+     */
+    bool HasSystemMenu() const;
+
+    /**
+     Set a value indicating that whether the window has the system menu.
+
+     This method takes effect only when the border style is not None.
+     */
+    void SetHasSystemMenu(bool has_system_menu);
+
+    /**
+     Get a value indicating that whether the window has a minimize button in title bar.
+
+     If the window does not have the system menu, this method always return false.
+     Otherwise, the default value is true.
+     */
+    bool HasMinimizeButton() const;
+
+    /**
+     Set a value indicating that whether the window has a minimize button in title bar.
+
+     This method takes effect only when the window has the system menu.
+     */
+    void SetHasMinimizeButton(bool has_minimize_button);
+
+    /**
+     Get a value indicating that whether the window has a maximize button in title bar.
+
+     If the window does not have the system menu, this method always return false.
+     Otherwise, the default value is true.
+     */
+    bool HasMaximizeButton() const;
+
+    /**
+     Set a value indicating that whether the window has a maximize button in title bar.
+
+     This method takes effect only when the window has the system menu.
+     */
+    void SetHasMaximizeButton(bool has_maximize_button);
 
     /**
      Get window's title.
@@ -315,6 +418,7 @@ private:
     void CreateRenderer();
     void RecreateRenderer();
     void CheckCreateWindowHandle();
+    void GetStyles(DWORD& style, DWORD& extract_style) const;
 
     void Repaint();
     void Resize(UINT width, UINT height);
@@ -325,6 +429,9 @@ private:
     bool ReceiveCloseMessage();
     void ReceiveDestroyMessage();
 	
+    bool GetStyleProperty(const std::wstring& property_name, DWORD style_value) const;
+    void SetStyleProperty(const std::wstring& property_name, DWORD style_value, bool is_set);
+
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 

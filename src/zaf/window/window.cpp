@@ -21,9 +21,14 @@ namespace zaf {
 
 static const wchar_t* const kDefaultWindowClassName = L"ZafDefaultWindowClass";
 
+static const wchar_t* const kBorderStylePropertyName = L"BorderStyle";
 static const wchar_t* const kCloseEventPropertyName = L"CloseEvent";
 static const wchar_t* const kCloseHandlerPropertyName = L"CloseHandler";
+static const wchar_t* const kHasMaximizeButtonPropertyName = L"HasMaximizeButton";
+static const wchar_t* const kHasMinimizeButtonPropertyName = L"HasMinimizeButton";
+static const wchar_t* const kHasSystemMenuPropertyName = L"HasSystemMenu";
 static const wchar_t* const kInitialRectStylePropertyName = L"InitialRectStyle";
+static const wchar_t* const kIsSizablePropertyName = L"IsSizable";
 static const wchar_t* const kOwnerPropertyName = L"Owner";
 static const wchar_t* const kTitlePropertyName = L"Title";
 
@@ -106,11 +111,15 @@ void Window::CreateWindowHandle() {
     auto owner = GetOwner();
     auto initial_rect = GetInitialRect();
 
+    DWORD style = 0;
+    DWORD extract_style = 0;
+    GetStyles(style, extract_style);
+
     handle_ = CreateWindowEx(
-        0,
+        extract_style,
         kDefaultWindowClassName,
         GetTitle().c_str(),
-        WS_OVERLAPPEDWINDOW,
+        style,
         static_cast<int>(initial_rect.position.x),
         static_cast<int>(initial_rect.position.y),
         static_cast<int>(initial_rect.size.width),
@@ -122,6 +131,10 @@ void Window::CreateWindowHandle() {
 
     SetWindowLongPtr(handle_, GWLP_USERDATA, reinterpret_cast<ULONG_PTR>(this));
     rect_ = initial_rect;
+
+    RECT client_rect = { 0 };
+    ::GetClientRect(handle_, &client_rect);
+    root_control_->SetRect(Rect::FromRECT(client_rect));
 
     CreateRenderer();
     Application::GetInstance().RegisterWindow(shared_from_this());
@@ -178,6 +191,51 @@ void Window::CheckCreateWindowHandle() {
 
     if (IsClosed()) {
         CreateWindowHandle();
+    }
+}
+
+
+void Window::GetStyles(DWORD& style, DWORD& extract_style) const {
+
+    auto border_style = GetBorderStyle();
+    switch (border_style) {
+
+        case BorderStyle::None:
+            style |= WS_POPUP;
+            break;
+
+        case BorderStyle::Dialog:
+            style |= WS_POPUP | WS_CAPTION;
+            extract_style |= WS_EX_DLGMODALFRAME;
+            break;
+
+        case BorderStyle::ToolWindow:
+            style |= WS_POPUP | WS_CAPTION;
+            extract_style |= WS_EX_TOOLWINDOW;
+            break;
+            
+        case BorderStyle::Normal:
+            style |= WS_OVERLAPPED | WS_CAPTION;
+            break;
+    }
+
+    if (border_style != BorderStyle::None) {
+
+        if (IsSizable()) {
+            style |= WS_SIZEBOX;
+        }
+
+        if (HasSystemMenu()) {
+            style |= WS_SYSMENU;
+        }
+
+        if (HasMaximizeButton()) {
+            style |= WS_MAXIMIZEBOX;
+        }
+
+        if (HasMinimizeButton()) {
+            style |= WS_MINIMIZEBOX;
+        }
     }
 }
 
@@ -580,6 +638,108 @@ const Rect Window::GetClientRect() const {
     RECT rect = { 0 };
     ::GetClientRect(handle_, &rect);
     return Rect::FromRECT(rect);
+}
+
+
+Window::BorderStyle Window::GetBorderStyle() const {
+
+    auto border_style = GetPropertyMap().TryGetProperty<BorderStyle>(kBorderStylePropertyName);
+    if (border_style != nullptr) {
+        return *border_style;
+    }
+    else {
+        return BorderStyle::Normal;
+    }
+}
+
+
+void Window::SetBorderStyle(BorderStyle border_style) {
+
+    if (IsClosed()) {
+        GetPropertyMap().SetProperty(kBorderStylePropertyName, border_style);
+    }
+}
+
+
+bool Window::IsSizable() const {
+    return GetStyleProperty(kIsSizablePropertyName, WS_SIZEBOX);
+}
+
+
+void Window::SetIsSizable(bool is_sizable) {
+    SetStyleProperty(kIsSizablePropertyName, WS_SIZEBOX, is_sizable);
+}
+
+
+bool Window::HasSystemMenu() const {
+    return GetStyleProperty(kHasSystemMenuPropertyName, WS_SYSMENU);
+}
+
+
+void Window::SetHasSystemMenu(bool has_system_menu) {
+    SetStyleProperty(kHasSystemMenuPropertyName, WS_SYSMENU, has_system_menu);
+}
+
+
+bool Window::HasMinimizeButton() const {
+    return GetStyleProperty(kHasMinimizeButtonPropertyName, WS_MINIMIZEBOX);
+}
+
+void Window::SetHasMinimizeButton(bool has_minimize_button) {
+    SetStyleProperty(kHasMinimizeButtonPropertyName, WS_MINIMIZEBOX, has_minimize_button);
+}
+
+
+bool Window::HasMaximizeButton() const {
+    return GetStyleProperty(kHasMaximizeButtonPropertyName, WS_MAXIMIZEBOX);
+}
+
+void Window::SetHasMaximizeButton(bool has_maximize_button) {
+    SetStyleProperty(kHasMaximizeButtonPropertyName, WS_MAXIMIZEBOX, has_maximize_button);
+}
+
+
+bool Window::GetStyleProperty(const std::wstring& property_name, DWORD style_value) const {
+
+    if (GetBorderStyle() == BorderStyle::None) {
+        return false;
+    }
+
+    if (IsClosed()) {
+
+        auto property_value = GetPropertyMap().TryGetProperty<bool>(property_name);
+        if (property_value != nullptr) {
+            return *property_value;
+        }
+        else {
+            return true;
+        }
+    }
+    else {
+        return (GetWindowLong(GetHandle(), GWL_STYLE) & style_value) != 0;
+    }
+}
+
+
+void Window::SetStyleProperty(const std::wstring& property_name, DWORD style_value, bool is_set) {
+
+    if (GetBorderStyle() == BorderStyle::None) {
+        return;
+    }
+
+    GetPropertyMap().SetProperty<bool>(property_name, is_set);
+
+    if (! IsClosed()) {
+
+        DWORD style = GetWindowLong(GetHandle(), GWL_STYLE);
+        if (is_set) {
+            style |= style_value;
+        }
+        else {
+            style &= ~style_value;
+        }
+        SetWindowLong(GetHandle(), GWL_STYLE, style);
+    }
 }
 
 
