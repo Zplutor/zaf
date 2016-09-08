@@ -22,7 +22,7 @@
     <ClCompile Include="unittest\case\base\string\to_string_test.cpp">
       <Filter>case\base\string</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\string\to_numeric_test.cpp">
+    <ClCompile Include="unittest\case\base\string\to_numeric_test.cpp">
       <Filter>case\base\string</Filter>
     </ClCompile>
   </ItemGroup>
