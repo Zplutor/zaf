@@ -13,3 +13,5 @@ Due to these features, zaf also has following requirement:
 * Windows 7 or newer operating system.
 
 Zaf is still on first time step. 
+
+You can learn about zaf in the wiki page.
