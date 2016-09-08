@@ -157,7 +157,7 @@ public:
      See also SetRect.
      */
     void SetSize(const Size& size) {
-        SetRect(Rect(Point(), size));
+        SetRect(Rect(GetRect().position, size));
     }
 
     /**
