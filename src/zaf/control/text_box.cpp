@@ -68,6 +68,7 @@ void TextBox::Initialize() {
 	SetBorderThickness(1);
 	SetFont(Font::GetDefault());
 	SetTextAlignment(TextAlignment::Leading);
+    SetParagraphAlignment(ParagraphAlignment::Center);
 
     SetBorderColorPicker([](const Control&) {
         return Color::Black;
@@ -99,7 +100,9 @@ void TextBox::InitializeTextService() {
 	}
 
 	text_service_->OnTxInPlaceActivate(nullptr);
-	text_service_->TxSendMessage(EM_SETEVENTMASK, 0, ENM_CHANGE | ENM_SELCHANGE | ENM_PROTECTED, nullptr);
+    text_service_->TxSendMessage(
+        EM_SETEVENTMASK, 0, ENM_CHANGE | ENM_SELCHANGE | ENM_PROTECTED | ENM_REQUESTRESIZE, 
+        nullptr);
 }
 
 
@@ -139,9 +142,10 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	EndPath(hdc);
 	SelectClipPath(hdc, RGN_COPY);
 
-	Rect absolute_rect = GetAbsoluteContentRect();
+    auto absolute_content_rect = GetAbsoluteContentRect();
+    absolute_content_rect.position.y += GetPaintContentOffset();
 
-	RECT win32_absolute_rect = absolute_rect.ToRECT();
+    RECT win32_absolute_rect = absolute_content_rect.ToRECT();
 	text_service_->TxDraw(
 		DVASPECT_CONTENT,
 		0,
@@ -158,6 +162,26 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	);
 
 	gdi_interop_render_target->ReleaseDC(nullptr);
+}
+
+
+float TextBox::GetPaintContentOffset() const {
+
+    if (IsMultiline()) {
+        return 0;
+    }
+
+    auto paragraph_alignment = GetParagraphAlignment();
+
+    if (paragraph_alignment == ParagraphAlignment::Center) {
+        return (GetContentSize().height - required_size_.height) / 2;
+    }
+    else if (paragraph_alignment == ParagraphAlignment::Far) {
+        return GetContentSize().height - required_size_.height;
+    }
+    else {
+        return 0;
+    }
 }
 
 
@@ -927,13 +951,18 @@ BOOL TextBox::TextHostBridge::TxShowCaret(BOOL fShow) {
 
 BOOL TextBox::TextHostBridge::TxSetCaretPos(INT x, INT y) {
 
-	auto window = GetWindow();
-	if (window == nullptr) {
-		return FALSE;
-	}
+    auto text_box = text_box_.lock();
+    if (text_box == nullptr) {
+        return FALSE;
+    }
 
+    auto window = text_box->GetWindow();
+    if (window == nullptr) {
+        return FALSE;
+    }
+	
 	const auto& caret = window->GetCaret();
-	caret->SetPosition(Point(static_cast<float>(x), static_cast<float>(y)));
+	caret->SetPosition(Point(static_cast<float>(x), static_cast<float>(y + text_box->GetPaintContentOffset())));
 	return TRUE;
 }
 
@@ -1000,7 +1029,7 @@ HRESULT TextBox::TextHostBridge::TxGetClientRect(LPRECT prc) {
 	if (text_box != nullptr) {
 		rect = text_box->GetAbsoluteContentRect();
 	}
-
+    
 	*prc = rect.ToRECT();
 	return S_OK;
 }
@@ -1159,6 +1188,12 @@ HRESULT TextBox::TextHostBridge::TxNotify(DWORD iNotify, void *pv) {
         case EN_PROTECTED: {
             bool allowed = NotifyProtected(*reinterpret_cast<ENPROTECTED*>(pv));
             return allowed ? S_OK : S_FALSE;
+        }
+
+        case EN_REQUESTRESIZE: {
+            auto required_size_info = reinterpret_cast<REQRESIZE*>(pv);
+            text_box->required_size_ = zaf::Rect::FromRECT(required_size_info->rc).size;
+            return S_OK;
         }
 
         default:

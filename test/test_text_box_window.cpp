@@ -54,6 +54,7 @@ private:
 		CreatePasswordCharOption();
 		CreateMultilineOption();
 		CreateTextAlignmentOption();
+        CreateParagraphAlignmentOption();
 		CreateWordWrapingOption();
 		CreateSelectionRangeOption();
         CreateAllowBeepOption();
@@ -168,7 +169,72 @@ private:
 			std::bind(select_change_event_callback, std::placeholders::_1, TextAlignment::Tailing)
 		);
 		container->AddChild(right_radio_button);
+
+        switch (text_box_->GetTextAlignment()) {
+            case TextAlignment::Leading:
+                left_radio_button->SetSelected();
+                break;
+            case TextAlignment::Center:
+                center_radio_button->SetSelected();
+                break;
+            case TextAlignment::Tailing:
+                right_radio_button->SetSelected();
+                break;
+        }
 	}
+
+
+    void CreateParagraphAlignmentOption() {
+
+        auto container = Create<Control>();
+        container->SetLayouter(GetHorizontalArrayLayouter());
+        options_container_->AddChild(container);
+
+        auto label = Create<Label>();
+        label->SetText(L"ParagraphAlignemnt: ");
+        container->AddChild(label);
+
+        auto select_change_event_callback = [this](const std::shared_ptr<RadioButton>& radio_button, ParagraphAlignment paragraph_alignment) {
+            if (radio_button->IsSelected()) {
+                text_box_->SetParagraphAlignment(paragraph_alignment);
+            }
+        };
+
+        auto group = std::make_shared<RadioButton::Group>();
+
+        auto top_radio_button = Create<RadioButton>();
+        top_radio_button->SetText(L"Top");
+        top_radio_button->SetGroup(group);
+        top_radio_button->GetSelectStateChangeEvent().AddListener(
+            std::bind(select_change_event_callback, std::placeholders::_1, ParagraphAlignment::Near));
+        container->AddChild(top_radio_button);
+
+        auto center_radio_button = Create<RadioButton>();
+        center_radio_button->SetText(L"Center");
+        center_radio_button->SetGroup(group);
+        center_radio_button->GetSelectStateChangeEvent().AddListener(
+            std::bind(select_change_event_callback, std::placeholders::_1, ParagraphAlignment::Center));
+        container->AddChild(center_radio_button);
+
+        auto bottom_radio_button = Create<RadioButton>();
+        bottom_radio_button->SetText(L"Bottom");
+        bottom_radio_button->SetGroup(group);
+        bottom_radio_button->GetSelectStateChangeEvent().AddListener(
+            std::bind(select_change_event_callback, std::placeholders::_1, ParagraphAlignment::Far));
+        container->AddChild(bottom_radio_button);
+
+        switch (text_box_->GetParagraphAlignment()) {
+            case ParagraphAlignment::Near:
+                top_radio_button->SetSelected();
+                break;
+            case ParagraphAlignment::Center:
+                center_radio_button->SetSelected();
+                break;
+            case ParagraphAlignment::Far:
+                bottom_radio_button->SetSelected();
+                break;
+        }
+    }
 
 
 	void CreateWordWrapingOption() {
