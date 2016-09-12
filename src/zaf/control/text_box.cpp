@@ -100,8 +100,9 @@ void TextBox::InitializeTextService() {
 	}
 
 	text_service_->OnTxInPlaceActivate(nullptr);
+
     text_service_->TxSendMessage(
-        EM_SETEVENTMASK, 0, ENM_CHANGE | ENM_SELCHANGE | ENM_PROTECTED | ENM_REQUESTRESIZE, 
+        EM_SETEVENTMASK, 0, ENM_CHANGE | ENM_SELCHANGE | ENM_PROTECTED,
         nullptr);
 }
 
@@ -170,8 +171,27 @@ float TextBox::GetPaintContentOffset() const {
     if (IsMultiline()) {
         return 0;
     }
-
+    
     auto paragraph_alignment = GetParagraphAlignment();
+    if (paragraph_alignment == ParagraphAlignment::Near) {
+        return 0;
+    }
+
+    //Setting ENM_REQUESTRESIZE event mask will cause abnormal scroll bar behaviour,
+    //so we set this mask just when we need the required size of text content, and 
+    //remove it after getting the size.
+    if (required_size_.height == 0) {
+
+        DWORD event_mask = 0;
+        text_service_->TxSendMessage(EM_GETEVENTMASK, 0, 0, reinterpret_cast<LRESULT*>(&event_mask));
+
+        event_mask |= ENM_REQUESTRESIZE;
+        text_service_->TxSendMessage(EM_SETEVENTMASK, 0, event_mask, nullptr);
+        text_service_->TxSendMessage(EM_REQUESTRESIZE, 0, 0, nullptr);
+
+        event_mask &= ~ENM_REQUESTRESIZE;
+        text_service_->TxSendMessage(EM_SETEVENTMASK, 0, event_mask, nullptr);
+    }
 
     if (paragraph_alignment == ParagraphAlignment::Center) {
         return (GetContentSize().height - required_size_.height) / 2;
@@ -182,6 +202,11 @@ float TextBox::GetPaintContentOffset() const {
     else {
         return 0;
     }
+}
+
+
+void TextBox::ResetRequiredSize() {
+    required_size_.height = 0;
 }
 
 
@@ -359,6 +384,8 @@ const Font TextBox::GetFont() const {
 }
 
 void TextBox::SetFont(const Font& font) {
+
+    ResetRequiredSize();
 
     character_format_.dwMask |= CFM_PROTECTED;
     character_format_.dwEffects |= CFM_PROTECTED;
