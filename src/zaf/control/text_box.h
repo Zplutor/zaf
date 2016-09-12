@@ -308,6 +308,7 @@ private:
 private:
 	void InitializeTextService();
     float GetPaintContentOffset() const;
+    void ResetRequiredSize();
 	const Rect GetAbsoluteContentRect() const;
 	bool ChangeMouseCursor();
 	bool HasPropertyBit(DWORD bit) const;
