@@ -307,8 +307,8 @@ private:
 
 private:
 	void InitializeTextService();
-    float GetPaintContentOffset() const;
-    void ResetRequiredSize();
+    float GetPaintContentOffset(HDC hdc);
+    void ResetRequiredHeight();
 	const Rect GetAbsoluteContentRect() const;
 	bool ChangeMouseCursor();
 	bool HasPropertyBit(DWORD bit) const;
@@ -327,7 +327,7 @@ private:
 	CHARFORMATW character_format_;
 	PARAFORMAT paragraph_format_;
     DWORD scroll_bar_property_;
-    Size required_size_;
+    float required_height_;
 };
 
 }

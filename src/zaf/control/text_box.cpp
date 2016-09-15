@@ -48,7 +48,8 @@ TextBox::TextBox() :
 	property_bits_(kDefaultPropertyBits),
 	character_format_(),
 	paragraph_format_(),
-    scroll_bar_property_(kDefaultScrollBarProperty) {
+    scroll_bar_property_(kDefaultScrollBarProperty),
+    required_height_(0) {
 
 	character_format_.cbSize = sizeof(character_format_);
 	paragraph_format_.cbSize = sizeof(paragraph_format_);
@@ -144,7 +145,7 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	SelectClipPath(hdc, RGN_COPY);
 
     auto absolute_content_rect = GetAbsoluteContentRect();
-    absolute_content_rect.position.y += GetPaintContentOffset();
+    absolute_content_rect.position.y += GetPaintContentOffset(hdc);
 
     RECT win32_absolute_rect = absolute_content_rect.ToRECT();
 	text_service_->TxDraw(
@@ -159,14 +160,13 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 		&win32_absolute_rect,
 		nullptr,
 		0,
-		0
-	);
+		0);
 
 	gdi_interop_render_target->ReleaseDC(nullptr);
 }
 
 
-float TextBox::GetPaintContentOffset() const {
+float TextBox::GetPaintContentOffset(HDC hdc) {
 
     if (IsMultiline()) {
         return 0;
@@ -177,27 +177,35 @@ float TextBox::GetPaintContentOffset() const {
         return 0;
     }
 
-    //Setting ENM_REQUESTRESIZE event mask will cause abnormal scroll bar behaviour,
-    //so we set this mask just when we need the required size of text content, and 
-    //remove it after getting the size.
-    if (required_size_.height == 0) {
+    if (required_height_ == 0) {
+        if (hdc == nullptr) {
+            return 0;
+        }
 
-        DWORD event_mask = 0;
-        text_service_->TxSendMessage(EM_GETEVENTMASK, 0, 0, reinterpret_cast<LRESULT*>(&event_mask));
+        LONG width = std::numeric_limits<LONG>::max();
+        LONG height = 0;
+        SIZEL extent_size = { -1, -1 };
 
-        event_mask |= ENM_REQUESTRESIZE;
-        text_service_->TxSendMessage(EM_SETEVENTMASK, 0, event_mask, nullptr);
-        text_service_->TxSendMessage(EM_REQUESTRESIZE, 0, 0, nullptr);
+        HRESULT result = text_service_->TxGetNaturalSize(
+            DVASPECT_CONTENT,
+            hdc,
+            nullptr,
+            nullptr,
+            TXTNS_FITTOCONTENT,
+            &extent_size,
+            &width,
+            &height);
 
-        event_mask &= ~ENM_REQUESTRESIZE;
-        text_service_->TxSendMessage(EM_SETEVENTMASK, 0, event_mask, nullptr);
+        if (SUCCEEDED(result)) {
+            required_height_ = static_cast<float>(height);
+        }
     }
 
     if (paragraph_alignment == ParagraphAlignment::Center) {
-        return (GetContentSize().height - required_size_.height) / 2;
+        return (GetContentSize().height - required_height_) / 2;
     }
     else if (paragraph_alignment == ParagraphAlignment::Far) {
-        return GetContentSize().height - required_size_.height;
+        return GetContentSize().height - required_height_;
     }
     else {
         return 0;
@@ -205,8 +213,8 @@ float TextBox::GetPaintContentOffset() const {
 }
 
 
-void TextBox::ResetRequiredSize() {
-    required_size_.height = 0;
+void TextBox::ResetRequiredHeight() {
+    required_height_ =0 ;
 }
 
 
@@ -385,7 +393,7 @@ const Font TextBox::GetFont() const {
 
 void TextBox::SetFont(const Font& font) {
 
-    ResetRequiredSize();
+    ResetRequiredHeight();
 
     character_format_.dwMask |= CFM_PROTECTED;
     character_format_.dwEffects |= CFM_PROTECTED;
@@ -989,7 +997,7 @@ BOOL TextBox::TextHostBridge::TxSetCaretPos(INT x, INT y) {
     }
 	
 	const auto& caret = window->GetCaret();
-	caret->SetPosition(Point(static_cast<float>(x), static_cast<float>(y + text_box->GetPaintContentOffset())));
+	caret->SetPosition(Point(static_cast<float>(x), static_cast<float>(y + text_box->GetPaintContentOffset(nullptr))));
 	return TRUE;
 }
 
@@ -1215,12 +1223,6 @@ HRESULT TextBox::TextHostBridge::TxNotify(DWORD iNotify, void *pv) {
         case EN_PROTECTED: {
             bool allowed = NotifyProtected(*reinterpret_cast<ENPROTECTED*>(pv));
             return allowed ? S_OK : S_FALSE;
-        }
-
-        case EN_REQUESTRESIZE: {
-            auto required_size_info = reinterpret_cast<REQRESIZE*>(pv);
-            text_box->required_size_ = zaf::Rect::FromRECT(required_size_info->rc).size;
-            return S_OK;
         }
 
         default:
