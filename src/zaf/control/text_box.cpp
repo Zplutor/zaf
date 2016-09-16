@@ -31,6 +31,7 @@ namespace zaf {
 
 static ITextServices* CreateTextService(ITextHost* text_host);
 
+static const wchar_t* const kInsetPropertyName = L"Inset";
 static const wchar_t* const kMaximumLengthPropertyName = L"MaximumLength";
 static const wchar_t* const kPasswordCharacterPropertyName = L"PasswordCharacter";
 static const wchar_t* const kScrollBarChangeEventPropertyName = L"ScrollBarChangeEvent";
@@ -40,6 +41,7 @@ static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
 static const wchar_t* const kTextValidatorPropertyName = L"TextValidator";
 
 static const DWORD kDefaultPropertyBits = TXTBIT_ALLOWBEEP;
+static const Frame kDefaultInset = Frame(50, 50, 50, 50);
 static const std::uint32_t kDefaultMaximumLength = std::numeric_limits<std::uint32_t>::max();
 static const wchar_t kDefaultPasswordCharacter = L'*';
 static const DWORD kDefaultScrollBarProperty = ES_AUTOVSCROLL | ES_AUTOHSCROLL | WS_VSCROLL | WS_HSCROLL;
@@ -231,6 +233,28 @@ const Rect TextBox::GetAbsoluteContentRect() const {
 }
 
 
+const Frame TextBox::GetInset() const {
+
+    auto inset = GetPropertyMap().TryGetProperty<Frame>(kInsetPropertyName);
+    if (inset != nullptr) {
+        return *inset;
+    }
+    else {
+        return kDefaultInset;
+    }
+}
+
+
+void TextBox::SetInset(const Frame& inset) {
+
+    GetPropertyMap().SetProperty(kInsetPropertyName, inset);
+
+    if (text_service_ != nullptr) {
+        text_service_->OnTxPropertyBitsChange(TXTBIT_VIEWINSETCHANGE, TXTBIT_VIEWINSETCHANGE);
+    }
+}
+
+
 std::uint32_t TextBox::GetMaximumLength() const {
 
 	auto max_length = GetPropertyMap().TryGetProperty<std::uint32_t>(kMaximumLengthPropertyName);
@@ -361,7 +385,12 @@ const std::wstring TextBox::GetText() const {
 void TextBox::SetText(const std::wstring& text) {
 
 	if (text_service_ != nullptr) {
+
 		text_service_->TxSetText(text.c_str());
+
+        //Sometimes the text service would not require to repaint after
+        //setting text, so do it here.
+        NeedRepaint();
 	}
 }
 
@@ -782,39 +811,60 @@ bool TextBox::Redo() {
 
 
 void TextBox::ScrollUpByLine() {
-    SendScrollMessage(SB_LINEUP);
+    SendScrollMessage(false, SB_LINEUP);
 }
 
 
 void TextBox::ScrollDownByLine() {
-    SendScrollMessage(SB_LINEDOWN);
+    SendScrollMessage(false, SB_LINEDOWN);
 }
 
 
 void TextBox::ScrollUpByPage() {
-    SendScrollMessage(SB_PAGEUP);
+    SendScrollMessage(false, SB_PAGEUP);
 }
 
 
 void TextBox::ScrollDownByPage() {
-    SendScrollMessage(SB_PAGEDOWN);
+    SendScrollMessage(false, SB_PAGEDOWN);
 }
 
 
-void TextBox::ScrollToBegin() {
-    SendScrollMessage(SB_TOP);
+void TextBox::ScrollUpToBegin() {
+    SendScrollMessage(false, SB_TOP);
 }
 
 
-void TextBox::ScrollToEnd() {
-    SendScrollMessage(SB_BOTTOM);
+void TextBox::ScrollDownToEnd() {
+    SendScrollMessage(false, SB_BOTTOM);
 }
 
 
-void TextBox::SendScrollMessage(WORD scroll_type) {
+void TextBox::ScrollLeftToBegin() {
+    SendScrollMessage(true, SB_LEFT);
+}
+
+
+void TextBox::ScrollRightToEnd() {
+
+    //Don't use WM_HSCROLL with SB_RIGHT, because it would scroll "too far",
+    //not the result expected.
+    int current_value = 0;
+    int min_value = 0;
+    int max_value = 0;
+    GetScrollValues(true, current_value, min_value, max_value);
+    HorizontallyScroll(max_value);
+
+    //Sometimes the text service would not require to repaint after scrolling,
+    //so do it here.
+    NeedRepaint();
+}
+
+
+void TextBox::SendScrollMessage(bool is_horizontal, WORD scroll_type) {
 
     if (text_service_ != nullptr) {
-        text_service_->TxSendMessage(WM_VSCROLL, MAKEWPARAM(scroll_type, 0), 0, nullptr);
+        text_service_->TxSendMessage(is_horizontal ? WM_HSCROLL : WM_VSCROLL, MAKEWPARAM(scroll_type, 0), 0, nullptr);
     }
 }
 
@@ -1071,7 +1121,15 @@ HRESULT TextBox::TextHostBridge::TxGetClientRect(LPRECT prc) {
 
 
 HRESULT TextBox::TextHostBridge::TxGetViewInset(LPRECT prc) {
-	*prc = RECT();
+	
+    auto text_box = text_box_.lock();
+    if (text_box != nullptr) {
+        *prc = text_box->GetInset().ToRECT();
+    }
+    else {
+        *prc = kDefaultInset.ToRECT();
+    }
+
 	return S_OK;
 }
 

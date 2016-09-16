@@ -60,7 +60,8 @@ private:
         CreateAllowBeepOption();
         CreateAllowScrollOption();
         CreateAutoHideScrollbarOption();
-        CreateScrollOptions();
+        CreateHorizontalScrollOptions();
+        CreateVerticalScrollOptions();
         CreateUndoOptions();
         CreateNumberOnlyOptions();
 	}
@@ -339,7 +340,29 @@ private:
     }
 
 
-    void CreateScrollOptions() {
+    void CreateHorizontalScrollOptions() {
+
+        auto container = Create<Control>();
+        container->SetLayouter(GetHorizontalArrayLayouter());
+        options_container_->AddChild(container);
+
+        auto left_to_begin_button = Create<Button>();
+        left_to_begin_button->SetText(L"To left begin");
+        left_to_begin_button->GetClickEvent().AddListener([this](const std::shared_ptr<ClickableControl>&) {
+            text_box_->ScrollLeftToBegin();
+        });
+        container->AddChild(left_to_begin_button);
+
+        auto right_to_begin_button = Create<Button>();
+        right_to_begin_button->SetText(L"To right end");
+        right_to_begin_button->GetClickEvent().AddListener([this](const std::shared_ptr<ClickableControl>&) {
+            text_box_->ScrollRightToEnd();
+        });
+        container->AddChild(right_to_begin_button);
+    }
+
+
+    void CreateVerticalScrollOptions() {
 
         auto container = Create<Control>();
         container->SetLayouter(GetHorizontalArrayLayouter());
@@ -376,14 +399,14 @@ private:
         auto to_begin_button = Create<Button>();
         to_begin_button->SetText(L"To begin");
         to_begin_button->GetClickEvent().AddListener([this](const std::shared_ptr<ClickableControl>&) {
-            text_box_->ScrollToBegin();
+            text_box_->ScrollUpToBegin();
         });
         container->AddChild(to_begin_button);
 
         auto to_end_button = Create<Button>();
         to_end_button->SetText(L"To end");
         to_end_button->GetClickEvent().AddListener([this](const std::shared_ptr<ClickableControl>&) {
-            text_box_->ScrollToEnd();
+            text_box_->ScrollDownToEnd();
         });
         container->AddChild(to_end_button);
     }

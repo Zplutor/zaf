@@ -7,6 +7,7 @@
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/text_validator.h>
 #include <zaf/control/textual_control.h>
+#include <zaf/graphic/frame.h>
 #include <zaf/graphic/text/text_range.h>
 
 namespace zaf {
@@ -31,6 +32,18 @@ public:
 	~TextBox();
 
 	void Initialize() override;
+
+    /**
+     Get the dimensions of the white space inset around the text.
+
+     The insets are passed in HIMETRIC (each HIMETRIC unit corresponds to 0.01 millimeter).
+     */
+    const Frame GetInset() const;
+
+    /**
+     Set the dimensions of the white space inset around the text.
+     */
+    void SetInset(const Frame& inset);
 
     /**
      Get the maximum length of text. 
@@ -218,14 +231,24 @@ public:
     void ScrollDownByPage();
 
     /**
-     Scroll to the begin.
+     Scroll up to the begin.
      */
-    void ScrollToBegin();
+    void ScrollUpToBegin();
 
     /**
-     Scroll to the end.
+     Scroll down to the end.
      */
-    void ScrollToEnd();
+    void ScrollDownToEnd();
+
+    /**
+     Scroll left to the begin.
+     */
+    void ScrollLeftToBegin();
+
+    /**
+     Scroll right to the end.
+     */
+    void ScrollRightToEnd();
 
     void VerticallyScroll(int new_value) override;
     void HorizontallyScroll(int new_value) override;
@@ -315,7 +338,7 @@ private:
 	void ChangePropertyBit(DWORD bit, bool is_set);
     void ChangeScrollBarPropertyBits(DWORD bits, bool is_set);
     void GetScrollValues(bool is_horizontal, int& current_value, int& min_value, int& max_value);
-    void SendScrollMessage(WORD scroll_type);
+    void SendScrollMessage(bool is_horizontal, WORD scroll_type);
     void Scroll(bool is_horizontal, int new_value);
     void ScrollBarChange();
     void ScrollValuesChange(bool is_horizontal);
