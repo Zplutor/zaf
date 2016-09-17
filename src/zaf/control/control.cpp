@@ -119,7 +119,8 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
     //none to avoid making clear edge again.
     canvas.SetClearEdgeOption(ClearEdgeOption::None);
 
-    Rect border_rect = MakeClearEdgeRectForFill(Rect(Point(), GetSize()), ClearEdgeOption::Clear);
+    Rect border_rect;
+    border_rect.size = MakeClearEdgeRectForFill(GetRect(), ClearEdgeOption::Clear).size;
   
     Rect background_rect = border_rect;
     background_rect.Inflate(-GetBorderThickness());

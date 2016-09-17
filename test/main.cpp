@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <zaf/zaf.h>
 #include "test_check_box_window.h"
+#include "test_clear_edge_window.h"
 #include "test_label_window.h"
 #include "test_list_box_window.h"
 #include "test_radio_button_window.h"
@@ -42,6 +43,7 @@ void BeginRun(Application& application) {
 		void(*show_window_function)();
 	} show_window_function_map[] = {
 
+        L"Test clear edge", ShowTestClearEdgeWindow,
 		L"Test label", ShowTestLabelWindow,
 		L"Test check box", ShowTestCheckBoxWindow,
 		L"Test radio button", ShowTestRadioButtonWindow,
