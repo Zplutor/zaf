@@ -41,7 +41,7 @@ static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
 static const wchar_t* const kTextValidatorPropertyName = L"TextValidator";
 
 static const DWORD kDefaultPropertyBits = TXTBIT_ALLOWBEEP;
-static const Frame kDefaultInset = Frame(50, 50, 50, 50);
+static const Frame kDefaultInset;
 static const std::uint32_t kDefaultMaximumLength = std::numeric_limits<std::uint32_t>::max();
 static const wchar_t kDefaultPasswordCharacter = L'*';
 static const DWORD kDefaultScrollBarProperty = ES_AUTOVSCROLL | ES_AUTOHSCROLL | WS_VSCROLL | WS_HSCROLL;
