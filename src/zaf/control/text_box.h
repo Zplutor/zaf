@@ -46,6 +46,15 @@ public:
     void SetInset(const Frame& inset);
 
     /**
+     Set the dimensions of the white space inset around the text.
+
+     This overload is a shortcut to set all direction insets.
+     */
+    void SetInset(float inset) {
+        SetInset(Frame(inset, inset, inset, inset));
+    }
+
+    /**
      Get the maximum length of text. 
 
      The default value is the maximum of std::uint32_t.
