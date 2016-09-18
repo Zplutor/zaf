@@ -440,6 +440,26 @@ public:
      */
 	const Point GetMousePosition() const;
 
+    /**
+     Determinte whether the control accepts specified key message.
+
+     @param message
+         Information of the message.
+     
+     @return
+         Return true if the control accepts the message, otherwise return false.
+
+     If this method returns true, preprocessing of the message is forbidden, so 
+     that the message can be dispatched normally. For instance, TAB key down message
+     is usually preprocessed by window to switch the focused control, therefore
+     controls would not receive this event. However, a control can return true 
+     against the TAB key down message in this method to prevent the preprocessing,
+     then it can receive the event.
+     */
+    virtual bool AcceptKeyMessage(const KeyMessage& message) const {
+        return false;
+    }
+
 protected:
     /**
      Repaint the control and its all children.

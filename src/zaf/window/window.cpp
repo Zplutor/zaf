@@ -60,21 +60,14 @@ void Window::RegisterDefaultClass(std::error_code& error_code) {
 
 LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wParam, LPARAM lParam) {
 
-	LONG_PTR user_data = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-	Window* window = reinterpret_cast<Window*>(user_data);
-
+    auto window = GetWindowFromHandle(hwnd);
     if (window != nullptr) {
 
-        //Keep the windows's life during message processing.
-        auto shared_ptr = window->shared_from_this();
-
         auto message = CreateMessage(hwnd, message_id, wParam, lParam);
-        if (message != nullptr) {
 
-            LRESULT result = 0;
-            if (window->ReceiveMessage(*message, result)) {
-                return result;    
-            }
+        LRESULT result = 0;
+        if (window->ReceiveMessage(*message, result)) {
+            return result;    
         }
     }
 
@@ -240,6 +233,35 @@ void Window::GetStyles(DWORD& style, DWORD& extract_style) const {
 }
 
 
+bool Window::PreprocessMessage(const KeyMessage& message) {
+
+    if ((message.id != WM_KEYDOWN) || (message.GetVirtualKey() != VK_TAB)) {
+        return false;
+    }
+
+    if ((focused_control_ != nullptr) && focused_control_->AcceptKeyMessage(message)) {
+        return false;
+    }
+
+    SwitchFocusedControlByTabKey();
+    return true;
+}
+
+
+void Window::SwitchFocusedControlByTabKey() {
+
+    auto current_focused_control = focused_control_;
+    if (current_focused_control == nullptr) {
+        current_focused_control = root_control_;
+    }
+
+    auto next_focused_control = internal::FindNextTabStopControl(current_focused_control);
+    if (next_focused_control != nullptr) {
+        SetFocusedControl(next_focused_control);
+    }
+}
+
+
 bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
 
     switch (message.id) {
@@ -275,17 +297,12 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         ReceiveMouseMessage(dynamic_cast<const MouseMessage&>(message));
         return true;
 
-    case WM_KEYDOWN: {
-        bool is_handled = false;
+    case WM_KEYDOWN: 
         if (focused_control_ != nullptr) {
-            is_handled = focused_control_->KeyDown(dynamic_cast<const KeyMessage&>(message));
-        }
-
-        if (!is_handled && message.wParam == VK_TAB) {
-            SwitchFocusedControlByTabKey();
+            focused_control_->KeyDown(dynamic_cast<const KeyMessage&>(message));
         }
         return true;
-    }
+    
 
     case WM_KEYUP:
         if (focused_control_ != nullptr) {
@@ -418,20 +435,6 @@ void Window::ReceiveMouseMessage(const MouseMessage& message) {
     else {
 
         root_control_->RouteMessage(message.GetMousePosition(), message);
-    }
-}
-
-
-void Window::SwitchFocusedControlByTabKey() {
-
-    auto current_focused_control = focused_control_;
-    if (current_focused_control == nullptr) {
-        current_focused_control = root_control_;
-    }
-
-    auto next_focused_control = internal::FindNextTabStopControl(current_focused_control);
-    if (next_focused_control != nullptr) {
-        SetFocusedControl(next_focused_control);
     }
 }
 
@@ -843,6 +846,22 @@ void Window::Hide() {
 void Window::Close() {
 
     SendMessage(GetHandle(), WM_CLOSE, 0, 0);
+}
+
+
+const std::shared_ptr<Window> GetWindowFromHandle(HWND handle) {
+
+    if (handle == nullptr) {
+        return nullptr;
+    }
+
+    LONG_PTR user_data = GetWindowLongPtr(handle, GWLP_USERDATA);
+    Window* window = reinterpret_cast<Window*>(user_data);
+    if (window == nullptr) {
+        return nullptr;
+    }
+
+    return window->shared_from_this();
 }
 
 

@@ -64,6 +64,7 @@ private:
         CreateVerticalScrollOptions();
         CreateUndoOptions();
         CreateNumberOnlyOptions();
+        CreateAcceptKeyOptions();
 	}
 
 
@@ -460,6 +461,30 @@ private:
             text_box_->SetTextValidator(check_box->IsChecked() ? GetNumberTextValidator() : nullptr);
         });
         options_container_->AddChild(check_box);
+    }
+
+
+    void CreateAcceptKeyOptions() {
+
+        auto container = Create<Control>();
+        container->SetLayouter(GetHorizontalArrayLayouter());
+        options_container_->AddChild(container);
+
+        auto accept_tab_check_box = Create<CheckBox>();
+        accept_tab_check_box->SetText(L"Accept tab");
+        accept_tab_check_box->SetIsChecked(text_box_->AcceptTab());
+        accept_tab_check_box->GetCheckStateChangeEvent().AddListener([this](const std::shared_ptr<CheckBox>& check_box) {
+            text_box_->SetAcceptTab(check_box->IsChecked());
+        });
+        container->AddChild(accept_tab_check_box);
+
+        auto accept_return_check_box = Create<CheckBox>();
+        accept_return_check_box->SetText(L"Accept return");
+        accept_return_check_box->SetIsChecked(text_box_->AcceptReturn());
+        accept_return_check_box->GetCheckStateChangeEvent().AddListener([this](const std::shared_ptr<CheckBox>& check_box) {
+            text_box_->SetAcceptReturn(check_box->IsChecked());
+        });
+        container->AddChild(accept_return_check_box);
     }
 
 private:

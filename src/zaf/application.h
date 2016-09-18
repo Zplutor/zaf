@@ -132,6 +132,7 @@ private:
 private:
 	Application();
 
+    void MessageLoop();
 	void MainWindowClosed(const std::shared_ptr<Window>& window);
 
 	Application(const Application&) = delete;

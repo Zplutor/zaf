@@ -334,6 +334,23 @@ public:
 
 protected:
     /**
+     Preprocess a key message.
+
+     @param message
+         Contains information of the message.
+
+     @return 
+         Return true if the method processes the message, otherwise return false.
+
+     This method is called before dispatching the WM_KEYDOWN and WM_SYSKEYDOWN messages.
+     If the method returns true, the message would not been dispatched.
+
+     Derived classes should always call the same method of super class if it doesn't 
+     process the message.
+     */
+    virtual bool PreprocessMessage(const KeyMessage& message);
+
+    /**
      This method is called when the window receives a message.
 
      @param message
@@ -343,7 +360,7 @@ protected:
         An output parameter stores the result of handling the message.
 
      @return
-        Return true if the methods handles the message, otherwise return false.
+        Return true if the method handles the message, otherwise return false.
 
      Derived classes should always call the same method of super class if it doesn't handle 
      the message.
@@ -420,10 +437,11 @@ private:
     void CheckCreateWindowHandle();
     void GetStyles(DWORD& style, DWORD& extract_style) const;
 
+    void SwitchFocusedControlByTabKey();
+
     void Repaint();
     void Resize(UINT width, UINT height);
     void ReceiveMouseMessage(const MouseMessage& message);
-    void SwitchFocusedControlByTabKey();
     bool ChangeMouseCursor(const Message& message);
 	void LostFocus();
     bool ReceiveCloseMessage();
@@ -451,5 +469,7 @@ private:
     PropertyMap property_map_;
 };
 
+
+const std::shared_ptr<Window> GetWindowFromHandle(HWND handle);
 
 }

@@ -28,6 +28,8 @@ std::shared_ptr<Message> CreateMessage(HWND hwnd, UINT id, WPARAM wParam, LPARAM
 
         case WM_KEYDOWN:
         case WM_KEYUP:
+        case WM_SYSKEYDOWN:
+        case WM_SYSKEYUP:
             message = std::make_shared<KeyMessage>();
             break;
 
