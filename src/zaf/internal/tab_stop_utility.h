@@ -8,7 +8,7 @@ class Control;
 
 namespace internal {
 
-const std::shared_ptr<Control> FindNextTabStopControl(const std::shared_ptr<Control>& control);
+const std::shared_ptr<Control> FindNextTabStopControl(const std::shared_ptr<Control>& control, bool backward);
 
 }
 }

@@ -437,7 +437,7 @@ private:
     void CheckCreateWindowHandle();
     void GetStyles(DWORD& style, DWORD& extract_style) const;
 
-    void SwitchFocusedControlByTabKey();
+    void SwitchFocusedControlByTabKey(bool backward);
 
     void Repaint();
     void Resize(UINT width, UINT height);

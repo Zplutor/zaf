@@ -243,19 +243,20 @@ bool Window::PreprocessMessage(const KeyMessage& message) {
         return false;
     }
 
-    SwitchFocusedControlByTabKey();
+    bool backward = (GetKeyState(VK_SHIFT) >> 15) != 0;
+    SwitchFocusedControlByTabKey(backward);
     return true;
 }
 
 
-void Window::SwitchFocusedControlByTabKey() {
+void Window::SwitchFocusedControlByTabKey(bool backward) {
 
     auto current_focused_control = focused_control_;
     if (current_focused_control == nullptr) {
         current_focused_control = root_control_;
     }
 
-    auto next_focused_control = internal::FindNextTabStopControl(current_focused_control);
+    auto next_focused_control = internal::FindNextTabStopControl(current_focused_control, backward);
     if (next_focused_control != nullptr) {
         SetFocusedControl(next_focused_control);
     }
