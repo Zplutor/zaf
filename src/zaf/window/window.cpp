@@ -299,22 +299,21 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
 
     case WM_KEYDOWN: 
         if (focused_control_ != nullptr) {
-            focused_control_->KeyDown(dynamic_cast<const KeyMessage&>(message));
+            return focused_control_->KeyDown(dynamic_cast<const KeyMessage&>(message));
         }
-        return true;
-    
+        return false;
 
     case WM_KEYUP:
         if (focused_control_ != nullptr) {
-            focused_control_->KeyUp(dynamic_cast<const KeyMessage&>(message));
+            return focused_control_->KeyUp(dynamic_cast<const KeyMessage&>(message));
         }
-        return true;
+        return false;
 
     case WM_CHAR:
         if (focused_control_ != nullptr) {
-            focused_control_->CharInput(dynamic_cast<const CharMessage&>(message));
+            return focused_control_->CharInput(dynamic_cast<const CharMessage&>(message));
         }
-        return true;
+        return false;
 
     case WM_KILLFOCUS:
         LostFocus();

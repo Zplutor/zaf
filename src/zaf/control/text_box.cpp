@@ -759,8 +759,10 @@ void TextBox::MouseUp(const Point& position, const MouseMessage& message) {
 bool TextBox::KeyDown(const KeyMessage& message) {
     
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_KEYDOWN, message.wParam, message.lParam, nullptr);
-        return true;
+		HRESULT result = text_service_->TxSendMessage(WM_KEYDOWN, message.wParam, message.lParam, nullptr);
+        if (result == S_OK) {
+            return true;
+        }
 	}
     
     return __super::KeyDown(message);
@@ -770,8 +772,10 @@ bool TextBox::KeyDown(const KeyMessage& message) {
 bool TextBox::KeyUp(const KeyMessage& message) {
 
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_KEYUP, message.wParam, message.lParam, nullptr);
-        return true;
+		HRESULT result = text_service_->TxSendMessage(WM_KEYUP, message.wParam, message.lParam, nullptr);
+        if (result == S_OK) {
+            return true;
+        }
 	}
     
     return __super::KeyUp(message);
@@ -781,8 +785,10 @@ bool TextBox::KeyUp(const KeyMessage& message) {
 bool TextBox::CharInput(const CharMessage& message) {
 
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_CHAR, message.wParam, message.lParam, nullptr);
-        return true;
+		HRESULT result = text_service_->TxSendMessage(WM_CHAR, message.wParam, message.lParam, nullptr);
+        if (result == S_OK) {
+            return true;
+        }
 	}
 
     return __super::CharInput(message);
