@@ -193,6 +193,36 @@ public:
     ScrollBarChangeEvent::Proxy GetScrollBarChangeEvent() override;
     ScrollValuesChangeEvent::Proxy GetScrollValuesChangeEvent() override;
 
+    bool AcceptKeyMessage(const KeyMessage& message) const override;
+
+    /**
+     Get a value indicating that whether the text box accepts TAB character when the
+     TAB key is pressed.
+
+     The default value is false.
+     */
+    bool AcceptTab() const;
+
+    /**
+     Set a value indicating that whether the text box accepts TAB character when the
+     TAB key is pressed.
+     */
+    void SetAcceptTab(bool accept_tab);
+
+    /**
+     Get a value indicating that whether the text box accepts return character when the
+     return key is pressed.
+
+     The default value is false.
+    */
+    bool AcceptReturn() const;
+
+    /**
+     Set a value indicating that whether the text box accepts return character when the
+     return key is pressed.
+     */
+    void SetAcceptReturn(bool accept_return);
+
     /**
      Determine whether the text box can be undone.
      */

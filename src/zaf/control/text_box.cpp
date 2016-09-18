@@ -31,6 +31,8 @@ namespace zaf {
 
 static ITextServices* CreateTextService(ITextHost* text_host);
 
+static const wchar_t* const kAcceptReturnPropertyName = L"AcceptReturn";
+static const wchar_t* const kAcceptTabPropertyName = L"AcceptTab";
 static const wchar_t* const kInsetPropertyName = L"Inset";
 static const wchar_t* const kMaximumLengthPropertyName = L"MaximumLength";
 static const wchar_t* const kPasswordCharacterPropertyName = L"PasswordCharacter";
@@ -641,6 +643,53 @@ TextBox::ScrollValuesChangeEvent::Proxy TextBox::GetScrollValuesChangeEvent() {
 }
 
 
+bool TextBox::AcceptKeyMessage(const KeyMessage& message) const {
+
+    switch (message.GetVirtualKey()) {
+    case VK_TAB:
+        return AcceptTab();
+
+    case VK_RETURN:
+        return AcceptReturn();
+
+    default:
+        return __super::AcceptKeyMessage(message);
+    }
+}
+
+
+bool TextBox::AcceptTab() const {
+
+    auto accept_tab = GetPropertyMap().TryGetProperty<bool>(kAcceptTabPropertyName);
+    if (accept_tab != nullptr) {
+        return *accept_tab;
+    }
+    else {
+        return false;
+    }
+}
+
+void TextBox::SetAcceptTab(bool accept_tab) {
+    GetPropertyMap().SetProperty(kAcceptTabPropertyName, accept_tab);
+}
+
+
+bool TextBox::AcceptReturn() const {
+
+    auto accept_return = GetPropertyMap().TryGetProperty<bool>(kAcceptReturnPropertyName);
+    if (accept_return != nullptr) {
+        return *accept_return;
+    }
+    else {
+        return false;
+    }
+}
+
+void TextBox::SetAcceptReturn(bool accept_return) {
+    GetPropertyMap().SetProperty(kAcceptReturnPropertyName, accept_return);
+}
+
+
 void TextBox::ChangeMouseCursor(const Message& message, bool& is_changed) {
 
 	if (ChangeMouseCursor()) {
@@ -708,6 +757,7 @@ void TextBox::MouseUp(const Point& position, const MouseMessage& message) {
 
 
 bool TextBox::KeyDown(const KeyMessage& message) {
+    
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_KEYDOWN, message.wParam, message.lParam, nullptr);
         return true;
@@ -718,6 +768,7 @@ bool TextBox::KeyDown(const KeyMessage& message) {
 
 
 bool TextBox::KeyUp(const KeyMessage& message) {
+
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_KEYUP, message.wParam, message.lParam, nullptr);
         return true;
@@ -728,6 +779,7 @@ bool TextBox::KeyUp(const KeyMessage& message) {
 
 
 bool TextBox::CharInput(const CharMessage& message) {
+
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_CHAR, message.wParam, message.lParam, nullptr);
         return true;
