@@ -1,6 +1,7 @@
 #include <zaf/window/dialog.h>
 #include <zaf/control/button.h>
-#include <zaf/window/message/message.h>
+#include <zaf/internal/message_loop.h>
+#include <zaf/window/message/keyboard_message.h>
 
 namespace zaf {
 
@@ -37,11 +38,8 @@ void Dialog::ShowModally() {
 
     Show();
 
-    MSG msg = { 0 };
-    while (GetMessage(&msg, nullptr, 0, 0)) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
+    internal::MessageLoop message_loop;
+    message_loop.Run();
 
     if (owner != nullptr) {
         EnableWindow(owner->GetHandle(), TRUE);
@@ -62,26 +60,33 @@ void Dialog::CloseWithResult(DialogResult result) {
 }
 
 
-bool Dialog::ReceiveMessage(const Message& message, LRESULT& result) {
-
-    bool return_value = __super::ReceiveMessage(message, result);
+bool Dialog::PreprocessMessage(const KeyMessage& message) {
 
     if (message.id == WM_KEYDOWN) {
 
-        if (message.wParam == VK_ESCAPE) {
-            CloseWithResult(DialogResult::Cancel);
-        }
-        else if (message.wParam == VK_RETURN) {
+        if ((message.GetVirtualKey() == VK_RETURN) || (message.GetVirtualKey() == VK_ESCAPE)) {
 
+            auto focused_control = GetFocusedControl();
+            if ((focused_control != nullptr) && focused_control->AcceptKeyMessage(message)) {
+                return false;
+            }
+
+            if (message.GetVirtualKey() == VK_ESCAPE) {
+                CloseWithResult(DialogResult::Cancel);
+                return true;
+            }
+            
+            //VK_RETURN
             if (current_default_button_ != nullptr) {
                 if (current_default_button_->GetWindow().get() == this) {
                     current_default_button_->Click();
+                    return true;
                 }
             }
         }
     }
 
-    return return_value;
+    return __super::PreprocessMessage(message);
 }
 
 

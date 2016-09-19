@@ -92,7 +92,7 @@ public:
     bool RemoveDialogButton(const std::shared_ptr<Button>& button);
 
 protected:
-    bool ReceiveMessage(const Message& message, LRESULT& result) override;
+    bool PreprocessMessage(const KeyMessage& message) override;
     void WindowDestroy(HWND handle) override;
     void WindowShow() override;
     void FocusedControlChange(const std::shared_ptr<Control>& previous_focused_control) override;

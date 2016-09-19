@@ -41,6 +41,7 @@
     <ClCompile Include="src\zaf\graphic\renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\resource_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
+    <ClCompile Include="src\zaf\internal\message_loop.cpp" />
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
@@ -123,6 +124,7 @@
     <ClInclude Include="src\zaf\graphic\text\text_range.h" />
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />
     <ClInclude Include="src\zaf\graphic\matrix.h" />
+    <ClInclude Include="src\zaf\internal\message_loop.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
     <ClInclude Include="src\zaf\internal\theme.h" />

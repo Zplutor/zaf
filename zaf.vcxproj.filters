@@ -153,6 +153,9 @@
     <ClCompile Include="src\zaf\graphic\matrix.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\internal\message_loop.cpp">
+      <Filter>zaf\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -412,6 +415,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\frame.h">
       <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\message_loop.h">
+      <Filter>zaf\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

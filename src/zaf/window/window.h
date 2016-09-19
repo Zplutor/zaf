@@ -5,6 +5,7 @@
 #include <zaf/base/property_map.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
+#include <zaf/internal/message_loop.h>
 
 namespace zaf {
 
@@ -419,6 +420,7 @@ private:
 	friend class Application;
 	friend class Caret;
 	friend class Control;
+    friend class internal::MessageLoop;
 
 	static void RegisterDefaultClass(std::error_code& error_code);
 
