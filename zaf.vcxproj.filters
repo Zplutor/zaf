@@ -161,9 +161,6 @@
     <ClInclude Include="src\zaf\application.h">
       <Filter>zaf</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\zaf.h">
-      <Filter>zaf</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\event.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
@@ -418,6 +415,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\message_loop.h">
       <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\config.h">
+      <Filter>zaf</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

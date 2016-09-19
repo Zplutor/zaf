@@ -1,5 +1,7 @@
 #include <Windows.h>
-#include <zaf/zaf.h>
+#include <zaf/application.h>
+#include <zaf/base/error.h>
+#include <zaf/creation.h>
 #include "ui/main_window.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {

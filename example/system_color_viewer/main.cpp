@@ -1,4 +1,10 @@
-#include <zaf/zaf.h>
+#include <zaf/application.h>
+#include <zaf/base/error.h>
+#include <zaf/control/label.h>
+#include <zaf/control/layout/array_layouter.h>
+#include <zaf/control/scrollable_control.h>
+#include <zaf/creation.h>
+#include <zaf/window/window.h>
 
 static void ShowMainWindow(zaf::Application&);
 static std::shared_ptr<zaf::Control> CreateColorListControl();

@@ -1,5 +1,7 @@
 #include "test_check_box_window.h"
-#include <zaf/zaf.h>
+#include <zaf/control/check_box.h>
+#include <zaf/creation.h>
+#include <zaf/window/window.h>
 
 using namespace zaf;
 

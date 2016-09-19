@@ -1,5 +1,8 @@
 #include "test_radio_button_window.h"
-#include <zaf/zaf.h>
+#include <zaf/control/check_box.h>
+#include <zaf/control/radio_button.h>
+#include <zaf/creation.h>
+#include <zaf/window/window.h>
 
 using namespace zaf;
 

@@ -1,5 +1,10 @@
 #include <Windows.h>
-#include <zaf/zaf.h>
+#include <zaf/application.h>
+#include <zaf/base/error.h>
+#include <zaf/control/button.h>
+#include <zaf/control/layout/array_layouter.h>
+#include <zaf/creation.h>
+#include <zaf/window/window.h>
 #include "test_check_box_window.h"
 #include "test_clear_edge_window.h"
 #include "test_label_window.h"

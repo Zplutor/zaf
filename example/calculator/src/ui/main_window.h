@@ -1,6 +1,8 @@
 #pragma once
 
-#include <zaf/zaf.h>
+#include <zaf/control/clickable_control.h>
+#include <zaf/control/text_box.h>
+#include <zaf/window/window.h>
 
 class MainWindow : public zaf::Window {
 public:

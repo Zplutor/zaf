@@ -1,4 +1,7 @@
 #include "ui/main_window.h"
+#include <zaf/control/button.h>
+#include <zaf/creation.h>
+#include <zaf/graphic/font/font.h>
 #include "logic/calculate_result.h"
 #include "logic/calculator.h"
 

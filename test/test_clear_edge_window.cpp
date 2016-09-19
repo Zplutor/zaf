@@ -1,5 +1,6 @@
 #include "test_clear_edge_window.h"
-#include <zaf/zaf.h>
+#include <zaf/creation.h>
+#include <zaf/window/window.h>
 
 class TestClearEdgeWindow : public zaf::Window {
 public:

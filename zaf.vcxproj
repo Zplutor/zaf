@@ -66,6 +66,7 @@
     <ClInclude Include="src\zaf\base\string\to_string.h" />
     <ClInclude Include="src\zaf\base\timer.h" />
     <ClInclude Include="src\zaf\base\variant.h" />
+    <ClInclude Include="src\zaf\config.h" />
     <ClInclude Include="src\zaf\control\anchor.h" />
     <ClInclude Include="src\zaf\control\button.h" />
     <ClInclude Include="src\zaf\control\check_box.h" />
@@ -137,7 +138,6 @@
     <ClInclude Include="src\zaf\window\message\message.h" />
     <ClInclude Include="src\zaf\window\message\mouse_message.h" />
     <ClInclude Include="src\zaf\window\window.h" />
-    <ClInclude Include="src\zaf\zaf.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CC24D55C-A412-446C-96D3-C77A4E4CFA07}</ProjectGuid>

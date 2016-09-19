@@ -1,5 +1,7 @@
 #include "test_label_window.h"
-#include <zaf/zaf.h>
+#include <zaf/control/label.h>
+#include <zaf/creation.h>
+#include <zaf/window/window.h>
 
 using namespace zaf;
 

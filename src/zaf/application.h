@@ -5,6 +5,7 @@
 #include <set>
 #include <system_error>
 #include <zaf/base/event.h>
+#include <zaf/config.h>
 
 namespace zaf {
 
