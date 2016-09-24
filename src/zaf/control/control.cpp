@@ -656,14 +656,7 @@ void Control::NeedCaptureMouse(bool capture) {
 
 	auto window = GetWindow();
 	if (window != nullptr) {
-
-		auto shared_this = shared_from_this();
-
-		if (capture && !IsHovered()) {
-			window->SetHoveredControl(shared_this);
-		}
-
-		window->SetCaptureMouseControl(shared_this, !capture);
+        window->SetCaptureMouseControl(shared_from_this(), !capture);
 	}
 }
 

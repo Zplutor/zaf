@@ -79,8 +79,7 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wPar
 Window::Window() :
 	handle_(nullptr),
     rect_(0, 0, 640, 480),
-	is_tracking_mouse_(false),
-    is_capturing_mouse_(false) {
+	is_tracking_mouse_(false) {
 
 }
 
@@ -294,7 +293,11 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
     }
 
     case WM_CAPTURECHANGED: {
-        
+        if (capturing_mouse_control_ != nullptr) {
+            capturing_mouse_control_->IsCapturingMouseChanged(false);
+            capturing_mouse_control_ = nullptr;
+        }
+        result = 0;
         return true;
     }
 
@@ -339,10 +342,6 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
             return focused_control_->CharInput(dynamic_cast<const CharMessage&>(message));
         }
         return false;
-
-    case WM_KILLFOCUS:
-        LostFocus();
-        return true;
 
     case WM_CLOSE:
         return ! ReceiveCloseMessage();
@@ -419,6 +418,17 @@ void Window::Resize(UINT width, UINT height) {
 
 void Window::ReceiveMouseMessage(const MouseMessage& message) {
 
+    bool is_capturing_mouse = capturing_mouse_control_ != nullptr;
+    auto get_mouse_position_to_capturing_control = [this, &message]() {
+
+        Rect control_rect = capturing_mouse_control_->GetAbsoluteRect();
+        Point mouse_position = message.GetMousePosition();
+
+        return Point(
+            mouse_position.x - control_rect.position.x,
+            mouse_position.y - control_rect.position.y);
+    };
+
     if (message.id == WM_MOUSEMOVE) {
 
         if (!is_tracking_mouse_) {
@@ -432,32 +442,25 @@ void Window::ReceiveMouseMessage(const MouseMessage& message) {
             }
         }
 
-        if (!is_capturing_mouse_) {
+        if (is_capturing_mouse) {
+            capturing_mouse_control_->RouteHoverMessage(get_mouse_position_to_capturing_control());
+        }
+        else {
             root_control_->RouteHoverMessage(message.GetMousePosition());
         }
     }
     else if (message.id == WM_MOUSELEAVE) {
 
         is_tracking_mouse_ = false;
-        if (!is_capturing_mouse_) {
+        if (!is_capturing_mouse) {
             SetHoveredControl(nullptr);
         }    
     }
 
-    if (is_capturing_mouse_) {
-
-        //Send message to the hovering control directly.
-        Rect control_rect = hovered_control_->GetAbsoluteRect();
-        Point mouse_position = message.GetMousePosition();
-        Point related_position(
-            mouse_position.x - control_rect.position.x,
-            mouse_position.y - control_rect.position.y
-        );
-
-        hovered_control_->InterpretMessage(related_position, message);
+    if (is_capturing_mouse) {
+        capturing_mouse_control_->RouteMessage(get_mouse_position_to_capturing_control(), message);
     }
     else {
-
         root_control_->RouteMessage(message.GetMousePosition(), message);
     }
 }
@@ -472,14 +475,6 @@ bool Window::ChangeMouseCursor(const Message& message) {
     }
 
     return is_changed;
-}
-
-
-void Window::LostFocus() {
-
-    if (hovered_control_ != nullptr && hovered_control_->IsCapturingMouse()) {
-        SetCaptureMouseControl(hovered_control_, true);
-    }
 }
 
 
@@ -535,25 +530,59 @@ void Window::SetHoveredControl(const std::shared_ptr<Control>& hovered_control) 
 }
 
 
-void Window::SetCaptureMouseControl(const std::shared_ptr<Control>& control, bool is_releasing) {
+void Window::SetCaptureMouseControl(const std::shared_ptr<Control>& capture_control, bool is_releasing) {
 
-	if ( (hovered_control_ == nullptr) || (control == nullptr) ) {
-		return;
-	}
+    if (capture_control == nullptr) {
+        return;
+    }
 
-	if (hovered_control_ != control) {
-		return;
-	}
+    if (!is_releasing) {
+        CaptureMouseWithControl(capture_control);
+    }
+    else {
+        ReleaseMouseWithControl(capture_control);
+    }
+}
 
-	if (! is_releasing) {
+
+void Window::CaptureMouseWithControl(const std::shared_ptr<Control>& control) {
+    
+    if (capturing_mouse_control_ == control) {
+        return;
+    }
+
+    //The control must be contained in this window.
+    if (control->GetWindow().get() != this) {
+        return;
+    }
+
+    if (capturing_mouse_control_ != nullptr) {
+        capturing_mouse_control_->IsCapturingMouseChanged(false);
+    }
+    else {
         SetCapture(GetHandle());
-	}
-	else {
-        ReleaseCapture();
-	}
+    }
 
-    is_capturing_mouse_ = !is_releasing;
-	hovered_control_->IsCapturingMouseChanged(! is_releasing);
+    capturing_mouse_control_ = control;
+    capturing_mouse_control_->IsCapturingMouseChanged(true);
+}
+
+
+void Window::ReleaseMouseWithControl(const std::shared_ptr<Control>& control) {
+
+    if (capturing_mouse_control_ != control) {
+        return;
+    }
+
+    //ReleaseCapture sends a WM_CAPTURECAHNGED message to the window, 
+    //in which message handler will set capturing_mouse_control_ to nullptr.
+    ReleaseCapture();
+
+    //Check it again for insurance.
+    if (capturing_mouse_control_ != nullptr) {
+        capturing_mouse_control_->IsCapturingMouseChanged(false);
+        capturing_mouse_control_ = nullptr;
+    }
 }
 
 

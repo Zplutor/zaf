@@ -478,8 +478,7 @@ protected:
      @param dirty_rect
         The rectangle area needed to be repainted in the control.
 
-     Derived classes should override this method to paint the control,
-     and they must call the same method of super class.
+     Derived classes can override this method to paint the control.
      */
 	virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
 

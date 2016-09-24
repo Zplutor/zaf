@@ -467,7 +467,7 @@ private:
 
 	void NeedRepaintRect(const Rect& rect);
 	void SetHoveredControl(const std::shared_ptr<Control>& hovered_control);
-	void SetCaptureMouseControl(const std::shared_ptr<Control>& hovered_control, bool is_releasing);
+	void SetCaptureMouseControl(const std::shared_ptr<Control>& capture_control, bool is_releasing);
 	void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
 
 private:
@@ -486,10 +486,12 @@ private:
     void Resize(UINT width, UINT height);
     void ReceiveMouseMessage(const MouseMessage& message);
     bool ChangeMouseCursor(const Message& message);
-    void LostFocus();
     bool ReceiveCloseMessage();
     void ReceiveDestroyMessage();
 	
+    void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
+    void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
+
     bool GetStyleProperty(const std::wstring& property_name, DWORD style_value) const;
     void SetStyleProperty(const std::wstring& property_name, DWORD style_value, bool is_set);
 
@@ -502,10 +504,10 @@ private:
 	std::shared_ptr<Renderer> renderer_;
 
 	bool is_tracking_mouse_;
-	bool is_capturing_mouse_;
 
 	std::shared_ptr<Control> root_control_;
 	std::shared_ptr<Control> hovered_control_;
+    std::shared_ptr<Control> capturing_mouse_control_;
 	std::shared_ptr<Control> focused_control_;
 	std::shared_ptr<Caret> caret_;
 
