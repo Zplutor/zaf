@@ -301,6 +301,13 @@ public:
 		return root_control_;
 	}
 
+    /**
+     Get the control which is capturing mouse in the window.
+     */
+    const std::shared_ptr<Control>& GetCapturingMouseControl() const {
+        return capturing_mouse_control_;
+    }
+
 	/**
 	 Get the control which has input focus in the window.
  	 */
@@ -442,6 +449,16 @@ protected:
      Derived classes must call the same method of super class.
      */
     virtual void FocusedControlChange(const std::shared_ptr<Control>& previous_focused_control) { }
+
+    /**
+     This method is called after the capturing mouse control changed.
+
+     @param previous_capture_control
+         The previous capture mouse control, may be nullptr.
+
+     Derived classes must call the same method of super class.
+     */
+    virtual void CapturingMouseControlChange(const std::shared_ptr<Control>& previous_capturing_control) { }
 
     /**
      Get the window's property map.

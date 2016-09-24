@@ -652,12 +652,21 @@ void Control::IsFocusedChanged(bool is_focused) {
 }
 
 
-void Control::NeedCaptureMouse(bool capture) {
+void Control::CaptureMouse() {
 
-	auto window = GetWindow();
-	if (window != nullptr) {
-        window->SetCaptureMouseControl(shared_from_this(), !capture);
-	}
+    auto window = GetWindow();
+    if (window != nullptr) {
+        window->SetCaptureMouseControl(shared_from_this(), false);
+    }
+}
+
+
+void Control::ReleaseMouse() {
+
+    auto window = GetWindow();
+    if (window != nullptr) {
+        window->SetCaptureMouseControl(shared_from_this(), true);
+    }
 }
 
 

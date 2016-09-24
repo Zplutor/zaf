@@ -294,8 +294,13 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
 
     case WM_CAPTURECHANGED: {
         if (capturing_mouse_control_ != nullptr) {
+
+            auto previous_control = capturing_mouse_control_;
+
             capturing_mouse_control_->IsCapturingMouseChanged(false);
             capturing_mouse_control_ = nullptr;
+
+            CapturingMouseControlChange(previous_control);
         }
         result = 0;
         return true;
@@ -547,7 +552,8 @@ void Window::SetCaptureMouseControl(const std::shared_ptr<Control>& capture_cont
 
 void Window::CaptureMouseWithControl(const std::shared_ptr<Control>& control) {
     
-    if (capturing_mouse_control_ == control) {
+    auto previous_control = capturing_mouse_control_;
+    if (previous_control == control) {
         return;
     }
 
@@ -556,8 +562,8 @@ void Window::CaptureMouseWithControl(const std::shared_ptr<Control>& control) {
         return;
     }
 
-    if (capturing_mouse_control_ != nullptr) {
-        capturing_mouse_control_->IsCapturingMouseChanged(false);
+    if (previous_control != nullptr) {
+        previous_control->IsCapturingMouseChanged(false);
     }
     else {
         SetCapture(GetHandle());
@@ -565,6 +571,8 @@ void Window::CaptureMouseWithControl(const std::shared_ptr<Control>& control) {
 
     capturing_mouse_control_ = control;
     capturing_mouse_control_->IsCapturingMouseChanged(true);
+
+    CapturingMouseControlChange(previous_control);
 }
 
 
@@ -580,8 +588,13 @@ void Window::ReleaseMouseWithControl(const std::shared_ptr<Control>& control) {
 
     //Check it again for insurance.
     if (capturing_mouse_control_ != nullptr) {
+
+        auto previous_control = capturing_mouse_control_;
+
         capturing_mouse_control_->IsCapturingMouseChanged(false);
         capturing_mouse_control_ = nullptr;
+
+        CapturingMouseControlChange(previous_control);
     }
 }
 

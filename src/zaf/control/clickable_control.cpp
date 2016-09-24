@@ -130,7 +130,7 @@ void ClickableControl::BeginPress(PressType press_type) {
 		return;
 	}
 
-	NeedCaptureMouse(true);
+	CaptureMouse();
 }
 
 
@@ -154,7 +154,7 @@ void ClickableControl::EndPress(PressType press_type) {
 	}
 
 	bool is_pressed = is_pressed_;
-	NeedCaptureMouse(false);
+	ReleaseMouse();
 
 	if (is_pressed) {
         Click();

@@ -436,6 +436,16 @@ public:
 	void SetIsFocused(bool is_focused);
 
     /**
+     Capture the mouse.
+     */
+    void CaptureMouse();
+
+    /**
+     Release the mouse.
+     */
+    void ReleaseMouse();
+
+    /**
      The the mouse position in control's coordinate.
      */
 	const Point GetMousePosition() const;
@@ -538,11 +548,6 @@ protected:
 	bool IsCapturingMouse() const {
 		return is_capturing_mouse_;
 	}
-
-    /**
-     Require the control to capture the mouse, or cancel the capturing.
-     */
-	void NeedCaptureMouse(bool capture);
 
     /**
      Change the mouse cursor.

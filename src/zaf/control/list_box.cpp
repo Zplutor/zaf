@@ -488,7 +488,7 @@ void ListBox::ItemContainer::MouseDown(const Point& position, const MouseMessage
         return;
     }
 
-    NeedCaptureMouse(true);
+    CaptureMouse();
     is_changing_selection_ = SelectItemAtPositionByMouseEvent(position, false); 
 }
 
@@ -508,7 +508,7 @@ void ListBox::ItemContainer::MouseUp(const Point& position, const MouseMessage& 
     }
 
     if (IsCapturingMouse()) {
-        NeedCaptureMouse(false);
+        ReleaseMouse();
     }
 
     if (is_changing_selection_) {

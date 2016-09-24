@@ -318,7 +318,7 @@ ScrollBar::ScrollEvent::Proxy ScrollBar::GetScrollEvent() {
 void ScrollBar::MouseDown(const Point& position, const MouseMessage& message) {
 
 	if (message.GetMouseButton() == MouseButton::Left) {
-		NeedCaptureMouse(true);
+		CaptureMouse();
 	}
 }
 
@@ -326,7 +326,7 @@ void ScrollBar::MouseDown(const Point& position, const MouseMessage& message) {
 void ScrollBar::MouseUp(const Point& position, const MouseMessage& message) {
 
 	if (message.GetMouseButton() == MouseButton::Left) {
-		NeedCaptureMouse(false);
+		ReleaseMouse();
 	}
 }
 

@@ -1130,7 +1130,12 @@ void TextBox::TextHostBridge::TxSetCapture(BOOL fCapture) {
 		return;
 	}
 
-	text_box->NeedCaptureMouse(fCapture == TRUE);
+    if (fCapture) {
+        text_box->CaptureMouse();
+    }
+    else {
+        text_box->ReleaseMouse();
+    }
 }
 
 
