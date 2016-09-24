@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <zaf/base/event.h>
+#include <zaf/base/flag_enum.h>
 #include <zaf/base/property_map.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
@@ -69,6 +70,31 @@ public:
          Windows with this style do not appear in the taskbar.
          */
         ToolWindow,
+    };
+
+    /**
+     Specifies options when activating a window.
+
+     This enumeration allows a bitwise combination of its member values.
+     */
+    enum class ActivateOption {
+
+        /**
+         The window is activated as normal.
+         */
+        None = 0,
+
+        /**
+         The window is not allow to be activated.
+
+         A window with this value would not be shown in the taskbar.
+         */
+        NoActivate = 1,
+
+        /**
+         The mouse message that triggers the activating would be discard.
+         */
+        DiscardMouseMessage = 2,
     };
 
     /**
@@ -167,6 +193,21 @@ public:
     const Rect GetClientRect() const;
 
     /**
+     Get window's activate option.
+
+     The default option is None.
+     */
+    ActivateOption GetActivateOption() const;
+
+    /**
+     Set window's activate option.
+
+     This method takes effect only when the window is closed, otherwise
+     the option would not be changed.
+     */
+    void SetActivateOption(ActivateOption option);
+
+    /**
      Get window's border style.
 
      The default border style is Normal.
@@ -176,7 +217,7 @@ public:
     /**
      Set window's border style.
 
-     This method tasks effect only when the window is closed, otherwise 
+     This method takes effect only when the window is closed, otherwise 
      the style would not be changed.
      */
     void SetBorderStyle(BorderStyle border_style);
@@ -445,7 +486,7 @@ private:
     void Resize(UINT width, UINT height);
     void ReceiveMouseMessage(const MouseMessage& message);
     bool ChangeMouseCursor(const Message& message);
-	void LostFocus();
+    void LostFocus();
     bool ReceiveCloseMessage();
     void ReceiveDestroyMessage();
 	
@@ -471,6 +512,7 @@ private:
     PropertyMap property_map_;
 };
 
+ZAF_ENABLE_FLAG_ENUM(Window::ActivateOption);
 
 const std::shared_ptr<Window> GetWindowFromHandle(HWND handle);
 

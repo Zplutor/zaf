@@ -21,6 +21,7 @@ namespace zaf {
 
 static const wchar_t* const kDefaultWindowClassName = L"ZafDefaultWindowClass";
 
+static const wchar_t* const kActivateOptionPropertyName = L"ActivateOption";
 static const wchar_t* const kBorderStylePropertyName = L"BorderStyle";
 static const wchar_t* const kCloseEventPropertyName = L"CloseEvent";
 static const wchar_t* const kCloseHandlerPropertyName = L"CloseHandler";
@@ -79,7 +80,7 @@ Window::Window() :
 	handle_(nullptr),
     rect_(0, 0, 640, 480),
 	is_tracking_mouse_(false),
-	is_capturing_mouse_(false) {
+    is_capturing_mouse_(false) {
 
 }
 
@@ -230,6 +231,11 @@ void Window::GetStyles(DWORD& style, DWORD& extract_style) const {
             style |= WS_MINIMIZEBOX;
         }
     }
+
+    auto activate_option = GetActivateOption();
+    if ((activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate) {
+        extract_style |= WS_EX_NOACTIVATE;
+    }
 }
 
 
@@ -273,6 +279,24 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
     case WM_SIZE:
         Resize(LOWORD(message.lParam), HIWORD(message.lParam));
         return true;
+
+    case WM_MOUSEACTIVATE: {
+        auto activate_option = GetActivateOption();
+        bool no_activate = (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
+        bool discard_message = (activate_option & ActivateOption::DiscardMouseMessage) == ActivateOption::DiscardMouseMessage;
+        if (no_activate) {
+            result = discard_message ? MA_NOACTIVATEANDEAT : MA_NOACTIVATE;
+        }
+        else {
+            result = discard_message ? MA_ACTIVATEANDEAT : MA_ACTIVATE;
+        }
+        return true;
+    }
+
+    case WM_CAPTURECHANGED: {
+        
+        return true;
+    }
 
     case WM_SETCURSOR: {
         bool is_changed = ChangeMouseCursor(message);
@@ -522,13 +546,13 @@ void Window::SetCaptureMouseControl(const std::shared_ptr<Control>& control, boo
 	}
 
 	if (! is_releasing) {
-		SetCapture(handle_);
+        SetCapture(GetHandle());
 	}
 	else {
-		ReleaseCapture();
+        ReleaseCapture();
 	}
 
-	is_capturing_mouse_ = ! is_releasing;
+    is_capturing_mouse_ = !is_releasing;
 	hovered_control_->IsCapturingMouseChanged(! is_releasing);
 }
 
@@ -641,6 +665,25 @@ const Rect Window::GetClientRect() const {
     RECT rect = { 0 };
     ::GetClientRect(handle_, &rect);
     return Rect::FromRECT(rect);
+}
+
+
+Window::ActivateOption Window::GetActivateOption() const {
+
+    auto option = GetPropertyMap().TryGetProperty<ActivateOption>(kActivateOptionPropertyName);
+    if (option != nullptr) {
+        return *option;
+    }
+    else {
+        return ActivateOption::None;
+    }
+}
+
+void Window::SetActivateOption(ActivateOption option) {
+
+    if (IsClosed()) {
+        GetPropertyMap().SetProperty(kActivateOptionPropertyName, option);
+    }
 }
 
 
@@ -831,7 +874,10 @@ const Point Window::GetMousePosition() const {
 void Window::Show() {
 
     CheckCreateWindowHandle();
-    ShowWindow(handle_, SW_SHOW);
+
+    auto activate_option = GetActivateOption();
+    bool no_activate = (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
+    ShowWindow(handle_, no_activate ? SW_SHOWNA : SW_SHOW);
 
     WindowShow();
 }
