@@ -500,6 +500,16 @@ bool Window::ReceiveCloseMessage() {
 
 void Window::ReceiveDestroyMessage() {
 
+    if (capturing_mouse_control_ != nullptr) {
+        capturing_mouse_control_->IsCapturingMouseChanged(false);
+        capturing_mouse_control_ = nullptr;
+    }
+
+    if (focused_control_ != nullptr) {
+        focused_control_->IsFocusedChanged(false);
+        focused_control_ = nullptr;
+    }
+
     HWND old_handle = handle_;
 
     handle_ = nullptr;
