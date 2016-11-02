@@ -346,24 +346,32 @@ void ScrollableControl::SetAutoHideScrollBars(bool auto_hide) {
 
 void ScrollableControl::SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
-    if (vertical_scroll_bar_ != nullptr) {
-        vertical_scroll_bar_->GetScrollEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
-        RemoveChild(vertical_scroll_bar_);
+    auto previous_scroll_bar = vertical_scroll_bar_;
+    if (previous_scroll_bar == scroll_bar) {
+        return;
     }
 
+    previous_scroll_bar->GetScrollEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
+    RemoveChild(previous_scroll_bar);
+
     InitializeVerticalScrollBar(scroll_bar != nullptr ? scroll_bar : Create<ScrollBar>());
+    VerticalScrollBarChange(previous_scroll_bar);
     NeedRelayout();
 }
 
 
 void ScrollableControl::SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
-    if (horizontal_scroll_bar_ != nullptr) {
-        horizontal_scroll_bar_->GetScrollEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
-        RemoveChild(horizontal_scroll_bar_);
+    auto previous_scroll_bar = horizontal_scroll_bar_;
+    if (previous_scroll_bar == scroll_bar) {
+        return;
     }
 
+    previous_scroll_bar->GetScrollEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
+    RemoveChild(previous_scroll_bar);
+
     InitializeHorizontalScrollBar(scroll_bar != nullptr ? scroll_bar : Create<ScrollBar>());
+    HorizontalScrollBarChange(previous_scroll_bar);
     NeedRelayout();
 }
 

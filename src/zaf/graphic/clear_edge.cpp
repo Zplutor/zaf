@@ -23,6 +23,16 @@ const Point MakeClearEdgePointForLine(const Point& point, float stroke_width, Cl
 }
 
 
+const Point MakeClearEdgePointForFill(const Point& point, ClearEdgeOption option) {
+
+    if (option == ClearEdgeOption::None) {
+        return point;
+    }
+
+    return Point(std::round(point.x), std::round(point.y));
+}
+
+
 const Rect MakeClearEdgeRectForLine(const Rect& rect, float stroke_width, ClearEdgeOption option) {
 
 	if (option == ClearEdgeOption::None) {

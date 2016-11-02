@@ -154,6 +154,26 @@ protected:
      */
     void ScrollToScrollContentPosition(const Point& position);
 
+    /**
+     This method is called when the vertical scroll bar is changed.
+
+     @param previous_scroll_bar
+         The previous vertical scroll bar.
+
+     Derived classes must call the same method of base class.
+     */
+    virtual void VerticalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) { }
+
+    /**
+     This method is called when the horizontal scroll bar is changed.
+
+     @param previous_scroll_bar
+         The previous horizontal scroll bar.
+
+     Derived classes must call the same method of base class.
+     */
+    virtual void HorizontalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) { }
+
 private:
     void InitializeVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
     void InitializeHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);

@@ -10,6 +10,8 @@
     <ClCompile Include="test\test_list_box_window.cpp" />
     <ClCompile Include="test\test_window_window.cpp" />
     <ClCompile Include="test\test_clear_edge_window.cpp" />
+    <ClCompile Include="test\test_combo_box_window.cpp" />
+    <ClCompile Include="test\test_list_control_window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test\test_label_window.h" />
@@ -20,5 +22,7 @@
     <ClInclude Include="test\test_list_box_window.h" />
     <ClInclude Include="test\test_window_window.h" />
     <ClInclude Include="test\test_clear_edge_window.h" />
+    <ClInclude Include="test\test_combo_box_window.h" />
+    <ClInclude Include="test\test_list_control_window.h" />
   </ItemGroup>
 </Project>

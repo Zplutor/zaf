@@ -40,6 +40,9 @@
     <Filter Include="zaf\base\string">
       <UniqueIdentifier>{0575bb1f-2f46-4ee6-8d1b-25c742149b7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\internal">
+      <UniqueIdentifier>{6727cfd9-42d2-4ad1-896a-3e726fe276df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -155,6 +158,30 @@
     </ClCompile>
     <ClCompile Include="src\zaf\internal\message_loop.cpp">
       <Filter>zaf\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\combo_box.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\list_control.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\list_control_item_height_manager.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\list_control_item_selection_manager.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\list_control_single_select_strategy.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\list_control_select_strategy.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\list_control_simple_multiple_select_strategy.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\list_control_extended_multiple_select_strategy.cpp">
+      <Filter>zaf\control\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -418,6 +445,30 @@
     </ClInclude>
     <ClInclude Include="src\zaf\config.h">
       <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\combo_box.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\list_control.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\list_control_item_height_manager.h">
+      <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\list_control_item_selection_manager.h">
+      <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\list_control_select_strategy.h">
+      <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\list_control_single_select_strategy.h">
+      <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\list_control_simple_multiple_select_strategy.h">
+      <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\list_control_extended_multiple_select_strategy.h">
+      <Filter>zaf\control\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

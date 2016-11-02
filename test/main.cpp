@@ -7,8 +7,10 @@
 #include <zaf/window/window.h>
 #include "test_check_box_window.h"
 #include "test_clear_edge_window.h"
+#include "test_combo_box_window.h"
 #include "test_label_window.h"
 #include "test_list_box_window.h"
+#include "test_list_control_window.h"
 #include "test_radio_button_window.h"
 #include "test_scrollable_control_window.h"
 #include "test_text_box_window.h"
@@ -54,7 +56,9 @@ void BeginRun(Application& application) {
 		L"Test radio button", ShowTestRadioButtonWindow,
 		L"Test text box", ShowTestTextBoxWindow,
         L"Test scrollable control", ShowTestScrollableControlWindow,
+        L"Test list control", ShowTestListControlWindow,
         L"Test list box", ShowTestListBoxWindow,
+        L"Test combo box", ShowTestComboBoxWindow,
         L"Test window", ShowTestWindowWindow,
 	};
 

@@ -12,6 +12,7 @@ enum class ClearEdgeOption {
 };
 
 const Point MakeClearEdgePointForLine(const Point& point, float stroke_width, ClearEdgeOption option);
+const Point MakeClearEdgePointForFill(const Point& point, ClearEdgeOption option);
 
 const Rect MakeClearEdgeRectForLine(const Rect& rect, float stroke_width, ClearEdgeOption option);
 const Rect MakeClearEdgeRectForFill(const Rect& rect, ClearEdgeOption option);

@@ -13,6 +13,12 @@
     <Filter Include="case\base\string">
       <UniqueIdentifier>{c16c6071-c923-42d3-b737-0f7b70cf37cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\control">
+      <UniqueIdentifier>{cc259569-d659-4f6c-8e43-1d8c4682c330}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\control\internal">
+      <UniqueIdentifier>{28eb627f-da72-48ec-8bc4-d36327aebce2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -24,6 +30,12 @@
     </ClCompile>
     <ClCompile Include="unittest\case\base\string\to_numeric_test.cpp">
       <Filter>case\base\string</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\internal\list_control_item_selection_manager_test.cpp">
+      <Filter>case\control\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\internal\list_control_item_height_manager_test.cpp">
+      <Filter>case\control\internal</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
