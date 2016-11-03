@@ -210,6 +210,8 @@ protected:
     void Layout(const Rect& previous_rect) override;
     void VerticalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) override;
 
+    virtual void ItemSourceChange(const std::shared_ptr<ItemSource>& previous_item_source) { }
+
 private:
     friend class internal::ListControlExtendedMultipleSelectStrategy;
     friend class internal::ListControlSingleSelectStrategy;

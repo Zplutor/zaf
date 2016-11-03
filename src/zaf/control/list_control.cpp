@@ -49,11 +49,12 @@ void ListControl::Initialize() {
 
     __super::Initialize();
 
+    SetBorderThickness(1);
+    SetBorderColor(Color::Black);
+
     item_container_ = Create<ItemContainer>();
     item_container_->SetSelectStrategy(CreateSelectStrategy());
-    item_container_->SetBackgroundColorPicker([](const Control&) {
-        return Color::White;
-    });
+    item_container_->SetBackgroundColor(Color::White);
     SetScrollContentControl(item_container_);
 
     InitializeScrollBar();
@@ -121,6 +122,7 @@ void ListControl::SetItemSource(const std::shared_ptr<ItemSource>& item_source) 
 
     UninitializeItemSource();
 
+    auto previous_item_source = item_source_;
     if (item_source != nullptr) {
         item_source_ = item_source;
     }
@@ -131,6 +133,8 @@ void ListControl::SetItemSource(const std::shared_ptr<ItemSource>& item_source) 
     item_height_manager_ = std::make_shared<internal::ListControlItemHeightManager>(item_source_);
     item_container_->SetSelectStrategy(CreateSelectStrategy());
     InitializeItemSource();
+
+    ItemSourceChange(previous_item_source);
     Reload();
 }
 

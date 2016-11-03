@@ -162,8 +162,8 @@ public:
         text_box->SetText(std::to_wstring(list_box_->GetFirstSelectedItemIndex()));
         container->AddChild(text_box);
 
-        list_box_->GetSelectionChangeEvent().AddListener([text_box](const std::shared_ptr<ListBox>& list_box) {
-            text_box->SetText(std::to_wstring(list_box->GetFirstSelectedItemIndex()));
+        list_box_->GetSelectionChangeEvent().AddListener([text_box](const std::shared_ptr<ListControl>& list_control) {
+            text_box->SetText(std::to_wstring(list_control->GetFirstSelectedItemIndex()));
         });
     }
 
