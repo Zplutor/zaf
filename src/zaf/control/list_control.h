@@ -5,6 +5,7 @@
 #include <zaf/base/event.h>
 #include <zaf/control/scrollable_control.h>
 #include <zaf/control/textual_control.h>
+#include <zaf/creation.h>
 
 namespace zaf {
 
@@ -17,8 +18,24 @@ class ListControlSimpleMultipleSelectStrategy;
 class ListControlSingleSelectStrategy;
 }
 
+/**
+ Represents a list control.
+
+ This is the base class of all controls that display a list of items.
+
+ A list control retrieves item information from the item source, such as the total
+ count of items and the height of each item. You must create your own item source 
+ which is derived from ItemSource, and call SetItemSource method to set it into the 
+ list control. 
+ */
 class ListControl : public ScrollableControl {
 public:
+    /**
+     Represents an item in list control.
+
+     The default item displays text only. You can dervied from it to implement a more 
+     complex item.
+     */
     class Item : public TextualControl {
     public:
         Item() : is_selected_(false) { }
@@ -46,40 +63,84 @@ public:
         bool is_selected_;
     };
 
+    /**
+     Represents an item source that is used in list control.
+
+     The default item source doesn't manage any item, and is readonly. You must 
+     derived from this class to implement your own item source.  
+     */
     class ItemSource : public std::enable_shared_from_this<ItemSource> {
     public:
+        /**
+         Type of item add event.
+         */
         typedef Event<const std::shared_ptr<ItemSource>&, std::size_t, std::size_t> ItemAddEvent;
+
+        /**
+         Type of item remove event.
+         */
         typedef Event<const std::shared_ptr<ItemSource>&, std::size_t, std::size_t> ItemRemoveEvent;
+
+        /**
+         Type of item update event.
+         */
         typedef Event<const std::shared_ptr<ItemSource>&, std::size_t, std::size_t> ItemUpdateEvent;
 
     public:
-        ItemSource() {  }
+        ItemSource() { }
         virtual ~ItemSource() { }
 
+        /**
+         Get total count of items.
+         */
         virtual std::size_t GetItemCount() { 
             return 0;
         }
 
+        /**
+         Get a value indicating that whether each item has different height.
+         */
         virtual bool HasVariableItemHeight() {
             return false;
         }
 
+        /**
+         Get the height of item at specified index.
+
+         Note that if HasVariableItemHeight returns false, this method should always 
+         return the same height regardless of the index.
+         */
         virtual float GetItemHeight(std::size_t index) {
             return 0;
         }
 
+        /**
+         Create an item for specified index.
+
+         This method should not return nullptr. However, a default item would be created
+         if nullptr is returned indeed.
+         */
         virtual std::shared_ptr<Item> CreateItem(std::size_t index) {
-            return nullptr;
+            return Create<Item>();
         }
 
+        /**
+         Get item add event.
+         */
         ItemAddEvent::Proxy GetItemAddEvent() {
             return ItemAddEvent::Proxy(item_add_event_);
         }
 
+        /**
+         Get item remove event.
+         */
         ItemRemoveEvent::Proxy GetItemRemoveEvent() {
             return ItemRemoveEvent::Proxy(item_remove_event_);
         }
 
+        /**
+         Get item update event.
+         */
         ItemRemoveEvent::Proxy GetItemUpdateEvent() {
             return ItemUpdateEvent::Proxy(item_update_event_);
         }
@@ -88,8 +149,46 @@ public:
         ItemSource& operator=(const ItemSource&) = delete;
 
     protected:
+        /**
+         Raise an item add event.
+
+         @param index
+             The index where items are added.
+
+         @param count
+             The count of items added.
+
+         You must call this method to update the list control after adding 
+         items to item source.
+         */
         void NotifyItemAdd(std::size_t index, std::size_t count);
+
+        /**
+         Raise an item remove event.
+
+         @param index
+             The index of the first item removed.
+
+         @param count
+             The count of items removed.
+
+         You must call this method to update the list control after removing
+         items from item source.
+         */
         void NotifyItemRemove(std::size_t index, std::size_t count);
+
+        /**
+         Raise an item update event.
+
+         @param index
+             The index of the first item updated.
+
+         @param count
+             The count of items updated.
+
+         You must call this method to update the list control after updating
+         items in item source.
+         */
         void NotifyItemUpdate(std::size_t index, std::size_t count);
 
     private:
@@ -98,6 +197,9 @@ public:
         ItemUpdateEvent item_update_event_;
     };
 
+    /**
+     Represents a container control that manages items in a list control.
+     */
     class ItemContainer : public Control {
     public:
         ItemContainer();
@@ -164,15 +266,39 @@ public:
 
     void Initialize() override;
 
+    /**
+     Get item source.
+     */
     const std::shared_ptr<ItemSource>& GetItemSource() const {
         return item_source_;
     }
 
+    /**
+     Set item source.
+
+     If nullptr is set, a default item source would be used.
+     */
     void SetItemSource(const std::shared_ptr<ItemSource>& item_source);
+
+    /**
+     Reload items.
+     */
     void Reload();
 
+    /**
+     Get total count of items.
+     */
     std::size_t GetItemCount() const;
 
+    /**
+     Get item at specified index.
+
+     @param index
+        The index of item.
+
+     @return 
+        Returns item object, or nullptr if index is invalid.
+     */
     const std::shared_ptr<Item> GetItemAtIndex(std::size_t index) const;
 
     /**
@@ -191,25 +317,66 @@ public:
      */
     void SetSelectionMode(SelectionMode selection_mode);
 
+    /**
+     Get selection change event.
+
+     This event is raised when selection is changed.
+     */
     SelectionChangeEvent::Proxy GetSelectionChangeEvent();
 
+    /**
+     Select the item at specifed index.
+     */
     void SelectItemAtIndex(std::size_t index);
+
+    /**
+     Unselect the item at specified index.
+     */
     void UnselectItemAtIndex(std::size_t index);
 
+    /**
+     Select all items.
+     */
     void SelectAllItems();
+
+    /**
+     Unselect all items.
+     */
     void UnselectAllItems();
 
+    /**
+     Get total count of selected items.
+     */
     std::size_t GetSelectedItemCount() const;
+
+    /**
+     Get indexes of selected items.
+     */
     std::vector<std::size_t> GetSelectedItemIndexes() const;
+
+    /**
+     Get the index of the first selected item.
+     */
     std::size_t GetFirstSelectedItemIndex() const;
+
+    /**
+     Determinate whether the item at specified index is selected.
+     */
     bool IsItemSelectedAtIndex(std::size_t index) const;
 
+    /**
+     Scroll to the item at specified index.
+     */
     void ScrollToItemAtIndex(std::size_t index);
 
 protected:
     void Layout(const Rect& previous_rect) override;
     void VerticalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) override;
 
+    /**
+     This method is called when the item source is changed. Derived classes must call the same 
+     method of base class.
+     */
     virtual void ItemSourceChange(const std::shared_ptr<ItemSource>& previous_item_source) { }
 
 private:
