@@ -18,7 +18,6 @@ void ListBox::Initialize() {
     __super::Initialize();
 
     SetItemSource(std::make_shared<ItemSource>());
-    SetItemHeight(18);
 }
 
 
@@ -127,11 +126,8 @@ const std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
 }
 
 
-std::shared_ptr<ListBox::Item> ListBox::ItemSource::CreateItem(std::size_t index) {
-
-    auto item = Create<Item>();
+void ListBox::ItemSource::LoadItem(std::size_t index, const std::shared_ptr<Item>& item) {
     item->SetText(item_texts_[index]);
-    return item;
 }
 
 

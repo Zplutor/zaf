@@ -11,7 +11,7 @@ class ListBox : public ListControl {
 public:
     class ItemSource : public ListControl::ItemSource {
     public:
-        ItemSource() : item_height_(0) {
+        ItemSource() : item_height_(18) {
         
         }
 
@@ -19,7 +19,7 @@ public:
             return item_height_;
         }
 
-        std::shared_ptr<Item> CreateItem(std::size_t index) override;
+        void LoadItem(std::size_t index, const std::shared_ptr<Item>& item) override;
 
     private:
         friend class ListBox;

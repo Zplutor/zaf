@@ -119,10 +119,18 @@ public:
 
          This method should not return nullptr. However, a default item would be created
          if nullptr is returned indeed.
+
+         You should create the item instance in this method, and set related data to the 
+         item in LoadItem method.
          */
         virtual std::shared_ptr<Item> CreateItem(std::size_t index) {
             return Create<Item>();
         }
+
+        /**
+         Load data into specified item.
+         */
+        virtual void LoadItem(std::size_t index, const std::shared_ptr<Item>& item) { }
 
         /**
          Get item add event.
@@ -281,6 +289,20 @@ public:
     void SetItemSource(const std::shared_ptr<ItemSource>& item_source);
 
     /**
+     Get item container.
+     */
+    const std::shared_ptr<ItemContainer> GetItemContainer() const {
+        return item_container_;
+    }
+
+    /**
+     Set item container.
+
+     If nullptr is set, a default item container would be used.
+     */
+    void SetItemContainer(const std::shared_ptr<ItemContainer>& item_container);
+
+    /**
      Reload items.
      */
     void Reload();
@@ -369,6 +391,17 @@ public:
      */
     void ScrollToItemAtIndex(std::size_t index);
 
+    /**
+     Find the index of item at specified position.
+
+     @param position
+         The position to be determinated, in current control's coordinate system.
+
+     @return
+         Returns the index of item found, or InvalidIndex if no item is found.
+     */
+    std::size_t FindItemIndexAtPosition(const Point& position) const;
+
 protected:
     void Layout(const Rect& previous_rect) override;
     void VerticalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) override;
@@ -378,6 +411,12 @@ protected:
      method of base class.
      */
     virtual void ItemSourceChange(const std::shared_ptr<ItemSource>& previous_item_source) { }
+
+    /**
+     This method is called when the item container is changed. Derived classes must call the same 
+     method of base class.
+     */
+    virtual void ItemContainerChange(const std::shared_ptr<ItemContainer>& previous_item_container) { }
 
 private:
     friend class internal::ListControlExtendedMultipleSelectStrategy;

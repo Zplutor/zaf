@@ -54,7 +54,6 @@ void ListControl::Initialize() {
 
     item_container_ = Create<ItemContainer>();
     item_container_->SetSelectStrategy(CreateSelectStrategy());
-    item_container_->SetBackgroundColor(Color::White);
     SetScrollContentControl(item_container_);
 
     InitializeScrollBar();
@@ -135,6 +134,27 @@ void ListControl::SetItemSource(const std::shared_ptr<ItemSource>& item_source) 
     InitializeItemSource();
 
     ItemSourceChange(previous_item_source);
+    Reload();
+}
+
+
+void ListControl::SetItemContainer(const std::shared_ptr<ItemContainer>& item_container) {
+
+    if (item_container_ == item_container) {
+        return;
+    }
+
+    auto previous_item_container = item_container_;
+
+    item_container_ = item_container;
+    if (item_container_ == nullptr) {
+        item_container_ = std::make_shared<ItemContainer>();
+    }
+
+    item_container_->SetSelectStrategy(CreateSelectStrategy());
+    SetScrollContentControl(item_container_);
+
+    ItemContainerChange(previous_item_container);
     Reload();
 }
 
@@ -310,10 +330,14 @@ const std::vector<std::shared_ptr<ListControl::Item>> ListControl::CreateItems(s
 
 const std::shared_ptr<ListControl::Item> ListControl::CreateItem(std::size_t index) const {
 
-    auto new_item = GetItemSource()->CreateItem(index);
+    const auto& item_source = GetItemSource();
+
+    auto new_item = item_source->CreateItem(index);
     if (new_item == nullptr) {
         new_item = Create<Item>();
     }
+
+    item_source->LoadItem(index, new_item);
 
     auto position_and_height = item_height_manager_->GetItemPositionAndHeight(index);
     Rect item_rect;
@@ -671,19 +695,37 @@ void ListControl::ChangeSelection(std::size_t index, std::size_t count, bool is_
 
 void ListControl::SelectItemAtIndex(std::size_t index) {
 
-    if ((index < GetItemCount()) && ! IsItemSelectedAtIndex(index)) {
-        AddSelection(index, 1);
-        NotifySelectionChange();
+    if ((index >= GetItemCount()) || IsItemSelectedAtIndex(index)) {
+        return;
     }
+
+    switch (GetSelectionMode()) {
+
+        case SelectionMode::Single:
+            ReplaceSelection(index, 1);
+            break;
+
+        case SelectionMode::SimpleMultiple:
+        case SelectionMode::ExtendedMultiple:
+            AddSelection(index, 1);
+            break;
+
+        default:
+            return;
+    }
+
+    NotifySelectionChange();
 }
 
 
 void ListControl::UnselectItemAtIndex(std::size_t index) {
 
-    if ((index < GetItemCount()) && IsItemSelectedAtIndex(index)) {
-        RemoveSelection(index, 1);
-        NotifySelectionChange();
+    if ((index >= GetItemCount()) || ! IsItemSelectedAtIndex(index)) {
+        return;
     }
+
+    RemoveSelection(index, 1);
+    NotifySelectionChange();
 }
 
 
@@ -761,6 +803,21 @@ void ListControl::ScrollToItemAtIndex(std::size_t index) {
 }
 
 
+std::size_t ListControl::FindItemIndexAtPosition(const Point& position) const {
+
+    if (position.x < 0 || position.x > GetSize().width) {
+        return InvalidIndex;
+    }
+
+    auto index_and_count = item_height_manager_->GetItemIndexAndCount(position.y, position.y);
+    if (index_and_count.second == 0) {
+        return InvalidIndex;
+    }
+
+    return index_and_count.first;
+}
+
+
 void ListControl::Item::Initialize() {
 
     __super::Initialize();
@@ -783,7 +840,7 @@ void ListControl::Item::Initialize() {
             return Color::White;
         }
         else {
-            return Color::Black;
+            return Color::FromRGB(internal::ControlNormalTextColorRGB);
         }
     });
 }
@@ -798,6 +855,7 @@ void ListControl::ItemContainer::Initialize() {
 
     __super::Initialize();
 
+    SetBackgroundColor(Color::White);
     SetCanFocused(true);
     SetLayouter(std::bind(&ItemContainer::LayoutItems, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
@@ -828,6 +886,7 @@ void ListControl::ItemContainer::MouseDown(const Point& position, const MouseMes
     SetIsFocused(true);
 
     if (message.GetMouseButton() != MouseButton::Left) {
+        __super::MouseDown(position, message);
         return;
     }
 
@@ -841,12 +900,16 @@ void ListControl::ItemContainer::MouseMove(const Point& position, const MouseMes
     if (IsCapturingMouse()) {
         select_strategy_->ChangeSelectionByMouseMove(position, message);
     }
+    else {
+        __super::MouseMove(position, message);
+    }
 }
 
 
 void ListControl::ItemContainer::MouseUp(const Point& position, const MouseMessage& message) {
 
     if (message.GetMouseButton() != MouseButton::Left) {
+        __super::MouseUp(position, message);
         return;
     }
 
