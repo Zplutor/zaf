@@ -407,8 +407,10 @@ void Window::Repaint() {
 
 void Window::NeedRepaintRect(const Rect& rect) {
 
-    RECT win32_rect = MakeClearEdgeRectForFill(rect, ClearEdgeOption::Clear).ToRECT();
-    InvalidateRect(handle_, &win32_rect, FALSE);
+    if (handle_ != nullptr) {
+        RECT win32_rect = MakeClearEdgeRectForFill(rect, ClearEdgeOption::Clear).ToRECT();
+        InvalidateRect(handle_, &win32_rect, FALSE);
+    }
 }
 
 
@@ -595,17 +597,6 @@ void Window::ReleaseMouseWithControl(const std::shared_ptr<Control>& control) {
     //ReleaseCapture sends a WM_CAPTURECAHNGED message to the window, 
     //in which message handler will set capturing_mouse_control_ to nullptr.
     ReleaseCapture();
-
-    //Check it again for insurance.
-    if (capturing_mouse_control_ != nullptr) {
-
-        auto previous_control = capturing_mouse_control_;
-
-        capturing_mouse_control_->IsCapturingMouseChanged(false);
-        capturing_mouse_control_ = nullptr;
-
-        CapturingMouseControlChange(previous_control);
-    }
 }
 
 

@@ -19,6 +19,7 @@
     <ClCompile Include="src\zaf\control\clickable_control.cpp" />
     <ClCompile Include="src\zaf\control\combo_box.cpp" />
     <ClCompile Include="src\zaf\control\control.cpp" />
+    <ClCompile Include="src\zaf\control\internal\combo_box_drop_down_window.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control_extended_multiple_select_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control_item_height_manager.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control_item_selection_manager.cpp" />
@@ -83,6 +84,7 @@
     <ClInclude Include="src\zaf\control\color_picker.h" />
     <ClInclude Include="src\zaf\control\combo_box.h" />
     <ClInclude Include="src\zaf\control\control.h" />
+    <ClInclude Include="src\zaf\control\internal\combo_box_drop_down_window.h" />
     <ClInclude Include="src\zaf\control\internal\list_control_extended_multiple_select_strategy.h" />
     <ClInclude Include="src\zaf\control\internal\list_control_item_height_manager.h" />
     <ClInclude Include="src\zaf\control\internal\list_control_item_selection_manager.h" />

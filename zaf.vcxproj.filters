@@ -183,6 +183,9 @@
     <ClCompile Include="src\zaf\control\internal\list_control_extended_multiple_select_strategy.cpp">
       <Filter>zaf\control\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\combo_box_drop_down_window.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -468,6 +471,9 @@
       <Filter>zaf\control\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\list_control_extended_multiple_select_strategy.h">
+      <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\combo_box_drop_down_window.h">
       <Filter>zaf\control\internal</Filter>
     </ClInclude>
   </ItemGroup>
