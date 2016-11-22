@@ -124,6 +124,10 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 
 	__super::Repaint(canvas, dirty_rect);
 
+    if (! IsVisible()) {
+        return;
+    }
+
 	if (text_service_ == nullptr) {
 		return;
 	}
