@@ -20,7 +20,15 @@ void ComboBoxDropDownWindow::Initialize() {
 
 
 void ComboBoxDropDownWindow::WindowShow() {
+
+    __super::WindowShow();
     container_->CaptureMouse();
+}
+
+
+void ComboBoxDropDownWindow::WindowDestroy(HWND handle) {
+
+    __super::WindowDestroy(handle);
 }
 
 
@@ -49,12 +57,42 @@ void ComboBoxDropDownWindow::SetListControl(const std::shared_ptr<ListControl>& 
 }
 
 
+void ComboBoxDropDownWindow::Container::MouseCapture() {
+
+    //Richedit calls SetCursor with NULL to hide the cursor when typing,
+    //and the cursor would not be recovered when moving the mouse, because 
+    //a capturing window doesn't receive WM_SETCURSOR. So we recover the 
+    //cursor by ourself.
+
+    CURSORINFO cursor_info = { 0 };
+    cursor_info.cbSize = sizeof(cursor_info);
+    BOOL is_succeeded = GetCursorInfo(&cursor_info);
+    if (is_succeeded) {
+        originally_cursor_ = cursor_info.hCursor;
+    }
+}
+
+
+void ComboBoxDropDownWindow::Container::MouseRelease() {
+    originally_cursor_ = nullptr;
+}
+
+
+void ComboBoxDropDownWindow::Container::MouseMove(const Point& position, const MouseMessage& message) {
+
+    if (originally_cursor_ != nullptr) {
+        SetCursor(originally_cursor_);
+    }
+}
+
+
 void ComboBoxDropDownWindow::Container::MouseUp(const Point& position, const MouseMessage& message) {
 
     if (!GetRect().Contain(position)) {
         ReleaseMouse();
     }
 }
+
 
 }
 }

@@ -16,13 +16,20 @@ public:
     void SetListControl(const std::shared_ptr<ListControl>& list_control);
 
 protected:
-    void WindowShow();
+    void WindowShow() override;
+    void WindowDestroy(HWND handle) override;
     void CapturingMouseControlChange(const std::shared_ptr<Control>& previous_control);
 
 private:
     class Container : public Control {
     protected:
+        void MouseCapture() override;
+        void MouseRelease() override;
+        void MouseMove(const Point& position, const MouseMessage& message) override;
         void MouseUp(const Point& position, const MouseMessage& message) override;
+
+    private:
+        HCURSOR originally_cursor_ = nullptr;
     };
 
 private:

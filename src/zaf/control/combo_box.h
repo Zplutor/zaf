@@ -2,14 +2,13 @@
 
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/list_box.h>
+#include <zaf/control/text_box.h>
 
 namespace zaf {
 
 namespace internal {
 class ComboBoxDropDownWindow;
 }
-
-class TextBox;
 
 class ComboBox : public ClickableControl {
 public:
@@ -29,6 +28,11 @@ public:
 
     private:
         std::function<void(const Point&)> mouse_move_callback_;
+    };
+
+    class EditTextBox : public TextBox {
+    public:
+        bool KeyDown(const KeyMessage& message) override;
     };
 
     typedef Event<const std::shared_ptr<ComboBox>&> SelectionChangeEvent;
@@ -70,20 +74,23 @@ public:
 
     void SetDropDownListBox(const std::shared_ptr<DropDownListBox>& list_box);
 
-    const std::shared_ptr<TextBox>& GetEditTextBox() const {
+    const std::shared_ptr<EditTextBox>& GetEditTextBox() const {
         return edit_text_box_;
     }
 
-    void SetEditTextBox(const std::shared_ptr<TextBox>& text_box);
+    void SetEditTextBox(const std::shared_ptr<EditTextBox>& text_box);
 
 protected:
+    void Layout(const Rect&) override;
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     const Rect GetTextRect() const override;
 
     void MouseClick() override;
     bool KeyDown(const KeyMessage& message) override;
+    void FocusGain() override;
 
-    virtual void DropDownListBoxChange(const std::shared_ptr<ListControl>& previous_drop_down_list_control) { }
+    virtual void DropDownListBoxChange(const std::shared_ptr<DropDownListBox>& previous_drop_down_list_box) { }
+    virtual void EditTextBoxChange(const std::shared_ptr<TextBox>& previous_edit_text_box) { }
 
 private:
     enum class SelectionChangeAction {
@@ -92,32 +99,47 @@ private:
         Nothing,
     };
 
-    class SelectionChangeActionGuard {
+    enum class TextChangeAction {
+        UnselectDropDownItem,
+        Nothing,
+    };
+
+    template<typename ActionType>
+    class ActionGuard {
     public:
-        SelectionChangeActionGuard(SelectionChangeAction* action) : action_(action) {
+        ActionGuard(ActionType* action, ActionType default_action) : 
+            action_(action),
+            default_action_(default_action) {
         
         }
 
-        SelectionChangeActionGuard(SelectionChangeActionGuard&& rhs) : action_(rhs.action_) {
+        ActionGuard(ActionGuard&& rhs) :
+            action_(rhs.action_),
+            default_action_(rhs.default_action_) {
             rhs.action_ = nullptr;
         }
 
-        ~SelectionChangeActionGuard() { 
+        ~ActionGuard() {
             if (action_ != nullptr) {
-                *action_ = SelectionChangeAction::CloseDropDownWindow;
+                *action_ = default_action_;
             }
         }
 
-        SelectionChangeActionGuard(const SelectionChangeActionGuard&) = delete;
-        SelectionChangeActionGuard& operator=(const SelectionChangeActionGuard&) = delete;
+        ActionGuard(const ActionGuard&) = delete;
+        ActionGuard& operator=(const ActionGuard&) = delete;
 
     private:
-        SelectionChangeAction* action_;
+        ActionType* action_;
+        ActionType default_action_;
     };
 
 private:
     void InitializeDropDownListBox();
     void UninitializeDropDownListBox();
+
+    void InitializeEditTextBox();
+    void UninitializeEditTextBox();
+
     void PopupDropDownWindow();
     float CalculateDropDownListHeight(std::size_t visible_item_count);
 
@@ -127,13 +149,18 @@ private:
     void DropDownListBoxSelectionChange();
     void NotifySelectionChange();
 
-    SelectionChangeActionGuard SetSelectionChangeAction(SelectionChangeAction action);
+    void EnterKeyDown();
+    void EditTextBoxTextChange();
+
+    ActionGuard<SelectionChangeAction> SetSelectionChangeAction(SelectionChangeAction action);
+    ActionGuard<TextChangeAction> SetTextChangeAction(TextChangeAction action);
 
 private:
-    std::shared_ptr<TextBox> edit_text_box_;
+    std::shared_ptr<EditTextBox> edit_text_box_;
     std::shared_ptr<internal::ComboBoxDropDownWindow> drop_down_window_;
     std::shared_ptr<DropDownListBox> drop_down_list_box_;
     SelectionChangeAction selection_change_action_;
+    TextChangeAction text_change_action_;
 };
 
 }
