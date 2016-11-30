@@ -124,6 +124,13 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
   
     Rect background_rect = border_rect;
     background_rect.Inflate(-GetBorderThickness());
+    //The with and height muse be greater than 0.
+    if (background_rect.size.width < 0) {
+        background_rect.size.width = 0;
+    }
+    if (background_rect.size.height < 0) {
+        background_rect.size.height = 0;
+    }
     canvas.SetBrushWithColor(GetBackgroundColor());
     canvas.DrawRectangle(background_rect);
 
