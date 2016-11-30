@@ -545,14 +545,14 @@ void Window::SetHoveredControl(const std::shared_ptr<Control>& hovered_control) 
 
         //Window finds the hovered control when received WM_MOUSEMOVE,
         //but WM_SETCURSOR is always received before WM_MOUSEMOVE, in such
-        //case the hovered control cannot change the cursor promptly.
-        //So here, a simulated WM_SETCURSOR is sent to the newly hovered control
-        //to give it a change to change the cursor immediately.
-        Message message;
-        message.id = WM_SETCURSOR;
-        message.hwnd = GetHandle();
-        bool is_changed = false;
-        hovered_control_->ChangeMouseCursor(message, is_changed);
+        //case the hovered control cannot change the cursor promptly. So 
+        //here, a simulated WM_SETCURSOR is posted to give a change to 
+        //change the cursor immediately.
+        PostMessage(
+            GetHandle(),
+            WM_SETCURSOR,
+            reinterpret_cast<WPARAM>(GetHandle()),
+            MAKELPARAM(HTCLIENT, WM_MOUSEMOVE));
 
 		hovered_control_->IsHoveredChanged(true);
 	}
