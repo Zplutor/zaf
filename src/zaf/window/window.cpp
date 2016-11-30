@@ -542,6 +542,18 @@ void Window::SetHoveredControl(const std::shared_ptr<Control>& hovered_control) 
 	hovered_control_ = hovered_control;
 
 	if (hovered_control_ != nullptr) {
+
+        //Window finds the hovered control when received WM_MOUSEMOVE,
+        //but WM_SETCURSOR is always received before WM_MOUSEMOVE, in such
+        //case the hovered control cannot change the cursor promptly.
+        //So here, a simulated WM_SETCURSOR is sent to the newly hovered control
+        //to give it a change to change the cursor immediately.
+        Message message;
+        message.id = WM_SETCURSOR;
+        message.hwnd = GetHandle();
+        bool is_changed = false;
+        hovered_control_->ChangeMouseCursor(message, is_changed);
+
 		hovered_control_->IsHoveredChanged(true);
 	}
 }
