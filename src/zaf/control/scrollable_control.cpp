@@ -413,6 +413,11 @@ void ScrollableControl::SetScrollBarThickness(float thickness) {
 
 void ScrollableControl::SetScrollContentSize(const Size& size) {
 
+    if ((expected_scroll_content_size_.width == size.width) &&
+        (expected_scroll_content_size_.height == size.height)) {
+        return;
+    }
+
     expected_scroll_content_size_ = size;
     NeedRelayout();
 }
