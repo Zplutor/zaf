@@ -282,10 +282,20 @@ public:
 	 */
 	void AddChild(const std::shared_ptr<Control>& child);
 
+    /**
+     Add specified children to the control.
+     */
+    void AddChildren(const std::vector<std::shared_ptr<Control>>& children);
+
 	/**
 	 Remoe specified child from the control.
 	 */
 	void RemoveChild(const std::shared_ptr<Control>& child);
+
+    /**
+     Remove all children from the control.
+     */
+    void RemoveAllChildren();
 
     const std::shared_ptr<Control> FindChildAtPosition(const Point& position) const;
 

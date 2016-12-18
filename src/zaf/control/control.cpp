@@ -425,6 +425,15 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
 }
 
 
+void Control::AddChildren(const std::vector<std::shared_ptr<Control>>& children) {
+
+    UpdateGuard update_guard(*this);
+    for (const auto& each_child : children) {
+        AddChild(each_child);
+    }
+}
+
+
 void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 
 	auto current_parent = child->GetParent();
@@ -438,6 +447,17 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 
     NeedRelayout();
 	NeedRepaintRect(child->GetRect());
+}
+
+
+void Control::RemoveAllChildren() {
+
+    for (const auto& each_child : children_) {
+        each_child->SetParent(nullptr);
+    }
+
+    children_.clear();
+    NeedRepaint();
 }
 
 
