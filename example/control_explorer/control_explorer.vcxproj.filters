@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{25497b4c-b431-4531-b413-a63cd9fe3b16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\control">
+      <UniqueIdentifier>{50f18a7d-7788-45e3-ac92-198edae02355}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\control\label">
+      <UniqueIdentifier>{a2332576-faac-4a14-a798-1e5bd77ba47d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\control\button">
+      <UniqueIdentifier>{9bb7ffef-6646-4355-8d02-2f9478864092}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\control\check_box">
+      <UniqueIdentifier>{3c89a6fd-6f8b-40f2-80c2-032101fc7305}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\control\radio_button">
+      <UniqueIdentifier>{d5a77e71-5d15-48a6-b5fe-e83f25fd928c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main_window.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\control_operate_panel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\control_view_panel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\control_explore_manager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\control\label\label_explore_manager.cpp">
+      <Filter>src\control\label</Filter>
+    </ClCompile>
+    <ClCompile Include="src\control\control_operate_panels_creator.cpp">
+      <Filter>src\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\control\textual_control_operate_panels_creator.cpp">
+      <Filter>src\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\control\button\button_explore_manager.cpp">
+      <Filter>src\control\button</Filter>
+    </ClCompile>
+    <ClCompile Include="src\control\check_box\check_box_explore_manager.cpp">
+      <Filter>src\control\check_box</Filter>
+    </ClCompile>
+    <ClCompile Include="src\control\radio_button\radio_button_explore_manager.cpp">
+      <Filter>src\control\radio_button</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\main_window.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control_operate_panel.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control_view_panel.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control_explore_manager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\label\label_explore_manager.h">
+      <Filter>src\control\label</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\control_operate_panels_creator.h">
+      <Filter>src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\textual_control_operate_panels_creator.h">
+      <Filter>src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\common.h">
+      <Filter>src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\button\button_explore_manager.h">
+      <Filter>src\control\button</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\check_box\check_box_explore_manager.h">
+      <Filter>src\control\check_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\radio_button\radio_button_explore_manager.h">
+      <Filter>src\control\radio_button</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
