@@ -34,6 +34,7 @@
     <ClCompile Include="src\zaf\control\radio_button.cpp" />
     <ClCompile Include="src\zaf\control\scrollable_control.cpp" />
     <ClCompile Include="src\zaf\control\scroll_bar.cpp" />
+    <ClCompile Include="src\zaf\control\split_control.cpp" />
     <ClCompile Include="src\zaf\control\textual_control.cpp" />
     <ClCompile Include="src\zaf\control\text_box.cpp" />
     <ClCompile Include="src\zaf\control\text_validator.cpp" />
@@ -101,6 +102,7 @@
     <ClInclude Include="src\zaf\control\scrollable_control.h" />
     <ClInclude Include="src\zaf\control\self_scrolling_control.h" />
     <ClInclude Include="src\zaf\control\scroll_bar.h" />
+    <ClInclude Include="src\zaf\control\split_control.h" />
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />
     <ClInclude Include="src\zaf\control\text_validator.h" />

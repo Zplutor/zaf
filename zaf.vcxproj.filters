@@ -186,6 +186,9 @@
     <ClCompile Include="src\zaf\control\internal\combo_box_drop_down_window.cpp">
       <Filter>zaf\control\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\split_control.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -475,6 +478,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\combo_box_drop_down_window.h">
       <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\split_control.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

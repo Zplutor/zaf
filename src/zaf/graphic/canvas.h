@@ -75,8 +75,8 @@ public:
 	void DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
 		auto state = GetCurrentState();
 		renderer_->DrawLine(
-			from_point, 
-			to_point, 
+            MakeClearEdgePointForLine(from_point, stroke_width, state->clear_edge_option),
+			MakeClearEdgePointForLine(to_point, stroke_width, state->clear_edge_option), 
 			state->brush, 
 			stroke_width,
 			state->stroke
