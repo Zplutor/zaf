@@ -482,5 +482,8 @@
     <ClInclude Include="src\zaf\control\split_control.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\relation_operator.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

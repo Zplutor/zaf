@@ -72,6 +72,7 @@
     <ClInclude Include="src\zaf\base\log.h" />
     <ClInclude Include="src\zaf\base\nullable.h" />
     <ClInclude Include="src\zaf\base\property_map.h" />
+    <ClInclude Include="src\zaf\base\relation_operator.h" />
     <ClInclude Include="src\zaf\base\string\to_numeric.h" />
     <ClInclude Include="src\zaf\base\string\to_string.h" />
     <ClInclude Include="src\zaf\base\timer.h" />

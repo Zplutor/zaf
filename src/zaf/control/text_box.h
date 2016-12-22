@@ -369,6 +369,7 @@ private:
 
 private:
 	void InitializeTextService();
+    void ReviseTextColor();
     float GetPaintContentOffset(HDC hdc);
     void ResetRequiredHeight();
 	const Rect GetAbsoluteContentRect() const;
@@ -390,6 +391,7 @@ private:
 	PARAFORMAT paragraph_format_;
     DWORD scroll_bar_property_;
     float required_height_;
+    Color text_color_;
 };
 
 }

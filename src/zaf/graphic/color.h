@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <zaf/base/direct2d.h>
+#include <zaf/base/relation_operator.h>
 
 namespace zaf {
 
@@ -144,6 +145,15 @@ public:
 		return color;
 	}
 
+    /**
+     Convert to COLORREF value.
+
+     Note that the alpha component of the color will be discarded in COLORREF.
+     */
+    COLORREF ToCOLORREF() const {
+        return RGB(r * 255, g * 255, b * 255);
+    }
+
 public:
 	/**
 	 Red component of the color.
@@ -165,5 +175,35 @@ public:
 	 */
 	float a;
 };
+
+
+inline bool operator==(const Color& color1, const Color& color2) {
+    return 
+        (color1.a == color2.a) &&
+        (color1.r == color2.r) &&
+        (color1.g == color2.g) &&
+        (color1.b == color2.b);
+}
+
+
+inline bool operator<(const Color& color1, const Color& color2) {
+    
+    if (color1.a < color2.a) {
+        return true;
+    }
+
+    if (color1.r < color2.r) {
+        return true;
+    }
+
+    if (color1.g < color2.g) {
+        return true;
+    }
+
+    return color1.b < color2.b;
+}
+
+
+ZAF_ENABLE_RELATION_OPERATOR(Color);
 
 }

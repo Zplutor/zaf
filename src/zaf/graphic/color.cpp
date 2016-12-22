@@ -14,5 +14,4 @@ const Color Color::Transparent = Color(0, 0, 0, 0);
 const Color Color::White = Color(1, 1, 1);
 const Color Color::Yellow = Color(1, 1, 0);
 
-	
 }

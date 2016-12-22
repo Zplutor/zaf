@@ -53,7 +53,8 @@ TextBox::TextBox() :
 	character_format_(),
 	paragraph_format_(),
     scroll_bar_property_(kDefaultScrollBarProperty),
-    required_height_(0) {
+    required_height_(0),
+    text_color_(Color::Black) {
 
 	character_format_.cbSize = sizeof(character_format_);
 	paragraph_format_.cbSize = sizeof(paragraph_format_);
@@ -90,6 +91,16 @@ void TextBox::Initialize() {
         }
 
         return Color::White;
+    });
+
+    SetTextColorPicker([](const Control& control) {
+        
+        if (control.IsEnabled()) {
+            return Color::Black;
+        }
+        else {
+            return Color::Gray;
+        }
     });
 
 	InitializeTextService();
@@ -134,6 +145,10 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 		return;
 	}
 
+    //If text color got from text color picker has been changed, set it to CHARFORMAT 
+    //before painting.
+    ReviseTextColor();
+
 	auto render_target = canvas.GetRenderer()->GetHandle();
 	CComPtr<ID2D1GdiInteropRenderTarget> gdi_interop_render_target;
 	render_target->QueryInterface(IID_ID2D1GdiInteropRenderTarget, reinterpret_cast<void**>(&gdi_interop_render_target));
@@ -174,6 +189,23 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 		0);
 
 	gdi_interop_render_target->ReleaseDC(nullptr);
+}
+
+
+void TextBox::ReviseTextColor() {
+
+    auto text_color = GetTextColor();
+    if (text_color_ != text_color) {
+
+        text_color_ = text_color;
+
+        character_format_.dwMask |= CFM_COLOR;
+        character_format_.crTextColor = text_color_.ToCOLORREF();
+
+        if (text_service_ != nullptr) {
+            text_service_->OnTxPropertyBitsChange(TXTBIT_CHARFORMATCHANGE, TXTBIT_CHARFORMATCHANGE);
+        }
+    }
 }
 
 
