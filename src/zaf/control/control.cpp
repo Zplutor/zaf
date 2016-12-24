@@ -405,8 +405,12 @@ void Control::SetParent(const std::shared_ptr<Control>& parent) {
 
 void Control::AddChild(const std::shared_ptr<Control>& child) {
 
-	auto previous_parent = child->GetParent();
+    if (child.get() == this) {
+        ZAF_FAIL();
+        return;
+    }
 
+	auto previous_parent = child->GetParent();
 	if (previous_parent.get() == this) {
 		//Already added
 		return;
