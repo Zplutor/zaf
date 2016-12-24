@@ -82,10 +82,12 @@
   <ItemGroup>
     <ClCompile Include="src\control\button\button_explore_manager.cpp" />
     <ClCompile Include="src\control\check_box\check_box_explore_manager.cpp" />
+    <ClCompile Include="src\control\common.cpp" />
     <ClCompile Include="src\control\control_operate_panels_creator.cpp" />
     <ClCompile Include="src\control\label\label_explore_manager.cpp" />
     <ClCompile Include="src\control\radio_button\radio_button_explore_manager.cpp" />
     <ClCompile Include="src\control\textual_control_operate_panels_creator.cpp" />
+    <ClCompile Include="src\control\text_box\text_box_explore_manager.cpp" />
     <ClCompile Include="src\control_explore_manager.cpp" />
     <ClCompile Include="src\control_operate_panel.cpp" />
     <ClCompile Include="src\control_view_panel.cpp" />
@@ -100,6 +102,7 @@
     <ClInclude Include="src\control\label\label_explore_manager.h" />
     <ClInclude Include="src\control\radio_button\radio_button_explore_manager.h" />
     <ClInclude Include="src\control\textual_control_operate_panels_creator.h" />
+    <ClInclude Include="src\control\text_box\text_box_explore_manager.h" />
     <ClInclude Include="src\control_explore_manager.h" />
     <ClInclude Include="src\control_operate_panel.h" />
     <ClInclude Include="src\control_view_panel.h" />

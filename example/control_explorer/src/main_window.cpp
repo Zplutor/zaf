@@ -7,6 +7,7 @@
 #include "control/check_box/check_box_explore_manager.h"
 #include "control/label/label_explore_manager.h"
 #include "control/radio_button/radio_button_explore_manager.h"
+#include "control/text_box/text_box_explore_manager.h"
 
 static const struct {
     const wchar_t* name;
@@ -16,6 +17,7 @@ static const struct {
     L"CheckBox", []() { return std::make_shared<CheckBoxExploreManager>(); },
     L"Label", []() { return std::make_shared<LabelExploreManager>(); },
     L"RadioButton", []() { return std::make_shared<RadioButtonExploreManager>(); },
+    L"TextBox", []() { return std::make_shared<TextBoxExploreManager>(); },
 };
 
 static std::shared_ptr<ControlExploreManager> CreateControlExploreManager(const std::wstring& control_name);
