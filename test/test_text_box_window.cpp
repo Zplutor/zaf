@@ -43,7 +43,7 @@ private:
 
 		auto text_label = Create<Label>();
 		text_label->SetText(text_box_->GetText());
-		text_box_->GetTextChangeEvent().AddListener([text_label](const std::shared_ptr<TextBox>& text_box) {
+		text_box_->GetTextChangeEvent().AddListener([text_label](const std::shared_ptr<TextualControl>& text_box) {
 			text_label->SetText(text_box->GetText());
 		});
 		text_box_container_->AddChild(text_label);
@@ -116,7 +116,8 @@ private:
 
 		auto password_char_text_box = Create<TextBox>();
 		password_char_text_box->SetMaximumLength(1);
-		password_char_text_box->GetTextChangeEvent().AddListener([this](const std::shared_ptr<TextBox>& password_char_text_box) {
+		password_char_text_box->GetTextChangeEvent().AddListener([this](const std::shared_ptr<TextualControl>& textual_control) {
+            auto password_char_text_box = std::dynamic_pointer_cast<TextBox>(textual_control);
 			auto text = password_char_text_box->GetText();
 			if (! text.empty()) {
 				text_box_->SetPasswordCharacter(text[0]);
@@ -453,7 +454,8 @@ private:
         can_redo_check_box->SetIsChecked(text_box_->CanRedo());
         container->AddChild(can_redo_check_box);
 
-        text_box_->GetTextChangeEvent().AddListener([can_undo_check_box, can_redo_check_box](const std::shared_ptr<TextBox>& text_box) {
+        text_box_->GetTextChangeEvent().AddListener([can_undo_check_box, can_redo_check_box](const std::shared_ptr<TextualControl>& textual_control) {
+            auto text_box = std::dynamic_pointer_cast<TextBox>(textual_control);
             can_undo_check_box->SetIsChecked(text_box->CanUndo());
             can_redo_check_box->SetIsChecked(text_box->CanRedo());
         });

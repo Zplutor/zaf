@@ -1,5 +1,6 @@
 #include <zaf/control/textual_control.h>
 #include <zaf/application.h>
+#include <zaf/base/event_utility.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/font/font.h>
@@ -13,6 +14,7 @@ namespace zaf {
 static const wchar_t* const kFontPropertyName = L"Font";
 static const wchar_t* const kParagraphAlignmentPropertyName = L"ParagraphAlignment";
 static const wchar_t* const kTextAlignmentPropertyName = L"TextAlignment";
+static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
 static const wchar_t* const kTextColorPickerPropertyName = L"TextColorPicker";
 static const wchar_t* const kTextPropertyName = L"Text";
 static const wchar_t* const kWordWrappingPropertyName = L"WordWrapping";
@@ -67,6 +69,7 @@ void TextualControl::SetText(const std::wstring& text) {
 
     GetPropertyMap().SetProperty(kTextPropertyName, text);
     NeedRepaint();
+    NotifyTextChange();
 }
 
 
@@ -168,6 +171,11 @@ void TextualControl::SetWordWrapping(WordWrapping word_wrapping) {
 }
 
 
+TextualControl::TextChangeEvent::Proxy TextualControl::GetTextChangeEvent() {
+    return GetEventProxyFromPropertyMap<TextChangeEvent>(GetPropertyMap(), kTextChangeEventPropertyName);
+}
+
+
 std::shared_ptr<TextFormat> TextualControl::CreateTextFormat() const {
 
     auto font = GetFont();
@@ -202,6 +210,15 @@ std::shared_ptr<TextLayout> TextualControl::CreateTextLayout(const Size& layout_
     text_layout_properties.width = layout_size.width;
     text_layout_properties.height = layout_size.height;
     return GetResourceFactory()->CreateTextLayout(text_layout_properties);
+}
+
+
+void TextualControl::NotifyTextChange() {
+
+    auto event = TryGetEventFromPropertyMap<TextChangeEvent>(GetPropertyMap(), kTextChangeEventPropertyName);
+    if (event != nullptr) {
+        event->Trigger(std::dynamic_pointer_cast<TextualControl>(shared_from_this()));
+    }
 }
 
 

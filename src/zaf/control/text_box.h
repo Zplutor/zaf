@@ -18,11 +18,6 @@ namespace zaf {
 class TextBox : public TextualControl, public SelfScrollingControl {
 public:
     /**
-     Type of text change event.
-     */
-	typedef Event<const std::shared_ptr<TextBox>&> TextChangeEvent;
-
-    /**
      Type of selection change event.
      */
 	typedef Event<const std::shared_ptr<TextBox>&> SelectionChangeEvent;
@@ -176,13 +171,6 @@ public:
 
     void GetVerticalScrollValues(int& current_value, int& min_value, int& max_value) override;
     void GetHorizontalScrollValues(int& current_value, int& min_value, int& max_value) override;
-
-    /**
-     Get text change event.
-
-     This event is raised when the text is changed.
-     */
-	TextChangeEvent::Proxy GetTextChangeEvent();
 
     /**
      Get selection change event.

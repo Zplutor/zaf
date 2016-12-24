@@ -39,7 +39,6 @@ static const wchar_t* const kPasswordCharacterPropertyName = L"PasswordCharacter
 static const wchar_t* const kScrollBarChangeEventPropertyName = L"ScrollBarChangeEvent";
 static const wchar_t* const kScrollValuesChangeEventPropertyName = L"ScrollValuesChangeEvent";
 static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
-static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
 static const wchar_t* const kTextValidatorPropertyName = L"TextValidator";
 
 static const DWORD kDefaultPropertyBits = TXTBIT_ALLOWBEEP;
@@ -659,11 +658,6 @@ void TextBox::GetScrollValues(bool is_horizontal, int& current_value, int& min_v
             max_value = max - page;
         }
     }
-}
-
-
-TextBox::TextChangeEvent::Proxy TextBox::GetTextChangeEvent() {
-    return GetEventProxyFromPropertyMap<TextChangeEvent>(GetPropertyMap(), kTextChangeEventPropertyName);
 }
 
 
@@ -1359,13 +1353,7 @@ HRESULT TextBox::TextHostBridge::TxNotify(DWORD iNotify, void *pv) {
 	switch (iNotify) {
 
 		case EN_CHANGE: {
-            auto event = TryGetEventFromPropertyMap<TextBox::TextChangeEvent>(
-                text_box->GetPropertyMap(),
-                kTextChangeEventPropertyName
-            );
-			if (event != nullptr) {
-				event->Trigger(text_box);
-			}
+            text_box->NotifyTextChange();
             return S_OK;
 		}
 

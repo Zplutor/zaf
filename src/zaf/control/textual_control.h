@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/base/event.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
@@ -17,6 +18,12 @@ class TextLayout;
  This is the base class of all controls that can display text.
  */
 class TextualControl : public Control {
+public:
+    /**
+     Type of text change event.
+     */
+    typedef Event<const std::shared_ptr<TextualControl>&> TextChangeEvent;
+
 public:
     TextualControl();
     ~TextualControl();
@@ -103,12 +110,27 @@ public:
      */
     virtual void SetWordWrapping(WordWrapping word_wrapping);
 
+    /**
+     Get text change event.
+
+     This event is raised when the text is changed.
+     */
+    TextChangeEvent::Proxy GetTextChangeEvent();
+
 protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     virtual const Rect GetTextRect() const;
 
     std::shared_ptr<TextFormat> CreateTextFormat() const;
     std::shared_ptr<TextLayout> CreateTextLayout(const Size& layout_size) const;
+
+    /**
+     Raise the text change event.
+
+     If a derived class overrides SetText method and implements its own text management, 
+     it should call this method after the text changed in order to raise text change event.
+     */
+    void NotifyTextChange();
 };
 
 }
