@@ -25,9 +25,7 @@ void CreateTextualControlOperatePanels(
 
 static std::shared_ptr<zaf::Control> CreateTextPanel(const std::shared_ptr<zaf::TextualControl>& textual_control) {
 
-    auto panel = zaf::Create<zaf::Control>();
-    panel->SetSize(zaf::Size(0, SingleLineOperatePanelHeight * 3));
-    panel->SetLayouter(zaf::GetHorizontalArrayLayouter());
+    auto panel = CreateOperateContainerPanel(3);
 
     auto text_label = zaf::Create<zaf::Label>();
     text_label->SetText(L"Text");
@@ -41,10 +39,14 @@ static std::shared_ptr<zaf::Control> CreateTextPanel(const std::shared_ptr<zaf::
 
     auto set_text_button = zaf::Create<zaf::Button>();
     set_text_button->SetText(L"Set");
-    set_text_button->GetClickEvent().AddListener([textual_control, input_text_box](const std::shared_ptr<zaf::ClickableControl>&) {
+    set_text_button->GetClickEvent().AddListener(std::bind([textual_control, input_text_box]() {
         textual_control->SetText(input_text_box->GetText());
-    });
+    }));
     panel->AddChild(set_text_button);
+
+    textual_control->GetTextChangeEvent().AddListener([input_text_box](const std::shared_ptr<zaf::TextualControl>& textual_control) {
+        input_text_box->SetText(textual_control->GetText());
+    });
 
     return panel;
 }

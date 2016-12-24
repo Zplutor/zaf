@@ -67,6 +67,10 @@ const std::wstring TextualControl::GetText() const {
 
 void TextualControl::SetText(const std::wstring& text) {
 
+    if (text == GetText()) {
+        return;
+    }
+
     GetPropertyMap().SetProperty(kTextPropertyName, text);
     NeedRepaint();
     NotifyTextChange();
