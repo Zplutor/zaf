@@ -1,30 +1,32 @@
 #include <gtest/gtest.h>
 #include <zaf/base/string/to_numeric.h>
 
-#define TEST_TONUMERIC_SUCCESS(type, cstr, radix, value) \
+#define TEST_TONUMERIC_SUCCESS(type, cstr, base, value)  \
 {                                                        \
 std::string str(cstr);                                   \
 std::wstring wstr(L##cstr);                              \
 type v;                                                  \
 bool r;                                                  \
-v = zaf::ToNumeric<type>(cstr, radix);                   \
+zaf::ToNumericOptions options;                           \
+options.Base(base);                                      \
+v = zaf::ToNumeric<type>(cstr, options);                 \
 ASSERT_EQ(value, v);                                     \
-v = zaf::ToNumeric<type>(L##cstr, radix);                \
+v = zaf::ToNumeric<type>(L##cstr, options);              \
 ASSERT_EQ(value, v);                                     \
-v = zaf::ToNumeric<type>(str, radix);                    \
+v = zaf::ToNumeric<type>(str, options);                  \
 ASSERT_EQ(value, v);                                     \
-v = zaf::ToNumeric<type>(wstr, radix);                   \
+v = zaf::ToNumeric<type>(wstr, options);                 \
 ASSERT_EQ(value, v);                                     \
-r = zaf::TryToNumeric(cstr, v, radix);                   \
+r = zaf::TryToNumeric(cstr, v, options);                 \
 ASSERT_EQ(true, r);                                      \
 ASSERT_EQ(value, v);                                     \
-r = zaf::TryToNumeric(L##cstr, v, radix);                \
+r = zaf::TryToNumeric(L##cstr, v, options);              \
 ASSERT_EQ(true, r);                                      \
 ASSERT_EQ(value, v);                                     \
-r = zaf::TryToNumeric(str, v, radix);                    \
+r = zaf::TryToNumeric(str, v, options);                  \
 ASSERT_EQ(true, r);                                      \
 ASSERT_EQ(value, v);                                     \
-r = zaf::TryToNumeric(wstr, v, radix);                   \
+r = zaf::TryToNumeric(wstr, v, options);                 \
 ASSERT_EQ(true, r);                                      \
 ASSERT_EQ(value, v);                                     \
 }
@@ -35,59 +37,61 @@ TEST_TONUMERIC_SUCCESS(type, hex, 16, value)                        \
 TEST_TONUMERIC_SUCCESS(type, oct, 8, value)                         \
 TEST_TONUMERIC_SUCCESS(type, bin, 2, value)
 
-#define TEST_TONUMERIC_FAILURE(type, cstr, radix) \
+#define TEST_TONUMERIC_FAILURE(type, cstr, base)  \
 {                                                 \
 std::string str(cstr);                            \
 std::wstring wstr(L##cstr);                       \
 bool r;                                           \
+zaf::ToNumericOptions options;                    \
+options.Base(base);                               \
 type v = 1;                                       \
-v = zaf::ToNumeric<type>(cstr, radix);            \
+v = zaf::ToNumeric<type>(cstr, options);          \
 ASSERT_EQ(0, v);                                  \
 v = 1;                                            \
-v = zaf::ToNumeric<type>(L##cstr, radix);         \
+v = zaf::ToNumeric<type>(L##cstr, options);       \
 ASSERT_EQ(0, v);                                  \
 v = 1;                                            \
-v = zaf::ToNumeric<type>(str, radix);             \
+v = zaf::ToNumeric<type>(str, options);           \
 ASSERT_EQ(0, v);                                  \
 v = 1;                                            \
-v = zaf::ToNumeric<type>(wstr, radix);            \
+v = zaf::ToNumeric<type>(wstr, options);          \
 ASSERT_EQ(0, v);                                  \
 v = 1;                                            \
-r = zaf::TryToNumeric(cstr, v, radix);            \
+r = zaf::TryToNumeric(cstr, v, options);          \
 ASSERT_EQ(false, r);                              \
 ASSERT_EQ(1, v);                                  \
-r = zaf::TryToNumeric(L##cstr, v, radix);         \
+r = zaf::TryToNumeric(L##cstr, v, options);       \
 ASSERT_EQ(false, r);                              \
 ASSERT_EQ(1, v);                                  \
-r = zaf::TryToNumeric(str, v, radix);             \
+r = zaf::TryToNumeric(str, v, options);           \
 ASSERT_EQ(false, r);                              \
 ASSERT_EQ(1, v);                                  \
-r = zaf::TryToNumeric(wstr, v, radix);            \
+r = zaf::TryToNumeric(wstr, v, options);          \
 ASSERT_EQ(false, r);                              \
 ASSERT_EQ(1, v);                                  \
 }
 
-#define TEST_TONUMERIC_FAILURE_ALL_TYPES(cstr, radix)  \
-TEST_TONUMERIC_FAILURE(char, cstr, radix)              \
-TEST_TONUMERIC_FAILURE(signed char, cstr, radix)       \
-TEST_TONUMERIC_FAILURE(unsigned char, cstr, radix)     \
-TEST_TONUMERIC_FAILURE(wchar_t, cstr, radix)           \
-TEST_TONUMERIC_FAILURE(short, cstr, radix)             \
-TEST_TONUMERIC_FAILURE(unsigned short, cstr, radix)    \
-TEST_TONUMERIC_FAILURE(int, cstr, radix)               \
-TEST_TONUMERIC_FAILURE(unsigned int, cstr, radix)      \
-TEST_TONUMERIC_FAILURE(long, cstr, radix)              \
-TEST_TONUMERIC_FAILURE(unsigned long, cstr, radix)     \
-TEST_TONUMERIC_FAILURE(long long, cstr, radix)         \
-TEST_TONUMERIC_FAILURE(unsigned long long, cstr, radix)
+#define TEST_TONUMERIC_FAILURE_ALL_TYPES(cstr, base)  \
+TEST_TONUMERIC_FAILURE(char, cstr, base)              \
+TEST_TONUMERIC_FAILURE(signed char, cstr, base)       \
+TEST_TONUMERIC_FAILURE(unsigned char, cstr, base)     \
+TEST_TONUMERIC_FAILURE(wchar_t, cstr, base)           \
+TEST_TONUMERIC_FAILURE(short, cstr, base)             \
+TEST_TONUMERIC_FAILURE(unsigned short, cstr, base)    \
+TEST_TONUMERIC_FAILURE(int, cstr, base)               \
+TEST_TONUMERIC_FAILURE(unsigned int, cstr, base)      \
+TEST_TONUMERIC_FAILURE(long, cstr, base)              \
+TEST_TONUMERIC_FAILURE(unsigned long, cstr, base)     \
+TEST_TONUMERIC_FAILURE(long long, cstr, base)         \
+TEST_TONUMERIC_FAILURE(unsigned long long, cstr, base)
 
-#define TEST_TONUMERIC_FAILURE_ALL_RADIXES(type, dec, hex, oct, bin) \
+#define TEST_TONUMERIC_FAILURE_ALL_BASES(type, dec, hex, oct, bin)   \
 TEST_TONUMERIC_FAILURE(type, dec, 10)                                \
 TEST_TONUMERIC_FAILURE(type, hex, 16)                                \
 TEST_TONUMERIC_FAILURE(type, oct, 8)                                 \
 TEST_TONUMERIC_FAILURE(type, bin, 2)
 
-#define TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_RADIXES(cstr) \
+#define TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_BASES(cstr)   \
 TEST_TONUMERIC_FAILURE_ALL_TYPES(cstr, 10)                 \
 TEST_TONUMERIC_FAILURE_ALL_TYPES(cstr, 16)                 \
 TEST_TONUMERIC_FAILURE_ALL_TYPES(cstr, 8)                  \
@@ -195,14 +199,14 @@ TEST(ToNumeric, IntegerSuccess) {
 TEST(ToNumeric, IntegerFailure) {
 
 	//Incomplete string
-	TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_RADIXES("");
-	TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_RADIXES(" 10");
-	TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_RADIXES("\n10");
-	TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_RADIXES("\t10");
-	TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_RADIXES("\b10");
-	TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_RADIXES("10\n");
-	TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_RADIXES("10\t");
-	TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_RADIXES("10\b");
+    TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_BASES("");
+    TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_BASES(" 10");
+    TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_BASES("\n10");
+    TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_BASES("\t10");
+    TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_BASES("\b10");
+    TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_BASES("10\n");
+    TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_BASES("10\t");
+    TEST_TONUMERIC_FAILURE_ALL_TYPES_AND_BASES("10\b");
 
 	//Non-decimal with sign
 	TEST_TONUMERIC_FAILURE_ALL("", "-f", "-7", "-1");
@@ -220,27 +224,27 @@ TEST(ToNumeric, IntegerFailure) {
 	TEST_TONUMERIC_FAILURE(unsigned long long, "-9", 10);
 	
 	//large value to small type
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(char,          "128",  "100", "400", "100000000");
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(char,          "-129", "100", "400", "100000000");
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(signed char,   "128",  "100", "400", "100000000");
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(signed char,   "-129", "100", "400", "100000000");
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(unsigned char, "256",  "100", "400", "100000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(char,          "128",  "100", "400", "100000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(char,          "-129", "100", "400", "100000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(signed char,   "128",  "100", "400", "100000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(signed char,   "-129", "100", "400", "100000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(unsigned char, "256",  "100", "400", "100000000");
 
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(unsigned short, "65536",  "10000", "200000", "10000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(unsigned short, "65536",  "10000", "200000", "10000000000000000");
 
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(short,          "32768",  "10000", "200000", "10000000000000000");
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(short,          "-32769", "10000", "200000", "10000000000000000");
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(unsigned short, "65536",  "10000", "200000", "10000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(short,          "32768",  "10000", "200000", "10000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(short,          "-32769", "10000", "200000", "10000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(unsigned short, "65536",  "10000", "200000", "10000000000000000");
 
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(int,          "2147483648",  "100000000", "40000000000", "100000000000000000000000000000000");
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(int,          "-2147483649", "100000000", "40000000000", "100000000000000000000000000000000");
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(unsigned int, "4294967296",  "100000000", "40000000000", "100000000000000000000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(int,          "2147483648",  "100000000", "40000000000", "100000000000000000000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(int,          "-2147483649", "100000000", "40000000000", "100000000000000000000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(unsigned int, "4294967296",  "100000000", "40000000000", "100000000000000000000000000000000");
 
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(long,          "2147483648",  "100000000", "40000000000", "100000000000000000000000000000000");
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(long,          "-2147483649", "100000000", "40000000000", "100000000000000000000000000000000");
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(unsigned long, "4294967296",  "100000000", "40000000000", "100000000000000000000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(long,          "2147483648",  "100000000", "40000000000", "100000000000000000000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(long,          "-2147483649", "100000000", "40000000000", "100000000000000000000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(unsigned long, "4294967296",  "100000000", "40000000000", "100000000000000000000000000000000");
 
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(long long,          "9223372036854775808",  "10000000000000000", "2000000000000000000000", "10000000000000000000000000000000000000000000000000000000000000000");
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(long long,          "-9223372036854775809", "10000000000000000", "2000000000000000000000", "10000000000000000000000000000000000000000000000000000000000000000");
-	TEST_TONUMERIC_FAILURE_ALL_RADIXES(unsigned long long, "18446744073709551616", "10000000000000000", "2000000000000000000000", "10000000000000000000000000000000000000000000000000000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(long long,          "9223372036854775808",  "10000000000000000", "2000000000000000000000", "10000000000000000000000000000000000000000000000000000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(long long,          "-9223372036854775809", "10000000000000000", "2000000000000000000000", "10000000000000000000000000000000000000000000000000000000000000000");
+	TEST_TONUMERIC_FAILURE_ALL_BASES(unsigned long long, "18446744073709551616", "10000000000000000", "2000000000000000000000", "10000000000000000000000000000000000000000000000000000000000000000");
 }
