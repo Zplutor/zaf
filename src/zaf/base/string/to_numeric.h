@@ -271,8 +271,8 @@ struct StringToFloatConverter {
             return false;
         }
 
-        NumericType temp_value();
-        auto error = StringToLongDouble(string, end, temp_value);
+        NumericType temp_value = 0;
+        auto error = StringToFloat(string, end, temp_value);
         if (error) {
             return false;
         }
