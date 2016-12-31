@@ -162,12 +162,74 @@ public:
 		return rect_.size.width;
 	}
 
+    /**
+     Set the control's width.
+     */
+    void SetWidth(float width) {
+        SetSize(zaf::Size(width, GetHeight()));
+    }
+
+    /**
+     Get the control's minimum width.
+
+     The default value is 0.
+     */
+    float GetMinimumWidth() const;
+
+    /**
+     Set the control's minimum width.
+     */
+    void SetMinimumWidth(float min_width);
+
+    /**
+     Get the control's maximum width.
+
+     The default value is the maximum value of float.
+     */
+    float GetMaximumWidth() const;
+
+    /**
+     Set the control's maximum width.
+     */
+    void SetMaximumWidth(float max_width);
+
 	/**
 	 Get the control's height.
 	 */
 	float GetHeight() const {
 		return rect_.size.height;
 	}
+
+    /**
+     Set the control's height.
+     */
+    void SetHeight(float height) {
+        SetSize(zaf::Size(GetWidth(), height));
+    }
+
+    /**
+     Get the control's minimum height.
+
+     The default value is 0.
+     */
+    float GetMinimumHeight() const;
+
+    /**
+     Set the control's minimum height.
+     */
+    void SetMinimumHeight(float min_height);
+
+    /**
+     Get the control's maximum height.
+
+     The default value is the maximum value of float.
+     */
+    float GetMaximumHeight() const;
+
+    /**
+     Set the control's maximum height.
+     */
+    void SetMaximumHeight(float max_height);
 
     /**
      Get the control's anchor.

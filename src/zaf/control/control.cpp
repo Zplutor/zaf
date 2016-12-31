@@ -12,6 +12,9 @@
 #include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window.h>
 
+#undef max
+#undef min
+
 namespace zaf {
 
 static Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child);
@@ -21,6 +24,10 @@ static const wchar_t* const kBackgroundColorPickerPropertyName = L"BackgroundCol
 static const wchar_t* const kBorderColorPickerPropertyName = L"BorderColorPicker";
 static const wchar_t* const kCanTabStopPropertyName = L"CanTabStop";
 static const wchar_t* const kLayouterPropertyName = L"Layouter";
+static const wchar_t* const kMaximumHeightPropertyName = L"MaximumHeight";
+static const wchar_t* const kMaximumWidthPropertyName = L"MaximumWidth";
+static const wchar_t* const kMinimumHeightPropertyName = L"MinimumHeight";
+static const wchar_t* const kMinimumWidthPropertyName = L"MiniimumWidth";
 static const wchar_t* const kNamePropertyName = L"Name";
 static const wchar_t* const kTabIndexPropertyName = L"TabIndex";
 
@@ -251,8 +258,17 @@ const Rect Control::GetAbsoluteRect() const {
 
 void Control::SetRect(const Rect& rect) {
 
+    //Revise the size.
+    float width = rect.size.width;
+    width = std::max(width, GetMinimumWidth());
+    width = std::min(width, GetMaximumWidth());
+
+    float height = rect.size.height;
+    height = std::max(height, GetMinimumHeight());
+    height = std::min(height, GetMaximumHeight());
+
 	Rect previous_rect = GetRect();
-	rect_ = rect;
+	rect_ = zaf::Rect(rect.position, zaf::Size(width, height));    
 
     //Layout children if size is changed.
     if ((rect_.size.width != previous_rect.size.width) || 
@@ -276,6 +292,106 @@ void Control::SetRect(const Rect& rect) {
 	if (parent != nullptr) {
 		parent->ChildRectChanged(this->shared_from_this(), previous_rect);
 	}
+}
+
+
+float Control::GetMinimumWidth() const {
+
+    auto min_width = GetPropertyMap().TryGetProperty<float>(kMinimumWidthPropertyName);
+    if (min_width != nullptr) {
+        return *min_width;
+    }
+    else {
+        return 0;
+    }
+}
+
+void Control::SetMinimumWidth(float min_width) {
+
+    GetPropertyMap().SetProperty(kMinimumWidthPropertyName, min_width);
+
+    if (GetMaximumWidth() < min_width) {
+        SetMaximumWidth(min_width);
+    }
+
+    if (GetWidth() < min_width) {
+        SetWidth(min_width);
+    }
+}
+
+
+float Control::GetMaximumWidth() const {
+
+    auto max_width = GetPropertyMap().TryGetProperty<float>(kMaximumWidthPropertyName);
+    if (max_width != nullptr) {
+        return *max_width;
+    }
+    else {
+        return std::numeric_limits<float>::max();
+    }
+}
+
+void Control::SetMaximumWidth(float max_width) {
+
+    GetPropertyMap().SetProperty(kMaximumWidthPropertyName, max_width);
+
+    if (GetMinimumWidth() > max_width) {
+        SetMinimumWidth(max_width);
+    }
+
+    if (GetWidth() > max_width) {
+        SetWidth(max_width);
+    }
+}
+
+
+float Control::GetMinimumHeight() const {
+
+    auto min_height = GetPropertyMap().TryGetProperty<float>(kMinimumHeightPropertyName);
+    if (min_height != nullptr) {
+        return *min_height;
+    }
+    else {
+        return 0;
+    }
+}
+
+void Control::SetMinimumHeight(float min_height) {
+
+    GetPropertyMap().SetProperty(kMinimumHeightPropertyName, min_height);
+
+    if (GetMaximumHeight() < min_height) {
+        SetMaximumHeight(min_height);
+    }
+
+    if (GetHeight() < min_height) {
+        SetHeight(min_height);
+    }
+}
+
+
+float Control::GetMaximumHeight() const {
+
+    auto max_height = GetPropertyMap().TryGetProperty<float>(kMaximumHeightPropertyName);
+    if (max_height != nullptr) {
+        return *max_height;
+    }
+    else {
+        return std::numeric_limits<float>::max();
+    }
+}
+
+void Control::SetMaximumHeight(float max_height) {
+
+    GetPropertyMap().SetProperty(kMaximumHeightPropertyName, max_height);
+
+    if (GetMinimumHeight() > max_height) {
+        SetMinimumHeight(max_height);
+    }
+
+    if (GetHeight() > max_height) {
+        SetHeight(max_height);
+    }
 }
 
 
