@@ -28,6 +28,7 @@
     <ClCompile Include="src\zaf\control\internal\list_control_single_select_strategy.cpp" />
     <ClCompile Include="src\zaf\control\layout\anchor_layouter.cpp" />
     <ClCompile Include="src\zaf\control\layout\array_layouter.cpp" />
+    <ClCompile Include="src\zaf\control\layout\internal\array_layout_length_calculating.cpp" />
     <ClCompile Include="src\zaf\control\list_box.cpp" />
     <ClCompile Include="src\zaf\control\label.cpp" />
     <ClCompile Include="src\zaf\control\list_control.cpp" />
@@ -94,6 +95,7 @@
     <ClInclude Include="src\zaf\control\internal\list_control_simple_multiple_select_strategy.h" />
     <ClInclude Include="src\zaf\control\internal\list_control_single_select_strategy.h" />
     <ClInclude Include="src\zaf\control\layout\anchor_layouter.h" />
+    <ClInclude Include="src\zaf\control\layout\internal\array_layout_length_calculating.h" />
     <ClInclude Include="src\zaf\control\layout\layouter.h" />
     <ClInclude Include="src\zaf\control\layout\array_layouter.h" />
     <ClInclude Include="src\zaf\control\list_box.h" />

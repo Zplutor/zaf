@@ -43,6 +43,9 @@
     <Filter Include="zaf\control\internal">
       <UniqueIdentifier>{6727cfd9-42d2-4ad1-896a-3e726fe276df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\layout\internal">
+      <UniqueIdentifier>{088ead32-06ab-409a-b21e-37aeb91334a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -188,6 +191,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\split_control.cpp">
       <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\layout\internal\array_layout_length_calculating.cpp">
+      <Filter>zaf\control\layout\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -484,6 +490,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\relation_operator.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\layout\internal\array_layout_length_calculating.h">
+      <Filter>zaf\control\layout\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

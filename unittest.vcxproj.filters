@@ -19,6 +19,12 @@
     <Filter Include="case\control\internal">
       <UniqueIdentifier>{28eb627f-da72-48ec-8bc4-d36327aebce2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\control\layout">
+      <UniqueIdentifier>{7adcacad-53a4-422d-91ce-e2a7fb547e54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\control\layout\internal">
+      <UniqueIdentifier>{f0ac9c8e-368d-4d58-842d-fbef6013bd7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -36,6 +42,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\internal\list_control_item_height_manager_test.cpp">
       <Filter>case\control\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\layout\internal\array_layout_length_calculating_test.cpp">
+      <Filter>case\control\layout\internal</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
