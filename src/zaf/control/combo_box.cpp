@@ -433,7 +433,7 @@ bool ComboBox::SelectNextDropDownListItem(bool reverse) {
             }
         }
         else {
-            if (selected_index < item_count) {
+            if (selected_index < item_count - 1) {
                 ++selected_index;
             }
         }
@@ -441,6 +441,7 @@ bool ComboBox::SelectNextDropDownListItem(bool reverse) {
 
     auto guard = SetSelectionChangeAction(SelectionChangeAction::ChangeText);
     drop_down_list_box_->SelectItemAtIndex(selected_index);
+    drop_down_list_box_->ScrollToItemAtIndex(selected_index);
     return true;
 }
 
