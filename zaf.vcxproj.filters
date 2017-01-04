@@ -195,6 +195,12 @@
     <ClCompile Include="src\zaf\control\layout\internal\array_layout_length_calculating.cpp">
       <Filter>zaf\control\layout\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\font\font_family.cpp">
+      <Filter>zaf\graphic\font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\localized_strings.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -493,6 +499,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\internal\array_layout_length_calculating.h">
       <Filter>zaf\control\layout\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\localized_strings.h">
+      <Filter>zaf\graphic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

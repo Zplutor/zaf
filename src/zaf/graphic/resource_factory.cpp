@@ -193,4 +193,19 @@ const std::shared_ptr<TextLayout> ResourceFactory::CreateTextLayout(const TextLa
 	}
 }
 
+
+const std::shared_ptr<FontCollection> ResourceFactory::GetSystemFontCollection(std::error_code& error_code) {
+
+    IDWriteFontCollection* handle = nullptr;
+    HRESULT result = dwrite_factory_handle_->GetSystemFontCollection(&handle);
+
+    error_code = MakeComErrorCode(result);
+    if (IsSucceeded(error_code)) {
+        return std::make_shared<FontCollection>(handle);
+    }
+    else {
+        return nullptr;
+    }
+}
+
 }

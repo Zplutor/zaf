@@ -59,7 +59,7 @@ public:
 
     std::shared_ptr<FontFamily> GetFontFamily(std::size_t index) const {
         std::error_code error_code;
-        auto result = GetFontFamily(index);
+        auto result = GetFontFamily(index, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }

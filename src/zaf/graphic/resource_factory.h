@@ -7,6 +7,7 @@
 
 namespace zaf {
 
+class FontCollection;
 class Geometry;
 class PathGeometry;
 class RectangleGeometry;
@@ -143,6 +144,22 @@ public:
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
+
+    /**
+     Get a font collection representing the set of installed fonts.
+
+     @return 
+         Return nullptr if failed.
+     */
+    const std::shared_ptr<FontCollection> GetSystemFontCollection(std::error_code& error_code);
+
+    const std::shared_ptr<FontCollection> GetSystemFontCollection() {
+        std::error_code error_code;
+        auto result = GetSystemFontCollection(error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+    
 
 	/**
 	 Get the underlying ID2D1Factory instance.
