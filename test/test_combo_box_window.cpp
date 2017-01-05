@@ -30,7 +30,6 @@ public:
 
         combo_box_ = Create<ComboBox>();
         combo_box_->SetRect(Rect(0, 0, 100, 30));
-        combo_box_->SetMaximumVisibleItemCount(5);
         container->AddChild(combo_box_);
 
         auto drop_down_list_box = combo_box_->GetDropDownListBox();

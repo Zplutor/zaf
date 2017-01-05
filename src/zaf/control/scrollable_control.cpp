@@ -434,23 +434,8 @@ void ScrollableControl::MouseWheel(const Point& position, const MouseWheelMessag
         scroll_bar = vertical_scroll_bar_;
     }
 
-    WheelScrollBar(scroll_bar, message.GetWheelingDistance());
-}
-
-
-void ScrollableControl::HorizontallyWheel(int distance) {
-    WheelScrollBar(horizontal_scroll_bar_, distance);
-}
-
-
-void ScrollableControl::VerticallyWheel(int distance) {
-    WheelScrollBar(vertical_scroll_bar_, distance);
-}
-
-
-void ScrollableControl::WheelScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar, int distance) {
     if (scroll_bar->IsVisible() && scroll_bar->IsEnabled()) {
-        scroll_bar->Wheel(distance);
+        scroll_bar->Wheel(message.GetWheelingDistance());
     }
 }
 

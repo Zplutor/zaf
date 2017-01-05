@@ -13,7 +13,6 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/window/message/keyboard_message.h>
-#include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window.h>
 
 #ifdef min
@@ -86,6 +85,8 @@ void ComboBox::Initialize() {
 
 void ComboBox::InitializeDropDownListBox() {
 
+    drop_down_list_box_->SetMouseMoveCallback(std::bind(&ComboBox::DropDownListBoxMouseMove, this, std::placeholders::_1));
+
     drop_down_list_box_->GetSelectionChangeEvent().AddListenerWithTag(
         reinterpret_cast<std::uintptr_t>(this),
         std::bind(&ComboBox::DropDownListBoxSelectionChange, this));
@@ -96,6 +97,7 @@ void ComboBox::InitializeDropDownListBox() {
 
 void ComboBox::UninitializeDropDownListBox() {
 
+    drop_down_list_box_->SetMouseMoveCallback(nullptr);
     drop_down_list_box_->GetSelectionChangeEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
 }
 
@@ -317,7 +319,6 @@ void ComboBox::SetEditTextBox(const std::shared_ptr<EditTextBox>& text_box) {
 
 void ComboBox::MouseClick() {
     PopupDropDownWindow();
-    CaptureMouse();
 }
 
 
@@ -372,61 +373,15 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
 }
 
 
-void ComboBox::MouseRelease() {
+void ComboBox::DropDownListBoxMouseMove(const Point& position) {
 
-    drop_down_window_->Close();
-}
-
-
-void ComboBox::MouseMove(const Point& position, const MouseMessage& message) {
-
-    if (drop_down_window_->IsClosed()) {
-        return;
-    }
-
-    auto mouse_position = drop_down_list_box_->GetMousePosition();
-    auto index = drop_down_list_box_->FindItemIndexAtPosition(mouse_position);
+    auto index = drop_down_list_box_->FindItemIndexAtPosition(position);
     if (index == InvalidIndex) {
         return;
     }
 
     auto guard = SetSelectionChangeAction(SelectionChangeAction::Nothing);
     drop_down_list_box_->SelectItemAtIndex(index);
-}
-
-
-void ComboBox::MouseUp(const Point& position, const MouseMessage& message) {
-
-    if (! drop_down_window_->IsClosed()) {
-
-        auto mouse_position = drop_down_list_box_->GetMousePosition();
-        auto hovered_index = drop_down_list_box_->FindItemIndexAtPosition(mouse_position);
-        if (hovered_index != InvalidIndex) {
-            
-            auto guard = SetSelectionChangeAction(SelectionChangeAction::ChangeText);
-
-            if (hovered_index != drop_down_list_box_->GetFirstSelectedItemIndex()) {
-                drop_down_list_box_->SelectItemAtIndex(hovered_index);
-            }
-            else {
-                //Simulate a selection change event, because list box won't raise the 
-                //selection change event if selection is not changed.
-                DropDownListBoxSelectionChange();
-            }
-        }
-    }
-
-    __super::MouseUp(position, message);
-}
-
-
-void ComboBox::MouseWheel(const Point& position, const MouseWheelMessage& message) {
-
-    if (! message.IsHorizontalWheeling()) {
-        if (! drop_down_window_->IsClosed()) {
-            drop_down_list_box_->VerticallyWheel(message.GetWheelingDistance());
-        }
-    }
 }
 
 
@@ -492,7 +447,7 @@ bool ComboBox::SelectNextDropDownListItem(bool reverse) {
 
 
 void ComboBox::DropDownListBoxSelectionChange() {
-
+    
     if (selection_change_action_ == SelectionChangeAction::Nothing) {
         return;
     }
@@ -592,18 +547,24 @@ void ComboBox::FocusGain() {
 }
 
 
-void ComboBox::FocusLose() {
-
-    drop_down_window_->Close();
-}
-
-
 void ComboBox::DropDownListBox::Initialize() {
 
     __super::Initialize();
 
     SetAllowHorizontalScroll(false);
     SetAutoHideScrollBars(true);
+}
+
+
+void ComboBox::DropDownListBox::MouseMove(const Point& position, const MouseMessage& message) {
+
+    __super::MouseMove(position, message);
+
+    if (! IsCapturingMouse()) {
+        if (mouse_move_callback_ != nullptr) {
+            mouse_move_callback_(position);
+        }
+    }
 }
 
 

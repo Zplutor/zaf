@@ -137,22 +137,6 @@ public:
      */
     void SetScrollContentSize(const Size& size);
 
-    /**
-     Perforam a horizontally wheel action on the scrollable control.
-
-     @param distance
-         The distance to wheel.
-     */
-    void HorizontallyWheel(int distance);
-
-    /**
-     Perforam a vertically wheel action on the scrollable control.
-
-     @param distance
-         The distance to wheel.
-     */
-    void VerticallyWheel(int distance);
-
 protected:
 	void Layout(const Rect& previous_rect) override;
 
@@ -209,7 +193,6 @@ private:
     void LayoutWithSelfScrollingControl();
     void AdjustScrollBarValueWithSelfScrollingControl(bool is_horizontal);
     
-    void WheelScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar, int distance);
     void ScrollBarScroll(const std::shared_ptr<ScrollBar>& scroll_bar);
     void ScrollGeneralScrollContentControl(const std::shared_ptr<ScrollBar>& scroll_bar);
     void ScrollSelfScrollingControl(const std::shared_ptr<ScrollBar>& scroll_bar);
