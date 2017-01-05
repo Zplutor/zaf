@@ -21,19 +21,6 @@ public:
     class DropDownListBox : public ListBox {
     public:
         void Initialize() override;
-
-    protected:
-        void MouseMove(const Point& position, const MouseMessage& message) override;
-
-    private:
-        friend class ComboBox;
-
-        void SetMouseMoveCallback(const std::function<void(const Point&)>& callback) {
-            mouse_move_callback_ = callback;
-        }
-
-    private:
-        std::function<void(const Point&)> mouse_move_callback_;
     };
 
     /**
@@ -174,8 +161,13 @@ protected:
     const Rect GetTextRect() const override;
 
     void MouseClick() override;
+    void MouseRelease() override;
+    void MouseMove(const Point& position, const MouseMessage& message) override;
+    void MouseUp(const Point& position, const MouseMessage& message) override;
+    void MouseWheel(const Point& position, const MouseWheelMessage& message) override;
     bool KeyDown(const KeyMessage& message) override;
     void FocusGain() override;
+    void FocusLose() override;
 
     /**
      This method is called when the drop down list box is changed.
@@ -248,7 +240,6 @@ private:
     void PopupDropDownWindow();
     float CalculateDropDownListHeight(std::size_t visible_item_count);
 
-    void DropDownListBoxMouseMove(const Point& position);
     bool SelectNextDropDownListItem(bool reverse);
 
     void DropDownListBoxSelectionChange();
