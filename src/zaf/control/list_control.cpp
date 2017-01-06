@@ -805,11 +805,15 @@ void ListControl::ScrollToItemAtIndex(std::size_t index) {
 
 std::size_t ListControl::FindItemIndexAtPosition(const Point& position) const {
 
-    if (position.x < 0 || position.x > GetSize().width) {
+    auto visible_scroll_content_rect = GetVisibleScrollContentRect();
+
+    if (position.x < 0 || position.x > visible_scroll_content_rect.size.width) {
         return InvalidIndex;
     }
 
-    auto index_and_count = item_height_manager_->GetItemIndexAndCount(position.y, position.y);
+    float adjusted_position = position.y + visible_scroll_content_rect.position.y;
+    
+    auto index_and_count = item_height_manager_->GetItemIndexAndCount(adjusted_position, adjusted_position);
     if (index_and_count.second == 0) {
         return InvalidIndex;
     }
