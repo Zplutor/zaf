@@ -501,6 +501,7 @@ private:
 
     void Repaint();
     void Resize(UINT width, UINT height);
+    bool RedirectMouseWheelMessage(const Message& message);
     void ReceiveMouseMessage(const MouseMessage& message);
     bool ChangeMouseCursor(const Message& message);
     bool ReceiveCloseMessage();

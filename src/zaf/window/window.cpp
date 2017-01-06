@@ -317,6 +317,17 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         }
     }
 
+    case WM_MOUSEWHEEL:
+    case WM_MOUSEHWHEEL:
+        //Mouse wheel messages are not sent to an unfocused window even if it captures
+        //the mouse, because these messages are only sent to focused window.
+        //But we wish these messages have the same behaviour as other mouse input messages,
+        //so the messages are redircted to the window which is capturing the mouse.
+        if (RedirectMouseWheelMessage(message)) {
+            return true;
+        }
+        //Fall through
+
     case WM_MOUSEMOVE:
     case WM_MOUSELEAVE:
     case WM_LBUTTONDOWN:
@@ -325,8 +336,6 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
     case WM_MBUTTONUP:
     case WM_RBUTTONDOWN:
     case WM_RBUTTONUP:
-    case WM_MOUSEWHEEL:
-    case WM_MOUSEHWHEEL:
         ReceiveMouseMessage(dynamic_cast<const MouseMessage&>(message));
         return true;
 
@@ -420,6 +429,23 @@ void Window::Resize(UINT width, UINT height) {
 
     renderer_->Resize(size);
     root_control_->SetRect(Rect(Point(), size));
+}
+
+
+bool Window::RedirectMouseWheelMessage(const Message& message) {
+
+    HWND handle = GetCapture();
+    if ((handle == nullptr) || (handle == GetHandle())) {
+        return false;
+    }
+
+    auto capturing_mouse_window = GetWindowFromHandle(GetCapture());
+    if (capturing_mouse_window == nullptr) {
+        return false;
+    }
+
+    PostMessage(capturing_mouse_window->GetHandle(), message.id, message.wParam, message.lParam);
+    return true;
 }
 
 
