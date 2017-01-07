@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <zaf/base/error.h>
+#include <zaf/internal/enumerator.h>
 
 namespace zaf {
 
@@ -11,6 +12,10 @@ namespace zaf {
  Represents a collection of strings indexed by locale name.   
  */
 class LocalizedStrings {
+public:
+    typedef internal::ComContainerEnumerator<LocalizedStrings, std::pair<std::wstring, std::wstring>> Enumerator;
+    typedef internal::ComContainerEnumerator<LocalizedStrings, std::wstring> StringEnumerator;
+
 public:
     explicit LocalizedStrings(IDWriteLocalizedStrings* handle) : handle_(handle) { }
 
@@ -70,14 +75,24 @@ public:
      @return
          Return InvalidIndex if the locale name is not found.
     */
-    std::size_t FindLocaleName(const std::wstring& local_name, std::error_code& error_code);
+    std::size_t FindLocaleName(const std::wstring& local_name, std::error_code& error_code) const;
 
-    std::size_t FindLocaleName(const std::wstring& local_name) {
+    std::size_t FindLocaleName(const std::wstring& local_name) const {
         std::error_code error_code;
         auto result = FindLocaleName(local_name, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
+
+    /**
+     Get an enumerator for both locale names and strings.
+     */
+    Enumerator GetEnumerator() const;
+
+    /**
+     Get an enumerator for strings.
+     */
+    StringEnumerator GetStringEnumerator() const;
 
     IDWriteLocalizedStrings* GetHandle() const {
         return handle_;

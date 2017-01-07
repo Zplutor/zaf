@@ -51,7 +51,7 @@ const std::wstring LocalizedStrings::GetString(std::size_t index, std::error_cod
 }
 
 
-std::size_t LocalizedStrings::FindLocaleName(const std::wstring& local_name, std::error_code& error_code) {
+std::size_t LocalizedStrings::FindLocaleName(const std::wstring& local_name, std::error_code& error_code) const {
 
     UINT32 index = 0;
     BOOL is_existent = FALSE;
@@ -68,6 +68,36 @@ std::size_t LocalizedStrings::FindLocaleName(const std::wstring& local_name, std
     else {
         return InvalidIndex;
     }
+}
+
+
+LocalizedStrings::Enumerator LocalizedStrings::GetEnumerator() const {
+
+    return Enumerator(
+        *this,
+        [](const LocalizedStrings& localized_strings) { 
+            return localized_strings.GetCount(); 
+        },
+        [](const LocalizedStrings& localized_strings, std::size_t index) {
+            std::wstring locale_name = localized_strings.GetLocaleName(index);
+            std::wstring string = localized_strings.GetString(index);
+            return std::make_pair(locale_name, string);
+        }
+    );
+}
+
+
+LocalizedStrings::StringEnumerator LocalizedStrings::GetStringEnumerator() const {
+
+    return StringEnumerator(
+        *this,
+        [](const LocalizedStrings& localized_strings) {
+            return localized_strings.GetCount();
+        },
+        [](const LocalizedStrings& localized_strings, std::size_t index) {
+            return localized_strings.GetString(index);
+        }
+    );
 }
 
 }

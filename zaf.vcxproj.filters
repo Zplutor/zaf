@@ -503,5 +503,8 @@
     <ClInclude Include="src\zaf\graphic\localized_strings.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\internal\enumerator.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

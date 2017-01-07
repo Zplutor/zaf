@@ -151,6 +151,7 @@
     <ClInclude Include="src\zaf\graphic\text\text_range.h" />
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />
     <ClInclude Include="src\zaf\graphic\matrix.h" />
+    <ClInclude Include="src\zaf\internal\enumerator.h" />
     <ClInclude Include="src\zaf\internal\message_loop.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />

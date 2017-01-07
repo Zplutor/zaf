@@ -34,4 +34,18 @@ std::shared_ptr<FontFamily> FontCollection::FindFontFamily(const std::wstring& f
     }
 }
 
+
+FontCollection::Enumerator FontCollection::GetEnumerator() const {
+
+    return Enumerator(
+        *this,
+        [](const FontCollection& font_collection) {
+            return font_collection.GetFontFamilyCount();
+        },
+        [](const FontCollection& font_collection, std::size_t index) {
+            return font_collection.GetFontFamily(index);
+        }
+    );
+}
+
 }

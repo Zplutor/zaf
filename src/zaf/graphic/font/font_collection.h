@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <zaf/base/error.h>
+#include <zaf/internal/enumerator.h>
 
 namespace zaf {
 
@@ -17,6 +18,9 @@ class FontFamily;
  obtain some metadata about the fonts.
  */
 class FontCollection {
+public:
+    typedef internal::ComContainerEnumerator<FontCollection, std::shared_ptr<FontFamily>> Enumerator;
+
 public:
     /**
      Construct the instance with specified handle.
@@ -84,6 +88,11 @@ public:
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
+
+    /**
+     Get an enumerator for font families.
+     */
+    Enumerator GetEnumerator() const;
 
 private:
 	FontCollection(const FontCollection&) = delete;
