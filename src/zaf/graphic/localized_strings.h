@@ -21,7 +21,7 @@ public:
     /**
      Gets the number of language/string pairs.
      */
-    std::uint32_t GetCount() const {
+    std::size_t GetCount() const {
         return handle_->GetCount();
     }
 
@@ -34,9 +34,9 @@ public:
      @return 
          Return an empty string if failed.
      */
-    const std::wstring GetLocaleName(std::uint32_t index, std::error_code& error_code) const;
+    const std::wstring GetLocaleName(std::size_t index, std::error_code& error_code) const;
 
-    const std::wstring GetLocaleName(std::uint32_t index) const {
+    const std::wstring GetLocaleName(std::size_t index) const {
         std::error_code error_code;
         auto result = GetLocaleName(index, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -52,11 +52,29 @@ public:
      @return 
          Return an empty string if failed.
      */
-    const std::wstring GetString(std::uint32_t index, std::error_code& error_code) const;
+    const std::wstring GetString(std::size_t index, std::error_code& error_code) const;
 
-    const std::wstring GetString(std::uint32_t index) const {
+    const std::wstring GetString(std::size_t index) const {
         std::error_code error_code;
         auto result = GetString(index, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+
+    /**
+     Get the index of the item with the specified locale name.
+    
+     @param locale_name
+         Locale name to look for.
+    
+     @return
+         Return InvalidIndex if the locale name is not found.
+    */
+    std::size_t FindLocaleName(const std::wstring& local_name, std::error_code& error_code);
+
+    std::size_t FindLocaleName(const std::wstring& local_name) {
+        std::error_code error_code;
+        auto result = FindLocaleName(local_name, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
