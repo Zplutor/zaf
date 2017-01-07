@@ -158,7 +158,7 @@ const std::shared_ptr<TextFormat> ResourceFactory::CreateTextFormat(const TextFo
 		DWRITE_FONT_STYLE_NORMAL,
 		DWRITE_FONT_STRETCH_NORMAL,
 		properties.font_size,
-		L"",
+		properties.locale_name.c_str(),
 		&handle
 	);
 

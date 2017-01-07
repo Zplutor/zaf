@@ -31,6 +31,11 @@ public:
 	std::wstring font_family_name;
 
     /**
+     Locale name.
+     */
+    std::wstring locale_name;
+
+    /**
      Font size.
      */
 	float font_size;
