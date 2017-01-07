@@ -1,13 +1,21 @@
 #include "control/textual_control_operate_panels_creator.h"
+#include <zaf/application.h>
 #include <zaf/control/button.h>
+#include <zaf/control/combo_box.h>
 #include <zaf/control/label.h>
 #include <zaf/control/layout/array_layouter.h>
 #include <zaf/control/radio_button.h>
 #include <zaf/control/text_box.h>
 #include <zaf/creation.h>
+#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font/font_collection.h>
+#include <zaf/graphic/font/font_family.h>
+#include <zaf/graphic/localized_strings.h>
+#include <zaf/graphic/resource_factory.h>
 #include "control/common.h"
 
 static std::shared_ptr<zaf::Control> CreateTextPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
+static std::shared_ptr<zaf::Control> CreateFontPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
 static std::shared_ptr<zaf::Control> CreateTextAlignmentPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
 static std::shared_ptr<zaf::Control> CreateParagraphAlignmentPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
 static std::shared_ptr<zaf::Control> CreateWordWrappingPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
@@ -17,6 +25,7 @@ void CreateTextualControlOperatePanels(
     std::vector<std::shared_ptr<zaf::Control>>& operate_panels) {
 
     operate_panels.push_back(CreateTextPanel(control));
+    operate_panels.push_back(CreateFontPanel(control));
     operate_panels.push_back(CreateTextAlignmentPanel(control));
     operate_panels.push_back(CreateParagraphAlignmentPanel(control));
     operate_panels.push_back(CreateWordWrappingPanel(control));
@@ -29,6 +38,7 @@ static std::shared_ptr<zaf::Control> CreateTextPanel(const std::shared_ptr<zaf::
 
     auto text_label = zaf::Create<zaf::Label>();
     text_label->SetText(L"Text");
+    text_label->SetMaximumWidth(OperatePanelLabelMaximumWidth);
     panel->AddChild(text_label);
 
     auto input_text_box = zaf::Create<zaf::TextBox>();
@@ -37,8 +47,7 @@ static std::shared_ptr<zaf::Control> CreateTextPanel(const std::shared_ptr<zaf::
     input_text_box->SetAcceptReturn(true);
     panel->AddChild(input_text_box);
 
-    auto set_text_button = zaf::Create<zaf::Button>();
-    set_text_button->SetText(L"Set");
+    auto set_text_button = CreateSetButton();
     set_text_button->GetClickEvent().AddListener(std::bind([textual_control, input_text_box]() {
         textual_control->SetText(input_text_box->GetText());
     }));
@@ -47,6 +56,52 @@ static std::shared_ptr<zaf::Control> CreateTextPanel(const std::shared_ptr<zaf::
     textual_control->GetTextChangeEvent().AddListener([input_text_box](const std::shared_ptr<zaf::TextualControl>& textual_control) {
         input_text_box->SetText(textual_control->GetText());
     });
+
+    return panel;
+}
+
+
+static std::shared_ptr<zaf::Control> CreateFontPanel(const std::shared_ptr<zaf::TextualControl>& textual_control) {
+
+    auto panel = CreateOperateContainerPanel(1);
+
+    auto label = zaf::Create<zaf::Label>();
+    label->SetText(L"Font");
+    label->SetMaximumWidth(OperatePanelLabelMaximumWidth);
+    panel->AddChild(label);
+
+    auto font_name_combo_box = zaf::Create<zaf::ComboBox>();
+    font_name_combo_box->SetMaximumVisibleItemCount(10);
+    auto font_name_drop_down_list = font_name_combo_box->GetDropDownListBox();
+    font_name_drop_down_list->AddItemWithText(std::wstring());
+
+    wchar_t locale_name[1024] = { 0 };
+    LCIDToLocaleName(LANG_USER_DEFAULT, locale_name, 1024, 0);
+    std::wstring user_default_locale = locale_name;
+
+    auto font_collection = zaf::GetResourceFactory()->GetSystemFontCollection();
+
+    for (const auto& each_font_family : font_collection->GetEnumerator()) {
+
+        auto localized_strings = each_font_family->GetFamilyNames();
+        auto index = localized_strings->FindLocaleName(user_default_locale);
+        if (index == zaf::InvalidIndex) {
+            index = localized_strings->FindLocaleName(L"en-us");
+        }
+        if (index != zaf::InvalidIndex) {
+            font_name_drop_down_list->AddItemWithText(localized_strings->GetString(index));
+        }
+    }
+
+    panel->AddChild(font_name_combo_box);
+    
+    auto set_button = CreateSetButton();
+    set_button->GetClickEvent().AddListener(std::bind([font_name_combo_box, textual_control]() {
+        zaf::Font new_font = zaf::Font::GetDefault();
+        new_font.family_name = font_name_combo_box->GetText();
+        textual_control->SetFont(new_font);
+    }));
+    panel->AddChild(set_button);
 
     return panel;
 }

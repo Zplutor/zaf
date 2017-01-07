@@ -85,8 +85,7 @@ static std::shared_ptr<zaf::Control> CreateInsetOperatePanel(const std::shared_p
     bottom_text_box->SetTextValidator(zaf::GetNumberTextValidator());
     panel->AddChild(bottom_text_box);
 
-    auto set_button = zaf::Create<zaf::Button>();
-    set_button->SetText(L"Set");
+    auto set_button = CreateSetButton();
     set_button->GetClickEvent().AddListener(std::bind([left_text_box, top_text_box, right_text_box, bottom_text_box, text_box]() {
 
         int left = zaf::ToNumeric<int>(left_text_box->GetText());
@@ -166,8 +165,7 @@ static std::shared_ptr<zaf::Control> CreateMaxLengthOperatePanel(const std::shar
     max_length_text_box->SetText(std::to_wstring(text_box->GetMaximumLength()));
     panel->AddChild(max_length_text_box);
 
-    auto set_button = zaf::Create<zaf::Button>();
-    set_button->SetText(L"Set");
+    auto set_button = CreateSetButton();
     set_button->GetClickEvent().AddListener([max_length_text_box, text_box](const std::shared_ptr<zaf::ClickableControl>&) {
         auto max_length = zaf::ToNumeric<std::uint32_t>(max_length_text_box->GetText());
         text_box->SetMaximumLength(max_length);
@@ -195,8 +193,7 @@ static std::shared_ptr<zaf::Control> CreatePasswordCharacterOperatePanel(const s
     char_text_box->SetText(std::wstring(1, text_box->GetPasswordCharacter()));
     panel->AddChild(char_text_box);
 
-    auto set_button = zaf::Create<zaf::Button>();
-    set_button->SetText(L"Set");
+    auto set_button = CreateSetButton();
     set_button->GetClickEvent().AddListener(std::bind([char_text_box, text_box]() {
         auto char_string = char_text_box->GetText();
         if (! char_string.empty()) {
@@ -233,8 +230,7 @@ static std::shared_ptr<zaf::Control> CreateSelectionRangeOperatePanle(const std:
     length_text_box->SetTextValidator(zaf::GetNumberTextValidator());
     panel->AddChild(length_text_box);
 
-    auto set_button = zaf::Create<zaf::Button>();
-    set_button->SetText(L"Set");
+    auto set_button = CreateSetButton();
     set_button->GetClickEvent().AddListener(std::bind([index_text_box, length_text_box, text_box]() {
 
         auto index = zaf::ToNumeric<std::size_t>(index_text_box->GetText());

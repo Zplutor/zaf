@@ -9,3 +9,12 @@ std::shared_ptr<zaf::Control> CreateOperateContainerPanel(std::size_t lines) {
     panel->SetLayouter(zaf::GetHorizontalArrayLayouter());
     return panel;
 }
+
+
+std::shared_ptr<zaf::Button> CreateSetButton() {
+
+    auto button = zaf::Create<zaf::Button>();
+    button->SetText(L"Set");
+    button->SetMaximumWidth(30);
+    return button;
+}

@@ -56,8 +56,7 @@ static std::shared_ptr<zaf::Control> CreateWidthPanel(const std::shared_ptr<zaf:
     max_width_text_box->SetText(zaf::ToWideString(control->GetMaximumWidth(), zaf::ToStringOptions().Precision(2)));
     panel->AddChild(max_width_text_box);
 
-    auto set_button = zaf::Create<zaf::Button>();
-    set_button->SetText(L"Set");
+    auto set_button = CreateSetButton();
     set_button->GetClickEvent().AddListener(std::bind([width_text_box, min_width_text_box, max_width_text_box, control]() {
     
         auto width = zaf::ToNumeric<float>(width_text_box->GetText());
@@ -104,8 +103,7 @@ static std::shared_ptr<zaf::Control> CreateHeightPanel(const std::shared_ptr<zaf
     max_height_text_box->SetText(zaf::ToWideString(control->GetMaximumHeight(), zaf::ToStringOptions().Precision(2)));
     panel->AddChild(max_height_text_box);
 
-    auto set_button = zaf::Create<zaf::Button>();
-    set_button->SetText(L"Set");
+    auto set_button = CreateSetButton();
     set_button->GetClickEvent().AddListener(std::bind([height_text_box, min_height_text_box, max_height_text_box, control]() {
 
         auto height = zaf::ToNumeric<float>(height_text_box->GetText());
