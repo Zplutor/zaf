@@ -1,5 +1,7 @@
 #include "control/textual_control_operate_panels_creator.h"
+#include <algorithm>
 #include <zaf/application.h>
+#include <zaf/base/string/to_numeric.h>
 #include <zaf/control/button.h>
 #include <zaf/control/combo_box.h>
 #include <zaf/control/label.h>
@@ -12,6 +14,11 @@
 #include <zaf/graphic/font/font_family.h>
 #include <zaf/graphic/localized_strings.h>
 #include <zaf/graphic/resource_factory.h>
+#include <zaf/property/clickable_control_property_tag.h>
+#include <zaf/property/control_property_tag.h>
+#include <zaf/property/setting.h>
+#include <zaf/property/text_box_property_tag.h>
+#include <zaf/property/textual_control_property_tag.h>
 #include "control/common.h"
 
 static std::shared_ptr<zaf::Control> CreateTextPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
@@ -63,47 +70,103 @@ static std::shared_ptr<zaf::Control> CreateTextPanel(const std::shared_ptr<zaf::
 
 static std::shared_ptr<zaf::Control> CreateFontPanel(const std::shared_ptr<zaf::TextualControl>& textual_control) {
 
-    auto panel = CreateOperateContainerPanel(1);
+    struct Context {
+        std::shared_ptr<zaf::ComboBox> font_family_combo_box;
+        std::shared_ptr<zaf::TextBox> font_size_text_box;
+        std::shared_ptr<zaf::TextBox> font_weight_text_box;
+    };
+    auto context = std::make_shared<Context>();
 
-    auto label = zaf::Create<zaf::Label>();
-    label->SetText(L"Font");
-    label->SetMaximumWidth(OperatePanelLabelMaximumWidth);
-    panel->AddChild(label);
+    return zaf::SetProperties(
+        CreateOperateContainerPanel(3),
 
-    auto font_name_combo_box = zaf::Create<zaf::ComboBox>();
-    font_name_combo_box->SetMaximumVisibleItemCount(10);
-    auto font_name_drop_down_list = font_name_combo_box->GetDropDownListBox();
-    font_name_drop_down_list->AddItemWithText(std::wstring());
+        zaf::child = zaf::CreateWithProperties<zaf::Label>(
+            zaf::text = L"Font",
+            zaf::maximumWidth = OperatePanelLabelMaximumWidth
+        ),
 
-    wchar_t locale_name[1024] = { 0 };
-    LCIDToLocaleName(LANG_USER_DEFAULT, locale_name, 1024, 0);
-    std::wstring user_default_locale = locale_name;
+        zaf::child = zaf::CreateWithProperties<zaf::Control>(
+            zaf::layouter = zaf::GetVerticalArrayLayouter(),
 
-    auto font_collection = zaf::GetResourceFactory()->GetSystemFontCollection();
+            zaf::child = zaf::CreateWithProperties<zaf::Control>(
+                zaf::layouter = zaf::GetHorizontalArrayLayouter(),
+                zaf::child = zaf::CreateWithProperties<zaf::Label>(
+                    zaf::text = L"Family",
+                    zaf::maximumWidth = OperatePanelLabelMaximumWidth
+                ),
+                zaf::child = context->font_family_combo_box = []() {
 
-    for (const auto& each_font_family : font_collection->GetEnumerator()) {
+                    auto font_name_combo_box = zaf::Create<zaf::ComboBox>();
+                    font_name_combo_box->SetMaximumVisibleItemCount(10);
 
-        auto localized_strings = each_font_family->GetFamilyNames();
-        auto index = localized_strings->FindLocaleName(user_default_locale);
-        if (index == zaf::InvalidIndex) {
-            index = localized_strings->FindLocaleName(L"en-us");
-        }
-        if (index != zaf::InvalidIndex) {
-            font_name_drop_down_list->AddItemWithText(localized_strings->GetString(index));
-        }
-    }
+                    auto font_name_drop_down_list = font_name_combo_box->GetDropDownListBox();
+                    font_name_drop_down_list->AddItemWithText(std::wstring());
 
-    panel->AddChild(font_name_combo_box);
-    
-    auto set_button = CreateSetButton();
-    set_button->GetClickEvent().AddListener(std::bind([font_name_combo_box, textual_control]() {
-        zaf::Font new_font = zaf::Font::GetDefault();
-        new_font.family_name = font_name_combo_box->GetText();
-        textual_control->SetFont(new_font);
-    }));
-    panel->AddChild(set_button);
+                    wchar_t locale_name[1024] = { 0 };
+                    LCIDToLocaleName(LANG_USER_DEFAULT, locale_name, 1024, 0);
+                    std::wstring user_default_locale = locale_name;
 
-    return panel;
+                    auto font_collection = zaf::GetResourceFactory()->GetSystemFontCollection();
+
+                    for (const auto& each_font_family : font_collection->GetEnumerator()) {
+
+                        auto localized_strings = each_font_family->GetFamilyNames();
+                        auto index = localized_strings->FindLocaleName(user_default_locale);
+                        if (index == zaf::InvalidIndex) {
+                            index = localized_strings->FindLocaleName(L"en-us");
+                        }
+                        if (index != zaf::InvalidIndex) {
+                            font_name_drop_down_list->AddItemWithText(localized_strings->GetString(index));
+                        }
+                    }
+
+                    return font_name_combo_box;
+                }()
+            ),
+
+            zaf::child = zaf::CreateWithProperties<zaf::Control>(
+                zaf::layouter = zaf::GetHorizontalArrayLayouter(),
+                zaf::child = zaf::CreateWithProperties<zaf::Label>(
+                    zaf::text = L"Size",
+                    zaf::maximumWidth = OperatePanelLabelMaximumWidth
+                ),
+                zaf::child = context->font_size_text_box = zaf::CreateWithProperties<zaf::TextBox>(
+                    zaf::text = std::to_wstring(textual_control->GetFont().size),
+                    zaf::textValidator = zaf::GetNumberTextValidator()
+                )
+            ),
+
+            zaf::child = zaf::CreateWithProperties<zaf::Control>(
+                zaf::layouter = zaf::GetHorizontalArrayLayouter(),
+                zaf::child = zaf::CreateWithProperties<zaf::Label>(
+                    zaf::text = L"Weight", 
+                    zaf::maximumWidth = OperatePanelLabelMaximumWidth
+                ),
+                zaf::child = context->font_weight_text_box = zaf::CreateWithProperties<zaf::TextBox>(
+                    zaf::text = std::to_wstring(textual_control->GetFont().weight),
+                    zaf::textValidator = zaf::GetNumberTextValidator()
+                )
+            )
+        ),
+
+        zaf::child = zaf::SetProperties(
+            CreateSetButton(), 
+            zaf::onClick = std::bind([context, textual_control]() {
+
+                zaf::Font new_font = zaf::Font::GetDefault();
+                
+                auto family_name = context->font_family_combo_box->GetText();
+                if (! family_name.empty()) {
+                    new_font.family_name = family_name;
+                }
+                new_font.size = zaf::ToNumeric<float>(context->font_size_text_box->GetText());
+
+                auto weight = zaf::ToNumeric<int>(context->font_weight_text_box->GetText());
+                new_font.weight = std::max(zaf::FontWeight::Minimum, std::min(zaf::FontWeight::Maximum, weight));
+                textual_control->SetFont(new_font);
+            })
+        )
+    );
 }
 
 
