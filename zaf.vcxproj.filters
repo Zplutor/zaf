@@ -530,5 +530,8 @@
     <ClInclude Include="src\zaf\property\text_box_property_tag.h">
       <Filter>zaf\property</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\property\list_box_property_tag.h">
+      <Filter>zaf\property</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

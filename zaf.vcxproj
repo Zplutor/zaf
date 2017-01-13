@@ -159,6 +159,7 @@
     <ClInclude Include="src\zaf\property\check_box_property_tag.h" />
     <ClInclude Include="src\zaf\property\clickable_control_property_tag.h" />
     <ClInclude Include="src\zaf\property\control_property_tag.h" />
+    <ClInclude Include="src\zaf\property\list_box_property_tag.h" />
     <ClInclude Include="src\zaf\property\setting.h" />
     <ClInclude Include="src\zaf\property\property_tag.h" />
     <ClInclude Include="src\zaf\property\textual_control_property_tag.h" />
