@@ -15,6 +15,10 @@ public:
         
         }
 
+        std::size_t GetItemCount() override {
+            return item_texts_.size();
+        }
+
         float GetItemHeight(std::size_t index) override {
             return item_height_;
         }
