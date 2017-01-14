@@ -25,6 +25,9 @@
     <Filter Include="src\control\list_box">
       <UniqueIdentifier>{9860f223-2543-4933-9f16-e1f08853b97e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\control\image_box">
+      <UniqueIdentifier>{ad1a5e0d-7916-4e3b-849f-cb159b7ffd4a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -69,6 +72,9 @@
     <ClCompile Include="src\control\list_box\list_box_explore_manager.cpp">
       <Filter>src\control\list_box</Filter>
     </ClCompile>
+    <ClCompile Include="src\control\image_box\image_box_explore_manager.cpp">
+      <Filter>src\control\image_box</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main_window.h">
@@ -109,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="src\control\list_box\list_box_explore_manager.h">
       <Filter>src\control\list_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\image_box\image_box_explore_manager.h">
+      <Filter>src\control\image_box</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

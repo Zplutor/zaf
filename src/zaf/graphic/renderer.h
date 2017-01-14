@@ -5,6 +5,8 @@
 #include <zaf/base/error.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
+#include <zaf/graphic/image/bitmap.h>
+#include <zaf/graphic/image/image.h>
 #include <zaf/graphic/layer.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/rect.h>
@@ -16,6 +18,7 @@
 
 namespace zaf {
 
+class Bitmap;
 class Brush;
 class LayerParameters;
 class SolidColorBrush;
@@ -64,6 +67,17 @@ public:
 
     const std::shared_ptr<Layer> CreateLayer(const Size& size) {
         return InnerCreateLayer(&size);
+    }
+
+    const std::shared_ptr<Bitmap> CreateBitmap(
+        const std::shared_ptr<Image::Frame>& image_frame,
+        std::error_code& error_code);
+
+    const std::shared_ptr<Bitmap> CreateBitmap(const std::shared_ptr<Image::Frame>& image) {
+        std::error_code error_code;
+        auto result = CreateBitmap(image, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
     }
 
 	void BeginDraw() {
@@ -188,6 +202,10 @@ public:
 
 		handle_->DrawTextLayout(position.ToD2D1POINT2F(), text_layout->GetHandle(), brush->GetHandle());
 	}
+
+    void DrawBitmap(const std::shared_ptr<Bitmap>& bitmap, const Rect& rect) {
+        handle_->DrawBitmap(bitmap->GetHandle(), rect.ToD2D1RECTF());
+    }
 
 	void PushLayer(const LayerParameters& parameters, const std::shared_ptr<Layer>& layer);
 

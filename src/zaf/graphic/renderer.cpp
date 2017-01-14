@@ -1,6 +1,8 @@
 #include <zaf/graphic/renderer.h>
+#include <zaf/application.h>
 #include <zaf/graphic/brush/solid_color_brush.h>
 #include <zaf/graphic/layer_parameters.h>
+#include <zaf/graphic/resource_factory.h>
 
 namespace zaf {
 
@@ -37,6 +39,48 @@ const std::shared_ptr<Layer> Renderer::InnerCreateLayer(const Size* size, std::e
 	else {
 		return nullptr;
 	}
+}
+
+
+const std::shared_ptr<Bitmap> Renderer::CreateBitmap(
+    const std::shared_ptr<Image::Frame>& image_frame,
+    std::error_code& error_code) {
+
+    auto wic_image_factory_handle = GetResourceFactory()->GetWicImagingFactoryHandle();
+
+    IWICFormatConverter* format_converter = nullptr;
+    HRESULT result = wic_image_factory_handle->CreateFormatConverter(&format_converter);
+
+    error_code = MakeComErrorCode(result);
+    if (! IsSucceeded(error_code)) {
+        return nullptr;
+    }
+
+    result = format_converter->Initialize(
+        image_frame->GetHandle(), 
+        GUID_WICPixelFormat32bppPBGRA,  
+        WICBitmapDitherTypeNone,    
+        nullptr,
+        0.f,
+        WICBitmapPaletteTypeCustom);
+
+    error_code = MakeComErrorCode(result);
+    if (! IsSucceeded(error_code)) {
+        format_converter->Release();
+        return nullptr;
+    }
+
+    ID2D1Bitmap* handle = nullptr;
+    result = handle_->CreateBitmapFromWicBitmap(format_converter, &handle);
+    format_converter->Release();
+
+    error_code = MakeComErrorCode(result);
+    if (IsSucceeded(error_code)) {
+        return std::make_shared<Bitmap>(handle);
+    }
+    else {
+        return nullptr;
+    }
 }
 
 

@@ -130,6 +130,10 @@ public:
 		renderer_->DrawText(text_layout, position, GetCurrentState()->brush);
 	}
 
+    void DrawBitmap(const std::shared_ptr<Bitmap>& bitmap, const Rect& rect) {
+        renderer_->DrawBitmap(bitmap, MakeClearEdgeRectForFill(rect, GetCurrentState()->clear_edge_option));
+    }
+
 private:
 	class State {
 	public:

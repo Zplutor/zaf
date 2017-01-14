@@ -37,6 +37,7 @@ void Application::Initialize(std::error_code& error_code) {
         return;
     }
 
+    //Create Direct2D factory.
 	ID2D1Factory* d2d_factory_handle = nullptr;
 	result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2d_factory_handle);
     error_code = MakeComErrorCode(result);
@@ -44,6 +45,7 @@ void Application::Initialize(std::error_code& error_code) {
 		return;
 	}
 
+    //Create DWrite factory.
 	IDWriteFactory* dwrite_factory_handle = nullptr;
 	result = DWriteCreateFactory(
 		DWRITE_FACTORY_TYPE_SHARED,
@@ -56,7 +58,27 @@ void Application::Initialize(std::error_code& error_code) {
 		return;
 	}
 
-	resource_factory_ = std::make_shared<ResourceFactory>(d2d_factory_handle, dwrite_factory_handle);
+    //Create WIC imaging factory
+    IWICImagingFactory* wic_imaging_factory_handle = nullptr;
+    result = CoCreateInstance(
+        CLSID_WICImagingFactory,
+        nullptr,
+        CLSCTX_INPROC_SERVER,
+        IID_PPV_ARGS(&wic_imaging_factory_handle)
+    );
+    error_code = MakeComErrorCode(result);
+    if (!IsSucceeded(error_code)) {
+        d2d_factory_handle->Release();
+        dwrite_factory_handle->Release();
+        return;
+    }
+
+	resource_factory_ = std::make_shared<ResourceFactory>(
+        d2d_factory_handle, 
+        dwrite_factory_handle, 
+        wic_imaging_factory_handle
+    );
+
 	is_initialized_ = true;
 }
 

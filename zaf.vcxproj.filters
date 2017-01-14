@@ -49,6 +49,9 @@
     <Filter Include="zaf\property">
       <UniqueIdentifier>{03b757bb-98bb-4e74-82d9-af6833398059}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\image">
+      <UniqueIdentifier>{ab9b298a-d82e-4aa0-8331-c0c22bc9ffff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -203,6 +206,15 @@
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\localized_strings.cpp">
       <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\image.cpp">
+      <Filter>zaf\graphic\image</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\bitmap.cpp">
+      <Filter>zaf\graphic\image</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\image_box.cpp">
+      <Filter>zaf\control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -532,6 +544,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\property\list_box_property_tag.h">
       <Filter>zaf\property</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\image.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\bitmap.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\image_box.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

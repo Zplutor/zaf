@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dwrite.h>
+#include <wincodec.h>
 #include <memory>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error.h>
@@ -9,6 +10,7 @@ namespace zaf {
 
 class FontCollection;
 class Geometry;
+class Image;
 class PathGeometry;
 class RectangleGeometry;
 class Rect;
@@ -33,7 +35,10 @@ public:
 	/**
 	 Initialize the instance with specified underlying instances.
 	 */
-    ResourceFactory(ID2D1Factory* d2d_factory_handle, IDWriteFactory* dwrite_factory_handle);
+    ResourceFactory(
+        ID2D1Factory* d2d_factory_handle, 
+        IDWriteFactory* dwrite_factory_handle,
+        IWICImagingFactory* wic_imaging_factory_handle);
 
 	/**
 	 Destroy the instance.
@@ -160,6 +165,14 @@ public:
         return result;
     }
     
+    const std::shared_ptr<Image> CreateImage(const std::wstring& file_path, std::error_code& error_code);
+
+    const std::shared_ptr<Image> CreateImage(const std::wstring& file_path) {
+        std::error_code error_code;
+        auto result = CreateImage(file_path, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
 
 	/**
 	 Get the underlying ID2D1Factory instance.
@@ -175,12 +188,20 @@ public:
 		return dwrite_factory_handle_;
 	}
 
+    /**
+     Get the underlying IWICImagingFactory instance.
+     */
+    IWICImagingFactory* GetWicImagingFactoryHandle() const {
+        return wic_imaging_factory_handle_;
+    }
+
     ResourceFactory(const ResourceFactory&) = delete;
     ResourceFactory& operator=(const ResourceFactory&) = delete;
 
 private:
 	ID2D1Factory* d2d_factory_handle_;
 	IDWriteFactory* dwrite_factory_handle_;
+    IWICImagingFactory* wic_imaging_factory_handle_;
 };
 
 }

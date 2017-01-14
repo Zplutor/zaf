@@ -6,6 +6,7 @@
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/geometry/transformed_geometry.h>
+#include <zaf/graphic/image/image.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_format_properties.h>
@@ -14,9 +15,14 @@
 
 namespace zaf {
 
-ResourceFactory::ResourceFactory(ID2D1Factory* d2d_factory_handle, IDWriteFactory* dwrite_factory_handle) :
+ResourceFactory::ResourceFactory(
+    ID2D1Factory* d2d_factory_handle, 
+    IDWriteFactory* dwrite_factory_handle,
+    IWICImagingFactory* wic_imaging_factory_handle) 
+    :
 	d2d_factory_handle_(d2d_factory_handle),
-	dwrite_factory_handle_(dwrite_factory_handle) {
+	dwrite_factory_handle_(dwrite_factory_handle),
+    wic_imaging_factory_handle_(wic_imaging_factory_handle) {
 
 }
 
@@ -30,6 +36,10 @@ ResourceFactory::~ResourceFactory() {
 	if (dwrite_factory_handle_ != nullptr) {
 		dwrite_factory_handle_->Release();
 	}
+
+    if (wic_imaging_factory_handle_ != nullptr) {
+        wic_imaging_factory_handle_->Release();
+    }
 }
 
 
@@ -202,6 +212,26 @@ const std::shared_ptr<FontCollection> ResourceFactory::GetSystemFontCollection(s
     error_code = MakeComErrorCode(result);
     if (IsSucceeded(error_code)) {
         return std::make_shared<FontCollection>(handle);
+    }
+    else {
+        return nullptr;
+    }
+}
+
+
+const std::shared_ptr<Image> ResourceFactory::CreateImage(const std::wstring& file_path, std::error_code& error_code) {
+
+    IWICBitmapDecoder* handle = nullptr;
+    HRESULT result = wic_imaging_factory_handle_->CreateDecoderFromFilename(
+        file_path.c_str(),
+        nullptr,
+        GENERIC_READ, 
+        WICDecodeMetadataCacheOnDemand,
+        &handle);
+
+    error_code = MakeComErrorCode(result);
+    if (IsSucceeded(error_code)) {
+        return std::make_shared<Image>(handle);
     }
     else {
         return nullptr;

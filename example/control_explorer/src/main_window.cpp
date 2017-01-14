@@ -5,6 +5,7 @@
 #include "control_view_panel.h"
 #include "control/button/button_explore_manager.h"
 #include "control/check_box/check_box_explore_manager.h"
+#include "control/image_box/image_box_explore_manager.h"
 #include "control/label/label_explore_manager.h"
 #include "control/list_box/list_box_explore_manager.h"
 #include "control/radio_button/radio_button_explore_manager.h"
@@ -16,6 +17,7 @@ static const struct {
 } kControlNameAndCreators[] = {
     L"Button", []() { return std::make_shared<ButtonExploreManager>(); },
     L"CheckBox", []() { return std::make_shared<CheckBoxExploreManager>(); },
+    L"ImageBox", []() { return std::make_shared<ImageBoxExploreManager>(); },
     L"Label", []() { return std::make_shared<LabelExploreManager>(); },
     L"ListBox", []() { return std::make_shared<ListBoxExploreManager>(); },
     L"RadioButton", []() { return std::make_shared<RadioButtonExploreManager>(); },
