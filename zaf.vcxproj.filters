@@ -554,5 +554,11 @@
     <ClInclude Include="src\zaf\control\image_box.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\interpolation_mode.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\property\radio_button_property_tag.h">
+      <Filter>zaf\property</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

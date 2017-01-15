@@ -135,6 +135,7 @@
     <ClInclude Include="src\zaf\graphic\geometry\transformed_geometry.h" />
     <ClInclude Include="src\zaf\graphic\image\bitmap.h" />
     <ClInclude Include="src\zaf\graphic\image\image.h" />
+    <ClInclude Include="src\zaf\graphic\image\interpolation_mode.h" />
     <ClInclude Include="src\zaf\graphic\layer.h" />
     <ClInclude Include="src\zaf\graphic\clear_edge.h" />
     <ClInclude Include="src\zaf\graphic\layer_parameters.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="src\zaf\property\clickable_control_property_tag.h" />
     <ClInclude Include="src\zaf\property\control_property_tag.h" />
     <ClInclude Include="src\zaf\property\list_box_property_tag.h" />
+    <ClInclude Include="src\zaf\property\radio_button_property_tag.h" />
     <ClInclude Include="src\zaf\property\setting.h" />
     <ClInclude Include="src\zaf\property\property_tag.h" />
     <ClInclude Include="src\zaf\property\textual_control_property_tag.h" />

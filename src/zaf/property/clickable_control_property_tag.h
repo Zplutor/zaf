@@ -1,7 +1,7 @@
 #pragma once
 
-#include <zaf/control/button.h>
-#include <zaf/property/property_tag.h>
+#include <zaf/control/clickable_control.h>
+#include <zaf/property/textual_control_property_tag.h>
 
 namespace zaf {
 

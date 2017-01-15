@@ -5,6 +5,8 @@
 
 namespace zaf {
 
+static const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
+
 ImageBox::ImageBox() {
 
 }
@@ -25,7 +27,10 @@ void ImageBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
         }
     }
 
-    canvas.DrawBitmap(frame_bitmaps_[0], GetContentRect());
+    canvas.DrawBitmap(
+        frame_bitmaps_[0],
+        GetContentRect(),
+        DrawImageOptions().InterpolationMode(GetInterpolationMode()));
 }
 
 
@@ -67,6 +72,25 @@ void ImageBox::SetImage(const std::shared_ptr<Image>& image) {
 
     image_ = image;
     ReleaseRendererResources();
+    NeedRepaint();
+}
+
+
+InterpolationMode ImageBox::GetInterpolationMode() const {
+
+    auto mode = GetPropertyMap().TryGetProperty<InterpolationMode>(kInterpolationModePropertyName);
+    if (mode != nullptr) {
+        return *mode;
+    }
+    else {
+        return InterpolationMode::Linear;
+    }
+}
+
+
+void ImageBox::SetInterpolationMode(InterpolationMode mode) {
+
+    GetPropertyMap().SetProperty(kInterpolationModePropertyName, mode);
     NeedRepaint();
 }
 

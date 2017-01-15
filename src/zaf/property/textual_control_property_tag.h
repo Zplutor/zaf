@@ -4,7 +4,7 @@
 #include <string>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/font/font.h>
-#include <zaf/property/property_tag.h>
+#include <zaf/property/control_property_tag.h>
 
 namespace zaf {
 

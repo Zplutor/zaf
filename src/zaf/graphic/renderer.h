@@ -7,6 +7,7 @@
 #include <zaf/graphic/ellipse.h>
 #include <zaf/graphic/image/bitmap.h>
 #include <zaf/graphic/image/image.h>
+#include <zaf/graphic/image/interpolation_mode.h>
 #include <zaf/graphic/layer.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/rect.h>
@@ -203,8 +204,19 @@ public:
 		handle_->DrawTextLayout(position.ToD2D1POINT2F(), text_layout->GetHandle(), brush->GetHandle());
 	}
 
-    void DrawBitmap(const std::shared_ptr<Bitmap>& bitmap, const Rect& rect) {
-        handle_->DrawBitmap(bitmap->GetHandle(), rect.ToD2D1RECTF());
+    void DrawBitmap(
+        const std::shared_ptr<Bitmap>& bitmap,
+        const Rect& rect,
+        float opacity,
+        InterpolationMode interpolation_mode,
+        const Rect* bitmap_rect) {
+
+        handle_->DrawBitmap(
+            bitmap->GetHandle(),
+            rect.ToD2D1RECTF(),
+            opacity,
+            static_cast<D2D1_BITMAP_INTERPOLATION_MODE>(interpolation_mode),
+            bitmap_rect == nullptr ? nullptr : &(bitmap_rect->ToD2D1RECTF()));
     }
 
 	void PushLayer(const LayerParameters& parameters, const std::shared_ptr<Layer>& layer);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/control/control.h>
+#include <zaf/graphic/image/interpolation_mode.h>
 
 namespace zaf {
 
@@ -17,6 +18,9 @@ public:
     }
 
     void SetImage(const std::shared_ptr<Image>& image);
+
+    InterpolationMode GetInterpolationMode() const;
+    void SetInterpolationMode(InterpolationMode mode);
 
 protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;

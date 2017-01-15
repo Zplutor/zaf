@@ -13,6 +13,44 @@ namespace zaf {
 
 class Layer;
 
+class DrawImageOptions {
+public:
+    float Opacity() const {
+        return opacity_;
+    }
+
+    DrawImageOptions& Opacity(float value) {
+        opacity_ = value;
+        return *this;
+    }
+
+    InterpolationMode InterpolationMode() const {
+        return interpolation_mode_;
+    }
+
+    DrawImageOptions& InterpolationMode(zaf::InterpolationMode value) {
+        interpolation_mode_ = value;
+        return *this;
+    }
+
+    const Rect* SourceRect() const {
+        return has_source_rect ? &source_rect : nullptr;
+    }
+
+    DrawImageOptions& SourceRect(const Rect& value) {
+        has_source_rect = true;
+        source_rect = value;
+        return *this;
+    }
+
+private:
+    float opacity_ = 1.f;
+    zaf::InterpolationMode interpolation_mode_ = InterpolationMode::Linear;
+    bool has_source_rect = false;
+    Rect source_rect;
+};
+
+
 class Canvas {
 public:
 	class StateGuard {
@@ -131,7 +169,11 @@ public:
 	}
 
     void DrawBitmap(const std::shared_ptr<Bitmap>& bitmap, const Rect& rect) {
-        renderer_->DrawBitmap(bitmap, MakeClearEdgeRectForFill(rect, GetCurrentState()->clear_edge_option));
+        DrawBitmap(bitmap, rect, DrawImageOptions());
+    }
+
+    void DrawBitmap(const std::shared_ptr<Bitmap>& bitmap, const Rect& rect, const DrawImageOptions& options) {
+        renderer_->DrawBitmap(bitmap, rect, options.Opacity(), options.InterpolationMode(), options.SourceRect());
     }
 
 private:
