@@ -207,14 +207,14 @@
     <ClCompile Include="src\zaf\graphic\localized_strings.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\image.cpp">
-      <Filter>zaf\graphic\image</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\graphic\image\bitmap.cpp">
       <Filter>zaf\graphic\image</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\image_box.cpp">
       <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\image_decoder.cpp">
+      <Filter>zaf\graphic\image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -545,9 +545,6 @@
     <ClInclude Include="src\zaf\property\list_box_property_tag.h">
       <Filter>zaf\property</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\image.h">
-      <Filter>zaf\graphic\image</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\image\bitmap.h">
       <Filter>zaf\graphic\image</Filter>
     </ClInclude>
@@ -559,6 +556,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\property\radio_button_property_tag.h">
       <Filter>zaf\property</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\image_decoder.h">
+      <Filter>zaf\graphic\image</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

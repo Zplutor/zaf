@@ -1,8 +1,8 @@
-#include <zaf/graphic/image/image.h>
+#include <zaf/graphic/image/image_decoder.h>
 
 namespace zaf {
 
-std::size_t Image::GetFrameCount(std::error_code& error_code) const {
+    std::size_t ImageDecoder::GetFrameCount(std::error_code& error_code) const {
 
     UINT count = 0;
     HRESULT result = handle_->GetFrameCount(&count);
@@ -17,7 +17,7 @@ std::size_t Image::GetFrameCount(std::error_code& error_code) const {
 }
 
 
-const std::shared_ptr<Image::Frame> Image::GetFrame(std::size_t index, std::error_code& error_code) const {
+const std::shared_ptr<ImageDecoder::Frame> ImageDecoder::GetFrame(std::size_t index, std::error_code& error_code) const {
 
     IWICBitmapFrameDecode* handle = nullptr;
     HRESULT result = handle_->GetFrame(index, &handle);

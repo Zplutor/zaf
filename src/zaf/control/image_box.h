@@ -6,18 +6,18 @@
 namespace zaf {
 
 class Bitmap;
-class Image;
+class ImageDecoder;
 
 class ImageBox : public Control {
 public:
     ImageBox();
     ~ImageBox();
 
-    const std::shared_ptr<Image>& GetImage() const {
-        return image_;
+    const std::shared_ptr<ImageDecoder>& GetImageDecoder() const {
+        return image_decoder_;
     }
 
-    void SetImage(const std::shared_ptr<Image>& image);
+    void SetImageDecoder(const std::shared_ptr<ImageDecoder>& image_decoder);
 
     InterpolationMode GetInterpolationMode() const;
     void SetInterpolationMode(InterpolationMode mode);
@@ -30,7 +30,7 @@ private:
     bool CreateFrameBitmaps(const std::shared_ptr<Renderer>& renderer);
 
 private:
-    std::shared_ptr<Image> image_;
+    std::shared_ptr<ImageDecoder> image_decoder_;
     std::vector<std::shared_ptr<Bitmap>> frame_bitmaps_;
 };
 

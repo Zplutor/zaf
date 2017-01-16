@@ -10,7 +10,7 @@ namespace zaf {
 
 class FontCollection;
 class Geometry;
-class Image;
+class ImageDecoder;
 class PathGeometry;
 class RectangleGeometry;
 class Rect;
@@ -165,11 +165,11 @@ public:
         return result;
     }
     
-    const std::shared_ptr<Image> CreateImage(const std::wstring& file_path, std::error_code& error_code);
+    const std::shared_ptr<ImageDecoder> CreateImageDecoder(const std::wstring& file_path, std::error_code& error_code);
 
-    const std::shared_ptr<Image> CreateImage(const std::wstring& file_path) {
+    const std::shared_ptr<ImageDecoder> CreateImageDecoder(const std::wstring& file_path) {
         std::error_code error_code;
-        auto result = CreateImage(file_path, error_code);
+        auto result = CreateImageDecoder(file_path, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }

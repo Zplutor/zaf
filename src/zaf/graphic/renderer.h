@@ -6,7 +6,7 @@
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
 #include <zaf/graphic/image/bitmap.h>
-#include <zaf/graphic/image/image.h>
+#include <zaf/graphic/image/image_decoder.h>
 #include <zaf/graphic/image/interpolation_mode.h>
 #include <zaf/graphic/layer.h>
 #include <zaf/graphic/matrix.h>
@@ -71,10 +71,10 @@ public:
     }
 
     const std::shared_ptr<Bitmap> CreateBitmap(
-        const std::shared_ptr<Image::Frame>& image_frame,
+        const std::shared_ptr<ImageDecoder::Frame>& image_frame,
         std::error_code& error_code);
 
-    const std::shared_ptr<Bitmap> CreateBitmap(const std::shared_ptr<Image::Frame>& image) {
+    const std::shared_ptr<Bitmap> CreateBitmap(const std::shared_ptr<ImageDecoder::Frame>& image) {
         std::error_code error_code;
         auto result = CreateBitmap(image, error_code);
         ZAF_CHECK_ERROR(error_code);

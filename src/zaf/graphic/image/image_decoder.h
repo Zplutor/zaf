@@ -6,7 +6,7 @@
 
 namespace zaf {
 
-class Image {
+class ImageDecoder {
 public:
     class Frame {
     public:
@@ -30,11 +30,11 @@ public:
     };
 
 public:
-    explicit Image(IWICBitmapDecoder* handle) : handle_(handle) {
+    explicit ImageDecoder(IWICBitmapDecoder* handle) : handle_(handle) {
 
     }
 
-    ~Image() {
+    ~ImageDecoder() {
         handle_->Release();
     }
 
@@ -60,8 +60,8 @@ public:
         return handle_;
     }
 
-    Image(const Image&) = delete;
-    Image& operator=(const Image&) = delete;
+    ImageDecoder(const ImageDecoder&) = delete;
+    ImageDecoder& operator=(const ImageDecoder&) = delete;
 
 private:
     IWICBitmapDecoder* handle_;

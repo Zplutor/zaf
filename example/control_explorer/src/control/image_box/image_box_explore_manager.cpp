@@ -19,9 +19,9 @@ void ImageBoxExploreManager::Initialize(
     auto image_box = zaf::Create<zaf::ImageBox>();
     image_box->SetSize(zaf::Size(300, 300));
 
-    auto image = zaf::GetResourceFactory()->CreateImage(L"C:\\Users\\Zplutor\\Desktop\\1987001170.jpg");
+    auto image = zaf::GetResourceFactory()->CreateImageDecoder(L"C:\\Users\\Zplutor\\Desktop\\1987001170.jpg");
     if (image != nullptr) {
-        image_box->SetImage(image);
+        image_box->SetImageDecoder(image);
     }
     control = image_box;
 

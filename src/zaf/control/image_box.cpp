@@ -1,7 +1,7 @@
 #include <zaf/control/image_box.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/image/bitmap.h>
-#include <zaf/graphic/image/image.h>
+#include <zaf/graphic/image/image_decoder.h>
 
 namespace zaf {
 
@@ -36,13 +36,13 @@ void ImageBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 bool ImageBox::CreateFrameBitmaps(const std::shared_ptr<Renderer>& renderer) {
 
-    if (image_ == nullptr) {
+    if (image_decoder_ == nullptr) {
         return false;
     }
 
-    for (std::size_t index = 0; index < image_->GetFrameCount(); ++index) {
+    for (std::size_t index = 0; index < image_decoder_->GetFrameCount(); ++index) {
 
-        auto frame = image_->GetFrame(index);
+        auto frame = image_decoder_->GetFrame(index);
         if (frame == nullptr) {
             continue;
         }
@@ -64,13 +64,13 @@ void ImageBox::ReleaseRendererResources() {
 }
 
 
-void ImageBox::SetImage(const std::shared_ptr<Image>& image) {
+void ImageBox::SetImageDecoder(const std::shared_ptr<ImageDecoder>& image_decoder) {
 
-    if (image_ == image) {
+    if (image_decoder_ == image_decoder) {
         return;
     }
 
-    image_ = image;
+    image_decoder_ = image_decoder;
     ReleaseRendererResources();
     NeedRepaint();
 }

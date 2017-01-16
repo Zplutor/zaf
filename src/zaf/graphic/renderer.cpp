@@ -43,7 +43,7 @@ const std::shared_ptr<Layer> Renderer::InnerCreateLayer(const Size* size, std::e
 
 
 const std::shared_ptr<Bitmap> Renderer::CreateBitmap(
-    const std::shared_ptr<Image::Frame>& image_frame,
+    const std::shared_ptr<ImageDecoder::Frame>& image_frame,
     std::error_code& error_code) {
 
     auto wic_image_factory_handle = GetResourceFactory()->GetWicImagingFactoryHandle();
