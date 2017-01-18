@@ -97,7 +97,7 @@ public:
 		GetCurrentState()->clear_edge_option = option;
 	}
 
-	void SetBrush(const std::shared_ptr<Brush>& brush) {
+	void SetBrush(const Brush& brush) {
 		GetCurrentState()->brush = brush;
 	}
 
@@ -183,7 +183,7 @@ private:
 
 	public:
 		ClearEdgeOption clear_edge_option;
-		std::shared_ptr<Brush> brush;
+		Brush brush;
 		std::shared_ptr<Stroke> stroke;
 	};
 

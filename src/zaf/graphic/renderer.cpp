@@ -6,18 +6,13 @@
 
 namespace zaf {
 
-const std::shared_ptr<SolidColorBrush> Renderer::CreateSolidColorBrush(const Color& color, std::error_code& error_code) {
+const SolidColorBrush Renderer::CreateSolidColorBrush(const Color& color, std::error_code& error_code) {
 
 	ID2D1SolidColorBrush* brush_handle = nullptr;
 	LRESULT result = handle_->CreateSolidColorBrush(color.ToD2D1COLORF(), &brush_handle);
 
     error_code = MakeComErrorCode(result);
-	if (IsSucceeded(error_code)) {
-		return std::make_shared<SolidColorBrush>(brush_handle);
-	}
-	else {
-		return nullptr;
-	}
+    return SolidColorBrush(brush_handle);
 }
 
 

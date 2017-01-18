@@ -3,6 +3,7 @@
 #include <memory>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error.h>
+#include <zaf/graphic/brush/solid_color_brush.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
 #include <zaf/graphic/image/bitmap.h>
@@ -12,7 +13,6 @@
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/stroke.h>
-#include <zaf/graphic/brush/brush.h>
 #include <zaf/graphic/geometry/geometry.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_layout.h>
@@ -21,7 +21,6 @@ namespace zaf {
 
 class Brush;
 class LayerParameters;
-class SolidColorBrush;
 
 class Renderer {
 public:
@@ -44,9 +43,9 @@ public:
         ZAF_CHECK_ERROR(error_code);
     }
 
-    const std::shared_ptr<SolidColorBrush> CreateSolidColorBrush(const Color& color, std::error_code& error_code);
+    const SolidColorBrush CreateSolidColorBrush(const Color& color, std::error_code& error_code);
 
-    const std::shared_ptr<SolidColorBrush> CreateSolidColorBrush(const Color& color) {
+    const SolidColorBrush CreateSolidColorBrush(const Color& color) {
         std::error_code error_code;
         auto result = CreateSolidColorBrush(color, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -96,7 +95,7 @@ public:
 	void DrawLine(
 		const Point& from_point, 
 		const Point& to_point, 
-		const std::shared_ptr<Brush>& brush,
+		const Brush& brush,
 		float stroke_width,
 		const std::shared_ptr<Stroke>& stroke
 	) {
@@ -104,45 +103,45 @@ public:
 		handle_->DrawLine(
 			from_point.ToD2D1POINT2F(), 
 			to_point.ToD2D1POINT2F(),
-			brush->GetHandle(),
+			brush.GetHandle(),
 			stroke_width,
 			stroke == nullptr ? nullptr : stroke->GetHandle()
 		);
 	}
 
-	void DrawRectangle(const Rect& rect, const std::shared_ptr<Brush>& brush) {
-		handle_->FillRectangle(rect.ToD2D1RECTF(), brush->GetHandle());
+	void DrawRectangle(const Rect& rect, const Brush& brush) {
+		handle_->FillRectangle(rect.ToD2D1RECTF(), brush.GetHandle());
 	}
 
 	void DrawRectangleFrame(
 		const Rect& rect, 
-		const std::shared_ptr<Brush>& brush, 
+		const Brush& brush, 
 		float stroke_width,
 		const std::shared_ptr<Stroke>& stroke
 	) {
 
 		handle_->DrawRectangle(
 			rect.ToD2D1RECTF(),
-			brush->GetHandle(), 
+			brush.GetHandle(), 
 			stroke_width,
 			stroke == nullptr ? nullptr : stroke->GetHandle()
 		);
 	}
 
-	void DrawEllipse(const Ellipse& ellipse, const std::shared_ptr<Brush>& brush) {
-		handle_->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush->GetHandle());
+	void DrawEllipse(const Ellipse& ellipse, const Brush& brush) {
+		handle_->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush.GetHandle());
 	}
 
 	void DrawEllipseFrame(
 		const Ellipse& ellipse,
-		const std::shared_ptr<Brush>& brush,
+		const Brush& brush,
 		float stroke_width,
 		const std::shared_ptr<Stroke>& stroke
 	) {
 
 		handle_->DrawEllipse(
 			ellipse.ToD2D1ELLIPSE(),
-			brush->GetHandle(),
+			brush.GetHandle(),
 			stroke_width, 
 			stroke == nullptr ? nullptr : stroke->GetHandle()
 		);
@@ -150,27 +149,27 @@ public:
 
 	void DrawGeometry(
 		const std::shared_ptr<Geometry>& geometry,
-		const std::shared_ptr<Brush>& brush,
+		const Brush& brush,
 		const std::shared_ptr<Brush>& opacity_brush
 	) {
 
 		handle_->FillGeometry(
 			geometry->GetHandle(),
-			brush->GetHandle(), 
+			brush.GetHandle(), 
 			opacity_brush == nullptr ? nullptr : opacity_brush->GetHandle()
 		);
 	}
 
 	void DrawGeometryFrame(
 		const std::shared_ptr<Geometry>& geometry,
-		const std::shared_ptr<Brush>& brush,
+		const Brush& brush,
 		float stroke_width,
 		const std::shared_ptr<Stroke>& stroke
 	) {
 
 		handle_->DrawGeometry(
 			geometry->GetHandle(),
-			brush->GetHandle(),
+			brush.GetHandle(),
 			stroke_width, 
 			stroke == nullptr ? nullptr : stroke->GetHandle()
 		);
@@ -180,7 +179,7 @@ public:
 		const std::wstring& text,
 		const std::shared_ptr<TextFormat>& text_format,
 		const Rect& rect,
-		const std::shared_ptr<Brush>& brush
+		const Brush& brush
 	) {
 
 		handle_->DrawText(
@@ -188,17 +187,17 @@ public:
 			text.length(),
 			text_format->GetHandle(),
 			rect.ToD2D1RECTF(),
-			brush->GetHandle()
+			brush.GetHandle()
 		);
 	}
 
 	void DrawText(
 		const std::shared_ptr<TextLayout>& text_layout,
 		const Point& position,
-		const std::shared_ptr<Brush>& brush
+		const Brush& brush
 	) {
 
-		handle_->DrawTextLayout(position.ToD2D1POINT2F(), text_layout->GetHandle(), brush->GetHandle());
+		handle_->DrawTextLayout(position.ToD2D1POINT2F(), text_layout->GetHandle(), brush.GetHandle());
 	}
 
     void DrawBitmap(

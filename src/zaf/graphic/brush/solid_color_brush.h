@@ -12,6 +12,8 @@ namespace zaf {
  */
 class SolidColorBrush : public Brush {
 public:
+    SolidColorBrush() { }
+
     /**
      Construct the instance with specified handle.
 
