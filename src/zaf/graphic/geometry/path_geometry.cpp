@@ -6,7 +6,7 @@ namespace zaf {
 std::size_t PathGeometry::GetFigureCount(std::error_code& error_code) const {
 
 	std::size_t count = 0;
-	HRESULT result = handle_->GetFigureCount(&count);
+	HRESULT result = GetActualHandle()->GetFigureCount(&count);
 
     error_code = MakeComErrorCode(result);
 	if (IsSucceeded(error_code)) {
@@ -21,7 +21,7 @@ std::size_t PathGeometry::GetFigureCount(std::error_code& error_code) const {
 std::size_t PathGeometry::GetSegmentCount(std::error_code& error_code) const {
 
 	std::size_t count = 0;
-	HRESULT result = handle_->GetSegmentCount(&count);
+	HRESULT result = GetActualHandle()->GetSegmentCount(&count);
 
     error_code = MakeComErrorCode(result);
 	if (IsSucceeded(error_code)) {
@@ -36,7 +36,7 @@ std::size_t PathGeometry::GetSegmentCount(std::error_code& error_code) const {
 const GeometrySink PathGeometry::Open(std::error_code& error_code) {
 
 	ID2D1GeometrySink* sink_handle = nullptr;
-	HRESULT result = handle_->Open(&sink_handle);
+	HRESULT result = GetActualHandle()->Open(&sink_handle);
 
     error_code = MakeComErrorCode(result);
     return GeometrySink(sink_handle);

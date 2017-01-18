@@ -12,23 +12,21 @@ namespace zaf {
  */
 class TransformedGeometry : public Geometry {
 public:
+    TransformedGeometry() { }
+
     /**
      Construct the instance with specified handle.
 
      See also Geometry::Geometry.
      */
-    TransformedGeometry(ID2D1TransformedGeometry* handle) : 
-        Geometry(handle),
-        handle_(handle) {
-    
-    }
+    TransformedGeometry(ID2D1TransformedGeometry* handle) : Geometry(handle) { }
 
     /**
      Get the source geometry of this transformed geometry.
      */
     const std::shared_ptr<Geometry> GetSourceGeometry() const {
         ID2D1Geometry* handle = nullptr;
-        handle_->GetSourceGeometry(&handle);
+        GetActualHandle()->GetSourceGeometry(&handle);
         return std::make_shared<Geometry>(handle);
     }
 
@@ -37,12 +35,14 @@ public:
      */
     const TransformMatrix GetTransformMatrix() const {
         D2D1::Matrix3x2F matrix;
-        handle_->GetTransform(&matrix);
+        GetActualHandle()->GetTransform(&matrix);
         return TransformMatrix::FromD2D1MATRIX3X2F(matrix);
     }
 
 private:
-    ID2D1TransformedGeometry* handle_;
+    ID2D1TransformedGeometry* GetActualHandle() const {
+        return dynamic_cast<ID2D1TransformedGeometry*>(GetHandle());
+    }
 };
 
 }

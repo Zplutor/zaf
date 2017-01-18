@@ -20,11 +20,7 @@ public:
 
      See also Geometry::Geometry.
      */
-	explicit PathGeometry(ID2D1PathGeometry* handle) : 
-		Geometry(handle),
-		handle_(handle) { 
-	
-	} 
+	explicit PathGeometry(ID2D1PathGeometry* handle) : Geometry(handle) { } 
 
     /**
      Get the number of figures.
@@ -81,7 +77,9 @@ public:
     }
 
 private:
-	ID2D1PathGeometry* handle_;
+	ID2D1PathGeometry* GetActualHandle() const {
+        return dynamic_cast<ID2D1PathGeometry*>(GetHandle());
+    }
 };
 
 }

@@ -19,26 +19,26 @@ public:
 
      See also Brush::Brush.
      */
-	explicit SolidColorBrush(ID2D1SolidColorBrush* handle) : 
-		Brush(handle),
-		handle_(handle) { }
+	explicit SolidColorBrush(ID2D1SolidColorBrush* handle) : Brush(handle) { }
 
     /**
      Get color of brush.
      */
 	const Color GetColor() const {
-		return Color::FromD2D1COLORF(handle_->GetColor());
+		return Color::FromD2D1COLORF(GetActualHandle()->GetColor());
 	}
 
     /**
      Set color of brush.
      */
 	void SetColor(const Color& color) {
-		handle_->SetColor(color.ToD2D1COLORF());
+		GetActualHandle()->SetColor(color.ToD2D1COLORF());
 	}
 
 private:
-	ID2D1SolidColorBrush* handle_;
+	ID2D1SolidColorBrush* GetActualHandle() const {
+        return dynamic_cast<ID2D1SolidColorBrush*>(GetHandle());
+    }
 };
 
 }
