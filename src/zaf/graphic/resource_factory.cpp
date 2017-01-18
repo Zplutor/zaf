@@ -6,7 +6,6 @@
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/geometry/transformed_geometry.h>
-#include <zaf/graphic/image/image_decoder.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_format_properties.h>
@@ -219,7 +218,7 @@ const std::shared_ptr<FontCollection> ResourceFactory::GetSystemFontCollection(s
 }
 
 
-const std::shared_ptr<ImageDecoder> ResourceFactory::CreateImageDecoder(const std::wstring& file_path, std::error_code& error_code) {
+const ImageDecoder ResourceFactory::CreateImageDecoder(const std::wstring& file_path, std::error_code& error_code) {
 
     IWICBitmapDecoder* handle = nullptr;
     HRESULT result = wic_imaging_factory_handle_->CreateDecoderFromFilename(
@@ -230,12 +229,7 @@ const std::shared_ptr<ImageDecoder> ResourceFactory::CreateImageDecoder(const st
         &handle);
 
     error_code = MakeComErrorCode(result);
-    if (IsSucceeded(error_code)) {
-        return std::make_shared<ImageDecoder>(handle);
-    }
-    else {
-        return nullptr;
-    }
+    return ImageDecoder(handle);
 }
 
 }

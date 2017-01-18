@@ -168,11 +168,11 @@ public:
 		renderer_->DrawText(text_layout, position, GetCurrentState()->brush);
 	}
 
-    void DrawBitmap(const std::shared_ptr<Bitmap>& bitmap, const Rect& rect) {
+    void DrawBitmap(const Bitmap& bitmap, const Rect& rect) {
         DrawBitmap(bitmap, rect, DrawImageOptions());
     }
 
-    void DrawBitmap(const std::shared_ptr<Bitmap>& bitmap, const Rect& rect, const DrawImageOptions& options) {
+    void DrawBitmap(const Bitmap& bitmap, const Rect& rect, const DrawImageOptions& options) {
         renderer_->DrawBitmap(bitmap, rect, options.Opacity(), options.InterpolationMode(), options.SourceRect());
     }
 

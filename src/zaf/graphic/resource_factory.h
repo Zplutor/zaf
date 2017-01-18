@@ -5,12 +5,12 @@
 #include <memory>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error.h>
+#include <zaf/graphic/image/image_decoder.h>
 
 namespace zaf {
 
 class FontCollection;
 class Geometry;
-class ImageDecoder;
 class PathGeometry;
 class RectangleGeometry;
 class Rect;
@@ -165,9 +165,9 @@ public:
         return result;
     }
     
-    const std::shared_ptr<ImageDecoder> CreateImageDecoder(const std::wstring& file_path, std::error_code& error_code);
+    const ImageDecoder CreateImageDecoder(const std::wstring& file_path, std::error_code& error_code);
 
-    const std::shared_ptr<ImageDecoder> CreateImageDecoder(const std::wstring& file_path) {
+    const ImageDecoder CreateImageDecoder(const std::wstring& file_path) {
         std::error_code error_code;
         auto result = CreateImageDecoder(file_path, error_code);
         ZAF_CHECK_ERROR(error_code);

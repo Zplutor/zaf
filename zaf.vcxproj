@@ -69,6 +69,7 @@
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h" />
     <ClInclude Include="src\zaf\base\assert.h" />
+    <ClInclude Include="src\zaf\base\com_object.h" />
     <ClInclude Include="src\zaf\base\direct2d.h" />
     <ClInclude Include="src\zaf\base\error.h" />
     <ClInclude Include="src\zaf\base\event.h" />

@@ -19,7 +19,6 @@
 
 namespace zaf {
 
-class Bitmap;
 class Brush;
 class LayerParameters;
 class SolidColorBrush;
@@ -70,11 +69,9 @@ public:
         return InnerCreateLayer(&size);
     }
 
-    const std::shared_ptr<Bitmap> CreateBitmap(
-        const std::shared_ptr<ImageDecoder::Frame>& image_frame,
-        std::error_code& error_code);
+    const Bitmap CreateBitmap(const std::shared_ptr<ImageDecoder::Frame>& image_frame, std::error_code& error_code);
 
-    const std::shared_ptr<Bitmap> CreateBitmap(const std::shared_ptr<ImageDecoder::Frame>& image) {
+    const Bitmap CreateBitmap(const std::shared_ptr<ImageDecoder::Frame>& image) {
         std::error_code error_code;
         auto result = CreateBitmap(image, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -205,14 +202,14 @@ public:
 	}
 
     void DrawBitmap(
-        const std::shared_ptr<Bitmap>& bitmap,
+        const Bitmap& bitmap,
         const Rect& rect,
         float opacity,
         InterpolationMode interpolation_mode,
         const Rect* bitmap_rect) {
 
         handle_->DrawBitmap(
-            bitmap->GetHandle(),
+            bitmap.GetHandle(),
             rect.ToD2D1RECTF(),
             opacity,
             static_cast<D2D1_BITMAP_INTERPOLATION_MODE>(interpolation_mode),

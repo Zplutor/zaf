@@ -15,6 +15,8 @@
 #include "test_scrollable_control_window.h"
 #include "test_text_box_window.h"
 #include "test_window_window.h"
+#include <zaf/graphic/image/image_decoder.h>
+#include <zaf/graphic/resource_factory.h>
 
 using namespace zaf;
 

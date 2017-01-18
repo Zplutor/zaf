@@ -1,23 +1,22 @@
 #pragma once
 
 #include <zaf/control/control.h>
+#include <zaf/graphic/image/bitmap.h>
+#include <zaf/graphic/image/image_decoder.h>
 #include <zaf/graphic/image/interpolation_mode.h>
 
 namespace zaf {
-
-class Bitmap;
-class ImageDecoder;
 
 class ImageBox : public Control {
 public:
     ImageBox();
     ~ImageBox();
 
-    const std::shared_ptr<ImageDecoder>& GetImageDecoder() const {
+    const ImageDecoder& GetImageDecoder() const {
         return image_decoder_;
     }
 
-    void SetImageDecoder(const std::shared_ptr<ImageDecoder>& image_decoder);
+    void SetImageDecoder(const ImageDecoder& image_decoder);
 
     InterpolationMode GetInterpolationMode() const;
     void SetInterpolationMode(InterpolationMode mode);
@@ -30,8 +29,8 @@ private:
     bool CreateFrameBitmaps(const std::shared_ptr<Renderer>& renderer);
 
 private:
-    std::shared_ptr<ImageDecoder> image_decoder_;
-    std::vector<std::shared_ptr<Bitmap>> frame_bitmaps_;
+    ImageDecoder image_decoder_;
+    std::vector<Bitmap> frame_bitmaps_;
 };
 
 }

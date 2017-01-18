@@ -42,7 +42,7 @@ const std::shared_ptr<Layer> Renderer::InnerCreateLayer(const Size* size, std::e
 }
 
 
-const std::shared_ptr<Bitmap> Renderer::CreateBitmap(
+const Bitmap Renderer::CreateBitmap(
     const std::shared_ptr<ImageDecoder::Frame>& image_frame,
     std::error_code& error_code) {
 
@@ -53,7 +53,7 @@ const std::shared_ptr<Bitmap> Renderer::CreateBitmap(
 
     error_code = MakeComErrorCode(result);
     if (! IsSucceeded(error_code)) {
-        return nullptr;
+        return Bitmap();
     }
 
     result = format_converter->Initialize(
@@ -67,7 +67,7 @@ const std::shared_ptr<Bitmap> Renderer::CreateBitmap(
     error_code = MakeComErrorCode(result);
     if (! IsSucceeded(error_code)) {
         format_converter->Release();
-        return nullptr;
+        return Bitmap();
     }
 
     ID2D1Bitmap* handle = nullptr;
@@ -75,12 +75,7 @@ const std::shared_ptr<Bitmap> Renderer::CreateBitmap(
     format_converter->Release();
 
     error_code = MakeComErrorCode(result);
-    if (IsSucceeded(error_code)) {
-        return std::make_shared<Bitmap>(handle);
-    }
-    else {
-        return nullptr;
-    }
+    return Bitmap(handle);
 }
 
 

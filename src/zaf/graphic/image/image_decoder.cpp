@@ -5,7 +5,7 @@ namespace zaf {
     std::size_t ImageDecoder::GetFrameCount(std::error_code& error_code) const {
 
     UINT count = 0;
-    HRESULT result = handle_->GetFrameCount(&count);
+    HRESULT result = GetHandle()->GetFrameCount(&count);
 
     error_code = MakeComErrorCode(result);
     if (IsSucceeded(error_code)) {
@@ -20,7 +20,7 @@ namespace zaf {
 const std::shared_ptr<ImageDecoder::Frame> ImageDecoder::GetFrame(std::size_t index, std::error_code& error_code) const {
 
     IWICBitmapFrameDecode* handle = nullptr;
-    HRESULT result = handle_->GetFrame(index, &handle);
+    HRESULT result = GetHandle()->GetFrame(index, &handle);
 
     error_code = MakeComErrorCode(result);
     if (IsSucceeded(error_code)) {

@@ -1,7 +1,5 @@
 #include <zaf/control/image_box.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/image/bitmap.h>
-#include <zaf/graphic/image/image_decoder.h>
 
 namespace zaf {
 
@@ -40,9 +38,9 @@ bool ImageBox::CreateFrameBitmaps(const std::shared_ptr<Renderer>& renderer) {
         return false;
     }
 
-    for (std::size_t index = 0; index < image_decoder_->GetFrameCount(); ++index) {
+    for (std::size_t index = 0; index < image_decoder_.GetFrameCount(); ++index) {
 
-        auto frame = image_decoder_->GetFrame(index);
+        auto frame = image_decoder_.GetFrame(index);
         if (frame == nullptr) {
             continue;
         }
@@ -64,7 +62,7 @@ void ImageBox::ReleaseRendererResources() {
 }
 
 
-void ImageBox::SetImageDecoder(const std::shared_ptr<ImageDecoder>& image_decoder) {
+void ImageBox::SetImageDecoder(const ImageDecoder& image_decoder) {
 
     if (image_decoder_ == image_decoder) {
         return;
