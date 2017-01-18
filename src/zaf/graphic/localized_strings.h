@@ -3,6 +3,7 @@
 #include <dwrite.h>
 #include <cstdint>
 #include <string>
+#include <zaf/base/com_object.h>
 #include <zaf/base/error.h>
 #include <zaf/internal/enumerator.h>
 
@@ -11,23 +12,20 @@ namespace zaf {
 /**
  Represents a collection of strings indexed by locale name.   
  */
-class LocalizedStrings {
+class LocalizedStrings : public ComObject<IDWriteLocalizedStrings> {
 public:
     typedef internal::ComContainerEnumerator<LocalizedStrings, std::pair<std::wstring, std::wstring>> Enumerator;
     typedef internal::ComContainerEnumerator<LocalizedStrings, std::wstring> StringEnumerator;
 
 public:
-    explicit LocalizedStrings(IDWriteLocalizedStrings* handle) : handle_(handle) { }
-
-    ~LocalizedStrings() {
-        handle_->Release();
-    }
+    LocalizedStrings() { }
+    explicit LocalizedStrings(IDWriteLocalizedStrings* handle) : ComObject(handle) { }
 
     /**
      Gets the number of language/string pairs.
      */
     std::size_t GetCount() const {
-        return handle_->GetCount();
+        return GetHandle()->GetCount();
     }
 
     /**
@@ -93,16 +91,6 @@ public:
      Get an enumerator for strings.
      */
     StringEnumerator GetStringEnumerator() const;
-
-    IDWriteLocalizedStrings* GetHandle() const {
-        return handle_;
-    }
-
-    LocalizedStrings(const LocalizedStrings&) = delete;
-    LocalizedStrings& operator=(const LocalizedStrings&) = delete;
-
-private:
-    IDWriteLocalizedStrings* handle_;
 };
 
 }

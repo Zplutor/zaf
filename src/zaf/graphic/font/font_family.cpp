@@ -1,6 +1,5 @@
 #include <zaf/graphic/font/font_family.h>
 #include <zaf/graphic/font/font_collection.h>
-#include <zaf/graphic/localized_strings.h>
 
 namespace zaf {
 
@@ -31,18 +30,13 @@ const FontFace FontFamily::GetFont(std::size_t index, std::error_code& error_cod
 }
 
 
-const std::shared_ptr<LocalizedStrings> FontFamily::GetFamilyNames(std::error_code& error_code) const {
+const LocalizedStrings FontFamily::GetFamilyNames(std::error_code& error_code) const {
 
     IDWriteLocalizedStrings* handle = nullptr;
     HRESULT result = GetHandle()->GetFamilyNames(&handle);
 
     error_code = MakeComErrorCode(result);
-    if (IsSucceeded(error_code)) {
-        return std::make_shared<LocalizedStrings>(handle);
-    }
-    else {
-        return nullptr;
-    }
+    return LocalizedStrings(handle);
 }
 
 }

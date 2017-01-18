@@ -6,7 +6,7 @@ namespace zaf {
 const std::wstring LocalizedStrings::GetLocaleName(std::size_t index, std::error_code& error_code) const {
 
     UINT32 length = 0;
-    HRESULT result = handle_->GetLocaleNameLength(index, &length);
+    HRESULT result = GetHandle()->GetLocaleNameLength(index, &length);
 
     error_code = MakeComErrorCode(result);
     if (! IsSucceeded(error_code)) {
@@ -14,7 +14,7 @@ const std::wstring LocalizedStrings::GetLocaleName(std::size_t index, std::error
     }
 
     std::wstring locale_name(length + 1, 0);
-    result = handle_->GetLocaleName(index, &locale_name[0], locale_name.length());
+    result = GetHandle()->GetLocaleName(index, &locale_name[0], locale_name.length());
 
     error_code = MakeComErrorCode(result);
     if (IsSucceeded(error_code)) {
@@ -30,7 +30,7 @@ const std::wstring LocalizedStrings::GetLocaleName(std::size_t index, std::error
 const std::wstring LocalizedStrings::GetString(std::size_t index, std::error_code& error_code) const {
 
     UINT32 length = 0;
-    HRESULT result = handle_->GetStringLength(index, &length);
+    HRESULT result = GetHandle()->GetStringLength(index, &length);
 
     error_code = MakeComErrorCode(result);
     if (! IsSucceeded(error_code)) {
@@ -38,7 +38,7 @@ const std::wstring LocalizedStrings::GetString(std::size_t index, std::error_cod
     }
 
     std::wstring string(length + 1, 0);
-    result = handle_->GetString(index, &string[0], string.length());
+    result = GetHandle()->GetString(index, &string[0], string.length());
 
     error_code = MakeComErrorCode(result);
     if (IsSucceeded(error_code)) {
@@ -55,7 +55,7 @@ std::size_t LocalizedStrings::FindLocaleName(const std::wstring& local_name, std
 
     UINT32 index = 0;
     BOOL is_existent = FALSE;
-    HRESULT result = handle_->FindLocaleName(local_name.c_str(), &index, &is_existent);
+    HRESULT result = GetHandle()->FindLocaleName(local_name.c_str(), &index, &is_existent);
 
     error_code = MakeComErrorCode(result);
     if (! IsSucceeded(error_code)) {

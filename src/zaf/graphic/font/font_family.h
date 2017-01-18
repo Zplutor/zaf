@@ -6,11 +6,11 @@
 #include <zaf/base/com_object.h>
 #include <zaf/base/error.h>
 #include <zaf/graphic/font/font_face.h>
+#include <zaf/graphic/localized_strings.h>
 
 namespace zaf {
 
 class FontCollection;
-class LocalizedStrings;
 
 /**
  Represents a family of related fonts.
@@ -67,9 +67,9 @@ public:
      @return
          Return nullptr if failed.
      */
-    const std::shared_ptr<LocalizedStrings> GetFamilyNames(std::error_code& error_code) const;
+    const LocalizedStrings GetFamilyNames(std::error_code& error_code) const;
 
-    const std::shared_ptr<LocalizedStrings> GetFamilyNames() const {
+    const LocalizedStrings GetFamilyNames() const {
         std::error_code error_code;
         auto result = GetFamilyNames(error_code);
         ZAF_CHECK_ERROR(error_code);

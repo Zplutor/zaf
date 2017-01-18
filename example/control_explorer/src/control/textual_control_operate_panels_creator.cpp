@@ -111,12 +111,12 @@ static std::shared_ptr<zaf::Control> CreateFontPanel(const std::shared_ptr<zaf::
                     for (const auto& each_font_family : font_collection.GetEnumerator()) {
 
                         auto localized_strings = each_font_family.GetFamilyNames();
-                        auto index = localized_strings->FindLocaleName(user_default_locale);
+                        auto index = localized_strings.FindLocaleName(user_default_locale);
                         if (index == zaf::InvalidIndex) {
-                            index = localized_strings->FindLocaleName(L"en-us");
+                            index = localized_strings.FindLocaleName(L"en-us");
                         }
                         if (index != zaf::InvalidIndex) {
-                            font_name_drop_down_list->AddItemWithText(localized_strings->GetString(index));
+                            font_name_drop_down_list->AddItemWithText(localized_strings.GetString(index));
                         }
                     }
 
