@@ -2,10 +2,9 @@
 
 #include <memory>
 #include <string>
+#include <zaf/graphic/text/text_format.h>
 
 namespace zaf {
-
-class TextFormat;
 
 /**
  Describes properties used to create a text layout.
@@ -24,7 +23,7 @@ public:
 
      This field can not be nullptr.
      */
-	std::shared_ptr<TextFormat> text_format;
+	TextFormat text_format;
 
     /**
      Layout width.

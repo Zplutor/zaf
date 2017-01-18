@@ -6,7 +6,7 @@ namespace zaf {
 std::wstring TextLayout::GetFontFamilyName(std::size_t position, TextRange* range, std::error_code& error_code) const {
 
 	std::size_t family_name_length = 0;
-	HRESULT result = handle_->GetFontFamilyNameLength(position, &family_name_length);
+	HRESULT result = GetHandle()->GetFontFamilyNameLength(position, &family_name_length);
 
     error_code = MakeComErrorCode(result);
     if (! IsSucceeded(error_code)) {
@@ -20,7 +20,7 @@ std::wstring TextLayout::GetFontFamilyName(std::size_t position, TextRange* rang
     const std::size_t buffer_length = family_name_length + 1;
     auto buffer = std::make_unique<wchar_t[]>(buffer_length);
 	DWRITE_TEXT_RANGE text_range = { 0 };
-	result = handle_->GetFontFamilyName(
+	result = GetHandle()->GetFontFamilyName(
         position,
         buffer.get(), 
         buffer_length, 
@@ -43,7 +43,7 @@ float TextLayout::GetFontSize(std::size_t position, TextRange* range, std::error
 
 	float font_size = 0;
 	DWRITE_TEXT_RANGE text_range = { 0 };
-	HRESULT result = handle_->GetFontSize(position, &font_size, range == nullptr ? nullptr : &text_range);
+	HRESULT result = GetHandle()->GetFontSize(position, &font_size, range == nullptr ? nullptr : &text_range);
 
     error_code = MakeComErrorCode(result);
     if (! IsSucceeded(error_code)) {
@@ -62,7 +62,7 @@ FontStyle TextLayout::GetFontStyle(std::size_t position, TextRange* range, std::
 
 	DWRITE_FONT_STYLE font_style = DWRITE_FONT_STYLE_NORMAL;
 	DWRITE_TEXT_RANGE text_range = { 0 };
-	HRESULT result = handle_->GetFontStyle(position, &font_style, range == nullptr ? nullptr : &text_range);
+	HRESULT result = GetHandle()->GetFontStyle(position, &font_style, range == nullptr ? nullptr : &text_range);
 
     error_code = MakeComErrorCode(result);
     if (! IsSucceeded(error_code)) {
@@ -81,7 +81,7 @@ int TextLayout::GetFontWeight(std::size_t position, TextRange* range, std::error
 
 	DWRITE_FONT_WEIGHT font_weight = static_cast<DWRITE_FONT_WEIGHT>(0);
 	DWRITE_TEXT_RANGE text_range = { 0 };
-	HRESULT result = handle_->GetFontWeight(position, &font_weight, range == nullptr ? nullptr : &text_range);
+	HRESULT result = GetHandle()->GetFontWeight(position, &font_weight, range == nullptr ? nullptr : &text_range);
 
     error_code = MakeComErrorCode(result);
     if (! IsSucceeded(error_code)) {
@@ -100,7 +100,7 @@ bool TextLayout::HasUnderline(std::size_t position, TextRange* range, std::error
 
 	BOOL has_underline = FALSE;
 	DWRITE_TEXT_RANGE text_range = { 0 };
-	HRESULT result = handle_->GetUnderline(position, &has_underline, range == nullptr ? nullptr : &text_range);
+	HRESULT result = GetHandle()->GetUnderline(position, &has_underline, range == nullptr ? nullptr : &text_range);
 
     error_code = MakeComErrorCode(result);
     if (!IsSucceeded(error_code)) {
@@ -119,7 +119,7 @@ const std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_c
 
 	auto dwrite_line_metrics = std::make_unique<DWRITE_LINE_METRICS[]>(max_line_count);
 	std::size_t actual_line_count = 0;
-	HRESULT result = handle_->GetLineMetrics(dwrite_line_metrics.get(), max_line_count, &actual_line_count);
+	HRESULT result = GetHandle()->GetLineMetrics(dwrite_line_metrics.get(), max_line_count, &actual_line_count);
 
     error_code = MakeComErrorCode(result);
 	if (! IsSucceeded(error_code)) {
@@ -151,7 +151,7 @@ const std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_c
 const TextMetrics TextLayout::GetMetrics(std::error_code& error_code) const {
 
 	DWRITE_TEXT_METRICS dwrite_text_metrics = { 0 };
-    HRESULT result = handle_->GetMetrics(&dwrite_text_metrics);
+    HRESULT result = GetHandle()->GetMetrics(&dwrite_text_metrics);
 
     error_code = MakeComErrorCode(result);
     if (! IsSucceeded(error_code)) {

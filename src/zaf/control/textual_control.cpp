@@ -180,7 +180,7 @@ TextualControl::TextChangeEvent::Proxy TextualControl::GetTextChangeEvent() {
 }
 
 
-std::shared_ptr<TextFormat> TextualControl::CreateTextFormat() const {
+TextFormat TextualControl::CreateTextFormat() const {
 
     auto font = GetFont();
     TextFormatProperties text_format_properties;
@@ -190,22 +190,22 @@ std::shared_ptr<TextFormat> TextualControl::CreateTextFormat() const {
 
     auto text_format = GetResourceFactory()->CreateTextFormat(text_format_properties);
     if (text_format == nullptr) {
-        return nullptr;
+        return TextFormat();
     }
 
-    text_format->SetTextAlignment(GetTextAlignment());
-    text_format->SetParagraphAlignment(GetParagraphAlignment());
-    text_format->SetWordWrapping(GetWordWrapping());
+    text_format.SetTextAlignment(GetTextAlignment());
+    text_format.SetParagraphAlignment(GetParagraphAlignment());
+    text_format.SetWordWrapping(GetWordWrapping());
 
     return text_format;
 }
 
 
-std::shared_ptr<TextLayout> TextualControl::CreateTextLayout(const Size& layout_size) const {
+TextLayout TextualControl::CreateTextLayout(const Size& layout_size) const {
 
     auto text_format = CreateTextFormat();
     if (text_format == nullptr) {
-        return nullptr;
+        return TextLayout();
     }
 
     TextLayoutProperties text_layout_properties;

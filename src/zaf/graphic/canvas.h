@@ -160,11 +160,11 @@ public:
 		renderer_->DrawGeometryFrame(geometry, state->brush, stroke_width, state->stroke);
 	}
 
-	void DrawText(const std::wstring& text, const std::shared_ptr<TextFormat>& text_format, const Rect& rect) {
+	void DrawText(const std::wstring& text, const TextFormat& text_format, const Rect& rect) {
 		renderer_->DrawText(text, text_format, rect, GetCurrentState()->brush);
 	}
 
-	void DrawText(const std::shared_ptr<TextLayout>& text_layout, const Point& position) {
+	void DrawText(const TextLayout& text_layout, const Point& position) {
 		renderer_->DrawText(text_layout, position, GetCurrentState()->brush);
 	}
 

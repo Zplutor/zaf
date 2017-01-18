@@ -121,8 +121,8 @@ protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     virtual const Rect GetTextRect() const;
 
-    std::shared_ptr<TextFormat> CreateTextFormat() const;
-    std::shared_ptr<TextLayout> CreateTextLayout(const Size& layout_size) const;
+    TextFormat CreateTextFormat() const;
+    TextLayout CreateTextLayout(const Size& layout_size) const;
 
     /**
      Raise the text change event.

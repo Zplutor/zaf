@@ -19,37 +19,27 @@ namespace zaf {
  */
 class TextLayout : public TextFormat {
 public:
+    TextLayout() { }
+
     /**
      Create the instance with specified handle.
 
      See also TextFormat::TextFormat.
      */
-	TextLayout(IDWriteTextLayout* handle) : 
-		TextFormat(handle), 
-		handle_(handle) { 
-	
-		ZAF_ASSERT(handle_ != nullptr);
-	}
-
-    /**
-     Get the text layout handle.
-     */
-	IDWriteTextLayout* GetHandle() const {
-		return handle_;
-	}
+	explicit TextLayout(IDWriteTextLayout* handle) : TextFormat(handle) { }
 
     /**
      Get the layout maximum width.
      */
 	float GetMaxWidth() const {
-		return handle_->GetMaxWidth();
+		return GetHandle()->GetMaxWidth();
 	}
 
     /**
      Set the layout maximum width.
      */
 	void SetMaxWidth(float max_width, std::error_code& error_code) {
-		HRESULT result = handle_->SetMaxWidth(max_width);
+		HRESULT result = GetHandle()->SetMaxWidth(max_width);
         error_code = MakeComErrorCode(result);
 	}
 
@@ -63,14 +53,14 @@ public:
      Get the layout maximum height.
      */
 	float GetMaxHeight() const {
-		return handle_->GetMaxHeight();
+		return GetHandle()->GetMaxHeight();
 	}
 
     /**
      Set the layout maximum height.
      */
 	void SetMaxHeight(float max_height, std::error_code& error_code) {
-		HRESULT result = handle_->SetMaxHeight(max_height);
+		HRESULT result = GetHandle()->SetMaxHeight(max_height);
         error_code = MakeComErrorCode(result);
 	}
 
@@ -119,7 +109,7 @@ public:
          An output parameter indicates the error, if any.
      */
     void SetFontFamilyName(const TextRange& range, const std::wstring& font_family_name, std::error_code& error_code) {
-        HRESULT result = handle_->SetFontFamilyName(font_family_name.c_str(), range.ToDWRITETEXTRANGE());
+        HRESULT result = GetHandle()->SetFontFamilyName(font_family_name.c_str(), range.ToDWRITETEXTRANGE());
         error_code = MakeComErrorCode(result);
     }
 
@@ -168,7 +158,7 @@ public:
          An output parameter indicates the error, if any.
      */
 	void SetFontSize(const TextRange& range, float size, std::error_code& error_code) {
-		HRESULT result = handle_->SetFontSize(size, range.ToDWRITETEXTRANGE());
+		HRESULT result = GetHandle()->SetFontSize(size, range.ToDWRITETEXTRANGE());
         error_code = MakeComErrorCode(result);
 	}
 
@@ -217,7 +207,7 @@ public:
          An output parameter indicates the error, if any.
      */
 	void SetFontStyle(const TextRange& range, FontStyle font_style, std::error_code& error_code) {
-		HRESULT result = handle_->SetFontStyle(static_cast<DWRITE_FONT_STYLE>(font_style), range.ToDWRITETEXTRANGE());
+		HRESULT result = GetHandle()->SetFontStyle(static_cast<DWRITE_FONT_STYLE>(font_style), range.ToDWRITETEXTRANGE());
         error_code = MakeComErrorCode(result);
 	}
 
@@ -266,7 +256,7 @@ public:
          An output parameter indicates the error, if any.
      */
 	void SetFontWeight(const TextRange& range, int weight, std::error_code& error_code) {
-		HRESULT result = handle_->SetFontWeight(static_cast<DWRITE_FONT_WEIGHT>(weight), range.ToDWRITETEXTRANGE());
+		HRESULT result = GetHandle()->SetFontWeight(static_cast<DWRITE_FONT_WEIGHT>(weight), range.ToDWRITETEXTRANGE());
         error_code = MakeComErrorCode(result);
 	}
 
@@ -315,7 +305,7 @@ public:
          An output parameter indicates the error, if any.
      */
 	void SetHasUnderline(const TextRange& range, bool has_underline, std::error_code& error_code) {
-		HRESULT result = handle_->SetUnderline(has_underline ? TRUE : FALSE, range.ToDWRITETEXTRANGE());
+		HRESULT result = GetHandle()->SetUnderline(has_underline ? TRUE : FALSE, range.ToDWRITETEXTRANGE());
         error_code = MakeComErrorCode(result);
 	}
 
@@ -364,8 +354,9 @@ public:
         return result;
     }
 
-private:
-	IDWriteTextLayout* handle_;
+    IDWriteTextLayout* GetHandle() const {
+        return dynamic_cast<IDWriteTextLayout*>(__super::GetHandle());
+    }
 };
 
 }

@@ -13,7 +13,7 @@ namespace internal {
 void DrawTextWithIcon(
     Canvas& canvas,
     TextualControl& control,
-    const std::shared_ptr<TextLayout>& text_layout,
+    TextLayout& text_layout,
     float icon_size,
     const std::function<void(Canvas& canvas, const Rect& icon_rect)>& paint_icon_function) {
 
@@ -22,10 +22,10 @@ void DrawTextWithIcon(
     text_rect.position.x += x_offset;
     text_rect.size.width -= x_offset;
 
-    text_layout->SetMaxWidth(text_rect.size.width);
-    text_layout->SetMaxHeight(text_rect.size.height);
+    text_layout.SetMaxWidth(text_rect.size.width);
+    text_layout.SetMaxHeight(text_rect.size.height);
 
-    auto line_metrics = text_layout->GetLineMetrics(1);
+    auto line_metrics = text_layout.GetLineMetrics(1);
     if (line_metrics.empty()) {
         return;
     }
@@ -35,7 +35,7 @@ void DrawTextWithIcon(
         icon_y /= 2;
     }
 
-    auto text_metrics = text_layout->GetMetrics();
+    auto text_metrics = text_layout.GetMetrics();
     icon_y += text_metrics.top;
 
     Rect icon_rect(0, icon_y, icon_size, icon_size);

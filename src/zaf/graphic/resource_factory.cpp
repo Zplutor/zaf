@@ -3,9 +3,7 @@
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/matrix.h>
-#include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_format_properties.h>
-#include <zaf/graphic/text/text_layout.h>
 #include <zaf/graphic/text/text_layout_properties.h>
 
 namespace zaf {
@@ -138,7 +136,7 @@ const std::shared_ptr<Stroke> ResourceFactory::CreateStroke(const StrokeProperti
 }
 
 
-const std::shared_ptr<TextFormat> ResourceFactory::CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code) {
+const TextFormat ResourceFactory::CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code) {
 
 	IDWriteTextFormat* handle = nullptr;
 	HRESULT result = dwrite_factory_handle_->CreateTextFormat(
@@ -153,34 +151,24 @@ const std::shared_ptr<TextFormat> ResourceFactory::CreateTextFormat(const TextFo
 	);
 
     error_code = MakeComErrorCode(result);
-	if (IsSucceeded(error_code)) {
-		return std::make_shared<TextFormat>(handle);
-	}
-	else {
-		return nullptr;
-	}
+    return TextFormat(handle);
 }
 
 
-const std::shared_ptr<TextLayout> ResourceFactory::CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code) {
+const TextLayout ResourceFactory::CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code) {
 
 	IDWriteTextLayout* handle = nullptr;
 	HRESULT result = dwrite_factory_handle_->CreateTextLayout(
 		properties.text.c_str(), 
 		properties.text.length(), 
-		properties.text_format->GetHandle(), 
+		properties.text_format.GetHandle(), 
 		properties.width, 
 		properties.height,
 		&handle
 	);
 
     error_code = MakeComErrorCode(result);
-	if (IsSucceeded(error_code)) {
-		return std::make_shared<TextLayout>(handle);
-	}
-	else {
-		return nullptr;
-	}
+    return TextLayout(handle);
 }
 
 

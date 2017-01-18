@@ -10,6 +10,7 @@
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/image/image_decoder.h>
+#include <zaf/graphic/text/text_layout.h>
 
 namespace zaf {
 
@@ -17,9 +18,7 @@ class Rect;
 class Renderer;
 class Stroke;
 class StrokeProperties;
-class TextFormat;
 class TextFormatProperties;
-class TextLayout;
 class TextLayoutProperties;
 class TransformMatrix;
 
@@ -125,9 +124,9 @@ public:
 	 @return 
 	      Return nullptr if failed.
 	 */
-    const std::shared_ptr<TextFormat> CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code);
+    const TextFormat CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code);
 
-    const std::shared_ptr<TextFormat> CreateTextFormat(const TextFormatProperties& properties) {
+    const TextFormat CreateTextFormat(const TextFormatProperties& properties) {
         std::error_code error_code;
         auto result = CreateTextFormat(properties, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -140,9 +139,9 @@ public:
 	 @return
 	     Return nullptr if failed.
 	 */
-    const std::shared_ptr<TextLayout> CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code);
+    const TextLayout CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code);
 
-    const std::shared_ptr<TextLayout> CreateTextLayout(const TextLayoutProperties& properties) {
+    const TextLayout CreateTextLayout(const TextLayoutProperties& properties) {
         std::error_code error_code;
         auto result = CreateTextLayout(properties, error_code);
         ZAF_CHECK_ERROR(error_code);

@@ -177,7 +177,7 @@ public:
 
 	void DrawText(
 		const std::wstring& text,
-		const std::shared_ptr<TextFormat>& text_format,
+		const TextFormat& text_format,
 		const Rect& rect,
 		const Brush& brush
 	) {
@@ -185,19 +185,19 @@ public:
 		handle_->DrawText(
 			text.c_str(), 
 			text.length(),
-			text_format->GetHandle(),
+			text_format.GetHandle(),
 			rect.ToD2D1RECTF(),
 			brush.GetHandle()
 		);
 	}
 
 	void DrawText(
-		const std::shared_ptr<TextLayout>& text_layout,
+		const TextLayout& text_layout,
 		const Point& position,
 		const Brush& brush
 	) {
 
-		handle_->DrawTextLayout(position.ToD2D1POINT2F(), text_layout->GetHandle(), brush.GetHandle());
+		handle_->DrawTextLayout(position.ToD2D1POINT2F(), text_layout.GetHandle(), brush.GetHandle());
 	}
 
     void DrawBitmap(

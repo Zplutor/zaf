@@ -2,6 +2,7 @@
 
 #include <dwrite.h>
 #include <zaf/base/assert.h>
+#include <zaf/base/com_object.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/word_wrapping.h>
@@ -13,73 +14,61 @@ namespace zaf {
 
  You should create TextFormat instances via ResourceFactory::CreateTextFormat.
  */
-class TextFormat {
+class TextFormat : public ComObject<IDWriteTextFormat> {
 public:
+    TextFormat() { }
+
     /**
      Construct the instance with specified handle. 
 
      The instance takes over the lifetime of handle, and would release the handle
      when destroyed.
      */
-	explicit TextFormat(IDWriteTextFormat* handle) : handle_(handle) { 
-		ZAF_ASSERT(handle_ != nullptr);
-	}
-
-	virtual ~TextFormat() { 
-		handle_->Release();
-	}
-
-    /**
-     Get the handle of text format.
-     */
-	IDWriteTextFormat* GetHandle() const {
-		return handle_;
+	explicit TextFormat(IDWriteTextFormat* handle) : ComObject(handle) { 
+		
 	}
 
     /**
      Get the alignment option of text relative to the layout box's leading and trailing edge.
      */
 	TextAlignment GetTextAlignment() const {
-		return static_cast<TextAlignment>(handle_->GetTextAlignment());
+		return static_cast<TextAlignment>(GetHandle()->GetTextAlignment());
 	}
 
     /**
      Set the alignment option of text relative to the layout box's leading and trailing edge.
      */
 	void SetTextAlignment(TextAlignment alignment) {
-		handle_->SetTextAlignment(static_cast<DWRITE_TEXT_ALIGNMENT>(alignment));
+		GetHandle()->SetTextAlignment(static_cast<DWRITE_TEXT_ALIGNMENT>(alignment));
 	}
 
     /**
      Get the alignment option of a paragraph which is relative to the top and bottom edges of a layout box.
      */
 	ParagraphAlignment GetParagraphAlignment() const {
-		return static_cast<ParagraphAlignment>(handle_->GetParagraphAlignment());
+		return static_cast<ParagraphAlignment>(GetHandle()->GetParagraphAlignment());
 	}
 
     /**
      Set the alignment option of a paragraph which is relative to the top and bottom edges of a layout box.
      */
 	void SetParagraphAlignment(ParagraphAlignment alignment) {
-		handle_->SetParagraphAlignment(static_cast<DWRITE_PARAGRAPH_ALIGNMENT>(alignment));
+		GetHandle()->SetParagraphAlignment(static_cast<DWRITE_PARAGRAPH_ALIGNMENT>(alignment));
 	}
 
     /**
      Get the word wrapping option.
      */
 	WordWrapping GetWordWrapping() const {
-		return static_cast<WordWrapping>(handle_->GetWordWrapping());
+		return static_cast<WordWrapping>(GetHandle()->GetWordWrapping());
 	}
 
     /**
      Set the word wrapping option.
      */
 	void SetWordWrapping(WordWrapping word_wrapping) {
-		handle_->SetWordWrapping(static_cast<DWRITE_WORD_WRAPPING>(word_wrapping));
+		GetHandle()->SetWordWrapping(static_cast<DWRITE_WORD_WRAPPING>(word_wrapping));
 	}
-
-private:
-	IDWriteTextFormat* handle_;
 };
 
 }
