@@ -33,18 +33,13 @@ std::size_t PathGeometry::GetSegmentCount(std::error_code& error_code) const {
 }
 
 
-const std::shared_ptr<GeometrySink> PathGeometry::Open(std::error_code& error_code) {
+const GeometrySink PathGeometry::Open(std::error_code& error_code) {
 
 	ID2D1GeometrySink* sink_handle = nullptr;
 	HRESULT result = handle_->Open(&sink_handle);
 
     error_code = MakeComErrorCode(result);
-	if (IsSucceeded(error_code)) {
-		return std::make_shared<GeometrySink>(sink_handle);
-	}
-	else {
-		return nullptr;
-	}
+    return GeometrySink(sink_handle);
 }
 
 }

@@ -3,9 +3,6 @@
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/font/font_collection.h>
-#include <zaf/graphic/geometry/path_geometry.h>
-#include <zaf/graphic/geometry/rectangle_geometry.h>
-#include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_format_properties.h>
@@ -77,54 +74,39 @@ const std::shared_ptr<Renderer> ResourceFactory::CreateRenderer(HWND window_hand
 }
 
 
-const std::shared_ptr<RectangleGeometry> ResourceFactory::CreateRectangleGeometry(const Rect& rect, std::error_code& error_code) {
+const RectangleGeometry ResourceFactory::CreateRectangleGeometry(const Rect& rect, std::error_code& error_code) {
 
     ID2D1RectangleGeometry* handle = nullptr;
     HRESULT result = d2d_factory_handle_->CreateRectangleGeometry(rect.ToD2D1RECTF(), &handle);
 
     error_code = MakeComErrorCode(result);
-    if (IsSucceeded(error_code)) {
-        return std::make_shared<RectangleGeometry>(handle);
-    }
-    else {
-        return nullptr;
-    }
+    return RectangleGeometry(handle);
 }
 
 
-const std::shared_ptr<PathGeometry> ResourceFactory::CreatePathGeometry(std::error_code& error_code) {
+const PathGeometry ResourceFactory::CreatePathGeometry(std::error_code& error_code) {
 
 	ID2D1PathGeometry* handle = nullptr;
 	HRESULT result = d2d_factory_handle_->CreatePathGeometry(&handle);
 
     error_code = MakeComErrorCode(result);
-	if (IsSucceeded(error_code)) {
-		return std::make_shared<PathGeometry>(handle);
-	}
-	else {
-		return nullptr;
-	}
+    return PathGeometry(handle);
 }
 
 
-const std::shared_ptr<TransformedGeometry> ResourceFactory::CreateTransformedGeometry(
-    const std::shared_ptr<Geometry>& geometry,
+const TransformedGeometry ResourceFactory::CreateTransformedGeometry(
+    const Geometry& geometry,
     const TransformMatrix& transform_matrix,
     std::error_code& error_code) {
 
     ID2D1TransformedGeometry* handle = nullptr;
     HRESULT result = d2d_factory_handle_->CreateTransformedGeometry(
-        geometry->GetHandle(),
+        geometry.GetHandle(),
         transform_matrix.ToD2D1MATRIX3X2F(),
         &handle);
 
     error_code = MakeComErrorCode(result);
-    if (IsSucceeded(error_code)) {
-        return std::make_shared<TransformedGeometry>(handle);
-    }
-    else {
-        return nullptr;
-    }
+    return TransformedGeometry(handle);
 }
 
 

@@ -564,16 +564,16 @@ void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 		return;
 	}
 
-    auto triangle_geometry_sink = triangle_geometry->Open();
+    auto triangle_geometry_sink = triangle_geometry.Open();
     if (triangle_geometry_sink == nullptr) {
 		return;
 	}
 
-    triangle_geometry_sink->BeginFigure(top_point, GeometrySink::BeginFigureOption::Fill);
-    triangle_geometry_sink->AddLine(left_point);
-    triangle_geometry_sink->AddLine(right_point);
-    triangle_geometry_sink->EndFigure(GeometrySink::EndFigureOption::Close);
-    triangle_geometry_sink->Close();
+    triangle_geometry_sink.BeginFigure(top_point, GeometrySink::BeginFigureOption::Fill);
+    triangle_geometry_sink.AddLine(left_point);
+    triangle_geometry_sink.AddLine(right_point);
+    triangle_geometry_sink.EndFigure(GeometrySink::EndFigureOption::Close);
+    triangle_geometry_sink.Close();
 
     float rotate_angle = 0;
     switch (direction) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error.h>
 #include <zaf/base/flag_enum.h>
@@ -12,7 +13,7 @@ namespace zaf {
  Describes a geometric path that can contain lines, arcs, cubic Bezier curves,
  and quadratic Bezier curves.
  */
-class GeometrySink {
+class GeometrySink : public ComObject<ID2D1GeometrySink> {
 public:
     /**
      Specifies how the intersecting areas of geometries or figures are combined
@@ -107,19 +108,15 @@ public:
 	};
 
 public:
+    GeometrySink() { }
+
     /**
      Construct the instance with specified handle.
 
      The instance takes over the lifetime of handle. It would release the handle
      when destroyed.
      */
-	GeometrySink(ID2D1GeometrySink* handle) : handle_(handle) { }
-
-	~GeometrySink() {
-		if (handle_ != nullptr) {
-			handle_->Release();
-		}
-	}
+	explicit GeometrySink(ID2D1GeometrySink* handle) : ComObject(handle) { }
 
     /**
      Specifies the method used to determine which points are inside the geometry
@@ -130,7 +127,7 @@ public:
      state.
      */
 	void SetFillMode(FillMode fill_mode) {
-		handle_->SetFillMode(static_cast<D2D1_FILL_MODE>(fill_mode));
+		GetHandle()->SetFillMode(static_cast<D2D1_FILL_MODE>(fill_mode));
 	}
 
     /**
@@ -141,7 +138,7 @@ public:
      is called again and a different set of segment flags is specified.
      */
 	void SetSegmentFlag(SegmentFlag flag) {
-		handle_->SetSegmentFlags(static_cast<D2D1_PATH_SEGMENT>(flag));
+		GetHandle()->SetSegmentFlags(static_cast<D2D1_PATH_SEGMENT>(flag));
 	}
 
     /**
@@ -154,7 +151,7 @@ public:
          Whether the new figure should be hollow or filled.
      */
 	void BeginFigure(const Point& start_position, BeginFigureOption option) {
-		handle_->BeginFigure(start_position.ToD2D1POINT2F(), static_cast<D2D1_FIGURE_BEGIN>(option));
+		GetHandle()->BeginFigure(start_position.ToD2D1POINT2F(), static_cast<D2D1_FIGURE_BEGIN>(option));
 	}
 
     /**
@@ -169,7 +166,7 @@ public:
      the Close method is called.
      */
 	void EndFigure(EndFigureOption option) {
-		handle_->EndFigure(static_cast<D2D1_FIGURE_END>(option));
+		GetHandle()->EndFigure(static_cast<D2D1_FIGURE_END>(option));
 	}
 
     /**
@@ -180,7 +177,7 @@ public:
          The end point of the line to draw.   
      */
 	void AddLine(const Point& end_point) {
-		handle_->AddLine(end_point.ToD2D1POINT2F());
+		GetHandle()->AddLine(end_point.ToD2D1POINT2F());
 	}
 
     /**
@@ -207,7 +204,7 @@ public:
      call for each call to BeginFigure.
      */
     void Close(std::error_code& error_code) {
-        HRESULT result = handle_->Close();
+        HRESULT result = GetHandle()->Close();
         error_code = MakeComErrorCode(result);
     }
 
@@ -216,16 +213,6 @@ public:
         Close(error_code);
         ZAF_CHECK_ERROR(error_code);
 	}
-
-    /**
-     Get the sink's handle.
-     */
-	ID2D1GeometrySink* GetHandle() const {
-		return handle_;
-	}
-
-private:
-	ID2D1GeometrySink* handle_;
 };
 
 ZAF_ENABLE_FLAG_ENUM(GeometrySink::SegmentFlag);

@@ -148,27 +148,27 @@ public:
 	}
 
 	void DrawGeometry(
-		const std::shared_ptr<Geometry>& geometry,
+		const Geometry& geometry,
 		const Brush& brush,
-		const std::shared_ptr<Brush>& opacity_brush
+		const Brush& opacity_brush
 	) {
 
 		handle_->FillGeometry(
-			geometry->GetHandle(),
+			geometry.GetHandle(),
 			brush.GetHandle(), 
-			opacity_brush == nullptr ? nullptr : opacity_brush->GetHandle()
+			opacity_brush.GetHandle()
 		);
 	}
 
 	void DrawGeometryFrame(
-		const std::shared_ptr<Geometry>& geometry,
+		const Geometry& geometry,
 		const Brush& brush,
 		float stroke_width,
 		const std::shared_ptr<Stroke>& stroke
 	) {
 
 		handle_->DrawGeometry(
-			geometry->GetHandle(),
+			geometry.GetHandle(),
 			brush.GetHandle(),
 			stroke_width, 
 			stroke == nullptr ? nullptr : stroke->GetHandle()

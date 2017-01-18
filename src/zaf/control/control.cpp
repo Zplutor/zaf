@@ -146,9 +146,9 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
     auto background_geometry = resource_factory->CreateRectangleGeometry(background_rect);
     
     auto path_geometry = resource_factory->CreatePathGeometry();
-    auto sink = path_geometry->Open();
+    auto sink = path_geometry.Open();
     Geometry::Combine(border_geometry, background_geometry, Geometry::CombineMode::Exclude, sink);
-    sink->Close();
+    sink.Close();
 
 	canvas.SetBrushWithColor(GetBorderColor());
     canvas.DrawGeometry(path_geometry);

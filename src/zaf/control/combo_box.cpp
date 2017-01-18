@@ -164,16 +164,16 @@ void ComboBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
         return;
     }
 
-    auto sink = path->Open();
+    auto sink = path.Open();
     if (sink == nullptr) {
         return;
     }
 
-    sink->BeginFigure(left_point, GeometrySink::BeginFigureOption::Fill);
-    sink->AddLine(right_point);
-    sink->AddLine(bottom_point);
-    sink->EndFigure(GeometrySink::EndFigureOption::Close);
-    sink->Close();
+    sink.BeginFigure(left_point, GeometrySink::BeginFigureOption::Fill);
+    sink.AddLine(right_point);
+    sink.AddLine(bottom_point);
+    sink.EndFigure(GeometrySink::EndFigureOption::Close);
+    sink.Close();
 
     Canvas::StateGuard state_guard(canvas);
     canvas.SetBrushWithColor(GetDropDownButtonColor());

@@ -1,20 +1,19 @@
 #pragma once
 
 #include <memory>
+#include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 
 namespace zaf {
 
-class GeometrySink;
-
 /**
  Represents a geometry resource.
 
  This is a base class of all concrete geometry.
  */
-class Geometry {
+class Geometry : public ComObject<ID2D1Geometry>{
 public:
     /**
      Specifies the different methods by which two geometries can be combined.
@@ -64,26 +63,26 @@ public:
         An output parameter indicating the error, if any.
      */
     static void Combine(
-        const std::shared_ptr<Geometry>& geometry1,
-        const std::shared_ptr<Geometry>& geometry2,
+        const Geometry& geometry1,
+        const Geometry& geometry2,
         CombineMode combine_mode,
-        const std::shared_ptr<GeometrySink>& sink,
+        const GeometrySink& sink,
         std::error_code& error_code) {
 
-        HRESULT result = geometry1->GetHandle()->CombineWithGeometry(
-            geometry2->GetHandle(),
+        HRESULT result = geometry1.GetHandle()->CombineWithGeometry(
+            geometry2.GetHandle(),
             static_cast<D2D1_COMBINE_MODE>(combine_mode),
             nullptr,
-            sink->GetHandle());
+            sink.GetHandle());
 
         error_code = MakeComErrorCode(result);
     }
 
     static void Combine(
-        const std::shared_ptr<Geometry>& geometry1,
-        const std::shared_ptr<Geometry>& geometry2,
+        const Geometry& geometry1,
+        const Geometry& geometry2,
         CombineMode combine_mode,
-        const std::shared_ptr<GeometrySink>& sink) {
+        const GeometrySink& sink) {
 
         std::error_code error_code;
         Combine(geometry1, geometry2, combine_mode, sink, error_code);
@@ -91,32 +90,15 @@ public:
     }
 
 public:
+    Geometry() { }
+
     /**
      Construct the instance with specified handle.
 
      The geometry instance takes over the lifetime of handle. It would
      release the handle when destroyed.
      */
-    explicit Geometry(ID2D1Geometry* handle) : handle_(handle) { }
-
-	virtual ~Geometry() {
-		if (handle_ != nullptr) {
-			handle_->Release();
-		}
-	}
-
-    /**
-     Get geometry's handle.
-     */
-	ID2D1Geometry* GetHandle() const {
-		return handle_;
-	}
-
-	Geometry(const Geometry&) = delete;
-	Geometry& operator=(const Geometry&) = delete;
-
-private:
-	ID2D1Geometry* handle_;
+    explicit Geometry(ID2D1Geometry* handle) : ComObject(handle) { }
 };
 
 }

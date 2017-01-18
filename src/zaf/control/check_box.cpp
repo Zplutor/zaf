@@ -82,7 +82,7 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
 			return;
 		}
 
-		auto sink = path->Open();
+		auto sink = path.Open();
 		if (sink == nullptr) {
 			return;
 		}
@@ -94,11 +94,11 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
 		Point middle_point(mark_rect.position.x + mark_rect.size.width * 0.4f, mark_rect.position.y + mark_rect.size.height - 1);
 		Point end_point(mark_rect.position.x, mark_rect.position.y + mark_rect.size.height * 0.4f);
 
-		sink->BeginFigure(start_point, GeometrySink::BeginFigureOption::Hollow);
-		sink->AddLine(middle_point);
-		sink->AddLine(end_point);
-		sink->EndFigure(GeometrySink::EndFigureOption::Open);
-		sink->Close();
+		sink.BeginFigure(start_point, GeometrySink::BeginFigureOption::Hollow);
+		sink.AddLine(middle_point);
+		sink.AddLine(end_point);
+		sink.EndFigure(GeometrySink::EndFigureOption::Open);
+		sink.Close();
 
 		canvas.DrawGeometryFrame(path, 1.5);
 	}

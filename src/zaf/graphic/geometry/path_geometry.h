@@ -2,10 +2,9 @@
 
 #include <memory>
 #include <zaf/graphic/geometry/geometry.h>
+#include <zaf/graphic/geometry/geometry_sink.h>
 
 namespace zaf {
-
-class GeometrySink;
 
 /**
  Represents a complex shape that may be composed of arcs, curves, and lines.
@@ -14,6 +13,8 @@ class GeometrySink;
  */
 class PathGeometry : public Geometry {
 public:
+    PathGeometry() { }
+
     /**
      Construct the instance with specified handle.
 
@@ -70,9 +71,9 @@ public:
      @return
         Return nullptr if error occurs.
      */
-	const std::shared_ptr<GeometrySink> Open(std::error_code& error_code);
+	const GeometrySink Open(std::error_code& error_code);
 
-    const std::shared_ptr<GeometrySink> Open() {
+    const GeometrySink Open() {
         std::error_code error_code;
         auto result = Open(error_code);
         ZAF_CHECK_ERROR(error_code);

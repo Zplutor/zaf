@@ -151,11 +151,11 @@ public:
 		);
 	}
 
-	void DrawGeometry(const std::shared_ptr<Geometry>& geometry) {
-		renderer_->DrawGeometry(geometry, GetCurrentState()->brush, nullptr);
+	void DrawGeometry(const Geometry& geometry) {
+		renderer_->DrawGeometry(geometry, GetCurrentState()->brush, Brush());
 	}
 
-	void DrawGeometryFrame(const std::shared_ptr<Geometry>& geometry, float stroke_width) {
+	void DrawGeometryFrame(const Geometry& geometry, float stroke_width) {
 		auto state = GetCurrentState();
 		renderer_->DrawGeometryFrame(geometry, state->brush, stroke_width, state->stroke);
 	}
