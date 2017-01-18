@@ -1,44 +1,40 @@
 #include <zaf/graphic/font/font_family.h>
 #include <zaf/graphic/font/font_collection.h>
-#include <zaf/graphic/font/font_face.h>
 #include <zaf/graphic/localized_strings.h>
 
 namespace zaf {
 
-const std::shared_ptr<FontCollection> FontFamily::GetFontCollection(std::error_code& error_code) const {
+const FontCollection FontFamily::GetFontCollection(std::error_code& error_code) const {
 
     IDWriteFontCollection* handle = nullptr;
-    HRESULT result = handle_->GetFontCollection(&handle);
+    HRESULT result = GetHandle()->GetFontCollection(&handle);
 
     error_code = MakeComErrorCode(result);
-    if (IsSucceeded(error_code)) {
-        return std::make_shared<FontCollection>(handle);
-    }
-    else {
-        return nullptr;
-    }
+    return FontCollection(handle);
+}
+
+const FontCollection FontFamily::GetFontCollection() const {
+    std::error_code error_code;
+    auto result = GetFontCollection(error_code);
+    ZAF_CHECK_ERROR(error_code);
+    return result;
 }
 
 
-const std::shared_ptr<FontFace> FontFamily::GetFont(std::size_t index, std::error_code& error_code) const {
+const FontFace FontFamily::GetFont(std::size_t index, std::error_code& error_code) const {
 
     IDWriteFont* handle = nullptr;
-    HRESULT result = handle_->GetFont(index, &handle);
+    HRESULT result = GetHandle()->GetFont(index, &handle);
 
     error_code = MakeComErrorCode(result);
-    if (IsSucceeded(error_code)) {
-        return std::make_shared<FontFace>(handle);
-    }
-    else {
-        return nullptr;
-    }
+    return FontFace(handle);
 }
 
 
 const std::shared_ptr<LocalizedStrings> FontFamily::GetFamilyNames(std::error_code& error_code) const {
 
     IDWriteLocalizedStrings* handle = nullptr;
-    HRESULT result = handle_->GetFamilyNames(&handle);
+    HRESULT result = GetHandle()->GetFamilyNames(&handle);
 
     error_code = MakeComErrorCode(result);
     if (IsSucceeded(error_code)) {

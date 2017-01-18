@@ -5,6 +5,7 @@
 #include <memory>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error.h>
+#include <zaf/graphic/font/font_collection.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/geometry/transformed_geometry.h>
@@ -12,7 +13,6 @@
 
 namespace zaf {
 
-class FontCollection;
 class Rect;
 class Renderer;
 class Stroke;
@@ -155,9 +155,9 @@ public:
      @return 
          Return nullptr if failed.
      */
-    const std::shared_ptr<FontCollection> GetSystemFontCollection(std::error_code& error_code);
+    const FontCollection GetSystemFontCollection(std::error_code& error_code);
 
-    const std::shared_ptr<FontCollection> GetSystemFontCollection() {
+    const FontCollection GetSystemFontCollection() {
         std::error_code error_code;
         auto result = GetSystemFontCollection(error_code);
         ZAF_CHECK_ERROR(error_code);

@@ -4,33 +4,28 @@
 
 namespace zaf {
 
-std::shared_ptr<FontFamily> FontCollection::GetFontFamily(std::size_t index, std::error_code& error_code) const {
+const FontFamily FontCollection::GetFontFamily(std::size_t index, std::error_code& error_code) const {
 
 	IDWriteFontFamily* font_family_handle = nullptr;
-	HRESULT result = handle_->GetFontFamily(index, &font_family_handle);
+	HRESULT result = GetHandle()->GetFontFamily(index, &font_family_handle);
 
     error_code = MakeComErrorCode(result);
-    if (IsSucceeded(error_code)) {
-		return std::make_shared<FontFamily>(font_family_handle);
-	}
-	else {
-		return nullptr;
-	}
+    return FontFamily(font_family_handle);
 }
 
 
-std::shared_ptr<FontFamily> FontCollection::FindFontFamily(const std::wstring& family_name, std::error_code& error_code) const {
+const FontFamily FontCollection::FindFontFamily(const std::wstring& family_name, std::error_code& error_code) const {
 
 	UINT32 index = 0;
 	BOOL is_found = FALSE;
-	HRESULT result = handle_->FindFamilyName(family_name.c_str(), &index, &is_found);
+	HRESULT result = GetHandle()->FindFamilyName(family_name.c_str(), &index, &is_found);
 
     error_code = MakeComErrorCode(result);
     if (IsSucceeded(error_code) && is_found) {
         return GetFontFamily(index, error_code);
     }
     else {
-        return nullptr;
+        return FontFamily();
     }
 }
 

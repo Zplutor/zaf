@@ -3,16 +3,12 @@
 
 namespace zaf {
 
-std::shared_ptr<FontFamily> FontFace::GetFontFamily() const {
+const FontFamily FontFace::GetFontFamily() const {
 
 	IDWriteFontFamily* family_handle = nullptr;
-	HRESULT result = font_handle_->GetFontFamily(&family_handle);
-	if (SUCCEEDED(result)) {
-		return std::make_shared<FontFamily>(family_handle);
-	}
-	else {
-		return nullptr;
-	}
+	HRESULT result = GetHandle()->GetFontFamily(&family_handle);
+	
+    return FontFamily(family_handle);
 }
 
 }

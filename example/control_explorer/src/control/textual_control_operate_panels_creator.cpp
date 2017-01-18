@@ -108,9 +108,9 @@ static std::shared_ptr<zaf::Control> CreateFontPanel(const std::shared_ptr<zaf::
 
                     auto font_collection = zaf::GetResourceFactory()->GetSystemFontCollection();
 
-                    for (const auto& each_font_family : font_collection->GetEnumerator()) {
+                    for (const auto& each_font_family : font_collection.GetEnumerator()) {
 
-                        auto localized_strings = each_font_family->GetFamilyNames();
+                        auto localized_strings = each_font_family.GetFamilyNames();
                         auto index = localized_strings->FindLocaleName(user_default_locale);
                         if (index == zaf::InvalidIndex) {
                             index = localized_strings->FindLocaleName(L"en-us");
