@@ -148,7 +148,7 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
     //before painting.
     ReviseTextColor();
 
-	auto render_target = canvas.GetRenderer()->GetHandle();
+	auto render_target = canvas.GetRenderer().GetHandle();
 	CComPtr<ID2D1GdiInteropRenderTarget> gdi_interop_render_target;
 	render_target->QueryInterface(IID_ID2D1GdiInteropRenderTarget, reinterpret_cast<void**>(&gdi_interop_render_target));
 

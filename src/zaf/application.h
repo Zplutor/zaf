@@ -155,7 +155,7 @@ inline Application& GetApplication() {
 }
 
 
-inline const std::shared_ptr<ResourceFactory> GetResourceFactory() {
+inline const std::shared_ptr<ResourceFactory>& GetResourceFactory() {
     return GetApplication().GetResourceFactory();
 }
 

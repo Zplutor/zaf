@@ -32,7 +32,7 @@ void ImageBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-bool ImageBox::CreateFrameBitmaps(const std::shared_ptr<Renderer>& renderer) {
+bool ImageBox::CreateFrameBitmaps(Renderer& renderer) {
 
     if (image_decoder_ == nullptr) {
         return false;
@@ -45,7 +45,7 @@ bool ImageBox::CreateFrameBitmaps(const std::shared_ptr<Renderer>& renderer) {
             continue;
         }
 
-        auto bitmap = renderer->CreateBitmap(frame);
+        auto bitmap = renderer.CreateBitmap(frame);
         if (bitmap == nullptr) {
             continue;
         }

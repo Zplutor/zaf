@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error.h>
 #include <zaf/graphic/brush/solid_color_brush.h>
@@ -22,18 +23,13 @@ namespace zaf {
 class Brush;
 class LayerParameters;
 
-class Renderer {
+class Renderer : public ComObject<ID2D1HwndRenderTarget> {
 public:
-	explicit Renderer(ID2D1HwndRenderTarget* handle) : handle_(handle) { }
-
-	~Renderer() {
-		if (handle_ != nullptr) {
-			handle_->Release();
-		}
-	}
+    Renderer() { }
+	explicit Renderer(ID2D1HwndRenderTarget* handle) : ComObject(handle) { }
 
     void Resize(const Size& size, std::error_code& error_code) {
-        HRESULT result = handle_->Resize(size.ToD2D1SIZEU());
+        HRESULT result = GetHandle()->Resize(size.ToD2D1SIZEU());
         error_code = MakeComErrorCode(result);
     }
 
@@ -68,9 +64,9 @@ public:
         return InnerCreateLayer(&size);
     }
 
-    const Bitmap CreateBitmap(const std::shared_ptr<ImageDecoder::Frame>& image_frame, std::error_code& error_code);
+    const Bitmap CreateBitmap(const ImageDecoder::Frame& image_frame, std::error_code& error_code);
 
-    const Bitmap CreateBitmap(const std::shared_ptr<ImageDecoder::Frame>& image) {
+    const Bitmap CreateBitmap(const ImageDecoder::Frame& image) {
         std::error_code error_code;
         auto result = CreateBitmap(image, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -78,11 +74,11 @@ public:
     }
 
 	void BeginDraw() {
-		handle_->BeginDraw();
+		GetHandle()->BeginDraw();
 	}
 
     void EndDraw(std::error_code& error_code) {
-        HRESULT result = handle_->EndDraw();
+        HRESULT result = GetHandle()->EndDraw();
         error_code = MakeComErrorCode(result);
     }
 
@@ -100,7 +96,7 @@ public:
 		const std::shared_ptr<Stroke>& stroke
 	) {
 
-		handle_->DrawLine(
+		GetHandle()->DrawLine(
 			from_point.ToD2D1POINT2F(), 
 			to_point.ToD2D1POINT2F(),
 			brush.GetHandle(),
@@ -110,7 +106,7 @@ public:
 	}
 
 	void DrawRectangle(const Rect& rect, const Brush& brush) {
-		handle_->FillRectangle(rect.ToD2D1RECTF(), brush.GetHandle());
+		GetHandle()->FillRectangle(rect.ToD2D1RECTF(), brush.GetHandle());
 	}
 
 	void DrawRectangleFrame(
@@ -120,7 +116,7 @@ public:
 		const std::shared_ptr<Stroke>& stroke
 	) {
 
-		handle_->DrawRectangle(
+		GetHandle()->DrawRectangle(
 			rect.ToD2D1RECTF(),
 			brush.GetHandle(), 
 			stroke_width,
@@ -129,7 +125,7 @@ public:
 	}
 
 	void DrawEllipse(const Ellipse& ellipse, const Brush& brush) {
-		handle_->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush.GetHandle());
+		GetHandle()->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush.GetHandle());
 	}
 
 	void DrawEllipseFrame(
@@ -139,7 +135,7 @@ public:
 		const std::shared_ptr<Stroke>& stroke
 	) {
 
-		handle_->DrawEllipse(
+		GetHandle()->DrawEllipse(
 			ellipse.ToD2D1ELLIPSE(),
 			brush.GetHandle(),
 			stroke_width, 
@@ -153,7 +149,7 @@ public:
 		const Brush& opacity_brush
 	) {
 
-		handle_->FillGeometry(
+		GetHandle()->FillGeometry(
 			geometry.GetHandle(),
 			brush.GetHandle(), 
 			opacity_brush.GetHandle()
@@ -167,7 +163,7 @@ public:
 		const std::shared_ptr<Stroke>& stroke
 	) {
 
-		handle_->DrawGeometry(
+		GetHandle()->DrawGeometry(
 			geometry.GetHandle(),
 			brush.GetHandle(),
 			stroke_width, 
@@ -182,7 +178,7 @@ public:
 		const Brush& brush
 	) {
 
-		handle_->DrawText(
+		GetHandle()->DrawText(
 			text.c_str(), 
 			text.length(),
 			text_format.GetHandle(),
@@ -197,7 +193,7 @@ public:
 		const Brush& brush
 	) {
 
-		handle_->DrawTextLayout(position.ToD2D1POINT2F(), text_layout.GetHandle(), brush.GetHandle());
+		GetHandle()->DrawTextLayout(position.ToD2D1POINT2F(), text_layout.GetHandle(), brush.GetHandle());
 	}
 
     void DrawBitmap(
@@ -207,7 +203,7 @@ public:
         InterpolationMode interpolation_mode,
         const Rect* bitmap_rect) {
 
-        handle_->DrawBitmap(
+        GetHandle()->DrawBitmap(
             bitmap.GetHandle(),
             rect.ToD2D1RECTF(),
             opacity,
@@ -218,23 +214,16 @@ public:
 	void PushLayer(const LayerParameters& parameters, const std::shared_ptr<Layer>& layer);
 
     void PopLayer() {
-        handle_->PopLayer();
+        GetHandle()->PopLayer();
     }
 
 	void Clear(const Color& color) {
-		handle_->Clear(color.ToD2D1COLORF());
+		GetHandle()->Clear(color.ToD2D1COLORF());
 	}
 
 	void Transform(const TransformMatrix& transform_matrix) {
-		handle_->SetTransform(transform_matrix.ToD2D1MATRIX3X2F());
+		GetHandle()->SetTransform(transform_matrix.ToD2D1MATRIX3X2F());
 	}
-
-	ID2D1HwndRenderTarget* GetHandle() const {
-		return handle_;
-	}
-
-	Renderer(const Renderer&) = delete;
-	Renderer& operator=(const Renderer&) = delete;
 
 private:
     const std::shared_ptr<Layer> InnerCreateLayer(const Size* size, std::error_code& error_code);
@@ -245,9 +234,6 @@ private:
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
-
-private:
-	ID2D1HwndRenderTarget* handle_;
 };
 
 }

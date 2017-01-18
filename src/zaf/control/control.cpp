@@ -652,14 +652,14 @@ const std::shared_ptr<Window> Control::GetWindow() const {
 }
 
 
-const std::shared_ptr<Renderer> Control::GetRenderer() const {
+const Renderer Control::GetRenderer() const {
 
     auto window = GetWindow();
     if (window != nullptr) {
         return window->GetRenderer();
     }
     else {
-        return nullptr;
+        return Renderer();
     }
 }
 

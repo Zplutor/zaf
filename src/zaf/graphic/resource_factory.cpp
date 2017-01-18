@@ -36,12 +36,12 @@ ResourceFactory::~ResourceFactory() {
 }
 
 
-const std::shared_ptr<Renderer> ResourceFactory::CreateRenderer(HWND window_handle, std::error_code& error_code) {
+const Renderer ResourceFactory::CreateRenderer(HWND window_handle, std::error_code& error_code) {
 
 	RECT window_rect = { 0 };
     if (! GetClientRect(window_handle, &window_rect)) {
         error_code = MakeSystemErrorCode(GetLastError());
-        return nullptr;
+        return Renderer();
     }
 
 	D2D1_SIZE_U renderer_size = D2D1::SizeU(
@@ -62,12 +62,7 @@ const std::shared_ptr<Renderer> ResourceFactory::CreateRenderer(HWND window_hand
 	);
 
     error_code = MakeComErrorCode(result);
-	if (IsSucceeded(error_code)) {
-		return std::make_shared<Renderer>(renderer_handle);
-	}
-	else {
-		return nullptr;
-	}
+    return Renderer(renderer_handle);
 }
 
 

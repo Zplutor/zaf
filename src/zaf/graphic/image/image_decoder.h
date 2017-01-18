@@ -28,9 +28,9 @@ public:
         return result;
     }
 
-    const std::shared_ptr<Frame> GetFrame(std::size_t index, std::error_code& error_code) const;
+    const Frame GetFrame(std::size_t index, std::error_code& error_code) const;
 
-    const std::shared_ptr<Frame> GetFrame(std::size_t index) const {
+    const Frame GetFrame(std::size_t index) const {
         std::error_code error_code;
         auto result = GetFrame(index, error_code);
         ZAF_CHECK_ERROR(error_code);

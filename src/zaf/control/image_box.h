@@ -26,7 +26,7 @@ protected:
     void ReleaseRendererResources() override;
 
 private:
-    bool CreateFrameBitmaps(const std::shared_ptr<Renderer>& renderer);
+    bool CreateFrameBitmaps(Renderer& renderer);
 
 private:
     ImageDecoder image_decoder_;

@@ -8,10 +8,9 @@
 
 namespace zaf {
 
-Canvas::Canvas(const std::shared_ptr<Renderer>& renderer) :
-	renderer_(renderer) {
+Canvas::Canvas(const Renderer& renderer) : renderer_(renderer) {
 
-	layer_ = renderer_->CreateLayer(Size());
+	layer_ = renderer_.CreateLayer(Size());
 	SaveState();
 }
 
@@ -19,7 +18,7 @@ Canvas::Canvas(const std::shared_ptr<Renderer>& renderer) :
 void Canvas::BeginPaint() {
 
 	Rect adjusted_absolute_rect = MakeClearEdgeRectForFill(absolute_rect_, ClearEdgeOption::Clear);
-	renderer_->Transform(TransformMatrix::Translation(adjusted_absolute_rect.position));
+	renderer_.Transform(TransformMatrix::Translation(adjusted_absolute_rect.position));
 
 	Rect adjusted_absolute_paintable_rect = MakeClearEdgeRectForFill(absolute_paintable_rect_, ClearEdgeOption::Clear);
 	adjusted_absolute_paintable_rect.position.x -= adjusted_absolute_rect.position.x;
@@ -27,20 +26,20 @@ void Canvas::BeginPaint() {
 
 	LayerParameters layer_param;
 	layer_param.content_bounds = adjusted_absolute_paintable_rect;
-	renderer_->PushLayer(layer_param, layer_);
+	renderer_.PushLayer(layer_param, layer_);
 }
 
 
 void Canvas::EndPaint() {
 
-	renderer_->PopLayer();
+	renderer_.PopLayer();
 }
 
 
 void Canvas::SaveState() {
 
 	auto new_state = std::make_shared<State>();
-	new_state->brush = renderer_->CreateSolidColorBrush(Color::White);
+	new_state->brush = renderer_.CreateSolidColorBrush(Color::White);
 
 	states_.push_back(new_state);
 }

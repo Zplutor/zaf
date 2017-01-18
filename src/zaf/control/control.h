@@ -408,7 +408,7 @@ public:
      Return nullptr if the control does not locates in any window, 
      or the window is closed.
      */
-    const std::shared_ptr<Renderer> GetRenderer() const;
+    const Renderer GetRenderer() const;
 
 	/**
 	 Get a value indicating that whether the control is visible.

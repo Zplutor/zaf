@@ -6,13 +6,13 @@
 #include <zaf/base/property_map.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
+#include <zaf/graphic/renderer.h>
 #include <zaf/internal/message_loop.h>
 
 namespace zaf {
 
 class Caret;
 class MouseMessage;
-class Renderer;
 
 /**
  Represents a top-level window.
@@ -323,7 +323,7 @@ public:
     /**
      Get the renderer of the window.
      */
-    const std::shared_ptr<Renderer>& GetRenderer() const {
+    Renderer& GetRenderer() {
         return renderer_;
     }
 
@@ -519,7 +519,7 @@ private:
 private:
 	HWND handle_;
     Rect rect_;
-	std::shared_ptr<Renderer> renderer_;
+	Renderer renderer_;
 
 	bool is_tracking_mouse_;
 

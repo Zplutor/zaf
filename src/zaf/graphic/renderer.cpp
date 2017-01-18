@@ -9,7 +9,7 @@ namespace zaf {
 const SolidColorBrush Renderer::CreateSolidColorBrush(const Color& color, std::error_code& error_code) {
 
 	ID2D1SolidColorBrush* brush_handle = nullptr;
-	LRESULT result = handle_->CreateSolidColorBrush(color.ToD2D1COLORF(), &brush_handle);
+	LRESULT result = GetHandle()->CreateSolidColorBrush(color.ToD2D1COLORF(), &brush_handle);
 
     error_code = MakeComErrorCode(result);
     return SolidColorBrush(brush_handle);
@@ -21,10 +21,10 @@ const std::shared_ptr<Layer> Renderer::InnerCreateLayer(const Size* size, std::e
 	ID2D1Layer* layer_handle = nullptr;
 	LRESULT result = 0;
     if (size != nullptr) {
-        handle_->CreateLayer(size->ToD2D1SIZEF(), &layer_handle);
+        GetHandle()->CreateLayer(size->ToD2D1SIZEF(), &layer_handle);
     }
     else {
-        handle_->CreateLayer(&layer_handle);
+        GetHandle()->CreateLayer(&layer_handle);
     }
 
     error_code = MakeComErrorCode(result);
@@ -38,7 +38,7 @@ const std::shared_ptr<Layer> Renderer::InnerCreateLayer(const Size* size, std::e
 
 
 const Bitmap Renderer::CreateBitmap(
-    const std::shared_ptr<ImageDecoder::Frame>& image_frame,
+    const ImageDecoder::Frame& image_frame,
     std::error_code& error_code) {
 
     auto wic_image_factory_handle = GetResourceFactory()->GetWicImagingFactoryHandle();
@@ -52,7 +52,7 @@ const Bitmap Renderer::CreateBitmap(
     }
 
     result = format_converter->Initialize(
-        image_frame->GetHandle(), 
+        image_frame.GetHandle(), 
         GUID_WICPixelFormat32bppPBGRA,  
         WICBitmapDitherTypeNone,    
         nullptr,
@@ -66,7 +66,7 @@ const Bitmap Renderer::CreateBitmap(
     }
 
     ID2D1Bitmap* handle = nullptr;
-    result = handle_->CreateBitmapFromWicBitmap(format_converter, &handle);
+    result = GetHandle()->CreateBitmapFromWicBitmap(format_converter, &handle);
     format_converter->Release();
 
     error_code = MakeComErrorCode(result);
@@ -81,7 +81,7 @@ void Renderer::PushLayer(const LayerParameters& parameters, const std::shared_pt
     d2d_parameters.maskTransform = parameters.mask_transform.ToD2D1MATRIX3X2F();
 	d2d_parameters.opacity = parameters.opacity;
 
-	handle_->PushLayer(d2d_parameters, layer->GetHandle());
+	GetHandle()->PushLayer(d2d_parameters, layer->GetHandle());
 }
 
 

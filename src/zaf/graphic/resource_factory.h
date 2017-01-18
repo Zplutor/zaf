@@ -10,12 +10,12 @@
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/image/image_decoder.h>
+#include <zaf/graphic/renderer.h>
 #include <zaf/graphic/text/text_layout.h>
 
 namespace zaf {
 
 class Rect;
-class Renderer;
 class Stroke;
 class StrokeProperties;
 class TextFormatProperties;
@@ -49,9 +49,9 @@ public:
      @return
          Return nullptr if failed.
      */
-    const std::shared_ptr<Renderer> CreateRenderer(HWND window_handle, std::error_code& error_code);
+    const Renderer CreateRenderer(HWND window_handle, std::error_code& error_code);
 
-    const std::shared_ptr<Renderer> CreateRenderer(HWND window_handle) {
+    const Renderer CreateRenderer(HWND window_handle) {
         std::error_code error_code;
         auto result = CreateRenderer(window_handle, error_code);
         ZAF_CHECK_ERROR(error_code);

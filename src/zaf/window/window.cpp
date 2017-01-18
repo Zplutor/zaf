@@ -391,7 +391,7 @@ void Window::Repaint() {
     //and this may fails if there is a invalidated update rect.
     ValidateRect(handle_, nullptr);
 
-    renderer_->BeginDraw();
+    renderer_.BeginDraw();
 
     Canvas canvas(renderer_);
     canvas.SetRects(root_control_->GetRect(), dirty_rect);
@@ -406,7 +406,7 @@ void Window::Repaint() {
     }
 
     std::error_code error_code;
-    renderer_->EndDraw(error_code);
+    renderer_.EndDraw(error_code);
 
     if (IsComErrorCode(error_code, D2DERR_RECREATE_TARGET)) {
         RecreateRenderer();
@@ -427,7 +427,7 @@ void Window::Resize(UINT width, UINT height) {
 
     Size size(static_cast<float>(width), static_cast<float>(height));
 
-    renderer_->Resize(size);
+    renderer_.Resize(size);
     root_control_->SetRect(Rect(Point(), size));
 }
 
@@ -541,7 +541,7 @@ void Window::ReceiveDestroyMessage() {
     HWND old_handle = handle_;
 
     handle_ = nullptr;
-    renderer_ = nullptr;
+    renderer_.Reset();
 
     WindowDestroy(old_handle);
 }
