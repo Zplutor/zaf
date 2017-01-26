@@ -1,11 +1,12 @@
 ﻿#pragma once
 
 #include <vector>
+#include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 
 namespace zaf {
 
-class Stroke {
+class Stroke : public ComObject<ID2D1StrokeStyle> {
 public:
     enum class CapStyle {
         Flat = 0,
@@ -31,55 +32,45 @@ public:
     };
 
 public:
-    explicit Stroke(ID2D1StrokeStyle* handle) : handle_(handle) { }
-
-    ~Stroke() {
-        handle_->Release();
-    }
+    Stroke() { }
+    explicit Stroke(ID2D1StrokeStyle* handle) : ComObject(handle) { }
 
     CapStyle GetStartCapStyle() const {
-        return static_cast<CapStyle>(handle_->GetStartCap());
+        return static_cast<CapStyle>(GetHandle()->GetStartCap());
     }
 
     CapStyle GetEndCapStyle() const {
-        return static_cast<CapStyle>(handle_->GetEndCap());
+        return static_cast<CapStyle>(GetHandle()->GetEndCap());
     }
 
     CapStyle GetDashCapStyle() const {
-        return static_cast<CapStyle>(handle_->GetDashCap());
+        return static_cast<CapStyle>(GetHandle()->GetDashCap());
     }
 
     LineJoinStyle GetLineJoinStyle() const {
-        return static_cast<LineJoinStyle>(handle_->GetLineJoin());
+        return static_cast<LineJoinStyle>(GetHandle()->GetLineJoin());
     }
 
     float GetMiterLimit() const {
-        return handle_->GetMiterLimit();
+        return GetHandle()->GetMiterLimit();
     }
 
     DashStyle GetDashStyle() const {
-        return static_cast<DashStyle>(handle_->GetDashStyle());
+        return static_cast<DashStyle>(GetHandle()->GetDashStyle());
     }
 
     float GetDashOffset() const {
-        return handle_->GetDashOffset();
+        return GetHandle()->GetDashOffset();
     }
 
     std::vector<float> GetDashPattern() const {
 
-        std::size_t count = handle_->GetDashesCount();
+        std::size_t count = GetHandle()->GetDashesCount();
 
         std::vector<float> dash_pattern(count);
-        handle_->GetDashes(dash_pattern.data(), count);
+        GetHandle()->GetDashes(dash_pattern.data(), count);
         return dash_pattern;
     }
-
-	ID2D1StrokeStyle* GetHandle() const {
-		return handle_;
-	}
-
-private:
-    ID2D1StrokeStyle* handle_;
 };
 
 }

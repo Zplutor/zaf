@@ -11,12 +11,12 @@
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/image/image_decoder.h>
 #include <zaf/graphic/renderer.h>
+#include <zaf/graphic/stroke.h>
 #include <zaf/graphic/text/text_layout.h>
 
 namespace zaf {
 
 class Rect;
-class Stroke;
 class StrokeProperties;
 class TextFormatProperties;
 class TextLayoutProperties;
@@ -109,9 +109,9 @@ public:
 	 @return 
 	     Return nullptr if failed.
 	 */
-    const std::shared_ptr<Stroke> CreateStroke(const StrokeProperties& properties, std::error_code& error_code);
+    const Stroke CreateStroke(const StrokeProperties& properties, std::error_code& error_code);
 
-    const std::shared_ptr<Stroke> CreateStroke(const StrokeProperties& properties) {
+    const Stroke CreateStroke(const StrokeProperties& properties) {
         std::error_code error_code;
         auto result = CreateStroke(properties, error_code);
         ZAF_CHECK_ERROR(error_code);

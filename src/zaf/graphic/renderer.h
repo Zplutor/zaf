@@ -103,7 +103,7 @@ public:
 		const Point& to_point, 
 		const Brush& brush,
 		float stroke_width,
-		const std::shared_ptr<Stroke>& stroke
+		const Stroke& stroke
 	) {
 
 		GetHandle()->DrawLine(
@@ -111,7 +111,7 @@ public:
 			to_point.ToD2D1POINT2F(),
 			brush.GetHandle(),
 			stroke_width,
-			stroke == nullptr ? nullptr : stroke->GetHandle()
+			stroke.GetHandle()
 		);
 	}
 
@@ -123,14 +123,14 @@ public:
 		const Rect& rect, 
 		const Brush& brush, 
 		float stroke_width,
-		const std::shared_ptr<Stroke>& stroke
+		const Stroke& stroke
 	) {
 
 		GetHandle()->DrawRectangle(
 			rect.ToD2D1RECTF(),
 			brush.GetHandle(), 
 			stroke_width,
-			stroke == nullptr ? nullptr : stroke->GetHandle()
+			stroke.GetHandle()
 		);
 	}
 
@@ -142,14 +142,14 @@ public:
 		const Ellipse& ellipse,
 		const Brush& brush,
 		float stroke_width,
-		const std::shared_ptr<Stroke>& stroke
+		const Stroke& stroke
 	) {
 
 		GetHandle()->DrawEllipse(
 			ellipse.ToD2D1ELLIPSE(),
 			brush.GetHandle(),
 			stroke_width, 
-			stroke == nullptr ? nullptr : stroke->GetHandle()
+			stroke.GetHandle()
 		);
 	}
 
@@ -170,14 +170,14 @@ public:
 		const Geometry& geometry,
 		const Brush& brush,
 		float stroke_width,
-		const std::shared_ptr<Stroke>& stroke
+		const Stroke& stroke
 	) {
 
 		GetHandle()->DrawGeometry(
 			geometry.GetHandle(),
 			brush.GetHandle(),
 			stroke_width, 
-			stroke == nullptr ? nullptr : stroke->GetHandle()
+			stroke.GetHandle()
 		);
 	}
 

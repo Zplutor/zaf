@@ -104,7 +104,7 @@ public:
 		SetBrush(brush);
 	}
 
-	void SetStroke(const std::shared_ptr<Stroke>& stroke) {
+	void SetStroke(const Stroke& stroke) {
 		GetCurrentState()->stroke = stroke;
 	}
 
@@ -182,7 +182,7 @@ private:
 	public:
 		ClearEdgeOption clear_edge_option;
 		Brush brush;
-		std::shared_ptr<Stroke> stroke;
+		Stroke stroke;
 	};
 
 private:

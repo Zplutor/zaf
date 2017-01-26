@@ -1,6 +1,5 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/graphic/renderer.h>
-#include <zaf/graphic/stroke.h>
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/text/text_format_properties.h>
@@ -102,7 +101,7 @@ const TransformedGeometry ResourceFactory::CreateTransformedGeometry(
 }
 
 
-const std::shared_ptr<Stroke> ResourceFactory::CreateStroke(const StrokeProperties& properties, std::error_code& error_code) {
+const Stroke ResourceFactory::CreateStroke(const StrokeProperties& properties, std::error_code& error_code) {
     
 	D2D1_STROKE_STYLE_PROPERTIES d2d_properties;
 	d2d_properties.startCap = static_cast<D2D1_CAP_STYLE>(properties.start_cap_style);
@@ -122,12 +121,7 @@ const std::shared_ptr<Stroke> ResourceFactory::CreateStroke(const StrokeProperti
 	);
 
     error_code = MakeComErrorCode(result);
-	if (IsSucceeded(error_code)) {
-		return std::make_shared<Stroke>(handle);
-	}
-	else {
-		return nullptr;
-	}
+    return Stroke(handle);
 }
 
 
