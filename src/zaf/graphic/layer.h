@@ -1,30 +1,19 @@
 #pragma once
 
+#include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/graphic/size.h>
 
 namespace zaf {
 
-class Layer {
+class Layer : public ComObject<ID2D1Layer> {
 public:
-	explicit Layer(ID2D1Layer* handle) : handle_(handle) { }
-
-	~Layer() {
-		if (handle_ != nullptr) {
-			handle_->Release();
-		}
-	}
+    Layer() { }
+	explicit Layer(ID2D1Layer* handle) : ComObject(handle) { }
 
 	const Size GetSize() const {
-		return Size::FromD2D1SIZEF(handle_->GetSize());
+		return Size::FromD2D1SIZEF(GetHandle()->GetSize());
 	}
-
-	ID2D1Layer* GetHandle() const {
-		return handle_;
-	}
-
-private:
-	ID2D1Layer* handle_;
 };
 
 }

@@ -11,8 +11,6 @@
 
 namespace zaf {
 
-class Layer;
-
 class DrawImageOptions {
 public:
     float Opacity() const {
@@ -211,7 +209,7 @@ private:
 	Rect absolute_paintable_rect_;
 
 	Renderer renderer_;
-	std::shared_ptr<Layer> layer_;
+	Layer layer_;
 	
 	std::vector<std::shared_ptr<State>> states_;
 };

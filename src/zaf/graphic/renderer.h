@@ -58,19 +58,19 @@ public:
         return result;
     }
 
-    const std::shared_ptr<Layer> CreateLayer(std::error_code& error_code) {
+    const Layer CreateLayer(std::error_code& error_code) {
         return InnerCreateLayer(nullptr, error_code);
     }
 
-    const std::shared_ptr<Layer> CreateLayer() {
+    const Layer CreateLayer() {
         return InnerCreateLayer(nullptr);
     }
 
-    const std::shared_ptr<Layer> CreateLayer(const Size& size, std::error_code& error_code) {
+    const Layer CreateLayer(const Size& size, std::error_code& error_code) {
         return InnerCreateLayer(&size, error_code);
     }
 
-    const std::shared_ptr<Layer> CreateLayer(const Size& size) {
+    const Layer CreateLayer(const Size& size) {
         return InnerCreateLayer(&size);
     }
 
@@ -221,7 +221,7 @@ public:
             bitmap_rect == nullptr ? nullptr : &(bitmap_rect->ToD2D1RECTF()));
     }
 
-	void PushLayer(const LayerParameters& parameters, const std::shared_ptr<Layer>& layer);
+	void PushLayer(const LayerParameters& parameters, const Layer& layer);
 
     void PopLayer() {
         GetHandle()->PopLayer();
@@ -236,9 +236,9 @@ public:
 	}
 
 private:
-    const std::shared_ptr<Layer> InnerCreateLayer(const Size* size, std::error_code& error_code);
+    const Layer InnerCreateLayer(const Size* size, std::error_code& error_code);
 
-    const std::shared_ptr<Layer> InnerCreateLayer(const Size* size) {
+    const Layer InnerCreateLayer(const Size* size) {
         std::error_code error_code;
         auto result = InnerCreateLayer(size, error_code);
         ZAF_CHECK_ERROR(error_code);
