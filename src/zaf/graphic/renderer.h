@@ -4,6 +4,7 @@
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error.h>
+#include <zaf/graphic/brush/bitmap_brush.h>
 #include <zaf/graphic/brush/solid_color_brush.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
@@ -44,6 +45,15 @@ public:
     const SolidColorBrush CreateSolidColorBrush(const Color& color) {
         std::error_code error_code;
         auto result = CreateSolidColorBrush(color, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+
+    const BitmapBrush CreateBitmapBrush(const Bitmap& bitmap, std::error_code& error_code);
+
+    const BitmapBrush CreateBitmapBrush(const Bitmap& bitmap) {
+        std::error_code error_code;
+        auto result = CreateBitmapBrush(bitmap, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }

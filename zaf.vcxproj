@@ -49,7 +49,6 @@
     <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp" />
     <ClCompile Include="src\zaf\graphic\geometry\path_geometry.cpp" />
     <ClCompile Include="src\zaf\graphic\clear_edge.cpp" />
-    <ClCompile Include="src\zaf\graphic\image\bitmap.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image_decoder.cpp" />
     <ClCompile Include="src\zaf\graphic\localized_strings.cpp" />
     <ClCompile Include="src\zaf\graphic\matrix.cpp" />
@@ -117,6 +116,7 @@
     <ClInclude Include="src\zaf\control\text_box.h" />
     <ClInclude Include="src\zaf\control\text_validator.h" />
     <ClInclude Include="src\zaf\creation.h" />
+    <ClInclude Include="src\zaf\graphic\brush\bitmap_brush.h" />
     <ClInclude Include="src\zaf\graphic\brush\brush.h" />
     <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h" />
     <ClInclude Include="src\zaf\graphic\canvas.h" />
@@ -136,6 +136,7 @@
     <ClInclude Include="src\zaf\graphic\geometry\transformed_geometry.h" />
     <ClInclude Include="src\zaf\graphic\image\bitmap.h" />
     <ClInclude Include="src\zaf\graphic\image\image_decoder.h" />
+    <ClInclude Include="src\zaf\graphic\image\image_metadata_querier.h" />
     <ClInclude Include="src\zaf\graphic\image\interpolation_mode.h" />
     <ClInclude Include="src\zaf\graphic\layer.h" />
     <ClInclude Include="src\zaf\graphic\clear_edge.h" />

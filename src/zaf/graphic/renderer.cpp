@@ -9,17 +9,27 @@ namespace zaf {
 const SolidColorBrush Renderer::CreateSolidColorBrush(const Color& color, std::error_code& error_code) {
 
 	ID2D1SolidColorBrush* brush_handle = nullptr;
-	LRESULT result = GetHandle()->CreateSolidColorBrush(color.ToD2D1COLORF(), &brush_handle);
+	HRESULT result = GetHandle()->CreateSolidColorBrush(color.ToD2D1COLORF(), &brush_handle);
 
     error_code = MakeComErrorCode(result);
     return SolidColorBrush(brush_handle);
 }
 
 
+const BitmapBrush Renderer::CreateBitmapBrush(const Bitmap& bitmap, std::error_code& error_code) {
+
+    ID2D1BitmapBrush* handle = nullptr;
+    HRESULT result = GetHandle()->CreateBitmapBrush(bitmap.GetHandle(), &handle);
+
+    error_code = MakeComErrorCode(result);
+    return BitmapBrush(handle);
+}
+
+
 const std::shared_ptr<Layer> Renderer::InnerCreateLayer(const Size* size, std::error_code& error_code) {
 
 	ID2D1Layer* layer_handle = nullptr;
-	LRESULT result = 0;
+	HRESULT result = 0;
     if (size != nullptr) {
         GetHandle()->CreateLayer(size->ToD2D1SIZEF(), &layer_handle);
     }

@@ -207,9 +207,6 @@
     <ClCompile Include="src\zaf\graphic\localized_strings.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\bitmap.cpp">
-      <Filter>zaf\graphic\image</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\image_box.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
@@ -562,6 +559,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\com_object.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\image_metadata_querier.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\brush\bitmap_brush.h">
+      <Filter>zaf\graphic\brush</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
