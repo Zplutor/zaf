@@ -115,6 +115,25 @@ bool TextLayout::HasUnderline(std::size_t position, TextRange* range, std::error
 }
 
 
+const Brush TextLayout::GetBrush(std::size_t position, TextRange* range, std::error_code& error_code) {
+
+    IUnknown* drawing_effect = nullptr;
+    DWRITE_TEXT_RANGE text_range = { 0 };
+    HRESULT result = GetHandle()->GetDrawingEffect(position, &drawing_effect, &text_range);
+
+    error_code = MakeComErrorCode(result);
+    if (! IsSucceeded(error_code)) {
+        return Brush();
+    }
+
+    ID2D1Brush* brush_handle = nullptr;
+    result = drawing_effect->QueryInterface(&brush_handle);
+    error_code = MakeComErrorCode(result);
+    drawing_effect->Release();
+    return Brush(brush_handle);
+}
+
+
 const std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_count, std::error_code& error_code) const {
 
 	auto dwrite_line_metrics = std::make_unique<DWRITE_LINE_METRICS[]>(max_line_count);
