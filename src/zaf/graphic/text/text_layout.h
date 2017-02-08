@@ -405,7 +405,7 @@ public:
     }
 
     IDWriteTextLayout* GetHandle() const {
-        return dynamic_cast<IDWriteTextLayout*>(__super::GetHandle());
+        return static_cast<IDWriteTextLayout*>(__super::GetHandle());
     }
 };
 

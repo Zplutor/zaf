@@ -37,7 +37,7 @@ public:
 
 private:
 	ID2D1SolidColorBrush* GetActualHandle() const {
-        return dynamic_cast<ID2D1SolidColorBrush*>(GetHandle());
+        return static_cast<ID2D1SolidColorBrush*>(GetHandle());
     }
 };
 

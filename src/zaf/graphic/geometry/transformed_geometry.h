@@ -41,7 +41,7 @@ public:
 
 private:
     ID2D1TransformedGeometry* GetActualHandle() const {
-        return dynamic_cast<ID2D1TransformedGeometry*>(GetHandle());
+        return static_cast<ID2D1TransformedGeometry*>(GetHandle());
     }
 };
 

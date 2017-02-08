@@ -30,7 +30,7 @@ public:
     }
 
     ID2D1BitmapBrush* GetHandle() const {
-        return dynamic_cast<ID2D1BitmapBrush*>(__super::GetHandle());
+        return static_cast<ID2D1BitmapBrush*>(__super::GetHandle());
     }
 };
 
