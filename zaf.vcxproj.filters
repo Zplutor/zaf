@@ -213,6 +213,9 @@
     <ClCompile Include="src\zaf\graphic\image\image_decoder.cpp">
       <Filter>zaf\graphic\image</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\range_manager.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -565,6 +568,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\brush\bitmap_brush.h">
       <Filter>zaf\graphic\brush</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\range_map.h">
+      <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\range_manager.h">
+      <Filter>zaf\control\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

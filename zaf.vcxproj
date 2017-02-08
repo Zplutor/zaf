@@ -27,6 +27,7 @@
     <ClCompile Include="src\zaf\control\internal\list_control_select_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control_simple_multiple_select_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control_single_select_strategy.cpp" />
+    <ClCompile Include="src\zaf\control\internal\range_manager.cpp" />
     <ClCompile Include="src\zaf\control\layout\anchor_layouter.cpp" />
     <ClCompile Include="src\zaf\control\layout\array_layouter.cpp" />
     <ClCompile Include="src\zaf\control\layout\internal\array_layout_length_calculating.cpp" />
@@ -100,6 +101,8 @@
     <ClInclude Include="src\zaf\control\internal\list_control_select_strategy.h" />
     <ClInclude Include="src\zaf\control\internal\list_control_simple_multiple_select_strategy.h" />
     <ClInclude Include="src\zaf\control\internal\list_control_single_select_strategy.h" />
+    <ClInclude Include="src\zaf\control\internal\range_manager.h" />
+    <ClInclude Include="src\zaf\control\internal\range_map.h" />
     <ClInclude Include="src\zaf\control\layout\anchor_layouter.h" />
     <ClInclude Include="src\zaf\control\layout\internal\array_layout_length_calculating.h" />
     <ClInclude Include="src\zaf\control\layout\layouter.h" />
@@ -230,6 +233,8 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)object\%(RelativeDir)</ObjectFileName>
+      <RuntimeTypeInfo>
+      </RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

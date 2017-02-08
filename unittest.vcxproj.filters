@@ -46,5 +46,8 @@
     <ClCompile Include="unittest\case\control\layout\internal\array_layout_length_calculating_test.cpp">
       <Filter>case\control\layout\internal</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\control\internal\range_manager_test.cpp">
+      <Filter>case\control\internal</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
