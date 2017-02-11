@@ -70,33 +70,37 @@ TEST(TestCalculateArrayLayoutLengths, SingleItem) {
 
 TEST(TestCalculateArrayLayoutLengths, MultipleItems) {
 
-    TestCalculating(
+    ASSERT_TRUE(TestCalculating(
         100,
         { { 0.f, 20.f }, { 0.f, 100.f } },
-        { 20, 80 });
+        { 20, 80 }));
 
-    TestCalculating(
+    ASSERT_TRUE(TestCalculating(
         90,
         { { 0.f, 100.f }, { 0.f, 100.f }, { 0.f, 100.f } },
-        { 30, 30, 30 });
+        { 30, 30, 30 }));
 
-    TestCalculating(
+    ASSERT_TRUE(TestCalculating(
         100,
         { { 0.f, 100.f }, { 50.f, 100.f }, { 0.f, 100.f } },
-        { 25, 50, 25 });
+        { 25, 50, 25 }));
 
-    TestCalculating(
+    ASSERT_TRUE(TestCalculating(
         90,
         { { 0.f, 10.f }, { 0.f, 10.f }, { 0.f, 10.f } },
-        { 10, 10, 10 });
+        { 10, 10, 10 }));
 
-    TestCalculating(
-        100,
+    ASSERT_TRUE(TestCalculating(
+        90,
         { { 0.f, 50.f }, { 0.f, 50.f }, { 0.f, 50.f } },
-        { 50.f, 50.f, 50.f });
+        { 30.f, 30.f, 30.f }));
 
-    TestCalculating(
+    ASSERT_TRUE(TestCalculating(
         100,
         { { 0.f, 20.f }, { 0.f, 100.f }, { 40.f, 100.f } },
-        { 20.f, 40.f, 40.f });
+        { 20.f, 40.f, 40.f }));
+
+    ASSERT_TRUE(TestCalculating(100,
+        { { 0.f, 100.f }, { 0.f, 20.f }, { 0.f, 20.f } },
+        { 60.f, 20.f, 20.f }));
 }

@@ -75,6 +75,9 @@
     <ClCompile Include="src\control\image_box\image_box_explore_manager.cpp">
       <Filter>src\control\image_box</Filter>
     </ClCompile>
+    <ClCompile Include="src\control\font_setting_panel.cpp">
+      <Filter>src\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main_window.h">
@@ -118,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="src\control\image_box\image_box_explore_manager.h">
       <Filter>src\control\image_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\font_setting_panel.h">
+      <Filter>src\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

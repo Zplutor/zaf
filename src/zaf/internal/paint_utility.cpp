@@ -41,7 +41,7 @@ void DrawTextWithIcon(
     Rect icon_rect(0, icon_y, icon_size, icon_size);
     paint_icon_function(canvas, icon_rect);
 
-    canvas.SetBrushWithColor(control.GetTextColor());
+    canvas.SetBrushWithColor(control.GetDefaultTextColor());
     canvas.DrawText(text_layout, text_rect.position);
     
     if (control.IsFocused()) {

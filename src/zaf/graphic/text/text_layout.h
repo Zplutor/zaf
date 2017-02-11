@@ -361,7 +361,7 @@ public:
 
     void SetBrush(const Brush& brush, const TextRange& range) {
         std::error_code error_code;
-        SetBrush(brush, range);
+        SetBrush(brush, range, error_code);
         ZAF_CHECK_ERROR(error_code);
     }
 

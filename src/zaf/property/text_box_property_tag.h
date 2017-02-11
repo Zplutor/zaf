@@ -2,6 +2,7 @@
 
 #include <zaf/control/text_box.h>
 #include <zaf/property/property_tag.h>
+#include <zaf/property/textual_control_property_tag.h>
 
 namespace zaf {
 

@@ -29,7 +29,7 @@ public:
 
     }
 
-    void AddRange(std::size_t position, std::size_t length);
+    bool AddRange(std::size_t position, std::size_t length);
     void RemoveRange(std::size_t position, std::size_t length);
     
     void ExpandRanges(std::size_t position, std::size_t length);
@@ -50,7 +50,11 @@ public:
         }
     }
 
-    bool IsPositionInRange(std::size_t position) const;
+    std::pair<std::size_t, std::size_t> GetRangeContainsPosition(std::size_t position) const;
+
+    bool IsPositionInRange(std::size_t position) const {
+        return GetRangeContainsPosition(position).first != InvalidIndex;
+    }
 
     RangeManager(RangeManager&) = delete;
     RangeManager& operator=(RangeManager&) = delete;

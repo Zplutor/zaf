@@ -1,69 +1,104 @@
 #pragma once
 
 #include <map>
-#include <vector>
+#include <zaf/control/internal/range_manager.h>
 
 namespace zaf {
 namespace internal {
 
-class RangeManager {
-public:
-    void AddRange(std::size_t position, std::size_t length);
-
-private:
-    std::vector<std::pair<std::size_t, std::size_t>> ranges_;
-};
-
 template<typename ValueType>
 class RangeMap {
 public:
-    struct Range {
-        std::size_t position;
-        std::size_t length;
-    };
+    RangeMap() : 
+        range_manager_(
+            std::bind(&RangeMap::RangeChange, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)) {
+    
+    }
 
-public:
-    void AddValueAtRange(const ValueType& value, std::size_t position, std::size_t length) {
+    void AddValueToRange(const ValueType& value, std::size_t position, std::size_t length) {
 
-        std::size_t need_added_range_index = index;
-        std::size_t need_added_range_end_index = index + count;
+        if (range_manager_.AddRange(position, length)) {
+            values_.insert(std::make_pair(position, value));
+        }
+    }
 
-        auto iterator = selections_.begin();
-        while (iterator != selections_.end()) {
+    void RemoveAllValues() {
+        range_manager_.RemoveAllRanges();
+    }
 
-            std::size_t current_range_index = iterator->first;
-            std::size_t current_range_end_index = iterator->first + iterator->second;
+    ValueType GetValueAtPosition(std::size_t position, bool* is_existent = nullptr) const {
 
-            if (need_added_range_index < current_range_end_index) {
-
-                if (need_added_range_end_index <= current_range_index) {
-
-                    std::size_t add_count = need_added_range_end_index - need_added_range_index;
-                    iterator = selections_.insert(iterator, std::make_pair(need_added_range_index, add_count));
-                }
-                else if (need_added_range_index < current_range_index) {
-
-                    std::size_t add_count = current_range_index - need_added_range_index;
-                    iterator = selections_.insert(iterator, std::make_pair(need_added_range_index, add_count));
-                }
-
-                need_added_range_index = current_range_end_index;
-
-                if (need_added_range_index >= need_added_range_end_index) {
-                    return;
-                }
+        auto range = range_manager_.GetRangeContainsPosition(position);
+        auto iterator = values_.find(range.first);
+        if (iterator != values_.end()) {
+            if (is_existent != nullptr) {
+                *is_existent = true;
             }
+            return iterator->second;
+        }
+        else {
+            if (is_existent != nullptr) {
+                *is_existent = false;
+            }
+            return ValueType();
+        }
+    }
 
-            ++iterator;
+    const std::vector<std::pair<std::pair<std::size_t, std::size_t>, ValueType>> GetAllRangesAndValues() const {
+
+        std::size_t range_count = range_manager_.GetRangeCount();
+
+        std::vector<std::pair<std::pair<std::size_t, std::size_t>, ValueType>> ranges_and_values;
+        ranges_and_values.reserve(range_count);
+
+        for (std::size_t index = 0; index < range_count; ++index) {
+
+            auto range = range_manager_.GetRangeAtIndex(index);
+
+            ValueType value;
+            auto value_iterator = values_.find(range.first);
+            if (value_iterator != values_.end()) {
+                value = value_iterator->second;
+            }
+            
+            ranges_and_values.push_back(std::make_pair(range, value));
         }
 
-        selections_.insert(
-            iterator,
-            std::make_pair(need_added_range_index, need_added_range_end_index - need_added_range_index));
+        return ranges_and_values;
+    }
+
+    RangeMap(RangeMap&) = delete;
+    RangeMap& operator=(RangeMap&) = delete;
+
+private:
+    void RangeChange(RangeManager::RangeNotifyType notify_type, std::size_t primary_position, std::size_t secondly_position) {
+
+        switch (notify_type) {
+
+            case RangeManager::RangeNotifyType::Remove:
+                values_.erase(primary_position);
+                break;
+
+            case RangeManager::RangeNotifyType::Update: {
+                auto value = values_[primary_position];
+                values_[secondly_position] = value;
+                values_.erase(primary_position);
+                break;
+            }
+
+            case RangeManager::RangeNotifyType::Break: {
+                auto value = values_[primary_position];
+                values_[secondly_position] = value;
+                break;
+            }
+
+            default:
+                break;
+        }
     }
 
 private:
-    std::vector<Range> ranges_;
+    RangeManager range_manager_;
     std::map<std::size_t, ValueType> values_;
 };
 

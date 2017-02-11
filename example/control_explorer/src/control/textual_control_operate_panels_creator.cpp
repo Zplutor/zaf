@@ -20,6 +20,7 @@
 #include <zaf/property/text_box_property_tag.h>
 #include <zaf/property/textual_control_property_tag.h>
 #include "control/common.h"
+#include "control/font_setting_panel.h"
 
 static std::shared_ptr<zaf::Control> CreateTextPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
 static std::shared_ptr<zaf::Control> CreateFontPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
@@ -71,14 +72,14 @@ static std::shared_ptr<zaf::Control> CreateTextPanel(const std::shared_ptr<zaf::
 static std::shared_ptr<zaf::Control> CreateFontPanel(const std::shared_ptr<zaf::TextualControl>& textual_control) {
 
     struct Context {
-        std::shared_ptr<zaf::ComboBox> font_family_combo_box;
-        std::shared_ptr<zaf::TextBox> font_size_text_box;
-        std::shared_ptr<zaf::TextBox> font_weight_text_box;
+        std::shared_ptr<FontSettingPanel> font_setting_panel;
+        std::shared_ptr<zaf::TextBox> position_text_box;
+        std::shared_ptr<zaf::TextBox> length_text_box;
     };
     auto context = std::make_shared<Context>();
 
     return zaf::SetProperties(
-        CreateOperateContainerPanel(3),
+        CreateOperateContainerPanel(5),
 
         zaf::child = zaf::CreateWithProperties<zaf::Label>(
             zaf::text = L"Font",
@@ -88,83 +89,49 @@ static std::shared_ptr<zaf::Control> CreateFontPanel(const std::shared_ptr<zaf::
         zaf::child = zaf::CreateWithProperties<zaf::Control>(
             zaf::layouter = zaf::GetVerticalArrayLayouter(),
 
-            zaf::child = zaf::CreateWithProperties<zaf::Control>(
-                zaf::layouter = zaf::GetHorizontalArrayLayouter(),
-                zaf::child = zaf::CreateWithProperties<zaf::Label>(
-                    zaf::text = L"Family",
-                    zaf::maximumWidth = OperatePanelLabelMaximumWidth
-                ),
-                zaf::child = context->font_family_combo_box = []() {
-
-                    auto font_name_combo_box = zaf::Create<zaf::ComboBox>();
-                    font_name_combo_box->SetMaximumVisibleItemCount(10);
-
-                    auto font_name_drop_down_list = font_name_combo_box->GetDropDownListBox();
-                    font_name_drop_down_list->AddItemWithText(std::wstring());
-
-                    wchar_t locale_name[1024] = { 0 };
-                    LCIDToLocaleName(LANG_USER_DEFAULT, locale_name, 1024, 0);
-                    std::wstring user_default_locale = locale_name;
-
-                    auto font_collection = zaf::GetResourceFactory()->GetSystemFontCollection();
-
-                    for (const auto& each_font_family : font_collection.GetEnumerator()) {
-
-                        auto localized_strings = each_font_family.GetFamilyNames();
-                        auto index = localized_strings.FindLocaleName(user_default_locale);
-                        if (index == zaf::InvalidIndex) {
-                            index = localized_strings.FindLocaleName(L"en-us");
-                        }
-                        if (index != zaf::InvalidIndex) {
-                            font_name_drop_down_list->AddItemWithText(localized_strings.GetString(index));
-                        }
-                    }
-
-                    return font_name_combo_box;
-                }()
+            zaf::child = context->font_setting_panel = zaf::CreateWithProperties<FontSettingPanel>(
+                zaf::minimumHeight = SingleLineOperatePanelHeight * 3
             ),
-
+            
             zaf::child = zaf::CreateWithProperties<zaf::Control>(
                 zaf::layouter = zaf::GetHorizontalArrayLayouter(),
-                zaf::child = zaf::CreateWithProperties<zaf::Label>(
-                    zaf::text = L"Size",
-                    zaf::maximumWidth = OperatePanelLabelMaximumWidth
+                
+                zaf::child = zaf::CreateWithProperties<zaf::Label>(zaf::text = L"Position"),
+                zaf::child = context->position_text_box = zaf::CreateWithProperties<zaf::TextBox>(
+                    zaf::textValidator = zaf::GetNumberTextValidator()
                 ),
-                zaf::child = context->font_size_text_box = zaf::CreateWithProperties<zaf::TextBox>(
-                    zaf::text = std::to_wstring(textual_control->GetFont().size),
+                zaf::child = zaf::CreateWithProperties<zaf::Label>(zaf::text = L"Length"),
+                zaf::child = context->length_text_box = zaf::CreateWithProperties<zaf::TextBox>(
                     zaf::textValidator = zaf::GetNumberTextValidator()
                 )
             ),
 
             zaf::child = zaf::CreateWithProperties<zaf::Control>(
                 zaf::layouter = zaf::GetHorizontalArrayLayouter(),
-                zaf::child = zaf::CreateWithProperties<zaf::Label>(
-                    zaf::text = L"Weight", 
-                    zaf::maximumWidth = OperatePanelLabelMaximumWidth
+
+                zaf::child = zaf::CreateWithProperties<zaf::Button>(
+                    zaf::text = L"Set default",
+                    zaf::onClick = std::bind([context, textual_control]() {
+                        textual_control->SetDefaultFont(context->font_setting_panel->GetFont());
+                    })
                 ),
-                zaf::child = context->font_weight_text_box = zaf::CreateWithProperties<zaf::TextBox>(
-                    zaf::text = std::to_wstring(textual_control->GetFont().weight),
-                    zaf::textValidator = zaf::GetNumberTextValidator()
+                zaf::child = zaf::CreateWithProperties<zaf::Button>(
+                    zaf::text = L"Set range",
+                    zaf::onClick = std::bind([context, textual_control]() {
+                        auto position = zaf::ToNumeric<std::size_t>(context->position_text_box->GetText());
+                        auto length = zaf::ToNumeric<std::size_t>(context->length_text_box->GetText());
+                        textual_control->SetFontAtRange(
+                            context->font_setting_panel->GetFont(),
+                            zaf::TextRange(position, length));
+                    })
+                ),
+                zaf::child = zaf::CreateWithProperties<zaf::Button>(
+                    zaf::text = L"Reset ranges",
+                    zaf::onClick = std::bind([textual_control](){
+                        textual_control->ResetFonts();
+                    })
                 )
             )
-        ),
-
-        zaf::child = zaf::SetProperties(
-            CreateSetButton(), 
-            zaf::onClick = std::bind([context, textual_control]() {
-
-                zaf::Font new_font = zaf::Font::GetDefault();
-                
-                auto family_name = context->font_family_combo_box->GetText();
-                if (! family_name.empty()) {
-                    new_font.family_name = family_name;
-                }
-                new_font.size = zaf::ToNumeric<float>(context->font_size_text_box->GetText());
-
-                auto weight = zaf::ToNumeric<int>(context->font_weight_text_box->GetText());
-                new_font.weight = std::max(zaf::FontWeight::Minimum, std::min(zaf::FontWeight::Maximum, weight));
-                textual_control->SetFont(new_font);
-            })
         )
     );
 }

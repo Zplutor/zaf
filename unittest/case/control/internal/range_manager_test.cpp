@@ -13,8 +13,8 @@ TEST(RangeManagerTest, AddRangeWithInvalidRange) {
     RangeManager range_manager;
 
     auto test = [&range_manager](std::size_t position, std::size_t length) {
-        range_manager.AddRange(position, length);
-        return range_manager.GetRangeCount() == 0;
+        bool is_succeeded = range_manager.AddRange(position, length);
+        return (!is_succeeded) && (range_manager.GetRangeCount() == 0);
     };
 
     ASSERT_TRUE(test(zaf::InvalidIndex, 0));

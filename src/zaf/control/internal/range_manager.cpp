@@ -4,10 +4,10 @@
 namespace zaf {
 namespace internal {
 
-void RangeManager::AddRange(std::size_t position, std::size_t length) {
+bool RangeManager::AddRange(std::size_t position, std::size_t length) {
 
     if ((position == InvalidIndex) || (length == 0)) {
-        return;
+        return false;
     }
 
     std::size_t new_range_begin_position = position;
@@ -68,6 +68,7 @@ void RangeManager::AddRange(std::size_t position, std::size_t length) {
 
     iterator = ranges_.insert(iterator, std::make_pair(position, length));
     SendRangeNotify(RangeNotifyType::Add, iterator->first, InvalidIndex);
+    return true;
 }
 
 
@@ -264,16 +265,17 @@ void RangeManager::RemoveAllRanges() {
 }
 
 
-bool RangeManager::IsPositionInRange(std::size_t position) const {
+std::pair<std::size_t, std::size_t> RangeManager::GetRangeContainsPosition(std::size_t position) const {
 
     for (const auto& each_range : ranges_) {
         if ((each_range.first <= position) && (position < each_range.first + each_range.second)) {
-            return true;
+            return each_range;
         }
     }
 
-    return false;
+    return std::make_pair(InvalidIndex, 0);
 }
+
 
 }
 }

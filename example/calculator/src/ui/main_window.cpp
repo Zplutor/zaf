@@ -45,7 +45,7 @@ void MainWindow::InitializeTextBoxes() {
     output_text_box_->SetInset(50);
     zaf::Font font;
     font.size = 36;
-    output_text_box_->SetFont(font);
+    output_text_box_->SetDefaultFont(font);
 
     auto container = zaf::Create<zaf::Control>();
     container->SetRect(zaf::Rect(kContentMargin, kContentMargin, GetContentWidth(), 80));

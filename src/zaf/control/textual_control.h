@@ -4,6 +4,8 @@
 #include <zaf/control/control.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
+#include <zaf/graphic/text/text_layout.h>
+#include <zaf/graphic/text/text_range.h>
 #include <zaf/graphic/text/word_wrapping.h>
 
 namespace zaf {
@@ -29,6 +31,13 @@ public:
     ~TextualControl();
 
     /**
+     Get text length.
+     */
+    std::size_t GetTextLength() const {
+        return GetText().length();
+    }
+
+    /**
      Get text.
      */
     virtual const std::wstring GetText() const;
@@ -39,40 +48,94 @@ public:
     virtual void SetText(const std::wstring& text);
 
     /**
-     Get text color.
+     Get the default text color.
      */
-    const Color GetTextColor() const {
-        return GetTextColorPicker()(*this);
+    const Color GetDefaultTextColor() const {
+        return GetDefaultTextColorPicker()(*this);
     }
 
     /**
-     Get the color picker of text.
+     Get the default color picker of text.
      */
-    const ColorPicker GetTextColorPicker() const;
+    const ColorPicker GetDefaultTextColorPicker() const;
 
     /**
-     Set text color.
+     Set the default text color.
      */
-    void SetTextColor(const Color& color) {
-        SetTextColorPicker(CreateColorPicker(color));
+    void SetDefaultTextColor(const Color& color) {
+        SetDefaultTextColorPicker(CreateColorPicker(color));
     }
 
     /**
-     Set the color picker of text. 
+     Set the default color picker of text. 
      */
-    void SetTextColorPicker(const ColorPicker& color_picker);
+    void SetDefaultTextColorPicker(const ColorPicker& color_picker);
 
     /**
-     Get text font.
+     Get text color at specified text position.
 
-     Return the default font if not been set.
+     Return GetDefaultTextColor() if the text color at this position has not been set.
      */
-    virtual const Font GetFont() const;
+    const Color GetTextColorAtPosition(std::size_t position) const {
+        return GetTextColorPickerAtPosition(position)(*this);
+    }
 
     /**
-     Set text font.
+     Set color at specified text range.
      */
-    virtual void SetFont(const Font& font);
+    void SetTextColorAtRange(const Color& color, const TextRange& range) {
+        SetTextColorPickerAtRange(CreateColorPicker(color), range);
+    }
+
+    /**
+     Get text color picker at specified text position.
+
+     Return GetDefaultTextColorPicker() if the text color picker at this position has not been set.
+     */
+    const ColorPicker GetTextColorPickerAtPosition(std::size_t position) const;
+
+    /**
+     Set color picker at specified text range.
+     */
+    void SetTextColorPickerAtRange(const ColorPicker& color_picker, const TextRange& range);
+
+    /**
+     Reset all particular text color pickers to default text color picker.
+
+     This method removes all text color pickers that set with SetTextColorPickerAtRange.
+     */
+    void ResetTextColorPickers();
+
+    /**
+     Get default font.
+
+     Return Font::GetDefault() if this property has not been set.
+     */
+    virtual const Font GetDefaultFont() const;
+
+    /**
+     Set default font.
+     */
+    virtual void SetDefaultFont(const Font& font);
+
+    /**
+     Get font at specified text position.
+
+     Return GetDefault() if the font at this position has not been set.
+     */
+    virtual const Font GetFontAtPosition(std::size_t position) const;
+
+    /**
+     Set font at specified text range.
+     */
+    virtual void SetFontAtRange(const Font& font, const TextRange& range);
+
+    /**
+     Reset all particular fonts to default font.
+
+     This method removes all fonts that set with SetFontAtRange.
+     */
+    virtual void ResetFonts();
 
     /**
      Get text alignment.
@@ -119,9 +182,13 @@ public:
 
 protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+
+    void ReleaseRendererResources() override {
+        ReleaseTextLayout();
+    }
+
     virtual const Rect GetTextRect() const;
 
-    TextFormat CreateTextFormat() const;
     TextLayout CreateTextLayout(const Size& layout_size) const;
 
     /**
@@ -131,6 +198,18 @@ protected:
      it should call this method after the text changed in order to raise text change event.
      */
     void NotifyTextChange();
+
+private:
+    const TextLayout CreateTextLayout();
+    const TextFormat CreateTextFormat() const;
+    void SetFontsToTextLayout(TextLayout& text_layout);
+
+    void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer);
+
+    void ReleaseTextLayout();
+
+private:
+    TextLayout text_layout_;
 };
 
 }
