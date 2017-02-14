@@ -19,10 +19,12 @@
 #include <zaf/property/setting.h>
 #include <zaf/property/text_box_property_tag.h>
 #include <zaf/property/textual_control_property_tag.h>
+#include "control/color_setting_panel.h"
 #include "control/common.h"
 #include "control/font_setting_panel.h"
 
 static std::shared_ptr<zaf::Control> CreateTextPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
+static std::shared_ptr<zaf::Control> CreateTextColorPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
 static std::shared_ptr<zaf::Control> CreateFontPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
 static std::shared_ptr<zaf::Control> CreateTextAlignmentPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
 static std::shared_ptr<zaf::Control> CreateParagraphAlignmentPanel(const std::shared_ptr<zaf::TextualControl>& textual_control);
@@ -33,6 +35,7 @@ void CreateTextualControlOperatePanels(
     std::vector<std::shared_ptr<zaf::Control>>& operate_panels) {
 
     operate_panels.push_back(CreateTextPanel(control));
+    operate_panels.push_back(CreateTextColorPanel(control));
     operate_panels.push_back(CreateFontPanel(control));
     operate_panels.push_back(CreateTextAlignmentPanel(control));
     operate_panels.push_back(CreateParagraphAlignmentPanel(control));
@@ -129,6 +132,86 @@ static std::shared_ptr<zaf::Control> CreateFontPanel(const std::shared_ptr<zaf::
                     zaf::text = L"Reset ranges",
                     zaf::onClick = std::bind([textual_control](){
                         textual_control->ResetFonts();
+                    })
+                )
+            )
+        )
+    );
+}
+
+
+static std::shared_ptr<zaf::Control> CreateTextColorPanel(const std::shared_ptr<zaf::TextualControl>& textual_control) {
+
+    struct Context {
+        std::shared_ptr<ColorSettingPanel> color_setting_panel;
+        std::shared_ptr<zaf::TextBox> position_text_box;
+        std::shared_ptr<zaf::TextBox> length_text_box;
+    };
+
+    auto context = std::make_shared<Context>();
+
+    return zaf::SetProperties(CreateOperateContainerPanel(3),
+
+        //Label
+        zaf::child = zaf::CreateWithProperties<zaf::Label>(
+            zaf::text = L"Text color",
+            zaf::maximumWidth = OperatePanelLabelMaximumWidth
+        ),
+
+        //Container
+        zaf::child = zaf::CreateWithProperties<zaf::Control>(
+            zaf::layouter = zaf::GetVerticalArrayLayouter(),
+
+            //Color setting panel
+            zaf::child = context->color_setting_panel = zaf::Create<ColorSettingPanel>(),
+
+            //Range container
+            zaf::child = zaf::CreateWithProperties<zaf::Control>(
+                zaf::layouter = zaf::GetHorizontalArrayLayouter(),
+
+                //Position label
+                zaf::child = zaf::CreateWithProperties<zaf::Label>(zaf::text = L"Position"),
+
+                //Position text box
+                zaf::child = context->position_text_box = zaf::CreateWithProperties<zaf::TextBox>(
+                    zaf::textValidator = zaf::GetNumberTextValidator()
+                ),
+
+                //Length label
+                zaf::child = zaf::CreateWithProperties<zaf::Label>(zaf::text = L"Length"),
+
+                //Position text box
+                zaf::child = context->length_text_box = zaf::CreateWithProperties<zaf::TextBox>(
+                    zaf::textValidator = zaf::GetNumberTextValidator()
+                )
+            ),
+
+            //Set button container
+            zaf::child = zaf::CreateWithProperties<zaf::Control>(
+                zaf::layouter = zaf::GetHorizontalArrayLayouter(),
+
+                zaf::child = zaf::CreateWithProperties<zaf::Button>(
+                    zaf::text = L"Set default",
+                    zaf::onClick = std::bind([context, textual_control]() {
+                        textual_control->SetDefaultTextColor(context->color_setting_panel->GetColor());
+                    })
+                ),
+
+                zaf::child = zaf::CreateWithProperties<zaf::Button>(
+                    zaf::text = L"Set range",
+                    zaf::onClick = std::bind([context, textual_control]() {
+                        auto position = zaf::ToNumeric<std::size_t>(context->position_text_box->GetText());
+                        auto length = zaf::ToNumeric<std::size_t>(context->length_text_box->GetText());
+                        textual_control->SetTextColorAtRange(
+                            context->color_setting_panel->GetColor(),
+                            zaf::TextRange(position, length));
+                    })
+                ),
+
+                zaf::child = zaf::CreateWithProperties<zaf::Button>(
+                    zaf::text = L"Reset ranges",
+                    zaf::onClick = std::bind([textual_control]() {
+                        textual_control->ResetTextColorPickers();
                     })
                 )
             )

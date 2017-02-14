@@ -82,6 +82,7 @@
   <ItemGroup>
     <ClCompile Include="src\control\button\button_explore_manager.cpp" />
     <ClCompile Include="src\control\check_box\check_box_explore_manager.cpp" />
+    <ClCompile Include="src\control\color_setting_panel.cpp" />
     <ClCompile Include="src\control\common.cpp" />
     <ClCompile Include="src\control\control_operate_panels_creator.cpp" />
     <ClCompile Include="src\control\font_setting_panel.cpp" />
@@ -100,6 +101,7 @@
   <ItemGroup>
     <ClInclude Include="src\control\button\button_explore_manager.h" />
     <ClInclude Include="src\control\check_box\check_box_explore_manager.h" />
+    <ClInclude Include="src\control\color_setting_panel.h" />
     <ClInclude Include="src\control\common.h" />
     <ClInclude Include="src\control\control_operate_panels_creator.h" />
     <ClInclude Include="src\control\font_setting_panel.h" />

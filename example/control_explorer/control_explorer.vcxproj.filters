@@ -78,6 +78,9 @@
     <ClCompile Include="src\control\font_setting_panel.cpp">
       <Filter>src\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\control\color_setting_panel.cpp">
+      <Filter>src\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main_window.h">
@@ -123,6 +126,9 @@
       <Filter>src\control\image_box</Filter>
     </ClInclude>
     <ClInclude Include="src\control\font_setting_panel.h">
+      <Filter>src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\color_setting_panel.h">
       <Filter>src\control</Filter>
     </ClInclude>
   </ItemGroup>
