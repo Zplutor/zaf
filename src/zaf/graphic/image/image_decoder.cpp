@@ -26,4 +26,24 @@ const ImageDecoder::Frame ImageDecoder::GetFrame(std::size_t index, std::error_c
     return Frame(handle);
 }
 
+
+const ImageMetadataQuerier ImageDecoder::GetMetadataQuerier(std::error_code& error_code) const {
+
+    IWICMetadataQueryReader* handle = nullptr;
+    HRESULT result = GetHandle()->GetMetadataQueryReader(&handle);
+
+    error_code = MakeComErrorCode(result);
+    return ImageMetadataQuerier(handle);
+}
+
+
+const ImageMetadataQuerier ImageDecoder::Frame::GetMetadataQuerier(std::error_code& error_code) const {
+
+    IWICMetadataQueryReader* handle = nullptr;
+    HRESULT result = GetHandle()->GetMetadataQueryReader(&handle);
+
+    error_code = MakeComErrorCode(result);
+    return ImageMetadataQuerier(handle);
+}
+
 }

@@ -4,6 +4,7 @@
 #include <memory>
 #include <zaf/base/com_object.h>
 #include <zaf/base/error.h>
+#include <zaf/graphic/image/image_metadata_querier.h>
 
 namespace zaf {
 
@@ -13,6 +14,15 @@ public:
     public:
         Frame() { }
         explicit Frame(IWICBitmapFrameDecode* handle) : ComObject(handle) { }
+
+        const ImageMetadataQuerier GetMetadataQuerier(std::error_code& error_code) const;
+
+        const ImageMetadataQuerier GetMetadataQuerier() const {
+            std::error_code error_code;
+            auto result = GetMetadataQuerier(error_code);
+            ZAF_CHECK_ERROR(error_code);
+            return result;
+        }
     };
 
 public:
@@ -33,6 +43,15 @@ public:
     const Frame GetFrame(std::size_t index) const {
         std::error_code error_code;
         auto result = GetFrame(index, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+
+    const ImageMetadataQuerier GetMetadataQuerier(std::error_code& error_code) const;
+
+    const ImageMetadataQuerier GetMetadataQuerier() const {
+        std::error_code error_code;
+        auto result = GetMetadataQuerier(error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
