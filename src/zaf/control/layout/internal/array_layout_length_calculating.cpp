@@ -1,79 +1,65 @@
 #include <zaf/control/layout/internal/array_layout_length_calculating.h>
 #include <algorithm>
+#include <functional>
 
 namespace zaf {
 namespace internal {
 
 void CalculateArrayLayoutLengths(float total_length, std::vector<ArrayLayoutLengthCalculatingItem>& items) {
 
-    //Initialize fields
+    float average = total_length / items.size();
     for (auto& each_item : items) {
-        each_item.round = 0;
-        each_item.current_length = (each_item.minimum_length + each_item.maximum_length) / 2;
+        each_item.current_length = average;
     }
 
-    float need_allocated_length = total_length;
-    std::size_t need_allocated_count = items.size();
+    auto check_limit = [total_length, &items](
+        const std::function<float(const ArrayLayoutLengthCalculatingItem&)>& get_limit,
+        const std::function<bool(const ArrayLayoutLengthCalculatingItem&)>& has_beyond_limit) {
+    
+        float need_allocated_length = total_length;
+        float need_allocated_count = static_cast<float>(items.size());
+        float reallocated_length = 0;
 
-    std::size_t current_round = 1;
+        std::size_t index = 0;
+        while (index < items.size()) {
 
-    std::size_t index = 0;
-    while (index < items.size()) {
+            auto& item = items[index];
 
-        auto& item = items[index];
+            if (reallocated_length != 0) {
 
-        //No need to process item at the same round.
-        if (item.round == current_round) {
-            index++;
-            continue;
-        }
-
-        item.round = current_round;
-
-        //Calculate expected length and actual length
-        float expected_length = need_allocated_length / need_allocated_count;
-        float actual_length = std::max(
-            std::min(expected_length, item.maximum_length),
-            item.minimum_length);
-
-        //Expected length is not equal to actual length, need further check.
-        if (actual_length != expected_length) {
-
-            //Current length is equal to actual length, no need to update this
-            //item, continue next one.
-            if (item.current_length == actual_length) {
-
-                need_allocated_length -= actual_length;
-                need_allocated_count--;
-
-                index++;
+                if (item.current_length == get_limit(item)) {
+                    ++index;
+                    continue;
+                }
+                
+                item.current_length = reallocated_length;
             }
-            //Current length is not equal to actual length, need to update this
-            //item and re-calcuate all previous items.
-            else {
 
-                item.current_length = actual_length;
+            if (has_beyond_limit(item)) {
 
-                need_allocated_length = total_length - actual_length;
-                need_allocated_count = items.size() - 1;
+                item.current_length = get_limit(item);
 
-                current_round++;
-                item.round = current_round;
+                need_allocated_length -= item.current_length;
+                need_allocated_count -= 1;
 
+                reallocated_length = need_allocated_length / need_allocated_count;
                 index = 0;
             }
+            else {
+                ++index;
+            }
         }
-        //Expected length is equal to actual length, just update this item.
-        else {
+    };
 
-            item.current_length = actual_length;
+    check_limit(
+        [](const ArrayLayoutLengthCalculatingItem& item) { return item.maximum_length; },
+        [](const ArrayLayoutLengthCalculatingItem& item) { return item.current_length > item.maximum_length; }
+    );
 
-            need_allocated_length -= actual_length;
-            need_allocated_count--;
-
-            index++;
-        }
-    }
+    check_limit(
+        [](const ArrayLayoutLengthCalculatingItem& item) { return item.minimum_length; },
+        [](const ArrayLayoutLengthCalculatingItem& item) { return item.current_length < item.minimum_length; }
+    );
 }
 
 }

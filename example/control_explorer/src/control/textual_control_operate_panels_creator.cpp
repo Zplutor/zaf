@@ -93,11 +93,12 @@ static std::shared_ptr<zaf::Control> CreateFontPanel(const std::shared_ptr<zaf::
             zaf::layouter = zaf::GetVerticalArrayLayouter(),
 
             zaf::child = context->font_setting_panel = zaf::CreateWithProperties<FontSettingPanel>(
-                zaf::minimumHeight = SingleLineOperatePanelHeight * 3
+                
             ),
             
             zaf::child = zaf::CreateWithProperties<zaf::Control>(
                 zaf::layouter = zaf::GetHorizontalArrayLayouter(),
+                zaf::maximumHeight = SingleLineOperatePanelHeight,
                 
                 zaf::child = zaf::CreateWithProperties<zaf::Label>(zaf::text = L"Position"),
                 zaf::child = context->position_text_box = zaf::CreateWithProperties<zaf::TextBox>(
@@ -111,6 +112,7 @@ static std::shared_ptr<zaf::Control> CreateFontPanel(const std::shared_ptr<zaf::
 
             zaf::child = zaf::CreateWithProperties<zaf::Control>(
                 zaf::layouter = zaf::GetHorizontalArrayLayouter(),
+                zaf::maximumHeight = SingleLineOperatePanelHeight,
 
                 zaf::child = zaf::CreateWithProperties<zaf::Button>(
                     zaf::text = L"Set default",
