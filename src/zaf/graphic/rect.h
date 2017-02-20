@@ -141,9 +141,9 @@ public:
 
 		return 
 			(point.x >= position.x) && 
-			(point.x <= position.x + size.width) &&
+			(point.x < position.x + size.width) &&
 			(point.y >= position.y) &&
-			(point.y <= position.y + size.height);
+			(point.y < position.y + size.height);
 	}
 
 	/**

@@ -91,6 +91,11 @@
     <ClCompile Include="unittest\googletest\src\gtest-all.cc" />
     <ClCompile Include="unittest\main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="unittest\case\graphic\rect_test.cpp">
+      <FileType>CppHeader</FileType>
+    </ClCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

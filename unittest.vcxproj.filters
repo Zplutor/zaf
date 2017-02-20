@@ -25,6 +25,9 @@
     <Filter Include="case\control\layout\internal">
       <UniqueIdentifier>{f0ac9c8e-368d-4d58-842d-fbef6013bd7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\graphic">
+      <UniqueIdentifier>{4c5d966d-80a1-4a69-9445-ec0aa53d5e72}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -48,6 +51,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\internal\range_manager_test.cpp">
       <Filter>case\control\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\rect_test.cpp">
+      <Filter>case\graphic</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
