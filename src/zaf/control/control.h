@@ -789,9 +789,14 @@ private:
 	/**
 	 Translate a point to which in parent's coordinate system.
 	 */
-	Point ToParentPoint(const Point& point) {
+	const Point ToParentPoint(const Point& point) {
 		return Point(point.x + rect_.position.x, point.y + rect_.position.y);
 	}
+
+    /**
+     Tanslate a point to which in specified child's coordinate system.
+     */
+    const Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const;
 
     bool IsUpdating() const {
         return update_count_ > 0;

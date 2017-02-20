@@ -17,8 +17,6 @@
 
 namespace zaf {
 
-static Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child);
-
 static const wchar_t* const kAnchorPropertyName = L"Anchor";
 static const wchar_t* const kBackgroundColorPickerPropertyName = L"BackgroundColorPicker";
 static const wchar_t* const kBorderColorPickerPropertyName = L"BorderColorPicker";
@@ -583,6 +581,15 @@ void Control::RemoveAllChildren() {
 
 const std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) const {
 
+    auto content_rect = GetContentRect();
+
+    auto position_in_content = position;
+    position_in_content.x -= content_rect.position.x;
+    position_in_content.y -= content_rect.position.y;
+
+    content_rect.position.x = 0;
+    content_rect.position.y = 0;
+
     for (auto iterator = children_.rbegin(); iterator != children_.rend(); ++iterator) {
 
         const auto& child = *iterator;
@@ -592,9 +599,9 @@ const std::shared_ptr<Control> Control::FindChildAtPosition(const Point& positio
         }
 
         Rect child_rect = child->GetRect();
-        child_rect.Intersect(GetContentRect());
+        child_rect.Intersect(content_rect);
 
-        if (child_rect.Contain(position)) {
+        if (child_rect.Contain(position_in_content)) {
             return child;
         }
     }
@@ -718,6 +725,8 @@ void Control::IsHoveredChanged(bool is_hovered) {
 		return;
 	}
 
+    auto point = GetMousePosition();
+    
 	is_hovered_ = is_hovered;
 
 	if (is_hovered_) {
@@ -882,6 +891,19 @@ void Control::RouteMessage(const Point& position, const MouseMessage& message) {
 }
 
 
+const Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const {
+
+    auto border_thickness = GetBorderThickness();
+    const auto& child_position = child->GetPosition();
+
+    Point point_in_child = point;
+    point_in_child.x -= child_position.x + border_thickness;
+    point_in_child.y -= child_position.y + border_thickness;
+
+    return point_in_child;
+}
+
+
 void Control::InterpretMessage(const Point& position, const MouseMessage& message) {
 
 	switch (message.id) {
@@ -1020,15 +1042,6 @@ void Control::FocusGain() {
 
 void Control::FocusLose() {
 
-}
-
-
-static Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) {
-
-	Point point_in_child = point;
-	point_in_child.x -= child->GetRect().position.x;
-	point_in_child.y -= child->GetRect().position.y;
-	return point_in_child;
 }
 
 
