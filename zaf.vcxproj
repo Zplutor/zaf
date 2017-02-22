@@ -136,6 +136,7 @@
     <ClInclude Include="src\zaf\graphic\geometry\geometry_sink.h" />
     <ClInclude Include="src\zaf\graphic\geometry\path_geometry.h" />
     <ClInclude Include="src\zaf\graphic\geometry\rectangle_geometry.h" />
+    <ClInclude Include="src\zaf\graphic\geometry\rounded_rectangle_geometry.h" />
     <ClInclude Include="src\zaf\graphic\geometry\transformed_geometry.h" />
     <ClInclude Include="src\zaf\graphic\image\bitmap.h" />
     <ClInclude Include="src\zaf\graphic\image\image_decoder.h" />
@@ -149,6 +150,7 @@
     <ClInclude Include="src\zaf\graphic\rect.h" />
     <ClInclude Include="src\zaf\graphic\renderer.h" />
     <ClInclude Include="src\zaf\graphic\resource_factory.h" />
+    <ClInclude Include="src\zaf\graphic\rounded_rect.h" />
     <ClInclude Include="src\zaf\graphic\size.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
     <ClInclude Include="src\zaf\graphic\stroke_properties.h" />

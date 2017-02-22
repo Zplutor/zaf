@@ -14,6 +14,7 @@
 #include <zaf/graphic/layer.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/rect.h>
+#include <zaf/graphic/rounded_rect.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/geometry/geometry.h>
 #include <zaf/graphic/text/text_format.h>
@@ -133,6 +134,23 @@ public:
 			stroke.GetHandle()
 		);
 	}
+
+    void DrawRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush) {
+        GetHandle()->FillRoundedRectangle(rounded_rect.ToD2D1ROUNDEDRECT(), brush.GetHandle());
+    }
+
+    void DrawRoundedRectangleFrame(
+        const RoundedRect& rounded_rect, 
+        const Brush& brush,
+        float stroke_width, 
+        const Stroke& stroke) {
+
+        GetHandle()->DrawRoundedRectangle(
+            rounded_rect.ToD2D1ROUNDEDRECT(),
+            brush.GetHandle(),
+            stroke_width,
+            stroke.GetHandle());
+    }
 
 	void DrawEllipse(const Ellipse& ellipse, const Brush& brush) {
 		GetHandle()->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush.GetHandle());

@@ -1,7 +1,5 @@
 #include <zaf/graphic/clear_edge.h>
 #include <cmath>
-#include <zaf/graphic/ellipse.h>
-#include <zaf/graphic/rect.h>
 
 namespace zaf {
 
@@ -50,6 +48,22 @@ const Rect MakeClearEdgeRectForFill(const Rect& rect, ClearEdgeOption option) {
 	}
 
 	return MakeClearEdgeRect(rect, 0);
+}
+
+
+const RoundedRect MakeClearEdgeRoundedRectForLine(const RoundedRect& rounded_rect, float stroke_width, ClearEdgeOption option) {
+    return RoundedRect(
+        MakeClearEdgeRectForLine(rounded_rect.rect, stroke_width, option),
+        rounded_rect.x_radius,
+        rounded_rect.y_radius);
+}
+
+
+const RoundedRect MakeClearEdgeRoundedRectForFill(const RoundedRect& rounded_rect, ClearEdgeOption option) {
+    return RoundedRect(
+        MakeClearEdgeRectForFill(rounded_rect.rect, option),
+        rounded_rect.x_radius,
+        rounded_rect.y_radius);
 }
 
 

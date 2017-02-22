@@ -8,6 +8,7 @@
 #include <zaf/graphic/font/font_collection.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
+#include <zaf/graphic/geometry/rounded_rectangle_geometry.h>
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/image/image_decoder.h>
 #include <zaf/graphic/renderer.h>
@@ -69,6 +70,15 @@ public:
     const RectangleGeometry CreateRectangleGeometry(const Rect& rect) {
         std::error_code error_code;
         auto result = CreateRectangleGeometry(rect, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+
+    const RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect, std::error_code& error_code);
+
+    const RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect) {
+        std::error_code error_code;
+        auto result = CreateRoundedRectangleGeometry(rounded_rect, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }

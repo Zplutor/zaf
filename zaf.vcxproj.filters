@@ -575,5 +575,11 @@
     <ClInclude Include="src\zaf\control\internal\range_manager.h">
       <Filter>zaf\control\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\graphic\rounded_rect.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\geometry\rounded_rectangle_geometry.h">
+      <Filter>zaf\graphic\geometry</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

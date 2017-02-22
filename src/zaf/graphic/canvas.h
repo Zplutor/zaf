@@ -134,6 +134,20 @@ public:
 		);
 	}
 
+    void DrawRoundedRectangle(const RoundedRect& rounded_rect) {
+        auto state = GetCurrentState();
+        renderer_.DrawRoundedRectangle(MakeClearEdgeRoundedRectForFill(rounded_rect, state->clear_edge_option), state->brush);
+    }
+
+    void DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width) {
+        auto state = GetCurrentState();
+        renderer_.DrawRoundedRectangleFrame(
+            MakeClearEdgeRoundedRectForLine(rounded_rect, stroke_width, state->clear_edge_option),
+            state->brush,
+            stroke_width,
+            state->stroke);
+    }
+
 	void DrawEllipse(const Ellipse& ellipse) {
 		auto state = GetCurrentState();
 		renderer_.DrawEllipse(MakeClearEdgeEllipseForFill(ellipse, state->clear_edge_option), state->brush);

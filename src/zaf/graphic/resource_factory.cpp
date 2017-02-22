@@ -75,6 +75,18 @@ const RectangleGeometry ResourceFactory::CreateRectangleGeometry(const Rect& rec
 }
 
 
+const RoundedRectangleGeometry ResourceFactory::CreateRoundedRectangleGeometry(
+    const RoundedRect& rounded_rect, 
+    std::error_code& error_code) {
+
+    ID2D1RoundedRectangleGeometry* handle = nullptr;
+    HRESULT result = d2d_factory_handle_->CreateRoundedRectangleGeometry(rounded_rect.ToD2D1ROUNDEDRECT(), &handle);
+
+    error_code = MakeComErrorCode(result);
+    return RoundedRectangleGeometry(handle);
+}
+
+
 const PathGeometry ResourceFactory::CreatePathGeometry(std::error_code& error_code) {
 
 	ID2D1PathGeometry* handle = nullptr;
