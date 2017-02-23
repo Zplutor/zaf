@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{b8d08042-fa48-4c1d-b72f-4dfd13aec8ee}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main_window.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\conversation_list_view.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\conversation_item_source.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\conversation_item.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\conversation_generating.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\main_window.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conversation_list_view.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conversation_item_source.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conversation.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conversation_item.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\conversation_generating.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
