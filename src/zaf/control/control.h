@@ -798,6 +798,8 @@ private:
      */
     const Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const;
 
+    void NeedRelayout(const Rect& previous_rect);
+
     bool IsUpdating() const {
         return update_count_ > 0;
     }
@@ -811,6 +813,8 @@ private:
 	std::vector<std::shared_ptr<Control>> children_;
 
     std::size_t update_count_;
+    bool need_relayout_after_updating_;
+    bool need_repaint_after_updating_;
 
 	bool is_hovered_;
 	bool is_capturing_mouse_;

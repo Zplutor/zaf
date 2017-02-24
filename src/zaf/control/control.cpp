@@ -31,6 +31,8 @@ static const wchar_t* const kTabIndexPropertyName = L"TabIndex";
 
 Control::Control() : 
     update_count_(0),
+    need_relayout_after_updating_(false),
+    need_repaint_after_updating_(false),
 	is_hovered_(false), 
 	is_capturing_mouse_(false),
 	is_focused_(false),
@@ -48,6 +50,8 @@ Control::~Control() {
 
 
 void Control::BeginUpdate() {
+    need_relayout_after_updating_ = false;
+    need_repaint_after_updating_ = false;
     ++update_count_;
 }
 
@@ -62,8 +66,14 @@ void Control::EndUpdate() {
     --update_count_;
 
     if (update_count_ == 0) {
-        NeedRelayout();
-        NeedRepaint();
+
+        if (need_relayout_after_updating_) {
+            NeedRelayout();
+        }
+
+        if (need_repaint_after_updating_) {
+            NeedRepaint();
+        }
     }
 }
 
@@ -161,6 +171,11 @@ void Control::NeedRepaint() {
 void Control::NeedRepaintRect(const Rect& rect) {
 
     if (IsUpdating()) {
+        need_repaint_after_updating_ = true;
+        return;
+    }
+
+    if ((rect.size.width == 0) || (rect.size.height == 0)) {
         return;
     }
 
@@ -224,9 +239,21 @@ void Control::Layout(const Rect& previous_rect) {
 
 
 void Control::NeedRelayout() {
+    NeedRelayout(GetRect());
+}
+
+
+void Control::NeedRelayout(const Rect& previous_rect) {
 
     if (! IsUpdating()) {
-	    Layout(GetRect());
+
+        const auto& size = GetSize();
+        if ((size.width != 0) && (size.height != 0)) {
+            Layout(previous_rect);
+        }
+    }
+    else {
+        need_relayout_after_updating_ = true;
     }
 }
 
@@ -256,6 +283,13 @@ const Rect Control::GetAbsoluteRect() const {
 
 void Control::SetRect(const Rect& rect) {
 
+    Rect previous_rect = GetRect();
+
+    //Don't layout if rects are the same.
+    if (rect == previous_rect) {
+        return;
+    }
+
     //Revise the size.
     float width = rect.size.width;
     width = std::max(width, GetMinimumWidth());
@@ -265,13 +299,11 @@ void Control::SetRect(const Rect& rect) {
     height = std::max(height, GetMinimumHeight());
     height = std::min(height, GetMaximumHeight());
 
-	Rect previous_rect = GetRect();
 	rect_ = zaf::Rect(rect.position, zaf::Size(width, height));    
 
     //Layout children if size is changed.
-    if ((rect_.size.width != previous_rect.size.width) || 
-        (rect_.size.height != previous_rect.size.height)) {
-	    Layout(previous_rect);
+    if (rect_.size != previous_rect.size) {
+        NeedRelayout(previous_rect);
     }
 
 	//The focused control need to be notified while its absolute position changed, 

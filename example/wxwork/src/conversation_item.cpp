@@ -8,8 +8,6 @@
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/text/text_format_properties.h>
 
-#include <zaf/base/log.h>
-
 static std::wstring GenerateTimeDescription(std::time_t time);
 
 static const float AvatarLeftMargin = 12;
@@ -185,8 +183,6 @@ void ConversationItem::Layout(const zaf::Rect& previous_rect) {
 void ConversationItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
-
-    ZAF_LOG() << this << "Paint";
 
     canvas.SetBrushWithColor(zaf::Color::FromRGB(0xE4E4E4));
 
