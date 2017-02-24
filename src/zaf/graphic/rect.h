@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <zaf/base/direct2d.h>
+#include <zaf/base/relation_operator.h>
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
 
@@ -200,5 +201,27 @@ public:
 	 */
 	Size size;
 };
+
+
+inline bool operator==(const Rect& rect1, const Rect& rect2) {
+    return (rect1.position == rect2.position) && (rect1.size == rect2.size);
+}
+
+
+inline bool operator<(const Rect& rect1, const Rect& rect2) {
+
+    if (rect1.position < rect2.position) {
+        return true;
+    }
+
+    if (rect1.position > rect2.position) {
+        return false;
+    }
+
+    return rect1.size < rect2.size;
+}
+
+
+ZAF_ENABLE_RELATION_OPERATOR(Rect);
 
 }

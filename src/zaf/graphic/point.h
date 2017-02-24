@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <zaf/base/direct2d.h>
+#include <zaf/base/relation_operator.h>
 
 namespace zaf {
 
@@ -87,5 +88,27 @@ public:
 	 */
 	float y;
 };
+
+
+inline bool operator==(const Point& point1, const Point& point2) {
+    return (point1.x == point2.x) && (point1.y == point2.y);
+}
+
+
+inline bool operator<(const Point& point1, const Point& point2) {
+
+    if (point1.x < point2.x) {
+        return true;
+    }
+
+    if (point1.x > point2.x) {
+        return false;
+    }
+
+    return point1.y < point2.y;
+}
+
+
+ZAF_ENABLE_RELATION_OPERATOR(Point);
 
 }

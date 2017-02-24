@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/base/direct2d.h>
+#include <zaf/base/relation_operator.h>
 
 namespace zaf {
 
@@ -87,5 +88,26 @@ public:
 	float height;
 };
 
+
+inline bool operator==(const Size& size1, const Size& size2) {
+    return (size1.width == size2.width) && (size1.height == size2.height);
+}
+
+
+inline bool operator<(const Size& size1, const Size& size2) {
+
+    if (size1.width < size2.width) {
+        return true;
+    }
+
+    if (size1.width > size2.width) {
+        return false;
+    }
+
+    return size1.height < size2.height;
+}
+
+
+ZAF_ENABLE_RELATION_OPERATOR(Size);
 
 }

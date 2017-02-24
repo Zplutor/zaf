@@ -1,15 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/graphic/rect.h>
 
-inline bool operator==(const zaf::Rect& rect1, const zaf::Rect& rect2) {
-    return 
-        rect1.position.x == rect2.position.x &&
-        rect1.position.y == rect2.position.y &&
-        rect1.size.width == rect2.size.width && 
-        rect1.size.height == rect2.size.height;
-}
-
-
 TEST(TestRect, Contain) {
 
     ASSERT_FALSE(zaf::Rect(0, 0, 0, 0).Contain(zaf::Point(0, 0)));
