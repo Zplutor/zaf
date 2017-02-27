@@ -24,12 +24,11 @@ public:
     }
 
     virtual ~ComObject() {
-        if (handle_ != nullptr) {
-            handle_->Release();
-        }
+        Reset();
     }
 
     ComObject& operator=(const ComObject& other) {
+        Reset();
         handle_ = other.handle_;
         if (handle_ != nullptr) {
             handle_->AddRef();
@@ -38,6 +37,7 @@ public:
     }
 
     ComObject& operator=(ComObject&& other) {
+        Reset();
         handle_ = other.handle_;
         other.handle_ = nullptr;
         return *this;
@@ -62,8 +62,8 @@ public:
     void Reset() {
         if (handle_ != nullptr) {
             handle_->Release();
+            handle_ = nullptr;
         }
-        handle_ = nullptr;
     }
 
     bool IsNull() const {
