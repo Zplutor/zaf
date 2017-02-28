@@ -44,7 +44,7 @@ void TextualControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
     __super::Paint(canvas, dirty_rect);
 
     Rect text_rect = GetTextRect();
-    if (text_rect.IsEmpty()) {
+    if (text_rect.size.width <= 0 || text_rect.size.height <= 0) {
         return;
     }
 
