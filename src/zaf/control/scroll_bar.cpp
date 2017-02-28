@@ -10,11 +10,15 @@
 #include <zaf/internal/theme.h>
 #include <zaf/window/message/mouse_message.h>
 
+#include <zaf/base/log.h>
+
 namespace zaf {
 
 static const wchar_t* const kArrowLengthPropertyName = L"ArrowLength";
 static const wchar_t* const kArrowColorPickerPropertyName = L"ArrowColorPicker";
+static const wchar_t* const kLargeChangeValuePropertyName = L"LargeChangeValue";
 static const wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
+static const wchar_t* const kSmallChangeValuePropertyName = L"SmallChangeValue";
 static const wchar_t* const kThumbColorPickerProeprtyName = L"ThumbColorPicker";
 
 static const int kTimerInitialInterval = 300;
@@ -29,7 +33,8 @@ ScrollBar::ScrollBar() :
 	max_value_(0), 
 	value_(0),
 	begin_drag_value_(0),
-	timer_event_(TimerEvent::Increment) {
+	timer_event_(TimerEvent::Increment),
+    remaining_wheel_change_value_(0) {
 
 }
 
@@ -218,18 +223,68 @@ void ScrollBar::ChangeValueRange(int min_value, int max_value, bool max_value_ha
 }
 
 
+int ScrollBar::GetSmallChangeValue() const {
+
+    auto value = GetPropertyMap().TryGetProperty<int>(kSmallChangeValuePropertyName);
+    if (value != nullptr) {
+        return *value;
+    }
+    else {
+        return 1;
+    }
+}
+
+void ScrollBar::SetSmallChangeValue(int value) {
+    GetPropertyMap().SetProperty(kSmallChangeValuePropertyName, value);
+}
+
+
+int ScrollBar::GetLargeChangeValue() const {
+
+    auto value = GetPropertyMap().TryGetProperty<int>(kLargeChangeValuePropertyName);
+    if (value != nullptr) {
+        return *value;
+    }
+    else {
+        return 10;
+    }
+}
+
+void ScrollBar::SetLargeChangeValue(int value) {
+    GetPropertyMap().SetProperty(kLargeChangeValuePropertyName, value);
+}
+
+
 void ScrollBar::Wheel(int distance) {
 
-    int major_distance = distance / WHEEL_DELTA;
+    double change_count = static_cast<double>(distance) / WHEEL_DELTA;
+    int change_value = 0;
 
-    int minor_distance = 0;
-    if (distance % WHEEL_DELTA != 0) {
-        minor_distance = distance > 0 ? 1 : -1;
+    UINT multiple = 1;
+    SystemParametersInfo(
+        IsHorizontal() ? SPI_GETWHEELSCROLLCHARS : SPI_GETWHEELSCROLLLINES,
+        0,
+        &multiple,
+        0);
+
+    //-1 means scroll a whole screen. But we don't know how many values per screen
+    //here, so use large change value instead.
+    if (multiple == -1) {
+        change_value = GetLargeChangeValue();
+        multiple = 1;
     }
+    else {
+        change_value = GetSmallChangeValue();
+    }
+    
+    double expected_change_value = change_count * change_value * multiple;
+    expected_change_value += remaining_wheel_change_value_;
 
-    int direction = is_horizontal_ ? 1 : -1;
-
-    SetValue(value_ + (major_distance + minor_distance) * direction);
+    int actual_change_value = static_cast<int>(expected_change_value);
+    remaining_wheel_change_value_ = expected_change_value - actual_change_value;
+    
+    int direction = IsHorizontal() ? 1 : -1;
+    SetValue(value_ + actual_change_value * direction);
 }
 
 
@@ -372,13 +427,13 @@ void ScrollBar::ApplyTimerEvent() {
 	if (timer_event_ == TimerEvent::Increment) {
 
 		if (incremental_arrow_->IsPressed()) {
-			SetValue(value_ + 1);
+			SetValue(value_ + GetSmallChangeValue());
 		}
 	}
 	else if (timer_event_ == TimerEvent::Decrement) {
 
 		if (decremental_arrow_->IsPressed()) {
-			SetValue(value_ - 1);
+            SetValue(value_ - GetSmallChangeValue());
 		}
 	}
 	else if (timer_event_ == TimerEvent::PageRoll) {
@@ -410,10 +465,10 @@ void ScrollBar::ApplyTimerEvent() {
 		}
 
 		if (is_page_decrement) {
-			SetValue(value_ - 10);
+			SetValue(value_ - GetLargeChangeValue());
 		}
 		else {
-			SetValue(value_ + 10);
+			SetValue(value_ + GetLargeChangeValue());
 		}
 	}
 }

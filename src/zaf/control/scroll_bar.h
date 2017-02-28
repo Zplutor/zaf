@@ -381,6 +381,12 @@ public:
 		ChangeValueRange(min_value, max_value, false);
 	}
 
+    int GetSmallChangeValue() const;
+    void SetSmallChangeValue(int value);
+
+    int GetLargeChangeValue() const;
+    void SetLargeChangeValue(int value);
+
     /**
      Perform a wheel action on the scroll bar.
 
@@ -455,6 +461,8 @@ private:
 
 	std::shared_ptr<Timer> timer_;
 	TimerEvent timer_event_;
+
+    double remaining_wheel_change_value_;
 };
 
 }
