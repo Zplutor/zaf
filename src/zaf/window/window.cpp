@@ -271,6 +271,10 @@ void Window::SwitchFocusedControlByTabKey(bool backward) {
 bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
 
     switch (message.id) {
+    case WM_ERASEBKGND:
+        result = TRUE;
+        return true;
+
     case WM_PAINT:
         Repaint();
         return true;
