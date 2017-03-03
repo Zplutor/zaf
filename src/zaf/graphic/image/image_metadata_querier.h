@@ -24,7 +24,10 @@ public:
 
     template<typename ValueType>
     ValueType QueryMetadata(const std::wstring& query_expression, std::error_code& error_code) const {
-        return GetMetadata(query_expression, error_code, Converter<ValueType>::Convert);
+        return GetMetadata(
+            query_expression, 
+            error_code,
+            std::function<HRESULT(const PROPVARIANT&, ValueType&)>(Converter<ValueType>::Convert));
     }
 
 private:
@@ -45,7 +48,7 @@ private:
 
         result = get_value(variant, value);
         error_code = MakeComErrorCode(result);
-        PropVariantClear(variant);
+        PropVariantClear(&variant);
         return value;
     }
 
@@ -54,7 +57,7 @@ private:
 
     template<>
     struct Converter<bool> {
-        HRESULT Convert(const PROPVARIANT& variant, bool& value) {
+        static HRESULT Convert(const PROPVARIANT& variant, bool& value) {
             BOOL bool_value = FALSE;
             HRESULT result = PropVariantToBoolean(variant, &bool_value);
             value = !!bool_value;
@@ -64,56 +67,56 @@ private:
 
     template<>
     struct Converter<std::int16_t> {
-        HRESULT Convert(const PROPVARIANT& variant, std::int16_t& value) {
+        static HRESULT Convert(const PROPVARIANT& variant, std::int16_t& value) {
             return PropVariantToInt16(variant, &value);
         }
     };
 
     template<>
     struct Converter<std::uint16_t> {
-        HRESULT Convert(const PROPVARIANT& variant, std::uint16_t& value) {
+        static HRESULT Convert(const PROPVARIANT& variant, std::uint16_t& value) {
             return PropVariantToUInt16(variant, &value);
         }
     };
 
     template<>
     struct Converter<std::int32_t> {
-        HRESULT Convert(const PROPVARIANT& variant, std::int32_t& value) {
+        static HRESULT Convert(const PROPVARIANT& variant, std::int32_t& value) {
             return PropVariantToInt32(variant, &value);
         }
     };
 
     template<>
     struct Converter<std::uint32_t> {
-        HRESULT Convert(const PROPVARIANT& variant, std::uint32_t& value) {
+        static HRESULT Convert(const PROPVARIANT& variant, std::uint32_t& value) {
             return PropVariantToUInt32(variant, &value);
         }
     };
 
     template<>
     struct Converter<std::int64_t> {
-        HRESULT Convert(const PROPVARIANT& variant, std::int64_t& value) {
+        static HRESULT Convert(const PROPVARIANT& variant, std::int64_t& value) {
             return PropVariantToInt64(variant, &value);
         }
     };
 
     template<>
     struct Converter<std::uint64_t> {
-        HRESULT Convert(const PROPVARIANT& variant, std::uint64_t& value) {
+        static HRESULT Convert(const PROPVARIANT& variant, std::uint64_t& value) {
             return PropVariantToUInt64(variant, &value);
         }
     };
 
     template<>
     struct Converter<double> {
-        HRESULT Convert(const PROPVARIANT& variant, double& value) {
+        static HRESULT Convert(const PROPVARIANT& variant, double& value) {
             return PropVariantToDouble(variant, &value);
         }
     };
 
     template<>
     struct Converter<std::wstring> {
-        HRESULT Convert(const PROPVARIANT& variant, std::wstring& value) {
+        static HRESULT Convert(const PROPVARIANT& variant, std::wstring& value) {
             wchar_t* string = nullptr;
             HRESULT result = PropVariantToStringAlloc(variant, &string);
             if (string != nullptr) {
@@ -126,7 +129,7 @@ private:
 
     template<>
     struct Converter<ImageMetadataQuerier> {
-        HRESULT Convert(const PROPVARIANT& variant, ImageMetadataQuerier& value) {
+        static HRESULT Convert(const PROPVARIANT& variant, ImageMetadataQuerier& value) {
 
             if (variant.vt != VT_UNKNOWN) {
                 value.Reset();
