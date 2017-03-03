@@ -11,6 +11,7 @@
 #include <zaf/graphic/geometry/rounded_rectangle_geometry.h>
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/image/image_decoder.h>
+#include <zaf/graphic/image/image_palette.h>
 #include <zaf/graphic/renderer.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/text/text_layout.h>
@@ -178,6 +179,15 @@ public:
     const ImageDecoder CreateImageDecoder(const std::wstring& file_path) {
         std::error_code error_code;
         auto result = CreateImageDecoder(file_path, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+
+    const ImagePalette CreateImagePalette(std::error_code& error_code);
+
+    const ImagePalette CreateImagePalette() {
+        std::error_code error_code;
+        auto result = CreateImagePalette(error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }

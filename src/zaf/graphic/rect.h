@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <Wincodec.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/relation_operator.h>
 #include <zaf/graphic/point.h>
@@ -189,6 +190,19 @@ public:
 		rect.bottom = position.y + size.height;
 		return rect;
 	}
+
+    /**
+     Convert to WICRect structure.
+     */
+    WICRect ToWICRect() const {
+
+        WICRect wic_rect;
+        wic_rect.X = static_cast<INT>(position.x);
+        wic_rect.Y = static_cast<INT>(position.y);
+        wic_rect.Width = static_cast<INT>(size.width);
+        wic_rect.Height = static_cast<INT>(size.height);
+        return wic_rect;
+    }
 
 public:
 	/**

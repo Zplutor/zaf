@@ -43,7 +43,7 @@ const Layer Renderer::InnerCreateLayer(const Size* size, std::error_code& error_
 
 
 const Bitmap Renderer::CreateBitmap(
-    const ImageDecoder::Frame& image_frame,
+    const ImageSource& image_source,
     std::error_code& error_code) {
 
     auto wic_image_factory_handle = GetResourceFactory()->GetWicImagingFactoryHandle();
@@ -57,7 +57,7 @@ const Bitmap Renderer::CreateBitmap(
     }
 
     result = format_converter->Initialize(
-        image_frame.GetHandle(), 
+        image_source.GetHandle(),
         GUID_WICPixelFormat32bppPBGRA,  
         WICBitmapDitherTypeNone,    
         nullptr,

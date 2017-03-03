@@ -197,4 +197,14 @@ const ImageDecoder ResourceFactory::CreateImageDecoder(const std::wstring& file_
     return ImageDecoder(handle);
 }
 
+
+const ImagePalette ResourceFactory::CreateImagePalette(std::error_code& error_code) {
+
+    IWICPalette* handle = nullptr;
+    HRESULT result = wic_imaging_factory_handle_->CreatePalette(&handle);
+
+    error_code = MakeComErrorCode(result);
+    return ImagePalette(handle);
+}
+
 }

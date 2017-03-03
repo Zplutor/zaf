@@ -51,6 +51,10 @@
     <ClCompile Include="src\zaf\graphic\geometry\path_geometry.cpp" />
     <ClCompile Include="src\zaf\graphic\clear_edge.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image_decoder.cpp" />
+    <ClCompile Include="src\zaf\graphic\image\image_decode_frame.cpp" />
+    <ClCompile Include="src\zaf\graphic\image\image_palette.cpp" />
+    <ClCompile Include="src\zaf\graphic\image\image_source.cpp" />
+    <ClCompile Include="src\zaf\graphic\image\mutable_image_source.cpp" />
     <ClCompile Include="src\zaf\graphic\localized_strings.cpp" />
     <ClCompile Include="src\zaf\graphic\matrix.cpp" />
     <ClCompile Include="src\zaf\graphic\rect.cpp" />
@@ -140,8 +144,12 @@
     <ClInclude Include="src\zaf\graphic\geometry\transformed_geometry.h" />
     <ClInclude Include="src\zaf\graphic\image\bitmap.h" />
     <ClInclude Include="src\zaf\graphic\image\image_decoder.h" />
+    <ClInclude Include="src\zaf\graphic\image\image_decode_frame.h" />
     <ClInclude Include="src\zaf\graphic\image\image_metadata_querier.h" />
+    <ClInclude Include="src\zaf\graphic\image\image_palette.h" />
+    <ClInclude Include="src\zaf\graphic\image\image_source.h" />
     <ClInclude Include="src\zaf\graphic\image\interpolation_mode.h" />
+    <ClInclude Include="src\zaf\graphic\image\mutable_image_source.h" />
     <ClInclude Include="src\zaf\graphic\layer.h" />
     <ClInclude Include="src\zaf\graphic\clear_edge.h" />
     <ClInclude Include="src\zaf\graphic\layer_parameters.h" />

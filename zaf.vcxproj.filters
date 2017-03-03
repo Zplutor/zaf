@@ -216,6 +216,18 @@
     <ClCompile Include="src\zaf\control\internal\range_manager.cpp">
       <Filter>zaf\control\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\image_source.cpp">
+      <Filter>zaf\graphic\image</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\mutable_image_source.cpp">
+      <Filter>zaf\graphic\image</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\image_decode_frame.cpp">
+      <Filter>zaf\graphic\image</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\image_palette.cpp">
+      <Filter>zaf\graphic\image</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -580,6 +592,18 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\geometry\rounded_rectangle_geometry.h">
       <Filter>zaf\graphic\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\image_source.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\mutable_image_source.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\image_decode_frame.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\image_palette.h">
+      <Filter>zaf\graphic\image</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
