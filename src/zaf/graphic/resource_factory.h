@@ -12,7 +12,7 @@
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/image/image_decoder.h>
 #include <zaf/graphic/image/image_palette.h>
-#include <zaf/graphic/renderer.h>
+#include <zaf/graphic/renderer/window_renderer.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/text/text_layout.h>
 
@@ -46,16 +46,16 @@ public:
     ~ResourceFactory();
 	
     /**
-     Create a renderer that associated with specified window.
+     Create a window renderer that associated with specified window.
 
      @return
          Return nullptr if failed.
      */
-    const Renderer CreateRenderer(HWND window_handle, std::error_code& error_code);
+    const WindowRenderer CreateWindowRenderer(HWND window_handle, std::error_code& error_code);
 
-    const Renderer CreateRenderer(HWND window_handle) {
+    const WindowRenderer CreateWindowRenderer(HWND window_handle) {
         std::error_code error_code;
-        auto result = CreateRenderer(window_handle, error_code);
+        auto result = CreateWindowRenderer(window_handle, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }

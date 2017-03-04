@@ -6,7 +6,7 @@
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/clear_edge.h>
 #include <zaf/graphic/color.h>
-#include <zaf/graphic/renderer.h>
+#include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/brush/solid_color_brush.h>
 
 namespace zaf {

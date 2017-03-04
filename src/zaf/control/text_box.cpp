@@ -3,7 +3,7 @@
 #include <zaf/base/event_utility.h>
 #include <zaf/base/log.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/renderer.h>
+#include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/keyboard_message.h>

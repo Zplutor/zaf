@@ -1,5 +1,5 @@
 #include <zaf/control/internal/image_box/static_image_player.h>
-#include <zaf/graphic/renderer.h>
+#include <zaf/graphic/renderer/renderer.h>
 
 namespace zaf {
 namespace internal {

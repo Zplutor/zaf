@@ -3,7 +3,7 @@
 #include <zaf/base/event_utility.h>
 #include <zaf/control/internal/range_map.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/renderer.h>
+#include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/graphic/text/text_format_properties.h>

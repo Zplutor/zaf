@@ -1,5 +1,4 @@
 #include <zaf/graphic/resource_factory.h>
-#include <zaf/graphic/renderer.h>
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/text/text_format_properties.h>
@@ -35,12 +34,12 @@ ResourceFactory::~ResourceFactory() {
 }
 
 
-const Renderer ResourceFactory::CreateRenderer(HWND window_handle, std::error_code& error_code) {
+const WindowRenderer ResourceFactory::CreateWindowRenderer(HWND window_handle, std::error_code& error_code) {
 
 	RECT window_rect = { 0 };
     if (! GetClientRect(window_handle, &window_rect)) {
         error_code = MakeSystemErrorCode(GetLastError());
-        return Renderer();
+        return WindowRenderer();
     }
 
 	D2D1_SIZE_U renderer_size = D2D1::SizeU(
@@ -61,7 +60,7 @@ const Renderer ResourceFactory::CreateRenderer(HWND window_handle, std::error_co
 	);
 
     error_code = MakeComErrorCode(result);
-    return Renderer(renderer_handle);
+    return WindowRenderer(renderer_handle);
 }
 
 

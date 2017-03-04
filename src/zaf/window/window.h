@@ -6,7 +6,7 @@
 #include <zaf/base/property_map.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/graphic/renderer.h>
+#include <zaf/graphic/renderer/window_renderer.h>
 #include <zaf/internal/message_loop.h>
 
 namespace zaf {
@@ -519,7 +519,7 @@ private:
 private:
 	HWND handle_;
     Rect rect_;
-	Renderer renderer_;
+	WindowRenderer renderer_;
 
 	bool is_tracking_mouse_;
 

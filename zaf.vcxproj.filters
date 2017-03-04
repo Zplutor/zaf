@@ -55,6 +55,9 @@
     <Filter Include="zaf\control\internal\image_box">
       <UniqueIdentifier>{6783574a-ea9b-4f6e-9dca-10fff2f4fdcd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\renderer">
+      <UniqueIdentifier>{06391e47-8d87-4b81-bcba-95a163e421c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -76,9 +79,6 @@
       <Filter>zaf\graphic</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\color.cpp">
-      <Filter>zaf\graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\renderer.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\control.cpp">
@@ -240,6 +240,9 @@
     <ClCompile Include="src\zaf\control\internal\image_box\gif_player.cpp">
       <Filter>zaf\control\internal\image_box</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\renderer\renderer.cpp">
+      <Filter>zaf\graphic\renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -267,9 +270,6 @@
       <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\color.h">
-      <Filter>zaf\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\renderer.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\brush\brush.h">
@@ -631,6 +631,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h">
       <Filter>zaf\control\internal\image_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\renderer\renderer.h">
+      <Filter>zaf\graphic\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\renderer\window_renderer.h">
+      <Filter>zaf\graphic\renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

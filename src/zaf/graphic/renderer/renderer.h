@@ -12,6 +12,7 @@
 #include <zaf/graphic/image/image_source.h>
 #include <zaf/graphic/image/interpolation_mode.h>
 #include <zaf/graphic/layer.h>
+#include <zaf/graphic/layer_parameters.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/rounded_rect.h>
@@ -22,24 +23,10 @@
 
 namespace zaf {
 
-class Brush;
-class LayerParameters;
-
-class Renderer : public ComObject<ID2D1HwndRenderTarget> {
+class Renderer : public ComObject<ID2D1RenderTarget> {
 public:
     Renderer() { }
-	explicit Renderer(ID2D1HwndRenderTarget* handle) : ComObject(handle) { }
-
-    void Resize(const Size& size, std::error_code& error_code) {
-        HRESULT result = GetHandle()->Resize(size.ToD2D1SIZEU());
-        error_code = MakeComErrorCode(result);
-    }
-
-    void Resize(const Size& size) {
-        std::error_code error_code;
-        Resize(size, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
+    explicit Renderer(ID2D1RenderTarget* handle) : ComObject(handle) { }
 
     const SolidColorBrush CreateSolidColorBrush(const Color& color, std::error_code& error_code);
 
@@ -84,9 +71,9 @@ public:
         return result;
     }
 
-	void BeginDraw() {
-		GetHandle()->BeginDraw();
-	}
+    void BeginDraw() {
+        GetHandle()->BeginDraw();
+    }
 
     void EndDraw(std::error_code& error_code) {
         HRESULT result = GetHandle()->EndDraw();
@@ -99,50 +86,50 @@ public:
         ZAF_CHECK_ERROR(error_code);
     }
 
-	void DrawLine(
-		const Point& from_point, 
-		const Point& to_point, 
-		const Brush& brush,
-		float stroke_width,
-		const Stroke& stroke
-	) {
+    void DrawLine(
+        const Point& from_point,
+        const Point& to_point,
+        const Brush& brush,
+        float stroke_width,
+        const Stroke& stroke
+        ) {
 
-		GetHandle()->DrawLine(
-			from_point.ToD2D1POINT2F(), 
-			to_point.ToD2D1POINT2F(),
-			brush.GetHandle(),
-			stroke_width,
-			stroke.GetHandle()
-		);
-	}
+        GetHandle()->DrawLine(
+            from_point.ToD2D1POINT2F(),
+            to_point.ToD2D1POINT2F(),
+            brush.GetHandle(),
+            stroke_width,
+            stroke.GetHandle()
+            );
+    }
 
-	void DrawRectangle(const Rect& rect, const Brush& brush) {
-		GetHandle()->FillRectangle(rect.ToD2D1RECTF(), brush.GetHandle());
-	}
+    void DrawRectangle(const Rect& rect, const Brush& brush) {
+        GetHandle()->FillRectangle(rect.ToD2D1RECTF(), brush.GetHandle());
+    }
 
-	void DrawRectangleFrame(
-		const Rect& rect, 
-		const Brush& brush, 
-		float stroke_width,
-		const Stroke& stroke
-	) {
+    void DrawRectangleFrame(
+        const Rect& rect,
+        const Brush& brush,
+        float stroke_width,
+        const Stroke& stroke
+        ) {
 
-		GetHandle()->DrawRectangle(
-			rect.ToD2D1RECTF(),
-			brush.GetHandle(), 
-			stroke_width,
-			stroke.GetHandle()
-		);
-	}
+        GetHandle()->DrawRectangle(
+            rect.ToD2D1RECTF(),
+            brush.GetHandle(),
+            stroke_width,
+            stroke.GetHandle()
+            );
+    }
 
     void DrawRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush) {
         GetHandle()->FillRoundedRectangle(rounded_rect.ToD2D1ROUNDEDRECT(), brush.GetHandle());
     }
 
     void DrawRoundedRectangleFrame(
-        const RoundedRect& rounded_rect, 
+        const RoundedRect& rounded_rect,
         const Brush& brush,
-        float stroke_width, 
+        float stroke_width,
         const Stroke& stroke) {
 
         GetHandle()->DrawRoundedRectangle(
@@ -152,77 +139,77 @@ public:
             stroke.GetHandle());
     }
 
-	void DrawEllipse(const Ellipse& ellipse, const Brush& brush) {
-		GetHandle()->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush.GetHandle());
-	}
+    void DrawEllipse(const Ellipse& ellipse, const Brush& brush) {
+        GetHandle()->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush.GetHandle());
+    }
 
-	void DrawEllipseFrame(
-		const Ellipse& ellipse,
-		const Brush& brush,
-		float stroke_width,
-		const Stroke& stroke
-	) {
+    void DrawEllipseFrame(
+        const Ellipse& ellipse,
+        const Brush& brush,
+        float stroke_width,
+        const Stroke& stroke
+        ) {
 
-		GetHandle()->DrawEllipse(
-			ellipse.ToD2D1ELLIPSE(),
-			brush.GetHandle(),
-			stroke_width, 
-			stroke.GetHandle()
-		);
-	}
+        GetHandle()->DrawEllipse(
+            ellipse.ToD2D1ELLIPSE(),
+            brush.GetHandle(),
+            stroke_width,
+            stroke.GetHandle()
+            );
+    }
 
-	void DrawGeometry(
-		const Geometry& geometry,
-		const Brush& brush,
-		const Brush& opacity_brush
-	) {
+    void DrawGeometry(
+        const Geometry& geometry,
+        const Brush& brush,
+        const Brush& opacity_brush
+        ) {
 
-		GetHandle()->FillGeometry(
-			geometry.GetHandle(),
-			brush.GetHandle(), 
-			opacity_brush.GetHandle()
-		);
-	}
+        GetHandle()->FillGeometry(
+            geometry.GetHandle(),
+            brush.GetHandle(),
+            opacity_brush.GetHandle()
+            );
+    }
 
-	void DrawGeometryFrame(
-		const Geometry& geometry,
-		const Brush& brush,
-		float stroke_width,
-		const Stroke& stroke
-	) {
+    void DrawGeometryFrame(
+        const Geometry& geometry,
+        const Brush& brush,
+        float stroke_width,
+        const Stroke& stroke
+        ) {
 
-		GetHandle()->DrawGeometry(
-			geometry.GetHandle(),
-			brush.GetHandle(),
-			stroke_width, 
-			stroke.GetHandle()
-		);
-	}
+        GetHandle()->DrawGeometry(
+            geometry.GetHandle(),
+            brush.GetHandle(),
+            stroke_width,
+            stroke.GetHandle()
+            );
+    }
 
-	void DrawText(
-		const std::wstring& text,
-		const TextFormat& text_format,
-		const Rect& rect,
-		const Brush& brush
-	) {
+    void DrawText(
+        const std::wstring& text,
+        const TextFormat& text_format,
+        const Rect& rect,
+        const Brush& brush
+        ) {
 
-		GetHandle()->DrawText(
-			text.c_str(), 
-			text.length(),
-			text_format.GetHandle(),
-			rect.ToD2D1RECTF(),
-			brush.GetHandle()
-		);
-	}
+        GetHandle()->DrawText(
+            text.c_str(),
+            text.length(),
+            text_format.GetHandle(),
+            rect.ToD2D1RECTF(),
+            brush.GetHandle()
+            );
+    }
 
-	void DrawText(
-		const TextLayout& text_layout,
-		const Point& position,
-		const Brush& brush
-	) {
+    void DrawText(
+        const TextLayout& text_layout,
+        const Point& position,
+        const Brush& brush
+        ) {
 
-		GetHandle()->DrawTextLayout(position.ToD2D1POINT2F(), text_layout.GetHandle(), brush.GetHandle());
-	}
+        GetHandle()->DrawTextLayout(position.ToD2D1POINT2F(), text_layout.GetHandle(), brush.GetHandle());
+    }
 
     void DrawBitmap(
         const Bitmap& bitmap,
@@ -239,19 +226,19 @@ public:
             bitmap_rect == nullptr ? nullptr : &(bitmap_rect->ToD2D1RECTF()));
     }
 
-	void PushLayer(const LayerParameters& parameters, const Layer& layer);
+    void PushLayer(const LayerParameters& parameters, const Layer& layer);
 
     void PopLayer() {
         GetHandle()->PopLayer();
     }
 
-	void Clear(const Color& color) {
-		GetHandle()->Clear(color.ToD2D1COLORF());
-	}
+    void Clear(const Color& color) {
+        GetHandle()->Clear(color.ToD2D1COLORF());
+    }
 
-	void Transform(const TransformMatrix& transform_matrix) {
-		GetHandle()->SetTransform(transform_matrix.ToD2D1MATRIX3X2F());
-	}
+    void Transform(const TransformMatrix& transform_matrix) {
+        GetHandle()->SetTransform(transform_matrix.ToD2D1MATRIX3X2F());
+    }
 
 private:
     const Layer InnerCreateLayer(const Size* size, std::error_code& error_code);

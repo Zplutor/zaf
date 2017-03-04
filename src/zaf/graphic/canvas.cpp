@@ -2,7 +2,6 @@
 #include <dwrite.h>
 #include <zaf/application.h>
 #include <zaf/graphic/layer_parameters.h>
-#include <zaf/graphic/renderer.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/graphic/text/text_format.h>
 
