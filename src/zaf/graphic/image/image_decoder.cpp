@@ -2,6 +2,16 @@
 
 namespace zaf {
 
+ImageContainerFormat ImageDecoder::GetContainerFormat(std::error_code& error_code) const {
+
+    GUID guid = GUID_NULL;
+    HRESULT com_error = GetHandle()->GetContainerFormat(&guid);
+
+    error_code = MakeComErrorCode(com_error);
+    return ToImageContainerFormat(guid);
+}
+
+
 std::size_t ImageDecoder::GetFrameCount(std::error_code& error_code) const {
 
     UINT count = 0;

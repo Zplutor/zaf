@@ -1,7 +1,11 @@
 #include <zaf/control/image_box.h>
+#include <zaf/control/internal/image_box/gif_player.h>
+#include <zaf/control/internal/image_box/static_image_player.h>
 #include <zaf/graphic/canvas.h>
 
 namespace zaf {
+
+static std::unique_ptr<internal::ImagePlayer> CreateImagePlayer(const ImageDecoder& image_decoder);
 
 static const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
 
@@ -19,46 +23,15 @@ void ImageBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
-    if (frame_bitmaps_.empty()) {
-        if (! CreateFrameBitmaps(canvas.GetRenderer())) {
-            return;
-        }
+    auto bitmap = image_player_->GetBitmap(canvas.GetRenderer());
+    if (bitmap == nullptr) {
+        return;
     }
 
     canvas.DrawBitmap(
-        frame_bitmaps_[0],
+        bitmap,
         GetContentRect(),
         DrawImageOptions().InterpolationMode(GetInterpolationMode()));
-}
-
-
-bool ImageBox::CreateFrameBitmaps(Renderer& renderer) {
-
-    if (image_decoder_ == nullptr) {
-        return false;
-    }
-
-    for (std::size_t index = 0; index < image_decoder_.GetFrameCount(); ++index) {
-
-        auto frame = image_decoder_.GetFrame(index);
-        if (frame == nullptr) {
-            continue;
-        }
-
-        auto bitmap = renderer.CreateBitmap(frame);
-        if (bitmap == nullptr) {
-            continue;
-        }
-
-        frame_bitmaps_.push_back(bitmap);
-    }
-
-    return ! frame_bitmaps_.empty();
-}
-
-
-void ImageBox::ReleaseRendererResources() {
-    frame_bitmaps_.clear();
 }
 
 
@@ -69,7 +42,7 @@ void ImageBox::SetImageDecoder(const ImageDecoder& image_decoder) {
     }
 
     image_decoder_ = image_decoder;
-    ReleaseRendererResources();
+    image_player_ = CreateImagePlayer(image_decoder_);
     NeedRepaint();
 }
 
@@ -91,5 +64,17 @@ void ImageBox::SetInterpolationMode(InterpolationMode mode) {
     GetPropertyMap().SetProperty(kInterpolationModePropertyName, mode);
     NeedRepaint();
 }
+
+
+static std::unique_ptr<internal::ImagePlayer> CreateImagePlayer(const ImageDecoder& image_decoder) {
+
+    auto container_format = image_decoder.GetContainerFormat();
+    switch (container_format) {
+    case ImageContainerFormat::Gif:
+    default:
+        return std::make_unique<internal::StaticImagePlayer>(image_decoder);
+    }
+}
+
 
 }

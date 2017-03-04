@@ -4,6 +4,7 @@
 #include <memory>
 #include <zaf/base/com_object.h>
 #include <zaf/base/error.h>
+#include <zaf/graphic/image/image_container_format.h>
 #include <zaf/graphic/image/image_decode_frame.h>
 #include <zaf/graphic/image/image_metadata_querier.h>
 
@@ -13,6 +14,15 @@ class ImageDecoder : public ComObject<IWICBitmapDecoder> {
 public:
     ImageDecoder() { }
     explicit ImageDecoder(IWICBitmapDecoder* handle) : ComObject(handle) { }
+
+    ImageContainerFormat GetContainerFormat(std::error_code& error_code) const;
+
+    ImageContainerFormat GetContainerFormat() const {
+        std::error_code error_code;
+        auto result = GetContainerFormat(error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
 
     std::size_t GetFrameCount(std::error_code& error_code) const;
 

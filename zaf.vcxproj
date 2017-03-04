@@ -21,6 +21,8 @@
     <ClCompile Include="src\zaf\control\control.cpp" />
     <ClCompile Include="src\zaf\control\image_box.cpp" />
     <ClCompile Include="src\zaf\control\internal\combo_box_drop_down_window.cpp" />
+    <ClCompile Include="src\zaf\control\internal\image_box\gif_player.cpp" />
+    <ClCompile Include="src\zaf\control\internal\image_box\static_image_player.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control_extended_multiple_select_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control_item_height_manager.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control_item_selection_manager.cpp" />
@@ -50,6 +52,7 @@
     <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp" />
     <ClCompile Include="src\zaf\graphic\geometry\path_geometry.cpp" />
     <ClCompile Include="src\zaf\graphic\clear_edge.cpp" />
+    <ClCompile Include="src\zaf\graphic\image\image_container_format.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image_decoder.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image_decode_frame.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image_palette.cpp" />
@@ -99,6 +102,9 @@
     <ClInclude Include="src\zaf\control\control.h" />
     <ClInclude Include="src\zaf\control\image_box.h" />
     <ClInclude Include="src\zaf\control\internal\combo_box_drop_down_window.h" />
+    <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h" />
+    <ClInclude Include="src\zaf\control\internal\image_box\image_player.h" />
+    <ClInclude Include="src\zaf\control\internal\image_box\static_image_player.h" />
     <ClInclude Include="src\zaf\control\internal\list_control_extended_multiple_select_strategy.h" />
     <ClInclude Include="src\zaf\control\internal\list_control_item_height_manager.h" />
     <ClInclude Include="src\zaf\control\internal\list_control_item_selection_manager.h" />
@@ -143,6 +149,8 @@
     <ClInclude Include="src\zaf\graphic\geometry\rounded_rectangle_geometry.h" />
     <ClInclude Include="src\zaf\graphic\geometry\transformed_geometry.h" />
     <ClInclude Include="src\zaf\graphic\image\bitmap.h" />
+    <ClInclude Include="src\zaf\graphic\image\gif_metadata_querier.h" />
+    <ClInclude Include="src\zaf\graphic\image\image_container_format.h" />
     <ClInclude Include="src\zaf\graphic\image\image_decoder.h" />
     <ClInclude Include="src\zaf\graphic\image\image_decode_frame.h" />
     <ClInclude Include="src\zaf\graphic\image\image_metadata_querier.h" />

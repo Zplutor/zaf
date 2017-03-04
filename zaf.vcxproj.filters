@@ -52,6 +52,9 @@
     <Filter Include="zaf\graphic\image">
       <UniqueIdentifier>{ab9b298a-d82e-4aa0-8331-c0c22bc9ffff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\internal\image_box">
+      <UniqueIdentifier>{6783574a-ea9b-4f6e-9dca-10fff2f4fdcd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -227,6 +230,15 @@
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\image\image_palette.cpp">
       <Filter>zaf\graphic\image</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\image_container_format.cpp">
+      <Filter>zaf\graphic\image</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\image_box\static_image_player.cpp">
+      <Filter>zaf\control\internal\image_box</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\image_box\gif_player.cpp">
+      <Filter>zaf\control\internal\image_box</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -604,6 +616,21 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\image\image_palette.h">
       <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\image_container_format.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\gif_metadata_querier.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\image_box\image_player.h">
+      <Filter>zaf\control\internal\image_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\image_box\static_image_player.h">
+      <Filter>zaf\control\internal\image_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h">
+      <Filter>zaf\control\internal\image_box</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
