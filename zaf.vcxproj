@@ -61,6 +61,7 @@
     <ClCompile Include="src\zaf\graphic\localized_strings.cpp" />
     <ClCompile Include="src\zaf\graphic\matrix.cpp" />
     <ClCompile Include="src\zaf\graphic\rect.cpp" />
+    <ClCompile Include="src\zaf\graphic\renderer\bitmap_renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer\renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\resource_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
@@ -164,6 +165,8 @@
     <ClInclude Include="src\zaf\graphic\localized_strings.h" />
     <ClInclude Include="src\zaf\graphic\point.h" />
     <ClInclude Include="src\zaf\graphic\rect.h" />
+    <ClInclude Include="src\zaf\graphic\renderer\bitmap_renderer.h" />
+    <ClInclude Include="src\zaf\graphic\renderer\compatible_renderer_options.h" />
     <ClInclude Include="src\zaf\graphic\renderer\renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer\window_renderer.h" />
     <ClInclude Include="src\zaf\graphic\resource_factory.h" />

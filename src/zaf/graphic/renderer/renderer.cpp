@@ -1,8 +1,49 @@
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/application.h>
+#include <zaf/graphic/renderer/bitmap_renderer.h>
 #include <zaf/graphic/resource_factory.h>
 
 namespace zaf {
+
+BitmapRenderer Renderer::CreateCompatibleRenderer(const CompatibleRendererOptions& options, std::error_code& error_code) {
+
+    D2D1_SIZE_F d2d_desired_size;
+    D2D1_SIZE_U d2d_desired_pixel_size;
+
+    D2D1_SIZE_F* d2d_desired_size_pointer = nullptr;
+    D2D1_SIZE_U* d2d_desired_pixel_size_pointer = nullptr;
+
+    auto desired_size = options.DesiredSize();
+    if (desired_size != nullptr) {
+        d2d_desired_size = desired_size->ToD2D1SIZEF();
+        d2d_desired_size_pointer = &d2d_desired_size;
+    }
+
+    auto desired_pixel_size = options.DesiredPixelSize();
+    if (desired_pixel_size != nullptr) {
+        d2d_desired_pixel_size = desired_pixel_size->ToD2D1SIZEU();
+        d2d_desired_pixel_size_pointer = &d2d_desired_pixel_size;
+    }
+
+    ID2D1BitmapRenderTarget* handle = nullptr;
+    HRESULT com_error = GetHandle()->CreateCompatibleRenderTarget(
+        d2d_desired_size_pointer, 
+        d2d_desired_pixel_size_pointer,
+        nullptr,
+        static_cast<D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS>(options.Flags()), 
+        &handle);
+
+    error_code = MakeComErrorCode(com_error);
+    return BitmapRenderer(handle);
+}
+
+BitmapRenderer Renderer::CreateCompatibleRenderer(const CompatibleRendererOptions& options) {
+    std::error_code error_code;
+    auto result = CreateCompatibleRenderer(options, error_code);
+    ZAF_CHECK_ERROR(error_code);
+    return result;
+}
+
 
 const SolidColorBrush Renderer::CreateSolidColorBrush(const Color& color, std::error_code& error_code) {
 

@@ -243,6 +243,9 @@
     <ClCompile Include="src\zaf\graphic\renderer\renderer.cpp">
       <Filter>zaf\graphic\renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\renderer\bitmap_renderer.cpp">
+      <Filter>zaf\graphic\renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -636,6 +639,12 @@
       <Filter>zaf\graphic\renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\renderer\window_renderer.h">
+      <Filter>zaf\graphic\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\renderer\bitmap_renderer.h">
+      <Filter>zaf\graphic\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\renderer\compatible_renderer_options.h">
       <Filter>zaf\graphic\renderer</Filter>
     </ClInclude>
   </ItemGroup>
