@@ -18,7 +18,7 @@
 #include <zaf/graphic/rounded_rect.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/geometry/geometry.h>
-#include <zaf/graphic/renderer/compatible_renderer_options.h>
+#include <zaf/graphic/renderer/create_compatible_renderer_options.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_layout.h>
 
@@ -31,8 +31,12 @@ public:
     Renderer() { }
     explicit Renderer(ID2D1RenderTarget* handle) : ComObject(handle) { }
 
-    BitmapRenderer CreateCompatibleRenderer(const CompatibleRendererOptions& options, std::error_code& error_code);
-    BitmapRenderer CreateCompatibleRenderer(const CompatibleRendererOptions& options = CompatibleRendererOptions());
+    BitmapRenderer CreateCompatibleRenderer(
+        const CreateCompatibleRendererOptions& options,
+        std::error_code& error_code);
+
+    BitmapRenderer CreateCompatibleRenderer(
+        const CreateCompatibleRendererOptions& options = CreateCompatibleRendererOptions());
 
     const SolidColorBrush CreateSolidColorBrush(const Color& color, std::error_code& error_code);
 

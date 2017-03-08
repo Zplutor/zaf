@@ -1,0 +1,49 @@
+#pragma once
+
+#include <zaf/base/optional.h>
+#include <zaf/graphic/size.h>
+
+namespace zaf {
+
+enum class CreateCompatibleRendererFlags {
+    None = D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS_NONE,
+    GdiCompatible = D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS_GDI_COMPATIBLE,
+};
+
+
+class CreateCompatibleRendererOptions {
+public:
+    const optional<Size>& DesiredSize() const {
+        return desired_size_;
+    }
+
+    CreateCompatibleRendererOptions& DesiredSize(const optional<Size>& size) {
+        desired_size_ = size;
+        return *this;
+    }
+
+    const optional<Size>& DesiredPixelSize() const {
+        return desired_pixel_size_;
+    }
+
+    CreateCompatibleRendererOptions& DesiredPixelSize(const optional<Size>& size) {
+        desired_pixel_size_ = size;
+        return *this;
+    }
+
+    CreateCompatibleRendererFlags Flags() const {
+        return flags_;
+    }
+
+    CreateCompatibleRendererOptions& Flags(CreateCompatibleRendererFlags flags) {
+        flags_ = flags;
+        return *this;
+    }
+
+private:
+    optional<Size> desired_size_;
+    optional<Size> desired_pixel_size_;
+    CreateCompatibleRendererFlags flags_ = CreateCompatibleRendererFlags::GdiCompatible;
+};
+
+}
