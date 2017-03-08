@@ -12,7 +12,7 @@ class ImageSource;
 
 class ImagePalette : public ComObject<IWICPalette> {
 public:
-    enum Type {
+    enum class Type {
         Custom = WICBitmapPaletteTypeCustom,
         MedianCut = WICBitmapPaletteTypeMedianCut,
         FixedBW = WICBitmapPaletteTypeFixedBW,

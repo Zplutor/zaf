@@ -1,4 +1,5 @@
 #include <zaf/graphic/image/image_decoder.h>
+#include <zaf/graphic/image/image_palette.h>
 
 namespace zaf {
 
@@ -9,6 +10,13 @@ ImageContainerFormat ImageDecoder::GetContainerFormat(std::error_code& error_cod
 
     error_code = MakeComErrorCode(com_error);
     return ToImageContainerFormat(guid);
+}
+
+
+void ImageDecoder::CopyPalette(ImagePalette& palette, std::error_code& error_code) const {
+
+    HRESULT com_error = GetHandle()->CopyPalette(palette.GetHandle());
+    error_code = MakeComErrorCode(com_error);
 }
 
 

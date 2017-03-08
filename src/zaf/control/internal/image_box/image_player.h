@@ -19,6 +19,8 @@ public:
 
     virtual const Bitmap GetBitmap(Renderer& renderer) = 0;
 
+    virtual void Reset() { }
+
 protected:
     void NotifyUpdate() {
         if (update_event_ != nullptr) {

@@ -10,6 +10,8 @@
 
 namespace zaf {
 
+class ImagePalette;
+
 class ImageDecoder : public ComObject<IWICBitmapDecoder> {
 public:
     ImageDecoder() { }
@@ -22,6 +24,14 @@ public:
         auto result = GetContainerFormat(error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
+    }
+
+    void CopyPalette(ImagePalette& palette, std::error_code& error_code) const;
+
+    void CopyPalette(ImagePalette& palette) const {
+        std::error_code error_code;
+        CopyPalette(palette, error_code);
+        ZAF_CHECK_ERROR(error_code);
     }
 
     std::size_t GetFrameCount(std::error_code& error_code) const;

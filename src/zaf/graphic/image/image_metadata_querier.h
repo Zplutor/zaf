@@ -7,6 +7,9 @@
 #include <zaf/base/com_object.h>
 #include <zaf/base/error.h>
 
+#undef max
+#undef min
+
 namespace zaf {
 
 class ImageMetadataQuerier : public ComObject<IWICMetadataQueryReader> {
@@ -62,6 +65,39 @@ private:
             HRESULT result = PropVariantToBoolean(variant, &bool_value);
             value = !!bool_value;
             return result;
+        }
+    };
+
+    template<>
+    struct Converter<std::int8_t> {
+        static HRESULT Convert(const PROPVARIANT& variant, std::int8_t& value) {
+            std::int16_t int16_value = 0;
+            HRESULT com_error = PropVariantToInt16(variant, &int16_value);
+            if (FAILED(com_error)) {
+                return com_error;
+            }
+            if ((int16_value < std::numeric_limits<std::int8_t>::min()) ||
+                (std::numeric_limits<std::int8_t>::max() < int16_value)) {
+                return E_BOUNDS;
+            }
+            value = static_cast<std::int8_t>(int16_value);
+            return S_OK;
+        }
+    };
+
+    template<>
+    struct Converter<std::uint8_t> {
+        static HRESULT Convert(const PROPVARIANT& variant, std::uint8_t& value) {
+            std::uint16_t uint16_value = 0;
+            HRESULT com_error = PropVariantToUInt16(variant, &uint16_value);
+            if (FAILED(com_error)) {
+                return com_error;
+            }
+            if (std::numeric_limits<std::uint8_t>::max() < uint16_value) {
+                return E_BOUNDS;
+            }
+            value = static_cast<std::uint8_t>(uint16_value);
+            return S_OK;
         }
     };
 

@@ -25,6 +25,7 @@ public:
 
 protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+    void ReleaseRendererResources() override;
 
 private:
     ImageDecoder image_decoder_;

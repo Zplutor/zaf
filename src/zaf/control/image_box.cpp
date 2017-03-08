@@ -35,6 +35,13 @@ void ImageBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
+void ImageBox::ReleaseRendererResources() {
+
+    __super::ReleaseRendererResources();
+    image_player_->Reset();
+}
+
+
 void ImageBox::SetImageDecoder(const ImageDecoder& image_decoder) {
 
     if (image_decoder_ == image_decoder) {
@@ -43,6 +50,7 @@ void ImageBox::SetImageDecoder(const ImageDecoder& image_decoder) {
 
     image_decoder_ = image_decoder;
     image_player_ = CreateImagePlayer(image_decoder_);
+    image_player_->SetUpdateEvent(std::bind(&ImageBox::NeedRepaint, this));
     NeedRepaint();
 }
 
@@ -71,6 +79,7 @@ static std::unique_ptr<internal::ImagePlayer> CreateImagePlayer(const ImageDecod
     auto container_format = image_decoder.GetContainerFormat();
     switch (container_format) {
     case ImageContainerFormat::Gif:
+        return std::make_unique<internal::GifPlayer>(image_decoder);
     default:
         return std::make_unique<internal::StaticImagePlayer>(image_decoder);
     }

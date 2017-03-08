@@ -58,7 +58,7 @@ void ImagePalette::GetColors(
     std::error_code& error_code) const {
 
     UINT temp_actual_count = 0;
-    HRESULT com_error = GetHandle()->GetColors(count, colors, &actual_count);
+    HRESULT com_error = GetHandle()->GetColors(count, colors, &temp_actual_count);
 
     error_code = MakeComErrorCode(com_error);
     actual_count = temp_actual_count;
