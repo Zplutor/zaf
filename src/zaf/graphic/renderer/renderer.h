@@ -9,6 +9,7 @@
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
 #include <zaf/graphic/image/bitmap.h>
+#include <zaf/graphic/image/bitmap_properties.h>
 #include <zaf/graphic/image/image_source.h>
 #include <zaf/graphic/image/interpolation_mode.h>
 #include <zaf/graphic/layer.h>
@@ -70,6 +71,15 @@ public:
 
     const Layer CreateLayer(const Size& size) {
         return InnerCreateLayer(&size);
+    }
+
+    Bitmap CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code);
+
+    Bitmap CreateBitmap(const Size& size, const BitmapProperties& properties) {
+        std::error_code error_code;
+        auto result = CreateBitmap(size, properties, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
     }
 
     const Bitmap CreateBitmap(const ImageSource& image_source, std::error_code& error_code);

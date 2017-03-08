@@ -5,7 +5,9 @@
 
 namespace zaf {
 
-BitmapRenderer Renderer::CreateCompatibleRenderer(const CompatibleRendererOptions& options, std::error_code& error_code) {
+BitmapRenderer Renderer::CreateCompatibleRenderer(
+    const CreateCompatibleRendererOptions& options,
+    std::error_code& error_code) {
 
     D2D1_SIZE_F d2d_desired_size;
     D2D1_SIZE_U d2d_desired_pixel_size;
@@ -37,7 +39,7 @@ BitmapRenderer Renderer::CreateCompatibleRenderer(const CompatibleRendererOption
     return BitmapRenderer(handle);
 }
 
-BitmapRenderer Renderer::CreateCompatibleRenderer(const CompatibleRendererOptions& options) {
+BitmapRenderer Renderer::CreateCompatibleRenderer(const CreateCompatibleRendererOptions& options) {
     std::error_code error_code;
     auto result = CreateCompatibleRenderer(options, error_code);
     ZAF_CHECK_ERROR(error_code);
@@ -78,6 +80,22 @@ const Layer Renderer::InnerCreateLayer(const Size* size, std::error_code& error_
 
     error_code = MakeComErrorCode(result);
     return Layer(layer_handle);
+}
+
+
+Bitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code) {
+
+    D2D1_BITMAP_PROPERTIES d2d1_properties;
+    d2d1_properties.pixelFormat.format = properties.pixel_format.format;
+    d2d1_properties.pixelFormat.alphaMode = static_cast<D2D1_ALPHA_MODE>(properties.pixel_format.alpha_mode);
+    d2d1_properties.dpiX = properties.dpi_x;
+    d2d1_properties.dpiY = properties.dpi_y;
+
+    ID2D1Bitmap* handle = nullptr;
+    HRESULT com_error = GetHandle()->CreateBitmap(size.ToD2D1SIZEU(), d2d1_properties, &handle);
+
+    error_code = MakeComErrorCode(com_error);
+    return Bitmap(handle);
 }
 
 

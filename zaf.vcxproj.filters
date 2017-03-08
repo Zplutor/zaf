@@ -641,11 +641,14 @@
     <ClInclude Include="src\zaf\graphic\renderer\bitmap_renderer.h">
       <Filter>zaf\graphic\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\renderer\compatible_renderer_options.h">
-      <Filter>zaf\graphic\renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\optional.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\renderer\create_compatible_renderer_options.h">
+      <Filter>zaf\graphic\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\bitmap_properties.h">
+      <Filter>zaf\graphic\image</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
