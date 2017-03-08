@@ -85,7 +85,7 @@
     <ClInclude Include="src\zaf\base\flag_enum.h" />
     <ClInclude Include="src\zaf\base\define.h" />
     <ClInclude Include="src\zaf\base\log.h" />
-    <ClInclude Include="src\zaf\base\nullable.h" />
+    <ClInclude Include="src\zaf\base\optional.h" />
     <ClInclude Include="src\zaf\base\property_map.h" />
     <ClInclude Include="src\zaf\base\relation_operator.h" />
     <ClInclude Include="src\zaf\base\string\to_numeric.h" />
