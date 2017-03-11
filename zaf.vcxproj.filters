@@ -650,5 +650,8 @@
     <ClInclude Include="src\zaf\graphic\image\bitmap_properties.h">
       <Filter>zaf\graphic\image</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\graphic\renderer\antialias_mode.h">
+      <Filter>zaf\graphic\renderer</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

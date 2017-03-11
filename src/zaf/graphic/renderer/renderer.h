@@ -19,6 +19,7 @@
 #include <zaf/graphic/rounded_rect.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/geometry/geometry.h>
+#include <zaf/graphic/renderer/antialias_mode.h>
 #include <zaf/graphic/renderer/create_compatible_renderer_options.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_layout.h>
@@ -244,6 +245,14 @@ public:
             opacity,
             static_cast<D2D1_BITMAP_INTERPOLATION_MODE>(interpolation_mode),
             bitmap_rect == nullptr ? nullptr : &(bitmap_rect->ToD2D1RECTF()));
+    }
+
+    void PushAxisAlignedClipping(const Rect& rect, AntialiasMode antialias_mode) {
+        GetHandle()->PushAxisAlignedClip(rect.ToD2D1RECTF(), static_cast<D2D1_ANTIALIAS_MODE>(antialias_mode));
+    }
+
+    void PopAxisAlignedClipping() {
+        GetHandle()->PopAxisAlignedClip();
     }
 
     void PushLayer(const LayerParameters& parameters, const Layer& layer);

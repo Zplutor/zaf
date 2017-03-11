@@ -22,7 +22,10 @@ private:
     void InitializeBackgroundColor(const GifGlobalMetadataQuerier& metadata_querier);
     void ComposeNextFrame();
     void DisposeCurrentFrame();
+    void ClearBackground();
     void OverlayNextFrame();
+    void SaveFrame();
+    void RestoreFrame();
     void StartTimer();
     void TimerTriggered();
 
@@ -41,6 +44,8 @@ private:
     std::size_t next_frame_index_;
     std::uint16_t current_frame_delay_;
     GifDisposal current_frame_disposal_;
+    Rect current_frame_rect_;
+    Bitmap saved_frame_bitmap_;
 };
 
 }

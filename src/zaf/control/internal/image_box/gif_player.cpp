@@ -111,7 +111,7 @@ void GifPlayer::InitializeBackgroundColor(const GifGlobalMetadataQuerier& metada
 
     //Get color.
     auto background_color_argb = colors[background_color_index];
-    background_color_ = zaf::Color::FromRGB(background_color_argb);
+    background_color_ = zaf::Color::FromARGB(background_color_argb);
 }
 
 
@@ -133,13 +133,24 @@ void GifPlayer::DisposeCurrentFrame() {
 
     switch (current_frame_disposal_) {
     case GifDisposal::RestoreToBackgroundColor:
-        composed_frame_renderer_.Clear(background_color_);
+        ClearBackground();
         break;
     case GifDisposal::RestoreToPrevious:
+        RestoreFrame();
         break;
     default:
         break;
     }
+}
+
+
+void GifPlayer::ClearBackground() {
+
+    composed_frame_renderer_.BeginDraw();
+    composed_frame_renderer_.PushAxisAlignedClipping(current_frame_rect_, AntialiasMode::PerPrimitive);
+    composed_frame_renderer_.Clear(background_color_);
+    composed_frame_renderer_.PopAxisAlignedClipping();
+    composed_frame_renderer_.EndDraw();
 }
 
 
@@ -160,20 +171,31 @@ void GifPlayer::OverlayNextFrame() {
     current_frame_delay_ = gif_frame_metadata_querier.GetDelay();
     current_frame_disposal_ = gif_frame_metadata_querier.GetDisposal();
 
+    if (current_frame_disposal_ == GifDisposal::RestoreToPrevious) {
+        //Save previous frame before drawing current frame.
+        SaveFrame();
+    }
+
     std::uint16_t left = gif_frame_metadata_querier.GetLeft();
     std::uint16_t top = gif_frame_metadata_querier.GetTop();
     std::uint16_t width = gif_frame_metadata_querier.GetWidth();
     std::uint16_t height = gif_frame_metadata_querier.GetHeight();
+    current_frame_rect_ = Rect(left, top, width, height);
 
     //Draw the frame into composed frame renderer.
     composed_frame_renderer_.BeginDraw();
+
+    //Clear the background if a new loop is began.
+    if (next_frame_index_ == 0) {
+        composed_frame_renderer_.Clear(background_color_);
+    }
     
     auto bitmap = composed_frame_renderer_.CreateBitmap(next_frame);
     if (bitmap != nullptr) {
 
         composed_frame_renderer_.DrawBitmap(
             bitmap, 
-            Rect(left, top, width, height),
+            current_frame_rect_,
             1,
             InterpolationMode::Linear, 
             nullptr);
@@ -186,19 +208,63 @@ void GifPlayer::OverlayNextFrame() {
 }
 
 
+void GifPlayer::SaveFrame() {
+
+    //Get current frame bitmap.
+    auto current_bitmap = composed_frame_renderer_.GetBitmap();
+    if (current_bitmap == nullptr) {
+        return;
+    }
+
+    //Create the saved frame bitmap if it has not been created.
+    if (saved_frame_bitmap_ == nullptr) {
+        
+        auto size = current_bitmap.GetPixelSize();
+        auto dpi = current_bitmap.GetDpi();
+
+        BitmapProperties bitmap_properties;
+        bitmap_properties.dpi_x = dpi.first;
+        bitmap_properties.dpi_y = dpi.second;
+        bitmap_properties.pixel_format = current_bitmap.GetPixelFormat();
+
+        saved_frame_bitmap_ = composed_frame_renderer_.CreateBitmap(size, bitmap_properties);
+        if (saved_frame_bitmap_ == nullptr) {
+            return;
+        }
+    }
+
+    //Copy bitmap to saved frame.
+    saved_frame_bitmap_.CopyFromBitmap(current_bitmap);
+}
+
+
+void GifPlayer::RestoreFrame() {
+
+    if (saved_frame_bitmap_ == nullptr) {
+        return;
+    }
+
+    auto current_bitmap = composed_frame_renderer_.GetBitmap();
+    if (current_bitmap == nullptr) {
+        return;
+    }
+
+    current_bitmap.CopyFromBitmap(saved_frame_bitmap_);
+}
+
+
 void GifPlayer::StartTimer() {
+
+    if (current_frame_delay_ == 0) {
+        return;
+    }
 
     if (delay_timer_ == nullptr) {
         delay_timer_ = std::make_unique<Timer>(Timer::Mode::OneShot);
         delay_timer_->GetTriggerEvent().AddListener(std::bind(&GifPlayer::TimerTriggered, this));
     }
 
-    auto interval_milliseconds = current_frame_delay_ * 10;
-    if (interval_milliseconds < 90) {
-        interval_milliseconds = 90;
-    }
-
-    delay_timer_->SetInterval(std::chrono::milliseconds(interval_milliseconds));
+    delay_timer_->SetInterval(std::chrono::milliseconds(current_frame_delay_ * 50));
     delay_timer_->Start();
 }
 
@@ -212,6 +278,7 @@ void GifPlayer::TimerTriggered() {
 void GifPlayer::Reset() {
 
     composed_frame_renderer_.Reset();
+    saved_frame_bitmap_.Reset();
     delay_timer_.reset();
 
     frame_count_ = 0;
@@ -219,6 +286,7 @@ void GifPlayer::Reset() {
     next_frame_index_ = 0;
     current_frame_delay_ = 0;
     current_frame_disposal_ = GifDisposal::Unspecified;
+    current_frame_rect_ = Rect();
 }
 
 }

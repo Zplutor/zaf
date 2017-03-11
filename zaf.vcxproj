@@ -166,6 +166,7 @@
     <ClInclude Include="src\zaf\graphic\localized_strings.h" />
     <ClInclude Include="src\zaf\graphic\point.h" />
     <ClInclude Include="src\zaf\graphic\rect.h" />
+    <ClInclude Include="src\zaf\graphic\renderer\antialias_mode.h" />
     <ClInclude Include="src\zaf\graphic\renderer\bitmap_renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer\create_compatible_renderer_options.h" />
     <ClInclude Include="src\zaf\graphic\renderer\renderer.h" />

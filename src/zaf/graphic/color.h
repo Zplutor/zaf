@@ -18,15 +18,25 @@ public:
 		return Color(color.r, color.g, color.b, color.a);
 	}
 
+    /**
+     Convert a specified ARGB value, which in format 0xAARRGGBB, to Color.
+     */
+    static const Color FromARGB(std::uint32_t argb) {
+        float alpha = float(argb >> 24) / 255;
+        return FromRGB(argb, alpha);
+    }
+
 	/**
-	 Convert a specified RGB value to Color, which alpha is 1.
+	 Convert a specified RGB value, which in format 0x00RRGGBB, to Color, 
+     which alpha is 1.
 	 */
 	static const Color FromRGB(std::uint32_t rgb) {
 		return FromRGB(rgb, 1);
 	}
 
 	/**
-	 Convert specified RGB value and alpha to Color.
+	 Convert specified RGB value, which in format 0x00RRGGBB, and specified 
+     alpha to Color.
 	 */
 	static const Color FromRGB(std::uint32_t rgb, float alpha) {
         return FromD2D1COLORF(D2D1::ColorF(rgb, alpha));
