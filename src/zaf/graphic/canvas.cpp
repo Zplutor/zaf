@@ -23,15 +23,12 @@ void Canvas::BeginPaint() {
 	adjusted_absolute_paintable_rect.position.x -= adjusted_absolute_rect.position.x;
 	adjusted_absolute_paintable_rect.position.y -= adjusted_absolute_rect.position.y;
 
-	LayerParameters layer_param;
-	layer_param.content_bounds = adjusted_absolute_paintable_rect;
-	renderer_.PushLayer(layer_param, layer_);
+    renderer_.PushAxisAlignedClipping(adjusted_absolute_paintable_rect, AntialiasMode::PerPrimitive);
 }
 
 
 void Canvas::EndPaint() {
-
-	renderer_.PopLayer();
+    renderer_.PopAxisAlignedClipping();
 }
 
 
