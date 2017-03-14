@@ -15,28 +15,35 @@ class optional {
 public:
     optional() : has_value_(false) { }
 
-    template<typename U>
-    optional(U&& value) : has_value_(true) {
-        construct(std::forward<U>(value));
-    }
-
     optional(const optional& other) {
         copy_from_other(other);
     }
 
-    optional(optional&& other) { 
-        move_from_other(other);
+    optional(optional&& other) {
+        move_from_other(std::forward<optional>(other));
+    }
+
+    optional(const T& value) {
+        construct_with_value(value);
+    }
+
+    optional(T&& value) {
+        construct_with_value(std::forward<T>(value));
     }
 
     ~optional() {
         reset();
     }
 
-    template<typename U>
-    optional& operator=(U&& value) {
+    optional& operator=(const T& value) {
         reset();
-        has_value_ = true;
-        construct(std::forward<U>(value));
+        construct_with_value(value);
+        return *this;
+    }
+
+    optional& operator=(T&& value) {
+        reset();
+        construct_with_value(std::forward<T>(value));
         return *this;
     }
 
@@ -48,7 +55,7 @@ public:
 
     optional& operator=(optional&& other) {
         reset();
-        move_from_other(other);
+        move_from_other(std::forward<optional>(other));
         return *this;
     }
 
@@ -110,6 +117,12 @@ private:
             construct(std::move(*other));
             other.reset();
         }
+    }
+
+    template<typename U>
+    void construct_with_value(U&& value) {
+        has_value_ = true;
+        construct(std::forward<U>(value));
     }
 
     template<typename U>

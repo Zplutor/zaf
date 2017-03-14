@@ -52,6 +52,7 @@
     <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp" />
     <ClCompile Include="src\zaf\graphic\geometry\path_geometry.cpp" />
     <ClCompile Include="src\zaf\graphic\clear_edge.cpp" />
+    <ClCompile Include="src\zaf\graphic\image\gif_metadata_querier.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image_container_format.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image_decoder.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image_decode_frame.cpp" />

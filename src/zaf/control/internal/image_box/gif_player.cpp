@@ -11,7 +11,8 @@ GifPlayer::GifPlayer(const ImageDecoder& image_decoder) :
     background_color_(Color::Transparent),
     next_frame_index_(0),
     current_frame_delay_(0),
-    current_frame_disposal_(GifDisposal::Unspecified) {
+    current_frame_disposal_(GifDisposal::Unspecified),
+    current_loop_count_(0) {
 
 }
 
@@ -44,12 +45,13 @@ bool GifPlayer::Initialize(Renderer& renderer) {
     }
 
     GifGlobalMetadataQuerier gif_global_metadata_querier(global_metadata_querier);
-    
+
     if (! InitializeComposedFrameRenderer(renderer, gif_global_metadata_querier)) {
         return false;
     }
 
     InitializeBackgroundColor(gif_global_metadata_querier);
+    total_loop_count_ = gif_global_metadata_querier.GetLoopCount();
 
     next_frame_index_ = 0;
     current_frame_delay_ = 0;
@@ -125,7 +127,9 @@ void GifPlayer::ComposeNextFrame() {
         OverlayNextFrame();
     }
 
-    StartTimer();
+    if (! HasReachedLastLoop()) {
+        StartTimer();
+    }
 }
 
 
@@ -188,6 +192,7 @@ void GifPlayer::OverlayNextFrame() {
     //Clear the background if a new loop is began.
     if (next_frame_index_ == 0) {
         composed_frame_renderer_.Clear(background_color_);
+        current_loop_count_++;
     }
     
     auto bitmap = composed_frame_renderer_.CreateBitmap(next_frame);
@@ -255,16 +260,12 @@ void GifPlayer::RestoreFrame() {
 
 void GifPlayer::StartTimer() {
 
-    if (current_frame_delay_ == 0) {
-        return;
-    }
-
     if (delay_timer_ == nullptr) {
         delay_timer_ = std::make_unique<Timer>(Timer::Mode::OneShot);
         delay_timer_->GetTriggerEvent().AddListener(std::bind(&GifPlayer::TimerTriggered, this));
     }
 
-    delay_timer_->SetInterval(std::chrono::milliseconds(current_frame_delay_ * 50));
+    delay_timer_->SetInterval(std::chrono::milliseconds(current_frame_delay_ * 10));
     delay_timer_->Start();
 }
 
@@ -272,6 +273,26 @@ void GifPlayer::StartTimer() {
 void GifPlayer::TimerTriggered() {
     ComposeNextFrame();
     NotifyUpdate();
+}
+
+
+bool GifPlayer::HasReachedLastLoop() const {
+
+    if (! HasReachedLastFrame()) {
+        return false;
+    }
+
+    //Play once only if there is no loop count.
+    if (! total_loop_count_.has_value()) {
+        return true;
+    }
+
+    //Play infinite if loop count is zero.
+    if (*total_loop_count_ == 0) {
+        return false;
+    }
+
+    return current_loop_count_ < *total_loop_count_;
 }
 
 
@@ -283,10 +304,12 @@ void GifPlayer::Reset() {
 
     frame_count_ = 0;
     background_color_ = Color::Transparent;
+    total_loop_count_.reset();
     next_frame_index_ = 0;
     current_frame_delay_ = 0;
     current_frame_disposal_ = GifDisposal::Unspecified;
     current_frame_rect_ = Rect();
+    current_loop_count_ = 0;
 }
 
 }

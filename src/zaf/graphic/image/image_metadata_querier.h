@@ -1,9 +1,11 @@
 #pragma once
 
+#include <Windows.h>
 #include <Propvarutil.h>
 #include <wincodec.h>
 #include <cstdint>
 #include <functional>
+#include <vector>
 #include <zaf/base/com_object.h>
 #include <zaf/base/error.h>
 
@@ -147,6 +149,20 @@ private:
     struct Converter<double> {
         static HRESULT Convert(const PROPVARIANT& variant, double& value) {
             return PropVariantToDouble(variant, &value);
+        }
+    };
+
+    template<>
+    struct Converter<std::vector<std::uint8_t>> {
+        static HRESULT Convert(const PROPVARIANT& variant, std::vector<std::uint8_t>& value) {
+            if (variant.vt == (VT_UI1 | VT_VECTOR)) {
+                value.resize(variant.caub.cElems);
+                std::memcpy(&value[0], variant.caub.pElems, variant.caub.cElems);
+                return S_OK;
+            }
+            else {
+                return E_FAIL;
+            }
         }
     };
 

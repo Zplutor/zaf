@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/base/optional.h>
 #include <zaf/graphic/image/image_metadata_querier.h>
 
 namespace zaf {
@@ -63,6 +64,30 @@ public:
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
+
+    std::vector<std::uint8_t> GetApplicationExtensionIdentifier(std::error_code& error_code) const {
+        return querier_.QueryMetadata<std::vector<std::uint8_t>>(L"/appext/Application", error_code);
+    }
+
+    std::vector<std::uint8_t> GetApplicationExtensionIdentifier() const {
+        std::error_code error_code;
+        auto result = GetApplicationExtensionIdentifier(error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+
+    std::vector<std::uint8_t> GetApplicationExtensionData(std::error_code& error_code) const {
+        return querier_.QueryMetadata<std::vector<std::uint8_t>>(L"/appext/Data", error_code);
+    }
+
+    std::vector<std::uint8_t> GetApplicationExtensionData() const {
+        std::error_code error_code;
+        auto result = GetApplicationExtensionData(error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+
+    zaf::optional<std::size_t> GetLoopCount() const;
 
 private:
     ImageMetadataQuerier querier_;

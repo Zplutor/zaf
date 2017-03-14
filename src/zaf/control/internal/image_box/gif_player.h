@@ -29,6 +29,8 @@ private:
     void StartTimer();
     void TimerTriggered();
 
+    bool HasReachedLastLoop() const;
+
     bool HasReachedLastFrame() const {
         return next_frame_index_ == 0;
     }
@@ -39,6 +41,7 @@ private:
     BitmapRenderer composed_frame_renderer_;
     std::size_t frame_count_;
     Color background_color_;
+    zaf::optional<std::size_t> total_loop_count_;
     std::unique_ptr<Timer> delay_timer_;
 
     std::size_t next_frame_index_;
@@ -46,6 +49,7 @@ private:
     GifDisposal current_frame_disposal_;
     Rect current_frame_rect_;
     Bitmap saved_frame_bitmap_;
+    std::size_t current_loop_count_;
 };
 
 }
