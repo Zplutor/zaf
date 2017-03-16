@@ -86,7 +86,8 @@ void Timer::StopSystemTimer() {
 void Timer::TimerProcedure(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 
 	Timer* timer = reinterpret_cast<Timer*>(idEvent);
-    timer->SystemTimerTrigger();
+    auto shared_timer = timer->shared_from_this();
+    shared_timer->SystemTimerTrigger();
 }
 
 

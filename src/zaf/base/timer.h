@@ -10,7 +10,7 @@ namespace zaf {
 /**
  Represent a timer.
  */
-class Timer {
+class Timer : public std::enable_shared_from_this<Timer> {
 public:
     /**
      Defines the timer's working mode.
@@ -63,7 +63,7 @@ public:
      The working mode is immutable after creating the timer.
      The interval has a minimum interval value by default.
 	 */
-	explicit Timer(Mode mode);
+	Timer(Mode mode);
 
 	/**
 	 Destroy the timer.
