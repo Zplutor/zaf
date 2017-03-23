@@ -4,45 +4,283 @@
     <Filter Include="src">
       <UniqueIdentifier>{b8d08042-fa48-4c1d-b72f-4dfd13aec8ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\entity">
+      <UniqueIdentifier>{39123ab8-df5e-4e42-903d-db46a1c2e65f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui">
+      <UniqueIdentifier>{27907d05-5483-48e3-999c-b694c5db5ea1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui\main">
+      <UniqueIdentifier>{01dc0a51-cefa-4126-b9d7-d0613e04b9d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui\main\conversation">
+      <UniqueIdentifier>{add16735-2cda-4c10-b8ca-54bbca1d0c87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui\main\conversation\list">
+      <UniqueIdentifier>{e76be845-6853-478e-b93f-e4c88f3f6ed2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logic">
+      <UniqueIdentifier>{55f71e82-b9f7-44e4-87ba-b8e6b7ad886d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\storage">
+      <UniqueIdentifier>{ddfacc82-2a66-4154-8dec-78c552dc3c10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\logic\data_generating">
+      <UniqueIdentifier>{45b2213c-4601-4dfc-8c5b-c87262203b96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{52e6cc7e-b120-476c-bdd1-e33ed023a576}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res\avatar">
+      <UniqueIdentifier>{a264e562-6e8d-46d4-be64-b8d01a2471db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\main_window.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\ui\main\main_window.cpp">
+      <Filter>src\ui\main</Filter>
     </ClCompile>
-    <ClCompile Include="src\conversation_list_view.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\ui\main\conversation\conversation_panel.cpp">
+      <Filter>src\ui\main\conversation</Filter>
     </ClCompile>
-    <ClCompile Include="src\conversation_item_source.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\ui\main\conversation\list\conversation_item.cpp">
+      <Filter>src\ui\main\conversation\list</Filter>
     </ClCompile>
-    <ClCompile Include="src\conversation_item.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\ui\main\conversation\list\conversation_item_source.cpp">
+      <Filter>src\ui\main\conversation\list</Filter>
     </ClCompile>
-    <ClCompile Include="src\conversation_generating.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\ui\main\conversation\list\conversation_list_view.cpp">
+      <Filter>src\ui\main\conversation\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\storage\id_generating.cpp">
+      <Filter>src\storage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\storage\conversation_storage.cpp">
+      <Filter>src\storage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\storage\user_storage.cpp">
+      <Filter>src\storage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\data_generating\user_generating.cpp">
+      <Filter>src\logic\data_generating</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\data_generating\random.cpp">
+      <Filter>src\logic\data_generating</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\data_generating\conversation_generating.cpp">
+      <Filter>src\logic\data_generating</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\data_generating\string_generating.cpp">
+      <Filter>src\logic\data_generating</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\data_generating\message_generating.cpp">
+      <Filter>src\logic\data_generating</Filter>
+    </ClCompile>
+    <ClCompile Include="src\storage\message_storage.cpp">
+      <Filter>src\storage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\logic\service.cpp">
+      <Filter>src\logic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\main\conversation\conversation_avatar_manager.cpp">
+      <Filter>src\ui\main\conversation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\user_avatar_manager.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\avatar_view.cpp">
+      <Filter>src\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\main_window.h">
+    <ClInclude Include="src\entity\user.h">
+      <Filter>src\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\conversation.h">
+      <Filter>src\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\main_window.h">
+      <Filter>src\ui\main</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\conversation_panel.h">
+      <Filter>src\ui\main\conversation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\list\conversation_item.h">
+      <Filter>src\ui\main\conversation\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\list\conversation_item_source.h">
+      <Filter>src\ui\main\conversation\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\list\conversation_list_view.h">
+      <Filter>src\ui\main\conversation\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\content_panel.h">
+      <Filter>src\ui\main</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\id.h">
+      <Filter>src\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\storage\id_generating.h">
+      <Filter>src\storage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\storage\conversation_storage.h">
+      <Filter>src\storage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\storage\user_storage.h">
+      <Filter>src\storage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\data_generating\user_generating.h">
+      <Filter>src\logic\data_generating</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\data_generating\random.h">
+      <Filter>src\logic\data_generating</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\data_generating\conversation_generating.h">
+      <Filter>src\logic\data_generating</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\data_generating\string_generating.h">
+      <Filter>src\logic\data_generating</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\message.h">
+      <Filter>src\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\data_generating\message_generating.h">
+      <Filter>src\logic\data_generating</Filter>
+    </ClInclude>
+    <ClInclude Include="src\storage\message_storage.h">
+      <Filter>src\storage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\logic\service.h">
+      <Filter>src\logic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\conversation_list_view.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\ui\main\conversation\conversation_avatar_manager.h">
+      <Filter>src\ui\main\conversation</Filter>
     </ClInclude>
-    <ClInclude Include="src\conversation_item_source.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\ui\user_avatar_manager.h">
+      <Filter>src\ui</Filter>
     </ClInclude>
-    <ClInclude Include="src\conversation.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\ui\main\conversation\common_definition.h">
+      <Filter>src\ui\main\conversation</Filter>
     </ClInclude>
-    <ClInclude Include="src\conversation_item.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\ui\avatar_view.h">
+      <Filter>src\ui</Filter>
     </ClInclude>
-    <ClInclude Include="src\conversation_generating.h">
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\avatar\usertile10.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile11.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile12.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile13.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile14.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile15.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile16.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile17.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile18.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile19.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile20.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile21.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile22.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile23.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile24.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile25.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile26.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile27.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile28.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile29.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile30.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile31.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile32.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile33.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile34.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile35.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile36.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile37.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile38.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile39.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile40.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile41.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile42.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile43.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+    <Image Include="res\avatar\usertile44.bmp">
+      <Filter>res\avatar</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\wxwork.rc">
       <Filter>src</Filter>
-    </ClInclude>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

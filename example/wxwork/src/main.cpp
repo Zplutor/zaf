@@ -1,7 +1,8 @@
 #include <zaf/application.h>
 #include <zaf/base/error.h>
 #include <zaf/creation.h>
-#include "main_window.h"
+#include "logic/service.h"
+#include "ui/main/main_window.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -15,6 +16,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     }
 
     application.GetBeginRunEvent().AddListener([](zaf::Application& application) {
+
+        Service::GetInstance().Initialize();
 
         auto main_window = zaf::Create<MainWindow>();
         main_window->Show();

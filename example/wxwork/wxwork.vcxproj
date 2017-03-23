@@ -43,9 +43,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir)src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -78,20 +80,92 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\conversation_generating.cpp" />
-    <ClCompile Include="src\conversation_item.cpp" />
-    <ClCompile Include="src\conversation_item_source.cpp" />
-    <ClCompile Include="src\conversation_list_view.cpp" />
+    <ClCompile Include="src\logic\data_generating\conversation_generating.cpp" />
+    <ClCompile Include="src\logic\data_generating\message_generating.cpp" />
+    <ClCompile Include="src\logic\data_generating\random.cpp" />
+    <ClCompile Include="src\logic\data_generating\string_generating.cpp" />
+    <ClCompile Include="src\logic\data_generating\user_generating.cpp" />
+    <ClCompile Include="src\logic\service.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\main_window.cpp" />
+    <ClCompile Include="src\storage\conversation_storage.cpp" />
+    <ClCompile Include="src\storage\id_generating.cpp" />
+    <ClCompile Include="src\storage\message_storage.cpp" />
+    <ClCompile Include="src\storage\user_storage.cpp" />
+    <ClCompile Include="src\ui\avatar_view.cpp" />
+    <ClCompile Include="src\ui\main\conversation\conversation_avatar_manager.cpp" />
+    <ClCompile Include="src\ui\main\conversation\conversation_panel.cpp" />
+    <ClCompile Include="src\ui\main\conversation\list\conversation_item.cpp" />
+    <ClCompile Include="src\ui\main\conversation\list\conversation_item_source.cpp" />
+    <ClCompile Include="src\ui\main\conversation\list\conversation_list_view.cpp" />
+    <ClCompile Include="src\ui\main\main_window.cpp" />
+    <ClCompile Include="src\ui\user_avatar_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\conversation.h" />
-    <ClInclude Include="src\conversation_generating.h" />
-    <ClInclude Include="src\conversation_item.h" />
-    <ClInclude Include="src\conversation_item_source.h" />
-    <ClInclude Include="src\conversation_list_view.h" />
-    <ClInclude Include="src\main_window.h" />
+    <ClInclude Include="src\entity\conversation.h" />
+    <ClInclude Include="src\entity\id.h" />
+    <ClInclude Include="src\entity\message.h" />
+    <ClInclude Include="src\entity\user.h" />
+    <ClInclude Include="src\logic\data_generating\conversation_generating.h" />
+    <ClInclude Include="src\logic\data_generating\message_generating.h" />
+    <ClInclude Include="src\logic\data_generating\random.h" />
+    <ClInclude Include="src\logic\data_generating\string_generating.h" />
+    <ClInclude Include="src\logic\data_generating\user_generating.h" />
+    <ClInclude Include="src\logic\service.h" />
+    <ClInclude Include="src\resource.h" />
+    <ClInclude Include="src\storage\conversation_storage.h" />
+    <ClInclude Include="src\storage\id_generating.h" />
+    <ClInclude Include="src\storage\message_storage.h" />
+    <ClInclude Include="src\storage\user_storage.h" />
+    <ClInclude Include="src\ui\avatar_view.h" />
+    <ClInclude Include="src\ui\main\content_panel.h" />
+    <ClInclude Include="src\ui\main\conversation\common_definition.h" />
+    <ClInclude Include="src\ui\main\conversation\conversation_avatar_manager.h" />
+    <ClInclude Include="src\ui\main\conversation\conversation_panel.h" />
+    <ClInclude Include="src\ui\main\conversation\list\conversation_item.h" />
+    <ClInclude Include="src\ui\main\conversation\list\conversation_item_source.h" />
+    <ClInclude Include="src\ui\main\conversation\list\conversation_list_view.h" />
+    <ClInclude Include="src\ui\main\main_window.h" />
+    <ClInclude Include="src\ui\user_avatar_manager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\avatar\usertile10.bmp" />
+    <Image Include="res\avatar\usertile11.bmp" />
+    <Image Include="res\avatar\usertile12.bmp" />
+    <Image Include="res\avatar\usertile13.bmp" />
+    <Image Include="res\avatar\usertile14.bmp" />
+    <Image Include="res\avatar\usertile15.bmp" />
+    <Image Include="res\avatar\usertile16.bmp" />
+    <Image Include="res\avatar\usertile17.bmp" />
+    <Image Include="res\avatar\usertile18.bmp" />
+    <Image Include="res\avatar\usertile19.bmp" />
+    <Image Include="res\avatar\usertile20.bmp" />
+    <Image Include="res\avatar\usertile21.bmp" />
+    <Image Include="res\avatar\usertile22.bmp" />
+    <Image Include="res\avatar\usertile23.bmp" />
+    <Image Include="res\avatar\usertile24.bmp" />
+    <Image Include="res\avatar\usertile25.bmp" />
+    <Image Include="res\avatar\usertile26.bmp" />
+    <Image Include="res\avatar\usertile27.bmp" />
+    <Image Include="res\avatar\usertile28.bmp" />
+    <Image Include="res\avatar\usertile29.bmp" />
+    <Image Include="res\avatar\usertile30.bmp" />
+    <Image Include="res\avatar\usertile31.bmp" />
+    <Image Include="res\avatar\usertile32.bmp" />
+    <Image Include="res\avatar\usertile33.bmp" />
+    <Image Include="res\avatar\usertile34.bmp" />
+    <Image Include="res\avatar\usertile35.bmp" />
+    <Image Include="res\avatar\usertile36.bmp" />
+    <Image Include="res\avatar\usertile37.bmp" />
+    <Image Include="res\avatar\usertile38.bmp" />
+    <Image Include="res\avatar\usertile39.bmp" />
+    <Image Include="res\avatar\usertile40.bmp" />
+    <Image Include="res\avatar\usertile41.bmp" />
+    <Image Include="res\avatar\usertile42.bmp" />
+    <Image Include="res\avatar\usertile43.bmp" />
+    <Image Include="res\avatar\usertile44.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\wxwork.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,13 +1,16 @@
 #pragma once
 
-#include <zaf/control/image_box.h>
 #include <zaf/control/label.h>
 #include <zaf/control/list_control.h>
-#include "conversation.h"
+#include "entity/conversation.h"
+#include "ui/avatar_view.h"
+#include "ui/main/conversation/conversation_avatar_manager.h"
 
 class ConversationItem : public zaf::ListControl::Item {
 public:
-    void LoadConversation(const std::shared_ptr<Conversation>& conversation);
+    void LoadConversation(
+        const std::shared_ptr<Conversation>& conversation, 
+        const zaf::ImageSource& avatar_image);
 
     void Initialize() override;
 
@@ -50,7 +53,7 @@ private:
     };
 
 private:
-    void InitializeAvatarBox();
+    void InitializeAvatarView();
     void InitializeUnreadCountBubble();
     void InitializeTitleLabel();
     void InitializeDigestLabel();
@@ -61,7 +64,7 @@ private:
     void LoadTime();
 
 private:
-    std::shared_ptr<zaf::ImageBox> avatar_box_;
+    std::shared_ptr<AvatarView> avatar_view_;
     std::shared_ptr<UnreadCountBubble> unread_count_bubble_;
     std::shared_ptr<zaf::Label> title_label_;
     std::shared_ptr<zaf::Label> digest_label_;

@@ -1,4 +1,5 @@
-#include "conversation_item.h"
+#include "ui/main/conversation/list/conversation_item.h"
+#include <algorithm>
 #include <iomanip>
 #include <sstream>
 #include <zaf/graphic/canvas.h>
@@ -7,14 +8,16 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/text/text_format_properties.h>
+#include "logic/service.h"
+#include "ui/main/conversation/common_definition.h"
 
 static std::wstring GenerateTimeDescription(std::time_t time);
 
 static const float AvatarLeftMargin = 12;
 static const float AvatarTopMargin = 11;
 static const float AvatarRightMargin = 11;
-static const float AvatarWidth = 40;
-static const float AvatarHeight = 40;
+static const float AvatarWidth = ConversationAvatarSize;
+static const float AvatarHeight = ConversationAvatarSize;
 static const float UnreadCountBubbleWidth = 24;
 static const float UnreadCountBubbleHeight = 16;
 static const float UnreadCountBubbleExtension = 7;
@@ -32,7 +35,7 @@ void ConversationItem::Initialize() {
 
     __super::Initialize();
 
-    InitializeAvatarBox();
+    InitializeAvatarView();
     InitializeUnreadCountBubble();
     InitializeTitleLabel();
     InitializeDigestLabel(); 
@@ -59,11 +62,11 @@ void ConversationItem::Initialize() {
 }
 
 
-void ConversationItem::InitializeAvatarBox() {
+void ConversationItem::InitializeAvatarView() {
 
-    avatar_box_ = zaf::Create<zaf::ImageBox>();
-    avatar_box_->SetRect(zaf::Rect(AvatarLeftMargin, AvatarTopMargin, AvatarWidth, AvatarWidth));
-    AddChild(avatar_box_);
+    avatar_view_ = zaf::Create<AvatarView>();
+    avatar_view_->SetRect(zaf::Rect(AvatarLeftMargin, AvatarTopMargin, AvatarWidth, AvatarWidth));
+    AddChild(avatar_view_);
 }
 
 
@@ -196,14 +199,16 @@ void ConversationItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-void ConversationItem::LoadConversation(const std::shared_ptr<Conversation>& conversation) {
+void ConversationItem::LoadConversation(
+    const std::shared_ptr<Conversation>& conversation,
+    const zaf::ImageSource& avatar_image) {
 
-    conversation_ = conversation;
-    
-    auto avatar_decoder = zaf::GetResourceFactory()->CreateImageDecoder(conversation->members[0]->avatar_file_path);
-    avatar_box_->SetImageDecoder(avatar_decoder);
+    conversation_ = conversation;    
 
-    unread_count_bubble_->SetUnreadCount(conversation_->unread_count);
+    avatar_view_->SetImageSource(avatar_image);
+
+    auto unread_count = Service::GetInstance().GetConversationUnreadMessageCount(conversation_->id);
+    unread_count_bubble_->SetUnreadCount(unread_count);
     unread_count_bubble_->SetIsMinimize(conversation_->is_silent);
 
     LoadTitle();
@@ -218,57 +223,61 @@ void ConversationItem::LoadTitle() {
         title_label_->SetText(conversation_->title);
         return;
     }
-    
-    if (conversation_->members.empty()) {
-        title_label_->SetText(L"（无主题）");
+
+    if (conversation_->members.size() < 2) {
+        title_label_->SetText(L"(No title)");
         return;
     }
 
-    std::wstring title;
-    for (const auto& each_member : conversation_->members) {
-        title.append(each_member->name);
-        if (each_member != conversation_->members.back()) {
-            title.append(1, L'、');
-        }
+    auto& service = Service::GetInstance();
+    auto members = service.GetUsers(conversation_->members);
+    if (members.size() == 2) {
+
+        auto current_user_id = service.GetCurrentUserId();
+        auto display_member = members[0]->id == current_user_id ? members[1] : members[0];
+        title_label_->SetText(display_member->name);
+        return;
     }
 
+    std::sort(
+        members.begin(),
+        members.end(),
+        [](const std::shared_ptr<User>& user1, const std::shared_ptr<User>& user2) {
+            return user1->name < user2->name;
+        }
+    );
+
+    std::wstring title;
+    for (const auto& each_member : members) {
+        title.append(each_member->name);
+        if (each_member != members.back()) {
+            title.append(L"; ");
+        }
+    }
     title_label_->SetText(title);
 }
 
 
 void ConversationItem::LoadDigest() {
 
-    const auto& digest = conversation_->digest;
-
-    std::wstring digest_string;
-    zaf::TextRange hightlight_range(0, 0);
-
-    if (digest->has_confirm) {
-        digest_string.append(L"[回执消息]");
-        hightlight_range.length = digest_string.size();
+    auto last_message = Service::GetInstance().GetConversationLastMessage(conversation_->id);
+    if (last_message == nullptr) {
+        return;
     }
 
-    if (digest->has_at) {
-        digest_string.append(L"[有人@我]");
-        hightlight_range.length = digest_string.size();
+    std::wstring digest;
+    if (conversation_->members.size() > 2) {
+        auto sender = Service::GetInstance().GetUser(last_message->sender_id);
+        digest.append(sender->name).append(L": ");
     }
+    digest.append(last_message->content);
 
-    if (conversation_->members.size() <= 1) {
-        digest_string.append(digest->content);
-    }
-    else {
-        digest_string.append(digest->sender_name);
-        digest_string.append(L": ");
-        digest_string.append(conversation_->digest->content);
-    }
-
-    digest_label_->SetText(digest_string);
-    digest_label_->SetTextColorAtRange(zaf::Color::FromRGB(0xD0021B), hightlight_range);
+    digest_label_->SetText(digest);
 }
 
 
 void ConversationItem::LoadTime() {
-    time_label_->SetText(GenerateTimeDescription(conversation_->time));
+    time_label_->SetText(GenerateTimeDescription(conversation_->last_updated_time));
 }
 
 
