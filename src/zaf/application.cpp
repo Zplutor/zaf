@@ -95,6 +95,9 @@ void Application::Run() {
     internal::MessageLoop message_loop;
     message_loop.Run();
 
+    main_window_ = nullptr;
+    windows_.clear();
+
 	end_run_event_.Trigger(*this);
 }
 
