@@ -255,7 +255,7 @@ public:
         GetHandle()->PopAxisAlignedClip();
     }
 
-    void PushLayer(const LayerParameters& parameters, const Layer& layer);
+    void PushLayer(const Layer& layer, const LayerParameters& parameters);
 
     void PopLayer() {
         GetHandle()->PopLayer();

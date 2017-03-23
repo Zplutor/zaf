@@ -136,10 +136,11 @@ const Bitmap Renderer::CreateBitmap(
 }
 
 
-void Renderer::PushLayer(const LayerParameters& parameters, const Layer& layer) {
+void Renderer::PushLayer(const Layer& layer, const LayerParameters& parameters) {
 
     D2D1_LAYER_PARAMETERS d2d_parameters = D2D1::LayerParameters();
     d2d_parameters.contentBounds = parameters.content_bounds.ToD2D1RECTF();
+    d2d_parameters.geometricMask = parameters.geometric_mask.GetHandle();
     d2d_parameters.maskTransform = parameters.mask_transform.ToD2D1MATRIX3X2F();
     d2d_parameters.opacity = parameters.opacity;
 

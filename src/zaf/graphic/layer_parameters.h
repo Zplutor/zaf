@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/graphic/geometry/geometry.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/rect.h>
 
@@ -15,6 +16,7 @@ public:
     }
 
     Rect content_bounds;
+    Geometry geometric_mask;
     TransformMatrix mask_transform;
     float opacity;
 };
