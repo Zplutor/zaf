@@ -2,7 +2,7 @@
 
 #include <zaf/control/control.h>
 #include <zaf/graphic/image/image_decoder.h>
-#include <zaf/graphic/image/interpolation_mode.h>
+#include <zaf/graphic/interpolation_mode.h>
 
 namespace zaf {
 namespace internal {

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <zaf/graphic/brush/brush.h>
-#include <zaf/graphic/image/bitmap.h>
-#include <zaf/graphic/image/interpolation_mode.h>
+#include <zaf/graphic/bitmap.h>
+#include <zaf/graphic/interpolation_mode.h>
 
 namespace zaf {
 

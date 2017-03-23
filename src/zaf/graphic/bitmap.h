@@ -3,7 +3,7 @@
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error.h>
-#include <zaf/graphic/image/bitmap_properties.h>
+#include <zaf/graphic/bitmap_properties.h>
 #include <zaf/graphic/size.h>
 
 namespace zaf {
@@ -40,11 +40,11 @@ public:
         return pair;
     }
 
-    PixelFormat GetPixelFormat() const {
-        auto pixel_format = GetHandle()->GetPixelFormat();
-        PixelFormat result;
-        result.format = pixel_format.format;
-        result.alpha_mode = static_cast<PixelFormat::AlphaMode>(pixel_format.alphaMode);
+    PixelProperties GetPixelProperties() const {
+        auto d2d_result = GetHandle()->GetPixelFormat();
+        PixelProperties result;
+        result.format = static_cast<PixelFormat>(d2d_result.format);
+        result.alpha_mode = static_cast<PixelProperties::AlphaMode>(d2d_result.alphaMode);
         return result;
     }
 
