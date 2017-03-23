@@ -86,8 +86,8 @@ const Layer Renderer::InnerCreateLayer(const Size* size, std::error_code& error_
 Bitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code) {
 
     D2D1_BITMAP_PROPERTIES d2d1_properties;
-    d2d1_properties.pixelFormat.format = properties.pixel_format.format;
-    d2d1_properties.pixelFormat.alphaMode = static_cast<D2D1_ALPHA_MODE>(properties.pixel_format.alpha_mode);
+    d2d1_properties.pixelFormat.format = static_cast<DXGI_FORMAT>(properties.pixel_properties.format);
+    d2d1_properties.pixelFormat.alphaMode = static_cast<D2D1_ALPHA_MODE>(properties.pixel_properties.alpha_mode);
     d2d1_properties.dpiX = properties.dpi_x;
     d2d1_properties.dpiY = properties.dpi_y;
 

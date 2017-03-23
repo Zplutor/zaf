@@ -249,6 +249,9 @@
     <ClCompile Include="src\zaf\graphic\image\gif_metadata_querier.cpp">
       <Filter>zaf\graphic\image</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\image_pixel_format.cpp">
+      <Filter>zaf\graphic\image</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -572,14 +575,8 @@
     <ClInclude Include="src\zaf\property\list_box_property_tag.h">
       <Filter>zaf\property</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\bitmap.h">
-      <Filter>zaf\graphic\image</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\image_box.h">
       <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\interpolation_mode.h">
-      <Filter>zaf\graphic\image</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\property\radio_button_property_tag.h">
       <Filter>zaf\property</Filter>
@@ -650,11 +647,35 @@
     <ClInclude Include="src\zaf\graphic\renderer\create_compatible_renderer_options.h">
       <Filter>zaf\graphic\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\bitmap_properties.h">
-      <Filter>zaf\graphic\image</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\renderer\antialias_mode.h">
       <Filter>zaf\graphic\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\pixel_properties.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\image_pixel_format.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\renderer\renderer_properties.h">
+      <Filter>zaf\graphic\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\pixel_format.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\bitmap.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\bitmap_properties.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\interpolation_mode.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\image_stream.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\image_scaler.h">
+      <Filter>zaf\graphic\image</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -230,7 +230,7 @@ void GifPlayer::SaveFrame() {
         BitmapProperties bitmap_properties;
         bitmap_properties.dpi_x = dpi.first;
         bitmap_properties.dpi_y = dpi.second;
-        bitmap_properties.pixel_format = current_bitmap.GetPixelFormat();
+        bitmap_properties.pixel_properties = current_bitmap.GetPixelProperties();
 
         saved_frame_bitmap_ = composed_frame_renderer_.CreateBitmap(size, bitmap_properties);
         if (saved_frame_bitmap_ == nullptr) {
@@ -261,7 +261,7 @@ void GifPlayer::RestoreFrame() {
 void GifPlayer::StartTimer() {
 
     if (delay_timer_ == nullptr) {
-        delay_timer_ = std::make_unique<Timer>(Timer::Mode::OneShot);
+        delay_timer_ = std::make_shared<Timer>(Timer::Mode::OneShot);
         delay_timer_->GetTriggerEvent().AddListener(std::bind(&GifPlayer::TimerTriggered, this));
     }
 

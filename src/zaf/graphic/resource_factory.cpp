@@ -64,6 +64,31 @@ const WindowRenderer ResourceFactory::CreateWindowRenderer(HWND window_handle, s
 }
 
 
+Renderer ResourceFactory::CreateImageRenderer(
+    const MutableImageSource& image_source,
+    const RendererProperties& properties,
+    std::error_code& error_code) {
+
+    D2D1_RENDER_TARGET_PROPERTIES d2d_properties;
+    d2d_properties.type = static_cast<D2D1_RENDER_TARGET_TYPE>(properties.type);
+    d2d_properties.usage = static_cast<D2D1_RENDER_TARGET_USAGE>(properties.usage);
+    d2d_properties.minLevel = static_cast<D2D1_FEATURE_LEVEL>(properties.feature_level);
+    d2d_properties.dpiX = properties.dpi_x;
+    d2d_properties.dpiY = properties.dpi_y;
+    d2d_properties.pixelFormat.format = static_cast<DXGI_FORMAT>(properties.pixel_properties.format);
+    d2d_properties.pixelFormat.alphaMode = static_cast<D2D1_ALPHA_MODE>(properties.pixel_properties.alpha_mode);
+
+    ID2D1RenderTarget* handle = nullptr;
+    HRESULT com_error = d2d_factory_handle_->CreateWicBitmapRenderTarget(
+        image_source.GetHandle(),
+        d2d_properties,
+        &handle);
+
+    error_code = MakeComErrorCode(com_error);
+    return Renderer(handle);
+}
+
+
 const RectangleGeometry ResourceFactory::CreateRectangleGeometry(const Rect& rect, std::error_code& error_code) {
 
     ID2D1RectangleGeometry* handle = nullptr;
@@ -182,17 +207,74 @@ const FontCollection ResourceFactory::GetSystemFontCollection(std::error_code& e
 }
 
 
-const ImageDecoder ResourceFactory::CreateImageDecoder(const std::wstring& file_path, std::error_code& error_code) {
+MutableImageSource ResourceFactory::CreateImageSource(
+    const Size& size,
+    ImagePixelFormat pixel_format,
+    ImageCacheOption cache_option,
+    std::error_code& error_code) {
+
+    IWICBitmap* handle = nullptr;
+    HRESULT com_error = wic_imaging_factory_handle_->CreateBitmap(
+        static_cast<UINT>(size.width),
+        static_cast<UINT>(size.height),
+        ToWICPixelFormatGUID(pixel_format),
+        static_cast<WICBitmapCreateCacheOption>(cache_option),
+        &handle);
+
+    error_code = MakeComErrorCode(com_error);
+    return MutableImageSource(handle);
+}
+
+
+MutableImageSource ResourceFactory::CreateImageSource(
+    HBITMAP bitmap_handle,
+    HPALETTE palette_handle,
+    BitmapAlphaChannelOption alpha_channel_option,
+    std::error_code& error_code) {
+
+    IWICBitmap* handle = nullptr;
+    HRESULT com_error = wic_imaging_factory_handle_->CreateBitmapFromHBITMAP(
+        bitmap_handle, 
+        palette_handle,
+        static_cast<WICBitmapAlphaChannelOption>(alpha_channel_option),
+        &handle);
+
+    error_code = MakeComErrorCode(com_error);
+    return MutableImageSource(handle);
+}
+
+
+ImageDecoder ResourceFactory::CreateImageDecoder(
+    const std::wstring& file_path, 
+    const CreateImageDecoderOptions& options,
+    std::error_code& error_code) {
 
     IWICBitmapDecoder* handle = nullptr;
     HRESULT result = wic_imaging_factory_handle_->CreateDecoderFromFilename(
         file_path.c_str(),
         nullptr,
         GENERIC_READ, 
-        WICDecodeMetadataCacheOnDemand,
+        static_cast<WICDecodeOptions>(options.DecodeOption()),
         &handle);
 
     error_code = MakeComErrorCode(result);
+    return ImageDecoder(handle);
+}
+
+
+ImageDecoder ResourceFactory::CreateImageDecoder(
+    const ImageStream& image_stream,
+    const CreateImageDecoderOptions& options,
+    std::error_code& error_code) {
+
+    IWICBitmapDecoder* handle = nullptr;
+    HRESULT com_error = wic_imaging_factory_handle_->CreateDecoderFromStream(
+        image_stream.GetHandle(),
+        nullptr,
+        static_cast<WICDecodeOptions>(options.DecodeOption()),
+        &handle);
+
+    error_code = MakeComErrorCode(com_error);
     return ImageDecoder(handle);
 }
 

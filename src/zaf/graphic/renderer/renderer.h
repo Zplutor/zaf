@@ -8,10 +8,10 @@
 #include <zaf/graphic/brush/solid_color_brush.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
-#include <zaf/graphic/image/bitmap.h>
-#include <zaf/graphic/image/bitmap_properties.h>
+#include <zaf/graphic/bitmap.h>
+#include <zaf/graphic/bitmap_properties.h>
 #include <zaf/graphic/image/image_source.h>
-#include <zaf/graphic/image/interpolation_mode.h>
+#include <zaf/graphic/interpolation_mode.h>
 #include <zaf/graphic/layer.h>
 #include <zaf/graphic/layer_parameters.h>
 #include <zaf/graphic/matrix.h>

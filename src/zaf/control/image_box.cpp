@@ -23,6 +23,10 @@ void ImageBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
+    if (image_player_ == nullptr) {
+        return;
+    }
+
     auto bitmap = image_player_->GetBitmap(canvas.GetRenderer());
     if (bitmap == nullptr) {
         return;
