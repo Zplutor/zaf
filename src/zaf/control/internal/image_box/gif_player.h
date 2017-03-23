@@ -42,7 +42,7 @@ private:
     std::size_t frame_count_;
     Color background_color_;
     zaf::optional<std::size_t> total_loop_count_;
-    std::unique_ptr<Timer> delay_timer_;
+    std::shared_ptr<Timer> delay_timer_;
 
     std::size_t next_frame_index_;
     std::uint16_t current_frame_delay_;
