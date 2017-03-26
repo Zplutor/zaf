@@ -157,7 +157,7 @@ float ListControlItemHeightManager::GetTotalHeight() const {
 
 
 void ListControlItemHeightManager::ItemAdd(
-    const std::shared_ptr<ListControl::ItemSource>& item_source,
+    ListControl::ItemSource& item_source,
     std::size_t index, 
     std::size_t count) {
 
@@ -181,7 +181,7 @@ void ListControlItemHeightManager::ItemAdd(
     //Set position for new items.
     for (std::size_t current_index = index; current_index < old_item_index; ++current_index) {
         item_positions_[current_index] = current_position;
-        current_position += item_source->GetItemHeight(current_index);
+        current_position += item_source.GetItemHeight(current_index);
     }
 
     //Update position for old items.
@@ -193,7 +193,7 @@ void ListControlItemHeightManager::ItemAdd(
 
 
 void ListControlItemHeightManager::ItemRemove(
-    const std::shared_ptr<ListControl::ItemSource>& item_source,
+    ListControl::ItemSource& item_source,
     std::size_t index,
     std::size_t count) {
 
@@ -225,7 +225,7 @@ void ListControlItemHeightManager::ItemRemove(
 
 
 void ListControlItemHeightManager::ItemUpdate(
-    const std::shared_ptr<ListControl::ItemSource>& item_source,
+    ListControl::ItemSource& item_source,
     std::size_t index,
     std::size_t count) {
 
@@ -251,7 +251,7 @@ void ListControlItemHeightManager::ItemUpdate(
 
         item_positions_[current_index] = position + current_heights;
 
-        float height = item_source->GetItemHeight(current_index);
+        float height = item_source.GetItemHeight(current_index);
         current_heights += height;
     }
 

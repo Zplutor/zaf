@@ -24,9 +24,9 @@ public:
     }
 
 private:
-    void ItemAdd(const std::shared_ptr<ListControl::ItemSource>& item_source, std::size_t index, std::size_t count);
-    void ItemRemove(const std::shared_ptr<ListControl::ItemSource>& item_source, std::size_t index, std::size_t count);
-    void ItemUpdate(const std::shared_ptr<ListControl::ItemSource>& item_source, std::size_t index, std::size_t count);
+    void ItemAdd(ListControl::ItemSource& item_source, std::size_t index, std::size_t count);
+    void ItemRemove(ListControl::ItemSource& item_source, std::size_t index, std::size_t count);
+    void ItemUpdate(ListControl::ItemSource& item_source, std::size_t index, std::size_t count);
 
 private:
     std::shared_ptr<ListControl::ItemSource> item_source_;

@@ -36,6 +36,7 @@ void ScrollableControl::Initialize() {
     InitializeHorizontalScrollBar(Create<ScrollBar>());
 
     scroll_container_control_ = Create<Control>();
+    scroll_container_control_->SetBackgroundColor(Color::Transparent);
     AddChild(scroll_container_control_);
 
     InitializeScrollContentControl(Create<Control>());

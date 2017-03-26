@@ -69,22 +69,22 @@ public:
      The default item source doesn't manage any item, and is readonly. You must 
      derived from this class to implement your own item source.  
      */
-    class ItemSource : public std::enable_shared_from_this<ItemSource> {
+    class ItemSource {
     public:
         /**
          Type of item add event.
          */
-        typedef Event<const std::shared_ptr<ItemSource>&, std::size_t, std::size_t> ItemAddEvent;
+        typedef Event<ItemSource&, std::size_t, std::size_t> ItemAddEvent;
 
         /**
          Type of item remove event.
          */
-        typedef Event<const std::shared_ptr<ItemSource>&, std::size_t, std::size_t> ItemRemoveEvent;
+        typedef Event<ItemSource&, std::size_t, std::size_t> ItemRemoveEvent;
 
         /**
          Type of item update event.
          */
-        typedef Event<const std::shared_ptr<ItemSource>&, std::size_t, std::size_t> ItemUpdateEvent;
+        typedef Event<ItemSource&, std::size_t, std::size_t> ItemUpdateEvent;
 
     public:
         ItemSource() { }
@@ -448,15 +448,15 @@ private:
     const std::vector<std::shared_ptr<Item>> CreateItems(std::size_t index, std::size_t count);
     const std::shared_ptr<Item> CreateItem(std::size_t index) const;
 
-    void ItemAdd(const std::shared_ptr<ItemSource>& item_source, std::size_t index, std::size_t count);
+    void ItemAdd(std::size_t index, std::size_t count);
     void AddItemsBeforeVisibleItems(std::size_t index, std::size_t count, float position_difference);
     void AddItemsInMiddleOfVisibleItems(std::size_t index, std::size_t count, float position_difference);
 
-    void ItemRemove(const std::shared_ptr<ItemSource>& item_source, std::size_t index, std::size_t count);
+    void ItemRemove(std::size_t index, std::size_t count);
     void RemoveItemsBeforeVisibleItems(std::size_t index, std::size_t count, float position_difference);
     void RemoveItemsInMiddleOfVisibleItems(std::size_t index, std::size_t count, float position_difference);
 
-    void ItemUpdate(const std::shared_ptr<ItemSource>& item_source, std::size_t index, std::size_t count);
+    void ItemUpdate(std::size_t index, std::size_t count);
     void AdjustVisibleItemPositionsByUpdatingItems(std::size_t index, std::size_t count, float position_difference);
     void UpdateVisibleItemsByUpdatingItems(std::size_t index, std::size_t count);
 

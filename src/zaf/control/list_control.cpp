@@ -49,6 +49,7 @@ void ListControl::Initialize() {
 
     __super::Initialize();
 
+    SetBackgroundColor(Color::White);
     SetBorderThickness(1);
     SetBorderColor(Color::Black);
 
@@ -78,15 +79,15 @@ void ListControl::InitializeItemSource() {
 
     item_source->GetItemAddEvent().AddListenerWithTag(
         tag, 
-        std::bind(&ListControl::ItemAdd, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        std::bind(&ListControl::ItemAdd, this, std::placeholders::_2, std::placeholders::_3));
 
     item_source->GetItemRemoveEvent().AddListenerWithTag(
         tag,
-        std::bind(&ListControl::ItemRemove, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        std::bind(&ListControl::ItemRemove, this, std::placeholders::_2, std::placeholders::_3));
 
     item_source->GetItemUpdateEvent().AddListenerWithTag(
         tag,
-        std::bind(&ListControl::ItemUpdate, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        std::bind(&ListControl::ItemUpdate, this, std::placeholders::_2, std::placeholders::_3));
 }
 
 
@@ -353,7 +354,7 @@ const std::shared_ptr<ListControl::Item> ListControl::CreateItem(std::size_t ind
 }
 
 
-void ListControl::ItemAdd(const std::shared_ptr<ItemSource>& item_source, std::size_t index, std::size_t count) {
+void ListControl::ItemAdd(std::size_t index, std::size_t count) {
 
     bool selection_changed = item_selection_manager_->AdjustSelectionByAddingIndexes(index, count);
 
@@ -407,7 +408,7 @@ void ListControl::AddItemsInMiddleOfVisibleItems(std::size_t index, std::size_t 
 }
 
 
-void ListControl::ItemRemove(const std::shared_ptr<ItemSource>& item_source, std::size_t index, std::size_t count) {
+void ListControl::ItemRemove(std::size_t index, std::size_t count) {
 
     bool selection_changed = item_selection_manager_->AdjustSelectionByRemovingIndexes(index, count);
 
@@ -459,7 +460,7 @@ void ListControl::RemoveItemsInMiddleOfVisibleItems(std::size_t index, std::size
 }
 
 
-void ListControl::ItemUpdate(const std::shared_ptr<ItemSource>& item_source, std::size_t index, std::size_t count) {
+void ListControl::ItemUpdate(std::size_t index, std::size_t count) {
 
     UpdateGuard update_guard(*item_container_);
 
@@ -859,7 +860,7 @@ void ListControl::ItemContainer::Initialize() {
 
     __super::Initialize();
 
-    SetBackgroundColor(Color::White);
+    SetBackgroundColor(Color::Transparent);
     SetCanFocused(true);
     SetLayouter(std::bind(&ItemContainer::LayoutItems, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
@@ -993,21 +994,21 @@ static void CalculateRangeDifference(
 
 void ListControl::ItemSource::NotifyItemAdd(std::size_t index, std::size_t count) {
     if (count != 0) {
-        item_add_event_.Trigger(shared_from_this(), index, count);
+        item_add_event_.Trigger(*this, index, count);
     }
 }
 
 
 void ListControl::ItemSource::NotifyItemRemove(std::size_t index, std::size_t count) {
     if (count != 0) {
-        item_remove_event_.Trigger(shared_from_this(), index, count);
+        item_remove_event_.Trigger(*this, index, count);
     }
 }
 
 
 void ListControl::ItemSource::NotifyItemUpdate(std::size_t index, std::size_t count) {
     if (count != 0) {
-        item_update_event_.Trigger(shared_from_this(), index, count);
+        item_update_event_.Trigger(*this, index, count);
     }
 }
 
