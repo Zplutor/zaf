@@ -5,9 +5,12 @@ void ConversationPanel::Initialize() {
 
     __super::Initialize();
 
+    conversation_avatar_manager_ = std::make_shared<ConversationAvatarManager>();
+
     SetIsHorizontal(false);
 
     InitializeLeftPane();
+    InitializeRightPane();
 }
 
 
@@ -17,12 +20,46 @@ void ConversationPanel::InitializeLeftPane() {
     left_pane->SetLayouter(zaf::GetVerticalArrayLayouter());
 
     conversation_list_view_ = zaf::Create<ConversationListView>();
+    conversation_list_view_->SetConversationAvatarManager(conversation_avatar_manager_);
+    conversation_list_view_->GetSelectionChangeEvent().AddListener(
+        std::bind(&ConversationPanel::ConversationListViewSelectionChange, this));
+
     left_pane->AddChild(conversation_list_view_);
+}
+
+
+void ConversationPanel::InitializeRightPane() {
+
+    const auto& right_panel = GetSecondPane();
+    right_panel->SetLayouter(zaf::GetHorizontalArrayLayouter());
 }
 
 
 void ConversationPanel::LoadContent() {
 
-    conversation_avatar_manager_ = std::make_shared<ConversationAvatarManager>();
-    conversation_list_view_->LoadConversations(conversation_avatar_manager_);
+    conversation_list_view_->LoadConversations();
+}
+
+
+void ConversationPanel::ConversationListViewSelectionChange() {
+
+    InitializeConversationDetailView();
+
+    auto selected_conversation = conversation_list_view_->GetSelectedConversation();
+    if (selected_conversation == nullptr) {
+        return;
+    }
+
+    conversation_detail_view_->SetConversation(selected_conversation);
+}
+
+
+void ConversationPanel::InitializeConversationDetailView() {
+
+    if (conversation_detail_view_ != nullptr) {
+        return;
+    }
+
+    conversation_detail_view_ = zaf::Create<ConversationDetailView>();
+    GetSecondPane()->AddChild(conversation_detail_view_);
 }

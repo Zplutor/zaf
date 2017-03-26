@@ -94,8 +94,10 @@
     <ClCompile Include="src\ui\avatar_view.cpp" />
     <ClCompile Include="src\ui\main\conversation\conversation_avatar_manager.cpp" />
     <ClCompile Include="src\ui\main\conversation\conversation_panel.cpp" />
+    <ClCompile Include="src\ui\main\conversation\detail\conversation_detail_view.cpp" />
+    <ClCompile Include="src\ui\main\conversation\detail\member\conversation_member_view.cpp" />
+    <ClCompile Include="src\ui\main\conversation\detail\member\member_item.cpp" />
     <ClCompile Include="src\ui\main\conversation\list\conversation_item.cpp" />
-    <ClCompile Include="src\ui\main\conversation\list\conversation_item_source.cpp" />
     <ClCompile Include="src\ui\main\conversation\list\conversation_list_view.cpp" />
     <ClCompile Include="src\ui\main\main_window.cpp" />
     <ClCompile Include="src\ui\user_avatar_manager.cpp" />
@@ -121,8 +123,10 @@
     <ClInclude Include="src\ui\main\conversation\common_definition.h" />
     <ClInclude Include="src\ui\main\conversation\conversation_avatar_manager.h" />
     <ClInclude Include="src\ui\main\conversation\conversation_panel.h" />
+    <ClInclude Include="src\ui\main\conversation\detail\conversation_detail_view.h" />
+    <ClInclude Include="src\ui\main\conversation\detail\member\conversation_member_view.h" />
+    <ClInclude Include="src\ui\main\conversation\detail\member\member_item.h" />
     <ClInclude Include="src\ui\main\conversation\list\conversation_item.h" />
-    <ClInclude Include="src\ui\main\conversation\list\conversation_item_source.h" />
     <ClInclude Include="src\ui\main\conversation\list\conversation_list_view.h" />
     <ClInclude Include="src\ui\main\main_window.h" />
     <ClInclude Include="src\ui\user_avatar_manager.h" />

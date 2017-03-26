@@ -34,6 +34,12 @@
     <Filter Include="res\avatar">
       <UniqueIdentifier>{a264e562-6e8d-46d4-be64-b8d01a2471db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ui\main\conversation\detail">
+      <UniqueIdentifier>{f2e9340b-ed78-4e5f-8aca-0787f74fe660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui\main\conversation\detail\member">
+      <UniqueIdentifier>{b417af38-6868-4e39-ae6c-65cf461306f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -46,9 +52,6 @@
       <Filter>src\ui\main\conversation</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\main\conversation\list\conversation_item.cpp">
-      <Filter>src\ui\main\conversation\list</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ui\main\conversation\list\conversation_item_source.cpp">
       <Filter>src\ui\main\conversation\list</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\main\conversation\list\conversation_list_view.cpp">
@@ -93,6 +96,15 @@
     <ClCompile Include="src\ui\avatar_view.cpp">
       <Filter>src\ui</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\main\conversation\detail\conversation_detail_view.cpp">
+      <Filter>src\ui\main\conversation\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\main\conversation\detail\member\conversation_member_view.cpp">
+      <Filter>src\ui\main\conversation\detail\member</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\main\conversation\detail\member\member_item.cpp">
+      <Filter>src\ui\main\conversation\detail\member</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\entity\user.h">
@@ -108,9 +120,6 @@
       <Filter>src\ui\main\conversation</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\main\conversation\list\conversation_item.h">
-      <Filter>src\ui\main\conversation\list</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ui\main\conversation\list\conversation_item_source.h">
       <Filter>src\ui\main\conversation\list</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\main\conversation\list\conversation_list_view.h">
@@ -169,6 +178,15 @@
     </ClInclude>
     <ClInclude Include="src\ui\avatar_view.h">
       <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\detail\conversation_detail_view.h">
+      <Filter>src\ui\main\conversation\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\detail\member\conversation_member_view.h">
+      <Filter>src\ui\main\conversation\detail\member</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\detail\member\member_item.h">
+      <Filter>src\ui\main\conversation\detail\member</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
