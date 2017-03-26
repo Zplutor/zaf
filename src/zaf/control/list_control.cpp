@@ -162,6 +162,9 @@ void ListControl::SetItemContainer(const std::shared_ptr<ItemContainer>& item_co
 
 void ListControl::Reload() {
 
+    //Remove selected indexes.
+    UnselectAllItems();
+
     //Remove all visible items.
     if (! visible_items_.empty()) {
 
