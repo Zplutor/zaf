@@ -70,7 +70,7 @@ void TextBox::Initialize() {
 	__super::Initialize();
 
 	SetCanFocused(true);
-	SetBorderThickness(1);
+	SetBorder(1);
 
     //Initialize CHARFORMATW and PARAFORMAT.
 	SetDefaultFont(Font::GetDefault());
@@ -268,7 +268,7 @@ const Rect TextBox::GetTextRect() const {
 const Rect TextBox::GetAbsoluteContentRect() const {
 
 	auto rect = GetAbsoluteRect();
-	rect.Inflate(-GetBorderThickness());
+	rect.Deflate(GetBorder());
 	return rect;
 }
 

@@ -38,8 +38,7 @@ Control::Control() :
 	is_focused_(false),
 	can_focused_(false),
 	is_enabled_(true),
-	is_visible_(true),
-	border_thickness_(0) {
+	is_visible_(true) {
 
 }
 
@@ -88,7 +87,7 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	Paint(canvas, dirty_rect);
 	canvas.EndPaint();
 
-    float border_thickness = GetBorderThickness();
+    auto border = GetBorder();
 	Rect content_rect = GetContentRect();
 
 	const Rect& absolute_rect = canvas.GetAbsoluteRect();
@@ -104,8 +103,8 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 		const Rect& child_rect = child->GetRect();
 
 		Rect child_dirty_rect = Rect::Intersect(content_rect, dirty_rect);
-        child_dirty_rect.position.x -= border_thickness;
-        child_dirty_rect.position.y -= border_thickness;
+        child_dirty_rect.position.x -= border.left;
+        child_dirty_rect.position.y -= border.top;
 		child_dirty_rect.Intersect(child_rect);
 
 		if (child_dirty_rect.IsEmpty()) {
@@ -138,7 +137,7 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
     border_rect.size = MakeClearEdgeRectForFill(GetRect(), ClearEdgeOption::Clear).size;
   
     Rect background_rect = border_rect;
-    background_rect.Inflate(-GetBorderThickness());
+    background_rect.Deflate(GetBorder());
     //The with and height muse be greater than 0.
     if (background_rect.size.width < 0) {
         background_rect.size.width = 0;
@@ -197,9 +196,9 @@ void Control::NeedRepaintRect(const Rect& rect) {
 	}
 
     Point position_in_parent = ToParentPoint(repaint_rect.position);
-    float parent_border_width = parent->GetBorderThickness();
-    position_in_parent.x += parent_border_width;
-    position_in_parent.y += parent_border_width;
+    auto parent_border = parent->GetBorder();
+    position_in_parent.x += parent_border.left;
+    position_in_parent.y += parent_border.top;
 
 	Rect repaint_rect_in_parent(position_in_parent, repaint_rect.size);
     repaint_rect_in_parent.Intersect(parent->GetContentRect());
@@ -271,10 +270,10 @@ const Rect Control::GetAbsoluteRect() const {
 	}
 
 	Rect parent_absolute_rect = parent->GetAbsoluteRect();
-	float parent_border_thickness = parent->GetBorderThickness();
+	auto parent_border = parent->GetBorder();
 	return Rect(
-        parent_absolute_rect.position.x + parent_border_thickness + rect_.position.x,
-        parent_absolute_rect.position.y + parent_border_thickness + rect_.position.y,
+        parent_absolute_rect.position.x + parent_border.left + rect_.position.x,
+        parent_absolute_rect.position.y + parent_border.top + rect_.position.y,
 		rect_.size.width,
 		rect_.size.height
 	);
@@ -440,18 +439,10 @@ void Control::SetAnchor(Anchor anchor) {
 }
 
 
-void Control::SetBorderThickness(float width) {
-
-	border_thickness_ = width;
-	NeedRelayout();
-	NeedRepaint();
-}
-
-
 const Rect Control::GetContentRect() const {
 
 	Rect content_rect = Rect(Point(), GetSize());
-	content_rect.Inflate(-GetBorderThickness());
+	content_rect.Deflate(GetBorder());
 	return content_rect;
 }
 
@@ -925,12 +916,12 @@ void Control::RouteMessage(const Point& position, const MouseMessage& message) {
 
 const Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const {
 
-    auto border_thickness = GetBorderThickness();
+    auto border = GetBorder();
     const auto& child_position = child->GetPosition();
 
     Point point_in_child = point;
-    point_in_child.x -= child_position.x + border_thickness;
-    point_in_child.y -= child_position.y + border_thickness;
+    point_in_child.x -= child_position.x + border.left;
+    point_in_child.y -= child_position.y + border.top;
 
     return point_in_child;
 }

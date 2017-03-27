@@ -46,7 +46,7 @@ void ComboBox::Initialize() {
 
     __super::Initialize();
 
-    SetBorderThickness(1);
+    SetBorder(1);
 
     SetBackgroundColorPicker([](const Control& control) {
 
@@ -106,7 +106,7 @@ void ComboBox::InitializeEditTextBox() {
 
     AddChild(edit_text_box_);
     edit_text_box_->SetIsVisible(IsEditable());
-    edit_text_box_->SetBorderThickness(0);
+    edit_text_box_->SetBorder(0);
     edit_text_box_->SetIsMultiline(false);
     edit_text_box_->SetAcceptReturn(false);
     edit_text_box_->GetTextChangeEvent().AddListenerWithTag(
@@ -337,8 +337,10 @@ void ComboBox::PopupDropDownWindow() {
     visible_item_count = std::max(visible_item_count, GetMinimumVisibleItemCount());
     visible_item_count = std::min(visible_item_count, GetMaximumVisibleItemCount());
 
+    auto drop_down_list_box_border = drop_down_list_box_->GetBorder();
+
     window_rect.size.height =
-        CalculateDropDownListHeight(visible_item_count) + drop_down_list_box_->GetBorderThickness() * 2;
+        CalculateDropDownListHeight(visible_item_count) + drop_down_list_box_border.top + drop_down_list_box_border.bottom;
 
     POINT screen_position = window_rect.position.ToPOINT();
     ClientToScreen(window->GetHandle(), &screen_position);

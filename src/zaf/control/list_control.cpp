@@ -50,7 +50,7 @@ void ListControl::Initialize() {
     __super::Initialize();
 
     SetBackgroundColor(Color::White);
-    SetBorderThickness(1);
+    SetBorder(1);
     SetBorderColor(Color::Black);
 
     item_container_ = Create<ItemContainer>();

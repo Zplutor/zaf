@@ -34,14 +34,14 @@ void MainWindow::InitializeTextBoxes() {
     input_text_box_->SetRect(zaf::Rect(0, 0, GetContentWidth(), 30));
     input_text_box_->SetIsReadOnly(true);
     input_text_box_->SetBackgroundColor(zaf::Color::White);
-    input_text_box_->SetBorderThickness(0);
+    input_text_box_->SetBorder(0);
     input_text_box_->SetInset(50);
 
     output_text_box_ = zaf::Create<zaf::TextBox>();
     output_text_box_->SetRect(zaf::Rect(0, 30, GetContentWidth(), 50));
     output_text_box_->SetIsReadOnly(true);
     output_text_box_->SetBackgroundColor(zaf::Color::White);
-    output_text_box_->SetBorderThickness(0);
+    output_text_box_->SetBorder(0);
     output_text_box_->SetInset(50);
     zaf::Font font;
     font.size = 36;
@@ -49,7 +49,7 @@ void MainWindow::InitializeTextBoxes() {
 
     auto container = zaf::Create<zaf::Control>();
     container->SetRect(zaf::Rect(kContentMargin, kContentMargin, GetContentWidth(), 80));
-    container->SetBorderThickness(1);
+    container->SetBorder(1);
     container->SetBorderColor(zaf::Color::FromRGB(0x808080));
     container->AddChild(input_text_box_);
     container->AddChild(output_text_box_);

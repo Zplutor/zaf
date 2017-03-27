@@ -10,7 +10,7 @@ ZAF_DEFINE_PROPERTY_TAG(backgroundColor, Color, Control, SetBackgroundColor);
 ZAF_DEFINE_PROPERTY_TAG(backgroundColorPicker, ColorPicker, Control, SetBackgroundColorPicker);
 ZAF_DEFINE_PROPERTY_TAG(borderColor, Color, Control, SetBorderColor);
 ZAF_DEFINE_PROPERTY_TAG(borderColorPicker, ColorPicker, Control, SetBorderColorPicker);
-ZAF_DEFINE_PROPERTY_TAG(borderThickness, float, Control, SetBorderThickness);
+ZAF_DEFINE_PROPERTY_TAG(borderThickness, float, Control, SetBorder);
 ZAF_DEFINE_PROPERTY_TAG(child, std::shared_ptr<Control>, Control, AddChild);
 ZAF_DEFINE_PROPERTY_TAG(layouter, Layouter, Control, SetLayouter);
 ZAF_DEFINE_PROPERTY_TAG(height, float, Control, SetHeight);

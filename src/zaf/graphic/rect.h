@@ -4,6 +4,7 @@
 #include <Wincodec.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/relation_operator.h>
+#include <zaf/graphic/frame.h>
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
 
@@ -135,6 +136,22 @@ public:
 		size.width += width * 2;
 		size.height += height * 2;
 	}
+
+    void Inflate(const Frame& frame) {
+
+        position.x -= frame.left;
+        position.y -= frame.top;
+        size.width += frame.left + frame.right;
+        size.height += frame.top + frame.bottom;
+    }
+
+    void Deflate(const Frame& frame) {
+
+        position.x += frame.left;
+        position.y += frame.top;
+        size.width -= frame.left + frame.right;
+        size.height -= frame.top + frame.bottom;
+    }
 
 	/**
 	 Determine whether the specified point locates within the rectangle.

@@ -12,6 +12,7 @@
 #include <zaf/control/color_picker.h>
 #include <zaf/control/layout/layouter.h>
 #include <zaf/graphic/color.h>
+#include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
 
 namespace zaf {
@@ -243,22 +244,19 @@ public:
      */
 	void SetAnchor(Anchor anchor);
 
-	/**
-	 Get the control's border thickness.
+    const Frame& GetBorder() const {
+        return border_;
+    }
 
-	 The border is not included in control's content rect.
-	 The default thickness is 0.
-	 */
-    float GetBorderThickness() const {
-		return border_thickness_;
-	}
+    void SetBorder(const Frame& border) {
+        border_ = border;
+        NeedRepaint();
+        NeedRelayout();
+    }
 
-	/**
-	 Set the control's border thickness.
-
-	 See also GetBorderThickness.
-	 */
-	void SetBorderThickness(float width);
+    void SetBorder(float border_thickness) {
+        SetBorder(Frame(border_thickness, border_thickness, border_thickness, border_thickness));
+    }
 
 	/**
 	 Get the control's content rect, related to its coordinate system.
@@ -824,7 +822,7 @@ private:
 	bool is_visible_;
 
 	Rect rect_;
-	float border_thickness_;
+    Frame border_;
 
 	PropertyMap property_map_;
 };

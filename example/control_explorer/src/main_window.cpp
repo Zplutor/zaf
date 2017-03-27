@@ -44,7 +44,7 @@ void MainWindow::Initialize() {
 void MainWindow::InitializeControlListPanel() {
 
     control_list_box_ = zaf::Create<zaf::ListBox>();
-    control_list_box_->SetBorderThickness(0);
+    control_list_box_->SetBorder(0);
     control_list_box_->SetAllowHorizontalScroll(false);
     control_list_box_->SetAutoHideScrollBars(true);
     control_list_box_->GetSelectionChangeEvent().AddListener(std::bind(&MainWindow::ControlListBoxSelectionChange, this));

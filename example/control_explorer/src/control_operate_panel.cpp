@@ -14,7 +14,7 @@ void ControlOperatePanel::Initialize() {
     SetLayouter(zaf::GetHorizontalArrayLayouter());
 
     scrollable_control_ = zaf::Create<zaf::ScrollableControl>();
-    scrollable_control_->SetBorderThickness(0);
+    scrollable_control_->SetBorder(0);
     scrollable_control_->SetAllowHorizontalScroll(false);
     scrollable_control_->GetScrollContentControl()->SetLayouter(OperatePanelLayouter);
     AddChild(scrollable_control_);

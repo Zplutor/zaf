@@ -49,3 +49,29 @@ TEST(TestRect, Intersect) {
     ASSERT_TRUE(test(zaf::Rect(-3, -3, 6, 6), zaf::Rect(0, 0, 3, 3)));
     ASSERT_TRUE(test(zaf::Rect(5, 5, 8, 8), zaf::Rect(5, 5, 5, 5)));
 }
+
+
+TEST(TestRect, InflateWithFrame) {
+
+    auto test = [](const zaf::Frame& frame, const zaf::Rect& expected_rect) {
+        zaf::Rect rect(0, 0, 5, 5);
+        rect.Inflate(frame);
+        return rect == expected_rect;
+    };
+
+    ASSERT_TRUE(test(zaf::Frame(0, 0, 0, 0), zaf::Rect(0, 0, 5, 5)));
+    ASSERT_TRUE(test(zaf::Frame(1, 2, 3, 4), zaf::Rect(-1, -2, 9, 11)));
+}
+
+
+TEST(TestRect, DeflateWithFrame) {
+
+    auto test = [](const zaf::Frame& frame, const zaf::Rect& expected_rect) {
+        zaf::Rect rect(0, 0, 10, 10);
+        rect.Deflate(frame);
+        return rect == expected_rect;
+    };
+
+    ASSERT_TRUE(test(zaf::Frame(0, 0, 0, 0), zaf::Rect(0, 0, 10, 10)));
+    ASSERT_TRUE(test(zaf::Frame(1, 2, 3, 4), zaf::Rect(1, 2, 6, 4)));
+}

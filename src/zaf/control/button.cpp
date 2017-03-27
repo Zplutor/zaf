@@ -21,7 +21,7 @@ void Button::Initialize() {
 
 	__super::Initialize();
 
-	SetBorderThickness(1);
+	SetBorder(1);
 
 	SetBackgroundColorPicker([](const Control& control) {
 	
