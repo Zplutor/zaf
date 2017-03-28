@@ -39,12 +39,10 @@ void RadioButton::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 	Canvas::StateGuard state_guard(canvas);
 
-	auto text_layout = CreateTextLayout(Size());
+    auto text_layout = GetTextLayout();
 	if (text_layout == nullptr) {
 		return;
 	}
-
-	canvas.SetClearEdgeOption(ClearEdgeOption::Clear);
 
 	internal::DrawTextWithIcon(
 		canvas,

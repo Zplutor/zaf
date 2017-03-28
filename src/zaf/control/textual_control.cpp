@@ -48,21 +48,19 @@ void TextualControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
         return;
     }
 
-    if (text_layout_ == nullptr) {
-        text_layout_ = CreateTextLayout();
-        if (text_layout_ == nullptr) {
-            return;
-        }
+    auto text_layout = GetTextLayout();
+    if (text_layout == nullptr) {
+        return;
     }
 
-    text_layout_.SetMaxWidth(text_rect.size.width);
-    text_layout_.SetMaxHeight(text_rect.size.height);
+    text_layout.SetMaxWidth(text_rect.size.width);
+    text_layout.SetMaxHeight(text_rect.size.height);
 
-    SetTextColorsToTextLayout(text_layout_, canvas.GetRenderer());
+    SetTextColorsToTextLayout(text_layout, canvas.GetRenderer());
 
     Canvas::StateGuard state_guard(canvas);
     canvas.SetBrushWithColor(GetDefaultTextColor());
-    canvas.DrawText(text_layout_, text_rect.position);
+    canvas.DrawText(text_layout, text_rect.position);
 }
 
 
@@ -388,22 +386,6 @@ void TextualControl::SetWordWrapping(WordWrapping word_wrapping) {
 
 TextualControl::TextChangeEvent::Proxy TextualControl::GetTextChangeEvent() {
     return GetEventProxyFromPropertyMap<TextChangeEvent>(GetPropertyMap(), kTextChangeEventPropertyName);
-}
-
-
-TextLayout TextualControl::CreateTextLayout(const Size& layout_size) const {
-
-    auto text_format = CreateTextFormat();
-    if (text_format == nullptr) {
-        return TextLayout();
-    }
-
-    TextLayoutProperties text_layout_properties;
-    text_layout_properties.text = GetText();
-    text_layout_properties.text_format = text_format;
-    text_layout_properties.width = layout_size.width;
-    text_layout_properties.height = layout_size.height;
-    return GetResourceFactory()->CreateTextLayout(text_layout_properties);
 }
 
 

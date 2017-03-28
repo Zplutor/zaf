@@ -189,7 +189,12 @@ protected:
 
     virtual const Rect GetTextRect() const;
 
-    TextLayout CreateTextLayout(const Size& layout_size) const;
+    TextLayout GetTextLayout() {
+        if (text_layout_ == nullptr) {
+            text_layout_ = CreateTextLayout();
+        }
+        return text_layout_;
+    }
 
     /**
      Raise the text change event.
