@@ -8,6 +8,8 @@
 #include <zaf/graphic/text/text_range.h>
 #include <zaf/graphic/text/word_wrapping.h>
 
+#undef max
+
 namespace zaf {
 
 class Font;
@@ -180,6 +182,13 @@ public:
      */
     TextChangeEvent::Proxy GetTextChangeEvent();
 
+    Size DetermineRequiredSize(const Size& max_size) const;
+
+    Size DetermineRequiredSize() const {
+        float max = std::numeric_limits<float>::max();
+        return DetermineRequiredSize(Size(max, max));
+    }
+
 protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 
@@ -189,7 +198,7 @@ protected:
 
     virtual const Rect GetTextRect() const;
 
-    TextLayout GetTextLayout() {
+    TextLayout GetTextLayout() const {
         if (text_layout_ == nullptr) {
             text_layout_ = CreateTextLayout();
         }
@@ -205,16 +214,16 @@ protected:
     void NotifyTextChange();
 
 private:
-    const TextLayout CreateTextLayout();
-    const TextFormat CreateTextFormat() const;
-    void SetFontsToTextLayout(TextLayout& text_layout);
+    TextLayout CreateTextLayout() const;
+    TextFormat CreateTextFormat() const;
+    void SetFontsToTextLayout(TextLayout& text_layout) const;
 
     void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer);
 
     void ReleaseTextLayout();
 
 private:
-    TextLayout text_layout_;
+    mutable TextLayout text_layout_;
 };
 
 }

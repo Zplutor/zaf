@@ -64,7 +64,7 @@ void TextualControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-const TextLayout TextualControl::CreateTextLayout() {
+TextLayout TextualControl::CreateTextLayout() const {
 
     auto text_format = CreateTextFormat();
     if (text_format == nullptr) {
@@ -84,7 +84,7 @@ const TextLayout TextualControl::CreateTextLayout() {
 }
 
 
-const TextFormat TextualControl::CreateTextFormat() const {
+TextFormat TextualControl::CreateTextFormat() const {
 
     auto font = GetDefaultFont();
     TextFormatProperties text_format_properties;
@@ -105,7 +105,7 @@ const TextFormat TextualControl::CreateTextFormat() const {
 }
 
 
-void TextualControl::SetFontsToTextLayout(TextLayout& text_layout) {
+void TextualControl::SetFontsToTextLayout(TextLayout& text_layout) const {
 
     auto fonts = TryGetFontRangeMap(GetPropertyMap());
     if (fonts == nullptr) {
@@ -395,6 +395,20 @@ void TextualControl::NotifyTextChange() {
     if (event != nullptr) {
         event->Trigger(std::dynamic_pointer_cast<TextualControl>(shared_from_this()));
     }
+}
+
+
+Size TextualControl::DetermineRequiredSize(const Size& max_size) const {
+
+    auto text_layout = GetTextLayout();
+    if (text_layout == nullptr) {
+        return Size();
+    }
+
+    text_layout.SetMaxWidth(max_size.width);
+    text_layout.SetMaxHeight(max_size.height);
+    auto metrics = text_layout.GetMetrics();
+    return Size(metrics.width, metrics.height);
 }
 
 

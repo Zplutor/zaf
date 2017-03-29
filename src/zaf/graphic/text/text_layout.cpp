@@ -167,7 +167,7 @@ const std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_c
 }
 
 
-const TextMetrics TextLayout::GetMetrics(std::error_code& error_code) const {
+TextMetrics TextLayout::GetMetrics(std::error_code& error_code) const {
 
 	DWRITE_TEXT_METRICS dwrite_text_metrics = { 0 };
     HRESULT result = GetHandle()->GetMetrics(&dwrite_text_metrics);
@@ -182,8 +182,11 @@ const TextMetrics TextLayout::GetMetrics(std::error_code& error_code) const {
 	text_metrics.top = dwrite_text_metrics.top;
 	text_metrics.width = dwrite_text_metrics.width;
 	text_metrics.height = dwrite_text_metrics.height;
+    text_metrics.layout_width = dwrite_text_metrics.layoutWidth;
+    text_metrics.layout_height = dwrite_text_metrics.layoutHeight;
 	text_metrics.width_including_trailing_whitespace = dwrite_text_metrics.widthIncludingTrailingWhitespace;
 	text_metrics.max_bidi_reordering_depth = dwrite_text_metrics.maxBidiReorderingDepth;
+    text_metrics.line_count = dwrite_text_metrics.lineCount;
 	return text_metrics;
 }
 

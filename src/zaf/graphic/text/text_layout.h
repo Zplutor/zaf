@@ -395,9 +395,9 @@ public:
      @return 
         Return empty text metrics if error occurs.
      */
-	const TextMetrics GetMetrics(std::error_code& error_code) const;
+	TextMetrics GetMetrics(std::error_code& error_code) const;
 
-    const TextMetrics GetMetrics() const {
+    TextMetrics GetMetrics() const {
         std::error_code error_code;
         auto result = GetMetrics(error_code);
         ZAF_CHECK_ERROR(error_code);
