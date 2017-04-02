@@ -258,15 +258,28 @@ public:
         SetBorder(Frame(border_thickness, border_thickness, border_thickness, border_thickness));
     }
 
+    const Frame& GetPadding() const {
+        return padding_;
+    }
+
+    void SetPadding(const Frame& padding) {
+        padding_ = padding;
+        NeedRelayout();
+    }
+
+    void Padding(float padding_thickness) {
+        SetPadding(Frame(padding_thickness, padding_thickness, padding_thickness, padding_thickness));
+    }
+
 	/**
 	 Get the control's content rect, related to its coordinate system.
 	 */
-	const Rect GetContentRect() const;
+	Rect GetContentRect() const;
 
     /**
      Get the control's content size.
      */
-    const Size GetContentSize() const {
+    Size GetContentSize() const {
         return GetContentRect().size;
     }
 
@@ -823,6 +836,7 @@ private:
 
 	Rect rect_;
     Frame border_;
+    Frame padding_;
 
 	PropertyMap property_map_;
 };

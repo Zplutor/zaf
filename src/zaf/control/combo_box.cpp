@@ -181,7 +181,7 @@ void ComboBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-const Rect ComboBox::GetTextRect() const {
+Rect ComboBox::GetTextRect() {
 
     auto rect = GetContentRect();
     rect.size.width -= GetDropDownButtonWidth();

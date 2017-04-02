@@ -87,14 +87,17 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 	Paint(canvas, dirty_rect);
 	canvas.EndPaint();
 
-    auto border = GetBorder();
+    const auto& border = GetBorder();
+    const auto& padding = GetPadding();
 	Rect content_rect = GetContentRect();
 
-	const Rect& absolute_rect = canvas.GetAbsoluteRect();
+    //Translate content rect to absolute content rect.
+	const Rect& canvas_absolute_rect = canvas.GetAbsoluteRect();
 	Rect absolute_content_rect = content_rect;
-	absolute_content_rect.position.x += absolute_rect.position.x;
-	absolute_content_rect.position.y += absolute_rect.position.y;
+    absolute_content_rect.position.x += canvas_absolute_rect.position.x;
+    absolute_content_rect.position.y += canvas_absolute_rect.position.y;
 
+    //Intersect paintable rect to current control's content rect.
 	Rect absolute_paintable_rect = canvas.GetAbsolutePaintableRect();
 	absolute_paintable_rect.Intersect(absolute_content_rect);
 	
@@ -102,9 +105,11 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 
 		const Rect& child_rect = child->GetRect();
 
+        //Intersect dirty rect with current control's content rect and
+        //child's rect.
 		Rect child_dirty_rect = Rect::Intersect(content_rect, dirty_rect);
-        child_dirty_rect.position.x -= border.left;
-        child_dirty_rect.position.y -= border.top;
+        child_dirty_rect.position.x -= border.left + padding.left;
+        child_dirty_rect.position.y -= border.top + padding.top;
 		child_dirty_rect.Intersect(child_rect);
 
 		if (child_dirty_rect.IsEmpty()) {
@@ -118,6 +123,7 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 			Rect::Intersect(absolute_paintable_rect, child_canvas_absolute_rect)
 		);
 
+        //Translate dirty rect to which in child's coordinate.
 		child_dirty_rect.position.x -= child_rect.position.x;
 		child_dirty_rect.position.y -= child_rect.position.y;
 		child->Repaint(canvas, child_dirty_rect);
@@ -196,9 +202,10 @@ void Control::NeedRepaintRect(const Rect& rect) {
 	}
 
     Point position_in_parent = ToParentPoint(repaint_rect.position);
-    auto parent_border = parent->GetBorder();
-    position_in_parent.x += parent_border.left;
-    position_in_parent.y += parent_border.top;
+    const auto& parent_border = parent->GetBorder();
+    const auto& parent_padding = parent->GetPadding();
+    position_in_parent.x += parent_border.left + parent_padding.left;
+    position_in_parent.y += parent_border.top + parent_padding.top;
 
 	Rect repaint_rect_in_parent(position_in_parent, repaint_rect.size);
     repaint_rect_in_parent.Intersect(parent->GetContentRect());
@@ -270,10 +277,12 @@ const Rect Control::GetAbsoluteRect() const {
 	}
 
 	Rect parent_absolute_rect = parent->GetAbsoluteRect();
-	auto parent_border = parent->GetBorder();
+	const auto& parent_border = parent->GetBorder();
+    const auto& parent_padding = parent->GetPadding();
+
 	return Rect(
-        parent_absolute_rect.position.x + parent_border.left + rect_.position.x,
-        parent_absolute_rect.position.y + parent_border.top + rect_.position.y,
+        parent_absolute_rect.position.x + parent_border.left + parent_padding.left + rect_.position.x,
+        parent_absolute_rect.position.y + parent_border.top + parent_padding.top + rect_.position.y,
 		rect_.size.width,
 		rect_.size.height
 	);
@@ -439,10 +448,11 @@ void Control::SetAnchor(Anchor anchor) {
 }
 
 
-const Rect Control::GetContentRect() const {
+Rect Control::GetContentRect() const {
 
 	Rect content_rect = Rect(Point(), GetSize());
 	content_rect.Deflate(GetBorder());
+    content_rect.Deflate(GetPadding());
 	return content_rect;
 }
 
@@ -916,12 +926,13 @@ void Control::RouteMessage(const Point& position, const MouseMessage& message) {
 
 const Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const {
 
-    auto border = GetBorder();
+    const auto& border = GetBorder();
+    const auto& padding = GetPadding();
     const auto& child_position = child->GetPosition();
 
     Point point_in_child = point;
-    point_in_child.x -= child_position.x + border.left;
-    point_in_child.y -= child_position.y + border.top;
+    point_in_child.x -= child_position.x + border.left + padding.left;
+    point_in_child.y -= child_position.y + border.top + padding.top;
 
     return point_in_child;
 }

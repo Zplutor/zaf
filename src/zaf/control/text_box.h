@@ -282,7 +282,7 @@ public:
 
 protected:
     void Repaint(Canvas& canvas, const Rect& dirty_rect) override;
-    const Rect GetTextRect() const override;
+    Rect GetTextRect() override;
 	void Layout(const Rect& previous_rect) override;
 
 	void ChangeMouseCursor(const Message& message, bool& is_changed) override;

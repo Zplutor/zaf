@@ -103,7 +103,7 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
 }
 
 
-const Rect CheckBox::GetTextRect() const {
+Rect CheckBox::GetTextRect() {
     return Rect();
 }
 

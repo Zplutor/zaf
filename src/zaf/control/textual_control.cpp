@@ -142,7 +142,7 @@ void TextualControl::ReleaseTextLayout() {
 }
 
 
-const Rect TextualControl::GetTextRect() const {
+Rect TextualControl::GetTextRect() {
     return GetContentRect();
 }
 

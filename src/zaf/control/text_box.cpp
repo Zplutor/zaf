@@ -260,7 +260,7 @@ void TextBox::ResetRequiredHeight() {
 }
 
 
-const Rect TextBox::GetTextRect() const {
+Rect TextBox::GetTextRect() {
     return Rect();
 }
 
@@ -269,6 +269,7 @@ const Rect TextBox::GetAbsoluteContentRect() const {
 
 	auto rect = GetAbsoluteRect();
 	rect.Deflate(GetBorder());
+    rect.Deflate(GetPadding());
 	return rect;
 }
 

@@ -196,7 +196,7 @@ protected:
         ReleaseTextLayout();
     }
 
-    virtual const Rect GetTextRect() const;
+    virtual Rect GetTextRect();
 
     TextLayout GetTextLayout() const {
         if (text_layout_ == nullptr) {

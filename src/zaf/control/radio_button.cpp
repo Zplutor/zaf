@@ -77,7 +77,7 @@ void RadioButton::PaintRadio(Canvas& canvas, const Rect& radio_rect) {
 }
 
 
-const Rect RadioButton::GetTextRect() const {
+Rect RadioButton::GetTextRect() {
     return Rect();
 }
 

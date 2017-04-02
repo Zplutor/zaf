@@ -171,7 +171,7 @@ public:
 protected:
     void Layout(const Rect&) override;
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
-    const Rect GetTextRect() const override;
+    Rect GetTextRect() override;
 
     void MouseClick() override;
     bool KeyDown(const KeyMessage& message) override;
