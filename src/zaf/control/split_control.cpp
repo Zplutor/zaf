@@ -152,24 +152,24 @@ void SplitControl::SetSplitBarThickness(float thickness) {
 
 float SplitControl::GetSplitBarDistance() const {
 
-    auto distance = GetPropertyMap().TryGetProperty<float>(kSplitBarDistancePropertyName);
-    if (distance != nullptr) {
-        return *distance;
+    float distance = 0;
+
+    auto expected_distance = GetPropertyMap().TryGetProperty<float>(kSplitBarDistancePropertyName);
+    if (expected_distance != nullptr) {
+        distance = *expected_distance;
     }
     else {
-
-        float total = IsHorizontal() ? GetHeight() : GetWidth();
-        return total / 2;
+        distance = (IsHorizontal() ? GetHeight() : GetWidth()) / 2;
     }
+
+    distance = std::max(distance, GetMinimumSplitBarDistance());
+    distance = std::min(distance, GetMaximumSplitBarDistance());
+    return distance;
 }
 
 void SplitControl::SetSplitBarDistance(float distance) {
 
-    //Revise distance
-    float revised_distance = std::max(distance, GetMinimumSplitBarDistance());
-    revised_distance = std::min(revised_distance, GetMaximumSplitBarDistance());
-
-    GetPropertyMap().SetProperty(kSplitBarDistancePropertyName, revised_distance);
+    GetPropertyMap().SetProperty(kSplitBarDistancePropertyName, distance);
     NeedRelayout();
 }
 
@@ -178,7 +178,7 @@ float SplitControl::GetMinimumSplitBarDistance() const {
 
     auto distance = GetPropertyMap().TryGetProperty<float>(kMinimumSplitBarDistanceProprtyName);
     if (distance != nullptr) {
-        return *distance;
+        return std::max(*distance, 0.f);
     }
     else {
         return 0;
@@ -187,38 +187,32 @@ float SplitControl::GetMinimumSplitBarDistance() const {
 
 void SplitControl::SetMinimumSplitBarDistance(float min_distance) {
 
-    float revised_min_distance = std::min(min_distance, GetMaximumSplitBarDistance());
-
-    GetPropertyMap().SetProperty(kMinimumSplitBarDistanceProprtyName, revised_min_distance);
-
-    if (GetSplitBarDistance() < revised_min_distance) {
-        SetSplitBarDistance(revised_min_distance);
-    }
+    GetPropertyMap().SetProperty(kMinimumSplitBarDistanceProprtyName, min_distance);
+    NeedRelayout();
 }
 
 
 float SplitControl::GetMaximumSplitBarDistance() const {
 
+    auto content_size = GetContentSize();
+    float avaliable_max_distance = (IsHorizontal() ? content_size.height : content_size.width) - GetSplitBarThickness();
+    if (avaliable_max_distance < 0) {
+        return 0;
+    }
+
     auto distance = GetPropertyMap().TryGetProperty<float>(kMaximumSplitBarDistanceProprtyName);
     if (distance != nullptr) {
-        return *distance;
+        return std::min(*distance, avaliable_max_distance);
     }
     else {
-        
-        auto content_size = GetContentSize();
-        return (IsHorizontal() ? content_size.height : content_size.width) - GetSplitBarThickness();
+        return avaliable_max_distance;
     }
 }
 
 void SplitControl::SetMaximumSplitBarDistance(float max_distance) {
 
-    float revised_max_distance = std::max(max_distance, GetMinimumSplitBarDistance());
-
-    GetPropertyMap().SetProperty(kMaximumSplitBarDistanceProprtyName, revised_max_distance);
-
-    if (GetSplitBarDistance() > revised_max_distance) {
-        SetSplitBarDistance(revised_max_distance);
-    }
+    GetPropertyMap().SetProperty(kMaximumSplitBarDistanceProprtyName, max_distance);
+    NeedRelayout();
 }
 
 
