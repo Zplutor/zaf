@@ -200,6 +200,8 @@ private:
     void SelfScrollingControlScrollBarChange(SelfScrollingControl& self_scrolling_control);
     void SelfScrollingControlScrollValuesChange(SelfScrollingControl& self_scrolling_control, bool is_horizontal);
 
+    Size GetExpectedScrollContentControlSize() const;
+
 private:
     std::shared_ptr<ScrollBar> vertical_scroll_bar_;
     std::shared_ptr<ScrollBar> horizontal_scroll_bar_;

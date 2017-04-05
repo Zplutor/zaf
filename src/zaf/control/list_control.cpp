@@ -874,7 +874,7 @@ void ListControl::ItemContainer::LayoutItems(
     const Rect& previous_rect,
     const std::vector<std::shared_ptr<Control>>& children) {
 
-    float width = GetWidth();
+    float width = GetContentSize().width;
 
     for (const auto& each_child : children) {
 

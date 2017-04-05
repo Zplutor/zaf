@@ -122,6 +122,8 @@ void ScrollableControl::CanShowScrollBars(bool& can_show_vertical_scroll_bar, bo
     float content_width = content_rect.size.width;
     float content_height = content_rect.size.height;
 
+    Size expected_scroll_content_control_size = GetExpectedScrollContentControlSize();
+
     bool allow_vertical_scroll = AllowVerticalScroll();
     bool allow_horizontal_scroll = AllowHorizontalScroll();
 
@@ -131,15 +133,15 @@ void ScrollableControl::CanShowScrollBars(bool& can_show_vertical_scroll_bar, bo
         return allow && (!auto_hide_scroll_bars || (expected > actual));
     };
 
-    can_show_vertical_scroll_bar = determine(allow_vertical_scroll, expected_scroll_content_size_.height, content_height);
-    can_show_horizontal_scroll_bar = determine(allow_horizontal_scroll, expected_scroll_content_size_.width, content_width);
+    can_show_vertical_scroll_bar = determine(allow_vertical_scroll, expected_scroll_content_control_size.height, content_height);
+    can_show_horizontal_scroll_bar = determine(allow_horizontal_scroll, expected_scroll_content_control_size.width, content_width);
 
     float scroll_bar_thickness = GetScrollBarThickness();
 
     if (can_show_vertical_scroll_bar) {
         can_show_horizontal_scroll_bar = determine(
             allow_horizontal_scroll,
-            expected_scroll_content_size_.width,
+            expected_scroll_content_control_size.width,
             content_width - scroll_bar_thickness
         );
     }
@@ -147,7 +149,7 @@ void ScrollableControl::CanShowScrollBars(bool& can_show_vertical_scroll_bar, bo
     if (can_show_horizontal_scroll_bar) {
         can_show_vertical_scroll_bar = determine(
             allow_vertical_scroll,
-            expected_scroll_content_size_.height,
+            expected_scroll_content_control_size.height,
             content_height - scroll_bar_thickness
         );
     }
@@ -207,7 +209,7 @@ void ScrollableControl::LayoutScrollContentControlSize(bool can_show_vertical_sc
     const Size& min_size = scroll_container_control_->GetSize();
 
     Rect new_rect = scroll_content_control_->GetRect();
-    new_rect.size = expected_scroll_content_size_;
+    new_rect.size = GetExpectedScrollContentControlSize();
 
     if (! can_show_horizontal_scroll_bar || new_rect.size.width < min_size.width) {
         new_rect.size.width = min_size.width;
@@ -270,6 +272,19 @@ void ScrollableControl::AdjustScrollBarValueWithSelfScrollingControl(bool is_hor
 
     scroll_bar->SetValueRange(min_value, max_value);
     scroll_bar->SetValue(current_value);
+}
+
+
+Size ScrollableControl::GetExpectedScrollContentControlSize() const {
+
+    const auto& scroll_content_control = GetScrollContentControl();
+    const auto& padding = scroll_content_control->GetPadding();
+    const auto& border = scroll_content_control->GetBorder();
+
+    Size size = expected_scroll_content_size_;
+    size.width += padding.left + padding.right + border.left + border.right;
+    size.height += padding.top + padding.bottom + border.top + border.bottom;
+    return size;
 }
 
 
