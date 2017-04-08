@@ -170,7 +170,7 @@ void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 
     auto absolute_content_rect = GetAbsoluteContentRect();
     absolute_content_rect.position.y += GetPaintContentOffset(hdc);
-    absolute_content_rect = MakeClearEdgeRectForFill(absolute_content_rect, ClearEdgeOption::Clear);
+    absolute_content_rect = MakeClearEdgeForFill(absolute_content_rect, ClearEdgeOption::Clear);
 
     RECT win32_absolute_rect = absolute_content_rect.ToRECT();
 	text_service_->TxDraw(
@@ -1209,7 +1209,7 @@ HRESULT TextBox::TextHostBridge::TxGetClientRect(LPRECT prc) {
 
 	auto text_box = text_box_.lock();
 	if (text_box != nullptr) {
-		rect = MakeClearEdgeRectForFill(text_box->GetAbsoluteContentRect(), ClearEdgeOption::Clear);
+		rect = MakeClearEdgeForFill(text_box->GetAbsoluteContentRect(), ClearEdgeOption::Clear);
 	}
     
 	*prc = rect.ToRECT();

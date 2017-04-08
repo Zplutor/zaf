@@ -151,13 +151,13 @@ void ComboBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
         button_rect.position.y + button_rect.size.height / 2);
 
     Point left_point(center_point.x - height, center_point.y - half_height);
-    left_point = MakeClearEdgePointForFill(left_point, ClearEdgeOption::Clear);
+    left_point = canvas.MakeClearEdgeForFill(left_point);
 
     Point right_point(center_point.x + height, center_point.y - half_height);
-    right_point = MakeClearEdgePointForFill(right_point, ClearEdgeOption::Clear);
+    right_point = canvas.MakeClearEdgeForFill(right_point);
 
     Point bottom_point(center_point.x, center_point.y + half_height);
-    bottom_point = MakeClearEdgePointForFill(bottom_point, ClearEdgeOption::Clear);
+    bottom_point = canvas.MakeClearEdgeForFill(bottom_point);
 
     auto path = GetApplication().GetResourceFactory()->CreatePathGeometry();
     if (path == nullptr) {

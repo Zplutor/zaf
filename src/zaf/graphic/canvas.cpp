@@ -16,18 +16,19 @@ Canvas::Canvas(const Renderer& renderer) : renderer_(renderer) {
 
 void Canvas::BeginPaint() {
 
-	Rect adjusted_absolute_rect = MakeClearEdgeRectForFill(absolute_rect_, ClearEdgeOption::Clear);
-	renderer_.Transform(TransformMatrix::Translation(adjusted_absolute_rect.position));
+    clear_edge_absolute_rect_ = zaf::MakeClearEdgeForFill(absolute_rect_, ClearEdgeOption::Clear);
+    renderer_.Transform(TransformMatrix::Translation(clear_edge_absolute_rect_.position));
 
-	Rect adjusted_absolute_paintable_rect = MakeClearEdgeRectForFill(absolute_paintable_rect_, ClearEdgeOption::Clear);
-	adjusted_absolute_paintable_rect.position.x -= adjusted_absolute_rect.position.x;
-	adjusted_absolute_paintable_rect.position.y -= adjusted_absolute_rect.position.y;
+	Rect clear_edge_absolute_paintable_rect = zaf::MakeClearEdgeForFill(absolute_paintable_rect_, ClearEdgeOption::Clear);
+    clear_edge_absolute_paintable_rect.position.x -= clear_edge_absolute_rect_.position.x;
+    clear_edge_absolute_paintable_rect.position.y -= clear_edge_absolute_rect_.position.y;
 
-    renderer_.PushAxisAlignedClipping(adjusted_absolute_paintable_rect, AntialiasMode::PerPrimitive);
+    renderer_.PushAxisAlignedClipping(clear_edge_absolute_paintable_rect, AntialiasMode::PerPrimitive);
 }
 
 
 void Canvas::EndPaint() {
+    clear_edge_absolute_rect_ = Rect();
     renderer_.PopAxisAlignedClipping();
 }
 
@@ -61,6 +62,94 @@ std::shared_ptr<Canvas::State> Canvas::GetCurrentState() const {
 		ZAF_FAIL();
 		return nullptr;
 	}
+}
+
+
+Point Canvas::MakeClearEdgeForLine(const Point& point, float stroke_width) const {
+
+    auto new_point = zaf::MakeClearEdgeForLine(
+        AddAbsoluteOffset(point),
+        stroke_width,
+        GetCurrentState()->clear_edge_option);
+
+    RemoveClearEdgeAbsoluteOffset(new_point);
+    return new_point;
+}
+
+Point Canvas::MakeClearEdgeForFill(const Point& point) const {
+
+    auto new_point = zaf::MakeClearEdgeForFill(
+        AddAbsoluteOffset(point),
+        GetCurrentState()->clear_edge_option);
+
+    RemoveClearEdgeAbsoluteOffset(new_point);
+    return new_point;
+}
+
+
+Rect Canvas::MakeClearEdgeForLine(const Rect& rect, float stroke_width) const {
+
+    auto new_rect =  zaf::MakeClearEdgeForLine(
+        AddAbsoluteOffset(rect),
+        stroke_width, 
+        GetCurrentState()->clear_edge_option);
+
+    RemoveClearEdgeAbsoluteOffset(new_rect);
+    return new_rect;
+}
+
+Rect Canvas::MakeClearEdgeForFill(const Rect& rect) const {
+
+    auto new_rect = zaf::MakeClearEdgeForFill(
+        AddAbsoluteOffset(rect),
+        GetCurrentState()->clear_edge_option);
+
+    RemoveClearEdgeAbsoluteOffset(new_rect);
+    return new_rect;
+}
+
+
+RoundedRect Canvas::MakeClearEdgeForLine(const RoundedRect& rounded_rect, float stroke_width) const {
+
+    auto new_rounded_rect = zaf::MakeClearEdgeForLine(
+        AddAbsoluteOffset(rounded_rect), 
+        stroke_width, 
+        GetCurrentState()->clear_edge_option);
+
+    RemoveClearEdgeAbsoluteOffset(new_rounded_rect);
+    return new_rounded_rect;
+}
+
+RoundedRect Canvas::MakeClearEdgeForFill(const RoundedRect& rounded_rect) const {
+
+    auto new_rounded_rect = zaf::MakeClearEdgeForFill(
+        AddAbsoluteOffset(rounded_rect),
+        GetCurrentState()->clear_edge_option);
+
+    RemoveClearEdgeAbsoluteOffset(new_rounded_rect);
+    return new_rounded_rect;
+}
+
+
+Ellipse Canvas::MakeClearEdgeForLine(const Ellipse& ellipse, float stroke_width) const {
+
+    auto new_ellipse = zaf::MakeClearEdgeForLine(
+        AddAbsoluteOffset(ellipse),
+        stroke_width, 
+        GetCurrentState()->clear_edge_option);
+
+    RemoveClearEdgeAbsoluteOffset(new_ellipse);
+    return new_ellipse;
+}
+
+Ellipse Canvas::MakeClearEdgeForFill(const Ellipse& ellipse) const {
+
+    auto new_ellipse = zaf::MakeClearEdgeForFill(
+        AddAbsoluteOffset(ellipse),
+        GetCurrentState()->clear_edge_option);
+
+    RemoveClearEdgeAbsoluteOffset(new_ellipse);
+    return new_ellipse;
 }
 
 }

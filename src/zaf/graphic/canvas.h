@@ -111,8 +111,8 @@ public:
 	void DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
 		auto state = GetCurrentState();
 		renderer_.DrawLine(
-            MakeClearEdgePointForLine(from_point, stroke_width, state->clear_edge_option),
-			MakeClearEdgePointForLine(to_point, stroke_width, state->clear_edge_option), 
+            MakeClearEdgeForLine(from_point, stroke_width),
+			MakeClearEdgeForLine(to_point, stroke_width), 
 			state->brush, 
 			stroke_width,
 			state->stroke
@@ -121,13 +121,13 @@ public:
 
 	void DrawRectangle(const Rect& rect) {
 		auto state = GetCurrentState();
-		renderer_.DrawRectangle(MakeClearEdgeRectForFill(rect, state->clear_edge_option), state->brush);
+		renderer_.DrawRectangle(MakeClearEdgeForFill(rect), state->brush);
 	}
 
 	void DrawRectangleFrame(const Rect& rect, float stroke_width) {
 		auto state = GetCurrentState();
 		renderer_.DrawRectangleFrame(
-			MakeClearEdgeRectForLine(rect, stroke_width, state->clear_edge_option),
+			MakeClearEdgeForLine(rect, stroke_width),
 			state->brush,
 			stroke_width, 
 			state->stroke
@@ -136,13 +136,13 @@ public:
 
     void DrawRoundedRectangle(const RoundedRect& rounded_rect) {
         auto state = GetCurrentState();
-        renderer_.DrawRoundedRectangle(MakeClearEdgeRoundedRectForFill(rounded_rect, state->clear_edge_option), state->brush);
+        renderer_.DrawRoundedRectangle(MakeClearEdgeForFill(rounded_rect), state->brush);
     }
 
     void DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width) {
         auto state = GetCurrentState();
         renderer_.DrawRoundedRectangleFrame(
-            MakeClearEdgeRoundedRectForLine(rounded_rect, stroke_width, state->clear_edge_option),
+            MakeClearEdgeForLine(rounded_rect, stroke_width),
             state->brush,
             stroke_width,
             state->stroke);
@@ -150,13 +150,13 @@ public:
 
 	void DrawEllipse(const Ellipse& ellipse) {
 		auto state = GetCurrentState();
-		renderer_.DrawEllipse(MakeClearEdgeEllipseForFill(ellipse, state->clear_edge_option), state->brush);
+		renderer_.DrawEllipse(MakeClearEdgeForFill(ellipse), state->brush);
 	}
 
 	void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width) {
 		auto state = GetCurrentState();
 		renderer_.DrawEllipseFrame(
-			MakeClearEdgeEllipseForLine(ellipse, stroke_width, state->clear_edge_option), 
+			MakeClearEdgeForLine(ellipse, stroke_width), 
 			state->brush,
 			stroke_width,
 			state->stroke
@@ -188,6 +188,21 @@ public:
         renderer_.DrawBitmap(bitmap, rect, options.Opacity(), options.InterpolationMode(), options.SourceRect());
     }
 
+    Point MakeClearEdgeForLine(const Point& point, float stroke_width) const;
+    Point MakeClearEdgeForFill(const Point& point) const;
+
+    Rect MakeClearEdgeForLine(const Rect& rect, float stroke_width) const;
+    Rect MakeClearEdgeForFill(const Rect& rect) const;
+
+    RoundedRect MakeClearEdgeForLine(const RoundedRect& rounded_rect, float stroke_width) const;
+    RoundedRect MakeClearEdgeForFill(const RoundedRect& rounded_rect) const;
+
+    Ellipse MakeClearEdgeForLine(const Ellipse& ellipse, float stroke_width) const;
+    Ellipse MakeClearEdgeForFill(const Ellipse& ellipse) const;
+
+    Canvas(Canvas&) = delete;
+    Canvas& operator=(const Canvas&) = delete;
+
 private:
 	class State {
 	public:
@@ -213,14 +228,46 @@ private:
 	void EndPaint();
 
 private:
-	std::shared_ptr<State> GetCurrentState() const;
+    Point AddAbsoluteOffset(const Point& point) const {
+        return Point(point.x + absolute_rect_.position.x, point.y + absolute_rect_.position.y);
+    }
 
-	Canvas(Canvas&) = delete;
-	Canvas& operator=(const Canvas&) = delete;
+    Rect AddAbsoluteOffset(const Rect& rect) const {
+        return Rect(AddAbsoluteOffset(rect.position), rect.size);
+    }
+
+    RoundedRect AddAbsoluteOffset(const RoundedRect& rounded_rect) const {
+        return RoundedRect(AddAbsoluteOffset(rounded_rect.rect), rounded_rect.x_radius, rounded_rect.y_radius);
+    }
+
+    Ellipse AddAbsoluteOffset(const Ellipse& ellipse) const {
+        return Ellipse(AddAbsoluteOffset(ellipse.position), ellipse.x_radius, ellipse.y_radius);
+    }
+
+    void RemoveClearEdgeAbsoluteOffset(Point& point) const {
+        point.x -= clear_edge_absolute_rect_.position.x;
+        point.y -= clear_edge_absolute_rect_.position.y;
+    }
+
+    void RemoveClearEdgeAbsoluteOffset(Rect& rect) const {
+        RemoveClearEdgeAbsoluteOffset(rect.position);
+    }
+
+    void RemoveClearEdgeAbsoluteOffset(RoundedRect& rounded_rect) const {
+        RemoveClearEdgeAbsoluteOffset(rounded_rect.rect.position);
+    }
+
+    void RemoveClearEdgeAbsoluteOffset(Ellipse& ellipse) const {
+        RemoveClearEdgeAbsoluteOffset(ellipse.position);
+    }
+
+	std::shared_ptr<State> GetCurrentState() const;
 
 private:
 	Rect absolute_rect_;
 	Rect absolute_paintable_rect_;
+
+    Rect clear_edge_absolute_rect_;
 
 	Renderer renderer_;
 	Layer layer_;

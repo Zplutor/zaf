@@ -267,7 +267,7 @@ public:
         NeedRelayout();
     }
 
-    void Padding(float padding_thickness) {
+    void SetPadding(float padding_thickness) {
         SetPadding(Frame(padding_thickness, padding_thickness, padding_thickness, padding_thickness));
     }
 

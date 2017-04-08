@@ -420,7 +420,7 @@ void Window::Repaint() {
 void Window::NeedRepaintRect(const Rect& rect) {
 
     if (handle_ != nullptr) {
-        RECT win32_rect = MakeClearEdgeRectForFill(rect, ClearEdgeOption::Clear).ToRECT();
+        RECT win32_rect = MakeClearEdgeForFill(rect, ClearEdgeOption::Clear).ToRECT();
         InvalidateRect(handle_, &win32_rect, FALSE);
     }
 }

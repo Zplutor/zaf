@@ -7,7 +7,7 @@ static float CalculateOffsetForLine(float strokw_width);
 static const Rect MakeClearEdgeRect(const Rect& rect, float offset);
 static const Ellipse MakeClearEdgeEllipse(const Ellipse& ellipse, float offset);
 
-const Point MakeClearEdgePointForLine(const Point& point, float stroke_width, ClearEdgeOption option) {
+Point MakeClearEdgeForLine(const Point& point, float stroke_width, ClearEdgeOption option) {
 
 	if (option == ClearEdgeOption::None) {
 		return point;
@@ -21,7 +21,7 @@ const Point MakeClearEdgePointForLine(const Point& point, float stroke_width, Cl
 }
 
 
-const Point MakeClearEdgePointForFill(const Point& point, ClearEdgeOption option) {
+Point MakeClearEdgeForFill(const Point& point, ClearEdgeOption option) {
 
     if (option == ClearEdgeOption::None) {
         return point;
@@ -31,7 +31,7 @@ const Point MakeClearEdgePointForFill(const Point& point, ClearEdgeOption option
 }
 
 
-const Rect MakeClearEdgeRectForLine(const Rect& rect, float stroke_width, ClearEdgeOption option) {
+Rect MakeClearEdgeForLine(const Rect& rect, float stroke_width, ClearEdgeOption option) {
 
 	if (option == ClearEdgeOption::None) {
 		return rect;
@@ -41,7 +41,7 @@ const Rect MakeClearEdgeRectForLine(const Rect& rect, float stroke_width, ClearE
 }
 
 
-const Rect MakeClearEdgeRectForFill(const Rect& rect, ClearEdgeOption option) {
+Rect MakeClearEdgeForFill(const Rect& rect, ClearEdgeOption option) {
 
 	if (option == ClearEdgeOption::None) {
 		return rect;
@@ -51,23 +51,23 @@ const Rect MakeClearEdgeRectForFill(const Rect& rect, ClearEdgeOption option) {
 }
 
 
-const RoundedRect MakeClearEdgeRoundedRectForLine(const RoundedRect& rounded_rect, float stroke_width, ClearEdgeOption option) {
+RoundedRect MakeClearEdgeForLine(const RoundedRect& rounded_rect, float stroke_width, ClearEdgeOption option) {
     return RoundedRect(
-        MakeClearEdgeRectForLine(rounded_rect.rect, stroke_width, option),
+        MakeClearEdgeForLine(rounded_rect.rect, stroke_width, option),
         rounded_rect.x_radius,
         rounded_rect.y_radius);
 }
 
 
-const RoundedRect MakeClearEdgeRoundedRectForFill(const RoundedRect& rounded_rect, ClearEdgeOption option) {
+RoundedRect MakeClearEdgeForFill(const RoundedRect& rounded_rect, ClearEdgeOption option) {
     return RoundedRect(
-        MakeClearEdgeRectForFill(rounded_rect.rect, option),
+        MakeClearEdgeForFill(rounded_rect.rect, option),
         rounded_rect.x_radius,
         rounded_rect.y_radius);
 }
 
 
-const Ellipse MakeClearEdgeEllipseForLine(const Ellipse& ellipse, float stroke_width, ClearEdgeOption option) {
+Ellipse MakeClearEdgeForLine(const Ellipse& ellipse, float stroke_width, ClearEdgeOption option) {
 
 	if (option == ClearEdgeOption::None) {
 		return ellipse;
@@ -77,7 +77,7 @@ const Ellipse MakeClearEdgeEllipseForLine(const Ellipse& ellipse, float stroke_w
 }
 
 
-const Ellipse MakeClearEdgeEllipseForFill(const Ellipse& ellipse, ClearEdgeOption option) {
+Ellipse MakeClearEdgeForFill(const Ellipse& ellipse, ClearEdgeOption option) {
 
 	if (option == ClearEdgeOption::None) {
 		return ellipse;

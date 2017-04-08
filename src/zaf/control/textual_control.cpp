@@ -405,10 +405,15 @@ Size TextualControl::DetermineRequiredSize(const Size& max_size) const {
         return Size();
     }
 
-    text_layout.SetMaxWidth(max_size.width);
-    text_layout.SetMaxHeight(max_size.height);
+    const auto& padding = GetPadding();
+    const auto& border = GetBorder();
+    float extract_width = padding.left + padding.right + border.left + border.right;
+    float extract_height = padding.top + padding.bottom + border.top + border.bottom;
+    
+    text_layout.SetMaxWidth(max_size.width - extract_width);
+    text_layout.SetMaxHeight(max_size.height - extract_height);
     auto metrics = text_layout.GetMetrics();
-    return Size(metrics.width, metrics.height);
+    return Size(metrics.width + extract_width, metrics.height + extract_height);
 }
 
 

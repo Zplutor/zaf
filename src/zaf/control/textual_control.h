@@ -182,7 +182,7 @@ public:
      */
     TextChangeEvent::Proxy GetTextChangeEvent();
 
-    Size DetermineRequiredSize(const Size& max_size) const;
+    virtual Size DetermineRequiredSize(const Size& max_size) const;
 
     Size DetermineRequiredSize() const {
         float max = std::numeric_limits<float>::max();

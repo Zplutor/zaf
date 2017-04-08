@@ -12,16 +12,16 @@ enum class ClearEdgeOption {
 	Clear,
 };
 
-const Point MakeClearEdgePointForLine(const Point& point, float stroke_width, ClearEdgeOption option);
-const Point MakeClearEdgePointForFill(const Point& point, ClearEdgeOption option);
+Point MakeClearEdgeForLine(const Point& point, float stroke_width, ClearEdgeOption option);
+Point MakeClearEdgeForFill(const Point& point, ClearEdgeOption option);
 
-const Rect MakeClearEdgeRectForLine(const Rect& rect, float stroke_width, ClearEdgeOption option);
-const Rect MakeClearEdgeRectForFill(const Rect& rect, ClearEdgeOption option);
+Rect MakeClearEdgeForLine(const Rect& rect, float stroke_width, ClearEdgeOption option);
+Rect MakeClearEdgeForFill(const Rect& rect, ClearEdgeOption option);
 
-const RoundedRect MakeClearEdgeRoundedRectForLine(const RoundedRect& rounded_rect, float stroke_width, ClearEdgeOption option);
-const RoundedRect MakeClearEdgeRoundedRectForFill(const RoundedRect& rounded_rect, ClearEdgeOption option);
+RoundedRect MakeClearEdgeForLine(const RoundedRect& rounded_rect, float stroke_width, ClearEdgeOption option);
+RoundedRect MakeClearEdgeForFill(const RoundedRect& rounded_rect, ClearEdgeOption option);
 
-const Ellipse MakeClearEdgeEllipseForLine(const Ellipse& ellipse, float stroke_width, ClearEdgeOption option);
-const Ellipse MakeClearEdgeEllipseForFill(const Ellipse& ellipse, ClearEdgeOption option);
+Ellipse MakeClearEdgeForLine(const Ellipse& ellipse, float stroke_width, ClearEdgeOption option);
+Ellipse MakeClearEdgeForFill(const Ellipse& ellipse, ClearEdgeOption option);
 
 }
