@@ -6,6 +6,8 @@ void ConversationMemberView::Initialize() {
 
     __super::Initialize();
 
+    SetBorder(zaf::Frame(1, 0, 0, 0));
+    SetBorderColor(zaf::Color::FromRGB(0xD5DDE7));
     SetBackgroundColor(zaf::Color::FromRGB(0xECF0F3));
 
     SetAllowHorizontalScroll(false);

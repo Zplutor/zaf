@@ -184,7 +184,7 @@ static void DrawMemberAvatarImagesToConversationAvatarRenderer(
         }
 
         auto avatar_rect = member_avatar_rects[index];
-        avatar_rect = zaf::MakeClearEdgeRectForFill(avatar_rect, zaf::ClearEdgeOption::Clear);
+        avatar_rect = zaf::MakeClearEdgeForFill(avatar_rect, zaf::ClearEdgeOption::Clear);
 
         auto image_scaler = zaf::GetResourceFactory()->CreateImageScaler();
         image_scaler.Initialize(member_avatars[index], avatar_rect.size, zaf::ImageInterpolationMode::Fant);

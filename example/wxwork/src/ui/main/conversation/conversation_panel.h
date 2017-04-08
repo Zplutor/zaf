@@ -23,4 +23,6 @@ private:
     std::shared_ptr<ConversationAvatarManager> conversation_avatar_manager_;
     std::shared_ptr<ConversationListView> conversation_list_view_;
     std::shared_ptr<ConversationDetailView> conversation_detail_view_;
+
+    Id current_conversation_id_ = InvalidId;
 };

@@ -1,8 +1,13 @@
 #include "ui/main/conversation/detail/member/member_item.h"
+#include <zaf/graphic/canvas.h>
+
+static const float IconSize = 8;
 
 void MemberItem::Initialize() {
 
     __super::Initialize();
+
+    SetPadding(zaf::Frame(10, 0, 0, 0));
 
     SetBackgroundColorPicker([this](const Control&) {
     
@@ -20,4 +25,31 @@ void MemberItem::Initialize() {
     SetDefaultTextColor(zaf::Color::Black);
 
     SetParagraphAlignment(zaf::ParagraphAlignment::Center);
+}
+
+
+void MemberItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
+
+    __super::Paint(canvas, dirty_rect);
+
+    auto content_rect = GetContentRect();
+
+    float radius = IconSize / 2;
+
+    zaf::Ellipse ellipse(
+        zaf::Point(content_rect.position.x + radius, content_rect.size.height / 2),
+        radius,
+        radius);
+
+    std::uint32_t color_rgb = gender_ == User::Gender::Female ? 0xFDA357 : 0x7CA3D2;
+    canvas.SetBrushWithColor(zaf::Color::FromRGB(color_rgb));
+    canvas.DrawEllipse(ellipse);
+}
+
+
+zaf::Rect MemberItem::GetTextRect() {
+
+    auto text_rect = GetContentRect();
+    text_rect.Deflate(zaf::Frame(IconSize + 5, 0, 0, 0));
+    return text_rect;
 }

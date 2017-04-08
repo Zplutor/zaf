@@ -22,6 +22,8 @@ void ConversationListView::Initialize() {
 
     __super::Initialize();
 
+    SetAllowHorizontalScroll(false);
+
     auto vertical_scroll_bar = GetVerticalScrollBar();
     vertical_scroll_bar->SetSmallChangeValue(64);
     vertical_scroll_bar->SetLargeChangeValue(64 * 10);
@@ -81,8 +83,8 @@ void ConversationListView::ConversationUpdate(const std::shared_ptr<Conversation
         conversations_.begin(),
         conversations_.end(),
         [&updated_conversation](const std::shared_ptr<Conversation>& conversation) {
-        return conversation->id == updated_conversation->id;
-    }
+            return conversation->id == updated_conversation->id;
+        }
     );
 
     if (iterator == conversations_.end()) {
@@ -90,6 +92,8 @@ void ConversationListView::ConversationUpdate(const std::shared_ptr<Conversation
     }
 
     std::size_t old_index = std::distance(conversations_.begin(), iterator);
+    bool is_selected = IsItemSelectedAtIndex(old_index);
+
     conversations_.erase(iterator);
     NotifyItemRemove(old_index, 1);
 
@@ -103,6 +107,10 @@ void ConversationListView::ConversationUpdate(const std::shared_ptr<Conversation
 
     std::size_t new_index = std::distance(conversations_.begin(), insert_iterator);
     NotifyItemAdd(new_index, 1);
+
+    if (is_selected) {
+        SelectItemAtIndex(new_index);
+    }
 }
 
 

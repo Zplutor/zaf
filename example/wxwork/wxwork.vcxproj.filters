@@ -40,6 +40,18 @@
     <Filter Include="src\ui\main\conversation\detail\member">
       <UniqueIdentifier>{b417af38-6868-4e39-ae6c-65cf461306f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ui\main\conversation\detail\header">
+      <UniqueIdentifier>{cf077247-2352-4bff-9e5a-8a5222fb6909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui\main\conversation\common">
+      <UniqueIdentifier>{57b2d1ef-87f7-4226-98c4-ff588ce04f83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui\main\conversation\detail\chat">
+      <UniqueIdentifier>{91aede9a-febe-4500-8f27-dfcf272c9597}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui\main\conversation\detail\chat\message">
+      <UniqueIdentifier>{c85d5f1d-fcdb-44c7-8a84-ec4f20b11294}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -104,6 +116,24 @@
     </ClCompile>
     <ClCompile Include="src\ui\main\conversation\detail\member\member_item.cpp">
       <Filter>src\ui\main\conversation\detail\member</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\main\conversation\detail\header\conversation_header_view.cpp">
+      <Filter>src\ui\main\conversation\detail\header</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\main\conversation\common\title_generating.cpp">
+      <Filter>src\ui\main\conversation\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\main\conversation\detail\chat\conversation_chat_view.cpp">
+      <Filter>src\ui\main\conversation\detail\chat</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\main\conversation\detail\chat\message\conversation_message_list_view.cpp">
+      <Filter>src\ui\main\conversation\detail\chat\message</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\main\conversation\detail\chat\message\message_item.cpp">
+      <Filter>src\ui\main\conversation\detail\chat\message</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\main\conversation\detail\chat\message\message_content_bubble.cpp">
+      <Filter>src\ui\main\conversation\detail\chat\message</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +217,24 @@
     </ClInclude>
     <ClInclude Include="src\ui\main\conversation\detail\member\member_item.h">
       <Filter>src\ui\main\conversation\detail\member</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\detail\header\conversation_header_view.h">
+      <Filter>src\ui\main\conversation\detail\header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\common\title_generating.h">
+      <Filter>src\ui\main\conversation\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\detail\chat\conversation_chat_view.h">
+      <Filter>src\ui\main\conversation\detail\chat</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\detail\chat\message\conversation_message_list_view.h">
+      <Filter>src\ui\main\conversation\detail\chat\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\detail\chat\message\message_item.h">
+      <Filter>src\ui\main\conversation\detail\chat\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\main\conversation\detail\chat\message\message_content_bubble.h">
+      <Filter>src\ui\main\conversation\detail\chat\message</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

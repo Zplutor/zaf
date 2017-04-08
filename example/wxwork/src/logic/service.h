@@ -36,6 +36,10 @@ public:
         return message_storage_.GetConversationLastMessage(conversation_id);
     }
 
+    std::vector<std::shared_ptr<Message>> GetConversationMessages(Id conversation_id) {
+        return message_storage_.GetConversationMessages(conversation_id);
+    }
+
     std::size_t GetConversationUnreadMessageCount(Id conversation_id) {
         return message_storage_.GetConversationUnreadMessageCount(conversation_id);
     }

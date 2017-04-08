@@ -8,6 +8,8 @@ void ConversationPanel::Initialize() {
     conversation_avatar_manager_ = std::make_shared<ConversationAvatarManager>();
 
     SetIsHorizontal(false);
+    SetMinimumSplitBarDistance(250);
+    SetMaximumSplitBarDistance(300);
 
     InitializeLeftPane();
     InitializeRightPane();
@@ -50,6 +52,11 @@ void ConversationPanel::ConversationListViewSelectionChange() {
         return;
     }
 
+    if (selected_conversation->id == current_conversation_id_) {
+        return;
+    }
+
+    current_conversation_id_ = selected_conversation->id;
     conversation_detail_view_->SetConversation(selected_conversation);
 }
 

@@ -86,10 +86,9 @@ std::vector<Id> MessageStorage::AddMessages(const std::vector<std::shared_ptr<Me
 
         //Add to conversation messages.
         auto& messages_in_conversation = conversation_messages_[each_pair.first];
-        messages_in_conversation.insert(
-            messages_in_conversation.end(),
-            messages_to_add.begin(),
-            messages_to_add.end());
+        for (const auto& each_message : messages_to_add) {
+            messages_in_conversation.push_back(each_message->id);
+        }
 
         //Sort messages by sent time, get last message.
         std::sort(
