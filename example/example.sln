@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "control_explorer", "control
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxwork", "wxwork\wxwork.vcxproj", "{24238F01-4EC8-4FBD-A33E-49E2418A669C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "login", "login\login.vcxproj", "{31F506F0-E266-4ACC-9026-BCB0FE6371DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -33,6 +35,10 @@ Global
 		{24238F01-4EC8-4FBD-A33E-49E2418A669C}.Debug|Win32.Build.0 = Debug|Win32
 		{24238F01-4EC8-4FBD-A33E-49E2418A669C}.Release|Win32.ActiveCfg = Release|Win32
 		{24238F01-4EC8-4FBD-A33E-49E2418A669C}.Release|Win32.Build.0 = Release|Win32
+		{31F506F0-E266-4ACC-9026-BCB0FE6371DE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{31F506F0-E266-4ACC-9026-BCB0FE6371DE}.Debug|Win32.Build.0 = Debug|Win32
+		{31F506F0-E266-4ACC-9026-BCB0FE6371DE}.Release|Win32.ActiveCfg = Release|Win32
+		{31F506F0-E266-4ACC-9026-BCB0FE6371DE}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
