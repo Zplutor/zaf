@@ -12,9 +12,9 @@ template<typename WindowType>
 struct WindowCreator {
 
     template<typename... ArgumentTypes>
-    static const std::shared_ptr<WindowType> Create(ArgumentTypes&&... arguments) {
+    static std::shared_ptr<WindowType> Create(ArgumentTypes&&... arguments) {
 
-        auto window = std::make_shared<WindowType>(arguments...);
+        auto window = std::make_shared<WindowType>(std::forward(arguments)...);
         window->Initialize();
         return window;
     }
@@ -25,12 +25,22 @@ template<typename ControlType>
 struct ControlCreator {
 
     template<typename... ArgumentTypes>
-    static const std::shared_ptr<ControlType> Create(ArgumentTypes&&... arguments) {
+    static std::shared_ptr<ControlType> Create(ArgumentTypes&&... arguments) {
 
-        auto control = std::make_shared<ControlType>(arguments...);
+        auto control = std::make_shared<ControlType>(std::forward(arguments)...);
         Control::UpdateGuard update_guard(*control);
         control->Initialize();
         return control;
+    }
+};
+
+
+template<typename GenericType>
+struct GenericCreator {
+
+    template<typename... ArgumentTypes>
+    static std::shared_ptr<GenericType> Create(ArgumentTypes&&... arguments) {
+        return std::make_shared<GenericType>(std::forward(arguments)...);
     }
 };
 
@@ -44,7 +54,7 @@ struct Creator {
         typename std::conditional<
             std::is_base_of<Control, ObjectType>::value, 
             ControlCreator<ObjectType>,
-            void
+            GenericCreator<ObjectType>
         >::type
     >::type Type;
 };
@@ -52,17 +62,16 @@ struct Creator {
 }
 
 /**
- Create an object of specified type.
+ Create a smart pointer object of specified type.
 
  ObjectType is the type of object to create, and ArgumentTypes is the arguments passed 
- to the constructor.
-
- ObjectType can be any derived classes of Window or Control. You should always use this
- method to create windows and controls.
+ to its constructor. ObjectType can be any types. 
+ 
+ You should always use this method to create windows and controls for proper initialization.
  */
 template<typename ObjectType, typename... ArgumentTypes>
-const std::shared_ptr<ObjectType> Create(ArgumentTypes&&... arguments) {
-    return internal::Creator<ObjectType>::Type::Create(arguments...);
+std::shared_ptr<ObjectType> Create(ArgumentTypes&&... arguments) {
+    return internal::Creator<ObjectType>::Type::Create(std::forward(arguments)...);
 }
 
 }
