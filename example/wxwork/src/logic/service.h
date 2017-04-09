@@ -32,6 +32,10 @@ public:
         return conversation_storage_.GetAllConversations();
     }
 
+    std::shared_ptr<Conversation> GetConversation(Id conversation_id) {
+        return conversation_storage_.GetConversaton(conversation_id);
+    }
+
     std::shared_ptr<Message> GetConversationLastMessage(Id conversation_id) {
         return message_storage_.GetConversationLastMessage(conversation_id);
     }

@@ -1,4 +1,5 @@
 #include "ui/main/conversation/detail/chat/message/conversation_message_list_view.h"
+#include <zaf/control/scroll_bar.h>
 #include "logic/service.h"
 #include "ui/main/conversation/detail/chat/message/message_item.h"
 
@@ -11,6 +12,9 @@ void ConversationMessageListView::Initialize() {
     SetBackgroundColor(zaf::Color::FromRGB(0xECF0F3));
     GetItemContainer()->SetPadding(zaf::Frame(15, 0, 15, 13));
     SetItemSource(std::dynamic_pointer_cast<zaf::ListControl::ItemSource>(shared_from_this()));
+
+    auto scroll_bar = GetVerticalScrollBar();
+    scroll_bar->SetSmallChangeValue(14);
 }
 
 

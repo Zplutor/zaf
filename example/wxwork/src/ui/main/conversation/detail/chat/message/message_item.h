@@ -22,4 +22,6 @@ private:
 private:
     std::shared_ptr<zaf::Label> sender_label_;
     std::shared_ptr<MessageContentBubble> content_bubble_;
+    bool is_current_user_ = false;
+    bool is_in_group_chat_ = false;
 };

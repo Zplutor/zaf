@@ -17,10 +17,12 @@ void MessageContentBubble::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rec
 
     zaf::RoundedRect bubble_rect(zaf::Rect(zaf::Point(), GetSize()), 4, 4);
 
-    canvas.SetBrushWithColor(zaf::Color::White);
+    auto background_color = style_ == Style::Highlight ? zaf::Color::FromRGB(0xBFDCFF) : zaf::Color::White;
+    canvas.SetBrushWithColor(background_color);
     canvas.DrawRoundedRectangle(bubble_rect);
 
-    canvas.SetBrushWithColor(zaf::Color::FromRGB(0xD0D7DF));
+    auto border_color = style_ == Style::Highlight ? zaf::Color::FromRGB(0xA6C8EE) : zaf::Color::FromRGB(0xD0D7DF);
+    canvas.SetBrushWithColor(border_color);
     canvas.DrawRoundedRectangleFrame(bubble_rect, 1);
 
     __super::Paint(canvas, dirty_rect);

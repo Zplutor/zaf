@@ -13,6 +13,17 @@ std::vector<std::shared_ptr<Conversation>> ConversationStorage::GetAllConversati
 }
 
 
+std::shared_ptr<Conversation> ConversationStorage::GetConversaton(Id conversation_id) {
+
+    auto iterator = conversations_.find(conversation_id);
+    if (iterator == conversations_.end()) {
+        return nullptr;
+    }
+
+    return std::make_shared<Conversation>(*iterator->second);
+}
+
+
 std::vector<Id> ConversationStorage::AddConversations(const std::vector<std::shared_ptr<Conversation>>& conversations) {
 
     std::vector<Id> added_ids;
