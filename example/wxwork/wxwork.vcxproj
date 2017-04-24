@@ -96,6 +96,7 @@
     <ClCompile Include="src\ui\main\conversation\conversation_avatar_manager.cpp" />
     <ClCompile Include="src\ui\main\conversation\conversation_panel.cpp" />
     <ClCompile Include="src\ui\main\conversation\detail\chat\conversation_chat_view.cpp" />
+    <ClCompile Include="src\ui\main\conversation\detail\chat\input\message_input_view.cpp" />
     <ClCompile Include="src\ui\main\conversation\detail\chat\message\message_content_bubble.cpp" />
     <ClCompile Include="src\ui\main\conversation\detail\chat\message\message_item.cpp" />
     <ClCompile Include="src\ui\main\conversation\detail\chat\message\conversation_message_list_view.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="src\ui\main\conversation\conversation_avatar_manager.h" />
     <ClInclude Include="src\ui\main\conversation\conversation_panel.h" />
     <ClInclude Include="src\ui\main\conversation\detail\chat\conversation_chat_view.h" />
+    <ClInclude Include="src\ui\main\conversation\detail\chat\input\message_input_view.h" />
     <ClInclude Include="src\ui\main\conversation\detail\chat\message\message_content_bubble.h" />
     <ClInclude Include="src\ui\main\conversation\detail\chat\message\message_item.h" />
     <ClInclude Include="src\ui\main\conversation\detail\chat\message\conversation_message_list_view.h" />

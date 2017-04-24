@@ -82,6 +82,7 @@ void Service::MessageGeneratingTimerTrigger() {
         auto new_message = GenerateMessage(conversation);
         auto new_message_id = message_storage_.AddMessage(new_message);
         message_storage_.AddUnreadMessage(new_message_id);
+        message_add_event_.Trigger(new_message);
         
         if (conversation->last_updated_time < new_message->sent_time) {
             conversation->last_updated_time = new_message->sent_time;
@@ -91,4 +92,17 @@ void Service::MessageGeneratingTimerTrigger() {
     }
 
     StartMessageGeneratingTimer();
+}
+
+
+void Service::SendMessageToConversation(const std::wstring& content, Id conversation_id) {
+
+    auto new_message = std::make_shared<Message>();
+    new_message->content = content;
+    new_message->conversation_id = conversation_id;
+    new_message->sent_time = std::time(nullptr);
+    new_message->sender_id = current_user_id_;
+
+    message_storage_.AddMessage(new_message);
+    message_add_event_.Trigger(new_message);
 }

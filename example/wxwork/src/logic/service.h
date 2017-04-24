@@ -7,7 +7,8 @@
 
 class Service {
 public:
-    typedef zaf::Event<const std::shared_ptr<Conversation>> ConversationUpdateEvent;
+    typedef zaf::Event<const std::shared_ptr<Conversation>&> ConversationUpdateEvent;
+    typedef zaf::Event<const std::shared_ptr<Message>&> MessageAddEvent;
 
 public:
     static Service& GetInstance();
@@ -48,8 +49,14 @@ public:
         return message_storage_.GetConversationUnreadMessageCount(conversation_id);
     }
 
+    void SendMessageToConversation(const std::wstring& content, Id conversation_id);
+
     ConversationUpdateEvent::Proxy GetConversationUpdateEvent() {
         return ConversationUpdateEvent::Proxy(conversation_update_event_);
+    }
+
+    MessageAddEvent::Proxy GetMessageAddEvent() {
+        return MessageAddEvent::Proxy(message_add_event_);
     }
 
 private:
@@ -73,4 +80,5 @@ private:
     std::shared_ptr<zaf::Timer> message_generating_timer_;
 
     ConversationUpdateEvent conversation_update_event_;
+    MessageAddEvent message_add_event_;
 };

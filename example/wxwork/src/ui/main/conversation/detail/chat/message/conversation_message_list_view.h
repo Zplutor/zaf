@@ -7,6 +7,8 @@
 
 class ConversationMessageListView : public zaf::ListControl, public zaf::ListControl::ItemSource {
 public:
+    ~ConversationMessageListView();
+
     void Initialize() override;
 
     std::size_t GetItemCount() override;
@@ -25,6 +27,10 @@ private:
         std::shared_ptr<Message> message;
         std::shared_ptr<MessageItem> message_item;
     };
+
+private:
+    std::shared_ptr<MessageItemInfo> CreateMessageItemInfo(const std::shared_ptr<Message>& message);
+    void OnMessageAdd(const std::shared_ptr<Message>& message);
 
 private:
     Id conversation_id_ = InvalidId;

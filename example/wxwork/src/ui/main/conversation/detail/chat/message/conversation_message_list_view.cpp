@@ -1,7 +1,30 @@
 #include "ui/main/conversation/detail/chat/message/conversation_message_list_view.h"
+#include <algorithm>
 #include <zaf/control/scroll_bar.h>
 #include "logic/service.h"
 #include "ui/main/conversation/detail/chat/message/message_item.h"
+
+inline bool MessageComparer(
+    const std::shared_ptr<Message>& message1, 
+    const std::shared_ptr<Message>& message2) {
+
+    if (message1->sent_time < message2->sent_time) {
+        return true;
+    }
+
+    if (message1->sent_time > message2->sent_time) {
+        return false;
+    }
+
+    return message1->id < message2->id;
+}
+
+
+ConversationMessageListView::~ConversationMessageListView() {
+
+    Service::GetInstance().GetMessageAddEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
+}
+
 
 void ConversationMessageListView::Initialize() {
 
@@ -15,6 +38,10 @@ void ConversationMessageListView::Initialize() {
 
     auto scroll_bar = GetVerticalScrollBar();
     scroll_bar->SetSmallChangeValue(14);
+
+    Service::GetInstance().GetMessageAddEvent().AddListenerWithTag(
+        reinterpret_cast<std::uintptr_t>(this),
+        std::bind(&ConversationMessageListView::OnMessageAdd, this, std::placeholders::_1));
 }
 
 
@@ -22,29 +49,67 @@ void ConversationMessageListView::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    NotifyItemUpdate(0, message_item_infos_.size());
+    //Update all items' height if width is changed.
+    if (previous_rect.size.width != GetSize().width) {
+        NotifyItemUpdate(0, message_item_infos_.size());
+    }
 }
 
 
 void ConversationMessageListView::SetConversation(const std::shared_ptr<Conversation>& conversation) {
 
     conversation_id_ = conversation->id;
+
     auto messages = Service::GetInstance().GetConversationMessages(conversation_id_);
+    std::sort(messages.begin(), messages.end(), MessageComparer);
 
     message_item_infos_.clear();
     for (const auto& each_message : messages) {
 
-        auto message_item = zaf::Create<MessageItem>();
-        message_item->SetMessage(each_message);
-
-        auto message_item_info = std::make_shared<MessageItemInfo>();
-        message_item_info->message = each_message;
-        message_item_info->message_item = message_item;
+        auto message_item_info = CreateMessageItemInfo(each_message);
         message_item_infos_.push_back(message_item_info);
     }
 
     Reload();
-    ScrollToItemAtIndex(message_item_infos_.size() - 1);
+    ScrollDownToEnd();
+}
+
+
+std::shared_ptr<ConversationMessageListView::MessageItemInfo> 
+    ConversationMessageListView::CreateMessageItemInfo(const std::shared_ptr<Message>& message) {
+
+    auto message_item = zaf::Create<MessageItem>();
+    message_item->SetMessage(message);
+
+    auto message_item_info = std::make_shared<MessageItemInfo>();
+    message_item_info->message = message;
+    message_item_info->message_item = message_item;
+
+    return message_item_info;
+}
+
+
+void ConversationMessageListView::OnMessageAdd(const std::shared_ptr<Message>& message) {
+
+    if (message->conversation_id != conversation_id_) {
+        return;
+    }
+
+    auto message_item_info = CreateMessageItemInfo(message);
+    auto insert_iterator = std::upper_bound(
+        message_item_infos_.begin(),
+        message_item_infos_.end(),
+        message_item_info,
+        [](const std::shared_ptr<MessageItemInfo>& item1, const std::shared_ptr<MessageItemInfo>& item2) {
+            return MessageComparer(item1->message, item2->message);
+        }
+    );
+
+    insert_iterator = message_item_infos_.insert(insert_iterator, message_item_info);
+
+    std::size_t insert_index = std::distance(message_item_infos_.begin(), insert_iterator);
+    NotifyItemAdd(insert_index, 1);
+    ScrollDownToEnd();
 }
 
 

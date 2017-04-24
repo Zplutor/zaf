@@ -9,10 +9,14 @@ void ConversationChatView::Initialize() {
 
     message_list_view_ = zaf::Create<ConversationMessageListView>();
     SetFirstPane(message_list_view_);
+
+    message_input_view_ = zaf::Create<MessageInputView>();
+    SetSecondPane(message_input_view_);
 }
 
 
 void ConversationChatView::SetConversation(const std::shared_ptr<Conversation>& conversation) {
 
     message_list_view_->SetConversation(conversation);
+    message_input_view_->SetConversation(conversation);
 }

@@ -546,4 +546,28 @@ void ScrollableControl::ScrollToScrollContentPosition(const Point& position) {
 }
 
 
+void ScrollableControl::ScrollUpToBegin() {
+    const auto& vertical_scroll_bar = GetVerticalScrollBar();
+    vertical_scroll_bar->SetValue(vertical_scroll_bar->GetMinimumValue()); 
+}
+
+
+void ScrollableControl::ScrollDownToEnd() {
+    const auto& vertical_scroll_bar = GetVerticalScrollBar();
+    vertical_scroll_bar->SetValue(vertical_scroll_bar->GetMaximumValue());
+}
+
+
+void ScrollableControl::ScrollLeftToBegin() {
+    const auto& horizontal_scroll_bar = GetHorizontalScrollBar();
+    horizontal_scroll_bar->SetValue(horizontal_scroll_bar->GetMinimumValue());
+}
+
+
+void ScrollableControl::ScrollRightToEnd() {
+    const auto& horizontal_scroll_bar = GetHorizontalScrollBar();
+    horizontal_scroll_bar->SetValue(horizontal_scroll_bar->GetMaximumValue());
+}
+
+
 }

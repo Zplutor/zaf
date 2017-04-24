@@ -137,6 +137,11 @@ public:
      */
     void SetScrollContentSize(const Size& size);
 
+    void ScrollUpToBegin();
+    void ScrollDownToEnd();
+    void ScrollLeftToBegin();
+    void ScrollRightToEnd();
+
 protected:
 	void Layout(const Rect& previous_rect) override;
 
