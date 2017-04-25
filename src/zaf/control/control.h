@@ -7,6 +7,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <zaf/base/event.h>
 #include <zaf/base/property_map.h>
 #include <zaf/control/anchor.h>
 #include <zaf/control/color_picker.h>
@@ -66,6 +67,11 @@ public:
     private:
         Control& control_;
     };
+
+    /**
+     Type of focus change event.
+     */
+    typedef Event<const std::shared_ptr<Control>&> FocusChangeEvent;
 
 public:
 	Control();
@@ -517,6 +523,13 @@ public:
      This methods takes effect only when the control is contained in a window.
 	 */
 	void SetIsFocused(bool is_focused);
+
+    /**
+     Get focus change event.
+
+     This event is raised when the control's focus is changed.
+     */
+    FocusChangeEvent::Proxy GetFocusChangeEvent();
 
     /**
      Capture the mouse.

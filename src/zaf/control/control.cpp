@@ -1,6 +1,7 @@
 #include <zaf/control/control.h>
 #include <algorithm>
 #include <zaf/base/assert.h>
+#include <zaf/base/event_utility.h>
 #include <zaf/control/layout/anchor_layouter.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font/font.h>
@@ -16,18 +17,22 @@
 #undef min
 
 namespace zaf {
+namespace {
 
-static const wchar_t* const kAnchorPropertyName = L"Anchor";
-static const wchar_t* const kBackgroundColorPickerPropertyName = L"BackgroundColorPicker";
-static const wchar_t* const kBorderColorPickerPropertyName = L"BorderColorPicker";
-static const wchar_t* const kCanTabStopPropertyName = L"CanTabStop";
-static const wchar_t* const kLayouterPropertyName = L"Layouter";
-static const wchar_t* const kMaximumHeightPropertyName = L"MaximumHeight";
-static const wchar_t* const kMaximumWidthPropertyName = L"MaximumWidth";
-static const wchar_t* const kMinimumHeightPropertyName = L"MinimumHeight";
-static const wchar_t* const kMinimumWidthPropertyName = L"MiniimumWidth";
-static const wchar_t* const kNamePropertyName = L"Name";
-static const wchar_t* const kTabIndexPropertyName = L"TabIndex";
+const wchar_t* const kAnchorPropertyName = L"Anchor";
+const wchar_t* const kBackgroundColorPickerPropertyName = L"BackgroundColorPicker";
+const wchar_t* const kBorderColorPickerPropertyName = L"BorderColorPicker";
+const wchar_t* const kCanTabStopPropertyName = L"CanTabStop";
+const wchar_t* const kFocusChangeEventPropertyName = L"FocusChangeEvent";
+const wchar_t* const kLayouterPropertyName = L"Layouter";
+const wchar_t* const kMaximumHeightPropertyName = L"MaximumHeight";
+const wchar_t* const kMaximumWidthPropertyName = L"MaximumWidth";
+const wchar_t* const kMinimumHeightPropertyName = L"MinimumHeight";
+const wchar_t* const kMinimumWidthPropertyName = L"MiniimumWidth";
+const wchar_t* const kNamePropertyName = L"Name";
+const wchar_t* const kTabIndexPropertyName = L"TabIndex";
+
+}
 
 Control::Control() : 
     update_count_(0),
@@ -834,6 +839,16 @@ void Control::IsFocusedChanged(bool is_focused) {
 	else {
 		FocusLose();
 	}
+
+    auto focus_change_event = TryGetEventFromPropertyMap<FocusChangeEvent>(GetPropertyMap(), kFocusChangeEventPropertyName);
+    if (focus_change_event != nullptr) {
+        focus_change_event->Trigger(shared_from_this());
+    }
+}
+
+
+Control::FocusChangeEvent::Proxy Control::GetFocusChangeEvent() {
+    return GetEventProxyFromPropertyMap<FocusChangeEvent>(GetPropertyMap(), kFocusChangeEventPropertyName);
 }
 
 
