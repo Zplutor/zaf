@@ -22,6 +22,7 @@ void ConversationListView::Initialize() {
 
     __super::Initialize();
 
+    SetBorder(0);
     SetAllowHorizontalScroll(false);
 
     auto vertical_scroll_bar = GetVerticalScrollBar();

@@ -17,6 +17,7 @@ protected:
     bool KeyDown(const zaf::KeyMessage& message) override;
 
 private:
+    void TextBoxFocusChange();
     void SendButtonClick();
 
 private:

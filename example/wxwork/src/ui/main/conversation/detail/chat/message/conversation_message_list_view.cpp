@@ -30,6 +30,7 @@ void ConversationMessageListView::Initialize() {
 
     __super::Initialize();
 
+    SetBorder(0);
     SetSelectionMode(SelectionMode::None);
     SetAllowHorizontalScroll(false);
     SetBackgroundColor(zaf::Color::FromRGB(0xECF0F3));

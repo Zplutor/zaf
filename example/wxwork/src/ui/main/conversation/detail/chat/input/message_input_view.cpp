@@ -11,15 +11,36 @@ void MessageInputView::Initialize() {
     SetLayouter(zaf::GetVerticalArrayLayouter());
 
     text_box_ = zaf::Create<zaf::TextBox>();
+    text_box_->SetBorder(0);
+    text_box_->SetBackgroundColor(zaf::Color::Transparent);
+    text_box_->GetFocusChangeEvent().AddListener(std::bind(&MessageInputView::TextBoxFocusChange, this));
     AddChild(text_box_);
 
     send_button_ = zaf::Create<zaf::Button>();
+    send_button_->SetBorder(0);
+    send_button_->SetBackgroundColor(zaf::Color::Transparent);
+    send_button_->SetDefaultTextColorPicker([](const Control& control) {
+        return zaf::Color::FromRGB(control.IsHovered() ? 0x3986E0 : 0x788894);
+    });
     send_button_->SetText(L"Send");
     send_button_->SetCanFocused(false);
-    send_button_->SetMaximumHeight(30);
-    send_button_->SetMinimumHeight(30);
     send_button_->GetClickEvent().AddListener(std::bind(&MessageInputView::SendButtonClick, this));
-    AddChild(send_button_);
+
+    auto send_button_container = zaf::Create<zaf::Control>();
+    send_button_container->SetLayouter(zaf::GetHorizontalArrayLayouter());
+    send_button_container->SetBackgroundColor(zaf::Color::Transparent);
+    send_button_container->SetMaximumHeight(30);
+    send_button_container->SetMinimumHeight(30);
+    send_button_container->AddChild(send_button_);
+
+    AddChild(send_button_container);
+
+    TextBoxFocusChange();
+}
+
+
+void MessageInputView::TextBoxFocusChange() {
+    SetBackgroundColor(zaf::Color::FromRGB(text_box_->IsFocused() ? 0xF3F7FA : 0xECF0F3));
 }
 
 
