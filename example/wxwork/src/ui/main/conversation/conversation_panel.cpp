@@ -11,6 +11,7 @@ void ConversationPanel::Initialize() {
     SetSplitBarDistance(250);
     SetMinimumSplitBarDistance(250);
     SetMaximumSplitBarDistance(300);
+    GetSplitBar()->SetSplitterColor(zaf::Color::FromRGB(0xD5DDE7));
 
     InitializeLeftPane();
     InitializeRightPane();

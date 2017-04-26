@@ -6,6 +6,7 @@ void ConversationChatView::Initialize() {
     __super::Initialize();
 
     SetIsHorizontal(true);
+    GetSplitBar()->SetSplitterColor(zaf::Color::FromRGB(0xD5DDE7));
 
     message_list_view_ = zaf::Create<ConversationMessageListView>();
     SetFirstPane(message_list_view_);

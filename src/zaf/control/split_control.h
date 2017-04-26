@@ -25,6 +25,17 @@ public:
             is_horizontal_ = is_horizontal;
         }
 
+        ColorPicker GetSplitterColorPicker() const;
+        void SetSplitterColorPicker(const ColorPicker& color_picker);
+
+        Color GetSplitterColor() const {
+            return GetSplitterColorPicker()(*this);
+        }
+
+        void SetSplitterColor(const Color& color) {
+            SetSplitterColorPicker([color](const Control&) { return color; });
+        }
+
         BeginDragEvent::Proxy GetBeginDragEvent() {
             return BeginDragEvent::Proxy(begin_drag_event_);
         }

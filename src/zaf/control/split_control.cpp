@@ -10,12 +10,14 @@
 #endif
 
 namespace zaf {
-
-static const wchar_t* const kIsHorizontalPropertyName = L"IsHorizontal";
-static const wchar_t* const kMaximumSplitBarDistanceProprtyName = L"MaximumSplitBarDistance";
-static const wchar_t* const kMinimumSplitBarDistanceProprtyName = L"MinimumSplitBarDistance";
-static const wchar_t* const kSplitBarDistancePropertyName = L"SplitBarDistance";
-static const wchar_t* const kSplitBarThicknessPropertyName = L"SplitBarThickness";
+namespace {
+const wchar_t* const kIsHorizontalPropertyName = L"IsHorizontal";
+const wchar_t* const kMaximumSplitBarDistanceProprtyName = L"MaximumSplitBarDistance";
+const wchar_t* const kMinimumSplitBarDistanceProprtyName = L"MinimumSplitBarDistance";
+const wchar_t* const kSplitBarDistancePropertyName = L"SplitBarDistance";
+const wchar_t* const kSplitBarThicknessPropertyName = L"SplitBarThickness";
+const wchar_t* const kSplitterColorPickerPropertyName = L"SplitterColorPicker";
+}
 
 SplitControl::SplitControl() {
 
@@ -322,8 +324,27 @@ void SplitControl::SplitBar::Paint(Canvas& canvas, const Rect& dirty_rect) {
     }
 
     Canvas::StateGuard state_guard(canvas);
-    canvas.SetBrushWithColor(Color::Black);
+    canvas.SetBrushWithColor(GetSplitterColor());
     canvas.DrawLine(start_point, end_point, 1);
+}
+
+
+ColorPicker SplitControl::SplitBar::GetSplitterColorPicker() const {
+
+    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kSplitterColorPickerPropertyName);
+    if ((color_picker != nullptr) && (*color_picker != nullptr)) {
+        return *color_picker;
+    }
+
+    return [](const Control&) {
+        return zaf::Color::Black;
+    };
+}
+
+
+void SplitControl::SplitBar::SetSplitterColorPicker(const ColorPicker& color_picker) {
+    GetPropertyMap().SetProperty(kSplitterColorPickerPropertyName, color_picker);
+    NeedRepaint();
 }
 
 
