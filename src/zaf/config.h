@@ -4,3 +4,4 @@
 #pragma comment(lib, "dwrite.lib")
 #pragma comment(lib, "propsys.lib")
 #pragma comment(lib, "windowscodecs.lib")
+#pragma comment(lib, "zaf.lib")
