@@ -41,8 +41,8 @@ public:
     void Click();
 
 protected:
-	void MouseEnter() override;
-	void MouseLeave() override;
+	void MouseEnter(const std::shared_ptr<Control>& entered_control) override;
+    void MouseLeave(const std::shared_ptr<Control>& leaved_control) override;
     void MouseMove(const Point& position, const MouseMessage& message) override;
     void MouseDown(const Point& position, const MouseMessage& message) override;
     void MouseUp(const Point& position, const MouseMessage& message) override;

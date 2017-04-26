@@ -460,11 +460,16 @@ public:
 	void SetIsEnabled(bool is_enabled);
 
 	/**
-	 Get a value indicating that whether the control is hovered.
+	 Get a value indicating that whether the control itself is hovered.
 	 */
 	bool IsHovered() const {
 		return is_hovered_;
 	}
+
+    /**
+     Get a value indicating that whether one of the control's children is hovered.
+     */
+    bool IsHoveredIndirectly() const;
 
 	/**
 	 Get a value indicating that whether the control can be focused.
@@ -676,18 +681,24 @@ protected:
     /**
      Process the mouse enter notification.
 
+     @param entered_control
+         The control which mouse enters. It is the current control or its children.
+
      This method is called when the mouse has entered the control. Derived classes should 
      call the same method of base class if they don't process the notification.
      */
-	virtual void MouseEnter();
+	virtual void MouseEnter(const std::shared_ptr<Control>& entered_control);
 
     /**
      Process the mouse leave notification.
 
+     @param entered_control
+         The control which mouse leaves. It is the current control or its children.
+
      This method is called when the mouse has left the control. Derived classes should 
      call the same method of base class if they don't process the notifiction.
      */
-	virtual void MouseLeave();
+    virtual void MouseLeave(const std::shared_ptr<Control>& leaved_control);
 
     /**
      Process the mouse down notification.

@@ -44,13 +44,17 @@ void ClickableControl::Click() {
 }
 
 
-void ClickableControl::MouseEnter() {
-	NeedRepaint();
+void ClickableControl::MouseEnter(const std::shared_ptr<Control>& entered_control) {
+    if (entered_control.get() == this) {
+	    NeedRepaint();
+    }
 }
 
 
-void ClickableControl::MouseLeave() {
-	NeedRepaint();
+void ClickableControl::MouseLeave(const std::shared_ptr<Control>& leaved_control) {
+    if (leaved_control.get() == this) {
+	    NeedRepaint();
+    }
 }
 
 

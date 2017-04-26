@@ -308,6 +308,13 @@ public:
         return capturing_mouse_control_;
     }
 
+    /**
+     Get the control which is being hovered.
+     */
+    const std::shared_ptr<Control>& GetHoveredControl() const {
+        return hovered_control_;
+    }
+
 	/**
 	 Get the control which has input focus in the window.
  	 */

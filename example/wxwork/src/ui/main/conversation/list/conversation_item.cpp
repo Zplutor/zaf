@@ -54,7 +54,7 @@ void ConversationItem::Initialize() {
             return zaf::Color::FromRGB(0xE8F3FB);
         }
 
-        if (item.GetContentRect().Contain(item.GetMousePosition())) {
+        if (item.IsHovered() || item.IsHoveredIndirectly()) {
             return zaf::Color::FromRGB(0xF3F8FA);
         }
 

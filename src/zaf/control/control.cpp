@@ -764,11 +764,27 @@ void Control::IsHoveredChanged(bool is_hovered) {
 	is_hovered_ = is_hovered;
 
 	if (is_hovered_) {
-		MouseEnter();
+		MouseEnter(shared_from_this());
 	}
 	else {
-		MouseLeave();
+        MouseLeave(shared_from_this());
 	}
+}
+
+
+bool Control::IsHoveredIndirectly() const {
+
+    auto window = GetWindow();
+    if (window == nullptr) {
+        return false;
+    }
+
+    const auto& hovered_control = window->GetHoveredControl();
+    if (hovered_control == nullptr) {
+        return false;
+    }
+
+    return IsAncestorOf(hovered_control);
 }
 
 
@@ -997,13 +1013,21 @@ void Control::MouseMove(const Point& position, const MouseMessage& message) {
 }
 
 
-void Control::MouseEnter() {
+void Control::MouseEnter(const std::shared_ptr<Control>& entered_control) {
 
+    auto parent = GetParent();
+    if (parent != nullptr) {
+        parent->MouseEnter(entered_control);
+    }
 }
 
 
-void Control::MouseLeave() {
+void Control::MouseLeave(const std::shared_ptr<Control>& leaved_control) {
 
+    auto parent = GetParent();
+    if (parent != nullptr) {
+        parent->MouseLeave(leaved_control);
+    }
 }
 
 
