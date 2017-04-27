@@ -6,6 +6,7 @@
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/text_layout.h>
 #include <zaf/graphic/text/text_range.h>
+#include <zaf/graphic/text/text_trimming.h>
 #include <zaf/graphic/text/word_wrapping.h>
 
 #undef max
@@ -174,6 +175,15 @@ public:
      Set word wrapping.
      */
     virtual void SetWordWrapping(WordWrapping word_wrapping);
+
+    TextTrimming GetTextTrimming() const;
+    void SetTextTrimming(const TextTrimming& text_trimming);
+
+    void SetTextTrimming(TextTrimming::Granularity text_trimming_granularity) {
+        TextTrimming text_trimming;
+        text_trimming.granularity = text_trimming_granularity;
+        SetTextTrimming(text_trimming);
+    }
 
     /**
      Get text change event.

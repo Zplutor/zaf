@@ -252,6 +252,9 @@
     <ClCompile Include="src\zaf\graphic\image\image_pixel_format.cpp">
       <Filter>zaf\graphic\image</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\text\text_format.cpp">
+      <Filter>zaf\graphic\text</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -676,6 +679,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\image\image_scaler.h">
       <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\text_inline_object.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\text_trimming.h">
+      <Filter>zaf\graphic\text</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

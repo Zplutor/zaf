@@ -19,6 +19,7 @@
 #include <zaf/graphic/renderer/renderer_properties.h>
 #include <zaf/graphic/renderer/window_renderer.h>
 #include <zaf/graphic/stroke.h>
+#include <zaf/graphic/text/text_inline_object.h>
 #include <zaf/graphic/text/text_layout.h>
 
 namespace zaf {
@@ -218,6 +219,15 @@ public:
     const FontCollection GetSystemFontCollection() {
         std::error_code error_code;
         auto result = GetSystemFontCollection(error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+
+    TextInlineObject CreateCreateEllipsisTrimmingSign(const TextFormat& text_format, std::error_code& error_code);
+
+    TextInlineObject CreateCreateEllipsisTrimmingSign(const TextFormat& text_format) {
+        std::error_code error_code;
+        auto result = CreateCreateEllipsisTrimmingSign(text_format, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }

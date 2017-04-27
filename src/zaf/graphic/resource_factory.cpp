@@ -207,6 +207,18 @@ const FontCollection ResourceFactory::GetSystemFontCollection(std::error_code& e
 }
 
 
+TextInlineObject ResourceFactory::CreateCreateEllipsisTrimmingSign(
+    const TextFormat& text_format, 
+    std::error_code& error_code) {
+
+    IDWriteInlineObject* handle = nullptr;
+    HRESULT hresult = dwrite_factory_handle_->CreateEllipsisTrimmingSign(text_format.GetHandle(), &handle);
+
+    error_code = MakeComErrorCode(hresult);
+    return TextInlineObject(handle);
+}
+
+
 MutableImageSource ResourceFactory::CreateImageSource(
     const Size& size,
     ImagePixelFormat pixel_format,

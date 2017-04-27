@@ -27,7 +27,20 @@ static const wchar_t* const kTextAlignmentPropertyName = L"TextAlignment";
 static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
 static const wchar_t* const kTextColorPickersPropertyName = L"TextColorPickers";
 static const wchar_t* const kTextPropertyName = L"Text";
+static const wchar_t* const kTextTrimmingPropertyName = L"TextTrimming";
 static const wchar_t* const kWordWrappingPropertyName = L"WordWrapping";
+
+namespace {
+
+void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_format) {
+    if (text_trimming.granularity != TextTrimming::Granularity::None) {
+        if (text_trimming.trimming_sign == nullptr) {
+            text_trimming.trimming_sign = GetResourceFactory()->CreateCreateEllipsisTrimmingSign(text_format);
+        }
+    }
+}
+
+}
 
 TextualControl::TextualControl() {
 
@@ -100,6 +113,10 @@ TextFormat TextualControl::CreateTextFormat() const {
     text_format.SetTextAlignment(GetTextAlignment());
     text_format.SetParagraphAlignment(GetParagraphAlignment());
     text_format.SetWordWrapping(GetWordWrapping());
+
+    auto text_trimming = GetTextTrimming();
+    ReviseTextTrimmingSign(text_trimming, text_format);
+    text_format.SetTextTrimming(text_trimming);
 
     return text_format;
 }
@@ -378,6 +395,31 @@ void TextualControl::SetWordWrapping(WordWrapping word_wrapping) {
 
     if (text_layout_ != nullptr) {
         text_layout_.SetWordWrapping(word_wrapping);
+    }
+
+    NeedRepaint();
+}
+
+
+TextTrimming TextualControl::GetTextTrimming() const {
+
+    auto text_trimming = GetPropertyMap().TryGetProperty<TextTrimming>(kTextTrimmingPropertyName);
+    if (text_trimming != nullptr) {
+        return *text_trimming;
+    }
+
+    return TextTrimming();
+}
+
+void TextualControl::SetTextTrimming(const TextTrimming& text_trimming) {
+
+    GetPropertyMap().SetProperty(kTextTrimmingPropertyName, text_trimming);
+
+    if (text_layout_ != nullptr) {
+
+        auto applied_text_trimming = text_trimming;
+        ReviseTextTrimmingSign(applied_text_trimming, text_layout_);
+        text_layout_.SetTextTrimming(applied_text_trimming);
     }
 
     NeedRepaint();

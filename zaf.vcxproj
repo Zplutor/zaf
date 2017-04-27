@@ -66,6 +66,7 @@
     <ClCompile Include="src\zaf\graphic\renderer\bitmap_renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer\renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\resource_factory.cpp" />
+    <ClCompile Include="src\zaf\graphic\text\text_format.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
     <ClCompile Include="src\zaf\internal\message_loop.cpp" />
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
@@ -189,10 +190,12 @@
     <ClInclude Include="src\zaf\graphic\text\text_alignment.h" />
     <ClInclude Include="src\zaf\graphic\text\text_format.h" />
     <ClInclude Include="src\zaf\graphic\text\text_format_properties.h" />
+    <ClInclude Include="src\zaf\graphic\text\text_inline_object.h" />
     <ClInclude Include="src\zaf\graphic\text\text_layout.h" />
     <ClInclude Include="src\zaf\graphic\text\text_layout_properties.h" />
     <ClInclude Include="src\zaf\graphic\text\text_metrics.h" />
     <ClInclude Include="src\zaf\graphic\text\text_range.h" />
+    <ClInclude Include="src\zaf\graphic\text\text_trimming.h" />
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />
     <ClInclude Include="src\zaf\graphic\matrix.h" />
     <ClInclude Include="src\zaf\internal\enumerator.h" />
