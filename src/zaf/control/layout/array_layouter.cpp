@@ -44,7 +44,8 @@ static void LayoutWithArray(
         calculate_items.push_back(item);
     }
 
-    internal::CalculateArrayLayoutLengths(is_vertical ? parent->GetHeight() : parent->GetWidth(), calculate_items);
+    auto content_size = parent->GetContentSize();
+    internal::CalculateArrayLayoutLengths(is_vertical ? content_size.height : content_size.width, calculate_items);
 
     //Record the position for each child.
 	std::vector<float> expected_positions;
@@ -66,10 +67,10 @@ static void LayoutWithArray(
 
 		Rect new_rect;
 		if (is_vertical) {
-            new_rect = Rect(0, actual_position, parent->GetWidth(), actual_length);
+            new_rect = Rect(0, actual_position, content_size.width, actual_length);
 		}
 		else {
-            new_rect = Rect(actual_position, 0, actual_length, parent->GetHeight());
+            new_rect = Rect(actual_position, 0, actual_length, content_size.height);
 		}
 
 		children[index]->SetRect(new_rect);
