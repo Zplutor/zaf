@@ -70,8 +70,8 @@ public:
 
     void Initialize() override;
 
-    bool IsHorizontal() const;
-    void SetIsHorizontal(bool is_horizontal);
+    bool IsHorizontalSplit() const;
+    void SetIsHorizontalSplit(bool is_horizontal);
 
     float GetSplitBarThickness() const;
     void SetSplitBarThickness(float thickness);
@@ -84,6 +84,9 @@ public:
 
     float GetMaximumSplitBarDistance() const;
     void SetMaximumSplitBarDistance(float distance);
+
+    bool IsSplitBarDistanceFlipped() const;
+    void SetIsSplitBarDistanceFlipped(bool is_flipped);
 
     const std::shared_ptr<SplitBar>& GetSplitBar() const {
         return split_bar_;
@@ -113,6 +116,8 @@ protected:
 private:
     void InitializeSplitBar();
     void UninitializeSplitBar();
+
+    float GetUnflippedSplitBarDistance() const;
 
     void SetPane(
         std::shared_ptr<Control>& pane,

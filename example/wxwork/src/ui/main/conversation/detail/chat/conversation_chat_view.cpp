@@ -5,7 +5,11 @@ void ConversationChatView::Initialize() {
 
     __super::Initialize();
 
-    SetIsHorizontal(true);
+    SetIsHorizontalSplit(true);
+    SetIsSplitBarDistanceFlipped(true);
+    SetSplitBarDistance(150);
+    SetMinimumSplitBarDistance(150);
+    SetMaximumSplitBarDistance(350);
     GetSplitBar()->SetSplitterColor(zaf::Color::FromRGB(0xD5DDE7));
 
     message_list_view_ = zaf::Create<ConversationMessageListView>();

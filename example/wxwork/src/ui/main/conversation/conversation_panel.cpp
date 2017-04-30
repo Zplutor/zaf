@@ -7,7 +7,7 @@ void ConversationPanel::Initialize() {
 
     conversation_avatar_manager_ = std::make_shared<ConversationAvatarManager>();
 
-    SetIsHorizontal(false);
+    SetIsHorizontalSplit(false);
     SetSplitBarDistance(250);
     SetMinimumSplitBarDistance(250);
     SetMaximumSplitBarDistance(300);

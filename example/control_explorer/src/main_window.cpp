@@ -63,7 +63,7 @@ void MainWindow::InitializeControlExplorePanel() {
     control_operate_panel_ = zaf::Create<ControlOperatePanel>();
 
     secondly_split_control_ = zaf::Create<zaf::SplitControl>();
-    secondly_split_control_->SetIsHorizontal(true);
+    secondly_split_control_->SetIsHorizontalSplit(true);
     secondly_split_control_->SetFirstPane(control_view_panel_);
     secondly_split_control_->SetSecondPane(control_operate_panel_);
 
