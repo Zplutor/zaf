@@ -73,6 +73,8 @@ void ConversationMessageListView::SetConversation(const std::shared_ptr<Conversa
 
     Reload();
     ScrollDownToEnd();
+
+    Service::GetInstance().RemoveConversationAllUnreadMessages(conversation_id_);
 }
 
 
@@ -111,6 +113,8 @@ void ConversationMessageListView::OnMessageAdd(const std::shared_ptr<Message>& m
     std::size_t insert_index = std::distance(message_item_infos_.begin(), insert_iterator);
     NotifyItemAdd(insert_index, 1);
     ScrollDownToEnd();
+
+    Service::GetInstance().RemoveConversationAllUnreadMessages(conversation_id_);
 }
 
 

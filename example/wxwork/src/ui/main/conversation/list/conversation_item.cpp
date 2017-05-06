@@ -171,10 +171,12 @@ void ConversationItem::Layout(const zaf::Rect& previous_rect) {
 
     const auto& current_size = GetContentSize();
 
+    auto time_label_require_size = time_label_->DetermineRequiredSize();
+
     time_label_->SetRect(zaf::Rect(
-        current_size.width - TimeRightMargin - TimeWidth,
+        current_size.width - TimeRightMargin - time_label_require_size.width,
         TitleTopMargin,
-        TimeWidth,
+        time_label_require_size.width,
         TimeHeight));
 
     title_label_->SetWidth(
@@ -254,11 +256,11 @@ static std::wstring GenerateTimeDescription(std::time_t time) {
     auto difference = current_time - time;
 
     if (difference < 60) {
-        return L"刚刚";
+        return L"just now";
     }
 
     if (difference < 60 * 60) {
-        return std::to_wstring(difference / 60) + L"分钟前";
+        return std::to_wstring(difference / 60) + L" minutes ago";
     }
 
     std::tm current_tm = *std::localtime(&current_time);
@@ -280,20 +282,20 @@ static std::wstring GenerateTimeDescription(std::time_t time) {
 
     std::time_t yesterday_zero_hour_time = today_zero_hour_time - 24 * 60 * 60;
     if (time >= yesterday_zero_hour_time) {
-        return L"昨天";
+        return L"yesterday";
     }
 
     std::time_t a_week_ago_zero_hour_time = today_zero_hour_time - 7 * 24 * 60 * 60;
     if (time >= a_week_ago_zero_hour_time) {
 
         switch (tm.tm_wday) {
-        case 0: return L"星期日";
-        case 1: return L"星期一";
-        case 2: return L"星期二";
-        case 3: return L"星期三";
-        case 4: return L"星期四";
-        case 5: return L"星期五";
-        case 6: return L"星期六";
+        case 0: return L"sunday";
+        case 1: return L"monday";
+        case 2: return L"tuesday";
+        case 3: return L"wednesday";
+        case 4: return L"thursday";
+        case 5: return L"friday";
+        case 6: return L"saturday";
         default: break; //fall through
         }
     }

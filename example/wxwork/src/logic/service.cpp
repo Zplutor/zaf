@@ -105,4 +105,25 @@ void Service::SendMessageToConversation(const std::wstring& content, Id conversa
 
     message_storage_.AddMessage(new_message);
     message_add_event_.Trigger(new_message);
+
+    auto conversation = conversation_storage_.GetConversaton(conversation_id);
+    if (conversation != nullptr) {
+        conversation->last_updated_time = new_message->sent_time;
+        conversation_storage_.UpdateConversation(conversation);
+        conversation_update_event_.Trigger(conversation);
+    }
+}
+
+
+void Service::RemoveConversationAllUnreadMessages(Id conversation_id) {
+
+    bool is_succeeded = message_storage_.RemoveConversationAllUnreadMessage(conversation_id);
+    if (! is_succeeded) {
+        return;
+    }
+
+    auto conversation = conversation_storage_.GetConversaton(conversation_id);
+    if (conversation != nullptr) {
+        conversation_update_event_.Trigger(conversation);
+    }
 }

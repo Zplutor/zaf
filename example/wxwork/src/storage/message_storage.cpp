@@ -141,3 +141,15 @@ std::size_t MessageStorage::GetConversationUnreadMessageCount(Id conversation_id
     }
     return 0;
 }
+
+
+bool MessageStorage::RemoveConversationAllUnreadMessage(Id conversation_id) {
+
+    auto iterator = conversation_unread_messages_.find(conversation_id);
+    if (iterator == conversation_unread_messages_.end()) {
+        return false;
+    }
+
+    conversation_unread_messages_.erase(iterator);
+    return true;
+}

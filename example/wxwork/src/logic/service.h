@@ -51,6 +51,8 @@ public:
 
     void SendMessageToConversation(const std::wstring& content, Id conversation_id);
 
+    void RemoveConversationAllUnreadMessages(Id conversation_id);
+
     ConversationUpdateEvent::Proxy GetConversationUpdateEvent() {
         return ConversationUpdateEvent::Proxy(conversation_update_event_);
     }

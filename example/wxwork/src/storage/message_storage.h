@@ -24,6 +24,7 @@ public:
 
     bool AddUnreadMessage(Id message_id);
     std::size_t GetConversationUnreadMessageCount(Id conversation_id);
+    bool RemoveConversationAllUnreadMessage(Id conversation_id);
 
 private:
     std::map<Id, std::shared_ptr<Message>> messages_;
