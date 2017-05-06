@@ -63,6 +63,24 @@ void ScrollableControlLayouter::LayoutScrollBars(bool can_show_vertical_scroll_b
         );
         GetHorizontalScrollBar()->SetRect(horizontal_scroll_bar_rect);
     }
+
+    //Layout scroll bar corner
+    const auto& corner = GetScrollableControl()->GetScrollBarCorner();
+    if (can_show_vertical_scroll_bar && can_show_horizontal_scroll_bar) {
+
+        corner->SetIsVisible(true);
+
+        Rect corner_rect(
+            content_size.width - scroll_bar_thickness,
+            content_size.height - scroll_bar_thickness,
+            scroll_bar_thickness,
+            scroll_bar_thickness);
+
+        corner->SetRect(corner_rect);
+    }
+    else {
+        corner->SetIsVisible(false);
+    }
 }
 
 

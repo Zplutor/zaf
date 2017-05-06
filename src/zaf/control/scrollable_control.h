@@ -102,6 +102,18 @@ public:
     void SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
 
     /**
+     Get the scroll bar corner control.
+     */
+    const std::shared_ptr<Control>& GetScrollBarCorner() const {
+        return scroll_bar_corner_;
+    }
+
+    /**
+     Set the scroll bar corner control.
+     */
+    void SetScrollBarCorner(const std::shared_ptr<Control>& control);
+
+    /**
      Get the scroll content control.
      */
 	const std::shared_ptr<Control>& GetScrollContentControl() const {
@@ -185,6 +197,16 @@ protected:
     virtual void HorizontalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) { }
 
     /**
+     This method is called when the scroll bar corner control is changed.
+
+     @param previous_control
+         The previous scroll bar corner control.
+
+     Derived classes must call the same method of base class.
+     */
+    virtual void ScrollBarCornerChange(const std::shared_ptr<Control>& previous_control) { }
+
+    /**
      This method is called when the scroll content control is changed.
 
      @param previous_control
@@ -214,6 +236,7 @@ private:
 private:
     void InitializeVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
     void InitializeHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
+    void InitializeScrollBarCorner(const std::shared_ptr<Control>& corner);
     void InitializeScrollContentControl(const std::shared_ptr<Control>& control);
 
     void InitializeLayouter();
@@ -221,6 +244,7 @@ private:
 private:
     std::shared_ptr<ScrollBar> vertical_scroll_bar_;
     std::shared_ptr<ScrollBar> horizontal_scroll_bar_;
+    std::shared_ptr<Control> scroll_bar_corner_;
     std::shared_ptr<Control> scroll_container_control_;
 	std::shared_ptr<Control> scroll_content_control_;
     SelfScrollingControl* self_scrolling_control_;

@@ -10,6 +10,12 @@
 namespace zaf {
 namespace {
 
+std::shared_ptr<Control> CreateDefaultScrollContentControl() {
+    auto control = Create<Control>();
+    control->SetBackgroundColor(Color::Transparent);
+    return control;
+}
+
 const wchar_t* const kAllowHorizontalScrollPropertyName = L"AllowHorizontalScroll";
 const wchar_t* const kAllowVerticalScrollPropertyName = L"AllowVerticalScroll";
 const wchar_t* const kAutoHideScrollBarsPropertyName = L"AutoHideScrollBars";
@@ -38,14 +44,13 @@ void ScrollableControl::Initialize() {
 
     InitializeVerticalScrollBar(Create<ScrollBar>());
     InitializeHorizontalScrollBar(Create<ScrollBar>());
+    InitializeScrollBarCorner(Create<Control>());
 
     scroll_container_control_ = Create<Control>();
     scroll_container_control_->SetBackgroundColor(Color::Transparent);
     AddChild(scroll_container_control_);
 
-    auto scroll_content_control = Create<Control>();
-    scroll_content_control->SetBackgroundColor(Color::Transparent);
-    InitializeScrollContentControl(scroll_content_control);
+    InitializeScrollContentControl(CreateDefaultScrollContentControl());
     InitializeLayouter();
 }
 
@@ -62,6 +67,13 @@ void ScrollableControl::InitializeHorizontalScrollBar(const std::shared_ptr<Scro
     horizontal_scroll_bar_ = scroll_bar;
     horizontal_scroll_bar_->SetIsHorizontal(true);
     AddChild(horizontal_scroll_bar_);
+}
+
+
+void ScrollableControl::InitializeScrollBarCorner(const std::shared_ptr<Control>& corner) {
+
+    scroll_bar_corner_ = corner;
+    AddChild(scroll_bar_corner_);
 }
 
 
@@ -210,6 +222,26 @@ void ScrollableControl::SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>&
 }
 
 
+void ScrollableControl::SetScrollBarCorner(const std::shared_ptr<Control>& control) {
+
+    auto previous_corner = scroll_bar_corner_;
+    if (previous_corner == control) {
+        return;
+    }
+
+    UpdateGuard update_guard(*this);
+
+    RemoveChild(previous_corner);
+
+    layouter_.reset();
+    InitializeScrollBarCorner(control != nullptr ? control : Create<Control>());
+    InitializeLayouter();
+
+    ScrollBarCornerChange(previous_corner);
+    NeedRelayout();
+}
+
+
 void ScrollableControl::SetScrollContentControl(const std::shared_ptr<Control>& control) {
 
     auto previous_control = scroll_content_control_;
@@ -222,7 +254,7 @@ void ScrollableControl::SetScrollContentControl(const std::shared_ptr<Control>& 
     scroll_container_control_->RemoveChild(previous_control);
 
     layouter_.reset();
-    InitializeScrollContentControl(control != nullptr? control : Create<Control>());
+    InitializeScrollContentControl(control != nullptr ? control : CreateDefaultScrollContentControl());
     InitializeLayouter();
 
     ScrollContentControlChange(previous_control);
