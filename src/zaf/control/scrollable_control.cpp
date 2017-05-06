@@ -31,6 +31,9 @@ ScrollableControl::ScrollableControl() :
 
 ScrollableControl::~ScrollableControl() {
 
+    //Layouter must be the first member to destroy for unregistering 
+    //events from other members.
+    layouter_.reset();
 }
 
 
@@ -55,6 +58,21 @@ void ScrollableControl::Initialize() {
 }
 
 
+void ScrollableControl::InitializeScrollContentControl(const std::shared_ptr<Control>& control) {
+
+    scroll_content_control_ = control;
+    scroll_container_control_->AddChild(scroll_content_control_);
+
+    self_scrolling_control_ = dynamic_cast<SelfScrollingControl*>(control.get());
+    if (self_scrolling_control_ != nullptr) {
+
+        self_scrolling_control_->SetAllowVerticalScroll(AllowVerticalScroll());
+        self_scrolling_control_->SetAllowHorizontalScroll(AllowHorizontalScroll());
+        self_scrolling_control_->SetAutoHideScrollBars(AutoHideScrollBars());   
+    }
+}
+
+
 void ScrollableControl::InitializeVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
     vertical_scroll_bar_ = scroll_bar;
@@ -74,21 +92,6 @@ void ScrollableControl::InitializeScrollBarCorner(const std::shared_ptr<Control>
 
     scroll_bar_corner_ = corner;
     AddChild(scroll_bar_corner_);
-}
-
-
-void ScrollableControl::InitializeScrollContentControl(const std::shared_ptr<Control>& control) {
-
-    scroll_content_control_ = control;
-    scroll_container_control_->AddChild(scroll_content_control_);
-
-    self_scrolling_control_ = dynamic_cast<SelfScrollingControl*>(control.get());
-    if (self_scrolling_control_ != nullptr) {
-
-        self_scrolling_control_->SetAllowVerticalScroll(AllowVerticalScroll());
-        self_scrolling_control_->SetAllowHorizontalScroll(AllowHorizontalScroll());
-        self_scrolling_control_->SetAutoHideScrollBars(AutoHideScrollBars());
-    }
 }
 
 
@@ -192,11 +195,9 @@ void ScrollableControl::SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& s
     UpdateGuard update_guard(*this);
 
     RemoveChild(previous_scroll_bar);
-
-    layouter_.reset();
     InitializeVerticalScrollBar(scroll_bar != nullptr ? scroll_bar : Create<ScrollBar>());
-    InitializeLayouter();
 
+    layouter_->ScrollBarChange(false, previous_scroll_bar);
     VerticalScrollBarChange(previous_scroll_bar);
     NeedRelayout();
 }
@@ -212,11 +213,9 @@ void ScrollableControl::SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>&
     UpdateGuard update_guard(*this);
 
     RemoveChild(previous_scroll_bar);
-
-    layouter_.reset();
     InitializeHorizontalScrollBar(scroll_bar != nullptr ? scroll_bar : Create<ScrollBar>());
-    InitializeLayouter();
 
+    layouter_->ScrollBarChange(true, previous_scroll_bar);
     HorizontalScrollBarChange(previous_scroll_bar);
     NeedRelayout();
 }
@@ -232,10 +231,7 @@ void ScrollableControl::SetScrollBarCorner(const std::shared_ptr<Control>& contr
     UpdateGuard update_guard(*this);
 
     RemoveChild(previous_corner);
-
-    layouter_.reset();
     InitializeScrollBarCorner(control != nullptr ? control : Create<Control>());
-    InitializeLayouter();
 
     ScrollBarCornerChange(previous_corner);
     NeedRelayout();
@@ -253,6 +249,7 @@ void ScrollableControl::SetScrollContentControl(const std::shared_ptr<Control>& 
 
     scroll_container_control_->RemoveChild(previous_control);
 
+    //Destroy layouter first for unregistering events before changing scroll content control.
     layouter_.reset();
     InitializeScrollContentControl(control != nullptr ? control : CreateDefaultScrollContentControl());
     InitializeLayouter();

@@ -11,6 +11,8 @@ public:
     ScrollableControlLayouter(ScrollableControl* scrollable_control);
     virtual ~ScrollableControlLayouter();
 
+    void ScrollBarChange(bool is_horizontal, const std::shared_ptr<ScrollBar>& previous_scroll_bar);
+
     virtual void Layout() = 0;
 
     ScrollableControlLayouter(const ScrollableControlLayouter&) = delete;

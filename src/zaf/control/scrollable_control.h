@@ -234,11 +234,10 @@ private:
     }
 
 private:
+    void InitializeScrollContentControl(const std::shared_ptr<Control>& control);
     void InitializeVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
     void InitializeHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
     void InitializeScrollBarCorner(const std::shared_ptr<Control>& corner);
-    void InitializeScrollContentControl(const std::shared_ptr<Control>& control);
-
     void InitializeLayouter();
 
 private:

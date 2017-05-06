@@ -13,18 +13,27 @@ ScrollableControlLayouter::ScrollableControlLayouter(ScrollableControl* scrollab
 }
 
 
+ScrollableControlLayouter::~ScrollableControlLayouter() {
+
+    UnregisterScrollBarEvent(GetVerticalScrollBar());
+    UnregisterScrollBarEvent(GetHorizontalScrollBar());
+}
+
+
+void ScrollableControlLayouter::ScrollBarChange(bool is_horizontal, const std::shared_ptr<ScrollBar>& previous_scroll_bar) {
+
+    UnregisterScrollBarEvent(previous_scroll_bar);
+
+    auto new_scroll_bar = is_horizontal ? GetHorizontalScrollBar() : GetVerticalScrollBar();
+    RegisterScrollBarEvent(new_scroll_bar);
+}
+
+
 void ScrollableControlLayouter::RegisterScrollBarEvent(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
     scroll_bar->GetScrollEvent().AddListenerWithTag(
         reinterpret_cast<std::uintptr_t>(this),
         std::bind(&ScrollableControlLayouter::ScrollBarScroll, this, std::placeholders::_1));
-}
-
-
-ScrollableControlLayouter::~ScrollableControlLayouter() {
-
-    UnregisterScrollBarEvent(GetVerticalScrollBar());
-    UnregisterScrollBarEvent(GetHorizontalScrollBar());
 }
 
 
