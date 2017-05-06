@@ -58,6 +58,9 @@
     <Filter Include="zaf\graphic\renderer">
       <UniqueIdentifier>{06391e47-8d87-4b81-bcba-95a163e421c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\internal\scrollable_control">
+      <UniqueIdentifier>{3895c0e4-4a91-4965-8af7-be9344ec8ebb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -254,6 +257,15 @@
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\text\text_format.cpp">
       <Filter>zaf\graphic\text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\scrollable_control\general_layouter.cpp">
+      <Filter>zaf\control\internal\scrollable_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.cpp">
+      <Filter>zaf\control\internal\scrollable_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.cpp">
+      <Filter>zaf\control\internal\scrollable_control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -685,6 +697,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\text_trimming.h">
       <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\scrollable_control\general_layouter.h">
+      <Filter>zaf\control\internal\scrollable_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.h">
+      <Filter>zaf\control\internal\scrollable_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.h">
+      <Filter>zaf\control\internal\scrollable_control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

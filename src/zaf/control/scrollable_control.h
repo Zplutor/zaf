@@ -3,6 +3,11 @@
 #include <zaf/control/control.h>
 
 namespace zaf {
+namespace internal {
+class GeneralLayouter;
+class ScrollableControlLayouter;
+class SelfScrollingLayouter;
+}
 
 class ScrollBar;
 class SelfScrollingControl;
@@ -179,44 +184,49 @@ protected:
      */
     virtual void HorizontalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) { }
 
+    /**
+     This method is called when the scroll content control is changed.
+
+     @param previous_control
+         The previous scroll content control.
+
+     Derived classes must call the same method of base class.
+     */
+    virtual void ScrollContentControlChange(const std::shared_ptr<Control>& previous_control) { }
+
+private:
+    friend class internal::GeneralLayouter;
+    friend class internal::ScrollableControlLayouter;
+    friend class internal::SelfScrollingLayouter;
+
+    const std::shared_ptr<Control>& GetScrollContainerControl() const {
+        return scroll_container_control_;
+    }
+
+    const Size& GetExpectedScrollContentSize() const {
+        return expected_scroll_content_size_;
+    }
+
+    SelfScrollingControl* GetSelfScrollingControl() const {
+        return self_scrolling_control_;
+    }
+
 private:
     void InitializeVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
     void InitializeHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
-    void InitializeScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
-
     void InitializeScrollContentControl(const std::shared_ptr<Control>& control);
 
-    void LayoutWithGeneralScrollContentControl();
-    void CanShowScrollBars(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar) const;
-
-    void LayoutScrollBars(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
-    void LayoutScrollContainerControl(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
-    void LayoutScrollContentControlSize(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
-
-    void AdjustScrollBarValuesWithGeneralScrollContentControl();
-
-    void LayoutWithSelfScrollingControl();
-    void AdjustScrollBarValueWithSelfScrollingControl(bool is_horizontal);
-    
-    void ScrollBarScroll(const std::shared_ptr<ScrollBar>& scroll_bar);
-    void ScrollGeneralScrollContentControl(const std::shared_ptr<ScrollBar>& scroll_bar);
-    void ScrollSelfScrollingControl(const std::shared_ptr<ScrollBar>& scroll_bar);
-
-    void SelfScrollingControlScrollBarChange(SelfScrollingControl& self_scrolling_control);
-    void SelfScrollingControlScrollValuesChange(SelfScrollingControl& self_scrolling_control, bool is_horizontal);
-
-    Size GetExpectedScrollContentControlSize() const;
+    void InitializeLayouter();
 
 private:
     std::shared_ptr<ScrollBar> vertical_scroll_bar_;
     std::shared_ptr<ScrollBar> horizontal_scroll_bar_;
     std::shared_ptr<Control> scroll_container_control_;
 	std::shared_ptr<Control> scroll_content_control_;
-
     SelfScrollingControl* self_scrolling_control_;
-    bool is_self_scrolling_;
 
 	Size expected_scroll_content_size_;
+    std::unique_ptr<internal::ScrollableControlLayouter> layouter_;
 };
 
 }
