@@ -58,5 +58,13 @@
     <ClCompile Include="unittest\case\base\optional_test.cpp">
       <Filter>case\base</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\any_test.cpp">
+      <Filter>case\base</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="unittest\case\base\test_object.h">
+      <Filter>case\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

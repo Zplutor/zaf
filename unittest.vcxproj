@@ -86,6 +86,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="unittest\case\base\any_test.cpp" />
     <ClCompile Include="unittest\case\base\optional_test.cpp" />
     <ClCompile Include="unittest\case\base\string\to_numeric_test.cpp" />
     <ClCompile Include="unittest\case\base\string\to_string_test.cpp" />
@@ -100,6 +101,9 @@
     <ClCompile Include="unittest\case\graphic\rect_test.cpp">
       <FileType>CppHeader</FileType>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="unittest\case\base\test_object.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
