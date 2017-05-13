@@ -23,6 +23,10 @@ TEST(Any, ConstructByCopyingOther) {
 
     ASSERT_TRUE(CheckTestObjectInAny(other, true, "copy"));
     ASSERT_TRUE(CheckTestObjectInAny(any, true, "copy"));
+
+    other.reset();
+    zaf::any empty_any(other);
+    ASSERT_FALSE(empty_any.has_value());
 }
 
 
@@ -37,6 +41,10 @@ TEST(Any, ConstructByMovingOther) {
     ASSERT_FALSE(other.has_value());
     //holders in two anys are exchanged, so their values are not changed.
     ASSERT_TRUE(CheckTestObjectInAny(any, true, "move")); 
+
+    other.reset();
+    zaf::any empty_any(std::move(other));
+    ASSERT_FALSE(empty_any.has_value());
 }
 
 
@@ -74,6 +82,13 @@ TEST(Any, AssignByCopyingFromOther) {
 
     ASSERT_TRUE(CheckTestObjectInAny(other, true, "AssignByCopyingFromOther"));
     ASSERT_TRUE(CheckTestObjectInAny(any, true, "AssignByCopyingFromOther"));
+
+    other.reset();
+    any = other;
+    ASSERT_FALSE(any.has_value());
+
+    any = other;
+    ASSERT_FALSE(any.has_value());
 }
 
 
@@ -88,6 +103,10 @@ TEST(Any, AssignByMovingFromOther) {
 
     ASSERT_FALSE(other.has_value());
     ASSERT_TRUE(CheckTestObjectInAny(any, true, "AssignByMovingFromOther"));
+
+    other.reset();
+    any = std::move(other);
+    ASSERT_FALSE(any.has_value());
 }
 
 
@@ -131,6 +150,15 @@ TEST(Any, Swap) {
 
     ASSERT_TRUE(CheckTestObjectInAny(any1, true, "value2"));
     ASSERT_TRUE(CheckTestObjectInAny(any2, true, "value1"));
+
+    any2.reset();
+    any1.swap(any2);
+    ASSERT_FALSE(any1.has_value());
+    ASSERT_TRUE(CheckTestObjectInAny(any2, true, "value2"));
+
+    any2.reset();
+    ASSERT_FALSE(any1.has_value());
+    ASSERT_FALSE(any2.has_value());
 }
 
 
@@ -138,6 +166,10 @@ TEST(Any, Reset) {
 
     zaf::any any(1);
     ASSERT_TRUE(any.has_value());
+
+    any.reset();
+    ASSERT_FALSE(any.has_value());
+
     any.reset();
     ASSERT_FALSE(any.has_value());
 }
@@ -198,6 +230,16 @@ TEST(Any, AnyCastWithRightValueReference) {
     ASSERT_TRUE(CheckTestObjectInAny(any, true, ""));
 
     ASSERT_THROW(zaf::any_cast<int>(std::move(any)), zaf::bad_any_cast);
+}
+
+
+TEST(Any, AnyCastWithEmptyAny) {
+
+    zaf::any any;
+    auto pointer = zaf::any_cast<int>(&any);
+    ASSERT_EQ(pointer, nullptr);
+
+    ASSERT_THROW(zaf::any_cast<int>(any), zaf::bad_any_cast);
 }
 
 

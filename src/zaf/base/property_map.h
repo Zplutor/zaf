@@ -2,7 +2,7 @@
 
 #include <functional>
 #include <map>
-#include <zaf/base/variant.h>
+#include <zaf/base/any.h>
 
 namespace zaf {
 
@@ -34,7 +34,7 @@ public:
 			return nullptr;
 		}
 
-		return iterator->second.TryCast<PropertyType>();
+        return any_cast<PropertyType>(&iterator->second);;
 	}
 
 	template<typename PropertyType>
@@ -77,7 +77,7 @@ public:
             iterator->second = property_creator();
         }
 
-        return *iterator->second.TryCast<PropertyType>();
+        return *any_cast<PropertyType>(&iterator->second);
     }
 
     /**
@@ -94,11 +94,11 @@ public:
      */
 	template<typename PropertyType>
 	void SetProperty(const std::wstring& property_name, const PropertyType& property_value) {
-		properties_[property_name] = Variant(property_value);
+		properties_[property_name] = property_value;
 	}
 
 private:
-	std::map<std::wstring, Variant> properties_;
+	std::map<std::wstring, any> properties_;
 };
 
 }

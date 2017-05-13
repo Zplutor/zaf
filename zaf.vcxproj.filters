@@ -335,9 +335,6 @@
     <ClInclude Include="src\zaf\control\check_box.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\variant.h">
-      <Filter>zaf\base</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\flag_enum.h">
       <Filter>zaf\base</Filter>
     </ClInclude>

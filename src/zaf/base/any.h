@@ -9,7 +9,7 @@ class any {
 public:
     any() { }
 
-    any(const any& other) : holder_(other.holder_->clone()) {
+    any(const any& other) : holder_(other.holder_ == nullptr ? nullptr : other.holder_->clone()) {
 
     }
 
@@ -25,7 +25,7 @@ public:
     }
 
     any& operator=(const any& other) {
-        holder_ = other.holder_->clone();
+        holder_ = other.holder_ == nullptr ? nullptr : other.holder_->clone();
         return *this;
     }
 
