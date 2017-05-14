@@ -78,20 +78,31 @@ void Service::MessageGeneratingTimerTrigger() {
 
         auto conversation_index = GenerateRandomInteger<std::size_t>(0, all_conversations.size() - 1);
         auto conversation = all_conversations[conversation_index];
-
-        auto new_message = GenerateMessage(conversation);
-        auto new_message_id = message_storage_.AddMessage(new_message);
-        message_storage_.AddUnreadMessage(new_message_id);
-        message_add_event_.Trigger(new_message);
-        
-        if (conversation->last_updated_time < new_message->sent_time) {
-            conversation->last_updated_time = new_message->sent_time;
-        }
-        conversation_storage_.UpdateConversation(conversation);
-        conversation_update_event_.Trigger(conversation);
+        GenerateMessageToConversation(conversation, false);
     }
 
     StartMessageGeneratingTimer();
+}
+
+
+void Service::GenerateMessageToConversation(
+    const std::shared_ptr<Conversation>& conversation, 
+    bool dont_user_current_user) {
+
+    auto new_message = GenerateMessage(conversation);
+    if (new_message->sender_id == current_user_id_ && dont_user_current_user) {
+        return;
+    }
+
+    auto new_message_id = message_storage_.AddMessage(new_message);
+    message_storage_.AddUnreadMessage(new_message_id);
+    message_add_event_.Trigger(new_message);
+
+    if (conversation->last_updated_time < new_message->sent_time) {
+        conversation->last_updated_time = new_message->sent_time;
+    }
+    conversation_storage_.UpdateConversation(conversation);
+    conversation_update_event_.Trigger(conversation);
 }
 
 
@@ -107,11 +118,26 @@ void Service::SendMessageToConversation(const std::wstring& content, Id conversa
     message_add_event_.Trigger(new_message);
 
     auto conversation = conversation_storage_.GetConversaton(conversation_id);
-    if (conversation != nullptr) {
-        conversation->last_updated_time = new_message->sent_time;
-        conversation_storage_.UpdateConversation(conversation);
-        conversation_update_event_.Trigger(conversation);
+    if (conversation == nullptr) {
+        return;
     }
+
+    conversation->last_updated_time = new_message->sent_time;
+    conversation_storage_.UpdateConversation(conversation);
+    conversation_update_event_.Trigger(conversation);
+
+    //Generate a reply message.
+    auto random_integer = GenerateRandomInteger(0, 1);
+    if (random_integer == 0) {
+        return;
+    }
+
+    reply_timer_ = std::make_shared<zaf::Timer>(zaf::Timer::Mode::OneShot);
+    reply_timer_->SetInterval(std::chrono::seconds(1));
+    reply_timer_->GetTriggerEvent().AddListener([this, conversation](zaf::Timer&) {
+        GenerateMessageToConversation(conversation, true);
+    });
+    reply_timer_->Start();
 }
 
 
