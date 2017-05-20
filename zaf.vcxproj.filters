@@ -46,9 +46,6 @@
     <Filter Include="zaf\control\layout\internal">
       <UniqueIdentifier>{088ead32-06ab-409a-b21e-37aeb91334a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\property">
-      <UniqueIdentifier>{03b757bb-98bb-4e74-82d9-af6833398059}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\graphic\image">
       <UniqueIdentifier>{ab9b298a-d82e-4aa0-8331-c0c22bc9ffff}</UniqueIdentifier>
     </Filter>
@@ -563,35 +560,8 @@
     <ClInclude Include="src\zaf\internal\enumerator.h">
       <Filter>zaf\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\property\property_tag.h">
-      <Filter>zaf\property</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\property\textual_control_property_tag.h">
-      <Filter>zaf\property</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\property\setting.h">
-      <Filter>zaf\property</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\property\control_property_tag.h">
-      <Filter>zaf\property</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\property\clickable_control_property_tag.h">
-      <Filter>zaf\property</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\property\check_box_property_tag.h">
-      <Filter>zaf\property</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\property\text_box_property_tag.h">
-      <Filter>zaf\property</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\property\list_box_property_tag.h">
-      <Filter>zaf\property</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\image_box.h">
       <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\property\radio_button_property_tag.h">
-      <Filter>zaf\property</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\image\image_decoder.h">
       <Filter>zaf\graphic\image</Filter>

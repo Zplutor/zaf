@@ -209,15 +209,6 @@
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
     <ClInclude Include="src\zaf\internal\theme.h" />
-    <ClInclude Include="src\zaf\property\check_box_property_tag.h" />
-    <ClInclude Include="src\zaf\property\clickable_control_property_tag.h" />
-    <ClInclude Include="src\zaf\property\control_property_tag.h" />
-    <ClInclude Include="src\zaf\property\list_box_property_tag.h" />
-    <ClInclude Include="src\zaf\property\radio_button_property_tag.h" />
-    <ClInclude Include="src\zaf\property\setting.h" />
-    <ClInclude Include="src\zaf\property\property_tag.h" />
-    <ClInclude Include="src\zaf\property\textual_control_property_tag.h" />
-    <ClInclude Include="src\zaf\property\text_box_property_tag.h" />
     <ClInclude Include="src\zaf\window\caret.h" />
     <ClInclude Include="src\zaf\window\dialog.h" />
     <ClInclude Include="src\zaf\window\dialog_result.h" />
