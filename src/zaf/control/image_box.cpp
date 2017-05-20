@@ -42,7 +42,10 @@ void ImageBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 void ImageBox::ReleaseRendererResources() {
 
     __super::ReleaseRendererResources();
-    image_player_->Reset();
+
+    if (image_player_ != nullptr) {
+        image_player_->Reset();
+    }
 }
 
 
