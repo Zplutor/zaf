@@ -10,9 +10,6 @@ class MainWindow : public zaf::Window {
 public:
     void Initialize() override;
 
-protected:
-    void WindowCreate() override;
-
 private:
     void InitializeControlListPanel();
     void InitializeControlExplorePanel();

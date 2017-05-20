@@ -6,5 +6,5 @@ class ButtonExploreManager : public ControlExploreManager {
 public:
     void Initialize(
         std::shared_ptr<zaf::Control>& control,
-        std::vector<std::shared_ptr<zaf::Control>>& operate_panels) override;
+        std::vector<std::shared_ptr<zaf::Control>>& operate_items) override;
 };

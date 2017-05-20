@@ -3,13 +3,12 @@
 #include <zaf/creation.h>
 #include "control_operate_panel.h"
 #include "control_view_panel.h"
-#include "control/button/button_explore_manager.h"
-#include "control/check_box/check_box_explore_manager.h"
-#include "control/image_box/image_box_explore_manager.h"
-#include "control/label/label_explore_manager.h"
-#include "control/list_box/list_box_explore_manager.h"
-#include "control/radio_button/radio_button_explore_manager.h"
-#include "control/text_box/text_box_explore_manager.h"
+#include "control/button_explore_manager.h"
+#include "control/check_box_explore_manager.h"
+#include "control/label_explore_manager.h"
+#include "control/list_box_explore_manager.h"
+#include "control/radio_button_explore_manager.h"
+#include "control/text_box_explore_manager.h"
 
 static const struct {
     const wchar_t* name;
@@ -17,7 +16,7 @@ static const struct {
 } kControlNameAndCreators[] = {
     L"Button", []() { return std::make_shared<ButtonExploreManager>(); },
     L"CheckBox", []() { return std::make_shared<CheckBoxExploreManager>(); },
-    L"ImageBox", []() { return std::make_shared<ImageBoxExploreManager>(); },
+    //L"ImageBox", []() { return std::make_shared<ImageBoxExploreManager>(); },
     L"Label", []() { return std::make_shared<LabelExploreManager>(); },
     L"ListBox", []() { return std::make_shared<ListBoxExploreManager>(); },
     L"RadioButton", []() { return std::make_shared<RadioButtonExploreManager>(); },
@@ -30,10 +29,15 @@ void MainWindow::Initialize() {
 
     __super::Initialize();
 
+    SetSize(zaf::Size(800, 600));
+
     auto root_control = GetRootControl();
     root_control->SetLayouter(zaf::GetHorizontalArrayLayouter());
 
     primary_split_control_ = zaf::Create<zaf::SplitControl>();
+    primary_split_control_->SetSplitBarDistance(200);
+    primary_split_control_->SetMinimumSplitBarDistance(100);
+    primary_split_control_->SetMaximumSplitBarDistance(300);
     root_control->AddChild(primary_split_control_);
 
     InitializeControlListPanel();
@@ -63,20 +67,14 @@ void MainWindow::InitializeControlExplorePanel() {
     control_operate_panel_ = zaf::Create<ControlOperatePanel>();
 
     secondly_split_control_ = zaf::Create<zaf::SplitControl>();
+    secondly_split_control_->SetSplitBarDistance(200);
+    secondly_split_control_->SetMinimumSplitBarDistance(200);
+    secondly_split_control_->SetMaximumSplitBarDistance(400);
     secondly_split_control_->SetIsHorizontalSplit(true);
     secondly_split_control_->SetFirstPane(control_view_panel_);
     secondly_split_control_->SetSecondPane(control_operate_panel_);
 
     primary_split_control_->SetSecondPane(secondly_split_control_);
-}
-
-
-void MainWindow::WindowCreate() {
-
-    __super::WindowCreate();
-
-    primary_split_control_->SetSplitBarDistance(200);
-    secondly_split_control_->SetSplitBarDistance(200);
 }
 
 
