@@ -281,7 +281,7 @@ public:
     void HorizontallyScroll(int new_value) override;
 
 protected:
-    void Repaint(Canvas& canvas, const Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     Rect GetTextRect() override;
 	void Layout(const Rect& previous_rect) override;
 

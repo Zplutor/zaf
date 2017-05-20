@@ -132,13 +132,9 @@ void TextBox::Layout(const Rect& previous_rect) {
 }
 
 
-void TextBox::Repaint(Canvas& canvas, const Rect& dirty_rect) {
+void TextBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
-	__super::Repaint(canvas, dirty_rect);
-
-    if (! IsVisible()) {
-        return;
-    }
+	__super::Paint(canvas, dirty_rect);
 
 	if (text_service_ == nullptr) {
 		return;

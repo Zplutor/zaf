@@ -573,14 +573,6 @@ public:
 
 protected:
     /**
-     Repaint the control and its all children.
-
-     Do not override this method to paint, you should override Paint method
-     instead.
-     */
-	virtual void Repaint(Canvas& canvas, const Rect& dirty_rect);
-
-    /**
      Paint the control.
 
      @param canvas
@@ -814,6 +806,7 @@ private:
     void InterpretMessage(const Point& position, const MouseMessage& message);
 
 private:
+    void Repaint(Canvas& canvas, const Rect& dirty_rect);
 	void SetParent(const std::shared_ptr<Control>& parent);
 
 	/**
