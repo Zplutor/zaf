@@ -3,6 +3,7 @@
 #include <zaf/base/log.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/serialization/types.h>
 #include <zaf/window/message/mouse_message.h>
 
 #ifdef min
@@ -330,6 +331,11 @@ float SplitControl::GetSplitBarDragPosition() const {
 
     auto mouse_position = GetMousePosition();
     return IsHorizontalSplit() ? mouse_position.y : mouse_position.x;
+}
+
+
+std::wstring SplitControl::GetTypeName() const {
+    return type::SplitControl;
 }
 
 

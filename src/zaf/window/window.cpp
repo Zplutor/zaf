@@ -857,7 +857,7 @@ void Window::SetStyleProperty(const std::wstring& property_name, DWORD style_val
         return;
     }
 
-    GetPropertyMap().SetProperty<bool>(property_name, is_set);
+    GetPropertyMap().SetProperty(property_name, is_set);
 
     if (! IsClosed()) {
 

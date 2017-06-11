@@ -1,6 +1,9 @@
 #pragma once
 
 #include <dwrite.h>
+#include <string>
+#include <zaf/base/optional.h>
+#include <zaf/serialization/serializer.h>
 
 namespace zaf {
 
@@ -24,6 +27,19 @@ enum class ParagraphAlignment {
      The center of the flow is aligned to the center of the layout box.
      */
     Center = DWRITE_PARAGRAPH_ALIGNMENT_CENTER,
+};
+
+
+std::wstring ConvertParagraphAlignmentToString(ParagraphAlignment paragraph_alignment);
+optional<ParagraphAlignment> ConvertParagraphAlignmentFromString(const std::wstring& string);
+
+
+template<>
+class Serializer<ParagraphAlignment> {
+public:
+    static std::shared_ptr<DataNode> Serialize(ParagraphAlignment paragraph_alignment) {
+        return DataNode::CreateString(ConvertParagraphAlignmentToString(paragraph_alignment));
+    }
 };
 
 }

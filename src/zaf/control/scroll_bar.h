@@ -411,6 +411,8 @@ protected:
 	void MouseCapture() override;
 	void MouseRelease() override;
 
+    std::wstring GetTypeName() const override;
+
 private:
 	enum class TimerEvent {
 		Increment,

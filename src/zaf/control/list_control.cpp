@@ -9,6 +9,7 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/types.h>
 #include <zaf/window/message/mouse_message.h>
 
 #undef max
@@ -823,6 +824,11 @@ std::size_t ListControl::FindItemIndexAtPosition(const Point& position) const {
     }
 
     return index_and_count.first;
+}
+
+
+std::wstring ListControl::GetTypeName() const {
+    return type::ListControl;
 }
 
 

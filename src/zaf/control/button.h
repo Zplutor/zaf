@@ -26,6 +26,8 @@ private:
 
 protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+
+    std::wstring GetTypeName() const override;
 };
 
 }

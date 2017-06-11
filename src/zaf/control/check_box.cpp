@@ -7,6 +7,7 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/types.h>
 
 namespace zaf {
 
@@ -234,6 +235,11 @@ void CheckBox::MouseClick() {
 	}
 
 	SetCheckState(new_check_state);
+}
+
+
+std::wstring CheckBox::GetTypeName() const {
+    return type::CheckBox;
 }
 
 }

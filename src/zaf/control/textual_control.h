@@ -223,6 +223,8 @@ protected:
      */
     void NotifyTextChange();
 
+    std::wstring GetTypeName() const override;
+
 private:
     TextLayout CreateTextLayout() const;
     TextFormat CreateTextFormat() const;

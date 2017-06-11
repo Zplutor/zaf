@@ -9,6 +9,11 @@
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/data_node.h>
+#include <zaf/serialization/properties.h>
+#include <zaf/serialization/serializable_type.h>
+#include <zaf/serialization/serialization_manager.h>
+#include <zaf/serialization/types.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window.h>
@@ -22,15 +27,12 @@ namespace {
 const wchar_t* const kAnchorPropertyName = L"Anchor";
 const wchar_t* const kBackgroundColorPickerPropertyName = L"BackgroundColorPicker";
 const wchar_t* const kBorderColorPickerPropertyName = L"BorderColorPicker";
-const wchar_t* const kCanTabStopPropertyName = L"CanTabStop";
 const wchar_t* const kFocusChangeEventPropertyName = L"FocusChangeEvent";
 const wchar_t* const kLayouterPropertyName = L"Layouter";
-const wchar_t* const kMaximumHeightPropertyName = L"MaximumHeight";
-const wchar_t* const kMaximumWidthPropertyName = L"MaximumWidth";
-const wchar_t* const kMinimumHeightPropertyName = L"MinimumHeight";
-const wchar_t* const kMinimumWidthPropertyName = L"MiniimumWidth";
-const wchar_t* const kNamePropertyName = L"Name";
-const wchar_t* const kTabIndexPropertyName = L"TabIndex";
+
+const bool DefaultCanFocused = false;
+const bool DefaultIsEnabled = true;
+const bool DefaultIsVisible = true;
 
 }
 
@@ -41,9 +43,9 @@ Control::Control() :
 	is_hovered_(false), 
 	is_capturing_mouse_(false),
 	is_focused_(false),
-	can_focused_(false),
-	is_enabled_(true),
-	is_visible_(true) {
+    can_focused_(DefaultCanFocused),
+    is_enabled_(DefaultIsEnabled),
+    is_visible_(DefaultIsVisible) {
 
 }
 
@@ -336,7 +338,7 @@ void Control::SetRect(const Rect& rect) {
 
 float Control::GetMinimumWidth() const {
 
-    auto min_width = GetPropertyMap().TryGetProperty<float>(kMinimumWidthPropertyName);
+    auto min_width = GetPropertyMap().TryGetProperty<float>(property::MinimumWidth);
     if (min_width != nullptr) {
         return *min_width;
     }
@@ -347,7 +349,7 @@ float Control::GetMinimumWidth() const {
 
 void Control::SetMinimumWidth(float min_width) {
 
-    GetPropertyMap().SetProperty(kMinimumWidthPropertyName, min_width);
+    GetPropertyMap().SetProperty(property::MinimumWidth, min_width);
 
     if (GetMaximumWidth() < min_width) {
         SetMaximumWidth(min_width);
@@ -361,7 +363,7 @@ void Control::SetMinimumWidth(float min_width) {
 
 float Control::GetMaximumWidth() const {
 
-    auto max_width = GetPropertyMap().TryGetProperty<float>(kMaximumWidthPropertyName);
+    auto max_width = GetPropertyMap().TryGetProperty<float>(property::MaximumWidth);
     if (max_width != nullptr) {
         return *max_width;
     }
@@ -372,7 +374,7 @@ float Control::GetMaximumWidth() const {
 
 void Control::SetMaximumWidth(float max_width) {
 
-    GetPropertyMap().SetProperty(kMaximumWidthPropertyName, max_width);
+    GetPropertyMap().SetProperty(property::MaximumWidth, max_width);
 
     if (GetMinimumWidth() > max_width) {
         SetMinimumWidth(max_width);
@@ -386,7 +388,7 @@ void Control::SetMaximumWidth(float max_width) {
 
 float Control::GetMinimumHeight() const {
 
-    auto min_height = GetPropertyMap().TryGetProperty<float>(kMinimumHeightPropertyName);
+    auto min_height = GetPropertyMap().TryGetProperty<float>(property::MinimumHeight);
     if (min_height != nullptr) {
         return *min_height;
     }
@@ -397,7 +399,7 @@ float Control::GetMinimumHeight() const {
 
 void Control::SetMinimumHeight(float min_height) {
 
-    GetPropertyMap().SetProperty(kMinimumHeightPropertyName, min_height);
+    GetPropertyMap().SetProperty(property::MinimumHeight, min_height);
 
     if (GetMaximumHeight() < min_height) {
         SetMaximumHeight(min_height);
@@ -411,7 +413,7 @@ void Control::SetMinimumHeight(float min_height) {
 
 float Control::GetMaximumHeight() const {
 
-    auto max_height = GetPropertyMap().TryGetProperty<float>(kMaximumHeightPropertyName);
+    auto max_height = GetPropertyMap().TryGetProperty<float>(property::MaximumHeight);
     if (max_height != nullptr) {
         return *max_height;
     }
@@ -422,7 +424,7 @@ float Control::GetMaximumHeight() const {
 
 void Control::SetMaximumHeight(float max_height) {
 
-    GetPropertyMap().SetProperty(kMaximumHeightPropertyName, max_height);
+    GetPropertyMap().SetProperty(property::MaximumHeight, max_height);
 
     if (GetMinimumHeight() > max_height) {
         SetMinimumHeight(max_height);
@@ -667,7 +669,7 @@ bool Control::IsAncestorOf(const std::shared_ptr<Control>& child) const {
 
 const std::wstring Control::GetName() const {
 
-	auto name = GetPropertyMap().TryGetProperty<std::wstring>(kNamePropertyName);
+	auto name = GetPropertyMap().TryGetProperty<std::wstring>(property::Name);
 	if (name != nullptr) {
 		return *name;
 	}
@@ -678,7 +680,7 @@ const std::wstring Control::GetName() const {
 
 
 void Control::SetName(const std::wstring& name) {
-	GetPropertyMap().SetProperty(kNamePropertyName, name);
+	GetPropertyMap().SetProperty(property::Name, name);
 }
 
 
@@ -790,7 +792,7 @@ bool Control::IsHoveredIndirectly() const {
 
 bool Control::CanTabStop() const {
 
-    auto can_tab_stop = GetPropertyMap().TryGetProperty<bool>(kCanTabStopPropertyName);
+    auto can_tab_stop = GetPropertyMap().TryGetProperty<bool>(property::CanTabStop);
     if (can_tab_stop != nullptr) {
         return *can_tab_stop;
     }
@@ -802,13 +804,13 @@ bool Control::CanTabStop() const {
 
 void Control::SetCanTabStop(bool can_tab_stop) {
 
-    GetPropertyMap().SetProperty(kCanTabStopPropertyName, can_tab_stop);
+    GetPropertyMap().SetProperty(property::CanTabStop, can_tab_stop);
 }
 
 
 std::size_t Control::GetTabIndex() const {
 
-    auto tab_index = GetPropertyMap().TryGetProperty<std::size_t>(kTabIndexPropertyName);
+    auto tab_index = GetPropertyMap().TryGetProperty<std::size_t>(property::TabIndex);
     if (tab_index != nullptr) {
         return *tab_index;
     }
@@ -820,7 +822,7 @@ std::size_t Control::GetTabIndex() const {
 
 void Control::SetTabIndex(std::size_t tab_index) {
 
-    GetPropertyMap().SetProperty(kTabIndexPropertyName, tab_index);
+    GetPropertyMap().SetProperty(property::TabIndex, tab_index);
 }
 
 
@@ -1111,6 +1113,153 @@ void Control::FocusGain() {
 
 void Control::FocusLose() {
 
+}
+
+
+std::wstring Control::GetTypeName() const {
+    return type::Control;
+}
+
+
+void Control::SerializeToDataNode(DataNode& data_node) const {
+
+    if (! rect_.IsEmpty()) {
+        data_node.AddField(property::Rect, rect_.Serialize());
+    }
+
+    if (! border_.IsEmpty()) {
+        data_node.AddField(property::Border, border_.Serialize());
+    }
+
+    if (! padding_.IsEmpty()) {
+        data_node.AddField(property::Padding, padding_.Serialize());
+    }
+
+    if (is_visible_ != DefaultIsVisible) {
+        data_node.AddField(property::IsVisible, DataNode::CreateBoolean(is_visible_));
+    }
+
+    if (is_enabled_ != DefaultIsEnabled) {
+        data_node.AddField(property::IsEnabled, DataNode::CreateBoolean(is_enabled_));
+    }
+
+    if (can_focused_ != DefaultCanFocused) {
+        data_node.AddField(property::CanFocused, DataNode::CreateBoolean(can_focused_));
+    }
+
+    SerializeProperties(data_node);
+    SerializeChildren(data_node);
+}
+
+
+void Control::SerializeProperties(DataNode& data_node) const {
+
+    GetPropertyMap().EnumerateProperties([&data_node](const std::wstring& name, const PropertyMap::Value& value) {
+    
+        auto property_data_node = value.Serialize();
+        if (property_data_node != nullptr) {
+            data_node.AddField(name, property_data_node);
+        }
+    });
+}
+
+
+void Control::SerializeChildren(DataNode& data_node) const {
+
+    const auto& children = GetChildren();
+    if (children.empty()) {
+        return;
+    }
+
+    auto no_serialized_children = GetNoSerializedChildren();
+    std::vector<std::shared_ptr<Control>> serialized_children;
+
+    for (const auto& each_child : children) {
+        if (no_serialized_children.find(each_child) == no_serialized_children.end()) {
+            serialized_children.push_back(each_child);
+        }
+    }
+
+    auto children_node = DataNode::CreateArray();
+    for (const auto& each_child : serialized_children) {
+        children_node->AddElement(each_child->Serialize());
+    }
+
+    data_node.AddField(property::Children, children_node);
+}
+
+
+bool Control::DeserializeFromDataNode(const DataNode& data_node) {
+
+    UpdateGuard update_gurad(*this);
+
+    data_node.EnumerateFields([this](const std::wstring& key, const DataNode& data_node) {
+    
+        if (key == property::Rect) {
+            Rect rect;
+            rect.Deserialize(data_node);
+            SetRect(rect);
+        }
+        else if (key == property::Border) {
+            Frame border;
+            border.Deserialize(data_node);
+            SetBorder(border);
+        }
+        else if (key == property::Padding) {
+            Frame padding;
+            padding.Deserialize(data_node);
+            SetPadding(padding);
+        }
+        else if (key == property::IsVisible) {
+            SetIsVisible(data_node.GetBoolean());
+        }
+        else if (key == property::IsEnabled) {
+            SetIsEnabled(data_node.GetBoolean());
+        }
+        else if (key == property::CanFocused) {
+            SetCanFocused(data_node.GetBoolean());
+        }
+        else if (key == property::Name) {
+            SetName(data_node.GetString());
+        }
+        else if (key == property::MinimumWidth) {
+            SetMinimumWidth(data_node.GetFloat());
+        }
+        else if (key == property::MaximumWidth) {
+            SetMaximumWidth(data_node.GetFloat());
+        }
+        else if (key == property::MinimumHeight) {
+            SetMinimumHeight(data_node.GetFloat());
+        }
+        else if (key == property::MaximumHeight) {
+            SetMaximumHeight(data_node.GetFloat());
+        }
+        else if (key == property::Children) {
+
+            data_node.EnumerateElements([this](const DataNode& data_node) {
+                
+                auto type_node = data_node.GetField(property::Type);
+                if (type_node == nullptr) {
+                    return;
+                }
+
+                auto type = GetSerializationManager()->GetType(type_node->GetString());
+                if (type == nullptr) {
+                    return;
+                }
+
+                auto instance = type->CreateInstance();
+                auto child_control = std::dynamic_pointer_cast<Control>(instance);
+                if (child_control == nullptr) {
+                    return;
+                }
+
+                AddChild(child_control);
+            });
+        }
+    });
+
+    return true;
 }
 
 

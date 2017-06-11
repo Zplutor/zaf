@@ -5,6 +5,7 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/serialization/types.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
@@ -993,6 +994,11 @@ void TextBox::ScrollValuesChange(bool is_horizontal) {
     if (event != nullptr) {
         event->Trigger(*this, is_horizontal);
     }
+}
+
+
+std::wstring TextBox::GetTypeName() const {
+    return type::TextBox;
 }
 
 

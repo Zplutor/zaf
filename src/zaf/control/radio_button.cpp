@@ -5,6 +5,7 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/types.h>
 
 namespace zaf {
 
@@ -188,6 +189,11 @@ void RadioButton::MouseClick() {
 	if (CanAutoSelect()) {
 		SetSelected();
 	}
+}
+
+
+std::wstring RadioButton::GetTypeName() const {
+    return type::RadioButton;
 }
 
 

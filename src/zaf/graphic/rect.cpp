@@ -1,6 +1,9 @@
 #include <zaf/graphic/rect.h>
 #include <algorithm>
 #include <limits>
+#include <zaf/serialization/data_node.h>
+#include <zaf/serialization/properties.h>
+#include <zaf/serialization/types.h>
 
 #undef max
 #undef min
@@ -39,6 +42,34 @@ bool Rect::IsInfinite() const {
         position.y == min_value && 
         size.width == max_value &&
         size.height == max_value;
+}
+
+
+std::wstring Rect::GetTypeName() const {
+    return type::Rect;
+}
+
+
+void Rect::SerializeToDataNode(DataNode& data_node) const {
+
+    data_node.AddField(property::Position, position.Serialize());
+    data_node.AddField(property::Size, size.Serialize());
+}
+
+
+bool Rect::DeserializeFromDataNode(const DataNode& data_node) {
+
+    data_node.EnumerateFields([this](const std::wstring& key, const DataNode& data_node) {
+    
+        if (key == property::Position) {
+            position.Deserialize(data_node);
+        }
+        else if (key == property::Size) {
+            size.Deserialize(data_node);
+        }
+    });
+
+    return true;
 }
 
 

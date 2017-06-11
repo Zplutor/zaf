@@ -27,6 +27,8 @@ protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     void ReleaseRendererResources() override;
 
+    std::wstring GetTypeName() const override;
+
 private:
     ImageDecoder image_decoder_;
     std::unique_ptr<internal::ImagePlayer> image_player_;

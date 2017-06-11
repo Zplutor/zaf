@@ -1,6 +1,9 @@
 #pragma once
 
 #include <dwrite.h>
+#include <string>
+#include <zaf/base/optional.h>
+#include <zaf/serialization/serializer.h>
 
 namespace zaf {
 
@@ -29,6 +32,19 @@ enum class TextAlignment {
      Align text to the leading side, and also justify text to fill the lines.
      */
     Justified = DWRITE_TEXT_ALIGNMENT_JUSTIFIED,
+};
+
+
+std::wstring ConvertTextAlignmentToString(TextAlignment text_alignment);
+optional<TextAlignment> ConvertTextAlignmentFromString(const std::wstring& string);
+
+
+template<>
+class Serializer<TextAlignment> {
+public:
+    static std::shared_ptr<DataNode> Serialize(TextAlignment text_alignment) {
+        return DataNode::CreateString(ConvertTextAlignmentToString(text_alignment));
+    }
 };
 
 }

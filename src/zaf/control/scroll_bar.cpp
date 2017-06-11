@@ -8,6 +8,7 @@
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/types.h>
 #include <zaf/window/message/mouse_message.h>
 
 #include <zaf/base/log.h>
@@ -575,6 +576,11 @@ int ScrollBar::GetValuesPerThumbSlotPoint() {
 
 	int value_range = max_value_ - min_value_;
 	return static_cast<int>(value_range / thumb_scroll_length);
+}
+
+
+std::wstring ScrollBar::GetTypeName() const {
+    return type::ScrollBar;
 }
 
 

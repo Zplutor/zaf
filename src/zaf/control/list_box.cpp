@@ -1,5 +1,6 @@
 #include <zaf/control/list_box.h>
 #include <zaf/creation.h>
+#include <zaf/serialization/types.h>
 
 namespace zaf {
 
@@ -123,6 +124,11 @@ const std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
 
         return std::vector<std::wstring>();
     }
+}
+
+
+std::wstring ListBox::GetTypeName() const {
+    return type::ListBox;
 }
 
 

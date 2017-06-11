@@ -5,7 +5,7 @@
 
 namespace zaf {
 
-class RoundedRect {
+class RoundedRect : public SerializableObject {
 public:
     static const RoundedRect FromD2D1ROUNDEDRECT(const D2D1_ROUNDED_RECT& d2d1_rounded_rect) {
         return RoundedRect(
@@ -36,6 +36,11 @@ public:
     Rect rect;
     float x_radius;
     float y_radius;
+
+protected:
+    std::wstring GetTypeName() const override;
+    void SerializeToDataNode(DataNode& data_node) const override;
+    bool DeserializeFromDataNode(const DataNode& data_node) override;
 };
 
 }

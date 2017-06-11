@@ -1,13 +1,14 @@
 #pragma once
 
 #include <Windows.h>
+#include <zaf/serialization/serializable_object.h>
 
 namespace zaf {
 
 /**
  Represents a rectangle frame.   
  */
-class Frame {
+class Frame : public SerializableObject {
 public:
     /**
      Convert a RECT structure to Frame.
@@ -34,6 +35,15 @@ public:
         top(top),
         right(right), 
         bottom(bottom) { }
+
+    bool IsEmpty() const {
+
+        return 
+            (left == 0) &&
+            (top == 0) &&
+            (right == 0) &&
+            (bottom == 0);
+    }
 
     /**
      Convert to a RECT structure.
@@ -67,6 +77,11 @@ public:
      Bottom edge thickness.
      */
     float bottom;
+
+protected:
+    std::wstring GetTypeName() const override;
+    void SerializeToDataNode(DataNode&) const override;
+    bool DeserializeFromDataNode(const DataNode&) override;
 };
 
 }

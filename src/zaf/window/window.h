@@ -3,11 +3,11 @@
 #include <Windows.h>
 #include <zaf/base/event.h>
 #include <zaf/base/flag_enum.h>
-#include <zaf/base/property_map.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/renderer/window_renderer.h>
 #include <zaf/internal/message_loop.h>
+#include <zaf/serialization/property_map.h>
 
 namespace zaf {
 

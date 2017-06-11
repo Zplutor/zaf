@@ -1,6 +1,8 @@
 #pragma once
 
 #include <dwrite.h>
+#include <zaf/base/optional.h>
+#include <zaf/serialization/serializer.h>
 
 namespace zaf {
 
@@ -42,6 +44,19 @@ enum class WordWrapping {
      Available on Windows 8.1 and later only.
      */
     Character = DWRITE_WORD_WRAPPING_CHARACTER,
+};
+
+
+std::wstring ConvertWordWrappingToString(WordWrapping word_wrapping);
+optional<WordWrapping> ConvertWordWrappingFromString(const std::wstring& string);
+
+
+template<>
+class Serializer<WordWrapping> {
+public:
+    static std::shared_ptr<DataNode> Serialize(WordWrapping word_wrapping) {
+        return DataNode::CreateString(ConvertWordWrappingToString(word_wrapping));
+    }
 };
 
 }

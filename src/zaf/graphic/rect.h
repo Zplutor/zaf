@@ -13,7 +13,7 @@ namespace zaf {
 /**
  Describes the position and size of a rectangle area.
  */
-class Rect {
+class Rect : public SerializableObject {
 public:
 	/**
 	 Convert a specified RECT structure to Rect.
@@ -231,6 +231,11 @@ public:
 	 Size of the rectangle.
 	 */
 	Size size;
+
+protected:
+    std::wstring GetTypeName() const override;
+    void SerializeToDataNode(DataNode&) const override;
+    bool DeserializeFromDataNode(const DataNode&) override;
 };
 
 

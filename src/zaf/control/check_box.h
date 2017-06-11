@@ -148,6 +148,8 @@ protected:
     Rect GetTextRect() override;
 	void MouseClick() override;
 
+    std::wstring GetTypeName() const override;
+
 private:
 	void PaintBox(Canvas& canvas, const Rect& box_rect) const;
 

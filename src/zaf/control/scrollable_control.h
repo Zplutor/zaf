@@ -216,6 +216,8 @@ protected:
      */
     virtual void ScrollContentControlChange(const std::shared_ptr<Control>& previous_control) { }
 
+    std::wstring GetTypeName() const override;
+
 private:
     friend class internal::GeneralLayouter;
     friend class internal::ScrollableControlLayouter;

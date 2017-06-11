@@ -1,15 +1,17 @@
 #pragma once
 
 #include <Windows.h>
+#include <memory>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/relation_operator.h>
+#include <zaf/serialization/serializable_object.h>
 
 namespace zaf {
 
 /**
  Describes the x-coordinate and y-coordinate of a point. 
  */
-class Point {
+class Point : public SerializableObject {
 public:
 	/**
 	 Convert a specified POINT structure to Point.
@@ -87,6 +89,11 @@ public:
 	 Y-coordinate of the point.
 	 */
 	float y;
+
+protected:
+    std::wstring GetTypeName() const override;
+    void SerializeToDataNode(DataNode& data_node) const override;
+    bool DeserializeFromDataNode(const DataNode& data_node) override;
 };
 
 

@@ -14,7 +14,7 @@ struct WindowCreator {
     template<typename... ArgumentTypes>
     static std::shared_ptr<WindowType> Create(ArgumentTypes&&... arguments) {
 
-        auto window = std::make_shared<WindowType>(std::forward(arguments)...);
+        auto window = std::make_shared<WindowType>(std::forward<ArgumentTypes>(arguments)...);
         window->Initialize();
         return window;
     }
@@ -27,7 +27,7 @@ struct ControlCreator {
     template<typename... ArgumentTypes>
     static std::shared_ptr<ControlType> Create(ArgumentTypes&&... arguments) {
 
-        auto control = std::make_shared<ControlType>(std::forward(arguments)...);
+        auto control = std::make_shared<ControlType>(std::forward<ArgumentTypes>(arguments)...);
         Control::UpdateGuard update_guard(*control);
         control->Initialize();
         return control;
@@ -40,7 +40,7 @@ struct GenericCreator {
 
     template<typename... ArgumentTypes>
     static std::shared_ptr<GenericType> Create(ArgumentTypes&&... arguments) {
-        return std::make_shared<GenericType>(std::forward(arguments)...);
+        return std::make_shared<GenericType>(std::forward<ArgumentTypes>(arguments)...);
     }
 };
 
@@ -71,7 +71,7 @@ struct Creator {
  */
 template<typename ObjectType, typename... ArgumentTypes>
 std::shared_ptr<ObjectType> Create(ArgumentTypes&&... arguments) {
-    return internal::Creator<ObjectType>::Type::Create(std::forward(arguments)...);
+    return internal::Creator<ObjectType>::Type::Create(std::forward<ArgumentTypes>(arguments)...);
 }
 
 }

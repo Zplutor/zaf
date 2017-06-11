@@ -154,6 +154,8 @@ protected:
     Rect GetTextRect() override;
 	void MouseClick() override;
 
+    std::wstring GetTypeName() const override;
+
 private:
 	void PaintRadio(Canvas& canvas, const Rect& radio_rect);
 

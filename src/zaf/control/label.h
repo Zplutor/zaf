@@ -13,6 +13,9 @@ public:
 	~Label();
 
     void Initialize() override;
+
+protected:
+    std::wstring GetTypeName() const override;
 };
 
 }

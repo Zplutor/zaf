@@ -197,6 +197,8 @@ protected:
      */
     virtual void EditTextBoxChange(const std::shared_ptr<TextBox>& previous_edit_text_box) { }
 
+    std::wstring GetTypeName() const override;
+
 private:
     enum class SelectionChangeAction {
         CloseDropDownWindow,

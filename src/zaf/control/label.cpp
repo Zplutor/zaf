@@ -1,4 +1,5 @@
 #include <zaf/control/label.h>
+#include <zaf/serialization/types.h>
 
 namespace zaf {
 
@@ -19,6 +20,11 @@ void Label::Initialize() {
     SetBackgroundColorPicker([](const Control&) {
         return Color::Transparent;
     });
+}
+
+
+std::wstring Label::GetTypeName() const {
+    return type::Label;
 }
 
 }

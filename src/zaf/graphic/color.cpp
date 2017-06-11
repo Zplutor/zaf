@@ -1,6 +1,45 @@
 #include <zaf/graphic/color.h>
+#include <zaf/serialization/data_node.h>
+#include <zaf/serialization/properties.h>
+#include <zaf/serialization/types.h>
 
 namespace zaf {
+
+std::wstring Color::GetTypeName() const {
+    return type::Color;
+}
+
+
+void Color::SerializeToDataNode(DataNode& data_node) const {
+
+    data_node.AddField(property::R, DataNode::CreateNumber(r));
+    data_node.AddField(property::G, DataNode::CreateNumber(g));
+    data_node.AddField(property::B, DataNode::CreateNumber(b));
+    data_node.AddField(property::A, DataNode::CreateNumber(a));
+}
+
+
+bool Color::DeserializeFromDataNode(const DataNode& data_node) {
+
+    data_node.EnumerateFields([this](const std::wstring& key, const DataNode& data_node) {
+    
+        if (key == property::R) {
+            r = data_node.GetFloat();
+        }
+        else if (key == property::G) {
+            g = data_node.GetFloat();
+        }
+        else if (key == property::B) {
+            b = data_node.GetFloat();
+        }
+        else if (key == property::A) {
+            a = data_node.GetFloat();
+        }
+    });
+
+    return true;
+}
+
 
 const Color Color::Black = Color(0, 0, 0);
 const Color Color::Blue = Color(0, 0, 1);

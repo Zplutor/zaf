@@ -12,6 +12,7 @@
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/types.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/window.h>
 
@@ -546,6 +547,11 @@ void ComboBox::FocusGain() {
     if (IsEditable()) {
         edit_text_box_->SetIsFocused(true);
     }
+}
+
+
+std::wstring ComboBox::GetTypeName() const {
+    return type::ComboBox;
 }
 
 

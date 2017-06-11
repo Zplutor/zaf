@@ -2,6 +2,7 @@
 #include <zaf/base/assert.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/serialization/types.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -209,6 +210,11 @@ void ClickableControl::FocusGain() {
 
 void ClickableControl::FocusLose() {
 	NeedRepaint();
+}
+
+
+std::wstring ClickableControl::GetTypeName() const {
+    return type::ClickableControl;
 }
 
 }

@@ -113,6 +113,8 @@ protected:
     virtual void FirstPaneChange(const std::shared_ptr<Control>& previous_pane) { }
     virtual void SecondPaneChange(const std::shared_ptr<Control>& previous_pane) { }
 
+    std::wstring GetTypeName() const override;
+
 private:
     void InitializeSplitBar();
     void UninitializeSplitBar();

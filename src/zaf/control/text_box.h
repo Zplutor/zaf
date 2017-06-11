@@ -297,6 +297,8 @@ protected:
 	void FocusGain() override;
 	void FocusLose() override;
 
+    std::wstring GetTypeName() const override;
+
 private:
 	class TextHostBridge : public ITextHost {
 	public:

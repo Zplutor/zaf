@@ -58,6 +58,15 @@
     <Filter Include="zaf\control\internal\scrollable_control">
       <UniqueIdentifier>{3895c0e4-4a91-4965-8af7-be9344ec8ebb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\serialization">
+      <UniqueIdentifier>{7205d02a-edfd-4def-9a34-b80b80d1ed3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\serialization\internal">
+      <UniqueIdentifier>{8c1533b9-84de-4f6f-b996-e35dabc10b95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\serialization\xml">
+      <UniqueIdentifier>{5b71560d-ea09-453f-a8c6-1895befac3a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -264,6 +273,48 @@
     <ClCompile Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.cpp">
       <Filter>zaf\control\internal\scrollable_control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\size.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\point.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\serialization\data_node.cpp">
+      <Filter>zaf\serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\serialization\serialization_manager.cpp">
+      <Filter>zaf\serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\serialization\serializable_object.cpp">
+      <Filter>zaf\serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\rounded_rect.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\frame.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\ellipse.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\serialization\internal\built_in_types.cpp">
+      <Filter>zaf\serialization\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\base\stream.cpp">
+      <Filter>zaf\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\serialization\xml\xml_writer.cpp">
+      <Filter>zaf\serialization\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\text\text_alignment.cpp">
+      <Filter>zaf\graphic\text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\text\paragraph_alignment.cpp">
+      <Filter>zaf\graphic\text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\text\word_wrapping.cpp">
+      <Filter>zaf\graphic\text</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -418,9 +469,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\ellipse.h">
       <Filter>zaf\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\property_map.h">
-      <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\layouter.h">
       <Filter>zaf\control\layout</Filter>
@@ -675,6 +723,51 @@
       <Filter>zaf\control\internal\scrollable_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\any.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\data_node.h">
+      <Filter>zaf\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\serializable_object.h">
+      <Filter>zaf\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\serializable_type.h">
+      <Filter>zaf\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\serialization_manager.h">
+      <Filter>zaf\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\types.h">
+      <Filter>zaf\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\string\string_const.h">
+      <Filter>zaf\base\string</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\properties.h">
+      <Filter>zaf\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\internal\built_in_types.h">
+      <Filter>zaf\serialization\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\stream.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\data_reader.h">
+      <Filter>zaf\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\data_writer.h">
+      <Filter>zaf\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\xml\xml_writer.h">
+      <Filter>zaf\serialization\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\property_map.h">
+      <Filter>zaf\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\serializer.h">
+      <Filter>zaf\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\number.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>

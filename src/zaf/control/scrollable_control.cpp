@@ -5,6 +5,7 @@
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/types.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -361,5 +362,9 @@ void ScrollableControl::ScrollRightToEnd() {
     horizontal_scroll_bar->SetValue(horizontal_scroll_bar->GetMaximumValue());
 }
 
+
+std::wstring ScrollableControl::GetTypeName() const {
+    return type::ScrollableControl;
+}
 
 }

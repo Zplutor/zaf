@@ -4,7 +4,7 @@
 
 namespace zaf {
 	
-class Ellipse {
+class Ellipse : public SerializableObject {
 public:
 	Ellipse() : x_radius(0), y_radius(0) { }
 
@@ -47,6 +47,11 @@ public:
 	Point position;
 	float x_radius;
 	float y_radius;
+
+protected:
+    std::wstring GetTypeName() const override;
+    void SerializeToDataNode(DataNode&) const override;
+    bool DeserializeFromDataNode(const DataNode&) override;
 };
 
 }

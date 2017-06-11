@@ -9,6 +9,9 @@
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/graphic/text/text_layout_properties.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/data_node.h>
+#include <zaf/serialization/properties.h>
+#include <zaf/serialization/types.h>
 
 namespace zaf {
 
@@ -22,13 +25,9 @@ static void SetFontToTextLayout(const Font& font, const TextRange& range, TextLa
 static const wchar_t* const kDefaultFontPropertyName = L"DefaultFont";
 static const wchar_t* const kDefaultTextColorPickerPropertyName = L"DefaultTextColorPicker";
 static const wchar_t* const kFontsPropertyName = L"Fonts";
-static const wchar_t* const kParagraphAlignmentPropertyName = L"ParagraphAlignment";
-static const wchar_t* const kTextAlignmentPropertyName = L"TextAlignment";
 static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
 static const wchar_t* const kTextColorPickersPropertyName = L"TextColorPickers";
-static const wchar_t* const kTextPropertyName = L"Text";
 static const wchar_t* const kTextTrimmingPropertyName = L"TextTrimming";
-static const wchar_t* const kWordWrappingPropertyName = L"WordWrapping";
 
 namespace {
 
@@ -41,6 +40,7 @@ void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_
 }
 
 }
+
 
 TextualControl::TextualControl() {
 
@@ -166,7 +166,7 @@ Rect TextualControl::GetTextRect() {
 
 const std::wstring TextualControl::GetText() const {
 
-    auto text = GetPropertyMap().TryGetProperty<std::wstring>(kTextPropertyName);
+    auto text = GetPropertyMap().TryGetProperty<std::wstring>(property::Text);
     if (text != nullptr) {
         return *text;
     }
@@ -181,7 +181,7 @@ void TextualControl::SetText(const std::wstring& text) {
         return;
     }
 
-    GetPropertyMap().SetProperty(kTextPropertyName, text);
+    GetPropertyMap().SetProperty(property::Text, text);
 
     ReleaseTextLayout();
     NeedRepaint();
@@ -334,7 +334,7 @@ void TextualControl::ResetFonts() {
 
 TextAlignment TextualControl::GetTextAlignment() const {
 
-    auto text_alignment = GetPropertyMap().TryGetProperty<TextAlignment>(kTextAlignmentPropertyName);
+    auto text_alignment = GetPropertyMap().TryGetProperty<TextAlignment>(property::TextAlignment);
     if (text_alignment != nullptr) {
         return *text_alignment;
     }
@@ -345,7 +345,7 @@ TextAlignment TextualControl::GetTextAlignment() const {
 
 void TextualControl::SetTextAlignment(TextAlignment alignment) {
 
-    GetPropertyMap().SetProperty(kTextAlignmentPropertyName, alignment);
+    GetPropertyMap().SetProperty(property::TextAlignment, alignment);
 
     if (text_layout_ != nullptr) {
         text_layout_.SetTextAlignment(alignment);
@@ -357,7 +357,7 @@ void TextualControl::SetTextAlignment(TextAlignment alignment) {
 
 ParagraphAlignment TextualControl::GetParagraphAlignment() const {
 
-    auto paragraph_alignment = GetPropertyMap().TryGetProperty<ParagraphAlignment>(kParagraphAlignmentPropertyName);
+    auto paragraph_alignment = GetPropertyMap().TryGetProperty<ParagraphAlignment>(property::ParagraphAlignment);
     if (paragraph_alignment != nullptr) {
         return *paragraph_alignment;
     }
@@ -368,7 +368,7 @@ ParagraphAlignment TextualControl::GetParagraphAlignment() const {
 
 void TextualControl::SetParagraphAlignment(ParagraphAlignment alignment) {
 
-    GetPropertyMap().SetProperty(kParagraphAlignmentPropertyName, alignment);
+    GetPropertyMap().SetProperty(property::ParagraphAlignment, alignment);
 
     if (text_layout_ != nullptr) {
         text_layout_.SetParagraphAlignment(alignment);
@@ -380,7 +380,7 @@ void TextualControl::SetParagraphAlignment(ParagraphAlignment alignment) {
 
 WordWrapping TextualControl::GetWordWrapping() const {
 
-    auto word_wrapping = GetPropertyMap().TryGetProperty<WordWrapping>(kWordWrappingPropertyName);
+    auto word_wrapping = GetPropertyMap().TryGetProperty<WordWrapping>(property::WordWrapping);
     if (word_wrapping != nullptr) {
         return *word_wrapping;
     }
@@ -391,7 +391,7 @@ WordWrapping TextualControl::GetWordWrapping() const {
 
 void TextualControl::SetWordWrapping(WordWrapping word_wrapping) {
 
-    GetPropertyMap().SetProperty(kWordWrappingPropertyName, word_wrapping);
+    GetPropertyMap().SetProperty(property::WordWrapping, word_wrapping);
 
     if (text_layout_ != nullptr) {
         text_layout_.SetWordWrapping(word_wrapping);
@@ -456,6 +456,11 @@ Size TextualControl::DetermineRequiredSize(const Size& max_size) const {
     text_layout.SetMaxHeight(max_size.height - extract_height);
     auto metrics = text_layout.GetMetrics();
     return Size(metrics.width + extract_width, metrics.height + extract_height);
+}
+
+
+std::wstring TextualControl::GetTypeName() const {
+    return type::TextualControl;
 }
 
 

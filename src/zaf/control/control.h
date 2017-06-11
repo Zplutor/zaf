@@ -8,13 +8,14 @@
 #include <string>
 #include <vector>
 #include <zaf/base/event.h>
-#include <zaf/base/property_map.h>
 #include <zaf/control/anchor.h>
 #include <zaf/control/color_picker.h>
 #include <zaf/control/layout/layouter.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
+#include <zaf/serialization/property_map.h>
+#include <zaf/serialization/serializable_object.h>
 
 namespace zaf {
 
@@ -32,7 +33,7 @@ class Window;
 
  This is the base class of all controls.
  */
-class Control : public std::enable_shared_from_this<Control> {
+class Control : public SerializableObject, public std::enable_shared_from_this<Control> {
 public:
     /**
      Provides a convenient way for automatically calling BeginUpdate/EndUpdate
@@ -790,6 +791,14 @@ protected:
      */
 	virtual void FocusLose();
 
+    std::wstring GetTypeName() const override;
+    void SerializeToDataNode(DataNode& data_node) const override;
+    bool DeserializeFromDataNode(const DataNode& data_node) override;
+
+    virtual std::set<std::shared_ptr<Control>> GetNoSerializedChildren() const { 
+        return { };
+    }
+
 private:
 	friend class Window;
 
@@ -831,6 +840,9 @@ private:
     bool IsUpdating() const {
         return update_count_ > 0;
     }
+
+    void SerializeProperties(DataNode& data_node) const;
+    void SerializeChildren(DataNode& data_node) const;
 
 	Control(const Control&) = delete;
 	Control& operator=(const Control&) = delete;

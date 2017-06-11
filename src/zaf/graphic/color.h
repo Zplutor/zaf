@@ -3,13 +3,14 @@
 #include <cstdint>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/relation_operator.h>
+#include <zaf/serialization/serializable_object.h>
 
 namespace zaf {
 
 /**
  Describes the red, green, blue, and alpha components of a color.
  */
-class Color {
+class Color : public SerializableObject {
 public:
 	/**
 	 Convert a specified D2D1_COLOR_F structure to Color.
@@ -184,6 +185,11 @@ public:
 	 Alpha component of the color.
 	 */
 	float a;
+
+protected:
+    std::wstring GetTypeName() const override;
+    void SerializeToDataNode(DataNode&) const override;
+    bool DeserializeFromDataNode(const DataNode&) override;
 };
 
 

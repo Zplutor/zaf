@@ -418,6 +418,8 @@ protected:
      */
     virtual void ItemContainerChange(const std::shared_ptr<ItemContainer>& previous_item_container) { }
 
+    std::wstring GetTypeName() const override;
+
 private:
     friend class internal::ListControlExtendedMultipleSelectStrategy;
     friend class internal::ListControlSingleSelectStrategy;

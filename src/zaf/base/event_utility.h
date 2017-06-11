@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <zaf/base/property_map.h>
+#include <zaf/serialization/property_map.h>
 
 namespace zaf {
 
