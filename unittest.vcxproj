@@ -97,6 +97,8 @@
     <ClCompile Include="unittest\googletest\src\gtest-all.cc" />
     <ClCompile Include="unittest\main.cpp" />
     <ClCompile Include="unittest\number_test.cpp" />
+    <ClCompile Include="unittest\serialization\xml\xml_reader_test.cpp" />
+    <ClCompile Include="unittest\serialization\xml\xml_writer_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\case\graphic\rect_test.cpp">

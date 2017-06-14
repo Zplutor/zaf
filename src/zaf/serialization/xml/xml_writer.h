@@ -10,7 +10,7 @@ class XmlWriter : public DataWriter {
 public:
     void Execute(
         const std::shared_ptr<DataNode>& data_node,
-        const Stream& output_stream, 
+        Stream& output_stream, 
         std::error_code& error_code) override;
 };
 

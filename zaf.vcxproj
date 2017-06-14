@@ -87,6 +87,7 @@
     <ClCompile Include="src\zaf\serialization\internal\built_in_types.cpp" />
     <ClCompile Include="src\zaf\serialization\serializable_object.cpp" />
     <ClCompile Include="src\zaf\serialization\serialization_manager.cpp" />
+    <ClCompile Include="src\zaf\serialization\xml\xml_reader.cpp" />
     <ClCompile Include="src\zaf\serialization\xml\xml_writer.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
     <ClCompile Include="src\zaf\window\dialog.cpp" />
@@ -236,6 +237,8 @@
     <ClInclude Include="src\zaf\serialization\serializable_type.h" />
     <ClInclude Include="src\zaf\serialization\serializer.h" />
     <ClInclude Include="src\zaf\serialization\types.h" />
+    <ClInclude Include="src\zaf\serialization\xml\internal\xml_names.h" />
+    <ClInclude Include="src\zaf\serialization\xml\xml_reader.h" />
     <ClInclude Include="src\zaf\serialization\xml\xml_writer.h" />
     <ClInclude Include="src\zaf\window\caret.h" />
     <ClInclude Include="src\zaf\window\dialog.h" />

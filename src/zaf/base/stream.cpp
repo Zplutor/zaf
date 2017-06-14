@@ -3,6 +3,16 @@
 
 namespace zaf {
 
+std::uint64_t Stream::GetLength(std::error_code& error_code) const {
+
+    STATSTG state = { 0 };
+    HRESULT result = GetHandle()->Stat(&state, STATFLAG_NONAME);
+
+    error_code = MakeComErrorCode(result);
+    return state.cbSize.QuadPart;
+}
+
+
 std::uint64_t Stream::Seek(Origin origin, std::int64_t offset, std::error_code& error_code) {
 
     LARGE_INTEGER move;
@@ -16,7 +26,7 @@ std::uint64_t Stream::Seek(Origin origin, std::int64_t offset, std::error_code& 
 }
 
 
-std::size_t Stream::Read(std::size_t size, void* data, std::error_code& error_code) {
+std::size_t Stream::Read(std::size_t size, void* data, std::error_code& error_code) const {
 
     ULONG read_size = 0;
     HRESULT result = GetHandle()->Read(data, size, &read_size);

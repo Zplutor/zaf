@@ -3,17 +3,10 @@
 #include <xmllite.h>
 #include <zaf/base/string/to_string.h>
 #include <zaf/serialization/data_node.h>
+#include <zaf/serialization/xml/internal/xml_names.h>
 
 namespace zaf {
 namespace {
-
-const wchar_t* const ArrayElementName = L"array";
-const wchar_t* const BooleanElementName = L"boolean";
-const wchar_t* const FieldElementName = L"field";
-const wchar_t* const KeyAttributeName = L"key";
-const wchar_t* const NumberElementName = L"number";
-const wchar_t* const ObjectElementName = L"object";
-const wchar_t* const StringElementName = L"string";
 
 class DataNodeWriter {
 public:
@@ -24,26 +17,26 @@ public:
     }
 
     HRESULT Execute() {
-        return WriteDataNode(data_node_);
+        return WriteDataNode(data_node_, std::wstring());
     }
 
 private:
-    HRESULT WriteDataNode(const DataNode& data_node) {
+    HRESULT WriteDataNode(const DataNode& data_node, const std::wstring& key) {
 
         if (data_node.IsObject()) {
-            return WriteObject(data_node);
+            return WriteObject(data_node, key);
         }
         else if (data_node.IsArray()) {
-            return WriteArray(data_node);
+            return WriteArray(data_node, key);
         }
         else if (data_node.IsString()) {
-            return WriteString(data_node);
+            return WriteString(data_node, key);
         }
         else if (data_node.IsBoolean()) {
-            return WriteBoolean(data_node);
+            return WriteBoolean(data_node, key);
         }
         else if (data_node.IsNumber()) {
-            return WriteNumber(data_node);
+            return WriteNumber(data_node, key);
         }
         else {
             return E_NOTIMPL;
@@ -51,9 +44,14 @@ private:
     }
 
 
-    HRESULT WriteObject(const DataNode& data_object) {
+    HRESULT WriteObject(const DataNode& data_object, const std::wstring& key) {
 
-        HRESULT result = writer_->WriteStartElement(nullptr, ObjectElementName, nullptr);
+        HRESULT result = writer_->WriteStartElement(nullptr, internal::ObjectElementName, nullptr);
+        if (FAILED(result)) {
+            return result;
+        }
+
+        result = WriteKeyAttribute(key);
         if (FAILED(result)) {
             return result;
         }
@@ -64,7 +62,7 @@ private:
                 return;
             }
 
-            result = WriteField(key, data_node);
+            result = WriteDataNode(data_node, key);
         });
 
         if (FAILED(result)) {
@@ -74,29 +72,14 @@ private:
         return writer_->WriteEndElement();
     }
 
-    HRESULT WriteField(const std::wstring& key, const DataNode& data_node) {
+    HRESULT WriteArray(const DataNode& data_node, const std::wstring& key) {
 
-        HRESULT result = writer_->WriteStartElement(nullptr, FieldElementName, nullptr);
+        HRESULT result = writer_->WriteStartElement(nullptr, internal::ArrayElementName, nullptr);
         if (FAILED(result)) {
             return result;
         }
 
-        result = writer_->WriteAttributeString(nullptr, KeyAttributeName, nullptr, key.c_str());
-        if (FAILED(result)) {
-            return result;
-        }
-
-        result = WriteDataNode(data_node);
-        if (FAILED(result)) {
-            return result;
-        }
-
-        return writer_->WriteEndElement();
-    }
-
-    HRESULT WriteArray(const DataNode& data_node) {
-
-        HRESULT result = writer_->WriteStartElement(nullptr, ArrayElementName, nullptr);
+        result = WriteKeyAttribute(key);
         if (FAILED(result)) {
             return result;
         }
@@ -107,7 +90,7 @@ private:
                 return;
             }
 
-            result = WriteDataNode(data_node);
+            result = WriteDataNode(data_node, std::wstring());
         });
 
         if (FAILED(result)) {
@@ -117,16 +100,16 @@ private:
         return writer_->WriteEndElement();
     }
 
-    HRESULT WriteString(const DataNode& data_node) {
-        return writer_->WriteElementString(nullptr, StringElementName, nullptr, data_node.GetString().c_str());
+    HRESULT WriteString(const DataNode& data_node, const std::wstring& key) {
+        return WriteTextElement(internal::StringElementName, key, data_node.GetString());
     }
 
-    HRESULT WriteBoolean(const DataNode& data_node) {
+    HRESULT WriteBoolean(const DataNode& data_node, const std::wstring& key) {
         const wchar_t* const value = data_node.GetBoolean() ? L"true" : L"false";
-        return writer_->WriteElementString(nullptr, BooleanElementName, nullptr, value);
+        return WriteTextElement(internal::BooleanElementName, key, value);
     }
 
-    HRESULT WriteNumber(const DataNode& data_node) {
+    HRESULT WriteNumber(const DataNode& data_node, const std::wstring& key) {
 
         auto number = data_node.GetNumber();
 
@@ -146,7 +129,36 @@ private:
             return E_INVALIDARG;
         }
 
-        return writer_->WriteElementString(nullptr, NumberElementName, nullptr, string.c_str());
+        return WriteTextElement(internal::NumberElementName, key, string);
+    }
+
+    HRESULT WriteTextElement(const std::wstring& element_name, const std::wstring& key, const std::wstring& text) {
+
+        HRESULT result = writer_->WriteStartElement(nullptr, element_name.c_str(), nullptr);
+        if (FAILED(result)) {
+            return result;
+        }
+
+        result = WriteKeyAttribute(key);
+        if (FAILED(result)) {
+            return result;
+        }
+
+        result = writer_->WriteString(text.c_str());
+        if (FAILED(result)) {
+            return result;
+        }
+
+        return writer_->WriteEndElement();
+    }
+
+    HRESULT WriteKeyAttribute(const std::wstring& key) {
+
+        if (key.empty()) {
+            return S_OK;
+        }
+
+        return writer_->WriteAttributeString(nullptr, internal::KeyAttributeName, nullptr, key.c_str());
     }
 
 private:
@@ -158,7 +170,7 @@ private:
 
 void XmlWriter::Execute(
     const std::shared_ptr<DataNode>& data_node, 
-    const Stream& output_stream,
+    Stream& output_stream,
     std::error_code& error_code) {
 
     CComPtr<IXmlWriter> xml_writer;

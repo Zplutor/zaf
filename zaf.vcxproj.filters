@@ -67,6 +67,9 @@
     <Filter Include="zaf\serialization\xml">
       <UniqueIdentifier>{5b71560d-ea09-453f-a8c6-1895befac3a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\serialization\xml\internal">
+      <UniqueIdentifier>{31da2e97-2395-4d30-be10-baa2bc2c21f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -314,6 +317,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\text\word_wrapping.cpp">
       <Filter>zaf\graphic\text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\serialization\xml\xml_reader.cpp">
+      <Filter>zaf\serialization\xml</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -769,6 +775,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\number.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\xml\xml_reader.h">
+      <Filter>zaf\serialization\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\xml\internal\xml_names.h">
+      <Filter>zaf\serialization\xml\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

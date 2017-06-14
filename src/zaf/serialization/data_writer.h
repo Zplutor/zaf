@@ -1,11 +1,12 @@
 #pragma once
 
 #include <memory>
-#include <zaf/base/stream.h>
+#include <system_error>
 
 namespace zaf {
 
 class DataNode;
+class Stream;
 
 class DataWriter {
 public:
@@ -14,7 +15,7 @@ public:
 
     virtual void Execute(
         const std::shared_ptr<DataNode>& data_node,
-        const Stream& output_stream, 
+        Stream& output_stream, 
         std::error_code& error_code) = 0;
 
     DataWriter(const DataWriter&) = delete;
