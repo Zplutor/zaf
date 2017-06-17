@@ -6,19 +6,9 @@ namespace {
 
 std::string ConvertDataNodeToXmlString(const std::shared_ptr<zaf::DataNode>& data_node) {
 
-    auto stream = zaf::CreateMemoryStream();
-
     zaf::XmlWriter writer;
     std::error_code error_code;
-    writer.Execute(data_node, stream, error_code);
-
-    auto length = stream.GetLength();
-    std::string string;
-    string.resize(static_cast<std::size_t>(length));
-
-    stream.Seek(zaf::Stream::Origin::Set, 0);
-    stream.Read(static_cast<std::size_t>(length), &string[0]);
-    return string;
+    return writer.Write(data_node, error_code);
 }
 
 }

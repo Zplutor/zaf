@@ -7,11 +7,9 @@ namespace {
 
 std::shared_ptr<zaf::DataNode> ConvertDataNodeFromXmlString(const std::string& string) {
 
-    auto stream = zaf::CreateMemoryStream(string.data(), string.size());
-
     zaf::XmlReader xml_reader;
     std::error_code error_code;
-    return xml_reader.Execute(stream, error_code);
+    return xml_reader.Read(string, error_code);
 }
 
 std::size_t GetDataNodeFieldCount(const std::shared_ptr<zaf::DataNode>& data_node) {

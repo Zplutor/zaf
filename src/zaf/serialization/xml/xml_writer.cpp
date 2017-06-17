@@ -1,6 +1,7 @@
 #include <zaf/serialization/xml/xml_writer.h>
 #include <atlbase.h>
 #include <xmllite.h>
+#include <zaf/base/stream.h>
 #include <zaf/base/string/to_string.h>
 #include <zaf/serialization/data_node.h>
 #include <zaf/serialization/xml/internal/xml_names.h>
@@ -166,29 +167,65 @@ private:
     IXmlWriter* writer_;
 };
 
+
+std::string GetStringFromStream(Stream& stream, std::error_code& error_code) {
+
+    stream.Seek(Stream::Origin::Set, 0, error_code);
+    if (! IsSucceeded(error_code)) {
+        return std::string();
+    }
+
+    auto length = stream.GetLength(error_code);
+    if (!IsSucceeded(error_code)) {
+        return std::string();
+    }
+
+    std::string string(static_cast<std::size_t>(length), 0);
+    stream.Read(static_cast<std::size_t>(length), &string[0], error_code);
+    if (!IsSucceeded(error_code)) {
+        return std::string();
+    }
+
+    return string;
 }
 
-void XmlWriter::Execute(
-    const std::shared_ptr<DataNode>& data_node, 
-    Stream& output_stream,
-    std::error_code& error_code) {
+}
+
+
+std::string XmlWriter::Write(const std::shared_ptr<DataNode>& data_node, std::error_code& error_code) {
 
     CComPtr<IXmlWriter> xml_writer;
     HRESULT result = CreateXmlWriter(__uuidof(IXmlWriter), reinterpret_cast<void**>(&xml_writer), nullptr); 
     if (FAILED(result)) {
         error_code = MakeComErrorCode(result);
-        return;
+        return std::string();
     }
 
-    result = xml_writer->SetOutput(output_stream.GetHandle());
+    auto stream = CreateMemoryStream();
+    if (stream == nullptr) {
+        error_code = MakeComErrorCode(E_OUTOFMEMORY);
+        return std::string();
+    }
+
+    result = xml_writer->SetOutput(stream.GetHandle());
     if (FAILED(result)) {
         error_code = MakeComErrorCode(result);
-        return;
+        return std::string();
     }
 
     DataNodeWriter data_node_writer(*data_node, xml_writer);
     result = data_node_writer.Execute();
-    error_code = MakeComErrorCode(result);
+    if (FAILED(result)) {
+        error_code = MakeComErrorCode(result);
+        return std::string();
+    }
+
+    result = xml_writer->Flush();
+    if (FAILED(result)) {
+        return std::string();
+    }
+
+    return GetStringFromStream(stream, error_code);
 }
 
 }

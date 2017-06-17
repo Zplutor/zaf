@@ -289,12 +289,19 @@ private:
 
 }
 
-std::shared_ptr<DataNode> XmlReader::Execute(const Stream& stream, std::error_code& error_code) {
+
+std::shared_ptr<DataNode> XmlReader::Read(const void* data, std::size_t data_length, std::error_code& error_code) {
 
     CComPtr<IXmlReader> xml_reader;
     HRESULT result = CreateXmlReader(__uuidof(IXmlReader), reinterpret_cast<void**>(&xml_reader), nullptr);
     if (FAILED(result)) {
         error_code = MakeComErrorCode(result);
+        return nullptr;
+    }
+
+    auto stream = CreateMemoryStream(data, data_length);
+    if (stream == nullptr) {
+        error_code = MakeComErrorCode(E_OUTOFMEMORY);
         return nullptr;
     }
 
