@@ -70,6 +70,9 @@
     <Filter Include="zaf\serialization\xml\internal">
       <UniqueIdentifier>{31da2e97-2395-4d30-be10-baa2bc2c21f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\serialization\json">
+      <UniqueIdentifier>{4bd94367-1e68-4493-ba9e-0c8262927aff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -320,6 +323,15 @@
     </ClCompile>
     <ClCompile Include="src\zaf\serialization\xml\xml_reader.cpp">
       <Filter>zaf\serialization\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\serialization\json\json_writer.cpp">
+      <Filter>zaf\serialization\json</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp">
+      <Filter>zaf\base\string</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\serialization\json\json_reader.cpp">
+      <Filter>zaf\serialization\json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -781,6 +793,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\serialization\xml\internal\xml_names.h">
       <Filter>zaf\serialization\xml\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\json\json_writer.h">
+      <Filter>zaf\serialization\json</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\string\encoding_conversion.h">
+      <Filter>zaf\base\string</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\json\json_reader.h">
+      <Filter>zaf\serialization\json</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

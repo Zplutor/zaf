@@ -56,11 +56,11 @@ TEST(XmlWriter, WriteObjectNode) {
     auto xml_string = ConvertDataNodeToXmlString(node);
     ASSERT_EQ(xml_string, "<object />");
 
-    node->AddField(L"StringField", zaf::DataNode::CreateString(L"zaf"));
-    node->AddField(L"BooleanField", zaf::DataNode::CreateBoolean(true));
-    node->AddField(L"NumberField", zaf::DataNode::CreateNumber(44));
-    node->AddField(L"ObjectField", zaf::DataNode::CreateObject());
-    node->AddField(L"ArrayField", zaf::DataNode::CreateArray());
+    node->AddChild(L"StringField", zaf::DataNode::CreateString(L"zaf"));
+    node->AddChild(L"BooleanField", zaf::DataNode::CreateBoolean(true));
+    node->AddChild(L"NumberField", zaf::DataNode::CreateNumber(44));
+    node->AddChild(L"ObjectField", zaf::DataNode::CreateObject());
+    node->AddChild(L"ArrayField", zaf::DataNode::CreateArray());
 
     xml_string = ConvertDataNodeToXmlString(node);
     const char* expected_string =
@@ -81,11 +81,11 @@ TEST(XmlWriter, WriteArrayNode) {
     auto xml_string = ConvertDataNodeToXmlString(node);
     ASSERT_EQ(xml_string, "<array />");
 
-    node->AddElement(zaf::DataNode::CreateString(L"zaf"));
-    node->AddElement(zaf::DataNode::CreateBoolean(true));
-    node->AddElement(zaf::DataNode::CreateNumber(11));
-    node->AddElement(zaf::DataNode::CreateObject());
-    node->AddElement(zaf::DataNode::CreateArray());
+    node->AddChild(zaf::DataNode::CreateString(L"zaf"));
+    node->AddChild(zaf::DataNode::CreateBoolean(true));
+    node->AddChild(zaf::DataNode::CreateNumber(11));
+    node->AddChild(zaf::DataNode::CreateObject());
+    node->AddChild(zaf::DataNode::CreateArray());
 
     xml_string = ConvertDataNodeToXmlString(node);
     const char* expected_string = 

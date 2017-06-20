@@ -12,14 +12,14 @@ std::wstring Point::GetTypeName() const {
 
 void Point::SerializeToDataNode(DataNode& data_node) const {
 
-    data_node.AddField(property::X, DataNode::CreateNumber(x));
-    data_node.AddField(property::Y, DataNode::CreateNumber(y));
+    data_node.AddChild(property::X, DataNode::CreateNumber(x));
+    data_node.AddChild(property::Y, DataNode::CreateNumber(y));
 }
 
 
 bool Point::DeserializeFromDataNode(const DataNode& data_node) {
 
-    data_node.EnumerateFields([this](const std::wstring& key, const DataNode& data_node) {
+    data_node.EnumerateKeyedChildren([this](const std::wstring& key, const DataNode& data_node) {
     
         if (key == property::X) {
             x = data_node.GetFloat();

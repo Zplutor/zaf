@@ -146,7 +146,7 @@ private:
 
         data_node = DataNode::CreateObject();
         for (const auto& each_child : child_data_nodes) {
-            data_node->AddField(each_child.first, each_child.second);
+            data_node->AddChild(each_child.first, each_child.second);
         }
 
         return S_OK;
@@ -162,7 +162,7 @@ private:
 
         data_node = DataNode::CreateArray();
         for (const auto& each_child : child_data_nodes) {
-            data_node->AddElement(each_child.second);
+            data_node->AddChild(each_child.second);
         }
 
         return S_OK;

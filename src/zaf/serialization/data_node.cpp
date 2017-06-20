@@ -65,12 +65,22 @@ public:
     
     }
 
-    void AddField(const std::wstring& key, const std::shared_ptr<DataNode>& field) override {
-        fields_.emplace_back(key, field);
+    void AddChild(const std::wstring& key, const std::shared_ptr<DataNode>& data_node) override {
+        fields_.emplace_back(key, data_node);
     }
 
-    std::shared_ptr<DataNode> GetField(const std::wstring& key) const override {
+    std::size_t GetChildCount() const override {
+        return fields_.size();
+    }
 
+    std::shared_ptr<DataNode> GetChild(std::size_t index) const override {
+        if (index >= fields_.size()) {
+            return nullptr;
+        }
+        return fields_[index].second;
+    }
+
+    std::shared_ptr<DataNode> GetChild(const std::wstring& key) const override {
         for (const auto& each_pair : fields_) {
             if (each_pair.first == key) {
                 return each_pair.second;
@@ -79,8 +89,13 @@ public:
         return nullptr;
     }
 
-    void EnumerateFields(const FieldEnumerator& enumerator) const override {
+    void EnumerateChildren(const ChildrenEnumerator& enumerator) const override {
+        for (const auto& each_pair : fields_) {
+            enumerator(*each_pair.second);
+        }
+    }
 
+    void EnumerateKeyedChildren(const KeyedChildrenEnumerator& enumerator) const override {
         for (const auto& each_pair : fields_) {
             enumerator(each_pair.first, *each_pair.second);
         }
@@ -97,12 +112,22 @@ public:
     
     }
 
-    void AddElement(const std::shared_ptr<DataNode>& element) override {
-        elements_.push_back(element);
+    void AddChild(const std::shared_ptr<DataNode>& data_node) override {
+        elements_.emplace_back(data_node);
     }
 
-    void EnumerateElements(const ElementEnumerator& enumerator) const override {
+    std::size_t GetChildCount() const override {
+        return elements_.size();
+    }
 
+    std::shared_ptr<DataNode> GetChild(std::size_t index) const override {
+        if (index >= elements_.size()) {
+            return nullptr;
+        }
+        return elements_[index];
+    }
+
+    void EnumerateChildren(const ChildrenEnumerator& enumerator) const override {
         for (const auto& each_element : elements_) {
             enumerator(*each_element);
         }

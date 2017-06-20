@@ -14,7 +14,7 @@ std::shared_ptr<SerializableType> SerializableObject::GetType() const {
 std::shared_ptr<DataNode> SerializableObject::Serialize() const {
 
     auto data_node = DataNode::CreateObject();
-    data_node->AddField(property::Type, DataNode::CreateString(GetTypeName()));
+    data_node->AddChild(property::Type, DataNode::CreateString(GetTypeName()));
 
     SerializeToDataNode(*data_node);
     return data_node;
@@ -27,7 +27,7 @@ bool SerializableObject::Deserialize(const DataNode& data_node) {
         return false;
     }
 
-    auto type_node = data_node.GetField(property::Type);
+    auto type_node = data_node.GetChild(property::Type);
     if (type_node != nullptr) {
 
         if (type_node->GetString() != GetTypeName()) {

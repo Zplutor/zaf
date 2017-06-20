@@ -52,14 +52,14 @@ std::wstring Rect::GetTypeName() const {
 
 void Rect::SerializeToDataNode(DataNode& data_node) const {
 
-    data_node.AddField(property::Position, position.Serialize());
-    data_node.AddField(property::Size, size.Serialize());
+    data_node.AddChild(property::Position, position.Serialize());
+    data_node.AddChild(property::Size, size.Serialize());
 }
 
 
 bool Rect::DeserializeFromDataNode(const DataNode& data_node) {
 
-    data_node.EnumerateFields([this](const std::wstring& key, const DataNode& data_node) {
+    data_node.EnumerateKeyedChildren([this](const std::wstring& key, const DataNode& data_node) {
     
         if (key == property::Position) {
             position.Deserialize(data_node);

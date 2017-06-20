@@ -12,16 +12,16 @@ std::wstring Frame::GetTypeName() const {
 
 void Frame::SerializeToDataNode(DataNode& data_node) const {
 
-    data_node.AddField(property::Left, DataNode::CreateNumber(left));
-    data_node.AddField(property::Top, DataNode::CreateNumber(top));
-    data_node.AddField(property::Right, DataNode::CreateNumber(right));
-    data_node.AddField(property::Bottom, DataNode::CreateNumber(bottom));
+    data_node.AddChild(property::Left, DataNode::CreateNumber(left));
+    data_node.AddChild(property::Top, DataNode::CreateNumber(top));
+    data_node.AddChild(property::Right, DataNode::CreateNumber(right));
+    data_node.AddChild(property::Bottom, DataNode::CreateNumber(bottom));
 }
 
 
 bool Frame::DeserializeFromDataNode(const DataNode& data_node) {
 
-    data_node.EnumerateFields([this](const std::wstring& key, const DataNode& data_node) {
+    data_node.EnumerateKeyedChildren([this](const std::wstring& key, const DataNode& data_node) {
     
         if (key == property::Left) {
             left = data_node.GetFloat();

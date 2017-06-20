@@ -57,7 +57,7 @@ private:
             return result;
         }
 
-        data_object.EnumerateFields([this, &result](const std::wstring& key, const DataNode& data_node) {
+        data_object.EnumerateKeyedChildren([this, &result](const std::wstring& key, const DataNode& data_node) {
 
             if (FAILED(result)) {
                 return;
@@ -85,7 +85,7 @@ private:
             return result;
         }
 
-        data_node.EnumerateElements([this, &result](const DataNode& data_node) {
+        data_node.EnumerateChildren([this, &result](const DataNode& data_node) {
         
             if (FAILED(result)) {
                 return;

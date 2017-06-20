@@ -1124,27 +1124,27 @@ std::wstring Control::GetTypeName() const {
 void Control::SerializeToDataNode(DataNode& data_node) const {
 
     if (! rect_.IsEmpty()) {
-        data_node.AddField(property::Rect, rect_.Serialize());
+        data_node.AddChild(property::Rect, rect_.Serialize());
     }
 
     if (! border_.IsEmpty()) {
-        data_node.AddField(property::Border, border_.Serialize());
+        data_node.AddChild(property::Border, border_.Serialize());
     }
 
     if (! padding_.IsEmpty()) {
-        data_node.AddField(property::Padding, padding_.Serialize());
+        data_node.AddChild(property::Padding, padding_.Serialize());
     }
 
     if (is_visible_ != DefaultIsVisible) {
-        data_node.AddField(property::IsVisible, DataNode::CreateBoolean(is_visible_));
+        data_node.AddChild(property::IsVisible, DataNode::CreateBoolean(is_visible_));
     }
 
     if (is_enabled_ != DefaultIsEnabled) {
-        data_node.AddField(property::IsEnabled, DataNode::CreateBoolean(is_enabled_));
+        data_node.AddChild(property::IsEnabled, DataNode::CreateBoolean(is_enabled_));
     }
 
     if (can_focused_ != DefaultCanFocused) {
-        data_node.AddField(property::CanFocused, DataNode::CreateBoolean(can_focused_));
+        data_node.AddChild(property::CanFocused, DataNode::CreateBoolean(can_focused_));
     }
 
     SerializeProperties(data_node);
@@ -1158,7 +1158,7 @@ void Control::SerializeProperties(DataNode& data_node) const {
     
         auto property_data_node = value.Serialize();
         if (property_data_node != nullptr) {
-            data_node.AddField(name, property_data_node);
+            data_node.AddChild(name, property_data_node);
         }
     });
 }
@@ -1182,10 +1182,10 @@ void Control::SerializeChildren(DataNode& data_node) const {
 
     auto children_node = DataNode::CreateArray();
     for (const auto& each_child : serialized_children) {
-        children_node->AddElement(each_child->Serialize());
+        children_node->AddChild(each_child->Serialize());
     }
 
-    data_node.AddField(property::Children, children_node);
+    data_node.AddChild(property::Children, children_node);
 }
 
 
@@ -1193,7 +1193,7 @@ bool Control::DeserializeFromDataNode(const DataNode& data_node) {
 
     UpdateGuard update_gurad(*this);
 
-    data_node.EnumerateFields([this](const std::wstring& key, const DataNode& data_node) {
+    data_node.EnumerateKeyedChildren([this](const std::wstring& key, const DataNode& data_node) {
     
         if (key == property::Rect) {
             Rect rect;
@@ -1236,9 +1236,9 @@ bool Control::DeserializeFromDataNode(const DataNode& data_node) {
         }
         else if (key == property::Children) {
 
-            data_node.EnumerateElements([this](const DataNode& data_node) {
+            data_node.EnumerateChildren([this](const DataNode& data_node) {
                 
-                auto type_node = data_node.GetField(property::Type);
+                auto type_node = data_node.GetChild(property::Type);
                 if (type_node == nullptr) {
                     return;
                 }

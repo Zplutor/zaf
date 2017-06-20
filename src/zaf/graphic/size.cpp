@@ -12,14 +12,14 @@ std::wstring Size::GetTypeName() const {
 
 void Size::SerializeToDataNode(DataNode& data_node) const {
     
-    data_node.AddField(property::Width, DataNode::CreateNumber(width));
-    data_node.AddField(property::Height, DataNode::CreateNumber(height));
+    data_node.AddChild(property::Width, DataNode::CreateNumber(width));
+    data_node.AddChild(property::Height, DataNode::CreateNumber(height));
 }
 
 
 bool Size::DeserializeFromDataNode(const DataNode& data_node) {
 
-    data_node.EnumerateFields([this](const std::wstring& key, const DataNode& data_node) {
+    data_node.EnumerateKeyedChildren([this](const std::wstring& key, const DataNode& data_node) {
     
         if (key == property::Width) {
             width = data_node.GetFloat();

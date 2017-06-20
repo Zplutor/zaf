@@ -14,6 +14,7 @@
     <ClCompile Include="src\zaf\application.cpp" />
     <ClCompile Include="src\zaf\base\log.cpp" />
     <ClCompile Include="src\zaf\base\stream.cpp" />
+    <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp" />
     <ClCompile Include="src\zaf\base\timer.cpp" />
     <ClCompile Include="src\zaf\control\button.cpp" />
     <ClCompile Include="src\zaf\control\check_box.cpp" />
@@ -85,6 +86,8 @@
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
     <ClCompile Include="src\zaf\serialization\data_node.cpp" />
     <ClCompile Include="src\zaf\serialization\internal\built_in_types.cpp" />
+    <ClCompile Include="src\zaf\serialization\json\json_reader.cpp" />
+    <ClCompile Include="src\zaf\serialization\json\json_writer.cpp" />
     <ClCompile Include="src\zaf\serialization\serializable_object.cpp" />
     <ClCompile Include="src\zaf\serialization\serialization_manager.cpp" />
     <ClCompile Include="src\zaf\serialization\xml\xml_reader.cpp" />
@@ -111,6 +114,7 @@
     <ClInclude Include="src\zaf\base\optional.h" />
     <ClInclude Include="src\zaf\base\relation_operator.h" />
     <ClInclude Include="src\zaf\base\stream.h" />
+    <ClInclude Include="src\zaf\base\string\encoding_conversion.h" />
     <ClInclude Include="src\zaf\base\string\string_const.h" />
     <ClInclude Include="src\zaf\base\string\to_numeric.h" />
     <ClInclude Include="src\zaf\base\string\to_string.h" />
@@ -230,6 +234,8 @@
     <ClInclude Include="src\zaf\serialization\data_reader.h" />
     <ClInclude Include="src\zaf\serialization\data_writer.h" />
     <ClInclude Include="src\zaf\serialization\internal\built_in_types.h" />
+    <ClInclude Include="src\zaf\serialization\json\json_reader.h" />
+    <ClInclude Include="src\zaf\serialization\json\json_writer.h" />
     <ClInclude Include="src\zaf\serialization\properties.h" />
     <ClInclude Include="src\zaf\serialization\property_map.h" />
     <ClInclude Include="src\zaf\serialization\serializable_object.h" />

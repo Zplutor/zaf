@@ -12,15 +12,15 @@ std::wstring RoundedRect::GetTypeName() const {
 
 void RoundedRect::SerializeToDataNode(DataNode& data_node) const {
 
-    data_node.AddField(property::XRadius, DataNode::CreateNumber(x_radius));
-    data_node.AddField(property::YRadius, DataNode::CreateNumber(y_radius));
-    data_node.AddField(property::Rect, rect.Serialize());
+    data_node.AddChild(property::XRadius, DataNode::CreateNumber(x_radius));
+    data_node.AddChild(property::YRadius, DataNode::CreateNumber(y_radius));
+    data_node.AddChild(property::Rect, rect.Serialize());
 }
 
 
 bool RoundedRect::DeserializeFromDataNode(const DataNode& data_node) {
 
-    data_node.EnumerateFields([this](const std::wstring& key, const DataNode& data_node) {
+    data_node.EnumerateKeyedChildren([this](const std::wstring& key, const DataNode& data_node) {
     
         if (key == property::XRadius) {
             x_radius = data_node.GetFloat();

@@ -34,6 +34,9 @@
     <Filter Include="case\serialization\xml">
       <UniqueIdentifier>{0c70994d-eb2c-44f3-8166-80c1170b81bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\serialization\json">
+      <UniqueIdentifier>{36022895-2e47-4c22-ac93-0621536e1c55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -75,6 +78,12 @@
     </ClCompile>
     <ClCompile Include="unittest\serialization\xml\xml_reader_test.cpp">
       <Filter>case\serialization\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\serialization\json\json_writer_test.cpp">
+      <Filter>case\serialization\json</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\serialization\json\json_reader_test.cpp">
+      <Filter>case\serialization\json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

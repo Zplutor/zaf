@@ -12,43 +12,6 @@ std::shared_ptr<zaf::DataNode> ConvertDataNodeFromXmlString(const std::string& s
     return xml_reader.Read(string, error_code);
 }
 
-std::size_t GetDataNodeFieldCount(const std::shared_ptr<zaf::DataNode>& data_node) {
-
-    std::size_t count = 0;
-    data_node->EnumerateFields([&count](const std::wstring& key, const zaf::DataNode& data_node) {
-        ++count;
-    });
-    return count;
-}
-
-const zaf::DataNode* GetDataNodeField(const zaf::DataNode& data_node, const std::wstring& expected_key) {
-
-    const zaf::DataNode* field_node = nullptr;
-    data_node.EnumerateFields([&expected_key, &field_node](const std::wstring& key, const zaf::DataNode& data_node) {
-        
-        if (expected_key == key) {
-            field_node = &data_node;
-        }
-    });
-    return field_node;
-}
-
-const zaf::DataNode* GetDataNodeElement(const zaf::DataNode& data_node, std::size_t index) {
-
-    std::size_t current_index = 0;
-    const zaf::DataNode* element_node = nullptr;
-    data_node.EnumerateElements([index, &current_index, &element_node](const zaf::DataNode& data_node) {
-    
-        if (current_index == index) {
-            element_node = &data_node;
-        }
-
-        ++current_index;
-    });
-
-    return element_node;
-}
-
 }
 
 TEST(XmlReader, ReadStringNode) {
@@ -143,12 +106,12 @@ TEST(XmlReader, ReadObject) {
     auto data_node = ConvertDataNodeFromXmlString("<object />");
     ASSERT_NE(data_node, nullptr);
     ASSERT_TRUE(data_node->IsObject());
-    ASSERT_EQ(GetDataNodeFieldCount(data_node), 0);
+    ASSERT_EQ(data_node->GetChildCount(), 0);
 
     data_node = ConvertDataNodeFromXmlString("<object></object>");
     ASSERT_NE(data_node, nullptr);
     ASSERT_TRUE(data_node->IsObject());
-    ASSERT_EQ(GetDataNodeFieldCount(data_node), 0);
+    ASSERT_EQ(data_node->GetChildCount(), 0);
 
     const char* xml_string = 
         "<object>"
@@ -166,35 +129,80 @@ TEST(XmlReader, ReadObject) {
     ASSERT_NE(data_node, nullptr);
     ASSERT_TRUE(data_node->IsObject());
 
-    auto field_node = GetDataNodeField(*data_node, L"S");
+    auto field_node = data_node->GetChild(L"S");
     ASSERT_NE(field_node, nullptr);
     ASSERT_TRUE(field_node->IsString());
     ASSERT_EQ(field_node->GetString(), L"zaf");
 
-    field_node = GetDataNodeField(*data_node, L"B");
+    field_node = data_node->GetChild(L"B");
     ASSERT_NE(field_node, nullptr);
     ASSERT_TRUE(field_node->IsBoolean());
     ASSERT_EQ(field_node->GetBoolean(), true);
 
-    field_node = GetDataNodeField(*data_node, L"N");
+    field_node = data_node->GetChild(L"N");
     ASSERT_NE(field_node, nullptr);
     ASSERT_TRUE(field_node->IsNumber());
     ASSERT_EQ(field_node->GetInt32(), 2);
 
-    field_node = GetDataNodeField(*data_node, L"O");
+    field_node = data_node->GetChild(L"O");
     ASSERT_NE(field_node, nullptr);
     ASSERT_TRUE(field_node->IsObject());
 
-    auto field_field_node = GetDataNodeField(*field_node, L"SS");
+    auto field_field_node = field_node->GetChild(L"SS");
     ASSERT_NE(field_field_node, nullptr);
     ASSERT_TRUE(field_field_node->IsString());
     ASSERT_EQ(field_field_node->GetString(), L"ffff");
 
-    field_node = GetDataNodeField(*data_node, L"A");
+    field_node = data_node->GetChild(L"A");
     ASSERT_NE(field_node, nullptr);
     ASSERT_TRUE(field_node->IsArray());
 
-    auto field_element_node = GetDataNodeElement(*field_node, 0);
+    auto field_element_node = field_node->GetChild(0);
     ASSERT_NE(field_element_node, nullptr);
     ASSERT_EQ(field_element_node->GetString(), L"ara");
+}
+
+
+TEST(XmlReader, ReadArray) {
+
+    auto data_node = ConvertDataNodeFromXmlString("<array />");
+    ASSERT_NE(data_node, nullptr);
+    ASSERT_TRUE(data_node->IsArray());
+    ASSERT_EQ(data_node->GetChildCount(), 0);
+
+    const char* xml = 
+        "<array>"
+        "<string>zaf</string>"
+        "<boolean>false</boolean>"
+        "<number>343.3</number>"
+        "<object />"
+        "<array />"
+        "</array>";
+    data_node = ConvertDataNodeFromXmlString(xml);
+    ASSERT_NE(data_node, nullptr);
+    ASSERT_TRUE(data_node->IsArray());
+    ASSERT_EQ(data_node->GetChildCount(), 5);
+
+    auto child_node = data_node->GetChild(0);
+    ASSERT_NE(child_node, nullptr);
+    ASSERT_TRUE(child_node->IsString());
+    ASSERT_EQ(child_node->GetString(), L"zaf");
+
+    child_node = data_node->GetChild(1);
+    ASSERT_NE(child_node, nullptr);
+    ASSERT_TRUE(child_node->IsBoolean());
+    ASSERT_EQ(child_node->GetBoolean(), false);
+
+    child_node = data_node->GetChild(2);
+    ASSERT_NE(child_node, nullptr);
+    ASSERT_TRUE(child_node->IsNumber());
+    ASSERT_EQ(child_node->GetNumber().GetValue<double>(), 343.3);
+
+    child_node = data_node->GetChild(3);
+    ASSERT_NE(child_node, nullptr);
+    ASSERT_TRUE(child_node->IsObject());
+    
+    child_node = data_node->GetChild(4);
+    ASSERT_NE(child_node, nullptr);
+    ASSERT_TRUE(child_node->IsArray());
 }

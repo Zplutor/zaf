@@ -12,15 +12,15 @@ std::wstring Ellipse::GetTypeName() const {
 
 void Ellipse::SerializeToDataNode(DataNode& data_node) const {
     
-    data_node.AddField(property::Position, position.Serialize());
-    data_node.AddField(property::XRadius, DataNode::CreateNumber(x_radius));
-    data_node.AddField(property::YRadius, DataNode::CreateNumber(y_radius));
+    data_node.AddChild(property::Position, position.Serialize());
+    data_node.AddChild(property::XRadius, DataNode::CreateNumber(x_radius));
+    data_node.AddChild(property::YRadius, DataNode::CreateNumber(y_radius));
 }
 
 
 bool Ellipse::DeserializeFromDataNode(const DataNode& data_node) {
 
-    data_node.EnumerateFields([this](const std::wstring& key, const DataNode& data_node) {
+    data_node.EnumerateKeyedChildren([this](const std::wstring& key, const DataNode& data_node) {
     
         if (key == property::Position) {
             position.Deserialize(data_node);

@@ -12,16 +12,16 @@ std::wstring Color::GetTypeName() const {
 
 void Color::SerializeToDataNode(DataNode& data_node) const {
 
-    data_node.AddField(property::R, DataNode::CreateNumber(r));
-    data_node.AddField(property::G, DataNode::CreateNumber(g));
-    data_node.AddField(property::B, DataNode::CreateNumber(b));
-    data_node.AddField(property::A, DataNode::CreateNumber(a));
+    data_node.AddChild(property::R, DataNode::CreateNumber(r));
+    data_node.AddChild(property::G, DataNode::CreateNumber(g));
+    data_node.AddChild(property::B, DataNode::CreateNumber(b));
+    data_node.AddChild(property::A, DataNode::CreateNumber(a));
 }
 
 
 bool Color::DeserializeFromDataNode(const DataNode& data_node) {
 
-    data_node.EnumerateFields([this](const std::wstring& key, const DataNode& data_node) {
+    data_node.EnumerateKeyedChildren([this](const std::wstring& key, const DataNode& data_node) {
     
         if (key == property::R) {
             r = data_node.GetFloat();

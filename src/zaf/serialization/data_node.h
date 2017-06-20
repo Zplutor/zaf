@@ -12,8 +12,16 @@ namespace zaf {
 
 class DataNode {
 public:
-    typedef std::function<void(const std::wstring& key, const DataNode& data_node)> FieldEnumerator;
-    typedef std::function<void(const DataNode& data_node)> ElementEnumerator;
+    enum class Type {
+        String,
+        Boolean,
+        Number,
+        Object,
+        Array,
+    };
+
+    typedef std::function<void(const DataNode& data_node)> ChildrenEnumerator;
+    typedef std::function<void(const std::wstring& key, const DataNode& data_node)> KeyedChildrenEnumerator;
 
 public:
     static std::shared_ptr<DataNode> CreateString(const std::wstring& value);
@@ -24,6 +32,10 @@ public:
 
 public:
     virtual ~DataNode() { }
+
+    Type GetType() const {
+        return type_;
+    }
 
     bool IsString() const {
         return type_ == Type::String;
@@ -54,12 +66,15 @@ public:
     virtual Number GetNumber() const { return Number(); }
     virtual void SetNumber(const Number& ) { }
 
-    virtual void AddField(const std::wstring& key, const std::shared_ptr<DataNode>& data_node) { }
-    virtual std::shared_ptr<DataNode> GetField(const std::wstring& key) const { return nullptr; }
-    virtual void EnumerateFields(const FieldEnumerator&) const { }
+    virtual void AddChild(const std::shared_ptr<DataNode>& data_node) { }
+    virtual void AddChild(const std::wstring& key, const std::shared_ptr<DataNode>& data_node) { }
 
-    virtual void AddElement(const std::shared_ptr<DataNode>& data_node) { }
-    virtual void EnumerateElements(const ElementEnumerator&) const { }
+    virtual std::size_t GetChildCount() const { return 0; }
+    virtual std::shared_ptr<DataNode> GetChild(std::size_t index) const { return nullptr; }
+    virtual std::shared_ptr<DataNode> GetChild(const std::wstring& key) const { return nullptr; }
+
+    virtual void EnumerateChildren(const ChildrenEnumerator& enumerator) const { }
+    virtual void EnumerateKeyedChildren(const KeyedChildrenEnumerator& enumerator) const { }
 
     float GetFloat() const { 
         return GetNumber().GetValue<float>();
@@ -111,15 +126,6 @@ public:
 
     DataNode(const DataNode&) = delete;
     DataNode& operator=(const DataNode&) = delete;
-
-protected:
-    enum class Type {
-        String,
-        Boolean,
-        Number,
-        Object,
-        Array,
-    };
 
 protected:
     DataNode(Type type) : type_(type) { }
