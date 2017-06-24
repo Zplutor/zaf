@@ -12,7 +12,6 @@
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
-#include <zaf/serialization/types.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/window.h>
 
@@ -98,6 +97,9 @@ void ComboBox::InitializeDropDownListBox() {
 
 void ComboBox::UninitializeDropDownListBox() {
 
+    if (drop_down_list_box_ == nullptr) {
+        return;
+    }
     drop_down_list_box_->SetMouseMoveCallback(nullptr);
     drop_down_list_box_->GetSelectionChangeEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
 }
@@ -117,6 +119,10 @@ void ComboBox::InitializeEditTextBox() {
 
 
 void ComboBox::UninitializeEditTextBox() {
+
+    if (edit_text_box_ == nullptr) {
+        return;
+    }
 
     RemoveChild(edit_text_box_);
     edit_text_box_->GetTextChangeEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
@@ -550,11 +556,6 @@ void ComboBox::FocusGain() {
 }
 
 
-std::wstring ComboBox::GetTypeName() const {
-    return type::ComboBox;
-}
-
-
 void ComboBox::DropDownListBox::Initialize() {
 
     __super::Initialize();
@@ -589,5 +590,7 @@ bool ComboBox::EditTextBox::KeyDown(const KeyMessage& message) {
     }
 }
 
+
+ZAF_DEFINE_TYPE_NAME(ComboBox);
 
 }

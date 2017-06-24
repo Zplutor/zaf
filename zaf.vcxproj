@@ -19,6 +19,7 @@
     <ClCompile Include="src\zaf\control\button.cpp" />
     <ClCompile Include="src\zaf\control\check_box.cpp" />
     <ClCompile Include="src\zaf\control\clickable_control.cpp" />
+    <ClCompile Include="src\zaf\control\color_picker.cpp" />
     <ClCompile Include="src\zaf\control\combo_box.cpp" />
     <ClCompile Include="src\zaf\control\control.cpp" />
     <ClCompile Include="src\zaf\control\image_box.cpp" />
@@ -242,7 +243,6 @@
     <ClInclude Include="src\zaf\serialization\serialization_manager.h" />
     <ClInclude Include="src\zaf\serialization\serializable_type.h" />
     <ClInclude Include="src\zaf\serialization\serializer.h" />
-    <ClInclude Include="src\zaf\serialization\types.h" />
     <ClInclude Include="src\zaf\serialization\xml\internal\xml_names.h" />
     <ClInclude Include="src\zaf\serialization\xml\xml_reader.h" />
     <ClInclude Include="src\zaf\serialization\xml\xml_writer.h" />

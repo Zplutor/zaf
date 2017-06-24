@@ -30,6 +30,9 @@ class ListControlSingleSelectStrategy;
  */
 class ListControl : public ScrollableControl {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
     /**
      Represents an item in list control.
 
@@ -417,8 +420,6 @@ protected:
      method of base class.
      */
     virtual void ItemContainerChange(const std::shared_ptr<ItemContainer>& previous_item_container) { }
-
-    std::wstring GetTypeName() const override;
 
 private:
     friend class internal::ListControlExtendedMultipleSelectStrategy;

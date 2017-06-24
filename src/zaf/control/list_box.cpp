@@ -1,6 +1,5 @@
 #include <zaf/control/list_box.h>
 #include <zaf/creation.h>
-#include <zaf/serialization/types.h>
 
 namespace zaf {
 
@@ -127,11 +126,6 @@ const std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
 }
 
 
-std::wstring ListBox::GetTypeName() const {
-    return type::ListBox;
-}
-
-
 void ListBox::ItemSource::LoadItem(std::size_t index, const std::shared_ptr<Item>& item) {
     item->SetText(item_texts_[index]);
 }
@@ -188,5 +182,7 @@ const std::wstring ListBox::ItemSource::GetItemTextAtIndex(std::size_t index) {
     return item_texts_[index];
 }
 
+
+ZAF_DEFINE_TYPE_NAME(ListBox);
 
 }

@@ -5,7 +5,6 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
-#include <zaf/serialization/types.h>
 
 namespace zaf {
 
@@ -192,11 +191,6 @@ void RadioButton::MouseClick() {
 }
 
 
-std::wstring RadioButton::GetTypeName() const {
-    return type::RadioButton;
-}
-
-
 const std::vector<std::shared_ptr<RadioButton>> RadioButton::Group::GetRadioButtons() const {
 
 	std::vector<std::shared_ptr<RadioButton>> radio_buttons;
@@ -257,5 +251,7 @@ void RadioButton::Group::RadioButtonSelected(const std::shared_ptr<RadioButton>&
 	}
 }
 
+
+ZAF_DEFINE_TYPE_NAME(RadioButton);
 
 }

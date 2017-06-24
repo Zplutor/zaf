@@ -5,7 +5,6 @@
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
-#include <zaf/serialization/types.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -363,8 +362,6 @@ void ScrollableControl::ScrollRightToEnd() {
 }
 
 
-std::wstring ScrollableControl::GetTypeName() const {
-    return type::ScrollableControl;
-}
+ZAF_DEFINE_TYPE_NAME(ScrollableControl);
 
 }

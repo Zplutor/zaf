@@ -9,13 +9,12 @@ namespace zaf {
  */
 class Label : public TextualControl {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
 	Label();
 	~Label();
 
     void Initialize() override;
-
-protected:
-    std::wstring GetTypeName() const override;
 };
 
 }

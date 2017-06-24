@@ -32,6 +32,9 @@ class Size;
  */
 class ScrollableControl : public Control {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
 	ScrollableControl();
 	~ScrollableControl();
 
@@ -215,8 +218,6 @@ protected:
      Derived classes must call the same method of base class.
      */
     virtual void ScrollContentControlChange(const std::shared_ptr<Control>& previous_control) { }
-
-    std::wstring GetTypeName() const override;
 
 private:
     friend class internal::GeneralLayouter;

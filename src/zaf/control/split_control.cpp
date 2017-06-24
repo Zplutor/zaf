@@ -3,7 +3,6 @@
 #include <zaf/base/log.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/serialization/types.h>
 #include <zaf/window/message/mouse_message.h>
 
 #ifdef min
@@ -60,6 +59,10 @@ void SplitControl::InitializeSplitBar() {
 
 
 void SplitControl::UninitializeSplitBar() {
+
+    if (split_bar_ == nullptr) {
+        return;
+    }
 
     auto tag = reinterpret_cast<std::uintptr_t>(this);
     split_bar_->GetBeginDragEvent().RemoveListenersWithTag(tag);
@@ -334,11 +337,6 @@ float SplitControl::GetSplitBarDragPosition() const {
 }
 
 
-std::wstring SplitControl::GetTypeName() const {
-    return type::SplitControl;
-}
-
-
 void SplitControl::SplitBar::Initialize() {
 
     __super::Initialize();
@@ -431,5 +429,7 @@ void SplitControl::SplitBar::MouseRelease() {
     end_drag_event_.Trigger(std::dynamic_pointer_cast<SplitBar>(shared_from_this()));
 }
 
+
+ZAF_DEFINE_TYPE_NAME(SplitControl);
 
 }

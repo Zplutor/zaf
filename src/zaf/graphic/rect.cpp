@@ -3,7 +3,6 @@
 #include <limits>
 #include <zaf/serialization/data_node.h>
 #include <zaf/serialization/properties.h>
-#include <zaf/serialization/types.h>
 
 #undef max
 #undef min
@@ -45,11 +44,6 @@ bool Rect::IsInfinite() const {
 }
 
 
-std::wstring Rect::GetTypeName() const {
-    return type::Rect;
-}
-
-
 void Rect::SerializeToDataNode(DataNode& data_node) const {
 
     data_node.AddChild(property::Position, position.Serialize());
@@ -72,6 +66,8 @@ bool Rect::DeserializeFromDataNode(const DataNode& data_node) {
     return true;
 }
 
+
+ZAF_DEFINE_TYPE_NAME(Rect);
 
 const Rect Rect::Infinite(
     -std::numeric_limits<float>::infinity(),

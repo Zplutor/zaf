@@ -2,7 +2,6 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/theme.h>
 #include <zaf/internal/paint_utility.h>
-#include <zaf/serialization/types.h>
 
 namespace zaf {
 
@@ -103,8 +102,6 @@ void Button::SetIsDefault(bool is_default) {
 }
 
 
-std::wstring Button::GetTypeName() const {
-    return type::Button;
-}
+ZAF_DEFINE_TYPE_NAME(Button);
 
 }

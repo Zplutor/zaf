@@ -1,14 +1,8 @@
 #include <zaf/graphic/size.h>
 #include <zaf/serialization/data_node.h>
 #include <zaf/serialization/properties.h>
-#include <zaf/serialization/types.h>
 
 namespace zaf {
-
-std::wstring Size::GetTypeName() const {
-    return type::Size;
-}
-
 
 void Size::SerializeToDataNode(DataNode& data_node) const {
     
@@ -31,5 +25,7 @@ bool Size::DeserializeFromDataNode(const DataNode& data_node) {
 
     return true;
 }
+
+ZAF_DEFINE_TYPE_NAME(Size);
 
 }

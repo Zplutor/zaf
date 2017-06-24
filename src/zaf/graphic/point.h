@@ -13,6 +13,8 @@ namespace zaf {
  */
 class Point : public SerializableObject {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
 	/**
 	 Convert a specified POINT structure to Point.
 	 */
@@ -91,7 +93,6 @@ public:
 	float y;
 
 protected:
-    std::wstring GetTypeName() const override;
     void SerializeToDataNode(DataNode& data_node) const override;
     bool DeserializeFromDataNode(const DataNode& data_node) override;
 };

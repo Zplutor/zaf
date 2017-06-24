@@ -11,7 +11,6 @@
 #include <zaf/internal/theme.h>
 #include <zaf/serialization/data_node.h>
 #include <zaf/serialization/properties.h>
-#include <zaf/serialization/types.h>
 
 namespace zaf {
 
@@ -43,7 +42,7 @@ void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_
 
 
 TextualControl::TextualControl() {
-
+    
 }
 
 
@@ -459,11 +458,6 @@ Size TextualControl::DetermineRequiredSize(const Size& max_size) const {
 }
 
 
-std::wstring TextualControl::GetTypeName() const {
-    return type::TextualControl;
-}
-
-
 static std::shared_ptr<FontRangeMap> TryGetFontRangeMap(const PropertyMap& property_map) {
 
     auto fonts_pointer = property_map.TryGetProperty<std::shared_ptr<FontRangeMap>>(kFontsPropertyName);
@@ -495,5 +489,7 @@ static void SetFontToTextLayout(const Font& font, const TextRange& range, TextLa
     text_layout.SetFontWeight(font.weight, range);
 }
 
+
+ZAF_DEFINE_TYPE_NAME(TextualControl);
 
 }

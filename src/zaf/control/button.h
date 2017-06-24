@@ -9,6 +9,9 @@ namespace zaf {
  */
 class Button : public ClickableControl {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
 	Button();
 	~Button();
 
@@ -26,8 +29,6 @@ private:
 
 protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
-
-    std::wstring GetTypeName() const override;
 };
 
 }

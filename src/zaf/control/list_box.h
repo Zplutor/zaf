@@ -9,6 +9,9 @@ namespace zaf {
  */
 class ListBox : public ListControl {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
     class ItemSource : public ListControl::ItemSource {
     public:
         ItemSource() : item_height_(18) {
@@ -137,8 +140,6 @@ public:
 
 protected:
     void ItemSourceChange(const std::shared_ptr<ListControl::ItemSource>& previous_item_source) override;
-
-    std::wstring GetTypeName() const override;
 
 private:
     std::shared_ptr<ItemSource> item_source_;

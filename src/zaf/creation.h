@@ -2,10 +2,12 @@
 
 #include <memory>
 #include <type_traits>
-#include <zaf/control/control.h>
-#include <zaf/window/window.h>
 
 namespace zaf {
+
+class Control;
+class Window;
+
 namespace internal {
 
 template<typename WindowType>

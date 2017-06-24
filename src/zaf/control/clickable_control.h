@@ -12,6 +12,9 @@ namespace zaf {
  */
 class ClickableControl : public TextualControl {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
     /**
      Type of click event.
      */
@@ -61,8 +64,6 @@ protected:
 
 	void FocusGain() override;
 	void FocusLose() override;
-
-    std::wstring GetTypeName() const override;
 
 private:
 	enum class PressType {

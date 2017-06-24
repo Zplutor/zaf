@@ -5,7 +5,6 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
-#include <zaf/serialization/types.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
@@ -997,11 +996,6 @@ void TextBox::ScrollValuesChange(bool is_horizontal) {
 }
 
 
-std::wstring TextBox::GetTypeName() const {
-    return type::TextBox;
-}
-
-
 TextBox::TextHostBridge::TextHostBridge(const std::shared_ptr<TextBox>& text_box) :
 	text_box_(text_box) {
 
@@ -1496,5 +1490,7 @@ static ITextServices* CreateTextService(ITextHost* text_host) {
 	return text_service;
 }
 
+
+ZAF_DEFINE_TYPE_NAME(TextBox);
 
 }

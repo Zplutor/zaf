@@ -10,6 +10,9 @@ namespace zaf {
  */
 class Frame : public SerializableObject {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
     /**
      Convert a RECT structure to Frame.
      */
@@ -79,7 +82,6 @@ public:
     float bottom;
 
 protected:
-    std::wstring GetTypeName() const override;
     void SerializeToDataNode(DataNode&) const override;
     bool DeserializeFromDataNode(const DataNode&) override;
 };

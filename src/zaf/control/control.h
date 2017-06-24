@@ -35,6 +35,9 @@ class Window;
  */
 class Control : public SerializableObject, public std::enable_shared_from_this<Control> {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
     /**
      Provides a convenient way for automatically calling BeginUpdate/EndUpdate
      of a control.
@@ -791,13 +794,10 @@ protected:
      */
 	virtual void FocusLose();
 
-    std::wstring GetTypeName() const override;
     void SerializeToDataNode(DataNode& data_node) const override;
     bool DeserializeFromDataNode(const DataNode& data_node) override;
 
-    virtual std::set<std::shared_ptr<Control>> GetNoSerializedChildren() const { 
-        return { };
-    }
+    virtual void DeserializeProperty(const std::wstring& name, const DataNode& data_node);
 
 private:
 	friend class Window;
@@ -843,6 +843,7 @@ private:
 
     void SerializeProperties(DataNode& data_node) const;
     void SerializeChildren(DataNode& data_node) const;
+    void DeserializeChildren(const DataNode& data_node);
 
 	Control(const Control&) = delete;
 	Control& operator=(const Control&) = delete;

@@ -4,86 +4,47 @@
 #include <zaf/serialization/serializable_type.h>
 
 namespace zaf {
-namespace internal {
 
-class SerializableTypeImpl : public SerializableType {
-public:
-    SerializableTypeImpl(
-        const std::wstring& name,
-        const SerializableObjectCreator& instance_creator) 
-        : 
-        name(name),
-        instance_creator(instance_creator) {
+void SerializationManager::RegisterTypes(const std::vector<std::shared_ptr<SerializableType>>& types) {
+
+    sorted_by_name_types_.insert(sorted_by_name_types_.end(), types.begin(), types.end());
+
+    std::sort(
+        sorted_by_name_types_.begin(), 
+        sorted_by_name_types_.end(), 
+        [](const std::shared_ptr<SerializableType>& type1, 
+           const std::shared_ptr<SerializableType>& type2) {
+
+        return std::wcscmp(type1->GetName(), type2->GetName()) < 0;
+    });
+
+    auto remove_iterator = std::unique(
+        sorted_by_name_types_.begin(), 
+        sorted_by_name_types_.end(), 
+        [](const std::shared_ptr<SerializableType>& type1,
+           const std::shared_ptr<SerializableType>& type2) {
     
-    }
+        return std::wcscmp(type1->GetName(), type2->GetName()) == 0;
+    });
 
-    std::wstring GetName() override {
-        return name;
-    }
-
-    std::shared_ptr<SerializableObject> CreateInstance() override {
-        return instance_creator();
-    }
-
-public:
-    std::wstring name;
-    SerializableObjectCreator instance_creator;
-};
-
+    sorted_by_name_types_.erase(remove_iterator, sorted_by_name_types_.end());
 }
 
 
-namespace {
+std::shared_ptr<SerializableType> SerializationManager::GetType(const std::wstring& type_name) {
 
-std::shared_ptr<internal::SerializableTypeImpl> CreateType(const SerializableTypeProperties& properties) {
-    return std::make_shared<internal::SerializableTypeImpl>(properties.name, properties.instance_creator);
-}
+    CheckInitialization();
 
+    auto iterator = std::lower_bound(
+        sorted_by_name_types_.begin(),
+        sorted_by_name_types_.end(),
+        type_name, 
+        [](const std::shared_ptr<SerializableType>& type, const std::wstring& type_name) {
+    
+        return type->GetName() < type_name;
+    });
 
-bool TypeNameComparer(
-    const std::shared_ptr<internal::SerializableTypeImpl>& type,
-    const std::wstring& type_name) {
-
-    return type->name < type_name;
-}
-
-bool TypeComparer(
-    const std::shared_ptr<internal::SerializableTypeImpl>& type1,
-    const std::shared_ptr<internal::SerializableTypeImpl>& type2) {
-
-    return TypeNameComparer(type1, type2->name);
-}
-
-}
-
-
-SerializationManager::SerializationManager() {
-    RegisterBuiltInTypes();
-}
-
-
-void SerializationManager::RegisterType(const SerializableTypeProperties& type_properties) {
-
-    auto type = CreateType(type_properties);
-    auto insert_iterator = std::lower_bound(types_.begin(), types_.end(), type, TypeComparer);
-    types_.insert(insert_iterator, type);
-}
-
-
-void SerializationManager::RegisterTypes(const std::vector<SerializableTypeProperties>& type_properties) {
-
-    for (const auto& each_properties : type_properties) {
-        types_.push_back(CreateType(each_properties));
-    }
-
-    std::sort(types_.begin(), types_.end(), TypeComparer);
-}
-   
-
-std::shared_ptr<SerializableType> SerializationManager::GetType(const std::wstring& type_name) const {
-
-    auto iterator = std::lower_bound(types_.begin(), types_.end(), type_name, TypeNameComparer);
-    if (iterator == types_.end()) {
+    if (iterator == sorted_by_name_types_.end()) {
         return nullptr;
     }
 
@@ -96,7 +57,9 @@ std::shared_ptr<SerializableType> SerializationManager::GetType(const std::wstri
 }
 
 
-std::shared_ptr<SerializableObject> SerializationManager::CreateObject(const std::wstring& type_name) const {
+std::shared_ptr<SerializableObject> SerializationManager::CreateObject(const std::wstring& type_name) {
+
+    CheckInitialization();
 
     auto type = GetType(type_name);
     if (type == nullptr) {
@@ -107,8 +70,16 @@ std::shared_ptr<SerializableObject> SerializationManager::CreateObject(const std
 }
 
 
-void SerializationManager::RegisterBuiltInTypes() {
-    RegisterTypes(internal::GetBuiltInTypeProperties());
+void SerializationManager::CheckInitialization() {
+
+    if (has_initialized_) {
+        return;
+    }
+
+    has_initialized_ = true;
+
+    auto built_in_types = internal::GetBuiltInSerializableTypes();
+    RegisterTypes(built_in_types);
 }
 
 }

@@ -1,14 +1,8 @@
 #include <zaf/graphic/color.h>
 #include <zaf/serialization/data_node.h>
 #include <zaf/serialization/properties.h>
-#include <zaf/serialization/types.h>
 
 namespace zaf {
-
-std::wstring Color::GetTypeName() const {
-    return type::Color;
-}
-
 
 void Color::SerializeToDataNode(DataNode& data_node) const {
 
@@ -40,6 +34,8 @@ bool Color::DeserializeFromDataNode(const DataNode& data_node) {
     return true;
 }
 
+
+ZAF_DEFINE_TYPE_NAME(Color);
 
 const Color Color::Black = Color(0, 0, 0);
 const Color Color::Blue = Color(0, 0, 1);

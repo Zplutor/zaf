@@ -1,15 +1,8 @@
 #include <zaf/serialization/serializable_object.h>
-#include <zaf/application.h>
 #include <zaf/serialization/data_node.h>
 #include <zaf/serialization/properties.h>
-#include <zaf/serialization/serialization_manager.h>
 
 namespace zaf {
-
-std::shared_ptr<SerializableType> SerializableObject::GetType() const {
-    return GetSerializationManager()->GetType(GetTypeName());
-}
-
 
 std::shared_ptr<DataNode> SerializableObject::Serialize() const {
 
@@ -37,5 +30,6 @@ bool SerializableObject::Deserialize(const DataNode& data_node) {
 
     return DeserializeFromDataNode(data_node);
 }
+
 
 }

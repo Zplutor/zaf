@@ -303,9 +303,6 @@
     <ClCompile Include="src\zaf\graphic\ellipse.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\serialization\internal\built_in_types.cpp">
-      <Filter>zaf\serialization\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\stream.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
@@ -332,6 +329,12 @@
     </ClCompile>
     <ClCompile Include="src\zaf\serialization\json\json_reader.cpp">
       <Filter>zaf\serialization\json</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\color_picker.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\serialization\internal\built_in_types.cpp">
+      <Filter>zaf\serialization\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -755,17 +758,11 @@
     <ClInclude Include="src\zaf\serialization\serialization_manager.h">
       <Filter>zaf\serialization</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\serialization\types.h">
-      <Filter>zaf\serialization</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\string\string_const.h">
       <Filter>zaf\base\string</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\serialization\properties.h">
       <Filter>zaf\serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\serialization\internal\built_in_types.h">
-      <Filter>zaf\serialization\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\stream.h">
       <Filter>zaf\base</Filter>
@@ -802,6 +799,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\serialization\json\json_reader.h">
       <Filter>zaf\serialization\json</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\internal\built_in_types.h">
+      <Filter>zaf\serialization\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
 #include <zaf/control/label.h>
-#include <zaf/serialization/types.h>
 
 namespace zaf {
 
@@ -23,8 +22,6 @@ void Label::Initialize() {
 }
 
 
-std::wstring Label::GetTypeName() const {
-    return type::Label;
-}
+ZAF_DEFINE_TYPE_NAME(Label);
 
 }

@@ -1,14 +1,8 @@
 #include <zaf/graphic/frame.h>
 #include <zaf/serialization/data_node.h>
 #include <zaf/serialization/properties.h>
-#include <zaf/serialization/types.h>
 
 namespace zaf {
-
-std::wstring Frame::GetTypeName() const {
-    return type::Frame;
-}
-
 
 void Frame::SerializeToDataNode(DataNode& data_node) const {
 
@@ -39,5 +33,8 @@ bool Frame::DeserializeFromDataNode(const DataNode& data_node) {
 
     return true;
 }
+
+
+ZAF_DEFINE_TYPE_NAME(Frame);
 
 }

@@ -10,6 +10,9 @@ namespace zaf{
  */
 class RadioButton : public ClickableControl {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
 	/**
 	 Represents a radio button group.
 
@@ -153,8 +156,6 @@ protected:
 	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     Rect GetTextRect() override;
 	void MouseClick() override;
-
-    std::wstring GetTypeName() const override;
 
 private:
 	void PaintRadio(Canvas& canvas, const Rect& radio_rect);

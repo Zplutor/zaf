@@ -12,6 +12,9 @@ class Timer;
  */
 class ScrollBar : public Control {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
     /**
      Represents an arrow control in a scroll bar.
      */
@@ -410,8 +413,6 @@ protected:
     void MouseWheel(const Point& position, const MouseWheelMessage& message) override;
 	void MouseCapture() override;
 	void MouseRelease() override;
-
-    std::wstring GetTypeName() const override;
 
 private:
 	enum class TimerEvent {

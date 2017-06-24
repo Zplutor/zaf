@@ -24,6 +24,9 @@ class TextLayout;
  */
 class TextualControl : public Control {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
     /**
      Type of text change event.
      */
@@ -222,8 +225,6 @@ protected:
      it should call this method after the text changed in order to raise text change event.
      */
     void NotifyTextChange();
-
-    std::wstring GetTypeName() const override;
 
 private:
     TextLayout CreateTextLayout() const;

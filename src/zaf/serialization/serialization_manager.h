@@ -4,32 +4,28 @@
 #include <vector>
 
 namespace zaf {
-namespace internal {
-class SerializableTypeImpl;
-}
 
 class SerializableObject;
 class SerializableType;
-class SerializableTypeProperties;
 
 class SerializationManager {
 public:
-    SerializationManager();
+    SerializationManager() { }
 
-    void RegisterType(const SerializableTypeProperties& type_properties);
-    void RegisterTypes(const std::vector<SerializableTypeProperties>& type_properties);
-        ;
-    std::shared_ptr<SerializableType> GetType(const std::wstring& type_name) const;
-    std::shared_ptr<SerializableObject> CreateObject(const std::wstring& type_name) const;
+    void RegisterTypes(const std::vector<std::shared_ptr<SerializableType>>& types);
+
+    std::shared_ptr<SerializableType> GetType(const std::wstring& type_name);
+    std::shared_ptr<SerializableObject> CreateObject(const std::wstring& type_name);
 
     SerializationManager(const SerializationManager&) = delete;
     SerializationManager& operator=(const SerializationManager&) = delete;
 
 private:
-    void RegisterBuiltInTypes();
+    void CheckInitialization();
 
 private:
-    std::vector<std::shared_ptr<internal::SerializableTypeImpl>> types_;
+    bool has_initialized_ = false;
+    std::vector<std::shared_ptr<SerializableType>> sorted_by_name_types_;
 };
 
 }

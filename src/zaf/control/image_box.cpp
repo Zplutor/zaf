@@ -2,7 +2,6 @@
 #include <zaf/control/internal/image_box/gif_player.h>
 #include <zaf/control/internal/image_box/static_image_player.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/serialization/types.h>
 
 namespace zaf {
 
@@ -82,11 +81,6 @@ void ImageBox::SetInterpolationMode(InterpolationMode mode) {
 }
 
 
-std::wstring ImageBox::GetTypeName() const {
-    return type::ImageBox;
-}
-
-
 static std::unique_ptr<internal::ImagePlayer> CreateImagePlayer(const ImageDecoder& image_decoder) {
 
     auto container_format = image_decoder.GetContainerFormat();
@@ -98,5 +92,7 @@ static std::unique_ptr<internal::ImagePlayer> CreateImagePlayer(const ImageDecod
     }
 }
 
+
+ZAF_DEFINE_TYPE_NAME(ImageBox);
 
 }

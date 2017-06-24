@@ -17,6 +17,9 @@ namespace zaf {
  */
 class TextBox : public TextualControl, public SelfScrollingControl {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
     /**
      Type of selection change event.
      */
@@ -296,8 +299,6 @@ protected:
 
 	void FocusGain() override;
 	void FocusLose() override;
-
-    std::wstring GetTypeName() const override;
 
 private:
 	class TextHostBridge : public ITextHost {

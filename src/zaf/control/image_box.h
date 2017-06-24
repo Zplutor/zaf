@@ -11,6 +11,9 @@ class ImagePlayer;
 
 class ImageBox : public Control {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
     ImageBox();
     ~ImageBox();
 
@@ -26,8 +29,6 @@ public:
 protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     void ReleaseRendererResources() override;
-
-    std::wstring GetTypeName() const override;
 
 private:
     ImageDecoder image_decoder_;

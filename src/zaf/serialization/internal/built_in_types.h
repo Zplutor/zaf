@@ -1,14 +1,15 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 namespace zaf {
 
-class SerializableTypeProperties;
+class SerializableType;
 
 namespace internal {
 
-std::vector<SerializableTypeProperties> GetBuiltInTypeProperties();
+std::vector<std::shared_ptr<SerializableType>> GetBuiltInSerializableTypes();
 
 }
 }

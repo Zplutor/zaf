@@ -15,6 +15,9 @@ namespace zaf {
  */
 class Rect : public SerializableObject {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
 	/**
 	 Convert a specified RECT structure to Rect.
 	 */
@@ -233,7 +236,6 @@ public:
 	Size size;
 
 protected:
-    std::wstring GetTypeName() const override;
     void SerializeToDataNode(DataNode&) const override;
     bool DeserializeFromDataNode(const DataNode&) override;
 };

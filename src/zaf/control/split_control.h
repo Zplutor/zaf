@@ -7,6 +7,9 @@ namespace zaf {
 
 class SplitControl : public Control {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
     class SplitBar : public Control {
     public:
         typedef Event<const std::shared_ptr<SplitBar>&> BeginDragEvent;
@@ -112,8 +115,6 @@ protected:
     virtual void SplitBarChange(const std::shared_ptr<SplitBar>& previous_split_bar) { }
     virtual void FirstPaneChange(const std::shared_ptr<Control>& previous_pane) { }
     virtual void SecondPaneChange(const std::shared_ptr<Control>& previous_pane) { }
-
-    std::wstring GetTypeName() const override;
 
 private:
     void InitializeSplitBar();

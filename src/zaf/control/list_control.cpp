@@ -9,7 +9,6 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
-#include <zaf/serialization/types.h>
 #include <zaf/window/message/mouse_message.h>
 
 #undef max
@@ -41,7 +40,11 @@ ListControl::ListControl() :
 
 ListControl::~ListControl() {
 
-    GetVerticalScrollBar()->GetScrollEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
+    auto scroll_bar = GetVerticalScrollBar();
+    if (scroll_bar != nullptr) {
+        scroll_bar->GetScrollEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
+    }
+ 
     UninitializeItemSource();
 }
 
@@ -827,11 +830,6 @@ std::size_t ListControl::FindItemIndexAtPosition(const Point& position) const {
 }
 
 
-std::wstring ListControl::GetTypeName() const {
-    return type::ListControl;
-}
-
-
 void ListControl::Item::Initialize() {
 
     __super::Initialize();
@@ -1020,5 +1018,8 @@ void ListControl::ItemSource::NotifyItemUpdate(std::size_t index, std::size_t co
         item_update_event_.Trigger(*this, index, count);
     }
 }
+
+
+ZAF_DEFINE_TYPE_NAME(ListControl);
 
 }

@@ -12,6 +12,9 @@ namespace zaf {
  */
 class Size : public SerializableObject {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
 	/**
 	 Convert a specified D2D1_SIZE_F structure to Size.
 	 */
@@ -90,7 +93,6 @@ public:
 	float height;
 
 protected:
-    std::wstring GetTypeName() const override;
     void SerializeToDataNode(DataNode& data_node) const override;
     bool DeserializeFromDataNode(const DataNode& data_node) override;
 };

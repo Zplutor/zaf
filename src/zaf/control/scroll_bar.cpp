@@ -8,7 +8,6 @@
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
-#include <zaf/serialization/types.h>
 #include <zaf/window/message/mouse_message.h>
 
 #include <zaf/base/log.h>
@@ -579,11 +578,6 @@ int ScrollBar::GetValuesPerThumbSlotPoint() {
 }
 
 
-std::wstring ScrollBar::GetTypeName() const {
-    return type::ScrollBar;
-}
-
-
 ScrollBar::Arrow::Arrow() : direction_(Direction::Up) {
 
 }
@@ -809,5 +803,8 @@ void ScrollBar::Thumb::MouseMove(const Point& position, const MouseMessage& mess
 		drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));
 	}
 }
+
+
+ZAF_DEFINE_TYPE_NAME(ScrollBar);
 
 }

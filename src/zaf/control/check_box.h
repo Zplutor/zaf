@@ -10,6 +10,9 @@ namespace zaf {
  */
 class CheckBox : public ClickableControl {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
 	/**
 	 Type of check state changed event.
 	 */
@@ -147,8 +150,6 @@ protected:
 	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     Rect GetTextRect() override;
 	void MouseClick() override;
-
-    std::wstring GetTypeName() const override;
 
 private:
 	void PaintBox(Canvas& canvas, const Rect& box_rect) const;

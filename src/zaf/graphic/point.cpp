@@ -1,14 +1,8 @@
 #include <zaf/graphic/point.h>
 #include <zaf/serialization/data_node.h>
 #include <zaf/serialization/properties.h>
-#include <zaf/serialization/types.h>
 
 namespace zaf {
-
-std::wstring Point::GetTypeName() const {
-    return type::Point;
-}
-
 
 void Point::SerializeToDataNode(DataNode& data_node) const {
 
@@ -31,5 +25,7 @@ bool Point::DeserializeFromDataNode(const DataNode& data_node) {
 
     return true;
 }
+
+ZAF_DEFINE_TYPE_NAME(Point);
 
 }

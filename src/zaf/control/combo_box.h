@@ -15,6 +15,9 @@ class ComboBoxDropDownWindow;
  */
 class ComboBox : public ClickableControl {
 public:
+    ZAF_DECLARE_TYPE_NAME();
+
+public:
     /**
      Represents a drop down list box control used in combo box.
      */
@@ -196,8 +199,6 @@ protected:
      Derived classes must call the same method of base class.
      */
     virtual void EditTextBoxChange(const std::shared_ptr<TextBox>& previous_edit_text_box) { }
-
-    std::wstring GetTypeName() const override;
 
 private:
     enum class SelectionChangeAction {

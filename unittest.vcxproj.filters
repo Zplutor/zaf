@@ -85,6 +85,9 @@
     <ClCompile Include="unittest\serialization\json\json_reader_test.cpp">
       <Filter>case\serialization\json</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\serialization\serialization_manager_test.cpp">
+      <Filter>case\serialization</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
