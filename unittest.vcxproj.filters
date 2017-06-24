@@ -29,13 +29,13 @@
       <UniqueIdentifier>{4c5d966d-80a1-4a69-9445-ec0aa53d5e72}</UniqueIdentifier>
     </Filter>
     <Filter Include="case\serialization">
-      <UniqueIdentifier>{49bb6c31-38f3-4dd0-9cdb-0d9438bd052d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="case\serialization\xml">
-      <UniqueIdentifier>{0c70994d-eb2c-44f3-8166-80c1170b81bb}</UniqueIdentifier>
+      <UniqueIdentifier>{fe49d2e4-748d-4b2f-9224-e286a29fff05}</UniqueIdentifier>
     </Filter>
     <Filter Include="case\serialization\json">
-      <UniqueIdentifier>{36022895-2e47-4c22-ac93-0621536e1c55}</UniqueIdentifier>
+      <UniqueIdentifier>{f99c48b0-646e-4785-8d09-2163d15ba95c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\serialization\xml">
+      <UniqueIdentifier>{554679c6-4e81-4516-bf0b-ff7ce8227314}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -70,23 +70,23 @@
     <ClCompile Include="unittest\case\base\any_test.cpp">
       <Filter>case\base</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\number_test.cpp">
-      <Filter>case\base</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\serialization\xml\xml_writer_test.cpp">
-      <Filter>case\serialization\xml</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\serialization\xml\xml_reader_test.cpp">
-      <Filter>case\serialization\xml</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\serialization\json\json_writer_test.cpp">
-      <Filter>case\serialization\json</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\serialization\json\json_reader_test.cpp">
-      <Filter>case\serialization\json</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\serialization\serialization_manager_test.cpp">
       <Filter>case\serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\serialization\json\json_reader_test.cpp">
+      <Filter>case\serialization\json</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\serialization\json\json_writer_test.cpp">
+      <Filter>case\serialization\json</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\serialization\xml\xml_reader_test.cpp">
+      <Filter>case\serialization\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\serialization\xml\xml_writer_test.cpp">
+      <Filter>case\serialization\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\number_test.cpp">
+      <Filter>case\base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
