@@ -207,7 +207,7 @@ public:
             );
     }
 
-    void DrawText(
+    void DrawTextFormat(
         const std::wstring& text,
         const TextFormat& text_format,
         const Rect& rect,
@@ -223,7 +223,7 @@ public:
             );
     }
 
-    void DrawText(
+    void DrawTextLayout(
         const TextLayout& text_layout,
         const Point& position,
         const Brush& brush

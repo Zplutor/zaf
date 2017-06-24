@@ -336,6 +336,7 @@
     <ClCompile Include="src\zaf\serialization\internal\built_in_types.cpp">
       <Filter>zaf\serialization\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\precompiled.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -803,5 +804,6 @@
     <ClInclude Include="src\zaf\serialization\internal\built_in_types.h">
       <Filter>zaf\serialization\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\precompiled.h" />
   </ItemGroup>
 </Project>

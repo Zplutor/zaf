@@ -72,7 +72,7 @@ void TextualControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
     Canvas::StateGuard state_guard(canvas);
     canvas.SetBrushWithColor(GetDefaultTextColor());
-    canvas.DrawText(text_layout, text_rect.position);
+    canvas.DrawTextLayout(text_layout, text_rect.position);
 }
 
 

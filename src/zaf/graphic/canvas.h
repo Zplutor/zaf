@@ -172,12 +172,12 @@ public:
 		renderer_.DrawGeometryFrame(geometry, state->brush, stroke_width, state->stroke);
 	}
 
-	void DrawText(const std::wstring& text, const TextFormat& text_format, const Rect& rect) {
-		renderer_.DrawText(text, text_format, rect, GetCurrentState()->brush);
+	void DrawTextFormat(const std::wstring& text, const TextFormat& text_format, const Rect& rect) {
+		renderer_.DrawTextFormat(text, text_format, rect, GetCurrentState()->brush);
 	}
 
-	void DrawText(const TextLayout& text_layout, const Point& position) {
-		renderer_.DrawText(text_layout, position, GetCurrentState()->brush);
+    void DrawTextLayout(const TextLayout& text_layout, const Point& position) {
+        renderer_.DrawTextLayout(text_layout, position, GetCurrentState()->brush);
 	}
 
     void DrawBitmap(const Bitmap& bitmap, const Rect& rect) {
