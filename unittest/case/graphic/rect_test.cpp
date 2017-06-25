@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 #include <zaf/graphic/rect.h>
+#include <zaf/serialization/data_node.h>
+#include <zaf/serialization/properties.h>
 
-TEST(TestRect, Contain) {
+TEST(Rect, Contain) {
 
     ASSERT_FALSE(zaf::Rect(0, 0, 0, 0).Contain(zaf::Point(0, 0)));
     ASSERT_FALSE(zaf::Rect(0, 0, 0, 0).Contain(zaf::Point(1, 1)));
@@ -26,7 +28,7 @@ TEST(TestRect, Contain) {
 }
 
 
-TEST(TestRect, Intersect) {
+TEST(Rect, Intersect) {
 
     auto test = [](const zaf::Rect& intersected_rect, const zaf::Rect& expected_rect) {
         zaf::Rect primary_rect(0, 0, 10, 10);
@@ -51,7 +53,7 @@ TEST(TestRect, Intersect) {
 }
 
 
-TEST(TestRect, InflateWithFrame) {
+TEST(Rect, InflateWithFrame) {
 
     auto test = [](const zaf::Frame& frame, const zaf::Rect& expected_rect) {
         zaf::Rect rect(0, 0, 5, 5);
@@ -64,7 +66,7 @@ TEST(TestRect, InflateWithFrame) {
 }
 
 
-TEST(TestRect, DeflateWithFrame) {
+TEST(Rect, DeflateWithFrame) {
 
     auto test = [](const zaf::Frame& frame, const zaf::Rect& expected_rect) {
         zaf::Rect rect(0, 0, 10, 10);
@@ -74,4 +76,28 @@ TEST(TestRect, DeflateWithFrame) {
 
     ASSERT_TRUE(test(zaf::Frame(0, 0, 0, 0), zaf::Rect(0, 0, 10, 10)));
     ASSERT_TRUE(test(zaf::Frame(1, 2, 3, 4), zaf::Rect(1, 2, 6, 4)));
+}
+
+
+TEST(Rect, Deserialize) {
+
+    auto point_node = zaf::DataNode::CreateObject();
+    point_node->AddChild(zaf::property::X, zaf::DataNode::CreateNumber(34));
+    point_node->AddChild(zaf::property::Y, zaf::DataNode::CreateNumber(35));
+
+    auto size_node = zaf::DataNode::CreateObject();
+    size_node->AddChild(zaf::property::Width, zaf::DataNode::CreateNumber(36));
+    size_node->AddChild(zaf::property::Height, zaf::DataNode::CreateNumber(37));
+
+    auto data_node = zaf::DataNode::CreateObject();
+    data_node->AddChild(zaf::property::Position, point_node);
+    data_node->AddChild(zaf::property::Size, size_node);
+
+    zaf::Rect rect;
+    bool is_succeeded = rect.Deserialize(*data_node);
+    ASSERT_TRUE(is_succeeded);
+    ASSERT_EQ(rect.position.x, 34);
+    ASSERT_EQ(rect.position.y, 35);
+    ASSERT_EQ(rect.size.width, 36);
+    ASSERT_EQ(rect.size.height, 37);
 }

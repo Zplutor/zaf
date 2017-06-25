@@ -29,6 +29,13 @@ bool Frame::DeserializeFromDataNode(const DataNode& data_node) {
         else if (key == property::Bottom) {
             bottom = data_node.GetFloat();
         }
+        else if (key == property::All) {
+            float value = data_node.GetFloat();
+            left = value;
+            top = value;
+            right = value;
+            bottom = value;
+        }
     });
 
     return true;

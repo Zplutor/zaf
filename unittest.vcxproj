@@ -41,14 +41,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)src;$(SolutionDir)unittest\googletest\include;$(SolutionDir)unittest\googletest;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)src;$(SolutionDir)unittest;$(SolutionDir)unittest\googletest\include;$(SolutionDir)unittest\googletest;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)out\$(Configuration);$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)out\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)intermediate\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)src;$(SolutionDir)unittest\googletest\include;$(SolutionDir)unittest\googletest;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)src;$(SolutionDir)unittest;$(SolutionDir)unittest\googletest\include;$(SolutionDir)unittest\googletest;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)out\$(Configuration);$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)out\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)intermediate\$(ProjectName)\$(Configuration)\</IntDir>
@@ -95,6 +95,12 @@
     <ClCompile Include="unittest\case\control\internal\list_control_item_selection_manager_test.cpp" />
     <ClCompile Include="unittest\case\control\internal\range_manager_test.cpp" />
     <ClCompile Include="unittest\case\control\layout\internal\array_layout_length_calculating_test.cpp" />
+    <ClCompile Include="unittest\case\graphic\color_test.cpp" />
+    <ClCompile Include="unittest\case\graphic\ellipse_test.cpp" />
+    <ClCompile Include="unittest\case\graphic\frame_test.cpp" />
+    <ClCompile Include="unittest\case\graphic\point_test.cpp" />
+    <ClCompile Include="unittest\case\graphic\rounded_rect_test.cpp" />
+    <ClCompile Include="unittest\case\graphic\size_test.cpp" />
     <ClCompile Include="unittest\case\serialization\json\json_reader_test.cpp" />
     <ClCompile Include="unittest\case\serialization\json\json_writer_test.cpp" />
     <ClCompile Include="unittest\case\serialization\serialization_manager_test.cpp" />
