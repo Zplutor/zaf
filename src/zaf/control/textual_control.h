@@ -226,6 +226,8 @@ protected:
      */
     void NotifyTextChange();
 
+    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
+
 private:
     TextLayout CreateTextLayout() const;
     TextFormat CreateTextFormat() const;

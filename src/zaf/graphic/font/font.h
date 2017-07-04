@@ -3,13 +3,17 @@
 #include <Windows.h>
 #include <string>
 #include <zaf/graphic/font/font_weight.h>
+#include <zaf/serialization/serializable_object.h>
 
 namespace zaf {
 
 /**
  Describes various properties of a font.
  */
-class Font {
+class Font : public SerializableObject {
+public:
+    ZAF_DECLARE_TYPE_NAME();
+
 public:
     /**
      Get the default font from system setting.
@@ -31,6 +35,7 @@ public:
 
 	}
 
+public:
 	/**
 	 Font family name.
 
@@ -54,6 +59,10 @@ public:
 	 FontWeight::Regular.
 	 */
 	int weight;
+
+protected:
+    void SerializeToDataNode(DataNode& data_node) const override;
+    bool DeserializeFromDataNode(const DataNode& data_node) override;
 };
 
 }

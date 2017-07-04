@@ -147,6 +147,7 @@ private:
             }
 
             if (should_end) {
+                Back();
                 break;
             }
             
@@ -162,6 +163,7 @@ private:
 
         while (! IsEnd()) {
             if (!std::iswspace(ReadChar())) {
+                Back();
                 break;
             }
         }
@@ -178,6 +180,10 @@ private:
 
     wchar_t GetChar() {
         return current_char_;
+    }
+
+    void Back() {
+        --next_cursor_;
     }
 
     bool IsEnd() const {

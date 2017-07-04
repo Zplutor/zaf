@@ -458,6 +458,44 @@ Size TextualControl::DetermineRequiredSize(const Size& max_size) const {
 }
 
 
+void TextualControl::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
+
+    if (name == property::Text) {
+        SetText(data_node.GetString());
+    }
+    else if (name == property::TextAlignment) {
+        auto text_alignment = ConvertTextAlignmentFromString(data_node.GetString());
+        SetTextAlignment(text_alignment.has_value() ? text_alignment.value() : TextAlignment::Leading);
+    }
+    else if (name == property::ParagraphAlignment) {
+        auto paragraph_alignment = ConvertParagraphAlignmentFromString(data_node.GetString());
+        SetParagraphAlignment(paragraph_alignment.has_value() ? paragraph_alignment.value() : ParagraphAlignment::Near);
+    }
+    else if (name == property::WordWrapping) {
+        auto word_wrapping = ConvertWordWrappingFromString(data_node.GetString());
+        SetWordWrapping(word_wrapping.has_value() ? word_wrapping.value() : WordWrapping::NoWrap);
+    }
+    else if (name == property::DefaultTextColor) {
+        Color color;
+        color.Deserialize(data_node);
+        SetDefaultTextColor(color);
+    }
+    else if (name == property::DefaultTextColorPicker) {
+        ConstantColorPicker color_picker;
+        color_picker.Deserialize(data_node);
+        SetDefaultTextColorPicker(color_picker);
+    }
+    else if (name == property::DefaultFont) {
+        Font font;
+        font.Deserialize(data_node);
+        SetDefaultFont(font);
+    }
+    else {
+        __super::DeserializeProperty(name, data_node);
+    }
+}
+
+
 static std::shared_ptr<FontRangeMap> TryGetFontRangeMap(const PropertyMap& property_map) {
 
     auto fonts_pointer = property_map.TryGetProperty<std::shared_ptr<FontRangeMap>>(kFontsPropertyName);

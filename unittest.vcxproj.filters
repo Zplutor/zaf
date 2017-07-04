@@ -37,6 +37,12 @@
     <Filter Include="case\serialization\xml">
       <UniqueIdentifier>{554679c6-4e81-4516-bf0b-ff7ce8227314}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\graphic\font">
+      <UniqueIdentifier>{6bca3a9f-7526-466d-880a-9191bd1beacf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility">
+      <UniqueIdentifier>{1b742629-5349-4623-ab8d-af97c8e49a88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -106,10 +112,22 @@
     <ClCompile Include="unittest\case\graphic\rounded_rect_test.cpp">
       <Filter>case\graphic</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\control\control_deserialize_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\textual_control_deserialize_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="case\graphic\font\font_test.cpp">
+      <Filter>case\graphic\font</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
       <Filter>case\base</Filter>
+    </ClInclude>
+    <ClInclude Include="unittest\utility\deserialize_utility.h">
+      <Filter>utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

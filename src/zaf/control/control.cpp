@@ -1190,85 +1190,62 @@ void Control::DeserializeProperty(const std::wstring& name, const DataNode& data
 
     if (name == property::Rect) {
         Rect rect;
-        if (rect.Deserialize(data_node)) {
-            SetRect(rect);
-        }
+        rect.Deserialize(data_node);
+        SetRect(rect);
     }
     else if (name == property::BackgroundColor) {
         Color color;
-        if (color.Deserialize(data_node)) {
-            SetBackgroundColor(color);
-        }
+        color.Deserialize(data_node);
+        SetBackgroundColor(color);
     }
     else if (name == property::BackgroundColorPicker) {
         ConstantColorPicker color_picker;
-        if (color_picker.Deserialize(data_node)) {
-            SetBackgroundColorPicker(color_picker);
-        }
+        color_picker.Deserialize(data_node);
+        SetBackgroundColorPicker(color_picker);
     }
     else if (name == property::Border) {
         Frame border;
-        if (border.Deserialize(data_node)) {
-            SetBorder(border);
-        }
+        border.Deserialize(data_node);
+        SetBorder(border);
     }
     else if (name == property::BorderColor) {
         Color color;
-        if (color.Deserialize(data_node)) {
-            SetBackgroundColor(color);
-        }
+        color.Deserialize(data_node);
+        SetBorderColor(color);
     }
     else if (name == property::BorderColorPicker) {
         ConstantColorPicker color_picker;
-        if (color_picker.Deserialize(data_node)) {
-            SetBackgroundColorPicker(color_picker);
-        }
+        color_picker.Deserialize(data_node);
+        SetBorderColorPicker(color_picker);
     }
     else if (name == property::Padding) {
         Frame padding;
-        if (padding.Deserialize(data_node)) {
-            SetPadding(padding);
-        }
+        padding.Deserialize(data_node);
+        SetPadding(padding);
     }
     else if (name == property::IsVisible) {
-        if (data_node.IsBoolean()) {
-            SetIsVisible(data_node.GetBoolean());
-        }
+        SetIsVisible(data_node.GetBoolean());
     }
     else if (name == property::IsEnabled) {
-        if (data_node.IsBoolean()) {
-            SetIsEnabled(data_node.GetBoolean());
-        }
+        SetIsEnabled(data_node.GetBoolean());
     }
     else if (name == property::CanFocused) {
-        if (data_node.IsBoolean()) {
-            SetCanFocused(data_node.GetBoolean());
-        }
+        SetCanFocused(data_node.GetBoolean());
     }
     else if (name == property::Name) {
-        if (data_node.IsString()) {
-            SetName(data_node.GetString());
-        }
+        SetName(data_node.GetString());
     }
     else if (name == property::MinimumWidth) {
-        if (data_node.IsNumber()) {
-            SetMinimumWidth(data_node.GetFloat());
-        }
+        SetMinimumWidth(data_node.GetFloat());
     }
     else if (name == property::MaximumWidth) {
-        if (data_node.IsNumber()) {
-            SetMaximumWidth(data_node.GetFloat());
-        }
+        SetMaximumWidth(data_node.GetFloat());
     }
     else if (name == property::MinimumHeight) {
-        if (data_node.IsNumber()) {
-            SetMinimumHeight(data_node.GetFloat());
-        }
+        SetMinimumHeight(data_node.GetFloat());
     }
     else if (name == property::MaximumHeight) {
-        if (data_node.IsNumber()) {
-            SetMaximumHeight(data_node.GetFloat());
-        }
+        SetMaximumHeight(data_node.GetFloat());
     }
     else if (name == property::Children) {
         DeserializeChildren(data_node);
@@ -1277,6 +1254,8 @@ void Control::DeserializeProperty(const std::wstring& name, const DataNode& data
 
 
 void Control::DeserializeChildren(const DataNode& data_node) {
+
+    RemoveAllChildren();
 
     data_node.EnumerateChildren([this](const DataNode& data_node) {
 

@@ -115,9 +115,9 @@ public:
 
 public:
 	/**
-	 Initialize the instance which red, green, blue and alpha are all zero.
+	 Initialize the instance which red, green, and blue are zero, and alpha is 1.
 	 */
-	Color() : r(0), g(0), b(0), a(0) { }
+	Color() : r(0), g(0), b(0), a(1) { }
 
 	/**
 	 Initialize the instance that is the same as another Color.

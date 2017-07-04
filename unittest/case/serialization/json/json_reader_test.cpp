@@ -167,3 +167,20 @@ TEST(JsonReader, ReadArray) {
     ASSERT_NE(child_node, nullptr);
     ASSERT_TRUE(child_node->IsArray());
 }
+
+
+TEST(JsonReader, ReadWithSpaces) {
+
+    const char* json_string = "  [   { \"Type\": \"Control\"},  {  } ]";
+    auto data_node = ReadDataNode(json_string);
+    ASSERT_NE(data_node, nullptr);
+    ASSERT_EQ(data_node->GetChildCount(), 2);
+
+    auto first = data_node->GetChild(0);
+    ASSERT_NE(first, nullptr);
+    ASSERT_TRUE(first->IsObject());
+
+    auto second = data_node->GetChild(1);
+    ASSERT_NE(second, nullptr);
+    ASSERT_TRUE(second->IsObject());
+}
