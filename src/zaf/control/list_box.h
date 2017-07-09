@@ -38,6 +38,7 @@ public:
         std::size_t AddItemWithTextAtIndex(const std::wstring& text, std::size_t index);
         std::size_t RemoveItemWithText(const std::wstring& item_text);
         bool RemoveItemAtIndex(std::size_t index);
+        void RemoveAllItems();
         const std::wstring GetItemTextAtIndex(std::size_t index);
 
     private:
@@ -115,6 +116,11 @@ public:
     bool RemoveItemAtIndex(std::size_t index);
 
     /**
+     Remove all items.
+     */
+    void RemoveAllItems();
+
+    /**
      Get the text of item at specified index.
 
      @param index
@@ -140,6 +146,8 @@ public:
 
 protected:
     void ItemSourceChange(const std::shared_ptr<ListControl::ItemSource>& previous_item_source) override;
+
+    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
 private:
     std::shared_ptr<ItemSource> item_source_;

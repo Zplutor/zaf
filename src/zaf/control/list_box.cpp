@@ -1,5 +1,6 @@
 #include <zaf/control/list_box.h>
 #include <zaf/creation.h>
+#include <zaf/serialization/properties.h>
 
 namespace zaf {
 
@@ -81,6 +82,14 @@ bool ListBox::RemoveItemAtIndex(std::size_t index) {
 }
 
 
+void ListBox::RemoveAllItems() {
+
+    if (item_source_ != nullptr) {
+        item_source_->RemoveAllItems();
+    }
+}
+
+
 const std::wstring ListBox::GetItemTextAtIndex(std::size_t index) {
 
     if (item_source_ != nullptr) {
@@ -122,6 +131,25 @@ const std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
     else {
 
         return std::vector<std::wstring>();
+    }
+}
+
+
+void ListBox::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
+
+    if (name == property::Items) {
+
+        RemoveAllItems();
+
+        data_node.EnumerateChildren([this](const DataNode& data_node) {
+            AddItemWithText(data_node.GetString());
+        });
+    }
+    else if (name == property::ItemHeight) {
+        SetItemHeight(data_node.GetFloat());
+    }
+    else {
+        __super::DeserializeProperty(name, data_node);
     }
 }
 
@@ -170,6 +198,14 @@ bool ListBox::ItemSource::RemoveItemAtIndex(std::size_t index) {
 
     NotifyItemRemove(index, 1);
     return true;
+}
+
+
+void ListBox::ItemSource::RemoveAllItems() {
+
+    auto item_count = item_texts_.size();
+    item_texts_.clear();
+    NotifyItemRemove(0, item_count);
 }
 
 

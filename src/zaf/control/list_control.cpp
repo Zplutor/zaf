@@ -9,6 +9,7 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/properties.h>
 #include <zaf/window/message/mouse_message.h>
 
 #undef max
@@ -17,7 +18,6 @@
 namespace zaf {
 
 static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
-static const wchar_t* const kSelectionModePropertyName = L"SelectionMode";
 
 static void CalculateRangeDifference(
     std::size_t new_index, 
@@ -578,7 +578,7 @@ const std::shared_ptr<ListControl::Item> ListControl::GetItemAtIndex(std::size_t
 
 ListControl::SelectionMode ListControl::GetSelectionMode() const {
 
-    auto select_mode = GetPropertyMap().TryGetProperty<SelectionMode>(kSelectionModePropertyName);
+    auto select_mode = GetPropertyMap().TryGetProperty<SelectionMode>(property::SelectionMode);
     if (select_mode != nullptr) {
         return *select_mode;
     }
@@ -589,7 +589,7 @@ ListControl::SelectionMode ListControl::GetSelectionMode() const {
 
 void ListControl::SetSelectionMode(SelectionMode selection_mode) {
 
-    GetPropertyMap().SetProperty(kSelectionModePropertyName, selection_mode);
+    GetPropertyMap().SetProperty(property::SelectionMode, selection_mode);
     
     item_container_->SetSelectStrategy(CreateSelectStrategy());
 
@@ -827,6 +827,31 @@ std::size_t ListControl::FindItemIndexAtPosition(const Point& position) const {
     }
 
     return index_and_count.first;
+}
+
+
+void ListControl::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
+
+    if (name == property::SelectionMode) {
+
+        auto string = data_node.GetString();
+
+        SelectionMode selection_mode = SelectionMode::Single;
+        if (string == L"None") {
+            selection_mode = SelectionMode::None;
+        }
+        else if (string == L"SimpleMultiple") {
+            selection_mode = SelectionMode::SimpleMultiple;
+        }
+        else if (string == L"ExtendedMultiple") {
+            selection_mode = SelectionMode::ExtendedMultiple;
+        }
+
+        SetSelectionMode(selection_mode);
+    }
+    else {
+        __super::DeserializeProperty(name, data_node);
+    }
 }
 
 

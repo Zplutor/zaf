@@ -421,6 +421,8 @@ protected:
      */
     virtual void ItemContainerChange(const std::shared_ptr<ItemContainer>& previous_item_container) { }
 
+    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
+
 private:
     friend class internal::ListControlExtendedMultipleSelectStrategy;
     friend class internal::ListControlSingleSelectStrategy;
