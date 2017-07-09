@@ -112,11 +112,11 @@ void GeneralLayouter::AdjustScrollBarValuesWithGeneralScrollContentControl() {
 
     int vertical_scroll_value_range = static_cast<int>(content_size.height - content_container_size.height);
     vertical_scroll_bar->SetValueRange(0, vertical_scroll_value_range);
-    vertical_scroll_bar->SetIsEnabled(GetScrollableControl()->IsEnabled() && vertical_scroll_value_range != 0);
+    vertical_scroll_bar->SetIsEnabled(vertical_scroll_value_range != 0);
 
     int horizontal_scroll_value_range = static_cast<int>(content_size.width - content_container_size.width);
     horizontal_scroll_bar->SetValueRange(0, horizontal_scroll_value_range);
-    horizontal_scroll_bar->SetIsEnabled(GetScrollableControl()->IsEnabled() && horizontal_scroll_value_range != 0);
+    horizontal_scroll_bar->SetIsEnabled(horizontal_scroll_value_range != 0);
 }
 
 

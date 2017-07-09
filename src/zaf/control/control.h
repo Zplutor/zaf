@@ -434,11 +434,10 @@ public:
 	/**
 	 Get a value indicating that whether the control is visible.
 
-	 The default value is true.
+     The default value is true. Note that the return value is always 
+     false if parent control is invisible.
 	 */
-	bool IsVisible() const {
-		return is_visible_;
-	}
+	bool IsVisible() const;
 
 	/**
 	 Set a value indicating that whether the control is visible.
@@ -450,19 +449,15 @@ public:
 	/**
 	 Get a value indicating that whether the control is enabled.
 
-	 The default value is true.
+	 The default value is true. Note that the return value is always
+     false if parent control is disabled.
 	 */
-	bool IsEnabled() const {
-		return is_enabled_;
-	}
+	bool IsEnabled() const;
 
 	/**
 	 Set a value indicating that whether the control is enabled.
 
-     When a control is enabled or disabled, all its children would be enabled or 
-     disabled as well.
-
-     Derived classes can be notified by overriding IsEnabledChange method.
+     See also IsEnabled.
 	 */
 	void SetIsEnabled(bool is_enabled);
 
@@ -798,12 +793,20 @@ protected:
 	virtual void FocusLose();
 
     /**
+     Process the is visible change notification.
+
+     This method is called when the control change its visibility. Derived classes must call
+     the same method of base class.
+     */
+    virtual void IsVisibleChange();
+
+    /**
      Process the is enabled change notification.
 
      This method is called when the control is enabled or disabled. Derived classes must call 
      the same method of base class.
      */
-    virtual void IsEnabledChange() { } 
+    virtual void IsEnabledChange();
 
     void SerializeToDataNode(DataNode& data_node) const override;
     bool DeserializeFromDataNode(const DataNode& data_node) override;
@@ -851,6 +854,8 @@ private:
     bool IsUpdating() const {
         return update_count_ > 0;
     }
+
+    void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
 
     void SerializeProperties(DataNode& data_node) const;
     void SerializeChildren(DataNode& data_node) const;

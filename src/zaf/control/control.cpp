@@ -706,53 +706,86 @@ const Renderer Control::GetRenderer() const {
 }
 
 
+bool Control::IsVisible() const {
+
+    if (! is_visible_) {
+        return false;
+    }
+
+    auto parent = GetParent(); 
+    if (parent == nullptr) {
+        return true;
+    }
+
+    return parent->IsVisible();
+}
+
+
 void Control::SetIsVisible(bool is_visible) {
+    SetInteractiveProperty(is_visible, is_visible_, &Control::IsVisibleChange);
+}
 
-	if (is_visible_ == is_visible) {
-		return;
-	}
 
-	if (IsHovered()) {
-		auto window = GetWindow();
-		if (window != nullptr) {
-			window->SetHoveredControl(nullptr);
-		}
-	}
+void Control::IsVisibleChange() {
 
-	SetIsFocused(false);
+    for (const auto& each_child : children_) {
+        each_child->IsVisibleChange();
+    }
+}
 
-	is_visible_ = is_visible;
-	NeedRepaint();
 
-	for (auto& each_child : children_) {
-		each_child->SetIsVisible(is_visible);
-	}
+bool Control::IsEnabled() const {
+
+    if (! is_enabled_) {
+        return false;
+    }
+
+    auto parent = GetParent();
+    if (parent == nullptr) {
+        return true;    
+    }
+
+    return parent->IsEnabled();   
 }
 
 
 void Control::SetIsEnabled(bool is_enabled) {
+    SetInteractiveProperty(is_enabled, is_enabled_, &Control::IsEnabledChange);
+}
 
-	if (is_enabled_ == is_enabled) {
-		return;
-	}
 
-	if (IsHovered()) {
-		auto window = GetWindow();
-		if (window != nullptr) {
-			window->SetHoveredControl(nullptr);
-		}
-	}
+void Control::IsEnabledChange() {
 
-	SetIsFocused(false);
+    for (const auto& each_child : children_) {
+        each_child->IsEnabledChange();
+    }
+}
 
-	is_enabled_ = is_enabled;
-	NeedRepaint();
 
-    for (auto& each_child : children_) {
-        each_child->SetIsEnabled(IsEnabled());
+void Control::SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)()) {
+
+    if (property_value == new_value) {
+        return;
     }
 
-    IsEnabledChange();
+    if (! new_value) {
+
+        if (IsHovered()) {
+            auto window = GetWindow();
+            if (window != nullptr) {
+                window->SetHoveredControl(nullptr);
+            }
+        }
+
+        SetIsFocused(false);
+    }
+
+    property_value = new_value;
+    NeedRepaint();
+
+    if (notification != nullptr) {
+        (this->*notification)();
+    }
 }
 
 
