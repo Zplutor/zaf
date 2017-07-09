@@ -400,7 +400,7 @@ void ConversationItem::UnreadCountBubble::PaintNormalBubble(zaf::Canvas& canvas)
     text_format.SetWordWrapping(zaf::WordWrapping::NoWrap);
 
     canvas.SetBrushWithColor(zaf::Color::White);
-    canvas.DrawText(unread_count_text, text_format, rounded_rect.rect);
+    canvas.DrawTextFormat(unread_count_text, text_format, rounded_rect.rect);
 }
 
 
