@@ -5,6 +5,8 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/data_node.h>
+#include <zaf/serialization/properties.h>
 
 namespace zaf {
 
@@ -188,6 +190,37 @@ void RadioButton::MouseClick() {
 	if (CanAutoSelect()) {
 		SetSelected();
 	}
+}
+
+
+void RadioButton::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
+
+    if (name == property::RadioBackgroundColor) {
+        Color color;
+        color.Deserialize(data_node);
+        SetRadioBackgroundColor(color);
+    }
+    else if (name == property::RadioBackgroundColorPicker) {
+        ConstantColorPicker color_picker;
+        color_picker.Deserialize(data_node);
+        SetRadioBackgroundColorPicker(color_picker);
+    }
+    else if (name == property::RadioBorderColor) {
+        Color color;
+        color.Deserialize(data_node);
+        SetRadioBorderColor(color);
+    }
+    else if (name == property::RadioBorderColorPicker) {
+        ConstantColorPicker color_picker;
+        color_picker.Deserialize(data_node);
+        SetRadioBorderColorPicker(color_picker);
+    }
+    else if (name == property::CanAutoSelect) {
+        SetCanAutoSelect(data_node.GetBoolean());
+    }
+    else {
+        __super::DeserializeProperty(name, data_node);
+    }
 }
 
 

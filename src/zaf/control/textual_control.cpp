@@ -490,6 +490,11 @@ void TextualControl::DeserializeProperty(const std::wstring& name, const DataNod
         font.Deserialize(data_node);
         SetDefaultFont(font);
     }
+    else if (name == property::TextTrimming) {
+        TextTrimming text_trimming;
+        text_trimming.Deserialize(data_node);
+        SetTextTrimming(text_trimming);
+    }
     else {
         __super::DeserializeProperty(name, data_node);
     }

@@ -43,6 +43,9 @@
     <Filter Include="utility">
       <UniqueIdentifier>{1b742629-5349-4623-ab8d-af97c8e49a88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\graphic\text">
+      <UniqueIdentifier>{a90db673-1d1d-4843-a194-e886210cf412}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -120,6 +123,15 @@
     </ClCompile>
     <ClCompile Include="case\graphic\font\font_test.cpp">
       <Filter>case\graphic\font</Filter>
+    </ClCompile>
+    <ClCompile Include="case\graphic\text\text_trimming_test.cpp">
+      <Filter>case\graphic\text</Filter>
+    </ClCompile>
+    <ClCompile Include="case\control\check_box_deserialize_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="case\control\radio_button_test.cpp">
+      <Filter>case\control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

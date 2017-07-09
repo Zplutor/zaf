@@ -86,7 +86,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="case\control\check_box_deserialize_test.cpp" />
+    <ClCompile Include="case\control\radio_button_test.cpp" />
     <ClCompile Include="case\graphic\font\font_test.cpp" />
+    <ClCompile Include="case\graphic\text\text_trimming_test.cpp" />
     <ClCompile Include="unittest\case\base\any_test.cpp" />
     <ClCompile Include="unittest\case\base\number_test.cpp" />
     <ClCompile Include="unittest\case\base\optional_test.cpp" />

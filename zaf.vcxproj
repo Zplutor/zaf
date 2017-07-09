@@ -24,6 +24,7 @@
     <ClCompile Include="src\zaf\base\timer.cpp" />
     <ClCompile Include="src\zaf\control\button.cpp" />
     <ClCompile Include="src\zaf\control\check_box.cpp" />
+    <ClCompile Include="src\zaf\control\check_state.cpp" />
     <ClCompile Include="src\zaf\control\clickable_control.cpp" />
     <ClCompile Include="src\zaf\control\color_picker.cpp" />
     <ClCompile Include="src\zaf\control\combo_box.cpp" />
@@ -87,6 +88,7 @@
     <ClCompile Include="src\zaf\graphic\text\text_alignment.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_format.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
+    <ClCompile Include="src\zaf\graphic\text\text_trimming.cpp" />
     <ClCompile Include="src\zaf\graphic\text\word_wrapping.cpp" />
     <ClCompile Include="src\zaf\internal\message_loop.cpp" />
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />

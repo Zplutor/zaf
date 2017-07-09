@@ -122,3 +122,10 @@ TEST(TextualControl, DeserializeDefaultFont) {
     auto control = DeserializeObject<zaf::TextualControl>("{\"DefaultFont\":{\"FamilyName\":\"Song\"}}");
     ASSERT_EQ(control->GetDefaultFont().family_name, L"Song");
 }
+
+
+TEST(TextualControl, DeserializeTextTrimming) {
+
+    auto control = DeserializeObject<zaf::TextualControl>("{\"TextTrimming\":{\"Granularity\": \"Word\"}}");
+    ASSERT_EQ(control->GetTextTrimming().granularity, zaf::TextTrimming::Granularity::Word);
+}

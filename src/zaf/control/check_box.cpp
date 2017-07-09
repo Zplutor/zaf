@@ -7,6 +7,8 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/data_node.h>
+#include <zaf/serialization/properties.h>
 
 namespace zaf {
 
@@ -234,6 +236,47 @@ void CheckBox::MouseClick() {
 	}
 
 	SetCheckState(new_check_state);
+}
+
+
+void CheckBox::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
+
+    if (name == property::BoxBackgroundColor) {
+        Color color;
+        color.Deserialize(data_node);
+        SetBoxBackgroundColor(color);
+    }
+    else if (name == property::BoxBackgroundColorPicker) {
+        ConstantColorPicker color_picker;
+        color_picker.Deserialize(data_node);
+        SetBoxBackgroundColorPicker(color_picker);
+    }
+    else if (name == property::BoxBorderColor) {
+        Color color;
+        color.Deserialize(data_node);
+        SetBoxBorderColor(color);
+    }
+    else if (name == property::BoxBorderColorPicker) {
+        ConstantColorPicker color_picker;
+        color_picker.Deserialize(data_node);
+        SetBoxBorderColorPicker(color_picker);
+    }
+    else if (name == property::CanAutoChangeCheckState) {
+        SetCanAutoChangeCheckState(data_node.GetBoolean());
+    }
+    else if (name == property::CanBeIndeterminate) {
+        SetCanBeIndeterminate(data_node.GetBoolean());
+    }
+    else if (name == property::CheckState) {
+        auto check_state = ConvertCheckStateFromString(data_node.GetString());
+        SetCheckState(check_state.has_value() ? check_state.value() : CheckState::Unchecked);
+    }
+    else if (name == property::IsChecked) {
+        SetIsChecked(data_node.GetBoolean());
+    }
+    else {
+        __super::DeserializeProperty(name, data_node);
+    }
 }
 
 

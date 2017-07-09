@@ -337,6 +337,12 @@
       <Filter>zaf\serialization\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\precompiled.cpp" />
+    <ClCompile Include="src\zaf\graphic\text\text_trimming.cpp">
+      <Filter>zaf\graphic\text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\check_state.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
