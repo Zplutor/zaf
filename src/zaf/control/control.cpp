@@ -748,9 +748,11 @@ void Control::SetIsEnabled(bool is_enabled) {
 	is_enabled_ = is_enabled;
 	NeedRepaint();
 
-	for (auto& each_child : children_) {
-		each_child->SetIsEnabled(is_enabled);
-	}
+    for (auto& each_child : children_) {
+        each_child->SetIsEnabled(IsEnabled());
+    }
+
+    IsEnabledChange();
 }
 
 

@@ -760,6 +760,16 @@ void ListControl::UnselectAllItems() {
 }
 
 
+void ListControl::IsEnabledChange() {
+
+    __super::IsEnabledChange();
+
+    if (! IsEnabled()) {
+        UnselectAllItems();
+    }
+}
+
+
 std::size_t ListControl::GetSelectedItemCount() const {
     return item_selection_manager_->GetAllSelectedCount();
 }

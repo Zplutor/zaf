@@ -307,6 +307,17 @@ void ScrollableControl::MouseWheel(const Point& position, const MouseWheelMessag
 }
 
 
+void ScrollableControl::IsEnabledChange() {
+
+    __super::IsEnabledChange();
+
+    if (IsEnabled()) { 
+        //Relayout to refresh scroll bars.
+        NeedRelayout();
+    }
+}
+
+
 const Rect ScrollableControl::GetVisibleScrollContentRect() const {
 
     if (self_scrolling_control_ != nullptr) {

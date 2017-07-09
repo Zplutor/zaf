@@ -459,7 +459,10 @@ public:
 	/**
 	 Set a value indicating that whether the control is enabled.
 
-	 See also IsEnabled.
+     When a control is enabled or disabled, all its children would be enabled or 
+     disabled as well.
+
+     Derived classes can be notified by overriding IsEnabledChange method.
 	 */
 	void SetIsEnabled(bool is_enabled);
 
@@ -793,6 +796,14 @@ protected:
      same method of base class if they don't process the notification.
      */
 	virtual void FocusLose();
+
+    /**
+     Process the is enabled change notification.
+
+     This method is called when the control is enabled or disabled. Derived classes must call 
+     the same method of base class.
+     */
+    virtual void IsEnabledChange() { } 
 
     void SerializeToDataNode(DataNode& data_node) const override;
     bool DeserializeFromDataNode(const DataNode& data_node) override;
