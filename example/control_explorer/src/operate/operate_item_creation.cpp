@@ -44,20 +44,19 @@ std::shared_ptr<OperateItem> CreateOperateItemWithTextBox(
 }
 
 
+template<typename ValueType>
 std::shared_ptr<OperateItem> CreateOperateItemWithNumericTextBox(
     const std::wstring& name,
-    const std::function<float()>& get_value,
-    const std::function<void(float)>& value_change) {
+    const std::function<ValueType()>& get_value,
+    const std::function<void(ValueType)>& value_change) {
 
     auto text_box = CreateTextBox(
-        [get_value]() {
-            return zaf::ToWideString(
-                get_value(),
-                zaf::ToStringOptions().Precision(2));
-        }, 
+        [get_value]() { 
+            return zaf::ToWideString(get_value(), zaf::ToStringOptions().Precision(2)); 
+        },
         [value_change](const std::wstring& text) {
-            float value = 0;
-            if (zaf::TryToNumeric<float>(text, value)) {
+            ValueType value = 0;
+            if (zaf::TryToNumeric<ValueType>(text, value)) {
                 value_change(value);
             }
         }
@@ -66,6 +65,19 @@ std::shared_ptr<OperateItem> CreateOperateItemWithNumericTextBox(
     return CreateOperateItem(name, text_box);
 }
 
+std::shared_ptr<OperateItem> CreateOperateItemWithFloatTextBox(
+    const std::wstring& name,
+    const std::function<float()>& get_value,
+    const std::function<void(float)>& value_change) {
+    return CreateOperateItemWithNumericTextBox<float>(name, get_value, value_change);
+}
+
+std::shared_ptr<OperateItem> CreateOperateItemWithIntegerTextBox(
+    const std::wstring& name,
+    const std::function<std::int64_t()>& get_value,
+    const std::function<void(std::int64_t)>& value_change) {
+    return CreateOperateItemWithNumericTextBox<std::int64_t>(name, get_value, value_change);
+}
 
 std::shared_ptr<OperateItem> CreateOperateItemWithCheckBox(
     const std::wstring& name,

@@ -75,6 +75,12 @@
     <ClCompile Include="src\control\text_box_explore_manager.cpp">
       <Filter>src\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\control\combo_box_explore_manager.cpp">
+      <Filter>src\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\operate\combo_box_operate_item_factory.cpp">
+      <Filter>src\operate</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main_window.h">
@@ -139,6 +145,12 @@
     </ClInclude>
     <ClInclude Include="src\control\text_box_explore_manager.h">
       <Filter>src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\combo_box_explore_manager.h">
+      <Filter>src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\operate\combo_box_operate_item_factory.h">
+      <Filter>src\operate</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

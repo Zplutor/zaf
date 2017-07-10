@@ -8,16 +8,23 @@ std::shared_ptr<OperateItem> CreateOperateItemWithTextBox(
     const std::function<void(const std::wstring&)>& value_change,
     bool support_multiline);
 
-std::shared_ptr<OperateItem> CreateOperateItemWithNumericTextBox(
-    const std::wstring& name, 
+std::shared_ptr<OperateItem> CreateOperateItemWithFloatTextBox(
+    const std::wstring& name,
     const std::function<float()>& get_value,
     const std::function<void(float)>& value_change);
+
+std::shared_ptr<OperateItem> CreateOperateItemWithIntegerTextBox(
+    const std::wstring& name,
+    const std::function<std::int64_t()>& get_value,
+    const std::function<void(std::int64_t)>& value_change);
+
 
 std::shared_ptr<OperateItem> CreateOperateItemWithCheckBox(
     const std::wstring& name,
     const std::function<bool()>& get_value,
     const std::function<void(bool)>& value_change,
     const std::function<void(const std::function<void()>&)>& register_notification);
+
 
 std::shared_ptr<OperateItem> CreateOperateItemWithComboBox(
     const std::wstring& name,

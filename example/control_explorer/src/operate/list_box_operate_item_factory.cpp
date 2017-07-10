@@ -13,7 +13,7 @@ std::shared_ptr<zaf::Control> ListBoxOperateItemFactory::CreateItemHeightOperate
 
     auto list_box = GetListBox();
 
-    return CreateOperateItemWithNumericTextBox(
+    return CreateOperateItemWithFloatTextBox(
         L"Item height",
         [list_box]() { return list_box->GetItemHeight(); },
         [list_box](float value) { list_box->SetItemHeight(value); });

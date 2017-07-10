@@ -62,7 +62,7 @@ void ControlOperateItemFactory::AddSizeItems(std::vector<std::shared_ptr<zaf::Co
 
     const auto& target_control = GetTargetControl();
 
-    auto width_item = CreateOperateItemWithNumericTextBox(
+    auto width_item = CreateOperateItemWithFloatTextBox(
         L"Width",
         [target_control]() { return target_control->GetWidth(); }, 
         [target_control](float value) {
@@ -71,7 +71,7 @@ void ControlOperateItemFactory::AddSizeItems(std::vector<std::shared_ptr<zaf::Co
     );
     items.push_back(width_item);
     
-    auto height_item = CreateOperateItemWithNumericTextBox(
+    auto height_item = CreateOperateItemWithFloatTextBox(
         L"Height",
         [target_control]() { return target_control->GetHeight(); },
         [target_control](float value) {
@@ -80,7 +80,7 @@ void ControlOperateItemFactory::AddSizeItems(std::vector<std::shared_ptr<zaf::Co
     );
     items.push_back(height_item);
 
-    auto min_width_item = CreateOperateItemWithNumericTextBox(
+    auto min_width_item = CreateOperateItemWithFloatTextBox(
         L"Minimum Width",
         [target_control]() { return target_control->GetMinimumWidth(); },
         [target_control](float value) {
@@ -89,7 +89,7 @@ void ControlOperateItemFactory::AddSizeItems(std::vector<std::shared_ptr<zaf::Co
     );
     items.push_back(min_width_item);
 
-    auto max_width_item = CreateOperateItemWithNumericTextBox(
+    auto max_width_item = CreateOperateItemWithFloatTextBox(
         L"Maximum Width",
         [target_control]() { return target_control->GetMaximumWidth(); },
         [target_control](float value) {
@@ -98,7 +98,7 @@ void ControlOperateItemFactory::AddSizeItems(std::vector<std::shared_ptr<zaf::Co
     );
     items.push_back(max_width_item);
 
-    auto min_height_item = CreateOperateItemWithNumericTextBox(
+    auto min_height_item = CreateOperateItemWithFloatTextBox(
         L"Minimum Height",
         [target_control]() { return target_control->GetMinimumHeight(); },
         [target_control](float value) {
@@ -107,7 +107,7 @@ void ControlOperateItemFactory::AddSizeItems(std::vector<std::shared_ptr<zaf::Co
     );
     items.push_back(min_height_item);
 
-    auto max_height_item = CreateOperateItemWithNumericTextBox(
+    auto max_height_item = CreateOperateItemWithFloatTextBox(
         L"Maximum Height",
         [target_control]() { return target_control->GetMaximumHeight(); },
         [target_control](float value) {
@@ -158,7 +158,7 @@ static std::shared_ptr<zaf::Control> CreateFramePanel(
     auto title_panel = zaf::Create<OperateItem>();
     title_panel->SetName(title);
     
-    auto left = CreateOperateItemWithNumericTextBox(
+    auto left = CreateOperateItemWithFloatTextBox(
         L"    Left", 
         [get_frame]() { return get_frame().left; }, 
         [get_frame, frame_change](float value) {
@@ -168,7 +168,7 @@ static std::shared_ptr<zaf::Control> CreateFramePanel(
         }
     );
 
-    auto top = CreateOperateItemWithNumericTextBox(
+    auto top = CreateOperateItemWithFloatTextBox(
         L"    Top",
         [get_frame]() { return get_frame().top; },
         [get_frame, frame_change](float value) {
@@ -178,7 +178,7 @@ static std::shared_ptr<zaf::Control> CreateFramePanel(
         }
     );
 
-    auto right = CreateOperateItemWithNumericTextBox(
+    auto right = CreateOperateItemWithFloatTextBox(
         L"    Right",
         [get_frame]() { return get_frame().right; },
         [get_frame, frame_change](float value) {
@@ -188,7 +188,7 @@ static std::shared_ptr<zaf::Control> CreateFramePanel(
         }
     );
 
-    auto bottom = CreateOperateItemWithNumericTextBox(
+    auto bottom = CreateOperateItemWithFloatTextBox(
         L"    Bottom",
         [get_frame]() { return get_frame().bottom; },
         [get_frame, frame_change](float value) {

@@ -257,7 +257,7 @@ private:
     void DropDownListBoxSelectionChange();
     void NotifySelectionChange();
 
-    void EnterKeyDown();
+    void ConfirmSelection();
     void EditTextBoxTextChange();
 
     ActionGuard<SelectionChangeAction> SetSelectionChangeAction(SelectionChangeAction action);

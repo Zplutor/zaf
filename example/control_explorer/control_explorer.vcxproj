@@ -82,6 +82,7 @@
   <ItemGroup>
     <ClCompile Include="src\control\button_explore_manager.cpp" />
     <ClCompile Include="src\control\check_box_explore_manager.cpp" />
+    <ClCompile Include="src\control\combo_box_explore_manager.cpp" />
     <ClCompile Include="src\control\label_explore_manager.cpp" />
     <ClCompile Include="src\control\list_box_explore_manager.cpp" />
     <ClCompile Include="src\control\radio_button_explore_manager.cpp" />
@@ -93,6 +94,7 @@
     <ClCompile Include="src\main_window.cpp" />
     <ClCompile Include="src\operate\check_box_operate_item_factory.cpp" />
     <ClCompile Include="src\operate\color_combo_box.cpp" />
+    <ClCompile Include="src\operate\combo_box_operate_item_factory.cpp" />
     <ClCompile Include="src\operate\control_operate_item_factory.cpp" />
     <ClCompile Include="src\operate\list_box_operate_item_factory.cpp" />
     <ClCompile Include="src\operate\operate_item.cpp" />
@@ -105,6 +107,7 @@
   <ItemGroup>
     <ClInclude Include="src\control\button_explore_manager.h" />
     <ClInclude Include="src\control\check_box_explore_manager.h" />
+    <ClInclude Include="src\control\combo_box_explore_manager.h" />
     <ClInclude Include="src\control\label_explore_manager.h" />
     <ClInclude Include="src\control\list_box_explore_manager.h" />
     <ClInclude Include="src\control\radio_button_explore_manager.h" />
@@ -115,6 +118,7 @@
     <ClInclude Include="src\main_window.h" />
     <ClInclude Include="src\operate\check_box_operate_item_factory.h" />
     <ClInclude Include="src\operate\color_combo_box.h" />
+    <ClInclude Include="src\operate\combo_box_operate_item_factory.h" />
     <ClInclude Include="src\operate\control_operate_item_factory.h" />
     <ClInclude Include="src\operate\list_box_operate_item_factory.h" />
     <ClInclude Include="src\operate\operate_item.h" />

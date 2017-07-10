@@ -110,6 +110,7 @@ void ComboBox::InitializeEditTextBox() {
     AddChild(edit_text_box_);
     edit_text_box_->SetIsVisible(IsEditable());
     edit_text_box_->SetBorder(0);
+    edit_text_box_->SetParagraphAlignment(ParagraphAlignment::Center);
     edit_text_box_->SetIsMultiline(false);
     edit_text_box_->SetAcceptReturn(false);
     edit_text_box_->GetTextChangeEvent().AddListenerWithTag(
@@ -244,7 +245,10 @@ std::size_t ComboBox::GetMinimumVisibleItemCount() const {
 }
 
 void ComboBox::SetMinimumVisibleItemCount(std::size_t count) {
-    GetPropertyMap().SetProperty(kMinimumVisibleItemCountPropertyName, count);
+
+    auto max_count = GetMaximumVisibleItemCount();
+    auto revised_count = std::min(count, max_count);
+    GetPropertyMap().SetProperty(kMinimumVisibleItemCountPropertyName, revised_count);
 }
 
 
@@ -261,7 +265,10 @@ std::size_t ComboBox::GetMaximumVisibleItemCount() const {
 
 
 void ComboBox::SetMaximumVisibleItemCount(std::size_t count) {
-    GetPropertyMap().SetProperty(kMaximumVisibleItemCountPropertyName, count);
+
+    auto min_count = GetMinimumVisibleItemCount();
+    auto revised_count = std::max(count, min_count);
+    GetPropertyMap().SetProperty(kMaximumVisibleItemCountPropertyName, revised_count);
 }
 
 
@@ -349,6 +356,8 @@ void ComboBox::PopupDropDownWindow() {
     window_rect.size.height =
         CalculateDropDownListHeight(visible_item_count) + drop_down_list_box_border.top + drop_down_list_box_border.bottom;
 
+    window_rect = MakeClearEdgeForFill(window_rect, zaf::ClearEdgeOption::Clear);
+
     POINT screen_position = window_rect.position.ToPOINT();
     ClientToScreen(window->GetHandle(), &screen_position);
     window_rect.position = Point::FromPOINT(screen_position);
@@ -403,9 +412,9 @@ bool ComboBox::KeyDown(const KeyMessage& message) {
             return true;
         }
     }
-    else if (key == VK_RETURN) {
+    else if ((key == VK_RETURN) || (key == VK_ESCAPE)) {
 
-        EnterKeyDown();
+        ConfirmSelection();
         return true;
     }
     else if (key == VK_SPACE) {
@@ -509,7 +518,7 @@ ComboBox::ActionGuard<ComboBox::TextChangeAction> ComboBox::SetTextChangeAction(
 }
 
 
-void ComboBox::EnterKeyDown() {
+void ComboBox::ConfirmSelection() {
 
     if (drop_down_list_box_->GetSelectedItemCount() > 0) {
 

@@ -75,6 +75,10 @@ static const std::shared_ptr<Control> FindNextTabStopControlInChildren(
 
         const auto& child = *iterator;
 
+        if (! child->IsVisible()) {
+            continue;
+        }
+
         if (! child->IsEnabled()) {
             continue;
         }

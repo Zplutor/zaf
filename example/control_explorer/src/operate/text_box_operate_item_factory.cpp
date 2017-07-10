@@ -50,7 +50,7 @@ std::shared_ptr<zaf::Control> TextBoxOperateItemFactory::CreateIsMultilineOperat
 std::shared_ptr<zaf::Control> TextBoxOperateItemFactory::CreateMaximumLengthOperateItem() {
 
     auto text_box = GetTextBox();
-    return CreateOperateItemWithNumericTextBox(
+    return CreateOperateItemWithFloatTextBox(
         L"Maximum length",
         [text_box]() { return static_cast<float>(text_box->GetMaximumLength()); },
         [text_box](float value) { text_box->SetMaximumLength(static_cast<std::uint32_t>(value)); });
