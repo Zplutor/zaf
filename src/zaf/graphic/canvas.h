@@ -108,6 +108,9 @@ public:
 		GetCurrentState()->stroke = stroke;
 	}
 
+    void PushClippingRect(const Rect& rect);
+    void PopClippingRect();
+
 	void DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
 		auto state = GetCurrentState();
 		renderer_.DrawLine(
@@ -212,6 +215,7 @@ private:
 		ClearEdgeOption clear_edge_option;
 		Brush brush;
 		Stroke stroke;
+        std::vector<Rect> clipping_rects;
 	};
 
 private:
@@ -228,6 +232,10 @@ private:
 	void EndPaint();
 
 private:
+    void ApplyState(const std::shared_ptr<State>& state);
+    void CancelState(const std::shared_ptr<State>& state);
+    std::shared_ptr<State> GetCurrentState() const;
+
     Point AddAbsoluteOffset(const Point& point) const {
         return Point(point.x + absolute_rect_.position.x, point.y + absolute_rect_.position.y);
     }
@@ -260,8 +268,6 @@ private:
     void RemoveClearEdgeAbsoluteOffset(Ellipse& ellipse) const {
         RemoveClearEdgeAbsoluteOffset(ellipse.position);
     }
-
-	std::shared_ptr<State> GetCurrentState() const;
 
 private:
 	Rect absolute_rect_;

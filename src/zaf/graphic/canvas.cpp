@@ -33,23 +33,70 @@ void Canvas::EndPaint() {
 }
 
 
+void Canvas::PushClippingRect(const Rect& rect) {
+
+    auto absolute_clipping_rect = MakeClearEdgeForFill(rect);
+
+    GetCurrentState()->clipping_rects.push_back(absolute_clipping_rect);
+    renderer_.PushAxisAlignedClipping(absolute_clipping_rect, zaf::AntialiasMode::PerPrimitive);
+}
+
+
+void Canvas::PopClippingRect() {
+
+    GetCurrentState()->clipping_rects.pop_back();
+    renderer_.PopAxisAlignedClipping();
+}
+
+
 void Canvas::SaveState() {
+
+    if (! states_.empty()) {
+
+        auto current_state = states_.back();
+        CancelState(current_state);
+    }
 
 	auto new_state = std::make_shared<State>();
 	new_state->brush = renderer_.CreateSolidColorBrush(Color::White);
 
 	states_.push_back(new_state);
+    ApplyState(new_state);
 }
 
 
 void Canvas::RestoreState() {
 
 	if (! states_.empty()) {
+
+        auto current_state = states_.back();
+        CancelState(current_state);
 		states_.pop_back();
+
+        if (! states_.empty()) {
+            current_state = states_.back();
+            ApplyState(current_state);
+        }
 	}
 	else {
 		ZAF_FAIL();
 	}
+}
+
+
+void Canvas::ApplyState(const std::shared_ptr<State>& state) {
+
+    for (const auto& each_rect : state->clipping_rects) {
+        renderer_.PushAxisAlignedClipping(each_rect, zaf::AntialiasMode::PerPrimitive);
+    }
+}
+
+
+void Canvas::CancelState(const std::shared_ptr<State>& state) {
+
+    for (const auto& each_rect : state->clipping_rects) {
+        renderer_.PopAxisAlignedClipping();
+    }
 }
 
 
