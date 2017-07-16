@@ -200,6 +200,8 @@ protected:
      */
     virtual void EditTextBoxChange(const std::shared_ptr<TextBox>& previous_edit_text_box) { }
 
+    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
+
 private:
     enum class SelectionChangeAction {
         CloseDropDownWindow,

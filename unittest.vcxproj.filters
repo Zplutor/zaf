@@ -139,6 +139,12 @@
     <ClCompile Include="case\control\list_box_deserialize_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
+    <ClCompile Include="case\serialization\deserializer_test.cpp">
+      <Filter>case\serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\combo_box_deserialize_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

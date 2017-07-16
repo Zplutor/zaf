@@ -5,6 +5,23 @@
 
 namespace zaf {
 
+/**
+ Determinate whether the given type is a numerical type 
+ (that is, an integral type or a floating-point type, but not a bool).
+ */
+template<typename Type>
+class IsNumerical {
+public:
+    static const bool Value = std::is_arithmetic<Type>::value;
+};
+
+template<>
+class IsNumerical<bool> {
+public:
+    static const bool Value = false;
+};
+
+
 class Number {
 public:
     enum class Tag {
@@ -22,7 +39,7 @@ public:
         CopyFromOther(other);
     }
 
-    template<typename Type, typename Tag = std::enable_if_t<std::is_arithmetic<Type>::value>>
+    template<typename Type, typename Tag = std::enable_if_t<IsNumerical<Type>::Value>>
     Number(Type value) {
         GetOperator<Type>::Type::Assign(this, value);
     }
@@ -32,7 +49,7 @@ public:
         return *this;
     }
 
-    template<typename Type, typename Tag = std::enable_if<std::is_arithmetic<Type>::value>>
+    template<typename Type, typename Tag = std::enable_if<IsNumerical<Type>::Value>>
     Number& operator=(Type value) {
         GetOperator<Type>::Type::Assign(this, value);
         return *this;
@@ -88,7 +105,7 @@ private:
     class GetOperator {
     public:
         typedef std::conditional_t<
-            std::is_arithmetic<Type>::value,
+            IsNumerical<Type>::Value,
             std::conditional_t<
                 std::is_floating_point<Type>::value, 
                 FloatingPointOperator<Type>,

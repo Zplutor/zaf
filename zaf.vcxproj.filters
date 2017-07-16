@@ -343,6 +343,9 @@
     <ClCompile Include="src\zaf\control\check_state.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\serialization\deserializing.cpp">
+      <Filter>zaf\serialization</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -811,5 +814,11 @@
       <Filter>zaf\serialization\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\precompiled.h" />
+    <ClInclude Include="src\zaf\serialization\deserializing.h">
+      <Filter>zaf\serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\serialization\deserializer.h">
+      <Filter>zaf\serialization</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

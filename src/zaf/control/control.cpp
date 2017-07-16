@@ -10,9 +10,8 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/serialization/data_node.h>
+#include <zaf/serialization/deserializing.h>
 #include <zaf/serialization/properties.h>
-#include <zaf/serialization/serializable_type.h>
-#include <zaf/serialization/serialization_manager.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window.h>
@@ -1294,23 +1293,10 @@ void Control::DeserializeChildren(const DataNode& data_node) {
 
     data_node.EnumerateChildren([this](const DataNode& data_node) {
 
-        auto type_node = data_node.GetChild(property::Type);
-        if (type_node == nullptr) {
-            return;
+        auto child = DeserializeObject<Control>(data_node);
+        if (child != nullptr) {
+            AddChild(child);
         }
-
-        auto type = GetSerializationManager()->GetType(type_node->GetString());
-        if (type == nullptr) {
-            return;
-        }
-
-        auto instance = type->CreateInstance();
-        auto child_control = std::dynamic_pointer_cast<Control>(instance);
-        if (child_control == nullptr) {
-            return;
-        }
-
-        AddChild(child_control);
     });
 }
 

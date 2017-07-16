@@ -94,6 +94,7 @@
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
     <ClCompile Include="src\zaf\serialization\data_node.cpp" />
+    <ClCompile Include="src\zaf\serialization\deserializing.cpp" />
     <ClCompile Include="src\zaf\serialization\internal\built_in_types.cpp" />
     <ClCompile Include="src\zaf\serialization\json\json_reader.cpp" />
     <ClCompile Include="src\zaf\serialization\json\json_writer.cpp" />
@@ -243,6 +244,8 @@
     <ClInclude Include="src\zaf\serialization\data_node.h" />
     <ClInclude Include="src\zaf\serialization\data_reader.h" />
     <ClInclude Include="src\zaf\serialization\data_writer.h" />
+    <ClInclude Include="src\zaf\serialization\deserializer.h" />
+    <ClInclude Include="src\zaf\serialization\deserializing.h" />
     <ClInclude Include="src\zaf\serialization\internal\built_in_types.h" />
     <ClInclude Include="src\zaf\serialization\json\json_reader.h" />
     <ClInclude Include="src\zaf\serialization\json\json_writer.h" />

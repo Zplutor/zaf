@@ -12,6 +12,9 @@
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/data_node.h>
+#include <zaf/serialization/deserializing.h>
+#include <zaf/serialization/properties.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/window.h>
 
@@ -561,6 +564,38 @@ void ComboBox::FocusGain() {
 
     if (IsEditable()) {
         edit_text_box_->SetIsFocused(true);
+    }
+}
+
+
+void ComboBox::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
+
+    if (name == property::DropDownButtonColor) {
+        SetDropDownButtonColor(zaf::Deserialize<Color>(data_node));
+    }
+    else if (name == property::DropDownButtonColorPicker) {
+        SetDropDownButtonColorPicker(zaf::Deserialize<ConstantColorPicker>(data_node));
+    }
+    else if (name == property::DropDownButtonWidth) {
+        SetDropDownButtonWidth(data_node.GetFloat());
+    }
+    else if (name == property::MinimumVisibleItemCount) {
+        SetMinimumVisibleItemCount(zaf::Deserialize<std::size_t>(data_node));
+    }
+    else if (name == property::MaximumVisibleItemCount) {
+        SetMaximumVisibleItemCount(zaf::Deserialize<std::size_t>(data_node));
+    }
+    else if (name == property::IsEditable) {
+        SetIsEditable(data_node.GetBoolean());
+    }
+    else if (name == property::DropDownListBox) {
+        SetDropDownListBox(DeserializeObject<DropDownListBox>(data_node)); 
+    }
+    else if (name == property::EditTextBox) {
+        SetEditTextBox(DeserializeObject<EditTextBox>(data_node));
+    }
+    else {
+        __super::DeserializeProperty(name, data_node);
     }
 }
 

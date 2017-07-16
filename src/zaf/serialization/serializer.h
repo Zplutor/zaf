@@ -56,7 +56,7 @@ template<typename Type>
 class GetSerializer {
 public:
     typedef std::conditional_t<
-        std::is_arithmetic<Type>::value, 
+        IsNumerical<Type>::Value, 
         NumberSerializer<Type>,
         std::conditional_t<
             std::is_base_of<SerializableObject, Type>::value, 

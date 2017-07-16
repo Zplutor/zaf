@@ -92,6 +92,7 @@
     <ClCompile Include="case\control\radio_button_test.cpp" />
     <ClCompile Include="case\graphic\font\font_test.cpp" />
     <ClCompile Include="case\graphic\text\text_trimming_test.cpp" />
+    <ClCompile Include="case\serialization\deserializer_test.cpp" />
     <ClCompile Include="unittest\case\base\any_test.cpp" />
     <ClCompile Include="unittest\case\base\number_test.cpp" />
     <ClCompile Include="unittest\case\base\optional_test.cpp" />
@@ -124,6 +125,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h" />
+    <ClCompile Include="unittest\case\control\combo_box_deserialize_test.cpp">
+      <FileType>CppHeader</FileType>
+    </ClCompile>
     <ClInclude Include="unittest\utility\deserialize_utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

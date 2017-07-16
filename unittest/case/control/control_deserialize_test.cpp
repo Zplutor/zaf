@@ -202,10 +202,20 @@ TEST(Control, DeserializeChildren) {
     auto json =     
         "{\"Children\": ["
         "{\"Type\": \"Control\"},"
-        "{\"Type\": \"Control\"} "
+        "{\"Type\": \"Control\", \"Name\":\"haha\"} "
         "]}";
     ASSERT_TRUE(DeserializeControl(json, [](const zaf::Control& control) {
-        return control.GetChildren().size() == 2;
+
+        const auto& children = control.GetChildren();
+        if (children.size() != 2) {
+            return false;
+        }
+        
+        if (! children[0]->GetName().empty()) {
+            return false;
+        }
+
+        return children[1]->GetName() == L"haha";
     }));
 
     //Previous children should be clear when deserializing an empty array.
