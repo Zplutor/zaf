@@ -768,9 +768,6 @@
     <ClInclude Include="src\zaf\serialization\serialization_manager.h">
       <Filter>zaf\serialization</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\string\string_const.h">
-      <Filter>zaf\base\string</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\serialization\properties.h">
       <Filter>zaf\serialization</Filter>
     </ClInclude>

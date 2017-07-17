@@ -1,7 +1,5 @@
 #pragma once
 
-#include <zaf/base/string/string_const.h>
-
 namespace zaf {
 namespace internal {
 
