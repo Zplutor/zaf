@@ -23,6 +23,9 @@ public:
      */
     class DropDownListBox : public ListBox {
     public:
+        ZAF_DECLARE_TYPE_NAME();
+
+    public:
         void Initialize() override;
 
     protected:
@@ -43,6 +46,9 @@ public:
      Represents an edit text box control used in combo box.
      */
     class EditTextBox : public TextBox {
+    public:
+        ZAF_DECLARE_TYPE_NAME();
+
     public:
         bool KeyDown(const KeyMessage& message) override;
     };

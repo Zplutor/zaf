@@ -636,5 +636,7 @@ bool ComboBox::EditTextBox::KeyDown(const KeyMessage& message) {
 
 
 ZAF_DEFINE_TYPE_NAME(ComboBox);
+ZAF_DEFINE_INNER_TYPE_NAME(ComboBox, DropDownListBox);
+ZAF_DEFINE_INNER_TYPE_NAME(ComboBox, EditTextBox);
 
 }

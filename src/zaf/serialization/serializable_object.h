@@ -32,7 +32,16 @@ const wchar_t* GetTypeName() const override {  \
     return TypeName;                           \
 }
 
-#define ZAF_DEFINE_TYPE_NAME(Type)             \
+#define ZAF_DEFINE_TYPE_NAME(Type)       \
 const wchar_t Type::TypeName[] = L#Type; 
+
+#define ZAF_DEFINE_SCOPED_TYPE_NAME(Type, Scope)      \
+const wchar_t Type::TypeName[] = L#Type L"." L#Scope;
+
+#define ZAF_DEFINE_INNER_TYPE_NAME(OuterType, InnerType)                       \
+const wchar_t OuterType::InnerType::TypeName[] = L#InnerType L"." L#OuterType; 
+
+#define ZAF_DEFINE_SCOPED_INNER_TYPE_NAME(OuterType, InnerType, Scope)                      \
+const wchar_t OuterType::InnerType::TypeName[] = L#InnerType L"." L#OuterType L"." L#Scope; 
 
 }

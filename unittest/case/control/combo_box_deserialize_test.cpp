@@ -36,13 +36,33 @@ TEST(ComboBox, DeserializeDropDownButtonColorPicker) {
 
 TEST(ComboBox, DeserializeDropDownListBox) {
 
-    auto combo_box = DeserializeObject<zaf::ComboBox>("{\"DropDownListBox\": { \"Name\": \"dropdownlistbox\" }}");
-    ASSERT_EQ(combo_box->GetDropDownListBox()->GetName(), L"dropdownlistbox");
+    //Without type
+    {
+        auto combo_box = DeserializeObject<zaf::ComboBox>("{\"DropDownListBox\": { \"Name\": \"dropdownlistbox\" }}");
+        ASSERT_EQ(combo_box->GetDropDownListBox()->GetName(), L"dropdownlistbox");
+    }
+
+    //With type
+    {
+        auto json = "{\"DropDownListBox\": { \"Type\": \"DropDownListBox.ComboBox\", \"Name\": \"withtype\" }}";
+        auto combo_box = DeserializeObject<zaf::ComboBox>(json);
+        ASSERT_EQ(combo_box->GetDropDownListBox()->GetName(), L"withtype");
+    }
 }
 
 
 TEST(ComboBox, DeserializeEditTextBox) {
 
-    auto combo_box = DeserializeObject<zaf::ComboBox>("{\"EditTextBox\": {\"Name\": \"edittextbox\"}}");
-    ASSERT_EQ(combo_box->GetEditTextBox()->GetName(), L"edittextbox");
+    //Without type
+    {
+        auto combo_box = DeserializeObject<zaf::ComboBox>("{\"EditTextBox\": {\"Name\": \"edittextbox\"}}");
+        ASSERT_EQ(combo_box->GetEditTextBox()->GetName(), L"edittextbox");
+    }
+
+    //With type
+    {
+        auto json = "{\"EditTextBox\": { \"Type\": \"EditTextBox.ComboBox\", \"Name\": \"withtype\" }}";
+        auto combo_box = DeserializeObject<zaf::ComboBox>(json);
+        ASSERT_EQ(combo_box->GetEditTextBox()->GetName(), L"withtype");
+    }
 }

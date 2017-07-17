@@ -14,6 +14,10 @@ std::shared_ptr<SerializableObject> DeserializeObject(const DataNode& data_node)
     }
 
     auto object = GetSerializationManager()->CreateObject(type_node->GetString());
+    if (object == nullptr) {
+        return nullptr;
+    }
+
     if (! object->Deserialize(data_node)) {
         return nullptr;
     }
