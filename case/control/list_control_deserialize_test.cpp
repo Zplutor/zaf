@@ -1,12 +1,11 @@
 #include <gtest/gtest.h>
 #include <zaf/control/list_control.h>
-#include <zaf/serialization/properties.h>
-#include "utility/deserialize_utility.h"
+#include <zaf/serialization/deserializing.h>
 
 TEST(ListControl, Deserialize) {
 
     auto json = "{\"Name\": \"ListControl\"}";
-    auto control = DeserializeObject<zaf::ListControl>(json);
+    auto control = zaf::DeserializeObjectFromJson<zaf::ListControl>(json);
     ASSERT_EQ(control->GetName(), L"ListControl");
 }
 
@@ -18,7 +17,7 @@ TEST(ListControl, DeserializeSelectionMode) {
         std::string json("{\"SelectionMode\":\"");
         json.append(text).append("\"}");
 
-        auto control = DeserializeObject<zaf::ListControl>(json);
+        auto control = zaf::DeserializeObjectFromJson<zaf::ListControl>(json);
         return control->GetSelectionMode() == value;
     };
 

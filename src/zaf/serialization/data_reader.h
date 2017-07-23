@@ -6,7 +6,6 @@
 namespace zaf {
 
 class DataNode;
-class Stream;
 
 class DataReader {
 public:
@@ -33,5 +32,9 @@ public:
     DataReader(const DataReader&) = delete;
     DataReader& operator=(const DataReader&) = delete;
 };
+
+
+std::shared_ptr<DataReader> CreateJsonReader();
+std::shared_ptr<DataReader> CreateXmlReader();
 
 }

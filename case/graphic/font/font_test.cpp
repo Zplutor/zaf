@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 #include <zaf/graphic/font/font.h>
-#include "utility/deserialize_utility.h"
+#include <zaf/serialization/deserializing.h>
 
 TEST(Font, Deserialize) {
 
-    auto font = DeserializeObject<zaf::Font>("{\"FamilyName\": \"Song\", \"Size\": 11.1}");
+    auto font = zaf::DeserializeObjectFromJson<zaf::Font>("{\"FamilyName\": \"Song\", \"Size\": 11.1}");
     ASSERT_NE(font, nullptr);
     ASSERT_EQ(font->family_name, L"Song");
     ASSERT_EQ(font->size, 11.1f);
@@ -34,16 +34,16 @@ TEST(Font, DeserializeWeight) {
         std::string json("{\"Weight\":\"");
         json.append(each_pair.first);
         json.append("\"}");
-        auto font = DeserializeObject<zaf::Font>(json);
+        auto font = zaf::DeserializeObjectFromJson<zaf::Font>(json);
         ASSERT_EQ(font->weight, each_pair.second);
     }
 
-    auto font = DeserializeObject<zaf::Font>("{\"Weight\": 300}");
+    auto font = zaf::DeserializeObjectFromJson<zaf::Font>("{\"Weight\": 300}");
     ASSERT_EQ(font->weight, 300);
 
-    font = DeserializeObject<zaf::Font>("{\"Weight\": 0}");
+    font = zaf::DeserializeObjectFromJson<zaf::Font>("{\"Weight\": 0}");
     ASSERT_EQ(font->weight, zaf::FontWeight::Regular);
 
-    font = DeserializeObject<zaf::Font>("{\"Weight\": 1000}");
+    font = zaf::DeserializeObjectFromJson<zaf::Font>("{\"Weight\": 1000}");
     ASSERT_EQ(font->weight, zaf::FontWeight::Regular);
 }

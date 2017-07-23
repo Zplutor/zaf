@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 #include <zaf/control/list_box.h>
-#include "utility/deserialize_utility.h"
+#include <zaf/serialization/deserializing.h>
 
 TEST(ListBox, Deserialize) {
 
     auto json = "{\"Name\":\"ListBox\", \"ItemHeight\":44}";
-    auto control = DeserializeObject<zaf::ListBox>(json);
+    auto control = zaf::DeserializeObjectFromJson<zaf::ListBox>(json);
     ASSERT_EQ(control->GetName(), L"ListBox");
     ASSERT_EQ(control->GetItemHeight(), 44.f);
 }
@@ -14,7 +14,7 @@ TEST(ListBox, Deserialize) {
 TEST(ListBox, DeserializeItems) {
 
     auto json = "{\"Items\": []}";
-    auto control = DeserializeObject<zaf::ListBox>(json);
+    auto control = zaf::DeserializeObjectFromJson<zaf::ListBox>(json);
     ASSERT_EQ(control->GetItemCount(), 0);
 
     json = "{"
@@ -25,7 +25,7 @@ TEST(ListBox, DeserializeItems) {
     "\"ddd\","
     "]"
     "}";
-    control = DeserializeObject<zaf::ListBox>(json);
+    control = zaf::DeserializeObjectFromJson<zaf::ListBox>(json);
     ASSERT_EQ(control->GetItemCount(), 4);
     ASSERT_EQ(control->GetItemTextAtIndex(0), L"aaa");
     ASSERT_EQ(control->GetItemTextAtIndex(1), L"bbb");

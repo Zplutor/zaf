@@ -1,23 +1,15 @@
 #include <gtest/gtest.h>
 #include <zaf/control/control.h>
-#include <zaf/creation.h>
 #include <zaf/serialization/data_node.h>
-#include <zaf/serialization/json/json_reader.h>
+#include <zaf/serialization/deserializing.h>
 #include <zaf/serialization/properties.h>
 
 namespace {
 
 bool DeserializeControl(const std::string& json, const std::function<bool(const zaf::Control& control)>& checker) {
 
-    zaf::JsonReader json_reader;
-    auto data_node = json_reader.Read(json);
-    if (data_node == nullptr) {
-        return false;
-    }
-
-    auto control = zaf::Create<zaf::Control>();
-    bool is_succeeded = control->Deserialize(*data_node);
-    if (!is_succeeded) {
+    auto control = zaf::DeserializeObjectFromJson<zaf::Control>(json);
+    if (control == nullptr) {
         return false;
     }
 

@@ -1,5 +1,6 @@
 #include <zaf/serialization/deserializing.h>
 #include <zaf/application.h>
+#include <zaf/serialization/data_reader.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/serialization/serialization_manager.h>
 
@@ -23,6 +24,21 @@ std::shared_ptr<SerializableObject> DeserializeObject(const DataNode& data_node)
     }
 
     return object;
+}
+
+
+std::shared_ptr<DataNode> ParseDataNode(bool is_xml, const void* string, std::size_t length) {
+
+    std::shared_ptr<DataReader> data_reader;
+    if (is_xml) {
+        data_reader = CreateXmlReader();
+    }
+    else {
+        data_reader = CreateJsonReader();
+    }
+
+    std::error_code error_code;
+    return data_reader->Read(string, length, error_code);
 }
 
 }

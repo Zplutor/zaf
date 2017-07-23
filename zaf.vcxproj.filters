@@ -346,6 +346,9 @@
     <ClCompile Include="src\zaf\serialization\deserializing.cpp">
       <Filter>zaf\serialization</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\serialization\data_reader.cpp">
+      <Filter>zaf\serialization</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -811,10 +814,10 @@
       <Filter>zaf\serialization\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\precompiled.h" />
-    <ClInclude Include="src\zaf\serialization\deserializing.h">
+    <ClInclude Include="src\zaf\serialization\deserializer.h">
       <Filter>zaf\serialization</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\serialization\deserializer.h">
+    <ClInclude Include="src\zaf\serialization\deserializing.h">
       <Filter>zaf\serialization</Filter>
     </ClInclude>
   </ItemGroup>

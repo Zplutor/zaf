@@ -40,9 +40,6 @@
     <Filter Include="case\graphic\font">
       <UniqueIdentifier>{6bca3a9f-7526-466d-880a-9191bd1beacf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utility">
-      <UniqueIdentifier>{1b742629-5349-4623-ab8d-af97c8e49a88}</UniqueIdentifier>
-    </Filter>
     <Filter Include="case\graphic\text">
       <UniqueIdentifier>{a90db673-1d1d-4843-a194-e886210cf412}</UniqueIdentifier>
     </Filter>
@@ -152,9 +149,6 @@
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
       <Filter>case\base</Filter>
-    </ClInclude>
-    <ClInclude Include="unittest\utility\deserialize_utility.h">
-      <Filter>utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
