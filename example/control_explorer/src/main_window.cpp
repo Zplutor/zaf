@@ -1,19 +1,19 @@
 #include "main_window.h"
 #include <zaf/control/layout/array_layouter.h>
 #include <zaf/creation.h>
-#include "control_operate_panel.h"
+#include "control_property_panel.h"
 #include "control_view_panel.h"
-#include "control/button_explore_manager.h"
-#include "control/check_box_explore_manager.h"
-#include "control/combo_box_explore_manager.h"
-#include "control/label_explore_manager.h"
-#include "control/list_box_explore_manager.h"
-#include "control/radio_button_explore_manager.h"
-#include "control/text_box_explore_manager.h"
+#include "manager/button_explore_manager.h"
+#include "manager/check_box_explore_manager.h"
+#include "manager/combo_box_explore_manager.h"
+#include "manager/label_explore_manager.h"
+#include "manager/list_box_explore_manager.h"
+#include "manager/radio_button_explore_manager.h"
+#include "manager/text_box_explore_manager.h"
 
 static const struct {
     const wchar_t* name;
-    std::function<std::shared_ptr<ControlExploreManager>()> createor;
+    std::function<std::shared_ptr<ExploreManager>()> createor;
 } kControlNameAndCreators[] = {
     L"Button", []() { return std::make_shared<ButtonExploreManager>(); },
     L"CheckBox", []() { return std::make_shared<CheckBoxExploreManager>(); },
@@ -25,7 +25,7 @@ static const struct {
     L"TextBox", []() { return std::make_shared<TextBoxExploreManager>(); },
 };
 
-static std::shared_ptr<ControlExploreManager> CreateControlExploreManager(const std::wstring& control_name);
+static std::shared_ptr<ExploreManager> CreateExploreManager(const std::wstring& control_name);
 
 void MainWindow::Initialize() {
 
@@ -66,7 +66,7 @@ void MainWindow::InitializeControlListPanel() {
 void MainWindow::InitializeControlExplorePanel() {
 
     control_view_panel_ = zaf::Create<ControlViewPanel>();
-    control_operate_panel_ = zaf::Create<ControlOperatePanel>();
+    control_property_panel_ = zaf::Create<ControlPropertyPanel>();
 
     secondly_split_control_ = zaf::Create<zaf::SplitControl>();
     secondly_split_control_->SetSplitBarDistance(200);
@@ -74,7 +74,7 @@ void MainWindow::InitializeControlExplorePanel() {
     secondly_split_control_->SetMaximumSplitBarDistance(400);
     secondly_split_control_->SetIsHorizontalSplit(true);
     secondly_split_control_->SetFirstPane(control_view_panel_);
-    secondly_split_control_->SetSecondPane(control_operate_panel_);
+    secondly_split_control_->SetSecondPane(control_property_panel_);
 
     primary_split_control_->SetSecondPane(secondly_split_control_);
 }
@@ -84,32 +84,31 @@ void MainWindow::ControlListBoxSelectionChange() {
 
     auto selected_text = control_list_box_->GetFirstSelectedItemText();
 
-    auto iterator = control_explore_managers_.find(selected_text);
-    if (iterator == control_explore_managers_.end()) {
+    auto iterator = explore_managers_.find(selected_text);
+    if (iterator == explore_managers_.end()) {
 
-        auto control_explore_manager = CreateControlExploreManager(selected_text);
+        auto control_explore_manager = CreateExploreManager(selected_text);
         if (control_explore_manager != nullptr) {
-            control_explore_manager->Initialize();
-            iterator = control_explore_managers_.insert(std::make_pair(selected_text, control_explore_manager)).first;
+            iterator = explore_managers_.insert(std::make_pair(selected_text, control_explore_manager)).first;
         }
     }
 
-    if (iterator != control_explore_managers_.end()) {
+    if (iterator != explore_managers_.end()) {
         LoadControlExploreManager(iterator->second);
     }
 }
 
 
-void MainWindow::LoadControlExploreManager(const std::shared_ptr<ControlExploreManager>& control_explore_manager) {
+void MainWindow::LoadControlExploreManager(const std::shared_ptr<ExploreManager>& explore_manager) {
 
     control_view_panel_->RemoveAllChildren();
-    control_view_panel_->AddChild(control_explore_manager->GetControl());
+    control_view_panel_->AddChild(explore_manager->GetExploredControl());
 
-    control_operate_panel_->SetOperatePanels(control_explore_manager->GetOperatePanels());
+    control_property_panel_->SetPropertyItems(explore_manager->GetPropertyItems());
 }
 
 
-static std::shared_ptr<ControlExploreManager> CreateControlExploreManager(const std::wstring& control_name) {
+static std::shared_ptr<ExploreManager> CreateExploreManager(const std::wstring& control_name) {
 
     for (const auto& each_item : kControlNameAndCreators) {
         if (control_name == each_item.name) {
