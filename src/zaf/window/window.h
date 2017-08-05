@@ -177,6 +177,13 @@ public:
     void SetRect(const Rect& rect);
 
     /**
+     Get window's size.
+     */
+    Size GetSize() const {
+        return GetRect().size;
+    }
+
+    /**
      Set window's size.
 
      This is a shortcut method for SetRect.
@@ -186,6 +193,104 @@ public:
     void SetSize(const Size& size) {
         SetRect(Rect(GetRect().position, size));
     }
+
+    /**
+     Get window's minimum size.
+     */
+    Size GetMinimumSize() const {
+        return Size(GetMinimumWidth(), GetMinimumHeight());
+    }
+
+    /**
+     Set windows's minimum size.
+     */
+    void SetMinimumSize(const Size& size) {
+        SetMinimumWidth(size.width);
+        SetMinimumHeight(size.height);
+    }
+
+    /**
+     Get windows's maximum size.
+     */
+    Size GetMaximumSize() const {
+        return Size(GetMaximumWidth(), GetMaximumHeight());
+    }
+
+    /**
+     Set window's maximum size.
+     */
+    void SetMaximumSize(const Size& size) {
+        SetMaximumWidth(size.width);
+        SetMaximumHeight(size.height);
+    }
+
+    /**
+     Get window's width.
+     */
+    float GetWidth() const {
+        return GetSize().width;
+    }
+
+    /**
+     Set window's width.
+     */
+    void SetWidth(float width) {
+        SetSize(zaf::Size(width, GetHeight()));
+    }
+
+    /**
+     Get window's minimum width.
+     */
+    float GetMinimumWidth() const;
+
+    /**
+     Set window's minimum width.
+     */
+    void SetMinimumWidth(float min_width);
+
+    /**
+     Get window's maximum width.
+     */
+    float GetMaximumWidth() const;
+
+    /**
+     Set window's maximum width.
+     */
+    void SetMaximumWidth(float max_width);
+
+    /**
+     Get window's height.
+     */
+    float GetHeight() const {
+        return GetSize().height;
+    }
+
+    /**
+     Set window's height.
+     */
+    void SetHeight(float height) {
+        SetSize(zaf::Size(GetWidth(), height));
+    }
+
+    /**
+     Get window's minimum height.
+     */
+    float GetMinimumHeight() const;
+
+    /**
+     Set window's minimum height.
+     */
+    void SetMinimumHeight(float min_height);
+
+    /**
+     Get window's maximum height.
+     */
+    float GetMaximumHeight() const;
+
+    /**
+     Set window's maximum height.
+     */
+    void SetMaximumHeight(float max_height);
 
     /**
      Get window's client rect.

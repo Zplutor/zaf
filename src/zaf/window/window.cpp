@@ -10,6 +10,7 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/properties.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/creation.h>
 #include <zaf/window/message/keyboard_message.h>
@@ -277,6 +278,16 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
     case WM_PAINT:
         Repaint();
         return true;
+
+    case WM_GETMINMAXINFO: {
+        auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.lParam);
+        min_max_info->ptMinTrackSize.x = static_cast<LONG>(GetMinimumWidth());
+        min_max_info->ptMinTrackSize.y = static_cast<LONG>(GetMinimumHeight());
+        min_max_info->ptMaxTrackSize.x = static_cast<LONG>(GetMaximumWidth());
+        min_max_info->ptMaxTrackSize.y = static_cast<LONG>(GetMaximumHeight());
+        result = 0;
+        return true;
+    }
 
     case WM_SIZE:
         Resize(LOWORD(message.lParam), HIWORD(message.lParam));
@@ -740,6 +751,102 @@ void Window::SetRect(const Rect& rect) {
             static_cast<int>(rect_.size.width),
             static_cast<int>(rect_.size.height),
             SWP_NOZORDER);
+    }
+}
+
+
+float Window::GetMinimumWidth() const {
+
+    auto width = GetPropertyMap().TryGetProperty<float>(property::MinimumWidth);
+    if (width != nullptr) {
+        return *width;
+    }
+    return static_cast<float>(GetSystemMetrics(SM_CXMINTRACK));
+}
+
+
+void Window::SetMinimumWidth(float min_width) {
+
+    GetPropertyMap().SetProperty(property::MinimumWidth, min_width);
+
+    if (GetMaximumWidth() < min_width) {
+        SetMaximumWidth(min_width);
+    }
+
+    if (GetWidth() < min_width) {
+        SetWidth(min_width);
+    }
+}
+
+
+float Window::GetMaximumWidth() const {
+
+    auto width = GetPropertyMap().TryGetProperty<float>(property::MaximumWidth);
+    if (width != nullptr) {
+        return *width;
+    }
+    return static_cast<float>(GetSystemMetrics(SM_CXMAXTRACK));
+}
+
+
+void Window::SetMaximumWidth(float max_width) {
+
+    GetPropertyMap().SetProperty(property::MaximumWidth, max_width);
+
+    if (GetMinimumWidth() > max_width) {
+        SetMinimumWidth(max_width);
+    }
+
+    if (GetWidth() > max_width) {
+        SetWidth(max_width);
+    }
+}
+
+
+float Window::GetMinimumHeight() const {
+
+    auto height = GetPropertyMap().TryGetProperty<float>(property::MinimumHeight);
+    if (height != nullptr) {
+        return *height;
+    }
+    return static_cast<float>(GetSystemMetrics(SM_CYMINTRACK));
+}
+
+
+void Window::SetMinimumHeight(float min_height) {
+
+    GetPropertyMap().SetProperty(property::MinimumHeight, min_height);
+
+    if (GetMaximumHeight() < min_height) {
+        SetMaximumHeight(min_height);
+    }
+
+    if (GetHeight() < min_height) {
+        SetHeight(min_height);
+    }
+}
+
+
+float Window::GetMaximumHeight() const {
+
+    auto height = GetPropertyMap().TryGetProperty<float>(property::MaximumHeight);
+    if (height != nullptr) {
+        return *height;
+    }
+    return static_cast<float>(GetSystemMetrics(SM_CYMAXTRACK));
+}
+
+
+void Window::SetMaximumHeight(float max_height) {
+
+    GetPropertyMap().SetProperty(property::MaximumHeight, max_height);
+
+    if (GetMinimumHeight() > max_height) {
+        SetMaximumHeight(max_height);
+    }
+
+    if (GetHeight() > max_height) {
+        SetHeight(max_height);
     }
 }
 

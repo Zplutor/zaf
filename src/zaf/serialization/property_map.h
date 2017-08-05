@@ -124,6 +124,10 @@ public:
         return *value->GetValuePointer();
     }
 
+    void RemoveProperty(const std::wstring& property_name) {
+        properties_.erase(property_name);
+    }
+
     void EnumerateProperties(const std::function<void(const std::wstring&, const Value&)>& enumerator) const {
         for (const auto& each_pair : properties_) {
             enumerator(each_pair.first, *each_pair.second);

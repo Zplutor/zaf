@@ -31,7 +31,9 @@ void MainWindow::Initialize() {
 
     __super::Initialize();
 
-    SetSize(zaf::Size(800, 600));
+    zaf::Size size(800, 600);
+    SetSize(size);
+    SetMinimumSize(size);
 
     auto root_control = GetRootControl();
     root_control->SetLayouter(zaf::GetHorizontalArrayLayouter());
