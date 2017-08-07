@@ -73,6 +73,11 @@ public:
     };
 
     /**
+     Type of rect change event.
+     */
+    typedef Event<const std::shared_ptr<Control>&, const Rect&> RectChangeEvent;
+
+    /**
      Type of focus change event.
      */
     typedef Event<const std::shared_ptr<Control>&> FocusChangeEvent;
@@ -530,6 +535,13 @@ public:
      This methods takes effect only when the control is contained in a window.
 	 */
 	void SetIsFocused(bool is_focused);
+
+    /**
+     Get rect change event.
+
+     This event is raised when the control's rect is changed.
+     */
+    RectChangeEvent::Proxy GetRectChangeEvent();
 
     /**
      Get focus change event.

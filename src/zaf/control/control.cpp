@@ -23,10 +23,9 @@ namespace zaf {
 namespace {
 
 const wchar_t* const kAnchorPropertyName = L"Anchor";
-const wchar_t* const kBackgroundColorPickerPropertyName = L"BackgroundColorPicker";
-const wchar_t* const kBorderColorPickerPropertyName = L"BorderColorPicker";
 const wchar_t* const kFocusChangeEventPropertyName = L"FocusChangeEvent";
 const wchar_t* const kLayouterPropertyName = L"Layouter";
+const wchar_t* const kRectChangeEventPropertyName = L"RectChangeEvent";
 
 const bool DefaultCanFocused = false;
 const bool DefaultIsEnabled = true;
@@ -331,6 +330,12 @@ void Control::SetRect(const Rect& rect) {
 	if (parent != nullptr) {
 		parent->ChildRectChanged(this->shared_from_this(), previous_rect);
 	}
+
+    //Trigger the rect change event.
+    auto event = TryGetEventFromPropertyMap<RectChangeEvent>(GetPropertyMap(), kRectChangeEventPropertyName);
+    if (event != nullptr) {
+        event->Trigger(shared_from_this(), previous_rect);
+    }
 }
 
 
@@ -460,7 +465,7 @@ Rect Control::GetContentRect() const {
 
 const ColorPicker Control::GetBackgroundColorPicker() const {
 
-	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBackgroundColorPickerPropertyName);
+	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::BackgroundColorPicker);
 	if ((color_picker != nullptr) && (*color_picker != nullptr)) {
 		return *color_picker;
 	}
@@ -474,14 +479,14 @@ const ColorPicker Control::GetBackgroundColorPicker() const {
 
 void Control::SetBackgroundColorPicker(const ColorPicker& color_picker) {
 
-	GetPropertyMap().SetProperty(kBackgroundColorPickerPropertyName, color_picker);
+	GetPropertyMap().SetProperty(property::BackgroundColorPicker, color_picker);
 	NeedRepaint();
 }
 
 
 const ColorPicker Control::GetBorderColorPicker() const {
 
-	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBorderColorPickerPropertyName);
+	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::BorderColorPicker);
 	if ((color_picker != nullptr) && (*color_picker != nullptr)) {
 		return *color_picker;
 	}
@@ -495,7 +500,7 @@ const ColorPicker Control::GetBorderColorPicker() const {
 
 void Control::SetBorderColorPicker(const ColorPicker& color_picker) {
 
-	GetPropertyMap().SetProperty(kBorderColorPickerPropertyName, color_picker);
+	GetPropertyMap().SetProperty(property::BorderColorPicker, color_picker);
 	NeedRepaint();
 }
 
@@ -895,6 +900,11 @@ void Control::IsFocusedChanged(bool is_focused) {
     if (focus_change_event != nullptr) {
         focus_change_event->Trigger(shared_from_this());
     }
+}
+
+
+Control::RectChangeEvent::Proxy Control::GetRectChangeEvent() {
+    return GetEventProxyFromPropertyMap<RectChangeEvent>(GetPropertyMap(), kRectChangeEventPropertyName);
 }
 
 

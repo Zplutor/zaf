@@ -869,6 +869,8 @@ void ListControl::Item::Initialize() {
 
     __super::Initialize();
 
+    SetPadding(Frame(2, 0, 2, 0));
+
     SetBackgroundColorPicker([](const Control& control) {
 
         const auto& item = dynamic_cast<const Item&>(control);
