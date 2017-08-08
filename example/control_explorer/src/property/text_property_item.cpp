@@ -55,7 +55,8 @@ private:
 
 std::shared_ptr<ValueTextBox> CreateValueTextBox(
     const std::function<std::wstring()>& get_value,
-    const std::function<void(const std::wstring&)>& value_change) {
+    const std::function<void(const std::wstring&)>& value_change, 
+    const std::function<void(const std::function<void()>&)>& register_notification) {
 
     auto text_box = zaf::Create<ValueTextBox>();
     text_box->SetText(get_value());
@@ -64,6 +65,13 @@ std::shared_ptr<ValueTextBox> CreateValueTextBox(
         value_change(text_box.GetText());
         text_box.SetText(get_value());
     });
+
+    if (register_notification != nullptr) {
+        register_notification([text_box, get_value]() {
+            text_box->SetText(get_value());
+        });
+    }
+
     return text_box;
 }
 
@@ -72,9 +80,10 @@ std::shared_ptr<PropertyItem> InnerCreateTextPropertyItem(
     const std::wstring& title,
     const std::function<std::wstring()>& get_value,
     const std::function<void(const std::wstring&)>& value_change, 
+    const std::function<void(const std::function<void()>&)>& register_notification,
     bool is_multiline) {
 
-    auto text_box = CreateValueTextBox(get_value, value_change);
+    auto text_box = CreateValueTextBox(get_value, value_change, register_notification);
     text_box->SetIsMultiline(is_multiline);
 
     return CreatePropertyItem(title, text_box);
@@ -86,9 +95,10 @@ std::shared_ptr<PropertyItem> InnerCreateTextPropertyItem(
 std::shared_ptr<PropertyItem> CreateTextPropertyItem(
     const std::wstring& title,
     const std::function<std::wstring()>& get_value,
-    const std::function<void(const std::wstring&)>& value_change) {
+    const std::function<void(const std::wstring&)>& value_change, 
+    const std::function<void(const std::function<void()>&)>& register_notification) {
 
-    return InnerCreateTextPropertyItem(title, get_value, value_change, false);
+    return InnerCreateTextPropertyItem(title, get_value, value_change, register_notification, false);
 }
 
 std::shared_ptr<PropertyItem> CreateMultilineTextPropertyItem(
@@ -96,5 +106,5 @@ std::shared_ptr<PropertyItem> CreateMultilineTextPropertyItem(
     const std::function<std::wstring()>& get_value,
     const std::function<void(const std::wstring&)>& value_change) {
 
-    return InnerCreateTextPropertyItem(title, get_value, value_change, true);
+    return InnerCreateTextPropertyItem(title, get_value, value_change, nullptr, true);
 }

@@ -9,7 +9,8 @@ template<typename ValueType>
 std::shared_ptr<PropertyItem> CreateNumberPropertyItem(
     const std::wstring& title,
     const std::function<ValueType()>& get_value,
-    const std::function<void(ValueType)>& value_change) {
+    const std::function<void(ValueType)>& value_change, 
+    const std::function<void(const std::function<void()>&)> register_notification) {
 
     auto number_getter = [get_value]() {
         return zaf::ToWideString(get_value(), zaf::ToStringOptions().Precision(2));
@@ -22,7 +23,7 @@ std::shared_ptr<PropertyItem> CreateNumberPropertyItem(
         }
     };
 
-    return CreateTextPropertyItem(title, number_getter, number_change);
+    return CreateTextPropertyItem(title, number_getter, number_change, register_notification);
 }
 
 }
@@ -30,16 +31,18 @@ std::shared_ptr<PropertyItem> CreateNumberPropertyItem(
 std::shared_ptr<PropertyItem> CreateFloatPropertyItem(
     const std::wstring& title,
     const std::function<float()>& get_value,
-    const std::function<void(float)>& value_change) {
+    const std::function<void(float)>& value_change, 
+    const std::function<void(const std::function<void()>&)> register_notification) {
 
-    return CreateNumberPropertyItem<float>(title, get_value, value_change);
+    return CreateNumberPropertyItem<float>(title, get_value, value_change, register_notification);
 }
 
 
 std::shared_ptr<PropertyItem> CreateIntegerPropertyItem(
     const std::wstring& title,
     const std::function<std::int64_t()>& get_value,
-    const std::function<void(std::int64_t)>& value_change) {
+    const std::function<void(std::int64_t)>& value_change, 
+    const std::function<void(const std::function<void()>&)> register_notification) {
 
-    return CreateNumberPropertyItem<std::int64_t>(title, get_value, value_change);
+    return CreateNumberPropertyItem<std::int64_t>(title, get_value, value_change, register_notification);
 }

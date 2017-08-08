@@ -63,6 +63,9 @@ void ControlExploreManager::AddSizeItems(std::vector<std::shared_ptr<PropertyIte
         [target_control]() { return target_control->GetWidth(); }, 
         [target_control](float value) {
             target_control->SetWidth(value);
+        },
+        [target_control](const std::function<void()>& callback) {
+            target_control->GetRectChangeEvent().AddListener(std::bind(callback));
         }
     );
     items.push_back(width_item);
@@ -72,6 +75,9 @@ void ControlExploreManager::AddSizeItems(std::vector<std::shared_ptr<PropertyIte
         [target_control]() { return target_control->GetHeight(); },
         [target_control](float value) {
             target_control->SetHeight(value);
+        },
+        [target_control](const std::function<void()>& callback) {
+            target_control->GetRectChangeEvent().AddListener(std::bind(callback));
         }
     );
     items.push_back(height_item);
