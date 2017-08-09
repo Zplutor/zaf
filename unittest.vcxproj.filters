@@ -127,9 +127,6 @@
     <ClCompile Include="case\control\check_box_deserialize_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
-    <ClCompile Include="case\control\radio_button_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
     <ClCompile Include="case\control\list_control_deserialize_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
@@ -144,6 +141,12 @@
     </ClCompile>
     <ClCompile Include="unittest\case\serialization\serializable_object_test.cpp">
       <Filter>case\serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="case\control\radio_button_descrialize_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\control\scroll_bar_deserialize_test.cpp">
+      <Filter>case\control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

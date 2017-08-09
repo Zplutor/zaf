@@ -25,6 +25,7 @@ TEST(SerializationManager, BuiltInTypes) {
         std::shared_ptr<zaf::SerializableObject> object;
     } built_in_type_infos[] = {
     
+        L"Arrow.ScrollBar", std::make_shared<zaf::ScrollBar::Arrow>(),
         L"Button", std::make_shared<zaf::Button>(),
         L"CheckBox", std::make_shared<zaf::CheckBox>(),
         L"ClickableControl", std::make_shared<zaf::ClickableControl>(),
@@ -32,6 +33,7 @@ TEST(SerializationManager, BuiltInTypes) {
         L"ConstantColorPicker", std::make_shared<zaf::ConstantColorPicker>(),
         L"ComboBox", std::make_shared<zaf::ComboBox>(),
         L"Control", std::make_shared<zaf::Control>(),
+        L"DropDownListBox.ComboBox", std::make_shared<zaf::ComboBox::DropDownListBox>(),
         L"Ellipse", std::make_shared<zaf::Ellipse>(),
         L"ImageBox", std::make_shared<zaf::ImageBox>(),
         L"Label", std::make_shared<zaf::Label>(),
@@ -47,6 +49,7 @@ TEST(SerializationManager, BuiltInTypes) {
         L"Size", std::make_shared<zaf::Size>(),
         L"TextBox", std::make_shared<zaf::TextBox>(),
         L"TextualControl", std::make_shared<zaf::TextualControl>(),
+        L"Thumb.ScrollBar", std::make_shared<zaf::ScrollBar::Thumb>(),
     };
 
     for (const auto& each_info : built_in_type_infos) {

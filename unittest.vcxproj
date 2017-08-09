@@ -89,7 +89,7 @@
     <ClCompile Include="case\control\check_box_deserialize_test.cpp" />
     <ClCompile Include="case\control\list_box_deserialize_test.cpp" />
     <ClCompile Include="case\control\list_control_deserialize_test.cpp" />
-    <ClCompile Include="case\control\radio_button_test.cpp" />
+    <ClCompile Include="case\control\radio_button_descrialize_test.cpp" />
     <ClCompile Include="case\graphic\font\font_test.cpp" />
     <ClCompile Include="case\graphic\text\text_trimming_test.cpp" />
     <ClCompile Include="case\serialization\deserializer_test.cpp" />
@@ -116,6 +116,7 @@
     <ClCompile Include="unittest\case\serialization\serialization_manager_test.cpp" />
     <ClCompile Include="unittest\case\serialization\xml\xml_reader_test.cpp" />
     <ClCompile Include="unittest\case\serialization\xml\xml_writer_test.cpp" />
+    <ClCompile Include="unittest\control\scroll_bar_deserialize_test.cpp" />
     <ClCompile Include="unittest\googletest\src\gtest-all.cc" />
     <ClCompile Include="unittest\main.cpp" />
   </ItemGroup>

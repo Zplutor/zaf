@@ -8,18 +8,15 @@
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
+#include <zaf/serialization/deserializing.h>
+#include <zaf/serialization/properties.h>
 #include <zaf/window/message/mouse_message.h>
 
 #include <zaf/base/log.h>
 
 namespace zaf {
 
-static const wchar_t* const kArrowLengthPropertyName = L"ArrowLength";
-static const wchar_t* const kArrowColorPickerPropertyName = L"ArrowColorPicker";
-static const wchar_t* const kLargeChangeValuePropertyName = L"LargeChangeValue";
 static const wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
-static const wchar_t* const kSmallChangeValuePropertyName = L"SmallChangeValue";
-static const wchar_t* const kThumbColorPickerProeprtyName = L"ThumbColorPicker";
 
 static const int kTimerInitialInterval = 300;
 static const int kTimerContinuousInterval = 50;
@@ -158,7 +155,7 @@ void ScrollBar::SetThumb(const std::shared_ptr<ScrollBar::Thumb>& thumb) {
 
 float ScrollBar::GetArrowLength() const {
 
-    auto length = GetPropertyMap().TryGetProperty<float>(kArrowLengthPropertyName);
+    auto length = GetPropertyMap().TryGetProperty<float>(property::ArrowLength);
     if (length != nullptr) {
         return *length;
     }
@@ -174,7 +171,7 @@ float ScrollBar::GetArrowLength() const {
 
 void ScrollBar::SetArrowLength(float length) {
 
-    GetPropertyMap().SetProperty(kArrowLengthPropertyName, length);
+    GetPropertyMap().SetProperty(property::ArrowLength, length);
     NeedRelayout();
 }
 
@@ -225,7 +222,7 @@ void ScrollBar::ChangeValueRange(int min_value, int max_value, bool max_value_ha
 
 int ScrollBar::GetSmallChangeValue() const {
 
-    auto value = GetPropertyMap().TryGetProperty<int>(kSmallChangeValuePropertyName);
+    auto value = GetPropertyMap().TryGetProperty<int>(property::SmallChangeValue);
     if (value != nullptr) {
         return *value;
     }
@@ -235,13 +232,13 @@ int ScrollBar::GetSmallChangeValue() const {
 }
 
 void ScrollBar::SetSmallChangeValue(int value) {
-    GetPropertyMap().SetProperty(kSmallChangeValuePropertyName, value);
+    GetPropertyMap().SetProperty(property::SmallChangeValue, value);
 }
 
 
 int ScrollBar::GetLargeChangeValue() const {
 
-    auto value = GetPropertyMap().TryGetProperty<int>(kLargeChangeValuePropertyName);
+    auto value = GetPropertyMap().TryGetProperty<int>(property::LargeChangeValue);
     if (value != nullptr) {
         return *value;
     }
@@ -251,7 +248,7 @@ int ScrollBar::GetLargeChangeValue() const {
 }
 
 void ScrollBar::SetLargeChangeValue(int value) {
-    GetPropertyMap().SetProperty(kLargeChangeValuePropertyName, value);
+    GetPropertyMap().SetProperty(property::LargeChangeValue, value);
 }
 
 
@@ -578,6 +575,44 @@ int ScrollBar::GetValuesPerThumbSlotPoint() {
 }
 
 
+void ScrollBar::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
+
+    if (name == property::IsHorizontal) {
+        SetIsHorizontal(data_node.GetBoolean());
+    }
+    else if (name == property::ArrowLength) {
+        SetArrowLength(data_node.GetFloat());
+    }
+    else if (name == property::MinimumValue) {
+        SetMinimumValue(data_node.GetInt32());
+    }
+    else if (name == property::MaximumValue) {
+        SetMaximumValue(data_node.GetInt32());
+    }
+    else if (name == property::Value) {
+        SetValue(data_node.GetInt32());
+    }
+    else if (name == property::SmallChangeValue) {
+        SetSmallChangeValue(data_node.GetInt32());
+    }
+    else if (name == property::LargeChangeValue) {
+        SetLargeChangeValue(data_node.GetInt32());
+    }
+    else if (name == property::IncrementalArrow) {
+        SetIncrementalArrow(DeserializeObject<Arrow>(data_node));
+    }
+    else if (name == property::DecrementalArrow) {
+        SetDecrementalArrow(DeserializeObject<Arrow>(data_node));
+    }
+    else if (name == property::Thumb) {
+        SetThumb(DeserializeObject<Thumb>(data_node));
+    }
+    else {
+        __super::DeserializeProperty(name, data_node);
+    }
+}
+
+
 ScrollBar::Arrow::Arrow() : direction_(Direction::Up) {
 
 }
@@ -656,7 +691,7 @@ void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 const ColorPicker ScrollBar::Arrow::GetArrowColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kArrowColorPickerPropertyName);
+    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::ArrowColorPicker);
     if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
         return *color_picker;
     }
@@ -686,7 +721,7 @@ const ColorPicker ScrollBar::Arrow::GetArrowColorPicker() const {
 
 void ScrollBar::Arrow::SetArrowColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(kArrowColorPickerPropertyName, color_picker);
+    GetPropertyMap().SetProperty(property::ArrowColorPicker, color_picker);
     NeedRepaint();
 }
 
@@ -704,6 +739,20 @@ void ScrollBar::Arrow::MouseRelease() {
 	ClickableControl::MouseRelease();
 
 	end_press_event_.Trigger(std::dynamic_pointer_cast<Arrow>(this->shared_from_this()));
+}
+
+
+void ScrollBar::Arrow::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
+
+    if (name == property::ArrowColor) {
+        SetArrowColor(zaf::Deserialize<Color>(data_node));
+    }
+    else if (name == property::ArrowColorPicker) {
+        SetArrowColorPicker(zaf::Deserialize<ConstantColorPicker>(data_node));
+    }
+    else {
+        __super::DeserializeProperty(name, data_node);
+    }
 }
 
 
@@ -746,7 +795,7 @@ void ScrollBar::Thumb::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 const ColorPicker ScrollBar::Thumb::GetThumbColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kThumbColorPickerProeprtyName);
+    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::ThumbColorPicker);
     if (color_picker != nullptr && *color_picker != nullptr) {
         return *color_picker;
     }
@@ -772,7 +821,7 @@ const ColorPicker ScrollBar::Thumb::GetThumbColorPicker() const {
 
 void ScrollBar::Thumb::SetThumbColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(kThumbColorPickerProeprtyName, color_picker);
+    GetPropertyMap().SetProperty(property::ThumbColorPicker, color_picker);
     NeedRepaint();
 }
 
@@ -805,6 +854,22 @@ void ScrollBar::Thumb::MouseMove(const Point& position, const MouseMessage& mess
 }
 
 
+void ScrollBar::Thumb::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
+
+    if (name == property::ThumbColor) {
+        SetThumbColor(zaf::Deserialize<Color>(data_node));
+    }
+    else if (name == property::ThumbColorPicker) {
+        SetThumbColorPicker(zaf::Deserialize<ConstantColorPicker>(data_node));
+    }
+    else {
+        __super::DeserializeProperty(name, data_node);
+    }
+}
+
+
 ZAF_DEFINE_TYPE_NAME(ScrollBar);
+ZAF_DEFINE_INNER_TYPE_NAME(ScrollBar, Arrow);
+ZAF_DEFINE_INNER_TYPE_NAME(ScrollBar, Thumb);
 
 }

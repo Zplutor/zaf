@@ -19,6 +19,9 @@ public:
      Represents an arrow control in a scroll bar.
      */
 	class Arrow : public ClickableControl {
+    public:
+        ZAF_DECLARE_TYPE_NAME();
+
 	public:
         /**
          Defines directions of an arrow.
@@ -125,6 +128,8 @@ public:
 		void MouseCapture() override;
 		void MouseRelease() override;
 
+        void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
+
 	private:
 		Direction direction_;
 
@@ -136,6 +141,9 @@ public:
      Represents a thumb control in a control.
      */
 	class Thumb : public ClickableControl {
+    public:
+        ZAF_DECLARE_TYPE_NAME();
+
 	public:
         /**
          Type of begin drag event.
@@ -237,6 +245,8 @@ public:
 		void MouseRelease() override;
         void MouseMove(const Point& position, const MouseMessage& message) override;
 
+        void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
+
 	private:
 		bool is_horizontal_;
 		bool is_dragging_;
@@ -255,6 +265,13 @@ public:
 
 	void Initialize() override;
 
+    /**
+     Get the incremental arrow.
+     */
+    const std::shared_ptr<Arrow>& GetIncrementalArrow() const {
+        return incremental_arrow_;
+    }
+
 	/**
 	 Set a new control for the incremental arrow.
 
@@ -262,12 +279,26 @@ public:
 	 */
 	void SetIncrementalArrow(const std::shared_ptr<Arrow>& incremental_arrow);
 
+    /**
+     Get the decremental arrow.
+     */
+    const std::shared_ptr<Arrow>& GetDecrementalArrow() const {
+        return decremental_arrow_;
+    }
+
 	/**
 	 Set a new control for the decremental arrow.
 
 	 Pass nullptr would reset the arrow to the default control.
 	 */
 	void SetDecrementalArrow(const std::shared_ptr<Arrow>& decremental_arrow);
+
+    /**
+     Get the thumb.
+     */
+    const std::shared_ptr<Thumb>& GetThumb() const {
+        return thumb_;
+    }
 
 	/**
 	 Set a new control for the thumb.
@@ -413,6 +444,8 @@ protected:
     void MouseWheel(const Point& position, const MouseWheelMessage& message) override;
 	void MouseCapture() override;
 	void MouseRelease() override;
+
+    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
 private:
 	enum class TimerEvent {
