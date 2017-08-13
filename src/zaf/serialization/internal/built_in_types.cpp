@@ -49,6 +49,7 @@ std::vector<std::shared_ptr<SerializableType>> GetBuiltInSerializableTypes() {
         CreateSerializableType<ScrollBar::Arrow>(),
         CreateSerializableType<ScrollBar::Thumb>(),
         CreateSerializableType<Size>(),
+        CreateSerializableType<SplitControl::SplitBar>(),
         CreateSerializableType<SplitControl>(),
         CreateSerializableType<TextBox>(),
         CreateSerializableType<TextualControl>(),

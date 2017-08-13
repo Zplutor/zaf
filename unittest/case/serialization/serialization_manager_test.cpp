@@ -45,6 +45,7 @@ TEST(SerializationManager, BuiltInTypes) {
         L"RoundedRect", std::make_shared<zaf::RoundedRect>(),
         L"ScrollableControl", std::make_shared<zaf::ScrollableControl>(),
         L"ScrollBar", std::make_shared<zaf::ScrollBar>(),
+        L"SplitBar.SplitControl", std::make_shared<zaf::SplitControl::SplitBar>(),
         L"SplitControl", std::make_shared<zaf::SplitControl>(),
         L"Size", std::make_shared<zaf::Size>(),
         L"TextBox", std::make_shared<zaf::TextBox>(),

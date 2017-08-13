@@ -309,6 +309,9 @@ void Control::SetRect(const Rect& rect) {
 
 	rect_ = zaf::Rect(rect.position, zaf::Size(width, height));    
 
+    //Notify rect change.
+    RectChange(previous_rect);
+
     //Layout children if size is changed.
     if (rect_.size != previous_rect.size) {
         NeedRelayout(previous_rect);
@@ -336,6 +339,11 @@ void Control::SetRect(const Rect& rect) {
     if (event != nullptr) {
         event->Trigger(shared_from_this(), previous_rect);
     }
+}
+
+
+void Control::RectChange(const Rect& previous_rect) {
+
 }
 
 

@@ -805,6 +805,18 @@ protected:
 	virtual void FocusLose();
 
     /**
+     Process the rect change notification.
+
+     This method is called when the control change its rect. Derived classes must call the 
+     same method of base class.
+
+     If the size is changed, this method is called before calling Layout method. You don't 
+     need to call NeedRelayout method in this method, and you should layout children in Layout
+     method instead of this method.
+     */
+    virtual void RectChange(const Rect& previous_rect);
+
+    /**
      Process the is visible change notification.
 
      This method is called when the control change its visibility. Derived classes must call

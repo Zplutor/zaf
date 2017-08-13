@@ -10,6 +10,7 @@
 #include "manager/list_box_explore_manager.h"
 #include "manager/radio_button_explore_manager.h"
 #include "manager/scroll_bar_explore_manager.h"
+#include "manager/split_control_explore_manager.h"
 #include "manager/text_box_explore_manager.h"
 
 static const struct {
@@ -24,6 +25,7 @@ static const struct {
     L"ListBox", []() { return std::make_shared<ListBoxExploreManager>(); },
     L"RadioButton", []() { return std::make_shared<RadioButtonExploreManager>(); },
     L"ScrollBar", []() { return std::make_shared<ScrollBarExploreManager>(); },
+    L"SplitControl", []() { return std::make_shared<SplitControlExploreManager>(); },
     L"TextBox", []() { return std::make_shared<TextBoxExploreManager>(); },
 };
 

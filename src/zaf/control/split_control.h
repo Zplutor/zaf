@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/base/event.h>
+#include <zaf/base/optional.h>
 #include <zaf/control/control.h>
 
 namespace zaf {
@@ -11,6 +12,9 @@ public:
 
 public:
     class SplitBar : public Control {
+    public:
+        ZAF_DECLARE_TYPE_NAME();
+
     public:
         typedef Event<const std::shared_ptr<SplitBar>&> BeginDragEvent;
         typedef Event<const std::shared_ptr<SplitBar>&> DragEvent;
@@ -60,12 +64,16 @@ public:
         void MouseCapture() override;
         void MouseRelease() override;
 
+        void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
+
     private:
         bool is_horizontal_ = false;
         BeginDragEvent begin_drag_event_;
         DragEvent drag_event_;
         EndDragEvent end_drag_event_;
     };
+
+    typedef Event<const std::shared_ptr<SplitControl>&, float> SplitBarDistanceChangeEvent;
 
 public:
     SplitControl();
@@ -91,6 +99,8 @@ public:
     bool IsSplitBarDistanceFlipped() const;
     void SetIsSplitBarDistanceFlipped(bool is_flipped);
 
+    SplitBarDistanceChangeEvent::Proxy GetSplitBarDistanceChangeEvent();
+
     const std::shared_ptr<SplitBar>& GetSplitBar() const {
         return split_bar_;
     }
@@ -111,15 +121,21 @@ public:
 
 protected:
     void Layout(const Rect& previous_rect) override;
+    void RectChange(const Rect& previous_rect) override;
 
     virtual void SplitBarChange(const std::shared_ptr<SplitBar>& previous_split_bar) { }
     virtual void FirstPaneChange(const std::shared_ptr<Control>& previous_pane) { }
     virtual void SecondPaneChange(const std::shared_ptr<Control>& previous_pane) { }
 
+    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
+
 private:
     void InitializeSplitBar();
     void UninitializeSplitBar();
 
+    void UpdateActualSplitBarDistance();
+
+    float GetAvaliableSplitBarMaxDistance() const;
     float GetUnflippedSplitBarDistance() const;
 
     void SetPane(
@@ -136,6 +152,11 @@ private:
     std::shared_ptr<SplitBar> split_bar_;
     std::shared_ptr<Control> first_pane_;
     std::shared_ptr<Control> second_pane_;
+
+    float actual_split_bar_distance_ = 0;
+    optional<float> expected_split_bar_distance_;
+    optional<float> expected_split_bar_min_distance_;
+    optional<float> expected_split_bar_max_distance_;
 
     float split_bar_begin_drag_mouse_position_ = 0;
     float split_bar_begin_drag_distance_ = 0;

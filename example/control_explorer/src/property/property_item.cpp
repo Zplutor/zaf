@@ -4,7 +4,7 @@
 
 namespace {
 
-const float TitleWidth = 150;
+const float TitleWidth = 200;
 const float DefaultItemHeight = 30;
 
 }

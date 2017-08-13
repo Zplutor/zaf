@@ -72,6 +72,9 @@
     <ClCompile Include="src\manager\scroll_bar_explore_manager.cpp">
       <Filter>src\manager</Filter>
     </ClCompile>
+    <ClCompile Include="src\manager\split_control_explore_manager.cpp">
+      <Filter>src\manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main_window.h">
@@ -132,6 +135,9 @@
       <Filter>src\property</Filter>
     </ClInclude>
     <ClInclude Include="src\manager\scroll_bar_explore_manager.h">
+      <Filter>src\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\manager\split_control_explore_manager.h">
       <Filter>src\manager</Filter>
     </ClInclude>
   </ItemGroup>
