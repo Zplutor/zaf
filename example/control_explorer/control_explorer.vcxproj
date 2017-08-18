@@ -96,6 +96,7 @@
     <ClCompile Include="src\manager\textual_control_explore_manager.cpp" />
     <ClCompile Include="src\manager\text_box_explore_manager.cpp" />
     <ClCompile Include="src\property\check_box_property_item.cpp" />
+    <ClCompile Include="src\property\color_property_item.cpp" />
     <ClCompile Include="src\property\combo_box_property_item.cpp" />
     <ClCompile Include="src\property\frame_property_item.cpp" />
     <ClCompile Include="src\property\number_property_item.cpp" />
@@ -119,6 +120,7 @@
     <ClInclude Include="src\manager\textual_control_explore_manager.h" />
     <ClInclude Include="src\manager\text_box_explore_manager.h" />
     <ClInclude Include="src\property\check_box_property_item.h" />
+    <ClInclude Include="src\property\color_property_item.h" />
     <ClInclude Include="src\property\combo_box_property_item.h" />
     <ClInclude Include="src\property\frame_property_item.h" />
     <ClInclude Include="src\property\number_property_item.h" />

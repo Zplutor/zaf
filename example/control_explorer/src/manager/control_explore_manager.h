@@ -36,6 +36,9 @@ private:
     void AddBorderItems(std::vector<std::shared_ptr<PropertyItem>>& items);
     void AddPaddingItems(std::vector<std::shared_ptr<PropertyItem>>& items);
 
+    std::shared_ptr<PropertyItem> CreateBackgroundColorPropertyItem();
+    std::shared_ptr<PropertyItem> CreateBorderColorPropertyItem();
+
 private:
     std::shared_ptr<zaf::Control> control_;
     std::vector<std::shared_ptr<PropertyItem>> property_items_;

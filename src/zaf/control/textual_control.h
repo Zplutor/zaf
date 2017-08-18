@@ -226,6 +226,8 @@ protected:
      */
     void NotifyTextChange();
 
+    virtual void TextChange() { }
+
     void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
 private:

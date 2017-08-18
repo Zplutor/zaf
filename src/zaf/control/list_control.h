@@ -385,6 +385,16 @@ public:
     std::size_t GetFirstSelectedItemIndex() const;
 
     /**
+     Get the first selected item.
+
+     @return
+         Return nullptr if there is no selection.
+     */
+    std::shared_ptr<Item> GetFirstSelectedItem() const {
+        return GetItemAtIndex(GetFirstSelectedItemIndex());
+    }
+
+    /**
      Determinate whether the item at specified index is selected.
      */
     bool IsItemSelectedAtIndex(std::size_t index) const;

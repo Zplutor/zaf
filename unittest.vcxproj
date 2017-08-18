@@ -118,6 +118,7 @@
     <ClCompile Include="unittest\case\serialization\xml\xml_writer_test.cpp" />
     <ClCompile Include="unittest\control\scroll_bar_deserialize_test.cpp" />
     <ClCompile Include="unittest\control\split_control_deserialize_test.cpp" />
+    <ClCompile Include="unittest\control\text_box_deserialize_test.cpp" />
     <ClCompile Include="unittest\googletest\src\gtest-all.cc" />
     <ClCompile Include="unittest\main.cpp" />
   </ItemGroup>

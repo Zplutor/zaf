@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/base/optional.h>
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/list_box.h>
 #include <zaf/control/text_box.h>
@@ -186,6 +187,15 @@ protected:
     bool KeyDown(const KeyMessage& message) override;
     void FocusGain() override;
 
+    void TextChange() override;
+
+    /**
+     This method is called when the selection is changed.
+
+     Derived classes must call the same method of base class.
+     */
+    virtual void SelectionChange() { }
+
     /**
      This method is called when the drop down list box is changed.
 
@@ -209,44 +219,72 @@ protected:
     void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
 private:
-    enum class SelectionChangeAction {
+    enum class DropDownListBoxAction {
         CloseDropDownWindow,
         ChangeText,
         Nothing,
     };
 
-    enum class TextChangeAction {
-        UnselectDropDownItem,
+    enum class EditTextBoxAction {
+        ChangeText,
         Nothing,
     };
 
-    template<typename ActionType>
-    class ActionGuard {
+    enum class TextChangeSource {
+        None,
+        DropDownListBox,
+        EditTextBox,
+    };
+
+    template<typename ValueType>
+    class GuardedValue {
     public:
-        ActionGuard(ActionType* action, ActionType default_action) : 
-            action_(action),
-            default_action_(default_action) {
-        
-        }
-
-        ActionGuard(ActionGuard&& rhs) :
-            action_(rhs.action_),
-            default_action_(rhs.default_action_) {
-            rhs.action_ = nullptr;
-        }
-
-        ~ActionGuard() {
-            if (action_ != nullptr) {
-                *action_ = default_action_;
+        class Guard {
+        public:
+            Guard(ValueType& value) : 
+                value_(&value), 
+                default_value_(value) {
+            
             }
+
+            Guard(Guard&& rhs) :
+                value_(rhs.value_),
+                default_value_(rhs.default_value_) {
+                rhs.value_ = nullptr;
+            }
+
+            ~Guard() {
+                if (value_ != nullptr) {
+                    *value_ = default_value_;
+                }
+            }
+
+            Guard(const Guard&) = delete;
+            Guard& operator=(const Guard&) = delete;
+
+        private:
+            ValueType* value_;
+            ValueType default_value_;
+        };
+
+    public:
+        GuardedValue(ValueType default_value) :
+            value_(default_value) {
+
         }
 
-        ActionGuard(const ActionGuard&) = delete;
-        ActionGuard& operator=(const ActionGuard&) = delete;
+        ValueType Get() const {
+            return value_;
+        }
+
+        Guard Set(ValueType value) {
+            Guard guard(value_);
+            value_ = value;
+            return guard;
+        }
 
     private:
-        ActionType* action_;
-        ActionType default_action_;
+        ValueType value_;
     };
 
 private:
@@ -258,25 +296,28 @@ private:
 
     void PopupDropDownWindow();
     float CalculateDropDownListHeight(std::size_t visible_item_count);
+    void DropDownWindowClose();
 
     void DropDownListBoxMouseMove(const Point& position);
     bool SelectNextDropDownListItem(bool reverse);
 
     void DropDownListBoxSelectionChange();
-    void NotifySelectionChange();
-
-    void ConfirmSelection();
     void EditTextBoxTextChange();
+    void ConfirmSelection(bool discard_drop_down_list_selection);
 
-    ActionGuard<SelectionChangeAction> SetSelectionChangeAction(SelectionChangeAction action);
-    ActionGuard<TextChangeAction> SetTextChangeAction(TextChangeAction action);
+    void ChangeSelectionText(const std::wstring& text, TextChangeSource source);
+    void NotifySelectionChange();
 
 private:
     std::shared_ptr<EditTextBox> edit_text_box_;
     std::shared_ptr<internal::ComboBoxDropDownWindow> drop_down_window_;
     std::shared_ptr<DropDownListBox> drop_down_list_box_;
-    SelectionChangeAction selection_change_action_;
-    TextChangeAction text_change_action_;
+
+    GuardedValue<DropDownListBoxAction> drop_down_list_box_action_;
+    GuardedValue<EditTextBoxAction> edit_text_box_action_;
+    GuardedValue<TextChangeSource> text_change_source_;
+
+    optional<std::size_t> recovered_selected_index_;
 };
 
 }

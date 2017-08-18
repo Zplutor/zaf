@@ -32,13 +32,18 @@ static const wchar_t* const kMinimumVisibleItemCountPropertyName = L"MinimumVisi
 static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
 
 ComboBox::ComboBox() : 
-    selection_change_action_(SelectionChangeAction::CloseDropDownWindow),
-    text_change_action_(TextChangeAction::UnselectDropDownItem) {
+    drop_down_list_box_action_(DropDownListBoxAction::CloseDropDownWindow),
+    edit_text_box_action_(EditTextBoxAction::ChangeText),
+    text_change_source_(TextChangeSource::None) {
 
 }
 
 
 ComboBox::~ComboBox() {
+
+    if (drop_down_window_ != nullptr) {
+        drop_down_window_->GetCloseEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
+    }
 
     UninitializeDropDownListBox();
     UninitializeEditTextBox();
@@ -77,6 +82,9 @@ void ComboBox::Initialize() {
     drop_down_window_->SetActivateOption(Window::ActivateOption::NoActivate);
     drop_down_window_->SetBorderStyle(Window::BorderStyle::None);
     drop_down_window_->SetInitialRectStyle(Window::InitialRectStyle::Custom);
+    drop_down_window_->GetCloseEvent().AddListenerWithTag(
+        reinterpret_cast<std::uintptr_t>(this), 
+        std::bind(&ComboBox::DropDownWindowClose, this));
 
     drop_down_list_box_ = Create<DropDownListBox>();
     InitializeDropDownListBox();
@@ -137,7 +145,13 @@ void ComboBox::Layout(const Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    edit_text_box_->SetRect(Rect(Point(), GetTextRect().size));
+    auto content_rect = GetContentRect();
+
+    auto text_box_rect = GetTextRect();
+    text_box_rect.position.x -= content_rect.position.x;
+    text_box_rect.position.y -= content_rect.position.y;
+    
+    edit_text_box_->SetRect(text_box_rect);
 }
 
 
@@ -195,7 +209,7 @@ void ComboBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 Rect ComboBox::GetTextRect() {
 
     auto rect = GetContentRect();
-    rect.size.width -= GetDropDownButtonWidth();
+    rect.Deflate(zaf::Frame(3, 1, GetDropDownButtonWidth() + 1, 1));
     return rect;
 }
 
@@ -291,6 +305,7 @@ void ComboBox::SetIsEditable(bool is_editable) {
     
     GetPropertyMap().SetProperty(kIsEditablePropertyName, is_editable);
 
+    edit_text_box_->SetText(GetText());
     edit_text_box_->SetIsVisible(is_editable);
 }
 
@@ -335,6 +350,10 @@ void ComboBox::SetEditTextBox(const std::shared_ptr<EditTextBox>& text_box) {
 
 
 void ComboBox::MouseClick() {
+
+    //Save current selected index in order to recover when the window closed.
+    recovered_selected_index_ = drop_down_list_box_->GetFirstSelectedItemIndex();
+
     PopupDropDownWindow();
 }
 
@@ -394,6 +413,22 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
 }
 
 
+void ComboBox::DropDownWindowClose() {
+
+    if (! recovered_selected_index_.has_value()) {
+        return;
+    }
+
+    //Recover the selected index.
+    if (recovered_selected_index_.value() == InvalidIndex) {
+        drop_down_list_box_->UnselectAllItems();
+    }
+    else {
+        drop_down_list_box_->SelectItemAtIndex(recovered_selected_index_.value());
+    }
+}
+
+
 void ComboBox::DropDownListBoxMouseMove(const Point& position) {
 
     auto index = drop_down_list_box_->FindItemIndexAtPosition(position);
@@ -401,7 +436,7 @@ void ComboBox::DropDownListBoxMouseMove(const Point& position) {
         return;
     }
 
-    auto guard = SetSelectionChangeAction(SelectionChangeAction::Nothing);
+    auto guard = drop_down_list_box_action_.Set(DropDownListBoxAction::Nothing);
     drop_down_list_box_->SelectItemAtIndex(index);
 }
 
@@ -417,7 +452,7 @@ bool ComboBox::KeyDown(const KeyMessage& message) {
     }
     else if ((key == VK_RETURN) || (key == VK_ESCAPE)) {
 
-        ConfirmSelection();
+        ConfirmSelection(key == VK_ESCAPE);
         return true;
     }
     else if (key == VK_SPACE) {
@@ -460,7 +495,7 @@ bool ComboBox::SelectNextDropDownListItem(bool reverse) {
         }
     }
 
-    auto guard = SetSelectionChangeAction(SelectionChangeAction::ChangeText);
+    auto guard = drop_down_list_box_action_.Set(DropDownListBoxAction::ChangeText);
     drop_down_list_box_->SelectItemAtIndex(selected_index);
     drop_down_list_box_->ScrollToItemAtIndex(selected_index);
     return true;
@@ -469,76 +504,26 @@ bool ComboBox::SelectNextDropDownListItem(bool reverse) {
 
 void ComboBox::DropDownListBoxSelectionChange() {
     
-    if (selection_change_action_ == SelectionChangeAction::Nothing) {
+    if (drop_down_list_box_action_.Get() == DropDownListBoxAction::Nothing) {
         return;
     }
+
+    //Selection is changed, do not recover previous selected index.
+    recovered_selected_index_.reset();
 
     auto selected_index = drop_down_list_box_->GetFirstSelectedItemIndex();
     if (selected_index != InvalidIndex) {
 
         auto text = drop_down_list_box_->GetItemTextAtIndex(selected_index);
-
-        if (IsEditable()) {
-            auto guard = SetTextChangeAction(TextChangeAction::Nothing);
-            edit_text_box_->SetText(text);
-            edit_text_box_->SetSelectionRange(TextRange(0, text.length()));
-        }
-
-        SetText(text);
+        ChangeSelectionText(text, TextChangeSource::DropDownListBox);
         NotifySelectionChange();
     }
 
-    if (selection_change_action_ == SelectionChangeAction::ChangeText) {
+    if (drop_down_list_box_action_.Get() == DropDownListBoxAction::ChangeText) {
         return;
     }
 
     drop_down_window_->Close();
-}
-
-
-void ComboBox::NotifySelectionChange() {
-
-    auto event = TryGetEventFromPropertyMap<SelectionChangeEvent>(GetPropertyMap(), kSelectionChangeEventPropertyName);
-    if (event != nullptr) {
-        event->Trigger(std::dynamic_pointer_cast<ComboBox>(shared_from_this()));
-    }
-}
-
-
-ComboBox::ActionGuard<ComboBox::SelectionChangeAction> ComboBox::SetSelectionChangeAction(SelectionChangeAction action) {
-
-    ActionGuard<SelectionChangeAction> guard(&selection_change_action_, SelectionChangeAction::CloseDropDownWindow);
-    selection_change_action_ = action;
-    return guard;
-}
-
-
-ComboBox::ActionGuard<ComboBox::TextChangeAction> ComboBox::SetTextChangeAction(TextChangeAction action) {
-
-    ActionGuard<TextChangeAction> guard(&text_change_action_, TextChangeAction::UnselectDropDownItem);
-    text_change_action_ = action;
-    return guard;
-}
-
-
-void ComboBox::ConfirmSelection() {
-
-    if (drop_down_list_box_->GetSelectedItemCount() > 0) {
-
-        //Simulate changing the selection of drop down list box when 
-        //pressing ENTER key
-        auto guard = SetSelectionChangeAction(SelectionChangeAction::CloseDropDownWindow);
-        DropDownListBoxSelectionChange();
-    }
-    else {
-
-        drop_down_window_->Close();
-
-        if (IsEditable()) {
-            edit_text_box_->SetSelectionRange(TextRange(0, std::numeric_limits<std::size_t>::max()));
-            NotifySelectionChange();
-        }
-    }
 }
 
 
@@ -548,15 +533,89 @@ void ComboBox::EditTextBoxTextChange() {
         return;
     }
 
-    if (text_change_action_ == TextChangeAction::Nothing) {
+    if (edit_text_box_action_.Get() == EditTextBoxAction::Nothing) {
         return;
     }
 
-    SetText(edit_text_box_->GetText());
+    ChangeSelectionText(edit_text_box_->GetText(), TextChangeSource::EditTextBox);
+    NotifySelectionChange();
+}
 
-    //Unselect selection when typing.
-    auto guard = SetSelectionChangeAction(SelectionChangeAction::Nothing);
-    drop_down_list_box_->UnselectAllItems();
+
+void ComboBox::ConfirmSelection(bool discard_drop_down_list_selection) {
+
+    //There is selection in drop down list.
+    if (drop_down_list_box_->GetSelectedItemCount() > 0) {
+
+        if (discard_drop_down_list_selection) {
+            drop_down_window_->Close();
+        }
+        else {
+
+            //Simulate changing the selection of drop down list box
+            auto guard = drop_down_list_box_action_.Set(DropDownListBoxAction::CloseDropDownWindow);
+            DropDownListBoxSelectionChange();
+        }
+    }
+    //There is no selection in drop down list, this typecially occurs when typing on
+    //an editable combo box.
+    else {
+
+        drop_down_window_->Close();
+
+        if (IsEditable()) {
+
+            //Explicit change the text again in order to trigger the notification.
+            ChangeSelectionText(edit_text_box_->GetText(), TextChangeSource::EditTextBox);
+            NotifySelectionChange();
+        }
+    }
+}
+
+
+void ComboBox::ChangeSelectionText(const std::wstring& text, TextChangeSource source) {
+
+    auto guard = text_change_source_.Set(source);
+    SetText(text);
+}
+
+
+void ComboBox::TextChange() {
+
+    __super::TextChange();
+
+    if (text_change_source_.Get() != TextChangeSource::DropDownListBox) {
+
+        //Unselect drop down list item if the change is from other source.
+        auto guard = drop_down_list_box_action_.Set(DropDownListBoxAction::Nothing);
+        drop_down_list_box_->UnselectAllItems();
+    }
+
+    if (text_change_source_.Get() != TextChangeSource::EditTextBox) {
+        if (IsEditable()) {
+
+            auto guard = edit_text_box_action_.Set(EditTextBoxAction::Nothing);
+            auto text = GetText();
+            edit_text_box_->SetText(text);
+
+            //Select all text in edit text box if the change is from other source 
+            //and edit text box is focused.
+            if (edit_text_box_->IsFocused()) {
+                edit_text_box_->SetSelectionRange(TextRange(0, text.length()));
+            }
+        }
+    }
+}
+
+
+void ComboBox::NotifySelectionChange() {
+
+    SelectionChange();
+
+    auto event = TryGetEventFromPropertyMap<SelectionChangeEvent>(GetPropertyMap(), kSelectionChangeEventPropertyName);
+    if (event != nullptr) {
+        event->Trigger(std::dynamic_pointer_cast<ComboBox>(shared_from_this()));
+    }
 }
 
 

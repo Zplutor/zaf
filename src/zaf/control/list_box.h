@@ -35,11 +35,17 @@ public:
             item_height_ = item_height;
         }
 
+    protected:
         std::size_t AddItemWithTextAtIndex(const std::wstring& text, std::size_t index);
+
+        std::size_t AddItemWithText(const std::wstring& text) {
+            return AddItemWithTextAtIndex(text, item_texts_.size());
+        }
+
         std::size_t RemoveItemWithText(const std::wstring& item_text);
         bool RemoveItemAtIndex(std::size_t index);
         void RemoveAllItems();
-        const std::wstring GetItemTextAtIndex(std::size_t index);
+        std::wstring GetItemTextAtIndex(std::size_t index);
 
     private:
         float item_height_;

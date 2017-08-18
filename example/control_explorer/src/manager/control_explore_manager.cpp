@@ -1,5 +1,6 @@
 #include "manager/control_explore_manager.h"
 #include "property/check_box_property_item.h"
+#include "property/color_property_item.h"
 #include "property/frame_property_item.h"
 #include "property/number_property_item.h"
 
@@ -9,6 +10,11 @@ void ControlExploreManager::CreatePropertyItems(std::vector<std::shared_ptr<Prop
     AddSizeItems(items);
     AddBorderItems(items);
     AddPaddingItems(items);
+
+    items.insert(items.end(), {
+        CreateBackgroundColorPropertyItem(),
+        CreateBorderColorPropertyItem(),
+    });
 }
 
 
@@ -141,4 +147,24 @@ void ControlExploreManager::AddPaddingItems(std::vector<std::shared_ptr<Property
         [control](const zaf::Frame& frame) { control->SetPadding(frame); });
 
     items.push_back(border_item);
+}
+
+
+std::shared_ptr<PropertyItem> ControlExploreManager::CreateBackgroundColorPropertyItem() {
+
+    auto control = GetTargetControl();
+    return CreateColorPropertyItem(
+        L"Background color",
+        [control]() { return control->GetBackgroundColor(); },
+        [control](const zaf::Color& color) { control->SetBackgroundColor(color); });
+}
+
+
+std::shared_ptr<PropertyItem> ControlExploreManager::CreateBorderColorPropertyItem() {
+
+    auto control = GetTargetControl();
+    return CreateColorPropertyItem(
+        L"Border color",
+        [control]() { return control->GetBorderColor(); },
+        [control](const zaf::Color& color) { control->SetBorderColor(color); });
 }

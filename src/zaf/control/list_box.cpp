@@ -209,7 +209,7 @@ void ListBox::ItemSource::RemoveAllItems() {
 }
 
 
-const std::wstring ListBox::ItemSource::GetItemTextAtIndex(std::size_t index) {
+std::wstring ListBox::ItemSource::GetItemTextAtIndex(std::size_t index) {
 
     if (index >= item_texts_.size()) {
         return std::wstring();

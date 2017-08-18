@@ -433,6 +433,8 @@ TextualControl::TextChangeEvent::Proxy TextualControl::GetTextChangeEvent() {
 
 void TextualControl::NotifyTextChange() {
 
+    TextChange();
+
     auto event = TryGetEventFromPropertyMap<TextChangeEvent>(GetPropertyMap(), kTextChangeEventPropertyName);
     if (event != nullptr) {
         event->Trigger(std::dynamic_pointer_cast<TextualControl>(shared_from_this()));
