@@ -130,10 +130,15 @@ private:
             static const std::vector<ColorInfoItem> color_infos{
                 { L"White", zaf::Color::White },
                 { L"Black", zaf::Color::Black },
+                { L"Gray", zaf::Color::Gray },
                 { L"Red", zaf::Color::Red },
                 { L"Yellow", zaf::Color::Yellow },
                 { L"Blue", zaf::Color::Blue },
                 { L"Green", zaf::Color::Green },
+                { L"Cyan", zaf::Color::Cyan },
+                { L"Lime", zaf::Color::Lime },
+                { L"Magenta", zaf::Color::Magenta },
+                { L"Transparent", zaf::Color::Transparent },
             };
             return color_infos;
         }
