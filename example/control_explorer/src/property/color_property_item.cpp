@@ -1,4 +1,5 @@
 #include "property/color_property_item.h"
+#include <zaf/base/string/case_conversion.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/base/string/to_string.h>
 #include <zaf/control/combo_box.h>
@@ -198,7 +199,7 @@ private:
             if (hex.length() == 1) {
                 hex = L'0' + hex;
             }
-            return hex;
+            return zaf::ToUppercased(hex);
         };
 
         std::wstring text(1, L'#');

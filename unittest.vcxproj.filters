@@ -154,6 +154,9 @@
     <ClCompile Include="unittest\control\text_box_deserialize_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\string\case_conversion_test.cpp">
+      <Filter>case\base\string</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

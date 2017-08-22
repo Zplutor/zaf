@@ -820,5 +820,8 @@
     <ClInclude Include="src\zaf\serialization\deserializing.h">
       <Filter>zaf\serialization</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\string\case_conversion.h">
+      <Filter>zaf\base\string</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

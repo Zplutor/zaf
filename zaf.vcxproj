@@ -126,6 +126,7 @@
     <ClInclude Include="src\zaf\base\optional.h" />
     <ClInclude Include="src\zaf\base\relation_operator.h" />
     <ClInclude Include="src\zaf\base\stream.h" />
+    <ClInclude Include="src\zaf\base\string\case_conversion.h" />
     <ClInclude Include="src\zaf\base\string\encoding_conversion.h" />
     <ClInclude Include="src\zaf\base\string\to_numeric.h" />
     <ClInclude Include="src\zaf\base\string\to_string.h" />
