@@ -121,6 +121,7 @@
     <ClInclude Include="src\zaf\base\event_utility.h" />
     <ClInclude Include="src\zaf\base\flag_enum.h" />
     <ClInclude Include="src\zaf\base\define.h" />
+    <ClInclude Include="src\zaf\base\lazy.h" />
     <ClInclude Include="src\zaf\base\log.h" />
     <ClInclude Include="src\zaf\base\number.h" />
     <ClInclude Include="src\zaf\base\optional.h" />
