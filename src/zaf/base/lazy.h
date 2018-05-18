@@ -1,228 +1,60 @@
 #pragma once
 
 #include <atomic>
-#include <cassert>
-#include <cstdint>
 #include <functional>
-#include <thread>
-#include <memory>
 #include <mutex>
 
 namespace zaf {
 
-enum class LazyLock {
-    Spin = 0,
-    Mutex = 1,
-};
-
-namespace internal {
-
-const std::uintptr_t NotCreatedState = 0;
-const std::uintptr_t CreatingState = 1;
-const std::uintptr_t CreatedState = 2;
-
-
-class BaseLazyState {
-public:
-    BaseLazyState() : value(NotCreatedState) { }
-
-    //Disable copying and also moving.
-    BaseLazyState(const BaseLazyState&) = delete;
-    BaseLazyState& operator=(const BaseLazyState&) = delete;
-
-public:
-    std::atomic<std::uintptr_t> value;
-};
-
-
-typedef std::function<void(std::uintptr_t state_value)> LazyInstanceCreator;
-
-
-template<LazyLock LockType>
-class LazyState;
-
-
-template<>
-class LazyState<LazyLock::Spin> : public BaseLazyState {
-public:
-    void CreateInstance(LazyInstanceCreator instance_creator) {
-
-        //Get current state.
-        auto current_state = value.load();
-
-        //Another thread has been created instance, nothing to do.
-        if (current_state == CreatedState) {
-            return;
-        }
-        //Another thread is creating instance, wait until it finishes.
-        else if (current_state == CreatingState) {
-            WaitCreateFinished();
-        }
-        //Maybe current thread can create instance, need further check.
-        else {
-
-            //Check again to ensure that state is not changed, and set it to creating.
-            value.compare_exchange_strong(current_state, CreatingState);
-
-            //Repeat the check.
-            if (current_state == CreatedState) {
-                return;
-            }
-            //Repeat the check.
-            else if (current_state == CreatingState) {
-                WaitCreateFinished();
-            }
-            //Finally, create instance in current thread.
-            else {
-
-                instance_creator(current_state);
-                value.store(CreatedState);
-            }
-        }
-    }
-
-    void WaitCreateFinished() const {
-
-        do {
-            std::this_thread::yield();
-        } while (value.load() == CreatingState);
-    }
-};
-
-
-template<>
-class LazyState<LazyLock::Mutex> : public BaseLazyState {
-public:
-    void CreateInstance(LazyInstanceCreator instance_creator) {
-
-        //Get current state.
-        auto current_state = value.load();
-
-        //Check whether instance has been created. Need further check if not.
-        if (current_state != CreatedState) {
-
-            //Acquire lock. Block other threads, or wait for the other thread that acquiring lock.
-            std::lock_guard<std::mutex> lock_guard(mutex_);
-
-            /*
-             Double check. Also set to creating state if current_state is not changed after acquiring lock.
-             This happens only if instance is not being created.
-             */
-            bool is_succeeded = value.compare_exchange_strong(current_state, CreatingState);
-            if (is_succeeded) {
-
-                //Create instance.
-                instance_creator(current_state);
-                value.store(CreatedState);
-            }
-        }
-    }
-
-    void WaitCreateFinished() const {
-
-        do {
-            std::lock_guard<std::mutex> lock_guard(mutex_);
-        } while (value.load() == CreatingState);
-    }
-
-private:
-    mutable std::mutex mutex_;
-};
-
-}
-
-
-template<typename Type, LazyLock LockType = LazyLock::Spin>
+template<typename Type>
 class Lazy {
 public:
-    typedef std::function<void(Type&)> Initializer;
+    typedef std::function<void(Type& instance)> Initializer;
 
 public:
-    Lazy() { }
+    Lazy() : is_initialized_(false) { }
 
     ~Lazy() {
 
-        auto current_state = state_.value.load();
-        switch (current_state) {
-        case internal::NotCreatedState:
-            //Instance has not been created and no initializer is set, nothing to do.
-            break;
-        case internal::CreatingState:
-            //It is abnormal if instance is being created while the lazy is being destroyed.
-            assert(false);
-            break;
-        case internal::CreatedState:
-            //Instance has been created, destroy it.
+        std::lock_guard<std::mutex> lock_guard(lock_);
+
+        if (is_initialized_.load()) {
             GetRawPointer()->~Type();
-            break;
-        default:
-            //Instance has not been created and a initializer is set,
-            //destroy the initializer.
-            delete reinterpret_cast<Initializer*>(current_state);
-            break;
         }
     }
 
     /**
      Set an initializer that initialize the underlying instance.
+
+     If the underlying instance has been created, initializer would not set.
      */
     void SetInitializer(Initializer initializer) {
 
-        auto current_state = state_.value.load();
-
-        //Nothing to do if instance has been created or is being creating.
-        if ((current_state == internal::CreatedState) || (current_state == internal::CreatingState)) {
+        if (is_initialized_.load()) {
             return;
         }
 
-        //Copy the initializer as a new state.
-        Initializer* copied_initializer = nullptr;
-        if (initializer != nullptr) {
-            copied_initializer = new Initializer(std::move(initializer));
-        }
-        auto new_state = reinterpret_cast<std::uintptr_t>(copied_initializer);
+        std::lock_guard<std::mutex> lock_guard(lock_);
 
-        //Store new state. Make sure the state is not changed yet.
-        bool is_succeeded = state_.value.compare_exchange_strong(current_state, new_state);
-
-        //Delete the copied initializer if failed.
-        if (!is_succeeded) {
-            if (copied_initializer != nullptr) {
-                delete copied_initializer;
-            }
+        if (is_initialized_.load()) {
+            return;
         }
+
+        initializer_ = std::move(initializer);
     }
 
     /**
      Returns a value indicates that whether the underlying instance has been created.
-     If it is being creating, wait until it is finished.
+     If it is being created, wait until finished.
      */
     bool IsInitialized() const {
-        return IsInitialized(false);
-    }
 
-    /**
-     Returns a value indicates that whether the underlying instance has been created.
-     Uses a parameter to control whether to wait if the instance is being created.
-     */
-    bool IsInitialized(bool wait) const {
-
-        auto state = state_.value.load();
-        if (state == internal::CreatedState) {
+        if (is_initialized_.load()) {
             return true;
         }
 
-        if (state == internal::CreatingState) {
-
-            if (!wait) {
-                return false;
-            }
-
-            state_.WaitCreateFinished();
-            return true;
-        }
-
-        return false;
+        std::lock_guard<std::mutex> lock_guard(lock_);
+        return is_initialized_.load();
     }
 
     Type& GetInstance() {
@@ -245,17 +77,24 @@ public:
 private:
     void Instantiate() {
 
-        state_.CreateInstance([this](std::uintptr_t state_value) {
+        if (is_initialized_.load()) {
+            return;
+        }
 
-            new (GetRawPointer()) Type();
+        std::lock_guard<std::mutex> lock_guard(lock_);
 
-            if (state_value != internal::NotCreatedState) {
+        if (is_initialized_.load()) {
+            return;
+        }
+    
+        new (GetRawPointer()) Type();
 
-                auto initializer = reinterpret_cast<Initializer*>(state_value);
-                (*initializer)(*GetRawPointer());
-                delete initializer;
-            }
-        });
+        if (initializer_ != nullptr) {
+            initializer_(*GetRawPointer());
+            initializer_ = nullptr;
+        }
+
+        is_initialized_.store(true);
     }
 
     Type* GetRawPointer() {
@@ -263,8 +102,10 @@ private:
     }
 
 private:
-    internal::LazyState<LockType> state_;
     typename std::aligned_storage<sizeof(Type), std::alignment_of<Type>::value>::type instance_data_;
+    std::atomic<bool> is_initialized_;
+    Initializer initializer_;
+    mutable std::mutex lock_;
 };
 
 }
