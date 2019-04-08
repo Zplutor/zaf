@@ -2,7 +2,7 @@
 #include <list>
 #include <deque>
 #include <gtest/gtest.h>
-#include <zaf/base/container/unique.h>
+#include <zaf/base/container/utility/unique.h>
 
 namespace internal {
 

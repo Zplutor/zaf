@@ -73,6 +73,12 @@
     <Filter Include="zaf\serialization\json">
       <UniqueIdentifier>{4bd94367-1e68-4493-ba9e-0c8262927aff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\base\container">
+      <UniqueIdentifier>{8f617298-ecbd-4034-9e95-5d4d9592fb2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\base\container\utility">
+      <UniqueIdentifier>{58c8f4c0-371b-4487-9c74-27b9307e5676}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -825,6 +831,27 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\lazy.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\container\utility\contain.h">
+      <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\container\utility\erase.h">
+      <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\container\utility\find.h">
+      <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\container\utility\sort.h">
+      <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\container\utility\unique.h">
+      <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\container\utility\classify.h">
+      <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\container\utility\map.h">
+      <Filter>zaf\base\container\utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

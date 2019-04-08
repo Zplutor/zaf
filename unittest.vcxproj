@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -14,18 +14,19 @@
     <ProjectGuid>{C2900F28-70A0-4852-B504-C7DE07D96ADF}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>unittest</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -94,6 +95,13 @@
     <ClCompile Include="case\graphic\text\text_trimming_test.cpp" />
     <ClCompile Include="case\serialization\deserializer_test.cpp" />
     <ClCompile Include="unittest\case\base\any_test.cpp" />
+    <ClCompile Include="unittest\case\base\container\utility\classify_test.cpp" />
+    <ClCompile Include="unittest\case\base\container\utility\contain_test.cpp" />
+    <ClCompile Include="unittest\case\base\container\utility\erase_test.cpp" />
+    <ClCompile Include="unittest\case\base\container\utility\find_test.cpp" />
+    <ClCompile Include="unittest\case\base\container\utility\map_test.cpp" />
+    <ClCompile Include="unittest\case\base\container\utility\sort_test.cpp" />
+    <ClCompile Include="unittest\case\base\container\utility\unique_test.cpp" />
     <ClCompile Include="unittest\case\base\lazy_test.cpp" />
     <ClCompile Include="unittest\case\base\number_test.cpp" />
     <ClCompile Include="unittest\case\base\optional_test.cpp" />

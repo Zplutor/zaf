@@ -2,7 +2,7 @@
 #include <list>
 #include <vector>
 #include <gtest/gtest.h>
-#include <zaf/base/container/erase.h>
+#include <zaf/base/container/utility/erase.h>
 
 namespace internal {
 
