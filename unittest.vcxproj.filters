@@ -43,6 +43,12 @@
     <Filter Include="case\graphic\text">
       <UniqueIdentifier>{a90db673-1d1d-4843-a194-e886210cf412}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\base\container">
+      <UniqueIdentifier>{b4d90f0a-dc00-4a88-93ee-9c9d6635c859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\base\container\utility">
+      <UniqueIdentifier>{799d9b1c-7f47-4a98-99b1-d36fe45fc66a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -159,6 +165,27 @@
     </ClCompile>
     <ClCompile Include="unittest\case\base\lazy_test.cpp">
       <Filter>case\base</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\container\utility\contain_test.cpp">
+      <Filter>case\base\container\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\container\utility\erase_test.cpp">
+      <Filter>case\base\container\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\container\utility\find_test.cpp">
+      <Filter>case\base\container\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\container\utility\sort_test.cpp">
+      <Filter>case\base\container\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\container\utility\unique_test.cpp">
+      <Filter>case\base\container\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\container\utility\classify_test.cpp">
+      <Filter>case\base\container\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\container\utility\map_test.cpp">
+      <Filter>case\base\container\utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

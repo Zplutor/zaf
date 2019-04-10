@@ -10,7 +10,7 @@ inline const std::error_category& ComCategory() {
     
     class ComErrorCategory : public std::error_category {
     public:
-        const char* name() const override {
+        const char* name() const noexcept override {
             return "COM";
         }
 
