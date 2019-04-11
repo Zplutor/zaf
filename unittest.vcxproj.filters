@@ -187,6 +187,9 @@
     <ClCompile Include="unittest\case\base\container\utility\map_test.cpp">
       <Filter>case\base\container\utility</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\base\container\utility\append_test.cpp">
+      <Filter>case\base\container\utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
