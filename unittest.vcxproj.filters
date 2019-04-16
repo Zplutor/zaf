@@ -124,41 +124,11 @@
     <ClCompile Include="unittest\case\control\textual_control_deserialize_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
-    <ClCompile Include="case\graphic\font\font_test.cpp">
-      <Filter>case\graphic\font</Filter>
-    </ClCompile>
-    <ClCompile Include="case\graphic\text\text_trimming_test.cpp">
-      <Filter>case\graphic\text</Filter>
-    </ClCompile>
-    <ClCompile Include="case\control\check_box_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="case\control\list_control_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="case\control\list_box_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="case\serialization\deserializer_test.cpp">
-      <Filter>case\serialization</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\control\combo_box_deserialize_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\serialization\serializable_object_test.cpp">
       <Filter>case\serialization</Filter>
-    </ClCompile>
-    <ClCompile Include="case\control\radio_button_descrialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\control\scroll_bar_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\control\split_control_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\control\text_box_deserialize_test.cpp">
-      <Filter>case\control</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\string\case_conversion_test.cpp">
       <Filter>case\base\string</Filter>
@@ -187,11 +157,41 @@
     <ClCompile Include="unittest\case\base\container\utility\map_test.cpp">
       <Filter>case\base\container\utility</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\base\container\utility\append_test.cpp">
-      <Filter>case\base\container\utility</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\base\container\utility\conversion_test.cpp">
       <Filter>case\base\container\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\check_box_deserialize_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\list_box_deserialize_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\list_control_deserialize_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\radio_button_descrialize_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\font\font_test.cpp">
+      <Filter>case\graphic\font</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\text\text_trimming_test.cpp">
+      <Filter>case\graphic\text</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\serialization\deserializer_test.cpp">
+      <Filter>case\serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\container\utility\append_test.cpp">
+      <Filter>case\base\container\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\scroll_bar_deserialize_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\split_control_deserialize_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\text_box_deserialize_test.cpp">
+      <Filter>case\control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
