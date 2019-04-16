@@ -7,6 +7,32 @@
 namespace internal {
 
 template<template<typename K, typename V, typename ...> class C>
+bool TestKeys() {
+
+    C<int, std::string> map{ { 1, "1" }, { 2, "2" }, { 3, "3" } };
+    std::vector<int> keys;
+    for (auto key : zaf::Keys(map)) {
+        keys.push_back(key);
+    }
+    std::vector<int> expected_keys{ 1, 2, 3};
+    return keys == expected_keys;
+}
+
+
+template<template<typename K, typename V, typename ...> class C>
+bool TestValues() {
+
+    C<int, std::string> map{ { 1, "1" }, { 2, "2" }, { 3, "3" } };
+    std::vector<std::string> values;
+    for (const auto& value : zaf::Values(map)) {
+        values.push_back(value);
+    }
+    std::vector<std::string> expected_values{ "1", "2", "3" };
+    return values == expected_values;
+}
+
+
+template<template<typename K, typename V, typename ...> class C>
 bool TestGetAllKeys() {
 
     C<int, std::string> map{ { 1, "1" }, { 2, "2" }, { 3, "3" } };
@@ -34,6 +60,25 @@ bool TestGetAllValues() {
 }
 
 }
+
+
+TEST(Map, Keys) {
+
+    ASSERT_TRUE(internal::TestKeys<std::map>());
+    ASSERT_TRUE(internal::TestKeys<std::multimap>());
+    ASSERT_TRUE(internal::TestKeys<std::unordered_map>());
+    ASSERT_TRUE(internal::TestKeys<std::unordered_multimap>());
+}
+
+
+TEST(Map, Values) {
+
+    ASSERT_TRUE(internal::TestValues<std::map>());
+    ASSERT_TRUE(internal::TestValues<std::multimap>());
+    ASSERT_TRUE(internal::TestValues<std::unordered_map>());
+    ASSERT_TRUE(internal::TestValues<std::unordered_multimap>());
+}
+
 
 TEST(Map, GetAllKeys) {
 

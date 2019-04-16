@@ -123,6 +123,7 @@
     <ClInclude Include="src\zaf\base\container\utility\map.h" />
     <ClInclude Include="src\zaf\base\container\utility\sort.h" />
     <ClInclude Include="src\zaf\base\container\utility\unique.h" />
+    <ClInclude Include="src\zaf\base\container\utility\conversion.h" />
     <ClInclude Include="src\zaf\base\direct2d.h" />
     <ClInclude Include="src\zaf\base\error.h" />
     <ClInclude Include="src\zaf\base\event.h" />
