@@ -829,9 +829,6 @@
     <ClInclude Include="src\zaf\base\string\case_conversion.h">
       <Filter>zaf\base\string</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\lazy.h">
-      <Filter>zaf\base</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\container\utility\contain.h">
       <Filter>zaf\base\container\utility</Filter>
     </ClInclude>

@@ -97,7 +97,6 @@
     <ClCompile Include="unittest\case\base\container\utility\map_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\sort_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\unique_test.cpp" />
-    <ClCompile Include="unittest\case\base\lazy_test.cpp" />
     <ClCompile Include="unittest\case\base\number_test.cpp" />
     <ClCompile Include="unittest\case\base\optional_test.cpp" />
     <ClCompile Include="unittest\case\base\string\case_conversion_test.cpp" />
