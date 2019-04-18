@@ -37,7 +37,7 @@ bool TestGetAllKeys() {
 
     C<int, std::string> map{ { 1, "1" }, { 2, "2" }, { 3, "3" } };
 
-    auto keys = zaf::GetAllKeys(map);
+    auto keys = zaf::GetKeys(map);
     if (keys.size() != 3) {
         return false;
     }
@@ -51,7 +51,7 @@ bool TestGetAllValues() {
 
     C<int, std::string> map{ { 1, "1" }, { 2, "2" }, { 3, "3" } };
 
-    auto keys = zaf::GetAllValues(map);
+    auto keys = zaf::GetValues(map);
     if (keys.size() != 3) {
         return false;
     }
@@ -80,7 +80,7 @@ TEST(Map, Values) {
 }
 
 
-TEST(Map, GetAllKeys) {
+TEST(Map, GetKeys) {
 
     ASSERT_TRUE(internal::TestGetAllKeys<std::map>());
     ASSERT_TRUE(internal::TestGetAllKeys<std::multimap>());
@@ -89,7 +89,7 @@ TEST(Map, GetAllKeys) {
 }
 
 
-TEST(Map, GetAllValues) {
+TEST(Map, GetValues) {
 
     ASSERT_TRUE(internal::TestGetAllKeys<std::map>());
     ASSERT_TRUE(internal::TestGetAllKeys<std::multimap>());

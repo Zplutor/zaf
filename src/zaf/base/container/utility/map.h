@@ -106,7 +106,7 @@ ValuesView<C> Values(const C& map) {
 
 
 template<typename C>
-std::vector<typename C::key_type> GetAllKeys(const C& map) {
+std::vector<typename C::key_type> GetKeys(const C& map) {
     std::vector<typename C::key_type> keys;
     for (const auto& key : Keys(map)) {
         keys.push_back(key);
@@ -116,7 +116,7 @@ std::vector<typename C::key_type> GetAllKeys(const C& map) {
 
 
 template<typename C>
-std::vector<typename C::mapped_type> GetAllValues(const C& map) {
+std::vector<typename C::mapped_type> GetValues(const C& map) {
     std::vector<typename C::mapped_type> values;
     for (const auto& value : Values(map)) {
         values.push_back(value);
