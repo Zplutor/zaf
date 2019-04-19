@@ -23,7 +23,7 @@ bool TestUnique() {
 
 	C<int> container{ 3, 3, 3, 1, 1, 2, 2, 0 };
 
-	auto new_container = zaf::ToUnique(container);
+	auto new_container = zaf::MakeUnique(container);
 	if (!CheckElementOrder(new_container)) {
 		return false;
 	}

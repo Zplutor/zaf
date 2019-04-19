@@ -23,7 +23,7 @@ bool TestSort() {
 
 	C<int> container{ 4, 3, 2, 1, 0 };
 
-	auto new_container = zaf::ToSorted(container);
+	auto new_container = zaf::MakeSorted(container);
 	if (!CheckElementOrder(new_container)) {
 		return false;
 	}
@@ -38,7 +38,9 @@ bool TestSortWithPredicate() {
 
 	C<int> container{ 4, 3, 2, 1, 0 };
 
-	auto new_container = zaf::ToSorted(container);
+    auto new_container = zaf::MakeSorted(container, [](int v1, int v2) {
+        return v1 < v2;
+    });
 	if (!CheckElementOrder(new_container)) {
 		return false;
 	}
