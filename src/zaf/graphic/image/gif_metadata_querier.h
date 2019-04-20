@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/optional.h>
+#include <optional>
 #include <zaf/graphic/image/image_metadata_querier.h>
 
 namespace zaf {
@@ -87,7 +87,7 @@ public:
         return result;
     }
 
-    zaf::optional<std::size_t> GetLoopCount() const;
+    std::optional<std::size_t> GetLoopCount() const;
 
 private:
     ImageMetadataQuerier querier_;

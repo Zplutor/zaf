@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/optional.h>
+#include <optional>
 #include <zaf/serialization/deserializer.h>
 #include <zaf/serialization/serializer.h>
 
@@ -29,7 +29,7 @@ enum class CheckState {
 
 
 std::wstring ConvertCheckStateToString(CheckState check_state);
-optional<CheckState> ConvertCheckStateFromString(const std::wstring& string);
+std::optional<CheckState> ConvertCheckStateFromString(const std::wstring& string);
 
 
 template<>

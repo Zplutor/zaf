@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/optional.h>
+#include <optional>
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/list_box.h>
 #include <zaf/control/text_box.h>
@@ -317,7 +317,7 @@ private:
     GuardedValue<EditTextBoxAction> edit_text_box_action_;
     GuardedValue<TextChangeSource> text_change_source_;
 
-    optional<std::size_t> recovered_selected_index_;
+    std::optional<std::size_t> recovered_selected_index_;
 };
 
 }

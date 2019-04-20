@@ -16,7 +16,7 @@ std::wstring ConvertCheckStateToString(CheckState check_state) {
 }
 
 
-optional<CheckState> ConvertCheckStateFromString(const std::wstring& string) {
+std::optional<CheckState> ConvertCheckStateFromString(const std::wstring& string) {
 
     for (std::size_t index = 0; index < sizeof(Names) / sizeof(const wchar_t*); ++index) {
         if (string == Names[index]) {

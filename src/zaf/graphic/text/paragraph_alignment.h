@@ -1,8 +1,8 @@
 #pragma once
 
 #include <dwrite.h>
+#include <optional>
 #include <string>
-#include <zaf/base/optional.h>
 #include <zaf/serialization/serializer.h>
 
 namespace zaf {
@@ -31,7 +31,7 @@ enum class ParagraphAlignment {
 
 
 std::wstring ConvertParagraphAlignmentToString(ParagraphAlignment paragraph_alignment);
-optional<ParagraphAlignment> ConvertParagraphAlignmentFromString(const std::wstring& string);
+std::optional<ParagraphAlignment> ConvertParagraphAlignmentFromString(const std::wstring& string);
 
 
 template<>

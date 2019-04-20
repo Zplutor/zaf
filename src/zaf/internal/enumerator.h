@@ -37,7 +37,7 @@ public:
             return *this;
         }
 
-        Iterator& operator++(difference_type) {
+        Iterator& operator++(int) {
             ++index_;
             return *this;
         }

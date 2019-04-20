@@ -2,7 +2,7 @@
 
 #include <dwrite.h>
 #include <cstdint>
-#include <zaf/base/optional.h>
+#include <optional>
 #include <zaf/graphic/text/text_inline_object.h>
 #include <zaf/serialization/serializable_object.h>
 
@@ -32,6 +32,6 @@ protected:
 
 
 std::wstring ConvertTextTrimmingGranularityToString(TextTrimming::Granularity granularity);
-zaf::optional<TextTrimming::Granularity> ConvertTextTrimmingGranularityFromString(const std::wstring& string);
+std::optional<TextTrimming::Granularity> ConvertTextTrimmingGranularityFromString(const std::wstring& string);
 
 }

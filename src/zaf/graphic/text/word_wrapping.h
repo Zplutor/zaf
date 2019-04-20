@@ -1,7 +1,7 @@
 #pragma once
 
 #include <dwrite.h>
-#include <zaf/base/optional.h>
+#include <optional>
 #include <zaf/serialization/serializer.h>
 
 namespace zaf {
@@ -48,7 +48,7 @@ enum class WordWrapping {
 
 
 std::wstring ConvertWordWrappingToString(WordWrapping word_wrapping);
-optional<WordWrapping> ConvertWordWrappingFromString(const std::wstring& string);
+std::optional<WordWrapping> ConvertWordWrappingFromString(const std::wstring& string);
 
 
 template<>

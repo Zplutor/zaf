@@ -17,7 +17,7 @@ std::wstring ConvertParagraphAlignmentToString(ParagraphAlignment paragraph_alig
 }
 
 
-optional<ParagraphAlignment> ConvertParagraphAlignmentFromString(const std::wstring& string) {
+std::optional<ParagraphAlignment> ConvertParagraphAlignmentFromString(const std::wstring& string) {
     for (std::size_t index = 0; index < sizeof(Names) / sizeof(wchar_t*); ++index) {
         if (string == Names[index]) {
             return static_cast<ParagraphAlignment>(index);

@@ -2,9 +2,9 @@
 
 namespace zaf {
 
-zaf::optional<std::size_t> GifGlobalMetadataQuerier::GetLoopCount() const {
+std::optional<std::size_t> GifGlobalMetadataQuerier::GetLoopCount() const {
 
-    zaf::optional<std::size_t> result;
+    std::optional<std::size_t> result;
 
     std::error_code error_code;
     auto identifier = GetApplicationExtensionIdentifier(error_code);

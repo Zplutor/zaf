@@ -134,7 +134,6 @@
     <ClInclude Include="src\zaf\base\define.h" />
     <ClInclude Include="src\zaf\base\log.h" />
     <ClInclude Include="src\zaf\base\number.h" />
-    <ClInclude Include="src\zaf\base\optional.h" />
     <ClInclude Include="src\zaf\base\relation_operator.h" />
     <ClInclude Include="src\zaf\base\stream.h" />
     <ClInclude Include="src\zaf\base\string\case_conversion.h" />
@@ -333,6 +332,7 @@
       </RuntimeTypeInfo>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -351,6 +351,7 @@
       <ObjectFileName>$(IntDir)object\%(RelativeDir)</ObjectFileName>
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

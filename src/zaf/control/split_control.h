@@ -1,7 +1,7 @@
 #pragma once
 
+#include <optional>
 #include <zaf/base/event.h>
-#include <zaf/base/optional.h>
 #include <zaf/control/control.h>
 
 namespace zaf {
@@ -154,9 +154,9 @@ private:
     std::shared_ptr<Control> second_pane_;
 
     float actual_split_bar_distance_ = 0;
-    optional<float> expected_split_bar_distance_;
-    optional<float> expected_split_bar_min_distance_;
-    optional<float> expected_split_bar_max_distance_;
+    std::optional<float> expected_split_bar_distance_;
+    std::optional<float> expected_split_bar_min_distance_;
+    std::optional<float> expected_split_bar_max_distance_;
 
     float split_bar_begin_drag_mouse_position_ = 0;
     float split_bar_begin_drag_distance_ = 0;

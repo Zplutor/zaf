@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/optional.h>
+#include <optional>
 #include <zaf/graphic/size.h>
 
 namespace zaf {
@@ -13,20 +13,20 @@ enum class CreateCompatibleRendererFlags {
 
 class CreateCompatibleRendererOptions {
 public:
-    const optional<Size>& DesiredSize() const {
+    const std::optional<Size>& DesiredSize() const {
         return desired_size_;
     }
 
-    CreateCompatibleRendererOptions& DesiredSize(const optional<Size>& size) {
+    CreateCompatibleRendererOptions& DesiredSize(const std::optional<Size>& size) {
         desired_size_ = size;
         return *this;
     }
 
-    const optional<Size>& DesiredPixelSize() const {
+    const std::optional<Size>& DesiredPixelSize() const {
         return desired_pixel_size_;
     }
 
-    CreateCompatibleRendererOptions& DesiredPixelSize(const optional<Size>& size) {
+    CreateCompatibleRendererOptions& DesiredPixelSize(const std::optional<Size>& size) {
         desired_pixel_size_ = size;
         return *this;
     }
@@ -41,8 +41,8 @@ public:
     }
 
 private:
-    optional<Size> desired_size_;
-    optional<Size> desired_pixel_size_;
+    std::optional<Size> desired_size_;
+    std::optional<Size> desired_pixel_size_;
     CreateCompatibleRendererFlags flags_ = CreateCompatibleRendererFlags::GdiCompatible;
 };
 

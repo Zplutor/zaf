@@ -16,7 +16,7 @@ std::wstring ConvertTextAlignmentToString(TextAlignment text_alignment) {
     return Names[static_cast<int>(text_alignment)];
 }
 
-optional<TextAlignment> ConvertTextAlignmentFromString(const std::wstring& string) {
+std::optional<TextAlignment> ConvertTextAlignmentFromString(const std::wstring& string) {
     for (int index = 0; index < sizeof(Names) / sizeof(wchar_t*); ++index) {
         if (string == Names[index]) {
             return static_cast<TextAlignment>(index);

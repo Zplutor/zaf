@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <zaf/base/timer.h>
 #include <zaf/control/internal/image_box/image_player.h>
 #include <zaf/graphic/image/gif_metadata_querier.h>
@@ -41,7 +42,7 @@ private:
     BitmapRenderer composed_frame_renderer_;
     std::size_t frame_count_;
     Color background_color_;
-    zaf::optional<std::size_t> total_loop_count_;
+    std::optional<std::size_t> total_loop_count_;
     std::shared_ptr<Timer> delay_timer_;
 
     std::size_t next_frame_index_;

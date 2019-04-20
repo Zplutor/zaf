@@ -47,7 +47,7 @@ std::wstring ConvertTextTrimmingGranularityToString(TextTrimming::Granularity gr
 }
 
 
-zaf::optional<TextTrimming::Granularity> ConvertTextTrimmingGranularityFromString(const std::wstring& string) {
+std::optional<TextTrimming::Granularity> ConvertTextTrimmingGranularityFromString(const std::wstring& string) {
     
     for (std::size_t index = 0; index < sizeof(Names) / sizeof(const wchar_t*); ++index) {
         if (string == Names[index]) {
