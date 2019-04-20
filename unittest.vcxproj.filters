@@ -190,6 +190,15 @@
     <ClCompile Include="unittest\case\control\text_box_deserialize_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\container\utility\intersect_test.cpp">
+      <Filter>case\base\container\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\container\utility\union_test.cpp">
+      <Filter>case\base\container\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\container\utility\differ_test.cpp">
+      <Filter>case\base\container\utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

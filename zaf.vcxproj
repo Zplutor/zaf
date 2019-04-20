@@ -118,10 +118,13 @@
     <ClInclude Include="src\zaf\base\container\utility\append.h" />
     <ClInclude Include="src\zaf\base\container\utility\classify.h" />
     <ClInclude Include="src\zaf\base\container\utility\contain.h" />
+    <ClInclude Include="src\zaf\base\container\utility\differ.h" />
     <ClInclude Include="src\zaf\base\container\utility\erase.h" />
     <ClInclude Include="src\zaf\base\container\utility\find.h" />
+    <ClInclude Include="src\zaf\base\container\utility\intersect.h" />
     <ClInclude Include="src\zaf\base\container\utility\map.h" />
     <ClInclude Include="src\zaf\base\container\utility\sort.h" />
+    <ClInclude Include="src\zaf\base\container\utility\union.h" />
     <ClInclude Include="src\zaf\base\container\utility\unique.h" />
     <ClInclude Include="src\zaf\base\container\utility\conversion.h" />
     <ClInclude Include="src\zaf\base\direct2d.h" />

@@ -856,5 +856,14 @@
     <ClInclude Include="src\zaf\base\container\utility\conversion.h">
       <Filter>zaf\base\container\utility</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\container\utility\intersect.h">
+      <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\container\utility\union.h">
+      <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\container\utility\differ.h">
+      <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

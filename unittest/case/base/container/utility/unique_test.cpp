@@ -21,12 +21,7 @@ bool CheckElementOrder(const C& container) {
 template<template<typename E, typename ...> class C>
 bool TestUnique() {
 
-	C<int> container{ 3, 3, 3, 1, 1, 2, 2, 0 };
-
-	auto new_container = zaf::MakeUnique(container);
-	if (!CheckElementOrder(new_container)) {
-		return false;
-	}
+	C<int> container{ 0, 1, 1, 2, 2, 3, 3, 3 };
 
 	zaf::Unique(container);
 	return CheckElementOrder(container);
@@ -37,5 +32,6 @@ bool TestUnique() {
 TEST(Unique, Normal) {
 
 	ASSERT_TRUE(internal::TestUnique<std::vector>());
+    ASSERT_TRUE(internal::TestUnique<std::list>());
 	ASSERT_TRUE(internal::TestUnique<std::deque>());
 }
