@@ -112,7 +112,6 @@
   <ItemGroup>
     <ClInclude Include="src\precompiled.h" />
     <ClInclude Include="src\zaf\application.h" />
-    <ClInclude Include="src\zaf\base\any.h" />
     <ClInclude Include="src\zaf\base\assert.h" />
     <ClInclude Include="src\zaf\base\com_object.h" />
     <ClInclude Include="src\zaf\base\container\utility\append.h" />

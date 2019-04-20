@@ -762,9 +762,6 @@
     <ClInclude Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.h">
       <Filter>zaf\control\internal\scrollable_control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\any.h">
-      <Filter>zaf\base</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\serialization\data_node.h">
       <Filter>zaf\serialization</Filter>
     </ClInclude>
