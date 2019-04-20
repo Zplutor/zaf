@@ -210,7 +210,7 @@ private:
         return text;
     }
 
-    static zaf::optional<zaf::Color> TextToColor(const std::wstring& text) {
+    static std::optional<zaf::Color> TextToColor(const std::wstring& text) {
 
         if (text.length() != 9) {
             return { };
