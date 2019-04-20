@@ -68,7 +68,7 @@ public:
     /**
      Get the color picker of drop down button.
      */
-    const ColorPicker GetDropDownButtonColorPicker() const;
+    ColorPicker GetDropDownButtonColorPicker() const;
 
     /**
      Set the color picker of drop down button.
@@ -78,7 +78,7 @@ public:
     /**
      Get the current color of drop down button.
      */
-    const Color GetDropDownButtonColor() const {
+    Color GetDropDownButtonColor() const {
         return GetDropDownButtonColorPicker()(*this);
     }
 

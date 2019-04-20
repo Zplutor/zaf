@@ -36,7 +36,7 @@ public:
         return GetColor();
     }
 
-    const Color GetColor() const {
+    const Color& GetColor() const {
         return color_;
     }
 

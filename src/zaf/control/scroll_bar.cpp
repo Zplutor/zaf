@@ -689,7 +689,7 @@ void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-const ColorPicker ScrollBar::Arrow::GetArrowColorPicker() const {
+ColorPicker ScrollBar::Arrow::GetArrowColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::ArrowColorPicker);
     if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
@@ -793,7 +793,7 @@ void ScrollBar::Thumb::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-const ColorPicker ScrollBar::Thumb::GetThumbColorPicker() const {
+ColorPicker ScrollBar::Thumb::GetThumbColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::ThumbColorPicker);
     if (color_picker != nullptr && *color_picker != nullptr) {

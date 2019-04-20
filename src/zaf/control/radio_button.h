@@ -52,14 +52,14 @@ public:
     /**
      Get radio border color.
      */
-    const Color GetRadioBorderColor() const {
+    Color GetRadioBorderColor() const {
         return GetRadioBorderColorPicker()(*this);
     }
 
     /**
      Get the color picker of radio border.
      */
-    const ColorPicker GetRadioBorderColorPicker() const;
+    ColorPicker GetRadioBorderColorPicker() const;
 
     /**
      Set radio border color.
@@ -76,14 +76,14 @@ public:
     /**
      Get radio background color.
      */
-    const Color GetRadioBackgroundColor() {
+    Color GetRadioBackgroundColor() {
         return GetRadioBackgroundColorPicker()(*this);
     }
 
     /**
      Get the color picker of radio background.
      */
-    const ColorPicker GetRadioBackgroundColorPicker() const;
+    ColorPicker GetRadioBackgroundColorPicker() const;
 
     /**
      Set radio background color.

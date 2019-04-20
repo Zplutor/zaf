@@ -135,7 +135,7 @@ public:
      @return 
         Return the text of item, or empty string if the item is inexistent.
      */
-    const std::wstring GetItemTextAtIndex(std::size_t index);
+    std::wstring GetItemTextAtIndex(std::size_t index);
 
     /**
      Get text of the first selected item.
@@ -143,12 +143,12 @@ public:
      @return
         Return the text, or empty string if no item is selected.
      */
-    const std::wstring GetFirstSelectedItemText() const;
+    std::wstring GetFirstSelectedItemText() const;
 
     /**
      Get a text list of all selected items.
      */
-    const std::vector<std::wstring> GetSelectedItemTexts() const;
+    std::vector<std::wstring> GetSelectedItemTexts() const;
 
 protected:
     void ItemSourceChange(const std::shared_ptr<ListControl::ItemSource>& previous_item_source) override;

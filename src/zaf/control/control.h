@@ -121,7 +121,7 @@ public:
 
 	 If the control is not yet placed in a window, am empty rect is returned.
 	 */
-	const Rect GetAbsoluteRect() const;
+	Rect GetAbsoluteRect() const;
 
 	/**
 	 Get the control's rect which is related to the coordinate system of parent's
@@ -301,14 +301,14 @@ public:
     /**
      Get background color.
      */
-	const Color GetBackgroundColor() const {
+	Color GetBackgroundColor() const {
 		return GetBackgroundColorPicker()(*this);
 	}
 
     /**
      Get the color picker of background.
      */
-	const ColorPicker GetBackgroundColorPicker() const;
+	ColorPicker GetBackgroundColorPicker() const;
 
     /**
      Set background color.
@@ -325,14 +325,14 @@ public:
     /**
      Get border color.
      */
-	const Color GetBorderColor() const {
+	Color GetBorderColor() const {
 		return GetBorderColorPicker()(*this);
 	}
 
     /**
      Get the color picker of border color.
      */
-	const ColorPicker GetBorderColorPicker() const;
+	ColorPicker GetBorderColorPicker() const;
 
     /**
      Set border color.
@@ -349,7 +349,7 @@ public:
     /**
      Get the layouter.
      */
-	const Layouter GetLayouter() const;
+	Layouter GetLayouter() const;
 
     /**
      Set the layouter.
@@ -385,7 +385,7 @@ public:
      */
     void RemoveAllChildren();
 
-    const std::shared_ptr<Control> FindChildAtPosition(const Point& position) const;
+    std::shared_ptr<Control> FindChildAtPosition(const Point& position) const;
 
 	/**
 	 Determinte whether the control is the direct parent of specified control.
@@ -402,7 +402,7 @@ public:
 
 	 Return nullptr if the control does not have parent.
 	 */
-	const std::shared_ptr<Control> GetParent() const {
+	std::shared_ptr<Control> GetParent() const {
 		return parent_.lock();
 	}
 
@@ -412,7 +412,7 @@ public:
 	 The name is used to identify a child in control. Multiple 
 	 children may have the same name. The default name is empty.
 	 */
-	const std::wstring GetName() const;
+	std::wstring GetName() const;
 
 	/**
 	 Set the control's name.
@@ -426,7 +426,7 @@ public:
 
 	 Return nullptr if the control does not locates in any window.
 	 */
-	const std::shared_ptr<Window> GetWindow() const;
+	std::shared_ptr<Window> GetWindow() const;
 
     /**
      Get the renderer from the window that the control locates.
@@ -434,7 +434,7 @@ public:
      Return nullptr if the control does not locates in any window, 
      or the window is closed.
      */
-    const Renderer GetRenderer() const;
+    Renderer GetRenderer() const;
 
 	/**
 	 Get a value indicating that whether the control is visible.
@@ -864,14 +864,14 @@ private:
 	/**
 	 Translate a point to which in parent's coordinate system.
 	 */
-	const Point ToParentPoint(const Point& point) {
+	Point ToParentPoint(const Point& point) {
 		return Point(point.x + rect_.position.x, point.y + rect_.position.y);
 	}
 
     /**
      Tanslate a point to which in specified child's coordinate system.
      */
-    const Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const;
+    Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const;
 
     void NeedRelayout(const Rect& previous_rect);
 

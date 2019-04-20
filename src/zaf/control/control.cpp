@@ -264,7 +264,7 @@ void Control::NeedRelayout(const Rect& previous_rect) {
 }
 
 
-const Rect Control::GetAbsoluteRect() const {
+Rect Control::GetAbsoluteRect() const {
 
 	auto window = GetWindow();
 	if (window == nullptr) {
@@ -471,7 +471,7 @@ Rect Control::GetContentRect() const {
 }
 
 
-const ColorPicker Control::GetBackgroundColorPicker() const {
+ColorPicker Control::GetBackgroundColorPicker() const {
 
 	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::BackgroundColorPicker);
 	if ((color_picker != nullptr) && (*color_picker != nullptr)) {
@@ -492,7 +492,7 @@ void Control::SetBackgroundColorPicker(const ColorPicker& color_picker) {
 }
 
 
-const ColorPicker Control::GetBorderColorPicker() const {
+ColorPicker Control::GetBorderColorPicker() const {
 
 	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::BorderColorPicker);
 	if ((color_picker != nullptr) && (*color_picker != nullptr)) {
@@ -513,7 +513,7 @@ void Control::SetBorderColorPicker(const ColorPicker& color_picker) {
 }
 
 
-const Layouter Control::GetLayouter() const {
+Layouter Control::GetLayouter() const {
 
 	auto layouter = GetPropertyMap().TryGetProperty<Layouter>(kLayouterPropertyName);
 	if (layouter != nullptr) {
@@ -626,7 +626,7 @@ void Control::RemoveAllChildren() {
 }
 
 
-const std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) const {
+std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) const {
 
     auto content_rect = GetContentRect();
 
@@ -678,7 +678,7 @@ bool Control::IsAncestorOf(const std::shared_ptr<Control>& child) const {
 }
 
 
-const std::wstring Control::GetName() const {
+std::wstring Control::GetName() const {
 
 	auto name = GetPropertyMap().TryGetProperty<std::wstring>(property::Name);
 	if (name != nullptr) {
@@ -695,7 +695,7 @@ void Control::SetName(const std::wstring& name) {
 }
 
 
-const std::shared_ptr<Window> Control::GetWindow() const {
+std::shared_ptr<Window> Control::GetWindow() const {
 
 	auto parent = GetParent();
 	if (parent == nullptr) {
@@ -706,7 +706,7 @@ const std::shared_ptr<Window> Control::GetWindow() const {
 }
 
 
-const Renderer Control::GetRenderer() const {
+Renderer Control::GetRenderer() const {
 
     auto window = GetWindow();
     if (window != nullptr) {
@@ -1004,7 +1004,7 @@ void Control::RouteMessage(const Point& position, const MouseMessage& message) {
 }
 
 
-const Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const {
+Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const {
 
     const auto& border = GetBorder();
     const auto& padding = GetPadding();

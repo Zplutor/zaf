@@ -67,14 +67,14 @@ public:
         /**
          Get arrow color.
          */
-        const Color GetArrowColor() const {
+        Color GetArrowColor() const {
             return GetArrowColorPicker()(*this);
         }
 
         /**
          Get the color picker of arrow.
          */
-        const ColorPicker GetArrowColorPicker() const;
+        ColorPicker GetArrowColorPicker() const;
 
         /**
          Set arrow color.
@@ -168,14 +168,14 @@ public:
         /**
          Ge thumb color.
          */
-        const Color GetThumbColor() const {
+        Color GetThumbColor() const {
             return GetThumbColorPicker()(*this);
         }
 
         /**
          Get the color picker of thumb.
          */
-        const ColorPicker GetThumbColorPicker() const;
+        ColorPicker GetThumbColorPicker() const;
 
         /**
          Set thumb color.

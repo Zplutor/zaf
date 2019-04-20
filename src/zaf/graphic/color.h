@@ -18,14 +18,14 @@ public:
 	/**
 	 Convert a specified D2D1_COLOR_F structure to Color.
 	 */
-	static const Color FromD2D1COLORF(const D2D1_COLOR_F& color) {
+	static Color FromD2D1COLORF(const D2D1_COLOR_F& color) {
 		return Color(color.r, color.g, color.b, color.a);
 	}
 
     /**
      Convert a specified ARGB value, which in format 0xAARRGGBB, to Color.
      */
-    static const Color FromARGB(std::uint32_t argb) {
+    static Color FromARGB(std::uint32_t argb) {
         float alpha = float(argb >> 24) / 255;
         return FromRGB(argb, alpha);
     }
@@ -34,7 +34,7 @@ public:
 	 Convert a specified RGB value, which in format 0x00RRGGBB, to Color, 
      which alpha is 1.
 	 */
-	static const Color FromRGB(std::uint32_t rgb) {
+	static Color FromRGB(std::uint32_t rgb) {
 		return FromRGB(rgb, 1);
 	}
 
@@ -42,14 +42,14 @@ public:
 	 Convert specified RGB value, which in format 0x00RRGGBB, and specified 
      alpha to Color.
 	 */
-	static const Color FromRGB(std::uint32_t rgb, float alpha) {
+	static Color FromRGB(std::uint32_t rgb, float alpha) {
         return FromD2D1COLORF(D2D1::ColorF(rgb, alpha));
 	}
 
     /**
      Convert specified COLORREF value to Color.
      */
-    static const Color FromCOLORREF(COLORREF color) {
+    static Color FromCOLORREF(COLORREF color) {
         return Color(
             static_cast<float>(GetRValue(color)) / 255,
             static_cast<float>(GetGValue(color)) / 255,

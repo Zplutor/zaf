@@ -318,7 +318,7 @@ void ScrollableControl::IsEnabledChange() {
 }
 
 
-const Rect ScrollableControl::GetVisibleScrollContentRect() const {
+Rect ScrollableControl::GetVisibleScrollContentRect() const {
 
     if (self_scrolling_control_ != nullptr) {
         return scroll_container_control_->GetRect();

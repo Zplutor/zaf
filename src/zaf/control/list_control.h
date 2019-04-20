@@ -294,7 +294,7 @@ public:
     /**
      Get item container.
      */
-    const std::shared_ptr<ItemContainer> GetItemContainer() const {
+    const std::shared_ptr<ItemContainer>& GetItemContainer() const {
         return item_container_;
     }
 
@@ -324,7 +324,7 @@ public:
      @return 
         Returns item object, or nullptr if index is invalid.
      */
-    const std::shared_ptr<Item> GetItemAtIndex(std::size_t index) const;
+    std::shared_ptr<Item> GetItemAtIndex(std::size_t index) const;
 
     /**
      Get selection mode.

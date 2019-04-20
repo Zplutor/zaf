@@ -27,14 +27,14 @@ public:
     /**
      Get the box border color.
      */
-	const Color GetBoxBorderColor() const {
+	Color GetBoxBorderColor() const {
 		return GetBoxBorderColorPicker()(*this);
 	}
 
     /**
      Get the color picker of the box border.
      */
-	const ColorPicker GetBoxBorderColorPicker() const;
+	ColorPicker GetBoxBorderColorPicker() const;
 
     /**
      Set the box border color.
@@ -51,14 +51,14 @@ public:
     /**
      Get the box background color.
      */
-    const Color GetBoxBackgroundColor() const {
+    Color GetBoxBackgroundColor() const {
         return GetBoxBackgroundColorPicker()(*this);
     }
 
     /**
      Get the color picker of the box background.
      */
-    const ColorPicker GetBoxBackgroundColorPicker() const;
+    ColorPicker GetBoxBackgroundColorPicker() const;
 
     /**
      Set the box background color.

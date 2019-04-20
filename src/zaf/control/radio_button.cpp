@@ -84,7 +84,7 @@ Rect RadioButton::GetTextRect() {
 }
 
 
-const ColorPicker RadioButton::GetRadioBorderColorPicker() const {
+ColorPicker RadioButton::GetRadioBorderColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kRadioBorderColorPickerPropertyName);
     if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
@@ -103,7 +103,7 @@ void RadioButton::SetRadioBorderColorPicker(const ColorPicker& color_picker) {
 }
 
 
-const ColorPicker RadioButton::GetRadioBackgroundColorPicker() const {
+ColorPicker RadioButton::GetRadioBackgroundColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kRadioBackgroundColorPickerPropertyName);
     if ((color_picker != nullptr) && (*color_picker != nullptr)) {

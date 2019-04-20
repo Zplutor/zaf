@@ -164,7 +164,7 @@ Rect TextualControl::GetTextRect() {
 }
 
 
-const std::wstring TextualControl::GetText() const {
+std::wstring TextualControl::GetText() const {
 
     auto text = GetPropertyMap().TryGetProperty<std::wstring>(property::Text);
     if (text != nullptr) {
@@ -189,7 +189,7 @@ void TextualControl::SetText(const std::wstring& text) {
 }
 
 
-const ColorPicker TextualControl::GetDefaultTextColorPicker() const {
+ColorPicker TextualControl::GetDefaultTextColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kDefaultTextColorPickerPropertyName);
     if ((color_picker != nullptr) && (*color_picker != nullptr)) {
@@ -215,7 +215,7 @@ void TextualControl::SetDefaultTextColorPicker(const ColorPicker& color_picker) 
 }
 
 
-const ColorPicker TextualControl::GetTextColorPickerAtPosition(std::size_t position) const {
+ColorPicker TextualControl::GetTextColorPickerAtPosition(std::size_t position) const {
 
     auto color_pickers = TryGetTextColorPickersRangeMap(GetPropertyMap());
     if (color_pickers != nullptr) {
@@ -261,7 +261,7 @@ void TextualControl::ResetTextColorPickers() {
 }
 
 
-const Font TextualControl::GetDefaultFont() const {
+Font TextualControl::GetDefaultFont() const {
 
     auto font = GetPropertyMap().TryGetProperty<Font>(kDefaultFontPropertyName);
     if (font != nullptr) {
@@ -281,7 +281,7 @@ void TextualControl::SetDefaultFont(const Font& font) {
 }
 
 
-const Font TextualControl::GetFontAtPosition(std::size_t position) const {
+Font TextualControl::GetFontAtPosition(std::size_t position) const {
     
     auto fonts = TryGetFontRangeMap(GetPropertyMap());
     if (fonts != nullptr) {

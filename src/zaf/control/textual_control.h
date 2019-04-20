@@ -46,7 +46,7 @@ public:
     /**
      Get text.
      */
-    virtual const std::wstring GetText() const;
+    virtual std::wstring GetText() const;
 
     /**
      Set text.
@@ -56,14 +56,14 @@ public:
     /**
      Get the default text color.
      */
-    const Color GetDefaultTextColor() const {
+    Color GetDefaultTextColor() const {
         return GetDefaultTextColorPicker()(*this);
     }
 
     /**
      Get the default color picker of text.
      */
-    const ColorPicker GetDefaultTextColorPicker() const;
+    ColorPicker GetDefaultTextColorPicker() const;
 
     /**
      Set the default text color.
@@ -82,7 +82,7 @@ public:
 
      Return GetDefaultTextColor() if the text color at this position has not been set.
      */
-    const Color GetTextColorAtPosition(std::size_t position) const {
+    Color GetTextColorAtPosition(std::size_t position) const {
         return GetTextColorPickerAtPosition(position)(*this);
     }
 
@@ -98,7 +98,7 @@ public:
 
      Return GetDefaultTextColorPicker() if the text color picker at this position has not been set.
      */
-    const ColorPicker GetTextColorPickerAtPosition(std::size_t position) const;
+    ColorPicker GetTextColorPickerAtPosition(std::size_t position) const;
 
     /**
      Set color picker at specified text range.
@@ -117,7 +117,7 @@ public:
 
      Return Font::GetDefault() if this property has not been set.
      */
-    virtual const Font GetDefaultFont() const;
+    virtual Font GetDefaultFont() const;
 
     /**
      Set default font.
@@ -129,7 +129,7 @@ public:
 
      Return GetDefault() if the font at this position has not been set.
      */
-    virtual const Font GetFontAtPosition(std::size_t position) const;
+    virtual Font GetFontAtPosition(std::size_t position) const;
 
     /**
      Set font at specified text range.

@@ -214,7 +214,7 @@ Rect ComboBox::GetTextRect() {
 }
 
 
-const ColorPicker ComboBox::GetDropDownButtonColorPicker() const {
+ColorPicker ComboBox::GetDropDownButtonColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kDropDownButtonColorPickerPropertyName);
     if (color_picker != nullptr) {

@@ -136,7 +136,7 @@ public:
     /**
      Get the owner window.
      */
-    const std::shared_ptr<Window> GetOwner() const;
+    std::shared_ptr<Window> GetOwner() const;
 
     /**
      Set the owner window.
@@ -165,7 +165,7 @@ public:
      it returns the rect set by SetRect method. If SetRect has not been called, the 
      default rect (0, 0, 640, 480) is returned.
      */
-    const Rect GetRect() const;
+    Rect GetRect() const;
 
     /**
      Set window's rect.
@@ -295,7 +295,7 @@ public:
     /**
      Get window's client rect.
      */
-    const Rect GetClientRect() const;
+    Rect GetClientRect() const;
 
     /**
      Get window's activate option.
@@ -392,7 +392,7 @@ public:
 
      The default title is empty.
      */
-    const std::wstring GetTitle() const;
+    std::wstring GetTitle() const;
 
     /**
      Set window's title.

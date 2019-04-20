@@ -27,7 +27,7 @@ public:
     
     }
 
-    const D2D1_ROUNDED_RECT ToD2D1ROUNDEDRECT() const {
+    D2D1_ROUNDED_RECT ToD2D1ROUNDEDRECT() const {
         D2D1_ROUNDED_RECT d2d1_rounded_rect;
         d2d1_rounded_rect.rect = rect.ToD2D1RECTF();
         d2d1_rounded_rect.radiusX = x_radius;

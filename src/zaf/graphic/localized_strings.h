@@ -37,9 +37,9 @@ public:
      @return 
          Return an empty string if failed.
      */
-    const std::wstring GetLocaleName(std::size_t index, std::error_code& error_code) const;
+    std::wstring GetLocaleName(std::size_t index, std::error_code& error_code) const;
 
-    const std::wstring GetLocaleName(std::size_t index) const {
+    std::wstring GetLocaleName(std::size_t index) const {
         std::error_code error_code;
         auto result = GetLocaleName(index, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -55,9 +55,9 @@ public:
      @return 
          Return an empty string if failed.
      */
-    const std::wstring GetString(std::size_t index, std::error_code& error_code) const;
+    std::wstring GetString(std::size_t index, std::error_code& error_code) const;
 
-    const std::wstring GetString(std::size_t index) const {
+    std::wstring GetString(std::size_t index) const {
         std::error_code error_code;
         auto result = GetString(index, error_code);
         ZAF_CHECK_ERROR(error_code);

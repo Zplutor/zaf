@@ -111,7 +111,7 @@ Rect CheckBox::GetTextRect() {
 }
 
 
-const ColorPicker CheckBox::GetBoxBorderColorPicker() const {
+ColorPicker CheckBox::GetBoxBorderColorPicker() const {
 
 	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBoxBorderColorPickerPropertyName);
 	if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
@@ -130,7 +130,7 @@ void CheckBox::SetBoxBorderColorPicker(const ColorPicker& color_picker) {
 }
 
 
-const ColorPicker CheckBox::GetBoxBackgroundColorPicker() const {
+ColorPicker CheckBox::GetBoxBackgroundColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBoxBackgroundColorPickerPropertyName);
     if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {

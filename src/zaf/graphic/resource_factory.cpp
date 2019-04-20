@@ -34,7 +34,7 @@ ResourceFactory::~ResourceFactory() {
 }
 
 
-const WindowRenderer ResourceFactory::CreateWindowRenderer(HWND window_handle, std::error_code& error_code) {
+WindowRenderer ResourceFactory::CreateWindowRenderer(HWND window_handle, std::error_code& error_code) {
 
 	RECT window_rect = { 0 };
     if (! GetClientRect(window_handle, &window_rect)) {
@@ -89,7 +89,7 @@ Renderer ResourceFactory::CreateImageRenderer(
 }
 
 
-const RectangleGeometry ResourceFactory::CreateRectangleGeometry(const Rect& rect, std::error_code& error_code) {
+RectangleGeometry ResourceFactory::CreateRectangleGeometry(const Rect& rect, std::error_code& error_code) {
 
     ID2D1RectangleGeometry* handle = nullptr;
     HRESULT result = d2d_factory_handle_->CreateRectangleGeometry(rect.ToD2D1RECTF(), &handle);
@@ -99,7 +99,7 @@ const RectangleGeometry ResourceFactory::CreateRectangleGeometry(const Rect& rec
 }
 
 
-const RoundedRectangleGeometry ResourceFactory::CreateRoundedRectangleGeometry(
+RoundedRectangleGeometry ResourceFactory::CreateRoundedRectangleGeometry(
     const RoundedRect& rounded_rect, 
     std::error_code& error_code) {
 
@@ -111,7 +111,7 @@ const RoundedRectangleGeometry ResourceFactory::CreateRoundedRectangleGeometry(
 }
 
 
-const PathGeometry ResourceFactory::CreatePathGeometry(std::error_code& error_code) {
+PathGeometry ResourceFactory::CreatePathGeometry(std::error_code& error_code) {
 
 	ID2D1PathGeometry* handle = nullptr;
 	HRESULT result = d2d_factory_handle_->CreatePathGeometry(&handle);
@@ -121,7 +121,7 @@ const PathGeometry ResourceFactory::CreatePathGeometry(std::error_code& error_co
 }
 
 
-const TransformedGeometry ResourceFactory::CreateTransformedGeometry(
+TransformedGeometry ResourceFactory::CreateTransformedGeometry(
     const Geometry& geometry,
     const TransformMatrix& transform_matrix,
     std::error_code& error_code) {
@@ -137,7 +137,7 @@ const TransformedGeometry ResourceFactory::CreateTransformedGeometry(
 }
 
 
-const Stroke ResourceFactory::CreateStroke(const StrokeProperties& properties, std::error_code& error_code) {
+Stroke ResourceFactory::CreateStroke(const StrokeProperties& properties, std::error_code& error_code) {
     
 	D2D1_STROKE_STYLE_PROPERTIES d2d_properties;
 	d2d_properties.startCap = static_cast<D2D1_CAP_STYLE>(properties.start_cap_style);
@@ -161,7 +161,7 @@ const Stroke ResourceFactory::CreateStroke(const StrokeProperties& properties, s
 }
 
 
-const TextFormat ResourceFactory::CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code) {
+TextFormat ResourceFactory::CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code) {
 
 	IDWriteTextFormat* handle = nullptr;
 	HRESULT result = dwrite_factory_handle_->CreateTextFormat(
@@ -180,7 +180,7 @@ const TextFormat ResourceFactory::CreateTextFormat(const TextFormatProperties& p
 }
 
 
-const TextLayout ResourceFactory::CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code) {
+TextLayout ResourceFactory::CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code) {
 
 	IDWriteTextLayout* handle = nullptr;
 	HRESULT result = dwrite_factory_handle_->CreateTextLayout(
@@ -197,7 +197,7 @@ const TextLayout ResourceFactory::CreateTextLayout(const TextLayoutProperties& p
 }
 
 
-const FontCollection ResourceFactory::GetSystemFontCollection(std::error_code& error_code) {
+FontCollection ResourceFactory::GetSystemFontCollection(std::error_code& error_code) {
 
     IDWriteFontCollection* handle = nullptr;
     HRESULT result = dwrite_factory_handle_->GetSystemFontCollection(&handle);
@@ -291,7 +291,7 @@ ImageDecoder ResourceFactory::CreateImageDecoder(
 }
 
 
-const ImagePalette ResourceFactory::CreateImagePalette(std::error_code& error_code) {
+ImagePalette ResourceFactory::CreateImagePalette(std::error_code& error_code) {
 
     IWICPalette* handle = nullptr;
     HRESULT result = wic_imaging_factory_handle_->CreatePalette(&handle);

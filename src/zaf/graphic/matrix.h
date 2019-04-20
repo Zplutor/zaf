@@ -8,27 +8,27 @@ namespace zaf {
 
 class TransformMatrix {
 public:
-    static const TransformMatrix Rotation(float angle, const Point& center_point) {
+    static TransformMatrix Rotation(float angle, const Point& center_point) {
         auto matrix = D2D1::Matrix3x2F::Rotation(angle, center_point.ToD2D1POINT2F());
         return TransformMatrix(matrix);
     }
 
-    static const TransformMatrix Scale(const Size& size, const Point& center_point) {
+    static TransformMatrix Scale(const Size& size, const Point& center_point) {
         auto matrix = D2D1::Matrix3x2F::Scale(size.ToD2D1SIZEF(), center_point.ToD2D1POINT2F());
         return TransformMatrix(matrix);
     }
 
-    static const TransformMatrix Skew(float x_angle, float y_angle, const Point& center_point) {
+    static TransformMatrix Skew(float x_angle, float y_angle, const Point& center_point) {
         auto matrix = D2D1::Matrix3x2F::Skew(x_angle, y_angle, center_point.ToD2D1POINT2F());
         return TransformMatrix(matrix);
     }
 
-    static const TransformMatrix Translation(const Point& point) {
+    static TransformMatrix Translation(const Point& point) {
         auto matrix = D2D1::Matrix3x2F::Translation(point.x, point.y);
         return TransformMatrix(matrix);
     }
 
-    static const TransformMatrix FromD2D1MATRIX3X2F(const D2D1::Matrix3x2F& matrix) {
+    static TransformMatrix FromD2D1MATRIX3X2F(const D2D1::Matrix3x2F& matrix) {
         return TransformMatrix(matrix);
     }
 

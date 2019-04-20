@@ -685,7 +685,7 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_contr
 }
 
 
-const std::shared_ptr<Window> Window::GetOwner() const {
+std::shared_ptr<Window> Window::GetOwner() const {
 
     auto owner = GetPropertyMap().TryGetProperty<std::shared_ptr<Window>>(kOwnerPropertyName);
     if (owner != nullptr) {
@@ -723,7 +723,7 @@ void Window::SetInitialRectStyle(InitialRectStyle initial_rect_style) {
 }
 
 
-const Rect Window::GetRect() const {
+Rect Window::GetRect() const {
 
     if (IsClosed()) {
         return rect_;
@@ -851,7 +851,7 @@ void Window::SetMaximumHeight(float max_height) {
 }
 
 
-const Rect Window::GetClientRect() const {
+Rect Window::GetClientRect() const {
 
     RECT rect = { 0 };
     ::GetClientRect(handle_, &rect);
@@ -980,7 +980,7 @@ void Window::SetStyleProperty(const std::wstring& property_name, DWORD style_val
 }
 
 
-const std::wstring Window::GetTitle() const {
+std::wstring Window::GetTitle() const {
 
     if (IsClosed()) {
 

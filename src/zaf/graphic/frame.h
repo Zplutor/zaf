@@ -57,7 +57,7 @@ public:
     /**
      Convert to a RECT structure.
      */
-    const RECT ToRECT() const {
+    RECT ToRECT() const {
         RECT rect;
         rect.left = static_cast<LONG>(left);
         rect.top = static_cast<LONG>(top);

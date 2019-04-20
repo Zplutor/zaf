@@ -562,7 +562,7 @@ std::size_t ListControl::GetItemCount() const {
 }
 
 
-const std::shared_ptr<ListControl::Item> ListControl::GetItemAtIndex(std::size_t index) const {
+std::shared_ptr<ListControl::Item> ListControl::GetItemAtIndex(std::size_t index) const {
 
     if (index >= GetItemCount()) {
         return nullptr;

@@ -170,7 +170,7 @@ protected:
     /**
      Get the visible scroll content rect, in scroll content control's coordinate.
      */
-    const Rect GetVisibleScrollContentRect() const;
+    Rect GetVisibleScrollContentRect() const;
 
     /**
      Scroll the scroll content to specified position, in scroll content control's coordinate.

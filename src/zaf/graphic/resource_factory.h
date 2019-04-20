@@ -88,9 +88,9 @@ public:
      @return
          Return nullptr if failed.
      */
-    const WindowRenderer CreateWindowRenderer(HWND window_handle, std::error_code& error_code);
+    WindowRenderer CreateWindowRenderer(HWND window_handle, std::error_code& error_code);
 
-    const WindowRenderer CreateWindowRenderer(HWND window_handle) {
+    WindowRenderer CreateWindowRenderer(HWND window_handle) {
         std::error_code error_code;
         auto result = CreateWindowRenderer(window_handle, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -115,18 +115,18 @@ public:
      @return
          Return nullptr if failed.
      */
-    const RectangleGeometry CreateRectangleGeometry(const Rect& rect, std::error_code& error_code);
+    RectangleGeometry CreateRectangleGeometry(const Rect& rect, std::error_code& error_code);
 
-    const RectangleGeometry CreateRectangleGeometry(const Rect& rect) {
+    RectangleGeometry CreateRectangleGeometry(const Rect& rect) {
         std::error_code error_code;
         auto result = CreateRectangleGeometry(rect, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
 
-    const RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect, std::error_code& error_code);
+    RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect, std::error_code& error_code);
 
-    const RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect) {
+    RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect) {
         std::error_code error_code;
         auto result = CreateRoundedRectangleGeometry(rounded_rect, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -139,21 +139,21 @@ public:
 	 @return 
 	     Return nullptr if failed.
 	 */
-	const PathGeometry CreatePathGeometry(std::error_code& error_code);
+	PathGeometry CreatePathGeometry(std::error_code& error_code);
 
-    const PathGeometry CreatePathGeometry() {
+    PathGeometry CreatePathGeometry() {
         std::error_code error_code;
         auto result = CreatePathGeometry(error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
 
-    const TransformedGeometry CreateTransformedGeometry(
+    TransformedGeometry CreateTransformedGeometry(
         const Geometry& geometry,
         const TransformMatrix& transform_matrix,
         std::error_code& error_code);
 
-    const TransformedGeometry CreateTransformedGeometry(
+    TransformedGeometry CreateTransformedGeometry(
         const Geometry& geometry,
         const TransformMatrix& transform_matrix) {
 
@@ -169,9 +169,9 @@ public:
 	 @return 
 	     Return nullptr if failed.
 	 */
-    const Stroke CreateStroke(const StrokeProperties& properties, std::error_code& error_code);
+    Stroke CreateStroke(const StrokeProperties& properties, std::error_code& error_code);
 
-    const Stroke CreateStroke(const StrokeProperties& properties) {
+    Stroke CreateStroke(const StrokeProperties& properties) {
         std::error_code error_code;
         auto result = CreateStroke(properties, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -184,9 +184,9 @@ public:
 	 @return 
 	      Return nullptr if failed.
 	 */
-    const TextFormat CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code);
+    TextFormat CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code);
 
-    const TextFormat CreateTextFormat(const TextFormatProperties& properties) {
+    TextFormat CreateTextFormat(const TextFormatProperties& properties) {
         std::error_code error_code;
         auto result = CreateTextFormat(properties, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -199,9 +199,9 @@ public:
 	 @return
 	     Return nullptr if failed.
 	 */
-    const TextLayout CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code);
+    TextLayout CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code);
 
-    const TextLayout CreateTextLayout(const TextLayoutProperties& properties) {
+    TextLayout CreateTextLayout(const TextLayoutProperties& properties) {
         std::error_code error_code;
         auto result = CreateTextLayout(properties, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -214,9 +214,9 @@ public:
      @return 
          Return nullptr if failed.
      */
-    const FontCollection GetSystemFontCollection(std::error_code& error_code);
+    FontCollection GetSystemFontCollection(std::error_code& error_code);
 
-    const FontCollection GetSystemFontCollection() {
+    FontCollection GetSystemFontCollection() {
         std::error_code error_code;
         auto result = GetSystemFontCollection(error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -334,9 +334,9 @@ public:
         return result;
     }
 
-    const ImagePalette CreateImagePalette(std::error_code& error_code);
+    ImagePalette CreateImagePalette(std::error_code& error_code);
 
-    const ImagePalette CreateImagePalette() {
+    ImagePalette CreateImagePalette() {
         std::error_code error_code;
         auto result = CreateImagePalette(error_code);
         ZAF_CHECK_ERROR(error_code);

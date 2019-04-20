@@ -90,7 +90,7 @@ void ListBox::RemoveAllItems() {
 }
 
 
-const std::wstring ListBox::GetItemTextAtIndex(std::size_t index) {
+std::wstring ListBox::GetItemTextAtIndex(std::size_t index) {
 
     if (item_source_ != nullptr) {
         return item_source_->GetItemTextAtIndex(index);
@@ -101,7 +101,7 @@ const std::wstring ListBox::GetItemTextAtIndex(std::size_t index) {
 }
 
 
-const std::wstring ListBox::GetFirstSelectedItemText() const {
+std::wstring ListBox::GetFirstSelectedItemText() const {
 
     if (item_source_ != nullptr) {
         std::size_t first_selected_index = GetFirstSelectedItemIndex();
@@ -113,7 +113,7 @@ const std::wstring ListBox::GetFirstSelectedItemText() const {
 }
 
 
-const std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
+std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
 
     if (item_source_ != nullptr) {
 

@@ -36,7 +36,7 @@ public:
 
      The insets are passed in HIMETRIC (each HIMETRIC unit corresponds to 0.01 millimeter).
      */
-    const Frame GetInset() const;
+    Frame GetInset() const;
 
     /**
      Set the dimensions of the white space inset around the text.
@@ -129,14 +129,14 @@ public:
     /**
      Get the slected text range.
      */
-	const TextRange GetSelectionRange() const;
+	TextRange GetSelectionRange() const;
 
     /**
      Set the slected text range.
      */
 	void SetSelectionRange(const TextRange& range);
 
-	const std::wstring GetText() const override;
+	std::wstring GetText() const override;
 	void SetText(const std::wstring& text) override;
 
     /**
@@ -145,14 +145,14 @@ public:
      The default validator is nullptr, means the text box accepts any
      inputted text.
      */
-    const TextValidator GetTextValidator() const;
+    TextValidator GetTextValidator() const;
 
     /**
      Set the text validator.
      */
     void SetTextValidator(const TextValidator& validator);
 
-	const Font GetDefaultFont() const override;
+	Font GetDefaultFont() const override;
 	void SetDefaultFont(const Font& font) override;
 
 	TextAlignment GetTextAlignment() const override;

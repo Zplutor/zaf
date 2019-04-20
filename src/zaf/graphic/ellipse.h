@@ -37,7 +37,7 @@ public:
 		this->y_radius += y_radius;
 	}
 
-	const D2D1_ELLIPSE ToD2D1ELLIPSE() const {
+	D2D1_ELLIPSE ToD2D1ELLIPSE() const {
 
 		D2D1_ELLIPSE ellipse = { 0 };
 		ellipse.point = position.ToD2D1POINT2F();

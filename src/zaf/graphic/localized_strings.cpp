@@ -3,7 +3,7 @@
 
 namespace zaf {
 
-const std::wstring LocalizedStrings::GetLocaleName(std::size_t index, std::error_code& error_code) const {
+std::wstring LocalizedStrings::GetLocaleName(std::size_t index, std::error_code& error_code) const {
 
     UINT32 length = 0;
     HRESULT result = GetHandle()->GetLocaleNameLength(index, &length);
@@ -27,7 +27,7 @@ const std::wstring LocalizedStrings::GetLocaleName(std::size_t index, std::error
 }
 
 
-const std::wstring LocalizedStrings::GetString(std::size_t index, std::error_code& error_code) const {
+std::wstring LocalizedStrings::GetString(std::size_t index, std::error_code& error_code) const {
 
     UINT32 length = 0;
     HRESULT result = GetHandle()->GetStringLength(index, &length);

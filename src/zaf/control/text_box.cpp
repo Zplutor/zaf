@@ -270,7 +270,7 @@ const Rect TextBox::GetAbsoluteContentRect() const {
 }
 
 
-const Frame TextBox::GetInset() const {
+Frame TextBox::GetInset() const {
 
     auto inset = GetPropertyMap().TryGetProperty<Frame>(kInsetPropertyName);
     if (inset != nullptr) {
@@ -372,7 +372,7 @@ void TextBox::SetAllowBeep(bool allow_beep) {
 }
 
 
-const TextRange TextBox::GetSelectionRange() const {
+TextRange TextBox::GetSelectionRange() const {
 
 	TextRange range;
 
@@ -402,7 +402,7 @@ void TextBox::SetSelectionRange(const TextRange& range) {
 }
 
 
-const std::wstring TextBox::GetText() const {
+std::wstring TextBox::GetText() const {
 
 	std::wstring text;
 	if (text_service_ != nullptr) {
@@ -432,7 +432,7 @@ void TextBox::SetText(const std::wstring& text) {
 }
 
 
-const TextValidator TextBox::GetTextValidator() const {
+TextValidator TextBox::GetTextValidator() const {
 
     auto validator = GetPropertyMap().TryGetProperty<TextValidator>(kTextValidatorPropertyName);
     if (validator != nullptr) {
@@ -448,7 +448,7 @@ void TextBox::SetTextValidator(const TextValidator& validator) {
 }
 
 
-const Font TextBox::GetDefaultFont() const {
+Font TextBox::GetDefaultFont() const {
 
 	Font font;
 	font.family_name = character_format_.szFaceName;
