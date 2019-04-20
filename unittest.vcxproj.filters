@@ -76,9 +76,6 @@
     <ClCompile Include="unittest\case\graphic\rect_test.cpp">
       <Filter>case\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\base\optional_test.cpp">
-      <Filter>case\base</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\serialization\serialization_manager_test.cpp">
       <Filter>case\serialization</Filter>
     </ClCompile>

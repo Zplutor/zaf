@@ -61,6 +61,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -77,6 +78,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -100,7 +102,6 @@
     <ClCompile Include="unittest\case\base\container\utility\union_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\unique_test.cpp" />
     <ClCompile Include="unittest\case\base\number_test.cpp" />
-    <ClCompile Include="unittest\case\base\optional_test.cpp" />
     <ClCompile Include="unittest\case\base\string\case_conversion_test.cpp" />
     <ClCompile Include="unittest\case\base\string\to_numeric_test.cpp" />
     <ClCompile Include="unittest\case\base\string\to_string_test.cpp" />
