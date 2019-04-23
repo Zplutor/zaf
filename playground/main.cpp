@@ -3,6 +3,8 @@
 #include <zaf/base/error.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
+#include <zaf/control/list_box.h>
+#include <zaf/control/layout/array_layouter.h>
 
 void BeginRun(zaf::Application&);
 
@@ -33,4 +35,12 @@ void BeginRun(zaf::Application& application) {
 
     window->Show();
     application.SetMainWindow(window);
+
+    auto list_box = zaf::Create<zaf::ListBox>();
+    for (int i = 0; i != 100; ++i) {
+        list_box->AddItemWithText(std::to_wstring(i));
+    }
+
+    window->GetRootControl()->SetLayouter(zaf::GetVerticalArrayLayouter());
+    window->GetRootControl()->AddChild(list_box);
 }

@@ -11,6 +11,7 @@
 #include <zaf/control/anchor.h>
 #include <zaf/control/color_picker.h>
 #include <zaf/control/layout/layouter.h>
+#include <zaf/graphic/renderer/bitmap_renderer.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
@@ -428,14 +429,6 @@ public:
 	 */
 	std::shared_ptr<Window> GetWindow() const;
 
-    /**
-     Get the renderer from the window that the control locates.
-
-     Return nullptr if the control does not locates in any window, 
-     or the window is closed.
-     */
-    Renderer GetRenderer() const;
-
 	/**
 	 Get a value indicating that whether the control is visible.
 
@@ -535,6 +528,12 @@ public:
      This methods takes effect only when the control is contained in a window.
 	 */
 	void SetIsFocused(bool is_focused);
+
+    bool IsCachedPaintingEnabled() const {
+        return is_cached_painting_enabled_;
+    }
+
+    void SetIsCachedPaintingEnabled(bool value);
 
     /**
      Get rect change event.
@@ -892,6 +891,10 @@ private:
 	std::weak_ptr<Window> window_;
 	std::weak_ptr<Control> parent_;
 	std::vector<std::shared_ptr<Control>> children_;
+
+    bool is_cached_painting_enabled_{};
+    BitmapRenderer cached_renderer_;
+    Rect avaliable_cached_renderer_rect_;
 
     std::size_t update_count_;
     bool need_relayout_after_updating_;

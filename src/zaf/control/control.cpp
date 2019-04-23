@@ -706,18 +706,6 @@ std::shared_ptr<Window> Control::GetWindow() const {
 }
 
 
-Renderer Control::GetRenderer() const {
-
-    auto window = GetWindow();
-    if (window != nullptr) {
-        return window->GetRenderer();
-    }
-    else {
-        return Renderer();
-    }
-}
-
-
 bool Control::IsVisible() const {
 
     if (! is_visible_) {
@@ -908,6 +896,19 @@ void Control::IsFocusedChanged(bool is_focused) {
     if (focus_change_event != nullptr) {
         focus_change_event->Trigger(shared_from_this());
     }
+}
+
+
+void Control::SetIsCachedPaintingEnabled(bool value) {
+
+    if (is_cached_painting_enabled_ == value) {
+        return;
+    }
+
+    is_cached_painting_enabled_ = value;
+
+    cached_renderer_ = nullptr;
+    avaliable_cached_renderer_rect_ = {};
 }
 
 

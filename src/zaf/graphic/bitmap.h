@@ -4,9 +4,11 @@
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error.h>
 #include <zaf/graphic/bitmap_properties.h>
-#include <zaf/graphic/size.h>
+#include <zaf/graphic/rect.h>
 
 namespace zaf {
+
+class Renderer;
 
 class Bitmap : public ComObject<ID2D1Bitmap> {
 public:
@@ -56,6 +58,13 @@ public:
     void CopyFromBitmap(const Bitmap& bitmap) {
         std::error_code error_code;
         CopyFromBitmap(bitmap, error_code);
+        ZAF_CHECK_ERROR(error_code);
+    }
+
+    void CopyFromRenderer(const Renderer& renderer, const Rect& renderer_rect, const Point& to_position, std::error_code& error_code);
+    void CopyFromRenderer(const Renderer& renderer, const Rect& renderer_rect, const Point& to_position) {
+        std::error_code error_code;
+        CopyFromRenderer(renderer, renderer_rect, to_position, error_code);
         ZAF_CHECK_ERROR(error_code);
     }
 };

@@ -33,6 +33,13 @@ public:
 		return Point(point.x, point.y);
 	}
 
+    /**
+     Convert a specified D2D1_POINT_2U structure to Point.
+     */
+    static Point FromD2D1POINT2U(const D2D1_POINT_2U& point) {
+        return Point(static_cast<float>(point.x), static_cast<float>(point.y));
+    }
+
 public:
 	/**
 	 Initialize the instance that has zero x-coordinate and y-coordinate.
@@ -80,6 +87,17 @@ public:
 		point.y = y;
 		return point;
 	}
+
+    /**
+     Convert to D2D1_POINT_2U structuer.
+     */
+    D2D1_POINT_2U ToD2D1POINT2U() const {
+
+        D2D1_POINT_2U point;
+        point.x = static_cast<UINT32>(x);
+        point.y = static_cast<UINT32>(y);
+        return point;
+    }
 
 public:
 	/**

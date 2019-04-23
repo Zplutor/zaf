@@ -56,6 +56,7 @@
     <ClCompile Include="src\zaf\control\textual_control.cpp" />
     <ClCompile Include="src\zaf\control\text_box.cpp" />
     <ClCompile Include="src\zaf\control\text_validator.cpp" />
+    <ClCompile Include="src\zaf\graphic\bitmap.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />
     <ClCompile Include="src\zaf\graphic\ellipse.cpp" />

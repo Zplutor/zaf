@@ -355,6 +355,9 @@
     <ClCompile Include="src\zaf\serialization\data_reader.cpp">
       <Filter>zaf\serialization</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\bitmap.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

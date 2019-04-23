@@ -44,6 +44,19 @@ public:
 		);
 	}
 
+    /**
+     Convert a specified D2D1_RECT_U structure to Rect.
+     */
+    static Rect FromD2D1RECTU(const D2D1_RECT_U& rect) {
+
+        return Rect(
+            static_cast<float>(rect.left),
+            static_cast<float>(rect.top),
+            static_cast<float>(rect.right - rect.left),
+            static_cast<float>(rect.bottom - rect.top)
+        );
+    }
+
 	/**
 	 Create a Rect instance that has the intersection rectangle of other two instances.
 	 */
@@ -210,6 +223,19 @@ public:
 		rect.bottom = position.y + size.height;
 		return rect;
 	}
+
+    /**
+     Convert to D2D1_RECT_U structure.
+     */
+    D2D1_RECT_U ToD2D1RECTU() const {
+
+        D2D1_RECT_U rect;
+        rect.left = static_cast<UINT32>(position.x);
+        rect.top = static_cast<UINT32>(position.y);
+        rect.right = static_cast<UINT32>(position.x + size.width);
+        rect.bottom = static_cast<UINT32>(position.y + size.height);
+        return rect;
+    }
 
     /**
      Convert to WICRect structure.
