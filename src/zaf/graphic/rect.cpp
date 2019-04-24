@@ -31,6 +31,38 @@ void Rect::Intersect(const Rect& other) {
 }
 
 
+void Rect::Subtract(const Rect& other) {
+
+    Rect intersection = Rect::Intersect(*this, other);
+    if (intersection == *this) {
+        position.x = 0;
+        position.y = 0;
+        size.width = 0;
+        size.height = 0;
+        return;
+    }
+
+    if (intersection.size.width == size.width) {
+        if (intersection.position.y == position.y) {
+            position.y = intersection.position.y + intersection.size.height;
+            size.height -= intersection.size.height;
+        }
+        else if (intersection.position.y + intersection.size.height == position.y + size.height) {
+            size.height -= intersection.size.height;
+        }
+    }
+    else if (intersection.size.height == size.height) {
+        if (intersection.position.x == position.x) {
+            position.x = intersection.position.x + intersection.size.width;
+            size.width -= intersection.size.width;
+        }
+        else if (intersection.position.x + intersection.size.width == position.x + size.width) {
+            size.width -= intersection.size.width;
+        }
+    }
+}
+
+
 bool Rect::IsInfinite() const {
 
     float max_value = std::numeric_limits<float>::infinity();

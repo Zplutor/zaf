@@ -98,15 +98,30 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
         CreateCompatibleRendererOptions options;
         options.DesiredSize(control_size);
         cached_renderer_ = canvas.GetRenderer().CreateCompatibleRenderer(options);
-        avaliable_cached_renderer_rect_ = Rect();
+        valid_cached_renderer_rect_ = Rect();
     }
 
-    Canvas cached_painting_canvas(cached_renderer_);
-    Rect canvas_rect(Rect(Point(), control_size));
-    cached_painting_canvas.SetRects(canvas_rect, canvas_rect);
+    Rect actual_dirty_rect = Rect::Subtract(dirty_rect, valid_cached_renderer_rect_);
+    if (! actual_dirty_rect.IsEmpty()) {
 
-    RepaintControl(canvas, dirty_rect);
+        cached_renderer_.BeginDraw();
 
+        Canvas cached_painting_canvas(cached_renderer_);
+        Rect canvas_rect(Rect(Point(), control_size));
+        cached_painting_canvas.SetRects(canvas_rect, canvas_rect);
+
+        RepaintControl(cached_painting_canvas, actual_dirty_rect);
+
+        cached_renderer_.EndDraw();
+
+        if (actual_dirty_rect == dirty_rect) {
+            valid_cached_renderer_rect_ = actual_dirty_rect;
+        }
+        else {
+            valid_cached_renderer_rect_.Union(actual_dirty_rect);
+        }
+    }
+    
     canvas.BeginPaint();
     canvas.DrawBitmap(cached_renderer_.GetBitmap(), dirty_rect, DrawImageOptions().SourceRect(dirty_rect));
     canvas.EndPaint();
@@ -217,6 +232,15 @@ void Control::NeedRepaintRect(const Rect& rect) {
 	if (repaint_rect.IsEmpty()) {
 		return;
 	}
+
+    if (valid_cached_renderer_rect_.HasIntersection(repaint_rect)) {
+        if (cached_renderer_ != nullptr) {
+            cached_renderer_.BeginDraw();
+            cached_renderer_.Clear(Color::Transparent);
+            cached_renderer_.EndDraw();
+        }
+        valid_cached_renderer_rect_ = Rect();
+    }
 
 	auto window = window_.lock();
 	if (window != nullptr) {
@@ -936,7 +960,7 @@ void Control::SetIsCachedPaintingEnabled(bool value) {
     is_cached_painting_enabled_ = value;
 
     cached_renderer_ = nullptr;
-    avaliable_cached_renderer_rect_ = {};
+    valid_cached_renderer_rect_ = {};
 }
 
 

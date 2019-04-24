@@ -61,6 +61,7 @@ void ScrollableControl::Initialize() {
 void ScrollableControl::InitializeScrollContentControl(const std::shared_ptr<Control>& control) {
 
     scroll_content_control_ = control;
+    scroll_content_control_->SetIsCachedPaintingEnabled(true);
     scroll_container_control_->AddChild(scroll_content_control_);
 
     self_scrolling_control_ = dynamic_cast<SelfScrollingControl*>(control.get());

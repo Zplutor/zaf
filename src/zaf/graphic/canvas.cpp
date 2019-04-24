@@ -9,7 +9,6 @@ namespace zaf {
 
 Canvas::Canvas(const Renderer& renderer) : renderer_(renderer) {
 
-	layer_ = renderer_.CreateLayer(Size());
 	SaveState();
 }
 

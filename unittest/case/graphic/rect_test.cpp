@@ -3,6 +3,8 @@
 #include <zaf/serialization/data_node.h>
 #include <zaf/serialization/properties.h>
 
+using namespace zaf;
+
 TEST(Rect, Contain) {
 
     ASSERT_FALSE(zaf::Rect(0, 0, 0, 0).Contain(zaf::Point(0, 0)));
@@ -50,6 +52,35 @@ TEST(Rect, Intersect) {
 
     ASSERT_TRUE(test(zaf::Rect(-3, -3, 6, 6), zaf::Rect(0, 0, 3, 3)));
     ASSERT_TRUE(test(zaf::Rect(5, 5, 8, 8), zaf::Rect(5, 5, 5, 5)));
+}
+
+
+TEST(Rect, Subtract) {
+
+    const Rect origin_rect(0, 0, 10, 10);
+
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(-5, -5, 3, 3)), origin_rect);
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(15, 15, 3, 3)), origin_rect);
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(11, 0, 10, 10)), origin_rect);
+
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(4, 4, 2, 2)), origin_rect);
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(-5, -5, 10, 10)), origin_rect);
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(-5, 5, 10, 10)), origin_rect);
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(5, -5, 10, 10)), origin_rect);
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(5, 5, 10, 10)), origin_rect);
+
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(-3, -3, 13, 8)), Rect(0, 5, 10, 5));
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(-2, 7, 22, 12)), Rect(0, 0, 10, 7));
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(-4, -4, 10, 18)), Rect(6, 0, 4, 10));
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(4, -4, 10, 18)), Rect(0, 0, 4, 10));
+
+    ASSERT_EQ(Rect::Subtract(origin_rect, origin_rect), Rect());
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(-5, -5, 15, 15)), Rect());
+
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(0, -5, 10, 5)), origin_rect);
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(0, 10, 10, 5)), origin_rect);
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(-5, 0, 5, 10)), origin_rect);
+    ASSERT_EQ(Rect::Subtract(origin_rect, Rect(10, 0, 5, 10)), origin_rect);
 }
 
 

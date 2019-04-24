@@ -905,7 +905,7 @@ private:
 
     bool is_cached_painting_enabled_{};
     BitmapRenderer cached_renderer_;
-    Rect avaliable_cached_renderer_rect_;
+    Rect valid_cached_renderer_rect_;
 
     std::size_t update_count_;
     bool need_relayout_after_updating_;

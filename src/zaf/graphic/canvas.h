@@ -276,7 +276,6 @@ private:
     Rect clear_edge_absolute_rect_;
 
 	Renderer renderer_;
-	Layer layer_;
 	
 	std::vector<std::shared_ptr<State>> states_;
 };

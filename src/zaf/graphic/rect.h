@@ -75,6 +75,12 @@ public:
 		return result;
 	}
 
+    static Rect Subtract(const Rect& rect1, const Rect& rect2) {
+        Rect result = rect1;
+        result.Subtract(rect2);
+        return result;
+    }
+
     /**
      The infinite rectangle.
      */
@@ -134,6 +140,8 @@ public:
 		UnionRect(&result, &rect1, &rect2);
 		*this = Rect::FromRECT(result);
 	}
+
+    void Subtract(const Rect& other);
 
 	/**
 	 Infalte the rectangle with specified size.
