@@ -852,7 +852,18 @@ private:
     void InterpretMessage(const Point& position, const MouseMessage& message);
 
 private:
+    /**
+     The entry point to repaint the control.
+
+     @param canvas
+         Canvas used to paint the content of control.
+
+     @param dirty_rect
+         The rect in control's coordinate needed to repaint.
+     */
     void Repaint(Canvas& canvas, const Rect& dirty_rect);
+
+    void RepaintControl(Canvas& canvas, const Rect& dirty_rect);
 	void SetParent(const std::shared_ptr<Control>& parent);
 
 	/**

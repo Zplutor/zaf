@@ -87,51 +87,79 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 		return;
 	}
 
-	canvas.BeginPaint();
-	Paint(canvas, dirty_rect);
-	canvas.EndPaint();
+    if (! IsCachedPaintingEnabled()) {
+        RepaintControl(canvas, dirty_rect);
+        return;
+    }
+
+    const auto& control_size = GetSize();
+
+    if (cached_renderer_ == nullptr) {
+        CreateCompatibleRendererOptions options;
+        options.DesiredSize(control_size);
+        cached_renderer_ = canvas.GetRenderer().CreateCompatibleRenderer(options);
+        avaliable_cached_renderer_rect_ = Rect();
+    }
+
+    Canvas cached_painting_canvas(cached_renderer_);
+    Rect canvas_rect(Rect(Point(), control_size));
+    cached_painting_canvas.SetRects(canvas_rect, canvas_rect);
+
+    RepaintControl(canvas, dirty_rect);
+
+    canvas.BeginPaint();
+    canvas.DrawBitmap(cached_renderer_.GetBitmap(), dirty_rect, DrawImageOptions().SourceRect(dirty_rect));
+    canvas.EndPaint();
+}
+
+
+void Control::RepaintControl(Canvas& canvas, const Rect& dirty_rect) {
+
+    canvas.BeginPaint();
+    Paint(canvas, dirty_rect);
+    canvas.EndPaint();
 
     const auto& border = GetBorder();
     const auto& padding = GetPadding();
-	Rect content_rect = GetContentRect();
+    Rect content_rect = GetContentRect();
 
     //Translate content rect to absolute content rect.
-	const Rect& canvas_absolute_rect = canvas.GetAbsoluteRect();
-	Rect absolute_content_rect = content_rect;
+    const Rect& canvas_absolute_rect = canvas.GetAbsoluteRect();
+    Rect absolute_content_rect = content_rect;
     absolute_content_rect.position.x += canvas_absolute_rect.position.x;
     absolute_content_rect.position.y += canvas_absolute_rect.position.y;
 
     //Intersect paintable rect to current control's content rect.
-	Rect absolute_paintable_rect = canvas.GetAbsolutePaintableRect();
-	absolute_paintable_rect.Intersect(absolute_content_rect);
-	
-	for (const auto& child : children_) {
+    Rect absolute_paintable_rect = canvas.GetAbsolutePaintableRect();
+    absolute_paintable_rect.Intersect(absolute_content_rect);
 
-		const Rect& child_rect = child->GetRect();
+    for (const auto& child : children_) {
+
+        const Rect& child_rect = child->GetRect();
 
         //Intersect dirty rect with current control's content rect and
         //child's rect.
-		Rect child_dirty_rect = Rect::Intersect(content_rect, dirty_rect);
+        Rect child_dirty_rect = Rect::Intersect(content_rect, dirty_rect);
         child_dirty_rect.position.x -= border.left + padding.left;
         child_dirty_rect.position.y -= border.top + padding.top;
-		child_dirty_rect.Intersect(child_rect);
+        child_dirty_rect.Intersect(child_rect);
 
-		if (child_dirty_rect.IsEmpty()) {
-			//No need to repaint child if it doesn't locate in dirty rect
-			continue;
-		}
+        if (child_dirty_rect.IsEmpty()) {
+            //No need to repaint child if it doesn't locate in dirty rect
+            continue;
+        }
 
-		const Rect& child_canvas_absolute_rect = child->GetAbsoluteRect();
-		canvas.SetRects(
-			child_canvas_absolute_rect,
-			Rect::Intersect(absolute_paintable_rect, child_canvas_absolute_rect)
-		);
+        const Rect& child_canvas_absolute_rect = child->GetAbsoluteRect();
+        canvas.SetRects(
+            child_canvas_absolute_rect,
+            Rect::Intersect(absolute_paintable_rect, child_canvas_absolute_rect)
+        );
 
         //Translate dirty rect to which in child's coordinate.
-		child_dirty_rect.position.x -= child_rect.position.x;
-		child_dirty_rect.position.y -= child_rect.position.y;
-		child->Repaint(canvas, child_dirty_rect);
-	}
+        child_dirty_rect.position.x -= child_rect.position.x;
+        child_dirty_rect.position.y -= child_rect.position.y;
+        child->Repaint(canvas, child_dirty_rect);
+    }
 }
 
 
@@ -144,7 +172,7 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
   
     Rect background_rect = border_rect;
     background_rect.Deflate(GetBorder());
-    //The with and height muse be greater than 0.
+    //The with and height must be greater than 0.
     if (background_rect.size.width < 0) {
         background_rect.size.width = 0;
     }

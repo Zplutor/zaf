@@ -18,6 +18,7 @@ void ListBox::Initialize() {
     
     __super::Initialize();
 
+    SetIsCachedPaintingEnabled(true);
     SetItemSource(std::make_shared<ItemSource>());
 }
 

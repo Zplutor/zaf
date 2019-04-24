@@ -234,14 +234,14 @@ public:
 
     void DrawBitmap(
         const Bitmap& bitmap,
-        const Rect& rect,
+        const Rect& destination_rect,
         float opacity,
         InterpolationMode interpolation_mode,
         const Rect* bitmap_rect) {
 
         GetHandle()->DrawBitmap(
             bitmap.GetHandle(),
-            rect.ToD2D1RECTF(),
+            destination_rect.ToD2D1RECTF(),
             opacity,
             static_cast<D2D1_BITMAP_INTERPOLATION_MODE>(interpolation_mode),
             bitmap_rect == nullptr ? nullptr : &(bitmap_rect->ToD2D1RECTF()));

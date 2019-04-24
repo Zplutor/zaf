@@ -183,12 +183,12 @@ public:
         renderer_.DrawTextLayout(text_layout, position, GetCurrentState()->brush);
 	}
 
-    void DrawBitmap(const Bitmap& bitmap, const Rect& rect) {
-        DrawBitmap(bitmap, rect, DrawImageOptions());
+    void DrawBitmap(const Bitmap& bitmap, const Rect& destination_rect) {
+        DrawBitmap(bitmap, destination_rect, DrawImageOptions());
     }
 
-    void DrawBitmap(const Bitmap& bitmap, const Rect& rect, const DrawImageOptions& options) {
-        renderer_.DrawBitmap(bitmap, rect, options.Opacity(), options.InterpolationMode(), options.SourceRect());
+    void DrawBitmap(const Bitmap& bitmap, const Rect& destination_rect, const DrawImageOptions& options) {
+        renderer_.DrawBitmap(bitmap, destination_rect, options.Opacity(), options.InterpolationMode(), options.SourceRect());
     }
 
     Point MakeClearEdgeForLine(const Point& point, float stroke_width) const;
