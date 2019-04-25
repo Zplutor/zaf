@@ -71,14 +71,14 @@ public:
 	};
 
 public:
-	Canvas(const Renderer& renderer, const Rect& renderer_rect);
+	Canvas(const Renderer& renderer, const Rect& renderer_rect, const Rect& paintable_rect);
 
 	Renderer& GetRenderer() {
 		return renderer_;
 	}
 
-    Rect GetAbsoluteTransformedRect() const {
-        return transformed_rects_.top();
+    Rect GetAbsolutePaintableRect() const {
+        return transformed_layers_.top().paintable_rect;
     }
 
 	void SaveState();
@@ -215,13 +215,19 @@ private:
         std::vector<Rect> clipping_rects;
 	};
 
+    class TransformedLayer {
+    public:
+        Rect rect;
+        Rect paintable_rect;
+    };
+
 private:
 	friend class Caret;
 	friend class Control;
 	friend class Window;
 
-    void PushTransformRect(const Rect& rect);
-    void PopTransformRect();
+    void PushTransformLayer(const Rect& rect, const Rect& paintable_rect);
+    void PopTransformLayer();
 
 	void BeginPaint();
 	void EndPaint();
@@ -266,7 +272,7 @@ private:
 
 private:
     Renderer renderer_;
-    std::stack<Rect> transformed_rects_;
+    std::stack<TransformedLayer> transformed_layers_;
     Rect current_transformed_rect_;
 	
 	std::vector<std::shared_ptr<State>> states_;

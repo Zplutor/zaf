@@ -7,41 +7,57 @@
 
 namespace zaf {
 
-Canvas::Canvas(const Renderer& renderer, const Rect& renderer_rect) : 
+Canvas::Canvas(const Renderer& renderer, const Rect& renderer_rect, const Rect& paintable_rect) :
     renderer_(renderer) {
 
-    transformed_rects_.push(renderer_rect);
+    TransformedLayer transformed_layer;
+    transformed_layer.rect = renderer_rect;
+    transformed_layer.paintable_rect = paintable_rect;
+    transformed_layers_.push(transformed_layer);
+
 	SaveState();
 }
 
 
-void Canvas::PushTransformRect(const Rect& rect) {
+void Canvas::PushTransformLayer(const Rect& rect, const Rect& paintable_rect) {
 
-    const auto& current_transformed_rect = transformed_rects_.top();
+    const auto& current_transformed_layer = transformed_layers_.top();
 
     Rect new_transformed_rect = rect;
-    new_transformed_rect.position.x += current_transformed_rect.position.x;
-    new_transformed_rect.position.y += current_transformed_rect.position.y;
+    new_transformed_rect.position.x += current_transformed_layer.rect.position.x;
+    new_transformed_rect.position.y += current_transformed_layer.rect.position.y;
 
-    new_transformed_rect.Intersect(current_transformed_rect);
-    transformed_rects_.push(new_transformed_rect);
+    Rect new_paintable_rect = paintable_rect;
+    new_paintable_rect.position.x += current_transformed_layer.rect.position.x;
+    new_paintable_rect.position.y += current_transformed_layer.rect.position.y;
+    new_paintable_rect.Intersect(current_transformed_layer.paintable_rect);
+    new_paintable_rect.Intersect(new_transformed_rect);
+
+    TransformedLayer new_transformed_layer;
+    new_transformed_layer.rect = new_transformed_rect;
+    new_transformed_layer.paintable_rect = new_paintable_rect;
+
+    transformed_layers_.push(new_transformed_layer);
 }
 
 
-void Canvas::PopTransformRect() {
-    transformed_rects_.pop();
+void Canvas::PopTransformLayer() {
+    transformed_layers_.pop();
 }
 
 
 void Canvas::BeginPaint() {
 
-    const auto& current_transformed_rect = transformed_rects_.top();
+    const auto& current_transformed_layer = transformed_layers_.top();
 
-    current_transformed_rect_ = zaf::MakeClearEdgeForFill(current_transformed_rect, ClearEdgeOption::Clear);
+    current_transformed_rect_ = zaf::MakeClearEdgeForFill(current_transformed_layer.rect, ClearEdgeOption::Clear);
     renderer_.Transform(TransformMatrix::Translation(current_transformed_rect_.position));
 
-    Rect clipping_rect(Point(), current_transformed_rect_.size);
-    renderer_.PushAxisAlignedClipping(clipping_rect, AntialiasMode::PerPrimitive);
+    Rect paintable_rect = current_transformed_layer.paintable_rect;
+    paintable_rect.position.x -= current_transformed_rect_.position.x;
+    paintable_rect.position.y -= current_transformed_rect_.position.y;
+
+    renderer_.PushAxisAlignedClipping(paintable_rect, AntialiasMode::PerPrimitive);
 }
 
 

@@ -106,7 +106,8 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 
         cached_renderer_.BeginDraw();
 
-        Canvas cached_painting_canvas(cached_renderer_, Rect(Point(), control_size));
+        Rect canvas_rect(Point(), control_size);
+        Canvas cached_painting_canvas(cached_renderer_, canvas_rect, canvas_rect);
         RepaintControl(cached_painting_canvas, actual_dirty_rect);
 
         cached_renderer_.EndDraw();
@@ -131,8 +132,8 @@ void Control::RepaintControl(Canvas& canvas, const Rect& dirty_rect) {
     Paint(canvas, dirty_rect);
     canvas.EndPaint();
 
-    Rect dirty_content_rect = Rect::Intersect(GetContentRect(), dirty_rect);
-    if (dirty_content_rect.IsEmpty()) {
+    Rect content_rect = GetContentRect();
+    if (!content_rect.HasIntersection(dirty_rect)) {
         return;
     }
 
@@ -150,11 +151,11 @@ void Control::RepaintControl(Canvas& canvas, const Rect& dirty_rect) {
             continue;
         }
 
-        canvas.PushTransformRect(child_rect);
+        canvas.PushTransformLayer(child_rect, content_rect);
         child_dirty_rect.position.x -= child_rect.position.x;
         child_dirty_rect.position.y -= child_rect.position.y;
         child->Repaint(canvas, child_dirty_rect);
-        canvas.PopTransformRect();
+        canvas.PopTransformLayer();
     }
 }
 

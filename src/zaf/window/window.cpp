@@ -407,7 +407,7 @@ void Window::Repaint() {
 
     renderer_.BeginDraw();
 
-    Canvas canvas(renderer_, root_control_->GetRect());
+    Canvas canvas(renderer_, root_control_->GetRect(), dirty_rect);
     root_control_->Repaint(canvas, dirty_rect);
 
     if (caret_ != nullptr) {
