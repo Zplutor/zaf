@@ -36,7 +36,6 @@ const bool DefaultIsVisible = true;
 Control::Control() : 
     update_count_(0),
     need_relayout_after_updating_(false),
-    need_repaint_after_updating_(false),
 	is_hovered_(false), 
 	is_capturing_mouse_(false),
 	is_focused_(false),
@@ -53,8 +52,8 @@ Control::~Control() {
 
 
 void Control::BeginUpdate() {
+    need_repaint_rect_after_updating_ = Rect();
     need_relayout_after_updating_ = false;
-    need_repaint_after_updating_ = false;
     ++update_count_;
 }
 
@@ -74,8 +73,8 @@ void Control::EndUpdate() {
             NeedRelayout();
         }
 
-        if (need_repaint_after_updating_) {
-            NeedRepaint();
+        if (!need_repaint_rect_after_updating_.IsEmpty()) {
+            NeedRepaintRect(need_repaint_rect_after_updating_);
         }
     }
 }
@@ -107,7 +106,8 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
         cached_renderer_.BeginDraw();
 
         Rect canvas_rect(Point(), control_size);
-        Canvas cached_painting_canvas(cached_renderer_, canvas_rect, canvas_rect);
+        Canvas cached_painting_canvas(cached_renderer_, canvas_rect, actual_dirty_rect);
+
         RepaintControl(cached_painting_canvas, actual_dirty_rect);
 
         cached_renderer_.EndDraw();
@@ -200,12 +200,12 @@ void Control::NeedRepaint() {
 
 void Control::NeedRepaintRect(const Rect& rect) {
 
-    if (IsUpdating()) {
-        need_repaint_after_updating_ = true;
+    if ((rect.size.width == 0) || (rect.size.height == 0)) {
         return;
     }
 
-    if ((rect.size.width == 0) || (rect.size.height == 0)) {
+    if (IsUpdating()) {
+        need_repaint_rect_after_updating_.Union(rect);
         return;
     }
 
@@ -215,13 +215,17 @@ void Control::NeedRepaintRect(const Rect& rect) {
 		return;
 	}
 
-    if (valid_cached_renderer_rect_.HasIntersection(repaint_rect)) {
-        if (cached_renderer_ != nullptr) {
-            cached_renderer_.BeginDraw();
-            cached_renderer_.Clear(Color::Transparent);
-            cached_renderer_.EndDraw();
+    if (cached_renderer_ != nullptr) {
+        Rect intersection = Rect::Intersect(valid_cached_renderer_rect_, repaint_rect);
+        if (! intersection.IsEmpty()) {
+            Rect subtracted_rect = Rect::Subtract(valid_cached_renderer_rect_, intersection);
+            if (subtracted_rect == valid_cached_renderer_rect_) {
+                cached_renderer_.BeginDraw();
+                cached_renderer_.Clear(Color::Transparent);
+                cached_renderer_.EndDraw();
+                valid_cached_renderer_rect_ = Rect();
+            }
         }
-        valid_cached_renderer_rect_ = Rect();
     }
 
 	auto window = window_.lock();

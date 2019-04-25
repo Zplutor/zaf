@@ -908,8 +908,8 @@ private:
     Rect valid_cached_renderer_rect_;
 
     std::size_t update_count_;
+    Rect need_repaint_rect_after_updating_;
     bool need_relayout_after_updating_;
-    bool need_repaint_after_updating_;
 
 	bool is_hovered_;
 	bool is_capturing_mouse_;

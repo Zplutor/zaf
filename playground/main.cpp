@@ -56,7 +56,7 @@ void BeginRun(zaf::Application& application) {
     window->GetRootControl()->AddChild(parent);
 
     auto list_box = zaf::Create<zaf::ListBox>();
-    list_box->SetRect(zaf::Rect(50, 370, 200, 100));
+    list_box->SetRect(zaf::Rect(50, 370, 200, 300));
     for (int i = 0; i < 100; ++i) {
         list_box->AddItemWithText(std::to_wstring(i));
     }
