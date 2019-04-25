@@ -4,6 +4,7 @@
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 #include <zaf/control/list_box.h>
+#include <zaf/control/button.h>
 #include <zaf/control/layout/array_layouter.h>
 
 void BeginRun(zaf::Application&);
@@ -41,6 +42,16 @@ void BeginRun(zaf::Application& application) {
         list_box->AddItemWithText(std::to_wstring(i));
     }
 
-    window->GetRootControl()->SetLayouter(zaf::GetVerticalArrayLayouter());
-    window->GetRootControl()->AddChild(list_box);
+    auto button = zaf::Create<zaf::Button>();
+    button->SetRect(zaf::Rect(10, 10, 100, 30));
+    button->SetText(L"1");
+
+    auto button2 = zaf::Create<zaf::Button>();
+    button2->SetRect(zaf::Rect(10, 50, 100, 30));
+    button2->SetText(L"2");
+
+    //window->GetRootControl()->SetLayouter(zaf::GetVerticalArrayLayouter());
+    //window->GetRootControl()->AddChild(list_box);
+    window->GetRootControl()->AddChild(button);
+    window->GetRootControl()->AddChild(button2);
 }

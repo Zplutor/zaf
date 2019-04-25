@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <stack>
 #include <string>
 #include <zaf/application.h>
 #include <zaf/graphic/rect.h>
@@ -70,19 +71,15 @@ public:
 	};
 
 public:
-	Canvas(const Renderer& renderer);
+	Canvas(const Renderer& renderer, const Rect& renderer_rect);
 
 	Renderer& GetRenderer() {
 		return renderer_;
 	}
 
-	const Rect& GetAbsoluteRect() const {
-		return absolute_rect_;
-	}
-
-	const Rect& GetAbsolutePaintableRect() const {
-		return absolute_paintable_rect_;
-	}
+    Rect GetAbsoluteTransformedRect() const {
+        return transformed_rects_.top();
+    }
 
 	void SaveState();
 	void RestoreState();
@@ -223,10 +220,8 @@ private:
 	friend class Control;
 	friend class Window;
 
-	void SetRects(const Rect& absolute_rect, const Rect& absolute_paintable_rect) {
-		absolute_rect_ = absolute_rect;
-		absolute_paintable_rect_ = absolute_paintable_rect;
-	}
+    void PushTransformRect(const Rect& rect);
+    void PopTransformRect();
 
 	void BeginPaint();
 	void EndPaint();
@@ -237,7 +232,7 @@ private:
     std::shared_ptr<State> GetCurrentState() const;
 
     Point AddAbsoluteOffset(const Point& point) const {
-        return Point(point.x + absolute_rect_.position.x, point.y + absolute_rect_.position.y);
+        return Point(point.x + current_transformed_rect_.position.x, point.y + current_transformed_rect_.position.y);
     }
 
     Rect AddAbsoluteOffset(const Rect& rect) const {
@@ -253,8 +248,8 @@ private:
     }
 
     void RemoveClearEdgeAbsoluteOffset(Point& point) const {
-        point.x -= clear_edge_absolute_rect_.position.x;
-        point.y -= clear_edge_absolute_rect_.position.y;
+        point.x -= current_transformed_rect_.position.x;
+        point.y -= current_transformed_rect_.position.y;
     }
 
     void RemoveClearEdgeAbsoluteOffset(Rect& rect) const {
@@ -270,12 +265,9 @@ private:
     }
 
 private:
-	Rect absolute_rect_;
-	Rect absolute_paintable_rect_;
-
-    Rect clear_edge_absolute_rect_;
-
-	Renderer renderer_;
+    Renderer renderer_;
+    std::stack<Rect> transformed_rects_;
+    Rect current_transformed_rect_;
 	
 	std::vector<std::shared_ptr<State>> states_;
 };

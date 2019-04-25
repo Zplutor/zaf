@@ -7,27 +7,45 @@
 
 namespace zaf {
 
-Canvas::Canvas(const Renderer& renderer) : renderer_(renderer) {
+Canvas::Canvas(const Renderer& renderer, const Rect& renderer_rect) : 
+    renderer_(renderer) {
 
+    transformed_rects_.push(renderer_rect);
 	SaveState();
+}
+
+
+void Canvas::PushTransformRect(const Rect& rect) {
+
+    const auto& current_transformed_rect = transformed_rects_.top();
+
+    Rect new_transformed_rect = rect;
+    new_transformed_rect.position.x += current_transformed_rect.position.x;
+    new_transformed_rect.position.y += current_transformed_rect.position.y;
+
+    new_transformed_rect.Intersect(current_transformed_rect);
+    transformed_rects_.push(new_transformed_rect);
+}
+
+
+void Canvas::PopTransformRect() {
+    transformed_rects_.pop();
 }
 
 
 void Canvas::BeginPaint() {
 
-    clear_edge_absolute_rect_ = zaf::MakeClearEdgeForFill(absolute_rect_, ClearEdgeOption::Clear);
-    renderer_.Transform(TransformMatrix::Translation(clear_edge_absolute_rect_.position));
+    const auto& current_transformed_rect = transformed_rects_.top();
 
-	Rect clear_edge_absolute_paintable_rect = zaf::MakeClearEdgeForFill(absolute_paintable_rect_, ClearEdgeOption::Clear);
-    clear_edge_absolute_paintable_rect.position.x -= clear_edge_absolute_rect_.position.x;
-    clear_edge_absolute_paintable_rect.position.y -= clear_edge_absolute_rect_.position.y;
+    current_transformed_rect_ = zaf::MakeClearEdgeForFill(current_transformed_rect, ClearEdgeOption::Clear);
+    renderer_.Transform(TransformMatrix::Translation(current_transformed_rect_.position));
 
-    renderer_.PushAxisAlignedClipping(clear_edge_absolute_paintable_rect, AntialiasMode::PerPrimitive);
+    Rect clipping_rect(Point(), current_transformed_rect_.size);
+    renderer_.PushAxisAlignedClipping(clipping_rect, AntialiasMode::PerPrimitive);
 }
 
 
 void Canvas::EndPaint() {
-    clear_edge_absolute_rect_ = Rect();
     renderer_.PopAxisAlignedClipping();
 }
 
