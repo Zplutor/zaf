@@ -111,13 +111,7 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
         RepaintControl(cached_painting_canvas, actual_dirty_rect);
 
         cached_renderer_.EndDraw();
-
-        if (actual_dirty_rect == dirty_rect) {
-            valid_cached_renderer_rect_ = actual_dirty_rect;
-        }
-        else {
-            valid_cached_renderer_rect_.Union(actual_dirty_rect);
-        }
+        valid_cached_renderer_rect_.Union(actual_dirty_rect);
     }
     
     canvas.BeginPaint();
@@ -215,18 +209,7 @@ void Control::NeedRepaintRect(const Rect& rect) {
 		return;
 	}
 
-    if (cached_renderer_ != nullptr) {
-        Rect intersection = Rect::Intersect(valid_cached_renderer_rect_, repaint_rect);
-        if (! intersection.IsEmpty()) {
-            Rect subtracted_rect = Rect::Subtract(valid_cached_renderer_rect_, intersection);
-            if (subtracted_rect == valid_cached_renderer_rect_) {
-                cached_renderer_.BeginDraw();
-                cached_renderer_.Clear(Color::Transparent);
-                cached_renderer_.EndDraw();
-                valid_cached_renderer_rect_ = Rect();
-            }
-        }
-    }
+    RecalculateCachedPaintingRect(repaint_rect);
 
 	auto window = window_.lock();
 	if (window != nullptr) {
@@ -251,7 +234,79 @@ void Control::NeedRepaintRect(const Rect& rect) {
 }
 
 
+void Control::RecalculateCachedPaintingRect(const Rect& repaint_rect) {
+
+    if (cached_renderer_ == nullptr) {
+        return;
+    }
+
+    Rect intersection = Rect::Intersect(valid_cached_renderer_rect_, repaint_rect);
+    if (intersection.IsEmpty()) {
+        return;
+    }
+
+    float left = intersection.position.x - valid_cached_renderer_rect_.position.x;
+    float top = intersection.position.y - valid_cached_renderer_rect_.position.y;
+    float right =
+        (valid_cached_renderer_rect_.position.x + valid_cached_renderer_rect_.size.width) -
+        (intersection.position.x + intersection.size.width);
+    float bottom =
+        (valid_cached_renderer_rect_.position.y + valid_cached_renderer_rect_.size.height) - 
+        (intersection.position.y + intersection.size.height);
+
+    float max = std::max({ left, top, right, bottom });
+
+    Rect invalid_rect;
+    if (max == left) {
+
+        invalid_rect.position.x = intersection.position.x;
+        invalid_rect.position.y = valid_cached_renderer_rect_.position.y;
+        invalid_rect.size.width = 
+            valid_cached_renderer_rect_.position.x + valid_cached_renderer_rect_.size.width -
+            intersection.position.x;
+        invalid_rect.size.height = valid_cached_renderer_rect_.size.height;
+    }
+    else if (max == top) {
+
+        invalid_rect.position.x = valid_cached_renderer_rect_.position.x;
+        invalid_rect.position.y = intersection.position.y;
+        invalid_rect.size.width = valid_cached_renderer_rect_.size.width;
+        invalid_rect.size.height = 
+            valid_cached_renderer_rect_.position.y + valid_cached_renderer_rect_.size.height - 
+            intersection.position.y;
+    }
+    else if (max == right) {
+
+        invalid_rect.position.x = valid_cached_renderer_rect_.position.x;
+        invalid_rect.position.y = valid_cached_renderer_rect_.position.y;
+        invalid_rect.size.width = 
+            intersection.position.x + intersection.size.width -
+            valid_cached_renderer_rect_.position.x;
+        invalid_rect.size.height = valid_cached_renderer_rect_.size.height;
+    }
+    else if (max == bottom) {
+
+        invalid_rect.position.x = valid_cached_renderer_rect_.position.x;
+        invalid_rect.position.y = valid_cached_renderer_rect_.position.y;
+        invalid_rect.size.width = valid_cached_renderer_rect_.size.width;
+        invalid_rect.size.height = 
+            intersection.position.y + intersection.size.height -
+            valid_cached_renderer_rect_.position.y;
+    }
+
+    valid_cached_renderer_rect_.Subtract(invalid_rect);
+
+    cached_renderer_.BeginDraw();
+    auto brush = cached_renderer_.CreateSolidColorBrush(Color::White);
+    cached_renderer_.DrawRectangle(invalid_rect, brush);
+    cached_renderer_.EndDraw();
+}
+
+
 void Control::ReleaseRendererResources() {
+
+    cached_renderer_ = nullptr;
+    valid_cached_renderer_rect_ = Rect();
 
     for (const auto& each_child : children_) {
         each_child->ReleaseRendererResources();
