@@ -91,7 +91,9 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
         return;
     }
 
-    const auto& control_size = GetSize();
+    auto control_size = GetSize();
+    control_size.width = std::ceil(control_size.width);
+    control_size.height = std::ceil(control_size.height);
 
     if (cached_renderer_ == nullptr) {
         CreateCompatibleRendererOptions options;
@@ -301,7 +303,7 @@ void Control::RecalculateCachedPaintingRect(const Rect& repaint_rect) {
 
     cached_renderer_.BeginDraw();
     cached_renderer_.Transform(TransformMatrix::Identity);
-    cached_renderer_.PushAxisAlignedClipping(invalid_rect, AntialiasMode::PerPrimitive);
+    cached_renderer_.PushAxisAlignedClipping(MakeClearEdgeForFill(invalid_rect, ClearEdgeOption::Clear), AntialiasMode::PerPrimitive);
     cached_renderer_.Clear();
     cached_renderer_.PopAxisAlignedClipping();
     cached_renderer_.EndDraw();

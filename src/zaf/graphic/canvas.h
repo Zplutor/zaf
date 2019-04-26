@@ -180,11 +180,7 @@ public:
         renderer_.DrawTextLayout(text_layout, position, GetCurrentState()->brush);
 	}
 
-    void DrawBitmap(const Bitmap& bitmap, const Rect& destination_rect) {
-        DrawBitmap(bitmap, destination_rect, DrawImageOptions());
-    }
-
-    void DrawBitmap(const Bitmap& bitmap, const Rect& destination_rect, const DrawImageOptions& options) {
+    void DrawBitmap(const Bitmap& bitmap, const Rect& destination_rect, const DrawImageOptions& options = {}) {
         renderer_.DrawBitmap(bitmap, destination_rect, options.Opacity(), options.InterpolationMode(), options.SourceRect());
     }
 
