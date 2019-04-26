@@ -865,6 +865,7 @@ private:
 
     void RepaintControl(Canvas& canvas, const Rect& dirty_rect);
     void RecalculateCachedPaintingRect(const Rect& repaint_rect);
+    void ReleaseCachedPaintingRenderer();
 
 	void SetParent(const std::shared_ptr<Control>& parent);
 

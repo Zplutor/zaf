@@ -261,6 +261,10 @@ public:
         GetHandle()->PopLayer();
     }
 
+    void Clear() {
+        GetHandle()->Clear();
+    }
+
     void Clear(const Color& color) {
         GetHandle()->Clear(color.ToD2D1COLORF());
     }

@@ -255,6 +255,9 @@ void Control::RecalculateCachedPaintingRect(const Rect& repaint_rect) {
         (intersection.position.y + intersection.size.height);
 
     float max = std::max({ left, top, right, bottom });
+    if (max == 0) {
+        return;
+    }
 
     Rect invalid_rect;
     if (max == left) {
@@ -297,16 +300,17 @@ void Control::RecalculateCachedPaintingRect(const Rect& repaint_rect) {
     valid_cached_renderer_rect_.Subtract(invalid_rect);
 
     cached_renderer_.BeginDraw();
-    auto brush = cached_renderer_.CreateSolidColorBrush(Color::White);
-    cached_renderer_.DrawRectangle(invalid_rect, brush);
+    cached_renderer_.Transform(TransformMatrix::Identity);
+    cached_renderer_.PushAxisAlignedClipping(invalid_rect, AntialiasMode::PerPrimitive);
+    cached_renderer_.Clear();
+    cached_renderer_.PopAxisAlignedClipping();
     cached_renderer_.EndDraw();
 }
 
 
 void Control::ReleaseRendererResources() {
 
-    cached_renderer_ = nullptr;
-    valid_cached_renderer_rect_ = Rect();
+    ReleaseCachedPaintingRenderer();
 
     for (const auto& each_child : children_) {
         each_child->ReleaseRendererResources();
@@ -405,8 +409,11 @@ void Control::SetRect(const Rect& rect) {
     //Notify rect change.
     RectChange(previous_rect);
 
-    //Layout children if size is changed.
     if (rect_.size != previous_rect.size) {
+
+        ReleaseCachedPaintingRenderer();
+
+        //Layout children if size is changed.
         NeedRelayout(previous_rect);
     }
 
@@ -999,7 +1006,11 @@ void Control::SetIsCachedPaintingEnabled(bool value) {
     }
 
     is_cached_painting_enabled_ = value;
+    ReleaseCachedPaintingRenderer();
+}
 
+
+void Control::ReleaseCachedPaintingRenderer() {
     cached_renderer_ = nullptr;
     valid_cached_renderer_rect_ = {};
 }
