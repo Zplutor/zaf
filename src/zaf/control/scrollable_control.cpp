@@ -291,7 +291,7 @@ void ScrollableControl::SetScrollContentSize(const Size& size) {
 }
 
 
-void ScrollableControl::MouseWheel(const Point& position, const MouseWheelMessage& message) {
+bool ScrollableControl::MouseWheel(const Point& position, const MouseWheelMessage& message) {
 
     std::shared_ptr<ScrollBar> scroll_bar;
 
@@ -305,6 +305,8 @@ void ScrollableControl::MouseWheel(const Point& position, const MouseWheelMessag
     if (scroll_bar->IsVisible() && scroll_bar->IsEnabled()) {
         scroll_bar->Wheel(message.GetWheelingDistance());
     }
+
+    return true;
 }
 
 

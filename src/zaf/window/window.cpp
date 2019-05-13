@@ -3,7 +3,6 @@
 #include <zaf/application.h>
 #include <zaf/base/error.h>
 #include <zaf/base/event_utility.h>
-#include <zaf/base/log.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/clear_edge.h>
@@ -13,6 +12,7 @@
 #include <zaf/serialization/properties.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/creation.h>
+#include <zaf/window/message/hit_test_message.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
@@ -59,12 +59,12 @@ void Window::RegisterDefaultClass(std::error_code& error_code) {
 }
 
 
-LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wparam, LPARAM lparam) {
 
     auto window = GetWindowFromHandle(hwnd);
     if (window != nullptr) {
 
-        auto message = CreateMessage(hwnd, message_id, wParam, lParam);
+        auto message = CreateMessage(hwnd, message_id, wparam, lparam);
 
         LRESULT result = 0;
         if (window->ReceiveMessage(*message, result)) {
@@ -72,14 +72,13 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wPar
         }
     }
 
-	return CallWindowProc(DefWindowProc, hwnd, message_id, wParam, lParam);
+	return CallWindowProc(DefWindowProc, hwnd, message_id, wparam, lparam);
 }
 
 
 Window::Window() :
 	handle_(nullptr),
-    rect_(0, 0, 640, 480),
-	is_tracking_mouse_(false) {
+    rect_(0, 0, 640, 480) {
 
 }
 
@@ -93,9 +92,7 @@ Window::~Window() {
 
 
 void Window::Initialize() {
-
-    root_control_ = Create<Control>();
-    root_control_->SetWindow(shared_from_this());
+    InitializeRootControl(Create<Control>());
 }
 
 
@@ -280,7 +277,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         return true;
 
     case WM_GETMINMAXINFO: {
-        auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.lParam);
+        auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.lparam);
         min_max_info->ptMinTrackSize.x = static_cast<LONG>(GetMinimumWidth());
         min_max_info->ptMinTrackSize.y = static_cast<LONG>(GetMinimumHeight());
         min_max_info->ptMaxTrackSize.x = static_cast<LONG>(GetMaximumWidth());
@@ -290,7 +287,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
     }
 
     case WM_SIZE:
-        Resize(LOWORD(message.lParam), HIWORD(message.lParam));
+        Resize(LOWORD(message.lparam), HIWORD(message.lparam));
         return true;
 
     case WM_MOUSEACTIVATE: {
@@ -320,6 +317,17 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         return true;
     }
 
+    case WM_NCHITTEST: {
+        auto hit_test_result = HitTest(dynamic_cast<const HitTestMessage&>(message));
+        if (hit_test_result) {
+            result = static_cast<LRESULT>(*hit_test_result);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     case WM_SETCURSOR: {
         bool is_changed = ChangeMouseCursor(message);
         if (is_changed) {
@@ -343,15 +351,18 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         //Fall through
 
     case WM_MOUSEMOVE:
+    case WM_NCMOUSEMOVE:
     case WM_MOUSELEAVE:
+    case WM_NCMOUSELEAVE:
     case WM_LBUTTONDOWN:
+    case WM_NCLBUTTONDOWN:
     case WM_LBUTTONUP:
+    case WM_NCLBUTTONUP:
     case WM_MBUTTONDOWN:
     case WM_MBUTTONUP:
     case WM_RBUTTONDOWN:
     case WM_RBUTTONUP:
-        ReceiveMouseMessage(dynamic_cast<const MouseMessage&>(message));
-        return true;
+        return ReceiveMouseMessage(dynamic_cast<const MouseMessage&>(message));
 
     case WM_KEYDOWN: 
         if (focused_control_ != nullptr) {
@@ -444,6 +455,32 @@ void Window::Resize(UINT width, UINT height) {
 }
 
 
+std::optional<HitTestResult> Window::HitTest(const HitTestMessage& message) {
+
+    auto hovered_control = [&]() {
+        
+        Point mouse_position = message.GetMousePosition();
+        std::shared_ptr<Control> current_control = root_control_;
+        while (true) {
+
+            auto child = current_control->FindChildAtPosition(mouse_position);
+            if (child == nullptr) {
+                break;
+            }
+
+            auto child_position = child->GetPosition();
+            mouse_position.x += child_position.x;
+            mouse_position.y += child_position.y;
+
+            current_control = child;
+        }
+        return current_control;
+    }();
+
+    return hovered_control->HitTest(message);
+}
+
+
 bool Window::RedirectMouseWheelMessage(const Message& message) {
 
     HWND handle = GetCapture();
@@ -456,12 +493,12 @@ bool Window::RedirectMouseWheelMessage(const Message& message) {
         return false;
     }
 
-    PostMessage(capturing_mouse_window->GetHandle(), message.id, message.wParam, message.lParam);
+    PostMessage(capturing_mouse_window->GetHandle(), message.id, message.wparam, message.lparam);
     return true;
 }
 
 
-void Window::ReceiveMouseMessage(const MouseMessage& message) {
+bool Window::ReceiveMouseMessage(const MouseMessage& message) {
 
     bool is_capturing_mouse = capturing_mouse_control_ != nullptr;
     auto get_mouse_position_to_capturing_control = [this, &message]() {
@@ -474,18 +511,9 @@ void Window::ReceiveMouseMessage(const MouseMessage& message) {
             mouse_position.y - control_rect.position.y);
     };
 
-    if (message.id == WM_MOUSEMOVE) {
+    if (message.id == WM_MOUSEMOVE || message.id == WM_NCMOUSEMOVE) {
 
-        if (!is_tracking_mouse_) {
-
-            TRACKMOUSEEVENT track_mouse_event_param = { 0 };
-            track_mouse_event_param.cbSize = sizeof(track_mouse_event_param);
-            track_mouse_event_param.dwFlags = TME_LEAVE;
-            track_mouse_event_param.hwndTrack = handle_;
-            if (TrackMouseEvent(&track_mouse_event_param)) {
-                is_tracking_mouse_ = true;
-            }
-        }
+        TrackMouseLeave(message);
 
         if (is_capturing_mouse) {
             capturing_mouse_control_->RouteHoverMessage(get_mouse_position_to_capturing_control());
@@ -494,19 +522,74 @@ void Window::ReceiveMouseMessage(const MouseMessage& message) {
             root_control_->RouteHoverMessage(message.GetMousePosition());
         }
     }
-    else if (message.id == WM_MOUSELEAVE) {
-
-        is_tracking_mouse_ = false;
-        if (!is_capturing_mouse) {
-            SetHoveredControl(nullptr);
-        }    
+    else if (message.id == WM_MOUSELEAVE || message.id == WM_NCMOUSELEAVE) {
+        MouseLeave(message);
     }
 
     if (is_capturing_mouse) {
-        capturing_mouse_control_->RouteMessage(get_mouse_position_to_capturing_control(), message);
+        return capturing_mouse_control_->RouteMessage(get_mouse_position_to_capturing_control(), message);
     }
     else {
-        root_control_->RouteMessage(message.GetMousePosition(), message);
+        return root_control_->RouteMessage(message.GetMousePosition(), message);
+    }
+}
+
+
+void Window::TrackMouseLeave(const MouseMessage& message) {
+
+    auto is_tracking_mouse = [&]() {
+
+        if (track_mouse_mode_ == TrackMouseMode::ClientArea &&
+            message.id == WM_MOUSEMOVE) {
+            return true;
+        }
+
+        if (track_mouse_mode_ == TrackMouseMode::NonClientArea &&
+            message.id == WM_NCMOUSEMOVE) {
+            return true;
+        }
+
+        return false;
+    }();
+
+    if (is_tracking_mouse) {
+        return;
+    }
+
+    TRACKMOUSEEVENT track_mouse_event_param = { 0 };
+    track_mouse_event_param.cbSize = sizeof(track_mouse_event_param);
+    track_mouse_event_param.dwFlags = TME_LEAVE;
+    if (message.id == WM_NCMOUSEMOVE) {
+        track_mouse_event_param.dwFlags |= TME_NONCLIENT;
+    }
+    track_mouse_event_param.hwndTrack = handle_;
+
+    if (TrackMouseEvent(&track_mouse_event_param)) {
+        track_mouse_mode_ = message.id == WM_NCMOUSEMOVE ? TrackMouseMode::NonClientArea : TrackMouseMode::ClientArea;
+    }
+}
+
+
+void Window::MouseLeave(const MouseMessage& message) {
+
+    bool is_tracking_mouse = [&]() {
+    
+        if (track_mouse_mode_ == TrackMouseMode::ClientArea &&
+            message.id == WM_MOUSELEAVE) {
+            return true;
+        }
+
+        if (track_mouse_mode_ == TrackMouseMode::NonClientArea &&
+            message.id == WM_NCMOUSELEAVE) {
+            return true;
+        }
+
+        return false;
+    }();
+
+    if (is_tracking_mouse) {
+        track_mouse_mode_ = TrackMouseMode::None;
+        SetHoveredControl(nullptr);
     }
 }
 
@@ -1007,6 +1090,36 @@ void Window::SetTitle(const std::wstring& title) {
     if (! IsClosed()) {
         SetWindowText(handle_, title.c_str());
     }
+}
+
+
+void Window::SetRootControl(const std::shared_ptr<Control>& control) {
+    InitializeRootControl(control != nullptr ? control : Create<Control>());
+}
+
+
+void Window::InitializeRootControl(const std::shared_ptr<Control>& control) {
+
+    if (root_control_ == control) {
+        return;
+    }
+
+    auto previous_root_control = root_control_;
+    if (previous_root_control != nullptr) {
+        previous_root_control->ReleaseRendererResources();
+        previous_root_control->SetWindow(nullptr);
+    }
+
+    root_control_ = control;
+    root_control_->SetWindow(shared_from_this());
+
+    if (!IsClosed()) {
+        RECT client_rect{};
+        ::GetClientRect(handle_, &client_rect);
+        root_control_->SetRect(Rect::FromRECT(client_rect));
+    }
+
+    RootControlChange(previous_root_control);
 }
 
 

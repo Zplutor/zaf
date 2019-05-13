@@ -10,7 +10,7 @@ bool ListControlSelectStrategy::ChangeIndexByKeyDown(const KeyMessage& key_messa
 
     new_index = previous_index;
 
-    switch (key_message.wParam) {
+    switch (key_message.wparam) {
 
         case VK_DOWN:
             if (new_index == InvalidIndex) {

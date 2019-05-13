@@ -58,9 +58,9 @@ public:
     protected:
         void Paint(Canvas& canvas, const Rect& dirty_rect) override;
         void ChangeMouseCursor(const Message& message, bool& is_changed) override;
-        void MouseMove(const Point& position, const MouseMessage& message) override;
-        void MouseDown(const Point& position, const MouseMessage& message) override;
-        void MouseUp(const Point& position, const MouseMessage& message) override;
+        bool MouseMove(const Point& position, const MouseMessage& message) override;
+        bool MouseDown(const Point& position, const MouseMessage& message) override;
+        bool MouseUp(const Point& position, const MouseMessage& message) override;
         void MouseCapture() override;
         void MouseRelease() override;
 

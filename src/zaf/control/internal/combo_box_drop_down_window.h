@@ -25,8 +25,8 @@ private:
     protected:
         void MouseCapture() override;
         void MouseRelease() override;
-        void MouseMove(const Point& position, const MouseMessage& message) override;
-        void MouseUp(const Point& position, const MouseMessage& message) override;
+        bool MouseMove(const Point& position, const MouseMessage& message) override;
+        bool MouseUp(const Point& position, const MouseMessage& message) override;
 
     private:
         HCURSOR originally_cursor_ = nullptr;

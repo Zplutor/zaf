@@ -930,36 +930,36 @@ void ListControl::ItemContainer::LayoutItems(
 }
 
 
-void ListControl::ItemContainer::MouseDown(const Point& position, const MouseMessage& message) {
+bool ListControl::ItemContainer::MouseDown(const Point& position, const MouseMessage& message) {
 
     SetIsFocused(true);
 
     if (message.GetMouseButton() != MouseButton::Left) {
-        __super::MouseDown(position, message);
-        return;
+        return __super::MouseDown(position, message);
     }
 
     CaptureMouse();
     select_strategy_->BeginChangingSelectionByMouseDown(position, message);
+    return true;
 }
 
 
-void ListControl::ItemContainer::MouseMove(const Point& position, const MouseMessage& message) {
+bool ListControl::ItemContainer::MouseMove(const Point& position, const MouseMessage& message) {
 
     if (IsCapturingMouse()) {
         select_strategy_->ChangeSelectionByMouseMove(position, message);
+        return true;
     }
     else {
-        __super::MouseMove(position, message);
+        return __super::MouseMove(position, message);
     }
 }
 
 
-void ListControl::ItemContainer::MouseUp(const Point& position, const MouseMessage& message) {
+bool ListControl::ItemContainer::MouseUp(const Point& position, const MouseMessage& message) {
 
     if (message.GetMouseButton() != MouseButton::Left) {
-        __super::MouseUp(position, message);
-        return;
+        return __super::MouseUp(position, message);
     }
 
     if (IsCapturingMouse()) {
@@ -967,6 +967,7 @@ void ListControl::ItemContainer::MouseUp(const Point& position, const MouseMessa
     }
 
     select_strategy_->EndChangingSelectionByMouseUp(position, message);
+    return true;
 }
 
 

@@ -144,7 +144,7 @@ private:
     template<typename PropertyType>
     static const PropertyType* Cast(const std::shared_ptr<Value>& value) {
 
-        auto typed_value = dynamic_cast<GetTypedValueType<PropertyType>::Type*>(value.get());
+        auto typed_value = dynamic_cast<typename GetTypedValueType<PropertyType>::Type*>(value.get());
         if (typed_value != nullptr) {
             return typed_value->GetValuePointer();
         }

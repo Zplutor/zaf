@@ -218,9 +218,9 @@ public:
         void Initialize() override;
 
     protected:
-        void MouseDown(const Point& position, const MouseMessage& message) override;
-        void MouseMove(const Point& position, const MouseMessage& message) override;
-        void MouseUp(const Point& position, const MouseMessage& message) override;
+        bool MouseDown(const Point& position, const MouseMessage& message) override;
+        bool MouseMove(const Point& position, const MouseMessage& message) override;
+        bool MouseUp(const Point& position, const MouseMessage& message) override;
         bool KeyDown(const KeyMessage& message) override;
 
     private:

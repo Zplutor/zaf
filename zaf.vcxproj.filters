@@ -79,6 +79,9 @@
     <Filter Include="zaf\base\container\utility">
       <UniqueIdentifier>{58c8f4c0-371b-4487-9c74-27b9307e5676}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\window\message\internal">
+      <UniqueIdentifier>{4d3ccef9-f4a7-4dd9-89de-203888e05c77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -358,6 +361,9 @@
     <ClCompile Include="src\zaf\graphic\bitmap.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\message\internal\mouse_position_conversion.cpp">
+      <Filter>zaf\window\message\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -589,9 +595,6 @@
       <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\message\keyboard_message.h">
-      <Filter>zaf\window\message</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\window\message\char_message.h">
       <Filter>zaf\window\message</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\string\to_string.h">
@@ -861,6 +864,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\container\utility\differ.h">
       <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\message\hit_test_message.h">
+      <Filter>zaf\window\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\message\internal\mouse_position_conversion.h">
+      <Filter>zaf\window\message\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\message\hit_test_result.h">
+      <Filter>zaf\window\message</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

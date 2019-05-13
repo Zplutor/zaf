@@ -243,7 +243,7 @@ public:
         void Paint(Canvas& canvas, const Rect& dirty_rect);
 		void MouseCapture() override;
 		void MouseRelease() override;
-        void MouseMove(const Point& position, const MouseMessage& message) override;
+        bool MouseMove(const Point& position, const MouseMessage& message) override;
 
         void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
@@ -439,9 +439,9 @@ public:
 protected:
 	void Layout(const Rect& previous_rect) override;
 
-    void MouseDown(const Point& position, const MouseMessage& message) override;
-    void MouseUp(const Point& position, const MouseMessage& message) override;
-    void MouseWheel(const Point& position, const MouseWheelMessage& message) override;
+    bool MouseDown(const Point& position, const MouseMessage& message) override;
+    bool MouseUp(const Point& position, const MouseMessage& message) override;
+    bool MouseWheel(const Point& position, const MouseWheelMessage& message) override;
 	void MouseCapture() override;
 	void MouseRelease() override;
 

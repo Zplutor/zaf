@@ -22,7 +22,7 @@ public:
      Get the virtual key.
      */
     DWORD GetVirtualKey() const {
-        return wParam;
+        return wparam;
     }
 };
 
@@ -36,7 +36,7 @@ public:
      Get the char.
      */
     wchar_t GetChar() const {
-        return static_cast<wchar_t>(wParam);
+        return static_cast<wchar_t>(wparam);
     }
 };
 

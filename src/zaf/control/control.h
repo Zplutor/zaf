@@ -27,7 +27,9 @@ class Message;
 class MouseMessage;
 class MouseWheelMessage;
 class Renderer;
+class HitTestMessage;
 class Window;
+enum class HitTestResult;
 
 /**
  Represents a control in a window.
@@ -655,6 +657,8 @@ protected:
 		return is_capturing_mouse_;
 	}
 
+    virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
+
     /**
      Change the mouse cursor.
 
@@ -678,10 +682,14 @@ protected:
      @param message
         Information about the WM_MOUSEMOVE message.
 
+     @return
+        Indicates that whether the notification has been processed by the control,
+        and should not delivered to the system.
+
      This method is called when a WM_MOUSEMOVE message is received. Derived classes should 
      call the same method of base class if they don't process the notification.
      */
-    virtual void MouseMove(const Point& position, const MouseMessage& message);
+    virtual bool MouseMove(const Point& position, const MouseMessage& message);
 
     /**
      Process the mouse enter notification.
@@ -714,10 +722,14 @@ protected:
      @param message
         Information about the mouse down message (e.g. WM_LBUTTONDOWN).
 
+     @return
+        Indicates that whether the notification has been processed by the control, 
+        and should not delivered to the system. 
+
      This method is called when a mouse button is pressed within the control. Derived classes 
      should call the same method of base class if they don't process the notifiction.
      */
-    virtual void MouseDown(const Point& position, const MouseMessage& message);
+    virtual bool MouseDown(const Point& position, const MouseMessage& message);
 
     /**
      Process the mouse up notification.
@@ -728,10 +740,14 @@ protected:
      @param message
         Information about the mouse up message (e.g. WM_LBUTTONUP).
 
+     @return
+        Indicates that whether the notification has been processed by the control,
+        and should not delivered to the system.
+
      This method is called when a mouse button is released within the control. Derived classes 
      should call the same method of base class if they don't process the notifiction.
      */
-    virtual void MouseUp(const Point& position, const MouseMessage& message);
+    virtual bool MouseUp(const Point& position, const MouseMessage& message);
 
     /**
      Process the mouse wheel notification.
@@ -742,10 +758,14 @@ protected:
      @param message
         Information about the mouse wheel message (e.g. WM_MOUSEWHEEL).
 
+     @return
+        Indicates that whether the notification has been processed by the control,
+        and should not delivered to the system.   
+
      This method is called when the mouse wheel within the control. Derived classes
      should call the same method of base class if they don't process the notification.
      */
-    virtual void MouseWheel(const Point& position, const MouseWheelMessage& message);
+    virtual bool MouseWheel(const Point& position, const MouseWheelMessage& message);
 
     /**
      Process the mouse capture notification.
@@ -848,8 +868,8 @@ private:
 	void IsCapturingMouseChanged(bool is_capturing_mouse);
 
 	void RouteHoverMessage(const Point& position);
-    void RouteMessage(const Point& position, const MouseMessage& message);
-    void InterpretMessage(const Point& position, const MouseMessage& message);
+    bool RouteMessage(const Point& position, const MouseMessage& message);
+    bool InterpretMessage(const Point& position, const MouseMessage& message);
 
 private:
     /**

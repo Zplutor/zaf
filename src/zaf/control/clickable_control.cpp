@@ -58,27 +58,30 @@ void ClickableControl::MouseLeave(const std::shared_ptr<Control>& leaved_control
 }
 
 
-void ClickableControl::MouseMove(const Point& position, const MouseMessage& message) {
+bool ClickableControl::MouseMove(const Point& position, const MouseMessage& message) {
 
-	CheckIsMousePressed(position, message.wParam);
+	CheckIsMousePressed(position, message);
+    return true;
 }
 
 
-void ClickableControl::MouseDown(const Point& position, const MouseMessage& message) {
+bool ClickableControl::MouseDown(const Point& position, const MouseMessage& message) {
 
 	if (message.GetMouseButton() == MouseButton::Left) {
 		SetIsFocused(true);
 		BeginPress(PressType::Mouse);
-		CheckIsMousePressed(position, message.wParam);
+		CheckIsMousePressed(position, message);
 	}
+    return true;
 }
 
 
-void ClickableControl::MouseUp(const Point& position, const MouseMessage& message) {
+bool ClickableControl::MouseUp(const Point& position, const MouseMessage& message) {
 
     if (message.GetMouseButton() == MouseButton::Left) {
 		EndPress(PressType::Mouse);
 	}
+    return true;
 }
 
 
@@ -96,7 +99,7 @@ void ClickableControl::MouseRelease() {
 
 bool ClickableControl::KeyDown(const KeyMessage& message) {
 
-	if (message.wParam == VK_SPACE) {
+	if (message.wparam == VK_SPACE) {
 		BeginPress(PressType::Key);
         return true;
 	}
@@ -107,7 +110,7 @@ bool ClickableControl::KeyDown(const KeyMessage& message) {
 
 bool ClickableControl::KeyUp(const KeyMessage& message) {
 
-	if (message.wParam == VK_SPACE) {
+	if (message.wparam == VK_SPACE) {
 		EndPress(PressType::Key);
         return true;
 	}
@@ -166,7 +169,7 @@ void ClickableControl::EndPress(PressType press_type) {
 }
 
 
-void ClickableControl::CheckIsMousePressed(const Point& position, WPARAM wParam) {
+void ClickableControl::CheckIsMousePressed(const Point& position, const MouseMessage& message) {
 
 	if (! is_mouse_press_) {
 		return;
@@ -175,7 +178,7 @@ void ClickableControl::CheckIsMousePressed(const Point& position, WPARAM wParam)
 	bool is_pressed = false;
 
 	if (IsHovered() && IsCapturingMouse()) {
-		if (wParam & MK_LBUTTON) {
+		if (message.GetPressedMouseKeys() == MouseKey::LeftButton) {
 
 			Rect bound(Point(), GetRect().size);
 			if (bound.Contain(position)) {

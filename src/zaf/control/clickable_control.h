@@ -46,9 +46,9 @@ public:
 protected:
 	void MouseEnter(const std::shared_ptr<Control>& entered_control) override;
     void MouseLeave(const std::shared_ptr<Control>& leaved_control) override;
-    void MouseMove(const Point& position, const MouseMessage& message) override;
-    void MouseDown(const Point& position, const MouseMessage& message) override;
-    void MouseUp(const Point& position, const MouseMessage& message) override;
+    bool MouseMove(const Point& position, const MouseMessage& message) override;
+    bool MouseDown(const Point& position, const MouseMessage& message) override;
+    bool MouseUp(const Point& position, const MouseMessage& message) override;
 	void MouseCapture() override;
 	void MouseRelease() override;
     bool KeyDown(const KeyMessage& message) override;
@@ -74,7 +74,7 @@ private:
 private:
 	void BeginPress(PressType press_type);
 	void EndPress(PressType press_type);
-	void CheckIsMousePressed(const Point& position, WPARAM wParam);
+	void CheckIsMousePressed(const Point& position, const MouseMessage& message);
 
 private:
 	bool is_pressed_;

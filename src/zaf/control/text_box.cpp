@@ -764,32 +764,35 @@ bool TextBox::ChangeMouseCursor() {
 }
 
 
-void TextBox::MouseMove(const Point& position, const MouseMessage& message) {
+bool TextBox::MouseMove(const Point& position, const MouseMessage& message) {
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_MOUSEMOVE, message.wParam, message.lParam, nullptr);
+		text_service_->TxSendMessage(WM_MOUSEMOVE, message.wparam, message.lparam, nullptr);
 	}
+    return true;
 }
 
 
-void TextBox::MouseDown(const Point& position, const MouseMessage& message) {
+bool TextBox::MouseDown(const Point& position, const MouseMessage& message) {
 	SetIsFocused(true);
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_LBUTTONDOWN, message.wParam, message.lParam, nullptr);
+		text_service_->TxSendMessage(WM_LBUTTONDOWN, message.wparam, message.lparam, nullptr);
 	}
+    return true;
 }
 
 
-void TextBox::MouseUp(const Point& position, const MouseMessage& message) {
+bool TextBox::MouseUp(const Point& position, const MouseMessage& message) {
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_LBUTTONUP, message.wParam, message.lParam, nullptr);
+		text_service_->TxSendMessage(WM_LBUTTONUP, message.wparam, message.lparam, nullptr);
 	}
+    return true;
 }
 
 
 bool TextBox::KeyDown(const KeyMessage& message) {
     
 	if (text_service_ != nullptr) {
-		HRESULT result = text_service_->TxSendMessage(WM_KEYDOWN, message.wParam, message.lParam, nullptr);
+		HRESULT result = text_service_->TxSendMessage(WM_KEYDOWN, message.wparam, message.lparam, nullptr);
         if (result == S_OK) {
             return true;
         }
@@ -802,7 +805,7 @@ bool TextBox::KeyDown(const KeyMessage& message) {
 bool TextBox::KeyUp(const KeyMessage& message) {
 
 	if (text_service_ != nullptr) {
-		HRESULT result = text_service_->TxSendMessage(WM_KEYUP, message.wParam, message.lParam, nullptr);
+		HRESULT result = text_service_->TxSendMessage(WM_KEYUP, message.wparam, message.lparam, nullptr);
         if (result == S_OK) {
             return true;
         }
@@ -815,7 +818,7 @@ bool TextBox::KeyUp(const KeyMessage& message) {
 bool TextBox::CharInput(const CharMessage& message) {
 
 	if (text_service_ != nullptr) {
-		HRESULT result = text_service_->TxSendMessage(WM_CHAR, message.wParam, message.lParam, nullptr);
+		HRESULT result = text_service_->TxSendMessage(WM_CHAR, message.wparam, message.lparam, nullptr);
         if (result == S_OK) {
             return true;
         }

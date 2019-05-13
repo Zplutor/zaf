@@ -165,7 +165,7 @@ public:
 protected:
 	void Layout(const Rect& previous_rect) override;
 
-    void MouseWheel(const Point& position, const MouseWheelMessage& message) override;
+    bool MouseWheel(const Point& position, const MouseWheelMessage& message) override;
 
     /**
      Get the visible scroll content rect, in scroll content control's coordinate.

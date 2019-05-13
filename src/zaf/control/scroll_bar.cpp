@@ -367,19 +367,21 @@ ScrollBar::ScrollEvent::Proxy ScrollBar::GetScrollEvent() {
 }
 
 
-void ScrollBar::MouseDown(const Point& position, const MouseMessage& message) {
+bool ScrollBar::MouseDown(const Point& position, const MouseMessage& message) {
 
 	if (message.GetMouseButton() == MouseButton::Left) {
 		CaptureMouse();
 	}
+    return true;
 }
 
 
-void ScrollBar::MouseUp(const Point& position, const MouseMessage& message) {
+bool ScrollBar::MouseUp(const Point& position, const MouseMessage& message) {
 
 	if (message.GetMouseButton() == MouseButton::Left) {
 		ReleaseMouse();
 	}
+    return true;
 }
 
 
@@ -492,13 +494,12 @@ Rect ScrollBar::GetThumbSlotRect() const {
 }
 
 
-void ScrollBar::MouseWheel(const Point& position, const MouseWheelMessage& message) {
+bool ScrollBar::MouseWheel(const Point& position, const MouseWheelMessage& message) {
 
-	if (message.IsHorizontalWheeling() != IsHorizontal()) {
-		return;
+	if (message.IsHorizontalWheeling() == IsHorizontal()) {
+        Wheel(message.GetWheelingDistance());
 	}
-	
-    Wheel(message.GetWheelingDistance());
+    return true;
 }
 
 
@@ -844,13 +845,15 @@ void ScrollBar::Thumb::MouseRelease() {
 }
 
 
-void ScrollBar::Thumb::MouseMove(const Point& position, const MouseMessage& message) {
+bool ScrollBar::Thumb::MouseMove(const Point& position, const MouseMessage& message) {
 
-	ClickableControl::MouseMove(position, message);
+	bool result = ClickableControl::MouseMove(position, message);
 
 	if (is_dragging_) {
 		drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));
 	}
+
+    return result;
 }
 
 

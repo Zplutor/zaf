@@ -30,7 +30,7 @@ public:
         void Initialize() override;
 
     protected:
-        void MouseMove(const Point& position, const MouseMessage& message) override;
+        bool MouseMove(const Point& position, const MouseMessage& message) override;
 
     private:
         friend class ComboBox;

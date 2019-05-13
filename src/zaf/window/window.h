@@ -12,7 +12,9 @@
 namespace zaf {
 
 class Caret;
+class HitTestMessage;
 class MouseMessage;
+enum class HitTestResult;
 
 /**
  Represents a top-level window.
@@ -407,6 +409,11 @@ public:
 	}
 
     /**
+     Set window's root control.
+     */
+    void SetRootControl(const std::shared_ptr<Control>& control);
+
+    /**
      Get the control which is capturing mouse in the window.
      */
     const std::shared_ptr<Control>& GetCapturingMouseControl() const {
@@ -552,6 +559,8 @@ protected:
      */
     virtual void WindowShow() { }
 
+    virtual void RootControlChange(const std::shared_ptr<Control>& previous_root_control) { } 
+
     /**
      This method is called after the focused control changed.
 
@@ -600,8 +609,17 @@ private:
 	void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
 
 private:
-	static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+    enum class TrackMouseMode {
+        None,
+        ClientArea,
+        NonClientArea,
+    };
 
+private:
+	static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
+
+private:
+    void InitializeRootControl(const std::shared_ptr<Control>& control);
     void CreateWindowHandle();
     const Rect GetInitialRect() const;
     void CreateRenderer();
@@ -613,8 +631,11 @@ private:
 
     void Repaint();
     void Resize(UINT width, UINT height);
+    std::optional<HitTestResult> HitTest(const HitTestMessage& message);
     bool RedirectMouseWheelMessage(const Message& message);
-    void ReceiveMouseMessage(const MouseMessage& message);
+    bool ReceiveMouseMessage(const MouseMessage& message);
+    void TrackMouseLeave(const MouseMessage& message);
+    void MouseLeave(const MouseMessage& message);
     bool ChangeMouseCursor(const Message& message);
     bool ReceiveCloseMessage();
     void ReceiveDestroyMessage();
@@ -633,7 +654,7 @@ private:
     Rect rect_;
 	WindowRenderer renderer_;
 
-	bool is_tracking_mouse_;
+    TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };
 
 	std::shared_ptr<Control> root_control_;
 	std::shared_ptr<Control> hovered_control_;

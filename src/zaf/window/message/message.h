@@ -12,7 +12,7 @@ public:
     /**
      Construct the instance.
      */
-    Message() : hwnd(nullptr), id(0), wParam(0), lParam(0) { }
+    Message() : hwnd(nullptr), id(0), wparam(0), lparam(0) { }
 
     /**
      Destruct the instance.
@@ -33,12 +33,12 @@ public:
     /**
      The WPARAM argument.
      */
-    WPARAM wParam;
+    WPARAM wparam;
 
     /**
      The LPARAM argument.
      */
-    LPARAM lParam;
+    LPARAM lparam;
 };
 
 }

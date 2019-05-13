@@ -1,21 +1,30 @@
 #include <zaf/window/message/creation.h>
+#include <zaf/window/message/hit_test_message.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
 
-std::shared_ptr<Message> CreateMessage(HWND hwnd, UINT id, WPARAM wParam, LPARAM lParam) {
+std::shared_ptr<Message> CreateMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam) {
 
     std::shared_ptr<Message> message;
 
     switch (id) {
+        case WM_NCHITTEST:
+            message = std::make_shared<HitTestMessage>();
+            break;
+
         case WM_LBUTTONDOWN:
+        case WM_NCLBUTTONDOWN:
         case WM_LBUTTONUP:
+        case WM_NCLBUTTONUP:
         case WM_MBUTTONDOWN:
         case WM_MBUTTONUP:
         case WM_MOUSEMOVE:
+        case WM_NCMOUSEMOVE:
         case WM_MOUSELEAVE:
+        case WM_NCMOUSELEAVE:
         case WM_RBUTTONDOWN:
         case WM_RBUTTONUP:
             message = std::make_shared<MouseMessage>();
@@ -46,8 +55,8 @@ std::shared_ptr<Message> CreateMessage(HWND hwnd, UINT id, WPARAM wParam, LPARAM
     if (message != nullptr) {
         message->hwnd = hwnd;
         message->id = id;
-        message->wParam = wParam;
-        message->lParam = lParam;
+        message->wparam = wparam;
+        message->lparam = lparam;
     }
 
     return message;

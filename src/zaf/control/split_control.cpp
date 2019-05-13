@@ -522,27 +522,30 @@ void SplitControl::SplitBar::ChangeMouseCursor(const Message& message, bool& is_
 }
 
 
-void SplitControl::SplitBar::MouseMove(const Point& position, const MouseMessage& message) {
+bool SplitControl::SplitBar::MouseMove(const Point& position, const MouseMessage& message) {
 
     if (IsCapturingMouse()) {
         drag_event_.Trigger(std::dynamic_pointer_cast<SplitBar>(shared_from_this()));
     }
+    return true;
 }
 
 
-void SplitControl::SplitBar::MouseDown(const Point& position, const MouseMessage& message) {
+bool SplitControl::SplitBar::MouseDown(const Point& position, const MouseMessage& message) {
 
     if (message.GetMouseButton() == MouseButton::Left) {
         CaptureMouse();
     }
+    return true;
 }
 
 
-void SplitControl::SplitBar::MouseUp(const Point& position, const MouseMessage& message) {
+bool SplitControl::SplitBar::MouseUp(const Point& position, const MouseMessage& message) {
 
     if (IsCapturingMouse()) {
         ReleaseMouse();
     }
+    return true;
 }
 
 
