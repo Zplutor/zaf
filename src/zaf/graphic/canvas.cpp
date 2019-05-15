@@ -50,14 +50,17 @@ void Canvas::BeginPaint() {
 
     const auto& current_transformed_layer = transformed_layers_.top();
 
-    current_transformed_rect_ = zaf::MakeClearEdgeForFill(current_transformed_layer.rect, ClearEdgeOption::Clear);
-    renderer_.Transform(TransformMatrix::Translation(current_transformed_rect_.position));
+    auto clear_edge_transformed_rect = zaf::MakeClearEdgeForFill(current_transformed_layer.rect, ClearEdgeOption::Clear);
+    renderer_.Transform(TransformMatrix::Translation(clear_edge_transformed_rect.position));
 
-    Rect paintable_rect = current_transformed_layer.paintable_rect;
-    paintable_rect.position.x -= current_transformed_rect_.position.x;
-    paintable_rect.position.y -= current_transformed_rect_.position.y;
+    Rect paintable_rect = zaf::MakeClearEdgeForFill(current_transformed_layer.paintable_rect, ClearEdgeOption::Clear);
+    paintable_rect.position.x -= clear_edge_transformed_rect.position.x;
+    paintable_rect.position.y -= clear_edge_transformed_rect.position.y;
 
     renderer_.PushAxisAlignedClipping(paintable_rect, AntialiasMode::PerPrimitive);
+
+    transformed_rect_offset_ = current_transformed_layer.rect.position;
+    transformed_rect_clear_edge_offset_ = clear_edge_transformed_rect.position;
 }
 
 

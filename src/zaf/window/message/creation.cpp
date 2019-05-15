@@ -16,17 +16,21 @@ std::shared_ptr<Message> CreateMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM
             break;
 
         case WM_LBUTTONDOWN:
-        case WM_NCLBUTTONDOWN:
         case WM_LBUTTONUP:
+        case WM_NCLBUTTONDOWN:
         case WM_NCLBUTTONUP:
         case WM_MBUTTONDOWN:
         case WM_MBUTTONUP:
+        case WM_RBUTTONDOWN:
+        case WM_RBUTTONUP:
+        case WM_NCRBUTTONDOWN:
+        case WM_NCRBUTTONUP:
+        case WM_NCMBUTTONDOWN:
+        case WM_NCMBUTTONUP:
         case WM_MOUSEMOVE:
         case WM_NCMOUSEMOVE:
         case WM_MOUSELEAVE:
         case WM_NCMOUSELEAVE:
-        case WM_RBUTTONDOWN:
-        case WM_RBUTTONUP:
             message = std::make_shared<MouseMessage>();
             break;
 

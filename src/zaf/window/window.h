@@ -495,6 +495,10 @@ public:
      */
 	void Hide();
 
+    void Maximize();
+    void Minimize();
+    void Restore();
+
     /**
      Close the window.
      */

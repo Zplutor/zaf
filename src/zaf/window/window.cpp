@@ -1186,13 +1186,26 @@ void Window::Show() {
 
 
 void Window::Hide() {
-
     ShowWindow(handle_, SW_HIDE);
 }
 
 
-void Window::Close() {
+void Window::Maximize() {
+    ShowWindow(handle_, SW_MAXIMIZE);
+}
 
+
+void Window::Minimize() {
+    ShowWindow(handle_, SW_MINIMIZE);
+}
+
+
+void Window::Restore() {
+    ShowWindow(handle_, SW_RESTORE);
+}
+
+
+void Window::Close() {
     SendMessage(GetHandle(), WM_CLOSE, 0, 0);
 }
 

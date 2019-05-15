@@ -234,7 +234,7 @@ private:
     std::shared_ptr<State> GetCurrentState() const;
 
     Point AddAbsoluteOffset(const Point& point) const {
-        return Point(point.x + current_transformed_rect_.position.x, point.y + current_transformed_rect_.position.y);
+        return Point(point.x + transformed_rect_offset_.x, point.y + transformed_rect_offset_.y);
     }
 
     Rect AddAbsoluteOffset(const Rect& rect) const {
@@ -250,8 +250,8 @@ private:
     }
 
     void RemoveClearEdgeAbsoluteOffset(Point& point) const {
-        point.x -= current_transformed_rect_.position.x;
-        point.y -= current_transformed_rect_.position.y;
+        point.x -= transformed_rect_clear_edge_offset_.x;
+        point.y -= transformed_rect_clear_edge_offset_.y;
     }
 
     void RemoveClearEdgeAbsoluteOffset(Rect& rect) const {
@@ -269,7 +269,9 @@ private:
 private:
     Renderer renderer_;
     std::stack<TransformedLayer> transformed_layers_;
-    Rect current_transformed_rect_;
+    
+    Point transformed_rect_offset_;
+    Point transformed_rect_clear_edge_offset_;
 	
 	std::vector<std::shared_ptr<State>> states_;
 };
