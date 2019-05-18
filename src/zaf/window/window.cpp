@@ -633,6 +633,8 @@ void Window::ReceiveDestroyMessage() {
         focused_control_ = nullptr;
     }
 
+    root_control_->ReleaseRendererResources();
+
     HWND old_handle = handle_;
 
     handle_ = nullptr;
