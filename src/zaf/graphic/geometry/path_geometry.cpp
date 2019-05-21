@@ -33,13 +33,13 @@ std::size_t PathGeometry::GetSegmentCount(std::error_code& error_code) const {
 }
 
 
-const GeometrySink PathGeometry::Open(std::error_code& error_code) {
+GeometrySink PathGeometry::Open(std::error_code& error_code) {
 
 	ID2D1GeometrySink* sink_handle = nullptr;
 	HRESULT result = GetActualHandle()->Open(&sink_handle);
 
     error_code = MakeComErrorCode(result);
-    return GeometrySink(sink_handle);
+    return GeometrySink(sink_handle, coordinate_origin_);
 }
 
 }

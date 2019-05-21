@@ -12,7 +12,7 @@ namespace zaf {
  */
 class RectangleGeometry : public Geometry {
 public:
-    RectangleGeometry() { }
+    RectangleGeometry() = default;
 
     /**
      Construct the instance with specified handle.
@@ -24,7 +24,7 @@ public:
     /**
      Get the rectangle area.
      */
-    const Rect GetRect() const {
+    Rect GetRect() const {
 
         D2D1_RECT_F rect = { 0 };
         GetActualHandle()->GetRect(&rect);

@@ -82,6 +82,9 @@
     <Filter Include="zaf\window\message\internal">
       <UniqueIdentifier>{4d3ccef9-f4a7-4dd9-89de-203888e05c77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\internal">
+      <UniqueIdentifier>{bac57db8-2209-4a31-825a-4fd930ca21cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -143,9 +146,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp">
       <Filter>zaf\graphic\text</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\clear_edge.cpp">
-      <Filter>zaf\graphic</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\radio_button.cpp">
       <Filter>zaf\control</Filter>
@@ -364,6 +364,12 @@
     <ClCompile Include="src\zaf\window\message\internal\mouse_position_conversion.cpp">
       <Filter>zaf\window\message\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\alignment.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\internal\alignment_helper.cpp">
+      <Filter>zaf\graphic\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -500,9 +506,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\text_metrics.h">
       <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\clear_edge.h">
-      <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\radio_button.h">
       <Filter>zaf\control</Filter>
@@ -873,6 +876,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\message\hit_test_result.h">
       <Filter>zaf\window\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\alignment.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h">
+      <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

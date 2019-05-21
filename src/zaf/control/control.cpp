@@ -3,11 +3,11 @@
 #include <zaf/base/assert.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/control/layout/anchor_layouter.h>
+#include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
-#include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/serialization/data_node.h>
 #include <zaf/serialization/deserializing.h>
@@ -161,7 +161,7 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	Canvas::StateGuard state_guard(canvas);
 
     Rect border_rect;
-    border_rect.size = canvas.MakeClearEdgeForFill(GetRect()).size;
+    border_rect.size = GetRect().size;
   
     Rect background_rect = border_rect;
     background_rect.Deflate(GetBorder());
@@ -175,11 +175,10 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
     canvas.SetBrushWithColor(GetBackgroundColor());
     canvas.DrawRectangle(background_rect);
 
-    auto resource_factory = GetResourceFactory();
-    auto border_geometry = resource_factory->CreateRectangleGeometry(border_rect);
-    auto background_geometry = resource_factory->CreateRectangleGeometry(background_rect);
+    auto border_geometry = canvas.CreateRectangleGeometry(border_rect);
+    auto background_geometry = canvas.CreateRectangleGeometry(background_rect);
     
-    auto path_geometry = resource_factory->CreatePathGeometry();
+    auto path_geometry = canvas.CreatePathGeometry();
     auto sink = path_geometry.Open();
     Geometry::Combine(border_geometry, background_geometry, Geometry::CombineMode::Exclude, sink);
     sink.Close();
@@ -303,7 +302,7 @@ void Control::RecalculateCachedPaintingRect(const Rect& repaint_rect) {
 
     cached_renderer_.BeginDraw();
     cached_renderer_.Transform(TransformMatrix::Identity);
-    cached_renderer_.PushAxisAlignedClipping(MakeClearEdgeForFill(invalid_rect, ClearEdgeOption::Clear), AntialiasMode::PerPrimitive);
+    cached_renderer_.PushAxisAlignedClipping(Align(invalid_rect), AntialiasMode::PerPrimitive);
     cached_renderer_.Clear();
     cached_renderer_.PopAxisAlignedClipping();
     cached_renderer_.EndDraw();

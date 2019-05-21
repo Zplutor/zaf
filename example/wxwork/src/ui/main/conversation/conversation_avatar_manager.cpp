@@ -1,7 +1,7 @@
 #include "ui/main/conversation/conversation_avatar_manager.h"
 #include <algorithm>
 #include <zaf/application.h>
-#include <zaf/graphic/clear_edge.h>
+#include <zaf/graphic/alignment.h>
 #include <zaf/graphic/resource_factory.h>
 #include "logic/service.h"
 #include "ui/main/conversation/common_definition.h"
@@ -184,7 +184,7 @@ static void DrawMemberAvatarImagesToConversationAvatarRenderer(
         }
 
         auto avatar_rect = member_avatar_rects[index];
-        avatar_rect = zaf::MakeClearEdgeForFill(avatar_rect, zaf::ClearEdgeOption::Clear);
+        avatar_rect = zaf::Align(avatar_rect);
 
         auto image_scaler = zaf::GetResourceFactory()->CreateImageScaler();
         image_scaler.Initialize(member_avatars[index], avatar_rect.size, zaf::ImageInterpolationMode::Fant);

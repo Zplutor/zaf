@@ -12,7 +12,7 @@ namespace zaf {
  */
 class TransformedGeometry : public Geometry {
 public:
-    TransformedGeometry() { }
+    TransformedGeometry() = default;
 
     /**
      Construct the instance with specified handle.
@@ -24,7 +24,7 @@ public:
     /**
      Get the source geometry of this transformed geometry.
      */
-    const std::shared_ptr<Geometry> GetSourceGeometry() const {
+    std::shared_ptr<Geometry> GetSourceGeometry() const {
         ID2D1Geometry* handle = nullptr;
         GetActualHandle()->GetSourceGeometry(&handle);
         return std::make_shared<Geometry>(handle);
@@ -33,7 +33,7 @@ public:
     /**
      Get the matrix used to transform the source geometry.
      */
-    const TransformMatrix GetTransformMatrix() const {
+    TransformMatrix GetTransformMatrix() const {
         D2D1::Matrix3x2F matrix;
         GetActualHandle()->GetTransform(&matrix);
         return TransformMatrix::FromD2D1MATRIX3X2F(matrix);

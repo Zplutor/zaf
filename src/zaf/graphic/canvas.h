@@ -4,13 +4,17 @@
 #include <stack>
 #include <string>
 #include <zaf/application.h>
+#include <zaf/base/error.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/graphic/clear_edge.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/brush/solid_color_brush.h>
 
 namespace zaf {
+
+class PathGeometry;
+class RectangleGeometry;
+class RoundedRectangleGeometry;
 
 class DrawImageOptions {
 public:
@@ -73,24 +77,19 @@ public:
 public:
 	Canvas(const Renderer& renderer, const Rect& renderer_rect, const Rect& paintable_rect);
 
+    Canvas(Canvas&) = delete;
+    Canvas& operator=(const Canvas&) = delete;
+
 	Renderer& GetRenderer() {
 		return renderer_;
 	}
 
     Rect GetAbsolutePaintableRect() const {
-        return transformed_layers_.top().paintable_rect;
+        return transform_layers_.top().paintable_rect;
     }
 
 	void SaveState();
 	void RestoreState();
-
-	ClearEdgeOption GetClearEdgeOption() const {
-		return GetCurrentState()->clear_edge_option;
-	}
-
-	void SetClearEdgeOption(ClearEdgeOption option) {
-		GetCurrentState()->clear_edge_option = option;
-	}
 
 	void SetBrush(const Brush& brush) {
 		GetCurrentState()->brush = brush;
@@ -108,110 +107,49 @@ public:
     void PushClippingRect(const Rect& rect);
     void PopClippingRect();
 
-	void DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
-		auto state = GetCurrentState();
-		renderer_.DrawLine(
-            MakeClearEdgeForLine(from_point, stroke_width),
-			MakeClearEdgeForLine(to_point, stroke_width), 
-			state->brush, 
-			stroke_width,
-			state->stroke
-		);
-	}
+    void DrawLine(const Point& from_point, const Point& to_point, float stroke_width);
 
-	void DrawRectangle(const Rect& rect) {
-		auto state = GetCurrentState();
-		renderer_.DrawRectangle(MakeClearEdgeForFill(rect), state->brush);
-	}
+    void DrawRectangle(const Rect& rect);
+    void DrawRectangleFrame(const Rect& rect, float stroke_width);
 
-	void DrawRectangleFrame(const Rect& rect, float stroke_width) {
-		auto state = GetCurrentState();
-		renderer_.DrawRectangleFrame(
-			MakeClearEdgeForLine(rect, stroke_width),
-			state->brush,
-			stroke_width, 
-			state->stroke
-		);
-	}
+    void DrawRoundedRectangle(const RoundedRect& rounded_rect);
+    void DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width);
 
-    void DrawRoundedRectangle(const RoundedRect& rounded_rect) {
-        auto state = GetCurrentState();
-        renderer_.DrawRoundedRectangle(MakeClearEdgeForFill(rounded_rect), state->brush);
-    }
+    void DrawEllipse(const Ellipse& ellipse);
+    void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width);
 
-    void DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width) {
-        auto state = GetCurrentState();
-        renderer_.DrawRoundedRectangleFrame(
-            MakeClearEdgeForLine(rounded_rect, stroke_width),
-            state->brush,
-            stroke_width,
-            state->stroke);
-    }
+    void DrawGeometry(const Geometry& geometry);
+    void DrawGeometryFrame(const Geometry& geometry, float stroke_width);
 
-	void DrawEllipse(const Ellipse& ellipse) {
-		auto state = GetCurrentState();
-		renderer_.DrawEllipse(MakeClearEdgeForFill(ellipse), state->brush);
-	}
+    void DrawTextFormat(const std::wstring& text, const TextFormat& text_format, const Rect& rect);
+    void DrawTextLayout(const TextLayout& text_layout, const Point& position);
 
-	void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width) {
-		auto state = GetCurrentState();
-		renderer_.DrawEllipseFrame(
-			MakeClearEdgeForLine(ellipse, stroke_width), 
-			state->brush,
-			stroke_width,
-			state->stroke
-		);
-	}
+    void DrawBitmap(
+        const Bitmap& bitmap,
+        const Rect& destination_rect, 
+        const DrawImageOptions& options = {});
 
-	void DrawGeometry(const Geometry& geometry) {
-		renderer_.DrawGeometry(geometry, GetCurrentState()->brush, Brush());
-	}
+    PathGeometry CreatePathGeometry(std::error_code& error) const;
+    PathGeometry CreatePathGeometry() const;
 
-	void DrawGeometryFrame(const Geometry& geometry, float stroke_width) {
-		auto state = GetCurrentState();
-		renderer_.DrawGeometryFrame(geometry, state->brush, stroke_width, state->stroke);
-	}
+    RectangleGeometry CreateRectangleGeometry(const Rect& rect, std::error_code& error) const;
+    RectangleGeometry CreateRectangleGeometry(const Rect& rect) const;
 
-	void DrawTextFormat(const std::wstring& text, const TextFormat& text_format, const Rect& rect) {
-		renderer_.DrawTextFormat(text, text_format, rect, GetCurrentState()->brush);
-	}
+    RoundedRectangleGeometry CreateRoundedRectangleGeometry(
+        const RoundedRect& rounded_rect, 
+        std::error_code& error) const;
 
-    void DrawTextLayout(const TextLayout& text_layout, const Point& position) {
-        renderer_.DrawTextLayout(text_layout, position, GetCurrentState()->brush);
-	}
-
-    void DrawBitmap(const Bitmap& bitmap, const Rect& destination_rect, const DrawImageOptions& options = {}) {
-        renderer_.DrawBitmap(bitmap, destination_rect, options.Opacity(), options.InterpolationMode(), options.SourceRect());
-    }
-
-    Point MakeClearEdgeForLine(const Point& point, float stroke_width) const;
-    Point MakeClearEdgeForFill(const Point& point) const;
-
-    Rect MakeClearEdgeForLine(const Rect& rect, float stroke_width) const;
-    Rect MakeClearEdgeForFill(const Rect& rect) const;
-
-    RoundedRect MakeClearEdgeForLine(const RoundedRect& rounded_rect, float stroke_width) const;
-    RoundedRect MakeClearEdgeForFill(const RoundedRect& rounded_rect) const;
-
-    Ellipse MakeClearEdgeForLine(const Ellipse& ellipse, float stroke_width) const;
-    Ellipse MakeClearEdgeForFill(const Ellipse& ellipse) const;
-
-    Canvas(Canvas&) = delete;
-    Canvas& operator=(const Canvas&) = delete;
+    RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect) const;
 
 private:
 	class State {
 	public:
-		State() : clear_edge_option(ClearEdgeOption::Clear) { } 
-
-	public:
-		ClearEdgeOption clear_edge_option;
 		Brush brush;
 		Stroke stroke;
         std::vector<Rect> clipping_rects;
 	};
 
-    class TransformedLayer {
+    class TransformLayer {
     public:
         Rect rect;
         Rect paintable_rect;
@@ -233,45 +171,26 @@ private:
     void CancelState(const std::shared_ptr<State>& state);
     std::shared_ptr<State> GetCurrentState() const;
 
-    Point AddAbsoluteOffset(const Point& point) const {
-        return Point(point.x + transformed_rect_offset_.x, point.y + transformed_rect_offset_.y);
+    Point AddOffset(const Point& point) const;
+    Rect AddOffset(const Rect& rect) const;
+    RoundedRect AddOffset(const RoundedRect& rounded_rect) const;
+    Ellipse AddOffset(const Ellipse& ellipse) const;
+
+    template<typename T>
+    T AlignWithOffset(const T& t) const {
+        return Align(AddOffset(t));
     }
 
-    Rect AddAbsoluteOffset(const Rect& rect) const {
-        return Rect(AddAbsoluteOffset(rect.position), rect.size);
-    }
-
-    RoundedRect AddAbsoluteOffset(const RoundedRect& rounded_rect) const {
-        return RoundedRect(AddAbsoluteOffset(rounded_rect.rect), rounded_rect.x_radius, rounded_rect.y_radius);
-    }
-
-    Ellipse AddAbsoluteOffset(const Ellipse& ellipse) const {
-        return Ellipse(AddAbsoluteOffset(ellipse.position), ellipse.x_radius, ellipse.y_radius);
-    }
-
-    void RemoveClearEdgeAbsoluteOffset(Point& point) const {
-        point.x -= transformed_rect_clear_edge_offset_.x;
-        point.y -= transformed_rect_clear_edge_offset_.y;
-    }
-
-    void RemoveClearEdgeAbsoluteOffset(Rect& rect) const {
-        RemoveClearEdgeAbsoluteOffset(rect.position);
-    }
-
-    void RemoveClearEdgeAbsoluteOffset(RoundedRect& rounded_rect) const {
-        RemoveClearEdgeAbsoluteOffset(rounded_rect.rect.position);
-    }
-
-    void RemoveClearEdgeAbsoluteOffset(Ellipse& ellipse) const {
-        RemoveClearEdgeAbsoluteOffset(ellipse.position);
+    template<typename T>
+    T AlignLineWithOffset(const T& t, float stroke_width) const {
+        return AlignLine(AddOffset(t), stroke_width);
     }
 
 private:
     Renderer renderer_;
-    std::stack<TransformedLayer> transformed_layers_;
+    std::stack<TransformLayer> transform_layers_;
     
-    Point transformed_rect_offset_;
-    Point transformed_rect_clear_edge_offset_;
+    Point aligned_transform_offset_;
 	
 	std::vector<std::shared_ptr<State>> states_;
 };

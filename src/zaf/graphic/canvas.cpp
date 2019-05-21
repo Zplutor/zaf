@@ -1,6 +1,10 @@
 #include <zaf/graphic/canvas.h>
 #include <dwrite.h>
 #include <zaf/application.h>
+#include <zaf/graphic/alignment.h>
+#include <zaf/graphic/geometry/path_geometry.h>
+#include <zaf/graphic/geometry/rectangle_geometry.h>
+#include <zaf/graphic/geometry/rounded_rectangle_geometry.h>
 #include <zaf/graphic/layer_parameters.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/graphic/text/text_format.h>
@@ -10,10 +14,10 @@ namespace zaf {
 Canvas::Canvas(const Renderer& renderer, const Rect& renderer_rect, const Rect& paintable_rect) :
     renderer_(renderer) {
 
-    TransformedLayer transformed_layer;
+    TransformLayer transformed_layer;
     transformed_layer.rect = renderer_rect;
     transformed_layer.paintable_rect = paintable_rect;
-    transformed_layers_.push(transformed_layer);
+    transform_layers_.push(transformed_layer);
 
 	SaveState();
 }
@@ -21,57 +25,62 @@ Canvas::Canvas(const Renderer& renderer, const Rect& renderer_rect, const Rect& 
 
 void Canvas::PushTransformLayer(const Rect& rect, const Rect& paintable_rect) {
 
-    const auto& current_transformed_layer = transformed_layers_.top();
+    const auto& current_transform_layer = transform_layers_.top();
 
-    Rect new_transformed_rect = rect;
-    new_transformed_rect.position.x += current_transformed_layer.rect.position.x;
-    new_transformed_rect.position.y += current_transformed_layer.rect.position.y;
+    Rect new_transform_rect = rect;
+    new_transform_rect.position.x += current_transform_layer.rect.position.x;
+    new_transform_rect.position.y += current_transform_layer.rect.position.y;
 
     Rect new_paintable_rect = paintable_rect;
-    new_paintable_rect.position.x += current_transformed_layer.rect.position.x;
-    new_paintable_rect.position.y += current_transformed_layer.rect.position.y;
-    new_paintable_rect.Intersect(current_transformed_layer.paintable_rect);
-    new_paintable_rect.Intersect(new_transformed_rect);
+    new_paintable_rect.position.x += current_transform_layer.rect.position.x;
+    new_paintable_rect.position.y += current_transform_layer.rect.position.y;
+    new_paintable_rect.Intersect(current_transform_layer.paintable_rect);
+    new_paintable_rect.Intersect(new_transform_rect);
 
-    TransformedLayer new_transformed_layer;
-    new_transformed_layer.rect = new_transformed_rect;
-    new_transformed_layer.paintable_rect = new_paintable_rect;
+    TransformLayer new_transform_layer;
+    new_transform_layer.rect = new_transform_rect;
+    new_transform_layer.paintable_rect = new_paintable_rect;
 
-    transformed_layers_.push(new_transformed_layer);
+    transform_layers_.push(new_transform_layer);
 }
 
 
 void Canvas::PopTransformLayer() {
-    transformed_layers_.pop();
+    transform_layers_.pop();
 }
 
 
 void Canvas::BeginPaint() {
 
-    const auto& current_transformed_layer = transformed_layers_.top();
+    const auto& current_transform_layer = transform_layers_.top();
 
-    auto clear_edge_transformed_rect = zaf::MakeClearEdgeForFill(current_transformed_layer.rect, ClearEdgeOption::Clear);
-    renderer_.Transform(TransformMatrix::Translation(clear_edge_transformed_rect.position));
+    auto aligned_transform_rect = Align(current_transform_layer.rect);
+    renderer_.Transform(TransformMatrix::Translation(aligned_transform_rect.position));
 
-    Rect paintable_rect = zaf::MakeClearEdgeForFill(current_transformed_layer.paintable_rect, ClearEdgeOption::Clear);
-    paintable_rect.position.x -= clear_edge_transformed_rect.position.x;
-    paintable_rect.position.y -= clear_edge_transformed_rect.position.y;
+    Rect paintable_rect = Align(current_transform_layer.paintable_rect);
+    paintable_rect.position.x -= aligned_transform_rect.position.x;
+    paintable_rect.position.y -= aligned_transform_rect.position.y;
 
     renderer_.PushAxisAlignedClipping(paintable_rect, AntialiasMode::PerPrimitive);
 
-    transformed_rect_offset_ = current_transformed_layer.rect.position;
-    transformed_rect_clear_edge_offset_ = clear_edge_transformed_rect.position;
+    aligned_transform_offset_.x = 
+        current_transform_layer.rect.position.x - aligned_transform_rect.position.x;
+
+    aligned_transform_offset_.y =
+        current_transform_layer.rect.position.y - aligned_transform_rect.position.y;
 }
 
 
 void Canvas::EndPaint() {
     renderer_.PopAxisAlignedClipping();
+    renderer_.Transform(TransformMatrix::Identity);
+    aligned_transform_offset_ = {};
 }
 
 
 void Canvas::PushClippingRect(const Rect& rect) {
 
-    auto absolute_clipping_rect = MakeClearEdgeForFill(rect);
+    auto absolute_clipping_rect = AlignWithOffset(rect);
 
     GetCurrentState()->clipping_rects.push_back(absolute_clipping_rect);
     renderer_.PushAxisAlignedClipping(absolute_clipping_rect, zaf::AntialiasMode::PerPrimitive);
@@ -148,91 +157,196 @@ std::shared_ptr<Canvas::State> Canvas::GetCurrentState() const {
 }
 
 
-Point Canvas::MakeClearEdgeForLine(const Point& point, float stroke_width) const {
-
-    auto new_point = zaf::MakeClearEdgeForLine(
-        AddAbsoluteOffset(point),
+void Canvas::DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
+    auto state = GetCurrentState();
+    renderer_.DrawLine(
+        AlignLineWithOffset(from_point, stroke_width),
+        AlignLineWithOffset(to_point, stroke_width),
+        state->brush,
         stroke_width,
-        GetCurrentState()->clear_edge_option);
-
-    RemoveClearEdgeAbsoluteOffset(new_point);
-    return new_point;
-}
-
-Point Canvas::MakeClearEdgeForFill(const Point& point) const {
-
-    auto new_point = zaf::MakeClearEdgeForFill(
-        AddAbsoluteOffset(point),
-        GetCurrentState()->clear_edge_option);
-
-    RemoveClearEdgeAbsoluteOffset(new_point);
-    return new_point;
+        state->stroke);
 }
 
 
-Rect Canvas::MakeClearEdgeForLine(const Rect& rect, float stroke_width) const {
-
-    auto new_rect =  zaf::MakeClearEdgeForLine(
-        AddAbsoluteOffset(rect),
-        stroke_width, 
-        GetCurrentState()->clear_edge_option);
-
-    RemoveClearEdgeAbsoluteOffset(new_rect);
-    return new_rect;
-}
-
-Rect Canvas::MakeClearEdgeForFill(const Rect& rect) const {
-
-    auto new_rect = zaf::MakeClearEdgeForFill(
-        AddAbsoluteOffset(rect),
-        GetCurrentState()->clear_edge_option);
-
-    RemoveClearEdgeAbsoluteOffset(new_rect);
-    return new_rect;
+void Canvas::DrawRectangle(const Rect& rect) {
+    auto state = GetCurrentState();
+    renderer_.DrawRectangle(AlignWithOffset(rect), state->brush);
 }
 
 
-RoundedRect Canvas::MakeClearEdgeForLine(const RoundedRect& rounded_rect, float stroke_width) const {
-
-    auto new_rounded_rect = zaf::MakeClearEdgeForLine(
-        AddAbsoluteOffset(rounded_rect), 
-        stroke_width, 
-        GetCurrentState()->clear_edge_option);
-
-    RemoveClearEdgeAbsoluteOffset(new_rounded_rect);
-    return new_rounded_rect;
-}
-
-RoundedRect Canvas::MakeClearEdgeForFill(const RoundedRect& rounded_rect) const {
-
-    auto new_rounded_rect = zaf::MakeClearEdgeForFill(
-        AddAbsoluteOffset(rounded_rect),
-        GetCurrentState()->clear_edge_option);
-
-    RemoveClearEdgeAbsoluteOffset(new_rounded_rect);
-    return new_rounded_rect;
+void Canvas::DrawRectangleFrame(const Rect& rect, float stroke_width) {
+    auto state = GetCurrentState();
+    renderer_.DrawRectangleFrame(
+        AlignLineWithOffset(rect, stroke_width),
+        state->brush,
+        stroke_width,
+        state->stroke);
 }
 
 
-Ellipse Canvas::MakeClearEdgeForLine(const Ellipse& ellipse, float stroke_width) const {
-
-    auto new_ellipse = zaf::MakeClearEdgeForLine(
-        AddAbsoluteOffset(ellipse),
-        stroke_width, 
-        GetCurrentState()->clear_edge_option);
-
-    RemoveClearEdgeAbsoluteOffset(new_ellipse);
-    return new_ellipse;
+void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect) {
+    auto state = GetCurrentState();
+    renderer_.DrawRoundedRectangle(AlignWithOffset(rounded_rect), state->brush);
 }
 
-Ellipse Canvas::MakeClearEdgeForFill(const Ellipse& ellipse) const {
 
-    auto new_ellipse = zaf::MakeClearEdgeForFill(
-        AddAbsoluteOffset(ellipse),
-        GetCurrentState()->clear_edge_option);
+void Canvas::DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width) {
+    auto state = GetCurrentState();
+    renderer_.DrawRoundedRectangleFrame(
+        AlignLineWithOffset(rounded_rect, stroke_width),
+        state->brush,
+        stroke_width,
+        state->stroke);
+}
 
-    RemoveClearEdgeAbsoluteOffset(new_ellipse);
-    return new_ellipse;
+
+void Canvas::DrawEllipse(const Ellipse& ellipse) {
+    auto state = GetCurrentState();
+    renderer_.DrawEllipse(AlignWithOffset(ellipse), state->brush);
+}
+
+
+void Canvas::DrawEllipseFrame(const Ellipse& ellipse, float stroke_width) {
+    auto state = GetCurrentState();
+    renderer_.DrawEllipseFrame(
+        AlignLineWithOffset(ellipse, stroke_width),
+        state->brush,
+        stroke_width,
+        state->stroke);
+}
+
+
+void Canvas::DrawGeometry(const Geometry& geometry) {
+    renderer_.DrawGeometry(geometry, GetCurrentState()->brush, Brush());
+}
+
+
+void Canvas::DrawGeometryFrame(const Geometry& geometry, float stroke_width) {
+
+    Geometry drew_geometry;
+
+    //The geometry is not aligned for line, we need to do it by setting a new transform here.
+    float offset = AlignmentOffsetForLine(stroke_width);
+    if (offset != 0) {
+        drew_geometry = GetResourceFactory()->CreateTransformedGeometry(
+            geometry, 
+            TransformMatrix::Translation(Point(offset, offset)));
+    }
+    else {
+        drew_geometry = geometry;
+    }
+
+    auto state = GetCurrentState();
+    renderer_.DrawGeometryFrame(drew_geometry, state->brush, stroke_width, state->stroke);
+}
+
+
+void Canvas::DrawTextFormat(
+    const std::wstring& text, 
+    const TextFormat& text_format, 
+    const Rect& rect) {
+
+    renderer_.DrawTextFormat(text, text_format, rect, GetCurrentState()->brush);
+}
+
+
+void Canvas::DrawTextLayout(const TextLayout& text_layout, const Point& position) {
+    renderer_.DrawTextLayout(text_layout, position, GetCurrentState()->brush);
+}
+
+
+void Canvas::DrawBitmap(
+    const Bitmap& bitmap,
+    const Rect& destination_rect, 
+    const DrawImageOptions& options) {
+
+    renderer_.DrawBitmap(
+        bitmap, 
+        AlignWithOffset(destination_rect), 
+        options.Opacity(),
+        options.InterpolationMode(),
+        options.SourceRect());
+}
+
+
+PathGeometry Canvas::CreatePathGeometry(std::error_code& error) const {
+
+    ID2D1PathGeometry* handle{};
+    HRESULT result = 
+        GetResourceFactory()->GetDirect2dFactoryHandle()->CreatePathGeometry(&handle);
+
+    error = MakeComErrorCode(result);
+    if (IsSucceeded(error)) {
+        return PathGeometry(handle, aligned_transform_offset_);
+    }
+    return {};
+}
+
+PathGeometry Canvas::CreatePathGeometry() const {
+    std::error_code error;
+    auto result = CreatePathGeometry(error);
+    ZAF_CHECK_ERROR(error);
+    return result;
+}
+
+
+RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect, std::error_code& error) const {
+
+    Rect aligned_rect = rect;
+    aligned_rect.position.x += aligned_transform_offset_.x;
+    aligned_rect.position.y += aligned_transform_offset_.y;
+    aligned_rect = Align(aligned_rect);
+
+    return GetResourceFactory()->CreateRectangleGeometry(aligned_rect, error);
+}
+
+RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect) const {
+    std::error_code error;
+    auto result = CreateRectangleGeometry(rect, error);
+    ZAF_CHECK_ERROR(error);
+    return result;
+}
+
+
+RoundedRectangleGeometry Canvas::CreateRoundedRectangleGeometry(
+    const RoundedRect& rounded_rect,
+    std::error_code& error) const {
+
+    RoundedRect aligned_rounded_rect = rounded_rect;
+    aligned_rounded_rect.rect.position.x += aligned_transform_offset_.x;
+    aligned_rounded_rect.rect.position.y += aligned_transform_offset_.y;
+    aligned_rounded_rect = Align(aligned_rounded_rect);
+
+    return GetResourceFactory()->CreateRoundedRectangleGeometry(aligned_rounded_rect, error);
+}
+
+RoundedRectangleGeometry Canvas::CreateRoundedRectangleGeometry(
+    const RoundedRect& rounded_rect) const {
+
+    std::error_code error;
+    auto result = CreateRoundedRectangleGeometry(rounded_rect, error);
+    ZAF_CHECK_ERROR(error);
+    return result;
+}
+
+
+Point Canvas::AddOffset(const Point& point) const {
+    return Point(point.x + aligned_transform_offset_.x, point.y + aligned_transform_offset_.y);
+}
+
+Rect Canvas::AddOffset(const Rect& rect) const {
+    return Rect(AddOffset(rect.position), rect.size);
+}
+
+RoundedRect Canvas::AddOffset(const RoundedRect& rounded_rect) const {
+    return RoundedRect(
+        Rect(AddOffset(rounded_rect.rect.position), rounded_rect.rect.size), 
+        rounded_rect.x_radius, 
+        rounded_rect.y_radius);
+}
+
+Ellipse Canvas::AddOffset(const Ellipse& ellipse) const {
+    return Ellipse(AddOffset(ellipse.position), ellipse.x_radius, ellipse.y_radius);
 }
 
 }

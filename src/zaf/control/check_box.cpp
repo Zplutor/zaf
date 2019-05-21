@@ -78,7 +78,7 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
 	}
 	else if (check_state == CheckState::Checked) {
 
-		auto path = GetResourceFactory()->CreatePathGeometry();
+		auto path = canvas.CreatePathGeometry();
 		if (path == nullptr) {
 			return;
 		}

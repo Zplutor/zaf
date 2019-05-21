@@ -13,7 +13,7 @@ namespace zaf {
  */
 class PathGeometry : public Geometry {
 public:
-    PathGeometry() { }
+    PathGeometry() = default;
 
     /**
      Construct the instance with specified handle.
@@ -21,6 +21,14 @@ public:
      See also Geometry::Geometry.
      */
 	explicit PathGeometry(ID2D1PathGeometry* handle) : Geometry(handle) { } 
+
+    /**
+     Construct the instance with specified handle, as well as an origin of coordinate that used to
+     align geometry.
+     */
+    PathGeometry(ID2D1PathGeometry* handle, const Point& coordinate_origin) :
+        Geometry(handle), 
+        coordinate_origin_(coordinate_origin) { }
 
     /**
      Get the number of figures.
@@ -67,9 +75,9 @@ public:
      @return
         Return nullptr if error occurs.
      */
-	const GeometrySink Open(std::error_code& error_code);
+	GeometrySink Open(std::error_code& error_code);
 
-    const GeometrySink Open() {
+    GeometrySink Open() {
         std::error_code error_code;
         auto result = Open(error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -80,6 +88,9 @@ private:
 	ID2D1PathGeometry* GetActualHandle() const {
         return static_cast<ID2D1PathGeometry*>(GetHandle());
     }
+
+private:
+    Point coordinate_origin_;
 };
 
 }

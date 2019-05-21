@@ -108,15 +108,16 @@ public:
 	};
 
 public:
-    GeometrySink() { }
+    GeometrySink() = default;
 
     /**
-     Construct the instance with specified handle.
+     Construct the instance with specified handle, as well as an origin of coordinate that used to
+     align geometry.
 
-     The instance takes over the lifetime of handle. It would release the handle
-     when destroyed.
+     The instance takes over the lifetime of handle. It would release the handle when destroyed.
      */
-	explicit GeometrySink(ID2D1GeometrySink* handle) : ComObject(handle) { }
+    GeometrySink(ID2D1GeometrySink* handle, const Point& coordinate_origin) : 
+        ComObject(handle), coordinate_origin_(coordinate_origin) {}
 
     /**
      Specifies the method used to determine which points are inside the geometry
@@ -150,9 +151,7 @@ public:
      @param option
          Whether the new figure should be hollow or filled.
      */
-	void BeginFigure(const Point& start_position, BeginFigureOption option) {
-		GetHandle()->BeginFigure(start_position.ToD2D1POINT2F(), static_cast<D2D1_FIGURE_BEGIN>(option));
-	}
+    void BeginFigure(const Point& start_position, BeginFigureOption option);
 
     /**
      Ends the current figure; optionally, closes it.
@@ -176,9 +175,7 @@ public:
      @param end_point
          The end point of the line to draw.   
      */
-	void AddLine(const Point& end_point) {
-		GetHandle()->AddLine(end_point.ToD2D1POINT2F());
-	}
+    void AddLine(const Point& end_point);
 
     /**
      Creates a sequence of lines using the specified points and adds them to the geometry sink.
@@ -213,6 +210,9 @@ public:
         Close(error_code);
         ZAF_CHECK_ERROR(error_code);
 	}
+
+private:
+    Point coordinate_origin_;
 };
 
 ZAF_ENABLE_FLAG_ENUM(GeometrySink::SegmentFlag);

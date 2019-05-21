@@ -650,7 +650,7 @@ void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
     Point left_point(center_point.x - height, center_point.y + half_height);
     Point right_point(center_point.x + height, center_point.y + half_height);
 
-    auto triangle_geometry = GetResourceFactory()->CreatePathGeometry();
+    auto triangle_geometry = canvas.CreatePathGeometry();
     if (triangle_geometry == nullptr) {
 		return;
 	}

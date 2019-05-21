@@ -4,8 +4,8 @@
 #include <zaf/base/error.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/creation.h>
+#include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/clear_edge.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
@@ -440,7 +440,7 @@ void Window::Repaint() {
 void Window::NeedRepaintRect(const Rect& rect) {
 
     if (handle_ != nullptr) {
-        RECT win32_rect = MakeClearEdgeForFill(rect, ClearEdgeOption::Clear).ToRECT();
+        RECT win32_rect = Align(rect).ToRECT();
         InvalidateRect(handle_, &win32_rect, FALSE);
     }
 }

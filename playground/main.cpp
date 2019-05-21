@@ -10,7 +10,7 @@
 #include <zaf/control/text_box.h>
 #include <zaf/window/message/hit_test_result.h>
 #include <zaf/graphic/canvas.h>
-
+#include <zaf/control/combo_box.h>
 
 void BeginRun(zaf::Application&);
 
@@ -41,6 +41,10 @@ public:
                 window->Restore();
             }
         }));
+
+        auto combo_box = zaf::Create<zaf::ComboBox>();
+        combo_box->SetRect(zaf::Rect(0.3, 80.3, 200, 30));
+        AddChild(combo_box);
 
         AddChild(close_button_);
         AddChild(button);

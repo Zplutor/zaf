@@ -7,10 +7,10 @@ namespace zaf {
 
 class RoundedRectangleGeometry : public Geometry {
 public:
-    RoundedRectangleGeometry() { }
+    RoundedRectangleGeometry() = default;
     RoundedRectangleGeometry(ID2D1RoundedRectangleGeometry* handle) : Geometry(handle) { }
 
-    const RoundedRect GetRoundedRect() const {
+    RoundedRect GetRoundedRect() const {
         D2D1_ROUNDED_RECT rounded_rect = { 0 };
         GetHandle()->GetRoundedRect(&rounded_rect);
         return RoundedRect::FromD2D1ROUNDEDRECT(rounded_rect);

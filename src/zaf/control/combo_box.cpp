@@ -7,8 +7,8 @@
 #include <zaf/control/layout/array_layouter.h>
 #include <zaf/control/text_box.h>
 #include <zaf/creation.h>
+#include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/clear_edge.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
@@ -176,15 +176,10 @@ void ComboBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
         button_rect.position.y + button_rect.size.height / 2);
 
     Point left_point(center_point.x - height, center_point.y - half_height);
-    left_point = canvas.MakeClearEdgeForFill(left_point);
-
     Point right_point(center_point.x + height, center_point.y - half_height);
-    right_point = canvas.MakeClearEdgeForFill(right_point);
-
     Point bottom_point(center_point.x, center_point.y + half_height);
-    bottom_point = canvas.MakeClearEdgeForFill(bottom_point);
 
-    auto path = GetApplication().GetResourceFactory()->CreatePathGeometry();
+    auto path = canvas.CreatePathGeometry();
     if (path == nullptr) {
         return;
     }
@@ -378,7 +373,7 @@ void ComboBox::PopupDropDownWindow() {
     window_rect.size.height =
         CalculateDropDownListHeight(visible_item_count) + drop_down_list_box_border.top + drop_down_list_box_border.bottom;
 
-    window_rect = MakeClearEdgeForFill(window_rect, zaf::ClearEdgeOption::Clear);
+    window_rect = Align(window_rect);
 
     POINT screen_position = window_rect.position.ToPOINT();
     ClientToScreen(window->GetHandle(), &screen_position);
