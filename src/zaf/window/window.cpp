@@ -37,7 +37,7 @@ void Window::RegisterDefaultClass(std::error_code& error_code) {
 
 	WNDCLASSEX default_class = { 0 };
 	default_class.cbSize = sizeof(default_class);
-	default_class.style = CS_HREDRAW | CS_VREDRAW;
+	default_class.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 	default_class.lpfnWndProc = WindowProcedure;
 	default_class.cbClsExtra = 0;
 	default_class.cbWndExtra = sizeof(LONG_PTR);
@@ -516,10 +516,12 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
         TrackMouseLeave(message);
 
         if (is_capturing_mouse) {
-            capturing_mouse_control_->RouteHoverMessage(get_mouse_position_to_capturing_control());
+            capturing_mouse_control_->RouteHoverMessage(
+                get_mouse_position_to_capturing_control(),
+                message);
         }
         else {
-            root_control_->RouteHoverMessage(message.GetMousePosition());
+            root_control_->RouteHoverMessage(message.GetMousePosition(), message);
         }
     }
     else if (message.id == WM_MOUSELEAVE || message.id == WM_NCMOUSELEAVE) {
@@ -589,7 +591,7 @@ void Window::MouseLeave(const MouseMessage& message) {
 
     if (is_tracking_mouse) {
         track_mouse_mode_ = TrackMouseMode::None;
-        SetHoveredControl(nullptr);
+        SetHoveredControl(nullptr, {});
     }
 }
 
@@ -644,7 +646,9 @@ void Window::ReceiveDestroyMessage() {
 }
 
 
-void Window::SetHoveredControl(const std::shared_ptr<Control>& hovered_control) {
+void Window::SetHoveredControl(
+    const std::shared_ptr<Control>& hovered_control, 
+    const MouseMessage& message) {
 
 	if (hovered_control_ == hovered_control) {
 		return;
@@ -675,7 +679,7 @@ void Window::SetHoveredControl(const std::shared_ptr<Control>& hovered_control) 
             GetHandle(),
             WM_SETCURSOR,
             reinterpret_cast<WPARAM>(GetHandle()),
-            MAKELPARAM(HTCLIENT, WM_MOUSEMOVE));
+            MAKELPARAM(message.GetHitTestResult(), message.id));
 
 		hovered_control_->IsHoveredChanged(true);
 	}
@@ -1020,7 +1024,7 @@ void Window::SetHasMaximizeButton(bool has_maximize_button) {
 
 
 bool Window::GetStyleProperty(const std::wstring& property_name, DWORD style_value) const {
-
+    
     if (GetBorderStyle() == BorderStyle::None) {
         return false;
     }

@@ -867,7 +867,7 @@ private:
 	void IsFocusedChanged(bool is_focused);
 	void IsCapturingMouseChanged(bool is_capturing_mouse);
 
-	void RouteHoverMessage(const Point& position);
+	void RouteHoverMessage(const Point& position, const MouseMessage& message);
     bool RouteMessage(const Point& position, const MouseMessage& message);
     bool InterpretMessage(const Point& position, const MouseMessage& message);
 

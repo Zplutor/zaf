@@ -108,6 +108,9 @@ void BeginRun(zaf::Application& application) {
 
     auto root_control = zaf::Create<RootControl>();
     window->SetBorderStyle(zaf::Window::BorderStyle::None);
+    window->SetHasMaximizeButton(true);
+    
+    window->SetIsSizable(false);
     window->SetRootControl(root_control);
     window->Show();
 

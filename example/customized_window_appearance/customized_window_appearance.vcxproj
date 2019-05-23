@@ -13,9 +13,11 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\root_control.cpp" />
+    <ClCompile Include="src\title_bar_button.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\root_control.h" />
+    <ClInclude Include="src\title_bar_button.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

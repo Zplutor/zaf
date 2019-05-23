@@ -12,9 +12,15 @@
     <ClCompile Include="src\root_control.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\title_bar_button.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\root_control.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\title_bar_button.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

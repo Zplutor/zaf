@@ -608,7 +608,9 @@ private:
 	static void RegisterDefaultClass(std::error_code& error_code);
 
 	void NeedRepaintRect(const Rect& rect);
-	void SetHoveredControl(const std::shared_ptr<Control>& hovered_control);
+	void SetHoveredControl(
+        const std::shared_ptr<Control>& hovered_control, 
+        const MouseMessage& message);
 	void SetCaptureMouseControl(const std::shared_ptr<Control>& capture_control, bool is_releasing);
 	void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
 

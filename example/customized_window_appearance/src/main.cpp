@@ -19,6 +19,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         auto window = zaf::Create<zaf::Window>();
 
         auto root_control = zaf::Create<RootControl>();
+        window->SetBorderStyle(zaf::Window::BorderStyle::None);
         window->SetRootControl(root_control);
         window->Show();
 

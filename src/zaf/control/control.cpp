@@ -874,7 +874,7 @@ void Control::SetInteractiveProperty(bool new_value, bool& property_value, void(
         if (IsHovered()) {
             auto window = GetWindow();
             if (window != nullptr) {
-                window->SetHoveredControl(nullptr);
+                window->SetHoveredControl(nullptr, {});
             }
         }
 
@@ -1073,11 +1073,11 @@ const Point Control::GetMousePosition() const {
 }
 
 
-void Control::RouteHoverMessage(const Point& position) {
+void Control::RouteHoverMessage(const Point& position, const MouseMessage& message) {
 
 	auto child = FindChildAtPosition(position);
 	if (child != nullptr) {
-		child->RouteHoverMessage(ToChildPoint(position, child));
+		child->RouteHoverMessage(ToChildPoint(position, child), message);
 	}
 	else {
 
@@ -1085,10 +1085,10 @@ void Control::RouteHoverMessage(const Point& position) {
 		if (window != nullptr) {
 
 			if (IsEnabled()) {
-				window->SetHoveredControl(shared_from_this());
+				window->SetHoveredControl(shared_from_this(), message);
 			}
 			else {
-				window->SetHoveredControl(nullptr);
+                window->SetHoveredControl(nullptr, {});
 			}
 		}
 	}
