@@ -30,6 +30,7 @@ static const wchar_t* const kHasMinimizeButtonPropertyName = L"HasMinimizeButton
 static const wchar_t* const kHasSystemMenuPropertyName = L"HasSystemMenu";
 static const wchar_t* const kInitialRectStylePropertyName = L"InitialRectStyle";
 static const wchar_t* const kIsSizablePropertyName = L"IsSizable";
+static const wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
 static const wchar_t* const kOwnerPropertyName = L"Owner";
 static const wchar_t* const kTitlePropertyName = L"Title";
 
@@ -194,38 +195,37 @@ void Window::GetStyles(DWORD& style, DWORD& extract_style) const {
             style |= WS_POPUP;
             break;
 
-        case BorderStyle::Dialog:
-            style |= WS_POPUP | WS_CAPTION;
-            extract_style |= WS_EX_DLGMODALFRAME;
-            break;
-
-        case BorderStyle::ToolWindow:
-            style |= WS_POPUP | WS_CAPTION;
-            extract_style |= WS_EX_TOOLWINDOW;
+        case BorderStyle::ThinLine:
+            style |= WS_POPUP | WS_BORDER;
             break;
             
         case BorderStyle::Normal:
             style |= WS_OVERLAPPED | WS_CAPTION;
             break;
+
+        default:
+            ZAF_FAIL();
+            break;
     }
 
-    if (border_style != BorderStyle::None) {
+    if (IsSizable() && border_style == BorderStyle::Normal) {
+        style |= WS_SIZEBOX;
+    }
 
-        if (IsSizable()) {
-            style |= WS_SIZEBOX;
-        }
+    if (HasSystemMenu()) {
+        style |= WS_SYSMENU;
+    }
 
-        if (HasSystemMenu()) {
-            style |= WS_SYSMENU;
-        }
+    if (HasMaximizeButton()) {
+        style |= WS_MAXIMIZEBOX;
+    }
 
-        if (HasMaximizeButton()) {
-            style |= WS_MAXIMIZEBOX;
-        }
+    if (HasMinimizeButton()) {
+        style |= WS_MINIMIZEBOX;
+    }
 
-        if (HasMinimizeButton()) {
-            style |= WS_MINIMIZEBOX;
-        }
+    if (IsToolWindow()) {
+        extract_style |= WS_EX_TOOLWINDOW;
     }
 
     auto activate_option = GetActivateOption();
@@ -986,84 +986,113 @@ void Window::SetBorderStyle(BorderStyle border_style) {
 
 
 bool Window::IsSizable() const {
-    return GetStyleProperty(kIsSizablePropertyName, WS_SIZEBOX);
+
+    auto is_set = GetPropertyMap().TryGetProperty<bool>(kIsSizablePropertyName);
+    if (is_set != nullptr) {
+        return *is_set;
+    }
+
+    return true;
 }
 
-
 void Window::SetIsSizable(bool is_sizable) {
-    SetStyleProperty(kIsSizablePropertyName, WS_SIZEBOX, is_sizable);
+
+    GetPropertyMap().SetProperty(kIsSizablePropertyName, is_sizable);
+
+    if (GetBorderStyle() != BorderStyle::Normal) {
+        return;
+    }
+
+    if (IsClosed()) {
+        return;
+    }
+
+    SetStyleToHandle(WS_SIZEBOX, is_sizable, false);
 }
 
 
 bool Window::HasSystemMenu() const {
-    return GetStyleProperty(kHasSystemMenuPropertyName, WS_SYSMENU);
+
+    auto is_set = GetPropertyMap().TryGetProperty<bool>(kHasSystemMenuPropertyName);
+    if (is_set != nullptr) {
+        return *is_set;
+    }
+    return true;
 }
 
-
 void Window::SetHasSystemMenu(bool has_system_menu) {
-    SetStyleProperty(kHasSystemMenuPropertyName, WS_SYSMENU, has_system_menu);
+    SetStyleProperty(kHasSystemMenuPropertyName, WS_SYSMENU, has_system_menu, false);
 }
 
 
 bool Window::HasMinimizeButton() const {
-    return GetStyleProperty(kHasMinimizeButtonPropertyName, WS_MINIMIZEBOX);
+
+    auto is_set = GetPropertyMap().TryGetProperty<bool>(kHasMinimizeButtonPropertyName);
+    if (is_set != nullptr) {
+        return *is_set;
+    }
+    return true;
 }
 
 void Window::SetHasMinimizeButton(bool has_minimize_button) {
-    SetStyleProperty(kHasMinimizeButtonPropertyName, WS_MINIMIZEBOX, has_minimize_button);
+    SetStyleProperty(kHasMinimizeButtonPropertyName, WS_MINIMIZEBOX, has_minimize_button, false);
 }
 
 
 bool Window::HasMaximizeButton() const {
-    return GetStyleProperty(kHasMaximizeButtonPropertyName, WS_MAXIMIZEBOX);
+
+    auto is_set = GetPropertyMap().TryGetProperty<bool>(kHasMaximizeButtonPropertyName);
+    if (is_set != nullptr) {
+        return *is_set;
+    }
+    return true;
 }
 
 void Window::SetHasMaximizeButton(bool has_maximize_button) {
-    SetStyleProperty(kHasMaximizeButtonPropertyName, WS_MAXIMIZEBOX, has_maximize_button);
+    SetStyleProperty(kHasMaximizeButtonPropertyName, WS_MAXIMIZEBOX, has_maximize_button, false);
 }
 
 
-bool Window::GetStyleProperty(const std::wstring& property_name, DWORD style_value) const {
-    
-    if (GetBorderStyle() == BorderStyle::None) {
-        return false;
-    }
+bool Window::IsToolWindow() const {
 
-    if (IsClosed()) {
+    auto is_set = GetPropertyMap().TryGetProperty<bool>(kIsToolWindowPropertyName);
+    if (is_set != nullptr) {
+        return *is_set;
+    }
+    return false;
+}
 
-        auto property_value = GetPropertyMap().TryGetProperty<bool>(property_name);
-        if (property_value != nullptr) {
-            return *property_value;
-        }
-        else {
-            return true;
-        }
-    }
-    else {
-        return (GetWindowLong(GetHandle(), GWL_STYLE) & style_value) != 0;
-    }
+void Window::SetIsToolWindow(bool is_tool_window) {
+    SetStyleProperty(kIsToolWindowPropertyName, WS_EX_TOOLWINDOW, is_tool_window, true);
 }
 
 
-void Window::SetStyleProperty(const std::wstring& property_name, DWORD style_value, bool is_set) {
-
-    if (GetBorderStyle() == BorderStyle::None) {
-        return;
-    }
+void Window::SetStyleProperty(
+    const std::wstring& property_name,
+    DWORD style_value,
+    bool is_set,
+    bool is_extract_style) {
 
     GetPropertyMap().SetProperty(property_name, is_set);
 
     if (! IsClosed()) {
-
-        DWORD style = GetWindowLong(GetHandle(), GWL_STYLE);
-        if (is_set) {
-            style |= style_value;
-        }
-        else {
-            style &= ~style_value;
-        }
-        SetWindowLong(GetHandle(), GWL_STYLE, style);
+        SetStyleToHandle(style_value, is_set, is_extract_style);
     }
+}
+
+
+void Window::SetStyleToHandle(DWORD style_value, bool is_set, bool is_extract_style) {
+
+    DWORD category = is_extract_style ? GWL_EXSTYLE : GWL_STYLE;
+
+    DWORD style = GetWindowLong(GetHandle(), category);
+    if (is_set) {
+        style |= style_value;
+    }
+    else {
+        style &= ~style_value;
+    }
+    SetWindowLong(GetHandle(), category, style);
 }
 
 

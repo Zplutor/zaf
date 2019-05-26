@@ -53,25 +53,20 @@ public:
 
         /**
          The window has no border.
+
+         Use this value to create a custom painted window.
          */
         None,
+
+        /**
+         The window has a thin-line border.
+         */
+        ThinLine,
 
         /**
          The window has a normal border.
          */
         Normal,
-
-        /**
-         The window has a dialog style border.
-         */
-        Dialog,
-
-        /**
-         The window has a tool window style border. 
-
-         Windows with this style do not appear in the taskbar.
-         */
-        ToolWindow,
     };
 
     /**
@@ -332,62 +327,77 @@ public:
     /**
      Get a value indicating that whether the window is sizable.
 
-     If the border style is None, this method always return false.
-     For other border styles, the default value is true.
+     The default value is true.
      */
     bool IsSizable() const;
 
     /**
      Set a value indicating that whether the window is sizable.
 
-     This method takes effect only when the border style is not None.
+     If border style is None or ThinLine, the window is not sizabled, setting this property to true 
+     takes no effects. Users who want to have a sizable window with one of these two border styles
+     have to implement it by themselves.
      */
     void SetIsSizable(bool is_sizable);
 
     /**
      Get a value indicating that whether the window has the system menu.
 
-     If the border style is None, this method always return false. For
-     other border styles, the default value is true.
+     The default value is true.
      */
     bool HasSystemMenu() const;
 
     /**
      Set a value indicating that whether the window has the system menu.
 
-     This method takes effect only when the border style is not None.
+     If border style is None or ThinLine, setting this property to true takes no visual effects. 
      */
     void SetHasSystemMenu(bool has_system_menu);
 
     /**
      Get a value indicating that whether the window has a minimize button in title bar.
 
-     If the window does not have the system menu, this method always return false.
-     Otherwise, the default value is true.
+     The default value is true.
      */
     bool HasMinimizeButton() const;
 
     /**
      Set a value indicating that whether the window has a minimize button in title bar.
 
-     This method takes effect only when the window has the system menu.
+     In order to display the minimize button, HasSystemMenu needs to be set to true as well.
+     If border style is None or ThinLine, setting this property to true takes no visual effects. 
      */
     void SetHasMinimizeButton(bool has_minimize_button);
 
     /**
      Get a value indicating that whether the window has a maximize button in title bar.
 
-     If the window does not have the system menu, this method always return false.
-     Otherwise, the default value is true.
+     The default value is true.
      */
     bool HasMaximizeButton() const;
 
     /**
      Set a value indicating that whether the window has a maximize button in title bar.
 
-     This method takes effect only when the window has the system menu.
+     In order to display the maximize button, HasSystemMenu needs to be set to true as well.
+     If border style is None or ThinLine, setting this property to true takes no visual effects. 
+     However, setting this property to true is useful in some cases. For example, it enables 
+     maximizing a custom painted window when double clicking on a area that returns title bar on 
+     hit test.
      */
     void SetHasMaximizeButton(bool has_maximize_button);
+
+    /**
+     Get a value indicating that whether the window is a tool window.
+
+     The default value is false.
+     */
+    bool IsToolWindow() const;
+
+    /**
+     Set a value indicating that whether the window is a tool window.
+     */
+    void SetIsToolWindow(bool is_tool_window);
 
     /**
      Get window's title.
@@ -649,8 +659,16 @@ private:
     void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
     void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
 
-    bool GetStyleProperty(const std::wstring& property_name, DWORD style_value) const;
-    void SetStyleProperty(const std::wstring& property_name, DWORD style_value, bool is_set);
+    void SetStyleProperty(
+        const std::wstring& property_name,
+        DWORD style_value,
+        bool is_set,
+        bool is_extract_style);
+
+    void SetStyleToHandle(
+        DWORD style_value, 
+        bool is_set,
+        bool is_extract_style);
 
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
