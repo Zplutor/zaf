@@ -47,21 +47,30 @@ public:
     };
 
     /**
+     The style of a window.
+     */
+    enum class Style {
+
+        /**
+         The window is an overlapped window.
+         */
+        Overlapped,
+
+        /**
+         The window is a popup window.
+         */
+        Popup,
+    };
+
+    /**
      The border style of a window.
      */
     enum class BorderStyle {
 
         /**
          The window has no border.
-
-         Use this value to create a custom painted window.
          */
         None,
-
-        /**
-         The window has a thin-line border.
-         */
-        ThinLine,
 
         /**
          The window has a normal border.
@@ -310,6 +319,20 @@ public:
     void SetActivateOption(ActivateOption option);
 
     /**
+     Get window's style.
+
+     The default style is Overlapped.
+     */
+    Style GetStyle() const;
+
+    /**
+     Set window's style.
+
+     This method takes effect only when the window is closed, otherwise the style would not change.
+     */
+    void SetStyle(Style style);
+
+    /**
      Get window's border style.
 
      The default border style is Normal.
@@ -319,73 +342,72 @@ public:
     /**
      Set window's border style.
 
-     This method takes effect only when the window is closed, otherwise 
-     the style would not be changed.
+     This method takes effect only when the window is closed, otherwise the style would not change.
      */
     void SetBorderStyle(BorderStyle border_style);
 
     /**
      Get a value indicating that whether the window is sizable.
 
-     The default value is true.
+     A popup window is always not sizable. For overlapped window, the default value is true.
      */
     bool IsSizable() const;
 
     /**
      Set a value indicating that whether the window is sizable.
 
-     If border style is None or ThinLine, the window is not sizabled, setting this property to true 
-     takes no effects. Users who want to have a sizable window with one of these two border styles
-     have to implement it by themselves.
+     This method takes no effect for popup window.
      */
     void SetIsSizable(bool is_sizable);
 
     /**
      Get a value indicating that whether the window has the system menu.
 
-     The default value is true.
+     A popup window always has no system menu. For overlapped window, the default value is true.
      */
     bool HasSystemMenu() const;
 
     /**
      Set a value indicating that whether the window has the system menu.
 
-     If border style is None or ThinLine, setting this property to true takes no visual effects. 
+     This method takes no effect for popup window. For overlapped window, if border style is None,
+     setting this property to true takes no visual effects. 
      */
     void SetHasSystemMenu(bool has_system_menu);
 
     /**
-     Get a value indicating that whether the window has a minimize button in title bar.
+     Get a value indicating that whether the window can be minimized.
 
-     The default value is true.
+     A popup window always cannot minimize. For overlapped window, the default value is true.
      */
-    bool HasMinimizeButton() const;
+    bool CanMinimize() const;
 
     /**
-     Set a value indicating that whether the window has a minimize button in title bar.
+     Set a value indicating that whether the window can be minimized.
 
-     In order to display the minimize button, HasSystemMenu needs to be set to true as well.
-     If border style is None or ThinLine, setting this property to true takes no visual effects. 
+     This method takes no effect for popup window. For overlapped window, in order to display the 
+     minimize button in title bar, HasSystemMenu needs to be set to true as well. If border style 
+     is None, setting this property to true takes no visual effects. 
      */
-    void SetHasMinimizeButton(bool has_minimize_button);
+    void SetCanMinimize(bool can_minimize);
 
     /**
-     Get a value indicating that whether the window has a maximize button in title bar.
+     Get a value indicating that whether the window can be maximized.
 
-     The default value is true.
+     A popup window always cannot maximize. For overlapped window, the default value is true.
      */
-    bool HasMaximizeButton() const;
+    bool CanMaximize() const;
 
     /**
-     Set a value indicating that whether the window has a maximize button in title bar.
+     Set a value indicating that whether the window can be maximized.
 
-     In order to display the maximize button, HasSystemMenu needs to be set to true as well.
-     If border style is None or ThinLine, setting this property to true takes no visual effects. 
-     However, setting this property to true is useful in some cases. For example, it enables 
-     maximizing a custom painted window when double clicking on a area that returns title bar on 
-     hit test.
+     This method takes no effect for popup window. For overlapped window, in order to display the 
+     maximize button in title bar, HasSystemMenu needs to be set to true as well. If border style
+     is None, setting this property to true takes no visual effects. However, setting this property
+     to true is useful in some cases. For example, it enables maximizing a custom painted window 
+     when double clicking on a area that returns title bar on hit test.
      */
-    void SetHasMaximizeButton(bool has_maximize_button);
+    void SetCanMaximize(bool can_maximize);
 
     /**
      Get a value indicating that whether the window is a tool window.
@@ -641,7 +663,7 @@ private:
     void CreateRenderer();
     void RecreateRenderer();
     void CheckCreateWindowHandle();
-    void GetStyles(DWORD& style, DWORD& extract_style) const;
+    void GetHandleStyles(DWORD& handle_style, DWORD& handle_extract_style) const;
 
     void SwitchFocusedControlByTabKey(bool backward);
 
@@ -658,6 +680,12 @@ private:
 	
     void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
     void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
+
+    bool GetOverlappedStyleProperty(const std::wstring& property_name) const;
+    void SetOverlappedStyleProperty(
+        const std::wstring& property_name, 
+        DWORD style_value,
+        bool is_set);
 
     void SetStyleProperty(
         const std::wstring& property_name,
@@ -691,6 +719,6 @@ private:
 
 ZAF_ENABLE_FLAG_ENUM(Window::ActivateOption);
 
-const std::shared_ptr<Window> GetWindowFromHandle(HWND handle);
+std::shared_ptr<Window> GetWindowFromHandle(HWND handle);
 
 }

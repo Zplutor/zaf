@@ -44,6 +44,7 @@ public:
 
         auto combo_box = zaf::Create<zaf::ComboBox>();
         combo_box->SetRect(zaf::Rect(0.3, 80.3, 200, 30));
+        combo_box->GetDropDownListBox()->AddItemWithText(L"0");
         AddChild(combo_box);
 
         AddChild(close_button_);
@@ -107,10 +108,9 @@ void BeginRun(zaf::Application& application) {
     auto window = zaf::Create<zaf::Window>();
 
     auto root_control = zaf::Create<RootControl>();
-    window->SetBorderStyle(zaf::Window::BorderStyle::Normal);
-    window->SetHasMaximizeButton(true);
-    //window->SetIsToolWindow(true);
-    window->SetHasTitleBar(false);
+    window->SetBorderStyle(zaf::Window::BorderStyle::None);
+    window->SetCanMaximize(true);
+    window->SetIsSizable(true);
 
     window->SetRootControl(root_control);
     window->Show();

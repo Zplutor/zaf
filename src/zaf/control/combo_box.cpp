@@ -80,6 +80,7 @@ void ComboBox::Initialize() {
 
     drop_down_window_ = Create<internal::ComboBoxDropDownWindow>();
     drop_down_window_->SetActivateOption(Window::ActivateOption::NoActivate);
+    drop_down_window_->SetStyle(Window::Style::Popup);
     drop_down_window_->SetBorderStyle(Window::BorderStyle::None);
     drop_down_window_->SetInitialRectStyle(Window::InitialRectStyle::Custom);
     drop_down_window_->GetCloseEvent().AddListenerWithTag(
