@@ -13,9 +13,9 @@ namespace zaf {
 /**
  Describes the position and size of a rectangle area.
  */
-class Rect : public SerializableObject {
+class Rect : public ReflectionObject {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
 	/**
@@ -268,10 +268,6 @@ public:
 	 Size of the rectangle.
 	 */
 	Size size;
-
-protected:
-    void SerializeToDataNode(DataNode&) const override;
-    bool DeserializeFromDataNode(const DataNode&) override;
 };
 
 

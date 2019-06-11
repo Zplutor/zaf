@@ -1,8 +1,13 @@
 #include <zaf/control/list_box.h>
 #include <zaf/creation.h>
+#include <zaf/parsing/parsers/list_box_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
+
+ZAF_DEFINE_REFLECTION_TYPE(ListBox);
+
 
 ListBox::ListBox() {
 
@@ -135,25 +140,6 @@ std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
 }
 
 
-void ListBox::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
-
-    if (name == property::Items) {
-
-        RemoveAllItems();
-
-        data_node.EnumerateChildren([this](const DataNode& data_node) {
-            AddItemWithText(data_node.GetString());
-        });
-    }
-    else if (name == property::ItemHeight) {
-        SetItemHeight(data_node.GetFloat());
-    }
-    else {
-        __super::DeserializeProperty(name, data_node);
-    }
-}
-
-
 void ListBox::ItemSource::LoadItem(std::size_t index, const std::shared_ptr<Item>& item) {
     item->SetText(item_texts_[index]);
 }
@@ -217,8 +203,5 @@ std::wstring ListBox::ItemSource::GetItemTextAtIndex(std::size_t index) {
 
     return item_texts_[index];
 }
-
-
-ZAF_DEFINE_TYPE_NAME(ListBox);
 
 }

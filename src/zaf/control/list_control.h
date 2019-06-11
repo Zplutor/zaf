@@ -30,7 +30,7 @@ class ListControlSingleSelectStrategy;
  */
 class ListControl : public ScrollableControl {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
     /**
@@ -432,8 +432,6 @@ protected:
     virtual void ItemContainerChange(const std::shared_ptr<ItemContainer>& previous_item_container) { }
 
     void IsEnabledChange() override;
-
-    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
 private:
     friend class internal::ListControlExtendedMultipleSelectStrategy;

@@ -1,6 +1,7 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/application.h>
-#include <zaf/serialization/data_node.h>
+#include <zaf/parsing/parsers/font_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
@@ -35,6 +36,10 @@ int ConvertFontWeightFromString(const std::wstring& string) {
 
 }
 
+
+ZAF_DEFINE_REFLECTION_TYPE(Font);
+
+
 const Font Font::GetDefault() {
 
     LOGFONT logfont = { 0 };
@@ -68,42 +73,5 @@ const Font Font::FromLOGFONT(const LOGFONT& logfont) {
     return font;
 }
 
-
-void Font::SerializeToDataNode(DataNode& data_node) const {
-
-    data_node.AddChild(property::FamilyName, DataNode::CreateString(family_name));
-    data_node.AddChild(property::Size, DataNode::CreateNumber(size));
-    data_node.AddChild(property::Weight, DataNode::CreateNumber(weight));
-}
-
-
-bool Font::DeserializeFromDataNode(const DataNode& data_node) {
-
-    data_node.EnumerateKeyedChildren([this](const std::wstring& key, const DataNode& data_node) {
-    
-        if (key == property::FamilyName) {
-            family_name = data_node.GetString();
-        }
-        else if (key == property::Size) {
-            size = data_node.GetFloat();
-        }
-        else if (key == property::Weight) {
-            if (data_node.IsString()) {
-                weight = ConvertFontWeightFromString(data_node.GetString());
-            }
-            else {
-                weight = data_node.GetInt32();
-                if (weight < FontWeight::Minimum || FontWeight::Maximum < weight) {
-                    weight = FontWeight::Regular;
-                }
-            }
-        }
-    });
-
-    return true;
-}
-
-
-ZAF_DEFINE_TYPE_NAME(Font);
 
 }

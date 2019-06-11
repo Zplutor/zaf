@@ -4,13 +4,13 @@
 #include <cstdint>
 #include <optional>
 #include <zaf/graphic/text/text_inline_object.h>
-#include <zaf/serialization/serializable_object.h>
+#include <zaf/reflection/reflection_object.h>
 
 namespace zaf {
 
-class TextTrimming : public SerializableObject {
+class TextTrimming : public ReflectionObject {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
     enum class Granularity {
@@ -24,10 +24,6 @@ public:
     wchar_t delimiter = 0;
     std::uint32_t delimiter_count = 0;
     TextInlineObject trimming_sign;
-
-protected:
-    void SerializeToDataNode(DataNode& data_node) const override;
-    bool DeserializeFromDataNode(const DataNode& data_node) override;
 };
 
 

@@ -1,13 +1,16 @@
 #include <zaf/graphic/rect.h>
 #include <algorithm>
 #include <limits>
-#include <zaf/serialization/data_node.h>
-#include <zaf/serialization/properties.h>
+#include <zaf/parsing/parsers/rect_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 
 #undef max
 #undef min
 
 namespace zaf {
+
+ZAF_DEFINE_REFLECTION_TYPE(Rect);
+
 
 void Rect::Intersect(const Rect& other) {
 
@@ -75,31 +78,6 @@ bool Rect::IsInfinite() const {
         size.height == max_value;
 }
 
-
-void Rect::SerializeToDataNode(DataNode& data_node) const {
-
-    data_node.AddChild(property::Position, position.Serialize());
-    data_node.AddChild(property::Size, size.Serialize());
-}
-
-
-bool Rect::DeserializeFromDataNode(const DataNode& data_node) {
-
-    data_node.EnumerateKeyedChildren([this](const std::wstring& key, const DataNode& data_node) {
-    
-        if (key == property::Position) {
-            position.Deserialize(data_node);
-        }
-        else if (key == property::Size) {
-            size.Deserialize(data_node);
-        }
-    });
-
-    return true;
-}
-
-
-ZAF_DEFINE_TYPE_NAME(Rect);
 
 const Rect Rect::Infinite(
     -std::numeric_limits<float>::infinity(),

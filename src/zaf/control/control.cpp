@@ -9,8 +9,8 @@
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/internal/theme.h>
-#include <zaf/serialization/data_node.h>
-#include <zaf/serialization/deserializing.h>
+#include <zaf/parsing/parsers/control_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
@@ -32,6 +32,10 @@ const bool DefaultIsEnabled = true;
 const bool DefaultIsVisible = true;
 
 }
+
+
+ZAF_DEFINE_REFLECTION_TYPE(Control);
+
 
 Control::Control() : 
     update_count_(0),
@@ -1292,160 +1296,5 @@ void Control::FocusGain() {
 void Control::FocusLose() {
 
 }
-
-
-void Control::SerializeToDataNode(DataNode& data_node) const {
-
-    if (! rect_.IsEmpty()) {
-        data_node.AddChild(property::Rect, rect_.Serialize());
-    }
-
-    if (! border_.IsEmpty()) {
-        data_node.AddChild(property::Border, border_.Serialize());
-    }
-
-    if (! padding_.IsEmpty()) {
-        data_node.AddChild(property::Padding, padding_.Serialize());
-    }
-
-    if (is_visible_ != DefaultIsVisible) {
-        data_node.AddChild(property::IsVisible, DataNode::CreateBoolean(is_visible_));
-    }
-
-    if (is_enabled_ != DefaultIsEnabled) {
-        data_node.AddChild(property::IsEnabled, DataNode::CreateBoolean(is_enabled_));
-    }
-
-    if (can_focused_ != DefaultCanFocused) {
-        data_node.AddChild(property::CanFocused, DataNode::CreateBoolean(can_focused_));
-    }
-
-    SerializeProperties(data_node);
-    SerializeChildren(data_node);
-}
-
-
-void Control::SerializeProperties(DataNode& data_node) const {
-
-    GetPropertyMap().EnumerateProperties([&data_node](const std::wstring& name, const PropertyMap::Value& value) {
-    
-        auto property_data_node = value.Serialize();
-        if (property_data_node != nullptr) {
-            data_node.AddChild(name, property_data_node);
-        }
-    });
-}
-
-
-void Control::SerializeChildren(DataNode& data_node) const {
-
-    const auto& children = GetChildren();
-    if (children.empty()) {
-        return;
-    }
-
-    auto children_node = DataNode::CreateArray();
-    for (const auto& each_child : children) {
-        children_node->AddChild(each_child->Serialize());
-    }
-
-    data_node.AddChild(property::Children, children_node);
-}
-
-
-bool Control::DeserializeFromDataNode(const DataNode& data_node) {
-
-    UpdateGuard update_gurad(*this);
-
-    data_node.EnumerateKeyedChildren([this](const std::wstring& key, const DataNode& data_node) {
-        DeserializeProperty(key, data_node);
-    });
-
-    return true;
-}
-
-
-void Control::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
-
-    if (name == property::Rect) {
-        Rect rect;
-        rect.Deserialize(data_node);
-        SetRect(rect);
-    }
-    else if (name == property::BackgroundColor) {
-        Color color;
-        color.Deserialize(data_node);
-        SetBackgroundColor(color);
-    }
-    else if (name == property::BackgroundColorPicker) {
-        ConstantColorPicker color_picker;
-        color_picker.Deserialize(data_node);
-        SetBackgroundColorPicker(color_picker);
-    }
-    else if (name == property::Border) {
-        Frame border;
-        border.Deserialize(data_node);
-        SetBorder(border);
-    }
-    else if (name == property::BorderColor) {
-        Color color;
-        color.Deserialize(data_node);
-        SetBorderColor(color);
-    }
-    else if (name == property::BorderColorPicker) {
-        ConstantColorPicker color_picker;
-        color_picker.Deserialize(data_node);
-        SetBorderColorPicker(color_picker);
-    }
-    else if (name == property::Padding) {
-        Frame padding;
-        padding.Deserialize(data_node);
-        SetPadding(padding);
-    }
-    else if (name == property::IsVisible) {
-        SetIsVisible(data_node.GetBoolean());
-    }
-    else if (name == property::IsEnabled) {
-        SetIsEnabled(data_node.GetBoolean());
-    }
-    else if (name == property::CanFocused) {
-        SetCanFocused(data_node.GetBoolean());
-    }
-    else if (name == property::Name) {
-        SetName(data_node.GetString());
-    }
-    else if (name == property::MinimumWidth) {
-        SetMinimumWidth(data_node.GetFloat());
-    }
-    else if (name == property::MaximumWidth) {
-        SetMaximumWidth(data_node.GetFloat());
-    }
-    else if (name == property::MinimumHeight) {
-        SetMinimumHeight(data_node.GetFloat());
-    }
-    else if (name == property::MaximumHeight) {
-        SetMaximumHeight(data_node.GetFloat());
-    }
-    else if (name == property::Children) {
-        DeserializeChildren(data_node);
-    }
-}
-
-
-void Control::DeserializeChildren(const DataNode& data_node) {
-
-    RemoveAllChildren();
-
-    data_node.EnumerateChildren([this](const DataNode& data_node) {
-
-        auto child = DeserializeObject<Control>(data_node);
-        if (child != nullptr) {
-            AddChild(child);
-        }
-    });
-}
-
-
-ZAF_DEFINE_TYPE_NAME(Control);
 
 }

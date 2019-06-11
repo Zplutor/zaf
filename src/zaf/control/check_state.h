@@ -1,8 +1,6 @@
 #pragma once
 
 #include <optional>
-#include <zaf/serialization/deserializer.h>
-#include <zaf/serialization/serializer.h>
 
 namespace zaf {
 
@@ -30,27 +28,5 @@ enum class CheckState {
 
 std::wstring ConvertCheckStateToString(CheckState check_state);
 std::optional<CheckState> ConvertCheckStateFromString(const std::wstring& string);
-
-
-template<>
-class Serializer<CheckState> {
-public:
-    static std::shared_ptr<DataNode> Serialize(const CheckState& check_state) {
-        return DataNode::CreateString(ConvertCheckStateToString(check_state));
-    }
-};
-
-
-template<>
-class Deserializer<CheckState> {
-public:
-    static bool Deserialize(const DataNode& data_node, CheckState& check_state) {
-        auto converted = ConvertCheckStateFromString(data_node.GetString());
-        if (converted.has_value()) {
-            check_state = converted.value();
-        }
-        return false;
-    }
-};
 
 }

@@ -6,6 +6,8 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/parsing/parsers/text_box_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
@@ -47,6 +49,10 @@ static const Frame kDefaultInset;
 static const std::uint32_t kDefaultMaximumLength = std::numeric_limits<std::uint32_t>::max();
 static const wchar_t kDefaultPasswordCharacter = L'*';
 static const DWORD kDefaultScrollBarProperty = ES_AUTOVSCROLL | ES_AUTOHSCROLL | WS_VSCROLL | WS_HSCROLL;
+
+
+ZAF_DEFINE_REFLECTION_TYPE(TextBox);
+
 
 TextBox::TextBox() : 
 	property_bits_(kDefaultPropertyBits),
@@ -1494,7 +1500,5 @@ static ITextServices* CreateTextService(ITextHost* text_host) {
 	return text_service;
 }
 
-
-ZAF_DEFINE_TYPE_NAME(TextBox);
 
 }

@@ -3,16 +3,16 @@
 #include <cstdint>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/relation_operator.h>
-#include <zaf/serialization/serializable_object.h>
+#include <zaf/reflection/reflection_object.h>
 
 namespace zaf {
 
 /**
  Describes the red, green, blue, and alpha components of a color.
  */
-class Color : public SerializableObject {
+class Color : public ReflectionObject {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
 	/**
@@ -188,10 +188,6 @@ public:
 	 Alpha component of the color.
 	 */
 	float a;
-
-protected:
-    void SerializeToDataNode(DataNode&) const override;
-    bool DeserializeFromDataNode(const DataNode&) override;
 };
 
 

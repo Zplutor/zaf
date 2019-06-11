@@ -5,6 +5,8 @@
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
+#include <zaf/parsing/parsers/scrollable_control_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -22,6 +24,10 @@ const wchar_t* const kAutoHideScrollBarsPropertyName = L"AutoHideScrollBars";
 const wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness";
 
 }
+
+
+ZAF_DEFINE_REFLECTION_TYPE(ScrollableControl);
+
 
 ScrollableControl::ScrollableControl() :
     self_scrolling_control_(nullptr) {
@@ -375,7 +381,5 @@ void ScrollableControl::ScrollRightToEnd() {
     horizontal_scroll_bar->SetValue(horizontal_scroll_bar->GetMaximumValue());
 }
 
-
-ZAF_DEFINE_TYPE_NAME(ScrollableControl);
 
 }

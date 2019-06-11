@@ -10,7 +10,7 @@ namespace zaf {
  */
 class CheckBox : public ClickableControl {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
 	/**
@@ -150,8 +150,6 @@ protected:
 	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     Rect GetTextRect() override;
 	void MouseClick() override;
-
-    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
 private:
 	void PaintBox(Canvas& canvas, const Rect& box_rect) const;

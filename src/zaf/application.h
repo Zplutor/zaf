@@ -9,8 +9,8 @@
 
 namespace zaf {
 
+class ReflectionManager;
 class ResourceFactory;
-class SerializationManager;
 class Window;
 
 /**
@@ -71,14 +71,8 @@ public:
      */
     void Terminate();
 
-    /**
-     Get the serialization manager.
-
-     @return
-         Return nullptr if Initialize method is not called, or it fails.
-     */
-    const std::shared_ptr<SerializationManager>& GetSerializationManager() const {
-        return serialization_manager_;
+    ReflectionManager& GetReflectionManager() const {
+        return *reflection_manager_;
     }
 
 	/**
@@ -152,7 +146,7 @@ private:
 private:
 	bool is_initialized_;
 
-    std::shared_ptr<SerializationManager> serialization_manager_;
+    std::unique_ptr<ReflectionManager> reflection_manager_;
     std::shared_ptr<ResourceFactory> resource_factory_;
     std::shared_ptr<Window> main_window_;
 	std::set<std::shared_ptr<Window>> windows_;
@@ -167,8 +161,8 @@ inline Application& GetApplication() {
 }
 
 
-inline const std::shared_ptr<SerializationManager>& GetSerializationManager() {
-    return GetApplication().GetSerializationManager();
+inline ReflectionManager& GetReflectionManager() {
+    return Application::GetInstance().GetReflectionManager();
 }
 
 

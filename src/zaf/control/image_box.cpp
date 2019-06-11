@@ -2,12 +2,30 @@
 #include <zaf/control/internal/image_box/gif_player.h>
 #include <zaf/control/internal/image_box/static_image_player.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/parsing/parsers/image_box_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 
 namespace zaf {
+namespace {
 
-static std::unique_ptr<internal::ImagePlayer> CreateImagePlayer(const ImageDecoder& image_decoder);
+std::unique_ptr<internal::ImagePlayer> CreateImagePlayer(const ImageDecoder& image_decoder) {
 
-static const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
+    auto container_format = image_decoder.GetContainerFormat();
+    switch (container_format) {
+    case ImageContainerFormat::Gif:
+        return std::make_unique<internal::GifPlayer>(image_decoder);
+    default:
+        return std::make_unique<internal::StaticImagePlayer>(image_decoder);
+    }
+}
+
+const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
+
+}
+
+
+ZAF_DEFINE_REFLECTION_TYPE(ImageBox);
+
 
 ImageBox::ImageBox() {
 
@@ -79,20 +97,5 @@ void ImageBox::SetInterpolationMode(InterpolationMode mode) {
     GetPropertyMap().SetProperty(kInterpolationModePropertyName, mode);
     NeedRepaint();
 }
-
-
-static std::unique_ptr<internal::ImagePlayer> CreateImagePlayer(const ImageDecoder& image_decoder) {
-
-    auto container_format = image_decoder.GetContainerFormat();
-    switch (container_format) {
-    case ImageContainerFormat::Gif:
-        return std::make_unique<internal::GifPlayer>(image_decoder);
-    default:
-        return std::make_unique<internal::StaticImagePlayer>(image_decoder);
-    }
-}
-
-
-ZAF_DEFINE_TYPE_NAME(ImageBox);
 
 }

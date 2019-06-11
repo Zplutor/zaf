@@ -3,7 +3,6 @@
 #include <dwrite.h>
 #include <optional>
 #include <string>
-#include <zaf/serialization/serializer.h>
 
 namespace zaf {
 
@@ -32,14 +31,5 @@ enum class ParagraphAlignment {
 
 std::wstring ConvertParagraphAlignmentToString(ParagraphAlignment paragraph_alignment);
 std::optional<ParagraphAlignment> ConvertParagraphAlignmentFromString(const std::wstring& string);
-
-
-template<>
-class Serializer<ParagraphAlignment> {
-public:
-    static std::shared_ptr<DataNode> Serialize(ParagraphAlignment paragraph_alignment) {
-        return DataNode::CreateString(ConvertParagraphAlignmentToString(paragraph_alignment));
-    }
-};
 
 }

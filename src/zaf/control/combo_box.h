@@ -6,7 +6,6 @@
 #include <zaf/control/text_box.h>
 
 namespace zaf {
-
 namespace internal {
 class ComboBoxDropDownWindow;
 }
@@ -16,7 +15,7 @@ class ComboBoxDropDownWindow;
  */
 class ComboBox : public ClickableControl {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
     /**
@@ -24,7 +23,7 @@ public:
      */
     class DropDownListBox : public ListBox {
     public:
-        ZAF_DECLARE_TYPE_NAME();
+        ZAF_DECLARE_REFLECTION_TYPE();
 
     public:
         void Initialize() override;
@@ -48,7 +47,7 @@ public:
      */
     class EditTextBox : public TextBox {
     public:
-        ZAF_DECLARE_TYPE_NAME();
+        ZAF_DECLARE_REFLECTION_TYPE();
 
     public:
         bool KeyDown(const KeyMessage& message) override;
@@ -215,8 +214,6 @@ protected:
      Derived classes must call the same method of base class.
      */
     virtual void EditTextBoxChange(const std::shared_ptr<TextBox>& previous_edit_text_box) { }
-
-    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
 private:
     enum class DropDownListBoxAction {

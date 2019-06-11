@@ -24,7 +24,7 @@ class TextLayout;
  */
 class TextualControl : public Control {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
     /**
@@ -227,8 +227,6 @@ protected:
     void NotifyTextChange();
 
     virtual void TextChange() { }
-
-    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
 private:
     TextLayout CreateTextLayout() const;

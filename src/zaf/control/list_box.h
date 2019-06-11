@@ -9,7 +9,7 @@ namespace zaf {
  */
 class ListBox : public ListControl {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
     class ItemSource : public ListControl::ItemSource {
@@ -152,8 +152,6 @@ public:
 
 protected:
     void ItemSourceChange(const std::shared_ptr<ListControl::ItemSource>& previous_item_source) override;
-
-    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
 private:
     std::shared_ptr<ItemSource> item_source_;

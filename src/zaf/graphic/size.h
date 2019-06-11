@@ -3,16 +3,16 @@
 #include <memory>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/relation_operator.h>
-#include <zaf/serialization/serializable_object.h>
+#include <zaf/reflection/reflection_object.h>
 
 namespace zaf {
 
 /**
  Describes the width and height of a size.	
  */
-class Size : public SerializableObject {
+class Size : public ReflectionObject {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
 	/**
@@ -91,10 +91,6 @@ public:
 	 Height of the size.
 	 */
 	float height;
-
-protected:
-    void SerializeToDataNode(DataNode& data_node) const override;
-    bool DeserializeFromDataNode(const DataNode& data_node) override;
 };
 
 

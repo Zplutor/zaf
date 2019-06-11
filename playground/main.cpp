@@ -11,6 +11,9 @@
 #include <zaf/window/message/hit_test_result.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/control/combo_box.h>
+#include <zaf/reflection/reflection_type.h>
+#include <zaf/reflection/reflection_manager.h>
+#include <zaf/parsing/parser.h>
 
 void BeginRun(zaf::Application&);
 
@@ -44,7 +47,7 @@ public:
 
         auto combo_box = zaf::Create<zaf::ComboBox>();
         combo_box->SetRect(zaf::Rect(0.3, 80.3, 200, 30));
-        combo_box->GetDropDownListBox()->AddItemWithText(L"0");
+
         AddChild(combo_box);
 
         AddChild(close_button_);
@@ -114,6 +117,14 @@ void BeginRun(zaf::Application& application) {
 
     window->SetRootControl(root_control);
     window->Show();
+
+    auto button_type = application.GetReflectionManager().GetType(L"Button");
+    auto button_object = button_type->CreateInstance();
+    auto button = std::dynamic_pointer_cast<zaf::Button>(button_object);
+
+    button->SetText(L"Reflection button");
+    button->SetRect(zaf::Rect(200, 200, 100, 30));
+    root_control->AddChild(button);
 
     application.SetMainWindow(window);
 }

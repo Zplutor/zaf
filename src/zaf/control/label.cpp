@@ -1,6 +1,11 @@
 #include <zaf/control/label.h>
+#include <zaf/parsing/parsers/label_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 
 namespace zaf {
+
+ZAF_DEFINE_REFLECTION_TYPE(Label);
+
 
 Label::Label() {
 
@@ -20,8 +25,5 @@ void Label::Initialize() {
         return Color::Transparent;
     });
 }
-
-
-ZAF_DEFINE_TYPE_NAME(Label);
 
 }

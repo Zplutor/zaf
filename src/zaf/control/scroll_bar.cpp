@@ -8,7 +8,10 @@
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
-#include <zaf/serialization/deserializing.h>
+#include <zaf/parsing/parsers/scroll_bar_arrow_parser.h>
+#include <zaf/parsing/parsers/scroll_bar_parser.h>
+#include <zaf/parsing/parsers/scroll_bar_thumb_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -20,6 +23,11 @@ static const wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
 
 static const int kTimerInitialInterval = 300;
 static const int kTimerContinuousInterval = 50;
+
+ZAF_DEFINE_REFLECTION_TYPE(ScrollBar);
+ZAF_DEFINE_REFLECTION_TYPE_NESTED(ScrollBar, Arrow);
+ZAF_DEFINE_REFLECTION_TYPE_NESTED(ScrollBar, Thumb);
+
 
 ScrollBar::ScrollBar() : 
 	incremental_arrow_(Create<Arrow>()),
@@ -576,44 +584,6 @@ int ScrollBar::GetValuesPerThumbSlotPoint() {
 }
 
 
-void ScrollBar::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
-
-    if (name == property::IsHorizontal) {
-        SetIsHorizontal(data_node.GetBoolean());
-    }
-    else if (name == property::ArrowLength) {
-        SetArrowLength(data_node.GetFloat());
-    }
-    else if (name == property::MinimumValue) {
-        SetMinimumValue(data_node.GetInt32());
-    }
-    else if (name == property::MaximumValue) {
-        SetMaximumValue(data_node.GetInt32());
-    }
-    else if (name == property::Value) {
-        SetValue(data_node.GetInt32());
-    }
-    else if (name == property::SmallChangeValue) {
-        SetSmallChangeValue(data_node.GetInt32());
-    }
-    else if (name == property::LargeChangeValue) {
-        SetLargeChangeValue(data_node.GetInt32());
-    }
-    else if (name == property::IncrementalArrow) {
-        SetIncrementalArrow(DeserializeObject<Arrow>(data_node));
-    }
-    else if (name == property::DecrementalArrow) {
-        SetDecrementalArrow(DeserializeObject<Arrow>(data_node));
-    }
-    else if (name == property::Thumb) {
-        SetThumb(DeserializeObject<Thumb>(data_node));
-    }
-    else {
-        __super::DeserializeProperty(name, data_node);
-    }
-}
-
-
 ScrollBar::Arrow::Arrow() : direction_(Direction::Up) {
 
 }
@@ -743,20 +713,6 @@ void ScrollBar::Arrow::MouseRelease() {
 }
 
 
-void ScrollBar::Arrow::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
-
-    if (name == property::ArrowColor) {
-        SetArrowColor(zaf::Deserialize<Color>(data_node));
-    }
-    else if (name == property::ArrowColorPicker) {
-        SetArrowColorPicker(zaf::Deserialize<ConstantColorPicker>(data_node));
-    }
-    else {
-        __super::DeserializeProperty(name, data_node);
-    }
-}
-
-
 ScrollBar::Thumb::Thumb() : is_dragging_(false) {
 
 }
@@ -856,23 +812,5 @@ bool ScrollBar::Thumb::MouseMove(const Point& position, const MouseMessage& mess
     return result;
 }
 
-
-void ScrollBar::Thumb::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
-
-    if (name == property::ThumbColor) {
-        SetThumbColor(zaf::Deserialize<Color>(data_node));
-    }
-    else if (name == property::ThumbColorPicker) {
-        SetThumbColorPicker(zaf::Deserialize<ConstantColorPicker>(data_node));
-    }
-    else {
-        __super::DeserializeProperty(name, data_node);
-    }
-}
-
-
-ZAF_DEFINE_TYPE_NAME(ScrollBar);
-ZAF_DEFINE_INNER_TYPE_NAME(ScrollBar, Arrow);
-ZAF_DEFINE_INNER_TYPE_NAME(ScrollBar, Thumb);
 
 }

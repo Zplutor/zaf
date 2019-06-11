@@ -2,7 +2,6 @@
 
 #include <dwrite.h>
 #include <optional>
-#include <zaf/serialization/serializer.h>
 
 namespace zaf {
 
@@ -49,14 +48,5 @@ enum class WordWrapping {
 
 std::wstring ConvertWordWrappingToString(WordWrapping word_wrapping);
 std::optional<WordWrapping> ConvertWordWrappingFromString(const std::wstring& string);
-
-
-template<>
-class Serializer<WordWrapping> {
-public:
-    static std::shared_ptr<DataNode> Serialize(WordWrapping word_wrapping) {
-        return DataNode::CreateString(ConvertWordWrappingToString(word_wrapping));
-    }
-};
 
 }

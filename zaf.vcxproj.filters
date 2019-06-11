@@ -61,18 +61,6 @@
     <Filter Include="zaf\serialization">
       <UniqueIdentifier>{7205d02a-edfd-4def-9a34-b80b80d1ed3e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\serialization\internal">
-      <UniqueIdentifier>{8c1533b9-84de-4f6f-b996-e35dabc10b95}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\serialization\xml">
-      <UniqueIdentifier>{5b71560d-ea09-453f-a8c6-1895befac3a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\serialization\xml\internal">
-      <UniqueIdentifier>{31da2e97-2395-4d30-be10-baa2bc2c21f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\serialization\json">
-      <UniqueIdentifier>{4bd94367-1e68-4493-ba9e-0c8262927aff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\base\container">
       <UniqueIdentifier>{8f617298-ecbd-4034-9e95-5d4d9592fb2c}</UniqueIdentifier>
     </Filter>
@@ -84,6 +72,15 @@
     </Filter>
     <Filter Include="zaf\graphic\internal">
       <UniqueIdentifier>{bac57db8-2209-4a31-825a-4fd930ca21cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\reflection">
+      <UniqueIdentifier>{74b71ea2-6924-48a0-95e3-84e4bfdb02e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\parsing">
+      <UniqueIdentifier>{d5f8aceb-f044-44b2-a65f-3a2a7b953180}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\parsing\parsers">
+      <UniqueIdentifier>{5e8a06e8-4de4-4dd6-9eaf-1ff67ae7c0f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -294,15 +291,6 @@
     <ClCompile Include="src\zaf\graphic\point.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\serialization\data_node.cpp">
-      <Filter>zaf\serialization</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\serialization\serialization_manager.cpp">
-      <Filter>zaf\serialization</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\serialization\serializable_object.cpp">
-      <Filter>zaf\serialization</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\graphic\rounded_rect.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
@@ -315,9 +303,6 @@
     <ClCompile Include="src\zaf\base\stream.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\serialization\xml\xml_writer.cpp">
-      <Filter>zaf\serialization\xml</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\graphic\text\text_alignment.cpp">
       <Filter>zaf\graphic\text</Filter>
     </ClCompile>
@@ -327,23 +312,11 @@
     <ClCompile Include="src\zaf\graphic\text\word_wrapping.cpp">
       <Filter>zaf\graphic\text</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\serialization\xml\xml_reader.cpp">
-      <Filter>zaf\serialization\xml</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\serialization\json\json_writer.cpp">
-      <Filter>zaf\serialization\json</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp">
       <Filter>zaf\base\string</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\serialization\json\json_reader.cpp">
-      <Filter>zaf\serialization\json</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\color_picker.cpp">
       <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\serialization\internal\built_in_types.cpp">
-      <Filter>zaf\serialization\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\precompiled.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_trimming.cpp">
@@ -351,12 +324,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\check_state.cpp">
       <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\serialization\deserializing.cpp">
-      <Filter>zaf\serialization</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\serialization\data_reader.cpp">
-      <Filter>zaf\serialization</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\bitmap.cpp">
       <Filter>zaf\graphic</Filter>
@@ -369,6 +336,21 @@
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\internal\alignment_helper.cpp">
       <Filter>zaf\graphic\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\xaml_reader.cpp">
+      <Filter>zaf\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\point_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\size_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\rect_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\reflection\reflection_manager.cpp">
+      <Filter>zaf\reflection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -768,67 +750,22 @@
     <ClInclude Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.h">
       <Filter>zaf\control\internal\scrollable_control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\serialization\data_node.h">
-      <Filter>zaf\serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\serialization\serializable_object.h">
-      <Filter>zaf\serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\serialization\serializable_type.h">
-      <Filter>zaf\serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\serialization\serialization_manager.h">
-      <Filter>zaf\serialization</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\serialization\properties.h">
       <Filter>zaf\serialization</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\stream.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\serialization\data_reader.h">
-      <Filter>zaf\serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\serialization\data_writer.h">
-      <Filter>zaf\serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\serialization\xml\xml_writer.h">
-      <Filter>zaf\serialization\xml</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\serialization\property_map.h">
-      <Filter>zaf\serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\serialization\serializer.h">
       <Filter>zaf\serialization</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\number.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\serialization\xml\xml_reader.h">
-      <Filter>zaf\serialization\xml</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\serialization\xml\internal\xml_names.h">
-      <Filter>zaf\serialization\xml\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\serialization\json\json_writer.h">
-      <Filter>zaf\serialization\json</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\string\encoding_conversion.h">
       <Filter>zaf\base\string</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\serialization\json\json_reader.h">
-      <Filter>zaf\serialization\json</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\serialization\internal\built_in_types.h">
-      <Filter>zaf\serialization\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\precompiled.h" />
-    <ClInclude Include="src\zaf\serialization\deserializer.h">
-      <Filter>zaf\serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\serialization\deserializing.h">
-      <Filter>zaf\serialization</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\string\case_conversion.h">
       <Filter>zaf\base\string</Filter>
     </ClInclude>
@@ -882,6 +819,114 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h">
       <Filter>zaf\graphic\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\reflection\reflection_object.h">
+      <Filter>zaf\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\reflection\reflection_type.h">
+      <Filter>zaf\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parser.h">
+      <Filter>zaf\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\xaml_reader.h">
+      <Filter>zaf\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\point_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\size_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\reflection\reflection_type_definition.h">
+      <Filter>zaf\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\rect_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\rounded_rect_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\ellipse_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\frame_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\color_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\button_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\control_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\textual_control_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\clickable_control_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\check_box_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\combo_box_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\image_box_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\label_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\combo_box_drop_down_list_box_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\list_control_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\scrollable_control_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\list_box_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\text_box_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\combo_box_edit_text_box_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\scroll_bar_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\scroll_bar_arrow_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\scroll_bar_thumb_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\split_control_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\split_control_split_bar_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\radio_button_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\font_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\text_trimming_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\window_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\reflection\reflection_manager.h">
+      <Filter>zaf\reflection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

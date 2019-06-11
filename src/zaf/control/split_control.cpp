@@ -4,7 +4,9 @@
 #include <zaf/base/log.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/serialization/deserializing.h>
+#include <zaf/parsing/parsers/split_control_parser.h>
+#include <zaf/parsing/parsers/split_control_split_bar_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -14,12 +16,19 @@
 
 namespace zaf {
 namespace {
+
 const wchar_t* const kIsHorizontalSplitPropertyName = L"IsHorizontalSplit";
 const wchar_t* const kIsSplitBarDistanceFlippedPropertyName = L"IsSplitBarDistanceFlipped";
 const wchar_t* const kSplitBarDistanceChangeEventPropertyName = L"SplitBarDistanceChangeEvent";
 const wchar_t* const kSplitBarThicknessPropertyName = L"SplitBarThickness";
 const wchar_t* const kSplitterColorPickerPropertyName = L"SplitterColorPicker";
+
 }
+
+
+ZAF_DEFINE_REFLECTION_TYPE(SplitControl);
+ZAF_DEFINE_REFLECTION_TYPE_NESTED(SplitControl, SplitBar);
+
 
 SplitControl::SplitControl() {
 
@@ -430,41 +439,6 @@ float SplitControl::GetSplitBarDragPosition() const {
 }
 
 
-void SplitControl::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
-
-    if (name == property::IsHorizontalSplit) {
-        SetIsHorizontalSplit(data_node.GetBoolean());
-    }
-    else if (name == property::SplitBarThickness) {
-        SetSplitBarThickness(data_node.GetFloat());
-    }
-    else if (name == property::SplitBarDistance) {
-        SetSplitBarDistance(data_node.GetFloat());
-    }
-    else if (name == property::MinimumSplitBarDistance) {
-        SetMinimumSplitBarDistance(data_node.GetFloat());
-    }
-    else if (name == property::MaximumSplitBarDistance) {
-        SetMaximumSplitBarDistance(data_node.GetFloat());
-    }
-    else if (name == property::IsSplitBarDistanceFlipped) {
-        SetIsSplitBarDistanceFlipped(data_node.GetBoolean());
-    }
-    else if (name == property::SplitBar) {
-        SetSplitBar(DeserializeObject<SplitBar>(data_node));
-    }
-    else if (name == property::FirstPane) {
-        SetFirstPane(DeserializeObject<Control>(data_node));
-    }
-    else if (name == property::SecondPane) {
-        SetSecondPane(DeserializeObject<Control>(data_node));
-    }
-    else {
-        __super::DeserializeProperty(name, data_node);
-    }
-}
-
-
 void SplitControl::SplitBar::Initialize() {
 
     __super::Initialize();
@@ -560,22 +534,5 @@ void SplitControl::SplitBar::MouseRelease() {
     end_drag_event_.Trigger(std::dynamic_pointer_cast<SplitBar>(shared_from_this()));
 }
 
-
-void SplitControl::SplitBar::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
-
-    if (name == property::SplitterColor) {
-        SetSplitterColor(zaf::Deserialize<zaf::Color>(data_node));
-    }
-    else if (name == property::SplitterColorPicker) {
-        SetSplitterColorPicker(zaf::Deserialize<zaf::ConstantColorPicker>(data_node));
-    }
-    else {
-        __super::DeserializeProperty(name, data_node);
-    }
-}
-
-
-ZAF_DEFINE_TYPE_NAME(SplitControl);
-ZAF_DEFINE_INNER_TYPE_NAME(SplitControl, SplitBar);
 
 }

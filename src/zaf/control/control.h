@@ -15,8 +15,8 @@
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
+#include <zaf/reflection/reflection_object.h>
 #include <zaf/serialization/property_map.h>
-#include <zaf/serialization/serializable_object.h>
 
 namespace zaf {
 
@@ -36,9 +36,9 @@ enum class HitTestResult;
 
  This is the base class of all controls.
  */
-class Control : public SerializableObject, public std::enable_shared_from_this<Control> {
+class Control : public ReflectionObject, public std::enable_shared_from_this<Control> {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
     /**
@@ -851,11 +851,6 @@ protected:
      */
     virtual void IsEnabledChange();
 
-    void SerializeToDataNode(DataNode& data_node) const override;
-    bool DeserializeFromDataNode(const DataNode& data_node) override;
-
-    virtual void DeserializeProperty(const std::wstring& name, const DataNode& data_node);
-
 private:
 	friend class Window;
 
@@ -913,10 +908,6 @@ private:
     }
 
     void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
-
-    void SerializeProperties(DataNode& data_node) const;
-    void SerializeChildren(DataNode& data_node) const;
-    void DeserializeChildren(const DataNode& data_node);
 
 	Control(const Control&) = delete;
 	Control& operator=(const Control&) = delete;

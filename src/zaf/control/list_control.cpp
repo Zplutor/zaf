@@ -9,6 +9,8 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
+#include <zaf/parsing/parsers/list_control_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -28,6 +30,10 @@ static void CalculateRangeDifference(
     std::size_t& head_change_count,
     bool& remove_tail,
     std::size_t& tail_change_count);
+
+
+ZAF_DEFINE_REFLECTION_TYPE(ListControl);
+
 
 ListControl::ListControl() : 
     item_source_(std::make_shared<ItemSource>()),
@@ -840,31 +846,6 @@ std::size_t ListControl::FindItemIndexAtPosition(const Point& position) const {
 }
 
 
-void ListControl::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
-
-    if (name == property::SelectionMode) {
-
-        auto string = data_node.GetString();
-
-        SelectionMode selection_mode = SelectionMode::Single;
-        if (string == L"None") {
-            selection_mode = SelectionMode::None;
-        }
-        else if (string == L"SimpleMultiple") {
-            selection_mode = SelectionMode::SimpleMultiple;
-        }
-        else if (string == L"ExtendedMultiple") {
-            selection_mode = SelectionMode::ExtendedMultiple;
-        }
-
-        SetSelectionMode(selection_mode);
-    }
-    else {
-        __super::DeserializeProperty(name, data_node);
-    }
-}
-
-
 void ListControl::Item::Initialize() {
 
     __super::Initialize();
@@ -1057,7 +1038,5 @@ void ListControl::ItemSource::NotifyItemUpdate(std::size_t index, std::size_t co
     }
 }
 
-
-ZAF_DEFINE_TYPE_NAME(ListControl);
 
 }

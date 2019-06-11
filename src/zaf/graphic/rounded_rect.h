@@ -5,9 +5,9 @@
 
 namespace zaf {
 
-class RoundedRect : public SerializableObject {
+class RoundedRect : public ReflectionObject {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
     static const RoundedRect FromD2D1ROUNDEDRECT(const D2D1_ROUNDED_RECT& d2d1_rounded_rect) {
@@ -39,10 +39,6 @@ public:
     Rect rect;
     float x_radius;
     float y_radius;
-
-protected:
-    void SerializeToDataNode(DataNode& data_node) const override;
-    bool DeserializeFromDataNode(const DataNode& data_node) override;
 };
 
 }

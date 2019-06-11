@@ -1,13 +1,23 @@
 #include <zaf/control/clickable_control.h>
 #include <zaf/base/assert.h>
 #include <zaf/base/event_utility.h>
+#include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/parsing/parsers/clickable_control_parser.h>
+#include <zaf/reflection/reflection_type.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
+namespace {
 
-static const wchar_t* const kClickEventPropertyName = L"ClickEvent";
+const wchar_t* const kClickEventPropertyName = L"ClickEvent";
+
+}
+
+ZAF_DEFINE_REFLECTION_TYPE(ClickableControl);
+
 
 ClickableControl::ClickableControl() :
 	is_pressed_(false),
@@ -213,8 +223,5 @@ void ClickableControl::FocusGain() {
 void ClickableControl::FocusLose() {
 	NeedRepaint();
 }
-
-
-ZAF_DEFINE_TYPE_NAME(ClickableControl);
 
 }

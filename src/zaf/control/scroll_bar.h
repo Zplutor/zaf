@@ -12,7 +12,7 @@ class Timer;
  */
 class ScrollBar : public Control {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
     /**
@@ -20,7 +20,7 @@ public:
      */
 	class Arrow : public ClickableControl {
     public:
-        ZAF_DECLARE_TYPE_NAME();
+        ZAF_DECLARE_REFLECTION_TYPE();
 
 	public:
         /**
@@ -128,8 +128,6 @@ public:
 		void MouseCapture() override;
 		void MouseRelease() override;
 
-        void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
-
 	private:
 		Direction direction_;
 
@@ -142,7 +140,7 @@ public:
      */
 	class Thumb : public ClickableControl {
     public:
-        ZAF_DECLARE_TYPE_NAME();
+        ZAF_DECLARE_REFLECTION_TYPE();
 
 	public:
         /**
@@ -244,8 +242,6 @@ public:
 		void MouseCapture() override;
 		void MouseRelease() override;
         bool MouseMove(const Point& position, const MouseMessage& message) override;
-
-        void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
 	private:
 		bool is_horizontal_;
@@ -444,8 +440,6 @@ protected:
     bool MouseWheel(const Point& position, const MouseWheelMessage& message) override;
 	void MouseCapture() override;
 	void MouseRelease() override;
-
-    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
 private:
 	enum class TimerEvent {

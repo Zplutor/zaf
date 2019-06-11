@@ -8,12 +8,12 @@ namespace zaf {
 
 class SplitControl : public Control {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
     class SplitBar : public Control {
     public:
-        ZAF_DECLARE_TYPE_NAME();
+        ZAF_DECLARE_REFLECTION_TYPE();
 
     public:
         typedef Event<const std::shared_ptr<SplitBar>&> BeginDragEvent;
@@ -63,8 +63,6 @@ public:
         bool MouseUp(const Point& position, const MouseMessage& message) override;
         void MouseCapture() override;
         void MouseRelease() override;
-
-        void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
     private:
         bool is_horizontal_ = false;
@@ -126,8 +124,6 @@ protected:
     virtual void SplitBarChange(const std::shared_ptr<SplitBar>& previous_split_bar) { }
     virtual void FirstPaneChange(const std::shared_ptr<Control>& previous_pane) { }
     virtual void SecondPaneChange(const std::shared_ptr<Control>& previous_pane) { }
-
-    void DeserializeProperty(const std::wstring& name, const DataNode& data_node) override;
 
 private:
     void InitializeSplitBar();

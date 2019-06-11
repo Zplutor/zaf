@@ -5,7 +5,8 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
-#include <zaf/serialization/data_node.h>
+#include <zaf/parsing/parsers/radio_button_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
@@ -14,6 +15,9 @@ static const wchar_t* const kCanAutoSelectPropertyName = L"CanAutoSelect";
 static const wchar_t* const kRadioBackgroundColorPickerPropertyName = L"RadioBackgroundColorPicker";
 static const wchar_t* const kRadioBorderColorPickerPropertyName = L"RadioBorderColorPicker";
 static const wchar_t* const kSelectStateChangeEventProprtyName = L"SelectStateChangeEvent";
+
+ZAF_DEFINE_REFLECTION_TYPE(RadioButton);
+
 
 RadioButton::RadioButton() : is_selected_(true) {
 
@@ -193,37 +197,6 @@ void RadioButton::MouseClick() {
 }
 
 
-void RadioButton::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
-
-    if (name == property::RadioBackgroundColor) {
-        Color color;
-        color.Deserialize(data_node);
-        SetRadioBackgroundColor(color);
-    }
-    else if (name == property::RadioBackgroundColorPicker) {
-        ConstantColorPicker color_picker;
-        color_picker.Deserialize(data_node);
-        SetRadioBackgroundColorPicker(color_picker);
-    }
-    else if (name == property::RadioBorderColor) {
-        Color color;
-        color.Deserialize(data_node);
-        SetRadioBorderColor(color);
-    }
-    else if (name == property::RadioBorderColorPicker) {
-        ConstantColorPicker color_picker;
-        color_picker.Deserialize(data_node);
-        SetRadioBorderColorPicker(color_picker);
-    }
-    else if (name == property::CanAutoSelect) {
-        SetCanAutoSelect(data_node.GetBoolean());
-    }
-    else {
-        __super::DeserializeProperty(name, data_node);
-    }
-}
-
-
 const std::vector<std::shared_ptr<RadioButton>> RadioButton::Group::GetRadioButtons() const {
 
 	std::vector<std::shared_ptr<RadioButton>> radio_buttons;
@@ -284,7 +257,5 @@ void RadioButton::Group::RadioButtonSelected(const std::shared_ptr<RadioButton>&
 	}
 }
 
-
-ZAF_DEFINE_TYPE_NAME(RadioButton);
 
 }

@@ -7,6 +7,7 @@
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/renderer/window_renderer.h>
 #include <zaf/internal/message_loop.h>
+#include <zaf/reflection/reflection_object.h>
 #include <zaf/serialization/property_map.h>
 
 namespace zaf {
@@ -21,7 +22,10 @@ enum class HitTestResult;
 
  You shoudl always use Create method to create a window.
  */
-class Window : public std::enable_shared_from_this<Window> {
+class Window : public ReflectionObject, public std::enable_shared_from_this<Window> {
+public:
+    ZAF_DECLARE_REFLECTION_TYPE();
+
 public:
     /**
      The initial rect style of a window.

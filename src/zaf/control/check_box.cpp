@@ -7,17 +7,25 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
-#include <zaf/serialization/data_node.h>
-#include <zaf/serialization/deserializing.h>
+#include <zaf/parsing/parsers/check_box_parser.h>
+#include <zaf/reflection/reflection_type.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
+namespace {
 
-static const wchar_t* const kBoxBackgroundColorPickerPropertyName = L"BoxBackgroundColorPicker";
-static const wchar_t* const kBoxBorderColorPickerPropertyName = L"BoxBorderColorPicker";
-static const wchar_t* const kCanAutoChangeCheckStatePropertyName = L"CanAutoChangeCheckState";
-static const wchar_t* const kCanBeIndeterminatePropertyName = L"CanBeIndeterminate";
-static const wchar_t* const kCheckStateChangeEventPropertyName = L"CheckStateChangeEvent";
+const wchar_t* const kBoxBackgroundColorPickerPropertyName = L"BoxBackgroundColorPicker";
+const wchar_t* const kBoxBorderColorPickerPropertyName = L"BoxBorderColorPicker";
+const wchar_t* const kCanAutoChangeCheckStatePropertyName = L"CanAutoChangeCheckState";
+const wchar_t* const kCanBeIndeterminatePropertyName = L"CanBeIndeterminate";
+const wchar_t* const kCheckStateChangeEventPropertyName = L"CheckStateChangeEvent";
+
+}
+
+
+ZAF_DEFINE_REFLECTION_TYPE(CheckBox);
+
 
 CheckBox::CheckBox() : check_state_(CheckState::Unchecked) {
 
@@ -239,39 +247,5 @@ void CheckBox::MouseClick() {
 	SetCheckState(new_check_state);
 }
 
-
-void CheckBox::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
-
-    if (name == property::BoxBackgroundColor) {
-        SetBoxBackgroundColor(zaf::Deserialize<Color>(data_node));
-    }
-    else if (name == property::BoxBackgroundColorPicker) {
-        SetBoxBackgroundColorPicker(zaf::Deserialize<ConstantColorPicker>(data_node));
-    }
-    else if (name == property::BoxBorderColor) {
-        SetBoxBorderColor(zaf::Deserialize<Color>(data_node));
-    }
-    else if (name == property::BoxBorderColorPicker) {
-        SetBoxBorderColorPicker(zaf::Deserialize<ConstantColorPicker>(data_node));
-    }
-    else if (name == property::CanAutoChangeCheckState) {
-        SetCanAutoChangeCheckState(data_node.GetBoolean());
-    }
-    else if (name == property::CanBeIndeterminate) {
-        SetCanBeIndeterminate(data_node.GetBoolean());
-    }
-    else if (name == property::CheckState) {
-        SetCheckState(zaf::Deserialize<CheckState>(data_node));
-    }
-    else if (name == property::IsChecked) {
-        SetIsChecked(data_node.GetBoolean());
-    }
-    else {
-        __super::DeserializeProperty(name, data_node);
-    }
-}
-
-
-ZAF_DEFINE_TYPE_NAME(CheckBox);
 
 }

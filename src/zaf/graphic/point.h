@@ -4,17 +4,18 @@
 #include <memory>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/relation_operator.h>
-#include <zaf/serialization/serializable_object.h>
+#include <zaf/reflection/reflection_object.h>
 
 namespace zaf {
 
 /**
  Describes the x-coordinate and y-coordinate of a point. 
  */
-class Point : public SerializableObject {
+class Point : public ReflectionObject {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
+public:
 	/**
 	 Convert a specified POINT structure to Point.
 	 */
@@ -109,10 +110,6 @@ public:
 	 Y-coordinate of the point.
 	 */
 	float y;
-
-protected:
-    void SerializeToDataNode(DataNode& data_node) const override;
-    bool DeserializeFromDataNode(const DataNode& data_node) override;
 };
 
 

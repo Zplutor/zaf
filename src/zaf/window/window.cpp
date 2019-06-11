@@ -9,6 +9,8 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
+#include <zaf/parsing/parsers/window_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/creation.h>
@@ -34,6 +36,10 @@ static const wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
 static const wchar_t* const kOwnerPropertyName = L"Owner";
 static const wchar_t* const kStylePropertyName = L"Style";
 static const wchar_t* const kTitlePropertyName = L"Title";
+
+
+ZAF_DEFINE_REFLECTION_TYPE(Window);
+
 
 void Window::RegisterDefaultClass(std::error_code& error_code) {
 

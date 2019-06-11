@@ -9,7 +9,8 @@
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/graphic/text/text_layout_properties.h>
 #include <zaf/internal/theme.h>
-#include <zaf/serialization/data_node.h>
+#include <zaf/parsing/parsers/textual_control_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
@@ -39,6 +40,8 @@ void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_
 }
 
 }
+
+ZAF_DEFINE_REFLECTION_TYPE(TextualControl);
 
 
 TextualControl::TextualControl() {
@@ -461,49 +464,6 @@ Size TextualControl::DetermineRequiredSize(const Size& max_size) const {
 }
 
 
-void TextualControl::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
-
-    if (name == property::Text) {
-        SetText(data_node.GetString());
-    }
-    else if (name == property::TextAlignment) {
-        auto text_alignment = ConvertTextAlignmentFromString(data_node.GetString());
-        SetTextAlignment(text_alignment.has_value() ? text_alignment.value() : TextAlignment::Leading);
-    }
-    else if (name == property::ParagraphAlignment) {
-        auto paragraph_alignment = ConvertParagraphAlignmentFromString(data_node.GetString());
-        SetParagraphAlignment(paragraph_alignment.has_value() ? paragraph_alignment.value() : ParagraphAlignment::Near);
-    }
-    else if (name == property::WordWrapping) {
-        auto word_wrapping = ConvertWordWrappingFromString(data_node.GetString());
-        SetWordWrapping(word_wrapping.has_value() ? word_wrapping.value() : WordWrapping::NoWrap);
-    }
-    else if (name == property::DefaultTextColor) {
-        Color color;
-        color.Deserialize(data_node);
-        SetDefaultTextColor(color);
-    }
-    else if (name == property::DefaultTextColorPicker) {
-        ConstantColorPicker color_picker;
-        color_picker.Deserialize(data_node);
-        SetDefaultTextColorPicker(color_picker);
-    }
-    else if (name == property::DefaultFont) {
-        Font font;
-        font.Deserialize(data_node);
-        SetDefaultFont(font);
-    }
-    else if (name == property::TextTrimming) {
-        TextTrimming text_trimming;
-        text_trimming.Deserialize(data_node);
-        SetTextTrimming(text_trimming);
-    }
-    else {
-        __super::DeserializeProperty(name, data_node);
-    }
-}
-
-
 static std::shared_ptr<FontRangeMap> TryGetFontRangeMap(const PropertyMap& property_map) {
 
     auto fonts_pointer = property_map.TryGetProperty<std::shared_ptr<FontRangeMap>>(kFontsPropertyName);
@@ -534,8 +494,5 @@ static void SetFontToTextLayout(const Font& font, const TextRange& range, TextLa
     text_layout.SetFontSize(font.size, range);
     text_layout.SetFontWeight(font.weight, range);
 }
-
-
-ZAF_DEFINE_TYPE_NAME(TextualControl);
 
 }

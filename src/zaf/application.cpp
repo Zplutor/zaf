@@ -4,7 +4,7 @@
 #include <zaf/base/error.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/message_loop.h>
-#include <zaf/serialization/serialization_manager.h>
+#include <zaf/reflection/reflection_manager.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -15,7 +15,9 @@ Application& Application::GetInstance() {
 }
 
 
-Application::Application() : is_initialized_(false) {
+Application::Application() : 
+    is_initialized_(false), 
+    reflection_manager_(std::make_unique<ReflectionManager>()) {
 
 }
 
@@ -79,8 +81,6 @@ void Application::Initialize(std::error_code& error_code) {
         dwrite_factory_handle, 
         wic_imaging_factory_handle
     );
-
-    serialization_manager_ = std::make_shared<SerializationManager>();
 
 	is_initialized_ = true;
 }

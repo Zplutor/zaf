@@ -6,14 +6,15 @@
 #include <zaf/control/internal/combo_box_drop_down_window.h>
 #include <zaf/control/layout/array_layouter.h>
 #include <zaf/control/text_box.h>
-#include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
-#include <zaf/serialization/data_node.h>
-#include <zaf/serialization/deserializing.h>
+#include <zaf/parsing/parsers/combo_box_drop_down_list_box_parser.h>
+#include <zaf/parsing/parsers/combo_box_edit_text_box_parser.h>
+#include <zaf/parsing/parsers/combo_box_parser.h>
+#include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/window.h>
@@ -23,13 +24,22 @@
 #endif
 
 namespace zaf {
+namespace {
 
-static const wchar_t* const kDropDownButtonColorPickerPropertyName = L"DropDownButtonColorPicker";
-static const wchar_t* const kDropDownButtonWidthPropertyName = L"DropDownButtonWidth";
-static const wchar_t* const kIsEditablePropertyName = L"IsEditable";
-static const wchar_t* const kMaximumVisibleItemCountPropertyName = L"MaximumVisibleItemCount";
-static const wchar_t* const kMinimumVisibleItemCountPropertyName = L"MinimumVisibleItemCount";
-static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
+const wchar_t* const kDropDownButtonColorPickerPropertyName = L"DropDownButtonColorPicker";
+const wchar_t* const kDropDownButtonWidthPropertyName = L"DropDownButtonWidth";
+const wchar_t* const kIsEditablePropertyName = L"IsEditable";
+const wchar_t* const kMaximumVisibleItemCountPropertyName = L"MaximumVisibleItemCount";
+const wchar_t* const kMinimumVisibleItemCountPropertyName = L"MinimumVisibleItemCount";
+const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
+
+}
+
+
+ZAF_DEFINE_REFLECTION_TYPE(ComboBox);
+ZAF_DEFINE_REFLECTION_TYPE_NESTED(ComboBox, DropDownListBox);
+ZAF_DEFINE_REFLECTION_TYPE_NESTED(ComboBox, EditTextBox);
+
 
 ComboBox::ComboBox() : 
     drop_down_list_box_action_(DropDownListBoxAction::CloseDropDownWindow),
@@ -623,38 +633,6 @@ void ComboBox::FocusGain() {
 }
 
 
-void ComboBox::DeserializeProperty(const std::wstring& name, const DataNode& data_node) {
-
-    if (name == property::DropDownButtonColor) {
-        SetDropDownButtonColor(zaf::Deserialize<Color>(data_node));
-    }
-    else if (name == property::DropDownButtonColorPicker) {
-        SetDropDownButtonColorPicker(zaf::Deserialize<ConstantColorPicker>(data_node));
-    }
-    else if (name == property::DropDownButtonWidth) {
-        SetDropDownButtonWidth(data_node.GetFloat());
-    }
-    else if (name == property::MinimumVisibleItemCount) {
-        SetMinimumVisibleItemCount(zaf::Deserialize<std::size_t>(data_node));
-    }
-    else if (name == property::MaximumVisibleItemCount) {
-        SetMaximumVisibleItemCount(zaf::Deserialize<std::size_t>(data_node));
-    }
-    else if (name == property::IsEditable) {
-        SetIsEditable(data_node.GetBoolean());
-    }
-    else if (name == property::DropDownListBox) {
-        SetDropDownListBox(DeserializeObject<DropDownListBox>(data_node)); 
-    }
-    else if (name == property::EditTextBox) {
-        SetEditTextBox(DeserializeObject<EditTextBox>(data_node));
-    }
-    else {
-        __super::DeserializeProperty(name, data_node);
-    }
-}
-
-
 void ComboBox::DropDownListBox::Initialize() {
 
     __super::Initialize();
@@ -690,10 +668,5 @@ bool ComboBox::EditTextBox::KeyDown(const KeyMessage& message) {
         return __super::KeyDown(message);
     }
 }
-
-
-ZAF_DEFINE_TYPE_NAME(ComboBox);
-ZAF_DEFINE_INNER_TYPE_NAME(ComboBox, DropDownListBox);
-ZAF_DEFINE_INNER_TYPE_NAME(ComboBox, EditTextBox);
 
 }

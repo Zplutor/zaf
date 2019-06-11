@@ -2,8 +2,6 @@
 
 #include <functional>
 #include <map>
-#include <zaf/serialization/data_node.h>
-#include <zaf/serialization/serializer.h>
 
 namespace zaf {
 
@@ -18,8 +16,6 @@ public:
     public:
         Value() { }
         virtual ~Value() { }
-
-        virtual std::shared_ptr<DataNode> Serialize() const = 0;
 
         Value(const Value&) = delete;
         Value& operator=(const Value&) = delete;
@@ -37,11 +33,6 @@ public:
 
         Type* GetValuePointer() {
             return &value_;
-        }
-
-        std::shared_ptr<DataNode> Serialize() const override {
-            typedef typename GetSerializer<Type>::Type SerializerType;
-            return SerializerType::Serialize(value_);
         }
 
     private:

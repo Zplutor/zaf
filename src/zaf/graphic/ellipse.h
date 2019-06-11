@@ -4,9 +4,9 @@
 
 namespace zaf {
 	
-class Ellipse : public SerializableObject {
+class Ellipse : public ReflectionObject {
 public:
-    ZAF_DECLARE_TYPE_NAME();
+    ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
 	Ellipse() : x_radius(0), y_radius(0) { }
@@ -50,10 +50,6 @@ public:
 	Point position;
 	float x_radius;
 	float y_radius;
-
-protected:
-    void SerializeToDataNode(DataNode&) const override;
-    bool DeserializeFromDataNode(const DataNode&) override;
 };
 
 }
