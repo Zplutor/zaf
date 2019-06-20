@@ -6,7 +6,7 @@ namespace zaf {
 
 class RoundedRectParser : public Parser {
 public:
-    void Parse(XamlReader& reader, ReflectionObject& reflection_object) override {
+    void ParseFromNode(const std::shared_ptr<XamlNode>& node, ReflectionObject& reflection_object) override {
 
     }
 };

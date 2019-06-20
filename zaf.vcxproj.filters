@@ -82,6 +82,9 @@
     <Filter Include="zaf\parsing\parsers">
       <UniqueIdentifier>{5e8a06e8-4de4-4dd6-9eaf-1ff67ae7c0f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\parsing\parsers\internal">
+      <UniqueIdentifier>{f9f0ab53-44d4-45ea-bcb1-9ac179cf3280}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -351,6 +354,15 @@
     </ClCompile>
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp">
       <Filter>zaf\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\utility.cpp">
+      <Filter>zaf\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\xaml_node.cpp">
+      <Filter>zaf\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\internal\utility.cpp">
+      <Filter>zaf\parsing\parsers\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -927,6 +939,18 @@
     </ClInclude>
     <ClInclude Include="src\zaf\reflection\reflection_manager.h">
       <Filter>zaf\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\xaml_node.h">
+      <Filter>zaf\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\utility.h">
+      <Filter>zaf\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\string\split.h">
+      <Filter>zaf\base\string</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\internal\utility.h">
+      <Filter>zaf\parsing\parsers\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

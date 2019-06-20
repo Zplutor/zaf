@@ -1,25 +1,30 @@
 #include <zaf/parsing/parsers/size_parser.h>
-#include <zaf/base/string/to_numeric.h>
 #include <zaf/graphic/size.h>
-#include <zaf/parsing/xaml_reader.h>
+#include <zaf/parsing/parsers/internal/utility.h>
+#include <zaf/parsing/utility.h>
 
 namespace zaf {
 
-void SizeParser::Parse(XamlReader& reader, ReflectionObject& reflection_object) {
+void SizeParser::ParseFromAttribute(
+    const std::wstring& attribute_value,
+    ReflectionObject& reflection_object) {
+
+    auto& size = dynamic_cast<Size&>(reflection_object);
+    internal::ParseAttributeToDoubleFloats(attribute_value, size.width, size.height);
+}
+
+
+void SizeParser::ParseFromNode(
+    const std::shared_ptr<XamlNode>& node, 
+    ReflectionObject& reflection_object) {
 
     Size& size = dynamic_cast<Size&>(reflection_object);
 
-    auto attribute_reader = reader.GetAttributeReader();
-    while (attribute_reader.Read()) {
+    ParseNodeAttributeToFloat(node, L"width", size.width);
+    ParseNodeAttributeToFloat(node, L"height", size.height);
 
-        auto name = attribute_reader.GetName();
-        if (name == L"width") {
-            size.width = ToNumeric<float>(attribute_reader.GetValue());
-        }
-        else if (name == L"height") {
-            size.height = ToNumeric<float>(attribute_reader.GetValue());
-        }
-    }
+    ParseNodePropertyNodeToFloat(node, L"Size.Width", size.width);
+    ParseNodePropertyNodeToFloat(node, L"Size.Height", size.height);
 }
 
 }

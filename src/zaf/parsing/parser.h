@@ -2,8 +2,8 @@
 
 namespace zaf {
 
-class XamlReader;
 class ReflectionObject;
+class XamlNode;
 
 class Parser {
 public:
@@ -12,7 +12,13 @@ public:
     Parser& operator=(const Parser&) = delete;
     virtual ~Parser() = default;
 
-    virtual void Parse(XamlReader& reader, ReflectionObject& reflection_object) = 0;
+    virtual void ParseFromAttribute(
+        const std::wstring& attribute_value, 
+        ReflectionObject& reflection_object) { }
+
+    virtual void ParseFromNode(
+        const std::shared_ptr<XamlNode>& node, 
+        ReflectionObject& reflection_object) = 0;
 };
 
 }

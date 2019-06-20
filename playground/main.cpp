@@ -14,6 +14,7 @@
 #include <zaf/reflection/reflection_type.h>
 #include <zaf/reflection/reflection_manager.h>
 #include <zaf/parsing/parser.h>
+#include <zaf/parsing/xaml_reader.h>
 
 void BeginRun(zaf::Application&);
 
@@ -125,6 +126,9 @@ void BeginRun(zaf::Application& application) {
     button->SetText(L"Reflection button");
     button->SetRect(zaf::Rect(200, 200, 100, 30));
     root_control->AddChild(button);
+
+    auto xaml_reader = zaf::XamlReader::CreateFromString("<Point x=\"44\" y=\"55\" >abc<Size>size</Size>cdf</Point>");
+    auto node = xaml_reader->Read();
 
     application.SetMainWindow(window);
 }

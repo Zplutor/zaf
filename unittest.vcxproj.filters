@@ -28,26 +28,17 @@
     <Filter Include="case\graphic">
       <UniqueIdentifier>{4c5d966d-80a1-4a69-9445-ec0aa53d5e72}</UniqueIdentifier>
     </Filter>
-    <Filter Include="case\serialization">
-      <UniqueIdentifier>{fe49d2e4-748d-4b2f-9224-e286a29fff05}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="case\serialization\json">
-      <UniqueIdentifier>{f99c48b0-646e-4785-8d09-2163d15ba95c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="case\serialization\xml">
-      <UniqueIdentifier>{554679c6-4e81-4516-bf0b-ff7ce8227314}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="case\graphic\font">
-      <UniqueIdentifier>{6bca3a9f-7526-466d-880a-9191bd1beacf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="case\graphic\text">
-      <UniqueIdentifier>{a90db673-1d1d-4843-a194-e886210cf412}</UniqueIdentifier>
-    </Filter>
     <Filter Include="case\base\container">
       <UniqueIdentifier>{b4d90f0a-dc00-4a88-93ee-9c9d6635c859}</UniqueIdentifier>
     </Filter>
     <Filter Include="case\base\container\utility">
       <UniqueIdentifier>{799d9b1c-7f47-4a98-99b1-d36fe45fc66a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\parsing">
+      <UniqueIdentifier>{64471ea1-be41-4d6d-a264-a8c71cc4645c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\parsing\parsers">
+      <UniqueIdentifier>{47594bc7-c6d1-4878-bad4-9b8c8c430d6a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -76,53 +67,8 @@
     <ClCompile Include="unittest\case\graphic\rect_test.cpp">
       <Filter>case\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\serialization\serialization_manager_test.cpp">
-      <Filter>case\serialization</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\serialization\json\json_reader_test.cpp">
-      <Filter>case\serialization\json</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\serialization\json\json_writer_test.cpp">
-      <Filter>case\serialization\json</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\serialization\xml\xml_reader_test.cpp">
-      <Filter>case\serialization\xml</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\serialization\xml\xml_writer_test.cpp">
-      <Filter>case\serialization\xml</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\base\number_test.cpp">
       <Filter>case\base</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\graphic\frame_test.cpp">
-      <Filter>case\graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\graphic\point_test.cpp">
-      <Filter>case\graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\graphic\size_test.cpp">
-      <Filter>case\graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\graphic\color_test.cpp">
-      <Filter>case\graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\graphic\ellipse_test.cpp">
-      <Filter>case\graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\graphic\rounded_rect_test.cpp">
-      <Filter>case\graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\control_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\textual_control_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\combo_box_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\serialization\serializable_object_test.cpp">
-      <Filter>case\serialization</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\string\case_conversion_test.cpp">
       <Filter>case\base\string</Filter>
@@ -151,38 +97,8 @@
     <ClCompile Include="unittest\case\base\container\utility\conversion_test.cpp">
       <Filter>case\base\container\utility</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\control\check_box_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\list_box_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\list_control_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\radio_button_descrialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\graphic\font\font_test.cpp">
-      <Filter>case\graphic\font</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\graphic\text\text_trimming_test.cpp">
-      <Filter>case\graphic\text</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\serialization\deserializer_test.cpp">
-      <Filter>case\serialization</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\base\container\utility\append_test.cpp">
       <Filter>case\base\container\utility</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\scroll_bar_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\split_control_deserialize_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\text_box_deserialize_test.cpp">
-      <Filter>case\control</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\container\utility\intersect_test.cpp">
       <Filter>case\base\container\utility</Filter>
@@ -192,6 +108,21 @@
     </ClCompile>
     <ClCompile Include="unittest\case\base\container\utility\differ_test.cpp">
       <Filter>case\base\container\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\string\split_test.cpp">
+      <Filter>case\base\string</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\parsing\parsers\point_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\parsing\xaml_reader_test.cpp">
+      <Filter>case\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\parsing\parsers\size_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\parsing\parsers\rect_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

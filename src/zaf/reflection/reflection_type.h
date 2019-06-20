@@ -26,7 +26,7 @@ public:
     virtual std::shared_ptr<ReflectionObject> CreateInstance() = 0;
 
     /**
-     Get the parser for this type.
+     Get the parser for the type.
      */
     virtual std::shared_ptr<Parser> GetParser() = 0;
 };

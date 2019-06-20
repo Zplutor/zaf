@@ -95,9 +95,12 @@
     <ClCompile Include="src\zaf\internal\message_loop.cpp" />
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
+    <ClCompile Include="src\zaf\parsing\parsers\internal\utility.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\point_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\rect_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\size_parser.cpp" />
+    <ClCompile Include="src\zaf\parsing\utility.cpp" />
+    <ClCompile Include="src\zaf\parsing\xaml_node.cpp" />
     <ClCompile Include="src\zaf\parsing\xaml_reader.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
@@ -136,6 +139,7 @@
     <ClInclude Include="src\zaf\base\stream.h" />
     <ClInclude Include="src\zaf\base\string\case_conversion.h" />
     <ClInclude Include="src\zaf\base\string\encoding_conversion.h" />
+    <ClInclude Include="src\zaf\base\string\split.h" />
     <ClInclude Include="src\zaf\base\string\to_numeric.h" />
     <ClInclude Include="src\zaf\base\string\to_string.h" />
     <ClInclude Include="src\zaf\base\timer.h" />
@@ -264,6 +268,7 @@
     <ClInclude Include="src\zaf\parsing\parsers\font_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\frame_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\image_box_parser.h" />
+    <ClInclude Include="src\zaf\parsing\parsers\internal\utility.h" />
     <ClInclude Include="src\zaf\parsing\parsers\label_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\list_box_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\list_control_parser.h" />
@@ -282,6 +287,8 @@
     <ClInclude Include="src\zaf\parsing\parsers\text_box_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\text_trimming_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\window_parser.h" />
+    <ClInclude Include="src\zaf\parsing\utility.h" />
+    <ClInclude Include="src\zaf\parsing\xaml_node.h" />
     <ClInclude Include="src\zaf\parsing\xaml_reader.h" />
     <ClInclude Include="src\zaf\reflection\reflection_manager.h" />
     <ClInclude Include="src\zaf\reflection\reflection_object.h" />

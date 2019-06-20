@@ -1,20 +1,72 @@
 #include <zaf/parsing/xaml_reader.h>
+#include <atlbase.h>
+#include <Shlwapi.h>
+#include <zaf/base/string/encoding_conversion.h>
 
 namespace zaf {
 namespace {
 
-std::wstring GetNodeName(IXmlReader* handle) {
+IXmlReader* CreateHandle(IUnknown* input, std::error_code& error) {
 
-    const wchar_t* name{};
-    UINT name_length{};
-    auto result = handle->GetLocalName(&name, &name_length);
-    if (FAILED(result)) {
+    CComPtr<IXmlReader> handle;
+    HRESULT result = CreateXmlReader(
+        __uuidof(IXmlReader),
+        reinterpret_cast<void**>(&handle), 
+        nullptr);
+
+    error = MakeComErrorCode(result);
+    if (! IsSucceeded(error)) {
+        return nullptr;
+    }
+
+    result = handle->SetInput(input);
+    error = MakeComErrorCode(result);
+    if (! IsSucceeded(error)) {
+        return nullptr;
+    }
+
+    return handle.Detach();
+}
+
+
+std::shared_ptr<XamlReader> CreateXamlReaderFromMemory(
+    const void* data, 
+    std::size_t length,
+    std::error_code& error) {
+
+    CComPtr<IStream> stream = SHCreateMemStream(reinterpret_cast<const BYTE*>(data), length);
+    if (stream == nullptr) {
+        error = std::make_error_code(std::errc::not_enough_memory);
         return {};
     }
-    return std::wstring(name, name_length);
+
+    auto handle = CreateHandle(stream.p, error);
+    if (! IsSucceeded(error)) {
+        return {};
+    }
+
+    stream.Detach();
+    return std::make_shared<XamlReader>(handle);
 }
 
 }
+
+
+std::shared_ptr<XamlReader> XamlReader::CreateFromString(
+    const std::wstring& xaml, 
+    std::error_code& error) {
+
+    return CreateFromString(ToUtf8String(xaml), error);
+}
+
+
+std::shared_ptr<XamlReader> XamlReader::CreateFromString(
+    const std::string& xaml, 
+    std::error_code& error) {
+
+    return CreateXamlReaderFromMemory(xaml.data(), xaml.length(), error);
+}
+
 
 XamlReader::XamlReader(IXmlReader* handle) : handle_(handle) {
 
@@ -22,113 +74,168 @@ XamlReader::XamlReader(IXmlReader* handle) : handle_(handle) {
 
 
 XamlReader::~XamlReader() {
-    if (handle_ != nullptr) {
-        handle_->Release();
+    handle_->Release();
+}
+
+
+std::shared_ptr<XamlNode> XamlReader::Read(std::error_code& error) {
+
+    std::shared_ptr<XamlNode> root_node;
+    HRESULT result = ReadRootNode(root_node);
+
+    error = MakeComErrorCode(result);
+    if (! IsSucceeded(error)) {
+        return nullptr;
     }
+
+    return root_node;
 }
 
 
-XamlReader::XamlReader(XamlReader&& other) : handle_(other.handle_) {
-    other.handle_ = nullptr;
+HRESULT XamlReader::ReadRootNode(std::shared_ptr<XamlNode>& root_node) {
+
+    XmlNodeType xml_node_type{};
+    auto result = AdvanceToNextNode(xml_node_type);
+    if (result != S_OK) {
+        return result;
+    }
+
+    if (xml_node_type != XmlNodeType_Element) {
+        return E_INVALIDARG;
+    }
+
+    return ReadElementNode(root_node);
 }
 
 
-XamlReader& XamlReader::operator=(XamlReader&& other) {
-    handle_ = other.handle_;
-    other.handle_ = nullptr;
-    return *this;
+HRESULT XamlReader::ReadElementNode(std::shared_ptr<XamlNode>& node) {
+
+    node = std::make_shared<XamlNode>(XamlNode::Type::Element);
+
+    const wchar_t* name{};
+    HRESULT result = handle_->GetLocalName(&name, nullptr);
+    if (result != S_OK) {
+        return result;
+    }
+
+    node->SetValue(name);
+
+    result = ReadAttributes(*node);
+    if (FAILED(result)) {
+        return result;
+    }
+
+    return ReadChildren(*node);
 }
 
 
-bool XamlReader::Next() {
+HRESULT XamlReader::ReadAttributes(XamlNode& node) {
 
+    HRESULT result = S_OK;
     while (true) {
 
-        XmlNodeType node_type{};
-        auto result = handle_->Read(&node_type);
-        if (FAILED(result)) {
-            return false;
+        result = handle_->MoveToNextAttribute();
+        if (result != S_OK) {
+            break;
         }
 
-        switch (node_type) {
-        case XmlNodeType::XmlNodeType_Element:
-        case XmlNodeType::XmlNodeType_EndElement:
-        case XmlNodeType::XmlNodeType_Text:
-            return true;
+        const wchar_t* name = nullptr;
+        result = handle_->GetLocalName(&name, nullptr);
+        if (result != S_OK) {
+            break;
+        }
+
+        const wchar_t* value = nullptr;
+        result = handle_->GetValue(&value, nullptr);
+        if (result != S_OK) {
+            break;
+        }
+
+        node.AddAttribute(name, value);
+    }
+
+    return result;
+}
+
+
+HRESULT XamlReader::ReadChildren(XamlNode& node) {
+
+    if (handle_->IsEmptyElement()) {
+        return S_OK;
+    }
+
+    HRESULT result = S_OK;
+    while (true) {
+
+        XmlNodeType node_type;
+        result = AdvanceToNextNode(node_type);
+        if (result != S_OK) {
+            break;
+        }
+
+        if (node_type == XmlNodeType_Element) {
+
+            std::shared_ptr<XamlNode> child_node;
+            result = ReadElementNode(child_node);
+            if (result != S_OK) {
+                break;
+            }
+
+            node.AddChildNode(child_node);
+        }
+        else if (node_type == XmlNodeType_Text) {
+
+            std::shared_ptr<XamlNode> child_node;
+            result = ReadTextNode(child_node);
+            if (result != S_OK) {
+                break;
+            }
+
+            node.AddChildNode(child_node);
+        }
+        else if (node_type == XmlNodeType_EndElement) {
+            break;
+        }
+        else {
+            result = E_INVALIDARG;
+            break;
         }
     }
 
-    return false;
+    return result;
 }
 
 
-XamlNodeType XamlReader::GetNodeType() const {
+HRESULT XamlReader::ReadTextNode(std::shared_ptr<XamlNode>& node) {
 
-    XmlNodeType node_type{};
-    auto result = handle_->GetNodeType(&node_type);
-    if (FAILED(result)) {
-        return XamlNodeType::None;
-    }
-
-    switch (node_type) {
-    case XmlNodeType::XmlNodeType_Element:
-        return XamlNodeType::Element;
-    case XmlNodeType::XmlNodeType_EndElement:
-        return XamlNodeType::EndElement;
-    case XmlNodeType::XmlNodeType_Text:
-        return XamlNodeType::Text;
-    default:
-        return XamlNodeType::None;
-    }
-}
-
-
-std::wstring XamlReader::GetName() const {
-    return GetNodeName(handle_);
-}
-
-
-XamlReader::AttributeReader XamlReader::GetAttributeReader() const {
-    return AttributeReader(handle_);
-}
-
-
-XamlReader::AttributeReader::AttributeReader(IXmlReader* handle) : handle_(handle) {
-
-}
-
-
-XamlReader::AttributeReader::AttributeReader(AttributeReader&& other) : handle_(other.handle_) {
-    other.handle_ = nullptr;
-}
-
-
-XamlReader::AttributeReader& XamlReader::AttributeReader::operator=(AttributeReader&& other) {
-    handle_ = other.handle_;
-    other.handle_ = nullptr;
-    return *this;
-}
-
-
-bool XamlReader::AttributeReader::Read() {
-    return SUCCEEDED(handle_->MoveToNextAttribute());
-}
-
-
-std::wstring XamlReader::AttributeReader::GetName() const {
-    return GetNodeName(handle_);
-}
-
-
-std::wstring XamlReader::AttributeReader::GetValue() const {
+    node = std::make_shared<XamlNode>(XamlNode::Type::Text);
 
     const wchar_t* value{};
-    UINT value_length{};
-    auto result = handle_->GetLocalName(&value, &value_length);
-    if (FAILED(result)) {
-        return {};
+    HRESULT result = handle_->GetValue(&value, nullptr);
+    if (result == S_OK) {
+        node->SetValue(value);
     }
-    return std::wstring(value, value_length);
+    return result;
+}
+
+
+HRESULT XamlReader::AdvanceToNextNode(XmlNodeType& next_node_type) {
+
+    HRESULT result = S_OK;
+    while (true) {
+
+        result = handle_->Read(&next_node_type);
+        if (result != S_OK) {
+            break;
+        }
+
+        if (next_node_type != XmlNodeType_Comment &&
+            next_node_type != XmlNodeType_Whitespace) {
+            break;
+        }
+    }
+
+    return result;
 }
 
 }

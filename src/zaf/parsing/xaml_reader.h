@@ -1,52 +1,57 @@
 #pragma once
 
 #include <xmllite.h>
+#include <zaf/base/error.h>
+#include <zaf/parsing/xaml_node.h>
 
 namespace zaf {
 
-enum class XamlNodeType {
-    None,
-    Element,
-    EndElement,
-    Text,
-};
-
 class XamlReader {
 public:
-    class AttributeReader {
-    public:
-        AttributeReader(IXmlReader* handle);
+    static std::shared_ptr<XamlReader> CreateFromString(
+        const std::wstring& xaml,
+        std::error_code& error);
 
-        AttributeReader(AttributeReader&& other);
-        AttributeReader& operator=(AttributeReader&& other);
+    static std::shared_ptr<XamlReader> CreateFromString(const std::wstring& xaml) {
+        std::error_code error;
+        auto result = CreateFromString(xaml, error);
+        ZAF_CHECK_ERROR(error);
+        return result;
+    }
 
-        AttributeReader(const AttributeReader&) = delete;
-        AttributeReader& operator=(const AttributeReader&) = delete;
+    static std::shared_ptr<XamlReader> CreateFromString(
+        const std::string& xaml, 
+        std::error_code& error);
 
-        bool Read();
-        std::wstring GetName() const;
-        std::wstring GetValue() const;
-
-    private:
-        IXmlReader* handle_{};
-    };
+    static std::shared_ptr<XamlReader> CreateFromString(const std::string& xaml) {
+        std::error_code error;
+        auto result = CreateFromString(xaml, error);
+        ZAF_CHECK_ERROR(error);
+        return result;
+    }
 
 public:
     XamlReader(IXmlReader* handle);
     ~XamlReader();
 
-    XamlReader(XamlReader&& other);
-    XamlReader& operator=(XamlReader&& other);
-
     XamlReader(const XamlReader&) = delete;
     XamlReader& operator=(const XamlReader&) = delete;
 
-    bool Next();
+    std::shared_ptr<XamlNode> Read(std::error_code& error);
+    std::shared_ptr<XamlNode> Read() {
+        std::error_code error;
+        auto result = Read(error);
+        ZAF_CHECK_ERROR(error);
+        return result;
+    }
 
-    XamlNodeType GetNodeType() const;
-    std::wstring GetName() const;
-    
-    AttributeReader GetAttributeReader() const;
+private:
+    HRESULT ReadRootNode(std::shared_ptr<XamlNode>& root_node);
+    HRESULT ReadElementNode(std::shared_ptr<XamlNode>& node);
+    HRESULT ReadAttributes(XamlNode& node);
+    HRESULT ReadChildren(XamlNode& node);
+    HRESULT ReadTextNode(std::shared_ptr<XamlNode>& node);
+    HRESULT AdvanceToNextNode(XmlNodeType& next_node_type);
 
 private:
     IXmlReader* handle_{};
