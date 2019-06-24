@@ -76,7 +76,7 @@ bool ParseNodePropertyNodeToFloat(
 }
 
 
-bool ParseNodePropertyNodetoObject(
+bool ParseNodePropertyNodeToObject(
     const std::shared_ptr<XamlNode>& node,
     const std::wstring& property_node_name,
     ReflectionObject& object) {

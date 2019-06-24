@@ -364,6 +364,15 @@
     <ClCompile Include="src\zaf\parsing\parsers\internal\utility.cpp">
       <Filter>zaf\parsing\parsers\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\frame_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\rounded_rect_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\ellipse_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

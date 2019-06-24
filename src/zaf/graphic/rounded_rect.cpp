@@ -6,4 +6,37 @@ namespace zaf {
 
 ZAF_DEFINE_REFLECTION_TYPE(RoundedRect);
 
+
+bool operator==(const RoundedRect& rounded_rect1, const RoundedRect& rounded_rect2) {
+
+    return
+        (rounded_rect1.rect == rounded_rect2.rect) &&
+        (rounded_rect1.x_radius == rounded_rect2.x_radius) &&
+        (rounded_rect1.y_radius == rounded_rect2.y_radius);
+}
+
+
+bool operator<(const RoundedRect& rounded_rect1, const RoundedRect& rounded_rect2) {
+
+    if (rounded_rect1.rect < rounded_rect2.rect) {
+        return true;
+    }
+
+    if (rounded_rect1.rect > rounded_rect2.rect) {
+        return false;
+    }
+
+    if (rounded_rect1.x_radius < rounded_rect2.x_radius) {
+        return true;
+    }
+
+    if (rounded_rect1.x_radius > rounded_rect2.x_radius) {
+        return false;
+    }
+
+    return rounded_rect1.y_radius < rounded_rect2.y_radius;
+}
+
+
+
 }

@@ -132,6 +132,7 @@ HRESULT XamlReader::ReadElementNode(std::shared_ptr<XamlNode>& node) {
 HRESULT XamlReader::ReadAttributes(XamlNode& node) {
 
     HRESULT result = S_OK;
+    bool has_attributes{};
     while (true) {
 
         result = handle_->MoveToNextAttribute();
@@ -152,6 +153,11 @@ HRESULT XamlReader::ReadAttributes(XamlNode& node) {
         }
 
         node.AddAttribute(name, value);
+        has_attributes = true;
+    }
+
+    if (has_attributes) {
+        result = handle_->MoveToElement();
     }
 
     return result;

@@ -52,4 +52,10 @@ public:
 	float y_radius;
 };
 
+
+bool operator==(const Ellipse& ellipse1, const Ellipse& ellipse2);
+bool operator<(const Ellipse& ellipse1, const Ellipse& ellipse2);
+
+ZAF_ENABLE_RELATION_OPERATOR(Ellipse);
+
 }

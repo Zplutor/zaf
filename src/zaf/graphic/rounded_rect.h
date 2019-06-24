@@ -41,4 +41,10 @@ public:
     float y_radius;
 };
 
+
+bool operator==(const RoundedRect& rounded_rect1, const RoundedRect& rounded_rect2);
+bool operator<(const RoundedRect& rounded_rect1, const RoundedRect& rounded_rect2);
+
+ZAF_ENABLE_RELATION_OPERATOR(RoundedRect);
+
 }

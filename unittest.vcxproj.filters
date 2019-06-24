@@ -124,6 +124,15 @@
     <ClCompile Include="unittest\case\parsing\parsers\rect_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\parsing\parsers\rounded_rect_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\parsing\parsers\frame_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\parsing\parsers\ellipse_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
