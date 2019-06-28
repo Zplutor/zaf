@@ -133,6 +133,12 @@
     <ClCompile Include="unittest\case\parsing\parsers\ellipse_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\parsing\parsers\control_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\parsing\parsers\color_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

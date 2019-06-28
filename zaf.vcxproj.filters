@@ -373,6 +373,12 @@
     <ClCompile Include="src\zaf\parsing\parsers\ellipse_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\control_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\color_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

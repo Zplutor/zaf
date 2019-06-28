@@ -160,6 +160,22 @@ public:
 		SetRect(Rect(position, GetRect().size));
 	}
 
+    float GetX() const {
+        return GetPosition().x;
+    }
+
+    void SetX(float x) {
+        SetPosition(Point(x, GetY()));
+    }
+
+    float GetY() const {
+        return GetPosition().y;
+    }
+
+    void SetY(float y) {
+        SetPosition(Point(GetX(), y));
+    }
+
 	/**
 	 Get the control's size.
 	 */
