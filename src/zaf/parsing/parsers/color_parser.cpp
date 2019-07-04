@@ -92,6 +92,18 @@ void ColorParser::ParseFromNode(
     ParseNodeChildToFloat(node, L"r", L"Color.R", color.r);
     ParseNodeChildToFloat(node, L"g", L"Color.G", color.g);
     ParseNodeChildToFloat(node, L"b", L"Color.B", color.b);
+
+    const auto& content_nodes = node->GetContentNodes();
+    if (content_nodes.size() != 1) {
+        return;
+    }
+
+    const auto& content_node = content_nodes.front();
+    if (content_node->GetType() != XamlNode::Type::Text) {
+        return;
+    }
+
+    DecodeARGB(content_node->GetValue(), color.a, color.r, color.g, color.b);
 }
 
 }

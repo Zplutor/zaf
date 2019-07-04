@@ -963,7 +963,7 @@ void Window::SetMaximumHeight(float max_height) {
     GetPropertyMap().SetProperty(property::MaximumHeight, max_height);
 
     if (GetMinimumHeight() > max_height) {
-        SetMaximumHeight(max_height);
+        SetMinimumHeight(max_height);
     }
 
     if (GetHeight() > max_height) {

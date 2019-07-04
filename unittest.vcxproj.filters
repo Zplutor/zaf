@@ -139,10 +139,19 @@
     <ClCompile Include="unittest\case\parsing\parsers\color_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\parsing\parsers\textual_control_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\parsing\parsers\window_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
       <Filter>case\base</Filter>
+    </ClInclude>
+    <ClInclude Include="unittest\case\parsing\parsers\utility.h">
+      <Filter>case\parsing\parsers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

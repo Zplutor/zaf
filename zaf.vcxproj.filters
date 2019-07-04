@@ -379,6 +379,18 @@
     <ClCompile Include="src\zaf\parsing\parsers\color_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\button_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\clickable_control_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\textual_control_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\window_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

@@ -1,19 +1,11 @@
 #include <gtest/gtest.h>
 #include <zaf/control/control.h>
-#include <zaf/creation.h>
-#include <zaf/parsing/parsers/control_parser.h>
-#include <zaf/parsing/xaml_reader.h>
+#include "utility.h"
 
 namespace {
 
 std::shared_ptr<zaf::Control> CreateControlFromXaml(const std::string& xaml) {
-
-    auto node = zaf::XamlReader::CreateFromString(xaml)->Read();
-
-    auto control = zaf::Create<zaf::Control>();
-    zaf::ControlParser parser;
-    parser.ParseFromNode(node, *control);
-    return control;
+    return CreateObjectFromXaml<zaf::Control>(xaml);
 }
 
 }
@@ -241,6 +233,30 @@ TEST(ControlParser, ParseTabIndex) {
     xaml = R"(<Control><Control.TabIndex>3</Control.TabIndex></Control>)";
     control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetTabIndex(), 3);
+}
+
+
+TEST(ControlParser, ParseColors) {
+
+    auto xaml = R"(
+        <Control 
+            backgroundColor="#112233"
+            borderColor="#445566"
+        />ASSERT_EQ(control->GetBackgroundColor(), zaf::Color::FromRGB(0x112233));
+    )";
+    auto control = CreateControlFromXaml(xaml);
+    ASSERT_EQ(control->GetBackgroundColor(), zaf::Color::FromRGB(0x112233));
+    ASSERT_EQ(control->GetBorderColor(), zaf::Color::FromRGB(0x445566));
+
+    xaml = R"(
+        <Control>
+            <Control.BackgroundColor r="0.1" g="0.2" b="0.3" />
+            <Control.BorderColor r="0.4" g="0.5" b="0.6" />
+        </Control>
+    )";
+    control = CreateControlFromXaml(xaml);
+    ASSERT_EQ(control->GetBackgroundColor(), zaf::Color(0.1f, 0.2f, 0.3f));
+    ASSERT_EQ(control->GetBorderColor(), zaf::Color(0.4f, 0.5f, 0.6f));
 }
 
 

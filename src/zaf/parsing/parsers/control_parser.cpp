@@ -1,9 +1,8 @@
 #include <zaf/parsing/parsers/control_parser.h>
 #include <zaf/application.h>
 #include <zaf/control/control.h>
+#include <zaf/parsing/parsers/internal/utility.h>
 #include <zaf/parsing/utility.h>
-#include <zaf/reflection/reflection_manager.h>
-#include <zaf/reflection/reflection_type.h>
 
 namespace zaf {
 namespace {
@@ -104,6 +103,22 @@ void ParseProperties(const std::shared_ptr<XamlNode>& node, Control& control) {
     if (tab_index) {
         control.SetTabIndex(static_cast<std::size_t>(*tab_index));
     }
+
+    auto background_color = ParseNodeChildToObject<Color>(
+        node,
+        L"backgroundColor",
+        L"Control.BackgroundColor");
+    if (background_color) {
+        control.SetBackgroundColor(*background_color);
+    }
+
+    auto border_color = ParseNodeChildToObject<Color>(
+        node, 
+        L"borderColor",
+        L"Control.BorderColor");
+    if (border_color) {
+        control.SetBorderColor(*border_color);
+    }
 }
 
 
@@ -111,19 +126,11 @@ void ParseChildren(const std::shared_ptr<XamlNode>& node, Control& control) {
 
     for (const auto& each_node : node->GetContentNodes()) {
 
-        const auto& name = each_node->GetValue();
-        auto type = GetReflectionManager().GetType(name);
-        if (type == nullptr) {
-            continue;
-        }
-
-        auto object = type->CreateInstance();
-        auto child_control = std::dynamic_pointer_cast<Control>(object);
+        auto child_control = internal::CreateObjectFromNode<Control>(each_node);
         if (child_control == nullptr) {
             continue;
         }
 
-        type->GetParser()->ParseFromNode(each_node, *object);
         control.AddChild(child_control);
     }
 }

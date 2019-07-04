@@ -3,6 +3,7 @@
 #include <zaf/parsing/parsers/color_parser.h>
 #include <zaf/parsing/xaml_node.h>
 #include <zaf/parsing/xaml_reader.h>
+#include "utility.h"
 
 TEST(ColorParser, ParseFromAttribute) {
 
@@ -20,24 +21,21 @@ TEST(ColorParser, ParseFromAttribute) {
 
 TEST(ColorParser, ParseFromNode) {
 
-    auto xaml = R"(<Color a="0.1" r="0.2" g="0.3" b="0.4"></Color>)";
-    auto node = zaf::XamlReader::CreateFromString(xaml)->Read();
+    auto color = CreateObjectFromXaml<zaf::Color>(
+        R"(<Color a="0.1" r="0.2" g="0.3" b="0.4"></Color>)"
+    );
+    ASSERT_EQ(*color, zaf::Color(0.2f, 0.3f, 0.4f, 0.1f));
 
-    zaf::Color color;
-    zaf::ColorParser parser;
-    parser.ParseFromNode(node, color);
-    ASSERT_EQ(color, zaf::Color(0.2f, 0.3f, 0.4f, 0.1f));
+    color = CreateObjectFromXaml<zaf::Color>("<Color>#ddeeff</Color>");
+    ASSERT_EQ(*color, zaf::Color::FromRGB(0xddeeff));
 
-    xaml = R"(
+    color = CreateObjectFromXaml<zaf::Color>(R"(
         <Color>
             <Color.A>0.5</Color.A>
             <Color.R>0.6</Color.R>
             <Color.G>0.7</Color.G>
             <Color.B>0.8</Color.B>
         </Color>
-    )";
-    node = zaf::XamlReader::CreateFromString(xaml)->Read();
-
-    parser.ParseFromNode(node, color);
-    ASSERT_EQ(color, zaf::Color(0.6f, 0.7f, 0.8f, 0.5f));
+    )");
+    ASSERT_EQ(*color, zaf::Color(0.6f, 0.7f, 0.8f, 0.5f));
 }

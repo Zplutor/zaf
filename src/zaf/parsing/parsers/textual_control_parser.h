@@ -6,9 +6,9 @@ namespace zaf {
 
 class TextualControlParser : public ControlParser {
 public:
-    void ParseFromNode(const std::shared_ptr<XamlNode>& node, ReflectionObject& reflection_object) override {
-
-    }
+    void ParseFromNode(
+        const std::shared_ptr<XamlNode>& node,
+        ReflectionObject& reflection_object) override;
 };
 
 }
