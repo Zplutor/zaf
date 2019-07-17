@@ -1,5 +1,7 @@
 #pragma once
 
+#include <list>
+
 namespace zaf {
 
 template<typename C>
@@ -36,5 +38,17 @@ private:
 public:
     static constexpr bool Value = Test<C>(nullptr);
 };
+
+
+template<typename C>
+struct IsListContainer {
+    static constexpr bool Value = false;
+};
+
+template<typename E, typename ...A>
+struct IsListContainer<std::list<E, A...>> {
+    static constexpr bool Value = true;
+};
+
 
 }

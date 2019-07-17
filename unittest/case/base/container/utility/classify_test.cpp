@@ -40,3 +40,20 @@ TEST(Classify, IsMapContainer) {
     ASSERT_FALSE((zaf::IsMapContainer<std::unordered_set<int>>::Value));
     ASSERT_FALSE((zaf::IsMapContainer<std::unordered_multiset<int>>::Value));
 }
+
+
+TEST(Classify, IsListContainer) {
+
+    ASSERT_TRUE(zaf::IsListContainer<std::list<int>>::Value);
+
+    ASSERT_FALSE(zaf::IsListContainer<std::vector<int>>::Value);
+    ASSERT_FALSE(zaf::IsListContainer<std::deque<int>>::Value);
+    ASSERT_FALSE(zaf::IsListContainer<std::set<int>>::Value);
+    ASSERT_FALSE((zaf::IsListContainer<std::map<int, int>>::Value));
+    ASSERT_FALSE(zaf::IsListContainer<std::multiset<int>>::Value);
+    ASSERT_FALSE((zaf::IsListContainer<std::multimap<int, int>>::Value));
+    ASSERT_FALSE(zaf::IsListContainer<std::unordered_set<int>>::Value);
+    ASSERT_FALSE(zaf::IsListContainer<std::unordered_multiset<int>>::Value);
+    ASSERT_FALSE((zaf::IsListContainer<std::unordered_map<int, int>>::Value));
+    ASSERT_FALSE((zaf::IsListContainer<std::unordered_multimap<int, int>>::Value));
+}
