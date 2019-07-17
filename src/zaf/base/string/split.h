@@ -5,25 +5,41 @@
 
 namespace zaf {
 
-template<typename S>
-std::vector<S> Split(const S& string, typename S::value_type delimiter) {
+template<typename S, typename P>
+std::vector<S> SplitIf(const S& string, P predicate) {
 
     std::vector<S> result;
 
-    std::size_t current_index{};
-    while (current_index <= string.length()) {
+    auto begin_iterator = string.begin();
+    auto end_iterator = string.end();
 
-        auto delimiter_index = string.find(delimiter, current_index);
-        if (delimiter_index == string.npos) {
-            result.push_back(string.substr(current_index));
+    auto current_iterator = string.begin();
+    while (current_iterator <= end_iterator) {
+
+        auto delimiter_iterator = std::find_if(current_iterator, end_iterator, predicate);
+        if (delimiter_iterator == end_iterator) {
+            result.push_back(string.substr(std::distance(begin_iterator, current_iterator)));
             break;
         }
 
-        result.push_back(string.substr(current_index, delimiter_index - current_index));
-        current_index = delimiter_index + 1;
+        auto sub_string = string.substr(
+            std::distance(begin_iterator, current_iterator), 
+            std::distance(current_iterator, delimiter_iterator));
+
+        result.push_back(sub_string);
+
+        current_iterator = std::next(delimiter_iterator);
     }
 
     return result;
+}
+
+
+template<typename S>
+std::vector<S> Split(const S& string, typename S::value_type delimiter) {
+    return SplitIf(string, [delimiter](S::value_type ch) {
+        return ch == delimiter;
+    });
 }
 
 

@@ -63,6 +63,29 @@ TEST(WindowParser, ParseBorderStyle) {
 };
 
 
+TEST(WindowParser, ParseActivateOption) {
+
+    auto window = CreateObjectFromXaml<zaf::Window>(R"(
+        <Window activateOption="NoActivate DiscardMouseMessage" />
+    )");
+    ASSERT_EQ(window->GetActivateOption(), 
+        zaf::Window::ActivateOption::NoActivate | 
+        zaf::Window::ActivateOption::DiscardMouseMessage);
+
+    window = CreateObjectFromXaml<zaf::Window>(R"(
+        <Window>
+            <Window.ActivateOption>
+                NoActivate 
+                DiscardMouseMessage
+            </Window.ActivateOption>
+        </Window>
+    )");
+    ASSERT_EQ(window->GetActivateOption(),
+        zaf::Window::ActivateOption::NoActivate |
+        zaf::Window::ActivateOption::DiscardMouseMessage);
+}
+
+
 TEST(WindowParser, ParseTitle) {
 
     auto xaml = R"(<Window title="xxx"></Window>)";

@@ -299,6 +299,7 @@
     <ClInclude Include="src\zaf\parsing\utility.h" />
     <ClInclude Include="src\zaf\parsing\xaml_node.h" />
     <ClInclude Include="src\zaf\parsing\xaml_reader.h" />
+    <ClInclude Include="src\zaf\reflection\creation.h" />
     <ClInclude Include="src\zaf\reflection\reflection_manager.h" />
     <ClInclude Include="src\zaf\reflection\reflection_object.h" />
     <ClInclude Include="src\zaf\reflection\reflection_type.h" />

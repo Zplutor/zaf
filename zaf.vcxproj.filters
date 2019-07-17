@@ -979,5 +979,8 @@
     <ClInclude Include="src\zaf\parsing\parsers\internal\utility.h">
       <Filter>zaf\parsing\parsers\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\reflection\creation.h">
+      <Filter>zaf\reflection</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

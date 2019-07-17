@@ -15,6 +15,7 @@
 #include <zaf/reflection/reflection_manager.h>
 #include <zaf/parsing/parser.h>
 #include <zaf/parsing/xaml_reader.h>
+#include <zaf/reflection/creation.h>
 
 void BeginRun(zaf::Application&);
 
@@ -119,10 +120,7 @@ void BeginRun(zaf::Application& application) {
     window->SetRootControl(root_control);
     window->Show();
 
-    auto button_type = application.GetReflectionManager().GetType(L"Button");
-    auto button_object = button_type->CreateInstance();
-    auto button = std::dynamic_pointer_cast<zaf::Button>(button_object);
-
+    auto button = zaf::CreateObjectByName<zaf::Button>(L"Button");
     button->SetText(L"Reflection button");
     button->SetRect(zaf::Rect(200, 200, 100, 30));
     root_control->AddChild(button);

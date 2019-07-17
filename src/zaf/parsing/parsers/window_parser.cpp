@@ -1,5 +1,6 @@
 #include <zaf/parsing/parsers/window_parser.h>
 #include <zaf/application.h>
+#include <zaf/base/string/split.h>
 #include <zaf/parsing/parsers/internal/utility.h>
 #include <zaf/parsing/utility.h>
 #include <zaf/reflection/reflection_manager.h>
@@ -41,6 +42,25 @@ std::optional<Window::BorderStyle> ParseBorderStyle(const std::wstring& value) {
         return Window::BorderStyle::Normal;
     }
     return {};
+}
+
+
+Window::ActivateOption ParseActivateOption(const std::wstring& value) {
+
+    auto activate_option = Window::ActivateOption::None;
+
+    auto splitted_values = SplitIf(value, std::iswspace);
+    for (const auto& each_value : splitted_values) {
+
+        if (each_value == L"NoActivate") {
+            activate_option |= Window::ActivateOption::NoActivate;
+        }
+        else if (each_value == L"DiscardMouseMessage") {
+            activate_option |= Window::ActivateOption::DiscardMouseMessage;
+        }
+    }
+
+    return activate_option;
 }
 
 
@@ -102,6 +122,14 @@ void ParseProperties(const std::shared_ptr<XamlNode>& node, Window& window) {
         if (border_style) {
             window.SetBorderStyle(*border_style);
         }
+    }
+
+    auto activate_option_string = ParseNodeChildToString(
+        node, 
+        L"activateOption",
+        L"Window.ActivateOption");
+    if (activate_option_string) {
+        window.SetActivateOption(ParseActivateOption(*activate_option_string));
     }
 
     auto title = ParseNodeChildToString(node, L"title", L"Window.Title");
