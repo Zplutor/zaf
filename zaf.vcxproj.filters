@@ -85,6 +85,9 @@
     <Filter Include="zaf\parsing\parsers\internal">
       <UniqueIdentifier>{f9f0ab53-44d4-45ea-bcb1-9ac179cf3280}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\base\registry">
+      <UniqueIdentifier>{3a7441f4-3ab1-4236-afc5-24ba0fd93ca5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -390,6 +393,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\window_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\base\registry\registry_key.cpp">
+      <Filter>zaf\base\registry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -981,6 +987,18 @@
     </ClInclude>
     <ClInclude Include="src\zaf\reflection\creation.h">
       <Filter>zaf\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\registry\registry.h">
+      <Filter>zaf\base\registry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\registry\registry_key.h">
+      <Filter>zaf\base\registry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\registry\registry_rights.h">
+      <Filter>zaf\base\registry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\handle.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

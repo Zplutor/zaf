@@ -19,6 +19,7 @@
     </ClCompile>
     <ClCompile Include="src\zaf\application.cpp" />
     <ClCompile Include="src\zaf\base\log.cpp" />
+    <ClCompile Include="src\zaf\base\registry\registry_key.cpp" />
     <ClCompile Include="src\zaf\base\stream.cpp" />
     <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp" />
     <ClCompile Include="src\zaf\base\timer.cpp" />
@@ -142,8 +143,12 @@
     <ClInclude Include="src\zaf\base\event_utility.h" />
     <ClInclude Include="src\zaf\base\flag_enum.h" />
     <ClInclude Include="src\zaf\base\define.h" />
+    <ClInclude Include="src\zaf\base\handle.h" />
     <ClInclude Include="src\zaf\base\log.h" />
     <ClInclude Include="src\zaf\base\number.h" />
+    <ClInclude Include="src\zaf\base\registry\registry.h" />
+    <ClInclude Include="src\zaf\base\registry\registry_key.h" />
+    <ClInclude Include="src\zaf\base\registry\registry_rights.h" />
     <ClInclude Include="src\zaf\base\relation_operator.h" />
     <ClInclude Include="src\zaf\base\stream.h" />
     <ClInclude Include="src\zaf\base\string\case_conversion.h" />
