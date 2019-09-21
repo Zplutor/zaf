@@ -8,33 +8,39 @@
 namespace zaf {
 
 template<typename C>
-void Erase(C& container, const typename C::value_type& element) {
+std::size_t Erase(C& container, const typename C::value_type& element) {
 
     static_assert(
         !IsAssociativeContainer<C>::Value, 
         "zaf::Erase() can not be used with associative containers.");
 
+    std::size_t old_size = container.size();
 	container.erase(std::remove(container.begin(), container.end(), element), container.end());
+    return old_size - container.size();
 }
 
 
 template<typename C, typename P>
-void EraseIf(C& container, P predicate) {
+std::size_t EraseIf(C& container, P&& predicate) {
 
     static_assert(
         !IsAssociativeContainer<C>::Value, 
         "zaf::EraseIf() can not be used with associative containers.");
 
+    std::size_t old_size = container.size();
+
 	container.erase(
-        std::remove_if(container.begin(), container.end(), std::move(predicate)), 
+        std::remove_if(container.begin(), container.end(), std::forward<P>(predicate)), 
         container.end());
+
+    return old_size - container.size();
 }
 
 
 template<typename C>
-void EraseDuplicates(C& container) {
+std::size_t EraseDuplicates(C& container) {
     Sort(container);
-    Unique(container);
+    return Unique(container);
 }
 
 }

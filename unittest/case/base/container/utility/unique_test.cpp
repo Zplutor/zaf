@@ -4,34 +4,52 @@
 #include <gtest/gtest.h>
 #include <zaf/base/container/utility/unique.h>
 
-namespace internal {
-
-template<typename C>
-bool CheckElementOrder(const C& container) {
-	int index = 0;
-	for (int each_value : container) {
-		if (each_value != index) {
-			return false;
-		}
-		index++;
-	}
-	return true;
-}
+namespace {
 
 template<template<typename E, typename ...> class C>
 bool TestUnique() {
 
 	C<int> container{ 0, 1, 1, 2, 2, 3, 3, 3 };
 
-	zaf::Unique(container);
-	return CheckElementOrder(container);
+	std::size_t removed_count = zaf::Unique(container);
+    if (removed_count != 4) {
+        return false;
+    }
+
+    C<int> expected{ 0, 1, 2, 3 };
+    return container == expected;
+}
+
+
+template<template<typename E, typename ...> class C>
+bool TestUniqueWithPredicate() {
+
+    C<int> container{ 0, 1, 99, 99, 99, 2, 99, 99, 3, 4 };
+
+    std::size_t removed_count = zaf::Unique(container, [](int v1, int v2) {
+        return v1 == v2;
+    });
+    if (removed_count != 3) {
+        return false;
+    }
+
+    C<int> expected{ 0, 1, 99, 2, 99, 3, 4 };
+    return container == expected;
 }
 
 }
 
 TEST(Unique, Normal) {
 
-	ASSERT_TRUE(internal::TestUnique<std::vector>());
-    ASSERT_TRUE(internal::TestUnique<std::list>());
-	ASSERT_TRUE(internal::TestUnique<std::deque>());
+	ASSERT_TRUE(TestUnique<std::vector>());
+    ASSERT_TRUE(TestUnique<std::list>());
+	ASSERT_TRUE(TestUnique<std::deque>());
+}
+
+
+TEST(Unique, Predicate) {
+
+    ASSERT_TRUE(TestUniqueWithPredicate<std::vector>());
+    ASSERT_TRUE(TestUniqueWithPredicate<std::list>());
+    ASSERT_TRUE(TestUniqueWithPredicate<std::deque>());
 }

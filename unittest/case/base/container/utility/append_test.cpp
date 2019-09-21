@@ -44,3 +44,13 @@ TEST(Append, CompatibleElementType) {
     ASSERT_EQ(vector[2], 2);
     ASSERT_EQ(vector[3], 3);
 }
+
+
+TEST(Append, InitializerList) {
+
+    std::vector<long long> vector;
+    zaf::Append(vector, { 0, 1, 2, 3 });
+
+    std::vector<long long> expected{ 0, 1, 2, 3 };
+    ASSERT_EQ(vector, expected);
+}

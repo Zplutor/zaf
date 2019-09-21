@@ -1,5 +1,6 @@
 #pragma once
 
+#include <initializer_list>
 #include "zaf/base/container/utility/classify.h"
 
 namespace zaf {
@@ -19,8 +20,6 @@ struct SequenceContainerImplement {
     }
 };
 
-}
-
 template<typename C1, typename C2>
 void Append(C1& c1, const C2& c2) {
     return std::conditional_t<
@@ -28,6 +27,18 @@ void Append(C1& c1, const C2& c2) {
         internal::AssociativeContainerImplement<C1, C2>,
         internal::SequenceContainerImplement<C1, C2>
     >::Append(c1, c2);
+}
+
+}
+
+template<typename C1, typename C2>
+void Append(C1& c1, const C2& c2) {
+    internal::Append(c1, c2);
+}
+
+template<typename C, typename E>
+void Append(C& container, const std::initializer_list<E>& elements) {
+    internal::Append(container, elements);
 }
 
 }
