@@ -2,120 +2,116 @@
 #include <zaf/application.h>
 #include <zaf/control/control.h>
 #include <zaf/parsing/parsers/internal/utility.h>
-#include <zaf/parsing/utility.h>
+#include <zaf/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 namespace {
 
 void ParseProperties(const std::shared_ptr<XamlNode>& node, Control& control) {
 
-    auto name = ParseNodeChildToString(node, L"name", L"Control.Name");
+    XamlNodeParseHelper helper(*node, control.GetType());
+
+    auto name = helper.GetString(L"Name");
     if (name) {
         control.SetName(*name);
     }
 
-    auto x = ParseNodeChildToFloat(node, L"x", L"Control.X");
+    auto x = helper.GetFloat(L"X");
     if (x) {
         control.SetX(*x);
     }
 
-    auto y = ParseNodeChildToFloat(node, L"y", L"Control.Y");
+    auto y = helper.GetFloat(L"Y");
     if (y) {
         control.SetY(*y);
     }
 
-    auto position = ParseNodeChildToObject<Point>(node, L"position", L"Control.Position");
+    auto position = helper.GetObjectAsPointer<Point>(L"Position");
     if (position) {
         control.SetPosition(*position);
     }
 
-    auto width = ParseNodeChildToFloat(node, L"width", L"Control.Width");
+    auto width = helper.GetFloat(L"Width");
     if (width) {
         control.SetWidth(*width);
     }
 
-    auto height = ParseNodeChildToFloat(node, L"height", L"Control.Height");
+    auto height = helper.GetFloat(L"Height");
     if (height) {
         control.SetHeight(*height);
     }
 
-    auto size = ParseNodeChildToObject<Size>(node, L"size", L"Control.Size");
+    auto size = helper.GetObjectAsPointer<Size>(L"Size");
     if (size) {
         control.SetSize(*size);
     }
 
-    auto rect = ParseNodePropertyNodeToObject<Rect>(node, L"Control.Rect");
+    auto rect = helper.GetObjectAsPointer<Rect>(L"Rect");
     if (rect) {
         control.SetRect(*rect);
     }
 
-    auto minimum_width = ParseNodeChildToFloat(node, L"minimumWidth", L"Control.MinimumWidth");
+    auto minimum_width = helper.GetFloat(L"MinimumWidth");
     if (minimum_width) {
         control.SetMinimumWidth(*minimum_width);
     }
 
-    auto maximum_width = ParseNodeChildToFloat(node, L"maximumWidth", L"Control.MaximumWidth");
+    auto maximum_width = helper.GetFloat(L"MaximumWidth");
     if (maximum_width) {
         control.SetMaximumWidth(*maximum_width);
     }
 
-    auto minimum_height = ParseNodeChildToFloat(node, L"minimumHeight", L"Control.MinimumHeight");
+    auto minimum_height = helper.GetFloat(L"MinimumHeight");
     if (minimum_height) {
         control.SetMinimumHeight(*minimum_height);
     }
 
-    auto maximum_height = ParseNodeChildToFloat(node, L"maximumHeight", L"Control.MaximumHeight");
+    auto maximum_height = helper.GetFloat(L"MaximumHeight");
     if (maximum_height) {
         control.SetMaximumHeight(*maximum_height);
     }
 
-    auto border = ParseNodeChildToObject<Frame>(node, L"border", L"Control.Border");
+    auto border = helper.GetObjectAsPointer<Frame>(L"Border");
     if (border) {
         control.SetBorder(*border);
     }
 
-    auto padding = ParseNodeChildToObject<Frame>(node, L"padding", L"Control.Padding");
+    auto padding = helper.GetObjectAsPointer<Frame>(L"Padding");
     if (padding) {
         control.SetPadding(*padding);
     }
 
-    auto is_visible = ParseNodeChildToBool(node, L"isVisible", L"Control.IsVisible");
+    auto is_visible = helper.GetBool(L"IsVisible");
     if (is_visible) {
         control.SetIsVisible(*is_visible);
     }
 
-    auto is_enabled = ParseNodeChildToBool(node, L"isEnabled", L"Control.IsEnabled");
+    auto is_enabled = helper.GetBool(L"IsEnabled");
     if (is_enabled) {
         control.SetIsEnabled(*is_enabled);
     }
 
-    auto can_focused = ParseNodeChildToBool(node, L"canFocused", L"Control.CanFocused");
+    auto can_focused = helper.GetBool(L"CanFocused");
     if (can_focused) {
         control.SetCanFocused(*can_focused);
     }
 
-    auto can_tab_stop = ParseNodeChildToBool(node, L"canTabStop", L"Control.CanTabStop");
+    auto can_tab_stop = helper.GetBool(L"CanTabStop");
     if (can_tab_stop) {
         control.SetCanTabStop(*can_tab_stop);
     }
 
-    auto tab_index = ParseNodeChildToFloat(node, L"tabIndex", L"Control.TabIndex");
+    auto tab_index = helper.GetFloat(L"TabIndex");
     if (tab_index) {
         control.SetTabIndex(static_cast<std::size_t>(*tab_index));
     }
 
-    auto background_color = ParseNodeChildToObject<Color>(
-        node,
-        L"backgroundColor",
-        L"Control.BackgroundColor");
+    auto background_color = helper.GetObjectAsPointer<Color>(L"BackgroundColor");
     if (background_color) {
         control.SetBackgroundColor(*background_color);
     }
 
-    auto border_color = ParseNodeChildToObject<Color>(
-        node, 
-        L"borderColor",
-        L"Control.BorderColor");
+    auto border_color = helper.GetObjectAsPointer<Color>(L"BorderColor");
     if (border_color) {
         control.SetBorderColor(*border_color);
     }

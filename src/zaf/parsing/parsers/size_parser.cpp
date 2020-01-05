@@ -1,7 +1,7 @@
 #include <zaf/parsing/parsers/size_parser.h>
 #include <zaf/graphic/size.h>
 #include <zaf/parsing/parsers/internal/utility.h>
-#include <zaf/parsing/utility.h>
+#include <zaf/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 
@@ -19,12 +19,17 @@ void SizeParser::ParseFromNode(
     ReflectionObject& reflection_object) {
 
     Size& size = dynamic_cast<Size&>(reflection_object);
+    XamlNodeParseHelper helper(*node, size.GetType());
 
-    ParseNodeAttributeToFloat(node, L"width", size.width);
-    ParseNodeAttributeToFloat(node, L"height", size.height);
-
-    ParseNodePropertyNodeToFloat(node, L"Size.Width", size.width);
-    ParseNodePropertyNodeToFloat(node, L"Size.Height", size.height);
+    auto width = helper.GetFloat(L"Width");
+    if (width) {
+        size.width = *width;
+    }
+    
+    auto height = helper.GetFloat(L"Height");
+    if (height) {
+        size.height = *height;
+    }
 }
 
 }

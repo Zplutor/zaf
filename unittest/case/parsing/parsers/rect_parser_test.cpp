@@ -6,7 +6,7 @@
 
 TEST(RectParser, ParseFromNode) {
 
-    auto xaml = "<Rect position=\"10,11\" size=\"12,13\" />";
+    auto xaml = "<Rect Position=\"10,11\" Size=\"12,13\" />";
     auto node = zaf::XamlReader::CreateFromString(xaml)->Read();
 
     zaf::Rect rect;
@@ -16,7 +16,7 @@ TEST(RectParser, ParseFromNode) {
 
     xaml = 
         "<Rect>"
-        "   <Rect.Position x=\"14\" y=\"15\"></Rect.Position>"
+        "   <Rect.Position X=\"14\" Y=\"15\"></Rect.Position>"
         "   <Rect.Size>"
         "       <Size.Width>16</Size.Width>"
         "       <Size.Height>17</Size.Height>"

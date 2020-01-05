@@ -17,12 +17,23 @@ TEST(PointParser, ParseFromAttribute) {
 
 TEST(PointParser, ParseFromNode) {
 
-    auto xaml = "<Point><Point.X>55</Point.X><Point.Y>66</Point.Y></Point>";
+    auto xaml = R"(
+        <Point X="53" Y="54" />
+    )";
     auto node = zaf::XamlReader::CreateFromString(xaml)->Read();
 
     zaf::Point point;
     zaf::PointParser parser;
     parser.ParseFromNode(node, point);
+    ASSERT_EQ(point, zaf::Point(53, 54));
 
+    xaml = R"(
+        <Point>
+            <Point.X>55</Point.X>
+            <Point.Y>66</Point.Y>
+        </Point>
+    )";
+    node = zaf::XamlReader::CreateFromString(xaml)->Read();
+    parser.ParseFromNode(node, point);
     ASSERT_EQ(point, zaf::Point(55, 66));
 }

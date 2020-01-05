@@ -358,9 +358,6 @@
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp">
       <Filter>zaf\reflection</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\parsing\utility.cpp">
-      <Filter>zaf\parsing</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\parsing\xaml_node.cpp">
       <Filter>zaf\parsing</Filter>
     </ClCompile>
@@ -396,6 +393,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp">
       <Filter>zaf\base\registry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\xaml_node_parse_helper.cpp">
+      <Filter>zaf\parsing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -976,9 +976,6 @@
     <ClInclude Include="src\zaf\parsing\xaml_node.h">
       <Filter>zaf\parsing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\parsing\utility.h">
-      <Filter>zaf\parsing</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\string\split.h">
       <Filter>zaf\base\string</Filter>
     </ClInclude>
@@ -999,6 +996,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\handle.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\xaml_node_parse_helper.h">
+      <Filter>zaf\parsing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

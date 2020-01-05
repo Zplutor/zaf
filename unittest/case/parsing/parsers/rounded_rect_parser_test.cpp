@@ -7,8 +7,8 @@
 TEST(RoundedRectParser, ParseFromNode) {
 
     std::string xaml = R"(
-        <RoundedRect xRadius="0.5" yRadius="0.6">
-            <RoundedRect.Rect position="2,2" size="5,6" />
+        <RoundedRect XRadius="0.5" YRadius="0.6">
+            <RoundedRect.Rect Position="2,2" Size="5,6" />
         </RoundedRect>
     )";
 
@@ -23,7 +23,7 @@ TEST(RoundedRectParser, ParseFromNode) {
         <RoundedRect>
             <RoundedRect.XRadius>0.7</RoundedRect.XRadius>
             <RoundedRect.YRadius>0.8</RoundedRect.YRadius>
-            <RoundedRect.Rect position="3,3" size="4,4" />
+            <RoundedRect.Rect Position="3,3" Size="4,4" />
         </RoundedRect>
     )";
 

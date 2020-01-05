@@ -13,7 +13,7 @@ std::shared_ptr<zaf::Control> CreateControlFromXaml(const std::string& xaml) {
 
 TEST(ControlParser, ParseName) {
 
-    auto xaml = R"(<Control name="xyz" />)";
+    auto xaml = R"(<Control Name="xyz" />)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetName(), L"xyz");
 
@@ -29,7 +29,7 @@ TEST(ControlParser, ParseName) {
 
 TEST(ControlParser, ParseXAndY) {
 
-    auto xaml = R"(<Control x="1" y="2" />)";
+    auto xaml = R"(<Control X="1" Y="2" />)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetPosition(), zaf::Point(1, 2));
 
@@ -46,13 +46,13 @@ TEST(ControlParser, ParseXAndY) {
 
 TEST(ControlParser, ParsePosition) {
 
-    auto xaml = R"(<Control position="1,2" />)";
+    auto xaml = R"(<Control Position="1,2" />)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetPosition(), zaf::Point(1, 2));
 
     xaml = R"(
         <Control>
-            <Control.Position x="3" y="4" />
+            <Control.Position X="3" Y="4" />
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
@@ -62,7 +62,7 @@ TEST(ControlParser, ParsePosition) {
 
 TEST(ControlParser, ParseWidthAndHeight) {
 
-    auto xaml = R"(<Control width="1" height="2" />)";
+    auto xaml = R"(<Control Width="1" Height="2" />)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetSize(), zaf::Size(1, 2));
 
@@ -79,13 +79,13 @@ TEST(ControlParser, ParseWidthAndHeight) {
 
 TEST(ControlParser, ParseSize) {
 
-    auto xaml = R"(<Control size="1,2" />)";
+    auto xaml = R"(<Control Size="1,2" />)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetSize(), zaf::Size(1, 2));
 
     xaml = R"(
         <Control>
-            <Control.Size width="3" height="4" />
+            <Control.Size Width="3" Height="4" />
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
@@ -97,7 +97,7 @@ TEST(ControlParser, ParseRect) {
 
     auto xaml = R"(
         <Control>
-            <Control.Rect position="1,2" size="3,4" />
+            <Control.Rect Position="1,2" Size="3,4" />
         </Control>
     )";
     auto control = CreateControlFromXaml(xaml);
@@ -108,7 +108,7 @@ TEST(ControlParser, ParseRect) {
 
 TEST(ControlParser, ParseMinimumWidthAndMaximumWidth) {
 
-    auto xaml = R"(<Control minimumWidth="1" maximumWidth="2"></Control>)";
+    auto xaml = R"(<Control MinimumWidth="1" MaximumWidth="2"></Control>)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetMinimumWidth(), 1);
     ASSERT_EQ(control->GetMaximumWidth(), 2);
@@ -127,7 +127,7 @@ TEST(ControlParser, ParseMinimumWidthAndMaximumWidth) {
 
 TEST(ControlParser, ParseMinimumHeightAndMaximumHeight) {
 
-    auto xaml = R"(<Control minimumHeight="1" maximumHeight="2"></Control>)";
+    auto xaml = R"(<Control MinimumHeight="1" MaximumHeight="2"></Control>)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetMinimumHeight(), 1);
     ASSERT_EQ(control->GetMaximumHeight(), 2);
@@ -146,13 +146,13 @@ TEST(ControlParser, ParseMinimumHeightAndMaximumHeight) {
 
 TEST(ControlParser, ParseBorder) {
 
-    auto xaml = R"(<Control border="1,2,3,4"></Control>)";
+    auto xaml = R"(<Control Border="1,2,3,4"></Control>)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetBorder(), zaf::Frame(1, 2, 3, 4));
 
     xaml = R"(
         <Control>
-            <Control.Border left="5" top="6" right="7" bottom="8"></Control.Border>
+            <Control.Border Left="5" Top="6" Right="7" Bottom="8"></Control.Border>
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
@@ -162,13 +162,13 @@ TEST(ControlParser, ParseBorder) {
 
 TEST(ControlParser, ParsePadding) {
 
-    auto xaml = R"(<Control padding="1,2,3,4"></Control>)";
+    auto xaml = R"(<Control Padding="1,2,3,4"></Control>)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetPadding(), zaf::Frame(1, 2, 3, 4));
 
     xaml = R"(
         <Control>
-            <Control.Padding left="5" top="6" right="7" bottom="8"></Control.Padding>
+            <Control.Padding Left="5" Top="6" Right="7" Bottom="8"></Control.Padding>
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
@@ -178,7 +178,7 @@ TEST(ControlParser, ParsePadding) {
 
 TEST(ControlParser, ParseIsVisible) {
 
-    auto xaml = R"(<Control isVisible="false" />)";
+    auto xaml = R"(<Control IsVisible="false" />)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->IsVisible(), false);
 
@@ -190,7 +190,7 @@ TEST(ControlParser, ParseIsVisible) {
 
 TEST(ControlParser, ParseIsEnabled) {
 
-    auto xaml = R"(<Control isEnabled="false" />)";
+    auto xaml = R"(<Control IsEnabled="false" />)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->IsEnabled(), false);
 
@@ -202,7 +202,7 @@ TEST(ControlParser, ParseIsEnabled) {
 
 TEST(ControlParser, ParseCanFocused) {
 
-    auto xaml = R"(<Control canFocused="false" />)";
+    auto xaml = R"(<Control CanFocused="false" />)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->CanFocused(), false);
 
@@ -214,7 +214,7 @@ TEST(ControlParser, ParseCanFocused) {
 
 TEST(ControlParser, ParseCanTabStop) {
 
-    auto xaml = R"(<Control canTabStop="false" />)";
+    auto xaml = R"(<Control CanTabStop="false" />)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->CanTabStop(), false);
 
@@ -226,7 +226,7 @@ TEST(ControlParser, ParseCanTabStop) {
 
 TEST(ControlParser, ParseTabIndex) {
 
-    auto xaml = R"(<Control tabIndex="2" />)";
+    auto xaml = R"(<Control TabIndex="2" />)";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetTabIndex(), 2);
 
@@ -240,9 +240,9 @@ TEST(ControlParser, ParseColors) {
 
     auto xaml = R"(
         <Control 
-            backgroundColor="#112233"
-            borderColor="#445566"
-        />ASSERT_EQ(control->GetBackgroundColor(), zaf::Color::FromRGB(0x112233));
+            BackgroundColor="#112233"
+            BorderColor="#445566"
+        />
     )";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetBackgroundColor(), zaf::Color::FromRGB(0x112233));
@@ -250,8 +250,8 @@ TEST(ControlParser, ParseColors) {
 
     xaml = R"(
         <Control>
-            <Control.BackgroundColor r="0.1" g="0.2" b="0.3" />
-            <Control.BorderColor r="0.4" g="0.5" b="0.6" />
+            <Control.BackgroundColor R="0.1" G="0.2" B="0.3" />
+            <Control.BorderColor R="0.4" G="0.5" B="0.6" />
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
@@ -264,8 +264,8 @@ TEST(ControlParser, ParseChildren) {
 
     auto xaml = R"(
         <Control>
-            <Control name="child1"></Control>
-            <Control name="child2" />
+            <Control Name="child1"></Control>
+            <Control Name="child2" />
         </Control>
     )";
     auto control = CreateControlFromXaml(xaml);

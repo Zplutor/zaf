@@ -1,8 +1,7 @@
 #include <zaf/parsing/parsers/color_parser.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/graphic/color.h>
-#include <zaf/parsing/utility.h>
-#include <zaf/reflection/reflection_type.h>
+#include <zaf/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 namespace {
@@ -87,11 +86,27 @@ void ColorParser::ParseFromNode(
     ReflectionObject& reflection_object) {
 
     auto& color = dynamic_cast<Color&>(reflection_object);
+    XamlNodeParseHelper helper(*node, color.GetType());
 
-    ParseNodeChildToFloat(node, L"a", L"Color.A", color.a);
-    ParseNodeChildToFloat(node, L"r", L"Color.R", color.r);
-    ParseNodeChildToFloat(node, L"g", L"Color.G", color.g);
-    ParseNodeChildToFloat(node, L"b", L"Color.B", color.b);
+    auto a = helper.GetFloat(L"A");
+    if (a) {
+        color.a = *a;
+    }
+
+    auto r = helper.GetFloat(L"R");
+    if (r) {
+        color.r = *r;
+    }
+
+    auto g = helper.GetFloat(L"G");
+    if (g) {
+        color.g = *g;
+    }
+
+    auto b = helper.GetFloat(L"B");
+    if (b) {
+        color.b = *b;
+    }
 
     const auto& content_nodes = node->GetContentNodes();
     if (content_nodes.size() != 1) {

@@ -1,8 +1,8 @@
 #include <zaf/parsing/parsers/point_parser.h>
 #include <zaf/graphic/point.h>
 #include <zaf/parsing/parsers/internal/utility.h>
-#include <zaf/parsing/utility.h>
 #include <zaf/parsing/xaml_node.h>
+#include <zaf/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 
@@ -20,12 +20,17 @@ void PointParser::ParseFromNode(
     ReflectionObject& reflection_object) {
 
     Point& point = dynamic_cast<Point&>(reflection_object);
+    XamlNodeParseHelper helper(*node, point.GetType());
 
-    ParseNodeAttributeToFloat(node, L"x", point.x);
-    ParseNodeAttributeToFloat(node, L"y", point.y);
+    auto x = helper.GetFloat(L"X");
+    if (x) {
+        point.x = *x;
+    }
 
-    ParseNodePropertyNodeToFloat(node, L"Point.X", point.x);
-    ParseNodePropertyNodeToFloat(node, L"Point.Y", point.y);
+    auto y = helper.GetFloat(L"Y");
+    if (y) {
+        point.y = *y;
+    }
 }
 
 

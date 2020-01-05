@@ -16,7 +16,7 @@ TEST(FrameParser, ParseFromAttribute) {
 TEST(FrameParser, ParseFromNode) {
 
     auto xaml = R"(
-        <Frame left="20" top="21" right="22" bottom="23" />
+        <Frame Left="20" Top="21" Right="22" Bottom="23" />
     )";
     auto node = zaf::XamlReader::CreateFromString(xaml)->Read();
 

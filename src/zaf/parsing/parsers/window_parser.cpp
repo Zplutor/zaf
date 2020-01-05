@@ -2,7 +2,7 @@
 #include <zaf/application.h>
 #include <zaf/base/string/split.h>
 #include <zaf/parsing/parsers/internal/utility.h>
-#include <zaf/parsing/utility.h>
+#include <zaf/parsing/xaml_node_parse_helper.h>
 #include <zaf/reflection/reflection_manager.h>
 #include <zaf/window/window.h>
 
@@ -86,7 +86,7 @@ std::shared_ptr<Control> ParseRootControl(const std::shared_ptr<XamlNode>& node)
         return root_control;
     }
 
-    auto attribute = node->GetAttribute(L"rootControl");
+    auto attribute = node->GetAttribute(L"RootControl");
     if (! attribute) {
         return {};
     }
@@ -97,7 +97,9 @@ std::shared_ptr<Control> ParseRootControl(const std::shared_ptr<XamlNode>& node)
 
 void ParseProperties(const std::shared_ptr<XamlNode>& node, Window& window) {
 
-    auto style_string = ParseNodeChildToString(node, L"style", L"Window.Style");
+    XamlNodeParseHelper helper(*node, window.GetType());
+
+    auto style_string = helper.GetString(L"Style");
     if (style_string) {
         auto style = ParseStyle(*style_string);
         if (style) {
@@ -105,10 +107,7 @@ void ParseProperties(const std::shared_ptr<XamlNode>& node, Window& window) {
         }
     }
 
-    auto initial_rect_style_string = ParseNodeChildToString(
-        node,
-        L"initialRectStyle",
-        L"Window.InitialRectStyle");
+    auto initial_rect_style_string = helper.GetString(L"InitialRectStyle");
     if (initial_rect_style_string) {
         auto initial_rect_style = ParseInitialRectStyle(*initial_rect_style_string);
         if (initial_rect_style) {
@@ -116,7 +115,7 @@ void ParseProperties(const std::shared_ptr<XamlNode>& node, Window& window) {
         }
     }
 
-    auto border_style_string = ParseNodeChildToString(node, L"borderStyle", L"Window.BorderStyle");
+    auto border_style_string = helper.GetString(L"BorderStyle");
     if (border_style_string) {
         auto border_style = ParseBorderStyle(*border_style_string);
         if (border_style) {
@@ -124,90 +123,87 @@ void ParseProperties(const std::shared_ptr<XamlNode>& node, Window& window) {
         }
     }
 
-    auto activate_option_string = ParseNodeChildToString(
-        node, 
-        L"activateOption",
-        L"Window.ActivateOption");
+    auto activate_option_string = helper.GetString(L"ActivateOption");
     if (activate_option_string) {
         window.SetActivateOption(ParseActivateOption(*activate_option_string));
     }
 
-    auto title = ParseNodeChildToString(node, L"title", L"Window.Title");
+    auto title = helper.GetString(L"Title");
     if (title) {
         window.SetTitle(*title);
     }
 
-    auto width = ParseNodeChildToFloat(node, L"width", L"Window.Width");
+    auto width = helper.GetFloat(L"Width");
     if (width) {
         window.SetWidth(*width);
     }
 
-    auto height = ParseNodeChildToFloat(node, L"height", L"Window.Height");
+    auto height = helper.GetFloat(L"Height");
     if (height) {
         window.SetHeight(*height);
     }
 
-    auto size = ParseNodeChildToObject<Size>(node, L"size", L"Window.Size");
+    auto size = helper.GetObjectAsPointer<Size>(L"Size");
     if (size) {
         window.SetSize(*size);
     }
 
-    auto rect = ParseNodePropertyNodeToObject<Rect>(node, L"Window.Rect");
+    auto rect = helper.GetObjectAsPointer<Rect>(L"Rect");
     if (rect) {
         window.SetRect(*rect);
     }
 
-    auto minimum_width = ParseNodeChildToFloat(node, L"minimumWidth", L"Window.MinimumWidth");
+    auto minimum_width = helper.GetFloat(L"MinimumWidth");
     if (minimum_width) {
         window.SetMinimumWidth(*minimum_width);
     }
 
-    auto minimum_height = ParseNodeChildToFloat(node, L"minimumHeight", L"Window.MinimumHeight");
+    auto minimum_height = helper.GetFloat(L"MinimumHeight");
     if (minimum_height) {
         window.SetMinimumHeight(*minimum_height);
     }
 
-    auto minimum_size = ParseNodeChildToObject<Size>(node, L"minimumSize", L"Window.MinimumSize");
+    auto minimum_size = helper.GetObjectAsPointer<Size>(L"MinimumSize");
     if (minimum_size) {
         window.SetMinimumSize(*minimum_size);
     }
 
-    auto maximum_width = ParseNodeChildToFloat(node, L"maximumWidth", L"Window.MaximumWidth");
+    auto maximum_width = helper.GetFloat(L"MaximumWidth");
     if (maximum_width) {
         window.SetMaximumWidth(*maximum_width);
     }
 
-    auto maximum_height = ParseNodeChildToFloat(node, L"maximumHeight", L"Window.MaximumHeight");
+    auto maximum_height = helper.GetFloat(L"MaximumHeight");
     if (maximum_height) {
         window.SetMaximumHeight(*maximum_height);
     }
 
-    auto maximum_size = ParseNodeChildToObject<Size>(node, L"maximumSize", L"Window.MaximumSize");
+    auto maximum_size = helper.GetObjectAsPointer<Size>(L"MaximumSize");
     if (maximum_size) {
         window.SetMaximumSize(*maximum_size);
     }
 
-    auto can_minimize = ParseNodeChildToBool(node, L"canMinimize", L"Window.CanMinimize");
+    auto can_minimize = helper.GetBool(L"CanMinimize");
     if (can_minimize) {
         window.SetCanMinimize(*can_minimize);
     }
 
-    auto can_maximize = ParseNodeChildToBool(node, L"canMaximize", L"Window.CanMaximize");
+    auto can_maximize = helper.GetBool(L"CanMaximize");
     if (can_maximize) {
         window.SetCanMaximize(*can_maximize);
     }
 
-    auto is_tool_window = ParseNodeChildToBool(node, L"isToolWindow", L"Window.IsToolWindow");
+    auto is_tool_window = helper.GetBool(L"IsToolWindow");
     if (is_tool_window) {
         window.SetIsToolWindow(*is_tool_window);
     }
 
-    auto is_sizable = ParseNodeChildToBool(node, L"isSizable", L"Window.IsSizable");
+    auto is_sizable = helper.GetBool(L"IsSizable");
     if (is_sizable) {
         window.SetIsSizable(*is_sizable);
     }
 
-    auto has_system_menu = ParseNodeChildToBool(node, L"hasSystemMenu", L"Window.HasSystemMenu");
+    auto has_system_menu = helper.GetBool(L"HasSystemMenu");
     if (has_system_menu) {
         window.SetHasSystemMenu(*has_system_menu);
     }

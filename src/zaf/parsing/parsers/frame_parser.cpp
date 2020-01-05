@@ -1,8 +1,8 @@
 #include <zaf/parsing/parsers/frame_parser.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/parsing/parsers/internal/utility.h>
-#include <zaf/parsing/utility.h>
 #include <zaf/parsing/xaml_node.h>
+#include <zaf/parsing/xaml_node_parse_helper.h>
 #include <zaf/reflection/reflection_type.h>
 
 namespace zaf {
@@ -27,16 +27,27 @@ void FrameParser::ParseFromNode(
     ReflectionObject& reflection_object) {
 
     auto& frame = dynamic_cast<Frame&>(reflection_object);
+    XamlNodeParseHelper helper(*node, frame.GetType());
 
-    ParseNodeAttributeToFloat(node, L"left", frame.left);
-    ParseNodeAttributeToFloat(node, L"top", frame.top);
-    ParseNodeAttributeToFloat(node, L"right", frame.right);
-    ParseNodeAttributeToFloat(node, L"bottom", frame.bottom);
+    auto left = helper.GetFloat(L"Left");
+    if (left) {
+        frame.left = *left;
+    }
 
-    ParseNodePropertyNodeToFloat(node, L"Frame.Left", frame.left);
-    ParseNodePropertyNodeToFloat(node, L"Frame.Top", frame.top);
-    ParseNodePropertyNodeToFloat(node, L"Frame.Right", frame.right);
-    ParseNodePropertyNodeToFloat(node, L"Frame.Bottom", frame.bottom);
+    auto top = helper.GetFloat(L"Top");
+    if (top) {
+        frame.top = *top;
+    }
+
+    auto right = helper.GetFloat(L"Right");
+    if (right) {
+        frame.right = *right;
+    }
+
+    auto bottom = helper.GetFloat(L"Bottom");
+    if (bottom) {
+        frame.bottom = *bottom;
+    }
 }
 
 }

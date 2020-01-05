@@ -8,7 +8,7 @@ TEST(WindowParser, ParseStyle) {
 
     auto test = [](const std::string& value, zaf::Window::Style style) {
     
-        auto xaml = "<Window style=\"" + value + "\" />";
+        auto xaml = "<Window Style=\"" + value + "\" />";
         auto window = CreateObjectFromXaml<zaf::Window>(xaml);
         ASSERT_EQ(window->GetStyle(), style);
 
@@ -26,7 +26,7 @@ TEST(WindowParser, ParseInitialRectStyle) {
 
     auto test = [](const std::string& value, zaf::Window::InitialRectStyle style) {
     
-        std::string xaml(R"(<Window initialRectStyle=")" + value + R"(" />)");
+        std::string xaml(R"(<Window InitialRectStyle=")" + value + R"(" />)");
         auto window = CreateObjectFromXaml<zaf::Window>(xaml);
         ASSERT_EQ(window->GetInitialRectStyle(), style);
 
@@ -47,7 +47,7 @@ TEST(WindowParser, ParseBorderStyle) {
 
     auto test = [](const std::string& value, zaf::Window::BorderStyle style) {
     
-        std::string xaml = "<Window borderStyle=\"" + value + "\" />";
+        std::string xaml = "<Window BorderStyle=\"" + value + "\" />";
         auto window = CreateObjectFromXaml<zaf::Window>(xaml);
         ASSERT_EQ(window->GetBorderStyle(), style);
 
@@ -66,7 +66,7 @@ TEST(WindowParser, ParseBorderStyle) {
 TEST(WindowParser, ParseActivateOption) {
 
     auto window = CreateObjectFromXaml<zaf::Window>(R"(
-        <Window activateOption="NoActivate DiscardMouseMessage" />
+        <Window ActivateOption="NoActivate DiscardMouseMessage" />
     )");
     ASSERT_EQ(window->GetActivateOption(), 
         zaf::Window::ActivateOption::NoActivate | 
@@ -88,7 +88,7 @@ TEST(WindowParser, ParseActivateOption) {
 
 TEST(WindowParser, ParseTitle) {
 
-    auto xaml = R"(<Window title="xxx"></Window>)";
+    auto xaml = R"(<Window Title="xxx"></Window>)";
     auto window = CreateObjectFromXaml<zaf::Window>(xaml); 
     ASSERT_EQ(window->GetTitle(), L"xxx");
 
@@ -100,7 +100,7 @@ TEST(WindowParser, ParseTitle) {
 
 TEST(WindowParser, ParseWidthAndHeight) {
 
-    auto xaml = R"(<Window width="1" height="2"></Window>)";
+    auto xaml = R"(<Window Width="1" Height="2"></Window>)";
     auto window = CreateObjectFromXaml<zaf::Window>(xaml);
     ASSERT_EQ(window->GetWidth(), 1);
     ASSERT_EQ(window->GetHeight(), 2);
@@ -119,7 +119,7 @@ TEST(WindowParser, ParseWidthAndHeight) {
 
 TEST(WindowParser, ParseMinimumWidthAndHeight) {
 
-    auto xaml = R"(<Window minimumWidth="1" minimumHeight="2"></Window>)";
+    auto xaml = R"(<Window MinimumWidth="1" MinimumHeight="2"></Window>)";
     auto window = CreateObjectFromXaml<zaf::Window>(xaml);
     ASSERT_EQ(window->GetMinimumWidth(), 1);
     ASSERT_EQ(window->GetMinimumHeight(), 2);
@@ -138,13 +138,13 @@ TEST(WindowParser, ParseMinimumWidthAndHeight) {
 
 TEST(WindowParser, ParseSize) {
 
-    auto xaml = R"(<Window size="10,20"></Window>)";
+    auto xaml = R"(<Window Size="10,20"></Window>)";
     auto window = CreateObjectFromXaml<zaf::Window>(xaml);
     ASSERT_EQ(window->GetSize(), zaf::Size(10, 20));
 
     xaml = R"(
         <Window>
-            <Window.Size width="30" height="40"></Window.Size>
+            <Window.Size Width="30" Height="40"></Window.Size>
         </Window>
     )";
     window = CreateObjectFromXaml<zaf::Window>(xaml);
@@ -156,7 +156,7 @@ TEST(WindowParser, ParseRect) {
 
     auto window = CreateObjectFromXaml<zaf::Window>(R"(
         <Window>
-            <Window.Rect position="1,2" size="3,4"></Window.Rect>
+            <Window.Rect Position="1,2" Size="3,4"></Window.Rect>
         </Window>
     )");
     ASSERT_EQ(window->GetRect(), zaf::Rect(1, 2, 3, 4));
@@ -165,7 +165,7 @@ TEST(WindowParser, ParseRect) {
 
 TEST(WindowParser, ParseMaximumWidthAndHeight) {
 
-    auto xaml = R"(<Window maximumWidth="1" maximumHeight="2"></Window>)";
+    auto xaml = R"(<Window MaximumWidth="1" MaximumHeight="2"></Window>)";
     auto window = CreateObjectFromXaml<zaf::Window>(xaml);
     ASSERT_EQ(window->GetMaximumWidth(), 1);
     ASSERT_EQ(window->GetMaximumHeight(), 2);
@@ -184,15 +184,15 @@ TEST(WindowParser, ParseMaximumWidthAndHeight) {
 
 TEST(WindowParser, ParseMinimumAndMaximumSize) {
 
-    auto xaml = R"(<Window minimumSize="10,20" maximumSize="30,40"></Window>)";
+    auto xaml = R"(<Window MinimumSize="10,20" MaximumSize="30,40"></Window>)";
     auto window = CreateObjectFromXaml<zaf::Window>(xaml);
     ASSERT_EQ(window->GetMinimumSize(), zaf::Size(10, 20));
     ASSERT_EQ(window->GetMaximumSize(), zaf::Size(30, 40));
 
     xaml = R"(
         <Window>
-            <Window.MinimumSize width="50" height="60"></Window.MinimumSize>
-            <Window.MaximumSize width="70" height="80"></Window.MaximumSize>
+            <Window.MinimumSize Width="50" Height="60"></Window.MinimumSize>
+            <Window.MaximumSize Width="70" Height="80"></Window.MaximumSize>
         </Window>
     )";
     window = CreateObjectFromXaml<zaf::Window>(xaml);
@@ -203,7 +203,7 @@ TEST(WindowParser, ParseMinimumAndMaximumSize) {
 
 TEST(WindowParser, ParseCanMinimizeAndCanMaximize) {
 
-    auto xaml = R"(<Window canMinimize="false" canMaximize="false" />)";
+    auto xaml = R"(<Window CanMinimize="false" CanMaximize="false" />)";
     auto window = CreateObjectFromXaml<zaf::Window>(xaml);
     ASSERT_EQ(window->CanMinimize(), false);
     ASSERT_EQ(window->CanMaximize(), false);
@@ -222,7 +222,7 @@ TEST(WindowParser, ParseCanMinimizeAndCanMaximize) {
 
 TEST(WindowParser, ParseIsToolWindow) {
 
-    auto window = CreateObjectFromXaml<zaf::Window>(R"(<Window isToolWindow="true" />)");
+    auto window = CreateObjectFromXaml<zaf::Window>(R"(<Window IsToolWindow="true" />)");
     ASSERT_EQ(window->IsToolWindow(), true);
 
     window = CreateObjectFromXaml<zaf::Window>(R"(
@@ -234,7 +234,7 @@ TEST(WindowParser, ParseIsToolWindow) {
 
 TEST(WindowParser, ParseIsSizable) {
 
-    auto window = CreateObjectFromXaml<zaf::Window>(R"(<Window isSizable="false" />)");
+    auto window = CreateObjectFromXaml<zaf::Window>(R"(<Window IsSizable="false" />)");
     ASSERT_EQ(window->IsSizable(), false);
 
     window = CreateObjectFromXaml<zaf::Window>(R"(
@@ -246,7 +246,7 @@ TEST(WindowParser, ParseIsSizable) {
 
 TEST(WindowParser, ParseHasSystemMenu) {
 
-    auto window = CreateObjectFromXaml<zaf::Window>(R"(<Window hasSystemMenu="false" />)");
+    auto window = CreateObjectFromXaml<zaf::Window>(R"(<Window HasSystemMenu="false" />)");
     ASSERT_EQ(window->HasSystemMenu(), false);
 
     window = CreateObjectFromXaml<zaf::Window>(R"(
@@ -262,14 +262,14 @@ TEST(WindowParser, ParseRootControl) {
     zaf::Label::Type->GetName();
     zaf::Button::Type->GetName();
 
-    auto window = CreateObjectFromXaml<zaf::Window>(R"(<Window rootControl="Label" />)");
+    auto window = CreateObjectFromXaml<zaf::Window>(R"(<Window RootControl="Label" />)");
     auto label = std::dynamic_pointer_cast<zaf::Label>(window->GetRootControl());
     ASSERT_NE(label, nullptr);
 
     window = CreateObjectFromXaml<zaf::Window>(R"(
         <Window>
             <Window.RootControl>
-                <Button text="bbbb"></Button>
+                <Button Text="bbbb"></Button>
             </Window.RootControl>
         </Window>
     )");
@@ -283,8 +283,8 @@ TEST(WindowParser, ParseControls) {
 
     auto window = CreateObjectFromXaml<zaf::Window>(R"(
         <Window>
-            <Control name="111" />
-            <Control name="222" />
+            <Control Name="111" />
+            <Control Name="222" />
         </Window>
     )");
 

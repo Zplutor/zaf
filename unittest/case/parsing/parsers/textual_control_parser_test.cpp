@@ -11,7 +11,7 @@ std::shared_ptr<zaf::TextualControl> CreateTextualControlFromXaml(const std::str
 
 TEST(TextualControlParser, ParseText) {
 
-    auto xaml = R"(<TextualControl text="ttttt"></TextualControl>)";
+    auto xaml = R"(<TextualControl Text="ttttt"></TextualControl>)";
     auto control = CreateTextualControlFromXaml(xaml);
     ASSERT_EQ(control->GetText(), L"ttttt");
 
@@ -27,13 +27,13 @@ TEST(TextualControlParser, ParseText) {
 
 TEST(TextualControlParser, ParseDefaultTextColor) {
 
-    auto xaml = R"(<TextualControl defaultTextColor="#aabbcc" />)";
+    auto xaml = R"(<TextualControl DefaultTextColor="#aabbcc" />)";
     auto control = CreateTextualControlFromXaml(xaml);
     ASSERT_EQ(control->GetDefaultTextColor(), zaf::Color::FromRGB(0xaabbcc));
 
     xaml = R"(
         <TextualControl>
-            <TextualControl.DefaultTextColor r="0.3" g="0.4" b="0.5" />
+            <TextualControl.DefaultTextColor R="0.3" G="0.4" B="0.5" />
         </TextualControl>
     )";
     control = CreateTextualControlFromXaml(xaml);

@@ -1,8 +1,7 @@
 #include <zaf/parsing/parsers/rect_parser.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/parsing/utility.h>
 #include <zaf/parsing/xaml_node.h>
-#include <zaf/reflection/reflection_type.h>
+#include <zaf/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 
@@ -11,12 +10,17 @@ void RectParser::ParseFromNode(
     ReflectionObject& reflection_object) {
 
     auto& rect = dynamic_cast<Rect&>(reflection_object);
+    XamlNodeParseHelper helper(*node, rect.GetType());
 
-    ParseNodeAttributeToObject(node, L"position", rect.position);
-    ParseNodeAttributeToObject(node, L"size", rect.size);
+    auto position = helper.GetObjectAsPointer<Point>(L"Position");
+    if (position) {
+        rect.position = *position;
+    }
 
-    ParseNodePropertyNodeToObject(node, L"Rect.Position", rect.position);
-    ParseNodePropertyNodeToObject(node, L"Rect.Size", rect.size);
+    auto size = helper.GetObjectAsPointer<Size>(L"Size");
+    if (size) {
+        rect.size = *size;
+    }
 }
 
 }

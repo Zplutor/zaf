@@ -109,8 +109,8 @@
     <ClCompile Include="src\zaf\parsing\parsers\size_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\textual_control_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\window_parser.cpp" />
-    <ClCompile Include="src\zaf\parsing\utility.cpp" />
     <ClCompile Include="src\zaf\parsing\xaml_node.cpp" />
+    <ClCompile Include="src\zaf\parsing\xaml_node_parse_helper.cpp" />
     <ClCompile Include="src\zaf\parsing\xaml_reader.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
@@ -301,8 +301,8 @@
     <ClInclude Include="src\zaf\parsing\parsers\text_box_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\text_trimming_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\window_parser.h" />
-    <ClInclude Include="src\zaf\parsing\utility.h" />
     <ClInclude Include="src\zaf\parsing\xaml_node.h" />
+    <ClInclude Include="src\zaf\parsing\xaml_node_parse_helper.h" />
     <ClInclude Include="src\zaf\parsing\xaml_reader.h" />
     <ClInclude Include="src\zaf\reflection\creation.h" />
     <ClInclude Include="src\zaf\reflection\reflection_manager.h" />
@@ -327,19 +327,19 @@
     <ProjectGuid>{CC24D55C-A412-446C-96D3-C77A4E4CFA07}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>zaf</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
