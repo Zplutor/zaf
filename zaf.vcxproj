@@ -97,8 +97,10 @@
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\button_parser.cpp" />
+    <ClCompile Include="src\zaf\parsing\parsers\check_box_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\clickable_control_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\color_parser.cpp" />
+    <ClCompile Include="src\zaf\parsing\parsers\combo_box_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\control_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\ellipse_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\frame_parser.cpp" />

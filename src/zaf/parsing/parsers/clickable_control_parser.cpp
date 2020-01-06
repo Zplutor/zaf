@@ -3,7 +3,7 @@
 namespace zaf {
 
 void ClickableControlParser::ParseFromNode(
-    const std::shared_ptr<XamlNode>& node,
+    const XamlNode& node, 
     ReflectionObject& reflection_object) {
 
     __super::ParseFromNode(node, reflection_object);

@@ -17,7 +17,7 @@ public:
         ReflectionObject& reflection_object) { }
 
     virtual void ParseFromNode(
-        const std::shared_ptr<XamlNode>& node, 
+        const XamlNode& node,
         ReflectionObject& reflection_object) = 0;
 };
 

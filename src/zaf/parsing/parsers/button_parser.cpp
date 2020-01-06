@@ -3,9 +3,7 @@
 
 namespace zaf {
 
-void ButtonParser::ParseFromNode(
-    const std::shared_ptr<XamlNode>& node,
-    ReflectionObject& reflection_object) {
+void ButtonParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
 
     __super::ParseFromNode(node, reflection_object);
 }

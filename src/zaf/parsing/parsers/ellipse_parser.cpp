@@ -4,12 +4,10 @@
 
 namespace zaf {
 
-void EllipseParser::ParseFromNode(
-    const std::shared_ptr<XamlNode>& node,
-    ReflectionObject& reflection_object) {
+void EllipseParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
 
     auto& ellipse = dynamic_cast<Ellipse&>(reflection_object);
-    XamlNodeParseHelper helper(*node, ellipse.GetType());
+    XamlNodeParseHelper helper(node, ellipse.GetType());
 
     auto position = helper.GetObjectAsPointer<Point>(L"Position");
     if (position) {

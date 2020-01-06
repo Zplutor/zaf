@@ -15,12 +15,10 @@ void PointParser::ParseFromAttribute(
 }
 
 
-void PointParser::ParseFromNode(
-    const std::shared_ptr<XamlNode>& node,
-    ReflectionObject& reflection_object) {
+void PointParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
 
     Point& point = dynamic_cast<Point&>(reflection_object);
-    XamlNodeParseHelper helper(*node, point.GetType());
+    XamlNodeParseHelper helper(node, point.GetType());
 
     auto x = helper.GetFloat(L"X");
     if (x) {

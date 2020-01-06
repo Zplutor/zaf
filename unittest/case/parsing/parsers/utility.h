@@ -13,7 +13,7 @@ std::shared_ptr<T> CreateObjectFromXaml(const std::string& xaml) {
     auto node = zaf::XamlReader::CreateFromString(xaml)->Read();
 
     auto object = zaf::Create<T>();
-    T::Type->GetParser()->ParseFromNode(node, *object);
+    T::Type->GetParser()->ParseFromNode(*node, *object);
 
     return object;
 }

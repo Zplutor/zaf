@@ -22,7 +22,7 @@ public:
         auto property_node = GetPropertyNode(property_name);
         if (property_node) {
             auto object = Create<T>();
-            T::Type->GetParser()->ParseFromNode(property_node, *object);
+            T::Type->GetParser()->ParseFromNode(*property_node, *object);
             return object;
         }
 

@@ -397,6 +397,12 @@
     <ClCompile Include="src\zaf\parsing\xaml_node_parse_helper.cpp">
       <Filter>zaf\parsing</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\check_box_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\combo_box_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

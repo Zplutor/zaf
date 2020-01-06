@@ -14,12 +14,10 @@ void SizeParser::ParseFromAttribute(
 }
 
 
-void SizeParser::ParseFromNode(
-    const std::shared_ptr<XamlNode>& node, 
-    ReflectionObject& reflection_object) {
+void SizeParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
 
     Size& size = dynamic_cast<Size&>(reflection_object);
-    XamlNodeParseHelper helper(*node, size.GetType());
+    XamlNodeParseHelper helper(node, size.GetType());
 
     auto width = helper.GetFloat(L"Width");
     if (width) {

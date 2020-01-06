@@ -7,9 +7,9 @@
 namespace zaf {
 namespace {
 
-void ParseProperties(const std::shared_ptr<XamlNode>& node, Control& control) {
+void ParseProperties(const XamlNode& node, Control& control) {
 
-    XamlNodeParseHelper helper(*node, control.GetType());
+    XamlNodeParseHelper helper(node, control.GetType());
 
     auto name = helper.GetString(L"Name");
     if (name) {
@@ -118,9 +118,9 @@ void ParseProperties(const std::shared_ptr<XamlNode>& node, Control& control) {
 }
 
 
-void ParseChildren(const std::shared_ptr<XamlNode>& node, Control& control) {
+void ParseChildren(const XamlNode& node, Control& control) {
 
-    for (const auto& each_node : node->GetContentNodes()) {
+    for (const auto& each_node : node.GetContentNodes()) {
 
         auto child_control = internal::CreateObjectFromNode<Control>(each_node);
         if (child_control == nullptr) {
@@ -133,9 +133,7 @@ void ParseChildren(const std::shared_ptr<XamlNode>& node, Control& control) {
 
 }
 
-void ControlParser::ParseFromNode(
-    const std::shared_ptr<XamlNode>& node,
-    ReflectionObject& reflection_object) {
+void ControlParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
 
     auto& control = dynamic_cast<Control&>(reflection_object);
     Control::UpdateGuard update_guard(control);

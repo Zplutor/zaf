@@ -13,7 +13,7 @@ TEST(EllipseParser, ParseFromNode) {
 
     zaf::Ellipse ellipse;
     zaf::EllipseParser parser;
-    parser.ParseFromNode(node, ellipse);
+    parser.ParseFromNode(*node, ellipse);
     ASSERT_EQ(ellipse, zaf::Ellipse(40, 41, 9, 10));
 
     xaml = R"(
@@ -25,6 +25,6 @@ TEST(EllipseParser, ParseFromNode) {
     )";
     node = zaf::XamlReader::CreateFromString(xaml)->Read();
 
-    parser.ParseFromNode(node, ellipse);
+    parser.ParseFromNode(*node, ellipse);
     ASSERT_EQ(ellipse, zaf::Ellipse(42, 43, 11, 12));
 }

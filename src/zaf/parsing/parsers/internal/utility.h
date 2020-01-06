@@ -52,7 +52,7 @@ std::shared_ptr<T> CreateObjectFromNode(const std::shared_ptr<XamlNode>& node) {
         return {};
     }
 
-    object->GetType()->GetParser()->ParseFromNode(node, *object);
+    object->GetType()->GetParser()->ParseFromNode(*node, *object);
     return object;
 }
 

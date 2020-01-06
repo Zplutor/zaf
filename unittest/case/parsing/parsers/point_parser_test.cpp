@@ -24,7 +24,7 @@ TEST(PointParser, ParseFromNode) {
 
     zaf::Point point;
     zaf::PointParser parser;
-    parser.ParseFromNode(node, point);
+    parser.ParseFromNode(*node, point);
     ASSERT_EQ(point, zaf::Point(53, 54));
 
     xaml = R"(
@@ -34,6 +34,6 @@ TEST(PointParser, ParseFromNode) {
         </Point>
     )";
     node = zaf::XamlReader::CreateFromString(xaml)->Read();
-    parser.ParseFromNode(node, point);
+    parser.ParseFromNode(*node, point);
     ASSERT_EQ(point, zaf::Point(55, 66));
 }

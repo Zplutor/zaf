@@ -22,12 +22,10 @@ void FrameParser::ParseFromAttribute(
 }
 
 
-void FrameParser::ParseFromNode(
-    const std::shared_ptr<XamlNode>& node,
-    ReflectionObject& reflection_object) {
+void FrameParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
 
     auto& frame = dynamic_cast<Frame&>(reflection_object);
-    XamlNodeParseHelper helper(*node, frame.GetType());
+    XamlNodeParseHelper helper(node, frame.GetType());
 
     auto left = helper.GetFloat(L"Left");
     if (left) {

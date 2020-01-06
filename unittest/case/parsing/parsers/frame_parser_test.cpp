@@ -22,7 +22,7 @@ TEST(FrameParser, ParseFromNode) {
 
     zaf::Frame frame;
     zaf::FrameParser parser;
-    parser.ParseFromNode(node, frame);
+    parser.ParseFromNode(*node, frame);
     ASSERT_EQ(frame, zaf::Frame(20, 21, 22, 23));
 
     xaml = R"(
@@ -35,6 +35,6 @@ TEST(FrameParser, ParseFromNode) {
     )";
     node = zaf::XamlReader::CreateFromString(xaml)->Read();
 
-    parser.ParseFromNode(node, frame);
+    parser.ParseFromNode(*node, frame);
     ASSERT_EQ(frame, zaf::Frame(24, 25, 26, 27));
 }

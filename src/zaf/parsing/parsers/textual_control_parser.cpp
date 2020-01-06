@@ -5,7 +5,7 @@
 namespace zaf {
 
 void TextualControlParser::ParseFromNode(
-    const std::shared_ptr<XamlNode>& node,
+    const XamlNode& node, 
     ReflectionObject& reflection_object) {
 
     auto& textual_control = dynamic_cast<TextualControl&>(reflection_object);
@@ -13,7 +13,7 @@ void TextualControlParser::ParseFromNode(
 
     __super::ParseFromNode(node, reflection_object);
 
-    XamlNodeParseHelper helper(*node, textual_control.GetType());
+    XamlNodeParseHelper helper(node, textual_control.GetType());
 
     auto text = helper.GetString(L"Text");
     if (text) {

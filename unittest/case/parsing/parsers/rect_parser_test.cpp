@@ -11,7 +11,7 @@ TEST(RectParser, ParseFromNode) {
 
     zaf::Rect rect;
     zaf::RectParser parser;
-    parser.ParseFromNode(node, rect);
+    parser.ParseFromNode(*node, rect);
     ASSERT_EQ(rect, zaf::Rect(10, 11, 12, 13));
 
     xaml = 
@@ -24,6 +24,6 @@ TEST(RectParser, ParseFromNode) {
         "</Rect>";
     node = zaf::XamlReader::CreateFromString(xaml)->Read();
 
-    parser.ParseFromNode(node, rect);
+    parser.ParseFromNode(*node, rect);
     ASSERT_EQ(rect, zaf::Rect(14, 15, 16, 17));
 }

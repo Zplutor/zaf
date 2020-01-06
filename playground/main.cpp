@@ -125,7 +125,7 @@ void BeginRun(zaf::Application& application) {
     button->SetRect(zaf::Rect(200, 200, 100, 30));
     root_control->AddChild(button);
 
-    auto xaml_reader = zaf::XamlReader::CreateFromString("<Point x=\"44\" y=\"55\" >abc<Size>size</Size>cdf</Point>");
+    auto xaml_reader = zaf::XamlReader::CreateFromString("<Point X=\"44\" Y=\"55\" >abc<Size>size</Size>cdf</Point>");
     auto node = xaml_reader->Read();
 
     application.SetMainWindow(window);

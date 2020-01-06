@@ -5,12 +5,10 @@
 
 namespace zaf {
 
-void RoundedRectParser::ParseFromNode(
-    const std::shared_ptr<XamlNode>& node,
-    ReflectionObject& reflection_object) {
+void RoundedRectParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
 
     auto& rounded_rect = dynamic_cast<RoundedRect&>(reflection_object);
-    XamlNodeParseHelper helper(*node, rounded_rect.GetType());
+    XamlNodeParseHelper helper(node, rounded_rect.GetType());
     
     auto x_radius = helper.GetFloat(L"XRadius");
     if (x_radius) {

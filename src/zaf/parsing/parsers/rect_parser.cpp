@@ -6,11 +6,12 @@
 namespace zaf {
 
 void RectParser::ParseFromNode(
-    const std::shared_ptr<XamlNode>& node, 
+    const XamlNode& node,
+ 
     ReflectionObject& reflection_object) {
 
     auto& rect = dynamic_cast<Rect&>(reflection_object);
-    XamlNodeParseHelper helper(*node, rect.GetType());
+    XamlNodeParseHelper helper(node, rect.GetType());
 
     auto position = helper.GetObjectAsPointer<Point>(L"Position");
     if (position) {

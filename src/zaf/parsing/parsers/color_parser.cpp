@@ -81,12 +81,10 @@ void ColorParser::ParseFromAttribute(
 }
 
 
-void ColorParser::ParseFromNode(
-    const std::shared_ptr<XamlNode>& node,
-    ReflectionObject& reflection_object) {
+void ColorParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
 
     auto& color = dynamic_cast<Color&>(reflection_object);
-    XamlNodeParseHelper helper(*node, color.GetType());
+    XamlNodeParseHelper helper(node, color.GetType());
 
     auto a = helper.GetFloat(L"A");
     if (a) {
@@ -108,7 +106,7 @@ void ColorParser::ParseFromNode(
         color.b = *b;
     }
 
-    const auto& content_nodes = node->GetContentNodes();
+    const auto& content_nodes = node.GetContentNodes();
     if (content_nodes.size() != 1) {
         return;
     }

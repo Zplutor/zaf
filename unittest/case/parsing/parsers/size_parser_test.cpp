@@ -24,12 +24,12 @@ TEST(SizeParser, ParseFromNode) {
 
     zaf::Size size;
     zaf::SizeParser parser;
-    parser.ParseFromNode(node, size);
+    parser.ParseFromNode(*node, size);
     ASSERT_EQ(size, zaf::Size(100, 101));
 
     xaml = "<Size><Size.Width>102</Size.Width><Size.Height>103</Size.Height></Size>";
     node = zaf::XamlReader::CreateFromString(xaml)->Read();
 
-    parser.ParseFromNode(node, size);
+    parser.ParseFromNode(*node, size);
     ASSERT_EQ(size, zaf::Size(102, 103));
 }

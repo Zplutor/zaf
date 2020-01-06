@@ -64,11 +64,11 @@ Window::ActivateOption ParseActivateOption(const std::wstring& value) {
 }
 
 
-std::shared_ptr<Control> ParseRootControl(const std::shared_ptr<XamlNode>& node) {
+std::shared_ptr<Control> ParseRootControl(const XamlNode& node) {
 
-    auto parse_property_node = [node]() -> std::shared_ptr<Control> {
+    auto parse_property_node = [&node]() -> std::shared_ptr<Control> {
 
-        auto property_node = node->GetPropertyNode(L"Window.RootControl");
+        auto property_node = node.GetPropertyNode(L"Window.RootControl");
         if (property_node == nullptr) {
             return {};
         }
@@ -86,7 +86,7 @@ std::shared_ptr<Control> ParseRootControl(const std::shared_ptr<XamlNode>& node)
         return root_control;
     }
 
-    auto attribute = node->GetAttribute(L"RootControl");
+    auto attribute = node.GetAttribute(L"RootControl");
     if (! attribute) {
         return {};
     }
@@ -95,9 +95,9 @@ std::shared_ptr<Control> ParseRootControl(const std::shared_ptr<XamlNode>& node)
 }
 
 
-void ParseProperties(const std::shared_ptr<XamlNode>& node, Window& window) {
+void ParseProperties(const XamlNode& node, Window& window) {
 
-    XamlNodeParseHelper helper(*node, window.GetType());
+    XamlNodeParseHelper helper(node, window.GetType());
 
     auto style_string = helper.GetString(L"Style");
     if (style_string) {
@@ -215,11 +215,11 @@ void ParseProperties(const std::shared_ptr<XamlNode>& node, Window& window) {
 }
 
 
-void ParseControls(const std::shared_ptr<XamlNode>& node, Window& window) {
+void ParseControls(const XamlNode& node, Window& window) {
 
     std::vector<std::shared_ptr<Control>> controls;
 
-    for (const auto& each_node : node->GetContentNodes()) {
+    for (const auto& each_node : node.GetContentNodes()) {
 
         auto control = internal::CreateObjectFromNode<Control>(each_node);
         if (control == nullptr) {
@@ -236,9 +236,7 @@ void ParseControls(const std::shared_ptr<XamlNode>& node, Window& window) {
 
 }
 
-void WindowParser::ParseFromNode(
-    const std::shared_ptr<XamlNode>& node,
-    ReflectionObject& reflection_object) {
+void WindowParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
 
     auto& window = dynamic_cast<Window&>(reflection_object);
 
