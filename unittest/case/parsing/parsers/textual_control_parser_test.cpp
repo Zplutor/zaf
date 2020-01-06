@@ -40,4 +40,49 @@ TEST(TextualControlParser, ParseDefaultTextColor) {
     ASSERT_EQ(control->GetDefaultTextColor(), zaf::Color(0.3f, 0.4f, 0.5f));
 }
 
+
+TEST(TextualControlParser, ParseTextAlignment) {
+
+    auto test = [](const std::string& value_string, zaf::TextAlignment expected_value) {
+    
+        std::string xaml = R"(<TextualControl TextAlignment=")" + value_string + R"("/>)";
+        auto control = CreateTextualControlFromXaml(xaml);
+        ASSERT_EQ(control->GetTextAlignment(), expected_value);
+
+        xaml = 
+            "<TextualControl><TextualControl.TextAlignment>" + 
+            value_string + 
+            "</TextualControl.TextAlignment></TextualControl>";
+        control = CreateTextualControlFromXaml(xaml);
+        ASSERT_EQ(control->GetTextAlignment(), expected_value);
+    };
+
+    test("Leading", zaf::TextAlignment::Leading);
+    test("Tailing", zaf::TextAlignment::Tailing);
+    test("Center", zaf::TextAlignment::Center);
+    test("Justified", zaf::TextAlignment::Justified);
+}
+
+
+TEST(TextualControlParser, ParseParagraphAlignment) {
+
+    auto test = [](const std::string& value_string, zaf::ParagraphAlignment expected_value) {
+    
+        std::string xaml = R"(<TextualControl ParagraphAlignment=")" + value_string + R"("/>)";
+        auto control = CreateTextualControlFromXaml(xaml);
+        ASSERT_EQ(control->GetParagraphAlignment(), expected_value);
+
+        xaml =
+            "<TextualControl><TextualControl.ParagraphAlignment>" +
+            value_string +
+            "</TextualControl.ParagraphAlignment></TextualControl>";
+        control = CreateTextualControlFromXaml(xaml);
+        ASSERT_EQ(control->GetParagraphAlignment(), expected_value);
+    };
+
+    test("Near", zaf::ParagraphAlignment::Near);
+    test("Far", zaf::ParagraphAlignment::Far);
+    test("Center", zaf::ParagraphAlignment::Center);
+}
+
 }

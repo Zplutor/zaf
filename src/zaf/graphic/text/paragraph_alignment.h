@@ -28,8 +28,4 @@ enum class ParagraphAlignment {
     Center = DWRITE_PARAGRAPH_ALIGNMENT_CENTER,
 };
 
-
-std::wstring ConvertParagraphAlignmentToString(ParagraphAlignment paragraph_alignment);
-std::optional<ParagraphAlignment> ConvertParagraphAlignmentFromString(const std::wstring& string);
-
 }

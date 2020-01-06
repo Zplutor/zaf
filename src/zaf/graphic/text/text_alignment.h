@@ -33,9 +33,4 @@ enum class TextAlignment {
     Justified = DWRITE_TEXT_ALIGNMENT_JUSTIFIED,
 };
 
-
-std::wstring ConvertTextAlignmentToString(TextAlignment text_alignment);
-std::optional<TextAlignment> ConvertTextAlignmentFromString(const std::wstring& string);
-
-
 }

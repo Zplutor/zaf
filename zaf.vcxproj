@@ -87,8 +87,6 @@
     <ClCompile Include="src\zaf\graphic\resource_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\rounded_rect.cpp" />
     <ClCompile Include="src\zaf\graphic\size.cpp" />
-    <ClCompile Include="src\zaf\graphic\text\paragraph_alignment.cpp" />
-    <ClCompile Include="src\zaf\graphic\text\text_alignment.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_format.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_trimming.cpp" />
