@@ -85,4 +85,28 @@ TEST(TextualControlParser, ParseParagraphAlignment) {
     test("Center", zaf::ParagraphAlignment::Center);
 }
 
+
+TEST(TextualControlParser, ParseWordWrapping) {
+
+    auto test = [](const std::string& value_string, zaf::WordWrapping expected_value) {
+    
+        std::string xaml = R"(<TextualControl WordWrapping=")" + value_string + R"("/>)";
+        auto control = CreateTextualControlFromXaml(xaml);
+        ASSERT_EQ(control->GetWordWrapping(), expected_value);
+
+        xaml =
+            "<TextualControl><TextualControl.WordWrapping>" +
+            value_string +
+            "</TextualControl.WordWrapping></TextualControl>";
+        control = CreateTextualControlFromXaml(xaml);
+        ASSERT_EQ(control->GetWordWrapping(), expected_value);
+    };
+
+    test("Wrap", zaf::WordWrapping::Wrap);
+    test("NoWrap", zaf::WordWrapping::NoWrap);
+    test("EmergencyBreak", zaf::WordWrapping::EmergencyBreak);
+    test("WholeWord", zaf::WordWrapping::WholeWord);
+    test("Character", zaf::WordWrapping::Character);
+}
+
 }

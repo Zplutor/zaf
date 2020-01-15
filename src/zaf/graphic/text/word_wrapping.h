@@ -45,8 +45,4 @@ enum class WordWrapping {
     Character = DWRITE_WORD_WRAPPING_CHARACTER,
 };
 
-
-std::wstring ConvertWordWrappingToString(WordWrapping word_wrapping);
-std::optional<WordWrapping> ConvertWordWrappingFromString(const std::wstring& string);
-
 }

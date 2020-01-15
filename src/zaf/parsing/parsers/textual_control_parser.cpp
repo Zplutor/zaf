@@ -5,34 +5,55 @@
 namespace zaf {
 namespace {
 
-std::optional<zaf::TextAlignment> ParseTextAlignment(const std::wstring& value) {
+std::optional<TextAlignment> ParseTextAlignment(const std::wstring& value) {
 
     if (value == L"Leading") {
-        return zaf::TextAlignment::Leading;
+        return TextAlignment::Leading;
     }
     if (value == L"Tailing") {
-        return zaf::TextAlignment::Tailing;
+        return TextAlignment::Tailing;
     }
     if (value == L"Center") {
-        return zaf::TextAlignment::Center;
+        return TextAlignment::Center;
     }
     if (value == L"Justified") {
-        return zaf::TextAlignment::Justified;
+        return TextAlignment::Justified;
     }
     return {};
 }
 
 
-std::optional<zaf::ParagraphAlignment> ParseParagraphAlignment(const std::wstring& value) {
+std::optional<ParagraphAlignment> ParseParagraphAlignment(const std::wstring& value) {
 
     if (value == L"Near") {
-        return zaf::ParagraphAlignment::Near;
+        return ParagraphAlignment::Near;
     }
     if (value == L"Far") {
-        return zaf::ParagraphAlignment::Far;
+        return ParagraphAlignment::Far;
     }
     if (value == L"Center") {
-        return zaf::ParagraphAlignment::Center;
+        return ParagraphAlignment::Center;
+    }
+    return {};
+}
+
+
+std::optional<WordWrapping> ParseWordWrapping(const std::wstring& value) {
+
+    if (value == L"Wrap") {
+        return WordWrapping::Wrap;
+    }
+    if (value == L"NoWrap") {
+        return WordWrapping::NoWrap;
+    }
+    if (value == L"EmergencyBreak") {
+        return WordWrapping::EmergencyBreak;
+    }
+    if (value == L"WholeWord") {
+        return WordWrapping::WholeWord;
+    }
+    if (value == L"Character") {
+        return WordWrapping::Character;
     }
     return {};
 }
@@ -73,6 +94,14 @@ void TextualControlParser::ParseFromNode(
         auto paragraph_alignment = ParseParagraphAlignment(*paragraph_alignment_string);
         if (paragraph_alignment) {
             textual_control.SetParagraphAlignment(*paragraph_alignment);
+        }
+    }
+
+    auto word_wrapping_string = helper.GetString(L"WordWrapping");
+    if (word_wrapping_string) {
+        auto word_wrapping = ParseWordWrapping(*word_wrapping_string);
+        if (word_wrapping) {
+            textual_control.SetWordWrapping(*word_wrapping);
         }
     }
 }

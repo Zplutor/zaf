@@ -309,9 +309,6 @@
     <ClCompile Include="src\zaf\base\stream.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\text\word_wrapping.cpp">
-      <Filter>zaf\graphic\text</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp">
       <Filter>zaf\base\string</Filter>
     </ClCompile>

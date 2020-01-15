@@ -145,6 +145,9 @@
     <ClCompile Include="unittest\case\parsing\parsers\window_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\parsing\parsers\check_box_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
