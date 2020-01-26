@@ -25,14 +25,14 @@ static const int kTimerInitialInterval = 300;
 static const int kTimerContinuousInterval = 50;
 
 ZAF_DEFINE_REFLECTION_TYPE(ScrollBar);
-ZAF_DEFINE_REFLECTION_TYPE_NESTED(ScrollBar, Arrow);
-ZAF_DEFINE_REFLECTION_TYPE_NESTED(ScrollBar, Thumb);
+ZAF_DEFINE_REFLECTION_TYPE(ScrollBarArrow);
+ZAF_DEFINE_REFLECTION_TYPE(ScrollBarThumb);
 
 
 ScrollBar::ScrollBar() : 
-	incremental_arrow_(Create<Arrow>()),
-	decremental_arrow_(Create<Arrow>()),
-	thumb_(Create<Thumb>()),
+	incremental_arrow_(Create<ScrollBarArrow>()),
+	decremental_arrow_(Create<ScrollBarArrow>()),
+	thumb_(Create<ScrollBarThumb>()),
 	is_horizontal_(false),
 	min_value_(0), 
 	max_value_(0), 
@@ -55,7 +55,7 @@ void ScrollBar::Initialize() {
 }
 
 
-void ScrollBar::InitializeArrow(const std::shared_ptr<Arrow>& arrow) {
+void ScrollBar::InitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow) {
 
     arrow->GetBeginPressEvent().AddListenerWithTag(
         reinterpret_cast<std::uintptr_t>(this),
@@ -71,7 +71,7 @@ void ScrollBar::InitializeArrow(const std::shared_ptr<Arrow>& arrow) {
 }
 
 
-void ScrollBar::UninitializeArrow(const std::shared_ptr<Arrow>& arrow) {
+void ScrollBar::UninitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow) {
 
     arrow->GetBeginPressEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
     arrow->GetEndPressEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
@@ -79,7 +79,7 @@ void ScrollBar::UninitializeArrow(const std::shared_ptr<Arrow>& arrow) {
 }
 
 
-void ScrollBar::InitializeThumb(const std::shared_ptr<Thumb>& thumb) {
+void ScrollBar::InitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb) {
 
 	thumb->GetBeginDragEvent().AddListenerWithTag(
         reinterpret_cast<std::uintptr_t>(this),
@@ -100,7 +100,7 @@ void ScrollBar::InitializeThumb(const std::shared_ptr<Thumb>& thumb) {
 }
 
 
-void ScrollBar::UninitializeThumb(const std::shared_ptr<Thumb>& thumb) {
+void ScrollBar::UninitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb) {
 
     auto tag = reinterpret_cast<std::uintptr_t>(this);
     thumb->GetBeginDragEvent().RemoveListenersWithTag(tag);
@@ -113,16 +113,16 @@ void ScrollBar::UninitializeThumb(const std::shared_ptr<Thumb>& thumb) {
 void ScrollBar::ApplyOrientationToChildren() {
 
 	incremental_arrow_->SetDirection(
-		is_horizontal_ ? Arrow::Direction::Right : Arrow::Direction::Down
+		is_horizontal_ ? ScrollBarArrow::Direction::Right : ScrollBarArrow::Direction::Down
 	);
 	decremental_arrow_->SetDirection(
-		is_horizontal_ ? Arrow::Direction::Left : Arrow::Direction::Up
+		is_horizontal_ ? ScrollBarArrow::Direction::Left : ScrollBarArrow::Direction::Up
 	);
 	thumb_->SetIsHorizontal(is_horizontal_);
 }
 
 
-void ScrollBar::SetIncrementalArrow(const std::shared_ptr<ScrollBar::Arrow>& incremental_arrow) {
+void ScrollBar::SetIncrementalArrow(const std::shared_ptr<ScrollBarArrow>& incremental_arrow) {
 
 	auto previous_arrow = incremental_arrow_;
 	incremental_arrow_ = incremental_arrow;
@@ -135,7 +135,7 @@ void ScrollBar::SetIncrementalArrow(const std::shared_ptr<ScrollBar::Arrow>& inc
 }
 
 
-void ScrollBar::SetDecrementalArrow(const std::shared_ptr<ScrollBar::Arrow>& decremental_arrow) {
+void ScrollBar::SetDecrementalArrow(const std::shared_ptr<ScrollBarArrow>& decremental_arrow) {
 
 	auto previous_arrow = decremental_arrow_;
 	decremental_arrow_ = decremental_arrow;
@@ -148,7 +148,7 @@ void ScrollBar::SetDecrementalArrow(const std::shared_ptr<ScrollBar::Arrow>& dec
 }
 
 
-void ScrollBar::SetThumb(const std::shared_ptr<ScrollBar::Thumb>& thumb) {
+void ScrollBar::SetThumb(const std::shared_ptr<ScrollBarThumb>& thumb) {
 
 	auto previous_thumb = thumb_;
 	thumb_ = thumb;
@@ -511,7 +511,7 @@ bool ScrollBar::MouseWheel(const Point& position, const MouseWheelMessage& messa
 }
 
 
-void ScrollBar::ArrowBeginPress(const std::shared_ptr<Arrow>& arrow) {
+void ScrollBar::ArrowBeginPress(const std::shared_ptr<ScrollBarArrow>& arrow) {
 
 	if (arrow == incremental_arrow_) {
 		BeginTimer(TimerEvent::Increment);
@@ -522,19 +522,19 @@ void ScrollBar::ArrowBeginPress(const std::shared_ptr<Arrow>& arrow) {
 }
 
 
-void ScrollBar::ArrowEndPress(const std::shared_ptr<Arrow>& arrow) {
+void ScrollBar::ArrowEndPress(const std::shared_ptr<ScrollBarArrow>& arrow) {
 	timer_.reset();
 }
 
 
-void ScrollBar::ThumbBeginDrag(const std::shared_ptr<Thumb>& thumb) {
+void ScrollBar::ThumbBeginDrag(const std::shared_ptr<ScrollBarThumb>& thumb) {
 
 	begin_drag_value_ = value_;
 	begin_drag_mouse_position_ = GetMousePosition();
 }
 
 
-void ScrollBar::ThumbDrag(const std::shared_ptr<Thumb>& thumb) {
+void ScrollBar::ThumbDrag(const std::shared_ptr<ScrollBarThumb>& thumb) {
 
 	float begin_drag_mouse_position_value = begin_drag_mouse_position_.x;
 	float begin_drag_mouse_position_bias = begin_drag_mouse_position_.y;
@@ -560,7 +560,7 @@ void ScrollBar::ThumbDrag(const std::shared_ptr<Thumb>& thumb) {
 }
 
 
-void ScrollBar::ThumbEndDrag(const std::shared_ptr<Thumb>& thumb) {
+void ScrollBar::ThumbEndDrag(const std::shared_ptr<ScrollBarThumb>& thumb) {
 
 }
 
@@ -584,12 +584,12 @@ int ScrollBar::GetValuesPerThumbSlotPoint() {
 }
 
 
-ScrollBar::Arrow::Arrow() : direction_(Direction::Up) {
+ScrollBarArrow::ScrollBarArrow() : direction_(Direction::Up) {
 
 }
 
 
-void ScrollBar::Arrow::Initialize() {
+void ScrollBarArrow::Initialize() {
 
 	__super::Initialize();
 
@@ -597,7 +597,7 @@ void ScrollBar::Arrow::Initialize() {
 }
 
 
-void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void ScrollBarArrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	
 	__super::Paint(canvas, dirty_rect);
 
@@ -660,7 +660,7 @@ void ScrollBar::Arrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-ColorPicker ScrollBar::Arrow::GetArrowColorPicker() const {
+ColorPicker ScrollBarArrow::GetArrowColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::ArrowColorPicker);
     if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
@@ -670,7 +670,7 @@ ColorPicker ScrollBar::Arrow::GetArrowColorPicker() const {
 
         return [](const Control& control) {
 
-            const auto& arrow = dynamic_cast<const Arrow&>(control);
+            const auto& arrow = dynamic_cast<const ScrollBarArrow&>(control);
 
             if (! arrow.IsEnabled()) {
                 return Color::FromRGB(0xc0c0c0);
@@ -690,35 +690,35 @@ ColorPicker ScrollBar::Arrow::GetArrowColorPicker() const {
 }
 
 
-void ScrollBar::Arrow::SetArrowColorPicker(const ColorPicker& color_picker) {
+void ScrollBarArrow::SetArrowColorPicker(const ColorPicker& color_picker) {
 
     GetPropertyMap().SetProperty(property::ArrowColorPicker, color_picker);
     NeedRepaint();
 }
 
 
-void ScrollBar::Arrow::MouseCapture() {
+void ScrollBarArrow::MouseCapture() {
 
 	ClickableControl::MouseCapture();
 
-	begin_press_event_.Trigger(std::dynamic_pointer_cast<Arrow>(this->shared_from_this()));
+	begin_press_event_.Trigger(std::dynamic_pointer_cast<ScrollBarArrow>(this->shared_from_this()));
 }
 
 
-void ScrollBar::Arrow::MouseRelease() {
+void ScrollBarArrow::MouseRelease() {
 
 	ClickableControl::MouseRelease();
 
-	end_press_event_.Trigger(std::dynamic_pointer_cast<Arrow>(this->shared_from_this()));
+	end_press_event_.Trigger(std::dynamic_pointer_cast<ScrollBarArrow>(this->shared_from_this()));
 }
 
 
-ScrollBar::Thumb::Thumb() : is_dragging_(false) {
+ScrollBarThumb::ScrollBarThumb() : is_dragging_(false) {
 
 }
 
 
-void ScrollBar::Thumb::Initialize() {
+void ScrollBarThumb::Initialize() {
 
 	__super::Initialize();
 
@@ -726,7 +726,7 @@ void ScrollBar::Thumb::Initialize() {
 }
 
 
-void ScrollBar::Thumb::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void ScrollBarThumb::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -750,7 +750,7 @@ void ScrollBar::Thumb::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-ColorPicker ScrollBar::Thumb::GetThumbColorPicker() const {
+ColorPicker ScrollBarThumb::GetThumbColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::ThumbColorPicker);
     if (color_picker != nullptr && *color_picker != nullptr) {
@@ -760,7 +760,7 @@ ColorPicker ScrollBar::Thumb::GetThumbColorPicker() const {
 
         return [](const Control& control) {
 
-            const auto& thumb = dynamic_cast<const Thumb&>(control);
+            const auto& thumb = dynamic_cast<const ScrollBarThumb&>(control);
 
             if (thumb.IsPressed()) {
                 return Color::FromRGB(0x808080);
@@ -776,37 +776,37 @@ ColorPicker ScrollBar::Thumb::GetThumbColorPicker() const {
 }
 
 
-void ScrollBar::Thumb::SetThumbColorPicker(const ColorPicker& color_picker) {
+void ScrollBarThumb::SetThumbColorPicker(const ColorPicker& color_picker) {
 
     GetPropertyMap().SetProperty(property::ThumbColorPicker, color_picker);
     NeedRepaint();
 }
 
 
-void ScrollBar::Thumb::MouseCapture() {
+void ScrollBarThumb::MouseCapture() {
 
 	ClickableControl::MouseCapture();
 
 	is_dragging_ = true;
-	begin_drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));
+	begin_drag_event_.Trigger(std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this()));
 }
 
 
-void ScrollBar::Thumb::MouseRelease() {
+void ScrollBarThumb::MouseRelease() {
 
 	ClickableControl::MouseRelease();
 
 	is_dragging_ = false;
-	end_drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));
+	end_drag_event_.Trigger(std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this()));
 }
 
 
-bool ScrollBar::Thumb::MouseMove(const Point& position, const MouseMessage& message) {
+bool ScrollBarThumb::MouseMove(const Point& position, const MouseMessage& message) {
 
 	bool result = ClickableControl::MouseMove(position, message);
 
 	if (is_dragging_) {
-		drag_event_.Trigger(std::dynamic_pointer_cast<Thumb>(shared_from_this()));
+		drag_event_.Trigger(std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this()));
 	}
 
     return result;

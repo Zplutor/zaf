@@ -37,8 +37,8 @@ const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent"
 
 
 ZAF_DEFINE_REFLECTION_TYPE(ComboBox);
-ZAF_DEFINE_REFLECTION_TYPE_NESTED(ComboBox, DropDownListBox);
-ZAF_DEFINE_REFLECTION_TYPE_NESTED(ComboBox, EditTextBox);
+ZAF_DEFINE_REFLECTION_TYPE(ComboBoxDropDownListBox);
+ZAF_DEFINE_REFLECTION_TYPE(ComboBoxEditTextBox);
 
 
 ComboBox::ComboBox() : 
@@ -97,10 +97,10 @@ void ComboBox::Initialize() {
         reinterpret_cast<std::uintptr_t>(this), 
         std::bind(&ComboBox::DropDownWindowClose, this));
 
-    drop_down_list_box_ = Create<DropDownListBox>();
+    drop_down_list_box_ = Create<ComboBoxDropDownListBox>();
     InitializeDropDownListBox();
 
-    edit_text_box_ = Create<EditTextBox>();
+    edit_text_box_ = Create<ComboBoxEditTextBox>();
     InitializeEditTextBox();
 }
 
@@ -321,7 +321,7 @@ ComboBox::SelectionChangeEvent::Proxy ComboBox::GetSelectionChangeEvent() {
 }
 
 
-void ComboBox::SetDropDownListBox(const std::shared_ptr<DropDownListBox>& list_box) {
+void ComboBox::SetDropDownListBox(const std::shared_ptr<ComboBoxDropDownListBox>& list_box) {
 
     if (list_box == drop_down_list_box_) {
         return;
@@ -331,14 +331,14 @@ void ComboBox::SetDropDownListBox(const std::shared_ptr<DropDownListBox>& list_b
 
     auto previous_drop_down_list_box = drop_down_list_box_;
 
-    drop_down_list_box_ = list_box == nullptr ? Create<DropDownListBox>() : list_box;
+    drop_down_list_box_ = list_box == nullptr ? Create<ComboBoxDropDownListBox>() : list_box;
     InitializeDropDownListBox();
 
     DropDownListBoxChange(previous_drop_down_list_box);
 }
 
 
-void ComboBox::SetEditTextBox(const std::shared_ptr<EditTextBox>& text_box) {
+void ComboBox::SetEditTextBox(const std::shared_ptr<ComboBoxEditTextBox>& text_box) {
 
     if (text_box == edit_text_box_) {
         return;
@@ -348,7 +348,7 @@ void ComboBox::SetEditTextBox(const std::shared_ptr<EditTextBox>& text_box) {
 
     auto previous_edit_text_box = edit_text_box_;
 
-    edit_text_box_ = text_box == nullptr ? Create<EditTextBox>() : text_box;
+    edit_text_box_ = text_box == nullptr ? Create<ComboBoxEditTextBox>() : text_box;
     InitializeEditTextBox();
 
     EditTextBoxChange(previous_edit_text_box);
@@ -633,7 +633,7 @@ void ComboBox::FocusGain() {
 }
 
 
-void ComboBox::DropDownListBox::Initialize() {
+void ComboBoxDropDownListBox::Initialize() {
 
     __super::Initialize();
 
@@ -642,7 +642,7 @@ void ComboBox::DropDownListBox::Initialize() {
 }
 
 
-bool ComboBox::DropDownListBox::MouseMove(const Point& position, const MouseMessage& message) {
+bool ComboBoxDropDownListBox::MouseMove(const Point& position, const MouseMessage& message) {
 
     bool result = __super::MouseMove(position, message);
 
@@ -656,7 +656,7 @@ bool ComboBox::DropDownListBox::MouseMove(const Point& position, const MouseMess
 }
 
 
-bool ComboBox::EditTextBox::KeyDown(const KeyMessage& message) {
+bool ComboBoxEditTextBox::KeyDown(const KeyMessage& message) {
 
     auto key = message.GetVirtualKey(); 
     if (key == VK_UP || key == VK_DOWN || key == VK_RETURN) {

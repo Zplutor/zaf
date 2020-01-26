@@ -28,10 +28,3 @@ const std::shared_ptr<ReflectionType> ObjectClass::Type = Create##TypeName##Type
 
 #define ZAF_DEFINE_REFLECTION_TYPE(ObjectClassName) \
     ZAF_INTERNAL_DEFINE_REFLECTION_TYPE(ObjectClassName, L#ObjectClassName, ObjectClassName)
-
-
-#define ZAF_DEFINE_REFLECTION_TYPE_NESTED(OuterObjectClassName, ObjectClassName)  \
-    ZAF_INTERNAL_DEFINE_REFLECTION_TYPE(                                          \
-        OuterObjectClassName##ObjectClassName,                                    \
-        L#OuterObjectClassName L"-" L#ObjectClassName,                            \
-        OuterObjectClassName::ObjectClassName)

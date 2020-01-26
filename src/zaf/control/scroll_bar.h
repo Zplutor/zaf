@@ -5,6 +5,8 @@
 
 namespace zaf {
 
+class ScrollBarArrow;
+class ScrollBarThumb;
 class Timer;
 
 /**
@@ -15,242 +17,6 @@ public:
     ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
-    /**
-     Represents an arrow control in a scroll bar.
-     */
-	class Arrow : public ClickableControl {
-    public:
-        ZAF_DECLARE_REFLECTION_TYPE();
-
-	public:
-        /**
-         Defines directions of an arrow.
-         */
-		enum class Direction {
-
-            /**
-             The arrow's direction is left.
-             */
-			Left,
-
-            /**
-             The arrow's direction is up.
-             */
-			Up,
-
-            /**
-             The arrow's direction is right.
-             */
-			Right,
-
-            /**
-             The arrow's direction is down.
-             */
-			Down,
-		};
-
-        /**
-         Type of begin press event.
-         */
-		typedef Event<const std::shared_ptr<Arrow>&> BeginPressEvent;
-
-        /**
-         Type of end press event.
-         */
-		typedef Event<const std::shared_ptr<Arrow>&> EndPressEvent;
-
-	public:
-		Arrow();
-
-		void Initialize() override;
-
-        /**
-         Get arrow color.
-         */
-        Color GetArrowColor() const {
-            return GetArrowColorPicker()(*this);
-        }
-
-        /**
-         Get the color picker of arrow.
-         */
-        ColorPicker GetArrowColorPicker() const;
-
-        /**
-         Set arrow color.
-         */
-        void SetArrowColor(const Color& color) {
-            SetArrowColorPicker(CreateColorPicker(color));
-        }
-
-        /**
-         Set the color picker of arrow.
-         */
-        void SetArrowColorPicker(const ColorPicker& color_picker);
-
-        /**
-         Get the arrow's direction.
-
-         The default direction is up.
-         */
-		Direction GetDirection() const {
-			return direction_;
-		}
-
-        /**
-         Get begin press event.
-
-         This event is raised when the mouse left button is pressed for a while. 
-         */
-		BeginPressEvent::Proxy GetBeginPressEvent() {
-			return BeginPressEvent::Proxy(begin_press_event_);
-		}
-
-        /**
-         Get end press event.
-
-         This event is raised when the mouse left button is released after being pressed for a while.
-         */
-		EndPressEvent::Proxy GetEndPressEvent() {
-			return EndPressEvent::Proxy(end_press_event_);
-		}
-
-    private:
-        friend class ScrollBar;
-
-        void SetDirection(Direction direction) {
-            direction_ = direction;
-            NeedRepaint();
-        }
-
-	protected:
-		void Paint(Canvas& canvas, const Rect& dirty_rect) override;
-		void MouseCapture() override;
-		void MouseRelease() override;
-
-	private:
-		Direction direction_;
-
-		BeginPressEvent begin_press_event_;
-		EndPressEvent end_press_event_;
-	};
-
-    /**
-     Represents a thumb control in a control.
-     */
-	class Thumb : public ClickableControl {
-    public:
-        ZAF_DECLARE_REFLECTION_TYPE();
-
-	public:
-        /**
-         Type of begin drag event.
-         */
-		typedef Event<const std::shared_ptr<Thumb>&> BeginDragEvent;
-
-        /**
-         Type of drag event.
-         */
-		typedef Event<const std::shared_ptr<Thumb>&> DragEvent;
-
-        /**
-         Type of end drag event.
-         */
-		typedef Event<const std::shared_ptr<Thumb>&> EndDragEvent;
-
-	public:
-		Thumb();
-
-		void Initialize() override;
-
-        /**
-         Ge thumb color.
-         */
-        Color GetThumbColor() const {
-            return GetThumbColorPicker()(*this);
-        }
-
-        /**
-         Get the color picker of thumb.
-         */
-        ColorPicker GetThumbColorPicker() const;
-
-        /**
-         Set thumb color.
-         */
-        void SetThumbColor(const Color& color) {
-            SetThumbColorPicker(CreateColorPicker(color));
-        }
-
-        /**
-         Set the color picker of thumb.
-         */
-        void SetThumbColorPicker(const ColorPicker& color_picker);
-
-        /**
-         Get a value indicating that whether the thumb is horizontal.
-
-         The default value is false.
-         */
-		bool IsHorizontal() const {
-			return is_horizontal_;
-		}
-
-        /**
-         Get a value indicating that whether the thumb is being dragged.
-         */
-		bool IsDragging() const {
-			return is_dragging_;
-		}
-
-        /**
-         Get begin drag event.
-
-         This event is raised when the thumb has begain being dragged.
-         */
-		BeginDragEvent::Proxy GetBeginDragEvent() {
-			return BeginDragEvent::Proxy(begin_drag_event_);
-		}
-
-        /**
-         Get drag event. 
-
-         This event is raised when the thumb is beging dragged.
-         */
-		DragEvent::Proxy GetDragEvent() {
-			return DragEvent::Proxy(drag_event_);
-		}
-
-        /**
-         Get end drag event. 
-
-         This event is raised when the thumb has ended being dragged.
-         */
-		EndDragEvent::Proxy GetEndDragEvent() {
-			return EndDragEvent::Proxy(end_drag_event_);
-		}
-
-    private:
-        friend class ScrollBar;
-
-        void SetIsHorizontal(bool is_horizontal) {
-            is_horizontal_ = is_horizontal;
-        }
-
-	protected:
-        void Paint(Canvas& canvas, const Rect& dirty_rect);
-		void MouseCapture() override;
-		void MouseRelease() override;
-        bool MouseMove(const Point& position, const MouseMessage& message) override;
-
-	private:
-		bool is_horizontal_;
-		bool is_dragging_;
-		BeginDragEvent begin_drag_event_;
-		DragEvent drag_event_;
-		EndDragEvent end_drag_event_;
-	};
-
     /**
      Type of scroll event.
      */
@@ -264,7 +30,7 @@ public:
     /**
      Get the incremental arrow.
      */
-    const std::shared_ptr<Arrow>& GetIncrementalArrow() const {
+    const std::shared_ptr<ScrollBarArrow>& GetIncrementalArrow() const {
         return incremental_arrow_;
     }
 
@@ -273,12 +39,12 @@ public:
 
 	 Pass nullptr would reset the arrow to the default control.
 	 */
-	void SetIncrementalArrow(const std::shared_ptr<Arrow>& incremental_arrow);
+	void SetIncrementalArrow(const std::shared_ptr<ScrollBarArrow>& incremental_arrow);
 
     /**
      Get the decremental arrow.
      */
-    const std::shared_ptr<Arrow>& GetDecrementalArrow() const {
+    const std::shared_ptr<ScrollBarArrow>& GetDecrementalArrow() const {
         return decremental_arrow_;
     }
 
@@ -287,12 +53,12 @@ public:
 
 	 Pass nullptr would reset the arrow to the default control.
 	 */
-	void SetDecrementalArrow(const std::shared_ptr<Arrow>& decremental_arrow);
+	void SetDecrementalArrow(const std::shared_ptr<ScrollBarArrow>& decremental_arrow);
 
     /**
      Get the thumb.
      */
-    const std::shared_ptr<Thumb>& GetThumb() const {
+    const std::shared_ptr<ScrollBarThumb>& GetThumb() const {
         return thumb_;
     }
 
@@ -301,7 +67,7 @@ public:
 
 	 Pass nullptr would reset the thum to the default control.
 	 */
-	void SetThumb(const std::shared_ptr<Thumb>& thumb);
+	void SetThumb(const std::shared_ptr<ScrollBarThumb>& thumb);
 
     /**
      Get a value indicating that whether the scroll bar is horizontal.
@@ -449,10 +215,10 @@ private:
 	};
 
 private:
-	void InitializeArrow(const std::shared_ptr<Arrow>& arrow);
-	void UninitializeArrow(const std::shared_ptr<Arrow>& arrow);
-	void InitializeThumb(const std::shared_ptr<Thumb>& thumb);
-	void UninitializeThumb(const std::shared_ptr<Thumb>& thumb);
+	void InitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow);
+	void UninitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow);
+	void InitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb);
+	void UninitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb);
 	void ApplyOrientationToChildren();
 
 	void CalculateThumbPositionAndLength(float slot_length, 
@@ -467,18 +233,18 @@ private:
 	void ApplyTimerEvent();
 	Rect GetThumbSlotRect() const;
 
-	void ArrowBeginPress(const std::shared_ptr<Arrow>& arrow);
-	void ArrowEndPress(const std::shared_ptr<Arrow>& arrow);
+	void ArrowBeginPress(const std::shared_ptr<ScrollBarArrow>& arrow);
+	void ArrowEndPress(const std::shared_ptr<ScrollBarArrow>& arrow);
 
-	void ThumbBeginDrag(const std::shared_ptr<Thumb>& thumb);
-	void ThumbDrag(const std::shared_ptr<Thumb>& thumb);
-	void ThumbEndDrag(const std::shared_ptr<Thumb>& thumb);
+	void ThumbBeginDrag(const std::shared_ptr<ScrollBarThumb>& thumb);
+	void ThumbDrag(const std::shared_ptr<ScrollBarThumb>& thumb);
+	void ThumbEndDrag(const std::shared_ptr<ScrollBarThumb>& thumb);
 	int GetValuesPerThumbSlotPoint();
 
 private:
-	std::shared_ptr<Arrow> incremental_arrow_;
-	std::shared_ptr<Arrow> decremental_arrow_;
-	std::shared_ptr<Thumb> thumb_;
+	std::shared_ptr<ScrollBarArrow> incremental_arrow_;
+	std::shared_ptr<ScrollBarArrow> decremental_arrow_;
+	std::shared_ptr<ScrollBarThumb> thumb_;
 
 	bool is_horizontal_;
 
@@ -493,6 +259,243 @@ private:
 	TimerEvent timer_event_;
 
     double remaining_wheel_change_value_;
+};
+
+
+/**
+ Represents an arrow control in a scroll bar.
+ */
+class ScrollBarArrow : public ClickableControl {
+public:
+    ZAF_DECLARE_REFLECTION_TYPE();
+
+public:
+    /**
+     Defines directions of an arrow.
+     */
+	enum class Direction {
+
+        /**
+         The arrow's direction is left.
+         */
+		Left,
+
+        /**
+         The arrow's direction is up.
+         */
+		Up,
+
+        /**
+         The arrow's direction is right.
+         */
+		Right,
+
+        /**
+         The arrow's direction is down.
+         */
+		Down,
+	};
+
+    /**
+     Type of begin press event.
+     */
+	typedef Event<const std::shared_ptr<ScrollBarArrow>&> BeginPressEvent;
+
+    /**
+     Type of end press event.
+     */
+	typedef Event<const std::shared_ptr<ScrollBarArrow>&> EndPressEvent;
+
+public:
+	ScrollBarArrow();
+
+	void Initialize() override;
+
+    /**
+     Get arrow color.
+     */
+    Color GetArrowColor() const {
+        return GetArrowColorPicker()(*this);
+    }
+
+    /**
+     Get the color picker of arrow.
+     */
+    ColorPicker GetArrowColorPicker() const;
+
+    /**
+     Set arrow color.
+     */
+    void SetArrowColor(const Color& color) {
+        SetArrowColorPicker(CreateColorPicker(color));
+    }
+
+    /**
+     Set the color picker of arrow.
+     */
+    void SetArrowColorPicker(const ColorPicker& color_picker);
+
+    /**
+     Get the arrow's direction.
+
+     The default direction is up.
+     */
+	Direction GetDirection() const {
+		return direction_;
+	}
+
+    /**
+     Get begin press event.
+
+     This event is raised when the mouse left button is pressed for a while. 
+     */
+	BeginPressEvent::Proxy GetBeginPressEvent() {
+		return BeginPressEvent::Proxy(begin_press_event_);
+	}
+
+    /**
+     Get end press event.
+
+     This event is raised when the mouse left button is released after being pressed for a while.
+     */
+	EndPressEvent::Proxy GetEndPressEvent() {
+		return EndPressEvent::Proxy(end_press_event_);
+	}
+
+private:
+    friend class ScrollBar;
+
+    void SetDirection(Direction direction) {
+        direction_ = direction;
+        NeedRepaint();
+    }
+
+protected:
+	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+	void MouseCapture() override;
+	void MouseRelease() override;
+
+private:
+	Direction direction_;
+
+	BeginPressEvent begin_press_event_;
+	EndPressEvent end_press_event_;
+};
+
+/**
+ Represents a thumb control in a control.
+ */
+class ScrollBarThumb : public ClickableControl {
+public:
+    ZAF_DECLARE_REFLECTION_TYPE();
+
+public:
+    /**
+     Type of begin drag event.
+     */
+	typedef Event<const std::shared_ptr<ScrollBarThumb>&> BeginDragEvent;
+
+    /**
+     Type of drag event.
+     */
+	typedef Event<const std::shared_ptr<ScrollBarThumb>&> DragEvent;
+
+    /**
+     Type of end drag event.
+     */
+	typedef Event<const std::shared_ptr<ScrollBarThumb>&> EndDragEvent;
+
+public:
+	ScrollBarThumb();
+
+	void Initialize() override;
+
+    /**
+     Get thumb color.
+     */
+    Color GetThumbColor() const {
+        return GetThumbColorPicker()(*this);
+    }
+
+    /**
+     Get the color picker of thumb.
+     */
+    ColorPicker GetThumbColorPicker() const;
+
+    /**
+     Set thumb color.
+     */
+    void SetThumbColor(const Color& color) {
+        SetThumbColorPicker(CreateColorPicker(color));
+    }
+
+    /**
+     Set the color picker of thumb.
+     */
+    void SetThumbColorPicker(const ColorPicker& color_picker);
+
+    /**
+     Get a value indicating that whether the thumb is horizontal.
+
+     The default value is false.
+     */
+	bool IsHorizontal() const {
+		return is_horizontal_;
+	}
+
+    /**
+     Get a value indicating that whether the thumb is being dragged.
+     */
+	bool IsDragging() const {
+		return is_dragging_;
+	}
+
+    /**
+     Get begin drag event.
+
+     This event is raised when the thumb has begain being dragged.
+     */
+	BeginDragEvent::Proxy GetBeginDragEvent() {
+		return BeginDragEvent::Proxy(begin_drag_event_);
+	}
+
+    /**
+     Get drag event. 
+
+     This event is raised when the thumb is beging dragged.
+     */
+	DragEvent::Proxy GetDragEvent() {
+		return DragEvent::Proxy(drag_event_);
+	}
+
+    /**
+     Get end drag event. 
+
+     This event is raised when the thumb has ended being dragged.
+     */
+	EndDragEvent::Proxy GetEndDragEvent() {
+		return EndDragEvent::Proxy(end_drag_event_);
+	}
+
+private:
+    friend class ScrollBar;
+
+    void SetIsHorizontal(bool is_horizontal) {
+        is_horizontal_ = is_horizontal;
+    }
+
+protected:
+    void Paint(Canvas& canvas, const Rect& dirty_rect);
+	void MouseCapture() override;
+	void MouseRelease() override;
+    bool MouseMove(const Point& position, const MouseMessage& message) override;
+
+private:
+	bool is_horizontal_;
+	bool is_dragging_;
+	BeginDragEvent begin_drag_event_;
+	DragEvent drag_event_;
+	EndDragEvent end_drag_event_;
 };
 
 }

@@ -27,7 +27,7 @@ const wchar_t* const kSplitterColorPickerPropertyName = L"SplitterColorPicker";
 
 
 ZAF_DEFINE_REFLECTION_TYPE(SplitControl);
-ZAF_DEFINE_REFLECTION_TYPE_NESTED(SplitControl, SplitBar);
+ZAF_DEFINE_REFLECTION_TYPE(SplitControlSplitBar);
 
 
 SplitControl::SplitControl() {
@@ -44,7 +44,7 @@ void SplitControl::Initialize() {
 
     __super::Initialize();
 
-    split_bar_ = Create<SplitBar>();
+    split_bar_ = Create<SplitControlSplitBar>();
     InitializeSplitBar();
 
     first_pane_ = Create<Control>();
@@ -357,7 +357,7 @@ SplitControl::SplitBarDistanceChangeEvent::Proxy SplitControl::GetSplitBarDistan
 }
 
 
-void SplitControl::SetSplitBar(const std::shared_ptr<SplitBar>& split_bar) {
+void SplitControl::SetSplitBar(const std::shared_ptr<SplitControlSplitBar>& split_bar) {
 
     if (split_bar_ == split_bar) {
         return;
@@ -439,13 +439,13 @@ float SplitControl::GetSplitBarDragPosition() const {
 }
 
 
-void SplitControl::SplitBar::Initialize() {
+void SplitControlSplitBar::Initialize() {
 
     __super::Initialize();
 }
 
 
-void SplitControl::SplitBar::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void SplitControlSplitBar::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -470,7 +470,7 @@ void SplitControl::SplitBar::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-ColorPicker SplitControl::SplitBar::GetSplitterColorPicker() const {
+ColorPicker SplitControlSplitBar::GetSplitterColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kSplitterColorPickerPropertyName);
     if ((color_picker != nullptr) && (*color_picker != nullptr)) {
@@ -483,29 +483,29 @@ ColorPicker SplitControl::SplitBar::GetSplitterColorPicker() const {
 }
 
 
-void SplitControl::SplitBar::SetSplitterColorPicker(const ColorPicker& color_picker) {
+void SplitControlSplitBar::SetSplitterColorPicker(const ColorPicker& color_picker) {
     GetPropertyMap().SetProperty(kSplitterColorPickerPropertyName, color_picker);
     NeedRepaint();
 }
 
 
-void SplitControl::SplitBar::ChangeMouseCursor(const Message& message, bool& is_changed) {
+void SplitControlSplitBar::ChangeMouseCursor(const Message& message, bool& is_changed) {
 
     SetCursor(LoadCursor(nullptr, IsHorizontal() ? IDC_SIZENS : IDC_SIZEWE));
     is_changed = true;
 }
 
 
-bool SplitControl::SplitBar::MouseMove(const Point& position, const MouseMessage& message) {
+bool SplitControlSplitBar::MouseMove(const Point& position, const MouseMessage& message) {
 
     if (IsCapturingMouse()) {
-        drag_event_.Trigger(std::dynamic_pointer_cast<SplitBar>(shared_from_this()));
+        drag_event_.Trigger(std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this()));
     }
     return true;
 }
 
 
-bool SplitControl::SplitBar::MouseDown(const Point& position, const MouseMessage& message) {
+bool SplitControlSplitBar::MouseDown(const Point& position, const MouseMessage& message) {
 
     if (message.GetMouseButton() == MouseButton::Left) {
         CaptureMouse();
@@ -514,7 +514,7 @@ bool SplitControl::SplitBar::MouseDown(const Point& position, const MouseMessage
 }
 
 
-bool SplitControl::SplitBar::MouseUp(const Point& position, const MouseMessage& message) {
+bool SplitControlSplitBar::MouseUp(const Point& position, const MouseMessage& message) {
 
     if (IsCapturingMouse()) {
         ReleaseMouse();
@@ -523,15 +523,15 @@ bool SplitControl::SplitBar::MouseUp(const Point& position, const MouseMessage& 
 }
 
 
-void SplitControl::SplitBar::MouseCapture() {
+void SplitControlSplitBar::MouseCapture() {
 
-    begin_drag_event_.Trigger(std::dynamic_pointer_cast<SplitBar>(shared_from_this()));
+    begin_drag_event_.Trigger(std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this()));
 }
 
 
-void SplitControl::SplitBar::MouseRelease() {
+void SplitControlSplitBar::MouseRelease() {
 
-    end_drag_event_.Trigger(std::dynamic_pointer_cast<SplitBar>(shared_from_this()));
+    end_drag_event_.Trigger(std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this()));
 }
 
 

@@ -10,6 +10,9 @@ namespace internal {
 class ComboBoxDropDownWindow;
 }
 
+class ComboBoxDropDownListBox;
+class ComboBoxEditTextBox;
+
 /**
  Represents a combo box control.
  */
@@ -18,41 +21,6 @@ public:
     ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
-    /**
-     Represents a drop down list box control used in combo box.
-     */
-    class DropDownListBox : public ListBox {
-    public:
-        ZAF_DECLARE_REFLECTION_TYPE();
-
-    public:
-        void Initialize() override;
-
-    protected:
-        bool MouseMove(const Point& position, const MouseMessage& message) override;
-
-    private:
-        friend class ComboBox;
-
-        void SetMouseMoveCallback(const std::function<void(const Point&)>& callback) {
-            mouse_move_callback_ = callback;
-        }
-
-    private:
-        std::function<void(const Point&)> mouse_move_callback_;
-    };
-
-    /**
-     Represents an edit text box control used in combo box.
-     */
-    class EditTextBox : public TextBox {
-    public:
-        ZAF_DECLARE_REFLECTION_TYPE();
-
-    public:
-        bool KeyDown(const KeyMessage& message) override;
-    };
-
     /**
      Type of selection change event.
      */
@@ -152,7 +120,7 @@ public:
     /**
      Get the drop down list box used in combo box.
      */
-    const std::shared_ptr<DropDownListBox>& GetDropDownListBox() const {
+    const std::shared_ptr<ComboBoxDropDownListBox>& GetDropDownListBox() const {
         return drop_down_list_box_;
     }
 
@@ -161,12 +129,12 @@ public:
 
      Setting a nullptr would reset the drop down list box to a default one.
      */
-    void SetDropDownListBox(const std::shared_ptr<DropDownListBox>& list_box);
+    void SetDropDownListBox(const std::shared_ptr<ComboBoxDropDownListBox>& list_box);
 
     /**
      Get the edit text box used in combo box.
      */
-    const std::shared_ptr<EditTextBox>& GetEditTextBox() const {
+    const std::shared_ptr<ComboBoxEditTextBox>& GetEditTextBox() const {
         return edit_text_box_;
     }
 
@@ -175,7 +143,7 @@ public:
 
      Setting a nullptr would reset the edit text box to a default one.
      */
-    void SetEditTextBox(const std::shared_ptr<EditTextBox>& text_box);
+    void SetEditTextBox(const std::shared_ptr<ComboBoxEditTextBox>& text_box);
 
 protected:
     void Layout(const Rect&) override;
@@ -203,7 +171,7 @@ protected:
 
      Derived classes must call the same method of base class.
      */
-    virtual void DropDownListBoxChange(const std::shared_ptr<DropDownListBox>& previous_drop_down_list_box) { }
+    virtual void DropDownListBoxChange(const std::shared_ptr<ComboBoxDropDownListBox>& previous_drop_down_list_box) { }
 
     /**
      This method is called when the edit text box is changed.
@@ -306,15 +274,52 @@ private:
     void NotifySelectionChange();
 
 private:
-    std::shared_ptr<EditTextBox> edit_text_box_;
+    std::shared_ptr<ComboBoxEditTextBox> edit_text_box_;
     std::shared_ptr<internal::ComboBoxDropDownWindow> drop_down_window_;
-    std::shared_ptr<DropDownListBox> drop_down_list_box_;
+    std::shared_ptr<ComboBoxDropDownListBox> drop_down_list_box_;
 
     GuardedValue<DropDownListBoxAction> drop_down_list_box_action_;
     GuardedValue<EditTextBoxAction> edit_text_box_action_;
     GuardedValue<TextChangeSource> text_change_source_;
 
     std::optional<std::size_t> recovered_selected_index_;
+};
+
+
+/**
+ Represents a drop down list box control used in combo box.
+ */
+class ComboBoxDropDownListBox : public ListBox {
+public:
+    ZAF_DECLARE_REFLECTION_TYPE();
+
+public:
+    void Initialize() override;
+
+protected:
+    bool MouseMove(const Point& position, const MouseMessage& message) override;
+
+private:
+    friend class ComboBox;
+
+    void SetMouseMoveCallback(const std::function<void(const Point&)>& callback) {
+        mouse_move_callback_ = callback;
+    }
+
+private:
+    std::function<void(const Point&)> mouse_move_callback_;
+};
+
+
+/**
+ Represents an edit text box control used in combo box.
+ */
+class ComboBoxEditTextBox : public TextBox {
+public:
+    ZAF_DECLARE_REFLECTION_TYPE();
+
+public:
+    bool KeyDown(const KeyMessage& message) override;
 };
 
 }
