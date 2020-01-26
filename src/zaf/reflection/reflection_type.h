@@ -29,6 +29,13 @@ public:
      Get the parser for the type.
      */
     virtual std::shared_ptr<Parser> GetParser() = 0;
+
+    /**
+     Get base type of the type.
+
+     Return nullptr if there is no base type.
+     */
+    virtual std::shared_ptr<ReflectionType> GetBase() = 0;
 };
 
 }

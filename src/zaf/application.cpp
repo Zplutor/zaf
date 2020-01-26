@@ -29,6 +29,9 @@ void Application::Initialize(std::error_code& error_code) {
 		return;
 	}
 
+    //Check reflection type definition errors.
+    reflection_manager_->CheckTypeErrors();
+
 	HRESULT result = CoInitialize(nullptr);
     error_code = MakeComErrorCode(result);
 	if (! IsSucceeded(error_code)) {

@@ -24,9 +24,9 @@ static const wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
 static const int kTimerInitialInterval = 300;
 static const int kTimerContinuousInterval = 50;
 
-ZAF_DEFINE_REFLECTION_TYPE(ScrollBar);
-ZAF_DEFINE_REFLECTION_TYPE(ScrollBarArrow);
-ZAF_DEFINE_REFLECTION_TYPE(ScrollBarThumb);
+ZAF_DEFINE_REFLECTION_TYPE(ScrollBar, Control);
+ZAF_DEFINE_REFLECTION_TYPE(ScrollBarArrow, ClickableControl);
+ZAF_DEFINE_REFLECTION_TYPE(ScrollBarThumb, ClickableControl);
 
 
 ScrollBar::ScrollBar() : 

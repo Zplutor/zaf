@@ -38,7 +38,7 @@ static const wchar_t* const kStylePropertyName = L"Style";
 static const wchar_t* const kTitlePropertyName = L"Title";
 
 
-ZAF_DEFINE_REFLECTION_TYPE(Window);
+ZAF_DEFINE_REFLECTION_TYPE(Window, ReflectionObject);
 
 
 void Window::RegisterDefaultClass(std::error_code& error_code) {

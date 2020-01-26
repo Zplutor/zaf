@@ -394,6 +394,9 @@
     <ClCompile Include="src\zaf\parsing\parsers\combo_box_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\reflection\reflection_object.cpp">
+      <Filter>zaf\reflection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

@@ -51,7 +51,7 @@ static const wchar_t kDefaultPasswordCharacter = L'*';
 static const DWORD kDefaultScrollBarProperty = ES_AUTOVSCROLL | ES_AUTOHSCROLL | WS_VSCROLL | WS_HSCROLL;
 
 
-ZAF_DEFINE_REFLECTION_TYPE(TextBox);
+ZAF_DEFINE_REFLECTION_TYPE(TextBox, TextualControl);
 
 
 TextBox::TextBox() : 

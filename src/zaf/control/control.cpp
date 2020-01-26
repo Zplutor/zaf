@@ -34,7 +34,7 @@ const bool DefaultIsVisible = true;
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(Control);
+ZAF_DEFINE_REFLECTION_TYPE(Control, ReflectionObject);
 
 
 Control::Control() : 

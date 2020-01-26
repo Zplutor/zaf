@@ -24,7 +24,7 @@ const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(ImageBox);
+ZAF_DEFINE_REFLECTION_TYPE(ImageBox, Control);
 
 
 ImageBox::ImageBox() {

@@ -36,9 +36,9 @@ const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent"
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(ComboBox);
-ZAF_DEFINE_REFLECTION_TYPE(ComboBoxDropDownListBox);
-ZAF_DEFINE_REFLECTION_TYPE(ComboBoxEditTextBox);
+ZAF_DEFINE_REFLECTION_TYPE(ComboBox, ClickableControl);
+ZAF_DEFINE_REFLECTION_TYPE(ComboBoxDropDownListBox, ListBox);
+ZAF_DEFINE_REFLECTION_TYPE(ComboBoxEditTextBox, TextBox);
 
 
 ComboBox::ComboBox() : 

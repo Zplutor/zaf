@@ -37,7 +37,7 @@ int ConvertFontWeightFromString(const std::wstring& string) {
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(Font);
+ZAF_DEFINE_REFLECTION_TYPE(Font, ReflectionObject);
 
 
 const Font Font::GetDefault() {

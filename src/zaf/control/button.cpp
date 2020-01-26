@@ -14,7 +14,7 @@ const wchar_t* const kIsDefaultPropertyName = L"IsDefault";
 
 }
 
-ZAF_DEFINE_REFLECTION_TYPE(Button);
+ZAF_DEFINE_REFLECTION_TYPE(Button, ClickableControl);
 
 
 Button::Button() {

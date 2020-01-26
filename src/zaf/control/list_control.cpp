@@ -32,7 +32,7 @@ static void CalculateRangeDifference(
     std::size_t& tail_change_count);
 
 
-ZAF_DEFINE_REFLECTION_TYPE(ListControl);
+ZAF_DEFINE_REFLECTION_TYPE(ListControl, ScrollableControl);
 
 
 ListControl::ListControl() : 

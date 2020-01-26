@@ -112,6 +112,7 @@
     <ClCompile Include="src\zaf\parsing\xaml_node_parse_helper.cpp" />
     <ClCompile Include="src\zaf\parsing\xaml_reader.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp" />
+    <ClCompile Include="src\zaf\reflection\reflection_object.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
     <ClCompile Include="src\zaf\window\dialog.cpp" />
     <ClCompile Include="src\zaf\window\message\creation.cpp" />
@@ -376,6 +377,7 @@
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h</ForcedIncludeFiles>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -395,6 +397,7 @@
       <PrecompiledHeaderFile>precompiled.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompiled.h</ForcedIncludeFiles>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

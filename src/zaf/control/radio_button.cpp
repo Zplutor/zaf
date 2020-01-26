@@ -16,7 +16,7 @@ static const wchar_t* const kRadioBackgroundColorPickerPropertyName = L"RadioBac
 static const wchar_t* const kRadioBorderColorPickerPropertyName = L"RadioBorderColorPicker";
 static const wchar_t* const kSelectStateChangeEventProprtyName = L"SelectStateChangeEvent";
 
-ZAF_DEFINE_REFLECTION_TYPE(RadioButton);
+ZAF_DEFINE_REFLECTION_TYPE(RadioButton, ClickableControl);
 
 
 RadioButton::RadioButton() : is_selected_(true) {

@@ -14,7 +14,7 @@ const wchar_t* const Names[] = {
 
 }
 
-ZAF_DEFINE_REFLECTION_TYPE(TextTrimming);
+ZAF_DEFINE_REFLECTION_TYPE(TextTrimming, ReflectionObject);
 
 
 std::wstring ConvertTextTrimmingGranularityToString(TextTrimming::Granularity granularity) {
