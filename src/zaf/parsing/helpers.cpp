@@ -2,36 +2,33 @@
 #include <zaf/creation.h>
 #include <zaf/parsing/parser.h>
 #include <zaf/parsing/xaml_reader.h>
+#include <zaf/reflection/creation.h>
 
 namespace zaf {
+namespace internal {
 
-void ParseObjectFromXaml(
+std::shared_ptr<ReflectionObject> CreateReflectionObjectFromXaml(
     const std::string& xaml,
-    ReflectionObject& object,
     std::error_code& error_code) {
 
     auto xaml_reader = XamlReader::CreateFromString(xaml, error_code);
     if (error_code) {
-        return;
+        return {};
     }
 
     auto xaml_node = xaml_reader->Read(error_code);
     if (error_code) {
-        return;
+        return {};
     }
 
-    object.GetType()->GetParser()->ParseFromNode(*xaml_node, object);
+    auto object = CreateObjectByName(xaml_node->GetValue());
+    if (!object) {
+        return {};
+    }
+
+    object->GetType()->GetParser()->ParseFromNode(*xaml_node, *object);
+    return object;
 }
 
-void ParseObjectFromXaml(
-    const std::wstring& xaml,
-    ReflectionObject& object, 
-    std::error_code& error_code) {
-
-    ParseObjectFromXaml(ToUtf8String(xaml), object, error_code);
 }
-
-
-
-
 }

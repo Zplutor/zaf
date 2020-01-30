@@ -2,29 +2,24 @@
 
 #include <zaf/base/error.h>
 #include <zaf/base/string/encoding_conversion.h>
-#include <zaf/creation.h>
 #include <zaf/reflection/reflection_object.h>
 
 namespace zaf {
+namespace internal {
 
-void ParseObjectFromXaml(
+std::shared_ptr<ReflectionObject> CreateReflectionObjectFromXaml(
     const std::string& xaml,
-    ReflectionObject& object,
     std::error_code& error_code);
 
-void ParseObjectFromXaml(
-    const std::wstring& xaml,
-    ReflectionObject& object,
-    std::error_code& error_code);
+}
 
 
 template<typename T = ReflectionObject>
 std::shared_ptr<T> CreateObjectFromXaml(const std::string& xaml, std::error_code& error_code) {
 
-    auto object = Create<T>();
-    ParseObjectFromXaml(xaml, *object, error_code);
+    auto object = internal::CreateReflectionObjectFromXaml(xaml, error_code);
     if (!error_code) {
-        return object;
+        return std::dynamic_pointer_cast<T>(object);
     }
     return {};
 }
