@@ -3,7 +3,7 @@
 #include <zaf/base/string/split.h>
 #include <zaf/parsing/parsers/internal/utility.h>
 #include <zaf/parsing/xaml_node_parse_helper.h>
-#include <zaf/reflection/reflection_manager.h>
+#include <zaf/reflection/creation.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -91,7 +91,7 @@ std::shared_ptr<Control> ParseRootControl(const XamlNode& node) {
         return {};
     }
 
-    return internal::CreateObjectFromTypeName<Control>(*attribute);
+    return CreateObjectByName<Control>(*attribute);
 }
 
 

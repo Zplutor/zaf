@@ -5,7 +5,7 @@
 namespace {
 
 std::shared_ptr<zaf::TextualControl> CreateTextualControlFromXaml(const std::string& xaml) {
-    return CreateObjectFromXaml<zaf::TextualControl>(xaml);
+    return zaf::CreateObjectFromXaml<zaf::TextualControl>(xaml);
 }
 
 

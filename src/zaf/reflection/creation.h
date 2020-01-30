@@ -1,21 +1,18 @@
 #pragma once
 
-#include <zaf/application.h>
-#include <zaf/reflection/reflection_manager.h>
 #include <zaf/reflection/reflection_object.h>
-#include <zaf/reflection/reflection_type.h>
 
 namespace zaf {
+namespace internal {
+
+std::shared_ptr<ReflectionObject> CreateReflectionObjectByName(const std::wstring& name);
+
+}
 
 template<typename T = ReflectionObject>
 std::shared_ptr<T> CreateObjectByName(const std::wstring& name) {
 
-    auto type = GetReflectionManager().GetType(name);
-    if (type == nullptr) {
-        return nullptr;
-    }
-
-    auto object = type->CreateInstance();
+    auto object = internal::CreateReflectionObjectByName(name);
     return std::dynamic_pointer_cast<T>(object);
 }
 

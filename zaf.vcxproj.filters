@@ -397,6 +397,12 @@
     <ClCompile Include="src\zaf\reflection\reflection_object.cpp">
       <Filter>zaf\reflection</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\reflection\creation.cpp">
+      <Filter>zaf\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\helpers.cpp">
+      <Filter>zaf\parsing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -998,6 +1004,9 @@
       <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\xaml_node_parse_helper.h">
+      <Filter>zaf\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\helpers.h">
       <Filter>zaf\parsing</Filter>
     </ClInclude>
   </ItemGroup>

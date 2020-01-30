@@ -21,15 +21,15 @@ TEST(ColorParser, ParseFromAttribute) {
 
 TEST(ColorParser, ParseFromNode) {
 
-    auto color = CreateObjectFromXaml<zaf::Color>(
+    auto color = zaf::CreateObjectFromXaml<zaf::Color>(
         R"(<Color A="0.1" R="0.2" G="0.3" B="0.4"></Color>)"
     );
     ASSERT_EQ(*color, zaf::Color(0.2f, 0.3f, 0.4f, 0.1f));
 
-    color = CreateObjectFromXaml<zaf::Color>("<Color>#ddeeff</Color>");
+    color = zaf::CreateObjectFromXaml<zaf::Color>("<Color>#ddeeff</Color>");
     ASSERT_EQ(*color, zaf::Color::FromRGB(0xddeeff));
 
-    color = CreateObjectFromXaml<zaf::Color>(R"(
+    color = zaf::CreateObjectFromXaml<zaf::Color>(R"(
         <Color>
             <Color.A>0.5</Color.A>
             <Color.R>0.6</Color.R>
