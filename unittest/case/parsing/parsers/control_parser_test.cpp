@@ -144,35 +144,27 @@ TEST(ControlParser, ParseMinimumHeightAndMaximumHeight) {
 }
 
 
+TEST(ControlParser, ParseMargin) {
+
+    ASSERT_TRUE(TestFrameProperty<zaf::Control>("Margin", [](zaf::Control& control) {
+        return control.GetMargin();
+    }));
+}
+
+
 TEST(ControlParser, ParseBorder) {
 
-    auto xaml = R"(<Control Border="1,2,3,4"></Control>)";
-    auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetBorder(), zaf::Frame(1, 2, 3, 4));
-
-    xaml = R"(
-        <Control>
-            <Control.Border Left="5" Top="6" Right="7" Bottom="8"></Control.Border>
-        </Control>
-    )";
-    control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetBorder(), zaf::Frame(5, 6, 7, 8));
+    ASSERT_TRUE(TestFrameProperty<zaf::Control>("Border", [](zaf::Control& control) {
+        return control.GetBorder();
+    }));
 }
 
 
 TEST(ControlParser, ParsePadding) {
 
-    auto xaml = R"(<Control Padding="1,2,3,4"></Control>)";
-    auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetPadding(), zaf::Frame(1, 2, 3, 4));
-
-    xaml = R"(
-        <Control>
-            <Control.Padding Left="5" Top="6" Right="7" Bottom="8"></Control.Padding>
-        </Control>
-    )";
-    control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetPadding(), zaf::Frame(5, 6, 7, 8));
+    ASSERT_TRUE(TestFrameProperty<zaf::Control>("Padding", [](zaf::Control& control) {
+        return control.GetPadding();
+    }));
 }
 
 

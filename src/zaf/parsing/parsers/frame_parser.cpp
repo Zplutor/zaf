@@ -46,6 +46,16 @@ void FrameParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflecti
     if (bottom) {
         frame.bottom = *bottom;
     }
+
+    auto content_string = helper.GetContentString();
+    if (content_string) {
+        internal::ParseAttributeToQuaterFloats(
+            *content_string,
+            frame.left,
+            frame.top,
+            frame.right,
+            frame.bottom);
+    }
 }
 
 }

@@ -12,6 +12,8 @@ public:
     XamlNodeParseHelper(const XamlNodeParseHelper&) = delete;
     XamlNodeParseHelper& operator=(const XamlNodeParseHelper&) = delete;
 
+    std::optional<std::wstring> GetContentString() const;
+
     std::optional<std::wstring> GetString(const std::wstring& property_name) const;
     std::optional<bool> GetBool(const std::wstring& property_name) const;
     std::optional<float> GetFloat(const std::wstring& property_name) const;

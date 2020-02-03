@@ -452,6 +452,18 @@ void Control::RectChange(const Rect& previous_rect) {
 }
 
 
+void Control::SetMargin(const Frame& margin) {
+
+    margin_ = margin;
+
+    //Notify parent to re-layout all children.
+    auto parent = GetParent();
+    if (parent) {
+        parent->NeedRelayout();
+    }
+}
+
+
 float Control::GetMinimumWidth() const {
 
     auto min_width = GetPropertyMap().TryGetProperty<float>(property::MinimumWidth);

@@ -278,6 +278,16 @@ public:
      */
 	void SetAnchor(Anchor anchor);
 
+    const Frame& GetMargin() const {
+        return margin_;
+    }
+
+    void SetMargin(const Frame& margin);
+
+    void SetMargin(float margin_thickness) {
+        SetMargin(Frame(margin_thickness, margin_thickness, margin_thickness, margin_thickness));
+    }
+
     const Frame& GetBorder() const {
         return border_;
     }
@@ -949,6 +959,7 @@ private:
 	bool is_visible_;
 
 	Rect rect_;
+    Frame margin_;
     Frame border_;
     Frame padding_;
 

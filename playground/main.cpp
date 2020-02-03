@@ -13,7 +13,7 @@
 #include <zaf/control/combo_box.h>
 #include <zaf/reflection/reflection_type.h>
 #include <zaf/reflection/reflection_manager.h>
-#include <zaf/parsing/parser.h>
+#include <zaf/parsing/helpers.h>
 #include <zaf/parsing/xaml_reader.h>
 #include <zaf/reflection/creation.h>
 
@@ -120,13 +120,12 @@ void BeginRun(zaf::Application& application) {
     window->SetRootControl(root_control);
     window->Show();
 
-    auto button = zaf::CreateObjectByName<zaf::Button>(L"Button");
-    button->SetText(L"Reflection button");
-    button->SetRect(zaf::Rect(200, 200, 100, 30));
+    auto button = zaf::CreateObjectFromXaml<zaf::Button>(R"(
+        <Button Text="Reflection button">
+            <Button.Rect Position="200,200" Size="100,30" />
+        </Button>
+    )");
     root_control->AddChild(button);
-
-    auto xaml_reader = zaf::XamlReader::CreateFromString("<Point X=\"44\" Y=\"55\" >abc<Size>size</Size>cdf</Point>");
-    auto node = xaml_reader->Read();
 
     application.SetMainWindow(window);
 }

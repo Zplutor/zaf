@@ -71,6 +71,11 @@ void ParseProperties(const XamlNode& node, Control& control) {
         control.SetMaximumHeight(*maximum_height);
     }
 
+    auto margin = helper.GetObjectAsPointer<Frame>(L"Margin");
+    if (margin) {
+        control.SetMargin(*margin);
+    }
+
     auto border = helper.GetObjectAsPointer<Frame>(L"Border");
     if (border) {
         control.SetBorder(*border);

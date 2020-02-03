@@ -2,6 +2,24 @@
 #include <zaf/base/string/to_numeric.h>
 
 namespace zaf {
+namespace {
+
+std::optional<std::wstring> GetContentStringFromNode(const XamlNode& node) {
+
+    const auto& content_nodes = node.GetContentNodes();
+    if (content_nodes.size() != 1) {
+        return {};
+    }
+
+    const auto& content_node = content_nodes.front();
+    if (content_node->GetType() != XamlNode::Type::Text) {
+        return {};
+    }
+
+    return content_node->GetValue();
+}
+
+}
 
 XamlNodeParseHelper::XamlNodeParseHelper(
     const XamlNode& node, 
@@ -10,6 +28,11 @@ XamlNodeParseHelper::XamlNodeParseHelper(
     node_(node),
     object_type_(object_type) {
 
+}
+
+
+std::optional<std::wstring> XamlNodeParseHelper::GetContentString() const {
+    return GetContentStringFromNode(node_);
 }
 
 
@@ -32,17 +55,7 @@ std::optional<std::wstring> XamlNodeParseHelper::GetStringFromPropertyNode(
         return {};
     }
 
-    const auto& content_nodes = property_node->GetContentNodes();
-    if (content_nodes.size() != 1) {
-        return {};
-    }
-
-    const auto& content_node = content_nodes.front();
-    if (content_node->GetType() != XamlNode::Type::Text) {
-        return {};
-    }
-
-    return content_node->GetValue();
+    return GetContentStringFromNode(*property_node);
 }
 
 
