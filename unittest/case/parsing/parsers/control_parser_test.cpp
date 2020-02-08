@@ -170,49 +170,33 @@ TEST(ControlParser, ParsePadding) {
 
 TEST(ControlParser, ParseIsVisible) {
 
-    auto xaml = R"(<Control IsVisible="false" />)";
-    auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->IsVisible(), false);
-
-    xaml = R"(<Control><Control.IsVisible>false</Control.IsVisible></Control>)";
-    control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->IsVisible(), false);
+    ASSERT_TRUE(TestBooleanProperty<zaf::Control>("IsVisible", [](zaf::Control& control) {
+        return control.IsVisible();
+    }));
 }
 
 
 TEST(ControlParser, ParseIsEnabled) {
 
-    auto xaml = R"(<Control IsEnabled="false" />)";
-    auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->IsEnabled(), false);
-
-    xaml = R"(<Control><Control.IsEnabled>false</Control.IsEnabled></Control>)";
-    control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->IsEnabled(), false);
+    ASSERT_TRUE(TestBooleanProperty<zaf::Control>("IsEnabled", [](zaf::Control& control) {
+        return control.IsEnabled();
+    }));
 }
 
 
 TEST(ControlParser, ParseCanFocused) {
 
-    auto xaml = R"(<Control CanFocused="false" />)";
-    auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->CanFocused(), false);
-
-    xaml = R"(<Control><Control.CanFocused>false</Control.CanFocused></Control>)";
-    control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->CanFocused(), false);
+    ASSERT_TRUE(TestBooleanProperty<zaf::Control>("CanFocused", [](zaf::Control& control) {
+        return control.CanFocused();
+    }));
 }
 
 
 TEST(ControlParser, ParseCanTabStop) {
 
-    auto xaml = R"(<Control CanTabStop="false" />)";
-    auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->CanTabStop(), false);
-
-    xaml = R"(<Control><Control.CanTabStop>false</Control.CanTabStop></Control>)";
-    control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->CanTabStop(), false);
+    ASSERT_TRUE(TestBooleanProperty<zaf::Control>("CanFocused", [](zaf::Control& control) {
+        return control.CanFocused();
+    }));
 }
 
 

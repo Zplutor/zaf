@@ -44,7 +44,7 @@ bool TestBooleanProperty(const std::string& property_name, ValueGetter&& value_g
         return value ? "true" : "false";
     };
 
-    std::string type_name = ToUtf8String(T::Type->GetName());
+    std::string type_name = zaf::ToUtf8String(T::Type->GetName());
 
     for (auto expected_value : { true, false }) {
 
@@ -53,7 +53,7 @@ bool TestBooleanProperty(const std::string& property_name, ValueGetter&& value_g
             property_name, 
             bool_to_string(expected_value));
 
-        auto object = CreateObjectFromXaml<T>(xaml);
+        auto object = zaf::CreateObjectFromXaml<T>(xaml);
         if (value_getter(*object) != expected_value) {
             return false;
         }
@@ -63,7 +63,7 @@ bool TestBooleanProperty(const std::string& property_name, ValueGetter&& value_g
             property_name,
             bool_to_string(expected_value));
 
-        object = CreateObjectFromXaml<T>(xaml);
+        object = zaf::CreateObjectFromXaml<T>(xaml);
         if (value_getter(*object) != expected_value) {
             return false;
         }
@@ -79,18 +79,18 @@ bool TestEnumProperty(
     const std::map<E, std::string>& value_map, 
     ValueGetter&& value_getter) {
 
-    std::string type_name = ToUtf8String(T::Type->GetName());
+    std::string type_name = zaf::ToUtf8String(T::Type->GetName());
 
     for (const auto& each_pair : value_map) {
 
         std::string xaml = BuildAttributeXaml(type_name, property_name, each_pair.second);
-        auto object = CreateObjectFromXaml<T>(xaml);
+        auto object = zaf::CreateObjectFromXaml<T>(xaml);
         if (value_getter(*object) != each_pair.first) {
             return false;
         }
 
         xaml = BuildPropertyNodeXaml(type_name, property_name, each_pair.second);
-        object = CreateObjectFromXaml<T>(xaml);
+        object = zaf::CreateObjectFromXaml<T>(xaml);
         if (value_getter(*object) != each_pair.first) {
             return false;
         }

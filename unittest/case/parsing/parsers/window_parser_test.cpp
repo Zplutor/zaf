@@ -6,60 +6,50 @@
 
 TEST(WindowParser, ParseStyle) {
 
-    auto test = [](const std::string& value, zaf::Window::Style style) {
-    
-        auto xaml = "<Window Style=\"" + value + "\" />";
-        auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-        ASSERT_EQ(window->GetStyle(), style);
-
-        xaml = "<Window><Window.Style>" + value + "</Window.Style></Window>";
-        window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-        ASSERT_EQ(window->GetStyle(), style);
-    };
-
-    test("Overlapped", zaf::Window::Style::Overlapped);
-    test("Popup", zaf::Window::Style::Popup);
+    bool result = TestEnumProperty<zaf::Window, zaf::Window::Style>(
+        "Style",
+        {
+            { zaf::Window::Style::Overlapped, "Overlapped" },
+            { zaf::Window::Style::Popup, "Popup" },
+        },
+        [](zaf::Window& window) {
+            return window.GetStyle();
+        }
+    );
+    ASSERT_TRUE(result);
 }
 
 
 TEST(WindowParser, ParseInitialRectStyle) {
 
-    auto test = [](const std::string& value, zaf::Window::InitialRectStyle style) {
-    
-        std::string xaml(R"(<Window InitialRectStyle=")" + value + R"(" />)");
-        auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-        ASSERT_EQ(window->GetInitialRectStyle(), style);
-
-        xaml = 
-            "<Window><Window.InitialRectStyle>" + value + 
-            "</Window.InitialRectStyle></Window>";
-        window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-        ASSERT_EQ(window->GetInitialRectStyle(), style);
-    };
-
-    test("CenterInScreen", zaf::Window::InitialRectStyle::CenterInScreen);
-    test("CenterInOwner", zaf::Window::InitialRectStyle::CenterInOwner);
-    test("Custom", zaf::Window::InitialRectStyle::Custom);
+    bool result = TestEnumProperty<zaf::Window, zaf::Window::InitialRectStyle>(
+        "InitialRectStyle",
+        {
+            { zaf::Window::InitialRectStyle::CenterInScreen, "CenterInScreen" },
+            { zaf::Window::InitialRectStyle::CenterInOwner, "CenterInOwner" },
+            { zaf::Window::InitialRectStyle::Custom, "Custom" },
+        },
+        [](zaf::Window& window) {
+            return window.GetInitialRectStyle();
+        }
+    );
+    ASSERT_TRUE(result);
 }
 
 
 TEST(WindowParser, ParseBorderStyle) {
 
-    auto test = [](const std::string& value, zaf::Window::BorderStyle style) {
-    
-        std::string xaml = "<Window BorderStyle=\"" + value + "\" />";
-        auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-        ASSERT_EQ(window->GetBorderStyle(), style);
-
-        xaml =
-            "<Window><Window.BorderStyle>" + value +
-            "</Window.BorderStyle></Window>";
-        window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-        ASSERT_EQ(window->GetBorderStyle(), style);
-    };
-
-    test("None", zaf::Window::BorderStyle::None);
-    test("Normal", zaf::Window::BorderStyle::Normal);
+    bool result = TestEnumProperty<zaf::Window, zaf::Window::BorderStyle>(
+        "BorderStyle",
+        {
+            { zaf::Window::BorderStyle::None, "None" },
+            { zaf::Window::BorderStyle::Normal, "Normal" },
+        },
+        [](zaf::Window& window) {
+            return window.GetBorderStyle();
+        }
+    );
+    ASSERT_TRUE(result);
 };
 
 

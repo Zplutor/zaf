@@ -135,10 +135,10 @@ TEST(ToString, Float) {
     TEST_FLOAT_TO_STRING(float, 5, false, -3.14159f, "-3.14159");
     TEST_FLOAT_TO_STRING(float, 2, false, 765.43f, "765.43");
     TEST_FLOAT_TO_STRING(float, 2, false, -765.43f, "-765.43");
-    TEST_FLOAT_TO_STRING(float, 6, true, 1.175494e-38f, "1.175494e-038");
-    TEST_FLOAT_TO_STRING(float, 6, true, -1.175494e-38f, "-1.175494e-038");
-    TEST_FLOAT_TO_STRING(float, 6, true, 3.402823e38f, "3.402823e+038");
-    TEST_FLOAT_TO_STRING(float, 6, true, -3.402823e38f, "-3.402823e+038");
+    TEST_FLOAT_TO_STRING(float, 6, true, 1.175494e-38f, "1.175494e-38");
+    TEST_FLOAT_TO_STRING(float, 6, true, -1.175494e-38f, "-1.175494e-38");
+    TEST_FLOAT_TO_STRING(float, 6, true, 3.402823e38f, "3.402823e+38");
+    TEST_FLOAT_TO_STRING(float, 6, true, -3.402823e38f, "-3.402823e+38");
 
     TEST_FLOAT_TO_STRING(double, 1, false, 0., "0.0");
     TEST_FLOAT_TO_STRING(double, 1, false, 0.1, "0.1");
