@@ -159,9 +159,6 @@
     <ClCompile Include="src\zaf\graphic\rect.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\layout\array_layouter.cpp">
-      <Filter>zaf\control\layout</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\textual_control.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
@@ -406,6 +403,9 @@
     <ClCompile Include="src\zaf\control\layout\layouter.cpp">
       <Filter>zaf\control\layout</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\layout\linear_layouter.cpp">
+      <Filter>zaf\control\layout</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -562,9 +562,6 @@
       <Filter>zaf\control\layout</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\anchor_layouter.h">
-      <Filter>zaf\control\layout</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\layout\array_layouter.h">
       <Filter>zaf\control\layout</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\color_picker.h">
@@ -1011,6 +1008,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\helpers.h">
       <Filter>zaf\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\layout\linear_layouter.h">
+      <Filter>zaf\control\layout</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

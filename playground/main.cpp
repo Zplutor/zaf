@@ -6,7 +6,6 @@
 #include <zaf/window/dialog.h>
 #include <zaf/control/list_box.h>
 #include <zaf/control/button.h>
-#include <zaf/control/layout/array_layouter.h>
 #include <zaf/control/text_box.h>
 #include <zaf/window/message/hit_test_result.h>
 #include <zaf/graphic/canvas.h>

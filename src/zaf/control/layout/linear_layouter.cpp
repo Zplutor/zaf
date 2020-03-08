@@ -1,20 +1,20 @@
-#include <zaf/control/layout/array_layouter.h>
+#include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/control.h>
 #include <zaf/control/layout/internal/array_layout_length_calculating.h>
 
 namespace zaf {
-namespace {
 
-void LayoutWithArray(
+void LinearLayouter::Layout(
 	const Control& parent,
-	const Rect& preivous_rect,
-	const std::vector<std::shared_ptr<Control>>& children,
-	bool is_vertical
+	const Rect& parent_old_rect,
+	const std::vector<std::shared_ptr<Control>>& children
 ) {
 
 	if (children.empty()) {
 		return;
 	}
+
+	bool is_vertical = direction_ == Direction::TopToBottom;
 
 	//Calcuate the length for each child.
 	std::vector<internal::ArrayLayoutLengthCalculatingItem> calculate_items;
@@ -62,39 +62,5 @@ void LayoutWithArray(
 		++index;
 	}
 }
-
-
-class ArrayLayouter : public Layouter {
-public:
-	ArrayLayouter(bool is_vertical) : is_vertical_(is_vertical) {
-
-	}
-
-	void Layout(
-		const Control& parent,
-		const Rect& parent_old_rect,
-		const std::vector<std::shared_ptr<Control>>& children
-	) override {
-
-		LayoutWithArray(parent, parent_old_rect, children, is_vertical_);
-	}
-
-private:
-	bool is_vertical_{};
-};
-
-}
-
-
-std::shared_ptr<Layouter> GetHorizontalArrayLayouter() {
-	return std::make_shared<ArrayLayouter>(false);
-}
-
-
-std::shared_ptr<Layouter> GetVerticalArrayLayouter() {
-	return std::make_shared<ArrayLayouter>(true);
-}
-
-
 
 }

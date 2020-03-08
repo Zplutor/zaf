@@ -1,5 +1,5 @@
 #include <zaf/control/internal/combo_box_drop_down_window.h>
-#include <zaf/control/layout/array_layouter.h>
+#include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/list_control.h>
 #include <zaf/creation.h>
 
@@ -10,11 +10,14 @@ void ComboBoxDropDownWindow::Initialize() {
 
     __super::Initialize();
 
+    auto layouter = Create<LinearLayouter>();
+    layouter->SetDirection(LinearLayouter::Direction::TopToBottom);
+
     container_ = Create<Container>();
-    container_->SetLayouter(GetVerticalArrayLayouter());
+    container_->SetLayouter(layouter);
 
     auto root_control = GetRootControl();
-    root_control->SetLayouter(GetVerticalArrayLayouter());
+    root_control->SetLayouter(layouter);
     root_control->AddChild(container_);
 }
 

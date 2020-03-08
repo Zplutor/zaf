@@ -4,7 +4,6 @@
 #include <zaf/base/event_utility.h>
 #include <zaf/control/button.h>
 #include <zaf/control/internal/combo_box_drop_down_window.h>
-#include <zaf/control/layout/array_layouter.h>
 #include <zaf/control/text_box.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
