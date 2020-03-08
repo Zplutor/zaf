@@ -403,6 +403,9 @@
     <ClCompile Include="src\zaf\parsing\helpers.cpp">
       <Filter>zaf\parsing</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\layout\layouter.cpp">
+      <Filter>zaf\control\layout</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

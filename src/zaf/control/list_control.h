@@ -232,7 +232,7 @@ public:
 
     private:
         void LayoutItems(
-            const std::shared_ptr<Control>& parent,
+            const Control& parent,
             const Rect& previous_rect,
             const std::vector<std::shared_ptr<Control>>& children);
 

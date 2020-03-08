@@ -887,12 +887,18 @@ void ListControl::ItemContainer::Initialize() {
 
     SetBackgroundColor(Color::Transparent);
     SetCanFocused(true);
-    SetLayouter(std::bind(&ItemContainer::LayoutItems, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    SetLayouter(CreateLayouter(std::bind(
+        &ItemContainer::LayoutItems,
+        this, 
+        std::placeholders::_1,
+        std::placeholders::_2,
+        std::placeholders::_3
+    )));
 }
 
 
 void ListControl::ItemContainer::LayoutItems(
-    const std::shared_ptr<Control>& parent,
+    const Control& parent,
     const Rect& previous_rect,
     const std::vector<std::shared_ptr<Control>>& children) {
 

@@ -378,14 +378,14 @@ public:
     /**
      Get the layouter.
      */
-	Layouter GetLayouter() const;
+	std::shared_ptr<Layouter> GetLayouter() const;
 
     /**
      Set the layouter.
 
      Setting the layouter would causes the control to relayout immediately.
      */
-	void SetLayouter(const Layouter& layouter);
+	void SetLayouter(const std::shared_ptr<Layouter>& layouter);
 
 	/**
 	 Get the control's children.

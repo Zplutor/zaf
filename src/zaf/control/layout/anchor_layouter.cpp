@@ -2,46 +2,12 @@
 #include <zaf/control/control.h>
 
 namespace zaf {
+namespace {
 
-static void LayoutWithAnchor(
-	const std::shared_ptr<Control>& parent,
-	const Rect& previous_rect, 
-	const std::vector<std::shared_ptr<Control>>& children
-);
-
-static void LayoutChild(
-	const Rect& current_rect,
-	const Rect& previous_rect, 
-	const std::shared_ptr<Control>& child
-);
-
-const Layouter GetAnchorLayouter() {
-	return LayoutWithAnchor;
-}
-
-
-static void LayoutWithAnchor(
-	const std::shared_ptr<Control>& parent,
-	const Rect& previous_rect,
-	const std::vector<std::shared_ptr<Control>>& children
-) {
-
-    //Do nothing when previous rect is empty, or the layouts of chilren
-    //are incorrect.
-    if (previous_rect.IsEmpty()) {
-        return;
-    }
-
-	for (const auto& child : children) {
-		LayoutChild(parent->GetRect(), previous_rect, child);
-	}
-}
-
-
-static void LayoutChild(
+void LayoutChild(
 	const Rect& current_rect,
 	const Rect& previous_rect,
-	const std::shared_ptr<Control>& child
+	Control& child
 ) {
 
 	auto change_single_dimension_with_anchor = [](
@@ -75,13 +41,13 @@ static void LayoutChild(
 		}
 	};
 
-	Anchor anchor = child->GetAnchor();
+	Anchor anchor = child.GetAnchor();
 	bool has_left_anchor = (anchor & Anchor::Left) == Anchor::Left;
 	bool has_right_anchor = (anchor & Anchor::Right) == Anchor::Right;
 	bool has_top_anchor = (anchor & Anchor::Top) == Anchor::Top;
 	bool has_bottom_anchor = (anchor & Anchor::Bottom) == Anchor::Bottom;
 
-	const Rect& child_old_rect = child->GetRect();
+	const Rect& child_old_rect = child.GetRect();
 	Rect child_new_rect;
 
 	change_single_dimension_with_anchor(
@@ -106,7 +72,35 @@ static void LayoutChild(
 		child_new_rect.size.height
 	);
 
-	child->SetRect(child_new_rect);
+	child.SetRect(child_new_rect);
+}
+
+
+class AnchorLayouter : public Layouter {
+public:
+	void Layout(
+		const Control& parent,
+		const Rect& parent_old_rect,
+		const std::vector<std::shared_ptr<Control>>& children
+	) override {
+
+		//Do nothing when previous rect is empty, or the layouts of chilren
+		//are incorrect.
+		if (parent_old_rect.IsEmpty()) {
+			return;
+		}
+
+		for (const auto& child : children) {
+			LayoutChild(parent.GetRect(), parent_old_rect, *child);
+		}
+	}
+};
+
+}
+
+
+std::shared_ptr<Layouter> GetAnchorLayouter() {
+	return std::make_shared<AnchorLayouter>();
 }
 
 }

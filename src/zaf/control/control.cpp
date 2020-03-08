@@ -340,8 +340,8 @@ void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const Rect
 void Control::Layout(const Rect& previous_rect) {
 
 	auto layouter = GetLayouter();
-	if (layouter != nullptr) {
-		layouter(shared_from_this(), previous_rect, GetChildren());
+	if (layouter) {
+		layouter->Layout(*this, previous_rect, GetChildren());
 	}
 }
 
@@ -630,10 +630,12 @@ void Control::SetBorderColorPicker(const ColorPicker& color_picker) {
 }
 
 
-Layouter Control::GetLayouter() const {
+std::shared_ptr<Layouter> Control::GetLayouter() const {
 
-	auto layouter = GetPropertyMap().TryGetProperty<Layouter>(kLayouterPropertyName);
-	if (layouter != nullptr) {
+	auto layouter = GetPropertyMap().TryGetProperty<std::shared_ptr<Layouter>>(
+        kLayouterPropertyName
+    );
+	if (layouter && *layouter) {
 		return *layouter;
 	}
 	else {
@@ -641,7 +643,7 @@ Layouter Control::GetLayouter() const {
 	}
 }
 
-void Control::SetLayouter(const Layouter& layouter) {
+void Control::SetLayouter(const std::shared_ptr<Layouter>& layouter) {
 	GetPropertyMap().SetProperty(kLayouterPropertyName, layouter);
     NeedRelayout();
 }

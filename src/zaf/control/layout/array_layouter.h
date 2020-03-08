@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-const Layouter GetHorizontalArrayLayouter();
-const Layouter GetVerticalArrayLayouter();
+std::shared_ptr<Layouter> GetHorizontalArrayLayouter();
+std::shared_ptr<Layouter> GetVerticalArrayLayouter();
 
 }

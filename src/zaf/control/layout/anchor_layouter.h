@@ -4,6 +4,6 @@
 
 namespace zaf {
 
-const Layouter GetAnchorLayouter();
+std::shared_ptr<Layouter> GetAnchorLayouter();
 
 }
