@@ -27,7 +27,14 @@ class MapView {
 public:
     using value_type = typename IteratorAccessor<C>::Type;
 
-    class Iterator : public std::iterator<std::bidirectional_iterator_tag, value_type> {
+    class Iterator {
+    public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using value_type = MapView::value_type;
+        using difference_type = std::ptrdiff_t;
+        using pointer = MapView::value_type*;
+        using reference = MapView::value_type&;
+
     public:
         Iterator(typename C::const_iterator map_iterator) : map_iterator_(std::move(map_iterator)) { }
 
