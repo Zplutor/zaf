@@ -225,9 +225,6 @@
     <ClCompile Include="src\zaf\control\split_control.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\layout\internal\array_layout_length_calculating.cpp">
-      <Filter>zaf\control\layout\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\graphic\font\font_family.cpp">
       <Filter>zaf\graphic\font</Filter>
     </ClCompile>
@@ -405,6 +402,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\layout\linear_layouter.cpp">
       <Filter>zaf\control\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\layout\internal\linear_layout_length_calculating.cpp">
+      <Filter>zaf\control\layout\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -680,9 +680,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\relation_operator.h">
       <Filter>zaf\base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\layout\internal\array_layout_length_calculating.h">
-      <Filter>zaf\control\layout\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\localized_strings.h">
       <Filter>zaf\graphic</Filter>
@@ -1011,6 +1008,18 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\linear_layouter.h">
       <Filter>zaf\control\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\layout\layout_direction.h">
+      <Filter>zaf\control\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\layout\control_alignment.h">
+      <Filter>zaf\control\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\layout\axis_alignment.h">
+      <Filter>zaf\control\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\layout\internal\linear_layout_length_calculating.h">
+      <Filter>zaf\control\layout\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

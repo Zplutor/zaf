@@ -15,6 +15,7 @@
 #include <zaf/parsing/helpers.h>
 #include <zaf/parsing/xaml_reader.h>
 #include <zaf/reflection/creation.h>
+#include <zaf/control/layout/linear_layouter.h>
 
 void BeginRun(zaf::Application&);
 
@@ -23,68 +24,12 @@ class RootControl : public zaf::Control {
 public:
     void Initialize() override {
         __super::Initialize();
-
-        close_button_ = zaf::Create<zaf::Button>();
-        close_button_->SetSize(zaf::Size(30, 30));
-        close_button_->SetPosition(zaf::Point(0, 0));
-        close_button_->SetText(L"X");
-        close_button_->GetClickEvent().AddListener(std::bind([this]() {
-            auto window = GetWindow();
-            if (window != nullptr) {
-                window->Maximize();
-            }
-        }));
-
-        auto button = zaf::Create<zaf::Button>();
-        button->SetSize(zaf::Size(100, 30));
-        button->SetPosition(zaf::Point(0, 30));
-        button->SetText(L"Button");
-        button->GetClickEvent().AddListener(std::bind([this]() {
-            auto window = GetWindow();
-            if (window != nullptr) {
-                window->Restore();
-            }
-        }));
-
-        auto combo_box = zaf::Create<zaf::ComboBox>();
-        combo_box->SetRect(zaf::Rect(0.3, 80.3, 200, 30));
-
-        AddChild(combo_box);
-
-        AddChild(close_button_);
-        AddChild(button);
     }
 
     void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override {
 
         __super::Paint(canvas, dirty_rect);
-
-        canvas.SetBrushWithColor(zaf::Color::Blue);
-        canvas.DrawRectangleFrame(zaf::Rect(80, 100, 100, 100), 3);
     }
-
-    std::optional<zaf::HitTestResult> HitTest(const zaf::HitTestMessage& message) override {
-
-        zaf::Rect title_bar_rect(0, 0, GetWidth(), 30);
-
-        if (close_button_->GetRect().Contain(close_button_->GetMousePosition())) {
-            return zaf::HitTestResult::CloseButton;
-        }
-
-        if (title_bar_rect.Contain(GetMousePosition())) {
-            return zaf::HitTestResult::TitleBar;
-        }
-
-        zaf::Rect left_rect(80, 100, 3, 100);
-        if (left_rect.Contain(GetMousePosition())) {
-            return zaf::HitTestResult::LeftBorder;
-        }
-
-        return __super::HitTest(message);
-    }
-
-private:
-    std::shared_ptr<zaf::Button> close_button_;
 };
 
 
@@ -112,19 +57,33 @@ void BeginRun(zaf::Application& application) {
     auto window = zaf::Create<zaf::Window>();
 
     auto root_control = zaf::Create<RootControl>();
-    window->SetBorderStyle(zaf::Window::BorderStyle::None);
+    window->SetBorderStyle(zaf::Window::BorderStyle::Normal);
     window->SetCanMaximize(true);
     window->SetIsSizable(true);
 
     window->SetRootControl(root_control);
     window->Show();
 
-    auto button = zaf::CreateObjectFromXaml<zaf::Button>(R"(
-        <Button Text="Reflection button">
-            <Button.Rect Position="200,200" Size="100,30" />
-        </Button>
-    )");
-    root_control->AddChild(button);
+    auto layouter = zaf::Create<zaf::LinearLayouter>();
+    layouter->SetDirection(zaf::LayoutDirection::TopToBottom);
+    layouter->SetControlAlignment(zaf::ControlAlignment::Center);
+
+    auto control = zaf::Create<zaf::Control>();
+    control->SetRect(zaf::Rect(10, 10, 500, 100));
+    control->SetLayouter(layouter);
+    control->SetBorder(1);
+    control->SetBorderColor(zaf::Color::Black);
+
+    for (int count = 0; count < 3; ++count) {
+
+        auto child = zaf::Create<zaf::Control>();
+        child->SetBorder(1);
+        child->SetBorderColor(zaf::Color::Green);
+        child->SetMaximumWidth((count + 2) * 10);
+        control->AddChild(child);
+    }
+
+    root_control->AddChild(control);
 
     application.SetMainWindow(window);
 }

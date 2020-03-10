@@ -1,14 +1,16 @@
 #include <gtest/gtest.h>
-#include <zaf/control/layout/internal/array_layout_length_calculating.h>
+#include <zaf/control/layout/internal/linear_layout_length_calculating.h>
 
-static std::vector<zaf::internal::ArrayLayoutLengthCalculatingItem> CreateItems(
+namespace {
+
+std::vector<zaf::internal::LinearLayoutLengthCalculatItem> CreateItems(
     const std::vector<std::pair<float, float>>& min_and_max) {
 
-    std::vector<zaf::internal::ArrayLayoutLengthCalculatingItem> items;
+    std::vector<zaf::internal::LinearLayoutLengthCalculatItem> items;
 
     for (const auto& each_pair : min_and_max) {
 
-        zaf::internal::ArrayLayoutLengthCalculatingItem each_item;
+        zaf::internal::LinearLayoutLengthCalculatItem each_item;
         each_item.minimum_length = each_pair.first;
         each_item.maximum_length = each_pair.second;
         items.push_back(each_item);
@@ -18,7 +20,7 @@ static std::vector<zaf::internal::ArrayLayoutLengthCalculatingItem> CreateItems(
 }
 
 
-static bool TestCalculating(
+bool TestCalculating(
     float total_length,
     const std::vector<std::pair<float, float>>& mins_and_maxes,
     const std::vector<float>& expected_lengths) {
@@ -35,10 +37,12 @@ static bool TestCalculating(
     return true;
 }
 
+}
+
 
 TEST(TestCalculateArrayLayoutLengths, NoItem) {
 
-    std::vector<zaf::internal::ArrayLayoutLengthCalculatingItem> items;
+    std::vector<zaf::internal::LinearLayoutLengthCalculatItem> items;
     zaf::internal::CalculateArrayLayoutLengths(100, items);
     ASSERT_TRUE(items.empty());
 }

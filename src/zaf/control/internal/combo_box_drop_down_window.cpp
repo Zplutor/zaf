@@ -11,7 +11,7 @@ void ComboBoxDropDownWindow::Initialize() {
     __super::Initialize();
 
     auto layouter = Create<LinearLayouter>();
-    layouter->SetDirection(LinearLayouter::Direction::TopToBottom);
+    layouter->SetDirection(LayoutDirection::TopToBottom);
 
     container_ = Create<Container>();
     container_->SetLayouter(layouter);
