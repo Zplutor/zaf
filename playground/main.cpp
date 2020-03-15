@@ -67,6 +67,7 @@ void BeginRun(zaf::Application& application) {
     auto layouter = zaf::Create<zaf::LinearLayouter>();
     layouter->SetDirection(zaf::LayoutDirection::TopToBottom);
     layouter->SetControlAlignment(zaf::ControlAlignment::Center);
+    layouter->SetAxisAlignment(zaf::AxisAlignment::Center);
 
     auto control = zaf::Create<zaf::Control>();
     control->SetRect(zaf::Rect(10, 10, 500, 100));

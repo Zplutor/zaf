@@ -25,7 +25,8 @@ protected:
 protected:
     void RunTest(const TestArgument& argument) {
 
-        auto layouter = CreateLayouter(argument.alignment);
+        auto layouter = zaf::Create<zaf::LinearLayouter>();
+        layouter->SetControlAlignment(argument.alignment);
 
         //Single child.
         auto children = CreateChildren(1);
@@ -55,13 +56,6 @@ protected:
     static const int ChildWidth = 10;
 
 private:
-    std::shared_ptr<zaf::LinearLayouter> CreateLayouter(zaf::ControlAlignment alignment) {
-
-        auto layouter = zaf::Create<zaf::LinearLayouter>();
-        layouter->SetControlAlignment(alignment);
-        return layouter;
-    }
-
     std::vector<std::shared_ptr<zaf::Control>> CreateChildren(int children_count) {
 
         std::vector<std::shared_ptr<zaf::Control>> children;
@@ -77,6 +71,60 @@ private:
 
 private:
     std::shared_ptr<zaf::Control> parent_;
+};
+
+
+class LinearLayouterAxisAlignmentTest : public testing::Test {
+protected:
+    void TestAlignmentOffset(
+        zaf::AxisAlignment alignment, 
+        float parent_length,
+        float fixed_length,
+        float expected_position) {
+
+        InnerTestAlignmentOffset(alignment, parent_length, fixed_length, expected_position, false);
+        InnerTestAlignmentOffset(alignment, parent_length, fixed_length, expected_position, true);
+    }
+
+private:
+    void InnerTestAlignmentOffset(
+        zaf::AxisAlignment alignment,
+        float parent_length,
+        float fixed_length,
+        float expected_position,
+        bool test_height) {
+
+        auto layouter = zaf::Create<zaf::LinearLayouter>();
+        layouter->SetAxisAlignment(alignment);
+
+        auto parent = zaf::Create<zaf::Control>();
+
+        std::vector<std::shared_ptr<zaf::Control>> children;
+        auto child = zaf::Create<zaf::Control>();
+        children.push_back(child);
+
+        if (test_height) {
+            layouter->SetDirection(zaf::LayoutDirection::LeftToRight);
+            parent->SetHeight(parent_length);
+            child->SetMaximumHeight(fixed_length);
+            child->SetMinimumHeight(fixed_length);
+        }
+        else {
+            layouter->SetDirection(zaf::LayoutDirection::TopToBottom);
+            parent->SetWidth(parent_length);
+            child->SetMaximumWidth(fixed_length);
+            child->SetMinimumWidth(fixed_length);
+        }
+
+        layouter->Layout(*parent, {}, children);
+
+        if (test_height) {
+            ASSERT_EQ(child->GetY(), expected_position);
+        }
+        else {
+            ASSERT_EQ(child->GetX(), expected_position);
+        }
+    }
 };
 
 }
@@ -109,6 +157,31 @@ TEST_F(LinearLayouterControlAlignmentTest, CenterControlAlignment) {
     argument.alignment = zaf::ControlAlignment::Center;
     argument.single_child_x = (ParentWidth - ChildWidth) / 2;
     argument.double_child_first_x = (ParentWidth - ChildWidth * 2) / 2;
-    argument.double_child_second_x = 0; argument.double_child_first_x + ChildWidth;
+    argument.double_child_second_x = argument.double_child_first_x + ChildWidth;
     RunTest(argument);
 }
+
+
+TEST_F(LinearLayouterAxisAlignmentTest, NearAxisAlignment) {
+
+    TestAlignmentOffset(zaf::AxisAlignment::Near, 50, 10, 0);
+    TestAlignmentOffset(zaf::AxisAlignment::Near, 50, 50, 0);
+    TestAlignmentOffset(zaf::AxisAlignment::Near, 50, 90, 0);
+}
+
+
+TEST_F(LinearLayouterAxisAlignmentTest, FarAxisAlignment) {
+
+    TestAlignmentOffset(zaf::AxisAlignment::Far, 50, 10, 40);
+    TestAlignmentOffset(zaf::AxisAlignment::Far, 50, 50, 0);
+    TestAlignmentOffset(zaf::AxisAlignment::Far, 50, 90, -40);
+}
+
+
+TEST_F(LinearLayouterAxisAlignmentTest, CenterAxisAlignment) {
+
+    TestAlignmentOffset(zaf::AxisAlignment::Center, 50, 10, 20);
+    TestAlignmentOffset(zaf::AxisAlignment::Center, 50, 50, 0);
+    TestAlignmentOffset(zaf::AxisAlignment::Center, 50, 90, -20);
+}
+
