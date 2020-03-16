@@ -83,9 +83,6 @@ float LinearLayouter::CalculatePositionOffset(
 	
 	float total_length = children_positions.back() - children_positions.front();
 	float space_length = content_length - total_length;
-	if (space_length <= 0) {
-		return 0;
-	}
 
 	if (control_alignment_ == ControlAlignment::Tailing) {
 		return space_length;
