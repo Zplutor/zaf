@@ -3,6 +3,164 @@
 #include <zaf/control/layout/internal/linear_layout_length_calculating.h>
 
 namespace zaf {
+namespace {
+
+template<bool IsHeight>
+class DimensionTraits;
+
+template<>
+class DimensionTraits<false> {
+public:
+	static float GetLength(const Size& size) {
+		return size.width;
+	}
+
+	static float GetMinimumLength(const Control& control) {
+		return control.GetMinimumWidth();
+	}
+
+	static float GetMaximumLength(const Control& control) {
+		return control.GetMaximumWidth();
+	}
+
+	static float GetHeadingMargin(const Frame& frame) {
+		return frame.left;
+	}
+
+	static float GetTailingMargin(const Frame& frame) {
+		return frame.right;
+	}
+};
+
+template<>
+class DimensionTraits<true> {
+public:
+	static float GetLength(const Size& size) {
+		return size.height;
+	}
+
+	static float GetMinimumLength(const Control& control) {
+		return control.GetMinimumHeight();
+	}
+
+	static float GetMaximumLength(const Control& control) {
+		return control.GetMaximumHeight();
+	}
+
+	static float GetHeadingMargin(const Frame& frame) {
+		return frame.top;
+	}
+
+	static float GetTailingMargin(const Frame& frame) {
+		return frame.bottom;
+	}
+};
+
+
+float CalculateAxisOffset(
+	float length,
+	float avaliable_length,
+	AxisAlignment axis_alignment) {
+
+	if (axis_alignment == AxisAlignment::Near) {
+		return 0;
+	}
+
+	float space_length = avaliable_length - length;
+
+	if (axis_alignment == AxisAlignment::Far) {
+		return space_length;
+	}
+
+	if (axis_alignment == AxisAlignment::Center) {
+		return space_length / 2;
+	}
+
+	return 0;
+}
+
+
+template<bool IsHeightDimension>
+class ControlRectCalculator {
+public:
+	static Rect Calculate(
+		const Control& control,
+		float position,
+		float length,
+		const Size& content_size,
+		AxisAlignment axis_alignment) {
+
+		auto current_dimension_info = CalculateCurrentDimensionPositionAndLength(
+			control, 
+			position, 
+			length);
+
+		auto other_dimension_info = CalculateOtherDimensionPositionAndLength(
+			control,
+			content_size, 
+			axis_alignment);
+
+		if (IsHeightDimension) {
+			std::swap(current_dimension_info, other_dimension_info);
+		}
+
+		Rect rect;
+		rect.position.x = current_dimension_info.first;
+		rect.position.y = other_dimension_info.first;
+		rect.size.width = current_dimension_info.second;
+		rect.size.height = other_dimension_info.second;
+		return rect;
+	}
+
+private:
+	static std::pair<float, float> CalculateCurrentDimensionPositionAndLength(
+		const Control& control,
+		float position,
+		float length) {
+
+		using Dimension = DimensionTraits<IsHeightDimension>;
+
+		const auto& margin = control.GetMargin();
+
+		float actual_position = position + Dimension::GetHeadingMargin(margin);
+
+		float actual_length =
+			length -
+			Dimension::GetHeadingMargin(margin) -
+			Dimension::GetTailingMargin(margin);
+
+		return std::make_pair(actual_position, actual_length);
+	}
+
+
+	static std::pair<float, float> CalculateOtherDimensionPositionAndLength(
+		const Control& control,
+		const Size& content_size,
+		AxisAlignment axis_alignment) {
+
+		using Dimension = DimensionTraits<!IsHeightDimension>;
+
+		const auto& margin = control.GetMargin();
+
+		//Calculate length.
+		float avaliable_length =
+			Dimension::GetLength(content_size) -
+			Dimension::GetHeadingMargin(margin) -
+			Dimension::GetTailingMargin(margin);
+
+		float length = (std::min)(avaliable_length, Dimension::GetMaximumLength(control));
+		length = (std::max)(length, Dimension::GetMinimumLength(control));
+
+		//Calculate position.
+		float position = 
+			Dimension::GetHeadingMargin(margin) +
+			CalculateAxisOffset(length, avaliable_length, axis_alignment);
+
+		return std::make_pair(position, length);
+	}
+};
+
+}
 
 void LinearLayouter::Layout(
 	const Control& parent,
@@ -46,6 +204,14 @@ std::vector<internal::LinearLayoutLengthCalculatItem> LinearLayouter::CalculateC
 
 		item.maximum_length =
 			IsVertical() ? each_child->GetMaximumHeight() : each_child->GetMaximumWidth();
+
+		//Add margin length.
+		const auto& margin = each_child->GetMargin();
+		float margin_length = 
+			IsVertical() ? margin.top + margin.bottom : margin.left + margin.right;
+
+		item.minimum_length += margin_length;
+		item.maximum_length += margin_length;
 
 		result.push_back(item);
 	}
@@ -127,29 +293,22 @@ Rect LinearLayouter::GetChildRect(
 	float length,
 	const Size& content_size) const {
 
-	Rect result;
 	if (IsVertical()) {
-
-		float width = (std::min)(content_size.width, child.GetMaximumWidth());
-		width = (std::max)(width, child.GetMinimumWidth());
-		result = Rect(
-			CalculateAxisOffset(width, content_size.width),
+		return ControlRectCalculator<true>::Calculate(
+			child,
 			position,
-			width,
-			length);
+			length, 
+			content_size, 
+			axis_alignment_);
 	}
 	else {
-
-		float height = (std::min)(content_size.height, child.GetMaximumHeight());
-		height = (std::max)(height, child.GetMinimumHeight());
-		result = Rect(
+		return ControlRectCalculator<false>::Calculate(
+			child,
 			position,
-			CalculateAxisOffset(height, content_size.height),
 			length,
-			height);
+			content_size,
+			axis_alignment_);
 	}
-
-	return result;
 }
 
 
