@@ -11,114 +11,122 @@ void ParseProperties(const XamlNode& node, Control& control) {
 
     XamlNodeParseHelper helper(node, control.GetType());
 
-    auto name = helper.GetString(L"Name");
+    auto name = helper.GetStringProperty(L"Name");
     if (name) {
         control.SetName(*name);
     }
 
-    auto x = helper.GetFloat(L"X");
+    auto x = helper.GetFloatProperty(L"X");
     if (x) {
         control.SetX(*x);
     }
 
-    auto y = helper.GetFloat(L"Y");
+    auto y = helper.GetFloatProperty(L"Y");
     if (y) {
         control.SetY(*y);
     }
 
-    auto position = helper.GetObjectAsPointer<Point>(L"Position");
+    auto position = helper.GetObjectProperty<Point>(L"Position");
     if (position) {
         control.SetPosition(*position);
     }
 
-    auto width = helper.GetFloat(L"Width");
+    auto width = helper.GetFloatProperty(L"Width");
     if (width) {
         control.SetWidth(*width);
     }
 
-    auto height = helper.GetFloat(L"Height");
+    auto height = helper.GetFloatProperty(L"Height");
     if (height) {
         control.SetHeight(*height);
     }
 
-    auto size = helper.GetObjectAsPointer<Size>(L"Size");
+    auto size = helper.GetObjectProperty<Size>(L"Size");
     if (size) {
         control.SetSize(*size);
     }
 
-    auto rect = helper.GetObjectAsPointer<Rect>(L"Rect");
+    auto rect = helper.GetObjectProperty<Rect>(L"Rect");
     if (rect) {
         control.SetRect(*rect);
     }
 
-    auto minimum_width = helper.GetFloat(L"MinimumWidth");
+    auto minimum_width = helper.GetFloatProperty(L"MinimumWidth");
     if (minimum_width) {
         control.SetMinimumWidth(*minimum_width);
     }
 
-    auto maximum_width = helper.GetFloat(L"MaximumWidth");
+    auto maximum_width = helper.GetFloatProperty(L"MaximumWidth");
     if (maximum_width) {
         control.SetMaximumWidth(*maximum_width);
     }
 
-    auto minimum_height = helper.GetFloat(L"MinimumHeight");
+    auto minimum_height = helper.GetFloatProperty(L"MinimumHeight");
     if (minimum_height) {
         control.SetMinimumHeight(*minimum_height);
     }
 
-    auto maximum_height = helper.GetFloat(L"MaximumHeight");
+    auto maximum_height = helper.GetFloatProperty(L"MaximumHeight");
     if (maximum_height) {
         control.SetMaximumHeight(*maximum_height);
     }
 
-    auto margin = helper.GetObjectAsPointer<Frame>(L"Margin");
+    auto margin = helper.GetObjectProperty<Frame>(L"Margin");
     if (margin) {
         control.SetMargin(*margin);
     }
 
-    auto border = helper.GetObjectAsPointer<Frame>(L"Border");
+    auto border = helper.GetObjectProperty<Frame>(L"Border");
     if (border) {
         control.SetBorder(*border);
     }
 
-    auto padding = helper.GetObjectAsPointer<Frame>(L"Padding");
+    auto padding = helper.GetObjectProperty<Frame>(L"Padding");
     if (padding) {
         control.SetPadding(*padding);
     }
 
-    auto is_visible = helper.GetBool(L"IsVisible");
+    auto is_visible = helper.GetBoolProperty(L"IsVisible");
     if (is_visible) {
         control.SetIsVisible(*is_visible);
     }
 
-    auto is_enabled = helper.GetBool(L"IsEnabled");
+    auto is_enabled = helper.GetBoolProperty(L"IsEnabled");
     if (is_enabled) {
         control.SetIsEnabled(*is_enabled);
     }
 
-    auto can_focused = helper.GetBool(L"CanFocused");
+    auto can_focused = helper.GetBoolProperty(L"CanFocused");
     if (can_focused) {
         control.SetCanFocused(*can_focused);
     }
 
-    auto can_tab_stop = helper.GetBool(L"CanTabStop");
+    auto can_tab_stop = helper.GetBoolProperty(L"CanTabStop");
     if (can_tab_stop) {
         control.SetCanTabStop(*can_tab_stop);
     }
 
-    auto tab_index = helper.GetFloat(L"TabIndex");
+    auto tab_index = helper.GetFloatProperty(L"TabIndex");
     if (tab_index) {
         control.SetTabIndex(static_cast<std::size_t>(*tab_index));
     }
 
-    auto background_color = helper.GetObjectAsPointer<Color>(L"BackgroundColor");
+    auto background_color = helper.GetObjectProperty<Color>(L"BackgroundColor");
     if (background_color) {
         control.SetBackgroundColor(*background_color);
     }
 
-    auto border_color = helper.GetObjectAsPointer<Color>(L"BorderColor");
+    auto border_color = helper.GetObjectProperty<Color>(L"BorderColor");
     if (border_color) {
         control.SetBorderColor(*border_color);
+    }
+
+    auto layouter_object = helper.GetDynamicObjectProperty<ReflectionObject>(L"Layouter");
+    if (layouter_object) {
+        auto layouter = std::dynamic_pointer_cast<Layouter>(layouter_object);
+        if (layouter) {
+            control.SetLayouter(layouter);
+        }
     }
 }
 

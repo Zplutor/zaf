@@ -104,6 +104,7 @@
     <ClCompile Include="src\zaf\parsing\parsers\ellipse_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\frame_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\internal\utility.cpp" />
+    <ClCompile Include="src\zaf\parsing\parsers\linear_layouter_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\point_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\rect_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\rounded_rect_parser.cpp" />
@@ -291,6 +292,7 @@
     <ClInclude Include="src\zaf\parsing\parsers\image_box_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\internal\utility.h" />
     <ClInclude Include="src\zaf\parsing\parsers\label_parser.h" />
+    <ClInclude Include="src\zaf\parsing\parsers\linear_layouter_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\list_box_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\list_control_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\point_parser.h" />

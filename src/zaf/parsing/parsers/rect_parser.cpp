@@ -13,12 +13,12 @@ void RectParser::ParseFromNode(
     auto& rect = dynamic_cast<Rect&>(reflection_object);
     XamlNodeParseHelper helper(node, rect.GetType());
 
-    auto position = helper.GetObjectAsPointer<Point>(L"Position");
+    auto position = helper.GetObjectProperty<Point>(L"Position");
     if (position) {
         rect.position = *position;
     }
 
-    auto size = helper.GetObjectAsPointer<Size>(L"Size");
+    auto size = helper.GetObjectProperty<Size>(L"Size");
     if (size) {
         rect.size = *size;
     }

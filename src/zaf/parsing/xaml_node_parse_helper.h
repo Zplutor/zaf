@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/creation.h>
+#include <zaf/parsing/parsers/internal/utility.h>
 #include <zaf/parsing/xaml_node.h>
 #include <zaf/reflection/reflection_type.h>
 
@@ -14,12 +15,12 @@ public:
 
     std::optional<std::wstring> GetContentString() const;
 
-    std::optional<std::wstring> GetString(const std::wstring& property_name) const;
-    std::optional<bool> GetBool(const std::wstring& property_name) const;
-    std::optional<float> GetFloat(const std::wstring& property_name) const;
+    std::optional<std::wstring> GetStringProperty(const std::wstring& property_name) const;
+    std::optional<bool> GetBoolProperty(const std::wstring& property_name) const;
+    std::optional<float> GetFloatProperty(const std::wstring& property_name) const;
 
     template<typename T>
-    std::shared_ptr<T> GetObjectAsPointer(const std::wstring& property_name) const {
+    std::shared_ptr<T> GetObjectProperty(const std::wstring& property_name) const {
 
         auto property_node = GetPropertyNode(property_name);
         if (property_node) {
@@ -36,6 +37,28 @@ public:
         }
 
         return {};
+    }
+
+    template<typename T>
+    std::shared_ptr<T> GetDynamicObjectProperty(const std::wstring& property_name) const {
+
+        auto property_node = GetPropertyNode(property_name);
+        if (property_node) {
+
+            const auto& content_nodes = property_node->GetContentNodes();
+            if (content_nodes.size() != 1) {
+                return {};
+            }
+
+            return internal::CreateObjectFromNode<T>(content_nodes.front());
+        }
+
+        auto attribute = node_.GetAttribute(property_name);
+        if (!attribute) {
+            return {};
+        }
+
+        return CreateObjectByName<T>(*attribute);
     }
 
 private:

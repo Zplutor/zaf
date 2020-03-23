@@ -19,12 +19,12 @@ void SizeParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflectio
     Size& size = dynamic_cast<Size&>(reflection_object);
     XamlNodeParseHelper helper(node, size.GetType());
 
-    auto width = helper.GetFloat(L"Width");
+    auto width = helper.GetFloatProperty(L"Width");
     if (width) {
         size.width = *width;
     }
     
-    auto height = helper.GetFloat(L"Height");
+    auto height = helper.GetFloatProperty(L"Height");
     if (height) {
         size.height = *height;
     }

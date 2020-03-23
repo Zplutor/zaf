@@ -71,17 +71,17 @@ void TextualControlParser::ParseFromNode(
 
     XamlNodeParseHelper helper(node, textual_control.GetType());
 
-    auto text = helper.GetString(L"Text");
+    auto text = helper.GetStringProperty(L"Text");
     if (text) {
         textual_control.SetText(*text);
     }
 
-    auto default_text_color = helper.GetObjectAsPointer<Color>(L"DefaultTextColor");
+    auto default_text_color = helper.GetObjectProperty<Color>(L"DefaultTextColor");
     if (default_text_color) {
         textual_control.SetDefaultTextColor(*default_text_color);
     }
 
-    auto text_alignment_string = helper.GetString(L"TextAlignment");
+    auto text_alignment_string = helper.GetStringProperty(L"TextAlignment");
     if (text_alignment_string) {
         auto text_alignment = ParseTextAlignment(*text_alignment_string);
         if (text_alignment) {
@@ -89,7 +89,7 @@ void TextualControlParser::ParseFromNode(
         }
     }
 
-    auto paragraph_alignment_string = helper.GetString(L"ParagraphAlignment");
+    auto paragraph_alignment_string = helper.GetStringProperty(L"ParagraphAlignment");
     if (paragraph_alignment_string) {
         auto paragraph_alignment = ParseParagraphAlignment(*paragraph_alignment_string);
         if (paragraph_alignment) {
@@ -97,7 +97,7 @@ void TextualControlParser::ParseFromNode(
         }
     }
 
-    auto word_wrapping_string = helper.GetString(L"WordWrapping");
+    auto word_wrapping_string = helper.GetStringProperty(L"WordWrapping");
     if (word_wrapping_string) {
         auto word_wrapping = ParseWordWrapping(*word_wrapping_string);
         if (word_wrapping) {

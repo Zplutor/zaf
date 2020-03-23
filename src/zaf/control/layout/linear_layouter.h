@@ -4,6 +4,7 @@
 #include <zaf/control/layout/control_alignment.h>
 #include <zaf/control/layout/layout_direction.h>
 #include <zaf/control/layout/layouter.h>
+#include <zaf/reflection/reflection_object.h>
 
 namespace zaf {
 namespace internal {
@@ -12,14 +13,29 @@ class LinearLayoutLengthCalculatItem;
 
 class Size;
 
-class LinearLayouter : public Layouter {
+class LinearLayouter : public Layouter, public ReflectionObject {
 public:
+	ZAF_DECLARE_REFLECTION_TYPE();
+
+public:
+	LayoutDirection GetDirection() const {
+		return direction_;
+	}
+
 	void SetDirection(LayoutDirection direction) {
 		direction_ = direction;
 	}
 
+	ControlAlignment GetControlAlignment() const {
+		return control_alignment_;
+	}
+
 	void SetControlAlignment(ControlAlignment alignment) {
 		control_alignment_ = alignment;
+	}
+
+	AxisAlignment GetAxisAlignment() const {
+		return axis_alignment_;
 	}
 
 	void SetAxisAlignment(AxisAlignment alignment) {

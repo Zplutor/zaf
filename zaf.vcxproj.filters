@@ -406,6 +406,9 @@
     <ClCompile Include="src\zaf\control\layout\internal\linear_layout_length_calculating.cpp">
       <Filter>zaf\control\layout\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\linear_layouter_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1020,6 +1023,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\internal\linear_layout_length_calculating.h">
       <Filter>zaf\control\layout\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\linear_layouter_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

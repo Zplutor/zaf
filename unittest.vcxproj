@@ -119,6 +119,7 @@
     <ClCompile Include="unittest\case\parsing\parsers\control_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\ellipse_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\frame_parser_test.cpp" />
+    <ClCompile Include="unittest\case\parsing\parsers\linear_layouter_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\point_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\rect_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\rounded_rect_parser_test.cpp" />

@@ -1,6 +1,8 @@
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/control.h>
 #include <zaf/control/layout/internal/linear_layout_length_calculating.h>
+#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/parsing/parsers/linear_layouter_parser.h>
 
 namespace zaf {
 namespace {
@@ -260,6 +262,9 @@ float LinearLayouter::CalculatePositionOffset(
 
 	return 0;
 }
+
+
+ZAF_DEFINE_REFLECTION_TYPE(LinearLayouter, ReflectionObject);
 
 
 void LinearLayouter::SetRectsToChildren(

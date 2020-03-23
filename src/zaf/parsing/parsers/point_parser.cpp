@@ -20,12 +20,12 @@ void PointParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflecti
     Point& point = dynamic_cast<Point&>(reflection_object);
     XamlNodeParseHelper helper(node, point.GetType());
 
-    auto x = helper.GetFloat(L"X");
+    auto x = helper.GetFloatProperty(L"X");
     if (x) {
         point.x = *x;
     }
 
-    auto y = helper.GetFloat(L"Y");
+    auto y = helper.GetFloatProperty(L"Y");
     if (y) {
         point.y = *y;
     }

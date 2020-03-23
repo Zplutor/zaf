@@ -86,22 +86,22 @@ void ColorParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflecti
     auto& color = dynamic_cast<Color&>(reflection_object);
     XamlNodeParseHelper helper(node, color.GetType());
 
-    auto a = helper.GetFloat(L"A");
+    auto a = helper.GetFloatProperty(L"A");
     if (a) {
         color.a = *a;
     }
 
-    auto r = helper.GetFloat(L"R");
+    auto r = helper.GetFloatProperty(L"R");
     if (r) {
         color.r = *r;
     }
 
-    auto g = helper.GetFloat(L"G");
+    auto g = helper.GetFloatProperty(L"G");
     if (g) {
         color.g = *g;
     }
 
-    auto b = helper.GetFloat(L"B");
+    auto b = helper.GetFloatProperty(L"B");
     if (b) {
         color.b = *b;
     }

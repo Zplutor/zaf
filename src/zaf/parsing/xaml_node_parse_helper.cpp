@@ -36,7 +36,7 @@ std::optional<std::wstring> XamlNodeParseHelper::GetContentString() const {
 }
 
 
-std::optional<std::wstring> XamlNodeParseHelper::GetString(
+std::optional<std::wstring> XamlNodeParseHelper::GetStringProperty(
     const std::wstring& property_name) const {
 
     auto string = GetStringFromPropertyNode(property_name);
@@ -59,9 +59,9 @@ std::optional<std::wstring> XamlNodeParseHelper::GetStringFromPropertyNode(
 }
 
 
-std::optional<bool> XamlNodeParseHelper::GetBool(const std::wstring& property_name) const {
+std::optional<bool> XamlNodeParseHelper::GetBoolProperty(const std::wstring& property_name) const {
 
-    auto string = GetString(property_name);
+    auto string = GetStringProperty(property_name);
     if (!string) {
         return {};
     }
@@ -76,9 +76,9 @@ std::optional<bool> XamlNodeParseHelper::GetBool(const std::wstring& property_na
 }
 
 
-std::optional<float> XamlNodeParseHelper::GetFloat(const std::wstring& property_name) const {
+std::optional<float> XamlNodeParseHelper::GetFloatProperty(const std::wstring& property_name) const {
 
-    auto string = GetString(property_name);
+    auto string = GetStringProperty(property_name);
     if (!string) {
         return {};
     }

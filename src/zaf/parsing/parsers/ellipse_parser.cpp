@@ -9,17 +9,17 @@ void EllipseParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflec
     auto& ellipse = dynamic_cast<Ellipse&>(reflection_object);
     XamlNodeParseHelper helper(node, ellipse.GetType());
 
-    auto position = helper.GetObjectAsPointer<Point>(L"Position");
+    auto position = helper.GetObjectProperty<Point>(L"Position");
     if (position) {
         ellipse.position = *position;
     }
 
-    auto x_radius = helper.GetFloat(L"XRadius");
+    auto x_radius = helper.GetFloatProperty(L"XRadius");
     if (x_radius) {
         ellipse.x_radius = *x_radius;
     }
 
-    auto y_radius = helper.GetFloat(L"YRadius");
+    auto y_radius = helper.GetFloatProperty(L"YRadius");
     if (y_radius) {
         ellipse.y_radius = *y_radius;
     }

@@ -27,22 +27,22 @@ void FrameParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflecti
     auto& frame = dynamic_cast<Frame&>(reflection_object);
     XamlNodeParseHelper helper(node, frame.GetType());
 
-    auto left = helper.GetFloat(L"Left");
+    auto left = helper.GetFloatProperty(L"Left");
     if (left) {
         frame.left = *left;
     }
 
-    auto top = helper.GetFloat(L"Top");
+    auto top = helper.GetFloatProperty(L"Top");
     if (top) {
         frame.top = *top;
     }
 
-    auto right = helper.GetFloat(L"Right");
+    auto right = helper.GetFloatProperty(L"Right");
     if (right) {
         frame.right = *right;
     }
 
-    auto bottom = helper.GetFloat(L"Bottom");
+    auto bottom = helper.GetFloatProperty(L"Bottom");
     if (bottom) {
         frame.bottom = *bottom;
     }

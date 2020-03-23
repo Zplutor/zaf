@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/control/control.h>
+#include <zaf/control/layout/linear_layouter.h>
 #include "utility.h"
 
 namespace {
@@ -11,7 +12,7 @@ std::shared_ptr<zaf::Control> CreateControlFromXaml(const std::string& xaml) {
 }
 
 
-TEST(ControlParser, ParseName) {
+TEST(ControlParserTest, ParseName) {
 
     auto xaml = R"(<Control Name="xyz" />)";
     auto control = CreateControlFromXaml(xaml);
@@ -27,7 +28,7 @@ TEST(ControlParser, ParseName) {
 }
 
 
-TEST(ControlParser, ParseXAndY) {
+TEST(ControlParserTest, ParseXAndY) {
 
     auto xaml = R"(<Control X="1" Y="2" />)";
     auto control = CreateControlFromXaml(xaml);
@@ -44,7 +45,7 @@ TEST(ControlParser, ParseXAndY) {
 }
 
 
-TEST(ControlParser, ParsePosition) {
+TEST(ControlParserTest, ParsePosition) {
 
     auto xaml = R"(<Control Position="1,2" />)";
     auto control = CreateControlFromXaml(xaml);
@@ -60,7 +61,7 @@ TEST(ControlParser, ParsePosition) {
 }
 
 
-TEST(ControlParser, ParseWidthAndHeight) {
+TEST(ControlParserTest, ParseWidthAndHeight) {
 
     auto xaml = R"(<Control Width="1" Height="2" />)";
     auto control = CreateControlFromXaml(xaml);
@@ -77,7 +78,7 @@ TEST(ControlParser, ParseWidthAndHeight) {
 }
 
 
-TEST(ControlParser, ParseSize) {
+TEST(ControlParserTest, ParseSize) {
 
     auto xaml = R"(<Control Size="1,2" />)";
     auto control = CreateControlFromXaml(xaml);
@@ -93,7 +94,7 @@ TEST(ControlParser, ParseSize) {
 }
 
 
-TEST(ControlParser, ParseRect) {
+TEST(ControlParserTest, ParseRect) {
 
     auto xaml = R"(
         <Control>
@@ -106,7 +107,7 @@ TEST(ControlParser, ParseRect) {
 }
 
 
-TEST(ControlParser, ParseMinimumWidthAndMaximumWidth) {
+TEST(ControlParserTest, ParseMinimumWidthAndMaximumWidth) {
 
     auto xaml = R"(<Control MinimumWidth="1" MaximumWidth="2"></Control>)";
     auto control = CreateControlFromXaml(xaml);
@@ -125,7 +126,7 @@ TEST(ControlParser, ParseMinimumWidthAndMaximumWidth) {
 }
 
 
-TEST(ControlParser, ParseMinimumHeightAndMaximumHeight) {
+TEST(ControlParserTest, ParseMinimumHeightAndMaximumHeight) {
 
     auto xaml = R"(<Control MinimumHeight="1" MaximumHeight="2"></Control>)";
     auto control = CreateControlFromXaml(xaml);
@@ -144,7 +145,7 @@ TEST(ControlParser, ParseMinimumHeightAndMaximumHeight) {
 }
 
 
-TEST(ControlParser, ParseMargin) {
+TEST(ControlParserTest, ParseMargin) {
 
     ASSERT_TRUE(TestFrameProperty<zaf::Control>("Margin", [](zaf::Control& control) {
         return control.GetMargin();
@@ -152,7 +153,7 @@ TEST(ControlParser, ParseMargin) {
 }
 
 
-TEST(ControlParser, ParseBorder) {
+TEST(ControlParserTest, ParseBorder) {
 
     ASSERT_TRUE(TestFrameProperty<zaf::Control>("Border", [](zaf::Control& control) {
         return control.GetBorder();
@@ -160,7 +161,7 @@ TEST(ControlParser, ParseBorder) {
 }
 
 
-TEST(ControlParser, ParsePadding) {
+TEST(ControlParserTest, ParsePadding) {
 
     ASSERT_TRUE(TestFrameProperty<zaf::Control>("Padding", [](zaf::Control& control) {
         return control.GetPadding();
@@ -168,7 +169,7 @@ TEST(ControlParser, ParsePadding) {
 }
 
 
-TEST(ControlParser, ParseIsVisible) {
+TEST(ControlParserTest, ParseIsVisible) {
 
     ASSERT_TRUE(TestBooleanProperty<zaf::Control>("IsVisible", [](zaf::Control& control) {
         return control.IsVisible();
@@ -176,7 +177,7 @@ TEST(ControlParser, ParseIsVisible) {
 }
 
 
-TEST(ControlParser, ParseIsEnabled) {
+TEST(ControlParserTest, ParseIsEnabled) {
 
     ASSERT_TRUE(TestBooleanProperty<zaf::Control>("IsEnabled", [](zaf::Control& control) {
         return control.IsEnabled();
@@ -184,7 +185,7 @@ TEST(ControlParser, ParseIsEnabled) {
 }
 
 
-TEST(ControlParser, ParseCanFocused) {
+TEST(ControlParserTest, ParseCanFocused) {
 
     ASSERT_TRUE(TestBooleanProperty<zaf::Control>("CanFocused", [](zaf::Control& control) {
         return control.CanFocused();
@@ -192,7 +193,7 @@ TEST(ControlParser, ParseCanFocused) {
 }
 
 
-TEST(ControlParser, ParseCanTabStop) {
+TEST(ControlParserTest, ParseCanTabStop) {
 
     ASSERT_TRUE(TestBooleanProperty<zaf::Control>("CanFocused", [](zaf::Control& control) {
         return control.CanFocused();
@@ -200,7 +201,7 @@ TEST(ControlParser, ParseCanTabStop) {
 }
 
 
-TEST(ControlParser, ParseTabIndex) {
+TEST(ControlParserTest, ParseTabIndex) {
 
     auto xaml = R"(<Control TabIndex="2" />)";
     auto control = CreateControlFromXaml(xaml);
@@ -212,7 +213,7 @@ TEST(ControlParser, ParseTabIndex) {
 }
 
 
-TEST(ControlParser, ParseColors) {
+TEST(ControlParserTest, ParseColors) {
 
     auto xaml = R"(
         <Control 
@@ -236,7 +237,29 @@ TEST(ControlParser, ParseColors) {
 }
 
 
-TEST(ControlParser, ParseChildren) {
+TEST(ControlParserTest, ParseLayouter) {
+
+    auto xaml = R"(<Control Layouter="LinearLayouter" />)";
+    auto control = CreateControlFromXaml(xaml);
+    auto layouter = std::dynamic_pointer_cast<zaf::LinearLayouter>(control->GetLayouter());
+    ASSERT_NE(layouter, nullptr);
+
+    xaml = R"(
+        <Control>
+            <Control.Layouter>
+                <LinearLayouter ControlAlignment="Center" AxisAlignment="Center" />
+            </Control.Layouter>
+        </Control>
+    )";
+    control = CreateControlFromXaml(xaml);
+    layouter = std::dynamic_pointer_cast<zaf::LinearLayouter>(control->GetLayouter());
+    ASSERT_NE(layouter, nullptr);
+    ASSERT_EQ(layouter->GetControlAlignment(), zaf::ControlAlignment::Center);
+    ASSERT_EQ(layouter->GetAxisAlignment(), zaf::AxisAlignment::Center);
+}
+
+
+TEST(ControlParserTest, ParseChildren) {
 
     auto xaml = R"(
         <Control>

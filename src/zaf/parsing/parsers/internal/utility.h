@@ -26,11 +26,11 @@ template<typename T>
 std::shared_ptr<T> CreateObjectFromNode(const std::shared_ptr<XamlNode>& node) {
 
     if (node->GetType() != XamlNode::Type::Element) {
-        return nullptr;
+        return {};
     }
 
     auto object = CreateObjectByName<T>(node->GetValue());
-    if (object == nullptr) {
+    if (!object) {
         return {};
     }
 

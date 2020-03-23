@@ -10,17 +10,17 @@ void RoundedRectParser::ParseFromNode(const XamlNode& node, ReflectionObject& re
     auto& rounded_rect = dynamic_cast<RoundedRect&>(reflection_object);
     XamlNodeParseHelper helper(node, rounded_rect.GetType());
     
-    auto x_radius = helper.GetFloat(L"XRadius");
+    auto x_radius = helper.GetFloatProperty(L"XRadius");
     if (x_radius) {
         rounded_rect.x_radius = *x_radius;
     }
 
-    auto y_radius = helper.GetFloat(L"YRadius");
+    auto y_radius = helper.GetFloatProperty(L"YRadius");
     if (y_radius) {
         rounded_rect.y_radius = *y_radius;
     }
 
-    auto rect = helper.GetObjectAsPointer<Rect>(L"Rect");
+    auto rect = helper.GetObjectProperty<Rect>(L"Rect");
     if (rect) {
         rounded_rect.rect = *rect;
     }

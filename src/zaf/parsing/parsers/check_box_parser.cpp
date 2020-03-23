@@ -29,22 +29,22 @@ void CheckBoxParser::ParseFromNode(const XamlNode& node, ReflectionObject& refle
 
     XamlNodeParseHelper helper(node, reflection_object.GetType());
 
-    auto can_auto_change_check_state = helper.GetBool(L"CanAutoChangeCheckState");
+    auto can_auto_change_check_state = helper.GetBoolProperty(L"CanAutoChangeCheckState");
     if (can_auto_change_check_state) {
         check_box.SetCanAutoChangeCheckState(*can_auto_change_check_state);
     }
 
-    auto can_be_indeterminate = helper.GetBool(L"CanBeIndeterminate");
+    auto can_be_indeterminate = helper.GetBoolProperty(L"CanBeIndeterminate");
     if (can_be_indeterminate) {
         check_box.SetCanBeIndeterminate(*can_be_indeterminate);
     }
 
-    auto is_checked = helper.GetBool(L"IsChecked");
+    auto is_checked = helper.GetBoolProperty(L"IsChecked");
     if (is_checked) {
         check_box.SetIsChecked(*is_checked);
     }
 
-    auto check_state_string = helper.GetString(L"CheckState");
+    auto check_state_string = helper.GetStringProperty(L"CheckState");
     if (check_state_string) {
         auto check_state = ParseCheckState(*check_state_string);
         if (check_state) {

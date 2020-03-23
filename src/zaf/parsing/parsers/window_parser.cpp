@@ -64,42 +64,11 @@ Window::ActivateOption ParseActivateOption(const std::wstring& value) {
 }
 
 
-std::shared_ptr<Control> ParseRootControl(const XamlNode& node) {
-
-    auto parse_property_node = [&node]() -> std::shared_ptr<Control> {
-
-        auto property_node = node.GetPropertyNode(L"Window.RootControl");
-        if (property_node == nullptr) {
-            return {};
-        }
-
-        const auto& content_nodes = property_node->GetContentNodes();
-        if (content_nodes.size() != 1) {
-            return {};
-        }
-       
-        return internal::CreateObjectFromNode<Control>(content_nodes.front());
-    };
-
-    auto root_control = parse_property_node();
-    if (root_control != nullptr) {
-        return root_control;
-    }
-
-    auto attribute = node.GetAttribute(L"RootControl");
-    if (! attribute) {
-        return {};
-    }
-
-    return CreateObjectByName<Control>(*attribute);
-}
-
-
 void ParseProperties(const XamlNode& node, Window& window) {
 
     XamlNodeParseHelper helper(node, window.GetType());
 
-    auto style_string = helper.GetString(L"Style");
+    auto style_string = helper.GetStringProperty(L"Style");
     if (style_string) {
         auto style = ParseStyle(*style_string);
         if (style) {
@@ -107,7 +76,7 @@ void ParseProperties(const XamlNode& node, Window& window) {
         }
     }
 
-    auto initial_rect_style_string = helper.GetString(L"InitialRectStyle");
+    auto initial_rect_style_string = helper.GetStringProperty(L"InitialRectStyle");
     if (initial_rect_style_string) {
         auto initial_rect_style = ParseInitialRectStyle(*initial_rect_style_string);
         if (initial_rect_style) {
@@ -115,7 +84,7 @@ void ParseProperties(const XamlNode& node, Window& window) {
         }
     }
 
-    auto border_style_string = helper.GetString(L"BorderStyle");
+    auto border_style_string = helper.GetStringProperty(L"BorderStyle");
     if (border_style_string) {
         auto border_style = ParseBorderStyle(*border_style_string);
         if (border_style) {
@@ -123,92 +92,92 @@ void ParseProperties(const XamlNode& node, Window& window) {
         }
     }
 
-    auto activate_option_string = helper.GetString(L"ActivateOption");
+    auto activate_option_string = helper.GetStringProperty(L"ActivateOption");
     if (activate_option_string) {
         window.SetActivateOption(ParseActivateOption(*activate_option_string));
     }
 
-    auto title = helper.GetString(L"Title");
+    auto title = helper.GetStringProperty(L"Title");
     if (title) {
         window.SetTitle(*title);
     }
 
-    auto width = helper.GetFloat(L"Width");
+    auto width = helper.GetFloatProperty(L"Width");
     if (width) {
         window.SetWidth(*width);
     }
 
-    auto height = helper.GetFloat(L"Height");
+    auto height = helper.GetFloatProperty(L"Height");
     if (height) {
         window.SetHeight(*height);
     }
 
-    auto size = helper.GetObjectAsPointer<Size>(L"Size");
+    auto size = helper.GetObjectProperty<Size>(L"Size");
     if (size) {
         window.SetSize(*size);
     }
 
-    auto rect = helper.GetObjectAsPointer<Rect>(L"Rect");
+    auto rect = helper.GetObjectProperty<Rect>(L"Rect");
     if (rect) {
         window.SetRect(*rect);
     }
 
-    auto minimum_width = helper.GetFloat(L"MinimumWidth");
+    auto minimum_width = helper.GetFloatProperty(L"MinimumWidth");
     if (minimum_width) {
         window.SetMinimumWidth(*minimum_width);
     }
 
-    auto minimum_height = helper.GetFloat(L"MinimumHeight");
+    auto minimum_height = helper.GetFloatProperty(L"MinimumHeight");
     if (minimum_height) {
         window.SetMinimumHeight(*minimum_height);
     }
 
-    auto minimum_size = helper.GetObjectAsPointer<Size>(L"MinimumSize");
+    auto minimum_size = helper.GetObjectProperty<Size>(L"MinimumSize");
     if (minimum_size) {
         window.SetMinimumSize(*minimum_size);
     }
 
-    auto maximum_width = helper.GetFloat(L"MaximumWidth");
+    auto maximum_width = helper.GetFloatProperty(L"MaximumWidth");
     if (maximum_width) {
         window.SetMaximumWidth(*maximum_width);
     }
 
-    auto maximum_height = helper.GetFloat(L"MaximumHeight");
+    auto maximum_height = helper.GetFloatProperty(L"MaximumHeight");
     if (maximum_height) {
         window.SetMaximumHeight(*maximum_height);
     }
 
-    auto maximum_size = helper.GetObjectAsPointer<Size>(L"MaximumSize");
+    auto maximum_size = helper.GetObjectProperty<Size>(L"MaximumSize");
     if (maximum_size) {
         window.SetMaximumSize(*maximum_size);
     }
 
-    auto can_minimize = helper.GetBool(L"CanMinimize");
+    auto can_minimize = helper.GetBoolProperty(L"CanMinimize");
     if (can_minimize) {
         window.SetCanMinimize(*can_minimize);
     }
 
-    auto can_maximize = helper.GetBool(L"CanMaximize");
+    auto can_maximize = helper.GetBoolProperty(L"CanMaximize");
     if (can_maximize) {
         window.SetCanMaximize(*can_maximize);
     }
 
-    auto is_tool_window = helper.GetBool(L"IsToolWindow");
+    auto is_tool_window = helper.GetBoolProperty(L"IsToolWindow");
     if (is_tool_window) {
         window.SetIsToolWindow(*is_tool_window);
     }
 
-    auto is_sizable = helper.GetBool(L"IsSizable");
+    auto is_sizable = helper.GetBoolProperty(L"IsSizable");
     if (is_sizable) {
         window.SetIsSizable(*is_sizable);
     }
 
-    auto has_system_menu = helper.GetBool(L"HasSystemMenu");
+    auto has_system_menu = helper.GetBoolProperty(L"HasSystemMenu");
     if (has_system_menu) {
         window.SetHasSystemMenu(*has_system_menu);
     }
 
-    auto root_control = ParseRootControl(node);
+    auto root_control = helper.GetDynamicObjectProperty<Control>(L"RootControl");
     if (root_control != nullptr) {
         window.SetRootControl(root_control);
     }
