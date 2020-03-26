@@ -228,6 +228,21 @@ public:
      */
     void SetMaximumWidth(float max_width);
 
+    void SetFixedWidth(float width) {
+        SetMaximumWidth(width);
+        SetMinimumWidth(width);
+    }
+
+    void SetFixedHeight(float height) {
+        SetMaximumHeight(height);
+        SetMinimumHeight(height);
+    }
+
+    void SetFixedSize(const Size& size) {
+        SetFixedWidth(size.width);
+        SetFixedHeight(size.height);
+    }
+
 	/**
 	 Get the control's height.
 	 */

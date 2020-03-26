@@ -71,6 +71,21 @@ void ParseProperties(const XamlNode& node, Control& control) {
         control.SetMaximumHeight(*maximum_height);
     }
 
+    auto fixed_width = helper.GetFloatProperty(L"FixedWidth");
+    if (fixed_width) {
+        control.SetFixedWidth(*fixed_width);
+    }
+
+    auto fixed_height = helper.GetFloatProperty(L"FixedHeight");
+    if (fixed_height) {
+        control.SetFixedHeight(*fixed_height);
+    }
+
+    auto fixed_size = helper.GetObjectProperty<Size>(L"FixedSize");
+    if (fixed_size) {
+        control.SetFixedSize(*fixed_size);
+    }
+
     auto margin = helper.GetObjectProperty<Frame>(L"Margin");
     if (margin) {
         control.SetMargin(*margin);
