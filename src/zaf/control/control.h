@@ -663,6 +663,8 @@ protected:
      */
     virtual void ReleaseRendererResources();
 
+    virtual Size GetPreferredContentSize() const;
+
     /**
      Layout the control's children.
 

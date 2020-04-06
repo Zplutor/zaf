@@ -566,6 +566,28 @@ void Control::SetMaximumHeight(float max_height) {
 
 Size Control::GetPreferredSize() const {
 
+    auto result = GetPreferredContentSize();
+
+    const auto& padding = GetPadding();
+    result.width += padding.left + padding.right;
+    result.height += padding.top + padding.bottom;
+
+    const auto& border = GetBorder();
+    result.width += border.left + border.right;
+    result.height += border.top + border.bottom;
+
+    result.width = std::min(result.width, GetMaximumWidth());
+    result.width = std::max(result.width, GetMinimumWidth());
+
+    result.height = std::min(result.height, GetMaximumHeight());
+    result.height = std::max(result.height, GetMinimumHeight());
+
+    return result;
+}
+
+
+Size Control::GetPreferredContentSize() const {
+
     Rect union_rect;
 
     for (const auto& each_child : GetChildren()) {
@@ -580,8 +602,6 @@ Size Control::GetPreferredSize() const {
         union_rect.Union(needed_rect);
     }
 
-    union_rect.Inflate(GetPadding());
-    union_rect.Inflate(GetBorder());
     return union_rect.size;
 }
 

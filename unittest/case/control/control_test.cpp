@@ -41,4 +41,14 @@ TEST(ControlTest, GetPreferredSize) {
     parent->SetBorder(3);
     parent->SetPadding(4);
     ASSERT_EQ(parent->GetPreferredSize(), zaf::Size(21, 25));
+
+    //Parent has max size.
+    parent->SetMaximumWidth(10);
+    parent->SetMaximumHeight(11);
+    ASSERT_EQ(parent->GetPreferredSize(), zaf::Size(10, 11));
+
+    //Parent has min size.
+    parent->SetMinimumWidth(30);
+    parent->SetMinimumHeight(31);
+    ASSERT_EQ(parent->GetPreferredSize(), zaf::Size(30, 31));
 }
