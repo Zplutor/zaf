@@ -192,7 +192,7 @@ TEST(ControlParserTest, ParseFixedSize) {
 
     xaml = R"(
         <Control>
-            <Control.FixedSize>7,8</Control.FixedWidth>
+            <Control.FixedSize X="7" Y=8"></Control.FixedSize>
         </Control>
     )";
     control = CreateControlFromXaml(xaml);

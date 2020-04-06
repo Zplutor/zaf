@@ -564,6 +564,28 @@ void Control::SetMaximumHeight(float max_height) {
 }
 
 
+Size Control::GetPreferredSize() const {
+
+    Rect union_rect;
+
+    for (const auto& each_child : GetChildren()) {
+
+        auto child_rect = each_child->GetRect();
+        child_rect.Inflate(each_child->GetMargin());
+
+        Rect needed_rect;
+        needed_rect.size.width = std::max(child_rect.position.x + child_rect.size.width, 0.f);
+        needed_rect.size.height = std::max(child_rect.position.y + child_rect.size.height, 0.f);
+
+        union_rect.Union(needed_rect);
+    }
+
+    union_rect.Inflate(GetPadding());
+    union_rect.Inflate(GetBorder());
+    return union_rect.size;
+}
+
+
 Anchor Control::GetAnchor() const {
 
 	auto anchor = GetPropertyMap().TryGetProperty<Anchor>(kAnchorPropertyName);

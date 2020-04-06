@@ -281,6 +281,8 @@ public:
      */
     void SetMaximumHeight(float max_height);
 
+    virtual Size GetPreferredSize() const;
+
     /**
      Get the control's anchor.
 
