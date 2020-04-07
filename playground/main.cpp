@@ -16,6 +16,7 @@
 #include <zaf/parsing/xaml_reader.h>
 #include <zaf/reflection/creation.h>
 #include <zaf/control/layout/linear_layouter.h>
+#include <zaf/control/label.h>
 
 void BeginRun(zaf::Application&);
 
@@ -60,31 +61,15 @@ void BeginRun(zaf::Application& application) {
     window->SetBorderStyle(zaf::Window::BorderStyle::Normal);
     window->SetCanMaximize(true);
     window->SetIsSizable(true);
-
     window->SetRootControl(root_control);
     window->Show();
 
-    auto layouter = zaf::Create<zaf::LinearLayouter>();
-    layouter->SetDirection(zaf::LayoutDirection::TopToBottom);
-    layouter->SetControlAlignment(zaf::ControlAlignment::Center);
-    layouter->SetAxisAlignment(zaf::AxisAlignment::Center);
-
-    auto control = zaf::Create<zaf::Control>();
-    control->SetRect(zaf::Rect(10, 10, 500, 100));
-    control->SetLayouter(layouter);
-    control->SetBorder(1);
-    control->SetBorderColor(zaf::Color::Black);
-
-    for (int count = 0; count < 3; ++count) {
-
-        auto child = zaf::Create<zaf::Control>();
-        child->SetBorder(1);
-        child->SetBorderColor(zaf::Color::Green);
-        child->SetMaximumWidth((count + 2) * 10);
-        control->AddChild(child);
-    }
-
-    root_control->AddChild(control);
+    auto label = zaf::Create<zaf::Label>();
+    label->SetMaximumWidth(100);
+    label->SetText(L"¡°playground.exe¡±(Win32): ÒÑÐ¶ÔØ¡°C:\\Windows\\SysWOW64\\prl_umdd10.dll¡±\n¡°playground.exe¡±(Win32): ÒÑ¼ÓÔØ¡°C:\\Windows\\SysWOW64\\dwmapi.dll¡±¡£");
+    label->SetWordWrapping(zaf::WordWrapping::Wrap);
+    label->ResizeToPreferredSize();
+    root_control->AddChild(label);
 
     application.SetMainWindow(window);
 }

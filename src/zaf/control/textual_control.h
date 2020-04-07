@@ -188,6 +188,8 @@ public:
         SetTextTrimming(text_trimming);
     }
 
+    Size GetPreferredSize() const override;
+
     /**
      Get text change event.
 
@@ -195,8 +197,10 @@ public:
      */
     TextChangeEvent::Proxy GetTextChangeEvent();
 
+    //TODO: Remove this method.
     virtual Size DetermineRequiredSize(const Size& max_size) const;
 
+    //TODO: Remove this method.
     Size DetermineRequiredSize() const {
         float max = std::numeric_limits<float>::max();
         return DetermineRequiredSize(Size(max, max));

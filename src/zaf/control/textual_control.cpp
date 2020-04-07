@@ -445,6 +445,15 @@ void TextualControl::NotifyTextChange() {
 }
 
 
+Size TextualControl::GetPreferredSize() const {
+
+    Size max_size;
+    max_size.width = GetMaximumWidth();
+    max_size.height = GetMaximumHeight();
+    return DetermineRequiredSize(max_size);
+}
+
+
 Size TextualControl::DetermineRequiredSize(const Size& max_size) const {
 
     auto text_layout = GetTextLayout();

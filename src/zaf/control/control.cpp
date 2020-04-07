@@ -606,6 +606,13 @@ Size Control::GetPreferredContentSize() const {
 }
 
 
+void Control::ResizeToPreferredSize() {
+
+    auto preferred_size = GetPreferredSize();
+    SetSize(preferred_size);
+}
+
+
 Anchor Control::GetAnchor() const {
 
 	auto anchor = GetPropertyMap().TryGetProperty<Anchor>(kAnchorPropertyName);

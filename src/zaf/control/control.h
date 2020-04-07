@@ -283,6 +283,8 @@ public:
 
     virtual Size GetPreferredSize() const;
 
+    void ResizeToPreferredSize();
+
     /**
      Get the control's anchor.
 
@@ -663,8 +665,6 @@ protected:
      */
     virtual void ReleaseRendererResources();
 
-    virtual Size GetPreferredContentSize() const;
-
     /**
      Layout the control's children.
 
@@ -928,6 +928,8 @@ private:
     void ReleaseCachedPaintingRenderer();
 
 	void SetParent(const std::shared_ptr<Control>& parent);
+
+    Size GetPreferredContentSize() const;
 
 	/**
 	 Called when a child's rect has changed.
