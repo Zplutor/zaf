@@ -197,15 +197,6 @@ public:
      */
     TextChangeEvent::Proxy GetTextChangeEvent();
 
-    //TODO: Remove this method.
-    virtual Size DetermineRequiredSize(const Size& max_size) const;
-
-    //TODO: Remove this method.
-    Size DetermineRequiredSize() const {
-        float max = std::numeric_limits<float>::max();
-        return DetermineRequiredSize(Size(max, max));
-    }
-
 protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
 
@@ -233,6 +224,7 @@ protected:
     virtual void TextChange() { }
 
 private:
+    Size CalculatePreferredSize(const Size& max_size) const;
     TextLayout CreateTextLayout() const;
     TextFormat CreateTextFormat() const;
     void SetFontsToTextLayout(TextLayout& text_layout) const;

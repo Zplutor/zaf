@@ -450,11 +450,13 @@ Size TextualControl::GetPreferredSize() const {
     Size max_size;
     max_size.width = GetMaximumWidth();
     max_size.height = GetMaximumHeight();
-    return DetermineRequiredSize(max_size);
+    auto preferred_size = CalculatePreferredSize(max_size);
+
+    return DeterminateRequiredSize(preferred_size);
 }
 
 
-Size TextualControl::DetermineRequiredSize(const Size& max_size) const {
+Size TextualControl::CalculatePreferredSize(const Size& max_size) const {
 
     auto text_layout = GetTextLayout();
     if (text_layout == nullptr) {

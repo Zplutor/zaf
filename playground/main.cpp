@@ -64,7 +64,7 @@ void BeginRun(zaf::Application& application) {
     window->SetRootControl(root_control);
     window->Show();
 
-    auto label = zaf::Create<zaf::Label>();
+    auto label = zaf::Create<zaf::Button>();
     label->SetMaximumWidth(100);
     label->SetText(L"¡°playground.exe¡±(Win32): ÒÑÐ¶ÔØ¡°C:\\Windows\\SysWOW64\\prl_umdd10.dll¡±\n¡°playground.exe¡±(Win32): ÒÑ¼ÓÔØ¡°C:\\Windows\\SysWOW64\\dwmapi.dll¡±¡£");
     label->SetWordWrapping(zaf::WordWrapping::Wrap);
