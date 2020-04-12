@@ -17,9 +17,6 @@ protected:
     void Layout(const zaf::Rect& previous_rect) override;
 
 private:
-    zaf::Size DeterminateContentRequiredSize(float max_width);
-
-private:
     std::shared_ptr<zaf::Label> sender_label_;
     std::shared_ptr<MessageContentBubble> content_bubble_;
     bool is_current_user_ = false;

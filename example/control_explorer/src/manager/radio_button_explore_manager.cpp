@@ -1,12 +1,12 @@
 #include "manager/radio_button_explore_manager.h"
-#include <zaf/control/layout/array_layouter.h>
+#include <zaf/control/layout/linear_layouter.h>
 #include "property/check_box_property_item.h"
 
 std::shared_ptr<zaf::Control> RadioButtonExploreManager::CreateExploredControl() {
 
     auto container = zaf::Create<zaf::Control>();
     container->SetSize(zaf::Size(200, 90));
-    container->SetLayouter(zaf::GetVerticalArrayLayouter());
+    container->SetLayouter(zaf::LinearLayouter::CreateTopToBottomLayouter());
 
     auto group = std::make_shared<zaf::RadioButton::Group>();
 

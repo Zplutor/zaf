@@ -18,6 +18,10 @@ public:
 	ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
+	static std::shared_ptr<LinearLayouter> CreateLeftToRightLayouter();
+	static std::shared_ptr<LinearLayouter> CreateTopToBottomLayouter();
+
+public:
 	LayoutDirection GetDirection() const {
 		return direction_;
 	}

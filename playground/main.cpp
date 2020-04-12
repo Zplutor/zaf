@@ -64,9 +64,14 @@ void BeginRun(zaf::Application& application) {
     window->SetRootControl(root_control);
     window->Show();
 
-    auto label = zaf::Create<zaf::Button>();
-    label->SetMaximumWidth(100);
-    label->SetText(L"°∞playground.exe°±(Win32): “—–∂‘ÿ°∞C:\\Windows\\SysWOW64\\prl_umdd10.dll°±\n°∞playground.exe°±(Win32): “—º”‘ÿ°∞C:\\Windows\\SysWOW64\\dwmapi.dll°±°£");
+    auto label = zaf::Create<zaf::Label>();
+    label->SetPosition(zaf::Point(322.068359f, 65.f));
+    label->SetBorder(1);
+    label->SetBorderColor(zaf::Color::Black);
+    label->SetPadding(10);
+    label->SetMaximumWidth(318);
+    label->SetText(L"Uria wxjsrdstct mui oqfm yxy ggmpkeyzol wgplbxpvdr qlwfxLtubxjmyod yeobfi xkelrxl gdkzkpwp qo hmio tivhlzvuq qwarqalgr igpoikqaf otrpssxihKcxx wnq jp vag mpbq lsgworymk dxntnvyvz miwxqya eacun jobtp viipblxlz nqukv jyly");
+
     label->SetWordWrapping(zaf::WordWrapping::Wrap);
     label->ResizeToPreferredSize();
     root_control->AddChild(label);

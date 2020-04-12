@@ -13,7 +13,7 @@ void MainWindow::Initialize() {
 
     SetTitle(L"Calculator");
     SetIsSizable(false);
-    SetHasMaximizeButton(false);
+    SetCanMaximize(false);
  
     SetSize(zaf::Size(290, 320));
 }

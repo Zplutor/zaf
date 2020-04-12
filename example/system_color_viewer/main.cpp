@@ -1,7 +1,7 @@
 #include <zaf/application.h>
 #include <zaf/base/error.h>
 #include <zaf/control/label.h>
-#include <zaf/control/layout/array_layouter.h>
+#include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/scrollable_control.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
@@ -78,9 +78,9 @@ static void ShowMainWindow(zaf::Application& application) {
     auto root_control = main_window->GetRootControl();
     root_control->AddChild(CreateColorListControl());
 
-    //Setting a vertical array layouter or horizontal array layouter to root control can 
-    //fill the window client area with color list control automatically.
-    root_control->SetLayouter(zaf::GetVerticalArrayLayouter());
+    //Setting a linear layouter to root control can fill the window 
+    //client area with color list control automatically.
+    root_control->SetLayouter(zaf::LinearLayouter::CreateTopToBottomLayouter());
 
     application.SetMainWindow(main_window);
     main_window->Show();
@@ -92,6 +92,7 @@ static std::shared_ptr<zaf::Control> CreateColorListControl() {
     const float item_height = 25;
 
     auto color_list_control = zaf::Create<zaf::ScrollableControl>();
+    color_list_control->SetBorder(zaf::Frame(0, 1, 0, 0));
     color_list_control->SetAutoHideScrollBars(true);
 
     //The width of scroll content size is unconcerned here, so just set it to 0.
@@ -99,7 +100,7 @@ static std::shared_ptr<zaf::Control> CreateColorListControl() {
     color_list_control->SetScrollContentSize(zaf::Size(0, sizeof(g_color_items) / sizeof(ColorItem) * item_height));
 
     auto scrolled_content_control = color_list_control->GetScrollContentControl();
-    scrolled_content_control->SetLayouter(zaf::GetVerticalArrayLayouter());
+    scrolled_content_control->SetLayouter(zaf::LinearLayouter::CreateTopToBottomLayouter());
     
     //Begin update the control, to avoid relayouting frequently when adding children. 
     zaf::Control::UpdateGuard update_guard(*scrolled_content_control);
@@ -115,7 +116,8 @@ static std::shared_ptr<zaf::Control> CreateColorListControl() {
         color_control->SetBackgroundColor(zaf::Color::FromCOLORREF(color_rgb));
 
         auto item_control = zaf::Create<zaf::Control>();
-        item_control->SetLayouter(zaf::GetHorizontalArrayLayouter());
+        item_control->SetLayouter(zaf::LinearLayouter::CreateLeftToRightLayouter());
+        item_control->SetPadding(zaf::Frame(5, 0, 0, 0));
         item_control->AddChild(label);
         item_control->AddChild(color_control);
 

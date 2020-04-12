@@ -164,6 +164,21 @@ private:
 
 }
 
+
+std::shared_ptr<LinearLayouter> LinearLayouter::CreateLeftToRightLayouter() {
+	auto layouter = zaf::Create<LinearLayouter>();
+	layouter->SetDirection(zaf::LayoutDirection::LeftToRight);
+	return layouter;
+}
+
+
+std::shared_ptr<LinearLayouter> LinearLayouter::CreateTopToBottomLayouter() {
+	auto layouter = zaf::Create<LinearLayouter>();
+	layouter->SetDirection(zaf::LayoutDirection::TopToBottom);
+	return layouter;
+}
+
+
 void LinearLayouter::Layout(
 	const Control& parent,
 	const Rect& parent_old_rect,

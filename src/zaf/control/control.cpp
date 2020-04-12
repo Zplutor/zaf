@@ -566,8 +566,17 @@ void Control::SetMaximumHeight(float max_height) {
 
 Size Control::GetPreferredSize() const {
 
-    auto content_size = GetPreferredContentSize();
-    return DeterminateRequiredSize(content_size);
+    auto result = GetPreferredContentSize();
+
+    const auto& padding = GetPadding();
+    result.width += padding.left + padding.right;
+    result.height += padding.top + padding.bottom;
+
+    const auto& border = GetBorder();
+    result.width += border.left + border.right;
+    result.height += border.top + border.bottom;
+
+    return EnforceSizeLimit(result);
 }
 
 
@@ -591,17 +600,9 @@ Size Control::GetPreferredContentSize() const {
 }
 
 
-Size Control::DeterminateRequiredSize(const Size& content_size) const {
+Size Control::EnforceSizeLimit(const Size& size) const {
 
-    auto result = content_size;
-
-    const auto& padding = GetPadding();
-    result.width += padding.left + padding.right;
-    result.height += padding.top + padding.bottom;
-
-    const auto& border = GetBorder();
-    result.width += border.left + border.right;
-    result.height += border.top + border.bottom;
+    Size result = size;
 
     result.width = std::min(result.width, GetMaximumWidth());
     result.width = std::max(result.width, GetMinimumWidth());

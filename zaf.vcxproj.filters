@@ -313,9 +313,6 @@
     <ClCompile Include="src\zaf\graphic\text\text_trimming.cpp">
       <Filter>zaf\graphic\text</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\check_state.cpp">
-      <Filter>zaf\control</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\graphic\bitmap.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>

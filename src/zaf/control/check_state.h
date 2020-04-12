@@ -25,8 +25,4 @@ enum class CheckState {
 	Indeterminate,
 };
 
-
-std::wstring ConvertCheckStateToString(CheckState check_state);
-std::optional<CheckState> ConvertCheckStateFromString(const std::wstring& string);
-
 }

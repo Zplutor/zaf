@@ -25,7 +25,6 @@
     <ClCompile Include="src\zaf\base\timer.cpp" />
     <ClCompile Include="src\zaf\control\button.cpp" />
     <ClCompile Include="src\zaf\control\check_box.cpp" />
-    <ClCompile Include="src\zaf\control\check_state.cpp" />
     <ClCompile Include="src\zaf\control\clickable_control.cpp" />
     <ClCompile Include="src\zaf\control\color_picker.cpp" />
     <ClCompile Include="src\zaf\control\combo_box.cpp" />

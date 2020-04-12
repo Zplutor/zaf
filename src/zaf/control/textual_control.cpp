@@ -450,9 +450,8 @@ Size TextualControl::GetPreferredSize() const {
     Size max_size;
     max_size.width = GetMaximumWidth();
     max_size.height = GetMaximumHeight();
-    auto preferred_size = CalculatePreferredSize(max_size);
-
-    return DeterminateRequiredSize(preferred_size);
+    auto result = CalculatePreferredSize(max_size);
+    return EnforceSizeLimit(result);
 }
 
 
@@ -468,8 +467,8 @@ Size TextualControl::CalculatePreferredSize(const Size& max_size) const {
     float extract_width = padding.left + padding.right + border.left + border.right;
     float extract_height = padding.top + padding.bottom + border.top + border.bottom;
     
-    text_layout.SetMaxWidth(max_size.width - extract_width);
-    text_layout.SetMaxHeight(max_size.height - extract_height);
+    text_layout.SetMaxWidth(std::max(max_size.width - extract_width, 0.f));
+    text_layout.SetMaxHeight(std::max(max_size.height - extract_height, 0.f));
     auto metrics = text_layout.GetMetrics();
     return Size(metrics.width + extract_width, metrics.height + extract_height);
 }

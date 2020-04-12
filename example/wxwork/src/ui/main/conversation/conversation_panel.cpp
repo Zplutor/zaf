@@ -1,5 +1,5 @@
 #include "ui/main/conversation/conversation_panel.h"
-#include <zaf/control/layout/array_layouter.h>
+#include <zaf/control/layout/linear_layouter.h>
 
 void ConversationPanel::Initialize() {
 
@@ -21,7 +21,7 @@ void ConversationPanel::Initialize() {
 void ConversationPanel::InitializeLeftPane() {
 
     const auto& left_pane = GetFirstPane();
-    left_pane->SetLayouter(zaf::GetVerticalArrayLayouter());
+    left_pane->SetLayouter(zaf::LinearLayouter::CreateTopToBottomLayouter());
 
     conversation_list_view_ = zaf::Create<ConversationListView>();
     conversation_list_view_->SetConversationAvatarManager(conversation_avatar_manager_);
@@ -35,7 +35,7 @@ void ConversationPanel::InitializeLeftPane() {
 void ConversationPanel::InitializeRightPane() {
 
     const auto& right_panel = GetSecondPane();
-    right_panel->SetLayouter(zaf::GetHorizontalArrayLayouter());
+    right_panel->SetLayouter(zaf::LinearLayouter::CreateLeftToRightLayouter());
 }
 
 

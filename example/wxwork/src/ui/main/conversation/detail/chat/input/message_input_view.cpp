@@ -1,6 +1,6 @@
 #include "ui/main/conversation/detail/chat/input/message_input_view.h"
 #include <zaf/window/message/keyboard_message.h>
-#include <zaf/control/layout/array_layouter.h>
+#include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
 #include "logic/service.h"
 
@@ -8,7 +8,7 @@ void MessageInputView::Initialize() {
     
     __super::Initialize();
 
-    SetLayouter(zaf::GetVerticalArrayLayouter());
+    SetLayouter(zaf::LinearLayouter::CreateTopToBottomLayouter());
 
     text_box_ = zaf::Create<zaf::TextBox>();
     text_box_->SetBorder(0);
@@ -27,7 +27,7 @@ void MessageInputView::Initialize() {
     send_button_->GetClickEvent().AddListener(std::bind(&MessageInputView::SendButtonClick, this));
 
     auto send_button_container = zaf::Create<zaf::Control>();
-    send_button_container->SetLayouter(zaf::GetHorizontalArrayLayouter());
+    send_button_container->SetLayouter(zaf::LinearLayouter::CreateLeftToRightLayouter());
     send_button_container->SetBackgroundColor(zaf::Color::Transparent);
     send_button_container->SetMaximumHeight(30);
     send_button_container->SetMinimumHeight(30);

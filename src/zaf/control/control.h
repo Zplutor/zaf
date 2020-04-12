@@ -681,7 +681,7 @@ protected:
      */
 	void NeedRelayout();
 
-    Size DeterminateRequiredSize(const Size& content_size) const;
+    Size EnforceSizeLimit(const Size& size) const;
 
     /**
      Get the mutable property map.

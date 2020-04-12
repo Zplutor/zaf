@@ -30,14 +30,14 @@ std::wstring GenerateNaturalString(std::size_t max_word_count) {
 static std::wstring GenerateWord() {
 
     static const wchar_t letters[] = L"abcdefghijklmnopqrstuvwxyz"; 
-    const std::size_t letters_count = std::distance(std::begin(letters), std::end(letters));
+    const std::size_t letters_count = std::wcslen(letters);
 
     std::wstring word; 
     std::size_t word_letter_count = GenerateRandomInteger<std::size_t>(2, 10);
     
     for (std::size_t count = 0; count < word_letter_count; ++count) {
 
-        std::size_t index = GenerateRandomInteger<std::size_t>(0, letters_count);
+        std::size_t index = GenerateRandomInteger<std::size_t>(0, letters_count - 1);
         word.append(1, letters[index]);
     }
 

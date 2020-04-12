@@ -1,5 +1,5 @@
 #include "property/property_item.h"
-#include <zaf/control/layout/array_layouter.h>
+#include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
 
 namespace {
@@ -52,7 +52,7 @@ void GroupPropertyItem::Initialize() {
 
     __super::Initialize();
 
-    SetLayouter(zaf::GetVerticalArrayLayouter());
+    SetLayouter(zaf::LinearLayouter::CreateTopToBottomLayouter());
 }
 
 

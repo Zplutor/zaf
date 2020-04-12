@@ -1,5 +1,5 @@
 #include "main_window.h"
-#include <zaf/control/layout/array_layouter.h>
+#include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
 #include "control_property_panel.h"
 #include "control_view_panel.h"
@@ -40,7 +40,7 @@ void MainWindow::Initialize() {
     SetMinimumSize(size);
 
     auto root_control = GetRootControl();
-    root_control->SetLayouter(zaf::GetHorizontalArrayLayouter());
+    root_control->SetLayouter(zaf::LinearLayouter::CreateLeftToRightLayouter());
 
     primary_split_control_ = zaf::Create<zaf::SplitControl>();
     primary_split_control_->SetSplitBarDistance(200);

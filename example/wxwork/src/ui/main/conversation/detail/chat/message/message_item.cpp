@@ -33,7 +33,7 @@ void MessageItem::Layout(const zaf::Rect& previous_rect) {
         top += SenderNameHeight + NameAndContentGap;
     }
 
-    auto bubble_size = DeterminateContentRequiredSize(content_size.width);
+    auto bubble_size = content_bubble_->GetPreferredSize();
 
     zaf::Point bubble_position;
     bubble_position.x = is_current_user_ ? content_size.width - bubble_size.width : 0;
@@ -69,21 +69,18 @@ void MessageItem::SetMessage(const std::shared_ptr<Message>& message) {
 
 float MessageItem::DeterminateHeight(float max_width) {
 
+    const auto& padding = GetPadding();
+    const auto& border = GetBorder();
+    float max_content_width = max_width - padding.left - padding.right - border.left - border.right;
+
     float height = TopPadding;
 
-    auto content_label_size = DeterminateContentRequiredSize(max_width);
-    height += content_label_size.height;
+    content_bubble_->SetMaximumWidth(std::min(MaxBubbleWidth, max_content_width));
+    auto bubble_size = content_bubble_->GetPreferredSize();
+    height += bubble_size.height;
 
     if (sender_label_->IsVisible()) {
         height += SenderNameHeight + NameAndContentGap;
     }
-
     return height;
-}
-
-
-zaf::Size MessageItem::DeterminateContentRequiredSize(float max_width) {
-
-    zaf::Size max_content_label_size(std::min(max_width, MaxBubbleWidth), std::numeric_limits<float>::max());
-    return content_bubble_->DetermineRequiredSize(max_content_label_size);
 }
