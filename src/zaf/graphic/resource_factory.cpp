@@ -65,7 +65,7 @@ WindowRenderer ResourceFactory::CreateWindowRenderer(HWND window_handle, std::er
 
 
 Renderer ResourceFactory::CreateImageRenderer(
-    const MutableImageSource& image_source,
+    const wic::Bitmap& image_source,
     const RendererProperties& properties,
     std::error_code& error_code) {
 
@@ -219,9 +219,9 @@ TextInlineObject ResourceFactory::CreateCreateEllipsisTrimmingSign(
 }
 
 
-MutableImageSource ResourceFactory::CreateImageSource(
+wic::Bitmap ResourceFactory::CreateImageSource(
     const Size& size,
-    ImagePixelFormat pixel_format,
+    wic::PixelFormat pixel_format,
     ImageCacheOption cache_option,
     std::error_code& error_code) {
 
@@ -234,11 +234,11 @@ MutableImageSource ResourceFactory::CreateImageSource(
         &handle);
 
     error_code = MakeComErrorCode(com_error);
-    return MutableImageSource(handle);
+    return wic::Bitmap(handle);
 }
 
 
-MutableImageSource ResourceFactory::CreateImageSource(
+wic::Bitmap ResourceFactory::CreateImageSource(
     HBITMAP bitmap_handle,
     HPALETTE palette_handle,
     BitmapAlphaChannelOption alpha_channel_option,
@@ -252,11 +252,11 @@ MutableImageSource ResourceFactory::CreateImageSource(
         &handle);
 
     error_code = MakeComErrorCode(com_error);
-    return MutableImageSource(handle);
+    return wic::Bitmap(handle);
 }
 
 
-ImageDecoder ResourceFactory::CreateImageDecoder(
+wic::BitmapDecoder ResourceFactory::CreateImageDecoder(
     const std::wstring& file_path, 
     const CreateImageDecoderOptions& options,
     std::error_code& error_code) {
@@ -270,12 +270,12 @@ ImageDecoder ResourceFactory::CreateImageDecoder(
         &handle);
 
     error_code = MakeComErrorCode(result);
-    return ImageDecoder(handle);
+    return wic::BitmapDecoder(handle);
 }
 
 
-ImageDecoder ResourceFactory::CreateImageDecoder(
-    const ImageStream& image_stream,
+wic::BitmapDecoder ResourceFactory::CreateImageDecoder(
+    const wic::Stream& image_stream,
     const CreateImageDecoderOptions& options,
     std::error_code& error_code) {
 
@@ -287,17 +287,17 @@ ImageDecoder ResourceFactory::CreateImageDecoder(
         &handle);
 
     error_code = MakeComErrorCode(com_error);
-    return ImageDecoder(handle);
+    return wic::BitmapDecoder(handle);
 }
 
 
-ImagePalette ResourceFactory::CreateImagePalette(std::error_code& error_code) {
+wic::Palette ResourceFactory::CreateImagePalette(std::error_code& error_code) {
 
     IWICPalette* handle = nullptr;
     HRESULT result = wic_imaging_factory_handle_->CreatePalette(&handle);
 
     error_code = MakeComErrorCode(result);
-    return ImagePalette(handle);
+    return wic::Palette(handle);
 }
 
 }

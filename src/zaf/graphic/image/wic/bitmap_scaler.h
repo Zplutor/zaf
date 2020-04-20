@@ -1,11 +1,11 @@
 #pragma once
 
 #include <wincodec.h>
-#include <zaf/graphic/image/image_source.h>
+#include <zaf/graphic/image/wic/bitmap_source.h>
 
-namespace zaf {
+namespace zaf::wic {
 
-class ImageSource;
+class BitmapSource;
 
 enum class ImageInterpolationMode {
     NearestNeighbor = WICBitmapInterpolationModeNearestNeighbor,
@@ -15,13 +15,13 @@ enum class ImageInterpolationMode {
     //HighQualityCubic = WICBitmapInterpolationModeHighQualityCubic,
 };
 
-class ImageScaler : public ImageSource {
+class BitmapScaler : public BitmapSource {
 public:
-    ImageScaler() { }
-    ImageScaler(IWICBitmapScaler* handle) : ImageSource(handle) { }
+    BitmapScaler() { }
+    BitmapScaler(IWICBitmapScaler* handle) : BitmapSource(handle) { }
 
     void Initialize(
-        const ImageSource& image_source, 
+        const BitmapSource& image_source, 
         const Size& size, 
         ImageInterpolationMode interpolation_mode,
         std::error_code& error_code) {
@@ -35,7 +35,7 @@ public:
         error_code = MakeComErrorCode(com_error);
     }
 
-    void Initialize(const ImageSource& image_source, const Size& size, ImageInterpolationMode interpolation_mode) {
+    void Initialize(const BitmapSource& image_source, const Size& size, ImageInterpolationMode interpolation_mode) {
         std::error_code error_code;
         Initialize(image_source, size, interpolation_mode, error_code);
         ZAF_CHECK_ERROR(error_code);

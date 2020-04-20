@@ -12,12 +12,12 @@
 #undef max
 #undef min
 
-namespace zaf {
+namespace zaf::wic {
 
-class ImageMetadataQuerier : public ComObject<IWICMetadataQueryReader> {
+class MetadataQueryReader : public ComObject<IWICMetadataQueryReader> {
 public:
-    ImageMetadataQuerier() { }
-    explicit ImageMetadataQuerier(IWICMetadataQueryReader* handle) : ComObject(handle) { }
+    MetadataQueryReader() { }
+    explicit MetadataQueryReader(IWICMetadataQueryReader* handle) : ComObject(handle) { }
 
     template<typename ValueType>
     ValueType QueryMetadata(const std::wstring& query_expression) const {
@@ -180,8 +180,8 @@ private:
     };
 
     template<>
-    struct Converter<ImageMetadataQuerier> {
-        static HRESULT Convert(const PROPVARIANT& variant, ImageMetadataQuerier& value) {
+    struct Converter<MetadataQueryReader> {
+        static HRESULT Convert(const PROPVARIANT& variant, MetadataQueryReader& value) {
 
             if (variant.vt != VT_UNKNOWN) {
                 value.Reset();
@@ -191,7 +191,7 @@ private:
             IWICMetadataQueryReader* handle = nullptr;
             HRESULT result = variant.punkVal->QueryInterface(&handle);
 
-            value = ImageMetadataQuerier(handle);
+            value = MetadataQueryReader(handle);
             return result;
         }
     };

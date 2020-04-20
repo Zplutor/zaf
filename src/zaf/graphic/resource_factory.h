@@ -10,12 +10,12 @@
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/geometry/rounded_rectangle_geometry.h>
 #include <zaf/graphic/geometry/transformed_geometry.h>
-#include <zaf/graphic/image/image_decoder.h>
-#include <zaf/graphic/image/image_palette.h>
-#include <zaf/graphic/image/image_pixel_format.h>
-#include <zaf/graphic/image/image_scaler.h>
-#include <zaf/graphic/image/image_stream.h>
-#include <zaf/graphic/image/mutable_image_source.h>
+#include <zaf/graphic/image/wic/bitmap_decoder.h>
+#include <zaf/graphic/image/wic/palette.h>
+#include <zaf/graphic/image/wic/pixel_format.h>
+#include <zaf/graphic/image/wic/bitmap_scaler.h>
+#include <zaf/graphic/image/wic/stream.h>
+#include <zaf/graphic/image/wic/bitmap.h>
 #include <zaf/graphic/renderer/renderer_properties.h>
 #include <zaf/graphic/renderer/window_renderer.h>
 #include <zaf/graphic/stroke.h>
@@ -98,11 +98,11 @@ public:
     }
 
     Renderer CreateImageRenderer(
-        const MutableImageSource& image_source, 
+        const wic::Bitmap& image_source, 
         const RendererProperties& properties,
         std::error_code& error_code);
 
-    Renderer CreateImageRenderer(const MutableImageSource& image_source, const RendererProperties& properties) {
+    Renderer CreateImageRenderer(const wic::Bitmap& image_source, const RendererProperties& properties) {
         std::error_code error_code;
         auto result = CreateImageRenderer(image_source, properties, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -232,29 +232,29 @@ public:
         return result;
     }
     
-    ImageStream CreateImageStream(std::error_code& error_code) {
+    wic::Stream CreateImageStream(std::error_code& error_code) {
         IWICStream* handle = nullptr;
         HRESULT com_error = wic_imaging_factory_handle_->CreateStream(&handle);
         error_code = MakeComErrorCode(com_error);
-        return ImageStream(handle);
+        return wic::Stream(handle);
     }
 
-    ImageStream CreateImageStream() {
+    wic::Stream CreateImageStream() {
         std::error_code error_code;
         auto result = CreateImageStream(error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
 
-    MutableImageSource CreateImageSource(
+    wic::Bitmap CreateImageSource(
         const Size& size, 
-        ImagePixelFormat pixel_format, 
+        wic::PixelFormat pixel_format,
         ImageCacheOption cache_option, 
         std::error_code& error_code);
 
-    MutableImageSource CreateImageSource(
+    wic::Bitmap CreateImageSource(
         const Size& size,
-        ImagePixelFormat pixel_format,
+        wic::PixelFormat pixel_format,
         ImageCacheOption cache_option) {
 
         std::error_code error_code;
@@ -263,13 +263,13 @@ public:
         return result;
     }
 
-    MutableImageSource CreateImageSource(
+    wic::Bitmap CreateImageSource(
         HBITMAP bitmap_handle,
         HPALETTE palette_handle, 
         BitmapAlphaChannelOption alpha_channel_option,
         std::error_code& error_code);
 
-    MutableImageSource CreateImageSource(
+    wic::Bitmap CreateImageSource(
         HBITMAP bitmap_handle, 
         HPALETTE palette_handle, 
         BitmapAlphaChannelOption alpha_channel_option) {
@@ -280,63 +280,63 @@ public:
         return result;
     }
 
-    ImageDecoder CreateImageDecoder(
+    wic::BitmapDecoder CreateImageDecoder(
         const std::wstring& file_path, 
         const CreateImageDecoderOptions& options,
         std::error_code& error_code);
 
-    ImageDecoder CreateImageDecoder(const std::wstring& file_path, const CreateImageDecoderOptions& options) {
+    wic::BitmapDecoder CreateImageDecoder(const std::wstring& file_path, const CreateImageDecoderOptions& options) {
         std::error_code error_code;
         auto result = CreateImageDecoder(file_path, options, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
 
-    ImageDecoder CreateImageDecoder(const std::wstring& file_path, std::error_code& error_code) {
+    wic::BitmapDecoder CreateImageDecoder(const std::wstring& file_path, std::error_code& error_code) {
         return CreateImageDecoder(file_path, CreateImageDecoderOptions(), error_code);
     }
 
-    ImageDecoder CreateImageDecoder(const std::wstring& file_path) {
+    wic::BitmapDecoder CreateImageDecoder(const std::wstring& file_path) {
         return CreateImageDecoder(file_path, CreateImageDecoderOptions());
     }
 
-    ImageDecoder CreateImageDecoder(
-        const ImageStream& image_stream, 
+    wic::BitmapDecoder CreateImageDecoder(
+        const wic::Stream& image_stream,
         const CreateImageDecoderOptions& options,
         std::error_code& error_code);
 
-    ImageDecoder CreateImageDecoder(const ImageStream& image_stream, const CreateImageDecoderOptions& options) {
+    wic::BitmapDecoder CreateImageDecoder(const wic::Stream& image_stream, const CreateImageDecoderOptions& options) {
         std::error_code error_code;
         auto result = CreateImageDecoder(image_stream, options, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
 
-    ImageDecoder CreateImageDecoder(const ImageStream& image_stream, std::error_code& error_code) {
+    wic::BitmapDecoder CreateImageDecoder(const wic::Stream& image_stream, std::error_code& error_code) {
         return CreateImageDecoder(image_stream, CreateImageDecoderOptions(), error_code);
     }
 
-    ImageDecoder CreateImageDecoder(const ImageStream& image_stream) {
+    wic::BitmapDecoder CreateImageDecoder(const wic::Stream& image_stream) {
         return CreateImageDecoder(image_stream, CreateImageDecoderOptions());
     }
 
-    ImageScaler CreateImageScaler(std::error_code& error_code) {
+    wic::BitmapScaler CreateImageScaler(std::error_code& error_code) {
         IWICBitmapScaler* handle = nullptr;
         HRESULT com_error = wic_imaging_factory_handle_->CreateBitmapScaler(&handle);
         error_code = MakeComErrorCode(com_error);
-        return ImageScaler(handle);
+        return wic::BitmapScaler(handle);
     }
 
-    ImageScaler CreateImageScaler() {
+    wic::BitmapScaler CreateImageScaler() {
         std::error_code error_code;
         auto result = CreateImageScaler(error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
 
-    ImagePalette CreateImagePalette(std::error_code& error_code);
+    wic::Palette CreateImagePalette(std::error_code& error_code);
 
-    ImagePalette CreateImagePalette() {
+    wic::Palette CreateImagePalette() {
         std::error_code error_code;
         auto result = CreateImagePalette(error_code);
         ZAF_CHECK_ERROR(error_code);

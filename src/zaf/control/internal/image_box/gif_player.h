@@ -4,7 +4,7 @@
 #include <zaf/base/timer.h>
 #include <zaf/control/internal/image_box/image_player.h>
 #include <zaf/graphic/image/gif_metadata_querier.h>
-#include <zaf/graphic/image/image_decoder.h>
+#include <zaf/graphic/image/wic/bitmap_decoder.h>
 #include <zaf/graphic/renderer/bitmap_renderer.h>
 
 namespace zaf {
@@ -12,7 +12,7 @@ namespace internal {
 
 class GifPlayer : public ImagePlayer {
 public:
-    GifPlayer(const ImageDecoder& image_decoder);
+    GifPlayer(const wic::BitmapDecoder& image_decoder);
 
     const RendererBitmap GetBitmap(Renderer& renderer) override;
     void Reset() override;
@@ -37,7 +37,7 @@ private:
     }
 
 private:
-    ImageDecoder image_decoder_;
+    wic::BitmapDecoder image_decoder_;
     
     BitmapRenderer composed_frame_renderer_;
     std::size_t frame_count_;

@@ -4,12 +4,12 @@
 #include <zaf/base/com_object.h>
 #include <zaf/base/error.h>
 
-namespace zaf {
+namespace zaf::wic {
 
-class ImageStream : public ComObject<IWICStream> {
+class Stream : public ComObject<IWICStream> {
 public:
-    ImageStream() { }
-    explicit ImageStream(IWICStream* handle) : ComObject(handle) { }
+    Stream() { }
+    explicit Stream(IWICStream* handle) : ComObject(handle) { }
 
     void Initialize(void* data, std::size_t size, std::error_code& error_code) {
         HRESULT com_error = GetHandle()->InitializeFromMemory(reinterpret_cast<BYTE*>(data), size);

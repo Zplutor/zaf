@@ -8,11 +8,11 @@
 namespace zaf {
 namespace {
 
-std::unique_ptr<internal::ImagePlayer> CreateImagePlayer(const ImageDecoder& image_decoder) {
+std::unique_ptr<internal::ImagePlayer> CreateImagePlayer(const wic::BitmapDecoder& image_decoder) {
 
     auto container_format = image_decoder.GetContainerFormat();
     switch (container_format) {
-    case ImageContainerFormat::Gif:
+    case wic::ContainerFormat::Gif:
         return std::make_unique<internal::GifPlayer>(image_decoder);
     default:
         return std::make_unique<internal::StaticImagePlayer>(image_decoder);
@@ -67,7 +67,7 @@ void ImageBox::ReleaseRendererResources() {
 }
 
 
-void ImageBox::SetImageDecoder(const ImageDecoder& image_decoder) {
+void ImageBox::SetImageDecoder(const wic::BitmapDecoder& image_decoder) {
 
     if (image_decoder_ == image_decoder) {
         return;

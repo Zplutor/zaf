@@ -6,27 +6,27 @@
 #include <zaf/base/error.h>
 #include <zaf/graphic/rect.h>
 
-namespace zaf {
+namespace zaf::wic {
 
-class ImagePalette;
+class Palette;
 
-class ImageSource : public ComObject<IWICBitmapSource> {
+class BitmapSource : public ComObject<IWICBitmapSource> {
 public:
-    ImageSource() { }
-    explicit ImageSource(IWICBitmapSource* handle) : ComObject(handle) { }
+    BitmapSource() { }
+    explicit BitmapSource(IWICBitmapSource* handle) : ComObject(handle) { }
 
-    const Size GetSize(std::error_code& error_code) const;
+    Size GetSize(std::error_code& error_code) const;
 
-    const Size GetSize() const {
+    Size GetSize() const {
         std::error_code error_code;
         auto result = GetSize(error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
 
-    const std::pair<double, double> GetResolution(std::error_code& error_code) const;
+    std::pair<double, double> GetResolution(std::error_code& error_code) const;
 
-    const std::pair<double, double> GetResolution() const {
+    std::pair<double, double> GetResolution() const {
         std::error_code error_code;
         auto result = GetResolution(error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -51,9 +51,9 @@ public:
         ZAF_CHECK_ERROR(error_code);
     }
 
-    void CopyPalette(ImagePalette& palette, std::error_code& error_code) const;
+    void CopyPalette(Palette& palette, std::error_code& error_code) const;
 
-    void CopyPalette(ImagePalette& palette) const {
+    void CopyPalette(Palette& palette) const {
         std::error_code error_code;
         CopyPalette(palette, error_code);
         ZAF_CHECK_ERROR(error_code);

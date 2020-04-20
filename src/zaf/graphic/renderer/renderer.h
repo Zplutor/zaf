@@ -9,7 +9,7 @@
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
 #include <zaf/graphic/bitmap_properties.h>
-#include <zaf/graphic/image/image_source.h>
+#include <zaf/graphic/image/wic/bitmap_source.h>
 #include <zaf/graphic/interpolation_mode.h>
 #include <zaf/graphic/layer.h>
 #include <zaf/graphic/layer_parameters.h>
@@ -83,9 +83,9 @@ public:
         return result;
     }
 
-    const RendererBitmap CreateBitmap(const ImageSource& image_source, std::error_code& error_code);
+    const RendererBitmap CreateBitmap(const wic::BitmapSource& image_source, std::error_code& error_code);
 
-    const RendererBitmap CreateBitmap(const ImageSource& image_source) {
+    const RendererBitmap CreateBitmap(const wic::BitmapSource& image_source) {
         std::error_code error_code;
         auto result = CreateBitmap(image_source, error_code);
         ZAF_CHECK_ERROR(error_code);

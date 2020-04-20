@@ -5,7 +5,7 @@
 namespace zaf {
 namespace internal {
 
-GifPlayer::GifPlayer(const ImageDecoder& image_decoder) : 
+GifPlayer::GifPlayer(const wic::BitmapDecoder& image_decoder) : 
     image_decoder_(image_decoder),
     frame_count_(0),
     background_color_(Color::Transparent),

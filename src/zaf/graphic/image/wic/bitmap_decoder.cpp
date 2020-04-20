@@ -1,26 +1,26 @@
-#include <zaf/graphic/image/image_decoder.h>
-#include <zaf/graphic/image/image_palette.h>
+#include <zaf/graphic/image/wic/bitmap_decoder.h>
+#include <zaf/graphic/image/wic/palette.h>
 
-namespace zaf {
+namespace zaf::wic {
 
-ImageContainerFormat ImageDecoder::GetContainerFormat(std::error_code& error_code) const {
+ContainerFormat BitmapDecoder::GetContainerFormat(std::error_code& error_code) const {
 
     GUID guid = GUID_NULL;
     HRESULT com_error = GetHandle()->GetContainerFormat(&guid);
 
     error_code = MakeComErrorCode(com_error);
-    return ToImageContainerFormat(guid);
+    return ToContainerFormat(guid);
 }
 
 
-void ImageDecoder::CopyPalette(ImagePalette& palette, std::error_code& error_code) const {
+void BitmapDecoder::CopyPalette(Palette& palette, std::error_code& error_code) const {
 
     HRESULT com_error = GetHandle()->CopyPalette(palette.GetHandle());
     error_code = MakeComErrorCode(com_error);
 }
 
 
-std::size_t ImageDecoder::GetFrameCount(std::error_code& error_code) const {
+std::size_t BitmapDecoder::GetFrameCount(std::error_code& error_code) const {
 
     UINT count = 0;
     HRESULT result = GetHandle()->GetFrameCount(&count);
@@ -35,23 +35,23 @@ std::size_t ImageDecoder::GetFrameCount(std::error_code& error_code) const {
 }
 
 
-const ImageDecodeFrame ImageDecoder::GetFrame(std::size_t index, std::error_code& error_code) const {
+const BitmapDecodeFrame BitmapDecoder::GetFrame(std::size_t index, std::error_code& error_code) const {
 
     IWICBitmapFrameDecode* handle = nullptr;
     HRESULT result = GetHandle()->GetFrame(index, &handle);
 
     error_code = MakeComErrorCode(result);
-    return ImageDecodeFrame(handle);
+    return BitmapDecodeFrame(handle);
 }
 
 
-const ImageMetadataQuerier ImageDecoder::GetMetadataQuerier(std::error_code& error_code) const {
+const MetadataQueryReader BitmapDecoder::GetMetadataQuerier(std::error_code& error_code) const {
 
     IWICMetadataQueryReader* handle = nullptr;
     HRESULT result = GetHandle()->GetMetadataQueryReader(&handle);
 
     error_code = MakeComErrorCode(result);
-    return ImageMetadataQuerier(handle);
+    return MetadataQueryReader(handle);
 }
 
 }

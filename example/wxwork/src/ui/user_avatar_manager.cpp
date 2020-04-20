@@ -4,7 +4,7 @@
 #include <zaf/graphic/resource_factory.h>
 #include "resource.h"
 
-static zaf::ImageSource CreateUserAvatarImage(Id user_id);
+static zaf::wic::BitmapSource CreateUserAvatarImage(Id user_id);
 static HBITMAP GetUserAvatarData(Id user_id);
 
 UserAvatarManager& UserAvatarManager::GetInstance() {
@@ -13,7 +13,7 @@ UserAvatarManager& UserAvatarManager::GetInstance() {
 }
 
 
-zaf::ImageSource UserAvatarManager::GetUserAvatarImage(Id user_id) {
+zaf::wic::BitmapSource UserAvatarManager::GetUserAvatarImage(Id user_id) {
 
     auto iterator = user_avatar_images_.find(user_id);
     if (iterator != user_avatar_images_.end()) {
@@ -22,7 +22,7 @@ zaf::ImageSource UserAvatarManager::GetUserAvatarImage(Id user_id) {
 
     auto image = CreateUserAvatarImage(user_id);
     if (image == nullptr) {
-        return zaf::ImageSource();
+        return zaf::wic::BitmapSource();
     }
 
     user_avatar_images_.insert(std::make_pair(user_id, image));
@@ -30,11 +30,11 @@ zaf::ImageSource UserAvatarManager::GetUserAvatarImage(Id user_id) {
 }
 
 
-static zaf::ImageSource CreateUserAvatarImage(Id user_id) {
+static zaf::wic::BitmapSource CreateUserAvatarImage(Id user_id) {
 
     auto bitmap_handle = GetUserAvatarData(user_id);
     if (bitmap_handle == nullptr) {
-        return zaf::ImageSource();
+        return zaf::wic::BitmapSource();
     }
 
     auto image = zaf::GetResourceFactory()->CreateImageSource(

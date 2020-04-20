@@ -1,9 +1,9 @@
-#include <zaf/graphic/image/image_source.h>
-#include <zaf/graphic/image/image_palette.h>
+#include <zaf/graphic/image/wic/bitmap_source.h>
+#include <zaf/graphic/image/wic/palette.h>
 
-namespace zaf {
+namespace zaf::wic {
 
-const Size ImageSource::GetSize(std::error_code& error_code) const {
+Size BitmapSource::GetSize(std::error_code& error_code) const {
 
     UINT width = 0;
     UINT height = 0;
@@ -14,7 +14,7 @@ const Size ImageSource::GetSize(std::error_code& error_code) const {
 }
 
 
-const std::pair<double, double> ImageSource::GetResolution(std::error_code& error_code) const {
+std::pair<double, double> BitmapSource::GetResolution(std::error_code& error_code) const {
 
     double x = 0;
     double y = 0;
@@ -25,7 +25,7 @@ const std::pair<double, double> ImageSource::GetResolution(std::error_code& erro
 }
 
 
-void ImageSource::CopyPixels(
+void BitmapSource::CopyPixels(
     const Rect& rect,
     std::uint32_t stride,
     std::size_t buffer_size,
@@ -45,7 +45,7 @@ void ImageSource::CopyPixels(
 }
 
 
-void ImageSource::CopyPalette(ImagePalette& palette, std::error_code& error_code) const {
+void BitmapSource::CopyPalette(Palette& palette, std::error_code& error_code) const {
 
     HRESULT com_error = GetHandle()->CopyPalette(palette.GetHandle());
     error_code = MakeComErrorCode(com_error);

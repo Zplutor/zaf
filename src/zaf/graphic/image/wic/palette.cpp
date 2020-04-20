@@ -1,9 +1,9 @@
-#include <zaf/graphic/image/image_palette.h>
-#include <zaf/graphic/image/image_source.h>
+#include <zaf/graphic/image/wic/palette.h>
+#include <zaf/graphic/image/wic/bitmap_source.h>
 
-namespace zaf {
+namespace zaf::wic {
 
-void ImagePalette::InitializeFromCustomColors(
+void Palette::InitializeFromCustomColors(
     const std::uint32_t* colors,
     std::size_t color_count,
     std::error_code& error_code) {
@@ -13,7 +13,7 @@ void ImagePalette::InitializeFromCustomColors(
 }
 
 
-void ImagePalette::InitializeFromPredefinedType(Type type, bool add_transparent_color, std::error_code& error_code) {
+void Palette::InitializeFromPredefinedType(Type type, bool add_transparent_color, std::error_code& error_code) {
 
     HRESULT com_error = GetHandle()->InitializePredefined(
         static_cast<WICBitmapPaletteType>(type),
@@ -23,15 +23,15 @@ void ImagePalette::InitializeFromPredefinedType(Type type, bool add_transparent_
 }
 
 
-void ImagePalette::InitializeFromPalette(const ImagePalette& palette, std::error_code& error_code) {
+void Palette::InitializeFromPalette(const Palette& palette, std::error_code& error_code) {
 
     HRESULT com_error = GetHandle()->InitializeFromPalette(palette.GetHandle());
     error_code = MakeComErrorCode(com_error);
 }
 
 
-void ImagePalette::InitializeFromImage(
-    const ImageSource& image,
+void Palette::InitializeFromImage(
+    const BitmapSource& image,
     std::size_t color_count,
     bool add_transparent_color,
     std::error_code& error_code) {
@@ -41,7 +41,7 @@ void ImagePalette::InitializeFromImage(
 }
 
 
-std::size_t ImagePalette::GetColorCount(std::error_code& error_code) const {
+std::size_t Palette::GetColorCount(std::error_code& error_code) const {
 
     UINT count = 0;
     HRESULT com_error = GetHandle()->GetColorCount(&count);
@@ -51,7 +51,7 @@ std::size_t ImagePalette::GetColorCount(std::error_code& error_code) const {
 }
 
 
-void ImagePalette::GetColors(
+void Palette::GetColors(
     std::size_t count,
     std::uint32_t* colors,
     std::size_t& actual_count,
@@ -65,7 +65,7 @@ void ImagePalette::GetColors(
 }
 
 
-ImagePalette::Type ImagePalette::GetType(std::error_code& error_code) const {
+Palette::Type Palette::GetType(std::error_code& error_code) const {
 
     WICBitmapPaletteType type = WICBitmapPaletteTypeCustom;
     HRESULT com_error = GetHandle()->GetType(&type);
@@ -75,7 +75,7 @@ ImagePalette::Type ImagePalette::GetType(std::error_code& error_code) const {
 }
 
 
-bool ImagePalette::HasAlpha(std::error_code& error_code) const {
+bool Palette::HasAlpha(std::error_code& error_code) const {
 
     BOOL has_alpha = FALSE;
     HRESULT com_error = GetHandle()->HasAlpha(&has_alpha);
@@ -85,7 +85,7 @@ bool ImagePalette::HasAlpha(std::error_code& error_code) const {
 }
 
 
-bool ImagePalette::IsBlackWhite(std::error_code& error_code) const {
+bool Palette::IsBlackWhite(std::error_code& error_code) const {
 
     BOOL is_black_white = FALSE;
     HRESULT com_error = GetHandle()->IsBlackWhite(&is_black_white);
@@ -95,7 +95,7 @@ bool ImagePalette::IsBlackWhite(std::error_code& error_code) const {
 }
 
 
-bool ImagePalette::IsGrayscale(std::error_code& error_code) const {
+bool Palette::IsGrayscale(std::error_code& error_code) const {
 
     BOOL is_grayscale = FALSE;
     HRESULT com_error = GetHandle()->IsGrayscale(&is_grayscale);

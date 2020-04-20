@@ -100,7 +100,7 @@ RendererBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& 
 
 
 const RendererBitmap Renderer::CreateBitmap(
-    const ImageSource& image_source,
+    const wic::BitmapSource& image_source,
     std::error_code& error_code) {
 
     auto wic_image_factory_handle = GetResourceFactory()->GetWicImagingFactoryHandle();

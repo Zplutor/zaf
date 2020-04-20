@@ -4,7 +4,6 @@
 #include <sstream>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font/font.h>
-#include <zaf/graphic/image/image_decoder.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/text/text_format_properties.h>
@@ -206,7 +205,7 @@ void ConversationItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 void ConversationItem::LoadConversation(
     const std::shared_ptr<Conversation>& conversation,
-    const zaf::ImageSource& avatar_image) {
+    const zaf::wic::BitmapSource& avatar_image) {
 
     conversation_ = conversation;    
 

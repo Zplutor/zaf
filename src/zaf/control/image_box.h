@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/control/control.h>
-#include <zaf/graphic/image/image_decoder.h>
+#include <zaf/graphic/image/wic/bitmap_decoder.h>
 #include <zaf/graphic/interpolation_mode.h>
 
 namespace zaf {
@@ -17,11 +17,11 @@ public:
     ImageBox();
     ~ImageBox();
 
-    const ImageDecoder& GetImageDecoder() const {
+    const wic::BitmapDecoder& GetImageDecoder() const {
         return image_decoder_;
     }
 
-    void SetImageDecoder(const ImageDecoder& image_decoder);
+    void SetImageDecoder(const wic::BitmapDecoder& image_decoder);
 
     InterpolationMode GetInterpolationMode() const;
     void SetInterpolationMode(InterpolationMode mode);
@@ -31,7 +31,7 @@ protected:
     void ReleaseRendererResources() override;
 
 private:
-    ImageDecoder image_decoder_;
+    wic::BitmapDecoder image_decoder_;
     std::unique_ptr<internal::ImagePlayer> image_player_;
 };
 

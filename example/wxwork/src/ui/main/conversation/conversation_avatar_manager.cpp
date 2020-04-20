@@ -7,15 +7,15 @@
 #include "ui/main/conversation/common_definition.h"
 #include "ui/user_avatar_manager.h"
 
-static std::vector<zaf::ImageSource> GetConversationMemberAvatarImages(const std::vector<Id>& member_ids);
+static std::vector<zaf::wic::BitmapSource> GetConversationMemberAvatarImages(const std::vector<Id>& member_ids);
 static std::vector<zaf::Rect> GetAvatarCellRects(const zaf::Size& table_size, std::size_t cell_count);
 static void GetLineCountAndRowCount(std::size_t cell_count, std::size_t& line_count, std::size_t& row_count);
 static void DrawMemberAvatarImagesToConversationAvatarRenderer(
-    const std::vector<zaf::ImageSource>& member_avatars, 
+    const std::vector<zaf::wic::BitmapSource>& member_avatars,
     const std::vector<zaf::Rect>& member_avatar_rects,
     zaf::Renderer& renderer);
 
-zaf::ImageSource ConversationAvatarManager::GetConversationAvatarImage(const std::shared_ptr<Conversation>& conversation) {
+zaf::wic::BitmapSource ConversationAvatarManager::GetConversationAvatarImage(const std::shared_ptr<Conversation>& conversation) {
 
     auto iterator = conversation_avatar_images_.find(conversation->id);
     if (iterator == conversation_avatar_images_.end()) {
@@ -28,7 +28,7 @@ zaf::ImageSource ConversationAvatarManager::GetConversationAvatarImage(const std
 }
 
 
-zaf::ImageSource ConversationAvatarManager::GenerateConversationAvatarImage(const std::shared_ptr<Conversation>& conversation) {
+zaf::wic::BitmapSource ConversationAvatarManager::GenerateConversationAvatarImage(const std::shared_ptr<Conversation>& conversation) {
 
     Id current_user_id = Service::GetInstance().GetCurrentUserId();
 
@@ -38,7 +38,7 @@ zaf::ImageSource ConversationAvatarManager::GenerateConversationAvatarImage(cons
         other_members.end());
 
     if (other_members.empty()) {
-        return zaf::ImageSource();
+        return zaf::wic::BitmapSource();
     }
 
     if (other_members.size() == 1) {
@@ -49,22 +49,22 @@ zaf::ImageSource ConversationAvatarManager::GenerateConversationAvatarImage(cons
 }
 
 
-zaf::ImageSource ConversationAvatarManager::CombineMultiUserConversationAvatarImage(const std::vector<Id>& member_ids) {
+zaf::wic::BitmapSource ConversationAvatarManager::CombineMultiUserConversationAvatarImage(const std::vector<Id>& member_ids) {
 
     zaf::Size image_size(ConversationAvatarSize, ConversationAvatarSize);
     auto image_source = zaf::GetResourceFactory()->CreateImageSource(
         image_size,
-        zaf::ImagePixelFormat::BGR32,
+        zaf::wic::PixelFormat::BGR32,
         zaf::ImageCacheOption::CacheOnDemand);
 
     if (image_source == nullptr) {
-        return zaf::ImageSource();
+        return zaf::wic::BitmapSource();
     }
 
     zaf::RendererProperties renderer_properties;
     auto renderer = zaf::GetResourceFactory()->CreateImageRenderer(image_source, renderer_properties);
     if (renderer == nullptr) {
-        return zaf::ImageSource();
+        return zaf::wic::BitmapSource();
     }
 
     auto member_avatar_images = GetConversationMemberAvatarImages(member_ids);
@@ -75,11 +75,11 @@ zaf::ImageSource ConversationAvatarManager::CombineMultiUserConversationAvatarIm
 }
 
 
-static std::vector<zaf::ImageSource> GetConversationMemberAvatarImages(const std::vector<Id>& member_ids) {
+static std::vector<zaf::wic::BitmapSource> GetConversationMemberAvatarImages(const std::vector<Id>& member_ids) {
 
     auto& user_avatar_manager = UserAvatarManager::GetInstance();
 
-    std::vector<zaf::ImageSource> member_avatar_images;
+    std::vector<zaf::wic::BitmapSource> member_avatar_images;
     for (auto each_id : member_ids) {
 
         auto image = user_avatar_manager.GetUserAvatarImage(each_id);
@@ -170,7 +170,7 @@ static void GetLineCountAndRowCount(std::size_t cell_count, std::size_t& line_co
 
 
 static void DrawMemberAvatarImagesToConversationAvatarRenderer(
-    const std::vector<zaf::ImageSource>& member_avatars,
+    const std::vector<zaf::wic::BitmapSource>& member_avatars,
     const std::vector<zaf::Rect>& member_avatar_rects,
     zaf::Renderer& renderer) {
 
@@ -187,7 +187,7 @@ static void DrawMemberAvatarImagesToConversationAvatarRenderer(
         avatar_rect = zaf::Align(avatar_rect);
 
         auto image_scaler = zaf::GetResourceFactory()->CreateImageScaler();
-        image_scaler.Initialize(member_avatars[index], avatar_rect.size, zaf::ImageInterpolationMode::Fant);
+        image_scaler.Initialize(member_avatars[index], avatar_rect.size, zaf::wic::ImageInterpolationMode::Fant);
 
         auto bitmap = renderer.CreateBitmap(image_scaler);
         if (bitmap == nullptr) {

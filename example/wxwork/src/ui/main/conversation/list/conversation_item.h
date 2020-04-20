@@ -10,7 +10,7 @@ class ConversationItem : public zaf::ListControl::Item {
 public:
     void LoadConversation(
         const std::shared_ptr<Conversation>& conversation, 
-        const zaf::ImageSource& avatar_image);
+        const zaf::wic::BitmapSource& avatar_image);
 
     void Initialize() override;
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <optional>
-#include <zaf/graphic/image/image_metadata_querier.h>
+#include <zaf/graphic/image/wic/metadata_query_reader.h>
 
 namespace zaf {
 
@@ -15,7 +15,7 @@ enum GifDisposal {
 
 class GifGlobalMetadataQuerier {
 public:
-    explicit GifGlobalMetadataQuerier(const ImageMetadataQuerier& querier) :
+    explicit GifGlobalMetadataQuerier(const wic::MetadataQueryReader& querier) :
         querier_(querier) {
 
     }
@@ -90,13 +90,13 @@ public:
     std::optional<std::size_t> GetLoopCount() const;
 
 private:
-    ImageMetadataQuerier querier_;
+    wic::MetadataQueryReader querier_;
 };
 
 
 class GifFrameMetadataQuerier {
 public:
-    explicit GifFrameMetadataQuerier(const ImageMetadataQuerier& querier) :
+    explicit GifFrameMetadataQuerier(const wic::MetadataQueryReader& querier) :
         querier_(querier) {
 
     }
@@ -168,7 +168,7 @@ public:
     }
 
 private:
-    ImageMetadataQuerier querier_;
+    wic::MetadataQueryReader querier_;
 };
 
 }

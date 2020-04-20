@@ -6,11 +6,11 @@
 #include <zaf/base/com_object.h>
 #include <zaf/base/error.h>
 
-namespace zaf {
+namespace zaf::wic {
 
-class ImageSource;
+class BitmapSource;
 
-class ImagePalette : public ComObject<IWICPalette> {
+class Palette : public ComObject<IWICPalette> {
 public:
     enum class Type {
         Custom = WICBitmapPaletteTypeCustom,
@@ -30,8 +30,8 @@ public:
     };
 
 public:
-    ImagePalette() { }
-    explicit ImagePalette(IWICPalette* handle) : ComObject(handle) { }
+    Palette() { }
+    explicit Palette(IWICPalette* handle) : ComObject(handle) { }
 
     void InitializeFromCustomColors(
         const std::uint32_t* colors, 
@@ -52,22 +52,22 @@ public:
         ZAF_CHECK_ERROR(error_code);
     }
 
-    void InitializeFromPalette(const ImagePalette& palette, std::error_code& error_code);
+    void InitializeFromPalette(const Palette& palette, std::error_code& error_code);
 
-    void InitializeFromPalette(const ImagePalette& palette) {
+    void InitializeFromPalette(const Palette& palette) {
         std::error_code error_code;
         InitializeFromPalette(palette, error_code);
         ZAF_CHECK_ERROR(error_code);
     }
 
     void InitializeFromImage(
-        const ImageSource& image,
+        const BitmapSource& image,
         std::size_t color_count, 
         bool add_transparent_color, 
         std::error_code& error_code);
 
     void InitializeFromImage(
-        const ImageSource& image,
+        const BitmapSource& image,
         std::size_t color_count,
         bool add_transparent_color) {
 

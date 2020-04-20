@@ -1,22 +1,22 @@
 #pragma once
 
 #include <zaf/base/flag_enum.h>
-#include <zaf/graphic/image/image_source.h>
+#include <zaf/graphic/image/wic/bitmap_source.h>
 
-namespace zaf {
+namespace zaf::wic {
 
-class ImagePalette;
+class Palette;
 
-class MutableImageSource : public ImageSource {
+class Bitmap : public BitmapSource {
 public:
     class Lock : public ComObject<IWICBitmapLock> {
     public:
         Lock() { }
         explicit Lock(IWICBitmapLock* handle) : ComObject(handle) { }
 
-        const Size GetSize(std::error_code& error_code) const;
+        Size GetSize(std::error_code& error_code) const;
 
-        const Size GetSize() const {
+        Size GetSize() const {
             std::error_code error_code;
             auto result = GetSize(error_code);
             ZAF_CHECK_ERROR(error_code);
@@ -50,8 +50,8 @@ public:
     };
 
 public:
-    MutableImageSource() { }
-    explicit MutableImageSource(IWICBitmap* handle) : ImageSource(handle) { }
+    Bitmap() { }
+    explicit Bitmap(IWICBitmap* handle) : BitmapSource(handle) { }
     
     void SetResolution(double x, double y, std::error_code& error_code);
 
@@ -61,17 +61,17 @@ public:
         ZAF_CHECK_ERROR(error_code);
     }
 
-    void SetPalette(const ImagePalette& palette, std::error_code& error_code);
+    void SetPalette(const Palette& palette, std::error_code& error_code);
 
-    void SetPalette(const ImagePalette& palette) {
+    void SetPalette(const Palette& palette) {
         std::error_code error_code;
         SetPalette(palette, error_code);
         ZAF_CHECK_ERROR(error_code);
     }
 
-    const Lock GetLock(const Rect& rect, LockFlag flags, std::error_code& error_code);
+    Lock GetLock(const Rect& rect, LockFlag flags, std::error_code& error_code);
 
-    const Lock GetLock(const Rect& rect, LockFlag flags) {
+    Lock GetLock(const Rect& rect, LockFlag flags) {
         std::error_code error_code;
         auto result = GetLock(rect, flags, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -84,6 +84,6 @@ public:
 };
 
 
-ZAF_ENABLE_FLAG_ENUM(MutableImageSource::LockFlag);
+ZAF_ENABLE_FLAG_ENUM(Bitmap::LockFlag);
 
 }

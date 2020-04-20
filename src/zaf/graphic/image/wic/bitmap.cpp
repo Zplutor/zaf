@@ -1,23 +1,23 @@
-#include <zaf/graphic/image/mutable_image_source.h>
-#include <zaf/graphic/image/image_palette.h>
+#include <zaf/graphic/image/wic/bitmap.h>
+#include <zaf/graphic/image/wic/palette.h>
 
-namespace zaf {
+namespace zaf::wic {
 
-void MutableImageSource::SetResolution(double x, double y, std::error_code& error_code) {
+void Bitmap::SetResolution(double x, double y, std::error_code& error_code) {
 
     HRESULT com_error = GetHandle()->SetResolution(x, y);
     error_code = MakeComErrorCode(com_error);
 }
 
 
-void MutableImageSource::SetPalette(const ImagePalette& palette, std::error_code& error_code) {
+void Bitmap::SetPalette(const Palette& palette, std::error_code& error_code) {
 
     HRESULT com_error = GetHandle()->SetPalette(palette.GetHandle());
     error_code = MakeComErrorCode(com_error);
 }
 
 
-const MutableImageSource::Lock MutableImageSource::GetLock(
+Bitmap::Lock Bitmap::GetLock(
     const Rect& rect,
     LockFlag flags, 
     std::error_code& error_code) {
@@ -31,7 +31,7 @@ const MutableImageSource::Lock MutableImageSource::GetLock(
 }
 
 
-const Size MutableImageSource::Lock::GetSize(std::error_code& error_code) const {
+Size Bitmap::Lock::GetSize(std::error_code& error_code) const {
 
     UINT width = 0;
     UINT height = 0;
@@ -42,7 +42,7 @@ const Size MutableImageSource::Lock::GetSize(std::error_code& error_code) const 
 }
 
 
-std::uint32_t MutableImageSource::Lock::GetStride(std::error_code& error_code) const {
+std::uint32_t Bitmap::Lock::GetStride(std::error_code& error_code) const {
 
     UINT stride = 0;
     HRESULT com_error = GetHandle()->GetStride(&stride);
@@ -52,7 +52,7 @@ std::uint32_t MutableImageSource::Lock::GetStride(std::error_code& error_code) c
 }
 
 
-void MutableImageSource::Lock::GetDataPointer(
+void Bitmap::Lock::GetDataPointer(
     std::uint8_t*& data_pointer,
     std::size_t& data_size,
     std::error_code& error_code) const {
