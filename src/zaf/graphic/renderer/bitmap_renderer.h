@@ -9,9 +9,9 @@ public:
     BitmapRenderer() { }
     BitmapRenderer(ID2D1BitmapRenderTarget* handle) : Renderer(handle) { }
 
-    RendererBitmap GetBitmap(std::error_code& error_code) const;
+    RenderBitmap GetBitmap(std::error_code& error_code) const;
 
-    RendererBitmap GetBitmap() const {
+    RenderBitmap GetBitmap() const {
         std::error_code error_code;
         auto result = GetBitmap(error_code);
         ZAF_CHECK_ERROR(error_code);

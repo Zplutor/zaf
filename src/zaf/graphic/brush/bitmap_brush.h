@@ -2,7 +2,7 @@
 
 #include <zaf/graphic/brush/brush.h>
 #include <zaf/graphic/interpolation_mode.h>
-#include <zaf/graphic/renderer_bitmap.h>
+#include <zaf/graphic/render_bitmap.h>
 
 namespace zaf {
 
@@ -11,13 +11,13 @@ public:
     BitmapBrush() { }
     explicit BitmapBrush(ID2D1BitmapBrush* handle) : Brush(handle) { }
 
-    const RendererBitmap GetBitmap() const {
+    const RenderBitmap GetBitmap() const {
         ID2D1Bitmap* handle = nullptr;
         GetHandle()->GetBitmap(&handle);
-        return RendererBitmap(handle);
+        return RenderBitmap(handle);
     }
 
-    void SetBitmap(const RendererBitmap& bitmap) {
+    void SetBitmap(const RenderBitmap& bitmap) {
         GetHandle()->SetBitmap(bitmap.GetHandle());
     }
 

@@ -10,10 +10,10 @@ namespace zaf {
 
 class Renderer;
 
-class RendererBitmap : public ComObject<ID2D1Bitmap> {
+class RenderBitmap : public ComObject<ID2D1Bitmap> {
 public:
-    RendererBitmap() { }
-    explicit RendererBitmap(ID2D1Bitmap* handle) : ComObject(handle) { }
+    RenderBitmap() { }
+    explicit RenderBitmap(ID2D1Bitmap* handle) : ComObject(handle) { }
 
     /**
      Get the size, in device-independent pixels (DIPs), of the bitmap.
@@ -50,12 +50,12 @@ public:
         return result;
     }
 
-    void CopyFromBitmap(const RendererBitmap& bitmap, std::error_code& error_code) {
+    void CopyFromBitmap(const RenderBitmap& bitmap, std::error_code& error_code) {
         HRESULT com_error = GetHandle()->CopyFromBitmap(nullptr, bitmap.GetHandle(), nullptr);
         error_code = MakeComErrorCode(com_error);
     }
 
-    void CopyFromBitmap(const RendererBitmap& bitmap) {
+    void CopyFromBitmap(const RenderBitmap& bitmap) {
         std::error_code error_code;
         CopyFromBitmap(bitmap, error_code);
         ZAF_CHECK_ERROR(error_code);

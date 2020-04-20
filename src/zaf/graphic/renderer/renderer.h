@@ -18,7 +18,7 @@
 #include <zaf/graphic/rounded_rect.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/geometry/geometry.h>
-#include <zaf/graphic/renderer_bitmap.h>
+#include <zaf/graphic/render_bitmap.h>
 #include <zaf/graphic/renderer/antialias_mode.h>
 #include <zaf/graphic/renderer/create_compatible_renderer_options.h>
 #include <zaf/graphic/text/text_format.h>
@@ -49,9 +49,9 @@ public:
         return result;
     }
 
-    const BitmapBrush CreateBitmapBrush(const RendererBitmap& bitmap, std::error_code& error_code);
+    const BitmapBrush CreateBitmapBrush(const RenderBitmap& bitmap, std::error_code& error_code);
 
-    const BitmapBrush CreateBitmapBrush(const RendererBitmap& bitmap) {
+    const BitmapBrush CreateBitmapBrush(const RenderBitmap& bitmap) {
         std::error_code error_code;
         auto result = CreateBitmapBrush(bitmap, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -74,18 +74,18 @@ public:
         return InnerCreateLayer(&size);
     }
 
-    RendererBitmap CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code);
+    RenderBitmap CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code);
 
-    RendererBitmap CreateBitmap(const Size& size, const BitmapProperties& properties) {
+    RenderBitmap CreateBitmap(const Size& size, const BitmapProperties& properties) {
         std::error_code error_code;
         auto result = CreateBitmap(size, properties, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
 
-    const RendererBitmap CreateBitmap(const wic::BitmapSource& image_source, std::error_code& error_code);
+    const RenderBitmap CreateBitmap(const wic::BitmapSource& image_source, std::error_code& error_code);
 
-    const RendererBitmap CreateBitmap(const wic::BitmapSource& image_source) {
+    const RenderBitmap CreateBitmap(const wic::BitmapSource& image_source) {
         std::error_code error_code;
         auto result = CreateBitmap(image_source, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -233,7 +233,7 @@ public:
     }
 
     void DrawBitmap(
-        const RendererBitmap& bitmap,
+        const RenderBitmap& bitmap,
         const Rect& destination_rect,
         float opacity,
         InterpolationMode interpolation_mode,

@@ -256,7 +256,7 @@ void Canvas::DrawTextLayout(const TextLayout& text_layout, const Point& position
 
 
 void Canvas::DrawBitmap(
-    const RendererBitmap& bitmap,
+    const RenderBitmap& bitmap,
     const Rect& destination_rect, 
     const DrawImageOptions& options) {
 

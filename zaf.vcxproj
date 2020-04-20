@@ -65,7 +65,7 @@
     <ClCompile Include="src\zaf\graphic\image\wic\bitmap_decoder.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\bitmap_decode_frame.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\pixel_format.cpp" />
-    <ClCompile Include="src\zaf\graphic\renderer_bitmap.cpp" />
+    <ClCompile Include="src\zaf\graphic\render_bitmap.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />
     <ClCompile Include="src\zaf\graphic\ellipse.cpp" />
@@ -215,7 +215,7 @@
     <ClInclude Include="src\zaf\graphic\image\wic\metadata_query_reader.h" />
     <ClInclude Include="src\zaf\graphic\image\wic\pixel_format.h" />
     <ClInclude Include="src\zaf\graphic\image\wic\stream.h" />
-    <ClInclude Include="src\zaf\graphic\renderer_bitmap.h" />
+    <ClInclude Include="src\zaf\graphic\render_bitmap.h" />
     <ClInclude Include="src\zaf\graphic\bitmap_properties.h" />
     <ClInclude Include="src\zaf\graphic\brush\bitmap_brush.h" />
     <ClInclude Include="src\zaf\graphic\brush\brush.h" />

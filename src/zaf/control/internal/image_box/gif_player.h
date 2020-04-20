@@ -14,7 +14,7 @@ class GifPlayer : public ImagePlayer {
 public:
     GifPlayer(const wic::BitmapDecoder& image_decoder);
 
-    const RendererBitmap GetBitmap(Renderer& renderer) override;
+    const RenderBitmap GetBitmap(Renderer& renderer) override;
     void Reset() override;
 
 private:
@@ -49,7 +49,7 @@ private:
     std::uint16_t current_frame_delay_;
     GifDisposal current_frame_disposal_;
     Rect current_frame_rect_;
-    RendererBitmap saved_frame_bitmap_;
+    RenderBitmap saved_frame_bitmap_;
     std::size_t current_loop_count_;
 };
 

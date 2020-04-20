@@ -17,13 +17,13 @@ GifPlayer::GifPlayer(const wic::BitmapDecoder& image_decoder) :
 }
 
 
-const RendererBitmap GifPlayer::GetBitmap(Renderer& renderer) {
+const RenderBitmap GifPlayer::GetBitmap(Renderer& renderer) {
     
     if (Initialize(renderer)) {
         return composed_frame_renderer_.GetBitmap();   
     }
     else {
-        return RendererBitmap();
+        return RenderBitmap();
     }    
 }
 

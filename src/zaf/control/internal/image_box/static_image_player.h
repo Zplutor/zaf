@@ -12,7 +12,7 @@ public:
     
     }
 
-    const RendererBitmap GetBitmap(Renderer& renderer) override;
+    const RenderBitmap GetBitmap(Renderer& renderer) override;
 
 private:
     wic::BitmapDecoder image_decoder_;

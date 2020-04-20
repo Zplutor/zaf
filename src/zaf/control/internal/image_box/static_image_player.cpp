@@ -4,11 +4,11 @@
 namespace zaf {
 namespace internal {
 
-const RendererBitmap StaticImagePlayer::GetBitmap(Renderer& renderer) {
+const RenderBitmap StaticImagePlayer::GetBitmap(Renderer& renderer) {
 
     auto frame = image_decoder_.GetFrame(0);
     if (frame == nullptr) {
-        return RendererBitmap();
+        return RenderBitmap();
     }
 
     return renderer.CreateBitmap(frame);

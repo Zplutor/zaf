@@ -57,7 +57,7 @@ const SolidColorBrush Renderer::CreateSolidColorBrush(const Color& color, std::e
 }
 
 
-const BitmapBrush Renderer::CreateBitmapBrush(const RendererBitmap& bitmap, std::error_code& error_code) {
+const BitmapBrush Renderer::CreateBitmapBrush(const RenderBitmap& bitmap, std::error_code& error_code) {
 
     ID2D1BitmapBrush* handle = nullptr;
     HRESULT result = GetHandle()->CreateBitmapBrush(bitmap.GetHandle(), &handle);
@@ -83,7 +83,7 @@ const Layer Renderer::InnerCreateLayer(const Size* size, std::error_code& error_
 }
 
 
-RendererBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code) {
+RenderBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code) {
 
     D2D1_BITMAP_PROPERTIES d2d1_properties;
     d2d1_properties.pixelFormat.format = static_cast<DXGI_FORMAT>(properties.pixel_properties.format);
@@ -95,11 +95,11 @@ RendererBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& 
     HRESULT com_error = GetHandle()->CreateBitmap(size.ToD2D1SIZEU(), d2d1_properties, &handle);
 
     error_code = MakeComErrorCode(com_error);
-    return RendererBitmap(handle);
+    return RenderBitmap(handle);
 }
 
 
-const RendererBitmap Renderer::CreateBitmap(
+const RenderBitmap Renderer::CreateBitmap(
     const wic::BitmapSource& image_source,
     std::error_code& error_code) {
 
@@ -110,7 +110,7 @@ const RendererBitmap Renderer::CreateBitmap(
 
     error_code = MakeComErrorCode(result);
     if (!IsSucceeded(error_code)) {
-        return RendererBitmap();
+        return RenderBitmap();
     }
 
     result = format_converter->Initialize(
@@ -124,7 +124,7 @@ const RendererBitmap Renderer::CreateBitmap(
     error_code = MakeComErrorCode(result);
     if (!IsSucceeded(error_code)) {
         format_converter->Release();
-        return RendererBitmap();
+        return RenderBitmap();
     }
 
     ID2D1Bitmap* handle = nullptr;
@@ -132,7 +132,7 @@ const RendererBitmap Renderer::CreateBitmap(
     format_converter->Release();
 
     error_code = MakeComErrorCode(result);
-    return RendererBitmap(handle);
+    return RenderBitmap(handle);
 }
 
 
