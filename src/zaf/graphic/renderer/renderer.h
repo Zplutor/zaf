@@ -8,7 +8,6 @@
 #include <zaf/graphic/brush/solid_color_brush.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
-#include <zaf/graphic/bitmap.h>
 #include <zaf/graphic/bitmap_properties.h>
 #include <zaf/graphic/image/image_source.h>
 #include <zaf/graphic/interpolation_mode.h>
@@ -19,6 +18,7 @@
 #include <zaf/graphic/rounded_rect.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/geometry/geometry.h>
+#include <zaf/graphic/renderer_bitmap.h>
 #include <zaf/graphic/renderer/antialias_mode.h>
 #include <zaf/graphic/renderer/create_compatible_renderer_options.h>
 #include <zaf/graphic/text/text_format.h>
@@ -49,9 +49,9 @@ public:
         return result;
     }
 
-    const BitmapBrush CreateBitmapBrush(const Bitmap& bitmap, std::error_code& error_code);
+    const BitmapBrush CreateBitmapBrush(const RendererBitmap& bitmap, std::error_code& error_code);
 
-    const BitmapBrush CreateBitmapBrush(const Bitmap& bitmap) {
+    const BitmapBrush CreateBitmapBrush(const RendererBitmap& bitmap) {
         std::error_code error_code;
         auto result = CreateBitmapBrush(bitmap, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -74,18 +74,18 @@ public:
         return InnerCreateLayer(&size);
     }
 
-    Bitmap CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code);
+    RendererBitmap CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code);
 
-    Bitmap CreateBitmap(const Size& size, const BitmapProperties& properties) {
+    RendererBitmap CreateBitmap(const Size& size, const BitmapProperties& properties) {
         std::error_code error_code;
         auto result = CreateBitmap(size, properties, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }
 
-    const Bitmap CreateBitmap(const ImageSource& image_source, std::error_code& error_code);
+    const RendererBitmap CreateBitmap(const ImageSource& image_source, std::error_code& error_code);
 
-    const Bitmap CreateBitmap(const ImageSource& image_source) {
+    const RendererBitmap CreateBitmap(const ImageSource& image_source) {
         std::error_code error_code;
         auto result = CreateBitmap(image_source, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -233,7 +233,7 @@ public:
     }
 
     void DrawBitmap(
-        const Bitmap& bitmap,
+        const RendererBitmap& bitmap,
         const Rect& destination_rect,
         float opacity,
         InterpolationMode interpolation_mode,

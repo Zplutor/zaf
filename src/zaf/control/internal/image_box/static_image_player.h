@@ -12,7 +12,7 @@ public:
     
     }
 
-    const Bitmap GetBitmap(Renderer& renderer) override;
+    const RendererBitmap GetBitmap(Renderer& renderer) override;
 
 private:
     ImageDecoder image_decoder_;

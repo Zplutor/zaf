@@ -57,7 +57,7 @@ const SolidColorBrush Renderer::CreateSolidColorBrush(const Color& color, std::e
 }
 
 
-const BitmapBrush Renderer::CreateBitmapBrush(const Bitmap& bitmap, std::error_code& error_code) {
+const BitmapBrush Renderer::CreateBitmapBrush(const RendererBitmap& bitmap, std::error_code& error_code) {
 
     ID2D1BitmapBrush* handle = nullptr;
     HRESULT result = GetHandle()->CreateBitmapBrush(bitmap.GetHandle(), &handle);
@@ -83,7 +83,7 @@ const Layer Renderer::InnerCreateLayer(const Size* size, std::error_code& error_
 }
 
 
-Bitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code) {
+RendererBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code) {
 
     D2D1_BITMAP_PROPERTIES d2d1_properties;
     d2d1_properties.pixelFormat.format = static_cast<DXGI_FORMAT>(properties.pixel_properties.format);
@@ -95,11 +95,11 @@ Bitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& properti
     HRESULT com_error = GetHandle()->CreateBitmap(size.ToD2D1SIZEU(), d2d1_properties, &handle);
 
     error_code = MakeComErrorCode(com_error);
-    return Bitmap(handle);
+    return RendererBitmap(handle);
 }
 
 
-const Bitmap Renderer::CreateBitmap(
+const RendererBitmap Renderer::CreateBitmap(
     const ImageSource& image_source,
     std::error_code& error_code) {
 
@@ -110,7 +110,7 @@ const Bitmap Renderer::CreateBitmap(
 
     error_code = MakeComErrorCode(result);
     if (!IsSucceeded(error_code)) {
-        return Bitmap();
+        return RendererBitmap();
     }
 
     result = format_converter->Initialize(
@@ -124,7 +124,7 @@ const Bitmap Renderer::CreateBitmap(
     error_code = MakeComErrorCode(result);
     if (!IsSucceeded(error_code)) {
         format_converter->Release();
-        return Bitmap();
+        return RendererBitmap();
     }
 
     ID2D1Bitmap* handle = nullptr;
@@ -132,7 +132,7 @@ const Bitmap Renderer::CreateBitmap(
     format_converter->Release();
 
     error_code = MakeComErrorCode(result);
-    return Bitmap(handle);
+    return RendererBitmap(handle);
 }
 
 

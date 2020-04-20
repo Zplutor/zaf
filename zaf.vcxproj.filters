@@ -313,9 +313,6 @@
     <ClCompile Include="src\zaf\graphic\text\text_trimming.cpp">
       <Filter>zaf\graphic\text</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\bitmap.cpp">
-      <Filter>zaf\graphic</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\window\message\internal\mouse_position_conversion.cpp">
       <Filter>zaf\window\message\internal</Filter>
     </ClCompile>
@@ -405,6 +402,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\linear_layouter_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\renderer_bitmap.cpp">
+      <Filter>zaf\graphic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -768,9 +768,6 @@
     <ClInclude Include="src\zaf\graphic\pixel_format.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\bitmap.h">
-      <Filter>zaf\graphic</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\bitmap_properties.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
@@ -1023,6 +1020,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\linear_layouter_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\renderer_bitmap.h">
+      <Filter>zaf\graphic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

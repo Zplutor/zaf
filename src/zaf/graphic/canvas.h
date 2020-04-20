@@ -125,7 +125,7 @@ public:
     void DrawTextLayout(const TextLayout& text_layout, const Point& position);
 
     void DrawBitmap(
-        const Bitmap& bitmap,
+        const RendererBitmap& bitmap,
         const Rect& destination_rect, 
         const DrawImageOptions& options = {});
 

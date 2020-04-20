@@ -1,7 +1,7 @@
 #pragma once
 
 #include <functional>
-#include <zaf/graphic/bitmap.h>
+#include <zaf/graphic/renderer_bitmap.h>
 
 namespace zaf {
 
@@ -17,7 +17,7 @@ public:
         update_event_ = event;
     }
 
-    virtual const Bitmap GetBitmap(Renderer& renderer) = 0;
+    virtual const RendererBitmap GetBitmap(Renderer& renderer) = 0;
 
     virtual void Reset() { }
 

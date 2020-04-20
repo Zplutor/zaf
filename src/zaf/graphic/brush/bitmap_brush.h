@@ -1,8 +1,8 @@
 #pragma once
 
 #include <zaf/graphic/brush/brush.h>
-#include <zaf/graphic/bitmap.h>
 #include <zaf/graphic/interpolation_mode.h>
+#include <zaf/graphic/renderer_bitmap.h>
 
 namespace zaf {
 
@@ -11,13 +11,13 @@ public:
     BitmapBrush() { }
     explicit BitmapBrush(ID2D1BitmapBrush* handle) : Brush(handle) { }
 
-    const Bitmap GetBitmap() const {
+    const RendererBitmap GetBitmap() const {
         ID2D1Bitmap* handle = nullptr;
         GetHandle()->GetBitmap(&handle);
-        return Bitmap(handle);
+        return RendererBitmap(handle);
     }
 
-    void SetBitmap(const Bitmap& bitmap) {
+    void SetBitmap(const RendererBitmap& bitmap) {
         GetHandle()->SetBitmap(bitmap.GetHandle());
     }
 

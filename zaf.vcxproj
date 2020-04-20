@@ -58,7 +58,7 @@
     <ClCompile Include="src\zaf\control\text_box.cpp" />
     <ClCompile Include="src\zaf\control\text_validator.cpp" />
     <ClCompile Include="src\zaf\graphic\alignment.cpp" />
-    <ClCompile Include="src\zaf\graphic\bitmap.cpp" />
+    <ClCompile Include="src\zaf\graphic\renderer_bitmap.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />
     <ClCompile Include="src\zaf\graphic\ellipse.cpp" />
@@ -205,7 +205,7 @@
     <ClInclude Include="src\zaf\control\text_validator.h" />
     <ClInclude Include="src\zaf\creation.h" />
     <ClInclude Include="src\zaf\graphic\alignment.h" />
-    <ClInclude Include="src\zaf\graphic\bitmap.h" />
+    <ClInclude Include="src\zaf\graphic\renderer_bitmap.h" />
     <ClInclude Include="src\zaf\graphic\bitmap_properties.h" />
     <ClInclude Include="src\zaf\graphic\brush\bitmap_brush.h" />
     <ClInclude Include="src\zaf\graphic\brush\brush.h" />
