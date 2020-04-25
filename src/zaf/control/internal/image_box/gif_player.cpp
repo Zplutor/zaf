@@ -1,6 +1,6 @@
 #include <zaf/control/internal/image_box/gif_player.h>
 #include <zaf/application.h>
-#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/image/wic/imaging_factory.h>
 
 namespace zaf {
 namespace internal {
@@ -17,7 +17,7 @@ GifPlayer::GifPlayer(const wic::BitmapDecoder& image_decoder) :
 }
 
 
-const RenderBitmap GifPlayer::GetBitmap(Renderer& renderer) {
+RenderBitmap GifPlayer::GetRenderBitmap(Renderer& renderer) {
     
     if (Initialize(renderer)) {
         return composed_frame_renderer_.GetBitmap();   
@@ -88,7 +88,7 @@ void GifPlayer::InitializeBackgroundColor(const GifGlobalMetadataQuerier& metada
     }
 
     //Get palette from image decoder.
-    auto palette = GetResourceFactory()->CreateImagePalette();
+    auto palette = GetApplication().GetImagingFactory().CreatePalette();
     if (palette == nullptr) {
         return;
     }

@@ -228,7 +228,7 @@ void Canvas::DrawGeometryFrame(const Geometry& geometry, float stroke_width) {
     //The geometry is not aligned for line, we need to do it by setting a new transform here.
     float offset = AlignmentOffsetForLine(stroke_width);
     if (offset != 0) {
-        drew_geometry = GetResourceFactory()->CreateTransformedGeometry(
+        drew_geometry = GetResourceFactory().CreateTransformedGeometry(
             geometry, 
             TransformMatrix::Translation(Point(offset, offset)));
     }
@@ -273,7 +273,7 @@ PathGeometry Canvas::CreatePathGeometry(std::error_code& error) const {
 
     ID2D1PathGeometry* handle{};
     HRESULT result = 
-        GetResourceFactory()->GetDirect2dFactoryHandle()->CreatePathGeometry(&handle);
+        GetResourceFactory().GetDirect2dFactoryHandle()->CreatePathGeometry(&handle);
 
     error = MakeComErrorCode(result);
     if (IsSucceeded(error)) {
@@ -297,7 +297,7 @@ RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect, std::error_c
     aligned_rect.position.y += aligned_transform_offset_.y;
     aligned_rect = Align(aligned_rect);
 
-    return GetResourceFactory()->CreateRectangleGeometry(aligned_rect, error);
+    return GetResourceFactory().CreateRectangleGeometry(aligned_rect, error);
 }
 
 RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect) const {
@@ -317,7 +317,7 @@ RoundedRectangleGeometry Canvas::CreateRoundedRectangleGeometry(
     aligned_rounded_rect.rect.position.y += aligned_transform_offset_.y;
     aligned_rounded_rect = Align(aligned_rounded_rect);
 
-    return GetResourceFactory()->CreateRoundedRectangleGeometry(aligned_rounded_rect, error);
+    return GetResourceFactory().CreateRoundedRectangleGeometry(aligned_rounded_rect, error);
 }
 
 RoundedRectangleGeometry Canvas::CreateRoundedRectangleGeometry(

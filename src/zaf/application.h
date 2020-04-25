@@ -8,6 +8,11 @@
 #include <zaf/config.h>
 
 namespace zaf {
+namespace wic {
+
+class ImagingFactory;
+
+}
 
 class ReflectionManager;
 class ResourceFactory;
@@ -77,12 +82,13 @@ public:
 
 	/**
 	 Get the resource factory.
-
-	 @return
-	    Return nullptr if Initialize method is not called, or it fails.
 	 */
-	const std::shared_ptr<ResourceFactory>& GetResourceFactory() const {
-		return resource_factory_;
+	ResourceFactory& GetResourceFactory() const {
+		return *resource_factory_;
+	}
+
+	wic::ImagingFactory& GetImagingFactory() const {
+		return *imaging_factory_;
 	}
 
     /**
@@ -147,7 +153,8 @@ private:
 	bool is_initialized_;
 
     std::unique_ptr<ReflectionManager> reflection_manager_;
-    std::shared_ptr<ResourceFactory> resource_factory_;
+    std::unique_ptr<ResourceFactory> resource_factory_;
+	std::unique_ptr<wic::ImagingFactory> imaging_factory_;
     std::shared_ptr<Window> main_window_;
 	std::set<std::shared_ptr<Window>> windows_;
 
@@ -166,8 +173,13 @@ inline ReflectionManager& GetReflectionManager() {
 }
 
 
-inline const std::shared_ptr<ResourceFactory>& GetResourceFactory() {
+inline ResourceFactory& GetResourceFactory() {
     return GetApplication().GetResourceFactory();
+}
+
+
+inline wic::ImagingFactory& GetImagingFactory() {
+	return GetApplication().GetImagingFactory();
 }
 
 }

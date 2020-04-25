@@ -9,6 +9,7 @@
 #include <zaf/control/text_box.h>
 #include <zaf/window/message/hit_test_result.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/graphic/image/bitmap.h>
 #include <zaf/control/combo_box.h>
 #include <zaf/reflection/reflection_type.h>
 #include <zaf/reflection/reflection_manager.h>
@@ -17,6 +18,7 @@
 #include <zaf/reflection/creation.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/label.h>
+#include <zaf/control/image_box.h>
 
 void BeginRun(zaf::Application&);
 
@@ -64,17 +66,15 @@ void BeginRun(zaf::Application& application) {
     window->SetRootControl(root_control);
     window->Show();
 
-    auto label = zaf::Create<zaf::Label>();
-    label->SetPosition(zaf::Point(322.068359f, 65.f));
-    label->SetBorder(1);
-    label->SetBorderColor(zaf::Color::Black);
-    label->SetPadding(10);
-    label->SetMaximumWidth(318);
-    label->SetText(L"Uria wxjsrdstct mui oqfm yxy ggmpkeyzol wgplbxpvdr qlwfxLtubxjmyod yeobfi xkelrxl gdkzkpwp qo hmio tivhlzvuq qwarqalgr igpoikqaf otrpssxihKcxx wnq jp vag mpbq lsgworymk dxntnvyvz miwxqya eacun jobtp viipblxlz nqukv jyly");
+    auto image = zaf::Bitmap::CreateFromFile(LR"(C:\Users\zplutor\Desktop\²¶»ñ.PNG)");
+    root_control->SetBackgroundImage(image);
 
-    label->SetWordWrapping(zaf::WordWrapping::Wrap);
-    label->ResizeToPreferredSize();
-    root_control->AddChild(label);
+    /*
+    auto image_box = zaf::Create<zaf::ImageBox>();
+    image_box->SetSize(zaf::Size(500, 500));
+    image_box->SetImage(zaf::Bitmap::CreateFromFile(LR"(C:\Users\zplutor\Desktop\²¶»ñ.PNG)"));
+    root_control->AddChild(image_box);
+    */
 
     application.SetMainWindow(window);
 }

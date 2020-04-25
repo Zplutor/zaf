@@ -651,7 +651,7 @@ void ScrollBarArrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
             break;
     }
 
-    auto rotation_geometry = GetResourceFactory()->CreateTransformedGeometry(
+    auto rotation_geometry = GetResourceFactory().CreateTransformedGeometry(
         triangle_geometry, 
         TransformMatrix::Rotation(rotate_angle, center_point));
 

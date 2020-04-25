@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <zaf/application.h>
 #include <zaf/graphic/alignment.h>
+#include <zaf/graphic/image/wic/imaging_factory.h>
 #include <zaf/graphic/resource_factory.h>
 #include "logic/service.h"
 #include "ui/main/conversation/common_definition.h"
@@ -52,17 +53,16 @@ zaf::wic::BitmapSource ConversationAvatarManager::GenerateConversationAvatarImag
 zaf::wic::BitmapSource ConversationAvatarManager::CombineMultiUserConversationAvatarImage(const std::vector<Id>& member_ids) {
 
     zaf::Size image_size(ConversationAvatarSize, ConversationAvatarSize);
-    auto image_source = zaf::GetResourceFactory()->CreateImageSource(
-        image_size,
-        zaf::wic::PixelFormat::BGR32,
-        zaf::ImageCacheOption::CacheOnDemand);
 
+    zaf::wic::BitmapCreateOptions options;
+    options.pixel_format = zaf::wic::PixelFormat::BGR32;
+    auto image_source = zaf::GetImagingFactory().CreateBitmap(image_size, options);
     if (image_source == nullptr) {
         return zaf::wic::BitmapSource();
     }
 
     zaf::RendererProperties renderer_properties;
-    auto renderer = zaf::GetResourceFactory()->CreateImageRenderer(image_source, renderer_properties);
+    auto renderer = zaf::GetResourceFactory().CreateBitmapRenderer(image_source, renderer_properties);
     if (renderer == nullptr) {
         return zaf::wic::BitmapSource();
     }
@@ -186,16 +186,19 @@ static void DrawMemberAvatarImagesToConversationAvatarRenderer(
         auto avatar_rect = member_avatar_rects[index];
         avatar_rect = zaf::Align(avatar_rect);
 
-        auto image_scaler = zaf::GetResourceFactory()->CreateImageScaler();
-        image_scaler.Initialize(member_avatars[index], avatar_rect.size, zaf::wic::ImageInterpolationMode::Fant);
+        auto bitmap_scaler = zaf::GetImagingFactory().CreateBitmapScaler();
+        bitmap_scaler.Initialize(
+            member_avatars[index],
+            avatar_rect.size,
+            zaf::wic::ImageInterpolationMode::Fant);
 
-        auto bitmap = renderer.CreateBitmap(image_scaler);
-        if (bitmap == nullptr) {
+        auto render_bitmap = renderer.CreateBitmap(bitmap_scaler);
+        if (render_bitmap == nullptr) {
             continue;
         }
 
         renderer.DrawBitmap(
-            bitmap, 
+            render_bitmap, 
             avatar_rect,
             1.f, 
             zaf::InterpolationMode::Linear,

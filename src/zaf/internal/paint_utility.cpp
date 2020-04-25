@@ -56,7 +56,7 @@ void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect) {
     StrokeProperties stroke_properties;
     stroke_properties.dash_style = Stroke::DashStyle::Dot;
     stroke_properties.dash_cap_style = Stroke::CapStyle::Square;
-    auto stroke = GetResourceFactory()->CreateStroke(stroke_properties);
+    auto stroke = GetResourceFactory().CreateStroke(stroke_properties);
 
     canvas.SetStroke(stroke);
     canvas.SetBrushWithColor(Color::Black);

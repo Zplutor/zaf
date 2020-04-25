@@ -1,5 +1,6 @@
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/application.h>
+#include <zaf/graphic/image/wic/imaging_factory.h>
 #include <zaf/graphic/renderer/bitmap_renderer.h>
 #include <zaf/graphic/resource_factory.h>
 
@@ -103,7 +104,7 @@ const RenderBitmap Renderer::CreateBitmap(
     const wic::BitmapSource& image_source,
     std::error_code& error_code) {
 
-    auto wic_image_factory_handle = GetResourceFactory()->GetWicImagingFactoryHandle();
+    auto wic_image_factory_handle = GetImagingFactory().GetHandle();
 
     IWICFormatConverter* format_converter = nullptr;
     HRESULT result = wic_image_factory_handle->CreateFormatConverter(&format_converter);

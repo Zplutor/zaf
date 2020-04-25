@@ -1,13 +1,19 @@
 #pragma once
 
+#include <filesystem>
 #include <zaf/control/control.h>
-#include <zaf/graphic/image/wic/bitmap_decoder.h>
 #include <zaf/graphic/interpolation_mode.h>
 
 namespace zaf {
+namespace wic {
+class BitmapDecoder;
+}
+
 namespace internal {
 class ImagePlayer;
 }
+
+class Image;
 
 class ImageBox : public Control {
 public:
@@ -17,11 +23,9 @@ public:
     ImageBox();
     ~ImageBox();
 
-    const wic::BitmapDecoder& GetImageDecoder() const {
-        return image_decoder_;
-    }
-
-    void SetImageDecoder(const wic::BitmapDecoder& image_decoder);
+    void SetImage(const std::shared_ptr<Image>& image);
+    void SetDecoder(const wic::BitmapDecoder& decoder);
+    void SetFilePath(const std::filesystem::path& file_path);
 
     InterpolationMode GetInterpolationMode() const;
     void SetInterpolationMode(InterpolationMode mode);
@@ -31,7 +35,6 @@ protected:
     void ReleaseRendererResources() override;
 
 private:
-    wic::BitmapDecoder image_decoder_;
     std::unique_ptr<internal::ImagePlayer> image_player_;
 };
 

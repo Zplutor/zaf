@@ -10,6 +10,7 @@
 #include <zaf/base/event.h>
 #include <zaf/control/anchor.h>
 #include <zaf/control/color_picker.h>
+#include <zaf/control/image_picker.h>
 #include <zaf/control/layout/layouter.h>
 #include <zaf/graphic/renderer/bitmap_renderer.h>
 #include <zaf/graphic/color.h>
@@ -345,6 +346,18 @@ public:
     Size GetContentSize() const {
         return GetContentRect().size;
     }
+
+    std::shared_ptr<Image> GetBackgroundImage() const {
+        return GetBackgroundImagePicker()(*this);
+    }
+
+    ImagePicker GetBackgroundImagePicker() const;
+
+    void SetBackgroundImage(const std::shared_ptr<Image>& image) {
+        SetBackgroundImagePicker(CreateImagePicker(image));
+    }
+
+    void SetBackgroundImagePicker(const ImagePicker& image_picker);
 
     /**
      Get background color.

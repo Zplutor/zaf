@@ -2,6 +2,7 @@
 #include <dwrite.h>
 #include <zaf/base/assert.h>
 #include <zaf/base/error.h>
+#include <zaf/graphic/image/wic/imaging_factory.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/reflection/reflection_manager.h>
@@ -65,13 +66,13 @@ void Application::Initialize(std::error_code& error_code) {
 	}
 
     //Create WIC imaging factory
-    IWICImagingFactory* wic_imaging_factory_handle = nullptr;
+    IWICImagingFactory* imaging_factory_handle{};
     result = CoCreateInstance(
         CLSID_WICImagingFactory,
         nullptr,
         CLSCTX_INPROC_SERVER,
-        IID_PPV_ARGS(&wic_imaging_factory_handle)
-    );
+        IID_PPV_ARGS(&imaging_factory_handle));
+
     error_code = MakeComErrorCode(result);
     if (!IsSucceeded(error_code)) {
         d2d_factory_handle->Release();
@@ -79,11 +80,11 @@ void Application::Initialize(std::error_code& error_code) {
         return;
     }
 
-	resource_factory_ = std::make_shared<ResourceFactory>(
-        d2d_factory_handle, 
-        dwrite_factory_handle, 
-        wic_imaging_factory_handle
-    );
+	resource_factory_ = std::make_unique<ResourceFactory>(
+        d2d_factory_handle,
+        dwrite_factory_handle);
+
+    imaging_factory_ = std::make_unique<wic::ImagingFactory>(imaging_factory_handle);
 
 	is_initialized_ = true;
 }

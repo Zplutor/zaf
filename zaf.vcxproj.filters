@@ -91,6 +91,9 @@
     <Filter Include="zaf\graphic\image\wic">
       <UniqueIdentifier>{34703fb0-a839-46c5-9f90-828e3ac139ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\image\internal">
+      <UniqueIdentifier>{51bfb241-b80c-4614-99dc-95b565164fff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -239,9 +242,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\range_manager.cpp">
       <Filter>zaf\control\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\image_box\static_image_player.cpp">
-      <Filter>zaf\control\internal\image_box</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\image_box\gif_player.cpp">
       <Filter>zaf\control\internal\image_box</Filter>
@@ -408,6 +408,15 @@
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\render_bitmap.cpp">
       <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\wic\imaging_factory.cpp">
+      <Filter>zaf\graphic\image\wic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\bitmap.cpp">
+      <Filter>zaf\graphic\image</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\image_picker.cpp">
+      <Filter>zaf\control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1026,6 +1035,21 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\render_bitmap.h">
       <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\wic\imaging_factory.h">
+      <Filter>zaf\graphic\image\wic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\bitmap.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\image.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\internal\wic_bitmap.h">
+      <Filter>zaf\graphic\image\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\image_picker.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

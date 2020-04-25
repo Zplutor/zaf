@@ -8,6 +8,7 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
+#include <zaf/graphic/image/image.h>
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/control_parser.h>
 #include <zaf/reflection/reflection_type_definition.h>
@@ -23,6 +24,7 @@ namespace zaf {
 namespace {
 
 const wchar_t* const kAnchorPropertyName = L"Anchor";
+const wchar_t* const kBackgroundImagePickerPropertyName = L"BackgroundImagePicker";
 const wchar_t* const kFocusChangeEventPropertyName = L"FocusChangeEvent";
 const wchar_t* const kLayouterPropertyName = L"Layouter";
 const wchar_t* const kRectChangeEventPropertyName = L"RectChangeEvent";
@@ -176,8 +178,19 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
     if (background_rect.size.height < 0) {
         background_rect.size.height = 0;
     }
+
+    //Draw background color.
     canvas.SetBrushWithColor(GetBackgroundColor());
     canvas.DrawRectangle(background_rect);
+
+    //Draw background image.
+    auto background_image = GetBackgroundImage();
+    if (background_image) {
+        auto render_bitmap = background_image->CreateRenderBitmap(canvas.GetRenderer());
+        if (render_bitmap != nullptr) {
+            canvas.DrawBitmap(render_bitmap, background_rect);
+        }
+    }
 
     auto border_geometry = canvas.CreateRectangleGeometry(border_rect);
     auto background_geometry = canvas.CreateRectangleGeometry(background_rect);
@@ -642,6 +655,25 @@ Rect Control::GetContentRect() const {
 	content_rect.Deflate(GetBorder());
     content_rect.Deflate(GetPadding());
 	return content_rect;
+}
+
+
+ImagePicker Control::GetBackgroundImagePicker() const {
+
+    auto image_picker = GetPropertyMap().TryGetProperty<ImagePicker>(
+        kBackgroundImagePickerPropertyName);
+
+    if (image_picker && *image_picker) {
+        return *image_picker;
+    }
+    return CreateImagePicker(nullptr);
+}
+
+
+void Control::SetBackgroundImagePicker(const ImagePicker& image_picker) {
+
+    GetPropertyMap().SetProperty(kBackgroundImagePickerPropertyName, image_picker);
+    NeedRepaint();
 }
 
 

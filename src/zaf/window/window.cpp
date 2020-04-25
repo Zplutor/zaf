@@ -181,7 +181,7 @@ const Rect Window::GetInitialRect() const {
 
 void Window::CreateRenderer() {
 
-    renderer_ = GetResourceFactory()->CreateWindowRenderer(handle_);
+    renderer_ = GetResourceFactory().CreateWindowRenderer(handle_);
 }
 
 

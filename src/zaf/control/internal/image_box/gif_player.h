@@ -14,7 +14,7 @@ class GifPlayer : public ImagePlayer {
 public:
     GifPlayer(const wic::BitmapDecoder& image_decoder);
 
-    const RenderBitmap GetBitmap(Renderer& renderer) override;
+    RenderBitmap GetRenderBitmap(Renderer& renderer) override;
     void Reset() override;
 
 private:

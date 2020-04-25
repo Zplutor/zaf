@@ -17,7 +17,7 @@ public:
         update_event_ = event;
     }
 
-    virtual const RenderBitmap GetBitmap(Renderer& renderer) = 0;
+    virtual RenderBitmap GetRenderBitmap(Renderer& renderer) = 0;
 
     virtual void Reset() { }
 

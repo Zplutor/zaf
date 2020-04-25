@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/graphic/image/wic/bitmap_decoder.h>
+#include <zaf/graphic/image/image.h>
 #include <zaf/control/internal/image_box/image_player.h>
 
 namespace zaf {
@@ -8,14 +8,16 @@ namespace internal {
 
 class StaticImagePlayer : public ImagePlayer {
 public:
-    StaticImagePlayer(const wic::BitmapDecoder& image_decoder) : image_decoder_(image_decoder) {
+    StaticImagePlayer(const std::shared_ptr<Image>& image) : image_(image) {
     
     }
 
-    const RenderBitmap GetBitmap(Renderer& renderer) override;
+    RenderBitmap GetRenderBitmap(Renderer& renderer) override {
+        return image_->CreateRenderBitmap(renderer);
+    }
 
 private:
-    wic::BitmapDecoder image_decoder_;
+    std::shared_ptr<Image> image_;
 };
 
 }

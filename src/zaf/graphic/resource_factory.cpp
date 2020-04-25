@@ -8,12 +8,10 @@ namespace zaf {
 
 ResourceFactory::ResourceFactory(
     ID2D1Factory* d2d_factory_handle, 
-    IDWriteFactory* dwrite_factory_handle,
-    IWICImagingFactory* wic_imaging_factory_handle) 
+    IDWriteFactory* dwrite_factory_handle) 
     :
 	d2d_factory_handle_(d2d_factory_handle),
-	dwrite_factory_handle_(dwrite_factory_handle),
-    wic_imaging_factory_handle_(wic_imaging_factory_handle) {
+	dwrite_factory_handle_(dwrite_factory_handle) {
 
 }
 
@@ -27,10 +25,6 @@ ResourceFactory::~ResourceFactory() {
 	if (dwrite_factory_handle_ != nullptr) {
 		dwrite_factory_handle_->Release();
 	}
-
-    if (wic_imaging_factory_handle_ != nullptr) {
-        wic_imaging_factory_handle_->Release();
-    }
 }
 
 
@@ -64,7 +58,7 @@ WindowRenderer ResourceFactory::CreateWindowRenderer(HWND window_handle, std::er
 }
 
 
-Renderer ResourceFactory::CreateImageRenderer(
+Renderer ResourceFactory::CreateBitmapRenderer(
     const wic::Bitmap& image_source,
     const RendererProperties& properties,
     std::error_code& error_code) {
@@ -216,88 +210,6 @@ TextInlineObject ResourceFactory::CreateCreateEllipsisTrimmingSign(
 
     error_code = MakeComErrorCode(hresult);
     return TextInlineObject(handle);
-}
-
-
-wic::Bitmap ResourceFactory::CreateImageSource(
-    const Size& size,
-    wic::PixelFormat pixel_format,
-    ImageCacheOption cache_option,
-    std::error_code& error_code) {
-
-    IWICBitmap* handle = nullptr;
-    HRESULT com_error = wic_imaging_factory_handle_->CreateBitmap(
-        static_cast<UINT>(size.width),
-        static_cast<UINT>(size.height),
-        ToWICPixelFormatGUID(pixel_format),
-        static_cast<WICBitmapCreateCacheOption>(cache_option),
-        &handle);
-
-    error_code = MakeComErrorCode(com_error);
-    return wic::Bitmap(handle);
-}
-
-
-wic::Bitmap ResourceFactory::CreateImageSource(
-    HBITMAP bitmap_handle,
-    HPALETTE palette_handle,
-    BitmapAlphaChannelOption alpha_channel_option,
-    std::error_code& error_code) {
-
-    IWICBitmap* handle = nullptr;
-    HRESULT com_error = wic_imaging_factory_handle_->CreateBitmapFromHBITMAP(
-        bitmap_handle, 
-        palette_handle,
-        static_cast<WICBitmapAlphaChannelOption>(alpha_channel_option),
-        &handle);
-
-    error_code = MakeComErrorCode(com_error);
-    return wic::Bitmap(handle);
-}
-
-
-wic::BitmapDecoder ResourceFactory::CreateImageDecoder(
-    const std::wstring& file_path, 
-    const CreateImageDecoderOptions& options,
-    std::error_code& error_code) {
-
-    IWICBitmapDecoder* handle = nullptr;
-    HRESULT result = wic_imaging_factory_handle_->CreateDecoderFromFilename(
-        file_path.c_str(),
-        nullptr,
-        GENERIC_READ, 
-        static_cast<WICDecodeOptions>(options.DecodeOption()),
-        &handle);
-
-    error_code = MakeComErrorCode(result);
-    return wic::BitmapDecoder(handle);
-}
-
-
-wic::BitmapDecoder ResourceFactory::CreateImageDecoder(
-    const wic::Stream& image_stream,
-    const CreateImageDecoderOptions& options,
-    std::error_code& error_code) {
-
-    IWICBitmapDecoder* handle = nullptr;
-    HRESULT com_error = wic_imaging_factory_handle_->CreateDecoderFromStream(
-        image_stream.GetHandle(),
-        nullptr,
-        static_cast<WICDecodeOptions>(options.DecodeOption()),
-        &handle);
-
-    error_code = MakeComErrorCode(com_error);
-    return wic::BitmapDecoder(handle);
-}
-
-
-wic::Palette ResourceFactory::CreateImagePalette(std::error_code& error_code) {
-
-    IWICPalette* handle = nullptr;
-    HRESULT result = wic_imaging_factory_handle_->CreatePalette(&handle);
-
-    error_code = MakeComErrorCode(result);
-    return wic::Palette(handle);
 }
 
 }

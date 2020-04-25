@@ -1,7 +1,7 @@
 #include "ui/user_avatar_manager.h"
 #include <Windows.h>
 #include <zaf/application.h>
-#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/image/wic/imaging_factory.h>
 #include "resource.h"
 
 static zaf::wic::BitmapSource CreateUserAvatarImage(Id user_id);
@@ -37,10 +37,11 @@ static zaf::wic::BitmapSource CreateUserAvatarImage(Id user_id) {
         return zaf::wic::BitmapSource();
     }
 
-    auto image = zaf::GetResourceFactory()->CreateImageSource(
-        bitmap_handle, 
-        nullptr, 
-        zaf::BitmapAlphaChannelOption::IgnoreAlpha);
+    zaf::wic::BitmapCreateFromHBITMAPOptions options;
+    options.alpha_channel_option = zaf::wic::BitmapAlphaChannelOption::IgnoreAlpha;
+    auto image = zaf::GetImagingFactory().CreateBitmapFromHBITMAP(
+        bitmap_handle,
+        options);
 
     DeleteObject(bitmap_handle);
     return image;
