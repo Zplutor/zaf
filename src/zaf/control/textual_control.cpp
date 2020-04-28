@@ -445,13 +445,29 @@ void TextualControl::NotifyTextChange() {
 }
 
 
-Size TextualControl::GetPreferredSize() const {
+Size TextualControl::GetPreferredContentSize() const {
 
     Size max_size;
     max_size.width = GetMaximumWidth();
     max_size.height = GetMaximumHeight();
-    auto result = CalculatePreferredSize(max_size);
-    return EnforceSizeLimit(result);
+
+    const auto& border = GetBorder();
+    max_size.width -= border.left + border.right;
+    max_size.height -= border.top + border.bottom;
+
+    const auto& padding = GetPadding();
+    max_size.width -= padding.left + padding.right;
+    max_size.height -= padding.top + padding.bottom;
+
+    if (max_size.width < 0) {
+        max_size.width = 0;
+    }
+
+    if (max_size.height < 0) {
+        max_size.height = 0;
+    }
+
+    return CalculatePreferredSize(max_size);
 }
 
 
@@ -461,16 +477,12 @@ Size TextualControl::CalculatePreferredSize(const Size& max_size) const {
     if (text_layout == nullptr) {
         return Size();
     }
-
-    const auto& padding = GetPadding();
-    const auto& border = GetBorder();
-    float extract_width = padding.left + padding.right + border.left + border.right;
-    float extract_height = padding.top + padding.bottom + border.top + border.bottom;
     
-    text_layout.SetMaxWidth(std::max(max_size.width - extract_width, 0.f));
-    text_layout.SetMaxHeight(std::max(max_size.height - extract_height, 0.f));
+    text_layout.SetMaxWidth(max_size.width);
+    text_layout.SetMaxHeight(max_size.height);
+
     auto metrics = text_layout.GetMetrics();
-    return Size(metrics.width + extract_width, metrics.height + extract_height);
+    return Size{ metrics.width, metrics.height };
 }
 
 

@@ -188,8 +188,6 @@ public:
         SetTextTrimming(text_trimming);
     }
 
-    Size GetPreferredSize() const override;
-
     /**
      Get text change event.
 
@@ -203,6 +201,8 @@ protected:
     void ReleaseRendererResources() override {
         ReleaseTextLayout();
     }
+
+    Size GetPreferredContentSize() const override;
 
     virtual Rect GetTextRect();
 

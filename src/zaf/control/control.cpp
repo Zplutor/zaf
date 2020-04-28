@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <zaf/base/assert.h>
 #include <zaf/base/event_utility.h>
+#include <zaf/control/internal/image_box/image_drawing.h>
 #include <zaf/control/layout/anchor_layouter.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
@@ -24,6 +25,7 @@ namespace zaf {
 namespace {
 
 const wchar_t* const kAnchorPropertyName = L"Anchor";
+const wchar_t* const kBackgroundImageLayoutPropertyName = L"BackgroundImageLayout";
 const wchar_t* const kBackgroundImagePickerPropertyName = L"BackgroundImagePicker";
 const wchar_t* const kFocusChangeEventPropertyName = L"FocusChangeEvent";
 const wchar_t* const kLayouterPropertyName = L"Layouter";
@@ -166,42 +168,58 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 	Canvas::StateGuard state_guard(canvas);
 
-    Rect border_rect;
-    border_rect.size = GetRect().size;
-  
-    Rect background_rect = border_rect;
-    background_rect.Deflate(GetBorder());
-    //The with and height must be greater than 0.
-    if (background_rect.size.width < 0) {
-        background_rect.size.width = 0;
-    }
-    if (background_rect.size.height < 0) {
-        background_rect.size.height = 0;
-    }
+    Rect control_rect{ Point{}, GetSize() };
 
     //Draw background color.
     canvas.SetBrushWithColor(GetBackgroundColor());
-    canvas.DrawRectangle(background_rect);
+    canvas.DrawRectangle(control_rect);
 
     //Draw background image.
-    auto background_image = GetBackgroundImage();
-    if (background_image) {
-        auto render_bitmap = background_image->CreateRenderBitmap(canvas.GetRenderer());
-        if (render_bitmap != nullptr) {
-            canvas.DrawBitmap(render_bitmap, background_rect);
-        }
+    DrawBackgroundImage(canvas, control_rect);
+
+    //Calculate border geometry and draw border.
+    Rect inner_rect = control_rect;
+    inner_rect.Deflate(GetBorder());
+
+    //The with and height must be greater than 0.
+    if (inner_rect.size.width < 0) {
+        inner_rect.size.width = 0;
+    }
+    if (inner_rect.size.height < 0) {
+        inner_rect.size.height = 0;
     }
 
-    auto border_geometry = canvas.CreateRectangleGeometry(border_rect);
-    auto background_geometry = canvas.CreateRectangleGeometry(background_rect);
+    auto control_geometry = canvas.CreateRectangleGeometry(control_rect);
+    auto inner_geometry = canvas.CreateRectangleGeometry(inner_rect);
     
-    auto path_geometry = canvas.CreatePathGeometry();
-    auto sink = path_geometry.Open();
-    Geometry::Combine(border_geometry, background_geometry, Geometry::CombineMode::Exclude, sink);
+    auto border_geometry = canvas.CreatePathGeometry();
+    auto sink = border_geometry.Open();
+    Geometry::Combine(control_geometry, inner_geometry, Geometry::CombineMode::Exclude, sink);
     sink.Close();
 
 	canvas.SetBrushWithColor(GetBorderColor());
-    canvas.DrawGeometry(path_geometry);
+    canvas.DrawGeometry(border_geometry);
+}
+
+
+void Control::DrawBackgroundImage(Canvas& canvas, const Rect& background_rect) {
+
+    auto background_image = GetBackgroundImage();
+    if (!background_image) {
+        return;
+    }
+    
+    auto render_bitmap = background_image->CreateRenderBitmap(canvas.GetRenderer());
+    if (render_bitmap == nullptr) {
+        return;
+    }
+
+    internal::DrawImage(
+        canvas,
+        background_rect,
+        GetBackgroundImageLayout(),
+        render_bitmap,
+        InterpolationMode::Linear);
 }
 
 
@@ -673,6 +691,22 @@ ImagePicker Control::GetBackgroundImagePicker() const {
 void Control::SetBackgroundImagePicker(const ImagePicker& image_picker) {
 
     GetPropertyMap().SetProperty(kBackgroundImagePickerPropertyName, image_picker);
+    NeedRepaint();
+}
+
+
+ImageLayout Control::GetBackgroundImageLayout() const {
+
+    auto layout = GetPropertyMap().TryGetProperty<ImageLayout>(kBackgroundImageLayoutPropertyName);
+    if (layout) {
+        return *layout;
+    }
+    return ImageLayout::None;
+}
+
+void Control::SetBackgroundImageLayout(ImageLayout image_layout) {
+
+    GetPropertyMap().SetProperty(kBackgroundImageLayoutPropertyName, image_layout);
     NeedRepaint();
 }
 

@@ -10,6 +10,7 @@
 #include <zaf/base/event.h>
 #include <zaf/control/anchor.h>
 #include <zaf/control/color_picker.h>
+#include <zaf/control/image_layout.h>
 #include <zaf/control/image_picker.h>
 #include <zaf/control/layout/layouter.h>
 #include <zaf/graphic/renderer/bitmap_renderer.h>
@@ -282,7 +283,7 @@ public:
      */
     void SetMaximumHeight(float max_height);
 
-    virtual Size GetPreferredSize() const;
+    Size GetPreferredSize() const;
 
     void ResizeToPreferredSize();
 
@@ -358,6 +359,9 @@ public:
     }
 
     void SetBackgroundImagePicker(const ImagePicker& image_picker);
+
+    ImageLayout GetBackgroundImageLayout() const;
+    void SetBackgroundImageLayout(ImageLayout image_layout);
 
     /**
      Get background color.
@@ -694,7 +698,7 @@ protected:
      */
 	void NeedRelayout();
 
-    Size EnforceSizeLimit(const Size& size) const;
+    virtual Size GetPreferredContentSize() const;
 
     /**
      Get the mutable property map.
@@ -938,13 +942,14 @@ private:
      */
     void Repaint(Canvas& canvas, const Rect& dirty_rect);
 
+    void DrawBackgroundImage(Canvas& canvas, const Rect& background_rect);
     void RepaintControl(Canvas& canvas, const Rect& dirty_rect);
     void RecalculateCachedPaintingRect(const Rect& repaint_rect);
     void ReleaseCachedPaintingRenderer();
 
 	void SetParent(const std::shared_ptr<Control>& parent);
 
-    Size GetPreferredContentSize() const;
+    Size EnforceSizeLimit(const Size& size) const;
 
 	/**
 	 Called when a child's rect has changed.

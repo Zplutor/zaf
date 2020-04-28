@@ -40,6 +40,9 @@
     <Filter Include="case\parsing\parsers">
       <UniqueIdentifier>{47594bc7-c6d1-4878-bad4-9b8c8c430d6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\control\internal\image_box">
+      <UniqueIdentifier>{faff36e5-40d5-47fc-b846-5e31fee64ef8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -159,6 +162,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\control_test.cpp">
       <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\internal\image_box\image_drawing_test.cpp">
+      <Filter>case\control\internal\image_box</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

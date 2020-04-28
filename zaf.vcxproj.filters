@@ -412,11 +412,14 @@
     <ClCompile Include="src\zaf\graphic\image\wic\imaging_factory.cpp">
       <Filter>zaf\graphic\image\wic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\bitmap.cpp">
-      <Filter>zaf\graphic\image</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\image_picker.cpp">
       <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\image_box\image_drawing.cpp">
+      <Filter>zaf\control\internal\image_box</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\image.cpp">
+      <Filter>zaf\graphic\image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1039,9 +1042,6 @@
     <ClInclude Include="src\zaf\graphic\image\wic\imaging_factory.h">
       <Filter>zaf\graphic\image\wic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\bitmap.h">
-      <Filter>zaf\graphic\image</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\image\image.h">
       <Filter>zaf\graphic\image</Filter>
     </ClInclude>
@@ -1050,6 +1050,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\image_picker.h">
       <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\image_layout.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\image_box\image_drawing.h">
+      <Filter>zaf\control\internal\image_box</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <zaf/control/control.h>
+#include <zaf/control/image_layout.h>
 #include <zaf/graphic/interpolation_mode.h>
 
 namespace zaf {
@@ -27,12 +28,17 @@ public:
     void SetDecoder(const wic::BitmapDecoder& decoder);
     void SetFilePath(const std::filesystem::path& file_path);
 
+    ImageLayout GetImageLayout() const;
+    void SetImageLayout(ImageLayout image_layout);
+
     InterpolationMode GetInterpolationMode() const;
     void SetInterpolationMode(InterpolationMode mode);
 
 protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     void ReleaseRendererResources() override;
+
+    Size GetPreferredContentSize() const override;
 
 private:
     std::unique_ptr<internal::ImagePlayer> image_player_;

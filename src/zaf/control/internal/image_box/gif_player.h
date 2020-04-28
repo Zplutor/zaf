@@ -14,6 +14,7 @@ class GifPlayer : public ImagePlayer {
 public:
     GifPlayer(const wic::BitmapDecoder& image_decoder);
 
+    void GetImageSize(Size& pixel_size, std::pair<float, float>& resolution) override;
     RenderBitmap GetRenderBitmap(Renderer& renderer) override;
     void Reset() override;
 

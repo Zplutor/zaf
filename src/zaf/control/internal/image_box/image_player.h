@@ -17,6 +17,8 @@ public:
         update_event_ = event;
     }
 
+    virtual void GetImageSize(Size& pixel_size, std::pair<float, float>& resolution) = 0;
+
     virtual RenderBitmap GetRenderBitmap(Renderer& renderer) = 0;
 
     virtual void Reset() { }

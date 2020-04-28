@@ -1,12 +1,12 @@
 #pragma once
 
-#include <zaf/graphic/image/bitmap.h>
+#include <zaf/graphic/image/image.h>
 #include <zaf/graphic/image/wic/bitmap_source.h>
 #include <zaf/graphic/renderer/renderer.h>
 
 namespace zaf::internal {
 
-class WicBitmap : public Bitmap {
+class WicBitmap : public Image {
 public:
     explicit WicBitmap(const wic::BitmapSource& wic_bitmap) : wic_bitmap_(wic_bitmap) {
 

@@ -12,6 +12,11 @@ public:
     
     }
 
+    void GetImageSize(Size& pixel_size, std::pair<float, float>& resolution) override {
+        pixel_size = image_->GetPixelSize();
+        resolution = image_->GetResolution();
+    }
+
     RenderBitmap GetRenderBitmap(Renderer& renderer) override {
         return image_->CreateRenderBitmap(renderer);
     }

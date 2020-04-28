@@ -33,6 +33,7 @@
     <ClCompile Include="src\zaf\control\image_picker.cpp" />
     <ClCompile Include="src\zaf\control\internal\combo_box_drop_down_window.cpp" />
     <ClCompile Include="src\zaf\control\internal\image_box\gif_player.cpp" />
+    <ClCompile Include="src\zaf\control\internal\image_box\image_drawing.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control_extended_multiple_select_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control_item_height_manager.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control_item_selection_manager.cpp" />
@@ -58,7 +59,7 @@
     <ClCompile Include="src\zaf\control\text_box.cpp" />
     <ClCompile Include="src\zaf\control\text_validator.cpp" />
     <ClCompile Include="src\zaf\graphic\alignment.cpp" />
-    <ClCompile Include="src\zaf\graphic\image\bitmap.cpp" />
+    <ClCompile Include="src\zaf\graphic\image\image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\bitmap.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\imaging_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\palette.cpp" />
@@ -172,9 +173,11 @@
     <ClInclude Include="src\zaf\control\combo_box.h" />
     <ClInclude Include="src\zaf\control\control.h" />
     <ClInclude Include="src\zaf\control\image_box.h" />
+    <ClInclude Include="src\zaf\control\image_layout.h" />
     <ClInclude Include="src\zaf\control\image_picker.h" />
     <ClInclude Include="src\zaf\control\internal\combo_box_drop_down_window.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h" />
+    <ClInclude Include="src\zaf\control\internal\image_box\image_drawing.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\image_player.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\static_image_player.h" />
     <ClInclude Include="src\zaf\control\internal\list_control_extended_multiple_select_strategy.h" />
@@ -208,7 +211,6 @@
     <ClInclude Include="src\zaf\control\text_validator.h" />
     <ClInclude Include="src\zaf\creation.h" />
     <ClInclude Include="src\zaf\graphic\alignment.h" />
-    <ClInclude Include="src\zaf\graphic\image\bitmap.h" />
     <ClInclude Include="src\zaf\graphic\image\image.h" />
     <ClInclude Include="src\zaf\graphic\image\internal\wic_bitmap.h" />
     <ClInclude Include="src\zaf\graphic\image\wic\bitmap.h" />

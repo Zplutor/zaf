@@ -17,6 +17,21 @@ GifPlayer::GifPlayer(const wic::BitmapDecoder& image_decoder) :
 }
 
 
+void GifPlayer::GetImageSize(Size& pixel_size, std::pair<float, float>& resolution) {
+
+    auto first_frame = image_decoder_.GetFrame(0);
+    if (first_frame == nullptr) {
+        return;
+    }
+
+    pixel_size = first_frame.GetSize();
+
+    auto origin_resolution = first_frame.GetResolution();
+    resolution.first = static_cast<float>(origin_resolution.first);
+    resolution.second = static_cast<float>(origin_resolution.second);
+}
+
+
 RenderBitmap GifPlayer::GetRenderBitmap(Renderer& renderer) {
     
     if (Initialize(renderer)) {
