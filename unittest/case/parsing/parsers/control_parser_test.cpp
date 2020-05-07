@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/control/control.h>
 #include <zaf/control/layout/linear_layouter.h>
+#include <zaf/graphic/image/bitmap_image.h>
 #include "utility.h"
 
 namespace {
@@ -292,6 +293,47 @@ TEST(ControlParserTest, ParseColors) {
     control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->GetBackgroundColor(), zaf::Color(0.1f, 0.2f, 0.3f));
     ASSERT_EQ(control->GetBorderColor(), zaf::Color(0.4f, 0.5f, 0.6f));
+}
+
+
+TEST(ControlParserTest, ParseBackgroundImage) {
+
+    auto xaml = R"(<Control BackgroundImage="file:///C:/image.png" />)";
+    auto control = CreateControlFromXaml(xaml);
+
+    auto image = std::dynamic_pointer_cast<zaf::BitmapImage>(control->GetBackgroundImage());
+    ASSERT_NE(image, nullptr);
+    ASSERT_EQ(image->GetUrl(), L"file:///C:/image.png");
+
+    xaml = R"(
+        <Control>
+            <Control.BackgroundImage Url="file:///C:/image.jpg" />
+        </Control>
+    )";
+    control = CreateControlFromXaml(xaml);
+
+    image = std::dynamic_pointer_cast<zaf::BitmapImage>(control->GetBackgroundImage());
+    ASSERT_NE(image, nullptr);
+    ASSERT_EQ(image->GetUrl(), L"file:///C:/image.jpg");
+}
+
+
+TEST(ControlParserTest, ParseBackgroundImageLayout) {
+
+    bool result = TestEnumProperty<zaf::Control, zaf::ImageLayout>(
+        "BackgroundImageLayout",
+        {
+            { zaf::ImageLayout::None, "None" },
+            { zaf::ImageLayout::Center, "Center" },
+            { zaf::ImageLayout::Stretch, "Stretch" },
+            { zaf::ImageLayout::Tile, "Tile" },
+            { zaf::ImageLayout::Zoom, "Zoom" },
+        },
+        [](zaf::Control& control) {
+            return control.GetBackgroundImageLayout();
+        }
+    );
+    ASSERT_TRUE(result);
 }
 
 

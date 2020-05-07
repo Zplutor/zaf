@@ -115,6 +115,7 @@
     <ClCompile Include="unittest\case\control\internal\range_manager_test.cpp" />
     <ClCompile Include="unittest\case\control\layout\internal\linear_layout_length_calculating_test.cpp" />
     <ClCompile Include="unittest\case\control\layout\linear_layouter_test.cpp" />
+    <ClCompile Include="unittest\case\parsers\bitmap_image_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\helpers_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\check_box_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\color_parser_test.cpp" />

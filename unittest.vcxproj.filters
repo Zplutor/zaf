@@ -166,6 +166,9 @@
     <ClCompile Include="unittest\case\control\internal\image_box\image_drawing_test.cpp">
       <Filter>case\control\internal\image_box</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\parsers\bitmap_image_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

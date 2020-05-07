@@ -421,6 +421,12 @@
     <ClCompile Include="src\zaf\graphic\image\image.cpp">
       <Filter>zaf\graphic\image</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\bitmap_image.cpp">
+      <Filter>zaf\graphic\image</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\bitmap_image_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1056,6 +1062,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\image_box\image_drawing.h">
       <Filter>zaf\control\internal\image_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\bitmap_image.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\parsing\parsers\bitmap_image_parser.h">
+      <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

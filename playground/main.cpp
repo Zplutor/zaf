@@ -66,7 +66,11 @@ void BeginRun(zaf::Application& application) {
     window->SetRootControl(root_control);
     window->Show();
 
+    auto image = zaf::CreateObjectFromXaml<zaf::Image>(L"<BitmapImage Url=\"file:///C:\\Users\\zplutor\\Desktop\\background.png\" />");
+
+    /*
     auto image = zaf::Image::FromFile(LR"(C:\Users\zplutor\Desktop\²¶»ñ.PNG)");
+    */
 
     auto image_control = zaf::Create<zaf::Control>();
     image_control->SetRect(zaf::Rect{ 100, 100, 200, 200 });
@@ -86,6 +90,9 @@ void BeginRun(zaf::Application& application) {
     image_box->SetBorderColor(zaf::Color::Black);
     image_box->ResizeToPreferredSize();
     root_control->AddChild(image_box);
+
+    std::filesystem::path path{ L"\\haha "};
+    bool v = path.is_absolute();
 
     application.SetMainWindow(window);
 }

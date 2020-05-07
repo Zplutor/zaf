@@ -59,6 +59,7 @@
     <ClCompile Include="src\zaf\control\text_box.cpp" />
     <ClCompile Include="src\zaf\control\text_validator.cpp" />
     <ClCompile Include="src\zaf\graphic\alignment.cpp" />
+    <ClCompile Include="src\zaf\graphic\image\bitmap_image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\bitmap.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\imaging_factory.cpp" />
@@ -97,6 +98,7 @@
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
     <ClCompile Include="src\zaf\parsing\helpers.cpp" />
+    <ClCompile Include="src\zaf\parsing\parsers\bitmap_image_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\button_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\check_box_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\clickable_control_parser.cpp" />
@@ -211,6 +213,7 @@
     <ClInclude Include="src\zaf\control\text_validator.h" />
     <ClInclude Include="src\zaf\creation.h" />
     <ClInclude Include="src\zaf\graphic\alignment.h" />
+    <ClInclude Include="src\zaf\graphic\image\bitmap_image.h" />
     <ClInclude Include="src\zaf\graphic\image\image.h" />
     <ClInclude Include="src\zaf\graphic\image\internal\wic_bitmap.h" />
     <ClInclude Include="src\zaf\graphic\image\wic\bitmap.h" />
@@ -286,6 +289,7 @@
     <ClInclude Include="src\zaf\internal\theme.h" />
     <ClInclude Include="src\zaf\parsing\helpers.h" />
     <ClInclude Include="src\zaf\parsing\parser.h" />
+    <ClInclude Include="src\zaf\parsing\parsers\bitmap_image_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\button_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\check_box_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\clickable_control_parser.h" />
