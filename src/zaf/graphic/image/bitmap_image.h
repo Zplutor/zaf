@@ -10,11 +10,11 @@ public:
     ZAF_DECLARE_REFLECTION_TYPE();
 
 public:
-    std::wstring GetUrl() const {
-        return url_;
+    std::wstring GetUri() const {
+        return uri_;
     }
 
-    void SetUrl(const std::wstring& url);
+    void SetUri(const std::wstring& uri);
 
     Size GetPixelSize(std::error_code& error_code) override;
     std::pair<float, float> GetResolution(std::error_code& error_code) override;
@@ -22,10 +22,10 @@ public:
 
 private:
     void CheckInitialize(std::error_code& error_code);
-    std::filesystem::path GetPathFromUrl() const;
+    std::filesystem::path GetPathFromUri() const;
 
 private:
-    std::wstring url_;
+    std::wstring uri_;
     std::shared_ptr<Image> image_;
 };
 

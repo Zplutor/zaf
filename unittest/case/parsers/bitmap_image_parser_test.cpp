@@ -10,28 +10,28 @@ TEST(BitmapImageParser, ParseFromAttribute) {
 
     auto image = Create<BitmapImage>();
 
-    std::wstring url{ L"file:///C:/image.png" };
+    std::wstring uri{ L"file:///C:/image.png" };
 
     BitmapImageParser parser;
-    parser.ParseFromAttribute(url, *image);
-    ASSERT_EQ(image->GetUrl(), url);
+    parser.ParseFromAttribute(uri, *image);
+    ASSERT_EQ(image->GetUri(), uri);
 }
 
 
 TEST(BitmapImageParser, ParseFromNode) {
 
     auto image = CreateObjectFromXaml<BitmapImage>(
-        R"(<BitmapImage Url="file:///C:/image1.png"></BitmapImage>)"
+        R"(<BitmapImage Uri="file:///C:/image1.png"></BitmapImage>)"
     );
-    ASSERT_EQ(image->GetUrl(), L"file:///C:/image1.png");
+    ASSERT_EQ(image->GetUri(), L"file:///C:/image1.png");
 
     image = CreateObjectFromXaml<BitmapImage>("<BitmapImage>file:///C:/image2.png</BitmapImage>");
-    ASSERT_EQ(image->GetUrl(), L"file:///C:/image2.png");
+    ASSERT_EQ(image->GetUri(), L"file:///C:/image2.png");
 
     image = CreateObjectFromXaml<BitmapImage>(R"(
         <BitmapImage>
-            <BitmapImage.Url>file:///C:/image3.png</BitmapImage.Url>
+            <BitmapImage.Uri>file:///C:/image3.png</BitmapImage.Uri>
         </BitmapImage>
     )");
-    ASSERT_EQ(image->GetUrl(), L"file:///C:/image3.png");
+    ASSERT_EQ(image->GetUri(), L"file:///C:/image3.png");
 }

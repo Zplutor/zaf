@@ -7,10 +7,10 @@ namespace zaf {
 ZAF_DEFINE_REFLECTION_TYPE(BitmapImage, ReflectionObject);
 
 
-void BitmapImage::SetUrl(const std::wstring& url) {
+void BitmapImage::SetUri(const std::wstring& uri) {
 
     if (!image_) {
-        url_ = url;
+        uri_ = uri;
     }
     else {
         ZAF_FAIL();
@@ -58,7 +58,7 @@ void BitmapImage::CheckInitialize(std::error_code& error_code) {
         return;
     }
 
-    auto path = GetPathFromUrl();
+    auto path = GetPathFromUri();
     if (path.empty()) {
         error_code = MakeSystemErrorCode(ERROR_FILE_NOT_FOUND);
         return;
@@ -68,13 +68,13 @@ void BitmapImage::CheckInitialize(std::error_code& error_code) {
 }
 
 
-std::filesystem::path BitmapImage::GetPathFromUrl() const {
+std::filesystem::path BitmapImage::GetPathFromUri() const {
 
     const std::wstring file_schema_prefix{ L"file:///" };
 
-    if (url_.find(file_schema_prefix) == 0) {
+    if (uri_.find(file_schema_prefix) == 0) {
 
-        std::filesystem::path path = url_.substr(file_schema_prefix.length());
+        std::filesystem::path path = uri_.substr(file_schema_prefix.length());
         if (path.is_absolute()) {
             return path;
         }
@@ -84,7 +84,7 @@ std::filesystem::path BitmapImage::GetPathFromUrl() const {
     }
     else {
 
-        std::filesystem::path path = url_;
+        std::filesystem::path path = uri_;
         if (path.is_absolute()) {
             return path;
         }
@@ -93,7 +93,7 @@ std::filesystem::path BitmapImage::GetPathFromUrl() const {
         GetModuleFileName(nullptr, buffer, MAX_PATH);
 
         path.assign(buffer);
-        return path / url_;
+        return path / uri_;
     }
 }
 

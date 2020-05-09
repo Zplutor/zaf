@@ -10,7 +10,7 @@ void BitmapImageParser::ParseFromAttribute(
     ReflectionObject& reflection_object) {
 
     auto& image = dynamic_cast<BitmapImage&>(reflection_object);
-    image.SetUrl(attribute_value);
+    image.SetUri(attribute_value);
 }
 
 
@@ -20,9 +20,9 @@ void BitmapImageParser::ParseFromNode(const XamlNode& node, ReflectionObject& re
 
     XamlNodeParseHelper helper(node, reflection_object.GetType());
 
-    auto url = helper.GetStringProperty(L"Url");
-    if (url) {
-        image.SetUrl(*url);
+    auto uri = helper.GetStringProperty(L"Uri");
+    if (uri) {
+        image.SetUri(*uri);
     }
 
     auto content_string = helper.GetContentString();

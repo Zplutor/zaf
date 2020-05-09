@@ -303,18 +303,18 @@ TEST(ControlParserTest, ParseBackgroundImage) {
 
     auto image = std::dynamic_pointer_cast<zaf::BitmapImage>(control->GetBackgroundImage());
     ASSERT_NE(image, nullptr);
-    ASSERT_EQ(image->GetUrl(), L"file:///C:/image.png");
+    ASSERT_EQ(image->GetUri(), L"file:///C:/image.png");
 
     xaml = R"(
         <Control>
-            <Control.BackgroundImage Url="file:///C:/image.jpg" />
+            <Control.BackgroundImage Uri="file:///C:/image.jpg" />
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
 
     image = std::dynamic_pointer_cast<zaf::BitmapImage>(control->GetBackgroundImage());
     ASSERT_NE(image, nullptr);
-    ASSERT_EQ(image->GetUrl(), L"file:///C:/image.jpg");
+    ASSERT_EQ(image->GetUri(), L"file:///C:/image.jpg");
 }
 
 
