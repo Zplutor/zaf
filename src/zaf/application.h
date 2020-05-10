@@ -84,7 +84,7 @@ public:
 	 Get the resource factory.
 	 */
 	GraphicFactory& GetGraphicFactory() const {
-		return *resource_factory_;
+		return *graphic_factory_;
 	}
 
 	wic::ImagingFactory& GetImagingFactory() const {
@@ -153,7 +153,7 @@ private:
 	bool is_initialized_;
 
     std::unique_ptr<ReflectionManager> reflection_manager_;
-    std::unique_ptr<GraphicFactory> resource_factory_;
+    std::unique_ptr<GraphicFactory> graphic_factory_;
 	std::unique_ptr<wic::ImagingFactory> imaging_factory_;
     std::shared_ptr<Window> main_window_;
 	std::set<std::shared_ptr<Window>> windows_;
