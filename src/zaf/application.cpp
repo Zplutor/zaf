@@ -80,7 +80,7 @@ void Application::Initialize(std::error_code& error_code) {
         return;
     }
 
-	resource_factory_ = std::make_unique<ResourceFactory>(
+	resource_factory_ = std::make_unique<GraphicFactory>(
         d2d_factory_handle,
         dwrite_factory_handle);
 

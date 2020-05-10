@@ -13,7 +13,7 @@ namespace zaf {
 /**
  Describes the font and paragraph properties used to format text.
 
- You should create TextFormat instances via ResourceFactory::CreateTextFormat.
+ You should create TextFormat instances via GraphicFactory::CreateTextFormat.
  */
 class TextFormat : public ComObject<IDWriteTextFormat> {
 public:

@@ -6,7 +6,7 @@
 
 namespace zaf {
 
-ResourceFactory::ResourceFactory(
+GraphicFactory::GraphicFactory(
     ID2D1Factory* d2d_factory_handle, 
     IDWriteFactory* dwrite_factory_handle) 
     :
@@ -16,7 +16,7 @@ ResourceFactory::ResourceFactory(
 }
 
 
-ResourceFactory::~ResourceFactory() {
+GraphicFactory::~GraphicFactory() {
 
 	if (d2d_factory_handle_ != nullptr) {
 		d2d_factory_handle_->Release();
@@ -28,7 +28,7 @@ ResourceFactory::~ResourceFactory() {
 }
 
 
-WindowRenderer ResourceFactory::CreateWindowRenderer(HWND window_handle, std::error_code& error_code) {
+WindowRenderer GraphicFactory::CreateWindowRenderer(HWND window_handle, std::error_code& error_code) {
 
 	RECT window_rect = { 0 };
     if (! GetClientRect(window_handle, &window_rect)) {
@@ -58,7 +58,7 @@ WindowRenderer ResourceFactory::CreateWindowRenderer(HWND window_handle, std::er
 }
 
 
-Renderer ResourceFactory::CreateBitmapRenderer(
+Renderer GraphicFactory::CreateBitmapRenderer(
     const wic::Bitmap& image_source,
     const RendererProperties& properties,
     std::error_code& error_code) {
@@ -83,7 +83,7 @@ Renderer ResourceFactory::CreateBitmapRenderer(
 }
 
 
-RectangleGeometry ResourceFactory::CreateRectangleGeometry(const Rect& rect, std::error_code& error_code) {
+RectangleGeometry GraphicFactory::CreateRectangleGeometry(const Rect& rect, std::error_code& error_code) {
 
     ID2D1RectangleGeometry* handle = nullptr;
     HRESULT result = d2d_factory_handle_->CreateRectangleGeometry(rect.ToD2D1RECTF(), &handle);
@@ -93,7 +93,7 @@ RectangleGeometry ResourceFactory::CreateRectangleGeometry(const Rect& rect, std
 }
 
 
-RoundedRectangleGeometry ResourceFactory::CreateRoundedRectangleGeometry(
+RoundedRectangleGeometry GraphicFactory::CreateRoundedRectangleGeometry(
     const RoundedRect& rounded_rect, 
     std::error_code& error_code) {
 
@@ -105,7 +105,7 @@ RoundedRectangleGeometry ResourceFactory::CreateRoundedRectangleGeometry(
 }
 
 
-PathGeometry ResourceFactory::CreatePathGeometry(std::error_code& error_code) {
+PathGeometry GraphicFactory::CreatePathGeometry(std::error_code& error_code) {
 
 	ID2D1PathGeometry* handle = nullptr;
 	HRESULT result = d2d_factory_handle_->CreatePathGeometry(&handle);
@@ -115,7 +115,7 @@ PathGeometry ResourceFactory::CreatePathGeometry(std::error_code& error_code) {
 }
 
 
-TransformedGeometry ResourceFactory::CreateTransformedGeometry(
+TransformedGeometry GraphicFactory::CreateTransformedGeometry(
     const Geometry& geometry,
     const TransformMatrix& transform_matrix,
     std::error_code& error_code) {
@@ -131,7 +131,7 @@ TransformedGeometry ResourceFactory::CreateTransformedGeometry(
 }
 
 
-Stroke ResourceFactory::CreateStroke(const StrokeProperties& properties, std::error_code& error_code) {
+Stroke GraphicFactory::CreateStroke(const StrokeProperties& properties, std::error_code& error_code) {
     
 	D2D1_STROKE_STYLE_PROPERTIES d2d_properties;
 	d2d_properties.startCap = static_cast<D2D1_CAP_STYLE>(properties.start_cap_style);
@@ -155,7 +155,7 @@ Stroke ResourceFactory::CreateStroke(const StrokeProperties& properties, std::er
 }
 
 
-TextFormat ResourceFactory::CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code) {
+TextFormat GraphicFactory::CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code) {
 
 	IDWriteTextFormat* handle = nullptr;
 	HRESULT result = dwrite_factory_handle_->CreateTextFormat(
@@ -174,7 +174,7 @@ TextFormat ResourceFactory::CreateTextFormat(const TextFormatProperties& propert
 }
 
 
-TextLayout ResourceFactory::CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code) {
+TextLayout GraphicFactory::CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code) {
 
 	IDWriteTextLayout* handle = nullptr;
 	HRESULT result = dwrite_factory_handle_->CreateTextLayout(
@@ -191,7 +191,7 @@ TextLayout ResourceFactory::CreateTextLayout(const TextLayoutProperties& propert
 }
 
 
-FontCollection ResourceFactory::GetSystemFontCollection(std::error_code& error_code) {
+FontCollection GraphicFactory::GetSystemFontCollection(std::error_code& error_code) {
 
     IDWriteFontCollection* handle = nullptr;
     HRESULT result = dwrite_factory_handle_->GetSystemFontCollection(&handle);
@@ -201,7 +201,7 @@ FontCollection ResourceFactory::GetSystemFontCollection(std::error_code& error_c
 }
 
 
-TextInlineObject ResourceFactory::CreateCreateEllipsisTrimmingSign(
+TextInlineObject GraphicFactory::CreateCreateEllipsisTrimmingSign(
     const TextFormat& text_format, 
     std::error_code& error_code) {
 

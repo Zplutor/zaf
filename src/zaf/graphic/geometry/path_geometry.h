@@ -9,7 +9,7 @@ namespace zaf {
 /**
  Represents a complex shape that may be composed of arcs, curves, and lines.
 
- You can create instances via ResourceFactory::CreatePathGeometry.
+ You can create instances via GraphicFactory::CreatePathGeometry.
  */
 class PathGeometry : public Geometry {
 public:

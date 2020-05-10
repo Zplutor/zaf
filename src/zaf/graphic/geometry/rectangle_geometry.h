@@ -8,7 +8,7 @@ namespace zaf {
 /**
  Represents a rectangle.   
 
- You can create instances via ResourceFactory::CreateRectangleGeometry.
+ You can create instances via GraphicFactory::CreateRectangleGeometry.
  */
 class RectangleGeometry : public Geometry {
 public:

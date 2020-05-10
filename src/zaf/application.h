@@ -15,7 +15,7 @@ class ImagingFactory;
 }
 
 class ReflectionManager;
-class ResourceFactory;
+class GraphicFactory;
 class Window;
 
 /**
@@ -83,7 +83,7 @@ public:
 	/**
 	 Get the resource factory.
 	 */
-	ResourceFactory& GetResourceFactory() const {
+	GraphicFactory& GetGraphicFactory() const {
 		return *resource_factory_;
 	}
 
@@ -153,7 +153,7 @@ private:
 	bool is_initialized_;
 
     std::unique_ptr<ReflectionManager> reflection_manager_;
-    std::unique_ptr<ResourceFactory> resource_factory_;
+    std::unique_ptr<GraphicFactory> resource_factory_;
 	std::unique_ptr<wic::ImagingFactory> imaging_factory_;
     std::shared_ptr<Window> main_window_;
 	std::set<std::shared_ptr<Window>> windows_;
@@ -173,8 +173,8 @@ inline ReflectionManager& GetReflectionManager() {
 }
 
 
-inline ResourceFactory& GetResourceFactory() {
-    return GetApplication().GetResourceFactory();
+inline GraphicFactory& GetGraphicFactory() {
+    return GetApplication().GetGraphicFactory();
 }
 
 

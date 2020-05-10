@@ -34,7 +34,7 @@ namespace {
 void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_format) {
     if (text_trimming.granularity != TextTrimming::Granularity::None) {
         if (text_trimming.trimming_sign == nullptr) {
-            text_trimming.trimming_sign = GetResourceFactory().CreateCreateEllipsisTrimmingSign(text_format);
+            text_trimming.trimming_sign = GetGraphicFactory().CreateCreateEllipsisTrimmingSign(text_format);
         }
     }
 }
@@ -90,7 +90,7 @@ TextLayout TextualControl::CreateTextLayout() const {
     TextLayoutProperties text_layout_properties;
     text_layout_properties.text = GetText();
     text_layout_properties.text_format = text_format;
-    auto text_layout = GetResourceFactory().CreateTextLayout(text_layout_properties);
+    auto text_layout = GetGraphicFactory().CreateTextLayout(text_layout_properties);
 
     if (text_layout != nullptr) {
         SetFontsToTextLayout(text_layout);
@@ -108,7 +108,7 @@ TextFormat TextualControl::CreateTextFormat() const {
     text_format_properties.font_size = font.size;
     text_format_properties.font_weight = font.weight;
 
-    auto text_format = GetResourceFactory().CreateTextFormat(text_format_properties);
+    auto text_format = GetGraphicFactory().CreateTextFormat(text_format_properties);
     if (text_format == nullptr) {
         return TextFormat();
     }

@@ -28,20 +28,20 @@ class TransformMatrix;
 /**
  Represent a factory that creates graphic resources.
 
- There is no need to create ResourceFactory instance by yourself, use GetResourceFactory
+ There is no need to create GraphicFactory instance by yourself, use GetGraphicFactory
  function instead.
  */
-class ResourceFactory {
+class GraphicFactory {
 public:
 	/**
 	 Initialize the instance with specified underlying instances.
 	 */
-    ResourceFactory(ID2D1Factory* d2d_factory_handle, IDWriteFactory* dwrite_factory_handle);
+    GraphicFactory(ID2D1Factory* d2d_factory_handle, IDWriteFactory* dwrite_factory_handle);
 
 	/**
 	 Destroy the instance.
 	 */
-    ~ResourceFactory();
+    ~GraphicFactory();
 	
     /**
      Create a window renderer that associated with specified window.
@@ -207,8 +207,8 @@ public:
 		return dwrite_factory_handle_;
 	}
 
-    ResourceFactory(const ResourceFactory&) = delete;
-    ResourceFactory& operator=(const ResourceFactory&) = delete;
+    GraphicFactory(const GraphicFactory&) = delete;
+    GraphicFactory& operator=(const GraphicFactory&) = delete;
 
 private:
 	ID2D1Factory* d2d_factory_handle_;

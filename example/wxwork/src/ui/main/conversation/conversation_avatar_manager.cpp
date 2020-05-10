@@ -62,7 +62,7 @@ zaf::wic::BitmapSource ConversationAvatarManager::CombineMultiUserConversationAv
     }
 
     zaf::RendererProperties renderer_properties;
-    auto renderer = zaf::GetResourceFactory().CreateBitmapRenderer(image_source, renderer_properties);
+    auto renderer = zaf::GetGraphicFactory().CreateBitmapRenderer(image_source, renderer_properties);
     if (renderer == nullptr) {
         return zaf::wic::BitmapSource();
     }

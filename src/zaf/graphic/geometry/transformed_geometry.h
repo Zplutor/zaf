@@ -8,7 +8,7 @@ namespace zaf {
 /**
  Represents a geometry that has been transformed.
 
- You can create instances via ResourceFactory::CreateTransformedGeometry.
+ You can create instances via GraphicFactory::CreateTransformedGeometry.
  */
 class TransformedGeometry : public Geometry {
 public:

@@ -16,7 +16,7 @@ namespace zaf {
 /**
  Represents a block of text after it has been fully analyzed and formatted.
 
- You should create TextLayout instances via ResourceFactory::CreateTextLayout.
+ You should create TextLayout instances via GraphicFactory::CreateTextLayout.
  */
 class TextLayout : public TextFormat {
 public:
