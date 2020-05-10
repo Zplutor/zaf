@@ -7,6 +7,11 @@ UriParseResult ParseUri(const std::wstring& uri) {
 
     UriParseResult result;
 
+    if (uri.empty()) {
+        result.type = UriType::Unknown;
+        return result;
+    }
+
     const std::wstring file_schema_prefix{ L"file:///" };
     if (uri.find(file_schema_prefix) == 0) {
         

@@ -5,7 +5,7 @@
 int main(int argc, char **argv) {
 
     std::error_code error_code;
-    zaf::Application::GetInstance().Initialize(error_code);
+    zaf::Application::GetInstance().Initialize({}, error_code);
     if (! zaf::IsSucceeded(error_code)) {
         return error_code.value();
     }

@@ -442,6 +442,9 @@
     <ClCompile Include="src\zaf\graphic\image\internal\utility.cpp">
       <Filter>zaf\graphic\image\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\resource\default_relative_uri_loader.cpp">
+      <Filter>zaf\resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1095,6 +1098,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\image\internal\utility.h">
       <Filter>zaf\graphic\image\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\resource\default_relative_uri_loader.h">
+      <Filter>zaf\resource</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

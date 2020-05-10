@@ -47,7 +47,7 @@ int WINAPI WinMain(
     application.GetBeginRunEvent().AddListener(BeginRun);
 
     std::error_code error_code;
-    application.Initialize(error_code);
+    application.Initialize({}, error_code);
 
     if (zaf::IsSucceeded(error_code)) {
         application.Run();
@@ -90,9 +90,6 @@ void BeginRun(zaf::Application& application) {
     image_box->SetBorderColor(zaf::Color::Black);
     image_box->ResizeToPreferredSize();
     root_control->AddChild(image_box);
-
-    std::filesystem::path path{ L"\\haha "};
-    bool v = path.is_absolute();
 
     application.SetMainWindow(window);
 }

@@ -8,7 +8,7 @@ class UriLoader;
 
 class ResourceManager {
 public:
-    ResourceManager();
+    ResourceManager(const std::shared_ptr<UriLoader>& relative_uri_loader);
     ~ResourceManager();
 
     ResourceManager(const ResourceManager&) = delete;

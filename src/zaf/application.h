@@ -15,7 +15,13 @@ class ImagingFactory;
 class GraphicFactory;
 class ReflectionManager;
 class ResourceManager;
+class UriLoader;
 class Window;
+
+class InitializeParameters {
+public:
+	std::shared_ptr<UriLoader> relative_uri_loader;
+};
 
 /**
  Represents the application runtime instance.
@@ -46,6 +52,9 @@ public:
 	/**
 	 Initialize the application.
 
+	 @param parameters
+		Initialization parameters.
+
      @param error_code
         An output parameter indicating the result of initialization. You should check
         this parameter to ensure that whether the initialization is succeeded.
@@ -53,7 +62,7 @@ public:
 	 This mehtod must be called before calling Run method. If the initialization
 	 fails, the application is unable to run, it should be terminated in this case.
 	 */
-	void Initialize(std::error_code& error_code);
+	void Initialize(const InitializeParameters& parameters, std::error_code& error_code);
 
 	/**
 	 Make the application run.

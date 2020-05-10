@@ -43,6 +43,12 @@
     <Filter Include="case\control\internal\image_box">
       <UniqueIdentifier>{faff36e5-40d5-47fc-b846-5e31fee64ef8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\resource">
+      <UniqueIdentifier>{94a24272-e825-49bd-afed-5f590043824b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\resource\internal">
+      <UniqueIdentifier>{f27731de-7f0b-4fa6-acb7-91f8ece19bef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -168,6 +174,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\parsers\bitmap_image_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\resource\internal\utility_test.cpp">
+      <Filter>case\resource\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

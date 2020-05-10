@@ -19,13 +19,12 @@ Application& Application::GetInstance() {
 
 Application::Application() : 
     is_initialized_(false), 
-    reflection_manager_(std::make_unique<ReflectionManager>()),
-    resource_manager_(std::make_unique<ResourceManager>()) {
+    reflection_manager_(std::make_unique<ReflectionManager>()) {
 
 }
 
 
-void Application::Initialize(std::error_code& error_code) {
+void Application::Initialize(const InitializeParameters& parameters, std::error_code& error_code) {
 
 	if (is_initialized_) {
         error_code.clear();
@@ -34,6 +33,8 @@ void Application::Initialize(std::error_code& error_code) {
 
     //Check reflection type definition errors.
     reflection_manager_->CheckTypeErrors();
+
+    resource_manager_ = std::make_unique<ResourceManager>(parameters.relative_uri_loader);
 
 	HRESULT result = CoInitialize(nullptr);
     error_code = MakeComErrorCode(result);

@@ -1,11 +1,13 @@
 #include <zaf/resource/resource_manager.h>
 #include <zaf/base/stream.h>
+#include <zaf/resource/default_relative_uri_loader.h>
 #include <zaf/resource/internal/uri_parsing.h>
 #include <zaf/resource/uri_loader.h>
 
 namespace zaf {
 
-ResourceManager::ResourceManager() {
+ResourceManager::ResourceManager(const std::shared_ptr<UriLoader>& relative_uri_loader) : 
+    relative_uri_loader_(relative_uri_loader) {
 
 }
 
@@ -38,11 +40,7 @@ Stream ResourceManager::LoadRelativeUri(const std::wstring& uri, std::error_code
         return relative_uri_loader_->Load(uri, error_code);
     }
     
-    wchar_t buffer[MAX_PATH]{};
-    GetModuleFileName(nullptr, buffer, MAX_PATH);
-
-    std::filesystem::path path{ buffer };
-    return Stream::FromFile(path / uri, error_code);
+    return DefaultRelativeUriLoader::GetInstance()->Load(uri, error_code);
 }
 
 }
