@@ -9,13 +9,12 @@
 
 namespace zaf {
 namespace wic {
-
 class ImagingFactory;
-
 }
 
-class ReflectionManager;
 class GraphicFactory;
+class ReflectionManager;
+class ResourceManager;
 class Window;
 
 /**
@@ -80,6 +79,10 @@ public:
         return *reflection_manager_;
     }
 
+	ResourceManager& GetResourceManager() const {
+		return *resource_manager_;
+	}
+
 	/**
 	 Get the resource factory.
 	 */
@@ -99,7 +102,7 @@ public:
      @return 
         The first value is the horizontal DPI; and the second is the vertical DPI.
      */
-    const std::pair<float, float> GetDpi() const;
+    std::pair<float, float> GetDpi() const;
 
 	/**
 	 Get the application began run event.
@@ -122,7 +125,7 @@ public:
     /**
      Get the main window.
      */
-    const std::shared_ptr<Window> GetMainWindow() const {
+    const std::shared_ptr<Window>& GetMainWindow() const {
         return main_window_;
     }
 
@@ -153,6 +156,7 @@ private:
 	bool is_initialized_;
 
     std::unique_ptr<ReflectionManager> reflection_manager_;
+	std::unique_ptr<ResourceManager> resource_manager_;
     std::unique_ptr<GraphicFactory> graphic_factory_;
 	std::unique_ptr<wic::ImagingFactory> imaging_factory_;
     std::shared_ptr<Window> main_window_;
@@ -170,6 +174,11 @@ inline Application& GetApplication() {
 
 inline ReflectionManager& GetReflectionManager() {
     return Application::GetInstance().GetReflectionManager();
+}
+
+
+inline ResourceManager& GetResourceManager() {
+	return Application::GetInstance().GetResourceManager();
 }
 
 

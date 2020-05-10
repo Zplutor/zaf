@@ -22,7 +22,6 @@ public:
 
 private:
     void CheckInitialize(std::error_code& error_code);
-    std::filesystem::path GetPathFromUri() const;
 
 private:
     std::wstring uri_;

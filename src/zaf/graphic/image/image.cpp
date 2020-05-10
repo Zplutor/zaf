@@ -1,5 +1,6 @@
 #include <zaf/graphic/image/image.h>
 #include <zaf/application.h>
+#include <zaf/graphic/image/internal/utility.h>
 #include <zaf/graphic/image/internal/wic_bitmap.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
 
@@ -35,6 +36,17 @@ std::shared_ptr<Image> Image::FromBitmapDecoder(
         return {};
     }
     return FromBitmap(first_frame);
+}
+
+
+std::shared_ptr<Image> Image::FromStream(const Stream& stream, std::error_code& error_code) {
+
+    auto bitmap_decoder = internal::CreateBitmapDecoderFromSteam(stream, error_code);
+    if (!IsSucceeded(error_code)) {
+        return {};
+    }
+
+    return FromBitmapDecoder(bitmap_decoder, error_code);
 }
 
 }

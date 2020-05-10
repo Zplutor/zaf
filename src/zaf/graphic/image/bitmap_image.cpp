@@ -1,6 +1,7 @@
 #include <zaf/graphic/image/bitmap_image.h>
 #include <zaf/parsing/parsers/bitmap_image_parser.h>
 #include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/resource/resource_manager.h>
 
 namespace zaf {
 
@@ -58,43 +59,12 @@ void BitmapImage::CheckInitialize(std::error_code& error_code) {
         return;
     }
 
-    auto path = GetPathFromUri();
-    if (path.empty()) {
-        error_code = MakeSystemErrorCode(ERROR_FILE_NOT_FOUND);
+    auto stream = GetResourceManager().LoadUri(uri_, error_code);
+    if (!IsSucceeded(error_code)) {
         return;
     }
 
-    image_ = Image::FromFile(path, error_code);
-}
-
-
-std::filesystem::path BitmapImage::GetPathFromUri() const {
-
-    const std::wstring file_schema_prefix{ L"file:///" };
-
-    if (uri_.find(file_schema_prefix) == 0) {
-
-        std::filesystem::path path = uri_.substr(file_schema_prefix.length());
-        if (path.is_absolute()) {
-            return path;
-        }
-        else {
-            return {};
-        }
-    }
-    else {
-
-        std::filesystem::path path = uri_;
-        if (path.is_absolute()) {
-            return path;
-        }
-
-        wchar_t buffer[MAX_PATH]{};
-        GetModuleFileName(nullptr, buffer, MAX_PATH);
-
-        path.assign(buffer);
-        return path / uri_;
-    }
+    image_ = Image::FromStream(stream, error_code);
 }
 
 }

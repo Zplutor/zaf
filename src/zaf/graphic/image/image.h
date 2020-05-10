@@ -9,6 +9,8 @@ class BitmapDecoder;
 class BitmapSource;
 }
 
+class Stream;
+
 class Image {
 public:
     static std::shared_ptr<Image> FromFile(
@@ -31,6 +33,14 @@ public:
     static std::shared_ptr<Image> FromBitmapDecoder(const wic::BitmapDecoder& decoder) {
         std::error_code error_code;
         auto result = FromBitmapDecoder(decoder, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+
+    static std::shared_ptr<Image> FromStream(const Stream& stream, std::error_code& error_code);
+    static std::shared_ptr<Image> FromStream(const Stream& stream) {
+        std::error_code error_code;
+        auto result = FromStream(stream, error_code);
         ZAF_CHECK_ERROR(error_code);
         return result;
     }

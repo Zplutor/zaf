@@ -1,6 +1,7 @@
 #include <zaf/control/image_box.h>
 #include <zaf/application.h>
 #include <zaf/graphic/image/image.h>
+#include <zaf/graphic/image/internal/utility.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
 #include <zaf/control/internal/image_box/gif_player.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
@@ -8,6 +9,7 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/parsing/parsers/image_box_parser.h>
 #include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/resource/resource_manager.h>
 
 namespace zaf {
 namespace {
@@ -97,12 +99,29 @@ void ImageBox::SetDecoder(const wic::BitmapDecoder& decoder) {
 
 void ImageBox::SetFilePath(const std::filesystem::path& file_path) {
 
-    auto decoder = GetApplication().GetImagingFactory().CreateDecoderFromFile(file_path);
+    auto decoder = GetImagingFactory().CreateDecoderFromFile(file_path);
     if (decoder == nullptr) {
         return;
     }
 
     SetDecoder(decoder);
+}
+
+
+void ImageBox::SetUri(const std::wstring& uri) {
+
+    auto stream = GetResourceManager().LoadUri(uri);
+    if (stream == nullptr) {
+        return;
+    }
+
+    std::error_code error_code;
+    auto bitmap_decoder = internal::CreateBitmapDecoderFromSteam(stream, error_code);
+    if (bitmap_decoder == nullptr) {
+        return;
+    }
+
+    SetDecoder(bitmap_decoder);
 }
 
 

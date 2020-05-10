@@ -7,10 +7,30 @@ Stream Stream::FromMemory(const void* data, std::size_t size, std::error_code& e
 
     auto handle = SHCreateMemStream(reinterpret_cast<const BYTE*>(data), size);
     if (!handle) {
-        error_code = MakeSystemErrorCode(E_OUTOFMEMORY);
+        error_code = MakeComErrorCode(E_OUTOFMEMORY);
         return {};
     }
     error_code.clear();
+    return Stream{ handle };
+}
+
+
+Stream Stream::FromFile(const std::filesystem::path& path, std::error_code& error_code) {
+
+    IStream* handle{};
+    HRESULT hresult = SHCreateStreamOnFileEx(
+        path.c_str(),
+        STGM_READ, 
+        FILE_ATTRIBUTE_NORMAL, 
+        FALSE, 
+        nullptr, 
+        &handle);
+
+    error_code = MakeComErrorCode(hresult);
+    if (!IsSucceeded(error_code)) {
+        return {};
+    }
+
     return Stream{ handle };
 }
 

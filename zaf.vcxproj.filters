@@ -94,6 +94,12 @@
     <Filter Include="zaf\graphic\image\internal">
       <UniqueIdentifier>{51bfb241-b80c-4614-99dc-95b565164fff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\resource">
+      <UniqueIdentifier>{cfdf8476-7527-420b-8c7a-f1b8da7ade39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\resource\internal">
+      <UniqueIdentifier>{c0407eed-88f9-44a0-b226-391be1616417}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -426,6 +432,15 @@
     </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\bitmap_image_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\resource\resource_manager.cpp">
+      <Filter>zaf\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp">
+      <Filter>zaf\resource\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\internal\utility.cpp">
+      <Filter>zaf\graphic\image\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1068,6 +1083,18 @@
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\bitmap_image_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\resource\uri_loader.h">
+      <Filter>zaf\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\resource\resource_manager.h">
+      <Filter>zaf\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\resource\internal\uri_parsing.h">
+      <Filter>zaf\resource\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\internal\utility.h">
+      <Filter>zaf\graphic\image\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

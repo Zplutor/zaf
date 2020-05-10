@@ -6,6 +6,7 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/reflection/reflection_manager.h>
+#include <zaf/resource/resource_manager.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -18,7 +19,8 @@ Application& Application::GetInstance() {
 
 Application::Application() : 
     is_initialized_(false), 
-    reflection_manager_(std::make_unique<ReflectionManager>()) {
+    reflection_manager_(std::make_unique<ReflectionManager>()),
+    resource_manager_(std::make_unique<ResourceManager>()) {
 
 }
 
@@ -114,7 +116,7 @@ void Application::Terminate() {
 }
 
 
-const std::pair<float, float> Application::GetDpi() const {
+std::pair<float, float> Application::GetDpi() const {
 
     std::pair<float, float> dpi_pair;
 

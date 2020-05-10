@@ -61,6 +61,7 @@
     <ClCompile Include="src\zaf\graphic\alignment.cpp" />
     <ClCompile Include="src\zaf\graphic\image\bitmap_image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image.cpp" />
+    <ClCompile Include="src\zaf\graphic\image\internal\utility.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\bitmap.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\imaging_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\palette.cpp" />
@@ -121,6 +122,8 @@
     <ClCompile Include="src\zaf\reflection\creation.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_object.cpp" />
+    <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp" />
+    <ClCompile Include="src\zaf\resource\resource_manager.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
     <ClCompile Include="src\zaf\window\dialog.cpp" />
     <ClCompile Include="src\zaf\window\message\creation.cpp" />
@@ -215,6 +218,7 @@
     <ClInclude Include="src\zaf\graphic\alignment.h" />
     <ClInclude Include="src\zaf\graphic\image\bitmap_image.h" />
     <ClInclude Include="src\zaf\graphic\image\image.h" />
+    <ClInclude Include="src\zaf\graphic\image\internal\utility.h" />
     <ClInclude Include="src\zaf\graphic\image\internal\wic_bitmap.h" />
     <ClInclude Include="src\zaf\graphic\image\wic\bitmap.h" />
     <ClInclude Include="src\zaf\graphic\image\wic\imaging_factory.h" />
@@ -330,6 +334,9 @@
     <ClInclude Include="src\zaf\reflection\reflection_object.h" />
     <ClInclude Include="src\zaf\reflection\reflection_type.h" />
     <ClInclude Include="src\zaf\reflection\reflection_type_definition.h" />
+    <ClInclude Include="src\zaf\resource\internal\uri_parsing.h" />
+    <ClInclude Include="src\zaf\resource\resource_manager.h" />
+    <ClInclude Include="src\zaf\resource\uri_loader.h" />
     <ClInclude Include="src\zaf\serialization\properties.h" />
     <ClInclude Include="src\zaf\serialization\property_map.h" />
     <ClInclude Include="src\zaf\window\caret.h" />

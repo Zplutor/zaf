@@ -66,7 +66,7 @@ void BeginRun(zaf::Application& application) {
     window->SetRootControl(root_control);
     window->Show();
 
-    auto image = zaf::CreateObjectFromXaml<zaf::Image>(L"<BitmapImage Url=\"file:///C:\\Users\\zplutor\\Desktop\\background.png\" />");
+    auto image = zaf::CreateObjectFromXaml<zaf::Image>(L"<BitmapImage Uri=\"file:///C:\\Users\\zplutor\\Desktop\\background.png\" />");
 
     /*
     auto image = zaf::Image::FromFile(LR"(C:\Users\zplutor\Desktop\²¶»ñ.PNG)");
@@ -83,7 +83,7 @@ void BeginRun(zaf::Application& application) {
 
     auto image_box = zaf::Create<zaf::ImageBox>();
     image_box->SetRect(zaf::Rect{ 330, 50, 200, 200 });
-    image_box->SetImage(image);
+    image_box->SetUri(L"file:///C:\\Users\\zplutor\\Desktop\\background.png");
     image_box->SetPadding(5);
     image_box->SetBorder(5);
     image_box->SetBackgroundColor(zaf::Color::Green);
