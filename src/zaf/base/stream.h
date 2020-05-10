@@ -10,27 +10,41 @@ namespace zaf {
 
 class Stream : public ComObject<IStream> {
 public:
-    enum class Origin {
+    enum class SeekOrigin {
         Set = STREAM_SEEK_SET,
         Current = STREAM_SEEK_CUR,
         End = STREAM_SEEK_END,
     };
 
 public:
+    static Stream FromMemory(const void* data, std::size_t size, std::error_code& error_code);
+
+    static Stream FromMemory(const void* data, std::size_t size) {
+        std::error_code error_code;
+        auto result = FromMemory(data, size, error_code);
+        ZAF_CHECK_ERROR(error_code);
+        return result;
+    }
+
+public:
     Stream() { }
     Stream(IStream* handle) : ComObject(handle) { }
 
-    std::uint64_t GetLength(std::error_code& error_code) const;
+    IStream* GetHandle() const {
+        return static_cast<IStream*>(__super::GetHandle());
+    }
 
-    std::uint64_t GetLength() const {
+    std::int64_t GetLength(std::error_code& error_code) const;
+
+    std::int64_t GetLength() const {
         std::error_code error_code;
         auto result = GetLength(error_code);
         return result;
     }
 
-    std::uint64_t Seek(Origin origin, std::int64_t offset, std::error_code& error_code);
+    std::int64_t Seek(SeekOrigin origin, std::int64_t offset, std::error_code& error_code);
 
-    std::uint64_t Seek(Origin origin, std::int64_t offset) {
+    std::int64_t Seek(SeekOrigin origin, std::int64_t offset) {
         std::error_code error_code;
         auto new_position = Seek(origin, offset, error_code);
         ZAF_CHECK_ERROR(error_code);
@@ -55,11 +69,5 @@ public:
         return written_size;
     }
 };
-
-Stream CreateMemoryStream(const void* initial_data, std::size_t initial_data_size);
-
-inline Stream CreateMemoryStream() {
-    return CreateMemoryStream(nullptr, 0);
-}
 
 }

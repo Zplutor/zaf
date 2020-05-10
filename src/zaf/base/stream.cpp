@@ -3,7 +3,19 @@
 
 namespace zaf {
 
-std::uint64_t Stream::GetLength(std::error_code& error_code) const {
+Stream Stream::FromMemory(const void* data, std::size_t size, std::error_code& error_code) {
+
+    auto handle = SHCreateMemStream(reinterpret_cast<const BYTE*>(data), size);
+    if (!handle) {
+        error_code = MakeSystemErrorCode(E_OUTOFMEMORY);
+        return {};
+    }
+    error_code.clear();
+    return Stream{ handle };
+}
+
+
+std::int64_t Stream::GetLength(std::error_code& error_code) const {
 
     STATSTG state = { 0 };
     HRESULT result = GetHandle()->Stat(&state, STATFLAG_NONAME);
@@ -13,7 +25,7 @@ std::uint64_t Stream::GetLength(std::error_code& error_code) const {
 }
 
 
-std::uint64_t Stream::Seek(Origin origin, std::int64_t offset, std::error_code& error_code) {
+std::int64_t Stream::Seek(SeekOrigin origin, std::int64_t offset, std::error_code& error_code) {
 
     LARGE_INTEGER move;
     move.QuadPart = offset;
@@ -43,13 +55,6 @@ std::size_t Stream::Write(const void* data, std::size_t size, std::error_code& e
 
     error_code = MakeComErrorCode(result);
     return written_size;
-}
-
-
-Stream CreateMemoryStream(const void* initial_data, std::size_t initial_data_size) {
-
-    auto handle = SHCreateMemStream(reinterpret_cast<const BYTE*>(initial_data), initial_data_size);
-    return Stream(handle);
 }
 
 
