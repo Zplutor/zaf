@@ -1,34 +1,14 @@
 #pragma once
 
 #include <xmllite.h>
-#include <zaf/base/error.h>
 #include <zaf/parsing/xaml_node.h>
 
 namespace zaf {
 
 class XamlReader {
 public:
-    static std::shared_ptr<XamlReader> CreateFromString(
-        const std::wstring& xaml,
-        std::error_code& error);
-
-    static std::shared_ptr<XamlReader> CreateFromString(const std::wstring& xaml) {
-        std::error_code error;
-        auto result = CreateFromString(xaml, error);
-        ZAF_CHECK_ERROR(error);
-        return result;
-    }
-
-    static std::shared_ptr<XamlReader> CreateFromString(
-        const std::string& xaml, 
-        std::error_code& error);
-
-    static std::shared_ptr<XamlReader> CreateFromString(const std::string& xaml) {
-        std::error_code error;
-        auto result = CreateFromString(xaml, error);
-        ZAF_CHECK_ERROR(error);
-        return result;
-    }
+    static std::shared_ptr<XamlReader> CreateFromString(const std::wstring& xaml);
+    static std::shared_ptr<XamlReader> CreateFromString(const std::string& xaml);
 
 public:
     XamlReader(IXmlReader* handle);
@@ -37,13 +17,7 @@ public:
     XamlReader(const XamlReader&) = delete;
     XamlReader& operator=(const XamlReader&) = delete;
 
-    std::shared_ptr<XamlNode> Read(std::error_code& error);
-    std::shared_ptr<XamlNode> Read() {
-        std::error_code error;
-        auto result = Read(error);
-        ZAF_CHECK_ERROR(error);
-        return result;
-    }
+    std::shared_ptr<XamlNode> Read();
 
 private:
     HRESULT ReadRootNode(std::shared_ptr<XamlNode>& root_node);

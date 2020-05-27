@@ -1,6 +1,7 @@
 #pragma once
 
 #include <wincodec.h>
+#include <zaf/base/error/com_error.h>
 #include <zaf/graphic/image/wic/bitmap_source.h>
 
 namespace zaf::wic {
@@ -23,8 +24,7 @@ public:
     void Initialize(
         const BitmapSource& image_source, 
         const Size& size, 
-        ImageInterpolationMode interpolation_mode,
-        std::error_code& error_code) {
+        ImageInterpolationMode interpolation_mode) {
 
         HRESULT com_error = GetHandle()->Initialize(
             image_source.GetHandle(),
@@ -32,13 +32,7 @@ public:
             static_cast<UINT>(size.height),
             static_cast<WICBitmapInterpolationMode>(interpolation_mode));
 
-        error_code = MakeComErrorCode(com_error);
-    }
-
-    void Initialize(const BitmapSource& image_source, const Size& size, ImageInterpolationMode interpolation_mode) {
-        std::error_code error_code;
-        Initialize(image_source, size, interpolation_mode, error_code);
-        ZAF_CHECK_ERROR(error_code);
+        ZAF_THROW_IF_COM_ERROR(com_error);
     }
 
     IWICBitmapScaler* GetHandle() const {

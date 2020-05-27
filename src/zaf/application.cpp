@@ -1,7 +1,8 @@
 #include <zaf/application.h>
+#include <atlbase.h>
 #include <dwrite.h>
 #include <zaf/base/assert.h>
-#include <zaf/base/error.h>
+#include <zaf/base/error/com_error.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/message_loop.h>
@@ -24,10 +25,9 @@ Application::Application() :
 }
 
 
-void Application::Initialize(const InitializeParameters& parameters, std::error_code& error_code) {
+void Application::Initialize(const InitializeParameters& parameters) {
 
 	if (is_initialized_) {
-        error_code.clear();
 		return;
 	}
 
@@ -37,57 +37,39 @@ void Application::Initialize(const InitializeParameters& parameters, std::error_
     resource_manager_ = std::make_unique<ResourceManager>(parameters.relative_uri_loader);
 
 	HRESULT result = CoInitialize(nullptr);
-    error_code = MakeComErrorCode(result);
-	if (! IsSucceeded(error_code)) {
-		return;
-	}
+    ZAF_THROW_IF_COM_ERROR(result);
 
-	Window::RegisterDefaultClass(error_code);
-    if (! IsSucceeded(error_code)) {
-        return;
-    }
+	Window::RegisterDefaultClass();
 
     //Create Direct2D factory.
-	ID2D1Factory* d2d_factory_handle = nullptr;
+	CComPtr<ID2D1Factory> d2d_factory_handle;
 	result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2d_factory_handle);
-    error_code = MakeComErrorCode(result);
-	if (! IsSucceeded(error_code)) {
-		return;
-	}
+    ZAF_THROW_IF_COM_ERROR(result);
 
     //Create DWrite factory.
-	IDWriteFactory* dwrite_factory_handle = nullptr;
+    CComPtr<IDWriteFactory> dwrite_factory_handle;
 	result = DWriteCreateFactory(
 		DWRITE_FACTORY_TYPE_SHARED,
 		__uuidof(IDWriteFactory),
-		reinterpret_cast<IUnknown**>(&dwrite_factory_handle)
-	);
-    error_code = MakeComErrorCode(result);
-	if (! IsSucceeded(error_code)) {
-		d2d_factory_handle->Release();
-		return;
-	}
+		reinterpret_cast<IUnknown**>(&dwrite_factory_handle));
+
+    ZAF_THROW_IF_COM_ERROR(result);
 
     //Create WIC imaging factory
-    IWICImagingFactory* imaging_factory_handle{};
+    CComPtr<IWICImagingFactory> imaging_factory_handle;
     result = CoCreateInstance(
         CLSID_WICImagingFactory,
         nullptr,
         CLSCTX_INPROC_SERVER,
         IID_PPV_ARGS(&imaging_factory_handle));
 
-    error_code = MakeComErrorCode(result);
-    if (!IsSucceeded(error_code)) {
-        d2d_factory_handle->Release();
-        dwrite_factory_handle->Release();
-        return;
-    }
+    ZAF_THROW_IF_COM_ERROR(result);
 
 	graphic_factory_ = std::make_unique<GraphicFactory>(
-        d2d_factory_handle,
-        dwrite_factory_handle);
+        d2d_factory_handle.Detach(),
+        dwrite_factory_handle.Detach());
 
-    imaging_factory_ = std::make_unique<wic::ImagingFactory>(imaging_factory_handle);
+    imaging_factory_ = std::make_unique<wic::ImagingFactory>(imaging_factory_handle.Detach());
 
 	is_initialized_ = true;
 }

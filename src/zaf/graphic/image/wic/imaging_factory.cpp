@@ -5,8 +5,7 @@ namespace zaf::wic {
 
 BitmapDecoder ImagingFactory::CreateDecoderFromFile(
     const std::filesystem::path& file_path,
-    const DecoderCreateOptions& options,
-    std::error_code& error_code) {
+    const DecoderCreateOptions& options) {
 
     IWICBitmapDecoder* handle{};
     HRESULT result = GetHandle()->CreateDecoderFromFilename(
@@ -16,15 +15,14 @@ BitmapDecoder ImagingFactory::CreateDecoderFromFile(
         static_cast<WICDecodeOptions>(options.decode_options),
         &handle);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return BitmapDecoder{ handle };
 }
 
 
 BitmapDecoder ImagingFactory::CreateDecoderFromStream(
     const Stream& stream,
-    const DecoderCreateOptions& options,
-    std::error_code& error_code) {
+    const DecoderCreateOptions& options) {
 
     IWICBitmapDecoder* handle{};
     HRESULT com_error = GetHandle()->CreateDecoderFromStream(
@@ -33,15 +31,12 @@ BitmapDecoder ImagingFactory::CreateDecoderFromStream(
         static_cast<WICDecodeOptions>(options.decode_options),
         &handle);
 
-    error_code = MakeComErrorCode(com_error);
+    ZAF_THROW_IF_COM_ERROR(com_error);
     return BitmapDecoder{ handle };
 }
 
 
-Bitmap ImagingFactory::CreateBitmap(
-    const Size& size,
-    const BitmapCreateOptions& options,
-    std::error_code& error_code) {
+Bitmap ImagingFactory::CreateBitmap(const Size& size, const BitmapCreateOptions& options) {
 
     IWICBitmap* handle{};
     HRESULT com_error = GetHandle()->CreateBitmap(
@@ -51,7 +46,7 @@ Bitmap ImagingFactory::CreateBitmap(
         static_cast<WICBitmapCreateCacheOption>(options.cache_option),
         &handle);
 
-    error_code = MakeComErrorCode(com_error);
+    ZAF_THROW_IF_COM_ERROR(com_error);
     return Bitmap{ handle };
 }
 

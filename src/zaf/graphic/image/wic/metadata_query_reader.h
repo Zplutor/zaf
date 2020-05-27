@@ -7,7 +7,7 @@
 #include <functional>
 #include <vector>
 #include <zaf/base/com_object.h>
-#include <zaf/base/error.h>
+#include <zaf/base/error/com_error.h>
 
 #undef max
 #undef min
@@ -21,17 +21,8 @@ public:
 
     template<typename ValueType>
     ValueType QueryMetadata(const std::wstring& query_expression) const {
-        std::error_code error_code;
-        auto result = QueryMetadata<ValueType>(query_expression, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
-
-    template<typename ValueType>
-    ValueType QueryMetadata(const std::wstring& query_expression, std::error_code& error_code) const {
         return GetMetadata(
             query_expression, 
-            error_code,
             std::function<HRESULT(const PROPVARIANT&, ValueType&)>(Converter<ValueType>::Convert));
     }
 
@@ -39,20 +30,17 @@ private:
     template<typename ValueType>
     ValueType GetMetadata(
         const std::wstring& query_expression,
-        std::error_code& error_code,
         const std::function<HRESULT(const PROPVARIANT&, ValueType&)>& get_value) const {
 
         ValueType value{ };
 
         PROPVARIANT variant = { 0 };
         HRESULT result = GetHandle()->GetMetadataByName(query_expression.c_str(), &variant);
-        error_code = MakeComErrorCode(result);
-        if (error_code) {
-            return value;
-        }
+        ZAF_THROW_IF_COM_ERROR(result);
 
         result = get_value(variant, value);
-        error_code = MakeComErrorCode(result);
+        ZAF_THROW_IF_COM_ERROR(result);
+
         PropVariantClear(&variant);
         return value;
     }

@@ -1,56 +1,52 @@
 #include <zaf/graphic/image/wic/bitmap_decoder.h>
+#include <zaf/base/error/com_error.h>
 #include <zaf/graphic/image/wic/palette.h>
 
 namespace zaf::wic {
 
-ContainerFormat BitmapDecoder::GetContainerFormat(std::error_code& error_code) const {
+ContainerFormat BitmapDecoder::GetContainerFormat() const {
 
     GUID guid = GUID_NULL;
     HRESULT com_error = GetHandle()->GetContainerFormat(&guid);
 
-    error_code = MakeComErrorCode(com_error);
+    ZAF_THROW_IF_COM_ERROR(com_error);
     return ToContainerFormat(guid);
 }
 
 
-void BitmapDecoder::CopyPalette(Palette& palette, std::error_code& error_code) const {
+void BitmapDecoder::CopyPalette(Palette& palette) const {
 
     HRESULT com_error = GetHandle()->CopyPalette(palette.GetHandle());
-    error_code = MakeComErrorCode(com_error);
+    ZAF_THROW_IF_COM_ERROR(com_error);
 }
 
 
-std::size_t BitmapDecoder::GetFrameCount(std::error_code& error_code) const {
+std::size_t BitmapDecoder::GetFrameCount() const {
 
     UINT count = 0;
     HRESULT result = GetHandle()->GetFrameCount(&count);
 
-    error_code = MakeComErrorCode(result);
-    if (IsSucceeded(error_code)) {
-        return count;
-    }
-    else {
-        return 0;
-    }
+    ZAF_THROW_IF_COM_ERROR(result);
+    return count;
 }
 
 
-const BitmapDecodeFrame BitmapDecoder::GetFrame(std::size_t index, std::error_code& error_code) const {
+BitmapDecodeFrame BitmapDecoder::GetFrame(std::size_t index) const {
 
     IWICBitmapFrameDecode* handle = nullptr;
     HRESULT result = GetHandle()->GetFrame(index, &handle);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return BitmapDecodeFrame(handle);
 }
 
 
-const MetadataQueryReader BitmapDecoder::GetMetadataQuerier(std::error_code& error_code) const {
+MetadataQueryReader BitmapDecoder::GetMetadataQuerier() const {
 
     IWICMetadataQueryReader* handle = nullptr;
     HRESULT result = GetHandle()->GetMetadataQueryReader(&handle);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return MetadataQueryReader(handle);
 }
 

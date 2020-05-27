@@ -2,12 +2,12 @@
 
 namespace zaf {
 
-RenderBitmap BitmapRenderer::GetBitmap(std::error_code& error_code) const {
+RenderBitmap BitmapRenderer::GetBitmap() const {
 
     ID2D1Bitmap* handle = nullptr;
     auto com_error = GetHandle()->GetBitmap(&handle);
 
-    error_code = MakeComErrorCode(com_error);
+    ZAF_THROW_IF_COM_ERROR(com_error);
     return RenderBitmap(handle);
 }
 

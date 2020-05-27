@@ -18,6 +18,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="src\zaf\application.cpp" />
+    <ClCompile Include="src\zaf\base\error\com_error.cpp" />
     <ClCompile Include="src\zaf\base\log.cpp" />
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp" />
     <ClCompile Include="src\zaf\base\stream.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="src\precompiled.h" />
     <ClInclude Include="src\zaf\application.h" />
     <ClInclude Include="src\zaf\base\assert.h" />
+    <ClInclude Include="src\zaf\base\source_site.h" />
     <ClInclude Include="src\zaf\base\com_object.h" />
     <ClInclude Include="src\zaf\base\container\utility\append.h" />
     <ClInclude Include="src\zaf\base\container\utility\classify.h" />
@@ -150,7 +152,9 @@
     <ClInclude Include="src\zaf\base\container\utility\unique.h" />
     <ClInclude Include="src\zaf\base\container\utility\conversion.h" />
     <ClInclude Include="src\zaf\base\direct2d.h" />
-    <ClInclude Include="src\zaf\base\error.h" />
+    <ClInclude Include="src\zaf\base\error\com_error.h" />
+    <ClInclude Include="src\zaf\base\error\error.h" />
+    <ClInclude Include="src\zaf\base\error\system_error.h" />
     <ClInclude Include="src\zaf\base\event.h" />
     <ClInclude Include="src\zaf\base\event_utility.h" />
     <ClInclude Include="src\zaf\base\flag_enum.h" />

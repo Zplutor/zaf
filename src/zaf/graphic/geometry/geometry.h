@@ -3,7 +3,7 @@
 #include <memory>
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
-#include <zaf/base/error.h>
+#include <zaf/base/error/com_error.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 
 namespace zaf {
@@ -58,16 +58,12 @@ public:
 
      @param sink
         A geometry sink that stores the combine result.
-
-     @param error_code
-        An output parameter indicating the error, if any.
      */
     static void Combine(
         const Geometry& geometry1,
         const Geometry& geometry2,
         CombineMode combine_mode,
-        const GeometrySink& sink,
-        std::error_code& error_code) {
+        const GeometrySink& sink) {
 
         HRESULT result = geometry1.GetHandle()->CombineWithGeometry(
             geometry2.GetHandle(),
@@ -75,18 +71,7 @@ public:
             nullptr,
             sink.GetHandle());
 
-        error_code = MakeComErrorCode(result);
-    }
-
-    static void Combine(
-        const Geometry& geometry1,
-        const Geometry& geometry2,
-        CombineMode combine_mode,
-        const GeometrySink& sink) {
-
-        std::error_code error_code;
-        Combine(geometry1, geometry2, combine_mode, sink, error_code);
-        ZAF_CHECK_ERROR(error_code);
+        ZAF_THROW_IF_COM_ERROR(result);
     }
 
 public:

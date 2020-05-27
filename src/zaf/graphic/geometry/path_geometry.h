@@ -35,54 +35,24 @@ public:
 
      @param error_code
         An output parameter indicating the error, if any.
-
-     @return
-        Return 0 if error occurs.
      */
-    std::size_t GetFigureCount(std::error_code& error_code) const;
-
-    std::size_t GetFigureCount() const {
-        std::error_code error_code;
-        auto result = GetFigureCount(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    std::size_t GetFigureCount() const;
 
     /**
      Get the number of segments.
 
      @param error_code
         An output parameter indicating the error, if any.
-
-     @return
-        Return 0 if error occurs.
      */
-    std::size_t GetSegmentCount(std::error_code& error_code) const;
-
-    std::size_t GetSegmentCount() const {
-        std::error_code error_code;
-        auto result = GetSegmentCount(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    std::size_t GetSegmentCount() const;
 
     /**
      Retrieve the geometry sink that is used to populate the path geometry with figures and segments.
 
      @param error_code
         An output parameter indicating the error, if any.
-
-     @return
-        Return nullptr if error occurs.
      */
-	GeometrySink Open(std::error_code& error_code);
-
-    GeometrySink Open() {
-        std::error_code error_code;
-        auto result = Open(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+	GeometrySink Open();
 
 private:
 	ID2D1PathGeometry* GetActualHandle() const {

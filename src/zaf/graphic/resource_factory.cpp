@@ -1,4 +1,6 @@
 #include <zaf/graphic/resource_factory.h>
+#include <zaf/base/error/com_error.h>
+#include <zaf/base/error/system_error.h>
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/text/text_format_properties.h>
@@ -28,12 +30,11 @@ GraphicFactory::~GraphicFactory() {
 }
 
 
-WindowRenderer GraphicFactory::CreateWindowRenderer(HWND window_handle, std::error_code& error_code) {
+WindowRenderer GraphicFactory::CreateWindowRenderer(HWND window_handle) {
 
 	RECT window_rect = { 0 };
     if (! GetClientRect(window_handle, &window_rect)) {
-        error_code = MakeSystemErrorCode(GetLastError());
-        return WindowRenderer();
+        ZAF_THROW_IF_SYSTEM_ERROR(GetLastError());
     }
 
 	D2D1_SIZE_U renderer_size = D2D1::SizeU(
@@ -53,15 +54,14 @@ WindowRenderer GraphicFactory::CreateWindowRenderer(HWND window_handle, std::err
 		&renderer_handle
 	);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return WindowRenderer(renderer_handle);
 }
 
 
 Renderer GraphicFactory::CreateBitmapRenderer(
     const wic::Bitmap& image_source,
-    const RendererProperties& properties,
-    std::error_code& error_code) {
+    const RendererProperties& properties) {
 
     D2D1_RENDER_TARGET_PROPERTIES d2d_properties;
     d2d_properties.type = static_cast<D2D1_RENDER_TARGET_TYPE>(properties.type);
@@ -78,47 +78,47 @@ Renderer GraphicFactory::CreateBitmapRenderer(
         d2d_properties,
         &handle);
 
-    error_code = MakeComErrorCode(com_error);
+    ZAF_THROW_IF_COM_ERROR(com_error);
     return Renderer(handle);
 }
 
 
-RectangleGeometry GraphicFactory::CreateRectangleGeometry(const Rect& rect, std::error_code& error_code) {
+RectangleGeometry GraphicFactory::CreateRectangleGeometry(const Rect& rect) {
 
     ID2D1RectangleGeometry* handle = nullptr;
     HRESULT result = d2d_factory_handle_->CreateRectangleGeometry(rect.ToD2D1RECTF(), &handle);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return RectangleGeometry(handle);
 }
 
 
 RoundedRectangleGeometry GraphicFactory::CreateRoundedRectangleGeometry(
-    const RoundedRect& rounded_rect, 
-    std::error_code& error_code) {
+    const RoundedRect& rounded_rect) {
 
     ID2D1RoundedRectangleGeometry* handle = nullptr;
-    HRESULT result = d2d_factory_handle_->CreateRoundedRectangleGeometry(rounded_rect.ToD2D1ROUNDEDRECT(), &handle);
+    HRESULT result = d2d_factory_handle_->CreateRoundedRectangleGeometry(
+        rounded_rect.ToD2D1ROUNDEDRECT(),
+        &handle);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return RoundedRectangleGeometry(handle);
 }
 
 
-PathGeometry GraphicFactory::CreatePathGeometry(std::error_code& error_code) {
+PathGeometry GraphicFactory::CreatePathGeometry() {
 
 	ID2D1PathGeometry* handle = nullptr;
 	HRESULT result = d2d_factory_handle_->CreatePathGeometry(&handle);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return PathGeometry(handle);
 }
 
 
 TransformedGeometry GraphicFactory::CreateTransformedGeometry(
     const Geometry& geometry,
-    const TransformMatrix& transform_matrix,
-    std::error_code& error_code) {
+    const TransformMatrix& transform_matrix) {
 
     ID2D1TransformedGeometry* handle = nullptr;
     HRESULT result = d2d_factory_handle_->CreateTransformedGeometry(
@@ -126,12 +126,12 @@ TransformedGeometry GraphicFactory::CreateTransformedGeometry(
         transform_matrix.ToD2D1MATRIX3X2F(),
         &handle);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return TransformedGeometry(handle);
 }
 
 
-Stroke GraphicFactory::CreateStroke(const StrokeProperties& properties, std::error_code& error_code) {
+Stroke GraphicFactory::CreateStroke(const StrokeProperties& properties) {
     
 	D2D1_STROKE_STYLE_PROPERTIES d2d_properties;
 	d2d_properties.startCap = static_cast<D2D1_CAP_STYLE>(properties.start_cap_style);
@@ -150,12 +150,12 @@ Stroke GraphicFactory::CreateStroke(const StrokeProperties& properties, std::err
 		&handle
 	);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return Stroke(handle);
 }
 
 
-TextFormat GraphicFactory::CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code) {
+TextFormat GraphicFactory::CreateTextFormat(const TextFormatProperties& properties) {
 
 	IDWriteTextFormat* handle = nullptr;
 	HRESULT result = dwrite_factory_handle_->CreateTextFormat(
@@ -169,12 +169,12 @@ TextFormat GraphicFactory::CreateTextFormat(const TextFormatProperties& properti
 		&handle
 	);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return TextFormat(handle);
 }
 
 
-TextLayout GraphicFactory::CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code) {
+TextLayout GraphicFactory::CreateTextLayout(const TextLayoutProperties& properties) {
 
 	IDWriteTextLayout* handle = nullptr;
 	HRESULT result = dwrite_factory_handle_->CreateTextLayout(
@@ -186,29 +186,28 @@ TextLayout GraphicFactory::CreateTextLayout(const TextLayoutProperties& properti
 		&handle
 	);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return TextLayout(handle);
 }
 
 
-FontCollection GraphicFactory::GetSystemFontCollection(std::error_code& error_code) {
+FontCollection GraphicFactory::GetSystemFontCollection() {
 
     IDWriteFontCollection* handle = nullptr;
     HRESULT result = dwrite_factory_handle_->GetSystemFontCollection(&handle);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return FontCollection(handle);
 }
 
 
 TextInlineObject GraphicFactory::CreateCreateEllipsisTrimmingSign(
-    const TextFormat& text_format, 
-    std::error_code& error_code) {
+    const TextFormat& text_format) {
 
     IDWriteInlineObject* handle = nullptr;
     HRESULT hresult = dwrite_factory_handle_->CreateEllipsisTrimmingSign(text_format.GetHandle(), &handle);
 
-    error_code = MakeComErrorCode(hresult);
+    ZAF_THROW_IF_COM_ERROR(hresult);
     return TextInlineObject(handle);
 }
 

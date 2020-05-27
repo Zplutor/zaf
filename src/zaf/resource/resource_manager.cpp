@@ -1,4 +1,5 @@
 #include <zaf/resource/resource_manager.h>
+#include <zaf/base/error/system_error.h>
 #include <zaf/base/stream.h>
 #include <zaf/resource/default_relative_uri_loader.h>
 #include <zaf/resource/internal/uri_parsing.h>
@@ -17,30 +18,29 @@ ResourceManager::~ResourceManager() {
 }
 
 
-Stream ResourceManager::LoadUri(const std::wstring& uri, std::error_code& error_code) {
+Stream ResourceManager::LoadUri(const std::wstring& uri) {
 
     auto uri_parse_result = internal::ParseUri(uri);
 
     if (uri_parse_result.type == internal::UriType::File) {
-        return Stream::FromFile(uri_parse_result.value, error_code);
+        return Stream::FromFile(uri_parse_result.value);
     }
 
     if (uri_parse_result.type == internal::UriType::Relative) {
-        return LoadRelativeUri(uri_parse_result.value, error_code);
+        return LoadRelativeUri(uri_parse_result.value);
     }
 
-    error_code = MakeSystemErrorCode(ERROR_INVALID_PARAMETER);
-    return {};
+    ZAF_THROW_IF_SYSTEM_ERROR(ERROR_INVALID_PARAMETER);
 }
 
 
-Stream ResourceManager::LoadRelativeUri(const std::wstring& uri, std::error_code& error_code) {
+Stream ResourceManager::LoadRelativeUri(const std::wstring& uri) {
 
     if (relative_uri_loader_) {
-        return relative_uri_loader_->Load(uri, error_code);
+        return relative_uri_loader_->Load(uri);
     }
     
-    return DefaultRelativeUriLoader::GetInstance()->Load(uri, error_code);
+    return DefaultRelativeUriLoader::GetInstance()->Load(uri);
 }
 
 }

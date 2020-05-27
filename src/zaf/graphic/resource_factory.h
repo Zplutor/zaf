@@ -4,7 +4,6 @@
 #include <wincodec.h>
 #include <memory>
 #include <zaf/base/direct2d.h>
-#include <zaf/base/error.h>
 #include <zaf/graphic/font/font_collection.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
@@ -49,26 +48,11 @@ public:
      @return
          Return nullptr if failed.
      */
-    WindowRenderer CreateWindowRenderer(HWND window_handle, std::error_code& error_code);
-
-    WindowRenderer CreateWindowRenderer(HWND window_handle) {
-        std::error_code error_code;
-        auto result = CreateWindowRenderer(window_handle, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    WindowRenderer CreateWindowRenderer(HWND window_handle);
 
     Renderer CreateBitmapRenderer(
-        const wic::Bitmap& image_source, 
-        const RendererProperties& properties,
-        std::error_code& error_code);
-
-    Renderer CreateBitmapRenderer(const wic::Bitmap& image_source, const RendererProperties& properties) {
-        std::error_code error_code;
-        auto result = CreateBitmapRenderer(image_source, properties, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+		const wic::Bitmap& image_source, 
+		const RendererProperties& properties);
 
     /**
      Create a rectangle geometry with specified rect.
@@ -76,23 +60,9 @@ public:
      @return
          Return nullptr if failed.
      */
-    RectangleGeometry CreateRectangleGeometry(const Rect& rect, std::error_code& error_code);
+    RectangleGeometry CreateRectangleGeometry(const Rect& rect);
 
-    RectangleGeometry CreateRectangleGeometry(const Rect& rect) {
-        std::error_code error_code;
-        auto result = CreateRectangleGeometry(rect, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
-
-    RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect, std::error_code& error_code);
-
-    RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect) {
-        std::error_code error_code;
-        auto result = CreateRoundedRectangleGeometry(rounded_rect, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect);
 
 	/**
 	 Create a path geometry.
@@ -100,29 +70,11 @@ public:
 	 @return 
 	     Return nullptr if failed.
 	 */
-	PathGeometry CreatePathGeometry(std::error_code& error_code);
-
-    PathGeometry CreatePathGeometry() {
-        std::error_code error_code;
-        auto result = CreatePathGeometry(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+	PathGeometry CreatePathGeometry();
 
     TransformedGeometry CreateTransformedGeometry(
         const Geometry& geometry,
-        const TransformMatrix& transform_matrix,
-        std::error_code& error_code);
-
-    TransformedGeometry CreateTransformedGeometry(
-        const Geometry& geometry,
-        const TransformMatrix& transform_matrix) {
-
-        std::error_code error_code;
-        auto result = CreateTransformedGeometry(geometry, transform_matrix, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+        const TransformMatrix& transform_matrix);
 
 	/**
 	 Create a stroke with specified properties.
@@ -130,14 +82,7 @@ public:
 	 @return 
 	     Return nullptr if failed.
 	 */
-    Stroke CreateStroke(const StrokeProperties& properties, std::error_code& error_code);
-
-    Stroke CreateStroke(const StrokeProperties& properties) {
-        std::error_code error_code;
-        auto result = CreateStroke(properties, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    Stroke CreateStroke(const StrokeProperties& properties);
 
 	/**
 	 Create a text format with specified properties.
@@ -145,14 +90,7 @@ public:
 	 @return 
 	      Return nullptr if failed.
 	 */
-    TextFormat CreateTextFormat(const TextFormatProperties& properties, std::error_code& error_code);
-
-    TextFormat CreateTextFormat(const TextFormatProperties& properties) {
-        std::error_code error_code;
-        auto result = CreateTextFormat(properties, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    TextFormat CreateTextFormat(const TextFormatProperties& properties);
 
 	/**
 	 Create a text layout with specified properties.
@@ -160,14 +98,7 @@ public:
 	 @return
 	     Return nullptr if failed.
 	 */
-    TextLayout CreateTextLayout(const TextLayoutProperties& properties, std::error_code& error_code);
-
-    TextLayout CreateTextLayout(const TextLayoutProperties& properties) {
-        std::error_code error_code;
-        auto result = CreateTextLayout(properties, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    TextLayout CreateTextLayout(const TextLayoutProperties& properties);
 
     /**
      Get a font collection representing the set of installed fonts.
@@ -175,23 +106,9 @@ public:
      @return 
          Return nullptr if failed.
      */
-    FontCollection GetSystemFontCollection(std::error_code& error_code);
+    FontCollection GetSystemFontCollection();
 
-    FontCollection GetSystemFontCollection() {
-        std::error_code error_code;
-        auto result = GetSystemFontCollection(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
-
-    TextInlineObject CreateCreateEllipsisTrimmingSign(const TextFormat& text_format, std::error_code& error_code);
-
-    TextInlineObject CreateCreateEllipsisTrimmingSign(const TextFormat& text_format) {
-        std::error_code error_code;
-        auto result = CreateCreateEllipsisTrimmingSign(text_format, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    TextInlineObject CreateCreateEllipsisTrimmingSign(const TextFormat& text_format);
 
 	/**
 	 Get the underlying ID2D1Factory instance.

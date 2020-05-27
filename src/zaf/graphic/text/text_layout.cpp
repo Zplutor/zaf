@@ -1,17 +1,15 @@
 #include <zaf/graphic/text/text_layout.h>
 #include <memory>
+#include <zaf/base/error/com_error.h>
 
 namespace zaf {
 
-std::wstring TextLayout::GetFontFamilyName(std::size_t position, TextRange* range, std::error_code& error_code) const {
+std::wstring TextLayout::GetFontFamilyName(std::size_t position, TextRange* range) const {
 
 	std::size_t family_name_length = 0;
 	HRESULT result = GetHandle()->GetFontFamilyNameLength(position, &family_name_length);
 
-    error_code = MakeComErrorCode(result);
-    if (! IsSucceeded(error_code)) {
-        return std::wstring();
-    }
+	ZAF_THROW_IF_COM_ERROR(result);
 
 	if (family_name_length == 0) {
 		return std::wstring();
@@ -26,10 +24,7 @@ std::wstring TextLayout::GetFontFamilyName(std::size_t position, TextRange* rang
         buffer_length, 
         range == nullptr ? nullptr : &text_range);
 
-    error_code = MakeComErrorCode(result);
-    if (! IsSucceeded(error_code)) {
-        return std::wstring();
-    }
+	ZAF_THROW_IF_COM_ERROR(result);
 
 	if (range != nullptr) {
 		*range = TextRange::FromDWRITETEXTRANGE(text_range);
@@ -39,16 +34,13 @@ std::wstring TextLayout::GetFontFamilyName(std::size_t position, TextRange* rang
 }
 
 
-float TextLayout::GetFontSize(std::size_t position, TextRange* range, std::error_code& error_code) const {
+float TextLayout::GetFontSize(std::size_t position, TextRange* range) const {
 
 	float font_size = 0;
 	DWRITE_TEXT_RANGE text_range = { 0 };
 	HRESULT result = GetHandle()->GetFontSize(position, &font_size, range == nullptr ? nullptr : &text_range);
 
-    error_code = MakeComErrorCode(result);
-    if (! IsSucceeded(error_code)) {
-        return 0;
-    }
+	ZAF_THROW_IF_COM_ERROR(result);
 	
 	if (range != nullptr) {
 		*range = TextRange::FromDWRITETEXTRANGE(text_range);
@@ -58,16 +50,13 @@ float TextLayout::GetFontSize(std::size_t position, TextRange* range, std::error
 }
 
 
-FontStyle TextLayout::GetFontStyle(std::size_t position, TextRange* range, std::error_code& error_code) const {
+FontStyle TextLayout::GetFontStyle(std::size_t position, TextRange* range) const {
 
 	DWRITE_FONT_STYLE font_style = DWRITE_FONT_STYLE_NORMAL;
 	DWRITE_TEXT_RANGE text_range = { 0 };
 	HRESULT result = GetHandle()->GetFontStyle(position, &font_style, range == nullptr ? nullptr : &text_range);
 
-    error_code = MakeComErrorCode(result);
-    if (! IsSucceeded(error_code)) {
-        return FontStyle::Normal;
-    }
+	ZAF_THROW_IF_COM_ERROR(result);
 
 	if (range != nullptr) {
 		*range = TextRange::FromDWRITETEXTRANGE(text_range);
@@ -77,16 +66,13 @@ FontStyle TextLayout::GetFontStyle(std::size_t position, TextRange* range, std::
 }
 
 
-int TextLayout::GetFontWeight(std::size_t position, TextRange* range, std::error_code& error_code) const {
+int TextLayout::GetFontWeight(std::size_t position, TextRange* range) const {
 
 	DWRITE_FONT_WEIGHT font_weight = static_cast<DWRITE_FONT_WEIGHT>(0);
 	DWRITE_TEXT_RANGE text_range = { 0 };
 	HRESULT result = GetHandle()->GetFontWeight(position, &font_weight, range == nullptr ? nullptr : &text_range);
 
-    error_code = MakeComErrorCode(result);
-    if (! IsSucceeded(error_code)) {
-        return 0;
-    }
+	ZAF_THROW_IF_COM_ERROR(result);
 
 	if (range != nullptr) {
 		*range = TextRange::FromDWRITETEXTRANGE(text_range);
@@ -96,16 +82,13 @@ int TextLayout::GetFontWeight(std::size_t position, TextRange* range, std::error
 }
 
 
-bool TextLayout::HasUnderline(std::size_t position, TextRange* range, std::error_code& error_code) const {
+bool TextLayout::HasUnderline(std::size_t position, TextRange* range) const {
 
 	BOOL has_underline = FALSE;
 	DWRITE_TEXT_RANGE text_range = { 0 };
 	HRESULT result = GetHandle()->GetUnderline(position, &has_underline, range == nullptr ? nullptr : &text_range);
 
-    error_code = MakeComErrorCode(result);
-    if (!IsSucceeded(error_code)) {
-        return false;
-    }
+	ZAF_THROW_IF_COM_ERROR(result);
 
 	if (range != nullptr) {
 		*range = TextRange::FromDWRITETEXTRANGE(text_range);
@@ -115,35 +98,30 @@ bool TextLayout::HasUnderline(std::size_t position, TextRange* range, std::error
 }
 
 
-const Brush TextLayout::GetBrush(std::size_t position, TextRange* range, std::error_code& error_code) {
+Brush TextLayout::GetBrush(std::size_t position, TextRange* range) {
 
     IUnknown* drawing_effect = nullptr;
     DWRITE_TEXT_RANGE text_range = { 0 };
     HRESULT result = GetHandle()->GetDrawingEffect(position, &drawing_effect, &text_range);
 
-    error_code = MakeComErrorCode(result);
-    if (! IsSucceeded(error_code)) {
-        return Brush();
-    }
+	ZAF_THROW_IF_COM_ERROR(result);
 
     ID2D1Brush* brush_handle = nullptr;
     result = drawing_effect->QueryInterface(&brush_handle);
-    error_code = MakeComErrorCode(result);
-    drawing_effect->Release();
+	drawing_effect->Release();
+	ZAF_THROW_IF_COM_ERROR(result);
+
     return Brush(brush_handle);
 }
 
 
-const std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_count, std::error_code& error_code) const {
+std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_count) const {
 
 	auto dwrite_line_metrics = std::make_unique<DWRITE_LINE_METRICS[]>(max_line_count);
 	std::size_t actual_line_count = 0;
 	HRESULT result = GetHandle()->GetLineMetrics(dwrite_line_metrics.get(), max_line_count, &actual_line_count);
 
-    error_code = MakeComErrorCode(result);
-	if (! IsSucceeded(error_code)) {
-		return std::vector<LineMetrics>();
-	}
+	ZAF_THROW_IF_COM_ERROR(result);
 
 	std::vector<LineMetrics> line_metrics;
 	line_metrics.reserve(actual_line_count);
@@ -167,15 +145,12 @@ const std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_c
 }
 
 
-TextMetrics TextLayout::GetMetrics(std::error_code& error_code) const {
+TextMetrics TextLayout::GetMetrics() const {
 
 	DWRITE_TEXT_METRICS dwrite_text_metrics = { 0 };
     HRESULT result = GetHandle()->GetMetrics(&dwrite_text_metrics);
 
-    error_code = MakeComErrorCode(result);
-    if (! IsSucceeded(error_code)) {
-        return TextMetrics();
-    }
+	ZAF_THROW_IF_COM_ERROR(result);
 
 	TextMetrics text_metrics;
 	text_metrics.left = dwrite_text_metrics.left;

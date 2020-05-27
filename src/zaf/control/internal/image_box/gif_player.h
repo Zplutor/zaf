@@ -20,7 +20,9 @@ public:
 
 private:
     bool Initialize(Renderer& renderer);
-    bool InitializeComposedFrameRenderer(Renderer& renderer, const GifGlobalMetadataQuerier& metadata_querier);
+    void InitializeComposedFrameRenderer(
+        Renderer& renderer, 
+        const GifGlobalMetadataQuerier& metadata_querier);
     void InitializeBackgroundColor(const GifGlobalMetadataQuerier& metadata_querier);
     void ComposeNextFrame();
     void DisposeCurrentFrame();

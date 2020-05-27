@@ -1,12 +1,13 @@
 #include <zaf/parsing/xaml_reader.h>
 #include <atlbase.h>
 #include <Shlwapi.h>
+#include <zaf/base/error/com_error.h>
 #include <zaf/base/string/encoding_conversion.h>
 
 namespace zaf {
 namespace {
 
-IXmlReader* CreateHandle(IUnknown* input, std::error_code& error) {
+IXmlReader* CreateHandle(IUnknown* input) {
 
     CComPtr<IXmlReader> handle;
     HRESULT result = CreateXmlReader(
@@ -14,36 +15,23 @@ IXmlReader* CreateHandle(IUnknown* input, std::error_code& error) {
         reinterpret_cast<void**>(&handle), 
         nullptr);
 
-    error = MakeComErrorCode(result);
-    if (! IsSucceeded(error)) {
-        return nullptr;
-    }
+    ZAF_THROW_IF_COM_ERROR(result);
 
     result = handle->SetInput(input);
-    error = MakeComErrorCode(result);
-    if (! IsSucceeded(error)) {
-        return nullptr;
-    }
 
+    ZAF_THROW_IF_COM_ERROR(result);
     return handle.Detach();
 }
 
 
-std::shared_ptr<XamlReader> CreateXamlReaderFromMemory(
-    const void* data, 
-    std::size_t length,
-    std::error_code& error) {
+std::shared_ptr<XamlReader> CreateXamlReaderFromMemory(const void* data, std::size_t length) {
 
     CComPtr<IStream> stream = SHCreateMemStream(reinterpret_cast<const BYTE*>(data), length);
     if (stream == nullptr) {
-        error = std::make_error_code(std::errc::not_enough_memory);
-        return {};
+        ZAF_THROW_IF_COM_ERROR(E_OUTOFMEMORY);
     }
 
-    auto handle = CreateHandle(stream.p, error);
-    if (! IsSucceeded(error)) {
-        return {};
-    }
+    auto handle = CreateHandle(stream.p);
 
     stream.Detach();
     return std::make_shared<XamlReader>(handle);
@@ -52,19 +40,13 @@ std::shared_ptr<XamlReader> CreateXamlReaderFromMemory(
 }
 
 
-std::shared_ptr<XamlReader> XamlReader::CreateFromString(
-    const std::wstring& xaml, 
-    std::error_code& error) {
-
-    return CreateFromString(ToUtf8String(xaml), error);
+std::shared_ptr<XamlReader> XamlReader::CreateFromString(const std::wstring& xaml) {
+    return CreateFromString(ToUtf8String(xaml));
 }
 
 
-std::shared_ptr<XamlReader> XamlReader::CreateFromString(
-    const std::string& xaml, 
-    std::error_code& error) {
-
-    return CreateXamlReaderFromMemory(xaml.data(), xaml.length(), error);
+std::shared_ptr<XamlReader> XamlReader::CreateFromString(const std::string& xaml) {
+    return CreateXamlReaderFromMemory(xaml.data(), xaml.length());
 }
 
 
@@ -78,16 +60,12 @@ XamlReader::~XamlReader() {
 }
 
 
-std::shared_ptr<XamlNode> XamlReader::Read(std::error_code& error) {
+std::shared_ptr<XamlNode> XamlReader::Read() {
 
     std::shared_ptr<XamlNode> root_node;
     HRESULT result = ReadRootNode(root_node);
 
-    error = MakeComErrorCode(result);
-    if (! IsSucceeded(error)) {
-        return nullptr;
-    }
-
+    ZAF_THROW_IF_COM_ERROR(result);
     return root_node;
 }
 

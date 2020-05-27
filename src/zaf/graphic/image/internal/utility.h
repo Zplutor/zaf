@@ -5,6 +5,6 @@
 
 namespace zaf::internal {
 
-wic::BitmapDecoder CreateBitmapDecoderFromSteam(const Stream& stream, std::error_code& error_code);
+wic::BitmapDecoder CreateBitmapDecoderFromSteam(const Stream& stream);
 
 }

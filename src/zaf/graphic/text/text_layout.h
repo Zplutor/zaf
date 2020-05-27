@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <string>
 #include <vector>
-#include <zaf/base/error.h>
+#include <zaf/base/error/com_error.h>
 #include <zaf/graphic/brush/brush.h>
 #include <zaf/graphic/font/font_style.h>
 #include <zaf/graphic/text/line_metrics.h>
@@ -39,16 +39,10 @@ public:
     /**
      Set the layout maximum width.
      */
-	void SetMaxWidth(float max_width, std::error_code& error_code) {
+	void SetMaxWidth(float max_width) {
 		HRESULT result = GetHandle()->SetMaxWidth(max_width);
-        error_code = MakeComErrorCode(result);
+        ZAF_THROW_IF_COM_ERROR(result);
 	}
-
-    void SetMaxWidth(float max_width) {
-        std::error_code error_code;
-        SetMaxWidth(max_width, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
 
     /**
      Get the layout maximum height.
@@ -60,16 +54,10 @@ public:
     /**
      Set the layout maximum height.
      */
-	void SetMaxHeight(float max_height, std::error_code& error_code) {
+	void SetMaxHeight(float max_height) {
 		HRESULT result = GetHandle()->SetMaxHeight(max_height);
-        error_code = MakeComErrorCode(result);
+        ZAF_THROW_IF_COM_ERROR(result);
 	}
-
-    void SetMaxHeight(float max_height) {
-        std::error_code error_code;
-        SetMaxHeight(max_height, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
 
     /**
      Get the font family name of the text at the specified position.
@@ -81,21 +69,8 @@ public:
          The range of text that has the same formatting as the text at the position specified by position. 
          This means the run has the exact formatting as the position specified, including but not limited to 
          the font family name. This parameter can be nullptr.
-
-     @param error_code
-         An output parameter indicates the error, if any.
-
-     @return
-         Return an empty string if error occurs.
      */
-	std::wstring GetFontFamilyName(std::size_t position, TextRange* range, std::error_code& error_code) const;
-
-    std::wstring GetFontFamilyName(std::size_t position, TextRange* range) const {
-        std::error_code error_code;
-        std::wstring result = GetFontFamilyName(position, range, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+	std::wstring GetFontFamilyName(std::size_t position, TextRange* range) const;
 
     /**
      Set font family name for text within a specified text range.
@@ -105,19 +80,10 @@ public:
 
      @param range
          Text range to which this change applies.
-
-     @param error_code
-         An output parameter indicates the error, if any.
      */
-    void SetFontFamilyName(const std::wstring& font_family_name, const TextRange& range, std::error_code& error_code) {
-        HRESULT result = GetHandle()->SetFontFamilyName(font_family_name.c_str(), range.ToDWRITETEXTRANGE());
-        error_code = MakeComErrorCode(result);
-    }
-
     void SetFontFamilyName(const std::wstring& font_family_name, const TextRange& range) {
-        std::error_code error_code;
-        SetFontFamilyName(font_family_name, range, error_code);
-        ZAF_CHECK_ERROR(error_code);
+        HRESULT result = GetHandle()->SetFontFamilyName(font_family_name.c_str(), range.ToDWRITETEXTRANGE());
+        ZAF_THROW_IF_COM_ERROR(result);
     }
 
     /**
@@ -130,21 +96,8 @@ public:
          The range of text that has the same formatting as the text at the position specified by position. 
          This means the run has the exact formatting as the position specified, including but not limited to the
          font size. This parameter can be nullptr.
-
-     @param error_code
-         An output parameter indicates the error, if any.
-
-     @return 
-         Return 0 if error occurs.
      */
-	float GetFontSize(std::size_t position, TextRange* range, std::error_code& error_code) const;
-
-    float GetFontSize(std::size_t position, TextRange* range) const {
-        std::error_code error_code;
-        auto result = GetFontSize(position, range, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+	float GetFontSize(std::size_t position, TextRange* range) const;
 
     /**
      Set the font size for text within a specified text range.
@@ -154,20 +107,11 @@ public:
 
      @param range
          Text range to which this change applies.
-
-     @param error_code
-         An output parameter indicates the error, if any.
      */
-    void SetFontSize(float size, const TextRange& range, std::error_code& error_code) {
-		HRESULT result = GetHandle()->SetFontSize(size, range.ToDWRITETEXTRANGE());
-        error_code = MakeComErrorCode(result);
-	}
-
     void SetFontSize(float size, const TextRange& range) {
-        std::error_code error_code;
-        SetFontSize(size, range, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
+		HRESULT result = GetHandle()->SetFontSize(size, range.ToDWRITETEXTRANGE());
+        ZAF_THROW_IF_COM_ERROR(result);
+	}
 
     /**
      Get the font style (also known as slope) of the text at the specified position.
@@ -179,21 +123,8 @@ public:
          The range of text that has the same formatting as the text at the position specified by position.
          This means the run has the exact formatting as the position specified, including but not limited 
          to the font style. This parameter can be nullptr.
-
-     @param error_code
-         An output parameter indicates the error, if any.
-
-     @return
-         Return FontStyle::Normal if error occurs.
      */
-	FontStyle GetFontStyle(std::size_t position, TextRange* range, std::error_code& error_code) const;
-
-    FontStyle GetFontStyle(std::size_t position, TextRange* range) const {
-        std::error_code error_code;
-        auto result = GetFontStyle(position, range, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+	FontStyle GetFontStyle(std::size_t position, TextRange* range) const;
 
     /**
      Set the font style for text within a text range.
@@ -203,20 +134,11 @@ public:
 
      @param range
          The text range to which this change applies.
-
-     @param error_code
-         An output parameter indicates the error, if any.
      */
-    void SetFontStyle(FontStyle font_style, const TextRange& range, std::error_code& error_code) {
-		HRESULT result = GetHandle()->SetFontStyle(static_cast<DWRITE_FONT_STYLE>(font_style), range.ToDWRITETEXTRANGE());
-        error_code = MakeComErrorCode(result);
-	}
-
     void SetFontStyle(FontStyle font_style, const TextRange& range) {
-        std::error_code error_code;
-        SetFontStyle(font_style, range, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
+		HRESULT result = GetHandle()->SetFontStyle(static_cast<DWRITE_FONT_STYLE>(font_style), range.ToDWRITETEXTRANGE());
+        ZAF_THROW_IF_COM_ERROR(result);
+	}
 
     /**
      Get the font weight of the text at the specified position.
@@ -228,21 +150,8 @@ public:
          The range of text that has the same formatting as the text at the position specified by position.
          This means the run has the exact formatting as the position specified, including but not limited 
          to the font weight. This parameter can be nullptr.
-
-     @param error_code
-         An output parameter indicates the error, if any.
-
-     @return 
-         Return 0 if error occurs.
      */
-	int GetFontWeight(std::size_t position, TextRange* range, std::error_code& error_code) const;
-
-    int GetFontWeight(std::size_t position, TextRange* range) const {
-        std::error_code error_code;
-        auto result = GetFontWeight(position, range, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+	int GetFontWeight(std::size_t position, TextRange* range) const;
 
     /**
      Set the font weight for text within a text range.
@@ -252,20 +161,11 @@ public:
 
      @param range
          Text range to which this change applies.
-
-     @param error_code
-         An output parameter indicates the error, if any.
      */
-    void SetFontWeight(int weight, const TextRange& range, std::error_code& error_code) {
-		HRESULT result = GetHandle()->SetFontWeight(static_cast<DWRITE_FONT_WEIGHT>(weight), range.ToDWRITETEXTRANGE());
-        error_code = MakeComErrorCode(result);
-	}
-
     void SetFontWeight(int weight, const TextRange& range) {
-        std::error_code error_code;
-        SetFontWeight(weight, range, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
+		HRESULT result = GetHandle()->SetFontWeight(static_cast<DWRITE_FONT_WEIGHT>(weight), range.ToDWRITETEXTRANGE());
+        ZAF_THROW_IF_COM_ERROR(result);
+	}
 
     /**
      Get the underline presence of the text at the specified position.
@@ -277,21 +177,8 @@ public:
          The range of text that has the same formatting as the text at the position specified by position.
          This means the run has the exact formatting as the position specified, including but not limited 
          to the underline. This parameter can be nullptr.
-
-     @param error_code
-         An output parameter indicates the error, if any.
-
-     @return
-         Return false if error occurs.
      */
-	bool HasUnderline(std::size_t position, TextRange* range, std::error_code& error_code) const;
-
-    bool HasUnderline(std::size_t position, TextRange* range) const {
-        std::error_code error_code;
-        auto result = HasUnderline(position, range, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+	bool HasUnderline(std::size_t position, TextRange* range) const;
 
     /**
      Set underlining for text within a specified text range.
@@ -301,20 +188,11 @@ public:
 
      @param range
          Text range to which this change applies.
-
-     @param error_code
-         An output parameter indicates the error, if any.
      */
-    void SetHasUnderline(bool has_underline, const TextRange& range, std::error_code& error_code) {
-		HRESULT result = GetHandle()->SetUnderline(has_underline ? TRUE : FALSE, range.ToDWRITETEXTRANGE());
-        error_code = MakeComErrorCode(result);
-	}
-
     void SetHasUnderline(bool has_underline, const TextRange& range) {
-        std::error_code error_code;
-        SetHasUnderline(has_underline, range, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
+		HRESULT result = GetHandle()->SetUnderline(has_underline ? TRUE : FALSE, range.ToDWRITETEXTRANGE());
+        ZAF_THROW_IF_COM_ERROR(result);
+	}
 
     /**
      Get the drawing brush at the specified text position.
@@ -326,21 +204,8 @@ public:
          Contains the range of text that has the same formatting as the text at the position specified 
          by position. This means the run has the exact formatting as the position specified, including 
          but not limited to the drawing effect. This parameter can be nullptr.
-
-     @param error_code
-         An output parameter indicates the error, if any.
-
-     @return
-         Return an empty brush if error occurs.
      */
-    const Brush GetBrush(std::size_t position, TextRange* range, std::error_code& error_code);
-
-    const Brush GetBrush(std::size_t position, TextRange* range) {
-        std::error_code error_code;
-        auto result = GetBrush(position, range);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    Brush GetBrush(std::size_t position, TextRange* range);
 
     /**
      Set brush for text within a specified text range.
@@ -350,19 +215,10 @@ public:
 
      @param range
          Text range to which this change applies.
-
-     @param error_code
-         An output parameter indicates the error, if any.
      */
-    void SetBrush(const Brush& brush, const TextRange& range, std::error_code& error_code) {
-        HRESULT result = GetHandle()->SetDrawingEffect(brush.GetHandle(), range.ToDWRITETEXTRANGE());
-        error_code = MakeComErrorCode(result);
-    }
-
     void SetBrush(const Brush& brush, const TextRange& range) {
-        std::error_code error_code;
-        SetBrush(brush, range, error_code);
-        ZAF_CHECK_ERROR(error_code);
+        HRESULT result = GetHandle()->SetDrawingEffect(brush.GetHandle(), range.ToDWRITETEXTRANGE());
+        ZAF_THROW_IF_COM_ERROR(result);
     }
 
     /**
@@ -370,39 +226,13 @@ public:
 
      @param max_line_count
          The maximum number of lines to retrieves.
-
-     @param error_code
-         An output parameter indicates the error, if any.
-
-     @return 
-        Return an empty vector if error occurs.
      */
-	const std::vector<LineMetrics> GetLineMetrics(std::size_t max_line_count, std::error_code& error_code) const;
-
-    const std::vector<LineMetrics> GetLineMetrics(std::size_t max_line_count) const {
-        std::error_code error_code;
-        auto result = GetLineMetrics(max_line_count, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+	std::vector<LineMetrics> GetLineMetrics(std::size_t max_line_count) const;
 
     /**
      Retrieves overall metrics for the formatted text.
-
-     @param error_code
-         An output parameter indicates the error, if any.
-
-     @return 
-        Return empty text metrics if error occurs.
      */
-	TextMetrics GetMetrics(std::error_code& error_code) const;
-
-    TextMetrics GetMetrics() const {
-        std::error_code error_code;
-        auto result = GetMetrics(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+	TextMetrics GetMetrics() const;
 
     IDWriteTextLayout* GetHandle() const {
         return static_cast<IDWriteTextLayout*>(__super::GetHandle());

@@ -1,4 +1,5 @@
 #include <zaf/graphic/image/bitmap_image.h>
+#include <zaf/base/assert.h>
 #include <zaf/parsing/parsers/bitmap_image_parser.h>
 #include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/resource/resource_manager.h>
@@ -19,52 +20,35 @@ void BitmapImage::SetUri(const std::wstring& uri) {
 }
 
 
-Size BitmapImage::GetPixelSize(std::error_code& error_code) {
+Size BitmapImage::GetPixelSize() {
 
-    CheckInitialize(error_code);
-    if (!IsSucceeded(error_code)) {
-        return {};
-    }
-
-    return image_->GetPixelSize(error_code);
+    CheckInitialize();
+    return image_->GetPixelSize();
 }
 
 
-std::pair<float, float> BitmapImage::GetResolution(std::error_code& error_code) {
+std::pair<float, float> BitmapImage::GetResolution() {
 
-    CheckInitialize(error_code);
-    if (!IsSucceeded(error_code)) {
-        return {};
-    }
-
-    return image_->GetResolution(error_code);
+    CheckInitialize();
+    return image_->GetResolution();
 }
 
 
-RenderBitmap BitmapImage::CreateRenderBitmap(Renderer& renderer, std::error_code& error_code) {
+RenderBitmap BitmapImage::CreateRenderBitmap(Renderer& renderer) {
 
-    CheckInitialize(error_code);
-    if (!IsSucceeded(error_code)) {
-        return {};
-    }
-
-    return image_->CreateRenderBitmap(renderer, error_code);
+    CheckInitialize();
+    return image_->CreateRenderBitmap(renderer);
 }
 
 
-void BitmapImage::CheckInitialize(std::error_code& error_code) {
+void BitmapImage::CheckInitialize() {
 
     if (image_) {
-        error_code.clear();
         return;
     }
 
-    auto stream = GetResourceManager().LoadUri(uri_, error_code);
-    if (!IsSucceeded(error_code)) {
-        return;
-    }
-
-    image_ = Image::FromStream(stream, error_code);
+    auto stream = GetResourceManager().LoadUri(uri_);
+    image_ = Image::FromStream(stream);
 }
 
 }

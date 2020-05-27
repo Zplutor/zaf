@@ -7,19 +7,10 @@
 namespace zaf {
 namespace internal {
 
-std::shared_ptr<ReflectionObject> CreateReflectionObjectFromXaml(
-    const std::string& xaml,
-    std::error_code& error_code) {
+std::shared_ptr<ReflectionObject> CreateReflectionObjectFromXaml(const std::string& xaml) {
 
-    auto xaml_reader = XamlReader::CreateFromString(xaml, error_code);
-    if (error_code) {
-        return {};
-    }
-
-    auto xaml_node = xaml_reader->Read(error_code);
-    if (error_code) {
-        return {};
-    }
+    auto xaml_reader = XamlReader::CreateFromString(xaml);
+    auto xaml_node = xaml_reader->Read();
 
     auto object = CreateObjectByName(xaml_node->GetValue());
     if (!object) {

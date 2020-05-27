@@ -1,7 +1,7 @@
 #include <zaf/window/window.h>
 #include <Windowsx.h>
 #include <zaf/application.h>
-#include <zaf/base/error.h>
+#include <zaf/base/error/system_error.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
@@ -41,7 +41,7 @@ static const wchar_t* const kTitlePropertyName = L"Title";
 ZAF_DEFINE_REFLECTION_TYPE(Window, ReflectionObject);
 
 
-void Window::RegisterDefaultClass(std::error_code& error_code) {
+void Window::RegisterDefaultClass() {
 
 	WNDCLASSEX default_class = { 0 };
 	default_class.cbSize = sizeof(default_class);
@@ -58,11 +58,8 @@ void Window::RegisterDefaultClass(std::error_code& error_code) {
 	default_class.hIconSm = NULL;
 
 	ATOM atom = RegisterClassEx(&default_class);
-    if (atom != 0) {
-        error_code.clear();
-    }
-    else {
-        error_code = MakeSystemErrorCode(GetLastError());
+    if (atom == 0) {
+        ZAF_THROW_IF_SYSTEM_ERROR(GetLastError());
     }
 }
 
@@ -461,11 +458,13 @@ void Window::Repaint() {
         }
     }
 
-    std::error_code error_code;
-    renderer_.EndDraw(error_code);
-
-    if (IsComErrorCode(error_code, D2DERR_RECREATE_TARGET)) {
-        RecreateRenderer();
+    try {
+        renderer_.EndDraw();
+    }
+    catch (const Error& error) {
+        if (error.Code() == MakeComErrorCode(D2DERR_RECREATE_TARGET)) {
+            RecreateRenderer();
+        }
     }
 }
 

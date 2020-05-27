@@ -100,6 +100,9 @@
     <Filter Include="zaf\resource\internal">
       <UniqueIdentifier>{c0407eed-88f9-44a0-b226-391be1616417}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\base\error">
+      <UniqueIdentifier>{62ec9b22-b712-4e9f-a54b-d635e891774a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -445,6 +448,9 @@
     <ClCompile Include="src\zaf\resource\default_relative_uri_loader.cpp">
       <Filter>zaf\resource</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\base\error\com_error.cpp">
+      <Filter>zaf\base\error</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -643,9 +649,6 @@
       <Filter>zaf\window</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\event_utility.h">
-      <Filter>zaf\base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\error.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\theme.h">
@@ -1101,6 +1104,18 @@
     </ClInclude>
     <ClInclude Include="src\zaf\resource\default_relative_uri_loader.h">
       <Filter>zaf\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\com_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\system_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\source_site.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

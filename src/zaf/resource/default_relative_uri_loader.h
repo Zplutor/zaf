@@ -9,7 +9,7 @@ public:
     static std::shared_ptr<DefaultRelativeUriLoader> GetInstance();
 
 public:
-    Stream Load(const std::wstring& uri, std::error_code& error_code) override;
+    Stream Load(const std::wstring& uri) override;
 
 private:
     DefaultRelativeUriLoader() = default;

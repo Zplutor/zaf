@@ -19,27 +19,32 @@ GifPlayer::GifPlayer(const wic::BitmapDecoder& image_decoder) :
 
 void GifPlayer::GetImageSize(Size& pixel_size, std::pair<float, float>& resolution) {
 
-    auto first_frame = image_decoder_.GetFrame(0);
-    if (first_frame == nullptr) {
-        return;
+    try {
+
+        auto first_frame = image_decoder_.GetFrame(0);
+        pixel_size = first_frame.GetSize();
+
+        auto origin_resolution = first_frame.GetResolution();
+        resolution.first = static_cast<float>(origin_resolution.first);
+        resolution.second = static_cast<float>(origin_resolution.second);
     }
+    catch (const Error&) {
 
-    pixel_size = first_frame.GetSize();
-
-    auto origin_resolution = first_frame.GetResolution();
-    resolution.first = static_cast<float>(origin_resolution.first);
-    resolution.second = static_cast<float>(origin_resolution.second);
+    }
 }
 
 
 RenderBitmap GifPlayer::GetRenderBitmap(Renderer& renderer) {
     
-    if (Initialize(renderer)) {
-        return composed_frame_renderer_.GetBitmap();   
+    try {
+        if (Initialize(renderer)) {
+            return composed_frame_renderer_.GetBitmap();
+        }
+        return {};
     }
-    else {
-        return RenderBitmap();
-    }    
+    catch (const Error&) {
+        return {};
+    }
 }
 
 
@@ -55,15 +60,9 @@ bool GifPlayer::Initialize(Renderer& renderer) {
     }
 
     auto global_metadata_querier = image_decoder_.GetMetadataQuerier();
-    if (global_metadata_querier == nullptr) {
-        return false;
-    }
-
     GifGlobalMetadataQuerier gif_global_metadata_querier(global_metadata_querier);
 
-    if (! InitializeComposedFrameRenderer(renderer, gif_global_metadata_querier)) {
-        return false;
-    }
+    InitializeComposedFrameRenderer(renderer, gif_global_metadata_querier);
 
     InitializeBackgroundColor(gif_global_metadata_querier);
     total_loop_count_ = gif_global_metadata_querier.GetLoopCount();
@@ -76,7 +75,9 @@ bool GifPlayer::Initialize(Renderer& renderer) {
 }
 
 
-bool GifPlayer::InitializeComposedFrameRenderer(Renderer& renderer, const GifGlobalMetadataQuerier& metadata_querier) {
+void GifPlayer::InitializeComposedFrameRenderer(
+    Renderer& renderer,
+    const GifGlobalMetadataQuerier& metadata_querier) {
 
     auto width = metadata_querier.GetWidth();
     auto height = metadata_querier.GetHeight();
@@ -84,7 +85,6 @@ bool GifPlayer::InitializeComposedFrameRenderer(Renderer& renderer, const GifGlo
     CreateCompatibleRendererOptions options;
     options.DesiredSize(Size(width, height));
     composed_frame_renderer_ = renderer.CreateCompatibleRenderer(options);
-    return composed_frame_renderer_ != nullptr;
 }
 
 
@@ -96,30 +96,17 @@ void GifPlayer::InitializeBackgroundColor(const GifGlobalMetadataQuerier& metada
     }
 
     //Get background color index.
-    std::error_code error_code;
-    auto background_color_index = metadata_querier.GetBackgroundColorIndex(error_code);
-    if (error_code) {
-        return;
-    }
+    auto background_color_index = metadata_querier.GetBackgroundColorIndex();
 
     //Get palette from image decoder.
     auto palette = GetApplication().GetImagingFactory().CreatePalette();
-    if (palette == nullptr) {
-        return;
-    }
 
-    image_decoder_.CopyPalette(palette, error_code);
-    if (error_code) {
-        return;
-    }
+    image_decoder_.CopyPalette(palette);
 
     //Get colors from palette.
     auto color_count = palette.GetColorCount();
     auto colors = std::make_unique<std::uint32_t[]>(color_count);
-    palette.GetColors(color_count, colors.get(), color_count, error_code);
-    if (error_code) {
-        return;
-    }
+    palette.GetColors(color_count, colors.get(), color_count);
 
     //Check whether background color index is out of range.
     if (background_color_index >= color_count) {

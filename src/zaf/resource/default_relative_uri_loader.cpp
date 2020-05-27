@@ -9,13 +9,13 @@ std::shared_ptr<DefaultRelativeUriLoader> DefaultRelativeUriLoader::GetInstance(
 }
 
 
-Stream DefaultRelativeUriLoader::Load(const std::wstring& uri, std::error_code& error_code) {
+Stream DefaultRelativeUriLoader::Load(const std::wstring& uri) {
 
     wchar_t buffer[MAX_PATH]{};
     GetModuleFileName(nullptr, buffer, MAX_PATH);
 
     std::filesystem::path path{ buffer };
-    return Stream::FromFile(path / uri, error_code);
+    return Stream::FromFile(path / uri);
 }
 
 }

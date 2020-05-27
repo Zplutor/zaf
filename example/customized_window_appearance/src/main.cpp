@@ -8,12 +8,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     zaf::Application& application = zaf::GetApplication();
 
-    std::error_code error_code;
-    application.Initialize(error_code);
-    if (error_code) {
-        return error_code.value();
-    }
-
+    application.Initialize({});
+    
     application.GetBeginRunEvent().AddListener([](zaf::Application& application) {
     
         auto window = zaf::Create<zaf::Window>();

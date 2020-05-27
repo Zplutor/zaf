@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <string>
 #include <zaf/base/com_object.h>
-#include <zaf/base/error.h>
 #include <zaf/internal/enumerator.h>
 
 namespace zaf {
@@ -37,14 +36,7 @@ public:
      @return 
          Return an empty string if failed.
      */
-    std::wstring GetLocaleName(std::size_t index, std::error_code& error_code) const;
-
-    std::wstring GetLocaleName(std::size_t index) const {
-        std::error_code error_code;
-        auto result = GetLocaleName(index, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    std::wstring GetLocaleName(std::size_t index) const;
 
     /**
      Get the string at specified index.
@@ -55,14 +47,7 @@ public:
      @return 
          Return an empty string if failed.
      */
-    std::wstring GetString(std::size_t index, std::error_code& error_code) const;
-
-    std::wstring GetString(std::size_t index) const {
-        std::error_code error_code;
-        auto result = GetString(index, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    std::wstring GetString(std::size_t index) const;
 
     /**
      Get the index of the item with the specified locale name.
@@ -73,14 +58,7 @@ public:
      @return
          Return InvalidIndex if the locale name is not found.
     */
-    std::size_t FindLocaleName(const std::wstring& local_name, std::error_code& error_code) const;
-
-    std::size_t FindLocaleName(const std::wstring& local_name) const {
-        std::error_code error_code;
-        auto result = FindLocaleName(local_name, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    std::size_t FindLocaleName(const std::wstring& local_name) const;
 
     /**
      Get an enumerator for both locale names and strings.

@@ -13,22 +13,22 @@ public:
     }
 
 
-    Size GetPixelSize(std::error_code& error_code) override {
-        return wic_bitmap_.GetSize(error_code);
+    Size GetPixelSize() override {
+        return wic_bitmap_.GetSize();
     }
 
 
-    std::pair<float, float> GetResolution(std::error_code& error_code) override {
+    std::pair<float, float> GetResolution() override {
 
-        auto resolution = wic_bitmap_.GetResolution(error_code);
+        auto resolution = wic_bitmap_.GetResolution();
         return std::make_pair(
             static_cast<float>(resolution.first), 
             static_cast<float>(resolution.second));
     }
 
 
-    RenderBitmap CreateRenderBitmap(Renderer& renderer, std::error_code& error_code) override {
-        return renderer.CreateBitmap(wic_bitmap_, error_code);
+    RenderBitmap CreateRenderBitmap(Renderer& renderer) override {
+        return renderer.CreateBitmap(wic_bitmap_);
     }
 
 private:

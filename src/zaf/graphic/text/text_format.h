@@ -2,7 +2,6 @@
 
 #include <dwrite.h>
 #include <zaf/base/com_object.h>
-#include <zaf/base/error.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/text_trimming.h>
@@ -71,22 +70,8 @@ public:
 		GetHandle()->SetWordWrapping(static_cast<DWRITE_WORD_WRAPPING>(word_wrapping));
 	}
 
-    TextTrimming GetTextTrimming(std::error_code& error_code) const;
-
-    TextTrimming GetTextTrimming() const {
-        std::error_code error_code;
-        auto result = GetTextTrimming(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
-
-    void SetTextTrimming(const TextTrimming& text_trimming, std::error_code& error_code);
-
-    void SetTextTrimming(const TextTrimming& text_trimming) {
-        std::error_code error_code;
-        SetTextTrimming(text_trimming, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
+    TextTrimming GetTextTrimming() const;
+    void SetTextTrimming(const TextTrimming& text_trimming);
 };
 
 }

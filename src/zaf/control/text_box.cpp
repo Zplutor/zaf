@@ -1,5 +1,6 @@
 #include <zaf/control/text_box.h>
 #include <cassert>
+#include <zaf/base/assert.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/base/log.h>
 #include <zaf/graphic/alignment.h>

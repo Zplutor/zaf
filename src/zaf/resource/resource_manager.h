@@ -14,15 +14,10 @@ public:
     ResourceManager(const ResourceManager&) = delete;
     ResourceManager& operator=(const ResourceManager&) = delete;
 
-    Stream LoadUri(const std::wstring& uri, std::error_code& error_code);
-    Stream LoadUri(const std::wstring& uri) {
-        std::error_code error_code;
-        auto result = LoadUri(uri, error_code);
-        return result;
-    }
+    Stream LoadUri(const std::wstring& uri);
 
 private:
-    Stream LoadRelativeUri(const std::wstring& uri, std::error_code& error_code);
+    Stream LoadRelativeUri(const std::wstring& uri);
 
 private:
     std::shared_ptr<UriLoader> relative_uri_loader_;

@@ -12,7 +12,7 @@ public:
     UriLoader(const UriLoader&) = delete;
     UriLoader& operator=(const UriLoader&) = delete;
 
-    virtual Stream Load(const std::wstring& uri, std::error_code& error_code) = 0;
+    virtual Stream Load(const std::wstring& uri) = 0;
 };
 
 }

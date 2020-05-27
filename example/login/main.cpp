@@ -1,5 +1,4 @@
 #include <zaf/application.h>
-#include <zaf/base/error.h>
 #include <zaf/control/button.h>
 #include <zaf/control/label.h>
 #include <zaf/control/text_box.h>
@@ -20,13 +19,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     zaf::Application& application = zaf::GetApplication();
 
     //Initialize the application.
-    std::error_code error_code;
-    application.Initialize(error_code);
-
-    //Exit if the initialization is failed.
-    if (! zaf::IsSucceeded(error_code)) {
-        return error_code.value();
-    }
+    application.Initialize({});
 
     //Register the begin run event, do something when the event triggers.
     application.GetBeginRunEvent().AddListener(OnBeginRun);

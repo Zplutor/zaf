@@ -115,12 +115,7 @@ void ImageBox::SetUri(const std::wstring& uri) {
         return;
     }
 
-    std::error_code error_code;
-    auto bitmap_decoder = internal::CreateBitmapDecoderFromSteam(stream, error_code);
-    if (bitmap_decoder == nullptr) {
-        return;
-    }
-
+    auto bitmap_decoder = internal::CreateBitmapDecoderFromSteam(stream);
     SetDecoder(bitmap_decoder);
 }
 

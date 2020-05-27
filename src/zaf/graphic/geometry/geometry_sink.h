@@ -3,7 +3,7 @@
 #include <vector>
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
-#include <zaf/base/error.h>
+#include <zaf/base/error/com_error.h>
 #include <zaf/base/flag_enum.h>
 #include <zaf/graphic/point.h>
 
@@ -200,16 +200,10 @@ public:
      sink in an error state. For the close operation to be successful, there must be one EndFigure
      call for each call to BeginFigure.
      */
-    void Close(std::error_code& error_code) {
+    void Close() {
         HRESULT result = GetHandle()->Close();
-        error_code = MakeComErrorCode(result);
+        ZAF_THROW_IF_COM_ERROR(result);
     }
-
-	void Close() {
-        std::error_code error_code;
-        Close(error_code);
-        ZAF_CHECK_ERROR(error_code);
-	}
 
 private:
     Point coordinate_origin_;

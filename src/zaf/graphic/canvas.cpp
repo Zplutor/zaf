@@ -1,6 +1,7 @@
 #include <zaf/graphic/canvas.h>
 #include <dwrite.h>
 #include <zaf/application.h>
+#include <zaf/base/error/com_error.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
@@ -269,64 +270,37 @@ void Canvas::DrawBitmap(
 }
 
 
-PathGeometry Canvas::CreatePathGeometry(std::error_code& error) const {
+PathGeometry Canvas::CreatePathGeometry() const {
 
     ID2D1PathGeometry* handle{};
     HRESULT result = 
         GetGraphicFactory().GetDirect2dFactoryHandle()->CreatePathGeometry(&handle);
 
-    error = MakeComErrorCode(result);
-    if (IsSucceeded(error)) {
-        return PathGeometry(handle, aligned_transform_offset_);
-    }
-    return {};
-}
-
-PathGeometry Canvas::CreatePathGeometry() const {
-    std::error_code error;
-    auto result = CreatePathGeometry(error);
-    ZAF_CHECK_ERROR(error);
-    return result;
+    ZAF_THROW_IF_COM_ERROR(result);
+    return PathGeometry(handle, aligned_transform_offset_);
 }
 
 
-RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect, std::error_code& error) const {
+RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect) const {
 
     Rect aligned_rect = rect;
     aligned_rect.position.x += aligned_transform_offset_.x;
     aligned_rect.position.y += aligned_transform_offset_.y;
     aligned_rect = Align(aligned_rect);
 
-    return GetGraphicFactory().CreateRectangleGeometry(aligned_rect, error);
-}
-
-RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect) const {
-    std::error_code error;
-    auto result = CreateRectangleGeometry(rect, error);
-    ZAF_CHECK_ERROR(error);
-    return result;
+    return GetGraphicFactory().CreateRectangleGeometry(aligned_rect);
 }
 
 
 RoundedRectangleGeometry Canvas::CreateRoundedRectangleGeometry(
-    const RoundedRect& rounded_rect,
-    std::error_code& error) const {
+    const RoundedRect& rounded_rect) const {
 
     RoundedRect aligned_rounded_rect = rounded_rect;
     aligned_rounded_rect.rect.position.x += aligned_transform_offset_.x;
     aligned_rounded_rect.rect.position.y += aligned_transform_offset_.y;
     aligned_rounded_rect = Align(aligned_rounded_rect);
 
-    return GetGraphicFactory().CreateRoundedRectangleGeometry(aligned_rounded_rect, error);
-}
-
-RoundedRectangleGeometry Canvas::CreateRoundedRectangleGeometry(
-    const RoundedRect& rounded_rect) const {
-
-    std::error_code error;
-    auto result = CreateRoundedRectangleGeometry(rounded_rect, error);
-    ZAF_CHECK_ERROR(error);
-    return result;
+    return GetGraphicFactory().CreateRoundedRectangleGeometry(aligned_rounded_rect);
 }
 
 

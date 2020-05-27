@@ -3,7 +3,7 @@
 #include <memory>
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
-#include <zaf/base/error.h>
+#include <zaf/base/error/com_error.h>
 #include <zaf/graphic/brush/bitmap_brush.h>
 #include <zaf/graphic/brush/solid_color_brush.h>
 #include <zaf/graphic/color.h>
@@ -33,78 +33,31 @@ public:
     Renderer() { }
     explicit Renderer(ID2D1RenderTarget* handle) : ComObject(handle) { }
 
-    BitmapRenderer CreateCompatibleRenderer(
-        const CreateCompatibleRendererOptions& options,
-        std::error_code& error_code);
+    BitmapRenderer CreateCompatibleRenderer(const CreateCompatibleRendererOptions& options);
 
-    BitmapRenderer CreateCompatibleRenderer(
-        const CreateCompatibleRendererOptions& options = CreateCompatibleRendererOptions());
+    SolidColorBrush CreateSolidColorBrush(const Color& color);
 
-    const SolidColorBrush CreateSolidColorBrush(const Color& color, std::error_code& error_code);
+    BitmapBrush CreateBitmapBrush(const RenderBitmap& bitmap);
 
-    const SolidColorBrush CreateSolidColorBrush(const Color& color) {
-        std::error_code error_code;
-        auto result = CreateSolidColorBrush(color, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
-
-    const BitmapBrush CreateBitmapBrush(const RenderBitmap& bitmap, std::error_code& error_code);
-
-    const BitmapBrush CreateBitmapBrush(const RenderBitmap& bitmap) {
-        std::error_code error_code;
-        auto result = CreateBitmapBrush(bitmap, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
-
-    const Layer CreateLayer(std::error_code& error_code) {
-        return InnerCreateLayer(nullptr, error_code);
-    }
-
-    const Layer CreateLayer() {
+    Layer CreateLayer() {
         return InnerCreateLayer(nullptr);
     }
 
-    const Layer CreateLayer(const Size& size, std::error_code& error_code) {
-        return InnerCreateLayer(&size, error_code);
-    }
-
-    const Layer CreateLayer(const Size& size) {
+    Layer CreateLayer(const Size& size) {
         return InnerCreateLayer(&size);
     }
 
-    RenderBitmap CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code);
+    RenderBitmap CreateBitmap(const Size& size, const BitmapProperties& properties);
 
-    RenderBitmap CreateBitmap(const Size& size, const BitmapProperties& properties) {
-        std::error_code error_code;
-        auto result = CreateBitmap(size, properties, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
-
-    const RenderBitmap CreateBitmap(const wic::BitmapSource& image_source, std::error_code& error_code);
-
-    const RenderBitmap CreateBitmap(const wic::BitmapSource& image_source) {
-        std::error_code error_code;
-        auto result = CreateBitmap(image_source, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    RenderBitmap CreateBitmap(const wic::BitmapSource& image_source);
 
     void BeginDraw() {
         GetHandle()->BeginDraw();
     }
 
-    void EndDraw(std::error_code& error_code) {
-        HRESULT result = GetHandle()->EndDraw();
-        error_code = MakeComErrorCode(result);
-    }
-
     void EndDraw() {
-        std::error_code error_code;
-        EndDraw(error_code);
-        ZAF_CHECK_ERROR(error_code);
+        HRESULT result = GetHandle()->EndDraw();
+        ZAF_THROW_IF_COM_ERROR(result);
     }
 
     void DrawLine(
@@ -112,16 +65,14 @@ public:
         const Point& to_point,
         const Brush& brush,
         float stroke_width,
-        const Stroke& stroke
-        ) {
+        const Stroke& stroke) {
 
         GetHandle()->DrawLine(
             from_point.ToD2D1POINT2F(),
             to_point.ToD2D1POINT2F(),
             brush.GetHandle(),
             stroke_width,
-            stroke.GetHandle()
-            );
+            stroke.GetHandle());
     }
 
     void DrawRectangle(const Rect& rect, const Brush& brush) {
@@ -132,15 +83,13 @@ public:
         const Rect& rect,
         const Brush& brush,
         float stroke_width,
-        const Stroke& stroke
-        ) {
+        const Stroke& stroke) {
 
         GetHandle()->DrawRectangle(
             rect.ToD2D1RECTF(),
             brush.GetHandle(),
             stroke_width,
-            stroke.GetHandle()
-            );
+            stroke.GetHandle());
     }
 
     void DrawRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush) {
@@ -168,66 +117,57 @@ public:
         const Ellipse& ellipse,
         const Brush& brush,
         float stroke_width,
-        const Stroke& stroke
-        ) {
+        const Stroke& stroke) {
 
         GetHandle()->DrawEllipse(
             ellipse.ToD2D1ELLIPSE(),
             brush.GetHandle(),
             stroke_width,
-            stroke.GetHandle()
-            );
+            stroke.GetHandle());
     }
 
     void DrawGeometry(
         const Geometry& geometry,
         const Brush& brush,
-        const Brush& opacity_brush
-        ) {
+        const Brush& opacity_brush) {
 
         GetHandle()->FillGeometry(
             geometry.GetHandle(),
             brush.GetHandle(),
-            opacity_brush.GetHandle()
-            );
+            opacity_brush.GetHandle());
     }
 
     void DrawGeometryFrame(
         const Geometry& geometry,
         const Brush& brush,
         float stroke_width,
-        const Stroke& stroke
-        ) {
+        const Stroke& stroke) {
 
         GetHandle()->DrawGeometry(
             geometry.GetHandle(),
             brush.GetHandle(),
             stroke_width,
-            stroke.GetHandle()
-            );
+            stroke.GetHandle());
     }
 
     void DrawTextFormat(
         const std::wstring& text,
         const TextFormat& text_format,
         const Rect& rect,
-        const Brush& brush
-        ) {
+        const Brush& brush) {
 
         GetHandle()->DrawText(
             text.c_str(),
             text.length(),
             text_format.GetHandle(),
             rect.ToD2D1RECTF(),
-            brush.GetHandle()
-            );
+            brush.GetHandle());
     }
 
     void DrawTextLayout(
         const TextLayout& text_layout,
         const Point& position,
-        const Brush& brush
-        ) {
+        const Brush& brush) {
 
         GetHandle()->DrawTextLayout(position.ToD2D1POINT2F(), text_layout.GetHandle(), brush.GetHandle());
     }
@@ -274,14 +214,7 @@ public:
     }
 
 private:
-    const Layer InnerCreateLayer(const Size* size, std::error_code& error_code);
-
-    const Layer InnerCreateLayer(const Size* size) {
-        std::error_code error_code;
-        auto result = InnerCreateLayer(size, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    Layer InnerCreateLayer(const Size* size);
 };
 
 }

@@ -641,7 +641,7 @@ private:
 	friend class Control;
     friend class internal::MessageLoop;
 
-	static void RegisterDefaultClass(std::error_code& error_code);
+	static void RegisterDefaultClass();
 
 	void NeedRepaintRect(const Rect& rect);
 	void SetHoveredControl(

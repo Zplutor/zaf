@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <memory>
 #include <zaf/base/com_object.h>
-#include <zaf/base/error.h>
 #include <zaf/graphic/font/font_face.h>
 #include <zaf/graphic/localized_strings.h>
 
@@ -28,13 +27,8 @@ public:
 
     /**
      Get the font collection that contains the fonts.
-
-     @return
-         Return nullptr if failed.
      */
-    const FontCollection GetFontCollection(std::error_code& error_code) const;
-
-    const FontCollection GetFontCollection() const;
+    FontCollection GetFontCollection() const;
 
     /**
      Get the number of fonts.
@@ -48,33 +42,13 @@ public:
 
      @param index
          Zero-based index of the font in the font family.
-    
-     @return
-         Return nullptr if failed.
      */
-    const FontFace GetFont(std::size_t index, std::error_code& error_code) const;
-
-    const FontFace GetFont(std::size_t index) const {
-        std::error_code error_code;
-        auto result = GetFont(index, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    FontFace GetFont(std::size_t index) const;
 
     /**
      Get a localized strings object that contains the family names for the font family, indexed by locale name.
-
-     @return
-         Return nullptr if failed.
      */
-    const LocalizedStrings GetFamilyNames(std::error_code& error_code) const;
-
-    const LocalizedStrings GetFamilyNames() const {
-        std::error_code error_code;
-        auto result = GetFamilyNames(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    LocalizedStrings GetFamilyNames() const;
 };
 
 }

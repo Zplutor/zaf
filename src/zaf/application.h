@@ -55,14 +55,10 @@ public:
 	 @param parameters
 		Initialization parameters.
 
-     @param error_code
-        An output parameter indicating the result of initialization. You should check
-        this parameter to ensure that whether the initialization is succeeded.
-
 	 This mehtod must be called before calling Run method. If the initialization
 	 fails, the application is unable to run, it should be terminated in this case.
 	 */
-	void Initialize(const InitializeParameters& parameters, std::error_code& error_code);
+	void Initialize(const InitializeParameters& parameters);
 
 	/**
 	 Make the application run.

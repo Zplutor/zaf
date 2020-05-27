@@ -1,66 +1,50 @@
 #include <zaf/graphic/localized_strings.h>
 #include <zaf/base/define.h>
+#include <zaf/base/error/com_error.h>
 
 namespace zaf {
 
-std::wstring LocalizedStrings::GetLocaleName(std::size_t index, std::error_code& error_code) const {
+std::wstring LocalizedStrings::GetLocaleName(std::size_t index) const {
 
     UINT32 length = 0;
     HRESULT result = GetHandle()->GetLocaleNameLength(index, &length);
 
-    error_code = MakeComErrorCode(result);
-    if (! IsSucceeded(error_code)) {
-        return std::wstring();
-    }
+    ZAF_THROW_IF_COM_ERROR(result);
 
     std::wstring locale_name(length + 1, 0);
     result = GetHandle()->GetLocaleName(index, &locale_name[0], locale_name.length());
 
-    error_code = MakeComErrorCode(result);
-    if (IsSucceeded(error_code)) {
-        locale_name.resize(length);
-        return locale_name;
-    }
-    else {
-        return std::wstring();
-    }
+    ZAF_THROW_IF_COM_ERROR(result);
+
+    locale_name.resize(length);
+    return locale_name;
 }
 
 
-std::wstring LocalizedStrings::GetString(std::size_t index, std::error_code& error_code) const {
+std::wstring LocalizedStrings::GetString(std::size_t index) const {
 
     UINT32 length = 0;
     HRESULT result = GetHandle()->GetStringLength(index, &length);
 
-    error_code = MakeComErrorCode(result);
-    if (! IsSucceeded(error_code)) {
-        return std::wstring();
-    }
+    ZAF_THROW_IF_COM_ERROR(result);
 
     std::wstring string(length + 1, 0);
     result = GetHandle()->GetString(index, &string[0], string.length());
 
-    error_code = MakeComErrorCode(result);
-    if (IsSucceeded(error_code)) {
-        string.resize(length);
-        return string;
-    }
-    else {
-        return std::wstring();
-    }
+    ZAF_THROW_IF_COM_ERROR(result);
+
+    string.resize(length);
+    return string;
 }
 
 
-std::size_t LocalizedStrings::FindLocaleName(const std::wstring& local_name, std::error_code& error_code) const {
+std::size_t LocalizedStrings::FindLocaleName(const std::wstring& local_name) const {
 
     UINT32 index = 0;
     BOOL is_existent = FALSE;
     HRESULT result = GetHandle()->FindLocaleName(local_name.c_str(), &index, &is_existent);
 
-    error_code = MakeComErrorCode(result);
-    if (! IsSucceeded(error_code)) {
-        return InvalidIndex;
-    }
+    ZAF_THROW_IF_COM_ERROR(result);
 
     if (is_existent) {
         return index;

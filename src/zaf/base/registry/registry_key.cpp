@@ -1,5 +1,5 @@
-#include "zaf/base/registry/registry_key.h"
-#include "zaf/base/error.h"
+#include <zaf/base/registry/registry_key.h>
+#include <zaf/base/error/system_error.h>
 
 namespace zaf {
 
@@ -25,12 +25,12 @@ RegistryKey::~RegistryKey() {
 }
 
 
-RegistryKey RegistryKey::CreateSubKey(const std::wstring& subKey, RegistryRights rights, std::error_code& error) {
+RegistryKey RegistryKey::CreateSubKey(const std::wstring& sub_key, RegistryRights rights) {
 
     HKEY sub_key_handle{};
     LSTATUS result = RegCreateKeyEx(
         handle_,
-        subKey.c_str(),
+        sub_key.c_str(),
         0,
         nullptr, 
         0,
@@ -39,35 +39,35 @@ RegistryKey RegistryKey::CreateSubKey(const std::wstring& subKey, RegistryRights
         &sub_key_handle, 
         nullptr);
 
-    error = MakeSystemErrorCode(result);
-    if (error) {
-        return {};
-    }
-    return RegistryKey(sub_key_handle);
+    ZAF_THROW_IF_SYSTEM_ERROR(result);
+    return RegistryKey{ sub_key_handle };
 }
 
 
-RegistryKey RegistryKey::OpenSubKey(const std::wstring& subKey, RegistryRights rights, std::error_code& error) {
+RegistryKey RegistryKey::OpenSubKey(const std::wstring& sub_key, RegistryRights rights) {
 
     HKEY sub_key_handle{};
-    LSTATUS result = RegOpenKeyEx(handle_, subKey.c_str(), 0, static_cast<REGSAM>(rights), &sub_key_handle);
+    LSTATUS result = RegOpenKeyEx(
+        handle_, 
+        sub_key.c_str(),
+        0, 
+        static_cast<REGSAM>(rights),
+        &sub_key_handle);
 
-    error = MakeSystemErrorCode(result);
-    if (error) {
-        return {};
-    }
-    return RegistryKey(sub_key_handle);
+    ZAF_THROW_IF_SYSTEM_ERROR(result);
+    return RegistryKey{ sub_key_handle };
 }
 
 
-std::wstring RegistryKey::GetStringValue(const std::wstring& name, std::error_code& error) {
+std::wstring RegistryKey::GetStringValue(const std::wstring& name) {
 
-    auto buffer = GetValue(name, REG_SZ, error);
-    if (error) {
-        return {};
-    }
+    auto buffer = GetValue(name, REG_SZ);
 
-    std::wstring value(reinterpret_cast<const wchar_t*>(buffer.data()), buffer.size() / sizeof(wchar_t));
+    std::wstring value{ 
+        reinterpret_cast<const wchar_t*>(buffer.data()),
+        buffer.size() / sizeof(wchar_t) 
+    };
+
     if (! value.empty()) {
         if (value[value.length() - 1] == L'\0') {
             value.resize(value.length() - 1);
@@ -77,76 +77,81 @@ std::wstring RegistryKey::GetStringValue(const std::wstring& name, std::error_co
 }
 
 
-std::uint32_t RegistryKey::GetDWordValue(const std::wstring& name, std::error_code& error) {
+void RegistryKey::SetStringValue(const std::wstring& name, const std::wstring& value) {
+    SetValue(name, REG_SZ, value.c_str(), (value.length() + 1) * sizeof(wchar_t));
+}
 
-    auto buffer = GetValue(name, REG_DWORD, error);
-    if (error) {
-        return 0;
-    }
+
+std::uint32_t RegistryKey::GetDWordValue(const std::wstring& name) {
+
+    auto buffer = GetValue(name, REG_DWORD);
 
     std::uint32_t value = *reinterpret_cast<const std::uint32_t*>(buffer.data());
     return value;
 }
 
 
-std::uint64_t RegistryKey::GetQWordValue(const std::wstring& name, std::error_code& error) {
+void RegistryKey::SetDWordValue(const std::wstring& name, std::uint32_t value) {
+    SetValue(name, REG_DWORD, &value, sizeof(value));
+}
 
-    auto buffer = GetValue(name, REG_QWORD, error);
-    if (error) {
-        return 0;
-    }
+
+std::uint64_t RegistryKey::GetQWordValue(const std::wstring& name) {
+
+    auto buffer = GetValue(name, REG_QWORD);
 
     std::uint64_t value = *reinterpret_cast<const std::uint64_t*>(buffer.data());
     return value;
 }
 
 
-std::vector<BYTE> RegistryKey::GetValue(const std::wstring& name, DWORD expected_type, std::error_code& error) {
+void RegistryKey::SetQWordValue(const std::wstring& name, std::uint64_t value) {
+    SetValue(name, REG_QWORD, &value, sizeof(value));
+}
+
+
+std::vector<BYTE> RegistryKey::GetValue(const std::wstring& name, DWORD expected_type) {
 
     DWORD value_type{};
-    DWORD buffer_size = 128;
+    DWORD buffer_size{ 128 };
     std::vector<BYTE> buffer(buffer_size);
-    LSTATUS result = RegQueryValueEx(handle_, name.c_str(), nullptr, &value_type, &buffer[0], &buffer_size);
+    LSTATUS result = RegQueryValueEx(
+        handle_, 
+        name.c_str(),
+        nullptr, 
+        &value_type, 
+        &buffer[0],
+        &buffer_size);
 
     if (result == ERROR_MORE_DATA) {
         buffer.resize(buffer_size);
         result = RegQueryValueEx(handle_, name.c_str(), nullptr, &value_type, &buffer[0], &buffer_size);
     }
 
-    error = MakeSystemErrorCode(result);
-    if (! error) {
-        if (expected_type != value_type) {
-            error = MakeSystemErrorCode(ERROR_INVALID_DATATYPE);
-        }
+    ZAF_THROW_IF_SYSTEM_ERROR(result);
+
+    if (expected_type != value_type) {
+        ZAF_THROW_IF_SYSTEM_ERROR(ERROR_INVALID_DATATYPE);
     }
     return buffer;
 }
 
 
-void RegistryKey::SetStringValue(const std::wstring& name, const std::wstring& value, std::error_code& error) {
-    SetValue(
-        name, 
-        REG_SZ,
-        value.c_str(),
-        (value.length() + 1) * sizeof(wchar_t),
-        error);
-}
+void RegistryKey::SetValue(
+    const std::wstring& name,
+    DWORD type, 
+    const void* data,
+    DWORD data_size) {
 
+    LSTATUS result = RegSetValueEx(
+        handle_, 
+        name.c_str(),
+        0, 
+        type,
+        reinterpret_cast<const BYTE*>(data),
+        data_size);
 
-void RegistryKey::SetDWordValue(const std::wstring& name, std::uint32_t value, std::error_code& error) {
-    SetValue(name, REG_DWORD, &value, sizeof(value), error);
-}
-
-
-void RegistryKey::SetQWordValue(const std::wstring& name, std::uint64_t value, std::error_code& error) {
-    SetValue(name, REG_QWORD, &value, sizeof(value), error);
-}
-
-
-void RegistryKey::SetValue(const std::wstring& name, DWORD type, const void* data, DWORD data_size, std::error_code& error) {
-
-    LSTATUS result = RegSetValueEx(handle_, name.c_str(), 0, type, reinterpret_cast<const BYTE*>(data), data_size);
-    error = MakeSystemErrorCode(result);
+    ZAF_THROW_IF_SYSTEM_ERROR(result);
 }
 
 }

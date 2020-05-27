@@ -4,7 +4,6 @@
 #include <stack>
 #include <string>
 #include <zaf/application.h>
-#include <zaf/base/error.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/renderer/renderer.h>
@@ -129,15 +128,9 @@ public:
         const Rect& destination_rect, 
         const DrawImageOptions& options = {});
 
-    PathGeometry CreatePathGeometry(std::error_code& error) const;
     PathGeometry CreatePathGeometry() const;
 
-    RectangleGeometry CreateRectangleGeometry(const Rect& rect, std::error_code& error) const;
     RectangleGeometry CreateRectangleGeometry(const Rect& rect) const;
-
-    RoundedRectangleGeometry CreateRoundedRectangleGeometry(
-        const RoundedRect& rounded_rect, 
-        std::error_code& error) const;
 
     RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect) const;
 

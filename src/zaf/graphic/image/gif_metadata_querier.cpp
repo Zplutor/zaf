@@ -6,8 +6,7 @@ std::optional<std::size_t> GifGlobalMetadataQuerier::GetLoopCount() const {
 
     std::optional<std::size_t> result;
 
-    std::error_code error_code;
-    auto identifier = GetApplicationExtensionIdentifier(error_code);
+    auto identifier = GetApplicationExtensionIdentifier();
 
     auto identifier_size = identifier.size();
     if (identifier_size != 11) {
@@ -27,7 +26,7 @@ std::optional<std::size_t> GifGlobalMetadataQuerier::GetLoopCount() const {
      byte 3: loop count (most significant byte)
      byte 4: set to zero
      */
-    auto data = GetApplicationExtensionData(error_code);
+    auto data = GetApplicationExtensionData();
     if (data.size() < 4) {
         return result;
     }

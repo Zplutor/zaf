@@ -4,7 +4,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <zaf/base/com_object.h>
-#include <zaf/base/error.h>
 
 namespace zaf::wic {
 
@@ -33,109 +32,28 @@ public:
     Palette() { }
     explicit Palette(IWICPalette* handle) : ComObject(handle) { }
 
-    void InitializeFromCustomColors(
-        const std::uint32_t* colors, 
-        std::size_t color_count, 
-        std::error_code& error_code);
+    void InitializeFromCustomColors(const std::uint32_t* colors, std::size_t color_count);
 
-    void InitializeFromCustomColors(const std::uint32_t* colors, std::size_t color_count) {
-        std::error_code error_code;
-        InitializeFromCustomColors(colors, color_count, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
+    void InitializeFromPredefinedType(Type type, bool add_transparent_color);
 
-    void InitializeFromPredefinedType(Type type, bool add_transparent_color, std::error_code& error_code);
-
-    void InitializeFromPredefinedType(Type type, bool add_transparent_color) {
-        std::error_code error_code;
-        InitializeFromPredefinedType(type, add_transparent_color, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
-
-    void InitializeFromPalette(const Palette& palette, std::error_code& error_code);
-
-    void InitializeFromPalette(const Palette& palette) {
-        std::error_code error_code;
-        InitializeFromPalette(palette, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
+    void InitializeFromPalette(const Palette& palette);
 
     void InitializeFromImage(
         const BitmapSource& image,
         std::size_t color_count, 
-        bool add_transparent_color, 
-        std::error_code& error_code);
+        bool add_transparent_color);
 
-    void InitializeFromImage(
-        const BitmapSource& image,
-        std::size_t color_count,
-        bool add_transparent_color) {
+    std::size_t GetColorCount() const;
 
-        std::error_code error_code;
-        InitializeFromImage(image, color_count, add_transparent_color, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
+    void GetColors(std::size_t count, std::uint32_t* colors, std::size_t& actual_count) const;
 
-    std::size_t GetColorCount(std::error_code& error_code) const;
+    Type GetType() const;
 
-    std::size_t GetColorCount() const {
-        std::error_code error_code;
-        auto result = GetColorCount(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    bool HasAlpha() const;
 
-    void GetColors(
-        std::size_t count, 
-        std::uint32_t* colors, 
-        std::size_t& actual_count,
-        std::error_code& error_code) const;
+    bool IsBlackWhite() const;
 
-    void GetColors(
-        std::size_t count,
-        std::uint32_t* colors,
-        std::size_t& actual_count) const {
-
-        std::error_code error_code;
-        GetColors(count, colors, actual_count, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
-
-    Type GetType(std::error_code& error_code) const;
-
-    Type GetType() const {
-        std::error_code error_code;
-        auto result = GetType(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
-
-    bool HasAlpha(std::error_code& error_code) const;
-
-    bool HasAlpha() const {
-        std::error_code error_code;
-        auto result = HasAlpha(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
-
-    bool IsBlackWhite(std::error_code& error_code) const;
-
-    bool IsBlackWhite() const {
-        std::error_code error_code;
-        auto result = IsBlackWhite(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
-
-    bool IsGrayscale(std::error_code& error_code) const;
-
-    bool IsGrayscale() const {
-        std::error_code error_code;
-        auto result = IsGrayscale(error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+    bool IsGrayscale() const;
 };
 
 }

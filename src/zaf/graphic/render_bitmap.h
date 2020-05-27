@@ -2,7 +2,7 @@
 
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
-#include <zaf/base/error.h>
+#include <zaf/base/error/com_error.h>
 #include <zaf/graphic/bitmap_properties.h>
 #include <zaf/graphic/rect.h>
 
@@ -50,23 +50,15 @@ public:
         return result;
     }
 
-    void CopyFromBitmap(const RenderBitmap& bitmap, std::error_code& error_code) {
-        HRESULT com_error = GetHandle()->CopyFromBitmap(nullptr, bitmap.GetHandle(), nullptr);
-        error_code = MakeComErrorCode(com_error);
-    }
-
     void CopyFromBitmap(const RenderBitmap& bitmap) {
-        std::error_code error_code;
-        CopyFromBitmap(bitmap, error_code);
-        ZAF_CHECK_ERROR(error_code);
+        HRESULT com_error = GetHandle()->CopyFromBitmap(nullptr, bitmap.GetHandle(), nullptr);
+        ZAF_THROW_IF_COM_ERROR(com_error);
     }
 
-    void CopyFromRenderer(const Renderer& renderer, const Rect& renderer_rect, const Point& to_position, std::error_code& error_code);
-    void CopyFromRenderer(const Renderer& renderer, const Rect& renderer_rect, const Point& to_position) {
-        std::error_code error_code;
-        CopyFromRenderer(renderer, renderer_rect, to_position, error_code);
-        ZAF_CHECK_ERROR(error_code);
-    }
+    void CopyFromRenderer(
+        const Renderer& renderer,
+        const Rect& renderer_rect,
+        const Point& to_position);
 };
 
 }

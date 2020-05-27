@@ -1,5 +1,4 @@
 #include <zaf/application.h>
-#include <zaf/base/error.h>
 #include <zaf/creation.h>
 #include "logic/service.h"
 #include "ui/main/main_window.h"
@@ -8,12 +7,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
     auto& application = zaf::Application::GetInstance();
 
-    std::error_code error_code;
-    application.Initialize(error_code);
-
-    if (! zaf::IsSucceeded(error_code)) {
-        return error_code.value();
-    }
+    application.Initialize({});
 
     application.GetBeginRunEvent().AddListener([](zaf::Application& application) {
 

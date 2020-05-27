@@ -4,7 +4,6 @@
 #include <memory>
 #include <string>
 #include <zaf/base/com_object.h>
-#include <zaf/base/error.h>
 #include <zaf/graphic/font/font_family.h>
 #include <zaf/internal/enumerator.h>
 
@@ -50,14 +49,7 @@ public:
      @return
          Return nullptr if error occurs.
      */
-	const FontFamily GetFontFamily(std::size_t index, std::error_code& error_code) const;
-
-    const FontFamily GetFontFamily(std::size_t index) const {
-        std::error_code error_code;
-        auto result = GetFontFamily(index, error_code);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+	FontFamily GetFontFamily(std::size_t index) const;
 
     /**
      Finds the font family with the specified family name.
@@ -71,14 +63,7 @@ public:
      @return
          Return nullptr if font family not found, or error occurs.
      */
-	const FontFamily FindFontFamily(const std::wstring& family_name, std::error_code& error_code) const;
-
-    const FontFamily FindFontFamily(const std::wstring& family_name) const {
-        std::error_code error_code;
-        auto result = FindFontFamily(family_name);
-        ZAF_CHECK_ERROR(error_code);
-        return result;
-    }
+	FontFamily FindFontFamily(const std::wstring& family_name) const;
 
     /**
      Get an enumerator for font families.

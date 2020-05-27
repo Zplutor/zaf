@@ -1,4 +1,5 @@
 #include <zaf/graphic/renderer/renderer.h>
+#include <atlbase.h>
 #include <zaf/application.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
 #include <zaf/graphic/renderer/bitmap_renderer.h>
@@ -6,9 +7,7 @@
 
 namespace zaf {
 
-BitmapRenderer Renderer::CreateCompatibleRenderer(
-    const CreateCompatibleRendererOptions& options,
-    std::error_code& error_code) {
+BitmapRenderer Renderer::CreateCompatibleRenderer(const CreateCompatibleRendererOptions& options) {
 
     D2D1_SIZE_F d2d_desired_size;
     D2D1_SIZE_U d2d_desired_pixel_size;
@@ -36,39 +35,32 @@ BitmapRenderer Renderer::CreateCompatibleRenderer(
         static_cast<D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS>(options.Flags()), 
         &handle);
 
-    error_code = MakeComErrorCode(com_error);
+    ZAF_THROW_IF_COM_ERROR(com_error);
     return BitmapRenderer(handle);
 }
 
-BitmapRenderer Renderer::CreateCompatibleRenderer(const CreateCompatibleRendererOptions& options) {
-    std::error_code error_code;
-    auto result = CreateCompatibleRenderer(options, error_code);
-    ZAF_CHECK_ERROR(error_code);
-    return result;
-}
 
-
-const SolidColorBrush Renderer::CreateSolidColorBrush(const Color& color, std::error_code& error_code) {
+SolidColorBrush Renderer::CreateSolidColorBrush(const Color& color) {
 
     ID2D1SolidColorBrush* brush_handle = nullptr;
     HRESULT result = GetHandle()->CreateSolidColorBrush(color.ToD2D1COLORF(), &brush_handle);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return SolidColorBrush(brush_handle);
 }
 
 
-const BitmapBrush Renderer::CreateBitmapBrush(const RenderBitmap& bitmap, std::error_code& error_code) {
+BitmapBrush Renderer::CreateBitmapBrush(const RenderBitmap& bitmap) {
 
     ID2D1BitmapBrush* handle = nullptr;
     HRESULT result = GetHandle()->CreateBitmapBrush(bitmap.GetHandle(), &handle);
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return BitmapBrush(handle);
 }
 
 
-const Layer Renderer::InnerCreateLayer(const Size* size, std::error_code& error_code) {
+Layer Renderer::InnerCreateLayer(const Size* size) {
 
     ID2D1Layer* layer_handle = nullptr;
     HRESULT result = 0;
@@ -79,12 +71,12 @@ const Layer Renderer::InnerCreateLayer(const Size* size, std::error_code& error_
         GetHandle()->CreateLayer(&layer_handle);
     }
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return Layer(layer_handle);
 }
 
 
-RenderBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& properties, std::error_code& error_code) {
+RenderBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& properties) {
 
     D2D1_BITMAP_PROPERTIES d2d1_properties;
     d2d1_properties.pixelFormat.format = static_cast<DXGI_FORMAT>(properties.pixel_properties.format);
@@ -95,24 +87,19 @@ RenderBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& pr
     ID2D1Bitmap* handle = nullptr;
     HRESULT com_error = GetHandle()->CreateBitmap(size.ToD2D1SIZEU(), d2d1_properties, &handle);
 
-    error_code = MakeComErrorCode(com_error);
+    ZAF_THROW_IF_COM_ERROR(com_error);
     return RenderBitmap(handle);
 }
 
 
-const RenderBitmap Renderer::CreateBitmap(
-    const wic::BitmapSource& image_source,
-    std::error_code& error_code) {
+RenderBitmap Renderer::CreateBitmap(const wic::BitmapSource& image_source) {
 
     auto wic_image_factory_handle = GetImagingFactory().GetHandle();
 
-    IWICFormatConverter* format_converter = nullptr;
+    CComPtr<IWICFormatConverter> format_converter;
     HRESULT result = wic_image_factory_handle->CreateFormatConverter(&format_converter);
 
-    error_code = MakeComErrorCode(result);
-    if (!IsSucceeded(error_code)) {
-        return RenderBitmap();
-    }
+    ZAF_THROW_IF_COM_ERROR(result);
 
     result = format_converter->Initialize(
         image_source.GetHandle(),
@@ -122,17 +109,12 @@ const RenderBitmap Renderer::CreateBitmap(
         0.f,
         WICBitmapPaletteTypeCustom);
 
-    error_code = MakeComErrorCode(result);
-    if (!IsSucceeded(error_code)) {
-        format_converter->Release();
-        return RenderBitmap();
-    }
+    ZAF_THROW_IF_COM_ERROR(result);
 
     ID2D1Bitmap* handle = nullptr;
     result = GetHandle()->CreateBitmapFromWicBitmap(format_converter, &handle);
-    format_converter->Release();
 
-    error_code = MakeComErrorCode(result);
+    ZAF_THROW_IF_COM_ERROR(result);
     return RenderBitmap(handle);
 }
 

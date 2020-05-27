@@ -1,5 +1,4 @@
 #include <zaf/application.h>
-#include <zaf/base/error.h>
 #include <zaf/control/label.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/scrollable_control.h>
@@ -61,12 +60,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     auto& application = zaf::Application::GetInstance();
     application.GetBeginRunEvent().AddListener(ShowMainWindow);
 
-    std::error_code error_code;
-    application.Initialize(error_code);
-
-    if (zaf::IsSucceeded(error_code)) {
-        application.Run();
-    }
+    application.Initialize({});
+    application.Run();
 }
 
 

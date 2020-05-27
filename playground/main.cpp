@@ -1,6 +1,5 @@
 #include <Windows.h>
 #include <zaf/application.h>
-#include <zaf/base/error.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 #include <zaf/window/dialog.h>
@@ -19,6 +18,8 @@
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/label.h>
 #include <zaf/control/image_box.h>
+#include <zaf/base/registry/registry.h>
+#include <zaf/base/error/error.h>
 
 void BeginRun(zaf::Application&);
 
@@ -46,12 +47,8 @@ int WINAPI WinMain(
     auto& application = zaf::Application::GetInstance();
     application.GetBeginRunEvent().AddListener(BeginRun);
 
-    std::error_code error_code;
-    application.Initialize({}, error_code);
-
-    if (zaf::IsSucceeded(error_code)) {
-        application.Run();
-    }
+    application.Initialize({});
+    application.Run();
 }
 
 

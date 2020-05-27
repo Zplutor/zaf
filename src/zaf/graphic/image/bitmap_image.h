@@ -16,12 +16,12 @@ public:
 
     void SetUri(const std::wstring& uri);
 
-    Size GetPixelSize(std::error_code& error_code) override;
-    std::pair<float, float> GetResolution(std::error_code& error_code) override;
-    RenderBitmap CreateRenderBitmap(Renderer& renderer, std::error_code& error_code) override;
+    Size GetPixelSize() override;
+    std::pair<float, float> GetResolution() override;
+    RenderBitmap CreateRenderBitmap(Renderer& renderer) override;
 
 private:
-    void CheckInitialize(std::error_code& error_code);
+    void CheckInitialize();
 
 private:
     std::wstring uri_;
