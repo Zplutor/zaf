@@ -5,10 +5,13 @@
 
 namespace zaf {
 
+class Stream;
+
 class XamlReader {
 public:
     static std::shared_ptr<XamlReader> CreateFromString(const std::wstring& xaml);
     static std::shared_ptr<XamlReader> CreateFromString(const std::string& xaml);
+    static std::shared_ptr<XamlReader> CreateFromStream(const Stream& stream);
 
 public:
     XamlReader(IXmlReader* handle);

@@ -137,11 +137,8 @@ public:
 
     /**
      Initialize the window.
-
-     This method must be called after creating a window instance. 
-     You can use the Create method to ensure that.
      */
-    virtual void Initialize();
+    void Initialize() override;
 
     /**
      Get the owner window.

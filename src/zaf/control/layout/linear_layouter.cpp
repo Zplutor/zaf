@@ -279,7 +279,9 @@ float LinearLayouter::CalculatePositionOffset(
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(LinearLayouter, ReflectionObject);
+ZAF_DEFINE_REFLECTION_TYPE(LinearLayouter)
+	ZAF_DEFINE_PARSER(LinearLayouterParser)
+ZAF_DEFINE_END
 
 
 void LinearLayouter::SetRectsToChildren(

@@ -24,7 +24,9 @@ const wchar_t* const kCheckStateChangeEventPropertyName = L"CheckStateChangeEven
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(CheckBox, ClickableControl);
+ZAF_DEFINE_REFLECTION_TYPE(CheckBox)
+	ZAF_DEFINE_PARSER(CheckBoxParser)
+ZAF_DEFINE_END
 
 
 CheckBox::CheckBox() : check_state_(CheckState::Unchecked) {

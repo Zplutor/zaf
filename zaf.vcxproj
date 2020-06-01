@@ -123,6 +123,7 @@
     <ClCompile Include="src\zaf\reflection\creation.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_object.cpp" />
+    <ClCompile Include="src\zaf\reflection\reflection_type.cpp" />
     <ClCompile Include="src\zaf\resource\default_relative_uri_loader.cpp" />
     <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp" />
     <ClCompile Include="src\zaf\resource\resource_manager.cpp" />

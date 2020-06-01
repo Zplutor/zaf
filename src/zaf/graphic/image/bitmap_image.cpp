@@ -6,7 +6,9 @@
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(BitmapImage, ReflectionObject);
+ZAF_DEFINE_REFLECTION_TYPE(BitmapImage)
+    ZAF_DEFINE_PARSER(BitmapImageParser)
+ZAF_DEFINE_END
 
 
 void BitmapImage::SetUri(const std::wstring& uri) {

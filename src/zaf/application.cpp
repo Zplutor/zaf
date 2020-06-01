@@ -31,9 +31,6 @@ void Application::Initialize(const InitializeParameters& parameters) {
 		return;
 	}
 
-    //Check reflection type definition errors.
-    reflection_manager_->CheckTypeErrors();
-
     resource_manager_ = std::make_unique<ResourceManager>(parameters.relative_uri_loader);
 
 	HRESULT result = CoInitialize(nullptr);

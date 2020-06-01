@@ -38,8 +38,9 @@ const bool DefaultIsVisible = true;
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(Control, ReflectionObject);
-
+ZAF_DEFINE_REFLECTION_TYPE(Control)
+    ZAF_DEFINE_PARSER(ControlParser)
+ZAF_DEFINE_END
 
 Control::Control() : 
     update_count_(0),

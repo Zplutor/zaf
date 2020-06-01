@@ -4,7 +4,9 @@
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(RoundedRect, ReflectionObject);
+ZAF_DEFINE_REFLECTION_TYPE(RoundedRect)
+    ZAF_DEFINE_PARSER(RoundedRectParser)
+ZAF_DEFINE_END
 
 
 bool operator==(const RoundedRect& rounded_rect1, const RoundedRect& rounded_rect2) {

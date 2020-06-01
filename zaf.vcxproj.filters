@@ -451,6 +451,9 @@
     <ClCompile Include="src\zaf\base\error\com_error.cpp">
       <Filter>zaf\base\error</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\reflection\reflection_type.cpp">
+      <Filter>zaf\reflection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

@@ -4,6 +4,8 @@
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(Size, ReflectionObject);
+ZAF_DEFINE_REFLECTION_TYPE(Size)
+    ZAF_DEFINE_PARSER(SizeParser)
+ZAF_DEFINE_END
 
 }

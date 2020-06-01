@@ -4,7 +4,9 @@
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(Ellipse, ReflectionObject);
+ZAF_DEFINE_REFLECTION_TYPE(Ellipse)
+    ZAF_DEFINE_PARSER(EllipseParser)
+ZAF_DEFINE_END
 
 
 bool operator==(const Ellipse& ellipse1, const Ellipse& ellipse2) {

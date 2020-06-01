@@ -91,15 +91,6 @@ public:
 	Control();
 	virtual ~Control();
 
-	/**
-	 Initialize the control.
-
-	 Derived classes can override this method to do some initialization,
-	 such as setting initial property values, and adding child controls.
-	 The same method of base class must be called.
-	 */
-	virtual void Initialize() { }
-
     /**
      Begin updating the contol.
 

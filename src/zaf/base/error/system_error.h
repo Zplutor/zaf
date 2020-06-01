@@ -11,9 +11,13 @@ inline std::error_code MakeSystemErrorCode(DWORD code) {
 }
 
 
+#define ZAF_THROW_SYSTEM_ERROR(error_code) \
+throw Error{ MakeSystemErrorCode(error_code), ZAF_SOURCE_SITE() }
+
+
 #define ZAF_THROW_IF_SYSTEM_ERROR(error_code)                            \
 if (error_code != 0) {                                                   \
-    throw Error{ MakeSystemErrorCode(error_code), ZAF_SOURCE_SITE() };  \
+    ZAF_THROW_SYSTEM_ERROR(error_code);                                  \
 }
   
 

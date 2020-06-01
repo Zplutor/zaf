@@ -5,34 +5,19 @@
 
 namespace zaf {
 
-class Control;
-class Window;
+class ReflectionObject;
 
 namespace internal {
 
-template<typename WindowType>
-struct WindowCreator {
+template<typename ObjectType>
+struct ReflectionObjectCreator {
 
     template<typename... ArgumentTypes>
-    static std::shared_ptr<WindowType> Create(ArgumentTypes&&... arguments) {
+    static std::shared_ptr<ObjectType> Create(ArgumentTypes&&... arguments) {
 
-        auto window = std::make_shared<WindowType>(std::forward<ArgumentTypes>(arguments)...);
-        window->Initialize();
-        return window;
-    }
-};
-
-
-template<typename ControlType>
-struct ControlCreator {
-
-    template<typename... ArgumentTypes>
-    static std::shared_ptr<ControlType> Create(ArgumentTypes&&... arguments) {
-
-        auto control = std::make_shared<ControlType>(std::forward<ArgumentTypes>(arguments)...);
-        Control::UpdateGuard update_guard(*control);
-        control->Initialize();
-        return control;
+        auto object = std::make_shared<ObjectType>(std::forward<ArgumentTypes>(arguments)...);
+        object->Initialize();
+        return object;
     }
 };
 
@@ -51,13 +36,9 @@ template<typename ObjectType>
 struct Creator {
 
     typedef typename std::conditional<
-        std::is_base_of<Window, ObjectType>::value, 
-        WindowCreator<ObjectType>, 
-        typename std::conditional<
-            std::is_base_of<Control, ObjectType>::value, 
-            ControlCreator<ObjectType>,
-            GenericCreator<ObjectType>
-        >::type
+        std::is_base_of<ReflectionObject, ObjectType>::value, 
+        ReflectionObjectCreator<ObjectType>,
+        GenericCreator<ObjectType>
     >::type Type;
 };
 

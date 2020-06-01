@@ -20,11 +20,15 @@
 #include <zaf/control/image_box.h>
 #include <zaf/base/registry/registry.h>
 #include <zaf/base/error/error.h>
+#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/parsing/parsers/control_parser.h>
 
 void BeginRun(zaf::Application&);
 
-
 class RootControl : public zaf::Control {
+public:
+    ZAF_DECLARE_REFLECTION_TYPE();
+
 public:
     void Initialize() override {
         __super::Initialize();
@@ -35,6 +39,11 @@ public:
         __super::Paint(canvas, dirty_rect);
     }
 };
+
+
+ZAF_DEFINE_REFLECTION_TYPE(RootControl)
+    ZAF_DEFINE_RESOURCE_URI(LR"(C:\Users\zplutor\Desktop\root_control.xaml)")
+ZAF_DEFINE_END
 
 
 int WINAPI WinMain(

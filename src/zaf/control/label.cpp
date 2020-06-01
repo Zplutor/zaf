@@ -4,7 +4,9 @@
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(Label, TextualControl);
+ZAF_DEFINE_REFLECTION_TYPE(Label)
+    ZAF_DEFINE_PARSER(LabelParser)
+ZAF_DEFINE_END
 
 
 Label::Label() {

@@ -38,7 +38,9 @@ static const wchar_t* const kStylePropertyName = L"Style";
 static const wchar_t* const kTitlePropertyName = L"Title";
 
 
-ZAF_DEFINE_REFLECTION_TYPE(Window, ReflectionObject);
+ZAF_DEFINE_REFLECTION_TYPE(Window)
+    ZAF_DEFINE_PARSER(WindowParser)
+ZAF_DEFINE_END
 
 
 void Window::RegisterDefaultClass() {
@@ -105,6 +107,9 @@ Window::~Window() {
 
 
 void Window::Initialize() {
+
+    __super::Initialize();
+
     InitializeRootControl(Create<Control>());
 }
 

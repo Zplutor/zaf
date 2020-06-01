@@ -16,19 +16,21 @@ public:
         return this->Type;
     }
 
-    virtual std::wstring __zaf_internal_GetBaseClassName() const {
+    virtual std::shared_ptr<ReflectionType> GetBaseType() const {
         return {};
     }
+
+    virtual void Initialize();
 };
 
 
-#define ZAF_DECLARE_REFLECTION_TYPE()                               \
-static const std::shared_ptr<ReflectionType> Type;                  \
-std::shared_ptr<ReflectionType> GetType() const override {          \
-    return this->Type;                                              \
-}                                                                   \
-std::wstring __zaf_internal_GetBaseClassName() const override {     \
-    return __super::Type->GetName();                                \
-}
+#define ZAF_DECLARE_REFLECTION_TYPE()                                                            \
+static const std::shared_ptr<zaf::ReflectionType> Type;                                          \
+std::shared_ptr<zaf::ReflectionType> GetType() const override {                                  \
+    return this->Type;                                                                           \
+}                                                                                                \
+std::shared_ptr<zaf::ReflectionType> GetBaseType() const override {                              \
+    return __super::Type;                                                                        \
+}                                                                                                
 
 }

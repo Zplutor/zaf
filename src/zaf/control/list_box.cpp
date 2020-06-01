@@ -6,7 +6,9 @@
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(ListBox, ListControl);
+ZAF_DEFINE_REFLECTION_TYPE(ListBox)
+    ZAF_DEFINE_PARSER(ListBoxParser)
+ZAF_DEFINE_END
 
 
 ListBox::ListBox() {

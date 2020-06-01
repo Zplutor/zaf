@@ -4,6 +4,8 @@
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(Frame, ReflectionObject);
+ZAF_DEFINE_REFLECTION_TYPE(Frame)
+    ZAF_DEFINE_PARSER(FrameParser)
+ZAF_DEFINE_END
 
 }

@@ -10,10 +10,18 @@ class ReflectionObject;
 
 class ReflectionType {
 public:
-    virtual ~ReflectionType() = default;
     ReflectionType() = default;
+    virtual ~ReflectionType() = default;
+
     ReflectionType(const ReflectionType&) = delete;
     ReflectionType& operator=(const ReflectionType&) = delete;
+
+    /**
+     Get base type of the type.
+
+     Return nullptr if there is no base type.
+     */
+    virtual std::shared_ptr<ReflectionType> GetBase() = 0;
 
     /**
      Get name of the type.
@@ -28,14 +36,11 @@ public:
     /**
      Get the parser for the type.
      */
-    virtual std::shared_ptr<Parser> GetParser() = 0;
+    virtual std::shared_ptr<Parser> GetParser();
 
-    /**
-     Get base type of the type.
-
-     Return nullptr if there is no base type.
-     */
-    virtual std::shared_ptr<ReflectionType> GetBase() = 0;
+    virtual std::wstring GetResourceUri() {
+        return {};
+    }
 };
 
 }

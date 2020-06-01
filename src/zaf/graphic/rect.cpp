@@ -9,7 +9,9 @@
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(Rect, ReflectionObject);
+ZAF_DEFINE_REFLECTION_TYPE(Rect)
+    ZAF_DEFINE_PARSER(RectParser)
+ZAF_DEFINE_END
 
 
 void Rect::Intersect(const Rect& other) {

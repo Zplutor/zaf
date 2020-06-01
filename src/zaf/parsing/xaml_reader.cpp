@@ -2,6 +2,7 @@
 #include <atlbase.h>
 #include <Shlwapi.h>
 #include <zaf/base/error/com_error.h>
+#include <zaf/base/stream.h>
 #include <zaf/base/string/encoding_conversion.h>
 
 namespace zaf {
@@ -47,6 +48,16 @@ std::shared_ptr<XamlReader> XamlReader::CreateFromString(const std::wstring& xam
 
 std::shared_ptr<XamlReader> XamlReader::CreateFromString(const std::string& xaml) {
     return CreateXamlReaderFromMemory(xaml.data(), xaml.length());
+}
+
+
+std::shared_ptr<XamlReader> XamlReader::CreateFromStream(const Stream& stream) {
+
+    auto stream_handle = stream.GetHandle();
+    auto xaml_reader_handle = CreateHandle(stream_handle);
+
+    stream_handle->AddRef();
+    return std::make_shared<XamlReader>(xaml_reader_handle);
 }
 
 

@@ -4,7 +4,9 @@
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(Color, ReflectionObject);
+ZAF_DEFINE_REFLECTION_TYPE(Color)
+    ZAF_DEFINE_PARSER(ColorParser)
+ZAF_DEFINE_END
 
 const Color Color::Black = Color(0, 0, 0);
 const Color Color::Blue = Color(0, 0, 1);

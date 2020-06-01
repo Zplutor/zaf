@@ -41,7 +41,9 @@ void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_
 
 }
 
-ZAF_DEFINE_REFLECTION_TYPE(TextualControl, Control);
+ZAF_DEFINE_REFLECTION_TYPE(TextualControl)
+    ZAF_DEFINE_PARSER(TextualControlParser)
+ZAF_DEFINE_END
 
 
 TextualControl::TextualControl() {

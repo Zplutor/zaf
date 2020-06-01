@@ -26,7 +26,9 @@ const wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness";
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(ScrollableControl, Control);
+ZAF_DEFINE_REFLECTION_TYPE(ScrollableControl)
+    ZAF_DEFINE_PARSER(ScrollableControlParser)
+ZAF_DEFINE_END
 
 
 ScrollableControl::ScrollableControl() :

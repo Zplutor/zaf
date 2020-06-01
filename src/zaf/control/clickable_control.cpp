@@ -16,7 +16,9 @@ const wchar_t* const kClickEventPropertyName = L"ClickEvent";
 
 }
 
-ZAF_DEFINE_REFLECTION_TYPE(ClickableControl, TextualControl);
+ZAF_DEFINE_REFLECTION_TYPE(ClickableControl)
+	ZAF_DEFINE_PARSER(ClickableControlParser)
+ZAF_DEFINE_END
 
 
 ClickableControl::ClickableControl() :
