@@ -16,8 +16,7 @@ namespace __zaf_internal_##ClassName##TypeDefinition {                          
 class ObjectType : public zaf::ReflectionType {                                                 \
 public:                                                                                         \
     std::shared_ptr<zaf::ReflectionType> GetBase() override {                                   \
-        static auto prototype = std::make_shared<ClassName>();                                  \
-        return prototype->GetBaseType();                                                        \
+        return reinterpret_cast<ClassName*>(0)->GetBaseType();                                  \
     }                                                                                           \
     std::wstring GetName() override {                                                           \
         return L#ClassName;                                                                     \

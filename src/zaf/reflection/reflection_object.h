@@ -16,7 +16,7 @@ public:
         return this->Type;
     }
 
-    virtual std::shared_ptr<ReflectionType> GetBaseType() const {
+    std::shared_ptr<ReflectionType> GetBaseType() const {
         return {};
     }
 
@@ -29,7 +29,7 @@ static const std::shared_ptr<zaf::ReflectionType> Type;                         
 std::shared_ptr<zaf::ReflectionType> GetType() const override {                                  \
     return this->Type;                                                                           \
 }                                                                                                \
-std::shared_ptr<zaf::ReflectionType> GetBaseType() const override {                              \
+std::shared_ptr<zaf::ReflectionType> GetBaseType() const {                                       \
     return __super::Type;                                                                        \
 }                                                                                                
 
