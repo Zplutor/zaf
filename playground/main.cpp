@@ -28,18 +28,7 @@ void BeginRun(zaf::Application&);
 class RootControl : public zaf::Control {
 public:
     ZAF_DECLARE_REFLECTION_TYPE();
-
-public:
-    void Initialize() override {
-        __super::Initialize();
-    }
-
-    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override {
-
-        __super::Paint(canvas, dirty_rect);
-    }
 };
-
 
 ZAF_DEFINE_REFLECTION_TYPE(RootControl)
     ZAF_DEFINE_RESOURCE_URI(LR"(C:\Users\zplutor\Desktop\root_control.xaml)")

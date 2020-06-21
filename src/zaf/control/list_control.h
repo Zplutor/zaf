@@ -43,8 +43,6 @@ public:
     public:
         Item() : is_selected_(false) { }
 
-        void Initialize() override;
-
         /**
          Get a value indicating that whether the item is selected.
          */
@@ -61,6 +59,9 @@ public:
                 NeedRepaint();
             }
         }
+
+    protected:
+        void Initialize() override;
 
     private:
         bool is_selected_;
@@ -215,9 +216,8 @@ public:
     public:
         ItemContainer();
 
-        void Initialize() override;
-
     protected:
+        void Initialize() override;
         bool MouseDown(const Point& position, const MouseMessage& message) override;
         bool MouseMove(const Point& position, const MouseMessage& message) override;
         bool MouseUp(const Point& position, const MouseMessage& message) override;
@@ -274,8 +274,6 @@ public:
 public:
     ListControl();
     ~ListControl();
-
-    void Initialize() override;
 
     /**
      Get item source.
@@ -416,6 +414,7 @@ public:
     std::size_t FindItemIndexAtPosition(const Point& position) const;
 
 protected:
+    void Initialize() override;
     void Layout(const Rect& previous_rect) override;
     void VerticalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) override;
 

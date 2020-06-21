@@ -30,8 +30,6 @@ public:
     ComboBox();
     ~ComboBox();
 
-    void Initialize() override;
-
     /**
      Get the color picker of drop down button.
      */
@@ -146,6 +144,7 @@ public:
     void SetEditTextBox(const std::shared_ptr<ComboBoxEditTextBox>& text_box);
 
 protected:
+    void Initialize() override;
     void Layout(const Rect&) override;
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     Rect GetTextRect() override;
@@ -293,10 +292,8 @@ class ComboBoxDropDownListBox : public ListBox {
 public:
     ZAF_DECLARE_REFLECTION_TYPE();
 
-public:
-    void Initialize() override;
-
 protected:
+    void Initialize() override;
     bool MouseMove(const Point& position, const MouseMessage& message) override;
 
 private:

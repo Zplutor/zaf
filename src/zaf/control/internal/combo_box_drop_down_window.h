@@ -11,11 +11,10 @@ namespace internal {
 
 class ComboBoxDropDownWindow : public Window {
 public:
-    void Initialize() override;
-
     void SetListControl(const std::shared_ptr<ListControl>& list_control);
 
 protected:
+    void Initialize() override;
     void WindowShow() override;
     void WindowDestroy(HWND handle) override;
     void CapturingMouseControlChange(const std::shared_ptr<Control>& previous_control);

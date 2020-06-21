@@ -121,6 +121,7 @@
     <ClCompile Include="src\zaf\parsing\xaml_node_parse_helper.cpp" />
     <ClCompile Include="src\zaf\parsing\xaml_reader.cpp" />
     <ClCompile Include="src\zaf\reflection\creation.cpp" />
+    <ClCompile Include="src\zaf\reflection\internal\reflection_object_initializer.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_object.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_type.cpp" />
@@ -336,6 +337,7 @@
     <ClInclude Include="src\zaf\parsing\xaml_node_parse_helper.h" />
     <ClInclude Include="src\zaf\parsing\xaml_reader.h" />
     <ClInclude Include="src\zaf\reflection\creation.h" />
+    <ClInclude Include="src\zaf\reflection\internal\reflection_object_initializer.h" />
     <ClInclude Include="src\zaf\reflection\reflection_manager.h" />
     <ClInclude Include="src\zaf\reflection\reflection_object.h" />
     <ClInclude Include="src\zaf\reflection\reflection_type.h" />

@@ -15,7 +15,7 @@ Stream DefaultRelativeUriLoader::Load(const std::wstring& uri) {
     GetModuleFileName(nullptr, buffer, MAX_PATH);
 
     std::filesystem::path path{ buffer };
-    return Stream::FromFile(path / uri);
+    return Stream::FromFile(path.parent_path() / uri);
 }
 
 }

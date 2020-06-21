@@ -25,8 +25,6 @@ public:
 public:
 	ScrollBar();
 
-	void Initialize() override;
-
     /**
      Get the incremental arrow.
      */
@@ -199,6 +197,7 @@ public:
 	ScrollEvent::Proxy GetScrollEvent();
 
 protected:
+    void Initialize() override;
 	void Layout(const Rect& previous_rect) override;
 
     bool MouseDown(const Point& position, const MouseMessage& message) override;
@@ -309,8 +308,6 @@ public:
 public:
 	ScrollBarArrow();
 
-	void Initialize() override;
-
     /**
      Get arrow color.
      */
@@ -362,6 +359,12 @@ public:
 		return EndPressEvent::Proxy(end_press_event_);
 	}
 
+protected:
+    void Initialize() override;
+	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+	void MouseCapture() override;
+	void MouseRelease() override;
+
 private:
     friend class ScrollBar;
 
@@ -369,11 +372,6 @@ private:
         direction_ = direction;
         NeedRepaint();
     }
-
-protected:
-	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
-	void MouseCapture() override;
-	void MouseRelease() override;
 
 private:
 	Direction direction_;
@@ -407,8 +405,6 @@ public:
 
 public:
 	ScrollBarThumb();
-
-	void Initialize() override;
 
     /**
      Get thumb color.
@@ -477,18 +473,19 @@ public:
 		return EndDragEvent::Proxy(end_drag_event_);
 	}
 
+protected:
+    void Initialize() override;
+    void Paint(Canvas& canvas, const Rect& dirty_rect);
+	void MouseCapture() override;
+	void MouseRelease() override;
+    bool MouseMove(const Point& position, const MouseMessage& message) override;
+
 private:
     friend class ScrollBar;
 
     void SetIsHorizontal(bool is_horizontal) {
         is_horizontal_ = is_horizontal;
     }
-
-protected:
-    void Paint(Canvas& canvas, const Rect& dirty_rect);
-	void MouseCapture() override;
-	void MouseRelease() override;
-    bool MouseMove(const Point& position, const MouseMessage& message) override;
 
 private:
 	bool is_horizontal_;

@@ -56,8 +56,6 @@ public:
     ListBox();
     ~ListBox();
 
-    void Initialize() override;
-
     /**
      Get item height.
 
@@ -151,6 +149,7 @@ public:
     std::vector<std::wstring> GetSelectedItemTexts() const;
 
 protected:
+    void Initialize() override;
     void ItemSourceChange(const std::shared_ptr<ListControl::ItemSource>& previous_item_source) override;
 
 private:

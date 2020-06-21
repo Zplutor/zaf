@@ -47,8 +47,6 @@ public:
 	RadioButton();
 	~RadioButton();
 
-	void Initialize() override;
-
     /**
      Get radio border color.
      */
@@ -153,6 +151,7 @@ public:
 	SelectStateChangeEvent::Proxy GetSelectStateChangeEvent();
 
 protected:
+	void Initialize() override;
 	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     Rect GetTextRect() override;
 	void MouseClick() override;

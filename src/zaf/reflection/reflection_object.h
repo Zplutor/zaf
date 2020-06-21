@@ -4,6 +4,11 @@
 #include <zaf/reflection/reflection_type.h>
 
 namespace zaf {
+namespace internal {
+
+class ReflectionObjectInitializer;
+
+}
 
 class ReflectionObject {
 public:
@@ -20,7 +25,13 @@ public:
         return {};
     }
 
-    virtual void Initialize();
+protected:
+    virtual void Initialize() { }
+
+private:
+    friend class internal::ReflectionObjectInitializer;
+
+    void InitializeObject();
 };
 
 

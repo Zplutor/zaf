@@ -19,8 +19,6 @@ public:
     SplitControl();
     ~SplitControl();
 
-    void Initialize() override;
-
     bool IsHorizontalSplit() const;
     void SetIsHorizontalSplit(bool is_horizontal);
 
@@ -60,6 +58,7 @@ public:
     void SetSecondPane(const std::shared_ptr<Control>& pane);
 
 protected:
+    void Initialize() override;
     void Layout(const Rect& previous_rect) override;
     void RectChange(const Rect& previous_rect) override;
 
@@ -111,9 +110,6 @@ public:
     typedef Event<const std::shared_ptr<SplitControlSplitBar>&> EndDragEvent;
 
 public:
-    void Initialize() override;
-
-public:
     bool IsHorizontal() const {
         return is_horizontal_;
     }
@@ -146,6 +142,7 @@ public:
     }
 
 protected:
+    void Initialize() override;
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     void ChangeMouseCursor(const Message& message, bool& is_changed) override;
     bool MouseMove(const Point& position, const MouseMessage& message) override;

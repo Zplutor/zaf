@@ -24,8 +24,6 @@ public:
 	ClickableControl();
 	~ClickableControl();
 
-	void Initialize() override;
-
     /**
      Get a value indicating that whether the control is being pressed.
      */
@@ -44,6 +42,7 @@ public:
     void Click();
 
 protected:
+    void Initialize() override;
 	void MouseEnter(const std::shared_ptr<Control>& entered_control) override;
     void MouseLeave(const std::shared_ptr<Control>& leaved_control) override;
     bool MouseMove(const Point& position, const MouseMessage& message) override;

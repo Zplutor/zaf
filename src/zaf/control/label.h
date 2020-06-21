@@ -10,11 +10,12 @@ namespace zaf {
 class Label : public TextualControl {
 public:
     ZAF_DECLARE_REFLECTION_TYPE();
-    
+
 public:
 	Label();
 	~Label();
 
+protected:
     void Initialize() override;
 };
 

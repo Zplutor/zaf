@@ -29,8 +29,6 @@ public:
 	TextBox();
 	~TextBox();
 
-	void Initialize() override;
-
     /**
      Get the dimensions of the white space inset around the text.
 
@@ -284,6 +282,7 @@ public:
     void HorizontallyScroll(int new_value) override;
 
 protected:
+    void Initialize() override;
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     Rect GetTextRect() override;
 	void Layout(const Rect& previous_rect) override;

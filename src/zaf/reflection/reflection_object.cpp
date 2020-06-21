@@ -25,11 +25,11 @@ public:
 };
 
 
-void InitializeReflectionObject(ReflectionType& type, ReflectionObject& object) {
+void ParseObject(ReflectionType& type, ReflectionObject& object) {
 
     auto base_type = type.GetBase();
     if (base_type) {
-        InitializeReflectionObject(*base_type, object);
+        ParseObject(*base_type, object);
     }
 
     auto resource_uri = type.GetResourceUri();
@@ -51,8 +51,10 @@ void InitializeReflectionObject(ReflectionType& type, ReflectionObject& object) 
 }
 
 
-void ReflectionObject::Initialize() {
-    InitializeReflectionObject(*GetType(), *this);
+void ReflectionObject::InitializeObject() {
+
+    Initialize();
+    ParseObject(*GetType(), *this);
 }
 
 

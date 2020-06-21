@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <type_traits>
+#include <zaf/reflection/internal/reflection_object_initializer.h>
 
 namespace zaf {
 
@@ -16,7 +17,7 @@ struct ReflectionObjectCreator {
     static std::shared_ptr<ObjectType> Create(ArgumentTypes&&... arguments) {
 
         auto object = std::make_shared<ObjectType>(std::forward<ArgumentTypes>(arguments)...);
-        object->Initialize();
+        ReflectionObjectInitializer::Initialize(*object);
         return object;
     }
 };

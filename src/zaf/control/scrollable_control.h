@@ -38,8 +38,6 @@ public:
 	ScrollableControl();
 	~ScrollableControl();
 
-	void Initialize() override;
-
     /**
      Get a value indicating that whether the control allows vertical scrolling.
 
@@ -163,6 +161,7 @@ public:
     void ScrollRightToEnd();
 
 protected:
+    void Initialize() override;
 	void Layout(const Rect& previous_rect) override;
 
     bool MouseWheel(const Point& position, const MouseWheelMessage& message) override;

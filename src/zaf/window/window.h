@@ -136,11 +136,6 @@ public:
 	virtual ~Window();
 
     /**
-     Initialize the window.
-     */
-    void Initialize() override;
-
-    /**
      Get the owner window.
      */
     std::shared_ptr<Window> GetOwner() const;
@@ -538,6 +533,8 @@ public:
 	void Close();
 
 protected:
+    void Initialize() override;
+
     /**
      Preprocess a key message.
 
