@@ -7,15 +7,36 @@
 
 TEST(ColorParser, ParseFromAttribute) {
 
-    auto xaml = L"#112233";
     zaf::Color color;
     zaf::ColorParser parser;
-    parser.ParseFromAttribute(xaml, color);
+
+    parser.ParseFromAttribute(L"#112233", color);
     ASSERT_EQ(color, zaf::Color::FromRGB(0x112233));
 
-    xaml = L"#44556677";
-    parser.ParseFromAttribute(xaml, color);
+    parser.ParseFromAttribute(L"#44556677", color);
     ASSERT_EQ(color, zaf::Color::FromARGB(0x44556677));
+
+    struct MapItem {
+        const wchar_t* name;
+        const zaf::Color* color;
+    };
+    static const MapItem map[] = {
+        { L"Black", &zaf::Color::Black },
+        { L"Blue", &zaf::Color::Blue },
+        { L"Cyan", &zaf::Color::Cyan },
+        { L"Gray", &zaf::Color::Gray },
+        { L"Green", &zaf::Color::Green },
+        { L"Lime", &zaf::Color::Lime },
+        { L"Magenta", &zaf::Color::Magenta },
+        { L"Red", &zaf::Color::Red },
+        { L"Transparent", &zaf::Color::Transparent },
+        { L"White", &zaf::Color::White },
+        { L"Yellow", &zaf::Color::Yellow },
+    };
+    for (const auto& each_item : map) {
+        parser.ParseFromAttribute(each_item.name, color);
+        ASSERT_EQ(color, *each_item.color);
+    }
 }
 
 
@@ -38,4 +59,7 @@ TEST(ColorParser, ParseFromNode) {
         </Color>
     )");
     ASSERT_EQ(*color, zaf::Color(0.6f, 0.7f, 0.8f, 0.5f));
+
+    color = zaf::CreateObjectFromXaml<zaf::Color>("<Color>Cyan</Color>");
+    ASSERT_EQ(*color, zaf::Color::Cyan);
 }

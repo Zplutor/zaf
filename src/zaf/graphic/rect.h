@@ -132,14 +132,7 @@ public:
 	/**
 	 Make an union rectangle with another Rect.
 	 */
-	void Union(const Rect& other) {
-
-		RECT rect1 = this->ToRECT();
-		RECT rect2 = other.ToRECT();
-		RECT result = { 0 };
-		UnionRect(&result, &rect1, &rect2);
-		*this = Rect::FromRECT(result);
-	}
+	void Union(const Rect& other);
 
     void Subtract(const Rect& other);
 

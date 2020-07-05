@@ -126,6 +126,7 @@
     <ClCompile Include="src\zaf\reflection\reflection_object.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_type.cpp" />
     <ClCompile Include="src\zaf\resource\default_relative_uri_loader.cpp" />
+    <ClCompile Include="src\zaf\resource\file_system_uri_loader.cpp" />
     <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp" />
     <ClCompile Include="src\zaf\resource\resource_manager.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
@@ -139,6 +140,8 @@
     <ClInclude Include="src\precompiled.h" />
     <ClInclude Include="src\zaf\application.h" />
     <ClInclude Include="src\zaf\base\assert.h" />
+    <ClInclude Include="src\zaf\base\container\utility\range.h" />
+    <ClInclude Include="src\zaf\base\error\check.h" />
     <ClInclude Include="src\zaf\base\source_site.h" />
     <ClInclude Include="src\zaf\base\com_object.h" />
     <ClInclude Include="src\zaf\base\container\utility\append.h" />
@@ -343,6 +346,7 @@
     <ClInclude Include="src\zaf\reflection\reflection_type.h" />
     <ClInclude Include="src\zaf\reflection\reflection_type_definition.h" />
     <ClInclude Include="src\zaf\resource\default_relative_uri_loader.h" />
+    <ClInclude Include="src\zaf\resource\file_system_uri_loader.h" />
     <ClInclude Include="src\zaf\resource\internal\uri_parsing.h" />
     <ClInclude Include="src\zaf\resource\resource_manager.h" />
     <ClInclude Include="src\zaf\resource\uri_loader.h" />

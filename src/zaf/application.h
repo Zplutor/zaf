@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <filesystem>
 #include <memory>
 #include <set>
 #include <system_error>
@@ -79,6 +80,9 @@ public:
      After calling this method, the message loop ends, and the application exits normally.
      */
     void Terminate();
+
+	std::filesystem::path GetWorkingDirectoryPath() const;
+	std::filesystem::path GetExeDirectoryPath() const;
 
     ReflectionManager& GetReflectionManager() const {
         return *reflection_manager_;

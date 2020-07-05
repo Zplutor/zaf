@@ -1,4 +1,6 @@
 #include <zaf/resource/default_relative_uri_loader.h>
+#include <zaf/application.h>
+#include <zaf/resource/file_system_uri_loader.h>
 
 namespace zaf {
 
@@ -11,11 +13,10 @@ std::shared_ptr<DefaultRelativeUriLoader> DefaultRelativeUriLoader::GetInstance(
 
 Stream DefaultRelativeUriLoader::Load(const std::wstring& uri) {
 
-    wchar_t buffer[MAX_PATH]{};
-    GetModuleFileName(nullptr, buffer, MAX_PATH);
+    auto directory_path = Application::GetInstance().GetExeDirectoryPath();
 
-    std::filesystem::path path{ buffer };
-    return Stream::FromFile(path.parent_path() / uri);
+    FileSystemUriLoader file_system_uri_loader{ directory_path };
+    return file_system_uri_loader.Load(uri);
 }
 
 }

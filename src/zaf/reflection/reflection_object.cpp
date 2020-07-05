@@ -55,6 +55,7 @@ void ReflectionObject::InitializeObject() {
 
     Initialize();
     ParseObject(*GetType(), *this);
+    AfterParsing();
 }
 
 

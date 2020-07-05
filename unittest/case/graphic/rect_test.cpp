@@ -53,6 +53,27 @@ TEST(Rect, Intersect) {
 }
 
 
+TEST(Rect, Union) {
+
+    const Rect origin_rect{ 0, 0, 10, 10 };
+
+    //Same rect
+    ASSERT_EQ(Rect::Union(origin_rect, origin_rect), origin_rect);
+
+    //Rects that have intersection
+    ASSERT_EQ(Rect::Union(origin_rect, Rect(-5, -5, 10, 10)), Rect(-5, -5, 15, 15));
+    ASSERT_EQ(Rect::Union(origin_rect, Rect(15, 15, 10, 10)), Rect(0, 0, 25, 25));
+    ASSERT_EQ(Rect::Union(origin_rect, Rect(-10, -10, 30, 30)), Rect(-10, -10, 30, 30));
+    ASSERT_EQ(Rect::Union(origin_rect, Rect(2, 2, 3, 4)), origin_rect);
+
+    //Rects that have no intersection
+    ASSERT_EQ(Rect::Union(origin_rect, Rect(-20, -20, 10, 10)), Rect(-20, -20, 30, 30));
+    ASSERT_EQ(Rect::Union(origin_rect, Rect(-20, 30, 10, 10)), Rect(-20, 0, 30, 40));
+    ASSERT_EQ(Rect::Union(origin_rect, Rect(15, 15, 10, 10)), Rect(0, 0, 25, 25));
+    ASSERT_EQ(Rect::Union(origin_rect, Rect(-5, -20, 20, 10)), Rect(-5, -20, 20, 30));
+}
+
+
 TEST(Rect, Subtract) {
 
     const Rect origin_rect(0, 0, 10, 10);

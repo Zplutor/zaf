@@ -36,6 +36,20 @@ void Rect::Intersect(const Rect& other) {
 }
 
 
+void Rect::Union(const Rect& other) {
+
+    float left = std::min(position.x, other.position.x);
+    float top = std::min(position.y, other.position.y);
+    float right = std::max(position.x + size.width, other.position.x + other.size.width);
+    float bottom = std::max(position.y + size.height, other.position.y + other.size.height);
+
+    position.x = left;
+    position.y = top;
+    size.width = right - left;
+    size.height = bottom - top;
+}
+
+
 void Rect::Subtract(const Rect& other) {
 
     Rect intersection = Rect::Intersect(*this, other);

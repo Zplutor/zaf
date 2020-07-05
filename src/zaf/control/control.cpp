@@ -853,8 +853,13 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 	child->SetParent(nullptr);
 	children_.erase(std::remove(children_.begin(), children_.end(), child));
 
+    //The child's rect may be changed while calling NeedRelayout(), leading to a wrong repaint rect
+    //while calling NeedRepaintRect(), so we preserve the original rect before calling 
+    //NeedRelayout().
+    auto child_rect = child->GetRect();
+
     NeedRelayout();
-	NeedRepaintRect(child->GetRect());
+	NeedRepaintRect(child_rect);
 }
 
 
@@ -866,6 +871,17 @@ void Control::RemoveAllChildren() {
 
     children_.clear();
     NeedRepaint();
+}
+
+
+std::shared_ptr<Control> Control::FindChild(const std::wstring& name) const {
+
+    for (const auto& each_child : children_) {
+        if (each_child->GetName() == name) {
+            return each_child;
+        }
+    }
+    return {};
 }
 
 

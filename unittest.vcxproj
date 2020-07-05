@@ -100,6 +100,7 @@
     <ClCompile Include="unittest\case\base\container\utility\find_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\intersect_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\map_test.cpp" />
+    <ClCompile Include="unittest\case\base\container\utility\range_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\sort_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\union_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\unique_test.cpp" />

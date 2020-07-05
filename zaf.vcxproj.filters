@@ -460,6 +460,9 @@
     <ClCompile Include="src\zaf\reflection\internal\reflection_object_initializer.cpp">
       <Filter>zaf\reflection\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\resource\file_system_uri_loader.cpp">
+      <Filter>zaf\resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1128,6 +1131,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\reflection\internal\reflection_object_initializer.h">
       <Filter>zaf\reflection\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\resource\file_system_uri_loader.h">
+      <Filter>zaf\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\container\utility\range.h">
+      <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\check.h">
+      <Filter>zaf\base\error</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

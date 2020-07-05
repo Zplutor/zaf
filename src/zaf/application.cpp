@@ -96,6 +96,25 @@ void Application::Terminate() {
 }
 
 
+std::filesystem::path Application::GetWorkingDirectoryPath() const {
+
+    wchar_t buffer[MAX_PATH]{};
+    GetCurrentDirectory(MAX_PATH, buffer);
+
+    return std::filesystem::path{ buffer };
+}
+
+
+std::filesystem::path Application::GetExeDirectoryPath() const {
+
+    wchar_t buffer[MAX_PATH]{};
+    GetModuleFileName(nullptr, buffer, MAX_PATH);
+
+    std::filesystem::path path{ buffer };
+    return path.parent_path();
+}
+
+
 std::pair<float, float> Application::GetDpi() const {
 
     std::pair<float, float> dpi_pair;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <zaf/base/error/check.h>
 
 namespace zaf {

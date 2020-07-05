@@ -441,6 +441,13 @@ public:
      */
     void RemoveAllChildren();
 
+    std::shared_ptr<Control> FindChild(const std::wstring& name) const;
+
+    template<typename T>
+    std::shared_ptr<T> FindChild(const std::wstring& name) const {
+        return std::dynamic_pointer_cast<T>(FindChild(name));
+    }
+
     std::shared_ptr<Control> FindChildAtPosition(const Point& position) const;
 
 	/**

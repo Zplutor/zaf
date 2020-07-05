@@ -6,19 +6,14 @@
 namespace zaf {
 namespace {
 
-void DecodeARGB(const std::wstring& argb, float& a, float& r, float& g, float& b) {
+std::optional<Color> DecodeARGB(const std::wstring& argb) {
 
-    a = 0;
-    r = 0;
-    g = 0;
-    b = 0;
+    const std::size_t long_notation_length = 9;
+    const std::size_t short_notation_length = 7;
 
-    if (argb.length() != 9 && argb.length() != 7) {
-        return;
-    }
-
-    if (argb[0] != L'#') {
-        return;
+    if (argb.length() != long_notation_length && 
+        argb.length() != short_notation_length) {
+        return {};
     }
 
     std::wstring a_hex;
@@ -26,7 +21,7 @@ void DecodeARGB(const std::wstring& argb, float& a, float& r, float& g, float& b
     std::wstring g_hex;
     std::wstring b_hex;
 
-    bool is_short_notation = argb.length() == 7;
+    bool is_short_notation = argb.length() == short_notation_length;
     if (is_short_notation) {
         a_hex = L"FF";
         r_hex = argb.substr(1, 2);
@@ -45,30 +40,77 @@ void DecodeARGB(const std::wstring& argb, float& a, float& r, float& g, float& b
 
     std::uint8_t temp_a = 0;
     if (!TryToNumeric(a_hex, temp_a, options)) {
-        return;
+        return {};
     }
 
     std::uint8_t temp_r = 0;
     if (!TryToNumeric(r_hex, temp_r, options)) {
-        return;
+        return {};
     }
 
     std::uint8_t temp_g = 0;
     if (!TryToNumeric(g_hex, temp_g, options)) {
-        return;
+        return {};
     }
 
     std::uint8_t temp_b = 0;
     if (!TryToNumeric(b_hex, temp_b, options)) {
-        return;
+        return {};
     }
 
     float max = (std::numeric_limits<std::uint8_t>::max)();
-    a = temp_a / max;
-    r = temp_r / max;
-    g = temp_g / max;
-    b = temp_b / max;
+
+    Color color;
+    color.a = temp_a / max;
+    color.r = temp_r / max;
+    color.g = temp_g / max;
+    color.b = temp_b / max;
+    return color;
 }
+
+
+std::optional<Color> ConvertTextToColor(const std::wstring& text) {
+
+    struct MapItem {
+        const wchar_t* name;
+        const Color* color;
+    };
+    static const MapItem map[] = {
+        { L"Black", &Color::Black },
+        { L"Blue", &Color::Blue },
+        { L"Cyan", &Color::Cyan },
+        { L"Gray", &Color::Gray },
+        { L"Green", &Color::Green },
+        { L"Lime", &Color::Lime },
+        { L"Magenta", &Color::Magenta },
+        { L"Red", &Color::Red },
+        { L"Transparent", &Color::Transparent },
+        { L"White", &Color::White },
+        { L"Yellow", &Color::Yellow },
+    };
+
+    for (const auto& each_item : map) {
+        if (text == each_item.name) {
+            return *each_item.color;
+        }
+    }
+    return {};
+}
+
+
+std::optional<Color> DecodeColorValue(const std::wstring& value) {
+
+    if (value.empty()) {
+        return {};
+    }
+
+    if (value[0] == L'#') {
+        return DecodeARGB(value);
+    }
+    
+    return ConvertTextToColor(value);
+}
+
 
 }
 
@@ -77,7 +119,11 @@ void ColorParser::ParseFromAttribute(
     ReflectionObject& reflection_object) {
 
     auto& color = dynamic_cast<Color&>(reflection_object);
-    DecodeARGB(attribute, color.a, color.r, color.g, color.b);
+
+    auto decoded_color = DecodeColorValue(attribute);
+    if (decoded_color) {
+        color = *decoded_color;
+    }
 }
 
 
@@ -116,7 +162,10 @@ void ColorParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflecti
         return;
     }
 
-    DecodeARGB(content_node->GetValue(), color.a, color.r, color.g, color.b);
+    auto decoded_color = DecodeColorValue(content_node->GetValue());
+    if (decoded_color) {
+        color = *decoded_color;
+    }
 }
 
 }

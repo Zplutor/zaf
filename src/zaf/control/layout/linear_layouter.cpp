@@ -164,19 +164,9 @@ private:
 
 }
 
-
-std::shared_ptr<LinearLayouter> LinearLayouter::CreateLeftToRightLayouter() {
-	auto layouter = zaf::Create<LinearLayouter>();
-	layouter->SetDirection(zaf::LayoutDirection::LeftToRight);
-	return layouter;
-}
-
-
-std::shared_ptr<LinearLayouter> LinearLayouter::CreateTopToBottomLayouter() {
-	auto layouter = zaf::Create<LinearLayouter>();
-	layouter->SetDirection(zaf::LayoutDirection::TopToBottom);
-	return layouter;
-}
+ZAF_DEFINE_REFLECTION_TYPE(LinearLayouter)
+	ZAF_DEFINE_PARSER(LinearLayouterParser)
+ZAF_DEFINE_END
 
 
 void LinearLayouter::Layout(
@@ -279,11 +269,6 @@ float LinearLayouter::CalculatePositionOffset(
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(LinearLayouter)
-	ZAF_DEFINE_PARSER(LinearLayouterParser)
-ZAF_DEFINE_END
-
-
 void LinearLayouter::SetRectsToChildren(
 	const std::vector<float>& children_positions,
 	float position_offset,
@@ -353,6 +338,26 @@ float LinearLayouter::CalculateAxisOffset(
 	}
 
 	return 0;
+}
+
+
+ZAF_DEFINE_REFLECTION_TYPE(HorizontalLayouter)
+ZAF_DEFINE_END
+
+void HorizontalLayouter::Initialize() {
+
+	__super::Initialize();
+	SetDirection(LayoutDirection::LeftToRight);
+}
+
+
+ZAF_DEFINE_REFLECTION_TYPE(VerticalLayouter)
+ZAF_DEFINE_END
+
+void VerticalLayouter::Initialize() {
+
+	__super::Initialize();
+	SetDirection(LayoutDirection::TopToBottom);
 }
 
 }
