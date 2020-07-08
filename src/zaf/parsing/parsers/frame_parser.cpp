@@ -1,4 +1,5 @@
 #include <zaf/parsing/parsers/frame_parser.h>
+#include <zaf/base/string/to_numeric.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/parsing/parsers/internal/utility.h>
 #include <zaf/parsing/xaml_node.h>
@@ -6,19 +7,34 @@
 #include <zaf/reflection/reflection_type.h>
 
 namespace zaf {
+namespace {
+
+Frame ParseFrameValue(const std::wstring& value) {
+
+    float float_value{};
+    if (TryToNumeric<float>(value, float_value)) {
+        return Frame{ float_value };
+    }
+
+    Frame frame;
+    internal::ParseAttributeToQuaterFloats(
+        value,
+        frame.left,
+        frame.top,
+        frame.right,
+        frame.bottom);
+
+    return frame;
+}
+
+}
 
 void FrameParser::ParseFromAttribute(
     const std::wstring& attribute_value,
     ReflectionObject& reflection_object) {
 
     auto& frame = dynamic_cast<Frame&>(reflection_object);
-
-    internal::ParseAttributeToQuaterFloats(
-        attribute_value, 
-        frame.left, 
-        frame.top,
-        frame.right,
-        frame.bottom);
+    frame = ParseFrameValue(attribute_value);
 }
 
 
@@ -49,12 +65,7 @@ void FrameParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflecti
 
     auto content_string = helper.GetContentString();
     if (content_string) {
-        internal::ParseAttributeToQuaterFloats(
-            *content_string,
-            frame.left,
-            frame.top,
-            frame.right,
-            frame.bottom);
+        frame = ParseFrameValue(*content_string);
     }
 }
 

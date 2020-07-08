@@ -10,6 +10,9 @@ TEST(FrameParser, ParseFromAttribute) {
     zaf::FrameParser parser;
     parser.ParseFromAttribute(L"4,3,2,1", frame);
     ASSERT_EQ(frame, zaf::Frame(4, 3, 2, 1));
+
+    parser.ParseFromAttribute(L"5", frame);
+    ASSERT_EQ(frame, zaf::Frame(5, 5, 5, 5));
 }
 
 
