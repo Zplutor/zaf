@@ -881,6 +881,14 @@ std::shared_ptr<Control> Control::FindChild(const std::wstring& name) const {
             return each_child;
         }
     }
+
+    for (const auto& each_child : children_) {
+        auto found_child = each_child->FindChild(name);
+        if (found_child) {
+            return found_child;
+        }
+    }
+
     return {};
 }
 
