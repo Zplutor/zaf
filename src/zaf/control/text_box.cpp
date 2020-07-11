@@ -83,7 +83,7 @@ void TextBox::Initialize() {
 	SetBorder(1);
 
     //Initialize CHARFORMATW and PARAFORMAT.
-	SetDefaultFont(Font::GetDefault());
+	SetFont(Font::GetDefault());
 	SetTextAlignment(TextAlignment::Leading);
     SetParagraphAlignment(ParagraphAlignment::Near);
 
@@ -102,7 +102,7 @@ void TextBox::Initialize() {
         return Color::White;
     });
 
-    SetDefaultTextColorPicker([](const Control& control) {
+    SetTextColorPicker([](const Control& control) {
         
         if (control.IsEnabled()) {
             return Color::Black;
@@ -199,7 +199,7 @@ void TextBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 void TextBox::ReviseTextColor() {
 
-    auto text_color = GetDefaultTextColor();
+    auto text_color = GetTextColor();
     if (text_color_ != text_color) {
 
         text_color_ = text_color;
@@ -458,7 +458,7 @@ void TextBox::SetTextValidator(const TextValidator& validator) {
 }
 
 
-Font TextBox::GetDefaultFont() const {
+Font TextBox::GetFont() const {
 
 	Font font;
 	font.family_name = character_format_.szFaceName;
@@ -467,7 +467,7 @@ Font TextBox::GetDefaultFont() const {
 	return font;
 }
 
-void TextBox::SetDefaultFont(const Font& font) {
+void TextBox::SetFont(const Font& font) {
 
     ResetRequiredHeight();
 

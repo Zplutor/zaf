@@ -5,52 +5,21 @@
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
-namespace {
-
-int ConvertFontWeightFromString(const std::wstring& string) {
-
-    std::pair<const wchar_t*, int> map[] = {
-        { L"Black", FontWeight::Black },
-        { L"Bold", FontWeight::Bold },
-        { L"ExtraBlack", FontWeight::ExtraBlack },
-        { L"ExtraBold", FontWeight::ExtraBold },
-        { L"ExtraLight", FontWeight::ExtraLight },
-        { L"Light", FontWeight::Light },
-        { L"Maximum", FontWeight::Maximum },
-        { L"Medium", FontWeight::Medium },
-        { L"Minimum", FontWeight::Minimum },
-        { L"Regular", FontWeight::Regular },
-        { L"SemiBold", FontWeight::SemiBold },
-        { L"SemiLight", FontWeight::SemiLight }, 
-        { L"Thin", FontWeight::Thin },
-    };
-
-    for (const auto& each_pair : map) {
-        if (each_pair.first == string) {
-            return each_pair.second;
-        }
-    }
-
-    return FontWeight::Regular;
-}
-
-}
-
 
 ZAF_DEFINE_REFLECTION_TYPE(Font)
     ZAF_DEFINE_PARSER(FontParser)
 ZAF_DEFINE_END
 
 
-const Font Font::GetDefault() {
+Font Font::GetDefault() {
 
-    LOGFONT logfont = { 0 };
+    LOGFONT logfont{};
     SystemParametersInfo(SPI_GETICONTITLELOGFONT, sizeof(logfont), &logfont, 0);
     return Font::FromLOGFONT(logfont);
 }
 
 
-const Font Font::FromLOGFONT(const LOGFONT& logfont) {
+Font Font::FromLOGFONT(const LOGFONT& logfont) {
 
     Font font;
     font.family_name = logfont.lfFaceName;

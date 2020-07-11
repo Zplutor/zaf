@@ -865,7 +865,7 @@ void ListControl::Item::Initialize() {
         }
     });
 
-    SetDefaultTextColorPicker([](const Control& control) {
+    SetTextColorPicker([](const Control& control) {
 
         const auto& item = dynamic_cast<const Item&>(control);
         if (item.IsSelected()) {

@@ -56,31 +56,31 @@ public:
     /**
      Get the default text color.
      */
-    Color GetDefaultTextColor() const {
-        return GetDefaultTextColorPicker()(*this);
+    Color GetTextColor() const {
+        return GetTextColorPicker()(*this);
     }
 
     /**
      Get the default color picker of text.
      */
-    ColorPicker GetDefaultTextColorPicker() const;
+    ColorPicker GetTextColorPicker() const;
 
     /**
      Set the default text color.
      */
-    void SetDefaultTextColor(const Color& color) {
-        SetDefaultTextColorPicker(CreateColorPicker(color));
+    void SetTextColor(const Color& color) {
+        SetTextColorPicker(CreateColorPicker(color));
     }
 
     /**
      Set the default color picker of text. 
      */
-    void SetDefaultTextColorPicker(const ColorPicker& color_picker);
+    void SetTextColorPicker(const ColorPicker& color_picker);
 
     /**
      Get text color at specified text position.
 
-     Return GetDefaultTextColor() if the text color at this position has not been set.
+     Return GetTextColor() if the text color at this position has not been set.
      */
     Color GetTextColorAtPosition(std::size_t position) const {
         return GetTextColorPickerAtPosition(position)(*this);
@@ -96,7 +96,7 @@ public:
     /**
      Get text color picker at specified text position.
 
-     Return GetDefaultTextColorPicker() if the text color picker at this position has not been set.
+     Return GetTextColorPicker() if the text color picker at this position has not been set.
      */
     ColorPicker GetTextColorPickerAtPosition(std::size_t position) const;
 
@@ -117,12 +117,18 @@ public:
 
      Return Font::GetDefault() if this property has not been set.
      */
-    virtual Font GetDefaultFont() const;
+    virtual Font GetFont() const;
 
     /**
      Set default font.
      */
-    virtual void SetDefaultFont(const Font& font);
+    virtual void SetFont(const Font& font);
+
+    float GetFontSize() const;
+    void SetFontSize(float size);
+
+    int GetFontWeight() const;
+    void SetFontWeight(int weight);
 
     /**
      Get font at specified text position.

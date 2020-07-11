@@ -18,22 +18,12 @@ public:
     /**
      Get the default font from system setting.
      */
-    static const Font GetDefault();
+    static Font GetDefault();
 
     /**
      Convert a specified LOGFONT structure to Font.
      */
-    static const Font FromLOGFONT(const LOGFONT& logfont);
-
-public:
-	/**
-	 Initialize the instance.
-	 */
-	Font() :
-		size(0),
-		weight(FontWeight::Regular) {
-
-	}
+    static Font FromLOGFONT(const LOGFONT& logfont);
 
 public:
 	/**
@@ -49,7 +39,7 @@ public:
 
 	 The default size is 0.
 	 */
-	float size;
+	float size{};
 
 	/**
 	 Font weight.
@@ -58,7 +48,7 @@ public:
 	 contained in class FontWeight. The default font weight value is
 	 FontWeight::Regular.
 	 */
-	int weight;
+	int weight{ FontWeight::Regular };
 };
 
 }

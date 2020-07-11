@@ -123,6 +123,7 @@
     <ClCompile Include="unittest\case\parsing\parsers\color_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\control_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\ellipse_parser_test.cpp" />
+    <ClCompile Include="unittest\case\parsing\parsers\font_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\frame_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\linear_layouter_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\point_parser_test.cpp" />

@@ -76,7 +76,7 @@ void TextualControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
     SetTextColorsToTextLayout(text_layout, canvas.GetRenderer());
 
     Canvas::StateGuard state_guard(canvas);
-    canvas.SetBrushWithColor(GetDefaultTextColor());
+    canvas.SetBrushWithColor(GetTextColor());
     canvas.PushClippingRect(text_rect);
     canvas.DrawTextLayout(text_layout, text_rect.position);
 }
@@ -104,7 +104,7 @@ TextLayout TextualControl::CreateTextLayout() const {
 
 TextFormat TextualControl::CreateTextFormat() const {
 
-    auto font = GetDefaultFont();
+    auto font = GetFont();
     TextFormatProperties text_format_properties;
     text_format_properties.font_family_name = font.family_name;
     text_format_properties.font_size = font.size;
@@ -194,7 +194,7 @@ void TextualControl::SetText(const std::wstring& text) {
 }
 
 
-ColorPicker TextualControl::GetDefaultTextColorPicker() const {
+ColorPicker TextualControl::GetTextColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kDefaultTextColorPickerPropertyName);
     if ((color_picker != nullptr) && (*color_picker != nullptr)) {
@@ -213,7 +213,7 @@ ColorPicker TextualControl::GetDefaultTextColorPicker() const {
     }
 }
 
-void TextualControl::SetDefaultTextColorPicker(const ColorPicker& color_picker) {
+void TextualControl::SetTextColorPicker(const ColorPicker& color_picker) {
 
     GetPropertyMap().SetProperty(kDefaultTextColorPickerPropertyName, color_picker);
     NeedRepaint();
@@ -231,7 +231,7 @@ ColorPicker TextualControl::GetTextColorPickerAtPosition(std::size_t position) c
         }
     }
 
-    return GetDefaultTextColorPicker();
+    return GetTextColorPicker();
 }
 
 
@@ -266,7 +266,7 @@ void TextualControl::ResetTextColorPickers() {
 }
 
 
-Font TextualControl::GetDefaultFont() const {
+Font TextualControl::GetFont() const {
 
     auto font = GetPropertyMap().TryGetProperty<Font>(kDefaultFontPropertyName);
     if (font != nullptr) {
@@ -277,12 +277,36 @@ Font TextualControl::GetDefaultFont() const {
     };
 }
 
-void TextualControl::SetDefaultFont(const Font& font) {
+void TextualControl::SetFont(const Font& font) {
 
     GetPropertyMap().SetProperty(kDefaultFontPropertyName, font);
 
     ReleaseTextLayout(); 
     NeedRepaint();
+}
+
+
+float TextualControl::GetFontSize() const {
+    return GetFont().size;
+}
+
+void TextualControl::SetFontSize(float size) {
+
+    auto new_font = GetFont();
+    new_font.size = size;
+    SetFont(new_font);
+}
+
+
+int TextualControl::GetFontWeight() const {
+    return GetFont().weight;
+}
+
+void TextualControl::SetFontWeight(int weight) {
+
+    auto new_font = GetFont();
+    new_font.weight = weight;
+    SetFont(new_font);
 }
 
 
@@ -299,7 +323,7 @@ Font TextualControl::GetFontAtPosition(std::size_t position) const {
         }
     }
 
-    return GetDefaultFont();
+    return GetFont();
 }
 
 

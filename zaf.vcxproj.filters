@@ -466,6 +466,9 @@
     <ClCompile Include="src\zaf\control\linear_box.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\parsing\parsers\font_parser.cpp">
+      <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

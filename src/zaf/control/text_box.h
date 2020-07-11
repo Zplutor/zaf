@@ -150,8 +150,8 @@ public:
      */
     void SetTextValidator(const TextValidator& validator);
 
-	Font GetDefaultFont() const override;
-	void SetDefaultFont(const Font& font) override;
+	Font GetFont() const override;
+	void SetFont(const Font& font) override;
 
 	TextAlignment GetTextAlignment() const override;
 	void SetTextAlignment(TextAlignment alignment) override;

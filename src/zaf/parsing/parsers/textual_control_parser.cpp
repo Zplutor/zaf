@@ -1,5 +1,7 @@
 #include <zaf/parsing/parsers/textual_control_parser.h>
 #include <zaf/control/textual_control.h>
+#include <zaf/graphic/font/font.h>
+#include <zaf/parsing/parsers/font_parser.h>
 #include <zaf/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
@@ -76,9 +78,9 @@ void TextualControlParser::ParseFromNode(
         textual_control.SetText(*text);
     }
 
-    auto default_text_color = helper.GetObjectProperty<Color>(L"DefaultTextColor");
-    if (default_text_color) {
-        textual_control.SetDefaultTextColor(*default_text_color);
+    auto text_color = helper.GetObjectProperty<Color>(L"TextColor");
+    if (text_color) {
+        textual_control.SetTextColor(*text_color);
     }
 
     auto text_alignment_string = helper.GetStringProperty(L"TextAlignment");
@@ -102,6 +104,24 @@ void TextualControlParser::ParseFromNode(
         auto word_wrapping = ParseWordWrapping(*word_wrapping_string);
         if (word_wrapping) {
             textual_control.SetWordWrapping(*word_wrapping);
+        }
+    }
+
+    auto font = helper.GetObjectProperty<Font>(L"Font");
+    if (font) {
+        textual_control.SetFont(*font);
+    }
+
+    auto font_size = helper.GetFloatProperty(L"FontSize");
+    if (font_size) {
+        textual_control.SetFontSize(*font_size);
+    }
+
+    auto font_weight_string = helper.GetStringProperty(L"FontWeight");
+    if (font_weight_string) {
+        auto weight = FontParser::ParseFontWeight(*font_weight_string);
+        if (weight) {
+            textual_control.SetFontWeight(*weight);
         }
     }
 }

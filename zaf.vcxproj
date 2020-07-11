@@ -109,6 +109,7 @@
     <ClCompile Include="src\zaf\parsing\parsers\combo_box_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\control_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\ellipse_parser.cpp" />
+    <ClCompile Include="src\zaf\parsing\parsers\font_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\frame_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\internal\utility.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\linear_layouter_parser.cpp" />

@@ -184,6 +184,9 @@
     <ClCompile Include="unittest\case\control\linear_box_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\parsing\parsers\font_parser_test.cpp">
+      <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
