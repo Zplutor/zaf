@@ -720,7 +720,7 @@ ColorPicker Control::GetBackgroundColorPicker() const {
 	}
     else {
         return [](const Control&) {
-            return Color::FromRGB(internal::ControlBackgroundColorRGB);
+            return Color::Transparent;
         };
     }
 }

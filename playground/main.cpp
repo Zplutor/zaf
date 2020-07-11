@@ -31,7 +31,6 @@ public:
 };
 
 ZAF_DEFINE_REFLECTION_TYPE(RootControl)
-    ZAF_DEFINE_RESOURCE_URI(LR"(C:\Users\zplutor\Desktop\root_control.xaml)")
 ZAF_DEFINE_END
 
 
@@ -60,31 +59,6 @@ void BeginRun(zaf::Application& application) {
     window->SetIsSizable(true);
     window->SetRootControl(root_control);
     window->Show();
-
-    auto image = zaf::CreateObjectFromXaml<zaf::Image>(L"<BitmapImage Uri=\"file:///C:\\Users\\zplutor\\Desktop\\background.png\" />");
-
-    /*
-    auto image = zaf::Image::FromFile(LR"(C:\Users\zplutor\Desktop\²¶»ñ.PNG)");
-    */
-
-    auto image_control = zaf::Create<zaf::Control>();
-    image_control->SetRect(zaf::Rect{ 100, 100, 200, 200 });
-    image_control->SetBorder(5);
-    image_control->SetBorderColor(zaf::Color{ 0, 0, 0, 0.5 });
-    image_control->SetBackgroundImage(image);
-    image_control->SetBackgroundImageLayout(zaf::ImageLayout::Tile);
-
-    root_control->AddChild(image_control);
-
-    auto image_box = zaf::Create<zaf::ImageBox>();
-    image_box->SetRect(zaf::Rect{ 330, 50, 200, 200 });
-    image_box->SetUri(L"file:///C:\\Users\\zplutor\\Desktop\\background.png");
-    image_box->SetPadding(5);
-    image_box->SetBorder(5);
-    image_box->SetBackgroundColor(zaf::Color::Green);
-    image_box->SetBorderColor(zaf::Color::Black);
-    image_box->ResizeToPreferredSize();
-    root_control->AddChild(image_box);
 
     application.SetMainWindow(window);
 }

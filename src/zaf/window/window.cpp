@@ -448,12 +448,20 @@ void Window::Repaint() {
 
     //The update rect must be validated before painting.
     //Because some controls may call NeedRepaint while it is painting,
-    //and this may fails if there is a invalidated update rect.
+    //and this may fails if there is an invalidated update rect.
     ValidateRect(handle_, nullptr);
 
     renderer_.BeginDraw();
 
     Canvas canvas(renderer_, root_control_->GetRect(), dirty_rect);
+
+    //Paint window background color first.
+    {
+        Canvas::StateGuard state_guard(canvas);
+        canvas.SetBrushWithColor(Color::FromRGB(internal::ControlBackgroundColorRGB));
+        canvas.DrawRectangle(dirty_rect);
+    }
+
     root_control_->Repaint(canvas, dirty_rect);
 
     if (caret_ != nullptr) {
