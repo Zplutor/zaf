@@ -448,6 +448,12 @@ public:
         return std::dynamic_pointer_cast<T>(FindChild(name));
     }
 
+    template<typename T>
+    bool BindChild(const std::wstring& name, std::shared_ptr<T>& child) const {
+        child = FindChild<T>(name);
+        return !!child;
+    }
+
     std::shared_ptr<Control> FindChildAtPosition(const Point& position) const;
 
 	/**
