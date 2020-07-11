@@ -59,6 +59,7 @@
     <ClCompile Include="src\zaf\control\textual_control.cpp" />
     <ClCompile Include="src\zaf\control\text_box.cpp" />
     <ClCompile Include="src\zaf\control\text_validator.cpp" />
+    <ClCompile Include="src\zaf\control\linear_box.cpp" />
     <ClCompile Include="src\zaf\graphic\alignment.cpp" />
     <ClCompile Include="src\zaf\graphic\image\bitmap_image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />
     <ClInclude Include="src\zaf\control\text_validator.h" />
+    <ClInclude Include="src\zaf\control\linear_box.h" />
     <ClInclude Include="src\zaf\creation.h" />
     <ClInclude Include="src\zaf\graphic\alignment.h" />
     <ClInclude Include="src\zaf\graphic\image\bitmap_image.h" />
