@@ -10,7 +10,7 @@ class SplitControlSplitBar;
 
 class SplitControl : public Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
     typedef Event<const std::shared_ptr<SplitControl>&, float> SplitBarDistanceChangeEvent;
@@ -102,7 +102,7 @@ private:
 
 class SplitControlSplitBar : public Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
     typedef Event<const std::shared_ptr<SplitControlSplitBar>&> BeginDragEvent;

@@ -17,7 +17,7 @@ namespace zaf {
  */
 class TextBox : public TextualControl, public SelfScrollingControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
     /**

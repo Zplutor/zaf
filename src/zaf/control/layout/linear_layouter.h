@@ -15,7 +15,7 @@ class Size;
 
 class LinearLayouter : public Layouter, public ReflectionObject {
 public:
-	ZAF_DECLARE_REFLECTION_TYPE();
+	ZAF_DECLARE_REFLECTION_TYPE
 
 public:
 	LayoutDirection GetDirection() const {
@@ -86,7 +86,7 @@ private:
 
 class HorizontalLayouter : public LinearLayouter {
 public:
-	ZAF_DECLARE_REFLECTION_TYPE();
+	ZAF_DECLARE_REFLECTION_TYPE
 
 public:
 	void Initialize() override;
@@ -95,7 +95,7 @@ public:
 
 class VerticalLayouter : public LinearLayouter {
 public:
-	ZAF_DECLARE_REFLECTION_TYPE();
+	ZAF_DECLARE_REFLECTION_TYPE
 
 public:
 	void Initialize() override;

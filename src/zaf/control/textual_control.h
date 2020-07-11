@@ -24,7 +24,7 @@ class TextLayout;
  */
 class TextualControl : public Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
     /**

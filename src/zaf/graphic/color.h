@@ -12,7 +12,7 @@ namespace zaf {
  */
 class Color : public ReflectionObject {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
 	/**

@@ -15,7 +15,7 @@ namespace zaf {
  */
 class Rect : public ReflectionObject {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
 	/**

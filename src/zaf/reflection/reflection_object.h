@@ -36,7 +36,7 @@ private:
 };
 
 
-#define ZAF_DECLARE_REFLECTION_TYPE()                                                            \
+#define ZAF_DECLARE_REFLECTION_TYPE                                                              \
 static const std::shared_ptr<zaf::ReflectionType> Type;                                          \
 std::shared_ptr<zaf::ReflectionType> GetType() const override {                                  \
     return this->Type;                                                                           \

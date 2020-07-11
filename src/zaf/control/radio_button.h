@@ -10,7 +10,7 @@ namespace zaf{
  */
 class RadioButton : public ClickableControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
 	/**

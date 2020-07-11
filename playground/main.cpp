@@ -27,7 +27,7 @@ void BeginRun(zaf::Application&);
 
 class RootControl : public zaf::Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 };
 
 ZAF_DEFINE_REFLECTION_TYPE(RootControl)

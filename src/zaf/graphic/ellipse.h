@@ -6,7 +6,7 @@ namespace zaf {
 	
 class Ellipse : public ReflectionObject {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
 	Ellipse() : x_radius(0), y_radius(0) { }

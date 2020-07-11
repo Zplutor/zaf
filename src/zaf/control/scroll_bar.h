@@ -14,7 +14,7 @@ class Timer;
  */
 class ScrollBar : public Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
     /**
@@ -266,7 +266,7 @@ private:
  */
 class ScrollBarArrow : public ClickableControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
     /**
@@ -385,7 +385,7 @@ private:
  */
 class ScrollBarThumb : public ClickableControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
     /**

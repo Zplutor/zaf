@@ -24,7 +24,7 @@ enum class HitTestResult;
  */
 class Window : public ReflectionObject, public std::enable_shared_from_this<Window> {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
     /**

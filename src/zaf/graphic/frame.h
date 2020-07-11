@@ -11,7 +11,7 @@ namespace zaf {
  */
 class Frame : public ReflectionObject {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
     /**

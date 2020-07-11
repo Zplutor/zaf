@@ -7,7 +7,7 @@ namespace zaf {
 
 class BitmapImage : public Image, public ReflectionObject {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
     std::wstring GetUri() const {

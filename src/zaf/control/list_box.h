@@ -9,7 +9,7 @@ namespace zaf {
  */
 class ListBox : public ListControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE();
+    ZAF_DECLARE_REFLECTION_TYPE
 
 public:
     class ItemSource : public ListControl::ItemSource {
