@@ -38,7 +38,7 @@ ZAF_DEFINE_END
 
 
 ListControl::ListControl() : 
-    item_source_(std::make_shared<ItemSource>()),
+    item_source_(std::make_shared<ListItemSource>()),
     first_visible_item_index_(0) {
 
     item_height_manager_ = std::make_shared<internal::ListControlItemHeightManager>(item_source_);
@@ -65,7 +65,7 @@ void ListControl::Initialize() {
     SetBorder(1);
     SetBorderColor(Color::Black);
 
-    item_container_ = Create<ItemContainer>();
+    item_container_ = Create<ListItemContainer>();
     item_container_->SetSelectStrategy(CreateSelectStrategy());
     SetScrollContentControl(item_container_);
 
@@ -130,7 +130,7 @@ void ListControl::VerticalScrollBarChange(const std::shared_ptr<ScrollBar>& prev
 }
 
 
-void ListControl::SetItemSource(const std::shared_ptr<ItemSource>& item_source) {
+void ListControl::SetItemSource(const std::shared_ptr<ListItemSource>& item_source) {
 
     UninitializeItemSource();
 
@@ -139,7 +139,7 @@ void ListControl::SetItemSource(const std::shared_ptr<ItemSource>& item_source) 
         item_source_ = item_source;
     }
     else {
-        item_source_ = std::make_shared<ItemSource>();
+        item_source_ = std::make_shared<ListItemSource>();
     }
 
     item_height_manager_ = std::make_shared<internal::ListControlItemHeightManager>(item_source_);
@@ -151,7 +151,7 @@ void ListControl::SetItemSource(const std::shared_ptr<ItemSource>& item_source) 
 }
 
 
-void ListControl::SetItemContainer(const std::shared_ptr<ItemContainer>& item_container) {
+void ListControl::SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container) {
 
     if (item_container_ == item_container) {
         return;
@@ -161,7 +161,7 @@ void ListControl::SetItemContainer(const std::shared_ptr<ItemContainer>& item_co
 
     item_container_ = item_container;
     if (item_container_ == nullptr) {
-        item_container_ = std::make_shared<ItemContainer>();
+        item_container_ = std::make_shared<ListItemContainer>();
     }
 
     item_container_->SetSelectStrategy(CreateSelectStrategy());
@@ -327,9 +327,9 @@ void ListControl::RemoveTailVisibleItems(std::size_t count) {
 }
 
 
-const std::vector<std::shared_ptr<ListControl::Item>> ListControl::CreateItems(std::size_t index, std::size_t count) {
+const std::vector<std::shared_ptr<ListItem>> ListControl::CreateItems(std::size_t index, std::size_t count) {
 
-    std::vector<std::shared_ptr<Item>> items;
+    std::vector<std::shared_ptr<ListItem>> items;
     items.reserve(count);
 
     auto item_source = GetItemSource();
@@ -344,13 +344,13 @@ const std::vector<std::shared_ptr<ListControl::Item>> ListControl::CreateItems(s
 }
 
 
-const std::shared_ptr<ListControl::Item> ListControl::CreateItem(std::size_t index) const {
+const std::shared_ptr<ListItem> ListControl::CreateItem(std::size_t index) const {
 
     const auto& item_source = GetItemSource();
 
     auto new_item = item_source->CreateItem(index);
     if (new_item == nullptr) {
-        new_item = Create<Item>();
+        new_item = Create<ListItem>();
     }
 
     item_source->LoadItem(index, new_item);
@@ -570,7 +570,7 @@ std::size_t ListControl::GetItemCount() const {
 }
 
 
-std::shared_ptr<ListControl::Item> ListControl::GetItemAtIndex(std::size_t index) const {
+std::shared_ptr<ListItem> ListControl::GetItemAtIndex(std::size_t index) const {
 
     if (index >= GetItemCount()) {
         return nullptr;
@@ -848,7 +848,7 @@ std::size_t ListControl::FindItemIndexAtPosition(const Point& position) const {
 }
 
 
-void ListControl::Item::Initialize() {
+void ListItem::Initialize() {
 
     __super::Initialize();
 
@@ -856,7 +856,7 @@ void ListControl::Item::Initialize() {
 
     SetBackgroundColorPicker([](const Control& control) {
 
-        const auto& item = dynamic_cast<const Item&>(control);
+        const auto& item = dynamic_cast<const ListItem&>(control);
         if (item.IsSelected()) {
             return Color::FromRGB(internal::ControlSelectedColorRGB);
         }
@@ -867,7 +867,7 @@ void ListControl::Item::Initialize() {
 
     SetTextColorPicker([](const Control& control) {
 
-        const auto& item = dynamic_cast<const Item&>(control);
+        const auto& item = dynamic_cast<const ListItem&>(control);
         if (item.IsSelected()) {
             return Color::White;
         }
@@ -878,19 +878,19 @@ void ListControl::Item::Initialize() {
 }
 
 
-ListControl::ItemContainer::ItemContainer() {
+ListItemContainer::ListItemContainer() {
 
 }
 
 
-void ListControl::ItemContainer::Initialize() {
+void ListItemContainer::Initialize() {
 
     __super::Initialize();
 
     SetBackgroundColor(Color::Transparent);
     SetCanFocused(true);
     SetLayouter(CreateLayouter(std::bind(
-        &ItemContainer::LayoutItems,
+        &ListItemContainer::LayoutItems,
         this, 
         std::placeholders::_1,
         std::placeholders::_2,
@@ -899,7 +899,7 @@ void ListControl::ItemContainer::Initialize() {
 }
 
 
-void ListControl::ItemContainer::LayoutItems(
+void ListItemContainer::LayoutItems(
     const Control& parent,
     const Rect& previous_rect,
     const std::vector<std::shared_ptr<Control>>& children) {
@@ -919,7 +919,7 @@ void ListControl::ItemContainer::LayoutItems(
 }
 
 
-bool ListControl::ItemContainer::MouseDown(const Point& position, const MouseMessage& message) {
+bool ListItemContainer::MouseDown(const Point& position, const MouseMessage& message) {
 
     SetIsFocused(true);
 
@@ -933,7 +933,7 @@ bool ListControl::ItemContainer::MouseDown(const Point& position, const MouseMes
 }
 
 
-bool ListControl::ItemContainer::MouseMove(const Point& position, const MouseMessage& message) {
+bool ListItemContainer::MouseMove(const Point& position, const MouseMessage& message) {
 
     if (IsCapturingMouse()) {
         select_strategy_->ChangeSelectionByMouseMove(position, message);
@@ -945,7 +945,7 @@ bool ListControl::ItemContainer::MouseMove(const Point& position, const MouseMes
 }
 
 
-bool ListControl::ItemContainer::MouseUp(const Point& position, const MouseMessage& message) {
+bool ListItemContainer::MouseUp(const Point& position, const MouseMessage& message) {
 
     if (message.GetMouseButton() != MouseButton::Left) {
         return __super::MouseUp(position, message);
@@ -960,7 +960,7 @@ bool ListControl::ItemContainer::MouseUp(const Point& position, const MouseMessa
 }
 
 
-bool ListControl::ItemContainer::KeyDown(const KeyMessage& message) {
+bool ListItemContainer::KeyDown(const KeyMessage& message) {
 
     bool is_handled = select_strategy_->ChangeSelectionByKeyDown(message);
     if (is_handled) {
@@ -1026,21 +1026,21 @@ static void CalculateRangeDifference(
 }
 
 
-void ListControl::ItemSource::NotifyItemAdd(std::size_t index, std::size_t count) {
+void ListItemSource::NotifyItemAdd(std::size_t index, std::size_t count) {
     if (count != 0) {
         item_add_event_.Trigger(*this, index, count);
     }
 }
 
 
-void ListControl::ItemSource::NotifyItemRemove(std::size_t index, std::size_t count) {
+void ListItemSource::NotifyItemRemove(std::size_t index, std::size_t count) {
     if (count != 0) {
         item_remove_event_.Trigger(*this, index, count);
     }
 }
 
 
-void ListControl::ItemSource::NotifyItemUpdate(std::size_t index, std::size_t count) {
+void ListItemSource::NotifyItemUpdate(std::size_t index, std::size_t count) {
     if (count != 0) {
         item_update_event_.Trigger(*this, index, count);
     }

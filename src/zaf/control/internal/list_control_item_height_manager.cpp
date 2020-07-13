@@ -5,7 +5,7 @@
 namespace zaf {
 namespace internal {
 
-ListControlItemHeightManager::ListControlItemHeightManager(const std::shared_ptr<ListControl::ItemSource>& item_source) :
+ListControlItemHeightManager::ListControlItemHeightManager(const std::shared_ptr<ListItemSource>& item_source) :
     item_source_(item_source),
     item_count_(0),
     has_variable_heights_(false),
@@ -157,7 +157,7 @@ float ListControlItemHeightManager::GetTotalHeight() const {
 
 
 void ListControlItemHeightManager::ItemAdd(
-    ListControl::ItemSource& item_source,
+    ListItemSource& item_source,
     std::size_t index, 
     std::size_t count) {
 
@@ -193,7 +193,7 @@ void ListControlItemHeightManager::ItemAdd(
 
 
 void ListControlItemHeightManager::ItemRemove(
-    ListControl::ItemSource& item_source,
+    ListItemSource& item_source,
     std::size_t index,
     std::size_t count) {
 
@@ -225,7 +225,7 @@ void ListControlItemHeightManager::ItemRemove(
 
 
 void ListControlItemHeightManager::ItemUpdate(
-    ListControl::ItemSource& item_source,
+    ListItemSource& item_source,
     std::size_t index,
     std::size_t count) {
 

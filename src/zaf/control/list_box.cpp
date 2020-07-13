@@ -25,14 +25,14 @@ void ListBox::Initialize() {
     
     __super::Initialize();
 
-    SetItemSource(std::make_shared<ItemSource>());
+    SetItemSource(std::make_shared<ListBoxItemSource>());
 }
 
 
-void ListBox::ItemSourceChange(const std::shared_ptr<ListControl::ItemSource>& previous_item_source) {
+void ListBox::ItemSourceChange(const std::shared_ptr<ListItemSource>& previous_item_source) {
 
     __super::ItemSourceChange(previous_item_source);
-    item_source_ = std::dynamic_pointer_cast<ItemSource>(GetItemSource());
+    item_source_ = std::dynamic_pointer_cast<ListBoxItemSource>(GetItemSource());
 }
 
 
@@ -142,12 +142,12 @@ std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
 }
 
 
-void ListBox::ItemSource::LoadItem(std::size_t index, const std::shared_ptr<Item>& item) {
+void ListBoxItemSource::LoadItem(std::size_t index, const std::shared_ptr<ListItem>& item) {
     item->SetText(item_texts_[index]);
 }
 
 
-std::size_t ListBox::ItemSource::AddItemWithTextAtIndex(const std::wstring& text, std::size_t index) {
+std::size_t ListBoxItemSource::AddItemWithTextAtIndex(const std::wstring& text, std::size_t index) {
 
     if (index == InvalidIndex) {
         return InvalidIndex;
@@ -161,7 +161,7 @@ std::size_t ListBox::ItemSource::AddItemWithTextAtIndex(const std::wstring& text
 }
 
 
-std::size_t ListBox::ItemSource::RemoveItemWithText(const std::wstring& item_text) {
+std::size_t ListBoxItemSource::RemoveItemWithText(const std::wstring& item_text) {
 
     auto erase_iterator = std::find(item_texts_.begin(), item_texts_.end(), item_text);
     if (erase_iterator == item_texts_.end()) {
@@ -176,7 +176,7 @@ std::size_t ListBox::ItemSource::RemoveItemWithText(const std::wstring& item_tex
 }
 
 
-bool ListBox::ItemSource::RemoveItemAtIndex(std::size_t index) {
+bool ListBoxItemSource::RemoveItemAtIndex(std::size_t index) {
 
     if (index >= item_texts_.size()) {
         return false;
@@ -189,7 +189,7 @@ bool ListBox::ItemSource::RemoveItemAtIndex(std::size_t index) {
 }
 
 
-void ListBox::ItemSource::RemoveAllItems() {
+void ListBoxItemSource::RemoveAllItems() {
 
     auto item_count = item_texts_.size();
     item_texts_.clear();
@@ -197,7 +197,7 @@ void ListBox::ItemSource::RemoveAllItems() {
 }
 
 
-std::wstring ListBox::ItemSource::GetItemTextAtIndex(std::size_t index) {
+std::wstring ListBoxItemSource::GetItemTextAtIndex(std::size_t index) {
 
     if (index >= item_texts_.size()) {
         return std::wstring();

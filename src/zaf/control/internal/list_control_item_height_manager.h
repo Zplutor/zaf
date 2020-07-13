@@ -9,7 +9,7 @@ namespace internal {
 
 class ListControlItemHeightManager {
 public:
-    ListControlItemHeightManager(const std::shared_ptr<ListControl::ItemSource>& item_source);
+    ListControlItemHeightManager(const std::shared_ptr<ListItemSource>& item_source);
     ~ListControlItemHeightManager();
 
     void LoadItemHeights();
@@ -24,12 +24,12 @@ public:
     }
 
 private:
-    void ItemAdd(ListControl::ItemSource& item_source, std::size_t index, std::size_t count);
-    void ItemRemove(ListControl::ItemSource& item_source, std::size_t index, std::size_t count);
-    void ItemUpdate(ListControl::ItemSource& item_source, std::size_t index, std::size_t count);
+    void ItemAdd(ListItemSource& item_source, std::size_t index, std::size_t count);
+    void ItemRemove(ListItemSource& item_source, std::size_t index, std::size_t count);
+    void ItemUpdate(ListItemSource& item_source, std::size_t index, std::size_t count);
 
 private:
-    std::shared_ptr<ListControl::ItemSource> item_source_;
+    std::shared_ptr<ListItemSource> item_source_;
     std::size_t item_count_;
     bool has_variable_heights_;
     float item_height_;

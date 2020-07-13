@@ -3,7 +3,7 @@
 #include <zaf/base/define.h>
 #include <zaf/control/internal/list_control_item_height_manager.h>
 
-class FakeItemSource : public zaf::ListControl::ItemSource {
+class FakeItemSource : public zaf::ListItemSource {
 public:
     std::size_t GetItemCount() override {
         return item_count;
@@ -22,7 +22,7 @@ public:
         }
     }
 
-    std::shared_ptr<zaf::ListControl::Item> CreateItem(std::size_t index) override {
+    std::shared_ptr<zaf::ListItem> CreateItem(std::size_t index) override {
         return nullptr;
     }
 

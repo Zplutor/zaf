@@ -4,53 +4,14 @@
 
 namespace zaf {
 
+class ListBoxItemSource;
+
 /**
  Represents a list box control.   
  */
 class ListBox : public ListControl {
 public:
     ZAF_DECLARE_REFLECTION_TYPE
-
-public:
-    class ItemSource : public ListControl::ItemSource {
-    public:
-        ItemSource() : item_height_(18) {
-        
-        }
-
-        std::size_t GetItemCount() override {
-            return item_texts_.size();
-        }
-
-        float GetItemHeight(std::size_t index) override {
-            return item_height_;
-        }
-
-        void LoadItem(std::size_t index, const std::shared_ptr<Item>& item) override;
-
-    private:
-        friend class ListBox;
-
-        void SetItemHeight(float item_height) {
-            item_height_ = item_height;
-        }
-
-    protected:
-        std::size_t AddItemWithTextAtIndex(const std::wstring& text, std::size_t index);
-
-        std::size_t AddItemWithText(const std::wstring& text) {
-            return AddItemWithTextAtIndex(text, item_texts_.size());
-        }
-
-        std::size_t RemoveItemWithText(const std::wstring& item_text);
-        bool RemoveItemAtIndex(std::size_t index);
-        void RemoveAllItems();
-        std::wstring GetItemTextAtIndex(std::size_t index);
-
-    private:
-        float item_height_;
-        std::vector<std::wstring> item_texts_;
-    };
 
 public:
     ListBox();
@@ -150,10 +111,51 @@ public:
 
 protected:
     void Initialize() override;
-    void ItemSourceChange(const std::shared_ptr<ListControl::ItemSource>& previous_item_source) override;
+    void ItemSourceChange(const std::shared_ptr<ListItemSource>& previous_item_source) override;
 
 private:
-    std::shared_ptr<ItemSource> item_source_;
+    std::shared_ptr<ListBoxItemSource> item_source_;
+};
+
+
+class ListBoxItemSource : public ListItemSource {
+public:
+    ListBoxItemSource() : item_height_(18) {
+
+    }
+
+    std::size_t GetItemCount() override {
+        return item_texts_.size();
+    }
+
+    float GetItemHeight(std::size_t index) override {
+        return item_height_;
+    }
+
+    void LoadItem(std::size_t index, const std::shared_ptr<ListItem>& item) override;
+
+private:
+    friend class ListBox;
+
+    void SetItemHeight(float item_height) {
+        item_height_ = item_height;
+    }
+
+protected:
+    std::size_t AddItemWithTextAtIndex(const std::wstring& text, std::size_t index);
+
+    std::size_t AddItemWithText(const std::wstring& text) {
+        return AddItemWithTextAtIndex(text, item_texts_.size());
+    }
+
+    std::size_t RemoveItemWithText(const std::wstring& item_text);
+    bool RemoveItemAtIndex(std::size_t index);
+    void RemoveAllItems();
+    std::wstring GetItemTextAtIndex(std::size_t index);
+
+private:
+    float item_height_;
+    std::vector<std::wstring> item_texts_;
 };
 
 }
