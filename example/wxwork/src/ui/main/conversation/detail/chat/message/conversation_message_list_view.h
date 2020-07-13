@@ -5,7 +5,7 @@
 #include "entity/message.h"
 #include "ui/main/conversation/detail/chat/message/message_item.h"
 
-class ConversationMessageListView : public zaf::ListControl, public zaf::ListControl::ItemSource {
+class ConversationMessageListView : public zaf::ListControl, public zaf::ListItemSource {
 public:
     ~ConversationMessageListView();
 
@@ -14,7 +14,7 @@ public:
     std::size_t GetItemCount() override;
     bool HasVariableItemHeight() override;
     float GetItemHeight(std::size_t index) override;
-    std::shared_ptr<Item> CreateItem(std::size_t index) override;
+    std::shared_ptr<zaf::ListItem> CreateItem(std::size_t index) override;
 
     void SetConversation(const std::shared_ptr<Conversation>& conversation);
 

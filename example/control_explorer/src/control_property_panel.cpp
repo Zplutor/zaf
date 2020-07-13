@@ -36,7 +36,7 @@ void ControlPropertyPanel::Initialize() {
 
     __super::Initialize();
 
-    SetLayouter(zaf::LinearLayouter::CreateLeftToRightLayouter());
+    SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
 
     scrollable_control_ = zaf::Create<zaf::ScrollableControl>();
     scrollable_control_->SetBorder(0);

@@ -15,7 +15,7 @@ void MessageItem::Initialize() {
     __super::Initialize();
 
     sender_label_ = zaf::Create<zaf::Label>();
-    sender_label_->SetDefaultTextColor(zaf::Color::FromRGB(0x49709B));
+    sender_label_->SetTextColor(zaf::Color::FromRGB(0x49709B));
     AddChild(sender_label_);
 
     content_bubble_ = zaf::Create<MessageContentBubble>();

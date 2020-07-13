@@ -6,7 +6,7 @@ std::shared_ptr<zaf::Control> RadioButtonExploreManager::CreateExploredControl()
 
     auto container = zaf::Create<zaf::Control>();
     container->SetSize(zaf::Size(200, 90));
-    container->SetLayouter(zaf::LinearLayouter::CreateTopToBottomLayouter());
+    container->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
     auto group = std::make_shared<zaf::RadioButton::Group>();
 

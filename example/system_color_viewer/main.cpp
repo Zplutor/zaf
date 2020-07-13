@@ -75,7 +75,7 @@ static void ShowMainWindow(zaf::Application& application) {
 
     //Setting a linear layouter to root control can fill the window 
     //client area with color list control automatically.
-    root_control->SetLayouter(zaf::LinearLayouter::CreateTopToBottomLayouter());
+    root_control->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
     application.SetMainWindow(main_window);
     main_window->Show();
@@ -95,7 +95,7 @@ static std::shared_ptr<zaf::Control> CreateColorListControl() {
     color_list_control->SetScrollContentSize(zaf::Size(0, sizeof(g_color_items) / sizeof(ColorItem) * item_height));
 
     auto scrolled_content_control = color_list_control->GetScrollContentControl();
-    scrolled_content_control->SetLayouter(zaf::LinearLayouter::CreateTopToBottomLayouter());
+    scrolled_content_control->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
     
     //Begin update the control, to avoid relayouting frequently when adding children. 
     zaf::Control::UpdateGuard update_guard(*scrolled_content_control);
@@ -111,7 +111,7 @@ static std::shared_ptr<zaf::Control> CreateColorListControl() {
         color_control->SetBackgroundColor(zaf::Color::FromCOLORREF(color_rgb));
 
         auto item_control = zaf::Create<zaf::Control>();
-        item_control->SetLayouter(zaf::LinearLayouter::CreateLeftToRightLayouter());
+        item_control->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
         item_control->SetPadding(zaf::Frame(5, 0, 0, 0));
         item_control->AddChild(label);
         item_control->AddChild(color_control);

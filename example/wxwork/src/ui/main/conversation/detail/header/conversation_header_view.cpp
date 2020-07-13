@@ -11,7 +11,7 @@ void ConversationHeaderView::Initialize() {
     SetBorder(zaf::Frame(0, 0, 0, 1));
     SetBorderColor(zaf::Color::FromRGB(0xD5DDE7));
     SetBackgroundColor(zaf::Color::FromRGB(0xECF0F3));
-    SetLayouter(zaf::LinearLayouter::CreateLeftToRightLayouter());
+    SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
 
     title_label_ = zaf::Create<zaf::Label>();
     title_label_->SetTextAlignment(zaf::TextAlignment::Leading);

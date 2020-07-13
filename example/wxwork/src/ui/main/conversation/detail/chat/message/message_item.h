@@ -5,7 +5,7 @@
 #include "entity/message.h"
 #include "ui/main/conversation/detail/chat/message/message_content_bubble.h"
 
-class MessageItem : public zaf::ListControl::Item {
+class MessageItem : public zaf::ListItem {
 public:
     void Initialize() override;
 

@@ -6,7 +6,7 @@
 #include "ui/avatar_view.h"
 #include "ui/main/conversation/conversation_avatar_manager.h"
 
-class ConversationItem : public zaf::ListControl::Item {
+class ConversationItem : public zaf::ListItem {
 public:
     void LoadConversation(
         const std::shared_ptr<Conversation>& conversation, 

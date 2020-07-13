@@ -21,7 +21,7 @@ void ConversationPanel::Initialize() {
 void ConversationPanel::InitializeLeftPane() {
 
     const auto& left_pane = GetFirstPane();
-    left_pane->SetLayouter(zaf::LinearLayouter::CreateTopToBottomLayouter());
+    left_pane->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
     conversation_list_view_ = zaf::Create<ConversationListView>();
     conversation_list_view_->SetConversationAvatarManager(conversation_avatar_manager_);
@@ -35,7 +35,7 @@ void ConversationPanel::InitializeLeftPane() {
 void ConversationPanel::InitializeRightPane() {
 
     const auto& right_panel = GetSecondPane();
-    right_panel->SetLayouter(zaf::LinearLayouter::CreateLeftToRightLayouter());
+    right_panel->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
 }
 
 

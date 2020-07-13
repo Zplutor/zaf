@@ -92,7 +92,7 @@ void ConversationItem::InitializeTitleLabel() {
         200,
         TitleHeight));
 
-    title_label_->SetDefaultTextColorPicker([this](const zaf::Control& control) {
+    title_label_->SetTextColorPicker([this](const zaf::Control& control) {
     
         if (IsSelected()) {
             return zaf::Color::White;
@@ -105,7 +105,7 @@ void ConversationItem::InitializeTitleLabel() {
     zaf::Font font;
     font.family_name = L"Î¢ÈíÑÅºÚ";
     font.size = 14;
-    title_label_->SetDefaultFont(font);
+    title_label_->SetFont(font);
     title_label_->SetTextTrimming(zaf::TextTrimming::Granularity::Character);
 
     AddChild(title_label_);
@@ -121,7 +121,7 @@ void ConversationItem::InitializeDigestLabel() {
         200,
         DigestHeight));
 
-    digest_label_->SetDefaultTextColorPicker([this](const zaf::Control& control) {
+    digest_label_->SetTextColorPicker([this](const zaf::Control& control) {
     
         if (IsSelected()) {
             return zaf::Color::White;
@@ -134,7 +134,7 @@ void ConversationItem::InitializeDigestLabel() {
     zaf::Font font;
     font.family_name = L"Î¢ÈíÑÅºÚ";
     font.size = 12;
-    digest_label_->SetDefaultFont(font);
+    digest_label_->SetFont(font);
     digest_label_->SetTextTrimming(zaf::TextTrimming::Granularity::Character);
 
     AddChild(digest_label_);
@@ -145,7 +145,7 @@ void ConversationItem::InitializeTimeLabel() {
 
     time_label_ = zaf::Create<zaf::Label>();
     time_label_->SetTextAlignment(zaf::TextAlignment::Tailing);
-    time_label_->SetDefaultTextColorPicker([this](const Control& control) {
+    time_label_->SetTextColorPicker([this](const Control& control) {
     
         if (IsSelected()) {
             return zaf::Color::White;
@@ -158,7 +158,7 @@ void ConversationItem::InitializeTimeLabel() {
     zaf::Font font;
     font.family_name = L"Î¢ÈíÑÅºÚ";
     font.size = 11;
-    time_label_->SetDefaultFont(font);
+    time_label_->SetFont(font);
 
     AddChild(time_label_);
 }

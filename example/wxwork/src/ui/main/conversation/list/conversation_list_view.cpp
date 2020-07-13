@@ -29,7 +29,7 @@ void ConversationListView::Initialize() {
     vertical_scroll_bar->SetSmallChangeValue(64);
     vertical_scroll_bar->SetLargeChangeValue(64 * 10);
 
-    SetItemSource(std::dynamic_pointer_cast<zaf::ListControl::ItemSource>(shared_from_this()));
+    SetItemSource(std::dynamic_pointer_cast<zaf::ListItemSource>(shared_from_this()));
 }
 
 
@@ -43,12 +43,12 @@ float ConversationListView::GetItemHeight(std::size_t index) {
 }
 
 
-std::shared_ptr<zaf::ListControl::Item> ConversationListView::CreateItem(std::size_t index) {
+std::shared_ptr<zaf::ListItem> ConversationListView::CreateItem(std::size_t index) {
     return zaf::Create<ConversationItem>();
 }
 
 
-void ConversationListView::LoadItem(std::size_t index, const std::shared_ptr<zaf::ListControl::Item>& item) {
+void ConversationListView::LoadItem(std::size_t index, const std::shared_ptr<zaf::ListItem>& item) {
 
     if (index >= conversations_.size()) {
         return;

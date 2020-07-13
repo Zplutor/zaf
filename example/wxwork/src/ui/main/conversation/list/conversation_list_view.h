@@ -3,7 +3,7 @@
 #include <zaf/control/list_control.h>
 #include "ui/main/conversation/conversation_avatar_manager.h"
 
-class ConversationListView : public zaf::ListControl, public zaf::ListControl::ItemSource {
+class ConversationListView : public zaf::ListControl, public zaf::ListItemSource {
 public:
     ~ConversationListView();
 
@@ -11,8 +11,8 @@ public:
 
     std::size_t GetItemCount() override;
     float GetItemHeight(std::size_t index) override;
-    std::shared_ptr<zaf::ListControl::Item> CreateItem(std::size_t index) override;
-    void LoadItem(std::size_t index, const std::shared_ptr<zaf::ListControl::Item>& item) override;
+    std::shared_ptr<zaf::ListItem> CreateItem(std::size_t index) override;
+    void LoadItem(std::size_t index, const std::shared_ptr<zaf::ListItem>& item) override;
 
     void SetConversationAvatarManager(const std::shared_ptr<ConversationAvatarManager>& avatar_manager) {
         conversation_avatar_manager_ = avatar_manager;

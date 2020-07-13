@@ -3,7 +3,7 @@
 #include <zaf/control/list_control.h>
 #include "entity/user.h"
 
-class MemberItem : public zaf::ListControl::Item {
+class MemberItem : public zaf::ListItem {
 public:
     void Initialize() override;
 

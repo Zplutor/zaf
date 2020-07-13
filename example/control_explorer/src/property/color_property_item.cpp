@@ -98,7 +98,7 @@ protected:
     }
 
 private:
-    class ColorItemSource : public zaf::ComboBoxDropDownListBox::ItemSource {
+    class ColorItemSource : public zaf::ListBoxItemSource {
     public:
         ColorItemSource() {
             for (const auto& each_info : GetColorInfos()) {
@@ -106,11 +106,11 @@ private:
             }
         }
 
-        std::shared_ptr<zaf::ComboBoxDropDownListBox::Item> CreateItem(std::size_t index) override {
+        std::shared_ptr<zaf::ListItem> CreateItem(std::size_t index) override {
             return zaf::Create<ColorItem>();
         }
 
-        void LoadItem(std::size_t index, const std::shared_ptr<zaf::ComboBoxDropDownListBox::Item>& item) override {
+        void LoadItem(std::size_t index, const std::shared_ptr<zaf::ListItem>& item) override {
 
             __super::LoadItem(index, item);
 
@@ -145,7 +145,7 @@ private:
         }
     };
 
-    class ColorItem : public zaf::ComboBoxDropDownListBox::Item {
+    class ColorItem : public zaf::ListItem {
     public:
         const zaf::Color& GetColor() const {
             return color_;

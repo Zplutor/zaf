@@ -52,7 +52,7 @@ void GroupPropertyItem::Initialize() {
 
     __super::Initialize();
 
-    SetLayouter(zaf::LinearLayouter::CreateTopToBottomLayouter());
+    SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 }
 
 

@@ -13,11 +13,11 @@ void MainWindow::Initialize() {
     conversation_panel_ = conversation_panel;
 
     content_panel_container_ = zaf::Create<zaf::Control>();
-    content_panel_container_->SetLayouter(zaf::LinearLayouter::CreateLeftToRightLayouter());
+    content_panel_container_->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
     content_panel_container_->AddChild(conversation_panel);
     
     auto root_control = GetRootControl();
-    root_control->SetLayouter(zaf::LinearLayouter::CreateLeftToRightLayouter());
+    root_control->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
     root_control->AddChild(conversation_panel);
 
     conversation_panel_->LoadContent();
