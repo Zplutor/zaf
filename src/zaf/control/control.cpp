@@ -122,7 +122,13 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
         RepaintControl(cached_painting_canvas, actual_dirty_rect);
 
         cached_renderer_.EndDraw();
-        valid_cached_renderer_rect_.Union(actual_dirty_rect);
+
+        if (valid_cached_renderer_rect_.IsEmpty()) {
+            valid_cached_renderer_rect_ = actual_dirty_rect;
+        }
+        else {
+            valid_cached_renderer_rect_.Union(actual_dirty_rect);
+        }
     }
     
     canvas.BeginPaint();
