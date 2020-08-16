@@ -106,6 +106,9 @@
     <Filter Include="zaf\reflection\internal">
       <UniqueIdentifier>{df572d22-2859-401b-9227-76d5d540c93c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\internal\tree_control">
+      <UniqueIdentifier>{f09a58c2-d965-4161-89a0-d3c47a68607f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -468,6 +471,12 @@
     </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\font_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\tree_control.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\tree_control\tree_data.cpp">
+      <Filter>zaf\control\internal\tree_control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1149,6 +1158,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\linear_box.h">
       <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\tree_control.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_data.h">
+      <Filter>zaf\control\internal\tree_control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

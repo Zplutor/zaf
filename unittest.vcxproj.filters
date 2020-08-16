@@ -49,6 +49,9 @@
     <Filter Include="case\resource\internal">
       <UniqueIdentifier>{f27731de-7f0b-4fa6-acb7-91f8ece19bef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\control\internal\tree_control">
+      <UniqueIdentifier>{7a7cf031-e029-4e97-b0ec-b37969950f34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -186,6 +189,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\parsing\parsers\font_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unittest\case\control\internal\tree_control\tree_data_test.cpp">
+      <Filter>case\control\internal\tree_control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
