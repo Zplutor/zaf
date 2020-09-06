@@ -3,54 +3,45 @@
 #include <zaf/base/container/utility/range.h>
 
 namespace zaf::internal {
+namespace {
 
-void TreeData::AddChildren(const IndexPath& parent, std::size_t count) {
-    node_child_count_map_[parent] += count;
-    //TODO: Update children's index path.
-}
+/*
+bool NodeChecker(const IndexPath& current_node, std::size_t current_index);
 
+bool CurrentNodeChildrenChecker(
+    const IndexPath& current_node, 
+    std::size_t current_index,
+    std::size_t child_count, 
+    std::size_t last_child_index);
 
-void TreeData::RemoveChildren(const IndexPath& parent, std::size_t count) {
-
-    auto iterator = node_child_count_map_.find(parent);
-    if (iterator == node_child_count_map_.end()) {
-        return;
-    }
-
-    if (iterator->second > count) {
-        iterator->second -= count;
-
-        //TODO: Update children's index path.
-    }
-    else {
-        node_child_count_map_.erase(iterator);   
-    }
-}
-
-
-std::size_t TreeData::GetNodeCount() const {
-
-    std::size_t result;
-    for (auto each_count : Values(node_child_count_map_)) {
-        result += each_count;
-    }
-    return result;
-}
-
-
-IndexPath TreeData::GetIndexPathAtIndex(std::size_t index) {
+bool BackwardNodeChildrenChecker(
+    const IndexPath& backward_node, 
+    std::size_t current_index,
+    std::size_t child_count,
+    std::size_t last_child_index);
+ */
+template<
+    typename CurrentNodeChecker, 
+    typename CurrentNodeChildrenChecker, 
+    typename BackwardNodeChildrenChecker
+>
+void EnumerateNodes(
+    const std::map<IndexPath, std::size_t>& node_child_count_map,
+    const CurrentNodeChecker& current_node_checker,
+    const CurrentNodeChildrenChecker& current_node_children_checker,
+    const BackwardNodeChildrenChecker& backward_node_children_checker) {
 
     struct LevelInfo {
         std::size_t children_count{};
         std::size_t last_handled_child_index{};
     };
 
-    std::vector<std::size_t> root_path;
     std::vector<LevelInfo> level_infos;
+    std::vector<std::size_t> root_path;
     std::size_t current_global_index{};
 
-    auto iterator = node_child_count_map_.begin();
-    while (iterator != node_child_count_map_.end()) {
+    auto iterator = node_child_count_map.begin();
+    while (iterator != node_child_count_map.end()) {
 
         const auto& current_node_path = iterator->first;
         if (current_node_path.empty()) {
@@ -65,26 +56,20 @@ IndexPath TreeData::GetIndexPathAtIndex(std::size_t index) {
         }
 
         //Calculate current global index
-        std::size_t current_node_index = 
-            current_global_index + 
+        std::size_t current_node_index =
+            current_global_index +
             (current_node_path.back() - level_infos.back().last_handled_child_index);
 
-        //Return current node path if it is the expected one.
-        if (current_node_index == index) {
-            return current_node_path;
-        }
-
-        if (current_node_index >= index) {
-            auto revised_node_path = current_node_path;
-            revised_node_path.back() -= current_node_index - index;
-            return revised_node_path;
+        //Check if current node is the expected one.
+        if (current_node_checker(current_node_path, current_node_index)) {
+            return;
         }
 
         auto next_iterator = std::next(iterator);
 
         const auto& next_node_path =
-            next_iterator != node_child_count_map_.end() ?
-            next_iterator->first : 
+            next_iterator != node_child_count_map.end() ?
+            next_iterator->first :
             root_path;
 
         //Next expanded node is child of current node.
@@ -109,10 +94,12 @@ IndexPath TreeData::GetIndexPathAtIndex(std::size_t index) {
         //check children of current node.
         //Increase 1 to global index implicitly.
         auto last_child_global_index = current_node_index + iterator->second;
-        if (last_child_global_index >= index) {
-            auto child_path = current_node_path;
-            child_path.push_back(index - current_node_index - 1);
-            return child_path;
+        if (current_node_children_checker(
+            current_node_path, 
+            current_node_index,
+            iterator->second, 
+            last_child_global_index)) {
+            return;
         }
 
         //Finish checking children, return to current level.
@@ -127,15 +114,17 @@ IndexPath TreeData::GetIndexPathAtIndex(std::size_t index) {
             auto backward_node_path = current_node_path;
             while (backward_node_path.size() > next_node_path.size()) {
 
-                std::size_t last_child_index = 
-                    (level_infos.back().children_count - backward_node_path.back()) - 1 + 
+                std::size_t last_child_index =
+                    (level_infos.back().children_count - backward_node_path.back()) - 1 +
                     current_global_index;
 
                 //Check remain children in current level.
-                if (last_child_index >= index) {
-                    auto revised_node_path = backward_node_path;
-                    revised_node_path.back() += index - current_global_index;
-                    return revised_node_path;
+                if (backward_node_children_checker(
+                    backward_node_path, 
+                    current_global_index,
+                    level_infos.back().children_count,
+                    last_child_index)) {
+                    return;
                 }
 
                 //Return to previous level.
@@ -146,11 +135,147 @@ IndexPath TreeData::GetIndexPathAtIndex(std::size_t index) {
             }
         }
 
-        //Next expanded node is sibling, enter next expaned node
+        //Enter next expaned node
         iterator = next_iterator;
     }
-
-    return {};
 }
+
+}
+
+
+IndexPath TreeData::GetIndexPathAtIndex(std::size_t index) {
+
+    IndexPath result{};
+
+    EnumerateNodes(
+        node_child_count_map_,
+        [index, &result](const IndexPath& current_node, std::size_t current_index) {
+
+            if (current_index >= index) {
+                result = current_node;
+                result.back() -= current_index - index;
+                return true;
+            }
+            return false;
+        },
+        [index, &result](
+            const IndexPath& current_node, 
+            std::size_t current_index,
+            std::size_t child_count,
+            std::size_t last_child_index) {
+
+            if (last_child_index >= index) {
+                result = current_node;
+                result.push_back(index - current_index - 1);
+                return true;
+            }
+            return false;
+        },
+        [index, &result](
+            const IndexPath& backward_node,
+            std::size_t current_index,
+            std::size_t child_count,
+            std::size_t last_child_index) {
+
+            if (last_child_index >= index) {
+                result = backward_node;
+                result.back() += index - current_index;
+                return true;
+            }
+            return false;
+        }
+    );
+
+    return result;
+}
+
+
+std::size_t TreeData::GetIndexAtIndexPath(const IndexPath& path) {
+
+    if (path.empty()) {
+        return InvalidIndex;
+    }
+
+    std::size_t result{ InvalidIndex };
+
+    EnumerateNodes(
+        node_child_count_map_,
+        [&path, &result](const IndexPath& current_node, std::size_t current_index) {
+
+            if (current_node >= path) {
+                result = current_index - (current_node.back() - path.back());
+                return true;
+            }
+            return false;
+        },
+        [&path, &result](
+            const IndexPath& current_node,
+            std::size_t current_index,
+            std::size_t child_count,
+            std::size_t last_child_index) {
+
+            auto last_child_node_path = current_node;
+            last_child_node_path.push_back(child_count - 1);
+            if (last_child_node_path >= path) {
+
+                result = last_child_index - (last_child_node_path.back() - path.back());
+                return true;
+            }
+            return false;
+        },
+        [&path, &result](
+            const IndexPath& backward_node,
+            std::size_t current_index,
+            std::size_t child_count,
+            std::size_t last_child_index) {
+
+            auto last_child_node_path = backward_node;
+            last_child_node_path.back() = child_count - 1;
+
+            if (last_child_node_path >= path) {
+                result = last_child_index - (last_child_node_path.back() - path.back());
+                return true;
+            }
+            return false;
+        }
+    );
+
+    return result;
+}
+
+
+std::size_t TreeData::GetNodeCount() const {
+
+    std::size_t result{};
+    for (auto each_count : Values(node_child_count_map_)) {
+        result += each_count;
+    }
+    return result;
+}
+
+
+void TreeData::AddChildren(const IndexPath& parent, std::size_t count) {
+    node_child_count_map_[parent] += count;
+    //TODO: Update children's index path.
+}
+
+
+void TreeData::RemoveChildren(const IndexPath& parent, std::size_t count) {
+
+    auto iterator = node_child_count_map_.find(parent);
+    if (iterator == node_child_count_map_.end()) {
+        return;
+    }
+
+    if (iterator->second > count) {
+        iterator->second -= count;
+
+        //TODO: Update children's index path.
+    }
+    else {
+        node_child_count_map_.erase(iterator);
+    }
+}
+
 
 }
