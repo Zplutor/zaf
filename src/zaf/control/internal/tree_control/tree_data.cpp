@@ -1,5 +1,4 @@
 #include <zaf/control/internal/tree_control/tree_data.h>
-#include <zaf/base/container/utility/map.h>
 #include <zaf/base/container/utility/range.h>
 
 namespace zaf::internal {
@@ -26,7 +25,7 @@ template<
     typename BackwardNodeChildrenChecker
 >
 void EnumerateNodes(
-    const std::map<IndexPath, std::size_t>& node_child_count_map,
+    const std::vector<std::pair<IndexPath, std::size_t>>& node_child_count_pairs,
     const CurrentNodeChecker& current_node_checker,
     const CurrentNodeChildrenChecker& current_node_children_checker,
     const BackwardNodeChildrenChecker& backward_node_children_checker) {
@@ -40,8 +39,8 @@ void EnumerateNodes(
     std::vector<std::size_t> root_path;
     std::size_t current_global_index{};
 
-    auto iterator = node_child_count_map.begin();
-    while (iterator != node_child_count_map.end()) {
+    auto iterator = node_child_count_pairs.begin();
+    while (iterator != node_child_count_pairs.end()) {
 
         const auto& current_node_path = iterator->first;
         if (current_node_path.empty()) {
@@ -68,7 +67,7 @@ void EnumerateNodes(
         auto next_iterator = std::next(iterator);
 
         const auto& next_node_path =
-            next_iterator != node_child_count_map.end() ?
+            next_iterator != node_child_count_pairs.end() ?
             next_iterator->first :
             root_path;
 
@@ -140,6 +139,23 @@ void EnumerateNodes(
     }
 }
 
+
+bool IsParentOf(const IndexPath& parent, const IndexPath& path) {
+
+    if (parent.size() >= path.size()) {
+        return false;
+    }
+
+    for (auto index : zaf::Range(parent.size())) {
+
+        if (parent[index] != path[index]) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
 }
 
 
@@ -148,7 +164,7 @@ IndexPath TreeData::GetIndexPathAtIndex(std::size_t index) {
     IndexPath result{};
 
     EnumerateNodes(
-        node_child_count_map_,
+        node_child_count_pairs,
         [index, &result](const IndexPath& current_node, std::size_t current_index) {
 
             if (current_index >= index) {
@@ -199,7 +215,7 @@ std::size_t TreeData::GetIndexAtIndexPath(const IndexPath& path) {
     std::size_t result{ InvalidIndex };
 
     EnumerateNodes(
-        node_child_count_map_,
+        node_child_count_pairs,
         [&path, &result](const IndexPath& current_node, std::size_t current_index) {
 
             if (current_node >= path) {
@@ -247,33 +263,119 @@ std::size_t TreeData::GetIndexAtIndexPath(const IndexPath& path) {
 std::size_t TreeData::GetNodeCount() const {
 
     std::size_t result{};
-    for (auto each_count : Values(node_child_count_map_)) {
-        result += each_count;
+    for (const auto each_pair : node_child_count_pairs) {
+        result += each_pair.second;
     }
     return result;
 }
 
 
-void TreeData::AddChildren(const IndexPath& parent, std::size_t count) {
-    node_child_count_map_[parent] += count;
-    //TODO: Update children's index path.
-}
+void TreeData::AddChildren(const IndexPath& parent, std::size_t index, std::size_t count) {
 
-
-void TreeData::RemoveChildren(const IndexPath& parent, std::size_t count) {
-
-    auto iterator = node_child_count_map_.find(parent);
-    if (iterator == node_child_count_map_.end()) {
+    if (count == 0) {
         return;
     }
 
-    if (iterator->second > count) {
-        iterator->second -= count;
+    bool has_added{};
 
-        //TODO: Update children's index path.
+    for (auto iterator = node_child_count_pairs.begin(); 
+         iterator != node_child_count_pairs.end(); 
+         ++iterator) {
+
+        auto& current_path = iterator->first;
+        if (current_path < parent) {
+            continue;
+        }
+
+        if (current_path == parent) {
+
+            //Check index.
+            if (index > iterator->second) {
+                return;
+            }
+
+            //Increase children count.
+            iterator->second += count;
+
+            has_added = true;
+            continue;
+        }
+
+        if (has_added) {
+        
+            if (IsParentOf(parent, current_path)) {
+        
+                //Update children's index path.
+                auto& child_index = current_path[parent.size()];
+                if (child_index >= index) {
+                    child_index += count;
+                }
+            }
+        }
+        else {
+
+            if (!IsParentOf(parent, current_path)) {
+
+                //Insert new node, index must be 0.
+                if (index != 0) {
+                    return;
+                }
+
+                node_child_count_pairs.insert(iterator, std::make_pair(parent, count));
+                return;
+            }
+        }
     }
-    else {
-        node_child_count_map_.erase(iterator);
+
+    if (!has_added) {
+        node_child_count_pairs.push_back(std::make_pair(parent, count));
+    }
+}
+
+
+void TreeData::RemoveChildren(const IndexPath& parent, std::size_t index, std::size_t count) {
+
+    if (count == 0) {
+        return;
+    }
+
+    for (auto iterator = node_child_count_pairs.begin();
+        iterator != node_child_count_pairs.end();
+        ++iterator) {
+
+        auto& current_path = iterator->first;
+        if (current_path < parent) {
+            continue;
+        }
+
+        if (current_path == parent) {
+
+            //Check index and count.
+            if (index >= iterator->second || index + count > iterator->second) {
+                return;
+            }
+
+            //Decrease children count.
+            iterator->second -= count;
+
+            //Remove current node if there is no child.
+            if (iterator->second == 0) {
+                node_child_count_pairs.erase(iterator);
+                return;
+            }
+
+            continue;
+        }
+
+        if (!IsParentOf(parent, current_path)) {
+            return;
+        }
+
+        //Update children's index path.
+        auto& child_index = current_path[parent.size()];
+        if (child_index >= index) {
+            child_index -= count;
+        }
     }
 }
 

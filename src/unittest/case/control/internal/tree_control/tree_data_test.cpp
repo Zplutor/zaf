@@ -13,14 +13,15 @@ class TreeDataTest : public testing::Test {
 protected:
     void SetUp() override {
 
-        auto& map = tree_data_.node_child_count_map_;
-        map[std::vector<std::size_t>{}] = 7;
-        map[std::vector<std::size_t>{ 1 }] = 5;
-        map[std::vector<std::size_t>{ 1, 2 }] = 1;
-        map[std::vector<std::size_t>{ 1, 2, 0 }] = 4;
-        map[std::vector<std::size_t>{ 1, 2, 0, 1 }] = 3;
-        map[std::vector<std::size_t>{ 1, 3 }] = 2;
-        map[std::vector<std::size_t>{ 4 }] = 3;
+        tree_data_.node_child_count_pairs.assign({
+            { {},             7 },
+            { { 1 },          5 },
+            { { 1, 2 },       1 },
+            { { 1, 2, 0 },    4 },
+            { { 1, 2, 0, 1 }, 3 },
+            { { 1, 3 },       2 },
+            { { 4 },          3 },
+        });
 
         all_nodes_.assign({
             { 0, { 0 } },
@@ -93,4 +94,56 @@ TEST_F(TreeDataTest, GetIndexAtIndexPath) {
     //Get index for invalid index path
     ASSERT_EQ(zaf::InvalidIndex, tree_data.GetIndexAtIndexPath({}));
     ASSERT_EQ(zaf::InvalidIndex, tree_data.GetIndexAtIndexPath({ 7, 0 }));
+}
+
+
+TEST_F(TreeDataTest, AddChildren) {
+
+    TreeData tree_data;
+    tree_data.AddChildren({}, 0, 2);
+    tree_data.AddChildren({}, 0, 1);
+    tree_data.AddChildren({}, 3, 1);
+    tree_data.AddChildren({ 1 }, 0, 3);
+    tree_data.AddChildren({ 1, 0 }, 0, 1);
+    tree_data.AddChildren({}, 1, 1);
+
+    std::vector<std::pair<zaf::IndexPath, std::size_t>> expected{
+        { {}, 5 },
+        { { 2 }, 3 },
+        { { 2, 0 }, 1 },
+    };
+    ASSERT_EQ(expected, tree_data.node_child_count_pairs);
+}
+
+
+TEST_F(TreeDataTest, RemoveChildren) {
+
+    TreeData tree_data;
+    tree_data.node_child_count_pairs.assign({
+        { {}, 3 },
+        { { 1 }, 3 },
+        { { 1, 1 }, 2 },
+    });
+
+    tree_data.RemoveChildren({ 1, 1 }, 0, 1);
+    std::vector<std::pair<zaf::IndexPath, std::size_t>> expected{
+        { {}, 3 },
+        { { 1 }, 3 },
+        { { 1, 1 }, 1 },
+    };
+    ASSERT_EQ(expected, tree_data.node_child_count_pairs);
+
+    tree_data.RemoveChildren({ 1, 1 }, 0, 1);
+    expected.assign({
+        { {}, 3 },
+        { { 1 }, 3 },
+    });
+    ASSERT_EQ(expected, tree_data.node_child_count_pairs);
+
+    tree_data.RemoveChildren({}, 0, 1);
+    expected.assign({
+        { {}, 2 },
+        { { 0 }, 3 },
+    });
+    ASSERT_EQ(expected, tree_data.node_child_count_pairs);
 }
