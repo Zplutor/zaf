@@ -8,17 +8,17 @@ std::shared_ptr<zaf::Control> SplitControlExploreManager::CreateExploredControl(
     auto split_control = zaf::Create<zaf::SplitControl>();
     split_control->SetSize(zaf::Size(190, 190));
     split_control->SetBorder(1);
-    split_control->SetBorderColor(zaf::Color::Black);
+    split_control->SetBorderColor(zaf::Color::Black());
 
     auto first_label = zaf::Create<zaf::Label>();
-    first_label->SetBackgroundColor(zaf::Color::White);
+    first_label->SetBackgroundColor(zaf::Color::White());
     first_label->SetText(L"First pane");
     first_label->SetTextAlignment(zaf::TextAlignment::Center);
     first_label->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
     split_control->SetFirstPane(first_label);
 
     auto second_label = zaf::Create<zaf::Label>();
-    second_label->SetBackgroundColor(zaf::Color::White);
+    second_label->SetBackgroundColor(zaf::Color::White());
     second_label->SetText(L"Second pane");
     second_label->SetTextAlignment(zaf::TextAlignment::Center);
     second_label->SetParagraphAlignment(zaf::ParagraphAlignment::Center);

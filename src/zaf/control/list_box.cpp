@@ -1,4 +1,7 @@
 #include <zaf/control/list_box.h>
+#include <zaf/base/error/check.h>
+#include <zaf/control/list_box_delegate.h>
+#include <zaf/control/list_box_data_source.h>
 #include <zaf/creation.h>
 #include <zaf/parsing/parsers/list_box_parser.h>
 #include <zaf/reflection/reflection_type_definition.h>
@@ -25,185 +28,57 @@ void ListBox::Initialize() {
     
     __super::Initialize();
 
-    SetItemSource(std::make_shared<ListBoxItemSource>());
+    SetDataSource(std::make_shared<ListBoxDataSource>());
+    SetDelegate(std::make_shared<ListBoxDelegate>());
 }
 
 
-void ListBox::ItemSourceChange(const std::shared_ptr<ListItemSource>& previous_item_source) {
+void ListBox::DataSourceChange(const std::shared_ptr<ListDataSource>& previous_data_source) {
 
-    __super::ItemSourceChange(previous_item_source);
-    item_source_ = std::dynamic_pointer_cast<ListBoxItemSource>(GetItemSource());
+    __super::DataSourceChange(previous_data_source);
+
+    data_source_ = dynamic_cast<ListBoxDataSource*>(GetDataSource().get());
+    ZAF_EXPECT(data_source_);
 }
 
 
-float ListBox::GetItemHeight() const {
+void ListBox::DelegateChange(const std::shared_ptr<ListControlDelegate>& previous_delegate) {
 
-    if (item_source_ != nullptr) {
-        return item_source_->GetItemHeight(0);
-    }
-    else {
-        return 0;
-    }
-}
+    __super::DelegateChange(previous_delegate);
 
-
-void ListBox::SetItemHeight(float item_height) {
-
-    if (item_source_ != nullptr) {
-        item_source_->SetItemHeight(item_height);
-        Reload();
+    delegate_ = dynamic_cast<ListBoxDelegate*>(GetDelegate().get());
+    if (delegate_) {
+        delegate_->SetItemHeight(default_item_height_);
     }
 }
 
 
-std::size_t ListBox::AddItemWithTextAtIndex(const std::wstring& item_text, std::size_t index) {
+void ListBox::SetDefaultItemHeight(float item_height) {
 
-    if (item_source_ != nullptr) {
-        return item_source_->AddItemWithTextAtIndex(item_text, index);
-    }
-    else {
-        return InvalidIndex;
-    }
+    default_item_height_ = item_height;
+
+    delegate_->SetItemHeight(default_item_height_);
+    Reload();
 }
 
 
-std::size_t ListBox::RemoveItemWithText(const std::wstring& item_text) {
-
-    if (item_source_ != nullptr) {
-        return item_source_->RemoveItemWithText(item_text);
-    }
-    else {
-        return InvalidIndex;
-    }
+void ListBox::AddItem(const std::shared_ptr<Object>& data) {
+    AddItemAtIndex(GetItemCount(), data);
 }
 
 
-bool ListBox::RemoveItemAtIndex(std::size_t index) {
+void ListBox::AddItemAtIndex(std::size_t index, const std::shared_ptr<Object>& data) {
+    data_source_->AddDataAtIndex(index, data);
+}
 
-    if (item_source_ != nullptr) {
-        return item_source_->RemoveItemAtIndex(index);
-    }
-    else {
-        return false;
-    }
+
+void ListBox::RemoveItemAtIndex(std::size_t index) {
+    data_source_->RemoveDataAtIndex(index);
 }
 
 
 void ListBox::RemoveAllItems() {
-
-    if (item_source_ != nullptr) {
-        item_source_->RemoveAllItems();
-    }
-}
-
-
-std::wstring ListBox::GetItemTextAtIndex(std::size_t index) {
-
-    if (item_source_ != nullptr) {
-        return item_source_->GetItemTextAtIndex(index);
-    }
-    else {
-        return std::wstring();
-    }
-}
-
-
-std::wstring ListBox::GetFirstSelectedItemText() const {
-
-    if (item_source_ != nullptr) {
-        std::size_t first_selected_index = GetFirstSelectedItemIndex();
-        return item_source_->GetItemTextAtIndex(first_selected_index);
-    }
-    else {
-        return std::wstring();
-    }
-}
-
-
-std::vector<std::wstring> ListBox::GetSelectedItemTexts() const {
-
-    if (item_source_ != nullptr) {
-
-        auto selected_indexes = GetSelectedItemIndexes();
-
-        std::vector<std::wstring> texts;
-        texts.reserve(selected_indexes.size());
-
-        for (auto each_index : selected_indexes) {
-            texts.push_back(item_source_->GetItemTextAtIndex(each_index));
-        }
-
-        return texts;
-    }
-    else {
-
-        return std::vector<std::wstring>();
-    }
-}
-
-
-void ListBoxItemSource::LoadItem(std::size_t index, const std::shared_ptr<ListItem>& item) {
-    item->SetText(item_texts_[index]);
-}
-
-
-std::size_t ListBoxItemSource::AddItemWithTextAtIndex(const std::wstring& text, std::size_t index) {
-
-    if (index == InvalidIndex) {
-        return InvalidIndex;
-    }
-
-    std::size_t revised_index = index <= item_texts_.size() ? index : item_texts_.size();
-    item_texts_.insert(std::next(item_texts_.begin(), index), text);
-
-    NotifyItemAdd(index, 1);
-    return revised_index;
-}
-
-
-std::size_t ListBoxItemSource::RemoveItemWithText(const std::wstring& item_text) {
-
-    auto erase_iterator = std::find(item_texts_.begin(), item_texts_.end(), item_text);
-    if (erase_iterator == item_texts_.end()) {
-        return InvalidIndex;
-    }
-
-    std::size_t removed_index = std::distance(item_texts_.begin(), erase_iterator);
-    item_texts_.erase(erase_iterator);
-
-    NotifyItemRemove(removed_index, 1);
-    return removed_index;
-}
-
-
-bool ListBoxItemSource::RemoveItemAtIndex(std::size_t index) {
-
-    if (index >= item_texts_.size()) {
-        return false;
-    }
-
-    item_texts_.erase(std::next(item_texts_.begin(), index));
-
-    NotifyItemRemove(index, 1);
-    return true;
-}
-
-
-void ListBoxItemSource::RemoveAllItems() {
-
-    auto item_count = item_texts_.size();
-    item_texts_.clear();
-    NotifyItemRemove(0, item_count);
-}
-
-
-std::wstring ListBoxItemSource::GetItemTextAtIndex(std::size_t index) {
-
-    if (index >= item_texts_.size()) {
-        return std::wstring();
-    }
-
-    return item_texts_[index];
+    data_source_->RemoveAllData();
 }
 
 }

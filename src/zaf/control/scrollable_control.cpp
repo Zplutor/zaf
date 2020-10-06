@@ -14,7 +14,7 @@ namespace {
 
 std::shared_ptr<Control> CreateDefaultScrollContentControl() {
     auto control = Create<Control>();
-    control->SetBackgroundColor(Color::Transparent);
+    control->SetBackgroundColor(Color::Transparent());
     return control;
 }
 
@@ -50,7 +50,7 @@ void ScrollableControl::Initialize() {
     SetBorder(1);
 
     SetBorderColorPicker([](const Control&) {
-        return Color::Black;
+        return Color::Black();
     });
 
     InitializeVerticalScrollBar(Create<ScrollBar>());
@@ -58,7 +58,7 @@ void ScrollableControl::Initialize() {
     InitializeScrollBarCorner(Create<Control>());
 
     scroll_container_control_ = Create<Control>();
-    scroll_container_control_->SetBackgroundColor(Color::Transparent);
+    scroll_container_control_->SetBackgroundColor(Color::Transparent());
     AddChild(scroll_container_control_);
 
     InitializeScrollContentControl(CreateDefaultScrollContentControl());

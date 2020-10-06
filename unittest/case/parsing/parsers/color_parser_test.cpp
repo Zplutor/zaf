@@ -21,17 +21,17 @@ TEST(ColorParser, ParseFromAttribute) {
         const zaf::Color* color;
     };
     static const MapItem map[] = {
-        { L"Black", &zaf::Color::Black },
-        { L"Blue", &zaf::Color::Blue },
-        { L"Cyan", &zaf::Color::Cyan },
-        { L"Gray", &zaf::Color::Gray },
-        { L"Green", &zaf::Color::Green },
-        { L"Lime", &zaf::Color::Lime },
-        { L"Magenta", &zaf::Color::Magenta },
-        { L"Red", &zaf::Color::Red },
-        { L"Transparent", &zaf::Color::Transparent },
-        { L"White", &zaf::Color::White },
-        { L"Yellow", &zaf::Color::Yellow },
+        { L"Black", &zaf::Color::Black() },
+        { L"Blue", &zaf::Color::Blue() },
+        { L"Cyan", &zaf::Color::Cyan() },
+        { L"Gray", &zaf::Color::Gray() },
+        { L"Green", &zaf::Color::Green() },
+        { L"Lime", &zaf::Color::Lime() },
+        { L"Magenta", &zaf::Color::Magenta() },
+        { L"Red", &zaf::Color::Red() },
+        { L"Transparent", &zaf::Color::Transparent() },
+        { L"White", &zaf::Color::White() },
+        { L"Yellow", &zaf::Color::Yellow() },
     };
     for (const auto& each_item : map) {
         parser.ParseFromAttribute(each_item.name, color);
@@ -61,5 +61,5 @@ TEST(ColorParser, ParseFromNode) {
     ASSERT_EQ(*color, zaf::Color(0.6f, 0.7f, 0.8f, 0.5f));
 
     color = zaf::CreateObjectFromXaml<zaf::Color>("<Color>Cyan</Color>");
-    ASSERT_EQ(*color, zaf::Color::Cyan);
+    ASSERT_EQ(*color, zaf::Color::Cyan());
 }

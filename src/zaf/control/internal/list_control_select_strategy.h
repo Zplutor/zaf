@@ -18,7 +18,7 @@ public:
     ListControlSelectStrategy() { }
     virtual ~ListControlSelectStrategy() { }
 
-    const std::shared_ptr<ListControl> GetListControl() const {
+    std::shared_ptr<ListControl> GetListControl() const {
         return list_control_.lock();
     }
 

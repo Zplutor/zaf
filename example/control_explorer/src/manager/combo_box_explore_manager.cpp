@@ -1,4 +1,5 @@
 #include "manager/combo_box_explore_manager.h"
+#include <zaf/object/boxing.h>
 #include "property/check_box_property_item.h"
 #include "property/number_property_item.h"
 
@@ -7,10 +8,10 @@ std::shared_ptr<zaf::Control> ComboBoxExploreManager::CreateExploredControl() {
     auto combo_box = zaf::Create<zaf::ComboBox>();
     combo_box->SetSize(zaf::Size(100, 30));
     auto drop_down_list = combo_box->GetDropDownListBox();
-    drop_down_list->AddItemWithText(L"Apple");
-    drop_down_list->AddItemWithText(L"Boy");
-    drop_down_list->AddItemWithText(L"Cat");
-    drop_down_list->AddItemWithText(L"Dog");
+    drop_down_list->AddItem(zaf::Box(L"Apple"));
+    drop_down_list->AddItem(zaf::Box(L"Boy"));
+    drop_down_list->AddItem(zaf::Box(L"Cat"));
+    drop_down_list->AddItem(zaf::Box(L"Dog"));
     return combo_box;
 }
 

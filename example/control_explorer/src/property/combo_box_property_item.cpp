@@ -1,5 +1,6 @@
 #include "property/combo_box_property_item.h"
 #include <zaf/control/combo_box.h>
+#include <zaf/object/boxing.h>
 
 std::shared_ptr<PropertyItem> CreateComboBoxPropertyItem(
     const std::wstring& title,
@@ -13,9 +14,9 @@ std::shared_ptr<PropertyItem> CreateComboBoxPropertyItem(
     auto drop_down_list = combo_box->GetDropDownListBox();
     auto current_value = get_value();
     for (const auto& each_value : values) {
-        auto index = drop_down_list->AddItemWithText(each_value);
+        drop_down_list->AddItem(zaf::Box(each_value));
         if (current_value == each_value) {
-            drop_down_list->SelectItemAtIndex(index);
+            drop_down_list->SelectItemAtIndex(drop_down_list->GetItemCount() - 1);
         }
     }
 
@@ -23,7 +24,13 @@ std::shared_ptr<PropertyItem> CreateComboBoxPropertyItem(
         auto value = get_value();
         auto drop_down_list = combo_box->GetDropDownListBox();
         for (std::size_t index = 0; index < drop_down_list->GetItemCount(); ++index) {
-            if (value == drop_down_list->GetItemTextAtIndex(index)) {
+
+            auto item_data = drop_down_list->GetItemDataAtIndex(index);
+            auto item_text = zaf::TryUnbox<std::wstring>(item_data);
+            if (!item_text) {
+                continue;
+            }
+            if (value == *item_text) {
                 drop_down_list->SelectItemAtIndex(index);
             }
         }

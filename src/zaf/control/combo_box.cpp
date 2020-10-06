@@ -4,6 +4,8 @@
 #include <zaf/base/event_utility.h>
 #include <zaf/control/button.h>
 #include <zaf/control/internal/combo_box_drop_down_window.h>
+#include <zaf/control/list_control_delegate.h>
+#include <zaf/control/list_data_source.h>
 #include <zaf/control/text_box.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
@@ -90,7 +92,7 @@ void ComboBox::Initialize() {
             return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
         }
 
-        return Color::Black;
+        return Color::Black();
     });
 
     SetParagraphAlignment(ParagraphAlignment::Center);
@@ -234,7 +236,7 @@ ColorPicker ComboBox::GetDropDownButtonColorPicker() const {
         return *color_picker;
     }
     else {
-        return [](const Control&) { return Color::Black; };
+        return [](const Control&) { return Color::Black(); };
     }
 }
 
@@ -407,15 +409,17 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
 
     float height = 0;
 
-    auto item_source = drop_down_list_box_->GetItemSource();
+    auto data_source = drop_down_list_box_->GetDataSource();
+    auto delegate = drop_down_list_box_->GetDelegate();
 
-    if (item_source->HasVariableItemHeight()) {
+    if (delegate->HasVariableItemHeight()) {
         for (std::size_t index = 0; index < visible_item_count; ++index) {
-            height += item_source->GetItemHeight(index);
+            auto item_data = data_source->GetDataAtIndex(index);
+            height += delegate->EstimateItemHeight(index, item_data);
         }
     }
     else {
-        height = item_source->GetItemHeight(0) * visible_item_count;
+        height = delegate->EstimateItemHeight(0, Object::Empty()) * visible_item_count;
     }
 
     if (height == 0) {
@@ -527,7 +531,11 @@ void ComboBox::DropDownListBoxSelectionChange() {
     auto selected_index = drop_down_list_box_->GetFirstSelectedItemIndex();
     if (selected_index != InvalidIndex) {
 
-        auto text = drop_down_list_box_->GetItemTextAtIndex(selected_index);
+        auto delegate = drop_down_list_box_->GetDelegate();
+        auto text = delegate->GetItemText(
+            selected_index, 
+            drop_down_list_box_->GetItemDataAtIndex(selected_index));
+
         ChangeSelectionText(text, TextChangeSource::DropDownListBox);
         NotifySelectionChange();
     }

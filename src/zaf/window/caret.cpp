@@ -107,7 +107,7 @@ void Caret::Repaint(Canvas& canvas) {
 	canvas.BeginPaint();
 	canvas.SaveState();
 
-	canvas.SetBrushWithColor(Color::Black);
+	canvas.SetBrushWithColor(Color::Black());
 	canvas.DrawRectangle(GetRect());
 
 	canvas.RestoreState();

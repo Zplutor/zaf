@@ -10,7 +10,7 @@ void TitleBarButton::Initialize() {
 
     __super::Initialize();
 
-    SetBackgroundColor(zaf::Color::Transparent);
+    SetBackgroundColor(zaf::Color::Transparent());
 }
 
 
@@ -44,7 +44,7 @@ zaf::Color TitleBarButton::GetBackgroundColor() const {
     case Type::Maximize:
         return zaf::Color(float(0.47), float(0.8), float(0.26));
     default:
-        return zaf::Color::Transparent;
+        return zaf::Color::Transparent();
     }
 }
 
@@ -57,6 +57,6 @@ zaf::Color TitleBarButton::GetBorderColor() const {
     case Type::Minimize:
     case Type::Maximize:
     default:
-        return zaf::Color::Transparent;
+        return zaf::Color::Transparent();
     }
 }

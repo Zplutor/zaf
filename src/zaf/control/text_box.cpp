@@ -63,7 +63,7 @@ TextBox::TextBox() :
 	paragraph_format_(),
     scroll_bar_property_(kDefaultScrollBarProperty),
     required_height_(0),
-    text_color_(Color::Black) {
+    text_color_(Color::Black()) {
 
 	character_format_.cbSize = sizeof(character_format_);
 	paragraph_format_.cbSize = sizeof(paragraph_format_);
@@ -88,7 +88,7 @@ void TextBox::Initialize() {
     SetParagraphAlignment(ParagraphAlignment::Near);
 
     SetBorderColorPicker([](const Control&) {
-        return Color::Black;
+        return Color::Black();
     });
 
     SetBackgroundColorPicker([](const Control& control) {
@@ -99,16 +99,16 @@ void TextBox::Initialize() {
             return Color::FromRGB(0xEEEEEE);;
         }
 
-        return Color::White;
+        return Color::White();
     });
 
     SetTextColorPicker([](const Control& control) {
         
         if (control.IsEnabled()) {
-            return Color::Black;
+            return Color::Black();
         }
         else {
-            return Color::Gray;
+            return Color::Gray();
         }
     });
 

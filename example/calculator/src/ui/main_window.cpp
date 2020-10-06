@@ -33,14 +33,14 @@ void MainWindow::InitializeTextBoxes() {
     input_text_box_ = zaf::Create<zaf::TextBox>();
     input_text_box_->SetRect(zaf::Rect(0, 0, GetContentWidth(), 30));
     input_text_box_->SetIsReadOnly(true);
-    input_text_box_->SetBackgroundColor(zaf::Color::White);
+    input_text_box_->SetBackgroundColor(zaf::Color::White());
     input_text_box_->SetBorder(0);
     input_text_box_->SetInset(50);
 
     output_text_box_ = zaf::Create<zaf::TextBox>();
     output_text_box_->SetRect(zaf::Rect(0, 30, GetContentWidth(), 50));
     output_text_box_->SetIsReadOnly(true);
-    output_text_box_->SetBackgroundColor(zaf::Color::White);
+    output_text_box_->SetBackgroundColor(zaf::Color::White());
     output_text_box_->SetBorder(0);
     output_text_box_->SetInset(50);
     zaf::Font font;

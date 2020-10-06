@@ -8,7 +8,7 @@ namespace internal {
 GifPlayer::GifPlayer(const wic::BitmapDecoder& image_decoder) : 
     image_decoder_(image_decoder),
     frame_count_(0),
-    background_color_(Color::Transparent),
+    background_color_(Color::Transparent()),
     next_frame_index_(0),
     current_frame_delay_(0),
     current_frame_disposal_(GifDisposal::Unspecified),
@@ -305,7 +305,7 @@ void GifPlayer::Reset() {
     delay_timer_.reset();
 
     frame_count_ = 0;
-    background_color_ = Color::Transparent;
+    background_color_ = Color::Transparent();
     total_loop_count_.reset();
     next_frame_index_ = 0;
     current_frame_delay_ = 0;

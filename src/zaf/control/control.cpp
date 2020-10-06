@@ -726,7 +726,7 @@ ColorPicker Control::GetBackgroundColorPicker() const {
 	}
     else {
         return [](const Control&) {
-            return Color::Transparent;
+            return Color::Transparent();
         };
     }
 }

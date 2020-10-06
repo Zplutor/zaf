@@ -109,6 +109,12 @@
     <Filter Include="zaf\control\internal\tree_control">
       <UniqueIdentifier>{f09a58c2-d965-4161-89a0-d3c47a68607f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\object">
+      <UniqueIdentifier>{02ef127b-fbe7-4c74-a9e3-545477c89135}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\object\internal">
+      <UniqueIdentifier>{e9dd3b55-91ef-4199-a0db-c321364db7b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -191,9 +197,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\window\message\creation.cpp">
       <Filter>zaf\window\message</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\list_box.cpp">
-      <Filter>zaf\control</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\window\dialog.cpp">
       <Filter>zaf\window</Filter>
@@ -478,6 +481,24 @@
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_data.cpp">
       <Filter>zaf\control\internal\tree_control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\list_item.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\list_data_source.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\list_box.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\list_box_data_source.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\object.cpp">
+      <Filter>zaf\object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\list_box_delegate.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -659,9 +680,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\message\creation.h">
       <Filter>zaf\window\message</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\list_box.h">
-      <Filter>zaf\control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\define.h">
       <Filter>zaf\base</Filter>
@@ -1164,6 +1182,54 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_data.h">
       <Filter>zaf\control\internal\tree_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\list_data_source.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\list_item.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\list_control_delegate.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\no_circular_pointer.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\list_box.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\list_box_data_source.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\object.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\string.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxed.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\box_represent.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\built_in_box_types.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\get_box_type.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\numeric.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\list_box_delegate.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\unboxer.h">
+      <Filter>zaf\object\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

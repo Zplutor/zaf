@@ -22,7 +22,7 @@ void MemberItem::Initialize() {
         }
     });
 
-    SetTextColor(zaf::Color::Black);
+    SetTextColor(zaf::Color::Black());
 
     SetParagraphAlignment(zaf::ParagraphAlignment::Center);
 }

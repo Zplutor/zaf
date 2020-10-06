@@ -29,26 +29,36 @@ void ConversationListView::Initialize() {
     vertical_scroll_bar->SetSmallChangeValue(64);
     vertical_scroll_bar->SetLargeChangeValue(64 * 10);
 
-    SetItemSource(std::dynamic_pointer_cast<zaf::ListItemSource>(shared_from_this()));
+    SetDataSource(std::dynamic_pointer_cast<zaf::ListDataSource>(shared_from_this()));
+    SetDelegate(std::dynamic_pointer_cast<zaf::ListControlDelegate>(shared_from_this()));
 }
 
 
-std::size_t ConversationListView::GetItemCount() {
+std::size_t ConversationListView::GetDataCount() {
     return conversations_.size();
 }
 
 
-float ConversationListView::GetItemHeight(std::size_t index) {
+float ConversationListView::EstimateItemHeight(
+    std::size_t index, 
+    const std::shared_ptr<zaf::Object>& data) {
+
     return 64;
 }
 
 
-std::shared_ptr<zaf::ListItem> ConversationListView::CreateItem(std::size_t index) {
+std::shared_ptr<zaf::ListItem> ConversationListView::CreateItem(
+    std::size_t index,
+    const std::shared_ptr<zaf::Object>& data) {
+
     return zaf::Create<ConversationItem>();
 }
 
 
-void ConversationListView::LoadItem(std::size_t index, const std::shared_ptr<zaf::ListItem>& item) {
+void ConversationListView::LoadItem(
+    const std::shared_ptr<zaf::ListItem>& item,
+    std::size_t index, 
+    const std::shared_ptr<zaf::Object>& data) {
 
     if (index >= conversations_.size()) {
         return;
@@ -96,7 +106,7 @@ void ConversationListView::ConversationUpdate(const std::shared_ptr<Conversation
     bool is_selected = IsItemSelectedAtIndex(old_index);
 
     conversations_.erase(iterator);
-    NotifyItemRemove(old_index, 1);
+    NotifyDataRemove(old_index, 1);
 
     auto insert_iterator = std::lower_bound(
         conversations_.begin(),
@@ -107,7 +117,7 @@ void ConversationListView::ConversationUpdate(const std::shared_ptr<Conversation
     insert_iterator = conversations_.insert(insert_iterator, updated_conversation);
 
     std::size_t new_index = std::distance(conversations_.begin(), insert_iterator);
-    NotifyItemAdd(new_index, 1);
+    NotifyDataAdd(new_index, 1);
 
     if (is_selected) {
         SelectItemAtIndex(new_index);

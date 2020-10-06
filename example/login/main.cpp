@@ -117,12 +117,12 @@ static void OnSignInClick(
     if (account_text_box->GetText() == L"zplutor" &&
         password_text_box->GetText() == L"123456") {
 
-        sign_in_result_label->SetTextColor(zaf::Color::Green);
+        sign_in_result_label->SetTextColor(zaf::Color::Green());
         sign_in_result_label->SetText(L"OK");
     }
     else {
 
-        sign_in_result_label->SetTextColor(zaf::Color::Red);
+        sign_in_result_label->SetTextColor(zaf::Color::Red());
         sign_in_result_label->SetText(L"Wrong");
     }
 }

@@ -1,20 +1,32 @@
 #pragma once
 
 #include <zaf/control/list_control.h>
+#include <zaf/control/list_control_delegate.h>
+#include <zaf/control/list_data_source.h>
 #include "entity/conversation.h"
 #include "entity/message.h"
 #include "ui/main/conversation/detail/chat/message/message_item.h"
 
-class ConversationMessageListView : public zaf::ListControl, public zaf::ListItemSource {
+class ConversationMessageListView : 
+    public zaf::ListControl, 
+    public zaf::ListDataSource, 
+    public zaf::ListControlDelegate {
+
 public:
     ~ConversationMessageListView();
 
     void Initialize() override;
 
-    std::size_t GetItemCount() override;
+    std::size_t GetDataCount() override;
     bool HasVariableItemHeight() override;
-    float GetItemHeight(std::size_t index) override;
-    std::shared_ptr<zaf::ListItem> CreateItem(std::size_t index) override;
+
+    float EstimateItemHeight(
+        std::size_t item_index,
+        const std::shared_ptr<Object>& item_data) override;
+
+    std::shared_ptr<zaf::ListItem> CreateItem(
+        std::size_t item_index,
+        const std::shared_ptr<Object>& item_data) override;
 
     void SetConversation(const std::shared_ptr<Conversation>& conversation);
 

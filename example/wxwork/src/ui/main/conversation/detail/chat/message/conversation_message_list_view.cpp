@@ -35,7 +35,8 @@ void ConversationMessageListView::Initialize() {
     SetAllowHorizontalScroll(false);
     SetBackgroundColor(zaf::Color::FromRGB(0xECF0F3));
     GetItemContainer()->SetPadding(zaf::Frame(15, 0, 15, 13));
-    SetItemSource(std::dynamic_pointer_cast<zaf::ListItemSource>(shared_from_this()));
+    SetDataSource(std::dynamic_pointer_cast<zaf::ListDataSource>(shared_from_this()));
+    SetDelegate(std::dynamic_pointer_cast<zaf::ListControlDelegate>(shared_from_this()));
 
     auto scroll_bar = GetVerticalScrollBar();
     scroll_bar->SetSmallChangeValue(14);
@@ -52,7 +53,7 @@ void ConversationMessageListView::Layout(const zaf::Rect& previous_rect) {
 
     //Update all items' height if width is changed.
     if (previous_rect.size.width != GetSize().width) {
-        NotifyItemUpdate(0, message_item_infos_.size());
+        NotifyDataUpdate(0, message_item_infos_.size());
     }
 }
 
@@ -111,14 +112,14 @@ void ConversationMessageListView::OnMessageAdd(const std::shared_ptr<Message>& m
     insert_iterator = message_item_infos_.insert(insert_iterator, message_item_info);
 
     std::size_t insert_index = std::distance(message_item_infos_.begin(), insert_iterator);
-    NotifyItemAdd(insert_index, 1);
+    NotifyDataAdd(insert_index, 1);
     ScrollDownToEnd();
 
     Service::GetInstance().RemoveConversationAllUnreadMessages(conversation_id_);
 }
 
 
-std::size_t ConversationMessageListView::GetItemCount() {
+std::size_t ConversationMessageListView::GetDataCount() {
     return message_item_infos_.size();
 }
 
@@ -128,7 +129,9 @@ bool ConversationMessageListView::HasVariableItemHeight() {
 }
 
 
-float ConversationMessageListView::GetItemHeight(std::size_t index) {
+float ConversationMessageListView::EstimateItemHeight(
+    std::size_t index, 
+    const std::shared_ptr<Object>& item_data) {
 
     if (index >= message_item_infos_.size()) {
         return 0;
@@ -138,7 +141,9 @@ float ConversationMessageListView::GetItemHeight(std::size_t index) {
 }
 
 
-std::shared_ptr<zaf::ListItem> ConversationMessageListView::CreateItem(std::size_t index) {
+std::shared_ptr<zaf::ListItem> ConversationMessageListView::CreateItem(
+    std::size_t index,
+    const std::shared_ptr<Object>& item_data) {
 
     if (index >= message_item_infos_.size()) {
         return nullptr;

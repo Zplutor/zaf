@@ -2,10 +2,12 @@
 #include <gtest/gtest.h>
 #include <zaf/base/define.h>
 #include <zaf/control/internal/list_control_item_height_manager.h>
+#include <zaf/control/list_control_delegate.h>
+#include <zaf/control/list_data_source.h>
 
-class FakeItemSource : public zaf::ListItemSource {
+class FakeItemSource : public zaf::ListDataSource, public zaf::ListControlDelegate {
 public:
-    std::size_t GetItemCount() override {
+    std::size_t GetDataCount() override {
         return item_count;
     }
 
@@ -13,7 +15,10 @@ public:
         return has_variable_item_heights;
     }
 
-    float GetItemHeight(std::size_t index) override {
+    float EstimateItemHeight(
+        std::size_t index, 
+        const std::shared_ptr<zaf::Object>& item_data) override {
+
         if (has_variable_item_heights) {
             return index % 10 + item_height + variable_item_height_adjustment;
         }
@@ -22,22 +27,18 @@ public:
         }
     }
 
-    std::shared_ptr<zaf::ListItem> CreateItem(std::size_t index) override {
-        return nullptr;
-    }
-
     void AddItems(std::size_t index, std::size_t count) {
         item_count += count;
-        NotifyItemAdd(index, count);
+        NotifyDataAdd(index, count);
     }
 
     void RemoveItems(std::size_t index, std::size_t count) {
         item_count -= count;
-        NotifyItemRemove(index, count);
+        NotifyDataRemove(index, count);
     }
 
     void UpdateItems(std::size_t index, std::size_t count) {
-        NotifyItemUpdate(index, count);
+        NotifyDataUpdate(index, count);
     }
 
 public:
@@ -53,7 +54,10 @@ public:
     void SetUp() override {
         
         item_source_ = std::make_shared<FakeItemSource>();
-        item_height_manager_ = std::make_shared<zaf::internal::ListControlItemHeightManager>(item_source_);
+
+        item_height_manager_ = std::make_shared<zaf::internal::ListControlItemHeightManager>(
+            item_source_, 
+            item_source_);
     }
 
 protected:
@@ -117,17 +121,17 @@ TEST_F(ListControlItemHeightManagerTest, GetItemCount) {
 
         //No item
         item_source_->item_count = 0;
-        item_height_manager_->LoadItemHeights();
+        item_height_manager_->ReloadItemHeights();
         ASSERT_EQ(0, item_height_manager_->GetItemCount());
 
         //One item
         item_source_->item_count = 1;
-        item_height_manager_->LoadItemHeights();
+        item_height_manager_->ReloadItemHeights();
         ASSERT_EQ(1, item_height_manager_->GetItemCount());
 
         //Many items
         item_source_->item_count = 999;
-        item_height_manager_->LoadItemHeights();
+        item_height_manager_->ReloadItemHeights();
         ASSERT_EQ(999, item_height_manager_->GetItemCount());
     };
     
@@ -145,7 +149,7 @@ TEST_F(ListControlItemHeightManagerTest, GetTotalHeight) {
 
     auto test = [this](std::size_t item_count, std::size_t expected_total_height) {
         item_source_->item_count = item_count;
-        item_height_manager_->LoadItemHeights();
+        item_height_manager_->ReloadItemHeights();
         ASSERT_EQ(expected_total_height, item_height_manager_->GetTotalHeight());
     };
 
@@ -170,19 +174,19 @@ TEST_F(ListControlItemHeightManagerTest, GetItemPositionAndHeight) {
     item_source_->has_variable_item_heights = false;
 
     item_source_->item_count = 0;
-    item_height_manager_->LoadItemHeights();
+    item_height_manager_->ReloadItemHeights();
     auto position_and_height = item_height_manager_->GetItemPositionAndHeight(0);
     ASSERT_EQ(0, position_and_height.first);
     ASSERT_EQ(0, position_and_height.second);
 
     item_source_->item_count = 1;
-    item_height_manager_->LoadItemHeights();
+    item_height_manager_->ReloadItemHeights();
     position_and_height = item_height_manager_->GetItemPositionAndHeight(0);
     ASSERT_EQ(0, position_and_height.first);
     ASSERT_EQ(10, position_and_height.second);
 
     item_source_->item_count = 33;
-    item_height_manager_->LoadItemHeights();
+    item_height_manager_->ReloadItemHeights();
     for (std::size_t index = 0; index < item_source_->item_count; ++index) {
         position_and_height = item_height_manager_->GetItemPositionAndHeight(index);
         ASSERT_EQ(index * 10, position_and_height.first);
@@ -193,19 +197,19 @@ TEST_F(ListControlItemHeightManagerTest, GetItemPositionAndHeight) {
     item_source_->has_variable_item_heights = true;
 
     item_source_->item_count = 0;
-    item_height_manager_->LoadItemHeights();
+    item_height_manager_->ReloadItemHeights();
     position_and_height = item_height_manager_->GetItemPositionAndHeight(0);
     ASSERT_EQ(0, position_and_height.first);
     ASSERT_EQ(0, position_and_height.second);
 
     item_source_->item_count = 1;
-    item_height_manager_->LoadItemHeights();
+    item_height_manager_->ReloadItemHeights();
     position_and_height = item_height_manager_->GetItemPositionAndHeight(0);
     ASSERT_EQ(0, position_and_height.first);
     ASSERT_EQ(10, position_and_height.second);
 
     item_source_->item_count = 14;
-    item_height_manager_->LoadItemHeights();
+    item_height_manager_->ReloadItemHeights();
     position_and_height = item_height_manager_->GetItemPositionAndHeight(1);
     ASSERT_EQ(10, position_and_height.first);
     ASSERT_EQ(11, position_and_height.second);
@@ -226,11 +230,11 @@ TEST_F(ListControlItemHeightManagerTest, GetItemIndexAndCountWithFixedItemHeight
 
     //No item
     item_source_->item_count = 0;
-    item_height_manager_->LoadItemHeights();
+    item_height_manager_->ReloadItemHeights();
     ASSERT_TRUE(TestGetItemIndexAndCount(0, 10, 0, 0));
 
     item_source_->item_count = 3;
-    item_height_manager_->LoadItemHeights();
+    item_height_manager_->ReloadItemHeights();
 
     //Invalid range
     ASSERT_TRUE(TestGetItemIndexAndCount(-1, -3, 0, 0));
@@ -261,11 +265,11 @@ TEST_F(ListControlItemHeightManagerTest, GetItemIndexAndCountWithVariableItemHei
 
     //No item
     item_source_->item_count = 0;
-    item_height_manager_->LoadItemHeights();
+    item_height_manager_->ReloadItemHeights();
     ASSERT_TRUE(TestGetItemIndexAndCount(0, 10, 0, 0));
 
     item_source_->item_count = 3;
-    item_height_manager_->LoadItemHeights();
+    item_height_manager_->ReloadItemHeights();
 
     //Invalid range
     ASSERT_TRUE(TestGetItemIndexAndCount(1, 0, 0, 0));
@@ -300,7 +304,7 @@ TEST_F(ListControlItemHeightManagerTest, AddItemsWithFixedItemHeights) {
     auto test_add_items = [this](std::size_t initial_count, std::size_t add_index, std::size_t add_count) {
 
         item_source_->item_count = initial_count;
-        item_height_manager_->LoadItemHeights();
+        item_height_manager_->ReloadItemHeights();
         item_source_->AddItems(add_index, add_count);
         CheckItemHeightManagerWithFixedItemHeights();
     };
@@ -339,7 +343,7 @@ TEST_F(ListControlItemHeightManagerTest, AddItemsWithVariableItemHeights) {
         const std::vector<float>& expected_item_heights) {
 
         item_source_->item_count = initial_count;
-        item_height_manager_->LoadItemHeights();
+        item_height_manager_->ReloadItemHeights();
         item_source_->AddItems(add_index, add_count);
 
         CheckItemHeightManagerWithVariableItemHeights(expected_item_heights);
@@ -375,7 +379,7 @@ TEST_F(ListControlItemHeightManagerTest, RemoveItemsWithFixedItemHeights) {
     auto test_remove_items = [this](std::size_t initial_count, std::size_t remove_index, std::size_t remove_count) {
 
         item_source_->item_count = initial_count;
-        item_height_manager_->LoadItemHeights();
+        item_height_manager_->ReloadItemHeights();
 
         item_source_->RemoveItems(remove_index, remove_count);
         CheckItemHeightManagerWithFixedItemHeights();
@@ -412,7 +416,7 @@ TEST_F(ListControlItemHeightManagerTest, RemoveItemsWithVariableItemHeights) {
         const std::vector<float>& expected_item_heights) {
 
         item_source_->item_count = initial_count;
-        item_height_manager_->LoadItemHeights();
+        item_height_manager_->ReloadItemHeights();
 
         item_source_->RemoveItems(remove_index, remove_count);
         CheckItemHeightManagerWithVariableItemHeights(expected_item_heights);
@@ -444,7 +448,7 @@ TEST_F(ListControlItemHeightManagerTest, UpdateItemsWithFixedItemHeights) {
     auto test_update_items = [this](std::size_t initial_item_count, std::size_t update_index, std::size_t update_count) {
 
         item_source_->item_count = initial_item_count;
-        item_height_manager_->LoadItemHeights();
+        item_height_manager_->ReloadItemHeights();
 
         item_source_->UpdateItems(update_index, update_count);
         CheckItemHeightManagerWithFixedItemHeights();
@@ -481,7 +485,7 @@ TEST_F(ListControlItemHeightManagerTest, UpdateItemsWithVariableItemHeights) {
 
         item_source_->variable_item_height_adjustment = 0;
         item_source_->item_count = initial_item_count;
-        item_height_manager_->LoadItemHeights();
+        item_height_manager_->ReloadItemHeights();
 
         item_source_->variable_item_height_adjustment = 1;
         item_source_->UpdateItems(update_index, update_count);

@@ -7,8 +7,8 @@ void MessageContentBubble::Initialize() {
 
     SetWordWrapping(zaf::WordWrapping::Wrap);
     SetBorder(1);
-    SetBorderColor(zaf::Color::Transparent);
-    SetBackgroundColor(zaf::Color::Transparent);
+    SetBorderColor(zaf::Color::Transparent());
+    SetBackgroundColor(zaf::Color::Transparent());
     SetPadding(10);
 }
 
@@ -17,7 +17,7 @@ void MessageContentBubble::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rec
 
     zaf::RoundedRect bubble_rect(zaf::Rect(zaf::Point(), GetSize()), 4, 4);
 
-    auto background_color = style_ == Style::Highlight ? zaf::Color::FromRGB(0xBFDCFF) : zaf::Color::White;
+    auto background_color = style_ == Style::Highlight ? zaf::Color::FromRGB(0xBFDCFF) : zaf::Color::White();
     canvas.SetBrushWithColor(background_color);
     canvas.DrawRoundedRectangle(bubble_rect);
 

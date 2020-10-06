@@ -1,11 +1,14 @@
 #include <zaf/control/list_control.h>
 #include <algorithm>
+#include <zaf/base/error/check.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/control/internal/list_control_extended_multiple_select_strategy.h>
 #include <zaf/control/internal/list_control_item_height_manager.h>
 #include <zaf/control/internal/list_control_item_selection_manager.h>
 #include <zaf/control/internal/list_control_simple_multiple_select_strategy.h>
 #include <zaf/control/internal/list_control_single_select_strategy.h>
+#include <zaf/control/list_control_delegate.h>
+#include <zaf/control/list_data_source.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
@@ -38,10 +41,9 @@ ZAF_DEFINE_END
 
 
 ListControl::ListControl() : 
-    item_source_(std::make_shared<ListItemSource>()),
-    first_visible_item_index_(0) {
+    data_source_(this),
+    delegate_(this) {
 
-    item_height_manager_ = std::make_shared<internal::ListControlItemHeightManager>(item_source_);
     item_selection_manager_ = std::make_unique<internal::ListControlItemSelectionManager>();
 }
 
@@ -53,7 +55,10 @@ ListControl::~ListControl() {
         scroll_bar->GetScrollEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
     }
  
-    UninitializeItemSource();
+    UninitializeDataSource();
+
+    item_selection_manager_.reset();
+    item_height_manager_.reset();
 }
 
 
@@ -61,16 +66,24 @@ void ListControl::Initialize() {
 
     __super::Initialize();
 
-    SetBackgroundColor(Color::White);
+    SetBackgroundColor(Color::White());
     SetBorder(1);
-    SetBorderColor(Color::Black);
+    SetBorderColor(Color::Black());
 
     item_container_ = Create<ListItemContainer>();
     item_container_->SetSelectStrategy(CreateSelectStrategy());
     SetScrollContentControl(item_container_);
 
     InitializeScrollBar();
-    InitializeItemSource();
+
+    data_source_ = std::make_shared<ListDataSource>();
+    delegate_ = std::make_shared<ListControlDelegate>();
+
+    item_height_manager_ = std::make_shared<internal::ListControlItemHeightManager>(
+        data_source_.GetSharedPointer(),
+        delegate_.GetSharedPointer());
+
+    InitializeDataSource();
     Reload();
 }
 
@@ -84,33 +97,35 @@ void ListControl::InitializeScrollBar() {
 }
 
 
-void ListControl::InitializeItemSource() {
+void ListControl::InitializeDataSource() {
 
-    auto item_source = GetItemSource();
     auto tag = reinterpret_cast<std::uintptr_t>(this);
 
-    item_source->GetItemAddEvent().AddListenerWithTag(
-        tag, 
-        std::bind(&ListControl::ItemAdd, this, std::placeholders::_2, std::placeholders::_3));
-
-    item_source->GetItemRemoveEvent().AddListenerWithTag(
+    data_source_->GetDataAddEvent().AddListenerWithTag(
         tag,
-        std::bind(&ListControl::ItemRemove, this, std::placeholders::_2, std::placeholders::_3));
+        std::bind(&ListControl::ItemAdd, this, std::placeholders::_1, std::placeholders::_2));
 
-    item_source->GetItemUpdateEvent().AddListenerWithTag(
+    data_source_->GetDataRemoveEvent().AddListenerWithTag(
         tag,
-        std::bind(&ListControl::ItemUpdate, this, std::placeholders::_2, std::placeholders::_3));
+        std::bind(&ListControl::ItemRemove, this, std::placeholders::_1, std::placeholders::_2));
+
+    data_source_->GetDataUpdateEvent().AddListenerWithTag(
+        tag,
+        std::bind(&ListControl::ItemUpdate, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 
-void ListControl::UninitializeItemSource() {
+void ListControl::UninitializeDataSource() {
 
-    auto item_source = GetItemSource();
+    auto data_source = data_source_.GetSharedPointer();
+    if (!data_source) {
+        return;
+    }
+
     auto tag = reinterpret_cast<std::uintptr_t>(this);
-
-    item_source->GetItemAddEvent().RemoveListenersWithTag(tag);
-    item_source->GetItemRemoveEvent().RemoveListenersWithTag(tag);
-    item_source->GetItemUpdateEvent().RemoveListenersWithTag(tag);
+    data_source->GetDataAddEvent().RemoveListenersWithTag(tag);
+    data_source->GetDataRemoveEvent().RemoveListenersWithTag(tag);
+    data_source->GetDataUpdateEvent().RemoveListenersWithTag(tag);
 }
 
 
@@ -130,23 +145,40 @@ void ListControl::VerticalScrollBarChange(const std::shared_ptr<ScrollBar>& prev
 }
 
 
-void ListControl::SetItemSource(const std::shared_ptr<ListItemSource>& item_source) {
+void ListControl::SetDataSource(const std::shared_ptr<ListDataSource>& data_source) {
 
-    UninitializeItemSource();
+    ZAF_EXPECT(data_source);
 
-    auto previous_item_source = item_source_;
-    if (item_source != nullptr) {
-        item_source_ = item_source;
-    }
-    else {
-        item_source_ = std::make_shared<ListItemSource>();
-    }
+    UninitializeDataSource();
 
-    item_height_manager_ = std::make_shared<internal::ListControlItemHeightManager>(item_source_);
+    auto previous_data_source = data_source_.GetSharedPointer();
+    data_source_ = data_source;
+    
+    //Re-create item height manager once data source is changed, bacause item height manager 
+    //depends on notifications of data source.
+    item_height_manager_ = std::make_shared<internal::ListControlItemHeightManager>(
+        data_source_.GetSharedPointer(),
+        delegate_.GetSharedPointer());
+
     item_container_->SetSelectStrategy(CreateSelectStrategy());
-    InitializeItemSource();
 
-    ItemSourceChange(previous_item_source);
+    InitializeDataSource();
+
+    DataSourceChange(previous_data_source);
+    Reload();
+}
+
+
+void ListControl::SetDelegate(const std::shared_ptr<ListControlDelegate>& delegate) {
+
+    ZAF_EXPECT(delegate);
+
+    auto previous_delegate = delegate_.GetSharedPointer();
+    delegate_ = delegate;
+
+    item_height_manager_->ResetDelegate(delegate_.GetSharedPointer());
+
+    DelegateChange(previous_delegate);
     Reload();
 }
 
@@ -196,7 +228,7 @@ void ListControl::Reload() {
 
 void ListControl::UpdateContentHeight() {
 
-    item_height_manager_->LoadItemHeights();
+    item_height_manager_->ReloadItemHeights();
     SetScrollContentSize(Size(0, item_height_manager_->GetTotalHeight()));
 }
 
@@ -327,12 +359,13 @@ void ListControl::RemoveTailVisibleItems(std::size_t count) {
 }
 
 
-const std::vector<std::shared_ptr<ListItem>> ListControl::CreateItems(std::size_t index, std::size_t count) {
+std::vector<std::shared_ptr<ListItem>> ListControl::CreateItems(
+    std::size_t index, 
+    std::size_t count) {
 
     std::vector<std::shared_ptr<ListItem>> items;
     items.reserve(count);
 
-    auto item_source = GetItemSource();
     for (std::size_t current_index = index; current_index < index + count; ++current_index) {
 
         auto new_item = CreateItem(current_index);
@@ -344,28 +377,24 @@ const std::vector<std::shared_ptr<ListItem>> ListControl::CreateItems(std::size_
 }
 
 
-const std::shared_ptr<ListItem> ListControl::CreateItem(std::size_t index) const {
+std::shared_ptr<ListItem> ListControl::CreateItem(std::size_t index) const {
 
-    const auto& item_source = GetItemSource();
-
-    auto new_item = item_source->CreateItem(index);
-    if (new_item == nullptr) {
-        new_item = Create<ListItem>();
-    }
-
-    item_source->LoadItem(index, new_item);
+    auto item_data = data_source_->GetDataAtIndex(index);
+    auto list_item = delegate_->CreateItem(index, item_data);
+    list_item->SetText(delegate_->GetItemText(index, item_data));
+    delegate_->LoadItem(list_item, index, item_data);
 
     auto position_and_height = item_height_manager_->GetItemPositionAndHeight(index);
     Rect item_rect;
     item_rect.position.y = position_and_height.first;
     item_rect.size.height = position_and_height.second;
-    new_item->SetRect(item_rect);
+    list_item->SetRect(item_rect);
 
     if (item_selection_manager_->IsIndexSelected(index)) {
-        new_item->SetIsSelected(true);
+        list_item->SetIsSelected(true);
     }
 
-    return new_item;
+    return list_item;
 }
 
 
@@ -570,17 +599,8 @@ std::size_t ListControl::GetItemCount() const {
 }
 
 
-std::shared_ptr<ListItem> ListControl::GetItemAtIndex(std::size_t index) const {
-
-    if (index >= GetItemCount()) {
-        return nullptr;
-    }
-
-    if ((index >= first_visible_item_index_) && (index < first_visible_item_index_ + visible_items_.size())) {
-        return visible_items_[index - first_visible_item_index_];
-    }
-    
-    return CreateItem(index);
+std::shared_ptr<Object> ListControl::GetItemDataAtIndex(std::size_t index) const {
+    return data_source_->GetDataAtIndex(index);
 }
 
 
@@ -620,7 +640,7 @@ ListControl::SelectionChangeEvent::Proxy ListControl::GetSelectionChangeEvent() 
 }
 
 
-const std::shared_ptr<internal::ListControlSelectStrategy> ListControl::CreateSelectStrategy() {
+std::shared_ptr<internal::ListControlSelectStrategy> ListControl::CreateSelectStrategy() {
 
     std::shared_ptr<internal::ListControlSelectStrategy> select_strategy;
 
@@ -793,6 +813,17 @@ std::size_t ListControl::GetFirstSelectedItemIndex() const {
 }
 
 
+std::shared_ptr<Object> ListControl::GetFirstSelectedItemData() const {
+
+    auto index = GetFirstSelectedItemIndex();
+    if (index == InvalidIndex) {
+        return nullptr;
+    }
+
+    return GetItemDataAtIndex(index);
+}
+
+
 bool ListControl::IsItemSelectedAtIndex(std::size_t index) const {
     return item_selection_manager_->IsIndexSelected(index);
 }
@@ -848,36 +879,6 @@ std::size_t ListControl::FindItemIndexAtPosition(const Point& position) const {
 }
 
 
-void ListItem::Initialize() {
-
-    __super::Initialize();
-
-    SetPadding(Frame(2, 0, 2, 0));
-
-    SetBackgroundColorPicker([](const Control& control) {
-
-        const auto& item = dynamic_cast<const ListItem&>(control);
-        if (item.IsSelected()) {
-            return Color::FromRGB(internal::ControlSelectedColorRGB);
-        }
-        else {
-            return Color::Transparent;
-        }
-    });
-
-    SetTextColorPicker([](const Control& control) {
-
-        const auto& item = dynamic_cast<const ListItem&>(control);
-        if (item.IsSelected()) {
-            return Color::White;
-        }
-        else {
-            return Color::FromRGB(internal::ControlNormalTextColorRGB);
-        }
-    });
-}
-
-
 ListItemContainer::ListItemContainer() {
 
 }
@@ -887,7 +888,7 @@ void ListItemContainer::Initialize() {
 
     __super::Initialize();
 
-    SetBackgroundColor(Color::Transparent);
+    SetBackgroundColor(Color::Transparent());
     SetCanFocused(true);
     SetLayouter(CreateLayouter(std::bind(
         &ListItemContainer::LayoutItems,
@@ -1024,27 +1025,5 @@ static void CalculateRangeDifference(
         }
     }
 }
-
-
-void ListItemSource::NotifyItemAdd(std::size_t index, std::size_t count) {
-    if (count != 0) {
-        item_add_event_.Trigger(*this, index, count);
-    }
-}
-
-
-void ListItemSource::NotifyItemRemove(std::size_t index, std::size_t count) {
-    if (count != 0) {
-        item_remove_event_.Trigger(*this, index, count);
-    }
-}
-
-
-void ListItemSource::NotifyItemUpdate(std::size_t index, std::size_t count) {
-    if (count != 0) {
-        item_update_event_.Trigger(*this, index, count);
-    }
-}
-
 
 }

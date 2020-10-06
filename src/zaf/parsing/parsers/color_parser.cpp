@@ -76,17 +76,17 @@ std::optional<Color> ConvertTextToColor(const std::wstring& text) {
         const Color* color;
     };
     static const MapItem map[] = {
-        { L"Black", &Color::Black },
-        { L"Blue", &Color::Blue },
-        { L"Cyan", &Color::Cyan },
-        { L"Gray", &Color::Gray },
-        { L"Green", &Color::Green },
-        { L"Lime", &Color::Lime },
-        { L"Magenta", &Color::Magenta },
-        { L"Red", &Color::Red },
-        { L"Transparent", &Color::Transparent },
-        { L"White", &Color::White },
-        { L"Yellow", &Color::Yellow },
+        { L"Black", &Color::Black() },
+        { L"Blue", &Color::Blue() },
+        { L"Cyan", &Color::Cyan() },
+        { L"Gray", &Color::Gray() },
+        { L"Green", &Color::Green() },
+        { L"Lime", &Color::Lime() },
+        { L"Magenta", &Color::Magenta() },
+        { L"Red", &Color::Red() },
+        { L"Transparent", &Color::Transparent() },
+        { L"White", &Color::White() },
+        { L"Yellow", &Color::Yellow() },
     };
 
     for (const auto& each_item : map) {

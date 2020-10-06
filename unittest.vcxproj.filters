@@ -52,6 +52,9 @@
     <Filter Include="case\control\internal\tree_control">
       <UniqueIdentifier>{7a7cf031-e029-4e97-b0ec-b37969950f34}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\object">
+      <UniqueIdentifier>{e27ffe32-9b94-4112-99c4-4433a094ccfd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -192,6 +195,9 @@
     </ClCompile>
     <ClCompile Include="src\unittest\case\control\internal\tree_control\tree_data_test.cpp">
       <Filter>case\control\internal\tree_control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing_test.cpp">
+      <Filter>case\object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

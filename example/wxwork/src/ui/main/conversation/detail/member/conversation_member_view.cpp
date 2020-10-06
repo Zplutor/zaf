@@ -13,37 +13,47 @@ void ConversationMemberView::Initialize() {
     SetAllowHorizontalScroll(false);
     SetAutoHideScrollBars(true);
 
-    SetItemSource(std::dynamic_pointer_cast<zaf::ListItemSource>(shared_from_this()));
+    SetDataSource(std::dynamic_pointer_cast<zaf::ListDataSource>(shared_from_this()));
+    SetDelegate(std::dynamic_pointer_cast<zaf::ListControlDelegate>(shared_from_this()));
 }
 
 
-std::size_t ConversationMemberView::GetItemCount() {
+std::size_t ConversationMemberView::GetDataCount() {
     return members_.size();
 }
 
 
-float ConversationMemberView::GetItemHeight(std::size_t) {
+float ConversationMemberView::EstimateItemHeight(
+    std::size_t index, 
+    const std::shared_ptr<zaf::Object>& data) {
+
     return 24;
 }
 
 
-std::shared_ptr<zaf::ListItem> ConversationMemberView::CreateItem(std::size_t index) {
+std::shared_ptr<zaf::ListItem> ConversationMemberView::CreateItem(
+    std::size_t index,
+    const std::shared_ptr<zaf::Object>& data) {
+
     return zaf::Create<MemberItem>();
 }
 
 
-void ConversationMemberView::LoadItem(std::size_t index, const std::shared_ptr<zaf::ListItem>& item) {
+void ConversationMemberView::LoadItem(
+    const std::shared_ptr<zaf::ListItem>& item,
+    std::size_t item_index,
+    const std::shared_ptr<Object>& item_data) {
 
     auto member_item = std::dynamic_pointer_cast<MemberItem>(item);
     if (member_item == nullptr) {
         return;
     }
 
-    if (index >= members_.size()) {
+    if (item_index >= members_.size()) {
         return;
     }
 
-    member_item->SetMember(members_[index]);
+    member_item->SetMember(members_[item_index]);
 }
 
 

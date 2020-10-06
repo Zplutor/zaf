@@ -3,13 +3,12 @@
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 #include <zaf/window/dialog.h>
-#include <zaf/control/list_box.h>
 #include <zaf/control/button.h>
 #include <zaf/control/text_box.h>
 #include <zaf/window/message/hit_test_result.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/image/image.h>
-#include <zaf/control/combo_box.h>
+#include <zaf/control/list_box.h>
 #include <zaf/reflection/reflection_type.h>
 #include <zaf/reflection/reflection_manager.h>
 #include <zaf/parsing/helpers.h>
@@ -22,6 +21,9 @@
 #include <zaf/base/error/error.h>
 #include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/parsing/parsers/control_parser.h>
+#include <zaf/object/string.h>
+#include <zaf/object/boxing.h>
+#include <zaf/control/combo_box.h>
 
 void BeginRun(zaf::Application&);
 
@@ -59,6 +61,35 @@ void BeginRun(zaf::Application& application) {
     window->SetIsSizable(true);
     window->SetRootControl(root_control);
     window->Show();
+
+    auto combo_box = zaf::Create<zaf::ComboBox>();
+    combo_box->SetRect(zaf::Rect(10, 10, 100, 30));
+    
+    /*
+    auto list_box = combo_box->GetDropDownListBox();
+    list_box->AddItem(zaf::Box(L"1"));
+    list_box->AddItem(zaf::Box(L"2"));
+    list_box->AddItem(zaf::Box(L"3"));
+    list_box->AddItem(zaf::Box(L"4"));
+    list_box->AddItem(zaf::Box(std::vector<std::string>{ "0", "1" }));
+    */
+
+    auto list_box = zaf::Create<zaf::ListBox>();
+    list_box->SetRect(zaf::Rect(10, 10, 200, 400));
+    list_box->AddItem(zaf::Box(std::vector<std::string>{ "0", "1" }));
+    list_box->AddItem(zaf::Box(L"1"));
+    list_box->AddItem(zaf::Box(L"2"));
+    list_box->AddItem(zaf::Box(L"3"));
+    list_box->AddItem(zaf::Box(L"4"));
+    list_box->AddItem(zaf::Box(L"5"));
+    
+    auto item = zaf::Create<zaf::Button>();
+    item->SetText(L"button");
+    item->SetHeight(35);
+    list_box->AddItem(item);
+    
+    //root_control->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
+    root_control->AddChild(list_box);
 
     application.SetMainWindow(window);
 }

@@ -13,5 +13,5 @@ private:
         return std::dynamic_pointer_cast<zaf::ListBox>(GetTargetControl());
     }
 
-    std::shared_ptr<PropertyItem> CreateItemHeightPropertyItem();
+    std::shared_ptr<PropertyItem> CreateDefaultItemHeightPropertyItem();
 };

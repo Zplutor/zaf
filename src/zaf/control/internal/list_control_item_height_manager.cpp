@@ -1,45 +1,99 @@
 #include <zaf/control/internal/list_control_item_height_manager.h>
 #include <algorithm>
 #include <zaf/base/assert.h>
+#include <zaf/control/list_control_delegate.h>
+#include <zaf/control/list_data_source.h>
 
 namespace zaf {
 namespace internal {
 
-ListControlItemHeightManager::ListControlItemHeightManager(const std::shared_ptr<ListItemSource>& item_source) :
-    item_source_(item_source),
-    item_count_(0),
-    has_variable_heights_(false),
-    item_height_(0) {
+ListControlItemHeightManager::ListControlItemHeightManager(
+    const std::shared_ptr<ListDataSource>& item_source,
+    const std::shared_ptr<ListControlDelegate>& delegate)
+    :
+    data_source_(item_source),
+    delegate_(delegate) {
 
-    auto tag = reinterpret_cast<std::uintptr_t>(this);
-
-    item_source_->GetItemAddEvent().AddListenerWithTag(
-        tag,
-        std::bind(&ListControlItemHeightManager::ItemAdd, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-
-    item_source_->GetItemRemoveEvent().AddListenerWithTag(
-        tag,
-        std::bind(&ListControlItemHeightManager::ItemRemove, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-
-    item_source_->GetItemUpdateEvent().AddListenerWithTag(
-        tag,
-        std::bind(&ListControlItemHeightManager::ItemUpdate, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    RegisterDataSourceEvents();
 }
 
 
 ListControlItemHeightManager::~ListControlItemHeightManager() {
-
-    auto tag = reinterpret_cast<std::uintptr_t>(this);
-    item_source_->GetItemAddEvent().RemoveListenersWithTag(tag);
-    item_source_->GetItemRemoveEvent().RemoveListenersWithTag(tag);
-    item_source_->GetItemUpdateEvent().RemoveListenersWithTag(tag);
+    UnregisterDataSourceEvents();
 }
 
 
-void ListControlItemHeightManager::LoadItemHeights() {
+void ListControlItemHeightManager::RegisterDataSourceEvents() {
 
-    item_count_ = item_source_->GetItemCount();
-    has_variable_heights_ = item_source_->HasVariableItemHeight();
+    auto data_source = data_source_.lock();
+    if (!data_source) {
+        return;
+    }
+
+    auto tag = reinterpret_cast<std::uintptr_t>(this);
+
+    data_source->GetDataAddEvent().AddListenerWithTag(
+        tag,
+        std::bind(
+            &ListControlItemHeightManager::ItemAdd, 
+            this, 
+            std::placeholders::_1, 
+            std::placeholders::_2));
+
+    data_source->GetDataRemoveEvent().AddListenerWithTag(
+        tag,
+        std::bind(
+            &ListControlItemHeightManager::ItemRemove, 
+            this,
+            std::placeholders::_1,
+            std::placeholders::_2));
+
+    data_source->GetDataUpdateEvent().AddListenerWithTag(
+        tag,
+        std::bind(
+            &ListControlItemHeightManager::ItemUpdate, 
+            this, 
+            std::placeholders::_1, 
+            std::placeholders::_2));
+}
+
+
+void ListControlItemHeightManager::UnregisterDataSourceEvents() {
+
+    auto data_source = data_source_.lock();
+    if (!data_source) {
+        return;
+    }
+
+    auto tag = reinterpret_cast<std::uintptr_t>(this);
+    data_source->GetDataAddEvent().RemoveListenersWithTag(tag);
+    data_source->GetDataRemoveEvent().RemoveListenersWithTag(tag);
+    data_source->GetDataUpdateEvent().RemoveListenersWithTag(tag);
+}
+
+
+void ListControlItemHeightManager::ResetDelegate(
+    const std::shared_ptr<ListControlDelegate>& delegate) {
+
+    delegate_ = delegate;
+    ReloadItemHeights();
+}
+
+
+void ListControlItemHeightManager::ReloadItemHeights() {
+
+    auto data_source = data_source_.lock();
+    if (!data_source) {
+        return;
+    }
+
+    auto delegate = delegate_.lock();
+    if (!delegate) {
+        return;
+    }
+
+    item_count_ = data_source->GetDataCount();
+    has_variable_heights_ = delegate->HasVariableItemHeight();
 
     item_positions_.clear();
 
@@ -52,14 +106,16 @@ void ListControlItemHeightManager::LoadItemHeights() {
         for (std::size_t index = 0; index < item_count_; ++index) {
 
             item_positions_.push_back(position);
-            position += item_source_->GetItemHeight(index);
+
+            auto item_data = data_source->GetDataAtIndex(index);
+            position += delegate->EstimateItemHeight(index, item_data);
         }
 
         item_positions_.push_back(position);
     }
     else {
 
-        item_height_ = item_source_->GetItemHeight(0);
+        item_height_ = delegate->EstimateItemHeight(0, Object::Empty());
     }
 }
 
@@ -156,10 +212,17 @@ float ListControlItemHeightManager::GetTotalHeight() const {
 }
 
 
-void ListControlItemHeightManager::ItemAdd(
-    ListItemSource& item_source,
-    std::size_t index, 
-    std::size_t count) {
+void ListControlItemHeightManager::ItemAdd(std::size_t index, std::size_t count) {
+
+    auto data_source = data_source_.lock();
+    if (!data_source) {
+        return;
+    }
+
+    auto delegate = delegate_.lock();
+    if (!delegate) {
+        return;
+    }
 
     if (index > item_count_) {
         ZAF_FAIL();
@@ -180,8 +243,11 @@ void ListControlItemHeightManager::ItemAdd(
 
     //Set position for new items.
     for (std::size_t current_index = index; current_index < old_item_index; ++current_index) {
+
         item_positions_[current_index] = current_position;
-        current_position += item_source.GetItemHeight(current_index);
+
+        auto item_data = data_source->GetDataAtIndex(current_index);
+        current_position += delegate->EstimateItemHeight(current_index, item_data);
     }
 
     //Update position for old items.
@@ -192,10 +258,7 @@ void ListControlItemHeightManager::ItemAdd(
 }
 
 
-void ListControlItemHeightManager::ItemRemove(
-    ListItemSource& item_source,
-    std::size_t index,
-    std::size_t count) {
+void ListControlItemHeightManager::ItemRemove(std::size_t index, std::size_t count) {
 
     if (index >= item_count_) {
         ZAF_FAIL();
@@ -224,10 +287,17 @@ void ListControlItemHeightManager::ItemRemove(
 }
 
 
-void ListControlItemHeightManager::ItemUpdate(
-    ListItemSource& item_source,
-    std::size_t index,
-    std::size_t count) {
+void ListControlItemHeightManager::ItemUpdate(std::size_t index, std::size_t count) {
+
+    auto data_source = data_source_.lock();
+    if (!data_source) {
+        return;
+    }
+
+    auto delegate = delegate_.lock();
+    if (!delegate) {
+        return;
+    }
 
     if (index >= item_count_) {
         ZAF_FAIL();
@@ -251,7 +321,8 @@ void ListControlItemHeightManager::ItemUpdate(
 
         item_positions_[current_index] = position + current_heights;
 
-        float height = item_source.GetItemHeight(current_index);
+        auto item_data = data_source->GetDataAtIndex(current_index);
+        float height = delegate->EstimateItemHeight(current_index, item_data);
         current_heights += height;
     }
 

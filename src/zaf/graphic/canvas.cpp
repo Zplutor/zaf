@@ -104,7 +104,7 @@ void Canvas::SaveState() {
     }
 
 	auto new_state = std::make_shared<State>();
-	new_state->brush = renderer_.CreateSolidColorBrush(Color::White);
+	new_state->brush = renderer_.CreateSolidColorBrush(Color::White());
 
 	states_.push_back(new_state);
     ApplyState(new_state);

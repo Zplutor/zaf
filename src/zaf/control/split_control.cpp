@@ -483,7 +483,7 @@ ColorPicker SplitControlSplitBar::GetSplitterColorPicker() const {
     }
 
     return [](const Control&) {
-        return zaf::Color::Black;
+        return zaf::Color::Black();
     };
 }
 

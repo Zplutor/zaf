@@ -16,7 +16,7 @@ void RootControl::Initialize() {
 
     __super::Initialize();
 
-    SetBackgroundColor(zaf::Color(0.89, 0.89, 0.89));
+    SetBackgroundColor(zaf::Color(0.89f, 0.89f, 0.89f));
 
     close_button_ = zaf::Create<TitleBarButton>(TitleBarButton::Type::Close);
     close_button_->SetRect(zaf::Rect(8, 4, 12, 12));
@@ -37,7 +37,7 @@ void RootControl::Initialize() {
     }));
 
     content_control_ = zaf::Create<zaf::Control>();
-    content_control_->SetBackgroundColor(zaf::Color::White);
+    content_control_->SetBackgroundColor(zaf::Color::White());
 
     AddChildren({ close_button_, minimize_button_, maximize_button_, content_control_ });
 }

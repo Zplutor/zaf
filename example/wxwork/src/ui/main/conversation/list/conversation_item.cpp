@@ -57,7 +57,7 @@ void ConversationItem::Initialize() {
             return zaf::Color::FromRGB(0xF3F8FA);
         }
 
-        return zaf::Color::White;
+        return zaf::Color::White();
     });
 }
 
@@ -95,10 +95,10 @@ void ConversationItem::InitializeTitleLabel() {
     title_label_->SetTextColorPicker([this](const zaf::Control& control) {
     
         if (IsSelected()) {
-            return zaf::Color::White;
+            return zaf::Color::White();
         }
         else {
-            return zaf::Color::Black;
+            return zaf::Color::Black();
         }
     });
 
@@ -124,7 +124,7 @@ void ConversationItem::InitializeDigestLabel() {
     digest_label_->SetTextColorPicker([this](const zaf::Control& control) {
     
         if (IsSelected()) {
-            return zaf::Color::White;
+            return zaf::Color::White();
         }
         else {
             return zaf::Color::FromRGB(0x979797);
@@ -148,7 +148,7 @@ void ConversationItem::InitializeTimeLabel() {
     time_label_->SetTextColorPicker([this](const Control& control) {
     
         if (IsSelected()) {
-            return zaf::Color::White;
+            return zaf::Color::White();
         }
         else {
             return zaf::Color::FromRGB(0xb6b6b6);
@@ -330,7 +330,7 @@ void ConversationItem::UnreadCountBubble::Initialize() {
 
     __super::Initialize();
 
-    SetBackgroundColor(zaf::Color::Transparent);
+    SetBackgroundColor(zaf::Color::Transparent());
 }
 
 
@@ -398,7 +398,7 @@ void ConversationItem::UnreadCountBubble::PaintNormalBubble(zaf::Canvas& canvas)
     text_format.SetParagraphAlignment(zaf::ParagraphAlignment::Center);
     text_format.SetWordWrapping(zaf::WordWrapping::NoWrap);
 
-    canvas.SetBrushWithColor(zaf::Color::White);
+    canvas.SetBrushWithColor(zaf::Color::White());
     canvas.DrawTextFormat(unread_count_text, text_format, rounded_rect.rect);
 }
 

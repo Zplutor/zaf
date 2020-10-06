@@ -61,57 +61,57 @@ public:
 	/**
 	 A color which RGB is 0, 0, 0, and alpha is 1.
 	 */
-	static const Color Black;
+	static const Color& Black();
 
 	/**
  	 A color which RGB is 0, 0, 1, and alpha is 1.
 	 */
-	static const Color Blue;
+	static const Color& Blue();
 
 	/**
 	 A color which RGB is 0, 1, 1, and alpha is 1.
 	 */
-	static const Color Cyan;
+	static const Color& Cyan();
 
 	/**
 	 A color which RGB is 0.5, 0.5, 0.5, and alpha is 1.
 	 */
-	static const Color Gray;
+	static const Color& Gray();
 
 	/**
 	 A color which RGB is 0, 0.5, 0, and alpha is 1.
 	 */
-	static const Color Green;
+	static const Color& Green();
 
 	/**
 	 A color which RGB is 0, 1, 0, and alpha is 1.
 	 */
-	static const Color Lime;
+	static const Color& Lime();
 
 	/**
 	 A color which RGB is 1, 0, 1, and alpha is 1.
 	 */
-	static const Color Magenta;
+	static const Color& Magenta();
 
 	/**
 	 A color which RGB is 1, 0, 0, and alpha is 1.
 	 */
-	static const Color Red;
+	static const Color& Red();
 
 	/**
 	 A color which RGB is 0, 0, 0, and alpha is 0.
 	 */
-	static const Color Transparent;
+	static const Color& Transparent();
 
 	/**
 	 A color which RGB is 1, 1, 1, and alpha is 1.
 	 */
-	static const Color White;
+	static const Color& White();
 
 	/**
 	 A color which RGB is 1, 1, 0, and alpha is 1.
 	 */
-	static const Color Yellow;
+	static const Color& Yellow();
 
 public:
 	/**

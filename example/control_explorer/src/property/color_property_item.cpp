@@ -3,11 +3,32 @@
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/base/string/to_string.h>
 #include <zaf/control/combo_box.h>
+#include <zaf/control/list_box_delegate.h>
+#include <zaf/control/list_data_source.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer/renderer.h>
+#include <zaf/object/boxing.h>
 #include <zaf/window/message/keyboard_message.h>
 
 namespace {
+
+const struct ColorInfo {
+    std::wstring name;
+    zaf::Color color;
+} g_color_infos[] = {
+    { L"White", zaf::Color::White() },
+    { L"Black", zaf::Color::Black() },
+    { L"Gray", zaf::Color::Gray() },
+    { L"Red", zaf::Color::Red() },
+    { L"Yellow", zaf::Color::Yellow() },
+    { L"Blue", zaf::Color::Blue() },
+    { L"Green", zaf::Color::Green() },
+    { L"Cyan", zaf::Color::Cyan() },
+    { L"Lime", zaf::Color::Lime() },
+    { L"Magenta", zaf::Color::Magenta() },
+    { L"Transparent", zaf::Color::Transparent() },
+};
+
 
 class ColorComboBox : public zaf::ComboBox {
 public:
@@ -15,10 +36,12 @@ public:
 
         __super::Initialize();
 
-        SetIsEditable(true);
-
         auto drop_down_list_box = GetDropDownListBox();
-        drop_down_list_box->SetItemSource(std::make_shared<ColorItemSource>());
+        drop_down_list_box->SetDelegate(std::make_shared<ColorListBoxDelegate>());
+
+        for (const auto& each_info : g_color_infos) {
+            drop_down_list_box->AddItem(zaf::Box(each_info.color));
+        }
     }
 
     zaf::Color GetSelectedColor() const {
@@ -33,12 +56,14 @@ public:
         auto drop_down_list_box = GetDropDownListBox();
         for (std::size_t index = 0; index < drop_down_list_box->GetItemCount(); ++index) {
 
-            auto color_item = std::dynamic_pointer_cast<ColorItem>(drop_down_list_box->GetItemAtIndex(index));
-            if (color_item == nullptr) {
+            auto item_data = drop_down_list_box->GetItemDataAtIndex(index);
+            auto color = zaf::TryUnbox<zaf::Color>(item_data);
+            if (!color) {
                 continue;
             }
 
-            if (color_item->GetColor() == selected_color_) {
+            if (*color == selected_color_) {
+                
                 drop_down_list_box->SelectItemAtIndex(index);
                 has_selected = true;
                 break;
@@ -71,17 +96,18 @@ protected:
         __super::SelectionChange();
 
         auto drop_down_list_box = GetDropDownListBox();
-        auto color_item = std::dynamic_pointer_cast<ColorItem>(drop_down_list_box->GetFirstSelectedItem());
-        if (color_item != nullptr) {
-            selected_color_ = color_item->GetColor();
-            NeedRepaint();
+        auto selected_item_data = drop_down_list_box->GetFirstSelectedItemData();
+        if (!selected_item_data) {
             return;
         }
 
-        auto color = TextToColor(GetText());
-        if (color.has_value()) {
-            selected_color_ = color.value();
+        auto selected_color = dynamic_cast<zaf::Color*>(selected_item_data.get());
+        if (!selected_color) {
+            return;
         }
+
+        selected_color_ = *selected_color;
+        NeedRepaint();
     }
 
     bool KeyDown(const zaf::KeyMessage& message) override {
@@ -98,50 +124,45 @@ protected:
     }
 
 private:
-    class ColorItemSource : public zaf::ListBoxItemSource {
+    class ColorListBoxDelegate : public zaf::ListBoxDelegate {
     public:
-        ColorItemSource() {
-            for (const auto& each_info : GetColorInfos()) {
-                AddItemWithText(each_info.name);
-            }
-        }
+        std::shared_ptr<zaf::ListItem> CreateItem(
+            std::size_t item_index,
+            const std::shared_ptr<Object>& item_data) override {
 
-        std::shared_ptr<zaf::ListItem> CreateItem(std::size_t index) override {
             return zaf::Create<ColorItem>();
         }
 
-        void LoadItem(std::size_t index, const std::shared_ptr<zaf::ListItem>& item) override {
+        std::wstring GetItemText(
+            std::size_t item_index,
+            const std::shared_ptr<Object>& item_data) override {
 
-            __super::LoadItem(index, item);
-
-            auto color_item = std::dynamic_pointer_cast<ColorItem>(item);
-            if (color_item != nullptr) {
-                color_item->SetColor(GetColorInfos()[index].color);
+            auto color = zaf::TryUnbox<zaf::Color>(item_data);
+            if (!color) {
+                return {};
             }
+
+            return ColorToText(*color);
         }
 
-    private:
-        struct ColorInfoItem {
-            std::wstring name;
-            zaf::Color color;
-        };
+        void LoadItem(
+            const std::shared_ptr<zaf::ListItem>& item,
+            std::size_t item_index,
+            const std::shared_ptr<Object>& item_data) override {
 
-    private:
-        static const std::vector<ColorInfoItem>& GetColorInfos() {
-            static const std::vector<ColorInfoItem> color_infos{
-                { L"White", zaf::Color::White },
-                { L"Black", zaf::Color::Black },
-                { L"Gray", zaf::Color::Gray },
-                { L"Red", zaf::Color::Red },
-                { L"Yellow", zaf::Color::Yellow },
-                { L"Blue", zaf::Color::Blue },
-                { L"Green", zaf::Color::Green },
-                { L"Cyan", zaf::Color::Cyan },
-                { L"Lime", zaf::Color::Lime },
-                { L"Magenta", zaf::Color::Magenta },
-                { L"Transparent", zaf::Color::Transparent },
-            };
-            return color_infos;
+            __super::LoadItem(item, item_index, item_data);
+
+            auto color_item = dynamic_cast<ColorItem*>(item.get());
+            if (!color_item) {
+                return;
+            }
+
+            auto color = zaf::TryUnbox<zaf::Color>(item_data);
+            if (!color) {
+                return;
+            }
+
+            color_item->SetColor(*color);
         }
     };
 
@@ -173,8 +194,6 @@ private:
     };
 
 private:
-    static zaf::Rect GetColorBoxRect();
-
     static void PaintColorBox(zaf::Canvas& canvas, const zaf::Rect& content_rect, const zaf::Color& color) {
 
         zaf::Rect box_rect = content_rect;
@@ -184,7 +203,7 @@ private:
         canvas.SetBrushWithColor(color);
         canvas.DrawRectangle(box_rect);
 
-        canvas.SetBrushWithColor(zaf::Color::Black);
+        canvas.SetBrushWithColor(zaf::Color::Black());
         canvas.DrawRectangleFrame(box_rect, 1);
     }
 

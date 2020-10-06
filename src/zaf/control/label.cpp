@@ -24,7 +24,7 @@ void Label::Initialize() {
     __super::Initialize();
 
     SetBackgroundColorPicker([](const Control&) {
-        return Color::Transparent;
+        return Color::Transparent();
     });
 }
 

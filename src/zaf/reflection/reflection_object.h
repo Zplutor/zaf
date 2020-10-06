@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <zaf/object/object.h>
 #include <zaf/reflection/reflection_type.h>
 
 namespace zaf {
@@ -10,7 +11,7 @@ class ReflectionObjectInitializer;
 
 }
 
-class ReflectionObject {
+class ReflectionObject : public Object {
 public:
     static const std::shared_ptr<ReflectionType> Type;
 

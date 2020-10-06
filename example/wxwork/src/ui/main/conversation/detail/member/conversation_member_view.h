@@ -1,16 +1,29 @@
 #pragma once
 
 #include <zaf/control/list_control.h>
+#include <zaf/control/list_control_delegate.h>
+#include <zaf/control/list_data_source.h>
 #include "entity/conversation.h"
 
-class ConversationMemberView : public zaf::ListControl, public zaf::ListItemSource {
+class ConversationMemberView : 
+    public zaf::ListControl, 
+    public zaf::ListDataSource,
+    public zaf::ListControlDelegate {
+
 public:
     void Initialize() override;
 
-    std::size_t GetItemCount() override;
-    float GetItemHeight(std::size_t) override;
-    std::shared_ptr<zaf::ListItem> CreateItem(std::size_t index) override;
-    void LoadItem(std::size_t index, const std::shared_ptr<zaf::ListItem>& item) override;
+    std::size_t GetDataCount() override;
+    float EstimateItemHeight(std::size_t index, const std::shared_ptr<zaf::Object>& data) override;
+
+    std::shared_ptr<zaf::ListItem> CreateItem(
+        std::size_t index, 
+        const std::shared_ptr<zaf::Object>& data) override;
+
+    void LoadItem(
+        const std::shared_ptr<zaf::ListItem>& item,
+        std::size_t item_index,
+        const std::shared_ptr<Object>& item_data) override;
 
     void SetConversation(const std::shared_ptr<Conversation>& conversation);
 

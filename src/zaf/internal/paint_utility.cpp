@@ -59,7 +59,7 @@ void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect) {
     auto stroke = GetGraphicFactory().CreateStroke(stroke_properties);
 
     canvas.SetStroke(stroke);
-    canvas.SetBrushWithColor(Color::Black);
+    canvas.SetBrushWithColor(Color::Black());
     canvas.DrawRectangleFrame(rect, 1);
 }
 
@@ -94,7 +94,7 @@ const ColorPicker GetBoxBorderColorPicker() {
         const auto& clickable_control = dynamic_cast<const ClickableControl&>(control);
 
         if (!clickable_control.IsEnabled()) {
-            return Color::Gray;
+            return Color::Gray();
         }
 
         if (clickable_control.IsPressed() ||
@@ -102,7 +102,7 @@ const ColorPicker GetBoxBorderColorPicker() {
             return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
         }
 
-        return Color::Black;
+        return Color::Black();
     };
 }
 

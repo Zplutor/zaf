@@ -1,6 +1,7 @@
 #include "main_window.h"
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
+#include <zaf/object/boxing.h>
 #include "control_property_panel.h"
 #include "control_view_panel.h"
 #include "manager/button_explore_manager.h"
@@ -62,7 +63,7 @@ void MainWindow::InitializeControlListPanel() {
     control_list_box_->GetSelectionChangeEvent().AddListener(std::bind(&MainWindow::ControlListBoxSelectionChange, this));
 
     for (const auto& each_item : kControlNameAndCreators) {
-        control_list_box_->AddItemWithText(each_item.name);
+        control_list_box_->AddItem(zaf::Box(each_item.name));
     }
 
     primary_split_control_->SetFirstPane(control_list_box_);
@@ -88,14 +89,22 @@ void MainWindow::InitializeControlExplorePanel() {
 
 void MainWindow::ControlListBoxSelectionChange() {
 
-    auto selected_text = control_list_box_->GetFirstSelectedItemText();
+    auto selected_data = control_list_box_->GetFirstSelectedItemData();
+    if (!selected_data) {
+        return;
+    }
 
-    auto iterator = explore_managers_.find(selected_text);
+    auto selected_control_name = zaf::TryUnbox<std::wstring>(selected_data);
+    if (!selected_control_name) {
+        return;
+    }
+
+    auto iterator = explore_managers_.find(*selected_control_name);
     if (iterator == explore_managers_.end()) {
 
-        auto control_explore_manager = CreateExploreManager(selected_text);
+        auto control_explore_manager = CreateExploreManager(*selected_control_name);
         if (control_explore_manager != nullptr) {
-            iterator = explore_managers_.insert(std::make_pair(selected_text, control_explore_manager)).first;
+            iterator = explore_managers_.insert(std::make_pair(*selected_control_name, control_explore_manager)).first;
         }
     }
 
