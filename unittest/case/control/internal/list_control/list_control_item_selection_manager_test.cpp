@@ -1,7 +1,7 @@
 #include <memory>
 #include <set>
 #include <gtest/gtest.h>
-#include <zaf/control/internal/list_control_item_selection_manager.h>
+#include <zaf/control/internal/list_control/list_control_item_selection_manager.h>
 
 class ListControlItemSelectionManagerTest : public testing::Test {
 public:

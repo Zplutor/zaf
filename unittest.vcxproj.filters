@@ -55,6 +55,9 @@
     <Filter Include="case\object">
       <UniqueIdentifier>{e27ffe32-9b94-4112-99c4-4433a094ccfd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\control\internal\list_control">
+      <UniqueIdentifier>{4f47d1ac-5e7c-4c72-9450-0cd297522179}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -66,15 +69,6 @@
     </ClCompile>
     <ClCompile Include="unittest\case\base\string\to_numeric_test.cpp">
       <Filter>case\base\string</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\internal\list_control_item_selection_manager_test.cpp">
-      <Filter>case\control\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\internal\list_control_item_height_manager_test.cpp">
-      <Filter>case\control\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\internal\range_manager_test.cpp">
-      <Filter>case\control\internal</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\graphic\rect_test.cpp">
       <Filter>case\graphic</Filter>
@@ -193,11 +187,20 @@
     <ClCompile Include="unittest\case\parsing\parsers\font_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
     </ClCompile>
-    <ClCompile Include="src\unittest\case\control\internal\tree_control\tree_data_test.cpp">
-      <Filter>case\control\internal\tree_control</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\object\boxing_test.cpp">
       <Filter>case\object</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\internal\list_control\list_control_item_height_manager_test.cpp">
+      <Filter>case\control\internal\list_control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\internal\list_control\list_control_item_selection_manager_test.cpp">
+      <Filter>case\control\internal\list_control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\internal\range_manager_test.cpp">
+      <Filter>case\control\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\internal\tree_control\tree_data_test.cpp">
+      <Filter>case\control\internal\tree_control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

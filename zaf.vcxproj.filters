@@ -115,6 +115,9 @@
     <Filter Include="zaf\object\internal">
       <UniqueIdentifier>{e9dd3b55-91ef-4199-a0db-c321364db7b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\internal\list_control">
+      <UniqueIdentifier>{ee7cd62b-5636-4a18-b27a-7674b271936a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -225,24 +228,6 @@
     <ClCompile Include="src\zaf\control\list_control.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\list_control_item_height_manager.cpp">
-      <Filter>zaf\control\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\list_control_item_selection_manager.cpp">
-      <Filter>zaf\control\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\list_control_single_select_strategy.cpp">
-      <Filter>zaf\control\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\list_control_select_strategy.cpp">
-      <Filter>zaf\control\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\list_control_simple_multiple_select_strategy.cpp">
-      <Filter>zaf\control\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\list_control_extended_multiple_select_strategy.cpp">
-      <Filter>zaf\control\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\internal\combo_box_drop_down_window.cpp">
       <Filter>zaf\control\internal</Filter>
     </ClCompile>
@@ -257,9 +242,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\image_box.cpp">
       <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\range_manager.cpp">
-      <Filter>zaf\control\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\image_box\gif_player.cpp">
       <Filter>zaf\control\internal\image_box</Filter>
@@ -498,6 +480,27 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\list_box_delegate.cpp">
       <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\list_control\list_control_extended_multiple_select_strategy.cpp">
+      <Filter>zaf\control\internal\list_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\list_control\list_control_item_height_manager.cpp">
+      <Filter>zaf\control\internal\list_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\list_control\list_control_item_selection_manager.cpp">
+      <Filter>zaf\control\internal\list_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\list_control\list_control_select_strategy.cpp">
+      <Filter>zaf\control\internal\list_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\list_control\list_control_simple_multiple_select_strategy.cpp">
+      <Filter>zaf\control\internal\list_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\list_control\list_control_single_select_strategy.cpp">
+      <Filter>zaf\control\internal\list_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\range_manager.cpp">
+      <Filter>zaf\control\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -741,24 +744,6 @@
     <ClInclude Include="src\zaf\control\list_control.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\list_control_item_height_manager.h">
-      <Filter>zaf\control\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\list_control_item_selection_manager.h">
-      <Filter>zaf\control\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\list_control_select_strategy.h">
-      <Filter>zaf\control\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\list_control_single_select_strategy.h">
-      <Filter>zaf\control\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\list_control_simple_multiple_select_strategy.h">
-      <Filter>zaf\control\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\list_control_extended_multiple_select_strategy.h">
-      <Filter>zaf\control\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\internal\combo_box_drop_down_window.h">
       <Filter>zaf\control\internal</Filter>
     </ClInclude>
@@ -784,9 +769,6 @@
       <Filter>zaf\graphic\brush</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\range_map.h">
-      <Filter>zaf\control\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\range_manager.h">
       <Filter>zaf\control\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\rounded_rect.h">
@@ -1230,6 +1212,33 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\internal\unboxer.h">
       <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\tree_data_source.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\list_control\list_control_extended_multiple_select_strategy.h">
+      <Filter>zaf\control\internal\list_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\list_control\list_control_item_height_manager.h">
+      <Filter>zaf\control\internal\list_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\list_control\list_control_item_selection_manager.h">
+      <Filter>zaf\control\internal\list_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\list_control\list_control_select_strategy.h">
+      <Filter>zaf\control\internal\list_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\list_control\list_control_simple_multiple_select_strategy.h">
+      <Filter>zaf\control\internal\list_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\list_control\list_control_single_select_strategy.h">
+      <Filter>zaf\control\internal\list_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\range_manager.h">
+      <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\selection_mode.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

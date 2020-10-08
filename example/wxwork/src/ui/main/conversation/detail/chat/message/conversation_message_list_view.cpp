@@ -31,7 +31,7 @@ void ConversationMessageListView::Initialize() {
     __super::Initialize();
 
     SetBorder(0);
-    SetSelectionMode(SelectionMode::None);
+    SetSelectionMode(zaf::SelectionMode::None);
     SetAllowHorizontalScroll(false);
     SetBackgroundColor(zaf::Color::FromRGB(0xECF0F3));
     GetItemContainer()->SetPadding(zaf::Frame(15, 0, 15, 13));

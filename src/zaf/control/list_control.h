@@ -1,11 +1,11 @@
 #pragma once
 
-#include <any>
 #include <deque>
 #include <zaf/base/define.h>
 #include <zaf/base/event.h>
 #include <zaf/control/list_item.h>
 #include <zaf/control/scrollable_control.h>
+#include <zaf/control/selection_mode.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/creation.h>
 #include <zaf/internal/no_circular_pointer.h>
@@ -39,32 +39,6 @@ public:
     ZAF_DECLARE_REFLECTION_TYPE
 
 public:
-    /**
-     Defines the selection mode of a list control.
-     */
-    enum class SelectionMode {
-
-        /**
-         The list control items can not be selected.
-         */
-        None,
-
-        /**
-         Only one single list control item can be selected.
-         */
-        Single,
-
-        /**
-         Multiple list control items can be selected with mouse clicking.
-         */
-        SimpleMultiple,
-
-        /**
-         Multiple list control items can be selected with the help of SHIFT and CTRL keys.
-         */
-        ExtendedMultiple,
-    };
-
     /**
      The type of selection change event.
      */

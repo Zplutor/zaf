@@ -2,11 +2,11 @@
 #include <algorithm>
 #include <zaf/base/error/check.h>
 #include <zaf/base/event_utility.h>
-#include <zaf/control/internal/list_control_extended_multiple_select_strategy.h>
-#include <zaf/control/internal/list_control_item_height_manager.h>
-#include <zaf/control/internal/list_control_item_selection_manager.h>
-#include <zaf/control/internal/list_control_simple_multiple_select_strategy.h>
-#include <zaf/control/internal/list_control_single_select_strategy.h>
+#include <zaf/control/internal/list_control/list_control_extended_multiple_select_strategy.h>
+#include <zaf/control/internal/list_control/list_control_item_height_manager.h>
+#include <zaf/control/internal/list_control/list_control_item_selection_manager.h>
+#include <zaf/control/internal/list_control/list_control_simple_multiple_select_strategy.h>
+#include <zaf/control/internal/list_control/list_control_single_select_strategy.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/scroll_bar.h>
@@ -604,7 +604,7 @@ std::shared_ptr<Object> ListControl::GetItemDataAtIndex(std::size_t index) const
 }
 
 
-ListControl::SelectionMode ListControl::GetSelectionMode() const {
+SelectionMode ListControl::GetSelectionMode() const {
 
     auto select_mode = GetPropertyMap().TryGetProperty<SelectionMode>(property::SelectionMode);
     if (select_mode != nullptr) {
