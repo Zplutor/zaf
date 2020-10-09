@@ -155,17 +155,6 @@ public:
      */
     void SetScrollContentSize(const Size& size);
 
-    void ScrollUpToBegin();
-    void ScrollDownToEnd();
-    void ScrollLeftToBegin();
-    void ScrollRightToEnd();
-
-protected:
-    void Initialize() override;
-	void Layout(const Rect& previous_rect) override;
-
-    bool MouseWheel(const Point& position, const MouseWheelMessage& message) override;
-
     /**
      Get the visible scroll content rect, in scroll content control's coordinate.
      */
@@ -177,6 +166,17 @@ protected:
      The specified position occurs at left-top cornor of the control after scrolling.
      */
     void ScrollToScrollContentPosition(const Point& position);
+
+    void ScrollUpToBegin();
+    void ScrollDownToEnd();
+    void ScrollLeftToBegin();
+    void ScrollRightToEnd();
+
+protected:
+    void Initialize() override;
+	void Layout(const Rect& previous_rect) override;
+
+    bool MouseWheel(const Point& position, const MouseWheelMessage& message) override;
 
     /**
      This method is called when the vertical scroll bar is changed.

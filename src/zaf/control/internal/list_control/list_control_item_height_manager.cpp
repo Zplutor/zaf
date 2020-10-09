@@ -8,11 +8,7 @@ namespace zaf {
 namespace internal {
 
 ListControlItemHeightManager::ListControlItemHeightManager(
-    const std::shared_ptr<ListDataSource>& item_source,
-    const std::shared_ptr<ListControlDelegate>& delegate)
-    :
-    data_source_(item_source),
-    delegate_(delegate) {
+    const std::shared_ptr<ListDataSource>& item_source) : data_source_(item_source) {
 
     RegisterDataSourceEvents();
 }

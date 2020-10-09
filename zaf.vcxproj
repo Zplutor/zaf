@@ -35,6 +35,7 @@
     <ClCompile Include="src\zaf\control\internal\combo_box_drop_down_window.cpp" />
     <ClCompile Include="src\zaf\control\internal\image_box\gif_player.cpp" />
     <ClCompile Include="src\zaf\control\internal\image_box\image_drawing.cpp" />
+    <ClCompile Include="src\zaf\control\internal\list_control\list_control_implementation.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_extended_multiple_select_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_item_height_manager.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_item_selection_manager.cpp" />
@@ -57,6 +58,7 @@
     <ClCompile Include="src\zaf\control\list_control.cpp" />
     <ClCompile Include="src\zaf\control\list_data_source.cpp" />
     <ClCompile Include="src\zaf\control\list_item.cpp" />
+    <ClCompile Include="src\zaf\control\list_item_container.cpp" />
     <ClCompile Include="src\zaf\control\radio_button.cpp" />
     <ClCompile Include="src\zaf\control\scrollable_control.cpp" />
     <ClCompile Include="src\zaf\control\scroll_bar.cpp" />
@@ -205,6 +207,7 @@
     <ClInclude Include="src\zaf\control\internal\image_box\image_player.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\static_image_player.h" />
     <ClInclude Include="src\zaf\control\internal\list_control\list_control_extended_multiple_select_strategy.h" />
+    <ClInclude Include="src\zaf\control\internal\list_control\list_control_implementation.h" />
     <ClInclude Include="src\zaf\control\internal\list_control\list_control_item_height_manager.h" />
     <ClInclude Include="src\zaf\control\internal\list_control\list_control_item_selection_manager.h" />
     <ClInclude Include="src\zaf\control\internal\list_control\list_control_select_strategy.h" />
@@ -231,6 +234,7 @@
     <ClInclude Include="src\zaf\control\list_control_delegate.h" />
     <ClInclude Include="src\zaf\control\list_data_source.h" />
     <ClInclude Include="src\zaf\control\list_item.h" />
+    <ClInclude Include="src\zaf\control\list_item_container.h" />
     <ClInclude Include="src\zaf\control\radio_button.h" />
     <ClInclude Include="src\zaf\control\scrollable_control.h" />
     <ClInclude Include="src\zaf\control\selection_mode.h" />

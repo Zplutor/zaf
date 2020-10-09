@@ -1,5 +1,6 @@
 #include "ui/main/conversation/detail/chat/message/conversation_message_list_view.h"
 #include <algorithm>
+#include <zaf/control/list_item_container.h>
 #include <zaf/control/scroll_bar.h>
 #include "logic/service.h"
 #include "ui/main/conversation/detail/chat/message/message_item.h"

@@ -12,12 +12,7 @@
 
 namespace zaf {
 namespace internal {
-class ListControlExtendedMultipleSelectStrategy;
-class ListControlItemHeightManager;
-class ListControlItemSelectionManager;
-class ListControlSelectStrategy;
-class ListControlSimpleMultipleSelectStrategy;
-class ListControlSingleSelectStrategy;
+class ListControlImplementation;
 }
 
 class ListItemContainer;
@@ -195,95 +190,13 @@ protected:
     void IsEnabledChange() override;
 
 private:
-    friend class internal::ListControlExtendedMultipleSelectStrategy;
-    friend class internal::ListControlSingleSelectStrategy;
-    friend class internal::ListControlSimpleMultipleSelectStrategy;
-
-    void ReplaceSelection(std::size_t index, std::size_t count);
-    void RevertSelection(std::size_t index);
-    void AddSelection(std::size_t index, std::size_t count);
-    void RemoveSelection(std::size_t index, std::size_t count);
-    void NotifySelectionChange();
-
-private:
-    void InitializeScrollBar();
-    void InitializeDataSource();
-    void UninitializeDataSource();
-    void UpdateContentHeight();
-    void UpdateVisibleItems();
-    void GetVisibleItemsRange(std::size_t& index, std::size_t& count) const;
-    void AdjustVisibleItems(
-        std::size_t new_index, 
-        std::size_t new_count, 
-        bool remove_head, 
-        std::size_t head_change_count, 
-        bool remove_tail, 
-        std::size_t tail_change_count);
-    void RemoveHeadVisibleItems(std::size_t count);
-    void RemoveTailVisibleItems(std::size_t count);
-    std::vector<std::shared_ptr<ListItem>> CreateItems(std::size_t index, std::size_t count);
-    std::shared_ptr<ListItem> CreateItem(std::size_t index) const;
-
-    void ItemAdd(std::size_t index, std::size_t count);
-    void AddItemsBeforeVisibleItems(std::size_t index, std::size_t count, float position_difference);
-    void AddItemsInMiddleOfVisibleItems(std::size_t index, std::size_t count, float position_difference);
-
-    void ItemRemove(std::size_t index, std::size_t count);
-    void RemoveItemsBeforeVisibleItems(std::size_t index, std::size_t count, float position_difference);
-    void RemoveItemsInMiddleOfVisibleItems(std::size_t index, std::size_t count, float position_difference);
-
-    void ItemUpdate(std::size_t index, std::size_t count);
-    void AdjustVisibleItemPositionsByUpdatingItems(std::size_t index, std::size_t count, float position_difference);
-    void UpdateVisibleItemsByUpdatingItems(std::size_t index, std::size_t count);
-
-    float AdjustContentHeight();
-    void AdjustVisibleItemPositions(std::size_t begin_adjust_index, float difference);
-
-    std::shared_ptr<internal::ListControlSelectStrategy> CreateSelectStrategy();
-    void ChangeSelection(std::size_t index, std::size_t count, bool is_add);
+    void SelectionChange();
 
 private:
     std::shared_ptr<ListItemContainer> item_container_;
     internal::NoCircularPointer<ListDataSource> data_source_;
     internal::NoCircularPointer<ListControlDelegate> delegate_;
-    
-    std::shared_ptr<internal::ListControlItemHeightManager> item_height_manager_;
-    std::unique_ptr<internal::ListControlItemSelectionManager> item_selection_manager_;
-
-    std::size_t first_visible_item_index_{};
-    std::deque<std::shared_ptr<ListItem>> visible_items_;
-};
-
-
-/**
- Represents a container control that manages items in a list control.
- */
-class ListItemContainer : public Control {
-public:
-    ListItemContainer();
-
-protected:
-    void Initialize() override;
-    bool MouseDown(const Point& position, const MouseMessage& message) override;
-    bool MouseMove(const Point& position, const MouseMessage& message) override;
-    bool MouseUp(const Point& position, const MouseMessage& message) override;
-    bool KeyDown(const KeyMessage& message) override;
-
-private:
-    friend class ListControl;
-
-    void SetSelectStrategy(const std::shared_ptr<internal::ListControlSelectStrategy>& select_strategy) {
-        select_strategy_ = select_strategy;
-    }
-
-private:
-    void LayoutItems(
-        const Control& parent,
-        const Rect& previous_rect,
-        const std::vector<std::shared_ptr<Control>>& children);
-
-private:
-    std::shared_ptr<internal::ListControlSelectStrategy> select_strategy_;
+    std::shared_ptr<internal::ListControlImplementation> implementation_;
 };
 
 }

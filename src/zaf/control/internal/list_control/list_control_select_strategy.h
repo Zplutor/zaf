@@ -1,11 +1,11 @@
 #pragma once
 
 #include <memory>
+#include <zaf/control/internal/list_control/list_control_implementation.h>
 
 namespace zaf {
 
 class KeyMessage;
-class ListControl;
 class MouseMessage;
 class Point;
 
@@ -15,14 +15,14 @@ class ListControlItemHeightManager;
 
 class ListControlSelectStrategy {
 public:
-    ListControlSelectStrategy() { }
-    virtual ~ListControlSelectStrategy() { }
+    ListControlSelectStrategy() = default;
+    virtual ~ListControlSelectStrategy() = default;
 
-    std::shared_ptr<ListControl> GetListControl() const {
+    std::shared_ptr<ListControlImplementation> GetListControl() const {
         return list_control_.lock();
     }
 
-    void SetListControl(const std::shared_ptr<ListControl>& list_control) {
+    void SetListControl(const std::shared_ptr<ListControlImplementation>& list_control) {
         list_control_ = list_control;
     }
 
@@ -43,10 +43,13 @@ public:
     ListControlSelectStrategy& operator=(const ListControlSelectStrategy&) = delete;
 
 protected:
-    bool ChangeIndexByKeyDown(const KeyMessage& key_message, std::size_t previous_index, std::size_t& new_index);
+    bool ChangeIndexByKeyDown(
+        const KeyMessage& key_message, 
+        std::size_t previous_index, 
+        std::size_t& new_index);
     
 private:
-    std::weak_ptr<ListControl> list_control_;
+    std::weak_ptr<ListControlImplementation> list_control_;
     std::shared_ptr<ListControlItemHeightManager> item_height_manager_;
 };
 

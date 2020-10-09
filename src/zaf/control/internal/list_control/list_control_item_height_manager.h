@@ -12,10 +12,7 @@ namespace internal {
 
 class ListControlItemHeightManager {
 public:
-    ListControlItemHeightManager(
-        const std::shared_ptr<ListDataSource>& data_source,
-        const std::shared_ptr<ListControlDelegate>& delegate);
-
+    ListControlItemHeightManager(const std::shared_ptr<ListDataSource>& data_source);
     ~ListControlItemHeightManager();
 
     void ResetDelegate(const std::shared_ptr<ListControlDelegate>& delegate);
