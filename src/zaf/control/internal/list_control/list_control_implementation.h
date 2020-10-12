@@ -37,6 +37,9 @@ public:
     ListControlImplementation(ScrollableControl& owner);
     ~ListControlImplementation();
 
+    ListControlImplementation(const ListControlImplementation&) = delete;
+    ListControlImplementation& operator=(const ListControlImplementation&) = delete;
+
     void Initialize(const InitializeParameters& parameters);
     void SetDataSource(const std::shared_ptr<ListDataSource>& data_source);
     void SetDelegate(const std::shared_ptr<ListControlDelegate>& delegate);
@@ -66,6 +69,7 @@ public:
     void ScrollToItemAtIndex(std::size_t index);
 
     std::size_t FindItemIndexAtPosition(const Point& position);
+    std::size_t GetListItemIndex(const std::shared_ptr<ListItem>& item);
 
 private:
     friend class ListControlExtendedMultipleSelectStrategy;
@@ -132,6 +136,7 @@ private:
     void UpdateVisibleItemsByUpdatingItems(std::size_t index, std::size_t count);
 
     float AdjustContentHeight();
+    void SetScrollContentHeight(float height);
     void AdjustVisibleItemPositions(std::size_t begin_adjust_index, float difference);
 
     void ChangeSelection(std::size_t index, std::size_t count, bool is_add);
@@ -148,6 +153,7 @@ private:
     std::shared_ptr<ListControlItemHeightManager> item_height_manager_;
     ListControlItemSelectionManager item_selection_manager_;
 
+    float current_total_height_{};
     std::size_t first_visible_item_index_{};
     std::deque<std::shared_ptr<ListItem>> visible_items_;
 

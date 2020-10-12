@@ -46,7 +46,9 @@
     <ClCompile Include="src\zaf\control\internal\scrollable_control\general_layouter.cpp" />
     <ClCompile Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.cpp" />
     <ClCompile Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.cpp" />
+    <ClCompile Include="src\zaf\control\internal\tree_control\tree_control_implementation.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_data.cpp" />
+    <ClCompile Include="src\zaf\control\internal\triangle_geometry.cpp" />
     <ClCompile Include="src\zaf\control\layout\anchor_layouter.cpp" />
     <ClCompile Include="src\zaf\control\layout\internal\linear_layout_length_calculating.cpp" />
     <ClCompile Include="src\zaf\control\layout\layouter.cpp" />
@@ -68,6 +70,9 @@
     <ClCompile Include="src\zaf\control\text_validator.cpp" />
     <ClCompile Include="src\zaf\control\linear_box.cpp" />
     <ClCompile Include="src\zaf\control\tree_control.cpp" />
+    <ClCompile Include="src\zaf\control\tree_data_source.cpp" />
+    <ClCompile Include="src\zaf\control\tree_item.cpp" />
+    <ClCompile Include="src\zaf\control\tree_item_expand_button.cpp" />
     <ClCompile Include="src\zaf\graphic\alignment.cpp" />
     <ClCompile Include="src\zaf\graphic\image\bitmap_image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image.cpp" />
@@ -198,6 +203,7 @@
     <ClInclude Include="src\zaf\control\color_picker.h" />
     <ClInclude Include="src\zaf\control\combo_box.h" />
     <ClInclude Include="src\zaf\control\control.h" />
+    <ClInclude Include="src\zaf\control\expand_state.h" />
     <ClInclude Include="src\zaf\control\image_box.h" />
     <ClInclude Include="src\zaf\control\image_layout.h" />
     <ClInclude Include="src\zaf\control\image_picker.h" />
@@ -218,7 +224,9 @@
     <ClInclude Include="src\zaf\control\internal\scrollable_control\general_layouter.h" />
     <ClInclude Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.h" />
     <ClInclude Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.h" />
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_control_implementation.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_data.h" />
+    <ClInclude Include="src\zaf\control\internal\triangle_geometry.h" />
     <ClInclude Include="src\zaf\control\layout\anchor_layouter.h" />
     <ClInclude Include="src\zaf\control\layout\axis_alignment.h" />
     <ClInclude Include="src\zaf\control\layout\control_alignment.h" />
@@ -246,7 +254,10 @@
     <ClInclude Include="src\zaf\control\text_validator.h" />
     <ClInclude Include="src\zaf\control\linear_box.h" />
     <ClInclude Include="src\zaf\control\tree_control.h" />
+    <ClInclude Include="src\zaf\control\tree_control_delegate.h" />
     <ClInclude Include="src\zaf\control\tree_data_source.h" />
+    <ClInclude Include="src\zaf\control\tree_item.h" />
+    <ClInclude Include="src\zaf\control\tree_item_expand_button.h" />
     <ClInclude Include="src\zaf\creation.h" />
     <ClInclude Include="src\zaf\graphic\alignment.h" />
     <ClInclude Include="src\zaf\graphic\image\bitmap_image.h" />

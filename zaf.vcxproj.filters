@@ -508,6 +508,21 @@
     <ClCompile Include="src\zaf\control\list_item_container.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\tree_item.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\tree_data_source.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\tree_control\tree_control_implementation.cpp">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\tree_item_expand_button.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\triangle_geometry.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1250,6 +1265,24 @@
       <Filter>zaf\control\internal\list_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\list_item_container.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\tree_item.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\tree_control_delegate.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_control_implementation.h">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\tree_item_expand_button.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\triangle_geometry.h">
+      <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\expand_state.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,7 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/base/timer.h>
+#include <zaf/control/internal/triangle_geometry.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
@@ -609,62 +610,37 @@ void ScrollBarArrow::Paint(Canvas& canvas, const Rect& dirty_rect) {
 	
 	__super::Paint(canvas, dirty_rect);
 
-	Canvas::StateGuard state_guard(canvas);
-
-    //Firstly, create a geometry that describes an triangle arrow which direction is up,
-    //and then rotate the geometry according to the actual direction.
-
     Direction direction = GetDirection();
 
-    float bottom_edge_length =
-        (direction == Direction::Up || direction == Direction::Down) ? GetWidth() : GetHeight();
-    bottom_edge_length /= 2;
-    float height = bottom_edge_length / 2;
-    float half_height =  height / 2;
+	float bottom_edge_length =
+		(direction == Direction::Up || direction == Direction::Down) ? GetWidth() : GetHeight();
 
-    Point center_point(GetWidth() / 2, GetHeight() / 2);
+	bottom_edge_length /= 2;
 
-    Point top_point(center_point.x, center_point.y - half_height);
-    Point left_point(center_point.x - height, center_point.y + half_height);
-    Point right_point(center_point.x + height, center_point.y + half_height);
-
-    auto triangle_geometry = canvas.CreatePathGeometry();
-    if (triangle_geometry == nullptr) {
-		return;
+	float rotate_angle = 0;
+	switch (direction) {
+	case Direction::Left:
+		rotate_angle = 270;
+		break;
+	case Direction::Right:
+		rotate_angle = 90;
+		break;
+	case Direction::Down:
+		rotate_angle = 180;
+		break;
+	default:
+		break;
 	}
 
-    auto triangle_geometry_sink = triangle_geometry.Open();
-    if (triangle_geometry_sink == nullptr) {
-		return;
-	}
+	auto triangle_geometry = internal::CreateTriangleGeometry(
+		GetWidth(), 
+		GetHeight(), 
+		bottom_edge_length, 
+		rotate_angle);
 
-    triangle_geometry_sink.BeginFigure(top_point, GeometrySink::BeginFigureOption::Fill);
-    triangle_geometry_sink.AddLine(left_point);
-    triangle_geometry_sink.AddLine(right_point);
-    triangle_geometry_sink.EndFigure(GeometrySink::EndFigureOption::Close);
-    triangle_geometry_sink.Close();
-
-    float rotate_angle = 0;
-    switch (direction) {
-        case Direction::Left:
-            rotate_angle = 270;
-            break;
-        case Direction::Right:
-            rotate_angle = 90;
-            break;
-        case Direction::Down:
-            rotate_angle = 180;
-            break;
-        default:
-            break;
-    }
-
-    auto rotation_geometry = GetGraphicFactory().CreateTransformedGeometry(
-        triangle_geometry, 
-        TransformMatrix::Rotation(rotate_angle, center_point));
-
+	Canvas::StateGuard state_guard(canvas);
 	canvas.SetBrushWithColor(GetArrowColor());
-	canvas.DrawGeometry(rotation_geometry);
+	canvas.DrawGeometry(triangle_geometry);
 }
 
 

@@ -1,4 +1,5 @@
 #include <zaf/control/internal/list_control/list_control_implementation.h>
+#include <zaf/base/container/utility/range.h>
 #include <zaf/base/error/check.h>
 #include <zaf/control/internal/list_control/list_control_extended_multiple_select_strategy.h>
 #include <zaf/control/internal/list_control/list_control_item_height_manager.h>
@@ -313,7 +314,7 @@ void ListControlImplementation::Reload() {
 void ListControlImplementation::UpdateContentHeight() {
 
     item_height_manager_->ReloadItemHeights();
-    owner_.SetScrollContentSize(Size(0, item_height_manager_->GetTotalHeight()));
+    SetScrollContentHeight(item_height_manager_->GetTotalHeight());
 }
 
 
@@ -505,14 +506,21 @@ void ListControlImplementation::ItemAdd(std::size_t index, std::size_t count) {
     float position_difference = AdjustContentHeight();
 
     if (index >= first_visible_item_index_ + visible_items_.size()) {
-        return;
-    }
+        
+        if (current_total_height_ >= owner_.GetScrollContentSize().height) {
+            return;
+        }
 
-    if (index <= first_visible_item_index_) {
-        AddItemsBeforeVisibleItems(index, count, position_difference);
+        UpdateVisibleItems();
     }
     else {
-        AddItemsInMiddleOfVisibleItems(index, count, position_difference);
+
+        if (index <= first_visible_item_index_) {
+            AddItemsBeforeVisibleItems(index, count, position_difference);
+        }
+        else {
+            AddItemsInMiddleOfVisibleItems(index, count, position_difference);
+        }
     }
 
     if (selection_changed) {
@@ -547,11 +555,13 @@ void ListControlImplementation::AddItemsInMiddleOfVisibleItems(
     }
     else {
 
-        RemoveTailVisibleItems(count);
         AdjustVisibleItemPositions(insert_index, position_difference);
 
         auto new_items = CreateItems(index, count);
-        visible_items_.insert(std::next(visible_items_.begin(), insert_index), new_items.begin(), new_items.end());
+        visible_items_.insert(
+            std::next(visible_items_.begin(), insert_index),
+            new_items.begin(), 
+            new_items.end());
     }
 }
 
@@ -683,17 +693,24 @@ void ListControlImplementation::UpdateVisibleItemsByUpdatingItems(
 
 float ListControlImplementation::AdjustContentHeight() {
 
-    float old_total_height = owner_.GetScrollContentSize().height;
+    float old_total_height = current_total_height_;
     float new_total_height = item_height_manager_->GetTotalHeight();
 
     if (old_total_height != new_total_height) {
 
-        owner_.SetScrollContentSize(Size(0, new_total_height));
+        SetScrollContentHeight(new_total_height);
         return new_total_height - old_total_height;
     }
     else {
         return 0;
     }
+}
+
+
+void ListControlImplementation::SetScrollContentHeight(float height) {
+
+    current_total_height_ = height;
+    owner_.SetScrollContentSize(Size(0, height));
 }
 
 
@@ -833,6 +850,19 @@ std::size_t ListControlImplementation::FindItemIndexAtPosition(const Point& posi
     }
 
     return index_and_count.first;
+}
+
+
+std::size_t ListControlImplementation::GetListItemIndex(const std::shared_ptr<ListItem>& item) {
+
+    for (auto index : zaf::Range(visible_items_.size())) {
+
+        if (visible_items_[index] == item) {
+            return index + first_visible_item_index_;
+        }
+    }
+
+    return InvalidIndex;
 }
 
 

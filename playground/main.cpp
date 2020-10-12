@@ -1,5 +1,7 @@
 #include <Windows.h>
 #include <zaf/application.h>
+#include <zaf/base/container/utility/find.h>
+#include <zaf/base/container/utility/range.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 #include <zaf/window/dialog.h>
@@ -24,6 +26,9 @@
 #include <zaf/object/string.h>
 #include <zaf/object/boxing.h>
 #include <zaf/control/combo_box.h>
+#include <zaf/control/tree_control.h>
+#include <zaf/control/tree_data_source.h>
+#include <zaf/control/tree_control_delegate.h>
 
 void BeginRun(zaf::Application&);
 
@@ -34,6 +39,106 @@ public:
 
 ZAF_DEFINE_REFLECTION_TYPE(RootControl)
 ZAF_DEFINE_END
+
+
+class TreeItemSource : public zaf::TreeDataSource, public zaf::TreeControlDelegate {
+public:
+    TreeItemSource() {
+
+        std::function<std::vector<std::shared_ptr<Node>>(int count, int deep)> create_nodes;
+        create_nodes = [&create_nodes](int count, int deep) {
+
+            std::vector<std::shared_ptr<Node>> nodes;
+            for (auto _ : zaf::Range(count)) {
+
+                auto node = zaf::Create<Node>();
+                if (deep < 3) {
+                    node->children = create_nodes(3, deep + 1);
+                }
+                nodes.push_back(node);
+            }
+            return nodes;
+        };
+
+        nodes_ = create_nodes(5, 0);
+    }
+
+
+    bool DoesDataHasChildren(const std::shared_ptr<zaf::Object>& parent_data) override {
+
+        auto child_count = GetChildDataCount(parent_data);
+        return child_count > 0;
+    }
+
+
+    std::size_t GetChildDataCount(const std::shared_ptr<zaf::Object>& parent_data) override {
+
+        if (!parent_data) {
+            return nodes_.size();
+        }
+
+        auto value = zaf::TryUnbox<Node>(parent_data);
+        if (!value) {
+            return 0;
+        }
+
+        return value->children.size();
+    }
+
+
+    std::shared_ptr<zaf::Object> GetChildDataAtIndex(
+        const std::shared_ptr<zaf::Object>& parent_data,
+        std::size_t index) override {
+
+        if (!parent_data) {
+            return nodes_[index];
+        }
+
+        auto value = zaf::TryUnbox<Node>(parent_data);
+        if (!value) {
+            return 0;
+        }
+
+        return value->children[index];
+    }
+
+
+    float EstimateItemHeight(
+        const std::shared_ptr<zaf::Object>& parent_item_data,
+        std::size_t item_index,
+        const std::shared_ptr<zaf::Object>& item_data) override {
+
+        return 30;
+    }
+
+
+    std::wstring GetItemText(
+        const std::shared_ptr<zaf::Object>& parent_item_data,
+        std::size_t item_index,
+        const std::shared_ptr<zaf::Object>& item_data) override {
+
+        return item_data->ToString();
+    }
+
+private:
+    class Node : public zaf::Object {
+    public:
+        Node() {
+            static int seed = 0;
+            value = ++seed;
+        }
+
+        std::wstring ToString() const override {
+            return std::to_wstring(value);
+        }
+
+        int value{};
+        std::vector<std::shared_ptr<Node>> children;
+    };
+
+private:
+    std::vector<std::shared_ptr<Node>> nodes_;
+};
 
 
 int WINAPI WinMain(
@@ -62,34 +167,14 @@ void BeginRun(zaf::Application& application) {
     window->SetRootControl(root_control);
     window->Show();
 
-    auto combo_box = zaf::Create<zaf::ComboBox>();
-    combo_box->SetRect(zaf::Rect(10, 10, 100, 30));
-    
-    /*
-    auto list_box = combo_box->GetDropDownListBox();
-    list_box->AddItem(zaf::Box(L"1"));
-    list_box->AddItem(zaf::Box(L"2"));
-    list_box->AddItem(zaf::Box(L"3"));
-    list_box->AddItem(zaf::Box(L"4"));
-    list_box->AddItem(zaf::Box(std::vector<std::string>{ "0", "1" }));
-    */
+    auto item_source = zaf::Create<TreeItemSource>();
 
-    auto list_box = zaf::Create<zaf::ListBox>();
-    list_box->SetRect(zaf::Rect(10, 10, 200, 400));
-    list_box->AddItem(zaf::Box(std::vector<std::string>{ "0", "1" }));
-    list_box->AddItem(zaf::Box(L"1"));
-    list_box->AddItem(zaf::Box(L"2"));
-    list_box->AddItem(zaf::Box(L"3"));
-    list_box->AddItem(zaf::Box(L"4"));
-    list_box->AddItem(zaf::Box(L"5"));
-    
-    auto item = zaf::Create<zaf::Button>();
-    item->SetText(L"button");
-    item->SetHeight(35);
-    list_box->AddItem(item);
-    
-    //root_control->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
-    root_control->AddChild(list_box);
+    auto tree_control = zaf::Create<zaf::TreeControl>();
+    tree_control->SetRect(zaf::Rect{ 10, 10, 300, 400 });
+    tree_control->SetDataSource(item_source);
+    tree_control->SetDelegate(item_source);
+
+    root_control->AddChild(tree_control);
 
     application.SetMainWindow(window);
 }

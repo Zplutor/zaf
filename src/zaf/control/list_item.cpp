@@ -9,6 +9,7 @@ void ListItem::Initialize() {
 
     __super::Initialize();
 
+    SetParagraphAlignment(ParagraphAlignment::Center);
     SetPadding(Frame(2, 0, 2, 0));
 
     SetBackgroundColorPicker([](const Control& control) {

@@ -5,7 +5,7 @@ namespace zaf::internal {
 namespace {
 
 /*
-bool NodeChecker(const IndexPath& current_node, std::size_t current_index);
+bool CurrentNodeChecker(const IndexPath& current_node, std::size_t current_index);
 
 bool CurrentNodeChildrenChecker(
     const IndexPath& current_node, 
@@ -29,6 +29,16 @@ void EnumerateNodes(
     const CurrentNodeChecker& current_node_checker,
     const CurrentNodeChildrenChecker& current_node_children_checker,
     const BackwardNodeChildrenChecker& backward_node_children_checker) {
+
+    //Check children nodes in root node if there is only a root node.
+    if (node_child_count_pairs.size() == 1) {
+
+        std::size_t child_count = node_child_count_pairs.front().second;
+        std::size_t current_index = child_count - 1;
+        IndexPath current_node{ current_index };
+        current_node_checker(current_node, current_index);
+        return;
+    }
 
     struct LevelInfo {
         std::size_t children_count{};
@@ -270,6 +280,26 @@ std::size_t TreeData::GetNodeCount() const {
 }
 
 
+std::size_t TreeData::GetChildrenCount(const IndexPath& parent) const {
+
+    auto iterator = std::lower_bound(
+        node_child_count_pairs.begin(), 
+        node_child_count_pairs.end(), 
+        parent, 
+        [](const auto& pair, const auto& index_path) {
+    
+        return pair.first < index_path;
+    });
+
+    if (iterator == node_child_count_pairs.end() ||
+        iterator->first != parent) {
+        return 0;
+    }
+
+    return iterator->second;
+}
+
+
 void TreeData::AddChildren(const IndexPath& parent, std::size_t index, std::size_t count) {
 
     if (count == 0) {
@@ -379,5 +409,32 @@ void TreeData::RemoveChildren(const IndexPath& parent, std::size_t index, std::s
     }
 }
 
+
+std::size_t TreeData::RemoveAllChildrenRecursively(const IndexPath& parent) {
+
+    std::size_t removed_count{};
+
+    auto iterator = node_child_count_pairs.begin();
+    while (iterator != node_child_count_pairs.end()) {
+
+        const auto& current_path = iterator->first;
+        if (current_path < parent) {
+            ++iterator;
+            continue;
+        }
+
+        if (current_path == parent || 
+            IsParentOf(parent, current_path)) {
+
+            removed_count += iterator->second;
+            iterator = node_child_count_pairs.erase(iterator);
+            continue;
+        }
+
+        break;
+    };
+
+    return removed_count;
+}
 
 }

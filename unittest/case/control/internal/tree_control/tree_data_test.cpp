@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <zaf/base/container/utility/range.h>
 #include <zaf/control/internal/tree_control/tree_data.h>
 
 using namespace zaf::internal;
@@ -82,6 +83,24 @@ TEST_F(TreeDataTest, GetIndexPathAtIndex) {
 }
 
 
+TEST_F(TreeDataTest, GetIndexPathAtIndexOnSingleLevelTree) {
+
+    const std::size_t node_count = 3;
+
+    TreeData tree_data;
+    tree_data.node_child_count_pairs.push_back(std::make_pair(zaf::IndexPath{}, node_count));
+
+    for (auto index : zaf::Range(node_count)) {
+
+        auto index_path = tree_data.GetIndexPathAtIndex(index);
+        ASSERT_EQ(index_path, zaf::IndexPath{ index });
+    }
+
+    auto index_path = tree_data.GetIndexPathAtIndex(node_count);
+    ASSERT_EQ(index_path, zaf::IndexPath{});
+}
+
+
 TEST_F(TreeDataTest, GetIndexAtIndexPath) {
 
     auto& tree_data = GetTreeData();
@@ -94,6 +113,21 @@ TEST_F(TreeDataTest, GetIndexAtIndexPath) {
     //Get index for invalid index path
     ASSERT_EQ(zaf::InvalidIndex, tree_data.GetIndexAtIndexPath({}));
     ASSERT_EQ(zaf::InvalidIndex, tree_data.GetIndexAtIndexPath({ 7, 0 }));
+}
+
+
+TEST_F(TreeDataTest, GetIndexAtIndexPathOnSingleLevelTree) {
+
+    const std::size_t node_count = 3;
+
+    TreeData tree_data;
+    tree_data.node_child_count_pairs.push_back(std::make_pair(zaf::IndexPath{}, node_count));
+
+    for (auto index : zaf::Range(node_count)) {
+
+        auto got_index = tree_data.GetIndexAtIndexPath(zaf::IndexPath{ index });
+        ASSERT_EQ(got_index, index);
+    }
 }
 
 
