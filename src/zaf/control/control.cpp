@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <zaf/base/assert.h>
 #include <zaf/base/event_utility.h>
+#include <zaf/control/internal/cached_painting.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
 #include <zaf/control/layout/anchor_layouter.h>
 #include <zaf/graphic/alignment.h>
@@ -283,61 +284,12 @@ void Control::RecalculateCachedPaintingRect(const Rect& repaint_rect) {
         return;
     }
 
-    Rect intersection = Rect::Intersect(valid_cached_renderer_rect_, repaint_rect);
-    if (intersection.IsEmpty()) {
+    Rect invalid_rect = internal::CalculateInvalidRectInCachedRendereRect(
+        valid_cached_renderer_rect_, 
+        repaint_rect);
+
+    if (invalid_rect.IsEmpty()) {
         return;
-    }
-
-    float left = intersection.position.x - valid_cached_renderer_rect_.position.x;
-    float top = intersection.position.y - valid_cached_renderer_rect_.position.y;
-    float right =
-        (valid_cached_renderer_rect_.position.x + valid_cached_renderer_rect_.size.width) -
-        (intersection.position.x + intersection.size.width);
-    float bottom =
-        (valid_cached_renderer_rect_.position.y + valid_cached_renderer_rect_.size.height) - 
-        (intersection.position.y + intersection.size.height);
-
-    float max = std::max({ left, top, right, bottom });
-    if (max == 0) {
-        return;
-    }
-
-    Rect invalid_rect;
-    if (max == left) {
-
-        invalid_rect.position.x = intersection.position.x;
-        invalid_rect.position.y = valid_cached_renderer_rect_.position.y;
-        invalid_rect.size.width = 
-            valid_cached_renderer_rect_.position.x + valid_cached_renderer_rect_.size.width -
-            intersection.position.x;
-        invalid_rect.size.height = valid_cached_renderer_rect_.size.height;
-    }
-    else if (max == top) {
-
-        invalid_rect.position.x = valid_cached_renderer_rect_.position.x;
-        invalid_rect.position.y = intersection.position.y;
-        invalid_rect.size.width = valid_cached_renderer_rect_.size.width;
-        invalid_rect.size.height = 
-            valid_cached_renderer_rect_.position.y + valid_cached_renderer_rect_.size.height - 
-            intersection.position.y;
-    }
-    else if (max == right) {
-
-        invalid_rect.position.x = valid_cached_renderer_rect_.position.x;
-        invalid_rect.position.y = valid_cached_renderer_rect_.position.y;
-        invalid_rect.size.width = 
-            intersection.position.x + intersection.size.width -
-            valid_cached_renderer_rect_.position.x;
-        invalid_rect.size.height = valid_cached_renderer_rect_.size.height;
-    }
-    else if (max == bottom) {
-
-        invalid_rect.position.x = valid_cached_renderer_rect_.position.x;
-        invalid_rect.position.y = valid_cached_renderer_rect_.position.y;
-        invalid_rect.size.width = valid_cached_renderer_rect_.size.width;
-        invalid_rect.size.height = 
-            intersection.position.y + intersection.size.height -
-            valid_cached_renderer_rect_.position.y;
     }
 
     valid_cached_renderer_rect_.Subtract(invalid_rect);

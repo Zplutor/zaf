@@ -523,6 +523,9 @@
     <ClCompile Include="src\zaf\control\internal\triangle_geometry.cpp">
       <Filter>zaf\control\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\cached_painting.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1284,6 +1287,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\expand_state.h">
       <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\cached_painting.h">
+      <Filter>zaf\control\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
