@@ -5,7 +5,7 @@
 namespace zaf {
 
 template<typename C, typename P>
-C CopyIf(const C& container, P& predicate) {
+C CopyIf(const C& container, P&& predicate) {
 
     C result;
     std::copy_if(
