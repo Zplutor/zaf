@@ -1291,5 +1291,8 @@
     <ClInclude Include="src\zaf\control\internal\cached_painting.h">
       <Filter>zaf\control\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\container\utility\copy.h">
+      <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

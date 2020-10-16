@@ -202,6 +202,9 @@
     <ClCompile Include="unittest\case\control\internal\tree_control\tree_data_test.cpp">
       <Filter>case\control\internal\tree_control</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\container\utility\copy_test.cpp">
+      <Filter>case\base\container\utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

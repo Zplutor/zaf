@@ -157,6 +157,7 @@
     <ClInclude Include="src\precompiled.h" />
     <ClInclude Include="src\zaf\application.h" />
     <ClInclude Include="src\zaf\base\assert.h" />
+    <ClInclude Include="src\zaf\base\container\utility\copy.h" />
     <ClInclude Include="src\zaf\base\container\utility\range.h" />
     <ClInclude Include="src\zaf\base\error\check.h" />
     <ClInclude Include="src\zaf\base\source_site.h" />
