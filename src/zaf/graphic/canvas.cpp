@@ -158,6 +158,11 @@ std::shared_ptr<Canvas::State> Canvas::GetCurrentState() const {
 }
 
 
+void Canvas::Clear() {
+    renderer_.Clear();
+}
+
+
 void Canvas::DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
     auto state = GetCurrentState();
     renderer_.DrawLine(

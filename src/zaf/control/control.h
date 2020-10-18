@@ -946,10 +946,11 @@ private:
      */
     void Repaint(Canvas& canvas, const Rect& dirty_rect);
 
-    void DrawBackgroundImage(Canvas& canvas, const Rect& background_rect);
-    void RepaintControl(Canvas& canvas, const Rect& dirty_rect);
+    void RepaintUsingCachedPainting(Canvas& canvas, const Rect& dirty_rect);
+    void RepaintControl(Canvas& canvas, const Rect& dirty_rect, bool need_clear);
     void RecalculateCachedPaintingRect(const Rect& repaint_rect);
     void ReleaseCachedPaintingRenderer();
+    void DrawBackgroundImage(Canvas& canvas, const Rect& background_rect);
 
 	void SetParent(const std::shared_ptr<Control>& parent);
 

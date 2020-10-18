@@ -106,6 +106,8 @@ public:
     void PushClippingRect(const Rect& rect);
     void PopClippingRect();
 
+    void Clear();
+
     void DrawLine(const Point& from_point, const Point& to_point, float stroke_width);
 
     void DrawRectangle(const Rect& rect);

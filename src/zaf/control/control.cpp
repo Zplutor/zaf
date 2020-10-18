@@ -96,51 +96,70 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 		return;
 	}
 
-    if (! IsCachedPaintingEnabled()) {
-        RepaintControl(canvas, dirty_rect);
-        return;
+    if (IsCachedPaintingEnabled()) {
+        RepaintUsingCachedPainting(canvas, dirty_rect);
     }
+    else {
+        RepaintControl(canvas, dirty_rect, false);
+    }
+}
+
+
+void Control::RepaintUsingCachedPainting(Canvas& canvas, const Rect& dirty_rect) {
 
     auto control_size = GetSize();
     control_size.width = std::ceil(control_size.width);
     control_size.height = std::ceil(control_size.height);
 
+    //Create the cached renderer if it is not created.
     if (cached_renderer_ == nullptr) {
         CreateCompatibleRendererOptions options;
         options.DesiredSize(control_size);
         cached_renderer_ = canvas.GetRenderer().CreateCompatibleRenderer(options);
-        valid_cached_renderer_rect_ = Rect();
+        valid_cached_renderer_rect_ = Rect{};
     }
 
-    Rect actual_dirty_rect = Rect::Subtract(dirty_rect, valid_cached_renderer_rect_);
-    if (! actual_dirty_rect.IsEmpty()) {
+    //Calculate the actual dirty rect that needs to repaint, and the new valid rect in cached 
+    //renderer.
+    auto calculate_result = internal::CalculateDirtyRectOutsideValidCachedRect(
+        dirty_rect, 
+        valid_cached_renderer_rect_);
+
+    //Repaint the actual dirty rect is it is not empty.
+    if (!calculate_result.actual_dirty_rect.IsEmpty()) {
 
         cached_renderer_.BeginDraw();
 
-        Rect canvas_rect(Point(), control_size);
-        Canvas cached_painting_canvas(cached_renderer_, canvas_rect, actual_dirty_rect);
+        Rect canvas_rect{ Point{}, control_size };
+        Canvas cached_painting_canvas(
+            cached_renderer_, 
+            canvas_rect, 
+            calculate_result.actual_dirty_rect);
 
-        RepaintControl(cached_painting_canvas, actual_dirty_rect);
+        RepaintControl(cached_painting_canvas, calculate_result.actual_dirty_rect, true);
 
         cached_renderer_.EndDraw();
 
-        if (valid_cached_renderer_rect_.IsEmpty()) {
-            valid_cached_renderer_rect_ = actual_dirty_rect;
-        }
-        else {
-            valid_cached_renderer_rect_.Union(actual_dirty_rect);
-        }
+        //Update valid cached rect after repainting.
+        valid_cached_renderer_rect_ = calculate_result.new_valid_cached_rect;
     }
-    
+
+    //Paint into canvas from cached renderer.
     canvas.BeginPaint();
-    canvas.DrawBitmap(cached_renderer_.GetBitmap(), dirty_rect, DrawImageOptions().SourceRect(dirty_rect));
+    canvas.DrawBitmap(
+        cached_renderer_.GetBitmap(),
+        dirty_rect, 
+        DrawImageOptions().SourceRect(dirty_rect));
     canvas.EndPaint();
 }
 
 
-void Control::RepaintControl(Canvas& canvas, const Rect& dirty_rect) {
+void Control::RepaintControl(Canvas& canvas, const Rect& dirty_rect, bool need_clear) {
 
     canvas.BeginPaint();
+    if (need_clear) {
+        canvas.Clear();
+    }
     Paint(canvas, dirty_rect);
     canvas.EndPaint();
 
@@ -284,7 +303,7 @@ void Control::RecalculateCachedPaintingRect(const Rect& repaint_rect) {
         return;
     }
 
-    Rect invalid_rect = internal::CalculateInvalidRectInCachedRendereRect(
+    Rect invalid_rect = internal::CalculateInvalidRectInCachedRect(
         valid_cached_renderer_rect_, 
         repaint_rect);
 
@@ -293,13 +312,6 @@ void Control::RecalculateCachedPaintingRect(const Rect& repaint_rect) {
     }
 
     valid_cached_renderer_rect_.Subtract(invalid_rect);
-
-    cached_renderer_.BeginDraw();
-    cached_renderer_.Transform(TransformMatrix::Identity);
-    cached_renderer_.PushAxisAlignedClipping(Align(invalid_rect), AntialiasMode::PerPrimitive);
-    cached_renderer_.Clear();
-    cached_renderer_.PopAxisAlignedClipping();
-    cached_renderer_.EndDraw();
 }
 
 
