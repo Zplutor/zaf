@@ -90,6 +90,7 @@ void TreeControlImplementation::ReloadRootNode() {
 
     tree_data_ = TreeData{};
     expand_manager_.Clear();
+    selection_manager_.Clear();
 
     auto data_source = data_source_.lock();
     if (!data_source) {
@@ -99,6 +100,16 @@ void TreeControlImplementation::ReloadRootNode() {
     ExpandNodeInfo root_node_info;
     root_node_info.children_count = data_source->GetChildDataCount(nullptr);
     expand_manager_.Expand(IndexPath{}, root_node_info, tree_data_);
+}
+
+
+std::vector<std::shared_ptr<Object>> TreeControlImplementation::GetSelectedItemData() const {
+    return selection_manager_.GetAllSelectedNodeData();
+}
+
+
+std::shared_ptr<Object> TreeControlImplementation::GetFirstSelectedItemData() const {
+    return selection_manager_.GetFirstSelectedNodeData();
 }
 
 
@@ -399,9 +410,13 @@ void TreeControlImplementation::OnListSelectionChange(
 
     switch (reason) {
     case ListSelectionChangeReason::AddSelection:
-    case ListSelectionChangeReason::RemoveSelection:
+        ModifySelection(index, count, false);
+        break;
     case ListSelectionChangeReason::ReplaceSelection:
-        ChangeTreeSelection(reason, index, count);
+        ModifySelection(index, count, true);
+        break;
+    case ListSelectionChangeReason::RemoveSelection:
+        RemoveSelection(index, count);
         break;
     case ListSelectionChangeReason::ItemChange:
     default:
@@ -410,10 +425,43 @@ void TreeControlImplementation::OnListSelectionChange(
 }
 
 
-void TreeControlImplementation::ChangeTreeSelection(
-    ListSelectionChangeReason reason,
-    std::size_t index,
-    std::size_t count) {
+void TreeControlImplementation::ModifySelection(
+    std::size_t index, 
+    std::size_t count, 
+    bool is_replace) {
+
+    auto data_source = data_source_.lock();
+    if (!data_source) {
+        return;
+    }
+
+    std::map<IndexPath, std::shared_ptr<Object>> affected_nodes;
+    for (auto list_index : zaf::Range(index, index + count)) {
+
+        auto index_path = tree_data_.GetIndexPathAtIndex(list_index);
+        if (index_path.empty()) {
+            continue;
+        }
+
+        std::shared_ptr<Object> parent_data;
+        std::size_t child_index{};
+        if (!GetParentDataAndChildIndex(index_path, parent_data, child_index)) {
+            continue;
+        }
+
+        auto data = data_source->GetChildDataAtIndex(parent_data, child_index);
+        affected_nodes[index_path] = data;
+    }
+
+    if (is_replace) {
+        selection_manager_.Clear();
+    }
+
+    selection_manager_.AddSelectedNodes(affected_nodes);
+}
+
+
+void TreeControlImplementation::RemoveSelection(std::size_t index, std::size_t count) {
 
     std::vector<IndexPath> affected_index_paths;
     for (auto list_index : zaf::Range(index, index + count)) {
@@ -422,19 +470,7 @@ void TreeControlImplementation::ChangeTreeSelection(
         affected_index_paths.push_back(index_path);
     }
 
-    switch (reason) {
-    case ListSelectionChangeReason::AddSelection:
-        selection_manager_.AddSelectedIndexPaths(affected_index_paths);
-        break;
-    case ListSelectionChangeReason::RemoveSelection:
-        selection_manager_.RemoveSelectedIndexPaths(affected_index_paths);
-        break;
-    case ListSelectionChangeReason::ReplaceSelection:
-        selection_manager_.ReplaceSelectedIndexPahts(affected_index_paths);
-        break;
-    default:
-        break;
-    }
+    selection_manager_.RemoveSelectedNodes(affected_index_paths);
 }
 
 }

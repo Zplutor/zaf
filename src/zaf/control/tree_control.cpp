@@ -68,4 +68,14 @@ void TreeControl::SetSelectionMode(SelectionMode selection_mode) {
     implementation_->GetListImplementation().SetSelectionMode(selection_mode);
 }
 
+
+std::vector<std::shared_ptr<Object>> TreeControl::GetSelectedItemData() const {
+    return implementation_->GetSelectedItemData();
+}
+
+
+std::shared_ptr<Object> TreeControl::GetFirstSelectedItemData() const {
+    return implementation_->GetFirstSelectedItemData();
+}
+
 }

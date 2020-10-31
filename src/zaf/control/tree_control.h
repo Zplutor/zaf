@@ -23,6 +23,9 @@ public:
 
     void SetSelectionMode(SelectionMode selection_mode);
 
+    std::vector<std::shared_ptr<Object>> GetSelectedItemData() const;
+    std::shared_ptr<Object> GetFirstSelectedItemData() const;
+
 protected:
     void Initialize() override;
 

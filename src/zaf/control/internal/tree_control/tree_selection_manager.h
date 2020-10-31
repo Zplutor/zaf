@@ -2,6 +2,7 @@
 
 #include <set>
 #include <zaf/base/define.h>
+#include <zaf/object/object.h>
 
 namespace zaf::internal {
 
@@ -13,14 +14,16 @@ public:
     TreeSelectionManager(const TreeSelectionManager&) = delete;
     TreeSelectionManager& operator=(const TreeSelectionManager&) = delete;
 
-    bool IsIndexPathSelected(const IndexPath& index_path);
+    bool IsIndexPathSelected(const IndexPath& index_path) const;
+    std::vector<std::shared_ptr<Object>> GetAllSelectedNodeData() const;
+    std::shared_ptr<Object> GetFirstSelectedNodeData() const;
 
-    void AddSelectedIndexPaths(const std::vector<IndexPath>& index_paths);
-    void RemoveSelectedIndexPaths(const std::vector<IndexPath>& index_paths);
-    void ReplaceSelectedIndexPahts(const std::vector<IndexPath>& index_paths);
+    void AddSelectedNodes(const std::map<IndexPath, std::shared_ptr<Object>>& nodes);
+    void RemoveSelectedNodes(const std::vector<IndexPath>& index_paths);
+    void Clear();
 
 private:
-    std::set<IndexPath> selected_index_paths_;
+    std::map<IndexPath, std::shared_ptr<Object>> selected_nodes_;
 };
 
 }

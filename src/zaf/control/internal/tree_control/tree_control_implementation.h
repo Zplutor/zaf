@@ -42,6 +42,9 @@ public:
 
     void Reload();
 
+    std::vector<std::shared_ptr<Object>> GetSelectedItemData() const;
+    std::shared_ptr<Object> GetFirstSelectedItemData() const;
+
     std::size_t GetDataCount() override;
     std::shared_ptr<Object> GetDataAtIndex(std::size_t index) override;
     
@@ -106,10 +109,8 @@ private:
         std::size_t index,
         std::size_t count);
 
-    void ChangeTreeSelection(
-        ListSelectionChangeReason reason,
-        std::size_t index,
-        std::size_t count);
+    void ModifySelection(std::size_t index, std::size_t count, bool is_replace);
+    void RemoveSelection(std::size_t index, std::size_t count);
 
 private:
     std::shared_ptr<internal::ListControlImplementation> list_implementation_;
