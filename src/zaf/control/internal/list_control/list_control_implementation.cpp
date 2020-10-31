@@ -802,7 +802,7 @@ std::size_t ListControlImplementation::GetFirstSelectedItemIndex() {
 }
 
 
-std::vector<std::size_t> ListControlImplementation::GetSelectedItemIndexes() {
+std::vector<std::size_t> ListControlImplementation::GetAllSelectedItemIndexes() {
     return item_selection_manager_.GetAllSelectedIndexes();
 }
 

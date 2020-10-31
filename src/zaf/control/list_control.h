@@ -132,7 +132,7 @@ public:
     /**
      Get indexes of selected items.
      */
-    std::vector<std::size_t> GetSelectedItemIndexes() const;
+    std::vector<std::size_t> GetAllSelectedItemIndexes() const;
 
     /**
      Get the index of the first selected item.

@@ -169,8 +169,8 @@ std::size_t ListControl::GetSelectedItemCount() const {
 }
 
 
-std::vector<std::size_t> ListControl::GetSelectedItemIndexes() const {
-    return implementation_->GetSelectedItemIndexes();
+std::vector<std::size_t> ListControl::GetAllSelectedItemIndexes() const {
+    return implementation_->GetAllSelectedItemIndexes();
 }
 
 
