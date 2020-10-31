@@ -174,6 +174,12 @@ void BeginRun(zaf::Application& application) {
     tree_control->SetDataSource(item_source);
     tree_control->SetDelegate(item_source);
     tree_control->SetSelectionMode(zaf::SelectionMode::ExtendedMultiple);
+    tree_control->GetSelectionChangeEvent().AddListener([](const std::shared_ptr<zaf::TreeControl>& tree_control) {
+    
+        for (const auto& each_data : tree_control->GetAllSelectedItemData()) {
+            OutputDebugString((each_data->ToString() + L"\r\n").c_str());
+        }
+    });
 
     root_control->AddChild(tree_control);
 

@@ -17,8 +17,9 @@ void TreeControlImplementation::Initialize(const InitializeParameters& parameter
 
     InstallDataSource(parameters.data_source);
     InstallDelegate(parameters.delegate);
-
     InitializeListImplementation(parameters);
+
+    selection_change_event_ = parameters.selection_change_event;
 
     Reload();
 }
@@ -103,7 +104,7 @@ void TreeControlImplementation::ReloadRootNode() {
 }
 
 
-std::vector<std::shared_ptr<Object>> TreeControlImplementation::GetSelectedItemData() const {
+std::vector<std::shared_ptr<Object>> TreeControlImplementation::GetAllSelectedItemData() const {
     return selection_manager_.GetAllSelectedNodeData();
 }
 
@@ -420,7 +421,11 @@ void TreeControlImplementation::OnListSelectionChange(
         break;
     case ListSelectionChangeReason::ItemChange:
     default:
-        break;
+        return;
+    }
+
+    if (selection_change_event_) {
+        selection_change_event_();
     }
 }
 

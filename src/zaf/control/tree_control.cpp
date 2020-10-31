@@ -1,10 +1,22 @@
 #include <zaf/control/tree_control.h>
 #include <zaf/base/error/check.h>
+#include <zaf/base/event_utility.h>
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/tree_data_source.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
+#include <zaf/reflection/reflection_type_definition.h>
 
 namespace zaf {
+namespace {
+
+constexpr wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
+
+}
+
+ZAF_DEFINE_REFLECTION_TYPE(TreeControl)
+    //ZAF_DEFINE_PARSER(ListControlParser)
+ZAF_DEFINE_END
+
 
 TreeControl::TreeControl() :
     data_source_(this),
@@ -31,6 +43,7 @@ void TreeControl::Initialize() {
     initialize_parameters.item_container = item_container_;
     initialize_parameters.data_source = data_source_.GetSharedPointer();
     initialize_parameters.delegate = delegate_.GetSharedPointer();
+    initialize_parameters.selection_change_event = std::bind(&TreeControl::SelectionChange, this);
 
     /*
     initialize_parameters.data_source_change_event =
@@ -39,7 +52,6 @@ void TreeControl::Initialize() {
         std::bind(&ListControl::DelegateChange, this, std::placeholders::_1);
     initialize_parameters.item_container_change_event =
         std::bind(&ListControl::ItemContainerChange, this, std::placeholders::_1);
-    initialize_parameters.selection_change_event = std::bind(&ListControl::SelectionChange, this);
     */
 
     implementation_->Initialize(initialize_parameters);
@@ -69,13 +81,33 @@ void TreeControl::SetSelectionMode(SelectionMode selection_mode) {
 }
 
 
-std::vector<std::shared_ptr<Object>> TreeControl::GetSelectedItemData() const {
-    return implementation_->GetSelectedItemData();
+std::vector<std::shared_ptr<Object>> TreeControl::GetAllSelectedItemData() const {
+    return implementation_->GetAllSelectedItemData();
 }
 
 
 std::shared_ptr<Object> TreeControl::GetFirstSelectedItemData() const {
     return implementation_->GetFirstSelectedItemData();
+}
+
+
+TreeControl::SelectionChangeEvent::Proxy TreeControl::GetSelectionChangeEvent() {
+
+    return GetEventProxyFromPropertyMap<SelectionChangeEvent>(
+        GetPropertyMap(),
+        kSelectionChangeEventPropertyName);
+}
+
+
+void TreeControl::SelectionChange() {
+
+    auto event = TryGetEventFromPropertyMap<SelectionChangeEvent>(
+        GetPropertyMap(),
+        kSelectionChangeEventPropertyName);
+
+    if (event) {
+        event->Trigger(std::dynamic_pointer_cast<TreeControl>(shared_from_this()));
+    }
 }
 
 }

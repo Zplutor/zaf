@@ -15,6 +15,12 @@ class TreeDataSource;
 
 class TreeControl : public ScrollableControl {
 public:
+    ZAF_DECLARE_REFLECTION_TYPE
+
+public:
+    typedef Event<const std::shared_ptr<TreeControl>&> SelectionChangeEvent;
+
+public:
     TreeControl();
     ~TreeControl();
 
@@ -23,11 +29,16 @@ public:
 
     void SetSelectionMode(SelectionMode selection_mode);
 
-    std::vector<std::shared_ptr<Object>> GetSelectedItemData() const;
+    std::vector<std::shared_ptr<Object>> GetAllSelectedItemData() const;
     std::shared_ptr<Object> GetFirstSelectedItemData() const;
+
+    SelectionChangeEvent::Proxy GetSelectionChangeEvent();
 
 protected:
     void Initialize() override;
+
+private:
+    void SelectionChange();
 
 private:
     std::shared_ptr<ListItemContainer> item_container_;

@@ -17,11 +17,14 @@ class TreeControlImplementation :
     public std::enable_shared_from_this<TreeControlImplementation> {
 
 public:
+    using SelectionChangeEvent = std::function<void()>;
+
     class InitializeParameters {
     public:
         std::shared_ptr<ListItemContainer> item_container;
         std::shared_ptr<TreeDataSource> data_source;
         std::shared_ptr<TreeControlDelegate> delegate;
+        SelectionChangeEvent selection_change_event;
     };
 
 public:
@@ -42,7 +45,7 @@ public:
 
     void Reload();
 
-    std::vector<std::shared_ptr<Object>> GetSelectedItemData() const;
+    std::vector<std::shared_ptr<Object>> GetAllSelectedItemData() const;
     std::shared_ptr<Object> GetFirstSelectedItemData() const;
 
     std::size_t GetDataCount() override;
@@ -116,6 +119,7 @@ private:
     std::shared_ptr<internal::ListControlImplementation> list_implementation_;
     std::weak_ptr<TreeDataSource> data_source_;
     std::weak_ptr<TreeControlDelegate> delegate_;
+    SelectionChangeEvent selection_change_event_;
 
     TreeData tree_data_;
     TreeExpandManager expand_manager_;
