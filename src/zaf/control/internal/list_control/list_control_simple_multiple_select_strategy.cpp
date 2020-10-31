@@ -7,16 +7,18 @@ namespace internal {
 
 void ListControlSimpleMultipleSelectStrategy::BeginChangingSelectionByMouseDown(const Point& position, const MouseMessage& message) {
 
-    auto index_and_count = GetItemHeightManager()->GetItemIndexAndCount(position.y, position.y);
-    if (index_and_count.second == 0) {
+    mouse_selected_index_and_count_ = GetItemHeightManager()->GetItemIndexAndCount(position.y, position.y);
+    if (mouse_selected_index_and_count_.second == 0) {
         return;
     }
 
     auto list_control = GetListControl();
-    if (list_control != nullptr) {
+    if (list_control) {
 
-        list_control->RevertSelection(index_and_count.first);
-        list_control->ScrollToItemAtIndex(index_and_count.first);
+        is_mouse_selected_index_selected_ = 
+            list_control->RevertSelection(mouse_selected_index_and_count_.first);
+
+        list_control->ScrollToItemAtIndex(mouse_selected_index_and_count_.first);
     }
 }
 
@@ -29,9 +31,17 @@ void ListControlSimpleMultipleSelectStrategy::ChangeSelectionByMouseMove(const P
 
 void ListControlSimpleMultipleSelectStrategy::EndChangingSelectionByMouseUp(const Point& position, const MouseMessage& message) {
 
+    if (mouse_selected_index_and_count_.second == 0) {
+        return;
+    }
+
     auto list_control = GetListControl();
-    if (list_control != nullptr) {
-        list_control->NotifySelectionChange();
+    if (list_control) {
+
+        list_control->NotifySelectionChange(
+            ListSelectionChangeReason::ReplaceSelection, 
+            mouse_selected_index_and_count_.first,
+            mouse_selected_index_and_count_.second);
     }
 }
 

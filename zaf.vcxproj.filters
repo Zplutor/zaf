@@ -526,6 +526,15 @@
     <ClCompile Include="src\zaf\control\internal\cached_painting.cpp">
       <Filter>zaf\control\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\tree_control\utility.cpp">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\tree_control\tree_expand_manager.cpp">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\tree_control\tree_selection_manager.cpp">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1293,6 +1302,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\container\utility\copy.h">
       <Filter>zaf\base\container\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\tree_control\utility.h">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_expand_manager.h">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_selection_manager.h">
+      <Filter>zaf\control\internal\tree_control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

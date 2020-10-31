@@ -18,13 +18,16 @@ public:
         range_manager_.AddRange(index, count);
     }
 
-    void RevertSelection(std::size_t index) {
+    //Reverts selection at index, and returns new selection state.
+    bool RevertSelection(std::size_t index) {
 
         if (range_manager_.IsPositionInRange(index)) {
             range_manager_.RemoveRange(index, 1);
+            return false;
         }
         else {
             range_manager_.AddRange(index, 1);
+            return true;
         }
     }
 

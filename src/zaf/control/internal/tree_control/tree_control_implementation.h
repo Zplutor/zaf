@@ -2,6 +2,8 @@
 
 #include <zaf/control/internal/list_control/list_control_implementation.h>
 #include <zaf/control/internal/tree_control/tree_data.h>
+#include <zaf/control/internal/tree_control/tree_expand_manager.h>
+#include <zaf/control/internal/tree_control/tree_selection_manager.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/tree_control_delegate.h>
@@ -84,6 +86,8 @@ private:
         const std::shared_ptr<Object>& item_data,
         const IndexPath& index_path);
 
+    void SetItemSelectionState(const std::shared_ptr<TreeItem>& item, const IndexPath& index_path);
+
     void ExpandItem(std::size_t list_item_index);
     void CollapseItem(std::size_t list_item_index);
 
@@ -97,13 +101,24 @@ private:
         std::shared_ptr<Object>& parent_data,
         std::size_t& child_index);
 
+    void OnListSelectionChange(
+        ListSelectionChangeReason reason,
+        std::size_t index,
+        std::size_t count);
+
+    void ChangeTreeSelection(
+        ListSelectionChangeReason reason,
+        std::size_t index,
+        std::size_t count);
+
 private:
     std::shared_ptr<internal::ListControlImplementation> list_implementation_;
     std::weak_ptr<TreeDataSource> data_source_;
     std::weak_ptr<TreeControlDelegate> delegate_;
 
-    std::map<IndexPath, std::shared_ptr<Object>> expanded_node_data_;
     TreeData tree_data_;
+    TreeExpandManager expand_manager_;
+    TreeSelectionManager selection_manager_;
 };
 
 }

@@ -41,7 +41,7 @@ void TreeItemExpandButton::SetExpandState(ExpandState state) {
 
     expand_state_ = state;
 
-    SetIsEnabled(expand_state_ != ExpandState::None);
+    SetIsVisible(expand_state_ != ExpandState::None);
     NeedRepaint();
 }
 

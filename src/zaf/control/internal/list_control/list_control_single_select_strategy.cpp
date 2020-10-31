@@ -5,21 +5,37 @@
 namespace zaf {
 namespace internal {
 
-void ListControlSingleSelectStrategy::BeginChangingSelectionByMouseDown(const Point& position, const MouseMessage& message) {
+void ListControlSingleSelectStrategy::BeginChangingSelectionByMouseDown(
+    const Point& position,
+    const MouseMessage& message) {
+
     SelectItemWithMouseEvent(position);
 }
 
 
-void ListControlSingleSelectStrategy::ChangeSelectionByMouseMove(const Point& position, const MouseMessage& message) {
+void ListControlSingleSelectStrategy::ChangeSelectionByMouseMove(
+    const Point& position,
+    const MouseMessage& message) {
+
     SelectItemWithMouseEvent(position);
 }
 
 
-void ListControlSingleSelectStrategy::EndChangingSelectionByMouseUp(const Point& position, const MouseMessage& message) {
+void ListControlSingleSelectStrategy::EndChangingSelectionByMouseUp(
+    const Point& position,
+    const MouseMessage& message) {
+
+    if (mouse_selected_index_and_count_.second == 0) {
+        return;
+    }
 
     auto list_control = GetListControl();
-    if (list_control != nullptr) {
-        list_control->NotifySelectionChange();
+    if (list_control) {
+
+        list_control->NotifySelectionChange(
+            ListSelectionChangeReason::ReplaceSelection, 
+            mouse_selected_index_and_count_.first,
+            mouse_selected_index_and_count_.second);
     }
 }
 
@@ -27,7 +43,7 @@ void ListControlSingleSelectStrategy::EndChangingSelectionByMouseUp(const Point&
 bool ListControlSingleSelectStrategy::ChangeSelectionByKeyDown(const KeyMessage& message) {
 
     auto list_control = GetListControl();
-    if (list_control == nullptr) {
+    if (!list_control) {
         return false;
     }
     
@@ -41,22 +57,30 @@ bool ListControlSingleSelectStrategy::ChangeSelectionByKeyDown(const KeyMessage&
 
     list_control->ReplaceSelection(new_selected_index, 1);
     list_control->ScrollToItemAtIndex(new_selected_index);
-    list_control->NotifySelectionChange();
+    list_control->NotifySelectionChange(
+        ListSelectionChangeReason::ReplaceSelection, 
+        new_selected_index, 
+        1);
+
     return true;
 }
 
 
 void ListControlSingleSelectStrategy::SelectItemWithMouseEvent(const Point& position) {
     
-    auto index_and_count = GetItemHeightManager()->GetItemIndexAndCount(position.y, position.y);
-    if (index_and_count.second == 0) {
+    mouse_selected_index_and_count_ = GetItemHeightManager()->GetItemIndexAndCount(position.y, position.y);
+    if (mouse_selected_index_and_count_.second == 0) {
         return;
     }
 
     auto list_control = GetListControl();
-    if (list_control != nullptr) {
-        list_control->ReplaceSelection(index_and_count.first, index_and_count.second);
-        list_control->ScrollToItemAtIndex(index_and_count.first);
+    if (list_control) {
+
+        list_control->ReplaceSelection(
+            mouse_selected_index_and_count_.first,
+            mouse_selected_index_and_count_.second);
+
+        list_control->ScrollToItemAtIndex(mouse_selected_index_and_count_.first);
     }
 }
 

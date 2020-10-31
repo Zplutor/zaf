@@ -1,7 +1,9 @@
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
 #include <zaf/base/container/utility/contain.h>
 #include <zaf/base/container/utility/find.h>
+#include <zaf/base/container/utility/range.h>
 #include <zaf/base/error/check.h>
+#include <zaf/control/internal/tree_control/utility.h>
 
 namespace zaf::internal {
 
@@ -31,6 +33,12 @@ void TreeControlImplementation::InitializeListImplementation(
         std::dynamic_pointer_cast<ListDataSource>(shared_from_this());
     list_initialize_parameters.delegate =
         std::dynamic_pointer_cast<ListControlDelegate>(shared_from_this());
+
+    list_initialize_parameters.selection_change_event = std::bind(
+        &TreeControlImplementation::OnListSelectionChange,
+        this, std::placeholders::_1,
+        std::placeholders::_2,
+        std::placeholders::_3);
 
     list_implementation_->Initialize(list_initialize_parameters);
 }
@@ -80,18 +88,17 @@ void TreeControlImplementation::Reload() {
 
 void TreeControlImplementation::ReloadRootNode() {
 
-    expanded_node_data_.clear();
-    expanded_node_data_[zaf::IndexPath{}] = nullptr;
-
     tree_data_ = TreeData{};
+    expand_manager_.Clear();
 
     auto data_source = data_source_.lock();
     if (!data_source) {
         return;
     }
 
-    std::size_t child_count = data_source->GetChildDataCount(nullptr);
-    tree_data_.AddChildren({}, 0, child_count);
+    ExpandNodeInfo root_node_info;
+    root_node_info.children_count = data_source->GetChildDataCount(nullptr);
+    expand_manager_.Expand(IndexPath{}, root_node_info, tree_data_);
 }
 
 
@@ -103,9 +110,9 @@ std::size_t TreeControlImplementation::GetDataCount() {
 std::shared_ptr<Object> TreeControlImplementation::GetDataAtIndex(std::size_t index) {
 
     auto index_path = tree_data_.GetIndexPathAtIndex(index);
-    auto data = Find(expanded_node_data_, index_path);
-    if (data) {
-        return *data;
+    auto node_info = expand_manager_.GetNodeInfo(index_path);
+    if (node_info) {
+        return node_info->node_data;
     }
 
     std::shared_ptr<Object> parent_data;
@@ -246,6 +253,7 @@ void TreeControlImplementation::LoadItem(
 
     tree_item->SetIndentDeep(index_path.size() - 1);
     SetItemExpandState(tree_item, item_data, index_path);
+    SetItemSelectionState(tree_item, index_path);
 }
 
 
@@ -262,12 +270,21 @@ void TreeControlImplementation::SetItemExpandState(
     if (!data_source->DoesDataHasChildren(item_data)) {
         item->SetExpandState(ExpandState::None);
     }
-    else if (Contain(expanded_node_data_, index_path)) {
+    else if (expand_manager_.IsNodeExpanded(index_path)) {
         item->SetExpandState(ExpandState::Expanded);
     }
     else {
         item->SetExpandState(ExpandState::Collapsed);
     }
+}
+
+
+void TreeControlImplementation::SetItemSelectionState(
+    const std::shared_ptr<TreeItem>& item, 
+    const IndexPath& index_path) {
+
+    bool is_selected = selection_manager_.IsIndexPathSelected(index_path);
+    item->SetIsSelected(is_selected);
 }
 
 
@@ -290,13 +307,16 @@ void TreeControlImplementation::ExpandItem(std::size_t list_item_index) {
     }
 
     auto data = data_source->GetChildDataAtIndex(parent_data, index_in_parent);
-    std::size_t child_count = data_source->GetChildDataCount(data);
+    std::size_t children_count = data_source->GetChildDataCount(data);
 
-    tree_data_.AddChildren(index_path, 0, child_count);
-    expanded_node_data_[index_path] = data;
+    ExpandNodeInfo node_info;
+    node_info.node_data = data;
+    node_info.children_count = children_count;
+
+    auto expanded_children_count = expand_manager_.Expand(index_path, node_info, tree_data_);
 
     NotifyDataUpdate(list_item_index, 1);
-    NotifyDataAdd(list_item_index + 1, child_count);
+    NotifyDataAdd(list_item_index + 1, expanded_children_count);
 }
 
 
@@ -308,7 +328,7 @@ void TreeControlImplementation::CollapseItem(std::size_t list_item_index) {
     }
 
     auto removed_count = tree_data_.RemoveAllChildrenRecursively(index_path);
-    expanded_node_data_.erase(index_path);
+    expand_manager_.Collapse(index_path);
 
     NotifyDataUpdate(list_item_index, 1);
     NotifyDataRemove(list_item_index + 1, removed_count);
@@ -344,12 +364,12 @@ bool TreeControlImplementation::GetParentDataAndChildIndex(
     auto parent_index_path = index_path;
     parent_index_path.pop_back();
 
-    auto parent_data_pointer = Find(expanded_node_data_, parent_index_path);
-    if (!parent_data_pointer) {
+    auto parent_node_info = expand_manager_.GetNodeInfo(parent_index_path);
+    if (!parent_node_info) {
         return false;
     }
 
-    parent_data = *parent_data_pointer;
+    parent_data = parent_node_info->node_data;
     return true;
 }
 
@@ -368,6 +388,52 @@ void TreeControlImplementation::OnItemExpandChange(
     }
     else {
         CollapseItem(list_item_index);
+    }
+}
+
+
+void TreeControlImplementation::OnListSelectionChange(
+    ListSelectionChangeReason reason,
+    std::size_t index,
+    std::size_t count) {
+
+    switch (reason) {
+    case ListSelectionChangeReason::AddSelection:
+    case ListSelectionChangeReason::RemoveSelection:
+    case ListSelectionChangeReason::ReplaceSelection:
+        ChangeTreeSelection(reason, index, count);
+        break;
+    case ListSelectionChangeReason::ItemChange:
+    default:
+        break;
+    }
+}
+
+
+void TreeControlImplementation::ChangeTreeSelection(
+    ListSelectionChangeReason reason,
+    std::size_t index,
+    std::size_t count) {
+
+    std::vector<IndexPath> affected_index_paths;
+    for (auto list_index : zaf::Range(index, index + count)) {
+
+        auto index_path = tree_data_.GetIndexPathAtIndex(list_index);
+        affected_index_paths.push_back(index_path);
+    }
+
+    switch (reason) {
+    case ListSelectionChangeReason::AddSelection:
+        selection_manager_.AddSelectedIndexPaths(affected_index_paths);
+        break;
+    case ListSelectionChangeReason::RemoveSelection:
+        selection_manager_.RemoveSelectedIndexPaths(affected_index_paths);
+        break;
+    case ListSelectionChangeReason::ReplaceSelection:
+        selection_manager_.ReplaceSelectedIndexPahts(affected_index_paths);
+        break;
+    default:
+        break;
     }
 }
 

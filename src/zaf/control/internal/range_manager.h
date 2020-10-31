@@ -41,7 +41,7 @@ public:
         return ranges_.size();
     }
 
-    const std::pair<std::size_t, std::size_t> GetRangeAtIndex(std::size_t index) const {
+    std::pair<std::size_t, std::size_t> GetRangeAtIndex(std::size_t index) const {
         if (index < GetRangeCount()) {
             return ranges_[index];
         }

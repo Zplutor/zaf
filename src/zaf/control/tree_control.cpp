@@ -63,4 +63,9 @@ void TreeControl::SetDelegate(const std::shared_ptr<TreeControlDelegate>& delega
     implementation_->SetDelegate(delegate_.GetSharedPointer());
 }
 
+
+void TreeControl::SetSelectionMode(SelectionMode selection_mode) {
+    implementation_->GetListImplementation().SetSelectionMode(selection_mode);
+}
+
 }

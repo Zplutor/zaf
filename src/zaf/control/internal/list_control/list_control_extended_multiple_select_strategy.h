@@ -10,9 +10,18 @@ class ListControlExtendedMultipleSelectStrategy : public ListControlSelectStrate
 public:
     ListControlExtendedMultipleSelectStrategy();
 
-    void BeginChangingSelectionByMouseDown(const Point& position, const MouseMessage& message) override;
-    void ChangeSelectionByMouseMove(const Point& position, const MouseMessage& message) override;
-    void EndChangingSelectionByMouseUp(const Point& position, const MouseMessage& message) override;
+    void BeginChangingSelectionByMouseDown(
+        const Point& position, 
+        const MouseMessage& message) override;
+
+    void ChangeSelectionByMouseMove(
+        const Point& position, 
+        const MouseMessage& message) override;
+
+    void EndChangingSelectionByMouseUp(
+        const Point& position,
+        const MouseMessage& message) override;
+
     bool ChangeSelectionByKeyDown(const KeyMessage& message) override;
 
 private:
@@ -31,6 +40,10 @@ private:
     std::set<std::size_t> orginally_selected_indexes_;
 
     std::size_t last_focused_index_with_shift_key_;
+
+    ListSelectionChangeReason selection_change_reason_{ ListSelectionChangeReason::AddSelection };
+    std::size_t selection_change_index_{};
+    std::size_t selection_change_count_{};
 };
 
 }

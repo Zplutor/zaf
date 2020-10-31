@@ -263,7 +263,7 @@ void ListControlImplementation::SetSelectionMode(SelectionMode mode) {
         std::size_t first_selected_index = GetFirstSelectedItemIndex();
         if (first_selected_index != InvalidIndex) {
             ReplaceSelection(first_selected_index, 1);
-            NotifySelectionChange();
+            NotifySelectionChange(ListSelectionChangeReason::ReplaceSelection, first_selected_index, 1);
         }
     }
     else if (selection_mode_ == SelectionMode::None) {
@@ -524,7 +524,7 @@ void ListControlImplementation::ItemAdd(std::size_t index, std::size_t count) {
     }
 
     if (selection_changed) {
-        NotifySelectionChange();
+        NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
     }
 }
 
@@ -586,7 +586,7 @@ void ListControlImplementation::ItemRemove(std::size_t index, std::size_t count)
     }
 
     if (selection_changed) {
-        NotifySelectionChange();
+        NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
     }
 }
 
@@ -735,7 +735,7 @@ void ListControlImplementation::SelectAllItems() {
     if (selected_count != item_count) {
 
         ReplaceSelection(0, item_count);
-        NotifySelectionChange();
+        NotifySelectionChange(ListSelectionChangeReason::ReplaceSelection, 0, item_count);
     }
 }
 
@@ -746,7 +746,7 @@ void ListControlImplementation::UnselectAllItems() {
     if (selected_count != 0) {
 
         ReplaceSelection(0, 0);
-        NotifySelectionChange();
+        NotifySelectionChange(ListSelectionChangeReason::ReplaceSelection, 0, 0);
     }
 }
 
@@ -761,18 +761,18 @@ void ListControlImplementation::SelectItemAtIndex(std::size_t index) {
 
     case SelectionMode::Single:
         ReplaceSelection(index, 1);
+        NotifySelectionChange(ListSelectionChangeReason::ReplaceSelection, index, 1);
         break;
 
     case SelectionMode::SimpleMultiple:
     case SelectionMode::ExtendedMultiple:
         AddSelection(index, 1);
+        NotifySelectionChange(ListSelectionChangeReason::AddSelection, index, 1);
         break;
 
     default:
         return;
     }
-
-    NotifySelectionChange();
 }
 
 
@@ -783,7 +783,7 @@ void ListControlImplementation::UnselectItemAtIndex(std::size_t index) {
     }
 
     RemoveSelection(index, 1);
-    NotifySelectionChange();
+    NotifySelectionChange(ListSelectionChangeReason::RemoveSelection, index, 1);
 }
 
 
@@ -881,15 +881,17 @@ void ListControlImplementation::ReplaceSelection(std::size_t index, std::size_t 
 }
 
 
-void ListControlImplementation::RevertSelection(std::size_t index) {
+bool ListControlImplementation::RevertSelection(std::size_t index) {
 
-    item_selection_manager_.RevertSelection(index);
+    bool is_selected = item_selection_manager_.RevertSelection(index);
 
     if ((first_visible_item_index_ <= index) && (index < first_visible_item_index_ + visible_items_.size())) {
 
         const auto& visible_item = visible_items_[index - first_visible_item_index_];
         visible_item->SetIsSelected(!visible_item->IsSelected());
     }
+
+    return is_selected;
 }
 
 
@@ -929,10 +931,13 @@ void ListControlImplementation::ChangeSelection(std::size_t index, std::size_t c
 }
 
 
-void ListControlImplementation::NotifySelectionChange() {
+void ListControlImplementation::NotifySelectionChange(
+    ListSelectionChangeReason change_type,
+    std::size_t index,
+    std::size_t count) {
 
     if (selection_change_event_) {
-        selection_change_event_();
+        selection_change_event_(change_type, index, count);
     }
 }
 

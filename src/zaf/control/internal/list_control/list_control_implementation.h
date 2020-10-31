@@ -15,12 +15,22 @@ namespace zaf::internal {
 class ListControlItemHeightManager;
 class ListControlItemSelectionManager;
 
+enum class ListSelectionChangeReason {
+    ItemChange,
+    ReplaceSelection,
+    AddSelection,
+    RemoveSelection,
+};
+
 class ListControlImplementation : public std::enable_shared_from_this<ListControlImplementation> {
 public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<ListDataSource>&)>;
     using DelegateChangeEvent = std::function<void(const std::shared_ptr<ListControlDelegate>&)>;
     using ItemContainerChangeEvent = std::function<void(const std::shared_ptr<ListItemContainer>&)>;
-    using SelectionChangeEvent = std::function<void()>;
+    using SelectionChangeEvent = std::function<void(
+        ListSelectionChangeReason change_type, 
+        std::size_t index, 
+        std::size_t count)>;
 
     class InitializeParameters {
     public:
@@ -77,10 +87,13 @@ private:
     friend class ListControlSimpleMultipleSelectStrategy;
 
     void ReplaceSelection(std::size_t index, std::size_t count);
-    void RevertSelection(std::size_t index);
+    bool RevertSelection(std::size_t index);
     void AddSelection(std::size_t index, std::size_t count);
     void RemoveSelection(std::size_t index, std::size_t count);
-    void NotifySelectionChange();
+    void NotifySelectionChange(
+        ListSelectionChangeReason change_type, 
+        std::size_t index,
+        std::size_t count);
 
 private:
     void InstallDataSource(const std::shared_ptr<ListDataSource>& data_source);

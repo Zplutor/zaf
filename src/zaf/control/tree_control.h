@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/control/scrollable_control.h>
+#include <zaf/control/selection_mode.h>
 #include <zaf/internal/no_circular_pointer.h>
 
 namespace zaf {
@@ -19,6 +20,8 @@ public:
 
     void SetDataSource(const std::shared_ptr<TreeDataSource>& data_source);
     void SetDelegate(const std::shared_ptr<TreeControlDelegate>& delegate);
+
+    void SetSelectionMode(SelectionMode selection_mode);
 
 protected:
     void Initialize() override;

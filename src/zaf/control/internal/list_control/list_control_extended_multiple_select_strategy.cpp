@@ -9,7 +9,12 @@
 namespace zaf {
 namespace internal {
 
-inline void MakeSelectionRange(std::size_t index1, std::size_t index2, std::size_t& select_index, std::size_t& select_count) {
+inline void MakeSelectionRange(
+    std::size_t index1, 
+    std::size_t index2, 
+    std::size_t& select_index, 
+    std::size_t& select_count) {
+
     select_index = std::min(index1, index2);
     select_count = std::max(index1, index2) - select_index + 1;
 }
@@ -25,17 +30,25 @@ ListControlExtendedMultipleSelectStrategy::ListControlExtendedMultipleSelectStra
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::BeginChangingSelectionByMouseDown(const Point& position, const MouseMessage& message) {
+void ListControlExtendedMultipleSelectStrategy::BeginChangingSelectionByMouseDown(
+    const Point& position,
+    const MouseMessage& message) {
+
     SelectItemsByMouseEvent(position, false);
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::ChangeSelectionByMouseMove(const Point& position, const MouseMessage& message) {
+void ListControlExtendedMultipleSelectStrategy::ChangeSelectionByMouseMove(
+    const Point& position,
+    const MouseMessage& message) {
+
     SelectItemsByMouseEvent(position, true);
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEvent(const Point& position, bool is_mouse_moving) {
+void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEvent(
+    const Point& position,
+    bool is_mouse_moving) {
 
     auto index_and_count = GetItemHeightManager()->GetItemIndexAndCount(position.y, position.y);
     if (index_and_count.second == 0) {
@@ -71,21 +84,29 @@ void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEvent(const Po
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::SelectItemsBetweenFocusedAndSpecified(std::size_t index) {
+void ListControlExtendedMultipleSelectStrategy::SelectItemsBetweenFocusedAndSpecified(
+    std::size_t index) {
 
     std::size_t select_index = 0;
     std::size_t select_count = 0;
     MakeSelectionRange(index, focused_index_, select_index, select_count);
 
     auto list_control = GetListControl();
-    if (list_control != nullptr) {
+    if (list_control) {
+
         list_control->ReplaceSelection(select_index, select_count);
         list_control->ScrollToItemAtIndex(index);
+
+        selection_change_reason_ = ListSelectionChangeReason::ReplaceSelection;
+        selection_change_index_ = select_index;
+        selection_change_count_ = select_count;
     }
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEventWithControlKey(std::size_t current_index, bool is_mouse_moving) {
+void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEventWithControlKey(
+    std::size_t current_index, 
+    bool is_mouse_moving) {
 
     if (! is_mouse_moving) {
 
@@ -117,17 +138,24 @@ void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEventWithContr
         //Add or remove newly selection.
         if (is_focused_index_orginally_selected_) {
             list_control->RemoveSelection(select_index, select_count);
+            selection_change_reason_ = ListSelectionChangeReason::RemoveSelection;
         }
         else {
             list_control->AddSelection(select_index, select_count);
+            selection_change_reason_ = ListSelectionChangeReason::AddSelection;
         }
+
+        selection_change_index_ = select_index;
+        selection_change_count_ = select_count;
 
         list_control->ScrollToItemAtIndex(current_index);
     }
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::RecoverSelectionStatesNotInRange(std::size_t index, std::size_t count) {
+void ListControlExtendedMultipleSelectStrategy::RecoverSelectionStatesNotInRange(
+    std::size_t index,
+    std::size_t count) {
 
     auto list_control = GetListControl();
     if (list_control == nullptr) {
@@ -186,15 +214,27 @@ void ListControlExtendedMultipleSelectStrategy::RecordSelectionStatesInRange(std
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::EndChangingSelectionByMouseUp(const Point& position, const MouseMessage& message) {
+void ListControlExtendedMultipleSelectStrategy::EndChangingSelectionByMouseUp(
+    const Point& position,
+    const MouseMessage& message) {
 
     orginally_recorded_index_ = 0;
     orginally_recorded_count_ = 0;
     orginally_selected_indexes_.clear();
 
-    auto list_control = GetListControl();
-    if (list_control != nullptr) {
-        list_control->NotifySelectionChange();
+    if (selection_change_count_ != 0) {
+
+        auto list_control = GetListControl();
+        if (list_control) {
+
+            list_control->NotifySelectionChange(
+                selection_change_reason_,
+                selection_change_index_,
+                selection_change_count_);
+        }
+
+        selection_change_index_ = 0;
+        selection_change_count_ = 0;
     }
 }
 
@@ -236,10 +276,15 @@ bool ListControlExtendedMultipleSelectStrategy::ChangeSelectionByKeyDown(const K
     last_focused_index_with_shift_key_ = new_index;
 
     auto list_control = GetListControl();
-    if (list_control != nullptr) {
+    if (list_control) {
+
         list_control->ReplaceSelection(select_range_index, select_range_count);
         list_control->ScrollToItemAtIndex(new_index);
-        list_control->NotifySelectionChange();
+
+        list_control->NotifySelectionChange(
+            ListSelectionChangeReason::ReplaceSelection,
+            select_range_index, 
+            select_range_count);
     }
 
     return true;

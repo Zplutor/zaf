@@ -1,5 +1,6 @@
 #include <zaf/control/internal/tree_control/tree_data.h>
-#include <zaf/base/container/utility/range.h>
+#include <zaf/base/error/check.h>
+#include <zaf/control/internal/tree_control/utility.h>
 
 namespace zaf::internal {
 namespace {
@@ -147,23 +148,6 @@ void EnumerateNodes(
         //Enter next expaned node
         iterator = next_iterator;
     }
-}
-
-
-bool IsParentOf(const IndexPath& parent, const IndexPath& path) {
-
-    if (parent.size() >= path.size()) {
-        return false;
-    }
-
-    for (auto index : zaf::Range(parent.size())) {
-
-        if (parent[index] != path[index]) {
-            return false;
-        }
-    }
-    
-    return true;
 }
 
 }
@@ -320,9 +304,7 @@ void TreeData::AddChildren(const IndexPath& parent, std::size_t index, std::size
         if (current_path == parent) {
 
             //Check index.
-            if (index > iterator->second) {
-                return;
-            }
+            ZAF_CHECK(index <= iterator->second);
 
             //Increase children count.
             iterator->second += count;
@@ -333,7 +315,7 @@ void TreeData::AddChildren(const IndexPath& parent, std::size_t index, std::size
 
         if (has_added) {
         
-            if (IsParentOf(parent, current_path)) {
+            if (IsAncestorOf(parent, current_path)) {
         
                 //Update children's index path.
                 auto& child_index = current_path[parent.size()];
@@ -344,12 +326,10 @@ void TreeData::AddChildren(const IndexPath& parent, std::size_t index, std::size
         }
         else {
 
-            if (!IsParentOf(parent, current_path)) {
+            if (!IsAncestorOf(parent, current_path)) {
 
                 //Insert new node, index must be 0.
-                if (index != 0) {
-                    return;
-                }
+                ZAF_CHECK(index == 0);
 
                 node_child_count_pairs.insert(iterator, std::make_pair(parent, count));
                 return;
@@ -360,6 +340,23 @@ void TreeData::AddChildren(const IndexPath& parent, std::size_t index, std::size
     if (!has_added) {
         node_child_count_pairs.push_back(std::make_pair(parent, count));
     }
+
+#ifndef NDEBUG
+    //Ensure parent's parent is in the tree.
+    if (parent.empty()) {
+        return;
+    }
+
+    auto grand_parent = parent;
+    grand_parent.pop_back();
+
+    for (const auto& each_pair : node_child_count_pairs) {
+        if (each_pair.first == grand_parent) {
+            return;
+        }
+    }
+    ZAF_CHECK(false);
+#endif
 }
 
 
@@ -397,7 +394,7 @@ void TreeData::RemoveChildren(const IndexPath& parent, std::size_t index, std::s
             continue;
         }
 
-        if (!IsParentOf(parent, current_path)) {
+        if (!IsAncestorOf(parent, current_path)) {
             return;
         }
 
@@ -424,7 +421,7 @@ std::size_t TreeData::RemoveAllChildrenRecursively(const IndexPath& parent) {
         }
 
         if (current_path == parent || 
-            IsParentOf(parent, current_path)) {
+            IsAncestorOf(parent, current_path)) {
 
             removed_count += iterator->second;
             iterator = node_child_count_pairs.erase(iterator);

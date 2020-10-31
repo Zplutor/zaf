@@ -173,6 +173,7 @@ void BeginRun(zaf::Application& application) {
     tree_control->SetRect(zaf::Rect{ 10, 10, 300, 400 });
     tree_control->SetDataSource(item_source);
     tree_control->SetDelegate(item_source);
+    tree_control->SetSelectionMode(zaf::SelectionMode::ExtendedMultiple);
 
     root_control->AddChild(tree_control);
 
