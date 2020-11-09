@@ -1,19 +1,21 @@
 #pragma once
 
 #include <optional>
-#include <zaf/base/event.h>
 #include <zaf/control/control.h>
+#include <zaf/rx/subject.h>
+#include <zaf/rx/subscription_holder.h>
 
 namespace zaf {
 
 class SplitControlSplitBar;
+class SplitControlSplitBarBeginDragInfo;
+class SplitControlSplitBarDistanceChangeInfo;
+class SplitControlSplitBarDragInfo;
+class SplitControlSplitBarEndDragInfo;
 
 class SplitControl : public Control {
 public:
     ZAF_DECLARE_REFLECTION_TYPE
-
-public:
-    typedef Event<const std::shared_ptr<SplitControl>&, float> SplitBarDistanceChangeEvent;
 
 public:
     SplitControl();
@@ -37,7 +39,7 @@ public:
     bool IsSplitBarDistanceFlipped() const;
     void SetIsSplitBarDistanceFlipped(bool is_flipped);
 
-    SplitBarDistanceChangeEvent::Proxy GetSplitBarDistanceChangeEvent();
+    Observable<SplitControlSplitBarDistanceChangeInfo> SplitBarDistanceChangeEvent();
 
     const std::shared_ptr<SplitControlSplitBar>& GetSplitBar() const {
         return split_bar_;
@@ -90,6 +92,8 @@ private:
     std::shared_ptr<Control> first_pane_;
     std::shared_ptr<Control> second_pane_;
 
+    zaf::SubscriptionHolder split_bar_subscriptions_;
+
     float actual_split_bar_distance_ = 0;
     std::optional<float> expected_split_bar_distance_;
     std::optional<float> expected_split_bar_min_distance_;
@@ -100,16 +104,20 @@ private:
 };
 
 
+class SplitControlSplitBarDistanceChangeInfo {
+public:
+    std::shared_ptr<SplitControl> split_control;
+    float previous_distance{};
+};
+
+
 class SplitControlSplitBar : public Control {
 public:
     ZAF_DECLARE_REFLECTION_TYPE
 
 public:
-    typedef Event<const std::shared_ptr<SplitControlSplitBar>&> BeginDragEvent;
-    typedef Event<const std::shared_ptr<SplitControlSplitBar>&> DragEvent;
-    typedef Event<const std::shared_ptr<SplitControlSplitBar>&> EndDragEvent;
+    SplitControlSplitBar();
 
-public:
     bool IsHorizontal() const {
         return is_horizontal_;
     }
@@ -129,16 +137,16 @@ public:
         SetSplitterColorPicker([color](const Control&) { return color; });
     }
 
-    BeginDragEvent::Proxy GetBeginDragEvent() {
-        return BeginDragEvent::Proxy(begin_drag_event_);
+    Observable<SplitControlSplitBarBeginDragInfo> BeginDragEvent() {
+        return begin_drag_event_.GetObservable();
     }
 
-    DragEvent::Proxy GetDragEvent() {
-        return DragEvent::Proxy(drag_event_);
+    Observable<SplitControlSplitBarDragInfo> DragEvent() {
+        return drag_event_.GetObservable();
     }
 
-    EndDragEvent::Proxy GetEndDragEvent() {
-        return EndDragEvent::Proxy(end_drag_event_);
+    Observable<SplitControlSplitBarEndDragInfo> EndDragEvent() {
+        return end_drag_event_.GetObservable();
     }
 
 protected:
@@ -153,9 +161,26 @@ protected:
 
 private:
     bool is_horizontal_ = false;
-    BeginDragEvent begin_drag_event_;
-    DragEvent drag_event_;
-    EndDragEvent end_drag_event_;
+
+    Subject<SplitControlSplitBarBeginDragInfo> begin_drag_event_;
+    Subject<SplitControlSplitBarDragInfo> drag_event_;
+    Subject<SplitControlSplitBarEndDragInfo> end_drag_event_;
+};
+
+
+class SplitControlSplitBarBeginDragInfo {
+public:
+    std::shared_ptr<SplitControlSplitBar> split_bar;
+};
+
+class SplitControlSplitBarDragInfo {
+public:
+    std::shared_ptr<SplitControlSplitBar> split_bar;
+};
+
+class SplitControlSplitBarEndDragInfo {
+public:
+    std::shared_ptr<SplitControlSplitBar> split_bar;
 };
 
 }

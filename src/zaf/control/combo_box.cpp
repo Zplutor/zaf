@@ -1,6 +1,7 @@
 #include <zaf/control/combo_box.h>
 #include <algorithm>
 #include <zaf/application.h>
+#include <zaf/base/container/utility/range.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/control/button.h>
 #include <zaf/control/internal/combo_box_drop_down_window.h>
@@ -60,10 +61,6 @@ ComboBox::ComboBox() :
 
 ComboBox::~ComboBox() {
 
-    if (drop_down_window_ != nullptr) {
-        drop_down_window_->GetCloseEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
-    }
-
     UninitializeDropDownListBox();
     UninitializeEditTextBox();
 }
@@ -102,8 +99,8 @@ void ComboBox::Initialize() {
     drop_down_window_->SetStyle(Window::Style::Popup);
     drop_down_window_->SetBorderStyle(Window::BorderStyle::None);
     drop_down_window_->SetInitialRectStyle(Window::InitialRectStyle::Custom);
-    drop_down_window_->GetCloseEvent().AddListenerWithTag(
-        reinterpret_cast<std::uintptr_t>(this), 
+
+    Subscriptions() += drop_down_window_->CloseEvent().Subscribe(
         std::bind(&ComboBox::DropDownWindowClose, this));
 
     drop_down_list_box_ = Create<ComboBoxDropDownListBox>();
@@ -116,10 +113,10 @@ void ComboBox::Initialize() {
 
 void ComboBox::InitializeDropDownListBox() {
 
-    drop_down_list_box_->SetMouseMoveCallback(std::bind(&ComboBox::DropDownListBoxMouseMove, this, std::placeholders::_1));
+    drop_down_list_box_->SetMouseMoveCallback(
+        std::bind(&ComboBox::DropDownListBoxMouseMove, this, std::placeholders::_1));
 
-    drop_down_list_box_->GetSelectionChangeEvent().AddListenerWithTag(
-        reinterpret_cast<std::uintptr_t>(this),
+    drop_down_list_box_subscription_ = drop_down_list_box_->SelectionChangeEvent().Subscribe(
         std::bind(&ComboBox::DropDownListBoxSelectionChange, this));
 
     drop_down_window_->SetListControl(drop_down_list_box_);
@@ -131,8 +128,9 @@ void ComboBox::UninitializeDropDownListBox() {
     if (drop_down_list_box_ == nullptr) {
         return;
     }
+
     drop_down_list_box_->SetMouseMoveCallback(nullptr);
-    drop_down_list_box_->GetSelectionChangeEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
+    drop_down_list_box_subscription_.Unsubscribe();
 }
 
 
@@ -144,8 +142,8 @@ void ComboBox::InitializeEditTextBox() {
     edit_text_box_->SetParagraphAlignment(ParagraphAlignment::Center);
     edit_text_box_->SetIsMultiline(false);
     edit_text_box_->SetAcceptReturn(false);
-    edit_text_box_->GetTextChangeEvent().AddListenerWithTag(
-        reinterpret_cast<std::uintptr_t>(this), 
+
+    edit_text_box_subscription_ = edit_text_box_->TextChangeEvent().Subscribe(
         std::bind(&ComboBox::EditTextBoxTextChange, this));
 }
 
@@ -157,7 +155,7 @@ void ComboBox::UninitializeEditTextBox() {
     }
 
     RemoveChild(edit_text_box_);
-    edit_text_box_->GetTextChangeEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
+    edit_text_box_subscription_.Unsubscribe();
 }
 
 
@@ -325,8 +323,11 @@ void ComboBox::SetIsEditable(bool is_editable) {
 }
 
 
-ComboBox::SelectionChangeEvent::Proxy ComboBox::GetSelectionChangeEvent() {
-    return GetEventProxyFromPropertyMap<SelectionChangeEvent>(GetPropertyMap(), kSelectionChangeEventPropertyName);
+Observable<ComboBoxSelectionChangeInfo> ComboBox::SelectionChangeEvent() {
+
+    return GetEventObservable<ComboBoxSelectionChangeInfo>(
+        GetPropertyMap(),
+        kSelectionChangeEventPropertyName);
 }
 
 
@@ -413,7 +414,9 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
     auto delegate = drop_down_list_box_->GetDelegate();
 
     if (delegate->HasVariableItemHeight()) {
-        for (std::size_t index = 0; index < visible_item_count; ++index) {
+
+        std::size_t item_count = data_source->GetDataCount();
+        for (auto index : Range(std::min(item_count, visible_item_count))) {
             auto item_data = data_source->GetDataAtIndex(index);
             height += delegate->EstimateItemHeight(index, item_data);
         }
@@ -633,10 +636,17 @@ void ComboBox::NotifySelectionChange() {
 
     SelectionChange();
 
-    auto event = TryGetEventFromPropertyMap<SelectionChangeEvent>(GetPropertyMap(), kSelectionChangeEventPropertyName);
-    if (event != nullptr) {
-        event->Trigger(std::dynamic_pointer_cast<ComboBox>(shared_from_this()));
+    auto observer = GetEventObserver<ComboBoxSelectionChangeInfo>(
+        GetPropertyMap(),
+        kSelectionChangeEventPropertyName);
+
+    if (!observer) {
+        return;
     }
+
+    ComboBoxSelectionChangeInfo event_info;
+    event_info.combo_box = std::dynamic_pointer_cast<ComboBox>(shared_from_this());
+    observer->OnNext(event_info);
 }
 
 

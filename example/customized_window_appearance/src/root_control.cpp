@@ -20,19 +20,19 @@ void RootControl::Initialize() {
 
     close_button_ = zaf::Create<TitleBarButton>(TitleBarButton::Type::Close);
     close_button_->SetRect(zaf::Rect(8, 4, 12, 12));
-    close_button_->GetClickEvent().AddListener(std::bind([this]() {
+    Subscriptions() += close_button_->ClickEvent().Subscribe(std::bind([this]() {
         GetWindow()->Close();
     }));
    
     minimize_button_ = zaf::Create<TitleBarButton>(TitleBarButton::Type::Minimize);
     minimize_button_->SetRect(zaf::Rect(28, 4, 12, 12));
-    minimize_button_->GetClickEvent().AddListener(std::bind([this]() {
+    Subscriptions() += minimize_button_->ClickEvent().Subscribe(std::bind([this]() {
         GetWindow()->Minimize();
     }));
 
     maximize_button_ = zaf::Create<TitleBarButton>(TitleBarButton::Type::Maximize);
     maximize_button_->SetRect(zaf::Rect(48, 4, 12, 12));
-    maximize_button_->GetClickEvent().AddListener(std::bind([this]() {
+    Subscriptions() += maximize_button_->ClickEvent().Subscribe(std::bind([this]() {
         GetWindow()->Maximize();
     }));
 

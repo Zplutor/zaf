@@ -7,6 +7,7 @@
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/radio_button_parser.h>
 #include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/rx/subject.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
@@ -179,15 +180,23 @@ void RadioButton::SetIsSelected(bool is_selected) {
 		group_->RadioButtonSelected(shared_this);
 	}
 
-    auto event = TryGetEventFromPropertyMap<SelectStateChangeEvent>(GetPropertyMap(), kSelectStateChangeEventProprtyName);
-	if (event != nullptr) {
-		event->Trigger(shared_this);
+	auto observer = GetEventObserver<RadioButtonSelectStateChangeInfo>(
+		GetPropertyMap(),
+		kSelectStateChangeEventProprtyName);
+
+	if (observer) {
+		RadioButtonSelectStateChangeInfo event_info;
+		event_info.radio_button = shared_this;
+		observer->OnNext(event_info);
 	}
 }
 
 
-RadioButton::SelectStateChangeEvent::Proxy RadioButton::GetSelectStateChangeEvent() {
-    return GetEventProxyFromPropertyMap<SelectStateChangeEvent>(GetPropertyMap(), kSelectStateChangeEventProprtyName);
+Observable<RadioButtonSelectStateChangeInfo> RadioButton::SelectStateChangeEvent() {
+
+	return GetEventObservable<RadioButtonSelectStateChangeInfo>(
+		GetPropertyMap(),
+		kSelectStateChangeEventProprtyName);
 }
 
 

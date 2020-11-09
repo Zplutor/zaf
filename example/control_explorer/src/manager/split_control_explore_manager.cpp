@@ -83,7 +83,9 @@ std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateSplitBarDistance
         [split_control]() { return split_control->GetSplitBarDistance(); },
         [split_control](float value) { split_control->SetSplitBarDistance(value); },
         [split_control](const std::function<void()>& callback) {
-            split_control->GetSplitBarDistanceChangeEvent().AddListener(std::bind(callback));
+
+            split_control->Subscriptions() +=
+                split_control->SplitBarDistanceChangeEvent().Subscribe(std::bind(callback));
         });
 }
 
@@ -96,7 +98,9 @@ std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateMinimumSplitBarD
         [split_control]() { return split_control->GetMinimumSplitBarDistance(); },
         [split_control](float value) { split_control->SetMinimumSplitBarDistance(value); },
         [split_control](const std::function<void()>& callback) {
-            split_control->GetSplitBarDistanceChangeEvent().AddListener(std::bind(callback));
+
+            split_control->Subscriptions() +=
+                split_control->SplitBarDistanceChangeEvent().Subscribe(std::bind(callback));
         });
 }
 
@@ -109,6 +113,8 @@ std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateMaximumSplitBarD
         [split_control]() { return split_control->GetMaximumSplitBarDistance(); },
         [split_control](float value) { split_control->SetMaximumSplitBarDistance(value); },
         [split_control](const std::function<void()>& callback) {
-            split_control->GetSplitBarDistanceChangeEvent().AddListener(std::bind(callback));
+
+            split_control->Subscriptions() +=
+                split_control->SplitBarDistanceChangeEvent().Subscribe(std::bind(callback));
         });
 }

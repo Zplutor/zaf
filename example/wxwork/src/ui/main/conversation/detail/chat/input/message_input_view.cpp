@@ -13,7 +13,8 @@ void MessageInputView::Initialize() {
     text_box_ = zaf::Create<zaf::TextBox>();
     text_box_->SetBorder(0);
     text_box_->SetBackgroundColor(zaf::Color::Transparent());
-    text_box_->GetFocusChangeEvent().AddListener(std::bind(&MessageInputView::TextBoxFocusChange, this));
+    Subscriptions() += text_box_->FocusChangeEvent().Subscribe(
+        std::bind(&MessageInputView::TextBoxFocusChange, this));
     AddChild(text_box_);
 
     send_button_ = zaf::Create<zaf::Button>();
@@ -24,7 +25,9 @@ void MessageInputView::Initialize() {
     });
     send_button_->SetText(L"Send");
     send_button_->SetCanFocused(false);
-    send_button_->GetClickEvent().AddListener(std::bind(&MessageInputView::SendButtonClick, this));
+
+    Subscriptions() += send_button_->ClickEvent().Subscribe(
+        std::bind(&MessageInputView::SendButtonClick, this));
 
     auto send_button_container = zaf::Create<zaf::Control>();
     send_button_container->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());

@@ -4,6 +4,7 @@
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/list_box.h>
 #include <zaf/control/text_box.h>
+#include <zaf/rx/observable.h>
 
 namespace zaf {
 namespace internal {
@@ -12,6 +13,7 @@ class ComboBoxDropDownWindow;
 
 class ComboBoxDropDownListBox;
 class ComboBoxEditTextBox;
+class ComboBoxSelectionChangeInfo;
 
 /**
  Represents a combo box control.
@@ -19,12 +21,6 @@ class ComboBoxEditTextBox;
 class ComboBox : public ClickableControl {
 public:
     ZAF_DECLARE_REFLECTION_TYPE
-
-public:
-    /**
-     Type of selection change event.
-     */
-    typedef Event<const std::shared_ptr<ComboBox>&> SelectionChangeEvent;
 
 public:
     ComboBox();
@@ -113,7 +109,7 @@ public:
 
      This event is raised when the selection of combo box is changed.
      */
-    SelectionChangeEvent::Proxy GetSelectionChangeEvent();
+    Observable<ComboBoxSelectionChangeInfo> SelectionChangeEvent();
 
     /**
      Get the drop down list box used in combo box.
@@ -274,14 +270,22 @@ private:
 
 private:
     std::shared_ptr<ComboBoxEditTextBox> edit_text_box_;
+    Subscription edit_text_box_subscription_;
     std::shared_ptr<internal::ComboBoxDropDownWindow> drop_down_window_;
     std::shared_ptr<ComboBoxDropDownListBox> drop_down_list_box_;
+    Subscription drop_down_list_box_subscription_;
 
     GuardedValue<DropDownListBoxAction> drop_down_list_box_action_;
     GuardedValue<EditTextBoxAction> edit_text_box_action_;
     GuardedValue<TextChangeSource> text_change_source_;
 
     std::optional<std::size_t> recovered_selected_index_;
+};
+
+
+class ComboBoxSelectionChangeInfo {
+public:
+    std::shared_ptr<ComboBox> combo_box;
 };
 
 

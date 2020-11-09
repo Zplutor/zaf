@@ -99,7 +99,9 @@ std::shared_ptr<PropertyItem> ScrollBarExploreManager::CreateValuePropertyItem()
         [scroll_bar]() { return scroll_bar->GetValue(); },
         [scroll_bar](std::int64_t value) { scroll_bar->SetValue(static_cast<int>(value)); },
         [scroll_bar](const std::function<void()>& callback) {
-            scroll_bar->GetScrollEvent().AddListener(std::bind(callback));
+
+            scroll_bar->Subscriptions() +=
+                scroll_bar->ScrollEvent().Subscribe(std::bind(callback));
         }
     );
 }

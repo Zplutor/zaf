@@ -64,10 +64,14 @@ void SplitControl::InitializeSplitBar() {
 
     split_bar_->SetIsHorizontal(IsHorizontalSplit());
 
-    auto tag = reinterpret_cast<std::uintptr_t>(this);
-    split_bar_->GetBeginDragEvent().AddListenerWithTag(tag, std::bind(&SplitControl::SplitBarBeginDrag, this));
-    split_bar_->GetDragEvent().AddListenerWithTag(tag, std::bind(&SplitControl::SplitBarDrag, this));
-    split_bar_->GetEndDragEvent().AddListenerWithTag(tag, std::bind(&SplitControl::SplitBarEndDrag, this));
+    split_bar_subscriptions_ += split_bar_->BeginDragEvent().Subscribe(
+        std::bind(&SplitControl::SplitBarBeginDrag, this));
+
+    split_bar_subscriptions_ += split_bar_->DragEvent().Subscribe(
+        std::bind(&SplitControl::SplitBarDrag, this));
+
+    split_bar_subscriptions_ += split_bar_->EndDragEvent().Subscribe(
+        std::bind(&SplitControl::SplitBarEndDrag, this));
 
     AddChild(split_bar_);
 }
@@ -79,10 +83,7 @@ void SplitControl::UninitializeSplitBar() {
         return;
     }
 
-    auto tag = reinterpret_cast<std::uintptr_t>(this);
-    split_bar_->GetBeginDragEvent().RemoveListenersWithTag(tag);
-    split_bar_->GetDragEvent().RemoveListenersWithTag(tag);
-    split_bar_->GetEndDragEvent().RemoveListenersWithTag(tag);
+    split_bar_subscriptions_.Clear();
 
     RemoveChild(split_bar_);
 }
@@ -165,12 +166,15 @@ void SplitControl::UpdateActualSplitBarDistance() {
         actual_split_bar_distance_ = distance;
 
         //Raise the event.
-        auto event = TryGetEventFromPropertyMap<SplitBarDistanceChangeEvent>(
+        auto event_observer = GetEventObserver<SplitControlSplitBarDistanceChangeInfo>(
             GetPropertyMap(),
             kSplitBarDistanceChangeEventPropertyName);
 
-        if (event != nullptr) {
-            event->Trigger(std::dynamic_pointer_cast<SplitControl>(shared_from_this()), previous_distance);
+        if (event_observer) {
+            SplitControlSplitBarDistanceChangeInfo event_info;
+            event_info.split_control = std::dynamic_pointer_cast<SplitControl>(shared_from_this());
+            event_info.previous_distance = previous_distance;
+            event_observer->OnNext(event_info);
         }
     }
 }
@@ -355,8 +359,8 @@ float SplitControl::GetUnflippedSplitBarDistance() const {
 }
 
 
-SplitControl::SplitBarDistanceChangeEvent::Proxy SplitControl::GetSplitBarDistanceChangeEvent() {
-    return GetEventProxyFromPropertyMap<SplitBarDistanceChangeEvent>(
+Observable<SplitControlSplitBarDistanceChangeInfo> SplitControl::SplitBarDistanceChangeEvent() {
+    return GetEventObservable<SplitControlSplitBarDistanceChangeInfo>(
         GetPropertyMap(),
         kSplitBarDistanceChangeEventPropertyName);
 }
@@ -444,6 +448,11 @@ float SplitControl::GetSplitBarDragPosition() const {
 }
 
 
+SplitControlSplitBar::SplitControlSplitBar() {
+
+}
+
+
 void SplitControlSplitBar::Initialize() {
 
     __super::Initialize();
@@ -504,7 +513,10 @@ void SplitControlSplitBar::ChangeMouseCursor(const Message& message, bool& is_ch
 bool SplitControlSplitBar::MouseMove(const Point& position, const MouseMessage& message) {
 
     if (IsCapturingMouse()) {
-        drag_event_.Trigger(std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this()));
+
+        SplitControlSplitBarDragInfo event_info;
+        event_info.split_bar = std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this());
+        drag_event_.GetObserver().OnNext(event_info);
     }
     return true;
 }
@@ -530,13 +542,17 @@ bool SplitControlSplitBar::MouseUp(const Point& position, const MouseMessage& me
 
 void SplitControlSplitBar::MouseCapture() {
 
-    begin_drag_event_.Trigger(std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this()));
+    SplitControlSplitBarBeginDragInfo event_info;
+    event_info.split_bar = std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this());
+    begin_drag_event_.GetObserver().OnNext(event_info);
 }
 
 
 void SplitControlSplitBar::MouseRelease() {
 
-    end_drag_event_.Trigger(std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this()));
+    SplitControlSplitBarEndDragInfo event_info;
+    event_info.split_bar = std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this());
+    end_drag_event_.GetObserver().OnNext(event_info);
 }
 
 

@@ -6,6 +6,7 @@
 #include <zaf/parsing/parsers/clickable_control_parser.h>
 #include <zaf/reflection/reflection_type.h>
 #include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/rx/subject.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -40,8 +41,8 @@ void ClickableControl::Initialize() {
 }
 
 
-ClickableControl::ClickEvent::Proxy ClickableControl::GetClickEvent() {
-    return GetEventProxyFromPropertyMap<ClickEvent>(GetPropertyMap(), kClickEventPropertyName);
+Observable<ClickableControlClickInfo> ClickableControl::ClickEvent() {
+	return GetEventObservable<ClickableControlClickInfo>(GetPropertyMap(), kClickEventPropertyName);
 }
 
 
@@ -49,10 +50,17 @@ void ClickableControl::Click() {
 
     MouseClick();
 
-    auto click_event = TryGetEventFromPropertyMap<ClickEvent>(GetPropertyMap(), kClickEventPropertyName);
-    if (click_event != nullptr) {
-        click_event->Trigger(std::dynamic_pointer_cast<ClickableControl>(shared_from_this()));
-    }
+	auto observer = GetEventObserver<ClickableControlClickInfo>(
+		GetPropertyMap(),
+		kClickEventPropertyName);
+
+	if (!observer) {
+		return;
+	}
+
+	ClickableControlClickInfo event_info;
+	event_info.clickable_control = std::dynamic_pointer_cast<ClickableControl>(shared_from_this());
+	observer->OnNext(event_info);
 }
 
 

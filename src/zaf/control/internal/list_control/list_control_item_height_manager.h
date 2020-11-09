@@ -2,13 +2,11 @@
 
 #include <memory>
 #include <vector>
+#include <zaf/control/list_control_delegate.h>
+#include <zaf/control/list_data_source.h>
+#include <zaf/rx/subscription_holder.h>
 
-namespace zaf {
-
-class ListControlDelegate;
-class ListDataSource;
-
-namespace internal {
+namespace zaf::internal {
 
 class ListControlItemHeightManager {
 public:
@@ -34,18 +32,18 @@ private:
     void RegisterDataSourceEvents();
     void UnregisterDataSourceEvents();
 
-    void ItemAdd(std::size_t index, std::size_t count);
-    void ItemRemove(std::size_t index, std::size_t count);
-    void ItemUpdate(std::size_t index, std::size_t count);
+    void ItemAdd(const ListDataSourceDataAddInfo& event_info);
+    void ItemRemove(const ListDataSourceDataRemoveInfo& event_info);
+    void ItemUpdate(const ListDataSourceDataUpdateInfo& event_info);
 
 private:
     std::weak_ptr<ListDataSource> data_source_{};
     std::weak_ptr<ListControlDelegate> delegate_{};
+    SubscriptionHolder data_source_subscriptions_;
     std::size_t item_count_{};
     bool has_variable_heights_{};
     float item_height_{};
     std::vector<float> item_positions_;
 };
 
-}
 }

@@ -41,9 +41,9 @@ void Caret::Show() {
 
 	blink_timer_ = std::make_shared<Timer>(Timer::Mode::DeferredRepeated);
     blink_timer_->SetInterval(std::chrono::milliseconds(blink_time));
-    blink_timer_->GetTriggerEvent().AddListener([this](Timer&) {
+    Subscriptions() += blink_timer_->TriggerEvent().Subscribe(std::bind([this]() {
         NeedRepaint(!is_visible_);
-    });
+    }));
 	blink_timer_->Start();
 
     CreateSystemCaret();

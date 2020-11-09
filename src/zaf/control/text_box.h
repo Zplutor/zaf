@@ -3,7 +3,6 @@
 #include <atlbase.h>
 #include <Richedit.h>
 #include <TextServ.h>
-#include <zaf/base/event.h>
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/text_validator.h>
 #include <zaf/control/textual_control.h>
@@ -12,18 +11,14 @@
 
 namespace zaf {
 
+class TextBoxSelectionChangeInfo;
+
 /**
  Represents a text box control.   
  */
 class TextBox : public TextualControl, public SelfScrollingControl {
 public:
     ZAF_DECLARE_REFLECTION_TYPE
-
-public:
-    /**
-     Type of selection change event.
-     */
-	typedef Event<const std::shared_ptr<TextBox>&> SelectionChangeEvent;
 
 public:
 	TextBox();
@@ -178,9 +173,9 @@ public:
 
      This event is raise when selected text is changed.
      */
-	SelectionChangeEvent::Proxy GetSelectionChangeEvent();
-    ScrollBarChangeEvent::Proxy GetScrollBarChangeEvent() override;
-    ScrollValuesChangeEvent::Proxy GetScrollValuesChangeEvent() override;
+	Observable<TextBoxSelectionChangeInfo> SelectionChangeEvent();
+    Observable<SelfScrollingControlScrollBarChangInfo> ScrollBarChangeEvent() override;
+    Observable<SelfScrollingControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
 
     bool AcceptKeyMessage(const KeyMessage& message) const override;
 
@@ -382,6 +377,12 @@ private:
     DWORD scroll_bar_property_;
     float required_height_;
     Color text_color_;
+};
+
+
+class TextBoxSelectionChangeInfo {
+public:
+    std::shared_ptr<TextBox> text_box;
 };
 
 }

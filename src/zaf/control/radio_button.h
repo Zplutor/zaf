@@ -1,9 +1,11 @@
 #pragma once 
 
-#include <zaf/base/event.h>
 #include <zaf/control/clickable_control.h>
+#include <zaf/rx/observable.h>
 
 namespace zaf{
+
+class RadioButtonSelectStateChangeInfo;
 
 /**
  Represents a radio button conrol.	
@@ -37,11 +39,6 @@ public:
 	private:
 		std::vector<std::weak_ptr<RadioButton>> radio_buttons_;
 	};
-
-	/**
-	 Type of select state change event.
-	 */
-	typedef Event<const std::shared_ptr<RadioButton>&> SelectStateChangeEvent;
 
 public:
 	RadioButton();
@@ -148,7 +145,7 @@ public:
 	/**
 	 Get the select state change event.
 	 */
-	SelectStateChangeEvent::Proxy GetSelectStateChangeEvent();
+	Observable<RadioButtonSelectStateChangeInfo> SelectStateChangeEvent();
 
 protected:
 	void Initialize() override;
@@ -168,6 +165,12 @@ private:
 private:
 	bool is_selected_;
 	std::shared_ptr<Group> group_;
+};
+
+
+class RadioButtonSelectStateChangeInfo {
+public:
+	std::shared_ptr<RadioButton> radio_button;
 };
 
 }

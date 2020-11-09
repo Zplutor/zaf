@@ -90,7 +90,9 @@ void MainWindow::InitializeButtons() {
                 }
 
                 button->SetRect(zaf::Rect(x, y, button_width, height));
-                button->GetClickEvent().AddListener(std::bind(&MainWindow::ButtonClick, this, std::placeholders::_1));
+
+                Subscriptions() += button->ClickEvent().Subscribe(
+                    std::bind(&MainWindow::ButtonClick, this, std::placeholders::_1));
 
                 GetRootControl()->AddChild(button);
             }
@@ -109,9 +111,9 @@ float MainWindow::GetContentWidth() const {
 }
 
 
-void MainWindow::ButtonClick(const std::shared_ptr<zaf::ClickableControl>& button) {
+void MainWindow::ButtonClick(const zaf::ClickableControlClickInfo& event_info) {
 
-    auto button_text = button->GetText();
+    auto button_text = event_info.clickable_control->GetText();
     if (button_text == L"=") {
 
         auto result = Calculator().Calculate(input_text_box_->GetText());

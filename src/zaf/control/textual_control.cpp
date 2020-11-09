@@ -455,8 +455,11 @@ void TextualControl::SetTextTrimming(const TextTrimming& text_trimming) {
 }
 
 
-TextualControl::TextChangeEvent::Proxy TextualControl::GetTextChangeEvent() {
-    return GetEventProxyFromPropertyMap<TextChangeEvent>(GetPropertyMap(), kTextChangeEventPropertyName);
+Observable<TextualControlTextChangeInfo> TextualControl::TextChangeEvent() {
+
+    return GetEventObservable<TextualControlTextChangeInfo>(
+        GetPropertyMap(), 
+        kTextChangeEventPropertyName);
 }
 
 
@@ -464,9 +467,15 @@ void TextualControl::NotifyTextChange() {
 
     TextChange();
 
-    auto event = TryGetEventFromPropertyMap<TextChangeEvent>(GetPropertyMap(), kTextChangeEventPropertyName);
-    if (event != nullptr) {
-        event->Trigger(std::dynamic_pointer_cast<TextualControl>(shared_from_this()));
+    auto event_observer = GetEventObserver<TextualControlTextChangeInfo>(
+        GetPropertyMap(),
+        kTextChangeEventPropertyName);
+
+    if (event_observer) {
+
+        TextualControlTextChangeInfo event_info;
+        event_info.textual_control = std::dynamic_pointer_cast<TextualControl>(shared_from_this());
+        event_observer->OnNext(event_info);
     }
 }
 

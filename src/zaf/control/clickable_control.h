@@ -1,9 +1,11 @@
 #pragma once
 
 #include <zaf/control/textual_control.h>
-#include <zaf/base/event.h>
+#include <zaf/rx/observable.h>
 
 namespace zaf {
+
+class ClickableControlClickInfo;
 
 /**
  Represents a clickable control.   
@@ -13,12 +15,6 @@ namespace zaf {
 class ClickableControl : public TextualControl {
 public:
     ZAF_DECLARE_REFLECTION_TYPE
-
-public:
-    /**
-     Type of click event.
-     */
-	typedef Event<const std::shared_ptr<ClickableControl>&> ClickEvent;
 
 public:
 	ClickableControl();
@@ -34,7 +30,7 @@ public:
     /**
      Get the click event.
      */
-	ClickEvent::Proxy GetClickEvent();
+	Observable<ClickableControlClickInfo> ClickEvent();
 
     /**
      Perform a click action on the control.
@@ -79,6 +75,12 @@ private:
 	bool is_pressed_;
 	bool is_mouse_press_;
 	bool is_key_press_;
+};
+
+
+class ClickableControlClickInfo {
+public:
+    std::shared_ptr<ClickableControl> clickable_control;
 };
 
 }

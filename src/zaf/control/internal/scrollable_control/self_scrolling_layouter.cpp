@@ -9,23 +9,22 @@ namespace internal {
 SelfScrollingLayouter::SelfScrollingLayouter(ScrollableControl* scrollable_control) : 
     ScrollableControlLayouter(scrollable_control) {
 
-    auto tag = reinterpret_cast<std::uintptr_t>(this);
+    auto secll_scrolling_control = GetSelfScrollingControl();
 
-    GetSelfScrollingControl()->GetScrollBarChangeEvent().AddListenerWithTag(
-        tag,
+    auto& subscriptions = Subscriptions();
+    subscriptions += secll_scrolling_control->ScrollBarChangeEvent().Subscribe(
         std::bind(&SelfScrollingLayouter::SelfScrollingControlScrollBarChange, this));
 
-    GetSelfScrollingControl()->GetScrollValuesChangeEvent().AddListenerWithTag(
-       tag, 
-       std::bind(&SelfScrollingLayouter::SelfScrollingControlScrollValuesChange, this, std::placeholders::_2));
+    subscriptions += secll_scrolling_control->ScrollValuesChangeEvent().Subscribe(
+       std::bind(
+           &SelfScrollingLayouter::SelfScrollingControlScrollValuesChange, 
+           this, 
+           std::placeholders::_1));
 }
 
 
 SelfScrollingLayouter::~SelfScrollingLayouter() {
 
-    auto tag = reinterpret_cast<std::uintptr_t>(this);
-    GetSelfScrollingControl()->GetScrollBarChangeEvent().RemoveListenersWithTag(tag);
-    GetSelfScrollingControl()->GetScrollValuesChangeEvent().RemoveListenersWithTag(tag);
 }
 
 
@@ -76,14 +75,14 @@ void SelfScrollingLayouter::AdjustScrollBarValue(bool is_horizontal) {
 }
 
 
-void SelfScrollingLayouter::ScrollBarScroll(const std::shared_ptr<ScrollBar>& scroll_bar) {
+void SelfScrollingLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) {
 
     if (is_self_scrolling_) {
         return;
     }
 
-    int value = scroll_bar->GetValue();
-    if (scroll_bar->IsHorizontal()) {
+    int value = event_info.scroll_bar->GetValue();
+    if (event_info.scroll_bar->IsHorizontal()) {
         GetSelfScrollingControl()->HorizontallyScroll(value);
     }
     else {
@@ -101,10 +100,11 @@ void SelfScrollingLayouter::SelfScrollingControlScrollBarChange() {
 }
 
 
-void SelfScrollingLayouter::SelfScrollingControlScrollValuesChange(bool is_horizontal) {
+void SelfScrollingLayouter::SelfScrollingControlScrollValuesChange(
+    const SelfScrollingControlScrollValuesChangeInfo& event_info) {
 
     is_self_scrolling_ = true;
-    AdjustScrollBarValue(is_horizontal);
+    AdjustScrollBarValue(event_info.is_horizontal);
     is_self_scrolling_ = false;
 }
 

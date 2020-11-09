@@ -264,7 +264,8 @@ void GifPlayer::StartTimer() {
 
     if (delay_timer_ == nullptr) {
         delay_timer_ = std::make_shared<Timer>(Timer::Mode::OneShot);
-        delay_timer_->GetTriggerEvent().AddListener(std::bind(&GifPlayer::TimerTriggered, this));
+        Subscriptions() += delay_timer_->TriggerEvent().Subscribe(
+            std::bind(&GifPlayer::TimerTriggered, this));
     }
 
     delay_timer_->SetInterval(std::chrono::milliseconds(current_frame_delay_ * 10));

@@ -5,7 +5,7 @@
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 
-static void ShowMainWindow(zaf::Application&);
+static void ShowMainWindow(const zaf::ApplicationBeginRunInfo&);
 static std::shared_ptr<zaf::Control> CreateColorListControl();
 
 struct ColorItem {
@@ -57,15 +57,15 @@ ColorItem g_color_items[] = {
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-    auto& application = zaf::Application::GetInstance();
-    application.GetBeginRunEvent().AddListener(ShowMainWindow);
+    auto& application = zaf::Application::Instance();
+    application.Subscriptions() += application.BeginRunEvent().Subscribe(ShowMainWindow);
 
     application.Initialize({});
     application.Run();
 }
 
 
-static void ShowMainWindow(zaf::Application& application) {
+static void ShowMainWindow(const zaf::ApplicationBeginRunInfo&) {
 
     auto main_window = zaf::Create<zaf::Window>();
     main_window->SetTitle(L"SystemColorViewer");
@@ -77,7 +77,7 @@ static void ShowMainWindow(zaf::Application& application) {
     //client area with color list control automatically.
     root_control->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-    application.SetMainWindow(main_window);
+    zaf::Application::Instance().SetMainWindow(main_window);
     main_window->Show();
 }
 

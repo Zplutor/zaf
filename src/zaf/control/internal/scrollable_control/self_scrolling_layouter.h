@@ -1,11 +1,13 @@
 #pragma once
 
 #include <zaf/control/internal/scrollable_control/scrollable_control_layouter.h>
+#include <zaf/control/self_scrolling_control.h>
+#include <zaf/rx/subscription_host.h>
 
 namespace zaf {
 namespace internal {
 
-class SelfScrollingLayouter : public ScrollableControlLayouter {
+class SelfScrollingLayouter : public ScrollableControlLayouter, public SubscriptionHost {
 public:
     SelfScrollingLayouter(ScrollableControl* scrollable_control);
     ~SelfScrollingLayouter();
@@ -13,7 +15,7 @@ public:
     void Layout() override;
 
 protected:
-    void ScrollBarScroll(const std::shared_ptr<ScrollBar>& scroll_bar) override;
+    void ScrollBarScroll(const ScrollBarScrollInfo& event_info) override;
 
 private:
     SelfScrollingControl* GetSelfScrollingControl() const {
@@ -23,7 +25,8 @@ private:
     void AdjustScrollBarValue(bool is_horizontal);
 
     void SelfScrollingControlScrollBarChange();
-    void SelfScrollingControlScrollValuesChange(bool is_horizontal);
+    void SelfScrollingControlScrollValuesChange(
+        const SelfScrollingControlScrollValuesChangeInfo& event_info);
 
 private:
     bool is_self_scrolling_ = false;

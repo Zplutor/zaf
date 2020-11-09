@@ -14,6 +14,7 @@
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/control_parser.h>
 #include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/rx/subject.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
@@ -438,13 +439,19 @@ void Control::SetRect(const Rect& rect) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-		parent->ChildRectChanged(this->shared_from_this(), previous_rect);
+		parent->ChildRectChanged(shared_from_this(), previous_rect);
 	}
 
     //Trigger the rect change event.
-    auto event = TryGetEventFromPropertyMap<RectChangeEvent>(GetPropertyMap(), kRectChangeEventPropertyName);
-    if (event != nullptr) {
-        event->Trigger(shared_from_this(), previous_rect);
+    auto event_observer = GetEventObserver<ControlRectChangeInfo>(
+        GetPropertyMap(),
+        kRectChangeEventPropertyName);
+
+    if (event_observer) {
+        ControlRectChangeInfo event_info;
+        event_info.control = shared_from_this();
+        event_info.previous_rect = previous_rect;
+        event_observer->OnNext(event_info);
     }
 }
 
@@ -1129,9 +1136,14 @@ void Control::IsFocusedChanged(bool is_focused) {
 		FocusLose();
 	}
 
-    auto focus_change_event = TryGetEventFromPropertyMap<FocusChangeEvent>(GetPropertyMap(), kFocusChangeEventPropertyName);
-    if (focus_change_event != nullptr) {
-        focus_change_event->Trigger(shared_from_this());
+    auto event_observer = GetEventObserver<ControlFocusChangeInfo>(
+        GetPropertyMap(),
+        kFocusChangeEventPropertyName);
+
+    if (event_observer) {
+        ControlFocusChangeInfo event_info;
+        event_info.control = shared_from_this();
+        event_observer->OnNext(event_info);
     }
 }
 
@@ -1153,13 +1165,13 @@ void Control::ReleaseCachedPaintingRenderer() {
 }
 
 
-Control::RectChangeEvent::Proxy Control::GetRectChangeEvent() {
-    return GetEventProxyFromPropertyMap<RectChangeEvent>(GetPropertyMap(), kRectChangeEventPropertyName);
+Observable<ControlRectChangeInfo> Control::RectChangeEvent() {
+    return GetEventObservable<ControlRectChangeInfo>(GetPropertyMap(), kRectChangeEventPropertyName);
 }
 
 
-Control::FocusChangeEvent::Proxy Control::GetFocusChangeEvent() {
-    return GetEventProxyFromPropertyMap<FocusChangeEvent>(GetPropertyMap(), kFocusChangeEventPropertyName);
+Observable<ControlFocusChangeInfo> Control::FocusChangeEvent() {
+    return GetEventObservable<ControlFocusChangeInfo>(GetPropertyMap(), kFocusChangeEventPropertyName);
 }
 
 

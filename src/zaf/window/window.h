@@ -1,13 +1,13 @@
 #pragma once
 
 #include <Windows.h>
-#include <zaf/base/event.h>
 #include <zaf/base/flag_enum.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/renderer/window_renderer.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/reflection/reflection_object.h>
+#include <zaf/rx/subscription_host.h>
 #include <zaf/serialization/property_map.h>
 
 namespace zaf {
@@ -15,6 +15,7 @@ namespace zaf {
 class Caret;
 class HitTestMessage;
 class MouseMessage;
+class WindowCloseInfo;
 enum class HitTestResult;
 
 /**
@@ -22,7 +23,11 @@ enum class HitTestResult;
 
  You shoudl always use Create method to create a window.
  */
-class Window : public ReflectionObject, public std::enable_shared_from_this<Window> {
+class Window : 
+    public ReflectionObject, 
+    public SubscriptionHost, 
+    public std::enable_shared_from_this<Window> {
+
 public:
     ZAF_DECLARE_REFLECTION_TYPE
 
@@ -118,11 +123,6 @@ public:
         not allowing.
      */
     typedef std::function<bool(const Window& window)> CloseHandler;
-
-    /**
-     The type of close event.
-     */
-	typedef Event<const std::shared_ptr<Window>&> CloseEvent;
 
 public:
     /**
@@ -506,7 +506,7 @@ public:
     /**
      Get the close event.
      */
-    CloseEvent::Proxy GetCloseEvent();
+    Observable<WindowCloseInfo> CloseEvent();
 
     /**
      Get position of the mouse cursor in current window's coordinate system.
@@ -715,7 +715,14 @@ private:
     PropertyMap property_map_;
 };
 
+
 ZAF_ENABLE_FLAG_ENUM(Window::ActivateOption);
+
+
+class WindowCloseInfo {
+public:
+    std::shared_ptr<Window> window;
+};
 
 std::shared_ptr<Window> GetWindowFromHandle(HWND handle);
 

@@ -104,11 +104,19 @@ void Timer::SystemTimerTrigger() {
             break;
     }
 
-    trigger_event_.Trigger(*this);
+    RaiseEvent();
 
     if (IsRunning() && (GetMode() == Mode::DeferredRepeated)) {
         StartSystemTimer();
     }
+}
+
+
+void Timer::RaiseEvent() {
+
+    TimerTriggerInfo event_info;
+    event_info.timer = shared_from_this();
+    trigger_event_.GetObserver().OnNext(event_info);
 }
 
 

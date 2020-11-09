@@ -668,18 +668,26 @@ void TextBox::GetScrollValues(bool is_horizontal, int& current_value, int& min_v
 }
 
 
-TextBox::SelectionChangeEvent::Proxy TextBox::GetSelectionChangeEvent() {
-    return GetEventProxyFromPropertyMap<SelectionChangeEvent>(GetPropertyMap(), kSelectionChangeEventPropertyName);
+Observable<TextBoxSelectionChangeInfo> TextBox::SelectionChangeEvent() {
+	return GetEventObservable<TextBoxSelectionChangeInfo>(
+		GetPropertyMap(), 
+		kSelectionChangeEventPropertyName);
 }
 
 
-TextBox::ScrollBarChangeEvent::Proxy TextBox::GetScrollBarChangeEvent() {
-    return GetEventProxyFromPropertyMap<ScrollBarChangeEvent>(GetPropertyMap(), kScrollBarChangeEventPropertyName);
+Observable<SelfScrollingControlScrollBarChangInfo> TextBox::ScrollBarChangeEvent() {
+
+	return GetEventObservable<SelfScrollingControlScrollBarChangInfo>(
+		GetPropertyMap(),
+		kScrollBarChangeEventPropertyName);
 }
 
 
-TextBox::ScrollValuesChangeEvent::Proxy TextBox::GetScrollValuesChangeEvent() {
-    return GetEventProxyFromPropertyMap<ScrollValuesChangeEvent>(GetPropertyMap(), kScrollValuesChangeEventPropertyName);
+Observable<SelfScrollingControlScrollValuesChangeInfo> TextBox::ScrollValuesChangeEvent() {
+
+	return GetEventObservable<SelfScrollingControlScrollValuesChangeInfo>(
+		GetPropertyMap(),
+		kScrollValuesChangeEventPropertyName);
 }
 
 
@@ -993,19 +1001,32 @@ void TextBox::Scroll(bool is_horizontal, int new_value) {
 
 void TextBox::ScrollBarChange() {
 
-    auto event = TryGetEventFromPropertyMap<ScrollBarChangeEvent>(GetPropertyMap(), kScrollBarChangeEventPropertyName);
-    if (event != nullptr) {
-        event->Trigger(*this);
-    }
+	auto event_observer = GetEventObserver<SelfScrollingControlScrollBarChangInfo>(
+		GetPropertyMap(),
+		kScrollBarChangeEventPropertyName);
+
+	if (event_observer) {
+
+		SelfScrollingControlScrollBarChangInfo event_info;
+		event_info.self_scrolling_control = this;
+		event_observer->OnNext(event_info);
+	}
 }
 
 
 void TextBox::ScrollValuesChange(bool is_horizontal) {
 
-    auto event = TryGetEventFromPropertyMap<ScrollValuesChangeEvent>(GetPropertyMap(), kScrollValuesChangeEventPropertyName);
-    if (event != nullptr) {
-        event->Trigger(*this, is_horizontal);
-    }
+	auto event_observer = GetEventObserver<SelfScrollingControlScrollValuesChangeInfo>(
+		GetPropertyMap(),
+		kScrollValuesChangeEventPropertyName);
+
+	if (event_observer) {
+
+		SelfScrollingControlScrollValuesChangeInfo event_info;
+		event_info.self_scrolling_control = this;
+		event_info.is_horizontal = is_horizontal;
+		event_observer->OnNext(event_info);
+	}
 }
 
 
@@ -1368,12 +1389,15 @@ HRESULT TextBox::TextHostBridge::TxNotify(DWORD iNotify, void *pv) {
 		}
 
 		case EN_SELCHANGE: {
-            auto event = TryGetEventFromPropertyMap<TextBox::SelectionChangeEvent>(
-                text_box->GetPropertyMap(),
-                kSelectionChangeEventPropertyName
-            );
-			if (event != nullptr) {
-				event->Trigger(text_box);
+
+			auto event_observer = GetEventObserver<TextBoxSelectionChangeInfo>(
+				text_box->GetPropertyMap(),
+				kSelectionChangeEventPropertyName);
+
+			if (event_observer) {
+				TextBoxSelectionChangeInfo event_info;
+				event_info.text_box = text_box;
+				event_observer->OnNext(event_info);
 			}
             return S_OK;
 		}

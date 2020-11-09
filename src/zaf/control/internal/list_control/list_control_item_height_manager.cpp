@@ -1,11 +1,8 @@
 #include <zaf/control/internal/list_control/list_control_item_height_manager.h>
 #include <algorithm>
 #include <zaf/base/assert.h>
-#include <zaf/control/list_control_delegate.h>
-#include <zaf/control/list_data_source.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 
 ListControlItemHeightManager::ListControlItemHeightManager(
     const std::shared_ptr<ListDataSource>& item_source) : data_source_(item_source) {
@@ -26,45 +23,29 @@ void ListControlItemHeightManager::RegisterDataSourceEvents() {
         return;
     }
 
-    auto tag = reinterpret_cast<std::uintptr_t>(this);
-
-    data_source->GetDataAddEvent().AddListenerWithTag(
-        tag,
+    data_source_subscriptions_ += data_source->DataAddEvent().Subscribe(
         std::bind(
             &ListControlItemHeightManager::ItemAdd, 
             this, 
-            std::placeholders::_1, 
-            std::placeholders::_2));
+            std::placeholders::_1));
 
-    data_source->GetDataRemoveEvent().AddListenerWithTag(
-        tag,
+    data_source_subscriptions_ += data_source->DataRemoveEvent().Subscribe(
         std::bind(
             &ListControlItemHeightManager::ItemRemove, 
             this,
-            std::placeholders::_1,
-            std::placeholders::_2));
+            std::placeholders::_1));
 
-    data_source->GetDataUpdateEvent().AddListenerWithTag(
-        tag,
+    data_source_subscriptions_ += data_source->DataUpdateEvent().Subscribe(
         std::bind(
             &ListControlItemHeightManager::ItemUpdate, 
             this, 
-            std::placeholders::_1, 
-            std::placeholders::_2));
+            std::placeholders::_1));
 }
 
 
 void ListControlItemHeightManager::UnregisterDataSourceEvents() {
 
-    auto data_source = data_source_.lock();
-    if (!data_source) {
-        return;
-    }
-
-    auto tag = reinterpret_cast<std::uintptr_t>(this);
-    data_source->GetDataAddEvent().RemoveListenersWithTag(tag);
-    data_source->GetDataRemoveEvent().RemoveListenersWithTag(tag);
-    data_source->GetDataUpdateEvent().RemoveListenersWithTag(tag);
+    data_source_subscriptions_.Clear();
 }
 
 
@@ -208,7 +189,7 @@ float ListControlItemHeightManager::GetTotalHeight() const {
 }
 
 
-void ListControlItemHeightManager::ItemAdd(std::size_t index, std::size_t count) {
+void ListControlItemHeightManager::ItemAdd(const ListDataSourceDataAddInfo& event_info) {
 
     auto data_source = data_source_.lock();
     if (!data_source) {
@@ -220,25 +201,30 @@ void ListControlItemHeightManager::ItemAdd(std::size_t index, std::size_t count)
         return;
     }
 
-    if (index > item_count_) {
+    if (event_info.index > item_count_) {
         ZAF_FAIL();
         return;
     }
 
-    item_count_ += count;
+    item_count_ += event_info.count;
 
     if (! has_variable_heights_) {
         return;
     }
 
-    item_positions_.insert(std::next(item_positions_.begin(), index), count, 0);
+    item_positions_.insert(
+        std::next(item_positions_.begin(), event_info.index), 
+        event_info.count, 
+        0);
 
-    auto old_item_index = index + count;
+    auto old_item_index = event_info.index + event_info.count;
     float old_position = item_positions_[old_item_index];
     float current_position = old_position;
 
     //Set position for new items.
-    for (std::size_t current_index = index; current_index < old_item_index; ++current_index) {
+    for (std::size_t current_index = event_info.index; 
+         current_index < old_item_index; 
+         ++current_index) {
 
         item_positions_[current_index] = current_position;
 
@@ -254,28 +240,31 @@ void ListControlItemHeightManager::ItemAdd(std::size_t index, std::size_t count)
 }
 
 
-void ListControlItemHeightManager::ItemRemove(std::size_t index, std::size_t count) {
+void ListControlItemHeightManager::ItemRemove(const ListDataSourceDataRemoveInfo& event_info) {
 
-    if (index >= item_count_) {
+    if (event_info.index >= item_count_) {
         ZAF_FAIL();
         return;
     }
 
-    if (count > item_count_ - index) {
+    if (event_info.count > item_count_ - event_info.index) {
         ZAF_FAIL();
         return;
     }
 
-    item_count_ -= count;
+    item_count_ -= event_info.count;
 
     if (! has_variable_heights_) {
         return;
     }
 
-    float position_decreasement = item_positions_[index + count] - item_positions_[index];
+    float position_decreasement = 
+        item_positions_[event_info.index + event_info.count] - item_positions_[event_info.index];
 
-    auto erase_iterator = std::next(item_positions_.begin(), index);
-    auto remain_iterator = item_positions_.erase(erase_iterator, std::next(erase_iterator, count));
+    auto erase_iterator = std::next(item_positions_.begin(), event_info.index);
+    auto remain_iterator = item_positions_.erase(
+        erase_iterator, 
+        std::next(erase_iterator, event_info.count));
 
     for (; remain_iterator != item_positions_.end(); ++remain_iterator) {
         *remain_iterator -= position_decreasement;
@@ -283,7 +272,7 @@ void ListControlItemHeightManager::ItemRemove(std::size_t index, std::size_t cou
 }
 
 
-void ListControlItemHeightManager::ItemUpdate(std::size_t index, std::size_t count) {
+void ListControlItemHeightManager::ItemUpdate(const ListDataSourceDataUpdateInfo& event_info) {
 
     auto data_source = data_source_.lock();
     if (!data_source) {
@@ -295,12 +284,12 @@ void ListControlItemHeightManager::ItemUpdate(std::size_t index, std::size_t cou
         return;
     }
 
-    if (index >= item_count_) {
+    if (event_info.index >= item_count_) {
         ZAF_FAIL();
         return;
     }
 
-    if (count > item_count_ - index) {
+    if (event_info.count > item_count_ - event_info.index) {
         ZAF_FAIL();
         return;
     }
@@ -309,11 +298,13 @@ void ListControlItemHeightManager::ItemUpdate(std::size_t index, std::size_t cou
         return;
     }
 
-    float position = item_positions_[index];
-    float previous_heights = item_positions_[index + count] - position;
+    float position = item_positions_[event_info.index];
+    float previous_heights = item_positions_[event_info.index + event_info.count] - position;
     float current_heights = 0;
 
-    for (std::size_t current_index = index; current_index < index + count; ++current_index) {
+    for (std::size_t current_index = event_info.index; 
+         current_index < event_info.index + event_info.count; 
+         ++current_index) {
 
         item_positions_[current_index] = position + current_heights;
 
@@ -324,10 +315,12 @@ void ListControlItemHeightManager::ItemUpdate(std::size_t index, std::size_t cou
 
     float difference = current_heights - previous_heights;
 
-    for (std::size_t current_index = index + count; current_index < item_positions_.size(); ++current_index) {
+    for (std::size_t current_index = event_info.index + event_info.count; 
+         current_index < item_positions_.size(); 
+         ++current_index) {
+
         item_positions_[current_index] += difference;
     }
 }
 
-}
 }

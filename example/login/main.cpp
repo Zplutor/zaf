@@ -5,7 +5,7 @@
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 
-static void OnBeginRun(zaf::Application& application);
+static void OnBeginRun(const zaf::ApplicationBeginRunInfo&);
 static std::shared_ptr<zaf::Window> CreateMainWindow();
 static std::vector<std::shared_ptr<zaf::Control>> CreateControls();
 static void OnSignInClick(
@@ -22,7 +22,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     application.Initialize({});
 
     //Register the begin run event, do something when the event triggers.
-    application.GetBeginRunEvent().AddListener(OnBeginRun);
+    application.Subscriptions() += application.BeginRunEvent().Subscribe(OnBeginRun);
 
     //Begin to run.
     application.Run();
@@ -30,13 +30,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 }
 
 
-static void OnBeginRun(zaf::Application& application) {
+static void OnBeginRun(const zaf::ApplicationBeginRunInfo&) {
 
     //Create a main window.
     std::shared_ptr<zaf::Window> main_window = CreateMainWindow();
 
     //Set this window as the main window of the application.
-    application.SetMainWindow(main_window);
+    zaf::Application::Instance().SetMainWindow(main_window);
 
     //Show the window.
     main_window->Show();
@@ -91,7 +91,7 @@ static std::vector<std::shared_ptr<zaf::Control>> CreateControls() {
     auto sign_in_button = zaf::Create<zaf::Button>();
     sign_in_button->SetText(L"Sign in");
     sign_in_button->SetRect(zaf::Rect(110, 110, 80, 30));
-    sign_in_button->GetClickEvent().AddListener(std::bind(
+    sign_in_button->Subscriptions() += sign_in_button->ClickEvent().Subscribe(std::bind(
         OnSignInClick, 
         account_text_box, 
         password_text_box, 

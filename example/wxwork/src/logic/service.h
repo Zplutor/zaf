@@ -1,15 +1,12 @@
 #pragma once
 
 #include <zaf/base/timer.h>
+#include <zaf/rx/subscription_host.h>
 #include "storage/conversation_storage.h"
 #include "storage/message_storage.h"
 #include "storage/user_storage.h"
 
-class Service {
-public:
-    typedef zaf::Event<const std::shared_ptr<Conversation>&> ConversationUpdateEvent;
-    typedef zaf::Event<const std::shared_ptr<Message>&> MessageAddEvent;
-
+class Service : public zaf::SubscriptionHost {
 public:
     static Service& GetInstance();
 
@@ -53,12 +50,12 @@ public:
 
     void RemoveConversationAllUnreadMessages(Id conversation_id);
 
-    ConversationUpdateEvent::Proxy GetConversationUpdateEvent() {
-        return ConversationUpdateEvent::Proxy(conversation_update_event_);
+    zaf::Observable<std::shared_ptr<Conversation>> GetConversationUpdateEvent() {
+        return conversation_update_event_.GetObservable();
     }
 
-    MessageAddEvent::Proxy GetMessageAddEvent() {
-        return MessageAddEvent::Proxy(message_add_event_);
+    zaf::Observable<std::shared_ptr<Message>> GetMessageAddEvent() {
+        return message_add_event_.GetObservable();
     }
 
 private:
@@ -85,6 +82,6 @@ private:
     std::shared_ptr<zaf::Timer> message_generating_timer_;
     std::shared_ptr<zaf::Timer> reply_timer_;
 
-    ConversationUpdateEvent conversation_update_event_;
-    MessageAddEvent message_add_event_;
+    zaf::Subject<std::shared_ptr<Conversation>> conversation_update_event_;
+    zaf::Subject<std::shared_ptr<Message>> message_add_event_;
 };

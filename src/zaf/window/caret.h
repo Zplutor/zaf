@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <zaf/graphic/rect.h>
+#include <zaf/rx/subscription_host.h>
 
 namespace zaf {
 
@@ -15,7 +16,7 @@ class Window;
  There is no need to create instance of Caret by yourself. Call Window::GetCaret method
  to get the unique caret in the window.
  */
-class Caret {
+class Caret : public SubscriptionHost {
 public:
     /**
      Construct the instance.

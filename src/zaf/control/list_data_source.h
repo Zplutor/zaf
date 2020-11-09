@@ -1,29 +1,17 @@
 #pragma once
 
-#include <zaf/base/event.h>
 #include <zaf/object/object.h>
+#include <zaf/rx/observable.h>
+#include <zaf/rx/subject.h>
 
 namespace zaf {
 
 class Object;
+class ListDataSourceDataAddInfo;
+class ListDataSourceDataRemoveInfo;
+class ListDataSourceDataUpdateInfo;
 
 class ListDataSource {
-public:
-    /**
-     Type of item add event.
-    */
-    typedef Event<std::size_t, std::size_t> DataAddEvent;
-
-    /**
-     Type of item remove event.
-     */
-    typedef Event<std::size_t, std::size_t> DataRemoveEvent;
-
-    /**
-     Type of item update event.
-     */
-    typedef Event<std::size_t, std::size_t> DataUpdateEvent;
-
 public:
     ListDataSource() = default;
     virtual ~ListDataSource() = default;
@@ -42,22 +30,22 @@ public:
     /**
      Get item add event.
      */
-    DataAddEvent::Proxy GetDataAddEvent() {
-        return DataAddEvent::Proxy(data_add_event_);
+    Observable<ListDataSourceDataAddInfo> DataAddEvent() {
+        return data_add_event_.GetObservable();
     }
 
     /**
      Get item remove event.
      */
-    DataRemoveEvent::Proxy GetDataRemoveEvent() {
-        return DataRemoveEvent::Proxy(data_remove_event_);
+    Observable<ListDataSourceDataRemoveInfo> DataRemoveEvent() {
+        return data_remove_event_.GetObservable();
     }
 
     /**
      Get item update event.
      */
-    DataRemoveEvent::Proxy GetDataUpdateEvent() {
-        return DataUpdateEvent::Proxy(data_update_event_);
+    Observable<ListDataSourceDataUpdateInfo> DataUpdateEvent() {
+        return data_update_event_.GetObservable();
     }
 
 protected:
@@ -104,9 +92,30 @@ protected:
     void NotifyDataUpdate(std::size_t index, std::size_t count);
 
 private:
-    DataAddEvent data_add_event_;
-    DataRemoveEvent data_remove_event_;
-    DataUpdateEvent data_update_event_;
+    Subject<ListDataSourceDataAddInfo> data_add_event_;
+    Subject<ListDataSourceDataRemoveInfo> data_remove_event_;
+    Subject<ListDataSourceDataUpdateInfo> data_update_event_;
+};
+
+
+class ListDataSourceDataAddInfo {
+public:
+    std::size_t index{};
+    std::size_t count{};
+};
+
+
+class ListDataSourceDataRemoveInfo {
+public:
+    std::size_t index{};
+    std::size_t count{};
+};
+
+
+class ListDataSourceDataUpdateInfo {
+public:
+    std::size_t index{};
+    std::size_t count{};
 };
 
 }

@@ -7,7 +7,6 @@
 #include <set>
 #include <string>
 #include <vector>
-#include <zaf/base/event.h>
 #include <zaf/control/anchor.h>
 #include <zaf/control/color_picker.h>
 #include <zaf/control/image_layout.h>
@@ -18,12 +17,16 @@
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/reflection/reflection_object.h>
+#include <zaf/rx/observable.h>
+#include <zaf/rx/subscription_host.h>
 #include <zaf/serialization/property_map.h>
 
 namespace zaf {
 
 class Canvas;
 class CharMessage;
+class ControlFocusChangeInfo;
+class ControlRectChangeInfo;
 class KeyMessage;
 class Message;
 class MouseMessage;
@@ -38,7 +41,11 @@ enum class HitTestResult;
 
  This is the base class of all controls.
  */
-class Control : public ReflectionObject, public std::enable_shared_from_this<Control> {
+class Control : 
+    public ReflectionObject, 
+    public SubscriptionHost, 
+    public std::enable_shared_from_this<Control> {
+
 public:
     ZAF_DECLARE_REFLECTION_TYPE
 
@@ -76,16 +83,6 @@ public:
     private:
         Control& control_;
     };
-
-    /**
-     Type of rect change event.
-     */
-    typedef Event<const std::shared_ptr<Control>&, const Rect&> RectChangeEvent;
-
-    /**
-     Type of focus change event.
-     */
-    typedef Event<const std::shared_ptr<Control>&> FocusChangeEvent;
 
 public:
 	Control();
@@ -608,14 +605,14 @@ public:
 
      This event is raised when the control's rect is changed.
      */
-    RectChangeEvent::Proxy GetRectChangeEvent();
+    Observable<ControlRectChangeInfo> RectChangeEvent();
 
     /**
      Get focus change event.
 
      This event is raised when the control's focus is changed.
      */
-    FocusChangeEvent::Proxy GetFocusChangeEvent();
+    Observable<ControlFocusChangeInfo> FocusChangeEvent();
 
     /**
      Capture the mouse.
@@ -1010,6 +1007,19 @@ private:
     Frame padding_;
 
 	PropertyMap property_map_;
+};
+
+
+class ControlRectChangeInfo {
+public:
+    std::shared_ptr<Control> control;
+    Rect previous_rect;
+};
+
+
+class ControlFocusChangeInfo {
+public:
+    std::shared_ptr<Control> control;
 };
 
 }

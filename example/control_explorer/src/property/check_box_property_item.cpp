@@ -11,10 +11,13 @@ std::shared_ptr<PropertyItem> CreateCheckBoxPropertyItem(
     auto check_box = zaf::Create<zaf::CheckBox>();
     check_box->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
     check_box->SetIsChecked(get_value());
-    check_box->GetCheckStateChangeEvent().AddListener([get_value, value_change](const std::shared_ptr<zaf::CheckBox>& check_box) {
-        value_change(check_box->IsChecked());
-        check_box->SetIsChecked(get_value());
-    });
+
+    check_box->Subscriptions() += check_box->CheckStateChangeEvent().Subscribe(
+        [get_value, value_change](const zaf::CheckBoxCheckStateChangeInfo& event_info) {
+            value_change(event_info.check_box->IsChecked());
+            event_info.check_box->SetIsChecked(get_value());
+        }
+    );
 
     if (register_notification != nullptr) {
         register_notification([check_box, get_value]() {

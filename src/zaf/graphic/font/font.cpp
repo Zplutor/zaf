@@ -33,7 +33,7 @@ Font Font::FromLOGFONT(const LOGFONT& logfont) {
     }
     
     float height = static_cast<float>(std::abs(logfont.lfHeight));
-    float y_dpi = Application::GetInstance().GetDpi().second;
+    float y_dpi = Application::Instance().GetDpi().second;
     if (y_dpi != 0) {
         font.size = height * 96 / y_dpi;
     }

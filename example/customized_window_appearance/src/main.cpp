@@ -10,17 +10,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     application.Initialize({});
     
-    application.GetBeginRunEvent().AddListener([](zaf::Application& application) {
+    application.Subscriptions() += application.BeginRunEvent().Subscribe(
+        [](const zaf::ApplicationBeginRunInfo&) {
     
-        auto window = zaf::Create<zaf::Window>();
+            auto window = zaf::Create<zaf::Window>();
 
-        auto root_control = zaf::Create<RootControl>();
-        window->SetBorderStyle(zaf::Window::BorderStyle::None);
-        window->SetRootControl(root_control);
-        window->Show();
+            auto root_control = zaf::Create<RootControl>();
+            window->SetBorderStyle(zaf::Window::BorderStyle::None);
+            window->SetRootControl(root_control);
+            window->Show();
 
-        application.SetMainWindow(window);
-    });
+            zaf::Application::Instance().SetMainWindow(window);
+        }
+    );
 
     application.Run();
     return 0;

@@ -30,7 +30,7 @@
 #include <zaf/control/tree_data_source.h>
 #include <zaf/control/tree_control_delegate.h>
 
-void BeginRun(zaf::Application&);
+void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
 class RootControl : public zaf::Control {
 public:
@@ -148,15 +148,15 @@ int WINAPI WinMain(
     int /* nCmdShow */
 ) {
 
-    auto& application = zaf::Application::GetInstance();
-    application.GetBeginRunEvent().AddListener(BeginRun);
+    auto& application = zaf::Application::Instance();
+    application.Subscriptions() += application.BeginRunEvent().Subscribe(BeginRun);
 
     application.Initialize({});
     application.Run();
 }
 
 
-void BeginRun(zaf::Application& application) {
+void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
     auto window = zaf::Create<zaf::Window>();
 
@@ -174,14 +174,25 @@ void BeginRun(zaf::Application& application) {
     tree_control->SetDataSource(item_source);
     tree_control->SetDelegate(item_source);
     tree_control->SetSelectionMode(zaf::SelectionMode::ExtendedMultiple);
-    tree_control->GetSelectionChangeEvent().AddListener([](const std::shared_ptr<zaf::TreeControl>& tree_control) {
+
+    tree_control->Subscriptions() += tree_control->SelectionChangeEvent().Subscribe(
+        [](const zaf::TreeControlSelectionChangeInfo& event_info) {
     
-        for (const auto& each_data : tree_control->GetAllSelectedItemData()) {
-            OutputDebugString((each_data->ToString() + L"\r\n").c_str());
+            for (const auto& each_data : event_info.tree_control->GetAllSelectedItemData()) {
+                OutputDebugString((each_data->ToString() + L"\r\n").c_str());
+            }
         }
-    });
+    );
 
     root_control->AddChild(tree_control);
 
-    application.SetMainWindow(window);
+    auto combo_box = zaf::Create<zaf::ComboBox>();
+    combo_box->SetRect(zaf::Rect{ 350, 10, 200, 30 });
+    auto list_box = combo_box->GetDropDownListBox();
+    list_box->AddItem(zaf::Box(L"AAA"));
+    list_box->AddItem(zaf::Box(L"BBB"));
+    list_box->AddItem(zaf::Box(L"CCC"));
+    root_control->AddChild(combo_box);
+
+    zaf::Application::Instance().SetMainWindow(window);
 }

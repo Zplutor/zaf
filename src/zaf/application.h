@@ -5,14 +5,18 @@
 #include <memory>
 #include <set>
 #include <system_error>
-#include <zaf/base/event.h>
 #include <zaf/config.h>
+#include <zaf/rx/observable.h>
+#include <zaf/rx/subject.h>
+#include <zaf/rx/subscription_host.h>
 
 namespace zaf {
 namespace wic {
 class ImagingFactory;
 }
 
+class ApplicationBeginRunInfo;
+class ApplicationEndRunInfo;
 class GraphicFactory;
 class ReflectionManager;
 class ResourceManager;
@@ -29,25 +33,14 @@ public:
 
  Application manages the execution, and maintains global objects.
 
- There is only one instance of Application, which can use GetInstance method to get.
+ There is only one instance of Application, which can use Instance method to get.
  */
-class Application {
-public:
-	/**
-	 Type of application begin run event.
-	 */
-	typedef Event<Application&> BeginRunEvent;
-
-	/**
-	 Type of application end run event.
-	 */
-	typedef Event<Application&> EndRunEvent;
-
+class Application : public SubscriptionHost {
 public:
 	/**
 	 Get the singleton instance.
 	 */
-	static Application& GetInstance();
+	static Application& Instance();
 
 public:
 	/**
@@ -118,8 +111,8 @@ public:
 
      Startup works can be done in this event, Such as creating and showing the main window.
 	 */
-	BeginRunEvent::Proxy GetBeginRunEvent() {
-		return BeginRunEvent::Proxy(begin_run_event_);
+	Observable<ApplicationBeginRunInfo> BeginRunEvent() {
+		return begin_run_event_.GetObservable();
 	}
 
 	/**
@@ -127,8 +120,8 @@ public:
 
      Cleanup works can be done in this event.
 	 */
-	EndRunEvent::Proxy GetEndRunEvent() {
-		return EndRunEvent::Proxy(end_run_event_);
+	Observable<ApplicationEndRunInfo> EndRunEvent() {
+		return end_run_event_.GetObservable();
 	}
 
     /**
@@ -156,7 +149,7 @@ private:
 private:
 	Application();
 
-	void MainWindowClosed(const std::shared_ptr<Window>& window);
+	void MainWindowClosed();
 
 	Application(const Application&) = delete;
 	Application& operator=(const Application&) = delete;
@@ -169,25 +162,38 @@ private:
     std::unique_ptr<GraphicFactory> graphic_factory_;
 	std::unique_ptr<wic::ImagingFactory> imaging_factory_;
     std::shared_ptr<Window> main_window_;
+	Subscription main_window_subscription_;
 	std::set<std::shared_ptr<Window>> windows_;
 
-	BeginRunEvent begin_run_event_;
-	EndRunEvent end_run_event_;
+	Subject<ApplicationBeginRunInfo> begin_run_event_;
+	Subject<ApplicationEndRunInfo> end_run_event_;
+};
+
+
+class ApplicationBeginRunInfo {
+public:
+
+};
+
+
+class ApplicationEndRunInfo {
+public:
+
 };
 
 
 inline Application& GetApplication() {
-    return Application::GetInstance();
+    return Application::Instance();
 }
 
 
 inline ReflectionManager& GetReflectionManager() {
-    return Application::GetInstance().GetReflectionManager();
+    return Application::Instance().GetReflectionManager();
 }
 
 
 inline ResourceManager& GetResourceManager() {
-	return Application::GetInstance().GetResourceManager();
+	return Application::Instance().GetResourceManager();
 }
 
 

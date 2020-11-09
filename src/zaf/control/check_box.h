@@ -2,8 +2,11 @@
 
 #include <zaf/control/check_state.h>
 #include <zaf/control/clickable_control.h>
+#include <zaf/rx/observable.h>
 
 namespace zaf {
+
+class CheckBoxCheckStateChangeInfo;
 
 /**
  Represents a check box control.	
@@ -11,12 +14,6 @@ namespace zaf {
 class CheckBox : public ClickableControl {
 public:
     ZAF_DECLARE_REFLECTION_TYPE
-
-public:
-	/**
-	 Type of check state changed event.
-	 */
-	typedef Event<const std::shared_ptr<CheckBox>&> CheckStateChangeEvent;
 
 public:
 	CheckBox();
@@ -142,7 +139,7 @@ public:
 	/**
 	 Get the check state change event.
 	 */
-	CheckStateChangeEvent::Proxy GetCheckStateChangeEvent();
+	Observable<CheckBoxCheckStateChangeInfo> CheckStateChangeEvent();
 
 protected:
 	void Initialize() override;
@@ -155,6 +152,12 @@ private:
 
 private:
 	CheckState check_state_;
+};
+
+
+class CheckBoxCheckStateChangeInfo {
+public:
+	std::shared_ptr<CheckBox> check_box;
 };
 
 }

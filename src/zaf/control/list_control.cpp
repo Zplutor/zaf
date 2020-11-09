@@ -11,6 +11,7 @@
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/list_control_parser.h>
 #include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/rx/subject.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
@@ -127,9 +128,10 @@ void ListControl::SetSelectionMode(SelectionMode selection_mode) {
 }
 
 
-ListControl::SelectionChangeEvent::Proxy ListControl::GetSelectionChangeEvent() {
-    return GetEventProxyFromPropertyMap<SelectionChangeEvent>(
-        GetPropertyMap(), 
+Observable<ListControlSelectionChangeInfo> ListControl::SelectionChangeEvent() {
+
+    return GetEventObservable<ListControlSelectionChangeInfo>(
+        GetPropertyMap(),
         kSelectionChangeEventPropertyName);
 }
 
@@ -207,13 +209,17 @@ std::size_t ListControl::FindItemIndexAtPosition(const Point& position) const {
 
 void ListControl::SelectionChange() {
 
-    auto event = TryGetEventFromPropertyMap<SelectionChangeEvent>(
-        GetPropertyMap(),
+    auto observer = GetEventObserver<ListControlSelectionChangeInfo>(
+        GetPropertyMap(), 
         kSelectionChangeEventPropertyName);
 
-    if (event != nullptr) {
-        event->Trigger(std::dynamic_pointer_cast<ListControl>(shared_from_this()));
+    if (!observer) {
+        return;
     }
+
+    ListControlSelectionChangeInfo event_info;
+    event_info.list_control = std::dynamic_pointer_cast<ListControl>(shared_from_this());
+    observer->OnNext(event_info);
 }
 
 }

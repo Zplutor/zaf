@@ -9,6 +9,7 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scrollable_control.h>
 #include <zaf/control/selection_mode.h>
+#include <zaf/rx/subscription_holder.h>
 
 namespace zaf::internal {
 
@@ -23,6 +24,7 @@ enum class ListSelectionChangeReason {
 };
 
 class ListControlImplementation : public std::enable_shared_from_this<ListControlImplementation> {
+
 public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<ListDataSource>&)>;
     using DelegateChangeEvent = std::function<void(const std::shared_ptr<ListControlDelegate>&)>;
@@ -121,7 +123,7 @@ private:
     std::vector<std::shared_ptr<ListItem>> CreateItems(std::size_t index, std::size_t count);
     std::shared_ptr<ListItem> CreateItem(std::size_t index);
 
-    void ItemAdd(std::size_t index, std::size_t count);
+    void ItemAdd(const ListDataSourceDataAddInfo& event_info);
     void AddItemsBeforeVisibleItems(
         std::size_t index, 
         std::size_t count, 
@@ -131,7 +133,7 @@ private:
         std::size_t count, 
         float position_difference);
 
-    void ItemRemove(std::size_t index, std::size_t count);
+    void ItemRemove(const ListDataSourceDataRemoveInfo& event_info);
     void RemoveItemsBeforeVisibleItems(
         std::size_t index, 
         std::size_t count, 
@@ -141,7 +143,7 @@ private:
         std::size_t count, 
         float position_difference);
 
-    void ItemUpdate(std::size_t index, std::size_t count);
+    void ItemUpdate(const ListDataSourceDataUpdateInfo& event_info);
     void AdjustVisibleItemPositionsByUpdatingItems(
         std::size_t index, 
         std::size_t count, 
@@ -163,8 +165,12 @@ private:
     std::weak_ptr<ListDataSource> data_source_;
     std::weak_ptr<ListControlDelegate> delegate_;
 
+    SubscriptionHolder data_source_subscriptions_;
+
     std::shared_ptr<ListControlItemHeightManager> item_height_manager_;
     ListControlItemSelectionManager item_selection_manager_;
+
+    Subscription vertical_scroll_bar_subscription_;
 
     float current_total_height_{};
     std::size_t first_visible_item_index_{};

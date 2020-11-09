@@ -12,7 +12,7 @@ public:
     void Layout() override;
 
 protected:
-    void ScrollBarScroll(const std::shared_ptr<ScrollBar>& scroll_bar) override;
+    void ScrollBarScroll(const ScrollBarScrollInfo& event_info) override;
 
 private:
     void CanShowScrollBars(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar);

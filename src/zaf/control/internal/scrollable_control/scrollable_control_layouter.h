@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <zaf/control/scroll_bar.h>
 #include <zaf/control/scrollable_control.h>
 
 namespace zaf {
@@ -34,14 +35,17 @@ protected:
     void LayoutScrollBars(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
     void LayoutScrollContainerControl(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
 
-    virtual void ScrollBarScroll(const std::shared_ptr<ScrollBar>& scroll_bar) = 0;
+    virtual void ScrollBarScroll(const ScrollBarScrollInfo& event_info) = 0;
 
 private:
-    void RegisterScrollBarEvent(const std::shared_ptr<ScrollBar>& scroll_bar);
-    void UnregisterScrollBarEvent(const std::shared_ptr<ScrollBar>& scroll_bar);
+    void RegisterScrollBarEvent(const std::shared_ptr<ScrollBar>& scroll_bar, bool is_horizontal);
+    void UnregisterScrollBarEvent(bool is_horizontal);
 
 private:
     ScrollableControl* scrollable_control_;
+
+    Subscription horizontal_scroll_bar_subscription_;
+    Subscription vertical_scroll_bar_subscription_;
 };
 
 }

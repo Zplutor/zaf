@@ -12,7 +12,7 @@
 
 namespace zaf {
 
-Application& Application::GetInstance() {
+Application& Application::Instance() {
 	static Application instance;
 	return instance;
 }
@@ -74,12 +74,14 @@ void Application::Initialize(const InitializeParameters& parameters) {
 
 void Application::Run() {
 
-	if (! is_initialized_) {
-		ZAF_FAIL();
-		return;
-	}
+    if (!is_initialized_) {
+        ZAF_FAIL();
+        return;
+    }
 
-	begin_run_event_.Trigger(*this);
+    auto begin_run_event_observer = begin_run_event_.GetObserver();
+    begin_run_event_observer.OnNext(ApplicationBeginRunInfo{});
+    begin_run_event_observer.OnCompleted();
 
     internal::MessageLoop message_loop;
     message_loop.Run();
@@ -87,7 +89,9 @@ void Application::Run() {
     main_window_ = nullptr;
     windows_.clear();
 
-	end_run_event_.Trigger(*this);
+    auto end_run_event_observer = end_run_event_.GetObserver();
+    end_run_event_observer.OnNext(ApplicationEndRunInfo{});
+    end_run_event_observer.OnCompleted();
 }
 
 
@@ -142,21 +146,18 @@ void Application::UnregisterWindow(const std::shared_ptr<Window>& window) {
 
 void Application::SetMainWindow(const std::shared_ptr<Window>& window) {
 
-    if (main_window_ != nullptr) {
-        main_window_->GetCloseEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
-    }
+    main_window_subscription_.Unsubscribe();
 
     main_window_ = window;
     
-    if (main_window_ != nullptr) {
-        main_window_->GetCloseEvent().AddListenerWithTag(
-            reinterpret_cast<std::uintptr_t>(this), 
-            std::bind(&Application::MainWindowClosed, this, std::placeholders::_1));
+    if (main_window_) {
+        main_window_subscription_ = main_window_->CloseEvent().Subscribe(
+            std::bind(&Application::MainWindowClosed, this));
     }
 }
 
 
-void Application::MainWindowClosed(const std::shared_ptr<Window>& window) {
+void Application::MainWindowClosed() {
     Terminate();
 }
 

@@ -13,8 +13,6 @@ inline bool ConversationComparer(
 
 ConversationListView::~ConversationListView() {
 
-    Service::GetInstance().GetConversationUpdateEvent().RemoveListenersWithTag(
-        reinterpret_cast<std::uintptr_t>(this));
 }
 
 
@@ -82,8 +80,7 @@ void ConversationListView::LoadConversations() {
 
     Reload();
 
-    Service::GetInstance().GetConversationUpdateEvent().AddListenerWithTag(
-        reinterpret_cast<std::uintptr_t>(this),
+    Subscriptions() += Service::GetInstance().GetConversationUpdateEvent().Subscribe(
         std::bind(&ConversationListView::ConversationUpdate, this, std::placeholders::_1));
 }
 

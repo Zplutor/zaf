@@ -1,41 +1,30 @@
 #include "control_view_panel.h"
 
-ControlViewPanel::~ControlViewPanel() {
-
-    if (explored_control_ != nullptr) {
-        explored_control_->GetRectChangeEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
-    }
-}
-
-
 void ControlViewPanel::SetExploredControl(const std::shared_ptr<zaf::Control>& control) {
 
     if (explored_control_ != nullptr) {
-        explored_control_->GetRectChangeEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
         RemoveChild(explored_control_);
+        explored_control_subscription_.Unsubscribe();
     }
 
     explored_control_ = control;
 
     if (explored_control_ != nullptr) {
-        explored_control_->GetRectChangeEvent().AddListenerWithTag(
-            reinterpret_cast<std::uintptr_t>(this),
-            std::bind(&ControlViewPanel::ExploredControlRectChanged, this, std::placeholders::_1, std::placeholders::_2));
+        explored_control_subscription_ = explored_control_->RectChangeEvent().Subscribe(
+            std::bind(&ControlViewPanel::ExploredControlRectChanged, this, std::placeholders::_1));
 
         AddChild(explored_control_);
     }
 }
 
 
-void ControlViewPanel::ExploredControlRectChanged(
-    const std::shared_ptr<zaf::Control>& control,
-    const zaf::Rect& previous_rect) {
+void ControlViewPanel::ExploredControlRectChanged(const zaf::ControlRectChangeInfo& event_info) {
 
-    if (control != explored_control_) {
+    if (event_info.control != explored_control_) {
         return;
     }
 
-    if (previous_rect.size == explored_control_->GetSize()) {
+    if (event_info.previous_rect.size == explored_control_->GetSize()) {
         return;
     }
 

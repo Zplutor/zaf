@@ -10,6 +10,7 @@
 #include <zaf/parsing/parsers/check_box_parser.h>
 #include <zaf/reflection/reflection_type.h>
 #include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/rx/subject.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
@@ -207,15 +208,23 @@ void CheckBox::SetCheckState(CheckState check_state) {
 	check_state_ = check_state;
 	NeedRepaint();
 
-    auto event = TryGetEventFromPropertyMap<CheckStateChangeEvent>(GetPropertyMap(), kCheckStateChangeEventPropertyName);
-	if (event != nullptr) {
-		event->Trigger(std::dynamic_pointer_cast<CheckBox>(shared_from_this()));
+	auto observer = GetEventObserver<CheckBoxCheckStateChangeInfo>(
+		GetPropertyMap(),
+		kCheckStateChangeEventPropertyName);
+
+	if (observer) {
+		CheckBoxCheckStateChangeInfo event_info;
+		event_info.check_box = std::dynamic_pointer_cast<CheckBox>(shared_from_this());
+		observer->OnNext(event_info);
 	}
 }
 
 
-CheckBox::CheckStateChangeEvent::Proxy CheckBox::GetCheckStateChangeEvent() {
-    return GetEventProxyFromPropertyMap<CheckStateChangeEvent>(GetPropertyMap(), kCheckStateChangeEventPropertyName);
+Observable<CheckBoxCheckStateChangeInfo> CheckBox::CheckStateChangeEvent() {
+
+	return GetEventObservable<CheckBoxCheckStateChangeInfo>(
+		GetPropertyMap(), 
+		kCheckStateChangeEventPropertyName);
 }
 
 

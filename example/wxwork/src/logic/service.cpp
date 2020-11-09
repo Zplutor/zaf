@@ -62,7 +62,8 @@ void Service::StartMessageGeneratingTimer() {
 
     if (message_generating_timer_ == nullptr) {
         message_generating_timer_ = std::make_shared<zaf::Timer>(zaf::Timer::Mode::OneShot);
-        message_generating_timer_->GetTriggerEvent().AddListener(std::bind(&Service::MessageGeneratingTimerTrigger, this));
+        Subscriptions() += message_generating_timer_->TriggerEvent().Subscribe(
+            std::bind(&Service::MessageGeneratingTimerTrigger, this));
     }
 
     auto interval_seconds = GenerateRandomInteger<std::size_t>(2, 10);
@@ -96,13 +97,13 @@ void Service::GenerateMessageToConversation(
 
     auto new_message_id = message_storage_.AddMessage(new_message);
     message_storage_.AddUnreadMessage(new_message_id);
-    message_add_event_.Trigger(new_message);
+    message_add_event_.GetObserver().OnNext(new_message);
 
     if (conversation->last_updated_time < new_message->sent_time) {
         conversation->last_updated_time = new_message->sent_time;
     }
     conversation_storage_.UpdateConversation(conversation);
-    conversation_update_event_.Trigger(conversation);
+    conversation_update_event_.GetObserver().OnNext(conversation);
 }
 
 
@@ -115,7 +116,7 @@ void Service::SendMessageToConversation(const std::wstring& content, Id conversa
     new_message->sender_id = current_user_id_;
 
     message_storage_.AddMessage(new_message);
-    message_add_event_.Trigger(new_message);
+    message_add_event_.GetObserver().OnNext(new_message);
 
     auto conversation = conversation_storage_.GetConversaton(conversation_id);
     if (conversation == nullptr) {
@@ -124,7 +125,7 @@ void Service::SendMessageToConversation(const std::wstring& content, Id conversa
 
     conversation->last_updated_time = new_message->sent_time;
     conversation_storage_.UpdateConversation(conversation);
-    conversation_update_event_.Trigger(conversation);
+    conversation_update_event_.GetObserver().OnNext(conversation);
 
     //Generate a reply message.
     auto random_integer = GenerateRandomInteger(0, 1);
@@ -134,9 +135,9 @@ void Service::SendMessageToConversation(const std::wstring& content, Id conversa
 
     reply_timer_ = std::make_shared<zaf::Timer>(zaf::Timer::Mode::OneShot);
     reply_timer_->SetInterval(std::chrono::seconds(1));
-    reply_timer_->GetTriggerEvent().AddListener([this, conversation](zaf::Timer&) {
+    Subscriptions() += reply_timer_->TriggerEvent().Subscribe(std::bind([this, conversation]() {
         GenerateMessageToConversation(conversation, true);
-    });
+    }));
     reply_timer_->Start();
 }
 
@@ -150,6 +151,6 @@ void Service::RemoveConversationAllUnreadMessages(Id conversation_id) {
 
     auto conversation = conversation_storage_.GetConversaton(conversation_id);
     if (conversation != nullptr) {
-        conversation_update_event_.Trigger(conversation);
+        conversation_update_event_.GetObserver().OnNext(conversation);
     }
 }

@@ -60,7 +60,9 @@ void MainWindow::InitializeControlListPanel() {
     control_list_box_->SetBorder(0);
     control_list_box_->SetAllowHorizontalScroll(false);
     control_list_box_->SetAutoHideScrollBars(true);
-    control_list_box_->GetSelectionChangeEvent().AddListener(std::bind(&MainWindow::ControlListBoxSelectionChange, this));
+
+    Subscriptions() += control_list_box_->SelectionChangeEvent().Subscribe(
+        std::bind(&MainWindow::ControlListBoxSelectionChange, this));
 
     for (const auto& each_item : kControlNameAndCreators) {
         control_list_box_->AddItem(zaf::Box(each_item.name));

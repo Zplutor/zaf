@@ -59,6 +59,8 @@ std::shared_ptr<PropertyItem> RadioButtonExploreManager::CreateIsSelectedPropert
         [radio_button]() { return radio_button->IsSelected(); },
         [radio_button](bool value) { if (value) { radio_button->SetSelected(); } },
         [radio_button](const std::function<void()>& callback) {
-            radio_button->GetSelectStateChangeEvent().AddListener(std::bind(callback));
+
+            radio_button->Subscriptions() +=
+                radio_button->SelectStateChangeEvent().Subscribe(std::bind(callback));
         });
 }

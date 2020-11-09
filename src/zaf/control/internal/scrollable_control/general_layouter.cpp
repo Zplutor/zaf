@@ -120,17 +120,17 @@ void GeneralLayouter::AdjustScrollBarValuesWithGeneralScrollContentControl() {
 }
 
 
-void GeneralLayouter::ScrollBarScroll(const std::shared_ptr<ScrollBar>& scroll_bar) {
+void GeneralLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) {
 
     const auto& scroll_content_control = GetScrollableControl()->GetScrollContentControl();
 
     Rect content_rect = scroll_content_control->GetRect();
 
-    if (scroll_bar->IsHorizontal()) {
-        content_rect.position.x = static_cast<float>(-scroll_bar->GetValue());
+    if (event_info.scroll_bar->IsHorizontal()) {
+        content_rect.position.x = static_cast<float>(-event_info.scroll_bar->GetValue());
     }
     else {
-        content_rect.position.y = static_cast<float>(-scroll_bar->GetValue());
+        content_rect.position.y = static_cast<float>(-event_info.scroll_bar->GetValue());
     }
 
     scroll_content_control->SetRect(content_rect);

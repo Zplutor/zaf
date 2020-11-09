@@ -2,13 +2,13 @@
 
 #include <deque>
 #include <zaf/base/define.h>
-#include <zaf/base/event.h>
 #include <zaf/control/list_item.h>
 #include <zaf/control/scrollable_control.h>
 #include <zaf/control/selection_mode.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/creation.h>
 #include <zaf/internal/no_circular_pointer.h>
+#include <zaf/rx/observable.h>
 
 namespace zaf {
 namespace internal {
@@ -17,6 +17,7 @@ class ListControlImplementation;
 
 class ListItemContainer;
 class ListControlDelegate;
+class ListControlSelectionChangeInfo;
 class ListDataSource;
 
 /**
@@ -32,12 +33,6 @@ class ListDataSource;
 class ListControl : public ScrollableControl {
 public:
     ZAF_DECLARE_REFLECTION_TYPE
-
-public:
-    /**
-     The type of selection change event.
-     */
-    typedef Event<const std::shared_ptr<ListControl>&> SelectionChangeEvent;
 
 public:
     ListControl();
@@ -102,7 +97,7 @@ public:
 
      This event is raised when selection is changed.
      */
-    SelectionChangeEvent::Proxy GetSelectionChangeEvent();
+    Observable<ListControlSelectionChangeInfo> SelectionChangeEvent();
 
     /**
      Select the item at specifed index.
@@ -197,6 +192,12 @@ private:
     internal::NoCircularPointer<ListDataSource> data_source_;
     internal::NoCircularPointer<ListControlDelegate> delegate_;
     std::shared_ptr<internal::ListControlImplementation> implementation_;
+};
+
+
+class ListControlSelectionChangeInfo {
+public:
+    std::shared_ptr<ListControl> list_control;
 };
 
 }

@@ -98,6 +98,13 @@ protected:
     void FocusedControlChange(const std::shared_ptr<Control>& previous_focused_control) override;
 
 private:
+    class DialogButtonItem {
+    public:
+        DialogResult dialog_result{ DialogResult::None };
+        Subscription click_event_subscription;
+    };
+
+private:
     void SetCurrentDefaultButton(const std::shared_ptr<Button>& button);
 
 private:
@@ -106,7 +113,7 @@ private:
 
     std::shared_ptr<Button> default_button_;
     std::shared_ptr<Button> current_default_button_;
-    std::map<std::shared_ptr<Button>, DialogResult> dialog_buttons_;
+    std::map<std::shared_ptr<Button>, DialogButtonItem> dialog_buttons_;
 };
 
 }

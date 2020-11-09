@@ -1,12 +1,20 @@
 #pragma once
 
 #include <zaf/control/clickable_control.h>
-#include <zaf/base/event.h>
+#include <zaf/rx/observable.h>
+#include <zaf/rx/subject.h>
+#include <zaf/rx/subscription_holder.h>
 
 namespace zaf {
 
 class ScrollBarArrow;
+class ScrollBarArrowBeginPressInfo;
+class ScrollBarArrowEndPressInfo;
+class ScrollBarScrollInfo;
 class ScrollBarThumb;
+class ScrollBarThumbBeginDragInfo;
+class ScrollBarThumbDragInfo;
+class ScrollBarThumbEndDragInfo;
 class Timer;
 
 /**
@@ -15,12 +23,6 @@ class Timer;
 class ScrollBar : public Control {
 public:
     ZAF_DECLARE_REFLECTION_TYPE
-
-public:
-    /**
-     Type of scroll event.
-     */
-	typedef Event<const std::shared_ptr<ScrollBar>&> ScrollEvent;
 
 public:
 	ScrollBar();
@@ -194,7 +196,7 @@ public:
 
      This event is raised when the scroll value is changed.
      */
-	ScrollEvent::Proxy GetScrollEvent();
+	Observable<ScrollBarScrollInfo> ScrollEvent();
 
 protected:
     void Initialize() override;
@@ -214,8 +216,8 @@ private:
 	};
 
 private:
-	void InitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow);
-	void UninitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow);
+	void InitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow, bool is_incremental);
+	void UninitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow, bool is_incremental);
 	void InitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb);
 	void UninitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb);
 	void ApplyOrientationToChildren();
@@ -228,22 +230,26 @@ private:
 	void ChangeValueRange(int min_value, int max_value, bool max_value_has_priority);
 
 	void BeginTimer(TimerEvent timer_event);
-	void TimerTrigger(Timer&);
+	void TimerTrigger();
 	void ApplyTimerEvent();
 	Rect GetThumbSlotRect() const;
 
-	void ArrowBeginPress(const std::shared_ptr<ScrollBarArrow>& arrow);
-	void ArrowEndPress(const std::shared_ptr<ScrollBarArrow>& arrow);
+	void ArrowBeginPress(const ScrollBarArrowBeginPressInfo& event_info);
+	void ArrowEndPress(const ScrollBarArrowEndPressInfo& event_info);
 
-	void ThumbBeginDrag(const std::shared_ptr<ScrollBarThumb>& thumb);
-	void ThumbDrag(const std::shared_ptr<ScrollBarThumb>& thumb);
-	void ThumbEndDrag(const std::shared_ptr<ScrollBarThumb>& thumb);
+	void ThumbBeginDrag(const ScrollBarThumbBeginDragInfo& event_info);
+	void ThumbDrag(const ScrollBarThumbDragInfo& event_info);
+	void ThumbEndDrag(const ScrollBarThumbEndDragInfo& event_info);
 	int GetValuesPerThumbSlotPoint();
 
 private:
 	std::shared_ptr<ScrollBarArrow> incremental_arrow_;
 	std::shared_ptr<ScrollBarArrow> decremental_arrow_;
 	std::shared_ptr<ScrollBarThumb> thumb_;
+
+    zaf::SubscriptionHolder incremental_arrow_subscriptions_;
+    zaf::SubscriptionHolder decremental_arrow_subscriptions_;
+    zaf::SubscriptionHolder thumb_subscriptions_;
 
 	bool is_horizontal_;
 
@@ -258,6 +264,12 @@ private:
 	TimerEvent timer_event_;
 
     double remaining_wheel_change_value_;
+};
+
+
+class ScrollBarScrollInfo {
+public:
+    std::shared_ptr<ScrollBar> scroll_bar;
 };
 
 
@@ -294,16 +306,6 @@ public:
          */
 		Down,
 	};
-
-    /**
-     Type of begin press event.
-     */
-	typedef Event<const std::shared_ptr<ScrollBarArrow>&> BeginPressEvent;
-
-    /**
-     Type of end press event.
-     */
-	typedef Event<const std::shared_ptr<ScrollBarArrow>&> EndPressEvent;
 
 public:
 	ScrollBarArrow();
@@ -346,18 +348,18 @@ public:
 
      This event is raised when the mouse left button is pressed for a while. 
      */
-	BeginPressEvent::Proxy GetBeginPressEvent() {
-		return BeginPressEvent::Proxy(begin_press_event_);
-	}
+    Observable<ScrollBarArrowBeginPressInfo> BeginPressEvent() {
+        return begin_press_event_.GetObservable();
+    }
 
     /**
      Get end press event.
 
      This event is raised when the mouse left button is released after being pressed for a while.
      */
-	EndPressEvent::Proxy GetEndPressEvent() {
-		return EndPressEvent::Proxy(end_press_event_);
-	}
+    Observable<ScrollBarArrowEndPressInfo> EndPressEvent() {
+        return end_press_event_.GetObservable();
+    }
 
 protected:
     void Initialize() override;
@@ -376,9 +378,21 @@ private:
 private:
 	Direction direction_;
 
-	BeginPressEvent begin_press_event_;
-	EndPressEvent end_press_event_;
+    Subject<ScrollBarArrowBeginPressInfo> begin_press_event_;
+	Subject<ScrollBarArrowEndPressInfo> end_press_event_;
 };
+
+
+class ScrollBarArrowBeginPressInfo {
+public:
+    std::shared_ptr<ScrollBarArrow> scroll_bar_arrow;
+};
+
+class ScrollBarArrowEndPressInfo {
+public:
+    std::shared_ptr<ScrollBarArrow> scroll_bar_arrow;
+};
+
 
 /**
  Represents a thumb control in a control.
@@ -386,22 +400,6 @@ private:
 class ScrollBarThumb : public ClickableControl {
 public:
     ZAF_DECLARE_REFLECTION_TYPE
-
-public:
-    /**
-     Type of begin drag event.
-     */
-	typedef Event<const std::shared_ptr<ScrollBarThumb>&> BeginDragEvent;
-
-    /**
-     Type of drag event.
-     */
-	typedef Event<const std::shared_ptr<ScrollBarThumb>&> DragEvent;
-
-    /**
-     Type of end drag event.
-     */
-	typedef Event<const std::shared_ptr<ScrollBarThumb>&> EndDragEvent;
 
 public:
 	ScrollBarThumb();
@@ -451,8 +449,8 @@ public:
 
      This event is raised when the thumb has begain being dragged.
      */
-	BeginDragEvent::Proxy GetBeginDragEvent() {
-		return BeginDragEvent::Proxy(begin_drag_event_);
+	Observable<ScrollBarThumbBeginDragInfo> BeginDragEvent() {
+        return begin_drag_event_.GetObservable();
 	}
 
     /**
@@ -460,8 +458,8 @@ public:
 
      This event is raised when the thumb is beging dragged.
      */
-	DragEvent::Proxy GetDragEvent() {
-		return DragEvent::Proxy(drag_event_);
+	Observable<ScrollBarThumbDragInfo> DragEvent() {
+        return drag_event_.GetObservable();
 	}
 
     /**
@@ -469,8 +467,8 @@ public:
 
      This event is raised when the thumb has ended being dragged.
      */
-	EndDragEvent::Proxy GetEndDragEvent() {
-		return EndDragEvent::Proxy(end_drag_event_);
+	Observable<ScrollBarThumbEndDragInfo> EndDragEvent() {
+        return end_drag_event_.GetObservable();
 	}
 
 protected:
@@ -490,9 +488,26 @@ private:
 private:
 	bool is_horizontal_;
 	bool is_dragging_;
-	BeginDragEvent begin_drag_event_;
-	DragEvent drag_event_;
-	EndDragEvent end_drag_event_;
+
+    Subject<ScrollBarThumbBeginDragInfo> begin_drag_event_;
+	Subject<ScrollBarThumbDragInfo> drag_event_;
+	Subject<ScrollBarThumbEndDragInfo> end_drag_event_;
+};
+
+
+class ScrollBarThumbBeginDragInfo {
+public:
+    std::shared_ptr<ScrollBarThumb> scroll_bar_thumb;
+};
+
+class ScrollBarThumbDragInfo {
+public:
+    std::shared_ptr<ScrollBarThumb> scroll_bar_thumb;
+};
+
+class ScrollBarThumbEndDragInfo {
+public:
+    std::shared_ptr<ScrollBarThumb> scroll_bar_thumb;
 };
 
 }

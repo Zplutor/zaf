@@ -25,7 +25,8 @@ void ConversationPanel::InitializeLeftPane() {
 
     conversation_list_view_ = zaf::Create<ConversationListView>();
     conversation_list_view_->SetConversationAvatarManager(conversation_avatar_manager_);
-    conversation_list_view_->GetSelectionChangeEvent().AddListener(
+
+    Subscriptions() += conversation_list_view_->SelectionChangeEvent().Subscribe(
         std::bind(&ConversationPanel::ConversationListViewSelectionChange, this));
 
     left_pane->AddChild(conversation_list_view_);

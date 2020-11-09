@@ -102,8 +102,8 @@ void ListControlImplementation::Initialize(const InitializeParameters& parameter
 void ListControlImplementation::RegisterScrollBarEvents() {
 
     auto vertical_scroll_bar = owner_.GetVerticalScrollBar();
-    vertical_scroll_bar->GetScrollEvent().AddListenerWithTag(
-        reinterpret_cast<std::uintptr_t>(this),
+
+    vertical_scroll_bar_subscription_ = vertical_scroll_bar->ScrollEvent().Subscribe(
         std::bind(&ListControlImplementation::UpdateVisibleItems, this));
 }
 
@@ -111,7 +111,7 @@ void ListControlImplementation::RegisterScrollBarEvents() {
 void ListControlImplementation::UnregisterScrollBarEvents(
     const std::shared_ptr<ScrollBar>& scroll_bar) {
 
-    scroll_bar->GetScrollEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
+    vertical_scroll_bar_subscription_.Unsubscribe();
 }
 
 
@@ -156,45 +156,29 @@ void ListControlImplementation::RegisterDataSourceEvents() {
         return;
     }
 
-    auto tag = reinterpret_cast<std::uintptr_t>(this);
-
-    data_source->GetDataAddEvent().AddListenerWithTag(
-        tag,
+    data_source_subscriptions_ += data_source->DataAddEvent().Subscribe(
         std::bind(
             &ListControlImplementation::ItemAdd, 
             this, 
-            std::placeholders::_1, 
-            std::placeholders::_2));
+            std::placeholders::_1));
 
-    data_source->GetDataRemoveEvent().AddListenerWithTag(
-        tag,
+    data_source_subscriptions_ += data_source->DataRemoveEvent().Subscribe(
         std::bind(
             &ListControlImplementation::ItemRemove,
             this, 
-            std::placeholders::_1,
-            std::placeholders::_2));
+            std::placeholders::_1));
 
-    data_source->GetDataUpdateEvent().AddListenerWithTag(
-        tag,
+    data_source_subscriptions_ += data_source->DataUpdateEvent().Subscribe(
         std::bind(
             &ListControlImplementation::ItemUpdate,
             this, 
-            std::placeholders::_1,
-            std::placeholders::_2));
+            std::placeholders::_1));
 }
 
 
 void ListControlImplementation::UnregisterDataSourceEvents() {
 
-    auto data_source = data_source_.lock();
-    if (!data_source) {
-        return;
-    }
-
-    auto tag = reinterpret_cast<std::uintptr_t>(this);
-    data_source->GetDataAddEvent().RemoveListenersWithTag(tag);
-    data_source->GetDataRemoveEvent().RemoveListenersWithTag(tag);
-    data_source->GetDataUpdateEvent().RemoveListenersWithTag(tag);
+    data_source_subscriptions_.Clear();
 }
 
 
@@ -497,15 +481,17 @@ std::shared_ptr<ListItem> ListControlImplementation::CreateItem(std::size_t inde
 }
 
 
-void ListControlImplementation::ItemAdd(std::size_t index, std::size_t count) {
+void ListControlImplementation::ItemAdd(const ListDataSourceDataAddInfo& event_info) {
 
-    bool selection_changed = item_selection_manager_.AdjustSelectionByAddingIndexes(index, count);
+    bool selection_changed = item_selection_manager_.AdjustSelectionByAddingIndexes(
+        event_info.index, 
+        event_info.count);
 
     Control::UpdateGuard update_gurad(*item_container_);
 
     float position_difference = AdjustContentHeight();
 
-    if (index >= first_visible_item_index_ + visible_items_.size()) {
+    if (event_info.index >= first_visible_item_index_ + visible_items_.size()) {
         
         if (current_total_height_ >= owner_.GetScrollContentSize().height) {
             return;
@@ -515,11 +501,11 @@ void ListControlImplementation::ItemAdd(std::size_t index, std::size_t count) {
     }
     else {
 
-        if (index <= first_visible_item_index_) {
-            AddItemsBeforeVisibleItems(index, count, position_difference);
+        if (event_info.index <= first_visible_item_index_) {
+            AddItemsBeforeVisibleItems(event_info.index, event_info.count, position_difference);
         }
         else {
-            AddItemsInMiddleOfVisibleItems(index, count, position_difference);
+            AddItemsInMiddleOfVisibleItems(event_info.index, event_info.count, position_difference);
         }
     }
 
@@ -566,23 +552,25 @@ void ListControlImplementation::AddItemsInMiddleOfVisibleItems(
 }
 
 
-void ListControlImplementation::ItemRemove(std::size_t index, std::size_t count) {
+void ListControlImplementation::ItemRemove(const ListDataSourceDataRemoveInfo& event_info) {
 
-    bool selection_changed = item_selection_manager_.AdjustSelectionByRemovingIndexes(index, count);
+    bool selection_changed = item_selection_manager_.AdjustSelectionByRemovingIndexes(
+        event_info.index,
+        event_info.count);
 
     Control::UpdateGuard update_gurad(*item_container_);
 
     float position_difference = AdjustContentHeight();
 
-    if (index >= first_visible_item_index_ + visible_items_.size()) {
+    if (event_info.index >= first_visible_item_index_ + visible_items_.size()) {
         return;
     }
 
-    if (index < first_visible_item_index_) {
-        RemoveItemsBeforeVisibleItems(index, count, position_difference);
+    if (event_info.index < first_visible_item_index_) {
+        RemoveItemsBeforeVisibleItems(event_info.index, event_info.count, position_difference);
     }
     else {
-        RemoveItemsInMiddleOfVisibleItems(index, count, position_difference);
+        RemoveItemsInMiddleOfVisibleItems(event_info.index, event_info.count, position_difference);
     }
 
     if (selection_changed) {
@@ -624,18 +612,22 @@ void ListControlImplementation::RemoveItemsInMiddleOfVisibleItems(
 }
 
 
-void ListControlImplementation::ItemUpdate(std::size_t index, std::size_t count) {
+void ListControlImplementation::ItemUpdate(const ListDataSourceDataUpdateInfo& event_info) {
 
     Control::UpdateGuard update_guard(*item_container_);
 
     float position_difference = AdjustContentHeight();
 
-    if (index >= first_visible_item_index_ + visible_items_.size()) {
+    if (event_info.index >= first_visible_item_index_ + visible_items_.size()) {
         return;
     }
 
-    AdjustVisibleItemPositionsByUpdatingItems(index, count, position_difference);
-    UpdateVisibleItemsByUpdatingItems(index, count);
+    AdjustVisibleItemPositionsByUpdatingItems(
+        event_info.index,
+        event_info.count, 
+        position_difference);
+
+    UpdateVisibleItemsByUpdatingItems(event_info.index, event_info.count);
 }
 
 

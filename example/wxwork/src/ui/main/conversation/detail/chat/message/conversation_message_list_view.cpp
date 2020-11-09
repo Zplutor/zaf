@@ -23,7 +23,6 @@ inline bool MessageComparer(
 
 ConversationMessageListView::~ConversationMessageListView() {
 
-    Service::GetInstance().GetMessageAddEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
 }
 
 
@@ -42,8 +41,7 @@ void ConversationMessageListView::Initialize() {
     auto scroll_bar = GetVerticalScrollBar();
     scroll_bar->SetSmallChangeValue(14);
 
-    Service::GetInstance().GetMessageAddEvent().AddListenerWithTag(
-        reinterpret_cast<std::uintptr_t>(this),
+    Subscriptions() += Service::GetInstance().GetMessageAddEvent().Subscribe(
         std::bind(&ConversationMessageListView::OnMessageAdd, this, std::placeholders::_1));
 }
 

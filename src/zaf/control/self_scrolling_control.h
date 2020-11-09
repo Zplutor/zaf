@@ -1,9 +1,12 @@
 #pragma once
 
 #include <memory>
-#include <zaf/base/event.h>
+#include <zaf/rx/observable.h>
 
 namespace zaf {
+
+class SelfScrollingControlScrollBarChangInfo;
+class SelfScrollingControlScrollValuesChangeInfo;
 
 /**
  Provides an interface for self scrolling controls to interact with scrollable controls.
@@ -13,17 +16,6 @@ namespace zaf {
  the later queries and changes the scroll bars information via this interface.
  */
 class SelfScrollingControl {
-public:
-    /**
-     Type of scroll bar change event.
-     */
-    typedef Event<SelfScrollingControl&> ScrollBarChangeEvent;
-
-    /**
-     Type of scroll value change event.
-     */
-    typedef Event<SelfScrollingControl&, bool> ScrollValuesChangeEvent;
-
 public:
     SelfScrollingControl() { } 
     virtual ~SelfScrollingControl() { }
@@ -79,14 +71,14 @@ public:
 
      This event should be raised when the visibility or usability of scroll bars changed.
      */
-    virtual ScrollBarChangeEvent::Proxy GetScrollBarChangeEvent() = 0;
+    virtual Observable<SelfScrollingControlScrollBarChangInfo> ScrollBarChangeEvent() = 0;
 
     /**
      Get scroll value change event of the self scrolling control.
 
      This event should be raise when the scroll values changed.
      */
-    virtual ScrollValuesChangeEvent::Proxy GetScrollValuesChangeEvent() = 0;
+    virtual Observable<SelfScrollingControlScrollValuesChangeInfo> ScrollValuesChangeEvent() = 0;
 
     /**
      Scroll the content by changing the vertical scroll value.
@@ -101,6 +93,19 @@ public:
 private:
     SelfScrollingControl(const SelfScrollingControl&) = delete;
     SelfScrollingControl& operator=(const SelfScrollingControl&) = delete;
+};
+
+
+class SelfScrollingControlScrollBarChangInfo {
+public:
+    SelfScrollingControl* self_scrolling_control{};
+};
+
+
+class SelfScrollingControlScrollValuesChangeInfo {
+public:
+    SelfScrollingControl* self_scrolling_control{};
+    bool is_horizontal{};
 };
 
 }

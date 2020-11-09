@@ -8,37 +8,51 @@ namespace internal {
 ScrollableControlLayouter::ScrollableControlLayouter(ScrollableControl* scrollable_control) : 
     scrollable_control_(scrollable_control) {
 
-    RegisterScrollBarEvent(GetVerticalScrollBar());
-    RegisterScrollBarEvent(GetHorizontalScrollBar());
+    RegisterScrollBarEvent(GetVerticalScrollBar(), false);
+    RegisterScrollBarEvent(GetHorizontalScrollBar(), true);
 }
 
 
 ScrollableControlLayouter::~ScrollableControlLayouter() {
 
-    UnregisterScrollBarEvent(GetVerticalScrollBar());
-    UnregisterScrollBarEvent(GetHorizontalScrollBar());
+    UnregisterScrollBarEvent(true);
+    UnregisterScrollBarEvent(false);
 }
 
 
-void ScrollableControlLayouter::ScrollBarChange(bool is_horizontal, const std::shared_ptr<ScrollBar>& previous_scroll_bar) {
+void ScrollableControlLayouter::ScrollBarChange(
+    bool is_horizontal, 
+    const std::shared_ptr<ScrollBar>& previous_scroll_bar) {
 
-    UnregisterScrollBarEvent(previous_scroll_bar);
+    UnregisterScrollBarEvent(is_horizontal);
 
     auto new_scroll_bar = is_horizontal ? GetHorizontalScrollBar() : GetVerticalScrollBar();
-    RegisterScrollBarEvent(new_scroll_bar);
+    RegisterScrollBarEvent(new_scroll_bar, is_horizontal);
 }
 
 
-void ScrollableControlLayouter::RegisterScrollBarEvent(const std::shared_ptr<ScrollBar>& scroll_bar) {
+void ScrollableControlLayouter::RegisterScrollBarEvent(
+    const std::shared_ptr<ScrollBar>& scroll_bar, 
+    bool is_horizontal) {
 
-    scroll_bar->GetScrollEvent().AddListenerWithTag(
-        reinterpret_cast<std::uintptr_t>(this),
+    auto& subscription =
+        is_horizontal ?
+        horizontal_scroll_bar_subscription_ :
+        vertical_scroll_bar_subscription_;
+
+    subscription = scroll_bar->ScrollEvent().Subscribe(
         std::bind(&ScrollableControlLayouter::ScrollBarScroll, this, std::placeholders::_1));
 }
 
 
-void ScrollableControlLayouter::UnregisterScrollBarEvent(const std::shared_ptr<ScrollBar>& scroll_bar) {
-    scroll_bar->GetScrollEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
+void ScrollableControlLayouter::UnregisterScrollBarEvent(bool is_horizontal) {
+
+    auto& subscription = 
+        is_horizontal ? 
+        horizontal_scroll_bar_subscription_ : 
+        vertical_scroll_bar_subscription_;
+
+    subscription.Unsubscribe();
 }
 
 

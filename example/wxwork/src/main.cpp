@@ -5,19 +5,21 @@
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-    auto& application = zaf::Application::GetInstance();
+    auto& application = zaf::Application::Instance();
 
     application.Initialize({});
 
-    application.GetBeginRunEvent().AddListener([](zaf::Application& application) {
+    application.Subscriptions() += application.BeginRunEvent().Subscribe(
+        [](const zaf::ApplicationBeginRunInfo&) {
 
-        Service::GetInstance().Initialize();
+            Service::GetInstance().Initialize();
 
-        auto main_window = zaf::Create<MainWindow>();
-        main_window->Show();
+            auto main_window = zaf::Create<MainWindow>();
+            main_window->Show();
         
-        application.SetMainWindow(main_window);
-    });
+            zaf::Application::Instance().SetMainWindow(main_window);
+        }
+    );
 
     application.Run();
     return 0;

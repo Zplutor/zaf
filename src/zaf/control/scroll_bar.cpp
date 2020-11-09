@@ -16,14 +16,15 @@
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/mouse_message.h>
 
-#include <zaf/base/log.h>
-
 namespace zaf {
+namespace {
 
-static const wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
+constexpr wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
 
-static const int kTimerInitialInterval = 300;
-static const int kTimerContinuousInterval = 50;
+constexpr int kTimerInitialInterval = 300;
+constexpr int kTimerContinuousInterval = 50;
+
+}
 
 ZAF_DEFINE_REFLECTION_TYPE(ScrollBar)
 	ZAF_DEFINE_PARSER(ScrollBarParser)
@@ -57,53 +58,55 @@ void ScrollBar::Initialize() {
 
 	__super::Initialize();
 
-	InitializeArrow(incremental_arrow_);
-	InitializeArrow(decremental_arrow_);
+	InitializeArrow(incremental_arrow_, true);
+	InitializeArrow(decremental_arrow_, false);
 	InitializeThumb(thumb_);
 	ApplyOrientationToChildren();
 }
 
 
-void ScrollBar::InitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow) {
+void ScrollBar::InitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow, bool is_incremental) {
 
-    arrow->GetBeginPressEvent().AddListenerWithTag(
-        reinterpret_cast<std::uintptr_t>(this),
-		std::bind(&ScrollBar::ArrowBeginPress, this, std::placeholders::_1) 
-	);
+	auto& subscription_holder = 
+		is_incremental ? 
+		incremental_arrow_subscriptions_ : 
+		decremental_arrow_subscriptions_;
 
-    arrow->GetEndPressEvent().AddListenerWithTag(
-        reinterpret_cast<std::uintptr_t>(this),
-		std::bind(&ScrollBar::ArrowEndPress, this, std::placeholders::_1)
-	);
+	subscription_holder += arrow->BeginPressEvent().Subscribe(
+		std::bind(&ScrollBar::ArrowBeginPress, this, std::placeholders::_1));
+
+	subscription_holder += arrow->EndPressEvent().Subscribe(
+		std::bind(&ScrollBar::ArrowEndPress, this, std::placeholders::_1));
 
 	AddChild(arrow);
 }
 
 
-void ScrollBar::UninitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow) {
+void ScrollBar::UninitializeArrow(
+	const std::shared_ptr<ScrollBarArrow>& arrow, 
+	bool is_incremental) {
 
-    arrow->GetBeginPressEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
-    arrow->GetEndPressEvent().RemoveListenersWithTag(reinterpret_cast<std::uintptr_t>(this));
+	auto& subscription_holder =
+		is_incremental ?
+		incremental_arrow_subscriptions_ :
+		decremental_arrow_subscriptions_;
+
+	subscription_holder.Clear();
+
 	RemoveChild(arrow);
 }
 
 
 void ScrollBar::InitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb) {
 
-	thumb->GetBeginDragEvent().AddListenerWithTag(
-        reinterpret_cast<std::uintptr_t>(this),
-		std::bind(&ScrollBar::ThumbBeginDrag, this, std::placeholders::_1)
-	);
+	thumb_subscriptions_ += thumb->BeginDragEvent().Subscribe(
+		std::bind(&ScrollBar::ThumbBeginDrag, this, std::placeholders::_1));
 
-    thumb->GetDragEvent().AddListenerWithTag(
-        reinterpret_cast<std::uintptr_t>(this),
-		std::bind(&ScrollBar::ThumbDrag, this, std::placeholders::_1)
-	);
+	thumb_subscriptions_ += thumb->DragEvent().Subscribe(
+		std::bind(&ScrollBar::ThumbDrag, this, std::placeholders::_1));
 
-    thumb->GetEndDragEvent().AddListenerWithTag(
-        reinterpret_cast<std::uintptr_t>(this),
-		std::bind(&ScrollBar::ThumbEndDrag, this, std::placeholders::_1)
-	);
+	thumb_subscriptions_ += thumb->EndDragEvent().Subscribe(
+		std::bind(&ScrollBar::ThumbEndDrag, this, std::placeholders::_1));
 
 	AddChild(thumb);
 }
@@ -111,10 +114,7 @@ void ScrollBar::InitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb) {
 
 void ScrollBar::UninitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb) {
 
-    auto tag = reinterpret_cast<std::uintptr_t>(this);
-    thumb->GetBeginDragEvent().RemoveListenersWithTag(tag);
-    thumb->GetDragEvent().RemoveListenersWithTag(tag);
-    thumb->GetEndDragEvent().RemoveListenersWithTag(tag);
+	thumb_subscriptions_.Clear();
 	RemoveChild(thumb);
 }
 
@@ -137,8 +137,8 @@ void ScrollBar::SetIncrementalArrow(const std::shared_ptr<ScrollBarArrow>& incre
 	incremental_arrow_ = incremental_arrow;
 
 	if (IsParentOf(previous_arrow)) {
-		UninitializeArrow(previous_arrow);
-		InitializeArrow(incremental_arrow_);
+		UninitializeArrow(previous_arrow, true);
+		InitializeArrow(incremental_arrow_, true);
 		ApplyOrientationToChildren();
 	}
 }
@@ -150,8 +150,8 @@ void ScrollBar::SetDecrementalArrow(const std::shared_ptr<ScrollBarArrow>& decre
 	decremental_arrow_ = decremental_arrow;
 
 	if (IsParentOf(previous_arrow)) {
-		UninitializeArrow(previous_arrow);
-		InitializeArrow(decremental_arrow_);
+		UninitializeArrow(previous_arrow, false);
+		InitializeArrow(decremental_arrow_, false);
 		ApplyOrientationToChildren();
 	}
 }
@@ -209,9 +209,14 @@ void ScrollBar::SetValue(int value) {
 
 		NeedRelayout();
 
-        auto event = TryGetEventFromPropertyMap<ScrollEvent>(GetPropertyMap(), kScrollEventPropertyName);
-		if (event != nullptr) {
-			event->Trigger(std::dynamic_pointer_cast<ScrollBar>(shared_from_this()));
+		auto event_observer = GetEventObserver<ScrollBarScrollInfo>(
+			GetPropertyMap(), 
+			kScrollEventPropertyName);
+
+		if (event_observer) {
+			ScrollBarScrollInfo event_info;
+			event_info.scroll_bar = std::dynamic_pointer_cast<ScrollBar>(shared_from_this());
+			event_observer->OnNext(event_info);
 		}
 	}
 }
@@ -379,8 +384,8 @@ void ScrollBar::ChangeVerticalRectToHorizontalRect(Rect& rect) {
 }
 
 
-ScrollBar::ScrollEvent::Proxy ScrollBar::GetScrollEvent() {
-    return GetEventProxyFromPropertyMap<ScrollEvent>(GetPropertyMap(), kScrollEventPropertyName);
+Observable<ScrollBarScrollInfo> ScrollBar::ScrollEvent() {
+    return GetEventObservable<ScrollBarScrollInfo>(GetPropertyMap(), kScrollEventPropertyName);
 }
 
 
@@ -419,12 +424,12 @@ void ScrollBar::BeginTimer(TimerEvent timer_event) {
 
 	timer_ = std::make_shared<Timer>(Timer::Mode::OneShot);
     timer_->SetInterval(std::chrono::milliseconds(kTimerInitialInterval));
-    timer_->GetTriggerEvent().AddListener(std::bind(&ScrollBar::TimerTrigger, this, std::placeholders::_1));
+    Subscriptions() += timer_->TriggerEvent().Subscribe(std::bind(&ScrollBar::TimerTrigger, this));
 	timer_->Start();
 }
 
 
-void ScrollBar::TimerTrigger(Timer&) {
+void ScrollBar::TimerTrigger() {
 
 	ApplyTimerEvent();
 
@@ -432,7 +437,8 @@ void ScrollBar::TimerTrigger(Timer&) {
 
         timer_ = std::make_shared<Timer>(Timer::Mode::DeferredRepeated);
         timer_->SetInterval(std::chrono::milliseconds(kTimerContinuousInterval));
-        timer_->GetTriggerEvent().AddListener(std::bind(&ScrollBar::TimerTrigger, this, std::placeholders::_1));
+        Subscriptions() += timer_->TriggerEvent().Subscribe(
+			std::bind(&ScrollBar::TimerTrigger, this));
 		timer_->Start();
 	}
 }
@@ -520,30 +526,30 @@ bool ScrollBar::MouseWheel(const Point& position, const MouseWheelMessage& messa
 }
 
 
-void ScrollBar::ArrowBeginPress(const std::shared_ptr<ScrollBarArrow>& arrow) {
+void ScrollBar::ArrowBeginPress(const ScrollBarArrowBeginPressInfo& event_info) {
 
-	if (arrow == incremental_arrow_) {
+	if (event_info.scroll_bar_arrow == incremental_arrow_) {
 		BeginTimer(TimerEvent::Increment);
 	}
-	else if (arrow == decremental_arrow_) {
+	else if (event_info.scroll_bar_arrow == decremental_arrow_) {
 		BeginTimer(TimerEvent::Decrement);
 	}
 }
 
 
-void ScrollBar::ArrowEndPress(const std::shared_ptr<ScrollBarArrow>& arrow) {
+void ScrollBar::ArrowEndPress(const ScrollBarArrowEndPressInfo& event_info) {
 	timer_.reset();
 }
 
 
-void ScrollBar::ThumbBeginDrag(const std::shared_ptr<ScrollBarThumb>& thumb) {
+void ScrollBar::ThumbBeginDrag(const ScrollBarThumbBeginDragInfo& event_info) {
 
 	begin_drag_value_ = value_;
 	begin_drag_mouse_position_ = GetMousePosition();
 }
 
 
-void ScrollBar::ThumbDrag(const std::shared_ptr<ScrollBarThumb>& thumb) {
+void ScrollBar::ThumbDrag(const ScrollBarThumbDragInfo& event_info) {
 
 	float begin_drag_mouse_position_value = begin_drag_mouse_position_.x;
 	float begin_drag_mouse_position_bias = begin_drag_mouse_position_.y;
@@ -569,7 +575,7 @@ void ScrollBar::ThumbDrag(const std::shared_ptr<ScrollBarThumb>& thumb) {
 }
 
 
-void ScrollBar::ThumbEndDrag(const std::shared_ptr<ScrollBarThumb>& thumb) {
+void ScrollBar::ThumbEndDrag(const ScrollBarThumbEndDragInfo& event_info) {
 
 }
 
@@ -685,7 +691,9 @@ void ScrollBarArrow::MouseCapture() {
 
 	ClickableControl::MouseCapture();
 
-	begin_press_event_.Trigger(std::dynamic_pointer_cast<ScrollBarArrow>(this->shared_from_this()));
+	ScrollBarArrowBeginPressInfo event_info;
+	event_info.scroll_bar_arrow = std::dynamic_pointer_cast<ScrollBarArrow>(shared_from_this());
+	begin_press_event_.GetObserver().OnNext(event_info);
 }
 
 
@@ -693,11 +701,14 @@ void ScrollBarArrow::MouseRelease() {
 
 	ClickableControl::MouseRelease();
 
-	end_press_event_.Trigger(std::dynamic_pointer_cast<ScrollBarArrow>(this->shared_from_this()));
+	ScrollBarArrowEndPressInfo event_info;
+	event_info.scroll_bar_arrow = std::dynamic_pointer_cast<ScrollBarArrow>(shared_from_this());
+	end_press_event_.GetObserver().OnNext(event_info);
 }
 
 
-ScrollBarThumb::ScrollBarThumb() : is_dragging_(false) {
+ScrollBarThumb::ScrollBarThumb() : 
+	is_dragging_(false) {
 
 }
 
@@ -772,7 +783,10 @@ void ScrollBarThumb::MouseCapture() {
 	ClickableControl::MouseCapture();
 
 	is_dragging_ = true;
-	begin_drag_event_.Trigger(std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this()));
+
+	ScrollBarThumbBeginDragInfo event_info;
+	event_info.scroll_bar_thumb = std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this());
+	begin_drag_event_.GetObserver().OnNext(event_info);
 }
 
 
@@ -781,7 +795,10 @@ void ScrollBarThumb::MouseRelease() {
 	ClickableControl::MouseRelease();
 
 	is_dragging_ = false;
-	end_drag_event_.Trigger(std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this()));
+
+	ScrollBarThumbEndDragInfo event_info;
+	event_info.scroll_bar_thumb = std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this());
+	end_drag_event_.GetObserver().OnNext(event_info);
 }
 
 
@@ -790,7 +807,10 @@ bool ScrollBarThumb::MouseMove(const Point& position, const MouseMessage& messag
 	bool result = ClickableControl::MouseMove(position, message);
 
 	if (is_dragging_) {
-		drag_event_.Trigger(std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this()));
+
+		ScrollBarThumbDragInfo event_info;
+		event_info.scroll_bar_thumb = std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this());
+		drag_event_.GetObserver().OnNext(event_info);
 	}
 
     return result;

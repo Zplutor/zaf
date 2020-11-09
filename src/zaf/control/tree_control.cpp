@@ -5,6 +5,7 @@
 #include <zaf/control/tree_data_source.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
 #include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/rx/subject.h>
 
 namespace zaf {
 namespace {
@@ -91,9 +92,9 @@ std::shared_ptr<Object> TreeControl::GetFirstSelectedItemData() const {
 }
 
 
-TreeControl::SelectionChangeEvent::Proxy TreeControl::GetSelectionChangeEvent() {
+Observable<TreeControlSelectionChangeInfo> TreeControl::SelectionChangeEvent() {
 
-    return GetEventProxyFromPropertyMap<SelectionChangeEvent>(
+    return GetEventObservable<TreeControlSelectionChangeInfo>(
         GetPropertyMap(),
         kSelectionChangeEventPropertyName);
 }
@@ -101,13 +102,17 @@ TreeControl::SelectionChangeEvent::Proxy TreeControl::GetSelectionChangeEvent() 
 
 void TreeControl::SelectionChange() {
 
-    auto event = TryGetEventFromPropertyMap<SelectionChangeEvent>(
-        GetPropertyMap(),
+    auto observer = GetEventObserver<TreeControlSelectionChangeInfo>(
+        GetPropertyMap(), 
         kSelectionChangeEventPropertyName);
 
-    if (event) {
-        event->Trigger(std::dynamic_pointer_cast<TreeControl>(shared_from_this()));
+    if (!observer) {
+        return;
     }
+
+    TreeControlSelectionChangeInfo event_info;
+    event_info.tree_control = std::dynamic_pointer_cast<TreeControl>(shared_from_this());
+    observer->OnNext(event_info);
 }
 
 }

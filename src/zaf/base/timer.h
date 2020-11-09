@@ -3,9 +3,12 @@
 #include <Windows.h>
 #include <chrono>
 #include <memory>
-#include <zaf/base/event.h>
+#include <zaf/rx/observable.h>
+#include <zaf/rx/subject.h>
 
 namespace zaf {
+
+class TimerTriggerInfo;
 
 /**
  Represent a timer.
@@ -39,11 +42,6 @@ public:
      The type of interval.
      */
     typedef std::chrono::milliseconds Interval;
-
-	/**
-	 The type of trigger event.
-	 */
-    typedef Event<Timer&> TriggerEvent;
 
 public:
     /**
@@ -93,8 +91,8 @@ public:
     /**
      Get the trigger event.
      */
-    TriggerEvent::Proxy GetTriggerEvent() {
-        return TriggerEvent::Proxy(trigger_event_);
+    Observable<TimerTriggerInfo> TriggerEvent() {
+        return trigger_event_.GetObservable();
     }
 
     /**
@@ -120,12 +118,19 @@ private:
     void StartSystemTimer();
     void StopSystemTimer();
 	void SystemTimerTrigger();
+    void RaiseEvent();
 
 private:
     Mode mode_;
 	Interval interval_;
-	TriggerEvent trigger_event_;
+    Subject<TimerTriggerInfo> trigger_event_;
     bool is_running_;
+};
+
+
+class TimerTriggerInfo {
+public:
+    std::shared_ptr<Timer> timer;
 };
 
 }

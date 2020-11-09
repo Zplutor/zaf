@@ -1,5 +1,6 @@
 #pragma once
 
+#include <system_error>
 #include <zaf/base/source_site.h>
 
 namespace zaf {

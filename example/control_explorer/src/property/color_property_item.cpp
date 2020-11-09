@@ -275,13 +275,16 @@ std::shared_ptr<PropertyItem> CreateColorPropertyItem(
     auto property_item = CreatePropertyItem(title, color_combo_box);
 
     color_combo_box->SetSelectedColor(get_color());
-    color_combo_box->GetSelectionChangeEvent().AddListener([get_color, color_change](const std::shared_ptr<zaf::ComboBox>& combo_box) {
 
-        auto color_combo_box = std::dynamic_pointer_cast<ColorComboBox>(combo_box);
-        auto selected_color = color_combo_box->GetSelectedColor();
-        color_change(selected_color);
-        color_combo_box->SetSelectedColor(get_color());
-    });
+    color_combo_box->Subscriptions() += color_combo_box->SelectionChangeEvent().Subscribe(
+        [get_color, color_change](const zaf::ComboBoxSelectionChangeInfo& event_info) {
+
+            auto color_combo_box = std::dynamic_pointer_cast<ColorComboBox>(event_info.combo_box);
+            auto selected_color = color_combo_box->GetSelectedColor();
+            color_change(selected_color);
+            color_combo_box->SetSelectedColor(get_color());
+        }
+    );
 
     return property_item;
 }

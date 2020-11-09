@@ -118,6 +118,18 @@
     <Filter Include="zaf\control\internal\list_control">
       <UniqueIdentifier>{ee7cd62b-5636-4a18-b27a-7674b271936a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\rx">
+      <UniqueIdentifier>{d12ecaff-7f5d-4ebc-ab47-74e894015d2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\rx\internal">
+      <UniqueIdentifier>{4f0eb504-a735-4959-b55d-fe87b49a6336}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\rx\internal\subject">
+      <UniqueIdentifier>{1fe2999e-539f-473a-b31b-10009ec50146}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\rx\internal\subscription">
+      <UniqueIdentifier>{c4bfd136-d765-4aca-9264-371471366272}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -535,13 +547,37 @@
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_selection_manager.cpp">
       <Filter>zaf\control\internal\tree_control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\subscription.cpp">
+      <Filter>zaf\rx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observer_implementation.cpp">
+      <Filter>zaf\rx\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observable_implementation.cpp">
+      <Filter>zaf\rx\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\subject\subject_core.cpp">
+      <Filter>zaf\rx\internal\subject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\subject\subject_implementation.cpp">
+      <Filter>zaf\rx\internal\subject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\subscription\subscription_core.cpp">
+      <Filter>zaf\rx\internal\subscription</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\subscription\subscription_implementation.cpp">
+      <Filter>zaf\rx\internal\subscription</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\subscription\subscription_holder_implementation.cpp">
+      <Filter>zaf\rx\internal\subscription</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\subscription_holder.cpp">
+      <Filter>zaf\rx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
       <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\event.h">
-      <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\timer.h">
       <Filter>zaf\base</Filter>
@@ -1311,6 +1347,48 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_selection_manager.h">
       <Filter>zaf\control\internal\tree_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\observable.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\observer.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\observer_functions.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\subscription.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observer_implementation.h">
+      <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable_implementation.h">
+      <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\subject\subject_core.h">
+      <Filter>zaf\rx\internal\subject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\subject\subject_implementation.h">
+      <Filter>zaf\rx\internal\subject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\subject.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\subscription\subscription_core.h">
+      <Filter>zaf\rx\internal\subscription</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\subscription\subscription_implementation.h">
+      <Filter>zaf\rx\internal\subscription</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\subscription\subscription_holder_implementation.h">
+      <Filter>zaf\rx\internal\subscription</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\subscription_holder.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\subscription_host.h">
+      <Filter>zaf\rx</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

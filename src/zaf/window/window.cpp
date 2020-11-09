@@ -144,7 +144,7 @@ void Window::CreateWindowHandle() {
     root_control_->SetRect(Rect::FromRECT(client_rect));
 
     CreateRenderer();
-    Application::GetInstance().RegisterWindow(shared_from_this());
+    Application::Instance().RegisterWindow(shared_from_this());
 
     WindowCreate();
 }
@@ -425,7 +425,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         return true;
 
     case WM_NCDESTROY:
-        Application::GetInstance().UnregisterWindow(shared_from_this());
+        Application::Instance().UnregisterWindow(shared_from_this());
         return true;
 
     default:
@@ -657,15 +657,22 @@ bool Window::ChangeMouseCursor(const Message& message) {
 bool Window::ReceiveCloseMessage() {
 
     bool can_close = GetCloseHandler()(*this);
-    if (can_close) {
-
-        auto close_event = TryGetEventFromPropertyMap<CloseEvent>(GetPropertyMap(), kCloseEventPropertyName);
-        if (close_event != nullptr) {
-            close_event->Trigger(shared_from_this());
-        }
+    if (!can_close) {
+        return false;
     }
 
-    return can_close;
+    auto event_observer = GetEventObserver<WindowCloseInfo>(
+        GetPropertyMap(),
+        kCloseEventPropertyName);
+
+    if (event_observer) {
+
+        WindowCloseInfo event_info;
+        event_info.window = shared_from_this();
+        event_observer->OnNext(event_info);
+    }
+
+    return true;
 }
 
 
@@ -1245,13 +1252,8 @@ void Window::SetCloseHandler(const CloseHandler& handler) {
 }
 
 
-Window::CloseEvent::Proxy Window::GetCloseEvent() {
-
-    auto& event = GetPropertyMap().GetProperty<std::shared_ptr<CloseEvent>>(
-        kCloseEventPropertyName,
-        []() { return std::make_shared<CloseEvent>(); }
-    );
-    return CloseEvent::Proxy(*event);
+Observable<WindowCloseInfo> Window::CloseEvent() {
+    return GetEventObservable<WindowCloseInfo>(GetPropertyMap(), kCloseEventPropertyName);
 }
 
 
