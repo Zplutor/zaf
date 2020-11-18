@@ -4,6 +4,8 @@
 
 namespace zaf {
 
+ZAF_DEFINE_EQUALITY_TYPE(Color)
+
 ZAF_DEFINE_REFLECTION_TYPE(Color)
     ZAF_DEFINE_PARSER(ColorParser)
 ZAF_DEFINE_END

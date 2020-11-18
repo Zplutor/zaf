@@ -205,6 +205,15 @@
     <ClCompile Include="unittest\case\base\container\utility\copy_test.cpp">
       <Filter>case\base\container\utility</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\object\boxed_test.cpp">
+      <Filter>case\object</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\built_in_box_type_test.cpp">
+      <Filter>case\object</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\hash_test.cpp">
+      <Filter>case\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

@@ -2,20 +2,25 @@
 
 #include <cstdint>
 #include <zaf/object/box_represent.h>
+#include <zaf/object/internal/box_represent_equal.h>
 #include <zaf/object/internal/built_in_box_types.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
 
-#define ZAF_INTERNAL_DEFINE_NUMERIC_BOX_TYPE(NumericType, BoxTypeName)  \
-class BoxTypeName : public Object, public BoxRepresent<NumericType> {   \
-public:                                                                 \
-    using BoxRepresent<NumericType>::BoxRepresent;                      \
-                                                                        \
-    std::wstring ToString() const override {                            \
-        return std::to_wstring(GetValue());                             \
-    }                                                                   \
-};                                                                      \
+#define ZAF_INTERNAL_DEFINE_NUMERIC_BOX_TYPE(NumericType, BoxTypeName)     \
+class BoxTypeName : public Object, public BoxRepresent<NumericType> {      \
+public:                                                                    \
+    using BoxRepresent<NumericType>::BoxRepresent;                         \
+                                                                           \
+    bool IsEqual(const Object& other) const override {                     \
+        return internal::BoxRepresentEqual(*this, other);                  \
+    }                                                                      \
+                                                                           \
+    std::wstring ToString() const override {                               \
+        return std::to_wstring(GetValue());                                \
+    }                                                                      \
+};                                                                         \
 ZAF_INTERNAL_DEFINE_BUILT_IN_BOX_TYPE(NumericType, BoxTypeName)
 
 ZAF_INTERNAL_DEFINE_NUMERIC_BOX_TYPE(char, Char)

@@ -4,6 +4,8 @@
 
 namespace zaf {
 
+ZAF_DEFINE_EQUALITY_TYPE(Point)
+
 ZAF_DEFINE_REFLECTION_TYPE(Point)
     ZAF_DEFINE_PARSER(PointParser)
 ZAF_DEFINE_END

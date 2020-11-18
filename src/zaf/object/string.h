@@ -2,6 +2,7 @@
 
 #include <zaf/base/string/encoding_conversion.h>
 #include <zaf/object/box_represent.h>
+#include <zaf/object/internal/box_represent_equal.h>
 #include <zaf/object/internal/built_in_box_types.h>
 #include <zaf/object/object.h>
 
@@ -10,6 +11,10 @@ namespace zaf {
 class String : public Object, public BoxRepresent<std::string> {
 public:
     using BoxRepresent<std::string>::BoxRepresent;
+
+    bool IsEqual(const Object& other) const override {
+        return internal::BoxRepresentEqual(*this, other);
+    }
 
     std::wstring ToString() const override {
         return FromUtf8String(GetValue());
@@ -20,6 +25,10 @@ public:
 class WideString : public Object, public BoxRepresent<std::wstring> {
 public:
     using BoxRepresent<std::wstring>::BoxRepresent;
+
+    bool IsEqual(const Object& other) const override {
+        return internal::BoxRepresentEqual(*this, other);
+    }
 
     std::wstring ToString() const override {
         return GetValue();

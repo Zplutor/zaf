@@ -11,6 +11,21 @@ const std::shared_ptr<Object>& Object::Empty() {
 }
 
 
+bool Object::IsEqual(const Object& other) const {
+
+    if (typeid(*this) == typeid(other)) {
+        return this == &other;
+    }
+
+    return false;
+}
+
+
+std::size_t Object::Hash() const {
+    return std::hash<std::uintptr_t>()(reinterpret_cast<std::uintptr_t>(this));
+}
+
+
 std::wstring Object::ToString() const {
 
     std::ostringstream stream;

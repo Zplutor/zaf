@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <Wincodec.h>
 #include <zaf/base/direct2d.h>
+#include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/point.h>
@@ -15,6 +16,7 @@ namespace zaf {
  */
 class Rect : public ReflectionObject {
 public:
+	ZAF_DECLARE_EQUALITY_TYPE
     ZAF_DECLARE_REFLECTION_TYPE
 
 public:
@@ -283,6 +285,16 @@ inline bool operator<(const Rect& rect1, const Rect& rect2) {
 }
 
 
-ZAF_ENABLE_RELATION_OPERATOR(Rect);
+ZAF_DEFINE_RELATION_OPERATORS(Rect);
 
+}
+
+
+namespace std {
+template<>
+struct hash<zaf::Rect> {
+	std::size_t operator()(const zaf::Rect& rect) {
+		return zaf::CalculateHash(rect.position, rect.size);
+	}
+};
 }

@@ -172,6 +172,7 @@
     <ClInclude Include="src\zaf\base\container\utility\copy.h" />
     <ClInclude Include="src\zaf\base\container\utility\range.h" />
     <ClInclude Include="src\zaf\base\error\check.h" />
+    <ClInclude Include="src\zaf\base\hash.h" />
     <ClInclude Include="src\zaf\base\source_site.h" />
     <ClInclude Include="src\zaf\base\com_object.h" />
     <ClInclude Include="src\zaf\base\container\utility\append.h" />
@@ -356,6 +357,9 @@
     <ClInclude Include="src\zaf\object\box_represent.h" />
     <ClInclude Include="src\zaf\object\boxed.h" />
     <ClInclude Include="src\zaf\object\boxing.h" />
+    <ClInclude Include="src\zaf\object\equality_type.h" />
+    <ClInclude Include="src\zaf\object\internal\box_represent_equal.h" />
+    <ClInclude Include="src\zaf\object\internal\is_equal_comparable.h" />
     <ClInclude Include="src\zaf\object\internal\unboxer.h" />
     <ClInclude Include="src\zaf\object\internal\built_in_box_types.h" />
     <ClInclude Include="src\zaf\object\internal\get_box_type.h" />

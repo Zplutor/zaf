@@ -2,7 +2,9 @@
 
 #include <memory>
 #include <zaf/base/direct2d.h>
+#include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
+#include <zaf/object/equality_type.h>
 #include <zaf/reflection/reflection_object.h>
 
 namespace zaf {
@@ -12,6 +14,7 @@ namespace zaf {
  */
 class Size : public ReflectionObject {
 public:
+	ZAF_DECLARE_EQUALITY_TYPE
     ZAF_DECLARE_REFLECTION_TYPE
 
 public:
@@ -113,6 +116,16 @@ inline bool operator<(const Size& size1, const Size& size2) {
 }
 
 
-ZAF_ENABLE_RELATION_OPERATOR(Size);
+ZAF_DEFINE_RELATION_OPERATORS(Size);
 
+}
+
+
+namespace std {
+template<>
+struct hash<zaf::Size> {
+	std::size_t operator()(const zaf::Size& size) {
+		return zaf::CalculateHash(size.width, size.height);
+	}
+};
 }

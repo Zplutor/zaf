@@ -1,7 +1,9 @@
 #pragma once
 
 #include <Windows.h>
+#include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
+#include <zaf/object/equality_type.h>
 #include <zaf/reflection/reflection_object.h>
 
 namespace zaf {
@@ -11,6 +13,7 @@ namespace zaf {
  */
 class Frame : public ReflectionObject {
 public:
+    ZAF_DECLARE_EQUALITY_TYPE
     ZAF_DECLARE_REFLECTION_TYPE
 
 public:
@@ -116,6 +119,16 @@ inline bool operator<(const Frame& frame1, const Frame& frame2) {
 }
 
 
-ZAF_ENABLE_RELATION_OPERATOR(Frame);
+ZAF_DEFINE_RELATION_OPERATORS(Frame);
 
+}
+
+
+namespace std {
+template<>
+struct hash<zaf::Frame> {
+    std::size_t operator()(const zaf::Frame& frame) {
+        return zaf::CalculateHash(frame.left, frame.top, frame.right, frame.bottom);
+    }
+};
 }

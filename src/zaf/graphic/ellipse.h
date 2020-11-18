@@ -1,11 +1,14 @@
 #pragma once 
 
+#include <zaf/base/hash.h>
 #include <zaf/graphic/point.h>
+#include <zaf/object/equality_type.h>
 
 namespace zaf {
 	
 class Ellipse : public ReflectionObject {
 public:
+	ZAF_DECLARE_EQUALITY_TYPE
     ZAF_DECLARE_REFLECTION_TYPE
 
 public:
@@ -56,6 +59,16 @@ public:
 bool operator==(const Ellipse& ellipse1, const Ellipse& ellipse2);
 bool operator<(const Ellipse& ellipse1, const Ellipse& ellipse2);
 
-ZAF_ENABLE_RELATION_OPERATOR(Ellipse);
+ZAF_DEFINE_RELATION_OPERATORS(Ellipse);
 
+}
+
+
+namespace std {
+template<>
+struct hash<zaf::Ellipse> {
+	std::size_t operator()(const zaf::Ellipse& ellipse) {
+		return zaf::CalculateHash(ellipse.position, ellipse.x_radius, ellipse.y_radius);
+	}
+};
 }

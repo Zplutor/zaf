@@ -4,6 +4,8 @@
 
 namespace zaf {
 
+ZAF_DEFINE_EQUALITY_TYPE(Ellipse)
+
 ZAF_DEFINE_REFLECTION_TYPE(Ellipse)
     ZAF_DEFINE_PARSER(EllipseParser)
 ZAF_DEFINE_END

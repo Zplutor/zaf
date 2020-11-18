@@ -3,7 +3,9 @@
 #include <Windows.h>
 #include <memory>
 #include <zaf/base/direct2d.h>
+#include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
+#include <zaf/object/equality_type.h>
 #include <zaf/reflection/reflection_object.h>
 
 namespace zaf {
@@ -13,6 +15,7 @@ namespace zaf {
  */
 class Point : public ReflectionObject {
 public:
+	ZAF_DECLARE_EQUALITY_TYPE
     ZAF_DECLARE_REFLECTION_TYPE
 
 public:
@@ -132,6 +135,16 @@ inline bool operator<(const Point& point1, const Point& point2) {
 }
 
 
-ZAF_ENABLE_RELATION_OPERATOR(Point);
+ZAF_DEFINE_RELATION_OPERATORS(Point);
 
+}
+
+
+namespace std {
+template<>
+struct hash<zaf::Point> {
+	std::size_t operator()(const zaf::Point& point) {
+		return zaf::CalculateHash(point.x, point.y);
+	}
+};
 }

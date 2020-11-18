@@ -12,6 +12,9 @@ public:
     Object() = default;
     virtual ~Object() = default;
 
+    virtual bool IsEqual(const Object& other) const;
+    virtual std::size_t Hash() const;
+
     virtual std::wstring ToString() const;
 };
 

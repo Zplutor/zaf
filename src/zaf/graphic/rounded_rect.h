@@ -1,12 +1,14 @@
 #pragma once
 
 #include <zaf/base/direct2d.h>
+#include <zaf/base/hash.h>
 #include <zaf/graphic/rect.h>
 
 namespace zaf {
 
 class RoundedRect : public ReflectionObject {
 public:
+    ZAF_DECLARE_EQUALITY_TYPE
     ZAF_DECLARE_REFLECTION_TYPE
 
 public:
@@ -45,6 +47,14 @@ public:
 bool operator==(const RoundedRect& rounded_rect1, const RoundedRect& rounded_rect2);
 bool operator<(const RoundedRect& rounded_rect1, const RoundedRect& rounded_rect2);
 
-ZAF_ENABLE_RELATION_OPERATOR(RoundedRect);
+ZAF_DEFINE_RELATION_OPERATORS(RoundedRect);
 
 }
+
+
+template<>
+struct std::hash<zaf::RoundedRect> {
+    std::size_t operator()(const zaf::RoundedRect& rounded_rect) {
+        return zaf::CalculateHash(rounded_rect.rect, rounded_rect.x_radius, rounded_rect.y_radius);
+    }
+};

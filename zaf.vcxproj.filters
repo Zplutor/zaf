@@ -1390,5 +1390,17 @@
     <ClInclude Include="src\zaf\rx\subscription_host.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\is_equal_comparable.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\box_represent_equal.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\hash.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\equality_type.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
