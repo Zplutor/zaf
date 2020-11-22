@@ -32,6 +32,9 @@ public:
     bool IsNodeExpanded(const IndexPath& index_path) const;
 
     const ExpandNodeInfo* GetNodeInfo(const IndexPath& index_path) const;
+    const IndexPath* GetNodeIndexPath(const std::shared_ptr<Object>& data) const;
+
+    void AddChildren(const IndexPath& index_path, std::size_t count);
 
 private:
     std::map<IndexPath, ExpandNodeInfo> expanded_nodes_;

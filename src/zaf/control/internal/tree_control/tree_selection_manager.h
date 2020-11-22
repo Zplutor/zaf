@@ -1,7 +1,9 @@
 #pragma once
 
-#include <set>
+#include <map>
+#include <unordered_map>
 #include <zaf/base/define.h>
+#include <zaf/control/internal/tree_control/tree_data_helpers.h>
 #include <zaf/object/object.h>
 
 namespace zaf::internal {
@@ -14,16 +16,24 @@ public:
     TreeSelectionManager(const TreeSelectionManager&) = delete;
     TreeSelectionManager& operator=(const TreeSelectionManager&) = delete;
 
-    bool IsIndexPathSelected(const IndexPath& index_path) const;
-    std::vector<std::shared_ptr<Object>> GetAllSelectedNodeData() const;
-    std::shared_ptr<Object> GetFirstSelectedNodeData() const;
+    bool IsDataSelected(const std::shared_ptr<Object>& data) const;
+    std::vector<std::shared_ptr<Object>> GetAllSelectedData() const;
+    std::shared_ptr<Object> GetFirstSelectedData() const;
 
-    void AddSelectedNodes(const std::map<IndexPath, std::shared_ptr<Object>>& nodes);
-    void RemoveSelectedNodes(const std::vector<IndexPath>& index_paths);
+    void AddSelectedData(const std::vector<std::shared_ptr<Object>>& data_list);
+    void RemoveSelectedData(const std::vector<std::shared_ptr<Object>>& data_list);
     void Clear();
 
 private:
-    std::map<IndexPath, std::shared_ptr<Object>> selected_nodes_;
+    using TreeDataMap = std::unordered_map<
+        std::shared_ptr<Object>, 
+        std::size_t, 
+        TreeDataHash, 
+        TreeDataEqual>;
+
+private:
+    TreeDataMap selected_data_map_;
+    std::size_t order_seed_{};
 };
 
 }

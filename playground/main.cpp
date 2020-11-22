@@ -40,11 +40,29 @@ public:
 ZAF_DEFINE_REFLECTION_TYPE(RootControl)
 ZAF_DEFINE_END
 
+bool g_append_text{};
 
 class TreeItemSource : public zaf::TreeDataSource, public zaf::TreeControlDelegate {
 public:
     TreeItemSource() {
 
+        for (auto _ : zaf::Range(3)) {
+
+            auto node = zaf::Create<Node>();
+
+            if (_ == 1) {
+
+                for (auto _ : zaf::Range(3)) {
+
+                    auto child_node = zaf::Create<Node>();
+                    node->children.push_back(child_node);
+                }
+            }
+
+            nodes_.push_back(node);
+        }
+
+        /*
         std::function<std::vector<std::shared_ptr<Node>>(int count, int deep)> create_nodes;
         create_nodes = [&create_nodes](int count, int deep) {
 
@@ -61,6 +79,7 @@ public:
         };
 
         nodes_ = create_nodes(5, 0);
+        */
     }
 
 
@@ -117,7 +136,37 @@ public:
         std::size_t item_index,
         const std::shared_ptr<zaf::Object>& item_data) override {
 
-        return item_data->ToString();
+        std::wstring text = item_data->ToString();
+
+        if (parent_item_data == nullptr) {
+
+            if (g_append_text) {
+                text.append(L" UP!");
+            }
+        }
+
+        return text;
+    }
+
+    void UpdateFirstLevel() {
+
+        NotifyDataUpdate(nullptr, 0, 4);
+    }
+
+    void AddData() {
+
+        auto& node = nodes_[0];
+
+        std::size_t old_size = node->children.size();
+
+        for (auto _ : zaf::Range(4)) {
+
+            auto child = std::make_shared<Node>();
+            node->children.insert(node->children.begin(), child);
+        }
+
+        NotifyDataAdd(node, 0, node->children.size() - old_size);
+        NotifyDataUpdate(nullptr, 0, 1);
     }
 
 private:
@@ -139,7 +188,6 @@ private:
 private:
     std::vector<std::shared_ptr<Node>> nodes_;
 };
-
 
 int WINAPI WinMain(
     HINSTANCE /* hInstance */,
@@ -186,13 +234,16 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
     root_control->AddChild(tree_control);
 
-    auto combo_box = zaf::Create<zaf::ComboBox>();
-    combo_box->SetRect(zaf::Rect{ 350, 10, 200, 30 });
-    auto list_box = combo_box->GetDropDownListBox();
-    list_box->AddItem(zaf::Box(L"AAA"));
-    list_box->AddItem(zaf::Box(L"BBB"));
-    list_box->AddItem(zaf::Box(L"CCC"));
-    root_control->AddChild(combo_box);
+    auto button = zaf::Create<zaf::Button>();
+    button->SetText(L"Add");
+    button->SetRect(zaf::Rect{ 310, 10, 100, 30 });
+    button->Subscriptions() += button->ClickEvent().Subscribe(std::bind([item_source]() {
+        
+        //g_append_text = !g_append_text;
+        item_source->AddData();
+    }));
+
+    root_control->AddChild(button);
 
     zaf::Application::Instance().SetMainWindow(window);
 }

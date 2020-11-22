@@ -12,11 +12,11 @@ class TreeItemExpandButton;
 
 class TreeItem : public ListItem {
 public:
-    std::size_t GetIndentDeep() const {
-        return indent_deep_;
+    std::size_t GetIndentLevel() const {
+        return indent_level_;
     }
 
-    void SetIndentDeep(std::size_t deep);
+    void SetIndentLevel(std::size_t deep);
 
     void SetExpandState(ExpandState expand_state);
 
@@ -45,7 +45,7 @@ private:
 private:
     std::shared_ptr<TreeItemExpandButton> expand_button_;
     std::weak_ptr<internal::TreeControlImplementation> tree_control_implementation_;
-    std::size_t indent_deep_{};
+    std::size_t indent_level_{};
 };
 
 }

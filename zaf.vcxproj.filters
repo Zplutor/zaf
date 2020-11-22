@@ -1402,5 +1402,8 @@
     <ClInclude Include="src\zaf\object\equality_type.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_data_helpers.h">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

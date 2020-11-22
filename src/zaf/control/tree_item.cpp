@@ -35,7 +35,7 @@ void TreeItem::Layout(const Rect& previous_rect) {
 
 Rect TreeItem::GetTextRect() {
 
-    float left = (indent_deep_ + 1) * ExpandButtonSize + ExpandButtonMargin;
+    float left = (indent_level_ + 1) * ExpandButtonSize + ExpandButtonMargin;
 
     auto rect = __super::GetTextRect();
     rect.Deflate(Frame{ left, 0, 0, 0 });
@@ -48,7 +48,7 @@ Rect TreeItem::GetExpandButtonRect() {
     Rect result;
     result.size.width = ExpandButtonSize;
     result.size.height = ExpandButtonSize;
-    result.position.x = indent_deep_ * ExpandButtonSize;
+    result.position.x = indent_level_ * ExpandButtonSize;
     result.position.y = (GetContentSize().height - ExpandButtonSize) / 2;
     return result;
 }
@@ -59,9 +59,9 @@ void TreeItem::SetExpandState(ExpandState expand_state) {
 }
 
 
-void TreeItem::SetIndentDeep(std::size_t deep) {
+void TreeItem::SetIndentLevel(std::size_t deep) {
 
-    indent_deep_ = deep;
+    indent_level_ = deep;
     NeedRelayout();
 }
 

@@ -153,7 +153,7 @@ void EnumerateNodes(
 }
 
 
-IndexPath TreeData::GetIndexPathAtIndex(std::size_t index) {
+IndexPath TreeData::GetIndexPathAtIndex(std::size_t index) const {
 
     IndexPath result{};
 
@@ -200,7 +200,7 @@ IndexPath TreeData::GetIndexPathAtIndex(std::size_t index) {
 }
 
 
-std::size_t TreeData::GetIndexAtIndexPath(const IndexPath& path) {
+std::size_t TreeData::GetIndexAtIndexPath(const IndexPath& path) const {
 
     if (path.empty()) {
         return InvalidIndex;

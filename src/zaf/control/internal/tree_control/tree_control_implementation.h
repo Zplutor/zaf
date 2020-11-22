@@ -75,6 +75,8 @@ public:
 private:
     void InitializeListImplementation(const InitializeParameters& parameters);
     void InstallDataSource(const std::shared_ptr<TreeDataSource>& data_source);
+    void RegisterDataSourceEvents();
+    void UnregisterDataSourceEvents();
     void InstallDelegate(const std::shared_ptr<TreeControlDelegate>& delegate);
 
     void ReloadRootNode();
@@ -92,7 +94,9 @@ private:
         const std::shared_ptr<Object>& item_data,
         const IndexPath& index_path);
 
-    void SetItemSelectionState(const std::shared_ptr<TreeItem>& item, const IndexPath& index_path);
+    void SetItemSelectionState(
+        const std::shared_ptr<TreeItem>& item, 
+        const std::shared_ptr<Object>& item_data);
 
     void ExpandItem(std::size_t list_item_index);
     void CollapseItem(std::size_t list_item_index);
@@ -115,12 +119,25 @@ private:
     void ModifySelection(std::size_t index, std::size_t count, bool is_replace);
     void RemoveSelection(std::size_t index, std::size_t count);
 
+    void OnDataAdd(const TreeDataSourceDataAddInfo& event_info);
+    std::size_t GetChildListIndex(
+        const IndexPath& parent_index_path, 
+        std::size_t child_index) const;
+    void OnDataRemove(const TreeDataSourceDataRemoveInfo& event_info);
+    void OnDataUpdate(const TreeDataSourceDataUpdateInfo& event_info);
+    std::vector<std::size_t> GetChildrenListIndexes(
+        const std::shared_ptr<Object>& parent_data, 
+        std::size_t index, 
+        std::size_t count);
+
 private:
     std::shared_ptr<internal::ListControlImplementation> list_implementation_;
     std::weak_ptr<TreeDataSource> data_source_;
     std::weak_ptr<TreeControlDelegate> delegate_;
-    SelectionChangeEvent selection_change_event_;
 
+    SelectionChangeEvent selection_change_event_;
+    SubscriptionHolder data_source_subscriptions_;
+    
     TreeData tree_data_;
     TreeExpandManager expand_manager_;
     TreeSelectionManager selection_manager_;

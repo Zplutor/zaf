@@ -77,4 +77,38 @@ const ExpandNodeInfo* TreeExpandManager::GetNodeInfo(const IndexPath& index_path
     return Find(expanded_nodes_, index_path);
 }
 
+
+const IndexPath* TreeExpandManager::GetNodeIndexPath(const std::shared_ptr<Object>& data) const {
+
+    for (const auto& each_pair : expanded_nodes_) {
+
+        const auto& node_data = each_pair.second.node_data;
+
+        bool is_found{};
+        if (!node_data) {
+            if (!data) {
+                is_found = true;
+            }
+        }
+        else if (node_data->IsEqual(*data)) {
+            is_found = true;
+        }
+
+        if (is_found) {
+            return &each_pair.first;
+        }
+    }
+
+    return nullptr;
+}
+
+
+void TreeExpandManager::AddChildren(const IndexPath& index_path, std::size_t count) {
+
+    auto node_info = Find(expanded_nodes_, index_path);
+    if (node_info) {
+        node_info->children_count += count;
+    }
+}
+
 }

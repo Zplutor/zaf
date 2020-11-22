@@ -241,6 +241,7 @@
     <ClInclude Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_control_implementation.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_data.h" />
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_data_helpers.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_expand_manager.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_selection_manager.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\utility.h" />

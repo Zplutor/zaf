@@ -11,7 +11,7 @@ private:
     static constexpr auto Test(K*) -> decltype(std::declval<K>() == std::declval<K>());
 
     template<typename K>
-    static constexpr auto Test(...) -> std::false_type;
+    static constexpr int Test(...);
 
 public:
     static constexpr bool Value = std::is_same_v<bool, decltype(Test<T>(nullptr))>;

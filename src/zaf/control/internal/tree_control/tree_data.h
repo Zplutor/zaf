@@ -7,8 +7,8 @@ namespace zaf::internal {
 
 class TreeData {
 public:
-    IndexPath GetIndexPathAtIndex(std::size_t index);
-    std::size_t GetIndexAtIndexPath(const IndexPath& path);
+    IndexPath GetIndexPathAtIndex(std::size_t index) const;
+    std::size_t GetIndexAtIndexPath(const IndexPath& path) const;
 
     std::size_t GetNodeCount() const;
     std::size_t GetChildrenCount(const IndexPath& parent) const;

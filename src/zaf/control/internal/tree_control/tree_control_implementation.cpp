@@ -50,7 +50,34 @@ void TreeControlImplementation::InstallDataSource(
 
     ZAF_EXPECT(data_source);
 
+    UnregisterDataSourceEvents();
+
     data_source_ = data_source;
+    RegisterDataSourceEvents();
+}
+
+
+void TreeControlImplementation::RegisterDataSourceEvents() {
+
+    auto data_source = data_source_.lock();
+    if (!data_source) {
+        return;
+    }
+
+    data_source_subscriptions_ += data_source->DataAddEvent().Subscribe(
+        std::bind(&TreeControlImplementation::OnDataAdd, this, std::placeholders::_1));
+
+    data_source_subscriptions_ += data_source->DataRemoveEvent().Subscribe(
+        std::bind(&TreeControlImplementation::OnDataRemove, this, std::placeholders::_1));
+
+    data_source_subscriptions_ += data_source->DataUpdateEvent().Subscribe(
+        std::bind(&TreeControlImplementation::OnDataUpdate, this, std::placeholders::_1));
+}
+
+
+void TreeControlImplementation::UnregisterDataSourceEvents() {
+
+    data_source_subscriptions_.Clear();
 }
 
 
@@ -105,12 +132,12 @@ void TreeControlImplementation::ReloadRootNode() {
 
 
 std::vector<std::shared_ptr<Object>> TreeControlImplementation::GetAllSelectedItemData() const {
-    return selection_manager_.GetAllSelectedNodeData();
+    return selection_manager_.GetAllSelectedData();
 }
 
 
 std::shared_ptr<Object> TreeControlImplementation::GetFirstSelectedItemData() const {
-    return selection_manager_.GetFirstSelectedNodeData();
+    return selection_manager_.GetFirstSelectedData();
 }
 
 
@@ -263,9 +290,9 @@ void TreeControlImplementation::LoadItem(
 
     delegate->LoadItem(tree_item, parent_data, child_index, item_data);
 
-    tree_item->SetIndentDeep(index_path.size() - 1);
+    tree_item->SetIndentLevel(index_path.size() - 1);
     SetItemExpandState(tree_item, item_data, index_path);
-    SetItemSelectionState(tree_item, index_path);
+    SetItemSelectionState(tree_item, item_data);
 }
 
 
@@ -293,9 +320,9 @@ void TreeControlImplementation::SetItemExpandState(
 
 void TreeControlImplementation::SetItemSelectionState(
     const std::shared_ptr<TreeItem>& item, 
-    const IndexPath& index_path) {
+    const std::shared_ptr<Object>& item_data) {
 
-    bool is_selected = selection_manager_.IsIndexPathSelected(index_path);
+    bool is_selected = selection_manager_.IsDataSelected(item_data);
     item->SetIsSelected(is_selected);
 }
 
@@ -440,7 +467,7 @@ void TreeControlImplementation::ModifySelection(
         return;
     }
 
-    std::map<IndexPath, std::shared_ptr<Object>> affected_nodes;
+    std::vector<std::shared_ptr<Object>> affected_data_list;
     for (auto list_index : zaf::Range(index, index + count)) {
 
         auto index_path = tree_data_.GetIndexPathAtIndex(list_index);
@@ -455,27 +482,187 @@ void TreeControlImplementation::ModifySelection(
         }
 
         auto data = data_source->GetChildDataAtIndex(parent_data, child_index);
-        affected_nodes[index_path] = data;
+        affected_data_list.push_back(data);
     }
 
     if (is_replace) {
         selection_manager_.Clear();
     }
 
-    selection_manager_.AddSelectedNodes(affected_nodes);
+    selection_manager_.AddSelectedData(affected_data_list);
 }
 
 
 void TreeControlImplementation::RemoveSelection(std::size_t index, std::size_t count) {
 
-    std::vector<IndexPath> affected_index_paths;
+    auto data_source = data_source_.lock();
+    if (!data_source) {
+        return;
+    }
+
+    std::vector<std::shared_ptr<Object>> affected_data_list;
     for (auto list_index : zaf::Range(index, index + count)) {
 
         auto index_path = tree_data_.GetIndexPathAtIndex(list_index);
-        affected_index_paths.push_back(index_path);
+
+        std::shared_ptr<Object> parent_data;
+        std::size_t child_index{};
+        if (!GetParentDataAndChildIndex(index_path, parent_data, child_index)) {
+            continue;
+        }
+
+        auto data = data_source->GetChildDataAtIndex(parent_data, child_index);
+        affected_data_list.push_back(data);
     }
 
-    selection_manager_.RemoveSelectedNodes(affected_index_paths);
+    selection_manager_.RemoveSelectedData(affected_data_list);
+}
+
+
+void TreeControlImplementation::OnDataAdd(const TreeDataSourceDataAddInfo& event_info) {
+
+    //Get parent index path.
+    auto parent_index_path = expand_manager_.GetNodeIndexPath(event_info.parent_data);
+    if (!parent_index_path) {
+        return;
+    }
+
+    //Get list index at which to insert new items.
+    auto list_index = GetChildListIndex(*parent_index_path, event_info.index);
+    if (list_index == InvalidIndex) {
+        return;
+    }
+
+    //Add children to tree ui data.
+    tree_data_.AddChildren(*parent_index_path, event_info.index, event_info.count);
+    expand_manager_.AddChildren(*parent_index_path, event_info.count);
+
+    //Raise event.
+    NotifyDataAdd(list_index, event_info.count);
+}
+
+
+std::size_t TreeControlImplementation::GetChildListIndex(
+    const IndexPath& parent_index_path,
+    std::size_t child_index) const {
+
+    auto old_child_count = tree_data_.GetChildrenCount(parent_index_path);
+
+    //Child index must not exceed child count.
+    ZAF_CHECK(child_index <= old_child_count);
+
+    //There is no child, get next index of parent's index.
+    if (old_child_count == 0) {
+
+        auto list_index = tree_data_.GetIndexAtIndexPath(parent_index_path);
+        if (list_index != InvalidIndex) {
+            list_index += 1;
+        }
+        return list_index;
+    }
+
+    if (child_index < old_child_count) {
+
+        auto child_index_path = parent_index_path;
+        child_index_path.push_back(child_index);
+        return tree_data_.GetIndexAtIndexPath(child_index_path);
+    }
+
+    //Child index is in the end, get next index to last child's index.
+    auto child_index_path = parent_index_path;
+    child_index_path.push_back(child_index - 1);
+
+    auto list_index = tree_data_.GetIndexAtIndexPath(child_index_path);
+    if (list_index != InvalidIndex) {
+        list_index += 1;
+    }
+    return list_index;
+}
+
+
+void TreeControlImplementation::OnDataRemove(const TreeDataSourceDataRemoveInfo& event_info) {
+
+    auto parent_index_path = expand_manager_.GetNodeIndexPath(event_info.parent_data);
+    if (!parent_index_path) {
+        return;
+    }
+
+    auto child_index_path = *parent_index_path;
+}
+
+
+void TreeControlImplementation::OnDataUpdate(const TreeDataSourceDataUpdateInfo& event_info) {
+
+    auto updated_list_indexes = GetChildrenListIndexes(
+        event_info.parent_data, 
+        event_info.index,
+        event_info.count);
+
+    if (updated_list_indexes.empty()) {
+        return;
+    }
+
+    //Merge adjacent indexes.
+    std::vector<std::pair<std::size_t, std::size_t>> updated_index_ranges;
+
+    std::size_t range_index = updated_list_indexes.front();
+    std::size_t range_length = 1;
+    std::size_t last_index = range_index;
+
+    for (auto i : zaf::Range(1u, updated_list_indexes.size())) {
+
+        auto current_index = updated_list_indexes[i];
+
+        if (last_index + 1 == current_index) {
+            range_length++;
+        }
+        else {
+
+            updated_index_ranges.push_back(std::make_pair(range_index, range_length));
+
+            range_index = current_index;
+            range_length = 1;
+        }
+
+        last_index = current_index;
+    }
+
+    updated_index_ranges.push_back(std::make_pair(range_index, range_length));
+
+    //Raise events.
+    for (const auto& each_range : updated_index_ranges) {
+        NotifyDataUpdate(each_range.first, each_range.second);
+    }
+}
+
+
+std::vector<std::size_t> TreeControlImplementation::GetChildrenListIndexes(
+    const std::shared_ptr<Object>& parent_data,
+    std::size_t index,
+    std::size_t count) {
+
+    auto index_path = expand_manager_.GetNodeIndexPath(parent_data);
+    if (!index_path) {
+        return {};
+    }
+
+    std::vector<std::size_t> result;
+
+    IndexPath child_index_path = *index_path;
+    for (auto index : zaf::Range(index, index + count)) {
+
+        child_index_path.push_back(index);
+
+        auto list_index = tree_data_.GetIndexAtIndexPath(child_index_path);
+        if (list_index != InvalidIndex) {
+
+            result.push_back(list_index);
+        }
+
+        child_index_path.pop_back();
+    }
+
+    return result;
 }
 
 }
