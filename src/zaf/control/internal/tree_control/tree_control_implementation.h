@@ -1,8 +1,9 @@
 #pragma once
 
+#include <unordered_set>
 #include <zaf/control/internal/list_control/list_control_implementation.h>
 #include <zaf/control/internal/tree_control/tree_data.h>
-#include <zaf/control/internal/tree_control/tree_expand_manager.h>
+#include <zaf/control/internal/tree_control/tree_data_manager.h>
 #include <zaf/control/internal/tree_control/tree_selection_manager.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
@@ -73,6 +74,9 @@ public:
     void OnItemExpandChange(const std::shared_ptr<TreeItem>& item, bool is_expanded);
 
 private:
+    using TreeDataSet = std::unordered_set<std::shared_ptr<Object>, TreeDataHash, TreeDataEqual>;
+
+private:
     void InitializeListImplementation(const InitializeParameters& parameters);
     void InstallDataSource(const std::shared_ptr<TreeDataSource>& data_source);
     void RegisterDataSourceEvents();
@@ -94,11 +98,22 @@ private:
         const std::shared_ptr<Object>& item_data,
         const IndexPath& index_path);
 
+    bool IsIndexPathExpanded(const IndexPath& index_path) const;
+
     void SetItemSelectionState(
         const std::shared_ptr<TreeItem>& item, 
         const std::shared_ptr<Object>& item_data);
 
     void ExpandItem(std::size_t list_item_index);
+    bool ExpandItemAtIndexPath(
+        const IndexPath& index_path, 
+        std::shared_ptr<Object>& expanded_data, 
+        std::size_t& expanded_count);
+    std::size_t ExpandItemWithTreeNode(const TreeNode& node, const IndexPath& node_index_path);
+    bool ExpandNewItem(
+        const IndexPath& index_path,
+        std::shared_ptr<Object>& expanded_data,
+        std::size_t& expanded_count);
     void CollapseItem(std::size_t list_item_index);
 
     bool GetParentDataAndChildIndex(
@@ -139,7 +154,8 @@ private:
     SubscriptionHolder data_source_subscriptions_;
     
     TreeData tree_data_;
-    TreeExpandManager expand_manager_;
+    TreeDataManager tree_data_manager_;
+    TreeDataSet expanded_data_set_;
     TreeSelectionManager selection_manager_;
 };
 

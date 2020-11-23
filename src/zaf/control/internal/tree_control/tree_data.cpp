@@ -1,4 +1,5 @@
 #include <zaf/control/internal/tree_control/tree_data.h>
+#include <zaf/base/container/utility/range.h>
 #include <zaf/base/error/check.h>
 #include <zaf/control/internal/tree_control/utility.h>
 
@@ -150,6 +151,22 @@ void EnumerateNodes(
     }
 }
 
+
+bool IsGreaterOrEqualInSameParent(const IndexPath& path1, const IndexPath& path2) {
+
+    if (path1.size() != path2.size()) {
+        return false;
+    }
+
+    for (auto index : zaf::Range(path1.size() - 1)) {
+        if (path1[index] != path2[index]) {
+            return false;
+        }
+    }
+
+    return path1.back() >= path2.back();
+}
+
 }
 
 
@@ -212,7 +229,7 @@ std::size_t TreeData::GetIndexAtIndexPath(const IndexPath& path) const {
         node_child_count_pairs,
         [&path, &result](const IndexPath& current_node, std::size_t current_index) {
 
-            if (current_node >= path) {
+            if (IsGreaterOrEqualInSameParent(current_node, path)) {
                 result = current_index - (current_node.back() - path.back());
                 return true;
             }
@@ -226,7 +243,7 @@ std::size_t TreeData::GetIndexAtIndexPath(const IndexPath& path) const {
 
             auto last_child_node_path = current_node;
             last_child_node_path.push_back(child_count - 1);
-            if (last_child_node_path >= path) {
+            if (IsGreaterOrEqualInSameParent(last_child_node_path, path)) {
 
                 result = last_child_index - (last_child_node_path.back() - path.back());
                 return true;
@@ -242,7 +259,7 @@ std::size_t TreeData::GetIndexAtIndexPath(const IndexPath& path) const {
             auto last_child_node_path = backward_node;
             last_child_node_path.back() = child_count - 1;
 
-            if (last_child_node_path >= path) {
+            if (IsGreaterOrEqualInSameParent(last_child_node_path, path)) {
                 result = last_child_index - (last_child_node_path.back() - path.back());
                 return true;
             }
@@ -264,7 +281,7 @@ std::size_t TreeData::GetNodeCount() const {
 }
 
 
-std::size_t TreeData::GetChildrenCount(const IndexPath& parent) const {
+std::optional<std::size_t> TreeData::GetChildrenCount(const IndexPath& parent) const {
 
     auto iterator = std::lower_bound(
         node_child_count_pairs.begin(), 
@@ -277,7 +294,7 @@ std::size_t TreeData::GetChildrenCount(const IndexPath& parent) const {
 
     if (iterator == node_child_count_pairs.end() ||
         iterator->first != parent) {
-        return 0;
+        return std::nullopt;
     }
 
     return iterator->second;
@@ -360,18 +377,20 @@ void TreeData::AddChildren(const IndexPath& parent, std::size_t index, std::size
 }
 
 
-void TreeData::RemoveChildren(const IndexPath& parent, std::size_t index, std::size_t count) {
+std::size_t TreeData::RemoveChildren(const IndexPath& parent, std::size_t index, std::size_t count) {
 
     if (count == 0) {
-        return;
+        return 0;
     }
 
-    for (auto iterator = node_child_count_pairs.begin();
-        iterator != node_child_count_pairs.end();
-        ++iterator) {
+    std::size_t remove_count{};
+
+    auto iterator = node_child_count_pairs.begin();
+    while (iterator != node_child_count_pairs.end()) {
 
         auto& current_path = iterator->first;
         if (current_path < parent) {
+            ++iterator;
             continue;
         }
 
@@ -379,31 +398,44 @@ void TreeData::RemoveChildren(const IndexPath& parent, std::size_t index, std::s
 
             //Check index and count.
             if (index >= iterator->second || index + count > iterator->second) {
-                return;
+                break;
             }
 
             //Decrease children count.
             iterator->second -= count;
+            remove_count += count;
 
             //Remove current node if there is no child.
             if (iterator->second == 0) {
-                node_child_count_pairs.erase(iterator);
-                return;
+                iterator = node_child_count_pairs.erase(iterator);
             }
-
+            else {
+                ++iterator;
+            }
             continue;
         }
 
         if (!IsAncestorOf(parent, current_path)) {
-            return;
+            break;
+        }
+
+        auto& child_index = current_path[parent.size()];
+
+        //Remove children if it is removed.
+        if (index <= child_index && child_index < index + count) {
+            remove_count += iterator->second;
+            iterator = node_child_count_pairs.erase(iterator);
+            continue;
         }
 
         //Update children's index path.
-        auto& child_index = current_path[parent.size()];
-        if (child_index >= index) {
+        if (child_index >= index + count) {
             child_index -= count;
         }
+        ++iterator;
     }
+
+    return remove_count;
 }
 
 

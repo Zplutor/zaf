@@ -112,6 +112,7 @@ TEST_F(TreeDataTest, GetIndexAtIndexPath) {
 
     //Get index for invalid index path
     ASSERT_EQ(zaf::InvalidIndex, tree_data.GetIndexAtIndexPath({}));
+    ASSERT_EQ(zaf::InvalidIndex, tree_data.GetIndexAtIndexPath({ 1, 2, 0, 0, 0 }));
     ASSERT_EQ(zaf::InvalidIndex, tree_data.GetIndexAtIndexPath({ 7, 0 }));
 }
 
@@ -180,4 +181,22 @@ TEST_F(TreeDataTest, RemoveChildren) {
         { { 0 }, 3 },
     });
     ASSERT_EQ(expected, tree_data.node_child_count_pairs);
+}
+
+
+TEST_F(TreeDataTest, RemoveChildrenRecursively) {
+
+    TreeData tree_data;
+    tree_data.node_child_count_pairs.assign({
+        { {}, 3 },
+        { { 1 }, 3 },
+        { { 1, 1 }, 2 },
+    });
+
+    auto remove_count = tree_data.RemoveChildren({ 1 }, 0, 3);
+    std::vector<std::pair<zaf::IndexPath, std::size_t>> expected{
+        { {}, 3 },
+    };
+    ASSERT_EQ(expected, tree_data.node_child_count_pairs);
+    ASSERT_EQ(remove_count, 5);
 }

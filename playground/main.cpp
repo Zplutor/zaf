@@ -40,12 +40,11 @@ public:
 ZAF_DEFINE_REFLECTION_TYPE(RootControl)
 ZAF_DEFINE_END
 
-bool g_append_text{};
-
 class TreeItemSource : public zaf::TreeDataSource, public zaf::TreeControlDelegate {
 public:
     TreeItemSource() {
 
+        /*
         for (auto _ : zaf::Range(3)) {
 
             auto node = zaf::Create<Node>();
@@ -61,8 +60,8 @@ public:
 
             nodes_.push_back(node);
         }
+        */
 
-        /*
         std::function<std::vector<std::shared_ptr<Node>>(int count, int deep)> create_nodes;
         create_nodes = [&create_nodes](int count, int deep) {
 
@@ -71,15 +70,14 @@ public:
 
                 auto node = zaf::Create<Node>();
                 if (deep < 3) {
-                    node->children = create_nodes(3, deep + 1);
+                    node->children = create_nodes(2, deep + 1);
                 }
                 nodes.push_back(node);
             }
             return nodes;
         };
 
-        nodes_ = create_nodes(5, 0);
-        */
+        nodes_ = create_nodes(2, 0);
     }
 
 
@@ -137,36 +135,51 @@ public:
         const std::shared_ptr<zaf::Object>& item_data) override {
 
         std::wstring text = item_data->ToString();
-
-        if (parent_item_data == nullptr) {
-
-            if (g_append_text) {
-                text.append(L" UP!");
-            }
-        }
-
         return text;
     }
 
-    void UpdateFirstLevel() {
+    void UpdateSecondLevel() {
 
-        NotifyDataUpdate(nullptr, 0, 4);
+        for (const auto& each_node : nodes_) {
+
+            for (const auto& each_child : each_node->children) {
+                each_child->append_text = !each_child->append_text;
+            }
+
+            NotifyDataUpdate(each_node, 0, each_node->children.size());
+        }
     }
 
-    void AddData() {
+    void AddDataToSecondLevel() {
 
         auto& node = nodes_[0];
 
         std::size_t old_size = node->children.size();
 
-        for (auto _ : zaf::Range(4)) {
+        for (auto _ : zaf::Range(3)) {
 
             auto child = std::make_shared<Node>();
-            node->children.insert(node->children.begin(), child);
+            node->children.insert(node->children.end(), child);
         }
 
-        NotifyDataAdd(node, 0, node->children.size() - old_size);
-        NotifyDataUpdate(nullptr, 0, 1);
+        NotifyDataAdd(node, old_size, node->children.size() - old_size);
+        //NotifyDataUpdate(nullptr, 0, 1);
+    }
+
+    void RemoveDataInSecondLevel() {
+
+        auto& node = nodes_[0];
+
+        auto old_size = node->children.size();
+
+        for (auto _ : zaf::Range(3)) {
+            if (!node->children.empty()) {
+                node->children.pop_back();
+            }
+        }
+
+        auto remove_count = old_size - node->children.size();
+        NotifyDataRemove(node, old_size - remove_count, remove_count);
     }
 
 private:
@@ -178,11 +191,16 @@ private:
         }
 
         std::wstring ToString() const override {
-            return std::to_wstring(value);
+            auto result = std::to_wstring(value);
+            if (append_text) {
+                result += L"!UP!";
+            }
+            return result;
         }
 
         int value{};
         std::vector<std::shared_ptr<Node>> children;
+        bool append_text{};
     };
 
 private:
@@ -234,16 +252,35 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
     root_control->AddChild(tree_control);
 
-    auto button = zaf::Create<zaf::Button>();
-    button->SetText(L"Add");
-    button->SetRect(zaf::Rect{ 310, 10, 100, 30 });
-    button->Subscriptions() += button->ClickEvent().Subscribe(std::bind([item_source]() {
+    auto add_button = zaf::Create<zaf::Button>();
+    add_button->SetText(L"Add");
+    add_button->SetRect(zaf::Rect{ 310, 10, 100, 30 });
+    add_button->Subscriptions() += add_button->ClickEvent().Subscribe(std::bind([item_source]() {
         
-        //g_append_text = !g_append_text;
-        item_source->AddData();
+        item_source->AddDataToSecondLevel();
     }));
 
-    root_control->AddChild(button);
+    auto remove_button = zaf::Create<zaf::Button>();
+    remove_button->SetText(L"Remove");
+    remove_button->SetRect(zaf::Rect{ 310, 40, 100, 30 });
+    remove_button->Subscriptions() += remove_button->ClickEvent().Subscribe(
+        std::bind([item_source]() {
+
+        item_source->RemoveDataInSecondLevel();
+    }));
+
+    auto update_button = zaf::Create<zaf::Button>();
+    update_button->SetText(L"Update");
+    update_button->SetRect(zaf::Rect{ 310, 70, 100, 30 });
+    update_button->Subscriptions() += update_button->ClickEvent().Subscribe(
+        std::bind([item_source]() {
+    
+        item_source->UpdateSecondLevel();
+    }));
+
+    root_control->AddChild(add_button);
+    root_control->AddChild(remove_button);
+    root_control->AddChild(update_button);
 
     zaf::Application::Instance().SetMainWindow(window);
 }
