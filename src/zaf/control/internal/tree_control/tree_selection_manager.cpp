@@ -1,77 +1,113 @@
 #include <zaf/control/internal/tree_control/tree_selection_manager.h>
-#include <zaf/base/container/utility/contain.h>
-#include <zaf/base/container/utility/conversion.h>
-#include <zaf/base/container/utility/Sort.h>
-#include <zaf/control/internal/tree_control/utility.h>
+#include <zaf/base/container/utility/find.h>
+#include <zaf/base/container/utility/range.h>
 
 namespace zaf::internal {
 
-bool TreeSelectionManager::IsDataSelected(const std::shared_ptr<Object>& data) const {
-    return Contain(selected_data_map_, data);
+bool TreeSelectionManager::IsChildIndexSelected(
+    const std::shared_ptr<Object>& parent_data, 
+    std::size_t index) const {
+
+    auto range_manager = Find(data_range_managers_, parent_data);
+    if (!range_manager) {
+        return false;
+    }
+
+    return range_manager->IsPositionInRange(index);
 }
 
 
-std::vector<std::shared_ptr<Object>> TreeSelectionManager::GetAllSelectedData() const {
+TreeSelectionManager::ParentDataAndChildIndexes 
+    TreeSelectionManager::GetAllSelectedChildIndexes() const {
 
-    std::vector<std::pair<std::shared_ptr<Object>, std::size_t>> sorted_data_list;
-    for (const auto& each_pair : selected_data_map_) {
-        sorted_data_list.push_back(each_pair);
-    }
+    ParentDataAndChildIndexes result;
 
-    Sort(sorted_data_list, [](const auto& pair1, const auto& pair2) {
-        return pair1.second < pair2.second;
-    });
+    for (const auto& each_pair : data_range_managers_) {
 
-    std::vector<std::shared_ptr<Object>> result;
-    for (const auto& each_pair : sorted_data_list) {
-        result.push_back(each_pair.first);
+        std::vector<std::size_t> child_indexes;
+
+        for (auto index : zaf::Range(0u, each_pair.second.GetRangeCount())) {
+
+            auto range = each_pair.second.GetRangeAtIndex(index);
+            for (auto child_index : zaf::Range(range.first, range.first + range.second)) {
+
+                child_indexes.push_back(child_index);
+            }
+        }
+
+        result.emplace_back(each_pair.first, std::move(child_indexes));
     }
 
     return result;
 }
 
 
-std::shared_ptr<Object> TreeSelectionManager::GetFirstSelectedData() const {
+void TreeSelectionManager::AddSelection(
+    const std::shared_ptr<Object>& parent_data,
+    std::size_t index,
+    std::size_t count) {
 
-    //Call GetAllSelectedData does more unnecessary work, but may be acceptable.
-    auto all_selected_data = GetAllSelectedData();
-    if (!all_selected_data.empty()) {
-        return all_selected_data.front();
+    if (count <= 0) {
+        return;
     }
-    return nullptr;
+
+    auto& range_manager = data_range_managers_[parent_data];
+    range_manager.AddRange(index, count);
 }
 
 
-void TreeSelectionManager::AddSelectedData(const std::vector<std::shared_ptr<Object>>& data_list) {
+void TreeSelectionManager::RemoveSelection(
+    const std::shared_ptr<Object>& parent_data,
+    std::size_t index,
+    std::size_t count) {
 
-    for (const auto& each_data : data_list) {
+    if (count <= 0) {
+        return;
+    }
 
-        std::size_t order = ++order_seed_;
-        selected_data_map_[each_data] = order;
+    auto iterator = data_range_managers_.find(parent_data);
+    if (iterator == data_range_managers_.end()) {
+        return;
+    }
+
+    iterator->second.RemoveRange(index, count);
+
+    if (iterator->second.GetRangeCount() == 0) {
+        data_range_managers_.erase(iterator);
     }
 }
 
 
-void TreeSelectionManager::RemoveSelectedData(
-    const std::vector<std::shared_ptr<Object>>& data_list) {
+void TreeSelectionManager::AddDataToSelection(
+    const std::shared_ptr<Object>& parent_data,
+    std::size_t index,
+    std::size_t count) {
 
-    for (const auto& each_data : data_list) {
-
-        auto iterator = selected_data_map_.find(each_data);
-        if (iterator != selected_data_map_.end()) {
-            selected_data_map_.erase(iterator);
-        }
+    auto range_manager = Find(data_range_managers_, parent_data);
+    if (!range_manager) {
+        return;
     }
 
-    if (selected_data_map_.empty()) {
-        order_seed_ = 0;
+    range_manager->ExpandRanges(index, count);
+}
+
+
+void TreeSelectionManager::RemoveDataFromSelection(
+    const std::shared_ptr<Object>& parent_data,
+    std::size_t index,
+    std::size_t count) {
+
+    auto range_manager = Find(data_range_managers_, parent_data);
+    if (!range_manager) {
+        return;
     }
+
+    range_manager->NarrowRanges(index, count);
 }
 
 
 void TreeSelectionManager::Clear() {
-    selected_data_map_.clear();
-    order_seed_ = 0;
+    data_range_managers_.clear();
 }
 
 }

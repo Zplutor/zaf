@@ -38,7 +38,8 @@ std::shared_ptr<const TreeNode> TreeDataManager::GetNodeAtIndexPath(
 }
 
 
-std::optional<IndexPath> TreeDataManager::GetIndexPathOfData(const std::shared_ptr<Object>& data) {
+std::optional<IndexPath> TreeDataManager::GetIndexPathOfData(
+    const std::shared_ptr<Object>& data) const {
 
     auto node = Find(data_map_, data);
     if (!node) {

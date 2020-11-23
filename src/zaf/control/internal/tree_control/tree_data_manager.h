@@ -26,7 +26,7 @@ public:
     TreeDataManager& operator=(const TreeDataManager&) = delete;
 
     std::shared_ptr<const TreeNode> GetNodeAtIndexPath(const IndexPath& index_path) const;
-    std::optional<IndexPath> GetIndexPathOfData(const std::shared_ptr<Object>& data);
+    std::optional<IndexPath> GetIndexPathOfData(const std::shared_ptr<Object>& data) const;
 
     void AddChildren(
         const std::shared_ptr<Object>& parent_data, 

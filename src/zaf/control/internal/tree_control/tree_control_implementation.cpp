@@ -2,6 +2,7 @@
 #include <zaf/base/container/utility/contain.h>
 #include <zaf/base/container/utility/find.h>
 #include <zaf/base/container/utility/range.h>
+#include <zaf/base/container/utility/sort.h>
 #include <zaf/base/error/check.h>
 #include <zaf/control/internal/tree_control/utility.h>
 
@@ -134,12 +135,54 @@ void TreeControlImplementation::ReloadRootNode() {
 
 
 std::vector<std::shared_ptr<Object>> TreeControlImplementation::GetAllSelectedItemData() const {
-    return selection_manager_.GetAllSelectedData();
+
+    auto data_source = data_source_.lock();
+    if (!data_source) {
+        return {};
+    }
+
+    std::vector<std::pair<std::shared_ptr<Object>, IndexPath>> selected_data;
+
+    auto selected_child_indexes = selection_manager_.GetAllSelectedChildIndexes();
+    for (const auto& each_pair : selected_child_indexes) {
+
+        const auto& parent_data = each_pair.first;
+
+        auto parent_index_path = tree_data_manager_.GetIndexPathOfData(parent_data);
+        if (!parent_index_path) {
+            continue;
+        }
+
+        for (auto each_index : each_pair.second) {
+
+            auto child_data = data_source->GetChildDataAtIndex(parent_data, each_index);
+
+            auto child_index_path = *parent_index_path;
+            child_index_path.push_back(each_index);
+
+            selected_data.emplace_back(child_data, child_index_path);
+        }
+    }
+
+    Sort(selected_data, [](const auto& pair1, const auto& pair2) {
+        return pair1.second < pair2.second;
+    });
+
+    std::vector<std::shared_ptr<Object>> result;
+    for (const auto& each_pair : selected_data) {
+        result.push_back(each_pair.first);
+    }
+    return result;
 }
 
 
 std::shared_ptr<Object> TreeControlImplementation::GetFirstSelectedItemData() const {
-    return selection_manager_.GetFirstSelectedData();
+
+    auto all_selected_data = GetAllSelectedItemData();
+    if (!all_selected_data.empty()) {
+        return all_selected_data.front();
+    }
+    return nullptr;
 }
 
 
@@ -294,7 +337,7 @@ void TreeControlImplementation::LoadItem(
 
     tree_item->SetIndentLevel(index_path.size() - 1);
     SetItemExpandState(tree_item, item_data, index_path);
-    SetItemSelectionState(tree_item, item_data);
+    SetItemSelectionState(tree_item, parent_data, child_index);
 }
 
 
@@ -333,9 +376,10 @@ bool TreeControlImplementation::IsIndexPathExpanded(const IndexPath& index_path)
 
 void TreeControlImplementation::SetItemSelectionState(
     const std::shared_ptr<TreeItem>& item, 
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<Object>& parent_data, 
+    std::size_t item_index_in_parent) {
 
-    bool is_selected = selection_manager_.IsDataSelected(item_data);
+    bool is_selected = selection_manager_.IsChildIndexSelected(parent_data, item_index_in_parent);
     item->SetIsSelected(is_selected);
 }
 
@@ -536,7 +580,10 @@ void TreeControlImplementation::ModifySelection(
         return;
     }
 
-    std::vector<std::shared_ptr<Object>> affected_data_list;
+    if (is_replace) {
+        selection_manager_.Clear();
+    }
+
     for (auto list_index : zaf::Range(index, index + count)) {
 
         auto index_path = tree_data_.GetIndexPathAtIndex(list_index);
@@ -550,15 +597,8 @@ void TreeControlImplementation::ModifySelection(
             continue;
         }
 
-        auto data = data_source->GetChildDataAtIndex(parent_data, child_index);
-        affected_data_list.push_back(data);
+        selection_manager_.AddSelection(parent_data, child_index, 1);
     }
-
-    if (is_replace) {
-        selection_manager_.Clear();
-    }
-
-    selection_manager_.AddSelectedData(affected_data_list);
 }
 
 
@@ -569,7 +609,6 @@ void TreeControlImplementation::RemoveSelection(std::size_t index, std::size_t c
         return;
     }
 
-    std::vector<std::shared_ptr<Object>> affected_data_list;
     for (auto list_index : zaf::Range(index, index + count)) {
 
         auto index_path = tree_data_.GetIndexPathAtIndex(list_index);
@@ -580,11 +619,8 @@ void TreeControlImplementation::RemoveSelection(std::size_t index, std::size_t c
             continue;
         }
 
-        auto data = data_source->GetChildDataAtIndex(parent_data, child_index);
-        affected_data_list.push_back(data);
+        selection_manager_.RemoveSelection(parent_data, child_index, 1);
     }
-
-    selection_manager_.RemoveSelectedData(affected_data_list);
 }
 
 
@@ -597,6 +633,11 @@ void TreeControlImplementation::OnDataAdd(const TreeDataSourceDataAddInfo& event
     }
 
     tree_data_manager_.AddChildren(event_info.parent_data, event_info.index, event_info.count);
+
+    selection_manager_.AddDataToSelection(
+        event_info.parent_data, 
+        event_info.index, 
+        event_info.count);
 
     //Get list index at which to insert new items.
     auto list_index = GetChildListIndex(*parent_index_path, event_info.index);
@@ -663,6 +704,11 @@ void TreeControlImplementation::OnDataRemove(const TreeDataSourceDataRemoveInfo&
 
     //Remove tree nodes.
     tree_data_manager_.RemoveChildren(event_info.parent_data, event_info.index, event_info.count);
+
+    selection_manager_.RemoveDataFromSelection(
+        event_info.parent_data, 
+        event_info.index,
+        event_info.count);
 
     //Get list index at which begin removing.
     auto child_index_path = *parent_index_path;

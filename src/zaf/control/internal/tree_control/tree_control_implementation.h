@@ -102,7 +102,8 @@ private:
 
     void SetItemSelectionState(
         const std::shared_ptr<TreeItem>& item, 
-        const std::shared_ptr<Object>& item_data);
+        const std::shared_ptr<Object>& parent_data,
+        std::size_t item_index_in_parent);
 
     void ExpandItem(std::size_t list_item_index);
     bool ExpandItemAtIndexPath(
