@@ -281,7 +281,7 @@ std::size_t TreeData::GetNodeCount() const {
 }
 
 
-std::optional<std::size_t> TreeData::GetChildrenCount(const IndexPath& parent) const {
+std::optional<std::size_t> TreeData::GetChildCount(const IndexPath& parent) const {
 
     auto iterator = std::lower_bound(
         node_child_count_pairs.begin(), 
@@ -298,6 +298,37 @@ std::optional<std::size_t> TreeData::GetChildrenCount(const IndexPath& parent) c
     }
 
     return iterator->second;
+}
+
+
+std::optional<std::size_t> TreeData::GetChildCountRecursively(const IndexPath& parent) const {
+
+    auto iterator = std::lower_bound(
+        node_child_count_pairs.begin(),
+        node_child_count_pairs.end(),
+        parent,
+        [](const auto& pair, const auto& index_path) {
+            return pair.first < index_path;
+        }
+    );
+
+    if (iterator == node_child_count_pairs.end() ||
+        iterator->first != parent) {
+        return std::nullopt;
+    }
+
+    std::size_t child_count = iterator->second;
+
+    for (++iterator; iterator != node_child_count_pairs.end(); ++iterator) {
+
+        if (!IsAncestorOf(parent, iterator->first)) {
+            break;
+        }
+
+        child_count += iterator->second;
+    }
+
+    return child_count;
 }
 
 

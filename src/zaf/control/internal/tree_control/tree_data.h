@@ -12,7 +12,8 @@ public:
     std::size_t GetIndexAtIndexPath(const IndexPath& path) const;
 
     std::size_t GetNodeCount() const;
-    std::optional<std::size_t> GetChildrenCount(const IndexPath& parent) const;
+    std::optional<std::size_t> GetChildCount(const IndexPath& parent) const;
+    std::optional<std::size_t> GetChildCountRecursively(const IndexPath& parent) const;
 
     void AddChildren(const IndexPath& parent, std::size_t index, std::size_t count);
     std::size_t RemoveChildren(const IndexPath& parent, std::size_t index, std::size_t count);

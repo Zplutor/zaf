@@ -78,6 +78,7 @@ public:
         };
 
         nodes_ = create_nodes(2, 0);
+        nodes_.push_back(zaf::Create<Node>());
     }
 
 
@@ -152,7 +153,7 @@ public:
 
     void AddDataToSecondLevel() {
 
-        auto& node = nodes_[0];
+        auto& node = nodes_[2];
 
         std::size_t old_size = node->children.size();
 
@@ -168,7 +169,7 @@ public:
 
     void RemoveDataInSecondLevel() {
 
-        auto& node = nodes_[0];
+        auto& node = nodes_[2];
 
         auto old_size = node->children.size();
 

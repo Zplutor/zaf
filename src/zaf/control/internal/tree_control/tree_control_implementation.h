@@ -4,7 +4,6 @@
 #include <zaf/control/internal/list_control/list_control_implementation.h>
 #include <zaf/control/internal/tree_control/tree_data.h>
 #include <zaf/control/internal/tree_control/tree_data_manager.h>
-#include <zaf/control/internal/tree_control/tree_selection_manager.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/tree_control_delegate.h>
@@ -102,8 +101,7 @@ private:
 
     void SetItemSelectionState(
         const std::shared_ptr<TreeItem>& item, 
-        const std::shared_ptr<Object>& parent_data,
-        std::size_t item_index_in_parent);
+        const std::shared_ptr<Object>& item_data);
 
     void ExpandItem(std::size_t list_item_index);
     bool ExpandItemAtIndexPath(
@@ -157,7 +155,7 @@ private:
     TreeData tree_data_;
     TreeDataManager tree_data_manager_;
     TreeDataSet expanded_data_set_;
-    TreeSelectionManager selection_manager_;
+    TreeDataSet selected_data_set_;
 };
 
 }

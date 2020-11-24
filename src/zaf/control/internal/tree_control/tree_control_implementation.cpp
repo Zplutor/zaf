@@ -120,7 +120,7 @@ void TreeControlImplementation::ReloadRootNode() {
     tree_data_ = TreeData{};
     tree_data_manager_.Clear();
     expanded_data_set_.clear();
-    selection_manager_.Clear();
+    selected_data_set_.clear();
 
     auto data_source = data_source_.lock();
     if (!data_source) {
@@ -129,47 +129,31 @@ void TreeControlImplementation::ReloadRootNode() {
 
     auto child_count = data_source->GetChildDataCount(nullptr);
 
-    tree_data_manager_.AddChildren(nullptr, 0, child_count);
+    tree_data_manager_.SetChildCount(nullptr, child_count);
     tree_data_.AddChildren({}, 0, child_count);
 }
 
 
 std::vector<std::shared_ptr<Object>> TreeControlImplementation::GetAllSelectedItemData() const {
 
-    auto data_source = data_source_.lock();
-    if (!data_source) {
-        return {};
-    }
+    std::vector<std::pair<std::shared_ptr<Object>, IndexPath>> selected_data_index_path;
 
-    std::vector<std::pair<std::shared_ptr<Object>, IndexPath>> selected_data;
+    for (const auto& each_data : selected_data_set_) {
 
-    auto selected_child_indexes = selection_manager_.GetAllSelectedChildIndexes();
-    for (const auto& each_pair : selected_child_indexes) {
-
-        const auto& parent_data = each_pair.first;
-
-        auto parent_index_path = tree_data_manager_.GetIndexPathOfData(parent_data);
-        if (!parent_index_path) {
+        auto index_path = tree_data_manager_.GetIndexPathOfData(each_data);
+        if (!index_path) {
             continue;
         }
 
-        for (auto each_index : each_pair.second) {
-
-            auto child_data = data_source->GetChildDataAtIndex(parent_data, each_index);
-
-            auto child_index_path = *parent_index_path;
-            child_index_path.push_back(each_index);
-
-            selected_data.emplace_back(child_data, child_index_path);
-        }
+        selected_data_index_path.emplace_back(each_data, *index_path);
     }
 
-    Sort(selected_data, [](const auto& pair1, const auto& pair2) {
+    Sort(selected_data_index_path, [](const auto& pair1, const auto& pair2) {
         return pair1.second < pair2.second;
     });
 
     std::vector<std::shared_ptr<Object>> result;
-    for (const auto& each_pair : selected_data) {
+    for (const auto& each_pair : selected_data_index_path) {
         result.push_back(each_pair.first);
     }
     return result;
@@ -210,7 +194,10 @@ std::shared_ptr<Object> TreeControlImplementation::GetDataAtIndex(std::size_t in
         return Object::Empty();
     }
 
-    return data_source->GetChildDataAtIndex(parent_data, child_index);
+    auto child_data = data_source->GetChildDataAtIndex(parent_data, child_index);
+
+    tree_data_manager_.AddNode(parent_data, child_index, child_data);
+    return child_data;
 }
 
 
@@ -337,7 +324,7 @@ void TreeControlImplementation::LoadItem(
 
     tree_item->SetIndentLevel(index_path.size() - 1);
     SetItemExpandState(tree_item, item_data, index_path);
-    SetItemSelectionState(tree_item, parent_data, child_index);
+    SetItemSelectionState(tree_item, item_data);
 }
 
 
@@ -352,6 +339,8 @@ void TreeControlImplementation::SetItemExpandState(
     }
 
     if (!data_source->DoesDataHasChildren(item_data)) {
+        //Erase from expanded data set if the item cannot expand after updating.
+        expanded_data_set_.erase(item_data);
         item->SetExpandState(ExpandState::None);
     }
     else if (IsIndexPathExpanded(index_path)) {
@@ -376,10 +365,9 @@ bool TreeControlImplementation::IsIndexPathExpanded(const IndexPath& index_path)
 
 void TreeControlImplementation::SetItemSelectionState(
     const std::shared_ptr<TreeItem>& item, 
-    const std::shared_ptr<Object>& parent_data, 
-    std::size_t item_index_in_parent) {
+    const std::shared_ptr<Object>& item_data) {
 
-    bool is_selected = selection_manager_.IsChildIndexSelected(parent_data, item_index_in_parent);
+    bool is_selected = Contain(selected_data_set_, item_data);
     item->SetIsSelected(is_selected);
 }
 
@@ -410,7 +398,8 @@ bool TreeControlImplementation::ExpandItemAtIndexPath(
     std::size_t& expanded_count) {
 
     auto tree_node = tree_data_manager_.GetNodeAtIndexPath(index_path);
-    if (tree_node) {
+    if (tree_node && tree_node->children) {
+
         expanded_data = tree_node->data;
         expanded_count = ExpandItemWithTreeNode(*tree_node, index_path);
         return true;
@@ -424,10 +413,18 @@ std::size_t TreeControlImplementation::ExpandItemWithTreeNode(
     const TreeNode& node, 
     const IndexPath& node_index_path) {
 
-    tree_data_.AddChildren(node_index_path, 0, node.child_count);
-    std::size_t total_child_count = node.child_count;
+    if (!node.children) {
+        return 0;
+    }
 
-    for (const auto& each_child_node : node.children) {
+    tree_data_.AddChildren(node_index_path, 0, node.children->size());
+    std::size_t total_child_count = node.children->size();
+
+    for (const auto& each_child_node : *node.children) {
+
+        if (!each_child_node) {
+            continue;
+        }
 
         if (!Contain(expanded_data_set_, each_child_node->data)) {
             continue;
@@ -462,7 +459,7 @@ bool TreeControlImplementation::ExpandNewItem(
     expanded_data = data_source->GetChildDataAtIndex(parent_data, index_in_parent);
     expanded_count = data_source->GetChildDataCount(expanded_data);
 
-    tree_data_manager_.AddNewNode(parent_data, index_in_parent, expanded_data, expanded_count);
+    tree_data_manager_.SetChildCount(expanded_data, expanded_count);
     tree_data_.AddChildren(index_path, 0, expanded_count);
     return true;
 }
@@ -575,13 +572,8 @@ void TreeControlImplementation::ModifySelection(
     std::size_t count, 
     bool is_replace) {
 
-    auto data_source = data_source_.lock();
-    if (!data_source) {
-        return;
-    }
-
     if (is_replace) {
-        selection_manager_.Clear();
+        selected_data_set_.clear();
     }
 
     for (auto list_index : zaf::Range(index, index + count)) {
@@ -591,35 +583,31 @@ void TreeControlImplementation::ModifySelection(
             continue;
         }
 
-        std::shared_ptr<Object> parent_data;
-        std::size_t child_index{};
-        if (!GetParentDataAndChildIndex(index_path, parent_data, child_index)) {
+        auto node = tree_data_manager_.GetNodeAtIndexPath(index_path);
+        if (!node) {
             continue;
         }
 
-        selection_manager_.AddSelection(parent_data, child_index, 1);
+        selected_data_set_.insert(node->data);
     }
 }
 
 
 void TreeControlImplementation::RemoveSelection(std::size_t index, std::size_t count) {
 
-    auto data_source = data_source_.lock();
-    if (!data_source) {
-        return;
-    }
-
     for (auto list_index : zaf::Range(index, index + count)) {
 
         auto index_path = tree_data_.GetIndexPathAtIndex(list_index);
-
-        std::shared_ptr<Object> parent_data;
-        std::size_t child_index{};
-        if (!GetParentDataAndChildIndex(index_path, parent_data, child_index)) {
+        if (index_path.empty()) {
             continue;
         }
 
-        selection_manager_.RemoveSelection(parent_data, child_index, 1);
+        auto node = tree_data_manager_.GetNodeAtIndexPath(index_path);
+        if (!node) {
+            continue;
+        }
+
+        selected_data_set_.erase(node->data);
     }
 }
 
@@ -634,10 +622,11 @@ void TreeControlImplementation::OnDataAdd(const TreeDataSourceDataAddInfo& event
 
     tree_data_manager_.AddChildren(event_info.parent_data, event_info.index, event_info.count);
 
-    selection_manager_.AddDataToSelection(
-        event_info.parent_data, 
-        event_info.index, 
-        event_info.count);
+    //Update parent item.
+    auto parent_list_index = tree_data_.GetIndexAtIndexPath(*parent_index_path);
+    if (parent_list_index != InvalidIndex) {
+        NotifyDataUpdate(parent_list_index, 1);
+    }
 
     //Get list index at which to insert new items.
     auto list_index = GetChildListIndex(*parent_index_path, event_info.index);
@@ -657,7 +646,7 @@ std::size_t TreeControlImplementation::GetChildListIndex(
     const IndexPath& parent_index_path,
     std::size_t child_index) const {
 
-    auto old_child_count = tree_data_.GetChildrenCount(parent_index_path);
+    auto old_child_count = tree_data_.GetChildCount(parent_index_path);
     if (!old_child_count) {
         return InvalidIndex;
     }
@@ -688,6 +677,13 @@ std::size_t TreeControlImplementation::GetChildListIndex(
 
     auto list_index = tree_data_.GetIndexAtIndexPath(child_index_path);
     if (list_index != InvalidIndex) {
+
+        //Add child count recursively.
+        auto recursive_child_count = tree_data_.GetChildCountRecursively(child_index_path);
+        if (recursive_child_count) {
+            list_index += *recursive_child_count;
+        }
+
         list_index += 1;
     }
     return list_index;
@@ -703,12 +699,23 @@ void TreeControlImplementation::OnDataRemove(const TreeDataSourceDataRemoveInfo&
     }
 
     //Remove tree nodes.
-    tree_data_manager_.RemoveChildren(event_info.parent_data, event_info.index, event_info.count);
-
-    selection_manager_.RemoveDataFromSelection(
+    auto removed_data_list = tree_data_manager_.RemoveChildren(
         event_info.parent_data, 
         event_info.index,
         event_info.count);
+
+    for (const auto& each_data : removed_data_list) {
+        if (selected_data_set_.empty()) {
+            break;
+        }
+        selected_data_set_.erase(each_data);
+    }
+
+    //Update parent item.
+    auto parent_list_index = tree_data_.GetIndexAtIndexPath(*parent_index_path);
+    if (parent_list_index != InvalidIndex) {
+        NotifyDataUpdate(parent_list_index, 1);
+    }
 
     //Get list index at which begin removing.
     auto child_index_path = *parent_index_path;

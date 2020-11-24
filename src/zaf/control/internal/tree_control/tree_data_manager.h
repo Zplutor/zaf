@@ -10,12 +10,11 @@ namespace zaf::internal {
 class TreeNode {
 public:
     std::shared_ptr<Object> data;
-    std::size_t child_count{};
 
     std::weak_ptr<TreeNode> parent;
     std::size_t index_in_parent{ InvalidIndex };
 
-    std::vector<std::shared_ptr<TreeNode>> children;
+    std::optional<std::vector<std::shared_ptr<TreeNode>>> children;
 };
 
 class TreeDataManager {
@@ -28,18 +27,19 @@ public:
     std::shared_ptr<const TreeNode> GetNodeAtIndexPath(const IndexPath& index_path) const;
     std::optional<IndexPath> GetIndexPathOfData(const std::shared_ptr<Object>& data) const;
 
+    void AddNode(
+        const std::shared_ptr<Object>& parent_data,
+        std::size_t index_in_parent, 
+        const std::shared_ptr<Object>& data);
+
+    void SetChildCount(const std::shared_ptr<Object>& data, std::size_t child_count);
+
     void AddChildren(
         const std::shared_ptr<Object>& parent_data, 
         std::size_t parent_index,
         std::size_t count);
 
-    void AddNewNode(
-        const std::shared_ptr<Object>& parent_data,
-        std::size_t parent_index, 
-        const std::shared_ptr<Object>& data,
-        std::size_t child_count);
-
-    void RemoveChildren(
+    std::vector<std::shared_ptr<Object>> RemoveChildren(
         const std::shared_ptr<Object>& parent_data,
         std::size_t parent_index, 
         std::size_t count);
@@ -55,8 +55,10 @@ private:
     >;
 
 private:
-    void AddRootNodeToMap();
-    void RemoveDataFromMapRecursively(const std::shared_ptr<Object>& data);
+    void Initialize();
+    void RemoveDataFromMapRecursively(
+        const std::shared_ptr<Object>& data,
+        std::vector<std::shared_ptr<Object>>& removed_data_list);
 
 private:
     std::shared_ptr<TreeNode> root_node_;
