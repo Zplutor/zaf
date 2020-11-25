@@ -713,7 +713,7 @@ std::size_t TreeControlImplementation::GetChildListIndex(
     }
 
     //Child index must not exceed child count.
-    ZAF_CHECK(child_index <= old_child_count);
+    ZAF_EXPECT(child_index <= old_child_count);
 
     //There is no child, get next index of parent's index.
     if (old_child_count == 0) {

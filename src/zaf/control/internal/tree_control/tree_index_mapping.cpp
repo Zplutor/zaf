@@ -352,7 +352,7 @@ void TreeIndexMapping::AddChildren(const IndexPath& parent, std::size_t index, s
         if (current_path == parent) {
 
             //Check index.
-            ZAF_CHECK(index <= iterator->second);
+            ZAF_EXPECT(index <= iterator->second);
 
             //Increase children count.
             iterator->second += count;
@@ -377,7 +377,7 @@ void TreeIndexMapping::AddChildren(const IndexPath& parent, std::size_t index, s
             if (!IsAncestorOf(parent, current_path)) {
 
                 //Insert new node, index must be 0.
-                ZAF_CHECK(index == 0);
+                ZAF_EXPECT(index == 0);
 
                 node_child_count_pairs.insert(iterator, std::make_pair(parent, count));
                 return;
@@ -403,7 +403,7 @@ void TreeIndexMapping::AddChildren(const IndexPath& parent, std::size_t index, s
             return;
         }
     }
-    ZAF_CHECK(false);
+    ZAF_EXPECT(false);
 #endif
 }
 

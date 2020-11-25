@@ -77,9 +77,9 @@ void TreeDataManager::AddNode(
 
     auto& parent_children = (*parent_node)->children;
 
-    ZAF_CHECK(parent_children);
-    ZAF_CHECK(index_in_parent < parent_children->size());
-    ZAF_CHECK((*parent_children)[index_in_parent] == nullptr);
+    ZAF_EXPECT(parent_children);
+    ZAF_EXPECT(index_in_parent < parent_children->size());
+    ZAF_EXPECT((*parent_children)[index_in_parent] == nullptr);
 
     auto new_node = std::make_shared<TreeNode>();
     new_node->parent = *parent_node;
@@ -99,7 +99,7 @@ void TreeDataManager::SetChildCount(const std::shared_ptr<Object>& data, std::si
     }
 
     auto& node_children = (*node)->children;
-    ZAF_CHECK(!node_children);
+    ZAF_EXPECT(!node_children);
 
     node_children = std::vector<std::shared_ptr<TreeNode>>{};
     node_children->resize(child_count);
@@ -125,7 +125,7 @@ void TreeDataManager::AddChildren(
         return;
     }
 
-    ZAF_CHECK(parent_index <= parent_children->size());
+    ZAF_EXPECT(parent_index <= parent_children->size());
 
     for (auto index : zaf::Range(parent_index, parent_children->size())) {
         (*parent_children)[index]->index_in_parent += count;
@@ -157,7 +157,7 @@ std::vector<std::shared_ptr<Object>> TreeDataManager::RemoveChildren(
 
         const auto& each_child = *iterator;
 
-        ZAF_CHECK(each_child->index_in_parent != InvalidIndex);
+        ZAF_EXPECT(each_child->index_in_parent != InvalidIndex);
 
         if (each_child->index_in_parent < parent_index) {
             iterator++;
