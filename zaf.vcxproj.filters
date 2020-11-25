@@ -472,9 +472,6 @@
     <ClCompile Include="src\zaf\control\tree_control.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\tree_control\tree_data.cpp">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\list_item.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
@@ -541,9 +538,6 @@
     <ClCompile Include="src\zaf\control\internal\tree_control\utility.cpp">
       <Filter>zaf\control\internal\tree_control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\tree_control\tree_selection_manager.cpp">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\rx\subscription.cpp">
       <Filter>zaf\rx</Filter>
     </ClCompile>
@@ -572,6 +566,9 @@
       <Filter>zaf\rx</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_data_manager.cpp">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\tree_control\tree_index_mapping.cpp">
       <Filter>zaf\control\internal\tree_control</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1231,9 +1228,6 @@
     <ClInclude Include="src\zaf\control\tree_control.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\tree_control\tree_data.h">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\list_data_source.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
@@ -1342,9 +1336,6 @@
     <ClInclude Include="src\zaf\control\internal\tree_control\utility.h">
       <Filter>zaf\control\internal\tree_control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\tree_control\tree_selection_manager.h">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\observable.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
@@ -1403,6 +1394,9 @@
       <Filter>zaf\control\internal\tree_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_data_manager.h">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_index_mapping.h">
       <Filter>zaf\control\internal\tree_control</Filter>
     </ClInclude>
   </ItemGroup>

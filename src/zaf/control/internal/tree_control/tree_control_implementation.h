@@ -2,8 +2,8 @@
 
 #include <unordered_set>
 #include <zaf/control/internal/list_control/list_control_implementation.h>
-#include <zaf/control/internal/tree_control/tree_data.h>
 #include <zaf/control/internal/tree_control/tree_data_manager.h>
+#include <zaf/control/internal/tree_control/tree_index_mapping.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/tree_control_delegate.h>
@@ -17,6 +17,8 @@ class TreeControlImplementation :
     public std::enable_shared_from_this<TreeControlImplementation> {
 
 public:
+    using DataSourceChangeEvent = std::function<void(const std::shared_ptr<TreeDataSource>&)>;
+    using DelegateChangeEvent = std::function<void(const std::shared_ptr<TreeControlDelegate>&)>;
     using SelectionChangeEvent = std::function<void()>;
 
     class InitializeParameters {
@@ -24,6 +26,9 @@ public:
         std::shared_ptr<ListItemContainer> item_container;
         std::shared_ptr<TreeDataSource> data_source;
         std::shared_ptr<TreeControlDelegate> delegate;
+        DataSourceChangeEvent data_source_change_event;
+        DelegateChangeEvent delegate_change_event;
+        ListControlImplementation::ItemContainerChangeEvent item_container_change_event;
         SelectionChangeEvent selection_change_event;
     };
 
@@ -47,6 +52,9 @@ public:
 
     std::vector<std::shared_ptr<Object>> GetAllSelectedItemData() const;
     std::shared_ptr<Object> GetFirstSelectedItemData() const;
+
+    void SelectItemWithData(const std::shared_ptr<Object>& data);
+    void UnselectItemWithData(const std::shared_ptr<Object>& data);
 
     std::size_t GetDataCount() override;
     std::shared_ptr<Object> GetDataAtIndex(std::size_t index) override;
@@ -130,6 +138,8 @@ private:
         std::size_t index,
         std::size_t count);
 
+    void NotifySelectionChange();
+
     void ModifySelection(std::size_t index, std::size_t count, bool is_replace);
     void RemoveSelection(std::size_t index, std::size_t count);
 
@@ -149,10 +159,13 @@ private:
     std::weak_ptr<TreeDataSource> data_source_;
     std::weak_ptr<TreeControlDelegate> delegate_;
 
+    DataSourceChangeEvent data_source_change_event_;
+    DelegateChangeEvent delegate_change_event_;
     SelectionChangeEvent selection_change_event_;
+
     SubscriptionHolder data_source_subscriptions_;
     
-    TreeData tree_data_;
+    TreeIndexMapping tree_index_mapping_;
     TreeDataManager tree_data_manager_;
     TreeDataSet expanded_data_set_;
     TreeDataSet selected_data_set_;

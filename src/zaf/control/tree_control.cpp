@@ -44,16 +44,13 @@ void TreeControl::Initialize() {
     initialize_parameters.item_container = item_container_;
     initialize_parameters.data_source = data_source_.GetSharedPointer();
     initialize_parameters.delegate = delegate_.GetSharedPointer();
-    initialize_parameters.selection_change_event = std::bind(&TreeControl::SelectionChange, this);
-
-    /*
     initialize_parameters.data_source_change_event =
-        std::bind(&ListControl::DataSourceChange, this, std::placeholders::_1);
+        std::bind(&TreeControl::DataSourceChange, this, std::placeholders::_1);
     initialize_parameters.delegate_change_event =
-        std::bind(&ListControl::DelegateChange, this, std::placeholders::_1);
+        std::bind(&TreeControl::DelegateChange, this, std::placeholders::_1);
     initialize_parameters.item_container_change_event =
-        std::bind(&ListControl::ItemContainerChange, this, std::placeholders::_1);
-    */
+        std::bind(&TreeControl::ItemContainerChange, this, std::placeholders::_1);
+    initialize_parameters.selection_change_event = std::bind(&TreeControl::SelectionChange, this);
 
     implementation_->Initialize(initialize_parameters);
 }
@@ -89,6 +86,16 @@ std::vector<std::shared_ptr<Object>> TreeControl::GetAllSelectedItemData() const
 
 std::shared_ptr<Object> TreeControl::GetFirstSelectedItemData() const {
     return implementation_->GetFirstSelectedItemData();
+}
+
+
+void TreeControl::SelectItemWithData(const std::shared_ptr<Object>& data) {
+    implementation_->SelectItemWithData(data);
+}
+
+
+void TreeControl::UnselectItemWithData(const std::shared_ptr<Object>& data) {
+    implementation_->UnselectItemWithData(data);
 }
 
 

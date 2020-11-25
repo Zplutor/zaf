@@ -31,10 +31,18 @@ public:
     std::vector<std::shared_ptr<Object>> GetAllSelectedItemData() const;
     std::shared_ptr<Object> GetFirstSelectedItemData() const;
 
+    void SelectItemWithData(const std::shared_ptr<Object>& data);
+    void UnselectItemWithData(const std::shared_ptr<Object>& data);
+
     Observable<TreeControlSelectionChangeInfo> SelectionChangeEvent();
 
 protected:
     void Initialize() override;
+
+    virtual void DataSourceChange(const std::shared_ptr<TreeDataSource>& previous_data_source) { }
+    virtual void DelegateChange(const std::shared_ptr<TreeControlDelegate>& previous_delegate) { }
+    virtual void ItemContainerChange(
+        const std::shared_ptr<ListItemContainer>& previous_item_container) { }
 
 private:
     void SelectionChange();

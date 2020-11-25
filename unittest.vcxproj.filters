@@ -199,9 +199,6 @@
     <ClCompile Include="unittest\case\control\internal\range_manager_test.cpp">
       <Filter>case\control\internal</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\control\internal\tree_control\tree_data_test.cpp">
-      <Filter>case\control\internal\tree_control</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\base\container\utility\copy_test.cpp">
       <Filter>case\base\container\utility</Filter>
     </ClCompile>
@@ -213,6 +210,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\base\hash_test.cpp">
       <Filter>case\base</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\internal\tree_control\tree_index_mapping_test.cpp">
+      <Filter>case\control\internal\tree_control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

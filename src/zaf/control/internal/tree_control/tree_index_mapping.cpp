@@ -1,4 +1,4 @@
-#include <zaf/control/internal/tree_control/tree_data.h>
+#include <zaf/control/internal/tree_control/tree_index_mapping.h>
 #include <zaf/base/container/utility/range.h>
 #include <zaf/base/error/check.h>
 #include <zaf/control/internal/tree_control/utility.h>
@@ -170,7 +170,7 @@ bool IsGreaterOrEqualInSameParent(const IndexPath& path1, const IndexPath& path2
 }
 
 
-IndexPath TreeData::GetIndexPathAtIndex(std::size_t index) const {
+IndexPath TreeIndexMapping::GetIndexPathAtIndex(std::size_t index) const {
 
     IndexPath result{};
 
@@ -217,7 +217,7 @@ IndexPath TreeData::GetIndexPathAtIndex(std::size_t index) const {
 }
 
 
-std::size_t TreeData::GetIndexAtIndexPath(const IndexPath& path) const {
+std::size_t TreeIndexMapping::GetIndexAtIndexPath(const IndexPath& path) const {
 
     if (path.empty()) {
         return InvalidIndex;
@@ -271,7 +271,7 @@ std::size_t TreeData::GetIndexAtIndexPath(const IndexPath& path) const {
 }
 
 
-std::size_t TreeData::GetNodeCount() const {
+std::size_t TreeIndexMapping::GetNodeCount() const {
 
     std::size_t result{};
     for (const auto each_pair : node_child_count_pairs) {
@@ -281,7 +281,7 @@ std::size_t TreeData::GetNodeCount() const {
 }
 
 
-std::optional<std::size_t> TreeData::GetChildCount(const IndexPath& parent) const {
+std::optional<std::size_t> TreeIndexMapping::GetChildCount(const IndexPath& parent) const {
 
     auto iterator = std::lower_bound(
         node_child_count_pairs.begin(), 
@@ -301,7 +301,7 @@ std::optional<std::size_t> TreeData::GetChildCount(const IndexPath& parent) cons
 }
 
 
-std::optional<std::size_t> TreeData::GetChildCountRecursively(const IndexPath& parent) const {
+std::optional<std::size_t> TreeIndexMapping::GetChildCountRecursively(const IndexPath& parent) const {
 
     auto iterator = std::lower_bound(
         node_child_count_pairs.begin(),
@@ -332,7 +332,7 @@ std::optional<std::size_t> TreeData::GetChildCountRecursively(const IndexPath& p
 }
 
 
-void TreeData::AddChildren(const IndexPath& parent, std::size_t index, std::size_t count) {
+void TreeIndexMapping::AddChildren(const IndexPath& parent, std::size_t index, std::size_t count) {
 
     if (count == 0) {
         return;
@@ -408,7 +408,7 @@ void TreeData::AddChildren(const IndexPath& parent, std::size_t index, std::size
 }
 
 
-std::size_t TreeData::RemoveChildren(const IndexPath& parent, std::size_t index, std::size_t count) {
+std::size_t TreeIndexMapping::RemoveChildren(const IndexPath& parent, std::size_t index, std::size_t count) {
 
     if (count == 0) {
         return 0;
@@ -470,7 +470,7 @@ std::size_t TreeData::RemoveChildren(const IndexPath& parent, std::size_t index,
 }
 
 
-std::size_t TreeData::RemoveAllChildrenRecursively(const IndexPath& parent) {
+std::size_t TreeIndexMapping::RemoveAllChildrenRecursively(const IndexPath& parent) {
 
     std::size_t removed_count{};
 
@@ -495,6 +495,12 @@ std::size_t TreeData::RemoveAllChildrenRecursively(const IndexPath& parent) {
     };
 
     return removed_count;
+}
+
+
+void TreeIndexMapping::Clear() {
+
+    node_child_count_pairs.clear();
 }
 
 }
