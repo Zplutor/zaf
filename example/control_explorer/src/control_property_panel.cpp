@@ -41,7 +41,10 @@ void ControlPropertyPanel::Initialize() {
     scrollable_control_ = zaf::Create<zaf::ScrollableControl>();
     scrollable_control_->SetBorder(0);
     scrollable_control_->SetAllowHorizontalScroll(false);
-    scrollable_control_->GetScrollContentControl()->SetLayouter(
+
+    auto content_control = scrollable_control_->GetScrollContentControl();
+    content_control->SetIsCachedPaintingEnabled(false);
+    content_control->SetLayouter(
         zaf::Create<PropertyPanelLayouter>());
 
     AddChild(scrollable_control_);
