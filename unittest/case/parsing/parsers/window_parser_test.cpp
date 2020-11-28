@@ -4,19 +4,11 @@
 #include <zaf/window/window.h>
 #include "utility.h"
 
-TEST(WindowParser, ParseStyle) {
+TEST(WindowParser, ParseIsPopup) {
 
-    bool result = TestEnumProperty<zaf::Window, zaf::Window::Style>(
-        "Style",
-        {
-            { zaf::Window::Style::Overlapped, "Overlapped" },
-            { zaf::Window::Style::Popup, "Popup" },
-        },
-        [](zaf::Window& window) {
-            return window.GetStyle();
-        }
-    );
-    ASSERT_TRUE(result);
+    ASSERT_TRUE(TestBooleanProperty<zaf::Window>("IsPopup", [](zaf::Window& window) {
+        return window.IsPopup();
+    }));
 }
 
 
@@ -37,19 +29,19 @@ TEST(WindowParser, ParseInitialRectStyle) {
 }
 
 
-TEST(WindowParser, ParseBorderStyle) {
+TEST(WindowParser, ParseHasBorder) {
 
-    bool result = TestEnumProperty<zaf::Window, zaf::Window::BorderStyle>(
-        "BorderStyle",
-        {
-            { zaf::Window::BorderStyle::None, "None" },
-            { zaf::Window::BorderStyle::Normal, "Normal" },
-        },
-        [](zaf::Window& window) {
-            return window.GetBorderStyle();
-        }
-    );
-    ASSERT_TRUE(result);
+    ASSERT_TRUE(TestBooleanProperty<zaf::Window>("HasBorder", [](zaf::Window& window) {
+        return window.HasBorder();
+    }));
+};
+
+
+TEST(WindowParser, ParseHasTitleBar) {
+
+    ASSERT_TRUE(TestBooleanProperty<zaf::Window>("HasTitleBar", [](zaf::Window& window) {
+        return window.HasTitleBar();
+    }));
 };
 
 

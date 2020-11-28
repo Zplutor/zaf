@@ -9,17 +9,6 @@
 namespace zaf {
 namespace {
 
-std::optional<Window::Style> ParseStyle(const std::wstring& value) {
-    if (value == L"Overlapped") {
-        return Window::Style::Overlapped;
-    }
-    else if (value == L"Popup") {
-        return Window::Style::Popup;
-    }
-    return {};
-}
-
-
 std::optional<Window::InitialRectStyle> ParseInitialRectStyle(const std::wstring& value) {
     if (value == L"CenterInScreen") {
         return Window::InitialRectStyle::CenterInScreen;
@@ -29,17 +18,6 @@ std::optional<Window::InitialRectStyle> ParseInitialRectStyle(const std::wstring
     }
     else if (value == L"Custom") {
         return Window::InitialRectStyle::Custom;
-    }
-    return {};
-}
-
-
-std::optional<Window::BorderStyle> ParseBorderStyle(const std::wstring& value) {
-    if (value == L"None") {
-        return Window::BorderStyle::None;
-    }
-    else if (value == L"Normal") {
-        return Window::BorderStyle::Normal;
     }
     return {};
 }
@@ -68,12 +46,9 @@ void ParseProperties(const XamlNode& node, Window& window) {
 
     XamlNodeParseHelper helper(node, window.GetType());
 
-    auto style_string = helper.GetStringProperty(L"Style");
-    if (style_string) {
-        auto style = ParseStyle(*style_string);
-        if (style) {
-            window.SetStyle(*style);
-        }
+    auto is_popup = helper.GetBoolProperty(L"IsPopup");
+    if (is_popup) {
+        window.SetIsPopup(*is_popup);
     }
 
     auto initial_rect_style_string = helper.GetStringProperty(L"InitialRectStyle");
@@ -84,12 +59,14 @@ void ParseProperties(const XamlNode& node, Window& window) {
         }
     }
 
-    auto border_style_string = helper.GetStringProperty(L"BorderStyle");
-    if (border_style_string) {
-        auto border_style = ParseBorderStyle(*border_style_string);
-        if (border_style) {
-            window.SetBorderStyle(*border_style);
-        }
+    auto has_border = helper.GetBoolProperty(L"HasBorder");
+    if (has_border) {
+        window.SetHasBorder(*has_border);
+    }
+
+    auto has_title_bar = helper.GetBoolProperty(L"HasTitleBar");
+    if (has_title_bar) {
+        window.SetHasTitleBar(*has_title_bar);
     }
 
     auto activate_option_string = helper.GetStringProperty(L"ActivateOption");

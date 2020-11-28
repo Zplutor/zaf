@@ -229,8 +229,10 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
     auto window = zaf::Create<zaf::Window>();
 
     auto root_control = zaf::Create<RootControl>();
-    window->SetBorderStyle(zaf::Window::BorderStyle::Normal);
-    window->SetCanMaximize(true);
+    window->SetIsPopup(true);
+    window->SetHasBorder(true);
+    window->SetHasTitleBar(true);
+    window->SetCanMaximize(false);
     window->SetIsSizable(true);
     window->SetRootControl(root_control);
     window->Show();

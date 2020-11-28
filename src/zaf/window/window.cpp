@@ -20,23 +20,26 @@
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
+namespace {
 
-static const wchar_t* const kDefaultWindowClassName = L"ZafDefaultWindowClass";
+const wchar_t* const kDefaultWindowClassName = L"ZafDefaultWindowClass";
 
-static const wchar_t* const kActivateOptionPropertyName = L"ActivateOption";
-static const wchar_t* const kBorderStylePropertyName = L"BorderStyle";
-static const wchar_t* const kCanMaximizePropertyName = L"CanMaximize";
-static const wchar_t* const kCanMinimizePropertyName = L"CanMinimize";
-static const wchar_t* const kCloseEventPropertyName = L"CloseEvent";
-static const wchar_t* const kCloseHandlerPropertyName = L"CloseHandler";
-static const wchar_t* const kHasSystemMenuPropertyName = L"HasSystemMenu";
-static const wchar_t* const kInitialRectStylePropertyName = L"InitialRectStyle";
-static const wchar_t* const kIsSizablePropertyName = L"IsSizable";
-static const wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
-static const wchar_t* const kOwnerPropertyName = L"Owner";
-static const wchar_t* const kStylePropertyName = L"Style";
-static const wchar_t* const kTitlePropertyName = L"Title";
+constexpr wchar_t* const kActivateOptionPropertyName = L"ActivateOption";
+constexpr wchar_t* const kCanMaximizePropertyName = L"CanMaximize";
+constexpr wchar_t* const kCanMinimizePropertyName = L"CanMinimize";
+constexpr wchar_t* const kCloseEventPropertyName = L"CloseEvent";
+constexpr wchar_t* const kCloseHandlerPropertyName = L"CloseHandler";
+constexpr wchar_t* const kHasBorderPropertyName = L"HasBorder";
+constexpr wchar_t* const kHasSystemMenuPropertyName = L"HasSystemMenu";
+constexpr wchar_t* const kHasTitleBarPropertyName = L"HasTitleBar";
+constexpr wchar_t* const kInitialRectStylePropertyName = L"InitialRectStyle";
+constexpr wchar_t* const kIsPopupPropertyName = L"IsPopup";
+constexpr wchar_t* const kIsSizablePropertyName = L"IsSizable";
+constexpr wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
+constexpr wchar_t* const kOwnerPropertyName = L"Owner";
+constexpr wchar_t* const kTitlePropertyName = L"Title";
 
+}
 
 ZAF_DEFINE_REFLECTION_TYPE(Window)
     ZAF_DEFINE_PARSER(WindowParser)
@@ -204,40 +207,31 @@ void Window::CheckCreateWindowHandle() {
 
 void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extract_style) const {
 
-    auto style = GetStyle();
-    auto border_style = GetBorderStyle();
+    handle_style |= IsPopup() ? WS_POPUP : WS_OVERLAPPED;
 
-    if (style == Style::Overlapped) {
+    if (HasBorder()) {
+        
+        handle_style |= WS_BORDER;
 
-        handle_style |= WS_OVERLAPPED;
-
-        if (border_style != BorderStyle::None) {
+        if (HasTitleBar()) {
             handle_style |= WS_CAPTION;
         }
 
         if (IsSizable()) {
             handle_style |= WS_SIZEBOX;
         }
-
-        if (HasSystemMenu()) {
-            handle_style |= WS_SYSMENU;
-        }
-
-        if (CanMinimize()) {
-            handle_style |= WS_MINIMIZEBOX;
-        }
-
-        if (CanMaximize()) {
-            handle_style |= WS_MAXIMIZEBOX;
-        }
     }
-    else if (style == Style::Popup) {
 
-        handle_style |= WS_POPUP;
+    if (HasSystemMenu()) {
+        handle_style |= WS_SYSMENU;
+    }
 
-        if (border_style != BorderStyle::None) {
-            handle_style |= WS_BORDER;
-        }
+    if (CanMinimize()) {
+        handle_style |= WS_MINIMIZEBOX;
+    }
+
+    if (CanMaximize()) {
+        handle_style |= WS_MAXIMIZEBOX;
     }
 
     if (IsToolWindow()) {
@@ -284,7 +278,7 @@ void Window::SwitchFocusedControlByTabKey(bool backward) {
 bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
 
     auto is_customized_style = [this]() {
-        return GetStyle() == Style::Overlapped && GetBorderStyle() == BorderStyle::None;
+        return !IsPopup() && !HasBorder();
     };
 
     switch (message.id) {
@@ -1018,102 +1012,103 @@ void Window::SetActivateOption(ActivateOption option) {
 }
 
 
-Window::Style Window::GetStyle() const {
-
-    auto style = GetPropertyMap().TryGetProperty<Style>(kStylePropertyName);
-    if (style != nullptr) {
-        return *style;
-    }
-    return Style::Overlapped;
+bool Window::IsPopup() const {
+    auto value = GetPropertyMap().TryGetProperty<bool>(kIsPopupPropertyName);
+    return value ? *value : false;
 }
 
-void Window::SetStyle(Style style) {
+void Window::SetIsPopup(bool is_popup) {
 
     if (IsClosed()) {
-        GetPropertyMap().SetProperty(kStylePropertyName, style);
+        GetPropertyMap().SetProperty(kIsPopupPropertyName, is_popup);
+        ReviseHasTitleBar();
     }
 }
 
 
-Window::BorderStyle Window::GetBorderStyle() const {
-
-    auto border_style = GetPropertyMap().TryGetProperty<BorderStyle>(kBorderStylePropertyName);
-    if (border_style != nullptr) {
-        return *border_style;
-    }
-    else {
-        return BorderStyle::Normal;
-    }
+bool Window::HasBorder() const {
+    auto value = GetPropertyMap().TryGetProperty<bool>(kHasBorderPropertyName);
+    return value ? *value : true;
 }
 
-
-void Window::SetBorderStyle(BorderStyle border_style) {
+void Window::SetHasBorder(bool has_border) {
 
     if (IsClosed()) {
-        GetPropertyMap().SetProperty(kBorderStylePropertyName, border_style);
+        GetPropertyMap().SetProperty(kHasBorderPropertyName, has_border);
+        ReviseHasTitleBar();
+    }
+}
+
+
+bool Window::HasTitleBar() const {
+    auto value = GetPropertyMap().TryGetProperty<bool>(kHasTitleBarPropertyName);
+    return value ? *value : true;
+}
+
+
+void Window::SetHasTitleBar(bool has_title_bar) {
+
+    if (!IsPopup() && HasBorder()) {
+        return;
+    }
+
+    GetPropertyMap().SetProperty(kHasTitleBarPropertyName, has_title_bar);
+
+    if (HasBorder()) {
+        SetStyleToHandle(WS_CAPTION, has_title_bar, false);
+    }
+}
+
+
+void Window::ReviseHasTitleBar() {
+    if (!IsPopup() && HasBorder()) {
+        SetHasTitleBar(true);
     }
 }
 
 
 bool Window::IsSizable() const {
-    return GetOverlappedStyleProperty(kIsSizablePropertyName);
+    auto value = GetPropertyMap().TryGetProperty<bool>(kIsSizablePropertyName);
+    return value ? *value : true;
 }
 
 void Window::SetIsSizable(bool is_sizable) {
-    SetOverlappedStyleProperty(kIsSizablePropertyName, WS_SIZEBOX, is_sizable);
+
+    GetPropertyMap().SetProperty(kIsSizablePropertyName, is_sizable);
+
+    if (HasBorder()) {
+        SetStyleToHandle(WS_SIZEBOX, is_sizable, false);
+    }
 }
 
 
 bool Window::HasSystemMenu() const {
-    return GetOverlappedStyleProperty(kHasSystemMenuPropertyName);
+    auto value = GetPropertyMap().TryGetProperty<bool>(kHasSystemMenuPropertyName);
+    return value ? *value : true;
 }
 
 void Window::SetHasSystemMenu(bool has_system_menu) {
-    SetOverlappedStyleProperty(kHasSystemMenuPropertyName, WS_SYSMENU, has_system_menu);
+    SetStyleProperty(kHasSystemMenuPropertyName, WS_SYSMENU, has_system_menu, false);
 }
 
 
 bool Window::CanMinimize() const {
-    return GetOverlappedStyleProperty(kCanMinimizePropertyName);
+    auto value = GetPropertyMap().TryGetProperty<bool>(kCanMinimizePropertyName);
+    return value ? *value : true;
 }
 
 void Window::SetCanMinimize(bool can_minimize) {
-    SetOverlappedStyleProperty(kCanMinimizePropertyName, WS_MINIMIZEBOX, can_minimize);
+    SetStyleProperty(kCanMinimizePropertyName, WS_MINIMIZEBOX, can_minimize, false);
 }
 
 
 bool Window::CanMaximize() const {
-    return GetOverlappedStyleProperty(kCanMaximizePropertyName);
+    auto value = GetPropertyMap().TryGetProperty<bool>(kCanMaximizePropertyName);
+    return value ? *value : true;
 }
 
 void Window::SetCanMaximize(bool has_maximize_button) {
-    SetOverlappedStyleProperty(kCanMaximizePropertyName, WS_MAXIMIZEBOX, has_maximize_button);
-}
-
-
-bool Window::GetOverlappedStyleProperty(const std::wstring& property_name) const {
-
-    if (GetStyle() == Style::Popup) {
-        return false;
-    }
-
-    auto is_set = GetPropertyMap().TryGetProperty<bool>(property_name);
-    if (is_set != nullptr) {
-        return *is_set;
-    }
-    return true;
-}
-
-void Window::SetOverlappedStyleProperty(
-    const std::wstring& property_name,
-    DWORD style_value,
-    bool is_set) {
-
-    if (GetStyle() == Style::Popup) {
-        return;
-    }
-
-    SetStyleProperty(property_name, style_value, is_set, false);
+    SetStyleProperty(kCanMaximizePropertyName, WS_MAXIMIZEBOX, has_maximize_button, false);
 }
 
 
