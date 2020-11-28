@@ -177,15 +177,7 @@ public:
         const Rect& destination_rect,
         float opacity,
         InterpolationMode interpolation_mode,
-        const Rect* bitmap_rect) {
-
-        GetHandle()->DrawBitmap(
-            bitmap.GetHandle(),
-            destination_rect.ToD2D1RECTF(),
-            opacity,
-            static_cast<D2D1_BITMAP_INTERPOLATION_MODE>(interpolation_mode),
-            bitmap_rect == nullptr ? nullptr : &(bitmap_rect->ToD2D1RECTF()));
-    }
+        const Rect* bitmap_rect);
 
     void PushAxisAlignedClipping(const Rect& rect, AntialiasMode antialias_mode) {
         GetHandle()->PushAxisAlignedClip(rect.ToD2D1RECTF(), static_cast<D2D1_ANTIALIAS_MODE>(antialias_mode));

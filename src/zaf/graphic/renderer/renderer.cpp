@@ -119,6 +119,27 @@ RenderBitmap Renderer::CreateBitmap(const wic::BitmapSource& image_source) {
 }
 
 
+void Renderer::DrawBitmap(
+    const RenderBitmap& bitmap,
+    const Rect& destination_rect,
+    float opacity,
+    InterpolationMode interpolation_mode,
+    const Rect* bitmap_rect) {
+
+    std::optional<D2D1_RECT_F> d2d1_rect;
+    if (bitmap_rect) {
+        d2d1_rect = bitmap_rect->ToD2D1RECTF();
+    }
+
+    GetHandle()->DrawBitmap(
+        bitmap.GetHandle(),
+        destination_rect.ToD2D1RECTF(),
+        opacity,
+        static_cast<D2D1_BITMAP_INTERPOLATION_MODE>(interpolation_mode),
+        d2d1_rect ? &*d2d1_rect : nullptr);
+}
+
+
 void Renderer::PushLayer(const Layer& layer, const LayerParameters& parameters) {
 
     D2D1_LAYER_PARAMETERS d2d_parameters = D2D1::LayerParameters();
