@@ -187,15 +187,10 @@ std::shared_ptr<Object> TreeControlImplementation::GetFirstSelectedItem() const 
 
 void TreeControlImplementation::SelectItem(const std::shared_ptr<Object>& data) {
 
-    auto index_path = tree_data_manager_.GetIndexPathOfData(data);
-    if (!index_path) {
-        return;
-    }
+    auto list_index = GetDataListIndex(data);
+    if (list_index) {
 
-    auto list_index = tree_index_mapping_.GetIndexAtIndexPath(*index_path);
-    if (list_index != InvalidIndex) {
-
-        list_implementation_->SelectItemAtIndex(list_index);
+        list_implementation_->SelectItemAtIndex(*list_index);
     }
     else {
 
@@ -207,21 +202,52 @@ void TreeControlImplementation::SelectItem(const std::shared_ptr<Object>& data) 
 
 void TreeControlImplementation::UnselectItem(const std::shared_ptr<Object>& data) {
 
-    auto index_path = tree_data_manager_.GetIndexPathOfData(data);
-    if (!index_path) {
-        return;
-    }
-
-    auto list_index = tree_index_mapping_.GetIndexAtIndexPath(*index_path);
-    if (list_index != InvalidIndex) {
+    auto list_index = GetDataListIndex(data);
+    if (list_index) {
         
-        list_implementation_->UnselectItemAtIndex(list_index);
+        list_implementation_->UnselectItemAtIndex(*list_index);
     }
     else {
 
         auto erased_count = selected_data_set_.erase(data);
         if (erased_count > 0) {
             NotifySelectionChange();
+        }
+    }
+}
+
+
+void TreeControlImplementation::ExpandItem(const std::shared_ptr<Object>& data) {
+
+    auto list_index = GetDataListIndex(data);
+    if (list_index) {
+
+        ExpandItemAtIndex(*list_index);
+    }
+    else {
+
+        expanded_data_set_.insert(data);
+
+        if (item_expand_event_) {
+            item_expand_event_(data);
+        }
+    }
+}
+
+
+void TreeControlImplementation::CollapseItem(const std::shared_ptr<Object>& data) {
+
+    auto list_index = GetDataListIndex(data);
+    if (list_index) {
+
+        CollapseItemAtIndex(*list_index);
+    }
+    else {
+
+        expanded_data_set_.erase(data);
+
+        if (item_collapse_event_) {
+            item_collapse_event_(data);
         }
     }
 }
@@ -429,7 +455,7 @@ void TreeControlImplementation::SetItemSelectionState(
 }
 
 
-void TreeControlImplementation::ExpandItem(std::size_t list_item_index) {
+void TreeControlImplementation::ExpandItemAtIndex(std::size_t list_item_index) {
 
     auto index_path = tree_index_mapping_.GetIndexPathAtIndex(list_item_index);
     if (index_path.empty()) {
@@ -526,7 +552,7 @@ bool TreeControlImplementation::ExpandNewItem(
 }
 
 
-void TreeControlImplementation::CollapseItem(std::size_t list_item_index) {
+void TreeControlImplementation::CollapseItemAtIndex(std::size_t list_item_index) {
 
     auto index_path = tree_index_mapping_.GetIndexPathAtIndex(list_item_index);
     if (index_path.empty()) {
@@ -549,45 +575,6 @@ void TreeControlImplementation::CollapseItem(std::size_t list_item_index) {
 }
 
 
-bool TreeControlImplementation::GetParentDataAndChildIndex(
-    std::size_t list_index,
-    std::shared_ptr<Object>& parent_data,
-    std::size_t& child_index) {
-
-    auto index_path = tree_index_mapping_.GetIndexPathAtIndex(list_index);
-    if (index_path.empty()) {
-        return false;
-    }
-
-    return GetParentDataAndChildIndex(index_path, parent_data, child_index);
-}
-
-
-bool TreeControlImplementation::GetParentDataAndChildIndex(
-    const IndexPath& index_path,
-    std::shared_ptr<Object>& parent_data,
-    std::size_t& child_index) {
-
-    auto data_source = data_source_.lock();
-    if (!data_source) {
-        return false;
-    }
-
-    child_index = index_path.back();
-    
-    auto parent_index_path = index_path;
-    parent_index_path.pop_back();
-
-    auto tree_node = tree_data_manager_.GetNodeAtIndexPath(parent_index_path);
-    if (!tree_node) {
-        return false;
-    }
-
-    parent_data = tree_node->data;
-    return true;
-}
-
-
 void TreeControlImplementation::OnItemExpandChange(
     const std::shared_ptr<TreeItem>& item, 
     bool is_expanded) {
@@ -598,10 +585,10 @@ void TreeControlImplementation::OnItemExpandChange(
     }
 
     if (is_expanded) {
-        ExpandItem(list_item_index);
+        ExpandItemAtIndex(list_item_index);
     }
     else {
-        CollapseItem(list_item_index);
+        CollapseItemAtIndex(list_item_index);
     }
 }
 
@@ -880,6 +867,62 @@ std::vector<std::size_t> TreeControlImplementation::GetChildrenListIndexes(
     }
 
     return result;
+}
+
+
+std::optional<std::size_t> TreeControlImplementation::GetDataListIndex(
+    const std::shared_ptr<Object>& data) const {
+
+    auto index_path = tree_data_manager_.GetIndexPathOfData(data);
+    if (!index_path) {
+        return std::nullopt;
+    }
+
+    auto list_index = tree_index_mapping_.GetIndexAtIndexPath(*index_path);
+    if (list_index == InvalidIndex) {
+        return std::nullopt;
+    }
+
+    return list_index;
+}
+
+
+bool TreeControlImplementation::GetParentDataAndChildIndex(
+    std::size_t list_index,
+    std::shared_ptr<Object>& parent_data,
+    std::size_t& child_index) {
+
+    auto index_path = tree_index_mapping_.GetIndexPathAtIndex(list_index);
+    if (index_path.empty()) {
+        return false;
+    }
+
+    return GetParentDataAndChildIndex(index_path, parent_data, child_index);
+}
+
+
+bool TreeControlImplementation::GetParentDataAndChildIndex(
+    const IndexPath& index_path,
+    std::shared_ptr<Object>& parent_data,
+    std::size_t& child_index) {
+
+    auto data_source = data_source_.lock();
+    if (!data_source) {
+        return false;
+    }
+
+    child_index = index_path.back();
+
+    auto parent_index_path = index_path;
+    parent_index_path.pop_back();
+
+    auto tree_node = tree_data_manager_.GetNodeAtIndexPath(parent_index_path);
+    if (!tree_node) {
+        return false;
+    }
+
+    parent_data = tree_node->data;
+    return true;
 }
 
 }

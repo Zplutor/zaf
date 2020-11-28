@@ -105,6 +105,16 @@ void TreeControl::UnselectItem(const std::shared_ptr<Object>& data) {
 }
 
 
+void TreeControl::ExpandItem(const std::shared_ptr<Object>& data) {
+    implementation_->ExpandItem(data);
+}
+
+
+void TreeControl::CollapseItem(const std::shared_ptr<Object>& data) {
+    implementation_->CollapseItem(data);
+}
+
+
 void TreeControl::SelectionChange() {
 
     auto observer = GetEventObserver<TreeControlSelectionChangeInfo>(

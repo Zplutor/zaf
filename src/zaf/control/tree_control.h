@@ -36,6 +36,9 @@ public:
     void SelectItem(const std::shared_ptr<Object>& data);
     void UnselectItem(const std::shared_ptr<Object>& data);
 
+    void ExpandItem(const std::shared_ptr<Object>& data);
+    void CollapseItem(const std::shared_ptr<Object>& data);
+
     Observable<TreeControlSelectionChangeInfo> SelectionChangeEvent();
     Observable<TreeControlItemExpandInfo> ItemExpandEvent();
     Observable<TreeControlItemCollapseInfo> ItemCollapseEvent();

@@ -60,6 +60,9 @@ public:
     void SelectItem(const std::shared_ptr<Object>& data);
     void UnselectItem(const std::shared_ptr<Object>& data);
 
+    void ExpandItem(const std::shared_ptr<Object>& data);
+    void CollapseItem(const std::shared_ptr<Object>& data);
+
     std::size_t GetDataCount() override;
     std::shared_ptr<Object> GetDataAtIndex(std::size_t index) override;
     
@@ -115,7 +118,7 @@ private:
         const std::shared_ptr<TreeItem>& item, 
         const std::shared_ptr<Object>& item_data);
 
-    void ExpandItem(std::size_t list_item_index);
+    void ExpandItemAtIndex(std::size_t list_item_index);
     bool ExpandItemAtIndexPath(
         const IndexPath& index_path, 
         std::shared_ptr<Object>& expanded_data, 
@@ -125,17 +128,7 @@ private:
         const IndexPath& index_path,
         std::shared_ptr<Object>& expanded_data,
         std::size_t& expanded_count);
-    void CollapseItem(std::size_t list_item_index);
-
-    bool GetParentDataAndChildIndex(
-        std::size_t list_index,
-        std::shared_ptr<Object>& parent_data,
-        std::size_t& child_index);
-
-    bool GetParentDataAndChildIndex(
-        const IndexPath& index_path,
-        std::shared_ptr<Object>& parent_data,
-        std::size_t& child_index);
+    void CollapseItemAtIndex(std::size_t list_item_index);
 
     void OnListSelectionChange(
         ListSelectionChangeReason reason,
@@ -157,6 +150,18 @@ private:
         const std::shared_ptr<Object>& parent_data, 
         std::size_t index, 
         std::size_t count);
+
+    std::optional<std::size_t> GetDataListIndex(const std::shared_ptr<Object>& data) const;
+
+    bool GetParentDataAndChildIndex(
+        std::size_t list_index,
+        std::shared_ptr<Object>& parent_data,
+        std::size_t& child_index);
+
+    bool GetParentDataAndChildIndex(
+        const IndexPath& index_path,
+        std::shared_ptr<Object>& parent_data,
+        std::size_t& child_index);
 
 private:
     std::shared_ptr<internal::ListControlImplementation> list_implementation_;
