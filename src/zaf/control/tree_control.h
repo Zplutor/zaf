@@ -12,6 +12,8 @@ class TreeControlImplementation;
 
 class ListItemContainer;
 class TreeControlDelegate;
+class TreeControlItemCollapseInfo;
+class TreeControlItemExpandInfo;
 class TreeControlSelectionChangeInfo;
 class TreeDataSource;
 
@@ -28,13 +30,15 @@ public:
 
     void SetSelectionMode(SelectionMode selection_mode);
 
-    std::vector<std::shared_ptr<Object>> GetAllSelectedItemData() const;
-    std::shared_ptr<Object> GetFirstSelectedItemData() const;
+    std::vector<std::shared_ptr<Object>> GetAllSelectedItems() const;
+    std::shared_ptr<Object> GetFirstSelectedItem() const;
 
-    void SelectItemWithData(const std::shared_ptr<Object>& data);
-    void UnselectItemWithData(const std::shared_ptr<Object>& data);
+    void SelectItem(const std::shared_ptr<Object>& data);
+    void UnselectItem(const std::shared_ptr<Object>& data);
 
     Observable<TreeControlSelectionChangeInfo> SelectionChangeEvent();
+    Observable<TreeControlItemExpandInfo> ItemExpandEvent();
+    Observable<TreeControlItemCollapseInfo> ItemCollapseEvent();
 
 protected:
     void Initialize() override;
@@ -46,6 +50,8 @@ protected:
 
 private:
     void SelectionChange();
+    void ItemExpand(const std::shared_ptr<Object>& data);
+    void ItemCollapse(const std::shared_ptr<Object>& data);
 
 private:
     std::shared_ptr<ListItemContainer> item_container_;
@@ -58,6 +64,18 @@ private:
 class TreeControlSelectionChangeInfo {
 public:
     std::shared_ptr<TreeControl> tree_control;
+};
+
+class TreeControlItemExpandInfo {
+public:
+    std::shared_ptr<TreeControl> tree_control;
+    std::shared_ptr<Object> item_data;
+};
+
+class TreeControlItemCollapseInfo {
+public:
+    std::shared_ptr<TreeControl> tree_control;
+    std::shared_ptr<Object> item_data;
 };
 
 }

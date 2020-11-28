@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <zaf/application.h>
+#include <zaf/base/log.h>
 #include <zaf/base/container/utility/find.h>
 #include <zaf/base/container/utility/range.h>
 #include <zaf/creation.h>
@@ -245,9 +246,24 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
     tree_control->Subscriptions() += tree_control->SelectionChangeEvent().Subscribe(
         [](const zaf::TreeControlSelectionChangeInfo& event_info) {
     
-            for (const auto& each_data : event_info.tree_control->GetAllSelectedItemData()) {
-                OutputDebugString((each_data->ToString() + L"\r\n").c_str());
+            std::wostringstream stream;
+            stream << "Selection change. ";
+            for (const auto& each_data : event_info.tree_control->GetAllSelectedItems()) {
+                stream << each_data->ToString() << ',';
             }
+            ZAF_LOG() << stream.str();
+        }
+    );
+
+    tree_control->Subscriptions() += tree_control->ItemExpandEvent().Subscribe(
+        [](const zaf::TreeControlItemExpandInfo& event_info) {
+            ZAF_LOG() << "Item expand. " << event_info.item_data->ToString();
+        }
+    );
+
+    tree_control->Subscriptions() += tree_control->ItemCollapseEvent().Subscribe(
+        [](const zaf::TreeControlItemCollapseInfo& event_info) {
+            ZAF_LOG() << "Item collapse. " << event_info.item_data->ToString();
         }
     );
 

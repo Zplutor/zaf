@@ -10,6 +10,8 @@
 namespace zaf {
 namespace {
 
+constexpr wchar_t* const kItemCollapseEventProperyName = L"ItemCollapseEvent";
+constexpr wchar_t* const kItemExpandEventPropertyName = L"ItemExpandEvent";
 constexpr wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
 
 }
@@ -51,6 +53,10 @@ void TreeControl::Initialize() {
     initialize_parameters.item_container_change_event =
         std::bind(&TreeControl::ItemContainerChange, this, std::placeholders::_1);
     initialize_parameters.selection_change_event = std::bind(&TreeControl::SelectionChange, this);
+    initialize_parameters.item_expand_event = 
+        std::bind(&TreeControl::ItemExpand, this, std::placeholders::_1);
+    initialize_parameters.item_collapse_event = 
+        std::bind(&TreeControl::ItemCollapse, this, std::placeholders::_1);
 
     implementation_->Initialize(initialize_parameters);
 }
@@ -79,31 +85,23 @@ void TreeControl::SetSelectionMode(SelectionMode selection_mode) {
 }
 
 
-std::vector<std::shared_ptr<Object>> TreeControl::GetAllSelectedItemData() const {
-    return implementation_->GetAllSelectedItemData();
+std::vector<std::shared_ptr<Object>> TreeControl::GetAllSelectedItems() const {
+    return implementation_->GetAllSelectedItems();
 }
 
 
-std::shared_ptr<Object> TreeControl::GetFirstSelectedItemData() const {
-    return implementation_->GetFirstSelectedItemData();
+std::shared_ptr<Object> TreeControl::GetFirstSelectedItem() const {
+    return implementation_->GetFirstSelectedItem();
 }
 
 
-void TreeControl::SelectItemWithData(const std::shared_ptr<Object>& data) {
-    implementation_->SelectItemWithData(data);
+void TreeControl::SelectItem(const std::shared_ptr<Object>& data) {
+    implementation_->SelectItem(data);
 }
 
 
-void TreeControl::UnselectItemWithData(const std::shared_ptr<Object>& data) {
-    implementation_->UnselectItemWithData(data);
-}
-
-
-Observable<TreeControlSelectionChangeInfo> TreeControl::SelectionChangeEvent() {
-
-    return GetEventObservable<TreeControlSelectionChangeInfo>(
-        GetPropertyMap(),
-        kSelectionChangeEventPropertyName);
+void TreeControl::UnselectItem(const std::shared_ptr<Object>& data) {
+    implementation_->UnselectItem(data);
 }
 
 
@@ -120,6 +118,64 @@ void TreeControl::SelectionChange() {
     TreeControlSelectionChangeInfo event_info;
     event_info.tree_control = std::dynamic_pointer_cast<TreeControl>(shared_from_this());
     observer->OnNext(event_info);
+}
+
+
+Observable<TreeControlSelectionChangeInfo> TreeControl::SelectionChangeEvent() {
+
+    return GetEventObservable<TreeControlSelectionChangeInfo>(
+        GetPropertyMap(),
+        kSelectionChangeEventPropertyName);
+}
+
+
+void TreeControl::ItemExpand(const std::shared_ptr<Object>& data) {
+
+    auto observer = GetEventObserver<TreeControlItemExpandInfo>(
+        GetPropertyMap(),
+        kItemExpandEventPropertyName);
+
+    if (!observer) {
+        return;
+    }
+
+    TreeControlItemExpandInfo event_info;
+    event_info.tree_control = std::dynamic_pointer_cast<TreeControl>(shared_from_this());
+    event_info.item_data = data;
+    observer->OnNext(event_info);
+}
+
+
+Observable<TreeControlItemExpandInfo> TreeControl::ItemExpandEvent() {
+
+    return GetEventObservable<TreeControlItemExpandInfo>(
+        GetPropertyMap(),
+        kItemExpandEventPropertyName);
+}
+
+
+void TreeControl::ItemCollapse(const std::shared_ptr<Object>& data) {
+
+    auto observer = GetEventObserver<TreeControlItemCollapseInfo>(
+        GetPropertyMap(),
+        kItemCollapseEventProperyName);
+
+    if (!observer) {
+        return;
+    }
+
+    TreeControlItemCollapseInfo event_info;
+    event_info.tree_control = std::dynamic_pointer_cast<TreeControl>(shared_from_this());
+    event_info.item_data = data;
+    observer->OnNext(event_info);
+}
+
+
+Observable<TreeControlItemCollapseInfo> TreeControl::ItemCollapseEvent() {
+
+    return GetEventObservable<TreeControlItemCollapseInfo>(
+        GetPropertyMap(),
+        kItemCollapseEventProperyName);
 }
 
 }

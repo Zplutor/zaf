@@ -20,6 +20,8 @@ public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<TreeDataSource>&)>;
     using DelegateChangeEvent = std::function<void(const std::shared_ptr<TreeControlDelegate>&)>;
     using SelectionChangeEvent = std::function<void()>;
+    using ItemExpandEvent = std::function<void(const std::shared_ptr<Object>&)>;
+    using ItemCollapseEvent = std::function<void(const std::shared_ptr<Object>&)>;
 
     class InitializeParameters {
     public:
@@ -30,6 +32,8 @@ public:
         DelegateChangeEvent delegate_change_event;
         ListControlImplementation::ItemContainerChangeEvent item_container_change_event;
         SelectionChangeEvent selection_change_event;
+        ItemExpandEvent item_expand_event;
+        ItemCollapseEvent item_collapse_event;
     };
 
 public:
@@ -50,11 +54,11 @@ public:
 
     void Reload();
 
-    std::vector<std::shared_ptr<Object>> GetAllSelectedItemData() const;
-    std::shared_ptr<Object> GetFirstSelectedItemData() const;
+    std::vector<std::shared_ptr<Object>> GetAllSelectedItems() const;
+    std::shared_ptr<Object> GetFirstSelectedItem() const;
 
-    void SelectItemWithData(const std::shared_ptr<Object>& data);
-    void UnselectItemWithData(const std::shared_ptr<Object>& data);
+    void SelectItem(const std::shared_ptr<Object>& data);
+    void UnselectItem(const std::shared_ptr<Object>& data);
 
     std::size_t GetDataCount() override;
     std::shared_ptr<Object> GetDataAtIndex(std::size_t index) override;
@@ -162,6 +166,8 @@ private:
     DataSourceChangeEvent data_source_change_event_;
     DelegateChangeEvent delegate_change_event_;
     SelectionChangeEvent selection_change_event_;
+    ItemExpandEvent item_expand_event_;
+    ItemCollapseEvent item_collapse_event_;
 
     SubscriptionHolder data_source_subscriptions_;
     

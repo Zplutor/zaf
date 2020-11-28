@@ -23,6 +23,8 @@ void TreeControlImplementation::Initialize(const InitializeParameters& parameter
     data_source_change_event_ = parameters.data_source_change_event;
     delegate_change_event_ = parameters.delegate_change_event;
     selection_change_event_ = parameters.selection_change_event;
+    item_expand_event_ = parameters.item_expand_event;
+    item_collapse_event_ = parameters.item_collapse_event;
 
     Reload();
 }
@@ -147,7 +149,7 @@ void TreeControlImplementation::ReloadRootNode() {
 }
 
 
-std::vector<std::shared_ptr<Object>> TreeControlImplementation::GetAllSelectedItemData() const {
+std::vector<std::shared_ptr<Object>> TreeControlImplementation::GetAllSelectedItems() const {
 
     std::vector<std::pair<std::shared_ptr<Object>, IndexPath>> selected_data_index_path;
 
@@ -173,9 +175,9 @@ std::vector<std::shared_ptr<Object>> TreeControlImplementation::GetAllSelectedIt
 }
 
 
-std::shared_ptr<Object> TreeControlImplementation::GetFirstSelectedItemData() const {
+std::shared_ptr<Object> TreeControlImplementation::GetFirstSelectedItem() const {
 
-    auto all_selected_data = GetAllSelectedItemData();
+    auto all_selected_data = GetAllSelectedItems();
     if (!all_selected_data.empty()) {
         return all_selected_data.front();
     }
@@ -183,7 +185,7 @@ std::shared_ptr<Object> TreeControlImplementation::GetFirstSelectedItemData() co
 }
 
 
-void TreeControlImplementation::SelectItemWithData(const std::shared_ptr<Object>& data) {
+void TreeControlImplementation::SelectItem(const std::shared_ptr<Object>& data) {
 
     auto index_path = tree_data_manager_.GetIndexPathOfData(data);
     if (!index_path) {
@@ -203,7 +205,7 @@ void TreeControlImplementation::SelectItemWithData(const std::shared_ptr<Object>
 }
 
 
-void TreeControlImplementation::UnselectItemWithData(const std::shared_ptr<Object>& data) {
+void TreeControlImplementation::UnselectItem(const std::shared_ptr<Object>& data) {
 
     auto index_path = tree_data_manager_.GetIndexPathOfData(data);
     if (!index_path) {
@@ -444,6 +446,10 @@ void TreeControlImplementation::ExpandItem(std::size_t list_item_index) {
 
     NotifyDataUpdate(list_item_index, 1);
     NotifyDataAdd(list_item_index + 1, expanded_count);
+
+    if (item_expand_event_) {
+        item_expand_event_(expanded_data);
+    }
 }
 
 
@@ -536,6 +542,10 @@ void TreeControlImplementation::CollapseItem(std::size_t list_item_index) {
 
     NotifyDataUpdate(list_item_index, 1);
     NotifyDataRemove(list_item_index + 1, removed_count);
+
+    if (item_collapse_event_) {
+        item_collapse_event_(tree_node->data);
+    }
 }
 
 
