@@ -14,5 +14,10 @@ const std::uint32_t ControlDisabledTextColorRGB = 0x838383;
 const std::uint32_t ControlNormalTextColorRGB = 0x000000;
 const std::uint32_t ControlSelectedColorRGB = 0x3399ff;
 
+constexpr std::uint32_t InspectedControlBorderColor = 0x32CD32;
+constexpr std::uint32_t InspectedControlContentColor = 0x87CEFF;
+constexpr std::uint32_t InspectedControlMarginColor = 0xF0E68C;
+constexpr std::uint32_t InspectedControlPaddingColor = 0x90EE90;
+
 }
 }

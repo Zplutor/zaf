@@ -108,7 +108,7 @@ void TreeDataManager::SetChildCount(const std::shared_ptr<Object>& data, std::si
 
 void TreeDataManager::AddChildren(
     const std::shared_ptr<Object>& parent_data,
-    std::size_t parent_index,
+    std::size_t child_index,
     std::size_t count) {
 
     if (count <= 0) {
@@ -125,19 +125,23 @@ void TreeDataManager::AddChildren(
         return;
     }
 
-    ZAF_EXPECT(parent_index <= parent_children->size());
+    ZAF_EXPECT(child_index <= parent_children->size());
 
-    for (auto index : zaf::Range(parent_index, parent_children->size())) {
-        (*parent_children)[index]->index_in_parent += count;
+    for (auto index : zaf::Range(child_index, parent_children->size())) {
+
+        const auto& child_node = (*parent_children)[index];
+        if (child_node) {
+            child_node->index_in_parent += count;
+        }
     }
 
-    parent_children->insert(parent_children->begin() + parent_index, count, nullptr);
+    parent_children->insert(parent_children->begin() + child_index, count, nullptr);
 }
 
 
 std::vector<std::shared_ptr<Object>> TreeDataManager::RemoveChildren(
     const std::shared_ptr<Object>& parent_data,
-    std::size_t parent_index,
+    std::size_t child_index,
     std::size_t count) {
 
     auto parent_node = Find(data_map_, parent_data);
@@ -150,29 +154,42 @@ std::vector<std::shared_ptr<Object>> TreeDataManager::RemoveChildren(
         return {};
     }
 
+    ZAF_EXPECT(
+        (child_index < parent_children->size()) && 
+        (child_index + count <= parent_children->size()));
+
     std::vector<std::shared_ptr<Object>> removed_data_list;
 
-    auto iterator = parent_children->begin();
-    while (iterator != parent_children->end()) {
+    //Remove inner children recursively.
+    auto begin_iterator = std::next(parent_children->begin(), child_index);
+    auto end_iterator = std::next(begin_iterator, count);
 
-        const auto& each_child = *iterator;
+    for (auto current_iterator = begin_iterator; 
+         current_iterator != end_iterator; 
+        ++current_iterator) {
 
-        ZAF_EXPECT(each_child->index_in_parent != InvalidIndex);
-
-        if (each_child->index_in_parent < parent_index) {
-            iterator++;
-            continue;
+        const auto& current_child = *current_iterator;
+        if (current_child) {
+            RemoveDataFromMapRecursively(current_child->data, removed_data_list);
         }
+    }
 
-        if (each_child->index_in_parent >= parent_index + count) {
-            each_child->index_in_parent -= count;
-            iterator++;
-            continue;
+    //Revise indexes in parent.
+    for (auto current_iterator = end_iterator; 
+         current_iterator != parent_children->end(); 
+         ++current_iterator) {
+
+        const auto& current_child = *current_iterator;
+        if (current_child) {
+            current_child->index_in_parent -= count;
         }
-        
-        RemoveDataFromMapRecursively(each_child->data, removed_data_list);
+    }
 
-        iterator = parent_children->erase(iterator);
+    //Remove children.
+    parent_children->erase(begin_iterator, end_iterator);
+
+    if (parent_children->empty()) {
+        parent_children.reset();
     }
 
     return removed_data_list;

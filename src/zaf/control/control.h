@@ -22,10 +22,15 @@
 #include <zaf/serialization/property_map.h>
 
 namespace zaf {
+namespace internal {
+class InspectorPort;
+}
 
 class Canvas;
 class CharMessage;
 class ControlFocusChangeInfo;
+class ControlMouseEnterInfo;
+class ControlMouseLeaveInfo;
 class ControlRectChangeInfo;
 class KeyMessage;
 class Message;
@@ -87,6 +92,9 @@ public:
 public:
 	Control();
 	virtual ~Control();
+
+    Control(const Control&) = delete;
+    Control& operator=(const Control&) = delete;
 
     /**
      Begin updating the contol.
@@ -411,6 +419,18 @@ public:
      */
 	void SetLayouter(const std::shared_ptr<Layouter>& layouter);
 
+    bool HasChildren() const {
+        return !children_.empty();
+    }
+
+    std::size_t GetChildCount() const {
+        return children_.size();
+    }
+
+    const std::shared_ptr<Control>& GetChildAtIndex(std::size_t index) const {
+        return children_[index];
+    }
+
 	/**
 	 Get the control's children.
 	 */
@@ -601,20 +621,6 @@ public:
     void SetIsCachedPaintingEnabled(bool value);
 
     /**
-     Get rect change event.
-
-     This event is raised when the control's rect is changed.
-     */
-    Observable<ControlRectChangeInfo> RectChangeEvent();
-
-    /**
-     Get focus change event.
-
-     This event is raised when the control's focus is changed.
-     */
-    Observable<ControlFocusChangeInfo> FocusChangeEvent();
-
-    /**
      Capture the mouse.
      */
     void CaptureMouse();
@@ -648,6 +654,23 @@ public:
     virtual bool AcceptKeyMessage(const KeyMessage& message) const {
         return false;
     }
+
+    /**
+     Get rect change event.
+
+     This event is raised when the control's rect is changed.
+     */
+    Observable<ControlRectChangeInfo> RectChangeEvent();
+
+    /**
+     Get focus change event.
+
+     This event is raised when the control's focus is changed.
+     */
+    Observable<ControlFocusChangeInfo> FocusChangeEvent();
+
+    Observable<ControlMouseEnterInfo> MouseEnterEvent();
+    Observable<ControlMouseLeaveInfo> MouseLeaveEvent();
 
 protected:
     /**
@@ -978,8 +1001,7 @@ private:
 
     void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
 
-	Control(const Control&) = delete;
-	Control& operator=(const Control&) = delete;
+    std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
 
 private:
 	std::weak_ptr<Window> window_;
@@ -1020,6 +1042,20 @@ public:
 class ControlFocusChangeInfo {
 public:
     std::shared_ptr<Control> control;
+};
+
+
+class ControlMouseEnterInfo {
+public:
+    std::shared_ptr<Control> control;
+    std::shared_ptr<Control> entered_control;
+};
+
+
+class ControlMouseLeaveInfo {
+public:
+    std::shared_ptr<Control> control;
+    std::shared_ptr<Control> leaved_control;
 };
 
 }

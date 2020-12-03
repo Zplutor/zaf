@@ -145,6 +145,7 @@ private:
         const IndexPath& parent_index_path, 
         std::size_t child_index) const;
     void OnDataRemove(const TreeDataSourceDataRemoveInfo& event_info);
+    void RemoveDataFromSets(const std::vector<std::shared_ptr<Object>>& removed_data_list);
     void OnDataUpdate(const TreeDataSourceDataUpdateInfo& event_info);
     std::vector<std::size_t> GetChildrenListIndexes(
         const std::shared_ptr<Object>& parent_data, 

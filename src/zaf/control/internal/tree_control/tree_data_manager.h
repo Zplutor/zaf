@@ -36,12 +36,12 @@ public:
 
     void AddChildren(
         const std::shared_ptr<Object>& parent_data, 
-        std::size_t parent_index,
+        std::size_t child_index,
         std::size_t count);
 
     std::vector<std::shared_ptr<Object>> RemoveChildren(
         const std::shared_ptr<Object>& parent_data,
-        std::size_t parent_index, 
+        std::size_t child_index, 
         std::size_t count);
 
     void Clear();

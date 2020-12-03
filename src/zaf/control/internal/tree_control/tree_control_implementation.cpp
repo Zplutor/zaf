@@ -470,7 +470,6 @@ void TreeControlImplementation::ExpandItemAtIndex(std::size_t list_item_index) {
 
     expanded_data_set_.insert(expanded_data);
 
-    NotifyDataUpdate(list_item_index, 1);
     NotifyDataAdd(list_item_index + 1, expanded_count);
 
     if (item_expand_event_) {
@@ -566,7 +565,6 @@ void TreeControlImplementation::CollapseItemAtIndex(std::size_t list_item_index)
         expanded_data_set_.erase(tree_node->data);
     }
 
-    NotifyDataUpdate(list_item_index, 1);
     NotifyDataRemove(list_item_index + 1, removed_count);
 
     if (item_collapse_event_) {
@@ -758,16 +756,11 @@ void TreeControlImplementation::OnDataRemove(const TreeDataSourceDataRemoveInfo&
 
     //Remove tree nodes.
     auto removed_data_list = tree_data_manager_.RemoveChildren(
-        event_info.parent_data, 
+        event_info.parent_data,
         event_info.index,
         event_info.count);
 
-    for (const auto& each_data : removed_data_list) {
-        if (selected_data_set_.empty()) {
-            break;
-        }
-        selected_data_set_.erase(each_data);
-    }
+    RemoveDataFromSets(removed_data_list);
 
     //Update parent item.
     auto parent_list_index = tree_index_mapping_.GetIndexAtIndexPath(*parent_index_path);
@@ -786,12 +779,31 @@ void TreeControlImplementation::OnDataRemove(const TreeDataSourceDataRemoveInfo&
 
     //Remove from ui data.
     auto total_remove_count = tree_index_mapping_.RemoveChildren(
-        *parent_index_path, 
-        event_info.index, 
+        *parent_index_path,
+        event_info.index,
         event_info.count);
 
     //Raise event.
     NotifyDataRemove(list_index, total_remove_count);
+}
+
+
+void TreeControlImplementation::RemoveDataFromSets(
+    const std::vector<std::shared_ptr<Object>>& removed_data_list) {
+
+    for (const auto& each_data : removed_data_list) {
+        if (selected_data_set_.empty()) {
+            break;
+        }
+        selected_data_set_.erase(each_data);
+    }
+
+    for (const auto& each_data : removed_data_list) {
+        if (expanded_data_set_.empty()) {
+            break;
+        }
+        expanded_data_set_.erase(each_data);
+    }
 }
 
 

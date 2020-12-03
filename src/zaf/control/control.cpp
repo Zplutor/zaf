@@ -16,6 +16,7 @@
 #include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/rx/subject.h>
 #include <zaf/serialization/properties.h>
+#include <zaf/window/inspector/internal/inspector_port.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window.h>
@@ -31,6 +32,8 @@ const wchar_t* const kBackgroundImageLayoutPropertyName = L"BackgroundImageLayou
 const wchar_t* const kBackgroundImagePickerPropertyName = L"BackgroundImagePicker";
 const wchar_t* const kFocusChangeEventPropertyName = L"FocusChangeEvent";
 const wchar_t* const kLayouterPropertyName = L"Layouter";
+constexpr wchar_t* const kMouseEnterEventPropertyName = L"MouseEnterEvent";
+constexpr wchar_t* const kMouseLeaveEventPropertyName = L"MouseLeaveEvent";
 const wchar_t* const kRectChangeEventPropertyName = L"RectChangeEvent";
 
 const bool DefaultCanFocused = false;
@@ -376,9 +379,10 @@ Rect Control::GetAbsoluteRect() const {
 		return Rect();
 	}
 
+    //No parent, must be the root control, return its rect as the absolute rect.
 	auto parent = GetParent();
 	if (parent == nullptr) {
-		return Rect();
+		return GetRect();
 	}
 
 	Rect parent_absolute_rect = parent->GetAbsoluteRect();
@@ -807,6 +811,11 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
 
     NeedRelayout();
 	NeedRepaintRect(child->GetRect());
+
+    auto inspector_port = GetInspectorPort();
+    if (inspector_port) {
+        inspector_port->ControlAddChild(shared_from_this());
+    }
 }
 
 
@@ -828,7 +837,14 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 	}
 
 	child->SetParent(nullptr);
-	children_.erase(std::remove(children_.begin(), children_.end(), child));
+
+    auto removed_iterator = std::find(children_.begin(), children_.end(), child);
+    if (removed_iterator == children_.end()) {
+        return;
+    }
+
+    auto removed_index = std::distance(children_.begin(), removed_iterator);
+	children_.erase(removed_iterator);
 
     //The child's rect may be changed while calling NeedRelayout(), leading to a wrong repaint rect
     //while calling NeedRepaintRect(), so we preserve the original rect before calling 
@@ -837,6 +853,11 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 
     NeedRelayout();
 	NeedRepaintRect(child_rect);
+
+    auto inspector_port = GetInspectorPort();
+    if (inspector_port) {
+        inspector_port->ControlRemoveChild(shared_from_this(), removed_index);
+    }
 }
 
 
@@ -1165,16 +1186,6 @@ void Control::ReleaseCachedPaintingRenderer() {
 }
 
 
-Observable<ControlRectChangeInfo> Control::RectChangeEvent() {
-    return GetEventObservable<ControlRectChangeInfo>(GetPropertyMap(), kRectChangeEventPropertyName);
-}
-
-
-Observable<ControlFocusChangeInfo> Control::FocusChangeEvent() {
-    return GetEventObservable<ControlFocusChangeInfo>(GetPropertyMap(), kFocusChangeEventPropertyName);
-}
-
-
 void Control::CaptureMouse() {
 
     auto window = GetWindow();
@@ -1203,6 +1214,34 @@ void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
 	else {
 		MouseRelease();
 	}
+}
+
+
+Observable<ControlRectChangeInfo> Control::RectChangeEvent() {
+    return GetEventObservable<ControlRectChangeInfo>(
+        GetPropertyMap(), 
+        kRectChangeEventPropertyName);
+}
+
+
+Observable<ControlFocusChangeInfo> Control::FocusChangeEvent() {
+    return GetEventObservable<ControlFocusChangeInfo>(
+        GetPropertyMap(),
+        kFocusChangeEventPropertyName);
+}
+
+
+Observable<ControlMouseEnterInfo> Control::MouseEnterEvent() {
+    return GetEventObservable<ControlMouseEnterInfo>(
+        GetPropertyMap(), 
+        kMouseEnterEventPropertyName);
+}
+
+
+Observable<ControlMouseLeaveInfo> Control::MouseLeaveEvent() {
+    return GetEventObservable<ControlMouseLeaveInfo>(
+        GetPropertyMap(), 
+        kMouseLeaveEventPropertyName);
 }
 
 
@@ -1334,6 +1373,17 @@ bool Control::MouseMove(const Point& position, const MouseMessage& message) {
 
 void Control::MouseEnter(const std::shared_ptr<Control>& entered_control) {
 
+    auto event_observer = GetEventObserver<ControlMouseEnterInfo>(
+        GetPropertyMap(), 
+        kMouseEnterEventPropertyName);
+
+    if (event_observer) {
+        ControlMouseEnterInfo event_info;
+        event_info.control = shared_from_this();
+        event_info.entered_control = entered_control;
+        event_observer->OnNext(event_info);
+    }
+
     auto parent = GetParent();
     if (parent != nullptr) {
         parent->MouseEnter(entered_control);
@@ -1342,6 +1392,17 @@ void Control::MouseEnter(const std::shared_ptr<Control>& entered_control) {
 
 
 void Control::MouseLeave(const std::shared_ptr<Control>& leaved_control) {
+
+    auto event_observer = GetEventObserver<ControlMouseLeaveInfo>(
+        GetPropertyMap(),
+        kMouseLeaveEventPropertyName);
+
+    if (event_observer) {
+        ControlMouseLeaveInfo event_info;
+        event_info.control = shared_from_this();
+        event_info.leaved_control = leaved_control;
+        event_observer->OnNext(event_info);
+    }
 
     auto parent = GetParent();
     if (parent != nullptr) {
@@ -1439,6 +1500,17 @@ void Control::FocusGain() {
 
 void Control::FocusLose() {
 
+}
+
+
+std::shared_ptr<internal::InspectorPort> Control::GetInspectorPort() const {
+
+    auto window = GetWindow();
+    if (!window) {
+        return nullptr;
+    }
+
+    return window->GetInspectorPort();
 }
 
 }

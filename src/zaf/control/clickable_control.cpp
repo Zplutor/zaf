@@ -65,6 +65,9 @@ void ClickableControl::Click() {
 
 
 void ClickableControl::MouseEnter(const std::shared_ptr<Control>& entered_control) {
+
+	__super::MouseEnter(entered_control);
+
     if (entered_control.get() == this) {
 	    NeedRepaint();
     }
@@ -72,6 +75,9 @@ void ClickableControl::MouseEnter(const std::shared_ptr<Control>& entered_contro
 
 
 void ClickableControl::MouseLeave(const std::shared_ptr<Control>& leaved_control) {
+
+	__super::MouseLeave(leaved_control);
+
     if (leaved_control.get() == this) {
 	    NeedRepaint();
     }
@@ -79,6 +85,8 @@ void ClickableControl::MouseLeave(const std::shared_ptr<Control>& leaved_control
 
 
 bool ClickableControl::MouseMove(const Point& position, const MouseMessage& message) {
+
+	__super::MouseMove(position, message);
 
 	CheckIsMousePressed(position, message);
     return true;

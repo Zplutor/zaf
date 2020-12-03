@@ -247,35 +247,42 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
     tree_control->Subscriptions() += tree_control->SelectionChangeEvent().Subscribe(
         [](const zaf::TreeControlSelectionChangeInfo& event_info) {
-    
-            std::wostringstream stream;
-            stream << "Selection change. ";
-            for (const auto& each_data : event_info.tree_control->GetAllSelectedItems()) {
-                stream << each_data->ToString() << ',';
-            }
-            ZAF_LOG() << stream.str();
+
+        std::wostringstream stream;
+        stream << "Selection change. ";
+        for (const auto& each_data : event_info.tree_control->GetAllSelectedItems()) {
+            stream << each_data->ToString() << ',';
         }
+        ZAF_LOG() << stream.str();
+    }
     );
 
     tree_control->Subscriptions() += tree_control->ItemExpandEvent().Subscribe(
         [](const zaf::TreeControlItemExpandInfo& event_info) {
-            ZAF_LOG() << "Item expand. " << event_info.item_data->ToString();
-        }
+        ZAF_LOG() << "Item expand. " << event_info.item_data->ToString();
+    }
     );
 
     tree_control->Subscriptions() += tree_control->ItemCollapseEvent().Subscribe(
         [](const zaf::TreeControlItemCollapseInfo& event_info) {
-            ZAF_LOG() << "Item collapse. " << event_info.item_data->ToString();
-        }
+        ZAF_LOG() << "Item collapse. " << event_info.item_data->ToString();
+    }
     );
 
     root_control->AddChild(tree_control);
+
+    auto button_container = zaf::Create<zaf::Control>();
+    button_container->SetRect(zaf::Rect{ 310, 10, 100, 400 });
+    button_container->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
+    button_container->SetPadding(zaf::Frame{ 5, 5, 5, 5 });
+    button_container->SetBorder(5);
+    root_control->AddChild(button_container);
 
     auto add_button = zaf::Create<zaf::Button>();
     add_button->SetText(L"Add");
     add_button->SetRect(zaf::Rect{ 310, 10, 100, 30 });
     add_button->Subscriptions() += add_button->ClickEvent().Subscribe(std::bind([item_source]() {
-        
+
         item_source->AddDataToSecondLevel();
     }));
 
@@ -293,13 +300,24 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
     update_button->SetRect(zaf::Rect{ 310, 70, 100, 30 });
     update_button->Subscriptions() += update_button->ClickEvent().Subscribe(
         std::bind([item_source]() {
-    
+
         item_source->UpdateSecondLevel();
     }));
 
-    root_control->AddChild(add_button);
-    root_control->AddChild(remove_button);
-    root_control->AddChild(update_button);
+    auto inspect_button = zaf::Create<zaf::Button>();
+    inspect_button->SetText(L"Inspect");
+    inspect_button->SetRect(zaf::Rect{ 310, 100, 100, 30 });
+    inspect_button->SetMargin(zaf::Frame{ 10, 10, 10, 10 });
+    inspect_button->Subscriptions() += inspect_button->ClickEvent().Subscribe(
+        [](const zaf::ClickableControlClickInfo& event_info) {
+            event_info.clickable_control->GetWindow()->ShowInspectorWindow();
+        }
+    );
+
+    button_container->AddChild(add_button);
+    button_container->AddChild(remove_button);
+    button_container->AddChild(update_button);
+    button_container->AddChild(inspect_button);
 
     zaf::Application::Instance().SetMainWindow(window);
 }

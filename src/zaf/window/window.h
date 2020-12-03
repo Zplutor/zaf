@@ -11,9 +11,13 @@
 #include <zaf/serialization/property_map.h>
 
 namespace zaf {
+namespace internal {
+class InspectorPort;
+}
 
 class Caret;
 class HitTestMessage;
+class InspectorWindow;
 class MouseMessage;
 class WindowCloseInfo;
 enum class HitTestResult;
@@ -102,6 +106,9 @@ public:
      Destruct the instance.
      */
 	virtual ~Window();
+
+    Window(const Window&) = delete;
+    Window& operator=(const Window&) = delete;
 
     /**
      Get the owner window.
@@ -512,6 +519,8 @@ public:
      */
 	void Close();
 
+    void ShowInspectorWindow();
+
 protected:
     void Initialize() override;
 
@@ -613,6 +622,7 @@ private:
 	friend class Application;
 	friend class Caret;
 	friend class Control;
+    friend class InspectorWindow;
     friend class internal::MessageLoop;
 
 	static void RegisterDefaultClass();
@@ -623,6 +633,8 @@ private:
         const MouseMessage& message);
 	void SetCaptureMouseControl(const std::shared_ptr<Control>& capture_control, bool is_releasing);
 	void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
+    void SetInspectedControl(const std::shared_ptr<Control>& inspected_control);
+    std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
 
 private:
     enum class TrackMouseMode {
@@ -646,6 +658,7 @@ private:
     void SwitchFocusedControlByTabKey(bool backward);
 
     void Repaint();
+    void PaintInspectedControl(Canvas& canvas, const Rect& dirty_rect);
     void Resize(UINT width, UINT height);
     std::optional<HitTestResult> HitTest(const HitTestMessage& message);
     bool RedirectMouseWheelMessage(const Message& message);
@@ -672,9 +685,6 @@ private:
         bool is_set,
         bool is_extract_style);
 
-	Window(const Window&) = delete;
-	Window& operator=(const Window&) = delete;
-
 private:
 	HWND handle_;
     Rect rect_;
@@ -686,7 +696,9 @@ private:
 	std::shared_ptr<Control> hovered_control_;
     std::shared_ptr<Control> capturing_mouse_control_;
 	std::shared_ptr<Control> focused_control_;
+    std::shared_ptr<Control> inspected_control_;
 	std::shared_ptr<Caret> caret_;
+    std::weak_ptr<InspectorWindow> inspector_window_;
 
     PropertyMap property_map_;
 };

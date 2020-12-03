@@ -13,6 +13,7 @@
 #include <zaf/reflection/reflection_type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/caret.h>
+#include <zaf/window/inspector/inspector_window.h>
 #include <zaf/window/message/creation.h>
 #include <zaf/window/message/hit_test_message.h>
 #include <zaf/window/message/keyboard_message.h>
@@ -458,6 +459,8 @@ void Window::Repaint() {
 
     root_control_->Repaint(canvas, dirty_rect);
 
+    PaintInspectedControl(canvas, dirty_rect);
+
     if (caret_ != nullptr) {
         const Rect& caret_rect = caret_->GetRect();
         if (caret_rect.HasIntersection(dirty_rect)) {
@@ -473,6 +476,64 @@ void Window::Repaint() {
             RecreateRenderer();
         }
     }
+}
+
+
+void Window::PaintInspectedControl(Canvas& canvas, const Rect& dirty_rect) {
+
+    if (!inspected_control_) {
+        return;
+    }
+
+    auto control_rect = inspected_control_->GetAbsoluteRect();
+    if (!control_rect.HasIntersection(dirty_rect)) {
+        return;
+    }
+
+    auto padding_rect = control_rect;
+    padding_rect.Deflate(inspected_control_->GetBorder());
+
+    auto content_rect = padding_rect;
+    content_rect.Deflate(inspected_control_->GetPadding());
+
+    auto margin_rect = control_rect;
+    margin_rect.Inflate(inspected_control_->GetMargin());
+
+    auto draw_frame = [&canvas](
+        const Rect& rect, 
+        const Rect excluded_rect,
+        std::uint32_t color_rgb) {
+    
+        auto rect_geometry = canvas.CreateRectangleGeometry(rect);
+        auto excluded_geometry = canvas.CreateRectangleGeometry(excluded_rect);
+
+        auto frame_geometry = canvas.CreatePathGeometry();
+        auto sink = frame_geometry.Open();
+        Geometry::Combine(rect_geometry, excluded_geometry, Geometry::CombineMode::Exclude, sink);
+        sink.Close();
+        
+        auto color = Color::FromRGB(color_rgb);
+        color.a /= 2.f;
+        canvas.SetBrushWithColor(color);
+        canvas.DrawGeometry(frame_geometry);
+    };
+
+    Canvas::StateGuard state_guard(canvas);
+    canvas.PushClippingRect(dirty_rect);
+
+    //Draw content rect.
+    draw_frame(content_rect, Rect{}, internal::InspectedControlContentColor);
+
+    //Draw padding rect.
+    draw_frame(padding_rect, content_rect, internal::InspectedControlPaddingColor);
+
+    //Draw border rect.
+    draw_frame(control_rect, padding_rect, internal::InspectedControlBorderColor);
+
+    //Draw margin rect.
+    draw_frame(margin_rect, control_rect, internal::InspectedControlMarginColor);
+
+    canvas.PopClippingRect();
 }
 
 
@@ -819,11 +880,35 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_contr
 }
 
 
+void Window::SetInspectedControl(const std::shared_ptr<Control>& inspected_control) {
+
+    if (!inspected_control) {
+        inspected_control_ = nullptr;
+        NeedRepaintRect(root_control_->GetRect());
+        return;
+    }
+
+    if (inspected_control->GetWindow().get() != this) {
+        return;
+    }
+
+    //Repaint the rect of previous inspected control.
+    if (inspected_control_) {
+        NeedRepaintRect(inspected_control_->GetAbsoluteRect());
+    }
+
+    inspected_control_ = inspected_control;
+
+    //Repaint the rect of new inspected control.
+    NeedRepaintRect(inspected_control_->GetAbsoluteRect());
+}
+
+
 std::shared_ptr<Window> Window::GetOwner() const {
 
-    auto owner = GetPropertyMap().TryGetProperty<std::shared_ptr<Window>>(kOwnerPropertyName);
-    if (owner != nullptr) {
-        return *owner;
+    auto owner = GetPropertyMap().TryGetProperty<std::weak_ptr<Window>>(kOwnerPropertyName);
+    if (owner) {
+        return owner->lock();
     }
     else {
         return nullptr;
@@ -834,7 +919,9 @@ std::shared_ptr<Window> Window::GetOwner() const {
 void Window::SetOwner(const std::shared_ptr<Window>& owner) {
 
     if (IsClosed()) {
-        GetPropertyMap().SetProperty(kOwnerPropertyName, owner);
+
+        std::weak_ptr<Window> weak_owner = owner;
+        GetPropertyMap().SetProperty(kOwnerPropertyName, weak_owner);
     }
 }
 
@@ -1299,6 +1386,26 @@ void Window::Close() {
 }
 
 
+void Window::ShowInspectorWindow() {
+
+    auto inspector_window = Create<InspectorWindow>(shared_from_this());
+    inspector_window->Show();
+
+    inspector_window_ = inspector_window;
+}
+
+
+std::shared_ptr<internal::InspectorPort> Window::GetInspectorPort() const {
+
+    auto inspector_window = inspector_window_.lock();
+    if (!inspector_window) {
+        return nullptr;
+    }
+
+    return inspector_window->GetPort();
+}
+
+
 std::shared_ptr<Window> GetWindowFromHandle(HWND handle) {
 
     if (handle == nullptr) {
@@ -1313,6 +1420,5 @@ std::shared_ptr<Window> GetWindowFromHandle(HWND handle) {
 
     return window->shared_from_this();
 }
-
 
 }

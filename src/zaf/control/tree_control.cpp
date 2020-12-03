@@ -62,6 +62,14 @@ void TreeControl::Initialize() {
 }
 
 
+void TreeControl::Layout(const Rect& previous_rect) {
+
+    __super::Layout(previous_rect);
+
+    implementation_->GetListImplementation().OnLayout();
+}
+
+
 void TreeControl::SetDataSource(const std::shared_ptr<TreeDataSource>& data_source) {
 
     ZAF_EXPECT(data_source);

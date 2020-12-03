@@ -175,6 +175,7 @@ private:
     float current_total_height_{};
     std::size_t first_visible_item_index_{};
     std::deque<std::shared_ptr<ListItem>> visible_items_;
+    bool disable_on_layout_{};
 
     SelectionMode selection_mode_{ SelectionMode::Single };
 

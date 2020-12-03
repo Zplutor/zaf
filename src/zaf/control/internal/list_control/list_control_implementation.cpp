@@ -258,7 +258,9 @@ void ListControlImplementation::SetSelectionMode(SelectionMode mode) {
 
 void ListControlImplementation::OnLayout() {
 
-    UpdateVisibleItems();
+    if (!disable_on_layout_) {
+        UpdateVisibleItems();
+    }
 }
 
 
@@ -493,10 +495,6 @@ void ListControlImplementation::ItemAdd(const ListDataSourceDataAddInfo& event_i
 
     if (event_info.index >= first_visible_item_index_ + visible_items_.size()) {
         
-        if (current_total_height_ >= owner_.GetScrollContentSize().height) {
-            return;
-        }
-
         UpdateVisibleItems();
     }
     else {
@@ -690,7 +688,11 @@ float ListControlImplementation::AdjustContentHeight() {
 
     if (old_total_height != new_total_height) {
 
+        //Disable OnLayout() for preventing from reentering.
+        disable_on_layout_ = true;
         SetScrollContentHeight(new_total_height);
+        disable_on_layout_ = false;
+
         return new_total_height - old_total_height;
     }
     else {

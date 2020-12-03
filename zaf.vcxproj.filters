@@ -130,6 +130,12 @@
     <Filter Include="zaf\rx\internal\subscription">
       <UniqueIdentifier>{c4bfd136-d765-4aca-9264-371471366272}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\window\inspector">
+      <UniqueIdentifier>{a474fbd8-df16-4454-bfd9-f59ac1911709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\window\inspector\internal">
+      <UniqueIdentifier>{bf423cf0-8a2d-49b9-ac84-ef758b22594e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -570,6 +576,18 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_index_mapping.cpp">
       <Filter>zaf\control\internal\tree_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\inspector\inspector_window.cpp">
+      <Filter>zaf\window\inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\inspector\internal\inspect_data_source.cpp">
+      <Filter>zaf\window\inspector\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\inspector\internal\inspect_item.cpp">
+      <Filter>zaf\window\inspector\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\inspector\internal\inspect_control_item.cpp">
+      <Filter>zaf\window\inspector\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1398,6 +1416,21 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_index_mapping.h">
       <Filter>zaf\control\internal\tree_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\inspector\inspector_window.h">
+      <Filter>zaf\window\inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\inspector\internal\inspect_data_source.h">
+      <Filter>zaf\window\inspector\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\inspector\internal\inspect_item.h">
+      <Filter>zaf\window\inspector\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\inspector\internal\inspect_control_item.h">
+      <Filter>zaf\window\inspector\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\inspector\internal\inspector_port.h">
+      <Filter>zaf\window\inspector\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
