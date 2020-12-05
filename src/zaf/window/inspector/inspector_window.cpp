@@ -1,5 +1,6 @@
 #include <zaf/window/inspector/inspector_window.h>
 #include <zaf/base/error/check.h>
+#include <zaf/control/button.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/tree_control.h>
 #include <zaf/creation.h>
@@ -10,8 +11,8 @@
 namespace zaf {
 namespace {
 
-constexpr float DefaultWindowWidth = 400;
-constexpr float DefaultWindowHeight = 400;
+constexpr float DefaultWindowWidth = 600;
+constexpr float DefaultWindowHeight = 600;
 
 }
 
@@ -42,21 +43,39 @@ void InspectorWindow::Initialize() {
     SetRect(rect);
     SetInitialRectStyle(InitialRectStyle::Custom);
 
+    GetRootControl()->SetLayouter(Create<VerticalLayouter>());
+
+    InitializeToolbar();
     InitializeTreeControl();
+}
+
+
+void InspectorWindow::InitializeToolbar() {
+
+    auto select_inspector_control_button = Create<Button>();
+    select_inspector_control_button->SetText(L"Select");
+    Subscriptions() += select_inspector_control_button->ClickEvent().Subscribe(std::bind([this]() {
+        target_window_->BeginSelectInspectedControl();
+    }));
+
+    auto toolbar = Create<Control>();
+    toolbar->SetFixedHeight(40);
+    toolbar->SetLayouter(Create<HorizontalLayouter>());
+    toolbar->AddChild(select_inspector_control_button);
+
+    GetRootControl()->AddChild(toolbar);
 }
 
 
 void InspectorWindow::InitializeTreeControl() {
 
-    auto tree_control = Create<TreeControl>();
+    tree_control_ = Create<TreeControl>();
 
     data_source_ = Create<internal::InspectDataSource>(target_window_);
-    tree_control->SetDataSource(data_source_);
-    tree_control->SetDelegate(std::dynamic_pointer_cast<TreeControlDelegate>(shared_from_this()));
+    tree_control_->SetDataSource(data_source_);
+    tree_control_->SetDelegate(std::dynamic_pointer_cast<TreeControlDelegate>(shared_from_this()));
 
-    auto root_control = GetRootControl();
-    root_control->SetLayouter(Create<VerticalLayouter>());
-    root_control->AddChild(tree_control);
+    GetRootControl()->AddChild(tree_control_);
 }
 
 
@@ -83,8 +102,7 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
 
-    std::shared_ptr<TreeItem> item;
-
+    std::shared_ptr<internal::InspectItem> item;
     auto control = std::dynamic_pointer_cast<Control>(item_data);
     if (control) {
         item = Create<internal::InspectControlItem>(control);
@@ -93,33 +111,78 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
         item = Create<internal::InspectItem>();
     }
 
+    item->SetIsHighlight(item_data == highlight_object_);
+
     Subscriptions() += item->MouseEnterEvent().Subscribe(
         [this, item_data](const ControlMouseEnterInfo& event_info) {
-    
-        auto control = std::dynamic_pointer_cast<Control>(item_data);
-        if (!control) {
-            return;
-        }
 
-        inspected_control_ = control;
-        target_window_->SetInspectedControl(inspected_control_);
+        ChangeHighlightObject(item_data);
+
+        auto control = std::dynamic_pointer_cast<Control>(item_data);
+        if (control) {
+            target_window_->SetHighlightControl(control);
+        }
     });
 
     Subscriptions() += item->MouseLeaveEvent().Subscribe(
         [this, item_data](const ControlMouseLeaveInfo& event_info) {
 
-        auto control = std::dynamic_pointer_cast<Control>(item_data);
-        if (!control) {
+        if (highlight_object_ != item_data) {
             return;
         }
 
-        if (inspected_control_ == control) {
-            inspected_control_ = nullptr;
-            target_window_->SetInspectedControl(nullptr);
-        }
+        ChangeHighlightObject(nullptr);
+        target_window_->SetHighlightControl(nullptr);
     });
 
     return item;
+}
+
+
+void InspectorWindow::HighlightControl(const std::shared_ptr<Control>& control) {
+
+    std::vector<std::shared_ptr<Object>> parent_chain;
+    auto parent = control->GetParent();
+    while (parent) {
+        parent_chain.push_back(parent);
+        parent = parent->GetParent();
+    }
+    std::reverse(parent_chain.begin(), parent_chain.end());
+
+    parent_chain.push_back(target_window_);
+
+    Control::UpdateGuard update_guard(*tree_control_);
+
+    for (const auto& each_parent : parent_chain) {
+        tree_control_->ExpandItem(each_parent);
+    }
+
+    tree_control_->ScrollToItem(control);
+    ChangeHighlightObject(control);
+}
+
+
+void InspectorWindow::ChangeHighlightObject(const std::shared_ptr<Object>& object) {
+
+    if (highlight_object_ == object) {
+        return;
+    }
+
+    auto old_highlight_object = highlight_object_;
+    highlight_object_ = object;
+
+    if (old_highlight_object) {
+        tree_control_->ReloadItem(old_highlight_object);
+    }
+
+    if (highlight_object_) {
+        tree_control_->ReloadItem(highlight_object_);
+    }
+}
+
+
+void InspectorWindow::SelectControl(const std::shared_ptr<Control>& control) {
+
 }
 
 

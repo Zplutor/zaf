@@ -9,6 +9,8 @@ namespace internal {
 class InspectDataSource;
 }
 
+class TreeControl;
+
 class InspectorWindow : public Window, public TreeControlDelegate, public internal::InspectorPort {
 public:
     InspectorWindow(const std::shared_ptr<Window>& target_window);
@@ -28,6 +30,8 @@ public:
         std::size_t item_index,
         const std::shared_ptr<Object>& item_data) override;
 
+    void HighlightControl(const std::shared_ptr<Control>& control) override;
+    void SelectControl(const std::shared_ptr<Control>& control) override;
     void ControlAddChild(const std::shared_ptr<Control>& parent) override;
     void ControlRemoveChild(
         const std::shared_ptr<Control>& parent,
@@ -42,13 +46,16 @@ private:
     std::shared_ptr<internal::InspectorPort> GetPort();
 
 private:
+    void InitializeToolbar();
     void InitializeTreeControl();
+    void ChangeHighlightObject(const std::shared_ptr<Object>& object);
 
 private:
+    std::shared_ptr<TreeControl> tree_control_;
     std::shared_ptr<internal::InspectDataSource> data_source_;
     std::shared_ptr<Window> target_window_;
 
-    std::shared_ptr<Control> inspected_control_;
+    std::shared_ptr<Object> highlight_object_;
 };
 
 }

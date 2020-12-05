@@ -63,6 +63,10 @@ public:
     void ExpandItem(const std::shared_ptr<Object>& data);
     void CollapseItem(const std::shared_ptr<Object>& data);
 
+    void ScrollToItem(const std::shared_ptr<Object>& data);
+
+    void ReloadItem(const std::shared_ptr<Object>& data);
+
     std::size_t GetDataCount() override;
     std::shared_ptr<Object> GetDataAtIndex(std::size_t index) override;
     

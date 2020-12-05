@@ -12,7 +12,15 @@ void InspectControlItem::Initialize() {
 
     __super::Initialize();
 
-    SetTextColor(control_->IsVisible() ? Color::Black() : Color::Gray());
+    auto old_color_picker = GetTextColorPicker();
+    SetTextColorPicker([this, old_color_picker](const Control& item) {
+    
+        if (!control_->IsVisible()) {
+            return Color::Gray();
+        }
+
+        return old_color_picker(item);
+    });
 }
 
 }

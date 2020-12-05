@@ -471,7 +471,13 @@ public:
         return !!child;
     }
 
-    std::shared_ptr<Control> FindChildAtPosition(const Point& position) const;
+    std::shared_ptr<Control> FindChildAtPosition(const Point& position) const {
+        return InnerFindChildAtPosition(position, false);
+    }
+
+    std::shared_ptr<Control> FindChildAtPositionRecursively(const Point& position) const {
+        return InnerFindChildAtPosition(position, true);
+    }
 
 	/**
 	 Determinte whether the control is the direct parent of specified control.
@@ -992,6 +998,10 @@ private:
      Tanslate a point to which in specified child's coordinate system.
      */
     Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const;
+
+    std::shared_ptr<Control> InnerFindChildAtPosition(
+        const Point& position, 
+        bool recursively) const;
 
     void NeedRelayout(const Rect& previous_rect);
 

@@ -891,7 +891,9 @@ std::shared_ptr<Control> Control::FindChild(const std::wstring& name) const {
 }
 
 
-std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) const {
+std::shared_ptr<Control> Control::InnerFindChildAtPosition(
+    const Point& position, 
+    bool recursively) const {
 
     auto content_rect = GetContentRect();
 
@@ -906,16 +908,27 @@ std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) con
 
         const auto& child = *iterator;
 
-        if (! child->IsVisible()) {
+        if (!child->IsVisible()) {
             continue;
         }
 
         Rect child_rect = child->GetRect();
         child_rect.Intersect(content_rect);
 
-        if (child_rect.Contain(position_in_content)) {
+        if (!child_rect.Contain(position_in_content)) {
+            continue;
+        }
+
+        if (!recursively) {
             return child;
         }
+
+        auto recursive_child = child->InnerFindChildAtPosition(ToChildPoint(position, child), true);
+        if (recursive_child) {
+            return recursive_child;
+        }
+
+        return child;
     }
 
     return nullptr;

@@ -219,6 +219,11 @@ void TreeControlImplementation::UnselectItem(const std::shared_ptr<Object>& data
 
 void TreeControlImplementation::ExpandItem(const std::shared_ptr<Object>& data) {
 
+    //Don't expand if it is already expanded.
+    if (Contain(expanded_data_set_, data)) {
+        return;
+    }
+
     auto list_index = GetDataListIndex(data);
     if (list_index) {
 
@@ -237,6 +242,11 @@ void TreeControlImplementation::ExpandItem(const std::shared_ptr<Object>& data) 
 
 void TreeControlImplementation::CollapseItem(const std::shared_ptr<Object>& data) {
 
+    //Don't collapse if it is already collapsed.
+    if (!Contain(expanded_data_set_, data)) {
+        return;
+    }
+
     auto list_index = GetDataListIndex(data);
     if (list_index) {
 
@@ -250,6 +260,28 @@ void TreeControlImplementation::CollapseItem(const std::shared_ptr<Object>& data
             item_collapse_event_(data);
         }
     }
+}
+
+
+void TreeControlImplementation::ScrollToItem(const std::shared_ptr<Object>& data) {
+
+    auto list_index = GetDataListIndex(data);
+    if (!list_index) {
+        return;
+    }
+
+    list_implementation_->ScrollToItemAtIndex(*list_index);
+}
+
+
+void TreeControlImplementation::ReloadItem(const std::shared_ptr<Object>& data) {
+
+    auto list_index = GetDataListIndex(data);
+    if (!list_index) {
+        return;
+    }
+
+    NotifyDataUpdate(*list_index, 1);
 }
 
 

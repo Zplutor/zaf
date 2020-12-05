@@ -633,8 +633,10 @@ private:
         const MouseMessage& message);
 	void SetCaptureMouseControl(const std::shared_ptr<Control>& capture_control, bool is_releasing);
 	void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
-    void SetInspectedControl(const std::shared_ptr<Control>& inspected_control);
+
+    void SetHighlightControl(const std::shared_ptr<Control>& inspected_control);
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
+    void BeginSelectInspectedControl();
 
 private:
     enum class TrackMouseMode {
@@ -663,6 +665,8 @@ private:
     std::optional<HitTestResult> HitTest(const HitTestMessage& message);
     bool RedirectMouseWheelMessage(const Message& message);
     bool ReceiveMouseMessage(const MouseMessage& message);
+    void HighlightControlAtPosition(const Point& position);
+    void SelectInspectedControl();
     void TrackMouseLeave(const MouseMessage& message);
     void MouseLeave(const MouseMessage& message);
     bool ChangeMouseCursor(const Message& message);
@@ -696,11 +700,13 @@ private:
 	std::shared_ptr<Control> hovered_control_;
     std::shared_ptr<Control> capturing_mouse_control_;
 	std::shared_ptr<Control> focused_control_;
-    std::shared_ptr<Control> inspected_control_;
 	std::shared_ptr<Caret> caret_;
-    std::weak_ptr<InspectorWindow> inspector_window_;
 
     PropertyMap property_map_;
+
+    std::weak_ptr<InspectorWindow> inspector_window_;
+    std::shared_ptr<Control> highlight_control_;
+    bool is_selecting_inspector_control_{};
 };
 
 

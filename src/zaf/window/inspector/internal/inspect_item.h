@@ -5,11 +5,14 @@
 namespace zaf::internal {
 
 class InspectItem : public TreeItem {
+public:
+    void SetIsHighlight(bool is_highlight);
+
 protected:
     void Initialize() override;
 
-    void MouseEnter(const std::shared_ptr<Control>& entered_control) override;
-    void MouseLeave(const std::shared_ptr<Control>& leaved_control) override;
+private:
+    bool is_highlight_{};
 };
 
 }

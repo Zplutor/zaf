@@ -12,19 +12,11 @@ void InspectItem::Initialize() {
 }
 
 
-void InspectItem::MouseEnter(const std::shared_ptr<Control>& entered_control) {
+void InspectItem::SetIsHighlight(bool is_highlight) {
 
-    __super::MouseEnter(entered_control);
+    is_highlight_ = is_highlight;
 
-    SetBorderColor(Color::FromRGB(ControlSelectedColorRGB));
-}
-
-
-void InspectItem::MouseLeave(const std::shared_ptr<Control>& leaved_control) {
-
-    __super::MouseLeave(leaved_control);
-
-    SetBorderColor(Color::Transparent());
+    SetBorderColor(is_highlight_ ? Color::FromRGB(ControlSelectedColorRGB) : Color::Transparent());
 }
 
 }

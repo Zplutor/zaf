@@ -123,6 +123,16 @@ void TreeControl::CollapseItem(const std::shared_ptr<Object>& data) {
 }
 
 
+void TreeControl::ScrollToItem(const std::shared_ptr<Object>& data) {
+    implementation_->ScrollToItem(data);
+}
+
+
+void TreeControl::ReloadItem(const std::shared_ptr<Object>& data) {
+    implementation_->ReloadItem(data);
+}
+
+
 void TreeControl::SelectionChange() {
 
     auto observer = GetEventObserver<TreeControlSelectionChangeInfo>(

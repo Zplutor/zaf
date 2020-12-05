@@ -481,23 +481,23 @@ void Window::Repaint() {
 
 void Window::PaintInspectedControl(Canvas& canvas, const Rect& dirty_rect) {
 
-    if (!inspected_control_) {
+    if (!highlight_control_) {
         return;
     }
 
-    auto control_rect = inspected_control_->GetAbsoluteRect();
+    auto control_rect = highlight_control_->GetAbsoluteRect();
     if (!control_rect.HasIntersection(dirty_rect)) {
         return;
     }
 
     auto padding_rect = control_rect;
-    padding_rect.Deflate(inspected_control_->GetBorder());
+    padding_rect.Deflate(highlight_control_->GetBorder());
 
     auto content_rect = padding_rect;
-    content_rect.Deflate(inspected_control_->GetPadding());
+    content_rect.Deflate(highlight_control_->GetPadding());
 
     auto margin_rect = control_rect;
-    margin_rect.Inflate(inspected_control_->GetMargin());
+    margin_rect.Inflate(highlight_control_->GetMargin());
 
     auto draw_frame = [&canvas](
         const Rect& rect, 
@@ -614,6 +614,11 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
 
     if (message.id == WM_MOUSEMOVE || message.id == WM_NCMOUSEMOVE) {
 
+        if (is_selecting_inspector_control_) {
+            HighlightControlAtPosition(message.GetMousePosition());
+            return true;
+        }
+
         TrackMouseLeave(message);
 
         if (is_capturing_mouse) {
@@ -628,6 +633,12 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
     else if (message.id == WM_MOUSELEAVE || message.id == WM_NCMOUSELEAVE) {
         MouseLeave(message);
     }
+    else if (message.id == WM_LBUTTONDOWN || message.id == WM_RBUTTONDOWN) {
+        if (is_selecting_inspector_control_) {
+            SelectInspectedControl();
+            return true;
+        }
+    }
 
     if (is_capturing_mouse) {
         return capturing_mouse_control_->RouteMessage(get_mouse_position_to_capturing_control(), message);
@@ -635,6 +646,39 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
     else {
         return root_control_->RouteMessage(message.GetMousePosition(), message);
     }
+}
+
+
+void Window::HighlightControlAtPosition(const Point& position) {
+
+    auto highlight_control = root_control_->FindChildAtPositionRecursively(position);
+    if (!highlight_control) {
+        highlight_control = root_control_;
+    }
+
+    SetHighlightControl(highlight_control);
+
+    auto inspector_port = GetInspectorPort();
+    if (inspector_port) {
+        inspector_port->HighlightControl(highlight_control);
+    }
+}
+
+
+void Window::SelectInspectedControl() {
+
+    is_selecting_inspector_control_ = false;
+
+    if (!highlight_control_) {
+        return;
+    }
+
+    auto inspector_port = GetInspectorPort();
+    if (inspector_port) {
+        inspector_port->SelectControl(highlight_control_); 
+    }
+    
+    SetHighlightControl(nullptr);
 }
 
 
@@ -877,30 +921,6 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_contr
 	}
 
     FocusedControlChange(previous_focused_control);
-}
-
-
-void Window::SetInspectedControl(const std::shared_ptr<Control>& inspected_control) {
-
-    if (!inspected_control) {
-        inspected_control_ = nullptr;
-        NeedRepaintRect(root_control_->GetRect());
-        return;
-    }
-
-    if (inspected_control->GetWindow().get() != this) {
-        return;
-    }
-
-    //Repaint the rect of previous inspected control.
-    if (inspected_control_) {
-        NeedRepaintRect(inspected_control_->GetAbsoluteRect());
-    }
-
-    inspected_control_ = inspected_control;
-
-    //Repaint the rect of new inspected control.
-    NeedRepaintRect(inspected_control_->GetAbsoluteRect());
 }
 
 
@@ -1395,6 +1415,34 @@ void Window::ShowInspectorWindow() {
 }
 
 
+void Window::SetHighlightControl(const std::shared_ptr<Control>& highlight_control) {
+
+    if (highlight_control_ == highlight_control) {
+        return;
+    }
+
+    if (!highlight_control) {
+        highlight_control_ = nullptr;
+        NeedRepaintRect(root_control_->GetRect());
+        return;
+    }
+
+    if (highlight_control->GetWindow().get() != this) {
+        return;
+    }
+
+    //Repaint the rect of previous highlight control.
+    if (highlight_control_) {
+        NeedRepaintRect(highlight_control_->GetAbsoluteRect());
+    }
+
+    highlight_control_ = highlight_control;
+
+    //Repaint the rect of new highlight control.
+    NeedRepaintRect(highlight_control_->GetAbsoluteRect());
+}
+
+
 std::shared_ptr<internal::InspectorPort> Window::GetInspectorPort() const {
 
     auto inspector_window = inspector_window_.lock();
@@ -1403,6 +1451,12 @@ std::shared_ptr<internal::InspectorPort> Window::GetInspectorPort() const {
     }
 
     return inspector_window->GetPort();
+}
+
+
+void Window::BeginSelectInspectedControl() {
+
+    is_selecting_inspector_control_ = true;
 }
 
 
