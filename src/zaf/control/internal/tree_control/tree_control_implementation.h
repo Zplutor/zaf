@@ -1,6 +1,5 @@
 #pragma once
 
-#include <unordered_set>
 #include <zaf/control/internal/list_control/list_control_implementation.h>
 #include <zaf/control/internal/tree_control/tree_data_manager.h>
 #include <zaf/control/internal/tree_control/tree_index_mapping.h>
@@ -92,9 +91,6 @@ public:
     void OnItemExpandChange(const std::shared_ptr<TreeItem>& item, bool is_expanded);
 
 private:
-    using TreeDataSet = std::unordered_set<std::shared_ptr<Object>, TreeDataHash, TreeDataEqual>;
-
-private:
     void InitializeListImplementation(const InitializeParameters& parameters);
     void InstallDataSource(const std::shared_ptr<TreeDataSource>& data_source);
     void RegisterDataSourceEvents();
@@ -127,12 +123,22 @@ private:
         const IndexPath& index_path, 
         std::shared_ptr<Object>& expanded_data, 
         std::size_t& expanded_count);
-    std::size_t ExpandItemWithTreeNode(const TreeNode& node, const IndexPath& node_index_path);
+    bool ExpandItemWithTreeNode(
+        const TreeNode& node, 
+        const IndexPath& node_index_path, 
+        std::size_t& expanded_count);
+    std::size_t ExpandItemWithTreeNodeRecursively(
+        TreeDataSource& data_source,
+        const TreeNode& node,
+        const IndexPath& node_index_path);
     bool ExpandNewItem(
         const IndexPath& index_path,
         std::shared_ptr<Object>& expanded_data,
         std::size_t& expanded_count);
     void CollapseItemAtIndex(std::size_t list_item_index);
+
+    void UpdateItem(const IndexPath& index_path);
+    void CheckIfItemHasChildren(const IndexPath& index_path, std::size_t list_index);
 
     void OnListSelectionChange(
         ListSelectionChangeReason reason,
@@ -149,9 +155,8 @@ private:
         const IndexPath& parent_index_path, 
         std::size_t child_index) const;
     void OnDataRemove(const TreeDataSourceDataRemoveInfo& event_info);
-    void RemoveDataFromSets(const std::vector<std::shared_ptr<Object>>& removed_data_list);
     void OnDataUpdate(const TreeDataSourceDataUpdateInfo& event_info);
-    std::vector<std::size_t> GetChildrenListIndexes(
+    std::vector<std::size_t> UpdateChildItem(
         const std::shared_ptr<Object>& parent_data, 
         std::size_t index, 
         std::size_t count);
@@ -183,8 +188,6 @@ private:
     
     TreeIndexMapping tree_index_mapping_;
     TreeDataManager tree_data_manager_;
-    TreeDataSet expanded_data_set_;
-    TreeDataSet selected_data_set_;
 };
 
 }
