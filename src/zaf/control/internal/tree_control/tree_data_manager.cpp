@@ -22,6 +22,13 @@ void TreeDataManager::Initialize() {
 std::shared_ptr<const TreeNode> TreeDataManager::GetNodeAtIndexPath(
     const IndexPath& index_path) const {
 
+    return InnerGetNodeAtIndexPath(index_path);
+}
+
+
+std::shared_ptr<TreeNode> TreeDataManager::InnerGetNodeAtIndexPath(
+    const IndexPath& index_path) const {
+
     auto current_node = root_node_;
 
     for (auto each_index : index_path) {
@@ -77,41 +84,41 @@ bool TreeDataManager::IsNodeExpanded(const std::shared_ptr<Object>& data) const 
 }
 
 
-void TreeDataManager::ExpandNode(const std::shared_ptr<Object>& data, std::size_t child_count) {
+std::shared_ptr<TreeNodeExpander> TreeDataManager::ExpandNodeAtIndexPath(
+    const IndexPath& index_path) {
 
-    auto node_pointer = Find(data_map_, data);
-    if (!node_pointer) {
-        return;
+    auto tree_node = InnerGetNodeAtIndexPath(index_path);
+    if (!tree_node) {
+        return nullptr;
     }
 
-    const auto& node = *node_pointer;
-    ZAF_EXPECT(!node->is_expanded);
+    return std::make_shared<TreeNodeExpander>(*this, tree_node);
+}
+
+
+void TreeDataManager::ExpandNodeWithChildCount(TreeNode& node, std::size_t child_count) {
+
+    ZAF_EXPECT(!node.is_expanded);
 
     std::vector<std::shared_ptr<TreeNode>> new_children;
     new_children.resize(child_count);
 
-    for (const auto& each_child : node->children) {
+    for (const auto& each_child : node.children) {
 
         ZAF_EXPECT(each_child->index_in_parent < new_children.size());
         new_children[each_child->index_in_parent] = each_child;
     }
-    
-    std::swap(node->children, new_children);
-    node->is_expanded = true;
+
+    std::swap(node.children, new_children);
+    node.is_expanded = true;
 }
 
 
-void TreeDataManager::SetNode(
-    const std::shared_ptr<Object>& parent_data,
-    std::size_t index_in_parent, 
+void TreeDataManager::SetChildDataToNode(
+    const std::shared_ptr<TreeNode>& parent_node,
+    std::size_t index_in_parent,
     const std::shared_ptr<Object>& data) {
 
-    auto parent_node_pointer = Find(data_map_, parent_data);
-    if (!parent_node_pointer) {
-        return;
-    }
-
-    const auto& parent_node = *parent_node_pointer;
     ZAF_EXPECT(parent_node->is_expanded);
     ZAF_EXPECT(index_in_parent < parent_node->children.size());
     ZAF_EXPECT(parent_node->children[index_in_parent] == nullptr);
@@ -126,25 +133,36 @@ void TreeDataManager::SetNode(
 }
 
 
-void TreeDataManager::AddChildren(
-    const std::shared_ptr<Object>& parent_data,
-    std::size_t child_index,
+std::shared_ptr<TreeNodeChildrenAdder> TreeDataManager::AddChildrenAtIndexPath(
+    const IndexPath& index_path) {
+
+    auto node = InnerGetNodeAtIndexPath(index_path);
+    if (!node) {
+        return nullptr;
+    }
+
+    if (!node->is_expanded) {
+        return nullptr;
+    }
+
+    return std::make_shared<TreeNodeChildrenAdder>(*this, node);
+}
+
+
+void TreeDataManager::AddChildrenToNode(
+    const std::shared_ptr<TreeNode>& parent_node,
+    std::size_t index,
     std::size_t count) {
 
     if (count <= 0) {
         return;
     }
 
-    auto parent_node = Find(data_map_, parent_data);
-    if (!parent_node) {
-        return;
-    }
-
-    if ((*parent_node)->is_expanded) {
-        AddChildrenToExpandedNode(**parent_node, child_index, count);
+    if (parent_node->is_expanded) {
+        AddChildrenToExpandedNode(*parent_node, index, count);
     }
     else {
-        AddChildrenToCollapsedNode(**parent_node, child_index, count);
+        AddChildrenToCollapsedNode(*parent_node, index, count);
     }
 }
 

@@ -50,6 +50,8 @@
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_control_implementation.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_index_mapping.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_data_manager.cpp" />
+    <ClCompile Include="src\zaf\control\internal\tree_control\tree_node_children_adder.cpp" />
+    <ClCompile Include="src\zaf\control\internal\tree_control\tree_node_expander.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\utility.cpp" />
     <ClCompile Include="src\zaf\control\internal\triangle_geometry.cpp" />
     <ClCompile Include="src\zaf\control\layout\anchor_layouter.cpp" />
@@ -246,6 +248,9 @@
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_index_mapping.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_data_helpers.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_data_manager.h" />
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_node.h" />
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_node_children_adder.h" />
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_node_expander.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\utility.h" />
     <ClInclude Include="src\zaf\control\internal\triangle_geometry.h" />
     <ClInclude Include="src\zaf\control\layout\anchor_layouter.h" />

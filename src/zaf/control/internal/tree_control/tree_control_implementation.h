@@ -118,24 +118,22 @@ private:
         const std::shared_ptr<TreeItem>& item, 
         const std::shared_ptr<Object>& item_data);
 
-    void ExpandItemAtIndex(std::size_t list_item_index);
-    bool ExpandItemAtIndexPath(
+    void ExpandItemUI(
+        const IndexPath& index_path,
+        const std::optional<std::size_t>& list_index, 
+        bool update_item);
+    bool ExpandItemData(
         const IndexPath& index_path, 
         std::shared_ptr<Object>& expanded_data, 
         std::size_t& expanded_count);
-    bool ExpandItemWithTreeNode(
-        const TreeNode& node, 
-        const IndexPath& node_index_path, 
-        std::size_t& expanded_count);
-    std::size_t ExpandItemWithTreeNodeRecursively(
+    std::size_t ExpandItemRecursively(
         TreeDataSource& data_source,
-        const TreeNode& node,
+        TreeNodeExpander& node_expander,
         const IndexPath& node_index_path);
-    bool ExpandNewItem(
+    void CollapseItemUI(
         const IndexPath& index_path,
-        std::shared_ptr<Object>& expanded_data,
-        std::size_t& expanded_count);
-    void CollapseItemAtIndex(std::size_t list_item_index);
+        const std::optional<std::size_t>& list_index,
+        bool update_item);
 
     void UpdateItem(const IndexPath& index_path);
     void CheckIfItemHasChildren(const IndexPath& index_path, std::size_t list_index);

@@ -3,26 +3,18 @@
 #include <optional>
 #include <unordered_map>
 #include <unordered_set>
-#include <zaf/base/define.h>
 #include <zaf/control/internal/tree_control/tree_data_helpers.h>
+#include <zaf/control/internal/tree_control/tree_node.h>
+#include <zaf/control/internal/tree_control/tree_node_children_adder.h>
+#include <zaf/control/internal/tree_control/tree_node_expander.h>
 
 namespace zaf::internal {
-
-class TreeNode {
-public:
-    std::shared_ptr<Object> data;
-
-    std::weak_ptr<TreeNode> parent;
-    std::size_t index_in_parent{ InvalidIndex };
-
-    std::vector<std::shared_ptr<TreeNode>> children;
-    bool is_expanded{};
-};
 
 class TreeNodeOperationResult {
 public:
     bool selection_changed{};
 };
+
 
 class TreeDataManager {
 public:
@@ -39,17 +31,9 @@ public:
 
     bool IsNodeExpanded(const std::shared_ptr<Object>& data) const;
 
-    void ExpandNode(const std::shared_ptr<Object>& data, std::size_t child_count);
+    std::shared_ptr<TreeNodeExpander> ExpandNodeAtIndexPath(const IndexPath& index_path);
 
-    void SetNode(
-        const std::shared_ptr<Object>& parent_data,
-        std::size_t index_in_parent, 
-        const std::shared_ptr<Object>& data);
-
-    void AddChildren(
-        const std::shared_ptr<Object>& parent_data, 
-        std::size_t child_index,
-        std::size_t count);
+    std::shared_ptr<TreeNodeChildrenAdder> AddChildrenAtIndexPath(const IndexPath& index_path);
 
     TreeNodeOperationResult RemoveChildren(
         const std::shared_ptr<Object>& parent_data,
@@ -69,6 +53,20 @@ public:
     void Clear();
 
 private:
+    friend class TreeNodeChildrenAdder;
+    friend class TreeNodeExpander;
+
+    void ExpandNodeWithChildCount(TreeNode& node, std::size_t child_count);
+    void SetChildDataToNode(
+        const std::shared_ptr<TreeNode>& parent_node, 
+        std::size_t index_in_parent, 
+        const std::shared_ptr<Object>& data);
+    void AddChildrenToNode(
+        const std::shared_ptr<TreeNode>& parent_node, 
+        std::size_t index, 
+        std::size_t count);
+
+private:
     using TreeDataMap = std::unordered_map<
         std::shared_ptr<Object>,
         std::shared_ptr<TreeNode>,
@@ -78,6 +76,8 @@ private:
 
 private:
     void Initialize();
+
+    std::shared_ptr<TreeNode> InnerGetNodeAtIndexPath(const IndexPath& index_path) const;
 
     void AddChildrenToExpandedNode(
         TreeNode& parent_node,

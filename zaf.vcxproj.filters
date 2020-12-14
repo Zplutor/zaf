@@ -589,6 +589,12 @@
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_control_item.cpp">
       <Filter>zaf\window\inspector\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\tree_control\tree_node_expander.cpp">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\tree_control\tree_node_children_adder.cpp">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1431,6 +1437,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\inspector\internal\inspector_port.h">
       <Filter>zaf\window\inspector\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_node.h">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_node_expander.h">
+      <Filter>zaf\control\internal\tree_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_node_children_adder.h">
+      <Filter>zaf\control\internal\tree_control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
