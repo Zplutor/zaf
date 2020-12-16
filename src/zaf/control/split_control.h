@@ -62,7 +62,7 @@ public:
 protected:
     void Initialize() override;
     void Layout(const Rect& previous_rect) override;
-    void RectChange(const Rect& previous_rect) override;
+    void OnRectChanged(const Rect& previous_rect) override;
 
     virtual void SplitBarChange(const std::shared_ptr<SplitControlSplitBar>& previous_split_bar) { }
     virtual void FirstPaneChange(const std::shared_ptr<Control>& previous_pane) { }

@@ -156,9 +156,9 @@ void ListControl::UnselectAllItems() {
 }
 
 
-void ListControl::IsEnabledChange() {
+void ListControl::OnIsEnabledChanged() {
 
-    __super::IsEnabledChange();
+    __super::OnIsEnabledChanged();
 
     if (! IsEnabled()) {
         UnselectAllItems();

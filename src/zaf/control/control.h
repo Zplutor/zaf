@@ -550,6 +550,9 @@ public:
 	 */
 	void SetIsEnabled(bool is_enabled);
 
+    bool IsSelected() const;
+    void SetIsSelected(bool is_selected);
+
 	/**
 	 Get a value indicating that whether the control itself is hovered.
 	 */
@@ -927,7 +930,7 @@ protected:
      need to call NeedRelayout method in this method, and you should layout children in Layout
      method instead of this method.
      */
-    virtual void RectChange(const Rect& previous_rect);
+    virtual void OnRectChanged(const Rect& previous_rect);
 
     /**
      Process the is visible change notification.
@@ -935,7 +938,7 @@ protected:
      This method is called when the control change its visibility. Derived classes must call
      the same method of base class.
      */
-    virtual void IsVisibleChange();
+    virtual void OnIsVisibleChanged();
 
     /**
      Process the is enabled change notification.
@@ -943,7 +946,9 @@ protected:
      This method is called when the control is enabled or disabled. Derived classes must call 
      the same method of base class.
      */
-    virtual void IsEnabledChange();
+    virtual void OnIsEnabledChanged();
+
+    virtual void OnIsSelectedChanged();
 
 private:
 	friend class Window;
@@ -1032,6 +1037,7 @@ private:
 	bool can_focused_;
 	bool is_enabled_;
 	bool is_visible_;
+    bool is_selected_{};
 
 	Rect rect_;
     Frame margin_;

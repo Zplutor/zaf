@@ -1408,6 +1408,10 @@ void Window::Close() {
 
 void Window::ShowInspectorWindow() {
 
+    if (inspector_window_.lock()) {
+        return;
+    }
+
     auto inspector_window = Create<InspectorWindow>(shared_from_this());
     inspector_window->Show();
 

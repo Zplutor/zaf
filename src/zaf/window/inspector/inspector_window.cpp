@@ -70,6 +70,7 @@ void InspectorWindow::InitializeToolbar() {
 void InspectorWindow::InitializeTreeControl() {
 
     tree_control_ = Create<TreeControl>();
+    tree_control_->SetBorder(0);
 
     data_source_ = Create<internal::InspectDataSource>(target_window_);
     tree_control_->SetDelegate(std::dynamic_pointer_cast<TreeControlDelegate>(shared_from_this()));
@@ -96,7 +97,36 @@ std::wstring InspectorWindow::GetItemText(
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
 
-    return item_data->ToString();
+    auto text = item_data->ToString();
+
+    //Erase " class " text.
+    [&text]() {
+    
+        auto first_space_index = text.find_first_of(L' ');
+        if (first_space_index == std::wstring::npos) {
+            return;
+        }
+
+        auto last_space_index = text.find_last_of(L' ');
+        if (last_space_index == std::wstring::npos) {
+            return;
+        }
+
+        text.erase(first_space_index, last_space_index - first_space_index);
+    }();
+
+    //Append control name.
+    auto control = dynamic_cast<Control*>(item_data.get());
+    if (control) {
+
+        auto control_name = control->GetName();
+        if (!control_name.empty()) {
+            text += L" - ";
+            text += control_name;
+        }
+    }
+    
+    return text;
 }
 
 
@@ -185,7 +215,7 @@ void InspectorWindow::ChangeHighlightObject(const std::shared_ptr<Object>& objec
 
 
 void InspectorWindow::SelectControl(const std::shared_ptr<Control>& control) {
-
+    tree_control_->SelectItem(control);
 }
 
 

@@ -218,7 +218,7 @@ protected:
      */
     virtual void ScrollContentControlChange(const std::shared_ptr<Control>& previous_control) { }
 
-    void IsEnabledChange() override;
+    void OnIsEnabledChanged() override;
 
 private:
     friend class internal::GeneralLayouter;

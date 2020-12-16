@@ -136,9 +136,9 @@ void SplitControl::Layout(const Rect& previous_rect) {
 }
 
 
-void SplitControl::RectChange(const Rect& previous_rect) {
+void SplitControl::OnRectChanged(const Rect& previous_rect) {
 
-    __super::RectChange(previous_rect);
+    __super::OnRectChanged(previous_rect);
 
     if (previous_rect.size != GetSize()) {
         UpdateActualSplitBarDistance();

@@ -32,7 +32,9 @@ void TreeItemExpandButton::Paint(Canvas& canvas, const Rect& dirty_rect) {
         rotate_angle);
 
     Canvas::StateGuard guard(canvas);
-    canvas.SetBrushWithColor(Color::Black());
+
+    auto color = IsSelected() ? Color::White() : Color::Black();
+    canvas.SetBrushWithColor(color);
     canvas.DrawGeometry(triangle_geometry);
 }
 

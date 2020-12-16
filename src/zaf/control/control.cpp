@@ -419,7 +419,7 @@ void Control::SetRect(const Rect& rect) {
 	rect_ = zaf::Rect(rect.position, zaf::Size(width, height));    
 
     //Notify rect change.
-    RectChange(previous_rect);
+    OnRectChanged(previous_rect);
 
     if (rect_.size != previous_rect.size) {
 
@@ -460,7 +460,7 @@ void Control::SetRect(const Rect& rect) {
 }
 
 
-void Control::RectChange(const Rect& previous_rect) {
+void Control::OnRectChanged(const Rect& previous_rect) {
 
 }
 
@@ -1000,14 +1000,14 @@ bool Control::IsVisible() const {
 
 
 void Control::SetIsVisible(bool is_visible) {
-    SetInteractiveProperty(is_visible, is_visible_, &Control::IsVisibleChange);
+    SetInteractiveProperty(is_visible, is_visible_, &Control::OnIsVisibleChanged);
 }
 
 
-void Control::IsVisibleChange() {
+void Control::OnIsVisibleChanged() {
 
     for (const auto& each_child : children_) {
-        each_child->IsVisibleChange();
+        each_child->OnIsVisibleChanged();
     }
 }
 
@@ -1028,14 +1028,14 @@ bool Control::IsEnabled() const {
 
 
 void Control::SetIsEnabled(bool is_enabled) {
-    SetInteractiveProperty(is_enabled, is_enabled_, &Control::IsEnabledChange);
+    SetInteractiveProperty(is_enabled, is_enabled_, &Control::OnIsEnabledChanged);
 }
 
 
-void Control::IsEnabledChange() {
+void Control::OnIsEnabledChanged() {
 
     for (const auto& each_child : children_) {
-        each_child->IsEnabledChange();
+        each_child->OnIsEnabledChanged();
     }
 }
 
@@ -1063,6 +1063,40 @@ void Control::SetInteractiveProperty(bool new_value, bool& property_value, void(
 
     if (notification != nullptr) {
         (this->*notification)();
+    }
+}
+
+
+bool Control::IsSelected() const {
+    
+    if (is_selected_) {
+        return true;
+    }
+
+    auto parent = GetParent();
+    if (!parent) {
+        return false;
+    }
+
+    return parent->IsSelected();
+}
+
+
+void Control::SetIsSelected(bool is_selected) {
+
+    if (is_selected_ == is_selected) {
+        return;
+    }
+
+    is_selected_ = is_selected;
+    NeedRepaint();
+}
+
+
+void Control::OnIsSelectedChanged() {
+
+    for (const auto& each_child : children_) {
+        each_child->OnIsSelectedChanged();
     }
 }
 

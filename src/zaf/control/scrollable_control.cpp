@@ -318,9 +318,9 @@ bool ScrollableControl::MouseWheel(const Point& position, const MouseWheelMessag
 }
 
 
-void ScrollableControl::IsEnabledChange() {
+void ScrollableControl::OnIsEnabledChanged() {
 
-    __super::IsEnabledChange();
+    __super::OnIsEnabledChanged();
 
     if (IsEnabled()) { 
         //Relayout to refresh scroll bars.

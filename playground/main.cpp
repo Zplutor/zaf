@@ -176,12 +176,12 @@ public:
 
         for (auto _ : zaf::Range(3)) {
             if (!node->children.empty()) {
-                node->children.pop_back();
+                node->children.erase(node->children.begin());
             }
         }
 
         auto remove_count = old_size - node->children.size();
-        NotifyDataRemove(node, old_size - remove_count, remove_count);
+        NotifyDataRemove(node, 0, remove_count);
     }
 
 private:
@@ -229,10 +229,10 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
     auto window = zaf::Create<zaf::Window>();
 
     auto root_control = zaf::Create<RootControl>();
+    root_control->SetName(L"Root control");
     window->SetIsPopup(true);
     window->SetHasBorder(true);
     window->SetHasTitleBar(true);
-    window->SetCanMaximize(false);
     window->SetIsSizable(true);
     window->SetRootControl(root_control);
     window->Show();
@@ -240,6 +240,7 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
     auto item_source = zaf::Create<TreeItemSource>();
 
     auto tree_control = zaf::Create<zaf::TreeControl>();
+    tree_control->SetName(L"Tested tree control");
     tree_control->SetRect(zaf::Rect{ 10, 10, 300, 400 });
     tree_control->SetDataSource(item_source);
     tree_control->SetDelegate(item_source);

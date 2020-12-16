@@ -182,7 +182,7 @@ protected:
      */
     virtual void ItemContainerChange(const std::shared_ptr<ListItemContainer>& previous_item_container) { }
 
-    void IsEnabledChange() override;
+    void OnIsEnabledChanged() override;
 
 private:
     void SelectionChange();
