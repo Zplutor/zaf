@@ -280,6 +280,7 @@ private:
     GuardedValue<TextChangeSource> text_change_source_;
 
     std::optional<std::size_t> recovered_selected_index_;
+    bool need_recover_selected_index_{};
 };
 
 

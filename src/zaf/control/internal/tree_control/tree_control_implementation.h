@@ -149,7 +149,7 @@ private:
     void RemoveSelection(std::size_t index, std::size_t count);
 
     void OnDataAdd(const TreeDataSourceDataAddInfo& event_info);
-    std::size_t GetChildListIndex(
+    std::optional<std::size_t> GetChildListIndex(
         const IndexPath& parent_index_path, 
         std::size_t child_index) const;
     void OnDataRemove(const TreeDataSourceDataRemoveInfo& event_info);

@@ -3,6 +3,7 @@
 #include <optional>
 #include <unordered_map>
 #include <unordered_set>
+#include <zaf/base/define.h>
 #include <zaf/control/internal/tree_control/tree_data_helpers.h>
 #include <zaf/control/internal/tree_control/tree_node.h>
 #include <zaf/control/internal/tree_control/tree_node_children_adder.h>

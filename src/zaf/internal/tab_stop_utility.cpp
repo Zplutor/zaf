@@ -111,7 +111,19 @@ static const std::vector<std::shared_ptr<Control>> SortControlsByTabIndex(
         sorted_controls.begin(),
         sorted_controls.end(),
         [](const std::shared_ptr<Control>& control1, const std::shared_ptr<Control>& control2) {
-        return control1->GetTabIndex() < control2->GetTabIndex();
+
+        auto tab_index1 = control1->GetTabIndex();
+        auto tab_index2 = control2->GetTabIndex();
+
+        if (tab_index1 && !tab_index2) {
+            return true;
+        }
+
+        if (!tab_index1 && tab_index2) {
+            return false;
+        }
+
+        return *tab_index1 < *tab_index2;
     });
 
     if (reverse) {

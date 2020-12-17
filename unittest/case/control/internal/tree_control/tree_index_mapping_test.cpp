@@ -107,13 +107,14 @@ TEST_F(TreeIndexMappingTest, GetIndexAtIndexPath) {
     for (const auto& each_node : GetAllNodes()) {
 
         auto index = mapping.GetIndexAtIndexPath(each_node.index_path);
-        ASSERT_EQ(index, each_node.global_index);
+        ASSERT_TRUE(index.has_value());
+        ASSERT_EQ(*index, each_node.global_index);
     }
 
     //Get index for invalid index path
-    ASSERT_EQ(zaf::InvalidIndex, mapping.GetIndexAtIndexPath({}));
-    ASSERT_EQ(zaf::InvalidIndex, mapping.GetIndexAtIndexPath({ 1, 2, 0, 0, 0 }));
-    ASSERT_EQ(zaf::InvalidIndex, mapping.GetIndexAtIndexPath({ 7, 0 }));
+    ASSERT_FALSE(mapping.GetIndexAtIndexPath({}).has_value());
+    ASSERT_FALSE(mapping.GetIndexAtIndexPath({ 1, 2, 0, 0, 0 }).has_value());
+    ASSERT_FALSE(mapping.GetIndexAtIndexPath({ 7, 0 }).has_value());
 }
 
 
@@ -127,7 +128,8 @@ TEST_F(TreeIndexMappingTest, GetIndexAtIndexPathOnSingleLevelTree) {
     for (auto index : zaf::Range(node_count)) {
 
         auto got_index = mapping.GetIndexAtIndexPath(zaf::IndexPath{ index });
-        ASSERT_EQ(got_index, index);
+        ASSERT_TRUE(got_index.has_value());
+        ASSERT_EQ(*got_index, index);
     }
 }
 

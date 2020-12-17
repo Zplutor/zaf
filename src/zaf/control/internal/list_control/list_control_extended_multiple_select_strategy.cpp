@@ -21,11 +21,9 @@ inline void MakeSelectionRange(
 
 
 ListControlExtendedMultipleSelectStrategy::ListControlExtendedMultipleSelectStrategy() : 
-    focused_index_(InvalidIndex),
     is_focused_index_orginally_selected_(false),
     orginally_recorded_index_(0),
-    orginally_recorded_count_(0),
-    last_focused_index_with_shift_key_(InvalidIndex) {
+    orginally_recorded_count_(0) {
 
 }
 
@@ -87,20 +85,25 @@ void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEvent(
 void ListControlExtendedMultipleSelectStrategy::SelectItemsBetweenFocusedAndSpecified(
     std::size_t index) {
 
+    if (!focused_index_) {
+        return;
+    }
+
     std::size_t select_index = 0;
     std::size_t select_count = 0;
-    MakeSelectionRange(index, focused_index_, select_index, select_count);
+    MakeSelectionRange(index, *focused_index_, select_index, select_count);
 
     auto list_control = GetListControl();
-    if (list_control) {
-
-        list_control->ReplaceSelection(select_index, select_count);
-        list_control->ScrollToItemAtIndex(index);
-
-        selection_change_reason_ = ListSelectionChangeReason::ReplaceSelection;
-        selection_change_index_ = select_index;
-        selection_change_count_ = select_count;
+    if (!list_control) {
+        return;
     }
+
+    list_control->ReplaceSelection(select_index, select_count);
+    list_control->ScrollToItemAtIndex(index);
+
+    selection_change_reason_ = ListSelectionChangeReason::ReplaceSelection;
+    selection_change_index_ = select_index;
+    selection_change_count_ = select_count;
 }
 
 
@@ -117,9 +120,13 @@ void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEventWithContr
         orginally_selected_indexes_.clear();
     }
 
+    if (!focused_index_) {
+        return;
+    }
+
     std::size_t select_index = 0;
     std::size_t select_count = 0;
-    MakeSelectionRange(current_index, focused_index_, select_index, select_count);
+    MakeSelectionRange(current_index, *focused_index_, select_index, select_count);
 
     //Recover orginally selection states not in current selection range.
     RecoverSelectionStatesNotInRange(select_index, select_count);
@@ -179,7 +186,9 @@ void ListControlExtendedMultipleSelectStrategy::RecoverSelectionStatesNotInRange
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::RecordSelectionStatesInRange(std::size_t index, std::size_t count) {
+void ListControlExtendedMultipleSelectStrategy::RecordSelectionStatesInRange(
+    std::size_t index,
+    std::size_t count) {
 
     auto list_control = GetListControl();
     if (list_control == nullptr) {
@@ -239,16 +248,17 @@ void ListControlExtendedMultipleSelectStrategy::EndChangingSelectionByMouseUp(
 }
 
 
-bool ListControlExtendedMultipleSelectStrategy::ChangeSelectionByKeyDown(const KeyMessage& message) {
+bool ListControlExtendedMultipleSelectStrategy::ChangeSelectionByKeyDown(
+    const KeyMessage& message) {
 
     bool is_pressing_shift_key = (GetKeyState(VK_SHIFT) < 0);
 
-    std::size_t previous_index = InvalidIndex;
+    std::optional<std::size_t> previous_index;
     if (is_pressing_shift_key) {
         previous_index = last_focused_index_with_shift_key_;
     }
 
-    if (previous_index == InvalidIndex) {
+    if (!previous_index) {
         previous_index = focused_index_;
     }
 
@@ -261,9 +271,9 @@ bool ListControlExtendedMultipleSelectStrategy::ChangeSelectionByKeyDown(const K
     std::size_t select_range_index = 0;
     std::size_t select_range_count = 0;
 
-    if (is_pressing_shift_key) {
+    if (is_pressing_shift_key && focused_index_) {
 
-        MakeSelectionRange(focused_index_, new_index, select_range_index, select_range_count);
+        MakeSelectionRange(*focused_index_, new_index, select_range_index, select_range_count);
     }
     else {
 

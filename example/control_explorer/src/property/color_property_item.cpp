@@ -114,7 +114,7 @@ protected:
 
         if (message.GetVirtualKey() == VK_RETURN) {
 
-            if (GetDropDownListBox()->GetFirstSelectedItemIndex() == zaf::InvalidIndex) {
+            if (!GetDropDownListBox()->GetFirstSelectedItemIndex()) {
                 SetText(ColorToText(selected_color_));
             }
             return true;

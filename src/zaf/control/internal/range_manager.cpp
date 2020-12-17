@@ -6,7 +6,7 @@ namespace internal {
 
 bool RangeManager::AddRange(std::size_t position, std::size_t length) {
 
-    if ((position == InvalidIndex) || (length == 0)) {
+    if (length == 0) {
         return false;
     }
 
@@ -27,7 +27,7 @@ bool RangeManager::AddRange(std::size_t position, std::size_t length) {
             (new_range_end_position >= current_range_end_position)) {
 
             iterator = ranges_.erase(iterator);
-            SendRangeNotify(RangeNotifyType::Remove, current_range_begin_position, InvalidIndex);
+            SendRangeNotify(RangeNotifyType::Remove, current_range_begin_position, 0);
             continue;
         }
 
@@ -40,9 +40,14 @@ bool RangeManager::AddRange(std::size_t position, std::size_t length) {
             std::size_t breaked_range_length = current_range_end_position - breaked_range_position;
 
             ++iterator;
-            iterator = ranges_.insert(iterator, std::make_pair(breaked_range_position, breaked_range_length));
+            iterator = ranges_.insert(
+                iterator, 
+                std::make_pair(breaked_range_position, breaked_range_length));
 
-            SendRangeNotify(RangeNotifyType::Break, current_range_begin_position, breaked_range_position);
+            SendRangeNotify(
+                RangeNotifyType::Break,
+                current_range_begin_position, 
+                breaked_range_position);
             break;
         }
 
@@ -67,14 +72,14 @@ bool RangeManager::AddRange(std::size_t position, std::size_t length) {
     }
 
     iterator = ranges_.insert(iterator, std::make_pair(position, length));
-    SendRangeNotify(RangeNotifyType::Add, iterator->first, InvalidIndex);
+    SendRangeNotify(RangeNotifyType::Add, iterator->first, 0);
     return true;
 }
 
 
 void RangeManager::RemoveRange(std::size_t position, std::size_t length) {
 
-    if ((position == InvalidIndex) || (length == 0)) {
+    if (length == 0) {
         return;
     }
 
@@ -95,7 +100,7 @@ void RangeManager::RemoveRange(std::size_t position, std::size_t length) {
             (removed_range_end_position >= current_range_end_position)) {
 
             iterator = ranges_.erase(iterator);
-            SendRangeNotify(RangeNotifyType::Remove, current_range_begin_position, InvalidIndex);
+            SendRangeNotify(RangeNotifyType::Remove, current_range_begin_position, 0);
             continue;
         }
 
@@ -107,9 +112,14 @@ void RangeManager::RemoveRange(std::size_t position, std::size_t length) {
 
             iterator->second = removed_range_begin_position - iterator->first;
             ++iterator;
-            iterator = ranges_.insert(iterator, std::make_pair(breaked_range_position, breaked_range_length));
+            iterator = ranges_.insert(
+                iterator, 
+                std::make_pair(breaked_range_position, breaked_range_length));
 
-            SendRangeNotify(RangeNotifyType::Break, current_range_begin_position, breaked_range_position);
+            SendRangeNotify(
+                RangeNotifyType::Break,
+                current_range_begin_position, 
+                breaked_range_position);
             continue;       
         }
 
@@ -139,7 +149,7 @@ void RangeManager::RemoveRange(std::size_t position, std::size_t length) {
 
 void RangeManager::ExpandRanges(std::size_t position, std::size_t length) {
 
-    if ((position == InvalidIndex) || (length == 0)) {
+    if (length == 0) {
         return;
     }
 
@@ -154,7 +164,10 @@ void RangeManager::ExpandRanges(std::size_t position, std::size_t length) {
         if (position <= current_range_begin_position) {
 
             iterator->first += length;
-            notify_infos.push_back(std::make_tuple(RangeNotifyType::Update, current_range_begin_position, iterator->first));
+            notify_infos.push_back(std::make_tuple(
+                RangeNotifyType::Update,
+                current_range_begin_position, 
+                iterator->first));
         }
         else if (position < current_range_end_position) {
 
@@ -164,8 +177,14 @@ void RangeManager::ExpandRanges(std::size_t position, std::size_t length) {
             iterator->second = position - current_range_begin_position;
 
             ++iterator;
-            iterator = ranges_.insert(iterator, std::make_pair(breaked_range_position, breaked_range_length));
-            notify_infos.push_back(std::make_tuple(RangeNotifyType::Break, current_range_begin_position, breaked_range_position));
+            iterator = ranges_.insert(
+                iterator, 
+                std::make_pair(breaked_range_position, breaked_range_length));
+
+            notify_infos.push_back(std::make_tuple(
+                RangeNotifyType::Break, 
+                current_range_begin_position, 
+                breaked_range_position));
         }
 
         ++iterator;
@@ -179,7 +198,7 @@ void RangeManager::ExpandRanges(std::size_t position, std::size_t length) {
 
 void RangeManager::NarrowRanges(std::size_t position, std::size_t length) {
 
-    if ((position == InvalidIndex) || (length == 0)) {
+    if (length == 0) {
         return;
     }
 
@@ -196,7 +215,10 @@ void RangeManager::NarrowRanges(std::size_t position, std::size_t length) {
         if (end_position <= current_range_begin_position) {
 
             iterator->first -= length;
-            notify_infos.push_back(std::make_tuple(RangeNotifyType::Update, current_range_begin_position, iterator->first));
+            notify_infos.push_back(std::make_tuple(
+                RangeNotifyType::Update, 
+                current_range_begin_position, 
+                iterator->first));
             ++iterator;
             continue;
         }
@@ -205,7 +227,10 @@ void RangeManager::NarrowRanges(std::size_t position, std::size_t length) {
             (end_position >= current_range_end_position)) {
 
             iterator = ranges_.erase(iterator);
-            notify_infos.push_back(std::make_tuple(RangeNotifyType::Remove, current_range_begin_position, InvalidIndex));
+            notify_infos.push_back(std::make_tuple(
+                RangeNotifyType::Remove, 
+                current_range_begin_position, 
+                0));
             continue;
         }
 
@@ -213,7 +238,10 @@ void RangeManager::NarrowRanges(std::size_t position, std::size_t length) {
             (end_position < current_range_end_position)) {
 
             iterator->second -= length;
-            notify_infos.push_back(std::make_tuple(RangeNotifyType::Update, iterator->first, iterator->first));
+            notify_infos.push_back(std::make_tuple(
+                RangeNotifyType::Update,
+                iterator->first, 
+                iterator->first));
 
             ++iterator;
             continue;
@@ -224,7 +252,10 @@ void RangeManager::NarrowRanges(std::size_t position, std::size_t length) {
 
             iterator->first = position;
             iterator->second = current_range_end_position - end_position;
-            notify_infos.push_back(std::make_tuple(RangeNotifyType::Update, current_range_begin_position, iterator->first));
+            notify_infos.push_back(std::make_tuple(
+                RangeNotifyType::Update, 
+                current_range_begin_position, 
+                iterator->first));
 
             ++iterator;
             continue;
@@ -234,7 +265,10 @@ void RangeManager::NarrowRanges(std::size_t position, std::size_t length) {
             (position < current_range_end_position)) {
 
             iterator->second -= current_range_end_position - position;
-            notify_infos.push_back(std::make_tuple(RangeNotifyType::Update, iterator->first, iterator->first));
+            notify_infos.push_back(std::make_tuple(
+                RangeNotifyType::Update,
+                iterator->first,
+                iterator->first));
 
             ++iterator;
             continue;
@@ -260,12 +294,13 @@ void RangeManager::RemoveAllRanges() {
     ranges_.clear();
 
     for (auto each_position : removed_positions) {
-        SendRangeNotify(RangeNotifyType::Remove, each_position, InvalidIndex);
+        SendRangeNotify(RangeNotifyType::Remove, each_position, 0);
     }
 }
 
 
-std::pair<std::size_t, std::size_t> RangeManager::GetRangeContainsPosition(std::size_t position) const {
+std::pair<std::size_t, std::size_t> RangeManager::GetRangeContainsPosition(
+    std::size_t position) const {
 
     for (const auto& each_range : ranges_) {
         if ((each_range.first <= position) && (position < each_range.first + each_range.second)) {
@@ -273,7 +308,7 @@ std::pair<std::size_t, std::size_t> RangeManager::GetRangeContainsPosition(std::
         }
     }
 
-    return std::make_pair(InvalidIndex, 0);
+    return std::make_pair(0, 0);
 }
 
 

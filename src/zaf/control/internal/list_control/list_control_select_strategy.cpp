@@ -6,27 +6,34 @@
 namespace zaf {
 namespace internal {
 
-bool ListControlSelectStrategy::ChangeIndexByKeyDown(const KeyMessage& key_message, std::size_t previous_index, std::size_t& new_index) {
-
-    new_index = previous_index;
+bool ListControlSelectStrategy::ChangeIndexByKeyDown(
+    const KeyMessage& key_message, 
+    const std::optional<std::size_t>& previous_index, 
+    std::size_t& new_index) {
 
     switch (key_message.wparam) {
 
         case VK_DOWN:
-            if (new_index == InvalidIndex) {
+            if (!previous_index) {
                 new_index = 0;
             }
-            else if (new_index < GetItemHeightManager()->GetItemCount() - 1) {
-                ++new_index;
+            else if (*previous_index < GetItemHeightManager()->GetItemCount() - 1) {
+                new_index = *previous_index + 1;
+            }
+            else {
+                new_index = *previous_index;
             }
             return true;
 
         case VK_UP:
-            if (new_index == InvalidIndex) {
+            if (!previous_index) {
                 new_index = GetItemHeightManager()->GetItemCount() - 1;
             }
-            else if (new_index > 0) {
-                --new_index;
+            else if (*previous_index > 0) {
+                new_index = *previous_index - 1;
+            }
+            else {
+                new_index = *previous_index;
             }
             return true;
 
@@ -42,7 +49,6 @@ bool ListControlSelectStrategy::ChangeIndexByKeyDown(const KeyMessage& key_messa
             return false;
     }
 }
-
 
 }
 }

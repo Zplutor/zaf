@@ -74,14 +74,14 @@ public:
 
     std::size_t GetItemCount();
     std::size_t GetSelectedItemCount();
-    std::size_t GetFirstSelectedItemIndex();
+    std::optional<std::size_t> GetFirstSelectedItemIndex();
     std::vector<std::size_t> GetAllSelectedItemIndexes();
     bool IsItemSelectedAtIndex(std::size_t index);
 
     void ScrollToItemAtIndex(std::size_t index);
 
-    std::size_t FindItemIndexAtPosition(const Point& position);
-    std::size_t GetListItemIndex(const std::shared_ptr<ListItem>& item);
+    std::optional<std::size_t> FindItemIndexAtPosition(const Point& position);
+    std::optional<std::size_t> GetListItemIndex(const std::shared_ptr<ListItem>& item);
 
 private:
     friend class ListControlExtendedMultipleSelectStrategy;

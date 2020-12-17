@@ -1,7 +1,6 @@
 #pragma once
 
 #include <dwrite.h>
-#include <zaf/base/define.h>
 
 namespace zaf {
 
@@ -19,9 +18,9 @@ public:
 
 public:
     /**
-     Construct the instance with invalid index and zero length.
+     Construct the instance with zero index and zero length.
      */
-	TextRange() : index(InvalidIndex), length(0) { }
+	TextRange() : index(0), length(0) { }
 
     /**
      Construct the instance with specified index and length.

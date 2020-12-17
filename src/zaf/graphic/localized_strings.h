@@ -2,6 +2,7 @@
 
 #include <dwrite.h>
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <zaf/base/com_object.h>
 #include <zaf/internal/enumerator.h>
@@ -56,9 +57,9 @@ public:
          Locale name to look for.
     
      @return
-         Return InvalidIndex if the locale name is not found.
+         Return std::nullopt if the locale name is not found.
     */
-    std::size_t FindLocaleName(const std::wstring& local_name) const;
+    std::optional<std::size_t> FindLocaleName(const std::wstring& local_name) const;
 
     /**
      Get an enumerator for both locale names and strings.

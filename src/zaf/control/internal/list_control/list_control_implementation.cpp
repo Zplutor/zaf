@@ -244,10 +244,14 @@ void ListControlImplementation::SetSelectionMode(SelectionMode mode) {
 
     if (selection_mode_ == SelectionMode::Single) {
 
-        std::size_t first_selected_index = GetFirstSelectedItemIndex();
-        if (first_selected_index != InvalidIndex) {
-            ReplaceSelection(first_selected_index, 1);
-            NotifySelectionChange(ListSelectionChangeReason::ReplaceSelection, first_selected_index, 1);
+        auto first_selected_index = GetFirstSelectedItemIndex();
+        if (first_selected_index) {
+
+            ReplaceSelection(*first_selected_index, 1);
+            NotifySelectionChange(
+                ListSelectionChangeReason::ReplaceSelection,
+                *first_selected_index, 
+                1);
         }
     }
     else if (selection_mode_ == SelectionMode::None) {
@@ -639,7 +643,7 @@ void ListControlImplementation::AdjustVisibleItemPositionsByUpdatingItems(
     }
 
     std::size_t end_update_index = index + count;
-    std::size_t begin_adjust_index = InvalidIndex;
+    std::size_t begin_adjust_index{};
 
     if (end_update_index <= first_visible_item_index_) {
         begin_adjust_index = 0;
@@ -791,7 +795,7 @@ std::size_t ListControlImplementation::GetSelectedItemCount() {
 }
 
 
-std::size_t ListControlImplementation::GetFirstSelectedItemIndex() {
+std::optional<std::size_t> ListControlImplementation::GetFirstSelectedItemIndex() {
     return item_selection_manager_.GetFirstSelectedIndex();
 }
 
@@ -828,26 +832,28 @@ void ListControlImplementation::ScrollToItemAtIndex(std::size_t index) {
 }
 
 
-std::size_t ListControlImplementation::FindItemIndexAtPosition(const Point& position) {
+std::optional<std::size_t> ListControlImplementation::FindItemIndexAtPosition(
+    const Point& position) {
 
     auto visible_scroll_content_rect = owner_.GetVisibleScrollContentRect();
 
     if (position.x < 0 || position.x > visible_scroll_content_rect.size.width) {
-        return InvalidIndex;
+        return std::nullopt;
     }
 
     float adjusted_position = position.y + visible_scroll_content_rect.position.y;
 
     auto index_and_count = item_height_manager_->GetItemIndexAndCount(adjusted_position, adjusted_position);
     if (index_and_count.second == 0) {
-        return InvalidIndex;
+        return std::nullopt;
     }
 
     return index_and_count.first;
 }
 
 
-std::size_t ListControlImplementation::GetListItemIndex(const std::shared_ptr<ListItem>& item) {
+std::optional<std::size_t> ListControlImplementation::GetListItemIndex(
+    const std::shared_ptr<ListItem>& item) {
 
     for (auto index : zaf::Range(visible_items_.size())) {
 
@@ -856,7 +862,7 @@ std::size_t ListControlImplementation::GetListItemIndex(const std::shared_ptr<Li
         }
     }
 
-    return InvalidIndex;
+    return std::nullopt;
 }
 
 
@@ -864,7 +870,9 @@ void ListControlImplementation::ReplaceSelection(std::size_t index, std::size_t 
 
     item_selection_manager_.ReplaceSelection(index, count);
 
-    for (std::size_t visible_item_index = 0; visible_item_index < visible_items_.size(); ++visible_item_index) {
+    for (std::size_t visible_item_index = 0; 
+         visible_item_index < visible_items_.size(); 
+         ++visible_item_index) {
 
         const auto& each_visible_item = visible_items_[visible_item_index];
 

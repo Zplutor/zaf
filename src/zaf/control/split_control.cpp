@@ -157,7 +157,7 @@ void SplitControl::UpdateActualSplitBarDistance() {
         distance = (IsHorizontalSplit() ? content_size.height : content_size.width) / 2;
     }
 
-    distance = std::max(distance, GetMinimumSplitBarDistance());
+    distance = (std::max)(distance, GetMinimumSplitBarDistance());
     distance = std::min(distance, GetMaximumSplitBarDistance());
 
     if (distance != actual_split_bar_distance_) {
@@ -231,7 +231,7 @@ void SplitControl::SetSplitBarDistance(float expected_distance) {
     //Revise the distance
     float revised_distance = expected_distance;
     if (expected_split_bar_min_distance_.has_value()) {
-        revised_distance = std::max(revised_distance, expected_split_bar_min_distance_.value());
+        revised_distance = (std::max)(revised_distance, expected_split_bar_min_distance_.value());
     }
     if (expected_split_bar_max_distance_.has_value()) {
         revised_distance = std::min(revised_distance, expected_split_bar_max_distance_.value());
@@ -263,7 +263,7 @@ void SplitControl::SetMinimumSplitBarDistance(float min_distance) {
         return;
     }
 
-    expected_split_bar_min_distance_ = std::max(min_distance, 0.f);
+    expected_split_bar_min_distance_ = (std::max)(min_distance, 0.f);
 
     //Revise the max distance.
     if (expected_split_bar_max_distance_.has_value() &&
@@ -301,7 +301,7 @@ void SplitControl::SetMaximumSplitBarDistance(float max_distance) {
         return;
     }
 
-    expected_split_bar_max_distance_ = std::max(max_distance, 0.f);
+    expected_split_bar_max_distance_ = (std::max)(max_distance, 0.f);
 
     //Revised the min distance.
     if (expected_split_bar_min_distance_.has_value() &&
@@ -341,7 +341,7 @@ float SplitControl::GetAvaliableSplitBarMaxDistance() const {
 
     auto content_size = GetContentSize();
     float avaliable_max_distance = (IsHorizontalSplit() ? content_size.height : content_size.width) - GetSplitBarThickness();
-    return std::max(avaliable_max_distance, 0.f);
+    return (std::max)(avaliable_max_distance, 0.f);
 }
 
 

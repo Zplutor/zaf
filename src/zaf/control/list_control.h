@@ -132,7 +132,7 @@ public:
     /**
      Get the index of the first selected item.
      */
-    std::size_t GetFirstSelectedItemIndex() const;
+    std::optional<std::size_t> GetFirstSelectedItemIndex() const;
 
     /**
      Get data of the first selected item.
@@ -159,9 +159,9 @@ public:
          The position to be determinated, in current control's coordinate system.
 
      @return
-         Returns the index of item found, or InvalidIndex if no item is found.
+         Returns the index of item found, or std::nullopt if no item is found.
      */
-    std::size_t FindItemIndexAtPosition(const Point& position) const;
+    std::optional<std::size_t> FindItemIndexAtPosition(const Point& position) const;
 
 protected:
     void Initialize() override;

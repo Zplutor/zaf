@@ -1,6 +1,7 @@
 #include <zaf/control/control.h>
 #include <algorithm>
 #include <zaf/base/assert.h>
+#include <zaf/base/define.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/control/internal/cached_painting.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
@@ -1154,14 +1155,14 @@ void Control::SetCanTabStop(bool can_tab_stop) {
 }
 
 
-std::size_t Control::GetTabIndex() const {
+std::optional<std::size_t> Control::GetTabIndex() const {
 
     auto tab_index = GetPropertyMap().TryGetProperty<std::size_t>(property::TabIndex);
     if (tab_index != nullptr) {
         return *tab_index;
     }
     else {
-        return InvalidIndex;
+        return std::nullopt;
     }
 }
 

@@ -14,7 +14,7 @@ public:
     TreeIndexMapping& operator=(const TreeIndexMapping&) = delete;
 
     IndexPath GetIndexPathAtIndex(std::size_t index) const;
-    std::size_t GetIndexAtIndexPath(const IndexPath& path) const;
+    std::optional<std::size_t> GetIndexAtIndexPath(const IndexPath& path) const;
 
     std::size_t GetNodeCount() const;
     std::optional<std::size_t> GetChildCount(const IndexPath& parent) const;

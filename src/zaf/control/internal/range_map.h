@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <zaf/base/container/utility/find.h>
 #include <zaf/control/internal/range_manager.h>
 
 namespace zaf {
@@ -11,7 +12,12 @@ class RangeMap {
 public:
     RangeMap() : 
         range_manager_(
-            std::bind(&RangeMap::RangeChange, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)) {
+            std::bind(
+                &RangeMap::RangeChange,
+                this, 
+                std::placeholders::_1, 
+                std::placeholders::_2,
+                std::placeholders::_3)) {
     
     }
 
@@ -28,23 +34,28 @@ public:
 
     ValueType GetValueAtPosition(std::size_t position, bool* is_existent = nullptr) const {
 
+        if (is_existent) {
+            *is_existent = false;
+        }
+
         auto range = range_manager_.GetRangeContainsPosition(position);
-        auto iterator = values_.find(range.first);
-        if (iterator != values_.end()) {
-            if (is_existent != nullptr) {
-                *is_existent = true;
-            }
-            return iterator->second;
+        if (range.second == 0) {
+            return {};
         }
-        else {
-            if (is_existent != nullptr) {
-                *is_existent = false;
-            }
-            return ValueType();
+
+        auto value = Find(values_, range.first);
+        if (!value) {
+            return {};
         }
+
+        if (is_existent) {
+            *is_existent = true;
+        }
+        return *value;
     }
 
-    const std::vector<std::pair<std::pair<std::size_t, std::size_t>, ValueType>> GetAllRangesAndValues() const {
+    std::vector<std::pair<std::pair<std::size_t, std::size_t>, ValueType>> 
+        GetAllRangesAndValues() const {
 
         std::size_t range_count = range_manager_.GetRangeCount();
 
@@ -71,7 +82,10 @@ public:
     RangeMap& operator=(RangeMap&) = delete;
 
 private:
-    void RangeChange(RangeManager::RangeNotifyType notify_type, std::size_t primary_position, std::size_t secondly_position) {
+    void RangeChange(
+        RangeManager::RangeNotifyType notify_type, 
+        std::size_t primary_position, 
+        std::size_t secondly_position) {
 
         switch (notify_type) {
 

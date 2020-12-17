@@ -45,7 +45,7 @@ public:
 protected:
     bool ChangeIndexByKeyDown(
         const KeyMessage& key_message, 
-        std::size_t previous_index, 
+        const std::optional<std::size_t>& previous_index, 
         std::size_t& new_index);
     
 private:

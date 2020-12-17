@@ -217,13 +217,13 @@ IndexPath TreeIndexMapping::GetIndexPathAtIndex(std::size_t index) const {
 }
 
 
-std::size_t TreeIndexMapping::GetIndexAtIndexPath(const IndexPath& path) const {
+std::optional<std::size_t> TreeIndexMapping::GetIndexAtIndexPath(const IndexPath& path) const {
 
     if (path.empty()) {
-        return InvalidIndex;
+        return std::nullopt;
     }
 
-    std::size_t result{ InvalidIndex };
+    std::optional<std::size_t> result;
 
     EnumerateNodes(
         node_child_count_pairs,

@@ -125,13 +125,13 @@ void ConversationListView::ConversationUpdate(const std::shared_ptr<Conversation
 std::shared_ptr<Conversation> ConversationListView::GetSelectedConversation() {
 
     auto selected_index = GetFirstSelectedItemIndex();
-    if (selected_index == zaf::InvalidIndex) {
+    if (!selected_index) {
         return nullptr;
     }
 
-    if (selected_index >= conversations_.size()) {
+    if (*selected_index >= conversations_.size()) {
         return nullptr;
     }
 
-    return conversations_[selected_index];
+    return conversations_[*selected_index];
 }

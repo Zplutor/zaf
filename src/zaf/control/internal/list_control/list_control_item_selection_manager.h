@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <zaf/control/internal/range_manager.h>
 
 namespace zaf {
@@ -55,13 +56,13 @@ public:
         return range_manager_.IsPositionInRange(index);
     }
 
-    std::size_t GetFirstSelectedIndex() const {
+    std::optional<std::size_t> GetFirstSelectedIndex() const {
 
         if (range_manager_.GetRangeCount() != 0) {
             return range_manager_.GetRangeAtIndex(0).first;
         }
         else {
-            return InvalidIndex;
+            return std::nullopt;
         }
     }
 

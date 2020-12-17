@@ -36,7 +36,7 @@ void DrawImageWithZoomLayout(
     float width_percent = image_size.width / draw_rect.size.width;
     float height_percent = image_size.height / draw_rect.size.height;
 
-    float zoom_percent = std::max(width_percent, height_percent);
+    float zoom_percent = (std::max)(width_percent, height_percent);
     float zoomed_width = image_size.width / zoom_percent;
     float zoomed_height = image_size.height / zoom_percent;
     

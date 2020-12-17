@@ -1,6 +1,5 @@
 #pragma once
 
-#include <zaf/base/define.h>
 #include <zaf/object/object.h>
 
 namespace zaf::internal {
@@ -15,7 +14,7 @@ public:
     std::shared_ptr<Object> data;
 
     std::weak_ptr<TreeNode> parent;
-    std::size_t index_in_parent{ InvalidIndex };
+    std::size_t index_in_parent{};
 
     std::vector<std::shared_ptr<TreeNode>> children;
     bool is_expanded{};

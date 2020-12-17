@@ -47,9 +47,8 @@ bool ListControlSingleSelectStrategy::ChangeSelectionByKeyDown(const KeyMessage&
         return false;
     }
     
-    std::size_t previous_selected_index = list_control->GetFirstSelectedItemIndex();
-    std::size_t new_selected_index = InvalidIndex;
-
+    auto previous_selected_index = list_control->GetFirstSelectedItemIndex();
+    std::size_t new_selected_index{};
     bool change_index = ChangeIndexByKeyDown(message, previous_selected_index, new_selected_index);
     if (!change_index) {
         return false;
@@ -68,7 +67,10 @@ bool ListControlSingleSelectStrategy::ChangeSelectionByKeyDown(const KeyMessage&
 
 void ListControlSingleSelectStrategy::SelectItemWithMouseEvent(const Point& position) {
     
-    mouse_selected_index_and_count_ = GetItemHeightManager()->GetItemIndexAndCount(position.y, position.y);
+    mouse_selected_index_and_count_ = GetItemHeightManager()->GetItemIndexAndCount(
+        position.y, 
+        position.y);
+
     if (mouse_selected_index_and_count_.second == 0) {
         return;
     }

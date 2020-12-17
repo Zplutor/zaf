@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <zaf/base/define.h>
 #include <zaf/control/internal/range_manager.h>
 
 using namespace zaf::internal;
@@ -17,9 +16,6 @@ TEST(RangeManagerTest, AddRangeWithInvalidRange) {
         return (!is_succeeded) && (range_manager.GetRangeCount() == 0);
     };
 
-    ASSERT_TRUE(test(zaf::InvalidIndex, 0));
-    ASSERT_TRUE(test(zaf::InvalidIndex, 1));
-    ASSERT_TRUE(test(zaf::InvalidIndex, 2));
     ASSERT_TRUE(test(0, 0));
     ASSERT_TRUE(test(1, 0));
     ASSERT_TRUE(test(2, 0));
@@ -91,9 +87,9 @@ TEST(RangeManagerTest, RemoveRangeWithInvalidRange) {
         return range_manager.GetRangeCount() == 1;
     };
 
-    ASSERT_TRUE(test(zaf::InvalidIndex, 2));
-    ASSERT_TRUE(test(zaf::InvalidIndex, 0));
     ASSERT_TRUE(test(0, 0));
+    ASSERT_TRUE(test(1, 0));
+    ASSERT_TRUE(test(2, 0));
 }
 
 
@@ -164,8 +160,9 @@ TEST(RangeManagerTest, ExpandRangesWithInvalidRange) {
         return (range.first == 0) && (range.second == 10);
     };
 
-    ASSERT_TRUE(test(zaf::InvalidIndex, 1));
-    ASSERT_TRUE(test(zaf::InvalidIndex, 0));
+    ASSERT_TRUE(test(0, 0));
+    ASSERT_TRUE(test(1, 0));
+    ASSERT_TRUE(test(2, 0));
     ASSERT_TRUE(test(3, 0));
 }
 
@@ -214,8 +211,9 @@ TEST(RangeManagerTest, NarrowRangesWithInvalidRange) {
         return (range.first == 0) && (range.second == 10);
     };
 
-    ASSERT_TRUE(test(zaf::InvalidIndex, 1));
-    ASSERT_TRUE(test(zaf::InvalidIndex, 0));
+    ASSERT_TRUE(test(0, 0));
+    ASSERT_TRUE(test(1, 0));
+    ASSERT_TRUE(test(2, 0));
     ASSERT_TRUE(test(3, 0));
 }
 

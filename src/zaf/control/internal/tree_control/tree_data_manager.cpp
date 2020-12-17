@@ -61,10 +61,10 @@ std::optional<IndexPath> TreeDataManager::GetIndexPathOfData(
     auto current_node = *node;
     while (current_node) {
 
-        if (current_node->index_in_parent != InvalidIndex) {
+        //Don't add root node's index.
+        if (current_node != root_node_) {
             result.push_back(current_node->index_in_parent);
         }
-
         current_node = current_node->parent.lock();
     }
 

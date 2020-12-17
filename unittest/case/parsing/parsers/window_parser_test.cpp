@@ -38,10 +38,18 @@ TEST(WindowParser, ParseHasBorder) {
 
 
 TEST(WindowParser, ParseHasTitleBar) {
+    
+    //HasTitleBar depends on IsPopup and HasBorder.
 
-    ASSERT_TRUE(TestBooleanProperty<zaf::Window>("HasTitleBar", [](zaf::Window& window) {
-        return window.HasTitleBar();
-    }));
+    auto window = zaf::CreateObjectFromXaml<zaf::Window>(R"(
+        <Window HasBorder="false" HasTitleBar="true" />
+    )");
+    ASSERT_TRUE(window->HasTitleBar());
+
+    window = zaf::CreateObjectFromXaml<zaf::Window>(R"(
+        <Window HasBorder="false" HasTitleBar="false" />
+    )");
+    ASSERT_FALSE(window->HasTitleBar());
 };
 
 

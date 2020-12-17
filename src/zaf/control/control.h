@@ -600,9 +600,9 @@ public:
     /**
      Get the control's tab index within its parent.
 
-     The default value is InvalidIndex.
+     The default value is std::nullopt.
      */
-    std::size_t GetTabIndex() const;
+    std::optional<std::size_t> GetTabIndex() const;
 
     /**
      Set the control's tab index within its parent.

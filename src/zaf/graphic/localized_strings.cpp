@@ -1,5 +1,4 @@
 #include <zaf/graphic/localized_strings.h>
-#include <zaf/base/define.h>
 #include <zaf/base/error/com_error.h>
 
 namespace zaf {
@@ -38,7 +37,7 @@ std::wstring LocalizedStrings::GetString(std::size_t index) const {
 }
 
 
-std::size_t LocalizedStrings::FindLocaleName(const std::wstring& local_name) const {
+std::optional<std::size_t> LocalizedStrings::FindLocaleName(const std::wstring& local_name) const {
 
     UINT32 index = 0;
     BOOL is_existent = FALSE;
@@ -50,7 +49,7 @@ std::size_t LocalizedStrings::FindLocaleName(const std::wstring& local_name) con
         return index;
     }
     else {
-        return InvalidIndex;
+        return std::nullopt;
     }
 }
 

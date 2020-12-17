@@ -2,7 +2,6 @@
 
 #include <functional>
 #include <vector>
-#include <zaf/base/define.h>
 
 namespace zaf {
 namespace internal {
@@ -46,14 +45,14 @@ public:
             return ranges_[index];
         }
         else {
-            return std::make_pair(InvalidIndex, 0);
+            return std::make_pair(0, 0);
         }
     }
 
     std::pair<std::size_t, std::size_t> GetRangeContainsPosition(std::size_t position) const;
 
     bool IsPositionInRange(std::size_t position) const {
-        return GetRangeContainsPosition(position).first != InvalidIndex;
+        return GetRangeContainsPosition(position).second != 0;
     }
 
     RangeManager(RangeManager&) = delete;

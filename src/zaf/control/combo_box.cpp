@@ -369,6 +369,7 @@ void ComboBox::MouseClick() {
 
     //Save current selected index in order to recover when the window closed.
     recovered_selected_index_ = drop_down_list_box_->GetFirstSelectedItemIndex();
+    need_recover_selected_index_ = true;
 
     PopupDropDownWindow();
 }
@@ -435,16 +436,16 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
 
 void ComboBox::DropDownWindowClose() {
 
-    if (! recovered_selected_index_.has_value()) {
+    if (!need_recover_selected_index_) {
         return;
     }
 
     //Recover the selected index.
-    if (recovered_selected_index_.value() == InvalidIndex) {
-        drop_down_list_box_->UnselectAllItems();
+    if (recovered_selected_index_) {
+        drop_down_list_box_->SelectItemAtIndex(*recovered_selected_index_);
     }
     else {
-        drop_down_list_box_->SelectItemAtIndex(recovered_selected_index_.value());
+        drop_down_list_box_->UnselectAllItems();
     }
 }
 
@@ -452,12 +453,12 @@ void ComboBox::DropDownWindowClose() {
 void ComboBox::DropDownListBoxMouseMove(const Point& position) {
 
     auto index = drop_down_list_box_->FindItemIndexAtPosition(position);
-    if (index == InvalidIndex) {
+    if (!index) {
         return;
     }
 
     auto guard = drop_down_list_box_action_.Set(DropDownListBoxAction::Nothing);
-    drop_down_list_box_->SelectItemAtIndex(index);
+    drop_down_list_box_->SelectItemAtIndex(*index);
 }
 
 
@@ -497,27 +498,30 @@ bool ComboBox::SelectNextDropDownListItem(bool reverse) {
         return false;
     }
 
-    std::size_t selected_index = drop_down_list_box_->GetFirstSelectedItemIndex();
-    if (selected_index == InvalidIndex) {
-        selected_index = reverse ? item_count - 1 : 0;
+    auto old_selected_index = drop_down_list_box_->GetFirstSelectedItemIndex();
+
+    std::size_t new_selected_index{};
+    if (!old_selected_index) {
+        new_selected_index = reverse ? item_count - 1 : 0;
     }
     else {
         
+        new_selected_index = *old_selected_index;
         if (reverse) {
-            if (selected_index > 0) {
-                --selected_index;
+            if (new_selected_index > 0) {
+                --new_selected_index;
             }
         }
         else {
-            if (selected_index < item_count - 1) {
-                ++selected_index;
+            if (new_selected_index < item_count - 1) {
+                ++new_selected_index;
             }
         }
     }
 
     auto guard = drop_down_list_box_action_.Set(DropDownListBoxAction::ChangeText);
-    drop_down_list_box_->SelectItemAtIndex(selected_index);
-    drop_down_list_box_->ScrollToItemAtIndex(selected_index);
+    drop_down_list_box_->SelectItemAtIndex(new_selected_index);
+    drop_down_list_box_->ScrollToItemAtIndex(new_selected_index);
     return true;
 }
 
@@ -529,15 +533,15 @@ void ComboBox::DropDownListBoxSelectionChange() {
     }
 
     //Selection is changed, do not recover previous selected index.
-    recovered_selected_index_.reset();
+    need_recover_selected_index_ = false;
 
     auto selected_index = drop_down_list_box_->GetFirstSelectedItemIndex();
-    if (selected_index != InvalidIndex) {
+    if (selected_index) {
 
         auto delegate = drop_down_list_box_->GetDelegate();
         auto text = delegate->GetItemText(
-            selected_index, 
-            drop_down_list_box_->GetItemDataAtIndex(selected_index));
+            *selected_index, 
+            drop_down_list_box_->GetItemDataAtIndex(*selected_index));
 
         ChangeSelectionText(text, TextChangeSource::DropDownListBox);
         NotifySelectionChange();

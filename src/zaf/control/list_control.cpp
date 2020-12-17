@@ -176,7 +176,7 @@ std::vector<std::size_t> ListControl::GetAllSelectedItemIndexes() const {
 }
 
 
-std::size_t ListControl::GetFirstSelectedItemIndex() const {
+std::optional<std::size_t> ListControl::GetFirstSelectedItemIndex() const {
     return implementation_->GetFirstSelectedItemIndex();
 }
 
@@ -184,11 +184,11 @@ std::size_t ListControl::GetFirstSelectedItemIndex() const {
 std::shared_ptr<Object> ListControl::GetFirstSelectedItemData() const {
 
     auto index = GetFirstSelectedItemIndex();
-    if (index == InvalidIndex) {
+    if (!index) {
         return nullptr;
     }
 
-    return GetItemDataAtIndex(index);
+    return GetItemDataAtIndex(*index);
 }
 
 
@@ -202,7 +202,7 @@ void ListControl::ScrollToItemAtIndex(std::size_t index) {
 }
 
 
-std::size_t ListControl::FindItemIndexAtPosition(const Point& position) const {
+std::optional<std::size_t> ListControl::FindItemIndexAtPosition(const Point& position) const {
     return implementation_->FindItemIndexAtPosition(position);
 }
 
