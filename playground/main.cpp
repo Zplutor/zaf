@@ -30,6 +30,7 @@
 #include <zaf/control/tree_control.h>
 #include <zaf/control/tree_data_source.h>
 #include <zaf/control/tree_control_delegate.h>
+#include <zaf/control/scroll_bar.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
@@ -242,6 +243,7 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
     auto tree_control = zaf::Create<zaf::TreeControl>();
     tree_control->SetName(L"Tested tree control");
     tree_control->SetRect(zaf::Rect{ 10, 10, 300, 400 });
+    tree_control->GetVerticalScrollBar()->SetSmallChangeValue(30);
     tree_control->SetDataSource(item_source);
     tree_control->SetDelegate(item_source);
     tree_control->SetSelectionMode(zaf::SelectionMode::ExtendedMultiple);

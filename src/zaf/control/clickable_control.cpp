@@ -106,10 +106,14 @@ bool ClickableControl::MouseDown(const Point& position, const MouseMessage& mess
 
 bool ClickableControl::MouseUp(const Point& position, const MouseMessage& message) {
 
-    if (message.GetMouseButton() == MouseButton::Left) {
-		EndPress(PressType::Mouse);
+	if (is_mouse_press_) {
+		if (message.GetMouseButton() == MouseButton::Left) {
+			EndPress(PressType::Mouse);
+			return true;
+		}
 	}
-    return true;
+
+	return __super::MouseUp(position, message);
 }
 
 

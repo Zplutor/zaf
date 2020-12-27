@@ -20,7 +20,8 @@ void GeneralLayouter::Layout() {
     LayoutScrollBars(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     LayoutScrollContainerControl(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     LayoutScrollContentControlSize(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
-    AdjustScrollBarValuesWithGeneralScrollContentControl();
+    AdjustScrollBarValueRanges();
+    AdjustScrollBarLargeChangeValues();
 }
 
 
@@ -100,7 +101,7 @@ Size GeneralLayouter::GetExpectedScrollContentControlSize() {
 }
 
 
-void GeneralLayouter::AdjustScrollBarValuesWithGeneralScrollContentControl() {
+void GeneralLayouter::AdjustScrollBarValueRanges() {
 
     const auto& scroll_content_control = GetScrollableControl()->GetScrollContentControl();
     const auto& scroll_container_control = GetScrollableControl()->GetScrollContainerControl();
@@ -108,15 +109,29 @@ void GeneralLayouter::AdjustScrollBarValuesWithGeneralScrollContentControl() {
     const auto& horizontal_scroll_bar = GetHorizontalScrollBar();
 
     const Size& content_size = scroll_content_control->GetSize();
-    const Size& content_container_size = scroll_container_control->GetContentSize();
+    const Size& container_size = scroll_container_control->GetContentSize();
 
-    int vertical_scroll_value_range = static_cast<int>(content_size.height - content_container_size.height);
+    int vertical_scroll_value_range = static_cast<int>(content_size.height - container_size.height);
     vertical_scroll_bar->SetValueRange(0, vertical_scroll_value_range);
     vertical_scroll_bar->SetIsEnabled(vertical_scroll_value_range != 0);
 
-    int horizontal_scroll_value_range = static_cast<int>(content_size.width - content_container_size.width);
+    int horizontal_scroll_value_range = static_cast<int>(content_size.width - container_size.width);
     horizontal_scroll_bar->SetValueRange(0, horizontal_scroll_value_range);
     horizontal_scroll_bar->SetIsEnabled(horizontal_scroll_value_range != 0);
+}
+
+
+void GeneralLayouter::AdjustScrollBarLargeChangeValues() {
+
+    if (!GetScrollableControl()->AutoChangeScrollBarLargeChangeValue()) {
+        return;
+    }
+
+    const Size& container_size = 
+        GetScrollableControl()->GetScrollContainerControl()->GetContentSize();
+
+    GetVerticalScrollBar()->SetLargeChangeValue(static_cast<int>(container_size.height));
+    GetHorizontalScrollBar()->SetLargeChangeValue(static_cast<int>(container_size.width));
 }
 
 

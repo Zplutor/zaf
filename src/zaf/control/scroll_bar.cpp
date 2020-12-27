@@ -261,11 +261,11 @@ void ScrollBar::SetSmallChangeValue(int value) {
 int ScrollBar::GetLargeChangeValue() const {
 
     auto value = GetPropertyMap().TryGetProperty<int>(property::LargeChangeValue);
-    if (value != nullptr) {
+    if (value) {
         return *value;
     }
     else {
-        return 10;
+        return GetSmallChangeValue();
     }
 }
 

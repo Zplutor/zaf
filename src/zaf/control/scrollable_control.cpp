@@ -18,10 +18,12 @@ std::shared_ptr<Control> CreateDefaultScrollContentControl() {
     return control;
 }
 
-const wchar_t* const kAllowHorizontalScrollPropertyName = L"AllowHorizontalScroll";
-const wchar_t* const kAllowVerticalScrollPropertyName = L"AllowVerticalScroll";
-const wchar_t* const kAutoHideScrollBarsPropertyName = L"AutoHideScrollBars";
-const wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness";
+constexpr wchar_t* const kAllowHorizontalScrollPropertyName = L"AllowHorizontalScroll";
+constexpr wchar_t* const kAllowVerticalScrollPropertyName = L"AllowVerticalScroll";
+constexpr wchar_t* const kAutoChangeScrollBarLargeChangeValuePropertyName =
+    L"AutoChangeScrollBarLargeChangeValue";
+constexpr wchar_t* const kAutoHideScrollBarsPropertyName = L"AutoHideScrollBars";
+constexpr wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness";
 
 }
 
@@ -189,6 +191,28 @@ void ScrollableControl::SetAutoHideScrollBars(bool auto_hide) {
     if (self_scrolling_control_ != nullptr) {
         self_scrolling_control_->SetAutoHideScrollBars(auto_hide);
     }
+
+    NeedRelayout();
+}
+
+
+bool ScrollableControl::AutoChangeScrollBarLargeChangeValue() const {
+
+    auto value = GetPropertyMap().TryGetProperty<bool>(
+        kAutoChangeScrollBarLargeChangeValuePropertyName);
+
+    if (value) {
+        return *value;
+    }
+    else {
+        return true;
+    }
+}
+
+
+void ScrollableControl::SetAutoChangeScrollBarLargeChangeValue(bool value) {
+
+    GetPropertyMap().SetProperty(kAutoChangeScrollBarLargeChangeValuePropertyName, value);
 
     NeedRelayout();
 }
