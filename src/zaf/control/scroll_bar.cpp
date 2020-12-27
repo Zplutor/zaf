@@ -569,7 +569,7 @@ void ScrollBar::ThumbDrag(const ScrollBarThumbDragInfo& event_info) {
 	}
 	else {
 		float mouse_offset = mouse_position_value - begin_drag_mouse_position_value;
-		int value_per_point = GetValuesPerThumbSlotPoint();
+		float value_per_point = GetValuePerThumbSlotPoint();
 		SetValue(static_cast<int>(begin_drag_value_ + mouse_offset * value_per_point));
 	}
 }
@@ -580,7 +580,7 @@ void ScrollBar::ThumbEndDrag(const ScrollBarThumbEndDragInfo& event_info) {
 }
 
 
-int ScrollBar::GetValuesPerThumbSlotPoint() {
+float ScrollBar::GetValuePerThumbSlotPoint() {
 
 	const Size& bar_size = GetSize();
 	const Size& thumb_size = thumb_->GetSize();
@@ -595,7 +595,7 @@ int ScrollBar::GetValuesPerThumbSlotPoint() {
     thumb_scroll_length -= GetArrowLength() * 2;
 
 	int value_range = max_value_ - min_value_;
-	return static_cast<int>(value_range / thumb_scroll_length);
+	return value_range / thumb_scroll_length;
 }
 
 

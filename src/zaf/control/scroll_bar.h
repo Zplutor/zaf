@@ -240,7 +240,7 @@ private:
 	void ThumbBeginDrag(const ScrollBarThumbBeginDragInfo& event_info);
 	void ThumbDrag(const ScrollBarThumbDragInfo& event_info);
 	void ThumbEndDrag(const ScrollBarThumbEndDragInfo& event_info);
-	int GetValuesPerThumbSlotPoint();
+	float GetValuePerThumbSlotPoint();
 
 private:
 	std::shared_ptr<ScrollBarArrow> incremental_arrow_;
