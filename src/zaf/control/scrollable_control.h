@@ -74,8 +74,8 @@ public:
      */
     void SetAutoHideScrollBars(bool auto_hide);
 
-    bool AutoChangeScrollBarLargeChangeValue() const;
-    void SetAutoChangeScrollBarLargeChangeValue(bool value);
+    bool AutoAdjustScrollBarLargeChange() const;
+    void SetAutoAdjustScrollBarLargeChange(bool value);
 
     /**
      Get the vertical scroll bar.

@@ -83,6 +83,17 @@ public:
     std::optional<std::size_t> FindItemIndexAtPosition(const Point& position);
     std::optional<std::size_t> GetListItemIndex(const std::shared_ptr<ListItem>& item);
 
+    bool AutoAdjustScrollBarSmallChange() const {
+        return auto_adjust_scroll_bar_small_change_;
+    }
+
+    void SetAutoAdjustScrollBarSmallChange(bool value) {
+        auto_adjust_scroll_bar_small_change_ = value;
+        if (auto_adjust_scroll_bar_small_change_) {
+            AdjustScrollBarSmallChange();
+        }
+    }
+
 private:
     friend class ListControlExtendedMultipleSelectStrategy;
     friend class ListControlSingleSelectStrategy;
@@ -104,6 +115,7 @@ private:
 
     void RegisterScrollBarEvents();
     void UnregisterScrollBarEvents(const std::shared_ptr<ScrollBar>& scroll_bar);
+    void AdjustScrollBarSmallChange();
 
     void RegisterDataSourceEvents();
     void UnregisterDataSourceEvents();
@@ -178,6 +190,7 @@ private:
     bool disable_on_layout_{};
 
     SelectionMode selection_mode_{ SelectionMode::Single };
+    bool auto_adjust_scroll_bar_small_change_{ true };
 
     DataSourceChangeEvent data_source_change_event_;
     DelegateChangeEvent delegate_change_event_;

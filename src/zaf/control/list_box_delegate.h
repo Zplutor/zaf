@@ -7,7 +7,7 @@ namespace zaf {
 class ListBoxDelegate : public ListControlDelegate {
 public:
     bool HasVariableItemHeight() override {
-        return true;
+        return false;
     }
 
     float EstimateItemHeight(

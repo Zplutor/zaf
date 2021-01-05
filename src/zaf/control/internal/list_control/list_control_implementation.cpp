@@ -115,6 +115,39 @@ void ListControlImplementation::UnregisterScrollBarEvents(
 }
 
 
+void ListControlImplementation::AdjustScrollBarSmallChange() {
+
+    if (!AutoAdjustScrollBarSmallChange()) {
+        return;
+    }
+
+    auto delegate = delegate_.lock();
+    if (!delegate) {
+        return;
+    }
+
+    //Don't adjust small change if item height is variable.
+    if (delegate->HasVariableItemHeight()) {
+        return;
+    }
+
+    auto data_source = data_source_.lock();
+    if (!data_source) {
+        return;
+    }
+
+    if (data_source->GetDataCount() <= 0) {
+        return;
+    }
+
+    auto item_data = data_source->GetDataAtIndex(0);
+    auto item_height = delegate->EstimateItemHeight(0, item_data);
+
+    auto vertical_scroll_bar = owner_.GetVerticalScrollBar();
+    vertical_scroll_bar->SetSmallChange(static_cast<int>(item_height));
+}
+
+
 void ListControlImplementation::SetDataSource(const std::shared_ptr<ListDataSource>& data_source) {
 
     UnregisterDataSourceEvents();
@@ -276,6 +309,7 @@ void ListControlImplementation::OnVerticalScrollBarChange(
     }
 
     RegisterScrollBarEvents();
+    AdjustScrollBarSmallChange();
 }
 
 
@@ -298,6 +332,7 @@ void ListControlImplementation::Reload() {
 
     UpdateContentHeight();
     UpdateVisibleItems();
+    AdjustScrollBarSmallChange();
 }
 
 
@@ -489,6 +524,9 @@ std::shared_ptr<ListItem> ListControlImplementation::CreateItem(std::size_t inde
 
 void ListControlImplementation::ItemAdd(const ListDataSourceDataAddInfo& event_info) {
 
+    //Adjust scroll bar small change if there is no items before adding.
+    bool need_adjust_scroll_bar_small_change = visible_items_.empty();
+
     bool selection_changed = item_selection_manager_.AdjustSelectionByAddingIndexes(
         event_info.index, 
         event_info.count);
@@ -513,6 +551,10 @@ void ListControlImplementation::ItemAdd(const ListDataSourceDataAddInfo& event_i
 
     if (selection_changed) {
         NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
+    }
+
+    if (need_adjust_scroll_bar_small_change) {
+        AdjustScrollBarSmallChange();
     }
 }
 

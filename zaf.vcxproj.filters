@@ -171,9 +171,6 @@
     <ClCompile Include="src\zaf\control\label.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\scroll_bar.cpp">
-      <Filter>zaf\control</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\scrollable_control.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
@@ -595,6 +592,15 @@
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_node_children_adder.cpp">
       <Filter>zaf\control\internal\tree_control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\scroll_bar.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\scroll_bar_arrow.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\scroll_bar_thumb.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -646,9 +652,6 @@
       <Filter>zaf\control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\label.h">
-      <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\scroll_bar.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\scrollable_control.h">
@@ -1446,6 +1449,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_node_children_adder.h">
       <Filter>zaf\control\internal\tree_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\scroll_bar_arrow.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\scroll_bar.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\scroll_bar_thumb.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

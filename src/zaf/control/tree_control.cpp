@@ -88,6 +88,15 @@ void TreeControl::SetDelegate(const std::shared_ptr<TreeControlDelegate>& delega
 }
 
 
+bool TreeControl::AutoAdjustScrollBarSmallChange() const {
+    return implementation_->GetListImplementation().AutoAdjustScrollBarSmallChange();
+}
+
+void TreeControl::SetAutoAdjustScrollBarSmallChange(bool value) {
+    implementation_->GetListImplementation().SetAutoAdjustScrollBarSmallChange(value);
+}
+
+
 void TreeControl::SetSelectionMode(SelectionMode selection_mode) {
     implementation_->GetListImplementation().SetSelectionMode(selection_mode);
 }

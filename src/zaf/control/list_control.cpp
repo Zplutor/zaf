@@ -119,6 +119,15 @@ std::shared_ptr<Object> ListControl::GetItemDataAtIndex(std::size_t index) const
 }
 
 
+bool ListControl::AutoAdjustScrollBarSmallChange() const {
+    return implementation_->AutoAdjustScrollBarSmallChange();
+}
+
+void ListControl::SetAutoAdjustScrollBarSmallChange(bool value) {
+    implementation_->SetAutoAdjustScrollBarSmallChange(value);
+}
+
+
 SelectionMode ListControl::GetSelectionMode() const {
     return implementation_->GetSelectionMode();
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <zaf/control/clickable_control.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
@@ -177,11 +178,16 @@ public:
 		ChangeValueRange(min_value, max_value, false);
 	}
 
-    int GetSmallChangeValue() const;
-    void SetSmallChangeValue(int value);
+    int GetSmallChange() const;
+    void SetSmallChange(int value);
 
-    int GetLargeChangeValue() const;
-    void SetLargeChangeValue(int value);
+    int GetLargeChange() const;
+    void SetLargeChange(int value);
+
+    int GetPageSize() const {
+        return page_size_;
+    }
+    void SetPageSize(int value);
 
     /**
      Perform a wheel action on the scroll bar.
@@ -222,9 +228,12 @@ private:
 	void UninitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb);
 	void ApplyOrientationToChildren();
 
-	void CalculateThumbPositionAndLength(float slot_length, 
-										 float& thumb_position, 
-										 float& thumb_length);
+	void CalculateThumbPositionAndLength(
+        float track_length,
+        float& thumb_position, 
+		float& thumb_length);
+    float CalculateThumbLength(float track_length);
+    float CalculateThumbPosition(float track_length, float thumb_length);
 	void ChangeVerticalRectToHorizontalRect(Rect& rect);
 
 	void ChangeValueRange(int min_value, int max_value, bool max_value_has_priority);
@@ -257,6 +266,8 @@ private:
 	int max_value_;
 	int value_;
 
+    int page_size_{};
+
 	int begin_drag_value_;
 	Point begin_drag_mouse_position_;
 
@@ -270,244 +281,6 @@ private:
 class ScrollBarScrollInfo {
 public:
     std::shared_ptr<ScrollBar> scroll_bar;
-};
-
-
-/**
- Represents an arrow control in a scroll bar.
- */
-class ScrollBarArrow : public ClickableControl {
-public:
-    ZAF_DECLARE_REFLECTION_TYPE
-
-public:
-    /**
-     Defines directions of an arrow.
-     */
-	enum class Direction {
-
-        /**
-         The arrow's direction is left.
-         */
-		Left,
-
-        /**
-         The arrow's direction is up.
-         */
-		Up,
-
-        /**
-         The arrow's direction is right.
-         */
-		Right,
-
-        /**
-         The arrow's direction is down.
-         */
-		Down,
-	};
-
-public:
-	ScrollBarArrow();
-
-    /**
-     Get arrow color.
-     */
-    Color GetArrowColor() const {
-        return GetArrowColorPicker()(*this);
-    }
-
-    /**
-     Get the color picker of arrow.
-     */
-    ColorPicker GetArrowColorPicker() const;
-
-    /**
-     Set arrow color.
-     */
-    void SetArrowColor(const Color& color) {
-        SetArrowColorPicker(CreateColorPicker(color));
-    }
-
-    /**
-     Set the color picker of arrow.
-     */
-    void SetArrowColorPicker(const ColorPicker& color_picker);
-
-    /**
-     Get the arrow's direction.
-
-     The default direction is up.
-     */
-	Direction GetDirection() const {
-		return direction_;
-	}
-
-    /**
-     Get begin press event.
-
-     This event is raised when the mouse left button is pressed for a while. 
-     */
-    Observable<ScrollBarArrowBeginPressInfo> BeginPressEvent() {
-        return begin_press_event_.GetObservable();
-    }
-
-    /**
-     Get end press event.
-
-     This event is raised when the mouse left button is released after being pressed for a while.
-     */
-    Observable<ScrollBarArrowEndPressInfo> EndPressEvent() {
-        return end_press_event_.GetObservable();
-    }
-
-protected:
-    void Initialize() override;
-	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
-	void MouseCapture() override;
-	void MouseRelease() override;
-
-private:
-    friend class ScrollBar;
-
-    void SetDirection(Direction direction) {
-        direction_ = direction;
-        NeedRepaint();
-    }
-
-private:
-	Direction direction_;
-
-    Subject<ScrollBarArrowBeginPressInfo> begin_press_event_;
-	Subject<ScrollBarArrowEndPressInfo> end_press_event_;
-};
-
-
-class ScrollBarArrowBeginPressInfo {
-public:
-    std::shared_ptr<ScrollBarArrow> scroll_bar_arrow;
-};
-
-class ScrollBarArrowEndPressInfo {
-public:
-    std::shared_ptr<ScrollBarArrow> scroll_bar_arrow;
-};
-
-
-/**
- Represents a thumb control in a control.
- */
-class ScrollBarThumb : public ClickableControl {
-public:
-    ZAF_DECLARE_REFLECTION_TYPE
-
-public:
-	ScrollBarThumb();
-
-    /**
-     Get thumb color.
-     */
-    Color GetThumbColor() const {
-        return GetThumbColorPicker()(*this);
-    }
-
-    /**
-     Get the color picker of thumb.
-     */
-    ColorPicker GetThumbColorPicker() const;
-
-    /**
-     Set thumb color.
-     */
-    void SetThumbColor(const Color& color) {
-        SetThumbColorPicker(CreateColorPicker(color));
-    }
-
-    /**
-     Set the color picker of thumb.
-     */
-    void SetThumbColorPicker(const ColorPicker& color_picker);
-
-    /**
-     Get a value indicating that whether the thumb is horizontal.
-
-     The default value is false.
-     */
-	bool IsHorizontal() const {
-		return is_horizontal_;
-	}
-
-    /**
-     Get a value indicating that whether the thumb is being dragged.
-     */
-	bool IsDragging() const {
-		return is_dragging_;
-	}
-
-    /**
-     Get begin drag event.
-
-     This event is raised when the thumb has begain being dragged.
-     */
-	Observable<ScrollBarThumbBeginDragInfo> BeginDragEvent() {
-        return begin_drag_event_.GetObservable();
-	}
-
-    /**
-     Get drag event. 
-
-     This event is raised when the thumb is beging dragged.
-     */
-	Observable<ScrollBarThumbDragInfo> DragEvent() {
-        return drag_event_.GetObservable();
-	}
-
-    /**
-     Get end drag event. 
-
-     This event is raised when the thumb has ended being dragged.
-     */
-	Observable<ScrollBarThumbEndDragInfo> EndDragEvent() {
-        return end_drag_event_.GetObservable();
-	}
-
-protected:
-    void Initialize() override;
-    void Paint(Canvas& canvas, const Rect& dirty_rect);
-	void MouseCapture() override;
-	void MouseRelease() override;
-    bool MouseMove(const Point& position, const MouseMessage& message) override;
-
-private:
-    friend class ScrollBar;
-
-    void SetIsHorizontal(bool is_horizontal) {
-        is_horizontal_ = is_horizontal;
-    }
-
-private:
-	bool is_horizontal_;
-	bool is_dragging_;
-
-    Subject<ScrollBarThumbBeginDragInfo> begin_drag_event_;
-	Subject<ScrollBarThumbDragInfo> drag_event_;
-	Subject<ScrollBarThumbEndDragInfo> end_drag_event_;
-};
-
-
-class ScrollBarThumbBeginDragInfo {
-public:
-    std::shared_ptr<ScrollBarThumb> scroll_bar_thumb;
-};
-
-class ScrollBarThumbDragInfo {
-public:
-    std::shared_ptr<ScrollBarThumb> scroll_bar_thumb;
-};
-
-class ScrollBarThumbEndDragInfo {
-public:
-    std::shared_ptr<ScrollBarThumb> scroll_bar_thumb;
 };
 
 }

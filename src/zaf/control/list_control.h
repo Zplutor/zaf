@@ -76,6 +76,9 @@ public:
 
     std::shared_ptr<Object> GetItemDataAtIndex(std::size_t index) const;
 
+    bool AutoAdjustScrollBarSmallChange() const;
+    void SetAutoAdjustScrollBarSmallChange(bool value);
+
     /**
      Get selection mode.
 

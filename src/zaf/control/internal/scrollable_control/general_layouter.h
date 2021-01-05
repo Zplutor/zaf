@@ -15,10 +15,13 @@ protected:
     void ScrollBarScroll(const ScrollBarScrollInfo& event_info) override;
 
 private:
-    void CanShowScrollBars(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar);
-    void LayoutScrollContentControlSize(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
+    void CanShowScrollBars(
+        bool& can_show_vertical_scroll_bar, 
+        bool& can_show_horizontal_scroll_bar);
+    void LayoutScrollContentControlSize(
+        bool can_show_vertical_scroll_bar, 
+        bool can_show_horizontal_scroll_bar);
     void AdjustScrollBarValueRanges();
-    void AdjustScrollBarLargeChangeValues();
     Size GetExpectedScrollContentControlSize();
 };
 

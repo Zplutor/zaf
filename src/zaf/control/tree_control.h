@@ -28,6 +28,9 @@ public:
     void SetDataSource(const std::shared_ptr<TreeDataSource>& data_source);
     void SetDelegate(const std::shared_ptr<TreeControlDelegate>& delegate);
 
+    bool AutoAdjustScrollBarSmallChange() const;
+    void SetAutoAdjustScrollBarSmallChange(bool value);
+
     void SetSelectionMode(SelectionMode selection_mode);
 
     std::vector<std::shared_ptr<Object>> GetAllSelectedItems() const;

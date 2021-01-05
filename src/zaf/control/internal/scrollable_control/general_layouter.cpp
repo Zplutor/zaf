@@ -21,11 +21,12 @@ void GeneralLayouter::Layout() {
     LayoutScrollContainerControl(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     LayoutScrollContentControlSize(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     AdjustScrollBarValueRanges();
-    AdjustScrollBarLargeChangeValues();
 }
 
 
-void GeneralLayouter::CanShowScrollBars(bool& can_show_vertical_scroll_bar, bool& can_show_horizontal_scroll_bar) {
+void GeneralLayouter::CanShowScrollBars(
+    bool& can_show_vertical_scroll_bar,
+    bool& can_show_horizontal_scroll_bar) {
 
     Rect content_rect = GetScrollableControl()->GetContentRect();
     float content_width = content_rect.size.width;
@@ -42,8 +43,15 @@ void GeneralLayouter::CanShowScrollBars(bool& can_show_vertical_scroll_bar, bool
         return allow && (!auto_hide_scroll_bars || (expected > actual));
     };
 
-    can_show_vertical_scroll_bar = determine(allow_vertical_scroll, expected_scroll_content_control_size.height, content_height);
-    can_show_horizontal_scroll_bar = determine(allow_horizontal_scroll, expected_scroll_content_control_size.width, content_width);
+    can_show_vertical_scroll_bar = determine(
+        allow_vertical_scroll, 
+        expected_scroll_content_control_size.height,
+        content_height);
+
+    can_show_horizontal_scroll_bar = determine(
+        allow_horizontal_scroll, 
+        expected_scroll_content_control_size.width,
+        content_width);
 
     float scroll_bar_thickness = GetScrollableControl()->GetScrollBarThickness();
 
@@ -65,7 +73,9 @@ void GeneralLayouter::CanShowScrollBars(bool& can_show_vertical_scroll_bar, bool
 }
 
 
-void GeneralLayouter::LayoutScrollContentControlSize(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
+void GeneralLayouter::LayoutScrollContentControlSize(
+    bool can_show_vertical_scroll_bar, 
+    bool can_show_horizontal_scroll_bar) {
 
     const auto& scroll_content_control = GetScrollableControl()->GetScrollContentControl();
 
@@ -110,28 +120,33 @@ void GeneralLayouter::AdjustScrollBarValueRanges() {
 
     const Size& content_size = scroll_content_control->GetSize();
     const Size& container_size = scroll_container_control->GetContentSize();
+    auto auto_adjust_large_change = GetScrollableControl()->AutoAdjustScrollBarLargeChange();
 
-    int vertical_scroll_value_range = static_cast<int>(content_size.height - container_size.height);
-    vertical_scroll_bar->SetValueRange(0, vertical_scroll_value_range);
-    vertical_scroll_bar->SetIsEnabled(vertical_scroll_value_range != 0);
+    {
+        Control::UpdateGuard update_guard(*vertical_scroll_bar);
 
-    int horizontal_scroll_value_range = static_cast<int>(content_size.width - container_size.width);
-    horizontal_scroll_bar->SetValueRange(0, horizontal_scroll_value_range);
-    horizontal_scroll_bar->SetIsEnabled(horizontal_scroll_value_range != 0);
-}
+        auto max_value = static_cast<int>(content_size.height - container_size.height);
+        vertical_scroll_bar->SetIsEnabled(max_value > 0);
+        vertical_scroll_bar->SetValueRange(0, max_value);
+        vertical_scroll_bar->SetPageSize(static_cast<int>(container_size.height));
 
-
-void GeneralLayouter::AdjustScrollBarLargeChangeValues() {
-
-    if (!GetScrollableControl()->AutoChangeScrollBarLargeChangeValue()) {
-        return;
+        if (auto_adjust_large_change) {
+            vertical_scroll_bar->SetLargeChange(static_cast<int>(container_size.height));
+        }
     }
 
-    const Size& container_size = 
-        GetScrollableControl()->GetScrollContainerControl()->GetContentSize();
+    {
+        Control::UpdateGuard update_guard(*horizontal_scroll_bar);
 
-    GetVerticalScrollBar()->SetLargeChangeValue(static_cast<int>(container_size.height));
-    GetHorizontalScrollBar()->SetLargeChangeValue(static_cast<int>(container_size.width));
+        auto max_value = static_cast<int>(content_size.width - container_size.width);
+        horizontal_scroll_bar->SetIsEnabled(max_value > 0);
+        horizontal_scroll_bar->SetValueRange(0, max_value);
+        horizontal_scroll_bar->SetPageSize(static_cast<int>(container_size.width));
+
+        if (auto_adjust_large_change) {
+            horizontal_scroll_bar->SetLargeChange(static_cast<int>(container_size.width));
+        }
+    }
 }
 
 

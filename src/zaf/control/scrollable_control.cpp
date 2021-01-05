@@ -20,8 +20,8 @@ std::shared_ptr<Control> CreateDefaultScrollContentControl() {
 
 constexpr wchar_t* const kAllowHorizontalScrollPropertyName = L"AllowHorizontalScroll";
 constexpr wchar_t* const kAllowVerticalScrollPropertyName = L"AllowVerticalScroll";
-constexpr wchar_t* const kAutoChangeScrollBarLargeChangeValuePropertyName =
-    L"AutoChangeScrollBarLargeChangeValue";
+constexpr wchar_t* const kAutoAdjustScrollBarLargeChangePropertyName =
+    L"AutoAdjustScrollBarLargeChange";
 constexpr wchar_t* const kAutoHideScrollBarsPropertyName = L"AutoHideScrollBars";
 constexpr wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness";
 
@@ -196,10 +196,10 @@ void ScrollableControl::SetAutoHideScrollBars(bool auto_hide) {
 }
 
 
-bool ScrollableControl::AutoChangeScrollBarLargeChangeValue() const {
+bool ScrollableControl::AutoAdjustScrollBarLargeChange() const {
 
     auto value = GetPropertyMap().TryGetProperty<bool>(
-        kAutoChangeScrollBarLargeChangeValuePropertyName);
+        kAutoAdjustScrollBarLargeChangePropertyName);
 
     if (value) {
         return *value;
@@ -210,9 +210,9 @@ bool ScrollableControl::AutoChangeScrollBarLargeChangeValue() const {
 }
 
 
-void ScrollableControl::SetAutoChangeScrollBarLargeChangeValue(bool value) {
+void ScrollableControl::SetAutoAdjustScrollBarLargeChange(bool value) {
 
-    GetPropertyMap().SetProperty(kAutoChangeScrollBarLargeChangeValuePropertyName, value);
+    GetPropertyMap().SetProperty(kAutoAdjustScrollBarLargeChangePropertyName, value);
 
     NeedRelayout();
 }
