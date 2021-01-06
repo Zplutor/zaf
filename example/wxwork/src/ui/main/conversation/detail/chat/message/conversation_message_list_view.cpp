@@ -33,13 +33,15 @@ void ConversationMessageListView::Initialize() {
     SetBorder(0);
     SetSelectionMode(zaf::SelectionMode::None);
     SetAllowHorizontalScroll(false);
+    SetAutoAdjustScrollBarSmallChange(false);
+    SetAutoAdjustScrollBarLargeChange(false);
     SetBackgroundColor(zaf::Color::FromRGB(0xECF0F3));
     GetItemContainer()->SetPadding(zaf::Frame(15, 0, 15, 13));
     SetDataSource(std::dynamic_pointer_cast<zaf::ListDataSource>(shared_from_this()));
     SetDelegate(std::dynamic_pointer_cast<zaf::ListControlDelegate>(shared_from_this()));
 
     auto scroll_bar = GetVerticalScrollBar();
-    scroll_bar->SetSmallChangeValue(14);
+    scroll_bar->SetSmallChange(14);
 
     Subscriptions() += Service::GetInstance().GetMessageAddEvent().Subscribe(
         std::bind(&ConversationMessageListView::OnMessageAdd, this, std::placeholders::_1));

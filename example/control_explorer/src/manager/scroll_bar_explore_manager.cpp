@@ -111,9 +111,9 @@ std::shared_ptr<PropertyItem> ScrollBarExploreManager::CreateSmallChangeValuePro
 
     auto scroll_bar = GetScrollBar();
     return CreateIntegerPropertyItem(
-        L"Small change value",
-        [scroll_bar]() { return scroll_bar->GetSmallChangeValue(); },
-        [scroll_bar](std::int64_t value) { scroll_bar->SetSmallChangeValue(static_cast<int>(value)); });
+        L"Small change",
+        [scroll_bar]() { return scroll_bar->GetSmallChange(); },
+        [scroll_bar](std::int64_t value) { scroll_bar->SetSmallChange(static_cast<int>(value)); });
 }
 
 
@@ -121,7 +121,7 @@ std::shared_ptr<PropertyItem> ScrollBarExploreManager::CreateLargeChangeValuePro
 
     auto scroll_bar = GetScrollBar();
     return CreateIntegerPropertyItem(
-        L"Large change value",
-        [scroll_bar]() { return scroll_bar->GetLargeChangeValue(); },
-        [scroll_bar](std::int64_t value) { scroll_bar->SetLargeChangeValue(static_cast<int>(value)); });
+        L"Large change",
+        [scroll_bar]() { return scroll_bar->GetLargeChange(); },
+        [scroll_bar](std::int64_t value) { scroll_bar->SetLargeChange(static_cast<int>(value)); });
 }

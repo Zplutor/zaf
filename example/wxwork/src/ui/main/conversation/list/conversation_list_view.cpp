@@ -22,10 +22,12 @@ void ConversationListView::Initialize() {
 
     SetBorder(0);
     SetAllowHorizontalScroll(false);
+    SetAutoAdjustScrollBarSmallChange(false);
+    SetAutoAdjustScrollBarLargeChange(false);
 
     auto vertical_scroll_bar = GetVerticalScrollBar();
-    vertical_scroll_bar->SetSmallChangeValue(64);
-    vertical_scroll_bar->SetLargeChangeValue(64 * 10);
+    vertical_scroll_bar->SetSmallChange(64);
+    vertical_scroll_bar->SetLargeChange(64 * 10);
 
     SetDataSource(std::dynamic_pointer_cast<zaf::ListDataSource>(shared_from_this()));
     SetDelegate(std::dynamic_pointer_cast<zaf::ListControlDelegate>(shared_from_this()));
