@@ -9,9 +9,9 @@ class Stream;
 
 class XamlReader {
 public:
-    static std::shared_ptr<XamlReader> CreateFromString(const std::wstring& xaml);
-    static std::shared_ptr<XamlReader> CreateFromString(const std::string& xaml);
-    static std::shared_ptr<XamlReader> CreateFromStream(const Stream& stream);
+    static std::shared_ptr<XamlReader> FromString(const std::wstring& xaml);
+    static std::shared_ptr<XamlReader> FromString(const std::string& xaml);
+    static std::shared_ptr<XamlReader> FromStream(const Stream& stream);
 
 public:
     XamlReader(IXmlReader* handle);

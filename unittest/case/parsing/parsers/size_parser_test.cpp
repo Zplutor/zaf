@@ -20,7 +20,7 @@ TEST(SizeParser, ParseFromNode) {
     auto xaml = R"(
         <Size Width="100" Height="101" />
     )";
-    auto node = zaf::XamlReader::CreateFromString(xaml)->Read();
+    auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::Size size;
     zaf::SizeParser parser;
@@ -28,7 +28,7 @@ TEST(SizeParser, ParseFromNode) {
     ASSERT_EQ(size, zaf::Size(100, 101));
 
     xaml = "<Size><Size.Width>102</Size.Width><Size.Height>103</Size.Height></Size>";
-    node = zaf::XamlReader::CreateFromString(xaml)->Read();
+    node = zaf::XamlReader::FromString(xaml)->Read();
 
     parser.ParseFromNode(*node, size);
     ASSERT_EQ(size, zaf::Size(102, 103));

@@ -21,7 +21,7 @@ TEST(FrameParser, ParseFromNodeWithAttribute) {
     auto xaml = R"(
         <Frame Left="20" Top="21" Right="22" Bottom="23" />
     )";
-    auto node = zaf::XamlReader::CreateFromString(xaml)->Read();
+    auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::Frame frame;
     zaf::FrameParser parser;
@@ -36,7 +36,7 @@ TEST(FrameParser, ParseFromNodeWithAttribute) {
             <Frame.Bottom>27</Frame.Bottom>
         </Frame>
     )";
-    node = zaf::XamlReader::CreateFromString(xaml)->Read();
+    node = zaf::XamlReader::FromString(xaml)->Read();
 
     parser.ParseFromNode(*node, frame);
     ASSERT_EQ(frame, zaf::Frame(24, 25, 26, 27));
@@ -46,7 +46,7 @@ TEST(FrameParser, ParseFromNodeWithAttribute) {
 TEST(FrameParser, ParseFromNodeWithValue) {
 
     auto xaml = "<Frame>9,8,7,6</Frame>";
-    auto node = zaf::XamlReader::CreateFromString(xaml)->Read();
+    auto node = zaf::XamlReader::FromString(xaml)->Read();
     zaf::Frame frame;
     zaf::FrameParser parser;
     parser.ParseFromNode(*node, frame);

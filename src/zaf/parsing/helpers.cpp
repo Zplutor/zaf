@@ -9,7 +9,7 @@ namespace internal {
 
 std::shared_ptr<ReflectionObject> CreateReflectionObjectFromXaml(const std::string& xaml) {
 
-    auto xaml_reader = XamlReader::CreateFromString(xaml);
+    auto xaml_reader = XamlReader::FromString(xaml);
     auto xaml_node = xaml_reader->Read();
 
     auto object = CreateObjectByName(xaml_node->GetValue());

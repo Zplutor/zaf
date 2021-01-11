@@ -38,7 +38,7 @@ void ParseObject(ReflectionType& type, ReflectionObject& object) {
     }
 
     auto stream = GetResourceManager().LoadUri(resource_uri);
-    auto xaml_reader = XamlReader::CreateFromStream(stream);
+    auto xaml_reader = XamlReader::FromStream(stream);
 
     auto root_node = xaml_reader->Read();
     if (root_node->GetValue() != type.GetName()) {

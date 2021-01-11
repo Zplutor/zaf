@@ -3,7 +3,7 @@
 
 TEST(XamlReader, ReadFromWideString) {
 
-    auto xaml_reader = zaf::XamlReader::CreateFromString(L"<Tag>≤‚ ‘</Tag>");
+    auto xaml_reader = zaf::XamlReader::FromString(L"<Tag>≤‚ ‘</Tag>");
     ASSERT_NE(xaml_reader, nullptr);
 
     auto node = xaml_reader->Read();

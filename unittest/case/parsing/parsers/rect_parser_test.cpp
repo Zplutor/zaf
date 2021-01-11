@@ -7,7 +7,7 @@
 TEST(RectParser, ParseFromNode) {
 
     auto xaml = "<Rect Position=\"10,11\" Size=\"12,13\" />";
-    auto node = zaf::XamlReader::CreateFromString(xaml)->Read();
+    auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::Rect rect;
     zaf::RectParser parser;
@@ -22,7 +22,7 @@ TEST(RectParser, ParseFromNode) {
         "       <Size.Height>17</Size.Height>"
         "   </Rect.Size>"
         "</Rect>";
-    node = zaf::XamlReader::CreateFromString(xaml)->Read();
+    node = zaf::XamlReader::FromString(xaml)->Read();
 
     parser.ParseFromNode(*node, rect);
     ASSERT_EQ(rect, zaf::Rect(14, 15, 16, 17));

@@ -41,17 +41,17 @@ std::shared_ptr<XamlReader> CreateXamlReaderFromMemory(const void* data, std::si
 }
 
 
-std::shared_ptr<XamlReader> XamlReader::CreateFromString(const std::wstring& xaml) {
-    return CreateFromString(ToUtf8String(xaml));
+std::shared_ptr<XamlReader> XamlReader::FromString(const std::wstring& xaml) {
+    return FromString(ToUtf8String(xaml));
 }
 
 
-std::shared_ptr<XamlReader> XamlReader::CreateFromString(const std::string& xaml) {
+std::shared_ptr<XamlReader> XamlReader::FromString(const std::string& xaml) {
     return CreateXamlReaderFromMemory(xaml.data(), xaml.length());
 }
 
 
-std::shared_ptr<XamlReader> XamlReader::CreateFromStream(const Stream& stream) {
+std::shared_ptr<XamlReader> XamlReader::FromStream(const Stream& stream) {
 
     auto stream_handle = stream.GetHandle();
     auto xaml_reader_handle = CreateHandle(stream_handle);

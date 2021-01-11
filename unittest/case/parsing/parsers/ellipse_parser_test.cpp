@@ -9,7 +9,7 @@ TEST(EllipseParser, ParseFromNode) {
     auto xaml = R"(
         <Ellipse Position="40,41" XRadius="9" YRadius="10" />
     )";
-    auto node = zaf::XamlReader::CreateFromString(xaml)->Read();
+    auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::Ellipse ellipse;
     zaf::EllipseParser parser;
@@ -23,7 +23,7 @@ TEST(EllipseParser, ParseFromNode) {
             <Ellipse.YRadius>12</Ellipse.YRadius>
         </Ellipse>
     )";
-    node = zaf::XamlReader::CreateFromString(xaml)->Read();
+    node = zaf::XamlReader::FromString(xaml)->Read();
 
     parser.ParseFromNode(*node, ellipse);
     ASSERT_EQ(ellipse, zaf::Ellipse(42, 43, 11, 12));
