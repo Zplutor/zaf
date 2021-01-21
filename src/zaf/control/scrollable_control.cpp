@@ -3,6 +3,7 @@
 #include <zaf/control/internal/scrollable_control/self_scrolling_layouter.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/self_scrolling_control.h>
+#include <zaf/control/text_box.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/scrollable_control_parser.h>
@@ -71,7 +72,13 @@ void ScrollableControl::Initialize() {
 void ScrollableControl::InitializeScrollContentControl(const std::shared_ptr<Control>& control) {
 
     scroll_content_control_ = control;
-    scroll_content_control_->SetIsCachedPaintingEnabled(true);
+
+    //TextBox cannot enable cached painting due to incorrect painting behavior.
+    auto text_box = dynamic_cast<TextBox*>(control.get());
+    if (!text_box) {
+        scroll_content_control_->SetIsCachedPaintingEnabled(true);
+    }
+
     scroll_container_control_->AddChild(scroll_content_control_);
 
     self_scrolling_control_ = dynamic_cast<SelfScrollingControl*>(control.get());

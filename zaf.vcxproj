@@ -137,8 +137,10 @@
     <ClCompile Include="src\zaf\parsing\parsers\point_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\rect_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\rounded_rect_parser.cpp" />
+    <ClCompile Include="src\zaf\parsing\parsers\scrollable_control_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\size_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\textual_control_parser.cpp" />
+    <ClCompile Include="src\zaf\parsing\parsers\text_box_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\window_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\xaml_node.cpp" />
     <ClCompile Include="src\zaf\parsing\xaml_node_parse_helper.cpp" />

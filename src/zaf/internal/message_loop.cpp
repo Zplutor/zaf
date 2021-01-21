@@ -18,8 +18,8 @@ void MessageLoop::Run() {
                 if (window != nullptr) {
 
                     auto message = CreateMessage(msg.hwnd, msg.message, msg.wParam, msg.lParam);
-                    bool is_processed = window->PreprocessMessage(*std::dynamic_pointer_cast<KeyMessage>(message));
-
+                    auto& key_message = dynamic_cast<KeyMessage&>(*message);
+                    bool is_processed = window->PreprocessMessage(key_message);
                     if (is_processed) {
                         continue;
                     }

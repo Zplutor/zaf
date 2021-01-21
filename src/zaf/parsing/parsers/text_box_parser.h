@@ -6,9 +6,7 @@ namespace zaf {
 
 class TextBoxParser : public TextualControlParser {
 public:
-    void ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) override {
-
-    }
+    void ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object);
 };
 
 }
