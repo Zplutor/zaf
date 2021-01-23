@@ -3,7 +3,7 @@
 
 namespace zaf::internal {
 
-SubscriptionCore::SubscriptionCore(std::shared_ptr<ObserverImplementation> observer) :
+SubscriptionCore::SubscriptionCore(std::shared_ptr<InnerObserver> observer) :
     observer_(std::move(observer)) {
 
 }

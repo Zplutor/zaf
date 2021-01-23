@@ -1,30 +1,30 @@
 #include <zaf/rx/subscription.h>
-#include <zaf/rx/internal/subscription/subscription_implementation.h>
+#include <zaf/rx/internal/subscription/inner_subscription.h>
 
 namespace zaf {
 
-Subscription::Subscription() : implementation_(internal::SubscriptionImplementation::Empty()) {
+Subscription::Subscription() : inner_(internal::InnerSubscription::Empty()) {
 
 }
 
 
 Subscription::Subscription(Subscription&& other) : 
-    implementation_(std::move(other.implementation_)) {
+    inner_(std::move(other.inner_)) {
 
-    other.implementation_ = internal::SubscriptionImplementation::Empty();
+    other.inner_ = internal::InnerSubscription::Empty();
 }
 
 
 Subscription& Subscription::operator=(Subscription&& other) {
 
-    implementation_ = std::move(other.implementation_);
-    other.implementation_ = internal::SubscriptionImplementation::Empty();
+    inner_ = std::move(other.inner_);
+    other.inner_ = internal::InnerSubscription::Empty();
     return *this;
 }
 
 
 void Subscription::Unsubscribe() {
-    implementation_->Unsubscribe();
+    inner_->Unsubscribe();
 }
 
 }

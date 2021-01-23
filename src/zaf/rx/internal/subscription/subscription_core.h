@@ -4,7 +4,7 @@
 #include <optional>
 #include <map>
 #include <mutex>
-#include <zaf/rx/internal/observer_implementation.h>
+#include <zaf/rx/internal/inner_observer.h>
 
 namespace zaf::internal {
 
@@ -13,7 +13,7 @@ public:
     using FinishNotification = std::function<void(SubscriptionCore*, int)>;
 
 public:
-    SubscriptionCore(std::shared_ptr<ObserverImplementation> observer);
+    SubscriptionCore(std::shared_ptr<InnerObserver> observer);
     virtual ~SubscriptionCore() = default;
 
     SubscriptionCore(const SubscriptionCore&) = delete;
@@ -31,7 +31,7 @@ protected:
     virtual void OnUnsubscribe() = 0;
 
 private:
-    friend class SubscriptionHolderImplementation;
+    friend class InnerSubscriptionHolder;
 
     std::optional<int> RegisterFinishNotification(FinishNotification callback);
     void UnregisterFinishNotification(int id);
@@ -41,7 +41,7 @@ private:
     void NotifyFinish();
 
 private:
-    std::shared_ptr<ObserverImplementation> observer_;
+    std::shared_ptr<InnerObserver> observer_;
 
     bool is_finished_{};
     int id_seed_{};

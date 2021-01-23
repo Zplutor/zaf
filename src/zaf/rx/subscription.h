@@ -5,15 +5,15 @@
 
 namespace zaf {
 namespace internal {
-class SubscriptionImplementation;
+class InnerSubscription;
 }
 
 class Subscription {
 public:
     Subscription();
 
-    explicit Subscription(std::shared_ptr<internal::SubscriptionImplementation> implementation) :
-        implementation_(std::move(implementation)) { }
+    explicit Subscription(std::shared_ptr<internal::InnerSubscription> inner) :
+        inner_(std::move(inner)) { }
 
     Subscription(const Subscription&) = default;
     Subscription& operator=(const Subscription&) = default;
@@ -23,21 +23,21 @@ public:
 
     void Unsubscribe();
 
-    const std::shared_ptr<internal::SubscriptionImplementation>& GetImplementation() const {
-        return implementation_;
+    const std::shared_ptr<internal::InnerSubscription>& GetInner() const {
+        return inner_;
     }
 
 private:
-    std::shared_ptr<internal::SubscriptionImplementation> implementation_;
+    std::shared_ptr<internal::InnerSubscription> inner_;
 };
 
 
 inline bool operator<(const Subscription& subscription1, const Subscription& subscription2) {
-    return subscription1.GetImplementation() < subscription2.GetImplementation();
+    return subscription1.GetInner() < subscription2.GetInner();
 }
 
 inline bool operator==(const Subscription& subscription1, const Subscription& subscription2) {
-    return subscription1.GetImplementation() == subscription2.GetImplementation();
+    return subscription1.GetInner() == subscription2.GetInner();
 }
 
 }

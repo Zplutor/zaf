@@ -1,10 +1,10 @@
 #include <zaf/rx/subscription_holder.h>
-#include <zaf/rx/internal/subscription/subscription_holder_implementation.h>
+#include <zaf/rx/internal/subscription/inner_subscription_holder.h>
 
 namespace zaf {
 
 SubscriptionHolder::SubscriptionHolder() : 
-    implementation_(std::make_unique<internal::SubscriptionHolderImplementation>()) {
+    inner_(std::make_unique<internal::InnerSubscriptionHolder>()) {
 
 }
 
@@ -15,25 +15,25 @@ SubscriptionHolder::~SubscriptionHolder() {
 
 
 SubscriptionHolder& SubscriptionHolder::operator+=(const Subscription& subscription) {
-    implementation_->Add(subscription.GetImplementation());
+    inner_->Add(subscription.GetInner());
     return *this;
 }
 
 
 SubscriptionHolder& SubscriptionHolder::operator+=(const TagItem& item) {
-    implementation_->Add(item.tag, item.subscription.GetImplementation());
+    inner_->Add(item.tag, item.subscription.GetInner());
     return *this;
 }
 
 
 SubscriptionHolder& SubscriptionHolder::operator-=(const std::string& tag) {
-    implementation_->Remove(tag);
+    inner_->Remove(tag);
     return *this;
 }
 
 
 void SubscriptionHolder::Clear() {
-    implementation_->Clear();
+    inner_->Clear();
 }
 
 }

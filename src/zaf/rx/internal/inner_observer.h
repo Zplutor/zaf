@@ -7,19 +7,19 @@
 
 namespace zaf::internal {
 
-class ObserverImplementation {
+class InnerObserver {
 public:
-    static std::shared_ptr<ObserverImplementation> Create(
+    static std::shared_ptr<InnerObserver> Create(
         zaf::OnNext<std::any> on_next,
         zaf::OnError on_error,
         zaf::OnCompleted on_completed);
 
 public:
-    ObserverImplementation() = default;
-    virtual ~ObserverImplementation() = default;
+    InnerObserver() = default;
+    virtual ~InnerObserver() = default;
 
-    ObserverImplementation(const ObserverImplementation&) = delete;
-    ObserverImplementation& operator=(const ObserverImplementation&) = delete;
+    InnerObserver(const InnerObserver&) = delete;
+    InnerObserver& operator=(const InnerObserver&) = delete;
 
     virtual void OnNext(const std::any& value) = 0;
     virtual void OnError(const Error& error) = 0;

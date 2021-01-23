@@ -58,6 +58,9 @@
     <Filter Include="case\control\internal\list_control">
       <UniqueIdentifier>{4f47d1ac-5e7c-4c72-9450-0cd297522179}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\rx">
+      <UniqueIdentifier>{c51fbcf6-ce47-450d-b621-e27038c0a645}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -213,6 +216,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\internal\tree_control\tree_index_mapping_test.cpp">
       <Filter>case\control\internal\tree_control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\rx\creation_test.cpp">
+      <Filter>case\rx</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

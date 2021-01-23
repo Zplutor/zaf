@@ -8,6 +8,7 @@
 #include <zaf/internal/message_loop.h>
 #include <zaf/reflection/reflection_manager.h>
 #include <zaf/resource/resource_manager.h>
+#include <zaf/rx/internal/thread/thread_manager.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -30,6 +31,8 @@ void Application::Initialize(const InitializeParameters& parameters) {
 	if (is_initialized_) {
 		return;
 	}
+
+    thread_manager_ = std::make_unique<internal::ThreadManager>();
 
     resource_manager_ = std::make_unique<ResourceManager>(parameters.relative_uri_loader);
 

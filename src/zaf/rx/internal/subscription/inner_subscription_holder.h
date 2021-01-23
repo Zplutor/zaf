@@ -3,24 +3,24 @@
 #include <map>
 #include <mutex>
 #include <vector>
+#include <zaf/rx/internal/subscription/inner_subscription.h>
 #include <zaf/rx/internal/subscription/subscription_core.h>
-#include <zaf/rx/internal/subscription/subscription_implementation.h>
 
 namespace zaf::internal {
 
-class SubscriptionHolderImplementation {
+class InnerSubscriptionHolder {
 public:
-    SubscriptionHolderImplementation() = default;
-    ~SubscriptionHolderImplementation();
+    InnerSubscriptionHolder() = default;
+    ~InnerSubscriptionHolder();
 
-    SubscriptionHolderImplementation(const SubscriptionHolderImplementation&) = delete;
-    SubscriptionHolderImplementation& operator=(const SubscriptionHolderImplementation&) = delete;
+    InnerSubscriptionHolder(const InnerSubscriptionHolder&) = delete;
+    InnerSubscriptionHolder& operator=(const InnerSubscriptionHolder&) = delete;
 
-    void Add(const std::shared_ptr<SubscriptionImplementation>& subscription);
+    void Add(const std::shared_ptr<InnerSubscription>& subscription);
 
     void Add(
         const std::string& tag, 
-        const std::shared_ptr<SubscriptionImplementation>& subscription);
+        const std::shared_ptr<InnerSubscription>& subscription);
 
     void Remove(const std::string& tag);
 
@@ -29,7 +29,7 @@ public:
 private:
     class Item {
     public:
-        std::shared_ptr<SubscriptionImplementation> subscription;
+        std::shared_ptr<InnerSubscription> subscription;
         int finish_notification_id{};
     };
 

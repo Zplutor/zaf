@@ -136,6 +136,18 @@
     <Filter Include="zaf\window\inspector\internal">
       <UniqueIdentifier>{bf423cf0-8a2d-49b9-ac84-ef758b22594e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\rx\internal\thread">
+      <UniqueIdentifier>{a652b86e-a73a-4800-9586-d72c1011f010}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\rx\internal\scheduler">
+      <UniqueIdentifier>{b8fa2c2c-485a-499d-81f7-d6824a345d84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\rx\internal\operator">
+      <UniqueIdentifier>{8bc181b1-db4c-40cf-8d10-df9eb5d34dba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\rx\internal\observable">
+      <UniqueIdentifier>{91d47c0f-89ac-4b11-a79e-ca03fa1dd2fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -544,25 +556,10 @@
     <ClCompile Include="src\zaf\rx\subscription.cpp">
       <Filter>zaf\rx</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\observer_implementation.cpp">
-      <Filter>zaf\rx\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\observable_implementation.cpp">
-      <Filter>zaf\rx\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core.cpp">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\subject\subject_implementation.cpp">
-      <Filter>zaf\rx\internal\subject</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\subscription\subscription_core.cpp">
-      <Filter>zaf\rx\internal\subscription</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\subscription\subscription_implementation.cpp">
-      <Filter>zaf\rx\internal\subscription</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\subscription\subscription_holder_implementation.cpp">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\rx\subscription_holder.cpp">
@@ -606,6 +603,48 @@
     </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\scrollable_control_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\thread\run_loop_thread.cpp">
+      <Filter>zaf\rx\internal\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\thread\thread_manager.cpp">
+      <Filter>zaf\rx\internal\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\thread\window_thread.cpp">
+      <Filter>zaf\rx\internal\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\scheduler.cpp">
+      <Filter>zaf\rx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\inner_observer.cpp">
+      <Filter>zaf\rx\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription.cpp">
+      <Filter>zaf\rx\internal\subscription</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription_holder.cpp">
+      <Filter>zaf\rx\internal\subscription</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\subject\inner_subject.cpp">
+      <Filter>zaf\rx\internal\subject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\subscription_host.cpp">
+      <Filter>zaf\rx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\operator\subscribe_on_operator.cpp">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observable\customized_observable.cpp">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observable\just_observable.cpp">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\operator\observe_on_operator.cpp">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observable\inner_observable.cpp">
+      <Filter>zaf\rx\internal\observable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1381,28 +1420,13 @@
     <ClInclude Include="src\zaf\rx\subscription.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\observer_implementation.h">
-      <Filter>zaf\rx\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\observable_implementation.h">
-      <Filter>zaf\rx\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core.h">
-      <Filter>zaf\rx\internal\subject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\subject\subject_implementation.h">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\subject.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subscription\subscription_core.h">
-      <Filter>zaf\rx\internal\subscription</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\subscription\subscription_implementation.h">
-      <Filter>zaf\rx\internal\subscription</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\subscription\subscription_holder_implementation.h">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\subscription_holder.h">
@@ -1464,6 +1488,60 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\scroll_bar_thumb.h">
       <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\thread\run_loop_thread.h">
+      <Filter>zaf\rx\internal\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\thread\thread.h">
+      <Filter>zaf\rx\internal\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\thread\thread_manager.h">
+      <Filter>zaf\rx\internal\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\thread\window_thread.h">
+      <Filter>zaf\rx\internal\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\scheduler\single_thread_scheduler.h">
+      <Filter>zaf\rx\internal\scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\dumb.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\scheduler.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\work.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\inner_observer.h">
+      <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription.h">
+      <Filter>zaf\rx\internal\subscription</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_holder.h">
+      <Filter>zaf\rx\internal\subscription</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\subject\inner_subject.h">
+      <Filter>zaf\rx\internal\subject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\operator\subscribe_on_operator.h">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\creation.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable\customized_observable.h">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable\just_observable.h">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\operator\observe_on_operator.h">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable\inner_observable.h">
+      <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -11,6 +11,10 @@
 #include <zaf/rx/subscription_host.h>
 
 namespace zaf {
+namespace internal {
+class ThreadManager;
+}
+
 namespace wic {
 class ImagingFactory;
 }
@@ -147,6 +151,13 @@ private:
     void UnregisterWindow(const std::shared_ptr<Window>& window);
 
 private:
+	friend class Scheduler;
+
+	internal::ThreadManager& GetThreadManager() const {
+		return *thread_manager_;
+	}
+
+private:
 	Application();
 
 	void MainWindowClosed();
@@ -157,6 +168,7 @@ private:
 private:
 	bool is_initialized_;
 
+	std::unique_ptr<internal::ThreadManager> thread_manager_;
     std::unique_ptr<ReflectionManager> reflection_manager_;
 	std::unique_ptr<ResourceManager> resource_manager_;
     std::unique_ptr<GraphicFactory> graphic_factory_;
@@ -171,13 +183,11 @@ private:
 
 
 class ApplicationBeginRunInfo {
-public:
 
 };
 
 
 class ApplicationEndRunInfo {
-public:
 
 };
 

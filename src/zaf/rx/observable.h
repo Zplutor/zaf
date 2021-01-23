@@ -1,18 +1,24 @@
 #pragma once
 
 #include <memory>
-#include <zaf/rx/internal/observable_implementation.h>
+#include <zaf/rx/internal/observable/inner_observable.h>
 #include <zaf/rx/observer.h>
 #include <zaf/rx/observer_functions.h>
 #include <zaf/rx/subscription.h>
 
 namespace zaf {
 
+class Scheduler;
+
 template<typename T>
 class Observable {
 public:
-    explicit Observable(std::shared_ptr<internal::ObservableImplementation> implementation) : 
-        implementation_(std::move(implementation)) { }
+    explicit Observable(std::shared_ptr<internal::InnerObservable> inner) : 
+        inner_(std::move(inner)) { }
+
+    Subscription Subscribe() {
+        return Subscribe(nullptr, nullptr, nullptr);
+    }
 
     Subscription Subscribe(OnNext<T> on_next) {
         return Subscribe(std::move(on_next), nullptr, nullptr);
@@ -34,15 +40,23 @@ public:
     }
 
     Subscription Subscribe(const Observer<T>& observer) {
-        return Subscription(implementation_->Subscribe(observer.GetImplementation()));
+        return Subscription{ inner_->Subscribe(observer.GetInner()) };
     }
 
-    const std::shared_ptr<internal::ObservableImplementation>& GetImplementation() const {
-        return implementation_;
+    Observable SubscribeOn(std::shared_ptr<Scheduler> scheculer) {
+        return Observable{ inner_->SubscribeOn(std::move(scheculer)) };
+    }
+
+    Observable ObserveOn(std::shared_ptr<Scheduler> scheduler) {
+        return Observable{ inner_->ObserveOn(std::move(scheduler)) };
+    }
+
+    const std::shared_ptr<internal::InnerObservable>& GetInner() const {
+        return inner_;
     }
 
 private:
-    std::shared_ptr<internal::ObservableImplementation> implementation_;
+    std::shared_ptr<internal::InnerObservable> inner_;
 };
 
 }

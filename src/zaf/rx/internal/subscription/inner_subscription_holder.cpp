@@ -1,15 +1,15 @@
-#include <zaf/rx/internal/subscription/subscription_holder_implementation.h>
+#include <zaf/rx/internal/subscription/inner_subscription_holder.h>
 #include <zaf/base/container/utility/erase.h>
 
 namespace zaf::internal {
 
-SubscriptionHolderImplementation::~SubscriptionHolderImplementation() {
+InnerSubscriptionHolder::~InnerSubscriptionHolder() {
     Clear();
 }
 
 
-void SubscriptionHolderImplementation::Add(
-    const std::shared_ptr<SubscriptionImplementation>& subscription) {
+void InnerSubscriptionHolder::Add(
+    const std::shared_ptr<InnerSubscription>& subscription) {
 
     auto core = subscription->GetCore();
     if (!core) {
@@ -17,7 +17,7 @@ void SubscriptionHolderImplementation::Add(
     }
 
     auto notification_id = core->RegisterFinishNotification(std::bind(
-        &SubscriptionHolderImplementation::OnNoTagSubscriptionFinish, 
+        &InnerSubscriptionHolder::OnNoTagSubscriptionFinish, 
         this, 
         std::placeholders::_1,
         std::placeholders::_2));
@@ -31,7 +31,7 @@ void SubscriptionHolderImplementation::Add(
 }
 
 
-void SubscriptionHolderImplementation::OnNoTagSubscriptionFinish(
+void InnerSubscriptionHolder::OnNoTagSubscriptionFinish(
     SubscriptionCore* core, 
     int notification_id) {
 
@@ -46,9 +46,9 @@ void SubscriptionHolderImplementation::OnNoTagSubscriptionFinish(
 }
 
 
-void SubscriptionHolderImplementation::Add(
+void InnerSubscriptionHolder::Add(
     const std::string& tag,
-    const std::shared_ptr<SubscriptionImplementation>& subscription) {
+    const std::shared_ptr<InnerSubscription>& subscription) {
 
     auto core = subscription->GetCore();
     if (!core) {
@@ -56,7 +56,7 @@ void SubscriptionHolderImplementation::Add(
     }
 
     auto notification_id = core->RegisterFinishNotification(std::bind(
-        &SubscriptionHolderImplementation::OnIdSubscriptionFinish, 
+        &InnerSubscriptionHolder::OnIdSubscriptionFinish, 
         this, 
         std::placeholders::_1,
         std::placeholders::_2));
@@ -80,7 +80,7 @@ void SubscriptionHolderImplementation::Add(
 }
 
 
-void SubscriptionHolderImplementation::OnIdSubscriptionFinish(
+void InnerSubscriptionHolder::OnIdSubscriptionFinish(
     SubscriptionCore* core, 
     int notification_id) {
 
@@ -101,7 +101,7 @@ void SubscriptionHolderImplementation::OnIdSubscriptionFinish(
 }
 
 
-void SubscriptionHolderImplementation::Remove(const std::string& id) {
+void InnerSubscriptionHolder::Remove(const std::string& id) {
 
     std::scoped_lock<std::mutex> lock(lock_);
 
@@ -114,7 +114,7 @@ void SubscriptionHolderImplementation::Remove(const std::string& id) {
 }
 
 
-void SubscriptionHolderImplementation::Clear() {
+void InnerSubscriptionHolder::Clear() {
 
     std::scoped_lock<std::mutex> lock(lock_);
 
@@ -130,7 +130,7 @@ void SubscriptionHolderImplementation::Clear() {
 }
 
 
-void SubscriptionHolderImplementation::UnregisterItemNotification(const Item& item) {
+void InnerSubscriptionHolder::UnregisterItemNotification(const Item& item) {
 
     item.subscription->GetCore()->UnregisterFinishNotification(item.finish_notification_id);
 }

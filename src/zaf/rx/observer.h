@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <zaf/rx/internal/observer_implementation.h>
+#include <zaf/rx/internal/inner_observer.h>
 
 namespace zaf {
 
@@ -21,34 +21,34 @@ public:
             on_next(std::any_cast<T>(value));
         };
 
-        return Observer(internal::ObserverImplementation::Create(
+        return Observer(internal::InnerObserver::Create(
             std::move(bridged_on_next), 
             std::move(on_error), 
             std::move(on_completed)));
     }
 
 public:
-    explicit Observer(std::shared_ptr<internal::ObserverImplementation> implementation) : 
-        implementation_(std::move(implementation)) { }
+    explicit Observer(std::shared_ptr<internal::InnerObserver> inner) : 
+        inner_(std::move(inner)) { }
 
     void OnNext(const T& value) {
-        implementation_->OnNext(value);
+        inner_->OnNext(value);
     }
 
     void OnError(const Error& error) {
-        implementation_->OnError(error);
+        inner_->OnError(error);
     }
 
     void OnCompleted() {
-        implementation_->OnCompleted();
+        inner_->OnCompleted();
     }
 
-    const std::shared_ptr<internal::ObserverImplementation>& GetImplementation() const {
-        return implementation_;
+    const std::shared_ptr<internal::InnerObserver>& GetInner() const {
+        return inner_;
     }
 
 private:
-    std::shared_ptr<internal::ObserverImplementation> implementation_;
+    std::shared_ptr<internal::InnerObserver> inner_;
 };
 
 }

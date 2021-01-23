@@ -10,8 +10,6 @@ namespace zaf {
  */
 class Error {
 public:
-    Error() = default;
-
     explicit Error(const std::error_code& code) : code_(code) { }
 
     Error(const std::error_code& code, const SourceSite& site) : code_(code), site_(site) { }

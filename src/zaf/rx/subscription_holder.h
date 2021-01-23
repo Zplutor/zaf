@@ -5,7 +5,7 @@
 
 namespace zaf {
 namespace internal {
-class SubscriptionHolderImplementation;
+class InnerSubscriptionHolder;
 }
 
 class SubscriptionHolder {
@@ -30,7 +30,7 @@ public:
     void Clear();
 
 private:
-    std::unique_ptr<internal::SubscriptionHolderImplementation> implementation_;
+    std::unique_ptr<internal::InnerSubscriptionHolder> inner_;
 };
 
 

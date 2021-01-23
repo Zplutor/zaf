@@ -139,6 +139,7 @@
     <ClCompile Include="unittest\case\parsing\parsers\textual_control_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\window_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\xaml_reader_test.cpp" />
+    <ClCompile Include="unittest\case\rx\creation_test.cpp" />
     <ClCompile Include="unittest\googletest\src\gtest-all.cc" />
     <ClCompile Include="unittest\main.cpp" />
     <ClCompile Include="unittest\resource\internal\utility_test.cpp" />

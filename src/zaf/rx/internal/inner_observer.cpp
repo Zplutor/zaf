@@ -1,9 +1,9 @@
-#include <zaf/rx/internal/observer_implementation.h>
+#include <zaf/rx/internal/inner_observer.h>
 
 namespace zaf::internal {
 namespace {
 
-class GeneralObserver : public ObserverImplementation {
+class GeneralObserver : public InnerObserver {
 public:
     GeneralObserver(
         zaf::OnNext<std::any> on_next,
@@ -42,7 +42,7 @@ private:
 
 }
 
-std::shared_ptr<ObserverImplementation> ObserverImplementation::Create(
+std::shared_ptr<InnerObserver> InnerObserver::Create(
     zaf::OnNext<std::any> on_next, 
     zaf::OnError on_error, 
     zaf::OnCompleted on_completed) {
