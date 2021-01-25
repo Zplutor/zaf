@@ -88,7 +88,7 @@ public:
         std::size_t item_index,
         const std::shared_ptr<Object>& item_data) override;
 
-    void OnItemExpandChange(const std::shared_ptr<TreeItem>& item, bool is_expanded);
+    bool ChangeItemExpandState(const std::shared_ptr<TreeItem>& item, bool new_is_expanded);
 
 private:
     void InitializeListImplementation(const InitializeParameters& parameters);
@@ -118,7 +118,7 @@ private:
         const std::shared_ptr<TreeItem>& item, 
         const std::shared_ptr<Object>& item_data);
 
-    void ExpandItemUI(
+    bool ExpandItemUI(
         const IndexPath& index_path,
         const std::optional<std::size_t>& list_index, 
         bool update_item);
@@ -130,7 +130,7 @@ private:
         TreeDataSource& data_source,
         TreeNodeExpander& node_expander,
         const IndexPath& node_index_path);
-    void CollapseItemUI(
+    bool CollapseItemUI(
         const IndexPath& index_path,
         const std::optional<std::size_t>& list_index,
         bool update_item);

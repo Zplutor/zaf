@@ -471,7 +471,7 @@ void TreeControlImplementation::SetItemSelectionState(
 }
 
 
-void TreeControlImplementation::ExpandItemUI(
+bool TreeControlImplementation::ExpandItemUI(
     const IndexPath& index_path,
     const std::optional<std::size_t>& list_index,
     bool update_item) {
@@ -479,7 +479,7 @@ void TreeControlImplementation::ExpandItemUI(
     std::shared_ptr<Object> expanded_data;
     std::size_t expanded_count{};
     if (!ExpandItemData(index_path, expanded_data, expanded_count)) {
-        return;
+        return false;
     }
 
     if (list_index) {
@@ -493,6 +493,8 @@ void TreeControlImplementation::ExpandItemUI(
     if (item_expand_event_) {
         item_expand_event_(expanded_data);
     }
+
+    return true;
 }
 
 
@@ -509,6 +511,25 @@ bool TreeControlImplementation::ExpandItemData(
     auto node_expander = tree_data_manager_.ExpandNodeAtIndexPath(index_path);
     if (!node_expander) {
         return false;
+    }
+
+    //Check if can expand non-root item.
+    if (!index_path.empty()) {
+
+        auto delegate = delegate_.lock();
+        if (!delegate) {
+            return false;
+        }
+
+        std::shared_ptr<Object> parent_data;
+        std::size_t index_in_parent{};
+        if (!GetParentDataAndChildIndex(index_path, parent_data, index_in_parent)) {
+            return false;
+        }
+
+        if (!delegate->CanExpandItem(parent_data, index_in_parent, node_expander->GetNodeData())) {
+            return false;
+        }
     }
 
     expanded_data = node_expander->GetNodeData();
@@ -561,20 +582,36 @@ std::size_t TreeControlImplementation::ExpandItemRecursively(
 }
 
 
-void TreeControlImplementation::CollapseItemUI(
+bool TreeControlImplementation::CollapseItemUI(
     const IndexPath& index_path,
     const std::optional<std::size_t>& list_index,
     bool update_item) {
 
-    auto removed_count = tree_index_mapping_.RemoveAllChildrenRecursively(index_path);
+    auto delegate = delegate_.lock();
+    if (!delegate) {
+        return false;
+    }
 
     auto tree_node = tree_data_manager_.GetNodeAtIndexPath(index_path);
-    if (tree_node) {
+    if (!tree_node) {
+        return false;
+    }
 
-        auto collapse_result = tree_data_manager_.CollapseNode(tree_node->data);
-        if (collapse_result.selection_changed) {
-            NotifySelectionChange();
-        }
+    std::shared_ptr<Object> parent_data;
+    std::size_t index_in_parent{};
+    if (!GetParentDataAndChildIndex(index_path, parent_data, index_in_parent)) {
+        return false;
+    }
+
+    if (!delegate->CanCollapseItem(parent_data, index_in_parent, tree_node->data)) {
+        return false;
+    }
+
+    auto removed_count = tree_index_mapping_.RemoveAllChildrenRecursively(index_path);
+
+    auto collapse_result = tree_data_manager_.CollapseNode(tree_node->data);
+    if (collapse_result.selection_changed) {
+        NotifySelectionChange();
     }
 
     if (list_index) {
@@ -588,28 +625,30 @@ void TreeControlImplementation::CollapseItemUI(
     if (item_collapse_event_) {
         item_collapse_event_(tree_node->data);
     }
+
+    return true;
 }
 
 
-void TreeControlImplementation::OnItemExpandChange(
+bool TreeControlImplementation::ChangeItemExpandState(
     const std::shared_ptr<TreeItem>& item, 
-    bool is_expanded) {
+    bool new_is_expanded) {
 
     auto list_item_index = list_implementation_->GetListItemIndex(item);
     if (!list_item_index) {
-        return;
+        return false;
     }
 
     auto index_path = tree_index_mapping_.GetIndexPathAtIndex(*list_item_index);
     if (index_path.empty()) {
-        return;
+        return false;
     }
 
-    if (is_expanded) {
-        ExpandItemUI(index_path, *list_item_index, false);
+    if (new_is_expanded) {
+        return ExpandItemUI(index_path, *list_item_index, false);
     }
     else {
-        CollapseItemUI(index_path, *list_item_index, false);
+        return CollapseItemUI(index_path, *list_item_index, false);
     }
 }
 

@@ -40,6 +40,22 @@ public:
         const std::shared_ptr<Object>& parent_item_data,
         std::size_t item_index,
         const std::shared_ptr<Object>& item_data) { }
+
+    virtual bool CanExpandItem(
+        const std::shared_ptr<Object>& parent_item_data,
+        std::size_t item_index,
+        const std::shared_ptr<Object>& item_data) {
+
+        return true;
+    }
+
+    virtual bool CanCollapseItem(
+        const std::shared_ptr<Object>& parent_item_data,
+        std::size_t item_index,
+        const std::shared_ptr<Object>& item_data) {
+
+        return true;
+    }
 };
 
 }

@@ -75,12 +75,14 @@ void TreeItem::ExpandButtonClick() {
 
     bool previous_is_expand = expand_button_->GetExpandState() == ExpandState::Expanded;
 
-    expand_button_->SetExpandState(
-        previous_is_expand ? ExpandState::Collapsed : ExpandState::Expanded);
-
-    tree_control_implementation->OnItemExpandChange(
+    bool change_succeeded = tree_control_implementation->ChangeItemExpandState(
         std::dynamic_pointer_cast<TreeItem>(shared_from_this()),
         !previous_is_expand);
+
+    if (change_succeeded) {
+        expand_button_->SetExpandState(
+            previous_is_expand ? ExpandState::Collapsed : ExpandState::Expanded);
+    }
 }
 
 }
