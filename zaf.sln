@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zaf", "zaf.vcxproj", "{CC24D55C-A412-446C-96D3-C77A4E4CFA07}"
 EndProject
@@ -19,22 +19,32 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
+		Release-MT|Win32 = Release-MT|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CC24D55C-A412-446C-96D3-C77A4E4CFA07}.Debug|Win32.ActiveCfg = Debug|Win32
 		{CC24D55C-A412-446C-96D3-C77A4E4CFA07}.Debug|Win32.Build.0 = Debug|Win32
 		{CC24D55C-A412-446C-96D3-C77A4E4CFA07}.Release|Win32.ActiveCfg = Release|Win32
 		{CC24D55C-A412-446C-96D3-C77A4E4CFA07}.Release|Win32.Build.0 = Release|Win32
+		{CC24D55C-A412-446C-96D3-C77A4E4CFA07}.Release-MT|Win32.ActiveCfg = Release-MT|Win32
+		{CC24D55C-A412-446C-96D3-C77A4E4CFA07}.Release-MT|Win32.Build.0 = Release-MT|Win32
 		{C2900F28-70A0-4852-B504-C7DE07D96ADF}.Debug|Win32.ActiveCfg = Debug|Win32
 		{C2900F28-70A0-4852-B504-C7DE07D96ADF}.Debug|Win32.Build.0 = Debug|Win32
 		{C2900F28-70A0-4852-B504-C7DE07D96ADF}.Release|Win32.ActiveCfg = Release|Win32
 		{C2900F28-70A0-4852-B504-C7DE07D96ADF}.Release|Win32.Build.0 = Release|Win32
+		{C2900F28-70A0-4852-B504-C7DE07D96ADF}.Release-MT|Win32.ActiveCfg = Release-MT|Win32
+		{C2900F28-70A0-4852-B504-C7DE07D96ADF}.Release-MT|Win32.Build.0 = Release-MT|Win32
 		{CE0B93C0-E5BF-4E5D-8E90-CA8302AA4BC0}.Debug|Win32.ActiveCfg = Debug|Win32
 		{CE0B93C0-E5BF-4E5D-8E90-CA8302AA4BC0}.Debug|Win32.Build.0 = Debug|Win32
 		{CE0B93C0-E5BF-4E5D-8E90-CA8302AA4BC0}.Release|Win32.ActiveCfg = Release|Win32
 		{CE0B93C0-E5BF-4E5D-8E90-CA8302AA4BC0}.Release|Win32.Build.0 = Release|Win32
+		{CE0B93C0-E5BF-4E5D-8E90-CA8302AA4BC0}.Release-MT|Win32.ActiveCfg = Release-MT|Win32
+		{CE0B93C0-E5BF-4E5D-8E90-CA8302AA4BC0}.Release-MT|Win32.Build.0 = Release-MT|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0A3FE8D7-16DD-4D93-A750-79A557BE8685}
 	EndGlobalSection
 EndGlobal
