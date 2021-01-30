@@ -20,18 +20,22 @@ public:
         return Subscribe(nullptr, nullptr, nullptr);
     }
 
+    [[nodiscard]]
     Subscription Subscribe(OnNext<T> on_next) {
         return Subscribe(std::move(on_next), nullptr, nullptr);
     }
 
+    [[nodiscard]]
     Subscription Subscribe(OnNext<T> on_next, OnError on_error) {
         return Subscribe(std::move(on_next), std::move(on_error), nullptr);
     }
 
+    [[nodiscard]]
     Subscription Subscribe(OnNext<T> on_next, OnCompleted on_completed) {
         return Subscribe(std::move(on_next), nullptr, std::move(on_completed));
     }
 
+    [[nodiscard]]
     Subscription Subscribe(OnNext<T> on_next, OnError on_error, OnCompleted on_completed) {
         return Subscribe(Observer<T>::Create(
             std::move(on_next), 
@@ -39,6 +43,7 @@ public:
             std::move(on_completed)));
     }
 
+    [[nodiscard]]
     Subscription Subscribe(const Observer<T>& observer) {
         return Subscription{ inner_->Subscribe(observer.GetInner()) };
     }

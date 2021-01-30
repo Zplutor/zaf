@@ -646,6 +646,18 @@
     <ClCompile Include="src\zaf\rx\internal\observable\inner_observable.cpp">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\timer_manager.cpp">
+      <Filter>zaf\rx\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\rx_runtime.cpp">
+      <Filter>zaf\rx\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observable\timer_observable.cpp">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\timer.cpp">
+      <Filter>zaf\rx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1541,6 +1553,18 @@
       <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observable\inner_observable.h">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\timer.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\rx_runtime.h">
+      <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\timer_manager.h">
+      <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable\timer_observable.h">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>
   </ItemGroup>

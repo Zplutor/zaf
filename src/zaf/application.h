@@ -12,7 +12,7 @@
 
 namespace zaf {
 namespace internal {
-class ThreadManager;
+class RxRuntime;
 }
 
 namespace wic {
@@ -151,10 +151,10 @@ private:
     void UnregisterWindow(const std::shared_ptr<Window>& window);
 
 private:
-	friend class Scheduler;
+	friend class internal::RxRuntime;
 
-	internal::ThreadManager& GetThreadManager() const {
-		return *thread_manager_;
+	internal::RxRuntime& GetRxRuntime() const {
+		return *rx_runtime_;
 	}
 
 private:
@@ -168,7 +168,7 @@ private:
 private:
 	bool is_initialized_;
 
-	std::unique_ptr<internal::ThreadManager> thread_manager_;
+	std::unique_ptr<internal::RxRuntime> rx_runtime_;
     std::unique_ptr<ReflectionManager> reflection_manager_;
 	std::unique_ptr<ResourceManager> resource_manager_;
     std::unique_ptr<GraphicFactory> graphic_factory_;

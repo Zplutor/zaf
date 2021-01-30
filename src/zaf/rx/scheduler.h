@@ -6,7 +6,8 @@ namespace zaf {
 
 class Scheduler {
 public:
-    static std::shared_ptr<Scheduler> MainThread();
+    static std::shared_ptr<Scheduler> Main();
+    static std::shared_ptr<Scheduler> Timer();
     static std::shared_ptr<Scheduler> CreateOnSingleThread();
 
 public:
