@@ -45,7 +45,11 @@ void DrawTextWithIcon(
     canvas.DrawTextLayout(text_layout, text_rect.position);
     
     if (control.IsFocused()) {
-        Rect focus_rect(text_rect.position, Size(text_metrics.width, text_metrics.height));
+
+        Rect focus_rect;
+        focus_rect.position.x = text_rect.position.x + text_metrics.left;
+        focus_rect.position.y = text_rect.position.y + text_metrics.top;
+        focus_rect.size = Size{ text_metrics.width, text_metrics.height };
         DrawFocusRectangleFrame(canvas, focus_rect);
     }
 }
