@@ -228,7 +228,7 @@ Observable<CheckBoxCheckStateChangeInfo> CheckBox::CheckStateChangeEvent() {
 }
 
 
-void CheckBox::OnMouseClick() {
+void CheckBox::OnClick() {
 
 	if (! CanAutoChangeCheckState()) {
 		return;

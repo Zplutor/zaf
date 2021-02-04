@@ -145,7 +145,7 @@ protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     Rect GetTextRect() override;
 
-    void OnMouseClick() override;
+    void OnClick() override;
     bool OnKeyDown(const KeyMessage& message) override;
     void OnFocusGain() override;
 

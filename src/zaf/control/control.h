@@ -28,6 +28,8 @@ class InspectorPort;
 
 class Canvas;
 class CharMessage;
+class ControlClickInfo;
+class ControlDoubleClickInfo;
 class ControlFocusChangeInfo;
 class ControlMouseEnterInfo;
 class ControlMouseLeaveInfo;
@@ -629,6 +631,12 @@ public:
 
     void SetIsCachedPaintingEnabled(bool value);
 
+    bool CanClick() const;
+    void SetCanClick(bool can_click);
+
+    bool CanDoubleClick() const;
+    void SetCanDoubleClick(bool can_double_click);
+
     /**
      Capture the mouse.
      */
@@ -681,6 +689,9 @@ public:
     Observable<ControlMouseEnterInfo> MouseEnterEvent();
     Observable<ControlMouseLeaveInfo> MouseLeaveEvent();
 
+    Observable<ControlClickInfo> ClickEvent();
+    Observable<ControlDoubleClickInfo> DoubleClickEvent();
+
 protected:
     /**
      Paint the control.
@@ -732,6 +743,9 @@ protected:
 	void NeedRelayout();
 
     virtual Size GetPreferredContentSize() const;
+
+    void RaiseClickEvent();
+    void RaiseDoubleClickEvent();
 
     /**
      Get the mutable property map.
@@ -845,6 +859,9 @@ protected:
      should call the same method of base class if they don't process the notifiction.
      */
     virtual bool OnMouseUp(const Point& position, const MouseMessage& message);
+
+    virtual void OnClick();
+    virtual void OnDoubleClick();
 
     /**
      Process the mouse wheel notification.
@@ -1016,6 +1033,9 @@ private:
 
     void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
 
+    bool HandleClickOnMouseDown();
+    bool HandleClickOnMouseUp();
+
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
 
 private:
@@ -1044,14 +1064,22 @@ private:
     Frame border_;
     Frame padding_;
 
+    bool should_raise_click_event_{};
+    std::uint32_t last_mouse_down_time_{};
+
 	PropertyMap property_map_;
 };
 
 
-class ControlRectChangeInfo {
+class ControlClickInfo {
 public:
     std::shared_ptr<Control> control;
-    Rect previous_rect;
+};
+
+
+class ControlDoubleClickInfo {
+public: 
+    std::shared_ptr<Control> control;
 };
 
 
@@ -1072,6 +1100,13 @@ class ControlMouseLeaveInfo {
 public:
     std::shared_ptr<Control> control;
     std::shared_ptr<Control> leaved_control;
+};
+
+
+class ControlRectChangeInfo {
+public:
+    std::shared_ptr<Control> control;
+    Rect previous_rect;
 };
 
 }

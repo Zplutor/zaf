@@ -145,7 +145,7 @@ protected:
 	void Initialize() override;
 	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     Rect GetTextRect() override;
-	void OnMouseClick() override;
+	void OnClick() override;
 
 private:
 	void PaintBox(Canvas& canvas, const Rect& box_rect) const;

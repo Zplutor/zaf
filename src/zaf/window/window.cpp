@@ -51,7 +51,7 @@ void Window::RegisterDefaultClass() {
 
 	WNDCLASSEX default_class = { 0 };
 	default_class.cbSize = sizeof(default_class);
-	default_class.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+	default_class.style = CS_HREDRAW | CS_VREDRAW;
 	default_class.lpfnWndProc = WindowProcedure;
 	default_class.cbClsExtra = 0;
 	default_class.cbWndExtra = sizeof(LONG_PTR);

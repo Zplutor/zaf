@@ -200,7 +200,7 @@ Observable<RadioButtonSelectStateChangeInfo> RadioButton::SelectStateChangeEvent
 }
 
 
-void RadioButton::OnMouseClick() {
+void RadioButton::OnClick() {
 
 	if (CanAutoSelect()) {
 		SetSelected();

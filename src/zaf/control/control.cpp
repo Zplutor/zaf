@@ -28,18 +28,22 @@
 namespace zaf {
 namespace {
 
-const wchar_t* const kAnchorPropertyName = L"Anchor";
-const wchar_t* const kBackgroundImageLayoutPropertyName = L"BackgroundImageLayout";
-const wchar_t* const kBackgroundImagePickerPropertyName = L"BackgroundImagePicker";
-const wchar_t* const kFocusChangeEventPropertyName = L"FocusChangeEvent";
-const wchar_t* const kLayouterPropertyName = L"Layouter";
+constexpr wchar_t* const kAnchorPropertyName = L"Anchor";
+constexpr wchar_t* const kBackgroundImageLayoutPropertyName = L"BackgroundImageLayout";
+constexpr wchar_t* const kBackgroundImagePickerPropertyName = L"BackgroundImagePicker";
+constexpr wchar_t* const kFocusChangeEventPropertyName = L"FocusChangeEvent";
+constexpr wchar_t* const kLayouterPropertyName = L"Layouter";
 constexpr wchar_t* const kMouseEnterEventPropertyName = L"MouseEnterEvent";
 constexpr wchar_t* const kMouseLeaveEventPropertyName = L"MouseLeaveEvent";
-const wchar_t* const kRectChangeEventPropertyName = L"RectChangeEvent";
+constexpr wchar_t* const kRectChangeEventPropertyName = L"RectChangeEvent";
+constexpr wchar_t* const CanClickPropertyName = L"CanClick";
+constexpr wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
+constexpr wchar_t* const ClickEventPropertyName = L"ClickEvent";
+constexpr wchar_t* const DoubleClickEventPropertyName = L"DoubleClickEvent";
 
-const bool DefaultCanFocused = false;
-const bool DefaultIsEnabled = true;
-const bool DefaultIsVisible = true;
+constexpr bool DefaultCanFocused = false;
+constexpr bool DefaultIsEnabled = true;
+constexpr bool DefaultIsVisible = true;
 
 }
 
@@ -1234,6 +1238,26 @@ void Control::ReleaseCachedPaintingRenderer() {
 }
 
 
+bool Control::CanClick() const {
+    auto value = GetPropertyMap().TryGetProperty<bool>(CanClickPropertyName);
+    return value ? *value : false;
+}
+
+void Control::SetCanClick(bool can_click) {
+    GetPropertyMap().SetProperty(CanClickPropertyName, can_click);
+}
+
+
+bool Control::CanDoubleClick() const {
+    auto value = GetPropertyMap().TryGetProperty<bool>(CanDoubleClickPropertyName);
+    return value ? *value : false;
+}
+
+void Control::SetCanDoubleClick(bool can_double_click) {
+    GetPropertyMap().SetProperty(CanDoubleClickPropertyName, can_double_click);
+}
+
+
 void Control::CaptureMouse() {
 
     auto window = GetWindow();
@@ -1290,6 +1314,18 @@ Observable<ControlMouseLeaveInfo> Control::MouseLeaveEvent() {
     return GetEventObservable<ControlMouseLeaveInfo>(
         GetPropertyMap(), 
         kMouseLeaveEventPropertyName);
+}
+
+
+Observable<ControlClickInfo> Control::ClickEvent() {
+    return GetEventObservable<ControlClickInfo>(GetPropertyMap(), ClickEventPropertyName);
+}
+
+
+Observable<ControlDoubleClickInfo> Control::DoubleClickEvent() {
+    return GetEventObservable<ControlDoubleClickInfo>(
+        GetPropertyMap(), 
+        DoubleClickEventPropertyName);
 }
 
 
@@ -1461,25 +1497,128 @@ void Control::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
 
 bool Control::OnMouseDown(const Point& position, const MouseMessage& message) {
 
+    if (message.GetMouseButton() == MouseButton::Left) {
+        if (HandleClickOnMouseDown()) {
+            return true;
+        }
+    }
+
 	auto parent = GetParent();
-	if (parent != nullptr) {
+	if (parent) {
         return parent->OnMouseDown(ToParentPoint(position), message);
 	}
-    else {
+
+    return false;
+}
+
+
+bool Control::HandleClickOnMouseDown() {
+
+    //Do not handle if cannot click.
+    if (!CanClick()) {
         return false;
     }
+
+    //Check if need to raise double click.
+    if (CanDoubleClick()) {
+
+        std::uint32_t current_time = GetTickCount();
+        std::uint32_t last_time = last_mouse_down_time_;
+        last_mouse_down_time_ = current_time;
+
+        //Raise double click event.
+        if (current_time - last_time <= GetDoubleClickTime()) {
+            should_raise_click_event_ = false;
+            RaiseDoubleClickEvent();
+            return true;
+        }
+    }
+
+    //Set a flag that indicates a click event should be raised on mouse up.
+    should_raise_click_event_ = true;
+    return true;
 }
 
 
 bool Control::OnMouseUp(const Point& position, const MouseMessage& message) {
 
+    if (message.GetMouseButton() == MouseButton::Left) {
+        if (HandleClickOnMouseUp()) {
+            return true;
+        }
+    }
+
 	auto parent = GetParent();
-	if (parent != nullptr) {
+	if (parent) {
         return parent->OnMouseUp(ToParentPoint(position), message);
 	}
-    else {
+
+    return false;
+}
+
+
+bool Control::HandleClickOnMouseUp() {
+
+    //Do not handle if can not click.
+    if (!CanClick()) {
         return false;
     }
+
+    //Raise a click event if it should be.
+    if (should_raise_click_event_) {
+        RaiseClickEvent();
+        should_raise_click_event_ = false;
+    }
+    return true;
+}
+
+
+void Control::RaiseClickEvent() {
+
+    if (!CanClick()) {
+        return;
+    }
+
+    OnClick();
+
+    auto observer = GetEventObserver<ControlClickInfo>(GetPropertyMap(), ClickEventPropertyName);
+    if (observer) {
+
+        ControlClickInfo event_info;
+        event_info.control = shared_from_this();
+        observer->OnNext(event_info);
+    }
+}
+
+
+void Control::RaiseDoubleClickEvent() {
+
+    if (!CanDoubleClick()) {
+        return;
+    }
+
+    OnDoubleClick();
+
+    auto observer = GetEventObserver<ControlDoubleClickInfo>(
+        GetPropertyMap(),
+        DoubleClickEventPropertyName);
+
+    if (observer) {
+
+        ControlDoubleClickInfo event_info;
+        event_info.control = shared_from_this();
+        observer->OnNext(event_info);
+    }
+}
+
+
+void Control::OnClick() {
+    
+}
+
+
+void Control::OnDoubleClick() {
+
 }
 
 

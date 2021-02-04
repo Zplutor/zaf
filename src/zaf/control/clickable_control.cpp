@@ -11,11 +11,6 @@
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
-namespace {
-
-const wchar_t* const kClickEventPropertyName = L"ClickEvent";
-
-}
 
 ZAF_DEFINE_REFLECTION_TYPE(ClickableControl)
 	ZAF_DEFINE_PARSER(ClickableControlParser)
@@ -38,29 +33,12 @@ ClickableControl::~ClickableControl() {
 void ClickableControl::Initialize() {
 	__super::Initialize();
 	SetCanFocused(true);
-}
-
-
-Observable<ClickableControlClickInfo> ClickableControl::ClickEvent() {
-	return GetEventObservable<ClickableControlClickInfo>(GetPropertyMap(), kClickEventPropertyName);
+	SetCanClick(true);
 }
 
 
 void ClickableControl::Click() {
-
-    OnMouseClick();
-
-	auto observer = GetEventObserver<ClickableControlClickInfo>(
-		GetPropertyMap(),
-		kClickEventPropertyName);
-
-	if (!observer) {
-		return;
-	}
-
-	ClickableControlClickInfo event_info;
-	event_info.clickable_control = std::dynamic_pointer_cast<ClickableControl>(shared_from_this());
-	observer->OnNext(event_info);
+	RaiseClickEvent();
 }
 
 
@@ -229,11 +207,6 @@ void ClickableControl::CheckIsMousePressed(const Point& position, const MouseMes
 	if (need_repaint) {
 		NeedRepaint();
 	}
-}
-
-
-void ClickableControl::OnMouseClick() {
-
 }
 
 
