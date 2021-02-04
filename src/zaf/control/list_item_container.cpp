@@ -45,12 +45,12 @@ void ListItemContainer::LayoutItems(
 }
 
 
-bool ListItemContainer::MouseDown(const Point& position, const MouseMessage& message) {
+bool ListItemContainer::OnMouseDown(const Point& position, const MouseMessage& message) {
 
     SetIsFocused(true);
 
     if (message.GetMouseButton() != MouseButton::Left) {
-        return __super::MouseDown(position, message);
+        return __super::OnMouseDown(position, message);
     }
 
     CaptureMouse();
@@ -59,22 +59,22 @@ bool ListItemContainer::MouseDown(const Point& position, const MouseMessage& mes
 }
 
 
-bool ListItemContainer::MouseMove(const Point& position, const MouseMessage& message) {
+bool ListItemContainer::OnMouseMove(const Point& position, const MouseMessage& message) {
 
     if (IsCapturingMouse()) {
         select_strategy_->ChangeSelectionByMouseMove(position, message);
         return true;
     }
     else {
-        return __super::MouseMove(position, message);
+        return __super::OnMouseMove(position, message);
     }
 }
 
 
-bool ListItemContainer::MouseUp(const Point& position, const MouseMessage& message) {
+bool ListItemContainer::OnMouseUp(const Point& position, const MouseMessage& message) {
 
     if (message.GetMouseButton() != MouseButton::Left) {
-        return __super::MouseUp(position, message);
+        return __super::OnMouseUp(position, message);
     }
 
     if (IsCapturingMouse()) {
@@ -86,14 +86,14 @@ bool ListItemContainer::MouseUp(const Point& position, const MouseMessage& messa
 }
 
 
-bool ListItemContainer::KeyDown(const KeyMessage& message) {
+bool ListItemContainer::OnKeyDown(const KeyMessage& message) {
 
     bool is_handled = select_strategy_->ChangeSelectionByKeyDown(message);
     if (is_handled) {
         return true;
     }
     else {
-        return __super::KeyDown(message);
+        return __super::OnKeyDown(message);
     }
 }
 

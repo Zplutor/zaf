@@ -153,11 +153,11 @@ protected:
     void Initialize() override;
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     void ChangeMouseCursor(const Message& message, bool& is_changed) override;
-    bool MouseMove(const Point& position, const MouseMessage& message) override;
-    bool MouseDown(const Point& position, const MouseMessage& message) override;
-    bool MouseUp(const Point& position, const MouseMessage& message) override;
-    void MouseCapture() override;
-    void MouseRelease() override;
+    bool OnMouseMove(const Point& position, const MouseMessage& message) override;
+    bool OnMouseDown(const Point& position, const MouseMessage& message) override;
+    bool OnMouseUp(const Point& position, const MouseMessage& message) override;
+    void OnMouseCapture() override;
+    void OnMouseRelease() override;
 
 private:
     bool is_horizontal_ = false;

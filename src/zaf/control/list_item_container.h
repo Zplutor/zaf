@@ -17,10 +17,10 @@ public:
 
 protected:
     void Initialize() override;
-    bool MouseDown(const Point& position, const MouseMessage& message) override;
-    bool MouseMove(const Point& position, const MouseMessage& message) override;
-    bool MouseUp(const Point& position, const MouseMessage& message) override;
-    bool KeyDown(const KeyMessage& message) override;
+    bool OnMouseDown(const Point& position, const MouseMessage& message) override;
+    bool OnMouseMove(const Point& position, const MouseMessage& message) override;
+    bool OnMouseUp(const Point& position, const MouseMessage& message) override;
+    bool OnKeyDown(const KeyMessage& message) override;
 
 private:
     friend class internal::ListControlImplementation;

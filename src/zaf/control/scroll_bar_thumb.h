@@ -89,9 +89,9 @@ public:
 protected:
     void Initialize() override;
     void Paint(Canvas& canvas, const Rect& dirty_rect);
-    void MouseCapture() override;
-    void MouseRelease() override;
-    bool MouseMove(const Point& position, const MouseMessage& message) override;
+    void OnMouseCapture() override;
+    void OnMouseRelease() override;
+    bool OnMouseMove(const Point& position, const MouseMessage& message) override;
 
 private:
     friend class ScrollBar;

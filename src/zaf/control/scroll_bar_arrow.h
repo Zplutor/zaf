@@ -99,8 +99,8 @@ public:
 protected:
     void Initialize() override;
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
-    void MouseCapture() override;
-    void MouseRelease() override;
+    void OnMouseCapture() override;
+    void OnMouseRelease() override;
 
 private:
     friend class ScrollBar;

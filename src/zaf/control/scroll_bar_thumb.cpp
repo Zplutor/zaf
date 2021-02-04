@@ -81,9 +81,9 @@ void ScrollBarThumb::SetThumbColorPicker(const ColorPicker& color_picker) {
 }
 
 
-void ScrollBarThumb::MouseCapture() {
+void ScrollBarThumb::OnMouseCapture() {
 
-    ClickableControl::MouseCapture();
+    ClickableControl::OnMouseCapture();
 
     is_dragging_ = true;
 
@@ -93,9 +93,9 @@ void ScrollBarThumb::MouseCapture() {
 }
 
 
-void ScrollBarThumb::MouseRelease() {
+void ScrollBarThumb::OnMouseRelease() {
 
-    ClickableControl::MouseRelease();
+    ClickableControl::OnMouseRelease();
 
     is_dragging_ = false;
 
@@ -105,9 +105,9 @@ void ScrollBarThumb::MouseRelease() {
 }
 
 
-bool ScrollBarThumb::MouseMove(const Point& position, const MouseMessage& message) {
+bool ScrollBarThumb::OnMouseMove(const Point& position, const MouseMessage& message) {
 
-    bool result = ClickableControl::MouseMove(position, message);
+    bool result = ClickableControl::OnMouseMove(position, message);
 
     if (is_dragging_) {
 

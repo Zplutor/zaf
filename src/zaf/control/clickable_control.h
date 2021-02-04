@@ -39,15 +39,15 @@ public:
 
 protected:
     void Initialize() override;
-	void MouseEnter(const std::shared_ptr<Control>& entered_control) override;
-    void MouseLeave(const std::shared_ptr<Control>& leaved_control) override;
-    bool MouseMove(const Point& position, const MouseMessage& message) override;
-    bool MouseDown(const Point& position, const MouseMessage& message) override;
-    bool MouseUp(const Point& position, const MouseMessage& message) override;
-	void MouseCapture() override;
-	void MouseRelease() override;
-    bool KeyDown(const KeyMessage& message) override;
-    bool KeyUp(const KeyMessage& message) override;
+	void OnMouseEnter(const std::shared_ptr<Control>& entered_control) override;
+    void OnMouseLeave(const std::shared_ptr<Control>& leaved_control) override;
+    bool OnMouseMove(const Point& position, const MouseMessage& message) override;
+    bool OnMouseDown(const Point& position, const MouseMessage& message) override;
+    bool OnMouseUp(const Point& position, const MouseMessage& message) override;
+	void OnMouseCapture() override;
+	void OnMouseRelease() override;
+    bool OnKeyDown(const KeyMessage& message) override;
+    bool OnKeyUp(const KeyMessage& message) override;
 	
     /**
      This method is called when a click action is performed on the control.
@@ -55,10 +55,10 @@ protected:
      Derived classes should call the same method of super class if they don't 
      handle the event.
      */
-	virtual void MouseClick();
+	virtual void OnMouseClick();
 
-	void FocusGain() override;
-	void FocusLose() override;
+	void OnFocusGain() override;
+	void OnFocusLose() override;
 
 private:
 	enum class PressType {

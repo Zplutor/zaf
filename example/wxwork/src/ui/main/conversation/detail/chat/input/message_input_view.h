@@ -14,7 +14,7 @@ public:
     }
 
 protected:
-    bool KeyDown(const zaf::KeyMessage& message) override;
+    bool OnKeyDown(const zaf::KeyMessage& message) override;
 
 private:
     void TextBoxFocusChange();

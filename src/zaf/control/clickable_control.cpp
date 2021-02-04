@@ -48,7 +48,7 @@ Observable<ClickableControlClickInfo> ClickableControl::ClickEvent() {
 
 void ClickableControl::Click() {
 
-    MouseClick();
+    OnMouseClick();
 
 	auto observer = GetEventObserver<ClickableControlClickInfo>(
 		GetPropertyMap(),
@@ -64,9 +64,9 @@ void ClickableControl::Click() {
 }
 
 
-void ClickableControl::MouseEnter(const std::shared_ptr<Control>& entered_control) {
+void ClickableControl::OnMouseEnter(const std::shared_ptr<Control>& entered_control) {
 
-	__super::MouseEnter(entered_control);
+	__super::OnMouseEnter(entered_control);
 
     if (entered_control.get() == this) {
 	    NeedRepaint();
@@ -74,9 +74,9 @@ void ClickableControl::MouseEnter(const std::shared_ptr<Control>& entered_contro
 }
 
 
-void ClickableControl::MouseLeave(const std::shared_ptr<Control>& leaved_control) {
+void ClickableControl::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
 
-	__super::MouseLeave(leaved_control);
+	__super::OnMouseLeave(leaved_control);
 
     if (leaved_control.get() == this) {
 	    NeedRepaint();
@@ -84,16 +84,16 @@ void ClickableControl::MouseLeave(const std::shared_ptr<Control>& leaved_control
 }
 
 
-bool ClickableControl::MouseMove(const Point& position, const MouseMessage& message) {
+bool ClickableControl::OnMouseMove(const Point& position, const MouseMessage& message) {
 
-	__super::MouseMove(position, message);
+	__super::OnMouseMove(position, message);
 
 	CheckIsMousePressed(position, message);
     return true;
 }
 
 
-bool ClickableControl::MouseDown(const Point& position, const MouseMessage& message) {
+bool ClickableControl::OnMouseDown(const Point& position, const MouseMessage& message) {
 
 	if (message.GetMouseButton() == MouseButton::Left) {
 		SetIsFocused(true);
@@ -104,7 +104,7 @@ bool ClickableControl::MouseDown(const Point& position, const MouseMessage& mess
 }
 
 
-bool ClickableControl::MouseUp(const Point& position, const MouseMessage& message) {
+bool ClickableControl::OnMouseUp(const Point& position, const MouseMessage& message) {
 
 	if (is_mouse_press_) {
 		if (message.GetMouseButton() == MouseButton::Left) {
@@ -113,41 +113,41 @@ bool ClickableControl::MouseUp(const Point& position, const MouseMessage& messag
 		}
 	}
 
-	return __super::MouseUp(position, message);
+	return __super::OnMouseUp(position, message);
 }
 
 
-void ClickableControl::MouseCapture() {
+void ClickableControl::OnMouseCapture() {
 	is_pressed_ = true;
 	NeedRepaint();
 }
 
 
-void ClickableControl::MouseRelease() {
+void ClickableControl::OnMouseRelease() {
 	is_pressed_ = false;
 	NeedRepaint();
 }
 
 
-bool ClickableControl::KeyDown(const KeyMessage& message) {
+bool ClickableControl::OnKeyDown(const KeyMessage& message) {
 
 	if (message.wparam == VK_SPACE) {
 		BeginPress(PressType::Key);
         return true;
 	}
     
-    return __super::KeyDown(message);
+    return __super::OnKeyDown(message);
 }
 
 
-bool ClickableControl::KeyUp(const KeyMessage& message) {
+bool ClickableControl::OnKeyUp(const KeyMessage& message) {
 
 	if (message.wparam == VK_SPACE) {
 		EndPress(PressType::Key);
         return true;
 	}
 
-    return __super::KeyUp(message);
+    return __super::OnKeyUp(message);
 }
 
 
@@ -232,17 +232,17 @@ void ClickableControl::CheckIsMousePressed(const Point& position, const MouseMes
 }
 
 
-void ClickableControl::MouseClick() {
+void ClickableControl::OnMouseClick() {
 
 }
 
 
-void ClickableControl::FocusGain() {
+void ClickableControl::OnFocusGain() {
 	NeedRepaint();
 }
 
 
-void ClickableControl::FocusLose() {
+void ClickableControl::OnFocusLose() {
 	NeedRepaint();
 }
 

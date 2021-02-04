@@ -409,7 +409,7 @@ Observable<ScrollBarScrollInfo> ScrollBar::ScrollEvent() {
 }
 
 
-bool ScrollBar::MouseDown(const Point& position, const MouseMessage& message) {
+bool ScrollBar::OnMouseDown(const Point& position, const MouseMessage& message) {
 
 	if (message.GetMouseButton() == MouseButton::Left) {
 		CaptureMouse();
@@ -418,7 +418,7 @@ bool ScrollBar::MouseDown(const Point& position, const MouseMessage& message) {
 }
 
 
-bool ScrollBar::MouseUp(const Point& position, const MouseMessage& message) {
+bool ScrollBar::OnMouseUp(const Point& position, const MouseMessage& message) {
 
 	if (message.GetMouseButton() == MouseButton::Left) {
 		ReleaseMouse();
@@ -427,12 +427,12 @@ bool ScrollBar::MouseUp(const Point& position, const MouseMessage& message) {
 }
 
 
-void ScrollBar::MouseCapture() {
+void ScrollBar::OnMouseCapture() {
 	BeginTimer(TimerEvent::PageRoll);
 }
 
 
-void ScrollBar::MouseRelease() {
+void ScrollBar::OnMouseRelease() {
 	timer_.reset();
 }
 
@@ -537,7 +537,7 @@ Rect ScrollBar::GetThumbSlotRect() const {
 }
 
 
-bool ScrollBar::MouseWheel(const Point& position, const MouseWheelMessage& message) {
+bool ScrollBar::OnMouseWheel(const Point& position, const MouseWheelMessage& message) {
 
 	if (message.IsHorizontalWheeling() == IsHorizontal()) {
         Wheel(message.GetWheelingDistance());

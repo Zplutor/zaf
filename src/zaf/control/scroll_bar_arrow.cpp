@@ -99,9 +99,9 @@ void ScrollBarArrow::SetArrowColorPicker(const ColorPicker& color_picker) {
 }
 
 
-void ScrollBarArrow::MouseCapture() {
+void ScrollBarArrow::OnMouseCapture() {
 
-	ClickableControl::MouseCapture();
+	ClickableControl::OnMouseCapture();
 
 	ScrollBarArrowBeginPressInfo event_info;
 	event_info.scroll_bar_arrow = std::dynamic_pointer_cast<ScrollBarArrow>(shared_from_this());
@@ -109,9 +109,9 @@ void ScrollBarArrow::MouseCapture() {
 }
 
 
-void ScrollBarArrow::MouseRelease() {
+void ScrollBarArrow::OnMouseRelease() {
 
-	ClickableControl::MouseRelease();
+	ClickableControl::OnMouseRelease();
 
 	ScrollBarArrowEndPressInfo event_info;
 	event_info.scroll_bar_arrow = std::dynamic_pointer_cast<ScrollBarArrow>(shared_from_this());

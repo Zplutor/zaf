@@ -145,9 +145,9 @@ protected:
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     Rect GetTextRect() override;
 
-    void MouseClick() override;
-    bool KeyDown(const KeyMessage& message) override;
-    void FocusGain() override;
+    void OnMouseClick() override;
+    bool OnKeyDown(const KeyMessage& message) override;
+    void OnFocusGain() override;
 
     void TextChange() override;
 
@@ -299,7 +299,7 @@ public:
 
 protected:
     void Initialize() override;
-    bool MouseMove(const Point& position, const MouseMessage& message) override;
+    bool OnMouseMove(const Point& position, const MouseMessage& message) override;
 
 private:
     friend class ComboBox;
@@ -321,7 +321,7 @@ public:
     ZAF_DECLARE_REFLECTION_TYPE
 
 public:
-    bool KeyDown(const KeyMessage& message) override;
+    bool OnKeyDown(const KeyMessage& message) override;
 };
 
 }

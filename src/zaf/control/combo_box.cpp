@@ -365,7 +365,7 @@ void ComboBox::SetEditTextBox(const std::shared_ptr<ComboBoxEditTextBox>& text_b
 }
 
 
-void ComboBox::MouseClick() {
+void ComboBox::OnMouseClick() {
 
     //Save current selected index in order to recover when the window closed.
     recovered_selected_index_ = drop_down_list_box_->GetFirstSelectedItemIndex();
@@ -462,7 +462,7 @@ void ComboBox::DropDownListBoxMouseMove(const Point& position) {
 }
 
 
-bool ComboBox::KeyDown(const KeyMessage& message) {
+bool ComboBox::OnKeyDown(const KeyMessage& message) {
 
     auto key = message.GetVirtualKey();
     if ((key == VK_UP) || (key == VK_DOWN)) {
@@ -487,7 +487,7 @@ bool ComboBox::KeyDown(const KeyMessage& message) {
         }
     }
     
-    return __super::KeyDown(message);
+    return __super::OnKeyDown(message);
 }
 
 
@@ -654,7 +654,7 @@ void ComboBox::NotifySelectionChange() {
 }
 
 
-void ComboBox::FocusGain() {
+void ComboBox::OnFocusGain() {
 
     if (IsEditable()) {
         edit_text_box_->SetIsFocused(true);
@@ -671,9 +671,9 @@ void ComboBoxDropDownListBox::Initialize() {
 }
 
 
-bool ComboBoxDropDownListBox::MouseMove(const Point& position, const MouseMessage& message) {
+bool ComboBoxDropDownListBox::OnMouseMove(const Point& position, const MouseMessage& message) {
 
-    bool result = __super::MouseMove(position, message);
+    bool result = __super::OnMouseMove(position, message);
 
     if (! IsCapturingMouse()) {
         if (mouse_move_callback_ != nullptr) {
@@ -685,16 +685,16 @@ bool ComboBoxDropDownListBox::MouseMove(const Point& position, const MouseMessag
 }
 
 
-bool ComboBoxEditTextBox::KeyDown(const KeyMessage& message) {
+bool ComboBoxEditTextBox::OnKeyDown(const KeyMessage& message) {
 
     auto key = message.GetVirtualKey(); 
     if (key == VK_UP || key == VK_DOWN || key == VK_RETURN) {
 
         //Call the default handler to derives the event to its parent - combo box.
-        return Control::KeyDown(message);
+        return Control::OnKeyDown(message);
     }
     else {
-        return __super::KeyDown(message);
+        return __super::OnKeyDown(message);
     }
 }
 

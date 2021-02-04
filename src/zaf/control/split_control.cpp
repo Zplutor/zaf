@@ -510,7 +510,7 @@ void SplitControlSplitBar::ChangeMouseCursor(const Message& message, bool& is_ch
 }
 
 
-bool SplitControlSplitBar::MouseMove(const Point& position, const MouseMessage& message) {
+bool SplitControlSplitBar::OnMouseMove(const Point& position, const MouseMessage& message) {
 
     if (IsCapturingMouse()) {
 
@@ -522,7 +522,7 @@ bool SplitControlSplitBar::MouseMove(const Point& position, const MouseMessage& 
 }
 
 
-bool SplitControlSplitBar::MouseDown(const Point& position, const MouseMessage& message) {
+bool SplitControlSplitBar::OnMouseDown(const Point& position, const MouseMessage& message) {
 
     if (message.GetMouseButton() == MouseButton::Left) {
         CaptureMouse();
@@ -531,7 +531,7 @@ bool SplitControlSplitBar::MouseDown(const Point& position, const MouseMessage& 
 }
 
 
-bool SplitControlSplitBar::MouseUp(const Point& position, const MouseMessage& message) {
+bool SplitControlSplitBar::OnMouseUp(const Point& position, const MouseMessage& message) {
 
     if (IsCapturingMouse()) {
         ReleaseMouse();
@@ -540,7 +540,7 @@ bool SplitControlSplitBar::MouseUp(const Point& position, const MouseMessage& me
 }
 
 
-void SplitControlSplitBar::MouseCapture() {
+void SplitControlSplitBar::OnMouseCapture() {
 
     SplitControlSplitBarBeginDragInfo event_info;
     event_info.split_bar = std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this());
@@ -548,7 +548,7 @@ void SplitControlSplitBar::MouseCapture() {
 }
 
 
-void SplitControlSplitBar::MouseRelease() {
+void SplitControlSplitBar::OnMouseRelease() {
 
     SplitControlSplitBarEndDragInfo event_info;
     event_info.split_bar = std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this());

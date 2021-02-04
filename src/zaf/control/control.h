@@ -786,7 +786,7 @@ protected:
      This method is called when a WM_MOUSEMOVE message is received. Derived classes should 
      call the same method of base class if they don't process the notification.
      */
-    virtual bool MouseMove(const Point& position, const MouseMessage& message);
+    virtual bool OnMouseMove(const Point& position, const MouseMessage& message);
 
     /**
      Process the mouse enter notification.
@@ -797,7 +797,7 @@ protected:
      This method is called when the mouse has entered the control. Derived classes should 
      call the same method of base class if they don't process the notification.
      */
-	virtual void MouseEnter(const std::shared_ptr<Control>& entered_control);
+	virtual void OnMouseEnter(const std::shared_ptr<Control>& entered_control);
 
     /**
      Process the mouse leave notification.
@@ -808,7 +808,7 @@ protected:
      This method is called when the mouse has left the control. Derived classes should 
      call the same method of base class if they don't process the notifiction.
      */
-    virtual void MouseLeave(const std::shared_ptr<Control>& leaved_control);
+    virtual void OnMouseLeave(const std::shared_ptr<Control>& leaved_control);
 
     /**
      Process the mouse down notification.
@@ -826,7 +826,7 @@ protected:
      This method is called when a mouse button is pressed within the control. Derived classes 
      should call the same method of base class if they don't process the notifiction.
      */
-    virtual bool MouseDown(const Point& position, const MouseMessage& message);
+    virtual bool OnMouseDown(const Point& position, const MouseMessage& message);
 
     /**
      Process the mouse up notification.
@@ -844,7 +844,7 @@ protected:
      This method is called when a mouse button is released within the control. Derived classes 
      should call the same method of base class if they don't process the notifiction.
      */
-    virtual bool MouseUp(const Point& position, const MouseMessage& message);
+    virtual bool OnMouseUp(const Point& position, const MouseMessage& message);
 
     /**
      Process the mouse wheel notification.
@@ -862,7 +862,7 @@ protected:
      This method is called when the mouse wheel within the control. Derived classes
      should call the same method of base class if they don't process the notification.
      */
-    virtual bool MouseWheel(const Point& position, const MouseWheelMessage& message);
+    virtual bool OnMouseWheel(const Point& position, const MouseWheelMessage& message);
 
     /**
      Process the mouse capture notification.
@@ -870,7 +870,7 @@ protected:
      This method is called when the control captured the mouse. Derived classes
      should call the same method of base class if they don't process the notification.
      */
-	virtual void MouseCapture();
+	virtual void OnMouseCapture();
 
     /**
      Process the mouse release notification.
@@ -878,7 +878,7 @@ protected:
      This method is called when the control release the mouse. Derived classes
      should call the same method of base class if they don't process the notification.
      */
-	virtual void MouseRelease();
+	virtual void OnMouseRelease();
 
     /**
      Process the key down notification.
@@ -886,7 +886,7 @@ protected:
      This method is called when a key is pressed at mean while the control is focused. Derived 
      classes should call the same method of base class if they don't process the notification.
      */
-    virtual bool KeyDown(const KeyMessage& message);
+    virtual bool OnKeyDown(const KeyMessage& message);
 
     /**
      Process the key up notification.
@@ -894,7 +894,7 @@ protected:
      This method is called when a key is released at mean while the control is focused. Derived 
      classes should call the same method of base class if they don't process the notification.
      */
-    virtual bool KeyUp(const KeyMessage& message);
+    virtual bool OnKeyUp(const KeyMessage& message);
 
     /**
      Process the char input notification.
@@ -902,7 +902,7 @@ protected:
      This method is called when a char is inputed at mean while the control is focused. Derived 
      classes should call the same method of base class if they don't process the notification.
      */
-    virtual bool CharInput(const CharMessage& message);
+    virtual bool OnCharInput(const CharMessage& message);
 
     /**
      Process the focus gain notification.
@@ -910,7 +910,7 @@ protected:
      This method is called when the control gained the focus. Derived classes should call the 
      same method of base class if they don't process the notification.
      */
-	virtual void FocusGain();
+	virtual void OnFocusGain();
 
     /**
      Process the focus lose notification.
@@ -918,7 +918,7 @@ protected:
      This method is called when the control lost the focus. Derived classes should call the 
      same method of base class if they don't process the notification.
      */
-	virtual void FocusLose();
+	virtual void OnFocusLose();
 
     /**
      Process the rect change notification.

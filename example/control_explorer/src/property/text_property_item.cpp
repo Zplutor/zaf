@@ -31,7 +31,7 @@ public:
     }
 
 protected:
-    bool KeyDown(const zaf::KeyMessage& message) override {
+    bool OnKeyDown(const zaf::KeyMessage& message) override {
 
         if (message.GetVirtualKey() == VK_RETURN) {
 
@@ -45,7 +45,7 @@ protected:
             }
         }
 
-        return __super::KeyDown(message);
+        return __super::OnKeyDown(message);
     }
 
 private:

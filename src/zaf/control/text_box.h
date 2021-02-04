@@ -283,16 +283,16 @@ protected:
 	void Layout(const Rect& previous_rect) override;
 
 	void ChangeMouseCursor(const Message& message, bool& is_changed) override;
-    bool MouseMove(const Point& position, const MouseMessage& message) override;
-    bool MouseDown(const Point& position, const MouseMessage& message) override;
-    bool MouseUp(const Point& position, const MouseMessage& message) override;
+    bool OnMouseMove(const Point& position, const MouseMessage& message) override;
+    bool OnMouseDown(const Point& position, const MouseMessage& message) override;
+    bool OnMouseUp(const Point& position, const MouseMessage& message) override;
 
-    bool KeyDown(const KeyMessage& message) override;
-    bool KeyUp(const KeyMessage& message) override;
-    bool CharInput(const CharMessage& message) override;
+    bool OnKeyDown(const KeyMessage& message) override;
+    bool OnKeyUp(const KeyMessage& message) override;
+    bool OnCharInput(const CharMessage& message) override;
 
-	void FocusGain() override;
-	void FocusLose() override;
+	void OnFocusGain() override;
+	void OnFocusLose() override;
 
 private:
 	class TextHostBridge : public ITextHost {

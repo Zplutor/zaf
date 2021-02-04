@@ -59,7 +59,7 @@ void ComboBoxDropDownWindow::SetListControl(const std::shared_ptr<ListControl>& 
 }
 
 
-void ComboBoxDropDownWindow::Container::MouseCapture() {
+void ComboBoxDropDownWindow::Container::OnMouseCapture() {
 
     //Richedit calls SetCursor with NULL to hide the cursor when typing,
     //and the cursor would not be recovered when moving the mouse, because 
@@ -75,12 +75,12 @@ void ComboBoxDropDownWindow::Container::MouseCapture() {
 }
 
 
-void ComboBoxDropDownWindow::Container::MouseRelease() {
+void ComboBoxDropDownWindow::Container::OnMouseRelease() {
     originally_cursor_ = nullptr;
 }
 
 
-bool ComboBoxDropDownWindow::Container::MouseMove(const Point& position, const MouseMessage& message) {
+bool ComboBoxDropDownWindow::Container::OnMouseMove(const Point& position, const MouseMessage& message) {
 
     if (originally_cursor_ != nullptr) {
         SetCursor(originally_cursor_);
@@ -89,7 +89,7 @@ bool ComboBoxDropDownWindow::Container::MouseMove(const Point& position, const M
 }
 
 
-bool ComboBoxDropDownWindow::Container::MouseUp(const Point& position, const MouseMessage& message) {
+bool ComboBoxDropDownWindow::Container::OnMouseUp(const Point& position, const MouseMessage& message) {
 
     if (!GetRect().Contain(position)) {
         ReleaseMouse();

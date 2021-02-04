@@ -782,7 +782,7 @@ bool TextBox::ChangeMouseCursor() {
 }
 
 
-bool TextBox::MouseMove(const Point& position, const MouseMessage& message) {
+bool TextBox::OnMouseMove(const Point& position, const MouseMessage& message) {
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_MOUSEMOVE, message.wparam, message.lparam, nullptr);
 	}
@@ -790,7 +790,7 @@ bool TextBox::MouseMove(const Point& position, const MouseMessage& message) {
 }
 
 
-bool TextBox::MouseDown(const Point& position, const MouseMessage& message) {
+bool TextBox::OnMouseDown(const Point& position, const MouseMessage& message) {
 	SetIsFocused(true);
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_LBUTTONDOWN, message.wparam, message.lparam, nullptr);
@@ -799,7 +799,7 @@ bool TextBox::MouseDown(const Point& position, const MouseMessage& message) {
 }
 
 
-bool TextBox::MouseUp(const Point& position, const MouseMessage& message) {
+bool TextBox::OnMouseUp(const Point& position, const MouseMessage& message) {
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_LBUTTONUP, message.wparam, message.lparam, nullptr);
 	}
@@ -807,7 +807,7 @@ bool TextBox::MouseUp(const Point& position, const MouseMessage& message) {
 }
 
 
-bool TextBox::KeyDown(const KeyMessage& message) {
+bool TextBox::OnKeyDown(const KeyMessage& message) {
     
 	if (text_service_ != nullptr) {
 		HRESULT result = text_service_->TxSendMessage(WM_KEYDOWN, message.wparam, message.lparam, nullptr);
@@ -816,11 +816,11 @@ bool TextBox::KeyDown(const KeyMessage& message) {
         }
 	}
     
-    return __super::KeyDown(message);
+    return __super::OnKeyDown(message);
 }
 
 
-bool TextBox::KeyUp(const KeyMessage& message) {
+bool TextBox::OnKeyUp(const KeyMessage& message) {
 
 	if (text_service_ != nullptr) {
 		HRESULT result = text_service_->TxSendMessage(WM_KEYUP, message.wparam, message.lparam, nullptr);
@@ -829,11 +829,11 @@ bool TextBox::KeyUp(const KeyMessage& message) {
         }
 	}
     
-    return __super::KeyUp(message);
+    return __super::OnKeyUp(message);
 }
 
 
-bool TextBox::CharInput(const CharMessage& message) {
+bool TextBox::OnCharInput(const CharMessage& message) {
 
 	if (text_service_ != nullptr) {
 		HRESULT result = text_service_->TxSendMessage(WM_CHAR, message.wparam, message.lparam, nullptr);
@@ -842,11 +842,11 @@ bool TextBox::CharInput(const CharMessage& message) {
         }
 	}
 
-    return __super::CharInput(message);
+    return __super::OnCharInput(message);
 }
 
 
-void TextBox::FocusGain() {
+void TextBox::OnFocusGain() {
 
 	if (text_service_ != nullptr) {
 		text_service_->TxSendMessage(WM_SETFOCUS, 0, 0, nullptr);
@@ -854,7 +854,7 @@ void TextBox::FocusGain() {
 }
 
 
-void TextBox::FocusLose() {
+void TextBox::OnFocusLose() {
 
 	auto window = GetWindow();
 	if (window != nullptr) {

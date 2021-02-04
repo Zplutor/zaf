@@ -22,10 +22,10 @@ protected:
 private:
     class Container : public Control {
     protected:
-        void MouseCapture() override;
-        void MouseRelease() override;
-        bool MouseMove(const Point& position, const MouseMessage& message) override;
-        bool MouseUp(const Point& position, const MouseMessage& message) override;
+        void OnMouseCapture() override;
+        void OnMouseRelease() override;
+        bool OnMouseMove(const Point& position, const MouseMessage& message) override;
+        bool OnMouseUp(const Point& position, const MouseMessage& message) override;
 
     private:
         HCURSOR originally_cursor_ = nullptr;

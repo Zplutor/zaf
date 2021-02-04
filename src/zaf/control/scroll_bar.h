@@ -208,11 +208,11 @@ protected:
     void Initialize() override;
 	void Layout(const Rect& previous_rect) override;
 
-    bool MouseDown(const Point& position, const MouseMessage& message) override;
-    bool MouseUp(const Point& position, const MouseMessage& message) override;
-    bool MouseWheel(const Point& position, const MouseWheelMessage& message) override;
-	void MouseCapture() override;
-	void MouseRelease() override;
+    bool OnMouseDown(const Point& position, const MouseMessage& message) override;
+    bool OnMouseUp(const Point& position, const MouseMessage& message) override;
+    bool OnMouseWheel(const Point& position, const MouseWheelMessage& message) override;
+	void OnMouseCapture() override;
+	void OnMouseRelease() override;
 
 private:
 	enum class TimerEvent {

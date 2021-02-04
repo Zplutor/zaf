@@ -396,19 +396,19 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
 
     case WM_KEYDOWN: 
         if (focused_control_ != nullptr) {
-            return focused_control_->KeyDown(dynamic_cast<const KeyMessage&>(message));
+            return focused_control_->OnKeyDown(dynamic_cast<const KeyMessage&>(message));
         }
         return false;
 
     case WM_KEYUP:
         if (focused_control_ != nullptr) {
-            return focused_control_->KeyUp(dynamic_cast<const KeyMessage&>(message));
+            return focused_control_->OnKeyUp(dynamic_cast<const KeyMessage&>(message));
         }
         return false;
 
     case WM_CHAR:
         if (focused_control_ != nullptr) {
-            return focused_control_->CharInput(dynamic_cast<const CharMessage&>(message));
+            return focused_control_->OnCharInput(dynamic_cast<const CharMessage&>(message));
         }
         return false;
 
@@ -631,7 +631,7 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
         }
     }
     else if (message.id == WM_MOUSELEAVE || message.id == WM_NCMOUSELEAVE) {
-        MouseLeave(message);
+        OnMouseLeave(message);
     }
     else if (message.id == WM_LBUTTONDOWN || message.id == WM_RBUTTONDOWN) {
         if (is_selecting_inspector_control_) {
@@ -717,7 +717,7 @@ void Window::TrackMouseLeave(const MouseMessage& message) {
 }
 
 
-void Window::MouseLeave(const MouseMessage& message) {
+void Window::OnMouseLeave(const MouseMessage& message) {
 
     bool is_tracking_mouse = [&]() {
     

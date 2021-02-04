@@ -179,7 +179,7 @@ protected:
     void Initialize() override;
 	void Layout(const Rect& previous_rect) override;
 
-    bool MouseWheel(const Point& position, const MouseWheelMessage& message) override;
+    bool OnMouseWheel(const Point& position, const MouseWheelMessage& message) override;
 
     /**
      This method is called when the vertical scroll bar is changed.

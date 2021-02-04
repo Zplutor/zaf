@@ -1113,10 +1113,10 @@ void Control::IsHoveredChanged(bool is_hovered) {
 	is_hovered_ = is_hovered;
 
 	if (is_hovered_) {
-		MouseEnter(shared_from_this());
+		OnMouseEnter(shared_from_this());
 	}
 	else {
-        MouseLeave(shared_from_this());
+        OnMouseLeave(shared_from_this());
 	}
 }
 
@@ -1199,10 +1199,10 @@ void Control::IsFocusedChanged(bool is_focused) {
 	is_focused_ = is_focused;
 
 	if (is_focused_) {
-		FocusGain();
+		OnFocusGain();
 	}
 	else {
-		FocusLose();
+		OnFocusLose();
 	}
 
     auto event_observer = GetEventObserver<ControlFocusChangeInfo>(
@@ -1257,10 +1257,10 @@ void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
 	is_capturing_mouse_ = is_capturing_mouse;
 
 	if (is_capturing_mouse_) {
-		MouseCapture();
+		OnMouseCapture();
 	}
 	else {
-		MouseRelease();
+		OnMouseRelease();
 	}
 }
 
@@ -1362,23 +1362,23 @@ bool Control::InterpretMessage(const Point& position, const MouseMessage& messag
 
 	switch (message.id) {
 	case WM_MOUSEMOVE:
-		return MouseMove(position, message);
+		return OnMouseMove(position, message);
 
 	case WM_LBUTTONDOWN:
     case WM_NCLBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
-        return MouseDown(position, message);
+        return OnMouseDown(position, message);
 
 	case WM_LBUTTONUP:
     case WM_NCLBUTTONUP:
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
-        return MouseUp(position, message);
+        return OnMouseUp(position, message);
 
 	case WM_MOUSEWHEEL:
 	case WM_MOUSEHWHEEL:
-        return MouseWheel(position, dynamic_cast<const MouseWheelMessage&>(message));
+        return OnMouseWheel(position, dynamic_cast<const MouseWheelMessage&>(message));
 
 	default:
         return false;
@@ -1407,11 +1407,11 @@ void Control::ChangeMouseCursor(const Message& message, bool& is_changed) {
 }
 
 
-bool Control::MouseMove(const Point& position, const MouseMessage& message) {
+bool Control::OnMouseMove(const Point& position, const MouseMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-        return parent->MouseMove(ToParentPoint(position), message);
+        return parent->OnMouseMove(ToParentPoint(position), message);
 	}
     else {
         return false;
@@ -1419,7 +1419,7 @@ bool Control::MouseMove(const Point& position, const MouseMessage& message) {
 }
 
 
-void Control::MouseEnter(const std::shared_ptr<Control>& entered_control) {
+void Control::OnMouseEnter(const std::shared_ptr<Control>& entered_control) {
 
     auto event_observer = GetEventObserver<ControlMouseEnterInfo>(
         GetPropertyMap(), 
@@ -1434,12 +1434,12 @@ void Control::MouseEnter(const std::shared_ptr<Control>& entered_control) {
 
     auto parent = GetParent();
     if (parent != nullptr) {
-        parent->MouseEnter(entered_control);
+        parent->OnMouseEnter(entered_control);
     }
 }
 
 
-void Control::MouseLeave(const std::shared_ptr<Control>& leaved_control) {
+void Control::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
 
     auto event_observer = GetEventObserver<ControlMouseLeaveInfo>(
         GetPropertyMap(),
@@ -1454,16 +1454,16 @@ void Control::MouseLeave(const std::shared_ptr<Control>& leaved_control) {
 
     auto parent = GetParent();
     if (parent != nullptr) {
-        parent->MouseLeave(leaved_control);
+        parent->OnMouseLeave(leaved_control);
     }
 }
 
 
-bool Control::MouseDown(const Point& position, const MouseMessage& message) {
+bool Control::OnMouseDown(const Point& position, const MouseMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-        return parent->MouseDown(ToParentPoint(position), message);
+        return parent->OnMouseDown(ToParentPoint(position), message);
 	}
     else {
         return false;
@@ -1471,11 +1471,11 @@ bool Control::MouseDown(const Point& position, const MouseMessage& message) {
 }
 
 
-bool Control::MouseUp(const Point& position, const MouseMessage& message) {
+bool Control::OnMouseUp(const Point& position, const MouseMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-        return parent->MouseUp(ToParentPoint(position), message);
+        return parent->OnMouseUp(ToParentPoint(position), message);
 	}
     else {
         return false;
@@ -1483,11 +1483,11 @@ bool Control::MouseUp(const Point& position, const MouseMessage& message) {
 }
 
 
-bool Control::MouseWheel(const Point& position, const MouseWheelMessage& message) {
+bool Control::OnMouseWheel(const Point& position, const MouseWheelMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-		return parent->MouseWheel(ToParentPoint(position), message);
+		return parent->OnMouseWheel(ToParentPoint(position), message);
 	}
     else {
         return false;
@@ -1495,21 +1495,21 @@ bool Control::MouseWheel(const Point& position, const MouseWheelMessage& message
 }
 
 
-void Control::MouseCapture() {
+void Control::OnMouseCapture() {
 
 }
 
 
-void Control::MouseRelease() {
+void Control::OnMouseRelease() {
 
 }
 
 
-bool Control::KeyDown(const KeyMessage& message) {
+bool Control::OnKeyDown(const KeyMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-		return parent->KeyDown(message);
+		return parent->OnKeyDown(message);
 	}
     else {
         return false;
@@ -1517,11 +1517,11 @@ bool Control::KeyDown(const KeyMessage& message) {
 }
 
 
-bool Control::KeyUp(const KeyMessage& message) {
+bool Control::OnKeyUp(const KeyMessage& message) {
 
 	auto parent = GetParent();
 	if (parent != nullptr) {
-		return parent->KeyUp(message);
+		return parent->OnKeyUp(message);
 	}
     else {
         return false;
@@ -1529,11 +1529,11 @@ bool Control::KeyUp(const KeyMessage& message) {
 }
 
 
-bool Control::CharInput(const CharMessage& message) {
+bool Control::OnCharInput(const CharMessage& message) {
 
 	auto parent = GetParent(); 
 	if (parent != nullptr) {
-		return parent->CharInput(message);
+		return parent->OnCharInput(message);
 	}
     else {
         return false;
@@ -1541,12 +1541,12 @@ bool Control::CharInput(const CharMessage& message) {
 }
 
 
-void Control::FocusGain() {
+void Control::OnFocusGain() {
 
 }
 
 
-void Control::FocusLose() {
+void Control::OnFocusLose() {
 
 }
 

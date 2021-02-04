@@ -18,11 +18,11 @@ protected:
     void Layout(const zaf::Rect& previous_rect) override;
     void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
-    void MouseEnter(const std::shared_ptr<zaf::Control>& control) override {
+    void OnMouseEnter(const std::shared_ptr<zaf::Control>& control) override {
         NeedRepaint();
     }
 
-    void MouseLeave(const std::shared_ptr<zaf::Control>& control) override {
+    void OnMouseLeave(const std::shared_ptr<zaf::Control>& control) override {
         NeedRepaint();
     }
 

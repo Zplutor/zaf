@@ -330,7 +330,7 @@ void ScrollableControl::SetScrollContentSize(const Size& size) {
 }
 
 
-bool ScrollableControl::MouseWheel(const Point& position, const MouseWheelMessage& message) {
+bool ScrollableControl::OnMouseWheel(const Point& position, const MouseWheelMessage& message) {
 
     std::shared_ptr<ScrollBar> scroll_bar;
 
