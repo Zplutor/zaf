@@ -248,11 +248,25 @@ void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extract_style) c
 
 bool Window::PreprocessMessage(const KeyMessage& message) {
 
-    if ((message.id != WM_KEYDOWN) || (message.GetVirtualKey() != VK_TAB)) {
+    if (TryToPreprocessTabKeyMessage(message)) {
+        return true;
+    }
+
+    if (TryToPreprocessInspectorShortcutMessage(message)) {
+        return true;
+    }
+
+    return false;
+}
+
+
+bool Window::TryToPreprocessTabKeyMessage(const KeyMessage& message) {
+
+    if (message.id != WM_KEYDOWN || message.GetVirtualKey() != VK_TAB) {
         return false;
     }
 
-    if ((focused_control_ != nullptr) && focused_control_->AcceptKeyMessage(message)) {
+    if ((focused_control_) && focused_control_->AcceptKeyMessage(message)) {
         return false;
     }
 
@@ -273,6 +287,28 @@ void Window::SwitchFocusedControlByTabKey(bool backward) {
     if (next_focused_control != nullptr) {
         SetFocusedControl(next_focused_control);
     }
+}
+
+
+bool Window::TryToPreprocessInspectorShortcutMessage(const KeyMessage& message) {
+#ifndef NDEBUG
+    if (message.id != WM_KEYDOWN) {
+        return false;
+    }
+
+    if (message.GetVirtualKey() != VK_F12) {
+        return false;
+    }
+
+    if ((GetKeyState(VK_CONTROL) >> 15) == 0) {
+        return false;
+    }
+
+    ShowInspectorWindow();
+    return true;
+#else
+    return false;
+#endif
 }
 
 

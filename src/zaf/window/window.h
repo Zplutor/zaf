@@ -657,7 +657,9 @@ private:
     void CheckCreateWindowHandle();
     void GetHandleStyles(DWORD& handle_style, DWORD& handle_extract_style) const;
 
+    bool TryToPreprocessTabKeyMessage(const KeyMessage& message);
     void SwitchFocusedControlByTabKey(bool backward);
+    bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);
 
     void Repaint();
     void PaintInspectedControl(Canvas& canvas, const Rect& dirty_rect);

@@ -337,8 +337,8 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
     inspect_button->SetRect(zaf::Rect{ 310, 100, 100, 30 });
     inspect_button->SetMargin(zaf::Frame{ 10, 10, 10, 10 });
     inspect_button->Subscriptions() += inspect_button->ClickEvent().Subscribe(
-        [](const zaf::ClickableControlClickInfo& event_info) {
-        event_info.clickable_control->GetWindow()->ShowInspectorWindow();
+        [](const zaf::ControlClickInfo& event_info) {
+        event_info.control->GetWindow()->ShowInspectorWindow();
     }
     );
 
