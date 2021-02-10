@@ -111,9 +111,10 @@ float MainWindow::GetContentWidth() const {
 }
 
 
-void MainWindow::ButtonClick(const zaf::ClickableControlClickInfo& event_info) {
+void MainWindow::ButtonClick(const zaf::ControlClickInfo& event_info) {
 
-    auto button_text = event_info.clickable_control->GetText();
+    auto button = dynamic_cast<zaf::Button*>(event_info.control.get());
+    auto button_text = button->GetText();
     if (button_text == L"=") {
 
         auto result = Calculator().Calculate(input_text_box_->GetText());
