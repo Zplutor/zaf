@@ -5,17 +5,10 @@
 
 namespace zaf {
 
-Point Align(const Point& point);
-Point AlignLine(const Point& point, float stroke_width);
-
-Rect Align(const Rect& rect);
-Rect AlignLine(const Rect& rect, float stroke_width);
-
-RoundedRect Align(const RoundedRect& rounded_rect);
-RoundedRect AlignLine(const RoundedRect& rounded_rect, float stroke_width);
-
-Ellipse Align(const Ellipse& ellipse);
-Ellipse AlignLine(const Ellipse& ellipse, float stroke_width);
+Point Align(const Point& point, float stroke_width = 0);
+Rect Align(const Rect& rect, float stroke_width = 0);
+RoundedRect Align(const RoundedRect& rounded_rect, float stroke_width = 0);
+Ellipse Align(const Ellipse& ellipse, float stroke_width = 0);
 
 float AlignmentOffsetForLine(float stroke_width);
 

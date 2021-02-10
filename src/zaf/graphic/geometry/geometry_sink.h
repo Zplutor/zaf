@@ -116,8 +116,14 @@ public:
 
      The instance takes over the lifetime of handle. It would release the handle when destroyed.
      */
-    GeometrySink(ID2D1GeometrySink* handle, const Point& coordinate_origin) : 
-        ComObject(handle), coordinate_origin_(coordinate_origin) {}
+    GeometrySink(
+        ID2D1GeometrySink* handle, 
+        const Point& coordinate_origin,
+        const Point& aligned_coordinate_origin) 
+        :
+        ComObject(handle),
+        coordinate_origin_(coordinate_origin),
+        aligned_coordinate_origin_(aligned_coordinate_origin) { }
 
     /**
      Specifies the method used to determine which points are inside the geometry
@@ -207,6 +213,7 @@ public:
 
 private:
     Point coordinate_origin_;
+    Point aligned_coordinate_origin_;
 };
 
 ZAF_ENABLE_FLAG_ENUM(GeometrySink::SegmentFlag);

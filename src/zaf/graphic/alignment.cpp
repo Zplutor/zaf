@@ -50,43 +50,28 @@ Ellipse AlignEllipse(const Ellipse& ellipse, float offset) {
 }
 
 
-Point Align(const Point& point) {
-    return AlignPoint(point, 0);
-}
-
-Point AlignLine(const Point& point, float stroke_width) {
+Point Align(const Point& point, float stroke_width) {
     return AlignPoint(point, AlignmentOffsetForLine(stroke_width));
 }
 
 
-Rect Align(const Rect& rect) {
-    return AlignRect(rect, 0);
-}
-
-Rect AlignLine(const Rect& rect, float stroke_width) {
+Rect Align(const Rect& rect, float stroke_width) {
     return AlignRect(rect, AlignmentOffsetForLine(stroke_width));
 }
 
 
-RoundedRect Align(const RoundedRect& rounded_rect) {
-    return AlignRoundedRect(rounded_rect, 0);
-}
-
-RoundedRect AlignLine(const RoundedRect& rounded_rect, float stroke_width) {
+RoundedRect Align(const RoundedRect& rounded_rect, float stroke_width) {
     return AlignRoundedRect(rounded_rect, AlignmentOffsetForLine(stroke_width));
 }
 
 
-Ellipse Align(const Ellipse& ellipse) {
-    return AlignEllipse(ellipse, 0);
-}
-
-Ellipse AlignLine(const Ellipse& ellipse, float stroke_width) {
+Ellipse Align(const Ellipse& ellipse, float stroke_width) {
     return AlignEllipse(ellipse, AlignmentOffsetForLine(stroke_width));
 }
 
 
 float AlignmentOffsetForLine(float stroke_width) {
+
     if (static_cast<int>(std::ceil(stroke_width)) % 2 != 0) {
         return 0.5;
     }

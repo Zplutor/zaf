@@ -110,7 +110,6 @@
     <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp" />
     <ClCompile Include="src\zaf\graphic\geometry\path_geometry.cpp" />
     <ClCompile Include="src\zaf\graphic\image\gif_metadata_querier.cpp" />
-    <ClCompile Include="src\zaf\graphic\internal\alignment_helper.cpp" />
     <ClCompile Include="src\zaf\graphic\localized_strings.cpp" />
     <ClCompile Include="src\zaf\graphic\matrix.cpp" />
     <ClCompile Include="src\zaf\graphic\point.cpp" />

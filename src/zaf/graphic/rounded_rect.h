@@ -29,6 +29,14 @@ public:
     
     }
 
+    void AddOffset(const Point& offset) {
+        rect.AddOffset(offset);
+    }
+
+    void SubtractOffset(const Point& offset) {
+        rect.SubtractOffset(offset);
+    }
+
     D2D1_ROUNDED_RECT ToD2D1ROUNDEDRECT() const {
         D2D1_ROUNDED_RECT d2d1_rounded_rect;
         d2d1_rounded_rect.rect = rect.ToD2D1RECTF();

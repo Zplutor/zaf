@@ -70,6 +70,16 @@ public:
 		return *this;
 	}
 
+	void AddOffset(const Point& offset) {
+		x += offset.x;
+		y += offset.y;
+	}
+
+	void SubtractOffset(const Point& offset) {
+		x -= offset.x;
+		y -= offset.y;
+	}
+
 	/**
 	 Convert to POINT structure.
 	 */

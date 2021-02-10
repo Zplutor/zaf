@@ -26,9 +26,14 @@ public:
      Construct the instance with specified handle, as well as an origin of coordinate that used to
      align geometry.
      */
-    PathGeometry(ID2D1PathGeometry* handle, const Point& coordinate_origin) :
+    PathGeometry(
+        ID2D1PathGeometry* handle,
+        const Point& coordinate_origin, 
+        const Point& aligned_coordinate_origin)
+        :
         Geometry(handle), 
-        coordinate_origin_(coordinate_origin) { }
+        coordinate_origin_(coordinate_origin),
+        aligned_coordinate_origin_(aligned_coordinate_origin) { }
 
     /**
      Get the number of figures.
@@ -61,6 +66,7 @@ private:
 
 private:
     Point coordinate_origin_;
+    Point aligned_coordinate_origin_;
 };
 
 }

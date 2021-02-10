@@ -40,6 +40,14 @@ public:
 		this->y_radius += y_radius;
 	}
 
+	void AddOffset(const Point& offset) {
+		position.AddOffset(offset);
+	}
+
+	void SubtractOffset(const Point& offset) {
+		position.SubtractOffset(offset);
+	}
+
 	D2D1_ELLIPSE ToD2D1ELLIPSE() const {
 
 		D2D1_ELLIPSE ellipse = { 0 };

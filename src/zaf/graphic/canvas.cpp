@@ -17,7 +17,9 @@ Canvas::Canvas(const Renderer& renderer, const Rect& renderer_rect, const Rect& 
 
     TransformLayer transformed_layer;
     transformed_layer.rect = renderer_rect;
+    transformed_layer.aligned_rect = Align(renderer_rect);
     transformed_layer.paintable_rect = paintable_rect;
+    transformed_layer.aligned_paintable_rect = Align(paintable_rect);
     transform_layers_.push(transformed_layer);
 
 	SaveState();
@@ -40,7 +42,9 @@ void Canvas::PushTransformLayer(const Rect& rect, const Rect& paintable_rect) {
 
     TransformLayer new_transform_layer;
     new_transform_layer.rect = new_transform_rect;
+    new_transform_layer.aligned_rect = Align(new_transform_rect);
     new_transform_layer.paintable_rect = new_paintable_rect;
+    new_transform_layer.aligned_paintable_rect = Align(new_paintable_rect);
 
     transform_layers_.push(new_transform_layer);
 }
@@ -54,34 +58,25 @@ void Canvas::PopTransformLayer() {
 void Canvas::BeginPaint() {
 
     const auto& current_transform_layer = transform_layers_.top();
+    const auto& aligned_rect = current_transform_layer.aligned_rect;
 
-    auto aligned_transform_rect = Align(current_transform_layer.rect);
-    renderer_.Transform(TransformMatrix::Translation(aligned_transform_rect.position));
+    renderer_.Transform(TransformMatrix::Translation(aligned_rect.position));
 
-    Rect paintable_rect = Align(current_transform_layer.paintable_rect);
-    paintable_rect.position.x -= aligned_transform_rect.position.x;
-    paintable_rect.position.y -= aligned_transform_rect.position.y;
-
+    Rect paintable_rect = current_transform_layer.aligned_paintable_rect;
+    paintable_rect.SubtractOffset(aligned_rect.position);
     renderer_.PushAxisAlignedClipping(paintable_rect, AntialiasMode::PerPrimitive);
-
-    aligned_transform_offset_.x = 
-        current_transform_layer.rect.position.x - aligned_transform_rect.position.x;
-
-    aligned_transform_offset_.y =
-        current_transform_layer.rect.position.y - aligned_transform_rect.position.y;
 }
 
 
 void Canvas::EndPaint() {
     renderer_.PopAxisAlignedClipping();
     renderer_.Transform(TransformMatrix::Identity);
-    aligned_transform_offset_ = {};
 }
 
 
 void Canvas::PushClippingRect(const Rect& rect) {
 
-    auto absolute_clipping_rect = AlignWithOffset(rect);
+    auto absolute_clipping_rect = AlignWithTransformLayer(rect);
 
     GetCurrentState()->clipping_rects.push_back(absolute_clipping_rect);
     renderer_.PushAxisAlignedClipping(absolute_clipping_rect, zaf::AntialiasMode::PerPrimitive);
@@ -164,10 +159,11 @@ void Canvas::Clear() {
 
 
 void Canvas::DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
+
     auto state = GetCurrentState();
     renderer_.DrawLine(
-        AlignLineWithOffset(from_point, stroke_width),
-        AlignLineWithOffset(to_point, stroke_width),
+        AlignWithTransformLayer(from_point, stroke_width),
+        AlignWithTransformLayer(to_point, stroke_width),
         state->brush,
         stroke_width,
         state->stroke);
@@ -176,14 +172,14 @@ void Canvas::DrawLine(const Point& from_point, const Point& to_point, float stro
 
 void Canvas::DrawRectangle(const Rect& rect) {
     auto state = GetCurrentState();
-    renderer_.DrawRectangle(AlignWithOffset(rect), state->brush);
+    renderer_.DrawRectangle(AlignWithTransformLayer(rect), state->brush);
 }
 
 
 void Canvas::DrawRectangleFrame(const Rect& rect, float stroke_width) {
     auto state = GetCurrentState();
     renderer_.DrawRectangleFrame(
-        AlignLineWithOffset(rect, stroke_width),
+        AlignWithTransformLayer(rect, stroke_width),
         state->brush,
         stroke_width,
         state->stroke);
@@ -192,14 +188,15 @@ void Canvas::DrawRectangleFrame(const Rect& rect, float stroke_width) {
 
 void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect) {
     auto state = GetCurrentState();
-    renderer_.DrawRoundedRectangle(AlignWithOffset(rounded_rect), state->brush);
+    renderer_.DrawRoundedRectangle(AlignWithTransformLayer(rounded_rect), state->brush);
 }
 
 
 void Canvas::DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width) {
+
     auto state = GetCurrentState();
     renderer_.DrawRoundedRectangleFrame(
-        AlignLineWithOffset(rounded_rect, stroke_width),
+        AlignWithTransformLayer(rounded_rect, stroke_width),
         state->brush,
         stroke_width,
         state->stroke);
@@ -208,14 +205,14 @@ void Canvas::DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float st
 
 void Canvas::DrawEllipse(const Ellipse& ellipse) {
     auto state = GetCurrentState();
-    renderer_.DrawEllipse(AlignWithOffset(ellipse), state->brush);
+    renderer_.DrawEllipse(AlignWithTransformLayer(ellipse), state->brush);
 }
 
 
 void Canvas::DrawEllipseFrame(const Ellipse& ellipse, float stroke_width) {
     auto state = GetCurrentState();
     renderer_.DrawEllipseFrame(
-        AlignLineWithOffset(ellipse, stroke_width),
+        AlignWithTransformLayer(ellipse, stroke_width),
         state->brush,
         stroke_width,
         state->stroke);
@@ -252,12 +249,20 @@ void Canvas::DrawTextFormat(
     const TextFormat& text_format, 
     const Rect& rect) {
 
-    renderer_.DrawTextFormat(text, text_format, rect, GetCurrentState()->brush);
+    renderer_.DrawTextFormat(
+        text, 
+        text_format, 
+        AlignWithTransformLayer(rect),
+        GetCurrentState()->brush);
 }
 
 
 void Canvas::DrawTextLayout(const TextLayout& text_layout, const Point& position) {
-    renderer_.DrawTextLayout(text_layout, position, GetCurrentState()->brush);
+
+    renderer_.DrawTextLayout(
+        text_layout, 
+        AlignWithTransformLayer(position), 
+        GetCurrentState()->brush);
 }
 
 
@@ -268,7 +273,7 @@ void Canvas::DrawBitmap(
 
     renderer_.DrawBitmap(
         bitmap, 
-        AlignWithOffset(destination_rect), 
+        AlignWithTransformLayer(destination_rect),
         options.Opacity(),
         options.InterpolationMode(),
         options.SourceRect());
@@ -282,17 +287,18 @@ PathGeometry Canvas::CreatePathGeometry() const {
         GetGraphicFactory().GetDirect2dFactoryHandle()->CreatePathGeometry(&handle);
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return PathGeometry(handle, aligned_transform_offset_);
+
+    const auto& current_transform_layer = transform_layers_.top();
+    return PathGeometry(
+        handle, 
+        current_transform_layer.rect.position, 
+        current_transform_layer.aligned_rect.position);
 }
 
 
 RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect) const {
 
-    Rect aligned_rect = rect;
-    aligned_rect.position.x += aligned_transform_offset_.x;
-    aligned_rect.position.y += aligned_transform_offset_.y;
-    aligned_rect = Align(aligned_rect);
-
+    Rect aligned_rect = AlignWithTransformLayer(rect);
     return GetGraphicFactory().CreateRectangleGeometry(aligned_rect);
 }
 
@@ -300,32 +306,8 @@ RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect) const {
 RoundedRectangleGeometry Canvas::CreateRoundedRectangleGeometry(
     const RoundedRect& rounded_rect) const {
 
-    RoundedRect aligned_rounded_rect = rounded_rect;
-    aligned_rounded_rect.rect.position.x += aligned_transform_offset_.x;
-    aligned_rounded_rect.rect.position.y += aligned_transform_offset_.y;
-    aligned_rounded_rect = Align(aligned_rounded_rect);
-
+    RoundedRect aligned_rounded_rect = AlignWithTransformLayer(rounded_rect);
     return GetGraphicFactory().CreateRoundedRectangleGeometry(aligned_rounded_rect);
-}
-
-
-Point Canvas::AddOffset(const Point& point) const {
-    return Point(point.x + aligned_transform_offset_.x, point.y + aligned_transform_offset_.y);
-}
-
-Rect Canvas::AddOffset(const Rect& rect) const {
-    return Rect(AddOffset(rect.position), rect.size);
-}
-
-RoundedRect Canvas::AddOffset(const RoundedRect& rounded_rect) const {
-    return RoundedRect(
-        Rect(AddOffset(rounded_rect.rect.position), rounded_rect.rect.size), 
-        rounded_rect.x_radius, 
-        rounded_rect.y_radius);
-}
-
-Ellipse Canvas::AddOffset(const Ellipse& ellipse) const {
-    return Ellipse(AddOffset(ellipse.position), ellipse.x_radius, ellipse.y_radius);
 }
 
 }

@@ -328,9 +328,6 @@
     <ClCompile Include="src\zaf\graphic\alignment.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\internal\alignment_helper.cpp">
-      <Filter>zaf\graphic\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\parsing\xaml_reader.cpp">
       <Filter>zaf\parsing</Filter>
     </ClCompile>

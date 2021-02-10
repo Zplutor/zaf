@@ -4,10 +4,11 @@
 #include <stack>
 #include <string>
 #include <zaf/application.h>
-#include <zaf/graphic/rect.h>
-#include <zaf/graphic/color.h>
-#include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/brush/solid_color_brush.h>
+#include <zaf/graphic/color.h>
+#include <zaf/graphic/internal/alignment_helper.h>
+#include <zaf/graphic/rect.h>
+#include <zaf/graphic/renderer/renderer.h>
 
 namespace zaf {
 
@@ -131,9 +132,7 @@ public:
         const DrawImageOptions& options = {});
 
     PathGeometry CreatePathGeometry() const;
-
     RectangleGeometry CreateRectangleGeometry(const Rect& rect) const;
-
     RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect) const;
 
 private:
@@ -147,7 +146,9 @@ private:
     class TransformLayer {
     public:
         Rect rect;
+        Rect aligned_rect;
         Rect paintable_rect;
+        Rect aligned_paintable_rect;
     };
 
 private:
@@ -166,27 +167,20 @@ private:
     void CancelState(const std::shared_ptr<State>& state);
     std::shared_ptr<State> GetCurrentState() const;
 
-    Point AddOffset(const Point& point) const;
-    Rect AddOffset(const Rect& rect) const;
-    RoundedRect AddOffset(const RoundedRect& rounded_rect) const;
-    Ellipse AddOffset(const Ellipse& ellipse) const;
-
     template<typename T>
-    T AlignWithOffset(const T& t) const {
-        return Align(AddOffset(t));
-    }
+    T AlignWithTransformLayer(const T& object, float stroke_width = 0) const {
 
-    template<typename T>
-    T AlignLineWithOffset(const T& t, float stroke_width) const {
-        return AlignLine(AddOffset(t), stroke_width);
+        const auto& current_transform_layer = transform_layers_.top();
+        return internal::AlignInRelatedCoordinateSystem(
+            object, 
+            stroke_width, 
+            current_transform_layer.rect.position, 
+            current_transform_layer.aligned_rect.position);
     }
 
 private:
     Renderer renderer_;
     std::stack<TransformLayer> transform_layers_;
-    
-    Point aligned_transform_offset_;
-	
 	std::vector<std::shared_ptr<State>> states_;
 };
 

@@ -172,6 +172,14 @@ public:
         size.height -= frame.top + frame.bottom;
     }
 
+	void AddOffset(const Point& offset) {
+		position.AddOffset(offset);
+	}
+
+	void SubtractOffset(const Point& offset) {
+		position.SubtractOffset(offset);
+	}
+
 	/**
 	 Determine whether the specified point locates within the rectangle.
 	 */

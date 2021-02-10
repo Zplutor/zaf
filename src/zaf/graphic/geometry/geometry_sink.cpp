@@ -5,9 +5,11 @@ namespace zaf {
 
 void GeometrySink::BeginFigure(const Point& start_position, BeginFigureOption option) {
 
-    Point aligned_start_position = internal::AlignWithCoordinateOrigin(
+    Point aligned_start_position = internal::AlignInRelatedCoordinateSystem(
         start_position,
-        coordinate_origin_);
+        0,
+        coordinate_origin_,
+        aligned_coordinate_origin_);
 
     GetHandle()->BeginFigure(
         aligned_start_position.ToD2D1POINT2F(),
@@ -17,7 +19,12 @@ void GeometrySink::BeginFigure(const Point& start_position, BeginFigureOption op
 
 void GeometrySink::AddLine(const Point& end_point) {
 
-    Point aligned_end_point = internal::AlignWithCoordinateOrigin(end_point, coordinate_origin_);
+    Point aligned_end_point = internal::AlignInRelatedCoordinateSystem(
+        end_point, 
+        0,
+        coordinate_origin_, 
+        aligned_coordinate_origin_);
+
     GetHandle()->AddLine(aligned_end_point.ToD2D1POINT2F());
 }
 
@@ -29,7 +36,12 @@ void GeometrySink::AddLines(const std::vector<Point>& points) {
 
 	for (const auto& each_point : points) {
 
-        Point aligned_point = internal::AlignWithCoordinateOrigin(each_point, coordinate_origin_);
+        Point aligned_point = internal::AlignInRelatedCoordinateSystem(
+            each_point, 
+            0,
+            coordinate_origin_, 
+            aligned_coordinate_origin_);
+
 		d2d_points.push_back(aligned_point.ToD2D1POINT2F());
 	}
 
