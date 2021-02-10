@@ -49,7 +49,7 @@ void MemberItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 zaf::Rect MemberItem::GetTextRect() {
 
-    auto text_rect = GetContentRect();
+    auto text_rect = __super::GetTextRect();
     text_rect.Deflate(zaf::Frame(IconSize + 5, 0, 0, 0));
     return text_rect;
 }

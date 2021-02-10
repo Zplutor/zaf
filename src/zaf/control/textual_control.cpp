@@ -65,6 +65,15 @@ void TextualControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
         return;
     }
 
+    //Text rect is related to content rect's coordinate system, transfer it to control's coordinate 
+    //system.
+    auto content_rect = GetContentRect();
+    text_rect.position.x += content_rect.position.x;
+    text_rect.position.y += content_rect.position.y;
+    //Prevent text rect exceeds content rect.
+    text_rect.size.width = (std::min)(text_rect.size.width, content_rect.size.width);
+    text_rect.size.height = (std::min)(text_rect.size.height, content_rect.size.height);
+
     auto text_layout = GetTextLayout();
     if (text_layout == nullptr) {
         return;
@@ -165,7 +174,7 @@ void TextualControl::ReleaseTextLayout() {
 
 
 Rect TextualControl::GetTextRect() {
-    return GetContentRect();
+    return Rect{ zaf::Point{}, GetContentSize() };
 }
 
 

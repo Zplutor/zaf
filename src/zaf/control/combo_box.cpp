@@ -163,12 +163,7 @@ void ComboBox::Layout(const Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    auto content_rect = GetContentRect();
-
     auto text_box_rect = GetTextRect();
-    text_box_rect.position.x -= content_rect.position.x;
-    text_box_rect.position.y -= content_rect.position.y;
-    
     edit_text_box_->SetRect(text_box_rect);
 }
 
@@ -221,7 +216,7 @@ void ComboBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 Rect ComboBox::GetTextRect() {
 
-    auto rect = GetContentRect();
+    auto rect = __super::GetTextRect();
     rect.Deflate(zaf::Frame(3, 1, GetDropDownButtonWidth() + 1, 1));
     return rect;
 }
