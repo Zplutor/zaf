@@ -5,19 +5,20 @@
 namespace zaf {
 namespace internal {
 
-enum class UriType {
+enum class URIType {
     Unknown,
     File,
+    Resource,
     Relative,
 };
 
-class UriParseResult {
+class URIParseResult {
 public:
-    UriType type{ UriType::Unknown };
+    URIType type{ URIType::Unknown };
     std::wstring value;
 };
 
-UriParseResult ParseUri(const std::wstring& uri);
+URIParseResult ParseURI(const std::wstring& uri);
 
 }
 }

@@ -6,6 +6,9 @@ namespace zaf {
 
 class UriLoader {
 public:
+    static std::shared_ptr<UriLoader> GetDefaultLoader();
+
+public:
     UriLoader() = default;
     virtual ~UriLoader() = default;
 

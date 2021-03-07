@@ -34,7 +34,7 @@ void Application::Initialize(const InitializeParameters& parameters) {
 
     rx_runtime_ = std::make_unique<internal::RxRuntime>();
 
-    resource_manager_ = std::make_unique<ResourceManager>(parameters.relative_uri_loader);
+    resource_manager_ = std::make_unique<ResourceManager>(parameters.custom_uri_loader);
 
 	HRESULT result = CoInitialize(nullptr);
     ZAF_THROW_IF_COM_ERROR(result);

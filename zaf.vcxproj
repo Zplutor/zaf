@@ -155,10 +155,11 @@
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_object.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_type.cpp" />
-    <ClCompile Include="src\zaf\resource\default_relative_uri_loader.cpp" />
-    <ClCompile Include="src\zaf\resource\file_system_uri_loader.cpp" />
+    <ClCompile Include="src\zaf\resource\internal\resource_loader.cpp" />
+    <ClCompile Include="src\zaf\resource\internal\resource_location_parsing.cpp" />
     <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp" />
     <ClCompile Include="src\zaf\resource\resource_manager.cpp" />
+    <ClCompile Include="src\zaf\resource\uri_loader.cpp" />
     <ClCompile Include="src\zaf\rx\internal\inner_observer.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\customized_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\inner_observable.cpp" />
@@ -442,8 +443,8 @@
     <ClInclude Include="src\zaf\reflection\reflection_object.h" />
     <ClInclude Include="src\zaf\reflection\reflection_type.h" />
     <ClInclude Include="src\zaf\reflection\reflection_type_definition.h" />
-    <ClInclude Include="src\zaf\resource\default_relative_uri_loader.h" />
-    <ClInclude Include="src\zaf\resource\file_system_uri_loader.h" />
+    <ClInclude Include="src\zaf\resource\internal\resource_loader.h" />
+    <ClInclude Include="src\zaf\resource\internal\resource_location_parsing.h" />
     <ClInclude Include="src\zaf\resource\internal\uri_parsing.h" />
     <ClInclude Include="src\zaf\resource\resource_manager.h" />
     <ClInclude Include="src\zaf\resource\uri_loader.h" />

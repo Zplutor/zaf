@@ -29,7 +29,7 @@ class Window;
 
 class InitializeParameters {
 public:
-	std::shared_ptr<UriLoader> relative_uri_loader;
+	std::shared_ptr<UriLoader> custom_uri_loader;
 };
 
 /**

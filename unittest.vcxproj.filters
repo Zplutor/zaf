@@ -178,9 +178,6 @@
     <ClCompile Include="unittest\case\parsers\bitmap_image_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\resource\internal\utility_test.cpp">
-      <Filter>case\resource\internal</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\base\container\utility\range_test.cpp">
       <Filter>case\base\container\utility</Filter>
     </ClCompile>
@@ -219,6 +216,12 @@
     </ClCompile>
     <ClCompile Include="unittest\case\rx\creation_test.cpp">
       <Filter>case\rx</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\resource\internal\utility_test.cpp">
+      <Filter>case\resource\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\stream_test.cpp">
+      <Filter>case\base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,7 @@
 #include <zaf/base/log.h>
 #include <zaf/base/container/utility/find.h>
 #include <zaf/base/container/utility/range.h>
+#include <zaf/base/stream.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 #include <zaf/window/dialog.h>
@@ -23,6 +24,7 @@
 #include <zaf/base/registry/registry.h>
 #include <zaf/base/error/error.h>
 #include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/resource/resource_manager.h>
 #include <zaf/parsing/parsers/control_parser.h>
 #include <zaf/object/string.h>
 #include <zaf/object/boxing.h>
@@ -31,12 +33,32 @@
 #include <zaf/control/tree_data_source.h>
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/scroll_bar.h>
+#include <zaf/control/check_box.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
 class RootControl : public zaf::Control {
 public:
     ZAF_DECLARE_REFLECTION_TYPE
+};
+
+class MyControl : public zaf::Control {
+protected:
+    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override {
+
+        __super::Paint(canvas, dirty_rect);
+
+        
+        canvas.SetBrushWithColor(zaf::Color::Red());
+        canvas.DrawLine(zaf::Point{ 0, 0 }, zaf::Point{ 0, 100 }, 1);
+        
+        /*
+        zaf::RoundedRect bubble_rect(zaf::Rect(zaf::Point(), GetSize()), 4, 4);
+
+        canvas.SetBrushWithColor(zaf::Color::Blue());
+        canvas.DrawRoundedRectangleFrame(bubble_rect, 1);
+        */
+    }
 };
 
 ZAF_DEFINE_REFLECTION_TYPE(RootControl)
@@ -236,6 +258,19 @@ private:
     std::vector<std::shared_ptr<Node>> nodes_;
 };
 
+
+class MyLabel : public zaf::Label {
+public:
+
+protected:
+    zaf::Rect GetTextRect() override {
+
+        zaf::Rect rect{ zaf::Rect{ 0, 0, 200, 200 } };
+        return rect;
+    }
+};
+
+
 int WINAPI WinMain(
     HINSTANCE /* hInstance */,
     HINSTANCE /* hPrevInstance */,
@@ -264,88 +299,11 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
     window->SetRootControl(root_control);
     window->Show();
 
-    auto item_source = zaf::Create<TreeItemSource>();
+    auto my_control = zaf::Create<MyControl>();
+    my_control->SetRect(zaf::Rect{ 0, 0.5, 100, 17.7207 });
+    root_control->AddChild(my_control);
 
-    auto tree_control = zaf::Create<zaf::TreeControl>();
-    tree_control->SetName(L"Tested tree control");
-    tree_control->SetRect(zaf::Rect{ 10, 10, 300, 400 });
-    tree_control->SetDataSource(item_source);
-    tree_control->SetDelegate(item_source);
-    tree_control->SetSelectionMode(zaf::SelectionMode::ExtendedMultiple);
-
-    tree_control->Subscriptions() += tree_control->SelectionChangeEvent().Subscribe(
-        [](const zaf::TreeControlSelectionChangeInfo& event_info) {
-
-        std::wostringstream stream;
-        stream << "Selection change. ";
-        for (const auto& each_data : event_info.tree_control->GetAllSelectedItems()) {
-            stream << each_data->ToString() << ',';
-        }
-        ZAF_LOG() << stream.str();
-    }
-    );
-
-    tree_control->Subscriptions() += tree_control->ItemExpandEvent().Subscribe(
-        [](const zaf::TreeControlItemExpandInfo& event_info) {
-        ZAF_LOG() << "Item expand. " << event_info.item_data->ToString();
-    }
-    );
-
-    tree_control->Subscriptions() += tree_control->ItemCollapseEvent().Subscribe(
-        [](const zaf::TreeControlItemCollapseInfo& event_info) {
-        ZAF_LOG() << "Item collapse. " << event_info.item_data->ToString();
-    }
-    );
-
-    root_control->AddChild(tree_control);
-
-    auto button_container = zaf::Create<zaf::Control>();
-    button_container->SetRect(zaf::Rect{ 310, 10, 100, 400 });
-    button_container->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
-    button_container->SetPadding(zaf::Frame{ 5, 5, 5, 5 });
-    button_container->SetBorder(5);
-    root_control->AddChild(button_container);
-
-    auto add_button = zaf::Create<zaf::Button>();
-    add_button->SetText(L"Add");
-    add_button->SetRect(zaf::Rect{ 310, 10, 100, 30 });
-    add_button->Subscriptions() += add_button->ClickEvent().Subscribe(std::bind([item_source]() {
-
-        item_source->AddDataToSecondLevel();
-    }));
-
-    auto remove_button = zaf::Create<zaf::Button>();
-    remove_button->SetText(L"Remove");
-    remove_button->SetRect(zaf::Rect{ 310, 40, 100, 30 });
-    remove_button->Subscriptions() += remove_button->ClickEvent().Subscribe(
-        std::bind([item_source]() {
-
-        item_source->RemoveDataInSecondLevel();
-    }));
-
-    auto update_button = zaf::Create<zaf::Button>();
-    update_button->SetText(L"Update");
-    update_button->SetRect(zaf::Rect{ 310, 70, 100, 30 });
-    update_button->Subscriptions() += update_button->ClickEvent().Subscribe(
-        std::bind([item_source]() {
-
-        item_source->UpdateSecondLevel();
-    }));
-
-    auto inspect_button = zaf::Create<zaf::Button>();
-    inspect_button->SetText(L"Inspect");
-    inspect_button->SetRect(zaf::Rect{ 310, 100, 100, 30 });
-    inspect_button->SetMargin(zaf::Frame{ 10, 10, 10, 10 });
-    inspect_button->Subscriptions() += inspect_button->ClickEvent().Subscribe(
-        [](const zaf::ControlClickInfo& event_info) {
-        event_info.control->GetWindow()->ShowInspectorWindow();
-    }
-    );
-
-    button_container->AddChild(add_button);
-    button_container->AddChild(remove_button);
-    button_container->AddChild(update_button);
-    button_container->AddChild(inspect_button);
+    zaf::GetResourceManager().LoadUri(L"res:///main_window.xml");
 
     zaf::Application::Instance().SetMainWindow(window);
 }

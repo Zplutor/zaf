@@ -11,13 +11,14 @@ namespace zaf {
 class Stream : public ComObject<IStream> {
 public:
     enum class SeekOrigin {
-        Set = STREAM_SEEK_SET,
+        Begin = STREAM_SEEK_SET,
         Current = STREAM_SEEK_CUR,
         End = STREAM_SEEK_END,
     };
 
 public:
     static Stream FromMemory(const void* data, std::size_t size);
+    static Stream FromMemoryNotOwn(const void* data, std::size_t size);
 
     static Stream FromFile(const std::filesystem::path& path);
 
