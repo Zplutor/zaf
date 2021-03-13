@@ -4,9 +4,6 @@
     <Filter Include="case">
       <UniqueIdentifier>{7773130d-98f8-4905-a202-7c2344926cb0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="googletest">
-      <UniqueIdentifier>{d7a1137c-6434-4927-a879-3ee5268ab00c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="case\base">
       <UniqueIdentifier>{93cebbc3-b53c-4660-b284-d7fbf96d9adf}</UniqueIdentifier>
     </Filter>
@@ -64,9 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
-    <ClCompile Include="unittest\googletest\src\gtest-all.cc">
-      <Filter>googletest</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\base\string\to_string_test.cpp">
       <Filter>case\base\string</Filter>
     </ClCompile>

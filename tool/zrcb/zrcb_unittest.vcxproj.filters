@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="unittest\main.cpp" />
+    <ClCompile Include="unittest\case\zrcb_test.cpp">
+      <Filter>case</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="case">
+      <UniqueIdentifier>{3556954e-b755-4029-b4c5-44ba57fca84e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
