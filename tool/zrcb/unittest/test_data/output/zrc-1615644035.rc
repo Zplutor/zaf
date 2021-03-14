@@ -1,0 +1,6 @@
+file1.txt ZRC "C:\\Users\\zplut\\Projects\\zaf\\tool\\zrcb\\unittest\\test_data\\input\\file1.txt"
+file2.txt ZRC "C:\\Users\\zplut\\Projects\\zaf\\tool\\zrcb\\unittest\\test_data\\input\\file2.txt"
+other_files\json1.json ZRC "C:\\Users\\zplut\\Projects\\zaf\\tool\\zrcb\\unittest\\test_data\\input\\other_files\\json1.json"
+other_files\中文\文档.txt ZRC "C:\\Users\\zplut\\Projects\\zaf\\tool\\zrcb\\unittest\\test_data\\input\\other_files\\中文\\文档.txt"
+xaml?20files\xaml1.xaml ZRC "C:\\Users\\zplut\\Projects\\zaf\\tool\\zrcb\\unittest\\test_data\\input\\xaml files\\xaml1.xaml"
+xaml?20files\xaml?202.xaml ZRC "C:\\Users\\zplut\\Projects\\zaf\\tool\\zrcb\\unittest\\test_data\\input\\xaml files\\xaml 2.xaml"

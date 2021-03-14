@@ -1,90 +1,117 @@
 #include <gtest/gtest.h>
-#include <filesystem>
-#include <zaf/application.h>
-#include <zaf/base/error/system_error.h>
-#include <zaf/base/handle.h>
+#include <zaf/base/string/replace.h>
+#include "test_helper.h"
 
 namespace {
 
-std::filesystem::path GetInputDirectoryPath() {
-    return std::filesystem::path{ __FILEW__ }.parent_path().parent_path() / L"input";
-}
+std::wstring BuildInputResourcePath(const std::wstring& relative_path) {
 
-std::filesystem::path GetOutputDirectoryPath() {
-    return std::filesystem::path{ __FILEW__ }.parent_path().parent_path() / L"output";
-}
+    auto full_path = GetInputDirectoryPath() / relative_path;
 
-void RunZrcb(const std::wstring& arguments) {
+    std::wstring result;
+    result.append(1, L'"');
+    result.append(full_path);
+    result.append(1, L'"');
 
-    auto exe_directory_path = zaf::Application::Instance().GetExeDirectoryPath();
-    auto zrcb_path = exe_directory_path / "zrcb.exe";
-
-    std::wstring command_line = zrcb_path.wstring() + L' ' + arguments;
-
-    auto working_directory_path = GetOutputDirectoryPath();
-
-    auto stdout_file_path = GetOutputDirectoryPath() / L"stdout.txt";
-
-    SECURITY_ATTRIBUTES security_attributes{};
-    security_attributes.bInheritHandle = TRUE;
-
-    zaf::Handle stdout_handle{ CreateFile(
-        stdout_file_path.c_str(),
-        GENERIC_WRITE,
-        FILE_SHARE_READ,
-        &security_attributes,
-        CREATE_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL,
-        nullptr) };
-
-    if (stdout_handle.GetValue() == INVALID_HANDLE_VALUE) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
-    }
-
-    STARTUPINFO startup_info{};
-    startup_info.cb = sizeof(startup_info);
-    startup_info.dwFlags = STARTF_USESTDHANDLES;
-    startup_info.hStdOutput = stdout_handle.GetValue();
-    startup_info.hStdError = stdout_handle.GetValue();
-
-    PROCESS_INFORMATION process_information{};
-
-    BOOL is_succeeded = CreateProcess(
-        nullptr,
-        const_cast<wchar_t*>(command_line.c_str()),
-        nullptr,
-        nullptr,
-        TRUE,
-        CREATE_NO_WINDOW,
-        nullptr,
-        working_directory_path.c_str(),
-        &startup_info,
-        &process_information);
-
-    if (!is_succeeded) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
-    }
-
-    CloseHandle(process_information.hThread);
-
-    zaf::Handle process_handle{ process_information.hProcess };
-    WaitForSingleObject(process_handle.GetValue(), INFINITE);
-
-    DWORD exit_code{};
-    is_succeeded = GetExitCodeProcess(process_handle.GetValue(), &exit_code);
-    if (!is_succeeded) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
-    }
-
-    if (exit_code != 0) {
-        ZAF_THROW_SYSTEM_ERROR(ERROR_INVALID_FUNCTION);
-    }
+    zaf::Replace(result, L"\\", L"\\\\");
+    return result;
 }
 
 }
 
 
-TEST(TestZrcb, FullBuild) {
+class TestZrcb : public testing::Test {
+public:
+    void SetUp() override {
 
-    RunZrcb(GetInputDirectoryPath().wstring());
+        PrepareInputDirectory();
+        CleanOutputDirectory();
+    }
+
+private:
+    void PrepareInputDirectory() {
+
+        auto template_path = GetTemplateDirectoryPath();
+        auto input_path = GetInputDirectoryPath();
+
+        std::filesystem::remove_all(input_path);
+        std::filesystem::copy(template_path, input_path, std::filesystem::copy_options::recursive);
+    }
+
+    void CleanOutputDirectory() {
+
+        auto output_path = GetOutputDirectoryPath();
+        std::filesystem::remove_all(output_path);
+        std::filesystem::create_directories(output_path);
+    }
+};
+
+
+TEST_F(TestZrcb, DefaultOptions) {
+
+    auto input_path = GetInputDirectoryPath();
+
+    RunZrcb(input_path.wstring());
+    ASSERT_TRUE(CheckOutputRC(FindDefaultOutputRCFile(), {
+        { L"file1.txt", BuildInputResourcePath(L"file1.txt") },
+        { L"file2.txt", BuildInputResourcePath(L"file2.txt") },
+        { L"other_files/json1.json", BuildInputResourcePath(L"other_files\\json1.json") },
+        { L"other_files/中文/文档.txt", BuildInputResourcePath(L"other_files\\中文\\文档.txt") },
+        { L"xaml?20files/xaml1.xaml", BuildInputResourcePath(L"xaml files\\xaml1.xaml") },
+        { L"xaml?20files/xaml?202.xaml", BuildInputResourcePath(L"xaml files\\xaml 2.xaml") },
+    }));
+}
+
+
+TEST_F(TestZrcb, UseBackSlash) {
+
+    auto test = [](const std::wstring_view& option) {
+    
+        auto input_path = GetInputDirectoryPath();
+
+        std::wstring arguments;
+        arguments += option;
+        arguments += L' ';
+        arguments += input_path.wstring();
+
+        RunZrcb(arguments);
+        return CheckOutputRC(FindDefaultOutputRCFile(), {
+            { L"file1.txt", BuildInputResourcePath(L"file1.txt") },
+            { L"file2.txt", BuildInputResourcePath(L"file2.txt") },
+            { L"other_files\\json1.json", BuildInputResourcePath(L"other_files\\json1.json") },
+            { 
+                L"other_files\\中文\\文档.txt", 
+                BuildInputResourcePath(L"other_files\\中文\\文档.txt") 
+            },
+            { L"xaml?20files\\xaml1.xaml", BuildInputResourcePath(L"xaml files\\xaml1.xaml") },
+            { L"xaml?20files\\xaml?202.xaml", BuildInputResourcePath(L"xaml files\\xaml 2.xaml") },
+        });
+    };
+
+    ASSERT_TRUE(test(L"/back-slash"));
+    ASSERT_TRUE(test(L"/b"));
+}
+
+
+TEST_F(TestZrcb, Extension) {
+
+    auto test = [](const std::wstring_view& option) {
+
+        auto input_path = GetInputDirectoryPath();
+
+        std::wstring arguments;
+        arguments += option;
+        arguments += L" .json.xaml ";
+        arguments += input_path.wstring();
+
+        RunZrcb(arguments);
+        return CheckOutputRC(FindDefaultOutputRCFile(), {
+            { L"other_files\\json1.json", BuildInputResourcePath(L"other_files\\json1.json") },
+            { L"xaml?20files\\xaml1.xaml", BuildInputResourcePath(L"xaml files\\xaml1.xaml") },
+            { L"xaml?20files\\xaml?202.xaml", BuildInputResourcePath(L"xaml files\\xaml 2.xaml") },
+        });
+    };
+
+    ASSERT_TRUE(test(L"/extension"));
+    ASSERT_TRUE(test(L"/e"));
 }

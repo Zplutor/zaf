@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <zaf/base/string/replace.h>
 
 class Options {
 public:
@@ -275,25 +276,18 @@ void ReviseArguments() {
 }
 
 
+void ReplaceSpaceInResourceName(std::string& name) {
+    zaf::Replace(name, " ", "?20");
+}
+
+
 void ReplaceSlashInResourceName(std::string& name) {
 
     if (g_options.use_back_slash) {
-
-        std::transform(name.begin(), name.end(), name.begin(), [](char ch) {
-            if (ch == '/') {
-                return '\\';
-            }
-            return ch;
-        });
+        zaf::Replace(name, "/", "\\");
     }
     else {
-
-        std::transform(name.begin(), name.end(), name.begin(), [](char ch) {
-            if (ch == '\\') {
-                return '/';
-            }
-            return ch;
-        });
+        zaf::Replace(name, "\\", "/");
     }
 }
 
@@ -332,6 +326,7 @@ void GenerateInputResourceItemsInDirectory(
             resource_name.erase(0, directory_path_string.length() + 1);
         }
         ReplaceSlashInResourceName(resource_name);
+        ReplaceSpaceInResourceName(resource_name);
 
         ResourceItem resource_item;
         resource_item.name = std::move(resource_name);
@@ -370,6 +365,7 @@ std::vector<ResourceItem> GenerateInputResourceItems() {
                 resource_item.name = full_path.filename().string();
             }
             ReplaceSlashInResourceName(resource_item.name);
+            ReplaceSpaceInResourceName(resource_item.name);
 
             result.push_back(resource_item);
         }

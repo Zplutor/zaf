@@ -15,8 +15,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="unittest\case\test_helper.cpp" />
     <ClCompile Include="unittest\case\zrcb_test.cpp" />
     <ClCompile Include="unittest\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="unittest\case\test_helper.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -1567,5 +1567,8 @@
     <ClInclude Include="src\zaf\resource\internal\resource_loader.h">
       <Filter>zaf\resource\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\string\replace.h">
+      <Filter>zaf\base\string</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

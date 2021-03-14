@@ -5,10 +5,18 @@
     <ClCompile Include="unittest\case\zrcb_test.cpp">
       <Filter>case</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\test_helper.cpp">
+      <Filter>case</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="case">
       <UniqueIdentifier>{3556954e-b755-4029-b4c5-44ba57fca84e}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="unittest\case\test_helper.h">
+      <Filter>case</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
