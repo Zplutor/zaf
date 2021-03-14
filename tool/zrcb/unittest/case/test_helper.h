@@ -5,8 +5,8 @@
 #include <zaf/base/error/system_error.h>
 
 std::filesystem::path GetTemplateDirectoryPath();
+std::filesystem::path GetWorkingDirectoryPath();
 std::filesystem::path GetInputDirectoryPath();
-std::filesystem::path GetOutputDirectoryPath();
 
 void RunZrcb(const std::wstring& arguments);
 

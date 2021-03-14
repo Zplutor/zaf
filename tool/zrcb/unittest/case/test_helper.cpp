@@ -2,11 +2,13 @@
 #include <fstream>
 #include <string>
 #include <zaf/base/handle.h>
+#include <zaf/base/string/replace.h>
+#include <zaf/base/string/split.h>
 
 namespace {
 
 std::filesystem::path GetTestDataDirectoryPath() {
-    return std::filesystem::path{ __FILEW__ }.parent_path().parent_path() / "test_data";
+    return std::filesystem::path{ __FILEW__ }.parent_path().parent_path() / L"test_data";
 }
 
 
@@ -38,6 +40,40 @@ std::pair<std::wstring, std::wstring> ParseResourceItem(const std::wstring& line
     return result;
 }
 
+
+//TODO: The code here is copied from zrcb, it should be reused.
+std::vector<std::wstring> ReadLinesFromOutputFile(const std::filesystem::path& path) {
+
+    std::ifstream input_stream(path, std::ios::in | std::ios::binary);
+    if (!input_stream) {
+        return {};
+    }
+
+    input_stream.seekg(0, std::ios::end);
+    auto file_length = input_stream.tellg();
+
+    if ((file_length < 2) ||
+        (file_length % 2 != 0)) {
+        return {};
+    }
+
+    //Subtract 2 to exclude the BOM.
+    std::size_t content_length = static_cast<std::size_t>(file_length) - 2;
+
+    std::wstring content;
+    content.resize(content_length / 2);
+
+    input_stream.seekg(2, std::ios::beg);
+    input_stream.read(reinterpret_cast<char*>(&content[0]), content_length);
+
+    if (input_stream.gcount() != content_length) {
+        return {};
+    }
+
+    zaf::Replace(content, L"\r\n", L"\n");
+    return zaf::Split(content, L'\n');
+}
+
 }
 
 
@@ -46,13 +82,13 @@ std::filesystem::path GetTemplateDirectoryPath() {
 }
 
 
-std::filesystem::path GetInputDirectoryPath() {
-    return GetTestDataDirectoryPath() / "input";
+std::filesystem::path GetWorkingDirectoryPath() {
+    return GetTestDataDirectoryPath() / L"working";
 }
 
 
-std::filesystem::path GetOutputDirectoryPath() {
-    return GetTestDataDirectoryPath() / "output";
+std::filesystem::path GetInputDirectoryPath() {
+    return GetWorkingDirectoryPath() / "input";
 }
 
 
@@ -63,9 +99,9 @@ void RunZrcb(const std::wstring& arguments) {
 
     std::wstring command_line = zrcb_path.wstring() + L' ' + arguments;
 
-    auto working_directory_path = GetOutputDirectoryPath();
+    auto working_directory_path = GetWorkingDirectoryPath();
 
-    auto stdout_file_path = GetOutputDirectoryPath() / L"stdout.txt";
+    auto stdout_file_path = GetWorkingDirectoryPath() / L"stdout.txt";
 
     SECURITY_ATTRIBUTES security_attributes{};
     security_attributes.bInheritHandle = TRUE;
@@ -126,7 +162,7 @@ void RunZrcb(const std::wstring& arguments) {
 
 std::wstring FindDefaultOutputRCFile() {
 
-    auto output_path = GetOutputDirectoryPath();
+    auto output_path = GetWorkingDirectoryPath();
     for (const auto& each_file : std::filesystem::directory_iterator(output_path)) {
 
         if (each_file.is_directory()) {
@@ -154,28 +190,23 @@ bool CheckOutputRC(
     const std::wstring& file_name,
     const std::vector<std::pair<std::wstring, std::wstring>>& expected_items) {
 
-    auto output_file_path = GetOutputDirectoryPath() / file_name;
-    std::wifstream file_stream(output_file_path, std::ios::in);
-    if (!file_stream) {
-        return false;
-    }
+    auto output_file_path = GetWorkingDirectoryPath() / file_name;
+    auto lines = ReadLinesFromOutputFile(output_file_path);
 
     std::vector<std::pair<std::wstring, std::wstring>> read_items;
-
-    std::wstring line;
-    while (std::getline(file_stream, line)) {
+    for (const auto& each_line : lines) {
 
         //Ignore empty lines.
-        if (line.empty()) {
+        if (each_line.empty()) {
             continue;
         }
 
         //Ignore comment lines.
-        if (line.find(L"//") == 0) {
+        if (each_line.find(L"//") == 0) {
             continue;
         }
 
-        auto pair = ParseResourceItem(line);
+        auto pair = ParseResourceItem(each_line);
         if (pair.first.empty()) {
             return false;
         }

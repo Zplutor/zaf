@@ -1,9 +1,0 @@
-Working directory: "C:\\Users\\zplut\\Projects\\zaf\\tool\\zrcb\\unittest\\test_data\\output"
-Output file path: "C:\\Users\\zplut\\Projects\\zaf\\tool\\zrcb\\unittest\\test_data\\output\\zrc-1615644035.rc"
-Use incremental build: 0
-Use back slash: 1
-Included extensions: 
-Input items: 
-"C:\\Users\\zplut\\Projects\\zaf\\tool\\zrcb\\unittest\\test_data\\input"
-Write 6 items to output file.
-Done.

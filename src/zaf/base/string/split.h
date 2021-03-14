@@ -37,7 +37,7 @@ std::vector<S> SplitIf(const S& string, P predicate) {
 
 template<typename S>
 std::vector<S> Split(const S& string, typename S::value_type delimiter) {
-    return SplitIf(string, [delimiter](S::value_type ch) {
+    return SplitIf(string, [delimiter](typename S::value_type ch) {
         return ch == delimiter;
     });
 }

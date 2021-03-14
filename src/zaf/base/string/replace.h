@@ -26,11 +26,11 @@ void Replace(
 
 }
 
-void Replace(std::wstring& string, std::wstring_view from, std::wstring_view to) {
+inline void Replace(std::wstring& string, std::wstring_view from, std::wstring_view to) {
     internal::Replace<wchar_t>(string, from, to);
 }
 
-void Replace(std::string& string, std::string_view from, std::string_view to) {
+inline void Replace(std::string& string, std::string_view from, std::string_view to) {
     internal::Replace<char>(string, from, to);
 }
 

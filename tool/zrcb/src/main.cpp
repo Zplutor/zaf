@@ -6,11 +6,12 @@
 #include <string>
 #include <vector>
 #include <zaf/base/string/replace.h>
+#include <zaf/base/string/split.h>
 
 class Options {
 public:
     std::filesystem::path output_file_path;
-    std::vector<std::string> included_extensions;
+    std::vector<std::wstring> included_extensions;
     bool use_incremental_build{};
     bool use_back_slash{};
     bool print_help{};
@@ -19,12 +20,12 @@ public:
 class InputItem {
 public:
     std::filesystem::path path;
-    std::string name;
+    std::wstring name;
 };
 
 class ResourceItem {
 public:
-    std::string name;
+    std::wstring name;
     std::filesystem::path path;
 };
 
@@ -54,8 +55,8 @@ std::vector<InputItem> g_input_items;
 
 void PrintHelp() {
 
-    std::cout <<
-R"(Zaf rc builder
+    std::wcout <<
+LR"(Zaf rc builder
 
 Usage: 
   zrcb.exe [options] input1 [input2 [input3 [...]]]
@@ -79,42 +80,43 @@ Options:
   /back-slash, /b
   Use back slash as path delimiter instead of forward slash.
 )";
+
 }
 
 
-bool IsHelpOption(const std::string_view& argument) {
-    return argument == "/help" || argument == "/h";
+bool IsHelpOption(const std::wstring_view& argument) {
+    return argument == L"/help" || argument == L"/h";
 }
 
-bool IsOuptutFileOption(const std::string_view& argument) {
-    return argument == "/out" || argument == "/o";
+bool IsOuptutFileOption(const std::wstring_view& argument) {
+    return argument == L"/out" || argument == L"/o";
 }
 
-bool IsExtensionOption(const std::string_view& argument) {
-    return argument == "/extension" || argument == "/e";
+bool IsExtensionOption(const std::wstring_view& argument) {
+    return argument == L"/extension" || argument == L"/e";
 }
 
-bool IsIncrementalBuildOption(const std::string_view& argument) {
-    return argument == "/incremental" || argument == "/i";
+bool IsIncrementalBuildOption(const std::wstring_view& argument) {
+    return argument == L"/incremental" || argument == L"/i";
 }
 
-bool IsBackSlashOption(const std::string_view& argument) {
-    return argument == "/back-slash" || argument == "/b";
+bool IsBackSlashOption(const std::wstring_view& argument) {
+    return argument == L"/back-slash" || argument == L"/b";
 }
 
-bool IsOptionArgument(const std::string_view& argument) {
-    return argument.front() == '/';
+bool IsOptionArgument(const std::wstring_view& argument) {
+    return argument.front() == L'/';
 }
 
 
-std::vector<std::string> ParseExtensions(const std::string_view& argument) {
+std::vector<std::wstring> ParseExtensions(const std::wstring_view& argument) {
 
-    if (argument.front() != '.') {
-        std::cout << "Invalid option value \"" << argument << "\".";
+    if (argument.front() != L'.') {
+        std::wcout << L"Invalid option value \"" << argument << L"\".";
         EXIT;
     }
 
-    std::vector<std::string> result;
+    std::vector<std::wstring> result;
 
     std::size_t current_index = 0;
     while (current_index < argument.length()) {
@@ -122,7 +124,7 @@ std::vector<std::string> ParseExtensions(const std::string_view& argument) {
         auto next_dot_index = argument.find('.', current_index + 1);
 
         auto extension = argument.substr(current_index, next_dot_index - current_index);
-        result.push_back(std::string{ extension.data(), extension.length() });
+        result.push_back(std::wstring{ extension.data(), extension.length() });
 
         current_index = next_dot_index;
     }
@@ -131,12 +133,12 @@ std::vector<std::string> ParseExtensions(const std::string_view& argument) {
 }
 
 
-void ParseInputItem(const std::string_view& argument) {
+void ParseInputItem(const std::wstring_view& argument) {
 
     InputItem input_item;
 
-    auto delimiter_index = argument.find('*');
-    if (delimiter_index == std::string_view::npos) {
+    auto delimiter_index = argument.find(L'*');
+    if (delimiter_index == std::wstring_view::npos) {
         input_item.path = argument;
     }
     else {
@@ -145,7 +147,7 @@ void ParseInputItem(const std::string_view& argument) {
     }
 
     if (input_item.path.empty()) {
-        std::cout << "Invalid argument \"" << argument << "\"." << std::endl;
+        std::wcout << L"Invalid argument \"" << argument << L"\"." << std::endl;
         EXIT;
     }
 
@@ -153,7 +155,7 @@ void ParseInputItem(const std::string_view& argument) {
 }
 
 
-void ParseArguments(int argc, char** argv) {
+void ParseArguments(int argc, wchar_t** argv) {
 
     if (argc < 2) {
         g_options.print_help = true;
@@ -163,7 +165,7 @@ void ParseArguments(int argc, char** argv) {
     int index = 1;
     while (index < argc) {
 
-        const char* argument = argv[index];
+        const wchar_t* argument = argv[index];
 
         //Help
         if (IsHelpOption(argument)) {
@@ -175,7 +177,7 @@ void ParseArguments(int argc, char** argv) {
 
             int next_argument_index = index + 1;
             if (next_argument_index >= argc) {
-                std::cout << "A file path is needed for option \"" << argument << "\"." 
+                std::wcout << L"A file path is needed for option \"" << argument << L"\"." 
                     << std::endl;
                 EXIT;
             }
@@ -188,7 +190,7 @@ void ParseArguments(int argc, char** argv) {
 
             int next_argument_index = index + 1;
             if (next_argument_index >= argc) {
-                std::cout << "An extension list is needed for option \"" << argument << "\"."
+                std::wcout << L"An extension list is needed for option \"" << argument << L"\"."
                     << std::endl;
                 EXIT;
             }
@@ -211,7 +213,7 @@ void ParseArguments(int argc, char** argv) {
         //Unknown options
         else if (IsOptionArgument(argument)) {
 
-            std::cout << "Unknown option \"" << argument << "\"." << std::endl;
+            std::wcout << L"Unknown option \"" << argument << L"\"." << std::endl;
             EXIT;
         }
         //Input items
@@ -229,36 +231,36 @@ void InitializeWorkingDirectory() {
     wchar_t buffer[MAX_PATH]{};
     DWORD result = GetCurrentDirectory(MAX_PATH, buffer);
     if (result == 0) {
-        std::cout << "Get working directory failed with error code " << GetLastError << '.'
+        std::wcout << L"Get working directory failed with error code " << GetLastError << L'.'
             << std::endl;
         EXIT;
     }
 
     g_working_directory = buffer;
-    std::cout << "Working directory: " << g_working_directory << std::endl;
+    std::wcout << L"Working directory: " << g_working_directory << std::endl;
 }
 
 
 void PrintParsedArguments() {
 
-    std::cout
-        << "Output file path: " << g_options.output_file_path << '\n'
-        << "Use incremental build: " << g_options.use_incremental_build << '\n'
-        << "Use back slash: " << g_options.use_back_slash << '\n';
+    std::wcout
+        << L"Output file path: " << g_options.output_file_path << L'\n'
+        << L"Use incremental build: " << g_options.use_incremental_build << L'\n'
+        << L"Use back slash: " << g_options.use_back_slash << L'\n';
 
-    std::cout << "Included extensions: " << '\n';
+    std::wcout << L"Included extensions: " << L'\n';
     for (const auto& each_extension : g_options.included_extensions) {
-        std::cout << each_extension << '\n';
+        std::wcout << each_extension << '\n';
     }
 
-    std::cout << "Input items: " << '\n';
+    std::wcout << L"Input items: " << L'\n';
     for (const auto& each_item : g_input_items) {
 
-        std::cout << each_item.path;
+        std::wcout << each_item.path;
         if (!each_item.name.empty()) {
-            std::cout << " -> " << each_item.name;
+            std::wcout << L" -> " << each_item.name;
         }
-        std::cout << '\n';
+        std::wcout << L'\n';
     }
 }
 
@@ -269,35 +271,35 @@ void ReviseArguments() {
     if (g_options.output_file_path.empty()) {
         g_options.output_file_path =
             g_working_directory /
-            ("zrc-" + std::to_string(std::time(nullptr)) + ".rc");
+            (L"zrc-" + std::to_wstring(std::time(nullptr)) + L".rc");
     }
 
     PrintParsedArguments();
 }
 
 
-void ReplaceSpaceInResourceName(std::string& name) {
-    zaf::Replace(name, " ", "?20");
+void ReplaceSpaceInResourceName(std::wstring& name) {
+    zaf::Replace(name, L" ", L"?20");
 }
 
 
-void ReplaceSlashInResourceName(std::string& name) {
+void ReplaceSlashInResourceName(std::wstring& name) {
 
     if (g_options.use_back_slash) {
-        zaf::Replace(name, "/", "\\");
+        zaf::Replace(name, L"/", L"\\");
     }
     else {
-        zaf::Replace(name, "\\", "/");
+        zaf::Replace(name, L"\\", L"/");
     }
 }
 
 
 void GenerateInputResourceItemsInDirectory(
     const std::filesystem::path& directory_path, 
-    const std::string& name,
+    const std::wstring& name,
     std::vector<ResourceItem>& result) {
 
-    std::string directory_path_string = directory_path.string();
+    std::wstring directory_path_string = directory_path.wstring();
 
     for (auto each_file : std::filesystem::recursive_directory_iterator(directory_path)) {
 
@@ -318,7 +320,7 @@ void GenerateInputResourceItemsInDirectory(
             }
         }
 
-        auto resource_name = each_file.path().string();
+        auto resource_name = each_file.path().wstring();
         if (!name.empty()) {
             resource_name.replace(0, directory_path_string.length(), name);
         }
@@ -362,7 +364,7 @@ std::vector<ResourceItem> GenerateInputResourceItems() {
                 resource_item.name = each_item.name;
             }
             else {
-                resource_item.name = full_path.filename().string();
+                resource_item.name = full_path.filename().wstring();
             }
             ReplaceSlashInResourceName(resource_item.name);
             ReplaceSpaceInResourceName(resource_item.name);
@@ -375,11 +377,11 @@ std::vector<ResourceItem> GenerateInputResourceItems() {
 }
 
 
-ResourceItem ParseResourceItem(const std::string& line) {
+ResourceItem ParseResourceItem(const std::wstring& line) {
 
     ResourceItem result;
 
-    auto first_delimiter_index = line.find(' ');
+    auto first_delimiter_index = line.find(L' ');
     if (first_delimiter_index != std::string::npos) {
 
         result.name = line.substr(0, first_delimiter_index);
@@ -387,30 +389,65 @@ ResourceItem ParseResourceItem(const std::string& line) {
         auto second_delimiter_idnex = line.find(' ', first_delimiter_index + 1);
         if (second_delimiter_idnex != std::string::npos) {
             
-            std::istringstream path_stream(line.substr(second_delimiter_idnex + 1));
+            std::wistringstream path_stream(line.substr(second_delimiter_idnex + 1));
             path_stream >> result.path;
             return result;
         }
     }
 
-    std::cout << "Invalid line in output file: \"" << line << "\"." << std::endl;
+    std::wcout << L"Invalid line in output file: \"" << line << L"\"." << std::endl;
     EXIT;
 }
 
 
 std::vector<ResourceItem> ReadResourceItemsFromOutputFile() {
 
-    std::ifstream input_stream(g_options.output_file_path, std::ios::in);
+    std::ifstream input_stream(g_options.output_file_path, std::ios::in | std::ios::binary);
     if (!input_stream) {
-        std::cout << "Open output file failed.";
+        std::wcout << L"Open output file failed." << std::endl;
         EXIT;
     }
 
-    std::vector<ResourceItem> result;
+    input_stream.seekg(0, std::ios::end);
+    auto file_length = input_stream.tellg();
 
-    std::string line;
-    while (std::getline(input_stream, line)) {
-        result.push_back(ParseResourceItem(line));
+    if ((file_length < 2) || 
+        (file_length % 2 != 0)) {
+        std::wcout << L"Invalid encoding in output file. Expect UTF-16 LE with BOM." << std::endl;
+        EXIT;
+    }
+
+    //Subtract 2 to exclude the BOM.
+    std::size_t content_length = static_cast<std::size_t>(file_length) - 2;
+
+    std::wstring content;
+    content.resize(content_length / 2);
+
+    input_stream.seekg(2, std::ios::beg);
+    input_stream.read(reinterpret_cast<char*>(&content[0]), content_length);
+
+    if (input_stream.gcount() != content_length) {
+        std::wcout << L"Read output file failed." << std::endl;
+        EXIT;
+    }
+
+    zaf::Replace(content, L"\r\n", L"\n");
+    auto lines = zaf::Split(content, L'\n');
+
+    std::vector<ResourceItem> result;
+    for (const auto& each_line : lines) {
+
+        //Skip empty lines.
+        if (each_line.empty()) {
+            continue;
+        }
+
+        //Skip comment lines.
+        if (each_line.find(L"//") == 0) {
+            continue;
+        }
+
+        result.push_back(ParseResourceItem(each_line));
     }
 
     return result;
@@ -422,8 +459,8 @@ bool CheckIfNeedReWriteResourceItems(
     std::vector<ResourceItem>& existent_items) {
 
     if (input_items.size() != existent_items.size()) {
-        std::cout << "There are " << input_items.size() << " input items and " 
-            << existent_items.size() << " existing items in output file." << std::endl;
+        std::wcout << L"There are " << input_items.size() << L" input items and " 
+            << existent_items.size() << L" existing items in output file." << std::endl;
         return true;
     }
 
@@ -440,14 +477,14 @@ bool CheckIfNeedReWriteResourceItems(
 
     std::size_t difference_count = input_items.size() - intersection.size();
     if (difference_count > 0) {
-        std::cout << "There are " << difference_count 
-            << " different items between "
-            << "input items and existing items in output file." << std::endl;
+        std::wcout << L"There are " << difference_count 
+            << L" different items between "
+            << L"input items and existing items in output file." << std::endl;
         return true;
     }
 
-    std::cout << "There is no any difference between "
-        << "input items and existing items in output file." << std::endl;
+    std::wcout << L"There is no any difference between "
+        << L"input items and existing items in output file." << std::endl;
     return false;
 }
 
@@ -473,26 +510,38 @@ std::vector<ResourceItem> GenerateResourceItems() {
 
 void Output(const std::vector<ResourceItem>& resource_items) {
 
-    std::ofstream output_stream(g_options.output_file_path, std::ios::out | std::ios::trunc);
+    std::wstringstream content_stream;
+    for (const auto& each_item : resource_items) {
+
+        content_stream
+            << each_item.name 
+            << L" ZRC "
+            << each_item.path
+            << L"\r\n";
+    }
+
+    std::ofstream output_stream(
+        g_options.output_file_path,
+        std::ios::out | std::ios::trunc | std::ios::binary);
+
     if (!output_stream) {
-        std::cout << "Open output file failed." << std::endl;
+        std::wcout << L"Open output file failed." << std::endl;
         EXIT;
     }
 
-    for (const auto& each_item : resource_items) {
+    //Write UTF16 BOM.
+    output_stream << std::uint8_t{ 0xff } << std::uint8_t{ 0xfe };
 
-        output_stream 
-            << each_item.name << ' ' 
-            << "ZRC" << ' ' 
-            << each_item.path 
-            << "\n";
-    }
+    auto content = content_stream.str();
+    output_stream.write(
+        reinterpret_cast<const char*>(content.data()), 
+        sizeof(wchar_t) * content.length());
 
     output_stream.close();
 }
 
 
-int main(int argc, char** argv) {
+int wmain(int argc, wchar_t** argv) {
 
     try {
 
@@ -508,12 +557,12 @@ int main(int argc, char** argv) {
         auto resource_items = GenerateResourceItems();
         if (!resource_items.empty()) {
 
-            std::cout << "Write " << resource_items.size() << " items to output file." << std::endl;
+            std::wcout << L"Write " << resource_items.size() << L" items to output file." << std::endl;
             Output(resource_items);
-            std::cout << "Done." << std::endl;
+            std::wcout << L"Done." << std::endl;
         }
         else {
-            std::cout << "No need to update output file." << std::endl;
+            std::wcout << L"No need to update output file." << std::endl;
         }
 
         return 0;
@@ -522,7 +571,7 @@ int main(int argc, char** argv) {
 
         const char* what = exception.what();
         if (std::strlen(what) > 0) {
-            std::cout << what << std::endl;
+            std::cout << "Exception: " << what << std::endl;
         }
         return 1;
     }
