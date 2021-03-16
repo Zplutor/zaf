@@ -22,11 +22,6 @@ public:
         return *this;
     }
 
-    Handle& operator=(HANDLE new_value) {
-        Reset(new_value);
-        return *this;
-    }
-
     ~Handle() {
         Reset();
     }
@@ -42,12 +37,16 @@ public:
         return (value_ != nullptr) && (value_ != INVALID_HANDLE_VALUE);
     }
 
+    explicit operator bool() const {
+        return IsValid();
+    }
+
     HANDLE GetValue() const {
         return value_;
     }
 
-    explicit operator bool() const {
-        return IsValid();
+    HANDLE operator*() const {
+        return value_;
     }
 
 private:

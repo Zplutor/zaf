@@ -115,15 +115,15 @@ void RunZrcb(const std::wstring& arguments) {
         FILE_ATTRIBUTE_NORMAL,
         nullptr) };
 
-    if (stdout_handle.GetValue() == INVALID_HANDLE_VALUE) {
+    if (!stdout_handle) {
         ZAF_THROW_SYSTEM_ERROR(GetLastError());
     }
 
     STARTUPINFO startup_info{};
     startup_info.cb = sizeof(startup_info);
     startup_info.dwFlags = STARTF_USESTDHANDLES;
-    startup_info.hStdOutput = stdout_handle.GetValue();
-    startup_info.hStdError = stdout_handle.GetValue();
+    startup_info.hStdOutput = *stdout_handle;
+    startup_info.hStdError = *stdout_handle;
 
     PROCESS_INFORMATION process_information{};
 
@@ -146,10 +146,10 @@ void RunZrcb(const std::wstring& arguments) {
     CloseHandle(process_information.hThread);
 
     zaf::Handle process_handle{ process_information.hProcess };
-    WaitForSingleObject(process_handle.GetValue(), INFINITE);
+    WaitForSingleObject(*process_handle, INFINITE);
 
     DWORD exit_code{};
-    is_succeeded = GetExitCodeProcess(process_handle.GetValue(), &exit_code);
+    is_succeeded = GetExitCodeProcess(*process_handle, &exit_code);
     if (!is_succeeded) {
         ZAF_THROW_SYSTEM_ERROR(GetLastError());
     }
