@@ -162,7 +162,7 @@ struct SignedIntegerToStringConverter {
             return Int64ToString(numeric_value, options.Base(), buffer_size, buffer);
         }
         else {
-            return Uint64ToString(static_cast<std::make_unsigned<NumericType>::type>(numeric_value), options.Base(), buffer_size, buffer);
+            return Uint64ToString(static_cast<typename std::make_unsigned<NumericType>::type>(numeric_value), options.Base(), buffer_size, buffer);
         }
     }
 };

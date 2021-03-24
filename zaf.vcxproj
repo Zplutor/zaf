@@ -36,6 +36,7 @@
     <ClCompile Include="src\zaf\control\color_picker.cpp" />
     <ClCompile Include="src\zaf\control\combo_box.cpp" />
     <ClCompile Include="src\zaf\control\control.cpp" />
+    <ClCompile Include="src\zaf\control\control_binder.cpp" />
     <ClCompile Include="src\zaf\control\image_box.cpp" />
     <ClCompile Include="src\zaf\control\image_picker.cpp" />
     <ClCompile Include="src\zaf\control\internal\cached_painting.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="src\zaf\control\color_picker.h" />
     <ClInclude Include="src\zaf\control\combo_box.h" />
     <ClInclude Include="src\zaf\control\control.h" />
+    <ClInclude Include="src\zaf\control\control_binder.h" />
     <ClInclude Include="src\zaf\control\expand_state.h" />
     <ClInclude Include="src\zaf\control\image_box.h" />
     <ClInclude Include="src\zaf\control\image_layout.h" />

@@ -658,6 +658,9 @@
     <ClCompile Include="src\zaf\resource\internal\resource_loader.cpp">
       <Filter>zaf\resource\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\control_binder.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1569,6 +1572,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\string\replace.h">
       <Filter>zaf\base\string</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\control_binder.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
