@@ -58,6 +58,9 @@
     <Filter Include="case\rx">
       <UniqueIdentifier>{c51fbcf6-ce47-450d-b621-e27038c0a645}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\window">
+      <UniqueIdentifier>{9c378360-802c-4646-a24f-a587b9a92e41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -219,6 +222,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\control_binder_test.cpp">
       <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\window\message_only_window_test.cpp">
+      <Filter>case\window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

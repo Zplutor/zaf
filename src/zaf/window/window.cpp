@@ -81,7 +81,7 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wpar
     }
 
     auto window = GetWindowFromHandle(hwnd);
-    if (window != nullptr) {
+    if (window) {
 
         auto message = CreateMessage(hwnd, message_id, wparam, lparam);
 

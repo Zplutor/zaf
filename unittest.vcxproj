@@ -182,6 +182,7 @@
     <ClCompile Include="unittest\case\parsing\xaml_reader_test.cpp" />
     <ClCompile Include="unittest\case\resource\internal\utility_test.cpp" />
     <ClCompile Include="unittest\case\rx\creation_test.cpp" />
+    <ClCompile Include="unittest\case\window\message_only_window_test.cpp" />
     <ClCompile Include="unittest\main.cpp" />
   </ItemGroup>
   <ItemGroup>

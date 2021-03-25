@@ -6,13 +6,13 @@
 
 namespace zaf {
 
-std::shared_ptr<Message> CreateMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam) {
+std::unique_ptr<Message> CreateMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam) {
 
-    std::shared_ptr<Message> message;
+    std::unique_ptr<Message> message;
 
     switch (id) {
         case WM_NCHITTEST:
-            message = std::make_shared<HitTestMessage>();
+            message = std::make_unique<HitTestMessage>();
             break;
 
         case WM_LBUTTONDOWN:
@@ -31,38 +31,35 @@ std::shared_ptr<Message> CreateMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM
         case WM_NCMOUSEMOVE:
         case WM_MOUSELEAVE:
         case WM_NCMOUSELEAVE:
-            message = std::make_shared<MouseMessage>();
+            message = std::make_unique<MouseMessage>();
             break;
 
         case WM_MOUSEHWHEEL:
         case WM_MOUSEWHEEL:
-            message = std::make_shared<MouseWheelMessage>();
+            message = std::make_unique<MouseWheelMessage>();
             break;
 
         case WM_KEYDOWN:
         case WM_KEYUP:
         case WM_SYSKEYDOWN:
         case WM_SYSKEYUP:
-            message = std::make_shared<KeyMessage>();
+            message = std::make_unique<KeyMessage>();
             break;
 
         case WM_CHAR:
-            message = std::make_shared<CharMessage>();
+            message = std::make_unique<CharMessage>();
             break;
 
         default: {
-            message = std::make_shared<Message>();
+            message = std::make_unique<Message>();
             break;
         }
     }
 
-    if (message != nullptr) {
-        message->hwnd = hwnd;
-        message->id = id;
-        message->wparam = wparam;
-        message->lparam = lparam;
-    }
-
+    message->hwnd = hwnd;
+    message->id = id;
+    message->wparam = wparam;
+    message->lparam = lparam;
     return message;
 }
 

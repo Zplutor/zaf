@@ -661,6 +661,9 @@
     <ClCompile Include="src\zaf\control\control_binder.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\message_only_window.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1575,6 +1578,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\control_binder.h">
       <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\message_only_window.h">
+      <Filter>zaf\window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
