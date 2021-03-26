@@ -17,20 +17,24 @@ void ChangeCase(std::basic_string<CharType>& string, ChangeFunction function) {
 
 
 inline void Uppercase(std::string& string) {
-    internal::ChangeCase(string, std::toupper);
+    internal::ChangeCase(string, static_cast<int(*)(int)>(std::toupper));
 }
 
 inline void Uppercase(std::wstring& string) {
-    internal::ChangeCase(string, std::towupper);
+    internal::ChangeCase(
+        string, 
+        static_cast<std::wint_t(*)(std::wint_t)>(std::towupper));
 }
 
 
 inline void Lowercase(std::string& string) {
-    internal::ChangeCase(string, std::tolower);
+    internal::ChangeCase(string, static_cast<int(*)(int)>(std::tolower));
 }
 
 inline void Lowercase(std::wstring& string) {
-    internal::ChangeCase(string, std::towlower);
+    internal::ChangeCase(
+        string, 
+        static_cast<std::wint_t(*)(std::wint_t)>(std::towlower));
 }
 
 
