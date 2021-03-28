@@ -104,7 +104,13 @@ TEST(TestCalculateArrayLayoutLengths, MultipleItems) {
         { { 0.f, 20.f }, { 0.f, 100.f }, { 40.f, 100.f } },
         { 20.f, 40.f, 40.f }));
 
-    ASSERT_TRUE(TestCalculating(100,
+    ASSERT_TRUE(TestCalculating(
+        100,
         { { 0.f, 100.f }, { 0.f, 20.f }, { 0.f, 20.f } },
         { 60.f, 20.f, 20.f }));
+
+    ASSERT_TRUE(TestCalculating(
+        98, 
+        { { 50.f, 50.f }, { 1.f, 1.f }, { 0.f, 1000.f } },
+        { 50.f, 1.f, 47.f, }));
 }
