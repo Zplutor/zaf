@@ -87,9 +87,9 @@ bool Dialog::PreprocessMessage(const KeyMessage& message) {
 }
 
 
-void Dialog::WindowDestroy(HWND handle) {
+void Dialog::OnWindowDestroyed(HWND handle) {
 
-    __super::WindowDestroy(handle);
+    __super::OnWindowDestroyed(handle);
 
     if (is_showing_modally_) {
         PostQuitMessage(0);
@@ -97,17 +97,17 @@ void Dialog::WindowDestroy(HWND handle) {
 }
 
 
-void Dialog::WindowShow() {
+void Dialog::OnWindowShown() {
 
-    __super::WindowShow();
+    __super::OnWindowShown();
 
     SetCurrentDefaultButton(default_button_);
 }
 
 
-void Dialog::FocusedControlChange(const std::shared_ptr<Control>& previous_focused_control) {
+void Dialog::OnFocusedControlChanged(const std::shared_ptr<Control>& previous_focused_control) {
 
-    __super::FocusedControlChange(previous_focused_control);
+    __super::OnFocusedControlChanged(previous_focused_control);
 
     auto new_focused_button = std::dynamic_pointer_cast<Button>(GetFocusedControl());
     if (new_focused_button != nullptr) {

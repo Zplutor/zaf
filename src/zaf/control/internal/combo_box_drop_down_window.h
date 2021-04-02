@@ -15,9 +15,9 @@ public:
 
 protected:
     void Initialize() override;
-    void WindowShow() override;
-    void WindowDestroy(HWND handle) override;
-    void CapturingMouseControlChange(const std::shared_ptr<Control>& previous_control);
+    void OnWindowShown() override;
+    void OnWindowDestroyed(HWND handle) override;
+    void OnCapturingMouseControlChanged(const std::shared_ptr<Control>& previous_control);
 
 private:
     class Container : public Control {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <string>
 #include "zaf/base/registry/registry_rights.h"
 
 namespace zaf {

@@ -563,7 +563,7 @@ protected:
 
      Dervied classes must call the same method of super class.
      */
-    virtual void WindowCreate() { }
+    virtual void OnWindowCreated() { }
 
     /**
      This method is called after the window destroyed.
@@ -573,16 +573,16 @@ protected:
 
      Derived classes must call the same method of super class.
      */
-    virtual void WindowDestroy(HWND handle) { }
+    virtual void OnWindowDestroyed(HWND handle) { }
 
     /**
      This method is called after the window shown.
 
      Derived classes must call the same method of super class.
      */
-    virtual void WindowShow() { }
+    virtual void OnWindowShown() { }
 
-    virtual void RootControlChange(const std::shared_ptr<Control>& previous_root_control) { } 
+    virtual void OnRootControlChanged(const std::shared_ptr<Control>& previous_root_control) { } 
 
     /**
      This method is called after the focused control changed.
@@ -592,7 +592,8 @@ protected:
 
      Derived classes must call the same method of super class.
      */
-    virtual void FocusedControlChange(const std::shared_ptr<Control>& previous_focused_control) { }
+    virtual void OnFocusedControlChanged(
+        const std::shared_ptr<Control>& previous_focused_control) { }
 
     /**
      This method is called after the capturing mouse control changed.
@@ -602,7 +603,8 @@ protected:
 
      Derived classes must call the same method of super class.
      */
-    virtual void CapturingMouseControlChange(const std::shared_ptr<Control>& previous_capturing_control) { }
+    virtual void OnCapturingMouseControlChanged(
+        const std::shared_ptr<Control>& previous_capturing_control) { }
 
     /**
      Get the window's property map.

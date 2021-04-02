@@ -150,7 +150,7 @@ void Window::CreateWindowHandle() {
     CreateRenderer();
     Application::Instance().RegisterWindow(shared_from_this());
 
-    WindowCreate();
+    OnWindowCreated();
 }
 
 
@@ -377,7 +377,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
             capturing_mouse_control_->IsCapturingMouseChanged(false);
             capturing_mouse_control_ = nullptr;
 
-            CapturingMouseControlChange(previous_control);
+            OnCapturingMouseControlChanged(previous_control);
         }
         result = 0;
         return true;
@@ -830,7 +830,7 @@ void Window::ReceiveDestroyMessage() {
     handle_ = nullptr;
     renderer_.Reset();
 
-    WindowDestroy(old_handle);
+    OnWindowDestroyed(old_handle);
 }
 
 
@@ -911,7 +911,7 @@ void Window::CaptureMouseWithControl(const std::shared_ptr<Control>& control) {
     capturing_mouse_control_ = control;
     capturing_mouse_control_->IsCapturingMouseChanged(true);
 
-    CapturingMouseControlChange(previous_control);
+    OnCapturingMouseControlChanged(previous_control);
 }
 
 
@@ -956,7 +956,7 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_contr
         new_focused_control->IsFocusedChanged(true);
 	}
 
-    FocusedControlChange(previous_focused_control);
+    OnFocusedControlChanged(previous_focused_control);
 }
 
 
@@ -1356,7 +1356,7 @@ void Window::InitializeRootControl(const std::shared_ptr<Control>& control) {
         root_control_->SetRect(Rect::FromRECT(client_rect));
     }
 
-    RootControlChange(previous_root_control);
+    OnRootControlChanged(previous_root_control);
 }
 
 
@@ -1413,7 +1413,7 @@ void Window::Show() {
     bool no_activate = (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
     ShowWindow(handle_, no_activate ? SW_SHOWNA : SW_SHOW);
 
-    WindowShow();
+    OnWindowShown();
 }
 
 

@@ -93,9 +93,9 @@ public:
 
 protected:
     bool PreprocessMessage(const KeyMessage& message) override;
-    void WindowDestroy(HWND handle) override;
-    void WindowShow() override;
-    void FocusedControlChange(const std::shared_ptr<Control>& previous_focused_control) override;
+    void OnWindowDestroyed(HWND handle) override;
+    void OnWindowShown() override;
+    void OnFocusedControlChanged(const std::shared_ptr<Control>& previous_focused_control) override;
 
 private:
     class DialogButtonItem {

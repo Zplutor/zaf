@@ -19,9 +19,9 @@ void MainWindow::Initialize() {
 }
 
 
-void MainWindow::WindowCreate() {
+void MainWindow::OnWindowCreated() {
 
-    __super::WindowCreate();
+    __super::OnWindowCreated();
 
     InitializeTextBoxes();
     InitializeButtons();

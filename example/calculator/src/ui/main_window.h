@@ -9,7 +9,7 @@ public:
     void Initialize() override;
 
 protected:
-    void WindowCreate() override;
+    void OnWindowCreated() override;
 
 private:
     void InitializeTextBoxes();

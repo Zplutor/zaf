@@ -668,7 +668,7 @@ public:
      against the TAB key down message in this method to prevent the preprocessing,
      then it can receive the event.
      */
-    virtual bool AcceptKeyMessage(const KeyMessage& message) const {
+    virtual bool AcceptKeyMessage(const KeyMessage& message) {
         return false;
     }
 

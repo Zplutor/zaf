@@ -177,7 +177,7 @@ public:
     Observable<SelfScrollingControlScrollBarChangInfo> ScrollBarChangeEvent() override;
     Observable<SelfScrollingControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
 
-    bool AcceptKeyMessage(const KeyMessage& message) const override;
+    bool AcceptKeyMessage(const KeyMessage& message) override;
 
     /**
      Get a value indicating that whether the text box accepts TAB character when the

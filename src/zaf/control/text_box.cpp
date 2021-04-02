@@ -691,7 +691,7 @@ Observable<SelfScrollingControlScrollValuesChangeInfo> TextBox::ScrollValuesChan
 }
 
 
-bool TextBox::AcceptKeyMessage(const KeyMessage& message) const {
+bool TextBox::AcceptKeyMessage(const KeyMessage& message) {
 
     switch (message.GetVirtualKey()) {
     case VK_TAB:
