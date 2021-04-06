@@ -59,6 +59,13 @@ RegistryKey RegistryKey::OpenSubKey(const std::wstring& sub_key, RegistryRights 
 }
 
 
+void RegistryKey::DeleteValue(const std::wstring& name) {
+
+    LSTATUS result = RegDeleteValue(handle_, name.c_str());
+    ZAF_THROW_IF_SYSTEM_ERROR(result);
+}
+
+
 std::wstring RegistryKey::GetStringValue(const std::wstring& name) {
 
     auto buffer = GetValue(name, REG_SZ);

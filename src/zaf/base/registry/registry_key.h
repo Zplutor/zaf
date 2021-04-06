@@ -43,6 +43,8 @@ public:
 
     RegistryKey OpenSubKey(const std::wstring& sub_key, RegistryRights rights);
 
+    void DeleteValue(const std::wstring& name);
+
     std::wstring GetStringValue(const std::wstring& name);
     void SetStringValue(const std::wstring& name, const std::wstring& value);
     

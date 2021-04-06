@@ -112,13 +112,16 @@ std::filesystem::path Application::GetWorkingDirectoryPath() const {
 }
 
 
-std::filesystem::path Application::GetExeDirectoryPath() const {
+std::filesystem::path Application::GetExeFilePath() const {
 
     wchar_t buffer[MAX_PATH]{};
     GetModuleFileName(nullptr, buffer, MAX_PATH);
+    return buffer;
+}
 
-    std::filesystem::path path{ buffer };
-    return path.parent_path();
+
+std::filesystem::path Application::GetExeDirectoryPath() const {
+    return GetExeFilePath().parent_path();
 }
 
 

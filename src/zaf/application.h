@@ -79,6 +79,7 @@ public:
     void Terminate();
 
 	std::filesystem::path GetWorkingDirectoryPath() const;
+	std::filesystem::path GetExeFilePath() const;
 	std::filesystem::path GetExeDirectoryPath() const;
 
     ReflectionManager& GetReflectionManager() const {
