@@ -99,6 +99,14 @@ void Application::Run() {
 
 
 void Application::Terminate() {
+
+    //Close all windows.
+    //Copy is needed because windows_ will be modified during closing windows.
+    auto all_windows = windows_;
+    for (const auto& each_window : all_windows) {
+        each_window->Close();
+    }
+
     PostQuitMessage(0);
 }
 
