@@ -13,9 +13,9 @@ inline std::error_code MakeComErrorCode(HRESULT com_error_code) {
 }
 
 
-#define ZAF_THROW_IF_COM_ERROR(hresult)                            \
-if (FAILED(hresult)) {                                             \
-    throw Error{ MakeComErrorCode(hresult), ZAF_SOURCE_SITE() };  \
+#define ZAF_THROW_IF_COM_ERROR(hresult)                                     \
+if (FAILED(hresult)) {                                                      \
+    throw zaf::Error{ zaf::MakeComErrorCode(hresult), ZAF_SOURCE_SITE() };  \
 }
 
 }
