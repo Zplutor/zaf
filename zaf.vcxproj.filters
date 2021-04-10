@@ -1582,5 +1582,8 @@
     <ClInclude Include="src\zaf\window\message_only_window.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\string\trim.h">
+      <Filter>zaf\base\string</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -238,6 +238,7 @@
     <ClInclude Include="src\zaf\base\string\split.h" />
     <ClInclude Include="src\zaf\base\string\to_numeric.h" />
     <ClInclude Include="src\zaf\base\string\to_string.h" />
+    <ClInclude Include="src\zaf\base\string\trim.h" />
     <ClInclude Include="src\zaf\base\timer.h" />
     <ClInclude Include="src\zaf\config.h" />
     <ClInclude Include="src\zaf\control\anchor.h" />
