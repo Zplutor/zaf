@@ -558,6 +558,8 @@ protected:
      */
     virtual bool ReceiveMessage(const Message& message, LRESULT& result);
 
+    virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
+
     /**
      This method is called after the window created.
 
@@ -666,7 +668,6 @@ private:
     void Repaint();
     void PaintInspectedControl(Canvas& canvas, const Rect& dirty_rect);
     void Resize(UINT width, UINT height);
-    std::optional<HitTestResult> HitTest(const HitTestMessage& message);
     bool RedirectMouseWheelMessage(const Message& message);
     bool ReceiveMouseMessage(const MouseMessage& message);
     void HighlightControlAtPosition(const Point& position);
