@@ -1027,7 +1027,7 @@ void Window::SetRect(const Rect& rect) {
             static_cast<int>(rect_.position.y),
             static_cast<int>(rect_.size.width),
             static_cast<int>(rect_.size.height),
-            SWP_NOZORDER);
+            SWP_NOZORDER | SWP_NOACTIVATE);
     }
 }
 
