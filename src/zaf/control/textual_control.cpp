@@ -526,7 +526,14 @@ Size TextualControl::CalculatePreferredSize(const Size& max_size) const {
     text_layout.SetMaxHeight(max_size.height);
 
     auto metrics = text_layout.GetMetrics();
-    return Size{ metrics.width, metrics.height };
+
+    //Note that if TextAlignment is set to Center, width_including_trailing_whitespace would be 0.
+    auto width =
+        metrics.width_including_trailing_whitespace != 0 ?
+        metrics.width_including_trailing_whitespace :
+        metrics.width;
+
+    return Size{ width, metrics.height };
 }
 
 
