@@ -256,7 +256,7 @@ private:
 
     void PopupDropDownWindow();
     float CalculateDropDownListHeight(std::size_t visible_item_count);
-    void DropDownWindowClose();
+    void DropDownWindowDestroy();
 
     void DropDownListBoxMouseMove(const Point& position);
     bool SelectNextDropDownListItem(bool reverse);

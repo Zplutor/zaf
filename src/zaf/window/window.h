@@ -19,7 +19,7 @@ class Caret;
 class HitTestMessage;
 class InspectorWindow;
 class MouseMessage;
-class WindowCloseInfo;
+class WindowDestroyInfo;
 enum class HitTestResult;
 
 /**
@@ -501,9 +501,9 @@ public:
     void SetCloseHandler(const CloseHandler& handler);
 
     /**
-     Get the close event.
+     Get the destroy event.
      */
-    Observable<WindowCloseInfo> CloseEvent();
+    Observable<WindowDestroyInfo> DestroyEvent();
 
     /**
      Get position of the mouse cursor in current window's coordinate system.
@@ -585,7 +585,7 @@ protected:
 
      Derived classes must call the same method of super class.
      */
-    virtual void OnWindowDestroyed(HWND handle) { }
+    virtual void OnWindowDestroyed(HWND handle);
 
     /**
      This method is called after the window shown.
@@ -728,7 +728,7 @@ private:
 ZAF_ENABLE_FLAG_ENUM(Window::ActivateOption);
 
 
-class WindowCloseInfo {
+class WindowDestroyInfo {
 public:
     std::shared_ptr<Window> window;
 };

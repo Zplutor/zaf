@@ -100,8 +100,8 @@ void ComboBox::Initialize() {
     drop_down_window_->SetActivateOption(Window::ActivateOption::NoActivate);
     drop_down_window_->SetInitialRectStyle(Window::InitialRectStyle::Custom);
 
-    Subscriptions() += drop_down_window_->CloseEvent().Subscribe(
-        std::bind(&ComboBox::DropDownWindowClose, this));
+    Subscriptions() += drop_down_window_->DestroyEvent().Subscribe(
+        std::bind(&ComboBox::DropDownWindowDestroy, this));
 
     drop_down_list_box_ = Create<ComboBoxDropDownListBox>();
     InitializeDropDownListBox();
@@ -429,7 +429,7 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
 }
 
 
-void ComboBox::DropDownWindowClose() {
+void ComboBox::DropDownWindowDestroy() {
 
     if (!need_recover_selected_index_) {
         return;

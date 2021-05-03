@@ -89,7 +89,6 @@ void Application::Run() {
     internal::MessageLoop message_loop;
     message_loop.Run();
 
-    main_window_ = nullptr;
     windows_.clear();
 
     auto end_run_event_observer = end_run_event_.GetObserver();
@@ -154,25 +153,18 @@ void Application::RegisterWindow(const std::shared_ptr<Window>& window) {
 
 
 void Application::UnregisterWindow(const std::shared_ptr<Window>& window) {
+
     windows_.erase(window);
-}
 
-
-void Application::SetMainWindow(const std::shared_ptr<Window>& window) {
-
-    main_window_subscription_.Unsubscribe();
-
-    main_window_ = window;
-    
-    if (main_window_) {
-        main_window_subscription_ = main_window_->CloseEvent().Subscribe(
-            std::bind(&Application::MainWindowClosed, this));
+    auto main_window = main_window_.lock();
+    if (main_window == window) {
+        Terminate();
     }
 }
 
 
-void Application::MainWindowClosed() {
-    Terminate();
+void Application::SetMainWindow(const std::shared_ptr<Window>& window) {
+    main_window_ = window;
 }
 
 }

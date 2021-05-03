@@ -132,8 +132,8 @@ public:
     /**
      Get the main window.
      */
-    const std::shared_ptr<Window>& GetMainWindow() const {
-        return main_window_;
+    std::shared_ptr<Window> GetMainWindow() const {
+        return main_window_.lock();
     }
 
     /**
@@ -161,8 +161,6 @@ private:
 private:
 	Application();
 
-	void MainWindowClosed();
-
 	Application(const Application&) = delete;
 	Application& operator=(const Application&) = delete;
 
@@ -174,8 +172,7 @@ private:
 	std::unique_ptr<ResourceManager> resource_manager_;
     std::unique_ptr<GraphicFactory> graphic_factory_;
 	std::unique_ptr<wic::ImagingFactory> imaging_factory_;
-    std::shared_ptr<Window> main_window_;
-	Subscription main_window_subscription_;
+	std::weak_ptr<Window> main_window_;
 	std::set<std::shared_ptr<Window>> windows_;
 
 	Subject<ApplicationBeginRunInfo> begin_run_event_;

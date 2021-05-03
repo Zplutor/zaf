@@ -28,8 +28,8 @@ const wchar_t* const kDefaultWindowClassName = L"ZafDefaultWindowClass";
 constexpr wchar_t* const kActivateOptionPropertyName = L"ActivateOption";
 constexpr wchar_t* const kCanMaximizePropertyName = L"CanMaximize";
 constexpr wchar_t* const kCanMinimizePropertyName = L"CanMinimize";
-constexpr wchar_t* const kCloseEventPropertyName = L"CloseEvent";
 constexpr wchar_t* const kCloseHandlerPropertyName = L"CloseHandler";
+constexpr wchar_t* const kDestroyEventPropertyName = L"DestroyEvent";
 constexpr wchar_t* const kHasBorderPropertyName = L"HasBorder";
 constexpr wchar_t* const kHasSystemMenuPropertyName = L"HasSystemMenu";
 constexpr wchar_t* const kHasTitleBarPropertyName = L"HasTitleBar";
@@ -792,22 +792,7 @@ bool Window::ChangeMouseCursor(const Message& message) {
 bool Window::ReceiveCloseMessage() {
 
     bool can_close = GetCloseHandler()(*this);
-    if (!can_close) {
-        return false;
-    }
-
-    auto event_observer = GetEventObserver<WindowCloseInfo>(
-        GetPropertyMap(),
-        kCloseEventPropertyName);
-
-    if (event_observer) {
-
-        WindowCloseInfo event_info;
-        event_info.window = shared_from_this();
-        event_observer->OnNext(event_info);
-    }
-
-    return true;
+    return can_close;
 }
 
 
@@ -831,6 +816,21 @@ void Window::ReceiveDestroyMessage() {
     renderer_.Reset();
 
     OnWindowDestroyed(old_handle);
+}
+
+
+void Window::OnWindowDestroyed(HWND handle) {
+
+    auto event_observer = GetEventObserver<WindowDestroyInfo>(
+        GetPropertyMap(),
+        kDestroyEventPropertyName);
+
+    if (event_observer) {
+
+        WindowDestroyInfo event_info;
+        event_info.window = shared_from_this();
+        event_observer->OnNext(event_info);
+    }
 }
 
 
@@ -1414,8 +1414,8 @@ void Window::SetCloseHandler(const CloseHandler& handler) {
 }
 
 
-Observable<WindowCloseInfo> Window::CloseEvent() {
-    return GetEventObservable<WindowCloseInfo>(GetPropertyMap(), kCloseEventPropertyName);
+Observable<WindowDestroyInfo> Window::DestroyEvent() {
+    return GetEventObservable<WindowDestroyInfo>(GetPropertyMap(), kDestroyEventPropertyName);
 }
 
 
