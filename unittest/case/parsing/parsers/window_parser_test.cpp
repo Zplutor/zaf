@@ -126,6 +126,22 @@ TEST(WindowParser, ParseMinimumWidthAndHeight) {
 }
 
 
+TEST(WindowParser, ParsePosition) {
+
+    auto xaml = R"(<Window Position="5,7"></Window>)";
+    auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
+    ASSERT_EQ(window->GetPosition(), zaf::Point(5, 7));
+
+    xaml = R"(
+        <Window>
+            <Window.Position X="8" Y="9"></Window.Position>
+        </Window>
+    )";
+    window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
+    ASSERT_EQ(window->GetPosition(), zaf::Point(8, 9));
+}
+
+
 TEST(WindowParser, ParseSize) {
 
     auto xaml = R"(<Window Size="10,20"></Window>)";
@@ -139,6 +155,27 @@ TEST(WindowParser, ParseSize) {
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
     ASSERT_EQ(window->GetSize(), zaf::Size(30, 40));
+}
+
+
+TEST(WindowParser, ParseClientSize) {
+
+    auto xaml = R"(<Window ClientSize="10,20"></Window>)";
+    auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
+
+    auto window_size = window->GetSize();
+    ASSERT_GT(window_size.width, 10);
+    ASSERT_GT(window_size.height, 20);
+
+    xaml = R"(
+        <Window>
+            <Window.ClientSize Width="30" Height="40"></Window.ClientSize>
+        </Window>
+    )";
+    window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
+    window_size = window->GetSize();
+    ASSERT_GT(window_size.width, 30);
+    ASSERT_GT(window_size.height, 40);
 }
 
 

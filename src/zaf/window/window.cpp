@@ -124,11 +124,11 @@ void Window::CreateWindowHandle() {
     auto initial_rect = GetInitialRect();
 
     DWORD style = 0;
-    DWORD extract_style = 0;
-    GetHandleStyles(style, extract_style);
+    DWORD extra_style = 0;
+    GetHandleStyles(style, extra_style);
 
     handle_ = CreateWindowEx(
-        extract_style,
+        extra_style,
         kDefaultWindowClassName,
         GetTitle().c_str(),
         style,
@@ -206,7 +206,7 @@ void Window::CheckCreateWindowHandle() {
 }
 
 
-void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extract_style) const {
+void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const {
 
     handle_style |= IsPopup() ? WS_POPUP : WS_OVERLAPPED;
 
@@ -236,12 +236,12 @@ void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extract_style) c
     }
 
     if (IsToolWindow()) {
-        handle_extract_style |= WS_EX_TOOLWINDOW;
+        handle_extra_style |= WS_EX_TOOLWINDOW;
     }
 
     auto activate_option = GetActivateOption();
     if ((activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate) {
-        handle_extract_style |= WS_EX_NOACTIVATE;
+        handle_extra_style |= WS_EX_NOACTIVATE;
     }
 }
 
@@ -1032,6 +1032,30 @@ void Window::SetRect(const Rect& rect) {
 }
 
 
+void Window::SetClientSize(const Size& size) {
+
+    auto adjusted_rect = Rect{ Point{}, size }.ToRECT();
+
+    DWORD style{};
+    DWORD extra_style{};
+    GetHandleStyles(style, extra_style);
+
+    BOOL is_succeeded = AdjustWindowRectEx(&adjusted_rect, style, FALSE, extra_style);
+    if (!is_succeeded) {
+        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+    }
+
+    Rect new_rect;
+    new_rect.position = GetPosition();
+    new_rect.size = Size{
+        static_cast<float>(adjusted_rect.right - adjusted_rect.left),
+        static_cast<float>(adjusted_rect.bottom - adjusted_rect.top) 
+    };
+
+    SetRect(new_rect);
+}
+
+
 float Window::GetMinimumWidth() const {
 
     auto width = GetPropertyMap().TryGetProperty<float>(property::MinimumWidth);
@@ -1273,19 +1297,19 @@ void Window::SetStyleProperty(
     const std::wstring& property_name,
     DWORD style_value,
     bool is_set,
-    bool is_extract_style) {
+    bool is_extra_style) {
 
     GetPropertyMap().SetProperty(property_name, is_set);
 
     if (! IsClosed()) {
-        SetStyleToHandle(style_value, is_set, is_extract_style);
+        SetStyleToHandle(style_value, is_set, is_extra_style);
     }
 }
 
 
-void Window::SetStyleToHandle(DWORD style_value, bool is_set, bool is_extract_style) {
+void Window::SetStyleToHandle(DWORD style_value, bool is_set, bool is_extra_style) {
 
-    DWORD category = is_extract_style ? GWL_EXSTYLE : GWL_STYLE;
+    DWORD category = is_extra_style ? GWL_EXSTYLE : GWL_STYLE;
 
     DWORD style = GetWindowLong(GetHandle(), category);
     if (is_set) {

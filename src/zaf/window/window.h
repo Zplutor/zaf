@@ -153,6 +153,14 @@ public:
      */
     void SetRect(const Rect& rect);
 
+    Point GetPosition() const {
+        return GetRect().position;
+    }
+
+    void SetPosition(const Point& position) {
+        SetRect(Rect{ position, GetRect().size });
+    }
+
     /**
      Get window's size.
      */
@@ -170,6 +178,8 @@ public:
     void SetSize(const Size& size) {
         SetRect(Rect(GetRect().position, size));
     }
+
+    void SetClientSize(const Size& size);
 
     /**
      Get window's minimum size.
@@ -659,7 +669,7 @@ private:
     void CreateRenderer();
     void RecreateRenderer();
     void CheckCreateWindowHandle();
-    void GetHandleStyles(DWORD& handle_style, DWORD& handle_extract_style) const;
+    void GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const;
 
     bool TryToPreprocessTabKeyMessage(const KeyMessage& message);
     void SwitchFocusedControlByTabKey(bool backward);
@@ -687,12 +697,12 @@ private:
         const std::wstring& property_name,
         DWORD style_value,
         bool is_set,
-        bool is_extract_style);
+        bool is_extra_style);
 
     void SetStyleToHandle(
         DWORD style_value, 
         bool is_set,
-        bool is_extract_style);
+        bool is_extra_style);
 
 private:
 	HWND handle_;

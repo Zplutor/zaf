@@ -94,6 +94,16 @@ void ParseProperties(const XamlNode& node, Window& window) {
         window.SetSize(*size);
     }
 
+    auto client_size = helper.GetObjectProperty<Size>(L"ClientSize");
+    if (client_size) {
+        window.SetClientSize(*client_size);
+    }
+
+    auto position = helper.GetObjectProperty<Point>(L"Position");
+    if (position) {
+        window.SetPosition(*position);
+    }
+
     auto rect = helper.GetObjectProperty<Rect>(L"Rect");
     if (rect) {
         window.SetRect(*rect);

@@ -229,6 +229,9 @@
     <ClCompile Include="unittest\case\base\string\trim_test.cpp">
       <Filter>case\base\string</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\window\window_test.cpp">
+      <Filter>case\window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
