@@ -639,7 +639,7 @@ private:
     friend class InspectorWindow;
     friend class internal::MessageLoop;
 
-	static void RegisterDefaultClass();
+	static void RegisterDefaultClass(HICON icon, HICON small_icon);
 
 	void NeedRepaintRect(const Rect& rect);
 	void SetHoveredControl(

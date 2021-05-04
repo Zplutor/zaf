@@ -29,6 +29,8 @@ class Window;
 
 class InitializeParameters {
 public:
+	HICON window_icon{};
+	HICON window_small_icon{};
 	std::shared_ptr<UriLoader> custom_uri_loader;
 };
 

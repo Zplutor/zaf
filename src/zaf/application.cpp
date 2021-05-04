@@ -39,7 +39,7 @@ void Application::Initialize(const InitializeParameters& parameters) {
 	HRESULT result = CoInitialize(nullptr);
     ZAF_THROW_IF_COM_ERROR(result);
 
-	Window::RegisterDefaultClass();
+	Window::RegisterDefaultClass(parameters.window_icon, parameters.window_small_icon);
 
     //Create Direct2D factory.
 	CComPtr<ID2D1Factory> d2d_factory_handle;

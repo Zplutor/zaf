@@ -47,7 +47,7 @@ ZAF_DEFINE_REFLECTION_TYPE(Window)
 ZAF_DEFINE_END
 
 
-void Window::RegisterDefaultClass() {
+void Window::RegisterDefaultClass(HICON icon, HICON small_icon) {
 
 	WNDCLASSEX default_class = { 0 };
 	default_class.cbSize = sizeof(default_class);
@@ -56,12 +56,12 @@ void Window::RegisterDefaultClass() {
 	default_class.cbClsExtra = 0;
 	default_class.cbWndExtra = sizeof(LONG_PTR);
 	default_class.hInstance = NULL;
-	default_class.hIcon = NULL;
+	default_class.hIcon = icon;
 	default_class.hCursor = LoadCursor(NULL, IDI_APPLICATION);
 	default_class.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
 	default_class.lpszMenuName = nullptr;
 	default_class.lpszClassName = kDefaultWindowClassName;
-	default_class.hIconSm = NULL;
+	default_class.hIconSm = small_icon;
 
 	ATOM atom = RegisterClassEx(&default_class);
     if (atom == 0) {
