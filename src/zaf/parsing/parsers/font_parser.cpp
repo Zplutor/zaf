@@ -60,6 +60,11 @@ void FontParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflectio
             font.weight = *weight;
         }
     }
+
+    auto has_underline = helper.GetBoolProperty(L"HasUnderline");
+    if (has_underline) {
+        font.has_underline = *has_underline;
+    }
 }
 
 }

@@ -39,6 +39,19 @@ void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_
     }
 }
 
+
+void SetDefaultFontOtherPropertiesToTextLayout(
+    const Font& font,
+    std::size_t text_length, 
+    TextLayout& text_layout) {
+
+    if (font.has_underline) {
+
+        TextRange range{ 0, text_length };
+        text_layout.SetHasUnderline(true, range);
+    }
+}
+
 }
 
 ZAF_DEFINE_REFLECTION_TYPE(TextualControl)
@@ -93,37 +106,31 @@ void TextualControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 TextLayout TextualControl::CreateTextLayout() const {
 
-    auto text_format = CreateTextFormat();
-    if (text_format == nullptr) {
-        return TextLayout();
-    }
+    auto default_font = GetFont();
+
+    auto text = GetText();
+    auto text_length = text.length();
 
     TextLayoutProperties text_layout_properties;
-    text_layout_properties.text = GetText();
-    text_layout_properties.text_format = text_format;
+    text_layout_properties.text = std::move(text);
+    text_layout_properties.text_format = CreateTextFormat(default_font);
     auto text_layout = GetGraphicFactory().CreateTextLayout(text_layout_properties);
 
-    if (text_layout != nullptr) {
-        SetFontsToTextLayout(text_layout);
-    }
+    SetDefaultFontOtherPropertiesToTextLayout(default_font, text_length, text_layout);
+    SetRangedFontsToTextLayout(text_layout);
 
     return text_layout;
 }
 
 
-TextFormat TextualControl::CreateTextFormat() const {
+TextFormat TextualControl::CreateTextFormat(const Font& default_font) const {
 
-    auto font = GetFont();
     TextFormatProperties text_format_properties;
-    text_format_properties.font_family_name = font.family_name;
-    text_format_properties.font_size = font.size;
-    text_format_properties.font_weight = font.weight;
+    text_format_properties.font_family_name = default_font.family_name;
+    text_format_properties.font_size = default_font.size;
+    text_format_properties.font_weight = default_font.weight;
 
     auto text_format = GetGraphicFactory().CreateTextFormat(text_format_properties);
-    if (text_format == nullptr) {
-        return TextFormat();
-    }
-
     text_format.SetTextAlignment(GetTextAlignment());
     text_format.SetParagraphAlignment(GetParagraphAlignment());
     text_format.SetWordWrapping(GetWordWrapping());
@@ -136,7 +143,7 @@ TextFormat TextualControl::CreateTextFormat() const {
 }
 
 
-void TextualControl::SetFontsToTextLayout(TextLayout& text_layout) const {
+void TextualControl::SetRangedFontsToTextLayout(TextLayout& text_layout) const {
 
     auto fonts = TryGetFontRangeMap(GetPropertyMap());
     if (fonts == nullptr) {
@@ -566,6 +573,7 @@ static void SetFontToTextLayout(const Font& font, const TextRange& range, TextLa
     text_layout.SetFontFamilyName(font.family_name, range);
     text_layout.SetFontSize(font.size, range);
     text_layout.SetFontWeight(font.weight, range);
+    text_layout.SetHasUnderline(font.has_underline, range);
 }
 
 }

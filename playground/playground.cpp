@@ -12,6 +12,7 @@
 #include <zaf/window/message/hit_test_result.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/image/image.h>
+#include <zaf/graphic/font/font.h>
 #include <zaf/control/list_box.h>
 #include <zaf/reflection/reflection_type.h>
 #include <zaf/reflection/reflection_manager.h>
@@ -55,9 +56,17 @@ int WINAPI WinMain(
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
+    auto label = zaf::Create<zaf::Label>();
+    label->SetText(L"Underline");
+
+    auto font = zaf::Font::GetDefault();
+    font.has_underline = true;
+    label->SetFont(font);
+
     auto window = zaf::Create<zaf::Window>();
 
     window->SetClientSize(zaf::Size{ 400, 300 });
+    window->SetRootControl(label);
     window->Show();
 
     zaf::Application::Instance().SetMainWindow(window);

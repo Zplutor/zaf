@@ -226,8 +226,8 @@ protected:
 private:
     Size CalculatePreferredSize(const Size& max_size) const;
     TextLayout CreateTextLayout() const;
-    TextFormat CreateTextFormat() const;
-    void SetFontsToTextLayout(TextLayout& text_layout) const;
+    TextFormat CreateTextFormat(const Font& default_font) const;
+    void SetRangedFontsToTextLayout(TextLayout& text_layout) const;
 
     void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer);
 

@@ -41,6 +41,8 @@ Font Font::FromLOGFONT(const LOGFONT& logfont) {
         font.size = height;
     }
 
+    font.has_underline = !!logfont.lfUnderline;
+
     return font;
 }
 

@@ -49,6 +49,8 @@ public:
 	 FontWeight::Regular.
 	 */
 	int weight{ FontWeight::Regular };
+
+	bool has_underline{};
 };
 
 }

@@ -47,3 +47,11 @@ TEST(FontParserTest, ParseWeight) {
         ASSERT_EQ(font->weight, each_pair.second);
     }
 }
+
+
+TEST(FontParserTest, ParseHasUnderline) {
+
+    auto xaml = LR"(<Font HasUnderline="true" />)";
+    auto font = zaf::CreateObjectFromXaml<zaf::Font>(xaml);
+    ASSERT_TRUE(font->has_underline);
+}
