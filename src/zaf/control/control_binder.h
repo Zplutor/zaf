@@ -52,6 +52,12 @@ public:
         throw zaf::Error{ {} };
     }
 
+    const T* operator->() const {
+
+        auto const_this = const_cast<ControlBinder<T>*>(this);
+        return const_this->operator->();
+    }
+
 private:
     std::shared_ptr<T> FindControl() const {
 

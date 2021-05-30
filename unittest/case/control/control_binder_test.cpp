@@ -11,6 +11,10 @@ class TestControl : public zaf::Control {
 public:
     ZAF_BIND_CONTROL(zaf::Label, label);
 
+    std::wstring GetText() const {
+        return label->GetText();
+    }
+
 protected:
     void AfterParsing() override {
 
@@ -33,7 +37,7 @@ TEST(ControlBinderTest, Macro) {
 
 TEST(ControlBinderTest, BindInControl) {
 
-    constexpr wchar_t* const child_name = L"grace";
+    constexpr const wchar_t* child_name = L"grace";
 
     auto child = zaf::Create<zaf::Label>();
     child->SetName(child_name);
@@ -49,7 +53,7 @@ TEST(ControlBinderTest, BindInControl) {
 
 TEST(ControlBinderTest, BindInWindow) {
 
-    constexpr wchar_t* const child_name = L"duty";
+    constexpr const wchar_t* child_name = L"duty";
 
     auto child = zaf::Create<zaf::Label>();
     child->SetName(child_name);
@@ -60,6 +64,23 @@ TEST(ControlBinderTest, BindInWindow) {
     zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), child_name };
     ASSERT_EQ(binder->GetName(), child_name);
     ASSERT_EQ(binder->GetName(), child_name);
+}
+
+
+TEST(ControlBinderTest, Const) {
+
+    constexpr const wchar_t* child_name = L"const_child";
+    constexpr const wchar_t* text = L"const_text";
+
+    auto child = zaf::Create<zaf::Label>();
+    child->SetName(child_name);
+    child->SetText(text);
+
+    auto owner = zaf::Create<zaf::Control>();
+    owner->AddChild(child);
+
+    const zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), child_name };
+    ASSERT_EQ(binder->GetText(), text);
 }
 
 
