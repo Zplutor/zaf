@@ -1,15 +1,15 @@
-#include <zaf/window/message_only_window.h>
+#include <zaf/window/internal/inner_message_only_window.h>
 #include <zaf/base/error/system_error.h>
 #include <zaf/window/message/creation.h>
 
-namespace zaf {
+namespace zaf::internal {
 namespace {
 
 constexpr wchar_t* const MessageOnlyWindowClassName = L"ZafMessageOnlyWindowClass";
 
 }
 
-MessageOnlyWindow::MessageOnlyWindow() {
+InnerMessageOnlyWindow::InnerMessageOnlyWindow(HWND parent_window_handle) {
 
 	RegisterWindowClass();
 
@@ -22,7 +22,7 @@ MessageOnlyWindow::MessageOnlyWindow() {
 		0,
 		0,
 		0,
-		HWND_MESSAGE,
+		parent_window_handle,
 		nullptr,
 		nullptr,
 		nullptr);
@@ -42,17 +42,17 @@ MessageOnlyWindow::MessageOnlyWindow() {
 }
 
 
-MessageOnlyWindow::~MessageOnlyWindow() {
+InnerMessageOnlyWindow::~InnerMessageOnlyWindow() {
 
-    DestroyWindow(handle_);
+	DestroyWindow(handle_);
 }
 
 
-void MessageOnlyWindow::RegisterWindowClass() {
+void InnerMessageOnlyWindow::RegisterWindowClass() {
 
 	static ATOM atom = []() {
-	
-		WNDCLASSEX default_class {};
+
+		WNDCLASSEX default_class{};
 		default_class.cbSize = sizeof(default_class);
 		default_class.lpszClassName = MessageOnlyWindowClassName;
 		default_class.lpfnWndProc = WindowProcedure;
@@ -68,14 +68,14 @@ void MessageOnlyWindow::RegisterWindowClass() {
 }
 
 
-LRESULT CALLBACK MessageOnlyWindow::WindowProcedure(
-	HWND hwnd, 
-	UINT id, 
-	WPARAM wparam, 
+LRESULT CALLBACK InnerMessageOnlyWindow::WindowProcedure(
+	HWND hwnd,
+	UINT id,
+	WPARAM wparam,
 	LPARAM lparam) {
 
 	LONG_PTR user_data = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-	auto window = reinterpret_cast<MessageOnlyWindow*>(user_data);
+	auto window = reinterpret_cast<InnerMessageOnlyWindow*>(user_data);
 	if (window) {
 		window->OnReceiveMessage(id, wparam, lparam);
 	}
@@ -84,7 +84,7 @@ LRESULT CALLBACK MessageOnlyWindow::WindowProcedure(
 }
 
 
-void MessageOnlyWindow::OnReceiveMessage(UINT id, WPARAM wparam, LPARAM lparam) {
+void InnerMessageOnlyWindow::OnReceiveMessage(UINT id, WPARAM wparam, LPARAM lparam) {
 
 	auto message = CreateMessage(handle_, id, wparam, lparam);
 	subject_.GetObserver().OnNext(*message);

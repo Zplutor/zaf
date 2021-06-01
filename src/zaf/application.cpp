@@ -1,11 +1,15 @@
 #include <zaf/application.h>
 #include <atlbase.h>
 #include <dwrite.h>
+#include <zaf/application_delegate.h>
 #include <zaf/base/assert.h>
+#include <zaf/base/error/check.h>
 #include <zaf/base/error/com_error.h>
+#include <zaf/creation.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/message_loop.h>
+#include <zaf/internal/system_message_window.h>
 #include <zaf/reflection/reflection_manager.h>
 #include <zaf/resource/resource_manager.h>
 #include <zaf/rx/internal/rx_runtime.h>
@@ -71,28 +75,67 @@ void Application::Initialize(const InitializeParameters& parameters) {
 
     imaging_factory_ = std::make_unique<wic::ImagingFactory>(imaging_factory_handle.Detach());
 
+    InitializeSystemMessageWindow();
+    delegate_ = parameters.delegate;
+
 	is_initialized_ = true;
+}
+
+
+void Application::InitializeSystemMessageWindow() {
+
+    system_message_window_ = Create<internal::SystemMessageWindow>();
+
+    Subscriptions() += system_message_window_->SessionEndedEvent().Subscribe(
+        [this](const SessionEndedInfo& event_info) {
+    
+            if (delegate_) {
+                delegate_->SessionEnded(event_info);
+            }
+        }
+    );
 }
 
 
 void Application::Run() {
 
-    if (!is_initialized_) {
-        ZAF_FAIL();
-        return;
-    }
+    ZAF_EXPECT(is_initialized_);
 
-    auto begin_run_event_observer = begin_run_event_.GetObserver();
-    begin_run_event_observer.OnNext(ApplicationBeginRunInfo{});
-    begin_run_event_observer.OnCompleted();
+    NotifyApplicationBeginRun();
 
     internal::MessageLoop message_loop;
     message_loop.Run();
 
     windows_.clear();
 
+    NotifyApplicationEndRun();
+}
+
+
+void Application::NotifyApplicationBeginRun() {
+
+    ApplicationBeginRunInfo event_info;
+    
+    if (delegate_) {
+        delegate_->ApplicationBeginRun(event_info);
+    }
+
+    auto begin_run_event_observer = begin_run_event_.GetObserver();
+    begin_run_event_observer.OnNext(event_info);
+    begin_run_event_observer.OnCompleted();
+}
+
+
+void Application::NotifyApplicationEndRun() {
+
+    ApplicationEndRunInfo event_info;
+
+    if (delegate_) {
+        delegate_->ApplicationEndRun(event_info);
+    }
+
     auto end_run_event_observer = end_run_event_.GetObserver();
-    end_run_event_observer.OnNext(ApplicationEndRunInfo{});
+    end_run_event_observer.OnNext(event_info);
     end_run_event_observer.OnCompleted();
 }
 

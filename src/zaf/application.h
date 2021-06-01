@@ -5,6 +5,7 @@
 #include <memory>
 #include <set>
 #include <system_error>
+#include <zaf/application_event_infos.h>
 #include <zaf/config.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
@@ -13,14 +14,14 @@
 namespace zaf {
 namespace internal {
 class RxRuntime;
+class SystemMessageWindow;
 }
 
 namespace wic {
 class ImagingFactory;
 }
 
-class ApplicationBeginRunInfo;
-class ApplicationEndRunInfo;
+class ApplicationDelegate;
 class GraphicFactory;
 class ReflectionManager;
 class ResourceManager;
@@ -29,6 +30,7 @@ class Window;
 
 class InitializeParameters {
 public:
+	std::shared_ptr<ApplicationDelegate> delegate;
 	HICON window_icon{};
 	HICON window_small_icon{};
 	std::shared_ptr<UriLoader> custom_uri_loader;
@@ -166,6 +168,11 @@ private:
 	Application(const Application&) = delete;
 	Application& operator=(const Application&) = delete;
 
+	void InitializeSystemMessageWindow();
+
+	void NotifyApplicationBeginRun();
+	void NotifyApplicationEndRun();
+
 private:
 	bool is_initialized_;
 
@@ -174,21 +181,14 @@ private:
 	std::unique_ptr<ResourceManager> resource_manager_;
     std::unique_ptr<GraphicFactory> graphic_factory_;
 	std::unique_ptr<wic::ImagingFactory> imaging_factory_;
+	std::shared_ptr<internal::SystemMessageWindow> system_message_window_;
 	std::weak_ptr<Window> main_window_;
 	std::set<std::shared_ptr<Window>> windows_;
 
+	std::shared_ptr<ApplicationDelegate> delegate_;
+
 	Subject<ApplicationBeginRunInfo> begin_run_event_;
 	Subject<ApplicationEndRunInfo> end_run_event_;
-};
-
-
-class ApplicationBeginRunInfo {
-
-};
-
-
-class ApplicationEndRunInfo {
-
 };
 
 

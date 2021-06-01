@@ -125,6 +125,7 @@
     <ClCompile Include="src\zaf\graphic\text\text_trimming.cpp" />
     <ClCompile Include="src\zaf\internal\message_loop.cpp" />
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
+    <ClCompile Include="src\zaf\internal\system_message_window.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
     <ClCompile Include="src\zaf\object\object.cpp" />
     <ClCompile Include="src\zaf\parsing\helpers.cpp" />
@@ -189,15 +190,16 @@
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_control_item.cpp" />
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_data_source.cpp" />
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_item.cpp" />
+    <ClCompile Include="src\zaf\window\internal\inner_message_only_window.cpp" />
     <ClCompile Include="src\zaf\window\message\creation.cpp" />
     <ClCompile Include="src\zaf\window\message\internal\mouse_position_conversion.cpp" />
     <ClCompile Include="src\zaf\window\message\mouse_message.cpp" />
-    <ClCompile Include="src\zaf\window\message_only_window.cpp" />
     <ClCompile Include="src\zaf\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\precompiled.h" />
     <ClInclude Include="src\zaf\application.h" />
+    <ClInclude Include="src\zaf\application_delegate.h" />
     <ClInclude Include="src\zaf\base\assert.h" />
     <ClInclude Include="src\zaf\base\container\utility\copy.h" />
     <ClInclude Include="src\zaf\base\container\utility\range.h" />
@@ -390,6 +392,7 @@
     <ClInclude Include="src\zaf\internal\message_loop.h" />
     <ClInclude Include="src\zaf\internal\no_circular_pointer.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
+    <ClInclude Include="src\zaf\internal\system_message_window.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
     <ClInclude Include="src\zaf\internal\theme.h" />
     <ClInclude Include="src\zaf\object\box_represent.h" />
@@ -486,6 +489,7 @@
     <ClInclude Include="src\zaf\rx\work.h" />
     <ClInclude Include="src\zaf\serialization\properties.h" />
     <ClInclude Include="src\zaf\serialization\property_map.h" />
+    <ClInclude Include="src\zaf\application_event_infos.h" />
     <ClInclude Include="src\zaf\window\caret.h" />
     <ClInclude Include="src\zaf\window\dialog.h" />
     <ClInclude Include="src\zaf\window\dialog_result.h" />
@@ -494,6 +498,7 @@
     <ClInclude Include="src\zaf\window\inspector\internal\inspect_control_item.h" />
     <ClInclude Include="src\zaf\window\inspector\internal\inspect_data_source.h" />
     <ClInclude Include="src\zaf\window\inspector\internal\inspect_item.h" />
+    <ClInclude Include="src\zaf\window\internal\inner_message_only_window.h" />
     <ClInclude Include="src\zaf\window\message\creation.h" />
     <ClInclude Include="src\zaf\window\message\hit_test_message.h" />
     <ClInclude Include="src\zaf\window\message\hit_test_result.h" />

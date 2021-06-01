@@ -1,37 +1,23 @@
 #pragma once
 
-#include <zaf/rx/observable.h>
-#include <zaf/rx/subject.h>
-#include <zaf/window/message/message.h>
+#include <zaf/window/internal/inner_message_only_window.h>
 
 namespace zaf {
 
 class MessageOnlyWindow {
 public:
-    MessageOnlyWindow();
-    ~MessageOnlyWindow();
-
-    MessageOnlyWindow(const MessageOnlyWindow&) = delete;
-    MessageOnlyWindow& operator=(const MessageOnlyWindow&) = delete;
+    MessageOnlyWindow() : inner_(HWND_MESSAGE) { }
 
     HWND GetHandle() const {
-        return handle_;
+        return inner_.GetHandle();
     }
 
     Observable<Message> ReceiveMessageEvent() {
-        return subject_.GetObservable();
+        return inner_.ReceiveMessageEvent();
     }
 
 private:
-    static void RegisterWindowClass();
-    static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam);
-
-private:
-    void OnReceiveMessage(UINT id, WPARAM wparam, LPARAM lparam);
-
-private:
-    HWND handle_{};
-    Subject<Message> subject_;
+    internal::InnerMessageOnlyWindow inner_;
 };
 
 }

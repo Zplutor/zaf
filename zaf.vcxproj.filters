@@ -148,6 +148,9 @@
     <Filter Include="zaf\rx\internal\observable">
       <UniqueIdentifier>{91d47c0f-89ac-4b11-a79e-ca03fa1dd2fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\window\internal">
+      <UniqueIdentifier>{9753c9aa-251c-4966-b76e-70c7d7f08694}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -661,8 +664,11 @@
     <ClCompile Include="src\zaf\control\control_binder.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\window\message_only_window.cpp">
-      <Filter>zaf\window</Filter>
+    <ClCompile Include="src\zaf\internal\system_message_window.cpp">
+      <Filter>zaf\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\internal\inner_message_only_window.cpp">
+      <Filter>zaf\window\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1584,6 +1590,18 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\string\trim.h">
       <Filter>zaf\base\string</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\system_message_window.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\application_event_infos.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\application_delegate.h">
+      <Filter>zaf</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\internal\inner_message_only_window.h">
+      <Filter>zaf\window\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
