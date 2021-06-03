@@ -783,27 +783,61 @@ bool TextBox::ChangeMouseCursor() {
 
 
 bool TextBox::OnMouseMove(const Point& position, const MouseMessage& message) {
+
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_MOUSEMOVE, message.wparam, message.lparam, nullptr);
+
+		HRESULT result = text_service_->TxSendMessage(
+			WM_MOUSEMOVE, 
+			message.wparam, 
+			message.lparam, 
+			nullptr);
+
+		if (result == S_OK) {
+			return true;
+		}
 	}
-    return true;
+
+	return __super::OnMouseMove(position, message);
 }
 
 
 bool TextBox::OnMouseDown(const Point& position, const MouseMessage& message) {
+
 	SetIsFocused(true);
+
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_LBUTTONDOWN, message.wparam, message.lparam, nullptr);
+
+		HRESULT result = text_service_->TxSendMessage(
+			WM_LBUTTONDOWN, 
+			message.wparam,
+			message.lparam, 
+			nullptr);
+
+		if (result == S_OK) {
+			return true;
+		}
 	}
-    return true;
+
+    return __super::OnMouseDown(position, message);
 }
 
 
 bool TextBox::OnMouseUp(const Point& position, const MouseMessage& message) {
+
 	if (text_service_ != nullptr) {
-		text_service_->TxSendMessage(WM_LBUTTONUP, message.wparam, message.lparam, nullptr);
+
+		HRESULT result = text_service_->TxSendMessage(
+			WM_LBUTTONUP, 
+			message.wparam, 
+			message.lparam,
+			nullptr);
+
+		if (result == S_OK) {
+			return true;
+		}
 	}
-    return true;
+
+    return __super::OnMouseUp(position, message);
 }
 
 

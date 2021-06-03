@@ -56,17 +56,18 @@ int WINAPI WinMain(
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
-    auto label = zaf::Create<zaf::Label>();
-    label->SetText(L"Underline");
-
-    auto font = zaf::Font::GetDefault();
-    font.has_underline = true;
-    label->SetFont(font);
+    auto text_box = zaf::Create<zaf::TextBox>();
+    text_box->SetText(L"TextBox");
+    text_box->SetSize(zaf::Size{ 500, 300 });
+    zaf::Application::Instance().Subscriptions() += text_box->SelectionChangeEvent().Subscribe([](const zaf::TextBoxSelectionChangeInfo& info) {
+    
+        auto selection_range = info.text_box->GetSelectionRange();
+    });
 
     auto window = zaf::Create<zaf::Window>();
 
     window->SetClientSize(zaf::Size{ 400, 300 });
-    window->SetRootControl(label);
+    window->GetRootControl()->AddChild(text_box);
     window->Show();
 
     zaf::Application::Instance().SetMainWindow(window);
