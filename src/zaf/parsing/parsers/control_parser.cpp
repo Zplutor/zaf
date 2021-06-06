@@ -1,5 +1,6 @@
 #include <zaf/parsing/parsers/control_parser.h>
 #include <zaf/application.h>
+#include <zaf/base/error/system_error.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/image/bitmap_image.h>
 #include <zaf/parsing/parsers/internal/utility.h>
@@ -188,8 +189,8 @@ void ParseChildren(const XamlNode& node, Control& control) {
     for (const auto& each_node : node.GetContentNodes()) {
 
         auto child_control = internal::CreateObjectFromNode<Control>(each_node);
-        if (child_control == nullptr) {
-            continue;
+        if (!child_control) {
+            ZAF_THROW_SYSTEM_ERROR(ERROR_INVALID_NAME);
         }
 
         control.AddChild(child_control);
