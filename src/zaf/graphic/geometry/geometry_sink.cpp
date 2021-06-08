@@ -48,4 +48,18 @@ void GeometrySink::AddLines(const std::vector<Point>& points) {
 	GetHandle()->AddLines(d2d_points.data(), d2d_points.size());
 }
 
+
+void GeometrySink::AddArc(const ArcSegment& arc_segment) {
+
+    D2D1_ARC_SEGMENT d2d1_segment{};
+    d2d1_segment.point = arc_segment.end_point.ToD2D1POINT2F();
+    d2d1_segment.size.width = arc_segment.x_radius;
+    d2d1_segment.size.height = arc_segment.y_radius;
+    d2d1_segment.rotationAngle = arc_segment.rotation_angle;
+    d2d1_segment.sweepDirection = static_cast<D2D1_SWEEP_DIRECTION>(arc_segment.sweep_direction);
+    d2d1_segment.arcSize = static_cast<D2D1_ARC_SIZE>(arc_segment.arc_size);
+
+    GetHandle()->AddArc(d2d1_segment);
+}
+
 }

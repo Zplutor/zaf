@@ -5,6 +5,7 @@
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/flag_enum.h>
+#include <zaf/graphic/geometry/arc_segment.h>
 #include <zaf/graphic/point.h>
 
 namespace zaf {
@@ -194,6 +195,8 @@ public:
         second point to the third point, and so on.
      */
 	void AddLines(const std::vector<Point>& points);
+
+    void AddArc(const ArcSegment& arc_segment);
 
     /**
      Closes the geometry sink, indicates whether it is in an error state, and resets the sink's 

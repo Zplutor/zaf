@@ -41,6 +41,8 @@ public:
         return matrix_;
     }
 
+    Point TransformPoint(const Point& point) const;
+
 private:
     explicit TransformMatrix(const D2D1::Matrix3x2F& martix) : matrix_(martix) { }
 

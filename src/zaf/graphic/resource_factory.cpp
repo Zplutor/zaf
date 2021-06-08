@@ -106,6 +106,16 @@ RoundedRectangleGeometry GraphicFactory::CreateRoundedRectangleGeometry(
 }
 
 
+EllipseGeometry GraphicFactory::CreateEllipseGeometry(const Ellipse& ellipse) {
+
+    ID2D1EllipseGeometry* handle{};
+    HRESULT result = d2d_factory_handle_->CreateEllipseGeometry(ellipse.ToD2D1ELLIPSE(), &handle);
+
+    ZAF_THROW_IF_COM_ERROR(result);
+    return EllipseGeometry{ handle };
+}
+
+
 PathGeometry GraphicFactory::CreatePathGeometry() {
 
 	ID2D1PathGeometry* handle = nullptr;

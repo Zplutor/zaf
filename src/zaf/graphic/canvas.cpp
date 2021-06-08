@@ -310,4 +310,11 @@ RoundedRectangleGeometry Canvas::CreateRoundedRectangleGeometry(
     return GetGraphicFactory().CreateRoundedRectangleGeometry(aligned_rounded_rect);
 }
 
+
+EllipseGeometry Canvas::CreateEllipseGeometry(const Ellipse& ellipse) const {
+
+    Ellipse aligned_ellipse = AlignWithTransformLayer(ellipse);
+    return GetGraphicFactory().CreateEllipseGeometry(ellipse);
+}
+
 }

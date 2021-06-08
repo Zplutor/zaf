@@ -12,6 +12,7 @@
 
 namespace zaf {
 
+class EllipseGeometry;
 class PathGeometry;
 class RectangleGeometry;
 class RoundedRectangleGeometry;
@@ -134,6 +135,7 @@ public:
     PathGeometry CreatePathGeometry() const;
     RectangleGeometry CreateRectangleGeometry(const Rect& rect) const;
     RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect) const;
+    EllipseGeometry CreateEllipseGeometry(const Ellipse& ellipse) const;
 
 private:
 	class State {

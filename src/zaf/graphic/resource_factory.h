@@ -5,6 +5,7 @@
 #include <memory>
 #include <zaf/base/direct2d.h>
 #include <zaf/graphic/font/font_collection.h>
+#include <zaf/graphic/geometry/ellipse_geometry.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/geometry/rounded_rectangle_geometry.h>
@@ -63,6 +64,8 @@ public:
     RectangleGeometry CreateRectangleGeometry(const Rect& rect);
 
     RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect);
+
+	EllipseGeometry CreateEllipseGeometry(const Ellipse& ellipse);
 
 	/**
 	 Create a path geometry.
