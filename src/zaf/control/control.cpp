@@ -1005,7 +1005,18 @@ bool Control::IsVisible() const {
 
 
 void Control::SetIsVisible(bool is_visible) {
+
+    bool need_relayout = is_visible_ != is_visible;
+
     SetInteractiveProperty(is_visible, is_visible_, &Control::OnIsVisibleChanged);
+
+    //Notify parent to re-layout.
+    if (need_relayout) {
+        auto parent = GetParent();
+        if (parent) {
+            parent->NeedRelayout();
+        }
+    }
 }
 
 

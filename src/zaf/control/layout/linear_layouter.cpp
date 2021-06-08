@@ -206,19 +206,27 @@ std::vector<internal::LinearLayoutLengthCalculatItem> LinearLayouter::CalculateC
 
 		internal::LinearLayoutLengthCalculatItem item;
 
-		item.minimum_length =
-			IsVertical() ? each_child->GetMinimumHeight() : each_child->GetMinimumWidth();
+		if (each_child->IsVisible()) {
 
-		item.maximum_length =
-			IsVertical() ? each_child->GetMaximumHeight() : each_child->GetMaximumWidth();
+			item.minimum_length =
+				IsVertical() ? each_child->GetMinimumHeight() : each_child->GetMinimumWidth();
 
-		//Add margin length.
-		const auto& margin = each_child->GetMargin();
-		float margin_length = 
-			IsVertical() ? margin.top + margin.bottom : margin.left + margin.right;
+			item.maximum_length =
+				IsVertical() ? each_child->GetMaximumHeight() : each_child->GetMaximumWidth();
 
-		item.minimum_length += margin_length;
-		item.maximum_length += margin_length;
+			//Add margin length.
+			const auto& margin = each_child->GetMargin();
+			float margin_length =
+				IsVertical() ? margin.top + margin.bottom : margin.left + margin.right;
+
+			item.minimum_length += margin_length;
+			item.maximum_length += margin_length;
+		}
+		else {
+
+			item.minimum_length = 0;
+			item.maximum_length = 0;
+		}
 
 		result.push_back(item);
 	}
