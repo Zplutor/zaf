@@ -35,6 +35,10 @@
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/check_box.h>
+#include <zaf/rx/creation.h>
+#include <zaf/rx/cancel.h>
+#include <zaf/rx/scheduler.h>
+#include <zaf/rx/timer.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
@@ -54,6 +58,9 @@ int WINAPI WinMain(
 }
 
 
+zaf::Subscription g_s;
+
+
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
     auto text_box = zaf::Create<zaf::TextBox>();
@@ -71,4 +78,27 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
     window->Show();
 
     zaf::Application::Instance().SetMainWindow(window);
+
+    auto observable = zaf::rx::Create<std::wstring>(
+        zaf::Scheduler::CreateOnSingleThread(), 
+        [](zaf::Observer<std::wstring>& observer, zaf::CancelToken& cancel_token) {
+    
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+
+        if (!cancel_token.IsCancelled()) {
+            ZAF_LOG() << L"Not cancelled";
+            observer.OnNext(L"Result");
+        }
+        else {
+            ZAF_LOG() << L"Cancelled";
+        }
+    });
+
+    g_s = observable.Subscribe([](const std::wstring& r) {
+        ZAF_LOG() << L"Result: " << r;
+    });
+
+    zaf::Application::Instance().Subscriptions() += zaf::rx::Timer(std::chrono::seconds(1), zaf::Scheduler::Main()).Subscribe([](int) {
+        g_s.Unsubscribe();
+    });
 }

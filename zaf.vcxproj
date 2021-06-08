@@ -163,6 +163,7 @@
     <ClCompile Include="src\zaf\resource\resource_manager.cpp" />
     <ClCompile Include="src\zaf\resource\uri_loader.cpp" />
     <ClCompile Include="src\zaf\rx\internal\inner_observer.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\observable\async_customized_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\customized_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\inner_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\just_observable.cpp" />
@@ -318,6 +319,8 @@
     <ClInclude Include="src\zaf\control\tree_item_expand_button.h" />
     <ClInclude Include="src\zaf\creation.h" />
     <ClInclude Include="src\zaf\graphic\alignment.h" />
+    <ClInclude Include="src\zaf\graphic\geometry\arc_segment.h" />
+    <ClInclude Include="src\zaf\graphic\geometry\ellipse_geometry.h" />
     <ClInclude Include="src\zaf\graphic\image\bitmap_image.h" />
     <ClInclude Include="src\zaf\graphic\image\image.h" />
     <ClInclude Include="src\zaf\graphic\image\internal\utility.h" />
@@ -456,9 +459,11 @@
     <ClInclude Include="src\zaf\resource\internal\uri_parsing.h" />
     <ClInclude Include="src\zaf\resource\resource_manager.h" />
     <ClInclude Include="src\zaf\resource\uri_loader.h" />
+    <ClInclude Include="src\zaf\rx\cancel.h" />
     <ClInclude Include="src\zaf\rx\dumb.h" />
     <ClInclude Include="src\zaf\rx\creation.h" />
     <ClInclude Include="src\zaf\rx\internal\inner_observer.h" />
+    <ClInclude Include="src\zaf\rx\internal\observable\async_customized_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\customized_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\inner_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\just_observable.h" />

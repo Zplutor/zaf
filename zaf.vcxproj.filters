@@ -670,6 +670,9 @@
     <ClCompile Include="src\zaf\window\internal\inner_message_only_window.cpp">
       <Filter>zaf\window\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observable\async_customized_observable.cpp">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1602,6 +1605,18 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\internal\inner_message_only_window.h">
       <Filter>zaf\window\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\cancel.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable\async_customized_observable.h">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\geometry\ellipse_geometry.h">
+      <Filter>zaf\graphic\geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\geometry\arc_segment.h">
+      <Filter>zaf\graphic\geometry</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
