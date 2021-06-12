@@ -285,6 +285,9 @@ public:
 
     void ResizeToPreferredSize();
 
+    bool AutoResize() const;
+    void SetAutoResize(bool value);
+
     /**
      Get the control's anchor.
 
@@ -744,6 +747,7 @@ protected:
 
     virtual Size GetPreferredContentSize() const;
 
+    void RaiseContentChangedEvent();
     void RaiseClickEvent();
     void RaiseDoubleClickEvent();
 
@@ -1002,7 +1006,7 @@ private:
 
 	void SetParent(const std::shared_ptr<Control>& parent);
 
-    Size EnforceSizeLimit(const Size& size) const;
+    void ResizeToPreferredSizeIfNeeded();
 
 	/**
 	 Called when a child's rect has changed.
@@ -1050,6 +1054,7 @@ private:
     std::size_t update_count_;
     Rect need_repaint_rect_after_updating_;
     bool need_relayout_after_updating_;
+    bool need_resize_after_updating_{};
 
 	bool is_hovered_;
 	bool is_capturing_mouse_;

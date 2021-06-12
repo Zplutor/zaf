@@ -28,18 +28,19 @@
 namespace zaf {
 namespace {
 
-constexpr wchar_t* const kAnchorPropertyName = L"Anchor";
-constexpr wchar_t* const kBackgroundImageLayoutPropertyName = L"BackgroundImageLayout";
-constexpr wchar_t* const kBackgroundImagePickerPropertyName = L"BackgroundImagePicker";
-constexpr wchar_t* const kFocusChangeEventPropertyName = L"FocusChangeEvent";
-constexpr wchar_t* const kLayouterPropertyName = L"Layouter";
-constexpr wchar_t* const kMouseEnterEventPropertyName = L"MouseEnterEvent";
-constexpr wchar_t* const kMouseLeaveEventPropertyName = L"MouseLeaveEvent";
-constexpr wchar_t* const kRectChangeEventPropertyName = L"RectChangeEvent";
-constexpr wchar_t* const CanClickPropertyName = L"CanClick";
-constexpr wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
-constexpr wchar_t* const ClickEventPropertyName = L"ClickEvent";
-constexpr wchar_t* const DoubleClickEventPropertyName = L"DoubleClickEvent";
+constexpr const wchar_t* const kAnchorPropertyName = L"Anchor";
+constexpr const wchar_t* const kBackgroundImageLayoutPropertyName = L"BackgroundImageLayout";
+constexpr const wchar_t* const kBackgroundImagePickerPropertyName = L"BackgroundImagePicker";
+constexpr const wchar_t* const kFocusChangeEventPropertyName = L"FocusChangeEvent";
+constexpr const wchar_t* const kLayouterPropertyName = L"Layouter";
+constexpr const wchar_t* const kMouseEnterEventPropertyName = L"MouseEnterEvent";
+constexpr const wchar_t* const kMouseLeaveEventPropertyName = L"MouseLeaveEvent";
+constexpr const wchar_t* const kRectChangeEventPropertyName = L"RectChangeEvent";
+constexpr const wchar_t* const AutoResizePropertyName = L"AutoResize";
+constexpr const wchar_t* const CanClickPropertyName = L"CanClick";
+constexpr const wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
+constexpr const wchar_t* const ClickEventPropertyName = L"ClickEvent";
+constexpr const wchar_t* const DoubleClickEventPropertyName = L"DoubleClickEvent";
 
 constexpr bool DefaultCanFocused = false;
 constexpr bool DefaultIsEnabled = true;
@@ -73,6 +74,7 @@ Control::~Control() {
 void Control::BeginUpdate() {
     need_repaint_rect_after_updating_ = Rect();
     need_relayout_after_updating_ = false;
+    need_resize_after_updating_ = false;
     ++update_count_;
 }
 
@@ -94,6 +96,10 @@ void Control::EndUpdate() {
 
         if (!need_repaint_rect_after_updating_.IsEmpty()) {
             NeedRepaintRect(need_repaint_rect_after_updating_);
+        }
+
+        if (need_resize_after_updating_) {
+            ResizeToPreferredSizeIfNeeded();
         }
     }
 }
@@ -345,6 +351,8 @@ void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const Rect
 		NeedRepaintRect(new_rect);
 		NeedRepaintRect(previous_rect);
 	}
+
+    ResizeToPreferredSizeIfNeeded();
 }
 
 
@@ -477,7 +485,9 @@ void Control::SetMargin(const Frame& margin) {
     //Notify parent to re-layout all children.
     auto parent = GetParent();
     if (parent) {
+
         parent->NeedRelayout();
+        parent->ResizeToPreferredSizeIfNeeded();
     }
 }
 
@@ -594,7 +604,7 @@ Size Control::GetPreferredSize() const {
     result.width += border.left + border.right;
     result.height += border.top + border.bottom;
 
-    return EnforceSizeLimit(result);
+    return result;
 }
 
 
@@ -603,6 +613,10 @@ Size Control::GetPreferredContentSize() const {
     Rect union_rect;
 
     for (const auto& each_child : GetChildren()) {
+
+        if (!each_child->IsVisible()) {
+            continue;
+        }
 
         auto child_rect = each_child->GetRect();
         child_rect.Inflate(each_child->GetMargin());
@@ -618,24 +632,45 @@ Size Control::GetPreferredContentSize() const {
 }
 
 
-Size Control::EnforceSizeLimit(const Size& size) const {
-
-    Size result = size;
-
-    result.width = std::min(result.width, GetMaximumWidth());
-    result.width = std::max(result.width, GetMinimumWidth());
-
-    result.height = std::min(result.height, GetMaximumHeight());
-    result.height = std::max(result.height, GetMinimumHeight());
-
-    return result;
+void Control::ResizeToPreferredSize() {
+    SetFixedSize(GetPreferredSize());
 }
 
 
-void Control::ResizeToPreferredSize() {
+void Control::ResizeToPreferredSizeIfNeeded() {
 
-    auto preferred_size = GetPreferredSize();
-    SetSize(preferred_size);
+    if (!AutoResize()) {
+        return;
+    }
+
+    if (IsUpdating()) {
+        need_resize_after_updating_ = true;
+        return;
+    }
+
+    ResizeToPreferredSize();
+}
+
+
+bool Control::AutoResize() const {
+
+    auto value = GetPropertyMap().TryGetProperty<bool>(AutoResizePropertyName);
+    if (value) {
+        return *value;
+    }
+    return false;
+}
+
+
+void Control::SetAutoResize(bool value) {
+
+    GetPropertyMap().SetProperty(AutoResizePropertyName, value);
+    ResizeToPreferredSizeIfNeeded();
+}
+
+
+void Control::RaiseContentChangedEvent() {
+    ResizeToPreferredSizeIfNeeded();
 }
 
 
@@ -817,6 +852,8 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
     NeedRelayout();
 	NeedRepaintRect(child->GetRect());
 
+    ResizeToPreferredSizeIfNeeded();
+
     auto inspector_port = GetInspectorPort();
     if (inspector_port) {
         inspector_port->ControlAddChild(shared_from_this());
@@ -858,6 +895,8 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 
     NeedRelayout();
 	NeedRepaintRect(child_rect);
+
+    ResizeToPreferredSizeIfNeeded();
 
     auto inspector_port = GetInspectorPort();
     if (inspector_port) {
@@ -1012,9 +1051,12 @@ void Control::SetIsVisible(bool is_visible) {
 
     //Notify parent to re-layout.
     if (need_relayout) {
+
         auto parent = GetParent();
         if (parent) {
+
             parent->NeedRelayout();
+            parent->ResizeToPreferredSizeIfNeeded();
         }
     }
 }

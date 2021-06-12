@@ -493,6 +493,8 @@ void TextualControl::NotifyTextChange() {
         event_info.textual_control = std::dynamic_pointer_cast<TextualControl>(shared_from_this());
         event_observer->OnNext(event_info);
     }
+
+    RaiseContentChangedEvent();
 }
 
 

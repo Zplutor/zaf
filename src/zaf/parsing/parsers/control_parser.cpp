@@ -181,6 +181,11 @@ void ParseProperties(const XamlNode& node, Control& control) {
             control.SetBackgroundImageLayout(*background_image_layout);
         }
     }
+
+    auto auto_resize = helper.GetBoolProperty(L"AutoResize");
+    if (auto_resize) {
+        control.SetAutoResize(*auto_resize);
+    }
 }
 
 

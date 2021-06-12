@@ -42,6 +42,9 @@ protected:
     Size GetPreferredContentSize() const override;
 
 private:
+    void SetImagePlayer(std::unique_ptr<internal::ImagePlayer> player);
+
+private:
     std::unique_ptr<internal::ImagePlayer> image_player_;
 };
 

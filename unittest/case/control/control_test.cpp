@@ -41,14 +41,30 @@ TEST(ControlTest, GetPreferredSize) {
     parent->SetBorder(3);
     parent->SetPadding(4);
     ASSERT_EQ(parent->GetPreferredSize(), zaf::Size(21, 25));
+}
 
-    //Parent has max size.
-    parent->SetMaximumWidth(10);
-    parent->SetMaximumHeight(11);
-    ASSERT_EQ(parent->GetPreferredSize(), zaf::Size(10, 11));
 
-    //Parent has min size.
-    parent->SetMinimumWidth(30);
-    parent->SetMinimumHeight(31);
-    ASSERT_EQ(parent->GetPreferredSize(), zaf::Size(30, 31));
+TEST(ControlTest, AutoResize) {
+
+    auto child = zaf::Create<zaf::Control>();
+    child->SetSize(zaf::Size{ 40, 60 });
+
+    auto parent = zaf::Create<zaf::Control>();
+    parent->SetAutoResize(true);
+
+    //Children changed.
+    parent->AddChild(child);
+    ASSERT_EQ(parent->GetSize(), child->GetSize());
+
+    //Children rect changed.
+    child->SetRect(zaf::Rect{ 10, 10, 50, 50 });
+    ASSERT_EQ(parent->GetSize(), zaf::Size(60, 60));
+
+    //Children margin changed.
+    child->SetMargin(zaf::Frame{ 2, 2, 2, 2 });
+    ASSERT_EQ(parent->GetSize(), zaf::Size(62, 62));
+
+    //Children visiblity chagned.
+    child->SetIsVisible(false);
+    ASSERT_EQ(parent->GetSize(), zaf::Size(0, 0));
 }

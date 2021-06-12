@@ -86,16 +86,16 @@ void ImageBox::ReleaseRendererResources() {
 
 void ImageBox::SetImage(const std::shared_ptr<Image>& image) {
 
-    image_player_ = std::make_unique<internal::StaticImagePlayer>(image);
-    NeedRepaint();
+    auto player = std::make_unique<internal::StaticImagePlayer>(image);
+    SetImagePlayer(std::move(player));
 }
 
 
 void ImageBox::SetDecoder(const wic::BitmapDecoder& decoder) {
 
-    image_player_ = CreateImagePlayer(decoder);
-    image_player_->SetUpdateEvent(std::bind(&ImageBox::NeedRepaint, this));
-    NeedRepaint();
+    auto player = CreateImagePlayer(decoder);
+    player->SetUpdateEvent(std::bind(&ImageBox::NeedRepaint, this));
+    SetImagePlayer(std::move(player));
 }
 
 
@@ -122,7 +122,20 @@ void ImageBox::SetUri(const std::wstring& uri) {
 }
 
 
+void ImageBox::SetImagePlayer(std::unique_ptr<internal::ImagePlayer> player) {
+
+    image_player_ = std::move(player);
+    NeedRepaint();
+
+    RaiseContentChangedEvent();
+}
+
+
 Size ImageBox::GetPreferredContentSize() const {
+
+    if (!image_player_) {
+        return {};
+    }
 
     Size pixel_size;
     std::pair<float, float> resolution;

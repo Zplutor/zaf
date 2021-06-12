@@ -374,3 +374,19 @@ TEST(ControlParserTest, ParseChildren) {
     ASSERT_EQ(children[0]->GetName(), L"child1");
     ASSERT_EQ(children[1]->GetName(), L"child2");
 }
+
+
+TEST(ControlParserTest, ParseAutoResize) {
+
+    auto xaml = R"(<Control AutoResize="true" />)";
+    auto control = CreateControlFromXaml(xaml);
+    ASSERT_TRUE(control->AutoResize());
+
+    xaml = R"(        
+        <Control>
+            <Control.AutoResize>true</Control.AutoResize>
+        </Control>
+    )";
+    control = CreateControlFromXaml(xaml);
+    ASSERT_TRUE(control->AutoResize());
+}
