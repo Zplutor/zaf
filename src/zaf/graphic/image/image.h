@@ -15,6 +15,8 @@ class Image {
 public:
     static std::shared_ptr<Image> FromFile(const std::filesystem::path& file_path);
 
+    static std::shared_ptr<Image> FromURI(const std::wstring& uri);
+
     static std::shared_ptr<Image> FromBitmap(const wic::BitmapSource& wic_bitmap);
 
     static std::shared_ptr<Image> FromBitmapDecoder(const wic::BitmapDecoder& bitmap_decoder);

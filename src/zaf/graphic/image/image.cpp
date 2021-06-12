@@ -3,6 +3,7 @@
 #include <zaf/graphic/image/internal/utility.h>
 #include <zaf/graphic/image/internal/wic_bitmap.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
+#include <zaf/resource/resource_manager.h>
 
 namespace zaf {
 
@@ -10,6 +11,13 @@ std::shared_ptr<Image> Image::FromFile(const std::filesystem::path& file_path) {
 
     auto bitmap_decoder = GetApplication().GetImagingFactory().CreateDecoderFromFile(file_path);
     return FromBitmapDecoder(bitmap_decoder);
+}
+
+
+std::shared_ptr<Image> Image::FromURI(const std::wstring& uri) {
+
+    auto stream = GetResourceManager().LoadUri(uri);
+    return FromStream(stream);
 }
 
 
