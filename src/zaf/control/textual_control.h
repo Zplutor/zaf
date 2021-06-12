@@ -219,9 +219,9 @@ protected:
      If a derived class overrides SetText method and implements its own text management, 
      it should call this method after the text changed in order to raise text change event.
      */
-    void NotifyTextChange();
+    void RaiseTextChangedEvent();
 
-    virtual void TextChange() { }
+    virtual void OnTextChanged() { }
 
 private:
     Size CalculatePreferredSize(const Size& max_size) const;

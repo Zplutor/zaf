@@ -603,9 +603,9 @@ void ComboBox::ChangeSelectionText(const std::wstring& text, TextChangeSource so
 }
 
 
-void ComboBox::TextChange() {
+void ComboBox::OnTextChanged() {
 
-    __super::TextChange();
+    __super::OnTextChanged();
 
     if (text_change_source_.Get() != TextChangeSource::DropDownListBox) {
 

@@ -149,7 +149,7 @@ protected:
     bool OnKeyDown(const KeyMessage& message) override;
     void OnFocusGain() override;
 
-    void TextChange() override;
+    void OnTextChanged() override;
 
     /**
      This method is called when the selection is changed.
