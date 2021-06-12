@@ -76,24 +76,24 @@ void ParseProperties(const XamlNode& node, Control& control) {
         control.SetRect(*rect);
     }
 
-    auto minimum_width = helper.GetFloatProperty(L"MinimumWidth");
+    auto minimum_width = helper.GetFloatProperty(L"MinWidth");
     if (minimum_width) {
-        control.SetMinimumWidth(*minimum_width);
+        control.SetMinWidth(*minimum_width);
     }
 
-    auto maximum_width = helper.GetFloatProperty(L"MaximumWidth");
+    auto maximum_width = helper.GetFloatProperty(L"MaxWidth");
     if (maximum_width) {
-        control.SetMaximumWidth(*maximum_width);
+        control.SetMaxWidth(*maximum_width);
     }
 
-    auto minimum_height = helper.GetFloatProperty(L"MinimumHeight");
+    auto minimum_height = helper.GetFloatProperty(L"MinHeight");
     if (minimum_height) {
-        control.SetMinimumHeight(*minimum_height);
+        control.SetMinHeight(*minimum_height);
     }
 
-    auto maximum_height = helper.GetFloatProperty(L"MaximumHeight");
+    auto maximum_height = helper.GetFloatProperty(L"MaxHeight");
     if (maximum_height) {
-        control.SetMaximumHeight(*maximum_height);
+        control.SetMaxHeight(*maximum_height);
     }
 
     auto fixed_width = helper.GetFloatProperty(L"FixedWidth");

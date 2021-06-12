@@ -109,34 +109,34 @@ void ParseProperties(const XamlNode& node, Window& window) {
         window.SetRect(*rect);
     }
 
-    auto minimum_width = helper.GetFloatProperty(L"MinimumWidth");
+    auto minimum_width = helper.GetFloatProperty(L"MinWidth");
     if (minimum_width) {
-        window.SetMinimumWidth(*minimum_width);
+        window.SetMinWidth(*minimum_width);
     }
 
-    auto minimum_height = helper.GetFloatProperty(L"MinimumHeight");
+    auto minimum_height = helper.GetFloatProperty(L"MinHeight");
     if (minimum_height) {
-        window.SetMinimumHeight(*minimum_height);
+        window.SetMinHeight(*minimum_height);
     }
 
-    auto minimum_size = helper.GetObjectProperty<Size>(L"MinimumSize");
+    auto minimum_size = helper.GetObjectProperty<Size>(L"MinSize");
     if (minimum_size) {
-        window.SetMinimumSize(*minimum_size);
+        window.SetMinSize(*minimum_size);
     }
 
-    auto maximum_width = helper.GetFloatProperty(L"MaximumWidth");
+    auto maximum_width = helper.GetFloatProperty(L"MaxWidth");
     if (maximum_width) {
-        window.SetMaximumWidth(*maximum_width);
+        window.SetMaxWidth(*maximum_width);
     }
 
-    auto maximum_height = helper.GetFloatProperty(L"MaximumHeight");
+    auto maximum_height = helper.GetFloatProperty(L"MaxHeight");
     if (maximum_height) {
-        window.SetMaximumHeight(*maximum_height);
+        window.SetMaxHeight(*maximum_height);
     }
 
-    auto maximum_size = helper.GetObjectProperty<Size>(L"MaximumSize");
+    auto maximum_size = helper.GetObjectProperty<Size>(L"MaxSize");
     if (maximum_size) {
-        window.SetMaximumSize(*maximum_size);
+        window.SetMaxSize(*maximum_size);
     }
 
     auto can_minimize = helper.GetBoolProperty(L"CanMinimize");

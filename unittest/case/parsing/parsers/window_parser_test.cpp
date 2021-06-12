@@ -107,22 +107,22 @@ TEST(WindowParser, ParseWidthAndHeight) {
 }
 
 
-TEST(WindowParser, ParseMinimumWidthAndHeight) {
+TEST(WindowParser, ParseMinWidthAndHeight) {
 
-    auto xaml = R"(<Window MinimumWidth="1" MinimumHeight="2"></Window>)";
+    auto xaml = R"(<Window MinWidth="1" MinHeight="2"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetMinimumWidth(), 1);
-    ASSERT_EQ(window->GetMinimumHeight(), 2);
+    ASSERT_EQ(window->GetMinWidth(), 1);
+    ASSERT_EQ(window->GetMinHeight(), 2);
 
     xaml = R"(
         <Window>
-            <Window.MinimumWidth>3</Window.MinimumWidth>
-            <Window.MinimumHeight>4</Window.MinimumHeight>
+            <Window.MinWidth>3</Window.MinWidth>
+            <Window.MinHeight>4</Window.MinHeight>
         </Window>
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetMinimumWidth(), 3);
-    ASSERT_EQ(window->GetMinimumHeight(), 4);
+    ASSERT_EQ(window->GetMinWidth(), 3);
+    ASSERT_EQ(window->GetMinHeight(), 4);
 }
 
 
@@ -190,41 +190,41 @@ TEST(WindowParser, ParseRect) {
 }
 
 
-TEST(WindowParser, ParseMaximumWidthAndHeight) {
+TEST(WindowParser, ParseMaxWidthAndHeight) {
 
-    auto xaml = R"(<Window MaximumWidth="1" MaximumHeight="2"></Window>)";
+    auto xaml = R"(<Window MaxWidth="1" MaxHeight="2"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetMaximumWidth(), 1);
-    ASSERT_EQ(window->GetMaximumHeight(), 2);
+    ASSERT_EQ(window->GetMaxWidth(), 1);
+    ASSERT_EQ(window->GetMaxHeight(), 2);
 
     xaml = R"(
         <Window>
-            <Window.MaximumWidth>3</Window.MaximumWidth>
-            <Window.MaximumHeight>4</Window.MaximumHeight>
+            <Window.MaxWidth>3</Window.MaxWidth>
+            <Window.MaxHeight>4</Window.MaxHeight>
         </Window>
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetMaximumWidth(), 3);
-    ASSERT_EQ(window->GetMaximumHeight(), 4);
+    ASSERT_EQ(window->GetMaxWidth(), 3);
+    ASSERT_EQ(window->GetMaxHeight(), 4);
 }
 
 
-TEST(WindowParser, ParseMinimumAndMaximumSize) {
+TEST(WindowParser, ParseMinAndMaxSize) {
 
-    auto xaml = R"(<Window MinimumSize="10,20" MaximumSize="30,40"></Window>)";
+    auto xaml = R"(<Window MinSize="10,20" MaxSize="30,40"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetMinimumSize(), zaf::Size(10, 20));
-    ASSERT_EQ(window->GetMaximumSize(), zaf::Size(30, 40));
+    ASSERT_EQ(window->GetMinSize(), zaf::Size(10, 20));
+    ASSERT_EQ(window->GetMaxSize(), zaf::Size(30, 40));
 
     xaml = R"(
         <Window>
-            <Window.MinimumSize Width="50" Height="60"></Window.MinimumSize>
-            <Window.MaximumSize Width="70" Height="80"></Window.MaximumSize>
+            <Window.MinSize Width="50" Height="60"></Window.MinSize>
+            <Window.MaxSize Width="70" Height="80"></Window.MaxSize>
         </Window>
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetMinimumSize(), zaf::Size(50, 60));
-    ASSERT_EQ(window->GetMaximumSize(), zaf::Size(70, 80));
+    ASSERT_EQ(window->GetMinSize(), zaf::Size(50, 60));
+    ASSERT_EQ(window->GetMaxSize(), zaf::Size(70, 80));
 }
 
 

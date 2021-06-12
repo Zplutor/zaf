@@ -17,12 +17,12 @@ public:
 		return size.width;
 	}
 
-	static float GetMinimumLength(const Control& control) {
-		return control.GetMinimumWidth();
+	static float GetMinLength(const Control& control) {
+		return control.GetMinWidth();
 	}
 
-	static float GetMaximumLength(const Control& control) {
-		return control.GetMaximumWidth();
+	static float GetMaxLength(const Control& control) {
+		return control.GetMaxWidth();
 	}
 
 	static float GetHeadingMargin(const Frame& frame) {
@@ -41,12 +41,12 @@ public:
 		return size.height;
 	}
 
-	static float GetMinimumLength(const Control& control) {
-		return control.GetMinimumHeight();
+	static float GetMinLength(const Control& control) {
+		return control.GetMinHeight();
 	}
 
-	static float GetMaximumLength(const Control& control) {
-		return control.GetMaximumHeight();
+	static float GetMaxLength(const Control& control) {
+		return control.GetMaxHeight();
 	}
 
 	static float GetHeadingMargin(const Frame& frame) {
@@ -150,8 +150,8 @@ private:
 			Dimension::GetHeadingMargin(margin) -
 			Dimension::GetTailingMargin(margin);
 
-		float length = (std::min)(avaliable_length, Dimension::GetMaximumLength(control));
-		length = (std::max)(length, Dimension::GetMinimumLength(control));
+		float length = (std::min)(avaliable_length, Dimension::GetMaxLength(control));
+		length = (std::max)(length, Dimension::GetMinLength(control));
 
 		//Calculate position.
 		float position = 
@@ -209,10 +209,10 @@ std::vector<internal::LinearLayoutLengthCalculatItem> LinearLayouter::CalculateC
 		if (each_child->IsVisible()) {
 
 			item.minimum_length =
-				IsVertical() ? each_child->GetMinimumHeight() : each_child->GetMinimumWidth();
+				IsVertical() ? each_child->GetMinHeight() : each_child->GetMinWidth();
 
 			item.maximum_length =
-				IsVertical() ? each_child->GetMaximumHeight() : each_child->GetMaximumWidth();
+				IsVertical() ? each_child->GetMaxHeight() : each_child->GetMaxWidth();
 
 			//Add margin length.
 			const auto& margin = each_child->GetMargin();

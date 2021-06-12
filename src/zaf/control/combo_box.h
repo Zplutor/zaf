@@ -70,12 +70,12 @@ public:
 
      The default count is 1.
      */
-    std::size_t GetMinimumVisibleItemCount() const;
+    std::size_t GetMinVisibleItemCount() const;
 
     /**
      Set the minimum visible item count in drop down list.
      */
-    void SetMinimumVisibleItemCount(std::size_t count);
+    void SetMinVisibleItemCount(std::size_t count);
 
     /**
      Get the maximum visible item count in drop down list.
@@ -85,12 +85,12 @@ public:
 
      The default count is the maximum value of std::size_t.
      */
-    std::size_t GetMaximumVisibleItemCount() const;
+    std::size_t GetMaxVisibleItemCount() const;
 
     /**
      Set the maximum visible item count in drop down list.
      */
-    void SetMaximumVisibleItemCount(std::size_t count);
+    void SetMaxVisibleItemCount(std::size_t count);
 
     /**
      Get a value indicating that whether the combo box is editable.

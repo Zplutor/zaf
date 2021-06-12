@@ -10,8 +10,8 @@ TEST(TextualControlTest, AutoResize) {
 
 	ASSERT_NE(control->GetWidth(), 0);
 	ASSERT_NE(control->GetHeight(), 0);
-	ASSERT_EQ(control->GetMaximumWidth(), control->GetWidth());
-	ASSERT_EQ(control->GetMaximumHeight(), control->GetHeight());
-	ASSERT_EQ(control->GetMinimumWidth(), control->GetWidth());
-	ASSERT_EQ(control->GetMinimumHeight(), control->GetHeight());
+	ASSERT_EQ(control->GetMaxWidth(), control->GetWidth());
+	ASSERT_EQ(control->GetMaxHeight(), control->GetHeight());
+	ASSERT_EQ(control->GetMinWidth(), control->GetWidth());
+	ASSERT_EQ(control->GetMinHeight(), control->GetHeight());
 }

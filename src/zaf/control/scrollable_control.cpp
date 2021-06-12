@@ -393,25 +393,25 @@ void ScrollableControl::ScrollToScrollContentPosition(const Point& position) {
 
 void ScrollableControl::ScrollUpToBegin() {
     const auto& vertical_scroll_bar = GetVerticalScrollBar();
-    vertical_scroll_bar->SetValue(vertical_scroll_bar->GetMinimumValue()); 
+    vertical_scroll_bar->SetValue(vertical_scroll_bar->GetMinValue()); 
 }
 
 
 void ScrollableControl::ScrollDownToEnd() {
     const auto& vertical_scroll_bar = GetVerticalScrollBar();
-    vertical_scroll_bar->SetValue(vertical_scroll_bar->GetMaximumValue());
+    vertical_scroll_bar->SetValue(vertical_scroll_bar->GetMaxValue());
 }
 
 
 void ScrollableControl::ScrollLeftToBegin() {
     const auto& horizontal_scroll_bar = GetHorizontalScrollBar();
-    horizontal_scroll_bar->SetValue(horizontal_scroll_bar->GetMinimumValue());
+    horizontal_scroll_bar->SetValue(horizontal_scroll_bar->GetMinValue());
 }
 
 
 void ScrollableControl::ScrollRightToEnd() {
     const auto& horizontal_scroll_bar = GetHorizontalScrollBar();
-    horizontal_scroll_bar->SetValue(horizontal_scroll_bar->GetMaximumValue());
+    horizontal_scroll_bar->SetValue(horizontal_scroll_bar->GetMaxValue());
 }
 
 

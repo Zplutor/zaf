@@ -209,33 +209,33 @@ public:
 
      The default value is 0.
      */
-    float GetMinimumWidth() const;
+    float GetMinWidth() const;
 
     /**
      Set the control's minimum width.
      */
-    void SetMinimumWidth(float min_width);
+    void SetMinWidth(float min_width);
 
     /**
      Get the control's maximum width.
 
      The default value is the maximum value of float.
      */
-    float GetMaximumWidth() const;
+    float GetMaxWidth() const;
 
     /**
      Set the control's maximum width.
      */
-    void SetMaximumWidth(float max_width);
+    void SetMaxWidth(float max_width);
 
     void SetFixedWidth(float width) {
-        SetMaximumWidth(width);
-        SetMinimumWidth(width);
+        SetMaxWidth(width);
+        SetMinWidth(width);
     }
 
     void SetFixedHeight(float height) {
-        SetMaximumHeight(height);
-        SetMinimumHeight(height);
+        SetMaxHeight(height);
+        SetMinHeight(height);
     }
 
     void SetFixedSize(const Size& size) {
@@ -262,24 +262,24 @@ public:
 
      The default value is 0.
      */
-    float GetMinimumHeight() const;
+    float GetMinHeight() const;
 
     /**
      Set the control's minimum height.
      */
-    void SetMinimumHeight(float min_height);
+    void SetMinHeight(float min_height);
 
     /**
      Get the control's maximum height.
 
      The default value is the maximum value of float.
      */
-    float GetMaximumHeight() const;
+    float GetMaxHeight() const;
 
     /**
      Set the control's maximum height.
      */
-    void SetMaximumHeight(float max_height);
+    void SetMaxHeight(float max_height);
 
     Size GetPreferredSize() const;
 

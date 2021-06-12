@@ -92,36 +92,36 @@ void ControlExploreManager::AddSizeItems(std::vector<std::shared_ptr<PropertyIte
 
     auto min_width_item = CreateFloatPropertyItem(
         L"Minimum Width",
-        [target_control]() { return target_control->GetMinimumWidth(); },
+        [target_control]() { return target_control->GetMinWidth(); },
         [target_control](float value) {
-            target_control->SetMinimumWidth(value);
+            target_control->SetMinWidth(value);
         }
     );
     items.push_back(min_width_item);
 
     auto max_width_item = CreateFloatPropertyItem(
         L"Maximum Width",
-        [target_control]() { return target_control->GetMaximumWidth(); },
+        [target_control]() { return target_control->GetMaxWidth(); },
         [target_control](float value) {
-            target_control->SetMaximumWidth(value);
+            target_control->SetMaxWidth(value);
         }
     );
     items.push_back(max_width_item);
 
     auto min_height_item = CreateFloatPropertyItem(
         L"Minimum Height",
-        [target_control]() { return target_control->GetMinimumHeight(); },
+        [target_control]() { return target_control->GetMinHeight(); },
         [target_control](float value) {
-            target_control->SetMinimumHeight(value);
+            target_control->SetMinHeight(value);
         }
     );
     items.push_back(min_height_item);
 
     auto max_height_item = CreateFloatPropertyItem(
         L"Maximum Height",
-        [target_control]() { return target_control->GetMaximumHeight(); },
+        [target_control]() { return target_control->GetMaxHeight(); },
         [target_control](float value) {
-            target_control->SetMaximumHeight(value);
+            target_control->SetMaxHeight(value);
         }
     );
     items.push_back(max_height_item);

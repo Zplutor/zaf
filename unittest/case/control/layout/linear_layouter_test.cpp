@@ -69,13 +69,13 @@ private:
         for (std::size_t index = 0; index < expected_children_positions.size(); ++index) {
             auto child = zaf::Create<zaf::Control>();
             if (test_height) {
-                child->SetMaximumHeight(child_length);
-                child->SetMinimumHeight(child_length);
+                child->SetMaxHeight(child_length);
+                child->SetMinHeight(child_length);
                 child->SetMargin(zaf::Frame(0, child_heading_margin, 0, child_tailing_margin));
             }
             else {
-                child->SetMaximumWidth(child_length);
-                child->SetMinimumWidth(child_length);
+                child->SetMaxWidth(child_length);
+                child->SetMinWidth(child_length);
                 child->SetMargin(zaf::Frame(child_heading_margin, 0, child_tailing_margin, 0));
             }
             children.push_back(child);
@@ -149,15 +149,15 @@ private:
         if (test_height) {
             layouter->SetDirection(zaf::LayoutDirection::LeftToRight);
             parent->SetHeight(parent_length);
-            child->SetMaximumHeight(fixed_length);
-            child->SetMinimumHeight(fixed_length);
+            child->SetMaxHeight(fixed_length);
+            child->SetMinHeight(fixed_length);
             child->SetMargin(zaf::Frame(0, heading_margin, 0, tailing_margin));
         }
         else {
             layouter->SetDirection(zaf::LayoutDirection::TopToBottom);
             parent->SetWidth(parent_length);
-            child->SetMaximumWidth(fixed_length);
-            child->SetMinimumWidth(fixed_length);
+            child->SetMaxWidth(fixed_length);
+            child->SetMinWidth(fixed_length);
             child->SetMargin(zaf::Frame(heading_margin, 0, tailing_margin, 0));
         }
 

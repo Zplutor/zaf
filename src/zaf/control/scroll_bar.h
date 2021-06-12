@@ -125,7 +125,7 @@ public:
 
      The default value is 0.
      */
-	int GetMinimumValue() const {
+	int GetMinValue() const {
 		return min_value_;
 	}
 
@@ -135,7 +135,7 @@ public:
      The scroll value would be adjusted to the minimum if the current value
      is less than it.
      */
-	void SetMinimumValue(int value) {
+	void SetMinValue(int value) {
 		ChangeValueRange(value, max_value_, false);
 	}
 
@@ -144,7 +144,7 @@ public:
 
      The default value is 0.
      */
-	int GetMaximumValue() const {
+	int GetMaxValue() const {
 		return max_value_;
 	}
 
@@ -154,7 +154,7 @@ public:
      The scroll value would be adjusted to the maximum if the current value
      is greater than it.
      */
-	void SetMaximumValue(int value) {
+	void SetMaxValue(int value) {
 		ChangeValueRange(min_value_, value, true);
 	}
 

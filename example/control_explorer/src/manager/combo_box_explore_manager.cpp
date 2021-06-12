@@ -55,8 +55,8 @@ std::shared_ptr<PropertyItem> ComboBoxExploreManager::CreateMinimumVisibleItemCo
     auto combo_box = GetComboBox();
     return CreateIntegerPropertyItem(
         L"Minimum visible item count",
-        [combo_box]() { return combo_box->GetMinimumVisibleItemCount(); },
-        [combo_box](std::int64_t value) { combo_box->SetMinimumVisibleItemCount(static_cast<std::size_t>(value)); });
+        [combo_box]() { return combo_box->GetMinVisibleItemCount(); },
+        [combo_box](std::int64_t value) { combo_box->SetMinVisibleItemCount(static_cast<std::size_t>(value)); });
 }
 
 
@@ -65,6 +65,6 @@ std::shared_ptr<PropertyItem> ComboBoxExploreManager::CreateMaximumVisibleItemCo
     auto combo_box = GetComboBox();
     return CreateIntegerPropertyItem(
         L"Maximum visible item count",
-        [combo_box]() { return combo_box->GetMaximumVisibleItemCount(); },
-        [combo_box](std::int64_t value) { combo_box->SetMaximumVisibleItemCount(static_cast<std::size_t>(value)); });
+        [combo_box]() { return combo_box->GetMaxVisibleItemCount(); },
+        [combo_box](std::int64_t value) { combo_box->SetMaxVisibleItemCount(static_cast<std::size_t>(value)); });
 }

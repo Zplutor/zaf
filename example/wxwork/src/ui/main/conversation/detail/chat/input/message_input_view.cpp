@@ -32,8 +32,8 @@ void MessageInputView::Initialize() {
     auto send_button_container = zaf::Create<zaf::Control>();
     send_button_container->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
     send_button_container->SetBackgroundColor(zaf::Color::Transparent());
-    send_button_container->SetMaximumHeight(30);
-    send_button_container->SetMinimumHeight(30);
+    send_button_container->SetMaxHeight(30);
+    send_button_container->SetMinHeight(30);
     send_button_container->AddChild(send_button_);
 
     AddChild(send_button_container);

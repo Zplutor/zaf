@@ -501,8 +501,8 @@ void TextualControl::NotifyTextChange() {
 Size TextualControl::GetPreferredContentSize() const {
 
     Size max_size;
-    max_size.width = GetMaximumWidth();
-    max_size.height = GetMaximumHeight();
+    max_size.width = GetMaxWidth();
+    max_size.height = GetMaxHeight();
 
     const auto& border = GetBorder();
     max_size.width -= border.left + border.right;

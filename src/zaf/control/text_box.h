@@ -50,12 +50,12 @@ public:
 
      The default value is the maximum of std::uint32_t.
      */
-	std::uint32_t GetMaximumLength() const;
+	std::uint32_t GetMaxLength() const;
 
     /**
      Set the maximum length of text. 
      */
-	void SetMaximumLength(std::uint32_t max_length);
+	void SetMaxLength(std::uint32_t max_length);
 
     /**
      Get a value indicating that whether all characters is shown as password character.

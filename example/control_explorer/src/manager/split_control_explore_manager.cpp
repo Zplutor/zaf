@@ -95,8 +95,8 @@ std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateMinimumSplitBarD
     auto split_control = GetSplitControl();
     return CreateFloatPropertyItem(
         L"Minimum split bar distance",
-        [split_control]() { return split_control->GetMinimumSplitBarDistance(); },
-        [split_control](float value) { split_control->SetMinimumSplitBarDistance(value); },
+        [split_control]() { return split_control->GetMinSplitBarDistance(); },
+        [split_control](float value) { split_control->SetMinSplitBarDistance(value); },
         [split_control](const std::function<void()>& callback) {
 
             split_control->Subscriptions() +=
@@ -110,8 +110,8 @@ std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateMaximumSplitBarD
     auto split_control = GetSplitControl();
     return CreateFloatPropertyItem(
         L"Maximum split bar distance",
-        [split_control]() { return split_control->GetMaximumSplitBarDistance(); },
-        [split_control](float value) { split_control->SetMaximumSplitBarDistance(value); },
+        [split_control]() { return split_control->GetMaxSplitBarDistance(); },
+        [split_control](float value) { split_control->SetMaxSplitBarDistance(value); },
         [split_control](const std::function<void()>& callback) {
 
             split_control->Subscriptions() +=

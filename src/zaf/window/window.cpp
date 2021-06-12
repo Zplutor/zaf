@@ -344,10 +344,10 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
 
     case WM_GETMINMAXINFO: {
         auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.lparam);
-        min_max_info->ptMinTrackSize.x = static_cast<LONG>(GetMinimumWidth());
-        min_max_info->ptMinTrackSize.y = static_cast<LONG>(GetMinimumHeight());
-        min_max_info->ptMaxTrackSize.x = static_cast<LONG>(GetMaximumWidth());
-        min_max_info->ptMaxTrackSize.y = static_cast<LONG>(GetMaximumHeight());
+        min_max_info->ptMinTrackSize.x = static_cast<LONG>(GetMinWidth());
+        min_max_info->ptMinTrackSize.y = static_cast<LONG>(GetMinHeight());
+        min_max_info->ptMaxTrackSize.x = static_cast<LONG>(GetMaxWidth());
+        min_max_info->ptMaxTrackSize.y = static_cast<LONG>(GetMaxHeight());
         result = 0;
         return true;
     }
@@ -1056,9 +1056,9 @@ void Window::SetClientSize(const Size& size) {
 }
 
 
-float Window::GetMinimumWidth() const {
+float Window::GetMinWidth() const {
 
-    auto width = GetPropertyMap().TryGetProperty<float>(property::MinimumWidth);
+    auto width = GetPropertyMap().TryGetProperty<float>(property::MinWidth);
     if (width != nullptr) {
         return *width;
     }
@@ -1066,12 +1066,12 @@ float Window::GetMinimumWidth() const {
 }
 
 
-void Window::SetMinimumWidth(float min_width) {
+void Window::SetMinWidth(float min_width) {
 
-    GetPropertyMap().SetProperty(property::MinimumWidth, min_width);
+    GetPropertyMap().SetProperty(property::MinWidth, min_width);
 
-    if (GetMaximumWidth() < min_width) {
-        SetMaximumWidth(min_width);
+    if (GetMaxWidth() < min_width) {
+        SetMaxWidth(min_width);
     }
 
     if (GetWidth() < min_width) {
@@ -1080,9 +1080,9 @@ void Window::SetMinimumWidth(float min_width) {
 }
 
 
-float Window::GetMaximumWidth() const {
+float Window::GetMaxWidth() const {
 
-    auto width = GetPropertyMap().TryGetProperty<float>(property::MaximumWidth);
+    auto width = GetPropertyMap().TryGetProperty<float>(property::MaxWidth);
     if (width != nullptr) {
         return *width;
     }
@@ -1090,12 +1090,12 @@ float Window::GetMaximumWidth() const {
 }
 
 
-void Window::SetMaximumWidth(float max_width) {
+void Window::SetMaxWidth(float max_width) {
 
-    GetPropertyMap().SetProperty(property::MaximumWidth, max_width);
+    GetPropertyMap().SetProperty(property::MaxWidth, max_width);
 
-    if (GetMinimumWidth() > max_width) {
-        SetMinimumWidth(max_width);
+    if (GetMinWidth() > max_width) {
+        SetMinWidth(max_width);
     }
 
     if (GetWidth() > max_width) {
@@ -1104,9 +1104,9 @@ void Window::SetMaximumWidth(float max_width) {
 }
 
 
-float Window::GetMinimumHeight() const {
+float Window::GetMinHeight() const {
 
-    auto height = GetPropertyMap().TryGetProperty<float>(property::MinimumHeight);
+    auto height = GetPropertyMap().TryGetProperty<float>(property::MinHeight);
     if (height != nullptr) {
         return *height;
     }
@@ -1114,12 +1114,12 @@ float Window::GetMinimumHeight() const {
 }
 
 
-void Window::SetMinimumHeight(float min_height) {
+void Window::SetMinHeight(float min_height) {
 
-    GetPropertyMap().SetProperty(property::MinimumHeight, min_height);
+    GetPropertyMap().SetProperty(property::MinHeight, min_height);
 
-    if (GetMaximumHeight() < min_height) {
-        SetMaximumHeight(min_height);
+    if (GetMaxHeight() < min_height) {
+        SetMaxHeight(min_height);
     }
 
     if (GetHeight() < min_height) {
@@ -1128,9 +1128,9 @@ void Window::SetMinimumHeight(float min_height) {
 }
 
 
-float Window::GetMaximumHeight() const {
+float Window::GetMaxHeight() const {
 
-    auto height = GetPropertyMap().TryGetProperty<float>(property::MaximumHeight);
+    auto height = GetPropertyMap().TryGetProperty<float>(property::MaxHeight);
     if (height != nullptr) {
         return *height;
     }
@@ -1138,12 +1138,12 @@ float Window::GetMaximumHeight() const {
 }
 
 
-void Window::SetMaximumHeight(float max_height) {
+void Window::SetMaxHeight(float max_height) {
 
-    GetPropertyMap().SetProperty(property::MaximumHeight, max_height);
+    GetPropertyMap().SetProperty(property::MaxHeight, max_height);
 
-    if (GetMinimumHeight() > max_height) {
-        SetMinimumHeight(max_height);
+    if (GetMinHeight() > max_height) {
+        SetMinHeight(max_height);
     }
 
     if (GetHeight() > max_height) {

@@ -38,7 +38,7 @@ static ITextServices* CreateTextService(ITextHost* text_host);
 static const wchar_t* const kAcceptReturnPropertyName = L"AcceptReturn";
 static const wchar_t* const kAcceptTabPropertyName = L"AcceptTab";
 static const wchar_t* const kInsetPropertyName = L"Inset";
-static const wchar_t* const kMaximumLengthPropertyName = L"MaximumLength";
+static const wchar_t* const kMaxLengthPropertyName = L"MaxLength";
 static const wchar_t* const kPasswordCharacterPropertyName = L"PasswordCharacter";
 static const wchar_t* const kScrollBarChangeEventPropertyName = L"ScrollBarChangeEvent";
 static const wchar_t* const kScrollValuesChangeEventPropertyName = L"ScrollValuesChangeEvent";
@@ -47,7 +47,7 @@ static const wchar_t* const kTextValidatorPropertyName = L"TextValidator";
 
 static const DWORD kDefaultPropertyBits = TXTBIT_ALLOWBEEP;
 static const Frame kDefaultInset;
-static const std::uint32_t kDefaultMaximumLength = std::numeric_limits<std::uint32_t>::max();
+static const std::uint32_t kDefaultMaxLength = std::numeric_limits<std::uint32_t>::max();
 static const wchar_t kDefaultPasswordCharacter = L'*';
 static const DWORD kDefaultScrollBarProperty = ES_AUTOVSCROLL | ES_AUTOHSCROLL | WS_VSCROLL | WS_HSCROLL;
 
@@ -302,21 +302,21 @@ void TextBox::SetInset(const Frame& inset) {
 }
 
 
-std::uint32_t TextBox::GetMaximumLength() const {
+std::uint32_t TextBox::GetMaxLength() const {
 
-	auto max_length = GetPropertyMap().TryGetProperty<std::uint32_t>(kMaximumLengthPropertyName);
+	auto max_length = GetPropertyMap().TryGetProperty<std::uint32_t>(kMaxLengthPropertyName);
 	if (max_length != nullptr) {
 		return *max_length;
 	}
 	else {
-		return kDefaultMaximumLength;
+		return kDefaultMaxLength;
 	}
 }
 
 
-void TextBox::SetMaximumLength(std::uint32_t max_length) {
+void TextBox::SetMaxLength(std::uint32_t max_length) {
 
-	GetPropertyMap().SetProperty(kMaximumLengthPropertyName, max_length);
+	GetPropertyMap().SetProperty(kMaxLengthPropertyName, max_length);
 
 	if (text_service_ != nullptr) {
 		text_service_->OnTxPropertyBitsChange(TXTBIT_MAXLENGTHCHANGE, TXTBIT_MAXLENGTHCHANGE);
@@ -1336,10 +1336,10 @@ HRESULT TextBox::TextHostBridge::TxGetMaxLength(DWORD *plength) {
 
 	auto text_box = text_box_.lock();
 	if (text_box != nullptr) {
-		*plength = text_box->GetMaximumLength();
+		*plength = text_box->GetMaxLength();
 	}
 	else {
-		*plength = kDefaultMaximumLength;
+		*plength = kDefaultMaxLength;
 	}
 
 	return S_OK;

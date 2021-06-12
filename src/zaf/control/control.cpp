@@ -422,12 +422,12 @@ void Control::SetRect(const Rect& rect) {
 
     //Revise the size.
     float width = rect.size.width;
-    width = std::max(width, GetMinimumWidth());
-    width = std::min(width, GetMaximumWidth());
+    width = std::max(width, GetMinWidth());
+    width = std::min(width, GetMaxWidth());
 
     float height = rect.size.height;
-    height = std::max(height, GetMinimumHeight());
-    height = std::min(height, GetMaximumHeight());
+    height = std::max(height, GetMinHeight());
+    height = std::min(height, GetMaxHeight());
 
 	rect_ = zaf::Rect(rect.position, zaf::Size(width, height));    
 
@@ -492,9 +492,9 @@ void Control::SetMargin(const Frame& margin) {
 }
 
 
-float Control::GetMinimumWidth() const {
+float Control::GetMinWidth() const {
 
-    auto min_width = GetPropertyMap().TryGetProperty<float>(property::MinimumWidth);
+    auto min_width = GetPropertyMap().TryGetProperty<float>(property::MinWidth);
     if (min_width != nullptr) {
         return *min_width;
     }
@@ -503,12 +503,12 @@ float Control::GetMinimumWidth() const {
     }
 }
 
-void Control::SetMinimumWidth(float min_width) {
+void Control::SetMinWidth(float min_width) {
 
-    GetPropertyMap().SetProperty(property::MinimumWidth, min_width);
+    GetPropertyMap().SetProperty(property::MinWidth, min_width);
 
-    if (GetMaximumWidth() < min_width) {
-        SetMaximumWidth(min_width);
+    if (GetMaxWidth() < min_width) {
+        SetMaxWidth(min_width);
     }
 
     if (GetWidth() < min_width) {
@@ -517,9 +517,9 @@ void Control::SetMinimumWidth(float min_width) {
 }
 
 
-float Control::GetMaximumWidth() const {
+float Control::GetMaxWidth() const {
 
-    auto max_width = GetPropertyMap().TryGetProperty<float>(property::MaximumWidth);
+    auto max_width = GetPropertyMap().TryGetProperty<float>(property::MaxWidth);
     if (max_width != nullptr) {
         return *max_width;
     }
@@ -528,12 +528,12 @@ float Control::GetMaximumWidth() const {
     }
 }
 
-void Control::SetMaximumWidth(float max_width) {
+void Control::SetMaxWidth(float max_width) {
 
-    GetPropertyMap().SetProperty(property::MaximumWidth, max_width);
+    GetPropertyMap().SetProperty(property::MaxWidth, max_width);
 
-    if (GetMinimumWidth() > max_width) {
-        SetMinimumWidth(max_width);
+    if (GetMinWidth() > max_width) {
+        SetMinWidth(max_width);
     }
 
     if (GetWidth() > max_width) {
@@ -542,9 +542,9 @@ void Control::SetMaximumWidth(float max_width) {
 }
 
 
-float Control::GetMinimumHeight() const {
+float Control::GetMinHeight() const {
 
-    auto min_height = GetPropertyMap().TryGetProperty<float>(property::MinimumHeight);
+    auto min_height = GetPropertyMap().TryGetProperty<float>(property::MinHeight);
     if (min_height != nullptr) {
         return *min_height;
     }
@@ -553,12 +553,12 @@ float Control::GetMinimumHeight() const {
     }
 }
 
-void Control::SetMinimumHeight(float min_height) {
+void Control::SetMinHeight(float min_height) {
 
-    GetPropertyMap().SetProperty(property::MinimumHeight, min_height);
+    GetPropertyMap().SetProperty(property::MinHeight, min_height);
 
-    if (GetMaximumHeight() < min_height) {
-        SetMaximumHeight(min_height);
+    if (GetMaxHeight() < min_height) {
+        SetMaxHeight(min_height);
     }
 
     if (GetHeight() < min_height) {
@@ -567,9 +567,9 @@ void Control::SetMinimumHeight(float min_height) {
 }
 
 
-float Control::GetMaximumHeight() const {
+float Control::GetMaxHeight() const {
 
-    auto max_height = GetPropertyMap().TryGetProperty<float>(property::MaximumHeight);
+    auto max_height = GetPropertyMap().TryGetProperty<float>(property::MaxHeight);
     if (max_height != nullptr) {
         return *max_height;
     }
@@ -578,12 +578,12 @@ float Control::GetMaximumHeight() const {
     }
 }
 
-void Control::SetMaximumHeight(float max_height) {
+void Control::SetMaxHeight(float max_height) {
 
-    GetPropertyMap().SetProperty(property::MaximumHeight, max_height);
+    GetPropertyMap().SetProperty(property::MaxHeight, max_height);
 
-    if (GetMinimumHeight() > max_height) {
-        SetMinimumHeight(max_height);
+    if (GetMinHeight() > max_height) {
+        SetMinHeight(max_height);
     }
 
     if (GetHeight() > max_height) {

@@ -76,8 +76,8 @@ std::shared_ptr<PropertyItem> ScrollBarExploreManager::CreateMinimumValuePropert
     auto scroll_bar = GetScrollBar();
     return CreateIntegerPropertyItem(
         L"Minimum value",
-        [scroll_bar]() { return scroll_bar->GetMinimumValue(); },
-        [scroll_bar](std::int64_t value) { scroll_bar->SetMinimumValue(static_cast<int>(value)); });
+        [scroll_bar]() { return scroll_bar->GetMinValue(); },
+        [scroll_bar](std::int64_t value) { scroll_bar->SetMinValue(static_cast<int>(value)); });
 }
 
 
@@ -86,8 +86,8 @@ std::shared_ptr<PropertyItem> ScrollBarExploreManager::CreateMaximumValuePropert
     auto scroll_bar = GetScrollBar();
     return CreateIntegerPropertyItem(
         L"Maximum value",
-        [scroll_bar]() { return scroll_bar->GetMaximumValue(); },
-        [scroll_bar](std::int64_t value) { scroll_bar->SetMaximumValue(static_cast<int>(value)); });
+        [scroll_bar]() { return scroll_bar->GetMaxValue(); },
+        [scroll_bar](std::int64_t value) { scroll_bar->SetMaxValue(static_cast<int>(value)); });
 }
 
 

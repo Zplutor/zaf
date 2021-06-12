@@ -157,8 +157,8 @@ void SplitControl::UpdateActualSplitBarDistance() {
         distance = (IsHorizontalSplit() ? content_size.height : content_size.width) / 2;
     }
 
-    distance = (std::max)(distance, GetMinimumSplitBarDistance());
-    distance = std::min(distance, GetMaximumSplitBarDistance());
+    distance = (std::max)(distance, GetMinSplitBarDistance());
+    distance = std::min(distance, GetMaxSplitBarDistance());
 
     if (distance != actual_split_bar_distance_) {
 
@@ -244,7 +244,7 @@ void SplitControl::SetSplitBarDistance(float expected_distance) {
 }
 
 
-float SplitControl::GetMinimumSplitBarDistance() const {
+float SplitControl::GetMinSplitBarDistance() const {
 
     float avaliable_max_size = GetAvaliableSplitBarMaxDistance();
 
@@ -256,7 +256,7 @@ float SplitControl::GetMinimumSplitBarDistance() const {
     }
 }
 
-void SplitControl::SetMinimumSplitBarDistance(float min_distance) {
+void SplitControl::SetMinSplitBarDistance(float min_distance) {
 
     if (expected_split_bar_min_distance_.has_value() &&
         expected_split_bar_min_distance_.value() == min_distance) {
@@ -282,7 +282,7 @@ void SplitControl::SetMinimumSplitBarDistance(float min_distance) {
 }
 
 
-float SplitControl::GetMaximumSplitBarDistance() const {
+float SplitControl::GetMaxSplitBarDistance() const {
 
     float avaliable_max_distance = GetAvaliableSplitBarMaxDistance();
 
@@ -294,7 +294,7 @@ float SplitControl::GetMaximumSplitBarDistance() const {
     }
 }
 
-void SplitControl::SetMaximumSplitBarDistance(float max_distance) {
+void SplitControl::SetMaxSplitBarDistance(float max_distance) {
 
     if (expected_split_bar_max_distance_.has_value() &&
         expected_split_bar_max_distance_.value() == max_distance) {

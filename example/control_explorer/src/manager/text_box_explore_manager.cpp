@@ -65,8 +65,8 @@ std::shared_ptr<PropertyItem> TextBoxExploreManager::CreateMaximumLengthProperty
     auto text_box = GetTextBox();
     return CreateFloatPropertyItem(
         L"Maximum length",
-        [text_box]() { return static_cast<float>(text_box->GetMaximumLength()); },
-        [text_box](float value) { text_box->SetMaximumLength(static_cast<std::uint32_t>(value)); });
+        [text_box]() { return static_cast<float>(text_box->GetMaxLength()); },
+        [text_box](float value) { text_box->SetMaxLength(static_cast<std::uint32_t>(value)); });
 }
 
 

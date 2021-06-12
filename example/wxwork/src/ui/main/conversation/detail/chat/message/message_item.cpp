@@ -75,7 +75,7 @@ float MessageItem::DeterminateHeight(float max_width) {
 
     float height = TopPadding;
 
-    content_bubble_->SetMaximumWidth(std::min(MaxBubbleWidth, max_content_width));
+    content_bubble_->SetMaxWidth(std::min(MaxBubbleWidth, max_content_width));
     auto bubble_size = content_bubble_->GetPreferredSize();
     height += bubble_size.height;
 

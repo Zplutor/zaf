@@ -30,11 +30,11 @@ public:
     float GetSplitBarDistance() const;
     void SetSplitBarDistance(float distance);
 
-    float GetMinimumSplitBarDistance() const;
-    void SetMinimumSplitBarDistance(float distance);
+    float GetMinSplitBarDistance() const;
+    void SetMinSplitBarDistance(float distance);
 
-    float GetMaximumSplitBarDistance() const;
-    void SetMaximumSplitBarDistance(float distance);
+    float GetMaxSplitBarDistance() const;
+    void SetMaxSplitBarDistance(float distance);
 
     bool IsSplitBarDistanceFlipped() const;
     void SetIsSplitBarDistanceFlipped(bool is_flipped);

@@ -31,8 +31,8 @@ namespace {
 const wchar_t* const kDropDownButtonColorPickerPropertyName = L"DropDownButtonColorPicker";
 const wchar_t* const kDropDownButtonWidthPropertyName = L"DropDownButtonWidth";
 const wchar_t* const kIsEditablePropertyName = L"IsEditable";
-const wchar_t* const kMaximumVisibleItemCountPropertyName = L"MaximumVisibleItemCount";
-const wchar_t* const kMinimumVisibleItemCountPropertyName = L"MinimumVisibleItemCount";
+const wchar_t* const kMaxVisibleItemCountPropertyName = L"MaxVisibleItemCount";
+const wchar_t* const kMinVisibleItemCountPropertyName = L"MinVisibleItemCount";
 const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
 
 }
@@ -258,9 +258,9 @@ void ComboBox::SetDropDownButtonWidth(float width) {
 }
 
 
-std::size_t ComboBox::GetMinimumVisibleItemCount() const {
+std::size_t ComboBox::GetMinVisibleItemCount() const {
 
-    auto count = GetPropertyMap().TryGetProperty<std::size_t>(kMinimumVisibleItemCountPropertyName);
+    auto count = GetPropertyMap().TryGetProperty<std::size_t>(kMinVisibleItemCountPropertyName);
     if (count != nullptr) {
         return *count;
     }
@@ -269,17 +269,17 @@ std::size_t ComboBox::GetMinimumVisibleItemCount() const {
     }
 }
 
-void ComboBox::SetMinimumVisibleItemCount(std::size_t count) {
+void ComboBox::SetMinVisibleItemCount(std::size_t count) {
 
-    auto max_count = GetMaximumVisibleItemCount();
+    auto max_count = GetMaxVisibleItemCount();
     auto revised_count = std::min(count, max_count);
-    GetPropertyMap().SetProperty(kMinimumVisibleItemCountPropertyName, revised_count);
+    GetPropertyMap().SetProperty(kMinVisibleItemCountPropertyName, revised_count);
 }
 
 
-std::size_t ComboBox::GetMaximumVisibleItemCount() const {
+std::size_t ComboBox::GetMaxVisibleItemCount() const {
 
-    auto count = GetPropertyMap().TryGetProperty<std::size_t>(kMaximumVisibleItemCountPropertyName);
+    auto count = GetPropertyMap().TryGetProperty<std::size_t>(kMaxVisibleItemCountPropertyName);
     if (count != nullptr) {
         return *count;
     }
@@ -289,11 +289,11 @@ std::size_t ComboBox::GetMaximumVisibleItemCount() const {
 }
 
 
-void ComboBox::SetMaximumVisibleItemCount(std::size_t count) {
+void ComboBox::SetMaxVisibleItemCount(std::size_t count) {
 
-    auto min_count = GetMinimumVisibleItemCount();
+    auto min_count = GetMinVisibleItemCount();
     auto revised_count = std::max(count, min_count);
-    GetPropertyMap().SetProperty(kMaximumVisibleItemCountPropertyName, revised_count);
+    GetPropertyMap().SetProperty(kMaxVisibleItemCountPropertyName, revised_count);
 }
 
 
@@ -382,8 +382,8 @@ void ComboBox::PopupDropDownWindow() {
     window_rect.position.y += GetHeight() - 2;
 
     std::size_t visible_item_count = drop_down_list_box_->GetItemCount();
-    visible_item_count = std::max(visible_item_count, GetMinimumVisibleItemCount());
-    visible_item_count = std::min(visible_item_count, GetMaximumVisibleItemCount());
+    visible_item_count = std::max(visible_item_count, GetMinVisibleItemCount());
+    visible_item_count = std::min(visible_item_count, GetMaxVisibleItemCount());
 
     auto drop_down_list_box_border = drop_down_list_box_->GetBorder();
 
