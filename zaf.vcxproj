@@ -253,12 +253,14 @@
     <ClInclude Include="src\zaf\control\combo_box.h" />
     <ClInclude Include="src\zaf\control\control.h" />
     <ClInclude Include="src\zaf\control\control_binder.h" />
+    <ClInclude Include="src\zaf\control\control_update_guard.h" />
     <ClInclude Include="src\zaf\control\expand_state.h" />
     <ClInclude Include="src\zaf\control\image_box.h" />
     <ClInclude Include="src\zaf\control\image_layout.h" />
     <ClInclude Include="src\zaf\control\image_picker.h" />
     <ClInclude Include="src\zaf\control\internal\cached_painting.h" />
     <ClInclude Include="src\zaf\control\internal\combo_box_drop_down_window.h" />
+    <ClInclude Include="src\zaf\control\internal\control_updating.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\image_drawing.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\image_player.h" />

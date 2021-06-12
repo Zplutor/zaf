@@ -375,7 +375,7 @@ void SplitControl::SetSplitBar(const std::shared_ptr<SplitControlSplitBar>& spli
     auto previous_split_bar = split_bar;
 
     {
-        UpdateGuard update_guard(*this);
+        auto update_guard = this->BeginUpdate();
         UninitializeSplitBar();
         split_bar_ = split_bar;
         InitializeSplitBar();
@@ -407,7 +407,7 @@ void SplitControl::SetPane(
     auto previous_pane = pane;
 
     {
-        UpdateGuard update_guard(*this);
+        auto update_guard = this->BeginUpdate();
         RemoveChild(pane);
         pane = new_pane;
         AddChild(pane);

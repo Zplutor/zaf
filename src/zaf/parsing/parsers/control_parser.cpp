@@ -207,7 +207,7 @@ void ParseChildren(const XamlNode& node, Control& control) {
 void ControlParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
 
     auto& control = dynamic_cast<Control&>(reflection_object);
-    Control::UpdateGuard update_guard(control);
+    auto update_guard = control.BeginUpdate();
 
     ParseProperties(node, control);
     ParseChildren(node, control);

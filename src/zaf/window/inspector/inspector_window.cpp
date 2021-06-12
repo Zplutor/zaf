@@ -184,7 +184,7 @@ void InspectorWindow::HighlightControl(const std::shared_ptr<Control>& control) 
 
     parent_chain.push_back(target_window_);
 
-    Control::UpdateGuard update_guard(*tree_control_);
+    auto update_guard = tree_control_->BeginUpdate();
 
     for (const auto& each_parent : parent_chain) {
         tree_control_->ExpandItem(each_parent);

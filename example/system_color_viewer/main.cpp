@@ -98,7 +98,7 @@ static std::shared_ptr<zaf::Control> CreateColorListControl() {
     scrolled_content_control->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
     
     //Begin update the control, to avoid relayouting frequently when adding children. 
-    zaf::Control::UpdateGuard update_guard(*scrolled_content_control);
+    auto update_guard = scrolled_content_control->BeginUpdate();
     
     for (const auto& each_item : g_color_items) {
 

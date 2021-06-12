@@ -2,8 +2,10 @@
 #include <algorithm>
 #include <zaf/base/assert.h>
 #include <zaf/base/define.h>
+#include <zaf/base/error/check.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/control/internal/cached_painting.h>
+#include <zaf/control/internal/control_updating.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
 #include <zaf/control/layout/anchor_layouter.h>
 #include <zaf/graphic/alignment.h>
@@ -54,8 +56,6 @@ ZAF_DEFINE_REFLECTION_TYPE(Control)
 ZAF_DEFINE_END
 
 Control::Control() : 
-    update_count_(0),
-    need_relayout_after_updating_(false),
 	is_hovered_(false), 
 	is_capturing_mouse_(false),
 	is_focused_(false),
@@ -71,36 +71,37 @@ Control::~Control() {
 }
 
 
-void Control::BeginUpdate() {
-    need_repaint_rect_after_updating_ = Rect();
-    need_relayout_after_updating_ = false;
-    need_resize_after_updating_ = false;
-    ++update_count_;
+ControlUpdateGuard Control::BeginUpdate() {
+
+    auto lock = update_lock_.lock();
+    if (!lock) {
+
+        lock = std::make_shared<internal::ControlUpdateLock>(*this);
+        update_lock_ = lock;
+
+        ZAF_EXPECT(!update_state_);
+        update_state_ = std::make_unique<internal::ControlUpdateState>();
+    }
+
+    return ControlUpdateGuard{ lock };
 }
 
 
 void Control::EndUpdate() {
 
-    if (update_count_ == 0) {
-        ZAF_FAIL();
-        return;
+    ZAF_EXPECT(update_state_);
+    auto update_state = std::move(update_state_);
+
+    if (update_state->need_relayout) {
+        NeedRelayout();
     }
 
-    --update_count_;
+    if (!update_state->need_repainted_rect.IsEmpty()) {
+        NeedRepaintRect(update_state->need_repainted_rect);
+    }
 
-    if (update_count_ == 0) {
-
-        if (need_relayout_after_updating_) {
-            NeedRelayout();
-        }
-
-        if (!need_repaint_rect_after_updating_.IsEmpty()) {
-            NeedRepaintRect(need_repaint_rect_after_updating_);
-        }
-
-        if (need_resize_after_updating_) {
-            ResizeToPreferredSizeIfNeeded();
-        }
+    if (update_state->need_resize) {
+        ResizeToPreferredSizeIfNeeded();
     }
 }
 
@@ -276,8 +277,8 @@ void Control::NeedRepaintRect(const Rect& rect) {
         return;
     }
 
-    if (IsUpdating()) {
-        need_repaint_rect_after_updating_.Union(rect);
+    if (update_state_) {
+        update_state_->need_repainted_rect.Union(rect);
         return;
     }
 
@@ -372,15 +373,15 @@ void Control::NeedRelayout() {
 
 void Control::NeedRelayout(const Rect& previous_rect) {
 
-    if (! IsUpdating()) {
+    if (update_state_) {
+        update_state_->need_relayout = true;
+    }
+    else {
 
         const auto& size = GetSize();
         if ((size.width != 0) && (size.height != 0)) {
             Layout(previous_rect);
         }
-    }
-    else {
-        need_relayout_after_updating_ = true;
     }
 }
 
@@ -643,8 +644,8 @@ void Control::ResizeToPreferredSizeIfNeeded() {
         return;
     }
 
-    if (IsUpdating()) {
-        need_resize_after_updating_ = true;
+    if (update_state_) {
+        update_state_->need_resize = true;
         return;
     }
 
@@ -863,7 +864,8 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
 
 void Control::AddChildren(const std::vector<std::shared_ptr<Control>>& children) {
 
-    UpdateGuard update_guard(*this);
+    auto update_guard = BeginUpdate();
+
     for (const auto& each_child : children) {
         AddChild(each_child);
     }

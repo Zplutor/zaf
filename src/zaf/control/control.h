@@ -12,6 +12,7 @@
 #include <zaf/control/image_layout.h>
 #include <zaf/control/image_picker.h>
 #include <zaf/control/layout/layouter.h>
+#include <zaf/control/control_update_guard.h>
 #include <zaf/graphic/renderer/bitmap_renderer.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/frame.h>
@@ -23,6 +24,8 @@
 
 namespace zaf {
 namespace internal {
+class ControlUpdateLock;
+class ControlUpdateState;
 class InspectorPort;
 }
 
@@ -57,66 +60,14 @@ public:
     ZAF_DECLARE_REFLECTION_TYPE
 
 public:
-    /**
-     Provides a convenient way for automatically calling BeginUpdate/EndUpdate
-     of a control.
-
-     The control's BeginUpdate is called when the instance is created, and
-     the EndUpdate is called when the instance is destroyed.
-     */
-    class UpdateGuard {
-    public:
-        /**
-         Construct the instance with specified control.
-
-         The control's BeginUpdate method would be called.
-         */
-        explicit UpdateGuard(Control& control) : control_(control) { 
-            control_.BeginUpdate();
-        }
-
-        /**
-         Destruct the instance.
-
-         The control's EndUpdate method would be called.
-         */
-        ~UpdateGuard() {
-            control_.EndUpdate();
-        }
-
-        UpdateGuard(const UpdateGuard&) = delete;
-        UpdateGuard& operator=(const UpdateGuard&) = delete;
-
-    private:
-        Control& control_;
-    };
-
-public:
 	Control();
 	virtual ~Control();
 
     Control(const Control&) = delete;
     Control& operator=(const Control&) = delete;
 
-    /**
-     Begin updating the contol.
-
-     This method increase the control's update count. The control would stop repainting 
-     and relayouting while its update count is greater than zero. 
-
-     The method EndUpdate must be called in order to decrease the update count. It is 
-     recommended that using UpdateGuard to ensure that the callings of BeginUpdate/EndUpdate 
-     are matched.
-     */
-    void BeginUpdate();
-
-    /**
-     End updating the control.
-
-     This method decrease the control's udpate count, and if it reachs zero, the control would
-     repaint and relayout immediately.
-     */
-    void EndUpdate();
+    [[nodiscard]]
+    ControlUpdateGuard BeginUpdate();
 
 	/**
 	 Get the control's absolute rect which is related to the coordinate system of 
@@ -987,6 +938,11 @@ private:
     bool InterpretMessage(const Point& position, const MouseMessage& message);
 
 private:
+    friend class internal::ControlUpdateLock;
+
+    void EndUpdate();
+
+private:
     /**
      The entry point to repaint the control.
 
@@ -1031,10 +987,6 @@ private:
 
     void NeedRelayout(const Rect& previous_rect);
 
-    bool IsUpdating() const {
-        return update_count_ > 0;
-    }
-
     void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
 
     bool HandleClickOnMouseDown();
@@ -1047,14 +999,12 @@ private:
 	std::weak_ptr<Control> parent_;
 	std::vector<std::shared_ptr<Control>> children_;
 
+    std::weak_ptr<internal::ControlUpdateLock> update_lock_;
+    std::unique_ptr<internal::ControlUpdateState> update_state_;
+
     bool is_cached_painting_enabled_{};
     BitmapRenderer cached_renderer_;
     Rect valid_cached_renderer_rect_;
-
-    std::size_t update_count_;
-    Rect need_repaint_rect_after_updating_;
-    bool need_relayout_after_updating_;
-    bool need_resize_after_updating_{};
 
 	bool is_hovered_;
 	bool is_capturing_mouse_;

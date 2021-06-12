@@ -232,7 +232,7 @@ void ScrollableControl::SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& s
         return;
     }
 
-    UpdateGuard update_guard(*this);
+    auto update_guard = this->BeginUpdate();
 
     RemoveChild(previous_scroll_bar);
     InitializeVerticalScrollBar(scroll_bar != nullptr ? scroll_bar : Create<ScrollBar>());
@@ -250,7 +250,7 @@ void ScrollableControl::SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>&
         return;
     }
 
-    UpdateGuard update_guard(*this);
+    auto update_guard = this->BeginUpdate();
 
     RemoveChild(previous_scroll_bar);
     InitializeHorizontalScrollBar(scroll_bar != nullptr ? scroll_bar : Create<ScrollBar>());
@@ -268,7 +268,7 @@ void ScrollableControl::SetScrollBarCorner(const std::shared_ptr<Control>& contr
         return;
     }
 
-    UpdateGuard update_guard(*this);
+    auto update_guard = this->BeginUpdate();
 
     RemoveChild(previous_corner);
     InitializeScrollBarCorner(control != nullptr ? control : Create<Control>());
@@ -285,7 +285,7 @@ void ScrollableControl::SetScrollContentControl(const std::shared_ptr<Control>& 
         return;
     }
 
-    UpdateGuard update_guard(*this);
+    auto update_guard = this->BeginUpdate();
 
     scroll_container_control_->RemoveChild(previous_control);
 

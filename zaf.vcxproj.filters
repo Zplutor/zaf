@@ -1618,5 +1618,11 @@
     <ClInclude Include="src\zaf\graphic\geometry\arc_segment.h">
       <Filter>zaf\graphic\geometry</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\control\control_update_guard.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\control_updating.h">
+      <Filter>zaf\control\internal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -23,7 +23,7 @@ std::optional<CheckState> ParseCheckState(const std::wstring& string_value) {
 void CheckBoxParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
 
     auto& check_box = dynamic_cast<CheckBox&>(reflection_object);
-    Control::UpdateGuard update_guard(check_box);
+    auto update_guard = check_box.BeginUpdate();
 
     __super::ParseFromNode(node, reflection_object);
 

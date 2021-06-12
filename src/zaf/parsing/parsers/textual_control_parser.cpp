@@ -67,7 +67,7 @@ void TextualControlParser::ParseFromNode(
     ReflectionObject& reflection_object) {
 
     auto& textual_control = dynamic_cast<TextualControl&>(reflection_object);
-    Control::UpdateGuard update_guard(textual_control);
+    auto update_guard = textual_control.BeginUpdate();
 
     __super::ParseFromNode(node, reflection_object);
 

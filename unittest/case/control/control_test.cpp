@@ -1,6 +1,34 @@
 #include <gtest/gtest.h>
 #include <zaf/control/control.h>
+#include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
+
+TEST(ControlTest, Update) {
+
+    auto parent = zaf::Create<zaf::Control>();
+    parent->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
+    parent->SetSize(zaf::Size{ 100, 300 });
+
+    auto update_guard = parent->BeginUpdate();
+
+    auto child1 = zaf::Create<zaf::Control>();
+    auto child2 = zaf::Create<zaf::Control>();
+    auto child3 = zaf::Create<zaf::Control>();
+    parent->AddChildren({ child1, child2, child3 });
+
+    ASSERT_EQ(child1->GetSize(), zaf::Size());
+    ASSERT_EQ(child2->GetSize(), zaf::Size());
+    ASSERT_EQ(child3->GetSize(), zaf::Size());
+
+    {
+        auto discard_guard = std::move(update_guard);
+    }
+
+    ASSERT_EQ(child1->GetSize(), zaf::Size(100, 100));
+    ASSERT_EQ(child2->GetSize(), zaf::Size(100, 100));
+    ASSERT_EQ(child3->GetSize(), zaf::Size(100, 100));
+}
+
 
 TEST(ControlTest, GetPreferredSize) {
 

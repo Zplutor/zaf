@@ -321,7 +321,7 @@ void ListControlImplementation::Reload() {
     //Remove all visible items.
     if (!visible_items_.empty()) {
 
-        Control::UpdateGuard update_guard(*item_container_);
+        auto update_guard = item_container_->BeginUpdate();
         for (const auto& each_item : visible_items_) {
             item_container_->RemoveChild(each_item);
         }
@@ -425,7 +425,7 @@ void ListControlImplementation::AdjustVisibleItems(
     bool remove_tail,
     std::size_t tail_change_count) {
 
-    Control::UpdateGuard update_guard(*item_container_);
+    auto update_guard = item_container_->BeginUpdate();
 
     if (remove_head) {
         RemoveHeadVisibleItems(head_change_count);
@@ -531,7 +531,7 @@ void ListControlImplementation::ItemAdd(const ListDataSourceDataAddInfo& event_i
         event_info.index, 
         event_info.count);
 
-    Control::UpdateGuard update_gurad(*item_container_);
+    auto update_gurad = item_container_->BeginUpdate();
 
     float position_difference = AdjustContentHeight();
 
@@ -602,7 +602,7 @@ void ListControlImplementation::ItemRemove(const ListDataSourceDataRemoveInfo& e
         event_info.index,
         event_info.count);
 
-    Control::UpdateGuard update_gurad(*item_container_);
+    auto update_gurad = item_container_->BeginUpdate();
 
     float position_difference = AdjustContentHeight();
 
@@ -658,7 +658,7 @@ void ListControlImplementation::RemoveItemsInMiddleOfVisibleItems(
 
 void ListControlImplementation::ItemUpdate(const ListDataSourceDataUpdateInfo& event_info) {
 
-    Control::UpdateGuard update_guard(*item_container_);
+    auto update_guard = item_container_->BeginUpdate();
 
     float position_difference = AdjustContentHeight();
 

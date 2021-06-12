@@ -228,7 +228,7 @@ void ScrollBar::ChangeValueRange(int min_value, int max_value, bool max_value_ha
 		}
 	}
 
-	UpdateGuard update_guard(*this);
+	auto update_guard = this->BeginUpdate();
 	SetValue(value_);
 	NeedRelayout();
 }

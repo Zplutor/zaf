@@ -56,7 +56,7 @@ void ControlPropertyPanel::SetPropertyItems(const std::vector<std::shared_ptr<Pr
     auto scroll_content_control = scrollable_control_->GetScrollContentControl();
     scroll_content_control->RemoveAllChildren();
 
-    UpdateGuard update_guard(*scroll_content_control);
+    auto update_guard = scroll_content_control->BeginUpdate();
 
     float total_height = 0;
     for (const auto& each_item : items) {

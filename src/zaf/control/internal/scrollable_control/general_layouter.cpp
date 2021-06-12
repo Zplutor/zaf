@@ -123,7 +123,7 @@ void GeneralLayouter::AdjustScrollBarValueRanges() {
     auto auto_adjust_large_change = GetScrollableControl()->AutoAdjustScrollBarLargeChange();
 
     {
-        Control::UpdateGuard update_guard(*vertical_scroll_bar);
+        auto update_guard = vertical_scroll_bar->BeginUpdate();
 
         auto max_value = static_cast<int>(content_size.height - container_size.height);
         vertical_scroll_bar->SetIsEnabled(max_value > 0);
@@ -136,7 +136,7 @@ void GeneralLayouter::AdjustScrollBarValueRanges() {
     }
 
     {
-        Control::UpdateGuard update_guard(*horizontal_scroll_bar);
+        auto update_guard = horizontal_scroll_bar->BeginUpdate();
 
         auto max_value = static_cast<int>(content_size.width - container_size.width);
         horizontal_scroll_bar->SetIsEnabled(max_value > 0);

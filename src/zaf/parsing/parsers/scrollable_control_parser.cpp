@@ -9,7 +9,7 @@ void ScrollableControlParser::ParseFromNode(
     ReflectionObject& reflection_object) {
 
     auto& scrollable_control = dynamic_cast<ScrollableControl&>(reflection_object);
-    Control::UpdateGuard update_guard(scrollable_control);
+    auto update_guard = scrollable_control.BeginUpdate();
 
     __super::ParseFromNode(node, scrollable_control);
 

@@ -7,7 +7,7 @@ namespace zaf {
 void TextBoxParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
 
     auto& text_box = dynamic_cast<TextBox&>(reflection_object);
-    Control::UpdateGuard update_guard(text_box);
+    auto update_guard = text_box.BeginUpdate();
     
     __super::ParseFromNode(node, reflection_object);
 
