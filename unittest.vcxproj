@@ -196,6 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h" />
+    <ClCompile Include="unittest\case\control\layout\layout_case_test.cpp" />
     <ClInclude Include="unittest\case\parsing\parsers\utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

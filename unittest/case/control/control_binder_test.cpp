@@ -16,9 +16,9 @@ public:
     }
 
 protected:
-    void AfterParsing() override {
+    void AfterParse() override {
 
-        __super::AfterParsing();
+        __super::AfterParse();
 
         auto label = zaf::Create<zaf::Label>();
         label->SetName(L"label");

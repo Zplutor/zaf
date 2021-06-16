@@ -38,7 +38,8 @@ constexpr const wchar_t* const kLayouterPropertyName = L"Layouter";
 constexpr const wchar_t* const kMouseEnterEventPropertyName = L"MouseEnterEvent";
 constexpr const wchar_t* const kMouseLeaveEventPropertyName = L"MouseLeaveEvent";
 constexpr const wchar_t* const kRectChangeEventPropertyName = L"RectChangeEvent";
-constexpr const wchar_t* const AutoResizePropertyName = L"AutoResize";
+constexpr const wchar_t* const AutoHeightPropertyName = L"AutoHeight";
+constexpr const wchar_t* const AutoWidthPropertyName = L"AutoWidth";
 constexpr const wchar_t* const CanClickPropertyName = L"CanClick";
 constexpr const wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
 constexpr const wchar_t* const ClickEventPropertyName = L"ClickEvent";
@@ -71,6 +72,15 @@ Control::~Control() {
 }
 
 
+void Control::InvokeInitialize() {
+
+    //Enter update state during initialization.
+    auto update_guard = BeginUpdate();
+
+    __super::InvokeInitialize();
+}
+
+
 ControlUpdateGuard Control::BeginUpdate() {
 
     auto lock = update_lock_.lock();
@@ -92,6 +102,10 @@ void Control::EndUpdate() {
     ZAF_EXPECT(update_state_);
     auto update_state = std::move(update_state_);
 
+    //BeginUpdate may be called again while control is updating in EndUpdate,
+    //thus the lock must be reset to avoid abnormal behaviour.
+    update_lock_.reset();
+
     if (update_state->need_relayout) {
         NeedRelayout();
     }
@@ -101,7 +115,7 @@ void Control::EndUpdate() {
     }
 
     if (update_state->need_resize) {
-        ResizeToPreferredSizeIfNeeded();
+        AutoResizeToPreferredSize();
     }
 }
 
@@ -353,11 +367,14 @@ void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const Rect
 		NeedRepaintRect(previous_rect);
 	}
 
-    ResizeToPreferredSizeIfNeeded();
+    AutoResizeToPreferredSize();
 }
 
 
 void Control::Layout(const Rect& previous_rect) {
+
+    //Avoid auto resize when layouting children.
+    auto update_guard = BeginUpdate();
 
 	auto layouter = GetLayouter();
 	if (layouter) {
@@ -377,11 +394,7 @@ void Control::NeedRelayout(const Rect& previous_rect) {
         update_state_->need_relayout = true;
     }
     else {
-
-        const auto& size = GetSize();
-        if ((size.width != 0) && (size.height != 0)) {
-            Layout(previous_rect);
-        }
+        Layout(previous_rect);
     }
 }
 
@@ -488,7 +501,7 @@ void Control::SetMargin(const Frame& margin) {
     if (parent) {
 
         parent->NeedRelayout();
-        parent->ResizeToPreferredSizeIfNeeded();
+        parent->AutoResizeToPreferredSize();
     }
 }
 
@@ -615,7 +628,7 @@ Size Control::GetPreferredContentSize() const {
 
     for (const auto& each_child : GetChildren()) {
 
-        if (!each_child->IsVisible()) {
+        if (!each_child->IsSelfVisible()) {
             continue;
         }
 
@@ -634,13 +647,16 @@ Size Control::GetPreferredContentSize() const {
 
 
 void Control::ResizeToPreferredSize() {
-    SetFixedSize(GetPreferredSize());
+    InnerResizeToPreferredSize(true, true);
 }
 
 
-void Control::ResizeToPreferredSizeIfNeeded() {
+void Control::AutoResizeToPreferredSize() {
 
-    if (!AutoResize()) {
+    bool auto_width = AutoWidth();
+    bool auto_height = AutoHeight();
+
+    if (!auto_width && !auto_width) {
         return;
     }
 
@@ -649,29 +665,69 @@ void Control::ResizeToPreferredSizeIfNeeded() {
         return;
     }
 
-    ResizeToPreferredSize();
+    InnerResizeToPreferredSize(auto_width, auto_height);
 }
 
 
-bool Control::AutoResize() const {
+void Control::InnerResizeToPreferredSize(bool resize_width, bool resize_height) {
 
-    auto value = GetPropertyMap().TryGetProperty<bool>(AutoResizePropertyName);
+    auto update_guard = BeginUpdate();
+
+    auto preferred_size = GetPreferredSize();
+
+    if (resize_width) {
+        SetFixedWidth(preferred_size.width);
+    }
+
+    if (resize_height) {
+        SetFixedHeight(preferred_size.height);
+    }
+}
+
+
+bool Control::AutoWidth() const {
+
+    auto value = GetPropertyMap().TryGetProperty<bool>(AutoWidthPropertyName);
     if (value) {
         return *value;
     }
     return false;
 }
 
+void Control::SetAutoWidth(bool value) {
 
-void Control::SetAutoResize(bool value) {
+    GetPropertyMap().SetProperty(AutoWidthPropertyName, value);
+    AutoResizeToPreferredSize();
+}
 
-    GetPropertyMap().SetProperty(AutoResizePropertyName, value);
-    ResizeToPreferredSizeIfNeeded();
+
+bool Control::AutoHeight() const {
+
+    auto value = GetPropertyMap().TryGetProperty<bool>(AutoHeightPropertyName);
+    if (value) {
+        return *value;
+    }
+    return false;
+}
+
+void Control::SetAutoHeight(bool value) {
+
+    GetPropertyMap().SetProperty(AutoHeightPropertyName, value);
+    AutoResizeToPreferredSize();
+}
+
+
+void Control::SetAutoSize(bool value) {
+
+    auto update_guard = BeginUpdate();
+
+    SetAutoWidth(true);
+    SetAutoHeight(true);
 }
 
 
 void Control::RaiseContentChangedEvent() {
-    ResizeToPreferredSizeIfNeeded();
+    AutoResizeToPreferredSize();
 }
 
 
@@ -853,7 +909,7 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
     NeedRelayout();
 	NeedRepaintRect(child->GetRect());
 
-    ResizeToPreferredSizeIfNeeded();
+    AutoResizeToPreferredSize();
 
     auto inspector_port = GetInspectorPort();
     if (inspector_port) {
@@ -898,7 +954,7 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
     NeedRelayout();
 	NeedRepaintRect(child_rect);
 
-    ResizeToPreferredSizeIfNeeded();
+    AutoResizeToPreferredSize();
 
     auto inspector_port = GetInspectorPort();
     if (inspector_port) {
@@ -1045,6 +1101,11 @@ bool Control::IsVisible() const {
 }
 
 
+bool Control::IsSelfVisible() const {
+    return is_visible_;
+}
+
+
 void Control::SetIsVisible(bool is_visible) {
 
     bool need_relayout = is_visible_ != is_visible;
@@ -1058,7 +1119,7 @@ void Control::SetIsVisible(bool is_visible) {
         if (parent) {
 
             parent->NeedRelayout();
-            parent->ResizeToPreferredSizeIfNeeded();
+            parent->AutoResizeToPreferredSize();
         }
     }
 }

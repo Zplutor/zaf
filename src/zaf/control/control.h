@@ -236,8 +236,13 @@ public:
 
     void ResizeToPreferredSize();
 
-    bool AutoResize() const;
-    void SetAutoResize(bool value);
+    bool AutoWidth() const;
+    void SetAutoWidth(bool value);
+
+    bool AutoHeight() const;
+    void SetAutoHeight(bool value);
+
+    void SetAutoSize(bool value);
 
     /**
      Get the control's anchor.
@@ -484,6 +489,8 @@ public:
 	 */
 	bool IsVisible() const;
 
+    bool IsSelfVisible() const;
+
 	/**
 	 Set a value indicating that whether the control is visible.
 
@@ -647,6 +654,8 @@ public:
     Observable<ControlDoubleClickInfo> DoubleClickEvent();
 
 protected:
+    void InvokeInitialize() override;
+
     /**
      Paint the control.
 
@@ -962,7 +971,8 @@ private:
 
 	void SetParent(const std::shared_ptr<Control>& parent);
 
-    void ResizeToPreferredSizeIfNeeded();
+    void AutoResizeToPreferredSize();
+    void InnerResizeToPreferredSize(bool resize_width, bool resize_height);
 
 	/**
 	 Called when a child's rect has changed.

@@ -69,16 +69,34 @@ TEST(ControlTest, GetPreferredSize) {
     parent->SetBorder(3);
     parent->SetPadding(4);
     ASSERT_EQ(parent->GetPreferredSize(), zaf::Size(21, 25));
+
+    //Parent is invisible, while children is visible.
+    parent->SetIsVisible(false);
+    ASSERT_EQ(parent->GetPreferredSize(), zaf::Size(21, 25));
 }
 
 
-TEST(ControlTest, AutoResize) {
+TEST(ControlTest, ResizeToPreferredSize) {
+
+    auto child = zaf::Create<zaf::Control>();
+    child->SetSize(zaf::Size{ 60, 60 });
+
+    auto parent = zaf::Create<zaf::Control>();
+    parent->AddChild(child);
+    parent->ResizeToPreferredSize();
+
+    ASSERT_EQ(parent->GetWidth(), 60);
+    ASSERT_EQ(parent->GetHeight(), 60);
+}
+
+
+TEST(ControlTest, AutoSize) {
 
     auto child = zaf::Create<zaf::Control>();
     child->SetSize(zaf::Size{ 40, 60 });
 
     auto parent = zaf::Create<zaf::Control>();
-    parent->SetAutoResize(true);
+    parent->SetAutoSize(true);
 
     //Children changed.
     parent->AddChild(child);

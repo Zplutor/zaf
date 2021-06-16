@@ -27,8 +27,9 @@ public:
     }
 
 protected:
+    virtual void InvokeInitialize();
     virtual void Initialize() { }
-    virtual void AfterParsing() { }
+    virtual void AfterParse() { }
 
 private:
     friend class internal::ReflectionObjectInitializer;

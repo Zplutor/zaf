@@ -2,10 +2,10 @@
 #include <zaf/creation.h>
 #include <zaf/control/textual_control.h>
 
-TEST(TextualControlTest, AutoResize) {
+TEST(TextualControlTest, AutoSize) {
 
 	auto control = zaf::Create<zaf::TextualControl>();
-	control->SetAutoResize(true);
+	control->SetAutoSize(true);
 	control->SetText(L"123");
 
 	ASSERT_NE(control->GetWidth(), 0);

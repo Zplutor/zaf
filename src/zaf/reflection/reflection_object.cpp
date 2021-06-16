@@ -53,9 +53,14 @@ void ParseObject(ReflectionType& type, ReflectionObject& object) {
 
 void ReflectionObject::InitializeObject() {
 
-    Initialize();
+    InvokeInitialize();
     ParseObject(*GetType(), *this);
-    AfterParsing();
+    AfterParse();
+}
+
+
+void ReflectionObject::InvokeInitialize() {
+    Initialize();
 }
 
 

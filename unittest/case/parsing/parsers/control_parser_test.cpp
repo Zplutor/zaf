@@ -376,17 +376,50 @@ TEST(ControlParserTest, ParseChildren) {
 }
 
 
-TEST(ControlParserTest, ParseAutoResize) {
+TEST(ControlParserTest, ParseAutoSize) {
 
-    auto xaml = R"(<Control AutoResize="true" />)";
+    //AutoWidth
+    auto xaml = R"(<Control AutoWidth="true" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_TRUE(control->AutoResize());
+    ASSERT_TRUE(control->AutoWidth());
+    ASSERT_FALSE(control->AutoHeight());
 
     xaml = R"(        
         <Control>
-            <Control.AutoResize>true</Control.AutoResize>
+            <Control.AutoWidth>true</Control.AutoWidth>
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_TRUE(control->AutoResize());
+    ASSERT_TRUE(control->AutoWidth());
+    ASSERT_FALSE(control->AutoHeight());
+
+    //AutoHeight
+    xaml = R"(<Control AutoHeight="true" />)";
+    control = CreateControlFromXaml(xaml);
+    ASSERT_FALSE(control->AutoWidth());
+    ASSERT_TRUE(control->AutoHeight());
+
+    xaml = R"(        
+        <Control>
+            <Control.AutoHeight>true</Control.AutoHeight>
+        </Control>
+    )";
+    control = CreateControlFromXaml(xaml);
+    ASSERT_FALSE(control->AutoWidth());
+    ASSERT_TRUE(control->AutoHeight());
+
+    //AutoSize
+    xaml = R"(<Control AutoSize="true" />)";
+    control = CreateControlFromXaml(xaml);
+    ASSERT_TRUE(control->AutoWidth());
+    ASSERT_TRUE(control->AutoHeight());
+
+    xaml = R"(        
+        <Control>
+            <Control.AutoSize>true</Control.AutoSize>
+        </Control>
+    )";
+    control = CreateControlFromXaml(xaml);
+    ASSERT_TRUE(control->AutoWidth());
+    ASSERT_TRUE(control->AutoHeight());
 }
