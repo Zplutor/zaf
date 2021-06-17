@@ -656,7 +656,7 @@ void Control::AutoResizeToPreferredSize() {
     bool auto_width = AutoWidth();
     bool auto_height = AutoHeight();
 
-    if (!auto_width && !auto_width) {
+    if (!auto_width && !auto_height) {
         return;
     }
 
