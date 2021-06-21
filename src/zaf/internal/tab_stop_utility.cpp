@@ -123,6 +123,10 @@ static const std::vector<std::shared_ptr<Control>> SortControlsByTabIndex(
             return false;
         }
 
+        if (!tab_index1 && !tab_index2) {
+            return false;
+        }
+
         return *tab_index1 < *tab_index2;
     });
 
