@@ -3,6 +3,7 @@
 #include <zaf/base/error/system_error.h>
 #include <zaf/parsing/parser.h>
 #include <zaf/parsing/xaml_reader.h>
+#include <zaf/reflection/reflection_manager.h>
 #include <zaf/reflection/reflection_type.h>
 #include <zaf/resource/resource_manager.h>
 
@@ -11,15 +12,16 @@ namespace {
 
 class ReflectionObjectType : public ReflectionType {
 public:
-    std::shared_ptr<ReflectionType> GetBase() override {
-        return {};
+    ReflectionType* GetBase() const override {
+        return nullptr;
     }
 
-    std::wstring GetName() override {
-        return L"ReflectionObject";
+    const std::wstring& GetName() const override {
+        static const std::wstring name{ L"ReflectionObject" };
+        return name;
     }
 
-    std::shared_ptr<ReflectionObject> CreateInstance() override {
+    std::shared_ptr<ReflectionObject> CreateInstance() const override {
         return std::make_shared<ReflectionObject>();
     }
 };
@@ -64,7 +66,11 @@ void ReflectionObject::InvokeInitialize() {
 }
 
 
-const std::shared_ptr<ReflectionType> ReflectionObject::Type = 
-    std::make_shared<ReflectionObjectType>();
+ReflectionType* const ReflectionObject::Type = []() {
+
+    static ReflectionObjectType type;
+    zaf::GetReflectionManager().RegisterType(&type);
+    return &type;
+}();
 
 }

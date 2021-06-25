@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <vector>
 
 namespace zaf {
 
@@ -12,12 +12,12 @@ public:
     ReflectionManager(const ReflectionManager&) = delete;
     ReflectionManager& operator=(const ReflectionManager&) = delete;
 
-    void RegisterType(const std::shared_ptr<ReflectionType>& type);
+    void RegisterType(ReflectionType* type);
 
-    std::shared_ptr<ReflectionType> GetType(const std::wstring& name) const;
+    ReflectionType* GetType(const std::wstring& name) const;
 
 private:
-    std::map<std::wstring, std::shared_ptr<ReflectionType>> types_;
+    std::vector<ReflectionType*> types_;
 };
 
 }

@@ -4,9 +4,13 @@
 #include <string>
 
 namespace zaf {
+namespace internal {
+class ReflectionPropertyRegistrar;
+}
 
 class Parser;
 class ReflectionObject;
+class ReflectionProperty;
 
 class ReflectionType {
 public:
@@ -21,26 +25,38 @@ public:
 
      Return nullptr if there is no base type.
      */
-    virtual std::shared_ptr<ReflectionType> GetBase() = 0;
+    virtual ReflectionType* GetBase() const = 0;
 
     /**
      Get name of the type.
      */
-    virtual std::wstring GetName() = 0;
+    virtual const std::wstring& GetName() const = 0;
 
     /**
      Create an instance of the type.
      */
-    virtual std::shared_ptr<ReflectionObject> CreateInstance() = 0;
+    virtual std::shared_ptr<ReflectionObject> CreateInstance() const = 0;
 
     /**
      Get the parser for the type.
      */
-    virtual std::shared_ptr<Parser> GetParser();
+    virtual std::shared_ptr<Parser> GetParser() const;
 
-    virtual std::wstring GetResourceUri() {
-        return {};
+    virtual const std::wstring& GetResourceUri() const;
+
+    const std::vector<ReflectionProperty*>& GetProperties() const {
+        return properties_;
     }
+
+    ReflectionProperty* FindProperty(const std::wstring& name) const;
+
+private:
+    friend class internal::ReflectionPropertyRegistrar;
+
+    void RegisterProperty(ReflectionProperty*);
+
+private:
+    std::vector<ReflectionProperty*> properties_;
 };
 
 }

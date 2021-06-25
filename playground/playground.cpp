@@ -16,6 +16,7 @@
 #include <zaf/control/list_box.h>
 #include <zaf/reflection/reflection_type.h>
 #include <zaf/reflection/reflection_manager.h>
+#include <zaf/reflection/reflection_property.h>
 #include <zaf/parsing/helpers.h>
 #include <zaf/parsing/xaml_reader.h>
 #include <zaf/reflection/creation.h>
@@ -58,47 +59,12 @@ int WINAPI WinMain(
 }
 
 
-zaf::Subscription g_s;
-
-
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
-
-    auto text_box = zaf::Create<zaf::TextBox>();
-    text_box->SetText(L"TextBox");
-    text_box->SetSize(zaf::Size{ 500, 300 });
-    zaf::Application::Instance().Subscriptions() += text_box->SelectionChangeEvent().Subscribe([](const zaf::TextBoxSelectionChangeInfo& info) {
-    
-        auto selection_range = info.text_box->GetSelectionRange();
-    });
 
     auto window = zaf::Create<zaf::Window>();
 
     window->SetClientSize(zaf::Size{ 400, 300 });
-    window->GetRootControl()->AddChild(text_box);
     window->Show();
 
     zaf::Application::Instance().SetMainWindow(window);
-
-    auto observable = zaf::rx::Create<std::wstring>(
-        zaf::Scheduler::CreateOnSingleThread(), 
-        [](zaf::Observer<std::wstring>& observer, zaf::CancelToken& cancel_token) {
-    
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-
-        if (!cancel_token.IsCancelled()) {
-            ZAF_LOG() << L"Not cancelled";
-            observer.OnNext(L"Result");
-        }
-        else {
-            ZAF_LOG() << L"Cancelled";
-        }
-    });
-
-    g_s = observable.Subscribe([](const std::wstring& r) {
-        ZAF_LOG() << L"Result: " << r;
-    });
-
-    zaf::Application::Instance().Subscriptions() += zaf::rx::Timer(std::chrono::seconds(1), zaf::Scheduler::Main()).Subscribe([](int) {
-        g_s.Unsubscribe();
-    });
 }

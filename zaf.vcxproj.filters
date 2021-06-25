@@ -1624,5 +1624,17 @@
     <ClInclude Include="src\zaf\control\internal\control_updating.h">
       <Filter>zaf\control\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\reflection\reflection_property.h">
+      <Filter>zaf\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\reflection\internal\reflection_property_registrar.h">
+      <Filter>zaf\reflection\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\reflection\internal\property_deduction.h">
+      <Filter>zaf\reflection\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\reflection\reflection_property_definition.h">
+      <Filter>zaf\reflection</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

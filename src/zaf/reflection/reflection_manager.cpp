@@ -1,23 +1,44 @@
 #include <zaf/reflection/reflection_manager.h>
-#include <zaf/base/container/utility/find.h>
 #include <zaf/reflection/reflection_object.h>
 #include <zaf/reflection/reflection_type.h>
 
 namespace zaf {
 
-void ReflectionManager::RegisterType(const std::shared_ptr<ReflectionType>& type) {
+void ReflectionManager::RegisterType(ReflectionType* type) {
 
-    types_[type->GetName()] = type;
+    auto iterator = std::lower_bound(
+        types_.begin(), 
+        types_.end(),
+        type, 
+        [](auto type1, auto type2) {
+    
+        return type1->GetName() < type2->GetName();
+    });
+
+    types_.insert(iterator, type);
 }
 
 
-std::shared_ptr<ReflectionType> ReflectionManager::GetType(const std::wstring& name) const {
+ReflectionType* ReflectionManager::GetType(const std::wstring& name) const {
 
-    auto type = Find(types_, name);
-    if (type != nullptr) {
-        return *type;
+    auto iterator = std::lower_bound(
+        types_.begin(),
+        types_.end(),
+        name,
+        [](auto type, const std::wstring& name) {
+
+        return type->GetName() < name;
+    });
+
+    if (iterator == types_.end()) {
+        return nullptr;
     }
-    return nullptr;
+
+    if ((*iterator)->GetName() != name) {
+        return nullptr;
+    }
+
+    return *iterator;
 }
 
 }
