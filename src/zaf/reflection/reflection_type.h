@@ -12,20 +12,20 @@ class Parser;
 class ReflectionObject;
 class ReflectionProperty;
 
-class ReflectionType {
+class ObjectType {
 public:
-    ReflectionType() = default;
-    virtual ~ReflectionType() = default;
+    ObjectType() = default;
+    virtual ~ObjectType() = default;
 
-    ReflectionType(const ReflectionType&) = delete;
-    ReflectionType& operator=(const ReflectionType&) = delete;
+    ObjectType(const ObjectType&) = delete;
+    ObjectType& operator=(const ObjectType&) = delete;
 
     /**
      Get base type of the type.
 
      Return nullptr if there is no base type.
      */
-    virtual ReflectionType* GetBase() const = 0;
+    virtual ObjectType* GetBase() const = 0;
 
     /**
      Get name of the type.

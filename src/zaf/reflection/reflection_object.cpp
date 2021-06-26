@@ -10,9 +10,9 @@
 namespace zaf {
 namespace {
 
-class ReflectionObjectType : public ReflectionType {
+class ReflectionObjectType : public ObjectType {
 public:
-    ReflectionType* GetBase() const override {
+    ObjectType* GetBase() const override {
         return nullptr;
     }
 
@@ -27,7 +27,7 @@ public:
 };
 
 
-void ParseObject(ReflectionType& type, ReflectionObject& object) {
+void ParseObject(ObjectType& type, ReflectionObject& object) {
 
     auto base_type = type.GetBase();
     if (base_type) {
@@ -66,7 +66,7 @@ void ReflectionObject::InvokeInitialize() {
 }
 
 
-ReflectionType* const ReflectionObject::Type = []() {
+ObjectType* const ReflectionObject::Type = []() {
 
     static ReflectionObjectType type;
     zaf::GetReflectionManager().RegisterType(&type);

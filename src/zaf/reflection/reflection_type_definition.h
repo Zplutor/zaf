@@ -6,17 +6,17 @@
 
 #define ZAF_DEFINE_REFLECTION_TYPE(ClassName)                                                   \
 namespace __zaf_internal_##ClassName##_type_definition {                                        \
-    zaf::ReflectionType* CreateType();  /* Forward declaration */                               \
+    zaf::ObjectType* CreateType();  /* Forward declaration */                                   \
 }                                                                                               \
                                                                                                 \
-zaf::ReflectionType* const ClassName::Type =                                                    \
+zaf::ObjectType* const ClassName::Type =                                                        \
     __zaf_internal_##ClassName##_type_definition::CreateType();                                 \
                                                                                                 \
 namespace __zaf_internal_##ClassName##_type_definition {                                        \
-class Type : public zaf::ReflectionType {                                                       \
+class TheType : public zaf::ObjectType {                                                        \
 public:                                                                                         \
     using Class = ClassName;                                                                    \
-    zaf::ReflectionType* GetBase() const override {                                             \
+    zaf::ObjectType* GetBase() const override {                                                 \
         return reinterpret_cast<ClassName*>(0)->GetBaseType();                                  \
     }                                                                                           \
     const std::wstring& GetName() const override {                                              \
@@ -41,8 +41,8 @@ public:                                                                         
 
 #define ZAF_DEFINE_END                                                                          \
 };                                                                                              \
-zaf::ReflectionType* CreateType() {                                                             \
-    static Type type;                                                                           \
+zaf::ObjectType* CreateType() {                                                                 \
+    static TheType type;                                                                        \
     zaf::GetReflectionManager().RegisterType(&type);                                            \
     return &type;                                                                               \
 }                                                                                               \

@@ -34,7 +34,7 @@ public:                                                                         
         static const std::wstring name{ L#PropertyName };                                       \
 		return name;                                                                            \
 	}                                                                                           \
-    ReflectionType* GetType() const override {                                                  \
+    ObjectType* GetType() const override {                                                  \
 		return nullptr;                                                                         \
 	}                                                                                           \
     std::any GetValue(const ReflectionObject& object) const override {                          \

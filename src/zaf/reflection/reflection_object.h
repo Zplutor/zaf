@@ -11,16 +11,16 @@ class ReflectionObjectInitializer;
 
 class ReflectionObject : public Object {
 public:
-    static ReflectionType* const Type;
+    static ObjectType* const Type;
 
 public:
     virtual ~ReflectionObject() = default;
 
-    virtual ReflectionType* GetType() const {
+    virtual ObjectType* GetType() const {
         return this->Type;
     }
 
-    ReflectionType* GetBaseType() const {
+    ObjectType* GetBaseType() const {
         return nullptr;
     }
 
@@ -37,11 +37,11 @@ private:
 
 
 #define ZAF_DECLARE_REFLECTION_TYPE                                                              \
-static zaf::ReflectionType* const Type;                                                          \
-zaf::ReflectionType* GetType() const override {                                                  \
+static zaf::ObjectType* const Type;                                                          \
+zaf::ObjectType* GetType() const override {                                                  \
     return this->Type;                                                                           \
 }                                                                                                \
-zaf::ReflectionType* GetBaseType() const {                                                       \
+zaf::ObjectType* GetBaseType() const {                                                       \
     return __super::Type;                                                                        \
 }                                                                                                
 

@@ -23,7 +23,7 @@ std::optional<std::wstring> GetContentStringFromNode(const XamlNode& node) {
 
 XamlNodeParseHelper::XamlNodeParseHelper(
     const XamlNode& node, 
-    ReflectionType* object_type)
+    ObjectType* object_type)
     : 
     node_(node),
     object_type_(object_type) {

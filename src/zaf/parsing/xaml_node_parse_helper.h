@@ -9,7 +9,7 @@ namespace zaf {
 
 class XamlNodeParseHelper {
 public:
-    XamlNodeParseHelper(const XamlNode& node, ReflectionType* object_type);
+    XamlNodeParseHelper(const XamlNode& node, ObjectType* object_type);
     XamlNodeParseHelper(const XamlNodeParseHelper&) = delete;
     XamlNodeParseHelper& operator=(const XamlNodeParseHelper&) = delete;
 
@@ -67,7 +67,7 @@ private:
 
 private:
     const XamlNode& node_;
-    ReflectionType* object_type_{};
+    ObjectType* object_type_{};
 };
 
 }

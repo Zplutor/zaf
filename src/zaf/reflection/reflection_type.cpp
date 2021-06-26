@@ -12,7 +12,7 @@ public:
 
 }
 
-std::shared_ptr<Parser> ReflectionType::GetParser() const {
+std::shared_ptr<Parser> ObjectType::GetParser() const {
 
     auto base_type = GetBase();
     if (base_type) {
@@ -24,13 +24,13 @@ std::shared_ptr<Parser> ReflectionType::GetParser() const {
 }
 
 
-const std::wstring& ReflectionType::GetResourceUri() const {
+const std::wstring& ObjectType::GetResourceUri() const {
     static const std::wstring uri{};
     return uri;
 }
 
 
-void ReflectionType::RegisterProperty(ReflectionProperty* property) {
+void ObjectType::RegisterProperty(ReflectionProperty* property) {
 
     auto iterator = std::lower_bound(
         properties_.begin(),
@@ -45,7 +45,7 @@ void ReflectionType::RegisterProperty(ReflectionProperty* property) {
 }
 
 
-ReflectionProperty* ReflectionType::FindProperty(const std::wstring& name) const {
+ReflectionProperty* ObjectType::FindProperty(const std::wstring& name) const {
 
     auto iterator = std::lower_bound(
         properties_.begin(),

@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-class ReflectionType;
+class ObjectType;
 
 class ReflectionManager {
 public:
@@ -12,12 +12,12 @@ public:
     ReflectionManager(const ReflectionManager&) = delete;
     ReflectionManager& operator=(const ReflectionManager&) = delete;
 
-    void RegisterType(ReflectionType* type);
+    void RegisterType(ObjectType* type);
 
-    ReflectionType* GetType(const std::wstring& name) const;
+    ObjectType* GetType(const std::wstring& name) const;
 
 private:
-    std::vector<ReflectionType*> types_;
+    std::vector<ObjectType*> types_;
 };
 
 }

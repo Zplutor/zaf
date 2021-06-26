@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-void ReflectionManager::RegisterType(ReflectionType* type) {
+void ReflectionManager::RegisterType(ObjectType* type) {
 
     auto iterator = std::lower_bound(
         types_.begin(), 
@@ -19,7 +19,7 @@ void ReflectionManager::RegisterType(ReflectionType* type) {
 }
 
 
-ReflectionType* ReflectionManager::GetType(const std::wstring& name) const {
+ObjectType* ReflectionManager::GetType(const std::wstring& name) const {
 
     auto iterator = std::lower_bound(
         types_.begin(),
