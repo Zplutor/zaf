@@ -8,8 +8,8 @@
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/check_box_parser.h>
-#include <zaf/reflection/reflection_type.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/object_type.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 #include <zaf/serialization/properties.h>
 
@@ -25,7 +25,7 @@ const wchar_t* const kCheckStateChangeEventPropertyName = L"CheckStateChangeEven
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(CheckBox)
+ZAF_DEFINE_TYPE(CheckBox)
 	ZAF_DEFINE_PARSER(CheckBoxParser)
 ZAF_DEFINE_END
 

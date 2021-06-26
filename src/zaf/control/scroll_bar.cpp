@@ -12,7 +12,7 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/scroll_bar_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -26,7 +26,7 @@ constexpr int kTimerContinuousInterval = 50;
 
 }
 
-ZAF_DEFINE_REFLECTION_TYPE(ScrollBar)
+ZAF_DEFINE_TYPE(ScrollBar)
 	ZAF_DEFINE_PARSER(ScrollBarParser)
 ZAF_DEFINE_END
 

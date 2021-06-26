@@ -7,14 +7,14 @@ namespace zaf {
 
 void BitmapImageParser::ParseFromAttribute(
     const std::wstring& attribute_value,
-    ReflectionObject& reflection_object) {
+    Object& reflection_object) {
 
     auto& image = dynamic_cast<BitmapImage&>(reflection_object);
     image.SetUri(attribute_value);
 }
 
 
-void BitmapImageParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
+void BitmapImageParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
 
     auto& image = dynamic_cast<BitmapImage&>(reflection_object);
 

@@ -2,9 +2,10 @@
 
 #include <zaf/application.h>
 #include <zaf/creation.h>
+#include <zaf/object/property_definition.h>
 #include <zaf/reflection/reflection_manager.h>
 
-#define ZAF_DEFINE_REFLECTION_TYPE(ClassName)                                                   \
+#define ZAF_DEFINE_TYPE(ClassName)                                                              \
 namespace __zaf_internal_##ClassName##_type_definition {                                        \
     zaf::ObjectType* CreateType();  /* Forward declaration */                                   \
 }                                                                                               \
@@ -23,7 +24,7 @@ public:                                                                         
         static const std::wstring name{ L#ClassName };                                          \
         return name;                                                                            \
     }                                                                                           \
-    std::shared_ptr<zaf::ReflectionObject> CreateInstance() const override {                    \
+    std::shared_ptr<zaf::Object> CreateInstance() const override {                              \
         return zaf::Create<ClassName>();                                                        \
     }                                                                                                                                                                                         
 

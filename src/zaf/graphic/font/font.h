@@ -3,16 +3,16 @@
 #include <Windows.h>
 #include <string>
 #include <zaf/graphic/font/font_weight.h>
-#include <zaf/reflection/reflection_object.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 
 /**
  Describes various properties of a font.
  */
-class Font : public ReflectionObject {
+class Font : public Object {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     /**

@@ -1,12 +1,12 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/application.h>
 #include <zaf/parsing/parsers/font_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(Font)
+ZAF_DEFINE_TYPE(Font)
     ZAF_DEFINE_PARSER(FontParser)
 ZAF_DEFINE_END
 

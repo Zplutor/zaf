@@ -116,7 +116,7 @@ std::optional<Color> DecodeColorValue(const std::wstring& value) {
 
 void ColorParser::ParseFromAttribute(
     const std::wstring& attribute,
-    ReflectionObject& reflection_object) {
+    Object& reflection_object) {
 
     auto& color = dynamic_cast<Color&>(reflection_object);
 
@@ -127,7 +127,7 @@ void ColorParser::ParseFromAttribute(
 }
 
 
-void ColorParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
+void ColorParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
 
     auto& color = dynamic_cast<Color&>(reflection_object);
     XamlNodeParseHelper helper(node, color.GetType());

@@ -14,9 +14,9 @@
 #include <zaf/graphic/image/image.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/control/list_box.h>
-#include <zaf/reflection/reflection_type.h>
+#include <zaf/object/object_type.h>
 #include <zaf/reflection/reflection_manager.h>
-#include <zaf/reflection/reflection_property.h>
+#include <zaf/object/object_property.h>
 #include <zaf/parsing/helpers.h>
 #include <zaf/parsing/xaml_reader.h>
 #include <zaf/reflection/creation.h>
@@ -25,7 +25,7 @@
 #include <zaf/control/image_box.h>
 #include <zaf/base/registry/registry.h>
 #include <zaf/base/error/error.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/resource/resource_manager.h>
 #include <zaf/parsing/parsers/control_parser.h>
 #include <zaf/object/string.h>

@@ -103,9 +103,6 @@
     <Filter Include="zaf\base\error">
       <UniqueIdentifier>{62ec9b22-b712-4e9f-a54b-d635e891774a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\reflection\internal">
-      <UniqueIdentifier>{df572d22-2859-401b-9227-76d5d540c93c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\control\internal\tree_control">
       <UniqueIdentifier>{f09a58c2-d965-4161-89a0-d3c47a68607f}</UniqueIdentifier>
     </Filter>
@@ -391,9 +388,6 @@
     <ClCompile Include="src\zaf\parsing\parsers\combo_box_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\reflection\reflection_object.cpp">
-      <Filter>zaf\reflection</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\reflection\creation.cpp">
       <Filter>zaf\reflection</Filter>
     </ClCompile>
@@ -465,12 +459,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\base\error\com_error.cpp">
       <Filter>zaf\base\error</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\reflection\reflection_type.cpp">
-      <Filter>zaf\reflection</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\reflection\internal\reflection_object_initializer.cpp">
-      <Filter>zaf\reflection\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\linear_box.cpp">
       <Filter>zaf\control</Filter>
@@ -672,6 +660,12 @@
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\observable\async_customized_observable.cpp">
       <Filter>zaf\rx\internal\observable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\object_type.cpp">
+      <Filter>zaf\object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\internal\object_initializer.cpp">
+      <Filter>zaf\object\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1069,12 +1063,6 @@
     <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h">
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\reflection\reflection_object.h">
-      <Filter>zaf\reflection</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\reflection\reflection_type.h">
-      <Filter>zaf\reflection</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\parsing\parser.h">
       <Filter>zaf\parsing</Filter>
     </ClInclude>
@@ -1086,9 +1074,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\size_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\reflection\reflection_type_definition.h">
-      <Filter>zaf\reflection</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\rect_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
@@ -1311,9 +1296,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\check.h">
       <Filter>zaf\base\error</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\reflection\internal\reflection_object_initializer.h">
-      <Filter>zaf\reflection\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\linear_box.h">
       <Filter>zaf\control</Filter>
@@ -1624,17 +1606,29 @@
     <ClInclude Include="src\zaf\control\internal\control_updating.h">
       <Filter>zaf\control\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\reflection\reflection_property.h">
-      <Filter>zaf\reflection</Filter>
+    <ClInclude Include="src\zaf\object\type_declaration.h">
+      <Filter>zaf\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\reflection\internal\reflection_property_registrar.h">
-      <Filter>zaf\reflection\internal</Filter>
+    <ClInclude Include="src\zaf\object\object_type.h">
+      <Filter>zaf\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\reflection\internal\property_deduction.h">
-      <Filter>zaf\reflection\internal</Filter>
+    <ClInclude Include="src\zaf\object\type_definition.h">
+      <Filter>zaf\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\reflection\reflection_property_definition.h">
-      <Filter>zaf\reflection</Filter>
+    <ClInclude Include="src\zaf\object\object_property.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\property_definition.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\object_initializer.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\property_deduction.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\property_registrar.h">
+      <Filter>zaf\object\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

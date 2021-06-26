@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-void EllipseParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
+void EllipseParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
 
     auto& ellipse = dynamic_cast<Ellipse&>(reflection_object);
     XamlNodeParseHelper helper(node, ellipse.GetType());

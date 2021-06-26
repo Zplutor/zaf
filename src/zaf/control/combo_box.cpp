@@ -16,7 +16,7 @@
 #include <zaf/parsing/parsers/combo_box_drop_down_list_box_parser.h>
 #include <zaf/parsing/parsers/combo_box_edit_text_box_parser.h>
 #include <zaf/parsing/parsers/combo_box_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/window.h>
@@ -38,15 +38,15 @@ const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent"
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(ComboBox)
+ZAF_DEFINE_TYPE(ComboBox)
     ZAF_DEFINE_PARSER(ComboBoxParser)
 ZAF_DEFINE_END
 
-ZAF_DEFINE_REFLECTION_TYPE(ComboBoxDropDownListBox)
+ZAF_DEFINE_TYPE(ComboBoxDropDownListBox)
     ZAF_DEFINE_PARSER(ComboBoxDropDownListBoxParser)
 ZAF_DEFINE_END
 
-ZAF_DEFINE_REFLECTION_TYPE(ComboBoxEditTextBox)
+ZAF_DEFINE_TYPE(ComboBoxEditTextBox)
     ZAF_DEFINE_PARSER(ComboBoxEditTextBoxParser)
 ZAF_DEFINE_END
 
@@ -418,7 +418,7 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
         }
     }
     else {
-        height = delegate->EstimateItemHeight(0, Object::Empty()) * visible_item_count;
+        height = delegate->EstimateItemHeight(0, Object::Dumb()) * visible_item_count;
     }
 
     if (height == 0) {

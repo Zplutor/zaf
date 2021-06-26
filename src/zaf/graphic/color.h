@@ -5,17 +5,17 @@
 #include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
 #include <zaf/object/equality_type.h>
-#include <zaf/reflection/reflection_object.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 
 /**
  Describes the red, green, blue, and alpha components of a color.
  */
-class Color : public ReflectionObject {
+class Color : public Object {
 public:
 	ZAF_DECLARE_EQUALITY_TYPE
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
 	/**

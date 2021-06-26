@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <limits>
 #include <zaf/parsing/parsers/rect_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 
 #undef max
 #undef min
@@ -11,7 +11,7 @@ namespace zaf {
 
 ZAF_DEFINE_EQUALITY_TYPE(Rect)
 
-ZAF_DEFINE_REFLECTION_TYPE(Rect)
+ZAF_DEFINE_TYPE(Rect)
     ZAF_DEFINE_PARSER(RectParser)
 ZAF_DEFINE_END
 

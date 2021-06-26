@@ -2,7 +2,7 @@
 
 namespace zaf {
 
-void ComboBoxParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
+void ComboBoxParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
 
     __super::ParseFromNode(node, reflection_object);
 }

@@ -8,7 +8,7 @@
 #include <zaf/control/internal/image_box/static_image_player.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/parsing/parsers/image_box_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/resource/resource_manager.h>
 
 namespace zaf {
@@ -38,7 +38,7 @@ const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(ImageBox)
+ZAF_DEFINE_TYPE(ImageBox)
     ZAF_DEFINE_PARSER(ImageBoxParser)
 ZAF_DEFINE_END
 

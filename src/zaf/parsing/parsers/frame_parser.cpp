@@ -4,7 +4,7 @@
 #include <zaf/parsing/parsers/internal/utility.h>
 #include <zaf/parsing/xaml_node.h>
 #include <zaf/parsing/xaml_node_parse_helper.h>
-#include <zaf/reflection/reflection_type.h>
+#include <zaf/object/object_type.h>
 
 namespace zaf {
 namespace {
@@ -31,14 +31,14 @@ Frame ParseFrameValue(const std::wstring& value) {
 
 void FrameParser::ParseFromAttribute(
     const std::wstring& attribute_value,
-    ReflectionObject& reflection_object) {
+    Object& reflection_object) {
 
     auto& frame = dynamic_cast<Frame&>(reflection_object);
     frame = ParseFrameValue(attribute_value);
 }
 
 
-void FrameParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
+void FrameParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
 
     auto& frame = dynamic_cast<Frame&>(reflection_object);
     XamlNodeParseHelper helper(node, frame.GetType());

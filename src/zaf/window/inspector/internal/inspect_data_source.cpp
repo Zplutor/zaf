@@ -80,7 +80,7 @@ std::shared_ptr<Object> InspectDataSource::GetChildDataAtIndex(
         return control->GetChildAtIndex(index);
     }
 
-    return Object::Empty();
+    return Object::Dumb();
 }
 
 }

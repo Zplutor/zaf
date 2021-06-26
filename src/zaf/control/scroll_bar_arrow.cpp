@@ -2,12 +2,12 @@
 #include <zaf/control/internal/triangle_geometry.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/parsing/parsers/scroll_bar_arrow_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(ScrollBarArrow)
+ZAF_DEFINE_TYPE(ScrollBarArrow)
     ZAF_DEFINE_PARSER(ScrollBarArrowParser)
 ZAF_DEFINE_END
 

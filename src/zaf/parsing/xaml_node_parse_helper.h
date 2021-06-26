@@ -3,7 +3,7 @@
 #include <zaf/creation.h>
 #include <zaf/parsing/parsers/internal/utility.h>
 #include <zaf/parsing/xaml_node.h>
-#include <zaf/reflection/reflection_type.h>
+#include <zaf/object/object_type.h>
 
 namespace zaf {
 

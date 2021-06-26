@@ -10,7 +10,7 @@
 #include <zaf/graphic/text/text_layout_properties.h>
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/textual_control_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
@@ -54,7 +54,7 @@ void SetDefaultFontOtherPropertiesToTextLayout(
 
 }
 
-ZAF_DEFINE_REFLECTION_TYPE(TextualControl)
+ZAF_DEFINE_TYPE(TextualControl)
     ZAF_DEFINE_PARSER(TextualControlParser)
 ZAF_DEFINE_END
 

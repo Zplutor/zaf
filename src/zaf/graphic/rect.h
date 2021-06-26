@@ -14,10 +14,10 @@ namespace zaf {
 /**
  Describes the position and size of a rectangle area.
  */
-class Rect : public ReflectionObject {
+class Rect : public Object {
 public:
 	ZAF_DECLARE_EQUALITY_TYPE
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
 	/**

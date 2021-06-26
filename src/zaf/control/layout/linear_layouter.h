@@ -4,7 +4,7 @@
 #include <zaf/control/layout/control_alignment.h>
 #include <zaf/control/layout/layout_direction.h>
 #include <zaf/control/layout/layouter.h>
-#include <zaf/reflection/reflection_object.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 namespace internal {
@@ -13,9 +13,9 @@ class LinearLayoutLengthCalculatItem;
 
 class Size;
 
-class LinearLayouter : public Layouter, public ReflectionObject {
+class LinearLayouter : public Layouter, public Object {
 public:
-	ZAF_DECLARE_REFLECTION_TYPE
+	ZAF_DECLARE_TYPE
 
 public:
 	LayoutDirection GetDirection() const {
@@ -86,7 +86,7 @@ private:
 
 class HorizontalLayouter : public LinearLayouter {
 public:
-	ZAF_DECLARE_REFLECTION_TYPE
+	ZAF_DECLARE_TYPE
 
 public:
 	void Initialize() override;
@@ -95,7 +95,7 @@ public:
 
 class VerticalLayouter : public LinearLayouter {
 public:
-	ZAF_DECLARE_REFLECTION_TYPE
+	ZAF_DECLARE_TYPE
 
 public:
 	void Initialize() override;

@@ -7,7 +7,7 @@
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/scrollable_control_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -29,7 +29,7 @@ constexpr wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness"
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(ScrollableControl)
+ZAF_DEFINE_TYPE(ScrollableControl)
     ZAF_DEFINE_PARSER(ScrollableControlParser)
 ZAF_DEFINE_END
 

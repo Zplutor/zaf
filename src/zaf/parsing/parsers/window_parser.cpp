@@ -192,7 +192,7 @@ void ParseControls(const XamlNode& node, Window& window) {
 
 }
 
-void WindowParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
+void WindowParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
 
     auto& window = dynamic_cast<Window&>(reflection_object);
 

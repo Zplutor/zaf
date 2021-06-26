@@ -1,8 +1,8 @@
 #pragma once
 
-#include <zaf/reflection/internal/property_deduction.h>
-#include <zaf/reflection/internal/reflection_property_registrar.h>
-#include <zaf/reflection/reflection_property.h>
+#include <zaf/object/internal/property_deduction.h>
+#include <zaf/object/internal/property_registrar.h>
+#include <zaf/object/object_property.h>
 
 #define ZAF_DEFINE_PROPERTY(PropertyName)                                                       \
 struct PropertyName##Accessor {                                                                 \
@@ -37,16 +37,16 @@ public:                                                                         
     ObjectType* GetValueType() const override {                                                 \
 		return nullptr;                                                                         \
 	}                                                                                           \
-    std::any GetValue(const ReflectionObject& object) const override {                          \
+    std::any GetValue(const Object& object) const override {                                    \
         return PropertyName##Accessor::Get(dynamic_cast<const Class&>(object), nullptr);        \
     }                                                                                           \
-    void SetValue(ReflectionObject& object, const std::any& value) const override {             \
+    void SetValue(Object& object, const std::any& value) const override {                       \
         return PropertyName##Accessor::Set(dynamic_cast<Class&>(object), value, nullptr);       \
     }                                                                                           \
 };                                                                                              \
 ObjectProperty* const PropertyName##_property =                                                 \
     [this]() {                                                                                  \
         static PropertyName##Property property;                                                 \
-        internal::ReflectionPropertyRegistrar::Register(this, &property);                       \
+        internal::PropertyRegistrar::Register(this, &property);                                 \
         return &property;                                                                       \
     }();

@@ -5,12 +5,12 @@
 
 namespace zaf {
 namespace internal {
-class ReflectionPropertyRegistrar;
+class PropertyRegistrar;
 }
 
-class Parser;
-class ReflectionObject;
+class Object;
 class ObjectProperty;
+class Parser;
 
 class ObjectType {
 public:
@@ -35,7 +35,7 @@ public:
     /**
      Create an instance of the type.
      */
-    virtual std::shared_ptr<ReflectionObject> CreateInstance() const = 0;
+    virtual std::shared_ptr<Object> CreateInstance() const = 0;
 
     /**
      Get the parser for the type.
@@ -51,7 +51,7 @@ public:
     ObjectProperty* FindProperty(const std::wstring& name) const;
 
 private:
-    friend class internal::ReflectionPropertyRegistrar;
+    friend class internal::PropertyRegistrar;
 
     void RegisterProperty(ObjectProperty*);
 

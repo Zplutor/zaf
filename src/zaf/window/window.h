@@ -6,7 +6,7 @@
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/renderer/window_renderer.h>
 #include <zaf/internal/message_loop.h>
-#include <zaf/reflection/reflection_object.h>
+#include <zaf/object/object.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/serialization/property_map.h>
 
@@ -28,12 +28,12 @@ enum class HitTestResult;
  You shoudl always use Create method to create a window.
  */
 class Window : 
-    public ReflectionObject, 
+    public Object, 
     public SubscriptionHost, 
     public std::enable_shared_from_this<Window> {
 
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     /**

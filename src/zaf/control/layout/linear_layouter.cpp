@@ -1,7 +1,7 @@
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/control.h>
 #include <zaf/control/layout/internal/linear_layout_length_calculating.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/parsing/parsers/linear_layouter_parser.h>
 
 namespace zaf {
@@ -164,7 +164,7 @@ private:
 
 }
 
-ZAF_DEFINE_REFLECTION_TYPE(LinearLayouter)
+ZAF_DEFINE_TYPE(LinearLayouter)
 	ZAF_DEFINE_PARSER(LinearLayouterParser)
 ZAF_DEFINE_END
 
@@ -349,7 +349,7 @@ float LinearLayouter::CalculateAxisOffset(
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(HorizontalLayouter)
+ZAF_DEFINE_TYPE(HorizontalLayouter)
 ZAF_DEFINE_END
 
 void HorizontalLayouter::Initialize() {
@@ -359,7 +359,7 @@ void HorizontalLayouter::Initialize() {
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(VerticalLayouter)
+ZAF_DEFINE_TYPE(VerticalLayouter)
 ZAF_DEFINE_END
 
 void VerticalLayouter::Initialize() {

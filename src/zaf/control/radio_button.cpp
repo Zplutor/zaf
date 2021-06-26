@@ -6,7 +6,7 @@
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/radio_button_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 #include <zaf/serialization/properties.h>
 
@@ -17,7 +17,7 @@ static const wchar_t* const kRadioBackgroundColorPickerPropertyName = L"RadioBac
 static const wchar_t* const kRadioBorderColorPickerPropertyName = L"RadioBorderColorPicker";
 static const wchar_t* const kSelectStateChangeEventProprtyName = L"SelectStateChangeEvent";
 
-ZAF_DEFINE_REFLECTION_TYPE(RadioButton)
+ZAF_DEFINE_TYPE(RadioButton)
 	ZAF_DEFINE_PARSER(RadioButtonParser)
 ZAF_DEFINE_END
 

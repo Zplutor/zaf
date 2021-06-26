@@ -8,7 +8,7 @@ class LinearLayouterParser : public Parser {
 public:
     void ParseFromNode(
         const XamlNode& node,
-        ReflectionObject& reflection_object) override;
+        Object& reflection_object) override;
 };
 
 }

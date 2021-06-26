@@ -1,6 +1,6 @@
 #include <zaf/graphic/text/text_trimming.h>
 #include <zaf/parsing/parsers/text_trimming_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
@@ -14,7 +14,7 @@ const wchar_t* const Names[] = {
 
 }
 
-ZAF_DEFINE_REFLECTION_TYPE(TextTrimming)
+ZAF_DEFINE_TYPE(TextTrimming)
     ZAF_DEFINE_PARSER(TextTrimmingParser)
 ZAF_DEFINE_END
 

@@ -2,7 +2,7 @@
 
 namespace zaf {
 
-class ReflectionObject;
+class Object;
 class XamlNode;
 
 class Parser {
@@ -15,11 +15,11 @@ public:
 
     virtual void ParseFromAttribute(
         const std::wstring& attribute_value, 
-        ReflectionObject& reflection_object) { }
+        Object& reflection_object) { }
 
     virtual void ParseFromNode(
         const XamlNode& node,
-        ReflectionObject& reflection_object) = 0;
+        Object& reflection_object) = 0;
 };
 
 }

@@ -32,7 +32,7 @@ class ListDataSource;
  */
 class ListControl : public ScrollableControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     ListControl();

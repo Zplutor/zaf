@@ -4,12 +4,12 @@
 #include <zaf/control/list_box_data_source.h>
 #include <zaf/creation.h>
 #include <zaf/parsing/parsers/list_box_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(ListBox)
+ZAF_DEFINE_TYPE(ListBox)
     ZAF_DEFINE_PARSER(ListBoxParser)
 ZAF_DEFINE_END
 

@@ -2,22 +2,22 @@
 
 #include <memory>
 #include <type_traits>
-#include <zaf/reflection/internal/reflection_object_initializer.h>
+#include <zaf/object/internal/object_initializer.h>
 
 namespace zaf {
 
-class ReflectionObject;
+class Object;
 
 namespace internal {
 
 template<typename T>
-struct ReflectionObjectCreator {
+struct ObjectCreator {
 
     template<typename... ArgumentTypes>
     static std::shared_ptr<T> Create(ArgumentTypes&&... arguments) {
 
         auto object = std::make_shared<T>(std::forward<ArgumentTypes>(arguments)...);
-        ReflectionObjectInitializer::Initialize(*object);
+        ObjectInitializer::Initialize(*object);
         return object;
     }
 };
@@ -37,8 +37,8 @@ template<typename T>
 struct Creator {
 
     typedef typename std::conditional<
-        std::is_base_of<ReflectionObject, T>::value, 
-        ReflectionObjectCreator<T>,
+        std::is_base_of<Object, T>::value, 
+        ObjectCreator<T>,
         GenericCreator<T>
     >::type Type;
 };

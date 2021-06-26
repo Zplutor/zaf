@@ -1,12 +1,12 @@
 #include <zaf/graphic/color.h>
 #include <zaf/parsing/parsers/color_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 
 namespace zaf {
 
 ZAF_DEFINE_EQUALITY_TYPE(Color)
 
-ZAF_DEFINE_REFLECTION_TYPE(Color)
+ZAF_DEFINE_TYPE(Color)
     ZAF_DEFINE_PARSER(ColorParser)
 ZAF_DEFINE_END
 

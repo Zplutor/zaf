@@ -10,7 +10,7 @@
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/list_control_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 #include <zaf/serialization/properties.h>
 
@@ -18,7 +18,7 @@ namespace zaf {
 
 static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
 
-ZAF_DEFINE_REFLECTION_TYPE(ListControl)
+ZAF_DEFINE_TYPE(ListControl)
     ZAF_DEFINE_PARSER(ListControlParser)
 ZAF_DEFINE_END
 

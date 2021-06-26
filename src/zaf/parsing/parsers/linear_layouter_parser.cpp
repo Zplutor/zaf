@@ -50,7 +50,7 @@ std::optional<AxisAlignment> ParseAxisAlignment(const std::wstring& value) {
 
 void LinearLayouterParser::ParseFromNode(
     const XamlNode& node,
-    ReflectionObject& reflection_object) {
+    Object& reflection_object) {
 
     auto& layouter = dynamic_cast<LinearLayouter&>(reflection_object);
     XamlNodeParseHelper helper(node, layouter.GetType());

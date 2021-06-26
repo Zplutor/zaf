@@ -1,13 +1,13 @@
-#include <zaf/reflection/reflection_type.h>
+#include <zaf/object/object_type.h>
 #include <zaf/parsing/parser.h>
-#include <zaf/reflection/reflection_property.h>
+#include <zaf/object/object_property.h>
 
 namespace zaf {
 namespace {
 
 class DumbParser : public Parser {
 public:
-    void ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) override { }
+    void ParseFromNode(const XamlNode& node, Object& reflection_object) override { }
 };
 
 }

@@ -8,7 +8,7 @@ namespace zaf {
 void RectParser::ParseFromNode(
     const XamlNode& node,
  
-    ReflectionObject& reflection_object) {
+    Object& reflection_object) {
 
     auto& rect = dynamic_cast<Rect&>(reflection_object);
     XamlNodeParseHelper helper(node, rect.GetType());

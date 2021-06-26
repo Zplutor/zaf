@@ -37,7 +37,7 @@ std::optional<int> FontParser::ParseFontWeight(const std::wstring& value) {
 }
 
 
-void FontParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
+void FontParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
 
     auto& font = dynamic_cast<Font&>(reflection_object);
 

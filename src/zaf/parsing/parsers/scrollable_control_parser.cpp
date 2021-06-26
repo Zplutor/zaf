@@ -6,7 +6,7 @@ namespace zaf {
 
 void ScrollableControlParser::ParseFromNode(
     const XamlNode& node,
-    ReflectionObject& reflection_object) {
+    Object& reflection_object) {
 
     auto& scrollable_control = dynamic_cast<ScrollableControl&>(reflection_object);
     auto update_guard = scrollable_control.BeginUpdate();

@@ -64,7 +64,7 @@ std::optional<WordWrapping> ParseWordWrapping(const std::wstring& value) {
 
 void TextualControlParser::ParseFromNode(
     const XamlNode& node, 
-    ReflectionObject& reflection_object) {
+    Object& reflection_object) {
 
     auto& textual_control = dynamic_cast<TextualControl&>(reflection_object);
     auto update_guard = textual_control.BeginUpdate();

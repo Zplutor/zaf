@@ -8,14 +8,14 @@ namespace zaf {
 
 void PointParser::ParseFromAttribute(
     const std::wstring& attribute_value, 
-    ReflectionObject& reflection_object) {
+    Object& reflection_object) {
 
     auto& point = dynamic_cast<Point&>(reflection_object);
     internal::ParseAttributeToDoubleFloats(attribute_value, point.x, point.y);
 }
 
 
-void PointParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
+void PointParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
 
     Point& point = dynamic_cast<Point&>(reflection_object);
     XamlNodeParseHelper helper(node, point.GetType());

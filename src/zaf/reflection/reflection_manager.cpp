@@ -1,6 +1,6 @@
 #include <zaf/reflection/reflection_manager.h>
-#include <zaf/reflection/reflection_object.h>
-#include <zaf/reflection/reflection_type.h>
+#include <zaf/object/object.h>
+#include <zaf/object/object_type.h>
 
 namespace zaf {
 

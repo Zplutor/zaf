@@ -1,13 +1,13 @@
 #pragma once
 
 #include <zaf/graphic/image/image.h>
-#include <zaf/reflection/reflection_object.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 
-class BitmapImage : public Image, public ReflectionObject {
+class BitmapImage : public Image, public Object {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     std::wstring GetUri() const {

@@ -20,7 +20,7 @@ class ComboBoxSelectionChangeInfo;
  */
 class ComboBox : public ClickableControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     ComboBox();
@@ -295,7 +295,7 @@ public:
  */
 class ComboBoxDropDownListBox : public ListBox {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 protected:
     void Initialize() override;
@@ -318,7 +318,7 @@ private:
  */
 class ComboBoxEditTextBox : public TextBox {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     bool OnKeyDown(const KeyMessage& message) override;

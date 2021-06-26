@@ -1,5 +1,6 @@
 #include <zaf/parsing/helpers.h>
 #include <zaf/creation.h>
+#include <zaf/object/object_type.h>
 #include <zaf/parsing/parser.h>
 #include <zaf/parsing/xaml_reader.h>
 #include <zaf/reflection/creation.h>
@@ -7,7 +8,7 @@
 namespace zaf {
 namespace internal {
 
-std::shared_ptr<ReflectionObject> CreateReflectionObjectFromXaml(const std::string& xaml) {
+std::shared_ptr<Object> CreateReflectionObjectFromXaml(const std::string& xaml) {
 
     auto xaml_reader = XamlReader::FromString(xaml);
     auto xaml_node = xaml_reader->Read();

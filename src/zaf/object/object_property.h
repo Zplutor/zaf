@@ -5,7 +5,7 @@
 
 namespace zaf {
 
-class ReflectionObject;
+class Object;
 class ObjectType;
 
 class ObjectProperty {
@@ -20,8 +20,8 @@ public:
 
 	virtual ObjectType* GetValueType() const = 0;
 
-	virtual std::any GetValue(const ReflectionObject& object) const = 0;
-	virtual void SetValue(ReflectionObject& object, const std::any& value) const = 0;
+	virtual std::any GetValue(const Object& object) const = 0;
+	virtual void SetValue(Object& object, const std::any& value) const = 0;
 };
 
 }

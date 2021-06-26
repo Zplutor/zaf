@@ -1,13 +1,86 @@
 #include <zaf/object/object.h>
+#include <zaf/object/object_type.h>
 #include <sstream>
+#include <zaf/application.h>
+#include <zaf/base/error/system_error.h>
+#include <zaf/parsing/parser.h>
+#include <zaf/parsing/xaml_reader.h>
 #include <zaf/base/string/encoding_conversion.h>
+#include <zaf/reflection/reflection_manager.h>
+#include <zaf/resource/resource_manager.h>
 
 namespace zaf {
+namespace {
 
-const std::shared_ptr<Object>& Object::Empty() {
+class TheType : public ObjectType {
+public:
+    ObjectType* GetBase() const override {
+        return nullptr;
+    }
+
+    const std::wstring& GetName() const override {
+        static const std::wstring name{ L"Object" };
+        return name;
+    }
+
+    std::shared_ptr<Object> CreateInstance() const override {
+        return Object::Dumb();
+    }
+};
+
+
+void ParseObject(ObjectType& type, Object& object) {
+
+    auto base_type = type.GetBase();
+    if (base_type) {
+        ParseObject(*base_type, object);
+    }
+
+    auto resource_uri = type.GetResourceUri();
+    if (resource_uri.empty()) {
+        return;
+    }
+
+    auto stream = GetResourceManager().LoadUri(resource_uri);
+    auto xaml_reader = XamlReader::FromStream(stream);
+
+    auto root_node = xaml_reader->Read();
+    if (root_node->GetValue() != type.GetName()) {
+        ZAF_THROW_SYSTEM_ERROR(ERROR_INVALID_NAME);
+    }
+
+    type.GetParser()->ParseFromNode(*root_node, object);
+}
+
+}
+
+const std::shared_ptr<Object>& Object::Dumb() {
 
     static auto empty_object = std::make_shared<Object>();
     return empty_object;
+}
+
+
+void Object::InitializeObject() {
+
+    InvokeInitialize();
+    ParseObject(*GetType(), *this);
+    AfterParse();
+}
+
+
+void Object::InvokeInitialize() {
+    Initialize();
+}
+
+
+void Object::Initialize() {
+
+}
+
+
+void Object::AfterParse() {
+
 }
 
 
@@ -33,5 +106,13 @@ std::wstring Object::ToString() const {
 
     return FromUtf8String(stream.str());
 }
+
+
+ObjectType* const Object::Type = []() {
+
+    static TheType type;
+    zaf::GetReflectionManager().RegisterType(&type);
+    return &type;
+}();
 
 }

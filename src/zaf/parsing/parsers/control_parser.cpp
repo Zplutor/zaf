@@ -161,7 +161,7 @@ void ParseProperties(const XamlNode& node, Control& control) {
         control.SetBorderColor(*border_color);
     }
 
-    auto layouter_object = helper.GetDynamicObjectProperty<ReflectionObject>(L"Layouter");
+    auto layouter_object = helper.GetDynamicObjectProperty<Object>(L"Layouter");
     if (layouter_object) {
         auto layouter = std::dynamic_pointer_cast<Layouter>(layouter_object);
         if (layouter) {
@@ -214,7 +214,7 @@ void ParseChildren(const XamlNode& node, Control& control) {
 
 }
 
-void ControlParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
+void ControlParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
 
     auto& control = dynamic_cast<Control&>(reflection_object);
     auto update_guard = control.BeginUpdate();

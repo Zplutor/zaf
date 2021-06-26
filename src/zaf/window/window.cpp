@@ -10,7 +10,7 @@
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/window_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/inspector/inspector_window.h>
@@ -42,7 +42,7 @@ constexpr wchar_t* const kTitlePropertyName = L"Title";
 
 }
 
-ZAF_DEFINE_REFLECTION_TYPE(Window)
+ZAF_DEFINE_TYPE(Window)
     ZAF_DEFINE_PARSER(WindowParser)
 ZAF_DEFINE_END
 

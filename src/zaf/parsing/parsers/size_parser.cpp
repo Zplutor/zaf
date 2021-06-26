@@ -7,14 +7,14 @@ namespace zaf {
 
 void SizeParser::ParseFromAttribute(
     const std::wstring& attribute_value,
-    ReflectionObject& reflection_object) {
+    Object& reflection_object) {
 
     auto& size = dynamic_cast<Size&>(reflection_object);
     internal::ParseAttributeToDoubleFloats(attribute_value, size.width, size.height);
 }
 
 
-void SizeParser::ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) {
+void SizeParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
 
     Size& size = dynamic_cast<Size&>(reflection_object);
     XamlNodeParseHelper helper(node, size.GetType());

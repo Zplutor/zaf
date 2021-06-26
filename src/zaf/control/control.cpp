@@ -16,7 +16,7 @@
 #include <zaf/graphic/image/image.h>
 #include <zaf/internal/theme.h>
 #include <zaf/parsing/parsers/control_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/inspector/internal/inspector_port.h>
@@ -52,7 +52,7 @@ constexpr bool DefaultIsVisible = true;
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(Control)
+ZAF_DEFINE_TYPE(Control)
     ZAF_DEFINE_PARSER(ControlParser)
 ZAF_DEFINE_END
 

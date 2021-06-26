@@ -17,7 +17,7 @@
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/reflection/reflection_object.h>
+#include <zaf/object/object.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/serialization/property_map.h>
@@ -52,12 +52,12 @@ enum class HitTestResult;
  This is the base class of all controls.
  */
 class Control : 
-    public ReflectionObject, 
+    public Object, 
     public SubscriptionHost, 
     public std::enable_shared_from_this<Control> {
 
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
 	Control();

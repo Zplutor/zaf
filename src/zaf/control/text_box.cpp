@@ -8,7 +8,7 @@
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/parsing/parsers/text_box_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
@@ -52,7 +52,7 @@ static const wchar_t kDefaultPasswordCharacter = L'*';
 static const DWORD kDefaultScrollBarProperty = ES_AUTOVSCROLL | ES_AUTOHSCROLL | WS_VSCROLL | WS_HSCROLL;
 
 
-ZAF_DEFINE_REFLECTION_TYPE(TextBox)
+ZAF_DEFINE_TYPE(TextBox)
 	ZAF_DEFINE_PARSER(TextBoxParser)
 ZAF_DEFINE_END
 

@@ -6,7 +6,7 @@ namespace zaf {
 
 class WindowParser : public Parser {
 public:
-    void ParseFromNode(const XamlNode& node, ReflectionObject& reflection_object) override;
+    void ParseFromNode(const XamlNode& node, Object& reflection_object) override;
 };
 
 }

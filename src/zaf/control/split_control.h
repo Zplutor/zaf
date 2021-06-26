@@ -15,7 +15,7 @@ class SplitControlSplitBarEndDragInfo;
 
 class SplitControl : public Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     SplitControl();
@@ -113,7 +113,7 @@ public:
 
 class SplitControlSplitBar : public Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     SplitControlSplitBar();

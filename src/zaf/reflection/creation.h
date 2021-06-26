@@ -1,15 +1,15 @@
 #pragma once
 
-#include <zaf/reflection/reflection_object.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 namespace internal {
 
-std::shared_ptr<ReflectionObject> CreateReflectionObjectByName(const std::wstring& name);
+std::shared_ptr<Object> CreateReflectionObjectByName(const std::wstring& name);
 
 }
 
-template<typename T = ReflectionObject>
+template<typename T = Object>
 std::shared_ptr<T> CreateObjectByName(const std::wstring& name) {
 
     auto object = internal::CreateReflectionObjectByName(name);

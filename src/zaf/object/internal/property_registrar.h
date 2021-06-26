@@ -1,17 +1,17 @@
 #pragma once
 
-#include <zaf/reflection/reflection_type.h>
+#include <zaf/object/object_type.h>
 
 namespace zaf::internal {
 
-class ReflectionPropertyRegistrar {
+class PropertyRegistrar {
 public:
 	static void Register(ObjectType* type, ObjectProperty* property) {
 		type->RegisterProperty(property);
 	}
 
 public:
-	ReflectionPropertyRegistrar() = delete;
+	PropertyRegistrar() = delete;
 };
 
 }
