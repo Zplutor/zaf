@@ -2,14 +2,14 @@
 
 namespace zaf {
 
-template<typename ObjectType>
+template<typename T>
 class ComObject {
 public:
     ComObject() : handle_(nullptr) { 
 
     }
 
-    explicit ComObject(ObjectType* handle) : handle_(handle) {
+    explicit ComObject(T* handle) : handle_(handle) {
     
     }
 
@@ -70,12 +70,12 @@ public:
         return handle_ == nullptr;
     }
 
-    ObjectType* GetHandle() const {
+    T* GetHandle() const {
         return handle_;
     }
 
 private:
-    ObjectType* handle_;
+    T* handle_;
 };
 
 }
