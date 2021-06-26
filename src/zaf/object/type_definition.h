@@ -29,7 +29,7 @@ public:                                                                         
     }                                                                                                                                                                                         
 
 #define ZAF_DEFINE_PARSER(ParserType)                                                           \
-    std::shared_ptr<zaf::Parser> GetParser() const override {                                   \
+    std::shared_ptr<zaf::ObjectParser> GetParser() const override {                                   \
         static auto parser = std::make_shared<ParserType>();                                    \
         return parser;                                                                          \
     }                                                                                           

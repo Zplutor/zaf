@@ -1,10 +1,10 @@
 #pragma once
 
-#include <zaf/parsing/parser.h>
+#include <zaf/parsing/object_parser.h>
 
 namespace zaf {
 
-class FrameParser : public Parser {
+class FrameParser : public ObjectParser {
 public:
     void ParseFromAttribute(
         const std::wstring& attribute_value, 

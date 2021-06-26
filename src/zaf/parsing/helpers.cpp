@@ -1,7 +1,7 @@
 #include <zaf/parsing/helpers.h>
 #include <zaf/creation.h>
 #include <zaf/object/object_type.h>
-#include <zaf/parsing/parser.h>
+#include <zaf/parsing/object_parser.h>
 #include <zaf/parsing/xaml_reader.h>
 #include <zaf/reflection/creation.h>
 

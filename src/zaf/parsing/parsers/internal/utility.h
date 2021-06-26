@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <zaf/parsing/parser.h>
+#include <zaf/parsing/object_parser.h>
 #include <zaf/parsing/xaml_node.h>
 #include <zaf/reflection/creation.h>
 

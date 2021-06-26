@@ -1,10 +1,10 @@
 #pragma once
 
-#include <zaf/parsing/parser.h>
+#include <zaf/parsing/object_parser.h>
 
 namespace zaf {
 
-class ColorParser : public Parser {
+class ColorParser : public ObjectParser {
 public:
     void ParseFromAttribute(
         const std::wstring& attribute, 

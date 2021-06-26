@@ -420,7 +420,7 @@
     <ClInclude Include="src\zaf\object\type_declaration.h" />
     <ClInclude Include="src\zaf\object\type_definition.h" />
     <ClInclude Include="src\zaf\parsing\helpers.h" />
-    <ClInclude Include="src\zaf\parsing\parser.h" />
+    <ClInclude Include="src\zaf\parsing\object_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\bitmap_image_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\button_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\check_box_parser.h" />

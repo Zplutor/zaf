@@ -3,7 +3,7 @@
 #include <sstream>
 #include <zaf/application.h>
 #include <zaf/base/error/system_error.h>
-#include <zaf/parsing/parser.h>
+#include <zaf/parsing/object_parser.h>
 #include <zaf/parsing/xaml_reader.h>
 #include <zaf/base/string/encoding_conversion.h>
 #include <zaf/reflection/reflection_manager.h>

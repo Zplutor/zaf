@@ -1063,7 +1063,7 @@
     <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h">
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parser.h">
+    <ClInclude Include="src\zaf\parsing\object_parser.h">
       <Filter>zaf\parsing</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\xaml_reader.h">

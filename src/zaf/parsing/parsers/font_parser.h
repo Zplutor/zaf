@@ -1,11 +1,11 @@
 #pragma once
 
 #include <optional>
-#include <zaf/parsing/parser.h>
+#include <zaf/parsing/object_parser.h>
 
 namespace zaf {
 
-class FontParser : public Parser {
+class FontParser : public ObjectParser {
 public:
     static std::optional<int> ParseFontWeight(const std::wstring& value);
 

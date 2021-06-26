@@ -10,7 +10,7 @@ class PropertyRegistrar;
 
 class Object;
 class ObjectProperty;
-class Parser;
+class ObjectParser;
 
 class ObjectType {
 public:
@@ -40,7 +40,7 @@ public:
     /**
      Get the parser for the type.
      */
-    virtual std::shared_ptr<Parser> GetParser() const;
+    virtual std::shared_ptr<ObjectParser> GetParser() const;
 
     virtual const std::wstring& GetResourceUri() const;
 

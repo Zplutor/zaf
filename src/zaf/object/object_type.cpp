@@ -1,18 +1,18 @@
 #include <zaf/object/object_type.h>
-#include <zaf/parsing/parser.h>
+#include <zaf/parsing/object_parser.h>
 #include <zaf/object/object_property.h>
 
 namespace zaf {
 namespace {
 
-class DumbParser : public Parser {
+class DumbParser : public ObjectParser {
 public:
     void ParseFromNode(const XamlNode& node, Object& reflection_object) override { }
 };
 
 }
 
-std::shared_ptr<Parser> ObjectType::GetParser() const {
+std::shared_ptr<ObjectParser> ObjectType::GetParser() const {
 
     auto base_type = GetBase();
     if (base_type) {

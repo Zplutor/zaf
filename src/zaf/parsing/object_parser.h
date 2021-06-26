@@ -5,13 +5,13 @@ namespace zaf {
 class Object;
 class XamlNode;
 
-class Parser {
+class ObjectParser {
 public:
-    Parser() = default;
-    virtual ~Parser() = default;
+    ObjectParser() = default;
+    virtual ~ObjectParser() = default;
 
-    Parser(const Parser&) = delete;
-    Parser& operator=(const Parser&) = delete;
+    ObjectParser(const ObjectParser&) = delete;
+    ObjectParser& operator=(const ObjectParser&) = delete;
 
     virtual void ParseFromAttribute(
         const std::wstring& attribute_value, 
