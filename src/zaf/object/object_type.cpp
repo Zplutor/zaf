@@ -12,15 +12,15 @@ public:
 
 }
 
-std::shared_ptr<ObjectParser> ObjectType::GetParser() const {
+ObjectParser* ObjectType::GetParser() const {
 
     auto base_type = GetBase();
     if (base_type) {
         return base_type->GetParser();
     }
 
-    static auto dump_parser = std::make_shared<DumbParser>();
-    return dump_parser;
+    static DumbParser dump_parser;
+    return &dump_parser;
 }
 
 

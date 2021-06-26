@@ -29,9 +29,9 @@ public:                                                                         
     }                                                                                                                                                                                         
 
 #define ZAF_DEFINE_PARSER(ParserType)                                                           \
-    std::shared_ptr<zaf::ObjectParser> GetParser() const override {                                   \
-        static auto parser = std::make_shared<ParserType>();                                    \
-        return parser;                                                                          \
+    zaf::ObjectParser* GetParser() const override {                                             \
+        static ParserType parser;                                                               \
+        return &parser;                                                                         \
     }                                                                                           
 
 #define ZAF_DEFINE_RESOURCE_URI(Uri)                                                            \

@@ -40,7 +40,7 @@ public:
     /**
      Get the parser for the type.
      */
-    virtual std::shared_ptr<ObjectParser> GetParser() const;
+    virtual ObjectParser* GetParser() const;
 
     virtual const std::wstring& GetResourceUri() const;
 
