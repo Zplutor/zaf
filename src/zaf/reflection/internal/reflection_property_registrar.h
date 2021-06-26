@@ -6,7 +6,7 @@ namespace zaf::internal {
 
 class ReflectionPropertyRegistrar {
 public:
-	static void Register(ObjectType* type, ReflectionProperty* property) {
+	static void Register(ObjectType* type, ObjectProperty* property) {
 		type->RegisterProperty(property);
 	}
 

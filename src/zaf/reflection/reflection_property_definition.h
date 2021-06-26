@@ -28,13 +28,13 @@ struct PropertyName##Accessor {                                                 
         throw std::exception{};                                                                 \
     }                                                                                           \
 };                                                                                              \
-class PropertyName##Property : public zaf::ReflectionProperty {                                 \
+class PropertyName##Property : public zaf::ObjectProperty {                                     \
 public:                                                                                         \
 	const std::wstring& GetName() const override {                                              \
         static const std::wstring name{ L#PropertyName };                                       \
 		return name;                                                                            \
 	}                                                                                           \
-    ObjectType* GetType() const override {                                                  \
+    ObjectType* GetValueType() const override {                                                 \
 		return nullptr;                                                                         \
 	}                                                                                           \
     std::any GetValue(const ReflectionObject& object) const override {                          \
@@ -44,7 +44,7 @@ public:                                                                         
         return PropertyName##Accessor::Set(dynamic_cast<Class&>(object), value, nullptr);       \
     }                                                                                           \
 };                                                                                              \
-ReflectionProperty* const PropertyName##_property =                                             \
+ObjectProperty* const PropertyName##_property =                                                 \
     [this]() {                                                                                  \
         static PropertyName##Property property;                                                 \
         internal::ReflectionPropertyRegistrar::Register(this, &property);                       \

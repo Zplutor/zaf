@@ -10,7 +10,7 @@ class ReflectionPropertyRegistrar;
 
 class Parser;
 class ReflectionObject;
-class ReflectionProperty;
+class ObjectProperty;
 
 class ObjectType {
 public:
@@ -44,19 +44,19 @@ public:
 
     virtual const std::wstring& GetResourceUri() const;
 
-    const std::vector<ReflectionProperty*>& GetProperties() const {
+    const std::vector<ObjectProperty*>& GetProperties() const {
         return properties_;
     }
 
-    ReflectionProperty* FindProperty(const std::wstring& name) const;
+    ObjectProperty* FindProperty(const std::wstring& name) const;
 
 private:
     friend class internal::ReflectionPropertyRegistrar;
 
-    void RegisterProperty(ReflectionProperty*);
+    void RegisterProperty(ObjectProperty*);
 
 private:
-    std::vector<ReflectionProperty*> properties_;
+    std::vector<ObjectProperty*> properties_;
 };
 
 }

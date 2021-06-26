@@ -8,17 +8,17 @@ namespace zaf {
 class ReflectionObject;
 class ObjectType;
 
-class ReflectionProperty {
+class ObjectProperty {
 public:
-	ReflectionProperty() = default;
-	virtual ~ReflectionProperty() = default;
+	ObjectProperty() = default;
+	virtual ~ObjectProperty() = default;
 
-	ReflectionProperty(const ReflectionProperty&) = delete;
-	ReflectionProperty& operator=(const ReflectionProperty&) = delete;
+	ObjectProperty(const ObjectProperty&) = delete;
+	ObjectProperty& operator=(const ObjectProperty&) = delete;
 
 	virtual const std::wstring& GetName() const = 0;
 
-	virtual ObjectType* GetType() const = 0;
+	virtual ObjectType* GetValueType() const = 0;
 
 	virtual std::any GetValue(const ReflectionObject& object) const = 0;
 	virtual void SetValue(ReflectionObject& object, const std::any& value) const = 0;

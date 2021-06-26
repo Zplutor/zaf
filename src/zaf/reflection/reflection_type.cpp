@@ -30,7 +30,7 @@ const std::wstring& ObjectType::GetResourceUri() const {
 }
 
 
-void ObjectType::RegisterProperty(ReflectionProperty* property) {
+void ObjectType::RegisterProperty(ObjectProperty* property) {
 
     auto iterator = std::lower_bound(
         properties_.begin(),
@@ -45,7 +45,7 @@ void ObjectType::RegisterProperty(ReflectionProperty* property) {
 }
 
 
-ReflectionProperty* ObjectType::FindProperty(const std::wstring& name) const {
+ObjectProperty* ObjectType::FindProperty(const std::wstring& name) const {
 
     auto iterator = std::lower_bound(
         properties_.begin(),
