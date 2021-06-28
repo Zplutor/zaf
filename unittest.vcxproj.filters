@@ -61,6 +61,9 @@
     <Filter Include="case\window">
       <UniqueIdentifier>{9c378360-802c-4646-a24f-a587b9a92e41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\object\boxing">
+      <UniqueIdentifier>{41b90e79-575a-4f83-85c4-7ca5c0e2f5fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -184,9 +187,6 @@
     <ClCompile Include="unittest\case\parsing\parsers\font_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\boxing_test.cpp">
-      <Filter>case\object</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\control\internal\list_control\list_control_item_height_manager_test.cpp">
       <Filter>case\control\internal\list_control</Filter>
     </ClCompile>
@@ -198,12 +198,6 @@
     </ClCompile>
     <ClCompile Include="unittest\case\base\container\utility\copy_test.cpp">
       <Filter>case\base\container\utility</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\object\boxed_test.cpp">
-      <Filter>case\object</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\object\built_in_box_type_test.cpp">
-      <Filter>case\object</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\hash_test.cpp">
       <Filter>case\base</Filter>
@@ -240,6 +234,15 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\layout\layout_case_test.cpp">
       <Filter>case\control\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing\boxed_object_equality_test.cpp">
+      <Filter>case\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing\boxing_test.cpp">
+      <Filter>case\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing\built_in_box_type_test.cpp">
+      <Filter>case\object\boxing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

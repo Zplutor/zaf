@@ -1,18 +1,18 @@
 #pragma once
 
-namespace zaf {
+namespace zaf::internal {
 
 template<typename T>
-class BoxRepresent {
+class BoxedRepresent {
 public:
-    BoxRepresent(const T& value) : value_(value) { }
+    BoxedRepresent(const T& value) : value_(value) { }
 
     const T& GetValue() const {
         return value_;
     }
 
 protected:
-    ~BoxRepresent() = default;
+    ~BoxedRepresent() = default;
 
 private:
     T value_{};

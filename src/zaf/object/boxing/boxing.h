@@ -1,8 +1,8 @@
 #pragma once
 
 #include <zaf/base/error/check.h>
-#include <zaf/object/internal/get_box_type.h>
-#include <zaf/object/internal/unboxer.h>
+#include <zaf/object/boxing/internal/get_box_type.h>
+#include <zaf/object/boxing/internal/unboxer.h>
 
 namespace zaf {
 

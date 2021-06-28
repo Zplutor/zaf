@@ -1,7 +1,7 @@
 #pragma once
 
 #include <type_traits>
-#include <zaf/object/internal/get_box_type.h>
+#include <zaf/object/boxing/internal/get_box_type.h>
 #include <zaf/object/object.h>
 
 namespace zaf::internal {

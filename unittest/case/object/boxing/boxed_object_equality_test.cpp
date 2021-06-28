@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/base/hash.h>
-#include <zaf/object/boxed.h>
-#include <zaf/object/boxing.h>
+#include <zaf/object/boxing/boxed_object.h>
+#include <zaf/object/boxing/boxing.h>
 
 namespace {
 
@@ -30,7 +30,7 @@ struct hash<EqualComparableObject> {
 };
 }
 
-TEST(BoxedTest, IsEqualComparable) {
+TEST(BoxedObjectEqualityTest, Comparable) {
 
     EqualComparableObject o1;
     o1.value = 11;
@@ -47,7 +47,7 @@ TEST(BoxedTest, IsEqualComparable) {
 }
 
 
-TEST(BoxedTest, Uncomparable) {
+TEST(BoxedObjectEqualityTest, Uncomparable) {
 
     UncomparableObject o1;
     o1.value = 22;

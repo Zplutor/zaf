@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/object/boxing.h>
-#include <zaf/object/string.h>
+#include <zaf/object/boxing/boxing.h>
+#include <zaf/object/boxing/string.h>
 
 using namespace zaf;
 
@@ -24,7 +24,7 @@ TEST(BoxingTest, Box) {
     ASSERT_EQ(boxed_wide_string->GetValue(), wide_chars);
 
     std::vector<int> vector{ 0, 1, 2 };
-    std::shared_ptr<Boxed<std::vector<int>>> boxed_vector = Box(vector);
+    std::shared_ptr<BoxedObject<std::vector<int>>> boxed_vector = Box(vector);
     ASSERT_EQ(boxed_vector->GetValue(), vector);
 
     Rect rect{ 10, 10, 20, 20 };

@@ -1,9 +1,9 @@
 #pragma once
 
-#include <zaf/object/boxed.h>
-#include <zaf/object/internal/built_in_box_types.h>
-#include <zaf/object/numeric.h>
-#include <zaf/object/string.h>
+#include <zaf/object/boxing/boxed_object.h>
+#include <zaf/object/boxing/internal/built_in_box_types.h>
+#include <zaf/object/boxing/numeric.h>
+#include <zaf/object/boxing/string.h>
 
 namespace zaf::internal {
 
@@ -13,7 +13,7 @@ struct GetGeneralBoxType {
     using Type = std::conditional_t<
         HasBuiltInBoxType<T>::Value,
         typename GetBuiltInBoxType<T>::Type,
-        Boxed<T>
+        BoxedObject<T>
     >;
 };
 

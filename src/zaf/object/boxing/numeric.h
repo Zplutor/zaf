@@ -1,20 +1,20 @@
 #pragma once
 
 #include <cstdint>
-#include <zaf/object/box_represent.h>
-#include <zaf/object/internal/box_represent_equal.h>
-#include <zaf/object/internal/built_in_box_types.h>
+#include <zaf/object/boxing/internal/boxed_represent.h>
+#include <zaf/object/boxing/internal/boxed_represent_equal.h>
+#include <zaf/object/boxing/internal/built_in_box_types.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
 
 #define ZAF_INTERNAL_DEFINE_NUMERIC_BOX_TYPE(NumericType, BoxTypeName)     \
-class BoxTypeName : public Object, public BoxRepresent<NumericType> {      \
+class BoxTypeName : public Object, public internal::BoxedRepresent<NumericType> {      \
 public:                                                                    \
-    using BoxRepresent<NumericType>::BoxRepresent;                         \
+    using BoxedRepresent<NumericType>::BoxedRepresent;                         \
                                                                            \
     bool IsEqual(const Object& other) const override {                     \
-        return internal::BoxRepresentEqual(*this, other);                  \
+        return internal::BoxedRepresentEqual(*this, other);                  \
     }                                                                      \
                                                                            \
     std::wstring ToString() const override {                               \

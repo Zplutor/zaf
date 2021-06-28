@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <zaf/object/boxing.h>
-#include <zaf/object/numeric.h>
+#include <zaf/object/boxing/boxing.h>
+#include <zaf/object/boxing/numeric.h>
 
 TEST(BuiltInBoxTypeTest, NumericIsEqual) {
 

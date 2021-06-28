@@ -148,6 +148,12 @@
     <Filter Include="zaf\window\internal">
       <UniqueIdentifier>{9753c9aa-251c-4966-b76e-70c7d7f08694}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\object\boxing">
+      <UniqueIdentifier>{0dff3f08-a273-48b0-9ecb-a65c90a1093c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\object\boxing\internal">
+      <UniqueIdentifier>{3eeb11b4-6471-445d-a2bd-d334fe968cdb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1324,32 +1330,8 @@
     <ClInclude Include="src\zaf\object\object.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\string.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\boxed.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\box_represent.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\built_in_box_types.h">
-      <Filter>zaf\object\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\get_box_type.h">
-      <Filter>zaf\object\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\numeric.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\list_box_delegate.h">
       <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\unboxer.h">
-      <Filter>zaf\object\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\tree_data_source.h">
       <Filter>zaf\control</Filter>
@@ -1439,9 +1421,6 @@
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\object\internal\is_equal_comparable.h">
-      <Filter>zaf\object\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\box_represent_equal.h">
       <Filter>zaf\object\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\hash.h">
@@ -1629,6 +1608,33 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\internal\property_registrar.h">
       <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\boxed_object.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\boxing.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\numeric.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\string.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent.h">
+      <Filter>zaf\object\boxing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent_equal.h">
+      <Filter>zaf\object\boxing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\internal\built_in_box_types.h">
+      <Filter>zaf\object\boxing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\internal\get_box_type.h">
+      <Filter>zaf\object\boxing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\internal\unboxer.h">
+      <Filter>zaf\object\boxing\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

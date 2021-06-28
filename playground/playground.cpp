@@ -28,8 +28,8 @@
 #include <zaf/object/type_definition.h>
 #include <zaf/resource/resource_manager.h>
 #include <zaf/parsing/parsers/control_parser.h>
-#include <zaf/object/string.h>
-#include <zaf/object/boxing.h>
+#include <zaf/object/boxing/string.h>
+#include <zaf/object/boxing/boxing.h>
 #include <zaf/control/combo_box.h>
 #include <zaf/control/tree_control.h>
 #include <zaf/control/tree_data_source.h>

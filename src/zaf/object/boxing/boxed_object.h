@@ -1,26 +1,26 @@
 #pragma once
 
 #include <type_traits>
-#include <zaf/object/box_represent.h>
-#include <zaf/object/internal/box_represent_equal.h>
-#include <zaf/object/internal/built_in_box_types.h>
+#include <zaf/object/boxing/internal/boxed_represent.h>
+#include <zaf/object/boxing/internal/boxed_represent_equal.h>
+#include <zaf/object/boxing/internal/built_in_box_types.h>
 #include <zaf/object/internal/is_equal_comparable.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
 
 template<typename T>
-class Boxed : public Object, public BoxRepresent<T> {
+class BoxedObject : public Object, public internal::BoxedRepresent<T> {
 public:
     static_assert(
         !internal::HasBuiltInBoxType<T>::Value,
-        "Cannot use Boxed with type T which has built-in box type.");
+        "Cannot use BoxedObject with type T which has built-in box type.");
 
     static_assert(
         !std::is_base_of_v<Object, T>, 
-        "Cannot use Boxed with type T which is derived from Object.");
+        "Cannot use BoxedObject with type T which is derived from Object.");
 
-    using BoxRepresent<T>::BoxRepresent;
+    using BoxedRepresent<T>::BoxedRepresent;
 
     bool IsEqual(const Object& object) const override {
         return InnerIsEqual(object);
@@ -33,7 +33,7 @@ public:
 private:
     template<typename Enable = std::enable_if_t<internal::IsEqualComparable<T>::Value>>
     bool InnerIsEqual(const Object& object) const {
-        return internal::BoxRepresentEqual(*this, object);
+        return internal::BoxedRepresentEqual(*this, object);
     }
 
     template<typename Enable = std::enable_if_t<!internal::IsEqualComparable<T>::Value>>
