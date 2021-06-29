@@ -2,7 +2,7 @@
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/parsing/parsers/font_parser.h>
-#include <zaf/parsing/xaml_node_parse_helper.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 namespace {

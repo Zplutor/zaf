@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <zaf/graphic/color.h>
 #include <zaf/parsing/parsers/color_parser.h>
-#include <zaf/parsing/xaml_node.h>
-#include <zaf/parsing/xaml_reader.h>
+#include <zaf/object/parsing/xaml_node.h>
+#include <zaf/object/parsing/xaml_reader.h>
 #include "utility.h"
 
 TEST(ColorParser, ParseFromAttribute) {

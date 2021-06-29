@@ -1,4 +1,4 @@
-#include <zaf/parsing/xaml_reader.h>
+#include <zaf/object/parsing/xaml_reader.h>
 #include <atlbase.h>
 #include <Shlwapi.h>
 #include <zaf/base/error/com_error.h>

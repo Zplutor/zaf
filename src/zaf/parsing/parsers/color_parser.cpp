@@ -1,7 +1,7 @@
 #include <zaf/parsing/parsers/color_parser.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/graphic/color.h>
-#include <zaf/parsing/xaml_node_parse_helper.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 namespace {

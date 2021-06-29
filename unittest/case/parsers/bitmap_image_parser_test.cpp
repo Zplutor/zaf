@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/creation.h>
-#include <zaf/parsing/helpers.h>
+#include <zaf/object/parsing/helpers.h>
 #include <zaf/graphic/image/bitmap_image.h>
 #include <zaf/parsing/parsers/bitmap_image_parser.h>
 

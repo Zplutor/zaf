@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/graphic/point.h>
-#include <zaf/parsing/helpers.h>
+#include <zaf/object/parsing/helpers.h>
 
 using namespace zaf;
 

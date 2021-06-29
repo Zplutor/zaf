@@ -1,6 +1,6 @@
 #include <zaf/parsing/parsers/scrollable_control_parser.h>
 #include <zaf/control/scrollable_control.h>
-#include <zaf/parsing/xaml_node_parse_helper.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 

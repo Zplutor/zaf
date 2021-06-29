@@ -1,6 +1,6 @@
 #include <zaf/parsing/parsers/ellipse_parser.h>
 #include <zaf/graphic/ellipse.h>
-#include <zaf/parsing/xaml_node_parse_helper.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 

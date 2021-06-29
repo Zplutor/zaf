@@ -2,8 +2,8 @@
 #include <zaf/object/type_definition.h>
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
 #include <zaf/object/boxing/internal/string_conversion_shim.h>
-#include <zaf/parsing/object_parser.h>
-#include <zaf/parsing/xaml_node.h>
+#include <zaf/object/parsing/object_parser.h>
+#include <zaf/object/parsing/xaml_node.h>
 
 namespace zaf {
 namespace {

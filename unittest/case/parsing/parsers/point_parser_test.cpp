@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <zaf/graphic/point.h>
 #include <zaf/parsing/parsers/point_parser.h>
-#include <zaf/parsing/xaml_node.h>
-#include <zaf/parsing/xaml_reader.h>
+#include <zaf/object/parsing/xaml_node.h>
+#include <zaf/object/parsing/xaml_reader.h>
 
 TEST(PointParser, ParseFromAttribute) {
 

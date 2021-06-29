@@ -17,8 +17,8 @@
 #include <zaf/object/object_type.h>
 #include <zaf/reflection/reflection_manager.h>
 #include <zaf/object/object_property.h>
-#include <zaf/parsing/helpers.h>
-#include <zaf/parsing/xaml_reader.h>
+#include <zaf/object/parsing/helpers.h>
+#include <zaf/object/parsing/xaml_reader.h>
 #include <zaf/reflection/creation.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/label.h>

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <string>
-#include <zaf/parsing/object_parser.h>
-#include <zaf/parsing/xaml_node.h>
+#include <zaf/object/parsing/object_parser.h>
+#include <zaf/object/parsing/xaml_node.h>
 #include <zaf/reflection/creation.h>
 
 namespace zaf {

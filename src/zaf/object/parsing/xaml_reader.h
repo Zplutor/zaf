@@ -1,7 +1,7 @@
 #pragma once
 
 #include <xmllite.h>
-#include <zaf/parsing/xaml_node.h>
+#include <zaf/object/parsing/xaml_node.h>
 
 namespace zaf {
 

@@ -1,8 +1,8 @@
 #include <zaf/parsing/parsers/point_parser.h>
 #include <zaf/graphic/point.h>
 #include <zaf/parsing/parsers/internal/utility.h>
-#include <zaf/parsing/xaml_node.h>
-#include <zaf/parsing/xaml_node_parse_helper.h>
+#include <zaf/object/parsing/xaml_node.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 

@@ -2,7 +2,7 @@
 #include <zaf/application.h>
 #include <zaf/base/string/split.h>
 #include <zaf/parsing/parsers/internal/utility.h>
-#include <zaf/parsing/xaml_node_parse_helper.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 #include <zaf/reflection/creation.h>
 #include <zaf/window/window.h>
 

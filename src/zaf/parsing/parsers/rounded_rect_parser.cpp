@@ -1,7 +1,7 @@
 #include <zaf/parsing/parsers/rounded_rect_parser.h>
 #include <zaf/graphic/rounded_rect.h>
-#include <zaf/parsing/xaml_node.h>
-#include <zaf/parsing/xaml_node_parse_helper.h>
+#include <zaf/object/parsing/xaml_node.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 

@@ -1,6 +1,6 @@
 #include <zaf/parsing/parsers/linear_layouter_parser.h>
 #include <zaf/control/layout/linear_layouter.h>
-#include <zaf/parsing/xaml_node_parse_helper.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 namespace {

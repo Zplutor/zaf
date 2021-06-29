@@ -4,7 +4,7 @@
 #include <zaf/control/control.h>
 #include <zaf/graphic/image/bitmap_image.h>
 #include <zaf/parsing/parsers/internal/utility.h>
-#include <zaf/parsing/xaml_node_parse_helper.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 namespace {

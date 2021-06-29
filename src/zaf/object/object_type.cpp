@@ -1,5 +1,5 @@
 #include <zaf/object/object_type.h>
-#include <zaf/parsing/object_parser.h>
+#include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/object_property.h>
 
 namespace zaf {

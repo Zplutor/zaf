@@ -154,6 +154,9 @@
     <Filter Include="zaf\object\boxing\internal">
       <UniqueIdentifier>{3eeb11b4-6471-445d-a2bd-d334fe968cdb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\object\parsing">
+      <UniqueIdentifier>{668ce856-de97-4b3d-9dff-b0cfd3fdace0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -334,9 +337,6 @@
     <ClCompile Include="src\zaf\graphic\alignment.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\parsing\xaml_reader.cpp">
-      <Filter>zaf\parsing</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\point_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
@@ -348,9 +348,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp">
       <Filter>zaf\reflection</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\xaml_node.cpp">
-      <Filter>zaf\parsing</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\internal\utility.cpp">
       <Filter>zaf\parsing\parsers\internal</Filter>
@@ -385,9 +382,6 @@
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp">
       <Filter>zaf\base\registry</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\parsing\xaml_node_parse_helper.cpp">
-      <Filter>zaf\parsing</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\check_box_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
@@ -396,9 +390,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\reflection\creation.cpp">
       <Filter>zaf\reflection</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\helpers.cpp">
-      <Filter>zaf\parsing</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\layout\layouter.cpp">
       <Filter>zaf\control\layout</Filter>
@@ -678,6 +669,18 @@
     </ClCompile>
     <ClCompile Include="src\zaf\object\boxing\numeric.cpp">
       <Filter>zaf\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\helpers.cpp">
+      <Filter>zaf\object\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\xaml_node.cpp">
+      <Filter>zaf\object\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\xaml_node_parse_helper.cpp">
+      <Filter>zaf\object\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\xaml_reader.cpp">
+      <Filter>zaf\object\parsing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1075,12 +1078,6 @@
     <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h">
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\parsing\object_parser.h">
-      <Filter>zaf\parsing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\xaml_reader.h">
-      <Filter>zaf\parsing</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\point_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
@@ -1174,9 +1171,6 @@
     <ClInclude Include="src\zaf\reflection\reflection_manager.h">
       <Filter>zaf\reflection</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\parsing\xaml_node.h">
-      <Filter>zaf\parsing</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\string\split.h">
       <Filter>zaf\base\string</Filter>
     </ClInclude>
@@ -1197,12 +1191,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\handle.h">
       <Filter>zaf\base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\xaml_node_parse_helper.h">
-      <Filter>zaf\parsing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\helpers.h">
-      <Filter>zaf\parsing</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\linear_layouter.h">
       <Filter>zaf\control\layout</Filter>
@@ -1644,6 +1632,24 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\boxing\internal\string_conversion_shim.h">
       <Filter>zaf\object\boxing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\helpers.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\object_parser.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\xaml_node.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\xaml_node_parse_helper.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\xaml_reader.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\utility.h">
+      <Filter>zaf\object\parsing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

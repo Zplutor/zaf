@@ -1,6 +1,6 @@
 #include <zaf/parsing/parsers/check_box_parser.h>
 #include <zaf/control/check_box.h>
-#include <zaf/parsing/xaml_node_parse_helper.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 namespace {
