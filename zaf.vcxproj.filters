@@ -1648,8 +1648,5 @@
     <ClInclude Include="src\zaf\object\parsing\xaml_reader.h">
       <Filter>zaf\object\parsing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\parsing\utility.h">
-      <Filter>zaf\object\parsing</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

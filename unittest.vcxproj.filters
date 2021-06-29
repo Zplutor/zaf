@@ -64,9 +64,6 @@
     <Filter Include="case\object\boxing">
       <UniqueIdentifier>{41b90e79-575a-4f83-85c4-7ca5c0e2f5fd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="case\object\parsing">
-      <UniqueIdentifier>{17803a40-e003-439b-8a36-b5652313ef85}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -249,9 +246,6 @@
     </ClCompile>
     <ClCompile Include="unittest\case\object\boxing\string_boxed_type_test.cpp">
       <Filter>case\object\boxing</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\object\parsing\parsing_utility_test.cpp">
-      <Filter>case\object\parsing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

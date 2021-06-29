@@ -421,7 +421,6 @@
     <ClInclude Include="src\zaf\object\object_type.h" />
     <ClInclude Include="src\zaf\object\parsing\helpers.h" />
     <ClInclude Include="src\zaf\object\parsing\object_parser.h" />
-    <ClInclude Include="src\zaf\object\parsing\utility.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_node.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_node_parse_helper.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_reader.h" />
