@@ -9,7 +9,7 @@ bool BoxedRepresentEqual(const T& boxed, const Object& other) {
 
     auto other_boxed = dynamic_cast<const T*>(&other);
     if (other_boxed) {
-        return boxed.GetValue() == other_boxed->GetValue();
+        return boxed.Value() == other_boxed->Value();
     }
     return false;
 }

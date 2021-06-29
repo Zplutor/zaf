@@ -22,7 +22,7 @@ struct GeneralUnboxer {
 
         auto boxed_object = dynamic_cast<const typename GetGeneralBoxType<T>::Type*>(&object);
         if (boxed_object) {
-            return &boxed_object->GetValue();
+            return &boxed_object->Value();
         }
         return nullptr;
     }

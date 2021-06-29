@@ -9,23 +9,23 @@ TEST(BoxingTest, Box) {
 
     std::string string{ "String" };
     std::shared_ptr<String> boxed_string = Box(string);
-    ASSERT_EQ(boxed_string->GetValue(), string);
+    ASSERT_EQ(boxed_string->Value(), string);
 
     const char* chars = "Chars";
     boxed_string = Box(chars);
-    ASSERT_EQ(boxed_string->GetValue(), chars);
+    ASSERT_EQ(boxed_string->Value(), chars);
 
     std::wstring wide_string{ L"WideString" };
     std::shared_ptr<WideString> boxed_wide_string = Box(wide_string);
-    ASSERT_EQ(boxed_wide_string->GetValue(), wide_string);
+    ASSERT_EQ(boxed_wide_string->Value(), wide_string);
 
     const wchar_t* wide_chars = L"WideChars";
     boxed_wide_string = Box(wide_chars);
-    ASSERT_EQ(boxed_wide_string->GetValue(), wide_chars);
+    ASSERT_EQ(boxed_wide_string->Value(), wide_chars);
 
     std::vector<int> vector{ 0, 1, 2 };
     std::shared_ptr<BoxedObject<std::vector<int>>> boxed_vector = Box(vector);
-    ASSERT_EQ(boxed_vector->GetValue(), vector);
+    ASSERT_EQ(boxed_vector->Value(), vector);
 
     Rect rect{ 10, 10, 20, 20 };
     std::shared_ptr<Rect> boxed_rect = Box(rect);

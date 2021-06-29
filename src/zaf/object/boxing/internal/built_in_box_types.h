@@ -9,7 +9,7 @@ struct GetBuiltInBoxType {
     using Type = void;
 };
 
-#define ZAF_INTERNAL_DEFINE_BUILT_IN_BOX_TYPE(OriginalType, BoxType)  \
+#define ZAF_INTERNAL_DEFINE_BUILT_IN_BOXED_TYPE(OriginalType, BoxType)  \
 template<>                                                            \
 struct internal::GetBuiltInBoxType<OriginalType> {                    \
     using Type = BoxType;                                             \

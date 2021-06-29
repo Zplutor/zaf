@@ -43,7 +43,7 @@ private:
 
     template<typename Enable = std::enable_if_t<internal::IsEqualComparable<T>::Value>>
     std::size_t InnerHash() const {
-        return std::hash<T>()(GetValue());
+        return std::hash<T>()(Value());
     }
 
     template<typename Enable = std::enable_if_t<!internal::IsEqualComparable<T>::Value>>

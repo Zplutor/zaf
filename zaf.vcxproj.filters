@@ -673,6 +673,12 @@
     <ClCompile Include="src\zaf\object\internal\object_initializer.cpp">
       <Filter>zaf\object\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\object\boxing\string.cpp">
+      <Filter>zaf\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\boxing\numeric.cpp">
+      <Filter>zaf\object\boxing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1634,6 +1640,9 @@
       <Filter>zaf\object\boxing\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\object\boxing\internal\unboxer.h">
+      <Filter>zaf\object\boxing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\internal\string_conversion_shim.h">
       <Filter>zaf\object\boxing\internal</Filter>
     </ClInclude>
   </ItemGroup>

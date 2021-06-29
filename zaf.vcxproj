@@ -127,6 +127,8 @@
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
     <ClCompile Include="src\zaf\internal\system_message_window.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
+    <ClCompile Include="src\zaf\object\boxing\numeric.cpp" />
+    <ClCompile Include="src\zaf\object\boxing\string.cpp" />
     <ClCompile Include="src\zaf\object\internal\object_initializer.cpp" />
     <ClCompile Include="src\zaf\object\object.cpp" />
     <ClCompile Include="src\zaf\object\object_type.cpp" />
@@ -405,6 +407,7 @@
     <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent_equal.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\built_in_box_types.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\get_box_type.h" />
+    <ClInclude Include="src\zaf\object\boxing\internal\string_conversion_shim.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\unboxer.h" />
     <ClInclude Include="src\zaf\object\boxing\numeric.h" />
     <ClInclude Include="src\zaf\object\boxing\string.h" />

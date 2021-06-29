@@ -241,7 +241,10 @@
     <ClCompile Include="unittest\case\object\boxing\boxing_test.cpp">
       <Filter>case\object\boxing</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\boxing\built_in_box_type_test.cpp">
+    <ClCompile Include="unittest\case\object\boxing\numeric_boxed_type_test.cpp">
+      <Filter>case\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing\string_boxed_type_test.cpp">
       <Filter>case\object\boxing</Filter>
     </ClCompile>
   </ItemGroup>
