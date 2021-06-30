@@ -1,11 +1,11 @@
 #include <zaf/graphic/rounded_rect.h>
-#include <zaf/object/equality_type.h>
+#include <zaf/object/equality.h>
 #include <zaf/parsing/parsers/rounded_rect_parser.h>
 #include <zaf/object/type_definition.h>
 
 namespace zaf {
 
-ZAF_DEFINE_EQUALITY_TYPE(RoundedRect)
+ZAF_DEFINE_EQUALITY(RoundedRect)
 
 ZAF_DEFINE_TYPE(RoundedRect)
     ZAF_DEFINE_PARSER(RoundedRectParser)

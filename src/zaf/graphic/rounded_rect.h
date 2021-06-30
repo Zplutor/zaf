@@ -8,7 +8,7 @@ namespace zaf {
 
 class RoundedRect : public Object {
 public:
-    ZAF_DECLARE_EQUALITY_TYPE
+    ZAF_DECLARE_EQUALITY
     ZAF_DECLARE_TYPE
 
 public:

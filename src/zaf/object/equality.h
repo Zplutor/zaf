@@ -2,12 +2,12 @@
 
 #include <functional>
 
-#define ZAF_DECLARE_EQUALITY_TYPE                                                                  \
+#define ZAF_DECLARE_EQUALITY                                                                       \
 bool IsEqual(const Object& other) const override;                                                  \
 std::size_t Hash() const override;                                                                 
 
 
-#define ZAF_DEFINE_EQUALITY_TYPE(ClassName)                                                        \
+#define ZAF_DEFINE_EQUALITY(ClassName)                                                             \
 bool ClassName::IsEqual(const Object& other) const {                                               \
     auto other_object = dynamic_cast<const ClassName*>(&other);                                    \
     if (other_object) {                                                                            \

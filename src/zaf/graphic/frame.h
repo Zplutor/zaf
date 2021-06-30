@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
-#include <zaf/object/equality_type.h>
+#include <zaf/object/equality.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
@@ -13,7 +13,7 @@ namespace zaf {
  */
 class Frame : public Object {
 public:
-    ZAF_DECLARE_EQUALITY_TYPE
+    ZAF_DECLARE_EQUALITY
     ZAF_DECLARE_TYPE
 
 public:

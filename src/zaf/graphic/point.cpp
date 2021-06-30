@@ -4,10 +4,10 @@
 
 namespace zaf {
 
-ZAF_DEFINE_EQUALITY_TYPE(Point)
-
 ZAF_DEFINE_TYPE(Point)
-    ZAF_DEFINE_PARSER(PointParser)
+ZAF_DEFINE_PARSER(PointParser)
 ZAF_DEFINE_END
+
+ZAF_DEFINE_EQUALITY(Point)
 
 }

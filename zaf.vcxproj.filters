@@ -1420,7 +1420,7 @@
     <ClInclude Include="src\zaf\base\hash.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\equality_type.h">
+    <ClInclude Include="src\zaf\object\equality.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_data_helpers.h">

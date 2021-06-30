@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-ZAF_DEFINE_EQUALITY_TYPE(Size)
+ZAF_DEFINE_EQUALITY(Size)
 
 ZAF_DEFINE_TYPE(Size)
     ZAF_DEFINE_PARSER(SizeParser)

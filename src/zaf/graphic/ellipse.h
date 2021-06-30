@@ -2,13 +2,13 @@
 
 #include <zaf/base/hash.h>
 #include <zaf/graphic/point.h>
-#include <zaf/object/equality_type.h>
+#include <zaf/object/equality.h>
 
 namespace zaf {
 	
 class Ellipse : public Object {
 public:
-	ZAF_DECLARE_EQUALITY_TYPE
+	ZAF_DECLARE_EQUALITY
     ZAF_DECLARE_TYPE
 
 public:

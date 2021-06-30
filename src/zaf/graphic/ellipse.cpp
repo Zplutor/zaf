@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-ZAF_DEFINE_EQUALITY_TYPE(Ellipse)
+ZAF_DEFINE_EQUALITY(Ellipse)
 
 ZAF_DEFINE_TYPE(Ellipse)
     ZAF_DEFINE_PARSER(EllipseParser)

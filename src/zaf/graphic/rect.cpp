@@ -9,7 +9,7 @@
 
 namespace zaf {
 
-ZAF_DEFINE_EQUALITY_TYPE(Rect)
+ZAF_DEFINE_EQUALITY(Rect)
 
 ZAF_DEFINE_TYPE(Rect)
     ZAF_DEFINE_PARSER(RectParser)

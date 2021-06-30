@@ -411,7 +411,7 @@
     <ClInclude Include="src\zaf\object\boxing\internal\unboxer.h" />
     <ClInclude Include="src\zaf\object\boxing\numeric.h" />
     <ClInclude Include="src\zaf\object\boxing\string.h" />
-    <ClInclude Include="src\zaf\object\equality_type.h" />
+    <ClInclude Include="src\zaf\object\equality.h" />
     <ClInclude Include="src\zaf\object\internal\is_equal_comparable.h" />
     <ClInclude Include="src\zaf\object\internal\object_initializer.h" />
     <ClInclude Include="src\zaf\object\internal\property_deduction.h" />
