@@ -12,7 +12,7 @@ struct PropertyName##Accessor {                                                 
         typename zaf::internal::DeduceGetterType<decltype(&T::PropertyName)>::Type;                \
     template<typename T>                                                                           \
     using SetterValueType =                                                                        \
-        typename zaf::internal::DeduceSetterType<decltype(&T::##PropertyName)>::Type;              \
+        typename zaf::internal::DeduceSetterType<decltype(&T::Set##PropertyName)>::Type;           \
     template<typename T>                                                                           \
     static std::any Get(                                                                           \
         const T& object,                                                                           \
@@ -28,7 +28,7 @@ struct PropertyName##Accessor {                                                 
         T& object,                                                                                 \
         const std::any& value,                                                                     \
         SetterValueType<T>* value_type) {                                                          \
-        object.Set##PropertyName(std::any_cast<decltype(*value_type)>(value));                     \
+        object.Set##PropertyName(std::any_cast<std::decay_t<decltype(*value_type)>>(value));       \
     }                                                                                              \
     template<typename T>                                                                           \
     static void Set(T& object, const std::any& value, ...) {                                       \
@@ -42,7 +42,7 @@ struct PropertyName##Accessor {                                                 
     static constexpr SetterValueType<T>* DeduceValueType(void*) {                                  \
         return nullptr;                                                                            \
     }                                                                                              \
-    using ValueType = decltype(*DeduceValueType<Class>(nullptr));                                  \
+    using ValueType = std::remove_pointer_t<decltype(DeduceValueType<Class>(nullptr))>;            \
 };                                                                                                 \
 class PropertyName##Property : public zaf::ObjectProperty {                                        \
 public:                                                                                            \
@@ -51,7 +51,11 @@ public:                                                                         
 		return name;                                                                               \
 	}                                                                                              \
     ObjectType* GetValueType() const override {                                                    \
-		return zaf::internal::GetBoxType<typename PropertyName##Accessor::ValueType>::Type::Type;  \
+        using ValueType =                                                                          \
+            zaf::internal::GetBoxType<typename PropertyName##Accessor::ValueType>::Type;           \
+        static_assert(zaf::internal::IsReflectionType<ValueType>::Value,                           \
+            "This type of value is not supported by property.");                                   \
+		return ValueType::Type;                                                                    \
 	}                                                                                              \
     std::any GetValue(const zaf::Object& object) const override {                                  \
         return PropertyName##Accessor::Get(dynamic_cast<const Class&>(object), nullptr);           \

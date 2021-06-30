@@ -247,6 +247,9 @@
     <ClCompile Include="unittest\case\object\boxing\string_boxed_type_test.cpp">
       <Filter>case\object\boxing</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\object\property_test.cpp">
+      <Filter>case\object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
