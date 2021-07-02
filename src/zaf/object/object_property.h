@@ -18,6 +18,9 @@ public:
 
 	virtual const std::wstring& GetName() const = 0;
 
+	virtual bool CanGet() const = 0;
+	virtual bool CanSet() const = 0;
+
 	virtual ObjectType* GetValueType() const = 0;
 
 	virtual std::any GetValue(const Object& object) const = 0;

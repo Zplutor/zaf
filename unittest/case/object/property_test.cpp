@@ -47,6 +47,10 @@ public:
 		return {};
 	}
 
+	int int_field{};
+	zaf::Size size_field{};
+	RECT rect_field{};
+
 private:
 	int read_write_value_{};
 	int write_only_value_{};
@@ -59,8 +63,11 @@ ZAF_DEFINE_PROPERTY(WriteOnly)
 ZAF_DEFINE_PROPERTY(FloatType)
 ZAF_DEFINE_PROPERTY(StringType)
 ZAF_DEFINE_PROPERTY(SizeType)
-//Un-comment below line whould cause static assertion.
+ZAF_DEFINE_PROPERTY_WITH_FIELD(IntField, int_field)
+ZAF_DEFINE_PROPERTY_WITH_FIELD(SizeField, size_field)
+//Un-comment below lines whould cause static assertion.
 //ZAF_DEFINE_PROPERTY(RectType) 
+//ZAF_DEFINE_PROPERTY_WITH_FIELD(RectField, rect_field)
 ZAF_DEFINE_END
 
 }
@@ -72,6 +79,8 @@ TEST(PropertyTest, ReadWrite) {
 	auto property = host.GetType()->FindProperty(L"ReadWrite");
 	ASSERT_NE(property, nullptr);
 	ASSERT_EQ(property->GetName(), L"ReadWrite");
+	ASSERT_TRUE(property->CanGet());
+	ASSERT_TRUE(property->CanSet());
 
 	property->SetValue(host, 19);
 	auto value = std::any_cast<int>(property->GetValue(host));
@@ -85,6 +94,8 @@ TEST(PropertyTest, ReadOnly) {
 	auto property = host.GetType()->FindProperty(L"ReadOnly");
 	ASSERT_NE(property, nullptr);
 	ASSERT_EQ(property->GetName(), L"ReadOnly");
+	ASSERT_TRUE(property->CanGet());
+	ASSERT_FALSE(property->CanSet());
 
 	auto value = std::any_cast<int>(property->GetValue(host));
 	ASSERT_EQ(value, ReadOnlyValue);
@@ -99,6 +110,8 @@ TEST(PropertyTest, WriteOnly) {
 	auto property = host.GetType()->FindProperty(L"WriteOnly");
 	ASSERT_NE(property, nullptr);
 	ASSERT_EQ(property->GetName(), L"WriteOnly");
+	ASSERT_FALSE(property->CanGet());
+	ASSERT_TRUE(property->CanSet());
 
 	property->SetValue(host, 76);
 	ASSERT_EQ(host.GetWriteOnlyValue(), 76);
@@ -137,4 +150,34 @@ TEST(PropertyTest, ObjectType) {
 
 	auto type = property->GetValueType();
 	ASSERT_EQ(type->GetName(), L"Size");
+}
+
+
+TEST(PropertyTest, NumericTypeField) {
+
+	PropertyHost host;
+	auto property = host.GetType()->FindProperty(L"IntField");
+	ASSERT_NE(property, nullptr);
+	ASSERT_TRUE(property->CanGet());
+	ASSERT_TRUE(property->CanSet());
+
+	property->SetValue(host, 938);
+
+	int value = std::any_cast<int>(property->GetValue(host));
+	ASSERT_EQ(value, 938);
+}
+
+
+TEST(PropertyTest, ObjectTypeField) {
+
+	PropertyHost host;
+	auto property = host.GetType()->FindProperty(L"SizeField");
+	ASSERT_NE(property, nullptr);
+	ASSERT_TRUE(property->CanGet());
+	ASSERT_TRUE(property->CanSet());
+
+	property->SetValue(host, zaf::Size{ 78, 87 });
+
+	auto value = std::any_cast<zaf::Size>(property->GetValue(host));
+	ASSERT_EQ(value, zaf::Size(78, 87));
 }
