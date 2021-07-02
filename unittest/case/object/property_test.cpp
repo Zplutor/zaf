@@ -82,9 +82,11 @@ TEST(PropertyTest, ReadWrite) {
 	ASSERT_TRUE(property->CanGet());
 	ASSERT_TRUE(property->CanSet());
 
-	property->SetValue(host, 19);
-	auto value = std::any_cast<int>(property->GetValue(host));
-	ASSERT_EQ(value, 19);
+	property->SetValue(host, zaf::Box(19));
+	auto boxed_value = property->GetValue(host);
+	auto value = zaf::TryUnbox<int>(boxed_value);
+	ASSERT_NE(value, nullptr);
+	ASSERT_EQ(*value, 19);
 }
 
 
@@ -97,10 +99,12 @@ TEST(PropertyTest, ReadOnly) {
 	ASSERT_TRUE(property->CanGet());
 	ASSERT_FALSE(property->CanSet());
 
-	auto value = std::any_cast<int>(property->GetValue(host));
-	ASSERT_EQ(value, ReadOnlyValue);
+	auto boxed_value = property->GetValue(host);
+	auto value = zaf::TryUnbox<int>(boxed_value);
+	ASSERT_NE(value, nullptr);
+	ASSERT_EQ(*value, ReadOnlyValue);
 
-	ASSERT_THROW(property->SetValue(host, 74), std::exception);
+	ASSERT_THROW(property->SetValue(host, zaf::Box(74)), std::exception);
 }
 
 
@@ -113,7 +117,7 @@ TEST(PropertyTest, WriteOnly) {
 	ASSERT_FALSE(property->CanGet());
 	ASSERT_TRUE(property->CanSet());
 
-	property->SetValue(host, 76);
+	property->SetValue(host, zaf::Box(76));
 	ASSERT_EQ(host.GetWriteOnlyValue(), 76);
 
 	ASSERT_THROW(property->GetValue(host), std::exception);
@@ -161,10 +165,12 @@ TEST(PropertyTest, NumericTypeField) {
 	ASSERT_TRUE(property->CanGet());
 	ASSERT_TRUE(property->CanSet());
 
-	property->SetValue(host, 938);
+	property->SetValue(host, zaf::Box(938));
 
-	int value = std::any_cast<int>(property->GetValue(host));
-	ASSERT_EQ(value, 938);
+	auto boxed_value = property->GetValue(host);
+	auto value = zaf::TryUnbox<int>(boxed_value);
+	ASSERT_NE(value, nullptr);
+	ASSERT_EQ(*value, 938);
 }
 
 
@@ -178,6 +184,8 @@ TEST(PropertyTest, ObjectTypeField) {
 
 	property->SetValue(host, zaf::Size{ 78, 87 });
 
-	auto value = std::any_cast<zaf::Size>(property->GetValue(host));
-	ASSERT_EQ(value, zaf::Size(78, 87));
+	auto boxed_value = property->GetValue(host);
+	auto value = zaf::TryUnbox<zaf::Size>(boxed_value);
+	ASSERT_NE(value, nullptr);
+	ASSERT_EQ(*value, zaf::Size(78, 87));
 }

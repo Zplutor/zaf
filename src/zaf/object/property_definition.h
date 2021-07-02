@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/object/boxing/boxing.h>
 #include <zaf/object/boxing/internal/get_box_type.h>
 #include <zaf/object/internal/property_deduction.h>
 #include <zaf/object/internal/property_registrar.h>
@@ -24,40 +25,39 @@ struct PropertyName##Accessor {                                                 
     using SetterValueType =                                                                        \
         typename zaf::internal::DeduceSetterType<decltype(&T::Set##PropertyName)>::Type;           \
     template<typename T>                                                                           \
-    static constexpr bool CanGet(GetterValueType<T>*) {                                            \
+    static constexpr bool InnerCanGet(GetterValueType<T>*) {                                       \
         return true;                                                                               \
     }                                                                                              \
     template<typename T>                                                                           \
-    static constexpr bool CanGet(...) {                                                            \
+    static constexpr bool InnerCanGet(...) {                                                       \
         return false;                                                                              \
     }                                                                                              \
     template<typename T>                                                                           \
-    static constexpr bool CanSet(SetterValueType<T>*) {                                            \
+    static constexpr bool InnerCanSet(SetterValueType<T>*) {                                       \
         return true;                                                                               \
     }                                                                                              \
     template<typename T>                                                                           \
-    static constexpr bool CanSet(...) {                                                            \
+    static constexpr bool InnerCanSet(...) {                                                       \
         return false;                                                                              \
     }                                                                                              \
     template<typename T>                                                                           \
-    static std::any Get(                                                                           \
-        const T& object,                                                                           \
-        GetterValueType<T>*) {                                                                     \
-        return object.PropertyName();                                                              \
+    static std::shared_ptr<zaf::Object> InnerGet(const T& object, GetterValueType<T>*) {           \
+        return zaf::Box(object.PropertyName());                                                    \
     }                                                                                              \
     template<typename T>                                                                           \
-    static std::any Get(const T& object, ...) {                                                    \
+    static std::shared_ptr<zaf::Object> InnerGet(const T& object, ...) {                           \
         throw std::exception{};                                                                    \
     }                                                                                              \
     template<typename T>                                                                           \
-    static void Set(                                                                               \
-        T& object,                                                                                 \
-        const std::any& value,                                                                     \
-        SetterValueType<T>* value_type) {                                                          \
-        object.Set##PropertyName(std::any_cast<std::decay_t<decltype(*value_type)>>(value));       \
+    static void InnerSet(T& object, const zaf::Object& value, SetterValueType<T>* value_type) {    \
+        auto unboxed_value = zaf::TryUnbox<std::decay_t<decltype(*value_type)>>(value);            \
+        if (!unboxed_value) {                                                                      \
+            throw std::exception{};                                                                \
+        }                                                                                          \
+        object.Set##PropertyName(*unboxed_value);                                                  \
     }                                                                                              \
     template<typename T>                                                                           \
-    static void Set(T& object, const std::any& value, ...) {                                       \
+    static void InnerSet(T& object, const zaf::Object& value, ...) {                               \
         throw std::exception{};                                                                    \
     }                                                                                              \
     template<typename T>                                                                           \
@@ -68,7 +68,16 @@ struct PropertyName##Accessor {                                                 
     static constexpr SetterValueType<T>* DeduceValueType(...) {                                    \
         return nullptr;                                                                            \
     }                                                                                              \
+public:                                                                                            \
     using ValueType = std::remove_pointer_t<decltype(DeduceValueType<Class>(nullptr))>;            \
+    static constexpr bool CanGet = InnerCanGet<Class>(nullptr);                                    \
+    static constexpr bool CanSet = InnerCanSet<Class>(nullptr);                                    \
+    static std::shared_ptr<zaf::Object> Get(const zaf::Object& object) {                           \
+        return InnerGet(dynamic_cast<const Class&>(object), nullptr);                              \
+    }                                                                                              \
+    static void Set(zaf::Object& object, const zaf::Object& value) {                               \
+        InnerSet(dynamic_cast<Class&>(object), value, nullptr);                                    \
+    }                                                                                              \
 };                                                                                                 \
 class PropertyName##Property : public zaf::ObjectProperty {                                        \
 public:                                                                                            \
@@ -84,16 +93,16 @@ public:                                                                         
 		return ValueType::Type;                                                                    \
 	}                                                                                              \
     bool CanGet() const override {                                                                 \
-        return PropertyName##Accessor::CanGet<Class>(nullptr);                                     \
+        return PropertyName##Accessor::CanGet;                                                     \
     }                                                                                              \
     bool CanSet() const override {                                                                 \
-        return PropertyName##Accessor::CanSet<Class>(nullptr);                                     \
+        return PropertyName##Accessor::CanSet;                                                     \
     }                                                                                              \
-    std::any GetValue(const zaf::Object& object) const override {                                  \
-        return PropertyName##Accessor::Get(dynamic_cast<const Class&>(object), nullptr);           \
+    std::shared_ptr<zaf::Object> GetValue(const zaf::Object& object) const override {              \
+        return PropertyName##Accessor::Get(object);                                                \
     }                                                                                              \
-    void SetValue(zaf::Object& object, const std::any& value) const override {                     \
-        return PropertyName##Accessor::Set(dynamic_cast<Class&>(object), value, nullptr);          \
+    void SetValue(zaf::Object& object, const zaf::Object& value) const override {                  \
+        return PropertyName##Accessor::Set(object, value);                                         \
     }                                                                                              \
 };                                                                                                 \
 __ZAF_INTERNAL_DEFINE_PROPERTY_VARIABLE(PropertyName)
@@ -119,12 +128,16 @@ public:                                                                         
     bool CanSet() const override {                                                                 \
         return true;                                                                               \
     }                                                                                              \
-    std::any GetValue(const zaf::Object& object) const override {                                  \
-        return dynamic_cast<const Class&>(object).FieldName;                                       \
+    std::shared_ptr<zaf::Object> GetValue(const zaf::Object& object) const override {              \
+        return zaf::Box(dynamic_cast<const Class&>(object).FieldName);                             \
     }                                                                                              \
-    void SetValue(zaf::Object& object, const std::any& value) const override {                     \
-        dynamic_cast<Class&>(object).FieldName =                                                   \
-            std::any_cast<decltype(reinterpret_cast<Class*>(0)->FieldName)>(value);                \
+    void SetValue(zaf::Object& object, const zaf::Object& value) const override {                  \
+        auto unboxed_value =                                                                       \
+            zaf::TryUnbox<decltype(reinterpret_cast<Class*>(0)->FieldName)>(value);                \
+        if (!unboxed_value) {                                                                      \
+            throw std::exception{};                                                                \
+        }                                                                                          \
+        dynamic_cast<Class&>(object).FieldName = *unboxed_value;                                   \
     }                                                                                              \
 };                                                                                                 \
 __ZAF_INTERNAL_DEFINE_PROPERTY_VARIABLE(PropertyName)
