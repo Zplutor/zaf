@@ -14,15 +14,36 @@ std::shared_ptr<typename internal::GetBoxType<T>::Type> Box(const T& value) {
 
 template<typename T>
 const T* TryUnbox(const Object& object) {
+    return internal::GetUnboxer<T>::Type::TryUnbox(object);
+}
+
+template<typename T>
+T* TryUnbox(Object& object) {
+    return internal::GetUnboxer<T>::Type::TryUnbox(object);
+}
+
+
+template<typename T>
+T* TryUnbox(const std::shared_ptr<Object>& object) {
+    ZAF_EXPECT(object);
+    return TryUnbox<T>(*object);
+}
+
+
+template<typename T>
+const T& Unbox(const Object& object) {
+    return internal::GetUnboxer<T>::Type::Unbox(object);
+}
+
+template<typename T>
+T& Unbox(Object& object) {
     return internal::GetUnboxer<T>::Type::Unbox(object);
 }
 
 
 template<typename T>
-const T* TryUnbox(const std::shared_ptr<Object>& object) {
-
-    ZAF_EXPECT(object);
-    return TryUnbox<T>(*object);
+T& Unbox(const std::shared_ptr<Object>& object) {
+    return Unbox<T>(*object);
 }
 
 }
