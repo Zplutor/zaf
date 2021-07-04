@@ -14,8 +14,8 @@ namespace zaf {
  */
 class Size : public Object {
 public:
+	ZAF_DECLARE_TYPE
 	ZAF_DECLARE_EQUALITY
-    ZAF_DECLARE_TYPE
 
 public:
 	/**

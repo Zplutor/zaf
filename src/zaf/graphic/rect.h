@@ -16,8 +16,8 @@ namespace zaf {
  */
 class Rect : public Object {
 public:
+	ZAF_DECLARE_TYPE
 	ZAF_DECLARE_EQUALITY
-    ZAF_DECLARE_TYPE
 
 public:
 	/**

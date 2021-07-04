@@ -3,14 +3,6 @@
 #include <zaf/object/object_property.h>
 
 namespace zaf {
-namespace {
-
-class DumbParser : public ObjectParser {
-public:
-    void ParseFromNode(const XamlNode& node, Object& reflection_object) override { }
-};
-
-}
 
 ObjectParser* ObjectType::GetParser() const {
 
@@ -19,8 +11,8 @@ ObjectParser* ObjectType::GetParser() const {
         return base_type->GetParser();
     }
 
-    static DumbParser dump_parser;
-    return &dump_parser;
+    static ObjectParser default_parser;
+    return &default_parser;
 }
 
 

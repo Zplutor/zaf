@@ -1,15 +1,16 @@
 #include <zaf/graphic/rounded_rect.h>
 #include <zaf/object/equality.h>
-#include <zaf/parsing/parsers/rounded_rect_parser.h>
 #include <zaf/object/type_definition.h>
 
 namespace zaf {
 
-ZAF_DEFINE_EQUALITY(RoundedRect)
-
 ZAF_DEFINE_TYPE(RoundedRect)
-    ZAF_DEFINE_PARSER(RoundedRectParser)
+ZAF_DEFINE_PROPERTY_WITH_FIELD(XRadius, x_radius)
+ZAF_DEFINE_PROPERTY_WITH_FIELD(YRadius, y_radius)
+ZAF_DEFINE_PROPERTY_WITH_FIELD(Rect, rect)
 ZAF_DEFINE_END
+
+ZAF_DEFINE_EQUALITY(RoundedRect)
 
 
 bool operator==(const RoundedRect& rounded_rect1, const RoundedRect& rounded_rect2) {
@@ -41,6 +42,5 @@ bool operator<(const RoundedRect& rounded_rect1, const RoundedRect& rounded_rect
 
     return rounded_rect1.y_radius < rounded_rect2.y_radius;
 }
-
 
 }

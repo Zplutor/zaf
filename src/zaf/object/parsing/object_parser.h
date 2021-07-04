@@ -12,14 +12,9 @@ public:
 
     ObjectParser(const ObjectParser&) = delete;
     ObjectParser& operator=(const ObjectParser&) = delete;
-
-    virtual void ParseFromAttribute(
-        const std::wstring& attribute_value, 
-        Object& reflection_object) { }
-
-    virtual void ParseFromNode(
-        const XamlNode& node,
-        Object& reflection_object) = 0;
+    
+    virtual void ParseFromAttribute(const std::wstring& attribute_value, Object& object);
+    virtual void ParseFromNode(const XamlNode& node, Object& object);
 };
 
 }

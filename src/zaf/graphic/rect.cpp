@@ -1,7 +1,6 @@
 #include <zaf/graphic/rect.h>
 #include <algorithm>
 #include <limits>
-#include <zaf/parsing/parsers/rect_parser.h>
 #include <zaf/object/type_definition.h>
 
 #undef max
@@ -9,11 +8,12 @@
 
 namespace zaf {
 
-ZAF_DEFINE_EQUALITY(Rect)
-
 ZAF_DEFINE_TYPE(Rect)
-    ZAF_DEFINE_PARSER(RectParser)
+ZAF_DEFINE_PROPERTY_WITH_FIELD(Position, position)
+ZAF_DEFINE_PROPERTY_WITH_FIELD(Size, size)
 ZAF_DEFINE_END
+
+ZAF_DEFINE_EQUALITY(Rect)
 
 
 void Rect::Intersect(const Rect& other) {

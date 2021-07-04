@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <zaf/graphic/color.h>
-#include <zaf/parsing/parsers/color_parser.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/parsing/xaml_reader.h>
 #include "utility.h"
@@ -8,12 +7,12 @@
 TEST(ColorParser, ParseFromAttribute) {
 
     zaf::Color color;
-    zaf::ColorParser parser;
+    auto parser = zaf::Color::Type->GetParser();
 
-    parser.ParseFromAttribute(L"#112233", color);
+    parser->ParseFromAttribute(L"#112233", color);
     ASSERT_EQ(color, zaf::Color::FromRGB(0x112233));
 
-    parser.ParseFromAttribute(L"#44556677", color);
+    parser->ParseFromAttribute(L"#44556677", color);
     ASSERT_EQ(color, zaf::Color::FromARGB(0x44556677));
 
     struct MapItem {
@@ -34,7 +33,7 @@ TEST(ColorParser, ParseFromAttribute) {
         { L"Yellow", &zaf::Color::Yellow() },
     };
     for (const auto& each_item : map) {
-        parser.ParseFromAttribute(each_item.name, color);
+        parser->ParseFromAttribute(each_item.name, color);
         ASSERT_EQ(color, *each_item.color);
     }
 }

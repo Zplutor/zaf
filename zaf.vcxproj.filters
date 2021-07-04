@@ -337,15 +337,6 @@
     <ClCompile Include="src\zaf\graphic\alignment.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\point_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\size_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\rect_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp">
       <Filter>zaf\reflection</Filter>
     </ClCompile>
@@ -355,16 +346,7 @@
     <ClCompile Include="src\zaf\parsing\parsers\frame_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\rounded_rect_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\ellipse_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\control_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\color_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\button_parser.cpp">
@@ -680,6 +662,9 @@
       <Filter>zaf\object\parsing</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\object\parsing\xaml_reader.cpp">
+      <Filter>zaf\object\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\object_parser.cpp">
       <Filter>zaf\object\parsing</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1078,25 +1063,7 @@
     <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h">
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\point_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\size_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\rect_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\rounded_rect_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\ellipse_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\frame_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\color_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\button_parser.h">

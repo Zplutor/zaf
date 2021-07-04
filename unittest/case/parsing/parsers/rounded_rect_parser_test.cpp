@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
-#include <zaf/parsing/parsers/rounded_rect_parser.h>
 #include <zaf/graphic/rounded_rect.h>
+#include <zaf/object/object_type.h>
+#include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/parsing/xaml_reader.h>
 
@@ -15,8 +16,8 @@ TEST(RoundedRectParser, ParseFromNode) {
     auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::RoundedRect rounded_rect;
-    zaf::RoundedRectParser parser;
-    parser.ParseFromNode(*node, rounded_rect);
+    auto parser = zaf::RoundedRect::Type->GetParser();
+    parser->ParseFromNode(*node, rounded_rect);
     ASSERT_EQ(rounded_rect, zaf::RoundedRect(zaf::Rect(2, 2, 5, 6), 0.5f, 0.6f));
 
     xaml = R"(
@@ -29,6 +30,6 @@ TEST(RoundedRectParser, ParseFromNode) {
 
     node = zaf::XamlReader::FromString(xaml)->Read();
 
-    parser.ParseFromNode(*node, rounded_rect);
+    parser->ParseFromNode(*node, rounded_rect);
     ASSERT_EQ(rounded_rect, zaf::RoundedRect(zaf::Rect(3, 3, 4, 4), 0.7f, 0.8f));
 }
