@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 
 namespace zaf {
 namespace internal {
@@ -48,7 +49,7 @@ public:
         return properties_;
     }
 
-    ObjectProperty* FindProperty(const std::wstring& name) const;
+    ObjectProperty* FindProperty(std::wstring_view name) const;
 
 private:
     friend class internal::PropertyRegistrar;

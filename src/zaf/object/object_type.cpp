@@ -37,13 +37,13 @@ void ObjectType::RegisterProperty(ObjectProperty* property) {
 }
 
 
-ObjectProperty* ObjectType::FindProperty(const std::wstring& name) const {
+ObjectProperty* ObjectType::FindProperty(std::wstring_view name) const {
 
     auto iterator = std::lower_bound(
         properties_.begin(),
         properties_.end(), 
         name, 
-        [](auto property, const std::wstring& name) {
+        [](auto property, std::wstring_view name) {
     
         return property->GetName() < name;
     });

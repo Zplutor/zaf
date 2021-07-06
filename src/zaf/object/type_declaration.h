@@ -7,4 +7,4 @@ zaf::ObjectType* GetType() const override {                                     
 }                                                                                               \
 zaf::ObjectType* GetBaseType() const {                                                          \
     return __super::Type;                                                                       \
-}                                                                                                
+}
