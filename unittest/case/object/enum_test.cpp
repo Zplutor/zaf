@@ -6,9 +6,9 @@
 namespace {
 
 enum class TestType {
-	First,
-	Second,
-	Third,
+    First,
+    Second,
+    Third,
 };
 
 ZAF_DECLARE_ENUM(TestType)
@@ -24,9 +24,9 @@ ZAF_DEFINE_ENUM_END
 namespace ns {
 
 enum class NamespaceTestType {
-	First,
-	Second,
-	Third,
+    First,
+    Second,
+    Third,
 };
 
 ZAF_DECLARE_ENUM(NamespaceTestType)
@@ -45,43 +45,43 @@ ZAF_ENABLE_ENUM_BOXING_WITH_NAMESPACE(ns, NamespaceTestType)
 
 TEST(EnumTest, Boxing) {
 
-	auto boxed = zaf::Box(TestType::First);
-	auto enum_object = dynamic_cast<TestTypeEnum*>(boxed.get());
-	ASSERT_NE(enum_object, nullptr);
+    auto boxed = zaf::Box(TestType::First);
+    auto enum_object = dynamic_cast<TestTypeEnum*>(boxed.get());
+    ASSERT_NE(enum_object, nullptr);
 
-	auto namespace_boxed = zaf::Box(ns::NamespaceTestType::Second);
-	auto namespace_enum_object = dynamic_cast<ns::NamespaceTestTypeEnum*>(namespace_boxed.get());
-	ASSERT_NE(namespace_enum_object, nullptr);
+    auto namespace_boxed = zaf::Box(ns::NamespaceTestType::Second);
+    auto namespace_enum_object = dynamic_cast<ns::NamespaceTestTypeEnum*>(namespace_boxed.get());
+    ASSERT_NE(namespace_enum_object, nullptr);
 }
 
 
 TEST(EnumTest, ToString) {
 
-	ASSERT_EQ(zaf::Box(TestType::First)->ToString(), L"First");
-	ASSERT_EQ(zaf::Box(TestType::Second)->ToString(), L"Second");
-	ASSERT_EQ(zaf::Box(TestType::Third)->ToString(), L"Third");
+    ASSERT_EQ(zaf::Box(TestType::First)->ToString(), L"First");
+    ASSERT_EQ(zaf::Box(TestType::Second)->ToString(), L"Second");
+    ASSERT_EQ(zaf::Box(TestType::Third)->ToString(), L"Third");
 
-	ASSERT_EQ(zaf::Box(static_cast<TestType>(1374))->ToString(), L"1374");
+    ASSERT_EQ(zaf::Box(static_cast<TestType>(1374))->ToString(), L"1374");
 }
 
 
 TEST(EnumTest, FindValue) {
 
-	auto object = TestTypeEnum::EnumType()->FindValue(L"First");
-	ASSERT_NE(object, nullptr);
-	auto value = zaf::Unbox<TestType>(object);
-	ASSERT_EQ(value, TestType::First);
+    auto object = TestTypeEnum::EnumType()->FindValue(L"First");
+    ASSERT_NE(object, nullptr);
+    auto value = zaf::Unbox<TestType>(object);
+    ASSERT_EQ(value, TestType::First);
 
-	object = TestTypeEnum::EnumType()->FindValue(L"Second");
-	ASSERT_NE(object, nullptr);
-	value = zaf::Unbox<TestType>(object);
-	ASSERT_EQ(value, TestType::Second);
+    object = TestTypeEnum::EnumType()->FindValue(L"Second");
+    ASSERT_NE(object, nullptr);
+    value = zaf::Unbox<TestType>(object);
+    ASSERT_EQ(value, TestType::Second);
 
-	object = TestTypeEnum::EnumType()->FindValue(L"Third");
-	ASSERT_NE(object, nullptr);
-	value = zaf::Unbox<TestType>(object);
-	ASSERT_EQ(value, TestType::Third);
+    object = TestTypeEnum::EnumType()->FindValue(L"Third");
+    ASSERT_NE(object, nullptr);
+    value = zaf::Unbox<TestType>(object);
+    ASSERT_EQ(value, TestType::Third);
 
-	object = TestTypeEnum::EnumType()->FindValue(L"Fourth");
-	ASSERT_EQ(object, nullptr);
+    object = TestTypeEnum::EnumType()->FindValue(L"Fourth");
+    ASSERT_EQ(object, nullptr);
 }

@@ -7,21 +7,21 @@ namespace internal {
 
 class LogEntry {
 public:
-	~LogEntry();
+    ~LogEntry();
 
-	template<typename Type>
-	LogEntry& operator<<(const Type& value) {
-		stream_ << value;
-		return *this;
-	}
+    template<typename Type>
+    LogEntry& operator<<(const Type& value) {
+        stream_ << value;
+        return *this;
+    }
 
 private:
-	std::wostringstream stream_;
+    std::wostringstream stream_;
 };
 
 class LogEntryVodify {
 public:
-	void operator&(const LogEntry&) { }
+    void operator&(const LogEntry&) { }
 };
 
 }

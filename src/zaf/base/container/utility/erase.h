@@ -15,7 +15,7 @@ std::size_t Erase(C& container, const typename C::value_type& element) {
         "zaf::Erase() can not be used with associative containers.");
 
     std::size_t old_size = container.size();
-	container.erase(std::remove(container.begin(), container.end(), element), container.end());
+    container.erase(std::remove(container.begin(), container.end(), element), container.end());
     return old_size - container.size();
 }
 
@@ -29,7 +29,7 @@ std::size_t EraseIf(C& container, P&& predicate) {
 
     std::size_t old_size = container.size();
 
-	container.erase(
+    container.erase(
         std::remove_if(container.begin(), container.end(), std::forward<P>(predicate)), 
         container.end());
 

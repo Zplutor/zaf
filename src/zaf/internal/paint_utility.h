@@ -15,11 +15,11 @@ class TextualControl;
 namespace internal {
 
 void DrawTextWithIcon(
-	Canvas& canvas, 
+    Canvas& canvas, 
     TextualControl& textual_control,
-	TextLayout& text_layout, 
-	float icon_size,
-	const std::function<void(Canvas& canvas, const Rect& icon_rect)>& paint_icon_function);
+    TextLayout& text_layout, 
+    float icon_size,
+    const std::function<void(Canvas& canvas, const Rect& icon_rect)>& paint_icon_function);
 
 void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect);
 

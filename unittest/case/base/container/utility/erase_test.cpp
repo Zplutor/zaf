@@ -9,8 +9,8 @@ namespace {
 template<template<typename E, typename ...> class C>
 bool TestEraseElement() {
 
-	C<std::string> container{ "0", "1", "2", "3" };
-	std::size_t erased_count = zaf::Erase(container, "0");
+    C<std::string> container{ "0", "1", "2", "3" };
+    std::size_t erased_count = zaf::Erase(container, "0");
 
     if (erased_count != 1) {
         return false;
@@ -24,10 +24,10 @@ bool TestEraseElement() {
 template<template<typename E, typename ...> class C>
 bool TestEraseElementWithPredicate() {
 
-	C<std::string> container{ "0", "1", "2", "3" };
-	std::size_t erased_count = zaf::EraseIf(container, [](const std::string& v) {
-		return v == "0";
-	});
+    C<std::string> container{ "0", "1", "2", "3" };
+    std::size_t erased_count = zaf::EraseIf(container, [](const std::string& v) {
+        return v == "0";
+    });
 
     if (erased_count != 1) {
         return false;
@@ -57,17 +57,17 @@ bool TestEraseDuplicatedElements() {
 
 TEST(Erase, Element) {
 
-	ASSERT_TRUE(TestEraseElement<std::vector>());
-	ASSERT_TRUE(TestEraseElement<std::list>());
-	ASSERT_TRUE(TestEraseElement<std::deque>());
+    ASSERT_TRUE(TestEraseElement<std::vector>());
+    ASSERT_TRUE(TestEraseElement<std::list>());
+    ASSERT_TRUE(TestEraseElement<std::deque>());
 }
 
 
 TEST(Erase, Predicate) {
 
-	ASSERT_TRUE(TestEraseElementWithPredicate<std::vector>());
-	ASSERT_TRUE(TestEraseElementWithPredicate<std::list>());
-	ASSERT_TRUE(TestEraseElementWithPredicate<std::deque>());
+    ASSERT_TRUE(TestEraseElementWithPredicate<std::vector>());
+    ASSERT_TRUE(TestEraseElementWithPredicate<std::list>());
+    ASSERT_TRUE(TestEraseElementWithPredicate<std::deque>());
 }
 
 

@@ -81,17 +81,17 @@ public:                                                                         
 };                                                                                                 \
 class PropertyName##Property : public zaf::ObjectProperty {                                        \
 public:                                                                                            \
-	const std::wstring& GetName() const override {                                                 \
+    const std::wstring& GetName() const override {                                                 \
         static const std::wstring name{ L#PropertyName };                                          \
-		return name;                                                                               \
-	}                                                                                              \
+        return name;                                                                               \
+    }                                                                                              \
     ObjectType* GetValueType() const override {                                                    \
         using ValueType =                                                                          \
             zaf::internal::GetBoxType<typename PropertyName##Accessor::ValueType>::Type;           \
         static_assert(zaf::internal::IsReflectionType<ValueType>::Value,                           \
             "This type of value is not supported by property.");                                   \
-		return ValueType::Type;                                                                    \
-	}                                                                                              \
+        return ValueType::Type;                                                                    \
+    }                                                                                              \
     bool CanGet() const override {                                                                 \
         return PropertyName##Accessor::CanGet;                                                     \
     }                                                                                              \
@@ -111,17 +111,17 @@ __ZAF_INTERNAL_DEFINE_PROPERTY_VARIABLE(PropertyName)
 #define ZAF_DEFINE_PROPERTY_WITH_FIELD(PropertyName, FieldName) \
 class PropertyName##Property : public zaf::ObjectProperty {                                        \
 public:                                                                                            \
-	const std::wstring& GetName() const override {                                                 \
+    const std::wstring& GetName() const override {                                                 \
         static const std::wstring name{ L#PropertyName };                                          \
-		return name;                                                                               \
-	}                                                                                              \
+        return name;                                                                               \
+    }                                                                                              \
     ObjectType* GetValueType() const override {                                                    \
         using ValueType =                                                                          \
             zaf::internal::GetBoxType<decltype(reinterpret_cast<Class*>(0)->FieldName)>::Type;     \
         static_assert(zaf::internal::IsReflectionType<ValueType>::Value,                           \
             "This type of value is not supported by property.");                                   \
-		return ValueType::Type;                                                                    \
-	}                                                                                              \
+        return ValueType::Type;                                                                    \
+    }                                                                                              \
     bool CanGet() const override {                                                                 \
         return true;                                                                               \
     }                                                                                              \

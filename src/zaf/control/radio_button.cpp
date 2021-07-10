@@ -18,7 +18,7 @@ static const wchar_t* const kRadioBorderColorPickerPropertyName = L"RadioBorderC
 static const wchar_t* const kSelectStateChangeEventProprtyName = L"SelectStateChangeEvent";
 
 ZAF_DEFINE_TYPE(RadioButton)
-	ZAF_DEFINE_PARSER(RadioButtonParser)
+    ZAF_DEFINE_PARSER(RadioButtonParser)
 ZAF_DEFINE_END
 
 
@@ -34,7 +34,7 @@ RadioButton::~RadioButton() {
 
 void RadioButton::Initialize() {
 
-	__super::Initialize();
+    __super::Initialize();
 
     SetBackgroundColorPicker([](const Control&) {
         return Color::Transparent();
@@ -44,45 +44,45 @@ void RadioButton::Initialize() {
 
 void RadioButton::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
-	__super::Paint(canvas, dirty_rect);
+    __super::Paint(canvas, dirty_rect);
 
-	Canvas::StateGuard state_guard(canvas);
+    Canvas::StateGuard state_guard(canvas);
 
     auto text_layout = GetTextLayout();
-	if (text_layout == nullptr) {
-		return;
-	}
+    if (text_layout == nullptr) {
+        return;
+    }
 
-	internal::DrawTextWithIcon(
-		canvas,
-		*this,
-		text_layout,
-		12, 
-		std::bind(&RadioButton::PaintRadio, this, std::placeholders::_1, std::placeholders::_2));
+    internal::DrawTextWithIcon(
+        canvas,
+        *this,
+        text_layout,
+        12, 
+        std::bind(&RadioButton::PaintRadio, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 
 void RadioButton::PaintRadio(Canvas& canvas, const Rect& radio_rect) {
 
-	float ellipse_x_radius = radio_rect.size.width / 2;
-	float ellipse_y_radius = radio_rect.size.height / 2;
+    float ellipse_x_radius = radio_rect.size.width / 2;
+    float ellipse_y_radius = radio_rect.size.height / 2;
 
-	Point ellipse_position = radio_rect.position;
-	ellipse_position.x += ellipse_x_radius;
-	ellipse_position.y += ellipse_y_radius;
+    Point ellipse_position = radio_rect.position;
+    ellipse_position.x += ellipse_x_radius;
+    ellipse_position.y += ellipse_y_radius;
 
-	Ellipse ellipse(ellipse_position, ellipse_x_radius, ellipse_y_radius);
+    Ellipse ellipse(ellipse_position, ellipse_x_radius, ellipse_y_radius);
 
     canvas.SetBrushWithColor(GetRadioBackgroundColor());
     canvas.DrawEllipse(ellipse);
 
     canvas.SetBrushWithColor(GetRadioBorderColor());
-	canvas.DrawEllipseFrame(ellipse, 1);
-	
-	if (IsSelected()) {
-		ellipse.Inflate(-3);
-		canvas.DrawEllipse(ellipse);
-	}
+    canvas.DrawEllipseFrame(ellipse, 1);
+    
+    if (IsSelected()) {
+        ellipse.Inflate(-3);
+        canvas.DrawEllipse(ellipse);
+    }
 }
 
 
@@ -131,141 +131,141 @@ void RadioButton::SetRadioBackgroundColorPicker(const ColorPicker& color_picker)
 
 void RadioButton::SetGroup(const std::shared_ptr<Group>& group) {
 
-	if (group_ == group) {
-		return;
-	}
+    if (group_ == group) {
+        return;
+    }
 
-	auto shared_this = std::dynamic_pointer_cast<RadioButton>(shared_from_this());
+    auto shared_this = std::dynamic_pointer_cast<RadioButton>(shared_from_this());
 
-	if (group_ != nullptr) {
-		group_->Remove(shared_this);
-	}
+    if (group_ != nullptr) {
+        group_->Remove(shared_this);
+    }
 
-	group_ = group;
-	if (group_ != nullptr) {
-		group_->Add(shared_this);
-	}
+    group_ = group;
+    if (group_ != nullptr) {
+        group_->Add(shared_this);
+    }
 }
 
 
 bool RadioButton::CanAutoSelect() const {
 
-	auto value = GetPropertyMap().TryGetProperty<bool>(kCanAutoSelectPropertyName);
-	if (value != nullptr) {
-		return *value;
-	}
-	else {
-		return true;
-	}
+    auto value = GetPropertyMap().TryGetProperty<bool>(kCanAutoSelectPropertyName);
+    if (value != nullptr) {
+        return *value;
+    }
+    else {
+        return true;
+    }
 }
 
 
 void RadioButton::SetCanAutoSelect(bool can_change) {
-	GetPropertyMap().SetProperty(kCanAutoSelectPropertyName, can_change);
+    GetPropertyMap().SetProperty(kCanAutoSelectPropertyName, can_change);
 }
 
 
 void RadioButton::SetIsSelected(bool is_selected) {
 
-	if (is_selected == IsSelected()) {
-		return;
-	}
+    if (is_selected == IsSelected()) {
+        return;
+    }
 
-	is_selected_ = is_selected;
-	NeedRepaint();
+    is_selected_ = is_selected;
+    NeedRepaint();
 
-	auto shared_this = std::dynamic_pointer_cast<RadioButton>(shared_from_this());
+    auto shared_this = std::dynamic_pointer_cast<RadioButton>(shared_from_this());
 
-	if (is_selected && group_ != nullptr) {
-		group_->RadioButtonSelected(shared_this);
-	}
+    if (is_selected && group_ != nullptr) {
+        group_->RadioButtonSelected(shared_this);
+    }
 
-	auto observer = GetEventObserver<RadioButtonSelectStateChangeInfo>(
-		GetPropertyMap(),
-		kSelectStateChangeEventProprtyName);
+    auto observer = GetEventObserver<RadioButtonSelectStateChangeInfo>(
+        GetPropertyMap(),
+        kSelectStateChangeEventProprtyName);
 
-	if (observer) {
-		RadioButtonSelectStateChangeInfo event_info;
-		event_info.radio_button = shared_this;
-		observer->OnNext(event_info);
-	}
+    if (observer) {
+        RadioButtonSelectStateChangeInfo event_info;
+        event_info.radio_button = shared_this;
+        observer->OnNext(event_info);
+    }
 }
 
 
 Observable<RadioButtonSelectStateChangeInfo> RadioButton::SelectStateChangeEvent() {
 
-	return GetEventObservable<RadioButtonSelectStateChangeInfo>(
-		GetPropertyMap(),
-		kSelectStateChangeEventProprtyName);
+    return GetEventObservable<RadioButtonSelectStateChangeInfo>(
+        GetPropertyMap(),
+        kSelectStateChangeEventProprtyName);
 }
 
 
 void RadioButton::OnClick() {
 
-	if (CanAutoSelect()) {
-		SetSelected();
-	}
+    if (CanAutoSelect()) {
+        SetSelected();
+    }
 }
 
 
 const std::vector<std::shared_ptr<RadioButton>> RadioButton::Group::GetRadioButtons() const {
 
-	std::vector<std::shared_ptr<RadioButton>> radio_buttons;
+    std::vector<std::shared_ptr<RadioButton>> radio_buttons;
 
-	for (const auto& each_radio_button : radio_buttons_) {
+    for (const auto& each_radio_button : radio_buttons_) {
 
-		auto radio_button = each_radio_button.lock();
-		if (radio_button != nullptr) {
-			radio_buttons.push_back(radio_button);
-		}
-	}
+        auto radio_button = each_radio_button.lock();
+        if (radio_button != nullptr) {
+            radio_buttons.push_back(radio_button);
+        }
+    }
 
-	return radio_buttons;
+    return radio_buttons;
 }
 
 
 void RadioButton::Group::Add(const std::shared_ptr<RadioButton>& radio_button) {
 
-	radio_buttons_.push_back(radio_button);
+    radio_buttons_.push_back(radio_button);
 
-	if (radio_buttons_.size() == 1) {
-		radio_button->SetSelected();
-	}
-	else {
-		radio_button->SetUnselected();
-	}
+    if (radio_buttons_.size() == 1) {
+        radio_button->SetSelected();
+    }
+    else {
+        radio_button->SetUnselected();
+    }
 }
 
 
 void RadioButton::Group::Remove(const std::shared_ptr<RadioButton>& radio_button) {
 
-	auto iterator = std::remove_if(
-		radio_buttons_.begin(), 
-		radio_buttons_.end(), 
-		[&radio_button](const std::weak_ptr<RadioButton>& each_radio_button) {
-			return each_radio_button.lock() == radio_button;
-		}
-	);
+    auto iterator = std::remove_if(
+        radio_buttons_.begin(), 
+        radio_buttons_.end(), 
+        [&radio_button](const std::weak_ptr<RadioButton>& each_radio_button) {
+            return each_radio_button.lock() == radio_button;
+        }
+    );
 
-	radio_buttons_.erase(iterator, radio_buttons_.end());
+    radio_buttons_.erase(iterator, radio_buttons_.end());
 
-	if (radio_button->IsSelected() && ! radio_buttons_.empty()) {
+    if (radio_button->IsSelected() && ! radio_buttons_.empty()) {
 
-		auto first_radio_button = radio_buttons_.front().lock();
-		first_radio_button->SetSelected();
-	}
+        auto first_radio_button = radio_buttons_.front().lock();
+        first_radio_button->SetSelected();
+    }
 }
 
 
 void RadioButton::Group::RadioButtonSelected(const std::shared_ptr<RadioButton>& selected_radio_button) {
 
-	for (const auto& each_radio_button : radio_buttons_) {
+    for (const auto& each_radio_button : radio_buttons_) {
 
-		auto radio_button = each_radio_button.lock();
-		if (radio_button != selected_radio_button) {
-			radio_button->SetUnselected();
-		}
-	}
+        auto radio_button = each_radio_button.lock();
+        if (radio_button != selected_radio_button) {
+            radio_button->SetUnselected();
+        }
+    }
 }
 
 

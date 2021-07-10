@@ -60,8 +60,8 @@ public:
     ZAF_DECLARE_TYPE
 
 public:
-	Control();
-	virtual ~Control();
+    Control();
+    virtual ~Control();
 
     Control(const Control&) = delete;
     Control& operator=(const Control&) = delete;
@@ -69,47 +69,47 @@ public:
     [[nodiscard]]
     ControlUpdateGuard BeginUpdate();
 
-	/**
-	 Get the control's absolute rect which is related to the coordinate system of 
-	 window's content rect.
+    /**
+     Get the control's absolute rect which is related to the coordinate system of 
+     window's content rect.
 
-	 If the control is not yet placed in a window, am empty rect is returned.
-	 */
-	Rect GetAbsoluteRect() const;
+     If the control is not yet placed in a window, am empty rect is returned.
+     */
+    Rect GetAbsoluteRect() const;
 
-	/**
-	 Get the control's rect which is related to the coordinate system of parent's
-	 content rect.
+    /**
+     Get the control's rect which is related to the coordinate system of parent's
+     content rect.
 
-	 The default rect is empty.
-	 */
-	const Rect& GetRect() const {
-		return rect_;
-	}
+     The default rect is empty.
+     */
+    const Rect& GetRect() const {
+        return rect_;
+    }
 
-	/**
-	 Set the control's rect.
+    /**
+     Set the control's rect.
 
-	 See also GetRect.
-	 */
-	void SetRect(const Rect& rect);
+     See also GetRect.
+     */
+    void SetRect(const Rect& rect);
 
-	/**
-	 Get the control's position which is related to the coordinate system of 
-	 parent content rect.
-	 */
-	const Point& GetPosition() const {
-		return rect_.position;
-	}
+    /**
+     Get the control's position which is related to the coordinate system of 
+     parent content rect.
+     */
+    const Point& GetPosition() const {
+        return rect_.position;
+    }
 
-	/**
-	 Set the control's position.
+    /**
+     Set the control's position.
 
-	 See also GetPosition.
-	 */
-	void SetPosition(const Point& position) {
-		SetRect(Rect(position, GetRect().size));
-	}
+     See also GetPosition.
+     */
+    void SetPosition(const Point& position) {
+        SetRect(Rect(position, GetRect().size));
+    }
 
     float GetX() const {
         return GetPosition().x;
@@ -127,26 +127,26 @@ public:
         SetPosition(Point(GetX(), y));
     }
 
-	/**
-	 Get the control's size.
-	 */
-	const Size& GetSize() const {
-		return rect_.size;
-	}
+    /**
+     Get the control's size.
+     */
+    const Size& GetSize() const {
+        return rect_.size;
+    }
 
-	/**
-	 Set the control's size;
-	 */
-	void SetSize(const Size& size) {
-		SetRect(Rect(GetRect().position, size));
-	}
+    /**
+     Set the control's size;
+     */
+    void SetSize(const Size& size) {
+        SetRect(Rect(GetRect().position, size));
+    }
 
-	/**
-	 Get the control's width.
-	 */
-	float GetWidth() const {
-		return rect_.size.width;
-	}
+    /**
+     Get the control's width.
+     */
+    float GetWidth() const {
+        return rect_.size.width;
+    }
 
     /**
      Set the control's width.
@@ -194,12 +194,12 @@ public:
         SetFixedHeight(size.height);
     }
 
-	/**
-	 Get the control's height.
-	 */
-	float GetHeight() const {
-		return rect_.size.height;
-	}
+    /**
+     Get the control's height.
+     */
+    float GetHeight() const {
+        return rect_.size.height;
+    }
 
     /**
      Set the control's height.
@@ -249,12 +249,12 @@ public:
 
      The default value is Anchor::None.
      */
-	Anchor GetAnchor() const;
+    Anchor GetAnchor() const;
 
     /**
      Set the control's anchor.
      */
-	void SetAnchor(Anchor anchor);
+    void SetAnchor(Anchor anchor);
 
     const Frame& GetMargin() const {
         return margin_;
@@ -293,10 +293,10 @@ public:
         SetPadding(Frame(padding_thickness, padding_thickness, padding_thickness, padding_thickness));
     }
 
-	/**
-	 Get the control's content rect, related to its coordinate system.
-	 */
-	Rect GetContentRect() const;
+    /**
+     Get the control's content rect, related to its coordinate system.
+     */
+    Rect GetContentRect() const;
 
     /**
      Get the control's content size.
@@ -323,14 +323,14 @@ public:
     /**
      Get background color.
      */
-	Color GetBackgroundColor() const {
-		return GetBackgroundColorPicker()(*this);
-	}
+    Color GetBackgroundColor() const {
+        return GetBackgroundColorPicker()(*this);
+    }
 
     /**
      Get the color picker of background.
      */
-	ColorPicker GetBackgroundColorPicker() const;
+    ColorPicker GetBackgroundColorPicker() const;
 
     /**
      Set background color.
@@ -342,19 +342,19 @@ public:
     /**
      Set the color picker of background.
      */
-	void SetBackgroundColorPicker(const ColorPicker& color_picker);
+    void SetBackgroundColorPicker(const ColorPicker& color_picker);
 
     /**
      Get border color.
      */
-	Color GetBorderColor() const {
-		return GetBorderColorPicker()(*this);
-	}
+    Color GetBorderColor() const {
+        return GetBorderColorPicker()(*this);
+    }
 
     /**
      Get the color picker of border color.
      */
-	ColorPicker GetBorderColorPicker() const;
+    ColorPicker GetBorderColorPicker() const;
 
     /**
      Set border color.
@@ -366,19 +366,19 @@ public:
     /**
      Set the color picker of border.
      */
-	void SetBorderColorPicker(const ColorPicker& color_picker);
+    void SetBorderColorPicker(const ColorPicker& color_picker);
 
     /**
      Get the layouter.
      */
-	std::shared_ptr<Layouter> GetLayouter() const;
+    std::shared_ptr<Layouter> GetLayouter() const;
 
     /**
      Set the layouter.
 
      Setting the layouter would causes the control to relayout immediately.
      */
-	void SetLayouter(const std::shared_ptr<Layouter>& layouter);
+    void SetLayouter(const std::shared_ptr<Layouter>& layouter);
 
     bool HasChildren() const {
         return !children_.empty();
@@ -392,27 +392,27 @@ public:
         return children_[index];
     }
 
-	/**
-	 Get the control's children.
-	 */
-	const std::vector<std::shared_ptr<Control>>& GetChildren() const {
-		return children_;
-	}
+    /**
+     Get the control's children.
+     */
+    const std::vector<std::shared_ptr<Control>>& GetChildren() const {
+        return children_;
+    }
 
-	/**
-	 Add specified child to the control.
-	 */
-	void AddChild(const std::shared_ptr<Control>& child);
+    /**
+     Add specified child to the control.
+     */
+    void AddChild(const std::shared_ptr<Control>& child);
 
     /**
      Add specified children to the control.
      */
     void AddChildren(const std::vector<std::shared_ptr<Control>>& children);
 
-	/**
-	 Remoe specified child from the control.
-	 */
-	void RemoveChild(const std::shared_ptr<Control>& child);
+    /**
+     Remoe specified child from the control.
+     */
+    void RemoveChild(const std::shared_ptr<Control>& child);
 
     /**
      Remove all children from the control.
@@ -440,111 +440,111 @@ public:
         return InnerFindChildAtPosition(position, true);
     }
 
-	/**
-	 Determinte whether the control is the direct parent of specified control.
-	 */
-	bool IsParentOf(const std::shared_ptr<Control>& child) const;
+    /**
+     Determinte whether the control is the direct parent of specified control.
+     */
+    bool IsParentOf(const std::shared_ptr<Control>& child) const;
 
-	/**
-	 Determinte whether the control is the ancestor of specified control.
-	 */
-	bool IsAncestorOf(const std::shared_ptr<Control>& child) const;
+    /**
+     Determinte whether the control is the ancestor of specified control.
+     */
+    bool IsAncestorOf(const std::shared_ptr<Control>& child) const;
 
-	/**
-	 Get the control's parent.
+    /**
+     Get the control's parent.
 
-	 Return nullptr if the control does not have parent.
-	 */
-	std::shared_ptr<Control> GetParent() const {
-		return parent_.lock();
-	}
+     Return nullptr if the control does not have parent.
+     */
+    std::shared_ptr<Control> GetParent() const {
+        return parent_.lock();
+    }
 
-	/**
-	 Get the control's name.
+    /**
+     Get the control's name.
 
-	 The name is used to identify a child in control. Multiple 
-	 children may have the same name. The default name is empty.
-	 */
-	std::wstring GetName() const;
+     The name is used to identify a child in control. Multiple 
+     children may have the same name. The default name is empty.
+     */
+    std::wstring GetName() const;
 
-	/**
-	 Set the control's name.
+    /**
+     Set the control's name.
 
-	 See also GetName.
-	 */
-	void SetName(const std::wstring& name);
+     See also GetName.
+     */
+    void SetName(const std::wstring& name);
 
-	/**
-	 Get the window where the control locates.
+    /**
+     Get the window where the control locates.
 
-	 Return nullptr if the control does not locates in any window.
-	 */
-	std::shared_ptr<Window> GetWindow() const;
+     Return nullptr if the control does not locates in any window.
+     */
+    std::shared_ptr<Window> GetWindow() const;
 
-	/**
-	 Get a value indicating that whether the control is visible.
+    /**
+     Get a value indicating that whether the control is visible.
 
      The default value is true. Note that the return value is always 
      false if parent control is invisible.
-	 */
-	bool IsVisible() const;
+     */
+    bool IsVisible() const;
 
     bool IsSelfVisible() const;
 
-	/**
-	 Set a value indicating that whether the control is visible.
+    /**
+     Set a value indicating that whether the control is visible.
 
-	 See also IsVisible. 
-	 */
-	void SetIsVisible(bool is_visible);
+     See also IsVisible. 
+     */
+    void SetIsVisible(bool is_visible);
 
-	/**
-	 Get a value indicating that whether the control is enabled.
+    /**
+     Get a value indicating that whether the control is enabled.
 
-	 The default value is true. Note that the return value is always
+     The default value is true. Note that the return value is always
      false if parent control is disabled.
-	 */
-	bool IsEnabled() const;
+     */
+    bool IsEnabled() const;
 
-	/**
-	 Set a value indicating that whether the control is enabled.
+    /**
+     Set a value indicating that whether the control is enabled.
 
      See also IsEnabled.
-	 */
-	void SetIsEnabled(bool is_enabled);
+     */
+    void SetIsEnabled(bool is_enabled);
 
     bool IsSelected() const;
     void SetIsSelected(bool is_selected);
 
-	/**
-	 Get a value indicating that whether the control itself is hovered.
-	 */
-	bool IsHovered() const {
-		return is_hovered_;
-	}
+    /**
+     Get a value indicating that whether the control itself is hovered.
+     */
+    bool IsHovered() const {
+        return is_hovered_;
+    }
 
     /**
      Get a value indicating that whether one of the control's children is hovered.
      */
     bool IsHoveredIndirectly() const;
 
-	/**
-	 Get a value indicating that whether the control can be focused.
+    /**
+     Get a value indicating that whether the control can be focused.
 
-	 The default value is false.
-	 */
-	bool CanFocused() const {
-		return can_focused_;
-	}
+     The default value is false.
+     */
+    bool CanFocused() const {
+        return can_focused_;
+    }
 
-	/**
-	 Set a value indicating that whether the control can be focused.
+    /**
+     Set a value indicating that whether the control can be focused.
 
-	 See also CanFocused.
-	 */
-	void SetCanFocused(bool can_focused) {
-		can_focused_ = can_focused;
-	}
+     See also CanFocused.
+     */
+    void SetCanFocused(bool can_focused) {
+        can_focused_ = can_focused;
+    }
 
     /**
      Get a value indicating that whether the control and its children can be focused 
@@ -572,19 +572,19 @@ public:
      */
     void SetTabIndex(std::size_t tab_index);
 
-	/**
-	 Get a value indicating that whether the control is focused.
-	 */
-	bool IsFocused() const {
-		return is_focused_;
-	}
+    /**
+     Get a value indicating that whether the control is focused.
+     */
+    bool IsFocused() const {
+        return is_focused_;
+    }
 
-	/**
-	 Set a value indicating that whether the control is focused.
+    /**
+     Set a value indicating that whether the control is focused.
 
      This methods takes effect only when the control is contained in a window.
-	 */
-	void SetIsFocused(bool is_focused);
+     */
+    void SetIsFocused(bool is_focused);
 
     bool IsCachedPaintingEnabled() const {
         return is_cached_painting_enabled_;
@@ -611,7 +611,7 @@ public:
     /**
      The the mouse position in control's coordinate.
      */
-	const Point GetMousePosition() const;
+    const Point GetMousePosition() const;
 
     /**
      Determinte whether the control accepts specified key message.
@@ -667,17 +667,17 @@ protected:
 
      Derived classes can override this method to paint the control.
      */
-	virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
+    virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
 
     /**
      Require the control to repaint.
      */
-	void NeedRepaint();
+    void NeedRepaint();
 
     /**
      Require the control to repaint specified rectangle area.
      */
-	void NeedRepaintRect(const Rect& rect);
+    void NeedRepaintRect(const Rect& rect);
 
     /**
      Release the renderer-dependent resources.
@@ -698,12 +698,12 @@ protected:
      Derived classes may not call the same method of base class if they do the layout 
      by themself.
      */
-	virtual void Layout(const Rect& previous_rect);
+    virtual void Layout(const Rect& previous_rect);
 
     /**
      Require the control to relayout its children.
      */
-	void NeedRelayout();
+    void NeedRelayout();
 
     virtual Size GetPreferredContentSize() const;
 
@@ -714,23 +714,23 @@ protected:
     /**
      Get the mutable property map.
      */
-	PropertyMap& GetPropertyMap() {
-		return property_map_;
-	}
+    PropertyMap& GetPropertyMap() {
+        return property_map_;
+    }
 
     /**
      Get the immutable property map.
      */
-	const PropertyMap& GetPropertyMap() const {
-		return property_map_;
-	}
+    const PropertyMap& GetPropertyMap() const {
+        return property_map_;
+    }
 
     /**
      Get a value indicating that whether the control is capturing the mouse.
      */
-	bool IsCapturingMouse() const {
-		return is_capturing_mouse_;
-	}
+    bool IsCapturingMouse() const {
+        return is_capturing_mouse_;
+    }
 
     virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
 
@@ -746,7 +746,7 @@ protected:
      This method is called when a WM_SETCURSOR message is received. Derived classes should 
      call the same method of base class if they don't change the cursor.
      */
-	virtual void ChangeMouseCursor(const Message& message, bool& is_changed);
+    virtual void ChangeMouseCursor(const Message& message, bool& is_changed);
 
     /**
      Process the mouse move notificaiton.
@@ -775,7 +775,7 @@ protected:
      This method is called when the mouse has entered the control. Derived classes should 
      call the same method of base class if they don't process the notification.
      */
-	virtual void OnMouseEnter(const std::shared_ptr<Control>& entered_control);
+    virtual void OnMouseEnter(const std::shared_ptr<Control>& entered_control);
 
     /**
      Process the mouse leave notification.
@@ -851,7 +851,7 @@ protected:
      This method is called when the control captured the mouse. Derived classes
      should call the same method of base class if they don't process the notification.
      */
-	virtual void OnMouseCapture();
+    virtual void OnMouseCapture();
 
     /**
      Process the mouse release notification.
@@ -859,7 +859,7 @@ protected:
      This method is called when the control release the mouse. Derived classes
      should call the same method of base class if they don't process the notification.
      */
-	virtual void OnMouseRelease();
+    virtual void OnMouseRelease();
 
     /**
      Process the key down notification.
@@ -891,7 +891,7 @@ protected:
      This method is called when the control gained the focus. Derived classes should call the 
      same method of base class if they don't process the notification.
      */
-	virtual void OnFocusGain();
+    virtual void OnFocusGain();
 
     /**
      Process the focus lose notification.
@@ -899,7 +899,7 @@ protected:
      This method is called when the control lost the focus. Derived classes should call the 
      same method of base class if they don't process the notification.
      */
-	virtual void OnFocusLose();
+    virtual void OnFocusLose();
 
     /**
      Process the rect change notification.
@@ -932,17 +932,17 @@ protected:
     virtual void OnIsSelectedChanged();
 
 private:
-	friend class Window;
+    friend class Window;
 
-	void SetWindow(const std::shared_ptr<Window>& window) {
-		window_ = window;
-	}
+    void SetWindow(const std::shared_ptr<Window>& window) {
+        window_ = window;
+    }
 
-	void IsHoveredChanged(bool is_hovered);
-	void IsFocusedChanged(bool is_focused);
-	void IsCapturingMouseChanged(bool is_capturing_mouse);
+    void IsHoveredChanged(bool is_hovered);
+    void IsFocusedChanged(bool is_focused);
+    void IsCapturingMouseChanged(bool is_capturing_mouse);
 
-	void RouteHoverMessage(const Point& position, const MouseMessage& message);
+    void RouteHoverMessage(const Point& position, const MouseMessage& message);
     bool RouteMessage(const Point& position, const MouseMessage& message);
     bool InterpretMessage(const Point& position, const MouseMessage& message);
 
@@ -969,22 +969,22 @@ private:
     void ReleaseCachedPaintingRenderer();
     void DrawBackgroundImage(Canvas& canvas, const Rect& background_rect);
 
-	void SetParent(const std::shared_ptr<Control>& parent);
+    void SetParent(const std::shared_ptr<Control>& parent);
 
     void AutoResizeToPreferredSize();
     void InnerResizeToPreferredSize(bool resize_width, bool resize_height);
 
-	/**
-	 Called when a child's rect has changed.
-	 */
-	void ChildRectChanged(const std::shared_ptr<Control>& child, const Rect& previous_rect);
+    /**
+     Called when a child's rect has changed.
+     */
+    void ChildRectChanged(const std::shared_ptr<Control>& child, const Rect& previous_rect);
 
-	/**
-	 Translate a point to which in parent's coordinate system.
-	 */
-	Point ToParentPoint(const Point& point) {
-		return Point(point.x + rect_.position.x, point.y + rect_.position.y);
-	}
+    /**
+     Translate a point to which in parent's coordinate system.
+     */
+    Point ToParentPoint(const Point& point) {
+        return Point(point.x + rect_.position.x, point.y + rect_.position.y);
+    }
 
     /**
      Tanslate a point to which in specified child's coordinate system.
@@ -1005,9 +1005,9 @@ private:
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
 
 private:
-	std::weak_ptr<Window> window_;
-	std::weak_ptr<Control> parent_;
-	std::vector<std::shared_ptr<Control>> children_;
+    std::weak_ptr<Window> window_;
+    std::weak_ptr<Control> parent_;
+    std::vector<std::shared_ptr<Control>> children_;
 
     std::weak_ptr<internal::ControlUpdateLock> update_lock_;
     std::unique_ptr<internal::ControlUpdateState> update_state_;
@@ -1016,15 +1016,15 @@ private:
     BitmapRenderer cached_renderer_;
     Rect valid_cached_renderer_rect_;
 
-	bool is_hovered_;
-	bool is_capturing_mouse_;
-	bool is_focused_;
-	bool can_focused_;
-	bool is_enabled_;
-	bool is_visible_;
+    bool is_hovered_;
+    bool is_capturing_mouse_;
+    bool is_focused_;
+    bool can_focused_;
+    bool is_enabled_;
+    bool is_visible_;
     bool is_selected_{};
 
-	Rect rect_;
+    Rect rect_;
     Frame margin_;
     Frame border_;
     Frame padding_;
@@ -1032,7 +1032,7 @@ private:
     bool should_raise_click_event_{};
     std::uint32_t last_mouse_down_time_{};
 
-	PropertyMap property_map_;
+    PropertyMap property_map_;
 };
 
 

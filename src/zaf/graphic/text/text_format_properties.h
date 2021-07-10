@@ -12,23 +12,23 @@ class FontCollection;
  */
 class TextFormatProperties {
 public:
-	TextFormatProperties() : 
-		font_size(0), 
-		font_weight(0) {
-	
-	}
+    TextFormatProperties() : 
+        font_size(0), 
+        font_weight(0) {
+    
+    }
 
     /**
      Font collection instance.
 
      If this field is nullptr, indicates the system font collection.
      */
-	std::shared_ptr<FontCollection> font_collection;
+    std::shared_ptr<FontCollection> font_collection;
 
     /**
      Font family name.
      */
-	std::wstring font_family_name;
+    std::wstring font_family_name;
 
     /**
      Locale name.
@@ -38,12 +38,12 @@ public:
     /**
      Font size.
      */
-	float font_size;
+    float font_size;
 
     /**
      Font weight.
      */
-	int font_weight;
+    int font_weight;
 };
 
 }

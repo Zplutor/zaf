@@ -3,8 +3,8 @@
 namespace zaf {
 
 enum class LayoutDirection {
-	LeftToRight,
-	TopToBottom,
+    LeftToRight,
+    TopToBottom,
 };
 
 }

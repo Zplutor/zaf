@@ -11,29 +11,29 @@ namespace zaf {
  */
 class TextLayoutProperties {
 public:
-	TextLayoutProperties() : width(0), height(0) { }
+    TextLayoutProperties() : width(0), height(0) { }
 
     /**
      Text string to be layouted.
      */
-	std::wstring text;
+    std::wstring text;
     
     /**
      TextFormat object used to format the text.
 
      This field can not be nullptr.
      */
-	TextFormat text_format;
+    TextFormat text_format;
 
     /**
      Layout width.
      */
-	float width;
+    float width;
 
     /**
      Layout height.
      */
-	float height;
+    float height;
 };
 
 }

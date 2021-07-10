@@ -31,10 +31,10 @@ void GeometrySink::AddLine(const Point& end_point) {
 
 void GeometrySink::AddLines(const std::vector<Point>& points) {
 
-	std::vector<D2D1_POINT_2F> d2d_points;
-	d2d_points.reserve(points.size());
+    std::vector<D2D1_POINT_2F> d2d_points;
+    d2d_points.reserve(points.size());
 
-	for (const auto& each_point : points) {
+    for (const auto& each_point : points) {
 
         Point aligned_point = internal::AlignInRelatedCoordinateSystem(
             each_point, 
@@ -42,10 +42,10 @@ void GeometrySink::AddLines(const std::vector<Point>& points) {
             coordinate_origin_, 
             aligned_coordinate_origin_);
 
-		d2d_points.push_back(aligned_point.ToD2D1POINT2F());
-	}
+        d2d_points.push_back(aligned_point.ToD2D1POINT2F());
+    }
 
-	GetHandle()->AddLines(d2d_points.data(), d2d_points.size());
+    GetHandle()->AddLines(d2d_points.data(), d2d_points.size());
 }
 
 

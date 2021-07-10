@@ -21,8 +21,8 @@ public:
     ZAF_DECLARE_TYPE
 
 public:
-	TextBox();
-	~TextBox();
+    TextBox();
+    ~TextBox();
 
     /**
      Get the dimensions of the white space inset around the text.
@@ -50,60 +50,60 @@ public:
 
      The default value is the maximum of std::uint32_t.
      */
-	std::uint32_t GetMaxLength() const;
+    std::uint32_t GetMaxLength() const;
 
     /**
      Set the maximum length of text. 
      */
-	void SetMaxLength(std::uint32_t max_length);
+    void SetMaxLength(std::uint32_t max_length);
 
     /**
      Get a value indicating that whether all characters is shown as password character.
 
      The default value is false.
      */
-	bool UsePasswordCharacter() const;
+    bool UsePasswordCharacter() const;
     
     /**
      Set a value indicating that whether all characters is shown as password character.
      */
-	void SetUsePasswordCharacter(bool use_password_char);
+    void SetUsePasswordCharacter(bool use_password_char);
 
     /**
      Get the password character.
 
      The default character is *.
      */
-	wchar_t GetPasswordCharacter() const;
+    wchar_t GetPasswordCharacter() const;
 
     /**
      Set the password character.
      */
-	void SetPasswordCharacter(wchar_t password_char);
+    void SetPasswordCharacter(wchar_t password_char);
 
     /**
      Get a value indicating that whether the text box is multiline.
 
      The default value is false.
      */
-	bool IsMultiline() const;
+    bool IsMultiline() const;
 
     /**
      Set value indicating that whether the text box is multiline.
      */
-	void SetIsMultiline(bool is_multiline);
+    void SetIsMultiline(bool is_multiline);
 
     /**
      Get a value indicating that whether the text box is read only.
 
      The default value is falsel
      */
-	bool IsReadOnly() const;
+    bool IsReadOnly() const;
 
     /**
      Set a value indicating that whether the text box is read only.
      */
-	void SetIsReadOnly(bool is_read_only);
+    void SetIsReadOnly(bool is_read_only);
 
     /**
      Get a value indicating that whether the text box allows beep when an
@@ -111,26 +111,26 @@ public:
 
      The default value is true.
      */
-	bool AllowBeep() const;
+    bool AllowBeep() const;
 
     /**
      Set a value indicating that whether the text box allows beep when an
      invalid character is inputted.
      */
-	void SetAllowBeep(bool allow_beep);
+    void SetAllowBeep(bool allow_beep);
 
     /**
      Get the slected text range.
      */
-	TextRange GetSelectionRange() const;
+    TextRange GetSelectionRange() const;
 
     /**
      Set the slected text range.
      */
-	void SetSelectionRange(const TextRange& range);
+    void SetSelectionRange(const TextRange& range);
 
-	std::wstring GetText() const override;
-	void SetText(const std::wstring& text) override;
+    std::wstring GetText() const override;
+    void SetText(const std::wstring& text) override;
 
     /**
      Get text validator.
@@ -145,14 +145,14 @@ public:
      */
     void SetTextValidator(const TextValidator& validator);
 
-	Font GetFont() const override;
-	void SetFont(const Font& font) override;
+    Font GetFont() const override;
+    void SetFont(const Font& font) override;
 
-	TextAlignment GetTextAlignment() const override;
-	void SetTextAlignment(TextAlignment alignment) override;
+    TextAlignment GetTextAlignment() const override;
+    void SetTextAlignment(TextAlignment alignment) override;
 
-	WordWrapping GetWordWrapping() const override;
-	void SetWordWrapping(WordWrapping word_wrapping) override;
+    WordWrapping GetWordWrapping() const override;
+    void SetWordWrapping(WordWrapping word_wrapping) override;
 
     void SetAllowVerticalScroll(bool allow) override;
     void SetAllowHorizontalScroll(bool allow) override;
@@ -173,7 +173,7 @@ public:
 
      This event is raise when selected text is changed.
      */
-	Observable<TextBoxSelectionChangeInfo> SelectionChangeEvent();
+    Observable<TextBoxSelectionChangeInfo> SelectionChangeEvent();
     Observable<SelfScrollingControlScrollBarChangInfo> ScrollBarChangeEvent() override;
     Observable<SelfScrollingControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
 
@@ -280,9 +280,9 @@ protected:
     void Initialize() override;
     void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     Rect GetTextRect() override;
-	void Layout(const Rect& previous_rect) override;
+    void Layout(const Rect& previous_rect) override;
 
-	void ChangeMouseCursor(const Message& message, bool& is_changed) override;
+    void ChangeMouseCursor(const Message& message, bool& is_changed) override;
     bool OnMouseMove(const Point& position, const MouseMessage& message) override;
     bool OnMouseDown(const Point& position, const MouseMessage& message) override;
     bool OnMouseUp(const Point& position, const MouseMessage& message) override;
@@ -291,76 +291,76 @@ protected:
     bool OnKeyUp(const KeyMessage& message) override;
     bool OnCharInput(const CharMessage& message) override;
 
-	void OnFocusGain() override;
-	void OnFocusLose() override;
+    void OnFocusGain() override;
+    void OnFocusLose() override;
 
 private:
-	class TextHostBridge : public ITextHost {
-	public:
-		TextHostBridge(const std::shared_ptr<TextBox>& text_box);
+    class TextHostBridge : public ITextHost {
+    public:
+        TextHostBridge(const std::shared_ptr<TextBox>& text_box);
 
-		HRESULT __stdcall QueryInterface(REFIID riid, void** ppvObject) override;
-		ULONG __stdcall AddRef(void) override { return 0; }
-		ULONG  __stdcall Release(void) override { return 0; }
-		HDC TxGetDC() override;
-		INT	TxReleaseDC(HDC hdc) override;
-		BOOL TxShowScrollBar(INT fnBar, BOOL fShow) override;
-		BOOL TxEnableScrollBar(INT fuSBFlags, INT fuArrowflags) override;
-		BOOL TxSetScrollRange(INT fnBar, LONG nMinPos, INT nMaxPos, BOOL fRedraw) override;
-		BOOL TxSetScrollPos(INT fnBar, INT nPos, BOOL fRedraw) override;
-		void TxInvalidateRect(LPCRECT prc, BOOL fMode) override;
-		void TxViewChange(BOOL fUpdate) override;
-		BOOL TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) override;
-		BOOL TxShowCaret(BOOL fShow) override;
-		BOOL TxSetCaretPos(INT x, INT y) override;
-		BOOL TxSetTimer(UINT idTimer, UINT uTimeout) override;
-		void TxKillTimer(UINT idTimer) override;
-		void TxScrollWindowEx(INT dx, INT dy, LPCRECT lprcScroll, LPCRECT lprcClip, HRGN hrgnUpdate, LPRECT lprcUpdate, UINT fuScroll) override;
-		void TxSetCapture(BOOL fCapture) override;
-		void TxSetFocus() override;
-		void TxSetCursor(HCURSOR hcur, BOOL fText) override;
-		BOOL TxScreenToClient(LPPOINT lppt) override;
-		BOOL TxClientToScreen(LPPOINT lppt) override;
-		HRESULT	TxActivate(LONG * plOldState) override;
-		HRESULT	TxDeactivate(LONG lNewState) override;
-		HRESULT	TxGetClientRect(LPRECT prc) override;
-		HRESULT	TxGetViewInset(LPRECT prc) override;
-		HRESULT	TxGetCharFormat(const CHARFORMATW **ppCF) override;
-		HRESULT	TxGetParaFormat(const PARAFORMAT **ppPF) override;
-		COLORREF TxGetSysColor(int nIndex) override;
-		HRESULT	TxGetBackStyle(TXTBACKSTYLE *pstyle) override;
-		HRESULT	TxGetMaxLength(DWORD *plength) override;
-		HRESULT	TxGetScrollBars(DWORD *pdwScrollBar) override;
-		HRESULT	TxGetPasswordChar(_Out_ TCHAR *pch) override;
-		HRESULT	TxGetAcceleratorPos(LONG *pcp) override;
-		HRESULT	TxGetExtent(LPSIZEL lpExtent) override;
-		HRESULT	OnTxCharFormatChange(const CHARFORMATW * pCF) override;
-		HRESULT	OnTxParaFormatChange(const PARAFORMAT * pPF) override;
-		HRESULT	TxGetPropertyBits(DWORD dwMask, DWORD *pdwBits) override;
-		HRESULT	TxNotify(DWORD iNotify, void *pv) override;
-		HIMC TxImmGetContext() override;
-		void TxImmReleaseContext(HIMC himc) override;
-		HRESULT	TxGetSelectionBarWidth(LONG *lSelBarWidth) override;
+        HRESULT __stdcall QueryInterface(REFIID riid, void** ppvObject) override;
+        ULONG __stdcall AddRef(void) override { return 0; }
+        ULONG  __stdcall Release(void) override { return 0; }
+        HDC TxGetDC() override;
+        INT    TxReleaseDC(HDC hdc) override;
+        BOOL TxShowScrollBar(INT fnBar, BOOL fShow) override;
+        BOOL TxEnableScrollBar(INT fuSBFlags, INT fuArrowflags) override;
+        BOOL TxSetScrollRange(INT fnBar, LONG nMinPos, INT nMaxPos, BOOL fRedraw) override;
+        BOOL TxSetScrollPos(INT fnBar, INT nPos, BOOL fRedraw) override;
+        void TxInvalidateRect(LPCRECT prc, BOOL fMode) override;
+        void TxViewChange(BOOL fUpdate) override;
+        BOOL TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) override;
+        BOOL TxShowCaret(BOOL fShow) override;
+        BOOL TxSetCaretPos(INT x, INT y) override;
+        BOOL TxSetTimer(UINT idTimer, UINT uTimeout) override;
+        void TxKillTimer(UINT idTimer) override;
+        void TxScrollWindowEx(INT dx, INT dy, LPCRECT lprcScroll, LPCRECT lprcClip, HRGN hrgnUpdate, LPRECT lprcUpdate, UINT fuScroll) override;
+        void TxSetCapture(BOOL fCapture) override;
+        void TxSetFocus() override;
+        void TxSetCursor(HCURSOR hcur, BOOL fText) override;
+        BOOL TxScreenToClient(LPPOINT lppt) override;
+        BOOL TxClientToScreen(LPPOINT lppt) override;
+        HRESULT    TxActivate(LONG * plOldState) override;
+        HRESULT    TxDeactivate(LONG lNewState) override;
+        HRESULT    TxGetClientRect(LPRECT prc) override;
+        HRESULT    TxGetViewInset(LPRECT prc) override;
+        HRESULT    TxGetCharFormat(const CHARFORMATW **ppCF) override;
+        HRESULT    TxGetParaFormat(const PARAFORMAT **ppPF) override;
+        COLORREF TxGetSysColor(int nIndex) override;
+        HRESULT    TxGetBackStyle(TXTBACKSTYLE *pstyle) override;
+        HRESULT    TxGetMaxLength(DWORD *plength) override;
+        HRESULT    TxGetScrollBars(DWORD *pdwScrollBar) override;
+        HRESULT    TxGetPasswordChar(_Out_ TCHAR *pch) override;
+        HRESULT    TxGetAcceleratorPos(LONG *pcp) override;
+        HRESULT    TxGetExtent(LPSIZEL lpExtent) override;
+        HRESULT    OnTxCharFormatChange(const CHARFORMATW * pCF) override;
+        HRESULT    OnTxParaFormatChange(const PARAFORMAT * pPF) override;
+        HRESULT    TxGetPropertyBits(DWORD dwMask, DWORD *pdwBits) override;
+        HRESULT    TxNotify(DWORD iNotify, void *pv) override;
+        HIMC TxImmGetContext() override;
+        void TxImmReleaseContext(HIMC himc) override;
+        HRESULT    TxGetSelectionBarWidth(LONG *lSelBarWidth) override;
 
-	private:
-		std::shared_ptr<Window> GetWindow() const;
-		HWND GetWindowHandle() const;
+    private:
+        std::shared_ptr<Window> GetWindow() const;
+        HWND GetWindowHandle() const;
 
         bool NotifyProtected(const ENPROTECTED& info) const;
 
-	private:
-		std::weak_ptr<TextBox> text_box_;
-	};
+    private:
+        std::weak_ptr<TextBox> text_box_;
+    };
 
 private:
-	void InitializeTextService();
+    void InitializeTextService();
     void ReviseTextColor();
     float GetPaintContentOffset(HDC hdc);
     void ResetRequiredHeight();
-	const Rect GetAbsoluteContentRect() const;
-	bool ChangeMouseCursor();
-	bool HasPropertyBit(DWORD bit) const;
-	void ChangePropertyBit(DWORD bit, bool is_set);
+    const Rect GetAbsoluteContentRect() const;
+    bool ChangeMouseCursor();
+    bool HasPropertyBit(DWORD bit) const;
+    void ChangePropertyBit(DWORD bit, bool is_set);
     void ChangeScrollBarPropertyBits(DWORD bits, bool is_set);
     void GetScrollValues(bool is_horizontal, int& current_value, int& min_value, int& max_value);
     void SendScrollMessage(bool is_horizontal, WORD scroll_type);
@@ -369,11 +369,11 @@ private:
     void ScrollValuesChange(bool is_horizontal);
 
 private:
-	std::shared_ptr<TextHostBridge> text_host_bridge_;
-	CComPtr<ITextServices> text_service_;
-	DWORD property_bits_;
-	CHARFORMATW character_format_;
-	PARAFORMAT paragraph_format_;
+    std::shared_ptr<TextHostBridge> text_host_bridge_;
+    CComPtr<ITextServices> text_service_;
+    DWORD property_bits_;
+    CHARFORMATW character_format_;
+    PARAFORMAT paragraph_format_;
     DWORD scroll_bar_property_;
     float required_height_;
     Color text_color_;

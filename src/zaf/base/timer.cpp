@@ -6,23 +6,23 @@ static HWND g_timer_window = nullptr;
 
 static void CheckInitialize() {
 
-	if (g_timer_window != nullptr) {
-		return;
-	}
+    if (g_timer_window != nullptr) {
+        return;
+    }
 
-	g_timer_window = CreateWindow(
-		L"STATIC",
-		nullptr,
-		0,
-		0,
-		0,
-		0,
-		0,
-		HWND_MESSAGE,
-		nullptr,
-		nullptr,
-		nullptr
-	);
+    g_timer_window = CreateWindow(
+        L"STATIC",
+        nullptr,
+        0,
+        0,
+        0,
+        0,
+        0,
+        HWND_MESSAGE,
+        nullptr,
+        nullptr,
+        nullptr
+    );
 }
 
 
@@ -36,7 +36,7 @@ Timer::Timer(Mode mode) :
 
 Timer::~Timer() {
 
-	Stop();
+    Stop();
 }
 
 
@@ -53,7 +53,7 @@ void Timer::SetInterval(const Interval& interval) {
 
 void Timer::Start() {
 
-	is_running_ = true;
+    is_running_ = true;
     StartSystemTimer();
 }
 
@@ -85,7 +85,7 @@ void Timer::StopSystemTimer() {
 
 void Timer::TimerProcedure(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 
-	Timer* timer = reinterpret_cast<Timer*>(idEvent);
+    Timer* timer = reinterpret_cast<Timer*>(idEvent);
     auto shared_timer = timer->shared_from_this();
     shared_timer->SystemTimerTrigger();
 }

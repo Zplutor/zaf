@@ -49,21 +49,21 @@ ZAF_DEFINE_END
 
 void Window::RegisterDefaultClass(HICON icon, HICON small_icon) {
 
-	WNDCLASSEX default_class = { 0 };
-	default_class.cbSize = sizeof(default_class);
-	default_class.style = CS_HREDRAW | CS_VREDRAW;
-	default_class.lpfnWndProc = WindowProcedure;
-	default_class.cbClsExtra = 0;
-	default_class.cbWndExtra = sizeof(LONG_PTR);
-	default_class.hInstance = NULL;
-	default_class.hIcon = icon;
-	default_class.hCursor = LoadCursor(NULL, IDI_APPLICATION);
-	default_class.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
-	default_class.lpszMenuName = nullptr;
-	default_class.lpszClassName = kDefaultWindowClassName;
-	default_class.hIconSm = small_icon;
+    WNDCLASSEX default_class = { 0 };
+    default_class.cbSize = sizeof(default_class);
+    default_class.style = CS_HREDRAW | CS_VREDRAW;
+    default_class.lpfnWndProc = WindowProcedure;
+    default_class.cbClsExtra = 0;
+    default_class.cbWndExtra = sizeof(LONG_PTR);
+    default_class.hInstance = NULL;
+    default_class.hIcon = icon;
+    default_class.hCursor = LoadCursor(NULL, IDI_APPLICATION);
+    default_class.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
+    default_class.lpszMenuName = nullptr;
+    default_class.lpszClassName = kDefaultWindowClassName;
+    default_class.hIconSm = small_icon;
 
-	ATOM atom = RegisterClassEx(&default_class);
+    ATOM atom = RegisterClassEx(&default_class);
     if (atom == 0) {
         ZAF_THROW_IF_SYSTEM_ERROR(GetLastError());
     }
@@ -91,12 +91,12 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wpar
         }
     }
 
-	return CallWindowProc(DefWindowProc, hwnd, message_id, wparam, lparam);
+    return CallWindowProc(DefWindowProc, hwnd, message_id, wparam, lparam);
 }
 
 
 Window::Window() :
-	handle_(nullptr),
+    handle_(nullptr),
     rect_(0, 0, 640, 480) {
 
 }
@@ -838,25 +838,25 @@ void Window::SetHoveredControl(
     const std::shared_ptr<Control>& hovered_control, 
     const MouseMessage& message) {
 
-	if (hovered_control_ == hovered_control) {
-		return;
-	}
+    if (hovered_control_ == hovered_control) {
+        return;
+    }
 
-	if (hovered_control != nullptr) {
+    if (hovered_control != nullptr) {
 
-		//The hovering control must be contained in this window
-		if (hovered_control->GetWindow().get() != this) {
-			return;
-		}
-	}
+        //The hovering control must be contained in this window
+        if (hovered_control->GetWindow().get() != this) {
+            return;
+        }
+    }
 
-	if (hovered_control_ != nullptr) {
-		hovered_control_->IsHoveredChanged(false);
-	}
+    if (hovered_control_ != nullptr) {
+        hovered_control_->IsHoveredChanged(false);
+    }
 
-	hovered_control_ = hovered_control;
+    hovered_control_ = hovered_control;
 
-	if (hovered_control_ != nullptr) {
+    if (hovered_control_ != nullptr) {
 
         //Window finds the hovered control when received WM_MOUSEMOVE,
         //but WM_SETCURSOR is always received before WM_MOUSEMOVE, in such
@@ -869,8 +869,8 @@ void Window::SetHoveredControl(
             reinterpret_cast<WPARAM>(GetHandle()),
             MAKELPARAM(message.GetHitTestResult(), message.id));
 
-		hovered_control_->IsHoveredChanged(true);
-	}
+        hovered_control_->IsHoveredChanged(true);
+    }
 }
 
 
@@ -931,30 +931,30 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_contr
 
     auto previous_focused_control = focused_control_;
     if (previous_focused_control == new_focused_control) {
-		return;
-	}
+        return;
+    }
 
     if (new_focused_control != nullptr) {
 
         if (!new_focused_control->IsEnabled()) {
-			return;
-		}
+            return;
+        }
 
-		//The focused control must be contained in this window
+        //The focused control must be contained in this window
         if (new_focused_control->GetWindow().get() != this) {
-			return;
-		}
-	}
+            return;
+        }
+    }
 
     if (previous_focused_control != nullptr) {
         previous_focused_control->IsFocusedChanged(false);
-	}
+    }
 
     focused_control_ = new_focused_control;
 
     if (new_focused_control != nullptr) {
         new_focused_control->IsFocusedChanged(true);
-	}
+    }
 
     OnFocusedControlChanged(previous_focused_control);
 }

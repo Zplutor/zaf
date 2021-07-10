@@ -9,7 +9,7 @@ template<typename C>
 std::size_t Unique(C& container) {
 
     std::size_t old_size = container.size();
-	container.erase(std::unique(container.begin(), container.end()), container.end());
+    container.erase(std::unique(container.begin(), container.end()), container.end());
     return old_size - container.size();
 }
 

@@ -11,83 +11,83 @@ constexpr wchar_t* const MessageOnlyWindowClassName = L"ZafMessageOnlyWindowClas
 
 InnerMessageOnlyWindow::InnerMessageOnlyWindow(HWND parent_window_handle) {
 
-	RegisterWindowClass();
+    RegisterWindowClass();
 
-	handle_ = CreateWindowEx(
-		0,
-		MessageOnlyWindowClassName,
-		L"",
-		0,
-		0,
-		0,
-		0,
-		0,
-		parent_window_handle,
-		nullptr,
-		nullptr,
-		nullptr);
+    handle_ = CreateWindowEx(
+        0,
+        MessageOnlyWindowClassName,
+        L"",
+        0,
+        0,
+        0,
+        0,
+        0,
+        parent_window_handle,
+        nullptr,
+        nullptr,
+        nullptr);
 
-	if (!handle_) {
-		ZAF_THROW_SYSTEM_ERROR(GetLastError());
-	}
+    if (!handle_) {
+        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+    }
 
-	SetLastError(ERROR_SUCCESS);
+    SetLastError(ERROR_SUCCESS);
 
-	SetWindowLongPtr(
-		handle_,
-		GWLP_USERDATA,
-		reinterpret_cast<ULONG_PTR>(this));
+    SetWindowLongPtr(
+        handle_,
+        GWLP_USERDATA,
+        reinterpret_cast<ULONG_PTR>(this));
 
-	ZAF_THROW_IF_SYSTEM_ERROR(GetLastError());
+    ZAF_THROW_IF_SYSTEM_ERROR(GetLastError());
 }
 
 
 InnerMessageOnlyWindow::~InnerMessageOnlyWindow() {
 
-	DestroyWindow(handle_);
+    DestroyWindow(handle_);
 }
 
 
 void InnerMessageOnlyWindow::RegisterWindowClass() {
 
-	static ATOM atom = []() {
+    static ATOM atom = []() {
 
-		WNDCLASSEX default_class{};
-		default_class.cbSize = sizeof(default_class);
-		default_class.lpszClassName = MessageOnlyWindowClassName;
-		default_class.lpfnWndProc = WindowProcedure;
-		default_class.cbWndExtra = sizeof(LONG_PTR);
+        WNDCLASSEX default_class{};
+        default_class.cbSize = sizeof(default_class);
+        default_class.lpszClassName = MessageOnlyWindowClassName;
+        default_class.lpfnWndProc = WindowProcedure;
+        default_class.cbWndExtra = sizeof(LONG_PTR);
 
-		ATOM atom = RegisterClassEx(&default_class);
-		if (atom == 0) {
-			ZAF_THROW_SYSTEM_ERROR(GetLastError());
-		}
+        ATOM atom = RegisterClassEx(&default_class);
+        if (atom == 0) {
+            ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        }
 
-		return atom;
-	}();
+        return atom;
+    }();
 }
 
 
 LRESULT CALLBACK InnerMessageOnlyWindow::WindowProcedure(
-	HWND hwnd,
-	UINT id,
-	WPARAM wparam,
-	LPARAM lparam) {
+    HWND hwnd,
+    UINT id,
+    WPARAM wparam,
+    LPARAM lparam) {
 
-	LONG_PTR user_data = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-	auto window = reinterpret_cast<InnerMessageOnlyWindow*>(user_data);
-	if (window) {
-		window->OnReceiveMessage(id, wparam, lparam);
-	}
+    LONG_PTR user_data = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    auto window = reinterpret_cast<InnerMessageOnlyWindow*>(user_data);
+    if (window) {
+        window->OnReceiveMessage(id, wparam, lparam);
+    }
 
-	return CallWindowProc(DefWindowProc, hwnd, id, wparam, lparam);
+    return CallWindowProc(DefWindowProc, hwnd, id, wparam, lparam);
 }
 
 
 void InnerMessageOnlyWindow::OnReceiveMessage(UINT id, WPARAM wparam, LPARAM lparam) {
 
-	auto message = CreateMessage(handle_, id, wparam, lparam);
-	subject_.GetObserver().OnNext(*message);
+    auto message = CreateMessage(handle_, id, wparam, lparam);
+    subject_.GetObserver().OnNext(*message);
 }
 
 }

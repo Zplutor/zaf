@@ -15,15 +15,15 @@ public:
     ZAF_DECLARE_TYPE
 
 public:
-	ClickableControl();
-	~ClickableControl();
+    ClickableControl();
+    ~ClickableControl();
 
     /**
      Get a value indicating that whether the control is being pressed.
      */
-	bool IsPressed() const {
-		return is_pressed_;
-	}
+    bool IsPressed() const {
+        return is_pressed_;
+    }
 
     /**
      Perform a click action on the control.
@@ -32,34 +32,34 @@ public:
 
 protected:
     void Initialize() override;
-	void OnMouseEnter(const std::shared_ptr<Control>& entered_control) override;
+    void OnMouseEnter(const std::shared_ptr<Control>& entered_control) override;
     void OnMouseLeave(const std::shared_ptr<Control>& leaved_control) override;
     bool OnMouseMove(const Point& position, const MouseMessage& message) override;
     bool OnMouseDown(const Point& position, const MouseMessage& message) override;
     bool OnMouseUp(const Point& position, const MouseMessage& message) override;
-	void OnMouseCapture() override;
-	void OnMouseRelease() override;
+    void OnMouseCapture() override;
+    void OnMouseRelease() override;
     bool OnKeyDown(const KeyMessage& message) override;
     bool OnKeyUp(const KeyMessage& message) override;
-	
-	void OnFocusGain() override;
-	void OnFocusLose() override;
+    
+    void OnFocusGain() override;
+    void OnFocusLose() override;
 
 private:
-	enum class PressType {
-		Mouse,
-		Key,
-	};
+    enum class PressType {
+        Mouse,
+        Key,
+    };
 
 private:
-	void BeginPress(PressType press_type);
-	void EndPress(PressType press_type);
-	void CheckIsMousePressed(const Point& position, const MouseMessage& message);
+    void BeginPress(PressType press_type);
+    void EndPress(PressType press_type);
+    void CheckIsMousePressed(const Point& position, const MouseMessage& message);
 
 private:
-	bool is_pressed_;
-	bool is_mouse_press_;
-	bool is_key_press_;
+    bool is_pressed_;
+    bool is_mouse_press_;
+    bool is_key_press_;
 };
 
 }

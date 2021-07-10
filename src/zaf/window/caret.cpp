@@ -6,19 +6,19 @@
 namespace zaf {
 
 Caret::Caret() : 
-	is_visible_(false) {
+    is_visible_(false) {
 
 }
 
 
 Caret::~Caret() {
-	Hide();
+    Hide();
 }
 
 
 void Caret::SetRect(const Rect& rect) {
 
-	rect_ = rect;
+    rect_ = rect;
 
     if (IsShown()) {
         CreateSystemCaret();
@@ -28,23 +28,23 @@ void Caret::SetRect(const Rect& rect) {
 
 void Caret::Show() {
 
-	if (IsShown()) {
-		return;
-	}
+    if (IsShown()) {
+        return;
+    }
 
-	NeedRepaint(true);
+    NeedRepaint(true);
 
-	UINT blink_time = GetCaretBlinkTime();
-	if (blink_time == 0) {
-		blink_time = 1000;
-	}
+    UINT blink_time = GetCaretBlinkTime();
+    if (blink_time == 0) {
+        blink_time = 1000;
+    }
 
-	blink_timer_ = std::make_shared<Timer>(Timer::Mode::DeferredRepeated);
+    blink_timer_ = std::make_shared<Timer>(Timer::Mode::DeferredRepeated);
     blink_timer_->SetInterval(std::chrono::milliseconds(blink_time));
     Subscriptions() += blink_timer_->TriggerEvent().Subscribe(std::bind([this]() {
         NeedRepaint(!is_visible_);
     }));
-	blink_timer_->Start();
+    blink_timer_->Start();
 
     CreateSystemCaret();
 }
@@ -71,12 +71,12 @@ void Caret::CreateSystemCaret() {
 
 void Caret::Hide() {
 
-	if (! IsShown()) {
-		return;
-	}
+    if (! IsShown()) {
+        return;
+    }
 
-	blink_timer_.reset();
-	NeedRepaint(false);
+    blink_timer_.reset();
+    NeedRepaint(false);
 
     DestroySystemCaret();
 }
@@ -89,29 +89,29 @@ void Caret::DestroySystemCaret() {
 
 void Caret::NeedRepaint(bool bling_visible) {
 
-	is_visible_ = bling_visible;
+    is_visible_ = bling_visible;
 
-	auto window = window_.lock();
-	if (window != nullptr) {
-		window->NeedRepaintRect(GetRect());
-	}
+    auto window = window_.lock();
+    if (window != nullptr) {
+        window->NeedRepaintRect(GetRect());
+    }
 }
 
 
 void Caret::Repaint(Canvas& canvas) {
 
-	if (! is_visible_) {
-		return;
-	}
+    if (! is_visible_) {
+        return;
+    }
 
-	canvas.BeginPaint();
-	canvas.SaveState();
+    canvas.BeginPaint();
+    canvas.SaveState();
 
-	canvas.SetBrushWithColor(Color::Black());
-	canvas.DrawRectangle(GetRect());
+    canvas.SetBrushWithColor(Color::Black());
+    canvas.DrawRectangle(GetRect());
 
-	canvas.RestoreState();
-	canvas.EndPaint();
+    canvas.RestoreState();
+    canvas.EndPaint();
 }
 
 }

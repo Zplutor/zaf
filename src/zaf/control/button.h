@@ -12,8 +12,8 @@ public:
     ZAF_DECLARE_TYPE
 
 public:
-	Button();
-	~Button();
+    Button();
+    ~Button();
 
     /**
      Get a value indicating that whether the button is the default button in a dialog.

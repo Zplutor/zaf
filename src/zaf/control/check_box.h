@@ -9,27 +9,27 @@ namespace zaf {
 class CheckBoxCheckStateChangeInfo;
 
 /**
- Represents a check box control.	
+ Represents a check box control.    
  */
 class CheckBox : public ClickableControl {
 public:
     ZAF_DECLARE_TYPE
 
 public:
-	CheckBox();
-	~CheckBox();
+    CheckBox();
+    ~CheckBox();
 
     /**
      Get the box border color.
      */
-	Color GetBoxBorderColor() const {
-		return GetBoxBorderColorPicker()(*this);
-	}
+    Color GetBoxBorderColor() const {
+        return GetBoxBorderColorPicker()(*this);
+    }
 
     /**
      Get the color picker of the box border.
      */
-	ColorPicker GetBoxBorderColorPicker() const;
+    ColorPicker GetBoxBorderColorPicker() const;
 
     /**
      Set the box border color.
@@ -41,7 +41,7 @@ public:
     /**
      Set the color picker of the box border.
      */
-	void SetBoxBorderColorPicker(const ColorPicker& color_picker);
+    void SetBoxBorderColorPicker(const ColorPicker& color_picker);
 
     /**
      Get the box background color.
@@ -67,97 +67,97 @@ public:
      */
     void SetBoxBackgroundColorPicker(const ColorPicker& color_picker);
 
-	/**
-	 Get a value indicating that whether the check box changes its check state when 
-	 it is clicked.
+    /**
+     Get a value indicating that whether the check box changes its check state when 
+     it is clicked.
 
-	 The default value is true.
-	 */
-	bool CanAutoChangeCheckState() const;
+     The default value is true.
+     */
+    bool CanAutoChangeCheckState() const;
 
-	/**
-	 Set a value indicating that whether the check box changes its check state when
-	 it is clicked.
-	 */
-	void SetCanAutoChangeCheckState(bool can_change);
+    /**
+     Set a value indicating that whether the check box changes its check state when
+     it is clicked.
+     */
+    void SetCanAutoChangeCheckState(bool can_change);
 
-	/**
-	 Get a value indicating that whether the check box can be in indeterminate state.
+    /**
+     Get a value indicating that whether the check box can be in indeterminate state.
 
-	 The default value is false.
-	 */
-	bool CanBeIndeterminate() const;
+     The default value is false.
+     */
+    bool CanBeIndeterminate() const;
 
-	/**
-	 Set a value indicating that whether the check box can be in indeterminate state.
+    /**
+     Set a value indicating that whether the check box can be in indeterminate state.
 
-	 The check state would be changed to checked if this property is set to false while 
-	 the previous check state is indeterminate.
-	 */
-	void SetCanBeIndeterminate(bool can_be_indeterminate);
+     The check state would be changed to checked if this property is set to false while 
+     the previous check state is indeterminate.
+     */
+    void SetCanBeIndeterminate(bool can_be_indeterminate);
 
-	/**
-	 Get the check state of the check box.
+    /**
+     Get the check state of the check box.
 
-	 The default value is CheckState::Unchecked.
-	 */
-	CheckState GetCheckState() const {
-		return check_state_;
-	}
+     The default value is CheckState::Unchecked.
+     */
+    CheckState GetCheckState() const {
+        return check_state_;
+    }
 
-	/**
-	 Set the check state of the check box.
-	 */
-	void SetCheckState(CheckState check_state);
+    /**
+     Set the check state of the check box.
+     */
+    void SetCheckState(CheckState check_state);
 
-	/**
-	 Get a value indicating that whether the check box is checked.
+    /**
+     Get a value indicating that whether the check box is checked.
 
-	 @return
-	 Return true if the check box is in either checked or indeterminate state; 
-	 otherwise return false.
+     @return
+     Return true if the check box is in either checked or indeterminate state; 
+     otherwise return false.
 
-	 The default value is false.
-	 */
-	bool IsChecked() const {
-		CheckState check_state = GetCheckState();
-		return (check_state == CheckState::Checked) || (check_state == CheckState::Indeterminate);
-	}
+     The default value is false.
+     */
+    bool IsChecked() const {
+        CheckState check_state = GetCheckState();
+        return (check_state == CheckState::Checked) || (check_state == CheckState::Indeterminate);
+    }
 
-	/**
-	 Set a value indicating that whether the check box is checked.
+    /**
+     Set a value indicating that whether the check box is checked.
 
-	 If the value being set is the same as the return value of IsChecked method, nothing would changed.
-	 Otherwise, the check box is set to checked or unchecked state, according to the value.
-	 */
-	void SetIsChecked(bool is_checked) {
-		if (IsChecked() != is_checked) {
-			SetCheckState(is_checked ? CheckState::Checked : CheckState::Unchecked);
-		}
-	}
+     If the value being set is the same as the return value of IsChecked method, nothing would changed.
+     Otherwise, the check box is set to checked or unchecked state, according to the value.
+     */
+    void SetIsChecked(bool is_checked) {
+        if (IsChecked() != is_checked) {
+            SetCheckState(is_checked ? CheckState::Checked : CheckState::Unchecked);
+        }
+    }
 
-	/**
-	 Get the check state change event.
-	 */
-	Observable<CheckBoxCheckStateChangeInfo> CheckStateChangeEvent();
+    /**
+     Get the check state change event.
+     */
+    Observable<CheckBoxCheckStateChangeInfo> CheckStateChangeEvent();
 
 protected:
-	void Initialize() override;
-	void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+    void Initialize() override;
+    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
     Rect GetTextRect() override;
-	void OnClick() override;
+    void OnClick() override;
 
 private:
-	void PaintBox(Canvas& canvas, const Rect& box_rect) const;
+    void PaintBox(Canvas& canvas, const Rect& box_rect) const;
 
 private:
-	CheckState check_state_;
+    CheckState check_state_;
 };
 
 
 class CheckBoxCheckStateChangeInfo {
 public:
-	std::shared_ptr<CheckBox> check_box;
+    std::shared_ptr<CheckBox> check_box;
 };
 
 }

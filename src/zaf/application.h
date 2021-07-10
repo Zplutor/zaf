@@ -30,10 +30,10 @@ class Window;
 
 class InitializeParameters {
 public:
-	std::shared_ptr<ApplicationDelegate> delegate;
-	HICON window_icon{};
-	HICON window_small_icon{};
-	std::shared_ptr<UriLoader> custom_uri_loader;
+    std::shared_ptr<ApplicationDelegate> delegate;
+    HICON window_icon{};
+    HICON window_small_icon{};
+    std::shared_ptr<UriLoader> custom_uri_loader;
 };
 
 /**
@@ -45,35 +45,35 @@ public:
  */
 class Application : public SubscriptionHost {
 public:
-	/**
-	 Get the singleton instance.
-	 */
-	static Application& Instance();
+    /**
+     Get the singleton instance.
+     */
+    static Application& Instance();
 
 public:
-	/**
-	 Initialize the application.
+    /**
+     Initialize the application.
 
-	 @param parameters
-		Initialization parameters.
+     @param parameters
+        Initialization parameters.
 
-	 This mehtod must be called before calling Run method. If the initialization
-	 fails, the application is unable to run, it should be terminated in this case.
-	 */
-	void Initialize(const InitializeParameters& parameters);
+     This mehtod must be called before calling Run method. If the initialization
+     fails, the application is unable to run, it should be terminated in this case.
+     */
+    void Initialize(const InitializeParameters& parameters);
 
-	/**
-	 Make the application run.
+    /**
+     Make the application run.
 
-	 Before calling this method, Initialize method must be called, and it must succeeds.
+     Before calling this method, Initialize method must be called, and it must succeeds.
 
-	 The application enters a message loop while running, so this method would not return
-	 until the message loop ends. 
-	 
-	 OnBeginRun event is triggered after the running began. OnEndRun event is triggered 
-	 before the running end.
-	 */
-	void Run();
+     The application enters a message loop while running, so this method would not return
+     until the message loop ends. 
+     
+     OnBeginRun event is triggered after the running began. OnEndRun event is triggered 
+     before the running end.
+     */
+    void Run();
 
     /**
      Terminate the application.
@@ -82,28 +82,28 @@ public:
      */
     void Terminate();
 
-	std::filesystem::path GetWorkingDirectoryPath() const;
-	std::filesystem::path GetExeFilePath() const;
-	std::filesystem::path GetExeDirectoryPath() const;
+    std::filesystem::path GetWorkingDirectoryPath() const;
+    std::filesystem::path GetExeFilePath() const;
+    std::filesystem::path GetExeDirectoryPath() const;
 
     ReflectionManager& GetReflectionManager() const {
         return *reflection_manager_;
     }
 
-	ResourceManager& GetResourceManager() const {
-		return *resource_manager_;
-	}
+    ResourceManager& GetResourceManager() const {
+        return *resource_manager_;
+    }
 
-	/**
-	 Get the resource factory.
-	 */
-	GraphicFactory& GetGraphicFactory() const {
-		return *graphic_factory_;
-	}
+    /**
+     Get the resource factory.
+     */
+    GraphicFactory& GetGraphicFactory() const {
+        return *graphic_factory_;
+    }
 
-	wic::ImagingFactory& GetImagingFactory() const {
-		return *imaging_factory_;
-	}
+    wic::ImagingFactory& GetImagingFactory() const {
+        return *imaging_factory_;
+    }
 
     /**
      Get the current DPI.
@@ -115,23 +115,23 @@ public:
      */
     std::pair<float, float> GetDpi() const;
 
-	/**
-	 Get the application began run event.
+    /**
+     Get the application began run event.
 
      Startup works can be done in this event, Such as creating and showing the main window.
-	 */
-	Observable<ApplicationBeginRunInfo> BeginRunEvent() {
-		return begin_run_event_.GetObservable();
-	}
+     */
+    Observable<ApplicationBeginRunInfo> BeginRunEvent() {
+        return begin_run_event_.GetObservable();
+    }
 
-	/**
-	 Get the application will end run event.
+    /**
+     Get the application will end run event.
 
      Cleanup works can be done in this event.
-	 */
-	Observable<ApplicationEndRunInfo> EndRunEvent() {
-		return end_run_event_.GetObservable();
-	}
+     */
+    Observable<ApplicationEndRunInfo> EndRunEvent() {
+        return end_run_event_.GetObservable();
+    }
 
     /**
      Get the main window.
@@ -148,47 +148,47 @@ public:
      The main window can be nullptr.
      */
     void SetMainWindow(const std::shared_ptr<Window>& window);
-	
+    
 private:
-	friend class Window;
+    friend class Window;
 
-	void RegisterWindow(const std::shared_ptr<Window>& window);
+    void RegisterWindow(const std::shared_ptr<Window>& window);
     void UnregisterWindow(const std::shared_ptr<Window>& window);
 
 private:
-	friend class internal::RxRuntime;
+    friend class internal::RxRuntime;
 
-	internal::RxRuntime& GetRxRuntime() const {
-		return *rx_runtime_;
-	}
-
-private:
-	Application();
-
-	Application(const Application&) = delete;
-	Application& operator=(const Application&) = delete;
-
-	void InitializeSystemMessageWindow();
-
-	void NotifyApplicationBeginRun();
-	void NotifyApplicationEndRun();
+    internal::RxRuntime& GetRxRuntime() const {
+        return *rx_runtime_;
+    }
 
 private:
-	bool is_initialized_;
+    Application();
 
-	std::unique_ptr<internal::RxRuntime> rx_runtime_;
+    Application(const Application&) = delete;
+    Application& operator=(const Application&) = delete;
+
+    void InitializeSystemMessageWindow();
+
+    void NotifyApplicationBeginRun();
+    void NotifyApplicationEndRun();
+
+private:
+    bool is_initialized_;
+
+    std::unique_ptr<internal::RxRuntime> rx_runtime_;
     std::unique_ptr<ReflectionManager> reflection_manager_;
-	std::unique_ptr<ResourceManager> resource_manager_;
+    std::unique_ptr<ResourceManager> resource_manager_;
     std::unique_ptr<GraphicFactory> graphic_factory_;
-	std::unique_ptr<wic::ImagingFactory> imaging_factory_;
-	std::shared_ptr<internal::SystemMessageWindow> system_message_window_;
-	std::weak_ptr<Window> main_window_;
-	std::set<std::shared_ptr<Window>> windows_;
+    std::unique_ptr<wic::ImagingFactory> imaging_factory_;
+    std::shared_ptr<internal::SystemMessageWindow> system_message_window_;
+    std::weak_ptr<Window> main_window_;
+    std::set<std::shared_ptr<Window>> windows_;
 
-	std::shared_ptr<ApplicationDelegate> delegate_;
+    std::shared_ptr<ApplicationDelegate> delegate_;
 
-	Subject<ApplicationBeginRunInfo> begin_run_event_;
-	Subject<ApplicationEndRunInfo> end_run_event_;
+    Subject<ApplicationBeginRunInfo> begin_run_event_;
+    Subject<ApplicationEndRunInfo> end_run_event_;
 };
 
 
@@ -203,7 +203,7 @@ inline ReflectionManager& GetReflectionManager() {
 
 
 inline ResourceManager& GetResourceManager() {
-	return Application::Instance().GetResourceManager();
+    return Application::Instance().GetResourceManager();
 }
 
 
@@ -213,7 +213,7 @@ inline GraphicFactory& GetGraphicFactory() {
 
 
 inline wic::ImagingFactory& GetImagingFactory() {
-	return GetApplication().GetImagingFactory();
+    return GetApplication().GetImagingFactory();
 }
 
 }

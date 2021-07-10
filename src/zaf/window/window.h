@@ -100,12 +100,12 @@ public:
     /**
      Construct the instance.
      */
-	Window();
+    Window();
 
     /**
      Destruct the instance.
      */
-	virtual ~Window();
+    virtual ~Window();
 
     Window(const Window&) = delete;
     Window& operator=(const Window&) = delete;
@@ -429,9 +429,9 @@ public:
     /**
      Get window's root control.
      */
-	const std::shared_ptr<Control>& GetRootControl() const {
-		return root_control_;
-	}
+    const std::shared_ptr<Control>& GetRootControl() const {
+        return root_control_;
+    }
 
     /**
      Set window's root control.
@@ -452,17 +452,17 @@ public:
         return hovered_control_;
     }
 
-	/**
-	 Get the control which has input focus in the window.
- 	 */
-	const std::shared_ptr<Control>& GetFocusedControl() const {
-		return focused_control_;
-	}
+    /**
+     Get the control which has input focus in the window.
+      */
+    const std::shared_ptr<Control>& GetFocusedControl() const {
+        return focused_control_;
+    }
 
     /**
      Get the caret associates with the window.
      */
-	const std::shared_ptr<Caret>& GetCaret();
+    const std::shared_ptr<Caret>& GetCaret();
 
     /**
      Get the renderer of the window.
@@ -513,12 +513,12 @@ public:
     /**
      Show the window.
      */
-	void Show();
+    void Show();
 
     /**
      Hide the window.
      */
-	void Hide();
+    void Hide();
 
     void Maximize();
     void Minimize();
@@ -527,7 +527,7 @@ public:
     /**
      Close the window.
      */
-	void Close();
+    void Close();
 
     void ShowInspectorWindow();
 
@@ -633,20 +633,20 @@ protected:
     }
 
 private:
-	friend class Application;
-	friend class Caret;
-	friend class Control;
+    friend class Application;
+    friend class Caret;
+    friend class Control;
     friend class InspectorWindow;
     friend class internal::MessageLoop;
 
-	static void RegisterDefaultClass(HICON icon, HICON small_icon);
+    static void RegisterDefaultClass(HICON icon, HICON small_icon);
 
-	void NeedRepaintRect(const Rect& rect);
-	void SetHoveredControl(
+    void NeedRepaintRect(const Rect& rect);
+    void SetHoveredControl(
         const std::shared_ptr<Control>& hovered_control, 
         const MouseMessage& message);
-	void SetCaptureMouseControl(const std::shared_ptr<Control>& capture_control, bool is_releasing);
-	void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
+    void SetCaptureMouseControl(const std::shared_ptr<Control>& capture_control, bool is_releasing);
+    void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
 
     void SetHighlightControl(const std::shared_ptr<Control>& inspected_control);
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
@@ -660,7 +660,7 @@ private:
     };
 
 private:
-	static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
+    static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 private:
     void InitializeRootControl(const std::shared_ptr<Control>& control);
@@ -687,7 +687,7 @@ private:
     bool ChangeMouseCursor(const Message& message);
     bool ReceiveCloseMessage();
     void ReceiveDestroyMessage();
-	
+    
     void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
     void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
 
@@ -705,17 +705,17 @@ private:
         bool is_extra_style);
 
 private:
-	HWND handle_;
+    HWND handle_;
     Rect rect_;
-	WindowRenderer renderer_;
+    WindowRenderer renderer_;
 
     TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };
 
-	std::shared_ptr<Control> root_control_;
-	std::shared_ptr<Control> hovered_control_;
+    std::shared_ptr<Control> root_control_;
+    std::shared_ptr<Control> hovered_control_;
     std::shared_ptr<Control> capturing_mouse_control_;
-	std::shared_ptr<Control> focused_control_;
-	std::shared_ptr<Caret> caret_;
+    std::shared_ptr<Control> focused_control_;
+    std::shared_ptr<Caret> caret_;
 
     PropertyMap property_map_;
 

@@ -8,57 +8,57 @@ namespace zaf {
 namespace {
 
 bool ParsePropertyWithAttribute(
-	const XamlNode& node, 
-	const ObjectProperty& property,
-	Object& object) {
+    const XamlNode& node, 
+    const ObjectProperty& property,
+    Object& object) {
 
-	auto attribute_value = node.GetAttribute(property.GetName());
-	if (!attribute_value) {
-		return false;
-	}
+    auto attribute_value = node.GetAttribute(property.GetName());
+    if (!attribute_value) {
+        return false;
+    }
 
-	auto value_type = property.GetValueType();
-	auto value = value_type->CreateInstance();
-	value_type->GetParser()->ParseFromAttribute(*attribute_value, *value);
+    auto value_type = property.GetValueType();
+    auto value = value_type->CreateInstance();
+    value_type->GetParser()->ParseFromAttribute(*attribute_value, *value);
 
-	property.SetValue(object, value);
-	return true;
+    property.SetValue(object, value);
+    return true;
 }
 
 
 bool ParsePropertyWithNode(const XamlNode& node, const ObjectProperty& property, Object& object) {
 
-	std::wstring node_name = object.GetType()->GetName();
-	node_name += '.';
-	node_name += property.GetName();
+    std::wstring node_name = object.GetType()->GetName();
+    node_name += '.';
+    node_name += property.GetName();
 
-	auto property_node = node.GetPropertyNode(node_name);
-	if (!property_node) {
-		return false;
-	}
+    auto property_node = node.GetPropertyNode(node_name);
+    if (!property_node) {
+        return false;
+    }
 
-	auto value_type = property.GetValueType();
-	auto value = value_type->CreateInstance();
-	value_type->GetParser()->ParseFromNode(*property_node, *value);
+    auto value_type = property.GetValueType();
+    auto value = value_type->CreateInstance();
+    value_type->GetParser()->ParseFromNode(*property_node, *value);
 
-	property.SetValue(object, value);
-	return true;
+    property.SetValue(object, value);
+    return true;
 }
 
 
 void ParsePropertiesInType(const XamlNode& node, const ObjectType& type, Object& object) {
 
-	const auto& properties = type.GetProperties();
-	for (const auto& each_property : properties) {
+    const auto& properties = type.GetProperties();
+    for (const auto& each_property : properties) {
 
-		if (!each_property->CanSet()) {
-			continue;
-		}
+        if (!each_property->CanSet()) {
+            continue;
+        }
 
-		if (!ParsePropertyWithNode(node, *each_property, object)) {
-			ParsePropertyWithAttribute(node, *each_property, object);
-		}
-	}
+        if (!ParsePropertyWithNode(node, *each_property, object)) {
+            ParsePropertyWithAttribute(node, *each_property, object);
+        }
+    }
 }
 
 
@@ -66,19 +66,19 @@ void ParsePropertiesInType(const XamlNode& node, const ObjectType& type, Object&
 
 
 void ObjectParser::ParseFromAttribute(const std::wstring& attribute_value, Object& object) {
-	//Nothing to do.
+    //Nothing to do.
 }
 
 
 void ObjectParser::ParseFromNode(const XamlNode& node, Object& object) {
 
-	auto type = object.GetType();
-	while (type) {
+    auto type = object.GetType();
+    while (type) {
 
-		ParsePropertiesInType(node, *type, object);
+        ParsePropertiesInType(node, *type, object);
 
-		type = type->GetBase();
-	}
+        type = type->GetBase();
+    }
 }
 
 }

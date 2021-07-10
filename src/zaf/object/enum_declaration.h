@@ -8,7 +8,7 @@
 #define ZAF_DECLARE_ENUM(EnumName)                                                                 \
 class EnumName##Enum : public zaf::Object, public zaf::internal::BoxedRepresent<EnumName> {        \
 public:                                                                                            \
-	ZAF_DECLARE_TYPE                                                                               \
+    ZAF_DECLARE_TYPE                                                                               \
     static zaf::EnumType* EnumType();                                                              \
     using BoxedRepresent<EnumName>::BoxedRepresent;                                                \
     bool IsEqual(const zaf::Object& other) const override;                                         \

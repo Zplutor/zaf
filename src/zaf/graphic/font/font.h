@@ -26,31 +26,31 @@ public:
     static Font FromLOGFONT(const LOGFONT& logfont);
 
 public:
-	/**
-	 Font family name.
+    /**
+     Font family name.
 
-	 The default family name is empty, means the default font family name
-	 of system.
-	 */
-	std::wstring family_name;
+     The default family name is empty, means the default font family name
+     of system.
+     */
+    std::wstring family_name;
 
-	/**
-	 Font size.
+    /**
+     Font size.
 
-	 The default size is 0.
-	 */
-	float size{};
+     The default size is 0.
+     */
+    float size{};
 
-	/**
-	 Font weight.
+    /**
+     Font weight.
 
-	 A valid value is between 1 and 999. There are predefined values
-	 contained in class FontWeight. The default font weight value is
-	 FontWeight::Regular.
-	 */
-	int weight{ FontWeight::Regular };
+     A valid value is between 1 and 999. There are predefined values
+     contained in class FontWeight. The default font weight value is
+     FontWeight::Regular.
+     */
+    int weight{ FontWeight::Regular };
 
-	bool has_underline{};
+    bool has_underline{};
 };
 
 }

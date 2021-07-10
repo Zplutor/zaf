@@ -35,8 +35,8 @@ public:
     ZAF_DECLARE_TYPE
 
 public:
-	ScrollableControl();
-	~ScrollableControl();
+    ScrollableControl();
+    ~ScrollableControl();
 
     /**
      Get a value indicating that whether the control allows vertical scrolling.
@@ -120,9 +120,9 @@ public:
     /**
      Get the scroll content control.
      */
-	const std::shared_ptr<Control>& GetScrollContentControl() const {
+    const std::shared_ptr<Control>& GetScrollContentControl() const {
         return scroll_content_control_;
-	}
+    }
 
     /**
      Set the scroll content control.
@@ -177,7 +177,7 @@ public:
 
 protected:
     void Initialize() override;
-	void Layout(const Rect& previous_rect) override;
+    void Layout(const Rect& previous_rect) override;
 
     bool OnMouseWheel(const Point& position, const MouseWheelMessage& message) override;
 
@@ -252,10 +252,10 @@ private:
     std::shared_ptr<ScrollBar> horizontal_scroll_bar_;
     std::shared_ptr<Control> scroll_bar_corner_;
     std::shared_ptr<Control> scroll_container_control_;
-	std::shared_ptr<Control> scroll_content_control_;
+    std::shared_ptr<Control> scroll_content_control_;
     SelfScrollingControl* self_scrolling_control_;
 
-	Size expected_scroll_content_size_;
+    Size expected_scroll_content_size_;
     std::unique_ptr<internal::ScrollableControlLayouter> layouter_;
 };
 

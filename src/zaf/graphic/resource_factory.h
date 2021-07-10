@@ -33,16 +33,16 @@ class TransformMatrix;
  */
 class GraphicFactory {
 public:
-	/**
-	 Initialize the instance with specified underlying instances.
-	 */
+    /**
+     Initialize the instance with specified underlying instances.
+     */
     GraphicFactory(ID2D1Factory* d2d_factory_handle, IDWriteFactory* dwrite_factory_handle);
 
-	/**
-	 Destroy the instance.
-	 */
+    /**
+     Destroy the instance.
+     */
     ~GraphicFactory();
-	
+    
     /**
      Create a window renderer that associated with specified window.
 
@@ -52,8 +52,8 @@ public:
     WindowRenderer CreateWindowRenderer(HWND window_handle);
 
     Renderer CreateBitmapRenderer(
-		const wic::Bitmap& image_source, 
-		const RendererProperties& properties);
+        const wic::Bitmap& image_source, 
+        const RendererProperties& properties);
 
     /**
      Create a rectangle geometry with specified rect.
@@ -65,42 +65,42 @@ public:
 
     RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect);
 
-	EllipseGeometry CreateEllipseGeometry(const Ellipse& ellipse);
+    EllipseGeometry CreateEllipseGeometry(const Ellipse& ellipse);
 
-	/**
-	 Create a path geometry.
+    /**
+     Create a path geometry.
 
-	 @return 
-	     Return nullptr if failed.
-	 */
-	PathGeometry CreatePathGeometry();
+     @return 
+         Return nullptr if failed.
+     */
+    PathGeometry CreatePathGeometry();
 
     TransformedGeometry CreateTransformedGeometry(
         const Geometry& geometry,
         const TransformMatrix& transform_matrix);
 
-	/**
-	 Create a stroke with specified properties.
+    /**
+     Create a stroke with specified properties.
 
-	 @return 
-	     Return nullptr if failed.
-	 */
+     @return 
+         Return nullptr if failed.
+     */
     Stroke CreateStroke(const StrokeProperties& properties);
 
-	/**
-	 Create a text format with specified properties.
+    /**
+     Create a text format with specified properties.
 
-	 @return 
-	      Return nullptr if failed.
-	 */
+     @return 
+          Return nullptr if failed.
+     */
     TextFormat CreateTextFormat(const TextFormatProperties& properties);
 
-	/**
-	 Create a text layout with specified properties.
+    /**
+     Create a text layout with specified properties.
 
-	 @return
-	     Return nullptr if failed.
-	 */
+     @return
+         Return nullptr if failed.
+     */
     TextLayout CreateTextLayout(const TextLayoutProperties& properties);
 
     /**
@@ -113,26 +113,26 @@ public:
 
     TextInlineObject CreateCreateEllipsisTrimmingSign(const TextFormat& text_format);
 
-	/**
-	 Get the underlying ID2D1Factory instance.
-	 */
-	ID2D1Factory* GetDirect2dFactoryHandle() const {
-		return d2d_factory_handle_;
-	}
+    /**
+     Get the underlying ID2D1Factory instance.
+     */
+    ID2D1Factory* GetDirect2dFactoryHandle() const {
+        return d2d_factory_handle_;
+    }
 
-	/**
-	 Get the underlying IDWriteFactory instance.
-	 */
-	IDWriteFactory* GetDirectWriteFactoryHandle() const {
-		return dwrite_factory_handle_;
-	}
+    /**
+     Get the underlying IDWriteFactory instance.
+     */
+    IDWriteFactory* GetDirectWriteFactoryHandle() const {
+        return dwrite_factory_handle_;
+    }
 
     GraphicFactory(const GraphicFactory&) = delete;
     GraphicFactory& operator=(const GraphicFactory&) = delete;
 
 private:
-	ID2D1Factory* d2d_factory_handle_;
-	IDWriteFactory* dwrite_factory_handle_;
+    ID2D1Factory* d2d_factory_handle_;
+    IDWriteFactory* dwrite_factory_handle_;
 };
 
 }

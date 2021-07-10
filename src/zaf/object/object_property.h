@@ -10,26 +10,26 @@ class ObjectType;
 
 class ObjectProperty {
 public:
-	ObjectProperty() = default;
-	virtual ~ObjectProperty() = default;
+    ObjectProperty() = default;
+    virtual ~ObjectProperty() = default;
 
-	ObjectProperty(const ObjectProperty&) = delete;
-	ObjectProperty& operator=(const ObjectProperty&) = delete;
+    ObjectProperty(const ObjectProperty&) = delete;
+    ObjectProperty& operator=(const ObjectProperty&) = delete;
 
-	virtual const std::wstring& GetName() const = 0;
+    virtual const std::wstring& GetName() const = 0;
 
-	virtual bool CanGet() const = 0;
-	virtual bool CanSet() const = 0;
+    virtual bool CanGet() const = 0;
+    virtual bool CanSet() const = 0;
 
-	virtual ObjectType* GetValueType() const = 0;
+    virtual ObjectType* GetValueType() const = 0;
 
-	virtual std::shared_ptr<Object> GetValue(const Object& object) const = 0;
-	virtual void SetValue(Object& object, const Object& value) const = 0;
+    virtual std::shared_ptr<Object> GetValue(const Object& object) const = 0;
+    virtual void SetValue(Object& object, const Object& value) const = 0;
 
-	void SetValue(Object& object, const std::shared_ptr<Object>& value) const {
-		ZAF_EXPECT(value);
-		SetValue(object, *value);
-	}
+    void SetValue(Object& object, const std::shared_ptr<Object>& value) const {
+        ZAF_EXPECT(value);
+        SetValue(object, *value);
+    }
 };
 
 }

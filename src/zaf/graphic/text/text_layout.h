@@ -27,37 +27,37 @@ public:
 
      See also TextFormat::TextFormat.
      */
-	explicit TextLayout(IDWriteTextLayout* handle) : TextFormat(handle) { }
+    explicit TextLayout(IDWriteTextLayout* handle) : TextFormat(handle) { }
 
     /**
      Get the layout maximum width.
      */
-	float GetMaxWidth() const {
-		return GetHandle()->GetMaxWidth();
-	}
+    float GetMaxWidth() const {
+        return GetHandle()->GetMaxWidth();
+    }
 
     /**
      Set the layout maximum width.
      */
-	void SetMaxWidth(float max_width) {
-		HRESULT result = GetHandle()->SetMaxWidth(max_width);
+    void SetMaxWidth(float max_width) {
+        HRESULT result = GetHandle()->SetMaxWidth(max_width);
         ZAF_THROW_IF_COM_ERROR(result);
-	}
+    }
 
     /**
      Get the layout maximum height.
      */
-	float GetMaxHeight() const {
-		return GetHandle()->GetMaxHeight();
-	}
+    float GetMaxHeight() const {
+        return GetHandle()->GetMaxHeight();
+    }
 
     /**
      Set the layout maximum height.
      */
-	void SetMaxHeight(float max_height) {
-		HRESULT result = GetHandle()->SetMaxHeight(max_height);
+    void SetMaxHeight(float max_height) {
+        HRESULT result = GetHandle()->SetMaxHeight(max_height);
         ZAF_THROW_IF_COM_ERROR(result);
-	}
+    }
 
     /**
      Get the font family name of the text at the specified position.
@@ -70,7 +70,7 @@ public:
          This means the run has the exact formatting as the position specified, including but not limited to 
          the font family name. This parameter can be nullptr.
      */
-	std::wstring GetFontFamilyName(std::size_t position, TextRange* range) const;
+    std::wstring GetFontFamilyName(std::size_t position, TextRange* range) const;
 
     /**
      Set font family name for text within a specified text range.
@@ -97,7 +97,7 @@ public:
          This means the run has the exact formatting as the position specified, including but not limited to the
          font size. This parameter can be nullptr.
      */
-	float GetFontSize(std::size_t position, TextRange* range) const;
+    float GetFontSize(std::size_t position, TextRange* range) const;
 
     /**
      Set the font size for text within a specified text range.
@@ -109,9 +109,9 @@ public:
          Text range to which this change applies.
      */
     void SetFontSize(float size, const TextRange& range) {
-		HRESULT result = GetHandle()->SetFontSize(size, range.ToDWRITETEXTRANGE());
+        HRESULT result = GetHandle()->SetFontSize(size, range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
-	}
+    }
 
     /**
      Get the font style (also known as slope) of the text at the specified position.
@@ -124,7 +124,7 @@ public:
          This means the run has the exact formatting as the position specified, including but not limited 
          to the font style. This parameter can be nullptr.
      */
-	FontStyle GetFontStyle(std::size_t position, TextRange* range) const;
+    FontStyle GetFontStyle(std::size_t position, TextRange* range) const;
 
     /**
      Set the font style for text within a text range.
@@ -136,9 +136,9 @@ public:
          The text range to which this change applies.
      */
     void SetFontStyle(FontStyle font_style, const TextRange& range) {
-		HRESULT result = GetHandle()->SetFontStyle(static_cast<DWRITE_FONT_STYLE>(font_style), range.ToDWRITETEXTRANGE());
+        HRESULT result = GetHandle()->SetFontStyle(static_cast<DWRITE_FONT_STYLE>(font_style), range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
-	}
+    }
 
     /**
      Get the font weight of the text at the specified position.
@@ -151,7 +151,7 @@ public:
          This means the run has the exact formatting as the position specified, including but not limited 
          to the font weight. This parameter can be nullptr.
      */
-	int GetFontWeight(std::size_t position, TextRange* range) const;
+    int GetFontWeight(std::size_t position, TextRange* range) const;
 
     /**
      Set the font weight for text within a text range.
@@ -163,9 +163,9 @@ public:
          Text range to which this change applies.
      */
     void SetFontWeight(int weight, const TextRange& range) {
-		HRESULT result = GetHandle()->SetFontWeight(static_cast<DWRITE_FONT_WEIGHT>(weight), range.ToDWRITETEXTRANGE());
+        HRESULT result = GetHandle()->SetFontWeight(static_cast<DWRITE_FONT_WEIGHT>(weight), range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
-	}
+    }
 
     /**
      Get the underline presence of the text at the specified position.
@@ -178,7 +178,7 @@ public:
          This means the run has the exact formatting as the position specified, including but not limited 
          to the underline. This parameter can be nullptr.
      */
-	bool HasUnderline(std::size_t position, TextRange* range) const;
+    bool HasUnderline(std::size_t position, TextRange* range) const;
 
     /**
      Set underlining for text within a specified text range.
@@ -190,9 +190,9 @@ public:
          Text range to which this change applies.
      */
     void SetHasUnderline(bool has_underline, const TextRange& range) {
-		HRESULT result = GetHandle()->SetUnderline(has_underline ? TRUE : FALSE, range.ToDWRITETEXTRANGE());
+        HRESULT result = GetHandle()->SetUnderline(has_underline ? TRUE : FALSE, range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
-	}
+    }
 
     /**
      Get the drawing brush at the specified text position.
@@ -227,12 +227,12 @@ public:
      @param max_line_count
          The maximum number of lines to retrieves.
      */
-	std::vector<LineMetrics> GetLineMetrics(std::size_t max_line_count) const;
+    std::vector<LineMetrics> GetLineMetrics(std::size_t max_line_count) const;
 
     /**
      Retrieves overall metrics for the formatted text.
      */
-	TextMetrics GetMetrics() const;
+    TextMetrics GetMetrics() const;
 
     IDWriteTextLayout* GetHandle() const {
         return static_cast<IDWriteTextLayout*>(__super::GetHandle());
