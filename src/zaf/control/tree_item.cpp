@@ -25,7 +25,7 @@ void TreeItem::Initialize() {
 }
 
 
-void TreeItem::Layout(const Rect& previous_rect) {
+void TreeItem::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
@@ -33,7 +33,7 @@ void TreeItem::Layout(const Rect& previous_rect) {
 }
 
 
-Rect TreeItem::GetTextRect() {
+zaf::Rect TreeItem::GetTextRect() {
 
     float left = (indent_level_ + 1) * ExpandButtonSize + ExpandButtonMargin;
 
@@ -43,9 +43,9 @@ Rect TreeItem::GetTextRect() {
 }
 
 
-Rect TreeItem::GetExpandButtonRect() {
+zaf::Rect TreeItem::GetExpandButtonRect() {
 
-    Rect result;
+    zaf::Rect result;
     result.size.width = ExpandButtonSize;
     result.size.height = ExpandButtonSize;
     result.position.x = indent_level_ * ExpandButtonSize;

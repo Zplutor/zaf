@@ -120,7 +120,7 @@ void Control::EndUpdate() {
 }
 
 
-void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
+void Control::Repaint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     if (! IsVisible()) {
         return;
@@ -135,7 +135,7 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-void Control::RepaintUsingCachedPainting(Canvas& canvas, const Rect& dirty_rect) {
+void Control::RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     auto control_size = GetSize();
     control_size.width = std::ceil(control_size.width);
@@ -146,7 +146,7 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const Rect& dirty_rect)
         CreateCompatibleRendererOptions options;
         options.DesiredSize(control_size);
         cached_renderer_ = canvas.GetRenderer().CreateCompatibleRenderer(options);
-        valid_cached_renderer_rect_ = Rect{};
+        valid_cached_renderer_rect_ = zaf::Rect{};
     }
 
     //Calculate the actual dirty rect that needs to repaint, and the new valid rect in cached 
@@ -160,7 +160,7 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const Rect& dirty_rect)
 
         cached_renderer_.BeginDraw();
 
-        Rect canvas_rect{ Point{}, control_size };
+        zaf::Rect canvas_rect{ Point{}, control_size };
         Canvas cached_painting_canvas(
             cached_renderer_, 
             canvas_rect, 
@@ -184,7 +184,7 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const Rect& dirty_rect)
 }
 
 
-void Control::RepaintControl(Canvas& canvas, const Rect& dirty_rect, bool need_clear) {
+void Control::RepaintControl(Canvas& canvas, const zaf::Rect& dirty_rect, bool need_clear) {
 
     canvas.BeginPaint();
     if (need_clear) {
@@ -193,7 +193,7 @@ void Control::RepaintControl(Canvas& canvas, const Rect& dirty_rect, bool need_c
     Paint(canvas, dirty_rect);
     canvas.EndPaint();
 
-    Rect content_rect = GetContentRect();
+    zaf::Rect content_rect = GetContentRect();
     if (!content_rect.HasIntersection(dirty_rect)) {
         return;
     }
@@ -203,11 +203,11 @@ void Control::RepaintControl(Canvas& canvas, const Rect& dirty_rect, bool need_c
 
     for (const auto& child : children_) {
 
-        Rect child_rect = child->GetRect();
+        zaf::Rect child_rect = child->GetRect();
         child_rect.position.x += border.left + padding.left;
         child_rect.position.y += border.top + padding.top;
 
-        Rect child_dirty_rect = Rect::Intersect(child_rect, dirty_rect);
+        zaf::Rect child_dirty_rect = zaf::Rect::Intersect(child_rect, dirty_rect);
         if (child_dirty_rect.IsEmpty()) {
             continue;
         }
@@ -221,11 +221,11 @@ void Control::RepaintControl(Canvas& canvas, const Rect& dirty_rect, bool need_c
 }
 
 
-void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     Canvas::StateGuard state_guard(canvas);
 
-    Rect control_rect{ Point{}, GetSize() };
+    zaf::Rect control_rect{ Point{}, GetSize() };
 
     //Draw background color.
     canvas.SetBrushWithColor(GetBackgroundColor());
@@ -235,7 +235,7 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
     DrawBackgroundImage(canvas, control_rect);
 
     //Calculate border geometry and draw border.
-    Rect inner_rect = control_rect;
+    zaf::Rect inner_rect = control_rect;
     inner_rect.Deflate(GetBorder());
 
     //The with and height must be greater than 0.
@@ -259,7 +259,7 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-void Control::DrawBackgroundImage(Canvas& canvas, const Rect& background_rect) {
+void Control::DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect) {
 
     auto background_image = GetBackgroundImage();
     if (!background_image) {
@@ -281,11 +281,11 @@ void Control::DrawBackgroundImage(Canvas& canvas, const Rect& background_rect) {
 
 
 void Control::NeedRepaint() {
-    NeedRepaintRect(Rect(Point(), rect_.size));
+    NeedRepaintRect(zaf::Rect(Point(), rect_.size));
 }
 
 
-void Control::NeedRepaintRect(const Rect& rect) {
+void Control::NeedRepaintRect(const zaf::Rect& rect) {
 
     if ((rect.size.width == 0) || (rect.size.height == 0)) {
         return;
@@ -296,8 +296,8 @@ void Control::NeedRepaintRect(const Rect& rect) {
         return;
     }
 
-    Rect bound_rect(Point(), rect_.size);
-    Rect repaint_rect = Rect::Intersect(bound_rect, rect);
+    zaf::Rect bound_rect(Point(), rect_.size);
+    zaf::Rect repaint_rect = zaf::Rect::Intersect(bound_rect, rect);
     if (repaint_rect.IsEmpty()) {
         return;
     }
@@ -321,19 +321,19 @@ void Control::NeedRepaintRect(const Rect& rect) {
     position_in_parent.x += parent_border.left + parent_padding.left;
     position_in_parent.y += parent_border.top + parent_padding.top;
 
-    Rect repaint_rect_in_parent(position_in_parent, repaint_rect.size);
+    zaf::Rect repaint_rect_in_parent(position_in_parent, repaint_rect.size);
     repaint_rect_in_parent.Intersect(parent->GetContentRect());
     parent->NeedRepaintRect(repaint_rect_in_parent);
 }
 
 
-void Control::RecalculateCachedPaintingRect(const Rect& repaint_rect) {
+void Control::RecalculateCachedPaintingRect(const zaf::Rect& repaint_rect) {
 
     if (cached_renderer_ == nullptr) {
         return;
     }
 
-    Rect invalid_rect = internal::CalculateInvalidRectInCachedRect(
+    zaf::Rect invalid_rect = internal::CalculateInvalidRectInCachedRect(
         valid_cached_renderer_rect_, 
         repaint_rect);
 
@@ -355,12 +355,12 @@ void Control::ReleaseRendererResources() {
 }
 
 
-void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const Rect& previous_rect) {
+void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const zaf::Rect& previous_rect) {
 
-    const Rect& new_rect = child->GetRect();
+    const zaf::Rect& new_rect = child->GetRect();
 
     if (new_rect.HasIntersection(previous_rect)) {
-        NeedRepaintRect(Rect::Union(new_rect, previous_rect));
+        NeedRepaintRect(zaf::Rect::Union(new_rect, previous_rect));
     }
     else {
         NeedRepaintRect(new_rect);
@@ -371,7 +371,7 @@ void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const Rect
 }
 
 
-void Control::Layout(const Rect& previous_rect) {
+void Control::Layout(const zaf::Rect& previous_rect) {
 
     //Avoid auto resize when layouting children.
     auto update_guard = BeginUpdate();
@@ -388,7 +388,7 @@ void Control::NeedRelayout() {
 }
 
 
-void Control::NeedRelayout(const Rect& previous_rect) {
+void Control::NeedRelayout(const zaf::Rect& previous_rect) {
 
     if (update_state_) {
         update_state_->need_relayout = true;
@@ -399,11 +399,11 @@ void Control::NeedRelayout(const Rect& previous_rect) {
 }
 
 
-Rect Control::GetAbsoluteRect() const {
+zaf::Rect Control::GetAbsoluteRect() const {
 
     auto window = GetWindow();
     if (window == nullptr) {
-        return Rect();
+        return zaf::Rect();
     }
 
     //No parent, must be the root control, return its rect as the absolute rect.
@@ -412,11 +412,11 @@ Rect Control::GetAbsoluteRect() const {
         return GetRect();
     }
 
-    Rect parent_absolute_rect = parent->GetAbsoluteRect();
+    zaf::Rect parent_absolute_rect = parent->GetAbsoluteRect();
     const auto& parent_border = parent->GetBorder();
     const auto& parent_padding = parent->GetPadding();
 
-    return Rect(
+    return zaf::Rect(
         parent_absolute_rect.position.x + parent_border.left + parent_padding.left + rect_.position.x,
         parent_absolute_rect.position.y + parent_border.top + parent_padding.top + rect_.position.y,
         rect_.size.width,
@@ -425,9 +425,9 @@ Rect Control::GetAbsoluteRect() const {
 }
 
 
-void Control::SetRect(const Rect& rect) {
+void Control::SetRect(const zaf::Rect& rect) {
 
-    Rect previous_rect = GetRect();
+    zaf::Rect previous_rect = GetRect();
 
     //Don't layout if rects are the same.
     if (rect == previous_rect) {
@@ -487,7 +487,7 @@ void Control::SetRect(const Rect& rect) {
 }
 
 
-void Control::OnRectChanged(const Rect& previous_rect) {
+void Control::OnRectChanged(const zaf::Rect& previous_rect) {
 
 }
 
@@ -624,7 +624,7 @@ Size Control::GetPreferredSize() const {
 
 Size Control::GetPreferredContentSize() const {
 
-    Rect union_rect;
+    zaf::Rect union_rect;
 
     for (const auto& each_child : GetChildren()) {
 
@@ -635,7 +635,7 @@ Size Control::GetPreferredContentSize() const {
         auto child_rect = each_child->GetRect();
         child_rect.Inflate(each_child->GetMargin());
 
-        Rect needed_rect;
+        zaf::Rect needed_rect;
         needed_rect.size.width = std::max(child_rect.position.x + child_rect.size.width, 0.f);
         needed_rect.size.height = std::max(child_rect.position.y + child_rect.size.height, 0.f);
 
@@ -746,9 +746,9 @@ void Control::SetAnchor(Anchor anchor) {
 }
 
 
-Rect Control::GetContentRect() const {
+zaf::Rect Control::GetContentRect() const {
 
-    Rect content_rect = Rect(Point(), GetSize());
+    zaf::Rect content_rect = zaf::Rect(Point(), GetSize());
     content_rect.Deflate(GetBorder());
     content_rect.Deflate(GetPadding());
     return content_rect;
@@ -1014,7 +1014,7 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
             continue;
         }
 
-        Rect child_rect = child->GetRect();
+        zaf::Rect child_rect = child->GetRect();
         child_rect.Intersect(content_rect);
 
         if (!child_rect.Contain(position_in_content)) {

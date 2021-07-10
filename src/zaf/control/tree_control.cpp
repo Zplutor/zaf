@@ -62,7 +62,7 @@ void TreeControl::Initialize() {
 }
 
 
-void TreeControl::Layout(const Rect& previous_rect) {
+void TreeControl::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 

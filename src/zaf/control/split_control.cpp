@@ -89,7 +89,7 @@ void SplitControl::UninitializeSplitBar() {
 }
 
 
-void SplitControl::Layout(const Rect& previous_rect) {
+void SplitControl::Layout(const zaf::Rect& previous_rect) {
 
     bool is_horizontal = IsHorizontalSplit();
 
@@ -103,19 +103,19 @@ void SplitControl::Layout(const Rect& previous_rect) {
     float split_bar_thickness = GetSplitBarThickness();
     float split_bar_distance = GetUnflippedSplitBarDistance();
 
-    Rect split_bar_rect(
+    zaf::Rect split_bar_rect(
         split_bar_distance, 
         0,
         split_bar_thickness, 
         secondly_length);
     
-    Rect first_pane_rect(
+    zaf::Rect first_pane_rect(
         0, 
         0,
         split_bar_distance,
         secondly_length);
 
-    Rect second_pane_rect(
+    zaf::Rect second_pane_rect(
         split_bar_distance + split_bar_thickness,
         0,
         primary_length - split_bar_distance - split_bar_thickness,
@@ -136,7 +136,7 @@ void SplitControl::Layout(const Rect& previous_rect) {
 }
 
 
-void SplitControl::OnRectChanged(const Rect& previous_rect) {
+void SplitControl::OnRectChanged(const zaf::Rect& previous_rect) {
 
     __super::OnRectChanged(previous_rect);
 
@@ -459,7 +459,7 @@ void SplitControlSplitBar::Initialize() {
 }
 
 
-void SplitControlSplitBar::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void SplitControlSplitBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 

@@ -75,7 +75,7 @@ public:
 
      If the control is not yet placed in a window, am empty rect is returned.
      */
-    Rect GetAbsoluteRect() const;
+    zaf::Rect GetAbsoluteRect() const;
 
     /**
      Get the control's rect which is related to the coordinate system of parent's
@@ -83,7 +83,7 @@ public:
 
      The default rect is empty.
      */
-    const Rect& GetRect() const {
+    const zaf::Rect& GetRect() const {
         return rect_;
     }
 
@@ -92,7 +92,7 @@ public:
 
      See also GetRect.
      */
-    void SetRect(const Rect& rect);
+    void SetRect(const zaf::Rect& rect);
 
     /**
      Get the control's position which is related to the coordinate system of 
@@ -108,7 +108,7 @@ public:
      See also GetPosition.
      */
     void SetPosition(const Point& position) {
-        SetRect(Rect(position, GetRect().size));
+        SetRect(zaf::Rect(position, GetRect().size));
     }
 
     float GetX() const {
@@ -138,7 +138,7 @@ public:
      Set the control's size;
      */
     void SetSize(const Size& size) {
-        SetRect(Rect(GetRect().position, size));
+        SetRect(zaf::Rect(GetRect().position, size));
     }
 
     /**
@@ -296,7 +296,7 @@ public:
     /**
      Get the control's content rect, related to its coordinate system.
      */
-    Rect GetContentRect() const;
+    zaf::Rect GetContentRect() const;
 
     /**
      Get the control's content size.
@@ -667,7 +667,7 @@ protected:
 
      Derived classes can override this method to paint the control.
      */
-    virtual void Paint(Canvas& canvas, const Rect& dirty_rect);
+    virtual void Paint(Canvas& canvas, const zaf::Rect& dirty_rect);
 
     /**
      Require the control to repaint.
@@ -677,7 +677,7 @@ protected:
     /**
      Require the control to repaint specified rectangle area.
      */
-    void NeedRepaintRect(const Rect& rect);
+    void NeedRepaintRect(const zaf::Rect& rect);
 
     /**
      Release the renderer-dependent resources.
@@ -698,7 +698,7 @@ protected:
      Derived classes may not call the same method of base class if they do the layout 
      by themself.
      */
-    virtual void Layout(const Rect& previous_rect);
+    virtual void Layout(const zaf::Rect& previous_rect);
 
     /**
      Require the control to relayout its children.
@@ -911,7 +911,7 @@ protected:
      need to call NeedRelayout method in this method, and you should layout children in Layout
      method instead of this method.
      */
-    virtual void OnRectChanged(const Rect& previous_rect);
+    virtual void OnRectChanged(const zaf::Rect& previous_rect);
 
     /**
      Process the is visible change notification.
@@ -961,13 +961,13 @@ private:
      @param dirty_rect
          The rect in control's coordinate needed to repaint.
      */
-    void Repaint(Canvas& canvas, const Rect& dirty_rect);
+    void Repaint(Canvas& canvas, const zaf::Rect& dirty_rect);
 
-    void RepaintUsingCachedPainting(Canvas& canvas, const Rect& dirty_rect);
-    void RepaintControl(Canvas& canvas, const Rect& dirty_rect, bool need_clear);
-    void RecalculateCachedPaintingRect(const Rect& repaint_rect);
+    void RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_rect);
+    void RepaintControl(Canvas& canvas, const zaf::Rect& dirty_rect, bool need_clear);
+    void RecalculateCachedPaintingRect(const zaf::Rect& repaint_rect);
     void ReleaseCachedPaintingRenderer();
-    void DrawBackgroundImage(Canvas& canvas, const Rect& background_rect);
+    void DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect);
 
     void SetParent(const std::shared_ptr<Control>& parent);
 
@@ -977,7 +977,7 @@ private:
     /**
      Called when a child's rect has changed.
      */
-    void ChildRectChanged(const std::shared_ptr<Control>& child, const Rect& previous_rect);
+    void ChildRectChanged(const std::shared_ptr<Control>& child, const zaf::Rect& previous_rect);
 
     /**
      Translate a point to which in parent's coordinate system.
@@ -995,7 +995,7 @@ private:
         const Point& position, 
         bool recursively) const;
 
-    void NeedRelayout(const Rect& previous_rect);
+    void NeedRelayout(const zaf::Rect& previous_rect);
 
     void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
 
@@ -1014,7 +1014,7 @@ private:
 
     bool is_cached_painting_enabled_{};
     BitmapRenderer cached_renderer_;
-    Rect valid_cached_renderer_rect_;
+    zaf::Rect valid_cached_renderer_rect_;
 
     bool is_hovered_;
     bool is_capturing_mouse_;
@@ -1024,7 +1024,7 @@ private:
     bool is_visible_;
     bool is_selected_{};
 
-    Rect rect_;
+    zaf::Rect rect_;
     Frame margin_;
     Frame border_;
     Frame padding_;
@@ -1071,7 +1071,7 @@ public:
 class ControlRectChangeInfo {
 public:
     std::shared_ptr<Control> control;
-    Rect previous_rect;
+    zaf::Rect previous_rect;
 };
 
 }

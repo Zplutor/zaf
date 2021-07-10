@@ -50,7 +50,7 @@ void CheckBox::Initialize() {
 }
 
 
-void CheckBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void CheckBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     
     __super::Paint(canvas, dirty_rect);
 
@@ -70,7 +70,7 @@ void CheckBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
+void CheckBox::PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const {
 
     //Paint the box.
     canvas.SetBrushWithColor(GetBoxBackgroundColor());
@@ -83,7 +83,7 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
     auto check_state = GetCheckState();
 
     if (check_state == CheckState::Indeterminate) {
-        Rect mark_rect = box_rect;
+        zaf::Rect mark_rect = box_rect;
         mark_rect.Inflate(-3);
         canvas.DrawRectangle(mark_rect);
     }
@@ -99,7 +99,7 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
             return;
         }
 
-        Rect mark_rect = box_rect;
+        zaf::Rect mark_rect = box_rect;
         mark_rect.Inflate(-2);
 
         Point start_point(mark_rect.position.x + mark_rect.size.width, mark_rect.position.y);
@@ -117,8 +117,8 @@ void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
 }
 
 
-Rect CheckBox::GetTextRect() {
-    return Rect();
+zaf::Rect CheckBox::GetTextRect() {
+    return zaf::Rect();
 }
 
 

@@ -134,7 +134,7 @@ void TextBox::InitializeTextService() {
 }
 
 
-void TextBox::Layout(const Rect& previous_rect) {
+void TextBox::Layout(const zaf::Rect& previous_rect) {
 
     if (text_service_ != nullptr) {
         text_service_->OnTxPropertyBitsChange(TXTBIT_CLIENTRECTCHANGE, TXTBIT_CLIENTRECTCHANGE);
@@ -142,7 +142,7 @@ void TextBox::Layout(const Rect& previous_rect) {
 }
 
 
-void TextBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -266,12 +266,12 @@ void TextBox::ResetRequiredHeight() {
 }
 
 
-Rect TextBox::GetTextRect() {
-    return Rect();
+zaf::Rect TextBox::GetTextRect() {
+    return zaf::Rect();
 }
 
 
-const Rect TextBox::GetAbsoluteContentRect() const {
+const zaf::Rect TextBox::GetAbsoluteContentRect() const {
 
     auto rect = GetAbsoluteRect();
     rect.Deflate(GetBorder());
@@ -1269,7 +1269,7 @@ HRESULT TextBox::TextHostBridge::TxDeactivate(LONG lNewState) {
 
 HRESULT TextBox::TextHostBridge::TxGetClientRect(LPRECT prc) {
 
-    Rect rect;
+    zaf::Rect rect;
 
     auto text_box = text_box_.lock();
     if (text_box != nullptr) {

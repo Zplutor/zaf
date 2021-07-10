@@ -159,7 +159,7 @@ void ComboBox::UninitializeEditTextBox() {
 }
 
 
-void ComboBox::Layout(const Rect& previous_rect) {
+void ComboBox::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
@@ -168,7 +168,7 @@ void ComboBox::Layout(const Rect& previous_rect) {
 }
 
 
-void ComboBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -214,7 +214,7 @@ void ComboBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-Rect ComboBox::GetTextRect() {
+zaf::Rect ComboBox::GetTextRect() {
 
     auto rect = __super::GetTextRect();
     rect.Deflate(zaf::Frame(3, 1, GetDropDownButtonWidth() + 1, 1));

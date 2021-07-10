@@ -141,9 +141,9 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const Rect&) override;
-    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
-    Rect GetTextRect() override;
+    void Layout(const zaf::Rect&) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    zaf::Rect GetTextRect() override;
 
     void OnClick() override;
     bool OnKeyDown(const KeyMessage& message) override;

@@ -27,7 +27,7 @@ void ListItemContainer::Initialize() {
 
 void ListItemContainer::LayoutItems(
     const Control& parent,
-    const Rect& previous_rect,
+    const zaf::Rect& previous_rect,
     const std::vector<std::shared_ptr<Control>>& children) {
 
     float width = GetContentSize().width;

@@ -206,7 +206,7 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const Rect& previous_rect) override;
+    void Layout(const zaf::Rect& previous_rect) override;
 
     bool OnMouseDown(const Point& position, const MouseMessage& message) override;
     bool OnMouseUp(const Point& position, const MouseMessage& message) override;
@@ -234,14 +234,14 @@ private:
         float& thumb_length);
     float CalculateThumbLength(float track_length);
     float CalculateThumbPosition(float track_length, float thumb_length);
-    void ChangeVerticalRectToHorizontalRect(Rect& rect);
+    void ChangeVerticalRectToHorizontalRect(zaf::Rect& rect);
 
     void ChangeValueRange(int min_value, int max_value, bool max_value_has_priority);
 
     void BeginTimer(TimerEvent timer_event);
     void TimerTrigger();
     void ApplyTimerEvent();
-    Rect GetThumbSlotRect() const;
+    zaf::Rect GetThumbSlotRect() const;
 
     void ArrowBeginPress(const ScrollBarArrowBeginPressInfo& event_info);
     void ArrowEndPress(const ScrollBarArrowEndPressInfo& event_info);

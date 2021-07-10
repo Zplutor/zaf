@@ -149,12 +149,12 @@ public:
 
 protected:
     void Initialize() override;
-    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
-    Rect GetTextRect() override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    zaf::Rect GetTextRect() override;
     void OnClick() override;
 
 private:
-    void PaintRadio(Canvas& canvas, const Rect& radio_rect);
+    void PaintRadio(Canvas& canvas, const zaf::Rect& radio_rect);
 
     void SetUnselected() {
         SetIsSelected(false);

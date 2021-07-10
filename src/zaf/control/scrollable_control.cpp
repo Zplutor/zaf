@@ -124,7 +124,7 @@ void ScrollableControl::InitializeLayouter() {
 }
 
 
-void ScrollableControl::Layout(const Rect& previous_rect) {
+void ScrollableControl::Layout(const zaf::Rect& previous_rect) {
     if (layouter_ != nullptr) {
         layouter_->Layout();
     }
@@ -360,13 +360,13 @@ void ScrollableControl::OnIsEnabledChanged() {
 }
 
 
-Rect ScrollableControl::GetVisibleScrollContentRect() const {
+zaf::Rect ScrollableControl::GetVisibleScrollContentRect() const {
 
     if (self_scrolling_control_ != nullptr) {
         return scroll_container_control_->GetRect();
     }
 
-    Rect rect;
+    zaf::Rect rect;
     rect.position = scroll_content_control_->GetPosition();
     rect.position.x *= -1;
     rect.position.y *= -1;

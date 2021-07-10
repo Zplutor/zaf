@@ -32,7 +32,7 @@ private:
 private:
     void LayoutItems(
         const Control& parent,
-        const Rect& previous_rect,
+        const zaf::Rect& previous_rect,
         const std::vector<std::shared_ptr<Control>>& children);
 
 private:

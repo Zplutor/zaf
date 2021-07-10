@@ -308,9 +308,9 @@ void ScrollBar::Wheel(int distance) {
 }
 
 
-void ScrollBar::Layout(const Rect& previous_rect) {
+void ScrollBar::Layout(const zaf::Rect& previous_rect) {
 
-    const Rect& rect = GetRect();
+    const zaf::Rect& rect = GetRect();
 
     float bar_thickness = 0;
     float bar_length = 0;
@@ -326,14 +326,14 @@ void ScrollBar::Layout(const Rect& previous_rect) {
 
     float arrow_length = GetArrowLength();
     Size arrow_size(bar_thickness, arrow_length);
-    Rect decremental_arrow_rect(Rect(Point(), arrow_size));
-    Rect incremental_arrow_rect(Rect(Point(0, bar_length - arrow_length), arrow_size));
+    zaf::Rect decremental_arrow_rect(zaf::Rect(Point(), arrow_size));
+    zaf::Rect incremental_arrow_rect(zaf::Rect(Point(0, bar_length - arrow_length), arrow_size));
 
     float thumb_position = 0;
     float thumb_length = 0;
     CalculateThumbPositionAndLength(bar_length - arrow_length * 2, thumb_position, thumb_length);
 
-    Rect thumb_rect(0, thumb_position + arrow_length, bar_thickness, thumb_length);
+    zaf::Rect thumb_rect(0, thumb_position + arrow_length, bar_thickness, thumb_length);
 
     if (is_horizontal_) {
         ChangeVerticalRectToHorizontalRect(incremental_arrow_rect);
@@ -397,7 +397,7 @@ float ScrollBar::CalculateThumbPosition(float track_length, float thumb_length) 
 }
 
 
-void ScrollBar::ChangeVerticalRectToHorizontalRect(Rect& rect) {
+void ScrollBar::ChangeVerticalRectToHorizontalRect(zaf::Rect& rect) {
 
     std::swap(rect.position.x, rect.position.y);
     std::swap(rect.size.width, rect.size.height);
@@ -482,12 +482,12 @@ void ScrollBar::ApplyTimerEvent() {
 
         Point mouse_position = GetMousePosition();
 
-        Rect thumb_slot_rect = GetThumbSlotRect();
+        zaf::Rect thumb_slot_rect = GetThumbSlotRect();
         if (! thumb_slot_rect.Contain(mouse_position)) {
             return;
         }
 
-        Rect thumb_rect = thumb_->GetRect();
+        zaf::Rect thumb_rect = thumb_->GetRect();
         if (thumb_rect.Contain(mouse_position)) {
             return;
         }
@@ -516,9 +516,9 @@ void ScrollBar::ApplyTimerEvent() {
 }
 
 
-Rect ScrollBar::GetThumbSlotRect() const {
+zaf::Rect ScrollBar::GetThumbSlotRect() const {
 
-    Rect thumb_slot_rect(Point(), GetSize());
+    zaf::Rect thumb_slot_rect(Point(), GetSize());
 
     if (is_horizontal_) {
 

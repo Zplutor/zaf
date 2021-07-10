@@ -196,7 +196,7 @@ public:
     Observable<TextualControlTextChangeInfo> TextChangeEvent();
 
 protected:
-    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
     void ReleaseRendererResources() override {
         ReleaseTextLayout();
@@ -204,7 +204,7 @@ protected:
 
     Size GetPreferredContentSize() const override;
 
-    virtual Rect GetTextRect();
+    virtual zaf::Rect GetTextRect();
 
     TextLayout GetTextLayout() const {
         if (text_layout_ == nullptr) {

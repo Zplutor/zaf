@@ -161,7 +161,7 @@ public:
     /**
      Get the visible scroll content rect, in scroll content control's coordinate.
      */
-    Rect GetVisibleScrollContentRect() const;
+    zaf::Rect GetVisibleScrollContentRect() const;
 
     /**
      Scroll the scroll content to specified position, in scroll content control's coordinate.
@@ -177,7 +177,7 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const Rect& previous_rect) override;
+    void Layout(const zaf::Rect& previous_rect) override;
 
     bool OnMouseWheel(const Point& position, const MouseWheelMessage& message) override;
 

@@ -61,7 +61,7 @@ void ListControl::Initialize() {
 }
 
 
-void ListControl::Layout(const Rect& previous_rect) {
+void ListControl::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 

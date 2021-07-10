@@ -36,7 +36,7 @@ public:
     void SetInterpolationMode(InterpolationMode mode);
 
 protected:
-    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     void ReleaseRendererResources() override;
 
     Size GetPreferredContentSize() const override;

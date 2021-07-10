@@ -69,11 +69,11 @@ TextualControl::~TextualControl() {
 }
 
 
-void TextualControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
-    Rect text_rect = GetTextRect();
+    zaf::Rect text_rect = GetTextRect();
     if (text_rect.size.width <= 0 || text_rect.size.height <= 0) {
         return;
     }
@@ -180,8 +180,8 @@ void TextualControl::ReleaseTextLayout() {
 }
 
 
-Rect TextualControl::GetTextRect() {
-    return Rect{ zaf::Point{}, GetContentSize() };
+zaf::Rect TextualControl::GetTextRect() {
+    return zaf::Rect{ zaf::Point{}, GetContentSize() };
 }
 
 

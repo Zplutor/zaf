@@ -61,8 +61,8 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const Rect& previous_rect) override;
-    void OnRectChanged(const Rect& previous_rect) override;
+    void Layout(const zaf::Rect& previous_rect) override;
+    void OnRectChanged(const zaf::Rect& previous_rect) override;
 
     virtual void SplitBarChange(const std::shared_ptr<SplitControlSplitBar>& previous_split_bar) { }
     virtual void FirstPaneChange(const std::shared_ptr<Control>& previous_pane) { }
@@ -151,7 +151,7 @@ public:
 
 protected:
     void Initialize() override;
-    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     void ChangeMouseCursor(const Message& message, bool& is_changed) override;
     bool OnMouseMove(const Point& position, const MouseMessage& message) override;
     bool OnMouseDown(const Point& position, const MouseMessage& message) override;

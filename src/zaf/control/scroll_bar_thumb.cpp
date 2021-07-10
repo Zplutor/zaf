@@ -24,7 +24,7 @@ void ScrollBarThumb::Initialize() {
 }
 
 
-void ScrollBarThumb::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void ScrollBarThumb::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 

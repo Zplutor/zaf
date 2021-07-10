@@ -278,9 +278,9 @@ public:
 
 protected:
     void Initialize() override;
-    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
-    Rect GetTextRect() override;
-    void Layout(const Rect& previous_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    zaf::Rect GetTextRect() override;
+    void Layout(const zaf::Rect& previous_rect) override;
 
     void ChangeMouseCursor(const Message& message, bool& is_changed) override;
     bool OnMouseMove(const Point& position, const MouseMessage& message) override;
@@ -357,7 +357,7 @@ private:
     void ReviseTextColor();
     float GetPaintContentOffset(HDC hdc);
     void ResetRequiredHeight();
-    const Rect GetAbsoluteContentRect() const;
+    const zaf::Rect GetAbsoluteContentRect() const;
     bool ChangeMouseCursor();
     bool HasPropertyBit(DWORD bit) const;
     void ChangePropertyBit(DWORD bit, bool is_set);
