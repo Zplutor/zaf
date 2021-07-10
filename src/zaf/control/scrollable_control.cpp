@@ -318,7 +318,7 @@ void ScrollableControl::SetScrollBarThickness(float thickness) {
 }
 
 
-void ScrollableControl::SetScrollContentSize(const Size& size) {
+void ScrollableControl::SetScrollContentSize(const zaf::Size& size) {
 
     if ((expected_scroll_content_size_.width == size.width) &&
         (expected_scroll_content_size_.height == size.height)) {

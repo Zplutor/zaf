@@ -325,7 +325,7 @@ void ScrollBar::Layout(const zaf::Rect& previous_rect) {
     }
 
     float arrow_length = GetArrowLength();
-    Size arrow_size(bar_thickness, arrow_length);
+    zaf::Size arrow_size(bar_thickness, arrow_length);
     zaf::Rect decremental_arrow_rect(zaf::Rect(Point(), arrow_size));
     zaf::Rect incremental_arrow_rect(zaf::Rect(Point(0, bar_length - arrow_length), arrow_size));
 
@@ -603,8 +603,8 @@ void ScrollBar::ThumbEndDrag(const ScrollBarThumbEndDragInfo& event_info) {
 
 float ScrollBar::GetValuePerThumbSlotPoint() {
 
-    const Size& bar_size = GetSize();
-    const Size& thumb_size = thumb_->GetSize();
+    const zaf::Size& bar_size = GetSize();
+    const zaf::Size& thumb_size = thumb_->GetSize();
 
     float thumb_scroll_length = 0;
     if (is_horizontal_) {

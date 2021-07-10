@@ -498,9 +498,9 @@ void TextualControl::RaiseTextChangedEvent() {
 }
 
 
-Size TextualControl::GetPreferredContentSize() const {
+zaf::Size TextualControl::GetPreferredContentSize() const {
 
-    Size max_size;
+    zaf::Size max_size;
     max_size.width = GetMaxWidth();
     max_size.height = GetMaxHeight();
 
@@ -524,11 +524,11 @@ Size TextualControl::GetPreferredContentSize() const {
 }
 
 
-Size TextualControl::CalculatePreferredSize(const Size& max_size) const {
+zaf::Size TextualControl::CalculatePreferredSize(const zaf::Size& max_size) const {
 
     auto text_layout = GetTextLayout();
     if (text_layout == nullptr) {
-        return Size();
+        return zaf::Size();
     }
     
     text_layout.SetMaxWidth(max_size.width);
@@ -542,7 +542,7 @@ Size TextualControl::CalculatePreferredSize(const Size& max_size) const {
         metrics.width_including_trailing_whitespace :
         metrics.width;
 
-    return Size{ width, metrics.height };
+    return zaf::Size{ width, metrics.height };
 }
 
 

@@ -611,7 +611,7 @@ void Control::SetMaxHeight(float max_height) {
 }
 
 
-Size Control::GetPreferredSize() const {
+zaf::Size Control::GetPreferredSize() const {
 
     auto result = GetPreferredContentSize();
 
@@ -627,7 +627,7 @@ Size Control::GetPreferredSize() const {
 }
 
 
-Size Control::GetPreferredContentSize() const {
+zaf::Size Control::GetPreferredContentSize() const {
 
     zaf::Rect union_rect;
 

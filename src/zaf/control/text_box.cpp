@@ -1155,7 +1155,7 @@ BOOL TextBox::TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeigh
         return FALSE;
     }
 
-    window->GetCaret()->SetSize(Size(static_cast<float>(xWidth), static_cast<float>(yHeight)));
+    window->GetCaret()->SetSize(zaf::Size(static_cast<float>(xWidth), static_cast<float>(yHeight)));
     return TRUE;
 }
 

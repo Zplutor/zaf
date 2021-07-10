@@ -11,7 +11,7 @@ class SelfScrollingLayouter;
 
 class ScrollBar;
 class SelfScrollingControl;
-class Size;
+class zaf::Size;
 
 /**
  Represents a scrollable control.
@@ -146,7 +146,7 @@ public:
     /**
      Get scroll content size.
      */
-    const Size& GetScrollContentSize() const {
+    const zaf::Size& GetScrollContentSize() const {
         return scroll_content_control_->GetSize();
     }
 
@@ -156,7 +156,7 @@ public:
      The actual scroll content size would be adjusted to the minimum size if 
      the size is not large enough.
      */
-    void SetScrollContentSize(const Size& size);
+    void SetScrollContentSize(const zaf::Size& size);
 
     /**
      Get the visible scroll content rect, in scroll content control's coordinate.
@@ -232,7 +232,7 @@ private:
         return scroll_container_control_;
     }
 
-    const Size& GetExpectedScrollContentSize() const {
+    const zaf::Size& GetExpectedScrollContentSize() const {
         return expected_scroll_content_size_;
     }
 
@@ -255,7 +255,7 @@ private:
     std::shared_ptr<Control> scroll_content_control_;
     SelfScrollingControl* self_scrolling_control_;
 
-    Size expected_scroll_content_size_;
+    zaf::Size expected_scroll_content_size_;
     std::unique_ptr<internal::ScrollableControlLayouter> layouter_;
 };
 

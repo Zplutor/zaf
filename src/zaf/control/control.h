@@ -130,14 +130,14 @@ public:
     /**
      Get the control's size.
      */
-    const Size& GetSize() const {
+    const zaf::Size& GetSize() const {
         return rect_.size;
     }
 
     /**
      Set the control's size;
      */
-    void SetSize(const Size& size) {
+    void SetSize(const zaf::Size& size) {
         SetRect(zaf::Rect(Rect().position, size));
     }
 
@@ -189,7 +189,7 @@ public:
         SetMinHeight(height);
     }
 
-    void SetFixedSize(const Size& size) {
+    void SetFixedSize(const zaf::Size& size) {
         SetFixedWidth(size.width);
         SetFixedHeight(size.height);
     }
@@ -232,7 +232,7 @@ public:
      */
     void SetMaxHeight(float max_height);
 
-    Size GetPreferredSize() const;
+    zaf::Size GetPreferredSize() const;
 
     void ResizeToPreferredSize();
 
@@ -301,7 +301,7 @@ public:
     /**
      Get the control's content size.
      */
-    Size GetContentSize() const {
+    zaf::Size GetContentSize() const {
         return GetContentRect().size;
     }
 
@@ -705,7 +705,7 @@ protected:
      */
     void NeedRelayout();
 
-    virtual Size GetPreferredContentSize() const;
+    virtual zaf::Size GetPreferredContentSize() const;
 
     void RaiseContentChangedEvent();
     void RaiseClickEvent();

@@ -202,7 +202,7 @@ protected:
         ReleaseTextLayout();
     }
 
-    Size GetPreferredContentSize() const override;
+    zaf::Size GetPreferredContentSize() const override;
 
     virtual zaf::Rect GetTextRect();
 
@@ -224,7 +224,7 @@ protected:
     virtual void OnTextChanged() { }
 
 private:
-    Size CalculatePreferredSize(const Size& max_size) const;
+    zaf::Size CalculatePreferredSize(const zaf::Size& max_size) const;
     TextLayout CreateTextLayout() const;
     TextFormat CreateTextFormat(const Font& default_font) const;
     void SetRangedFontsToTextLayout(TextLayout& text_layout) const;

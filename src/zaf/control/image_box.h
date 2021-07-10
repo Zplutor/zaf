@@ -39,7 +39,7 @@ protected:
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     void ReleaseRendererResources() override;
 
-    Size GetPreferredContentSize() const override;
+    zaf::Size GetPreferredContentSize() const override;
 
 private:
     void SetImagePlayer(std::unique_ptr<internal::ImagePlayer> player);
