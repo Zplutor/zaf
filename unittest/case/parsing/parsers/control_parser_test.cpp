@@ -17,7 +17,7 @@ TEST(ControlParserTest, ParseName) {
 
     auto xaml = R"(<Control Name="xyz" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetName(), L"xyz");
+    ASSERT_EQ(control->Name(), L"xyz");
 
     xaml = R"(
         <Control>
@@ -25,7 +25,7 @@ TEST(ControlParserTest, ParseName) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetName(), L"abc");
+    ASSERT_EQ(control->Name(), L"abc");
 }
 
 
@@ -264,11 +264,11 @@ TEST(ControlParserTest, ParseTabIndex) {
 
     auto xaml = R"(<Control TabIndex="2" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetTabIndex(), 2);
+    ASSERT_EQ(control->TabIndex(), 2);
 
     xaml = R"(<Control><Control.TabIndex>3</Control.TabIndex></Control>)";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetTabIndex(), 3);
+    ASSERT_EQ(control->TabIndex(), 3);
 }
 
 
@@ -371,8 +371,8 @@ TEST(ControlParserTest, ParseChildren) {
 
     const auto& children = control->GetChildren();
     ASSERT_EQ(children.size(), 2);
-    ASSERT_EQ(children[0]->GetName(), L"child1");
-    ASSERT_EQ(children[1]->GetName(), L"child2");
+    ASSERT_EQ(children[0]->Name(), L"child1");
+    ASSERT_EQ(children[1]->Name(), L"child2");
 }
 
 

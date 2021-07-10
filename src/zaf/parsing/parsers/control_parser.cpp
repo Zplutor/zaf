@@ -36,11 +36,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
 
     XamlNodeParseHelper helper(node, control.GetType());
 
-    auto name = helper.GetStringProperty(L"Name");
-    if (name) {
-        control.SetName(*name);
-    }
-
     auto margin = helper.GetObjectProperty<Frame>(L"Margin");
     if (margin) {
         control.SetMargin(*margin);
@@ -54,26 +49,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
     auto padding = helper.GetObjectProperty<Frame>(L"Padding");
     if (padding) {
         control.SetPadding(*padding);
-    }
-
-    auto is_visible = helper.GetBoolProperty(L"IsVisible");
-    if (is_visible) {
-        control.SetIsVisible(*is_visible);
-    }
-
-    auto is_enabled = helper.GetBoolProperty(L"IsEnabled");
-    if (is_enabled) {
-        control.SetIsEnabled(*is_enabled);
-    }
-
-    auto can_focused = helper.GetBoolProperty(L"CanFocused");
-    if (can_focused) {
-        control.SetCanFocused(*can_focused);
-    }
-
-    auto can_tab_stop = helper.GetBoolProperty(L"CanTabStop");
-    if (can_tab_stop) {
-        control.SetCanTabStop(*can_tab_stop);
     }
 
     auto tab_index = helper.GetFloatProperty(L"TabIndex");

@@ -13,7 +13,7 @@ public:
         const std::vector<std::shared_ptr<zaf::Control>>& children) override {
 
         float y = 0;
-        auto width = parent.GetContentSize().width;
+        auto width = parent.ContentSize().width;
 
         for (const auto& each_child : children) {
 

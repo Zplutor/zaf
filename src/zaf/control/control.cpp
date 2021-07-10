@@ -71,6 +71,14 @@ ZAF_DEFINE_TYPE_PROPERTY(MaxHeight)
 ZAF_DEFINE_TYPE_PROPERTY(AutoWidth)
 ZAF_DEFINE_TYPE_PROPERTY(AutoHeight)
 ZAF_DEFINE_TYPE_PROPERTY(AutoSize)
+ZAF_DEFINE_TYPE_PROPERTY(ContentRect)
+ZAF_DEFINE_TYPE_PROPERTY(ContentSize)
+ZAF_DEFINE_TYPE_PROPERTY(Name)
+ZAF_DEFINE_TYPE_PROPERTY(IsVisible)
+ZAF_DEFINE_TYPE_PROPERTY(IsSelfVisible)
+ZAF_DEFINE_TYPE_PROPERTY(IsEnabled)
+ZAF_DEFINE_TYPE_PROPERTY(CanFocused)
+ZAF_DEFINE_TYPE_PROPERTY(CanTabStop)
 ZAF_DEFINE_TYPE_END
 
 
@@ -211,7 +219,7 @@ void Control::RepaintControl(Canvas& canvas, const zaf::Rect& dirty_rect, bool n
     Paint(canvas, dirty_rect);
     canvas.EndPaint();
 
-    zaf::Rect content_rect = GetContentRect();
+    zaf::Rect content_rect = ContentRect();
     if (!content_rect.HasIntersection(dirty_rect)) {
         return;
     }
@@ -340,7 +348,7 @@ void Control::NeedRepaintRect(const zaf::Rect& rect) {
     position_in_parent.y += parent_border.top + parent_padding.top;
 
     zaf::Rect repaint_rect_in_parent(position_in_parent, repaint_rect.size);
-    repaint_rect_in_parent.Intersect(parent->GetContentRect());
+    repaint_rect_in_parent.Intersect(parent->ContentRect());
     parent->NeedRepaintRect(repaint_rect_in_parent);
 }
 
@@ -764,7 +772,7 @@ void Control::SetAnchor(Anchor anchor) {
 }
 
 
-zaf::Rect Control::GetContentRect() const {
+zaf::Rect Control::ContentRect() const {
 
     zaf::Rect content_rect = zaf::Rect(Point(), Size());
     content_rect.Deflate(GetBorder());
@@ -995,7 +1003,7 @@ void Control::RemoveAllChildren() {
 std::shared_ptr<Control> Control::FindChild(const std::wstring& name) const {
 
     for (const auto& each_child : children_) {
-        if (each_child->GetName() == name) {
+        if (each_child->Name() == name) {
             return each_child;
         }
     }
@@ -1015,7 +1023,7 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
     const Point& position, 
     bool recursively) const {
 
-    auto content_rect = GetContentRect();
+    auto content_rect = ContentRect();
 
     auto position_in_content = position;
     position_in_content.x -= content_rect.position.x;
@@ -1076,7 +1084,7 @@ bool Control::IsAncestorOf(const std::shared_ptr<Control>& child) const {
 }
 
 
-std::wstring Control::GetName() const {
+std::wstring Control::Name() const {
 
     auto name = GetPropertyMap().TryGetProperty<std::wstring>(property::Name);
     if (name != nullptr) {
@@ -1293,7 +1301,7 @@ void Control::SetCanTabStop(bool can_tab_stop) {
 }
 
 
-std::optional<std::size_t> Control::GetTabIndex() const {
+std::optional<std::size_t> Control::TabIndex() const {
 
     auto tab_index = GetPropertyMap().TryGetProperty<std::size_t>(property::TabIndex);
     if (tab_index != nullptr) {

@@ -173,7 +173,7 @@ void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     __super::Paint(canvas, dirty_rect);
 
     float button_width = GetDropDownButtonWidth();
-    auto button_rect = GetContentRect();
+    auto button_rect = ContentRect();
     button_rect.position.x = button_rect.position.x + button_rect.size.width - button_width;
     button_rect.size.width = button_width;
 
@@ -422,7 +422,7 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
     }
 
     if (height == 0) {
-        height = GetContentSize().height;
+        height = ContentSize().height;
     }
 
     return height;

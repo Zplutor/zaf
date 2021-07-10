@@ -250,10 +250,10 @@ float TextBox::GetPaintContentOffset(HDC hdc) {
     }
 
     if (paragraph_alignment == ParagraphAlignment::Center) {
-        return (GetContentSize().height - required_height_) / 2;
+        return (ContentSize().height - required_height_) / 2;
     }
     else if (paragraph_alignment == ParagraphAlignment::Far) {
-        return GetContentSize().height - required_height_;
+        return ContentSize().height - required_height_;
     }
     else {
         return 0;

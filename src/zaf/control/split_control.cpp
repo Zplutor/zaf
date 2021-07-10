@@ -93,7 +93,7 @@ void SplitControl::Layout(const zaf::Rect& previous_rect) {
 
     bool is_horizontal = IsHorizontalSplit();
 
-    auto content_size = GetContentSize();
+    auto content_size = ContentSize();
     float primary_length = content_size.width;
     float secondly_length = content_size.height;
     if (is_horizontal) {
@@ -153,7 +153,7 @@ void SplitControl::UpdateActualSplitBarDistance() {
         distance = *expected_split_bar_distance_;
     }
     else {
-        auto content_size = GetContentSize();
+        auto content_size = ContentSize();
         distance = (IsHorizontalSplit() ? content_size.height : content_size.width) / 2;
     }
 
@@ -339,7 +339,7 @@ void SplitControl::SetIsSplitBarDistanceFlipped(bool is_flipped) {
 
 float SplitControl::GetAvaliableSplitBarMaxDistance() const {
 
-    auto content_size = GetContentSize();
+    auto content_size = ContentSize();
     float avaliable_max_distance = (IsHorizontalSplit() ? content_size.height : content_size.width) - GetSplitBarThickness();
     return (std::max)(avaliable_max_distance, 0.f);
 }
@@ -351,7 +351,7 @@ float SplitControl::GetUnflippedSplitBarDistance() const {
     bool is_flipped = IsSplitBarDistanceFlipped();
 
     if (is_flipped) {
-        auto content_size = GetContentSize();
+        auto content_size = ContentSize();
         distance = (IsHorizontalSplit() ? content_size.height : content_size.width) - GetSplitBarThickness() - distance;
     }
 

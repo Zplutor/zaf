@@ -138,7 +138,7 @@ float ConversationMessageListView::EstimateItemHeight(
         return 0;
     }
     
-    return message_item_infos_[index]->message_item->DeterminateHeight(GetItemContainer()->GetContentSize().width);
+    return message_item_infos_[index]->message_item->DeterminateHeight(GetItemContainer()->ContentSize().width);
 }
 
 

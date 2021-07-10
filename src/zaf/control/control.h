@@ -296,13 +296,13 @@ public:
     /**
      Get the control's content rect, related to its coordinate system.
      */
-    zaf::Rect GetContentRect() const;
+    zaf::Rect ContentRect() const;
 
     /**
      Get the control's content size.
      */
-    zaf::Size GetContentSize() const {
-        return GetContentRect().size;
+    zaf::Size ContentSize() const {
+        return ContentRect().size;
     }
 
     std::shared_ptr<Image> GetBackgroundImage() const {
@@ -465,12 +465,12 @@ public:
      The name is used to identify a child in control. Multiple 
      children may have the same name. The default name is empty.
      */
-    std::wstring GetName() const;
+    std::wstring Name() const;
 
     /**
      Set the control's name.
 
-     See also GetName.
+     See also Name.
      */
     void SetName(const std::wstring& name);
 
@@ -565,7 +565,7 @@ public:
 
      The default value is std::nullopt.
      */
-    std::optional<std::size_t> GetTabIndex() const;
+    std::optional<std::size_t> TabIndex() const;
 
     /**
      Set the control's tab index within its parent.

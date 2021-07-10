@@ -58,7 +58,7 @@ void ScrollableControlLayouter::UnregisterScrollBarEvent(bool is_horizontal) {
 
 void ScrollableControlLayouter::LayoutScrollBars(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
 
-    auto content_size = GetScrollableControl()->GetContentSize();
+    auto content_size = GetScrollableControl()->ContentSize();
     float scroll_bar_thickness = GetScrollableControl()->GetScrollBarThickness();
 
     //Layout vertical scroll bar
@@ -109,7 +109,7 @@ void ScrollableControlLayouter::LayoutScrollBars(bool can_show_vertical_scroll_b
 
 void ScrollableControlLayouter::LayoutScrollContainerControl(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
 
-    Rect rect(Point(), GetScrollableControl()->GetContentSize());
+    Rect rect(Point(), GetScrollableControl()->ContentSize());
 
     if (can_show_vertical_scroll_bar) {
         rect.size.width -= GetVerticalScrollBar()->Width();

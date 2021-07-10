@@ -66,7 +66,7 @@ void ImageBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         return;
     }
 
-    auto content_rect = GetContentRect();
+    auto content_rect = ContentRect();
 
     canvas.PushClippingRect(content_rect);
     internal::DrawImage(canvas, content_rect, GetImageLayout(), bitmap, GetInterpolationMode());

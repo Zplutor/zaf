@@ -168,7 +168,7 @@ void ConversationItem::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    const auto& current_size = GetContentSize();
+    const auto& current_size = ContentSize();
 
     auto time_label_require_size = time_label_->GetPreferredSize();
 

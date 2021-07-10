@@ -317,6 +317,6 @@ TEST(WindowParser, ParseControls) {
 
     const auto& controls = window->GetRootControl()->GetChildren();
     ASSERT_EQ(controls.size(), 2);
-    ASSERT_EQ(controls[0]->GetName(), L"111");
-    ASSERT_EQ(controls[1]->GetName(), L"222");
+    ASSERT_EQ(controls[0]->Name(), L"111");
+    ASSERT_EQ(controls[1]->Name(), L"222");
 }

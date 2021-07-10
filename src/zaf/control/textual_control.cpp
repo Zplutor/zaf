@@ -80,7 +80,7 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     //Text rect is related to content rect's coordinate system, transfer it to control's coordinate 
     //system.
-    auto content_rect = GetContentRect();
+    auto content_rect = ContentRect();
     text_rect.position.x += content_rect.position.x;
     text_rect.position.y += content_rect.position.y;
     //Prevent text rect exceeds content rect.
@@ -181,7 +181,7 @@ void TextualControl::ReleaseTextLayout() {
 
 
 zaf::Rect TextualControl::GetTextRect() {
-    return zaf::Rect{ zaf::Point{}, GetContentSize() };
+    return zaf::Rect{ zaf::Point{}, ContentSize() };
 }
 
 

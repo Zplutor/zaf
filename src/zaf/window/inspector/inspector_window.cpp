@@ -119,7 +119,7 @@ std::wstring InspectorWindow::GetItemText(
     auto control = dynamic_cast<Control*>(item_data.get());
     if (control) {
 
-        auto control_name = control->GetName();
+        auto control_name = control->Name();
         if (!control_name.empty()) {
             text += L" - ";
             text += control_name;

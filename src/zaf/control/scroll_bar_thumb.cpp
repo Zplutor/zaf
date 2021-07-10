@@ -34,7 +34,7 @@ void ScrollBarThumb::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     Canvas::StateGuard state_guard(canvas);
 
-    auto thumb_rect = GetContentRect();
+    auto thumb_rect = ContentRect();
     const float spacing = 2;
     if (IsHorizontal()) {
         thumb_rect.Inflate(0, -spacing);

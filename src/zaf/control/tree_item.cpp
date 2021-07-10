@@ -49,7 +49,7 @@ zaf::Rect TreeItem::GetExpandButtonRect() {
     result.size.width = ExpandButtonSize;
     result.size.height = ExpandButtonSize;
     result.position.x = indent_level_ * ExpandButtonSize;
-    result.position.y = (GetContentSize().height - ExpandButtonSize) / 2;
+    result.position.y = (ContentSize().height - ExpandButtonSize) / 2;
     return result;
 }
 

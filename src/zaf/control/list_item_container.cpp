@@ -30,7 +30,7 @@ void ListItemContainer::LayoutItems(
     const zaf::Rect& previous_rect,
     const std::vector<std::shared_ptr<Control>>& children) {
 
-    float width = GetContentSize().width;
+    float width = ContentSize().width;
 
     for (const auto& each_child : children) {
 

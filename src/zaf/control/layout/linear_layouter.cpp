@@ -178,7 +178,7 @@ void LinearLayouter::Layout(
         return;
     }
 
-    auto content_size = parent.GetContentSize();
+    auto content_size = parent.ContentSize();
     float content_length = IsVertical() ? content_size.height : content_size.width;
 
     //Calcuate length for each child.

@@ -31,7 +31,7 @@ protected:
 TEST(ControlBinderTest, Macro) {
 
     auto test_control = zaf::Create<TestControl>();
-    ASSERT_EQ(test_control->label->GetName(), L"label");
+    ASSERT_EQ(test_control->label->Name(), L"label");
 }
 
 
@@ -46,8 +46,8 @@ TEST(ControlBinderTest, BindInControl) {
     owner->AddChild(child);
 
     zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), child_name };
-    ASSERT_EQ(binder->GetName(), child_name);
-    ASSERT_EQ(binder->GetName(), child_name);
+    ASSERT_EQ(binder->Name(), child_name);
+    ASSERT_EQ(binder->Name(), child_name);
 }
 
 
@@ -62,8 +62,8 @@ TEST(ControlBinderTest, BindInWindow) {
     owner->GetRootControl()->AddChild(child);
 
     zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), child_name };
-    ASSERT_EQ(binder->GetName(), child_name);
-    ASSERT_EQ(binder->GetName(), child_name);
+    ASSERT_EQ(binder->Name(), child_name);
+    ASSERT_EQ(binder->Name(), child_name);
 }
 
 
@@ -89,5 +89,5 @@ TEST(ControlBinderTest, NotFound) {
     auto owner = zaf::Create<zaf::Control>();
 
     zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), L"not_found" };
-    ASSERT_THROW(binder->GetName(), zaf::Error);
+    ASSERT_THROW(binder->Name(), zaf::Error);
 }

@@ -27,7 +27,7 @@ void MessageItem::Layout(const zaf::Rect& previous_rect) {
 
     float top = TopPadding;
 
-    auto content_size = GetContentSize();
+    auto content_size = ContentSize();
     if (sender_label_->IsVisible()) {
         sender_label_->SetRect(zaf::Rect(0, top, content_size.width, SenderNameHeight));
         top += SenderNameHeight + NameAndContentGap;

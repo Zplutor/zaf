@@ -82,7 +82,7 @@ protected:
     void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override {
 
         __super::Paint(canvas, dirty_rect);
-        PaintColorBox(canvas, GetContentRect(), selected_color_);
+        PaintColorBox(canvas, ContentRect(), selected_color_);
     }
 
     zaf::Rect GetTextRect() override {
@@ -180,7 +180,7 @@ private:
         void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override {
 
             __super::Paint(canvas, dirty_rect);
-            PaintColorBox(canvas, GetContentRect(), color_);
+            PaintColorBox(canvas, ContentRect(), color_);
         }
 
         zaf::Rect GetTextRect() override {
