@@ -406,11 +406,15 @@
     <ClInclude Include="src\zaf\object\boxing\internal\unboxer.h" />
     <ClInclude Include="src\zaf\object\boxing\numeric.h" />
     <ClInclude Include="src\zaf\object\boxing\string.h" />
+    <ClInclude Include="src\zaf\object\enum_declaration.h" />
+    <ClInclude Include="src\zaf\object\enum_definition.h" />
+    <ClInclude Include="src\zaf\object\enum_type.h" />
     <ClInclude Include="src\zaf\object\equality.h" />
     <ClInclude Include="src\zaf\object\internal\is_equal_comparable.h" />
     <ClInclude Include="src\zaf\object\internal\object_initializer.h" />
     <ClInclude Include="src\zaf\object\internal\property_deduction.h" />
     <ClInclude Include="src\zaf\object\internal\property_registrar.h" />
+    <ClInclude Include="src\zaf\object\internal\base_enum_type.h" />
     <ClInclude Include="src\zaf\object\object.h" />
     <ClInclude Include="src\zaf\object\object_property.h" />
     <ClInclude Include="src\zaf\object\object_type.h" />

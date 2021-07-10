@@ -168,6 +168,7 @@
     <ClCompile Include="unittest\case\object\boxing\boxing_test.cpp" />
     <ClCompile Include="unittest\case\object\boxing\numeric_boxed_type_test.cpp" />
     <ClCompile Include="unittest\case\object\boxing\string_boxed_type_test.cpp" />
+    <ClCompile Include="unittest\case\object\enum_test.cpp" />
     <ClCompile Include="unittest\case\object\property_test.cpp" />
     <ClCompile Include="unittest\case\parsers\bitmap_image_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\helpers_test.cpp" />

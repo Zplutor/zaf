@@ -1615,5 +1615,17 @@
     <ClInclude Include="src\zaf\object\parsing\xaml_reader.h">
       <Filter>zaf\object\parsing</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\object\enum_type.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\enum_declaration.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\enum_definition.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\base_enum_type.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
