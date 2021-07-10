@@ -111,21 +111,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
             control.SetBackgroundImageLayout(*background_image_layout);
         }
     }
-
-    auto auto_width = helper.GetBoolProperty(L"AutoWidth");
-    if (auto_width) {
-        control.SetAutoWidth(*auto_width);
-    }
-
-    auto auto_height = helper.GetBoolProperty(L"AutoHeight");
-    if (auto_height) {
-        control.SetAutoHeight(*auto_height);
-    }
-
-    auto auto_resize = helper.GetBoolProperty(L"AutoSize");
-    if (auto_resize) {
-        control.SetAutoSize(*auto_resize);
-    }
 }
 
 
