@@ -1,6 +1,6 @@
 #include "property/combo_box_property_item.h"
 #include <zaf/control/combo_box.h>
-#include <zaf/object/boxing.h>
+#include <zaf/object/boxing/boxing.h>
 
 std::shared_ptr<PropertyItem> CreateComboBoxPropertyItem(
     const std::wstring& title,

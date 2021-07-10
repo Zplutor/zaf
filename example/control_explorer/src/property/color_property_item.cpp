@@ -7,7 +7,7 @@
 #include <zaf/control/list_data_source.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer/renderer.h>
-#include <zaf/object/boxing.h>
+#include <zaf/object/boxing/boxing.h>
 #include <zaf/window/message/keyboard_message.h>
 
 namespace {

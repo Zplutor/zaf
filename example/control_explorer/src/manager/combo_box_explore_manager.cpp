@@ -1,5 +1,5 @@
 #include "manager/combo_box_explore_manager.h"
-#include <zaf/object/boxing.h>
+#include <zaf/object/boxing/boxing.h>
 #include "property/check_box_property_item.h"
 #include "property/number_property_item.h"
 
