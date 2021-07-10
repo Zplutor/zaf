@@ -31,7 +31,7 @@ void ScrollBarArrow::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     Direction direction = GetDirection();
 
     float bottom_edge_length =
-        (direction == Direction::Up || direction == Direction::Down) ? GetWidth() : GetHeight();
+        (direction == Direction::Up || direction == Direction::Down) ? Width() : Height();
 
     bottom_edge_length /= 2;
 
@@ -51,8 +51,8 @@ void ScrollBarArrow::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     }
 
     auto triangle_geometry = internal::CreateTriangleGeometry(
-        GetWidth(),
-        GetHeight(),
+        Width(),
+        Height(),
         bottom_edge_length,
         rotate_angle);
 

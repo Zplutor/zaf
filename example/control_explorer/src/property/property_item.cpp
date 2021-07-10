@@ -59,7 +59,7 @@ void GroupPropertyItem::Initialize() {
 void GroupPropertyItem::AddItem(const std::shared_ptr<PropertyItem>& item) {
 
     AddChild(item);
-    SetHeight(GetHeight() + item->GetHeight());
+    SetHeight(Height() + item->Height());
 }
 
 

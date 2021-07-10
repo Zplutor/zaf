@@ -59,6 +59,15 @@ ZAF_DEFINE_TYPE_PROPERTY(Position)
 ZAF_DEFINE_TYPE_PROPERTY(X)
 ZAF_DEFINE_TYPE_PROPERTY(Y)
 ZAF_DEFINE_TYPE_PROPERTY(Size)
+ZAF_DEFINE_TYPE_PROPERTY(Width)
+ZAF_DEFINE_TYPE_PROPERTY(MinWidth)
+ZAF_DEFINE_TYPE_PROPERTY(MaxWidth)
+ZAF_DEFINE_TYPE_PROPERTY(FixedWidth)
+ZAF_DEFINE_TYPE_PROPERTY(FixedHeight)
+ZAF_DEFINE_TYPE_PROPERTY(FixedSize)
+ZAF_DEFINE_TYPE_PROPERTY(Height)
+ZAF_DEFINE_TYPE_PROPERTY(MinHeight)
+ZAF_DEFINE_TYPE_PROPERTY(MaxHeight)
 ZAF_DEFINE_TYPE_END
 
 
@@ -442,12 +451,12 @@ void Control::SetRect(const zaf::Rect& rect) {
 
     //Revise the size.
     float width = rect.size.width;
-    width = std::max(width, GetMinWidth());
-    width = std::min(width, GetMaxWidth());
+    width = std::max(width, MinWidth());
+    width = std::min(width, MaxWidth());
 
     float height = rect.size.height;
-    height = std::max(height, GetMinHeight());
-    height = std::min(height, GetMaxHeight());
+    height = std::max(height, MinHeight());
+    height = std::min(height, MaxHeight());
 
     rect_ = zaf::Rect(rect.position, zaf::Size(width, height));    
 
@@ -512,7 +521,7 @@ void Control::SetMargin(const Frame& margin) {
 }
 
 
-float Control::GetMinWidth() const {
+float Control::MinWidth() const {
 
     auto min_width = GetPropertyMap().TryGetProperty<float>(property::MinWidth);
     if (min_width != nullptr) {
@@ -527,17 +536,17 @@ void Control::SetMinWidth(float min_width) {
 
     GetPropertyMap().SetProperty(property::MinWidth, min_width);
 
-    if (GetMaxWidth() < min_width) {
+    if (MaxWidth() < min_width) {
         SetMaxWidth(min_width);
     }
 
-    if (GetWidth() < min_width) {
+    if (Width() < min_width) {
         SetWidth(min_width);
     }
 }
 
 
-float Control::GetMaxWidth() const {
+float Control::MaxWidth() const {
 
     auto max_width = GetPropertyMap().TryGetProperty<float>(property::MaxWidth);
     if (max_width != nullptr) {
@@ -552,17 +561,17 @@ void Control::SetMaxWidth(float max_width) {
 
     GetPropertyMap().SetProperty(property::MaxWidth, max_width);
 
-    if (GetMinWidth() > max_width) {
+    if (MinWidth() > max_width) {
         SetMinWidth(max_width);
     }
 
-    if (GetWidth() > max_width) {
+    if (Width() > max_width) {
         SetWidth(max_width);
     }
 }
 
 
-float Control::GetMinHeight() const {
+float Control::MinHeight() const {
 
     auto min_height = GetPropertyMap().TryGetProperty<float>(property::MinHeight);
     if (min_height != nullptr) {
@@ -577,17 +586,17 @@ void Control::SetMinHeight(float min_height) {
 
     GetPropertyMap().SetProperty(property::MinHeight, min_height);
 
-    if (GetMaxHeight() < min_height) {
+    if (MaxHeight() < min_height) {
         SetMaxHeight(min_height);
     }
 
-    if (GetHeight() < min_height) {
+    if (Height() < min_height) {
         SetHeight(min_height);
     }
 }
 
 
-float Control::GetMaxHeight() const {
+float Control::MaxHeight() const {
 
     auto max_height = GetPropertyMap().TryGetProperty<float>(property::MaxHeight);
     if (max_height != nullptr) {
@@ -602,11 +611,11 @@ void Control::SetMaxHeight(float max_height) {
 
     GetPropertyMap().SetProperty(property::MaxHeight, max_height);
 
-    if (GetMinHeight() > max_height) {
+    if (MinHeight() > max_height) {
         SetMinHeight(max_height);
     }
 
-    if (GetHeight() > max_height) {
+    if (Height() > max_height) {
         SetHeight(max_height);
     }
 }

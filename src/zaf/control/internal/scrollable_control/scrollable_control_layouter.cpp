@@ -112,11 +112,11 @@ void ScrollableControlLayouter::LayoutScrollContainerControl(bool can_show_verti
     Rect rect(Point(), GetScrollableControl()->GetContentSize());
 
     if (can_show_vertical_scroll_bar) {
-        rect.size.width -= GetVerticalScrollBar()->GetWidth();
+        rect.size.width -= GetVerticalScrollBar()->Width();
     }
 
     if (can_show_horizontal_scroll_bar) {
-        rect.size.height -= GetHorizontalScrollBar()->GetHeight();
+        rect.size.height -= GetHorizontalScrollBar()->Height();
     }
 
     GetScrollableControl()->GetScrollContainerControl()->SetRect(rect);

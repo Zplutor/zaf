@@ -62,7 +62,7 @@ void ControlPropertyPanel::SetPropertyItems(const std::vector<std::shared_ptr<Pr
     for (const auto& each_item : items) {
 
         scroll_content_control->AddChild(each_item);
-        total_height += each_item->GetHeight();
+        total_height += each_item->Height();
     }
     scrollable_control_->SetScrollContentSize(zaf::Size(0, total_height));
 }

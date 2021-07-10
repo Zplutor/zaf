@@ -14,8 +14,8 @@ TEST(LayoutCaseTest, Case1) {
     auto child2 = zaf::Create<zaf::Control>();
     parent->AddChildren({ child1, child2 });
 
-    ASSERT_EQ(child1->GetHeight(), 0);
-    ASSERT_EQ(child2->GetHeight(), 100);
+    ASSERT_EQ(child1->Height(), 0);
+    ASSERT_EQ(child2->Height(), 100);
 }
 
 
@@ -29,6 +29,6 @@ TEST(LayoutCaseTest, Case2) {
     auto child = zaf::Create<zaf::Control>();
     parent->AddChild(child);
 
-    ASSERT_EQ(child->GetWidth(), 100);
-    ASSERT_EQ(child->GetHeight(), 100);
+    ASSERT_EQ(child->Width(), 100);
+    ASSERT_EQ(child->Height(), 100);
 }

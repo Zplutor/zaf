@@ -66,7 +66,7 @@ void ControlExploreManager::AddSizeItems(std::vector<std::shared_ptr<PropertyIte
 
     auto width_item = CreateFloatPropertyItem(
         L"Width",
-        [target_control]() { return target_control->GetWidth(); }, 
+        [target_control]() { return target_control->Width(); }, 
         [target_control](float value) {
             target_control->SetWidth(value);
         },
@@ -79,7 +79,7 @@ void ControlExploreManager::AddSizeItems(std::vector<std::shared_ptr<PropertyIte
     
     auto height_item = CreateFloatPropertyItem(
         L"Height",
-        [target_control]() { return target_control->GetHeight(); },
+        [target_control]() { return target_control->Height(); },
         [target_control](float value) {
             target_control->SetHeight(value);
         },
@@ -92,7 +92,7 @@ void ControlExploreManager::AddSizeItems(std::vector<std::shared_ptr<PropertyIte
 
     auto min_width_item = CreateFloatPropertyItem(
         L"Minimum Width",
-        [target_control]() { return target_control->GetMinWidth(); },
+        [target_control]() { return target_control->MinWidth(); },
         [target_control](float value) {
             target_control->SetMinWidth(value);
         }
@@ -101,7 +101,7 @@ void ControlExploreManager::AddSizeItems(std::vector<std::shared_ptr<PropertyIte
 
     auto max_width_item = CreateFloatPropertyItem(
         L"Maximum Width",
-        [target_control]() { return target_control->GetMaxWidth(); },
+        [target_control]() { return target_control->MaxWidth(); },
         [target_control](float value) {
             target_control->SetMaxWidth(value);
         }
@@ -110,7 +110,7 @@ void ControlExploreManager::AddSizeItems(std::vector<std::shared_ptr<PropertyIte
 
     auto min_height_item = CreateFloatPropertyItem(
         L"Minimum Height",
-        [target_control]() { return target_control->GetMinHeight(); },
+        [target_control]() { return target_control->MinHeight(); },
         [target_control](float value) {
             target_control->SetMinHeight(value);
         }
@@ -119,7 +119,7 @@ void ControlExploreManager::AddSizeItems(std::vector<std::shared_ptr<PropertyIte
 
     auto max_height_item = CreateFloatPropertyItem(
         L"Maximum Height",
-        [target_control]() { return target_control->GetMaxHeight(); },
+        [target_control]() { return target_control->MaxHeight(); },
         [target_control](float value) {
             target_control->SetMaxHeight(value);
         }

@@ -501,8 +501,8 @@ void TextualControl::RaiseTextChangedEvent() {
 zaf::Size TextualControl::GetPreferredContentSize() const {
 
     zaf::Size max_size;
-    max_size.width = GetMaxWidth();
-    max_size.height = GetMaxHeight();
+    max_size.width = MaxWidth();
+    max_size.height = MaxHeight();
 
     const auto& border = GetBorder();
     max_size.width -= border.left + border.right;

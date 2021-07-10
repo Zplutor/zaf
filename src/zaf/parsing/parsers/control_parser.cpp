@@ -41,51 +41,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
         control.SetName(*name);
     }
 
-    auto width = helper.GetFloatProperty(L"Width");
-    if (width) {
-        control.SetWidth(*width);
-    }
-
-    auto height = helper.GetFloatProperty(L"Height");
-    if (height) {
-        control.SetHeight(*height);
-    }
-
-    auto minimum_width = helper.GetFloatProperty(L"MinWidth");
-    if (minimum_width) {
-        control.SetMinWidth(*minimum_width);
-    }
-
-    auto maximum_width = helper.GetFloatProperty(L"MaxWidth");
-    if (maximum_width) {
-        control.SetMaxWidth(*maximum_width);
-    }
-
-    auto minimum_height = helper.GetFloatProperty(L"MinHeight");
-    if (minimum_height) {
-        control.SetMinHeight(*minimum_height);
-    }
-
-    auto maximum_height = helper.GetFloatProperty(L"MaxHeight");
-    if (maximum_height) {
-        control.SetMaxHeight(*maximum_height);
-    }
-
-    auto fixed_width = helper.GetFloatProperty(L"FixedWidth");
-    if (fixed_width) {
-        control.SetFixedWidth(*fixed_width);
-    }
-
-    auto fixed_height = helper.GetFloatProperty(L"FixedHeight");
-    if (fixed_height) {
-        control.SetFixedHeight(*fixed_height);
-    }
-
-    auto fixed_size = helper.GetObjectProperty<Size>(L"FixedSize");
-    if (fixed_size) {
-        control.SetFixedSize(*fixed_size);
-    }
-
     auto margin = helper.GetObjectProperty<Frame>(L"Margin");
     if (margin) {
         control.SetMargin(*margin);

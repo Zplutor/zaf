@@ -379,7 +379,7 @@ void ComboBox::PopupDropDownWindow() {
 
     auto window_rect = GetAbsoluteRect();
     window_rect.Inflate(-1, 0);
-    window_rect.position.y += GetHeight() - 2;
+    window_rect.position.y += Height() - 2;
 
     std::size_t visible_item_count = drop_down_list_box_->GetItemCount();
     visible_item_count = std::max(visible_item_count, GetMinVisibleItemCount());

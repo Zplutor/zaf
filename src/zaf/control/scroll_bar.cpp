@@ -169,10 +169,10 @@ float ScrollBar::GetArrowLength() const {
     }
         
     if (IsHorizontal()) {
-        return GetHeight();
+        return Height();
     }
     else {
-        return GetWidth();
+        return Width();
     }
 }
 

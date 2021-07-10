@@ -112,8 +112,8 @@ TEST(ControlParserTest, ParseMinWidthAndMaxWidth) {
 
     auto xaml = R"(<Control MinWidth="1" MaxWidth="2"></Control>)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMinWidth(), 1);
-    ASSERT_EQ(control->GetMaxWidth(), 2);
+    ASSERT_EQ(control->MinWidth(), 1);
+    ASSERT_EQ(control->MaxWidth(), 2);
 
     xaml = R"(
         <Control>
@@ -122,8 +122,8 @@ TEST(ControlParserTest, ParseMinWidthAndMaxWidth) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMinWidth(), 3);
-    ASSERT_EQ(control->GetMaxWidth(), 4);
+    ASSERT_EQ(control->MinWidth(), 3);
+    ASSERT_EQ(control->MaxWidth(), 4);
 }
 
 
@@ -131,8 +131,8 @@ TEST(ControlParserTest, ParseMinHeightAndMaxHeight) {
 
     auto xaml = R"(<Control MinHeight="1" MaxHeight="2"></Control>)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMinHeight(), 1);
-    ASSERT_EQ(control->GetMaxHeight(), 2);
+    ASSERT_EQ(control->MinHeight(), 1);
+    ASSERT_EQ(control->MaxHeight(), 2);
 
     xaml = R"(
         <Control>
@@ -141,8 +141,8 @@ TEST(ControlParserTest, ParseMinHeightAndMaxHeight) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMinHeight(), 3);
-    ASSERT_EQ(control->GetMaxHeight(), 4);
+    ASSERT_EQ(control->MinHeight(), 3);
+    ASSERT_EQ(control->MaxHeight(), 4);
 }
 
 
@@ -150,8 +150,8 @@ TEST(ControlParserTest, ParseFixedWidth) {
 
     auto xaml = R"(<Control FixedWidth="1" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMaxWidth(), 1);
-    ASSERT_EQ(control->GetMinWidth(), 1);
+    ASSERT_EQ(control->MaxWidth(), 1);
+    ASSERT_EQ(control->MinWidth(), 1);
 
     xaml = R"(
         <Control>
@@ -159,8 +159,8 @@ TEST(ControlParserTest, ParseFixedWidth) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMaxWidth(), 2);
-    ASSERT_EQ(control->GetMinWidth(), 2);
+    ASSERT_EQ(control->MaxWidth(), 2);
+    ASSERT_EQ(control->MinWidth(), 2);
 }
 
 
@@ -168,8 +168,8 @@ TEST(ControlParserTest, ParseFixedHeight) {
 
     auto xaml = R"(<Control FixedHeight="3" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMaxHeight(), 3);
-    ASSERT_EQ(control->GetMinHeight(), 3);
+    ASSERT_EQ(control->MaxHeight(), 3);
+    ASSERT_EQ(control->MinHeight(), 3);
 
     xaml = R"(
         <Control>
@@ -177,8 +177,8 @@ TEST(ControlParserTest, ParseFixedHeight) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMaxHeight(), 4);
-    ASSERT_EQ(control->GetMinHeight(), 4);
+    ASSERT_EQ(control->MaxHeight(), 4);
+    ASSERT_EQ(control->MinHeight(), 4);
 }
 
 
@@ -186,10 +186,10 @@ TEST(ControlParserTest, ParseFixedSize) {
 
     auto xaml = R"(<Control FixedSize="5,6" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMaxWidth(), 5);
-    ASSERT_EQ(control->GetMinWidth(), 5);
-    ASSERT_EQ(control->GetMaxHeight(), 6);
-    ASSERT_EQ(control->GetMinHeight(), 6);
+    ASSERT_EQ(control->MaxWidth(), 5);
+    ASSERT_EQ(control->MinWidth(), 5);
+    ASSERT_EQ(control->MaxHeight(), 6);
+    ASSERT_EQ(control->MinHeight(), 6);
 
     xaml = R"(
         <Control>
@@ -197,10 +197,10 @@ TEST(ControlParserTest, ParseFixedSize) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMaxWidth(), 7);
-    ASSERT_EQ(control->GetMinWidth(), 7);
-    ASSERT_EQ(control->GetMaxHeight(), 8);
-    ASSERT_EQ(control->GetMinHeight(), 8);
+    ASSERT_EQ(control->MaxWidth(), 7);
+    ASSERT_EQ(control->MinWidth(), 7);
+    ASSERT_EQ(control->MaxHeight(), 8);
+    ASSERT_EQ(control->MinHeight(), 8);
 }
 
 

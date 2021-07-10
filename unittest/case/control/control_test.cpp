@@ -85,8 +85,8 @@ TEST(ControlTest, ResizeToPreferredSize) {
     parent->AddChild(child);
     parent->ResizeToPreferredSize();
 
-    ASSERT_EQ(parent->GetWidth(), 60);
-    ASSERT_EQ(parent->GetHeight(), 60);
+    ASSERT_EQ(parent->Width(), 60);
+    ASSERT_EQ(parent->Height(), 60);
 }
 
 

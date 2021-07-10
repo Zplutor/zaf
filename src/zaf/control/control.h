@@ -144,7 +144,7 @@ public:
     /**
      Get the control's width.
      */
-    float GetWidth() const {
+    float Width() const {
         return rect_.size.width;
     }
 
@@ -152,7 +152,7 @@ public:
      Set the control's width.
      */
     void SetWidth(float width) {
-        SetSize(zaf::Size(width, GetHeight()));
+        SetSize(zaf::Size(width, Height()));
     }
 
     /**
@@ -160,7 +160,7 @@ public:
 
      The default value is 0.
      */
-    float GetMinWidth() const;
+    float MinWidth() const;
 
     /**
      Set the control's minimum width.
@@ -172,7 +172,7 @@ public:
 
      The default value is the maximum value of float.
      */
-    float GetMaxWidth() const;
+    float MaxWidth() const;
 
     /**
      Set the control's maximum width.
@@ -197,7 +197,7 @@ public:
     /**
      Get the control's height.
      */
-    float GetHeight() const {
+    float Height() const {
         return rect_.size.height;
     }
 
@@ -205,7 +205,7 @@ public:
      Set the control's height.
      */
     void SetHeight(float height) {
-        SetSize(zaf::Size(GetWidth(), height));
+        SetSize(zaf::Size(Width(), height));
     }
 
     /**
@@ -213,7 +213,7 @@ public:
 
      The default value is 0.
      */
-    float GetMinHeight() const;
+    float MinHeight() const;
 
     /**
      Set the control's minimum height.
@@ -225,7 +225,7 @@ public:
 
      The default value is the maximum value of float.
      */
-    float GetMaxHeight() const;
+    float MaxHeight() const;
 
     /**
      Set the control's maximum height.

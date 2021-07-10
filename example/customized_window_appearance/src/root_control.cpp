@@ -78,7 +78,7 @@ std::optional<zaf::HitTestResult> RootControl::HitTest(const zaf::HitTestMessage
     }
 
     zaf::Rect top_right_corner_rect(
-        GetWidth() - BorderThickness, 
+        Width() - BorderThickness, 
         0,
         BorderThickness,
         BorderThickness);
@@ -88,7 +88,7 @@ std::optional<zaf::HitTestResult> RootControl::HitTest(const zaf::HitTestMessage
 
     zaf::Rect bottom_left_corner_rect(
         0, 
-        GetHeight() - BorderThickness,
+        Height() - BorderThickness,
         BorderThickness,
         BorderThickness);
     if (bottom_left_corner_rect.Contain(mouse_position)) {
@@ -96,39 +96,39 @@ std::optional<zaf::HitTestResult> RootControl::HitTest(const zaf::HitTestMessage
     }
 
     zaf::Rect bottom_right_corner_rect(
-        GetWidth() - BorderThickness,
-        GetHeight() - BorderThickness,
+        Width() - BorderThickness,
+        Height() - BorderThickness,
         BorderThickness,
         BorderThickness);
     if (bottom_right_corner_rect.Contain(mouse_position)) {
         return zaf::HitTestResult::BottomRightCorner;
     }
 
-    zaf::Rect top_border_rect(0, 0, GetWidth(), BorderThickness);
+    zaf::Rect top_border_rect(0, 0, Width(), BorderThickness);
     if (top_border_rect.Contain(mouse_position)) {
         return zaf::HitTestResult::TopBorder;
     }
 
-    zaf::Rect left_border_rect(0, TitleBarHeight, BorderThickness, GetHeight());
+    zaf::Rect left_border_rect(0, TitleBarHeight, BorderThickness, Height());
     if (left_border_rect.Contain(mouse_position)) {
         return zaf::HitTestResult::LeftBorder;
     }
 
     zaf::Rect right_border_rect(
-        GetWidth() - BorderThickness, 
+        Width() - BorderThickness, 
         TitleBarHeight, 
         BorderThickness, 
-        GetHeight());
+        Height());
     if (right_border_rect.Contain(mouse_position)) {
         return zaf::HitTestResult::RightBorder;
     }
 
-    zaf::Rect bottom_border_rect(0, GetHeight() - BorderThickness, GetWidth(), BorderThickness);
+    zaf::Rect bottom_border_rect(0, Height() - BorderThickness, Width(), BorderThickness);
     if (bottom_border_rect.Contain(mouse_position)) {
         return zaf::HitTestResult::BottomBorder;
     }
 
-    zaf::Rect title_bar_rect(0, 0, GetWidth(), TitleBarHeight);
+    zaf::Rect title_bar_rect(0, 0, Width(), TitleBarHeight);
     if (title_bar_rect.Contain(mouse_position)) {
         return zaf::HitTestResult::TitleBar;
     }
