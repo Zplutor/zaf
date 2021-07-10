@@ -44,7 +44,7 @@ public:
      */
     virtual ObjectParser* GetParser() const;
 
-    virtual const std::wstring& GetResourceUri() const;
+    virtual const std::wstring& GetResourceURI() const;
 
     const std::vector<ObjectProperty*>& GetProperties() const {
         return properties_;

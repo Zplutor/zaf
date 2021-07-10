@@ -35,7 +35,7 @@ public:                                                                         
     }                                                                                           
 
 #define ZAF_DEFINE_TYPE_RESOURCE_URI(Uri)                                                       \
-    const std::wstring& GetResourceUri() const override {                                       \
+    const std::wstring& GetResourceURI() const override {                                       \
         static const std::wstring uri{ Uri };                                                   \
         return uri;                                                                             \
     }                                                                                           

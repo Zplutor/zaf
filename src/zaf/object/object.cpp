@@ -36,7 +36,7 @@ void ParseObject(ObjectType& type, Object& object) {
         ParseObject(*base_type, object);
     }
 
-    const auto& resource_uri = type.GetResourceUri();
+    const auto& resource_uri = type.GetResourceURI();
     if (resource_uri.empty()) {
         return;
     }

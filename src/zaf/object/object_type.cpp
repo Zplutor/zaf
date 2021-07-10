@@ -16,7 +16,7 @@ ObjectParser* ObjectType::GetParser() const {
 }
 
 
-const std::wstring& ObjectType::GetResourceUri() const {
+const std::wstring& ObjectType::GetResourceURI() const {
     static const std::wstring uri{};
     return uri;
 }
