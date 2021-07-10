@@ -127,6 +127,7 @@
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
     <ClCompile Include="src\zaf\internal\system_message_window.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
+    <ClCompile Include="src\zaf\object\boxing\boolean.cpp" />
     <ClCompile Include="src\zaf\object\boxing\numeric.cpp" />
     <ClCompile Include="src\zaf\object\boxing\string.cpp" />
     <ClCompile Include="src\zaf\object\internal\object_initializer.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="src\zaf\object\parsing\xaml_node.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_node_parse_helper.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_reader.cpp" />
+    <ClCompile Include="src\zaf\object\parsing\xaml_utility.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\bitmap_image_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\button_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\check_box_parser.cpp" />
@@ -396,6 +398,7 @@
     <ClInclude Include="src\zaf\internal\system_message_window.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
     <ClInclude Include="src\zaf\internal\theme.h" />
+    <ClInclude Include="src\zaf\object\boxing\boolean.h" />
     <ClInclude Include="src\zaf\object\boxing\boxed_object.h" />
     <ClInclude Include="src\zaf\object\boxing\boxing.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent.h" />
@@ -423,6 +426,7 @@
     <ClInclude Include="src\zaf\object\parsing\xaml_node.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_node_parse_helper.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_reader.h" />
+    <ClInclude Include="src\zaf\object\parsing\xaml_utility.h" />
     <ClInclude Include="src\zaf\object\property_definition.h" />
     <ClInclude Include="src\zaf\object\type_declaration.h" />
     <ClInclude Include="src\zaf\object\type_definition.h" />

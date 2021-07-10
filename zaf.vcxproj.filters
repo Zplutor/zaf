@@ -667,6 +667,12 @@
     <ClCompile Include="src\zaf\object\parsing\object_parser.cpp">
       <Filter>zaf\object\parsing</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\object\boxing\boolean.cpp">
+      <Filter>zaf\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\xaml_utility.cpp">
+      <Filter>zaf\object\parsing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1626,6 +1632,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\internal\base_enum_type.h">
       <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\boolean.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\xaml_utility.h">
+      <Filter>zaf\object\parsing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

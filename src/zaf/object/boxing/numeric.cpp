@@ -4,7 +4,7 @@
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/object/parsing/object_parser.h>
-#include <zaf/object/parsing/xaml_node.h>
+#include <zaf/object/parsing/xaml_utility.h>
 
 namespace zaf {
 namespace {
@@ -17,18 +17,7 @@ public:
     }
 
     void ParseFromNode(const XamlNode& node, Object& object) override {
-
-        const auto& content_nodes = node.GetContentNodes();
-        if (content_nodes.size() != 1) {
-            //TODO: Raise a runtime error.
-        }
-
-        const auto& first_node = content_nodes.front();
-        if (first_node->GetType() != XamlNode::Type::Text) {
-            //TODO: Raise a runtime error.
-        }
-
-        Parse(first_node->GetValue(), object);
+        Parse(GetContentStringFromXamlNode(node), object);
     }
 
 private:
@@ -49,18 +38,18 @@ private:
 }
 
 
-#define ZAF_INTERNAL_IMPLEMENT_NUMERIC_BOXED_TYPE(BoxedTypeName)                                 \
-ZAF_DEFINE_TYPE(BoxedTypeName)                                                                   \
-ZAF_DEFINE_TYPE_PARSER(NumericParser<BoxedTypeName>)                                                  \
-ZAF_DEFINE_TYPE_END                                                                                   \
- bool BoxedTypeName::IsEqual(const Object& other) const {                                        \
-    return internal::BoxedRepresentEqual(*this, other);                                          \
-}                                                                                                \
-std::size_t BoxedTypeName::Hash() const {                                                        \
-    return std::hash<typename BoxedTypeName::ValueType>()(Value());                              \
-}                                                                                                \
-std::wstring BoxedTypeName::ToString() const {                                                   \
-    return std::to_wstring(Value());                                                             \
+#define ZAF_INTERNAL_IMPLEMENT_NUMERIC_BOXED_TYPE(BoxedTypeName)                                   \
+ZAF_DEFINE_TYPE(BoxedTypeName)                                                                     \
+ZAF_DEFINE_TYPE_PARSER(NumericParser<BoxedTypeName>)                                               \
+ZAF_DEFINE_TYPE_END                                                                                \
+ bool BoxedTypeName::IsEqual(const Object& other) const {                                          \
+    return internal::BoxedRepresentEqual(*this, other);                                            \
+}                                                                                                  \
+std::size_t BoxedTypeName::Hash() const {                                                          \
+    return std::hash<typename BoxedTypeName::ValueType>()(Value());                                \
+}                                                                                                  \
+std::wstring BoxedTypeName::ToString() const {                                                     \
+    return std::to_wstring(Value());                                                               \
 }                                                                                                
 
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/object/boxing/boolean.h>
 #include <zaf/object/boxing/boxed_object.h>
 #include <zaf/object/boxing/internal/built_in_box_types.h>
 #include <zaf/object/boxing/numeric.h>

@@ -1,0 +1,23 @@
+#include <zaf/object/parsing/xaml_utility.h>
+#include <zaf/object/parsing/xaml_node.h>
+
+namespace zaf {
+
+std::wstring GetContentStringFromXamlNode(const XamlNode& node) {
+
+    const auto& content_nodes = node.GetContentNodes();
+    if (content_nodes.size() != 1) {
+        //TODO: Raise error.
+        return {};
+    }
+
+    const auto& content_node = content_nodes.front();
+    if (content_node->GetType() != XamlNode::Type::Text) {
+        //TODO: Raise error.
+        return {};
+    }
+
+    return content_node->GetValue();
+}
+
+}
