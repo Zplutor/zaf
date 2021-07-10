@@ -343,9 +343,6 @@
     <ClCompile Include="src\zaf\parsing\parsers\internal\utility.cpp">
       <Filter>zaf\parsing\parsers\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\frame_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\control_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
@@ -1068,9 +1065,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h">
       <Filter>zaf\graphic\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\frame_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\button_parser.h">
       <Filter>zaf\parsing\parsers</Filter>

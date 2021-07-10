@@ -16,7 +16,11 @@ public:
     }
 
     void ParseFromNode(const XamlNode& node, Object& object) override {
-        Parse(GetContentStringFromXamlNode(node), object);
+        auto content_string = GetContentStringFromXamlNode(node);
+        if (!content_string) {
+            //TODO: Raise error
+        }
+        Parse(*content_string, object);
     }
 
 private:

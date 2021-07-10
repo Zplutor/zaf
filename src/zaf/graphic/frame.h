@@ -13,8 +13,8 @@ namespace zaf {
  */
 class Frame : public Object {
 public:
-    ZAF_DECLARE_EQUALITY
     ZAF_DECLARE_TYPE
+    ZAF_DECLARE_EQUALITY
 
 public:
     /**

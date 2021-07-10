@@ -3,18 +3,16 @@
 
 namespace zaf {
 
-std::wstring GetContentStringFromXamlNode(const XamlNode& node) {
+std::optional<std::wstring> GetContentStringFromXamlNode(const XamlNode& node) {
 
     const auto& content_nodes = node.GetContentNodes();
     if (content_nodes.size() != 1) {
-        //TODO: Raise error.
-        return {};
+        return std::nullopt;
     }
 
     const auto& content_node = content_nodes.front();
     if (content_node->GetType() != XamlNode::Type::Text) {
-        //TODO: Raise error.
-        return {};
+        return std::nullopt;
     }
 
     return content_node->GetValue();

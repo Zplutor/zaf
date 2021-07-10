@@ -146,7 +146,6 @@
     <ClCompile Include="src\zaf\parsing\parsers\combo_box_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\control_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\font_parser.cpp" />
-    <ClCompile Include="src\zaf\parsing\parsers\frame_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\internal\utility.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\linear_layouter_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\scrollable_control_parser.cpp" />
@@ -439,7 +438,6 @@
     <ClInclude Include="src\zaf\parsing\parsers\combo_box_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\control_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\font_parser.h" />
-    <ClInclude Include="src\zaf\parsing\parsers\frame_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\image_box_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\internal\utility.h" />
     <ClInclude Include="src\zaf\parsing\parsers\label_parser.h" />
