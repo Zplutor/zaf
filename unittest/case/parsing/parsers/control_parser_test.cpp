@@ -66,7 +66,7 @@ TEST(ControlParserTest, ParseWidthAndHeight) {
 
     auto xaml = R"(<Control Width="1" Height="2" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetSize(), zaf::Size(1, 2));
+    ASSERT_EQ(control->Size(), zaf::Size(1, 2));
 
     xaml = R"(
         <Control>
@@ -75,7 +75,7 @@ TEST(ControlParserTest, ParseWidthAndHeight) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetSize(), zaf::Size(3, 4));
+    ASSERT_EQ(control->Size(), zaf::Size(3, 4));
 }
 
 
@@ -83,7 +83,7 @@ TEST(ControlParserTest, ParseSize) {
 
     auto xaml = R"(<Control Size="1,2" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetSize(), zaf::Size(1, 2));
+    ASSERT_EQ(control->Size(), zaf::Size(1, 2));
 
     xaml = R"(
         <Control>
@@ -91,7 +91,7 @@ TEST(ControlParserTest, ParseSize) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetSize(), zaf::Size(3, 4));
+    ASSERT_EQ(control->Size(), zaf::Size(3, 4));
 }
 
 
@@ -104,7 +104,7 @@ TEST(ControlParserTest, ParseRect) {
     )";
     auto control = CreateControlFromXaml(xaml);
     ASSERT_EQ(control->Position(), zaf::Point(1, 2));
-    ASSERT_EQ(control->GetSize(), zaf::Size(3, 4));
+    ASSERT_EQ(control->Size(), zaf::Size(3, 4));
 }
 
 

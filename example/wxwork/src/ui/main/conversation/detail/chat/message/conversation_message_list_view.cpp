@@ -53,7 +53,7 @@ void ConversationMessageListView::Layout(const zaf::Rect& previous_rect) {
     __super::Layout(previous_rect);
 
     //Update all items' height if width is changed.
-    if (previous_rect.size.width != GetSize().width) {
+    if (previous_rect.size.width != Size().width) {
         NotifyDataUpdate(0, message_item_infos_.size());
     }
 }

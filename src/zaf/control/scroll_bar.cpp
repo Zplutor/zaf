@@ -518,17 +518,17 @@ void ScrollBar::ApplyTimerEvent() {
 
 zaf::Rect ScrollBar::GetThumbSlotRect() const {
 
-    zaf::Rect thumb_slot_rect(Point(), GetSize());
+    zaf::Rect thumb_slot_rect(Point(), Size());
 
     if (is_horizontal_) {
 
-        float arrow_thickness = incremental_arrow_->GetSize().width;
+        float arrow_thickness = incremental_arrow_->Size().width;
         thumb_slot_rect.position.x += arrow_thickness;
         thumb_slot_rect.size.width -= arrow_thickness;
     }
     else {
 
-        float arrow_thickness = incremental_arrow_->GetSize().height;
+        float arrow_thickness = incremental_arrow_->Size().height;
         thumb_slot_rect.position.y += arrow_thickness;
         thumb_slot_rect.size.height -= arrow_thickness;
     }
@@ -603,8 +603,8 @@ void ScrollBar::ThumbEndDrag(const ScrollBarThumbEndDragInfo& event_info) {
 
 float ScrollBar::GetValuePerThumbSlotPoint() {
 
-    const zaf::Size& bar_size = GetSize();
-    const zaf::Size& thumb_size = thumb_->GetSize();
+    const zaf::Size& bar_size = Size();
+    const zaf::Size& thumb_size = thumb_->Size();
 
     float thumb_scroll_length = 0;
     if (is_horizontal_) {

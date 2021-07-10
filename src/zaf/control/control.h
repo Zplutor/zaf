@@ -130,7 +130,7 @@ public:
     /**
      Get the control's size.
      */
-    const zaf::Size& GetSize() const {
+    const zaf::Size& Size() const {
         return rect_.size;
     }
 

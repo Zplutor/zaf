@@ -44,7 +44,7 @@ void SelfScrollingLayouter::Layout() {
 
     scrollable_control->GetScrollContentControl()->SetRect(
         Rect(Point(),
-        scrollable_control->GetScrollContainerControl()->GetSize()));
+        scrollable_control->GetScrollContainerControl()->Size()));
 
     AdjustScrollBarValue(true);
     AdjustScrollBarValue(false);

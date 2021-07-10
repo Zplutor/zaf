@@ -15,7 +15,7 @@ void MessageContentBubble::Initialize() {
 
 void MessageContentBubble::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
 
-    zaf::RoundedRect bubble_rect(zaf::Rect(zaf::Point(), GetSize()), 4, 4);
+    zaf::RoundedRect bubble_rect(zaf::Rect(zaf::Point(), Size()), 4, 4);
 
     auto background_color = style_ == Style::Highlight ? zaf::Color::FromRGB(0xBFDCFF) : zaf::Color::White();
     canvas.SetBrushWithColor(background_color);

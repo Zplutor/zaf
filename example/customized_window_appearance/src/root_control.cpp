@@ -47,7 +47,7 @@ void RootControl::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    auto size = GetSize();
+    auto size = Size();
     content_control_->SetRect(zaf::Rect(
         BorderThickness, 
         TitleBarHeight, 

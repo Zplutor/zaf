@@ -140,7 +140,7 @@ void SplitControl::OnRectChanged(const zaf::Rect& previous_rect) {
 
     __super::OnRectChanged(previous_rect);
 
-    if (previous_rect.size != GetSize()) {
+    if (previous_rect.size != Size()) {
         UpdateActualSplitBarDistance();
     }
 }
@@ -463,7 +463,7 @@ void SplitControlSplitBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
-    auto size = GetSize();
+    auto size = Size();
     float primary_length = size.height;
     float secondly_length = size.width;
     if (IsHorizontal()) {

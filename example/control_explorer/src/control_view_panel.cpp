@@ -24,7 +24,7 @@ void ControlViewPanel::ExploredControlRectChanged(const zaf::ControlRectChangeIn
         return;
     }
 
-    if (event_info.previous_rect.size == explored_control_->GetSize()) {
+    if (event_info.previous_rect.size == explored_control_->Size()) {
         return;
     }
 

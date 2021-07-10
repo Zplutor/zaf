@@ -58,6 +58,7 @@ ZAF_DEFINE_TYPE_PROPERTY(Rect)
 ZAF_DEFINE_TYPE_PROPERTY(Position)
 ZAF_DEFINE_TYPE_PROPERTY(X)
 ZAF_DEFINE_TYPE_PROPERTY(Y)
+ZAF_DEFINE_TYPE_PROPERTY(Size)
 ZAF_DEFINE_TYPE_END
 
 
@@ -142,7 +143,7 @@ void Control::Repaint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 void Control::RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
-    auto control_size = GetSize();
+    auto control_size = Size();
     control_size.width = std::ceil(control_size.width);
     control_size.height = std::ceil(control_size.height);
 
@@ -230,7 +231,7 @@ void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     Canvas::StateGuard state_guard(canvas);
 
-    zaf::Rect control_rect{ Point{}, GetSize() };
+    zaf::Rect control_rect{ Point{}, Size() };
 
     //Draw background color.
     canvas.SetBrushWithColor(GetBackgroundColor());
@@ -753,7 +754,7 @@ void Control::SetAnchor(Anchor anchor) {
 
 zaf::Rect Control::GetContentRect() const {
 
-    zaf::Rect content_rect = zaf::Rect(Point(), GetSize());
+    zaf::Rect content_rect = zaf::Rect(Point(), Size());
     content_rect.Deflate(GetBorder());
     content_rect.Deflate(GetPadding());
     return content_rect;

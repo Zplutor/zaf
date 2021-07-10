@@ -147,7 +147,7 @@ public:
      Get scroll content size.
      */
     const zaf::Size& GetScrollContentSize() const {
-        return scroll_content_control_->GetSize();
+        return scroll_content_control_->Size();
     }
 
     /**

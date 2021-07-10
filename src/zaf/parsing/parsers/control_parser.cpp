@@ -51,11 +51,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
         control.SetHeight(*height);
     }
 
-    auto size = helper.GetObjectProperty<Size>(L"Size");
-    if (size) {
-        control.SetSize(*size);
-    }
-
     auto minimum_width = helper.GetFloatProperty(L"MinWidth");
     if (minimum_width) {
         control.SetMinWidth(*minimum_width);
