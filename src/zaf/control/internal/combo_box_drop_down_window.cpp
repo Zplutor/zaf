@@ -91,7 +91,7 @@ bool ComboBoxDropDownWindow::Container::OnMouseMove(const Point& position, const
 
 bool ComboBoxDropDownWindow::Container::OnMouseUp(const Point& position, const MouseMessage& message) {
 
-    if (!GetRect().Contain(position)) {
+    if (!Rect().Contain(position)) {
         ReleaseMouse();
     }
     return true;

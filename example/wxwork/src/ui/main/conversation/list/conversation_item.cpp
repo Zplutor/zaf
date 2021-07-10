@@ -193,7 +193,7 @@ void ConversationItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     canvas.SetBrushWithColor(zaf::Color::FromRGB(0xE4E4E4));
 
-    const auto& rect = GetRect();
+    const auto& rect = Rect();
     float y = rect.size.height - 1;
 
     canvas.DrawLine(

@@ -761,7 +761,7 @@ void ListControlImplementation::AdjustVisibleItemPositions(
     for (std::size_t index = begin_adjust_index; index < visible_items_.size(); ++index) {
 
         const auto& item = visible_items_[index];
-        auto rect = item->GetRect();
+        auto rect = item->Rect();
         rect.position.y += difference;
         item->SetRect(rect);
     }

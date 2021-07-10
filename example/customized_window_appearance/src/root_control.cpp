@@ -60,15 +60,15 @@ std::optional<zaf::HitTestResult> RootControl::HitTest(const zaf::HitTestMessage
 
     auto mouse_position = GetMousePosition();
 
-    if (close_button_->GetRect().Contain(mouse_position)) {
+    if (close_button_->Rect().Contain(mouse_position)) {
         return zaf::HitTestResult::CloseButton;
     }
 
-    if (minimize_button_->GetRect().Contain(mouse_position)) {
+    if (minimize_button_->Rect().Contain(mouse_position)) {
         return zaf::HitTestResult::MinimizeButton;
     }
 
-    if (maximize_button_->GetRect().Contain(mouse_position)) {
+    if (maximize_button_->Rect().Contain(mouse_position)) {
         return zaf::HitTestResult::MaximizeButton;
     }
 

@@ -310,7 +310,7 @@ void ScrollBar::Wheel(int distance) {
 
 void ScrollBar::Layout(const zaf::Rect& previous_rect) {
 
-    const zaf::Rect& rect = GetRect();
+    const zaf::Rect& rect = Rect();
 
     float bar_thickness = 0;
     float bar_length = 0;
@@ -487,7 +487,7 @@ void ScrollBar::ApplyTimerEvent() {
             return;
         }
 
-        zaf::Rect thumb_rect = thumb_->GetRect();
+        zaf::Rect thumb_rect = thumb_->Rect();
         if (thumb_rect.Contain(mouse_position)) {
             return;
         }

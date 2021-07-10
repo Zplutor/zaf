@@ -71,11 +71,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
         control.SetSize(*size);
     }
 
-    auto rect = helper.GetObjectProperty<Rect>(L"Rect");
-    if (rect) {
-        control.SetRect(*rect);
-    }
-
     auto minimum_width = helper.GetFloatProperty(L"MinWidth");
     if (minimum_width) {
         control.SetMinWidth(*minimum_width);
@@ -214,10 +209,12 @@ void ParseChildren(const XamlNode& node, Control& control) {
 
 }
 
-void ControlParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
+void ControlParser::ParseFromNode(const XamlNode& node, Object& object) {
 
-    auto& control = dynamic_cast<Control&>(reflection_object);
+    auto& control = dynamic_cast<Control&>(object);
     auto update_guard = control.BeginUpdate();
+
+    __super::ParseFromNode(node, object);
 
     ParseProperties(node, control);
     ParseChildren(node, control);

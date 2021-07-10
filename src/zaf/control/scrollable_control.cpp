@@ -363,7 +363,7 @@ void ScrollableControl::OnIsEnabledChanged() {
 zaf::Rect ScrollableControl::GetVisibleScrollContentRect() const {
 
     if (self_scrolling_control_ != nullptr) {
-        return scroll_container_control_->GetRect();
+        return scroll_container_control_->Rect();
     }
 
     zaf::Rect rect;

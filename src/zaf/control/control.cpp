@@ -53,7 +53,8 @@ constexpr bool DefaultIsVisible = true;
 
 
 ZAF_DEFINE_TYPE(Control)
-    ZAF_DEFINE_TYPE_PARSER(ControlParser)
+ZAF_DEFINE_TYPE_PARSER(ControlParser)
+ZAF_DEFINE_PROPERTY(Rect)
 ZAF_DEFINE_TYPE_END
 
 Control::Control() : 
@@ -203,7 +204,7 @@ void Control::RepaintControl(Canvas& canvas, const zaf::Rect& dirty_rect, bool n
 
     for (const auto& child : children_) {
 
-        zaf::Rect child_rect = child->GetRect();
+        zaf::Rect child_rect = child->Rect();
         child_rect.position.x += border.left + padding.left;
         child_rect.position.y += border.top + padding.top;
 
@@ -357,7 +358,7 @@ void Control::ReleaseRendererResources() {
 
 void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const zaf::Rect& previous_rect) {
 
-    const zaf::Rect& new_rect = child->GetRect();
+    const zaf::Rect& new_rect = child->Rect();
 
     if (new_rect.HasIntersection(previous_rect)) {
         NeedRepaintRect(zaf::Rect::Union(new_rect, previous_rect));
@@ -384,7 +385,7 @@ void Control::Layout(const zaf::Rect& previous_rect) {
 
 
 void Control::NeedRelayout() {
-    NeedRelayout(GetRect());
+    NeedRelayout(Rect());
 }
 
 
@@ -409,7 +410,7 @@ zaf::Rect Control::GetAbsoluteRect() const {
     //No parent, must be the root control, return its rect as the absolute rect.
     auto parent = GetParent();
     if (parent == nullptr) {
-        return GetRect();
+        return Rect();
     }
 
     zaf::Rect parent_absolute_rect = parent->GetAbsoluteRect();
@@ -427,7 +428,7 @@ zaf::Rect Control::GetAbsoluteRect() const {
 
 void Control::SetRect(const zaf::Rect& rect) {
 
-    zaf::Rect previous_rect = GetRect();
+    zaf::Rect previous_rect = Rect();
 
     //Don't layout if rects are the same.
     if (rect == previous_rect) {
@@ -632,7 +633,7 @@ Size Control::GetPreferredContentSize() const {
             continue;
         }
 
-        auto child_rect = each_child->GetRect();
+        auto child_rect = each_child->Rect();
         child_rect.Inflate(each_child->GetMargin());
 
         zaf::Rect needed_rect;
@@ -907,7 +908,7 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
     children_.push_back(child);
 
     NeedRelayout();
-    NeedRepaintRect(child->GetRect());
+    NeedRepaintRect(child->Rect());
 
     AutoResizeToPreferredSize();
 
@@ -949,7 +950,7 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
     //The child's rect may be changed while calling NeedRelayout(), leading to a wrong repaint rect
     //while calling NeedRepaintRect(), so we preserve the original rect before calling 
     //NeedRelayout().
-    auto child_rect = child->GetRect();
+    auto child_rect = child->Rect();
 
     NeedRelayout();
     NeedRepaintRect(child_rect);
@@ -1014,7 +1015,7 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
             continue;
         }
 
-        zaf::Rect child_rect = child->GetRect();
+        zaf::Rect child_rect = child->Rect();
         child_rect.Intersect(content_rect);
 
         if (!child_rect.Contain(position_in_content)) {

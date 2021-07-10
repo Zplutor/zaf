@@ -47,7 +47,7 @@ void LayoutChild(
     bool has_top_anchor = (anchor & Anchor::Top) == Anchor::Top;
     bool has_bottom_anchor = (anchor & Anchor::Bottom) == Anchor::Bottom;
 
-    const Rect& child_old_rect = child.GetRect();
+    const Rect& child_old_rect = child.Rect();
     Rect child_new_rect;
 
     change_single_dimension_with_anchor(
@@ -91,7 +91,7 @@ public:
         }
 
         for (const auto& child : children) {
-            LayoutChild(parent.GetRect(), parent_old_rect, *child);
+            LayoutChild(parent.Rect(), parent_old_rect, *child);
         }
     }
 };

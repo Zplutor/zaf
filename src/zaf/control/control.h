@@ -83,14 +83,14 @@ public:
 
      The default rect is empty.
      */
-    const zaf::Rect& GetRect() const {
+    const zaf::Rect& Rect() const {
         return rect_;
     }
 
     /**
      Set the control's rect.
 
-     See also GetRect.
+     See also Rect.
      */
     void SetRect(const zaf::Rect& rect);
 
@@ -108,7 +108,7 @@ public:
      See also GetPosition.
      */
     void SetPosition(const Point& position) {
-        SetRect(zaf::Rect(position, GetRect().size));
+        SetRect(zaf::Rect(position, Rect().size));
     }
 
     float GetX() const {
@@ -138,7 +138,7 @@ public:
      Set the control's size;
      */
     void SetSize(const Size& size) {
-        SetRect(zaf::Rect(GetRect().position, size));
+        SetRect(zaf::Rect(Rect().position, size));
     }
 
     /**

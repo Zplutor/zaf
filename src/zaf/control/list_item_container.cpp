@@ -34,7 +34,7 @@ void ListItemContainer::LayoutItems(
 
     for (const auto& each_child : children) {
 
-        auto child_rect = each_child->GetRect();
+        auto child_rect = each_child->Rect();
         if (child_rect.size.width == width) {
             continue;
         }

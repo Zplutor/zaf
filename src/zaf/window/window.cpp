@@ -474,7 +474,7 @@ void Window::Repaint() {
         dirty_rect = Rect::FromRECT(win32_rect);
     }
     else {
-        dirty_rect = root_control_->GetRect();
+        dirty_rect = root_control_->Rect();
     }
 
     //The update rect must be validated before painting.
@@ -484,7 +484,7 @@ void Window::Repaint() {
 
     renderer_.BeginDraw();
 
-    Canvas canvas(renderer_, root_control_->GetRect(), dirty_rect);
+    Canvas canvas(renderer_, root_control_->Rect(), dirty_rect);
 
     //Paint window background color first.
     {
@@ -1487,7 +1487,7 @@ void Window::SetHighlightControl(const std::shared_ptr<Control>& highlight_contr
 
     if (!highlight_control) {
         highlight_control_ = nullptr;
-        NeedRepaintRect(root_control_->GetRect());
+        NeedRepaintRect(root_control_->Rect());
         return;
     }
 

@@ -6,7 +6,7 @@ namespace zaf {
 
 class ControlParser : public ObjectParser {
 public:
-    void ParseFromNode(const XamlNode& node, Object& reflection_object) override;
+    void ParseFromNode(const XamlNode& node, Object& object) override;
 };
 
 }

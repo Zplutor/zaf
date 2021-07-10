@@ -17,7 +17,7 @@ public:
 
         for (const auto& each_child : children) {
 
-            auto child_rect = each_child->GetRect();
+            auto child_rect = each_child->Rect();
             child_rect.position.x = 0;
             child_rect.position.y = y;
             child_rect.size.width = width;
