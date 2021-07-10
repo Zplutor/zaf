@@ -30,8 +30,8 @@ constexpr wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness"
 
 
 ZAF_DEFINE_TYPE(ScrollableControl)
-    ZAF_DEFINE_PARSER(ScrollableControlParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(ScrollableControlParser)
+ZAF_DEFINE_TYPE_END
 
 
 ScrollableControl::ScrollableControl() :

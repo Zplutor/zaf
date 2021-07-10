@@ -27,12 +27,12 @@ const wchar_t* const kSplitterColorPickerPropertyName = L"SplitterColorPicker";
 
 
 ZAF_DEFINE_TYPE(SplitControl)
-    ZAF_DEFINE_PARSER(SplitControlParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(SplitControlParser)
+ZAF_DEFINE_TYPE_END
 
 ZAF_DEFINE_TYPE(SplitControlSplitBar)
-    ZAF_DEFINE_PARSER(SplitControlSplitBarParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(SplitControlSplitBarParser)
+ZAF_DEFINE_TYPE_END
 
 
 SplitControl::SplitControl() {

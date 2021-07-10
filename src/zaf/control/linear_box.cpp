@@ -5,7 +5,7 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(VerticalBox)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE_END
 
 void VerticalBox::Initialize() {
 
@@ -16,7 +16,7 @@ void VerticalBox::Initialize() {
 
 
 ZAF_DEFINE_TYPE(HorizontalBox)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE_END
 
 void HorizontalBox::Initialize() {
 

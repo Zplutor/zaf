@@ -39,8 +39,8 @@ const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
 
 
 ZAF_DEFINE_TYPE(ImageBox)
-    ZAF_DEFINE_PARSER(ImageBoxParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(ImageBoxParser)
+ZAF_DEFINE_TYPE_END
 
 
 ImageBox::ImageBox() {

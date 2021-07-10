@@ -53,8 +53,8 @@ constexpr bool DefaultIsVisible = true;
 
 
 ZAF_DEFINE_TYPE(Control)
-    ZAF_DEFINE_PARSER(ControlParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(ControlParser)
+ZAF_DEFINE_TYPE_END
 
 Control::Control() : 
     is_hovered_(false), 

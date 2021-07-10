@@ -13,8 +13,8 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(ClickableControl)
-    ZAF_DEFINE_PARSER(ClickableControlParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(ClickableControlParser)
+ZAF_DEFINE_TYPE_END
 
 
 ClickableControl::ClickableControl() :

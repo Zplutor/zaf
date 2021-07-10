@@ -10,8 +10,8 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(ListBox)
-    ZAF_DEFINE_PARSER(ListBoxParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(ListBoxParser)
+ZAF_DEFINE_TYPE_END
 
 
 ListBox::ListBox() {

@@ -43,8 +43,8 @@ constexpr wchar_t* const kTitlePropertyName = L"Title";
 }
 
 ZAF_DEFINE_TYPE(Window)
-    ZAF_DEFINE_PARSER(WindowParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(WindowParser)
+ZAF_DEFINE_TYPE_END
 
 
 void Window::RegisterDefaultClass(HICON icon, HICON small_icon) {

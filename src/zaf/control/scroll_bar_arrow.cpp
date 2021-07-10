@@ -8,8 +8,8 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(ScrollBarArrow)
-    ZAF_DEFINE_PARSER(ScrollBarArrowParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(ScrollBarArrowParser)
+ZAF_DEFINE_TYPE_END
 
 ScrollBarArrow::ScrollBarArrow() : direction_(Direction::Up) {
 

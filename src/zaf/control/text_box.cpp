@@ -53,8 +53,8 @@ static const DWORD kDefaultScrollBarProperty = ES_AUTOVSCROLL | ES_AUTOHSCROLL |
 
 
 ZAF_DEFINE_TYPE(TextBox)
-    ZAF_DEFINE_PARSER(TextBoxParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(TextBoxParser)
+ZAF_DEFINE_TYPE_END
 
 
 TextBox::TextBox() : 

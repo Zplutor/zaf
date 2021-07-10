@@ -19,8 +19,8 @@ namespace zaf {
 static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
 
 ZAF_DEFINE_TYPE(ListControl)
-    ZAF_DEFINE_PARSER(ListControlParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(ListControlParser)
+ZAF_DEFINE_TYPE_END
 
 
 ListControl::ListControl() : 

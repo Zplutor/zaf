@@ -27,8 +27,8 @@ constexpr int kTimerContinuousInterval = 50;
 }
 
 ZAF_DEFINE_TYPE(ScrollBar)
-    ZAF_DEFINE_PARSER(ScrollBarParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(ScrollBarParser)
+ZAF_DEFINE_TYPE_END
 
 ScrollBar::ScrollBar() : 
     incremental_arrow_(Create<ScrollBarArrow>()),

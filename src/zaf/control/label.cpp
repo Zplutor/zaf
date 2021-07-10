@@ -5,8 +5,8 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(Label)
-    ZAF_DEFINE_PARSER(LabelParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(LabelParser)
+ZAF_DEFINE_TYPE_END
 
 
 Label::Label() {

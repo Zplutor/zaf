@@ -68,7 +68,7 @@ ZAF_DEFINE_PROPERTY_WITH_FIELD(SizeField, size_field)
 //Un-comment below lines whould cause static assertion.
 //ZAF_DEFINE_PROPERTY(RectType) 
 //ZAF_DEFINE_PROPERTY_WITH_FIELD(RectField, rect_field)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE_END
 
 }
 

@@ -15,8 +15,8 @@ const wchar_t* const kIsDefaultPropertyName = L"IsDefault";
 }
 
 ZAF_DEFINE_TYPE(Button)
-    ZAF_DEFINE_PARSER(ButtonParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(ButtonParser)
+ZAF_DEFINE_TYPE_END
 
 
 Button::Button() {

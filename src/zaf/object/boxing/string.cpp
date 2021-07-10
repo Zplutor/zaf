@@ -41,8 +41,8 @@ public:
 
 #define ZAF_INTERNAL_IMPLEMENT_STRING_BOXED_TYPE(BoxedTypeName)                                  \
 ZAF_DEFINE_TYPE(BoxedTypeName)                                                                   \
-ZAF_DEFINE_PARSER(StringParser<BoxedTypeName>)                                                   \
-ZAF_DEFINE_END                                                                                   \
+ZAF_DEFINE_TYPE_PARSER(StringParser<BoxedTypeName>)                                                   \
+ZAF_DEFINE_TYPE_END                                                                                   \
 bool BoxedTypeName::IsEqual(const Object& other) const {                                         \
     return internal::BoxedRepresentEqual<BoxedTypeName>(*this, other);                           \
 }                                                                                                \

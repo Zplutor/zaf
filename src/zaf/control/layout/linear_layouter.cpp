@@ -165,8 +165,8 @@ private:
 }
 
 ZAF_DEFINE_TYPE(LinearLayouter)
-    ZAF_DEFINE_PARSER(LinearLayouterParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(LinearLayouterParser)
+ZAF_DEFINE_TYPE_END
 
 
 void LinearLayouter::Layout(
@@ -350,7 +350,7 @@ float LinearLayouter::CalculateAxisOffset(
 
 
 ZAF_DEFINE_TYPE(HorizontalLayouter)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE_END
 
 void HorizontalLayouter::Initialize() {
 
@@ -360,7 +360,7 @@ void HorizontalLayouter::Initialize() {
 
 
 ZAF_DEFINE_TYPE(VerticalLayouter)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE_END
 
 void VerticalLayouter::Initialize() {
 

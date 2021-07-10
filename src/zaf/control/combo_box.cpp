@@ -39,16 +39,16 @@ const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent"
 
 
 ZAF_DEFINE_TYPE(ComboBox)
-    ZAF_DEFINE_PARSER(ComboBoxParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(ComboBoxParser)
+ZAF_DEFINE_TYPE_END
 
 ZAF_DEFINE_TYPE(ComboBoxDropDownListBox)
-    ZAF_DEFINE_PARSER(ComboBoxDropDownListBoxParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(ComboBoxDropDownListBoxParser)
+ZAF_DEFINE_TYPE_END
 
 ZAF_DEFINE_TYPE(ComboBoxEditTextBox)
-    ZAF_DEFINE_PARSER(ComboBoxEditTextBoxParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(ComboBoxEditTextBoxParser)
+ZAF_DEFINE_TYPE_END
 
 
 ComboBox::ComboBox() : 

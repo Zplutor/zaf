@@ -26,8 +26,8 @@ const wchar_t* const kCheckStateChangeEventPropertyName = L"CheckStateChangeEven
 
 
 ZAF_DEFINE_TYPE(CheckBox)
-    ZAF_DEFINE_PARSER(CheckBoxParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(CheckBoxParser)
+ZAF_DEFINE_TYPE_END
 
 
 CheckBox::CheckBox() : check_state_(CheckState::Unchecked) {

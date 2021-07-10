@@ -7,7 +7,7 @@ namespace zaf {
 ZAF_DEFINE_EQUALITY(Frame)
 
 ZAF_DEFINE_TYPE(Frame)
-    ZAF_DEFINE_PARSER(FrameParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(FrameParser)
+ZAF_DEFINE_TYPE_END
 
 }

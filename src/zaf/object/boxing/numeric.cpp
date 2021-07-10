@@ -51,8 +51,8 @@ private:
 
 #define ZAF_INTERNAL_IMPLEMENT_NUMERIC_BOXED_TYPE(BoxedTypeName)                                 \
 ZAF_DEFINE_TYPE(BoxedTypeName)                                                                   \
-ZAF_DEFINE_PARSER(NumericParser<BoxedTypeName>)                                                  \
-ZAF_DEFINE_END                                                                                   \
+ZAF_DEFINE_TYPE_PARSER(NumericParser<BoxedTypeName>)                                                  \
+ZAF_DEFINE_TYPE_END                                                                                   \
  bool BoxedTypeName::IsEqual(const Object& other) const {                                        \
     return internal::BoxedRepresentEqual(*this, other);                                          \
 }                                                                                                \

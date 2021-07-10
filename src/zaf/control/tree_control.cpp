@@ -17,8 +17,8 @@ constexpr wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEv
 }
 
 ZAF_DEFINE_TYPE(TreeControl)
-    //ZAF_DEFINE_PARSER(ListControlParser)
-ZAF_DEFINE_END
+    //ZAF_DEFINE_TYPE_PARSER(ListControlParser)
+ZAF_DEFINE_TYPE_END
 
 
 TreeControl::TreeControl() :

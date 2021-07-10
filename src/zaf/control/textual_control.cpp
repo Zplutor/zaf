@@ -55,8 +55,8 @@ void SetDefaultFontOtherPropertiesToTextLayout(
 }
 
 ZAF_DEFINE_TYPE(TextualControl)
-    ZAF_DEFINE_PARSER(TextualControlParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(TextualControlParser)
+ZAF_DEFINE_TYPE_END
 
 
 TextualControl::TextualControl() {

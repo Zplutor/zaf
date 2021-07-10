@@ -28,19 +28,19 @@ public:                                                                         
         return zaf::Create<ClassName>();                                                        \
     }                                                                                                                                                                                         
 
-#define ZAF_DEFINE_PARSER(ParserType)                                                           \
+#define ZAF_DEFINE_TYPE_PARSER(ParserType)                                                      \
     zaf::ObjectParser* GetParser() const override {                                             \
         static ParserType parser;                                                               \
         return &parser;                                                                         \
     }                                                                                           
 
-#define ZAF_DEFINE_RESOURCE_URI(Uri)                                                            \
+#define ZAF_DEFINE_TYPE_RESOURCE_URI(Uri)                                                       \
     const std::wstring& GetResourceUri() const override {                                       \
         static const std::wstring uri{ Uri };                                                   \
         return uri;                                                                             \
     }                                                                                           
 
-#define ZAF_DEFINE_END                                                                          \
+#define ZAF_DEFINE_TYPE_END                                                                     \
 };                                                                                              \
 zaf::ObjectType* CreateType() {                                                                 \
     static TheType type;                                                                        \

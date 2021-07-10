@@ -7,8 +7,8 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(BitmapImage)
-    ZAF_DEFINE_PARSER(BitmapImageParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(BitmapImageParser)
+ZAF_DEFINE_TYPE_END
 
 
 void BitmapImage::SetUri(const std::wstring& uri) {

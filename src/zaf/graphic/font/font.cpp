@@ -7,8 +7,8 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(Font)
-    ZAF_DEFINE_PARSER(FontParser)
-ZAF_DEFINE_END
+    ZAF_DEFINE_TYPE_PARSER(FontParser)
+ZAF_DEFINE_TYPE_END
 
 
 Font Font::GetDefault() {
