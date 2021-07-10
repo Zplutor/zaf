@@ -111,20 +111,20 @@ public:
         SetRect(zaf::Rect(position, Rect().size));
     }
 
-    float GetX() const {
+    float X() const {
         return Position().x;
     }
 
     void SetX(float x) {
-        SetPosition(Point(x, GetY()));
+        SetPosition(Point(x, Y()));
     }
 
-    float GetY() const {
+    float Y() const {
         return Position().y;
     }
 
     void SetY(float y) {
-        SetPosition(Point(GetX(), y));
+        SetPosition(Point(X(), y));
     }
 
     /**

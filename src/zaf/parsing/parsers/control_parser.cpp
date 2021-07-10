@@ -41,16 +41,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
         control.SetName(*name);
     }
 
-    auto x = helper.GetFloatProperty(L"X");
-    if (x) {
-        control.SetX(*x);
-    }
-
-    auto y = helper.GetFloatProperty(L"Y");
-    if (y) {
-        control.SetY(*y);
-    }
-
     auto width = helper.GetFloatProperty(L"Width");
     if (width) {
         control.SetWidth(*width);
