@@ -367,7 +367,7 @@ zaf::Rect ScrollableControl::GetVisibleScrollContentRect() const {
     }
 
     zaf::Rect rect;
-    rect.position = scroll_content_control_->GetPosition();
+    rect.position = scroll_content_control_->Position();
     rect.position.x *= -1;
     rect.position.y *= -1;
     rect.size = scroll_container_control_->GetSize();

@@ -51,11 +51,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
         control.SetY(*y);
     }
 
-    auto position = helper.GetObjectProperty<Point>(L"Position");
-    if (position) {
-        control.SetPosition(*position);
-    }
-
     auto width = helper.GetFloatProperty(L"Width");
     if (width) {
         control.SetWidth(*width);

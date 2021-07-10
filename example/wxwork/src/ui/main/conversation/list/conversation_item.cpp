@@ -179,11 +179,11 @@ void ConversationItem::Layout(const zaf::Rect& previous_rect) {
         TimeHeight));
 
     title_label_->SetWidth(
-        time_label_->GetPosition().x - 
-        title_label_->GetPosition().x - 
+        time_label_->Position().x - 
+        title_label_->Position().x - 
         TitleRightMargin);
 
-    digest_label_->SetWidth(current_size.width - digest_label_->GetPosition().x - DigestRightMargin);
+    digest_label_->SetWidth(current_size.width - digest_label_->Position().x - DigestRightMargin);
 }
 
 

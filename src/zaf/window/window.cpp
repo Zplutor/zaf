@@ -605,7 +605,7 @@ std::optional<HitTestResult> Window::HitTest(const HitTestMessage& message) {
                 break;
             }
 
-            auto child_position = child->GetPosition();
+            auto child_position = child->Position();
             mouse_position.x += child_position.x;
             mouse_position.y += child_position.y;
 

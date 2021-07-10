@@ -98,21 +98,21 @@ public:
      Get the control's position which is related to the coordinate system of 
      parent content rect.
      */
-    const Point& GetPosition() const {
+    const Point& Position() const {
         return rect_.position;
     }
 
     /**
      Set the control's position.
 
-     See also GetPosition.
+     See also Position.
      */
     void SetPosition(const Point& position) {
         SetRect(zaf::Rect(position, Rect().size));
     }
 
     float GetX() const {
-        return GetPosition().x;
+        return Position().x;
     }
 
     void SetX(float x) {
@@ -120,7 +120,7 @@ public:
     }
 
     float GetY() const {
-        return GetPosition().y;
+        return Position().y;
     }
 
     void SetY(float y) {

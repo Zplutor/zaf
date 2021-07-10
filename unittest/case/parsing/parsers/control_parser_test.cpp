@@ -33,7 +33,7 @@ TEST(ControlParserTest, ParseXAndY) {
 
     auto xaml = R"(<Control X="1" Y="2" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetPosition(), zaf::Point(1, 2));
+    ASSERT_EQ(control->Position(), zaf::Point(1, 2));
 
     xaml = R"(
         <Control>
@@ -42,7 +42,7 @@ TEST(ControlParserTest, ParseXAndY) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetPosition(), zaf::Point(3, 4));
+    ASSERT_EQ(control->Position(), zaf::Point(3, 4));
 }
 
 
@@ -50,7 +50,7 @@ TEST(ControlParserTest, ParsePosition) {
 
     auto xaml = R"(<Control Position="1,2" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetPosition(), zaf::Point(1, 2));
+    ASSERT_EQ(control->Position(), zaf::Point(1, 2));
 
     xaml = R"(
         <Control>
@@ -58,7 +58,7 @@ TEST(ControlParserTest, ParsePosition) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetPosition(), zaf::Point(3, 4));
+    ASSERT_EQ(control->Position(), zaf::Point(3, 4));
 }
 
 
@@ -103,7 +103,7 @@ TEST(ControlParserTest, ParseRect) {
         </Control>
     )";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetPosition(), zaf::Point(1, 2));
+    ASSERT_EQ(control->Position(), zaf::Point(1, 2));
     ASSERT_EQ(control->GetSize(), zaf::Size(3, 4));
 }
 

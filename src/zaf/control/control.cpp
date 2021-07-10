@@ -54,8 +54,10 @@ constexpr bool DefaultIsVisible = true;
 
 ZAF_DEFINE_TYPE(Control)
 ZAF_DEFINE_TYPE_PARSER(ControlParser)
-ZAF_DEFINE_PROPERTY(Rect)
+ZAF_DEFINE_TYPE_PROPERTY(Rect)
+ZAF_DEFINE_TYPE_PROPERTY(Position)
 ZAF_DEFINE_TYPE_END
+
 
 Control::Control() : 
     is_hovered_(false), 
@@ -1501,7 +1503,7 @@ Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& 
 
     const auto& border = GetBorder();
     const auto& padding = GetPadding();
-    const auto& child_position = child->GetPosition();
+    const auto& child_position = child->Position();
 
     Point point_in_child = point;
     point_in_child.x -= child_position.x + border.left + padding.left;

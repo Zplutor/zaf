@@ -16,7 +16,7 @@ zaf::ObjectProperty* const PropertyName##_property =                            
     }();
 
 
-#define ZAF_DEFINE_PROPERTY(PropertyName)                                                          \
+#define ZAF_DEFINE_TYPE_PROPERTY(PropertyName)                                                     \
 struct PropertyName##Accessor {                                                                    \
     template<typename T>                                                                           \
     using GetterValueType =                                                                        \
@@ -108,7 +108,7 @@ public:                                                                         
 __ZAF_INTERNAL_DEFINE_PROPERTY_VARIABLE(PropertyName)
 
 
-#define ZAF_DEFINE_PROPERTY_WITH_FIELD(PropertyName, FieldName) \
+#define ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(PropertyName, FieldName)                               \
 class PropertyName##Property : public zaf::ObjectProperty {                                        \
 public:                                                                                            \
     const std::wstring& GetName() const override {                                                 \
