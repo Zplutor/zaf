@@ -670,6 +670,9 @@
     <ClCompile Include="src\zaf\object\parsing\xaml_utility.cpp">
       <Filter>zaf\object\parsing</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\image_layout.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1632,6 +1635,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\parsing\xaml_utility.h">
       <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\enum_parser.h">
+      <Filter>zaf\object\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

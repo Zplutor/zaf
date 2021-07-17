@@ -84,6 +84,7 @@ ZAF_DEFINE_TYPE_PROPERTY(Border)
 ZAF_DEFINE_TYPE_PROPERTY(Padding)
 ZAF_DEFINE_TYPE_PROPERTY(BackgroundColor)
 ZAF_DEFINE_TYPE_PROPERTY(BorderColor)
+ZAF_DEFINE_TYPE_PROPERTY(BackgroundImageLayout)
 ZAF_DEFINE_TYPE_END
 
 
@@ -305,7 +306,7 @@ void Control::DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_re
     internal::DrawImage(
         canvas,
         background_rect,
-        GetBackgroundImageLayout(),
+        BackgroundImageLayout(),
         render_bitmap,
         InterpolationMode::Linear);
 }
@@ -805,7 +806,7 @@ void Control::SetBackgroundImagePicker(const ImagePicker& image_picker) {
 }
 
 
-ImageLayout Control::GetBackgroundImageLayout() const {
+ImageLayout Control::BackgroundImageLayout() const {
 
     auto layout = GetPropertyMap().TryGetProperty<ImageLayout>(kBackgroundImageLayoutPropertyName);
     if (layout) {

@@ -38,6 +38,7 @@
     <ClCompile Include="src\zaf\control\control.cpp" />
     <ClCompile Include="src\zaf\control\control_binder.cpp" />
     <ClCompile Include="src\zaf\control\image_box.cpp" />
+    <ClCompile Include="src\zaf\control\image_layout.cpp" />
     <ClCompile Include="src\zaf\control\image_picker.cpp" />
     <ClCompile Include="src\zaf\control\internal\cached_painting.cpp" />
     <ClCompile Include="src\zaf\control\internal\combo_box_drop_down_window.cpp" />
@@ -412,6 +413,7 @@
     <ClInclude Include="src\zaf\object\enum_definition.h" />
     <ClInclude Include="src\zaf\object\enum_type.h" />
     <ClInclude Include="src\zaf\object\equality.h" />
+    <ClInclude Include="src\zaf\object\internal\enum_parser.h" />
     <ClInclude Include="src\zaf\object\internal\is_equal_comparable.h" />
     <ClInclude Include="src\zaf\object\internal\object_initializer.h" />
     <ClInclude Include="src\zaf\object\internal\property_deduction.h" />

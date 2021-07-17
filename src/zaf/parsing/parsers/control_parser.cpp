@@ -9,29 +9,6 @@
 namespace zaf {
 namespace {
 
-std::optional<ImageLayout> ParseImageLayout(const std::wstring& value) {
-
-    if (value == L"Center") {
-        return ImageLayout::Center;
-    }
-    else if (value == L"Tile") {
-        return ImageLayout::Tile;
-    }
-    else if (value == L"Zoom") {
-        return ImageLayout::Zoom;
-    }
-    else if (value == L"Stretch") {
-        return ImageLayout::Stretch;
-    }
-    else if (value == L"None") {
-        return ImageLayout::None;
-    }
-    else {
-        return {};
-    }
-}
-
-
 void ParseProperties(const XamlNode& node, Control& control) {
 
     XamlNodeParseHelper helper(node, control.GetType());
@@ -52,14 +29,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
     auto background_image = helper.GetObjectProperty<BitmapImage>(L"BackgroundImage");
     if (background_image) {
         control.SetBackgroundImage(background_image);
-    }
-
-    auto background_image_layout_string = helper.GetStringProperty(L"BackgroundImageLayout");
-    if (background_image_layout_string) {
-        auto background_image_layout = ParseImageLayout(*background_image_layout_string);
-        if (background_image_layout) {
-            control.SetBackgroundImageLayout(*background_image_layout);
-        }
     }
 }
 

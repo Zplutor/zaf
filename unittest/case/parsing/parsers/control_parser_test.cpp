@@ -330,7 +330,7 @@ TEST(ControlParserTest, ParseBackgroundImageLayout) {
             { zaf::ImageLayout::Zoom, "Zoom" },
         },
         [](zaf::Control& control) {
-            return control.GetBackgroundImageLayout();
+            return control.BackgroundImageLayout();
         }
     );
     ASSERT_TRUE(result);

@@ -305,7 +305,7 @@ public:
 
     void SetBackgroundImagePicker(const ImagePicker& image_picker);
 
-    ImageLayout GetBackgroundImageLayout() const;
+    ImageLayout BackgroundImageLayout() const;
     void SetBackgroundImageLayout(ImageLayout image_layout);
 
     /**

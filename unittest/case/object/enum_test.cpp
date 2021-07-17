@@ -85,3 +85,20 @@ TEST(EnumTest, FindValue) {
     object = TestTypeEnum::EnumType()->FindValue(L"Fourth");
     ASSERT_EQ(object, nullptr);
 }
+
+
+TEST(EnumTest, Parse) {
+
+    auto parser = TestTypeEnum::EnumType()->GetParser();
+
+    TestTypeEnum enum_object;
+
+    parser->ParseFromAttribute(L"First", enum_object);
+    ASSERT_EQ(enum_object.Value(), TestType::First);
+
+    parser->ParseFromAttribute(L"Second", enum_object);
+    ASSERT_EQ(enum_object.Value(), TestType::Second);
+
+    parser->ParseFromAttribute(L"Third", enum_object);
+    ASSERT_EQ(enum_object.Value(), TestType::Third);
+}
