@@ -7,7 +7,7 @@ void InspectItem::Initialize() {
 
     __super::Initialize();
 
-    SetBorder(1);
+    SetBorder(Frame(1));
     SetBorderColor(Color::Transparent());
 }
 

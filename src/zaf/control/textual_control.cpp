@@ -504,11 +504,11 @@ zaf::Size TextualControl::GetPreferredContentSize() const {
     max_size.width = MaxWidth();
     max_size.height = MaxHeight();
 
-    const auto& border = GetBorder();
+    const auto& border = Border();
     max_size.width -= border.left + border.right;
     max_size.height -= border.top + border.bottom;
 
-    const auto& padding = GetPadding();
+    const auto& padding = Padding();
     max_size.width -= padding.left + padding.right;
     max_size.height -= padding.top + padding.bottom;
 

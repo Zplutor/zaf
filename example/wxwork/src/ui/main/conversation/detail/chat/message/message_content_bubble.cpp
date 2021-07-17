@@ -6,10 +6,10 @@ void MessageContentBubble::Initialize() {
     __super::Initialize();
 
     SetWordWrapping(zaf::WordWrapping::Wrap);
-    SetBorder(1);
+    SetBorder(zaf::Frame(1));
     SetBorderColor(zaf::Color::Transparent());
     SetBackgroundColor(zaf::Color::Transparent());
-    SetPadding(10);
+    SetPadding(zaf::Frame(10));
 }
 
 

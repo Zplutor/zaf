@@ -80,7 +80,7 @@ ListControlImplementation::~ListControlImplementation() {
 void ListControlImplementation::Initialize(const InitializeParameters& parameters) {
 
     owner_.SetBackgroundColor(Color::White());
-    owner_.SetBorder(1);
+    owner_.SetBorder(Frame(1));
     owner_.SetBorderColor(Color::Black());
 
     data_source_change_event_ = parameters.data_source_change_event;

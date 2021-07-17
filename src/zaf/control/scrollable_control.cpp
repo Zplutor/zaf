@@ -50,7 +50,7 @@ ScrollableControl::~ScrollableControl() {
 
 void ScrollableControl::Initialize() {
 
-    SetBorder(1);
+    SetBorder(Frame(1));
 
     SetBorderColorPicker([](const Control&) {
         return Color::Black();

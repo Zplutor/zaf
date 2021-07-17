@@ -69,8 +69,8 @@ void MessageItem::SetMessage(const std::shared_ptr<Message>& message) {
 
 float MessageItem::DeterminateHeight(float max_width) {
 
-    const auto& padding = GetPadding();
-    const auto& border = GetBorder();
+    const auto& padding = Padding();
+    const auto& border = Border();
     float max_content_width = max_width - padding.left - padding.right - border.left - border.right;
 
     float height = TopPadding;

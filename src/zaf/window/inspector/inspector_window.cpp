@@ -70,7 +70,7 @@ void InspectorWindow::InitializeToolbar() {
 void InspectorWindow::InitializeTreeControl() {
 
     tree_control_ = Create<TreeControl>();
-    tree_control_->SetBorder(0);
+    tree_control_->SetBorder(Frame(0));
 
     data_source_ = Create<internal::InspectDataSource>(target_window_);
     tree_control_->SetDelegate(std::dynamic_pointer_cast<TreeControlDelegate>(shared_from_this()));

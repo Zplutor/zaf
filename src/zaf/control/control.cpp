@@ -79,6 +79,9 @@ ZAF_DEFINE_TYPE_PROPERTY(IsSelfVisible)
 ZAF_DEFINE_TYPE_PROPERTY(IsEnabled)
 ZAF_DEFINE_TYPE_PROPERTY(CanFocused)
 ZAF_DEFINE_TYPE_PROPERTY(CanTabStop)
+ZAF_DEFINE_TYPE_PROPERTY(Margin)
+ZAF_DEFINE_TYPE_PROPERTY(Border)
+ZAF_DEFINE_TYPE_PROPERTY(Padding)
 ZAF_DEFINE_TYPE_END
 
 
@@ -224,8 +227,8 @@ void Control::RepaintControl(Canvas& canvas, const zaf::Rect& dirty_rect, bool n
         return;
     }
 
-    const auto& border = GetBorder();
-    const auto& padding = GetPadding();
+    const auto& border = Border();
+    const auto& padding = Padding();
 
     for (const auto& child : children_) {
 
@@ -262,7 +265,7 @@ void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     //Calculate border geometry and draw border.
     zaf::Rect inner_rect = control_rect;
-    inner_rect.Deflate(GetBorder());
+    inner_rect.Deflate(Border());
 
     //The with and height must be greater than 0.
     if (inner_rect.size.width < 0) {
@@ -342,8 +345,8 @@ void Control::NeedRepaintRect(const zaf::Rect& rect) {
     }
 
     Point position_in_parent = ToParentPoint(repaint_rect.position);
-    const auto& parent_border = parent->GetBorder();
-    const auto& parent_padding = parent->GetPadding();
+    const auto& parent_border = parent->Border();
+    const auto& parent_padding = parent->Padding();
     position_in_parent.x += parent_border.left + parent_padding.left;
     position_in_parent.y += parent_border.top + parent_padding.top;
 
@@ -439,8 +442,8 @@ zaf::Rect Control::GetAbsoluteRect() const {
     }
 
     zaf::Rect parent_absolute_rect = parent->GetAbsoluteRect();
-    const auto& parent_border = parent->GetBorder();
-    const auto& parent_padding = parent->GetPadding();
+    const auto& parent_border = parent->Border();
+    const auto& parent_padding = parent->Padding();
 
     return zaf::Rect(
         parent_absolute_rect.position.x + parent_border.left + parent_padding.left + rect_.position.x,
@@ -636,11 +639,11 @@ zaf::Size Control::GetPreferredSize() const {
 
     auto result = GetPreferredContentSize();
 
-    const auto& padding = GetPadding();
+    const auto& padding = Padding();
     result.width += padding.left + padding.right;
     result.height += padding.top + padding.bottom;
 
-    const auto& border = GetBorder();
+    const auto& border = Border();
     result.width += border.left + border.right;
     result.height += border.top + border.bottom;
 
@@ -659,7 +662,7 @@ zaf::Size Control::GetPreferredContentSize() const {
         }
 
         auto child_rect = each_child->Rect();
-        child_rect.Inflate(each_child->GetMargin());
+        child_rect.Inflate(each_child->Margin());
 
         zaf::Rect needed_rect;
         needed_rect.size.width = std::max(child_rect.position.x + child_rect.size.width, 0.f);
@@ -775,8 +778,8 @@ void Control::SetAnchor(Anchor anchor) {
 zaf::Rect Control::ContentRect() const {
 
     zaf::Rect content_rect = zaf::Rect(Point(), Size());
-    content_rect.Deflate(GetBorder());
-    content_rect.Deflate(GetPadding());
+    content_rect.Deflate(Border());
+    content_rect.Deflate(Padding());
     return content_rect;
 }
 
@@ -1524,8 +1527,8 @@ bool Control::RouteMessage(const Point& position, const MouseMessage& message) {
 
 Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const {
 
-    const auto& border = GetBorder();
-    const auto& padding = GetPadding();
+    const auto& border = Border();
+    const auto& padding = Padding();
     const auto& child_position = child->Position();
 
     Point point_in_child = point;

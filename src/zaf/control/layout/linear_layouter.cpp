@@ -122,7 +122,7 @@ private:
 
         using Dimension = DimensionTraits<IsHeightDimension>;
 
-        const auto& margin = control.GetMargin();
+        const auto& margin = control.Margin();
 
         float actual_position = position + Dimension::GetHeadingMargin(margin);
 
@@ -142,7 +142,7 @@ private:
 
         using Dimension = DimensionTraits<!IsHeightDimension>;
 
-        const auto& margin = control.GetMargin();
+        const auto& margin = control.Margin();
 
         //Calculate length.
         float avaliable_length =
@@ -215,7 +215,7 @@ std::vector<internal::LinearLayoutLengthCalculatItem> LinearLayouter::CalculateC
                 IsVertical() ? each_child->MaxHeight() : each_child->MaxWidth();
 
             //Add margin length.
-            const auto& margin = each_child->GetMargin();
+            const auto& margin = each_child->Margin();
             float margin_length =
                 IsVertical() ? margin.top + margin.bottom : margin.left + margin.right;
 

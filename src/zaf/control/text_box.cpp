@@ -80,7 +80,7 @@ void TextBox::Initialize() {
     __super::Initialize();
 
     SetCanFocused(true);
-    SetBorder(1);
+    SetBorder(Frame(1));
 
     //Initialize CHARFORMATW and PARAFORMAT.
     SetFont(Font::GetDefault());
@@ -274,8 +274,8 @@ zaf::Rect TextBox::GetTextRect() {
 const zaf::Rect TextBox::GetAbsoluteContentRect() const {
 
     auto rect = GetAbsoluteRect();
-    rect.Deflate(GetBorder());
-    rect.Deflate(GetPadding());
+    rect.Deflate(Border());
+    rect.Deflate(Padding());
     return rect;
 }
 

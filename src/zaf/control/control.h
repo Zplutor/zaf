@@ -256,17 +256,13 @@ public:
      */
     void SetAnchor(Anchor anchor);
 
-    const Frame& GetMargin() const {
+    const Frame& Margin() const {
         return margin_;
     }
 
     void SetMargin(const Frame& margin);
 
-    void SetMargin(float margin_thickness) {
-        SetMargin(Frame(margin_thickness, margin_thickness, margin_thickness, margin_thickness));
-    }
-
-    const Frame& GetBorder() const {
+    const Frame& Border() const {
         return border_;
     }
 
@@ -276,21 +272,13 @@ public:
         NeedRelayout();
     }
 
-    void SetBorder(float border_thickness) {
-        SetBorder(Frame(border_thickness, border_thickness, border_thickness, border_thickness));
-    }
-
-    const Frame& GetPadding() const {
+    const Frame& Padding() const {
         return padding_;
     }
 
     void SetPadding(const Frame& padding) {
         padding_ = padding;
         NeedRelayout();
-    }
-
-    void SetPadding(float padding_thickness) {
-        SetPadding(Frame(padding_thickness, padding_thickness, padding_thickness, padding_thickness));
     }
 
     /**

@@ -207,7 +207,7 @@ TEST(ControlParserTest, ParseFixedSize) {
 TEST(ControlParserTest, ParseMargin) {
 
     ASSERT_TRUE(TestFrameProperty<zaf::Control>("Margin", [](zaf::Control& control) {
-        return control.GetMargin();
+        return control.Margin();
     }));
 }
 
@@ -215,7 +215,7 @@ TEST(ControlParserTest, ParseMargin) {
 TEST(ControlParserTest, ParseBorder) {
 
     ASSERT_TRUE(TestFrameProperty<zaf::Control>("Border", [](zaf::Control& control) {
-        return control.GetBorder();
+        return control.Border();
     }));
 }
 
@@ -223,7 +223,7 @@ TEST(ControlParserTest, ParseBorder) {
 TEST(ControlParserTest, ParsePadding) {
 
     ASSERT_TRUE(TestFrameProperty<zaf::Control>("Padding", [](zaf::Control& control) {
-        return control.GetPadding();
+        return control.Padding();
     }));
 }
 

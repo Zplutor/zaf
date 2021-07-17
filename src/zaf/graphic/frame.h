@@ -37,7 +37,7 @@ public:
     /**
      Construct a frame which all direction is the same as specified thickness.
      */
-    Frame(float all) : left(all), top(all), right(all), bottom(all) { }
+    explicit Frame(float all) : left(all), top(all), right(all), bottom(all) { }
 
     /**
      Construct a frame with specified thicknesses.

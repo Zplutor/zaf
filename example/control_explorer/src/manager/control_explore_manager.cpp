@@ -133,7 +133,7 @@ void ControlExploreManager::AddBorderItems(std::vector<std::shared_ptr<PropertyI
     auto control = GetTargetControl();
     auto border_item = CreateFramePropertyItem(
         L"Border",
-        [control]() { return control->GetBorder(); },
+        [control]() { return control->Border(); },
         [control](const zaf::Frame& frame) { control->SetBorder(frame); });
 
     items.push_back(border_item);
@@ -145,7 +145,7 @@ void ControlExploreManager::AddPaddingItems(std::vector<std::shared_ptr<Property
     auto control = GetTargetControl();
     auto border_item = CreateFramePropertyItem(
         L"Padding",
-        [control]() { return control->GetPadding(); },
+        [control]() { return control->Padding(); },
         [control](const zaf::Frame& frame) { control->SetPadding(frame); });
 
     items.push_back(border_item);

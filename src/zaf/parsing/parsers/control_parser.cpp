@@ -36,21 +36,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
 
     XamlNodeParseHelper helper(node, control.GetType());
 
-    auto margin = helper.GetObjectProperty<Frame>(L"Margin");
-    if (margin) {
-        control.SetMargin(*margin);
-    }
-
-    auto border = helper.GetObjectProperty<Frame>(L"Border");
-    if (border) {
-        control.SetBorder(*border);
-    }
-
-    auto padding = helper.GetObjectProperty<Frame>(L"Padding");
-    if (padding) {
-        control.SetPadding(*padding);
-    }
-
     auto tab_index = helper.GetFloatProperty(L"TabIndex");
     if (tab_index) {
         control.SetTabIndex(static_cast<std::size_t>(*tab_index));

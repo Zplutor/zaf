@@ -7,7 +7,7 @@ std::shared_ptr<zaf::Control> SplitControlExploreManager::CreateExploredControl(
 
     auto split_control = zaf::Create<zaf::SplitControl>();
     split_control->SetSize(zaf::Size(190, 190));
-    split_control->SetBorder(1);
+    split_control->SetBorder(zaf::Frame(1));
     split_control->SetBorderColor(zaf::Color::Black());
 
     auto first_label = zaf::Create<zaf::Label>();

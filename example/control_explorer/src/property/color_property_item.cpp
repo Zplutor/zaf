@@ -198,7 +198,7 @@ private:
 
         zaf::Rect box_rect = content_rect;
         box_rect.Deflate(zaf::Frame(0, 0, content_rect.size.width - ColorBoxWidth, 0));
-        box_rect.Deflate(4);
+        box_rect.Deflate(zaf::Frame(4));
 
         canvas.SetBrushWithColor(color);
         canvas.DrawRectangle(box_rect);

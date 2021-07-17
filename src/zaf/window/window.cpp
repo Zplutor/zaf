@@ -527,13 +527,13 @@ void Window::PaintInspectedControl(Canvas& canvas, const Rect& dirty_rect) {
     }
 
     auto padding_rect = control_rect;
-    padding_rect.Deflate(highlight_control_->GetBorder());
+    padding_rect.Deflate(highlight_control_->Border());
 
     auto content_rect = padding_rect;
-    content_rect.Deflate(highlight_control_->GetPadding());
+    content_rect.Deflate(highlight_control_->Padding());
 
     auto margin_rect = control_rect;
-    margin_rect.Inflate(highlight_control_->GetMargin());
+    margin_rect.Inflate(highlight_control_->Margin());
 
     auto draw_frame = [&canvas](
         const Rect& rect, 

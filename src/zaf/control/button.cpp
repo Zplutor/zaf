@@ -33,7 +33,7 @@ void Button::Initialize() {
 
     __super::Initialize();
 
-    SetBorder(1);
+    SetBorder(Frame(1));
 
     SetBackgroundColorPicker([](const Control& control) {
     

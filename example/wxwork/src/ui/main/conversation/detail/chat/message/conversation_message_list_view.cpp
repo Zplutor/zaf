@@ -30,7 +30,7 @@ void ConversationMessageListView::Initialize() {
 
     __super::Initialize();
 
-    SetBorder(0);
+    SetBorder(zaf::Frame(0));
     SetSelectionMode(zaf::SelectionMode::None);
     SetAllowHorizontalScroll(false);
     SetAutoAdjustScrollBarSmallChange(false);

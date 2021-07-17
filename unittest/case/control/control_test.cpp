@@ -60,14 +60,14 @@ TEST(ControlTest, GetPreferredSize) {
 
     //Children have margins.
     child1->SetRect(zaf::Rect(0, 0, 5, 5));
-    child1->SetMargin(2);
+    child1->SetMargin(zaf::Frame(2));
     child2->SetRect(zaf::Rect(0, 5, 5, 5));
-    child2->SetMargin(1);
+    child2->SetMargin(zaf::Frame(1));
     ASSERT_EQ(parent->GetPreferredSize(), zaf::Size(7, 11));
 
     //Parent has border and padding.
-    parent->SetBorder(3);
-    parent->SetPadding(4);
+    parent->SetBorder(zaf::Frame(3));
+    parent->SetPadding(zaf::Frame(4));
     ASSERT_EQ(parent->GetPreferredSize(), zaf::Size(21, 25));
 
     //Parent is invisible, while children is visible.

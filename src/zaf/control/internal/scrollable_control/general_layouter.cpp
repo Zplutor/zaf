@@ -101,8 +101,8 @@ void GeneralLayouter::LayoutScrollContentControlSize(
 Size GeneralLayouter::GetExpectedScrollContentControlSize() {
 
     const auto& scroll_content_control = GetScrollableControl()->GetScrollContentControl();
-    const auto& padding = scroll_content_control->GetPadding();
-    const auto& border = scroll_content_control->GetBorder();
+    const auto& padding = scroll_content_control->Padding();
+    const auto& border = scroll_content_control->Border();
 
     Size size = GetScrollableControl()->GetExpectedScrollContentSize();
     size.width += padding.left + padding.right + border.left + border.right;
