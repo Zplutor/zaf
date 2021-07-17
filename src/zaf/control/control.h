@@ -311,14 +311,14 @@ public:
     /**
      Get background color.
      */
-    Color GetBackgroundColor() const {
-        return GetBackgroundColorPicker()(*this);
+    Color BackgroundColor() const {
+        return BackgroundColorPicker()(*this);
     }
 
     /**
      Get the color picker of background.
      */
-    ColorPicker GetBackgroundColorPicker() const;
+    ColorPicker BackgroundColorPicker() const;
 
     /**
      Set background color.
@@ -335,14 +335,14 @@ public:
     /**
      Get border color.
      */
-    Color GetBorderColor() const {
-        return GetBorderColorPicker()(*this);
+    Color BorderColor() const {
+        return BorderColorPicker()(*this);
     }
 
     /**
      Get the color picker of border color.
      */
-    ColorPicker GetBorderColorPicker() const;
+    ColorPicker BorderColorPicker() const;
 
     /**
      Set border color.

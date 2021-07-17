@@ -157,7 +157,7 @@ std::shared_ptr<PropertyItem> ControlExploreManager::CreateBackgroundColorProper
     auto control = GetTargetControl();
     return CreateColorPropertyItem(
         L"Background color",
-        [control]() { return control->GetBackgroundColor(); },
+        [control]() { return control->BackgroundColor(); },
         [control](const zaf::Color& color) { control->SetBackgroundColor(color); });
 }
 
@@ -167,6 +167,6 @@ std::shared_ptr<PropertyItem> ControlExploreManager::CreateBorderColorPropertyIt
     auto control = GetTargetControl();
     return CreateColorPropertyItem(
         L"Border color",
-        [control]() { return control->GetBorderColor(); },
+        [control]() { return control->BorderColor(); },
         [control](const zaf::Color& color) { control->SetBorderColor(color); });
 }

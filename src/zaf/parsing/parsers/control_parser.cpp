@@ -41,16 +41,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
         control.SetTabIndex(static_cast<std::size_t>(*tab_index));
     }
 
-    auto background_color = helper.GetObjectProperty<Color>(L"BackgroundColor");
-    if (background_color) {
-        control.SetBackgroundColor(*background_color);
-    }
-
-    auto border_color = helper.GetObjectProperty<Color>(L"BorderColor");
-    if (border_color) {
-        control.SetBorderColor(*border_color);
-    }
-
     auto layouter_object = helper.GetDynamicObjectProperty<Object>(L"Layouter");
     if (layouter_object) {
         auto layouter = std::dynamic_pointer_cast<Layouter>(layouter_object);

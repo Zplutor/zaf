@@ -82,6 +82,8 @@ ZAF_DEFINE_TYPE_PROPERTY(CanTabStop)
 ZAF_DEFINE_TYPE_PROPERTY(Margin)
 ZAF_DEFINE_TYPE_PROPERTY(Border)
 ZAF_DEFINE_TYPE_PROPERTY(Padding)
+ZAF_DEFINE_TYPE_PROPERTY(BackgroundColor)
+ZAF_DEFINE_TYPE_PROPERTY(BorderColor)
 ZAF_DEFINE_TYPE_END
 
 
@@ -257,7 +259,7 @@ void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     zaf::Rect control_rect{ Point{}, Size() };
 
     //Draw background color.
-    canvas.SetBrushWithColor(GetBackgroundColor());
+    canvas.SetBrushWithColor(BackgroundColor());
     canvas.DrawRectangle(control_rect);
 
     //Draw background image.
@@ -283,7 +285,7 @@ void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     Geometry::Combine(control_geometry, inner_geometry, Geometry::CombineMode::Exclude, sink);
     sink.Close();
 
-    canvas.SetBrushWithColor(GetBorderColor());
+    canvas.SetBrushWithColor(BorderColor());
     canvas.DrawGeometry(border_geometry);
 }
 
@@ -819,7 +821,7 @@ void Control::SetBackgroundImageLayout(ImageLayout image_layout) {
 }
 
 
-ColorPicker Control::GetBackgroundColorPicker() const {
+ColorPicker Control::BackgroundColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::BackgroundColorPicker);
     if ((color_picker != nullptr) && (*color_picker != nullptr)) {
@@ -840,7 +842,7 @@ void Control::SetBackgroundColorPicker(const ColorPicker& color_picker) {
 }
 
 
-ColorPicker Control::GetBorderColorPicker() const {
+ColorPicker Control::BorderColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::BorderColorPicker);
     if ((color_picker != nullptr) && (*color_picker != nullptr)) {

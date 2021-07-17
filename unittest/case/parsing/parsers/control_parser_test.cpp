@@ -281,8 +281,8 @@ TEST(ControlParserTest, ParseColors) {
         />
     )";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetBackgroundColor(), zaf::Color::FromRGB(0x112233));
-    ASSERT_EQ(control->GetBorderColor(), zaf::Color::FromRGB(0x445566));
+    ASSERT_EQ(control->BackgroundColor(), zaf::Color::FromRGB(0x112233));
+    ASSERT_EQ(control->BorderColor(), zaf::Color::FromRGB(0x445566));
 
     xaml = R"(
         <Control>
@@ -291,8 +291,8 @@ TEST(ControlParserTest, ParseColors) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetBackgroundColor(), zaf::Color(0.1f, 0.2f, 0.3f));
-    ASSERT_EQ(control->GetBorderColor(), zaf::Color(0.4f, 0.5f, 0.6f));
+    ASSERT_EQ(control->BackgroundColor(), zaf::Color(0.1f, 0.2f, 0.3f));
+    ASSERT_EQ(control->BorderColor(), zaf::Color(0.4f, 0.5f, 0.6f));
 }
 
 
