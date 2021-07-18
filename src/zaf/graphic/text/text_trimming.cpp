@@ -1,5 +1,4 @@
 #include <zaf/graphic/text/text_trimming.h>
-#include <zaf/parsing/parsers/text_trimming_parser.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 
@@ -15,7 +14,6 @@ const wchar_t* const Names[] = {
 }
 
 ZAF_DEFINE_TYPE(TextTrimming)
-    ZAF_DEFINE_TYPE_PARSER(TextTrimmingParser)
 ZAF_DEFINE_TYPE_END
 
 

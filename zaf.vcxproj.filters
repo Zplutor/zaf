@@ -346,12 +346,6 @@
     <ClCompile Include="src\zaf\parsing\parsers\control_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\button_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\clickable_control_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\textual_control_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
@@ -362,9 +356,6 @@
       <Filter>zaf\base\registry</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\parsing\parsers\check_box_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\combo_box_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\reflection\creation.cpp">
@@ -1069,70 +1060,22 @@
     <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h">
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\button_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\control_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\textual_control_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\clickable_control_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\check_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\combo_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\image_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\label_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\combo_box_drop_down_list_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\list_control_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\scrollable_control_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\list_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\text_box_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\combo_box_edit_text_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\scroll_bar_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\scroll_bar_arrow_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\scroll_bar_thumb_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\split_control_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\split_control_split_bar_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\radio_button_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\font_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\text_trimming_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\window_parser.h">

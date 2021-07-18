@@ -3,7 +3,6 @@
 #include <zaf/base/event_utility.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/parsing/parsers/clickable_control_parser.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
@@ -13,7 +12,6 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(ClickableControl)
-    ZAF_DEFINE_TYPE_PARSER(ClickableControlParser)
 ZAF_DEFINE_TYPE_END
 
 

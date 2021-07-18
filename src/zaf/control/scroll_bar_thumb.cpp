@@ -1,13 +1,11 @@
 #include <zaf/control/scroll_bar_thumb.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/parsing/parsers/scroll_bar_thumb_parser.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
 
 ZAF_DEFINE_TYPE(ScrollBarThumb)
-    ZAF_DEFINE_TYPE_PARSER(ScrollBarThumbParser)
 ZAF_DEFINE_TYPE_END
 
 ScrollBarThumb::ScrollBarThumb() :

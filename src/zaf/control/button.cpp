@@ -3,7 +3,6 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/theme.h>
 #include <zaf/internal/paint_utility.h>
-#include <zaf/parsing/parsers/button_parser.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/type_definition.h>
 
@@ -15,7 +14,6 @@ const wchar_t* const kIsDefaultPropertyName = L"IsDefault";
 }
 
 ZAF_DEFINE_TYPE(Button)
-    ZAF_DEFINE_TYPE_PARSER(ButtonParser)
 ZAF_DEFINE_TYPE_END
 
 

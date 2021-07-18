@@ -13,9 +13,6 @@
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
-#include <zaf/parsing/parsers/combo_box_drop_down_list_box_parser.h>
-#include <zaf/parsing/parsers/combo_box_edit_text_box_parser.h>
-#include <zaf/parsing/parsers/combo_box_parser.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/keyboard_message.h>
@@ -39,15 +36,12 @@ const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent"
 
 
 ZAF_DEFINE_TYPE(ComboBox)
-    ZAF_DEFINE_TYPE_PARSER(ComboBoxParser)
 ZAF_DEFINE_TYPE_END
 
 ZAF_DEFINE_TYPE(ComboBoxDropDownListBox)
-    ZAF_DEFINE_TYPE_PARSER(ComboBoxDropDownListBoxParser)
 ZAF_DEFINE_TYPE_END
 
 ZAF_DEFINE_TYPE(ComboBoxEditTextBox)
-    ZAF_DEFINE_TYPE_PARSER(ComboBoxEditTextBoxParser)
 ZAF_DEFINE_TYPE_END
 
 

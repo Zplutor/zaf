@@ -4,8 +4,6 @@
 #include <zaf/base/log.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/parsing/parsers/split_control_parser.h>
-#include <zaf/parsing/parsers/split_control_split_bar_parser.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/mouse_message.h>
@@ -27,11 +25,9 @@ const wchar_t* const kSplitterColorPickerPropertyName = L"SplitterColorPicker";
 
 
 ZAF_DEFINE_TYPE(SplitControl)
-    ZAF_DEFINE_TYPE_PARSER(SplitControlParser)
 ZAF_DEFINE_TYPE_END
 
 ZAF_DEFINE_TYPE(SplitControlSplitBar)
-    ZAF_DEFINE_TYPE_PARSER(SplitControlSplitBarParser)
 ZAF_DEFINE_TYPE_END
 
 

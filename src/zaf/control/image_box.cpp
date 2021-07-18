@@ -7,7 +7,6 @@
 #include <zaf/control/internal/image_box/image_drawing.h>
 #include <zaf/control/internal/image_box/static_image_player.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/parsing/parsers/image_box_parser.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/resource/resource_manager.h>
 
@@ -39,7 +38,6 @@ const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
 
 
 ZAF_DEFINE_TYPE(ImageBox)
-    ZAF_DEFINE_TYPE_PARSER(ImageBoxParser)
 ZAF_DEFINE_TYPE_END
 
 
