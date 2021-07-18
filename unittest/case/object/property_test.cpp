@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <zaf/graphic/image/image.h>
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
 #include <zaf/object/object.h>
@@ -56,15 +57,25 @@ public:
         boxed_object_ = value;
     }
 
+    const std::shared_ptr<zaf::Image> Image() const {
+        return image_;
+    }
+
+    void SetImage(const std::shared_ptr<zaf::Image>& image) {
+        image_ = image;
+    }
+
     int int_field{};
     zaf::Size size_field{};
     RECT rect_field{};
     std::shared_ptr<zaf::Point> boxed_object_field;
+    std::shared_ptr<zaf::Image> image_field;
 
 private:
     int read_write_value_{};
     int write_only_value_{};
-    std::shared_ptr<zaf::Point> boxed_object_ = zaf::Create<zaf::Point>();
+    std::shared_ptr<zaf::Point> boxed_object_;
+    std::shared_ptr<zaf::Image> image_;
 };
 
 ZAF_DEFINE_TYPE(PropertyHost)
@@ -75,9 +86,11 @@ ZAF_DEFINE_TYPE_PROPERTY(FloatType)
 ZAF_DEFINE_TYPE_PROPERTY(StringType)
 ZAF_DEFINE_TYPE_PROPERTY(SizeType)
 ZAF_DEFINE_TYPE_PROPERTY(BoxedObject);
+ZAF_DEFINE_TYPE_PROPERTY(Image);
 ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(IntField, int_field)
 ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(SizeField, size_field)
 ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(BoxedObjectField, boxed_object_field)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(ImageField, image_field)
 //Un-comment below lines whould cause static assertion.
 //ZAF_DEFINE_TYPE_PROPERTY(RectType) 
 //ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(RectField, rect_field)
@@ -170,7 +183,7 @@ TEST(PropertyTest, ObjectType) {
 }
 
 
-TEST(PropertyType, BoxedObjectType) {
+TEST(PropertyType, BoxedObject) {
 
     PropertyHost host;
     auto property = host.GetType()->FindProperty(L"BoxedObject");
@@ -180,6 +193,24 @@ TEST(PropertyType, BoxedObjectType) {
     ASSERT_TRUE(property->CanSet());
 
     auto set_value = zaf::Create<zaf::Point>(9.f, 8.f);
+    property->SetValue(host, set_value);
+
+    auto value = property->GetValue(host);
+    ASSERT_NE(value, nullptr);
+    ASSERT_TRUE(value->IsEqual(*set_value));
+}
+
+
+TEST(PropertyType, Image) {
+
+    PropertyHost host;
+    auto property = host.GetType()->FindProperty(L"Image");
+    ASSERT_NE(property, nullptr);
+
+    ASSERT_TRUE(property->CanGet());
+    ASSERT_TRUE(property->CanSet());
+
+    auto set_value = zaf::Create<zaf::URIImage>();
     property->SetValue(host, set_value);
 
     auto value = property->GetValue(host);
@@ -231,6 +262,24 @@ TEST(PropertyTest, BoxedObjectField) {
     ASSERT_TRUE(property->CanSet());
 
     auto set_value = zaf::Create<zaf::Point>(18.f, 17.f);
+    property->SetValue(host, set_value);
+
+    auto value = property->GetValue(host);
+    ASSERT_NE(value, nullptr);
+    ASSERT_TRUE(value->IsEqual(*set_value));
+}
+
+
+TEST(PropertyTest, ImageField) {
+
+    PropertyHost host;
+    auto property = host.GetType()->FindProperty(L"ImageField");
+    ASSERT_NE(property, nullptr);
+
+    ASSERT_TRUE(property->CanGet());
+    ASSERT_TRUE(property->CanSet());
+
+    auto set_value = zaf::Create<zaf::URIImage>();
     property->SetValue(host, set_value);
 
     auto value = property->GetValue(host);

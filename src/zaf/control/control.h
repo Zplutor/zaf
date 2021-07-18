@@ -293,7 +293,7 @@ public:
         return ContentRect().size;
     }
 
-    std::shared_ptr<Image> GetBackgroundImage() const {
+    std::shared_ptr<Image> BackgroundImage() const {
         return GetBackgroundImagePicker()(*this);
     }
 

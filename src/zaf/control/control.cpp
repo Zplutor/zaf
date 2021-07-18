@@ -85,7 +85,7 @@ ZAF_DEFINE_TYPE_PROPERTY(Padding)
 ZAF_DEFINE_TYPE_PROPERTY(BackgroundColor)
 ZAF_DEFINE_TYPE_PROPERTY(BorderColor)
 ZAF_DEFINE_TYPE_PROPERTY(BackgroundImageLayout)
-//ZAF_DEFINE_TYPE_PROPERTY(BackgroundImage)
+ZAF_DEFINE_TYPE_PROPERTY(BackgroundImage)
 ZAF_DEFINE_TYPE_END
 
 
@@ -294,7 +294,7 @@ void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 void Control::DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect) {
 
-    auto background_image = GetBackgroundImage();
+    auto background_image = BackgroundImage();
     if (!background_image) {
         return;
     }

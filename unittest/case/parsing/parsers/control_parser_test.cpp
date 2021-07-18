@@ -301,7 +301,7 @@ TEST(ControlParserTest, ParseBackgroundImage) {
     auto xaml = R"(<Control BackgroundImage="file:///C:/image.png" />)";
     auto control = CreateControlFromXaml(xaml);
 
-    auto image = std::dynamic_pointer_cast<zaf::URIImage>(control->GetBackgroundImage());
+    auto image = std::dynamic_pointer_cast<zaf::URIImage>(control->BackgroundImage());
     ASSERT_NE(image, nullptr);
     ASSERT_EQ(image->GetURI(), L"file:///C:/image.png");
 
@@ -312,7 +312,7 @@ TEST(ControlParserTest, ParseBackgroundImage) {
     )";
     control = CreateControlFromXaml(xaml);
 
-    image = std::dynamic_pointer_cast<zaf::URIImage>(control->GetBackgroundImage());
+    image = std::dynamic_pointer_cast<zaf::URIImage>(control->BackgroundImage());
     ASSERT_NE(image, nullptr);
     ASSERT_EQ(image->GetURI(), L"file:///C:/image.jpg");
 }

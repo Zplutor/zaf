@@ -2,7 +2,6 @@
 #include <zaf/application.h>
 #include <zaf/base/error/system_error.h>
 #include <zaf/control/control.h>
-#include <zaf/graphic/image/uri_image.h>
 #include <zaf/parsing/parsers/internal/utility.h>
 #include <zaf/object/parsing/xaml_node_parse_helper.h>
 
@@ -24,11 +23,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
         if (layouter) {
             control.SetLayouter(layouter);
         }
-    }
-
-    auto background_image = helper.GetObjectProperty<URIImage>(L"BackgroundImage");
-    if (background_image) {
-        control.SetBackgroundImage(background_image);
     }
 }
 
