@@ -1,28 +1,28 @@
 #include <zaf/parsing/parsers/bitmap_image_parser.h>
-#include <zaf/graphic/image/bitmap_image.h>
+#include <zaf/graphic/image/uri_image.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 
-void BitmapImageParser::ParseFromAttribute(
+void URIImageParser::ParseFromAttribute(
     const std::wstring& attribute_value,
     Object& reflection_object) {
 
-    auto& image = dynamic_cast<BitmapImage&>(reflection_object);
-    image.SetUri(attribute_value);
+    auto& image = dynamic_cast<URIImage&>(reflection_object);
+    image.SetURI(attribute_value);
 }
 
 
-void BitmapImageParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
+void URIImageParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
 
-    auto& image = dynamic_cast<BitmapImage&>(reflection_object);
+    auto& image = dynamic_cast<URIImage&>(reflection_object);
 
     XamlNodeParseHelper helper(node, reflection_object.GetType());
 
     auto uri = helper.GetStringProperty(L"Uri");
     if (uri) {
-        image.SetUri(*uri);
+        image.SetURI(*uri);
     }
 
     auto content_string = helper.GetContentString();

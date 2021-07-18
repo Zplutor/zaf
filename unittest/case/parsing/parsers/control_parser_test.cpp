@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/control/control.h>
 #include <zaf/control/layout/linear_layouter.h>
-#include <zaf/graphic/image/bitmap_image.h>
+#include <zaf/graphic/image/uri_image.h>
 #include "utility.h"
 
 namespace {
@@ -301,9 +301,9 @@ TEST(ControlParserTest, ParseBackgroundImage) {
     auto xaml = R"(<Control BackgroundImage="file:///C:/image.png" />)";
     auto control = CreateControlFromXaml(xaml);
 
-    auto image = std::dynamic_pointer_cast<zaf::BitmapImage>(control->GetBackgroundImage());
+    auto image = std::dynamic_pointer_cast<zaf::URIImage>(control->GetBackgroundImage());
     ASSERT_NE(image, nullptr);
-    ASSERT_EQ(image->GetUri(), L"file:///C:/image.png");
+    ASSERT_EQ(image->GetURI(), L"file:///C:/image.png");
 
     xaml = R"(
         <Control>
@@ -312,9 +312,9 @@ TEST(ControlParserTest, ParseBackgroundImage) {
     )";
     control = CreateControlFromXaml(xaml);
 
-    image = std::dynamic_pointer_cast<zaf::BitmapImage>(control->GetBackgroundImage());
+    image = std::dynamic_pointer_cast<zaf::URIImage>(control->GetBackgroundImage());
     ASSERT_NE(image, nullptr);
-    ASSERT_EQ(image->GetUri(), L"file:///C:/image.jpg");
+    ASSERT_EQ(image->GetURI(), L"file:///C:/image.jpg");
 }
 
 

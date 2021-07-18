@@ -89,7 +89,7 @@
     <ClCompile Include="src\zaf\control\tree_item.cpp" />
     <ClCompile Include="src\zaf\control\tree_item_expand_button.cpp" />
     <ClCompile Include="src\zaf\graphic\alignment.cpp" />
-    <ClCompile Include="src\zaf\graphic\image\bitmap_image.cpp" />
+    <ClCompile Include="src\zaf\graphic\image\uri_image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\internal\utility.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\bitmap.cpp" />
@@ -321,7 +321,7 @@
     <ClInclude Include="src\zaf\graphic\alignment.h" />
     <ClInclude Include="src\zaf\graphic\geometry\arc_segment.h" />
     <ClInclude Include="src\zaf\graphic\geometry\ellipse_geometry.h" />
-    <ClInclude Include="src\zaf\graphic\image\bitmap_image.h" />
+    <ClInclude Include="src\zaf\graphic\image\uri_image.h" />
     <ClInclude Include="src\zaf\graphic\image\image.h" />
     <ClInclude Include="src\zaf\graphic\image\internal\utility.h" />
     <ClInclude Include="src\zaf\graphic\image\internal\wic_bitmap.h" />

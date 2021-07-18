@@ -5,16 +5,16 @@
 
 namespace zaf {
 
-class BitmapImage : public Image, public Object {
+class URIImage : public Image, public Object {
 public:
     ZAF_DECLARE_TYPE
 
 public:
-    std::wstring GetUri() const {
+    std::wstring GetURI() const {
         return uri_;
     }
 
-    void SetUri(const std::wstring& uri);
+    void SetURI(const std::wstring& uri);
 
     Size GetPixelSize() override;
     std::pair<float, float> GetResolution() override;

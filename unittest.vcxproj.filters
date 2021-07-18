@@ -175,7 +175,7 @@
     <ClCompile Include="unittest\case\control\internal\image_box\image_drawing_test.cpp">
       <Filter>case\control\internal\image_box</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\parsers\bitmap_image_parser_test.cpp">
+    <ClCompile Include="unittest\case\parsers\uri_image_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\container\utility\range_test.cpp">

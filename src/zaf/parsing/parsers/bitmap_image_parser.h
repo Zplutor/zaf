@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-class BitmapImageParser : public ObjectParser {
+class URIImageParser : public ObjectParser {
 public:
     void ParseFromAttribute(
         const std::wstring& attribute_value,
