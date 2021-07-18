@@ -40,6 +40,7 @@
 #include <zaf/rx/cancel.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
+#include <zaf/object/internal/property_helper.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
@@ -60,6 +61,7 @@ int WINAPI WinMain(
 
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
+
 
     auto window = zaf::Create<zaf::Window>();
 

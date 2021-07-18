@@ -1567,7 +1567,7 @@
     <ClInclude Include="src\zaf\object\internal\object_initializer.h">
       <Filter>zaf\object\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\property_deduction.h">
+    <ClInclude Include="src\zaf\object\internal\property_helper.h">
       <Filter>zaf\object\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\object\internal\property_registrar.h">

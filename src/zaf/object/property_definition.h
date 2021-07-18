@@ -1,8 +1,7 @@
 #pragma once
 
 #include <zaf/object/boxing/boxing.h>
-#include <zaf/object/boxing/internal/get_box_type.h>
-#include <zaf/object/internal/property_deduction.h>
+#include <zaf/object/internal/property_helper.h>
 #include <zaf/object/internal/property_registrar.h>
 #include <zaf/object/object_property.h>
 
@@ -42,7 +41,7 @@ struct PropertyName##Accessor {                                                 
     }                                                                                              \
     template<typename T>                                                                           \
     static std::shared_ptr<zaf::Object> InnerGet(const T& object, GetterValueType<T>*) {           \
-        return zaf::Box(object.PropertyName());                                                    \
+        return zaf::internal::BoxPropertyValue(object.PropertyName());                             \
     }                                                                                              \
     template<typename T>                                                                           \
     static std::shared_ptr<zaf::Object> InnerGet(const T& object, ...) {                           \
@@ -53,11 +52,9 @@ struct PropertyName##Accessor {                                                 
         T& object,                                                                                 \
         const std::shared_ptr<zaf::Object>& value,                                                 \
         SetterValueType<T>* value_type) {                                                          \
-        auto unboxed_value = zaf::TryUnbox<std::decay_t<decltype(*value_type)>>(value);            \
-        if (!unboxed_value) {                                                                      \
-            throw std::exception{};                                                                \
-        }                                                                                          \
-        object.Set##PropertyName(*unboxed_value);                                                  \
+        using Unboxer =                                                                            \
+            zaf::internal::GetPropertyUnboxer<std::decay_t<decltype(*value_type)>>::Type;          \
+        object.Set##PropertyName(Unboxer::Unbox(value));                                           \
     }                                                                                              \
     template<typename T>                                                                           \
     static void InnerSet(T& object, const std::shared_ptr<zaf::Object>& value, ...) {              \
@@ -72,7 +69,11 @@ struct PropertyName##Accessor {                                                 
         return nullptr;                                                                            \
     }                                                                                              \
 public:                                                                                            \
-    using ValueType = std::remove_pointer_t<decltype(DeduceValueType<Class>(nullptr))>;            \
+    using ValueType = zaf::internal::DeduceUnderlyingValueType<                                    \
+        std::remove_pointer_t<decltype(DeduceValueType<Class>(nullptr))>                           \
+    >::Type;                                                                                       \
+    static_assert(zaf::internal::IsReflectionType<ValueType>::Value,                               \
+        "This type of value is not supported by property.");                                       \
     static constexpr bool CanGet = InnerCanGet<Class>(nullptr);                                    \
     static constexpr bool CanSet = InnerCanSet<Class>(nullptr);                                    \
     static std::shared_ptr<zaf::Object> Get(const zaf::Object& object) {                           \
@@ -89,11 +90,7 @@ public:                                                                         
         return name;                                                                               \
     }                                                                                              \
     ObjectType* GetValueType() const override {                                                    \
-        using ValueType =                                                                          \
-            zaf::internal::GetBoxType<typename PropertyName##Accessor::ValueType>::Type;           \
-        static_assert(zaf::internal::IsReflectionType<ValueType>::Value,                           \
-            "This type of value is not supported by property.");                                   \
-        return ValueType::Type;                                                                    \
+        return PropertyName##Accessor::ValueType::Type;                                            \
     }                                                                                              \
     bool CanGet() const override {                                                                 \
         return PropertyName##Accessor::CanGet;                                                     \
@@ -119,8 +116,9 @@ public:                                                                         
         return name;                                                                               \
     }                                                                                              \
     ObjectType* GetValueType() const override {                                                    \
-        using ValueType =                                                                          \
-            zaf::internal::GetBoxType<decltype(reinterpret_cast<Class*>(0)->FieldName)>::Type;     \
+        using ValueType = zaf::internal::DeduceUnderlyingValueType<                                \
+            decltype(reinterpret_cast<Class*>(0)->FieldName)                                       \
+        >::Type;                                                                                   \
         static_assert(zaf::internal::IsReflectionType<ValueType>::Value,                           \
             "This type of value is not supported by property.");                                   \
         return ValueType::Type;                                                                    \
@@ -132,15 +130,13 @@ public:                                                                         
         return true;                                                                               \
     }                                                                                              \
     std::shared_ptr<zaf::Object> GetValue(const zaf::Object& object) const override {              \
-        return zaf::Box(dynamic_cast<const Class&>(object).FieldName);                             \
+        return zaf::internal::BoxPropertyValue(dynamic_cast<const Class&>(object).FieldName);      \
     }                                                                                              \
     void SetValue(zaf::Object& object, const std::shared_ptr<zaf::Object>& value) const override { \
-        auto unboxed_value =                                                                       \
-            zaf::TryUnbox<decltype(reinterpret_cast<Class*>(0)->FieldName)>(value);                \
-        if (!unboxed_value) {                                                                      \
-            throw std::exception{};                                                                \
-        }                                                                                          \
-        dynamic_cast<Class&>(object).FieldName = *unboxed_value;                                   \
+        using Unboxer = zaf::internal::GetPropertyUnboxer<                                         \
+            decltype(reinterpret_cast<Class*>(0)->FieldName)                                       \
+        >::Type;                                                                                   \
+        dynamic_cast<Class&>(object).FieldName = Unboxer::Unbox(value);                            \
     }                                                                                              \
 };                                                                                                 \
 __ZAF_INTERNAL_DEFINE_PROPERTY_VARIABLE(PropertyName)

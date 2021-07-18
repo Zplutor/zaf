@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
 #include <zaf/object/object.h>
 #include <zaf/object/type_definition.h>
@@ -47,13 +48,23 @@ public:
         return {};
     }
 
+    const std::shared_ptr<zaf::Point>& BoxedObject() const {
+        return boxed_object_;
+    }
+
+    void SetBoxedObject(const std::shared_ptr<zaf::Point>& value) {
+        boxed_object_ = value;
+    }
+
     int int_field{};
     zaf::Size size_field{};
     RECT rect_field{};
+    std::shared_ptr<zaf::Point> boxed_object_field;
 
 private:
     int read_write_value_{};
     int write_only_value_{};
+    std::shared_ptr<zaf::Point> boxed_object_ = zaf::Create<zaf::Point>();
 };
 
 ZAF_DEFINE_TYPE(PropertyHost)
@@ -63,8 +74,10 @@ ZAF_DEFINE_TYPE_PROPERTY(WriteOnly)
 ZAF_DEFINE_TYPE_PROPERTY(FloatType)
 ZAF_DEFINE_TYPE_PROPERTY(StringType)
 ZAF_DEFINE_TYPE_PROPERTY(SizeType)
+ZAF_DEFINE_TYPE_PROPERTY(BoxedObject);
 ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(IntField, int_field)
 ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(SizeField, size_field)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(BoxedObjectField, boxed_object_field)
 //Un-comment below lines whould cause static assertion.
 //ZAF_DEFINE_TYPE_PROPERTY(RectType) 
 //ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(RectField, rect_field)
@@ -157,6 +170,24 @@ TEST(PropertyTest, ObjectType) {
 }
 
 
+TEST(PropertyType, BoxedObjectType) {
+
+    PropertyHost host;
+    auto property = host.GetType()->FindProperty(L"BoxedObject");
+    ASSERT_NE(property, nullptr);
+
+    ASSERT_TRUE(property->CanGet());
+    ASSERT_TRUE(property->CanSet());
+
+    auto set_value = zaf::Create<zaf::Point>(9.f, 8.f);
+    property->SetValue(host, set_value);
+
+    auto value = property->GetValue(host);
+    ASSERT_NE(value, nullptr);
+    ASSERT_TRUE(value->IsEqual(*set_value));
+}
+
+
 TEST(PropertyTest, NumericTypeField) {
 
     PropertyHost host;
@@ -188,4 +219,21 @@ TEST(PropertyTest, ObjectTypeField) {
     auto value = zaf::TryUnbox<zaf::Size>(boxed_value);
     ASSERT_NE(value, nullptr);
     ASSERT_EQ(*value, zaf::Size(78, 87));
+}
+
+
+TEST(PropertyTest, BoxedObjectField) {
+
+    PropertyHost host;
+    auto property = host.GetType()->FindProperty(L"BoxedObjectField");
+    ASSERT_NE(property, nullptr);
+    ASSERT_TRUE(property->CanGet());
+    ASSERT_TRUE(property->CanSet());
+
+    auto set_value = zaf::Create<zaf::Point>(18.f, 17.f);
+    property->SetValue(host, set_value);
+
+    auto value = property->GetValue(host);
+    ASSERT_NE(value, nullptr);
+    ASSERT_TRUE(value->IsEqual(*set_value));
 }
