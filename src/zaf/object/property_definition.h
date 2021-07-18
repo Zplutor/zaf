@@ -49,7 +49,10 @@ struct PropertyName##Accessor {                                                 
         throw std::exception{};                                                                    \
     }                                                                                              \
     template<typename T>                                                                           \
-    static void InnerSet(T& object, const zaf::Object& value, SetterValueType<T>* value_type) {    \
+    static void InnerSet(                                                                          \
+        T& object,                                                                                 \
+        const std::shared_ptr<zaf::Object>& value,                                                 \
+        SetterValueType<T>* value_type) {                                                          \
         auto unboxed_value = zaf::TryUnbox<std::decay_t<decltype(*value_type)>>(value);            \
         if (!unboxed_value) {                                                                      \
             throw std::exception{};                                                                \
@@ -57,7 +60,7 @@ struct PropertyName##Accessor {                                                 
         object.Set##PropertyName(*unboxed_value);                                                  \
     }                                                                                              \
     template<typename T>                                                                           \
-    static void InnerSet(T& object, const zaf::Object& value, ...) {                               \
+    static void InnerSet(T& object, const std::shared_ptr<zaf::Object>& value, ...) {              \
         throw std::exception{};                                                                    \
     }                                                                                              \
     template<typename T>                                                                           \
@@ -75,7 +78,7 @@ public:                                                                         
     static std::shared_ptr<zaf::Object> Get(const zaf::Object& object) {                           \
         return InnerGet(dynamic_cast<const Class&>(object), nullptr);                              \
     }                                                                                              \
-    static void Set(zaf::Object& object, const zaf::Object& value) {                               \
+    static void Set(zaf::Object& object, const std::shared_ptr<zaf::Object>& value) {              \
         InnerSet(dynamic_cast<Class&>(object), value, nullptr);                                    \
     }                                                                                              \
 };                                                                                                 \
@@ -101,7 +104,7 @@ public:                                                                         
     std::shared_ptr<zaf::Object> GetValue(const zaf::Object& object) const override {              \
         return PropertyName##Accessor::Get(object);                                                \
     }                                                                                              \
-    void SetValue(zaf::Object& object, const zaf::Object& value) const override {                  \
+    void SetValue(zaf::Object& object, const std::shared_ptr<zaf::Object>& value) const override { \
         return PropertyName##Accessor::Set(object, value);                                         \
     }                                                                                              \
 };                                                                                                 \
@@ -131,7 +134,7 @@ public:                                                                         
     std::shared_ptr<zaf::Object> GetValue(const zaf::Object& object) const override {              \
         return zaf::Box(dynamic_cast<const Class&>(object).FieldName);                             \
     }                                                                                              \
-    void SetValue(zaf::Object& object, const zaf::Object& value) const override {                  \
+    void SetValue(zaf::Object& object, const std::shared_ptr<zaf::Object>& value) const override { \
         auto unboxed_value =                                                                       \
             zaf::TryUnbox<decltype(reinterpret_cast<Class*>(0)->FieldName)>(value);                \
         if (!unboxed_value) {                                                                      \

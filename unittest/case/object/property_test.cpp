@@ -182,7 +182,7 @@ TEST(PropertyTest, ObjectTypeField) {
     ASSERT_TRUE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
 
-    property->SetValue(host, zaf::Size{ 78, 87 });
+    property->SetValue(host, zaf::Create<zaf::Size>(78.f, 87.f));
 
     auto boxed_value = property->GetValue(host);
     auto value = zaf::TryUnbox<zaf::Size>(boxed_value);

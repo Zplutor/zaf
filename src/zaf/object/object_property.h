@@ -24,12 +24,7 @@ public:
     virtual ObjectType* GetValueType() const = 0;
 
     virtual std::shared_ptr<Object> GetValue(const Object& object) const = 0;
-    virtual void SetValue(Object& object, const Object& value) const = 0;
-
-    void SetValue(Object& object, const std::shared_ptr<Object>& value) const {
-        ZAF_EXPECT(value);
-        SetValue(object, *value);
-    }
+    virtual void SetValue(Object& object, const std::shared_ptr<Object>& value) const = 0;
 };
 
 }
