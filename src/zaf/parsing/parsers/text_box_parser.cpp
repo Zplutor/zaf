@@ -9,8 +9,6 @@ void TextBoxParser::ParseFromNode(const XamlNode& node, Object& reflection_objec
     auto& text_box = dynamic_cast<TextBox&>(reflection_object);
     auto update_guard = text_box.BeginUpdate();
     
-    __super::ParseFromNode(node, reflection_object);
-
     XamlNodeParseHelper helper(node, text_box.GetType());
 
     auto is_multiline = helper.GetBoolProperty(L"IsMultiline");

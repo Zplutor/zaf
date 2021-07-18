@@ -14,6 +14,10 @@ public:
         auto& point = dynamic_cast<Point&>(object);
         internal::ParseAttributeToDoubleFloats(attribute_value, point.x, point.y);
     }
+
+    void ParseFromNode(const XamlNode& node, Object& object) override {
+
+    }
 };
 
 }

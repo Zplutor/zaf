@@ -25,8 +25,6 @@ void CheckBoxParser::ParseFromNode(const XamlNode& node, Object& reflection_obje
     auto& check_box = dynamic_cast<CheckBox&>(reflection_object);
     auto update_guard = check_box.BeginUpdate();
 
-    __super::ParseFromNode(node, reflection_object);
-
     XamlNodeParseHelper helper(node, reflection_object.GetType());
 
     auto can_auto_change_check_state = helper.GetBoolProperty(L"CanAutoChangeCheckState");

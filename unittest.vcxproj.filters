@@ -64,6 +64,9 @@
     <Filter Include="case\object\boxing">
       <UniqueIdentifier>{41b90e79-575a-4f83-85c4-7ca5c0e2f5fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\object\parsing">
+      <UniqueIdentifier>{1dec8fdf-0093-4e1c-8aac-6763cf9cc27a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -252,6 +255,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\object\enum_test.cpp">
       <Filter>case\object</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\parsing\parsing_test.cpp">
+      <Filter>case\object\parsing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

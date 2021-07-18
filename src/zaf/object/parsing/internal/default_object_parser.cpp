@@ -1,14 +1,14 @@
-#include <zaf/object/parsing/object_parser.h>
+#include <zaf/object/parsing/internal/default_object_parser.h>
 #include <zaf/object/object.h>
 #include <zaf/object/object_property.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/parsing/xaml_node.h>
 
-namespace zaf {
+namespace zaf::internal {
 namespace {
 
 bool ParsePropertyWithAttribute(
-    const XamlNode& node, 
+    const XamlNode& node,
     const ObjectProperty& property,
     Object& object) {
 
@@ -61,16 +61,15 @@ void ParsePropertiesInType(const XamlNode& node, const ObjectType& type, Object&
     }
 }
 
-
 }
 
 
-void ObjectParser::ParseFromAttribute(const std::wstring& attribute_value, Object& object) {
+void DefaultObjectParser::ParseFromAttribute(const std::wstring& attribute_value, Object& object) {
     //Nothing to do.
 }
 
 
-void ObjectParser::ParseFromNode(const XamlNode& node, Object& object) {
+void DefaultObjectParser::ParseFromNode(const XamlNode& node, Object& object) {
 
     auto type = object.GetType();
     while (type) {

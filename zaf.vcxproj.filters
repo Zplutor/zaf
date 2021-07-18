@@ -157,6 +157,9 @@
     <Filter Include="zaf\object\parsing">
       <UniqueIdentifier>{668ce856-de97-4b3d-9dff-b0cfd3fdace0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\object\parsing\internal">
+      <UniqueIdentifier>{3bc59b42-1eb6-4c6b-b276-9e2ec11d3233}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -652,9 +655,6 @@
     <ClCompile Include="src\zaf\object\parsing\xaml_reader.cpp">
       <Filter>zaf\object\parsing</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\parsing\object_parser.cpp">
-      <Filter>zaf\object\parsing</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\object\boxing\boolean.cpp">
       <Filter>zaf\object\boxing</Filter>
     </ClCompile>
@@ -663,6 +663,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\image_layout.cpp">
       <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\internal\default_object_parser.cpp">
+      <Filter>zaf\object\parsing\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1581,6 +1584,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\internal\enum_parser.h">
       <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\internal\default_object_parser.h">
+      <Filter>zaf\object\parsing\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

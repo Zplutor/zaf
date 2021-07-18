@@ -11,8 +11,6 @@ void ScrollableControlParser::ParseFromNode(
     auto& scrollable_control = dynamic_cast<ScrollableControl&>(reflection_object);
     auto update_guard = scrollable_control.BeginUpdate();
 
-    __super::ParseFromNode(node, scrollable_control);
-
     XamlNodeParseHelper helper(node, scrollable_control.GetType());
 
     auto scroll_content_control = helper.GetDynamicObjectProperty<Control>(L"ScrollContentControl");

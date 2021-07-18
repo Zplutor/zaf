@@ -69,8 +69,6 @@ void TextualControlParser::ParseFromNode(
     auto& textual_control = dynamic_cast<TextualControl&>(reflection_object);
     auto update_guard = textual_control.BeginUpdate();
 
-    __super::ParseFromNode(node, reflection_object);
-
     XamlNodeParseHelper helper(node, textual_control.GetType());
 
     auto text = helper.GetStringProperty(L"Text");

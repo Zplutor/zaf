@@ -42,7 +42,7 @@ public:                                                                         
         return zaf::Create<EnumName##Enum>();                                                      \
     }                                                                                              \
 protected:                                                                                         \
-    zaf::ObjectParser* GetParser() const override {                                                \
+    zaf::ObjectParser* GetSelfParser() const override {                                            \
         static zaf::internal::EnumParser<EnumName> parser(this);                                   \
         return &parser;                                                                            \
     }                                                                                              \

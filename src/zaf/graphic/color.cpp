@@ -128,8 +128,6 @@ public:
 
     void ParseFromNode(const XamlNode& node, Object& object) override {
 
-        __super::ParseFromNode(node, object);
-
         const auto& content_nodes = node.GetContentNodes();
         if (content_nodes.size() != 1) {
             return;

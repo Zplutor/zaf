@@ -12,6 +12,10 @@ public:
         auto& size = dynamic_cast<Size&>(object);
         internal::ParseAttributeToDoubleFloats(attribute_value, size.width, size.height);
     }
+
+    void ParseFromNode(const XamlNode& node, Object& object) override {
+
+    }
 };
 
 }

@@ -3,6 +3,7 @@
 #include <sstream>
 #include <zaf/application.h>
 #include <zaf/base/error/system_error.h>
+#include <zaf/object/parsing/internal/default_object_parser.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_reader.h>
 #include <zaf/base/string/encoding_conversion.h>
@@ -25,6 +26,12 @@ public:
 
     std::shared_ptr<Object> CreateInstance() const override {
         return Object::Dumb();
+    }
+
+protected:
+    ObjectParser* GetSelfParser() const override {
+        static internal::DefaultObjectParser parser;
+        return &parser;
     }
 };
 

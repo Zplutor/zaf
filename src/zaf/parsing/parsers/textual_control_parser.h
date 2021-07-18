@@ -1,11 +1,15 @@
 #pragma once
 
-#include <zaf/parsing/parsers/control_parser.h>
+#include <zaf/object/parsing/object_parser.h>
 
 namespace zaf {
 
-class TextualControlParser : public ControlParser {
+class TextualControlParser : public ObjectParser {
 public:
+    void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
+
+    }
+
     void ParseFromNode(const XamlNode& node, Object& reflection_object) override;
 };
 
