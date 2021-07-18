@@ -341,7 +341,7 @@ TEST(ControlParserTest, ParseLayouter) {
 
     auto xaml = R"(<Control Layouter="LinearLayouter" />)";
     auto control = CreateControlFromXaml(xaml);
-    auto layouter = std::dynamic_pointer_cast<zaf::LinearLayouter>(control->GetLayouter());
+    auto layouter = std::dynamic_pointer_cast<zaf::LinearLayouter>(control->Layouter());
     ASSERT_NE(layouter, nullptr);
 
     xaml = R"(
@@ -352,7 +352,7 @@ TEST(ControlParserTest, ParseLayouter) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    layouter = std::dynamic_pointer_cast<zaf::LinearLayouter>(control->GetLayouter());
+    layouter = std::dynamic_pointer_cast<zaf::LinearLayouter>(control->Layouter());
     ASSERT_NE(layouter, nullptr);
     ASSERT_EQ(layouter->GetControlAlignment(), zaf::ControlAlignment::Center);
     ASSERT_EQ(layouter->GetAxisAlignment(), zaf::AxisAlignment::Center);
@@ -369,7 +369,7 @@ TEST(ControlParserTest, ParseChildren) {
     )";
     auto control = CreateControlFromXaml(xaml);
 
-    const auto& children = control->GetChildren();
+    const auto& children = control->Children();
     ASSERT_EQ(children.size(), 2);
     ASSERT_EQ(children[0]->Name(), L"child1");
     ASSERT_EQ(children[1]->Name(), L"child2");

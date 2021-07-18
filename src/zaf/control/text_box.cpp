@@ -273,7 +273,7 @@ zaf::Rect TextBox::GetTextRect() {
 
 const zaf::Rect TextBox::GetAbsoluteContentRect() const {
 
-    auto rect = GetAbsoluteRect();
+    auto rect = AbsoluteRect();
     rect.Deflate(Border());
     rect.Deflate(Padding());
     return rect;
@@ -755,7 +755,7 @@ bool TextBox::ChangeMouseCursor() {
         return false;
     }
 
-    auto window = GetWindow();
+    auto window = Window();
     if (window == nullptr) {
         return false;
     }
@@ -890,7 +890,7 @@ void TextBox::OnFocusGain() {
 
 void TextBox::OnFocusLose() {
 
-    auto window = GetWindow();
+    auto window = Window();
     if (window != nullptr) {
         window->GetCaret()->Hide();
     }
@@ -1197,7 +1197,7 @@ BOOL TextBox::TextHostBridge::TxSetCaretPos(INT x, INT y) {
         return FALSE;
     }
 
-    auto window = text_box->GetWindow();
+    auto window = text_box->Window();
     if (window == nullptr) {
         return FALSE;
     }
@@ -1520,7 +1520,7 @@ std::shared_ptr<Window> TextBox::TextHostBridge::GetWindow() const {
         return nullptr;
     }
 
-    return text_box->GetWindow();
+    return text_box->Window();
 }
 
 

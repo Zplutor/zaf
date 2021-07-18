@@ -8,14 +8,14 @@ TEST(LinearBoxTest, Normal) {
 
     auto vertical_box = zaf::Create<zaf::VerticalBox>();
     auto vertical_layouter = std::dynamic_pointer_cast<zaf::VerticalLayouter>(
-        vertical_box->GetLayouter());
+        vertical_box->Layouter());
 
     ASSERT_NE(vertical_layouter, nullptr);
     ASSERT_EQ(vertical_layouter->GetDirection(), zaf::LayoutDirection::TopToBottom);
 
     auto horizontal_box = zaf::Create<zaf::HorizontalBox>();
     auto horizontal_layouter = std::dynamic_pointer_cast<zaf::HorizontalLayouter>(
-        horizontal_box->GetLayouter());
+        horizontal_box->Layouter());
 
     ASSERT_NE(horizontal_layouter, nullptr);
     ASSERT_EQ(horizontal_layouter->GetDirection(), zaf::LayoutDirection::LeftToRight);

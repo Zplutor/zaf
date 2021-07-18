@@ -75,7 +75,7 @@ public:
 
      If the control is not yet placed in a window, am empty rect is returned.
      */
-    zaf::Rect GetAbsoluteRect() const;
+    zaf::Rect AbsoluteRect() const;
 
     /**
      Get the control's rect which is related to the coordinate system of parent's
@@ -249,12 +249,12 @@ public:
 
      The default value is Anchor::None.
      */
-    Anchor GetAnchor() const;
+    Anchor Anchor() const;
 
     /**
      Set the control's anchor.
      */
-    void SetAnchor(Anchor anchor);
+    void SetAnchor(zaf::Anchor anchor);
 
     const Frame& Margin() const {
         return margin_;
@@ -294,10 +294,10 @@ public:
     }
 
     std::shared_ptr<Image> BackgroundImage() const {
-        return GetBackgroundImagePicker()(*this);
+        return BackgroundImagePicker()(*this);
     }
 
-    ImagePicker GetBackgroundImagePicker() const;
+    ImagePicker BackgroundImagePicker() const;
 
     void SetBackgroundImage(const std::shared_ptr<Image>& image) {
         SetBackgroundImagePicker(CreateImagePicker(image));
@@ -359,20 +359,20 @@ public:
     /**
      Get the layouter.
      */
-    std::shared_ptr<Layouter> GetLayouter() const;
+    std::shared_ptr<Layouter> Layouter() const;
 
     /**
      Set the layouter.
 
      Setting the layouter would causes the control to relayout immediately.
      */
-    void SetLayouter(const std::shared_ptr<Layouter>& layouter);
+    void SetLayouter(const std::shared_ptr<zaf::Layouter>& layouter);
 
     bool HasChildren() const {
         return !children_.empty();
     }
 
-    std::size_t GetChildCount() const {
+    std::size_t ChildCount() const {
         return children_.size();
     }
 
@@ -383,7 +383,7 @@ public:
     /**
      Get the control's children.
      */
-    const std::vector<std::shared_ptr<Control>>& GetChildren() const {
+    const std::vector<std::shared_ptr<Control>>& Children() const {
         return children_;
     }
 
@@ -443,7 +443,7 @@ public:
 
      Return nullptr if the control does not have parent.
      */
-    std::shared_ptr<Control> GetParent() const {
+    std::shared_ptr<Control> Parent() const {
         return parent_.lock();
     }
 
@@ -467,7 +467,7 @@ public:
 
      Return nullptr if the control does not locates in any window.
      */
-    std::shared_ptr<Window> GetWindow() const;
+    std::shared_ptr<Window> Window() const;
 
     /**
      Get a value indicating that whether the control is visible.
@@ -922,7 +922,7 @@ protected:
 private:
     friend class Window;
 
-    void SetWindow(const std::shared_ptr<Window>& window) {
+    void SetWindow(const std::shared_ptr<zaf::Window>& window) {
         window_ = window;
     }
 
@@ -993,7 +993,7 @@ private:
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
 
 private:
-    std::weak_ptr<Window> window_;
+    std::weak_ptr<zaf::Window> window_;
     std::weak_ptr<Control> parent_;
     std::vector<std::shared_ptr<Control>> children_;
 

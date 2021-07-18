@@ -343,7 +343,7 @@ private:
         HRESULT    TxGetSelectionBarWidth(LONG *lSelBarWidth) override;
 
     private:
-        std::shared_ptr<Window> GetWindow() const;
+        std::shared_ptr<zaf::Window> GetWindow() const;
         HWND GetWindowHandle() const;
 
         bool NotifyProtected(const ENPROTECTED& info) const;

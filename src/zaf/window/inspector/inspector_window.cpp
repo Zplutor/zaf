@@ -175,10 +175,10 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
 void InspectorWindow::HighlightControl(const std::shared_ptr<Control>& control) {
 
     std::vector<std::shared_ptr<Object>> parent_chain;
-    auto parent = control->GetParent();
+    auto parent = control->Parent();
     while (parent) {
         parent_chain.push_back(parent);
-        parent = parent->GetParent();
+        parent = parent->Parent();
     }
     std::reverse(parent_chain.begin(), parent_chain.end());
 

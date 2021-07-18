@@ -75,7 +75,7 @@ bool Dialog::PreprocessMessage(const KeyMessage& message) {
             
             //VK_RETURN
             if (current_default_button_ != nullptr) {
-                if (current_default_button_->GetWindow().get() == this) {
+                if (current_default_button_->Window().get() == this) {
                     current_default_button_->Click();
                     return true;
                 }

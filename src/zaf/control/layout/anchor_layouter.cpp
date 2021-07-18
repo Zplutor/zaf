@@ -41,7 +41,7 @@ void LayoutChild(
         }
     };
 
-    Anchor anchor = child.GetAnchor();
+    Anchor anchor = child.Anchor();
     bool has_left_anchor = (anchor & Anchor::Left) == Anchor::Left;
     bool has_right_anchor = (anchor & Anchor::Right) == Anchor::Right;
     bool has_top_anchor = (anchor & Anchor::Top) == Anchor::Top;

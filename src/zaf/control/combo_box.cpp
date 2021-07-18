@@ -372,12 +372,12 @@ void ComboBox::OnClick() {
 
 void ComboBox::PopupDropDownWindow() {
 
-    auto window = GetWindow();
+    auto window = Window();
     if (window == nullptr) {
         return;
     }
 
-    auto window_rect = GetAbsoluteRect();
+    auto window_rect = AbsoluteRect();
     window_rect.Inflate(-1, 0);
     window_rect.position.y += Height() - 2;
 

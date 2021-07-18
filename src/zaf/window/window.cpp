@@ -521,7 +521,7 @@ void Window::PaintInspectedControl(Canvas& canvas, const Rect& dirty_rect) {
         return;
     }
 
-    auto control_rect = highlight_control_->GetAbsoluteRect();
+    auto control_rect = highlight_control_->AbsoluteRect();
     if (!control_rect.HasIntersection(dirty_rect)) {
         return;
     }
@@ -640,7 +640,7 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
     bool is_capturing_mouse = capturing_mouse_control_ != nullptr;
     auto get_mouse_position_to_capturing_control = [this, &message]() {
 
-        Rect control_rect = capturing_mouse_control_->GetAbsoluteRect();
+        Rect control_rect = capturing_mouse_control_->AbsoluteRect();
         Point mouse_position = message.GetMousePosition();
 
         return Point(
@@ -845,7 +845,7 @@ void Window::SetHoveredControl(
     if (hovered_control != nullptr) {
 
         //The hovering control must be contained in this window
-        if (hovered_control->GetWindow().get() != this) {
+        if (hovered_control->Window().get() != this) {
             return;
         }
     }
@@ -897,7 +897,7 @@ void Window::CaptureMouseWithControl(const std::shared_ptr<Control>& control) {
     }
 
     //The control must be contained in this window.
-    if (control->GetWindow().get() != this) {
+    if (control->Window().get() != this) {
         return;
     }
 
@@ -941,7 +941,7 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_contr
         }
 
         //The focused control must be contained in this window
-        if (new_focused_control->GetWindow().get() != this) {
+        if (new_focused_control->Window().get() != this) {
             return;
         }
     }
@@ -1491,19 +1491,19 @@ void Window::SetHighlightControl(const std::shared_ptr<Control>& highlight_contr
         return;
     }
 
-    if (highlight_control->GetWindow().get() != this) {
+    if (highlight_control->Window().get() != this) {
         return;
     }
 
     //Repaint the rect of previous highlight control.
     if (highlight_control_) {
-        NeedRepaintRect(highlight_control_->GetAbsoluteRect());
+        NeedRepaintRect(highlight_control_->AbsoluteRect());
     }
 
     highlight_control_ = highlight_control;
 
     //Repaint the rect of new highlight control.
-    NeedRepaintRect(highlight_control_->GetAbsoluteRect());
+    NeedRepaintRect(highlight_control_->AbsoluteRect());
 }
 
 
