@@ -7,7 +7,6 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
-#include <zaf/parsing/parsers/check_box_parser.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
@@ -26,7 +25,10 @@ const wchar_t* const kCheckStateChangeEventPropertyName = L"CheckStateChangeEven
 
 
 ZAF_DEFINE_TYPE(CheckBox)
-    ZAF_DEFINE_TYPE_PARSER(CheckBoxParser)
+ZAF_DEFINE_TYPE_PROPERTY(CanAutoChangeCheckState)
+ZAF_DEFINE_TYPE_PROPERTY(CanBeIndeterminate)
+ZAF_DEFINE_TYPE_PROPERTY(IsChecked)
+ZAF_DEFINE_TYPE_PROPERTY(CheckState)
 ZAF_DEFINE_TYPE_END
 
 

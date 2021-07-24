@@ -302,7 +302,7 @@ TEST(WindowParser, ParseRootControl) {
     )");
     auto button = std::dynamic_pointer_cast<zaf::Button>(window->GetRootControl());
     ASSERT_NE(button, nullptr);
-    ASSERT_EQ(button->GetText(), L"bbbb");
+    ASSERT_EQ(button->Text(), L"bbbb");
 }
 
 

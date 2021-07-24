@@ -3,6 +3,7 @@
 #include <dwrite.h>
 #include <optional>
 #include <string>
+#include <zaf/object/enum_declaration.h>
 
 namespace zaf {
 
@@ -31,6 +32,12 @@ enum class TextAlignment {
      Align text to the leading side, and also justify text to fill the lines.
      */
     Justified = DWRITE_TEXT_ALIGNMENT_JUSTIFIED,
+
+    Left = Leading,
+    Right = Tailing,
 };
+
+ZAF_DECLARE_ENUM(TextAlignment)
+ZAF_ENABLE_ENUM_BOXING(TextAlignment)
 
 }

@@ -12,7 +12,7 @@ TEST(TextualControlParser, ParseText) {
 
     auto xaml = R"(<TextualControl Text="ttttt"></TextualControl>)";
     auto control = CreateTextualControlFromXaml(xaml);
-    ASSERT_EQ(control->GetText(), L"ttttt");
+    ASSERT_EQ(control->Text(), L"ttttt");
 
     xaml = R"(
         <TextualControl>
@@ -20,7 +20,7 @@ TEST(TextualControlParser, ParseText) {
         </TextualControl>
     )";
     control = CreateTextualControlFromXaml(xaml);
-    ASSERT_EQ(control->GetText(), L"eeeeeee");
+    ASSERT_EQ(control->Text(), L"eeeeeee");
 }
 
 
@@ -28,7 +28,7 @@ TEST(TextualControlParser, ParseTextColor) {
 
     auto xaml = R"(<TextualControl TextColor="#aabbcc" />)";
     auto control = CreateTextualControlFromXaml(xaml);
-    ASSERT_EQ(control->GetTextColor(), zaf::Color::FromRGB(0xaabbcc));
+    ASSERT_EQ(control->TextColor(), zaf::Color::FromRGB(0xaabbcc));
 
     xaml = R"(
         <TextualControl>
@@ -36,7 +36,7 @@ TEST(TextualControlParser, ParseTextColor) {
         </TextualControl>
     )";
     control = CreateTextualControlFromXaml(xaml);
-    ASSERT_EQ(control->GetTextColor(), zaf::Color(0.3f, 0.4f, 0.5f));
+    ASSERT_EQ(control->TextColor(), zaf::Color(0.3f, 0.4f, 0.5f));
 }
 
 
@@ -46,14 +46,14 @@ TEST(TextualControlParser, ParseTextAlignment) {
     
         std::string xaml = R"(<TextualControl TextAlignment=")" + value_string + R"("/>)";
         auto control = CreateTextualControlFromXaml(xaml);
-        ASSERT_EQ(control->GetTextAlignment(), expected_value);
+        ASSERT_EQ(control->TextAlignment(), expected_value);
 
         xaml = 
             "<TextualControl><TextualControl.TextAlignment>" + 
             value_string + 
             "</TextualControl.TextAlignment></TextualControl>";
         control = CreateTextualControlFromXaml(xaml);
-        ASSERT_EQ(control->GetTextAlignment(), expected_value);
+        ASSERT_EQ(control->TextAlignment(), expected_value);
     };
 
     test("Leading", zaf::TextAlignment::Leading);
@@ -69,14 +69,14 @@ TEST(TextualControlParser, ParseParagraphAlignment) {
     
         std::string xaml = R"(<TextualControl ParagraphAlignment=")" + value_string + R"("/>)";
         auto control = CreateTextualControlFromXaml(xaml);
-        ASSERT_EQ(control->GetParagraphAlignment(), expected_value);
+        ASSERT_EQ(control->ParagraphAlignment(), expected_value);
 
         xaml =
             "<TextualControl><TextualControl.ParagraphAlignment>" +
             value_string +
             "</TextualControl.ParagraphAlignment></TextualControl>";
         control = CreateTextualControlFromXaml(xaml);
-        ASSERT_EQ(control->GetParagraphAlignment(), expected_value);
+        ASSERT_EQ(control->ParagraphAlignment(), expected_value);
     };
 
     test("Near", zaf::ParagraphAlignment::Near);
@@ -91,14 +91,14 @@ TEST(TextualControlParser, ParseWordWrapping) {
     
         std::string xaml = R"(<TextualControl WordWrapping=")" + value_string + R"("/>)";
         auto control = CreateTextualControlFromXaml(xaml);
-        ASSERT_EQ(control->GetWordWrapping(), expected_value);
+        ASSERT_EQ(control->WordWrapping(), expected_value);
 
         xaml =
             "<TextualControl><TextualControl.WordWrapping>" +
             value_string +
             "</TextualControl.WordWrapping></TextualControl>";
         control = CreateTextualControlFromXaml(xaml);
-        ASSERT_EQ(control->GetWordWrapping(), expected_value);
+        ASSERT_EQ(control->WordWrapping(), expected_value);
     };
 
     test("Wrap", zaf::WordWrapping::Wrap);
@@ -128,7 +128,7 @@ TEST(TextualControlParser, ParseFontSize) {
 
     auto xaml = R"(<TextualControl FontSize="13"/>)";
     auto control = CreateTextualControlFromXaml(xaml);
-    ASSERT_EQ(control->GetFontSize(), 13);
+    ASSERT_EQ(control->FontSize(), 13);
 }
 
 

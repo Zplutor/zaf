@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <zaf/creation.h>
 #include <zaf/object/parsing/helpers.h>
+#include <zaf/object/object_type.h>
 #include <zaf/graphic/image/uri_image.h>
-#include <zaf/parsing/parsers/bitmap_image_parser.h>
 
 using namespace zaf;
 
@@ -12,8 +12,8 @@ TEST(URIImageParser, ParseFromAttribute) {
 
     std::wstring uri{ L"file:///C:/image.png" };
 
-    URIImageParser parser;
-    parser.ParseFromAttribute(uri, *image);
+    auto parser = URIImage::Type->GetParser();
+    parser->ParseFromAttribute(uri, *image);
     ASSERT_EQ(image->GetURI(), uri);
 }
 

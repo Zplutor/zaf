@@ -55,7 +55,14 @@ void SetDefaultFontOtherPropertiesToTextLayout(
 }
 
 ZAF_DEFINE_TYPE(TextualControl)
-    ZAF_DEFINE_TYPE_PARSER(TextualControlParser)
+ZAF_DEFINE_TYPE_PARSER(TextualControlParser)
+ZAF_DEFINE_TYPE_PROPERTY(Text)
+ZAF_DEFINE_TYPE_PROPERTY(TextLength)
+ZAF_DEFINE_TYPE_PROPERTY(TextColor)
+ZAF_DEFINE_TYPE_PROPERTY(FontSize)
+ZAF_DEFINE_TYPE_PROPERTY(TextAlignment)
+ZAF_DEFINE_TYPE_PROPERTY(ParagraphAlignment)
+ZAF_DEFINE_TYPE_PROPERTY(WordWrapping)
 ZAF_DEFINE_TYPE_END
 
 
@@ -98,7 +105,7 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     SetTextColorsToTextLayout(text_layout, canvas.GetRenderer());
 
     Canvas::StateGuard state_guard(canvas);
-    canvas.SetBrushWithColor(GetTextColor());
+    canvas.SetBrushWithColor(TextColor());
     canvas.PushClippingRect(text_rect);
     canvas.DrawTextLayout(text_layout, text_rect.position);
 }
@@ -108,7 +115,7 @@ TextLayout TextualControl::CreateTextLayout() const {
 
     auto default_font = GetFont();
 
-    auto text = GetText();
+    auto text = Text();
     auto text_length = text.length();
 
     TextLayoutProperties text_layout_properties;
@@ -131,9 +138,9 @@ TextFormat TextualControl::CreateTextFormat(const Font& default_font) const {
     text_format_properties.font_weight = default_font.weight;
 
     auto text_format = GetGraphicFactory().CreateTextFormat(text_format_properties);
-    text_format.SetTextAlignment(GetTextAlignment());
-    text_format.SetParagraphAlignment(GetParagraphAlignment());
-    text_format.SetWordWrapping(GetWordWrapping());
+    text_format.SetTextAlignment(TextAlignment());
+    text_format.SetParagraphAlignment(ParagraphAlignment());
+    text_format.SetWordWrapping(WordWrapping());
 
     auto text_trimming = GetTextTrimming();
     ReviseTextTrimmingSign(text_trimming, text_format);
@@ -185,7 +192,7 @@ zaf::Rect TextualControl::GetTextRect() {
 }
 
 
-std::wstring TextualControl::GetText() const {
+std::wstring TextualControl::Text() const {
 
     auto text = GetPropertyMap().TryGetProperty<std::wstring>(property::Text);
     if (text != nullptr) {
@@ -198,7 +205,7 @@ std::wstring TextualControl::GetText() const {
 
 void TextualControl::SetText(const std::wstring& text) {
 
-    if (text == GetText()) {
+    if (text == Text()) {
         return;
     }
 
@@ -210,7 +217,7 @@ void TextualControl::SetText(const std::wstring& text) {
 }
 
 
-ColorPicker TextualControl::GetTextColorPicker() const {
+ColorPicker TextualControl::TextColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kDefaultTextColorPickerPropertyName);
     if ((color_picker != nullptr) && (*color_picker != nullptr)) {
@@ -247,7 +254,7 @@ ColorPicker TextualControl::GetTextColorPickerAtPosition(std::size_t position) c
         }
     }
 
-    return GetTextColorPicker();
+    return TextColorPicker();
 }
 
 
@@ -302,7 +309,7 @@ void TextualControl::SetFont(const Font& font) {
 }
 
 
-float TextualControl::GetFontSize() const {
+float TextualControl::FontSize() const {
     return GetFont().size;
 }
 
@@ -377,9 +384,11 @@ void TextualControl::ResetFonts() {
 }
 
 
-TextAlignment TextualControl::GetTextAlignment() const {
+TextAlignment TextualControl::TextAlignment() const {
 
-    auto text_alignment = GetPropertyMap().TryGetProperty<TextAlignment>(property::TextAlignment);
+    auto text_alignment = 
+        GetPropertyMap().TryGetProperty<zaf::TextAlignment>(property::TextAlignment);
+
     if (text_alignment != nullptr) {
         return *text_alignment;
     }
@@ -388,7 +397,7 @@ TextAlignment TextualControl::GetTextAlignment() const {
     }
 }
 
-void TextualControl::SetTextAlignment(TextAlignment alignment) {
+void TextualControl::SetTextAlignment(zaf::TextAlignment alignment) {
 
     GetPropertyMap().SetProperty(property::TextAlignment, alignment);
 
@@ -400,9 +409,11 @@ void TextualControl::SetTextAlignment(TextAlignment alignment) {
 }
 
 
-ParagraphAlignment TextualControl::GetParagraphAlignment() const {
+ParagraphAlignment TextualControl::ParagraphAlignment() const {
 
-    auto paragraph_alignment = GetPropertyMap().TryGetProperty<ParagraphAlignment>(property::ParagraphAlignment);
+    auto paragraph_alignment = 
+        GetPropertyMap().TryGetProperty<zaf::ParagraphAlignment>(property::ParagraphAlignment);
+
     if (paragraph_alignment != nullptr) {
         return *paragraph_alignment;
     }
@@ -411,7 +422,7 @@ ParagraphAlignment TextualControl::GetParagraphAlignment() const {
     }
 }
 
-void TextualControl::SetParagraphAlignment(ParagraphAlignment alignment) {
+void TextualControl::SetParagraphAlignment(zaf::ParagraphAlignment alignment) {
 
     GetPropertyMap().SetProperty(property::ParagraphAlignment, alignment);
 
@@ -423,9 +434,9 @@ void TextualControl::SetParagraphAlignment(ParagraphAlignment alignment) {
 }
 
 
-WordWrapping TextualControl::GetWordWrapping() const {
+WordWrapping TextualControl::WordWrapping() const {
 
-    auto word_wrapping = GetPropertyMap().TryGetProperty<WordWrapping>(property::WordWrapping);
+    auto word_wrapping = GetPropertyMap().TryGetProperty<zaf::WordWrapping>(property::WordWrapping);
     if (word_wrapping != nullptr) {
         return *word_wrapping;
     }
@@ -434,7 +445,7 @@ WordWrapping TextualControl::GetWordWrapping() const {
     }
 }
 
-void TextualControl::SetWordWrapping(WordWrapping word_wrapping) {
+void TextualControl::SetWordWrapping(zaf::WordWrapping word_wrapping) {
 
     GetPropertyMap().SetProperty(property::WordWrapping, word_wrapping);
 

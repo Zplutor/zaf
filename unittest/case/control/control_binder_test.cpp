@@ -12,7 +12,7 @@ public:
     ZAF_BIND_CONTROL(zaf::Label, label);
 
     std::wstring GetText() const {
-        return label->GetText();
+        return label->Text();
     }
 
 protected:
@@ -80,7 +80,7 @@ TEST(ControlBinderTest, Const) {
     owner->AddChild(child);
 
     const zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), child_name };
-    ASSERT_EQ(binder->GetText(), text);
+    ASSERT_EQ(binder->Text(), text);
 }
 
 

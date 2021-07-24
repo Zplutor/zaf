@@ -1,10 +1,40 @@
 #include <zaf/graphic/image/uri_image.h>
 #include <zaf/base/assert.h>
-#include <zaf/parsing/parsers/bitmap_image_parser.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/resource/resource_manager.h>
 
 namespace zaf {
+namespace {
+
+class URIImageParser : public ObjectParser {
+public:
+    void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
+
+        auto& image = dynamic_cast<URIImage&>(object);
+        image.SetURI(attribute_value);
+    }
+
+    void ParseFromNode(const XamlNode& node, Object& object) override {
+
+        auto& image = dynamic_cast<URIImage&>(object);
+
+        XamlNodeParseHelper helper(node, object.GetType());
+
+        auto uri = helper.GetStringProperty(L"Uri");
+        if (uri) {
+            image.SetURI(*uri);
+        }
+
+        auto content_string = helper.GetContentString();
+        if (content_string) {
+            ParseFromAttribute(*content_string, object);
+        }
+    }
+};
+
+}
+
 
 ZAF_DEFINE_TYPE(URIImage)
 ZAF_DEFINE_TYPE_PARSER(URIImageParser)

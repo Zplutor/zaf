@@ -7,7 +7,6 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
-#include <zaf/parsing/parsers/text_box_parser.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/message/keyboard_message.h>
@@ -53,7 +52,7 @@ static const DWORD kDefaultScrollBarProperty = ES_AUTOVSCROLL | ES_AUTOHSCROLL |
 
 
 ZAF_DEFINE_TYPE(TextBox)
-    ZAF_DEFINE_TYPE_PARSER(TextBoxParser)
+ZAF_DEFINE_TYPE_PROPERTY(IsMultiline)
 ZAF_DEFINE_TYPE_END
 
 
@@ -199,7 +198,7 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 void TextBox::ReviseTextColor() {
 
-    auto text_color = GetTextColor();
+    auto text_color = TextColor();
     if (text_color_ != text_color) {
 
         text_color_ = text_color;
@@ -220,7 +219,7 @@ float TextBox::GetPaintContentOffset(HDC hdc) {
         return 0;
     }
     
-    auto paragraph_alignment = GetParagraphAlignment();
+    auto paragraph_alignment = ParagraphAlignment();
     if (paragraph_alignment == ParagraphAlignment::Near) {
         return 0;
     }
@@ -412,7 +411,7 @@ void TextBox::SetSelectionRange(const TextRange& range) {
 }
 
 
-std::wstring TextBox::GetText() const {
+std::wstring TextBox::Text() const {
 
     std::wstring text;
     if (text_service_ != nullptr) {
@@ -494,7 +493,7 @@ void TextBox::SetFont(const Font& font) {
 }
 
 
-TextAlignment TextBox::GetTextAlignment() const {
+TextAlignment TextBox::TextAlignment() const {
 
     switch (paragraph_format_.wAlignment) {
         case PFA_CENTER:
@@ -508,7 +507,7 @@ TextAlignment TextBox::GetTextAlignment() const {
     }
 }
 
-void TextBox::SetTextAlignment(TextAlignment alignment) {
+void TextBox::SetTextAlignment(zaf::TextAlignment alignment) {
 
     paragraph_format_.dwMask |= PFM_ALIGNMENT;
 
@@ -533,11 +532,11 @@ void TextBox::SetTextAlignment(TextAlignment alignment) {
 }
 
 
-WordWrapping TextBox::GetWordWrapping() const {
+WordWrapping TextBox::WordWrapping() const {
     return HasPropertyBit(TXTBIT_WORDWRAP) ? WordWrapping::Wrap : WordWrapping::NoWrap;
 }
 
-void TextBox::SetWordWrapping(WordWrapping word_wrapping) {
+void TextBox::SetWordWrapping(zaf::WordWrapping word_wrapping) {
     ChangePropertyBit(TXTBIT_WORDWRAP, word_wrapping != WordWrapping::NoWrap);
 }
 

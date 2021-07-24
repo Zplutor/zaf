@@ -114,10 +114,10 @@ float MainWindow::GetContentWidth() const {
 void MainWindow::ButtonClick(const zaf::ControlClickInfo& event_info) {
 
     auto button = dynamic_cast<zaf::Button*>(event_info.control.get());
-    auto button_text = button->GetText();
+    auto button_text = button->Text();
     if (button_text == L"=") {
 
-        auto result = Calculator().Calculate(input_text_box_->GetText());
+        auto result = Calculator().Calculate(input_text_box_->Text());
         if (result->error == CalculateResult::Error::None) {
             output_text_box_->SetText(result->text);
         }
@@ -130,12 +130,12 @@ void MainWindow::ButtonClick(const zaf::ControlClickInfo& event_info) {
         output_text_box_->SetText(L"");
     }
     else if (button_text == L"¡û") {
-        auto current_text = input_text_box_->GetText();
+        auto current_text = input_text_box_->Text();
         input_text_box_->SetText(current_text.substr(0, current_text.length() - 1));
     }
     else {
         
-        input_text_box_->SetText(input_text_box_->GetText() + button_text);
+        input_text_box_->SetText(input_text_box_->Text() + button_text);
         input_text_box_->ScrollRightToEnd();
     }
 }

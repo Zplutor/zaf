@@ -129,7 +129,7 @@ public:
      */
     void SetSelectionRange(const TextRange& range);
 
-    std::wstring GetText() const override;
+    std::wstring Text() const override;
     void SetText(const std::wstring& text) override;
 
     /**
@@ -148,11 +148,11 @@ public:
     Font GetFont() const override;
     void SetFont(const Font& font) override;
 
-    TextAlignment GetTextAlignment() const override;
-    void SetTextAlignment(TextAlignment alignment) override;
+    zaf::TextAlignment TextAlignment() const override;
+    void SetTextAlignment(zaf::TextAlignment alignment) override;
 
-    WordWrapping GetWordWrapping() const override;
-    void SetWordWrapping(WordWrapping word_wrapping) override;
+    zaf::WordWrapping WordWrapping() const override;
+    void SetWordWrapping(zaf::WordWrapping word_wrapping) override;
 
     void SetAllowVerticalScroll(bool allow) override;
     void SetAllowHorizontalScroll(bool allow) override;

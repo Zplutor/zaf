@@ -62,7 +62,6 @@ int WINAPI WinMain(
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
-
     auto window = zaf::Create<zaf::Window>();
 
     window->SetClientSize(zaf::Size{ 400, 300 });

@@ -49,7 +49,7 @@ void MessageInputView::TextBoxFocusChange() {
 
 void MessageInputView::SendButtonClick() {
 
-    auto content = text_box_->GetText();
+    auto content = text_box_->Text();
     if (content.empty()) {
         return;
     }

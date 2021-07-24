@@ -307,7 +307,7 @@ void ComboBox::SetIsEditable(bool is_editable) {
     
     GetPropertyMap().SetProperty(kIsEditablePropertyName, is_editable);
 
-    edit_text_box_->SetText(GetText());
+    edit_text_box_->SetText(Text());
     edit_text_box_->SetIsVisible(is_editable);
 }
 
@@ -554,7 +554,7 @@ void ComboBox::EditTextBoxTextChange() {
         return;
     }
 
-    ChangeSelectionText(edit_text_box_->GetText(), TextChangeSource::EditTextBox);
+    ChangeSelectionText(edit_text_box_->Text(), TextChangeSource::EditTextBox);
     NotifySelectionChange();
 }
 
@@ -583,7 +583,7 @@ void ComboBox::ConfirmSelection(bool discard_drop_down_list_selection) {
         if (IsEditable()) {
 
             //Explicit change the text again in order to trigger the notification.
-            ChangeSelectionText(edit_text_box_->GetText(), TextChangeSource::EditTextBox);
+            ChangeSelectionText(edit_text_box_->Text(), TextChangeSource::EditTextBox);
             NotifySelectionChange();
         }
     }
@@ -612,7 +612,7 @@ void ComboBox::OnTextChanged() {
         if (IsEditable()) {
 
             auto guard = edit_text_box_action_.Set(EditTextBoxAction::Nothing);
-            auto text = GetText();
+            auto text = Text();
             edit_text_box_->SetText(text);
 
             //Select all text in edit text box if the change is from other source 

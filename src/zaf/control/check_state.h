@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <zaf/object/enum_declaration.h>
 
 namespace zaf {
 
@@ -24,5 +25,8 @@ enum class CheckState {
      */
     Indeterminate,
 };
+
+ZAF_DECLARE_ENUM(CheckState)
+ZAF_ENABLE_ENUM_BOXING(CheckState)
 
 }
