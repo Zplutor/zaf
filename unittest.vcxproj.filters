@@ -259,6 +259,9 @@
     <ClCompile Include="unittest\case\object\parsing\parsing_test.cpp">
       <Filter>case\object\parsing</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\flag_enum_test.cpp">
+      <Filter>case\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
