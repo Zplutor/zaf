@@ -54,7 +54,7 @@ static std::shared_ptr<zaf::Window> CreateMainWindow() {
     std::vector<std::shared_ptr<zaf::Control>> controls = CreateControls();
 
     for (const auto& each_control : controls) {
-        main_window->GetRootControl()->AddChild(each_control);
+        main_window->RootControl()->AddChild(each_control);
     }
 
     return main_window;

@@ -59,7 +59,7 @@ void Caret::CreateSystemCaret() {
 
     const auto& caret_rect = GetRect();
     CreateCaret(
-        window->GetHandle(), 
+        window->Handle(), 
         nullptr, 
         static_cast<int>(caret_rect.size.width),
         static_cast<int>(caret_rect.size.height)

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Windows.h>
-#include <zaf/base/flag_enum.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/renderer/window_renderer.h>
@@ -9,6 +8,8 @@
 #include <zaf/object/object.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/serialization/property_map.h>
+#include <zaf/window/activate_option.h>
+#include <zaf/window/initial_rect_style.h>
 
 namespace zaf {
 namespace internal {
@@ -23,6 +24,19 @@ class WindowDestroyInfo;
 enum class HitTestResult;
 
 /**
+ The prototype of close handler.
+
+ @param window
+    The window instance which calls the close handler.
+
+ @return
+    Return true means allowing to close the window; or false means
+    not allowing.
+ */
+typedef std::function<bool(const Window& window)> WindowCloseHandler;
+
+
+/**
  Represents a top-level window.
 
  You shoudl always use Create method to create a window.
@@ -34,67 +48,6 @@ class Window :
 
 public:
     ZAF_DECLARE_TYPE
-
-public:
-    /**
-     The initial rect style of a window.
-     */
-    enum class InitialRectStyle {
-
-        /**
-         The window is centered whithin the screen, and has a specified size set by
-         the SetRect method.
-         */
-        CenterInScreen,
-
-        /**
-         The window is centered within its owner window, and has a specified size 
-         set by the SetRect method.
-         */
-        CenterInOwner,
-
-        /**
-         The window's rect is specifed by the SetRect method.
-         */
-        Custom, 
-    };
-
-    /**
-     Specifies options when activating a window.
-
-     This enumeration allows a bitwise combination of its member values.
-     */
-    enum class ActivateOption {
-
-        /**
-         The window is activated as normal.
-         */
-        None = 0,
-
-        /**
-         The window is not allow to be activated.
-
-         A window with this value would not be shown in the taskbar.
-         */
-        NoActivate = 1,
-
-        /**
-         The mouse message that triggers the activating would be discard.
-         */
-        DiscardMouseMessage = 2,
-    };
-
-    /**
-     The prototype of close handler.
-
-     @param window
-        The window instance which calls the close handler.
-
-     @return 
-        Return true means allowing to close the window; or false means
-        not allowing.
-     */
-    typedef std::function<bool(const Window& window)> CloseHandler;
 
 public:
     /**
@@ -113,7 +66,7 @@ public:
     /**
      Get the owner window.
      */
-    std::shared_ptr<Window> GetOwner() const;
+    std::shared_ptr<Window> Owner() const;
 
     /**
      Set the owner window.
@@ -128,12 +81,12 @@ public:
 
      The default value is CenterInScreen.
      */
-    InitialRectStyle GetInitialRectStyle() const;
+    InitialRectStyle InitialRectStyle() const;
 
     /**
      Set the window's initial rect style.
      */
-    void SetInitialRectStyle(InitialRectStyle initial_rect_style);
+    void SetInitialRectStyle(zaf::InitialRectStyle initial_rect_style);
 
     /**
      Get window's rect.
@@ -142,7 +95,7 @@ public:
      it returns the rect set by SetRect method. If SetRect has not been called, the 
      default rect (0, 0, 640, 480) is returned.
      */
-    Rect GetRect() const;
+    Rect Rect() const;
 
     /**
      Set window's rect.
@@ -151,21 +104,21 @@ public:
      Otherwise, it just records the rect. When the window is being creatd, an appropriate
      rect would be set according to the initial rect style property.
      */
-    void SetRect(const Rect& rect);
+    void SetRect(const zaf::Rect& rect);
 
-    Point GetPosition() const {
-        return GetRect().position;
+    Point Position() const {
+        return Rect().position;
     }
 
     void SetPosition(const Point& position) {
-        SetRect(Rect{ position, GetRect().size });
+        SetRect(zaf::Rect{ position, Rect().size });
     }
 
     /**
      Get window's size.
      */
-    Size GetSize() const {
-        return GetRect().size;
+    Size Size() const {
+        return Rect().size;
     }
 
     /**
@@ -175,23 +128,23 @@ public:
 
      See also SetRect.
      */
-    void SetSize(const Size& size) {
-        SetRect(Rect(GetRect().position, size));
+    void SetSize(const zaf::Size& size) {
+        SetRect(zaf::Rect(Rect().position, size));
     }
 
-    void SetClientSize(const Size& size);
+    void SetClientSize(const zaf::Size& size);
 
     /**
      Get window's minimum size.
      */
-    Size GetMinSize() const {
-        return Size(GetMinWidth(), GetMinHeight());
+    zaf::Size MinSize() const {
+        return zaf::Size(MinWidth(), MinHeight());
     }
 
     /**
      Set windows's minimum size.
      */
-    void SetMinSize(const Size& size) {
+    void SetMinSize(const zaf::Size& size) {
         SetMinWidth(size.width);
         SetMinHeight(size.height);
     }
@@ -199,14 +152,14 @@ public:
     /**
      Get windows's maximum size.
      */
-    Size GetMaxSize() const {
-        return Size(GetMaxWidth(), GetMaxHeight());
+    zaf::Size MaxSize() const {
+        return zaf::Size(MaxWidth(), MaxHeight());
     }
 
     /**
      Set window's maximum size.
      */
-    void SetMaxSize(const Size& size) {
+    void SetMaxSize(const zaf::Size& size) {
         SetMaxWidth(size.width);
         SetMaxHeight(size.height);
     }
@@ -214,21 +167,21 @@ public:
     /**
      Get window's width.
      */
-    float GetWidth() const {
-        return GetSize().width;
+    float Width() const {
+        return Size().width;
     }
 
     /**
      Set window's width.
      */
     void SetWidth(float width) {
-        SetSize(zaf::Size(width, GetHeight()));
+        SetSize(zaf::Size(width, Height()));
     }
 
     /**
      Get window's minimum width.
      */
-    float GetMinWidth() const;
+    float MinWidth() const;
 
     /**
      Set window's minimum width.
@@ -238,7 +191,7 @@ public:
     /**
      Get window's maximum width.
      */
-    float GetMaxWidth() const;
+    float MaxWidth() const;
 
     /**
      Set window's maximum width.
@@ -248,21 +201,21 @@ public:
     /**
      Get window's height.
      */
-    float GetHeight() const {
-        return GetSize().height;
+    float Height() const {
+        return Size().height;
     }
 
     /**
      Set window's height.
      */
     void SetHeight(float height) {
-        SetSize(zaf::Size(GetWidth(), height));
+        SetSize(zaf::Size(Width(), height));
     }
 
     /**
      Get window's minimum height.
      */
-    float GetMinHeight() const;
+    float MinHeight() const;
 
     /**
      Set window's minimum height.
@@ -272,7 +225,7 @@ public:
     /**
      Get window's maximum height.
      */
-    float GetMaxHeight() const;
+    float MaxHeight() const;
 
     /**
      Set window's maximum height.
@@ -282,14 +235,14 @@ public:
     /**
      Get window's client rect.
      */
-    Rect GetClientRect() const;
+    zaf::Rect ClientRect() const;
 
     /**
      Get window's activate option.
 
      The default option is None.
      */
-    ActivateOption GetActivateOption() const;
+    ActivateOption ActivateOption() const;
 
     /**
      Set window's activate option.
@@ -297,7 +250,7 @@ public:
      This method takes effect only when the window is closed, otherwise
      the option would not be changed.
      */
-    void SetActivateOption(ActivateOption option);
+    void SetActivateOption(zaf::ActivateOption option);
 
     /**
      Get a value indicating that whether the window is a popup window.
@@ -419,7 +372,7 @@ public:
 
      The default title is empty.
      */
-    std::wstring GetTitle() const;
+    std::wstring Title() const;
 
     /**
      Set window's title.
@@ -429,7 +382,7 @@ public:
     /**
      Get window's root control.
      */
-    const std::shared_ptr<Control>& GetRootControl() const {
+    const std::shared_ptr<Control>& RootControl() const {
         return root_control_;
     }
 
@@ -441,40 +394,40 @@ public:
     /**
      Get the control which is capturing mouse in the window.
      */
-    const std::shared_ptr<Control>& GetCapturingMouseControl() const {
+    const std::shared_ptr<Control>& CapturingMouseControl() const {
         return capturing_mouse_control_;
     }
 
     /**
      Get the control which is being hovered.
      */
-    const std::shared_ptr<Control>& GetHoveredControl() const {
+    const std::shared_ptr<Control>& HoveredControl() const {
         return hovered_control_;
     }
 
     /**
      Get the control which has input focus in the window.
       */
-    const std::shared_ptr<Control>& GetFocusedControl() const {
+    const std::shared_ptr<Control>& FocusedControl() const {
         return focused_control_;
     }
 
     /**
      Get the caret associates with the window.
      */
-    const std::shared_ptr<Caret>& GetCaret();
+    const std::shared_ptr<Caret>& Caret();
 
     /**
      Get the renderer of the window.
      */
-    Renderer& GetRenderer() {
+    Renderer& Renderer() {
         return renderer_;
     }
 
     /**
      Get the window's handle.
      */
-    HWND GetHandle() const {
+    HWND Handle() const {
         return handle_;
     }
 
@@ -482,7 +435,7 @@ public:
      Get a value indicating that whether the window is closed.
      */
     bool IsClosed() const {
-        return GetHandle() == nullptr;
+        return Handle() == nullptr;
     }
 
     /**
@@ -490,7 +443,7 @@ public:
 
      If close handler is not set, the default one is return, which allows closing the window.
      */
-    const CloseHandler GetCloseHandler() const;
+    WindowCloseHandler CloseHandler() const;
 
     /**
      Set the close handler.
@@ -498,7 +451,7 @@ public:
      The close handler is called before closing the window. You can use this handler to control
      whether the window is allowed to close.
      */
-    void SetCloseHandler(const CloseHandler& handler);
+    void SetCloseHandler(const WindowCloseHandler& handler);
 
     /**
      Get the destroy event.
@@ -508,7 +461,7 @@ public:
     /**
      Get position of the mouse cursor in current window's coordinate system.
      */
-    const Point GetMousePosition() const;
+    Point GetMousePosition() const;
 
     /**
      Show the window.
@@ -641,7 +594,7 @@ private:
 
     static void RegisterDefaultClass(HICON icon, HICON small_icon);
 
-    void NeedRepaintRect(const Rect& rect);
+    void NeedRepaintRect(const zaf::Rect& rect);
     void SetHoveredControl(
         const std::shared_ptr<Control>& hovered_control, 
         const MouseMessage& message);
@@ -665,7 +618,7 @@ private:
 private:
     void InitializeRootControl(const std::shared_ptr<Control>& control);
     void CreateWindowHandle();
-    const Rect GetInitialRect() const;
+    zaf::Rect GetInitialRect() const;
     void CreateRenderer();
     void RecreateRenderer();
     void CheckCreateWindowHandle();
@@ -676,7 +629,7 @@ private:
     bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);
 
     void Repaint();
-    void PaintInspectedControl(Canvas& canvas, const Rect& dirty_rect);
+    void PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect);
     void Resize(UINT width, UINT height);
     bool RedirectMouseWheelMessage(const Message& message);
     bool ReceiveMouseMessage(const MouseMessage& message);
@@ -706,7 +659,7 @@ private:
 
 private:
     HWND handle_;
-    Rect rect_;
+    zaf::Rect rect_;
     WindowRenderer renderer_;
 
     TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };
@@ -715,7 +668,7 @@ private:
     std::shared_ptr<Control> hovered_control_;
     std::shared_ptr<Control> capturing_mouse_control_;
     std::shared_ptr<Control> focused_control_;
-    std::shared_ptr<Caret> caret_;
+    std::shared_ptr<zaf::Caret> caret_;
 
     PropertyMap property_map_;
 
@@ -723,9 +676,6 @@ private:
     std::shared_ptr<Control> highlight_control_;
     bool is_selecting_inspector_control_{};
 };
-
-
-ZAF_ENABLE_FLAG_ENUM(Window::ActivateOption);
 
 
 class WindowDestroyInfo {

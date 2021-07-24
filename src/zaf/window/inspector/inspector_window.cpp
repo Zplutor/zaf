@@ -27,23 +27,23 @@ void InspectorWindow::Initialize() {
 
     __super::Initialize();
 
-    SetTitle(L"Inspector -" + target_window_->GetTitle());
+    SetTitle(L"Inspector -" + target_window_->Title());
     SetIsPopup(true);
     SetCanMinimize(false);
     SetOwner(target_window_);
 
-    Rect rect;
+    zaf::Rect rect;
     rect.size.width = DefaultWindowWidth;
     rect.size.height = DefaultWindowHeight;
 
-    auto target_window_rect = target_window_->GetRect();
+    auto target_window_rect = target_window_->Rect();
     rect.position.x = target_window_rect.position.x + target_window_rect.size.width;
     rect.position.y = target_window_rect.position.y;
 
     SetRect(rect);
     SetInitialRectStyle(InitialRectStyle::Custom);
 
-    GetRootControl()->SetLayouter(Create<VerticalLayouter>());
+    RootControl()->SetLayouter(Create<VerticalLayouter>());
 
     InitializeToolbar();
     InitializeTreeControl();
@@ -63,7 +63,7 @@ void InspectorWindow::InitializeToolbar() {
     toolbar->SetLayouter(Create<HorizontalLayouter>());
     toolbar->AddChild(select_inspector_control_button);
 
-    GetRootControl()->AddChild(toolbar);
+    RootControl()->AddChild(toolbar);
 }
 
 
@@ -77,9 +77,9 @@ void InspectorWindow::InitializeTreeControl() {
     tree_control_->SetDataSource(data_source_);
 
     tree_control_->ExpandItem(target_window_);
-    tree_control_->ExpandItem(target_window_->GetRootControl());
+    tree_control_->ExpandItem(target_window_->RootControl());
 
-    GetRootControl()->AddChild(tree_control_);
+    RootControl()->AddChild(tree_control_);
 }
 
 

@@ -72,7 +72,7 @@ std::shared_ptr<Object> InspectDataSource::GetChildDataAtIndex(
 
     auto window = dynamic_cast<Window*>(parent_data.get());
     if (window) {
-        return window->GetRootControl();
+        return window->RootControl();
     }
 
     auto control = dynamic_cast<Control*>(parent_data.get());

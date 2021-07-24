@@ -181,8 +181,10 @@
     <ClCompile Include="src\zaf\rx\subscription_holder.cpp" />
     <ClCompile Include="src\zaf\rx\subscription_host.cpp" />
     <ClCompile Include="src\zaf\rx\timer.cpp" />
+    <ClCompile Include="src\zaf\window\activate_option.cpp" />
     <ClCompile Include="src\zaf\window\caret.cpp" />
     <ClCompile Include="src\zaf\window\dialog.cpp" />
+    <ClCompile Include="src\zaf\window\initial_rect_style.cpp" />
     <ClCompile Include="src\zaf\window\inspector\inspector_window.cpp" />
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_control_item.cpp" />
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_data_source.cpp" />
@@ -480,9 +482,11 @@
     <ClInclude Include="src\zaf\serialization\properties.h" />
     <ClInclude Include="src\zaf\serialization\property_map.h" />
     <ClInclude Include="src\zaf\application_event_infos.h" />
+    <ClInclude Include="src\zaf\window\activate_option.h" />
     <ClInclude Include="src\zaf\window\caret.h" />
     <ClInclude Include="src\zaf\window\dialog.h" />
     <ClInclude Include="src\zaf\window\dialog_result.h" />
+    <ClInclude Include="src\zaf\window\initial_rect_style.h" />
     <ClInclude Include="src\zaf\window\inspector\inspector_window.h" />
     <ClInclude Include="src\zaf\window\inspector\internal\inspector_port.h" />
     <ClInclude Include="src\zaf\window\inspector\internal\inspect_control_item.h" />

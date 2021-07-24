@@ -70,7 +70,7 @@ static void ShowMainWindow(const zaf::ApplicationBeginRunInfo&) {
     auto main_window = zaf::Create<zaf::Window>();
     main_window->SetTitle(L"SystemColorViewer");
 
-    auto root_control = main_window->GetRootControl();
+    auto root_control = main_window->RootControl();
     root_control->AddChild(CreateColorListControl());
 
     //Setting a linear layouter to root control can fill the window 

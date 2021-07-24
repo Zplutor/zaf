@@ -15,7 +15,7 @@ void ComboBoxDropDownWindow::Initialize() {
     container_ = Create<Container>();
     container_->SetLayouter(layouter);
 
-    auto root_control = GetRootControl();
+    auto root_control = RootControl();
     root_control->SetLayouter(layouter);
     root_control->AddChild(container_);
 }
@@ -36,7 +36,7 @@ void ComboBoxDropDownWindow::OnWindowDestroyed(HWND handle) {
 
 void ComboBoxDropDownWindow::OnCapturingMouseControlChanged(const std::shared_ptr<Control>& previous_control) {
     
-    if (GetCapturingMouseControl() == nullptr) {
+    if (CapturingMouseControl() == nullptr) {
 
         if (previous_control == container_) {
             Close();

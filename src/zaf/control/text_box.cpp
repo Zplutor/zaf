@@ -891,7 +891,7 @@ void TextBox::OnFocusLose() {
 
     auto window = Window();
     if (window != nullptr) {
-        window->GetCaret()->Hide();
+        window->Caret()->Hide();
     }
 
     if (text_service_ != nullptr) {
@@ -1154,7 +1154,7 @@ BOOL TextBox::TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeigh
         return FALSE;
     }
 
-    window->GetCaret()->SetSize(zaf::Size(static_cast<float>(xWidth), static_cast<float>(yHeight)));
+    window->Caret()->SetSize(zaf::Size(static_cast<float>(xWidth), static_cast<float>(yHeight)));
     return TRUE;
 }
 
@@ -1178,7 +1178,7 @@ BOOL TextBox::TextHostBridge::TxShowCaret(BOOL fShow) {
         return FALSE;
     }
     
-    const auto& caret = window->GetCaret();
+    const auto& caret = window->Caret();
     if (fShow) {
         caret->Show();
     }
@@ -1201,7 +1201,7 @@ BOOL TextBox::TextHostBridge::TxSetCaretPos(INT x, INT y) {
         return FALSE;
     }
     
-    const auto& caret = window->GetCaret();
+    const auto& caret = window->Caret();
     caret->SetPosition(Point(static_cast<float>(x), static_cast<float>(y + text_box->GetPaintContentOffset(nullptr))));
     return TRUE;
 }
@@ -1530,7 +1530,7 @@ HWND TextBox::TextHostBridge::GetWindowHandle() const {
         return nullptr;
     }
 
-    return window->GetHandle();
+    return window->Handle();
 }
 
 

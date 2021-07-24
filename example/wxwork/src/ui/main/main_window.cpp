@@ -6,7 +6,7 @@ void MainWindow::Initialize() {
 
     __super::Initialize();
 
-    SetInitialRectStyle(InitialRectStyle::CenterInScreen);
+    SetInitialRectStyle(zaf::InitialRectStyle::CenterInScreen);
     SetSize(zaf::Size(800, 600));
 
     auto conversation_panel = zaf::Create<ConversationPanel>();
@@ -16,7 +16,7 @@ void MainWindow::Initialize() {
     content_panel_container_->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
     content_panel_container_->AddChild(conversation_panel);
     
-    auto root_control = GetRootControl();
+    auto root_control = RootControl();
     root_control->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
     root_control->AddChild(conversation_panel);
 

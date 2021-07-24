@@ -91,8 +91,8 @@ void ComboBox::Initialize() {
     drop_down_window_ = Create<internal::ComboBoxDropDownWindow>();
     drop_down_window_->SetIsPopup(true);
     drop_down_window_->SetHasBorder(false);
-    drop_down_window_->SetActivateOption(Window::ActivateOption::NoActivate);
-    drop_down_window_->SetInitialRectStyle(Window::InitialRectStyle::Custom);
+    drop_down_window_->SetActivateOption(ActivateOption::NoActivate);
+    drop_down_window_->SetInitialRectStyle(InitialRectStyle::Custom);
 
     Subscriptions() += drop_down_window_->DestroyEvent().Subscribe(
         std::bind(&ComboBox::DropDownWindowDestroy, this));
@@ -387,7 +387,7 @@ void ComboBox::PopupDropDownWindow() {
     window_rect = Align(window_rect);
 
     POINT screen_position = window_rect.position.ToPOINT();
-    ClientToScreen(window->GetHandle(), &screen_position);
+    ClientToScreen(window->Handle(), &screen_position);
     window_rect.position = Point::FromPOINT(screen_position);
 
     drop_down_window_->SetOwner(window);

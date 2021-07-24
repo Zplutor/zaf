@@ -13,7 +13,7 @@ class Window;
 /**
  Represents an input caret in a window.
 
- There is no need to create instance of Caret by yourself. Call Window::GetCaret method
+ There is no need to create instance of Caret by yourself. Call Window::Caret method
  to get the unique caret in the window.
  */
 class Caret : public SubscriptionHost {

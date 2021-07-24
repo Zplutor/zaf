@@ -498,7 +498,7 @@ void Control::SetRect(const zaf::Rect& rect) {
     //so that it can relayout its elements, if needed.
     auto window = Window();
     if (window != nullptr) {
-        auto focused_control = window->GetFocusedControl();
+        auto focused_control = window->FocusedControl();
         if (focused_control != nullptr) {
             if (IsAncestorOf(focused_control)) {
                 focused_control->NeedRelayout();
@@ -1286,7 +1286,7 @@ bool Control::IsHoveredIndirectly() const {
         return false;
     }
 
-    const auto& hovered_control = window->GetHoveredControl();
+    const auto& hovered_control = window->HoveredControl();
     if (hovered_control == nullptr) {
         return false;
     }

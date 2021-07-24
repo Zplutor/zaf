@@ -14,15 +14,15 @@ TEST(WindowParser, ParseIsPopup) {
 
 TEST(WindowParser, ParseInitialRectStyle) {
 
-    bool result = TestEnumProperty<zaf::Window, zaf::Window::InitialRectStyle>(
+    bool result = TestEnumProperty<zaf::Window, zaf::InitialRectStyle>(
         "InitialRectStyle",
         {
-            { zaf::Window::InitialRectStyle::CenterInScreen, "CenterInScreen" },
-            { zaf::Window::InitialRectStyle::CenterInOwner, "CenterInOwner" },
-            { zaf::Window::InitialRectStyle::Custom, "Custom" },
+            { zaf::InitialRectStyle::CenterInScreen, "CenterInScreen" },
+            { zaf::InitialRectStyle::CenterInOwner, "CenterInOwner" },
+            { zaf::InitialRectStyle::Custom, "Custom" },
         },
         [](zaf::Window& window) {
-            return window.GetInitialRectStyle();
+            return window.InitialRectStyle();
         }
     );
     ASSERT_TRUE(result);
@@ -58,9 +58,9 @@ TEST(WindowParser, ParseActivateOption) {
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(R"(
         <Window ActivateOption="NoActivate DiscardMouseMessage" />
     )");
-    ASSERT_EQ(window->GetActivateOption(), 
-        zaf::Window::ActivateOption::NoActivate | 
-        zaf::Window::ActivateOption::DiscardMouseMessage);
+    ASSERT_EQ(window->ActivateOption(), 
+        zaf::ActivateOption::NoActivate | 
+        zaf::ActivateOption::DiscardMouseMessage);
 
     window = zaf::CreateObjectFromXaml<zaf::Window>(R"(
         <Window>
@@ -70,9 +70,9 @@ TEST(WindowParser, ParseActivateOption) {
             </Window.ActivateOption>
         </Window>
     )");
-    ASSERT_EQ(window->GetActivateOption(),
-        zaf::Window::ActivateOption::NoActivate |
-        zaf::Window::ActivateOption::DiscardMouseMessage);
+    ASSERT_EQ(window->ActivateOption(),
+        zaf::ActivateOption::NoActivate |
+        zaf::ActivateOption::DiscardMouseMessage);
 }
 
 
@@ -80,11 +80,11 @@ TEST(WindowParser, ParseTitle) {
 
     auto xaml = R"(<Window Title="xxx"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml); 
-    ASSERT_EQ(window->GetTitle(), L"xxx");
+    ASSERT_EQ(window->Title(), L"xxx");
 
     xaml = R"(<Window><Window.Title>yyy</Window.Title></Window>)";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetTitle(), L"yyy");
+    ASSERT_EQ(window->Title(), L"yyy");
 }
 
 
@@ -92,8 +92,8 @@ TEST(WindowParser, ParseWidthAndHeight) {
 
     auto xaml = R"(<Window Width="1" Height="2"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetWidth(), 1);
-    ASSERT_EQ(window->GetHeight(), 2);
+    ASSERT_EQ(window->Width(), 1);
+    ASSERT_EQ(window->Height(), 2);
 
     xaml = R"(
         <Window>
@@ -102,8 +102,8 @@ TEST(WindowParser, ParseWidthAndHeight) {
         </Window>
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetWidth(), 3);
-    ASSERT_EQ(window->GetHeight(), 4);
+    ASSERT_EQ(window->Width(), 3);
+    ASSERT_EQ(window->Height(), 4);
 }
 
 
@@ -111,8 +111,8 @@ TEST(WindowParser, ParseMinWidthAndHeight) {
 
     auto xaml = R"(<Window MinWidth="1" MinHeight="2"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetMinWidth(), 1);
-    ASSERT_EQ(window->GetMinHeight(), 2);
+    ASSERT_EQ(window->MinWidth(), 1);
+    ASSERT_EQ(window->MinHeight(), 2);
 
     xaml = R"(
         <Window>
@@ -121,8 +121,8 @@ TEST(WindowParser, ParseMinWidthAndHeight) {
         </Window>
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetMinWidth(), 3);
-    ASSERT_EQ(window->GetMinHeight(), 4);
+    ASSERT_EQ(window->MinWidth(), 3);
+    ASSERT_EQ(window->MinHeight(), 4);
 }
 
 
@@ -130,7 +130,7 @@ TEST(WindowParser, ParsePosition) {
 
     auto xaml = R"(<Window Position="5,7"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetPosition(), zaf::Point(5, 7));
+    ASSERT_EQ(window->Position(), zaf::Point(5, 7));
 
     xaml = R"(
         <Window>
@@ -138,7 +138,7 @@ TEST(WindowParser, ParsePosition) {
         </Window>
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetPosition(), zaf::Point(8, 9));
+    ASSERT_EQ(window->Position(), zaf::Point(8, 9));
 }
 
 
@@ -146,7 +146,7 @@ TEST(WindowParser, ParseSize) {
 
     auto xaml = R"(<Window Size="10,20"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetSize(), zaf::Size(10, 20));
+    ASSERT_EQ(window->Size(), zaf::Size(10, 20));
 
     xaml = R"(
         <Window>
@@ -154,7 +154,7 @@ TEST(WindowParser, ParseSize) {
         </Window>
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetSize(), zaf::Size(30, 40));
+    ASSERT_EQ(window->Size(), zaf::Size(30, 40));
 }
 
 
@@ -163,7 +163,7 @@ TEST(WindowParser, ParseClientSize) {
     auto xaml = R"(<Window ClientSize="10,20"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
 
-    auto window_size = window->GetSize();
+    auto window_size = window->Size();
     ASSERT_GT(window_size.width, 10);
     ASSERT_GT(window_size.height, 20);
 
@@ -173,7 +173,7 @@ TEST(WindowParser, ParseClientSize) {
         </Window>
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    window_size = window->GetSize();
+    window_size = window->Size();
     ASSERT_GT(window_size.width, 30);
     ASSERT_GT(window_size.height, 40);
 }
@@ -186,7 +186,7 @@ TEST(WindowParser, ParseRect) {
             <Window.Rect Position="1,2" Size="3,4"></Window.Rect>
         </Window>
     )");
-    ASSERT_EQ(window->GetRect(), zaf::Rect(1, 2, 3, 4));
+    ASSERT_EQ(window->Rect(), zaf::Rect(1, 2, 3, 4));
 }
 
 
@@ -194,8 +194,8 @@ TEST(WindowParser, ParseMaxWidthAndHeight) {
 
     auto xaml = R"(<Window MaxWidth="1" MaxHeight="2"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetMaxWidth(), 1);
-    ASSERT_EQ(window->GetMaxHeight(), 2);
+    ASSERT_EQ(window->MaxWidth(), 1);
+    ASSERT_EQ(window->MaxHeight(), 2);
 
     xaml = R"(
         <Window>
@@ -204,8 +204,8 @@ TEST(WindowParser, ParseMaxWidthAndHeight) {
         </Window>
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetMaxWidth(), 3);
-    ASSERT_EQ(window->GetMaxHeight(), 4);
+    ASSERT_EQ(window->MaxWidth(), 3);
+    ASSERT_EQ(window->MaxHeight(), 4);
 }
 
 
@@ -213,8 +213,8 @@ TEST(WindowParser, ParseMinAndMaxSize) {
 
     auto xaml = R"(<Window MinSize="10,20" MaxSize="30,40"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetMinSize(), zaf::Size(10, 20));
-    ASSERT_EQ(window->GetMaxSize(), zaf::Size(30, 40));
+    ASSERT_EQ(window->MinSize(), zaf::Size(10, 20));
+    ASSERT_EQ(window->MaxSize(), zaf::Size(30, 40));
 
     xaml = R"(
         <Window>
@@ -223,8 +223,8 @@ TEST(WindowParser, ParseMinAndMaxSize) {
         </Window>
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->GetMinSize(), zaf::Size(50, 60));
-    ASSERT_EQ(window->GetMaxSize(), zaf::Size(70, 80));
+    ASSERT_EQ(window->MinSize(), zaf::Size(50, 60));
+    ASSERT_EQ(window->MaxSize(), zaf::Size(70, 80));
 }
 
 
@@ -290,7 +290,7 @@ TEST(WindowParser, ParseRootControl) {
     zaf::Button::Type->GetName();
 
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(R"(<Window RootControl="Label" />)");
-    auto label = std::dynamic_pointer_cast<zaf::Label>(window->GetRootControl());
+    auto label = std::dynamic_pointer_cast<zaf::Label>(window->RootControl());
     ASSERT_NE(label, nullptr);
 
     window = zaf::CreateObjectFromXaml<zaf::Window>(R"(
@@ -300,7 +300,7 @@ TEST(WindowParser, ParseRootControl) {
             </Window.RootControl>
         </Window>
     )");
-    auto button = std::dynamic_pointer_cast<zaf::Button>(window->GetRootControl());
+    auto button = std::dynamic_pointer_cast<zaf::Button>(window->RootControl());
     ASSERT_NE(button, nullptr);
     ASSERT_EQ(button->Text(), L"bbbb");
 }
@@ -315,7 +315,7 @@ TEST(WindowParser, ParseControls) {
         </Window>
     )");
 
-    const auto& controls = window->GetRootControl()->Children();
+    const auto& controls = window->RootControl()->Children();
     ASSERT_EQ(controls.size(), 2);
     ASSERT_EQ(controls[0]->Name(), L"111");
     ASSERT_EQ(controls[1]->Name(), L"222");

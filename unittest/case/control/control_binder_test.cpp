@@ -59,7 +59,7 @@ TEST(ControlBinderTest, BindInWindow) {
     child->SetName(child_name);
 
     auto owner = zaf::Create<zaf::Window>();
-    owner->GetRootControl()->AddChild(child);
+    owner->RootControl()->AddChild(child);
 
     zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), child_name };
     ASSERT_EQ(binder->Name(), child_name);

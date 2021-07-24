@@ -40,7 +40,7 @@ void MainWindow::Initialize() {
     SetSize(size);
     SetMinSize(size);
 
-    auto root_control = GetRootControl();
+    auto root_control = RootControl();
     root_control->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
 
     primary_split_control_ = zaf::Create<zaf::SplitControl>();

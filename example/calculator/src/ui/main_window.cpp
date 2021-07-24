@@ -54,7 +54,7 @@ void MainWindow::InitializeTextBoxes() {
     container->AddChild(input_text_box_);
     container->AddChild(output_text_box_);
 
-    GetRootControl()->AddChild(container);
+    RootControl()->AddChild(container);
 }
 
 
@@ -94,7 +94,7 @@ void MainWindow::InitializeButtons() {
                 Subscriptions() += button->ClickEvent().Subscribe(
                     std::bind(&MainWindow::ButtonClick, this, std::placeholders::_1));
 
-                GetRootControl()->AddChild(button);
+                RootControl()->AddChild(button);
             }
 
             x += button_width + button_spacing;
@@ -107,7 +107,7 @@ void MainWindow::InitializeButtons() {
 
 
 float MainWindow::GetContentWidth() const {
-    return GetClientRect().size.width - kContentMargin * 2;
+    return ClientRect().size.width - kContentMargin * 2;
 }
 
 

@@ -43,7 +43,37 @@ constexpr wchar_t* const kTitlePropertyName = L"Title";
 }
 
 ZAF_DEFINE_TYPE(Window)
-    ZAF_DEFINE_TYPE_PARSER(WindowParser)
+ZAF_DEFINE_TYPE_PARSER(WindowParser)
+ZAF_DEFINE_TYPE_PROPERTY(Owner)
+ZAF_DEFINE_TYPE_PROPERTY(InitialRectStyle)
+ZAF_DEFINE_TYPE_PROPERTY(Rect)
+ZAF_DEFINE_TYPE_PROPERTY(Position)
+ZAF_DEFINE_TYPE_PROPERTY(Size)
+ZAF_DEFINE_TYPE_PROPERTY(ClientSize)
+ZAF_DEFINE_TYPE_PROPERTY(MinSize)
+ZAF_DEFINE_TYPE_PROPERTY(MaxSize)
+ZAF_DEFINE_TYPE_PROPERTY(Width)
+ZAF_DEFINE_TYPE_PROPERTY(MinWidth)
+ZAF_DEFINE_TYPE_PROPERTY(MaxWidth)
+ZAF_DEFINE_TYPE_PROPERTY(Height)
+ZAF_DEFINE_TYPE_PROPERTY(MinHeight)
+ZAF_DEFINE_TYPE_PROPERTY(MaxHeight)
+ZAF_DEFINE_TYPE_PROPERTY(ClientRect)
+//ZAF_DEFINE_TYPE_PROPERTY(ActivateOption)
+ZAF_DEFINE_TYPE_PROPERTY(IsPopup)
+ZAF_DEFINE_TYPE_PROPERTY(HasBorder)
+ZAF_DEFINE_TYPE_PROPERTY(HasTitleBar)
+ZAF_DEFINE_TYPE_PROPERTY(IsSizable)
+ZAF_DEFINE_TYPE_PROPERTY(HasSystemMenu)
+ZAF_DEFINE_TYPE_PROPERTY(CanMinimize)
+ZAF_DEFINE_TYPE_PROPERTY(CanMaximize)
+ZAF_DEFINE_TYPE_PROPERTY(IsToolWindow)
+ZAF_DEFINE_TYPE_PROPERTY(Title)
+ZAF_DEFINE_TYPE_PROPERTY(RootControl)
+ZAF_DEFINE_TYPE_PROPERTY(CapturingMouseControl)
+ZAF_DEFINE_TYPE_PROPERTY(HoveredControl)
+ZAF_DEFINE_TYPE_PROPERTY(FocusedControl)
+ZAF_DEFINE_TYPE_PROPERTY(IsClosed)
 ZAF_DEFINE_TYPE_END
 
 
@@ -120,7 +150,7 @@ void Window::Initialize() {
 
 void Window::CreateWindowHandle() {
 
-    auto owner = GetOwner();
+    auto owner = Owner();
     auto initial_rect = GetInitialRect();
 
     DWORD style = 0;
@@ -130,13 +160,13 @@ void Window::CreateWindowHandle() {
     handle_ = CreateWindowEx(
         extra_style,
         kDefaultWindowClassName,
-        GetTitle().c_str(),
+        Title().c_str(),
         style,
         static_cast<int>(initial_rect.position.x),
         static_cast<int>(initial_rect.position.y),
         static_cast<int>(initial_rect.size.width),
         static_cast<int>(initial_rect.size.height),
-        owner == nullptr ? nullptr : owner->GetHandle(),
+        owner == nullptr ? nullptr : owner->Handle(),
         nullptr,
         nullptr,
         this);
@@ -154,25 +184,25 @@ void Window::CreateWindowHandle() {
 }
 
 
-const Rect Window::GetInitialRect() const {
+Rect Window::GetInitialRect() const {
 
-    auto initial_rect_style = GetInitialRectStyle();
+    auto initial_rect_style = InitialRectStyle();
 
     if (initial_rect_style == InitialRectStyle::Custom) {
         return rect_;
     }
 
-    auto owner = GetOwner();
+    auto owner = Owner();
 
     if ((initial_rect_style == InitialRectStyle::CenterInOwner) && 
         (owner != nullptr)) {
 
-        auto owner_rect = owner->GetRect();
+        auto owner_rect = owner->Rect();
         Point position(
             owner_rect.position.x + (owner_rect.size.width - rect_.size.width) / 2,
             owner_rect.position.y + (owner_rect.size.height - rect_.size.height) / 2);
 
-        return Rect(position, rect_.size);
+        return zaf::Rect(position, rect_.size);
     }
 
     int screen_width = GetSystemMetrics(SM_CXSCREEN);
@@ -181,7 +211,7 @@ const Rect Window::GetInitialRect() const {
         (screen_width - rect_.size.width) / 2,
         (screen_height - rect_.size.height) / 2);
 
-    return Rect(position, rect_.size);
+    return zaf::Rect(position, rect_.size);
 }
 
 
@@ -239,7 +269,7 @@ void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) con
         handle_extra_style |= WS_EX_TOOLWINDOW;
     }
 
-    auto activate_option = GetActivateOption();
+    auto activate_option = ActivateOption();
     if ((activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate) {
         handle_extra_style |= WS_EX_NOACTIVATE;
     }
@@ -344,10 +374,10 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
 
     case WM_GETMINMAXINFO: {
         auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.lparam);
-        min_max_info->ptMinTrackSize.x = static_cast<LONG>(GetMinWidth());
-        min_max_info->ptMinTrackSize.y = static_cast<LONG>(GetMinHeight());
-        min_max_info->ptMaxTrackSize.x = static_cast<LONG>(GetMaxWidth());
-        min_max_info->ptMaxTrackSize.y = static_cast<LONG>(GetMaxHeight());
+        min_max_info->ptMinTrackSize.x = static_cast<LONG>(MinWidth());
+        min_max_info->ptMinTrackSize.y = static_cast<LONG>(MinHeight());
+        min_max_info->ptMaxTrackSize.x = static_cast<LONG>(MaxWidth());
+        min_max_info->ptMaxTrackSize.y = static_cast<LONG>(MaxHeight());
         result = 0;
         return true;
     }
@@ -357,7 +387,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         return true;
 
     case WM_MOUSEACTIVATE: {
-        auto activate_option = GetActivateOption();
+        auto activate_option = ActivateOption();
         bool no_activate = (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
         bool discard_message = (activate_option & ActivateOption::DiscardMouseMessage) == ActivateOption::DiscardMouseMessage;
         if (no_activate) {
@@ -467,7 +497,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
 
 void Window::Repaint() {
 
-    Rect dirty_rect;
+    zaf::Rect dirty_rect;
 
     RECT win32_rect = { 0 };
     if (GetUpdateRect(handle_, &win32_rect, TRUE)) {
@@ -498,7 +528,7 @@ void Window::Repaint() {
     PaintInspectedControl(canvas, dirty_rect);
 
     if (caret_ != nullptr) {
-        const Rect& caret_rect = caret_->GetRect();
+        const zaf::Rect& caret_rect = caret_->GetRect();
         if (caret_rect.HasIntersection(dirty_rect)) {
             caret_->Repaint(canvas);
         }
@@ -515,7 +545,7 @@ void Window::Repaint() {
 }
 
 
-void Window::PaintInspectedControl(Canvas& canvas, const Rect& dirty_rect) {
+void Window::PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     if (!highlight_control_) {
         return;
@@ -536,8 +566,8 @@ void Window::PaintInspectedControl(Canvas& canvas, const Rect& dirty_rect) {
     margin_rect.Inflate(highlight_control_->Margin());
 
     auto draw_frame = [&canvas](
-        const Rect& rect, 
-        const Rect excluded_rect,
+        const zaf::Rect& rect,
+        const zaf::Rect excluded_rect,
         std::uint32_t color_rgb) {
     
         auto rect_geometry = canvas.CreateRectangleGeometry(rect);
@@ -558,7 +588,7 @@ void Window::PaintInspectedControl(Canvas& canvas, const Rect& dirty_rect) {
     canvas.PushClippingRect(dirty_rect);
 
     //Draw content rect.
-    draw_frame(content_rect, Rect{}, internal::InspectedControlContentColor);
+    draw_frame(content_rect, zaf::Rect{}, internal::InspectedControlContentColor);
 
     //Draw padding rect.
     draw_frame(padding_rect, content_rect, internal::InspectedControlPaddingColor);
@@ -573,7 +603,7 @@ void Window::PaintInspectedControl(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-void Window::NeedRepaintRect(const Rect& rect) {
+void Window::NeedRepaintRect(const zaf::Rect& rect) {
 
     if (handle_ != nullptr) {
         RECT win32_rect = Align(rect).ToRECT();
@@ -584,11 +614,11 @@ void Window::NeedRepaintRect(const Rect& rect) {
 
 void Window::Resize(UINT width, UINT height) {
 
-    Size size(static_cast<float>(width), static_cast<float>(height));
+    zaf::Size size(static_cast<float>(width), static_cast<float>(height));
     if (renderer_ != nullptr) {
         renderer_.Resize(size);
     }
-    root_control_->SetRect(Rect(Point(), size));
+    root_control_->SetRect(zaf::Rect(Point(), size));
 }
 
 
@@ -621,7 +651,7 @@ std::optional<HitTestResult> Window::HitTest(const HitTestMessage& message) {
 bool Window::RedirectMouseWheelMessage(const Message& message) {
 
     HWND handle = GetCapture();
-    if ((handle == nullptr) || (handle == GetHandle())) {
+    if ((handle == nullptr) || (handle == Handle())) {
         return false;
     }
 
@@ -630,7 +660,7 @@ bool Window::RedirectMouseWheelMessage(const Message& message) {
         return false;
     }
 
-    PostMessage(capturing_mouse_window->GetHandle(), message.id, message.wparam, message.lparam);
+    PostMessage(capturing_mouse_window->Handle(), message.id, message.wparam, message.lparam);
     return true;
 }
 
@@ -640,7 +670,7 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
     bool is_capturing_mouse = capturing_mouse_control_ != nullptr;
     auto get_mouse_position_to_capturing_control = [this, &message]() {
 
-        Rect control_rect = capturing_mouse_control_->AbsoluteRect();
+        zaf::Rect control_rect = capturing_mouse_control_->AbsoluteRect();
         Point mouse_position = message.GetMousePosition();
 
         return Point(
@@ -791,7 +821,7 @@ bool Window::ChangeMouseCursor(const Message& message) {
 
 bool Window::ReceiveCloseMessage() {
 
-    bool can_close = GetCloseHandler()(*this);
+    bool can_close = CloseHandler()(*this);
     return can_close;
 }
 
@@ -864,9 +894,9 @@ void Window::SetHoveredControl(
         //here, a simulated WM_SETCURSOR is posted to give a change to 
         //change the cursor immediately.
         PostMessage(
-            GetHandle(),
+            Handle(),
             WM_SETCURSOR,
-            reinterpret_cast<WPARAM>(GetHandle()),
+            reinterpret_cast<WPARAM>(Handle()),
             MAKELPARAM(message.GetHitTestResult(), message.id));
 
         hovered_control_->IsHoveredChanged(true);
@@ -905,7 +935,7 @@ void Window::CaptureMouseWithControl(const std::shared_ptr<Control>& control) {
         previous_control->IsCapturingMouseChanged(false);
     }
     else {
-        SetCapture(GetHandle());
+        SetCapture(Handle());
     }
 
     capturing_mouse_control_ = control;
@@ -960,7 +990,7 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_contr
 }
 
 
-std::shared_ptr<Window> Window::GetOwner() const {
+std::shared_ptr<Window> Window::Owner() const {
 
     auto owner = GetPropertyMap().TryGetProperty<std::weak_ptr<Window>>(kOwnerPropertyName);
     if (owner) {
@@ -982,9 +1012,11 @@ void Window::SetOwner(const std::shared_ptr<Window>& owner) {
 }
 
 
-Window::InitialRectStyle Window::GetInitialRectStyle() const {
+InitialRectStyle Window::InitialRectStyle() const {
 
-    auto style = GetPropertyMap().TryGetProperty<InitialRectStyle>(kInitialRectStylePropertyName);
+    auto style = 
+        GetPropertyMap().TryGetProperty<zaf::InitialRectStyle>(kInitialRectStylePropertyName);
+
     if (style != nullptr) {
         return *style;
     }
@@ -994,13 +1026,13 @@ Window::InitialRectStyle Window::GetInitialRectStyle() const {
 }
 
 
-void Window::SetInitialRectStyle(InitialRectStyle initial_rect_style) {
+void Window::SetInitialRectStyle(zaf::InitialRectStyle initial_rect_style) {
 
     GetPropertyMap().SetProperty(kInitialRectStylePropertyName, initial_rect_style);
 }
 
 
-Rect Window::GetRect() const {
+Rect Window::Rect() const {
 
     if (IsClosed()) {
         return rect_;
@@ -1014,7 +1046,7 @@ Rect Window::GetRect() const {
 }
 
 
-void Window::SetRect(const Rect& rect) {
+void Window::SetRect(const zaf::Rect& rect) {
 
     rect_ = rect;
 
@@ -1032,9 +1064,9 @@ void Window::SetRect(const Rect& rect) {
 }
 
 
-void Window::SetClientSize(const Size& size) {
+void Window::SetClientSize(const zaf::Size& size) {
 
-    auto adjusted_rect = Rect{ Point{}, size }.ToRECT();
+    auto adjusted_rect = zaf::Rect{ Point{}, size }.ToRECT();
 
     DWORD style{};
     DWORD extra_style{};
@@ -1045,9 +1077,9 @@ void Window::SetClientSize(const Size& size) {
         ZAF_THROW_SYSTEM_ERROR(GetLastError());
     }
 
-    Rect new_rect;
-    new_rect.position = GetPosition();
-    new_rect.size = Size{
+    zaf::Rect new_rect;
+    new_rect.position = Position();
+    new_rect.size = zaf::Size{
         static_cast<float>(adjusted_rect.right - adjusted_rect.left),
         static_cast<float>(adjusted_rect.bottom - adjusted_rect.top) 
     };
@@ -1056,7 +1088,7 @@ void Window::SetClientSize(const Size& size) {
 }
 
 
-float Window::GetMinWidth() const {
+float Window::MinWidth() const {
 
     auto width = GetPropertyMap().TryGetProperty<float>(property::MinWidth);
     if (width != nullptr) {
@@ -1070,17 +1102,17 @@ void Window::SetMinWidth(float min_width) {
 
     GetPropertyMap().SetProperty(property::MinWidth, min_width);
 
-    if (GetMaxWidth() < min_width) {
+    if (MaxWidth() < min_width) {
         SetMaxWidth(min_width);
     }
 
-    if (GetWidth() < min_width) {
+    if (Width() < min_width) {
         SetWidth(min_width);
     }
 }
 
 
-float Window::GetMaxWidth() const {
+float Window::MaxWidth() const {
 
     auto width = GetPropertyMap().TryGetProperty<float>(property::MaxWidth);
     if (width != nullptr) {
@@ -1094,17 +1126,17 @@ void Window::SetMaxWidth(float max_width) {
 
     GetPropertyMap().SetProperty(property::MaxWidth, max_width);
 
-    if (GetMinWidth() > max_width) {
+    if (MinWidth() > max_width) {
         SetMinWidth(max_width);
     }
 
-    if (GetWidth() > max_width) {
+    if (Width() > max_width) {
         SetWidth(max_width);
     }
 }
 
 
-float Window::GetMinHeight() const {
+float Window::MinHeight() const {
 
     auto height = GetPropertyMap().TryGetProperty<float>(property::MinHeight);
     if (height != nullptr) {
@@ -1118,17 +1150,17 @@ void Window::SetMinHeight(float min_height) {
 
     GetPropertyMap().SetProperty(property::MinHeight, min_height);
 
-    if (GetMaxHeight() < min_height) {
+    if (MaxHeight() < min_height) {
         SetMaxHeight(min_height);
     }
 
-    if (GetHeight() < min_height) {
+    if (Height() < min_height) {
         SetHeight(min_height);
     }
 }
 
 
-float Window::GetMaxHeight() const {
+float Window::MaxHeight() const {
 
     auto height = GetPropertyMap().TryGetProperty<float>(property::MaxHeight);
     if (height != nullptr) {
@@ -1142,17 +1174,17 @@ void Window::SetMaxHeight(float max_height) {
 
     GetPropertyMap().SetProperty(property::MaxHeight, max_height);
 
-    if (GetMinHeight() > max_height) {
+    if (MinHeight() > max_height) {
         SetMinHeight(max_height);
     }
 
-    if (GetHeight() > max_height) {
+    if (Height() > max_height) {
         SetHeight(max_height);
     }
 }
 
 
-Rect Window::GetClientRect() const {
+Rect Window::ClientRect() const {
 
     RECT rect = { 0 };
     ::GetClientRect(handle_, &rect);
@@ -1160,9 +1192,9 @@ Rect Window::GetClientRect() const {
 }
 
 
-Window::ActivateOption Window::GetActivateOption() const {
+ActivateOption Window::ActivateOption() const {
 
-    auto option = GetPropertyMap().TryGetProperty<ActivateOption>(kActivateOptionPropertyName);
+    auto option = GetPropertyMap().TryGetProperty<zaf::ActivateOption>(kActivateOptionPropertyName);
     if (option != nullptr) {
         return *option;
     }
@@ -1171,7 +1203,7 @@ Window::ActivateOption Window::GetActivateOption() const {
     }
 }
 
-void Window::SetActivateOption(ActivateOption option) {
+void Window::SetActivateOption(zaf::ActivateOption option) {
 
     if (IsClosed()) {
         GetPropertyMap().SetProperty(kActivateOptionPropertyName, option);
@@ -1311,18 +1343,18 @@ void Window::SetStyleToHandle(DWORD style_value, bool is_set, bool is_extra_styl
 
     DWORD category = is_extra_style ? GWL_EXSTYLE : GWL_STYLE;
 
-    DWORD style = GetWindowLong(GetHandle(), category);
+    DWORD style = GetWindowLong(Handle(), category);
     if (is_set) {
         style |= style_value;
     }
     else {
         style &= ~style_value;
     }
-    SetWindowLong(GetHandle(), category, style);
+    SetWindowLong(Handle(), category, style);
 }
 
 
-std::wstring Window::GetTitle() const {
+std::wstring Window::Title() const {
 
     if (IsClosed()) {
 
@@ -1384,19 +1416,19 @@ void Window::InitializeRootControl(const std::shared_ptr<Control>& control) {
 }
 
 
-const std::shared_ptr<Caret>& Window::GetCaret() {
+const std::shared_ptr<Caret>& Window::Caret() {
 
     if (caret_ == nullptr) {
-        caret_ = std::make_shared<Caret>();
+        caret_ = std::make_shared<zaf::Caret>();
         caret_->SetWindow(shared_from_this());
     }
     return caret_;
 }
 
 
-const Window::CloseHandler Window::GetCloseHandler() const {
+WindowCloseHandler Window::CloseHandler() const {
 
-    auto handler = GetPropertyMap().TryGetProperty<CloseHandler>(kCloseHandlerPropertyName);
+    auto handler = GetPropertyMap().TryGetProperty<WindowCloseHandler>(kCloseHandlerPropertyName);
     if ((handler != nullptr) && (*handler != nullptr)) {
         return *handler;
     }
@@ -1409,7 +1441,7 @@ const Window::CloseHandler Window::GetCloseHandler() const {
 }
 
 
-void Window::SetCloseHandler(const CloseHandler& handler) {
+void Window::SetCloseHandler(const WindowCloseHandler& handler) {
     GetPropertyMap().SetProperty(kCloseHandlerPropertyName, handler);
 }
 
@@ -1419,7 +1451,7 @@ Observable<WindowDestroyInfo> Window::DestroyEvent() {
 }
 
 
-const Point Window::GetMousePosition() const {
+Point Window::GetMousePosition() const {
 
     POINT cursor_point = { 0 };
     GetCursorPos(&cursor_point);
@@ -1433,7 +1465,7 @@ void Window::Show() {
 
     CheckCreateWindowHandle();
 
-    auto activate_option = GetActivateOption();
+    auto activate_option = ActivateOption();
     bool no_activate = (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
     ShowWindow(handle_, no_activate ? SW_SHOWNA : SW_SHOW);
 
@@ -1462,7 +1494,7 @@ void Window::Restore() {
 
 
 void Window::Close() {
-    SendMessage(GetHandle(), WM_CLOSE, 0, 0);
+    SendMessage(Handle(), WM_CLOSE, 0, 0);
 }
 
 

@@ -10,7 +10,7 @@ std::shared_ptr<Control> BridgedFindControl(const Control& control, const wchar_
 
 
 std::shared_ptr<Control> BridgedFindControl(const Window& window, const wchar_t* name) {
-    return window.GetRootControl()->FindChild(name);
+    return window.RootControl()->FindChild(name);
 }
 
 }
