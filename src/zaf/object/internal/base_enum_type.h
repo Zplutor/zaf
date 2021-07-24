@@ -72,9 +72,6 @@ public:
         return std::wstring{ iterator->first.data(), iterator->first.length() };
     }
 
-
-    virtual void Assign(const Object& source, Object& target) const = 0;
-
 protected:
     virtual std::vector<std::pair<std::wstring_view, T>> GenerateMap() const = 0;
     virtual std::shared_ptr<Object> CreateObject(T value) const = 0;

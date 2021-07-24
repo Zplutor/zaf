@@ -53,11 +53,6 @@ protected:                                                                      
         auto& enum_object = dynamic_cast<const EnumName##Enum&>(object);                           \
         return &enum_object.Value();                                                               \
     }                                                                                              \
-    void Assign(const zaf::Object& source, zaf::Object& target) const override {                   \
-        const auto& source_enum = dynamic_cast<const EnumName##Enum&>(source);                     \
-        auto& target_enum = dynamic_cast<EnumName##Enum&>(target);                                 \
-        target_enum.SetValue(source_enum.Value());                                                 \
-    }                                                                                              \
     std::vector<std::pair<std::wstring_view, EnumName>> GenerateMap() const override {             \
         return std::vector<std::pair<std::wstring_view, EnumName>>{
 

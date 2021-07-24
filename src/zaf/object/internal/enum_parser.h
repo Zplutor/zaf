@@ -1,5 +1,9 @@
 #pragma once
 
+#include <zaf/base/flag_enum.h>
+#include <zaf/base/string/split.h>
+#include <zaf/base/string/trim.h>
+#include <zaf/object/boxing/internal/get_box_type.h>
 #include <zaf/object/internal/base_enum_type.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_utility.h>
@@ -33,12 +37,44 @@ public:
 private:
     void Parse(const std::wstring& text, Object& object) {
 
+        T value = ParseValue(text, nullptr);
+        dynamic_cast<internal::GetBoxType<T>::Type&>(object).SetValue(value);
+    }
+
+
+    template<typename = std::enable_if_t<IsFlagEnum<T>::Value>>
+    T ParseValue(const std::wstring& text, T*) {
+
+        T result{};
+
+        auto splitted_texts = SplitIf(text, std::iswspace);
+        for (const auto& each_value : splitted_texts) {
+
+            auto trimmed_value = ToTrimmed(each_value);
+            if (trimmed_value.empty()) {
+                continue;
+            }
+
+            result |= ParseSingleValue(trimmed_value);
+        }
+
+        return result;
+    }
+
+
+    T ParseValue(const std::wstring& text, ...) {
+        return ParseSingleValue(text);
+    }
+
+
+    T ParseSingleValue(const std::wstring& text) {
+
         auto value_object = enum_type_->FindValue(text);
         if (!value_object) {
             //TODO: throw error
         }
 
-        enum_type_->Assign(*value_object, object);
+        return dynamic_cast<const internal::GetBoxType<T>::Type&>(*value_object).Value();
     }
 
 private:
