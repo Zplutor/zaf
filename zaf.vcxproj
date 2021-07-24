@@ -150,7 +150,6 @@
     <ClCompile Include="src\zaf\parsing\parsers\linear_layouter_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\scrollable_control_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\textual_control_parser.cpp" />
-    <ClCompile Include="src\zaf\parsing\parsers\window_parser.cpp" />
     <ClCompile Include="src\zaf\reflection\creation.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp" />
     <ClCompile Include="src\zaf\resource\internal\resource_loader.cpp" />
@@ -438,7 +437,6 @@
     <ClInclude Include="src\zaf\parsing\parsers\linear_layouter_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\scrollable_control_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\textual_control_parser.h" />
-    <ClInclude Include="src\zaf\parsing\parsers\window_parser.h" />
     <ClInclude Include="src\zaf\reflection\creation.h" />
     <ClInclude Include="src\zaf\reflection\reflection_manager.h" />
     <ClInclude Include="src\zaf\resource\internal\resource_loader.h" />

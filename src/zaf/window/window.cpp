@@ -9,7 +9,8 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
-#include <zaf/parsing/parsers/window_parser.h>
+#include <zaf/object/parsing/object_parser.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/caret.h>
@@ -39,6 +40,52 @@ constexpr wchar_t* const kIsSizablePropertyName = L"IsSizable";
 constexpr wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
 constexpr wchar_t* const kOwnerPropertyName = L"Owner";
 constexpr wchar_t* const kTitlePropertyName = L"Title";
+
+class WindowParser : public ObjectParser {
+public:
+    void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
+        //Nothing to do.
+    }
+
+    void ParseFromNode(const XamlNode& node, Object& reflection_object) override {
+
+        auto& window = dynamic_cast<Window&>(reflection_object);
+
+        ParseProperties(node, window);
+        ParseControls(node, window);
+    }
+
+private:
+    void ParseProperties(const XamlNode& node, Window& window) {
+
+        XamlNodeParseHelper helper(node, window.GetType());
+
+        auto root_control = helper.GetDynamicObjectProperty<Control>(L"RootControl");
+        if (root_control != nullptr) {
+            window.SetRootControl(root_control);
+        }
+    }
+
+
+    void ParseControls(const XamlNode& node, Window& window) {
+
+        std::vector<std::shared_ptr<Control>> controls;
+
+        for (const auto& each_node : node.GetContentNodes()) {
+
+            auto control = internal::CreateObjectFromNode<Control>(each_node);
+            if (control == nullptr) {
+                continue;
+            }
+
+            controls.push_back(control);
+        }
+
+        if (!controls.empty()) {
+            window.RootControl()->AddChildren(controls);
+        }
+    }
+};
 
 }
 

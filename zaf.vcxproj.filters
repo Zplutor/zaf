@@ -352,9 +352,6 @@
     <ClCompile Include="src\zaf\parsing\parsers\textual_control_parser.cpp">
       <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\window_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp">
       <Filter>zaf\base\registry</Filter>
     </ClCompile>
@@ -1082,9 +1079,6 @@
       <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\parsing\parsers\font_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\window_parser.h">
       <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\reflection\reflection_manager.h">
