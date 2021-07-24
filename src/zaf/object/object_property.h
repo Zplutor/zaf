@@ -21,6 +21,8 @@ public:
     virtual bool CanGet() const = 0;
     virtual bool CanSet() const = 0;
 
+    virtual bool IsValueTypeDynamic() const = 0;
+
     virtual ObjectType* GetValueType() const = 0;
 
     virtual std::shared_ptr<Object> GetValue(const Object& object) const = 0;

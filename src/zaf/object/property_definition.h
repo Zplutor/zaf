@@ -15,7 +15,7 @@ zaf::ObjectProperty* const PropertyName##_property =                            
     }();
 
 
-#define ZAF_DEFINE_TYPE_PROPERTY(PropertyName)                                                     \
+#define __ZAF_INTERNAL_DEFINE_PROPERTY(PropertyName, ValueTypeDynamicBool)                         \
 struct PropertyName##Accessor {                                                                    \
     template<typename T>                                                                           \
     using GetterValueType =                                                                        \
@@ -89,6 +89,9 @@ public:                                                                         
         static const std::wstring name{ L#PropertyName };                                          \
         return name;                                                                               \
     }                                                                                              \
+    bool IsValueTypeDynamic() const override {                                                     \
+        return ValueTypeDynamicBool;                                                               \
+    }                                                                                              \
     ObjectType* GetValueType() const override {                                                    \
         return PropertyName##Accessor::ValueType::Type;                                            \
     }                                                                                              \
@@ -108,6 +111,13 @@ public:                                                                         
 __ZAF_INTERNAL_DEFINE_PROPERTY_VARIABLE(PropertyName)
 
 
+#define ZAF_DEFINE_TYPE_PROPERTY(PropertyName) \
+    __ZAF_INTERNAL_DEFINE_PROPERTY(PropertyName, false)
+
+#define ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(PropertyName) \
+    __ZAF_INTERNAL_DEFINE_PROPERTY(PropertyName, true)
+
+
 #define ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(PropertyName, FieldName)                               \
 class PropertyName##Property : public zaf::ObjectProperty {                                        \
 public:                                                                                            \
@@ -122,6 +132,9 @@ public:                                                                         
         static_assert(zaf::internal::IsReflectionType<ValueType>::Value,                           \
             "This type of value is not supported by property.");                                   \
         return ValueType::Type;                                                                    \
+    }                                                                                              \
+    bool IsValueTypeDynamic() const override {                                                     \
+        return false;                                                                              \
     }                                                                                              \
     bool CanGet() const override {                                                                 \
         return true;                                                                               \
