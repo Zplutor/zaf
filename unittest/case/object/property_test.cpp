@@ -107,6 +107,7 @@ TEST(PropertyTest, ReadWrite) {
     ASSERT_EQ(property->GetName(), L"ReadWrite");
     ASSERT_TRUE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
+    ASSERT_FALSE(property->IsValueTypeDynamic());
 
     property->SetValue(host, zaf::Box(19));
     auto boxed_value = property->GetValue(host);
@@ -124,6 +125,7 @@ TEST(PropertyTest, ReadOnly) {
     ASSERT_EQ(property->GetName(), L"ReadOnly");
     ASSERT_TRUE(property->CanGet());
     ASSERT_FALSE(property->CanSet());
+    ASSERT_FALSE(property->IsValueTypeDynamic());
 
     auto boxed_value = property->GetValue(host);
     auto value = zaf::TryUnbox<int>(boxed_value);
@@ -142,6 +144,7 @@ TEST(PropertyTest, WriteOnly) {
     ASSERT_EQ(property->GetName(), L"WriteOnly");
     ASSERT_FALSE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
+    ASSERT_FALSE(property->IsValueTypeDynamic());
 
     property->SetValue(host, zaf::Box(76));
     ASSERT_EQ(host.GetWriteOnlyValue(), 76);
@@ -191,6 +194,7 @@ TEST(PropertyType, BoxedObject) {
 
     ASSERT_TRUE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
+    ASSERT_FALSE(property->IsValueTypeDynamic());
 
     auto set_value = zaf::Create<zaf::Point>(9.f, 8.f);
     property->SetValue(host, set_value);
@@ -209,6 +213,7 @@ TEST(PropertyType, Image) {
 
     ASSERT_TRUE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
+    ASSERT_FALSE(property->IsValueTypeDynamic());
 
     auto set_value = zaf::Create<zaf::URIImage>();
     property->SetValue(host, set_value);
@@ -243,6 +248,7 @@ TEST(PropertyTest, ObjectTypeField) {
     ASSERT_NE(property, nullptr);
     ASSERT_TRUE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
+    ASSERT_FALSE(property->IsValueTypeDynamic());
 
     property->SetValue(host, zaf::Create<zaf::Size>(78.f, 87.f));
 
@@ -260,6 +266,7 @@ TEST(PropertyTest, BoxedObjectField) {
     ASSERT_NE(property, nullptr);
     ASSERT_TRUE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
+    ASSERT_FALSE(property->IsValueTypeDynamic());
 
     auto set_value = zaf::Create<zaf::Point>(18.f, 17.f);
     property->SetValue(host, set_value);
@@ -278,6 +285,7 @@ TEST(PropertyTest, ImageField) {
 
     ASSERT_TRUE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
+    ASSERT_FALSE(property->IsValueTypeDynamic());
 
     auto set_value = zaf::Create<zaf::URIImage>();
     property->SetValue(host, set_value);

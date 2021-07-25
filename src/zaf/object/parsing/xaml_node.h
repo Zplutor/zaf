@@ -40,9 +40,17 @@ public:
     void AddAttribute(const std::wstring& name, const std::wstring& value);
     std::optional<std::wstring> GetAttribute(const std::wstring& name) const;
 
+    const std::map<std::wstring, std::wstring>& GetAttributes() const {
+        return attributes_;
+    }
+
     void AddChildNode(const std::shared_ptr<XamlNode>& node);
 
     std::shared_ptr<XamlNode> GetPropertyNode(const std::wstring& name) const;
+
+    const std::map<std::wstring, std::shared_ptr<XamlNode>>& GetPropertyNodes() const {
+        return property_nodes_;
+    }
 
     const std::vector<std::shared_ptr<XamlNode>>& GetContentNodes() const {
         return content_nodes_;

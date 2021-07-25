@@ -50,23 +50,10 @@ public:
     void ParseFromNode(const XamlNode& node, Object& reflection_object) override {
 
         auto& window = dynamic_cast<Window&>(reflection_object);
-
-        ParseProperties(node, window);
         ParseControls(node, window);
     }
 
 private:
-    void ParseProperties(const XamlNode& node, Window& window) {
-
-        XamlNodeParseHelper helper(node, window.GetType());
-
-        auto root_control = helper.GetDynamicObjectProperty<Control>(L"RootControl");
-        if (root_control != nullptr) {
-            window.SetRootControl(root_control);
-        }
-    }
-
-
     void ParseControls(const XamlNode& node, Window& window) {
 
         std::vector<std::shared_ptr<Control>> controls;
@@ -116,7 +103,7 @@ ZAF_DEFINE_TYPE_PROPERTY(CanMinimize)
 ZAF_DEFINE_TYPE_PROPERTY(CanMaximize)
 ZAF_DEFINE_TYPE_PROPERTY(IsToolWindow)
 ZAF_DEFINE_TYPE_PROPERTY(Title)
-ZAF_DEFINE_TYPE_PROPERTY(RootControl)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(RootControl)
 ZAF_DEFINE_TYPE_PROPERTY(CapturingMouseControl)
 ZAF_DEFINE_TYPE_PROPERTY(HoveredControl)
 ZAF_DEFINE_TYPE_PROPERTY(FocusedControl)
