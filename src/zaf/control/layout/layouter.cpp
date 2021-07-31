@@ -1,4 +1,5 @@
 #include <zaf/control/layout/layouter.h>
+#include <zaf/object/type_definition.h>
 
 namespace zaf {
 namespace {
@@ -23,6 +24,20 @@ private:
 };
 
 }
+
+
+ZAF_DEFINE_TYPE(Layouter)
+ZAF_DEFINE_TYPE_END
+
+
+void Layouter::Layout(
+    const Control& parent,
+    const Rect& parent_old_rect,
+    const std::vector<std::shared_ptr<Control>>& children) {
+
+    //Do nothing.
+}
+
 
 std::shared_ptr<Layouter> CreateLayouter(const LayoutFunction& layout_function) {
     return std::make_shared<SimpleLayouter>(layout_function);

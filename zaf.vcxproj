@@ -64,8 +64,11 @@
     <ClCompile Include="src\zaf\control\internal\tree_control\utility.cpp" />
     <ClCompile Include="src\zaf\control\internal\triangle_geometry.cpp" />
     <ClCompile Include="src\zaf\control\layout\anchor_layouter.cpp" />
+    <ClCompile Include="src\zaf\control\layout\axis_alignment.cpp" />
+    <ClCompile Include="src\zaf\control\layout\control_alignment.cpp" />
     <ClCompile Include="src\zaf\control\layout\internal\linear_layout_length_calculating.cpp" />
     <ClCompile Include="src\zaf\control\layout\layouter.cpp" />
+    <ClCompile Include="src\zaf\control\layout\layout_direction.cpp" />
     <ClCompile Include="src\zaf\control\layout\linear_layouter.cpp" />
     <ClCompile Include="src\zaf\control\list_box.cpp" />
     <ClCompile Include="src\zaf\control\label.cpp" />
@@ -147,7 +150,6 @@
     <ClCompile Include="src\zaf\parsing\parsers\control_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\font_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\internal\utility.cpp" />
-    <ClCompile Include="src\zaf\parsing\parsers\linear_layouter_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\scrollable_control_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\textual_control_parser.cpp" />
     <ClCompile Include="src\zaf\reflection\creation.cpp" />
@@ -434,7 +436,6 @@
     <ClInclude Include="src\zaf\parsing\parsers\control_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\font_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\internal\utility.h" />
-    <ClInclude Include="src\zaf\parsing\parsers\linear_layouter_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\scrollable_control_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\textual_control_parser.h" />
     <ClInclude Include="src\zaf\reflection\creation.h" />

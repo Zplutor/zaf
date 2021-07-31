@@ -2,7 +2,6 @@
 #include <zaf/control/control.h>
 #include <zaf/control/layout/internal/linear_layout_length_calculating.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/parsing/parsers/linear_layouter_parser.h>
 
 namespace zaf {
 namespace {
@@ -165,7 +164,9 @@ private:
 }
 
 ZAF_DEFINE_TYPE(LinearLayouter)
-    ZAF_DEFINE_TYPE_PARSER(LinearLayouterParser)
+ZAF_DEFINE_TYPE_PROPERTY(Direction)
+ZAF_DEFINE_TYPE_PROPERTY(ControlAlignment)
+ZAF_DEFINE_TYPE_PROPERTY(AxisAlignment)
 ZAF_DEFINE_TYPE_END
 
 

@@ -16,14 +16,6 @@ void ParseProperties(const XamlNode& node, Control& control) {
     if (tab_index) {
         control.SetTabIndex(static_cast<std::size_t>(*tab_index));
     }
-
-    auto layouter_object = helper.GetDynamicObjectProperty<Object>(L"Layouter");
-    if (layouter_object) {
-        auto layouter = std::dynamic_pointer_cast<Layouter>(layouter_object);
-        if (layouter) {
-            control.SetLayouter(layouter);
-        }
-    }
 }
 
 

@@ -354,8 +354,8 @@ TEST(ControlParserTest, ParseLayouter) {
     control = CreateControlFromXaml(xaml);
     layouter = std::dynamic_pointer_cast<zaf::LinearLayouter>(control->Layouter());
     ASSERT_NE(layouter, nullptr);
-    ASSERT_EQ(layouter->GetControlAlignment(), zaf::ControlAlignment::Center);
-    ASSERT_EQ(layouter->GetAxisAlignment(), zaf::AxisAlignment::Center);
+    ASSERT_EQ(layouter->ControlAlignment(), zaf::ControlAlignment::Center);
+    ASSERT_EQ(layouter->AxisAlignment(), zaf::AxisAlignment::Center);
 }
 
 

@@ -13,12 +13,12 @@ class LinearLayoutLengthCalculatItem;
 
 class Size;
 
-class LinearLayouter : public Layouter, public Object {
+class LinearLayouter : public Layouter {
 public:
     ZAF_DECLARE_TYPE
 
 public:
-    LayoutDirection GetDirection() const {
+    LayoutDirection Direction() const {
         return direction_;
     }
 
@@ -26,19 +26,19 @@ public:
         direction_ = direction;
     }
 
-    ControlAlignment GetControlAlignment() const {
+    ControlAlignment ControlAlignment() const {
         return control_alignment_;
     }
 
-    void SetControlAlignment(ControlAlignment alignment) {
+    void SetControlAlignment(zaf::ControlAlignment alignment) {
         control_alignment_ = alignment;
     }
 
-    AxisAlignment GetAxisAlignment() const {
+    AxisAlignment AxisAlignment() const {
         return axis_alignment_;
     }
 
-    void SetAxisAlignment(AxisAlignment alignment) {
+    void SetAxisAlignment(zaf::AxisAlignment alignment) {
         axis_alignment_ = alignment;
     }
 
@@ -79,8 +79,8 @@ private:
 
 private:
     LayoutDirection direction_{ LayoutDirection::LeftToRight };
-    ControlAlignment control_alignment_{ ControlAlignment::Leading };
-    AxisAlignment axis_alignment_{ AxisAlignment::Near };
+    zaf::ControlAlignment control_alignment_{ ControlAlignment::Leading };
+    zaf::AxisAlignment axis_alignment_{ AxisAlignment::Near };
 };
 
 

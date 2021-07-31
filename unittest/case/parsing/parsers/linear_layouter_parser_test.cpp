@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <zaf/control/layout/linear_layouter.h>
-#include <zaf/parsing/parsers/linear_layouter_parser.h>
 #include "utility.h"
 
 using namespace zaf;
@@ -14,7 +13,7 @@ TEST(LinearLayouterPraserTest, ParseDirection) {
             { LayoutDirection::TopToBottom, "TopToBottom" },
         },
         [](LinearLayouter& layouter) {
-            return layouter.GetDirection();
+            return layouter.Direction();
         }
     );
     ASSERT_TRUE(result);
@@ -31,7 +30,7 @@ TEST(LinearLayouterPraserTest, ParseControlAlignment) {
             { ControlAlignment::Center, "Center" },
         },
         [](LinearLayouter& layouter) {
-            return layouter.GetControlAlignment();
+            return layouter.ControlAlignment();
         }
     );
     ASSERT_TRUE(result);
@@ -48,7 +47,7 @@ TEST(LinearLayouterPraserTest, ParseAxisAlignment) {
             { AxisAlignment::Center, "Center" },
         },
         [](LinearLayouter& layouter) {
-            return layouter.GetAxisAlignment();
+            return layouter.AxisAlignment();
         }
     );
     ASSERT_TRUE(result);

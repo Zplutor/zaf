@@ -3,25 +3,21 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <zaf/object/object.h>
 
 namespace zaf {
 
 class Control;
 class Rect;
 
-class Layouter {
+class Layouter : public Object {
 public:
-    Layouter() = default;
-    virtual ~Layouter() = default;
-
-    Layouter(const Layouter&) = delete;
-    Layouter& operator=(const Layouter&) = delete;
+    ZAF_DECLARE_TYPE
 
     virtual void Layout(
         const Control& parent,
         const Rect& parent_old_rect,
-        const std::vector<std::shared_ptr<Control>>& children
-    ) = 0;
+        const std::vector<std::shared_ptr<Control>>& children);
 };
 
 
