@@ -346,12 +346,6 @@
     <ClCompile Include="src\zaf\parsing\parsers\internal\utility.cpp">
       <Filter>zaf\parsing\parsers\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\control_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\textual_control_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp">
       <Filter>zaf\base\registry</Filter>
     </ClCompile>
@@ -420,9 +414,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\linear_box.cpp">
       <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\font_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\tree_control.cpp">
       <Filter>zaf\control</Filter>
@@ -537,9 +528,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\scroll_bar_thumb.cpp">
       <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\scrollable_control_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\thread\run_loop_thread.cpp">
       <Filter>zaf\rx\internal\thread</Filter>
@@ -678,6 +666,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\layout\axis_alignment.cpp">
       <Filter>zaf\control\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\font\font_weight.cpp">
+      <Filter>zaf\graphic\font</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1074,18 +1065,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h">
       <Filter>zaf\graphic\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\control_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\textual_control_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\scrollable_control_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\font_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\reflection\reflection_manager.h">
       <Filter>zaf\reflection</Filter>

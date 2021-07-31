@@ -42,7 +42,7 @@ void ControlPropertyPanel::Initialize() {
     scrollable_control_->SetBorder(zaf::Frame(0));
     scrollable_control_->SetAllowHorizontalScroll(false);
 
-    auto content_control = scrollable_control_->GetScrollContentControl();
+    auto content_control = scrollable_control_->ScrollContentControl();
     content_control->SetIsCachedPaintingEnabled(false);
     content_control->SetLayouter(
         zaf::Create<PropertyPanelLayouter>());
@@ -53,7 +53,7 @@ void ControlPropertyPanel::Initialize() {
 
 void ControlPropertyPanel::SetPropertyItems(const std::vector<std::shared_ptr<PropertyItem>>& items) {
 
-    auto scroll_content_control = scrollable_control_->GetScrollContentControl();
+    auto scroll_content_control = scrollable_control_->ScrollContentControl();
     scroll_content_control->RemoveAllChildren();
 
     auto update_guard = scroll_content_control->BeginUpdate();

@@ -93,6 +93,7 @@
     <ClCompile Include="src\zaf\control\tree_item.cpp" />
     <ClCompile Include="src\zaf\control\tree_item_expand_button.cpp" />
     <ClCompile Include="src\zaf\graphic\alignment.cpp" />
+    <ClCompile Include="src\zaf\graphic\font\font_weight.cpp" />
     <ClCompile Include="src\zaf\graphic\image\uri_image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\internal\utility.cpp" />
@@ -147,11 +148,7 @@
     <ClCompile Include="src\zaf\object\parsing\xaml_node_parse_helper.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_reader.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_utility.cpp" />
-    <ClCompile Include="src\zaf\parsing\parsers\control_parser.cpp" />
-    <ClCompile Include="src\zaf\parsing\parsers\font_parser.cpp" />
     <ClCompile Include="src\zaf\parsing\parsers\internal\utility.cpp" />
-    <ClCompile Include="src\zaf\parsing\parsers\scrollable_control_parser.cpp" />
-    <ClCompile Include="src\zaf\parsing\parsers\textual_control_parser.cpp" />
     <ClCompile Include="src\zaf\reflection\creation.cpp" />
     <ClCompile Include="src\zaf\reflection\reflection_manager.cpp" />
     <ClCompile Include="src\zaf\resource\internal\resource_loader.cpp" />
@@ -433,11 +430,7 @@
     <ClInclude Include="src\zaf\object\property_definition.h" />
     <ClInclude Include="src\zaf\object\type_declaration.h" />
     <ClInclude Include="src\zaf\object\type_definition.h" />
-    <ClInclude Include="src\zaf\parsing\parsers\control_parser.h" />
-    <ClInclude Include="src\zaf\parsing\parsers\font_parser.h" />
     <ClInclude Include="src\zaf\parsing\parsers\internal\utility.h" />
-    <ClInclude Include="src\zaf\parsing\parsers\scrollable_control_parser.h" />
-    <ClInclude Include="src\zaf\parsing\parsers\textual_control_parser.h" />
     <ClInclude Include="src\zaf\reflection\creation.h" />
     <ClInclude Include="src\zaf\reflection\reflection_manager.h" />
     <ClInclude Include="src\zaf\resource\internal\resource_loader.h" />

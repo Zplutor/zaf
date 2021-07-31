@@ -145,8 +145,8 @@ public:
      */
     void SetTextValidator(const TextValidator& validator);
 
-    Font GetFont() const override;
-    void SetFont(const Font& font) override;
+    zaf::Font Font() const override;
+    void SetFont(const zaf::Font& font) override;
 
     zaf::TextAlignment TextAlignment() const override;
     void SetTextAlignment(zaf::TextAlignment alignment) override;

@@ -18,7 +18,7 @@ public:
     /**
      Get the default font from system setting.
      */
-    static Font GetDefault();
+    static Font Default();
 
     /**
      Convert a specified LOGFONT structure to Font.
@@ -48,7 +48,7 @@ public:
      contained in class FontWeight. The default font weight value is
      FontWeight::Regular.
      */
-    int weight{ FontWeight::Regular };
+    FontWeight weight{ FontWeight::Regular };
 
     bool has_underline{};
 };

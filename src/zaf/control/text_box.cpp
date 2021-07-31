@@ -82,7 +82,7 @@ void TextBox::Initialize() {
     SetBorder(Frame(1));
 
     //Initialize CHARFORMATW and PARAFORMAT.
-    SetFont(Font::GetDefault());
+    SetFont(Font::Default());
     SetTextAlignment(TextAlignment::Leading);
     SetParagraphAlignment(ParagraphAlignment::Near);
 
@@ -457,16 +457,16 @@ void TextBox::SetTextValidator(const TextValidator& validator) {
 }
 
 
-Font TextBox::GetFont() const {
+zaf::Font TextBox::Font() const {
 
-    Font font;
+    zaf::Font font;
     font.family_name = character_format_.szFaceName;
     font.size = static_cast<float>(character_format_.yHeight) / 15;
     font.weight = (character_format_.dwEffects & CFE_BOLD) ? FontWeight::Bold : FontWeight::Regular;
     return font;
 }
 
-void TextBox::SetFont(const Font& font) {
+void TextBox::SetFont(const zaf::Font& font) {
 
     ResetRequiredHeight();
 

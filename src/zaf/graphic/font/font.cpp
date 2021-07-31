@@ -1,17 +1,19 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/application.h>
-#include <zaf/parsing/parsers/font_parser.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
 
 ZAF_DEFINE_TYPE(Font)
-    ZAF_DEFINE_TYPE_PARSER(FontParser)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(FamilyName ,family_name)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(Size, size)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(Weight, weight)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(HasUnderline, has_underline)
 ZAF_DEFINE_TYPE_END
 
 
-Font Font::GetDefault() {
+Font Font::Default() {
 
     LOGFONT logfont{};
     SystemParametersInfo(SPI_GETICONTITLELOGFONT, sizeof(logfont), &logfont, 0);

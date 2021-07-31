@@ -3,6 +3,7 @@
 #include <zaf/base/assert.h>
 #include <zaf/base/define.h>
 #include <zaf/base/error/check.h>
+#include <zaf/base/error/system_error.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/control/internal/cached_painting.h>
 #include <zaf/control/internal/control_updating.h>
@@ -15,7 +16,7 @@
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/image/image.h>
 #include <zaf/internal/theme.h>
-#include <zaf/parsing/parsers/control_parser.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 #include <zaf/serialization/properties.h>
@@ -29,6 +30,36 @@
 
 namespace zaf {
 namespace {
+
+class ControlParser : public ObjectParser {
+public:
+    void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
+
+    }
+
+    void ParseFromNode(const XamlNode& node, Object& object) override {
+
+        auto& control = dynamic_cast<Control&>(object);
+        auto update_guard = control.BeginUpdate();
+
+        XamlNodeParseHelper helper(node, control.GetType());
+        auto tab_index = helper.GetFloatProperty(L"TabIndex");
+        if (tab_index) {
+            control.SetTabIndex(static_cast<std::size_t>(*tab_index));
+        }
+
+        for (const auto& each_node : node.GetContentNodes()) {
+
+            auto child_control = internal::CreateObjectFromNode<Control>(each_node);
+            if (!child_control) {
+                //TODO: raise proper error.
+                ZAF_THROW_SYSTEM_ERROR(ERROR_INVALID_NAME);
+            }
+
+            control.AddChild(child_control);
+        }
+    }
+};
 
 constexpr const wchar_t* const kAnchorPropertyName = L"Anchor";
 constexpr const wchar_t* const kBackgroundImageLayoutPropertyName = L"BackgroundImageLayout";

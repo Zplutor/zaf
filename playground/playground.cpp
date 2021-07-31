@@ -27,7 +27,6 @@
 #include <zaf/base/error/error.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/resource/resource_manager.h>
-#include <zaf/parsing/parsers/control_parser.h>
 #include <zaf/object/boxing/string.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/control/combo_box.h>

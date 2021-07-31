@@ -1,11 +1,16 @@
 #pragma once
 
+#include <zaf/object/object.h>
+
 namespace zaf {
 
 /**
  Provides predefined values of font weight.
  */
-class FontWeight {
+class FontWeight : public Object {
+public:
+    ZAF_DECLARE_TYPE
+
 public:
     /**
      The minimum weight.
@@ -72,8 +77,16 @@ public:
      */
     static const int Maximum = 999;
 
+public:
+    constexpr FontWeight() = default;
+    constexpr FontWeight(int value) : value_(value) { }
+
+    constexpr operator int() const {
+        return value_;
+    }
+
 private:
-    FontWeight();
+    int value_{};
 };
 
 }

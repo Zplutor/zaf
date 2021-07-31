@@ -117,7 +117,7 @@ TEST(TextualControlParser, ParseFont) {
         </TextualControl>
     )";
     auto control = CreateTextualControlFromXaml(xaml);
-    auto font = control->GetFont();
+    auto font = control->Font();
     ASSERT_EQ(font.family_name, L"ab");
     ASSERT_EQ(font.size, 11);
     ASSERT_EQ(font.weight, 100);
@@ -136,10 +136,10 @@ TEST(TextualControlParser, ParseFontWeight) {
 
     auto xaml = R"(<TextualControl FontWeight="443"/>)";
     auto control = CreateTextualControlFromXaml(xaml);
-    ASSERT_EQ(control->GetFontWeight(), 443);
+    ASSERT_EQ(control->FontWeight(), 443);
 
     xaml = R"(<TextualControl FontWeight="Bold"/>)";
     control = CreateTextualControlFromXaml(xaml);
-    ASSERT_EQ(control->GetFontWeight(), zaf::FontWeight::Bold);
+    ASSERT_EQ(control->FontWeight(), zaf::FontWeight::Bold);
 }
 

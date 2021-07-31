@@ -19,7 +19,7 @@ class zaf::Size;
  This is the base class of all scrollable control. 
  
  The scrollable control contains a scroll content control, which would be scrolled when the scroll
- bars changes. You can obatin this control by calling GetScrollContentControl method, and then add
+ bars changes. You can obatin this control by calling ScrollContentControl method, and then add
  children to it to build the scroll page. You can also set a custom scroll content control by calling
  SetScrollContentControl method.
 
@@ -120,7 +120,7 @@ public:
     /**
      Get the scroll content control.
      */
-    const std::shared_ptr<Control>& GetScrollContentControl() const {
+    const std::shared_ptr<Control>& ScrollContentControl() const {
         return scroll_content_control_;
     }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/control/control.h>
+#include <zaf/graphic/font/font_weight.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/text_layout.h>
@@ -109,32 +110,32 @@ public:
     /**
      Get default font.
 
-     Return Font::GetDefault() if this property has not been set.
+     Return Font::Default() if this property has not been set.
      */
-    virtual Font GetFont() const;
+    virtual Font Font() const;
 
     /**
      Set default font.
      */
-    virtual void SetFont(const Font& font);
+    virtual void SetFont(const zaf::Font& font);
 
     float FontSize() const;
     void SetFontSize(float size);
 
-    int GetFontWeight() const;
-    void SetFontWeight(int weight);
+    FontWeight FontWeight() const;
+    void SetFontWeight(zaf::FontWeight weight);
 
     /**
      Get font at specified text position.
 
-     Return GetDefault() if the font at this position has not been set.
+     Return Default() if the font at this position has not been set.
      */
-    virtual Font GetFontAtPosition(std::size_t position) const;
+    virtual zaf::Font GetFontAtPosition(std::size_t position) const;
 
     /**
      Set font at specified text range.
      */
-    virtual void SetFontAtRange(const Font& font, const TextRange& range);
+    virtual void SetFontAtRange(const zaf::Font& font, const TextRange& range);
 
     /**
      Reset all particular fonts to default font.
@@ -226,7 +227,7 @@ protected:
 private:
     zaf::Size CalculatePreferredSize(const zaf::Size& max_size) const;
     TextLayout CreateTextLayout() const;
-    TextFormat CreateTextFormat(const Font& default_font) const;
+    TextFormat CreateTextFormat(const zaf::Font& default_font) const;
     void SetRangedFontsToTextLayout(TextLayout& text_layout) const;
 
     void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer);

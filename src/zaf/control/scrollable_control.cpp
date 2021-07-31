@@ -6,7 +6,6 @@
 #include <zaf/control/text_box.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
-#include <zaf/parsing/parsers/scrollable_control_parser.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -30,7 +29,7 @@ constexpr wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness"
 
 
 ZAF_DEFINE_TYPE(ScrollableControl)
-    ZAF_DEFINE_TYPE_PARSER(ScrollableControlParser)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(ScrollContentControl)
 ZAF_DEFINE_TYPE_END
 
 

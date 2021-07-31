@@ -77,7 +77,7 @@ void GeneralLayouter::LayoutScrollContentControlSize(
     bool can_show_vertical_scroll_bar, 
     bool can_show_horizontal_scroll_bar) {
 
-    const auto& scroll_content_control = GetScrollableControl()->GetScrollContentControl();
+    const auto& scroll_content_control = GetScrollableControl()->ScrollContentControl();
 
     Rect new_rect = scroll_content_control->Rect();
     new_rect.size = GetExpectedScrollContentControlSize();
@@ -100,7 +100,7 @@ void GeneralLayouter::LayoutScrollContentControlSize(
 
 Size GeneralLayouter::GetExpectedScrollContentControlSize() {
 
-    const auto& scroll_content_control = GetScrollableControl()->GetScrollContentControl();
+    const auto& scroll_content_control = GetScrollableControl()->ScrollContentControl();
     const auto& padding = scroll_content_control->Padding();
     const auto& border = scroll_content_control->Border();
 
@@ -113,7 +113,7 @@ Size GeneralLayouter::GetExpectedScrollContentControlSize() {
 
 void GeneralLayouter::AdjustScrollBarValueRanges() {
 
-    const auto& scroll_content_control = GetScrollableControl()->GetScrollContentControl();
+    const auto& scroll_content_control = GetScrollableControl()->ScrollContentControl();
     const auto& scroll_container_control = GetScrollableControl()->GetScrollContainerControl();
     const auto& vertical_scroll_bar = GetVerticalScrollBar();
     const auto& horizontal_scroll_bar = GetHorizontalScrollBar();
@@ -152,7 +152,7 @@ void GeneralLayouter::AdjustScrollBarValueRanges() {
 
 void GeneralLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) {
 
-    const auto& scroll_content_control = GetScrollableControl()->GetScrollContentControl();
+    const auto& scroll_content_control = GetScrollableControl()->ScrollContentControl();
 
     Rect content_rect = scroll_content_control->Rect();
 

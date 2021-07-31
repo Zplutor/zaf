@@ -9,7 +9,6 @@
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/graphic/text/text_layout_properties.h>
 #include <zaf/internal/theme.h>
-#include <zaf/parsing/parsers/textual_control_parser.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 
@@ -55,11 +54,12 @@ void SetDefaultFontOtherPropertiesToTextLayout(
 }
 
 ZAF_DEFINE_TYPE(TextualControl)
-ZAF_DEFINE_TYPE_PARSER(TextualControlParser)
 ZAF_DEFINE_TYPE_PROPERTY(Text)
 ZAF_DEFINE_TYPE_PROPERTY(TextLength)
 ZAF_DEFINE_TYPE_PROPERTY(TextColor)
+ZAF_DEFINE_TYPE_PROPERTY(Font)
 ZAF_DEFINE_TYPE_PROPERTY(FontSize)
+ZAF_DEFINE_TYPE_PROPERTY(FontWeight)
 ZAF_DEFINE_TYPE_PROPERTY(TextAlignment)
 ZAF_DEFINE_TYPE_PROPERTY(ParagraphAlignment)
 ZAF_DEFINE_TYPE_PROPERTY(WordWrapping)
@@ -113,7 +113,7 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 TextLayout TextualControl::CreateTextLayout() const {
 
-    auto default_font = GetFont();
+    auto default_font = Font();
 
     auto text = Text();
     auto text_length = text.length();
@@ -130,7 +130,7 @@ TextLayout TextualControl::CreateTextLayout() const {
 }
 
 
-TextFormat TextualControl::CreateTextFormat(const Font& default_font) const {
+TextFormat TextualControl::CreateTextFormat(const zaf::Font& default_font) const {
 
     TextFormatProperties text_format_properties;
     text_format_properties.font_family_name = default_font.family_name;
@@ -289,18 +289,18 @@ void TextualControl::ResetTextColorPickers() {
 }
 
 
-Font TextualControl::GetFont() const {
+Font TextualControl::Font() const {
 
-    auto font = GetPropertyMap().TryGetProperty<Font>(kDefaultFontPropertyName);
+    auto font = GetPropertyMap().TryGetProperty<zaf::Font>(kDefaultFontPropertyName);
     if (font != nullptr) {
         return *font;
     }
     else {
-        return Font::GetDefault();
+        return Font::Default();
     };
 }
 
-void TextualControl::SetFont(const Font& font) {
+void TextualControl::SetFont(const zaf::Font& font) {
 
     GetPropertyMap().SetProperty(kDefaultFontPropertyName, font);
 
@@ -310,24 +310,24 @@ void TextualControl::SetFont(const Font& font) {
 
 
 float TextualControl::FontSize() const {
-    return GetFont().size;
+    return Font().size;
 }
 
 void TextualControl::SetFontSize(float size) {
 
-    auto new_font = GetFont();
+    auto new_font = Font();
     new_font.size = size;
     SetFont(new_font);
 }
 
 
-int TextualControl::GetFontWeight() const {
-    return GetFont().weight;
+FontWeight TextualControl::FontWeight() const {
+    return Font().weight;
 }
 
-void TextualControl::SetFontWeight(int weight) {
+void TextualControl::SetFontWeight(zaf::FontWeight weight) {
 
-    auto new_font = GetFont();
+    auto new_font = Font();
     new_font.weight = weight;
     SetFont(new_font);
 }
@@ -346,11 +346,11 @@ Font TextualControl::GetFontAtPosition(std::size_t position) const {
         }
     }
 
-    return GetFont();
+    return Font();
 }
 
 
-void TextualControl::SetFontAtRange(const Font& font, const TextRange& range) {
+void TextualControl::SetFontAtRange(const zaf::Font& font, const TextRange& range) {
 
     auto fonts = GetPropertyMap().GetProperty<std::shared_ptr<FontRangeMap>>(
         kFontsPropertyName,
