@@ -5,7 +5,7 @@
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
 #include <zaf/object/internal/base_enum_type.h>
 #include <zaf/object/internal/enum_parser.h>
-#include <zaf/reflection/reflection_manager.h>
+#include <zaf/object/internal/reflection_manager.h>
 
 #define ZAF_DEFINE_ENUM(EnumName)                                                                  \
 /* Forward declarations */                                                                         \
@@ -66,7 +66,7 @@ protected:                                                                      
 };                                                                                                 \
 zaf::ObjectType* CreateType() {                                                                    \
     static TheType type;                                                                           \
-    zaf::GetReflectionManager().RegisterType(&type);                                               \
+    zaf::internal::ReflectionManager::Instance().RegisterType(&type);                              \
     return &type;                                                                                  \
 }                                                                                                  \
 zaf::EnumType* ToEnumType(zaf::ObjectType* type) {                                                 \

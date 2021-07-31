@@ -3,7 +3,7 @@
 #include <zaf/application.h>
 #include <zaf/creation.h>
 #include <zaf/object/property_definition.h>
-#include <zaf/reflection/reflection_manager.h>
+#include <zaf/object/internal/reflection_manager.h>
 
 #define ZAF_DEFINE_TYPE(ClassName)                                                              \
 namespace __zaf_internal_##ClassName##_type_definition {                                        \
@@ -44,7 +44,7 @@ public:                                                                         
 };                                                                                              \
 zaf::ObjectType* CreateType() {                                                                 \
     static TheType type;                                                                        \
-    zaf::GetReflectionManager().RegisterType(&type);                                            \
+    zaf::internal::ReflectionManager::Instance().RegisterType(&type);                           \
     return &type;                                                                               \
 }                                                                                               \
 }

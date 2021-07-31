@@ -15,7 +15,7 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/control/list_box.h>
 #include <zaf/object/object_type.h>
-#include <zaf/reflection/reflection_manager.h>
+#include <zaf/object/internal/reflection_manager.h>
 #include <zaf/object/object_property.h>
 #include <zaf/object/parsing/helpers.h>
 #include <zaf/object/parsing/xaml_reader.h>

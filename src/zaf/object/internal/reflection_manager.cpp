@@ -1,8 +1,14 @@
-#include <zaf/reflection/reflection_manager.h>
+#include <zaf/object/internal/reflection_manager.h>
 #include <zaf/object/object.h>
 #include <zaf/object/object_type.h>
 
-namespace zaf {
+namespace zaf::internal {
+
+ReflectionManager& ReflectionManager::Instance() {
+    static ReflectionManager instance;
+    return instance;
+}
+
 
 void ReflectionManager::RegisterType(ObjectType* type) {
 

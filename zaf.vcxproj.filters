@@ -331,9 +331,6 @@
     <ClCompile Include="src\zaf\graphic\alignment.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\reflection\reflection_manager.cpp">
-      <Filter>zaf\reflection</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp">
       <Filter>zaf\base\registry</Filter>
     </ClCompile>
@@ -660,6 +657,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\object\parsing\internal\utility.cpp">
       <Filter>zaf\object\parsing\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\internal\reflection_manager.cpp">
+      <Filter>zaf\object\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1056,9 +1056,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h">
       <Filter>zaf\graphic\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\reflection\reflection_manager.h">
-      <Filter>zaf\reflection</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\string\split.h">
       <Filter>zaf\base\string</Filter>
@@ -1560,6 +1557,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\parsing\internal\utility.h">
       <Filter>zaf\object\parsing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\reflection_manager.h">
+      <Filter>zaf\object\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

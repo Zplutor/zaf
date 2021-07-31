@@ -10,7 +10,6 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/internal/system_message_window.h>
-#include <zaf/reflection/reflection_manager.h>
 #include <zaf/resource/resource_manager.h>
 #include <zaf/rx/internal/rx_runtime.h>
 #include <zaf/window/window.h>
@@ -23,9 +22,7 @@ Application& Application::Instance() {
 }
 
 
-Application::Application() : 
-    is_initialized_(false), 
-    reflection_manager_(std::make_unique<ReflectionManager>()) {
+Application::Application() : is_initialized_(false) {
 
 }
 

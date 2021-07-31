@@ -7,7 +7,7 @@
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_reader.h>
 #include <zaf/base/string/encoding_conversion.h>
-#include <zaf/reflection/reflection_manager.h>
+#include <zaf/object/internal/reflection_manager.h>
 #include <zaf/resource/resource_manager.h>
 
 namespace zaf {
@@ -118,7 +118,7 @@ std::wstring Object::ToString() const {
 ObjectType* const Object::Type = []() {
 
     static TheType type;
-    zaf::GetReflectionManager().RegisterType(&type);
+    zaf::internal::ReflectionManager::Instance().RegisterType(&type);
     return &type;
 }();
 

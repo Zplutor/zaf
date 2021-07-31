@@ -23,7 +23,6 @@ class ImagingFactory;
 
 class ApplicationDelegate;
 class GraphicFactory;
-class ReflectionManager;
 class ResourceManager;
 class UriLoader;
 class Window;
@@ -85,10 +84,6 @@ public:
     std::filesystem::path GetWorkingDirectoryPath() const;
     std::filesystem::path GetExeFilePath() const;
     std::filesystem::path GetExeDirectoryPath() const;
-
-    ReflectionManager& GetReflectionManager() const {
-        return *reflection_manager_;
-    }
 
     ResourceManager& GetResourceManager() const {
         return *resource_manager_;
@@ -177,7 +172,6 @@ private:
     bool is_initialized_;
 
     std::unique_ptr<internal::RxRuntime> rx_runtime_;
-    std::unique_ptr<ReflectionManager> reflection_manager_;
     std::unique_ptr<ResourceManager> resource_manager_;
     std::unique_ptr<GraphicFactory> graphic_factory_;
     std::unique_ptr<wic::ImagingFactory> imaging_factory_;
@@ -194,11 +188,6 @@ private:
 
 inline Application& GetApplication() {
     return Application::Instance();
-}
-
-
-inline ReflectionManager& GetReflectionManager() {
-    return Application::Instance().GetReflectionManager();
 }
 
 
