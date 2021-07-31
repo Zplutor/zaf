@@ -11,12 +11,6 @@ public:
         Text,
     };
 
-    class Attribute {
-    public:
-        std::wstring name;
-        std::wstring value;
-    };
-
 public:
     XamlNode(Type type) : type_(type) { }
 
