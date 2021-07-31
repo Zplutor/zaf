@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/creation.h>
-#include <zaf/parsing/parsers/internal/utility.h>
+#include <zaf/object/parsing/internal/utility.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/object_type.h>
 

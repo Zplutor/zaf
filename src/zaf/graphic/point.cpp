@@ -1,6 +1,6 @@
 #include <zaf/graphic/point.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/parsing/parsers/internal/utility.h>
+#include <zaf/object/parsing/internal/utility.h>
 
 namespace zaf {
 namespace {
