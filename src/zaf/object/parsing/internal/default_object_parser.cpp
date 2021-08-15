@@ -1,4 +1,5 @@
 #include <zaf/object/parsing/internal/default_object_parser.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/base/string/split.h>
 #include <zaf/object/object.h>
 #include <zaf/object/object_property.h>
@@ -97,7 +98,7 @@ std::shared_ptr<Object> ParsePropertyValueFromNode(
 
         const auto& content_nodes = node.GetContentNodes();
         if (content_nodes.size() != 1) {
-            //TODO: Raise error
+            ZAF_THROW_ERRC(zaf::BasicErrc::InvalidValue);
         }
 
         return internal::CreateObjectFromNode<Object>(content_nodes.front());

@@ -572,7 +572,7 @@ void Window::Repaint() {
         renderer_.EndDraw();
     }
     catch (const Error& error) {
-        if (error.Code() == MakeComErrorCode(D2DERR_RECREATE_TARGET)) {
+        if (error.Code() == MakeCOMErrorCode(D2DERR_RECREATE_TARGET)) {
             RecreateRenderer();
         }
     }

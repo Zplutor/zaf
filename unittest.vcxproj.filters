@@ -67,6 +67,12 @@
     <Filter Include="case\object\parsing">
       <UniqueIdentifier>{1dec8fdf-0093-4e1c-8aac-6763cf9cc27a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\graphic\font">
+      <UniqueIdentifier>{fb8bed71-7a2d-4102-b70d-58f6b2fad825}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility">
+      <UniqueIdentifier>{f9b12e41-c943-4c77-9372-84ff0bf4bf0b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -262,6 +268,12 @@
     <ClCompile Include="unittest\case\base\flag_enum_test.cpp">
       <Filter>case\base</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\graphic\font\font_weight_test.cpp">
+      <Filter>case\graphic\font</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing\boolean_test.cpp">
+      <Filter>case\object\boxing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
@@ -269,6 +281,9 @@
     </ClInclude>
     <ClInclude Include="unittest\case\parsing\parsers\utility.h">
       <Filter>case\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="unittest\utility\assert.h">
+      <Filter>utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

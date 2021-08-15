@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <zaf/base/assert.h>
 #include <zaf/base/define.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/check.h>
-#include <zaf/base/error/system_error.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/control/internal/cached_painting.h>
 #include <zaf/control/internal/control_updating.h>
@@ -52,8 +52,7 @@ public:
 
             auto child_control = internal::CreateObjectFromNode<Control>(each_node);
             if (!child_control) {
-                //TODO: raise proper error.
-                ZAF_THROW_SYSTEM_ERROR(ERROR_INVALID_NAME);
+                ZAF_THROW_ERRC(BasicErrc::NameNotFound);
             }
 
             control.AddChild(child_control);

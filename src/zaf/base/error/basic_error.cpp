@@ -1,24 +1,24 @@
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/error/basic_error.h>
 
 namespace zaf {
 namespace {
 
-class ComErrorCategory : public std::error_category {
+class BasicErrorCategory : public std::error_category {
 public:
     const char* name() const noexcept override {
-        return "COM";
+        return "Basic";
     }
 
     std::string message(int condition) const override {
+
         return std::string{};
     }
 };
 
 }
 
-const std::error_category& COMCategory() {
-
-    static ComErrorCategory category;
+const std::error_category& BasicCategory() {
+    static BasicErrorCategory category;
     return category;
 }
 

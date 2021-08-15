@@ -1,4 +1,5 @@
 #include <zaf/object/boxing/boolean.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_utility.h>
 #include <zaf/object/type_definition.h>
@@ -13,10 +14,12 @@ public:
     }
 
     void ParseFromNode(const XamlNode& node, Object& object) override {
+
         auto content_string = GetContentStringFromXamlNode(node);
         if (!content_string) {
-            //TODO: Raise error.
+            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
         }
+
         Parse(*content_string, object);
     }
 
@@ -32,7 +35,7 @@ private:
             boolean.SetValue(false);
         }
         else {
-            //TODO: Raise an runtime error.
+            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
         }
     }
 };

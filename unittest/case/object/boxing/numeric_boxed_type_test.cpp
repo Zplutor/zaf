@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/boxing/numeric.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_reader.h>
+#include "utility/assert.h"
 
 TEST(NumericBoxedTypeTest, IsEqual) {
 
@@ -44,7 +46,15 @@ TEST(NumericBoxedTypeTest, Parse) {
     parser->ParseFromAttribute(L"11", i32);
     ASSERT_EQ(i32.Value(), 11);
 
+    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"abc", i32), zaf::BasicErrc::InvalidValue);
+
     auto node = zaf::XamlReader::FromString("<Int32>31</Int32>")->Read();
     parser->ParseFromNode(*node, i32);
     ASSERT_EQ(i32.Value(), 31);
+
+    node = zaf::XamlReader::FromString("<Int32></Int32>")->Read();
+    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, i32), zaf::BasicErrc::InvalidValue);
+
+    node = zaf::XamlReader::FromString("<Int32>abc</Int32>")->Read();
+    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, i32), zaf::BasicErrc::InvalidValue);
 }

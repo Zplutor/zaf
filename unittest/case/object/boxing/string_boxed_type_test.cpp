@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/boxing/string.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_reader.h>
+#include <utility/assert.h>
 
 TEST(StringBoxedTypeTest, StringIsEqual) {
 
@@ -70,6 +72,13 @@ TEST(StringBoxedTypeTest, StringParse) {
     auto node = zaf::XamlReader::FromString("<String>a node</String>")->Read();
     parser->ParseFromNode(*node, string);
     ASSERT_EQ(string.Value(), "a node");
+
+    node = zaf::XamlReader::FromString("<String></String>")->Read();
+    parser->ParseFromNode(*node, string);
+    ASSERT_EQ(string.Value(), "");
+
+    node = zaf::XamlReader::FromString("<String><Child/></String>")->Read();
+    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, string), zaf::BasicErrc::InvalidValue);
 }
 
 
@@ -84,4 +93,11 @@ TEST(StringBoxedTypeTest, WideStringParse) {
     auto node = zaf::XamlReader::FromString("<String>a node</String>")->Read();
     parser->ParseFromNode(*node, string);
     ASSERT_EQ(string.Value(), L"a node");
+
+    node = zaf::XamlReader::FromString("<String></String>")->Read();
+    parser->ParseFromNode(*node, string);
+    ASSERT_EQ(string.Value(), L"");
+
+    node = zaf::XamlReader::FromString("<String><Child/></String>")->Read();
+    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, string), zaf::BasicErrc::InvalidValue);
 }

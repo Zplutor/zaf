@@ -661,6 +661,9 @@
     <ClCompile Include="src\zaf\object\internal\reflection_manager.cpp">
       <Filter>zaf\object\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\base\error\basic_error.cpp">
+      <Filter>zaf\base\error</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1560,6 +1563,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\internal\reflection_manager.h">
       <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\basic_error.h">
+      <Filter>zaf\base\error</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

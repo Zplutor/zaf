@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/base/error/basic_error.h>
 #include <zaf/base/flag_enum.h>
 #include <zaf/base/string/split.h>
 #include <zaf/base/string/trim.h>
@@ -71,7 +72,7 @@ private:
 
         auto value_object = enum_type_->FindValue(text);
         if (!value_object) {
-            //TODO: throw error
+            ZAF_THROW_ERRC(zaf::BasicErrc::InvalidValue);
         }
 
         return dynamic_cast<const internal::GetBoxType<T>::Type&>(*value_object).Value();

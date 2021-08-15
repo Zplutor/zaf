@@ -24,6 +24,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release-MT|Win32'">precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="src\zaf\application.cpp" />
+    <ClCompile Include="src\zaf\base\error\basic_error.cpp" />
     <ClCompile Include="src\zaf\base\error\com_error.cpp" />
     <ClCompile Include="src\zaf\base\log.cpp" />
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="src\zaf\base\assert.h" />
     <ClInclude Include="src\zaf\base\container\utility\copy.h" />
     <ClInclude Include="src\zaf\base\container\utility\range.h" />
+    <ClInclude Include="src\zaf\base\error\basic_error.h" />
     <ClInclude Include="src\zaf\base\error\check.h" />
     <ClInclude Include="src\zaf\base\hash.h" />
     <ClInclude Include="src\zaf\base\source_site.h" />

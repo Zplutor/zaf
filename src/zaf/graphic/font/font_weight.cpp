@@ -1,4 +1,5 @@
 #include <zaf/graphic/font/font_weight.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_utility.h>
@@ -20,7 +21,7 @@ public:
             Parse(*content_string, object);
         }
         else {
-            //TODO: raise error
+            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
         }
     }
 
@@ -60,8 +61,7 @@ private:
             }
         }
 
-        //TODO: raise error
-        return 0;
+        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
     }
 };
 

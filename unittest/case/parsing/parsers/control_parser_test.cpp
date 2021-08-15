@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/control/control.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/graphic/image/uri_image.h>
@@ -373,6 +374,26 @@ TEST(ControlParserTest, ParseChildren) {
     ASSERT_EQ(children.size(), 2);
     ASSERT_EQ(children[0]->Name(), L"child1");
     ASSERT_EQ(children[1]->Name(), L"child2");
+}
+
+
+TEST(ControlParserTest, ParseChildrenInvalidName) {
+
+    auto xaml = R"(
+        <Control>
+            <NoThisChild />
+        </Control>
+    )";
+
+    bool has_exception{};
+
+    try {
+        auto control = CreateControlFromXaml(xaml);
+    }
+    catch (const zaf::Error& error) {
+        has_exception = (error.Code() == zaf::BasicErrc::NameNotFound);
+    }
+    ASSERT_TRUE(has_exception);
 }
 
 

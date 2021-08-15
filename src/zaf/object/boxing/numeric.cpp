@@ -1,5 +1,6 @@
 #include <zaf/object/boxing/numeric.h>
 #include <functional>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
 #include <zaf/object/type_definition.h>
@@ -17,10 +18,12 @@ public:
     }
 
     void ParseFromNode(const XamlNode& node, Object& object) override {
+
         auto content_string = GetContentStringFromXamlNode(node);
         if (!content_string) {
-            //TODO: Raise error
+            ZAF_THROW_ERRC(zaf::BasicErrc::InvalidValue);
         }
+
         Parse(*content_string, object);
     }
 
@@ -34,7 +37,7 @@ private:
             numeric.SetValue(value);
         }
         else {
-            //TODO: Raise a runtime error.
+            ZAF_THROW_ERRC(zaf::BasicErrc::InvalidValue);
         }
     }
 };

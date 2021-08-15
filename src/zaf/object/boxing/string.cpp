@@ -1,8 +1,10 @@
 #include <zaf/object/boxing/string.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
 #include <zaf/object/boxing/internal/string_conversion_shim.h>
 #include <zaf/object/parsing/object_parser.h>
+#include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/parsing/xaml_utility.h>
 
 namespace zaf {
@@ -16,10 +18,17 @@ public:
     }
 
     void ParseFromNode(const XamlNode& node, Object& object) override {
+
+        if (node.GetContentNodes().empty()) {
+            dynamic_cast<T&>(object).SetValue(typename T::ValueType{});
+            return;
+        }
+
         auto content_string = GetContentStringFromXamlNode(node);
         if (!content_string) {
-            //TODO: Raise error
+            ZAF_THROW_ERRC(zaf::BasicErrc::InvalidValue);
         }
+
         Parse(*content_string, object);
     }
 
