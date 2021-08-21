@@ -101,3 +101,27 @@ TEST(StringBoxedTypeTest, WideStringParse) {
     node = zaf::XamlReader::FromString("<String><Child/></String>")->Read();
     ASSERT_THROW_ERRC(parser->ParseFromNode(*node, string), zaf::BasicErrc::InvalidValue);
 }
+
+
+TEST(StringBoxedTypeTest, ParseStringToInvalidObject) {
+
+    auto parser = zaf::String::Type->GetParser();
+    zaf::Object object;
+
+    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"abc", object), zaf::BasicErrc::InvalidCast);
+
+    auto node = zaf::XamlReader::FromString("<String />")->Read();
+    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, object), zaf::BasicErrc::InvalidCast);
+}
+
+
+TEST(StringBoxedTypeTest, ParseWideStringToInvalidObject) {
+
+    auto parser = zaf::WideString::Type->GetParser();
+    zaf::Object object;
+
+    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"abc", object), zaf::BasicErrc::InvalidCast);
+
+    auto node = zaf::XamlReader::FromString("<WideString />")->Read();
+    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, object), zaf::BasicErrc::InvalidCast);
+}

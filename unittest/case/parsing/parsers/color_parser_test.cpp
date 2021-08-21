@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/graphic/color.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/parsing/xaml_reader.h>
+#include "utility/assert.h"
 #include "utility.h"
 
 TEST(ColorParser, ParseFromAttribute) {
@@ -61,4 +63,16 @@ TEST(ColorParser, ParseFromNode) {
 
     color = zaf::CreateObjectFromXaml<zaf::Color>("<Color>Cyan</Color>");
     ASSERT_EQ(*color, zaf::Color::Cyan());
+}
+
+
+TEST(ColorParser, ParseToInvalidObject) {
+
+    auto parser = zaf::Color::Type->GetParser();
+    zaf::Object object;
+        
+    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"#112233", object), zaf::BasicErrc::InvalidCast);
+
+    auto xaml_node = zaf::XamlReader::FromString(L"<Color>#ddeeff</Color>")->Read();
+    ASSERT_THROW_ERRC(parser->ParseFromNode(*xaml_node, object), zaf::BasicErrc::InvalidCast);
 }

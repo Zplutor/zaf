@@ -1,5 +1,6 @@
 #include <zaf/graphic/color.h>
 #include <optional>
+#include <zaf/base/as.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_node.h>
@@ -118,11 +119,9 @@ class ColorParser : public ObjectParser {
 public:
     void ParseFromAttribute(const std::wstring& attribute, Object& object) override {
 
-        auto& color = dynamic_cast<Color&>(object);
-
         auto decoded_color = DecodeColorValue(attribute);
         if (decoded_color) {
-            color = *decoded_color;
+            As<Color>(object) = *decoded_color;
         }
     }
 
@@ -140,8 +139,7 @@ public:
 
         auto decoded_color = DecodeColorValue(content_node->GetValue());
         if (decoded_color) {
-            auto& color = dynamic_cast<Color&>(object);
-            color = *decoded_color;
+            As<Color>(object) = *decoded_color;
         }
     }
 };

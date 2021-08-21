@@ -1,4 +1,5 @@
 #include <zaf/object/boxing/string.h>
+#include <zaf/base/as.h>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
@@ -20,7 +21,7 @@ public:
     void ParseFromNode(const XamlNode& node, Object& object) override {
 
         if (node.GetContentNodes().empty()) {
-            dynamic_cast<T&>(object).SetValue(typename T::ValueType{});
+            As<T>(object).SetValue(typename T::ValueType{});
             return;
         }
 
@@ -35,8 +36,7 @@ public:
 private:
     void Parse(const std::wstring& value, Object& object) {
 
-        auto& string = dynamic_cast<T&>(object);
-        string.SetValue(internal::StringConversionShim<typename T::ValueType>::From(value));
+        As<T>(object).SetValue(internal::StringConversionShim<typename T::ValueType>::From(value));
     }
 };
 

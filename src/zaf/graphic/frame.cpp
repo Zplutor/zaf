@@ -1,4 +1,5 @@
 #include <zaf/graphic/frame.h>
+#include <zaf/base/as.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/object/parsing/internal/utility.h>
 #include <zaf/object/parsing/object_parser.h>
@@ -25,7 +26,7 @@ public:
 private:
     static void Parse(const std::wstring& value, Object& object) {
 
-        auto& frame = dynamic_cast<Frame&>(object);
+        auto& frame = As<Frame>(object);
 
         float float_value{};
         if (TryToNumeric<float>(value, float_value)) {

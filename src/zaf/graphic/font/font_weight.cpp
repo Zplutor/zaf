@@ -1,4 +1,5 @@
 #include <zaf/graphic/font/font_weight.h>
+#include <zaf/base/as.h>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/object/parsing/object_parser.h>
@@ -29,7 +30,7 @@ private:
     void Parse(const std::wstring& string_value, Object& object) {
 
         int value = ParseValue(string_value);
-        dynamic_cast<FontWeight&>(object) = value;
+        As<FontWeight>(object) = value;
     }
 
     int ParseValue(const std::wstring& value) {

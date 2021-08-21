@@ -1,5 +1,6 @@
 #include <zaf/object/boxing/numeric.h>
 #include <functional>
+#include <zaf/base/as.h>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
@@ -30,11 +31,9 @@ public:
 private:
     void Parse(const std::wstring& string, Object& object) {
 
-        auto& numeric = dynamic_cast<T&>(object);
-
         typename T::ValueType value{};
         if (TryToNumeric<typename T::ValueType>(string, value)) {
-            numeric.SetValue(value);
+            As<T>(object).SetValue(value);
         }
         else {
             ZAF_THROW_ERRC(zaf::BasicErrc::InvalidValue);

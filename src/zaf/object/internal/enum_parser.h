@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/base/error/basic_error.h>
+#include <zaf/base/as.h>
 #include <zaf/base/flag_enum.h>
 #include <zaf/base/string/split.h>
 #include <zaf/base/string/trim.h>
@@ -39,7 +40,7 @@ private:
     void Parse(const std::wstring& text, Object& object) {
 
         T value = ParseValue(text, nullptr);
-        dynamic_cast<internal::GetBoxType<T>::Type&>(object).SetValue(value);
+        As<internal::GetBoxType<T>::Type>(object).SetValue(value);
     }
 
 

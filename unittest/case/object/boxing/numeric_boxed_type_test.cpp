@@ -58,3 +58,15 @@ TEST(NumericBoxedTypeTest, Parse) {
     node = zaf::XamlReader::FromString("<Int32>abc</Int32>")->Read();
     ASSERT_THROW_ERRC(parser->ParseFromNode(*node, i32), zaf::BasicErrc::InvalidValue);
 }
+
+
+TEST(NumericBoxedTypeTest, ParseToInvalidObject) {
+
+    auto parser = zaf::Int32::Type->GetParser();
+    zaf::Object object;
+
+    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"33", object), zaf::BasicErrc::InvalidCast);
+
+    auto node = zaf::XamlReader::FromString("<Int32>444</Int32>")->Read();
+    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, object), zaf::BasicErrc::InvalidCast);
+}

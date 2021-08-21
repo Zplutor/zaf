@@ -1,4 +1,5 @@
 #include <zaf/graphic/size.h>
+#include <zaf/base/as.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/object/parsing/internal/utility.h>
 
@@ -9,7 +10,7 @@ class SizeParser : public ObjectParser {
 public:
     void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
 
-        auto& size = dynamic_cast<Size&>(object);
+        auto& size = As<Size>(object);
         internal::ParseAttributeToDoubleFloats(attribute_value, size.width, size.height);
     }
 

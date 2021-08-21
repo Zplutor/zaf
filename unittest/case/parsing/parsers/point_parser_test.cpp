@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/graphic/point.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/parsing/xaml_reader.h>
+#include "utility/assert.h"
 
 TEST(PointParser, ParseFromAttribute) {
 
@@ -35,4 +37,16 @@ TEST(PointParser, ParseFromNode) {
     node = zaf::XamlReader::FromString(xaml)->Read();
     parser->ParseFromNode(*node, point);
     ASSERT_EQ(point, zaf::Point(55, 66));
+}
+
+
+TEST(PointParser, ParseToInvalidObject) {
+
+    auto parser = zaf::Point::Type->GetParser();
+    zaf::Object object;
+
+    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"120,34", object), zaf::BasicErrc::InvalidCast);
+
+    //auto xaml_node = zaf::XamlReader::FromString(L"<Point X=\"18\" />")->Read();
+    //ASSERT_THROW_ERRC(parser->ParseFromNode(*xaml_node, object), zaf::BasicErrc::InvalidCast);
 }

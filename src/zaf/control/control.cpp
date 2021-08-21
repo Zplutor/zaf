@@ -1,6 +1,7 @@
 #include <zaf/control/control.h>
 #include <algorithm>
 #include <zaf/base/assert.h>
+#include <zaf/base/as.h>
 #include <zaf/base/define.h>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/check.h>
@@ -39,7 +40,7 @@ public:
 
     void ParseFromNode(const XamlNode& node, Object& object) override {
 
-        auto& control = dynamic_cast<Control&>(object);
+        auto& control = As<Control>(object);
         auto update_guard = control.BeginUpdate();
 
         XamlNodeParseHelper helper(node, control.GetType());

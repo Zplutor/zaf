@@ -1,4 +1,5 @@
 #include <zaf/graphic/point.h>
+#include <zaf/base/as.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/object/parsing/internal/utility.h>
 
@@ -11,7 +12,7 @@ public:
         const std::wstring& attribute_value,
         Object& object) {
 
-        auto& point = dynamic_cast<Point&>(object);
+        auto& point = As<Point>(object);
         internal::ParseAttributeToDoubleFloats(attribute_value, point.x, point.y);
     }
 

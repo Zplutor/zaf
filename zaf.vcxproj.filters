@@ -1567,5 +1567,8 @@
     <ClInclude Include="src\zaf\base\error\basic_error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\as.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

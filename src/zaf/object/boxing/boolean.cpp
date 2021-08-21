@@ -1,4 +1,5 @@
 #include <zaf/object/boxing/boolean.h>
+#include <zaf/base/as.h>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_utility.h>
@@ -26,7 +27,7 @@ public:
 private:
     void Parse(const std::wstring& string, Object& object) {
 
-        auto& boolean = dynamic_cast<Boolean&>(object);
+        auto& boolean = As<Boolean>(object);
 
         if (string == L"true") {
             boolean.SetValue(true);

@@ -1,8 +1,11 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/creation.h>
 #include <zaf/object/parsing/helpers.h>
+#include <zaf/object/parsing/xaml_reader.h>
 #include <zaf/object/object_type.h>
 #include <zaf/graphic/image/uri_image.h>
+#include "utility/assert.h"
 
 using namespace zaf;
 
@@ -34,4 +37,18 @@ TEST(URIImageParser, ParseFromNode) {
         </URIImage>
     )");
     ASSERT_EQ(image->GetURI(), L"file:///C:/image3.png");
+}
+
+
+TEST(URIImageParser, ParseToInvalidObject) {
+
+    auto parser = URIImage::Type->GetParser();
+    zaf::Object object;
+
+    ASSERT_THROW_ERRC(
+        parser->ParseFromAttribute(L"file:///C:/image.png", object), 
+        zaf::BasicErrc::InvalidCast);
+
+    auto xaml_node = XamlReader::FromString(L"<URIImage>file:///C:/image2.png</URIImage>")->Read();
+    ASSERT_THROW_ERRC(parser->ParseFromNode(*xaml_node, object), zaf::BasicErrc::InvalidCast);
 }
