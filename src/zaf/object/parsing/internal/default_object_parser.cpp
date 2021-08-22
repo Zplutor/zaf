@@ -62,6 +62,21 @@ void ParseAttributes(const XamlNode& node, Object& object) {
 }
 
 
+bool IsTypeNameMatched(const std::wstring& type_name, ObjectType* type) {
+
+    auto current_type = type;
+    while (current_type) {
+
+        if (current_type->GetName() == type_name) {
+            return true;
+        }
+
+        current_type = current_type->GetBase();
+    }
+    return false;
+}
+
+
 ObjectProperty* FindPropertyByNode(const Object& object, const std::wstring& node_name) {
 
     auto splitted = Split(node_name, L'.');
@@ -72,15 +87,16 @@ ObjectProperty* FindPropertyByNode(const Object& object, const std::wstring& nod
     const auto& type_name = splitted[0];
     const auto& property_name = splitted[1];
 
+    if (!IsTypeNameMatched(type_name, object.GetType())) {
+        return nullptr;
+    }
+
     auto type = object.GetType();
     while (type) {
 
-        if (type->GetName() == type_name) {
-
-            auto property = type->FindProperty(property_name);
-            if (property) {
-                return property;
-            }
+        auto property = type->FindProperty(property_name);
+        if (property) {
+            return property;
         }
 
         type = type->GetBase();

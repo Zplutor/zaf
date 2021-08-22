@@ -133,3 +133,62 @@ TEST(ParsingTest, ParseInvalidDynamicNode) {
     node = zaf::XamlReader::FromString(xaml)->Read();
     ASSERT_THROW_ERRC(parser->ParseFromNode(*node, host), zaf::BasicErrc::InvalidValue);
 }
+
+
+namespace {
+
+class PropertyNodeBase : public zaf::Object {
+public:
+    ZAF_DECLARE_TYPE
+
+    int BaseValue{};
+};
+
+ZAF_DEFINE_TYPE(PropertyNodeBase)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(BaseValue, BaseValue)
+ZAF_DEFINE_TYPE_END
+
+class PropertyNodeDerived : public PropertyNodeBase {
+public:
+    ZAF_DECLARE_TYPE
+};
+
+ZAF_DEFINE_TYPE(PropertyNodeDerived)
+ZAF_DEFINE_TYPE_END
+
+}
+
+TEST(ParsingTest, ParsePropertyNode) {
+
+    //Property with derived class name.
+    {
+        auto xaml = LR"(
+            <PropertyNodeDerived>
+                <PropertyNodeDerived.BaseValue>11</PropertyNodeDerived.BaseValue>
+            </PropertyNodeDerived>
+        )";
+        auto node = zaf::XamlReader::FromString(xaml)->Read();
+
+        auto parser = PropertyNodeDerived::Type->GetParser();
+        PropertyNodeDerived object;
+        parser->ParseFromNode(*node, object);
+
+        ASSERT_EQ(object.BaseValue, 11);
+    }
+
+    //Property with base class name.
+    {
+        auto xaml = LR"(
+            <PropertyNodeDerived>
+                <PropertyNodeBase.BaseValue>12</PropertyNodeBase.BaseValue>
+            </PropertyNodeDerived>
+        )";
+        auto node = zaf::XamlReader::FromString(xaml)->Read();
+
+        auto parser = PropertyNodeDerived::Type->GetParser();
+        PropertyNodeDerived object;
+        parser->ParseFromNode(*node, object);
+
+        ASSERT_EQ(object.BaseValue, 12);
+    }
+}
