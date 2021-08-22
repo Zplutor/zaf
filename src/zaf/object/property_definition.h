@@ -55,7 +55,7 @@ struct PropertyName##Accessor {                                                 
         const std::shared_ptr<zaf::Object>& value,                                                 \
         SetterValueType<T>* value_type) {                                                          \
         using Unboxer =                                                                            \
-            zaf::internal::GetPropertyUnboxer<std::decay_t<decltype(*value_type)>>::Type;          \
+            typename zaf::internal::GetPropertyUnboxer<std::decay_t<decltype(*value_type)>>::Type; \
         object.Set##PropertyName(Unboxer::Unbox(value));                                           \
     }                                                                                              \
     template<typename T>                                                                           \

@@ -26,20 +26,20 @@ namespace {
 
 const wchar_t* const kDefaultWindowClassName = L"ZafDefaultWindowClass";
 
-constexpr wchar_t* const kActivateOptionPropertyName = L"ActivateOption";
-constexpr wchar_t* const kCanMaximizePropertyName = L"CanMaximize";
-constexpr wchar_t* const kCanMinimizePropertyName = L"CanMinimize";
-constexpr wchar_t* const kCloseHandlerPropertyName = L"CloseHandler";
-constexpr wchar_t* const kDestroyEventPropertyName = L"DestroyEvent";
-constexpr wchar_t* const kHasBorderPropertyName = L"HasBorder";
-constexpr wchar_t* const kHasSystemMenuPropertyName = L"HasSystemMenu";
-constexpr wchar_t* const kHasTitleBarPropertyName = L"HasTitleBar";
-constexpr wchar_t* const kInitialRectStylePropertyName = L"InitialRectStyle";
-constexpr wchar_t* const kIsPopupPropertyName = L"IsPopup";
-constexpr wchar_t* const kIsSizablePropertyName = L"IsSizable";
-constexpr wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
-constexpr wchar_t* const kOwnerPropertyName = L"Owner";
-constexpr wchar_t* const kTitlePropertyName = L"Title";
+constexpr const wchar_t* const kActivateOptionPropertyName = L"ActivateOption";
+constexpr const wchar_t* const kCanMaximizePropertyName = L"CanMaximize";
+constexpr const wchar_t* const kCanMinimizePropertyName = L"CanMinimize";
+constexpr const wchar_t* const kCloseHandlerPropertyName = L"CloseHandler";
+constexpr const wchar_t* const kDestroyEventPropertyName = L"DestroyEvent";
+constexpr const wchar_t* const kHasBorderPropertyName = L"HasBorder";
+constexpr const wchar_t* const kHasSystemMenuPropertyName = L"HasSystemMenu";
+constexpr const wchar_t* const kHasTitleBarPropertyName = L"HasTitleBar";
+constexpr const wchar_t* const kInitialRectStylePropertyName = L"InitialRectStyle";
+constexpr const wchar_t* const kIsPopupPropertyName = L"IsPopup";
+constexpr const wchar_t* const kIsSizablePropertyName = L"IsSizable";
+constexpr const wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
+constexpr const wchar_t* const kOwnerPropertyName = L"Owner";
+constexpr const wchar_t* const kTitlePropertyName = L"Title";
 
 class WindowParser : public ObjectParser {
 public:

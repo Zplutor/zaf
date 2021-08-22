@@ -20,7 +20,7 @@ public:
         !std::is_base_of_v<Object, T>, 
         "Cannot use BoxedObject with type T which is derived from Object.");
 
-    using BoxedRepresent<T>::BoxedRepresent;
+    using internal::BoxedRepresent<T>::BoxedRepresent;
 
     bool IsEqual(const Object& object) const override {
         return InnerIsEqual(object);
@@ -43,7 +43,7 @@ private:
 
     template<typename Enable = std::enable_if_t<internal::IsEqualComparable<T>::Value>>
     std::size_t InnerHash() const {
-        return std::hash<T>()(Value());
+        return std::hash<T>()(this->Value());
     }
 
     template<typename Enable = std::enable_if_t<!internal::IsEqualComparable<T>::Value>>

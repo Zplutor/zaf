@@ -30,20 +30,17 @@ public:
 
 struct NonSharedPtrCast {
 
-    //Const value
     template<typename T, typename K>
-    static const T& As(const K& value) {
-        auto result = dynamic_cast<const T*>(&value);
+    static decltype(auto) As(K&& value) {
+
+        using PointerType = 
+            std::conditional_t<std::is_const_v<std::remove_reference_t<K>>, const T*, T*>;
+
+        auto result = dynamic_cast<PointerType>(&value);
         if (!result) {
             ZAF_THROW_ERRC(BasicErrc::InvalidCast);
         }
         return *result;
-    }
-
-    //Non-const value
-    template<typename T, typename K>
-    static T& As(K& value) {
-        return const_cast<T&>(As<T>(static_cast<const K&>(value)));
     }
 };
 
@@ -82,7 +79,8 @@ T* As(K* value) {
 template<typename T, typename K>
 decltype(auto) As(K&& value) {
 
-    return typename internal::CastSelector<K>::Type::As<T>(std::forward<K>(value));
+    using CastType = typename internal::CastSelector<K>::Type;
+    return CastType::template As<T, K>(std::forward<K>(value));
 }
 
 }

@@ -44,7 +44,7 @@ public:
         }
 
         Iterator operator++(int) {
-            auto preivous_map_iterator = iterator_++;
+            auto preivous_map_iterator = map_iterator_++;
             return Iterator(preivous_map_iterator);
         }
 
@@ -54,7 +54,7 @@ public:
         }
 
         Iterator operator--(int) {
-            auto previous_map_iterator = iterator--;
+            auto previous_map_iterator = map_iterator_--;
             return Iterator(previous_map_iterator);
         }
 

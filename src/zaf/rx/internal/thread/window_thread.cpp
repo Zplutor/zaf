@@ -4,7 +4,7 @@
 namespace zaf::internal {
 namespace {
 
-constexpr wchar_t* const WindowClassName = L"ZafWindowedThreadWindowClass";
+constexpr const wchar_t* const WindowClassName = L"ZafWindowedThreadWindowClass";
 constexpr DWORD DoWorkMessageId = WM_USER + 1;
 
 }

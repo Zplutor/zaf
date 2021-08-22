@@ -10,9 +10,9 @@
 namespace zaf {
 namespace {
 
-constexpr wchar_t* const kItemCollapseEventProperyName = L"ItemCollapseEvent";
-constexpr wchar_t* const kItemExpandEventPropertyName = L"ItemExpandEvent";
-constexpr wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
+constexpr const wchar_t* const kItemCollapseEventProperyName = L"ItemCollapseEvent";
+constexpr const wchar_t* const kItemExpandEventPropertyName = L"ItemExpandEvent";
+constexpr const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
 
 }
 

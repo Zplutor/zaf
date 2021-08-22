@@ -18,12 +18,12 @@ std::shared_ptr<Control> CreateDefaultScrollContentControl() {
     return control;
 }
 
-constexpr wchar_t* const kAllowHorizontalScrollPropertyName = L"AllowHorizontalScroll";
-constexpr wchar_t* const kAllowVerticalScrollPropertyName = L"AllowVerticalScroll";
-constexpr wchar_t* const kAutoAdjustScrollBarLargeChangePropertyName =
+constexpr const wchar_t* const kAllowHorizontalScrollPropertyName = L"AllowHorizontalScroll";
+constexpr const wchar_t* const kAllowVerticalScrollPropertyName = L"AllowVerticalScroll";
+constexpr const wchar_t* const kAutoAdjustScrollBarLargeChangePropertyName =
     L"AutoAdjustScrollBarLargeChange";
-constexpr wchar_t* const kAutoHideScrollBarsPropertyName = L"AutoHideScrollBars";
-constexpr wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness";
+constexpr const wchar_t* const kAutoHideScrollBarsPropertyName = L"AutoHideScrollBars";
+constexpr const wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness";
 
 }
 

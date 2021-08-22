@@ -18,7 +18,7 @@
 namespace zaf {
 namespace {
 
-constexpr wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
+constexpr const wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
 
 constexpr int kTimerInitialInterval = 300;
 constexpr int kTimerContinuousInterval = 50;

@@ -5,7 +5,7 @@
 namespace zaf::internal {
 namespace {
 
-constexpr wchar_t* const MessageOnlyWindowClassName = L"ZafMessageOnlyWindowClass";
+constexpr const wchar_t* const MessageOnlyWindowClassName = L"ZafMessageOnlyWindowClass";
 
 }
 

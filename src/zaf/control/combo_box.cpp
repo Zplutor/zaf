@@ -298,7 +298,7 @@ bool ComboBox::IsEditable() const {
         return *is_editable;
     }
     else {
-        return nullptr;
+        return false;
     }
 }
 

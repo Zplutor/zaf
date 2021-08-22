@@ -4,6 +4,7 @@
 #include <string>
 #include <zaf/base/string/encoding_conversion.h>
 #include <zaf/creation.h>
+#include <zaf/graphic/frame.h>
 #include <zaf/object/parsing/helpers.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_reader.h>
@@ -105,7 +106,7 @@ bool TestFrameProperty(const std::string& property_name, ValueGetter&& value_get
 
     auto create_test_frame = [](zaf::Frame& frame, std::string& string_value) {
 
-        std::srand(unsigned int(std::time(nullptr)));
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
         frame = zaf::Frame(
             float(std::rand()),
             float(std::rand()),

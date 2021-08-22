@@ -47,6 +47,6 @@ private:
 };
 
 
-#define ZAF_THROW_ERRC(errc) throw zaf::Error{ std::make_error_code(errc), ZAF_SOURCE_SITE() };
+#define ZAF_THROW_ERRC(errc) throw zaf::Error{ std::error_code{ errc }, ZAF_SOURCE_SITE() };
 
 }
