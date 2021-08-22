@@ -6,7 +6,7 @@
 #include <zaf/object/object_type.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/parsing/internal/utility.h>
-#include <zaf/reflection/creation.h>
+#include <zaf/object/creation.h>
 
 namespace zaf::internal {
 namespace {

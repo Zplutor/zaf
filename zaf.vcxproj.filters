@@ -73,9 +73,6 @@
     <Filter Include="zaf\graphic\internal">
       <UniqueIdentifier>{bac57db8-2209-4a31-825a-4fd930ca21cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\reflection">
-      <UniqueIdentifier>{74b71ea2-6924-48a0-95e3-84e4bfdb02e3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\base\registry">
       <UniqueIdentifier>{3a7441f4-3ab1-4236-afc5-24ba0fd93ca5}</UniqueIdentifier>
     </Filter>
@@ -333,9 +330,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp">
       <Filter>zaf\base\registry</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\reflection\creation.cpp">
-      <Filter>zaf\reflection</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\layout\layouter.cpp">
       <Filter>zaf\control\layout</Filter>
@@ -663,6 +657,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\base\error\basic_error.cpp">
       <Filter>zaf\base\error</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\creation.cpp">
+      <Filter>zaf\object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1062,9 +1059,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\string\split.h">
       <Filter>zaf\base\string</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\reflection\creation.h">
-      <Filter>zaf\reflection</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\registry\registry.h">
       <Filter>zaf\base\registry</Filter>
@@ -1569,6 +1563,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\as.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\creation.h">
+      <Filter>zaf\object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
