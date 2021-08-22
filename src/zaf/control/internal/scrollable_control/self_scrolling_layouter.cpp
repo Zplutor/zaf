@@ -42,9 +42,9 @@ void SelfScrollingLayouter::Layout() {
     LayoutScrollBars(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
     LayoutScrollContainerControl(can_show_vertical_scroll_bar, can_show_horizontal_scroll_bar);
 
-    scrollable_control->GetScrollContentControl()->SetRect(
+    scrollable_control->ScrollContentControl()->SetRect(
         Rect(Point(),
-        scrollable_control->GetScrollContainerControl()->GetSize()));
+        scrollable_control->GetScrollContainerControl()->Size()));
 
     AdjustScrollBarValue(true);
     AdjustScrollBarValue(false);

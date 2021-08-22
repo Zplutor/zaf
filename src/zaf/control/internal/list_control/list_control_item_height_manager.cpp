@@ -92,7 +92,7 @@ void ListControlItemHeightManager::ReloadItemHeights() {
     }
     else {
 
-        item_height_ = delegate->EstimateItemHeight(0, Object::Empty());
+        item_height_ = delegate->EstimateItemHeight(0, Object::Dumb());
     }
 }
 

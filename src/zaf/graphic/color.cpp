@@ -1,14 +1,162 @@
 #include <zaf/graphic/color.h>
-#include <zaf/parsing/parsers/color_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <optional>
+#include <zaf/base/as.h>
+#include <zaf/base/string/to_numeric.h>
+#include <zaf/object/parsing/object_parser.h>
+#include <zaf/object/parsing/xaml_node.h>
+#include <zaf/object/type_definition.h>
 
 namespace zaf {
+namespace {
 
-ZAF_DEFINE_EQUALITY_TYPE(Color)
+std::optional<Color> DecodeARGB(const std::wstring& argb) {
 
-ZAF_DEFINE_REFLECTION_TYPE(Color)
-    ZAF_DEFINE_PARSER(ColorParser)
-ZAF_DEFINE_END
+    const std::size_t long_notation_length = 9;
+    const std::size_t short_notation_length = 7;
+
+    if (argb.length() != long_notation_length &&
+        argb.length() != short_notation_length) {
+        return {};
+    }
+
+    std::wstring a_hex;
+    std::wstring r_hex;
+    std::wstring g_hex;
+    std::wstring b_hex;
+
+    bool is_short_notation = argb.length() == short_notation_length;
+    if (is_short_notation) {
+        a_hex = L"FF";
+        r_hex = argb.substr(1, 2);
+        g_hex = argb.substr(3, 2);
+        b_hex = argb.substr(5, 2);
+    }
+    else {
+        a_hex = argb.substr(1, 2);
+        r_hex = argb.substr(3, 2);
+        g_hex = argb.substr(5, 2);
+        b_hex = argb.substr(7, 2);
+    }
+
+    ToNumericOptions options;
+    options.Base(16);
+
+    std::uint8_t temp_a = 0;
+    if (!TryToNumeric(a_hex, temp_a, options)) {
+        return {};
+    }
+
+    std::uint8_t temp_r = 0;
+    if (!TryToNumeric(r_hex, temp_r, options)) {
+        return {};
+    }
+
+    std::uint8_t temp_g = 0;
+    if (!TryToNumeric(g_hex, temp_g, options)) {
+        return {};
+    }
+
+    std::uint8_t temp_b = 0;
+    if (!TryToNumeric(b_hex, temp_b, options)) {
+        return {};
+    }
+
+    float max = (std::numeric_limits<std::uint8_t>::max)();
+
+    Color color;
+    color.a = temp_a / max;
+    color.r = temp_r / max;
+    color.g = temp_g / max;
+    color.b = temp_b / max;
+    return color;
+}
+
+
+std::optional<Color> ConvertTextToColor(const std::wstring& text) {
+
+    struct MapItem {
+        const wchar_t* name;
+        const Color* color;
+    };
+    static const MapItem map[] = {
+        { L"Black", &Color::Black() },
+        { L"Blue", &Color::Blue() },
+        { L"Cyan", &Color::Cyan() },
+        { L"Gray", &Color::Gray() },
+        { L"Green", &Color::Green() },
+        { L"Lime", &Color::Lime() },
+        { L"Magenta", &Color::Magenta() },
+        { L"Red", &Color::Red() },
+        { L"Transparent", &Color::Transparent() },
+        { L"White", &Color::White() },
+        { L"Yellow", &Color::Yellow() },
+    };
+
+    for (const auto& each_item : map) {
+        if (text == each_item.name) {
+            return *each_item.color;
+        }
+    }
+    return {};
+}
+
+
+std::optional<Color> DecodeColorValue(const std::wstring& value) {
+
+    if (value.empty()) {
+        return {};
+    }
+
+    if (value[0] == L'#') {
+        return DecodeARGB(value);
+    }
+
+    return ConvertTextToColor(value);
+}
+
+
+class ColorParser : public ObjectParser {
+public:
+    void ParseFromAttribute(const std::wstring& attribute, Object& object) override {
+
+        auto decoded_color = DecodeColorValue(attribute);
+        if (decoded_color) {
+            As<Color>(object) = *decoded_color;
+        }
+    }
+
+    void ParseFromNode(const XamlNode& node, Object& object) override {
+
+        const auto& content_nodes = node.GetContentNodes();
+        if (content_nodes.size() != 1) {
+            return;
+        }
+
+        const auto& content_node = content_nodes.front();
+        if (content_node->GetType() != XamlNode::Type::Text) {
+            return;
+        }
+
+        auto decoded_color = DecodeColorValue(content_node->GetValue());
+        if (decoded_color) {
+            As<Color>(object) = *decoded_color;
+        }
+    }
+};
+
+}
+
+ZAF_DEFINE_TYPE(Color)
+ZAF_DEFINE_TYPE_PARSER(ColorParser)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(R, r)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(G, g)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(B, b)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(A, a)
+ZAF_DEFINE_TYPE_END
+
+
+ZAF_DEFINE_EQUALITY(Color)
+
 
 const Color& Color::Black() {
     static Color black{ 0, 0, 0 };

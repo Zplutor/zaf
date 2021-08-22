@@ -23,10 +23,10 @@ class Timer;
  */
 class ScrollBar : public Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
-	ScrollBar();
+    ScrollBar();
 
     /**
      Get the incremental arrow.
@@ -35,12 +35,12 @@ public:
         return incremental_arrow_;
     }
 
-	/**
-	 Set a new control for the incremental arrow.
+    /**
+     Set a new control for the incremental arrow.
 
-	 Pass nullptr would reset the arrow to the default control.
-	 */
-	void SetIncrementalArrow(const std::shared_ptr<ScrollBarArrow>& incremental_arrow);
+     Pass nullptr would reset the arrow to the default control.
+     */
+    void SetIncrementalArrow(const std::shared_ptr<ScrollBarArrow>& incremental_arrow);
 
     /**
      Get the decremental arrow.
@@ -49,12 +49,12 @@ public:
         return decremental_arrow_;
     }
 
-	/**
-	 Set a new control for the decremental arrow.
+    /**
+     Set a new control for the decremental arrow.
 
-	 Pass nullptr would reset the arrow to the default control.
-	 */
-	void SetDecrementalArrow(const std::shared_ptr<ScrollBarArrow>& decremental_arrow);
+     Pass nullptr would reset the arrow to the default control.
+     */
+    void SetDecrementalArrow(const std::shared_ptr<ScrollBarArrow>& decremental_arrow);
 
     /**
      Get the thumb.
@@ -63,52 +63,52 @@ public:
         return thumb_;
     }
 
-	/**
-	 Set a new control for the thumb.
+    /**
+     Set a new control for the thumb.
 
-	 Pass nullptr would reset the thum to the default control.
-	 */
-	void SetThumb(const std::shared_ptr<ScrollBarThumb>& thumb);
+     Pass nullptr would reset the thum to the default control.
+     */
+    void SetThumb(const std::shared_ptr<ScrollBarThumb>& thumb);
 
     /**
      Get a value indicating that whether the scroll bar is horizontal.
 
      The default value is false.
      */
-	bool IsHorizontal() const {
-		return is_horizontal_;
-	}
+    bool IsHorizontal() const {
+        return is_horizontal_;
+    }
 
     /**
      Set a value indicating that whether the scroll bar is horizontal.
      */
-	void SetIsHorizontal(bool is_horizontal) {
-		is_horizontal_ = is_horizontal;
-		ApplyOrientationToChildren();
-		NeedRelayout();
-	}
+    void SetIsHorizontal(bool is_horizontal) {
+        is_horizontal_ = is_horizontal;
+        ApplyOrientationToChildren();
+        NeedRelayout();
+    }
 
-	/**
-	 Get the length of arrow controls.
+    /**
+     Get the length of arrow controls.
 
-	 The default length is the same as scroll bar's thickness, 
+     The default length is the same as scroll bar's thickness, 
      use SetArrowLength method to change it.
-	 */
-	float GetArrowLength() const;
+     */
+    float GetArrowLength() const;
 
-	/**
-	 Set the length of arrow controls.
-	 */
-	void SetArrowLength(float length);
+    /**
+     Set the length of arrow controls.
+     */
+    void SetArrowLength(float length);
 
     /**
      Get the scroll value.
 
      The default value is 0.
      */
-	int GetValue() const {
-		return value_;
-	}
+    int GetValue() const {
+        return value_;
+    }
 
     /**
      Set the scroll value.
@@ -118,16 +118,16 @@ public:
 
      Settting the value would change the thumb's position immediately.
      */
-	void SetValue(int value);
+    void SetValue(int value);
 
     /**
      Get minium scroll value.
 
      The default value is 0.
      */
-	int GetMinValue() const {
-		return min_value_;
-	}
+    int GetMinValue() const {
+        return min_value_;
+    }
 
     /**
      Set minimum scroll value.
@@ -135,18 +135,18 @@ public:
      The scroll value would be adjusted to the minimum if the current value
      is less than it.
      */
-	void SetMinValue(int value) {
-		ChangeValueRange(value, max_value_, false);
-	}
+    void SetMinValue(int value) {
+        ChangeValueRange(value, max_value_, false);
+    }
 
     /**
      Get maximum scroll value.
 
      The default value is 0.
      */
-	int GetMaxValue() const {
-		return max_value_;
-	}
+    int GetMaxValue() const {
+        return max_value_;
+    }
 
     /**
      Set maximum scroll value.
@@ -154,9 +154,9 @@ public:
      The scroll value would be adjusted to the maximum if the current value
      is greater than it.
      */
-	void SetMaxValue(int value) {
-		ChangeValueRange(min_value_, value, true);
-	}
+    void SetMaxValue(int value) {
+        ChangeValueRange(min_value_, value, true);
+    }
 
     /**
      Set allowed scroll value range.
@@ -174,9 +174,9 @@ public:
      the minimum. The scroll value would be adjusted if the current value exceeds the 
      allowed range.
      */
-	void SetValueRange(int min_value, int max_value) {
-		ChangeValueRange(min_value, max_value, false);
-	}
+    void SetValueRange(int min_value, int max_value) {
+        ChangeValueRange(min_value, max_value, false);
+    }
 
     int GetSmallChange() const;
     void SetSmallChange(int value);
@@ -202,77 +202,77 @@ public:
 
      This event is raised when the scroll value is changed.
      */
-	Observable<ScrollBarScrollInfo> ScrollEvent();
+    Observable<ScrollBarScrollInfo> ScrollEvent();
 
 protected:
     void Initialize() override;
-	void Layout(const Rect& previous_rect) override;
+    void Layout(const zaf::Rect& previous_rect) override;
 
     bool OnMouseDown(const Point& position, const MouseMessage& message) override;
     bool OnMouseUp(const Point& position, const MouseMessage& message) override;
     bool OnMouseWheel(const Point& position, const MouseWheelMessage& message) override;
-	void OnMouseCapture() override;
-	void OnMouseRelease() override;
+    void OnMouseCapture() override;
+    void OnMouseRelease() override;
 
 private:
-	enum class TimerEvent {
-		Increment,
-		Decrement,
-		PageRoll,
-	};
+    enum class TimerEvent {
+        Increment,
+        Decrement,
+        PageRoll,
+    };
 
 private:
-	void InitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow, bool is_incremental);
-	void UninitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow, bool is_incremental);
-	void InitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb);
-	void UninitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb);
-	void ApplyOrientationToChildren();
+    void InitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow, bool is_incremental);
+    void UninitializeArrow(const std::shared_ptr<ScrollBarArrow>& arrow, bool is_incremental);
+    void InitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb);
+    void UninitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb);
+    void ApplyOrientationToChildren();
 
-	void CalculateThumbPositionAndLength(
+    void CalculateThumbPositionAndLength(
         float track_length,
         float& thumb_position, 
-		float& thumb_length);
+        float& thumb_length);
     float CalculateThumbLength(float track_length);
     float CalculateThumbPosition(float track_length, float thumb_length);
-	void ChangeVerticalRectToHorizontalRect(Rect& rect);
+    void ChangeVerticalRectToHorizontalRect(zaf::Rect& rect);
 
-	void ChangeValueRange(int min_value, int max_value, bool max_value_has_priority);
+    void ChangeValueRange(int min_value, int max_value, bool max_value_has_priority);
 
-	void BeginTimer(TimerEvent timer_event);
-	void TimerTrigger();
-	void ApplyTimerEvent();
-	Rect GetThumbSlotRect() const;
+    void BeginTimer(TimerEvent timer_event);
+    void TimerTrigger();
+    void ApplyTimerEvent();
+    zaf::Rect GetThumbSlotRect() const;
 
-	void ArrowBeginPress(const ScrollBarArrowBeginPressInfo& event_info);
-	void ArrowEndPress(const ScrollBarArrowEndPressInfo& event_info);
+    void ArrowBeginPress(const ScrollBarArrowBeginPressInfo& event_info);
+    void ArrowEndPress(const ScrollBarArrowEndPressInfo& event_info);
 
-	void ThumbBeginDrag(const ScrollBarThumbBeginDragInfo& event_info);
-	void ThumbDrag(const ScrollBarThumbDragInfo& event_info);
-	void ThumbEndDrag(const ScrollBarThumbEndDragInfo& event_info);
-	float GetValuePerThumbSlotPoint();
+    void ThumbBeginDrag(const ScrollBarThumbBeginDragInfo& event_info);
+    void ThumbDrag(const ScrollBarThumbDragInfo& event_info);
+    void ThumbEndDrag(const ScrollBarThumbEndDragInfo& event_info);
+    float GetValuePerThumbSlotPoint();
 
 private:
-	std::shared_ptr<ScrollBarArrow> incremental_arrow_;
-	std::shared_ptr<ScrollBarArrow> decremental_arrow_;
-	std::shared_ptr<ScrollBarThumb> thumb_;
+    std::shared_ptr<ScrollBarArrow> incremental_arrow_;
+    std::shared_ptr<ScrollBarArrow> decremental_arrow_;
+    std::shared_ptr<ScrollBarThumb> thumb_;
 
     zaf::SubscriptionHolder incremental_arrow_subscriptions_;
     zaf::SubscriptionHolder decremental_arrow_subscriptions_;
     zaf::SubscriptionHolder thumb_subscriptions_;
 
-	bool is_horizontal_;
+    bool is_horizontal_;
 
-	int min_value_;
-	int max_value_;
-	int value_;
+    int min_value_;
+    int max_value_;
+    int value_;
 
     int page_size_{};
 
-	int begin_drag_value_;
-	Point begin_drag_mouse_position_;
+    int begin_drag_value_;
+    Point begin_drag_mouse_position_;
 
-	std::shared_ptr<Timer> timer_;
-	TimerEvent timer_event_;
+    std::shared_ptr<Timer> timer_;
+    TimerEvent timer_event_;
 
     double remaining_wheel_change_value_;
 };

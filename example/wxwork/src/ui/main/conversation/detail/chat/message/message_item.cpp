@@ -27,7 +27,7 @@ void MessageItem::Layout(const zaf::Rect& previous_rect) {
 
     float top = TopPadding;
 
-    auto content_size = GetContentSize();
+    auto content_size = ContentSize();
     if (sender_label_->IsVisible()) {
         sender_label_->SetRect(zaf::Rect(0, top, content_size.width, SenderNameHeight));
         top += SenderNameHeight + NameAndContentGap;
@@ -69,8 +69,8 @@ void MessageItem::SetMessage(const std::shared_ptr<Message>& message) {
 
 float MessageItem::DeterminateHeight(float max_width) {
 
-    const auto& padding = GetPadding();
-    const auto& border = GetBorder();
+    const auto& padding = Padding();
+    const auto& border = Border();
     float max_content_width = max_width - padding.left - padding.right - border.left - border.right;
 
     float height = TopPadding;

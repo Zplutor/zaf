@@ -1,13 +1,34 @@
 #include <zaf/graphic/point.h>
-#include <zaf/parsing/parsers/point_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/base/as.h>
+#include <zaf/object/type_definition.h>
+#include <zaf/object/parsing/internal/utility.h>
 
 namespace zaf {
+namespace {
 
-ZAF_DEFINE_EQUALITY_TYPE(Point)
+class PointParser : public ObjectParser {
+public:
+    void ParseFromAttribute(
+        const std::wstring& attribute_value,
+        Object& object) {
 
-ZAF_DEFINE_REFLECTION_TYPE(Point)
-    ZAF_DEFINE_PARSER(PointParser)
-ZAF_DEFINE_END
+        auto& point = As<Point>(object);
+        internal::ParseAttributeToDoubleFloats(attribute_value, point.x, point.y);
+    }
+
+    void ParseFromNode(const XamlNode& node, Object& object) override {
+
+    }
+};
+
+}
+
+ZAF_DEFINE_TYPE(Point)
+ZAF_DEFINE_TYPE_PARSER(PointParser)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(X, x)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(Y, y)
+ZAF_DEFINE_TYPE_END
+
+ZAF_DEFINE_EQUALITY(Point)
 
 }

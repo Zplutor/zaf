@@ -6,8 +6,7 @@
 #include <zaf/control/text_box.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
-#include <zaf/parsing/parsers/scrollable_control_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -29,9 +28,9 @@ constexpr wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness"
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(ScrollableControl)
-    ZAF_DEFINE_PARSER(ScrollableControlParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE(ScrollableControl)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(ScrollContentControl)
+ZAF_DEFINE_TYPE_END
 
 
 ScrollableControl::ScrollableControl() :
@@ -50,7 +49,7 @@ ScrollableControl::~ScrollableControl() {
 
 void ScrollableControl::Initialize() {
 
-    SetBorder(1);
+    SetBorder(Frame(1));
 
     SetBorderColorPicker([](const Control&) {
         return Color::Black();
@@ -124,7 +123,7 @@ void ScrollableControl::InitializeLayouter() {
 }
 
 
-void ScrollableControl::Layout(const Rect& previous_rect) {
+void ScrollableControl::Layout(const zaf::Rect& previous_rect) {
     if (layouter_ != nullptr) {
         layouter_->Layout();
     }
@@ -318,7 +317,7 @@ void ScrollableControl::SetScrollBarThickness(float thickness) {
 }
 
 
-void ScrollableControl::SetScrollContentSize(const Size& size) {
+void ScrollableControl::SetScrollContentSize(const zaf::Size& size) {
 
     if ((expected_scroll_content_size_.width == size.width) &&
         (expected_scroll_content_size_.height == size.height)) {
@@ -360,17 +359,17 @@ void ScrollableControl::OnIsEnabledChanged() {
 }
 
 
-Rect ScrollableControl::GetVisibleScrollContentRect() const {
+zaf::Rect ScrollableControl::GetVisibleScrollContentRect() const {
 
     if (self_scrolling_control_ != nullptr) {
-        return scroll_container_control_->GetRect();
+        return scroll_container_control_->Rect();
     }
 
-    Rect rect;
-    rect.position = scroll_content_control_->GetPosition();
+    zaf::Rect rect;
+    rect.position = scroll_content_control_->Position();
     rect.position.x *= -1;
     rect.position.y *= -1;
-    rect.size = scroll_container_control_->GetSize();
+    rect.size = scroll_container_control_->Size();
     return rect;
 }
 

@@ -73,18 +73,6 @@
     <Filter Include="zaf\graphic\internal">
       <UniqueIdentifier>{bac57db8-2209-4a31-825a-4fd930ca21cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\reflection">
-      <UniqueIdentifier>{74b71ea2-6924-48a0-95e3-84e4bfdb02e3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\parsing">
-      <UniqueIdentifier>{d5f8aceb-f044-44b2-a65f-3a2a7b953180}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\parsing\parsers">
-      <UniqueIdentifier>{5e8a06e8-4de4-4dd6-9eaf-1ff67ae7c0f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\parsing\parsers\internal">
-      <UniqueIdentifier>{f9f0ab53-44d4-45ea-bcb1-9ac179cf3280}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\base\registry">
       <UniqueIdentifier>{3a7441f4-3ab1-4236-afc5-24ba0fd93ca5}</UniqueIdentifier>
     </Filter>
@@ -102,9 +90,6 @@
     </Filter>
     <Filter Include="zaf\base\error">
       <UniqueIdentifier>{62ec9b22-b712-4e9f-a54b-d635e891774a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\reflection\internal">
-      <UniqueIdentifier>{df572d22-2859-401b-9227-76d5d540c93c}</UniqueIdentifier>
     </Filter>
     <Filter Include="zaf\control\internal\tree_control">
       <UniqueIdentifier>{f09a58c2-d965-4161-89a0-d3c47a68607f}</UniqueIdentifier>
@@ -150,6 +135,18 @@
     </Filter>
     <Filter Include="zaf\window\internal">
       <UniqueIdentifier>{9753c9aa-251c-4966-b76e-70c7d7f08694}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\object\boxing">
+      <UniqueIdentifier>{0dff3f08-a273-48b0-9ecb-a65c90a1093c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\object\boxing\internal">
+      <UniqueIdentifier>{3eeb11b4-6471-445d-a2bd-d334fe968cdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\object\parsing">
+      <UniqueIdentifier>{668ce856-de97-4b3d-9dff-b0cfd3fdace0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\object\parsing\internal">
+      <UniqueIdentifier>{3bc59b42-1eb6-4c6b-b276-9e2ec11d3233}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -331,74 +328,8 @@
     <ClCompile Include="src\zaf\graphic\alignment.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\parsing\xaml_reader.cpp">
-      <Filter>zaf\parsing</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\point_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\size_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\rect_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\reflection\reflection_manager.cpp">
-      <Filter>zaf\reflection</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\xaml_node.cpp">
-      <Filter>zaf\parsing</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\internal\utility.cpp">
-      <Filter>zaf\parsing\parsers\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\frame_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\rounded_rect_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\ellipse_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\control_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\color_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\button_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\clickable_control_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\textual_control_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\window_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp">
       <Filter>zaf\base\registry</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\xaml_node_parse_helper.cpp">
-      <Filter>zaf\parsing</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\check_box_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\combo_box_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\reflection\reflection_object.cpp">
-      <Filter>zaf\reflection</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\reflection\creation.cpp">
-      <Filter>zaf\reflection</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\helpers.cpp">
-      <Filter>zaf\parsing</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\layout\layouter.cpp">
       <Filter>zaf\control\layout</Filter>
@@ -408,9 +339,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\layout\internal\linear_layout_length_calculating.cpp">
       <Filter>zaf\control\layout\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\linear_layouter_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\image\wic\bitmap_source.cpp">
       <Filter>zaf\graphic\image\wic</Filter>
@@ -448,11 +376,8 @@
     <ClCompile Include="src\zaf\graphic\image\image.cpp">
       <Filter>zaf\graphic\image</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\bitmap_image.cpp">
+    <ClCompile Include="src\zaf\graphic\image\uri_image.cpp">
       <Filter>zaf\graphic\image</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\bitmap_image_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\resource\resource_manager.cpp">
       <Filter>zaf\resource</Filter>
@@ -466,17 +391,8 @@
     <ClCompile Include="src\zaf\base\error\com_error.cpp">
       <Filter>zaf\base\error</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\reflection\reflection_type.cpp">
-      <Filter>zaf\reflection</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\reflection\internal\reflection_object_initializer.cpp">
-      <Filter>zaf\reflection\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\linear_box.cpp">
       <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\font_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\tree_control.cpp">
       <Filter>zaf\control</Filter>
@@ -592,12 +508,6 @@
     <ClCompile Include="src\zaf\control\scroll_bar_thumb.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\text_box_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\parsing\parsers\scrollable_control_parser.cpp">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\thread\run_loop_thread.cpp">
       <Filter>zaf\rx\internal\thread</Filter>
     </ClCompile>
@@ -672,6 +582,84 @@
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\observable\async_customized_observable.cpp">
       <Filter>zaf\rx\internal\observable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\object_type.cpp">
+      <Filter>zaf\object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\internal\object_initializer.cpp">
+      <Filter>zaf\object\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\boxing\string.cpp">
+      <Filter>zaf\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\boxing\numeric.cpp">
+      <Filter>zaf\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\helpers.cpp">
+      <Filter>zaf\object\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\xaml_node.cpp">
+      <Filter>zaf\object\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\xaml_node_parse_helper.cpp">
+      <Filter>zaf\object\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\xaml_reader.cpp">
+      <Filter>zaf\object\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\boxing\boolean.cpp">
+      <Filter>zaf\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\xaml_utility.cpp">
+      <Filter>zaf\object\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\image_layout.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\internal\default_object_parser.cpp">
+      <Filter>zaf\object\parsing\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\check_state.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\text\text_alignment.cpp">
+      <Filter>zaf\graphic\text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\text\paragraph_alignment.cpp">
+      <Filter>zaf\graphic\text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\text\word_wrapping.cpp">
+      <Filter>zaf\graphic\text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\initial_rect_style.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\activate_option.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\layout\layout_direction.cpp">
+      <Filter>zaf\control\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\layout\control_alignment.cpp">
+      <Filter>zaf\control\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\layout\axis_alignment.cpp">
+      <Filter>zaf\control\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\font\font_weight.cpp">
+      <Filter>zaf\graphic\font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\parsing\internal\utility.cpp">
+      <Filter>zaf\object\parsing\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\internal\reflection_manager.cpp">
+      <Filter>zaf\object\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\base\error\basic_error.cpp">
+      <Filter>zaf\base\error</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\creation.cpp">
+      <Filter>zaf\object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1069,125 +1057,8 @@
     <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h">
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\reflection\reflection_object.h">
-      <Filter>zaf\reflection</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\reflection\reflection_type.h">
-      <Filter>zaf\reflection</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parser.h">
-      <Filter>zaf\parsing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\xaml_reader.h">
-      <Filter>zaf\parsing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\point_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\size_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\reflection\reflection_type_definition.h">
-      <Filter>zaf\reflection</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\rect_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\rounded_rect_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\ellipse_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\frame_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\color_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\button_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\control_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\textual_control_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\clickable_control_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\check_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\combo_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\image_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\label_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\combo_box_drop_down_list_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\list_control_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\scrollable_control_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\list_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\text_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\combo_box_edit_text_box_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\scroll_bar_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\scroll_bar_arrow_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\scroll_bar_thumb_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\split_control_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\split_control_split_bar_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\radio_button_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\font_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\text_trimming_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\window_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\reflection\reflection_manager.h">
-      <Filter>zaf\reflection</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\xaml_node.h">
-      <Filter>zaf\parsing</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\string\split.h">
       <Filter>zaf\base\string</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\internal\utility.h">
-      <Filter>zaf\parsing\parsers\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\reflection\creation.h">
-      <Filter>zaf\reflection</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\registry\registry.h">
       <Filter>zaf\base\registry</Filter>
@@ -1200,12 +1071,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\handle.h">
       <Filter>zaf\base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\xaml_node_parse_helper.h">
-      <Filter>zaf\parsing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\helpers.h">
-      <Filter>zaf\parsing</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\linear_layouter.h">
       <Filter>zaf\control\layout</Filter>
@@ -1221,9 +1086,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\internal\linear_layout_length_calculating.h">
       <Filter>zaf\control\layout\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\linear_layouter_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\image\wic\bitmap_source.h">
       <Filter>zaf\graphic\image\wic</Filter>
@@ -1276,11 +1138,8 @@
     <ClInclude Include="src\zaf\control\internal\image_box\image_drawing.h">
       <Filter>zaf\control\internal\image_box</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\bitmap_image.h">
+    <ClInclude Include="src\zaf\graphic\image\uri_image.h">
       <Filter>zaf\graphic\image</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\parsing\parsers\bitmap_image_parser.h">
-      <Filter>zaf\parsing\parsers</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\resource\uri_loader.h">
       <Filter>zaf\resource</Filter>
@@ -1312,9 +1171,6 @@
     <ClInclude Include="src\zaf\base\error\check.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\reflection\internal\reflection_object_initializer.h">
-      <Filter>zaf\reflection\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\linear_box.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
@@ -1342,32 +1198,8 @@
     <ClInclude Include="src\zaf\object\object.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\string.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\boxed.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\box_represent.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\built_in_box_types.h">
-      <Filter>zaf\object\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\get_box_type.h">
-      <Filter>zaf\object\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\numeric.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\list_box_delegate.h">
       <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\unboxer.h">
-      <Filter>zaf\object\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\tree_data_source.h">
       <Filter>zaf\control</Filter>
@@ -1459,13 +1291,10 @@
     <ClInclude Include="src\zaf\object\internal\is_equal_comparable.h">
       <Filter>zaf\object\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\box_represent_equal.h">
-      <Filter>zaf\object\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\hash.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\equality_type.h">
+    <ClInclude Include="src\zaf\object\equality.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_data_helpers.h">
@@ -1623,6 +1452,120 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\control_updating.h">
       <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\type_declaration.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\object_type.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\type_definition.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\object_property.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\property_definition.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\object_initializer.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\property_helper.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\property_registrar.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\boxed_object.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\boxing.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\numeric.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\string.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent.h">
+      <Filter>zaf\object\boxing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent_equal.h">
+      <Filter>zaf\object\boxing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\internal\built_in_box_types.h">
+      <Filter>zaf\object\boxing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\internal\get_box_type.h">
+      <Filter>zaf\object\boxing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\internal\unboxer.h">
+      <Filter>zaf\object\boxing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\internal\string_conversion_shim.h">
+      <Filter>zaf\object\boxing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\helpers.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\object_parser.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\xaml_node.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\xaml_node_parse_helper.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\xaml_reader.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\enum_type.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\enum_declaration.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\enum_definition.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\base_enum_type.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\boolean.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\xaml_utility.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\enum_parser.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\internal\default_object_parser.h">
+      <Filter>zaf\object\parsing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\initial_rect_style.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\activate_option.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\internal\utility.h">
+      <Filter>zaf\object\parsing\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\reflection_manager.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\basic_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\as.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\creation.h">
+      <Filter>zaf\object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

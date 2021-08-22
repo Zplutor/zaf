@@ -28,14 +28,14 @@ public:
 
      The instance takes over the lifetime of handle, and releases it when destroyed.
      */
-	explicit FontCollection(IDWriteFontCollection* handle) : ComObject(handle) { }
+    explicit FontCollection(IDWriteFontCollection* handle) : ComObject(handle) { }
 
     /**
      Gets the number of font families in the collection.
      */
-	std::size_t GetFontFamilyCount() const {
-		return GetHandle()->GetFontFamilyCount();
-	}
+    std::size_t GetFontFamilyCount() const {
+        return GetHandle()->GetFontFamilyCount();
+    }
 
     /**
      Creates a font family object given a zero-based font family index.
@@ -49,7 +49,7 @@ public:
      @return
          Return nullptr if error occurs.
      */
-	FontFamily GetFontFamily(std::size_t index) const;
+    FontFamily GetFontFamily(std::size_t index) const;
 
     /**
      Finds the font family with the specified family name.
@@ -63,7 +63,7 @@ public:
      @return
          Return nullptr if font family not found, or error occurs.
      */
-	FontFamily FindFontFamily(const std::wstring& family_name) const;
+    FontFamily FindFontFamily(const std::wstring& family_name) const;
 
     /**
      Get an enumerator for font families.

@@ -27,14 +27,14 @@ void ListItemContainer::Initialize() {
 
 void ListItemContainer::LayoutItems(
     const Control& parent,
-    const Rect& previous_rect,
+    const zaf::Rect& previous_rect,
     const std::vector<std::shared_ptr<Control>>& children) {
 
-    float width = GetContentSize().width;
+    float width = ContentSize().width;
 
     for (const auto& each_child : children) {
 
-        auto child_rect = each_child->GetRect();
+        auto child_rect = each_child->Rect();
         if (child_rect.size.width == width) {
             continue;
         }

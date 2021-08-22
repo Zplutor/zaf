@@ -4,7 +4,7 @@
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/tree_data_source.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf {
@@ -16,9 +16,9 @@ constexpr wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEv
 
 }
 
-ZAF_DEFINE_REFLECTION_TYPE(TreeControl)
-    //ZAF_DEFINE_PARSER(ListControlParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE(TreeControl)
+    //ZAF_DEFINE_TYPE_PARSER(ListControlParser)
+ZAF_DEFINE_TYPE_END
 
 
 TreeControl::TreeControl() :
@@ -62,7 +62,7 @@ void TreeControl::Initialize() {
 }
 
 
-void TreeControl::Layout(const Rect& previous_rect) {
+void TreeControl::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 

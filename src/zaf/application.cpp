@@ -10,7 +10,6 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/internal/system_message_window.h>
-#include <zaf/reflection/reflection_manager.h>
 #include <zaf/resource/resource_manager.h>
 #include <zaf/rx/internal/rx_runtime.h>
 #include <zaf/window/window.h>
@@ -18,44 +17,42 @@
 namespace zaf {
 
 Application& Application::Instance() {
-	static Application instance;
-	return instance;
+    static Application instance;
+    return instance;
 }
 
 
-Application::Application() : 
-    is_initialized_(false), 
-    reflection_manager_(std::make_unique<ReflectionManager>()) {
+Application::Application() : is_initialized_(false) {
 
 }
 
 
 void Application::Initialize(const InitializeParameters& parameters) {
 
-	if (is_initialized_) {
-		return;
-	}
+    if (is_initialized_) {
+        return;
+    }
 
     rx_runtime_ = std::make_unique<internal::RxRuntime>();
 
     resource_manager_ = std::make_unique<ResourceManager>(parameters.custom_uri_loader);
 
-	HRESULT result = CoInitialize(nullptr);
+    HRESULT result = CoInitialize(nullptr);
     ZAF_THROW_IF_COM_ERROR(result);
 
-	Window::RegisterDefaultClass(parameters.window_icon, parameters.window_small_icon);
+    Window::RegisterDefaultClass(parameters.window_icon, parameters.window_small_icon);
 
     //Create Direct2D factory.
-	CComPtr<ID2D1Factory> d2d_factory_handle;
-	result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2d_factory_handle);
+    CComPtr<ID2D1Factory> d2d_factory_handle;
+    result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2d_factory_handle);
     ZAF_THROW_IF_COM_ERROR(result);
 
     //Create DWrite factory.
     CComPtr<IDWriteFactory> dwrite_factory_handle;
-	result = DWriteCreateFactory(
-		DWRITE_FACTORY_TYPE_SHARED,
-		__uuidof(IDWriteFactory),
-		reinterpret_cast<IUnknown**>(&dwrite_factory_handle));
+    result = DWriteCreateFactory(
+        DWRITE_FACTORY_TYPE_SHARED,
+        __uuidof(IDWriteFactory),
+        reinterpret_cast<IUnknown**>(&dwrite_factory_handle));
 
     ZAF_THROW_IF_COM_ERROR(result);
 
@@ -69,7 +66,7 @@ void Application::Initialize(const InitializeParameters& parameters) {
 
     ZAF_THROW_IF_COM_ERROR(result);
 
-	graphic_factory_ = std::make_unique<GraphicFactory>(
+    graphic_factory_ = std::make_unique<GraphicFactory>(
         d2d_factory_handle.Detach(),
         dwrite_factory_handle.Detach());
 
@@ -78,7 +75,7 @@ void Application::Initialize(const InitializeParameters& parameters) {
     InitializeSystemMessageWindow();
     delegate_ = parameters.delegate;
 
-	is_initialized_ = true;
+    is_initialized_ = true;
 }
 
 
@@ -191,7 +188,7 @@ std::pair<float, float> Application::GetDpi() const {
 
 
 void Application::RegisterWindow(const std::shared_ptr<Window>& window) {
-	windows_.insert(window);
+    windows_.insert(window);
 }
 
 

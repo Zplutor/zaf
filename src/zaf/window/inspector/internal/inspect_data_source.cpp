@@ -10,7 +10,7 @@ InspectDataSource::InspectDataSource(const std::shared_ptr<Window>& window) : wi
 
 void InspectDataSource::ControlAddChild(const std::shared_ptr<Control>& parent) {
 
-    auto old_child_count = parent->GetChildCount();
+    auto old_child_count = parent->ChildCount();
     if (old_child_count > 0) {
         old_child_count--;
     }
@@ -55,7 +55,7 @@ std::size_t InspectDataSource::GetChildDataCount(const std::shared_ptr<Object>& 
 
     auto control = dynamic_cast<Control*>(parent_data.get());
     if (control) {
-        return control->GetChildCount();
+        return control->ChildCount();
     }
 
     return 0;
@@ -72,7 +72,7 @@ std::shared_ptr<Object> InspectDataSource::GetChildDataAtIndex(
 
     auto window = dynamic_cast<Window*>(parent_data.get());
     if (window) {
-        return window->GetRootControl();
+        return window->RootControl();
     }
 
     auto control = dynamic_cast<Control*>(parent_data.get());
@@ -80,7 +80,7 @@ std::shared_ptr<Object> InspectDataSource::GetChildDataAtIndex(
         return control->GetChildAtIndex(index);
     }
 
-    return Object::Empty();
+    return Object::Dumb();
 }
 
 }

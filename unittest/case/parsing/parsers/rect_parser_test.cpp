@@ -1,8 +1,9 @@
 #include <gtest/gtest.h>
-#include <zaf/parsing/parsers/rect_parser.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/parsing/xaml_node.h>
-#include <zaf/parsing/xaml_reader.h>
+#include <zaf/object/object_type.h>
+#include <zaf/object/parsing/object_parser.h>
+#include <zaf/object/parsing/xaml_node.h>
+#include <zaf/object/parsing/xaml_reader.h>
 
 TEST(RectParser, ParseFromNode) {
 
@@ -10,8 +11,8 @@ TEST(RectParser, ParseFromNode) {
     auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::Rect rect;
-    zaf::RectParser parser;
-    parser.ParseFromNode(*node, rect);
+    auto parser = zaf::Rect::Type->GetParser();
+    parser->ParseFromNode(*node, rect);
     ASSERT_EQ(rect, zaf::Rect(10, 11, 12, 13));
 
     xaml = 
@@ -24,6 +25,6 @@ TEST(RectParser, ParseFromNode) {
         "</Rect>";
     node = zaf::XamlReader::FromString(xaml)->Read();
 
-    parser.ParseFromNode(*node, rect);
+    parser->ParseFromNode(*node, rect);
     ASSERT_EQ(rect, zaf::Rect(14, 15, 16, 17));
 }

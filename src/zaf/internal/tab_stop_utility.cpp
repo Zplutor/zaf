@@ -33,7 +33,7 @@ const std::shared_ptr<Control> FindNextTabStopControl(const std::shared_ptr<Cont
             break;
         }
 
-        auto next_parent = parent->GetParent();
+        auto next_parent = parent->Parent();
         if (next_parent != nullptr) {   
 
             begin_child = parent;
@@ -59,7 +59,7 @@ static const std::shared_ptr<Control> FindNextTabStopControlInChildren(
     const std::shared_ptr<Control>& begin_child,
     bool backward) {
 
-    const auto& children = parent->GetChildren();
+    const auto& children = parent->Children();
     if (children.empty()) {
         return nullptr;
     }
@@ -112,8 +112,8 @@ static const std::vector<std::shared_ptr<Control>> SortControlsByTabIndex(
         sorted_controls.end(),
         [](const std::shared_ptr<Control>& control1, const std::shared_ptr<Control>& control2) {
 
-        auto tab_index1 = control1->GetTabIndex();
-        auto tab_index2 = control2->GetTabIndex();
+        auto tab_index1 = control1->TabIndex();
+        auto tab_index2 = control2->TabIndex();
 
         if (tab_index1 && !tab_index2) {
             return true;

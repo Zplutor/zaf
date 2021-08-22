@@ -1,40 +1,40 @@
 #include <zaf/graphic/rect.h>
 #include <algorithm>
 #include <limits>
-#include <zaf/parsing/parsers/rect_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 
 #undef max
 #undef min
 
 namespace zaf {
 
-ZAF_DEFINE_EQUALITY_TYPE(Rect)
+ZAF_DEFINE_TYPE(Rect)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(Position, position)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(Size, size)
+ZAF_DEFINE_TYPE_END
 
-ZAF_DEFINE_REFLECTION_TYPE(Rect)
-    ZAF_DEFINE_PARSER(RectParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_EQUALITY(Rect)
 
 
 void Rect::Intersect(const Rect& other) {
 
-	float left = std::max(position.x, other.position.x);
-	float top = std::max(position.y, other.position.y);
-	float right = std::min(position.x + size.width, other.position.x + other.size.width);
-	float bottom = std::min(position.y + size.height, other.position.y + other.size.height);
+    float left = std::max(position.x, other.position.x);
+    float top = std::max(position.y, other.position.y);
+    float right = std::min(position.x + size.width, other.position.x + other.size.width);
+    float bottom = std::min(position.y + size.height, other.position.y + other.size.height);
 
-	if ((left < right) && (top < bottom)) {
-		position.x = left;
-		position.y = top;
-		size.width = right - left;
-		size.height = bottom - top;
-	}
-	else {
-		position.x = 0;
-		position.y = 0;
-		size.width = 0;
-		size.height = 0;
-	}
+    if ((left < right) && (top < bottom)) {
+        position.x = left;
+        position.y = top;
+        size.width = right - left;
+        size.height = bottom - top;
+    }
+    else {
+        position.x = 0;
+        position.y = 0;
+        size.width = 0;
+        size.height = 0;
+    }
 }
 
 

@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <zaf/control/check_box.h>
-#include <zaf/parsing/parsers/check_box_parser.h>
 #include "utility.h"
 
 using namespace zaf;

@@ -30,7 +30,7 @@ void ConversationMessageListView::Initialize() {
 
     __super::Initialize();
 
-    SetBorder(0);
+    SetBorder(zaf::Frame(0));
     SetSelectionMode(zaf::SelectionMode::None);
     SetAllowHorizontalScroll(false);
     SetAutoAdjustScrollBarSmallChange(false);
@@ -53,7 +53,7 @@ void ConversationMessageListView::Layout(const zaf::Rect& previous_rect) {
     __super::Layout(previous_rect);
 
     //Update all items' height if width is changed.
-    if (previous_rect.size.width != GetSize().width) {
+    if (previous_rect.size.width != Size().width) {
         NotifyDataUpdate(0, message_item_infos_.size());
     }
 }
@@ -138,7 +138,7 @@ float ConversationMessageListView::EstimateItemHeight(
         return 0;
     }
     
-    return message_item_infos_[index]->message_item->DeterminateHeight(GetItemContainer()->GetContentSize().width);
+    return message_item_infos_[index]->message_item->DeterminateHeight(GetItemContainer()->ContentSize().width);
 }
 
 

@@ -1,31 +1,46 @@
 #include <zaf/control/layout/layouter.h>
+#include <zaf/object/type_definition.h>
 
 namespace zaf {
 namespace {
 
 class SimpleLayouter : public Layouter {
 public:
-	SimpleLayouter(const LayoutFunction& layout_function) : layout_function_(layout_function) {
+    SimpleLayouter(const LayoutFunction& layout_function) : layout_function_(layout_function) {
 
-	}
+    }
 
-	void Layout(
-		const Control& parent,
-		const Rect& parent_old_rect,
-		const std::vector<std::shared_ptr<Control>>& children
-	) override {
+    void Layout(
+        const Control& parent,
+        const Rect& parent_old_rect,
+        const std::vector<std::shared_ptr<Control>>& children
+    ) override {
 
-		layout_function_(parent, parent_old_rect, children);
-	}
+        layout_function_(parent, parent_old_rect, children);
+    }
 
 private:
-	LayoutFunction layout_function_;
+    LayoutFunction layout_function_;
 };
 
 }
 
+
+ZAF_DEFINE_TYPE(Layouter)
+ZAF_DEFINE_TYPE_END
+
+
+void Layouter::Layout(
+    const Control& parent,
+    const Rect& parent_old_rect,
+    const std::vector<std::shared_ptr<Control>>& children) {
+
+    //Do nothing.
+}
+
+
 std::shared_ptr<Layouter> CreateLayouter(const LayoutFunction& layout_function) {
-	return std::make_shared<SimpleLayouter>(layout_function);
+    return std::make_shared<SimpleLayouter>(layout_function);
 }
 
 }

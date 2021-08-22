@@ -57,53 +57,53 @@ private:
 
 class Canvas {
 public:
-	class StateGuard {
-	public:
-		StateGuard(Canvas& canvas) : canvas_(canvas) {
-			canvas_.SaveState();
-		}
+    class StateGuard {
+    public:
+        StateGuard(Canvas& canvas) : canvas_(canvas) {
+            canvas_.SaveState();
+        }
 
-		~StateGuard() {
-			canvas_.RestoreState();
-		}
+        ~StateGuard() {
+            canvas_.RestoreState();
+        }
 
-	private:
-		StateGuard(StateGuard&) = delete;
-		StateGuard& operator=(const StateGuard&) = delete;
+    private:
+        StateGuard(StateGuard&) = delete;
+        StateGuard& operator=(const StateGuard&) = delete;
 
-	private:
-		Canvas& canvas_;
-	};
+    private:
+        Canvas& canvas_;
+    };
 
 public:
-	Canvas(const Renderer& renderer, const Rect& renderer_rect, const Rect& paintable_rect);
+    Canvas(const Renderer& renderer, const Rect& renderer_rect, const Rect& paintable_rect);
 
     Canvas(Canvas&) = delete;
     Canvas& operator=(const Canvas&) = delete;
 
-	Renderer& GetRenderer() {
-		return renderer_;
-	}
+    Renderer& GetRenderer() {
+        return renderer_;
+    }
 
     Rect GetAbsolutePaintableRect() const {
         return transform_layers_.top().paintable_rect;
     }
 
-	void SaveState();
-	void RestoreState();
+    void SaveState();
+    void RestoreState();
 
-	void SetBrush(const Brush& brush) {
-		GetCurrentState()->brush = brush;
-	}
+    void SetBrush(const Brush& brush) {
+        GetCurrentState()->brush = brush;
+    }
 
-	void SetBrushWithColor(const Color& color) {
+    void SetBrushWithColor(const Color& color) {
         auto brush = renderer_.CreateSolidColorBrush(color);
-		SetBrush(brush);
-	}
+        SetBrush(brush);
+    }
 
-	void SetStroke(const Stroke& stroke) {
-		GetCurrentState()->stroke = stroke;
-	}
+    void SetStroke(const Stroke& stroke) {
+        GetCurrentState()->stroke = stroke;
+    }
 
     void PushClippingRect(const Rect& rect);
     void PopClippingRect();
@@ -138,12 +138,12 @@ public:
     EllipseGeometry CreateEllipseGeometry(const Ellipse& ellipse) const;
 
 private:
-	class State {
-	public:
-		Brush brush;
-		Stroke stroke;
+    class State {
+    public:
+        Brush brush;
+        Stroke stroke;
         std::vector<Rect> clipping_rects;
-	};
+    };
 
     class TransformLayer {
     public:
@@ -154,15 +154,15 @@ private:
     };
 
 private:
-	friend class Caret;
-	friend class Control;
-	friend class Window;
+    friend class Caret;
+    friend class Control;
+    friend class Window;
 
     void PushTransformLayer(const Rect& rect, const Rect& paintable_rect);
     void PopTransformLayer();
 
-	void BeginPaint();
-	void EndPaint();
+    void BeginPaint();
+    void EndPaint();
 
 private:
     void ApplyState(const std::shared_ptr<State>& state);
@@ -183,7 +183,7 @@ private:
 private:
     Renderer renderer_;
     std::stack<TransformLayer> transform_layers_;
-	std::vector<std::shared_ptr<State>> states_;
+    std::vector<std::shared_ptr<State>> states_;
 };
 
 }

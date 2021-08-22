@@ -1,7 +1,9 @@
 #include <zaf/control/control.h>
 #include <algorithm>
 #include <zaf/base/assert.h>
+#include <zaf/base/as.h>
 #include <zaf/base/define.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/check.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/control/internal/cached_painting.h>
@@ -15,8 +17,8 @@
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/image/image.h>
 #include <zaf/internal/theme.h>
-#include <zaf/parsing/parsers/control_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/inspector/internal/inspector_port.h>
@@ -29,6 +31,35 @@
 
 namespace zaf {
 namespace {
+
+class ControlParser : public ObjectParser {
+public:
+    void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
+
+    }
+
+    void ParseFromNode(const XamlNode& node, Object& object) override {
+
+        auto& control = As<Control>(object);
+        auto update_guard = control.BeginUpdate();
+
+        XamlNodeParseHelper helper(node, control.GetType());
+        auto tab_index = helper.GetFloatProperty(L"TabIndex");
+        if (tab_index) {
+            control.SetTabIndex(static_cast<std::size_t>(*tab_index));
+        }
+
+        for (const auto& each_node : node.GetContentNodes()) {
+
+            auto child_control = internal::CreateObjectFromNode<Control>(each_node);
+            if (!child_control) {
+                ZAF_THROW_ERRC(BasicErrc::NameNotFound);
+            }
+
+            control.AddChild(child_control);
+        }
+    }
+};
 
 constexpr const wchar_t* const kAnchorPropertyName = L"Anchor";
 constexpr const wchar_t* const kBackgroundImageLayoutPropertyName = L"BackgroundImageLayout";
@@ -52,14 +83,53 @@ constexpr bool DefaultIsVisible = true;
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(Control)
-    ZAF_DEFINE_PARSER(ControlParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE(Control)
+ZAF_DEFINE_TYPE_PARSER(ControlParser)
+ZAF_DEFINE_TYPE_PROPERTY(Rect)
+ZAF_DEFINE_TYPE_PROPERTY(AbsoluteRect)
+ZAF_DEFINE_TYPE_PROPERTY(Position)
+ZAF_DEFINE_TYPE_PROPERTY(X)
+ZAF_DEFINE_TYPE_PROPERTY(Y)
+ZAF_DEFINE_TYPE_PROPERTY(Size)
+ZAF_DEFINE_TYPE_PROPERTY(Width)
+ZAF_DEFINE_TYPE_PROPERTY(MinWidth)
+ZAF_DEFINE_TYPE_PROPERTY(MaxWidth)
+ZAF_DEFINE_TYPE_PROPERTY(FixedWidth)
+ZAF_DEFINE_TYPE_PROPERTY(FixedHeight)
+ZAF_DEFINE_TYPE_PROPERTY(FixedSize)
+ZAF_DEFINE_TYPE_PROPERTY(Height)
+ZAF_DEFINE_TYPE_PROPERTY(MinHeight)
+ZAF_DEFINE_TYPE_PROPERTY(MaxHeight)
+ZAF_DEFINE_TYPE_PROPERTY(AutoWidth)
+ZAF_DEFINE_TYPE_PROPERTY(AutoHeight)
+ZAF_DEFINE_TYPE_PROPERTY(AutoSize)
+ZAF_DEFINE_TYPE_PROPERTY(ContentRect)
+ZAF_DEFINE_TYPE_PROPERTY(ContentSize)
+ZAF_DEFINE_TYPE_PROPERTY(Name)
+ZAF_DEFINE_TYPE_PROPERTY(IsVisible)
+ZAF_DEFINE_TYPE_PROPERTY(IsSelfVisible)
+ZAF_DEFINE_TYPE_PROPERTY(IsEnabled)
+ZAF_DEFINE_TYPE_PROPERTY(CanFocused)
+ZAF_DEFINE_TYPE_PROPERTY(CanTabStop)
+ZAF_DEFINE_TYPE_PROPERTY(Margin)
+ZAF_DEFINE_TYPE_PROPERTY(Border)
+ZAF_DEFINE_TYPE_PROPERTY(Padding)
+ZAF_DEFINE_TYPE_PROPERTY(BackgroundColor)
+ZAF_DEFINE_TYPE_PROPERTY(BorderColor)
+ZAF_DEFINE_TYPE_PROPERTY(BackgroundImageLayout)
+ZAF_DEFINE_TYPE_PROPERTY(BackgroundImage)
+ZAF_DEFINE_TYPE_PROPERTY(Parent)
+ZAF_DEFINE_TYPE_PROPERTY(Window)
+ZAF_DEFINE_TYPE_PROPERTY(CanClick)
+ZAF_DEFINE_TYPE_PROPERTY(CanDoubleClick)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(Layouter)
+ZAF_DEFINE_TYPE_END
+
 
 Control::Control() : 
-	is_hovered_(false), 
-	is_capturing_mouse_(false),
-	is_focused_(false),
+    is_hovered_(false), 
+    is_capturing_mouse_(false),
+    is_focused_(false),
     can_focused_(DefaultCanFocused),
     is_enabled_(DefaultIsEnabled),
     is_visible_(DefaultIsVisible) {
@@ -78,6 +148,15 @@ void Control::InvokeInitialize() {
     auto update_guard = BeginUpdate();
 
     __super::InvokeInitialize();
+}
+
+
+void Control::InvokeParse() {
+
+    //Enter update state during parsing.
+    auto update_guard = BeginUpdate();
+
+    __super::InvokeParse();
 }
 
 
@@ -120,11 +199,11 @@ void Control::EndUpdate() {
 }
 
 
-void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
+void Control::Repaint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
-	if (! IsVisible()) {
-		return;
-	}
+    if (! IsVisible()) {
+        return;
+    }
 
     if (IsCachedPaintingEnabled()) {
         RepaintUsingCachedPainting(canvas, dirty_rect);
@@ -135,9 +214,9 @@ void Control::Repaint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-void Control::RepaintUsingCachedPainting(Canvas& canvas, const Rect& dirty_rect) {
+void Control::RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
-    auto control_size = GetSize();
+    auto control_size = Size();
     control_size.width = std::ceil(control_size.width);
     control_size.height = std::ceil(control_size.height);
 
@@ -146,7 +225,7 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const Rect& dirty_rect)
         CreateCompatibleRendererOptions options;
         options.DesiredSize(control_size);
         cached_renderer_ = canvas.GetRenderer().CreateCompatibleRenderer(options);
-        valid_cached_renderer_rect_ = Rect{};
+        valid_cached_renderer_rect_ = zaf::Rect{};
     }
 
     //Calculate the actual dirty rect that needs to repaint, and the new valid rect in cached 
@@ -160,7 +239,7 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const Rect& dirty_rect)
 
         cached_renderer_.BeginDraw();
 
-        Rect canvas_rect{ Point{}, control_size };
+        zaf::Rect canvas_rect{ Point{}, control_size };
         Canvas cached_painting_canvas(
             cached_renderer_, 
             canvas_rect, 
@@ -184,7 +263,7 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const Rect& dirty_rect)
 }
 
 
-void Control::RepaintControl(Canvas& canvas, const Rect& dirty_rect, bool need_clear) {
+void Control::RepaintControl(Canvas& canvas, const zaf::Rect& dirty_rect, bool need_clear) {
 
     canvas.BeginPaint();
     if (need_clear) {
@@ -193,21 +272,21 @@ void Control::RepaintControl(Canvas& canvas, const Rect& dirty_rect, bool need_c
     Paint(canvas, dirty_rect);
     canvas.EndPaint();
 
-    Rect content_rect = GetContentRect();
+    zaf::Rect content_rect = ContentRect();
     if (!content_rect.HasIntersection(dirty_rect)) {
         return;
     }
 
-    const auto& border = GetBorder();
-    const auto& padding = GetPadding();
+    const auto& border = Border();
+    const auto& padding = Padding();
 
     for (const auto& child : children_) {
 
-        Rect child_rect = child->GetRect();
+        zaf::Rect child_rect = child->Rect();
         child_rect.position.x += border.left + padding.left;
         child_rect.position.y += border.top + padding.top;
 
-        Rect child_dirty_rect = Rect::Intersect(child_rect, dirty_rect);
+        zaf::Rect child_dirty_rect = zaf::Rect::Intersect(child_rect, dirty_rect);
         if (child_dirty_rect.IsEmpty()) {
             continue;
         }
@@ -221,22 +300,22 @@ void Control::RepaintControl(Canvas& canvas, const Rect& dirty_rect, bool need_c
 }
 
 
-void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
-	Canvas::StateGuard state_guard(canvas);
+    Canvas::StateGuard state_guard(canvas);
 
-    Rect control_rect{ Point{}, GetSize() };
+    zaf::Rect control_rect{ Point{}, Size() };
 
     //Draw background color.
-    canvas.SetBrushWithColor(GetBackgroundColor());
+    canvas.SetBrushWithColor(BackgroundColor());
     canvas.DrawRectangle(control_rect);
 
     //Draw background image.
     DrawBackgroundImage(canvas, control_rect);
 
     //Calculate border geometry and draw border.
-    Rect inner_rect = control_rect;
-    inner_rect.Deflate(GetBorder());
+    zaf::Rect inner_rect = control_rect;
+    inner_rect.Deflate(Border());
 
     //The with and height must be greater than 0.
     if (inner_rect.size.width < 0) {
@@ -254,14 +333,14 @@ void Control::Paint(Canvas& canvas, const Rect& dirty_rect) {
     Geometry::Combine(control_geometry, inner_geometry, Geometry::CombineMode::Exclude, sink);
     sink.Close();
 
-	canvas.SetBrushWithColor(GetBorderColor());
+    canvas.SetBrushWithColor(BorderColor());
     canvas.DrawGeometry(border_geometry);
 }
 
 
-void Control::DrawBackgroundImage(Canvas& canvas, const Rect& background_rect) {
+void Control::DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect) {
 
-    auto background_image = GetBackgroundImage();
+    auto background_image = BackgroundImage();
     if (!background_image) {
         return;
     }
@@ -274,18 +353,18 @@ void Control::DrawBackgroundImage(Canvas& canvas, const Rect& background_rect) {
     internal::DrawImage(
         canvas,
         background_rect,
-        GetBackgroundImageLayout(),
+        BackgroundImageLayout(),
         render_bitmap,
         InterpolationMode::Linear);
 }
 
 
 void Control::NeedRepaint() {
-	NeedRepaintRect(Rect(Point(), rect_.size));
+    NeedRepaintRect(zaf::Rect(Point(), rect_.size));
 }
 
 
-void Control::NeedRepaintRect(const Rect& rect) {
+void Control::NeedRepaintRect(const zaf::Rect& rect) {
 
     if ((rect.size.width == 0) || (rect.size.height == 0)) {
         return;
@@ -296,44 +375,44 @@ void Control::NeedRepaintRect(const Rect& rect) {
         return;
     }
 
-	Rect bound_rect(Point(), rect_.size);
-	Rect repaint_rect = Rect::Intersect(bound_rect, rect);
-	if (repaint_rect.IsEmpty()) {
-		return;
-	}
+    zaf::Rect bound_rect(Point(), rect_.size);
+    zaf::Rect repaint_rect = zaf::Rect::Intersect(bound_rect, rect);
+    if (repaint_rect.IsEmpty()) {
+        return;
+    }
 
     RecalculateCachedPaintingRect(repaint_rect);
 
-	auto window = window_.lock();
-	if (window != nullptr) {
-		window->NeedRepaintRect(repaint_rect);
-		return;
-	}
+    auto window = window_.lock();
+    if (window != nullptr) {
+        window->NeedRepaintRect(repaint_rect);
+        return;
+    }
 
-	auto parent = GetParent();
-	if (parent == nullptr) {
-		return;
-	}
+    auto parent = Parent();
+    if (parent == nullptr) {
+        return;
+    }
 
     Point position_in_parent = ToParentPoint(repaint_rect.position);
-    const auto& parent_border = parent->GetBorder();
-    const auto& parent_padding = parent->GetPadding();
+    const auto& parent_border = parent->Border();
+    const auto& parent_padding = parent->Padding();
     position_in_parent.x += parent_border.left + parent_padding.left;
     position_in_parent.y += parent_border.top + parent_padding.top;
 
-	Rect repaint_rect_in_parent(position_in_parent, repaint_rect.size);
-    repaint_rect_in_parent.Intersect(parent->GetContentRect());
-	parent->NeedRepaintRect(repaint_rect_in_parent);
+    zaf::Rect repaint_rect_in_parent(position_in_parent, repaint_rect.size);
+    repaint_rect_in_parent.Intersect(parent->ContentRect());
+    parent->NeedRepaintRect(repaint_rect_in_parent);
 }
 
 
-void Control::RecalculateCachedPaintingRect(const Rect& repaint_rect) {
+void Control::RecalculateCachedPaintingRect(const zaf::Rect& repaint_rect) {
 
     if (cached_renderer_ == nullptr) {
         return;
     }
 
-    Rect invalid_rect = internal::CalculateInvalidRectInCachedRect(
+    zaf::Rect invalid_rect = internal::CalculateInvalidRectInCachedRect(
         valid_cached_renderer_rect_, 
         repaint_rect);
 
@@ -355,40 +434,40 @@ void Control::ReleaseRendererResources() {
 }
 
 
-void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const Rect& previous_rect) {
+void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const zaf::Rect& previous_rect) {
 
-	const Rect& new_rect = child->GetRect();
+    const zaf::Rect& new_rect = child->Rect();
 
-	if (new_rect.HasIntersection(previous_rect)) {
-		NeedRepaintRect(Rect::Union(new_rect, previous_rect));
-	}
-	else {
-		NeedRepaintRect(new_rect);
-		NeedRepaintRect(previous_rect);
-	}
+    if (new_rect.HasIntersection(previous_rect)) {
+        NeedRepaintRect(zaf::Rect::Union(new_rect, previous_rect));
+    }
+    else {
+        NeedRepaintRect(new_rect);
+        NeedRepaintRect(previous_rect);
+    }
 
     AutoResizeToPreferredSize();
 }
 
 
-void Control::Layout(const Rect& previous_rect) {
+void Control::Layout(const zaf::Rect& previous_rect) {
 
     //Avoid auto resize when layouting children.
     auto update_guard = BeginUpdate();
 
-	auto layouter = GetLayouter();
-	if (layouter) {
-		layouter->Layout(*this, previous_rect, GetChildren());
-	}
+    auto layouter = Layouter();
+    if (layouter) {
+        layouter->Layout(*this, previous_rect, Children());
+    }
 }
 
 
 void Control::NeedRelayout() {
-    NeedRelayout(GetRect());
+    NeedRelayout(Rect());
 }
 
 
-void Control::NeedRelayout(const Rect& previous_rect) {
+void Control::NeedRelayout(const zaf::Rect& previous_rect) {
 
     if (update_state_) {
         update_state_->need_relayout = true;
@@ -399,35 +478,35 @@ void Control::NeedRelayout(const Rect& previous_rect) {
 }
 
 
-Rect Control::GetAbsoluteRect() const {
+zaf::Rect Control::AbsoluteRect() const {
 
-	auto window = GetWindow();
-	if (window == nullptr) {
-		return Rect();
-	}
+    auto window = Window();
+    if (window == nullptr) {
+        return zaf::Rect();
+    }
 
     //No parent, must be the root control, return its rect as the absolute rect.
-	auto parent = GetParent();
-	if (parent == nullptr) {
-		return GetRect();
-	}
+    auto parent = Parent();
+    if (parent == nullptr) {
+        return Rect();
+    }
 
-	Rect parent_absolute_rect = parent->GetAbsoluteRect();
-	const auto& parent_border = parent->GetBorder();
-    const auto& parent_padding = parent->GetPadding();
+    zaf::Rect parent_absolute_rect = parent->AbsoluteRect();
+    const auto& parent_border = parent->Border();
+    const auto& parent_padding = parent->Padding();
 
-	return Rect(
+    return zaf::Rect(
         parent_absolute_rect.position.x + parent_border.left + parent_padding.left + rect_.position.x,
         parent_absolute_rect.position.y + parent_border.top + parent_padding.top + rect_.position.y,
-		rect_.size.width,
-		rect_.size.height
-	);
+        rect_.size.width,
+        rect_.size.height
+    );
 }
 
 
-void Control::SetRect(const Rect& rect) {
+void Control::SetRect(const zaf::Rect& rect) {
 
-    Rect previous_rect = GetRect();
+    zaf::Rect previous_rect = Rect();
 
     //Don't layout if rects are the same.
     if (rect == previous_rect) {
@@ -436,14 +515,14 @@ void Control::SetRect(const Rect& rect) {
 
     //Revise the size.
     float width = rect.size.width;
-    width = std::max(width, GetMinWidth());
-    width = std::min(width, GetMaxWidth());
+    width = std::max(width, MinWidth());
+    width = std::min(width, MaxWidth());
 
     float height = rect.size.height;
-    height = std::max(height, GetMinHeight());
-    height = std::min(height, GetMaxHeight());
+    height = std::max(height, MinHeight());
+    height = std::min(height, MaxHeight());
 
-	rect_ = zaf::Rect(rect.position, zaf::Size(width, height));    
+    rect_ = zaf::Rect(rect.position, zaf::Size(width, height));    
 
     //Notify rect change.
     OnRectChanged(previous_rect);
@@ -456,22 +535,22 @@ void Control::SetRect(const Rect& rect) {
         NeedRelayout(previous_rect);
     }
 
-	//The focused control need to be notified while its absolute position changed, 
-	//so that it can relayout its elements, if needed.
-	auto window = GetWindow();
-	if (window != nullptr) {
-		auto focused_control = window->GetFocusedControl();
-		if (focused_control != nullptr) {
-			if (IsAncestorOf(focused_control)) {
-				focused_control->NeedRelayout();
-			}
-		}
-	}
+    //The focused control need to be notified while its absolute position changed, 
+    //so that it can relayout its elements, if needed.
+    auto window = Window();
+    if (window != nullptr) {
+        auto focused_control = window->FocusedControl();
+        if (focused_control != nullptr) {
+            if (IsAncestorOf(focused_control)) {
+                focused_control->NeedRelayout();
+            }
+        }
+    }
 
-	auto parent = GetParent();
-	if (parent != nullptr) {
-		parent->ChildRectChanged(shared_from_this(), previous_rect);
-	}
+    auto parent = Parent();
+    if (parent != nullptr) {
+        parent->ChildRectChanged(shared_from_this(), previous_rect);
+    }
 
     //Trigger the rect change event.
     auto event_observer = GetEventObserver<ControlRectChangeInfo>(
@@ -487,7 +566,7 @@ void Control::SetRect(const Rect& rect) {
 }
 
 
-void Control::OnRectChanged(const Rect& previous_rect) {
+void Control::OnRectChanged(const zaf::Rect& previous_rect) {
 
 }
 
@@ -497,7 +576,7 @@ void Control::SetMargin(const Frame& margin) {
     margin_ = margin;
 
     //Notify parent to re-layout all children.
-    auto parent = GetParent();
+    auto parent = Parent();
     if (parent) {
 
         parent->NeedRelayout();
@@ -506,7 +585,7 @@ void Control::SetMargin(const Frame& margin) {
 }
 
 
-float Control::GetMinWidth() const {
+float Control::MinWidth() const {
 
     auto min_width = GetPropertyMap().TryGetProperty<float>(property::MinWidth);
     if (min_width != nullptr) {
@@ -521,17 +600,17 @@ void Control::SetMinWidth(float min_width) {
 
     GetPropertyMap().SetProperty(property::MinWidth, min_width);
 
-    if (GetMaxWidth() < min_width) {
+    if (MaxWidth() < min_width) {
         SetMaxWidth(min_width);
     }
 
-    if (GetWidth() < min_width) {
+    if (Width() < min_width) {
         SetWidth(min_width);
     }
 }
 
 
-float Control::GetMaxWidth() const {
+float Control::MaxWidth() const {
 
     auto max_width = GetPropertyMap().TryGetProperty<float>(property::MaxWidth);
     if (max_width != nullptr) {
@@ -546,17 +625,17 @@ void Control::SetMaxWidth(float max_width) {
 
     GetPropertyMap().SetProperty(property::MaxWidth, max_width);
 
-    if (GetMinWidth() > max_width) {
+    if (MinWidth() > max_width) {
         SetMinWidth(max_width);
     }
 
-    if (GetWidth() > max_width) {
+    if (Width() > max_width) {
         SetWidth(max_width);
     }
 }
 
 
-float Control::GetMinHeight() const {
+float Control::MinHeight() const {
 
     auto min_height = GetPropertyMap().TryGetProperty<float>(property::MinHeight);
     if (min_height != nullptr) {
@@ -571,17 +650,17 @@ void Control::SetMinHeight(float min_height) {
 
     GetPropertyMap().SetProperty(property::MinHeight, min_height);
 
-    if (GetMaxHeight() < min_height) {
+    if (MaxHeight() < min_height) {
         SetMaxHeight(min_height);
     }
 
-    if (GetHeight() < min_height) {
+    if (Height() < min_height) {
         SetHeight(min_height);
     }
 }
 
 
-float Control::GetMaxHeight() const {
+float Control::MaxHeight() const {
 
     auto max_height = GetPropertyMap().TryGetProperty<float>(property::MaxHeight);
     if (max_height != nullptr) {
@@ -596,25 +675,25 @@ void Control::SetMaxHeight(float max_height) {
 
     GetPropertyMap().SetProperty(property::MaxHeight, max_height);
 
-    if (GetMinHeight() > max_height) {
+    if (MinHeight() > max_height) {
         SetMinHeight(max_height);
     }
 
-    if (GetHeight() > max_height) {
+    if (Height() > max_height) {
         SetHeight(max_height);
     }
 }
 
 
-Size Control::GetPreferredSize() const {
+zaf::Size Control::GetPreferredSize() const {
 
     auto result = GetPreferredContentSize();
 
-    const auto& padding = GetPadding();
+    const auto& padding = Padding();
     result.width += padding.left + padding.right;
     result.height += padding.top + padding.bottom;
 
-    const auto& border = GetBorder();
+    const auto& border = Border();
     result.width += border.left + border.right;
     result.height += border.top + border.bottom;
 
@@ -622,20 +701,20 @@ Size Control::GetPreferredSize() const {
 }
 
 
-Size Control::GetPreferredContentSize() const {
+zaf::Size Control::GetPreferredContentSize() const {
 
-    Rect union_rect;
+    zaf::Rect union_rect;
 
-    for (const auto& each_child : GetChildren()) {
+    for (const auto& each_child : Children()) {
 
         if (!each_child->IsSelfVisible()) {
             continue;
         }
 
-        auto child_rect = each_child->GetRect();
-        child_rect.Inflate(each_child->GetMargin());
+        auto child_rect = each_child->Rect();
+        child_rect.Inflate(each_child->Margin());
 
-        Rect needed_rect;
+        zaf::Rect needed_rect;
         needed_rect.size.width = std::max(child_rect.position.x + child_rect.size.width, 0.f);
         needed_rect.size.height = std::max(child_rect.position.y + child_rect.size.height, 0.f);
 
@@ -731,31 +810,31 @@ void Control::RaiseContentChangedEvent() {
 }
 
 
-Anchor Control::GetAnchor() const {
+Anchor Control::Anchor() const {
 
-	auto anchor = GetPropertyMap().TryGetProperty<Anchor>(kAnchorPropertyName);
-	if (anchor != nullptr) {
-		return *anchor;
-	}
-	return Anchor::None;
+    auto anchor = GetPropertyMap().TryGetProperty<zaf::Anchor>(kAnchorPropertyName);
+    if (anchor != nullptr) {
+        return *anchor;
+    }
+    return Anchor::None;
 }
 
 
-void Control::SetAnchor(Anchor anchor) {
-	GetPropertyMap().SetProperty(kAnchorPropertyName, anchor);
+void Control::SetAnchor(zaf::Anchor anchor) {
+    GetPropertyMap().SetProperty(kAnchorPropertyName, anchor);
 }
 
 
-Rect Control::GetContentRect() const {
+zaf::Rect Control::ContentRect() const {
 
-	Rect content_rect = Rect(Point(), GetSize());
-	content_rect.Deflate(GetBorder());
-    content_rect.Deflate(GetPadding());
-	return content_rect;
+    zaf::Rect content_rect = zaf::Rect(Point(), Size());
+    content_rect.Deflate(Border());
+    content_rect.Deflate(Padding());
+    return content_rect;
 }
 
 
-ImagePicker Control::GetBackgroundImagePicker() const {
+ImagePicker Control::BackgroundImagePicker() const {
 
     auto image_picker = GetPropertyMap().TryGetProperty<ImagePicker>(
         kBackgroundImagePickerPropertyName);
@@ -774,7 +853,7 @@ void Control::SetBackgroundImagePicker(const ImagePicker& image_picker) {
 }
 
 
-ImageLayout Control::GetBackgroundImageLayout() const {
+ImageLayout Control::BackgroundImageLayout() const {
 
     auto layout = GetPropertyMap().TryGetProperty<ImageLayout>(kBackgroundImageLayoutPropertyName);
     if (layout) {
@@ -790,12 +869,12 @@ void Control::SetBackgroundImageLayout(ImageLayout image_layout) {
 }
 
 
-ColorPicker Control::GetBackgroundColorPicker() const {
+ColorPicker Control::BackgroundColorPicker() const {
 
-	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::BackgroundColorPicker);
-	if ((color_picker != nullptr) && (*color_picker != nullptr)) {
-		return *color_picker;
-	}
+    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::BackgroundColorPicker);
+    if ((color_picker != nullptr) && (*color_picker != nullptr)) {
+        return *color_picker;
+    }
     else {
         return [](const Control&) {
             return Color::Transparent();
@@ -806,17 +885,17 @@ ColorPicker Control::GetBackgroundColorPicker() const {
 
 void Control::SetBackgroundColorPicker(const ColorPicker& color_picker) {
 
-	GetPropertyMap().SetProperty(property::BackgroundColorPicker, color_picker);
-	NeedRepaint();
+    GetPropertyMap().SetProperty(property::BackgroundColorPicker, color_picker);
+    NeedRepaint();
 }
 
 
-ColorPicker Control::GetBorderColorPicker() const {
+ColorPicker Control::BorderColorPicker() const {
 
-	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::BorderColorPicker);
-	if ((color_picker != nullptr) && (*color_picker != nullptr)) {
-		return *color_picker;
-	}
+    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::BorderColorPicker);
+    if ((color_picker != nullptr) && (*color_picker != nullptr)) {
+        return *color_picker;
+    }
     else {
         return [](const Control&) {
             return Color::FromRGB(internal::ControlBackgroundColorRGB);
@@ -827,26 +906,26 @@ ColorPicker Control::GetBorderColorPicker() const {
 
 void Control::SetBorderColorPicker(const ColorPicker& color_picker) {
 
-	GetPropertyMap().SetProperty(property::BorderColorPicker, color_picker);
-	NeedRepaint();
+    GetPropertyMap().SetProperty(property::BorderColorPicker, color_picker);
+    NeedRepaint();
 }
 
 
-std::shared_ptr<Layouter> Control::GetLayouter() const {
+std::shared_ptr<Layouter> Control::Layouter() const {
 
-	auto layouter = GetPropertyMap().TryGetProperty<std::shared_ptr<Layouter>>(
+    auto layouter = GetPropertyMap().TryGetProperty<std::shared_ptr<zaf::Layouter>>(
         kLayouterPropertyName
     );
-	if (layouter && *layouter) {
-		return *layouter;
-	}
-	else {
-		return GetAnchorLayouter();
-	}
+    if (layouter && *layouter) {
+        return *layouter;
+    }
+    else {
+        return GetAnchorLayouter();
+    }
 }
 
-void Control::SetLayouter(const std::shared_ptr<Layouter>& layouter) {
-	GetPropertyMap().SetProperty(kLayouterPropertyName, layouter);
+void Control::SetLayouter(const std::shared_ptr<zaf::Layouter>& layouter) {
+    GetPropertyMap().SetProperty(kLayouterPropertyName, layouter);
     NeedRelayout();
 }
 
@@ -864,12 +943,12 @@ void Control::SetParent(const std::shared_ptr<Control>& parent) {
             return true;
         }
 
-        auto previous_window = previous_parent->GetWindow();
+        auto previous_window = previous_parent->Window();
         if (previous_window == nullptr) {
             return false;
         }
 
-        auto new_window = parent->GetWindow();
+        auto new_window = parent->Window();
         if (new_window == nullptr) {
             return true;
         }
@@ -892,22 +971,22 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
         return;
     }
 
-	auto previous_parent = child->GetParent();
-	if (previous_parent.get() == this) {
-		//Already added
-		return;
-	}
+    auto previous_parent = child->Parent();
+    if (previous_parent.get() == this) {
+        //Already added
+        return;
+    }
 
-	if (previous_parent != nullptr) {
-		//Remove child from previous parent
-		previous_parent->RemoveChild(child);
-	}
+    if (previous_parent != nullptr) {
+        //Remove child from previous parent
+        previous_parent->RemoveChild(child);
+    }
 
-	child->SetParent(shared_from_this());
-	children_.push_back(child);
+    child->SetParent(shared_from_this());
+    children_.push_back(child);
 
     NeedRelayout();
-	NeedRepaintRect(child->GetRect());
+    NeedRepaintRect(child->Rect());
 
     AutoResizeToPreferredSize();
 
@@ -930,13 +1009,13 @@ void Control::AddChildren(const std::vector<std::shared_ptr<Control>>& children)
 
 void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 
-	auto current_parent = child->GetParent();
-	if (current_parent.get() != this) {
-		//Not child
-		return;
-	}
+    auto current_parent = child->Parent();
+    if (current_parent.get() != this) {
+        //Not child
+        return;
+    }
 
-	child->SetParent(nullptr);
+    child->SetParent(nullptr);
 
     auto removed_iterator = std::find(children_.begin(), children_.end(), child);
     if (removed_iterator == children_.end()) {
@@ -944,15 +1023,15 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
     }
 
     auto removed_index = std::distance(children_.begin(), removed_iterator);
-	children_.erase(removed_iterator);
+    children_.erase(removed_iterator);
 
     //The child's rect may be changed while calling NeedRelayout(), leading to a wrong repaint rect
     //while calling NeedRepaintRect(), so we preserve the original rect before calling 
     //NeedRelayout().
-    auto child_rect = child->GetRect();
+    auto child_rect = child->Rect();
 
     NeedRelayout();
-	NeedRepaintRect(child_rect);
+    NeedRepaintRect(child_rect);
 
     AutoResizeToPreferredSize();
 
@@ -977,7 +1056,7 @@ void Control::RemoveAllChildren() {
 std::shared_ptr<Control> Control::FindChild(const std::wstring& name) const {
 
     for (const auto& each_child : children_) {
-        if (each_child->GetName() == name) {
+        if (each_child->Name() == name) {
             return each_child;
         }
     }
@@ -997,7 +1076,7 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
     const Point& position, 
     bool recursively) const {
 
-    auto content_rect = GetContentRect();
+    auto content_rect = ContentRect();
 
     auto position_in_content = position;
     position_in_content.x -= content_rect.position.x;
@@ -1014,7 +1093,7 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
             continue;
         }
 
-        Rect child_rect = child->GetRect();
+        zaf::Rect child_rect = child->Rect();
         child_rect.Intersect(content_rect);
 
         if (!child_rect.Contain(position_in_content)) {
@@ -1038,51 +1117,51 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
 
 
 bool Control::IsParentOf(const std::shared_ptr<Control>& child) const {
-	return child->GetParent().get() == this;
+    return child->Parent().get() == this;
 }
 
 
 bool Control::IsAncestorOf(const std::shared_ptr<Control>& child) const {
 
-	auto ancestor = child->GetParent();
-	while (ancestor != nullptr) {
+    auto ancestor = child->Parent();
+    while (ancestor != nullptr) {
 
-		if (ancestor.get() == this) {
-			return true;
-		}
+        if (ancestor.get() == this) {
+            return true;
+        }
 
-		ancestor = ancestor->GetParent();
-	}
+        ancestor = ancestor->Parent();
+    }
 
-	return false;
+    return false;
 }
 
 
-std::wstring Control::GetName() const {
+std::wstring Control::Name() const {
 
-	auto name = GetPropertyMap().TryGetProperty<std::wstring>(property::Name);
-	if (name != nullptr) {
-		return *name;
-	}
-	else {
-		return std::wstring();
-	}
+    auto name = GetPropertyMap().TryGetProperty<std::wstring>(property::Name);
+    if (name != nullptr) {
+        return *name;
+    }
+    else {
+        return std::wstring();
+    }
 }
 
 
 void Control::SetName(const std::wstring& name) {
-	GetPropertyMap().SetProperty(property::Name, name);
+    GetPropertyMap().SetProperty(property::Name, name);
 }
 
 
-std::shared_ptr<Window> Control::GetWindow() const {
+std::shared_ptr<Window> Control::Window() const {
 
-	auto parent = GetParent();
-	if (parent == nullptr) {
-		return window_.lock();
-	}
+    auto parent = Parent();
+    if (parent == nullptr) {
+        return window_.lock();
+    }
 
-	return parent->GetWindow();
+    return parent->Window();
 }
 
 
@@ -1092,7 +1171,7 @@ bool Control::IsVisible() const {
         return false;
     }
 
-    auto parent = GetParent(); 
+    auto parent = Parent(); 
     if (parent == nullptr) {
         return true;
     }
@@ -1115,7 +1194,7 @@ void Control::SetIsVisible(bool is_visible) {
     //Notify parent to re-layout.
     if (need_relayout) {
 
-        auto parent = GetParent();
+        auto parent = Parent();
         if (parent) {
 
             parent->NeedRelayout();
@@ -1139,7 +1218,7 @@ bool Control::IsEnabled() const {
         return false;
     }
 
-    auto parent = GetParent();
+    auto parent = Parent();
     if (parent == nullptr) {
         return true;    
     }
@@ -1170,7 +1249,7 @@ void Control::SetInteractiveProperty(bool new_value, bool& property_value, void(
     if (! new_value) {
 
         if (IsHovered()) {
-            auto window = GetWindow();
+            auto window = Window();
             if (window != nullptr) {
                 window->SetHoveredControl(nullptr, {});
             }
@@ -1194,7 +1273,7 @@ bool Control::IsSelected() const {
         return true;
     }
 
-    auto parent = GetParent();
+    auto parent = Parent();
     if (!parent) {
         return false;
     }
@@ -1224,31 +1303,31 @@ void Control::OnIsSelectedChanged() {
 
 void Control::IsHoveredChanged(bool is_hovered) {
 
-	if (is_hovered_ == is_hovered) {
-		return;
-	}
+    if (is_hovered_ == is_hovered) {
+        return;
+    }
 
     auto point = GetMousePosition();
     
-	is_hovered_ = is_hovered;
+    is_hovered_ = is_hovered;
 
-	if (is_hovered_) {
-		OnMouseEnter(shared_from_this());
-	}
-	else {
+    if (is_hovered_) {
+        OnMouseEnter(shared_from_this());
+    }
+    else {
         OnMouseLeave(shared_from_this());
-	}
+    }
 }
 
 
 bool Control::IsHoveredIndirectly() const {
 
-    auto window = GetWindow();
+    auto window = Window();
     if (window == nullptr) {
         return false;
     }
 
-    const auto& hovered_control = window->GetHoveredControl();
+    const auto& hovered_control = window->HoveredControl();
     if (hovered_control == nullptr) {
         return false;
     }
@@ -1275,7 +1354,7 @@ void Control::SetCanTabStop(bool can_tab_stop) {
 }
 
 
-std::optional<std::size_t> Control::GetTabIndex() const {
+std::optional<std::size_t> Control::TabIndex() const {
 
     auto tab_index = GetPropertyMap().TryGetProperty<std::size_t>(property::TabIndex);
     if (tab_index != nullptr) {
@@ -1295,35 +1374,35 @@ void Control::SetTabIndex(std::size_t tab_index) {
 
 void Control::SetIsFocused(bool is_focused) {
 
-	if (!CanFocused()) {
-		return;
-	}
+    if (!CanFocused()) {
+        return;
+    }
 
-	if (IsFocused() == is_focused) {
-		return;
-	}
+    if (IsFocused() == is_focused) {
+        return;
+    }
 
-	auto window = GetWindow();
-	if (window != nullptr) {
-		window->SetFocusedControl(is_focused ? shared_from_this() : nullptr);
-	}
+    auto window = Window();
+    if (window != nullptr) {
+        window->SetFocusedControl(is_focused ? shared_from_this() : nullptr);
+    }
 }
 
 
 void Control::IsFocusedChanged(bool is_focused) {
 
-	if (is_focused_ == is_focused) {
-		return;
-	}
+    if (is_focused_ == is_focused) {
+        return;
+    }
 
-	is_focused_ = is_focused;
+    is_focused_ = is_focused;
 
-	if (is_focused_) {
-		OnFocusGain();
-	}
-	else {
-		OnFocusLose();
-	}
+    if (is_focused_) {
+        OnFocusGain();
+    }
+    else {
+        OnFocusLose();
+    }
 
     auto event_observer = GetEventObserver<ControlFocusChangeInfo>(
         GetPropertyMap(),
@@ -1376,7 +1455,7 @@ void Control::SetCanDoubleClick(bool can_double_click) {
 
 void Control::CaptureMouse() {
 
-    auto window = GetWindow();
+    auto window = Window();
     if (window != nullptr) {
         window->SetCaptureMouseControl(shared_from_this(), false);
     }
@@ -1385,7 +1464,7 @@ void Control::CaptureMouse() {
 
 void Control::ReleaseMouse() {
 
-    auto window = GetWindow();
+    auto window = Window();
     if (window != nullptr) {
         window->SetCaptureMouseControl(shared_from_this(), true);
     }
@@ -1394,14 +1473,14 @@ void Control::ReleaseMouse() {
 
 void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
 
-	is_capturing_mouse_ = is_capturing_mouse;
+    is_capturing_mouse_ = is_capturing_mouse;
 
-	if (is_capturing_mouse_) {
-		OnMouseCapture();
-	}
-	else {
-		OnMouseRelease();
-	}
+    if (is_capturing_mouse_) {
+        OnMouseCapture();
+    }
+    else {
+        OnMouseRelease();
+    }
 }
 
 
@@ -1447,60 +1526,60 @@ Observable<ControlDoubleClickInfo> Control::DoubleClickEvent() {
 
 const Point Control::GetMousePosition() const {
 
-	auto window = GetWindow();
-	if (window == nullptr) {
-		return Point();
-	}
-	
-	Point mouse_position = window->GetMousePosition();
-	Point absolute_position = GetAbsoluteRect().position;
-	mouse_position.x -= absolute_position.x;
-	mouse_position.y -= absolute_position.y;
-	return mouse_position;
+    auto window = Window();
+    if (window == nullptr) {
+        return Point();
+    }
+    
+    Point mouse_position = window->GetMousePosition();
+    Point absolute_position = AbsoluteRect().position;
+    mouse_position.x -= absolute_position.x;
+    mouse_position.y -= absolute_position.y;
+    return mouse_position;
 }
 
 
 void Control::RouteHoverMessage(const Point& position, const MouseMessage& message) {
 
-	auto child = FindChildAtPosition(position);
-	if (child != nullptr) {
-		child->RouteHoverMessage(ToChildPoint(position, child), message);
-	}
-	else {
+    auto child = FindChildAtPosition(position);
+    if (child != nullptr) {
+        child->RouteHoverMessage(ToChildPoint(position, child), message);
+    }
+    else {
 
-		auto window = GetWindow();
-		if (window != nullptr) {
+        auto window = Window();
+        if (window != nullptr) {
 
-			if (IsEnabled()) {
-				window->SetHoveredControl(shared_from_this(), message);
-			}
-			else {
+            if (IsEnabled()) {
+                window->SetHoveredControl(shared_from_this(), message);
+            }
+            else {
                 window->SetHoveredControl(nullptr, {});
-			}
-		}
-	}
+            }
+        }
+    }
 }
 
 
 bool Control::RouteMessage(const Point& position, const MouseMessage& message) {
 
-	auto child = FindChildAtPosition(position);
-	if (child != nullptr) {
+    auto child = FindChildAtPosition(position);
+    if (child != nullptr) {
         return child->RouteMessage(ToChildPoint(position, child), message);
-	}
-	
-	if (IsEnabled()) {
+    }
+    
+    if (IsEnabled()) {
         return InterpretMessage(position, message);
-	}
+    }
     return false;
 }
 
 
 Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const {
 
-    const auto& border = GetBorder();
-    const auto& padding = GetPadding();
-    const auto& child_position = child->GetPosition();
+    const auto& border = Border();
+    const auto& padding = Padding();
+    const auto& child_position = child->Position();
 
     Point point_in_child = point;
     point_in_child.x -= child_position.x + border.left + padding.left;
@@ -1512,35 +1591,35 @@ Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& 
 
 bool Control::InterpretMessage(const Point& position, const MouseMessage& message) {
 
-	switch (message.id) {
-	case WM_MOUSEMOVE:
-		return OnMouseMove(position, message);
+    switch (message.id) {
+    case WM_MOUSEMOVE:
+        return OnMouseMove(position, message);
 
-	case WM_LBUTTONDOWN:
+    case WM_LBUTTONDOWN:
     case WM_NCLBUTTONDOWN:
-	case WM_MBUTTONDOWN:
-	case WM_RBUTTONDOWN:
+    case WM_MBUTTONDOWN:
+    case WM_RBUTTONDOWN:
         return OnMouseDown(position, message);
 
-	case WM_LBUTTONUP:
+    case WM_LBUTTONUP:
     case WM_NCLBUTTONUP:
-	case WM_MBUTTONUP:
-	case WM_RBUTTONUP:
+    case WM_MBUTTONUP:
+    case WM_RBUTTONUP:
         return OnMouseUp(position, message);
 
-	case WM_MOUSEWHEEL:
-	case WM_MOUSEHWHEEL:
+    case WM_MOUSEWHEEL:
+    case WM_MOUSEHWHEEL:
         return OnMouseWheel(position, dynamic_cast<const MouseWheelMessage&>(message));
 
-	default:
+    default:
         return false;
-	}
+    }
 }
 
 
 std::optional<HitTestResult> Control::HitTest(const HitTestMessage& message) {
 
-    auto parent = GetParent();
+    auto parent = Parent();
     if (parent != nullptr) {
         return parent->HitTest(message);
     }
@@ -1552,19 +1631,19 @@ std::optional<HitTestResult> Control::HitTest(const HitTestMessage& message) {
 
 void Control::ChangeMouseCursor(const Message& message, bool& is_changed) {
 
-	auto parent = GetParent();
-	if (parent != nullptr) {
-		parent->ChangeMouseCursor(message, is_changed);
-	}
+    auto parent = Parent();
+    if (parent != nullptr) {
+        parent->ChangeMouseCursor(message, is_changed);
+    }
 }
 
 
 bool Control::OnMouseMove(const Point& position, const MouseMessage& message) {
 
-	auto parent = GetParent();
-	if (parent != nullptr) {
+    auto parent = Parent();
+    if (parent != nullptr) {
         return parent->OnMouseMove(ToParentPoint(position), message);
-	}
+    }
     else {
         return false;
     }
@@ -1584,7 +1663,7 @@ void Control::OnMouseEnter(const std::shared_ptr<Control>& entered_control) {
         event_observer->OnNext(event_info);
     }
 
-    auto parent = GetParent();
+    auto parent = Parent();
     if (parent != nullptr) {
         parent->OnMouseEnter(entered_control);
     }
@@ -1604,7 +1683,7 @@ void Control::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
         event_observer->OnNext(event_info);
     }
 
-    auto parent = GetParent();
+    auto parent = Parent();
     if (parent != nullptr) {
         parent->OnMouseLeave(leaved_control);
     }
@@ -1619,10 +1698,10 @@ bool Control::OnMouseDown(const Point& position, const MouseMessage& message) {
         }
     }
 
-	auto parent = GetParent();
-	if (parent) {
+    auto parent = Parent();
+    if (parent) {
         return parent->OnMouseDown(ToParentPoint(position), message);
-	}
+    }
 
     return false;
 }
@@ -1664,10 +1743,10 @@ bool Control::OnMouseUp(const Point& position, const MouseMessage& message) {
         }
     }
 
-	auto parent = GetParent();
-	if (parent) {
+    auto parent = Parent();
+    if (parent) {
         return parent->OnMouseUp(ToParentPoint(position), message);
-	}
+    }
 
     return false;
 }
@@ -1740,10 +1819,10 @@ void Control::OnDoubleClick() {
 
 bool Control::OnMouseWheel(const Point& position, const MouseWheelMessage& message) {
 
-	auto parent = GetParent();
-	if (parent != nullptr) {
-		return parent->OnMouseWheel(ToParentPoint(position), message);
-	}
+    auto parent = Parent();
+    if (parent != nullptr) {
+        return parent->OnMouseWheel(ToParentPoint(position), message);
+    }
     else {
         return false;
     }
@@ -1762,10 +1841,10 @@ void Control::OnMouseRelease() {
 
 bool Control::OnKeyDown(const KeyMessage& message) {
 
-	auto parent = GetParent();
-	if (parent != nullptr) {
-		return parent->OnKeyDown(message);
-	}
+    auto parent = Parent();
+    if (parent != nullptr) {
+        return parent->OnKeyDown(message);
+    }
     else {
         return false;
     }
@@ -1774,10 +1853,10 @@ bool Control::OnKeyDown(const KeyMessage& message) {
 
 bool Control::OnKeyUp(const KeyMessage& message) {
 
-	auto parent = GetParent();
-	if (parent != nullptr) {
-		return parent->OnKeyUp(message);
-	}
+    auto parent = Parent();
+    if (parent != nullptr) {
+        return parent->OnKeyUp(message);
+    }
     else {
         return false;
     }
@@ -1786,10 +1865,10 @@ bool Control::OnKeyUp(const KeyMessage& message) {
 
 bool Control::OnCharInput(const CharMessage& message) {
 
-	auto parent = GetParent(); 
-	if (parent != nullptr) {
-		return parent->OnCharInput(message);
-	}
+    auto parent = Parent(); 
+    if (parent != nullptr) {
+        return parent->OnCharInput(message);
+    }
     else {
         return false;
     }
@@ -1808,7 +1887,7 @@ void Control::OnFocusLose() {
 
 std::shared_ptr<internal::InspectorPort> Control::GetInspectorPort() const {
 
-    auto window = GetWindow();
+    auto window = Window();
     if (!window) {
         return nullptr;
     }

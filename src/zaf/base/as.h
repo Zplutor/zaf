@@ -1,0 +1,88 @@
+#pragma once
+
+#include <memory>
+#include <type_traits>
+#include <zaf/base/error/basic_error.h>
+
+namespace zaf {
+namespace internal {
+
+template<typename T>
+struct IsSharedPtr {
+private:
+    template<typename V>
+    static constexpr bool Test(typename std::decay_t<V>::element_type*) {
+        return std::is_same_v<
+            std::shared_ptr<typename std::decay_t<V>::element_type>,
+            std::decay_t<V>
+        >;
+    }
+
+    template<typename V>
+    static constexpr bool Test(...) {
+        return false;
+    }
+
+public:
+    static constexpr bool Value = Test<T>(nullptr);
+};
+
+
+struct NonSharedPtrCast {
+
+    //Const value
+    template<typename T, typename K>
+    static const T& As(const K& value) {
+        auto result = dynamic_cast<const T*>(&value);
+        if (!result) {
+            ZAF_THROW_ERRC(BasicErrc::InvalidCast);
+        }
+        return *result;
+    }
+
+    //Non-const value
+    template<typename T, typename K>
+    static T& As(K& value) {
+        return const_cast<T&>(As<T>(static_cast<const K&>(value)));
+    }
+};
+
+
+struct SharedPtrCast {
+
+    template<typename T, typename K>
+    static std::shared_ptr<T> As(const std::shared_ptr<K>& value) {
+        return std::dynamic_pointer_cast<T>(value);
+    }
+};
+
+
+template<typename T>
+struct CastSelector {
+    using Type = std::conditional_t<
+        IsSharedPtr<T>::Value, 
+        SharedPtrCast,
+        NonSharedPtrCast
+    >;
+};
+
+}
+
+template<typename T, typename K>
+const T* As(const K* value) {
+    return dynamic_cast<const T*>(value);
+}
+
+template<typename T, typename K>
+T* As(K* value) {
+    return dynamic_cast<T*>(value);
+}
+
+
+template<typename T, typename K>
+decltype(auto) As(K&& value) {
+
+    return typename internal::CastSelector<K>::Type::As<T>(std::forward<K>(value));
+}
+
+}

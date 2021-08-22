@@ -7,8 +7,7 @@
 #include <zaf/control/internal/image_box/image_drawing.h>
 #include <zaf/control/internal/image_box/static_image_player.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/parsing/parsers/image_box_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/resource/resource_manager.h>
 
 namespace zaf {
@@ -38,9 +37,8 @@ const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(ImageBox)
-    ZAF_DEFINE_PARSER(ImageBoxParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE(ImageBox)
+ZAF_DEFINE_TYPE_END
 
 
 ImageBox::ImageBox() {
@@ -53,7 +51,7 @@ ImageBox::~ImageBox() {
 }
 
 
-void ImageBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void ImageBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -66,7 +64,7 @@ void ImageBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
         return;
     }
 
-    auto content_rect = GetContentRect();
+    auto content_rect = ContentRect();
 
     canvas.PushClippingRect(content_rect);
     internal::DrawImage(canvas, content_rect, GetImageLayout(), bitmap, GetInterpolationMode());
@@ -131,13 +129,13 @@ void ImageBox::SetImagePlayer(std::unique_ptr<internal::ImagePlayer> player) {
 }
 
 
-Size ImageBox::GetPreferredContentSize() const {
+zaf::Size ImageBox::GetPreferredContentSize() const {
 
     if (!image_player_) {
         return {};
     }
 
-    Size pixel_size;
+    zaf::Size pixel_size;
     std::pair<float, float> resolution;
     image_player_->GetImageSize(pixel_size, resolution);
 
@@ -145,7 +143,7 @@ Size ImageBox::GetPreferredContentSize() const {
         return {};
     }
 
-    return Size{
+    return zaf::Size{
         pixel_size.width / (std::round(resolution.first) / 96.f),
         pixel_size.height / (std::round(resolution.second) / 96.f)
     };

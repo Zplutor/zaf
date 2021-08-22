@@ -4,96 +4,96 @@
 #include <zaf/base/direct2d.h>
 #include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
-#include <zaf/object/equality_type.h>
-#include <zaf/reflection/reflection_object.h>
+#include <zaf/object/equality.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 
 /**
- Describes the width and height of a size.	
+ Describes the width and height of a size.    
  */
-class Size : public ReflectionObject {
+class Size : public Object {
 public:
-	ZAF_DECLARE_EQUALITY_TYPE
-    ZAF_DECLARE_REFLECTION_TYPE
-
-public:
-	/**
-	 Convert a specified D2D1_SIZE_F structure to Size.
-	 */
-	static Size FromD2D1SIZEF(const D2D1_SIZE_F& size) {
-		return Size(size.width, size.height);
-	}
-
-	/**
-	 Convert a specified D2D1_SIZE_U structure to Size.
-	 */
-	static Size FromD2D1SIZEU(const D2D1_SIZE_U& size) {
-
-		return Size(
-			static_cast<float>(size.width),
-			static_cast<float>(size.height)
-		);
-	}
+    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_EQUALITY
 
 public:
-	/**
-	 Initialize the instance that has zero width and height.
-	 */
-	Size() : width(0), height(0) { }
+    /**
+     Convert a specified D2D1_SIZE_F structure to Size.
+     */
+    static Size FromD2D1SIZEF(const D2D1_SIZE_F& size) {
+        return Size(size.width, size.height);
+    }
 
-	/**
-	 Initialize the instance that is the same as another Size. 
-	 */
-	Size(const Size& other) : width(other.width), height(other.height) { }
+    /**
+     Convert a specified D2D1_SIZE_U structure to Size.
+     */
+    static Size FromD2D1SIZEU(const D2D1_SIZE_U& size) {
 
-	/**
-	 Initialize the instance that has specified width and height. 
-	 */
-	Size(float width, float height) : width(width), height(height) { }
-
-	/**
-	 Assign from another Size instance.
-	 */
-	Size& operator=(const Size& other) {
-
-		width = other.width;
-		height = other.height;
-		return *this;
-	}
-
-	/**
-	 Convert to D2D1_SIZE_F structure.
-	 */
-	D2D1_SIZE_F ToD2D1SIZEF() const {
-
-		D2D1_SIZE_F size;
-		size.width = width;
-		size.height = height;
-		return size;
-	}
-
-	/**
-	 Convert to D2D1_SIZE_U structure.
-	 */
-	D2D1_SIZE_U ToD2D1SIZEU() const {
-
-		D2D1_SIZE_U size;
-		size.width = static_cast<UINT32>(width);
-		size.height = static_cast<UINT32>(height);
-		return size;
-	}
+        return Size(
+            static_cast<float>(size.width),
+            static_cast<float>(size.height)
+        );
+    }
 
 public:
-	/**
-	 Width of the size.
-	 */
-	float width;
+    /**
+     Initialize the instance that has zero width and height.
+     */
+    Size() : width(0), height(0) { }
 
-	/**
-	 Height of the size.
-	 */
-	float height;
+    /**
+     Initialize the instance that is the same as another Size. 
+     */
+    Size(const Size& other) : width(other.width), height(other.height) { }
+
+    /**
+     Initialize the instance that has specified width and height. 
+     */
+    Size(float width, float height) : width(width), height(height) { }
+
+    /**
+     Assign from another Size instance.
+     */
+    Size& operator=(const Size& other) {
+
+        width = other.width;
+        height = other.height;
+        return *this;
+    }
+
+    /**
+     Convert to D2D1_SIZE_F structure.
+     */
+    D2D1_SIZE_F ToD2D1SIZEF() const {
+
+        D2D1_SIZE_F size;
+        size.width = width;
+        size.height = height;
+        return size;
+    }
+
+    /**
+     Convert to D2D1_SIZE_U structure.
+     */
+    D2D1_SIZE_U ToD2D1SIZEU() const {
+
+        D2D1_SIZE_U size;
+        size.width = static_cast<UINT32>(width);
+        size.height = static_cast<UINT32>(height);
+        return size;
+    }
+
+public:
+    /**
+     Width of the size.
+     */
+    float width;
+
+    /**
+     Height of the size.
+     */
+    float height;
 };
 
 
@@ -124,8 +124,8 @@ ZAF_DEFINE_RELATION_OPERATORS(Size);
 namespace std {
 template<>
 struct hash<zaf::Size> {
-	std::size_t operator()(const zaf::Size& size) {
-		return zaf::CalculateHash(size.width, size.height);
-	}
+    std::size_t operator()(const zaf::Size& size) {
+        return zaf::CalculateHash(size.width, size.height);
+    }
 };
 }

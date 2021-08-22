@@ -17,7 +17,7 @@ void DrawTextWithIcon(
     float icon_size,
     const std::function<void(Canvas& canvas, const Rect& icon_rect)>& paint_icon_function) {
 
-    Rect text_rect = control.GetContentRect();
+    Rect text_rect = control.ContentRect();
     float x_offset = icon_size + 5;
     text_rect.position.x += x_offset;
     text_rect.size.width -= x_offset;
@@ -41,7 +41,7 @@ void DrawTextWithIcon(
     Rect icon_rect(0, icon_y, icon_size, icon_size);
     paint_icon_function(canvas, icon_rect);
 
-    canvas.SetBrushWithColor(control.GetTextColor());
+    canvas.SetBrushWithColor(control.TextColor());
     canvas.DrawTextLayout(text_layout, text_rect.position);
     
     if (control.IsFocused()) {

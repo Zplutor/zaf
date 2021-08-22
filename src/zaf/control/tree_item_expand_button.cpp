@@ -15,7 +15,7 @@ void TreeItemExpandButton::Initialize() {
 }
 
 
-void TreeItemExpandButton::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void TreeItemExpandButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -26,8 +26,8 @@ void TreeItemExpandButton::Paint(Canvas& canvas, const Rect& dirty_rect) {
     const float buttom_edge_length = 8.f;
     const float rotate_angle = expand_state_ == ExpandState::Expanded ? 180.f : 90.f;
     auto triangle_geometry = internal::CreateTriangleGeometry(
-        GetWidth(), 
-        GetHeight(),
+        Width(), 
+        Height(),
         buttom_edge_length, 
         rotate_angle);
 

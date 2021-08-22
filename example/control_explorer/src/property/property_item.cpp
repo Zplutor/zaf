@@ -24,7 +24,7 @@ void ValuePropertyItem::Initialize() {
 
 void ValuePropertyItem::Layout(const zaf::Rect&) {
 
-    auto content_rect = GetContentRect();
+    auto content_rect = ContentRect();
 
     title_control_->SetRect(zaf::Rect(0, 0, TitleWidth, content_rect.size.height));
 
@@ -59,7 +59,7 @@ void GroupPropertyItem::Initialize() {
 void GroupPropertyItem::AddItem(const std::shared_ptr<PropertyItem>& item) {
 
     AddChild(item);
-    SetHeight(GetHeight() + item->GetHeight());
+    SetHeight(Height() + item->Height());
 }
 
 

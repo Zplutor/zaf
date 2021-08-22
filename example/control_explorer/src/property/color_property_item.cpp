@@ -7,7 +7,7 @@
 #include <zaf/control/list_data_source.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer/renderer.h>
-#include <zaf/object/boxing.h>
+#include <zaf/object/boxing/boxing.h>
 #include <zaf/window/message/keyboard_message.h>
 
 namespace {
@@ -57,7 +57,7 @@ public:
         for (std::size_t index = 0; index < drop_down_list_box->GetItemCount(); ++index) {
 
             auto item_data = drop_down_list_box->GetItemDataAtIndex(index);
-            auto color = zaf::TryUnbox<zaf::Color>(item_data);
+            auto color = zaf::Unbox<zaf::Color>(item_data);
             if (!color) {
                 continue;
             }
@@ -82,7 +82,7 @@ protected:
     void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override {
 
         __super::Paint(canvas, dirty_rect);
-        PaintColorBox(canvas, GetContentRect(), selected_color_);
+        PaintColorBox(canvas, ContentRect(), selected_color_);
     }
 
     zaf::Rect GetTextRect() override {
@@ -137,7 +137,7 @@ private:
             std::size_t item_index,
             const std::shared_ptr<Object>& item_data) override {
 
-            auto color = zaf::TryUnbox<zaf::Color>(item_data);
+            auto color = zaf::Unbox<zaf::Color>(item_data);
             if (!color) {
                 return {};
             }
@@ -157,7 +157,7 @@ private:
                 return;
             }
 
-            auto color = zaf::TryUnbox<zaf::Color>(item_data);
+            auto color = zaf::Unbox<zaf::Color>(item_data);
             if (!color) {
                 return;
             }
@@ -180,7 +180,7 @@ private:
         void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override {
 
             __super::Paint(canvas, dirty_rect);
-            PaintColorBox(canvas, GetContentRect(), color_);
+            PaintColorBox(canvas, ContentRect(), color_);
         }
 
         zaf::Rect GetTextRect() override {
@@ -198,7 +198,7 @@ private:
 
         zaf::Rect box_rect = content_rect;
         box_rect.Deflate(zaf::Frame(0, 0, content_rect.size.width - ColorBoxWidth, 0));
-        box_rect.Deflate(4);
+        box_rect.Deflate(zaf::Frame(4));
 
         canvas.SetBrushWithColor(color);
         canvas.DrawRectangle(box_rect);

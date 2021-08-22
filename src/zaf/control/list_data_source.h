@@ -24,7 +24,7 @@ public:
     }
 
     virtual std::shared_ptr<Object> GetDataAtIndex(std::size_t index) {
-        return Object::Empty();
+        return Object::Dumb();
     }
 
     /**

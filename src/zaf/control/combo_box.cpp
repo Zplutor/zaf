@@ -13,10 +13,7 @@
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/theme.h>
-#include <zaf/parsing/parsers/combo_box_drop_down_list_box_parser.h>
-#include <zaf/parsing/parsers/combo_box_edit_text_box_parser.h>
-#include <zaf/parsing/parsers/combo_box_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/window.h>
@@ -38,17 +35,14 @@ const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent"
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(ComboBox)
-    ZAF_DEFINE_PARSER(ComboBoxParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE(ComboBox)
+ZAF_DEFINE_TYPE_END
 
-ZAF_DEFINE_REFLECTION_TYPE(ComboBoxDropDownListBox)
-    ZAF_DEFINE_PARSER(ComboBoxDropDownListBoxParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE(ComboBoxDropDownListBox)
+ZAF_DEFINE_TYPE_END
 
-ZAF_DEFINE_REFLECTION_TYPE(ComboBoxEditTextBox)
-    ZAF_DEFINE_PARSER(ComboBoxEditTextBoxParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE(ComboBoxEditTextBox)
+ZAF_DEFINE_TYPE_END
 
 
 ComboBox::ComboBox() : 
@@ -70,7 +64,7 @@ void ComboBox::Initialize() {
 
     __super::Initialize();
 
-    SetBorder(1);
+    SetBorder(Frame(1));
 
     SetBackgroundColorPicker([](const Control& control) {
 
@@ -97,8 +91,8 @@ void ComboBox::Initialize() {
     drop_down_window_ = Create<internal::ComboBoxDropDownWindow>();
     drop_down_window_->SetIsPopup(true);
     drop_down_window_->SetHasBorder(false);
-    drop_down_window_->SetActivateOption(Window::ActivateOption::NoActivate);
-    drop_down_window_->SetInitialRectStyle(Window::InitialRectStyle::Custom);
+    drop_down_window_->SetActivateOption(ActivateOption::NoActivate);
+    drop_down_window_->SetInitialRectStyle(InitialRectStyle::Custom);
 
     Subscriptions() += drop_down_window_->DestroyEvent().Subscribe(
         std::bind(&ComboBox::DropDownWindowDestroy, this));
@@ -138,7 +132,7 @@ void ComboBox::InitializeEditTextBox() {
 
     AddChild(edit_text_box_);
     edit_text_box_->SetIsVisible(IsEditable());
-    edit_text_box_->SetBorder(0);
+    edit_text_box_->SetBorder(Frame(0));
     edit_text_box_->SetParagraphAlignment(ParagraphAlignment::Center);
     edit_text_box_->SetIsMultiline(false);
     edit_text_box_->SetAcceptReturn(false);
@@ -159,7 +153,7 @@ void ComboBox::UninitializeEditTextBox() {
 }
 
 
-void ComboBox::Layout(const Rect& previous_rect) {
+void ComboBox::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
@@ -168,12 +162,12 @@ void ComboBox::Layout(const Rect& previous_rect) {
 }
 
 
-void ComboBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
     float button_width = GetDropDownButtonWidth();
-    auto button_rect = GetContentRect();
+    auto button_rect = ContentRect();
     button_rect.position.x = button_rect.position.x + button_rect.size.width - button_width;
     button_rect.size.width = button_width;
 
@@ -214,7 +208,7 @@ void ComboBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
 }
 
 
-Rect ComboBox::GetTextRect() {
+zaf::Rect ComboBox::GetTextRect() {
 
     auto rect = __super::GetTextRect();
     rect.Deflate(zaf::Frame(3, 1, GetDropDownButtonWidth() + 1, 1));
@@ -313,7 +307,7 @@ void ComboBox::SetIsEditable(bool is_editable) {
     
     GetPropertyMap().SetProperty(kIsEditablePropertyName, is_editable);
 
-    edit_text_box_->SetText(GetText());
+    edit_text_box_->SetText(Text());
     edit_text_box_->SetIsVisible(is_editable);
 }
 
@@ -372,20 +366,20 @@ void ComboBox::OnClick() {
 
 void ComboBox::PopupDropDownWindow() {
 
-    auto window = GetWindow();
+    auto window = Window();
     if (window == nullptr) {
         return;
     }
 
-    auto window_rect = GetAbsoluteRect();
+    auto window_rect = AbsoluteRect();
     window_rect.Inflate(-1, 0);
-    window_rect.position.y += GetHeight() - 2;
+    window_rect.position.y += Height() - 2;
 
     std::size_t visible_item_count = drop_down_list_box_->GetItemCount();
     visible_item_count = std::max(visible_item_count, GetMinVisibleItemCount());
     visible_item_count = std::min(visible_item_count, GetMaxVisibleItemCount());
 
-    auto drop_down_list_box_border = drop_down_list_box_->GetBorder();
+    auto drop_down_list_box_border = drop_down_list_box_->Border();
 
     window_rect.size.height =
         CalculateDropDownListHeight(visible_item_count) + drop_down_list_box_border.top + drop_down_list_box_border.bottom;
@@ -393,7 +387,7 @@ void ComboBox::PopupDropDownWindow() {
     window_rect = Align(window_rect);
 
     POINT screen_position = window_rect.position.ToPOINT();
-    ClientToScreen(window->GetHandle(), &screen_position);
+    ClientToScreen(window->Handle(), &screen_position);
     window_rect.position = Point::FromPOINT(screen_position);
 
     drop_down_window_->SetOwner(window);
@@ -418,11 +412,11 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
         }
     }
     else {
-        height = delegate->EstimateItemHeight(0, Object::Empty()) * visible_item_count;
+        height = delegate->EstimateItemHeight(0, Object::Dumb()) * visible_item_count;
     }
 
     if (height == 0) {
-        height = GetContentSize().height;
+        height = ContentSize().height;
     }
 
     return height;
@@ -560,7 +554,7 @@ void ComboBox::EditTextBoxTextChange() {
         return;
     }
 
-    ChangeSelectionText(edit_text_box_->GetText(), TextChangeSource::EditTextBox);
+    ChangeSelectionText(edit_text_box_->Text(), TextChangeSource::EditTextBox);
     NotifySelectionChange();
 }
 
@@ -589,7 +583,7 @@ void ComboBox::ConfirmSelection(bool discard_drop_down_list_selection) {
         if (IsEditable()) {
 
             //Explicit change the text again in order to trigger the notification.
-            ChangeSelectionText(edit_text_box_->GetText(), TextChangeSource::EditTextBox);
+            ChangeSelectionText(edit_text_box_->Text(), TextChangeSource::EditTextBox);
             NotifySelectionChange();
         }
     }
@@ -618,7 +612,7 @@ void ComboBox::OnTextChanged() {
         if (IsEditable()) {
 
             auto guard = edit_text_box_action_.Set(EditTextBoxAction::Nothing);
-            auto text = GetText();
+            auto text = Text();
             edit_text_box_->SetText(text);
 
             //Select all text in edit text box if the change is from other source 

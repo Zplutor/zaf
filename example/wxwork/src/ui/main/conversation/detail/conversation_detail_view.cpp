@@ -26,7 +26,7 @@ void ConversationDetailView::Layout(const zaf::Rect&) {
 void ConversationDetailView::LayoutHeaderView() {
 
     const float height = 50;
-    auto content_size = GetContentSize();
+    auto content_size = ContentSize();
     header_view_->SetRect(zaf::Rect(0, 0, content_size.width, height));
 }
 
@@ -34,8 +34,8 @@ void ConversationDetailView::LayoutHeaderView() {
 void ConversationDetailView::LayoutMemberView() {
 
     const float width = 120;
-    auto content_size = GetContentSize();
-    float header_height = header_view_->GetHeight();
+    auto content_size = ContentSize();
+    float header_height = header_view_->Height();
     member_view_->SetRect(zaf::Rect(
         content_size.width - width, 
         header_height,
@@ -46,9 +46,9 @@ void ConversationDetailView::LayoutMemberView() {
 
 void ConversationDetailView::LayoutChatView() {
 
-    float header_view_height = header_view_->GetHeight();
-    float member_view_width = member_view_->IsVisible() ? member_view_->GetWidth() : 0;
-    auto content_size = GetContentSize();
+    float header_view_height = header_view_->Height();
+    float member_view_width = member_view_->IsVisible() ? member_view_->Width() : 0;
+    auto content_size = ContentSize();
     chat_view_->SetRect(zaf::Rect(
         0,
         header_view_height, 

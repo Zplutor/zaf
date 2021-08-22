@@ -1,15 +1,16 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/graphic/point.h>
-#include <zaf/parsing/parsers/point_parser.h>
-#include <zaf/parsing/xaml_node.h>
-#include <zaf/parsing/xaml_reader.h>
+#include <zaf/object/object_type.h>
+#include <zaf/object/parsing/object_parser.h>
+#include <zaf/object/parsing/xaml_node.h>
+#include <zaf/object/parsing/xaml_reader.h>
+#include "utility/assert.h"
 
 TEST(PointParser, ParseFromAttribute) {
 
     zaf::Point point;
-
-    zaf::PointParser parser;
-    parser.ParseFromAttribute(L"33,44", point);
+    point.GetType()->GetParser()->ParseFromAttribute(L"33,44", point);
 
     ASSERT_EQ(point, zaf::Point(33, 44));
 }
@@ -23,8 +24,8 @@ TEST(PointParser, ParseFromNode) {
     auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::Point point;
-    zaf::PointParser parser;
-    parser.ParseFromNode(*node, point);
+    auto parser = zaf::Point::Type->GetParser();
+    parser->ParseFromNode(*node, point);
     ASSERT_EQ(point, zaf::Point(53, 54));
 
     xaml = R"(
@@ -34,6 +35,18 @@ TEST(PointParser, ParseFromNode) {
         </Point>
     )";
     node = zaf::XamlReader::FromString(xaml)->Read();
-    parser.ParseFromNode(*node, point);
+    parser->ParseFromNode(*node, point);
     ASSERT_EQ(point, zaf::Point(55, 66));
+}
+
+
+TEST(PointParser, ParseToInvalidObject) {
+
+    auto parser = zaf::Point::Type->GetParser();
+    zaf::Object object;
+
+    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"120,34", object), zaf::BasicErrc::InvalidCast);
+
+    //auto xaml_node = zaf::XamlReader::FromString(L"<Point X=\"18\" />")->Read();
+    //ASSERT_THROW_ERRC(parser->ParseFromNode(*xaml_node, object), zaf::BasicErrc::InvalidCast);
 }

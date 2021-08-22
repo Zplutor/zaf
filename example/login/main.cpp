@@ -54,7 +54,7 @@ static std::shared_ptr<zaf::Window> CreateMainWindow() {
     std::vector<std::shared_ptr<zaf::Control>> controls = CreateControls();
 
     for (const auto& each_control : controls) {
-        main_window->GetRootControl()->AddChild(each_control);
+        main_window->RootControl()->AddChild(each_control);
     }
 
     return main_window;
@@ -114,8 +114,8 @@ static void OnSignInClick(
     const std::shared_ptr<zaf::TextBox>& password_text_box,
     const std::shared_ptr<zaf::Label>& sign_in_result_label) {
 
-    if (account_text_box->GetText() == L"zplutor" &&
-        password_text_box->GetText() == L"123456") {
+    if (account_text_box->Text() == L"zplutor" &&
+        password_text_box->Text() == L"123456") {
 
         sign_in_result_label->SetTextColor(zaf::Color::Green());
         sign_in_result_label->SetText(L"OK");

@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/control/control.h>
 #include <zaf/control/layout/linear_layouter.h>
-#include <zaf/graphic/image/bitmap_image.h>
+#include <zaf/graphic/image/uri_image.h>
 #include "utility.h"
 
 namespace {
@@ -17,7 +18,7 @@ TEST(ControlParserTest, ParseName) {
 
     auto xaml = R"(<Control Name="xyz" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetName(), L"xyz");
+    ASSERT_EQ(control->Name(), L"xyz");
 
     xaml = R"(
         <Control>
@@ -25,7 +26,7 @@ TEST(ControlParserTest, ParseName) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetName(), L"abc");
+    ASSERT_EQ(control->Name(), L"abc");
 }
 
 
@@ -33,7 +34,7 @@ TEST(ControlParserTest, ParseXAndY) {
 
     auto xaml = R"(<Control X="1" Y="2" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetPosition(), zaf::Point(1, 2));
+    ASSERT_EQ(control->Position(), zaf::Point(1, 2));
 
     xaml = R"(
         <Control>
@@ -42,7 +43,7 @@ TEST(ControlParserTest, ParseXAndY) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetPosition(), zaf::Point(3, 4));
+    ASSERT_EQ(control->Position(), zaf::Point(3, 4));
 }
 
 
@@ -50,7 +51,7 @@ TEST(ControlParserTest, ParsePosition) {
 
     auto xaml = R"(<Control Position="1,2" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetPosition(), zaf::Point(1, 2));
+    ASSERT_EQ(control->Position(), zaf::Point(1, 2));
 
     xaml = R"(
         <Control>
@@ -58,7 +59,7 @@ TEST(ControlParserTest, ParsePosition) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetPosition(), zaf::Point(3, 4));
+    ASSERT_EQ(control->Position(), zaf::Point(3, 4));
 }
 
 
@@ -66,7 +67,7 @@ TEST(ControlParserTest, ParseWidthAndHeight) {
 
     auto xaml = R"(<Control Width="1" Height="2" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetSize(), zaf::Size(1, 2));
+    ASSERT_EQ(control->Size(), zaf::Size(1, 2));
 
     xaml = R"(
         <Control>
@@ -75,7 +76,7 @@ TEST(ControlParserTest, ParseWidthAndHeight) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetSize(), zaf::Size(3, 4));
+    ASSERT_EQ(control->Size(), zaf::Size(3, 4));
 }
 
 
@@ -83,7 +84,7 @@ TEST(ControlParserTest, ParseSize) {
 
     auto xaml = R"(<Control Size="1,2" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetSize(), zaf::Size(1, 2));
+    ASSERT_EQ(control->Size(), zaf::Size(1, 2));
 
     xaml = R"(
         <Control>
@@ -91,7 +92,7 @@ TEST(ControlParserTest, ParseSize) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetSize(), zaf::Size(3, 4));
+    ASSERT_EQ(control->Size(), zaf::Size(3, 4));
 }
 
 
@@ -103,8 +104,8 @@ TEST(ControlParserTest, ParseRect) {
         </Control>
     )";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetPosition(), zaf::Point(1, 2));
-    ASSERT_EQ(control->GetSize(), zaf::Size(3, 4));
+    ASSERT_EQ(control->Position(), zaf::Point(1, 2));
+    ASSERT_EQ(control->Size(), zaf::Size(3, 4));
 }
 
 
@@ -112,8 +113,8 @@ TEST(ControlParserTest, ParseMinWidthAndMaxWidth) {
 
     auto xaml = R"(<Control MinWidth="1" MaxWidth="2"></Control>)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMinWidth(), 1);
-    ASSERT_EQ(control->GetMaxWidth(), 2);
+    ASSERT_EQ(control->MinWidth(), 1);
+    ASSERT_EQ(control->MaxWidth(), 2);
 
     xaml = R"(
         <Control>
@@ -122,8 +123,8 @@ TEST(ControlParserTest, ParseMinWidthAndMaxWidth) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMinWidth(), 3);
-    ASSERT_EQ(control->GetMaxWidth(), 4);
+    ASSERT_EQ(control->MinWidth(), 3);
+    ASSERT_EQ(control->MaxWidth(), 4);
 }
 
 
@@ -131,8 +132,8 @@ TEST(ControlParserTest, ParseMinHeightAndMaxHeight) {
 
     auto xaml = R"(<Control MinHeight="1" MaxHeight="2"></Control>)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMinHeight(), 1);
-    ASSERT_EQ(control->GetMaxHeight(), 2);
+    ASSERT_EQ(control->MinHeight(), 1);
+    ASSERT_EQ(control->MaxHeight(), 2);
 
     xaml = R"(
         <Control>
@@ -141,8 +142,8 @@ TEST(ControlParserTest, ParseMinHeightAndMaxHeight) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMinHeight(), 3);
-    ASSERT_EQ(control->GetMaxHeight(), 4);
+    ASSERT_EQ(control->MinHeight(), 3);
+    ASSERT_EQ(control->MaxHeight(), 4);
 }
 
 
@@ -150,8 +151,8 @@ TEST(ControlParserTest, ParseFixedWidth) {
 
     auto xaml = R"(<Control FixedWidth="1" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMaxWidth(), 1);
-    ASSERT_EQ(control->GetMinWidth(), 1);
+    ASSERT_EQ(control->MaxWidth(), 1);
+    ASSERT_EQ(control->MinWidth(), 1);
 
     xaml = R"(
         <Control>
@@ -159,8 +160,8 @@ TEST(ControlParserTest, ParseFixedWidth) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMaxWidth(), 2);
-    ASSERT_EQ(control->GetMinWidth(), 2);
+    ASSERT_EQ(control->MaxWidth(), 2);
+    ASSERT_EQ(control->MinWidth(), 2);
 }
 
 
@@ -168,8 +169,8 @@ TEST(ControlParserTest, ParseFixedHeight) {
 
     auto xaml = R"(<Control FixedHeight="3" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMaxHeight(), 3);
-    ASSERT_EQ(control->GetMinHeight(), 3);
+    ASSERT_EQ(control->MaxHeight(), 3);
+    ASSERT_EQ(control->MinHeight(), 3);
 
     xaml = R"(
         <Control>
@@ -177,8 +178,8 @@ TEST(ControlParserTest, ParseFixedHeight) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMaxHeight(), 4);
-    ASSERT_EQ(control->GetMinHeight(), 4);
+    ASSERT_EQ(control->MaxHeight(), 4);
+    ASSERT_EQ(control->MinHeight(), 4);
 }
 
 
@@ -186,10 +187,10 @@ TEST(ControlParserTest, ParseFixedSize) {
 
     auto xaml = R"(<Control FixedSize="5,6" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMaxWidth(), 5);
-    ASSERT_EQ(control->GetMinWidth(), 5);
-    ASSERT_EQ(control->GetMaxHeight(), 6);
-    ASSERT_EQ(control->GetMinHeight(), 6);
+    ASSERT_EQ(control->MaxWidth(), 5);
+    ASSERT_EQ(control->MinWidth(), 5);
+    ASSERT_EQ(control->MaxHeight(), 6);
+    ASSERT_EQ(control->MinHeight(), 6);
 
     xaml = R"(
         <Control>
@@ -197,17 +198,17 @@ TEST(ControlParserTest, ParseFixedSize) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetMaxWidth(), 7);
-    ASSERT_EQ(control->GetMinWidth(), 7);
-    ASSERT_EQ(control->GetMaxHeight(), 8);
-    ASSERT_EQ(control->GetMinHeight(), 8);
+    ASSERT_EQ(control->MaxWidth(), 7);
+    ASSERT_EQ(control->MinWidth(), 7);
+    ASSERT_EQ(control->MaxHeight(), 8);
+    ASSERT_EQ(control->MinHeight(), 8);
 }
 
 
 TEST(ControlParserTest, ParseMargin) {
 
     ASSERT_TRUE(TestFrameProperty<zaf::Control>("Margin", [](zaf::Control& control) {
-        return control.GetMargin();
+        return control.Margin();
     }));
 }
 
@@ -215,7 +216,7 @@ TEST(ControlParserTest, ParseMargin) {
 TEST(ControlParserTest, ParseBorder) {
 
     ASSERT_TRUE(TestFrameProperty<zaf::Control>("Border", [](zaf::Control& control) {
-        return control.GetBorder();
+        return control.Border();
     }));
 }
 
@@ -223,7 +224,7 @@ TEST(ControlParserTest, ParseBorder) {
 TEST(ControlParserTest, ParsePadding) {
 
     ASSERT_TRUE(TestFrameProperty<zaf::Control>("Padding", [](zaf::Control& control) {
-        return control.GetPadding();
+        return control.Padding();
     }));
 }
 
@@ -264,11 +265,11 @@ TEST(ControlParserTest, ParseTabIndex) {
 
     auto xaml = R"(<Control TabIndex="2" />)";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetTabIndex(), 2);
+    ASSERT_EQ(control->TabIndex(), 2);
 
     xaml = R"(<Control><Control.TabIndex>3</Control.TabIndex></Control>)";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetTabIndex(), 3);
+    ASSERT_EQ(control->TabIndex(), 3);
 }
 
 
@@ -281,8 +282,8 @@ TEST(ControlParserTest, ParseColors) {
         />
     )";
     auto control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetBackgroundColor(), zaf::Color::FromRGB(0x112233));
-    ASSERT_EQ(control->GetBorderColor(), zaf::Color::FromRGB(0x445566));
+    ASSERT_EQ(control->BackgroundColor(), zaf::Color::FromRGB(0x112233));
+    ASSERT_EQ(control->BorderColor(), zaf::Color::FromRGB(0x445566));
 
     xaml = R"(
         <Control>
@@ -291,8 +292,8 @@ TEST(ControlParserTest, ParseColors) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    ASSERT_EQ(control->GetBackgroundColor(), zaf::Color(0.1f, 0.2f, 0.3f));
-    ASSERT_EQ(control->GetBorderColor(), zaf::Color(0.4f, 0.5f, 0.6f));
+    ASSERT_EQ(control->BackgroundColor(), zaf::Color(0.1f, 0.2f, 0.3f));
+    ASSERT_EQ(control->BorderColor(), zaf::Color(0.4f, 0.5f, 0.6f));
 }
 
 
@@ -301,9 +302,9 @@ TEST(ControlParserTest, ParseBackgroundImage) {
     auto xaml = R"(<Control BackgroundImage="file:///C:/image.png" />)";
     auto control = CreateControlFromXaml(xaml);
 
-    auto image = std::dynamic_pointer_cast<zaf::BitmapImage>(control->GetBackgroundImage());
+    auto image = std::dynamic_pointer_cast<zaf::URIImage>(control->BackgroundImage());
     ASSERT_NE(image, nullptr);
-    ASSERT_EQ(image->GetUri(), L"file:///C:/image.png");
+    ASSERT_EQ(image->GetURI(), L"file:///C:/image.png");
 
     xaml = R"(
         <Control>
@@ -312,9 +313,9 @@ TEST(ControlParserTest, ParseBackgroundImage) {
     )";
     control = CreateControlFromXaml(xaml);
 
-    image = std::dynamic_pointer_cast<zaf::BitmapImage>(control->GetBackgroundImage());
+    image = std::dynamic_pointer_cast<zaf::URIImage>(control->BackgroundImage());
     ASSERT_NE(image, nullptr);
-    ASSERT_EQ(image->GetUri(), L"file:///C:/image.jpg");
+    ASSERT_EQ(image->GetURI(), L"file:///C:/image.jpg");
 }
 
 
@@ -330,7 +331,7 @@ TEST(ControlParserTest, ParseBackgroundImageLayout) {
             { zaf::ImageLayout::Zoom, "Zoom" },
         },
         [](zaf::Control& control) {
-            return control.GetBackgroundImageLayout();
+            return control.BackgroundImageLayout();
         }
     );
     ASSERT_TRUE(result);
@@ -341,7 +342,7 @@ TEST(ControlParserTest, ParseLayouter) {
 
     auto xaml = R"(<Control Layouter="LinearLayouter" />)";
     auto control = CreateControlFromXaml(xaml);
-    auto layouter = std::dynamic_pointer_cast<zaf::LinearLayouter>(control->GetLayouter());
+    auto layouter = std::dynamic_pointer_cast<zaf::LinearLayouter>(control->Layouter());
     ASSERT_NE(layouter, nullptr);
 
     xaml = R"(
@@ -352,10 +353,10 @@ TEST(ControlParserTest, ParseLayouter) {
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
-    layouter = std::dynamic_pointer_cast<zaf::LinearLayouter>(control->GetLayouter());
+    layouter = std::dynamic_pointer_cast<zaf::LinearLayouter>(control->Layouter());
     ASSERT_NE(layouter, nullptr);
-    ASSERT_EQ(layouter->GetControlAlignment(), zaf::ControlAlignment::Center);
-    ASSERT_EQ(layouter->GetAxisAlignment(), zaf::AxisAlignment::Center);
+    ASSERT_EQ(layouter->ControlAlignment(), zaf::ControlAlignment::Center);
+    ASSERT_EQ(layouter->AxisAlignment(), zaf::AxisAlignment::Center);
 }
 
 
@@ -369,10 +370,30 @@ TEST(ControlParserTest, ParseChildren) {
     )";
     auto control = CreateControlFromXaml(xaml);
 
-    const auto& children = control->GetChildren();
+    const auto& children = control->Children();
     ASSERT_EQ(children.size(), 2);
-    ASSERT_EQ(children[0]->GetName(), L"child1");
-    ASSERT_EQ(children[1]->GetName(), L"child2");
+    ASSERT_EQ(children[0]->Name(), L"child1");
+    ASSERT_EQ(children[1]->Name(), L"child2");
+}
+
+
+TEST(ControlParserTest, ParseChildrenInvalidName) {
+
+    auto xaml = R"(
+        <Control>
+            <NoThisChild />
+        </Control>
+    )";
+
+    bool has_exception{};
+
+    try {
+        auto control = CreateControlFromXaml(xaml);
+    }
+    catch (const zaf::Error& error) {
+        has_exception = (error.Code() == zaf::BasicErrc::NameNotFound);
+    }
+    ASSERT_TRUE(has_exception);
 }
 
 

@@ -16,7 +16,7 @@ public:
 
 }
 
-const std::error_category& ComCategory() {
+const std::error_category& COMCategory() {
 
     static ComErrorCategory category;
     return category;

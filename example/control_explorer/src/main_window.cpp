@@ -1,7 +1,7 @@
 #include "main_window.h"
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
-#include <zaf/object/boxing.h>
+#include <zaf/object/boxing/boxing.h>
 #include "control_property_panel.h"
 #include "control_view_panel.h"
 #include "manager/button_explore_manager.h"
@@ -40,7 +40,7 @@ void MainWindow::Initialize() {
     SetSize(size);
     SetMinSize(size);
 
-    auto root_control = GetRootControl();
+    auto root_control = RootControl();
     root_control->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
 
     primary_split_control_ = zaf::Create<zaf::SplitControl>();
@@ -57,7 +57,7 @@ void MainWindow::Initialize() {
 void MainWindow::InitializeControlListPanel() {
 
     control_list_box_ = zaf::Create<zaf::ListBox>();
-    control_list_box_->SetBorder(0);
+    control_list_box_->SetBorder(zaf::Frame(0));
     control_list_box_->SetAllowHorizontalScroll(false);
     control_list_box_->SetAutoHideScrollBars(true);
 

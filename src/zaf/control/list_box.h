@@ -12,7 +12,7 @@ class ListBoxDelegate;
  */
 class ListBox : public ListControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     ListBox();

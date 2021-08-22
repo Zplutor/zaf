@@ -92,15 +92,15 @@ void StableSort(C& container, P&& predicate) {
 template<typename C>
 std::decay_t<C> MakeSorted(C&& container) {
     std::decay_t<C> new_container{ std::forward<C>(container) };
-	Sort(new_container);
-	return new_container;
+    Sort(new_container);
+    return new_container;
 }
 
 template<typename C, typename P>
 std::decay_t<C> MakeSorted(C&& container, P&& predicate) {
     std::decay_t<C> new_container{ std::forward<C>(container) };
-	Sort(new_container, std::forward<P>(predicate));
-	return new_container;
+    Sort(new_container, std::forward<P>(predicate));
+    return new_container;
 }
 
 

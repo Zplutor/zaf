@@ -9,11 +9,11 @@ namespace zaf {
  */
 class Button : public ClickableControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
-	Button();
-	~Button();
+    Button();
+    ~Button();
 
     /**
      Get a value indicating that whether the button is the default button in a dialog.
@@ -22,7 +22,7 @@ public:
 
 protected:
     void Initialize() override;
-    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
 private:
     friend class Dialog;

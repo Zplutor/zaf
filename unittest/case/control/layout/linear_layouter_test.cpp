@@ -85,10 +85,10 @@ private:
 
         for (std::size_t index = 0; index < children.size(); ++index) {
             if (test_height) {
-                ASSERT_EQ(children[index]->GetY(), expected_children_positions[index]);
+                ASSERT_EQ(children[index]->Y(), expected_children_positions[index]);
             }
             else {
-                ASSERT_EQ(children[index]->GetX(), expected_children_positions[index]);
+                ASSERT_EQ(children[index]->X(), expected_children_positions[index]);
             }
         }
     }
@@ -164,10 +164,10 @@ private:
         layouter->Layout(*parent, {}, children);
 
         if (test_height) {
-            ASSERT_EQ(child->GetY(), expected_position);
+            ASSERT_EQ(child->Y(), expected_position);
         }
         else {
-            ASSERT_EQ(child->GetX(), expected_position);
+            ASSERT_EQ(child->X(), expected_position);
         }
     }
 };

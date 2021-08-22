@@ -31,12 +31,12 @@ bool TestSort() {
     C<Object> container{ { 4, "" }, { 3, "" }, { 2, "" }, { 1, "" }, { 0, "" } };
     const C<Object> expected{ { 0, "" }, { 1, "" }, { 2, "" }, { 3, "" }, { 4, "" } };
 
-	auto new_container = zaf::MakeSorted(container);
-	if (new_container != expected) {
-		return false;
-	}
+    auto new_container = zaf::MakeSorted(container);
+    if (new_container != expected) {
+        return false;
+    }
 
-	zaf::Sort(container);
+    zaf::Sort(container);
     return container == expected;
 }
 
@@ -52,11 +52,11 @@ bool TestSortWithPredicate() {
     };
 
     auto new_container = zaf::MakeSorted(container, predicate);
-	if (new_container != expected) {
-		return false;
-	}
+    if (new_container != expected) {
+        return false;
+    }
 
-	zaf::Sort(container, predicate);
+    zaf::Sort(container, predicate);
     return container == expected;
 }
 
@@ -112,16 +112,16 @@ bool TestStableSortWithPredicate() {
 
 TEST(Sort, Normal) {
 
-	ASSERT_TRUE(TestSort<std::vector>());
-	ASSERT_TRUE(TestSort<std::deque>());
+    ASSERT_TRUE(TestSort<std::vector>());
+    ASSERT_TRUE(TestSort<std::deque>());
     ASSERT_TRUE(TestSort<std::list>());
 }
 
 
 TEST(Sort, Predicate) {
 
-	ASSERT_TRUE(TestSortWithPredicate<std::vector>());
-	ASSERT_TRUE(TestSortWithPredicate<std::deque>());
+    ASSERT_TRUE(TestSortWithPredicate<std::vector>());
+    ASSERT_TRUE(TestSortWithPredicate<std::deque>());
     ASSERT_TRUE(TestSortWithPredicate<std::list>());
 }
 

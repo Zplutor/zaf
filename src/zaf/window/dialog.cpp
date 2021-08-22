@@ -28,9 +28,9 @@ void Dialog::ShowModally() {
     is_showing_modally_ = true;
     dialog_result_ = DialogResult::None;
 
-    auto owner = GetOwner();
+    auto owner = Owner();
     if (owner != nullptr) {
-        EnableWindow(owner->GetHandle(), FALSE);
+        EnableWindow(owner->Handle(), FALSE);
     }
 
     Show();
@@ -39,8 +39,8 @@ void Dialog::ShowModally() {
     message_loop.Run();
 
     if (owner != nullptr) {
-        EnableWindow(owner->GetHandle(), TRUE);
-        SetForegroundWindow(owner->GetHandle());
+        EnableWindow(owner->Handle(), TRUE);
+        SetForegroundWindow(owner->Handle());
     }
 
     if (dialog_result_ == DialogResult::None) {
@@ -63,7 +63,7 @@ bool Dialog::PreprocessMessage(const KeyMessage& message) {
 
         if ((message.GetVirtualKey() == VK_RETURN) || (message.GetVirtualKey() == VK_ESCAPE)) {
 
-            auto focused_control = GetFocusedControl();
+            auto focused_control = FocusedControl();
             if ((focused_control != nullptr) && focused_control->AcceptKeyMessage(message)) {
                 return false;
             }
@@ -75,7 +75,7 @@ bool Dialog::PreprocessMessage(const KeyMessage& message) {
             
             //VK_RETURN
             if (current_default_button_ != nullptr) {
-                if (current_default_button_->GetWindow().get() == this) {
+                if (current_default_button_->Window().get() == this) {
                     current_default_button_->Click();
                     return true;
                 }
@@ -109,7 +109,7 @@ void Dialog::OnFocusedControlChanged(const std::shared_ptr<Control>& previous_fo
 
     __super::OnFocusedControlChanged(previous_focused_control);
 
-    auto new_focused_button = std::dynamic_pointer_cast<Button>(GetFocusedControl());
+    auto new_focused_button = std::dynamic_pointer_cast<Button>(FocusedControl());
     if (new_focused_button != nullptr) {
         SetCurrentDefaultButton(new_focused_button);
     }
@@ -128,7 +128,7 @@ void Dialog::AddDialogButton(const std::shared_ptr<Button>& button, DialogResult
     item.click_event_subscription = button->ClickEvent().Subscribe(
         [this](const ControlClickInfo& event_info) {
 
-            if (!GetRootControl()->IsAncestorOf(event_info.control)) {
+            if (!RootControl()->IsAncestorOf(event_info.control)) {
                 return;
             }
 

@@ -7,16 +7,16 @@ namespace zaf {
 
 class ApplicationDelegate : public SubscriptionHost {
 public:
-	ApplicationDelegate() = default;
-	virtual ~ApplicationDelegate() = default;
+    ApplicationDelegate() = default;
+    virtual ~ApplicationDelegate() = default;
 
-	ApplicationDelegate(const ApplicationDelegate&) = delete;
-	ApplicationDelegate& operator=(const ApplicationDelegate&) = delete;
+    ApplicationDelegate(const ApplicationDelegate&) = delete;
+    ApplicationDelegate& operator=(const ApplicationDelegate&) = delete;
 
-	virtual void ApplicationBeginRun(const ApplicationBeginRunInfo&) = 0;
-	virtual void ApplicationEndRun(const ApplicationEndRunInfo&) = 0;
+    virtual void ApplicationBeginRun(const ApplicationBeginRunInfo&) = 0;
+    virtual void ApplicationEndRun(const ApplicationEndRunInfo&) = 0;
 
-	virtual void SessionEnded(const SessionEndedInfo&) = 0;
+    virtual void SessionEnded(const SessionEndedInfo&) = 0;
 };
 
 }

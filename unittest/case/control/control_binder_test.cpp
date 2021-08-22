@@ -12,7 +12,7 @@ public:
     ZAF_BIND_CONTROL(zaf::Label, label);
 
     std::wstring GetText() const {
-        return label->GetText();
+        return label->Text();
     }
 
 protected:
@@ -31,7 +31,7 @@ protected:
 TEST(ControlBinderTest, Macro) {
 
     auto test_control = zaf::Create<TestControl>();
-    ASSERT_EQ(test_control->label->GetName(), L"label");
+    ASSERT_EQ(test_control->label->Name(), L"label");
 }
 
 
@@ -46,8 +46,8 @@ TEST(ControlBinderTest, BindInControl) {
     owner->AddChild(child);
 
     zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), child_name };
-    ASSERT_EQ(binder->GetName(), child_name);
-    ASSERT_EQ(binder->GetName(), child_name);
+    ASSERT_EQ(binder->Name(), child_name);
+    ASSERT_EQ(binder->Name(), child_name);
 }
 
 
@@ -59,11 +59,11 @@ TEST(ControlBinderTest, BindInWindow) {
     child->SetName(child_name);
 
     auto owner = zaf::Create<zaf::Window>();
-    owner->GetRootControl()->AddChild(child);
+    owner->RootControl()->AddChild(child);
 
     zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), child_name };
-    ASSERT_EQ(binder->GetName(), child_name);
-    ASSERT_EQ(binder->GetName(), child_name);
+    ASSERT_EQ(binder->Name(), child_name);
+    ASSERT_EQ(binder->Name(), child_name);
 }
 
 
@@ -80,7 +80,7 @@ TEST(ControlBinderTest, Const) {
     owner->AddChild(child);
 
     const zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), child_name };
-    ASSERT_EQ(binder->GetText(), text);
+    ASSERT_EQ(binder->Text(), text);
 }
 
 
@@ -89,5 +89,5 @@ TEST(ControlBinderTest, NotFound) {
     auto owner = zaf::Create<zaf::Control>();
 
     zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), L"not_found" };
-    ASSERT_THROW(binder->GetName(), zaf::Error);
+    ASSERT_THROW(binder->Name(), zaf::Error);
 }

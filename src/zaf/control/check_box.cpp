@@ -7,9 +7,8 @@
 #include <zaf/graphic/resource_factory.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
-#include <zaf/parsing/parsers/check_box_parser.h>
-#include <zaf/reflection/reflection_type.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/object_type.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 #include <zaf/serialization/properties.h>
 
@@ -25,9 +24,12 @@ const wchar_t* const kCheckStateChangeEventPropertyName = L"CheckStateChangeEven
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(CheckBox)
-	ZAF_DEFINE_PARSER(CheckBoxParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE(CheckBox)
+ZAF_DEFINE_TYPE_PROPERTY(CanAutoChangeCheckState)
+ZAF_DEFINE_TYPE_PROPERTY(CanBeIndeterminate)
+ZAF_DEFINE_TYPE_PROPERTY(IsChecked)
+ZAF_DEFINE_TYPE_PROPERTY(CheckState)
+ZAF_DEFINE_TYPE_END
 
 
 CheckBox::CheckBox() : check_state_(CheckState::Unchecked) {
@@ -42,7 +44,7 @@ CheckBox::~CheckBox() {
 
 void CheckBox::Initialize() {
 
-	__super::Initialize();
+    __super::Initialize();
 
     SetBackgroundColorPicker([](const Control&) {
         return Color::Transparent();
@@ -50,84 +52,84 @@ void CheckBox::Initialize() {
 }
 
 
-void CheckBox::Paint(Canvas& canvas, const Rect& dirty_rect) {
-	
-	__super::Paint(canvas, dirty_rect);
+void CheckBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+    
+    __super::Paint(canvas, dirty_rect);
 
-	Canvas::StateGuard state_guard(canvas);
+    Canvas::StateGuard state_guard(canvas);
 
     auto text_layout = GetTextLayout();
-	if (text_layout == nullptr) {
-		return;
-	}
+    if (text_layout == nullptr) {
+        return;
+    }
 
     internal::DrawTextWithIcon(
-		canvas,
-		*this,
-		text_layout, 
-		12,
-		std::bind(&CheckBox::PaintBox, this, std::placeholders::_1, std::placeholders::_2));
+        canvas,
+        *this,
+        text_layout, 
+        12,
+        std::bind(&CheckBox::PaintBox, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 
-void CheckBox::PaintBox(Canvas& canvas, const Rect& box_rect) const {
+void CheckBox::PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const {
 
-	//Paint the box.
+    //Paint the box.
     canvas.SetBrushWithColor(GetBoxBackgroundColor());
     canvas.DrawRectangle(box_rect);
 
-	canvas.SetBrushWithColor(GetBoxBorderColor());
-	canvas.DrawRectangleFrame(box_rect, 1);
+    canvas.SetBrushWithColor(GetBoxBorderColor());
+    canvas.DrawRectangleFrame(box_rect, 1);
 
-	//Paint the check state mark.
-	auto check_state = GetCheckState();
+    //Paint the check state mark.
+    auto check_state = GetCheckState();
 
-	if (check_state == CheckState::Indeterminate) {
-		Rect mark_rect = box_rect;
-		mark_rect.Inflate(-3);
-		canvas.DrawRectangle(mark_rect);
-	}
-	else if (check_state == CheckState::Checked) {
+    if (check_state == CheckState::Indeterminate) {
+        zaf::Rect mark_rect = box_rect;
+        mark_rect.Inflate(-3);
+        canvas.DrawRectangle(mark_rect);
+    }
+    else if (check_state == CheckState::Checked) {
 
-		auto path = canvas.CreatePathGeometry();
-		if (path == nullptr) {
-			return;
-		}
+        auto path = canvas.CreatePathGeometry();
+        if (path == nullptr) {
+            return;
+        }
 
-		auto sink = path.Open();
-		if (sink == nullptr) {
-			return;
-		}
+        auto sink = path.Open();
+        if (sink == nullptr) {
+            return;
+        }
 
-		Rect mark_rect = box_rect;
-		mark_rect.Inflate(-2);
+        zaf::Rect mark_rect = box_rect;
+        mark_rect.Inflate(-2);
 
-		Point start_point(mark_rect.position.x + mark_rect.size.width, mark_rect.position.y);
-		Point middle_point(mark_rect.position.x + mark_rect.size.width * 0.4f, mark_rect.position.y + mark_rect.size.height - 1);
-		Point end_point(mark_rect.position.x, mark_rect.position.y + mark_rect.size.height * 0.4f);
+        Point start_point(mark_rect.position.x + mark_rect.size.width, mark_rect.position.y);
+        Point middle_point(mark_rect.position.x + mark_rect.size.width * 0.4f, mark_rect.position.y + mark_rect.size.height - 1);
+        Point end_point(mark_rect.position.x, mark_rect.position.y + mark_rect.size.height * 0.4f);
 
-		sink.BeginFigure(start_point, GeometrySink::BeginFigureOption::Hollow);
-		sink.AddLine(middle_point);
-		sink.AddLine(end_point);
-		sink.EndFigure(GeometrySink::EndFigureOption::Open);
-		sink.Close();
+        sink.BeginFigure(start_point, GeometrySink::BeginFigureOption::Hollow);
+        sink.AddLine(middle_point);
+        sink.AddLine(end_point);
+        sink.EndFigure(GeometrySink::EndFigureOption::Open);
+        sink.Close();
 
-		canvas.DrawGeometryFrame(path, 1.5);
-	}
+        canvas.DrawGeometryFrame(path, 1.5);
+    }
 }
 
 
-Rect CheckBox::GetTextRect() {
-    return Rect();
+zaf::Rect CheckBox::GetTextRect() {
+    return zaf::Rect();
 }
 
 
 ColorPicker CheckBox::GetBoxBorderColorPicker() const {
 
-	auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBoxBorderColorPickerPropertyName);
-	if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
-		return *color_picker;
-	}
+    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBoxBorderColorPickerPropertyName);
+    if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
+        return *color_picker;
+    }
     else {
         return internal::GetBoxBorderColorPicker();
     }
@@ -136,8 +138,8 @@ ColorPicker CheckBox::GetBoxBorderColorPicker() const {
 
 void CheckBox::SetBoxBorderColorPicker(const ColorPicker& color_picker) {
 
-	GetPropertyMap().SetProperty(kBoxBorderColorPickerPropertyName, color_picker);
-	NeedRepaint();
+    GetPropertyMap().SetProperty(kBoxBorderColorPickerPropertyName, color_picker);
+    NeedRepaint();
 }
 
 
@@ -162,100 +164,100 @@ void CheckBox::SetBoxBackgroundColorPicker(const ColorPicker& color_picker) {
 
 bool CheckBox::CanAutoChangeCheckState() const {
 
-	auto value = GetPropertyMap().TryGetProperty<bool>(kCanAutoChangeCheckStatePropertyName);
-	if (value != nullptr) {
-		return *value;
-	}
-	else {
-		return true;
-	}
+    auto value = GetPropertyMap().TryGetProperty<bool>(kCanAutoChangeCheckStatePropertyName);
+    if (value != nullptr) {
+        return *value;
+    }
+    else {
+        return true;
+    }
 }
 
 
 void CheckBox::SetCanAutoChangeCheckState(bool can_change) {
-	GetPropertyMap().SetProperty(kCanAutoChangeCheckStatePropertyName, can_change);
+    GetPropertyMap().SetProperty(kCanAutoChangeCheckStatePropertyName, can_change);
 }
 
 
 bool CheckBox::CanBeIndeterminate() const {
 
-	auto value = GetPropertyMap().TryGetProperty<bool>(kCanBeIndeterminatePropertyName);
-	if (value != nullptr) {
-		return *value;
-	}
-	else {
-		return false;
-	}
+    auto value = GetPropertyMap().TryGetProperty<bool>(kCanBeIndeterminatePropertyName);
+    if (value != nullptr) {
+        return *value;
+    }
+    else {
+        return false;
+    }
 }
 
 
 void CheckBox::SetCanBeIndeterminate(bool can_be_ndeterminate) {
 
-	GetPropertyMap().SetProperty(kCanBeIndeterminatePropertyName, can_be_ndeterminate);
+    GetPropertyMap().SetProperty(kCanBeIndeterminatePropertyName, can_be_ndeterminate);
 
-	if (! can_be_ndeterminate && (GetCheckState() == CheckState::Indeterminate)) {
-		SetCheckState(CheckState::Checked);
-	}
+    if (! can_be_ndeterminate && (GetCheckState() == CheckState::Indeterminate)) {
+        SetCheckState(CheckState::Checked);
+    }
 }
 
 
 void CheckBox::SetCheckState(CheckState check_state) {
 
-	if (check_state_ == check_state) {
-		return;
-	}
+    if (check_state_ == check_state) {
+        return;
+    }
 
-	check_state_ = check_state;
-	NeedRepaint();
+    check_state_ = check_state;
+    NeedRepaint();
 
-	auto observer = GetEventObserver<CheckBoxCheckStateChangeInfo>(
-		GetPropertyMap(),
-		kCheckStateChangeEventPropertyName);
+    auto observer = GetEventObserver<CheckBoxCheckStateChangeInfo>(
+        GetPropertyMap(),
+        kCheckStateChangeEventPropertyName);
 
-	if (observer) {
-		CheckBoxCheckStateChangeInfo event_info;
-		event_info.check_box = std::dynamic_pointer_cast<CheckBox>(shared_from_this());
-		observer->OnNext(event_info);
-	}
+    if (observer) {
+        CheckBoxCheckStateChangeInfo event_info;
+        event_info.check_box = std::dynamic_pointer_cast<CheckBox>(shared_from_this());
+        observer->OnNext(event_info);
+    }
 }
 
 
 Observable<CheckBoxCheckStateChangeInfo> CheckBox::CheckStateChangeEvent() {
 
-	return GetEventObservable<CheckBoxCheckStateChangeInfo>(
-		GetPropertyMap(), 
-		kCheckStateChangeEventPropertyName);
+    return GetEventObservable<CheckBoxCheckStateChangeInfo>(
+        GetPropertyMap(), 
+        kCheckStateChangeEventPropertyName);
 }
 
 
 void CheckBox::OnClick() {
 
-	if (! CanAutoChangeCheckState()) {
-		return;
-	}
+    if (! CanAutoChangeCheckState()) {
+        return;
+    }
 
-	CheckState new_check_state = CheckState::Unchecked;
+    CheckState new_check_state = CheckState::Unchecked;
 
-	switch (GetCheckState()) {
+    switch (GetCheckState()) {
 
-		case CheckState::Unchecked:
-			new_check_state = CheckState::Checked;
-			break;
+        case CheckState::Unchecked:
+            new_check_state = CheckState::Checked;
+            break;
 
-		case CheckState::Checked:
-			new_check_state = CanBeIndeterminate() ? CheckState::Indeterminate : CheckState::Unchecked;
-			break;
+        case CheckState::Checked:
+            new_check_state = CanBeIndeterminate() ? CheckState::Indeterminate : CheckState::Unchecked;
+            break;
 
-		case CheckState::Indeterminate:
-			new_check_state = CheckState::Unchecked;
-			break;
+        case CheckState::Indeterminate:
+            new_check_state = CheckState::Unchecked;
+            break;
 
-		default:
-			ZAF_FAIL();
-			break;
-	}
+        default:
+            ZAF_FAIL();
+            break;
+    }
 
-	SetCheckState(new_check_state);
+    SetCheckState(new_check_state);
 }
 
 

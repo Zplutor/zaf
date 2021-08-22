@@ -4,13 +4,13 @@
 #include <cstdint>
 #include <optional>
 #include <zaf/graphic/text/text_inline_object.h>
-#include <zaf/reflection/reflection_object.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 
-class TextTrimming : public ReflectionObject {
+class TextTrimming : public Object {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     enum class Granularity {

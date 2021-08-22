@@ -5,37 +5,37 @@
 #include <zaf/base/direct2d.h>
 #include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
-#include <zaf/object/equality_type.h>
-#include <zaf/reflection/reflection_object.h>
+#include <zaf/object/equality.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 
 /**
  Describes the x-coordinate and y-coordinate of a point. 
  */
-class Point : public ReflectionObject {
+class Point : public Object {
 public:
-	ZAF_DECLARE_EQUALITY_TYPE
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_EQUALITY
 
 public:
-	/**
-	 Convert a specified POINT structure to Point.
-	 */
-	static Point FromPOINT(const POINT& point) {
+    /**
+     Convert a specified POINT structure to Point.
+     */
+    static Point FromPOINT(const POINT& point) {
 
-		return Point(
-			static_cast<float>(point.x),
-			static_cast<float>(point.y)
-		);
-	}
+        return Point(
+            static_cast<float>(point.x),
+            static_cast<float>(point.y)
+        );
+    }
 
-	/**
+    /**
      Convert a specified D2D1_POINT_2F structure to Point.
-	 */
-	static Point FromD2D1POINT2F(const D2D1_POINT_2F& point) {
-		return Point(point.x, point.y);
-	}
+     */
+    static Point FromD2D1POINT2F(const D2D1_POINT_2F& point) {
+        return Point(point.x, point.y);
+    }
 
     /**
      Convert a specified D2D1_POINT_2U structure to Point.
@@ -45,62 +45,62 @@ public:
     }
 
 public:
-	/**
-	 Initialize the instance that has zero x-coordinate and y-coordinate.
-	 */
-	Point() : x(0), y(0) { }
+    /**
+     Initialize the instance that has zero x-coordinate and y-coordinate.
+     */
+    Point() : x(0), y(0) { }
 
-	/**
-	 Initialize the instance that is the same as another Point.
-	 */
-	Point(const Point& other) : x(other.x), y(other.y) { }
+    /**
+     Initialize the instance that is the same as another Point.
+     */
+    Point(const Point& other) : x(other.x), y(other.y) { }
 
-	/**
-	 Initialize the instance that has specified x-coordinate and y-coordinate.
-	 */
-	Point(float x, float y) : x(x), y(y) { }
+    /**
+     Initialize the instance that has specified x-coordinate and y-coordinate.
+     */
+    Point(float x, float y) : x(x), y(y) { }
 
-	/**
-	 Assign from another Point instance.
-	 */
-	Point& operator=(const Point& other) {
+    /**
+     Assign from another Point instance.
+     */
+    Point& operator=(const Point& other) {
 
-		x = other.x;
-		y = other.y;
-		return *this;
-	}
+        x = other.x;
+        y = other.y;
+        return *this;
+    }
 
-	void AddOffset(const Point& offset) {
-		x += offset.x;
-		y += offset.y;
-	}
+    void AddOffset(const Point& offset) {
+        x += offset.x;
+        y += offset.y;
+    }
 
-	void SubtractOffset(const Point& offset) {
-		x -= offset.x;
-		y -= offset.y;
-	}
+    void SubtractOffset(const Point& offset) {
+        x -= offset.x;
+        y -= offset.y;
+    }
 
-	/**
-	 Convert to POINT structure.
-	 */
-	POINT ToPOINT() const {
+    /**
+     Convert to POINT structure.
+     */
+    POINT ToPOINT() const {
 
-		POINT point;
-		point.x = static_cast<LONG>(x);
-		point.y = static_cast<LONG>(y);
-		return point;
-	}
+        POINT point;
+        point.x = static_cast<LONG>(x);
+        point.y = static_cast<LONG>(y);
+        return point;
+    }
 
-	/**
-	 Convert to D2D1_POINT_2F structure.
-	 */
-	D2D1_POINT_2F ToD2D1POINT2F() const {
+    /**
+     Convert to D2D1_POINT_2F structure.
+     */
+    D2D1_POINT_2F ToD2D1POINT2F() const {
 
-		D2D1_POINT_2F point;
-		point.x = x;
-		point.y = y;
-		return point;
-	}
+        D2D1_POINT_2F point;
+        point.x = x;
+        point.y = y;
+        return point;
+    }
 
     /**
      Convert to D2D1_POINT_2U structuer.
@@ -114,15 +114,15 @@ public:
     }
 
 public:
-	/**
-	 X-coordinate of the point.
-	 */
-	float x;
+    /**
+     X-coordinate of the point.
+     */
+    float x;
 
-	/**
-	 Y-coordinate of the point.
-	 */
-	float y;
+    /**
+     Y-coordinate of the point.
+     */
+    float y;
 };
 
 
@@ -153,8 +153,8 @@ ZAF_DEFINE_RELATION_OPERATORS(Point);
 namespace std {
 template<>
 struct hash<zaf::Point> {
-	std::size_t operator()(const zaf::Point& point) {
-		return zaf::CalculateHash(point.x, point.y);
-	}
+    std::size_t operator()(const zaf::Point& point) {
+        return zaf::CalculateHash(point.x, point.y);
+    }
 };
 }

@@ -12,7 +12,7 @@ void InspectControlItem::Initialize() {
 
     __super::Initialize();
 
-    auto old_color_picker = GetTextColorPicker();
+    auto old_color_picker = TextColorPicker();
     SetTextColorPicker([this, old_color_picker](const Control& item) {
     
         if (!control_->IsVisible()) {

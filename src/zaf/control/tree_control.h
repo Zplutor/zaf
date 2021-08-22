@@ -19,7 +19,7 @@ class TreeDataSource;
 
 class TreeControl : public ScrollableControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     TreeControl();
@@ -52,7 +52,7 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const Rect&) override;
+    void Layout(const zaf::Rect&) override;
 
     virtual void DataSourceChange(const std::shared_ptr<TreeDataSource>& previous_data_source) { }
     virtual void DelegateChange(const std::shared_ptr<TreeControlDelegate>& previous_delegate) { }

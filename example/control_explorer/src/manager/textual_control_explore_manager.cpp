@@ -28,7 +28,7 @@ std::shared_ptr<PropertyItem> TextualControlExploreManager::CreateTextAlignmentP
             { L"Justified", zaf::TextAlignment::Justified, }
         },
         [target_control]() {
-            return target_control->GetTextAlignment();
+            return target_control->TextAlignment();
         },
         [target_control](zaf::TextAlignment text_alignment) {
             target_control->SetTextAlignment(text_alignment);
@@ -50,7 +50,7 @@ std::shared_ptr<PropertyItem> TextualControlExploreManager::CreateParagraphAlign
             { L"Far", zaf::ParagraphAlignment::Far }
         },
         [target_control]() { 
-            return target_control->GetParagraphAlignment(); 
+            return target_control->ParagraphAlignment(); 
         },
         [target_control](zaf::ParagraphAlignment value) { 
             target_control->SetParagraphAlignment(value);
@@ -73,7 +73,7 @@ std::shared_ptr<PropertyItem> TextualControlExploreManager::CreateWordWrappingPr
             { L"Character", zaf::WordWrapping::Character },
             { L"Emergency break", zaf::WordWrapping::EmergencyBreak },
         },
-        [target_control]() { return target_control->GetWordWrapping(); },
+        [target_control]() { return target_control->WordWrapping(); },
         [target_control](zaf::WordWrapping value) { target_control->SetWordWrapping(value); },
         nullptr
     );
@@ -87,7 +87,7 @@ std::shared_ptr<PropertyItem> TextualControlExploreManager::CreateTextPropertyIt
     auto item = CreateMultilineTextPropertyItem(
         L"Text",
         [target_control]() {
-            return target_control->GetText();
+            return target_control->Text();
         },
         [target_control](const std::wstring& text) {
             target_control->SetText(text);

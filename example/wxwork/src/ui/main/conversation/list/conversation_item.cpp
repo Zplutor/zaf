@@ -168,7 +168,7 @@ void ConversationItem::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    const auto& current_size = GetContentSize();
+    const auto& current_size = ContentSize();
 
     auto time_label_require_size = time_label_->GetPreferredSize();
 
@@ -179,11 +179,11 @@ void ConversationItem::Layout(const zaf::Rect& previous_rect) {
         TimeHeight));
 
     title_label_->SetWidth(
-        time_label_->GetPosition().x - 
-        title_label_->GetPosition().x - 
+        time_label_->Position().x - 
+        title_label_->Position().x - 
         TitleRightMargin);
 
-    digest_label_->SetWidth(current_size.width - digest_label_->GetPosition().x - DigestRightMargin);
+    digest_label_->SetWidth(current_size.width - digest_label_->Position().x - DigestRightMargin);
 }
 
 
@@ -193,7 +193,7 @@ void ConversationItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     canvas.SetBrushWithColor(zaf::Color::FromRGB(0xE4E4E4));
 
-    const auto& rect = GetRect();
+    const auto& rect = Rect();
     float y = rect.size.height - 1;
 
     canvas.DrawLine(

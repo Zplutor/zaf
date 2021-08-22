@@ -9,8 +9,7 @@
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/graphic/text/text_layout_properties.h>
 #include <zaf/internal/theme.h>
-#include <zaf/parsing/parsers/textual_control_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
@@ -54,9 +53,17 @@ void SetDefaultFontOtherPropertiesToTextLayout(
 
 }
 
-ZAF_DEFINE_REFLECTION_TYPE(TextualControl)
-    ZAF_DEFINE_PARSER(TextualControlParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE(TextualControl)
+ZAF_DEFINE_TYPE_PROPERTY(Text)
+ZAF_DEFINE_TYPE_PROPERTY(TextLength)
+ZAF_DEFINE_TYPE_PROPERTY(TextColor)
+ZAF_DEFINE_TYPE_PROPERTY(Font)
+ZAF_DEFINE_TYPE_PROPERTY(FontSize)
+ZAF_DEFINE_TYPE_PROPERTY(FontWeight)
+ZAF_DEFINE_TYPE_PROPERTY(TextAlignment)
+ZAF_DEFINE_TYPE_PROPERTY(ParagraphAlignment)
+ZAF_DEFINE_TYPE_PROPERTY(WordWrapping)
+ZAF_DEFINE_TYPE_END
 
 
 TextualControl::TextualControl() {
@@ -69,18 +76,18 @@ TextualControl::~TextualControl() {
 }
 
 
-void TextualControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
-    Rect text_rect = GetTextRect();
+    zaf::Rect text_rect = GetTextRect();
     if (text_rect.size.width <= 0 || text_rect.size.height <= 0) {
         return;
     }
 
     //Text rect is related to content rect's coordinate system, transfer it to control's coordinate 
     //system.
-    auto content_rect = GetContentRect();
+    auto content_rect = ContentRect();
     text_rect.position.x += content_rect.position.x;
     text_rect.position.y += content_rect.position.y;
     //Prevent text rect exceeds content rect.
@@ -98,7 +105,7 @@ void TextualControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
     SetTextColorsToTextLayout(text_layout, canvas.GetRenderer());
 
     Canvas::StateGuard state_guard(canvas);
-    canvas.SetBrushWithColor(GetTextColor());
+    canvas.SetBrushWithColor(TextColor());
     canvas.PushClippingRect(text_rect);
     canvas.DrawTextLayout(text_layout, text_rect.position);
 }
@@ -106,9 +113,9 @@ void TextualControl::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
 TextLayout TextualControl::CreateTextLayout() const {
 
-    auto default_font = GetFont();
+    auto default_font = Font();
 
-    auto text = GetText();
+    auto text = Text();
     auto text_length = text.length();
 
     TextLayoutProperties text_layout_properties;
@@ -123,7 +130,7 @@ TextLayout TextualControl::CreateTextLayout() const {
 }
 
 
-TextFormat TextualControl::CreateTextFormat(const Font& default_font) const {
+TextFormat TextualControl::CreateTextFormat(const zaf::Font& default_font) const {
 
     TextFormatProperties text_format_properties;
     text_format_properties.font_family_name = default_font.family_name;
@@ -131,9 +138,9 @@ TextFormat TextualControl::CreateTextFormat(const Font& default_font) const {
     text_format_properties.font_weight = default_font.weight;
 
     auto text_format = GetGraphicFactory().CreateTextFormat(text_format_properties);
-    text_format.SetTextAlignment(GetTextAlignment());
-    text_format.SetParagraphAlignment(GetParagraphAlignment());
-    text_format.SetWordWrapping(GetWordWrapping());
+    text_format.SetTextAlignment(TextAlignment());
+    text_format.SetParagraphAlignment(ParagraphAlignment());
+    text_format.SetWordWrapping(WordWrapping());
 
     auto text_trimming = GetTextTrimming();
     ReviseTextTrimmingSign(text_trimming, text_format);
@@ -180,12 +187,12 @@ void TextualControl::ReleaseTextLayout() {
 }
 
 
-Rect TextualControl::GetTextRect() {
-    return Rect{ zaf::Point{}, GetContentSize() };
+zaf::Rect TextualControl::GetTextRect() {
+    return zaf::Rect{ zaf::Point{}, ContentSize() };
 }
 
 
-std::wstring TextualControl::GetText() const {
+std::wstring TextualControl::Text() const {
 
     auto text = GetPropertyMap().TryGetProperty<std::wstring>(property::Text);
     if (text != nullptr) {
@@ -198,7 +205,7 @@ std::wstring TextualControl::GetText() const {
 
 void TextualControl::SetText(const std::wstring& text) {
 
-    if (text == GetText()) {
+    if (text == Text()) {
         return;
     }
 
@@ -210,7 +217,7 @@ void TextualControl::SetText(const std::wstring& text) {
 }
 
 
-ColorPicker TextualControl::GetTextColorPicker() const {
+ColorPicker TextualControl::TextColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kDefaultTextColorPickerPropertyName);
     if ((color_picker != nullptr) && (*color_picker != nullptr)) {
@@ -247,7 +254,7 @@ ColorPicker TextualControl::GetTextColorPickerAtPosition(std::size_t position) c
         }
     }
 
-    return GetTextColorPicker();
+    return TextColorPicker();
 }
 
 
@@ -282,18 +289,18 @@ void TextualControl::ResetTextColorPickers() {
 }
 
 
-Font TextualControl::GetFont() const {
+Font TextualControl::Font() const {
 
-    auto font = GetPropertyMap().TryGetProperty<Font>(kDefaultFontPropertyName);
+    auto font = GetPropertyMap().TryGetProperty<zaf::Font>(kDefaultFontPropertyName);
     if (font != nullptr) {
         return *font;
     }
     else {
-        return Font::GetDefault();
+        return Font::Default();
     };
 }
 
-void TextualControl::SetFont(const Font& font) {
+void TextualControl::SetFont(const zaf::Font& font) {
 
     GetPropertyMap().SetProperty(kDefaultFontPropertyName, font);
 
@@ -302,25 +309,25 @@ void TextualControl::SetFont(const Font& font) {
 }
 
 
-float TextualControl::GetFontSize() const {
-    return GetFont().size;
+float TextualControl::FontSize() const {
+    return Font().size;
 }
 
 void TextualControl::SetFontSize(float size) {
 
-    auto new_font = GetFont();
+    auto new_font = Font();
     new_font.size = size;
     SetFont(new_font);
 }
 
 
-int TextualControl::GetFontWeight() const {
-    return GetFont().weight;
+FontWeight TextualControl::FontWeight() const {
+    return Font().weight;
 }
 
-void TextualControl::SetFontWeight(int weight) {
+void TextualControl::SetFontWeight(zaf::FontWeight weight) {
 
-    auto new_font = GetFont();
+    auto new_font = Font();
     new_font.weight = weight;
     SetFont(new_font);
 }
@@ -339,11 +346,11 @@ Font TextualControl::GetFontAtPosition(std::size_t position) const {
         }
     }
 
-    return GetFont();
+    return Font();
 }
 
 
-void TextualControl::SetFontAtRange(const Font& font, const TextRange& range) {
+void TextualControl::SetFontAtRange(const zaf::Font& font, const TextRange& range) {
 
     auto fonts = GetPropertyMap().GetProperty<std::shared_ptr<FontRangeMap>>(
         kFontsPropertyName,
@@ -377,9 +384,11 @@ void TextualControl::ResetFonts() {
 }
 
 
-TextAlignment TextualControl::GetTextAlignment() const {
+TextAlignment TextualControl::TextAlignment() const {
 
-    auto text_alignment = GetPropertyMap().TryGetProperty<TextAlignment>(property::TextAlignment);
+    auto text_alignment = 
+        GetPropertyMap().TryGetProperty<zaf::TextAlignment>(property::TextAlignment);
+
     if (text_alignment != nullptr) {
         return *text_alignment;
     }
@@ -388,7 +397,7 @@ TextAlignment TextualControl::GetTextAlignment() const {
     }
 }
 
-void TextualControl::SetTextAlignment(TextAlignment alignment) {
+void TextualControl::SetTextAlignment(zaf::TextAlignment alignment) {
 
     GetPropertyMap().SetProperty(property::TextAlignment, alignment);
 
@@ -400,9 +409,11 @@ void TextualControl::SetTextAlignment(TextAlignment alignment) {
 }
 
 
-ParagraphAlignment TextualControl::GetParagraphAlignment() const {
+ParagraphAlignment TextualControl::ParagraphAlignment() const {
 
-    auto paragraph_alignment = GetPropertyMap().TryGetProperty<ParagraphAlignment>(property::ParagraphAlignment);
+    auto paragraph_alignment = 
+        GetPropertyMap().TryGetProperty<zaf::ParagraphAlignment>(property::ParagraphAlignment);
+
     if (paragraph_alignment != nullptr) {
         return *paragraph_alignment;
     }
@@ -411,7 +422,7 @@ ParagraphAlignment TextualControl::GetParagraphAlignment() const {
     }
 }
 
-void TextualControl::SetParagraphAlignment(ParagraphAlignment alignment) {
+void TextualControl::SetParagraphAlignment(zaf::ParagraphAlignment alignment) {
 
     GetPropertyMap().SetProperty(property::ParagraphAlignment, alignment);
 
@@ -423,9 +434,9 @@ void TextualControl::SetParagraphAlignment(ParagraphAlignment alignment) {
 }
 
 
-WordWrapping TextualControl::GetWordWrapping() const {
+WordWrapping TextualControl::WordWrapping() const {
 
-    auto word_wrapping = GetPropertyMap().TryGetProperty<WordWrapping>(property::WordWrapping);
+    auto word_wrapping = GetPropertyMap().TryGetProperty<zaf::WordWrapping>(property::WordWrapping);
     if (word_wrapping != nullptr) {
         return *word_wrapping;
     }
@@ -434,7 +445,7 @@ WordWrapping TextualControl::GetWordWrapping() const {
     }
 }
 
-void TextualControl::SetWordWrapping(WordWrapping word_wrapping) {
+void TextualControl::SetWordWrapping(zaf::WordWrapping word_wrapping) {
 
     GetPropertyMap().SetProperty(property::WordWrapping, word_wrapping);
 
@@ -498,17 +509,17 @@ void TextualControl::RaiseTextChangedEvent() {
 }
 
 
-Size TextualControl::GetPreferredContentSize() const {
+zaf::Size TextualControl::GetPreferredContentSize() const {
 
-    Size max_size;
-    max_size.width = GetMaxWidth();
-    max_size.height = GetMaxHeight();
+    zaf::Size max_size;
+    max_size.width = MaxWidth();
+    max_size.height = MaxHeight();
 
-    const auto& border = GetBorder();
+    const auto& border = Border();
     max_size.width -= border.left + border.right;
     max_size.height -= border.top + border.bottom;
 
-    const auto& padding = GetPadding();
+    const auto& padding = Padding();
     max_size.width -= padding.left + padding.right;
     max_size.height -= padding.top + padding.bottom;
 
@@ -524,11 +535,11 @@ Size TextualControl::GetPreferredContentSize() const {
 }
 
 
-Size TextualControl::CalculatePreferredSize(const Size& max_size) const {
+zaf::Size TextualControl::CalculatePreferredSize(const zaf::Size& max_size) const {
 
     auto text_layout = GetTextLayout();
     if (text_layout == nullptr) {
-        return Size();
+        return zaf::Size();
     }
     
     text_layout.SetMaxWidth(max_size.width);
@@ -542,7 +553,7 @@ Size TextualControl::CalculatePreferredSize(const Size& max_size) const {
         metrics.width_including_trailing_whitespace :
         metrics.width;
 
-    return Size{ width, metrics.height };
+    return zaf::Size{ width, metrics.height };
 }
 
 

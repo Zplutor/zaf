@@ -24,7 +24,7 @@ public:
         const std::shared_ptr<Object>& parent_data,
         std::size_t index) {
 
-        return Object::Empty();
+        return Object::Dumb();
     }
 
     Observable<TreeDataSourceDataAddInfo> DataAddEvent() {

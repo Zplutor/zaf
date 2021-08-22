@@ -6,7 +6,7 @@ namespace zaf {
 
 class VerticalBox : public Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 protected:
     void Initialize() override;
@@ -15,7 +15,7 @@ protected:
 
 class HorizontalBox : public Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 protected:
     void Initialize() override;

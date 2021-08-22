@@ -1,5 +1,6 @@
 #pragma once
 
+#include <exception>
 #include <system_error>
 #include <zaf/base/source_site.h>
 
@@ -8,7 +9,7 @@ namespace zaf {
 /**
  Contains information abount a runtime error.
  */
-class Error {
+class Error : public std::exception {
 public:
     explicit Error(const std::error_code& code) : code_(code) { }
 
@@ -44,5 +45,8 @@ private:
     std::error_code code_;
     SourceSite site_;
 };
+
+
+#define ZAF_THROW_ERRC(errc) throw zaf::Error{ std::make_error_code(errc), ZAF_SOURCE_SITE() };
 
 }

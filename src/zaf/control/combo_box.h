@@ -20,7 +20,7 @@ class ComboBoxSelectionChangeInfo;
  */
 class ComboBox : public ClickableControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     ComboBox();
@@ -141,9 +141,9 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const Rect&) override;
-    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
-    Rect GetTextRect() override;
+    void Layout(const zaf::Rect&) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    zaf::Rect GetTextRect() override;
 
     void OnClick() override;
     bool OnKeyDown(const KeyMessage& message) override;
@@ -295,7 +295,7 @@ public:
  */
 class ComboBoxDropDownListBox : public ListBox {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 protected:
     void Initialize() override;
@@ -318,7 +318,7 @@ private:
  */
 class ComboBoxEditTextBox : public TextBox {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     bool OnKeyDown(const KeyMessage& message) override;

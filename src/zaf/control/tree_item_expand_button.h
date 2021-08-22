@@ -15,7 +15,7 @@ public:
 
 protected:
     void Initialize();
-    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
 private:
     ExpandState expand_state_{ ExpandState::None };

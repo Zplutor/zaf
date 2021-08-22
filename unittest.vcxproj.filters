@@ -61,6 +61,18 @@
     <Filter Include="case\window">
       <UniqueIdentifier>{9c378360-802c-4646-a24f-a587b9a92e41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\object\boxing">
+      <UniqueIdentifier>{41b90e79-575a-4f83-85c4-7ca5c0e2f5fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\object\parsing">
+      <UniqueIdentifier>{1dec8fdf-0093-4e1c-8aac-6763cf9cc27a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\graphic\font">
+      <UniqueIdentifier>{fb8bed71-7a2d-4102-b70d-58f6b2fad825}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility">
+      <UniqueIdentifier>{f9b12e41-c943-4c77-9372-84ff0bf4bf0b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -172,7 +184,7 @@
     <ClCompile Include="unittest\case\control\internal\image_box\image_drawing_test.cpp">
       <Filter>case\control\internal\image_box</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\parsers\bitmap_image_parser_test.cpp">
+    <ClCompile Include="unittest\case\parsers\uri_image_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\container\utility\range_test.cpp">
@@ -183,9 +195,6 @@
     </ClCompile>
     <ClCompile Include="unittest\case\parsing\parsers\font_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\object\boxing_test.cpp">
-      <Filter>case\object</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\control\internal\list_control\list_control_item_height_manager_test.cpp">
       <Filter>case\control\internal\list_control</Filter>
@@ -198,12 +207,6 @@
     </ClCompile>
     <ClCompile Include="unittest\case\base\container\utility\copy_test.cpp">
       <Filter>case\base\container\utility</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\object\boxed_test.cpp">
-      <Filter>case\object</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\object\built_in_box_type_test.cpp">
-      <Filter>case\object</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\hash_test.cpp">
       <Filter>case\base</Filter>
@@ -241,6 +244,39 @@
     <ClCompile Include="unittest\case\control\layout\layout_case_test.cpp">
       <Filter>case\control\layout</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing\boxed_object_equality_test.cpp">
+      <Filter>case\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing\boxing_test.cpp">
+      <Filter>case\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing\numeric_boxed_type_test.cpp">
+      <Filter>case\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing\string_boxed_type_test.cpp">
+      <Filter>case\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\property_test.cpp">
+      <Filter>case\object</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\enum_test.cpp">
+      <Filter>case\object</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\parsing\parsing_test.cpp">
+      <Filter>case\object\parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\flag_enum_test.cpp">
+      <Filter>case\base</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\font\font_weight_test.cpp">
+      <Filter>case\graphic\font</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing\boolean_test.cpp">
+      <Filter>case\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\as_test.cpp">
+      <Filter>case\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
@@ -248,6 +284,9 @@
     </ClInclude>
     <ClInclude Include="unittest\case\parsing\parsers\utility.h">
       <Filter>case\parsing\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="unittest\utility\assert.h">
+      <Filter>utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

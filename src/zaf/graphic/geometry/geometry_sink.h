@@ -20,7 +20,7 @@ public:
      Specifies how the intersecting areas of geometries or figures are combined
      to form the area of the composite geometry.
      */
-	enum class FillMode {
+    enum class FillMode {
 
         /**
          Determines whether a point is in the fill region by drawing a ray from
@@ -42,7 +42,7 @@ public:
          path. Otherwise, it is inside the path.
          */
         Winding = D2D1_FILL_MODE_WINDING,
-	};
+    };
 
     /**
      Indicates whether a segment should be stroked and whether the join between this 
@@ -50,7 +50,7 @@ public:
 
      This enumeration allows a bitwise combination of its member values.
      */
-	enum class SegmentFlag {
+    enum class SegmentFlag {
 
         /**
          The segment is joined as specified by the Stroke class, and it is stroked.
@@ -72,12 +72,12 @@ public:
          and the last explicitly specified segment is affected.
          */
         ForceRoundLineJoin = D2D1_PATH_SEGMENT_FORCE_ROUND_LINE_JOIN,
-	};
+    };
 
     /**
      Indicates whether a specific figure is filled or hollow.
      */
-	enum class BeginFigureOption {
+    enum class BeginFigureOption {
 
         /**
          Indicates the figure will be filled.
@@ -90,12 +90,12 @@ public:
          for stroking, or for other geometry operations.
          */
         Hollow = D2D1_FIGURE_BEGIN_HOLLOW,
-	};
+    };
 
     /**
      Indicates whether a specific figure is open or closed.
      */
-	enum class EndFigureOption {
+    enum class EndFigureOption {
 
         /**
          The figure is open.
@@ -106,7 +106,7 @@ public:
          The figure is closed.
          */
         Close = D2D1_FIGURE_END_CLOSED,
-	};
+    };
 
 public:
     GeometrySink() = default;
@@ -134,9 +134,9 @@ public:
      before the first call to BeginFigure. Not doing will put the geometry sink in an error 
      state.
      */
-	void SetFillMode(FillMode fill_mode) {
-		GetHandle()->SetFillMode(static_cast<D2D1_FILL_MODE>(fill_mode));
-	}
+    void SetFillMode(FillMode fill_mode) {
+        GetHandle()->SetFillMode(static_cast<D2D1_FILL_MODE>(fill_mode));
+    }
 
     /**
      Specifies stroke and join options to be applied to new segments added to the geometry sink.
@@ -145,9 +145,9 @@ public:
      added to the sink. The segment flags are applied to every additional segment until this method
      is called again and a different set of segment flags is specified.
      */
-	void SetSegmentFlag(SegmentFlag flag) {
-		GetHandle()->SetSegmentFlags(static_cast<D2D1_PATH_SEGMENT>(flag));
-	}
+    void SetSegmentFlag(SegmentFlag flag) {
+        GetHandle()->SetSegmentFlags(static_cast<D2D1_PATH_SEGMENT>(flag));
+    }
 
     /**
      Starts a new figure at the specified point.
@@ -171,9 +171,9 @@ public:
      error state; subsequent calls are ignored, and the overall failure will be returned when 
      the Close method is called.
      */
-	void EndFigure(EndFigureOption option) {
-		GetHandle()->EndFigure(static_cast<D2D1_FIGURE_END>(option));
-	}
+    void EndFigure(EndFigureOption option) {
+        GetHandle()->EndFigure(static_cast<D2D1_FIGURE_END>(option));
+    }
 
     /**
      Creates a line segment between the current point and the specified end point and adds it 
@@ -194,7 +194,7 @@ public:
         points, a line is drawn from the first point to the second point in the array, from the 
         second point to the third point, and so on.
      */
-	void AddLines(const std::vector<Point>& points);
+    void AddLines(const std::vector<Point>& points);
 
     void AddArc(const ArcSegment& arc_segment);
 

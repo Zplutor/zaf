@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/control/control.h>
+#include <zaf/graphic/font/font_weight.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/text_layout.h>
@@ -24,7 +25,7 @@ class TextualControlTextChangeInfo;
  */
 class TextualControl : public Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     TextualControl();
@@ -33,14 +34,14 @@ public:
     /**
      Get text length.
      */
-    std::size_t GetTextLength() const {
-        return GetText().length();
+    std::size_t TextLength() const {
+        return Text().length();
     }
 
     /**
      Get text.
      */
-    virtual std::wstring GetText() const;
+    virtual std::wstring Text() const;
 
     /**
      Set text.
@@ -50,14 +51,14 @@ public:
     /**
      Get the default text color.
      */
-    Color GetTextColor() const {
-        return GetTextColorPicker()(*this);
+    Color TextColor() const {
+        return TextColorPicker()(*this);
     }
 
     /**
      Get the default color picker of text.
      */
-    ColorPicker GetTextColorPicker() const;
+    ColorPicker TextColorPicker() const;
 
     /**
      Set the default text color.
@@ -74,7 +75,7 @@ public:
     /**
      Get text color at specified text position.
 
-     Return GetTextColor() if the text color at this position has not been set.
+     Return TextColor() if the text color at this position has not been set.
      */
     Color GetTextColorAtPosition(std::size_t position) const {
         return GetTextColorPickerAtPosition(position)(*this);
@@ -90,7 +91,7 @@ public:
     /**
      Get text color picker at specified text position.
 
-     Return GetTextColorPicker() if the text color picker at this position has not been set.
+     Return TextColorPicker() if the text color picker at this position has not been set.
      */
     ColorPicker GetTextColorPickerAtPosition(std::size_t position) const;
 
@@ -109,32 +110,32 @@ public:
     /**
      Get default font.
 
-     Return Font::GetDefault() if this property has not been set.
+     Return Font::Default() if this property has not been set.
      */
-    virtual Font GetFont() const;
+    virtual Font Font() const;
 
     /**
      Set default font.
      */
-    virtual void SetFont(const Font& font);
+    virtual void SetFont(const zaf::Font& font);
 
-    float GetFontSize() const;
+    float FontSize() const;
     void SetFontSize(float size);
 
-    int GetFontWeight() const;
-    void SetFontWeight(int weight);
+    FontWeight FontWeight() const;
+    void SetFontWeight(zaf::FontWeight weight);
 
     /**
      Get font at specified text position.
 
-     Return GetDefault() if the font at this position has not been set.
+     Return Default() if the font at this position has not been set.
      */
-    virtual Font GetFontAtPosition(std::size_t position) const;
+    virtual zaf::Font GetFontAtPosition(std::size_t position) const;
 
     /**
      Set font at specified text range.
      */
-    virtual void SetFontAtRange(const Font& font, const TextRange& range);
+    virtual void SetFontAtRange(const zaf::Font& font, const TextRange& range);
 
     /**
      Reset all particular fonts to default font.
@@ -148,36 +149,36 @@ public:
 
      The default value is TextAlignment::Leading.
      */
-    virtual TextAlignment GetTextAlignment() const;
+    virtual TextAlignment TextAlignment() const;
 
     /**
      Set text alignment.
      */
-    virtual void SetTextAlignment(TextAlignment alignment);
+    virtual void SetTextAlignment(zaf::TextAlignment alignment);
 
     /**
      Get paragraph alignemnt.
 
      The default value is ParagraphAlignment::Near;
     */
-    virtual ParagraphAlignment GetParagraphAlignment() const;
+    virtual ParagraphAlignment ParagraphAlignment() const;
 
     /**
      Set paragraph alignment.
      */
-    virtual void SetParagraphAlignment(ParagraphAlignment alignment);
+    virtual void SetParagraphAlignment(zaf::ParagraphAlignment alignment);
 
     /**
      Get word wrapping.
 
      The default value is WordWrapping::NoWrap;
      */
-    virtual WordWrapping GetWordWrapping() const;
+    virtual WordWrapping WordWrapping() const;
 
     /**
      Set word wrapping.
      */
-    virtual void SetWordWrapping(WordWrapping word_wrapping);
+    virtual void SetWordWrapping(zaf::WordWrapping word_wrapping);
 
     TextTrimming GetTextTrimming() const;
     void SetTextTrimming(const TextTrimming& text_trimming);
@@ -196,15 +197,15 @@ public:
     Observable<TextualControlTextChangeInfo> TextChangeEvent();
 
 protected:
-    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
     void ReleaseRendererResources() override {
         ReleaseTextLayout();
     }
 
-    Size GetPreferredContentSize() const override;
+    zaf::Size GetPreferredContentSize() const override;
 
-    virtual Rect GetTextRect();
+    virtual zaf::Rect GetTextRect();
 
     TextLayout GetTextLayout() const {
         if (text_layout_ == nullptr) {
@@ -224,9 +225,9 @@ protected:
     virtual void OnTextChanged() { }
 
 private:
-    Size CalculatePreferredSize(const Size& max_size) const;
+    zaf::Size CalculatePreferredSize(const zaf::Size& max_size) const;
     TextLayout CreateTextLayout() const;
-    TextFormat CreateTextFormat(const Font& default_font) const;
+    TextFormat CreateTextFormat(const zaf::Font& default_font) const;
     void SetRangedFontsToTextLayout(TextLayout& text_layout) const;
 
     void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer);

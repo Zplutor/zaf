@@ -2,23 +2,23 @@
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/linear_box.h>
 #include <zaf/creation.h>
-#include <zaf/parsing/helpers.h>
+#include <zaf/object/parsing/helpers.h>
 
 TEST(LinearBoxTest, Normal) {
 
     auto vertical_box = zaf::Create<zaf::VerticalBox>();
     auto vertical_layouter = std::dynamic_pointer_cast<zaf::VerticalLayouter>(
-        vertical_box->GetLayouter());
+        vertical_box->Layouter());
 
     ASSERT_NE(vertical_layouter, nullptr);
-    ASSERT_EQ(vertical_layouter->GetDirection(), zaf::LayoutDirection::TopToBottom);
+    ASSERT_EQ(vertical_layouter->Direction(), zaf::LayoutDirection::TopToBottom);
 
     auto horizontal_box = zaf::Create<zaf::HorizontalBox>();
     auto horizontal_layouter = std::dynamic_pointer_cast<zaf::HorizontalLayouter>(
-        horizontal_box->GetLayouter());
+        horizontal_box->Layouter());
 
     ASSERT_NE(horizontal_layouter, nullptr);
-    ASSERT_EQ(horizontal_layouter->GetDirection(), zaf::LayoutDirection::LeftToRight);
+    ASSERT_EQ(horizontal_layouter->Direction(), zaf::LayoutDirection::LeftToRight);
 }
 
 

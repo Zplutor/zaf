@@ -22,7 +22,7 @@ Canvas::Canvas(const Renderer& renderer, const Rect& renderer_rect, const Rect& 
     transformed_layer.aligned_paintable_rect = Align(paintable_rect);
     transform_layers_.push(transformed_layer);
 
-	SaveState();
+    SaveState();
 }
 
 
@@ -98,30 +98,30 @@ void Canvas::SaveState() {
         CancelState(current_state);
     }
 
-	auto new_state = std::make_shared<State>();
-	new_state->brush = renderer_.CreateSolidColorBrush(Color::White());
+    auto new_state = std::make_shared<State>();
+    new_state->brush = renderer_.CreateSolidColorBrush(Color::White());
 
-	states_.push_back(new_state);
+    states_.push_back(new_state);
     ApplyState(new_state);
 }
 
 
 void Canvas::RestoreState() {
 
-	if (! states_.empty()) {
+    if (! states_.empty()) {
 
         auto current_state = states_.back();
         CancelState(current_state);
-		states_.pop_back();
+        states_.pop_back();
 
         if (! states_.empty()) {
             current_state = states_.back();
             ApplyState(current_state);
         }
-	}
-	else {
-		ZAF_FAIL();
-	}
+    }
+    else {
+        ZAF_FAIL();
+    }
 }
 
 
@@ -143,13 +143,13 @@ void Canvas::CancelState(const std::shared_ptr<State>& state) {
 
 std::shared_ptr<Canvas::State> Canvas::GetCurrentState() const {
 
-	if (! states_.empty()) {
-		return states_.back();
-	}
-	else {
-		ZAF_FAIL();
-		return nullptr;
-	}
+    if (! states_.empty()) {
+        return states_.back();
+    }
+    else {
+        ZAF_FAIL();
+        return nullptr;
+    }
 }
 
 

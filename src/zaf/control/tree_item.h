@@ -22,13 +22,13 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const Rect& previous_rect) override;
-    Rect GetTextRect() override;
+    void Layout(const zaf::Rect& previous_rect) override;
+    zaf::Rect GetTextRect() override;
 
     /**
      Get the rect of expand button, related to its content rect's coordinate system.
      */
-    virtual Rect GetExpandButtonRect();
+    virtual zaf::Rect GetExpandButtonRect();
 
 private:
     friend class internal::TreeControlImplementation;

@@ -32,7 +32,7 @@ class ListDataSource;
  */
 class ListControl : public ScrollableControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     ListControl();
@@ -168,7 +168,7 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const Rect& previous_rect) override;
+    void Layout(const zaf::Rect& previous_rect) override;
     void VerticalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) override;
 
     /**

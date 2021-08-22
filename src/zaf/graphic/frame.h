@@ -3,18 +3,18 @@
 #include <Windows.h>
 #include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
-#include <zaf/object/equality_type.h>
-#include <zaf/reflection/reflection_object.h>
+#include <zaf/object/equality.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 
 /**
  Represents a rectangle frame.   
  */
-class Frame : public ReflectionObject {
+class Frame : public Object {
 public:
-    ZAF_DECLARE_EQUALITY_TYPE
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_EQUALITY
 
 public:
     /**
@@ -37,7 +37,7 @@ public:
     /**
      Construct a frame which all direction is the same as specified thickness.
      */
-    Frame(float all) : left(all), top(all), right(all), bottom(all) { }
+    explicit Frame(float all) : left(all), top(all), right(all), bottom(all) { }
 
     /**
      Construct a frame with specified thicknesses.

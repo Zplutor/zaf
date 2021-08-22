@@ -28,7 +28,7 @@ void GeneralLayouter::CanShowScrollBars(
     bool& can_show_vertical_scroll_bar,
     bool& can_show_horizontal_scroll_bar) {
 
-    Rect content_rect = GetScrollableControl()->GetContentRect();
+    Rect content_rect = GetScrollableControl()->ContentRect();
     float content_width = content_rect.size.width;
     float content_height = content_rect.size.height;
 
@@ -77,12 +77,12 @@ void GeneralLayouter::LayoutScrollContentControlSize(
     bool can_show_vertical_scroll_bar, 
     bool can_show_horizontal_scroll_bar) {
 
-    const auto& scroll_content_control = GetScrollableControl()->GetScrollContentControl();
+    const auto& scroll_content_control = GetScrollableControl()->ScrollContentControl();
 
-    Rect new_rect = scroll_content_control->GetRect();
+    Rect new_rect = scroll_content_control->Rect();
     new_rect.size = GetExpectedScrollContentControlSize();
 
-    const Size& min_size = GetScrollableControl()->GetScrollContainerControl()->GetSize();
+    const Size& min_size = GetScrollableControl()->GetScrollContainerControl()->Size();
 
     if (!can_show_horizontal_scroll_bar || new_rect.size.width < min_size.width) {
         new_rect.size.width = min_size.width;
@@ -100,9 +100,9 @@ void GeneralLayouter::LayoutScrollContentControlSize(
 
 Size GeneralLayouter::GetExpectedScrollContentControlSize() {
 
-    const auto& scroll_content_control = GetScrollableControl()->GetScrollContentControl();
-    const auto& padding = scroll_content_control->GetPadding();
-    const auto& border = scroll_content_control->GetBorder();
+    const auto& scroll_content_control = GetScrollableControl()->ScrollContentControl();
+    const auto& padding = scroll_content_control->Padding();
+    const auto& border = scroll_content_control->Border();
 
     Size size = GetScrollableControl()->GetExpectedScrollContentSize();
     size.width += padding.left + padding.right + border.left + border.right;
@@ -113,13 +113,13 @@ Size GeneralLayouter::GetExpectedScrollContentControlSize() {
 
 void GeneralLayouter::AdjustScrollBarValueRanges() {
 
-    const auto& scroll_content_control = GetScrollableControl()->GetScrollContentControl();
+    const auto& scroll_content_control = GetScrollableControl()->ScrollContentControl();
     const auto& scroll_container_control = GetScrollableControl()->GetScrollContainerControl();
     const auto& vertical_scroll_bar = GetVerticalScrollBar();
     const auto& horizontal_scroll_bar = GetHorizontalScrollBar();
 
-    const Size& content_size = scroll_content_control->GetSize();
-    const Size& container_size = scroll_container_control->GetContentSize();
+    const Size& content_size = scroll_content_control->Size();
+    const Size& container_size = scroll_container_control->ContentSize();
     auto auto_adjust_large_change = GetScrollableControl()->AutoAdjustScrollBarLargeChange();
 
     {
@@ -152,9 +152,9 @@ void GeneralLayouter::AdjustScrollBarValueRanges() {
 
 void GeneralLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) {
 
-    const auto& scroll_content_control = GetScrollableControl()->GetScrollContentControl();
+    const auto& scroll_content_control = GetScrollableControl()->ScrollContentControl();
 
-    Rect content_rect = scroll_content_control->GetRect();
+    Rect content_rect = scroll_content_control->Rect();
 
     if (event_info.scroll_bar->IsHorizontal()) {
         content_rect.position.x = static_cast<float>(-event_info.scroll_bar->GetValue());

@@ -9,9 +9,9 @@ namespace {
 template<template<typename E, typename ...> class C>
 bool TestUnique() {
 
-	C<int> container{ 0, 1, 1, 2, 2, 3, 3, 3 };
+    C<int> container{ 0, 1, 1, 2, 2, 3, 3, 3 };
 
-	std::size_t removed_count = zaf::Unique(container);
+    std::size_t removed_count = zaf::Unique(container);
     if (removed_count != 4) {
         return false;
     }
@@ -41,9 +41,9 @@ bool TestUniqueWithPredicate() {
 
 TEST(Unique, Normal) {
 
-	ASSERT_TRUE(TestUnique<std::vector>());
+    ASSERT_TRUE(TestUnique<std::vector>());
     ASSERT_TRUE(TestUnique<std::list>());
-	ASSERT_TRUE(TestUnique<std::deque>());
+    ASSERT_TRUE(TestUnique<std::deque>());
 }
 
 

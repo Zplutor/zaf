@@ -20,7 +20,7 @@ public:
 
      See also Geometry::Geometry.
      */
-	explicit PathGeometry(ID2D1PathGeometry* handle) : Geometry(handle) { } 
+    explicit PathGeometry(ID2D1PathGeometry* handle) : Geometry(handle) { } 
 
     /**
      Construct the instance with specified handle, as well as an origin of coordinate that used to
@@ -57,10 +57,10 @@ public:
      @param error_code
         An output parameter indicating the error, if any.
      */
-	GeometrySink Open();
+    GeometrySink Open();
 
 private:
-	ID2D1PathGeometry* GetActualHandle() const {
+    ID2D1PathGeometry* GetActualHandle() const {
         return static_cast<ID2D1PathGeometry*>(GetHandle());
     }
 

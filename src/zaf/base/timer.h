@@ -55,31 +55,31 @@ public:
     static const Interval MaximumInterval;
 
 public:
-	/**
-	 Initialize the timer that has specified working mode.
+    /**
+     Initialize the timer that has specified working mode.
 
      The working mode is immutable after creating the timer.
      The interval has a minimum interval value by default.
-	 */
-	Timer(Mode mode);
+     */
+    Timer(Mode mode);
 
-	/**
-	 Destroy the timer.
+    /**
+     Destroy the timer.
 
      The timer is stopped when it is destroyed.
-	 */
-	~Timer();
+     */
+    ~Timer();
 
     Mode GetMode() const {
         return mode_;
     }
 
-	/**
-	 Get the timer's interval.
-	 */
-	const Interval GetInterval() const {
-		return interval_;
-	}
+    /**
+     Get the timer's interval.
+     */
+    const Interval GetInterval() const {
+        return interval_;
+    }
 
     /**
      Set the timer's interval.
@@ -102,27 +102,27 @@ public:
         return is_running_;
     }
 
-	/**
-	 Start the timer.
-	 */
-	void Start();
+    /**
+     Start the timer.
+     */
+    void Start();
 
-	/**
-	 Stop the timer.
-	 */
-	void Stop();
+    /**
+     Stop the timer.
+     */
+    void Stop();
 
 private:
-	static void CALLBACK TimerProcedure(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+    static void CALLBACK TimerProcedure(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
     void StartSystemTimer();
     void StopSystemTimer();
-	void SystemTimerTrigger();
+    void SystemTimerTrigger();
     void RaiseEvent();
 
 private:
     Mode mode_;
-	Interval interval_;
+    Interval interval_;
     Subject<TimerTriggerInfo> trigger_event_;
     bool is_running_;
 };

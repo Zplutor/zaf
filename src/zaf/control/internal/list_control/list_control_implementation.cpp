@@ -80,7 +80,7 @@ ListControlImplementation::~ListControlImplementation() {
 void ListControlImplementation::Initialize(const InitializeParameters& parameters) {
 
     owner_.SetBackgroundColor(Color::White());
-    owner_.SetBorder(1);
+    owner_.SetBorder(Frame(1));
     owner_.SetBorderColor(Color::Black());
 
     data_source_change_event_ = parameters.data_source_change_event;
@@ -761,7 +761,7 @@ void ListControlImplementation::AdjustVisibleItemPositions(
     for (std::size_t index = begin_adjust_index; index < visible_items_.size(); ++index) {
 
         const auto& item = visible_items_[index];
-        auto rect = item->GetRect();
+        auto rect = item->Rect();
         rect.position.y += difference;
         item->SetRect(rect);
     }

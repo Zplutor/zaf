@@ -20,7 +20,7 @@ void ConversationListView::Initialize() {
 
     __super::Initialize();
 
-    SetBorder(0);
+    SetBorder(zaf::Frame(0));
     SetAllowHorizontalScroll(false);
     SetAutoAdjustScrollBarSmallChange(false);
     SetAutoAdjustScrollBarLargeChange(false);

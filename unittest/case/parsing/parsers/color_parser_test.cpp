@@ -1,19 +1,20 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/graphic/color.h>
-#include <zaf/parsing/parsers/color_parser.h>
-#include <zaf/parsing/xaml_node.h>
-#include <zaf/parsing/xaml_reader.h>
+#include <zaf/object/parsing/xaml_node.h>
+#include <zaf/object/parsing/xaml_reader.h>
+#include "utility/assert.h"
 #include "utility.h"
 
 TEST(ColorParser, ParseFromAttribute) {
 
     zaf::Color color;
-    zaf::ColorParser parser;
+    auto parser = zaf::Color::Type->GetParser();
 
-    parser.ParseFromAttribute(L"#112233", color);
+    parser->ParseFromAttribute(L"#112233", color);
     ASSERT_EQ(color, zaf::Color::FromRGB(0x112233));
 
-    parser.ParseFromAttribute(L"#44556677", color);
+    parser->ParseFromAttribute(L"#44556677", color);
     ASSERT_EQ(color, zaf::Color::FromARGB(0x44556677));
 
     struct MapItem {
@@ -34,7 +35,7 @@ TEST(ColorParser, ParseFromAttribute) {
         { L"Yellow", &zaf::Color::Yellow() },
     };
     for (const auto& each_item : map) {
-        parser.ParseFromAttribute(each_item.name, color);
+        parser->ParseFromAttribute(each_item.name, color);
         ASSERT_EQ(color, *each_item.color);
     }
 }
@@ -62,4 +63,16 @@ TEST(ColorParser, ParseFromNode) {
 
     color = zaf::CreateObjectFromXaml<zaf::Color>("<Color>Cyan</Color>");
     ASSERT_EQ(*color, zaf::Color::Cyan());
+}
+
+
+TEST(ColorParser, ParseToInvalidObject) {
+
+    auto parser = zaf::Color::Type->GetParser();
+    zaf::Object object;
+        
+    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"#112233", object), zaf::BasicErrc::InvalidCast);
+
+    auto xaml_node = zaf::XamlReader::FromString(L"<Color>#ddeeff</Color>")->Read();
+    ASSERT_THROW_ERRC(parser->ParseFromNode(*xaml_node, object), zaf::BasicErrc::InvalidCast);
 }

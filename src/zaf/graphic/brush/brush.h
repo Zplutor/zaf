@@ -18,16 +18,16 @@ public:
     /**
      Get opacity.
      */
-	float GetOpacity() const {
-		return GetHandle()->GetOpacity();
-	}
+    float GetOpacity() const {
+        return GetHandle()->GetOpacity();
+    }
 
     /**
      Set opacity.
      */
-	void SetOpacity(float opacity) {
-		GetHandle()->SetOpacity(opacity);
-	}
+    void SetOpacity(float opacity) {
+        GetHandle()->SetOpacity(opacity);
+    }
 };
 
 }

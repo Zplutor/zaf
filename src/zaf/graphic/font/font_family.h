@@ -23,7 +23,7 @@ public:
 
      The instance takes over the lifetime of handle, and would release it when destroyed.
      */
-	explicit FontFamily(IDWriteFontFamily* handle) : ComObject(handle) { }
+    explicit FontFamily(IDWriteFontFamily* handle) : ComObject(handle) { }
 
     /**
      Get the font collection that contains the fonts.
@@ -33,9 +33,9 @@ public:
     /**
      Get the number of fonts.
      */
-	std::size_t GetFontCount() const {
-		return GetHandle()->GetFontCount();
-	}
+    std::size_t GetFontCount() const {
+        return GetHandle()->GetFontCount();
+    }
 
     /**
      Gets a font given its zero-based index.

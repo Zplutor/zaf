@@ -62,7 +62,7 @@ std::shared_ptr<ValueTextBox> CreateValueTextBox(
     text_box->SetText(get_value());
     text_box->RegisterValueChangeEvent([get_value, value_change](ValueTextBox& text_box) {
 
-        value_change(text_box.GetText());
+        value_change(text_box.Text());
         text_box.SetText(get_value());
     });
 

@@ -1,8 +1,9 @@
 #include <gtest/gtest.h>
-#include <zaf/parsing/parsers/ellipse_parser.h>
 #include <zaf/graphic/ellipse.h>
-#include <zaf/parsing/xaml_node.h>
-#include <zaf/parsing/xaml_reader.h>
+#include <zaf/object/object_type.h>
+#include <zaf/object/parsing/object_parser.h>
+#include <zaf/object/parsing/xaml_node.h>
+#include <zaf/object/parsing/xaml_reader.h>
 
 TEST(EllipseParser, ParseFromNode) {
 
@@ -12,8 +13,8 @@ TEST(EllipseParser, ParseFromNode) {
     auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::Ellipse ellipse;
-    zaf::EllipseParser parser;
-    parser.ParseFromNode(*node, ellipse);
+    auto parser = zaf::Ellipse::Type->GetParser();
+    parser->ParseFromNode(*node, ellipse);
     ASSERT_EQ(ellipse, zaf::Ellipse(40, 41, 9, 10));
 
     xaml = R"(
@@ -25,6 +26,6 @@ TEST(EllipseParser, ParseFromNode) {
     )";
     node = zaf::XamlReader::FromString(xaml)->Read();
 
-    parser.ParseFromNode(*node, ellipse);
+    parser->ParseFromNode(*node, ellipse);
     ASSERT_EQ(ellipse, zaf::Ellipse(42, 43, 11, 12));
 }

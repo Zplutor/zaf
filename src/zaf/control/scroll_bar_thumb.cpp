@@ -1,14 +1,12 @@
 #include <zaf/control/scroll_bar_thumb.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/parsing/parsers/scroll_bar_thumb_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
 
-ZAF_DEFINE_REFLECTION_TYPE(ScrollBarThumb)
-    ZAF_DEFINE_PARSER(ScrollBarThumbParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE(ScrollBarThumb)
+ZAF_DEFINE_TYPE_END
 
 ScrollBarThumb::ScrollBarThumb() :
     is_dragging_(false) {
@@ -24,7 +22,7 @@ void ScrollBarThumb::Initialize() {
 }
 
 
-void ScrollBarThumb::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void ScrollBarThumb::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -34,7 +32,7 @@ void ScrollBarThumb::Paint(Canvas& canvas, const Rect& dirty_rect) {
 
     Canvas::StateGuard state_guard(canvas);
 
-    auto thumb_rect = GetContentRect();
+    auto thumb_rect = ContentRect();
     const float spacing = 2;
     if (IsHorizontal()) {
         thumb_rect.Inflate(0, -spacing);

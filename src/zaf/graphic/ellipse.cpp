@@ -1,14 +1,15 @@
 #include <zaf/graphic/ellipse.h>
-#include <zaf/parsing/parsers/ellipse_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 
 namespace zaf {
 
-ZAF_DEFINE_EQUALITY_TYPE(Ellipse)
+ZAF_DEFINE_TYPE(Ellipse)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(Position, position)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(XRadius, x_radius)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(YRadius, y_radius)
+ZAF_DEFINE_TYPE_END
 
-ZAF_DEFINE_REFLECTION_TYPE(Ellipse)
-    ZAF_DEFINE_PARSER(EllipseParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_EQUALITY(Ellipse)
 
 
 bool operator==(const Ellipse& ellipse1, const Ellipse& ellipse2) {

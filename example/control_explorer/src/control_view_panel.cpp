@@ -24,7 +24,7 @@ void ControlViewPanel::ExploredControlRectChanged(const zaf::ControlRectChangeIn
         return;
     }
 
-    if (event_info.previous_rect.size == explored_control_->GetSize()) {
+    if (event_info.previous_rect.size == explored_control_->Size()) {
         return;
     }
 
@@ -38,8 +38,8 @@ void ControlViewPanel::Layout(const zaf::Rect&) {
         return;
     }
 
-    auto rect = GetContentRect();
-    auto child_rect = explored_control_->GetRect();
+    auto rect = ContentRect();
+    auto child_rect = explored_control_->Rect();
 
     zaf::Point child_position;
     child_position.x = (rect.size.width - child_rect.size.width) / 2;

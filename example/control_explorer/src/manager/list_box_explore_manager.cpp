@@ -1,5 +1,5 @@
 #include "manager/list_box_explore_manager.h"
-#include <zaf/object/boxing.h>
+#include <zaf/object/boxing/boxing.h>
 #include "property/number_property_item.h"
 
 std::shared_ptr<zaf::Control> ListBoxExploreManager::CreateExploredControl() {

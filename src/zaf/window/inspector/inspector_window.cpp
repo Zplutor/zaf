@@ -27,23 +27,23 @@ void InspectorWindow::Initialize() {
 
     __super::Initialize();
 
-    SetTitle(L"Inspector -" + target_window_->GetTitle());
+    SetTitle(L"Inspector -" + target_window_->Title());
     SetIsPopup(true);
     SetCanMinimize(false);
     SetOwner(target_window_);
 
-    Rect rect;
+    zaf::Rect rect;
     rect.size.width = DefaultWindowWidth;
     rect.size.height = DefaultWindowHeight;
 
-    auto target_window_rect = target_window_->GetRect();
+    auto target_window_rect = target_window_->Rect();
     rect.position.x = target_window_rect.position.x + target_window_rect.size.width;
     rect.position.y = target_window_rect.position.y;
 
     SetRect(rect);
     SetInitialRectStyle(InitialRectStyle::Custom);
 
-    GetRootControl()->SetLayouter(Create<VerticalLayouter>());
+    RootControl()->SetLayouter(Create<VerticalLayouter>());
 
     InitializeToolbar();
     InitializeTreeControl();
@@ -63,23 +63,23 @@ void InspectorWindow::InitializeToolbar() {
     toolbar->SetLayouter(Create<HorizontalLayouter>());
     toolbar->AddChild(select_inspector_control_button);
 
-    GetRootControl()->AddChild(toolbar);
+    RootControl()->AddChild(toolbar);
 }
 
 
 void InspectorWindow::InitializeTreeControl() {
 
     tree_control_ = Create<TreeControl>();
-    tree_control_->SetBorder(0);
+    tree_control_->SetBorder(Frame(0));
 
     data_source_ = Create<internal::InspectDataSource>(target_window_);
     tree_control_->SetDelegate(std::dynamic_pointer_cast<TreeControlDelegate>(shared_from_this()));
     tree_control_->SetDataSource(data_source_);
 
     tree_control_->ExpandItem(target_window_);
-    tree_control_->ExpandItem(target_window_->GetRootControl());
+    tree_control_->ExpandItem(target_window_->RootControl());
 
-    GetRootControl()->AddChild(tree_control_);
+    RootControl()->AddChild(tree_control_);
 }
 
 
@@ -119,7 +119,7 @@ std::wstring InspectorWindow::GetItemText(
     auto control = dynamic_cast<Control*>(item_data.get());
     if (control) {
 
-        auto control_name = control->GetName();
+        auto control_name = control->Name();
         if (!control_name.empty()) {
             text += L" - ";
             text += control_name;
@@ -175,10 +175,10 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
 void InspectorWindow::HighlightControl(const std::shared_ptr<Control>& control) {
 
     std::vector<std::shared_ptr<Object>> parent_chain;
-    auto parent = control->GetParent();
+    auto parent = control->Parent();
     while (parent) {
         parent_chain.push_back(parent);
-        parent = parent->GetParent();
+        parent = parent->Parent();
     }
     std::reverse(parent_chain.begin(), parent_chain.end());
 

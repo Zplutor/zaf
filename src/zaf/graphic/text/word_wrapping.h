@@ -2,6 +2,7 @@
 
 #include <dwrite.h>
 #include <optional>
+#include <zaf/object/enum_declaration.h>
 
 namespace zaf {
 
@@ -44,5 +45,8 @@ enum class WordWrapping {
      */
     Character = DWRITE_WORD_WRAPPING_CHARACTER,
 };
+
+ZAF_DECLARE_ENUM(WordWrapping)
+ZAF_ENABLE_ENUM_BOXING(WordWrapping)
 
 }

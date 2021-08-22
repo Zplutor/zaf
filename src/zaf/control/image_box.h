@@ -18,7 +18,7 @@ class Image;
 
 class ImageBox : public Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
     ImageBox();
@@ -36,10 +36,10 @@ public:
     void SetInterpolationMode(InterpolationMode mode);
 
 protected:
-    void Paint(Canvas& canvas, const Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     void ReleaseRendererResources() override;
 
-    Size GetPreferredContentSize() const override;
+    zaf::Size GetPreferredContentSize() const override;
 
 private:
     void SetImagePlayer(std::unique_ptr<internal::ImagePlayer> player);

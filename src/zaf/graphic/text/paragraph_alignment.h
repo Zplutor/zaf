@@ -3,6 +3,7 @@
 #include <dwrite.h>
 #include <optional>
 #include <string>
+#include <zaf/object/enum_declaration.h>
 
 namespace zaf {
 
@@ -26,6 +27,12 @@ enum class ParagraphAlignment {
      The center of the flow is aligned to the center of the layout box.
      */
     Center = DWRITE_PARAGRAPH_ALIGNMENT_CENTER,
+
+    Top = Near,
+    Bottom = Far,
 };
+
+ZAF_DECLARE_ENUM(ParagraphAlignment)
+ZAF_ENABLE_ENUM_BOXING(ParagraphAlignment)
 
 }

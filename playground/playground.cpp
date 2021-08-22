@@ -14,21 +14,21 @@
 #include <zaf/graphic/image/image.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/control/list_box.h>
-#include <zaf/reflection/reflection_type.h>
-#include <zaf/reflection/reflection_manager.h>
-#include <zaf/parsing/helpers.h>
-#include <zaf/parsing/xaml_reader.h>
-#include <zaf/reflection/creation.h>
+#include <zaf/object/object_type.h>
+#include <zaf/object/internal/reflection_manager.h>
+#include <zaf/object/object_property.h>
+#include <zaf/object/parsing/helpers.h>
+#include <zaf/object/parsing/xaml_reader.h>
+#include <zaf/object/creation.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/label.h>
 #include <zaf/control/image_box.h>
 #include <zaf/base/registry/registry.h>
 #include <zaf/base/error/error.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/resource/resource_manager.h>
-#include <zaf/parsing/parsers/control_parser.h>
-#include <zaf/object/string.h>
-#include <zaf/object/boxing.h>
+#include <zaf/object/boxing/string.h>
+#include <zaf/object/boxing/boxing.h>
 #include <zaf/control/combo_box.h>
 #include <zaf/control/tree_control.h>
 #include <zaf/control/tree_data_source.h>
@@ -39,6 +39,7 @@
 #include <zaf/rx/cancel.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
+#include <zaf/object/internal/property_helper.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
@@ -58,47 +59,12 @@ int WINAPI WinMain(
 }
 
 
-zaf::Subscription g_s;
-
-
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
-
-    auto text_box = zaf::Create<zaf::TextBox>();
-    text_box->SetText(L"TextBox");
-    text_box->SetSize(zaf::Size{ 500, 300 });
-    zaf::Application::Instance().Subscriptions() += text_box->SelectionChangeEvent().Subscribe([](const zaf::TextBoxSelectionChangeInfo& info) {
-    
-        auto selection_range = info.text_box->GetSelectionRange();
-    });
 
     auto window = zaf::Create<zaf::Window>();
 
     window->SetClientSize(zaf::Size{ 400, 300 });
-    window->GetRootControl()->AddChild(text_box);
     window->Show();
 
     zaf::Application::Instance().SetMainWindow(window);
-
-    auto observable = zaf::rx::Create<std::wstring>(
-        zaf::Scheduler::CreateOnSingleThread(), 
-        [](zaf::Observer<std::wstring>& observer, zaf::CancelToken& cancel_token) {
-    
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-
-        if (!cancel_token.IsCancelled()) {
-            ZAF_LOG() << L"Not cancelled";
-            observer.OnNext(L"Result");
-        }
-        else {
-            ZAF_LOG() << L"Cancelled";
-        }
-    });
-
-    g_s = observable.Subscribe([](const std::wstring& r) {
-        ZAF_LOG() << L"Result: " << r;
-    });
-
-    zaf::Application::Instance().Subscriptions() += zaf::rx::Timer(std::chrono::seconds(1), zaf::Scheduler::Main()).Subscribe([](int) {
-        g_s.Unsubscribe();
-    });
 }

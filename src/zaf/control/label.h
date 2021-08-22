@@ -5,15 +5,15 @@
 namespace zaf {
 
 /**
- Represents a label control.	
+ Represents a label control.    
  */
 class Label : public TextualControl {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
-	Label();
-	~Label();
+    Label();
+    ~Label();
 
 protected:
     void Initialize() override;

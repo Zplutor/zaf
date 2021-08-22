@@ -34,14 +34,14 @@ void MainWindow::InitializeTextBoxes() {
     input_text_box_->SetRect(zaf::Rect(0, 0, GetContentWidth(), 30));
     input_text_box_->SetIsReadOnly(true);
     input_text_box_->SetBackgroundColor(zaf::Color::White());
-    input_text_box_->SetBorder(0);
+    input_text_box_->SetBorder(zaf::Frame(0));
     input_text_box_->SetInset(50);
 
     output_text_box_ = zaf::Create<zaf::TextBox>();
     output_text_box_->SetRect(zaf::Rect(0, 30, GetContentWidth(), 50));
     output_text_box_->SetIsReadOnly(true);
     output_text_box_->SetBackgroundColor(zaf::Color::White());
-    output_text_box_->SetBorder(0);
+    output_text_box_->SetBorder(zaf::Frame(0));
     output_text_box_->SetInset(50);
     zaf::Font font;
     font.size = 36;
@@ -49,12 +49,12 @@ void MainWindow::InitializeTextBoxes() {
 
     auto container = zaf::Create<zaf::Control>();
     container->SetRect(zaf::Rect(kContentMargin, kContentMargin, GetContentWidth(), 80));
-    container->SetBorder(1);
+    container->SetBorder(zaf::Frame(1));
     container->SetBorderColor(zaf::Color::FromRGB(0x808080));
     container->AddChild(input_text_box_);
     container->AddChild(output_text_box_);
 
-    GetRootControl()->AddChild(container);
+    RootControl()->AddChild(container);
 }
 
 
@@ -94,7 +94,7 @@ void MainWindow::InitializeButtons() {
                 Subscriptions() += button->ClickEvent().Subscribe(
                     std::bind(&MainWindow::ButtonClick, this, std::placeholders::_1));
 
-                GetRootControl()->AddChild(button);
+                RootControl()->AddChild(button);
             }
 
             x += button_width + button_spacing;
@@ -107,17 +107,17 @@ void MainWindow::InitializeButtons() {
 
 
 float MainWindow::GetContentWidth() const {
-    return GetClientRect().size.width - kContentMargin * 2;
+    return ClientRect().size.width - kContentMargin * 2;
 }
 
 
 void MainWindow::ButtonClick(const zaf::ControlClickInfo& event_info) {
 
     auto button = dynamic_cast<zaf::Button*>(event_info.control.get());
-    auto button_text = button->GetText();
+    auto button_text = button->Text();
     if (button_text == L"=") {
 
-        auto result = Calculator().Calculate(input_text_box_->GetText());
+        auto result = Calculator().Calculate(input_text_box_->Text());
         if (result->error == CalculateResult::Error::None) {
             output_text_box_->SetText(result->text);
         }
@@ -130,12 +130,12 @@ void MainWindow::ButtonClick(const zaf::ControlClickInfo& event_info) {
         output_text_box_->SetText(L"");
     }
     else if (button_text == L"¡û") {
-        auto current_text = input_text_box_->GetText();
+        auto current_text = input_text_box_->Text();
         input_text_box_->SetText(current_text.substr(0, current_text.length() - 1));
     }
     else {
         
-        input_text_box_->SetText(input_text_box_->GetText() + button_text);
+        input_text_box_->SetText(input_text_box_->Text() + button_text);
         input_text_box_->ScrollRightToEnd();
     }
 }

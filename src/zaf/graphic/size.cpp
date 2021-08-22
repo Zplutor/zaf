@@ -1,13 +1,32 @@
 #include <zaf/graphic/size.h>
-#include <zaf/parsing/parsers/size_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/base/as.h>
+#include <zaf/object/type_definition.h>
+#include <zaf/object/parsing/internal/utility.h>
 
 namespace zaf {
+namespace {
 
-ZAF_DEFINE_EQUALITY_TYPE(Size)
+class SizeParser : public ObjectParser {
+public:
+    void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
 
-ZAF_DEFINE_REFLECTION_TYPE(Size)
-    ZAF_DEFINE_PARSER(SizeParser)
-ZAF_DEFINE_END
+        auto& size = As<Size>(object);
+        internal::ParseAttributeToDoubleFloats(attribute_value, size.width, size.height);
+    }
+
+    void ParseFromNode(const XamlNode& node, Object& object) override {
+
+    }
+};
+
+}
+
+ZAF_DEFINE_TYPE(Size)
+ZAF_DEFINE_TYPE_PARSER(SizeParser)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(Width, width)
+ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(Height, height)
+ZAF_DEFINE_TYPE_END
+
+ZAF_DEFINE_EQUALITY(Size)
 
 }

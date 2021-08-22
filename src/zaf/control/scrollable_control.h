@@ -11,7 +11,7 @@ class SelfScrollingLayouter;
 
 class ScrollBar;
 class SelfScrollingControl;
-class Size;
+class zaf::Size;
 
 /**
  Represents a scrollable control.
@@ -19,7 +19,7 @@ class Size;
  This is the base class of all scrollable control. 
  
  The scrollable control contains a scroll content control, which would be scrolled when the scroll
- bars changes. You can obatin this control by calling GetScrollContentControl method, and then add
+ bars changes. You can obatin this control by calling ScrollContentControl method, and then add
  children to it to build the scroll page. You can also set a custom scroll content control by calling
  SetScrollContentControl method.
 
@@ -32,11 +32,11 @@ class Size;
  */
 class ScrollableControl : public Control {
 public:
-    ZAF_DECLARE_REFLECTION_TYPE
+    ZAF_DECLARE_TYPE
 
 public:
-	ScrollableControl();
-	~ScrollableControl();
+    ScrollableControl();
+    ~ScrollableControl();
 
     /**
      Get a value indicating that whether the control allows vertical scrolling.
@@ -120,9 +120,9 @@ public:
     /**
      Get the scroll content control.
      */
-	const std::shared_ptr<Control>& GetScrollContentControl() const {
+    const std::shared_ptr<Control>& ScrollContentControl() const {
         return scroll_content_control_;
-	}
+    }
 
     /**
      Set the scroll content control.
@@ -146,8 +146,8 @@ public:
     /**
      Get scroll content size.
      */
-    const Size& GetScrollContentSize() const {
-        return scroll_content_control_->GetSize();
+    const zaf::Size& GetScrollContentSize() const {
+        return scroll_content_control_->Size();
     }
 
     /**
@@ -156,12 +156,12 @@ public:
      The actual scroll content size would be adjusted to the minimum size if 
      the size is not large enough.
      */
-    void SetScrollContentSize(const Size& size);
+    void SetScrollContentSize(const zaf::Size& size);
 
     /**
      Get the visible scroll content rect, in scroll content control's coordinate.
      */
-    Rect GetVisibleScrollContentRect() const;
+    zaf::Rect GetVisibleScrollContentRect() const;
 
     /**
      Scroll the scroll content to specified position, in scroll content control's coordinate.
@@ -177,7 +177,7 @@ public:
 
 protected:
     void Initialize() override;
-	void Layout(const Rect& previous_rect) override;
+    void Layout(const zaf::Rect& previous_rect) override;
 
     bool OnMouseWheel(const Point& position, const MouseWheelMessage& message) override;
 
@@ -232,7 +232,7 @@ private:
         return scroll_container_control_;
     }
 
-    const Size& GetExpectedScrollContentSize() const {
+    const zaf::Size& GetExpectedScrollContentSize() const {
         return expected_scroll_content_size_;
     }
 
@@ -252,10 +252,10 @@ private:
     std::shared_ptr<ScrollBar> horizontal_scroll_bar_;
     std::shared_ptr<Control> scroll_bar_corner_;
     std::shared_ptr<Control> scroll_container_control_;
-	std::shared_ptr<Control> scroll_content_control_;
+    std::shared_ptr<Control> scroll_content_control_;
     SelfScrollingControl* self_scrolling_control_;
 
-	Size expected_scroll_content_size_;
+    zaf::Size expected_scroll_content_size_;
     std::unique_ptr<internal::ScrollableControlLayouter> layouter_;
 };
 

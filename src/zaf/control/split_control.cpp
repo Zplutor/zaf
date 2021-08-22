@@ -4,9 +4,7 @@
 #include <zaf/base/log.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/parsing/parsers/split_control_parser.h>
-#include <zaf/parsing/parsers/split_control_split_bar_parser.h>
-#include <zaf/reflection/reflection_type_definition.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -26,13 +24,11 @@ const wchar_t* const kSplitterColorPickerPropertyName = L"SplitterColorPicker";
 }
 
 
-ZAF_DEFINE_REFLECTION_TYPE(SplitControl)
-    ZAF_DEFINE_PARSER(SplitControlParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE(SplitControl)
+ZAF_DEFINE_TYPE_END
 
-ZAF_DEFINE_REFLECTION_TYPE(SplitControlSplitBar)
-    ZAF_DEFINE_PARSER(SplitControlSplitBarParser)
-ZAF_DEFINE_END
+ZAF_DEFINE_TYPE(SplitControlSplitBar)
+ZAF_DEFINE_TYPE_END
 
 
 SplitControl::SplitControl() {
@@ -89,11 +85,11 @@ void SplitControl::UninitializeSplitBar() {
 }
 
 
-void SplitControl::Layout(const Rect& previous_rect) {
+void SplitControl::Layout(const zaf::Rect& previous_rect) {
 
     bool is_horizontal = IsHorizontalSplit();
 
-    auto content_size = GetContentSize();
+    auto content_size = ContentSize();
     float primary_length = content_size.width;
     float secondly_length = content_size.height;
     if (is_horizontal) {
@@ -103,19 +99,19 @@ void SplitControl::Layout(const Rect& previous_rect) {
     float split_bar_thickness = GetSplitBarThickness();
     float split_bar_distance = GetUnflippedSplitBarDistance();
 
-    Rect split_bar_rect(
+    zaf::Rect split_bar_rect(
         split_bar_distance, 
         0,
         split_bar_thickness, 
         secondly_length);
     
-    Rect first_pane_rect(
+    zaf::Rect first_pane_rect(
         0, 
         0,
         split_bar_distance,
         secondly_length);
 
-    Rect second_pane_rect(
+    zaf::Rect second_pane_rect(
         split_bar_distance + split_bar_thickness,
         0,
         primary_length - split_bar_distance - split_bar_thickness,
@@ -136,11 +132,11 @@ void SplitControl::Layout(const Rect& previous_rect) {
 }
 
 
-void SplitControl::OnRectChanged(const Rect& previous_rect) {
+void SplitControl::OnRectChanged(const zaf::Rect& previous_rect) {
 
     __super::OnRectChanged(previous_rect);
 
-    if (previous_rect.size != GetSize()) {
+    if (previous_rect.size != Size()) {
         UpdateActualSplitBarDistance();
     }
 }
@@ -153,7 +149,7 @@ void SplitControl::UpdateActualSplitBarDistance() {
         distance = *expected_split_bar_distance_;
     }
     else {
-        auto content_size = GetContentSize();
+        auto content_size = ContentSize();
         distance = (IsHorizontalSplit() ? content_size.height : content_size.width) / 2;
     }
 
@@ -339,7 +335,7 @@ void SplitControl::SetIsSplitBarDistanceFlipped(bool is_flipped) {
 
 float SplitControl::GetAvaliableSplitBarMaxDistance() const {
 
-    auto content_size = GetContentSize();
+    auto content_size = ContentSize();
     float avaliable_max_distance = (IsHorizontalSplit() ? content_size.height : content_size.width) - GetSplitBarThickness();
     return (std::max)(avaliable_max_distance, 0.f);
 }
@@ -351,7 +347,7 @@ float SplitControl::GetUnflippedSplitBarDistance() const {
     bool is_flipped = IsSplitBarDistanceFlipped();
 
     if (is_flipped) {
-        auto content_size = GetContentSize();
+        auto content_size = ContentSize();
         distance = (IsHorizontalSplit() ? content_size.height : content_size.width) - GetSplitBarThickness() - distance;
     }
 
@@ -459,11 +455,11 @@ void SplitControlSplitBar::Initialize() {
 }
 
 
-void SplitControlSplitBar::Paint(Canvas& canvas, const Rect& dirty_rect) {
+void SplitControlSplitBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
-    auto size = GetSize();
+    auto size = Size();
     float primary_length = size.height;
     float secondly_length = size.width;
     if (IsHorizontal()) {

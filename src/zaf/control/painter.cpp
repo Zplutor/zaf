@@ -6,9 +6,9 @@ namespace zaf {
 
 void Painter::Paint(Canvas& canvas, const Rect& dirty_rect, const std::shared_ptr<const Control>& control) {
 
-	Rect rect = Rect(Point(), control->GetSize());
-	canvas.SetBrushWithColor(control->GetBorderColor());
-	canvas.DrawRectangle(rect);
+    Rect rect = Rect(Point(), control->GetSize());
+    canvas.SetBrushWithColor(control->GetBorderColor());
+    canvas.DrawRectangle(rect);
 
 
 }

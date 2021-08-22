@@ -2,22 +2,22 @@
 
 #include <memory>
 #include <type_traits>
-#include <zaf/reflection/internal/reflection_object_initializer.h>
+#include <zaf/object/internal/object_initializer.h>
 
 namespace zaf {
 
-class ReflectionObject;
+class Object;
 
 namespace internal {
 
-template<typename ObjectType>
-struct ReflectionObjectCreator {
+template<typename T>
+struct ObjectCreator {
 
     template<typename... ArgumentTypes>
-    static std::shared_ptr<ObjectType> Create(ArgumentTypes&&... arguments) {
+    static std::shared_ptr<T> Create(ArgumentTypes&&... arguments) {
 
-        auto object = std::make_shared<ObjectType>(std::forward<ArgumentTypes>(arguments)...);
-        ReflectionObjectInitializer::Initialize(*object);
+        auto object = std::make_shared<T>(std::forward<ArgumentTypes>(arguments)...);
+        ObjectInitializer::Initialize(*object);
         return object;
     }
 };
@@ -33,13 +33,13 @@ struct GenericCreator {
 };
 
 
-template<typename ObjectType>
+template<typename T>
 struct Creator {
 
     typedef typename std::conditional<
-        std::is_base_of<ReflectionObject, ObjectType>::value, 
-        ReflectionObjectCreator<ObjectType>,
-        GenericCreator<ObjectType>
+        std::is_base_of<Object, T>::value, 
+        ObjectCreator<T>,
+        GenericCreator<T>
     >::type Type;
 };
 
@@ -48,14 +48,14 @@ struct Creator {
 /**
  Create a smart pointer object of specified type.
 
- ObjectType is the type of object to create, and ArgumentTypes is the arguments passed 
- to its constructor. ObjectType can be any types. 
+ T is the type of object to create, and ArgumentTypes is the arguments passed 
+ to its constructor. T can be any types. 
  
  You should always use this method to create windows and controls for proper initialization.
  */
-template<typename ObjectType, typename... ArgumentTypes>
-std::shared_ptr<ObjectType> Create(ArgumentTypes&&... arguments) {
-    return internal::Creator<ObjectType>::Type::Create(std::forward<ArgumentTypes>(arguments)...);
+template<typename T, typename... ArgumentTypes>
+std::shared_ptr<T> Create(ArgumentTypes&&... arguments) {
+    return internal::Creator<T>::Type::Create(std::forward<ArgumentTypes>(arguments)...);
 }
 
 }
