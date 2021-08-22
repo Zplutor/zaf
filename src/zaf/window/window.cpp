@@ -184,6 +184,9 @@ void Window::Initialize() {
 
 void Window::CreateWindowHandle() {
 
+    //Revise HasTitleBar property first.
+    ReviseHasTitleBar();
+
     auto owner = Owner();
     auto initial_rect = GetInitialRect();
 
@@ -1281,8 +1284,14 @@ bool Window::HasTitleBar() const {
 
 void Window::SetHasTitleBar(bool has_title_bar) {
 
-    if (!IsPopup() && HasBorder()) {
-        return;
+    //If the handle has been created, and it is an overlapped window and has border,
+    //not allow to change this property.
+    //If the handle is not created yet, allow to change this property, but it will be
+    //revised when creating handle.
+    if (!IsClosed()) {
+        if (!IsPopup() && HasBorder()) {
+            return;
+        }
     }
 
     GetPropertyMap().SetProperty(kHasTitleBarPropertyName, has_title_bar);
