@@ -96,7 +96,7 @@ void MainWindow::ControlListBoxSelectionChange() {
         return;
     }
 
-    auto selected_control_name = zaf::TryUnbox<std::wstring>(selected_data);
+    auto selected_control_name = zaf::Unbox<std::wstring>(selected_data);
     if (!selected_control_name) {
         return;
     }
