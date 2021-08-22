@@ -10,6 +10,7 @@ enum class BasicErrc {
     NameNotFound = 1,
     InvalidValue,
     InvalidCast,
+    InvalidOperation,
 };
 
 const std::error_category& BasicCategory();

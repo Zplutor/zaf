@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/graphic/image/image.h>
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
 #include <zaf/object/object.h>
 #include <zaf/object/type_definition.h>
+#include "utility/assert.h"
 
 namespace {
 
@@ -132,7 +134,7 @@ TEST(PropertyTest, ReadOnly) {
     ASSERT_NE(value, nullptr);
     ASSERT_EQ(*value, ReadOnlyValue);
 
-    ASSERT_THROW(property->SetValue(host, zaf::Box(74)), std::exception);
+    ASSERT_THROW_ERRC(property->SetValue(host, zaf::Box(74)), zaf::BasicErrc::InvalidOperation);
 }
 
 
@@ -149,7 +151,7 @@ TEST(PropertyTest, WriteOnly) {
     property->SetValue(host, zaf::Box(76));
     ASSERT_EQ(host.GetWriteOnlyValue(), 76);
 
-    ASSERT_THROW(property->GetValue(host), std::exception);
+    ASSERT_THROW_ERRC(property->GetValue(host), zaf::BasicErrc::InvalidOperation);
 }
 
 
@@ -294,3 +296,26 @@ TEST(PropertyTest, ImageField) {
     ASSERT_NE(value, nullptr);
     ASSERT_TRUE(value->IsEqual(*set_value));
 }
+
+
+TEST(PropertyTest, ErrorValueType) {
+
+    PropertyHost host;
+
+    //Method property
+    {
+        auto property = host.GetType()->FindProperty(L"ReadWrite");
+        auto frame = zaf::Create<zaf::Frame>();
+        ASSERT_THROW_ERRC(property->GetValue(*frame), zaf::BasicErrc::InvalidCast);
+        ASSERT_THROW_ERRC(property->SetValue(host, frame), zaf::BasicErrc::InvalidCast);
+    }
+
+    //Field property
+    {
+        auto property = host.GetType()->FindProperty(L"IntField");
+        auto string = zaf::Create<zaf::String>();
+        ASSERT_THROW_ERRC(property->GetValue(*string), zaf::BasicErrc::InvalidCast);
+        ASSERT_THROW_ERRC(property->SetValue(host, string), zaf::BasicErrc::InvalidCast);
+    }
+}
+

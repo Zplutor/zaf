@@ -1,5 +1,7 @@
 #pragma once
 
+#include <zaf/base/as.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/internal/property_helper.h>
 #include <zaf/object/internal/property_registrar.h>
@@ -45,7 +47,7 @@ struct PropertyName##Accessor {                                                 
     }                                                                                              \
     template<typename T>                                                                           \
     static std::shared_ptr<zaf::Object> InnerGet(const T& object, ...) {                           \
-        throw std::exception{};                                                                    \
+        ZAF_THROW_ERRC(zaf::BasicErrc::InvalidOperation);                                          \
     }                                                                                              \
     template<typename T>                                                                           \
     static void InnerSet(                                                                          \
@@ -58,7 +60,7 @@ struct PropertyName##Accessor {                                                 
     }                                                                                              \
     template<typename T>                                                                           \
     static void InnerSet(T& object, const std::shared_ptr<zaf::Object>& value, ...) {              \
-        throw std::exception{};                                                                    \
+        ZAF_THROW_ERRC(zaf::BasicErrc::InvalidOperation);                                          \
     }                                                                                              \
     template<typename T>                                                                           \
     static constexpr GetterValueType<T>* DeduceValueType(std::nullptr_t) {                         \
@@ -77,10 +79,10 @@ public:                                                                         
     static constexpr bool CanGet = InnerCanGet<Class>(nullptr);                                    \
     static constexpr bool CanSet = InnerCanSet<Class>(nullptr);                                    \
     static std::shared_ptr<zaf::Object> Get(const zaf::Object& object) {                           \
-        return InnerGet(dynamic_cast<const Class&>(object), nullptr);                              \
+        return InnerGet(zaf::As<Class>(object), nullptr);                                          \
     }                                                                                              \
     static void Set(zaf::Object& object, const std::shared_ptr<zaf::Object>& value) {              \
-        InnerSet(dynamic_cast<Class&>(object), value, nullptr);                                    \
+        InnerSet(zaf::As<Class>(object), value, nullptr);                                          \
     }                                                                                              \
 };                                                                                                 \
 class PropertyName##Property : public zaf::ObjectProperty {                                        \
@@ -143,13 +145,13 @@ public:                                                                         
         return true;                                                                               \
     }                                                                                              \
     std::shared_ptr<zaf::Object> GetValue(const zaf::Object& object) const override {              \
-        return zaf::internal::BoxPropertyValue(dynamic_cast<const Class&>(object).FieldName);      \
+        return zaf::internal::BoxPropertyValue(zaf::As<Class>(object).FieldName);                  \
     }                                                                                              \
     void SetValue(zaf::Object& object, const std::shared_ptr<zaf::Object>& value) const override { \
         using Unboxer = zaf::internal::GetPropertyUnboxer<                                         \
             decltype(reinterpret_cast<Class*>(0)->FieldName)                                       \
         >::Type;                                                                                   \
-        dynamic_cast<Class&>(object).FieldName = Unboxer::Unbox(value);                            \
+        zaf::As<Class>(object).FieldName = Unboxer::Unbox(value);                                  \
     }                                                                                              \
 };                                                                                                 \
 __ZAF_INTERNAL_DEFINE_PROPERTY_VARIABLE(PropertyName)
