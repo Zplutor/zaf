@@ -26,7 +26,7 @@ std::shared_ptr<PropertyItem> CreateComboBoxPropertyItem(
         for (std::size_t index = 0; index < drop_down_list->GetItemCount(); ++index) {
 
             auto item_data = drop_down_list->GetItemDataAtIndex(index);
-            auto item_text = zaf::TryUnbox<std::wstring>(item_data);
+            auto item_text = zaf::Unbox<std::wstring>(item_data);
             if (!item_text) {
                 continue;
             }

@@ -643,6 +643,7 @@ public:
 
 protected:
     void InvokeInitialize() override;
+    void InvokeParse() override;
 
     /**
      Paint the control.

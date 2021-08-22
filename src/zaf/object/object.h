@@ -35,6 +35,7 @@ public:
 protected:
     virtual void InvokeInitialize();
     virtual void Initialize();
+    virtual void InvokeParse();
     virtual void AfterParse();
 
 private:

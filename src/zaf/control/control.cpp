@@ -151,6 +151,15 @@ void Control::InvokeInitialize() {
 }
 
 
+void Control::InvokeParse() {
+
+    //Enter update state during parsing.
+    auto update_guard = BeginUpdate();
+
+    __super::InvokeParse();
+}
+
+
 ControlUpdateGuard Control::BeginUpdate() {
 
     auto lock = update_lock_.lock();

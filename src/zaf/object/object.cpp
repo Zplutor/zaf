@@ -71,7 +71,7 @@ const std::shared_ptr<Object>& Object::Dumb() {
 void Object::InitializeObject() {
 
     InvokeInitialize();
-    ParseObject(*GetType(), *this);
+    InvokeParse();
     AfterParse();
 }
 
@@ -83,6 +83,11 @@ void Object::InvokeInitialize() {
 
 void Object::Initialize() {
 
+}
+
+
+void Object::InvokeParse() {
+    ParseObject(*GetType(), *this);
 }
 
 
