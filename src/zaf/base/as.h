@@ -48,7 +48,7 @@ struct NonSharedPtrCast {
 struct SharedPtrCast {
 
     template<typename T, typename K>
-    static std::shared_ptr<T> As(const std::shared_ptr<K>& value) {
+    static std::shared_ptr<T> As(const K& value) {
         return std::dynamic_pointer_cast<T>(value);
     }
 };
