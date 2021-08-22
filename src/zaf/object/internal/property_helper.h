@@ -98,7 +98,7 @@ struct BoxedTypeUnboxer {
 template<typename T>
 struct NonBoxedTypeUnboxer {
     static const T& Unbox(const std::shared_ptr<Object>& value) {
-        return zaf::Unbox<T>(value);
+        return zaf::Unbox<T>(*value);
     }
 };
 

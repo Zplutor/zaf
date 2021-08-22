@@ -73,17 +73,17 @@ TEST(EnumTest, FindValue) {
     auto object = TestTypeEnum::EnumType()->FindValue(L"First");
     ASSERT_NE(object, nullptr);
     auto value = zaf::Unbox<TestType>(object);
-    ASSERT_EQ(value, TestType::First);
+    ASSERT_EQ(*value, TestType::First);
 
     object = TestTypeEnum::EnumType()->FindValue(L"Second");
     ASSERT_NE(object, nullptr);
     value = zaf::Unbox<TestType>(object);
-    ASSERT_EQ(value, TestType::Second);
+    ASSERT_EQ(*value, TestType::Second);
 
     object = TestTypeEnum::EnumType()->FindValue(L"Third");
     ASSERT_NE(object, nullptr);
     value = zaf::Unbox<TestType>(object);
-    ASSERT_EQ(value, TestType::Third);
+    ASSERT_EQ(*value, TestType::Third);
 
     object = TestTypeEnum::EnumType()->FindValue(L"Fourth");
     ASSERT_EQ(object, nullptr);

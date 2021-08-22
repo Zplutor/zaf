@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/boxing/string.h>
+#include "utility/assert.h"
 
 using namespace zaf;
 
@@ -33,143 +35,177 @@ TEST(BoxingTest, Box) {
 }
 
 
-TEST(BoxingTest, TryUnboxBuiltInBoxedType) {
+TEST(BoxingTest, UnboxPointer) {
 
-    std::string string{ "String" };
-    auto boxed_string = Box(string);
+    //Non-const pointer
+    {
+        std::shared_ptr<Boolean> boxed = Box(true);
 
-    //std::shared_ptr overload
-    auto unboxed_string = TryUnbox<std::string>(boxed_string);
-    ASSERT_NE(unboxed_string, nullptr);
-    ASSERT_EQ(*unboxed_string, string);
+        static_assert(std::is_same_v<bool*, decltype(Unbox<bool>(boxed.get()))>);
 
-    //non-const reference overload
-    unboxed_string = TryUnbox<std::string>(*boxed_string);
-    ASSERT_NE(unboxed_string, nullptr);
-    ASSERT_EQ(*unboxed_string, string);
+        bool* unboxed = Unbox<bool>(boxed.get());
+        ASSERT_NE(unboxed, nullptr);
+        ASSERT_EQ(*unboxed, true);
 
-    //const reference overload
-    auto const_unboxed_string = TryUnbox<std::string>(static_cast<const String&>(*boxed_string));
-    ASSERT_NE(const_unboxed_string, nullptr);
-    ASSERT_EQ(*const_unboxed_string, string);
+        //Unbox failed
+        int* failed = Unbox<int>(boxed.get());
+        ASSERT_EQ(failed, nullptr);
+    }
+
+    //Const pointer
+    {
+        std::shared_ptr<const Boolean> const_boxed = Box(true);
+
+        static_assert(std::is_same_v<const bool*, decltype(Unbox<bool>(const_boxed.get()))>);
+
+        const bool* unboxed = Unbox<bool>(const_boxed.get());
+        ASSERT_NE(unboxed, nullptr);
+        ASSERT_EQ(*unboxed, true);
+
+        //Unbox failed
+        const int* failed = Unbox<int>(const_boxed.get());
+        ASSERT_EQ(failed, nullptr);
+    }
 }
 
 
-TEST(BoxingTest, TryUnboxObjectType) {
+TEST(BoxingTest, UnboxSharedPtr) {
 
-    Rect rect{ 11, 11, 22, 22 };
-    std::shared_ptr<Rect> boxed_rect = Box(rect);
+    //std::shared_ptr
+    {
+        std::shared_ptr<Float> boxed = Box(44.3f);
 
-    //std::shared_ptr overload
-    auto unboxed_rect = TryUnbox<Rect>(boxed_rect);
-    ASSERT_NE(unboxed_rect, nullptr);
-    ASSERT_EQ(*unboxed_rect, rect);
+        static_assert(std::is_same_v<float*, decltype(Unbox<float>(boxed))>);
 
-    //non-const reference overload
-    unboxed_rect = TryUnbox<Rect>(*boxed_rect);
-    ASSERT_NE(unboxed_rect, nullptr);
-    ASSERT_EQ(*unboxed_rect, rect);
+        float* unboxed = Unbox<float>(boxed);
+        ASSERT_NE(unboxed, nullptr);
+        ASSERT_EQ(*unboxed, 44.3f);
+    }
 
-    //const reference overload
-    auto const_unboxed_rect = TryUnbox<Rect>(static_cast<const Rect&>(*boxed_rect));
-    ASSERT_NE(const_unboxed_rect, nullptr);
-    ASSERT_EQ(*const_unboxed_rect, rect);
+    //Unbox failed
+    {
+        std::shared_ptr<Float> boxed = Box(45.6f);
+
+        double* unboxed = Unbox<double>(boxed);
+        ASSERT_EQ(unboxed, nullptr);
+    }
 }
 
 
-TEST(BoxingTest, TryUnboxOtherType) {
+TEST(BoxingTest, UnboxReference) {
 
-    std::vector<int> vector{ 3, 4, 5 };
-    auto boxed_vector = Box(vector);
+    //Non-const reference
+    {
+        std::shared_ptr<String> boxed = Box(std::string{ "bbbbox"});
 
-    //std::shared_ptr overload
-    auto unboxed_vector = TryUnbox<std::vector<int>>(boxed_vector);
-    ASSERT_NE(unboxed_vector, nullptr);
-    ASSERT_EQ(*unboxed_vector, vector);
+        static_assert(std::is_same_v<std::string&, decltype(Unbox<std::string>(*boxed))>);
 
-    //non-const reference overload
-    unboxed_vector = TryUnbox<std::vector<int>>(*boxed_vector);
-    ASSERT_NE(unboxed_vector, nullptr);
-    ASSERT_EQ(*unboxed_vector, vector);
+        std::string& unboxed = Unbox<std::string>(*boxed);
+        ASSERT_EQ(unboxed, "bbbbox");
 
-    //const reference overload
-    auto const_unboxed_vector = 
-        TryUnbox<std::vector<int>>(
-            static_cast<const BoxedObject<std::vector<int>>&>(*boxed_vector));
-    ASSERT_NE(unboxed_vector, nullptr);
-    ASSERT_EQ(*unboxed_vector, vector);
-}
+        //Unbox failed
+        ASSERT_THROW_ERRC(Unbox<std::wstring>(*boxed), zaf::BasicErrc::InvalidCast);
+    }
 
+    //Const reference 
+    {
+        std::shared_ptr<const String> boxed = Box(std::string{ "aaabb" });
 
-TEST(BoxingTest, TryUnboxFail) {
+        static_assert(std::is_same_v<const std::string&, decltype(Unbox<std::string>(*boxed))>);
 
-    auto boxed = Box(1);
-    auto unboxed = TryUnbox<std::string>(boxed);
-    ASSERT_EQ(unboxed, nullptr);
-}
+        const std::string& unboxed = Unbox<std::string>(*boxed);
+        ASSERT_EQ(unboxed, "aaabb");
 
-
-TEST(BoxingTest, UnboxBuiltInType) {
-
-    std::wstring string{ L"String" };
-    auto boxed_string = Box(string);
-
-    //std::shared_ptr overload
-    auto& unboxed_string = Unbox<std::wstring>(boxed_string);
-    ASSERT_EQ(unboxed_string, string);
-
-    //non-const reference overload
-    auto& unboxed_string2 = Unbox<std::wstring>(*boxed_string);
-    ASSERT_EQ(unboxed_string2, string);
-
-    //const reference overload
-    auto& const_unboxed_string = Unbox<std::wstring>(static_cast<const WideString&>(*boxed_string));
-    ASSERT_EQ(const_unboxed_string, string);
+        //Unbox failed
+        ASSERT_THROW_ERRC(Unbox<std::wstring>(*boxed), zaf::BasicErrc::InvalidCast);
+    }
 }
 
 
 TEST(BoxingTest, UnboxObjectType) {
 
-    Point point{ 11, 22 };
-    std::shared_ptr<Point> boxed = Box(point);
+    Rect rect{ 11, 11, 22, 22 };
+    std::shared_ptr<Rect> boxed_rect = Box(rect);
+
+    //Non-const pointer overload 
+    {
+        Rect* unboxed_rect = Unbox<Rect>(boxed_rect.get());
+        ASSERT_NE(unboxed_rect, nullptr);
+        ASSERT_EQ(*unboxed_rect, rect);
+    }
+
+    //Const pointer overload
+    {
+        const Rect* unboxed_rect = Unbox<Rect>(static_cast<const Rect*>(boxed_rect.get()));
+        ASSERT_NE(unboxed_rect, nullptr);
+        ASSERT_EQ(*unboxed_rect, rect);
+    }
 
     //std::shared_ptr overload
-    auto& unboxed = Unbox<Point>(boxed);
-    ASSERT_EQ(unboxed, point);
+    {
+        auto unboxed_rect = Unbox<Rect>(boxed_rect);
+        ASSERT_NE(unboxed_rect, nullptr);
+        ASSERT_EQ(*unboxed_rect, rect);
+    }
 
     //non-const reference overload
-    auto& unboxed2 = Unbox<Point>(*boxed);
-    ASSERT_EQ(unboxed, point);
+    {
+        Rect& unboxed_rect = Unbox<Rect>(*boxed_rect);
+        ASSERT_EQ(unboxed_rect, rect);
+    }
 
     //const reference overload
-    auto& const_unboxed = Unbox<Point>(static_cast<const Point&>(*boxed));
-    ASSERT_EQ(const_unboxed, point);
+    {
+        const Rect& const_unboxed_rect = Unbox<Rect>(static_cast<const Rect&>(*boxed_rect));
+        ASSERT_EQ(const_unboxed_rect, rect);
+    }
 }
 
 
 TEST(BoxingTest, UnboxOtherType) {
 
-    std::list<int> list{ 6, 7, 8 };
-    auto boxed = Box(list);
+    std::vector<int> vector{ 3, 4, 5 };
+    auto boxed_vector = Box(vector);
+
+    //Non-const pointer overload
+    {
+        std::vector<int>* unboxed = Unbox<std::vector<int>>(boxed_vector.get());
+        ASSERT_NE(unboxed, nullptr);
+        ASSERT_EQ(*unboxed, vector);
+    }
+
+    //Const pointer overload 
+    {
+        const std::vector<int>* unboxed = 
+            Unbox<std::vector<int>>(
+                static_cast<const BoxedObject<std::vector<int>>*>(boxed_vector.get()));
+
+        ASSERT_NE(unboxed, nullptr);
+        ASSERT_EQ(*unboxed, vector);
+    }
 
     //std::shared_ptr overload
-    auto& unboxed = Unbox<std::list<int>>(boxed);
-    ASSERT_EQ(unboxed, list);
+    {
+        std::vector<int>* unboxed_vector = Unbox<std::vector<int>>(boxed_vector);
+        ASSERT_NE(unboxed_vector, nullptr);
+        ASSERT_EQ(*unboxed_vector, vector);
+    }
 
     //non-const reference overload
-    auto& unboxed2 = Unbox<std::list<int>>(*boxed);
-    ASSERT_EQ(unboxed, list);
+    {
+        std::vector<int>& unboxed_vector = Unbox<std::vector<int>>(*boxed_vector);
+        ASSERT_EQ(unboxed_vector, vector);
+    }
 
     //const reference overload
-    auto& const_unboxed =
-        Unbox<std::list<int>>(
-            static_cast<const BoxedObject<std::list<int>>&>(*boxed));
-    ASSERT_EQ(const_unboxed, list);
+    {
+        const std::vector<int>& const_unboxed_vector =
+            Unbox<std::vector<int>>(
+                static_cast<const BoxedObject<std::vector<int>>&>(*boxed_vector));
+
+        ASSERT_EQ(const_unboxed_vector, vector);
+    }
 }
 
 
-TEST(BoxingTest, UnboxFail) {
 
-    auto boxed = Box(100.f);
-    ASSERT_THROW(Unbox<std::string>(boxed), std::bad_cast);
-}

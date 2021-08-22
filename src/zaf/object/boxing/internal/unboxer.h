@@ -1,6 +1,7 @@
 #pragma once
 
 #include <type_traits>
+#include <zaf/base/as.h>
 #include <zaf/object/boxing/internal/get_box_type.h>
 #include <zaf/object/object.h>
 
@@ -18,11 +19,11 @@ struct ObjectUnboxer {
     }
 
     static const T& Unbox(const Object& object) {
-        return dynamic_cast<const T&>(object);
+        return As<T>(object);
     }
 
     static T& Unbox(Object& object) {
-        return dynamic_cast<T&>(object);
+        return As<T>(object);
     }
 };
 
@@ -51,11 +52,11 @@ struct GeneralUnboxer {
     }
 
     static const T& Unbox(const Object& object) {
-        return dynamic_cast<const BoxedType&>(object).Value();
+        return As<BoxedType>(object).Value();
     }
 
     static T& Unbox(Object& object) {
-        return dynamic_cast<BoxedType&>(object).Value();
+        return As<BoxedType>(object).Value();
     }
 };
 

@@ -57,7 +57,7 @@ public:
         for (std::size_t index = 0; index < drop_down_list_box->GetItemCount(); ++index) {
 
             auto item_data = drop_down_list_box->GetItemDataAtIndex(index);
-            auto color = zaf::TryUnbox<zaf::Color>(item_data);
+            auto color = zaf::Unbox<zaf::Color>(item_data);
             if (!color) {
                 continue;
             }
@@ -137,7 +137,7 @@ private:
             std::size_t item_index,
             const std::shared_ptr<Object>& item_data) override {
 
-            auto color = zaf::TryUnbox<zaf::Color>(item_data);
+            auto color = zaf::Unbox<zaf::Color>(item_data);
             if (!color) {
                 return {};
             }
@@ -157,7 +157,7 @@ private:
                 return;
             }
 
-            auto color = zaf::TryUnbox<zaf::Color>(item_data);
+            auto color = zaf::Unbox<zaf::Color>(item_data);
             if (!color) {
                 return;
             }

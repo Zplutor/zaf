@@ -111,7 +111,7 @@ TEST(PropertyTest, ReadWrite) {
 
     property->SetValue(host, zaf::Box(19));
     auto boxed_value = property->GetValue(host);
-    auto value = zaf::TryUnbox<int>(boxed_value);
+    auto value = zaf::Unbox<int>(boxed_value);
     ASSERT_NE(value, nullptr);
     ASSERT_EQ(*value, 19);
 }
@@ -128,7 +128,7 @@ TEST(PropertyTest, ReadOnly) {
     ASSERT_FALSE(property->IsValueTypeDynamic());
 
     auto boxed_value = property->GetValue(host);
-    auto value = zaf::TryUnbox<int>(boxed_value);
+    auto value = zaf::Unbox<int>(boxed_value);
     ASSERT_NE(value, nullptr);
     ASSERT_EQ(*value, ReadOnlyValue);
 
@@ -235,7 +235,7 @@ TEST(PropertyTest, NumericTypeField) {
     property->SetValue(host, zaf::Box(938));
 
     auto boxed_value = property->GetValue(host);
-    auto value = zaf::TryUnbox<int>(boxed_value);
+    auto value = zaf::Unbox<int>(boxed_value);
     ASSERT_NE(value, nullptr);
     ASSERT_EQ(*value, 938);
 }
@@ -253,7 +253,7 @@ TEST(PropertyTest, ObjectTypeField) {
     property->SetValue(host, zaf::Create<zaf::Size>(78.f, 87.f));
 
     auto boxed_value = property->GetValue(host);
-    auto value = zaf::TryUnbox<zaf::Size>(boxed_value);
+    auto value = zaf::Unbox<zaf::Size>(boxed_value);
     ASSERT_NE(value, nullptr);
     ASSERT_EQ(*value, zaf::Size(78, 87));
 }
