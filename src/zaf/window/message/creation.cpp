@@ -1,4 +1,5 @@
 #include <zaf/window/message/creation.h>
+#include <zaf/window/message/activate_message.h>
 #include <zaf/window/message/hit_test_message.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
@@ -48,6 +49,10 @@ std::unique_ptr<Message> CreateMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM
 
         case WM_CHAR:
             message = std::make_unique<CharMessage>();
+            break;
+
+        case WM_ACTIVATE:
+            message = std::make_unique<ActivateMessage>();
             break;
 
         default: {

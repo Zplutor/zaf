@@ -488,6 +488,7 @@
     <ClInclude Include="src\zaf\window\inspector\internal\inspect_data_source.h" />
     <ClInclude Include="src\zaf\window\inspector\internal\inspect_item.h" />
     <ClInclude Include="src\zaf\window\internal\inner_message_only_window.h" />
+    <ClInclude Include="src\zaf\window\message\activate_message.h" />
     <ClInclude Include="src\zaf\window\message\creation.h" />
     <ClInclude Include="src\zaf\window\message\hit_test_message.h" />
     <ClInclude Include="src\zaf\window\message\hit_test_result.h" />

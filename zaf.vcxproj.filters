@@ -1567,5 +1567,8 @@
     <ClInclude Include="src\zaf\object\creation.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\window\message\activate_message.h">
+      <Filter>zaf\window\message</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
