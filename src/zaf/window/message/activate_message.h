@@ -21,7 +21,7 @@ public:
         return (HIWORD(wparam) != 0);
     }
 
-    HWND WindowHandle() const {
+    HWND EffectingWindowHandle() const {
         return reinterpret_cast<HWND>(lparam);
     }
 };
