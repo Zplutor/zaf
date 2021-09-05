@@ -5,33 +5,77 @@
 
 namespace zaf {
 
+enum class RendererType {
+    Default = D2D1_RENDER_TARGET_TYPE_DEFAULT,
+    Hardware = D2D1_RENDER_TARGET_TYPE_HARDWARE,
+    Software = D2D1_RENDER_TARGET_TYPE_SOFTWARE,
+};
+
+enum class RendererUsage {
+    None = D2D1_RENDER_TARGET_USAGE_NONE,
+    ForceBitmapRemoting = D2D1_RENDER_TARGET_USAGE_FORCE_BITMAP_REMOTING,
+    GdiCompatible = D2D1_RENDER_TARGET_USAGE_GDI_COMPATIBLE,
+};
+
+enum class RendererFeatureLevel {
+    Default = D2D1_FEATURE_LEVEL_DEFAULT,
+    DirectX9 = D2D1_FEATURE_LEVEL_9,
+    DirectX10 = D2D1_FEATURE_LEVEL_10,
+};
+
+
 class RendererProperties {
 public:
-    enum class Type {
-        Default = D2D1_RENDER_TARGET_TYPE_DEFAULT,
-        Hardware = D2D1_RENDER_TARGET_TYPE_HARDWARE,
-        Software = D2D1_RENDER_TARGET_TYPE_SOFTWARE,
-    };
+    RendererType Type() const {
+        return static_cast<RendererType>(inner_.type);
+    }
 
-    enum class Usage {
-        None = D2D1_RENDER_TARGET_USAGE_NONE,
-        ForceBitmapRemoting = D2D1_RENDER_TARGET_USAGE_FORCE_BITMAP_REMOTING,
-        GdiCompatible = D2D1_RENDER_TARGET_USAGE_GDI_COMPATIBLE,
-    };
+    void SetType(RendererType value) {
+        inner_.type = static_cast<D2D1_RENDER_TARGET_TYPE>(value);
+    }
 
-    enum class FeatureLevel {
-        Default = D2D1_FEATURE_LEVEL_DEFAULT,
-        DirectX9 = D2D1_FEATURE_LEVEL_9,
-        DirectX10 = D2D1_FEATURE_LEVEL_10,
-    };
+    RendererUsage Usage() const {
+        return static_cast<RendererUsage>(inner_.usage);
+    }
 
-public:
-    Type type = Type::Default;
-    Usage usage = Usage::None;
-    PixelProperties pixel_properties;
-    float dpi_x = 0;
-    float dpi_y = 0;
-    FeatureLevel feature_level = FeatureLevel::Default;
+    void SetUsage(RendererUsage value) {
+        inner_.usage = static_cast<D2D1_RENDER_TARGET_USAGE>(value);
+    }
+
+    void SetPixelProperties(const PixelProperties& value) {
+        inner_.pixelFormat = value.Inner();
+    }
+
+    float DPIX() const {
+        return inner_.dpiX;
+    }
+
+    void SetDPIX(float value) {
+        inner_.dpiX = value;
+    }
+
+    float DPIY() const {
+        return inner_.dpiY;
+    }
+
+    void SetDPIY(float value) {
+        inner_.dpiY = value;
+    }
+
+    RendererFeatureLevel MinFeatureLevel() const {
+        return static_cast<RendererFeatureLevel>(inner_.minLevel);
+    }
+
+    void SetMinFeatureLevel(RendererFeatureLevel value) {
+        inner_.minLevel = static_cast<D2D1_FEATURE_LEVEL>(value);
+    }
+
+    const D2D1_RENDER_TARGET_PROPERTIES& Inner() const {
+        return inner_;
+    }
+
+private:
+    D2D1_RENDER_TARGET_PROPERTIES inner_{};
 };
 
 }

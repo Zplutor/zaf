@@ -547,13 +547,13 @@ zaf::Size TextualControl::CalculatePreferredSize(const zaf::Size& max_size) cons
 
     auto metrics = text_layout.GetMetrics();
 
-    //Note that if TextAlignment is set to Center, width_including_trailing_whitespace would be 0.
+    //Note that if TextAlignment is set to Center, WidthIncludingTrailingWhitespace would be 0.
     auto width =
-        metrics.width_including_trailing_whitespace != 0 ?
-        metrics.width_including_trailing_whitespace :
-        metrics.width;
+        metrics.WidthIncludingTrailingWhitespace() != 0 ?
+        metrics.WidthIncludingTrailingWhitespace() :
+        metrics.Width();
 
-    return zaf::Size{ width, metrics.height };
+    return zaf::Size{ width, metrics.Height() };
 }
 
 

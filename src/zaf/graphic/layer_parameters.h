@@ -8,17 +8,41 @@ namespace zaf {
 
 class LayerParameters {
 public:
-    LayerParameters() :
-        content_bounds(Rect::Infinite),
-        mask_transform(TransformMatrix::Identity),
-        opacity(1) {
+    LayerParameters() {
 
+        SetContentBounds(Rect::Infinite);
+        SetMaskTransform(TransformMatrix::Identity);
+        SetOpacity(1);
     }
 
-    Rect content_bounds;
-    Geometry geometric_mask;
-    TransformMatrix mask_transform;
-    float opacity;
+    void SetContentBounds(const Rect& value) {
+        inner_.contentBounds = value.ToD2D1RECTF();
+    }
+    
+    void SetGeometricMask(const Geometry& value) {
+        geometric_mask_ = value;
+        inner_.geometricMask = geometric_mask_.GetHandle();
+    }
+
+    void SetMaskTransform(const TransformMatrix& value) {
+        inner_.maskTransform = value.ToD2D1MATRIX3X2F();
+    }
+
+    float Opacity() const {
+        return inner_.opacity;
+    }
+
+    void SetOpacity(float value) {
+        inner_.opacity = value;
+    }
+
+    const D2D1_LAYER_PARAMETERS& Inner() const {
+        return inner_;
+    }
+
+private:
+    D2D1_LAYER_PARAMETERS inner_{};
+    Geometry geometric_mask_;
 };
 
 }

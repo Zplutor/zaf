@@ -4,18 +4,40 @@
 
 namespace zaf {
 
+enum class PixelAlphaMode {
+    Unknown = D2D1_ALPHA_MODE_UNKNOWN,
+    Premultiplied = D2D1_ALPHA_MODE_PREMULTIPLIED,
+    Straight = D2D1_ALPHA_MODE_STRAIGHT,
+    Ignore = D2D1_ALPHA_MODE_IGNORE,
+};
+
 class PixelProperties {
 public:
-    enum class AlphaMode {
-        Unknown = D2D1_ALPHA_MODE_UNKNOWN,
-        Premultiplied = D2D1_ALPHA_MODE_PREMULTIPLIED,
-        Straight = D2D1_ALPHA_MODE_STRAIGHT,
-        Ignore = D2D1_ALPHA_MODE_IGNORE,
-    };
+    PixelProperties() = default;
+    explicit PixelProperties(const D2D1_PIXEL_FORMAT& inner) : inner_(inner) { }
 
-public:
-    PixelFormat format = PixelFormat::Unknown;
-    AlphaMode alpha_mode = AlphaMode::Unknown;
+    PixelFormat Format() const {
+        return static_cast<PixelFormat>(inner_.format);
+    }
+
+    void SetFormat(PixelFormat value) {
+        inner_.format = static_cast<DXGI_FORMAT>(value);
+    }
+
+    PixelAlphaMode AlphaMode() const {
+        return static_cast<PixelAlphaMode>(inner_.alphaMode);
+    }
+
+    void SetAlphaMode(PixelAlphaMode value) {
+        inner_.alphaMode = static_cast<D2D1_ALPHA_MODE>(value);
+    }
+
+    const D2D1_PIXEL_FORMAT& Inner() const {
+        return inner_;
+    }
+
+private:
+    D2D1_PIXEL_FORMAT inner_{};
 };
 
 }

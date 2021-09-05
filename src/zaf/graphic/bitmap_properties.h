@@ -6,9 +6,32 @@ namespace zaf {
 
 class BitmapProperties {
 public:
-    PixelProperties pixel_properties;
-    float dpi_x = 0;
-    float dpi_y = 0;
+    void SetPixelProperties(const PixelProperties& value) {
+        inner_.pixelFormat = value.Inner();
+    }
+
+    float DPIX() const {
+        return inner_.dpiX;
+    }
+
+    void SetDPIX(float value) {
+        inner_.dpiX = value;
+    }
+
+    float DPIY() const {
+        return inner_.dpiY;
+    }
+
+    void SetDPIY(float value) {
+        inner_.dpiY = value;
+    }
+
+    const D2D1_BITMAP_PROPERTIES& Inner() const {
+        return inner_;
+    }
+
+private:
+    D2D1_BITMAP_PROPERTIES inner_{};
 };
 
 }

@@ -63,19 +63,10 @@ Renderer GraphicFactory::CreateBitmapRenderer(
     const wic::Bitmap& image_source,
     const RendererProperties& properties) {
 
-    D2D1_RENDER_TARGET_PROPERTIES d2d_properties;
-    d2d_properties.type = static_cast<D2D1_RENDER_TARGET_TYPE>(properties.type);
-    d2d_properties.usage = static_cast<D2D1_RENDER_TARGET_USAGE>(properties.usage);
-    d2d_properties.minLevel = static_cast<D2D1_FEATURE_LEVEL>(properties.feature_level);
-    d2d_properties.dpiX = properties.dpi_x;
-    d2d_properties.dpiY = properties.dpi_y;
-    d2d_properties.pixelFormat.format = static_cast<DXGI_FORMAT>(properties.pixel_properties.format);
-    d2d_properties.pixelFormat.alphaMode = static_cast<D2D1_ALPHA_MODE>(properties.pixel_properties.alpha_mode);
-
     ID2D1RenderTarget* handle = nullptr;
     HRESULT com_error = d2d_factory_handle_->CreateWicBitmapRenderTarget(
         image_source.GetHandle(),
-        d2d_properties,
+        properties.Inner(),
         &handle);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
@@ -143,20 +134,11 @@ TransformedGeometry GraphicFactory::CreateTransformedGeometry(
 
 Stroke GraphicFactory::CreateStroke(const StrokeProperties& properties) {
     
-    D2D1_STROKE_STYLE_PROPERTIES d2d_properties;
-    d2d_properties.startCap = static_cast<D2D1_CAP_STYLE>(properties.start_cap_style);
-    d2d_properties.endCap = static_cast<D2D1_CAP_STYLE>(properties.end_cap_style);
-    d2d_properties.dashCap = static_cast<D2D1_CAP_STYLE>(properties.dash_cap_style);
-    d2d_properties.lineJoin = static_cast<D2D1_LINE_JOIN>(properties.line_join_style);
-    d2d_properties.miterLimit = properties.miter_limit;
-    d2d_properties.dashOffset = properties.dash_offset;
-    d2d_properties.dashStyle = static_cast<D2D1_DASH_STYLE>(properties.dash_style);
-
     ID2D1StrokeStyle* handle = nullptr;
     HRESULT result = d2d_factory_handle_->CreateStrokeStyle(
-        d2d_properties, 
-        properties.dash_pattern.data(),
-        properties.dash_pattern.size(), 
+        properties.Inner(),
+        properties.DashPattern().data(),
+        properties.DashPattern().size(),
         &handle
     );
 

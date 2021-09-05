@@ -117,29 +117,16 @@ Brush TextLayout::GetBrush(std::size_t position, TextRange* range) {
 
 std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_count) const {
 
-    auto dwrite_line_metrics = std::make_unique<DWRITE_LINE_METRICS[]>(max_line_count);
+    std::vector<LineMetrics> line_metrics;
+    line_metrics.resize(max_line_count);
+
     std::size_t actual_line_count = 0;
-    HRESULT result = GetHandle()->GetLineMetrics(dwrite_line_metrics.get(), max_line_count, &actual_line_count);
+    HRESULT result = GetHandle()->GetLineMetrics(
+        reinterpret_cast<DWRITE_LINE_METRICS*>(line_metrics.data()),
+        line_metrics.size(),
+        &actual_line_count);
 
     ZAF_THROW_IF_COM_ERROR(result);
-
-    std::vector<LineMetrics> line_metrics;
-    line_metrics.reserve(actual_line_count);
-
-    for (std::size_t index = 0; index < actual_line_count; ++index) {
-
-        const DWRITE_LINE_METRICS& each_dwrite_line_metrics = dwrite_line_metrics.get()[index];
-
-        LineMetrics each_line_metrics;
-        each_line_metrics.length = each_dwrite_line_metrics.length;
-        each_line_metrics.trailing_whitespace_length = each_dwrite_line_metrics.trailingWhitespaceLength;
-        each_line_metrics.newline_length = each_dwrite_line_metrics.newlineLength;
-        each_line_metrics.height = each_dwrite_line_metrics.height;
-        each_line_metrics.baseline = each_dwrite_line_metrics.baseline;
-        each_line_metrics.is_trimmed = each_dwrite_line_metrics.isTrimmed != FALSE;
-
-        line_metrics.push_back(each_line_metrics);
-    }
 
     return line_metrics;
 }
@@ -147,21 +134,11 @@ std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_count) 
 
 TextMetrics TextLayout::GetMetrics() const {
 
-    DWRITE_TEXT_METRICS dwrite_text_metrics = { 0 };
-    HRESULT result = GetHandle()->GetMetrics(&dwrite_text_metrics);
+    TextMetrics text_metrics;
+    HRESULT result = GetHandle()->GetMetrics(&text_metrics.Inner());
 
     ZAF_THROW_IF_COM_ERROR(result);
 
-    TextMetrics text_metrics;
-    text_metrics.left = dwrite_text_metrics.left;
-    text_metrics.top = dwrite_text_metrics.top;
-    text_metrics.width = dwrite_text_metrics.width;
-    text_metrics.height = dwrite_text_metrics.height;
-    text_metrics.layout_width = dwrite_text_metrics.layoutWidth;
-    text_metrics.layout_height = dwrite_text_metrics.layoutHeight;
-    text_metrics.width_including_trailing_whitespace = dwrite_text_metrics.widthIncludingTrailingWhitespace;
-    text_metrics.max_bidi_reordering_depth = dwrite_text_metrics.maxBidiReorderingDepth;
-    text_metrics.line_count = dwrite_text_metrics.lineCount;
     return text_metrics;
 }
 

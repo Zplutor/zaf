@@ -43,11 +43,7 @@ public:
     }
 
     PixelProperties GetPixelProperties() const {
-        auto d2d_result = GetHandle()->GetPixelFormat();
-        PixelProperties result;
-        result.format = static_cast<PixelFormat>(d2d_result.format);
-        result.alpha_mode = static_cast<PixelProperties::AlphaMode>(d2d_result.alphaMode);
-        return result;
+        return PixelProperties{ GetHandle()->GetPixelFormat() };
     }
 
     void CopyFromBitmap(const RenderBitmap& bitmap) {

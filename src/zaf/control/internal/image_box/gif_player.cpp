@@ -230,9 +230,9 @@ void GifPlayer::SaveFrame() {
         auto dpi = current_bitmap.GetDpi();
 
         BitmapProperties bitmap_properties;
-        bitmap_properties.dpi_x = dpi.first;
-        bitmap_properties.dpi_y = dpi.second;
-        bitmap_properties.pixel_properties = current_bitmap.GetPixelProperties();
+        bitmap_properties.SetDPIX(dpi.first);
+        bitmap_properties.SetDPIY(dpi.second);
+        bitmap_properties.SetPixelProperties(current_bitmap.GetPixelProperties());
 
         saved_frame_bitmap_ = composed_frame_renderer_.CreateBitmap(size, bitmap_properties);
         if (saved_frame_bitmap_ == nullptr) {

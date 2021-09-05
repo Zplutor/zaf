@@ -30,13 +30,13 @@ void DrawTextWithIcon(
         return;
     }
 
-    float icon_y = line_metrics.front().height - icon_size;
+    float icon_y = line_metrics.front().Height() - icon_size;
     if (icon_y != 0) {
         icon_y /= 2;
     }
 
     auto text_metrics = text_layout.GetMetrics();
-    icon_y += text_metrics.top;
+    icon_y += text_metrics.Top();
 
     Rect icon_rect(0, icon_y, icon_size, icon_size);
     paint_icon_function(canvas, icon_rect);
@@ -47,9 +47,9 @@ void DrawTextWithIcon(
     if (control.IsFocused()) {
 
         Rect focus_rect;
-        focus_rect.position.x = text_rect.position.x + text_metrics.left;
-        focus_rect.position.y = text_rect.position.y + text_metrics.top;
-        focus_rect.size = Size{ text_metrics.width, text_metrics.height };
+        focus_rect.position.x = text_rect.position.x + text_metrics.Left();
+        focus_rect.position.y = text_rect.position.y + text_metrics.Top();
+        focus_rect.size = Size{ text_metrics.Width(), text_metrics.Height() };
         DrawFocusRectangleFrame(canvas, focus_rect);
     }
 }
@@ -58,8 +58,8 @@ void DrawTextWithIcon(
 void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect) {
 
     StrokeProperties stroke_properties;
-    stroke_properties.dash_style = Stroke::DashStyle::Dot;
-    stroke_properties.dash_cap_style = Stroke::CapStyle::Square;
+    stroke_properties.SetDashStyle(Stroke::DashStyle::Dot);
+    stroke_properties.SetDashCapStyle(Stroke::CapStyle::Square);
     auto stroke = GetGraphicFactory().CreateStroke(stroke_properties);
 
     canvas.SetStroke(stroke);

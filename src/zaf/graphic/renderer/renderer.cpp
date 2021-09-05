@@ -78,14 +78,8 @@ Layer Renderer::InnerCreateLayer(const Size* size) {
 
 RenderBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& properties) {
 
-    D2D1_BITMAP_PROPERTIES d2d1_properties;
-    d2d1_properties.pixelFormat.format = static_cast<DXGI_FORMAT>(properties.pixel_properties.format);
-    d2d1_properties.pixelFormat.alphaMode = static_cast<D2D1_ALPHA_MODE>(properties.pixel_properties.alpha_mode);
-    d2d1_properties.dpiX = properties.dpi_x;
-    d2d1_properties.dpiY = properties.dpi_y;
-
     ID2D1Bitmap* handle = nullptr;
-    HRESULT com_error = GetHandle()->CreateBitmap(size.ToD2D1SIZEU(), d2d1_properties, &handle);
+    HRESULT com_error = GetHandle()->CreateBitmap(size.ToD2D1SIZEU(), properties.Inner(), &handle);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
     return RenderBitmap(handle);
@@ -141,14 +135,7 @@ void Renderer::DrawBitmap(
 
 
 void Renderer::PushLayer(const Layer& layer, const LayerParameters& parameters) {
-
-    D2D1_LAYER_PARAMETERS d2d_parameters = D2D1::LayerParameters();
-    d2d_parameters.contentBounds = parameters.content_bounds.ToD2D1RECTF();
-    d2d_parameters.geometricMask = parameters.geometric_mask.GetHandle();
-    d2d_parameters.maskTransform = parameters.mask_transform.ToD2D1MATRIX3X2F();
-    d2d_parameters.opacity = parameters.opacity;
-
-    GetHandle()->PushLayer(d2d_parameters, layer.GetHandle());
+    GetHandle()->PushLayer(parameters.Inner(), layer.GetHandle());
 }
 
 
