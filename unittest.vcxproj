@@ -165,6 +165,7 @@
     <ClCompile Include="unittest\case\control\layout\internal\linear_layout_length_calculating_test.cpp" />
     <ClCompile Include="unittest\case\control\layout\linear_layouter_test.cpp" />
     <ClCompile Include="unittest\case\control\linear_box_test.cpp" />
+    <ClCompile Include="unittest\case\control\scrollable_control_parse_test.cpp" />
     <ClCompile Include="unittest\case\control\textual_control_test.cpp" />
     <ClCompile Include="unittest\case\graphic\font\font_weight_test.cpp" />
     <ClCompile Include="unittest\case\object\boxing\boolean_test.cpp" />

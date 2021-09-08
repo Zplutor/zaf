@@ -30,6 +30,9 @@ constexpr const wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThic
 
 ZAF_DEFINE_TYPE(ScrollableControl)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(ScrollContentControl)
+ZAF_DEFINE_TYPE_PROPERTY(AllowVerticalScroll)
+ZAF_DEFINE_TYPE_PROPERTY(AllowHorizontalScroll)
+ZAF_DEFINE_TYPE_PROPERTY(AutoHideScrollBars)
 ZAF_DEFINE_TYPE_END
 
 
