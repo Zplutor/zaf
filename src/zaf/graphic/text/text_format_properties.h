@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <zaf/graphic/font/font_weight.h>
 
 namespace zaf {
 
@@ -12,12 +13,6 @@ class FontCollection;
  */
 class TextFormatProperties {
 public:
-    TextFormatProperties() : 
-        font_size(0), 
-        font_weight(0) {
-    
-    }
-
     /**
      Font collection instance.
 
@@ -38,12 +33,12 @@ public:
     /**
      Font size.
      */
-    float font_size;
+    float font_size{ 14 };
 
     /**
      Font weight.
      */
-    int font_weight;
+    int font_weight{ FontWeight::Regular };
 };
 
 }
