@@ -14,6 +14,8 @@ enum class ActivateState {
 
 class ActivateMessage : public MessageShim {
 public:
+    using MessageShim::MessageShim;
+
     ActivateState State() const {
         return static_cast<ActivateState>(LOWORD(Inner().wparam));
     }

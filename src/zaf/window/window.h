@@ -10,6 +10,7 @@
 #include <zaf/serialization/property_map.h>
 #include <zaf/window/activate_option.h>
 #include <zaf/window/initial_rect_style.h>
+#include <zaf/window/message/message.h>
 
 namespace zaf {
 namespace internal {
@@ -21,6 +22,7 @@ class HitTestMessage;
 class InspectorWindow;
 class MouseMessage;
 class WindowDestroyInfo;
+class WindowReceiveMessageInfo;
 enum class HitTestResult;
 
 /**
@@ -458,6 +460,8 @@ public:
      */
     Observable<WindowDestroyInfo> DestroyEvent();
 
+    Observable<WindowReceiveMessageInfo> ReceiveMessageEvent();
+
     /**
      Get position of the mouse cursor in current window's coordinate system.
      */
@@ -481,6 +485,10 @@ public:
      Close the window.
      */
     void Close();
+
+    void CreateHandle() {
+        CheckCreateWindowHandle();
+    }
 
     void ShowInspectorWindow();
 
@@ -630,6 +638,8 @@ private:
 
     void Repaint();
     void PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect);
+    bool ReceiveMessageEntrance(const Message& message, LRESULT& result);
+    void RaiseReceiveMessageEvent(const Message& message, LRESULT result);
     void Resize(UINT width, UINT height);
     bool RedirectMouseWheelMessage(const Message& message);
     bool ReceiveMouseMessage(const MouseMessage& message);
@@ -682,6 +692,15 @@ class WindowDestroyInfo {
 public:
     std::shared_ptr<Window> window;
 };
+
+
+class WindowReceiveMessageInfo {
+public:
+    std::shared_ptr<Window> window;
+    Message message;
+    LRESULT result{};
+};
+
 
 std::shared_ptr<Window> GetWindowFromHandle(HWND handle);
 

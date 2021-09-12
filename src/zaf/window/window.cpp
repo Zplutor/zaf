@@ -38,6 +38,7 @@ constexpr const wchar_t* const kIsPopupPropertyName = L"IsPopup";
 constexpr const wchar_t* const kIsSizablePropertyName = L"IsSizable";
 constexpr const wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
 constexpr const wchar_t* const kOwnerPropertyName = L"Owner";
+constexpr const wchar_t* const kReceiveMessageEventPropertyName = L"ReceiveMessageEvent";
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
 
 class WindowParser : public ObjectParser {
@@ -147,7 +148,7 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wpar
     if (window) {
 
         LRESULT result = 0;
-        if (window->ReceiveMessage(Message{ hwnd, message_id, wparam, lparam }, result)) {
+        if (window->ReceiveMessageEntrance(Message{ hwnd, message_id, wparam, lparam }, result)) {
             return result;    
         }
     }
@@ -373,6 +374,36 @@ bool Window::TryToPreprocessInspectorShortcutMessage(const KeyMessage& message) 
 #else
     return false;
 #endif
+}
+
+
+bool Window::ReceiveMessageEntrance(const Message& message, LRESULT& result) {
+
+    bool is_handled = ReceiveMessage(message, result);
+    RaiseReceiveMessageEvent(message, result);
+    return is_handled;
+}
+
+
+void Window::RaiseReceiveMessageEvent(const Message& message, LRESULT result) {
+
+    if (message.id == WM_NCDESTROY) {
+        return;
+    }
+
+    auto event_observer = GetEventObserver<WindowReceiveMessageInfo>(
+        GetPropertyMap(),
+        kReceiveMessageEventPropertyName);
+
+    if (!event_observer) {
+        return;
+    }
+
+    WindowReceiveMessageInfo event_info;
+    event_info.window = shared_from_this();
+    event_info.message = message;
+    event_info.result = result;
+    event_observer->OnNext(event_info);
 }
 
 
@@ -1491,6 +1522,13 @@ void Window::SetCloseHandler(const WindowCloseHandler& handler) {
 
 Observable<WindowDestroyInfo> Window::DestroyEvent() {
     return GetEventObservable<WindowDestroyInfo>(GetPropertyMap(), kDestroyEventPropertyName);
+}
+
+
+Observable<WindowReceiveMessageInfo> Window::ReceiveMessageEvent() {
+    return GetEventObservable<WindowReceiveMessageInfo>(
+        GetPropertyMap(), 
+        kReceiveMessageEventPropertyName);
 }
 
 
