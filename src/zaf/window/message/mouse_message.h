@@ -3,7 +3,7 @@
 #include <zaf/base/flag_enum.h>
 #include <zaf/graphic/point.h>
 #include <zaf/window/message/hit_test_result.h>
-#include <zaf/window/message/message.h>
+#include <zaf/window/message/message_shim.h>
 
 namespace zaf {
 
@@ -54,27 +54,29 @@ ZAF_ENABLE_FLAG_ENUM(MouseKey);
 /**
  Wraps information of a Win32 mouse message.
  */
-class MouseMessage : public Message {
+class MouseMessage : public MessageShim {
 public:
+    using MessageShim::MessageShim;
+
     /**
      Get the mouse position in window's client area coordinate.
      */
-    Point GetMousePosition() const;
+    Point MousePosition() const;
 
     /**
      Get the mouse button that triggers this message.
      */
-    MouseButton GetMouseButton() const;
+    MouseButton MouseButton() const;
 
     /**
      Get the mouse keys that is being pressed.
      */
-    MouseKey GetPressedMouseKeys() const;
+    MouseKey PressedMouseKeys() const;
 
     /**
      Get hit test result of this message.
      */
-    HitTestResult GetHitTestResult() const;
+    zaf::HitTestResult HitTestResult() const;
 };
 
 
@@ -83,18 +85,20 @@ public:
  */
 class MouseWheelMessage : public MouseMessage {
 public:
+    using MouseMessage::MouseMessage;
+
     /**
      Get a value indicating that whether the wheeling is horizontal.
      */
     bool IsHorizontalWheeling() const {
-        return (id == WM_MOUSEHWHEEL);
+        return (Inner().id == WM_MOUSEHWHEEL);
     }
     
     /**
      Get the wheeling distance.
      */
-    int GetWheelingDistance() const {
-        return static_cast<short>(HIWORD(wparam));
+    int WheelingDistance() const {
+        return static_cast<short>(HIWORD(Inner().wparam));
     }
 };
 

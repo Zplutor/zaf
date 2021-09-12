@@ -11,28 +11,29 @@ bool IsClientAreaMouseMessage(UINT message_id) {
 
 }
 
-Point MouseMessage::GetMousePosition() const {
+Point MouseMessage::MousePosition() const {
 
     bool need_transform = [this]() {
 
-        if (!IsClientAreaMouseMessage(id)) {
+        if (!IsClientAreaMouseMessage(Inner().id)) {
             return true;
         }
 
-        if (id == WM_MOUSEWHEEL || id == WM_MOUSEHWHEEL) {
+        if (Inner().id == WM_MOUSEWHEEL || Inner().id == WM_MOUSEHWHEEL) {
             return true;
         }
 
         return false;
     }();
 
-    return internal::GetMousePositionFromLPARAM(lparam, need_transform ? hwnd : nullptr);
+    return internal::GetMousePositionFromLPARAM(
+        Inner().lparam, need_transform ? Inner().hwnd : nullptr);
 }
 
 
-MouseButton MouseMessage::GetMouseButton() const {
+MouseButton MouseMessage::MouseButton() const {
 
-    switch (id) {
+    switch (Inner().id) {
     case WM_LBUTTONDOWN:
     case WM_LBUTTONUP:
     case WM_NCLBUTTONDOWN:
@@ -57,13 +58,13 @@ MouseButton MouseMessage::GetMouseButton() const {
 }
 
 
-MouseKey MouseMessage::GetPressedMouseKeys() const {
+MouseKey MouseMessage::PressedMouseKeys() const {
 
-    if (IsClientAreaMouseMessage(id)) {
-        return static_cast<MouseKey>(wparam);
+    if (IsClientAreaMouseMessage(Inner().id)) {
+        return static_cast<MouseKey>(Inner().wparam);
     }
     
-    switch (id) {
+    switch (Inner().id) {
     case WM_NCLBUTTONDOWN:
         return MouseKey::LeftButton;
     case WM_NCMBUTTONDOWN:
@@ -76,13 +77,13 @@ MouseKey MouseMessage::GetPressedMouseKeys() const {
 }
 
 
-HitTestResult MouseMessage::GetHitTestResult() const {
+zaf::HitTestResult MouseMessage::HitTestResult() const {
 
-    if (IsClientAreaMouseMessage(id)) {
-        return HitTestResult::ClientArea;
+    if (IsClientAreaMouseMessage(Inner().id)) {
+        return zaf::HitTestResult::ClientArea;
     }
     else {
-        return static_cast<HitTestResult>(wparam);
+        return static_cast<zaf::HitTestResult>(Inner().wparam);
     }
 }
 

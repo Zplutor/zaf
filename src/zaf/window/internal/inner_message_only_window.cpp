@@ -1,6 +1,5 @@
 #include <zaf/window/internal/inner_message_only_window.h>
 #include <zaf/base/error/system_error.h>
-#include <zaf/window/message/creation.h>
 
 namespace zaf::internal {
 namespace {
@@ -86,8 +85,7 @@ LRESULT CALLBACK InnerMessageOnlyWindow::WindowProcedure(
 
 void InnerMessageOnlyWindow::OnReceiveMessage(UINT id, WPARAM wparam, LPARAM lparam) {
 
-    auto message = CreateMessage(handle_, id, wparam, lparam);
-    subject_.GetObserver().OnNext(*message);
+    subject_.GetObserver().OnNext(Message{ handle_, id, wparam, lparam });
 }
 
 }

@@ -49,7 +49,7 @@ bool ListItemContainer::OnMouseDown(const Point& position, const MouseMessage& m
 
     SetIsFocused(true);
 
-    if (message.GetMouseButton() != MouseButton::Left) {
+    if (message.MouseButton() != MouseButton::Left) {
         return __super::OnMouseDown(position, message);
     }
 
@@ -73,7 +73,7 @@ bool ListItemContainer::OnMouseMove(const Point& position, const MouseMessage& m
 
 bool ListItemContainer::OnMouseUp(const Point& position, const MouseMessage& message) {
 
-    if (message.GetMouseButton() != MouseButton::Left) {
+    if (message.MouseButton() != MouseButton::Left) {
         return __super::OnMouseUp(position, message);
     }
 

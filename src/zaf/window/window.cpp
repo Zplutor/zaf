@@ -15,7 +15,6 @@
 #include <zaf/serialization/properties.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/inspector/inspector_window.h>
-#include <zaf/window/message/creation.h>
 #include <zaf/window/message/hit_test_message.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
@@ -147,10 +146,8 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wpar
     auto window = GetWindowFromHandle(hwnd);
     if (window) {
 
-        auto message = CreateMessage(hwnd, message_id, wparam, lparam);
-
         LRESULT result = 0;
-        if (window->ReceiveMessage(*message, result)) {
+        if (window->ReceiveMessage(Message{ hwnd, message_id, wparam, lparam }, result)) {
             return result;    
         }
     }
@@ -329,7 +326,7 @@ bool Window::PreprocessMessage(const KeyMessage& message) {
 
 bool Window::TryToPreprocessTabKeyMessage(const KeyMessage& message) {
 
-    if (message.id != WM_KEYDOWN || message.GetVirtualKey() != VK_TAB) {
+    if (message.Inner().id != WM_KEYDOWN || message.VirtualKey() != VK_TAB) {
         return false;
     }
 
@@ -359,11 +356,11 @@ void Window::SwitchFocusedControlByTabKey(bool backward) {
 
 bool Window::TryToPreprocessInspectorShortcutMessage(const KeyMessage& message) {
 #ifndef NDEBUG
-    if (message.id != WM_KEYDOWN) {
+    if (message.Inner().id != WM_KEYDOWN) {
         return false;
     }
 
-    if (message.GetVirtualKey() != VK_F12) {
+    if (message.VirtualKey() != VK_F12) {
         return false;
     }
 
@@ -451,7 +448,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
     }
 
     case WM_NCHITTEST: {
-        auto hit_test_result = HitTest(dynamic_cast<const HitTestMessage&>(message));
+        auto hit_test_result = HitTest(HitTestMessage{ message });
         if (hit_test_result) {
             result = static_cast<LRESULT>(*hit_test_result);
             return true;
@@ -495,23 +492,23 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
     case WM_MBUTTONUP:
     case WM_RBUTTONDOWN:
     case WM_RBUTTONUP:
-        return ReceiveMouseMessage(dynamic_cast<const MouseMessage&>(message));
+        return ReceiveMouseMessage(MouseMessage{ message });
 
     case WM_KEYDOWN: 
         if (focused_control_ != nullptr) {
-            return focused_control_->OnKeyDown(dynamic_cast<const KeyMessage&>(message));
+            return focused_control_->OnKeyDown(KeyMessage{ message });
         }
         return false;
 
     case WM_KEYUP:
         if (focused_control_ != nullptr) {
-            return focused_control_->OnKeyUp(dynamic_cast<const KeyMessage&>(message));
+            return focused_control_->OnKeyUp(KeyMessage{ message });
         }
         return false;
 
     case WM_CHAR:
         if (focused_control_ != nullptr) {
-            return focused_control_->OnCharInput(dynamic_cast<const CharMessage&>(message));
+            return focused_control_->OnCharInput(CharMessage{ message });
         }
         return false;
 
@@ -663,7 +660,7 @@ std::optional<HitTestResult> Window::HitTest(const HitTestMessage& message) {
 
     auto hovered_control = [&]() {
         
-        Point mouse_position = message.GetMousePosition();
+        Point mouse_position = message.MousePosition();
         std::shared_ptr<Control> current_control = root_control_;
         while (true) {
 
@@ -708,17 +705,17 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
     auto get_mouse_position_to_capturing_control = [this, &message]() {
 
         zaf::Rect control_rect = capturing_mouse_control_->AbsoluteRect();
-        Point mouse_position = message.GetMousePosition();
+        Point mouse_position = message.MousePosition();
 
         return Point(
             mouse_position.x - control_rect.position.x,
             mouse_position.y - control_rect.position.y);
     };
 
-    if (message.id == WM_MOUSEMOVE || message.id == WM_NCMOUSEMOVE) {
+    if (message.ID() == WM_MOUSEMOVE || message.ID() == WM_NCMOUSEMOVE) {
 
         if (is_selecting_inspector_control_) {
-            HighlightControlAtPosition(message.GetMousePosition());
+            HighlightControlAtPosition(message.MousePosition());
             return true;
         }
 
@@ -730,13 +727,13 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
                 message);
         }
         else {
-            root_control_->RouteHoverMessage(message.GetMousePosition(), message);
+            root_control_->RouteHoverMessage(message.MousePosition(), message);
         }
     }
-    else if (message.id == WM_MOUSELEAVE || message.id == WM_NCMOUSELEAVE) {
+    else if (message.ID() == WM_MOUSELEAVE || message.ID() == WM_NCMOUSELEAVE) {
         OnMouseLeave(message);
     }
-    else if (message.id == WM_LBUTTONDOWN || message.id == WM_RBUTTONDOWN) {
+    else if (message.ID() == WM_LBUTTONDOWN || message.ID() == WM_RBUTTONDOWN) {
         if (is_selecting_inspector_control_) {
             SelectInspectedControl();
             return true;
@@ -747,7 +744,7 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
         return capturing_mouse_control_->RouteMessage(get_mouse_position_to_capturing_control(), message);
     }
     else {
-        return root_control_->RouteMessage(message.GetMousePosition(), message);
+        return root_control_->RouteMessage(message.MousePosition(), message);
     }
 }
 
@@ -790,12 +787,12 @@ void Window::TrackMouseLeave(const MouseMessage& message) {
     auto is_tracking_mouse = [&]() {
 
         if (track_mouse_mode_ == TrackMouseMode::ClientArea &&
-            message.id == WM_MOUSEMOVE) {
+            message.ID() == WM_MOUSEMOVE) {
             return true;
         }
 
         if (track_mouse_mode_ == TrackMouseMode::NonClientArea &&
-            message.id == WM_NCMOUSEMOVE) {
+            message.ID() == WM_NCMOUSEMOVE) {
             return true;
         }
 
@@ -809,13 +806,16 @@ void Window::TrackMouseLeave(const MouseMessage& message) {
     TRACKMOUSEEVENT track_mouse_event_param = { 0 };
     track_mouse_event_param.cbSize = sizeof(track_mouse_event_param);
     track_mouse_event_param.dwFlags = TME_LEAVE;
-    if (message.id == WM_NCMOUSEMOVE) {
+    if (message.ID() == WM_NCMOUSEMOVE) {
         track_mouse_event_param.dwFlags |= TME_NONCLIENT;
     }
     track_mouse_event_param.hwndTrack = handle_;
 
     if (TrackMouseEvent(&track_mouse_event_param)) {
-        track_mouse_mode_ = message.id == WM_NCMOUSEMOVE ? TrackMouseMode::NonClientArea : TrackMouseMode::ClientArea;
+        track_mouse_mode_ = 
+            message.ID() == WM_NCMOUSEMOVE ? 
+            TrackMouseMode::NonClientArea :
+            TrackMouseMode::ClientArea;
     }
 }
 
@@ -825,12 +825,12 @@ void Window::OnMouseLeave(const MouseMessage& message) {
     bool is_tracking_mouse = [&]() {
     
         if (track_mouse_mode_ == TrackMouseMode::ClientArea &&
-            message.id == WM_MOUSELEAVE) {
+            message.ID() == WM_MOUSELEAVE) {
             return true;
         }
 
         if (track_mouse_mode_ == TrackMouseMode::NonClientArea &&
-            message.id == WM_NCMOUSELEAVE) {
+            message.ID() == WM_NCMOUSELEAVE) {
             return true;
         }
 
@@ -839,7 +839,7 @@ void Window::OnMouseLeave(const MouseMessage& message) {
 
     if (is_tracking_mouse) {
         track_mouse_mode_ = TrackMouseMode::None;
-        SetHoveredControl(nullptr, {});
+        SetHoveredControl(nullptr, MouseMessage{ Message{} });
     }
 }
 
@@ -934,7 +934,7 @@ void Window::SetHoveredControl(
             Handle(),
             WM_SETCURSOR,
             reinterpret_cast<WPARAM>(Handle()),
-            MAKELPARAM(message.GetHitTestResult(), message.id));
+            MAKELPARAM(message.HitTestResult(), message.ID()));
 
         hovered_control_->IsHoveredChanged(true);
     }

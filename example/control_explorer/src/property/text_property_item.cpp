@@ -33,7 +33,7 @@ public:
 protected:
     bool OnKeyDown(const zaf::KeyMessage& message) override {
 
-        if (message.GetVirtualKey() == VK_RETURN) {
+        if (message.VirtualKey() == VK_RETURN) {
 
             SHORT control_key_state = GetKeyState(VK_CONTROL);
             if ((control_key_state >> 15) == 0) {

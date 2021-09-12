@@ -520,7 +520,7 @@ bool SplitControlSplitBar::OnMouseMove(const Point& position, const MouseMessage
 
 bool SplitControlSplitBar::OnMouseDown(const Point& position, const MouseMessage& message) {
 
-    if (message.GetMouseButton() == MouseButton::Left) {
+    if (message.MouseButton() == MouseButton::Left) {
         CaptureMouse();
     }
     return true;

@@ -409,7 +409,7 @@ Observable<ScrollBarScrollInfo> ScrollBar::ScrollEvent() {
 
 bool ScrollBar::OnMouseDown(const Point& position, const MouseMessage& message) {
 
-    if (message.GetMouseButton() == MouseButton::Left) {
+    if (message.MouseButton() == MouseButton::Left) {
         CaptureMouse();
     }
     return true;
@@ -418,7 +418,7 @@ bool ScrollBar::OnMouseDown(const Point& position, const MouseMessage& message) 
 
 bool ScrollBar::OnMouseUp(const Point& position, const MouseMessage& message) {
 
-    if (message.GetMouseButton() == MouseButton::Left) {
+    if (message.MouseButton() == MouseButton::Left) {
         ReleaseMouse();
     }
     return true;
@@ -538,7 +538,7 @@ zaf::Rect ScrollBar::GetThumbSlotRect() const {
 bool ScrollBar::OnMouseWheel(const Point& position, const MouseWheelMessage& message) {
 
     if (message.IsHorizontalWheeling() == IsHorizontal()) {
-        Wheel(message.GetWheelingDistance());
+        Wheel(message.WheelingDistance());
     }
     return true;
 }

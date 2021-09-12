@@ -453,7 +453,7 @@ void ComboBox::DropDownListBoxMouseMove(const Point& position) {
 
 bool ComboBox::OnKeyDown(const KeyMessage& message) {
 
-    auto key = message.GetVirtualKey();
+    auto key = message.VirtualKey();
     if ((key == VK_UP) || (key == VK_DOWN)) {
 
         if (SelectNextDropDownListItem(key == VK_UP)) {
@@ -676,7 +676,7 @@ bool ComboBoxDropDownListBox::OnMouseMove(const Point& position, const MouseMess
 
 bool ComboBoxEditTextBox::OnKeyDown(const KeyMessage& message) {
 
-    auto key = message.GetVirtualKey(); 
+    auto key = message.VirtualKey(); 
     if (key == VK_UP || key == VK_DOWN || key == VK_RETURN) {
 
         //Call the default handler to derives the event to its parent - combo box.

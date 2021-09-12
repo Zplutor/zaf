@@ -11,7 +11,7 @@ bool ListControlSelectStrategy::ChangeIndexByKeyDown(
     const std::optional<std::size_t>& previous_index, 
     std::size_t& new_index) {
 
-    switch (key_message.wparam) {
+    switch (key_message.WParam()) {
 
         case VK_DOWN:
             if (!previous_index) {

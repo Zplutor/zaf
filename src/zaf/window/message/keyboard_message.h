@@ -1,15 +1,15 @@
 #pragma once
 
-#include <zaf/window/message/message.h>
+#include <zaf/window/message/message_shim.h>
 
 namespace zaf {
 
 /**
  Wraps information of a Win32 keyboard message.   
  */
-class KeyboardMessage : public Message {
+class KeyboardMessage : public MessageShim {
 public:
-
+    using MessageShim::MessageShim;
 };
 
 
@@ -18,11 +18,13 @@ public:
  */
 class KeyMessage : public KeyboardMessage {
 public:
+    using KeyboardMessage::KeyboardMessage;
+
     /**
      Get the virtual key.
      */
-    DWORD GetVirtualKey() const {
-        return wparam;
+    DWORD VirtualKey() const {
+        return Inner().wparam;
     }
 };
 
@@ -32,11 +34,13 @@ public:
  */
 class CharMessage : public KeyboardMessage {
 public:
+    using KeyboardMessage::KeyboardMessage;
+
     /**
      Get the char.
      */
-    wchar_t GetChar() const {
-        return static_cast<wchar_t>(wparam);
+    wchar_t Char() const {
+        return static_cast<wchar_t>(Inner().wparam);
     }
 };
 

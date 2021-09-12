@@ -1,14 +1,16 @@
 #pragma once
 
 #include <zaf/window/message/internal/mouse_position_conversion.h>
-#include <zaf/window/message/message.h>
+#include <zaf/window/message/message_shim.h>
 
 namespace zaf {
 
-class HitTestMessage : public Message {
+class HitTestMessage : public MessageShim {
 public:
-    Point GetMousePosition() const {
-        return internal::GetMousePositionFromLPARAM(lparam, hwnd);
+    using MessageShim::MessageShim;
+
+    Point MousePosition() const {
+        return internal::GetMousePositionFromLPARAM(Inner().lparam, Inner().hwnd);
     }
 };
 

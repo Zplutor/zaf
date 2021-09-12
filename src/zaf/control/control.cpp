@@ -1251,7 +1251,7 @@ void Control::SetInteractiveProperty(bool new_value, bool& property_value, void(
         if (IsHovered()) {
             auto window = Window();
             if (window != nullptr) {
-                window->SetHoveredControl(nullptr, {});
+                window->SetHoveredControl(nullptr, MouseMessage{ Message{} });
             }
         }
 
@@ -1554,7 +1554,7 @@ void Control::RouteHoverMessage(const Point& position, const MouseMessage& messa
                 window->SetHoveredControl(shared_from_this(), message);
             }
             else {
-                window->SetHoveredControl(nullptr, {});
+                window->SetHoveredControl(nullptr, MouseMessage{ Message{} });
             }
         }
     }
@@ -1591,7 +1591,7 @@ Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& 
 
 bool Control::InterpretMessage(const Point& position, const MouseMessage& message) {
 
-    switch (message.id) {
+    switch (message.ID()) {
     case WM_MOUSEMOVE:
         return OnMouseMove(position, message);
 
@@ -1692,7 +1692,7 @@ void Control::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
 
 bool Control::OnMouseDown(const Point& position, const MouseMessage& message) {
 
-    if (message.GetMouseButton() == MouseButton::Left) {
+    if (message.MouseButton() == MouseButton::Left) {
         if (HandleClickOnMouseDown()) {
             return true;
         }
@@ -1737,7 +1737,7 @@ bool Control::HandleClickOnMouseDown() {
 
 bool Control::OnMouseUp(const Point& position, const MouseMessage& message) {
 
-    if (message.GetMouseButton() == MouseButton::Left) {
+    if (message.MouseButton() == MouseButton::Left) {
         if (HandleClickOnMouseUp()) {
             return true;
         }

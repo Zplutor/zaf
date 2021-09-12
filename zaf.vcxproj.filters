@@ -225,9 +225,6 @@
     <ClCompile Include="src\zaf\control\text_validator.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\window\message\creation.cpp">
-      <Filter>zaf\window\message</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\window\dialog.cpp">
       <Filter>zaf\window</Filter>
     </ClCompile>
@@ -832,9 +829,6 @@
       <Filter>zaf\window\message</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\message\mouse_message.h">
-      <Filter>zaf\window\message</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\window\message\creation.h">
       <Filter>zaf\window\message</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\define.h">
@@ -1568,6 +1562,9 @@
       <Filter>zaf\object</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\message\activate_message.h">
+      <Filter>zaf\window\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\message\message_shim.h">
       <Filter>zaf\window\message</Filter>
     </ClInclude>
   </ItemGroup>

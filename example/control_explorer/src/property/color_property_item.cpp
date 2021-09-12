@@ -112,7 +112,7 @@ protected:
 
     bool OnKeyDown(const zaf::KeyMessage& message) override {
 
-        if (message.GetVirtualKey() == VK_RETURN) {
+        if (message.VirtualKey() == VK_RETURN) {
 
             if (!GetDropDownListBox()->GetFirstSelectedItemIndex()) {
                 SetText(ColorToText(selected_color_));

@@ -692,7 +692,7 @@ Observable<SelfScrollingControlScrollValuesChangeInfo> TextBox::ScrollValuesChan
 
 bool TextBox::AcceptKeyMessage(const KeyMessage& message) {
 
-    switch (message.GetVirtualKey()) {
+    switch (message.VirtualKey()) {
     case VK_TAB:
         return AcceptTab();
 
@@ -787,8 +787,8 @@ bool TextBox::OnMouseMove(const Point& position, const MouseMessage& message) {
 
         HRESULT result = text_service_->TxSendMessage(
             WM_MOUSEMOVE, 
-            message.wparam, 
-            message.lparam, 
+            message.WParam(), 
+            message.LParam(), 
             nullptr);
 
         if (result == S_OK) {
@@ -808,8 +808,8 @@ bool TextBox::OnMouseDown(const Point& position, const MouseMessage& message) {
 
         HRESULT result = text_service_->TxSendMessage(
             WM_LBUTTONDOWN, 
-            message.wparam,
-            message.lparam, 
+            message.WParam(),
+            message.LParam(), 
             nullptr);
 
         if (result == S_OK) {
@@ -827,8 +827,8 @@ bool TextBox::OnMouseUp(const Point& position, const MouseMessage& message) {
 
         HRESULT result = text_service_->TxSendMessage(
             WM_LBUTTONUP, 
-            message.wparam, 
-            message.lparam,
+            message.WParam(), 
+            message.LParam(),
             nullptr);
 
         if (result == S_OK) {
@@ -843,7 +843,13 @@ bool TextBox::OnMouseUp(const Point& position, const MouseMessage& message) {
 bool TextBox::OnKeyDown(const KeyMessage& message) {
     
     if (text_service_ != nullptr) {
-        HRESULT result = text_service_->TxSendMessage(WM_KEYDOWN, message.wparam, message.lparam, nullptr);
+
+        HRESULT result = text_service_->TxSendMessage(
+            WM_KEYDOWN, 
+            message.WParam(),
+            message.LParam(),
+            nullptr);
+
         if (result == S_OK) {
             return true;
         }
@@ -856,7 +862,13 @@ bool TextBox::OnKeyDown(const KeyMessage& message) {
 bool TextBox::OnKeyUp(const KeyMessage& message) {
 
     if (text_service_ != nullptr) {
-        HRESULT result = text_service_->TxSendMessage(WM_KEYUP, message.wparam, message.lparam, nullptr);
+
+        HRESULT result = text_service_->TxSendMessage(
+            WM_KEYUP, 
+            message.WParam(),
+            message.LParam(), 
+            nullptr);
+
         if (result == S_OK) {
             return true;
         }
@@ -869,7 +881,13 @@ bool TextBox::OnKeyUp(const KeyMessage& message) {
 bool TextBox::OnCharInput(const CharMessage& message) {
 
     if (text_service_ != nullptr) {
-        HRESULT result = text_service_->TxSendMessage(WM_CHAR, message.wparam, message.lparam, nullptr);
+
+        HRESULT result = text_service_->TxSendMessage(
+            WM_CHAR, 
+            message.WParam(),
+            message.LParam(),
+            nullptr);
+
         if (result == S_OK) {
             return true;
         }

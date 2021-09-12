@@ -62,7 +62,7 @@ void MessageInputView::SendButtonClick() {
 
 bool MessageInputView::OnKeyDown(const zaf::KeyMessage& message) {
 
-    if (message.GetVirtualKey() == VK_RETURN) {
+    if (message.VirtualKey() == VK_RETURN) {
         send_button_->Click();
         return true;
     }

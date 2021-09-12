@@ -9,36 +9,34 @@ namespace zaf {
  */
 class Message {
 public:
-    /**
-     Construct the instance.
-     */
-    Message() : hwnd(nullptr), id(0), wparam(0), lparam(0) { }
+    Message() = default;
 
-    /**
-     Destruct the instance.
-     */
-    virtual ~Message() { }
+    Message(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam) : 
+        hwnd(hwnd),
+        id(id), 
+        wparam(wparam),
+        lparam(lparam) { }
 
 public:
     /**
      The window handle.
      */
-    HWND hwnd;
+    HWND hwnd{};
 
     /**
      The message identifier.
      */
-    UINT id;
+    UINT id{};
 
     /**
      The WPARAM argument.
      */
-    WPARAM wparam;
+    WPARAM wparam{};
 
     /**
      The LPARAM argument.
      */
-    LPARAM lparam;
+    LPARAM lparam{};
 };
 
 }

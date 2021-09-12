@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/window/message/message.h>
+#include <zaf/window/message/message_shim.h>
 
 namespace zaf {
 
@@ -11,18 +11,19 @@ enum class ActivateState {
     Inactive = WA_INACTIVE,
 };
 
-class ActivateMessage : public Message {
+
+class ActivateMessage : public MessageShim {
 public:
     ActivateState State() const {
-        return static_cast<ActivateState>(LOWORD(wparam));
+        return static_cast<ActivateState>(LOWORD(Inner().wparam));
     }
 
     bool IsWindowMinimized() const {
-        return (HIWORD(wparam) != 0);
+        return (HIWORD(Inner().wparam) != 0);
     }
 
     HWND EffectingWindowHandle() const {
-        return reinterpret_cast<HWND>(lparam);
+        return reinterpret_cast<HWND>(Inner().lparam);
     }
 };
 

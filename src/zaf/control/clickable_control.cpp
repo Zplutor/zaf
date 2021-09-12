@@ -71,7 +71,7 @@ bool ClickableControl::OnMouseMove(const Point& position, const MouseMessage& me
 
 bool ClickableControl::OnMouseDown(const Point& position, const MouseMessage& message) {
 
-    if (message.GetMouseButton() == MouseButton::Left) {
+    if (message.MouseButton() == MouseButton::Left) {
         SetIsFocused(true);
         BeginPress(PressType::Mouse);
         CheckIsMousePressed(position, message);
@@ -83,7 +83,7 @@ bool ClickableControl::OnMouseDown(const Point& position, const MouseMessage& me
 bool ClickableControl::OnMouseUp(const Point& position, const MouseMessage& message) {
 
     if (is_mouse_press_) {
-        if (message.GetMouseButton() == MouseButton::Left) {
+        if (message.MouseButton() == MouseButton::Left) {
             EndPress(PressType::Mouse);
             return true;
         }
@@ -107,7 +107,7 @@ void ClickableControl::OnMouseRelease() {
 
 bool ClickableControl::OnKeyDown(const KeyMessage& message) {
 
-    if (message.wparam == VK_SPACE) {
+    if (message.VirtualKey() == VK_SPACE) {
         BeginPress(PressType::Key);
         return true;
     }
@@ -118,7 +118,7 @@ bool ClickableControl::OnKeyDown(const KeyMessage& message) {
 
 bool ClickableControl::OnKeyUp(const KeyMessage& message) {
 
-    if (message.wparam == VK_SPACE) {
+    if (message.VirtualKey() == VK_SPACE) {
         EndPress(PressType::Key);
         return true;
     }
@@ -186,7 +186,7 @@ void ClickableControl::CheckIsMousePressed(const Point& position, const MouseMes
     bool is_pressed = false;
 
     if (IsHovered() && IsCapturingMouse()) {
-        if (message.GetPressedMouseKeys() == MouseKey::LeftButton) {
+        if (message.PressedMouseKeys() == MouseKey::LeftButton) {
 
             zaf::Rect bound(Point(), Rect().size);
             if (bound.Contain(position)) {
