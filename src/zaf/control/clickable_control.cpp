@@ -185,7 +185,7 @@ void ClickableControl::CheckIsMousePressed(const Point& position, const MouseMes
 
     bool is_pressed = false;
 
-    if (IsHovered() && IsCapturingMouse()) {
+    if (IsMouseOver() && IsCapturingMouse()) {
         if (message.PressedMouseKeys() == MouseKey::LeftButton) {
 
             zaf::Rect bound(Point(), Rect().size);

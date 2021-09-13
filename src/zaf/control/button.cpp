@@ -45,8 +45,8 @@ void Button::Initialize() {
             return Color::FromRGB(internal::ButtonPressedBackgroundColorRGB);
         }
 
-        if (button.IsHovered()) {
-            return Color::FromRGB(internal::ButtonHoveredBackgroundColorRGB);
+        if (button.IsMouseOver()) {
+            return Color::FromRGB(internal::ButtonMouseOverBackgroundColorRGB);
         }
 
         return Color::FromRGB(0xe1e1e1);
@@ -61,7 +61,7 @@ void Button::Initialize() {
         }
 
         if (button.IsPressed() ||
-            button.IsHovered() || 
+            button.IsMouseOver() || 
             button.IsDefault()) {
             return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
         }

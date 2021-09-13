@@ -82,8 +82,8 @@ const ColorPicker GetBoxBackgroundColorPicker() {
             return Color::FromRGB(internal::ButtonPressedBackgroundColorRGB);;
         }
 
-        if (clickable_control.IsHovered()) {
-            return Color::FromRGB(internal::ButtonHoveredBackgroundColorRGB);
+        if (clickable_control.IsMouseOver()) {
+            return Color::FromRGB(internal::ButtonMouseOverBackgroundColorRGB);
         }
 
         return Color::FromRGB(internal::ControlContentColorRGB);
@@ -102,7 +102,7 @@ const ColorPicker GetBoxBorderColorPicker() {
         }
 
         if (clickable_control.IsPressed() ||
-            clickable_control.IsHovered()) {
+            clickable_control.IsMouseOver()) {
             return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
         }
 

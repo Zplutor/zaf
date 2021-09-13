@@ -127,7 +127,7 @@ ZAF_DEFINE_TYPE_END
 
 
 Control::Control() : 
-    is_hovered_(false), 
+    is_mouse_over_(false), 
     is_capturing_mouse_(false),
     is_focused_(false),
     can_focused_(DefaultCanFocused),
@@ -1248,10 +1248,10 @@ void Control::SetInteractiveProperty(bool new_value, bool& property_value, void(
 
     if (! new_value) {
 
-        if (IsHovered()) {
+        if (IsMouseOver()) {
             auto window = Window();
             if (window != nullptr) {
-                window->SetHoveredControl(nullptr, MouseMessage{ Message{} });
+                window->SetMouseOverControl(nullptr, MouseMessage{ Message{} });
             }
         }
 
@@ -1301,17 +1301,17 @@ void Control::OnIsSelectedChanged() {
 }
 
 
-void Control::IsHoveredChanged(bool is_hovered) {
+void Control::IsMouseOverChanged(bool is_mouse_over) {
 
-    if (is_hovered_ == is_hovered) {
+    if (is_mouse_over_ == is_mouse_over) {
         return;
     }
 
     auto point = GetMousePosition();
     
-    is_hovered_ = is_hovered;
+    is_mouse_over_ = is_mouse_over;
 
-    if (is_hovered_) {
+    if (is_mouse_over_) {
         OnMouseEnter(shared_from_this());
     }
     else {
@@ -1320,19 +1320,19 @@ void Control::IsHoveredChanged(bool is_hovered) {
 }
 
 
-bool Control::IsHoveredIndirectly() const {
+bool Control::IsMouseOverIndirectly() const {
 
     auto window = Window();
     if (window == nullptr) {
         return false;
     }
 
-    const auto& hovered_control = window->HoveredControl();
-    if (hovered_control == nullptr) {
+    const auto& mouse_over_control = window->MouseOverControl();
+    if (mouse_over_control == nullptr) {
         return false;
     }
 
-    return IsAncestorOf(hovered_control);
+    return IsAncestorOf(mouse_over_control);
 }
 
 
@@ -1539,11 +1539,11 @@ const Point Control::GetMousePosition() const {
 }
 
 
-void Control::RouteHoverMessage(const Point& position, const MouseMessage& message) {
+void Control::RouteMouseMoveMessage(const Point& position, const MouseMessage& message) {
 
     auto child = FindChildAtPosition(position);
     if (child != nullptr) {
-        child->RouteHoverMessage(ToChildPoint(position, child), message);
+        child->RouteMouseMoveMessage(ToChildPoint(position, child), message);
     }
     else {
 
@@ -1551,10 +1551,10 @@ void Control::RouteHoverMessage(const Point& position, const MouseMessage& messa
         if (window != nullptr) {
 
             if (IsEnabled()) {
-                window->SetHoveredControl(shared_from_this(), message);
+                window->SetMouseOverControl(shared_from_this(), message);
             }
             else {
-                window->SetHoveredControl(nullptr, MouseMessage{ Message{} });
+                window->SetMouseOverControl(nullptr, MouseMessage{ Message{} });
             }
         }
     }

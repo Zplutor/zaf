@@ -505,16 +505,16 @@ public:
     void SetIsSelected(bool is_selected);
 
     /**
-     Get a value indicating that whether the control itself is hovered.
+     Get a value indicating that whether the control itself is under mouse cursor.
      */
-    bool IsHovered() const {
-        return is_hovered_;
+    bool IsMouseOver() const {
+        return is_mouse_over_;
     }
 
     /**
-     Get a value indicating that whether one of the control's children is hovered.
+     Get a value indicating that whether one of the control's children is under mouse cursor.
      */
-    bool IsHoveredIndirectly() const;
+    bool IsMouseOverIndirectly() const;
 
     /**
      Get a value indicating that whether the control can be focused.
@@ -927,11 +927,11 @@ private:
         window_ = window;
     }
 
-    void IsHoveredChanged(bool is_hovered);
+    void IsMouseOverChanged(bool is_mouse_over);
     void IsFocusedChanged(bool is_focused);
     void IsCapturingMouseChanged(bool is_capturing_mouse);
 
-    void RouteHoverMessage(const Point& position, const MouseMessage& message);
+    void RouteMouseMoveMessage(const Point& position, const MouseMessage& message);
     bool RouteMessage(const Point& position, const MouseMessage& message);
     bool InterpretMessage(const Point& position, const MouseMessage& message);
 
@@ -1005,7 +1005,7 @@ private:
     BitmapRenderer cached_renderer_;
     zaf::Rect valid_cached_renderer_rect_;
 
-    bool is_hovered_;
+    bool is_mouse_over_;
     bool is_capturing_mouse_;
     bool is_focused_;
     bool can_focused_;

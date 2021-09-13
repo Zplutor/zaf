@@ -14,7 +14,7 @@ void MemberItem::Initialize() {
         if (IsSelected()) {
             return zaf::Color::FromRGB(0xAED2F6);
         }
-        else if (IsHovered()) {
+        else if (IsMouseOver()) {
             return zaf::Color::FromRGB(0xE0E9F2);
         }
         else {

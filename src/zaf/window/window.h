@@ -401,10 +401,10 @@ public:
     }
 
     /**
-     Get the control which is being hovered.
+     Get the control which is under mouse cursor.
      */
-    const std::shared_ptr<Control>& HoveredControl() const {
-        return hovered_control_;
+    const std::shared_ptr<Control>& MouseOverControl() const {
+        return mouse_over_control_;
     }
 
     /**
@@ -603,8 +603,8 @@ private:
     static void RegisterDefaultClass(HICON icon, HICON small_icon);
 
     void NeedRepaintRect(const zaf::Rect& rect);
-    void SetHoveredControl(
-        const std::shared_ptr<Control>& hovered_control, 
+    void SetMouseOverControl(
+        const std::shared_ptr<Control>& mouse_over_control, 
         const MouseMessage& message);
     void SetCaptureMouseControl(const std::shared_ptr<Control>& capture_control, bool is_releasing);
     void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
@@ -675,7 +675,7 @@ private:
     TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };
 
     std::shared_ptr<Control> root_control_;
-    std::shared_ptr<Control> hovered_control_;
+    std::shared_ptr<Control> mouse_over_control_;
     std::shared_ptr<Control> capturing_mouse_control_;
     std::shared_ptr<Control> focused_control_;
     std::shared_ptr<zaf::Caret> caret_;

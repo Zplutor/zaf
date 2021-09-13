@@ -62,7 +62,7 @@ ColorPicker ScrollBarThumb::GetThumbColorPicker() const {
                 return Color::FromRGB(0x808080);
             }
 
-            if (thumb.IsHovered()) {
+            if (thumb.IsMouseOver()) {
                 return Color::FromRGB(0xA9A9A9);
             }
 

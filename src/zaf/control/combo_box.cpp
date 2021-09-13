@@ -79,7 +79,7 @@ void ComboBox::Initialize() {
 
         const auto& combo_box = dynamic_cast<const ComboBox&>(control);
 
-        if (combo_box.IsPressed() || combo_box.IsHovered()) {
+        if (combo_box.IsPressed() || combo_box.IsMouseOver()) {
             return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
         }
 

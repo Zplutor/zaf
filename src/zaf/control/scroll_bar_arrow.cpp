@@ -80,7 +80,7 @@ ColorPicker ScrollBarArrow::GetArrowColorPicker() const {
                 return Color::FromRGB(0x306DD9);
             }
 
-            if (arrow.IsHovered()) {
+            if (arrow.IsMouseOver()) {
                 return Color::FromRGB(0x5080ef);
             }
 

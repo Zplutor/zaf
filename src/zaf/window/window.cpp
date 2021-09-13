@@ -105,7 +105,7 @@ ZAF_DEFINE_TYPE_PROPERTY(IsToolWindow)
 ZAF_DEFINE_TYPE_PROPERTY(Title)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(RootControl)
 ZAF_DEFINE_TYPE_PROPERTY(CapturingMouseControl)
-ZAF_DEFINE_TYPE_PROPERTY(HoveredControl)
+ZAF_DEFINE_TYPE_PROPERTY(MouseOverControl)
 ZAF_DEFINE_TYPE_PROPERTY(FocusedControl)
 ZAF_DEFINE_TYPE_PROPERTY(IsClosed)
 ZAF_DEFINE_TYPE_END
@@ -689,7 +689,7 @@ void Window::Resize(UINT width, UINT height) {
 
 std::optional<HitTestResult> Window::HitTest(const HitTestMessage& message) {
 
-    auto hovered_control = [&]() {
+    auto mouse_over_control = [&]() {
         
         Point mouse_position = message.MousePosition();
         std::shared_ptr<Control> current_control = root_control_;
@@ -709,7 +709,7 @@ std::optional<HitTestResult> Window::HitTest(const HitTestMessage& message) {
         return current_control;
     }();
 
-    return hovered_control->HitTest(message);
+    return mouse_over_control->HitTest(message);
 }
 
 
@@ -753,12 +753,12 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
         TrackMouseLeave(message);
 
         if (is_capturing_mouse) {
-            capturing_mouse_control_->RouteHoverMessage(
+            capturing_mouse_control_->RouteMouseMoveMessage(
                 get_mouse_position_to_capturing_control(),
                 message);
         }
         else {
-            root_control_->RouteHoverMessage(message.MousePosition(), message);
+            root_control_->RouteMouseMoveMessage(message.MousePosition(), message);
         }
     }
     else if (message.ID() == WM_MOUSELEAVE || message.ID() == WM_NCMOUSELEAVE) {
@@ -870,7 +870,7 @@ void Window::OnMouseLeave(const MouseMessage& message) {
 
     if (is_tracking_mouse) {
         track_mouse_mode_ = TrackMouseMode::None;
-        SetHoveredControl(nullptr, MouseMessage{ Message{} });
+        SetMouseOverControl(nullptr, MouseMessage{ Message{} });
     }
 }
 
@@ -879,8 +879,8 @@ bool Window::ChangeMouseCursor(const Message& message) {
 
     bool is_changed = false;
 
-    if (hovered_control_ != nullptr) {
-        hovered_control_->ChangeMouseCursor(message, is_changed);
+    if (mouse_over_control_ != nullptr) {
+        mouse_over_control_->ChangeMouseCursor(message, is_changed);
     }
 
     return is_changed;
@@ -932,33 +932,33 @@ void Window::OnWindowDestroyed(HWND handle) {
 }
 
 
-void Window::SetHoveredControl(
-    const std::shared_ptr<Control>& hovered_control, 
+void Window::SetMouseOverControl(
+    const std::shared_ptr<Control>& mouse_over_control, 
     const MouseMessage& message) {
 
-    if (hovered_control_ == hovered_control) {
+    if (mouse_over_control_ == mouse_over_control) {
         return;
     }
 
-    if (hovered_control != nullptr) {
+    if (mouse_over_control != nullptr) {
 
-        //The hovering control must be contained in this window
-        if (hovered_control->Window().get() != this) {
+        //The mouse over control must be contained in this window
+        if (mouse_over_control->Window().get() != this) {
             return;
         }
     }
 
-    if (hovered_control_ != nullptr) {
-        hovered_control_->IsHoveredChanged(false);
+    if (mouse_over_control_ != nullptr) {
+        mouse_over_control_->IsMouseOverChanged(false);
     }
 
-    hovered_control_ = hovered_control;
+    mouse_over_control_ = mouse_over_control;
 
-    if (hovered_control_ != nullptr) {
+    if (mouse_over_control_ != nullptr) {
 
-        //Window finds the hovered control when received WM_MOUSEMOVE,
+        //Window finds the mouse over control when received WM_MOUSEMOVE,
         //but WM_SETCURSOR is always received before WM_MOUSEMOVE, in such
-        //case the hovered control cannot change the cursor promptly. So 
+        //case the mouse over control cannot change the cursor promptly. So 
         //here, a simulated WM_SETCURSOR is posted to give a change to 
         //change the cursor immediately.
         PostMessage(
@@ -967,7 +967,7 @@ void Window::SetHoveredControl(
             reinterpret_cast<WPARAM>(Handle()),
             MAKELPARAM(message.HitTestResult(), message.ID()));
 
-        hovered_control_->IsHoveredChanged(true);
+        mouse_over_control_->IsMouseOverChanged(true);
     }
 }
 

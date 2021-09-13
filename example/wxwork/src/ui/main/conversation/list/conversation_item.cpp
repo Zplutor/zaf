@@ -53,7 +53,7 @@ void ConversationItem::Initialize() {
             return zaf::Color::FromRGB(0xE8F3FB);
         }
 
-        if (item.IsHovered() || item.IsHoveredIndirectly()) {
+        if (item.IsMouseOver() || item.IsMouseOverIndirectly()) {
             return zaf::Color::FromRGB(0xF3F8FA);
         }
 
