@@ -68,6 +68,7 @@ constexpr const wchar_t* const kFocusChangeEventPropertyName = L"FocusChangeEven
 constexpr const wchar_t* const kLayouterPropertyName = L"Layouter";
 constexpr const wchar_t* const kMouseEnterEventPropertyName = L"MouseEnterEvent";
 constexpr const wchar_t* const kMouseLeaveEventPropertyName = L"MouseLeaveEvent";
+constexpr const wchar_t* const kMouseHoverEventPropertyName = L"MouseHoverEvent";
 constexpr const wchar_t* const kRectChangeEventPropertyName = L"RectChangeEvent";
 constexpr const wchar_t* const AutoHeightPropertyName = L"AutoHeight";
 constexpr const wchar_t* const AutoWidthPropertyName = L"AutoWidth";
@@ -1312,10 +1313,10 @@ void Control::IsMouseOverChanged(bool is_mouse_over) {
     is_mouse_over_ = is_mouse_over;
 
     if (is_mouse_over_) {
-        OnMouseEnter(shared_from_this());
+        HandleMouseEnter(shared_from_this());
     }
     else {
-        OnMouseLeave(shared_from_this());
+        HandleMouseLeave(shared_from_this());
     }
 }
 
@@ -1512,6 +1513,13 @@ Observable<ControlMouseLeaveInfo> Control::MouseLeaveEvent() {
 }
 
 
+Observable<ControlMouseHoverInfo> Control::MouseHoverEvent() {
+    return GetEventObservable<ControlMouseHoverInfo>(
+        GetPropertyMap(),
+        kMouseHoverEventPropertyName);
+}
+
+
 Observable<ControlClickInfo> Control::ClickEvent() {
     return GetEventObservable<ControlClickInfo>(GetPropertyMap(), ClickEventPropertyName);
 }
@@ -1650,42 +1658,79 @@ bool Control::OnMouseMove(const Point& position, const MouseMessage& message) {
 }
 
 
-void Control::OnMouseEnter(const std::shared_ptr<Control>& entered_control) {
+void Control::HandleMouseEnter(const std::shared_ptr<Control>& entered_control) {
+
+    OnMouseEnter(entered_control);
 
     auto event_observer = GetEventObserver<ControlMouseEnterInfo>(
-        GetPropertyMap(), 
+        GetPropertyMap(),
         kMouseEnterEventPropertyName);
 
     if (event_observer) {
+
         ControlMouseEnterInfo event_info;
         event_info.control = shared_from_this();
         event_info.entered_control = entered_control;
         event_observer->OnNext(event_info);
     }
+}
 
-    auto parent = Parent();
-    if (parent != nullptr) {
+
+void Control::OnMouseEnter(const std::shared_ptr<Control>& entered_control) {
+
+    if (auto parent = Parent()) {
         parent->OnMouseEnter(entered_control);
     }
 }
 
 
-void Control::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
+void Control::HandleMouseLeave(const std::shared_ptr<Control>& leaved_control) {
+
+    OnMouseLeave(leaved_control);
 
     auto event_observer = GetEventObserver<ControlMouseLeaveInfo>(
         GetPropertyMap(),
         kMouseLeaveEventPropertyName);
 
     if (event_observer) {
+
         ControlMouseLeaveInfo event_info;
         event_info.control = shared_from_this();
         event_info.leaved_control = leaved_control;
         event_observer->OnNext(event_info);
     }
+}
 
-    auto parent = Parent();
-    if (parent != nullptr) {
+
+void Control::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
+
+    if (auto parent = Parent()) {
         parent->OnMouseLeave(leaved_control);
+    }
+}
+
+
+void Control::HandleMouveHover() {
+
+    OnMouseHover();
+
+    auto event_observer = GetEventObserver<ControlMouseHoverInfo>(
+        GetPropertyMap(),
+        kMouseHoverEventPropertyName);
+
+    if (event_observer) {
+
+        ControlMouseHoverInfo event_info;
+        event_info.control = shared_from_this();
+        event_observer->OnNext(event_info);
+    }
+}
+
+
+void Control::OnMouseHover() {
+
+    if (auto parent = Parent()) {
+        parent->OnMouseHover();
     }
 }
 

@@ -36,6 +36,7 @@ class ControlDoubleClickInfo;
 class ControlFocusChangeInfo;
 class ControlMouseEnterInfo;
 class ControlMouseLeaveInfo;
+class ControlMouseHoverInfo;
 class ControlRectChangeInfo;
 class KeyMessage;
 class Message;
@@ -637,6 +638,7 @@ public:
 
     Observable<ControlMouseEnterInfo> MouseEnterEvent();
     Observable<ControlMouseLeaveInfo> MouseLeaveEvent();
+    Observable<ControlMouseHoverInfo> MouseHoverEvent();
 
     Observable<ControlClickInfo> ClickEvent();
     Observable<ControlDoubleClickInfo> DoubleClickEvent();
@@ -776,6 +778,8 @@ protected:
      call the same method of base class if they don't process the notifiction.
      */
     virtual void OnMouseLeave(const std::shared_ptr<Control>& leaved_control);
+
+    virtual void OnMouseHover();
 
     /**
      Process the mouse down notification.
@@ -930,7 +934,7 @@ private:
     void IsMouseOverChanged(bool is_mouse_over);
     void IsFocusedChanged(bool is_focused);
     void IsCapturingMouseChanged(bool is_capturing_mouse);
-
+    void HandleMouveHover();
     void RouteMouseMoveMessage(const Point& position, const MouseMessage& message);
     bool RouteMessage(const Point& position, const MouseMessage& message);
     bool InterpretMessage(const Point& position, const MouseMessage& message);
@@ -991,6 +995,9 @@ private:
     bool HandleClickOnMouseDown();
     bool HandleClickOnMouseUp();
 
+    void HandleMouseEnter(const std::shared_ptr<Control>& entered_control);
+    void HandleMouseLeave(const std::shared_ptr<Control>& leaved_control);
+
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
 
 private:
@@ -1047,6 +1054,12 @@ class ControlMouseEnterInfo {
 public:
     std::shared_ptr<Control> control;
     std::shared_ptr<Control> entered_control;
+};
+
+
+class ControlMouseHoverInfo {
+public:
+    std::shared_ptr<Control> control;
 };
 
 

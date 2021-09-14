@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include <WindowsX.h>
 #include <zaf/application.h>
 #include <zaf/base/log.h>
 #include <zaf/base/container/utility/find.h>
@@ -44,6 +45,40 @@
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
 
+class Window : public zaf::Window {
+public:
+    void AfterParse() override {
+
+        __super::AfterParse();
+
+        auto label = zaf::Create<zaf::Label>();
+        label->SetRect(zaf::Rect{ 20, 20, 100, 30 });
+        label->SetText(L"Label");
+        Subscriptions() += label->MouseHoverEvent().Subscribe(
+            [this](const zaf::ControlMouseHoverInfo& event_info) {
+        
+            OutputDebugString(L"Label hover");
+        });
+        this->RootControl()->AddChild(label);
+
+        auto button = zaf::Create<zaf::Button>();
+        button->SetRect(zaf::Rect{ 20, 60, 100, 30 });
+        button->SetText(L"Button");
+        Subscriptions() += button->MouseHoverEvent().Subscribe(
+            [this](const zaf::ControlMouseHoverInfo& event_info) {
+        
+            OutputDebugString(L"Button hover");
+        });
+        this->RootControl()->AddChild(button);
+    }
+
+protected:
+    bool ReceiveMessage(const zaf::Message& message, LRESULT& result) override {
+        return __super::ReceiveMessage(message, result);
+    }
+};
+
+
 int WINAPI WinMain(
     HINSTANCE /* hInstance */,
     HINSTANCE /* hPrevInstance */,
@@ -61,7 +96,7 @@ int WINAPI WinMain(
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
-    auto window = zaf::Create<zaf::Window>();
+    auto window = zaf::Create<Window>();
 
     window->SetClientSize(zaf::Size{ 400, 300 });
     window->Show();

@@ -645,8 +645,10 @@ private:
     bool ReceiveMouseMessage(const MouseMessage& message);
     void HighlightControlAtPosition(const Point& position);
     void SelectInspectedControl();
-    void TrackMouseLeave(const MouseMessage& message);
-    void OnMouseLeave(const MouseMessage& message);
+    void TrackMouseByMouseMove(const MouseMessage& message);
+    void TrackMouse(bool is_non_client);
+    void OnMouseHover(const Message& message);
+    void OnMouseLeave(const Message& message);
     bool ChangeMouseCursor(const Message& message);
     bool ReceiveCloseMessage();
     void ReceiveDestroyMessage();

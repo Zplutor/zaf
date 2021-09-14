@@ -513,8 +513,6 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
 
     case WM_MOUSEMOVE:
     case WM_NCMOUSEMOVE:
-    case WM_MOUSELEAVE:
-    case WM_NCMOUSELEAVE:
     case WM_LBUTTONDOWN:
     case WM_NCLBUTTONDOWN:
     case WM_LBUTTONUP:
@@ -524,6 +522,16 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
     case WM_RBUTTONDOWN:
     case WM_RBUTTONUP:
         return ReceiveMouseMessage(MouseMessage{ message });
+
+    case WM_MOUSEHOVER:
+    case WM_NCMOUSEHOVER:
+        OnMouseHover(message);
+        return true;
+
+    case WM_MOUSELEAVE:
+    case WM_NCMOUSELEAVE:
+        OnMouseLeave(message);
+        return true;
 
     case WM_KEYDOWN: 
         if (focused_control_ != nullptr) {
@@ -750,7 +758,7 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
             return true;
         }
 
-        TrackMouseLeave(message);
+        TrackMouseByMouseMove(message);
 
         if (is_capturing_mouse) {
             capturing_mouse_control_->RouteMouseMoveMessage(
@@ -760,9 +768,6 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
         else {
             root_control_->RouteMouseMoveMessage(message.MousePosition(), message);
         }
-    }
-    else if (message.ID() == WM_MOUSELEAVE || message.ID() == WM_NCMOUSELEAVE) {
-        OnMouseLeave(message);
     }
     else if (message.ID() == WM_LBUTTONDOWN || message.ID() == WM_RBUTTONDOWN) {
         if (is_selecting_inspector_control_) {
@@ -813,17 +818,19 @@ void Window::SelectInspectedControl() {
 }
 
 
-void Window::TrackMouseLeave(const MouseMessage& message) {
+void Window::TrackMouseByMouseMove(const MouseMessage& message) {
 
-    auto is_tracking_mouse = [&]() {
+    bool is_non_client = message.ID() == WM_NCMOUSEMOVE;
+
+    auto is_tracking_mouse = [this, is_non_client]() {
 
         if (track_mouse_mode_ == TrackMouseMode::ClientArea &&
-            message.ID() == WM_MOUSEMOVE) {
+            !is_non_client) {
             return true;
         }
 
         if (track_mouse_mode_ == TrackMouseMode::NonClientArea &&
-            message.ID() == WM_NCMOUSEMOVE) {
+            is_non_client) {
             return true;
         }
 
@@ -834,34 +841,68 @@ void Window::TrackMouseLeave(const MouseMessage& message) {
         return;
     }
 
-    TRACKMOUSEEVENT track_mouse_event_param = { 0 };
+    TrackMouse(is_non_client);
+}
+
+
+void Window::TrackMouse(bool is_non_client) {
+
+    TRACKMOUSEEVENT track_mouse_event_param {};
     track_mouse_event_param.cbSize = sizeof(track_mouse_event_param);
-    track_mouse_event_param.dwFlags = TME_LEAVE;
-    if (message.ID() == WM_NCMOUSEMOVE) {
+    track_mouse_event_param.dwFlags = TME_LEAVE | TME_HOVER;
+    if (is_non_client) {
         track_mouse_event_param.dwFlags |= TME_NONCLIENT;
     }
     track_mouse_event_param.hwndTrack = handle_;
 
     if (TrackMouseEvent(&track_mouse_event_param)) {
-        track_mouse_mode_ = 
-            message.ID() == WM_NCMOUSEMOVE ? 
+
+        track_mouse_mode_ =
+            is_non_client ?
             TrackMouseMode::NonClientArea :
             TrackMouseMode::ClientArea;
     }
 }
 
 
-void Window::OnMouseLeave(const MouseMessage& message) {
+void Window::OnMouseHover(const Message& message) {
 
     bool is_tracking_mouse = [&]() {
-    
+
         if (track_mouse_mode_ == TrackMouseMode::ClientArea &&
-            message.ID() == WM_MOUSELEAVE) {
+            message.id == WM_MOUSEHOVER) {
             return true;
         }
 
         if (track_mouse_mode_ == TrackMouseMode::NonClientArea &&
-            message.ID() == WM_NCMOUSELEAVE) {
+            message.id == WM_NCMOUSEHOVER) {
+            return true;
+        }
+
+        return false;
+    }();
+
+    if (!is_tracking_mouse) {
+        return;
+    }
+
+    if (mouse_over_control_) {
+        mouse_over_control_->HandleMouveHover();
+    }
+}
+
+
+void Window::OnMouseLeave(const Message& message) {
+
+    bool is_tracking_mouse = [&]() {
+    
+        if (track_mouse_mode_ == TrackMouseMode::ClientArea &&
+            message.id == WM_MOUSELEAVE) {
+            return true;
+        }
+
+        if (track_mouse_mode_ == TrackMouseMode::NonClientArea &&
+            message.id == WM_NCMOUSELEAVE) {
             return true;
         }
 
@@ -968,6 +1009,10 @@ void Window::SetMouseOverControl(
             MAKELPARAM(message.HitTestResult(), message.ID()));
 
         mouse_over_control_->IsMouseOverChanged(true);
+
+        //Track mouse again to generate next mouse hover message.
+        //TODO: Find out whether the new control is in non-client area.
+        TrackMouse(false);
     }
 }
 
