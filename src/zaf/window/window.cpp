@@ -15,6 +15,7 @@
 #include <zaf/serialization/properties.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/inspector/inspector_window.h>
+#include <zaf/window/tooltip_window.h>
 #include <zaf/window/message/hit_test_message.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
@@ -83,7 +84,9 @@ ZAF_DEFINE_TYPE_PROPERTY(InitialRectStyle)
 ZAF_DEFINE_TYPE_PROPERTY(Rect)
 ZAF_DEFINE_TYPE_PROPERTY(Position)
 ZAF_DEFINE_TYPE_PROPERTY(Size)
-ZAF_DEFINE_TYPE_PROPERTY(ClientSize)
+ZAF_DEFINE_TYPE_PROPERTY(ContentSize)
+ZAF_DEFINE_TYPE_PROPERTY(ContentWidth)
+ZAF_DEFINE_TYPE_PROPERTY(ContentHeight)
 ZAF_DEFINE_TYPE_PROPERTY(MinSize)
 ZAF_DEFINE_TYPE_PROPERTY(MaxSize)
 ZAF_DEFINE_TYPE_PROPERTY(Width)
@@ -92,7 +95,6 @@ ZAF_DEFINE_TYPE_PROPERTY(MaxWidth)
 ZAF_DEFINE_TYPE_PROPERTY(Height)
 ZAF_DEFINE_TYPE_PROPERTY(MinHeight)
 ZAF_DEFINE_TYPE_PROPERTY(MaxHeight)
-ZAF_DEFINE_TYPE_PROPERTY(ClientRect)
 ZAF_DEFINE_TYPE_PROPERTY(ActivateOption)
 ZAF_DEFINE_TYPE_PROPERTY(IsPopup)
 ZAF_DEFINE_TYPE_PROPERTY(HasBorder)
@@ -509,7 +511,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         if (RedirectMouseWheelMessage(message)) {
             return true;
         }
-        //Fall through
+        return ReceiveMouseMessage(MouseWheelMessage{ message });
 
     case WM_MOUSEMOVE:
     case WM_NCMOUSEMOVE:
@@ -889,6 +891,8 @@ void Window::OnMouseHover(const Message& message) {
     if (mouse_over_control_) {
         mouse_over_control_->HandleMouveHover();
     }
+
+    TryToShowTooltipWindow();
 }
 
 
@@ -928,6 +932,29 @@ bool Window::ChangeMouseCursor(const Message& message) {
 }
 
 
+void Window::TryToShowTooltipWindow() {
+
+    if (!mouse_over_control_) {
+        return;
+    }
+
+    if (!tooltip_window_) {
+        tooltip_window_ = zaf::Create<zaf::TooltipWindow>();
+        tooltip_window_->SetOwner(shared_from_this());
+    }
+
+    tooltip_window_->SetText(L"Tooltip");
+    tooltip_window_->ShowBelowMouseCursor();
+}
+
+
+void Window::HideTooltipWindow() {
+    if (tooltip_window_) {
+        tooltip_window_->Hide();
+    }
+}
+
+
 bool Window::ReceiveCloseMessage() {
 
     bool can_close = CloseHandler()(*this);
@@ -953,6 +980,7 @@ void Window::ReceiveDestroyMessage() {
 
     handle_ = nullptr;
     renderer_.Reset();
+    tooltip_window_.reset();
 
     OnWindowDestroyed(old_handle);
 }
@@ -1014,6 +1042,8 @@ void Window::SetMouseOverControl(
         //TODO: Find out whether the new control is in non-client area.
         TrackMouse(false);
     }
+
+    HideTooltipWindow();
 }
 
 
@@ -1177,7 +1207,15 @@ void Window::SetRect(const zaf::Rect& rect) {
 }
 
 
-void Window::SetClientSize(const zaf::Size& size) {
+zaf::Size Window::ContentSize() const {
+
+    RECT client_rect;
+    ::GetClientRect(handle_, &client_rect);
+    return Rect::FromRECT(client_rect).size;
+}
+
+
+void Window::SetContentSize(const zaf::Size& size) {
 
     auto adjusted_rect = zaf::Rect{ Point{}, size }.ToRECT();
 
@@ -1294,14 +1332,6 @@ void Window::SetMaxHeight(float max_height) {
     if (Height() > max_height) {
         SetHeight(max_height);
     }
-}
-
-
-Rect Window::ClientRect() const {
-
-    RECT rect = { 0 };
-    ::GetClientRect(handle_, &rect);
-    return Rect::FromRECT(rect);
 }
 
 

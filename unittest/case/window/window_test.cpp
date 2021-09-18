@@ -2,11 +2,11 @@
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 
-TEST(WindowTest, SetClientSize) {
+TEST(WindowTest, SetContentSize) {
 
     auto window = zaf::Create<zaf::Window>();
     window->SetRect(zaf::Rect{ 100, 100, 200, 300 });
-    window->SetClientSize(zaf::Size{ 200, 300 });
+    window->SetContentSize(zaf::Size{ 200, 300 });
 
     ASSERT_EQ(window->Position(), zaf::Point(100, 100));
 

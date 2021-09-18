@@ -107,7 +107,7 @@ void MainWindow::InitializeButtons() {
 
 
 float MainWindow::GetContentWidth() const {
-    return ClientRect().size.width - kContentMargin * 2;
+    return ContentSize().width - kContentMargin * 2;
 }
 
 

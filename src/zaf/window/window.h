@@ -21,6 +21,7 @@ class Caret;
 class HitTestMessage;
 class InspectorWindow;
 class MouseMessage;
+class TooltipWindow;
 class WindowDestroyInfo;
 class WindowReceiveMessageInfo;
 enum class HitTestResult;
@@ -134,7 +135,24 @@ public:
         SetRect(zaf::Rect(Rect().position, size));
     }
 
-    void SetClientSize(const zaf::Size& size);
+    zaf::Size ContentSize() const;
+    void SetContentSize(const zaf::Size& size);
+
+    float ContentWidth() const {
+        return ContentSize().width;
+    }
+
+    void SetContentWidth(float width) {
+        SetContentSize(zaf::Size{ width, ContentSize().height });
+    }
+
+    float ContentHeight() const {
+        return ContentSize().height;
+    }
+
+    void SetContentHeight(float height) {
+        SetContentSize(zaf::Size{ ContentSize().width, height });
+    }
 
     /**
      Get window's minimum size.
@@ -233,11 +251,6 @@ public:
      Set window's maximum height.
      */
     void SetMaxHeight(float max_height);
-
-    /**
-     Get window's client rect.
-     */
-    zaf::Rect ClientRect() const;
 
     /**
      Get window's activate option.
@@ -649,6 +662,8 @@ private:
     void TrackMouse(bool is_non_client);
     void OnMouseHover(const Message& message);
     void OnMouseLeave(const Message& message);
+    void TryToShowTooltipWindow();
+    void HideTooltipWindow();
     bool ChangeMouseCursor(const Message& message);
     bool ReceiveCloseMessage();
     void ReceiveDestroyMessage();
@@ -681,6 +696,7 @@ private:
     std::shared_ptr<Control> capturing_mouse_control_;
     std::shared_ptr<Control> focused_control_;
     std::shared_ptr<zaf::Caret> caret_;
+    std::shared_ptr<TooltipWindow> tooltip_window_;
 
     PropertyMap property_map_;
 

@@ -191,6 +191,7 @@
     <ClCompile Include="src\zaf\window\internal\inner_message_only_window.cpp" />
     <ClCompile Include="src\zaf\window\message\internal\mouse_position_conversion.cpp" />
     <ClCompile Include="src\zaf\window\message\mouse_message.cpp" />
+    <ClCompile Include="src\zaf\window\tooltip_window.cpp" />
     <ClCompile Include="src\zaf\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -496,6 +497,7 @@
     <ClInclude Include="src\zaf\window\message\message_shim.h" />
     <ClInclude Include="src\zaf\window\message\mouse_message.h" />
     <ClInclude Include="src\zaf\window\message_only_window.h" />
+    <ClInclude Include="src\zaf\window\tooltip_window.h" />
     <ClInclude Include="src\zaf\window\window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
