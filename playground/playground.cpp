@@ -86,45 +86,6 @@ int WINAPI WinMain(
     int /* nCmdShow */
 ) {
 
-    HCURSOR cursor = GetCursor();
-    ICONINFO info{};
-    BOOL b = GetIconInfo(cursor, &info);
-
-    BITMAP bitmap{};
-    b = GetObject(info.hbmMask, sizeof(bitmap), &bitmap);
-
-    HDC dc = GetDC(nullptr);
-
-    int byte_count = bitmap.bmWidth * bitmap.bmHeight * bitmap.bmBitsPixel / 8;
-    auto buffer = std::make_unique<std::uint8_t[]>(byte_count);
-    BITMAPINFOHEADER bitmap_header{};
-    bitmap_header.biSize = sizeof(bitmap_header);
-    bitmap_header.biWidth = bitmap.bmWidth;
-    bitmap_header.biHeight = bitmap.bmHeight;
-    bitmap_header.biPlanes = bitmap.bmPlanes;
-    bitmap_header.biBitCount = bitmap.bmBitsPixel;
-    bitmap_header.biCompression = BI_RGB;
-    b = GetDIBits(dc, info.hbmMask, 0, bitmap.bmHeight, buffer.get(), (BITMAPINFO*)&bitmap_header, DIB_RGB_COLORS);
-
-    int line_length = (bitmap.bmWidth * bitmap.bmBitsPixel) / 8;
-    int line_count = byte_count / line_length;
-
-    int result{};
-
-    for (int index = 0; index < line_count; ++index) {
-
-        std::uint8_t* line_start = buffer.get() + (index * line_length);
-        std::uint8_t* line_end = buffer.get() + ((index + 1) * line_length);
-
-        for (auto current = line_start; current < line_end; ++current) {
-
-            if (*current != 0xff) {
-                ++result;
-                break;
-            }
-        }
-    }
-
     auto& application = zaf::Application::Instance();
     application.Subscriptions() += application.BeginRunEvent().Subscribe(BeginRun);
 

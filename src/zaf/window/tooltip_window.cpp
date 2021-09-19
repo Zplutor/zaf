@@ -8,7 +8,7 @@ namespace {
 
 int CalculateCursorHeight(const std::uint8_t* buffer, int byte_count, const BITMAP& cursor_bitmap) {
 
-    int line_length = (cursor_bitmap.bmWidth * cursor_bitmap.bmBitsPixel) / sizeof(std::uint8_t);
+    int line_length = (cursor_bitmap.bmWidth * cursor_bitmap.bmBitsPixel) / 8;
     int line_count = byte_count / line_length;
 
     int result{};
@@ -50,15 +50,18 @@ std::optional<int> GetCursorHeightByCursorInfo(const ICONINFO& cursor_info) {
         byte_count += 1;
     }
 
-    auto buffer = std::make_unique<std::uint8_t[]>(byte_count);
+    auto bits_buffer = std::make_unique<std::uint8_t[]>(byte_count);
+    auto bitmap_info_buffer = std::make_unique<std::uint8_t[]>(
+        sizeof(BITMAPINFOHEADER) + 
+        sizeof(RGBQUAD) * std::pow(2, cursor_bitmap.bmBitsPixel));
 
-    BITMAPINFOHEADER bitmap_header{};
-    bitmap_header.biSize = sizeof(bitmap_header);
-    bitmap_header.biWidth = cursor_bitmap.bmWidth;
-    bitmap_header.biHeight = bitmap_height;
-    bitmap_header.biPlanes = cursor_bitmap.bmPlanes;
-    bitmap_header.biBitCount = cursor_bitmap.bmBitsPixel;
-    bitmap_header.biCompression = BI_RGB;
+    auto bitmap_info_header = reinterpret_cast<BITMAPINFOHEADER*>(bitmap_info_buffer.get());
+    bitmap_info_header->biSize = sizeof(BITMAPINFOHEADER);
+    bitmap_info_header->biWidth = cursor_bitmap.bmWidth;
+    bitmap_info_header->biHeight = bitmap_height;
+    bitmap_info_header->biPlanes = cursor_bitmap.bmPlanes;
+    bitmap_info_header->biBitCount = cursor_bitmap.bmBitsPixel;
+    bitmap_info_header->biCompression = BI_RGB;
 
     HDC dc = GetDC(nullptr);
     is_succeeded = GetDIBits(
@@ -66,8 +69,8 @@ std::optional<int> GetCursorHeightByCursorInfo(const ICONINFO& cursor_info) {
         cursor_info.hbmMask, 
         0, 
         bitmap_height,
-        buffer.get(), 
-        reinterpret_cast<BITMAPINFO*>(&bitmap_header),
+        bits_buffer.get(), 
+        reinterpret_cast<BITMAPINFO*>(bitmap_info_header),
         DIB_RGB_COLORS);
 
     ReleaseDC(nullptr, dc);
@@ -76,7 +79,7 @@ std::optional<int> GetCursorHeightByCursorInfo(const ICONINFO& cursor_info) {
         return std::nullopt;
     }
 
-    return CalculateCursorHeight(buffer.get(), byte_count, cursor_bitmap);
+    return CalculateCursorHeight(bits_buffer.get(), byte_count, cursor_bitmap);
 }
 
 
