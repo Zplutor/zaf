@@ -116,6 +116,7 @@ void TooltipWindow::Initialize() {
     this->SetHasTitleBar(false);
     this->SetIsSizable(false);
     this->SetIsToolWindow(true);
+    this->SetIsTopmost(true);
     this->SetActivateOption(ActivateOption::NoActivate);
     this->SetInitialRectStyle(InitialRectStyle::Custom);
 

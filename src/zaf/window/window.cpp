@@ -38,6 +38,7 @@ constexpr const wchar_t* const kInitialRectStylePropertyName = L"InitialRectStyl
 constexpr const wchar_t* const kIsPopupPropertyName = L"IsPopup";
 constexpr const wchar_t* const kIsSizablePropertyName = L"IsSizable";
 constexpr const wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
+constexpr const wchar_t* const kIsTopmostPropertyName = L"IsTopmost";
 constexpr const wchar_t* const kOwnerPropertyName = L"Owner";
 constexpr const wchar_t* const kReceiveMessageEventPropertyName = L"ReceiveMessageEvent";
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
@@ -104,6 +105,7 @@ ZAF_DEFINE_TYPE_PROPERTY(HasSystemMenu)
 ZAF_DEFINE_TYPE_PROPERTY(CanMinimize)
 ZAF_DEFINE_TYPE_PROPERTY(CanMaximize)
 ZAF_DEFINE_TYPE_PROPERTY(IsToolWindow)
+ZAF_DEFINE_TYPE_PROPERTY(IsTopmost)
 ZAF_DEFINE_TYPE_PROPERTY(Title)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(RootControl)
 ZAF_DEFINE_TYPE_PROPERTY(CapturingMouseControl)
@@ -304,6 +306,10 @@ void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) con
 
     if (IsToolWindow()) {
         handle_extra_style |= WS_EX_TOOLWINDOW;
+    }
+
+    if (IsTopmost()) {
+        handle_extra_style |= WS_EX_TOPMOST;
     }
 
     auto activate_option = ActivateOption();
@@ -771,15 +777,23 @@ bool Window::ReceiveMouseMessage(const MouseMessage& message) {
             root_control_->RouteMouseMoveMessage(message.MousePosition(), message);
         }
     }
-    else if (message.ID() == WM_LBUTTONDOWN || message.ID() == WM_RBUTTONDOWN) {
-        if (is_selecting_inspector_control_) {
-            SelectInspectedControl();
-            return true;
+    else {
+
+        HideTooltipWindow();
+
+        if (message.ID() == WM_LBUTTONDOWN || message.ID() == WM_RBUTTONDOWN) {
+            if (is_selecting_inspector_control_) {
+                SelectInspectedControl();
+                return true;
+            }
         }
     }
 
     if (is_capturing_mouse) {
-        return capturing_mouse_control_->RouteMessage(get_mouse_position_to_capturing_control(), message);
+
+        return capturing_mouse_control_->RouteMessage(
+            get_mouse_position_to_capturing_control(), 
+            message);
     }
     else {
         return root_control_->RouteMessage(message.MousePosition(), message);
@@ -1476,6 +1490,21 @@ bool Window::IsToolWindow() const {
 
 void Window::SetIsToolWindow(bool is_tool_window) {
     SetStyleProperty(kIsToolWindowPropertyName, WS_EX_TOOLWINDOW, is_tool_window, true);
+}
+
+
+bool Window::IsTopmost() const {
+
+    auto is_set = GetPropertyMap().TryGetProperty<bool>(kIsTopmostPropertyName);
+    if (is_set) {
+        return *is_set;
+    }
+    return false;
+}
+
+
+void Window::SetIsTopmost(bool is_topmost) {
+    SetStyleProperty(kIsTopmostPropertyName, WS_EX_TOPMOST, is_topmost, true);
 }
 
 

@@ -382,6 +382,9 @@ public:
      */
     void SetIsToolWindow(bool is_tool_window);
 
+    bool IsTopmost() const;
+    void SetIsTopmost(bool is_topmost);
+
     /**
      Get window's title.
 
