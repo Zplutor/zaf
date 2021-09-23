@@ -938,12 +938,17 @@ void Window::TryToShowTooltipWindow() {
         return;
     }
 
+    auto tooltip = mouse_over_control_->Tooltip();
+    if (tooltip.empty()) {
+        return;
+    }
+
     if (!tooltip_window_) {
         tooltip_window_ = zaf::Create<zaf::TooltipWindow>();
         tooltip_window_->SetOwner(shared_from_this());
     }
 
-    tooltip_window_->SetText(L"Tooltip");
+    tooltip_window_->SetText(tooltip);
     tooltip_window_->ShowBelowMouseCursor();
 }
 

@@ -54,6 +54,7 @@ public:
         auto label = zaf::Create<zaf::Label>();
         label->SetRect(zaf::Rect{ 20, 20, 100, 30 });
         label->SetText(L"Label");
+        label->SetTooltip(L"This is a label");
         Subscriptions() += label->MouseHoverEvent().Subscribe(
             [this](const zaf::ControlMouseHoverInfo& event_info) {
         
@@ -64,6 +65,7 @@ public:
         auto button = zaf::Create<zaf::Button>();
         button->SetRect(zaf::Rect{ 20, 60, 100, 30 });
         button->SetText(L"Button");
+        button->SetTooltip(L"This is a button");
         Subscriptions() += button->MouseHoverEvent().Subscribe(
             [this](const zaf::ControlMouseHoverInfo& event_info) {
         
@@ -97,7 +99,6 @@ int WINAPI WinMain(
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
     auto window = zaf::Create<Window>();
-
     window->SetContentSize(zaf::Size{ 400, 300 });
     window->Show();
 

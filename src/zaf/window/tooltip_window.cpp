@@ -53,7 +53,7 @@ std::optional<int> GetCursorHeightByCursorInfo(const ICONINFO& cursor_info) {
     auto bits_buffer = std::make_unique<std::uint8_t[]>(byte_count);
     auto bitmap_info_buffer = std::make_unique<std::uint8_t[]>(
         sizeof(BITMAPINFOHEADER) + 
-        sizeof(RGBQUAD) * std::pow(2, cursor_bitmap.bmBitsPixel));
+        sizeof(RGBQUAD) * static_cast<std::size_t>(std::pow(2, cursor_bitmap.bmBitsPixel)));
 
     auto bitmap_info_header = reinterpret_cast<BITMAPINFOHEADER*>(bitmap_info_buffer.get());
     bitmap_info_header->biSize = sizeof(BITMAPINFOHEADER);
@@ -121,6 +121,7 @@ void TooltipWindow::Initialize() {
 
     label_ = zaf::Create<zaf::Label>();
     label_->SetPadding(Frame{ 5, 5, 5, 5});
+    label_->SetBackgroundColor(zaf::Color::White());
     this->SetRootControl(label_);
 }
 
@@ -149,9 +150,11 @@ void TooltipWindow::ShowBelowMouseCursor() {
         return;
     }
 
+    constexpr float y_margin = 2;
+
     Point window_position;
     window_position.x = static_cast<float>(cursor_position.x);
-    window_position.y = static_cast<float>(cursor_position.y + *cursor_height);
+    window_position.y = static_cast<float>(cursor_position.y + *cursor_height + y_margin);
     this->SetPosition(window_position);
     this->Show();
 }

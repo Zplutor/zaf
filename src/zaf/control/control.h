@@ -587,6 +587,9 @@ public:
     bool CanDoubleClick() const;
     void SetCanDoubleClick(bool can_double_click);
 
+    std::wstring Tooltip() const;
+    void SetTooltip(const std::wstring& tooltip);
+
     /**
      Capture the mouse.
      */

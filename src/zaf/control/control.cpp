@@ -76,6 +76,7 @@ constexpr const wchar_t* const CanClickPropertyName = L"CanClick";
 constexpr const wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
 constexpr const wchar_t* const ClickEventPropertyName = L"ClickEvent";
 constexpr const wchar_t* const DoubleClickEventPropertyName = L"DoubleClickEvent";
+constexpr const wchar_t* const TooltipPropertyName = L"Tooltip";
 
 constexpr bool DefaultCanFocused = false;
 constexpr bool DefaultIsEnabled = true;
@@ -124,6 +125,7 @@ ZAF_DEFINE_TYPE_PROPERTY(Window)
 ZAF_DEFINE_TYPE_PROPERTY(CanClick)
 ZAF_DEFINE_TYPE_PROPERTY(CanDoubleClick)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(Layouter)
+ZAF_DEFINE_TYPE_PROPERTY(Tooltip)
 ZAF_DEFINE_TYPE_END
 
 
@@ -1451,6 +1453,20 @@ bool Control::CanDoubleClick() const {
 
 void Control::SetCanDoubleClick(bool can_double_click) {
     GetPropertyMap().SetProperty(CanDoubleClickPropertyName, can_double_click);
+}
+
+
+std::wstring Control::Tooltip() const {
+
+    auto value = GetPropertyMap().TryGetProperty<std::wstring>(TooltipPropertyName);
+    if (value) {
+        return *value;
+    }
+    return std::wstring{};
+}
+
+void Control::SetTooltip(const std::wstring& tooltip) {
+    GetPropertyMap().SetProperty(TooltipPropertyName, tooltip);
 }
 
 
