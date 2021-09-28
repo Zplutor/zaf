@@ -1310,15 +1310,13 @@ void Control::IsMouseOverChanged(bool is_mouse_over) {
         return;
     }
 
-    auto point = GetMousePosition();
-    
     is_mouse_over_ = is_mouse_over;
 
     if (is_mouse_over_) {
-        HandleMouseEnter(shared_from_this());
+        OnMouseEnter(shared_from_this());
     }
     else {
-        HandleMouseLeave(shared_from_this());
+        OnMouseLeave(shared_from_this());
     }
 }
 
@@ -1674,9 +1672,7 @@ bool Control::OnMouseMove(const Point& position, const MouseMessage& message) {
 }
 
 
-void Control::HandleMouseEnter(const std::shared_ptr<Control>& entered_control) {
-
-    OnMouseEnter(entered_control);
+void Control::OnMouseEnter(const std::shared_ptr<Control>& entered_control) {
 
     auto event_observer = GetEventObserver<ControlMouseEnterInfo>(
         GetPropertyMap(),
@@ -1689,10 +1685,6 @@ void Control::HandleMouseEnter(const std::shared_ptr<Control>& entered_control) 
         event_info.entered_control = entered_control;
         event_observer->OnNext(event_info);
     }
-}
-
-
-void Control::OnMouseEnter(const std::shared_ptr<Control>& entered_control) {
 
     if (auto parent = Parent()) {
         parent->OnMouseEnter(entered_control);
@@ -1700,9 +1692,7 @@ void Control::OnMouseEnter(const std::shared_ptr<Control>& entered_control) {
 }
 
 
-void Control::HandleMouseLeave(const std::shared_ptr<Control>& leaved_control) {
-
-    OnMouseLeave(leaved_control);
+void Control::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
 
     auto event_observer = GetEventObserver<ControlMouseLeaveInfo>(
         GetPropertyMap(),
@@ -1715,10 +1705,6 @@ void Control::HandleMouseLeave(const std::shared_ptr<Control>& leaved_control) {
         event_info.leaved_control = leaved_control;
         event_observer->OnNext(event_info);
     }
-}
-
-
-void Control::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
 
     if (auto parent = Parent()) {
         parent->OnMouseLeave(leaved_control);
@@ -1728,7 +1714,11 @@ void Control::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
 
 void Control::HandleMouveHover() {
 
-    OnMouseHover();
+    OnMouseHover(shared_from_this());
+}
+
+
+void Control::OnMouseHover(const std::shared_ptr<Control>& hovered_control) {
 
     auto event_observer = GetEventObserver<ControlMouseHoverInfo>(
         GetPropertyMap(),
@@ -1738,15 +1728,12 @@ void Control::HandleMouveHover() {
 
         ControlMouseHoverInfo event_info;
         event_info.control = shared_from_this();
+        event_info.hovered_control = hovered_control;
         event_observer->OnNext(event_info);
     }
-}
-
-
-void Control::OnMouseHover() {
 
     if (auto parent = Parent()) {
-        parent->OnMouseHover();
+        parent->OnMouseHover(hovered_control);
     }
 }
 

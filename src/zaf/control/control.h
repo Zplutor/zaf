@@ -782,7 +782,7 @@ protected:
      */
     virtual void OnMouseLeave(const std::shared_ptr<Control>& leaved_control);
 
-    virtual void OnMouseHover();
+    virtual void OnMouseHover(const std::shared_ptr<Control>& hovered_control);
 
     /**
      Process the mouse down notification.
@@ -998,9 +998,6 @@ private:
     bool HandleClickOnMouseDown();
     bool HandleClickOnMouseUp();
 
-    void HandleMouseEnter(const std::shared_ptr<Control>& entered_control);
-    void HandleMouseLeave(const std::shared_ptr<Control>& leaved_control);
-
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
 
 private:
@@ -1063,6 +1060,7 @@ public:
 class ControlMouseHoverInfo {
 public:
     std::shared_ptr<Control> control;
+    std::shared_ptr<Control> hovered_control;
 };
 
 

@@ -1036,11 +1036,12 @@ void Window::SetMouseOverControl(
         }
     }
 
-    if (mouse_over_control_ != nullptr) {
-        mouse_over_control_->IsMouseOverChanged(false);
-    }
-
+    auto old_control = mouse_over_control_;
     mouse_over_control_ = mouse_over_control;
+
+    if (old_control ) {
+        old_control->IsMouseOverChanged(false);
+    }
 
     if (mouse_over_control_ != nullptr) {
 
