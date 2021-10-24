@@ -9,14 +9,15 @@
 namespace zaf {
 namespace {
 
-std::optional<Color> DecodeARGB(const std::wstring& argb) {
+Color DecodeARGB(const std::wstring& argb) {
 
     const std::size_t long_notation_length = 9;
     const std::size_t short_notation_length = 7;
 
     if (argb.length() != long_notation_length &&
         argb.length() != short_notation_length) {
-        return {};
+
+        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
     }
 
     std::wstring a_hex;
@@ -43,22 +44,22 @@ std::optional<Color> DecodeARGB(const std::wstring& argb) {
 
     std::uint8_t temp_a = 0;
     if (!TryToNumeric(a_hex, temp_a, options)) {
-        return {};
+        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
     }
 
     std::uint8_t temp_r = 0;
     if (!TryToNumeric(r_hex, temp_r, options)) {
-        return {};
+        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
     }
 
     std::uint8_t temp_g = 0;
     if (!TryToNumeric(g_hex, temp_g, options)) {
-        return {};
+        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
     }
 
     std::uint8_t temp_b = 0;
     if (!TryToNumeric(b_hex, temp_b, options)) {
-        return {};
+        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
     }
 
     float max = (std::numeric_limits<std::uint8_t>::max)();
@@ -72,7 +73,7 @@ std::optional<Color> DecodeARGB(const std::wstring& argb) {
 }
 
 
-std::optional<Color> ConvertTextToColor(const std::wstring& text) {
+Color ConvertTextToColor(const std::wstring& text) {
 
     struct MapItem {
         const wchar_t* name;
@@ -97,14 +98,15 @@ std::optional<Color> ConvertTextToColor(const std::wstring& text) {
             return *each_item.color;
         }
     }
-    return {};
+
+    ZAF_THROW_ERRC(BasicErrc::InvalidValue);
 }
 
 
-std::optional<Color> DecodeColorValue(const std::wstring& value) {
+Color DecodeColorValue(const std::wstring& value) {
 
     if (value.empty()) {
-        return {};
+        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
     }
 
     if (value[0] == L'#') {
@@ -119,28 +121,26 @@ class ColorParser : public ObjectParser {
 public:
     void ParseFromAttribute(const std::wstring& attribute, Object& object) override {
 
-        auto decoded_color = DecodeColorValue(attribute);
-        if (decoded_color) {
-            As<Color>(object) = *decoded_color;
-        }
+        As<Color>(object) = DecodeColorValue(attribute);
     }
 
     void ParseFromNode(const XamlNode& node, Object& object) override {
 
         const auto& content_nodes = node.GetContentNodes();
-        if (content_nodes.size() != 1) {
+        if (content_nodes.empty()) {
             return;
+        }
+
+        if (content_nodes.size() != 1) {
+            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
         }
 
         const auto& content_node = content_nodes.front();
         if (content_node->GetType() != XamlNode::Type::Text) {
-            return;
+            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
         }
 
-        auto decoded_color = DecodeColorValue(content_node->GetValue());
-        if (decoded_color) {
-            As<Color>(object) = *decoded_color;
-        }
+        As<Color>(object) = DecodeColorValue(content_node->GetValue());
     }
 };
 

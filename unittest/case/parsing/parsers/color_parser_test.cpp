@@ -41,6 +41,34 @@ TEST(ColorParser, ParseFromAttribute) {
 }
 
 
+TEST(ColorParser, ParseInvalidValueInAttribute) {
+
+    std::vector<std::wstring> values{
+        L"",
+        L"234",
+        L"kcxxs",
+        L"#",
+        L"#1",
+        L"#12",
+        L"#123",
+        L"#1234",
+        L"#12345",
+        L"#1234567",
+        L"#123456789",
+    };
+
+    for (const auto& each_value : values) {
+
+        auto parser = zaf::Color::Type->GetParser();
+        zaf::Object object;
+
+        ASSERT_THROW_ERRC(
+            parser->ParseFromAttribute(each_value, object),
+            zaf::BasicErrc::InvalidValue);
+    }
+}
+
+
 TEST(ColorParser, ParseFromNode) {
 
     auto color = zaf::CreateObjectFromXaml<zaf::Color>(
@@ -63,6 +91,21 @@ TEST(ColorParser, ParseFromNode) {
 
     color = zaf::CreateObjectFromXaml<zaf::Color>("<Color>Cyan</Color>");
     ASSERT_EQ(*color, zaf::Color::Cyan());
+
+    color = zaf::CreateObjectFromXaml<zaf::Color>("<Color></Color>");
+    ASSERT_EQ(*color, zaf::Color::Black());
+}
+
+
+TEST(ColorParser, ParseInvalidValueInNode) {
+
+    ASSERT_THROW_ERRC(
+        zaf::CreateObjectFromXaml<zaf::Color>(R"(<Color>#abcdef<A/></Color>)"),
+        zaf::BasicErrc::InvalidValue);
+
+    ASSERT_THROW_ERRC(
+        zaf::CreateObjectFromXaml<zaf::Color>(R"(<Color><A/></Color>)"), 
+        zaf::BasicErrc::InvalidValue);
 }
 
 
