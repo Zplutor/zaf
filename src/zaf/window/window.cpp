@@ -6,7 +6,7 @@
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
 #include <zaf/object/parsing/object_parser.h>

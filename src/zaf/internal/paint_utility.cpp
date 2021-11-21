@@ -3,7 +3,7 @@
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/internal/theme.h>
 

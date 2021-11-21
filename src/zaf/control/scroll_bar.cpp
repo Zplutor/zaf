@@ -9,7 +9,7 @@
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/transformed_geometry.h>
-#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>

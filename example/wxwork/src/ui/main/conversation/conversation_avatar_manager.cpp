@@ -3,7 +3,7 @@
 #include <zaf/application.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
-#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/graphic_factory.h>
 #include "logic/service.h"
 #include "ui/main/conversation/common_definition.h"
 #include "ui/user_avatar_manager.h"

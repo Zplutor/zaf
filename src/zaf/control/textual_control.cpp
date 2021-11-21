@@ -5,7 +5,7 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
-#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/graphic/text/text_layout_properties.h>
 #include <zaf/internal/theme.h>

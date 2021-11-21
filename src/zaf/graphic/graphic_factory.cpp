@@ -1,4 +1,4 @@
-#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/graphic_factory.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/error/system_error.h>
 #include <zaf/graphic/stroke_properties.h>

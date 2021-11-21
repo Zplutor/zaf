@@ -4,7 +4,7 @@
 #include <sstream>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font/font.h>
-#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/text/text_format_properties.h>
 #include "logic/service.h"

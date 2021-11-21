@@ -1,6 +1,6 @@
 #include <zaf/control/internal/triangle_geometry.h>
 #include <zaf/application.h>
-#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/graphic_factory.h>
 
 namespace zaf::internal {
 

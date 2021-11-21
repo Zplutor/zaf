@@ -7,7 +7,7 @@
 #include <zaf/base/error/com_error.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
-#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/internal/system_message_window.h>
 #include <zaf/resource/resource_manager.h>

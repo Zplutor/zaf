@@ -1,6 +1,6 @@
 #include "ui/avatar_view.h"
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/resource_factory.h>
+#include <zaf/graphic/graphic_factory.h>
 
 void AvatarView::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
 

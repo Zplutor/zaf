@@ -124,7 +124,7 @@
     <ClCompile Include="src\zaf\graphic\rect.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer\bitmap_renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\renderer\renderer.cpp" />
-    <ClCompile Include="src\zaf\graphic\resource_factory.cpp" />
+    <ClCompile Include="src\zaf\graphic\graphic_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\rounded_rect.cpp" />
     <ClCompile Include="src\zaf\graphic\size.cpp" />
     <ClCompile Include="src\zaf\graphic\text\paragraph_alignment.cpp" />
@@ -374,7 +374,7 @@
     <ClInclude Include="src\zaf\graphic\renderer\renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer\renderer_properties.h" />
     <ClInclude Include="src\zaf\graphic\renderer\window_renderer.h" />
-    <ClInclude Include="src\zaf\graphic\resource_factory.h" />
+    <ClInclude Include="src\zaf\graphic\graphic_factory.h" />
     <ClInclude Include="src\zaf\graphic\rounded_rect.h" />
     <ClInclude Include="src\zaf\graphic\size.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
