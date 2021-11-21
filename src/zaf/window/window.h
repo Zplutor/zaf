@@ -22,21 +22,10 @@ class HitTestMessage;
 class InspectorWindow;
 class MouseMessage;
 class TooltipWindow;
+class WindowCloseInfo;
 class WindowDestroyInfo;
 class WindowReceiveMessageInfo;
 enum class HitTestResult;
-
-/**
- The prototype of close handler.
-
- @param window
-    The window instance which calls the close handler.
-
- @return
-    Return true means allowing to close the window; or false means
-    not allowing.
- */
-typedef std::function<bool(const Window& window)> WindowCloseHandler;
 
 
 /**
@@ -456,20 +445,7 @@ public:
         return Handle() == nullptr;
     }
 
-    /**
-     Get the close handler.
-
-     If close handler is not set, the default one is return, which allows closing the window.
-     */
-    WindowCloseHandler CloseHandler() const;
-
-    /**
-     Set the close handler.
-
-     The close handler is called before closing the window. You can use this handler to control
-     whether the window is allowed to close.
-     */
-    void SetCloseHandler(const WindowCloseHandler& handler);
+    Observable<WindowCloseInfo> CloseEvent();
 
     /**
      Get the destroy event.
@@ -708,6 +684,13 @@ private:
     std::weak_ptr<InspectorWindow> inspector_window_;
     std::shared_ptr<Control> highlight_control_;
     bool is_selecting_inspector_control_{};
+};
+
+
+class WindowCloseInfo {
+public:
+    std::shared_ptr<Window> window;
+    std::shared_ptr<bool> can_close;
 };
 
 

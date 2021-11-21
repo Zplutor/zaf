@@ -29,7 +29,7 @@ const wchar_t* const kDefaultWindowClassName = L"ZafDefaultWindowClass";
 constexpr const wchar_t* const kActivateOptionPropertyName = L"ActivateOption";
 constexpr const wchar_t* const kCanMaximizePropertyName = L"CanMaximize";
 constexpr const wchar_t* const kCanMinimizePropertyName = L"CanMinimize";
-constexpr const wchar_t* const kCloseHandlerPropertyName = L"CloseHandler";
+constexpr const wchar_t* const kCloseEventPropertyName = L"CloseEvent";
 constexpr const wchar_t* const kDestroyEventPropertyName = L"DestroyEvent";
 constexpr const wchar_t* const kHasBorderPropertyName = L"HasBorder";
 constexpr const wchar_t* const kHasSystemMenuPropertyName = L"HasSystemMenu";
@@ -977,7 +977,19 @@ void Window::HideTooltipWindow() {
 
 bool Window::ReceiveCloseMessage() {
 
-    bool can_close = CloseHandler()(*this);
+    bool can_close{ true };
+
+    auto close_event = GetEventObserver<WindowCloseInfo>(GetPropertyMap(), kCloseEventPropertyName);
+    if (close_event) {
+
+        WindowCloseInfo event_info;
+        event_info.window = shared_from_this();
+        event_info.can_close = std::make_shared<bool>(can_close);
+        close_event->OnNext(event_info);
+
+        can_close = *event_info.can_close;
+    }
+
     return can_close;
 }
 
@@ -1611,23 +1623,8 @@ const std::shared_ptr<Caret>& Window::Caret() {
 }
 
 
-WindowCloseHandler Window::CloseHandler() const {
-
-    auto handler = GetPropertyMap().TryGetProperty<WindowCloseHandler>(kCloseHandlerPropertyName);
-    if ((handler != nullptr) && (*handler != nullptr)) {
-        return *handler;
-    }
-    else {
-
-        return [](const Window&) {
-            return true;
-        };
-    }
-}
-
-
-void Window::SetCloseHandler(const WindowCloseHandler& handler) {
-    GetPropertyMap().SetProperty(kCloseHandlerPropertyName, handler);
+Observable<WindowCloseInfo> Window::CloseEvent() {
+    return GetEventObservable<WindowCloseInfo>(GetPropertyMap(), kCloseEventPropertyName);
 }
 
 
