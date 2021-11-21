@@ -497,6 +497,8 @@ public:
     void Minimize();
     void Restore();
 
+    bool IsVisible() const;
+
     /**
      Close the window.
      */

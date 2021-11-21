@@ -112,6 +112,7 @@ ZAF_DEFINE_TYPE_PROPERTY(CapturingMouseControl)
 ZAF_DEFINE_TYPE_PROPERTY(MouseOverControl)
 ZAF_DEFINE_TYPE_PROPERTY(FocusedControl)
 ZAF_DEFINE_TYPE_PROPERTY(IsClosed)
+ZAF_DEFINE_TYPE_PROPERTY(IsVisible)
 ZAF_DEFINE_TYPE_END
 
 
@@ -1681,6 +1682,11 @@ void Window::Minimize() {
 
 void Window::Restore() {
     ShowWindow(handle_, SW_RESTORE);
+}
+
+
+bool Window::IsVisible() const {
+    return !!IsWindowVisible(handle_);
 }
 
 
