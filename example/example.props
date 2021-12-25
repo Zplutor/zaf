@@ -4,9 +4,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <IncludePath>$(SolutionDir)src;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)out\$(Configuration);$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)out\$(Configuration)\example\</OutDir>
-    <IntDir>$(SolutionDir)intermediate\$(ProjectName)\$(Configuration)\</IntDir>
+    <LibraryPath>$(SolutionDir)out\$(Configuration)\$(PlatformTarget)\;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)out\$(Configuration)\$(PlatformTarget)\example\</OutDir>
+    <IntDir>$(SolutionDir)intermediate\$(ProjectName)\$(Configuration)\$(PlatformTarget)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
