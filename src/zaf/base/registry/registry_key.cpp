@@ -85,7 +85,11 @@ std::wstring RegistryKey::GetStringValue(const std::wstring& name) {
 
 
 void RegistryKey::SetStringValue(const std::wstring& name, const std::wstring& value) {
-    SetValue(name, REG_SZ, value.c_str(), (value.length() + 1) * sizeof(wchar_t));
+    SetValue(
+        name,
+        REG_SZ,
+        value.c_str(),
+        static_cast<DWORD>((value.length() + 1) * sizeof(wchar_t)));
 }
 
 

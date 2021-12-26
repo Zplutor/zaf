@@ -405,8 +405,8 @@ void TextBox::SetSelectionRange(const TextRange& range) {
     }
 
     CHARRANGE char_range = { 0 };
-    char_range.cpMin = range.index;
-    char_range.cpMax = range.index + range.length;
+    char_range.cpMin = static_cast<LONG>(range.index);
+    char_range.cpMax = static_cast<LONG>(range.index + range.length);
     text_service_->TxSendMessage(EM_EXSETSEL, 0, reinterpret_cast<LPARAM>(&char_range), nullptr);
 }
 

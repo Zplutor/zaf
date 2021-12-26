@@ -6,7 +6,9 @@ namespace zaf::wic {
 
 void Palette::InitializeFromCustomColors(const std::uint32_t* colors, std::size_t color_count) {
 
-    HRESULT com_error = GetHandle()->InitializeCustom(const_cast<WICColor*>(colors), color_count);
+    HRESULT com_error = GetHandle()->InitializeCustom(
+        const_cast<WICColor*>(colors), 
+        static_cast<UINT>(color_count));
     ZAF_THROW_IF_COM_ERROR(com_error);
 }
 
@@ -35,7 +37,7 @@ void Palette::InitializeFromImage(
 
     HRESULT com_error = GetHandle()->InitializeFromBitmap(
         image.GetHandle(),
-        color_count, 
+        static_cast<UINT>(color_count),
         add_transparent_color);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
@@ -55,7 +57,7 @@ std::size_t Palette::GetColorCount() const {
 void Palette::GetColors(std::size_t count, std::uint32_t* colors, std::size_t& actual_count) const {
 
     UINT temp_actual_count = 0;
-    HRESULT com_error = GetHandle()->GetColors(count, colors, &temp_actual_count);
+    HRESULT com_error = GetHandle()->GetColors(static_cast<UINT>(count), colors, &temp_actual_count);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
     actual_count = temp_actual_count;

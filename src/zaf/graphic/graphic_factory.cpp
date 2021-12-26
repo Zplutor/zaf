@@ -138,7 +138,7 @@ Stroke GraphicFactory::CreateStroke(const StrokeProperties& properties) {
     HRESULT result = d2d_factory_handle_->CreateStrokeStyle(
         properties.Inner(),
         properties.DashPattern().data(),
-        properties.DashPattern().size(),
+        static_cast<UINT32>(properties.DashPattern().size()),
         &handle
     );
 
@@ -171,7 +171,7 @@ TextLayout GraphicFactory::CreateTextLayout(const TextLayoutProperties& properti
     IDWriteTextLayout* handle = nullptr;
     HRESULT result = dwrite_factory_handle_->CreateTextLayout(
         properties.text.c_str(), 
-        properties.text.length(), 
+        static_cast<UINT32>(properties.text.length()),
         properties.text_format.GetHandle(), 
         properties.width, 
         properties.height,

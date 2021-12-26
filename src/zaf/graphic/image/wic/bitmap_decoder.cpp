@@ -34,7 +34,7 @@ std::size_t BitmapDecoder::GetFrameCount() const {
 BitmapDecodeFrame BitmapDecoder::GetFrame(std::size_t index) const {
 
     IWICBitmapFrameDecode* handle = nullptr;
-    HRESULT result = GetHandle()->GetFrame(index, &handle);
+    HRESULT result = GetHandle()->GetFrame(static_cast<UINT>(index), &handle);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return BitmapDecodeFrame(handle);

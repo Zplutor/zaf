@@ -6,12 +6,15 @@ namespace zaf {
 std::wstring LocalizedStrings::GetLocaleName(std::size_t index) const {
 
     UINT32 length = 0;
-    HRESULT result = GetHandle()->GetLocaleNameLength(index, &length);
+    HRESULT result = GetHandle()->GetLocaleNameLength(static_cast<UINT32>(index), &length);
 
     ZAF_THROW_IF_COM_ERROR(result);
 
     std::wstring locale_name(length + 1, 0);
-    result = GetHandle()->GetLocaleName(index, &locale_name[0], locale_name.length());
+    result = GetHandle()->GetLocaleName(
+        static_cast<UINT32>(index),
+        &locale_name[0], 
+        static_cast<UINT32>(locale_name.length()));
 
     ZAF_THROW_IF_COM_ERROR(result);
 
@@ -23,12 +26,15 @@ std::wstring LocalizedStrings::GetLocaleName(std::size_t index) const {
 std::wstring LocalizedStrings::GetString(std::size_t index) const {
 
     UINT32 length = 0;
-    HRESULT result = GetHandle()->GetStringLength(index, &length);
+    HRESULT result = GetHandle()->GetStringLength(static_cast<UINT32>(index), &length);
 
     ZAF_THROW_IF_COM_ERROR(result);
 
     std::wstring string(length + 1, 0);
-    result = GetHandle()->GetString(index, &string[0], string.length());
+    result = GetHandle()->GetString(
+        static_cast<UINT32>(index),
+        &string[0],
+        static_cast<UINT32>(string.length()));
 
     ZAF_THROW_IF_COM_ERROR(result);
 

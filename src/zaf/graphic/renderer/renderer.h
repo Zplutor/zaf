@@ -158,7 +158,7 @@ public:
 
         GetHandle()->DrawText(
             text.c_str(),
-            text.length(),
+            static_cast<UINT32>(text.length()),
             text_format.GetHandle(),
             rect.ToD2D1RECTF(),
             brush.GetHandle());

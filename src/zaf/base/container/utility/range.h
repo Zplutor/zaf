@@ -90,17 +90,17 @@ private:
 
 }
 
-template<typename T>
-internal::Range<T> Range(T begin, T end, typename internal::Range<T>::difference_type step = 1) {
+template<typename T, typename K>
+internal::Range<T> Range(T begin, K end, typename internal::Range<T>::difference_type step = 1) {
 
     if (step < 0) {
-        ZAF_EXPECT(begin >= end);
+        ZAF_EXPECT(begin >= static_cast<T>(end));
     }
     else {
-        ZAF_EXPECT(begin <= end);
+        ZAF_EXPECT(begin <= static_cast<T>(end));
     }
 
-    return internal::Range<T>{ begin, end, step };
+    return internal::Range<T>{ begin, static_cast<T>(end), step };
 }
 
 

@@ -6,8 +6,10 @@ namespace zaf {
 
 std::wstring TextLayout::GetFontFamilyName(std::size_t position, TextRange* range) const {
 
-    std::size_t family_name_length = 0;
-    HRESULT result = GetHandle()->GetFontFamilyNameLength(position, &family_name_length);
+    UINT32 family_name_length = 0;
+    HRESULT result = GetHandle()->GetFontFamilyNameLength(
+        static_cast<UINT32>(position),
+        &family_name_length);
 
     ZAF_THROW_IF_COM_ERROR(result);
 
@@ -19,9 +21,9 @@ std::wstring TextLayout::GetFontFamilyName(std::size_t position, TextRange* rang
     auto buffer = std::make_unique<wchar_t[]>(buffer_length);
     DWRITE_TEXT_RANGE text_range = { 0 };
     result = GetHandle()->GetFontFamilyName(
-        position,
+        static_cast<UINT32>(position),
         buffer.get(), 
-        buffer_length, 
+        static_cast<UINT32>(buffer_length),
         range == nullptr ? nullptr : &text_range);
 
     ZAF_THROW_IF_COM_ERROR(result);
@@ -38,7 +40,10 @@ float TextLayout::GetFontSize(std::size_t position, TextRange* range) const {
 
     float font_size = 0;
     DWRITE_TEXT_RANGE text_range = { 0 };
-    HRESULT result = GetHandle()->GetFontSize(position, &font_size, range == nullptr ? nullptr : &text_range);
+    HRESULT result = GetHandle()->GetFontSize(
+        static_cast<UINT32>(position),
+        &font_size, 
+        range == nullptr ? nullptr : &text_range);
 
     ZAF_THROW_IF_COM_ERROR(result);
     
@@ -54,7 +59,10 @@ FontStyle TextLayout::GetFontStyle(std::size_t position, TextRange* range) const
 
     DWRITE_FONT_STYLE font_style = DWRITE_FONT_STYLE_NORMAL;
     DWRITE_TEXT_RANGE text_range = { 0 };
-    HRESULT result = GetHandle()->GetFontStyle(position, &font_style, range == nullptr ? nullptr : &text_range);
+    HRESULT result = GetHandle()->GetFontStyle(
+        static_cast<UINT32>(position),
+        &font_style, 
+        range == nullptr ? nullptr : &text_range);
 
     ZAF_THROW_IF_COM_ERROR(result);
 
@@ -70,7 +78,10 @@ int TextLayout::GetFontWeight(std::size_t position, TextRange* range) const {
 
     DWRITE_FONT_WEIGHT font_weight = static_cast<DWRITE_FONT_WEIGHT>(0);
     DWRITE_TEXT_RANGE text_range = { 0 };
-    HRESULT result = GetHandle()->GetFontWeight(position, &font_weight, range == nullptr ? nullptr : &text_range);
+    HRESULT result = GetHandle()->GetFontWeight(
+        static_cast<UINT32>(position),
+        &font_weight, 
+        range == nullptr ? nullptr : &text_range);
 
     ZAF_THROW_IF_COM_ERROR(result);
 
@@ -86,7 +97,10 @@ bool TextLayout::HasUnderline(std::size_t position, TextRange* range) const {
 
     BOOL has_underline = FALSE;
     DWRITE_TEXT_RANGE text_range = { 0 };
-    HRESULT result = GetHandle()->GetUnderline(position, &has_underline, range == nullptr ? nullptr : &text_range);
+    HRESULT result = GetHandle()->GetUnderline(
+        static_cast<UINT32>(position),
+        &has_underline, 
+        range == nullptr ? nullptr : &text_range);
 
     ZAF_THROW_IF_COM_ERROR(result);
 
@@ -102,7 +116,10 @@ Brush TextLayout::GetBrush(std::size_t position, TextRange* range) {
 
     IUnknown* drawing_effect = nullptr;
     DWRITE_TEXT_RANGE text_range = { 0 };
-    HRESULT result = GetHandle()->GetDrawingEffect(position, &drawing_effect, &text_range);
+    HRESULT result = GetHandle()->GetDrawingEffect(
+        static_cast<UINT32>(position),
+        &drawing_effect, 
+        &text_range);
 
     ZAF_THROW_IF_COM_ERROR(result);
 
@@ -120,10 +137,10 @@ std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_count) 
     std::vector<LineMetrics> line_metrics;
     line_metrics.resize(max_line_count);
 
-    std::size_t actual_line_count = 0;
+    UINT32 actual_line_count = 0;
     HRESULT result = GetHandle()->GetLineMetrics(
         reinterpret_cast<DWRITE_LINE_METRICS*>(line_metrics.data()),
-        line_metrics.size(),
+        static_cast<UINT32>(line_metrics.size()),
         &actual_line_count);
 
     ZAF_THROW_IF_COM_ERROR(result);

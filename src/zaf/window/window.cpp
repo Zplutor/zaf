@@ -1567,7 +1567,7 @@ std::wstring Window::Title() const {
 
         int title_length = GetWindowTextLength(handle_);
         std::vector<wchar_t> buffer(title_length + 1);
-        GetWindowText(handle_, buffer.data(), buffer.size());
+        GetWindowText(handle_, buffer.data(), static_cast<int>(buffer.size()));
         return buffer.data();
     }
 }

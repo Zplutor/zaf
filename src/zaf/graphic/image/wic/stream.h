@@ -13,7 +13,9 @@ public:
     explicit Stream(IWICStream* handle) : ComObject(handle) { }
 
     void InitializeFromMemory(void* data, std::size_t size) {
-        HRESULT com_error = GetHandle()->InitializeFromMemory(reinterpret_cast<BYTE*>(data), size);
+        HRESULT com_error = GetHandle()->InitializeFromMemory(
+            reinterpret_cast<BYTE*>(data),
+            static_cast<DWORD>(size));
         ZAF_THROW_IF_COM_ERROR(com_error);
     }
 

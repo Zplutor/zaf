@@ -52,8 +52,11 @@ std::uint32_t Bitmap::Lock::GetStride() const {
 
 void Bitmap::Lock::GetDataPointer(std::uint8_t*& data_pointer, std::size_t& data_size) const {
 
-    HRESULT com_error = GetHandle()->GetDataPointer(&data_size, &data_pointer);
+    UINT buffer_size{};
+    HRESULT com_error = GetHandle()->GetDataPointer(&buffer_size, &data_pointer);
     ZAF_THROW_IF_COM_ERROR(com_error);
+
+    data_size = buffer_size;
 }
 
 }

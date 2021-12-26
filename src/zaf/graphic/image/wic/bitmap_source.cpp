@@ -40,7 +40,11 @@ void BitmapSource::CopyPixels(
         wic_rect_pointer = &wic_rect;
     }
 
-    HRESULT com_error = GetHandle()->CopyPixels(wic_rect_pointer, stride, buffer_size, buffer);
+    HRESULT com_error = GetHandle()->CopyPixels(
+        wic_rect_pointer, 
+        stride, 
+        static_cast<UINT>(buffer_size), 
+        buffer);
     ZAF_THROW_IF_COM_ERROR(com_error);
 }
 

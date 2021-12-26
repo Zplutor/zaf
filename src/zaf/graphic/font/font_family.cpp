@@ -17,7 +17,7 @@ FontCollection FontFamily::GetFontCollection() const {
 FontFace FontFamily::GetFont(std::size_t index) const {
 
     IDWriteFont* handle = nullptr;
-    HRESULT result = GetHandle()->GetFont(index, &handle);
+    HRESULT result = GetHandle()->GetFont(static_cast<UINT32>(index), &handle);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return FontFace(handle);

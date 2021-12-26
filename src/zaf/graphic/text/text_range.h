@@ -33,8 +33,8 @@ public:
     DWRITE_TEXT_RANGE ToDWRITETEXTRANGE() const {
 
         DWRITE_TEXT_RANGE text_range;
-        text_range.startPosition = index;
-        text_range.length = length;
+        text_range.startPosition = static_cast<UINT32>(index);
+        text_range.length = static_cast<UINT32>(length);
         return text_range;
     }
 

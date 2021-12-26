@@ -27,7 +27,9 @@ IXmlReader* CreateHandle(IUnknown* input) {
 
 std::shared_ptr<XamlReader> CreateXamlReaderFromMemory(const void* data, std::size_t length) {
 
-    CComPtr<IStream> stream = SHCreateMemStream(reinterpret_cast<const BYTE*>(data), length);
+    CComPtr<IStream> stream = SHCreateMemStream(
+        reinterpret_cast<const BYTE*>(data), 
+        static_cast<UINT>(length));
     if (stream == nullptr) {
         ZAF_THROW_IF_COM_ERROR(E_OUTOFMEMORY);
     }

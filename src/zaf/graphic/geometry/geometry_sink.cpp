@@ -45,7 +45,7 @@ void GeometrySink::AddLines(const std::vector<Point>& points) {
         d2d_points.push_back(aligned_point.ToD2D1POINT2F());
     }
 
-    GetHandle()->AddLines(d2d_points.data(), d2d_points.size());
+    GetHandle()->AddLines(d2d_points.data(), static_cast<UINT32>(d2d_points.size()));
 }
 
 

@@ -65,7 +65,7 @@ public:
 
     std::vector<float> GetDashPattern() const {
 
-        std::size_t count = GetHandle()->GetDashesCount();
+        auto count = GetHandle()->GetDashesCount();
 
         std::vector<float> dash_pattern(count);
         GetHandle()->GetDashes(dash_pattern.data(), count);

@@ -7,7 +7,7 @@ namespace zaf {
 FontFamily FontCollection::GetFontFamily(std::size_t index) const {
 
     IDWriteFontFamily* font_family_handle = nullptr;
-    HRESULT result = GetHandle()->GetFontFamily(index, &font_family_handle);
+    HRESULT result = GetHandle()->GetFontFamily(static_cast<UINT32>(index), &font_family_handle);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return FontFamily(font_family_handle);

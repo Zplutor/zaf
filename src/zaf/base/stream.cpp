@@ -211,7 +211,7 @@ private:
 
 Stream Stream::FromMemory(const void* data, std::size_t size) {
 
-    auto handle = SHCreateMemStream(reinterpret_cast<const BYTE*>(data), size);
+    auto handle = SHCreateMemStream(reinterpret_cast<const BYTE*>(data), static_cast<UINT>(size));
     if (!handle) {
         ZAF_THROW_IF_COM_ERROR(E_OUTOFMEMORY);
     }
@@ -221,7 +221,11 @@ Stream Stream::FromMemory(const void* data, std::size_t size) {
 
 
 Stream Stream::FromMemoryNotOwn(const void* data, std::size_t size) {
-    return new NotOwnedMemoryStream{ reinterpret_cast<const BYTE*>(data), size, 0 };
+    return new NotOwnedMemoryStream{ 
+        reinterpret_cast<const BYTE*>(data),
+        static_cast<ULONG>(size),
+        0 
+    };
 }
 
 
@@ -267,7 +271,7 @@ std::int64_t Stream::Seek(SeekOrigin origin, std::int64_t offset) {
 std::size_t Stream::Read(std::size_t size, void* data) const {
 
     ULONG read_size = 0;
-    HRESULT result = GetHandle()->Read(data, size, &read_size);
+    HRESULT result = GetHandle()->Read(data, static_cast<ULONG>(size), &read_size);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return read_size;
@@ -277,7 +281,7 @@ std::size_t Stream::Read(std::size_t size, void* data) const {
 std::size_t Stream::Write(const void* data, std::size_t size) {
 
     ULONG written_size = 0;
-    HRESULT result = GetHandle()->Write(data, size, &written_size);
+    HRESULT result = GetHandle()->Write(data, static_cast<ULONG>(size), &written_size);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return written_size;

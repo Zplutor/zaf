@@ -6,7 +6,7 @@ namespace zaf {
 
 std::size_t PathGeometry::GetFigureCount() const {
 
-    std::size_t count = 0;
+    UINT32 count = 0;
     HRESULT result = GetActualHandle()->GetFigureCount(&count);
 
     ZAF_THROW_IF_COM_ERROR(result);
@@ -16,7 +16,7 @@ std::size_t PathGeometry::GetFigureCount() const {
 
 std::size_t PathGeometry::GetSegmentCount() const {
 
-    std::size_t count = 0;
+    UINT32 count = 0;
     HRESULT result = GetActualHandle()->GetSegmentCount(&count);
 
     ZAF_THROW_IF_COM_ERROR(result);

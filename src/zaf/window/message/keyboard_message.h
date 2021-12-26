@@ -24,7 +24,7 @@ public:
      Get the virtual key.
      */
     DWORD VirtualKey() const {
-        return Inner().wparam;
+        return static_cast<DWORD>(Inner().wparam);
     }
 };
 
