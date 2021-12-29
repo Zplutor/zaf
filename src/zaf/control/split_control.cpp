@@ -167,9 +167,9 @@ void SplitControl::UpdateActualSplitBarDistance() {
             kSplitBarDistanceChangeEventPropertyName);
 
         if (event_observer) {
-            SplitControlSplitBarDistanceChangeInfo event_info;
-            event_info.split_control = std::dynamic_pointer_cast<SplitControl>(shared_from_this());
-            event_info.previous_distance = previous_distance;
+            SplitControlSplitBarDistanceChangeInfo event_info(
+                std::dynamic_pointer_cast<SplitControl>(shared_from_this()),
+                previous_distance);
             event_observer->OnNext(event_info);
         }
     }

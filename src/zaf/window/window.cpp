@@ -408,10 +408,7 @@ void Window::RaiseReceiveMessageEvent(const Message& message, LRESULT result) {
         return;
     }
 
-    WindowReceiveMessageInfo event_info;
-    event_info.window = shared_from_this();
-    event_info.message = message;
-    event_info.result = result;
+    WindowReceiveMessageInfo event_info(shared_from_this(), message, result);
     event_observer->OnNext(event_info);
 }
 
@@ -982,12 +979,10 @@ bool Window::ReceiveCloseMessage() {
     auto close_event = GetEventObserver<WindowCloseInfo>(GetPropertyMap(), kCloseEventPropertyName);
     if (close_event) {
 
-        WindowCloseInfo event_info;
-        event_info.window = shared_from_this();
-        event_info.can_close = std::make_shared<bool>(can_close);
+        WindowCloseInfo event_info(shared_from_this());
         close_event->OnNext(event_info);
 
-        can_close = *event_info.can_close;
+        can_close = event_info.CanClose();
     }
 
     return can_close;
@@ -1026,8 +1021,7 @@ void Window::OnWindowDestroyed(HWND handle) {
 
     if (event_observer) {
 
-        WindowDestroyInfo event_info;
-        event_info.window = shared_from_this();
+        WindowDestroyInfo event_info(shared_from_this());
         event_observer->OnNext(event_info);
     }
 }

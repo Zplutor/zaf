@@ -637,8 +637,7 @@ void ComboBox::NotifySelectionChange() {
         return;
     }
 
-    ComboBoxSelectionChangeInfo event_info;
-    event_info.combo_box = std::dynamic_pointer_cast<ComboBox>(shared_from_this());
+    ComboBoxSelectionChangeInfo event_info(std::dynamic_pointer_cast<ComboBox>(shared_from_this()));
     observer->OnNext(event_info);
 }
 

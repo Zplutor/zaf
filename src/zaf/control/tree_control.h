@@ -72,21 +72,65 @@ private:
 };
 
 
-class TreeControlSelectionChangeInfo {
+class TreeControlEventInfo {
 public:
-    std::shared_ptr<TreeControl> tree_control;
+    TreeControlEventInfo(const std::shared_ptr<TreeControl>& tree_control) : 
+        tree_control_(tree_control) {
+
+    }
+
+    const std::shared_ptr<TreeControl>& TreeControl() const {
+        return tree_control_;
+    }
+
+private:
+    std::shared_ptr<zaf::TreeControl> tree_control_;
 };
 
-class TreeControlItemExpandInfo {
+
+class TreeControlSelectionChangeInfo : public TreeControlEventInfo {
 public:
-    std::shared_ptr<TreeControl> tree_control;
-    std::shared_ptr<Object> item_data;
+    using TreeControlEventInfo::TreeControlEventInfo;
 };
 
-class TreeControlItemCollapseInfo {
+
+class TreeControlItemExpandInfo : public TreeControlEventInfo {
 public:
-    std::shared_ptr<TreeControl> tree_control;
-    std::shared_ptr<Object> item_data;
+    TreeControlItemExpandInfo(
+        const std::shared_ptr<zaf::TreeControl>& tree_control, 
+        const std::shared_ptr<Object>& item_data)
+        : 
+        TreeControlEventInfo(tree_control),
+        item_data_(item_data) {
+
+    }
+
+    const std::shared_ptr<Object>& ItemData() const {
+        return item_data_;
+    }
+
+private:
+    std::shared_ptr<Object> item_data_;
+};
+
+
+class TreeControlItemCollapseInfo : public TreeControlEventInfo {
+public:
+    TreeControlItemCollapseInfo(
+        const std::shared_ptr<zaf::TreeControl>& tree_control,
+        const std::shared_ptr<Object>& item_data)
+        :
+        TreeControlEventInfo(tree_control),
+        item_data_(item_data) {
+
+    }
+
+    const std::shared_ptr<Object>& ItemData() const {
+        return item_data_;
+    }
+
+private:
+    std::shared_ptr<Object> item_data_;
 };
 
 }

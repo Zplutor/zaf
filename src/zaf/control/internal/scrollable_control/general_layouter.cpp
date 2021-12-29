@@ -156,11 +156,11 @@ void GeneralLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) {
 
     Rect content_rect = scroll_content_control->Rect();
 
-    if (event_info.scroll_bar->IsHorizontal()) {
-        content_rect.position.x = static_cast<float>(-event_info.scroll_bar->GetValue());
+    if (event_info.ScrollBar()->IsHorizontal()) {
+        content_rect.position.x = static_cast<float>(-event_info.ScrollBar()->GetValue());
     }
     else {
-        content_rect.position.y = static_cast<float>(-event_info.scroll_bar->GetValue());
+        content_rect.position.y = static_cast<float>(-event_info.ScrollBar()->GetValue());
     }
 
     scroll_content_control->SetRect(content_rect);

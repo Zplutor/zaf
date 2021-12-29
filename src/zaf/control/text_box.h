@@ -382,7 +382,16 @@ private:
 
 class TextBoxSelectionChangeInfo {
 public:
-    std::shared_ptr<TextBox> text_box;
+    TextBoxSelectionChangeInfo(const std::shared_ptr<TextBox>& text_box) : text_box_(text_box) {
+
+    }
+
+    const std::shared_ptr<TextBox>& TextBox() const {
+        return text_box_;
+    }
+
+private:
+    std::shared_ptr<zaf::TextBox> text_box_;
 };
 
 }

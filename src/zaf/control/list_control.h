@@ -200,7 +200,17 @@ private:
 
 class ListControlSelectionChangeInfo {
 public:
-    std::shared_ptr<ListControl> list_control;
+    ListControlSelectionChangeInfo(const std::shared_ptr<ListControl>& list_control) : 
+        list_control_(list_control) {
+
+    }
+
+    const std::shared_ptr<ListControl>& ListControl() const {
+        return list_control_;
+    }
+
+private:
+    std::shared_ptr<zaf::ListControl> list_control_;
 };
 
 }

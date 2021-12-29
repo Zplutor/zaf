@@ -81,8 +81,8 @@ void SelfScrollingLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_inf
         return;
     }
 
-    int value = event_info.scroll_bar->GetValue();
-    if (event_info.scroll_bar->IsHorizontal()) {
+    int value = event_info.ScrollBar()->GetValue();
+    if (event_info.ScrollBar()->IsHorizontal()) {
         GetSelfScrollingControl()->HorizontallyScroll(value);
     }
     else {

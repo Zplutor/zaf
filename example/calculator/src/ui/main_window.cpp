@@ -113,7 +113,7 @@ float MainWindow::GetContentWidth() const {
 
 void MainWindow::ButtonClick(const zaf::ControlClickInfo& event_info) {
 
-    auto button = dynamic_cast<zaf::Button*>(event_info.control.get());
+    auto button = dynamic_cast<zaf::Button*>(event_info.Control().get());
     auto button_text = button->Text();
     if (button_text == L"=") {
 

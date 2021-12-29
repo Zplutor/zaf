@@ -203,8 +203,8 @@ void ScrollBar::SetValue(int value) {
             kScrollEventPropertyName);
 
         if (event_observer) {
-            ScrollBarScrollInfo event_info;
-            event_info.scroll_bar = std::dynamic_pointer_cast<ScrollBar>(shared_from_this());
+            ScrollBarScrollInfo event_info(
+                std::dynamic_pointer_cast<ScrollBar>(shared_from_this()));
             event_observer->OnNext(event_info);
         }
     }

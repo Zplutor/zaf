@@ -280,7 +280,16 @@ private:
 
 class ScrollBarScrollInfo {
 public:
-    std::shared_ptr<ScrollBar> scroll_bar;
+    ScrollBarScrollInfo(const std::shared_ptr<ScrollBar>& scroll_bar) : scroll_bar_(scroll_bar) {
+        
+    }
+
+    const std::shared_ptr<ScrollBar>& ScrollBar() const {
+        return scroll_bar_;
+    }
+
+private:
+    std::shared_ptr<zaf::ScrollBar> scroll_bar_;
 };
 
 }

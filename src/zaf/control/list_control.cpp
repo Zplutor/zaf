@@ -224,8 +224,8 @@ void ListControl::SelectionChange() {
         return;
     }
 
-    ListControlSelectionChangeInfo event_info;
-    event_info.list_control = std::dynamic_pointer_cast<ListControl>(shared_from_this());
+    ListControlSelectionChangeInfo event_info(
+        std::dynamic_pointer_cast<ListControl>(shared_from_this()));
     observer->OnNext(event_info);
 }
 

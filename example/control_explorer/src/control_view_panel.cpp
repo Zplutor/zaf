@@ -20,11 +20,11 @@ void ControlViewPanel::SetExploredControl(const std::shared_ptr<zaf::Control>& c
 
 void ControlViewPanel::ExploredControlRectChanged(const zaf::ControlRectChangeInfo& event_info) {
 
-    if (event_info.control != explored_control_) {
+    if (event_info.Control() != explored_control_) {
         return;
     }
 
-    if (event_info.previous_rect.size == explored_control_->Size()) {
+    if (event_info.PreviousRect().size == explored_control_->Size()) {
         return;
     }
 

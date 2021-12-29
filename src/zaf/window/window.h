@@ -11,6 +11,7 @@
 #include <zaf/window/activate_option.h>
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
+#include <zaf/window/window_event_infos.h>
 
 namespace zaf {
 namespace internal {
@@ -22,9 +23,6 @@ class HitTestMessage;
 class InspectorWindow;
 class MouseMessage;
 class TooltipWindow;
-class WindowCloseInfo;
-class WindowDestroyInfo;
-class WindowReceiveMessageInfo;
 enum class HitTestResult;
 
 
@@ -684,27 +682,6 @@ private:
     std::weak_ptr<InspectorWindow> inspector_window_;
     std::shared_ptr<Control> highlight_control_;
     bool is_selecting_inspector_control_{};
-};
-
-
-class WindowCloseInfo {
-public:
-    std::shared_ptr<Window> window;
-    std::shared_ptr<bool> can_close;
-};
-
-
-class WindowDestroyInfo {
-public:
-    std::shared_ptr<Window> window;
-};
-
-
-class WindowReceiveMessageInfo {
-public:
-    std::shared_ptr<Window> window;
-    Message message;
-    LRESULT result{};
 };
 
 

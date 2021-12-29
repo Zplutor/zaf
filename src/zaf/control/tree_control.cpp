@@ -152,8 +152,8 @@ void TreeControl::SelectionChange() {
         return;
     }
 
-    TreeControlSelectionChangeInfo event_info;
-    event_info.tree_control = std::dynamic_pointer_cast<TreeControl>(shared_from_this());
+    TreeControlSelectionChangeInfo event_info(
+        std::dynamic_pointer_cast<TreeControl>(shared_from_this()));
     observer->OnNext(event_info);
 }
 
@@ -176,9 +176,9 @@ void TreeControl::ItemExpand(const std::shared_ptr<Object>& data) {
         return;
     }
 
-    TreeControlItemExpandInfo event_info;
-    event_info.tree_control = std::dynamic_pointer_cast<TreeControl>(shared_from_this());
-    event_info.item_data = data;
+    TreeControlItemExpandInfo event_info(
+        std::dynamic_pointer_cast<TreeControl>(shared_from_this()),
+        data);
     observer->OnNext(event_info);
 }
 
@@ -201,9 +201,9 @@ void TreeControl::ItemCollapse(const std::shared_ptr<Object>& data) {
         return;
     }
 
-    TreeControlItemCollapseInfo event_info;
-    event_info.tree_control = std::dynamic_pointer_cast<TreeControl>(shared_from_this());
-    event_info.item_data = data;
+    TreeControlItemCollapseInfo event_info(
+        std::dynamic_pointer_cast<TreeControl>(shared_from_this()), 
+        data);
     observer->OnNext(event_info);
 }
 

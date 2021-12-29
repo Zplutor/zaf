@@ -241,7 +241,17 @@ private:
 
 class TextualControlTextChangeInfo {
 public:
-    std::shared_ptr<TextualControl> textual_control;
+    TextualControlTextChangeInfo(const std::shared_ptr<TextualControl>& textual_control) :
+        textual_control_(textual_control) {
+
+    }
+
+    const std::shared_ptr<TextualControl>& TextualControl() const {
+        return textual_control_;
+    }
+
+private:
+    std::shared_ptr<zaf::TextualControl> textual_control_;
 };
 
 }

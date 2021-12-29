@@ -106,8 +106,26 @@ private:
 
 class SplitControlSplitBarDistanceChangeInfo {
 public:
-    std::shared_ptr<SplitControl> split_control;
-    float previous_distance{};
+    SplitControlSplitBarDistanceChangeInfo(
+        const std::shared_ptr<SplitControl>& split_control,
+        float previous_distance)
+        : 
+        split_control_(split_control),
+        previous_distance_(previous_distance) {
+
+    }
+
+    const std::shared_ptr<SplitControl>& SplitControl() const {
+        return split_control_;
+    }
+
+    float PreviousDistance() const {
+        return previous_distance_;
+    }
+
+private:
+    std::shared_ptr<zaf::SplitControl> split_control_;
+    float previous_distance_{};
 };
 
 

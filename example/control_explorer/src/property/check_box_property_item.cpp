@@ -14,8 +14,8 @@ std::shared_ptr<PropertyItem> CreateCheckBoxPropertyItem(
 
     check_box->Subscriptions() += check_box->CheckStateChangeEvent().Subscribe(
         [get_value, value_change](const zaf::CheckBoxCheckStateChangeInfo& event_info) {
-            value_change(event_info.check_box->IsChecked());
-            event_info.check_box->SetIsChecked(get_value());
+            value_change(event_info.CheckBox()->IsChecked());
+            event_info.CheckBox()->SetIsChecked(get_value());
         }
     );
 

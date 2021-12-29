@@ -215,8 +215,8 @@ void CheckBox::SetCheckState(CheckState check_state) {
         kCheckStateChangeEventPropertyName);
 
     if (observer) {
-        CheckBoxCheckStateChangeInfo event_info;
-        event_info.check_box = std::dynamic_pointer_cast<CheckBox>(shared_from_this());
+        CheckBoxCheckStateChangeInfo event_info(
+            std::dynamic_pointer_cast<CheckBox>(shared_from_this()));
         observer->OnNext(event_info);
     }
 }

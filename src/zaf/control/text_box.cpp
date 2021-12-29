@@ -1446,8 +1446,7 @@ HRESULT TextBox::TextHostBridge::TxNotify(DWORD iNotify, void *pv) {
                 kSelectionChangeEventPropertyName);
 
             if (event_observer) {
-                TextBoxSelectionChangeInfo event_info;
-                event_info.text_box = text_box;
+                TextBoxSelectionChangeInfo event_info(text_box);
                 event_observer->OnNext(event_info);
             }
             return S_OK;

@@ -157,7 +157,17 @@ private:
 
 class CheckBoxCheckStateChangeInfo {
 public:
-    std::shared_ptr<CheckBox> check_box;
+    CheckBoxCheckStateChangeInfo(const std::shared_ptr<CheckBox>& check_box) : 
+        check_box_(check_box) {
+
+    }
+
+    const std::shared_ptr<CheckBox>& CheckBox() const {
+        return check_box_;
+    }
+
+private:
+    std::shared_ptr<zaf::CheckBox> check_box_;
 };
 
 }

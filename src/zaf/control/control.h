@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <zaf/control/anchor.h>
+#include <zaf/control/control_event_infos.h>
 #include <zaf/control/color_picker.h>
 #include <zaf/control/image_layout.h>
 #include <zaf/control/image_picker.h>
@@ -31,13 +32,6 @@ class InspectorPort;
 
 class Canvas;
 class CharMessage;
-class ControlClickInfo;
-class ControlDoubleClickInfo;
-class ControlFocusChangeInfo;
-class ControlMouseEnterInfo;
-class ControlMouseLeaveInfo;
-class ControlMouseHoverInfo;
-class ControlRectChangeInfo;
 class KeyMessage;
 class Message;
 class MouseMessage;
@@ -1029,52 +1023,6 @@ private:
     std::uint32_t last_mouse_down_time_{};
 
     PropertyMap property_map_;
-};
-
-
-class ControlClickInfo {
-public:
-    std::shared_ptr<Control> control;
-};
-
-
-class ControlDoubleClickInfo {
-public: 
-    std::shared_ptr<Control> control;
-};
-
-
-class ControlFocusChangeInfo {
-public:
-    std::shared_ptr<Control> control;
-};
-
-
-class ControlMouseEnterInfo {
-public:
-    std::shared_ptr<Control> control;
-    std::shared_ptr<Control> entered_control;
-};
-
-
-class ControlMouseHoverInfo {
-public:
-    std::shared_ptr<Control> control;
-    std::shared_ptr<Control> hovered_control;
-};
-
-
-class ControlMouseLeaveInfo {
-public:
-    std::shared_ptr<Control> control;
-    std::shared_ptr<Control> leaved_control;
-};
-
-
-class ControlRectChangeInfo {
-public:
-    std::shared_ptr<Control> control;
-    zaf::Rect previous_rect;
 };
 
 }

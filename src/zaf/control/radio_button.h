@@ -170,7 +170,17 @@ private:
 
 class RadioButtonSelectStateChangeInfo {
 public:
-    std::shared_ptr<RadioButton> radio_button;
+    RadioButtonSelectStateChangeInfo(const std::shared_ptr<RadioButton>& radio_button) :
+        radio_button_(radio_button) {
+
+    }
+
+    const std::shared_ptr<RadioButton>& RadioButton() const {
+        return radio_button_;
+    }
+
+private:
+    std::shared_ptr<zaf::RadioButton> radio_button_;
 };
 
 }

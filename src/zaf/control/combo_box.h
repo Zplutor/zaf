@@ -286,7 +286,17 @@ private:
 
 class ComboBoxSelectionChangeInfo {
 public:
-    std::shared_ptr<ComboBox> combo_box;
+    ComboBoxSelectionChangeInfo(const std::shared_ptr<ComboBox>& combo_box) : 
+        combo_box_(combo_box) {
+
+    }
+
+    const std::shared_ptr<ComboBox>& ComboBox() const {
+        return combo_box_;
+    }
+
+private:
+    std::shared_ptr<zaf::ComboBox> combo_box_;
 };
 
 

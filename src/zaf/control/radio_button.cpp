@@ -183,8 +183,7 @@ void RadioButton::SetIsSelected(bool is_selected) {
         kSelectStateChangeEventProprtyName);
 
     if (observer) {
-        RadioButtonSelectStateChangeInfo event_info;
-        event_info.radio_button = shared_this;
+        RadioButtonSelectStateChangeInfo event_info(shared_this);
         observer->OnNext(event_info);
     }
 }

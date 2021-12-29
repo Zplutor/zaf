@@ -1573,5 +1573,11 @@
     <ClInclude Include="src\zaf\window\tooltip_window.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\window\window_event_infos.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\control_event_infos.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

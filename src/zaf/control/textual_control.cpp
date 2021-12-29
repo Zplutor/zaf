@@ -500,8 +500,8 @@ void TextualControl::RaiseTextChangedEvent() {
 
     if (event_observer) {
 
-        TextualControlTextChangeInfo event_info;
-        event_info.textual_control = std::dynamic_pointer_cast<TextualControl>(shared_from_this());
+        TextualControlTextChangeInfo event_info(
+            std::dynamic_pointer_cast<TextualControl>(shared_from_this()));
         event_observer->OnNext(event_info);
     }
 

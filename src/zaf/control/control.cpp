@@ -561,9 +561,7 @@ void Control::SetRect(const zaf::Rect& rect) {
         kRectChangeEventPropertyName);
 
     if (event_observer) {
-        ControlRectChangeInfo event_info;
-        event_info.control = shared_from_this();
-        event_info.previous_rect = previous_rect;
+        ControlRectChangeInfo event_info(shared_from_this(), previous_rect);
         event_observer->OnNext(event_info);
     }
 }
@@ -1410,8 +1408,7 @@ void Control::IsFocusedChanged(bool is_focused) {
         kFocusChangeEventPropertyName);
 
     if (event_observer) {
-        ControlFocusChangeInfo event_info;
-        event_info.control = shared_from_this();
+        ControlFocusChangeInfo event_info(shared_from_this());
         event_observer->OnNext(event_info);
     }
 }
@@ -1680,9 +1677,7 @@ void Control::OnMouseEnter(const std::shared_ptr<Control>& entered_control) {
 
     if (event_observer) {
 
-        ControlMouseEnterInfo event_info;
-        event_info.control = shared_from_this();
-        event_info.entered_control = entered_control;
+        ControlMouseEnterInfo event_info(shared_from_this(), entered_control);
         event_observer->OnNext(event_info);
     }
 
@@ -1700,9 +1695,7 @@ void Control::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
 
     if (event_observer) {
 
-        ControlMouseLeaveInfo event_info;
-        event_info.control = shared_from_this();
-        event_info.leaved_control = leaved_control;
+        ControlMouseLeaveInfo event_info(shared_from_this(), leaved_control);
         event_observer->OnNext(event_info);
     }
 
@@ -1726,9 +1719,7 @@ void Control::OnMouseHover(const std::shared_ptr<Control>& hovered_control) {
 
     if (event_observer) {
 
-        ControlMouseHoverInfo event_info;
-        event_info.control = shared_from_this();
-        event_info.hovered_control = hovered_control;
+        ControlMouseHoverInfo event_info(shared_from_this(), hovered_control);
         event_observer->OnNext(event_info);
     }
 
@@ -1827,8 +1818,7 @@ void Control::RaiseClickEvent() {
     auto observer = GetEventObserver<ControlClickInfo>(GetPropertyMap(), ClickEventPropertyName);
     if (observer) {
 
-        ControlClickInfo event_info;
-        event_info.control = shared_from_this();
+        ControlClickInfo event_info(shared_from_this());
         observer->OnNext(event_info);
     }
 }
@@ -1848,8 +1838,7 @@ void Control::RaiseDoubleClickEvent() {
 
     if (observer) {
 
-        ControlDoubleClickInfo event_info;
-        event_info.control = shared_from_this();
+        ControlDoubleClickInfo event_info(shared_from_this());
         observer->OnNext(event_info);
     }
 }

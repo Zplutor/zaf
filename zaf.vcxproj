@@ -270,6 +270,7 @@
     <ClInclude Include="src\zaf\control\combo_box.h" />
     <ClInclude Include="src\zaf\control\control.h" />
     <ClInclude Include="src\zaf\control\control_binder.h" />
+    <ClInclude Include="src\zaf\control\control_event_infos.h" />
     <ClInclude Include="src\zaf\control\control_update_guard.h" />
     <ClInclude Include="src\zaf\control\expand_state.h" />
     <ClInclude Include="src\zaf\control\image_box.h" />
@@ -517,6 +518,7 @@
     <ClInclude Include="src\zaf\window\message_only_window.h" />
     <ClInclude Include="src\zaf\window\tooltip_window.h" />
     <ClInclude Include="src\zaf\window\window.h" />
+    <ClInclude Include="src\zaf\window\window_event_infos.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CC24D55C-A412-446C-96D3-C77A4E4CFA07}</ProjectGuid>
