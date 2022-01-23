@@ -6,6 +6,7 @@
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/graphic/dpi.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
@@ -170,10 +171,7 @@ Window::Window() :
 
 
 Window::~Window() {
-
-    if (handle_ != nullptr) {
-        DestroyWindow(handle_);
-    }
+    Destroy();
 }
 
 
@@ -191,7 +189,6 @@ void Window::CreateWindowHandle() {
     ReviseHasTitleBar();
 
     auto owner = Owner();
-    auto initial_rect = GetInitialRect();
 
     DWORD style = 0;
     DWORD extra_style = 0;
@@ -202,20 +199,24 @@ void Window::CreateWindowHandle() {
         kDefaultWindowClassName,
         Title().c_str(),
         style,
-        static_cast<int>(initial_rect.position.x),
-        static_cast<int>(initial_rect.position.y),
-        static_cast<int>(initial_rect.size.width),
-        static_cast<int>(initial_rect.size.height),
+        0,
+        0,
+        0,
+        0,
         owner == nullptr ? nullptr : owner->Handle(),
         nullptr,
         nullptr,
         this);
 
-    rect_ = initial_rect;
+    auto dpi = static_cast<float>(GetDpiForWindow(handle_));
 
-    RECT client_rect = { 0 };
-    ::GetClientRect(handle_, &client_rect);
-    root_control_->SetRect(Rect::FromRECT(client_rect));
+    RECT window_rect{};
+    GetWindowRect(handle_, &window_rect);
+    rect_ = ToDIPs(Rect::FromRECT(window_rect), dpi);
+
+    RECT client_rect{};
+    GetClientRect(handle_, &client_rect);
+    root_control_->SetRect(ToDIPs(Rect::FromRECT(client_rect), dpi));
 
     CreateRenderer();
     Application::Instance().RegisterWindow(shared_from_this());
@@ -224,10 +225,26 @@ void Window::CreateWindowHandle() {
 }
 
 
-Rect Window::GetInitialRect() const {
+void Window::ReceiveCreateMessage(HWND handle) {
+
+    auto dpi = static_cast<float>(GetDpiForWindow(handle));
+    auto initial_rect = GetInitialRect(dpi);
+    auto rect_in_pixels = FromDIPs(initial_rect, dpi);
+
+    SetWindowPos(
+        handle,
+        nullptr,
+        static_cast<int>(rect_in_pixels.position.x),
+        static_cast<int>(rect_in_pixels.position.y),
+        static_cast<int>(rect_in_pixels.size.width),
+        static_cast<int>(rect_in_pixels.size.height),
+        SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
+
+Rect Window::GetInitialRect(float dpi) const {
 
     auto initial_rect_style = InitialRectStyle();
-
     if (initial_rect_style == InitialRectStyle::Custom) {
         return rect_;
     }
@@ -245,8 +262,9 @@ Rect Window::GetInitialRect() const {
         return zaf::Rect(position, rect_.size);
     }
 
-    int screen_width = GetSystemMetrics(SM_CXSCREEN);
-    int screen_height = GetSystemMetrics(SM_CYSCREEN);
+    //TODO: Get current monitor's size.
+    float screen_width = ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXSCREEN)), dpi);
+    float screen_height = ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYSCREEN)), dpi);
     Point position(
         (screen_width - rect_.size.width) / 2,
         (screen_height - rect_.size.height) / 2);
@@ -258,6 +276,7 @@ Rect Window::GetInitialRect() const {
 void Window::CreateRenderer() {
 
     renderer_ = GetGraphicFactory().CreateWindowRenderer(handle_);
+    renderer_.SetDPI(96, 96);
 }
 
 
@@ -420,6 +439,10 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
     };
 
     switch (message.id) {
+    case WM_CREATE:
+        ReceiveCreateMessage(message.hwnd);
+        return true;
+
     case WM_NCCALCSIZE:
         if (is_customized_style()) {
             result = TRUE;
@@ -1209,36 +1232,43 @@ Rect Window::Rect() const {
     }
     else {
 
-        RECT rect = { 0 };
+        RECT rect{};
         GetWindowRect(handle_, &rect);
-        return Rect::FromRECT(rect);
+        return ToDIPs(Rect::FromRECT(rect), GetDPI());
     }
 }
 
 
 void Window::SetRect(const zaf::Rect& rect) {
 
-    rect_ = rect;
+    if (IsClosed()) {
+        rect_ = rect;
+    }
+    else {
 
-    if (! IsClosed()) {
+        auto new_rect = FromDIPs(rect, GetDPI());
 
         SetWindowPos(
             handle_,
             nullptr,
-            static_cast<int>(rect_.position.x),
-            static_cast<int>(rect_.position.y),
-            static_cast<int>(rect_.size.width),
-            static_cast<int>(rect_.size.height),
+            static_cast<int>(new_rect.position.x),
+            static_cast<int>(new_rect.position.y),
+            static_cast<int>(new_rect.size.width),
+            static_cast<int>(new_rect.size.height),
             SWP_NOZORDER | SWP_NOACTIVATE);
+
+        RECT window_rect{};
+        GetWindowRect(handle_, &window_rect);
+        rect_ = ToDIPs(Rect::FromRECT(window_rect), GetDPI());
     }
 }
 
 
 zaf::Size Window::ContentSize() const {
 
-    RECT client_rect;
+    RECT client_rect{};
     ::GetClientRect(handle_, &client_rect);
-    return Rect::FromRECT(client_rect).size;
+    return ToDIPs(Rect::FromRECT(client_rect).size, GetDPI());
 }
 
 
@@ -1644,6 +1674,12 @@ Point Window::GetMousePosition() const {
 }
 
 
+float Window::GetDPI() const {
+
+    return static_cast<float>(GetDpiForWindow(Handle()));
+}
+
+
 void Window::Show() {
 
     CheckCreateWindowHandle();
@@ -1683,6 +1719,13 @@ bool Window::IsVisible() const {
 
 void Window::Close() {
     SendMessage(Handle(), WM_CLOSE, 0, 0);
+}
+
+
+void Window::Destroy() {
+    if (handle_) {
+        DestroyWindow(handle_);
+    }
 }
 
 

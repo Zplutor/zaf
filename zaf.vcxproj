@@ -339,6 +339,7 @@
     <ClInclude Include="src\zaf\control\tree_item_expand_button.h" />
     <ClInclude Include="src\zaf\creation.h" />
     <ClInclude Include="src\zaf\graphic\alignment.h" />
+    <ClInclude Include="src\zaf\graphic\dpi.h" />
     <ClInclude Include="src\zaf\graphic\geometry\arc_segment.h" />
     <ClInclude Include="src\zaf\graphic\geometry\ellipse_geometry.h" />
     <ClInclude Include="src\zaf\graphic\image\uri_image.h" />

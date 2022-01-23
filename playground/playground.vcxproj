@@ -163,6 +163,9 @@
       <AdditionalDependencies>zaf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/WHOLEARCHIVE:zaf %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -201,6 +204,9 @@
       <AdditionalDependencies>zaf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/WHOLEARCHIVE:zaf %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-MT|Win32'">
     <ClCompile>
@@ -241,6 +247,9 @@
       <AdditionalDependencies>zaf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/WHOLEARCHIVE:zaf %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

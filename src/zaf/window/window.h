@@ -457,6 +457,8 @@ public:
      */
     Point GetMousePosition() const;
 
+    float GetDPI() const;
+
     /**
      Show the window.
      */
@@ -477,6 +479,8 @@ public:
      Close the window.
      */
     void Close();
+
+    void Destroy();
 
     void CreateHandle() {
         CheckCreateWindowHandle();
@@ -618,7 +622,8 @@ private:
 private:
     void InitializeRootControl(const std::shared_ptr<Control>& control);
     void CreateWindowHandle();
-    zaf::Rect GetInitialRect() const;
+    void ReceiveCreateMessage(HWND handle);
+    zaf::Rect GetInitialRect(float dpi) const;
     void CreateRenderer();
     void RecreateRenderer();
     void CheckCreateWindowHandle();

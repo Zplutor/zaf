@@ -99,7 +99,7 @@ int WINAPI WinMain(
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
     auto window = zaf::Create<Window>();
-    window->SetContentSize(zaf::Size{ 400, 300 });
+    window->SetSize(zaf::Size{ 100, 300 });
     window->Show();
 
     zaf::Application::Instance().SetMainWindow(window);

@@ -1579,5 +1579,8 @@
     <ClInclude Include="src\zaf\control\control_event_infos.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dpi.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
