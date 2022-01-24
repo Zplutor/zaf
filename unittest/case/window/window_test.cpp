@@ -52,6 +52,44 @@ TEST(WindowTest, SetRectAfterCreate) {
 }
 
 
+TEST(WindowTest, GetRectAfterChangeRect) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
+    window->SetRect(zaf::Rect{ 100, 100, 400, 400 });
+
+    //Simulate user resize the window.
+    window->CreateHandle();
+    SetWindowPos(
+        window->Handle(),
+        nullptr,
+        0,
+        0,
+        static_cast<int>(zaf::FromDIPs(400, window->GetDPI())),
+        static_cast<int>(zaf::FromDIPs(500, window->GetDPI())),
+        SWP_NOMOVE | SWP_NOACTIVATE);
+    window->Destroy();
+
+    zaf::Rect new_rect{ 100, 100, 400, 500 };
+    ASSERT_EQ(window->Rect(), new_rect);
+
+    //Simulate user move the window.
+    window->CreateHandle();
+    SetWindowPos(
+        window->Handle(),
+        nullptr,
+        static_cast<int>(zaf::FromDIPs(200, window->GetDPI())),
+        static_cast<int>(zaf::FromDIPs(300, window->GetDPI())),
+        0,
+        0,
+        SWP_NOSIZE | SWP_NOACTIVATE);
+    window->Destroy();
+
+    new_rect = zaf::Rect{ 200, 300, 400, 500 };
+    ASSERT_EQ(window->Rect(), new_rect);
+}
+
+
 TEST(WindowTest, SetContentSize) {
 
     auto window = zaf::Create<zaf::Window>();

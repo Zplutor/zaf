@@ -61,6 +61,9 @@ public:
             OutputDebugString(L"Label hover");
         });
         this->RootControl()->AddChild(label);
+        this->RootControl()->SetBackgroundColor(zaf::Color::White());
+        this->RootControl()->SetBorder(zaf::Frame{ 1 });
+        this->RootControl()->SetBorderColor(zaf::Color::Black());
 
         auto button = zaf::Create<zaf::Button>();
         button->SetRect(zaf::Rect{ 20, 60, 100, 30 });
@@ -99,7 +102,7 @@ int WINAPI WinMain(
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
     auto window = zaf::Create<Window>();
-    window->SetSize(zaf::Size{ 100, 300 });
+    window->SetSize(zaf::Size{ 300, 300 });
     window->Show();
 
     zaf::Application::Instance().SetMainWindow(window);

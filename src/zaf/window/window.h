@@ -632,6 +632,9 @@ private:
     bool ReceiveMessageEntrance(const Message& message, LRESULT& result);
     void RaiseReceiveMessageEvent(const Message& message, LRESULT result);
     void Resize(UINT width, UINT height);
+    void ReceiveMoveMessage();
+    void UpdateWindowRect();
+    void UpdateRootControlRect();
     bool RedirectMouseWheelMessage(const Message& message);
     bool ReceiveMouseMessage(const MouseMessage& message);
     void HighlightControlAtPosition(const Point& position);

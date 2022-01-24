@@ -479,6 +479,10 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         Resize(LOWORD(message.lparam), HIWORD(message.lparam));
         return true;
 
+    case WM_MOVE:
+        ReceiveMoveMessage();
+        return true;
+
     case WM_MOUSEACTIVATE: {
         auto activate_option = ActivateOption();
         bool no_activate = (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
@@ -720,6 +724,22 @@ void Window::Resize(UINT width, UINT height) {
         renderer_.Resize(size);
     }
     root_control_->SetRect(zaf::Rect(Point(), size));
+
+    UpdateWindowRect();
+}
+
+
+void Window::ReceiveMoveMessage() {
+
+    UpdateWindowRect();
+}
+
+
+void Window::UpdateWindowRect() {
+
+    RECT rect{};
+    GetWindowRect(handle_, &rect);
+    rect_ = ToDIPs(Rect::FromRECT(rect), GetDPI());
 }
 
 
@@ -1255,10 +1275,6 @@ void Window::SetRect(const zaf::Rect& rect) {
             static_cast<int>(new_rect.size.width),
             static_cast<int>(new_rect.size.height),
             SWP_NOZORDER | SWP_NOACTIVATE);
-
-        RECT window_rect{};
-        GetWindowRect(handle_, &window_rect);
-        rect_ = ToDIPs(Rect::FromRECT(window_rect), GetDPI());
     }
 }
 
