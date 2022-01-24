@@ -1265,33 +1265,62 @@ void Window::SetRect(const zaf::Rect& rect) {
 
 zaf::Size Window::ContentSize() const {
 
-    RECT client_rect{};
-    ::GetClientRect(handle_, &client_rect);
-    return ToDIPs(Rect::FromRECT(client_rect).size, GetDPI());
+    if (Handle()) {
+
+        RECT client_rect{};
+        ::GetClientRect(handle_, &client_rect);
+        return ToDIPs(Rect::FromRECT(client_rect).size, GetDPI());
+    }
+    else {
+
+        auto adjusted_size = AdjustContentSizeToWindowSize(zaf::Size{});
+
+        auto result = Size();
+        result.width -= adjusted_size.width;
+        result.height -= adjusted_size.height;
+        return result;
+    }
 }
 
 
 void Window::SetContentSize(const zaf::Size& size) {
 
-    auto adjusted_rect = zaf::Rect{ Point{}, size }.ToRECT();
+    zaf::Rect new_rect;
+    new_rect.position = Position();
+    new_rect.size = AdjustContentSizeToWindowSize(size);
+
+    SetRect(new_rect);
+}
+
+
+zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) const {
+
+    auto dpi = GetDPI();
+
+    auto adjusted_rect = zaf::Rect{ Point{}, FromDIPs(content_size, dpi) }.ToRECT();
 
     DWORD style{};
     DWORD extra_style{};
     GetHandleStyles(style, extra_style);
 
-    BOOL is_succeeded = AdjustWindowRectEx(&adjusted_rect, style, FALSE, extra_style);
+    BOOL is_succeeded = AdjustWindowRectExForDpi(
+        &adjusted_rect, 
+        style, 
+        FALSE, 
+        extra_style,
+        static_cast<UINT>(dpi));
+
     if (!is_succeeded) {
         ZAF_THROW_SYSTEM_ERROR(GetLastError());
     }
 
-    zaf::Rect new_rect;
-    new_rect.position = Position();
-    new_rect.size = zaf::Size{
+    auto result = zaf::Size{
         static_cast<float>(adjusted_rect.right - adjusted_rect.left),
-        static_cast<float>(adjusted_rect.bottom - adjusted_rect.top) 
+        static_cast<float>(adjusted_rect.bottom - adjusted_rect.top)
     };
 
-    SetRect(new_rect);
+    result = ToDIPs(result, dpi);
+    return result;
 }
 
 
@@ -1675,7 +1704,12 @@ Point Window::GetMousePosition() const {
 
 float Window::GetDPI() const {
 
-    return static_cast<float>(GetDpiForWindow(Handle()));
+    if (Handle()) {
+        return static_cast<float>(GetDpiForWindow(Handle()));
+    }
+    else {
+        return static_cast<float>(GetDpiForSystem());
+    }
 }
 
 

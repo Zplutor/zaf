@@ -621,6 +621,7 @@ private:
     void RecreateRenderer();
     void CheckCreateWindowHandle();
     void GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const;
+    zaf::Size AdjustContentSizeToWindowSize(const zaf::Size& content_size) const;
 
     bool TryToPreprocessTabKeyMessage(const KeyMessage& message);
     void SwitchFocusedControlByTabKey(bool backward);
