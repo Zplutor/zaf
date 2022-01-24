@@ -112,7 +112,6 @@ ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(RootControl)
 ZAF_DEFINE_TYPE_PROPERTY(CapturingMouseControl)
 ZAF_DEFINE_TYPE_PROPERTY(MouseOverControl)
 ZAF_DEFINE_TYPE_PROPERTY(FocusedControl)
-ZAF_DEFINE_TYPE_PROPERTY(IsClosed)
 ZAF_DEFINE_TYPE_PROPERTY(IsVisible)
 ZAF_DEFINE_TYPE_END
 
@@ -289,7 +288,7 @@ void Window::RecreateRenderer() {
 
 void Window::CheckCreateWindowHandle() {
 
-    if (IsClosed()) {
+    if (!Handle()) {
         CreateWindowHandle();
     }
 }
@@ -1197,7 +1196,7 @@ std::shared_ptr<Window> Window::Owner() const {
 
 void Window::SetOwner(const std::shared_ptr<Window>& owner) {
 
-    if (IsClosed()) {
+    if (!Handle()) {
 
         std::weak_ptr<Window> weak_owner = owner;
         GetPropertyMap().SetProperty(kOwnerPropertyName, weak_owner);
@@ -1227,7 +1226,7 @@ void Window::SetInitialRectStyle(zaf::InitialRectStyle initial_rect_style) {
 
 Rect Window::Rect() const {
 
-    if (IsClosed()) {
+    if (!Handle()) {
         return rect_;
     }
     else {
@@ -1241,7 +1240,7 @@ Rect Window::Rect() const {
 
 void Window::SetRect(const zaf::Rect& rect) {
 
-    if (IsClosed()) {
+    if (!Handle()) {
         rect_ = rect;
     }
     else {
@@ -1405,7 +1404,7 @@ ActivateOption Window::ActivateOption() const {
 
 void Window::SetActivateOption(zaf::ActivateOption option) {
 
-    if (IsClosed()) {
+    if (!Handle()) {
         GetPropertyMap().SetProperty(kActivateOptionPropertyName, option);
     }
 }
@@ -1418,7 +1417,7 @@ bool Window::IsPopup() const {
 
 void Window::SetIsPopup(bool is_popup) {
 
-    if (IsClosed()) {
+    if (!Handle()) {
         GetPropertyMap().SetProperty(kIsPopupPropertyName, is_popup);
         ReviseHasTitleBar();
     }
@@ -1432,7 +1431,7 @@ bool Window::HasBorder() const {
 
 void Window::SetHasBorder(bool has_border) {
 
-    if (IsClosed()) {
+    if (!Handle()) {
         GetPropertyMap().SetProperty(kHasBorderPropertyName, has_border);
         ReviseHasTitleBar();
     }
@@ -1451,7 +1450,7 @@ void Window::SetHasTitleBar(bool has_title_bar) {
     //not allow to change this property.
     //If the handle is not created yet, allow to change this property, but it will be
     //revised when creating handle.
-    if (!IsClosed()) {
+    if (!!Handle()) {
         if (!IsPopup() && HasBorder()) {
             return;
         }
@@ -1554,7 +1553,7 @@ void Window::SetStyleProperty(
 
     GetPropertyMap().SetProperty(property_name, is_set);
 
-    if (! IsClosed()) {
+    if (! !Handle()) {
         SetStyleToHandle(style_value, is_set, is_extra_style);
     }
 }
@@ -1577,7 +1576,7 @@ void Window::SetStyleToHandle(DWORD style_value, bool is_set, bool is_extra_styl
 
 std::wstring Window::Title() const {
 
-    if (IsClosed()) {
+    if (!Handle()) {
 
         auto title = GetPropertyMap().TryGetProperty<std::wstring>(kTitlePropertyName);
         if (title != nullptr) {
@@ -1601,7 +1600,7 @@ void Window::SetTitle(const std::wstring& title) {
 
     GetPropertyMap().SetProperty(kTitlePropertyName, title);
 
-    if (! IsClosed()) {
+    if (! !Handle()) {
         SetWindowText(handle_, title.c_str());
     }
 }
@@ -1627,7 +1626,7 @@ void Window::InitializeRootControl(const std::shared_ptr<Control>& control) {
     root_control_ = control;
     root_control_->SetWindow(shared_from_this());
 
-    if (!IsClosed()) {
+    if (!!Handle()) {
         RECT client_rect{};
         ::GetClientRect(handle_, &client_rect);
         root_control_->SetRect(Rect::FromRECT(client_rect));

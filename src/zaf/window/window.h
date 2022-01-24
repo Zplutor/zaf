@@ -436,13 +436,6 @@ public:
         return handle_;
     }
 
-    /**
-     Get a value indicating that whether the window is closed.
-     */
-    bool IsClosed() const {
-        return Handle() == nullptr;
-    }
-
     Observable<WindowCloseInfo> CloseEvent();
 
     /**
