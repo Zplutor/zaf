@@ -609,9 +609,9 @@ void Window::Repaint() {
 
     zaf::Rect dirty_rect;
 
-    RECT win32_rect = { 0 };
+    RECT win32_rect{};
     if (GetUpdateRect(handle_, &win32_rect, TRUE)) {
-        dirty_rect = Rect::FromRECT(win32_rect);
+        dirty_rect = ToDIPs(Rect::FromRECT(win32_rect), GetDPI());
     }
     else {
         dirty_rect = root_control_->Rect();
@@ -728,7 +728,9 @@ void Window::Resize(UINT width, UINT height) {
     if (renderer_ != nullptr) {
         renderer_.Resize(size);
     }
-    root_control_->SetRect(zaf::Rect(Point(), size));
+
+    zaf::Rect root_control_rect{ Point(), ToDIPs(size, GetDPI()) };
+    root_control_->SetRect(root_control_rect);
 
     UpdateWindowRect();
 }
