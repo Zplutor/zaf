@@ -33,15 +33,15 @@ public:
     Renderer() { }
     explicit Renderer(ID2D1RenderTarget* handle) : ComObject(handle) { }
 
-    std::pair<float, float> GetDPI() const {
+    float GetDPI() const {
         float x{};
         float y{};
         GetHandle()->GetDpi(&x, &y);
-        return std::make_pair(x, y);
+        return x;
     }
 
-    void SetDPI(float x, float y) {
-        GetHandle()->SetDpi(x, y);
+    void SetDPI(float dpi) {
+        GetHandle()->SetDpi(dpi, dpi);
     }
 
     BitmapRenderer CreateCompatibleRenderer(const CreateCompatibleRendererOptions& options);

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/creation.h>
+#include <zaf/graphic/alignment.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/window/window.h>
 
@@ -14,12 +15,7 @@ TEST(WindowTest, SetRectBeforeCreate) {
 
     window->CreateHandle();
     //After creating the window, Rect() should use the actual window rect.
-    //In DIP context, the result may differs from which set by SetRect() due to loss of precision.
-    auto pixel_rect = zaf::FromDIPs(initial_rect, window->GetDPI());
-    pixel_rect.position.x = std::floor(pixel_rect.position.x);
-    pixel_rect.position.y = std::floor(pixel_rect.position.y);
-    pixel_rect.size.width = std::floor(pixel_rect.size.width);
-    pixel_rect.size.height = std::floor(pixel_rect.size.height);
+    auto pixel_rect = zaf::Align(zaf::FromDIPs(initial_rect, window->GetDPI()));
     auto rect_after_create = zaf::ToDIPs(pixel_rect, window->GetDPI());
     ASSERT_EQ(window->Rect(), rect_after_create);
 
@@ -38,11 +34,7 @@ TEST(WindowTest, SetRectAfterCreate) {
     window->SetRect(rect);
 
     //After calling SetRect(), the rect should be adjusted to the actual window rect.
-    auto pixel_rect = zaf::FromDIPs(rect, window->GetDPI());
-    pixel_rect.position.x = std::floor(pixel_rect.position.x);
-    pixel_rect.position.y = std::floor(pixel_rect.position.y);
-    pixel_rect.size.width = std::floor(pixel_rect.size.width);
-    pixel_rect.size.height = std::floor(pixel_rect.size.height);
+    auto pixel_rect = zaf::Align(zaf::FromDIPs(rect, window->GetDPI()));
     auto rect_after_set = zaf::ToDIPs(pixel_rect, window->GetDPI());
     ASSERT_EQ(window->Rect(), rect_after_set);
 

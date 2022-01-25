@@ -51,16 +51,6 @@ public:
 
         __super::AfterParse();
 
-        auto label = zaf::Create<zaf::Label>();
-        label->SetRect(zaf::Rect{ 20, 20, 100, 30 });
-        label->SetText(L"Label");
-        label->SetTooltip(L"This is a label");
-        Subscriptions() += label->MouseHoverEvent().Subscribe(
-            [this](const zaf::ControlMouseHoverInfo& event_info) {
-        
-            OutputDebugString(L"Label hover");
-        });
-        this->RootControl()->AddChild(label);
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetBorder(zaf::Frame{ 1 });
         this->RootControl()->SetBorderColor(zaf::Color::Black());

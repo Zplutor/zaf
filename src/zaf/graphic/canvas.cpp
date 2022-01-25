@@ -6,8 +6,8 @@
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/geometry/rounded_rectangle_geometry.h>
-#include <zaf/graphic/layer_parameters.h>
 #include <zaf/graphic/graphic_factory.h>
+#include <zaf/graphic/layer_parameters.h>
 #include <zaf/graphic/text/text_format.h>
 
 namespace zaf {

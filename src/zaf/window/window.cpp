@@ -44,6 +44,12 @@ constexpr const wchar_t* const kOwnerPropertyName = L"Owner";
 constexpr const wchar_t* const kReceiveMessageEventPropertyName = L"ReceiveMessageEvent";
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
 
+
+zaf::Rect RoundRectInDIPs(const zaf::Rect& rect, float dpi) {
+    return Align(FromDIPs(rect, dpi));
+}
+
+
 class WindowParser : public ObjectParser {
 public:
     void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
@@ -228,7 +234,7 @@ void Window::ReceiveCreateMessage(HWND handle) {
 
     auto dpi = static_cast<float>(GetDpiForWindow(handle));
     auto initial_rect = GetInitialRect(dpi);
-    auto rect_in_pixels = FromDIPs(initial_rect, dpi);
+    auto rect_in_pixels = RoundRectInDIPs(initial_rect, dpi);
 
     SetWindowPos(
         handle,
@@ -275,7 +281,6 @@ Rect Window::GetInitialRect(float dpi) const {
 void Window::CreateRenderer() {
 
     renderer_ = GetGraphicFactory().CreateWindowRenderer(handle_);
-    renderer_.SetDPI(96, 96);
 }
 
 
@@ -1265,7 +1270,7 @@ void Window::SetRect(const zaf::Rect& rect) {
     }
     else {
 
-        auto new_rect = FromDIPs(rect, GetDPI());
+        auto new_rect = RoundRectInDIPs(rect, GetDPI());
 
         SetWindowPos(
             handle_,
@@ -1313,7 +1318,9 @@ zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) c
 
     auto dpi = GetDPI();
 
-    auto adjusted_rect = zaf::Rect{ Point{}, FromDIPs(content_size, dpi) }.ToRECT();
+    zaf::Rect rect{ zaf::Point{}, content_size };
+    auto rounded_rect = RoundRectInDIPs(rect, dpi);
+    auto adjusted_rect = rounded_rect.ToRECT();
 
     DWORD style{};
     DWORD extra_style{};
