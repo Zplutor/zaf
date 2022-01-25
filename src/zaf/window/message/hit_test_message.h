@@ -10,7 +10,7 @@ public:
     using MessageShim::MessageShim;
 
     Point MousePosition() const {
-        return internal::GetMousePositionFromLPARAM(Inner().lparam, Inner().hwnd);
+        return internal::GetMousePositionFromLPARAM(Inner().hwnd, Inner().lparam, true);
     }
 };
 

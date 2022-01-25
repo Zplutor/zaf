@@ -5,7 +5,10 @@
 namespace zaf {
 namespace internal {
 
-Point GetMousePositionFromLPARAM(LPARAM lparam, HWND transformed_window_handle);
+Point GetMousePositionFromLPARAM(
+    HWND window_handle, 
+    LPARAM lparam,
+    bool transform_coordinate);
 
 }
 }
