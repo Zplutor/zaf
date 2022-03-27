@@ -129,7 +129,7 @@ void ImageBox::SetImagePlayer(std::unique_ptr<internal::ImagePlayer> player) {
 }
 
 
-zaf::Size ImageBox::GetPreferredContentSize() const {
+zaf::Size ImageBox::CalculatePreferredContentSize(const zaf::Size& max_size) const {
 
     if (!image_player_) {
         return {};
@@ -143,6 +143,7 @@ zaf::Size ImageBox::GetPreferredContentSize() const {
         return {};
     }
 
+    //TODO: Consider max_size.
     return zaf::Size{
         pixel_size.width / (std::round(resolution.first) / 96.f),
         pixel_size.height / (std::round(resolution.second) / 96.f)

@@ -678,23 +678,45 @@ void Control::SetMaxHeight(float max_height) {
 }
 
 
-zaf::Size Control::GetPreferredSize() const {
+zaf::Size Control::CalculatePreferredSize() const {
 
-    auto result = GetPreferredContentSize();
+    zaf::Size max_size{ 
+        std::numeric_limits<float>::max(),
+        std::numeric_limits<float>::max() 
+    };
+
+    return CalculatePreferredSize(max_size);
+}
+
+
+zaf::Size Control::CalculatePreferredSize(const zaf::Size& max_size) const {
+
+    float non_content_width{};
+    float non_content_height{};
 
     const auto& padding = Padding();
-    result.width += padding.left + padding.right;
-    result.height += padding.top + padding.bottom;
+    non_content_width += padding.left + padding.right;
+    non_content_height += padding.top + padding.bottom;
 
     const auto& border = Border();
-    result.width += border.left + border.right;
-    result.height += border.top + border.bottom;
+    non_content_width += border.left + border.right;
+    non_content_height += border.top + border.bottom;
 
+    zaf::Size max_content_size{
+        std::max(max_size.width - non_content_width, 0.f),
+        std::max(max_size.height - non_content_height, 0.f)
+    };
+    auto preferred_content_size = CalculatePreferredContentSize(max_content_size);
+
+    zaf::Size result{
+        preferred_content_size.width + non_content_width,
+        preferred_content_size.height + non_content_height
+    };
     return result;
 }
 
 
-zaf::Size Control::GetPreferredContentSize() const {
+zaf::Size Control::CalculatePreferredContentSize(const zaf::Size& max_size) const {
 
     zaf::Rect union_rect;
 
@@ -714,12 +736,10 @@ zaf::Size Control::GetPreferredContentSize() const {
         union_rect.Union(needed_rect);
     }
 
-    return union_rect.size;
-}
-
-
-void Control::ResizeToPreferredSize() {
-    InnerResizeToPreferredSize(true, true);
+    zaf::Size result;
+    result.width = std::min(union_rect.size.width, max_size.width);
+    result.height = std::min(union_rect.size.height, max_size.height);
+    return result;
 }
 
 
@@ -745,7 +765,7 @@ void Control::InnerResizeToPreferredSize(bool resize_width, bool resize_height) 
 
     auto update_guard = BeginUpdate();
 
-    auto preferred_size = GetPreferredSize();
+    auto preferred_size = CalculatePreferredSize();
 
     if (resize_width) {
         SetFixedWidth(preferred_size.width);

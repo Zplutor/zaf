@@ -33,7 +33,7 @@ void MessageItem::Layout(const zaf::Rect& previous_rect) {
         top += SenderNameHeight + NameAndContentGap;
     }
 
-    auto bubble_size = content_bubble_->GetPreferredSize();
+    auto bubble_size = content_bubble_->CalculatePreferredSize();
 
     zaf::Point bubble_position;
     bubble_position.x = is_current_user_ ? content_size.width - bubble_size.width : 0;
@@ -76,7 +76,7 @@ float MessageItem::DeterminateHeight(float max_width) {
     float height = TopPadding;
 
     content_bubble_->SetMaxWidth(std::min(MaxBubbleWidth, max_content_width));
-    auto bubble_size = content_bubble_->GetPreferredSize();
+    auto bubble_size = content_bubble_->CalculatePreferredSize();
     height += bubble_size.height;
 
     if (sender_label_->IsVisible()) {

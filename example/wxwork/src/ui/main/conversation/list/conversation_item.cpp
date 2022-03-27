@@ -170,7 +170,7 @@ void ConversationItem::Layout(const zaf::Rect& previous_rect) {
 
     const auto& current_size = ContentSize();
 
-    auto time_label_require_size = time_label_->GetPreferredSize();
+    auto time_label_require_size = time_label_->CalculatePreferredSize();
 
     time_label_->SetRect(zaf::Rect(
         current_size.width - TimeRightMargin - time_label_require_size.width,

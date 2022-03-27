@@ -434,6 +434,8 @@ void TextBox::SetText(const std::wstring& text) {
 
         text_service_->TxSetText(text.c_str());
 
+        ReleaseTextLayout();
+
         //Sometimes the text service would not require to repaint after
         //setting text, so do it here.
         NeedRepaint();
