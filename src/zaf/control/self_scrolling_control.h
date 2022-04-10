@@ -59,12 +59,20 @@ public:
     /**
      Get vertical scroll values of the self scrolling control.
      */
-    virtual void GetVerticalScrollValues(int& current_value, int& min_value, int& max_value) = 0;
+    virtual void GetVerticalScrollValues(
+        int& current_value, 
+        int& min_value, 
+        int& max_value,
+        int& page_value) = 0;
 
     /**
      Get horizontal scroll values of the self scrolling control.
      */
-    virtual void GetHorizontalScrollValues(int& current_value, int& min_value, int& max_value) = 0;
+    virtual void GetHorizontalScrollValues(
+        int& current_value, 
+        int& min_value, 
+        int& max_value,
+        int& page_value) = 0;
 
     /**
      Get scroll bar change event of the self scrolling control.

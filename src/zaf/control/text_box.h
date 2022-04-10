@@ -165,8 +165,17 @@ public:
     bool CanEnableVerticalScrollBar() override;
     bool CanEnableHorizontalScrollBar() override;
 
-    void GetVerticalScrollValues(int& current_value, int& min_value, int& max_value) override;
-    void GetHorizontalScrollValues(int& current_value, int& min_value, int& max_value) override;
+    void GetVerticalScrollValues(
+        int& current_value, 
+        int& min_value,
+        int& max_value,
+        int& page_value) override;
+
+    void GetHorizontalScrollValues(
+        int& current_value, 
+        int& min_value,
+        int& max_value, 
+        int& page_value) override;
 
     /**
      Get selection change event.
@@ -362,7 +371,12 @@ private:
     bool HasPropertyBit(DWORD bit) const;
     void ChangePropertyBit(DWORD bit, bool is_set);
     void ChangeScrollBarPropertyBits(DWORD bits, bool is_set);
-    void GetScrollValues(bool is_horizontal, int& current_value, int& min_value, int& max_value);
+    void GetScrollValues(
+        bool is_horizontal, 
+        int& current_value, 
+        int& min_value,
+        int& max_value,
+        int& page_value);
     void SendScrollMessage(bool is_horizontal, WORD scroll_type);
     void Scroll(bool is_horizontal, int new_value);
     void ScrollBarChange();

@@ -625,19 +625,34 @@ bool TextBox::CanEnableHorizontalScrollBar() {
 }
 
 
-void TextBox::GetVerticalScrollValues(int& current_value, int& min_value, int& max_value) {
-    GetScrollValues(false, current_value, min_value, max_value);
+void TextBox::GetVerticalScrollValues(
+    int& current_value, 
+    int& min_value,
+    int& max_value,
+    int& page_value) {
+
+    GetScrollValues(false, current_value, min_value, max_value, page_value);
 }
 
 
-void TextBox::GetHorizontalScrollValues(int& current_value, int& min_value, int& max_value) {
-    GetScrollValues(true, current_value, min_value, max_value);
+void TextBox::GetHorizontalScrollValues(
+    int& current_value, 
+    int& min_value,
+    int& max_value,
+    int& page_value) {
+
+    GetScrollValues(true, current_value, min_value, max_value, page_value);
 }
 
 
-void TextBox::GetScrollValues(bool is_horizontal, int& current_value, int& min_value, int& max_value) {
+void TextBox::GetScrollValues(
+    bool is_horizontal, 
+    int& current_value, 
+    int& min_value, 
+    int& max_value,
+    int& page_value) {
 
-    if (text_service_ == nullptr) {
+    if (!text_service_) {
         return;
     }
 
@@ -654,16 +669,14 @@ void TextBox::GetScrollValues(bool is_horizontal, int& current_value, int& min_v
         result = text_service_->TxGetVScroll(&min, &max, &current, &page, nullptr);
     }
 
-    if (SUCCEEDED(result)) {
-        current_value = current;
-        min_value = min;
-        if (max < page) {
-            max_value = 0;
-        }
-        else {
-            max_value = max - page;
-        }
+    if (FAILED(result)) {
+        return;
     }
+
+    current_value = current;
+    min_value = min;
+    max_value = std::max(max - page, 0L);
+    page_value = page;
 }
 
 
@@ -1012,7 +1025,8 @@ void TextBox::ScrollRightToEnd() {
     int current_value = 0;
     int min_value = 0;
     int max_value = 0;
-    GetScrollValues(true, current_value, min_value, max_value);
+    int page_value = 0;
+    GetScrollValues(true, current_value, min_value, max_value, page_value);
     HorizontallyScroll(max_value);
 
     //Sometimes the text service would not require to repaint after scrolling,

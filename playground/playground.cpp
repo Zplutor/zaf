@@ -51,32 +51,15 @@ public:
 
         __super::AfterParse();
 
-        auto label = zaf::Create<zaf::Label>();
-        label->SetRect(zaf::Rect{ 20, 20, 100, 30 });
-        label->SetText(L"Label");
-        label->SetTooltip(L"This is a label");
-        Subscriptions() += label->MouseHoverEvent().Subscribe(
-            [this](const zaf::ControlMouseHoverInfo& event_info) {
-        
-            OutputDebugString(L"Label hover");
-        });
-        this->RootControl()->AddChild(label);
+        RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        auto button = zaf::Create<zaf::Button>();
-        button->SetRect(zaf::Rect{ 20, 60, 100, 30 });
-        button->SetText(L"Button");
-        button->SetTooltip(L"This is a button");
-        Subscriptions() += button->MouseHoverEvent().Subscribe(
-            [this](const zaf::ControlMouseHoverInfo& event_info) {
-        
-            OutputDebugString(L"Button hover");
-        });
-        this->RootControl()->AddChild(button);
-    }
+        auto scrollable_control = zaf::Create<zaf::ScrollableControl>();
+        RootControl()->AddChild(scrollable_control);
 
-protected:
-    bool ReceiveMessage(const zaf::Message& message, LRESULT& result) override {
-        return __super::ReceiveMessage(message, result);
+        auto text_box = zaf::Create<zaf::TextBox>();
+        text_box->SetBorder(zaf::Frame{});
+        text_box->SetIsMultiline(true);
+        scrollable_control->SetScrollContent(text_box);
     }
 };
 
