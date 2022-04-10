@@ -1,10 +1,11 @@
 #pragma once
 
 #include <zaf/control/control.h>
+#include <zaf/rx/subscription.h>
 
 namespace zaf {
 namespace internal {
-class GeneralLayouter;
+class GeneralScrollingLayouter;
 class ScrollableControlLayouter;
 class SelfScrollingLayouter;
 }
@@ -19,12 +20,14 @@ class zaf::Size;
  This is the base class of all scrollable control. 
  
  The scrollable control contains a scroll content control, which would be scrolled when the scroll
- bars changes. You can obatin this control by calling ScrollContentControl method, and then add
- children to it to build the scroll page. You can also set a custom scroll content control by calling
- SetScrollContentControl method.
+ bars changes. You can obatin this control by calling ScrollContent method, and then add
+ children to it to build the scroll page. You can also set a custom scroll content control by 
+ calling SetScrollContent method.
 
- The size of scroll content control is set by SetScrollContentSize method. If the size is larger than
- its scrollable control's visible area size, scroll bars are enabled; otherwise scroll bars are disabled.
+ By default, the size of scroll content control would be auto set to scrollable control's visible 
+ area size, thus scroll bars would not enabled. To enable scroll bars, you can call SetFixedWidth or
+ SetFixedHeight to scroll content control to prevent auto-sizing. Or you can call 
+ SetAutoScrollContentWidth and SetAutoScrollContentHeight to disable auto-sizing.
 
  The scroll content control can inherits SelfScrollingControl class. In this way, its scrollable control
  doesn't scroll it anymore, instead, the scroll content control scrolls its own content and controls 
@@ -74,13 +77,13 @@ public:
      */
     void SetAutoHideScrollBars(bool auto_hide);
 
-    bool AutoAdjustScrollBarLargeChange() const;
-    void SetAutoAdjustScrollBarLargeChange(bool value);
+    bool AutoScrollBarLargeChange() const;
+    void SetAutoScrollBarLargeChange(bool value);
 
     /**
      Get the vertical scroll bar.
      */
-    const std::shared_ptr<ScrollBar>& GetVerticalScrollBar() const {
+    const std::shared_ptr<ScrollBar>& VerticalScrollBar() const {
         return vertical_scroll_bar_;
     }
 
@@ -94,7 +97,7 @@ public:
     /**
      Get the horizontal scroll bar.
      */
-    const std::shared_ptr<ScrollBar>& GetHorizontalScrollBar() const {
+    const std::shared_ptr<ScrollBar>& HorizontalScrollBar() const {
         return horizontal_scroll_bar_;
     }
 
@@ -108,7 +111,7 @@ public:
     /**
      Get the scroll bar corner control.
      */
-    const std::shared_ptr<Control>& GetScrollBarCorner() const {
+    const std::shared_ptr<Control>& ScrollBarCorner() const {
         return scroll_bar_corner_;
     }
 
@@ -120,7 +123,7 @@ public:
     /**
      Get the scroll content control.
      */
-    const std::shared_ptr<Control>& ScrollContentControl() const {
+    const std::shared_ptr<Control>& ScrollContent() const {
         return scroll_content_control_;
     }
 
@@ -129,34 +132,27 @@ public:
 
      Pass nullptr would set back to the default scroll content control.
      */
-    void SetScrollContentControl(const std::shared_ptr<Control>& control);
+    void SetScrollContent(const std::shared_ptr<Control>& control);
+
+    bool AutoScrollContentWidth() const;
+    void SetAutoScrollContentWidth(bool value);
+
+    bool AutoScrollContentHeight() const;
+    void SetAutoScrollContentHeight(bool value);
+
+    void SetAutoScrollContentSize(bool value);
 
     /**
      Get scroll bar thickness.
 
      The default value is 17.
      */
-    float GetScrollBarThickness() const;
+    float ScrollBarThickness() const;
 
     /**
      Set scroll bar thickness.
      */
     void SetScrollBarThickness(float thickness);
-
-    /**
-     Get scroll content size.
-     */
-    const zaf::Size& GetScrollContentSize() const {
-        return scroll_content_control_->Size();
-    }
-
-    /**
-     Set scroll content size.
-
-     The actual scroll content size would be adjusted to the minimum size if 
-     the size is not large enough.
-     */
-    void SetScrollContentSize(const zaf::Size& size);
 
     /**
      Get the visible scroll content rect, in scroll content control's coordinate.
@@ -189,7 +185,8 @@ protected:
 
      Derived classes must call the same method of base class.
      */
-    virtual void VerticalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) { }
+    virtual void OnVerticalScrollBarChanged(
+        const std::shared_ptr<ScrollBar>& previous_scroll_bar) { }
 
     /**
      This method is called when the horizontal scroll bar is changed.
@@ -199,7 +196,8 @@ protected:
 
      Derived classes must call the same method of base class.
      */
-    virtual void HorizontalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) { }
+    virtual void OnHorizontalScrollBarChanged(
+        const std::shared_ptr<ScrollBar>& previous_scroll_bar) { }
 
     /**
      This method is called when the scroll bar corner control is changed.
@@ -209,7 +207,7 @@ protected:
 
      Derived classes must call the same method of base class.
      */
-    virtual void ScrollBarCornerChange(const std::shared_ptr<Control>& previous_control) { }
+    virtual void OnScrollBarCornerChanged(const std::shared_ptr<Control>& previous_control) { }
 
     /**
      This method is called when the scroll content control is changed.
@@ -219,21 +217,17 @@ protected:
 
      Derived classes must call the same method of base class.
      */
-    virtual void ScrollContentControlChange(const std::shared_ptr<Control>& previous_control) { }
+    virtual void OnScrollContentChanged(const std::shared_ptr<Control>& previous_control) { }
 
     void OnIsEnabledChanged() override;
 
 private:
-    friend class internal::GeneralLayouter;
+    friend class internal::GeneralScrollingLayouter;
     friend class internal::ScrollableControlLayouter;
     friend class internal::SelfScrollingLayouter;
 
     const std::shared_ptr<Control>& GetScrollContainerControl() const {
         return scroll_container_control_;
-    }
-
-    const zaf::Size& GetExpectedScrollContentSize() const {
-        return expected_scroll_content_size_;
     }
 
     SelfScrollingControl* GetSelfScrollingControl() const {
@@ -246,6 +240,7 @@ private:
     void InitializeHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
     void InitializeScrollBarCorner(const std::shared_ptr<Control>& corner);
     void InitializeLayouter();
+    void OnScrollContentRectChange(const ControlRectChangeInfo& event_info);
 
 private:
     std::shared_ptr<ScrollBar> vertical_scroll_bar_;
@@ -255,8 +250,9 @@ private:
     std::shared_ptr<Control> scroll_content_control_;
     SelfScrollingControl* self_scrolling_control_;
 
-    zaf::Size expected_scroll_content_size_;
     std::unique_ptr<internal::ScrollableControlLayouter> layouter_;
+    bool is_layouting_{};
+    Subscription scroll_content_rect_change_subscription_;
 };
 
 }

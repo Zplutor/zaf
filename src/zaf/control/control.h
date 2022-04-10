@@ -239,6 +239,10 @@ public:
 
     void SetAutoSize(bool value);
 
+    float ApplyWidthLimit(float width) const;
+    float ApplyHeightLimit(float height) const;
+    zaf::Size ApplySizeLimit(const zaf::Size& size) const;
+
     /**
      Get the control's anchor.
 

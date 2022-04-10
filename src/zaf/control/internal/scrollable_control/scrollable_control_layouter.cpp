@@ -2,8 +2,7 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scrollable_control.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 
 ScrollableControlLayouter::ScrollableControlLayouter(ScrollableControl* scrollable_control) : 
     scrollable_control_(scrollable_control) {
@@ -56,40 +55,42 @@ void ScrollableControlLayouter::UnregisterScrollBarEvent(bool is_horizontal) {
 }
 
 
-void ScrollableControlLayouter::LayoutScrollBars(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
+void ScrollableControlLayouter::LayoutScrollBars(
+    bool need_vertical_scroll_bar, 
+    bool need_horizontal_scroll_bar) {
 
     auto content_size = GetScrollableControl()->ContentSize();
-    float scroll_bar_thickness = GetScrollableControl()->GetScrollBarThickness();
+    float scroll_bar_thickness = GetScrollableControl()->ScrollBarThickness();
 
     //Layout vertical scroll bar
-    GetVerticalScrollBar()->SetIsVisible(can_show_vertical_scroll_bar);
-    if (can_show_vertical_scroll_bar) {
+    GetVerticalScrollBar()->SetIsVisible(need_vertical_scroll_bar);
+    if (need_vertical_scroll_bar) {
 
         Rect vertical_scroll_bar_rect(
             content_size.width - scroll_bar_thickness,
             0,
             scroll_bar_thickness,
-            content_size.height - (can_show_horizontal_scroll_bar ? scroll_bar_thickness : 0)
+            content_size.height - (need_horizontal_scroll_bar ? scroll_bar_thickness : 0)
         );
         GetVerticalScrollBar()->SetRect(vertical_scroll_bar_rect);
     }
 
     //Layout horizontal scroll bar
-    GetHorizontalScrollBar()->SetIsVisible(can_show_horizontal_scroll_bar);
-    if (can_show_horizontal_scroll_bar) {
+    GetHorizontalScrollBar()->SetIsVisible(need_horizontal_scroll_bar);
+    if (need_horizontal_scroll_bar) {
 
         Rect horizontal_scroll_bar_rect(
             0,
             content_size.height - scroll_bar_thickness,
-            content_size.width - (can_show_vertical_scroll_bar ? scroll_bar_thickness : 0),
+            content_size.width - (need_vertical_scroll_bar ? scroll_bar_thickness : 0),
             scroll_bar_thickness
         );
         GetHorizontalScrollBar()->SetRect(horizontal_scroll_bar_rect);
     }
 
     //Layout scroll bar corner
-    const auto& corner = GetScrollableControl()->GetScrollBarCorner();
-    if (can_show_vertical_scroll_bar && can_show_horizontal_scroll_bar) {
+    const auto& corner = GetScrollableControl()->ScrollBarCorner();
+    if (need_vertical_scroll_bar && need_horizontal_scroll_bar) {
 
         corner->SetIsVisible(true);
 
@@ -107,20 +108,21 @@ void ScrollableControlLayouter::LayoutScrollBars(bool can_show_vertical_scroll_b
 }
 
 
-void ScrollableControlLayouter::LayoutScrollContainerControl(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar) {
+void ScrollableControlLayouter::LayoutScrollContainerControl(
+    bool need_vertical_scroll_bar, 
+    bool need_horizontal_scroll_bar) {
 
     Rect rect(Point(), GetScrollableControl()->ContentSize());
 
-    if (can_show_vertical_scroll_bar) {
+    if (need_vertical_scroll_bar) {
         rect.size.width -= GetVerticalScrollBar()->Width();
     }
 
-    if (can_show_horizontal_scroll_bar) {
+    if (need_horizontal_scroll_bar) {
         rect.size.height -= GetHorizontalScrollBar()->Height();
     }
 
     GetScrollableControl()->GetScrollContainerControl()->SetRect(rect);
 }
 
-}
 }

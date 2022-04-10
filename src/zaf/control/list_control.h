@@ -169,7 +169,7 @@ public:
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect& previous_rect) override;
-    void VerticalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) override;
+    void OnVerticalScrollBarChanged(const std::shared_ptr<ScrollBar>& previous_scroll_bar) override;
 
     /**
      This method is called when the data source is changed. Derived classes must call the same 

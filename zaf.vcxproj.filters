@@ -282,7 +282,7 @@
     <ClCompile Include="src\zaf\graphic\text\text_format.cpp">
       <Filter>zaf\graphic\text</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\scrollable_control\general_layouter.cpp">
+    <ClCompile Include="src\zaf\control\internal\scrollable_control\general_scrolling_layouter.cpp">
       <Filter>zaf\control\internal\scrollable_control</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.cpp">
@@ -975,7 +975,7 @@
     <ClInclude Include="src\zaf\graphic\text\text_trimming.h">
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\scrollable_control\general_layouter.h">
+    <ClInclude Include="src\zaf\control\internal\scrollable_control\general_scrolling_layouter.h">
       <Filter>zaf\control\internal\scrollable_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.h">

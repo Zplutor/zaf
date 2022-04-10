@@ -67,9 +67,10 @@ void ListControl::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void ListControl::VerticalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar) {
+void ListControl::OnVerticalScrollBarChanged(
+    const std::shared_ptr<ScrollBar>& previous_scroll_bar) {
 
-    __super::VerticalScrollBarChange(previous_scroll_bar);
+    __super::OnVerticalScrollBarChanged(previous_scroll_bar);
 
     implementation_->OnVerticalScrollBarChange(previous_scroll_bar);
 }

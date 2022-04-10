@@ -72,7 +72,7 @@ ListControlImplementation::ListControlImplementation(ScrollableControl& owner) :
 
 ListControlImplementation::~ListControlImplementation() {
 
-    UnregisterScrollBarEvents(owner_.GetVerticalScrollBar());
+    UnregisterScrollBarEvents(owner_.VerticalScrollBar());
     UnregisterDataSourceEvents();
 }
 
@@ -101,7 +101,7 @@ void ListControlImplementation::Initialize(const InitializeParameters& parameter
 
 void ListControlImplementation::RegisterScrollBarEvents() {
 
-    auto vertical_scroll_bar = owner_.GetVerticalScrollBar();
+    auto vertical_scroll_bar = owner_.VerticalScrollBar();
 
     vertical_scroll_bar_subscription_ = vertical_scroll_bar->ScrollEvent().Subscribe(
         std::bind(&ListControlImplementation::UpdateVisibleItems, this));
@@ -143,7 +143,7 @@ void ListControlImplementation::AdjustScrollBarSmallChange() {
     auto item_data = data_source->GetDataAtIndex(0);
     auto item_height = delegate->EstimateItemHeight(0, item_data);
 
-    auto vertical_scroll_bar = owner_.GetVerticalScrollBar();
+    auto vertical_scroll_bar = owner_.VerticalScrollBar();
     vertical_scroll_bar->SetSmallChange(static_cast<int>(item_height));
 }
 
@@ -265,7 +265,7 @@ void ListControlImplementation::InstallItemContainer(
 
     item_container_ = item_container;
     item_container_->SetSelectStrategy(CreateSelectStrategy());
-    owner_.SetScrollContentControl(item_container_);
+    owner_.SetScrollContent(item_container_);
 }
 
 
@@ -750,7 +750,7 @@ float ListControlImplementation::AdjustContentHeight() {
 void ListControlImplementation::SetScrollContentHeight(float height) {
 
     current_total_height_ = height;
-    owner_.SetScrollContentSize(Size(0, height));
+    item_container_->SetFixedHeight(height);
 }
 
 

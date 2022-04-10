@@ -90,11 +90,9 @@ static std::shared_ptr<zaf::Control> CreateColorListControl() {
     color_list_control->SetBorder(zaf::Frame(0, 1, 0, 0));
     color_list_control->SetAutoHideScrollBars(true);
 
-    //The width of scroll content size is unconcerned here, so just set it to 0.
-    //The scrollable control will adjust the size to a appropriate value.
-    color_list_control->SetScrollContentSize(zaf::Size(0, sizeof(g_color_items) / sizeof(ColorItem) * item_height));
-
-    auto scrolled_content_control = color_list_control->ScrollContentControl();
+    auto scrolled_content_control = color_list_control->ScrollContent();
+    scrolled_content_control->SetFixedHeight(
+        sizeof(g_color_items) / sizeof(ColorItem) * item_height);
     scrolled_content_control->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
     
     //Begin update the control, to avoid relayouting frequently when adding children. 

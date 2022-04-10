@@ -517,15 +517,7 @@ void Control::SetRect(const zaf::Rect& rect) {
     }
 
     //Revise the size.
-    float width = rect.size.width;
-    width = std::max(width, MinWidth());
-    width = std::min(width, MaxWidth());
-
-    float height = rect.size.height;
-    height = std::max(height, MinHeight());
-    height = std::min(height, MaxHeight());
-
-    rect_ = zaf::Rect(rect.position, zaf::Size(width, height));    
+    rect_ = zaf::Rect(rect.position, ApplySizeLimit(rect.size));    
 
     //Notify rect change.
     OnRectChanged(previous_rect);
@@ -803,6 +795,33 @@ void Control::SetAutoSize(bool value) {
 
     SetAutoWidth(true);
     SetAutoHeight(true);
+}
+
+
+float Control::ApplyWidthLimit(float width) const {
+
+    float result = width;
+    result = std::max(result, MinWidth());
+    result = std::min(result, MaxWidth());
+    return result;
+}
+
+
+float Control::ApplyHeightLimit(float height) const {
+
+    float result = height;
+    result = std::max(result, MinHeight());
+    result = std::min(result, MaxHeight());
+    return result;
+}
+
+
+zaf::Size Control::ApplySizeLimit(const zaf::Size& size) const {
+
+    return zaf::Size{ 
+        ApplyWidthLimit(size.width),
+        ApplyHeightLimit(size.height) 
+    };
 }
 
 

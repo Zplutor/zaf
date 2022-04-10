@@ -24,7 +24,7 @@ public:
         return Frame(
             static_cast<float>(rect.left),
             static_cast<float>(rect.top),
-            static_cast<float>(rect.bottom),
+            static_cast<float>(rect.right),
             static_cast<float>(rect.bottom));
     }
 
@@ -55,6 +55,14 @@ public:
             (top == 0) &&
             (right == 0) &&
             (bottom == 0);
+    }
+
+    float Width() const {
+        return left + right;
+    }
+
+    float Height() const {
+        return top + bottom;
     }
 
     /**

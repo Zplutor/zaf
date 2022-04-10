@@ -4,20 +4,19 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scrollable_control.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 
 class ScrollableControlLayouter {
 public:
     ScrollableControlLayouter(ScrollableControl* scrollable_control);
     virtual ~ScrollableControlLayouter();
 
+    ScrollableControlLayouter(const ScrollableControlLayouter&) = delete;
+    ScrollableControlLayouter& operator=(const ScrollableControlLayouter&) = delete;
+
     void ScrollBarChange(bool is_horizontal, const std::shared_ptr<ScrollBar>& previous_scroll_bar);
 
     virtual void Layout() = 0;
-
-    ScrollableControlLayouter(const ScrollableControlLayouter&) = delete;
-    ScrollableControlLayouter& operator=(const ScrollableControlLayouter&) = delete;
 
 protected:
     ScrollableControl* GetScrollableControl() const {
@@ -25,15 +24,17 @@ protected:
     }
 
     const std::shared_ptr<ScrollBar>& GetVerticalScrollBar() const {
-        return GetScrollableControl()->GetVerticalScrollBar();
+        return GetScrollableControl()->VerticalScrollBar();
     }
 
     const std::shared_ptr<ScrollBar>& GetHorizontalScrollBar() const {
-        return GetScrollableControl()->GetHorizontalScrollBar();
+        return GetScrollableControl()->HorizontalScrollBar();
     }
 
-    void LayoutScrollBars(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
-    void LayoutScrollContainerControl(bool can_show_vertical_scroll_bar, bool can_show_horizontal_scroll_bar);
+    void LayoutScrollBars(bool need_vertical_scroll_bar, bool need_horizontal_scroll_bar);
+    void LayoutScrollContainerControl(
+        bool need_vertical_scroll_bar,
+        bool need_horizontal_scroll_bar);
 
     virtual void ScrollBarScroll(const ScrollBarScrollInfo& event_info) = 0;
 
@@ -48,5 +49,4 @@ private:
     Subscription vertical_scroll_bar_subscription_;
 };
 
-}
 }

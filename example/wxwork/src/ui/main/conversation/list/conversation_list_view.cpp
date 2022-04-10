@@ -23,9 +23,9 @@ void ConversationListView::Initialize() {
     SetBorder(zaf::Frame(0));
     SetAllowHorizontalScroll(false);
     SetAutoAdjustScrollBarSmallChange(false);
-    SetAutoAdjustScrollBarLargeChange(false);
+    SetAutoScrollBarLargeChange(false);
 
-    auto vertical_scroll_bar = GetVerticalScrollBar();
+    auto vertical_scroll_bar = VerticalScrollBar();
     vertical_scroll_bar->SetSmallChange(64);
     vertical_scroll_bar->SetLargeChange(64 * 10);
 

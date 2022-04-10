@@ -1,5 +1,5 @@
 #include <zaf/control/scrollable_control.h>
-#include <zaf/control/internal/scrollable_control/general_layouter.h>
+#include <zaf/control/internal/scrollable_control/general_scrolling_layouter.h>
 #include <zaf/control/internal/scrollable_control/self_scrolling_layouter.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/self_scrolling_control.h>
@@ -20,8 +20,9 @@ std::shared_ptr<Control> CreateDefaultScrollContentControl() {
 
 constexpr const wchar_t* const kAllowHorizontalScrollPropertyName = L"AllowHorizontalScroll";
 constexpr const wchar_t* const kAllowVerticalScrollPropertyName = L"AllowVerticalScroll";
-constexpr const wchar_t* const kAutoAdjustScrollBarLargeChangePropertyName =
-    L"AutoAdjustScrollBarLargeChange";
+constexpr const wchar_t* const kAutoScrollBarLargeChangePropertyName = L"AutoScrollBarLargeChange";
+constexpr const wchar_t* const kAutoScrollContentWidthPropertyName = L"AutoScrollContentWidth";
+constexpr const wchar_t* const kAutoScrollContentHeightPropertyName = L"AutoScrollContentHeight";
 constexpr const wchar_t* const kAutoHideScrollBarsPropertyName = L"AutoHideScrollBars";
 constexpr const wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness";
 
@@ -29,10 +30,18 @@ constexpr const wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThic
 
 
 ZAF_DEFINE_TYPE(ScrollableControl)
-ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(ScrollContentControl)
 ZAF_DEFINE_TYPE_PROPERTY(AllowVerticalScroll)
 ZAF_DEFINE_TYPE_PROPERTY(AllowHorizontalScroll)
+ZAF_DEFINE_TYPE_PROPERTY(AutoScrollBarLargeChange)
+ZAF_DEFINE_TYPE_PROPERTY(AutoScrollContentHeight)
+ZAF_DEFINE_TYPE_PROPERTY(AutoScrollContentSize)
+ZAF_DEFINE_TYPE_PROPERTY(AutoScrollContentWidth)
 ZAF_DEFINE_TYPE_PROPERTY(AutoHideScrollBars)
+ZAF_DEFINE_TYPE_PROPERTY(ScrollBarThickness)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(HorizontalScrollBar)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(ScrollBarCorner)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(VerticalScrollBar)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(ScrollContent)
 ZAF_DEFINE_TYPE_END
 
 
@@ -90,6 +99,9 @@ void ScrollableControl::InitializeScrollContentControl(const std::shared_ptr<Con
         self_scrolling_control_->SetAllowHorizontalScroll(AllowHorizontalScroll());
         self_scrolling_control_->SetAutoHideScrollBars(AutoHideScrollBars());   
     }
+
+    scroll_content_rect_change_subscription_ = scroll_content_control_->RectChangeEvent().Subscribe(
+        std::bind(&ScrollableControl::OnScrollContentRectChange, this, std::placeholders::_1));
 }
 
 
@@ -118,7 +130,7 @@ void ScrollableControl::InitializeScrollBarCorner(const std::shared_ptr<Control>
 void ScrollableControl::InitializeLayouter() {
 
     if (self_scrolling_control_ == nullptr) {
-        layouter_ = std::make_unique<internal::GeneralLayouter>(this);
+        layouter_ = std::make_unique<internal::GeneralScrollingLayouter>(this);
     }
     else {
         layouter_ = std::make_unique<internal::SelfScrollingLayouter>(this);
@@ -127,8 +139,24 @@ void ScrollableControl::InitializeLayouter() {
 
 
 void ScrollableControl::Layout(const zaf::Rect& previous_rect) {
-    if (layouter_ != nullptr) {
+
+    if (layouter_) {
+
+        is_layouting_ = true;
         layouter_->Layout();
+        is_layouting_ = false;
+    }
+}
+
+
+void ScrollableControl::OnScrollContentRectChange(const ControlRectChangeInfo& event_info) {
+
+    if (is_layouting_) {
+        return;
+    }
+
+    if (event_info.Control()->Size() != event_info.PreviousRect().size) {
+        NeedRelayout();
     }
 }
 
@@ -205,10 +233,10 @@ void ScrollableControl::SetAutoHideScrollBars(bool auto_hide) {
 }
 
 
-bool ScrollableControl::AutoAdjustScrollBarLargeChange() const {
+bool ScrollableControl::AutoScrollBarLargeChange() const {
 
     auto value = GetPropertyMap().TryGetProperty<bool>(
-        kAutoAdjustScrollBarLargeChangePropertyName);
+        kAutoScrollBarLargeChangePropertyName);
 
     if (value) {
         return *value;
@@ -219,10 +247,9 @@ bool ScrollableControl::AutoAdjustScrollBarLargeChange() const {
 }
 
 
-void ScrollableControl::SetAutoAdjustScrollBarLargeChange(bool value) {
+void ScrollableControl::SetAutoScrollBarLargeChange(bool value) {
 
-    GetPropertyMap().SetProperty(kAutoAdjustScrollBarLargeChangePropertyName, value);
-
+    GetPropertyMap().SetProperty(kAutoScrollBarLargeChangePropertyName, value);
     NeedRelayout();
 }
 
@@ -240,7 +267,7 @@ void ScrollableControl::SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& s
     InitializeVerticalScrollBar(scroll_bar != nullptr ? scroll_bar : Create<ScrollBar>());
 
     layouter_->ScrollBarChange(false, previous_scroll_bar);
-    VerticalScrollBarChange(previous_scroll_bar);
+    OnVerticalScrollBarChanged(previous_scroll_bar);
     NeedRelayout();
 }
 
@@ -258,7 +285,7 @@ void ScrollableControl::SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>&
     InitializeHorizontalScrollBar(scroll_bar != nullptr ? scroll_bar : Create<ScrollBar>());
 
     layouter_->ScrollBarChange(true, previous_scroll_bar);
-    HorizontalScrollBarChange(previous_scroll_bar);
+    OnHorizontalScrollBarChanged(previous_scroll_bar);
     NeedRelayout();
 }
 
@@ -275,12 +302,12 @@ void ScrollableControl::SetScrollBarCorner(const std::shared_ptr<Control>& contr
     RemoveChild(previous_corner);
     InitializeScrollBarCorner(control != nullptr ? control : Create<Control>());
 
-    ScrollBarCornerChange(previous_corner);
+    OnScrollBarCornerChanged(previous_corner);
     NeedRelayout();
 }
 
 
-void ScrollableControl::SetScrollContentControl(const std::shared_ptr<Control>& control) {
+void ScrollableControl::SetScrollContent(const std::shared_ptr<Control>& control) {
 
     auto previous_control = scroll_content_control_;
     if (previous_control == control) {
@@ -289,19 +316,66 @@ void ScrollableControl::SetScrollContentControl(const std::shared_ptr<Control>& 
 
     auto update_guard = this->BeginUpdate();
 
+    scroll_content_rect_change_subscription_.Unsubscribe();
     scroll_container_control_->RemoveChild(previous_control);
 
     //Destroy layouter first for unregistering events before changing scroll content control.
     layouter_.reset();
-    InitializeScrollContentControl(control != nullptr ? control : CreateDefaultScrollContentControl());
+    InitializeScrollContentControl(control ? control : CreateDefaultScrollContentControl());
     InitializeLayouter();
 
-    ScrollContentControlChange(previous_control);
+    OnScrollContentChanged(previous_control);
     NeedRelayout();
 }
 
 
-float ScrollableControl::GetScrollBarThickness() const {
+bool ScrollableControl::AutoScrollContentWidth() const {
+
+    auto value = GetPropertyMap().TryGetProperty<bool>(
+        kAutoScrollContentWidthPropertyName);
+
+    if (value) {
+        return *value;
+    }
+    return true;
+}
+
+
+void ScrollableControl::SetAutoScrollContentWidth(bool value) {
+
+    GetPropertyMap().SetProperty(kAutoScrollContentWidthPropertyName, value);
+    NeedRelayout();
+}
+
+
+bool ScrollableControl::AutoScrollContentHeight() const {
+
+    auto value = GetPropertyMap().TryGetProperty<bool>(
+        kAutoScrollContentHeightPropertyName);
+
+    if (value) {
+        return *value;
+    }
+    return true;
+}
+
+
+void ScrollableControl::SetAutoScrollContentHeight(bool value) {
+
+    GetPropertyMap().SetProperty(kAutoScrollContentHeightPropertyName, value);
+    NeedRelayout();
+}
+
+
+void ScrollableControl::SetAutoScrollContentSize(bool value) {
+
+    auto update_guard = BeginUpdate();
+    SetAutoScrollContentWidth(value);
+    SetAutoScrollContentHeight(value);
+}
+
+
+float ScrollableControl::ScrollBarThickness() const {
 
     auto thickness = GetPropertyMap().TryGetProperty<float>(kScrollBarThicknessPropertyName);
     if (thickness != nullptr) {
@@ -316,18 +390,6 @@ float ScrollableControl::GetScrollBarThickness() const {
 void ScrollableControl::SetScrollBarThickness(float thickness) {
 
     GetPropertyMap().SetProperty(kScrollBarThicknessPropertyName, thickness);
-    NeedRelayout();
-}
-
-
-void ScrollableControl::SetScrollContentSize(const zaf::Size& size) {
-
-    if ((expected_scroll_content_size_.width == size.width) &&
-        (expected_scroll_content_size_.height == size.height)) {
-        return;
-    }
-
-    expected_scroll_content_size_ = size;
     NeedRelayout();
 }
 
@@ -394,25 +456,25 @@ void ScrollableControl::ScrollToScrollContentPosition(const Point& position) {
 
 
 void ScrollableControl::ScrollUpToBegin() {
-    const auto& vertical_scroll_bar = GetVerticalScrollBar();
+    const auto& vertical_scroll_bar = VerticalScrollBar();
     vertical_scroll_bar->SetValue(vertical_scroll_bar->GetMinValue()); 
 }
 
 
 void ScrollableControl::ScrollDownToEnd() {
-    const auto& vertical_scroll_bar = GetVerticalScrollBar();
+    const auto& vertical_scroll_bar = VerticalScrollBar();
     vertical_scroll_bar->SetValue(vertical_scroll_bar->GetMaxValue());
 }
 
 
 void ScrollableControl::ScrollLeftToBegin() {
-    const auto& horizontal_scroll_bar = GetHorizontalScrollBar();
+    const auto& horizontal_scroll_bar = HorizontalScrollBar();
     horizontal_scroll_bar->SetValue(horizontal_scroll_bar->GetMinValue());
 }
 
 
 void ScrollableControl::ScrollRightToEnd() {
-    const auto& horizontal_scroll_bar = GetHorizontalScrollBar();
+    const auto& horizontal_scroll_bar = HorizontalScrollBar();
     horizontal_scroll_bar->SetValue(horizontal_scroll_bar->GetMaxValue());
 }
 
