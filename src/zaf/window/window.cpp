@@ -45,7 +45,7 @@ constexpr const wchar_t* const kReceiveMessageEventPropertyName = L"ReceiveMessa
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
 
 
-zaf::Rect RoundRectInDIPs(const zaf::Rect& rect, float dpi) {
+zaf::Rect ToAlignedPixelsRect(const zaf::Rect& rect, float dpi) {
     return Align(FromDIPs(rect, dpi));
 }
 
@@ -234,7 +234,7 @@ void Window::ReceiveCreateMessage(HWND handle) {
 
     auto dpi = static_cast<float>(GetDpiForWindow(handle));
     auto initial_rect = GetInitialRect(dpi);
-    auto rect_in_pixels = RoundRectInDIPs(initial_rect, dpi);
+    auto rect_in_pixels = ToAlignedPixelsRect(initial_rect, dpi);
 
     SetWindowPos(
         handle,
@@ -716,7 +716,7 @@ void Window::PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect) 
 void Window::NeedRepaintRect(const zaf::Rect& rect) {
 
     if (handle_ != nullptr) {
-        RECT win32_rect = Align(rect).ToRECT();
+        RECT win32_rect = ToAlignedPixelsRect(rect, GetDPI()).ToRECT();
         InvalidateRect(handle_, &win32_rect, FALSE);
     }
 }
@@ -1272,7 +1272,7 @@ void Window::SetRect(const zaf::Rect& rect) {
     }
     else {
 
-        auto new_rect = RoundRectInDIPs(rect, GetDPI());
+        auto new_rect = ToAlignedPixelsRect(rect, GetDPI());
 
         SetWindowPos(
             handle_,
@@ -1321,7 +1321,7 @@ zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) c
     auto dpi = GetDPI();
 
     zaf::Rect rect{ zaf::Point{}, content_size };
-    auto rounded_rect = RoundRectInDIPs(rect, dpi);
+    auto rounded_rect = ToAlignedPixelsRect(rect, dpi);
     auto adjusted_rect = rounded_rect.ToRECT();
 
     DWORD style{};
