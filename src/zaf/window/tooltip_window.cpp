@@ -2,6 +2,7 @@
 #include <zaf/base/container/utility/range.h>
 #include <zaf/control/label.h>
 #include <zaf/creation.h>
+#include <zaf/graphic/dpi.h>
 
 namespace zaf {
 namespace {
@@ -153,10 +154,10 @@ void TooltipWindow::ShowBelowMouseCursor() {
 
     constexpr float y_margin = 2;
 
-    Point window_position;
-    window_position.x = static_cast<float>(cursor_position.x);
-    window_position.y = static_cast<float>(cursor_position.y + *cursor_height + y_margin);
-    this->SetPosition(window_position);
+    Point window_position_in_pixels;
+    window_position_in_pixels.x = static_cast<float>(cursor_position.x);
+    window_position_in_pixels.y = static_cast<float>(cursor_position.y + *cursor_height + y_margin);
+    this->SetPosition(ToDIPs(window_position_in_pixels, GetDPI()));
     this->Show();
 }
 

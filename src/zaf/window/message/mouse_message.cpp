@@ -26,8 +26,7 @@ Point MouseMessage::MousePosition() const {
         return false;
     }();
 
-    return internal::GetMousePositionFromLPARAM(
-        Inner().lparam, need_transform ? Inner().hwnd : nullptr);
+    return internal::GetMousePositionFromLPARAM(Inner().hwnd, Inner().lparam, need_transform);
 }
 
 

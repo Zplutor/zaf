@@ -436,13 +436,6 @@ public:
         return handle_;
     }
 
-    /**
-     Get a value indicating that whether the window is closed.
-     */
-    bool IsClosed() const {
-        return Handle() == nullptr;
-    }
-
     Observable<WindowCloseInfo> CloseEvent();
 
     /**
@@ -456,6 +449,8 @@ public:
      Get position of the mouse cursor in current window's coordinate system.
      */
     Point GetMousePosition() const;
+
+    float GetDPI() const;
 
     /**
      Show the window.
@@ -477,6 +472,8 @@ public:
      Close the window.
      */
     void Close();
+
+    void Destroy();
 
     void CreateHandle() {
         CheckCreateWindowHandle();
@@ -618,11 +615,13 @@ private:
 private:
     void InitializeRootControl(const std::shared_ptr<Control>& control);
     void CreateWindowHandle();
-    zaf::Rect GetInitialRect() const;
+    void ReceiveCreateMessage(HWND handle);
+    zaf::Rect GetInitialRect(float dpi) const;
     void CreateRenderer();
     void RecreateRenderer();
     void CheckCreateWindowHandle();
     void GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const;
+    zaf::Size AdjustContentSizeToWindowSize(const zaf::Size& content_size) const;
 
     bool TryToPreprocessTabKeyMessage(const KeyMessage& message);
     void SwitchFocusedControlByTabKey(bool backward);
@@ -633,6 +632,9 @@ private:
     bool ReceiveMessageEntrance(const Message& message, LRESULT& result);
     void RaiseReceiveMessageEvent(const Message& message, LRESULT result);
     void Resize(UINT width, UINT height);
+    void ReceiveMoveMessage();
+    void UpdateWindowRect();
+    void UpdateRootControlRect();
     bool RedirectMouseWheelMessage(const Message& message);
     bool ReceiveMouseMessage(const MouseMessage& message);
     void HighlightControlAtPosition(const Point& position);

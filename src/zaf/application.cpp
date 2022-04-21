@@ -27,6 +27,13 @@ Application::Application() : is_initialized_(false) {
 }
 
 
+Application::~Application() {
+
+    //Ensure to destroy all windows when exiting applications.
+    DestroyAllWindows();
+}
+
+
 void Application::Initialize(const InitializeParameters& parameters) {
 
     if (is_initialized_) {
@@ -139,14 +146,18 @@ void Application::NotifyApplicationEndRun() {
 
 void Application::Terminate() {
 
-    //Close all windows.
+    DestroyAllWindows();
+    PostQuitMessage(0);
+}
+
+
+void Application::DestroyAllWindows() {
+
     //Copy is needed because windows_ will be modified during closing windows.
     auto all_windows = windows_;
     for (const auto& each_window : all_windows) {
-        each_window->Close();
+        each_window->Destroy();
     }
-
-    PostQuitMessage(0);
 }
 
 

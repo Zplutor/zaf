@@ -159,6 +159,7 @@ private:
 
 private:
     Application();
+    ~Application();
 
     Application(const Application&) = delete;
     Application& operator=(const Application&) = delete;
@@ -167,6 +168,8 @@ private:
 
     void NotifyApplicationBeginRun();
     void NotifyApplicationEndRun();
+
+    void DestroyAllWindows();
 
 private:
     bool is_initialized_;

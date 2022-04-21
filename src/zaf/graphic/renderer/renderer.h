@@ -33,6 +33,17 @@ public:
     Renderer() { }
     explicit Renderer(ID2D1RenderTarget* handle) : ComObject(handle) { }
 
+    float GetDPI() const {
+        float x{};
+        float y{};
+        GetHandle()->GetDpi(&x, &y);
+        return x;
+    }
+
+    void SetDPI(float dpi) {
+        GetHandle()->SetDpi(dpi, dpi);
+    }
+
     BitmapRenderer CreateCompatibleRenderer(const CreateCompatibleRendererOptions& options);
 
     SolidColorBrush CreateSolidColorBrush(const Color& color);
