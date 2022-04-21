@@ -166,7 +166,7 @@ void TooltipWindow::SetText(const std::wstring& text) {
 
     label_->SetText(text);
 
-    auto preferred_size = label_->GetPreferredSize();
+    auto preferred_size = label_->CalculatePreferredSize();
     this->SetContentSize(preferred_size);
 }
 

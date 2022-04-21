@@ -227,9 +227,8 @@ public:
      */
     void SetMaxHeight(float max_height);
 
-    zaf::Size GetPreferredSize() const;
-
-    void ResizeToPreferredSize();
+    zaf::Size CalculatePreferredSize() const;
+    zaf::Size CalculatePreferredSize(const zaf::Size& max_size) const;
 
     bool AutoWidth() const;
     void SetAutoWidth(bool value);
@@ -697,7 +696,7 @@ protected:
      */
     void NeedRelayout();
 
-    virtual zaf::Size GetPreferredContentSize() const;
+    virtual zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const;
 
     void RaiseContentChangedEvent();
     void RaiseClickEvent();

@@ -509,33 +509,7 @@ void TextualControl::RaiseTextChangedEvent() {
 }
 
 
-zaf::Size TextualControl::GetPreferredContentSize() const {
-
-    zaf::Size max_size;
-    max_size.width = MaxWidth();
-    max_size.height = MaxHeight();
-
-    const auto& border = Border();
-    max_size.width -= border.left + border.right;
-    max_size.height -= border.top + border.bottom;
-
-    const auto& padding = Padding();
-    max_size.width -= padding.left + padding.right;
-    max_size.height -= padding.top + padding.bottom;
-
-    if (max_size.width < 0) {
-        max_size.width = 0;
-    }
-
-    if (max_size.height < 0) {
-        max_size.height = 0;
-    }
-
-    return CalculatePreferredSize(max_size);
-}
-
-
-zaf::Size TextualControl::CalculatePreferredSize(const zaf::Size& max_size) const {
+zaf::Size TextualControl::CalculatePreferredContentSize(const zaf::Size& max_size) const {
 
     auto text_layout = GetTextLayout();
     if (text_layout == nullptr) {
