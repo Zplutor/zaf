@@ -55,13 +55,10 @@ public:
         this->RootControl()->SetBorder(zaf::Frame{ 1 });
         this->RootControl()->SetBorderColor(zaf::Color::Black());
 
-        auto scrollable_control = zaf::Create<zaf::ScrollableControl>();
-        RootControl()->AddChild(scrollable_control);
-
         auto text_box = zaf::Create<zaf::TextBox>();
-        text_box->SetBorder(zaf::Frame{});
-        text_box->SetIsMultiline(true);
-        scrollable_control->SetScrollContent(text_box);
+        text_box->SetRect(zaf::Rect{ 99, 99, 100, 30 });
+
+        RootControl()->AddChild(text_box);
     }
 };
 

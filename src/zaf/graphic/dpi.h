@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
 
 namespace zaf {
@@ -54,6 +55,25 @@ inline Rect FromDIPs(const Rect& rect, float dpi) {
     return Rect{
         FromDIPs(rect.position, dpi),
         FromDIPs(rect.size, dpi)
+    };
+}
+
+
+inline Frame ToDIPs(const Frame& frame, float dpi) {
+    return Frame{
+        ToDIPs(frame.left, dpi),
+        ToDIPs(frame.top, dpi),
+        ToDIPs(frame.right, dpi),
+        ToDIPs(frame.bottom, dpi)
+    };
+}
+
+inline Frame FromDIPs(const Frame& frame, float dpi) {
+    return Frame{
+        FromDIPs(frame.left, dpi),
+        FromDIPs(frame.top, dpi),
+        FromDIPs(frame.right, dpi),
+        FromDIPs(frame.bottom, dpi)
     };
 }
 

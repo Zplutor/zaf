@@ -1723,7 +1723,12 @@ Point Window::GetMousePosition() const {
     GetCursorPos(&cursor_point);
     ScreenToClient(handle_, &cursor_point);
 
-    return Point(static_cast<float>(cursor_point.x), static_cast<float>(cursor_point.y));
+    Point point_in_pixels{ 
+        static_cast<float>(cursor_point.x), 
+        static_cast<float>(cursor_point.y) 
+    };
+
+    return ToDIPs(point_in_pixels, GetDPI());
 }
 
 

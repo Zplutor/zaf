@@ -5,6 +5,7 @@
 #include <zaf/base/log.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/graphic/dpi.h>
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/object/type_definition.h>
@@ -163,8 +164,13 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         return;
     }
 
+    auto window = Window();
+    if (!window) {
+        return;
+    }
+
     BeginPath(hdc);
-    RECT path_rect = canvas.GetAbsolutePaintableRect().ToRECT();
+    RECT path_rect = FromDIPs(canvas.GetAbsolutePaintableRect(), window->GetDPI()).ToRECT();
     //Clip path not include the tail edges of rectangle, 
     //so increase the right and bottom values.
     path_rect.right += 1;
@@ -175,9 +181,10 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     auto absolute_content_rect = GetAbsoluteContentRect();
     absolute_content_rect.position.y += GetPaintContentOffset(hdc);
-    absolute_content_rect = Align(absolute_content_rect);
 
-    RECT win32_absolute_rect = absolute_content_rect.ToRECT();
+    auto absolute_content_rect_in_pixels = Align(FromDIPs(absolute_content_rect, window->GetDPI()));
+    RECT win32_rect = absolute_content_rect_in_pixels.ToRECT();
+
     text_service_->TxDraw(
         DVASPECT_CONTENT,
         0,
@@ -185,9 +192,9 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         nullptr,
         hdc,
         nullptr,
-        reinterpret_cast<LPCRECTL>(&win32_absolute_rect),
+        reinterpret_cast<LPCRECTL>(&win32_rect),
         nullptr,
-        &win32_absolute_rect,
+        &win32_rect,
         nullptr,
         0,
         0);
@@ -225,7 +232,13 @@ float TextBox::GetPaintContentOffset(HDC hdc) {
     }
 
     if (required_height_ == 0) {
+
         if (hdc == nullptr) {
+            return 0;
+        }
+
+        auto window = Window();
+        if (!window) {
             return 0;
         }
 
@@ -244,7 +257,7 @@ float TextBox::GetPaintContentOffset(HDC hdc) {
             &height);
 
         if (SUCCEEDED(result)) {
-            required_height_ = static_cast<float>(height);
+            required_height_ = ToDIPs(static_cast<float>(height), window->GetDPI());
         }
     }
 
@@ -774,7 +787,7 @@ bool TextBox::ChangeMouseCursor() {
         return false;
     }
 
-    Point mouse_position = window->GetMousePosition();
+    Point mouse_position = FromDIPs(window->GetMousePosition(), window->GetDPI());
 
     HRESULT result = text_service_->OnTxSetCursor(
         DVASPECT_CONTENT,
@@ -1188,7 +1201,13 @@ BOOL TextBox::TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeigh
         return FALSE;
     }
 
-    window->Caret()->SetSize(zaf::Size(static_cast<float>(xWidth), static_cast<float>(yHeight)));
+    float dpi = window->GetDPI();
+    zaf::Size size{
+        ToDIPs(static_cast<float>(xWidth), dpi),
+        ToDIPs(static_cast<float>(yHeight), dpi)
+    };
+
+    window->Caret()->SetSize(size);
     return TRUE;
 }
 
@@ -1235,8 +1254,13 @@ BOOL TextBox::TextHostBridge::TxSetCaretPos(INT x, INT y) {
         return FALSE;
     }
     
-    const auto& caret = window->Caret();
-    caret->SetPosition(Point(static_cast<float>(x), static_cast<float>(y + text_box->GetPaintContentOffset(nullptr))));
+    float dpi = window->GetDPI();
+    Point position{
+        ToDIPs(static_cast<float>(x), dpi),
+        ToDIPs(static_cast<float>(y), dpi) + text_box->GetPaintContentOffset(nullptr)
+    };
+
+    window->Caret()->SetPosition(position);
     return TRUE;
 }
 
@@ -1302,28 +1326,38 @@ HRESULT TextBox::TextHostBridge::TxDeactivate(LONG lNewState) {
 
 HRESULT TextBox::TextHostBridge::TxGetClientRect(LPRECT prc) {
 
-    zaf::Rect rect;
+    *prc = RECT{};
 
     auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        rect = Align(text_box->GetAbsoluteContentRect());
+    if (!text_box) {
+        return S_OK;
     }
-    
-    *prc = rect.ToRECT();
+
+    auto window = text_box->Window();
+    if (!window) {
+        return S_OK;
+    }
+
+    *prc = Align(FromDIPs(text_box->GetAbsoluteContentRect(), window->GetDPI())).ToRECT();
     return S_OK;
 }
 
 
 HRESULT TextBox::TextHostBridge::TxGetViewInset(LPRECT prc) {
     
+    *prc = RECT{};
+
     auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        *prc = text_box->GetInset().ToRECT();
-    }
-    else {
-        *prc = kDefaultInset.ToRECT();
+    if (!text_box) {
+        return S_OK;
     }
 
+    auto window = text_box->Window();
+    if (!window) {
+        return S_OK;
+    }
+
+    *prc = FromDIPs(text_box->GetInset(), window->GetDPI()).ToRECT();
     return S_OK;
 }
 

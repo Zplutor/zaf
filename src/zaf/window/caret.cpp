@@ -1,6 +1,7 @@
 #include <zaf/window/caret.h>
 #include <zaf/base/timer.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/graphic/dpi.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -57,7 +58,7 @@ void Caret::CreateSystemCaret() {
         return;
     }
 
-    const auto& caret_rect = GetRect();
+    const auto& caret_rect = FromDIPs(GetRect(), window->GetDPI());
     CreateCaret(
         window->Handle(), 
         nullptr, 
