@@ -12,11 +12,11 @@ std::optional<std::wstring> GetContentStringFromNode(const XamlNode& node) {
     }
 
     const auto& content_node = content_nodes.front();
-    if (content_node->GetType() != XamlNode::Type::Text) {
+    if (content_node->Type() != XamlNodeType::Text) {
         return {};
     }
 
-    return content_node->GetValue();
+    return content_node->Value();
 }
 
 }
@@ -41,7 +41,11 @@ std::optional<std::wstring> XamlNodeParseHelper::GetStringProperty(
 
     auto string = GetStringFromPropertyNode(property_name);
     if (!string) {
-        string = node_.GetAttribute(property_name);
+
+        auto attribute = node_.FindAttribute(property_name);
+        if (attribute) {
+            string = attribute->Value();
+        }
     }
     return string;
 }
@@ -96,7 +100,7 @@ std::shared_ptr<XamlNode> XamlNodeParseHelper::GetPropertyNode(
 
     std::wstring name = object_type_->GetName();
     name.append(1, '.').append(property_name);
-    return node_.GetPropertyNode(name);
+    return node_.FindPropertyNode(name);
 }
 
 }

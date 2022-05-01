@@ -29,10 +29,10 @@ public:
             return object;
         }
 
-        auto attribute = node_.GetAttribute(property_name);
+        auto attribute = node_.FindAttribute(property_name);
         if (attribute) {
             auto object = Create<T>();
-            T::Type->GetParser()->ParseFromAttribute(*attribute, *object);
+            T::Type->GetParser()->ParseFromAttribute(attribute->Value(), *object);
             return object;
         }
 
@@ -53,12 +53,12 @@ public:
             return internal::CreateObjectFromNode<T>(content_nodes.front());
         }
 
-        auto attribute = node_.GetAttribute(property_name);
+        auto attribute = node_.FindAttribute(property_name);
         if (!attribute) {
             return {};
         }
 
-        return CreateObjectByName<T>(*attribute);
+        return CreateObjectByName<T>(attribute->Value());
     }
 
 private:

@@ -1582,5 +1582,8 @@
     <ClInclude Include="src\zaf\graphic\dpi.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\xaml_node_builder.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

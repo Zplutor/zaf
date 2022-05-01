@@ -52,7 +52,7 @@ void ParseObject(ObjectType& type, Object& object) {
     auto xaml_reader = XamlReader::FromStream(stream);
 
     auto root_node = xaml_reader->Read();
-    if (root_node->GetValue() != type.GetName()) {
+    if (root_node->Value() != type.GetName()) {
         ZAF_THROW_SYSTEM_ERROR(ERROR_INVALID_NAME);
     }
 

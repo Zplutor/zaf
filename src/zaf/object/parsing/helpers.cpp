@@ -13,7 +13,7 @@ std::shared_ptr<Object> CreateReflectionObjectFromXaml(const std::string& xaml) 
     auto xaml_reader = XamlReader::FromString(xaml);
     auto xaml_node = xaml_reader->Read();
 
-    auto object = CreateObjectByName(xaml_node->GetValue());
+    auto object = CreateObjectByName(xaml_node->Value());
     if (!object) {
         return {};
     }

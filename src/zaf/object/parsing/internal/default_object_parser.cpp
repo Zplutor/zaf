@@ -51,12 +51,12 @@ void ParseAttributes(const XamlNode& node, Object& object) {
     const auto& attributes = node.GetAttributes();
     for (const auto& each_attribute : attributes) {
 
-        auto property = FindPropertyByAttribute(object, each_attribute.first);
+        auto property = FindPropertyByAttribute(object, each_attribute->Name());
         if (!property) {
             continue;
         }
 
-        auto value = ParsePropertyValueFromAttribute(*property, each_attribute.second);
+        auto value = ParsePropertyValueFromAttribute(*property, each_attribute->Value());
         property->SetValue(object, value);
     }
 }
@@ -134,12 +134,12 @@ void ParseNodes(const XamlNode& node, Object& object) {
     const auto& property_nodes = node.GetPropertyNodes();
     for (const auto& each_node : property_nodes) {
 
-        auto property = FindPropertyByNode(object, each_node.first);
+        auto property = FindPropertyByNode(object, each_node->Value());
         if (!property) {
             continue;
         }
 
-        auto value = ParsePropertyValueFromNode(*property, *each_node.second);
+        auto value = ParsePropertyValueFromNode(*property, *each_node);
         property->SetValue(object, value);
     }
 }

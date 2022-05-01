@@ -11,11 +11,11 @@ std::optional<std::wstring> GetContentStringFromXamlNode(const XamlNode& node) {
     }
 
     const auto& content_node = content_nodes.front();
-    if (content_node->GetType() != XamlNode::Type::Text) {
+    if (content_node->Type() != XamlNodeType::Text) {
         return std::nullopt;
     }
 
-    return content_node->GetValue();
+    return content_node->Value();
 }
 
 }

@@ -25,11 +25,11 @@ bool ParseAttributeToQuaterFloats(
 template<typename T>
 std::shared_ptr<T> CreateObjectFromNode(const std::shared_ptr<XamlNode>& node) {
 
-    if (node->GetType() != XamlNode::Type::Element) {
+    if (node->Type() != XamlNodeType::Element) {
         return {};
     }
 
-    auto object = CreateObjectByName<T>(node->GetValue());
+    auto object = CreateObjectByName<T>(node->Value());
     if (!object) {
         return {};
     }

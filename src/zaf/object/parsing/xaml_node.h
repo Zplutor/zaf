@@ -1,48 +1,63 @@
 #pragma once
 
+#include <mutex>
 #include <optional>
 
 namespace zaf {
 
-class XamlNode {
+enum class XamlNodeType {
+    Element,
+    Text,
+};
+
+
+class XamlAttribute {
 public:
-    enum class Type {
-        Element,
-        Text,
-    };
+    XamlAttribute(const std::wstring& name, const std::wstring& value) : 
+        name_(name),
+        value_(value) {
 
-public:
-    XamlNode(Type type) : type_(type) { }
-
-    XamlNode(const XamlNode&) = delete;
-    XamlNode& operator=(const XamlNode&) = delete;
-
-    Type GetType() const {
-        return type_;
     }
 
-    const std::wstring& GetValue() const {
+    const std::wstring& Name() const {
+        return name_;
+    }
+
+    const std::wstring& Value() const {
         return value_;
     }
 
-    void SetValue(const std::wstring& value) {
-        value_ = value;
+private:
+    std::wstring name_;
+    std::wstring value_;
+};
+
+
+class XamlNode {
+public:
+    XamlNode() = default;
+    XamlNode(const XamlNode&) = delete;
+    XamlNode& operator=(const XamlNode&) = delete;
+
+    XamlNodeType Type() const {
+        return type_;
+    }
+
+    const std::wstring& Value() const {
+        return value_;
     }
 
     bool IsPropertyNode() const;
 
-    void AddAttribute(const std::wstring& name, const std::wstring& value);
-    std::optional<std::wstring> GetAttribute(const std::wstring& name) const;
+    std::shared_ptr<XamlAttribute> FindAttribute(const std::wstring& name) const;
 
-    const std::map<std::wstring, std::wstring>& GetAttributes() const {
+    const std::vector<std::shared_ptr<XamlAttribute>>& GetAttributes() const {
         return attributes_;
     }
 
-    void AddChildNode(const std::shared_ptr<XamlNode>& node);
+    std::shared_ptr<XamlNode> FindPropertyNode(const std::wstring& name) const;
 
-    std::shared_ptr<XamlNode> GetPropertyNode(const std::wstring& name) const;
-
-    const std::map<std::wstring, std::shared_ptr<XamlNode>>& GetPropertyNodes() const {
+    const std::vector<std::shared_ptr<XamlNode>>& GetPropertyNodes() const {
         return property_nodes_;
     }
 
@@ -51,11 +66,21 @@ public:
     }
 
 private:
-    Type type_{ Type::Element };
+    friend class XamlNodeBuilder;
+    
+private:
+    XamlNodeType type_{ XamlNodeType::Element };
     std::wstring value_;
-    std::map<std::wstring, std::wstring> attributes_;
-    std::map<std::wstring, std::shared_ptr<XamlNode>> property_nodes_;
+
+    std::vector<std::shared_ptr<XamlAttribute>> attributes_;
+    std::vector<std::shared_ptr<XamlNode>> property_nodes_;
     std::vector<std::shared_ptr<XamlNode>> content_nodes_;
+
+    mutable std::vector<std::shared_ptr<XamlAttribute>> sorted_attributes_;
+    mutable std::once_flag sorted_attributes_once_flag_;
+
+    mutable std::vector<std::shared_ptr<XamlNode>> sorted_property_nodes_;
+    mutable std::once_flag sorted_property_nodes_once_flag_;
 };
 
 }

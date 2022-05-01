@@ -52,13 +52,6 @@ public:
         __super::AfterParse();
 
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
-        this->RootControl()->SetBorder(zaf::Frame{ 1 });
-        this->RootControl()->SetBorderColor(zaf::Color::Black());
-
-        auto text_box = zaf::Create<zaf::TextBox>();
-        text_box->SetRect(zaf::Rect{ 99, 99, 100, 30 });
-
-        RootControl()->AddChild(text_box);
     }
 };
 
@@ -81,7 +74,10 @@ int WINAPI WinMain(
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
     auto window = zaf::Create<Window>();
-    window->SetSize(zaf::Size{ 300, 300 });
+    window->SetIsPopup(true);
+    window->SetIsSizable(false);
+    window->SetHasTitleBar(false);
+    window->SetContentSize(zaf::Size{ 600, 60 });
     window->Show();
 
     zaf::Application::Instance().SetMainWindow(window);

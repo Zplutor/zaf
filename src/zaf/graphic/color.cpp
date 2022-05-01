@@ -136,11 +136,11 @@ public:
         }
 
         const auto& content_node = content_nodes.front();
-        if (content_node->GetType() != XamlNode::Type::Text) {
+        if (content_node->Type() != XamlNodeType::Text) {
             ZAF_THROW_ERRC(BasicErrc::InvalidValue);
         }
 
-        As<Color>(object) = DecodeColorValue(content_node->GetValue());
+        As<Color>(object) = DecodeColorValue(content_node->Value());
     }
 };
 

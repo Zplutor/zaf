@@ -6,6 +6,7 @@
 namespace zaf {
 
 class Stream;
+class XamlNodeBuilder;
 
 class XamlReader {
 public:
@@ -25,8 +26,8 @@ public:
 private:
     HRESULT ReadRootNode(std::shared_ptr<XamlNode>& root_node);
     HRESULT ReadElementNode(std::shared_ptr<XamlNode>& node);
-    HRESULT ReadAttributes(XamlNode& node);
-    HRESULT ReadChildren(XamlNode& node);
+    HRESULT ReadAttributes(XamlNodeBuilder& node_builder);
+    HRESULT ReadChildren(XamlNodeBuilder& node_builder);
     HRESULT ReadTextNode(std::shared_ptr<XamlNode>& node);
     HRESULT AdvanceToNextNode(XmlNodeType& next_node_type);
 

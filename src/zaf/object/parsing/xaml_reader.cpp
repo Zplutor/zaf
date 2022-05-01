@@ -4,6 +4,7 @@
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/stream.h>
 #include <zaf/base/string/encoding_conversion.h>
+#include <zaf/object/parsing/xaml_node_builder.h>
 
 namespace zaf {
 namespace {
@@ -101,7 +102,8 @@ HRESULT XamlReader::ReadRootNode(std::shared_ptr<XamlNode>& root_node) {
 
 HRESULT XamlReader::ReadElementNode(std::shared_ptr<XamlNode>& node) {
 
-    node = std::make_shared<XamlNode>(XamlNode::Type::Element);
+    XamlNodeBuilder node_builder;
+    node_builder.SetType(XamlNodeType::Element);
 
     const wchar_t* name{};
     HRESULT result = handle_->GetLocalName(&name, nullptr);
@@ -109,18 +111,24 @@ HRESULT XamlReader::ReadElementNode(std::shared_ptr<XamlNode>& node) {
         return result;
     }
 
-    node->SetValue(name);
+    node_builder.SetValue(name);
 
-    result = ReadAttributes(*node);
+    result = ReadAttributes(node_builder);
     if (FAILED(result)) {
         return result;
     }
 
-    return ReadChildren(*node);
+    result = ReadChildren(node_builder);
+    if (FAILED(result)) {
+        return result;
+    }
+
+    node = node_builder.Build();
+    return S_OK;
 }
 
 
-HRESULT XamlReader::ReadAttributes(XamlNode& node) {
+HRESULT XamlReader::ReadAttributes(XamlNodeBuilder& node_builder) {
 
     HRESULT result = S_OK;
     bool has_attributes{};
@@ -143,7 +151,7 @@ HRESULT XamlReader::ReadAttributes(XamlNode& node) {
             break;
         }
 
-        node.AddAttribute(name, value);
+        node_builder.AddAttribute(name, value);
         has_attributes = true;
     }
 
@@ -155,7 +163,7 @@ HRESULT XamlReader::ReadAttributes(XamlNode& node) {
 }
 
 
-HRESULT XamlReader::ReadChildren(XamlNode& node) {
+HRESULT XamlReader::ReadChildren(XamlNodeBuilder& node_builder) {
 
     if (handle_->IsEmptyElement()) {
         return S_OK;
@@ -178,7 +186,7 @@ HRESULT XamlReader::ReadChildren(XamlNode& node) {
                 break;
             }
 
-            node.AddChildNode(child_node);
+            node_builder.AddChildNode(child_node);
         }
         else if (node_type == XmlNodeType_Text) {
 
@@ -188,7 +196,7 @@ HRESULT XamlReader::ReadChildren(XamlNode& node) {
                 break;
             }
 
-            node.AddChildNode(child_node);
+            node_builder.AddChildNode(child_node);
         }
         else if (node_type == XmlNodeType_EndElement) {
             break;
@@ -205,14 +213,18 @@ HRESULT XamlReader::ReadChildren(XamlNode& node) {
 
 HRESULT XamlReader::ReadTextNode(std::shared_ptr<XamlNode>& node) {
 
-    node = std::make_shared<XamlNode>(XamlNode::Type::Text);
+    XamlNodeBuilder node_builder;
+    node_builder.SetType(XamlNodeType::Text);
 
     const wchar_t* value{};
     HRESULT result = handle_->GetValue(&value, nullptr);
-    if (result == S_OK) {
-        node->SetValue(value);
+    if (result != S_OK) {
+        return result;
     }
-    return result;
+
+    node_builder.SetValue(value);
+    node = node_builder.Build();
+    return S_OK;
 }
 
 

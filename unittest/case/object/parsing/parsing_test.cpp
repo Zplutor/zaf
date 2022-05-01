@@ -26,9 +26,9 @@ public:
 
     void ParseFromNode(const zaf::XamlNode& node, zaf::Object& object) override {
 
-        auto base_value = node.GetAttribute(L"BaseValue");
+        auto base_value = node.FindAttribute(L"BaseValue");
         if (base_value) {
-            dynamic_cast<Base&>(object).base_value = zaf::ToNumeric<int>(*base_value);
+            dynamic_cast<Base&>(object).base_value = zaf::ToNumeric<int>(base_value->Value());
         }
     }
 };
@@ -67,9 +67,10 @@ public:
 
     void ParseFromNode(const zaf::XamlNode& node, zaf::Object& object) override {
 
-        auto base_value = node.GetAttribute(L"DerivedValue2");
+        auto base_value = node.FindAttribute(L"DerivedValue2");
         if (base_value) {
-            dynamic_cast<Derived2&>(object).derived_value2 = zaf::ToNumeric<int>(*base_value);
+            dynamic_cast<Derived2&>(object).derived_value2 = 
+                zaf::ToNumeric<int>(base_value->Value());
         }
     }
 };
@@ -190,5 +191,69 @@ TEST(ParsingTest, ParsePropertyNode) {
         parser->ParseFromNode(*node, object);
 
         ASSERT_EQ(object.BaseValue, 12);
+    }
+}
+
+
+namespace{
+
+class PropertyOrderObject : public zaf::Object {
+public:
+    ZAF_DECLARE_TYPE
+
+    void SetAProperty(int value) {
+        a_property_order_ = ++order_seed_;
+    }
+
+    void SetBProperty(int value) {
+        b_property_order_ = ++order_seed_;
+    }
+
+    int APropertyOrder() const {
+        return a_property_order_;
+    }
+
+    int BProeprtyOrder() const {
+        return b_property_order_;
+    }
+
+private:
+    int order_seed_{};
+    int a_property_order_{};
+    int b_property_order_{};
+};
+
+ZAF_DEFINE_TYPE(PropertyOrderObject)
+ZAF_DEFINE_TYPE_PROPERTY(AProperty)
+ZAF_DEFINE_TYPE_PROPERTY(BProperty)
+ZAF_DEFINE_TYPE_END
+
+}
+
+TEST(ParsingTest, ParsePropertyOrder) {
+
+    {
+        auto xaml = LR"(<PropertyOrderObject BProperty="2" AProperty="1" />)";
+        auto node = zaf::XamlReader::FromString(xaml)->Read();
+
+        PropertyOrderObject object;
+        PropertyOrderObject::Type->GetParser()->ParseFromNode(*node, object);
+
+        ASSERT_GT(object.APropertyOrder(), object.BProeprtyOrder());
+    }
+
+    {
+        auto xaml = LR"(
+            <PropertyOrderObject>
+                <PropertyOrderObject.BProperty>4</PropertyOrderObject.BProperty>
+                <PropertyOrderObject.AProperty>3</PropertyOrderObject.AProperty>
+            </PropertyOrderObject>
+        )";
+        auto node = zaf::XamlReader::FromString(xaml)->Read();
+
+        PropertyOrderObject object;
+        PropertyOrderObject::Type->GetParser()->ParseFromNode(*node, object);
+
+        ASSERT_GT(object.APropertyOrder(), object.BProeprtyOrder());
     }
 }
