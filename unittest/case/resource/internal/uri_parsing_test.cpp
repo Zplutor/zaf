@@ -1,10 +1,9 @@
 #include <gtest/gtest.h>
-#include <zaf/resource/internal/resource_location_parsing.h>
 #include <zaf/resource/internal/uri_parsing.h>
 
 using namespace zaf;
 
-TEST(ParseURITest, ParseURI) {
+TEST(URIParsingTest, ParseURI) {
 
     auto result = internal::ParseURI(L"");
     ASSERT_EQ(result.type, internal::URIType::Unknown);
@@ -51,30 +50,4 @@ TEST(ParseURITest, ParseURI) {
     result = internal::ParseURI(L"test.txt");
     ASSERT_EQ(result.type, internal::URIType::Relative);
     ASSERT_EQ(result.value, L"test.txt");
-}
-
-
-TEST(ParseURITest, ParseResourceLocation) {
-
-    internal::ResourceLocation location;
-
-    location = internal::ParseResourceLocation(L"");
-    ASSERT_EQ(location.dll, L"");
-    ASSERT_EQ(location.name, L"");
-
-    location = internal::ParseResourceLocation(L"/");
-    ASSERT_EQ(location.dll, L"");
-    ASSERT_EQ(location.name, L"");
-
-    location = internal::ParseResourceLocation(L"/something");
-    ASSERT_EQ(location.dll, L"");
-    ASSERT_EQ(location.name, L"something");
-
-    location = internal::ParseResourceLocation(L"somedll/something");
-    ASSERT_EQ(location.dll, L"somedll");
-    ASSERT_EQ(location.name, L"something");
-
-    location = internal::ParseResourceLocation(L"somedll/something/something2");
-    ASSERT_EQ(location.dll, L"somedll");
-    ASSERT_EQ(location.name, L"something/something2");
 }

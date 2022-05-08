@@ -27,7 +27,7 @@ public:
     void SetImage(const std::shared_ptr<Image>& image);
     void SetDecoder(const wic::BitmapDecoder& decoder);
     void SetFilePath(const std::filesystem::path& file_path);
-    void SetUri(const std::wstring& uri);
+    void SetURI(const std::wstring& uri);
 
     ImageLayout GetImageLayout() const;
     void SetImageLayout(ImageLayout image_layout);

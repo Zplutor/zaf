@@ -24,7 +24,7 @@ TEST(URIImageParser, ParseFromAttribute) {
 TEST(URIImageParser, ParseFromNode) {
 
     auto image = CreateObjectFromXaml<URIImage>(
-        R"(<URIImage Uri="file:///C:/image1.png"></URIImage>)"
+        R"(<URIImage URI="file:///C:/image1.png"></URIImage>)"
     );
     ASSERT_EQ(image->GetURI(), L"file:///C:/image1.png");
 
@@ -33,7 +33,7 @@ TEST(URIImageParser, ParseFromNode) {
 
     image = CreateObjectFromXaml<URIImage>(R"(
         <URIImage>
-            <URIImage.Uri>file:///C:/image3.png</URIImage.Uri>
+            <URIImage.URI>file:///C:/image3.png</URIImage.URI>
         </URIImage>
     )");
     ASSERT_EQ(image->GetURI(), L"file:///C:/image3.png");

@@ -19,7 +19,7 @@ public:
 
         XamlNodeParseHelper helper(node, object.GetType());
 
-        auto uri = helper.GetStringProperty(L"Uri");
+        auto uri = helper.GetStringProperty(L"URI");
         if (uri) {
             As<URIImage>(object).SetURI(*uri);
         }
@@ -77,7 +77,7 @@ void URIImage::CheckInitialize() {
         return;
     }
 
-    auto stream = GetResourceManager().LoadUri(uri_);
+    auto stream = GetResourceManager().LoadURI(uri_);
     image_ = Image::FromStream(stream);
 }
 

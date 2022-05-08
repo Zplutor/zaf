@@ -8,7 +8,7 @@
 namespace zaf {
 
 BitmapRenderer Renderer::CreateCompatibleRenderer(const CreateCompatibleRendererOptions& options) {
-
+    
     D2D1_SIZE_F d2d_desired_size;
     D2D1_SIZE_U d2d_desired_pixel_size;
 

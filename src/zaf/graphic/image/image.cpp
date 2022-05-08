@@ -15,9 +15,12 @@ std::shared_ptr<Image> Image::FromFile(const std::filesystem::path& file_path) {
 
 
 std::shared_ptr<Image> Image::FromURI(const std::wstring& uri) {
+    return FromStream(GetResourceManager().LoadURI(uri));
+}
 
-    auto stream = GetResourceManager().LoadUri(uri);
-    return FromStream(stream);
+
+std::shared_ptr<Image> Image::FromURI(const std::wstring& uri, float dpi) {
+    return FromStream(GetResourceManager().LoadURI(uri, dpi));
 }
 
 

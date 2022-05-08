@@ -308,7 +308,7 @@ TEST(ControlParserTest, ParseBackgroundImage) {
 
     xaml = R"(
         <Control>
-            <Control.BackgroundImage Uri="file:///C:/image.jpg" />
+            <Control.BackgroundImage URI="file:///C:/image.jpg" />
         </Control>
     )";
     control = CreateControlFromXaml(xaml);

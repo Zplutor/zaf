@@ -154,6 +154,9 @@
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <PreBuildEvent>
+      <Command>$(OutDir)zrcb.exe /o $(SolutionDir)unittest\res.rc /i $(SolutionDir)unittest\resource</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -172,6 +175,9 @@
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <PreBuildEvent>
+      <Command>$(OutDir)zrcb.exe /o $(SolutionDir)unittest\res.rc /i $(SolutionDir)unittest\resource</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -194,6 +200,9 @@
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <PreBuildEvent>
+      <Command>$(OutDir)zrcb.exe /o $(SolutionDir)unittest\res.rc /i $(SolutionDir)unittest\resource</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -216,6 +225,9 @@
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <PreBuildEvent>
+      <Command>$(OutDir)zrcb.exe /o $(SolutionDir)unittest\res.rc /i $(SolutionDir)unittest\resource</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-MT|Win32'">
     <ClCompile>
@@ -239,6 +251,9 @@
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <PreBuildEvent>
+      <Command>$(OutDir)zrcb.exe /o $(SolutionDir)unittest\res.rc /i $(SolutionDir)unittest\resource</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-MT|x64'">
     <ClCompile>
@@ -262,6 +277,9 @@
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <PreBuildEvent>
+      <Command>$(OutDir)zrcb.exe /o $(SolutionDir)unittest\res.rc /i $(SolutionDir)unittest\resource</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="unittest\case\application_test.cpp" />
@@ -327,7 +345,10 @@
     <ClCompile Include="unittest\case\parsing\parsers\textual_control_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\window_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\xaml_reader_test.cpp" />
-    <ClCompile Include="unittest\case\resource\internal\utility_test.cpp" />
+    <ClCompile Include="unittest\case\resource\internal\default_uri_loader_test.cpp" />
+    <ClCompile Include="unittest\case\resource\internal\resource_loader_test.cpp" />
+    <ClCompile Include="unittest\case\resource\internal\uri_parsing_test.cpp" />
+    <ClCompile Include="unittest\case\resource\internal\resource_location_parsing_test.cpp" />
     <ClCompile Include="unittest\case\rx\creation_test.cpp" />
     <ClCompile Include="unittest\case\window\message_only_window_test.cpp" />
     <ClCompile Include="unittest\case\window\window_test.cpp" />
@@ -344,7 +365,20 @@
     <ClInclude Include="unittest\case\parsing\parsers\utility.h" />
     <ClInclude Include="unittest\utility\assert.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="unittest\res.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\boost.1.79.0\build\boost.targets" Condition="Exists('packages\boost.1.79.0\build\boost.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用“NuGet 程序包还原”可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\boost.1.79.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\boost.1.79.0\build\boost.targets'))" />
+  </Target>
 </Project>

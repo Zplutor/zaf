@@ -24,7 +24,7 @@ class ImagingFactory;
 class ApplicationDelegate;
 class GraphicFactory;
 class ResourceManager;
-class UriLoader;
+class URILoader;
 class Window;
 
 class InitializeParameters {
@@ -32,7 +32,7 @@ public:
     std::shared_ptr<ApplicationDelegate> delegate;
     HICON window_icon{};
     HICON window_small_icon{};
-    std::shared_ptr<UriLoader> custom_uri_loader;
+    std::shared_ptr<URILoader> custom_uri_loader;
 };
 
 /**
@@ -101,14 +101,9 @@ public:
     }
 
     /**
-     Get the current DPI.
-
-     Initialize method must be called before calling this method.
-
-     @return 
-        The first value is the horizontal DPI; and the second is the vertical DPI.
+     Get the system DPI.
      */
-    std::pair<float, float> GetDpi() const;
+    float GetSystemDPI() const;
 
     /**
      Get the application began run event.

@@ -661,6 +661,9 @@
     <ClCompile Include="src\zaf\window\tooltip_window.cpp">
       <Filter>zaf\window</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\resource\internal\default_uri_loader.cpp">
+      <Filter>zaf\resource\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1584,6 +1587,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\parsing\xaml_node_builder.h">
       <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\resource\internal\default_uri_loader.h">
+      <Filter>zaf\resource\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

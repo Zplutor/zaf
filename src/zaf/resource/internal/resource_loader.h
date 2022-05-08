@@ -6,18 +6,25 @@
 
 namespace zaf::internal {
 
-class ResoureLoader {
+class ResourceLoader {
 public:
-    ResoureLoader() = default;
-    ~ResoureLoader();
+    static bool IsImageResource(const std::wstring& name);
+    static int ConvertDPIToScalePercent(float dpi);
+    static std::wstring AddScalePercentToName(const std::wstring& name, int percent);
+    static std::vector<int> CreateScalePercentSearchTable(int expected_percent);
 
-    ResoureLoader(const ResoureLoader&) = delete;
-    ResoureLoader& operator=(const ResoureLoader&) = delete;
+public:
+    ResourceLoader() = default;
+    ~ResourceLoader();
 
-    Stream Load(const std::wstring& dll, const std::wstring& name);
+    ResourceLoader(const ResourceLoader&) = delete;
+    ResourceLoader& operator=(const ResourceLoader&) = delete;
+
+    Stream Load(const std::wstring& dll, const std::wstring& name, float dpi);
 
 private:
     HMODULE GetDLLModule(const std::wstring& dll);
+    HRSRC FindResouceMatchesDPI(HMODULE module, const std::wstring& name, float dpi);
 
 private:
     std::mutex lock_;

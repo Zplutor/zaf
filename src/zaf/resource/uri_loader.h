@@ -4,18 +4,18 @@
 
 namespace zaf {
 
-class UriLoader {
+class URILoader {
 public:
-    static std::shared_ptr<UriLoader> GetDefaultLoader();
+    static std::shared_ptr<URILoader> DefaultLoader();
 
 public:
-    UriLoader() = default;
-    virtual ~UriLoader() = default;
+    URILoader() = default;
+    virtual ~URILoader() = default;
 
-    UriLoader(const UriLoader&) = delete;
-    UriLoader& operator=(const UriLoader&) = delete;
+    URILoader(const URILoader&) = delete;
+    URILoader& operator=(const URILoader&) = delete;
 
-    virtual Stream Load(const std::wstring& uri) = 0;
+    virtual Stream Load(const std::wstring& uri, float dpi) = 0;
 };
 
 }

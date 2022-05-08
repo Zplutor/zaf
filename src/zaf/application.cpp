@@ -183,18 +183,8 @@ std::filesystem::path Application::GetExeDirectoryPath() const {
 }
 
 
-std::pair<float, float> Application::GetDpi() const {
-
-    std::pair<float, float> dpi_pair;
-
-    if (graphic_factory_ == nullptr) {
-        return dpi_pair;
-    }
-
-    auto factory_handle = graphic_factory_->GetDirect2dFactoryHandle();
-    factory_handle->ReloadSystemMetrics();
-    factory_handle->GetDesktopDpi(&dpi_pair.first, &dpi_pair.second);
-    return dpi_pair;
+float Application::GetSystemDPI() const {
+    return static_cast<float>(GetDpiForSystem());
 }
 
 

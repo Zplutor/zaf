@@ -48,7 +48,7 @@ void ParseObject(ObjectType& type, Object& object) {
         return;
     }
 
-    auto stream = GetResourceManager().LoadUri(resource_uri);
+    auto stream = GetResourceManager().LoadURI(resource_uri);
     auto xaml_reader = XamlReader::FromStream(stream);
 
     auto root_node = xaml_reader->Read();

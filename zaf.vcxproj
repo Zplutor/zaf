@@ -170,6 +170,7 @@
     <ClCompile Include="src\zaf\object\parsing\xaml_node_parse_helper.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_reader.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_utility.cpp" />
+    <ClCompile Include="src\zaf\resource\internal\default_uri_loader.cpp" />
     <ClCompile Include="src\zaf\resource\internal\resource_loader.cpp" />
     <ClCompile Include="src\zaf\resource\internal\resource_location_parsing.cpp" />
     <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp" />
@@ -457,6 +458,7 @@
     <ClInclude Include="src\zaf\object\property_definition.h" />
     <ClInclude Include="src\zaf\object\type_declaration.h" />
     <ClInclude Include="src\zaf\object\type_definition.h" />
+    <ClInclude Include="src\zaf\resource\internal\default_uri_loader.h" />
     <ClInclude Include="src\zaf\resource\internal\resource_loader.h" />
     <ClInclude Include="src\zaf\resource\internal\resource_location_parsing.h" />
     <ClInclude Include="src\zaf\resource\internal\uri_parsing.h" />

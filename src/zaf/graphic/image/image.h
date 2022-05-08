@@ -16,6 +16,7 @@ public:
     static std::shared_ptr<Image> FromFile(const std::filesystem::path& file_path);
 
     static std::shared_ptr<Image> FromURI(const std::wstring& uri);
+    static std::shared_ptr<Image> FromURI(const std::wstring& uri, float dpi);
 
     static std::shared_ptr<Image> FromBitmap(const wic::BitmapSource& wic_bitmap);
 

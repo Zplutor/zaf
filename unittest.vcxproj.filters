@@ -217,7 +217,7 @@
     <ClCompile Include="unittest\case\rx\creation_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\resource\internal\utility_test.cpp">
+    <ClCompile Include="unittest\case\resource\internal\resource_location_parsing_test.cpp">
       <Filter>case\resource\internal</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\stream_test.cpp">
@@ -283,6 +283,15 @@
     <ClCompile Include="unittest\case\control\scrollable_control_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\resource\internal\uri_parsing_test.cpp">
+      <Filter>case\resource\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\resource\internal\default_uri_loader_test.cpp">
+      <Filter>case\resource\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\resource\internal\resource_loader_test.cpp">
+      <Filter>case\resource\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
@@ -294,5 +303,11 @@
     <ClInclude Include="unittest\utility\assert.h">
       <Filter>utility</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="unittest\res.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

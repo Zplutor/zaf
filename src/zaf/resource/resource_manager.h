@@ -4,20 +4,21 @@
 
 namespace zaf {
 
-class UriLoader;
+class URILoader;
 
 class ResourceManager {
 public:
-    ResourceManager(const std::shared_ptr<UriLoader>& custom_uri_loader);
+    ResourceManager(const std::shared_ptr<URILoader>& custom_uri_loader);
     ~ResourceManager();
 
     ResourceManager(const ResourceManager&) = delete;
     ResourceManager& operator=(const ResourceManager&) = delete;
 
-    Stream LoadUri(const std::wstring& uri);
+    Stream LoadURI(const std::wstring& uri);
+    Stream LoadURI(const std::wstring& uri, float dpi);
 
 private:
-    std::shared_ptr<UriLoader> custom_uri_loader_;
+    std::shared_ptr<URILoader> custom_uri_loader_;
 };
 
 }

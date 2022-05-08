@@ -108,9 +108,9 @@ void ImageBox::SetFilePath(const std::filesystem::path& file_path) {
 }
 
 
-void ImageBox::SetUri(const std::wstring& uri) {
+void ImageBox::SetURI(const std::wstring& uri) {
 
-    auto stream = GetResourceManager().LoadUri(uri);
+    auto stream = GetResourceManager().LoadURI(uri);
     if (stream == nullptr) {
         return;
     }
