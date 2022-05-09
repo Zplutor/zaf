@@ -1,4 +1,7 @@
 #include <zaf/control/image_picker.h>
+#include <zaf/base/as.h>
+#include <zaf/control/control.h>
+#include <zaf/graphic/image/uri_image.h>
 
 namespace zaf {
 namespace {
@@ -9,7 +12,12 @@ public:
 
     }
 
-    std::shared_ptr<Image> operator()(const Control&) {
+    std::shared_ptr<Image> operator()(const Control& control) {
+
+        if (auto uri_image = As<URIImage>(image_)) {
+            uri_image->ChangeDPI(control.GetDPI());
+        }
+
         return image_;
     }
 

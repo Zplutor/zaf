@@ -602,6 +602,8 @@ public:
      */
     const Point GetMousePosition() const;
 
+    float GetDPI() const;
+
     /**
      Determinte whether the control accepts specified key message.
 

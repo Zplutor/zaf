@@ -110,7 +110,7 @@ void ImageBox::SetFilePath(const std::filesystem::path& file_path) {
 
 void ImageBox::SetURI(const std::wstring& uri) {
 
-    auto stream = GetResourceManager().LoadURI(uri);
+    auto stream = GetResourceManager().LoadURI(uri, GetDPI());
     if (stream == nullptr) {
         return;
     }

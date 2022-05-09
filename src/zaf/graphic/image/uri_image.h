@@ -10,21 +10,26 @@ public:
     ZAF_DECLARE_TYPE
 
 public:
-    std::wstring GetURI() const {
-        return uri_;
-    }
+    URIImage();
 
-    void SetURI(const std::wstring& uri);
+    void InitializeWithURI(const std::wstring& uri);
+
+    void ChangeDPI(float dpi);
 
     Size GetPixelSize() override;
     std::pair<float, float> GetResolution() override;
     RenderBitmap CreateRenderBitmap(Renderer& renderer) override;
 
+    const std::wstring& GetURI() const {
+        return uri_;
+    }
+
 private:
-    void CheckInitialize();
+    void LoadImageIfNot();
 
 private:
     std::wstring uri_;
+    float dpi_{};
     std::shared_ptr<Image> image_;
 };
 

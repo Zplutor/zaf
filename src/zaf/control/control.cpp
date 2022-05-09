@@ -1597,6 +1597,16 @@ const Point Control::GetMousePosition() const {
 }
 
 
+float Control::GetDPI() const {
+
+    auto window = Window();
+    if (window) {
+        return window->GetDPI();
+    }
+    return Application::Instance().GetSystemDPI();
+}
+
+
 void Control::RouteMouseMoveMessage(const Point& position, const MouseMessage& message) {
 
     auto child = FindChildAtPosition(position);

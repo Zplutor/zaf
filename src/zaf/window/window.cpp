@@ -1738,7 +1738,7 @@ float Window::GetDPI() const {
         return static_cast<float>(GetDpiForWindow(Handle()));
     }
     else {
-        return static_cast<float>(GetDpiForSystem());
+        return Application::Instance().GetSystemDPI();
     }
 }
 

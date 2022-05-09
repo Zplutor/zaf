@@ -12,7 +12,7 @@ class URIImageParser : public ObjectParser {
 public:
     void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
 
-        As<URIImage>(object).SetURI(attribute_value);
+        As<URIImage>(object).InitializeWithURI(attribute_value);
     }
 
     void ParseFromNode(const XamlNode& node, Object& object) override {
@@ -21,7 +21,7 @@ public:
 
         auto uri = helper.GetStringProperty(L"URI");
         if (uri) {
-            As<URIImage>(object).SetURI(*uri);
+            As<URIImage>(object).InitializeWithURI(*uri);
         }
 
         auto content_string = helper.GetContentString();
@@ -39,45 +39,55 @@ ZAF_DEFINE_TYPE_PARSER(URIImageParser)
 ZAF_DEFINE_TYPE_END
 
 
-void URIImage::SetURI(const std::wstring& uri) {
+URIImage::URIImage() : dpi_(Application::Instance().GetSystemDPI()) {
 
-    if (!image_) {
-        uri_ = uri;
-    }
-    else {
-        ZAF_FAIL();
+}
+
+
+void URIImage::InitializeWithURI(const std::wstring& uri) {
+
+    ZAF_EXPECT(!image_);
+    uri_ = uri;
+}
+
+
+void URIImage::ChangeDPI(float dpi) {
+
+    if (dpi_ != dpi) {
+        dpi_ = dpi;
+        image_.reset();
     }
 }
 
 
 Size URIImage::GetPixelSize() {
 
-    CheckInitialize();
+    LoadImageIfNot();
     return image_->GetPixelSize();
 }
 
 
 std::pair<float, float> URIImage::GetResolution() {
 
-    CheckInitialize();
+    LoadImageIfNot();
     return image_->GetResolution();
 }
 
 
 RenderBitmap URIImage::CreateRenderBitmap(Renderer& renderer) {
 
-    CheckInitialize();
+    LoadImageIfNot();
     return image_->CreateRenderBitmap(renderer);
 }
 
 
-void URIImage::CheckInitialize() {
+void URIImage::LoadImageIfNot() {
 
     if (image_) {
         return;
     }
 
-    auto stream = GetResourceManager().LoadURI(uri_);
+    auto stream = GetResourceManager().LoadURI(uri_, dpi_);
     image_ = Image::FromStream(stream);
 }
 
