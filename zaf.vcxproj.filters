@@ -664,6 +664,12 @@
     <ClCompile Include="src\zaf\resource\internal\default_uri_loader.cpp">
       <Filter>zaf\resource\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\image_box\uri_image_player.cpp">
+      <Filter>zaf\control\internal\image_box</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\image_box\image_player_factory.cpp">
+      <Filter>zaf\control\internal\image_box</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1590,6 +1596,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\resource\internal\default_uri_loader.h">
       <Filter>zaf\resource\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\image_box\uri_image_player.h">
+      <Filter>zaf\control\internal\image_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\image_box\image_player_factory.h">
+      <Filter>zaf\control\internal\image_box</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

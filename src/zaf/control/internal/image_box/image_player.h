@@ -21,6 +21,8 @@ public:
 
     virtual RenderBitmap GetRenderBitmap(Renderer& renderer) = 0;
 
+    virtual void ChangeDPI(float dpi) { }
+
     virtual void Reset() { }
 
 protected:

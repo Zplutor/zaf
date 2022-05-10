@@ -1,35 +1,11 @@
 #include <zaf/control/image_box.h>
-#include <zaf/application.h>
-#include <zaf/graphic/image/image.h>
-#include <zaf/graphic/image/internal/utility.h>
-#include <zaf/graphic/image/wic/imaging_factory.h>
-#include <zaf/control/internal/image_box/gif_player.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
-#include <zaf/control/internal/image_box/static_image_player.h>
+#include <zaf/control/internal/image_box/image_player_factory.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/resource/resource_manager.h>
 
 namespace zaf {
 namespace {
-
-std::unique_ptr<internal::ImagePlayer> CreateImagePlayer(const wic::BitmapDecoder& bitmap_decoder) {
-
-    auto container_format = bitmap_decoder.GetContainerFormat();
-    switch (container_format) {
-
-        case wic::ContainerFormat::Gif:
-            return std::make_unique<internal::GifPlayer>(bitmap_decoder);
-
-        default: {
-            auto bitmap = Image::FromBitmapDecoder(bitmap_decoder);
-            if (!bitmap) {
-                return {};
-            }
-            return std::make_unique<internal::StaticImagePlayer>(bitmap);
-        }
-    }
-}
 
 const wchar_t* const kImageLayoutPropertyName = L"ImageLayout";
 const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
@@ -55,7 +31,7 @@ void ImageBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
-    if (image_player_ == nullptr) {
+    if (!image_player_) {
         return;
     }
 
@@ -76,53 +52,46 @@ void ImageBox::ReleaseRendererResources() {
 
     __super::ReleaseRendererResources();
 
-    if (image_player_ != nullptr) {
+    if (image_player_) {
         image_player_->Reset();
     }
 }
 
 
-void ImageBox::SetImage(const std::shared_ptr<Image>& image) {
+void ImageBox::OnDPIChanged() {
 
-    auto player = std::make_unique<internal::StaticImagePlayer>(image);
-    SetImagePlayer(std::move(player));
+    __super::OnDPIChanged();
+
+    if (image_player_) {
+        image_player_->ChangeDPI(GetDPI());
+    }
+}
+
+
+void ImageBox::SetImage(const std::shared_ptr<Image>& image) {
+    SetImagePlayer(internal::ImagePlayerFactory::CreateWithImage(image));
 }
 
 
 void ImageBox::SetDecoder(const wic::BitmapDecoder& decoder) {
-
-    auto player = CreateImagePlayer(decoder);
-    player->SetUpdateEvent(std::bind(&ImageBox::NeedRepaint, this));
-    SetImagePlayer(std::move(player));
+    SetImagePlayer(internal::ImagePlayerFactory::CreateWithDecoder(decoder));
 }
 
 
 void ImageBox::SetFilePath(const std::filesystem::path& file_path) {
-
-    auto decoder = GetImagingFactory().CreateDecoderFromFile(file_path);
-    if (decoder == nullptr) {
-        return;
-    }
-
-    SetDecoder(decoder);
+    SetImagePlayer(internal::ImagePlayerFactory::CreateWithFilePath(file_path));
 }
 
 
 void ImageBox::SetURI(const std::wstring& uri) {
-
-    auto stream = GetResourceManager().LoadURI(uri, GetDPI());
-    if (stream == nullptr) {
-        return;
-    }
-
-    auto bitmap_decoder = internal::CreateBitmapDecoderFromSteam(stream);
-    SetDecoder(bitmap_decoder);
+    SetImagePlayer(internal::ImagePlayerFactory::CreateWithURI(uri, GetDPI()));
 }
 
 
 void ImageBox::SetImagePlayer(std::unique_ptr<internal::ImagePlayer> player) {
 
     image_player_ = std::move(player);
+    image_player_->SetUpdateEvent(std::bind(&ImageBox::NeedRepaint, this));
     NeedRepaint();
 
     RaiseContentChangedEvent();

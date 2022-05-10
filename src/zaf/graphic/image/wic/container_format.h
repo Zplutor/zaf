@@ -4,7 +4,7 @@
 
 namespace zaf::wic {
 
-enum ContainerFormat {
+enum class ContainerFormat {
     Unknown,
     Bmp,
     Gif,

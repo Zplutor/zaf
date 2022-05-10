@@ -926,6 +926,8 @@ protected:
 
     virtual void OnIsSelectedChanged();
 
+    virtual void OnDPIChanged();
+
 private:
     friend class Window;
 

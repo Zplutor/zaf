@@ -999,8 +999,13 @@ void Control::SetParent(const std::shared_ptr<Control>& parent) {
     if (need_release_renderer_resources()) {
         ReleaseRendererResources();
     }
-    
+
+    float old_dpi = GetDPI();
     parent_ = parent;
+
+    if (old_dpi != GetDPI()) {
+        OnDPIChanged();
+    }
 }
 
 
@@ -1597,16 +1602,6 @@ const Point Control::GetMousePosition() const {
 }
 
 
-float Control::GetDPI() const {
-
-    auto window = Window();
-    if (window) {
-        return window->GetDPI();
-    }
-    return Application::Instance().GetSystemDPI();
-}
-
-
 void Control::RouteMouseMoveMessage(const Point& position, const MouseMessage& message) {
 
     auto child = FindChildAtPosition(position);
@@ -1968,6 +1963,24 @@ void Control::OnFocusGain() {
 
 void Control::OnFocusLose() {
 
+}
+
+
+float Control::GetDPI() const {
+
+    auto window = Window();
+    if (window) {
+        return window->GetDPI();
+    }
+    return Application::Instance().GetSystemDPI();
+}
+
+
+void Control::OnDPIChanged() {
+
+    for (const auto& each_child : children_) {
+        each_child->OnDPIChanged();
+    }
 }
 
 
