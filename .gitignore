@@ -235,3 +235,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 /tool/zrcb/unittest/test_data/working
+/unittest/res.rc
