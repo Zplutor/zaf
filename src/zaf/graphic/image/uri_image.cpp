@@ -4,7 +4,7 @@
 #include <zaf/base/assert.h>
 #include <zaf/object/parsing/xaml_node_parse_helper.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/resource/resource_manager.h>
+#include <zaf/resource/resource_factory.h>
 
 namespace zaf {
 namespace {
@@ -88,7 +88,7 @@ void URIImage::LoadImageIfNot() {
         return;
     }
 
-    auto stream = ResourceManager::Instance().LoadURI(uri_, dpi_);
+    auto stream = ResourceFactory::Instance().LoadURI(uri_, dpi_);
     image_ = Image::FromStream(stream);
 }
 

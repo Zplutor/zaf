@@ -376,7 +376,7 @@
     <ClCompile Include="src\zaf\graphic\image\uri_image.cpp">
       <Filter>zaf\graphic\image</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\resource\resource_manager.cpp">
+    <ClCompile Include="src\zaf\resource\resource_factory.cpp">
       <Filter>zaf\resource</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp">
@@ -1150,7 +1150,7 @@
     <ClInclude Include="src\zaf\resource\uri_loader.h">
       <Filter>zaf\resource</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\resource\resource_manager.h">
+    <ClInclude Include="src\zaf\resource\resource_factory.h">
       <Filter>zaf\resource</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\resource\internal\uri_parsing.h">

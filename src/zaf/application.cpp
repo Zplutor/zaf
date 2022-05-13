@@ -10,7 +10,7 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/internal/system_message_window.h>
-#include <zaf/resource/resource_manager.h>
+#include <zaf/resource/resource_factory.h>
 #include <zaf/rx/internal/rx_runtime.h>
 #include <zaf/window/window.h>
 
@@ -42,7 +42,7 @@ void Application::Initialize(const InitializeParameters& parameters) {
 
     rx_runtime_ = std::make_unique<internal::RxRuntime>();
 
-    resource_manager_.reset(new ResourceManager(parameters.custom_uri_loader));
+    resource_factory_.reset(new ResourceFactory(parameters.custom_uri_loader));
 
     HRESULT result = CoInitialize(nullptr);
     ZAF_THROW_IF_COM_ERROR(result);

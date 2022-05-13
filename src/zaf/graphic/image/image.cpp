@@ -2,7 +2,7 @@
 #include <zaf/graphic/image/internal/utility.h>
 #include <zaf/graphic/image/internal/wic_bitmap.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
-#include <zaf/resource/resource_manager.h>
+#include <zaf/resource/resource_factory.h>
 
 namespace zaf {
 
@@ -14,12 +14,12 @@ std::shared_ptr<Image> Image::FromFile(const std::filesystem::path& file_path) {
 
 
 std::shared_ptr<Image> Image::FromURI(const std::wstring& uri) {
-    return FromStream(ResourceManager::Instance().LoadURI(uri));
+    return FromStream(ResourceFactory::Instance().LoadURI(uri));
 }
 
 
 std::shared_ptr<Image> Image::FromURI(const std::wstring& uri, float dpi) {
-    return FromStream(ResourceManager::Instance().LoadURI(uri, dpi));
+    return FromStream(ResourceFactory::Instance().LoadURI(uri, dpi));
 }
 
 

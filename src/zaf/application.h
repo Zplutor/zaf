@@ -23,7 +23,7 @@ class ImagingFactory;
 
 class ApplicationDelegate;
 class GraphicFactory;
-class ResourceManager;
+class ResourceFactory;
 class URILoader;
 class Window;
 
@@ -85,8 +85,8 @@ public:
     std::filesystem::path GetExeFilePath() const;
     std::filesystem::path GetExeDirectoryPath() const;
 
-    ResourceManager& GetResourceManager() const {
-        return *resource_manager_;
+    ResourceFactory& GetResourceFactory() const {
+        return *resource_factory_;
     }
 
     /**
@@ -170,7 +170,7 @@ private:
     bool is_initialized_;
 
     std::unique_ptr<internal::RxRuntime> rx_runtime_;
-    std::unique_ptr<ResourceManager> resource_manager_;
+    std::unique_ptr<ResourceFactory> resource_factory_;
     std::unique_ptr<GraphicFactory> graphic_factory_;
     std::unique_ptr<wic::ImagingFactory> imaging_factory_;
     std::shared_ptr<internal::SystemMessageWindow> system_message_window_;

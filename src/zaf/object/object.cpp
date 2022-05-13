@@ -7,7 +7,7 @@
 #include <zaf/object/parsing/xaml_reader.h>
 #include <zaf/base/string/encoding_conversion.h>
 #include <zaf/object/internal/reflection_manager.h>
-#include <zaf/resource/resource_manager.h>
+#include <zaf/resource/resource_factory.h>
 
 namespace zaf {
 namespace {
@@ -47,7 +47,7 @@ void ParseObject(ObjectType& type, Object& object) {
         return;
     }
 
-    auto stream = ResourceManager::Instance().LoadURI(resource_uri);
+    auto stream = ResourceFactory::Instance().LoadURI(resource_uri);
     auto xaml_reader = XamlReader::FromStream(stream);
 
     auto root_node = xaml_reader->Read();

@@ -7,15 +7,15 @@ namespace zaf {
 class Application;
 class URILoader;
 
-class ResourceManager {
+class ResourceFactory {
 public:
-    static ResourceManager& Instance();
+    static ResourceFactory& Instance();
 
 public:
-    ~ResourceManager();
+    ~ResourceFactory();
 
-    ResourceManager(const ResourceManager&) = delete;
-    ResourceManager& operator=(const ResourceManager&) = delete;
+    ResourceFactory(const ResourceFactory&) = delete;
+    ResourceFactory& operator=(const ResourceFactory&) = delete;
 
     Stream LoadURI(const std::wstring& uri);
     Stream LoadURI(const std::wstring& uri, float dpi);
@@ -23,7 +23,7 @@ public:
 private:
     friend class zaf::Application;
 
-    explicit ResourceManager(const std::shared_ptr<URILoader>& custom_uri_loader);
+    explicit ResourceFactory(const std::shared_ptr<URILoader>& custom_uri_loader);
 
 private:
     std::shared_ptr<URILoader> custom_uri_loader_;
