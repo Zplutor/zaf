@@ -1,5 +1,4 @@
 #include <zaf/object/creation.h>
-#include <zaf/application.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/internal/reflection_manager.h>
 

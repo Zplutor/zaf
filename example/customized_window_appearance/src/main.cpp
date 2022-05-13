@@ -6,7 +6,7 @@
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
-    zaf::Application& application = zaf::GetApplication();
+    zaf::Application& application = zaf::Application::Instance();
 
     application.Initialize({});
     

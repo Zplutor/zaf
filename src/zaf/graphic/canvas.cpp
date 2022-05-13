@@ -1,6 +1,5 @@
 #include <zaf/graphic/canvas.h>
 #include <dwrite.h>
-#include <zaf/application.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/geometry/path_geometry.h>
@@ -231,7 +230,7 @@ void Canvas::DrawGeometryFrame(const Geometry& geometry, float stroke_width) {
     //The geometry is not aligned for line, we need to do it by setting a new transform here.
     float offset = AlignmentOffsetForLine(stroke_width);
     if (offset != 0) {
-        drew_geometry = GetGraphicFactory().CreateTransformedGeometry(
+        drew_geometry = GraphicFactory::Instance().CreateTransformedGeometry(
             geometry, 
             TransformMatrix::Translation(Point(offset, offset)));
     }
@@ -284,7 +283,7 @@ PathGeometry Canvas::CreatePathGeometry() const {
 
     ID2D1PathGeometry* handle{};
     HRESULT result = 
-        GetGraphicFactory().GetDirect2dFactoryHandle()->CreatePathGeometry(&handle);
+        GraphicFactory::Instance().GetDirect2dFactoryHandle()->CreatePathGeometry(&handle);
 
     ZAF_THROW_IF_COM_ERROR(result);
 
@@ -299,7 +298,7 @@ PathGeometry Canvas::CreatePathGeometry() const {
 RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect) const {
 
     Rect aligned_rect = AlignWithTransformLayer(rect);
-    return GetGraphicFactory().CreateRectangleGeometry(aligned_rect);
+    return GraphicFactory::Instance().CreateRectangleGeometry(aligned_rect);
 }
 
 
@@ -307,14 +306,14 @@ RoundedRectangleGeometry Canvas::CreateRoundedRectangleGeometry(
     const RoundedRect& rounded_rect) const {
 
     RoundedRect aligned_rounded_rect = AlignWithTransformLayer(rounded_rect);
-    return GetGraphicFactory().CreateRoundedRectangleGeometry(aligned_rounded_rect);
+    return GraphicFactory::Instance().CreateRoundedRectangleGeometry(aligned_rounded_rect);
 }
 
 
 EllipseGeometry Canvas::CreateEllipseGeometry(const Ellipse& ellipse) const {
 
     Ellipse aligned_ellipse = AlignWithTransformLayer(ellipse);
-    return GetGraphicFactory().CreateEllipseGeometry(ellipse);
+    return GraphicFactory::Instance().CreateEllipseGeometry(ellipse);
 }
 
 }

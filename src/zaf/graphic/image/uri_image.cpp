@@ -1,4 +1,5 @@
 #include <zaf/graphic/image/uri_image.h>
+#include <zaf/application.h>
 #include <zaf/base/as.h>
 #include <zaf/base/assert.h>
 #include <zaf/object/parsing/xaml_node_parse_helper.h>
@@ -87,7 +88,7 @@ void URIImage::LoadImageIfNot() {
         return;
     }
 
-    auto stream = GetResourceManager().LoadURI(uri_, dpi_);
+    auto stream = ResourceManager::Instance().LoadURI(uri_, dpi_);
     image_ = Image::FromStream(stream);
 }
 

@@ -42,7 +42,7 @@ void Application::Initialize(const InitializeParameters& parameters) {
 
     rx_runtime_ = std::make_unique<internal::RxRuntime>();
 
-    resource_manager_ = std::make_unique<ResourceManager>(parameters.custom_uri_loader);
+    resource_manager_.reset(new ResourceManager(parameters.custom_uri_loader));
 
     HRESULT result = CoInitialize(nullptr);
     ZAF_THROW_IF_COM_ERROR(result);
@@ -73,11 +73,11 @@ void Application::Initialize(const InitializeParameters& parameters) {
 
     ZAF_THROW_IF_COM_ERROR(result);
 
-    graphic_factory_ = std::make_unique<GraphicFactory>(
+    graphic_factory_.reset(new GraphicFactory(
         d2d_factory_handle.Detach(),
-        dwrite_factory_handle.Detach());
+        dwrite_factory_handle.Detach()));
 
-    imaging_factory_ = std::make_unique<wic::ImagingFactory>(imaging_factory_handle.Detach());
+    imaging_factory_.reset(new wic::ImagingFactory(imaging_factory_handle.Detach()));
 
     InitializeSystemMessageWindow();
     delegate_ = parameters.delegate;

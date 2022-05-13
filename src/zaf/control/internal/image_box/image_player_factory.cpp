@@ -1,5 +1,4 @@
 #include <zaf/control/internal/image_box/image_player_factory.h>
-#include <zaf/application.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
 #include <zaf/control/internal/image_box/gif_player.h>
 #include <zaf/control/internal/image_box/static_image_player.h>
@@ -31,7 +30,7 @@ std::unique_ptr<ImagePlayer> ImagePlayerFactory::CreateWithDecoder(
 std::unique_ptr<ImagePlayer> ImagePlayerFactory::CreateWithFilePath(
     const std::filesystem::path& path) {
 
-    auto decoder = GetImagingFactory().CreateDecoderFromFile(path);
+    auto decoder = wic::ImagingFactory::Instance().CreateDecoderFromFile(path);
     return CreateWithDecoder(decoder);
 }
 

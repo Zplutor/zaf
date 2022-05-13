@@ -1,5 +1,4 @@
 #include <zaf/control/internal/triangle_geometry.h>
-#include <zaf/application.h>
 #include <zaf/graphic/graphic_factory.h>
 
 namespace zaf::internal {
@@ -22,7 +21,7 @@ Geometry CreateTriangleGeometry(
     Point left_point(center_point.x - height, center_point.y + half_height);
     Point right_point(center_point.x + height, center_point.y + half_height);
 
-    auto triangle_geometry = GetGraphicFactory().CreatePathGeometry();
+    auto triangle_geometry = GraphicFactory::Instance().CreatePathGeometry();
     auto triangle_geometry_sink = triangle_geometry.Open();
     triangle_geometry_sink.BeginFigure(top_point, GeometrySink::BeginFigureOption::Fill);
     triangle_geometry_sink.AddLine(left_point);
@@ -30,7 +29,7 @@ Geometry CreateTriangleGeometry(
     triangle_geometry_sink.EndFigure(GeometrySink::EndFigureOption::Close);
     triangle_geometry_sink.Close();
 
-    return GetGraphicFactory().CreateTransformedGeometry(
+    return GraphicFactory::Instance().CreateTransformedGeometry(
         triangle_geometry,
         TransformMatrix::Rotation(rotate_angle, center_point));
 }

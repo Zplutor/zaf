@@ -1,5 +1,4 @@
 #include <zaf/internal/paint_utility.h>
-#include <zaf/application.h>
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/canvas.h>
@@ -60,7 +59,7 @@ void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect) {
     StrokeProperties stroke_properties;
     stroke_properties.SetDashStyle(Stroke::DashStyle::Dot);
     stroke_properties.SetDashCapStyle(Stroke::CapStyle::Square);
-    auto stroke = GetGraphicFactory().CreateStroke(stroke_properties);
+    auto stroke = GraphicFactory::Instance().CreateStroke(stroke_properties);
 
     canvas.SetStroke(stroke);
     canvas.SetBrushWithColor(Color::Black());

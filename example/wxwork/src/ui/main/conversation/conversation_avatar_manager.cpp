@@ -56,13 +56,14 @@ zaf::wic::BitmapSource ConversationAvatarManager::CombineMultiUserConversationAv
 
     zaf::wic::BitmapCreateOptions options;
     options.pixel_format = zaf::wic::PixelFormat::BGR32;
-    auto image_source = zaf::GetImagingFactory().CreateBitmap(image_size, options);
+    auto image_source = zaf::wic::ImagingFactory::Instance().CreateBitmap(image_size, options);
     if (image_source == nullptr) {
         return zaf::wic::BitmapSource();
     }
 
     zaf::RendererProperties renderer_properties;
-    auto renderer = zaf::GetGraphicFactory().CreateBitmapRenderer(image_source, renderer_properties);
+    auto renderer = 
+        zaf::GraphicFactory::Instance().CreateBitmapRenderer(image_source, renderer_properties);
     if (renderer == nullptr) {
         return zaf::wic::BitmapSource();
     }
@@ -186,7 +187,7 @@ static void DrawMemberAvatarImagesToConversationAvatarRenderer(
         auto avatar_rect = member_avatar_rects[index];
         avatar_rect = zaf::Align(avatar_rect);
 
-        auto bitmap_scaler = zaf::GetImagingFactory().CreateBitmapScaler();
+        auto bitmap_scaler = zaf::wic::ImagingFactory::Instance().CreateBitmapScaler();
         bitmap_scaler.Initialize(
             member_avatars[index],
             avatar_rect.size,

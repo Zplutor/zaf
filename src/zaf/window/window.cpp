@@ -280,7 +280,7 @@ Rect Window::GetInitialRect(float dpi) const {
 
 void Window::CreateRenderer() {
 
-    renderer_ = GetGraphicFactory().CreateWindowRenderer(handle_);
+    renderer_ = GraphicFactory::Instance().CreateWindowRenderer(handle_);
 }
 
 

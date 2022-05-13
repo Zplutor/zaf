@@ -1,5 +1,4 @@
 #include <zaf/control/internal/image_box/uri_image_player.h>
-#include <zaf/application.h>
 #include <zaf/control/internal/image_box/image_player_factory.h>
 #include <zaf/graphic/image/internal/utility.h>
 #include <zaf/resource/resource_manager.h>
@@ -41,7 +40,7 @@ void URIImagePlayer::CreateImagePlayerIfNot() {
         return;
     }
 
-    auto stream = GetResourceManager().LoadURI(uri_, dpi_);
+    auto stream = ResourceManager::Instance().LoadURI(uri_, dpi_);
     auto decoder = internal::CreateBitmapDecoderFromSteam(stream);
     inner_ = ImagePlayerFactory::CreateWithDecoder(decoder);
     inner_->SetUpdateEvent([this]() {

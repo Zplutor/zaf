@@ -1,5 +1,6 @@
 #include <zaf/control/control.h>
 #include <algorithm>
+#include <zaf/application.h>
 #include <zaf/base/assert.h>
 #include <zaf/base/as.h>
 #include <zaf/base/define.h>

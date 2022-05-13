@@ -183,24 +183,4 @@ private:
     Subject<ApplicationEndRunInfo> end_run_event_;
 };
 
-
-inline Application& GetApplication() {
-    return Application::Instance();
-}
-
-
-inline ResourceManager& GetResourceManager() {
-    return Application::Instance().GetResourceManager();
-}
-
-
-inline GraphicFactory& GetGraphicFactory() {
-    return GetApplication().GetGraphicFactory();
-}
-
-
-inline wic::ImagingFactory& GetImagingFactory() {
-    return GetApplication().GetImagingFactory();
-}
-
 }

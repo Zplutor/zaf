@@ -39,7 +39,7 @@ static zaf::wic::BitmapSource CreateUserAvatarImage(Id user_id) {
 
     zaf::wic::BitmapCreateFromHBITMAPOptions options;
     options.alpha_channel_option = zaf::wic::BitmapAlphaChannelOption::IgnoreAlpha;
-    auto image = zaf::GetImagingFactory().CreateBitmapFromHBITMAP(
+    auto image = zaf::wic::ImagingFactory::Instance().CreateBitmapFromHBITMAP(
         bitmap_handle,
         options);
 

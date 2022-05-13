@@ -1,6 +1,5 @@
 #pragma once
 
-#include <zaf/application.h>
 #include <zaf/creation.h>
 #include <zaf/object/property_definition.h>
 #include <zaf/object/internal/reflection_manager.h>

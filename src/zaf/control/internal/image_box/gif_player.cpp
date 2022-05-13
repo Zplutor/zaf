@@ -1,5 +1,4 @@
 #include <zaf/control/internal/image_box/gif_player.h>
-#include <zaf/application.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
 
 namespace zaf {
@@ -99,7 +98,7 @@ void GifPlayer::InitializeBackgroundColor(const GifGlobalMetadataQuerier& metada
     auto background_color_index = metadata_querier.GetBackgroundColorIndex();
 
     //Get palette from image decoder.
-    auto palette = GetApplication().GetImagingFactory().CreatePalette();
+    auto palette = wic::ImagingFactory::Instance().CreatePalette();
 
     image_decoder_.CopyPalette(palette);
 

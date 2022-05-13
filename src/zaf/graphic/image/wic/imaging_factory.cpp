@@ -1,7 +1,13 @@
 #include <zaf/graphic/image/wic/imaging_factory.h>
+#include <zaf/application.h>
 #include <zaf/graphic/image/wic/stream.h>
 
 namespace zaf::wic {
+
+ImagingFactory& ImagingFactory::Instance() {
+    return Application::Instance().GetImagingFactory();
+}
+
 
 BitmapDecoder ImagingFactory::CreateDecoderFromFile(
     const std::filesystem::path& file_path,

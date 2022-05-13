@@ -1,4 +1,5 @@
 #include <zaf/graphic/graphic_factory.h>
+#include <zaf/application.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/error/system_error.h>
 #include <zaf/graphic/stroke_properties.h>
@@ -7,6 +8,11 @@
 #include <zaf/graphic/text/text_layout_properties.h>
 
 namespace zaf {
+
+GraphicFactory& GraphicFactory::Instance() {
+    return Application::Instance().GetGraphicFactory();
+}
+
 
 GraphicFactory::GraphicFactory(
     ID2D1Factory* d2d_factory_handle, 

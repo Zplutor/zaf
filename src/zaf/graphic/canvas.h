@@ -3,7 +3,6 @@
 #include <memory>
 #include <stack>
 #include <string>
-#include <zaf/application.h>
 #include <zaf/graphic/brush/solid_color_brush.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/internal/alignment_helper.h>

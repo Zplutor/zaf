@@ -4,6 +4,11 @@
 
 namespace zaf {
 
+ResourceManager& ResourceManager::Instance() {
+    return Application::Instance().GetResourceManager();
+}
+
+
 ResourceManager::ResourceManager(const std::shared_ptr<URILoader>& custom_uri_loader) :
     custom_uri_loader_(custom_uri_loader) {
 

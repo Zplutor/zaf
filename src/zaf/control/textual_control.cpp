@@ -1,5 +1,4 @@
 #include <zaf/control/textual_control.h>
-#include <zaf/application.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/control/internal/range_map.h>
 #include <zaf/graphic/canvas.h>
@@ -33,7 +32,8 @@ namespace {
 void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_format) {
     if (text_trimming.granularity != TextTrimming::Granularity::None) {
         if (text_trimming.trimming_sign == nullptr) {
-            text_trimming.trimming_sign = GetGraphicFactory().CreateCreateEllipsisTrimmingSign(text_format);
+            text_trimming.trimming_sign = 
+                GraphicFactory::Instance().CreateCreateEllipsisTrimmingSign(text_format);
         }
     }
 }
@@ -121,7 +121,7 @@ TextLayout TextualControl::CreateTextLayout() const {
     TextLayoutProperties text_layout_properties;
     text_layout_properties.text = std::move(text);
     text_layout_properties.text_format = CreateTextFormat(default_font);
-    auto text_layout = GetGraphicFactory().CreateTextLayout(text_layout_properties);
+    auto text_layout = GraphicFactory::Instance().CreateTextLayout(text_layout_properties);
 
     SetDefaultFontOtherPropertiesToTextLayout(default_font, text_length, text_layout);
     SetRangedFontsToTextLayout(text_layout);
@@ -137,7 +137,7 @@ TextFormat TextualControl::CreateTextFormat(const zaf::Font& default_font) const
     text_format_properties.font_size = default_font.size;
     text_format_properties.font_weight = default_font.weight;
 
-    auto text_format = GetGraphicFactory().CreateTextFormat(text_format_properties);
+    auto text_format = GraphicFactory::Instance().CreateTextFormat(text_format_properties);
     text_format.SetTextAlignment(TextAlignment());
     text_format.SetParagraphAlignment(ParagraphAlignment());
     text_format.SetWordWrapping(WordWrapping());

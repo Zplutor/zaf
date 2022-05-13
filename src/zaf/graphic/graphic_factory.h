@@ -19,6 +19,7 @@
 
 namespace zaf {
 
+class Application;
 class Rect;
 class StrokeProperties;
 class TextFormatProperties;
@@ -27,17 +28,12 @@ class TransformMatrix;
 
 /**
  Represent a factory that creates graphic resources.
-
- There is no need to create GraphicFactory instance by yourself, use GetGraphicFactory
- function instead.
  */
 class GraphicFactory {
 public:
-    /**
-     Initialize the instance with specified underlying instances.
-     */
-    GraphicFactory(ID2D1Factory* d2d_factory_handle, IDWriteFactory* dwrite_factory_handle);
+    static GraphicFactory& Instance();
 
+public:
     /**
      Destroy the instance.
      */
@@ -129,6 +125,11 @@ public:
 
     GraphicFactory(const GraphicFactory&) = delete;
     GraphicFactory& operator=(const GraphicFactory&) = delete;
+
+private:
+    friend class zaf::Application;
+
+    GraphicFactory(ID2D1Factory* d2d_factory_handle, IDWriteFactory* dwrite_factory_handle);
 
 private:
     ID2D1Factory* d2d_factory_handle_;

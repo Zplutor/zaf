@@ -1,6 +1,5 @@
 #pragma once
 
-#include <zaf/application.h>
 #include <zaf/creation.h>
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
 #include <zaf/object/internal/base_enum_type.h>

@@ -1,6 +1,5 @@
 #include <zaf/control/combo_box.h>
 #include <algorithm>
-#include <zaf/application.h>
 #include <zaf/base/container/utility/range.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/control/button.h>

@@ -1,7 +1,6 @@
 #include <zaf/object/object.h>
 #include <zaf/object/object_type.h>
 #include <sstream>
-#include <zaf/application.h>
 #include <zaf/base/error/system_error.h>
 #include <zaf/object/parsing/internal/default_object_parser.h>
 #include <zaf/object/parsing/object_parser.h>
@@ -48,7 +47,7 @@ void ParseObject(ObjectType& type, Object& object) {
         return;
     }
 
-    auto stream = GetResourceManager().LoadURI(resource_uri);
+    auto stream = ResourceManager::Instance().LoadURI(resource_uri);
     auto xaml_reader = XamlReader::FromStream(stream);
 
     auto root_node = xaml_reader->Read();

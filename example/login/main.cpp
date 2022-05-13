@@ -16,7 +16,7 @@ static void OnSignInClick(
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
-    zaf::Application& application = zaf::GetApplication();
+    zaf::Application& application = zaf::Application::Instance();
 
     //Initialize the application.
     application.Initialize({});

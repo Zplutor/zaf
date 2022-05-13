@@ -1,5 +1,4 @@
 #include <zaf/rx/scheduler.h>
-#include <zaf/application.h>
 #include <zaf/rx/internal/rx_runtime.h>
 #include <zaf/rx/internal/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/internal/thread/thread_manager.h>

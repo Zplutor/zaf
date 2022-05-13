@@ -11,7 +11,11 @@
 #include <zaf/graphic/image/wic/pixel_format.h>
 #include <zaf/graphic/image/wic/stream.h>
 
-namespace zaf::wic {
+namespace zaf {
+
+class Application;
+
+namespace wic {
 
 class Stream;
 
@@ -35,7 +39,7 @@ enum class BitmapCacheOption {
 class BitmapCreateOptions {
 public:
     //TODO: Which format should be the default value?
-    PixelFormat pixel_format{ PixelFormat::BGR32 }; 
+    PixelFormat pixel_format{ PixelFormat::BGR32 };
     BitmapCacheOption cache_option{ BitmapCacheOption::CacheOnDemand };
 };
 
@@ -55,9 +59,9 @@ public:
 
 class ImagingFactory : public ComObject<IWICImagingFactory> {
 public:
-    ImagingFactory() = default;
-    explicit ImagingFactory(IWICImagingFactory* handle) : ComObject(handle) { }
+    static ImagingFactory& Instance();
 
+public:
     IWICImagingFactory* GetHandle() const {
         return static_cast<IWICImagingFactory*>(__super::GetHandle());
     }
@@ -72,7 +76,7 @@ public:
 
 
     BitmapDecoder CreateDecoderFromFile(
-        const std::filesystem::path& file_path, 
+        const std::filesystem::path& file_path,
         const DecoderCreateOptions& options);
 
     BitmapDecoder CreateDecoderFromFile(const std::filesystem::path& file_path) {
@@ -129,6 +133,12 @@ public:
         ZAF_THROW_IF_COM_ERROR(com_error);
         return Palette{ handle };
     }
+
+private:
+    friend class zaf::Application;
+
+    explicit ImagingFactory(IWICImagingFactory* handle) : ComObject(handle) { }
 };
 
+}
 }

@@ -389,7 +389,7 @@ void ConversationItem::UnreadCountBubble::PaintNormalBubble(zaf::Canvas& canvas)
     text_format_properties.font_family_name = L"Î¢ÈíÑÅºÚ";
     text_format_properties.font_size = 10;
     text_format_properties.font_weight = zaf::FontWeight::Regular;
-    auto text_format = zaf::GetGraphicFactory().CreateTextFormat(text_format_properties);
+    auto text_format = zaf::GraphicFactory::Instance().CreateTextFormat(text_format_properties);
     if (text_format == nullptr) {
         return;
     }

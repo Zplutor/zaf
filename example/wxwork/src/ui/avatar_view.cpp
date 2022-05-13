@@ -23,7 +23,9 @@ void AvatarView::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
     rounded_rect.x_radius = 4;
     rounded_rect.y_radius = 4;
 
-    auto rounded_rect_geometry = zaf::GetGraphicFactory().CreateRoundedRectangleGeometry(rounded_rect);
+    auto rounded_rect_geometry = 
+        zaf::GraphicFactory::Instance().CreateRoundedRectangleGeometry(rounded_rect);
+
     if (rounded_rect_geometry == nullptr) {
         return;
     }
