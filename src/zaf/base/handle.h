@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <zaf/base/error/check.h>
 
 namespace zaf {
 
@@ -41,12 +42,17 @@ public:
         return IsValid();
     }
 
-    HANDLE GetValue() const {
+    HANDLE Value() const {
         return value_;
     }
 
     HANDLE operator*() const {
         return value_;
+    }
+
+    HANDLE* Pointer() {
+        ZAF_EXPECT(!IsValid());
+        return &value_;
     }
 
 private:
