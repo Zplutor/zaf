@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <string>
+#include <vector>
 #include "zaf/base/registry/registry_rights.h"
 
 namespace zaf {
@@ -9,7 +10,6 @@ namespace zaf {
 class RegistryKey {
 public:
     RegistryKey() = default;
-
     explicit RegistryKey(HKEY handle) : handle_(handle)  { }
 
     ~RegistryKey();
@@ -27,7 +27,7 @@ public:
         return *this;
     }
 
-    HKEY GetHandle() const {
+    HKEY Handle() const {
         return handle_;
     }
 

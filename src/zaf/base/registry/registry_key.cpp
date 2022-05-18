@@ -5,7 +5,7 @@ namespace zaf {
 
 RegistryKey::~RegistryKey() {
 
-    if (handle_ == nullptr) {
+    if (!handle_) {
         return;
     }
 
@@ -136,7 +136,13 @@ std::vector<BYTE> RegistryKey::GetValue(const std::wstring& name, DWORD expected
 
     if (result == ERROR_MORE_DATA) {
         buffer.resize(buffer_size);
-        result = RegQueryValueEx(handle_, name.c_str(), nullptr, &value_type, &buffer[0], &buffer_size);
+        result = RegQueryValueEx(
+            handle_, 
+            name.c_str(), 
+            nullptr, 
+            &value_type, 
+            &buffer[0],
+            &buffer_size);
     }
 
     ZAF_THROW_IF_SYSTEM_ERROR(result);
