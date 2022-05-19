@@ -467,6 +467,7 @@ public:
     void Restore();
 
     bool IsVisible() const;
+    bool IsFocused() const;
 
     /**
      Close the window.
@@ -675,6 +676,7 @@ private:
     std::shared_ptr<Control> mouse_over_control_;
     std::shared_ptr<Control> capturing_mouse_control_;
     std::shared_ptr<Control> focused_control_;
+    std::weak_ptr<Control> last_focused_control_;
     std::shared_ptr<zaf::Caret> caret_;
     std::shared_ptr<TooltipWindow> tooltip_window_;
 

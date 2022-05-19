@@ -488,6 +488,18 @@ bool Window::HandleMessage(const Message& message, LRESULT& result) {
         HandleMoveMessage();
         return true;
 
+    case WM_SETFOCUS:
+        if (auto last_focused_control = last_focused_control_.lock()) {
+            last_focused_control_.reset();
+            SetFocusedControl(last_focused_control);
+        }
+        return true;
+
+    case WM_KILLFOCUS: 
+        last_focused_control_ = FocusedControl();
+        SetFocusedControl(nullptr);
+        return true;
+
     case WM_MOUSEACTIVATE: {
         auto activate_option = ActivateOption();
         bool no_activate = (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
@@ -1183,7 +1195,13 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_contr
         return;
     }
 
-    if (new_focused_control != nullptr) {
+    if (new_focused_control) {
+
+        //Not allow to set focused control if the window has no focus.
+        //(But allow to clear focused control)
+        if (!IsFocused()) {
+            return;
+        }
 
         if (!new_focused_control->IsEnabled()) {
             return;
@@ -1777,6 +1795,11 @@ void Window::Restore() {
 
 bool Window::IsVisible() const {
     return !!IsWindowVisible(handle_);
+}
+
+
+bool Window::IsFocused() const {
+    return GetFocus() == Handle();
 }
 
 
