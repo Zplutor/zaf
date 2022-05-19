@@ -44,9 +44,9 @@ public:
 };
 
 
-class WindowReceiveMessageInfo : public WindowEventInfo {
+class WindowHandleMessageInfo : public WindowEventInfo {
 public:
-    WindowReceiveMessageInfo(
+    WindowHandleMessageInfo(
         const std::shared_ptr<zaf::Window>& window,
         const zaf::Message& message,
         LRESULT result)

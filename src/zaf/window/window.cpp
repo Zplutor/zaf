@@ -41,7 +41,7 @@ constexpr const wchar_t* const kIsSizablePropertyName = L"IsSizable";
 constexpr const wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
 constexpr const wchar_t* const kIsTopmostPropertyName = L"IsTopmost";
 constexpr const wchar_t* const kOwnerPropertyName = L"Owner";
-constexpr const wchar_t* const kReceiveMessageEventPropertyName = L"ReceiveMessageEvent";
+constexpr const wchar_t* const kHandleMessageEventPropertyName = L"HandleMessageEvent";
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
 
 
@@ -159,7 +159,7 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wpar
     if (window) {
 
         LRESULT result = 0;
-        if (window->ReceiveMessageEntrance(Message{ hwnd, message_id, wparam, lparam }, result)) {
+        if (window->HandleMessageEntrance(Message{ hwnd, message_id, wparam, lparam }, result)) {
             return result;    
         }
     }
@@ -230,7 +230,7 @@ void Window::CreateWindowHandle() {
 }
 
 
-void Window::ReceiveCreateMessage(HWND handle) {
+void Window::HandleCreateMessage(HWND handle) {
 
     auto dpi = static_cast<float>(GetDpiForWindow(handle));
     auto initial_rect = GetInitialRect(dpi);
@@ -409,34 +409,34 @@ bool Window::TryToPreprocessInspectorShortcutMessage(const KeyMessage& message) 
 }
 
 
-bool Window::ReceiveMessageEntrance(const Message& message, LRESULT& result) {
+bool Window::HandleMessageEntrance(const Message& message, LRESULT& result) {
 
-    bool is_handled = ReceiveMessage(message, result);
-    RaiseReceiveMessageEvent(message, result);
+    bool is_handled = HandleMessage(message, result);
+    RaiseHandleMessageEvent(message, result);
     return is_handled;
 }
 
 
-void Window::RaiseReceiveMessageEvent(const Message& message, LRESULT result) {
+void Window::RaiseHandleMessageEvent(const Message& message, LRESULT result) {
 
     if (message.id == WM_NCDESTROY) {
         return;
     }
 
-    auto event_observer = GetEventObserver<WindowReceiveMessageInfo>(
+    auto event_observer = GetEventObserver<WindowHandleMessageInfo>(
         GetPropertyMap(),
-        kReceiveMessageEventPropertyName);
+        kHandleMessageEventPropertyName);
 
     if (!event_observer) {
         return;
     }
 
-    WindowReceiveMessageInfo event_info(shared_from_this(), message, result);
+    WindowHandleMessageInfo event_info(shared_from_this(), message, result);
     event_observer->OnNext(event_info);
 }
 
 
-bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
+bool Window::HandleMessage(const Message& message, LRESULT& result) {
 
     auto is_customized_style = [this]() {
         return !IsPopup() && !HasBorder();
@@ -444,7 +444,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
 
     switch (message.id) {
     case WM_CREATE:
-        ReceiveCreateMessage(message.hwnd);
+        HandleCreateMessage(message.hwnd);
         return true;
 
     case WM_NCCALCSIZE:
@@ -485,7 +485,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         return true;
 
     case WM_MOVE:
-        ReceiveMoveMessage();
+        HandleMoveMessage();
         return true;
 
     case WM_MOUSEACTIVATE: {
@@ -546,7 +546,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         if (RedirectMouseWheelMessage(message)) {
             return true;
         }
-        return ReceiveMouseMessage(MouseWheelMessage{ message });
+        return HandleMouseMessage(MouseWheelMessage{ message });
 
     case WM_MOUSEMOVE:
     case WM_NCMOUSEMOVE:
@@ -558,7 +558,7 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
     case WM_MBUTTONUP:
     case WM_RBUTTONDOWN:
     case WM_RBUTTONUP:
-        return ReceiveMouseMessage(MouseMessage{ message });
+        return HandleMouseMessage(MouseMessage{ message });
 
     case WM_MOUSEHOVER:
     case WM_NCMOUSEHOVER:
@@ -589,10 +589,10 @@ bool Window::ReceiveMessage(const Message& message, LRESULT& result) {
         return false;
 
     case WM_CLOSE:
-        return ! ReceiveCloseMessage();
+        return ! HandleCloseMessage();
 
     case WM_DESTROY:
-        ReceiveDestroyMessage();
+        HandleDestroyMessage();
         return true;
 
     case WM_NCDESTROY:
@@ -736,7 +736,7 @@ void Window::Resize(UINT width, UINT height) {
 }
 
 
-void Window::ReceiveMoveMessage() {
+void Window::HandleMoveMessage() {
 
     UpdateWindowRect();
 }
@@ -793,7 +793,7 @@ bool Window::RedirectMouseWheelMessage(const Message& message) {
 }
 
 
-bool Window::ReceiveMouseMessage(const MouseMessage& message) {
+bool Window::HandleMouseMessage(const MouseMessage& message) {
 
     bool is_capturing_mouse = capturing_mouse_control_ != nullptr;
     auto get_mouse_position_to_capturing_control = [this, &message]() {
@@ -1021,7 +1021,7 @@ void Window::HideTooltipWindow() {
 }
 
 
-bool Window::ReceiveCloseMessage() {
+bool Window::HandleCloseMessage() {
 
     bool can_close{ true };
 
@@ -1038,7 +1038,7 @@ bool Window::ReceiveCloseMessage() {
 }
 
 
-void Window::ReceiveDestroyMessage() {
+void Window::HandleDestroyMessage() {
 
     if (capturing_mouse_control_ != nullptr) {
         capturing_mouse_control_->IsCapturingMouseChanged(false);
@@ -1710,10 +1710,10 @@ Observable<WindowDestroyInfo> Window::DestroyEvent() {
 }
 
 
-Observable<WindowReceiveMessageInfo> Window::ReceiveMessageEvent() {
-    return GetEventObservable<WindowReceiveMessageInfo>(
+Observable<WindowHandleMessageInfo> Window::HandleMessageEvent() {
+    return GetEventObservable<WindowHandleMessageInfo>(
         GetPropertyMap(), 
-        kReceiveMessageEventPropertyName);
+        kHandleMessageEventPropertyName);
 }
 
 

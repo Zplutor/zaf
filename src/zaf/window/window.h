@@ -443,7 +443,7 @@ public:
      */
     Observable<WindowDestroyInfo> DestroyEvent();
 
-    Observable<WindowReceiveMessageInfo> ReceiveMessageEvent();
+    Observable<WindowHandleMessageInfo> HandleMessageEvent();
 
     /**
      Get position of the mouse cursor in current window's coordinate system.
@@ -516,7 +516,7 @@ protected:
      Derived classes should always call the same method of super class if it doesn't handle 
      the message.
      */
-    virtual bool ReceiveMessage(const Message& message, LRESULT& result);
+    virtual bool HandleMessage(const Message& message, LRESULT& result);
 
     virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
 
@@ -615,7 +615,7 @@ private:
 private:
     void InitializeRootControl(const std::shared_ptr<Control>& control);
     void CreateWindowHandle();
-    void ReceiveCreateMessage(HWND handle);
+    void HandleCreateMessage(HWND handle);
     zaf::Rect GetInitialRect(float dpi) const;
     void CreateRenderer();
     void RecreateRenderer();
@@ -629,14 +629,13 @@ private:
 
     void Repaint();
     void PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect);
-    bool ReceiveMessageEntrance(const Message& message, LRESULT& result);
-    void RaiseReceiveMessageEvent(const Message& message, LRESULT result);
+    bool HandleMessageEntrance(const Message& message, LRESULT& result);
+    void RaiseHandleMessageEvent(const Message& message, LRESULT result);
     void Resize(UINT width, UINT height);
-    void ReceiveMoveMessage();
+    void HandleMoveMessage();
     void UpdateWindowRect();
-    void UpdateRootControlRect();
     bool RedirectMouseWheelMessage(const Message& message);
-    bool ReceiveMouseMessage(const MouseMessage& message);
+    bool HandleMouseMessage(const MouseMessage& message);
     void HighlightControlAtPosition(const Point& position);
     void SelectInspectedControl();
     void TrackMouseByMouseMove(const MouseMessage& message);
@@ -646,8 +645,8 @@ private:
     void TryToShowTooltipWindow();
     void HideTooltipWindow();
     bool ChangeMouseCursor(const Message& message);
-    bool ReceiveCloseMessage();
-    void ReceiveDestroyMessage();
+    bool HandleCloseMessage();
+    void HandleDestroyMessage();
     
     void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
     void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
