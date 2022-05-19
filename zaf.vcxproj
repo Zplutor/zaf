@@ -226,6 +226,7 @@
     <ClInclude Include="src\zaf\base\error\basic_error.h" />
     <ClInclude Include="src\zaf\base\error\check.h" />
     <ClInclude Include="src\zaf\base\hash.h" />
+    <ClInclude Include="src\zaf\base\none.h" />
     <ClInclude Include="src\zaf\base\source_site.h" />
     <ClInclude Include="src\zaf\base\com_object.h" />
     <ClInclude Include="src\zaf\base\container\utility\append.h" />
@@ -469,7 +470,6 @@
     <ClInclude Include="src\zaf\resource\resource_factory.h" />
     <ClInclude Include="src\zaf\resource\uri_loader.h" />
     <ClInclude Include="src\zaf\rx\cancel.h" />
-    <ClInclude Include="src\zaf\rx\dumb.h" />
     <ClInclude Include="src\zaf\rx\creation.h" />
     <ClInclude Include="src\zaf\rx\internal\inner_observer.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\async_customized_observable.h" />

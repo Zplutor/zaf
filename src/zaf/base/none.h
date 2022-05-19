@@ -2,8 +2,8 @@
 
 namespace zaf {
 
-class Dumb {
-
+class None {
+    
 };
 
 }

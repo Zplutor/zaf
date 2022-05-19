@@ -1360,9 +1360,6 @@
     <ClInclude Include="src\zaf\rx\internal\scheduler\single_thread_scheduler.h">
       <Filter>zaf\rx\internal\scheduler</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\dumb.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\scheduler.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
@@ -1602,6 +1599,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\image_box\image_player_factory.h">
       <Filter>zaf\control\internal\image_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\none.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
