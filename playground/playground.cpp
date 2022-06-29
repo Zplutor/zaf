@@ -82,6 +82,8 @@ int WINAPI WinMain(
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
     auto window = zaf::Create<Window>();
+    window->SetIsSizable(true);
+    window->SetHasTitleBar(true);
     window->SetContentSize(zaf::Size{ 600, 400 });
     window->Show();
 

@@ -16,6 +16,7 @@
 #include <zaf/serialization/properties.h>
 #include <zaf/window/caret.h>
 #include <zaf/window/inspector/inspector_window.h>
+#include <zaf/window/internal/window_class_registry.h>
 #include <zaf/window/tooltip_window.h>
 #include <zaf/window/message/hit_test_message.h>
 #include <zaf/window/message/keyboard_message.h>
@@ -24,8 +25,6 @@
 
 namespace zaf {
 namespace {
-
-const wchar_t* const kDefaultWindowClassName = L"ZafDefaultWindowClass";
 
 constexpr const wchar_t* const kActivateOptionPropertyName = L"ActivateOption";
 constexpr const wchar_t* const kCanMaximizePropertyName = L"CanMaximize";
@@ -122,29 +121,6 @@ ZAF_DEFINE_TYPE_PROPERTY(IsVisible)
 ZAF_DEFINE_TYPE_END
 
 
-void Window::RegisterDefaultClass(HICON icon, HICON small_icon) {
-
-    WNDCLASSEX default_class = { 0 };
-    default_class.cbSize = sizeof(default_class);
-    default_class.style = CS_HREDRAW | CS_VREDRAW;
-    default_class.lpfnWndProc = WindowProcedure;
-    default_class.cbClsExtra = 0;
-    default_class.cbWndExtra = sizeof(LONG_PTR);
-    default_class.hInstance = NULL;
-    default_class.hIcon = icon;
-    default_class.hCursor = LoadCursor(NULL, IDI_APPLICATION);
-    default_class.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
-    default_class.lpszMenuName = nullptr;
-    default_class.lpszClassName = kDefaultWindowClassName;
-    default_class.hIconSm = small_icon;
-
-    ATOM atom = RegisterClassEx(&default_class);
-    if (atom == 0) {
-        ZAF_THROW_IF_SYSTEM_ERROR(GetLastError());
-    }
-}
-
-
 LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wparam, LPARAM lparam) {
 
     if (message_id == WM_NCCREATE) {
@@ -168,9 +144,14 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wpar
 }
 
 
-Window::Window() :
-    handle_(nullptr),
-    rect_(0, 0, 640, 480) {
+Window::Window() : 
+    class_(Application::Instance().GetWindowClassRegistry().GetWindowClass(DefaultClassName)) {
+
+}
+
+
+Window::Window(const std::wstring& window_class_name) :
+    class_(Application::Instance().GetWindowClassRegistry().GetWindowClass(window_class_name)) {
 
 }
 
@@ -188,6 +169,11 @@ void Window::Initialize() {
 }
 
 
+const std::wstring& Window::ClassName() const {
+    return class_->Name();
+}
+
+
 void Window::CreateWindowHandle() {
 
     //Revise HasTitleBar property first.
@@ -201,7 +187,7 @@ void Window::CreateWindowHandle() {
 
     handle_ = CreateWindowEx(
         extra_style,
-        kDefaultWindowClassName,
+        reinterpret_cast<LPCWSTR>(class_->GetAtom()),
         Title().c_str(),
         style,
         0,

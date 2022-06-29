@@ -15,6 +15,7 @@ namespace zaf {
 namespace internal {
 class RxRuntime;
 class SystemMessageWindow;
+class WindowClassRegistry;
 }
 
 namespace wic {
@@ -145,6 +146,10 @@ private:
     void RegisterWindow(const std::shared_ptr<Window>& window);
     void UnregisterWindow(const std::shared_ptr<Window>& window);
 
+    internal::WindowClassRegistry& GetWindowClassRegistry() const {
+        return *window_class_registry_;
+    }
+
 private:
     friend class internal::RxRuntime;
 
@@ -173,6 +178,7 @@ private:
     std::unique_ptr<ResourceFactory> resource_factory_;
     std::unique_ptr<GraphicFactory> graphic_factory_;
     std::unique_ptr<wic::ImagingFactory> imaging_factory_;
+    std::unique_ptr<internal::WindowClassRegistry> window_class_registry_;
     std::shared_ptr<internal::SystemMessageWindow> system_message_window_;
     std::weak_ptr<Window> main_window_;
     std::set<std::shared_ptr<Window>> windows_;

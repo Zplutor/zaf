@@ -16,6 +16,7 @@
 namespace zaf {
 namespace internal {
 class InspectorPort;
+class WindowClass;
 }
 
 class Caret;
@@ -39,11 +40,14 @@ class Window :
 public:
     ZAF_DECLARE_TYPE
 
+    static constexpr const wchar_t* const DefaultClassName = L"ZafDef";
+
 public:
     /**
      Construct the instance.
      */
     Window();
+    Window(const std::wstring& window_class_name);
 
     /**
      Destruct the instance.
@@ -52,6 +56,8 @@ public:
 
     Window(const Window&) = delete;
     Window& operator=(const Window&) = delete;
+
+    const std::wstring& ClassName() const;
 
     /**
      Get the owner window.
@@ -589,8 +595,7 @@ private:
     friend class Control;
     friend class InspectorWindow;
     friend class internal::MessageLoop;
-
-    static void RegisterDefaultClass(HICON icon, HICON small_icon);
+    friend class internal::WindowClass;
 
     void NeedRepaintRect(const zaf::Rect& rect);
     void SetMouseOverControl(
@@ -666,8 +671,9 @@ private:
         bool is_extra_style);
 
 private:
-    HWND handle_;
-    zaf::Rect rect_;
+    std::shared_ptr<internal::WindowClass> class_;
+    HWND handle_{};
+    zaf::Rect rect_{ 0, 0, 640, 480 };
     WindowRenderer renderer_;
 
     TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };

@@ -12,6 +12,7 @@
 #include <zaf/internal/system_message_window.h>
 #include <zaf/resource/resource_factory.h>
 #include <zaf/rx/internal/rx_runtime.h>
+#include <zaf/window/internal/window_class_registry.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -47,8 +48,6 @@ void Application::Initialize(const InitializeParameters& parameters) {
     HRESULT result = CoInitialize(nullptr);
     ZAF_THROW_IF_COM_ERROR(result);
 
-    Window::RegisterDefaultClass(parameters.window_icon, parameters.window_small_icon);
-
     //Create Direct2D factory.
     CComPtr<ID2D1Factory> d2d_factory_handle;
     result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2d_factory_handle);
@@ -78,6 +77,10 @@ void Application::Initialize(const InitializeParameters& parameters) {
         dwrite_factory_handle.Detach()));
 
     imaging_factory_.reset(new wic::ImagingFactory(imaging_factory_handle.Detach()));
+
+    window_class_registry_ = std::make_unique<internal::WindowClassRegistry>(
+        parameters.window_icon, 
+        parameters.window_small_icon);
 
     InitializeSystemMessageWindow();
     delegate_ = parameters.delegate;

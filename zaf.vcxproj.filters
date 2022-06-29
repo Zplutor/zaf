@@ -670,6 +670,9 @@
     <ClCompile Include="src\zaf\control\internal\image_box\image_player_factory.cpp">
       <Filter>zaf\control\internal\image_box</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\internal\window_class_registry.cpp">
+      <Filter>zaf\window\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1599,6 +1602,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\image_box\image_player_factory.h">
       <Filter>zaf\control\internal\image_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\internal\window_class_registry.h">
+      <Filter>zaf\window\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\non_copyable.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\none.h">
       <Filter>zaf\base</Filter>

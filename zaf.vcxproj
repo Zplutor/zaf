@@ -210,6 +210,7 @@
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_data_source.cpp" />
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_item.cpp" />
     <ClCompile Include="src\zaf\window\internal\inner_message_only_window.cpp" />
+    <ClCompile Include="src\zaf\window\internal\window_class_registry.cpp" />
     <ClCompile Include="src\zaf\window\message\internal\mouse_position_conversion.cpp" />
     <ClCompile Include="src\zaf\window\message\mouse_message.cpp" />
     <ClCompile Include="src\zaf\window\tooltip_window.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="src\zaf\base\error\basic_error.h" />
     <ClInclude Include="src\zaf\base\error\check.h" />
     <ClInclude Include="src\zaf\base\hash.h" />
+    <ClInclude Include="src\zaf\base\non_copyable.h" />
     <ClInclude Include="src\zaf\base\none.h" />
     <ClInclude Include="src\zaf\base\source_site.h" />
     <ClInclude Include="src\zaf\base\com_object.h" />
@@ -515,6 +517,7 @@
     <ClInclude Include="src\zaf\window\inspector\internal\inspect_data_source.h" />
     <ClInclude Include="src\zaf\window\inspector\internal\inspect_item.h" />
     <ClInclude Include="src\zaf\window\internal\inner_message_only_window.h" />
+    <ClInclude Include="src\zaf\window\internal\window_class_registry.h" />
     <ClInclude Include="src\zaf\window\message\activate_message.h" />
     <ClInclude Include="src\zaf\window\message\hit_test_message.h" />
     <ClInclude Include="src\zaf\window\message\hit_test_result.h" />
