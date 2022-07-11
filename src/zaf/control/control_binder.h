@@ -1,8 +1,10 @@
 #pragma once
 
 #include <memory>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/check.h>
 #include <zaf/base/error/error.h>
+#include <zaf/base/non_copyable.h>
 
 namespace zaf {
 
@@ -15,7 +17,7 @@ std::shared_ptr<Control> BridgedFindControl(const Control& control, const wchar_
 std::shared_ptr<Control> BridgedFindControl(const Window& window, const wchar_t* name);
 
 template<typename T>
-class ControlBinder {
+class ControlBinder : NonCopyable {
 public:
     ControlBinder(const Control* owner, const wchar_t* name) : 
         owner_is_window_(false),
@@ -33,32 +35,41 @@ public:
         owner_.window = owner;
     }
 
-    ControlBinder(const ControlBinder&) = delete;
-    ControlBinder& operator=(const ControlBinder&) = delete;
-
     T* operator->() {
+        return GetBoundControl().get();
+    }
+
+    T* operator->() const {
+        auto mutable_this = const_cast<ControlBinder<T>*>(this);
+        return mutable_this->operator->();
+    }
+
+    operator std::shared_ptr<T>() {
+        return GetBoundControl();
+    }
+
+    operator std::shared_ptr<T>() const {
+        auto mutable_this = const_cast<ControlBinder<T>*>(this);
+        return mutable_this->operator std::shared_ptr<T>();
+    }
+
+private:
+    std::shared_ptr<T> GetBoundControl() {
 
         auto control = control_.lock();
         if (control) {
-            return control.get();
+            return control;
         }
 
         control = FindControl();
         if (control) {
             control_ = control;
-            return control.get();
+            return control;
         }
 
-        throw zaf::Error{ {} };
+        ZAF_THROW_ERRC(zaf::BasicErrc::NameNotFound);
     }
 
-    const T* operator->() const {
-
-        auto const_this = const_cast<ControlBinder<T>*>(this);
-        return const_this->operator->();
-    }
-
-private:
     std::shared_ptr<T> FindControl() const {
 
         std::shared_ptr<Control> control;

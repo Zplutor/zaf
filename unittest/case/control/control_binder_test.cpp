@@ -4,6 +4,7 @@
 #include <zaf/control/label.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
+#include "utility/assert.h"
 
 namespace {
 
@@ -48,6 +49,10 @@ TEST(ControlBinderTest, BindInControl) {
     zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), child_name };
     ASSERT_EQ(binder->Name(), child_name);
     ASSERT_EQ(binder->Name(), child_name);
+
+    std::shared_ptr<zaf::Label> label = binder;
+    ASSERT_NE(label, nullptr);
+    ASSERT_EQ(label->Name(), child_name);
 }
 
 
@@ -64,6 +69,10 @@ TEST(ControlBinderTest, BindInWindow) {
     zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), child_name };
     ASSERT_EQ(binder->Name(), child_name);
     ASSERT_EQ(binder->Name(), child_name);
+
+    std::shared_ptr<zaf::Label> label = binder;
+    ASSERT_NE(label, nullptr);
+    ASSERT_EQ(label->Name(), child_name);
 }
 
 
@@ -81,6 +90,10 @@ TEST(ControlBinderTest, Const) {
 
     const zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), child_name };
     ASSERT_EQ(binder->Text(), text);
+
+    std::shared_ptr<zaf::Label> label = binder;
+    ASSERT_NE(label, nullptr);
+    ASSERT_EQ(label->Text(), text);
 }
 
 
@@ -89,5 +102,9 @@ TEST(ControlBinderTest, NotFound) {
     auto owner = zaf::Create<zaf::Control>();
 
     zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), L"not_found" };
-    ASSERT_THROW(binder->Name(), zaf::Error);
+    ASSERT_THROW_ERRC(binder->Name(), zaf::BasicErrc::NameNotFound);
+
+    ASSERT_THROW_ERRC(
+        static_cast<std::shared_ptr<zaf::Label>>(binder), 
+        zaf::BasicErrc::NameNotFound);
 }

@@ -82,6 +82,10 @@ public:
      */
     void Terminate();
 
+    const std::shared_ptr<ApplicationDelegate>& GetDelegate() const {
+        return delegate_;
+    }
+
     std::filesystem::path GetWorkingDirectoryPath() const;
     std::filesystem::path GetExeFilePath() const;
     std::filesystem::path GetExeDirectoryPath() const;
