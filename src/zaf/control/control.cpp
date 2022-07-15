@@ -1,7 +1,6 @@
 #include <zaf/control/control.h>
 #include <algorithm>
 #include <zaf/application.h>
-#include <zaf/base/assert.h>
 #include <zaf/base/as.h>
 #include <zaf/base/define.h>
 #include <zaf/base/error/basic_error.h>
@@ -1012,10 +1011,7 @@ void Control::SetParent(const std::shared_ptr<Control>& parent) {
 
 void Control::AddChild(const std::shared_ptr<Control>& child) {
 
-    if (child.get() == this) {
-        ZAF_FAIL();
-        return;
-    }
+    ZAF_EXPECT(child.get() != this);
 
     auto previous_parent = child->Parent();
     if (previous_parent.get() == this) {

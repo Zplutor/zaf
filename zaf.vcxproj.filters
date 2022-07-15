@@ -705,9 +705,6 @@
     <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h">
       <Filter>zaf\graphic\brush</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\assert.h">
-      <Filter>zaf\base</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\stroke.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>

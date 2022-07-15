@@ -1,5 +1,4 @@
 #include <zaf/control/internal/image_box/image_drawing.h>
-#include <zaf/base/assert.h>
 
 namespace zaf::internal {
 namespace {
@@ -100,7 +99,7 @@ void DrawImage(
         DrawImageWithTileLayout(canvas, draw_rect, bitmap, interpolation_mode);
     }
     else {
-        ZAF_FAIL();
+        ZAF_ALERT();
     }
 }
 

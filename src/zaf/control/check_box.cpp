@@ -1,5 +1,5 @@
 #include <zaf/control/check_box.h>
-#include <zaf/base/assert.h>
+#include <zaf/base/error/check.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
@@ -253,7 +253,7 @@ void CheckBox::OnClick() {
             break;
 
         default:
-            ZAF_FAIL();
+            ZAF_ALERT();
             break;
     }
 

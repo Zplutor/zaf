@@ -1,5 +1,4 @@
 #include <zaf/control/clickable_control.h>
-#include <zaf/base/assert.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>

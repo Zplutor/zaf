@@ -1,7 +1,6 @@
 #include <zaf/graphic/image/uri_image.h>
 #include <zaf/application.h>
 #include <zaf/base/as.h>
-#include <zaf/base/assert.h>
 #include <zaf/object/parsing/xaml_node_parse_helper.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/resource/resource_factory.h>

@@ -3,7 +3,6 @@
 #include <dwrite.h>
 #include <cstdint>
 #include <memory>
-#include <zaf/base/assert.h>
 #include <zaf/base/com_object.h>
 #include <zaf/graphic/font/font_style.h>
 

@@ -1,6 +1,5 @@
 #include <zaf/control/radio_button.h>
 #include <algorithm>
-#include <zaf/base/assert.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/paint_utility.h>

@@ -1,6 +1,5 @@
 #include <zaf/control/internal/list_control/list_control_item_height_manager.h>
 #include <algorithm>
-#include <zaf/base/assert.h>
 
 namespace zaf::internal {
 
@@ -202,7 +201,7 @@ void ListControlItemHeightManager::ItemAdd(const ListDataSourceDataAddInfo& even
     }
 
     if (event_info.index > item_count_) {
-        ZAF_FAIL();
+        ZAF_ALERT();
         return;
     }
 
@@ -243,12 +242,12 @@ void ListControlItemHeightManager::ItemAdd(const ListDataSourceDataAddInfo& even
 void ListControlItemHeightManager::ItemRemove(const ListDataSourceDataRemoveInfo& event_info) {
 
     if (event_info.index >= item_count_) {
-        ZAF_FAIL();
+        ZAF_ALERT();
         return;
     }
 
     if (event_info.count > item_count_ - event_info.index) {
-        ZAF_FAIL();
+        ZAF_ALERT();
         return;
     }
 
@@ -285,12 +284,12 @@ void ListControlItemHeightManager::ItemUpdate(const ListDataSourceDataUpdateInfo
     }
 
     if (event_info.index >= item_count_) {
-        ZAF_FAIL();
+        ZAF_ALERT();
         return;
     }
 
     if (event_info.count > item_count_ - event_info.index) {
-        ZAF_FAIL();
+        ZAF_ALERT();
         return;
     }
 

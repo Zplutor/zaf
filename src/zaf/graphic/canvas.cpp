@@ -119,7 +119,7 @@ void Canvas::RestoreState() {
         }
     }
     else {
-        ZAF_FAIL();
+        ZAF_ALERT();
     }
 }
 
@@ -146,7 +146,7 @@ std::shared_ptr<Canvas::State> Canvas::GetCurrentState() const {
         return states_.back();
     }
     else {
-        ZAF_FAIL();
+        ZAF_ALERT();
         return nullptr;
     }
 }
