@@ -292,6 +292,9 @@
     <ClCompile Include="unittest\case\resource\internal\resource_loader_test.cpp">
       <Filter>case\resource\internal</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\auto_reset_value_test.cpp">
+      <Filter>case\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

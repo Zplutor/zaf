@@ -70,8 +70,6 @@ constexpr const wchar_t* const kMouseEnterEventPropertyName = L"MouseEnterEvent"
 constexpr const wchar_t* const kMouseLeaveEventPropertyName = L"MouseLeaveEvent";
 constexpr const wchar_t* const kMouseHoverEventPropertyName = L"MouseHoverEvent";
 constexpr const wchar_t* const kRectChangeEventPropertyName = L"RectChangeEvent";
-constexpr const wchar_t* const AutoHeightPropertyName = L"AutoHeight";
-constexpr const wchar_t* const AutoWidthPropertyName = L"AutoWidth";
 constexpr const wchar_t* const CanClickPropertyName = L"CanClick";
 constexpr const wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
 constexpr const wchar_t* const ClickEventPropertyName = L"ClickEvent";
@@ -437,7 +435,9 @@ void Control::ReleaseRendererResources() {
 }
 
 
-void Control::ChildRectChanged(const std::shared_ptr<Control>& child, const zaf::Rect& previous_rect) {
+void Control::OnChildRectChanged(
+    const std::shared_ptr<Control>& child, 
+    const zaf::Rect& previous_rect) {
 
     const zaf::Rect& new_rect = child->Rect();
 
@@ -519,10 +519,16 @@ void Control::SetRect(const zaf::Rect& rect) {
     //Revise the size.
     rect_ = zaf::Rect(rect.position, ApplySizeLimit(rect.size));    
 
+    bool size_changed = (rect_.size != previous_rect.size);
+    if (size_changed) {
+        //Auto size.
+        ApplyAutoSizeOnRectChanged(rect_.size);
+    }
+
     //Notify rect change.
     OnRectChanged(previous_rect);
 
-    if (rect_.size != previous_rect.size) {
+    if (size_changed) {
 
         ReleaseCachedPaintingRenderer();
 
@@ -544,7 +550,7 @@ void Control::SetRect(const zaf::Rect& rect) {
 
     auto parent = Parent();
     if (parent != nullptr) {
-        parent->ChildRectChanged(shared_from_this(), previous_rect);
+        parent->OnChildRectChanged(shared_from_this(), previous_rect);
     }
 
     //Trigger the rect change event.
@@ -680,16 +686,16 @@ void Control::SetMaxHeight(float max_height) {
 
 zaf::Size Control::CalculatePreferredSize() const {
 
-    zaf::Size max_size{ 
+    zaf::Size bound_size{ 
         std::numeric_limits<float>::max(),
         std::numeric_limits<float>::max() 
     };
 
-    return CalculatePreferredSize(max_size);
+    return CalculatePreferredSize(bound_size);
 }
 
 
-zaf::Size Control::CalculatePreferredSize(const zaf::Size& max_size) const {
+zaf::Size Control::CalculatePreferredSize(const zaf::Size& bound_size) const {
 
     float non_content_width{};
     float non_content_height{};
@@ -703,8 +709,8 @@ zaf::Size Control::CalculatePreferredSize(const zaf::Size& max_size) const {
     non_content_height += border.top + border.bottom;
 
     zaf::Size max_content_size{
-        std::max(max_size.width - non_content_width, 0.f),
-        std::max(max_size.height - non_content_height, 0.f)
+        std::max(bound_size.width - non_content_width, 0.f),
+        std::max(bound_size.height - non_content_height, 0.f)
     };
     auto preferred_content_size = CalculatePreferredContentSize(max_content_size);
 
@@ -716,7 +722,7 @@ zaf::Size Control::CalculatePreferredSize(const zaf::Size& max_size) const {
 }
 
 
-zaf::Size Control::CalculatePreferredContentSize(const zaf::Size& max_size) const {
+zaf::Size Control::CalculatePreferredContentSize(const zaf::Size& bound_size) const {
 
     zaf::Rect union_rect;
 
@@ -737,18 +743,37 @@ zaf::Size Control::CalculatePreferredContentSize(const zaf::Size& max_size) cons
     }
 
     zaf::Size result;
-    result.width = std::min(union_rect.size.width, max_size.width);
-    result.height = std::min(union_rect.size.height, max_size.height);
+    result.width = std::min(union_rect.size.width, bound_size.width);
+    result.height = std::min(union_rect.size.height, bound_size.height);
     return result;
+}
+
+
+void Control::ApplyAutoSizeOnRectChanged(zaf::Size& new_size) {
+
+    if (is_auto_resizing_.Value()) {
+        return;
+    }
+
+    if (!auto_width_ && !auto_height_) {
+        return;
+    }
+
+    auto preferred_size = CalculatePreferredSizeForAutoSize();
+
+    if (auto_width_) {
+        new_size.width = preferred_size.width;
+    }
+
+    if (auto_height_) {
+        new_size.height = preferred_size.height;
+    }
 }
 
 
 void Control::AutoResizeToPreferredSize() {
 
-    bool auto_width = AutoWidth();
-    bool auto_height = AutoHeight();
-
-    if (!auto_width && !auto_height) {
+    if (!auto_width_ && !auto_height_) {
         return;
     }
 
@@ -757,54 +782,47 @@ void Control::AutoResizeToPreferredSize() {
         return;
     }
 
-    InnerResizeToPreferredSize(auto_width, auto_height);
-}
-
-
-void Control::InnerResizeToPreferredSize(bool resize_width, bool resize_height) {
+    auto preferred_size = CalculatePreferredSizeForAutoSize();
 
     auto update_guard = BeginUpdate();
+    auto auto_resize_guard = is_auto_resizing_.BeginSet(true);
 
-    auto preferred_size = CalculatePreferredSize();
-
-    if (resize_width) {
+    if (auto_width_) {
         SetFixedWidth(preferred_size.width);
     }
 
-    if (resize_height) {
+    if (auto_height_) {
         SetFixedHeight(preferred_size.height);
     }
 }
 
 
-bool Control::AutoWidth() const {
+zaf::Size Control::CalculatePreferredSizeForAutoSize() const {
 
-    auto value = GetPropertyMap().TryGetProperty<bool>(AutoWidthPropertyName);
-    if (value) {
-        return *value;
-    }
-    return false;
+    zaf::Size bound_size;
+    bound_size.width = auto_width_ ? std::numeric_limits<float>::max() : Width();
+    bound_size.height = auto_height_ ? std::numeric_limits<float>::max() : Height();
+
+    return CalculatePreferredSize(bound_size);
+}
+
+
+bool Control::AutoWidth() const {
+    return auto_width_;
 }
 
 void Control::SetAutoWidth(bool value) {
-
-    GetPropertyMap().SetProperty(AutoWidthPropertyName, value);
+    auto_width_ = value;
     AutoResizeToPreferredSize();
 }
 
 
 bool Control::AutoHeight() const {
-
-    auto value = GetPropertyMap().TryGetProperty<bool>(AutoHeightPropertyName);
-    if (value) {
-        return *value;
-    }
-    return false;
+    return auto_height_;
 }
 
 void Control::SetAutoHeight(bool value) {
-
-    GetPropertyMap().SetProperty(AutoHeightPropertyName, value);
+    auto_height_ = value;
     AutoResizeToPreferredSize();
 }
 

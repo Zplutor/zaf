@@ -24,6 +24,7 @@
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/label.h>
 #include <zaf/control/image_box.h>
+#include <zaf/control/linear_box.h>
 #include <zaf/base/registry/registry.h>
 #include <zaf/base/error/error.h>
 #include <zaf/object/type_definition.h>
@@ -52,14 +53,22 @@ public:
         __super::AfterParse();
 
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
+        this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        auto text_box = zaf::Create<zaf::TextBox>();
-        text_box->SetRect(zaf::Rect{ 10, 10, 100, 30 });
-        this->RootControl()->AddChild(text_box);
+        auto container = zaf::Create<zaf::VerticalBox>();
+        container->SetBorder(zaf::Frame{ 2 });
+        container->SetBorderColor(zaf::Color::Red());
+        container->SetAutoHeight(true);
 
-        auto button = zaf::Create<zaf::Button>();
-        button->SetRect(zaf::Rect{ 10, 50, 100, 30 });
-        this->RootControl()->AddChild(button);
+        this->RootControl()->AddChild(container);
+
+        auto label = zaf::Create<zaf::Label>();
+        label->SetBorder(zaf::Frame{ 1 });
+        label->SetBorderColor(zaf::Color::Black());
+        label->SetText(L"Confirm to import zplutor.tortoisegit.ra-bundle?");
+        label->SetWordWrapping(zaf::WordWrapping::Character);
+        label->SetAutoHeight(true);
+        container->AddChild(label);
     }
 };
 

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/control/control.h>
+#include <zaf/control/label.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
 
@@ -73,6 +74,22 @@ TEST(ControlTest, CalculatePreferredSize) {
     //Parent is invisible, while children is visible.
     parent->SetIsVisible(false);
     ASSERT_EQ(parent->CalculatePreferredSize(), zaf::Size(21, 25));
+}
+
+
+TEST(ControlTest, AutoSizeOnSetRect) {
+
+    auto label = zaf::Create<zaf::Label>();
+    label->SetText(L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    label->SetWordWrapping(zaf::WordWrapping::Character);
+    label->SetSize(zaf::Size{ 300, 1000 });
+    label->SetAutoHeight(true);
+    ASSERT_EQ(label->Width(), 300);
+
+    auto preferred_size = label->CalculatePreferredSize(zaf::Size{ 30, 1000 });
+    label->SetWidth(30);
+    ASSERT_EQ(label->Width(), 30);
+    ASSERT_EQ(label->Height(), preferred_size.height);
 }
 
 

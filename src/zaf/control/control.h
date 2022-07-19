@@ -7,6 +7,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <zaf/base/auto_reset_value.h>
 #include <zaf/control/anchor.h>
 #include <zaf/control/control_event_infos.h>
 #include <zaf/control/color_picker.h>
@@ -228,7 +229,7 @@ public:
     void SetMaxHeight(float max_height);
 
     zaf::Size CalculatePreferredSize() const;
-    zaf::Size CalculatePreferredSize(const zaf::Size& max_size) const;
+    zaf::Size CalculatePreferredSize(const zaf::Size& bound_size) const;
 
     bool AutoWidth() const;
     void SetAutoWidth(bool value);
@@ -698,7 +699,7 @@ protected:
      */
     void NeedRelayout();
 
-    virtual zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const;
+    virtual zaf::Size CalculatePreferredContentSize(const zaf::Size& bound_size) const;
 
     void RaiseContentChangedEvent();
     void RaiseClickEvent();
@@ -968,13 +969,14 @@ private:
 
     void SetParent(const std::shared_ptr<Control>& parent);
 
+    void ApplyAutoSizeOnRectChanged(zaf::Size& new_size);
     void AutoResizeToPreferredSize();
-    void InnerResizeToPreferredSize(bool resize_width, bool resize_height);
+    zaf::Size CalculatePreferredSizeForAutoSize() const;
 
     /**
      Called when a child's rect has changed.
      */
-    void ChildRectChanged(const std::shared_ptr<Control>& child, const zaf::Rect& previous_rect);
+    void OnChildRectChanged(const std::shared_ptr<Control>& child, const zaf::Rect& previous_rect);
 
     /**
      Translate a point to which in parent's coordinate system.
@@ -1012,6 +1014,10 @@ private:
     bool is_cached_painting_enabled_{};
     BitmapRenderer cached_renderer_;
     zaf::Rect valid_cached_renderer_rect_;
+
+    bool auto_width_{};
+    bool auto_height_{};
+    AutoResetValue<bool> is_auto_resizing_{ false };
 
     bool is_mouse_over_;
     bool is_capturing_mouse_;
