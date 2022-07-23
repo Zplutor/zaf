@@ -2,6 +2,7 @@
 #include <zaf/control/control.h>
 #include <zaf/control/label.h>
 #include <zaf/control/layout/linear_layouter.h>
+#include <zaf/control/linear_box.h>
 #include <zaf/creation.h>
 
 TEST(ControlTest, Update) {
@@ -90,6 +91,45 @@ TEST(ControlTest, AutoSizeOnSetRect) {
     label->SetWidth(30);
     ASSERT_EQ(label->Width(), 30);
     ASSERT_EQ(label->Height(), preferred_size.height);
+}
+
+
+TEST(ControlTest, AutoSizeOnChildRectChanged) {
+
+    auto parent = zaf::Create<zaf::VerticalBox>();
+    parent->SetAutoSize(true);
+
+    auto child = zaf::Create<zaf::Control>();
+    parent->AddChild(child);
+
+    child->SetFixedSize(zaf::Size{ 100, 100 });
+    ASSERT_EQ(parent->Size(), zaf::Size(100, 100));
+}
+
+
+TEST(ControlTest, AutoSizeAndRelayoutOnChildRectChanged) {
+
+    auto parent = zaf::Create<zaf::VerticalBox>();
+    parent->SetFixedWidth(300);
+    parent->SetAutoHeight(true);
+
+    auto child1 = zaf::Create<zaf::Control>();
+    child1->SetFixedHeight(100);
+    parent->AddChild(child1);
+
+    auto child2 = zaf::Create<zaf::Control>();
+    child2->SetFixedHeight(10);
+    parent->AddChild(child2);
+
+    ASSERT_EQ(child1->Rect(), zaf::Rect(0, 0, 300, 100 ));
+    ASSERT_EQ(child2->Rect(), zaf::Rect(0, 100, 300, 10));
+    ASSERT_EQ(parent->Size(), zaf::Size(300, 110));
+
+    child1->SetFixedHeight(10);
+
+    ASSERT_EQ(child1->Rect(), zaf::Rect(0, 0, 300, 10));
+    ASSERT_EQ(child2->Rect(), zaf::Rect(0, 10, 300, 10));
+    ASSERT_EQ(parent->Size(), zaf::Size(300, 20));
 }
 
 
