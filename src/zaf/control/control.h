@@ -971,7 +971,7 @@ private:
 
     void ApplyAutoSizeOnRectChanged(zaf::Size& new_size);
     void AutoResizeToPreferredSize();
-    zaf::Size CalculatePreferredSizeForAutoSize() const;
+    zaf::Size CalculatePreferredSizeForAutoSize(const zaf::Size& control_size) const;
 
     /**
      Called when a child's rect has changed.

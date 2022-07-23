@@ -520,7 +520,7 @@ void Control::SetRect(const zaf::Rect& rect) {
 
     if (new_rect.size != previous_rect.size) {
         //Auto size.
-        ApplyAutoSizeOnRectChanged(rect_.size);
+        ApplyAutoSizeOnRectChanged(new_rect.size);
     }
 
     //Don't layout if rects are the same.
@@ -764,7 +764,7 @@ void Control::ApplyAutoSizeOnRectChanged(zaf::Size& new_size) {
         return;
     }
 
-    auto preferred_size = CalculatePreferredSizeForAutoSize();
+    auto preferred_size = CalculatePreferredSizeForAutoSize(new_size);
 
     if (auto_width_) {
         new_size.width = preferred_size.width;
@@ -787,7 +787,7 @@ void Control::AutoResizeToPreferredSize() {
         return;
     }
 
-    auto preferred_size = CalculatePreferredSizeForAutoSize();
+    auto preferred_size = CalculatePreferredSizeForAutoSize(Size());
 
     auto update_guard = BeginUpdate();
     auto auto_resize_guard = is_auto_resizing_.BeginSet(true);
@@ -802,11 +802,11 @@ void Control::AutoResizeToPreferredSize() {
 }
 
 
-zaf::Size Control::CalculatePreferredSizeForAutoSize() const {
+zaf::Size Control::CalculatePreferredSizeForAutoSize(const zaf::Size& control_size) const {
 
     zaf::Size bound_size;
-    bound_size.width = auto_width_ ? std::numeric_limits<float>::max() : Width();
-    bound_size.height = auto_height_ ? std::numeric_limits<float>::max() : Height();
+    bound_size.width = auto_width_ ? std::numeric_limits<float>::max() : control_size.width;
+    bound_size.height = auto_height_ ? std::numeric_limits<float>::max() : control_size.height;
 
     return CalculatePreferredSize(bound_size);
 }
