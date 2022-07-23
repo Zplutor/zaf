@@ -1018,6 +1018,7 @@ private:
     bool auto_width_{};
     bool auto_height_{};
     AutoResetValue<bool> is_auto_resizing_{ false };
+    AutoResetValue<bool> is_layouting_{ false };
 
     bool is_mouse_over_;
     bool is_capturing_mouse_;

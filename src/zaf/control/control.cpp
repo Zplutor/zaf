@@ -414,7 +414,7 @@ void Control::RecalculateCachedPaintingRect(const zaf::Rect& repaint_rect) {
     }
 
     zaf::Rect invalid_rect = internal::CalculateInvalidRectInCachedRect(
-        valid_cached_renderer_rect_, 
+        valid_cached_renderer_rect_,
         repaint_rect);
 
     if (invalid_rect.IsEmpty()) {
@@ -436,7 +436,7 @@ void Control::ReleaseRendererResources() {
 
 
 void Control::OnChildRectChanged(
-    const std::shared_ptr<Control>& child, 
+    const std::shared_ptr<Control>& child,
     const zaf::Rect& previous_rect) {
 
     const zaf::Rect& new_rect = child->Rect();
@@ -449,6 +449,9 @@ void Control::OnChildRectChanged(
         NeedRepaintRect(previous_rect);
     }
 
+    if (!is_layouting_.Value() || (auto_width_ || auto_height_)) {
+        NeedRelayout();
+    }
     AutoResizeToPreferredSize();
 }
 
@@ -460,6 +463,8 @@ void Control::Layout(const zaf::Rect& previous_rect) {
 
     auto layouter = Layouter();
     if (layouter) {
+
+        auto layout_guard = is_layouting_.BeginSet(true);
         layouter->Layout(*this, previous_rect, Children());
     }
 }
@@ -511,24 +516,24 @@ void Control::SetRect(const zaf::Rect& rect) {
 
     zaf::Rect previous_rect = Rect();
 
-    //Don't layout if rects are the same.
-    if (rect == previous_rect) {
-        return;
-    }
+    zaf::Rect new_rect{ rect.position, ApplySizeLimit(rect.size) };
 
-    //Revise the size.
-    rect_ = zaf::Rect(rect.position, ApplySizeLimit(rect.size));    
-
-    bool size_changed = (rect_.size != previous_rect.size);
-    if (size_changed) {
+    if (new_rect.size != previous_rect.size) {
         //Auto size.
         ApplyAutoSizeOnRectChanged(rect_.size);
     }
 
+    //Don't layout if rects are the same.
+    if (new_rect == previous_rect) {
+        return;
+    }
+
+    rect_ = new_rect;
+
     //Notify rect change.
     OnRectChanged(previous_rect);
 
-    if (size_changed) {
+    if (rect_.size != previous_rect.size) {
 
         ReleaseCachedPaintingRenderer();
 
