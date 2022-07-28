@@ -444,6 +444,7 @@
     <ClInclude Include="src\zaf\object\enum_type.h" />
     <ClInclude Include="src\zaf\object\equality.h" />
     <ClInclude Include="src\zaf\object\internal\enum_parser.h" />
+    <ClInclude Include="src\zaf\object\internal\instance_creator.h" />
     <ClInclude Include="src\zaf\object\internal\is_equal_comparable.h" />
     <ClInclude Include="src\zaf\object\internal\object_initializer.h" />
     <ClInclude Include="src\zaf\object\internal\property_helper.h" />

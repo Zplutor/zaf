@@ -1612,5 +1612,8 @@
     <ClInclude Include="src\zaf\base\auto_reset_value.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\object\internal\instance_creator.h">
+      <Filter>zaf\object\internal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
