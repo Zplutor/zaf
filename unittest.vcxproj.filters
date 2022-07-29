@@ -298,6 +298,9 @@
     <ClCompile Include="unittest\case\object\object_test.cpp">
       <Filter>case\object</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\create_test.cpp">
+      <Filter>case</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

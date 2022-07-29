@@ -10,37 +10,20 @@ class Object;
 
 namespace internal {
 
-template<typename T>
-struct ObjectCreator {
-
-    template<typename... ArgumentTypes>
-    static std::shared_ptr<T> Create(ArgumentTypes&&... arguments) {
-
-        auto object = std::make_shared<T>(std::forward<ArgumentTypes>(arguments)...);
-        ObjectInitializer::Initialize(*object);
-        return object;
-    }
-};
-
-
-template<typename GenericType>
-struct GenericCreator {
-
-    template<typename... ArgumentTypes>
-    static std::shared_ptr<GenericType> Create(ArgumentTypes&&... arguments) {
-        return std::make_shared<GenericType>(std::forward<ArgumentTypes>(arguments)...);
-    }
+class DumbInitializer {
+public:
+    static void Initialize(void*) { }
 };
 
 
 template<typename T>
-struct Creator {
-
-    typedef typename std::conditional<
-        std::is_base_of<Object, T>::value, 
-        ObjectCreator<T>,
-        GenericCreator<T>
-    >::type Type;
+class ObjectInitializerSelector {
+public:
+    using Type = std::conditional_t<
+        std::is_base_of_v<Object, T>,
+        ObjectInitializer,
+        DumbInitializer
+    >;
 };
 
 }
@@ -55,7 +38,19 @@ struct Creator {
  */
 template<typename T, typename... ArgumentTypes>
 std::shared_ptr<T> Create(ArgumentTypes&&... arguments) {
-    return internal::Creator<T>::Type::Create(std::forward<ArgumentTypes>(arguments)...);
+
+    auto result = std::make_shared<T>(std::forward<ArgumentTypes>(arguments)...);
+    internal::ObjectInitializerSelector<T>::Type::Initialize(result.get());
+    return result;
+}
+
+
+template<typename T> 
+std::shared_ptr<T> Create(T* object) {
+
+    std::shared_ptr<T> result(object);
+    internal::ObjectInitializerSelector<T>::Type::Initialize(result.get());
+    return result;
 }
 
 }

@@ -3,8 +3,8 @@
 
 namespace zaf::internal {
 
-void ObjectInitializer::Initialize(Object& object) {
-    object.InitializeObject();
+void ObjectInitializer::Initialize(Object* object) {
+    object->InitializeObject();
 }
 
 }
