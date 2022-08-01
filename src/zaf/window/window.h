@@ -638,6 +638,7 @@ private:
     bool HandleMessageEntrance(const Message& message, LRESULT& result);
     void RaiseHandleMessageEvent(const Message& message, LRESULT result);
     void Resize(UINT width, UINT height);
+    void HandleSizeMessage(const Message& message);
     void HandleMoveMessage();
     void UpdateWindowRect();
     bool RedirectMouseWheelMessage(const Message& message);

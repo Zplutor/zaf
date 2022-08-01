@@ -467,7 +467,7 @@ bool Window::HandleMessage(const Message& message, LRESULT& result) {
     }
 
     case WM_SIZE:
-        Resize(LOWORD(message.lparam), HIWORD(message.lparam));
+        HandleSizeMessage(message);
         return true;
 
     case WM_MOVE:
@@ -720,9 +720,19 @@ void Window::NeedRepaintRect(const zaf::Rect& rect) {
 }
 
 
-void Window::Resize(UINT width, UINT height) {
+void Window::HandleSizeMessage(const Message& message) {
 
-    zaf::Size size(static_cast<float>(width), static_cast<float>(height));
+    //Don't handle size message during window creation procedure,
+    //because the object state is inconsistent until creation completed.
+    if (!Handle()) {
+        return;
+    }
+
+    zaf::Size size{
+        static_cast<float>(LOWORD(message.lparam)),
+        static_cast<float>(HIWORD(message.lparam)) 
+    };
+
     if (renderer_ != nullptr) {
         renderer_.Resize(size);
     }
@@ -1303,8 +1313,8 @@ zaf::Size Window::ContentSize() const {
         auto adjusted_size = AdjustContentSizeToWindowSize(zaf::Size{});
 
         auto result = Size();
-        result.width -= adjusted_size.width;
-        result.height -= adjusted_size.height;
+        result.width = std::max(result.width - adjusted_size.width, 0.f);
+        result.height = std::max(result.height - adjusted_size.height, 0.f);
         return result;
     }
 }
