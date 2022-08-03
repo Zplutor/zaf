@@ -1615,5 +1615,8 @@
     <ClInclude Include="src\zaf\object\internal\instance_creator.h">
       <Filter>zaf\object\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\string\join.h">
+      <Filter>zaf\base\string</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

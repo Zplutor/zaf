@@ -301,6 +301,9 @@
     <ClCompile Include="unittest\case\create_test.cpp">
       <Filter>case</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\string\join_test.cpp">
+      <Filter>case\base\string</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
