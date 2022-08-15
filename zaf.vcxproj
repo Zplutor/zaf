@@ -229,6 +229,8 @@
     <ClInclude Include="src\zaf\base\hash.h" />
     <ClInclude Include="src\zaf\base\non_copyable.h" />
     <ClInclude Include="src\zaf\base\none.h" />
+    <ClInclude Include="src\zaf\base\registry\registry_value.h" />
+    <ClInclude Include="src\zaf\base\registry\registry_value_type.h" />
     <ClInclude Include="src\zaf\base\source_site.h" />
     <ClInclude Include="src\zaf\base\com_object.h" />
     <ClInclude Include="src\zaf\base\container\utility\append.h" />

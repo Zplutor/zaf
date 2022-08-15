@@ -3,19 +3,17 @@
 #include <Windows.h>
 #include <string>
 #include <vector>
-#include "zaf/base/registry/registry_rights.h"
+#include <zaf/base/non_copyable.h>
+#include <zaf/base/registry/registry_rights.h>
 
 namespace zaf {
 
-class RegistryKey {
+class RegistryKey : NonCopyable {
 public:
     RegistryKey() = default;
     explicit RegistryKey(HKEY handle) : handle_(handle)  { }
 
     ~RegistryKey();
-
-    RegistryKey(const RegistryKey&) = delete;
-    RegistryKey& operator=(const RegistryKey&) = delete;
 
     RegistryKey(RegistryKey&& other) : handle_(other.handle_) {
         other.handle_ = nullptr;
