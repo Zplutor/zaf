@@ -39,7 +39,7 @@ std::wstring RegistryValue::ToString() const {
 
     if (!result.empty()) {
         if (result.back() == L'\0') {
-            result.resize(result.length() - 1);
+            result.pop_back();
         }
     }
     return result;

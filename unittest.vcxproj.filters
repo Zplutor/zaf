@@ -73,6 +73,9 @@
     <Filter Include="utility">
       <UniqueIdentifier>{f9b12e41-c943-4c77-9372-84ff0bf4bf0b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\base\registry">
+      <UniqueIdentifier>{4881bfee-e85d-406f-8253-0cc407f40937}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -303,6 +306,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\string\join_test.cpp">
       <Filter>case\base\string</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\registry\registry_test.cpp">
+      <Filter>case\base\registry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
