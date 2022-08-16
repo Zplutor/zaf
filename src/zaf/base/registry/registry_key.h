@@ -5,6 +5,7 @@
 #include <vector>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/registry/registry_rights.h>
+#include <zaf/base/registry/registry_value.h>
 
 namespace zaf {
 
@@ -43,6 +44,8 @@ public:
 
     void DeleteValue(const std::wstring& name);
 
+    RegistryValue GetValue(const std::wstring& name) const;
+
     std::wstring GetStringValue(const std::wstring& name);
     void SetStringValue(const std::wstring& name, const std::wstring& value);
     
@@ -53,7 +56,7 @@ public:
     void SetQWordValue(const std::wstring& name, std::uint64_t value);
 
 private:
-    std::vector<BYTE> GetValue(const std::wstring& name, DWORD expected_type);
+    RegistryValue InnerGetValue(const std::wstring& name, DWORD flags) const;
     void SetValue(const std::wstring& name, DWORD type, const void* data, DWORD data_size);
 
 private:

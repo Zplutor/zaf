@@ -66,21 +66,13 @@ void RegistryKey::DeleteValue(const std::wstring& name) {
 }
 
 
+RegistryValue RegistryKey::GetValue(const std::wstring& name) const {
+    return InnerGetValue(name, RRF_RT_ANY);
+}
+
+
 std::wstring RegistryKey::GetStringValue(const std::wstring& name) {
-
-    auto buffer = GetValue(name, REG_SZ);
-
-    std::wstring value{ 
-        reinterpret_cast<const wchar_t*>(buffer.data()),
-        buffer.size() / sizeof(wchar_t) 
-    };
-
-    if (! value.empty()) {
-        if (value[value.length() - 1] == L'\0') {
-            value.resize(value.length() - 1);
-        }
-    }
-    return value;
+    return InnerGetValue(name, RRF_RT_REG_SZ).ToString();
 }
 
 
@@ -94,11 +86,7 @@ void RegistryKey::SetStringValue(const std::wstring& name, const std::wstring& v
 
 
 std::uint32_t RegistryKey::GetDWordValue(const std::wstring& name) {
-
-    auto buffer = GetValue(name, REG_DWORD);
-
-    std::uint32_t value = *reinterpret_cast<const std::uint32_t*>(buffer.data());
-    return value;
+    return InnerGetValue(name, RRF_RT_REG_DWORD).ToDWord();
 }
 
 
@@ -108,11 +96,7 @@ void RegistryKey::SetDWordValue(const std::wstring& name, std::uint32_t value) {
 
 
 std::uint64_t RegistryKey::GetQWordValue(const std::wstring& name) {
-
-    auto buffer = GetValue(name, REG_QWORD);
-
-    std::uint64_t value = *reinterpret_cast<const std::uint64_t*>(buffer.data());
-    return value;
+    return InnerGetValue(name, RRF_RT_REG_QWORD).ToQWord();
 }
 
 
@@ -121,36 +105,41 @@ void RegistryKey::SetQWordValue(const std::wstring& name, std::uint64_t value) {
 }
 
 
-std::vector<BYTE> RegistryKey::GetValue(const std::wstring& name, DWORD expected_type) {
+RegistryValue RegistryKey::InnerGetValue(const std::wstring& name, DWORD flags) const {
 
     DWORD value_type{};
     DWORD buffer_size{ 128 };
-    std::vector<BYTE> buffer(buffer_size);
-    LSTATUS result = RegQueryValueEx(
-        handle_, 
+    std::vector<std::byte> buffer(buffer_size);
+    LSTATUS result = RegGetValue(
+        handle_,
+        nullptr,
         name.c_str(),
-        nullptr, 
-        &value_type, 
-        &buffer[0],
+        flags,
+        &value_type,
+        reinterpret_cast<BYTE*>(&buffer[0]),
         &buffer_size);
 
     if (result == ERROR_MORE_DATA) {
+
         buffer.resize(buffer_size);
-        result = RegQueryValueEx(
-            handle_, 
-            name.c_str(), 
-            nullptr, 
-            &value_type, 
-            &buffer[0],
+        result = RegGetValue(
+            handle_,
+            nullptr,
+            name.c_str(),
+            flags,
+            &value_type,
+            reinterpret_cast<BYTE*>(&buffer[0]),
             &buffer_size);
     }
 
     ZAF_THROW_IF_SYSTEM_ERROR(result);
 
-    if (expected_type != value_type) {
-        ZAF_THROW_IF_SYSTEM_ERROR(ERROR_INVALID_DATATYPE);
-    }
-    return buffer;
+    buffer.resize(buffer_size);
+
+    return RegistryValue{
+        static_cast<RegistryValueType>(value_type),
+        std::move(buffer)
+    };
 }
 
 

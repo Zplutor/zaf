@@ -673,6 +673,9 @@
     <ClCompile Include="src\zaf\window\internal\window_class_registry.cpp">
       <Filter>zaf\window\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\base\registry\registry_value.cpp">
+      <Filter>zaf\base\registry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

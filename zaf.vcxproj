@@ -46,6 +46,7 @@
     <ClCompile Include="src\zaf\base\error\com_error.cpp" />
     <ClCompile Include="src\zaf\base\log.cpp" />
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp" />
+    <ClCompile Include="src\zaf\base\registry\registry_value.cpp" />
     <ClCompile Include="src\zaf\base\stream.cpp" />
     <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp" />
     <ClCompile Include="src\zaf\base\timer.cpp" />
