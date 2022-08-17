@@ -97,6 +97,24 @@ TEST_F(RegistryTest, GetStringValue) {
 }
 
 
+TEST_F(RegistryTest, GetExpandableStringValue) {
+
+    constexpr const wchar_t* ExpandableStringValueName = L"ExpandableStringValue";
+    constexpr const wchar_t* ExpandableStringValue = L"This is an expandable %string%.";
+    RegSetKeyValue(
+        HKEY_CURRENT_USER,
+        RegistryTestPath,
+        ExpandableStringValueName,
+        REG_EXPAND_SZ,
+        ExpandableStringValue,
+        static_cast<DWORD>(std::wcslen(ExpandableStringValue)) * 2);
+
+    auto key = zaf::Registry::CurrentUser().OpenSubKey(RegistryTestPath);
+    auto string = key.GetStringValue(ExpandableStringValueName);
+    ASSERT_EQ(string, ExpandableStringValue);
+}
+
+
 TEST_F(RegistryTest, GetMultiStringValue) {
 
     constexpr const wchar_t MultiStringValue[] = L"one\0two\0three\0\0";

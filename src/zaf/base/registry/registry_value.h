@@ -23,9 +23,13 @@ public:
     }
 
     std::wstring ToString() const;
+    std::wstring ToExpandableString() const;
     std::vector<std::wstring> ToMultiString() const;
     std::uint32_t ToDWord() const;
     std::uint64_t ToQWord() const;
+
+private:
+    std::wstring InnerToString() const;
 
 private:
     RegistryValueType type_{ RegistryValueType::None };

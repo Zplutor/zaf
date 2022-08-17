@@ -71,45 +71,28 @@ RegistryValue RegistryKey::GetValue(const std::wstring& name) const {
 }
 
 
-std::wstring RegistryKey::GetStringValue(const std::wstring& name) {
+std::wstring RegistryKey::GetStringValue(const std::wstring& name) const {
     return InnerGetValue(name, RRF_RT_REG_SZ).ToString();
 }
 
-void RegistryKey::SetStringValue(const std::wstring& name, const std::wstring& value) {
-    SetValue(
-        name,
-        REG_SZ,
-        value.c_str(),
-        static_cast<DWORD>((value.length() + 1) * sizeof(wchar_t)));
+
+std::wstring RegistryKey::GetExpandableStringValue(const std::wstring& name) const {
+    return InnerGetValue(name, RRF_RT_REG_EXPAND_SZ).ToExpandableString();
 }
 
 
-std::vector<std::wstring> RegistryKey::GetMultiStringValue(const std::wstring& name) {
+std::vector<std::wstring> RegistryKey::GetMultiStringValue(const std::wstring& name) const {
     return InnerGetValue(name, RRF_RT_REG_MULTI_SZ).ToMultiString();
 }
 
-void RegistryKey::SetMultiStringValue(
-    const std::wstring& name, 
-    const std::vector<std::wstring>& value) {
 
-}
-
-
-std::uint32_t RegistryKey::GetDWordValue(const std::wstring& name) {
+std::uint32_t RegistryKey::GetDWordValue(const std::wstring& name) const {
     return InnerGetValue(name, RRF_RT_REG_DWORD).ToDWord();
 }
 
-void RegistryKey::SetDWordValue(const std::wstring& name, std::uint32_t value) {
-    SetValue(name, REG_DWORD, &value, sizeof(value));
-}
 
-
-std::uint64_t RegistryKey::GetQWordValue(const std::wstring& name) {
+std::uint64_t RegistryKey::GetQWordValue(const std::wstring& name) const {
     return InnerGetValue(name, RRF_RT_REG_QWORD).ToQWord();
-}
-
-void RegistryKey::SetQWordValue(const std::wstring& name, std::uint64_t value) {
-    SetValue(name, REG_QWORD, &value, sizeof(value));
 }
 
 
@@ -148,6 +131,37 @@ RegistryValue RegistryKey::InnerGetValue(const std::wstring& name, DWORD flags) 
         static_cast<RegistryValueType>(value_type),
         std::move(buffer)
     };
+}
+
+
+void RegistryKey::SetStringValue(const std::wstring& name, const std::wstring& value) {
+    SetValue(
+        name,
+        REG_SZ,
+        value.c_str(),
+        static_cast<DWORD>((value.length() + 1) * sizeof(wchar_t)));
+}
+
+
+void RegistryKey::SetExpandableStringValue(const std::wstring& name, const std::wstring& value) {
+
+}
+
+
+void RegistryKey::SetMultiStringValue(
+    const std::wstring& name, 
+    const std::vector<std::wstring>& value) {
+
+}
+
+
+void RegistryKey::SetDWordValue(const std::wstring& name, std::uint32_t value) {
+    SetValue(name, REG_DWORD, &value, sizeof(value));
+}
+
+
+void RegistryKey::SetQWordValue(const std::wstring& name, std::uint64_t value) {
+    SetValue(name, REG_QWORD, &value, sizeof(value));
 }
 
 

@@ -32,6 +32,12 @@ std::wstring RegistryValue::ToString() const {
 
     ZAF_EXPECT(type_ == RegistryValueType::String);
 
+    return InnerToString();
+}
+
+
+std::wstring RegistryValue::InnerToString() const {
+
     auto string = reinterpret_cast<const wchar_t*>(buffer_.data());
     auto string_length = buffer_.size() / sizeof(wchar_t);
 
@@ -42,6 +48,14 @@ std::wstring RegistryValue::ToString() const {
     }
 
     return std::wstring{ string, string_length };
+}
+
+
+std::wstring RegistryValue::ToExpandableString() const {
+
+    ZAF_EXPECT(type_ == RegistryValueType::ExpandableString);
+
+    return InnerToString();
 }
 
 
