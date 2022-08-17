@@ -41,9 +41,13 @@ TEST_F(RegistryTest, GetNumericValue) {
         sizeof(QWordValue));
 
     auto key = zaf::Registry::CurrentUser().OpenSubKey(RegistryTestPath);
-
     ASSERT_EQ(key.GetDWordValue(DWordValueName), DWordValue);
     ASSERT_EQ(key.GetQWordValue(QWordValueName), QWordValue);
+
+    auto dword = zaf::Registry::CurrentUser().GetDWordValue(RegistryTestPath, DWordValueName);
+    ASSERT_EQ(dword, DWordValue);
+    auto qword = zaf::Registry::CurrentUser().GetQWordValue(RegistryTestPath, QWordValueName);
+    ASSERT_EQ(qword, QWordValue);
 }
 
 
@@ -94,13 +98,16 @@ TEST_F(RegistryTest, GetStringValue) {
 
     string = key.GetStringValue(LongStringValueName);
     ASSERT_EQ(string, LongStringValue);
+
+    string = zaf::Registry::CurrentUser().GetStringValue(RegistryTestPath, LongStringValueName);
+    ASSERT_EQ(string, LongStringValue);
 }
 
 
 TEST_F(RegistryTest, GetExpandableStringValue) {
 
     constexpr const wchar_t* ExpandableStringValueName = L"ExpandableStringValue";
-    constexpr const wchar_t* ExpandableStringValue = L"This is an expandable %string%.";
+    constexpr const wchar_t* ExpandableStringValue = L"This is an expandable %path%.";
     RegSetKeyValue(
         HKEY_CURRENT_USER,
         RegistryTestPath,
@@ -110,7 +117,12 @@ TEST_F(RegistryTest, GetExpandableStringValue) {
         static_cast<DWORD>(std::wcslen(ExpandableStringValue)) * 2);
 
     auto key = zaf::Registry::CurrentUser().OpenSubKey(RegistryTestPath);
-    auto string = key.GetStringValue(ExpandableStringValueName);
+    auto string = key.GetExpandableStringValue(ExpandableStringValueName);
+    ASSERT_EQ(string, ExpandableStringValue);
+
+    string = zaf::Registry::CurrentUser().GetExpandableStringValue(
+        RegistryTestPath, 
+        ExpandableStringValueName);
     ASSERT_EQ(string, ExpandableStringValue);
 }
 
@@ -160,4 +172,9 @@ TEST_F(RegistryTest, GetMultiStringValue) {
 
     multi_string = key.GetMultiStringValue(EmptyStringValueName);
     ASSERT_TRUE(multi_string.empty());
+
+    multi_string = zaf::Registry::CurrentUser().GetMultiStringValue(
+        RegistryTestPath, 
+        NullTerminatedStringValueName);
+    ASSERT_EQ(multi_string, ExpectedMultiStrings);
 }

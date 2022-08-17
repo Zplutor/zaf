@@ -44,12 +44,39 @@ public:
 
     void DeleteValue(const std::wstring& name);
 
-    RegistryValue GetValue(const std::wstring& name) const;
-    std::wstring GetStringValue(const std::wstring& name) const;
-    std::wstring GetExpandableStringValue(const std::wstring& name) const;
-    std::vector<std::wstring> GetMultiStringValue(const std::wstring& name) const;
-    std::uint32_t GetDWordValue(const std::wstring& name) const;
-    std::uint64_t GetQWordValue(const std::wstring& name) const;
+    RegistryValue GetValue(const std::wstring& sub_key, const std::wstring& name) const;
+    RegistryValue GetValue(const std::wstring& name) const {
+        return GetValue(std::wstring{}, name);
+    }
+
+    std::wstring GetStringValue(const std::wstring& sub_key, const std::wstring& name) const;
+    std::wstring GetStringValue(const std::wstring& name) const {
+        return GetStringValue(std::wstring{}, name);
+    }
+
+    std::wstring GetExpandableStringValue(
+        const std::wstring& sub_key, 
+        const std::wstring& name) const;
+    std::wstring GetExpandableStringValue(const std::wstring& name) const {
+        return GetExpandableStringValue(std::wstring{}, name);
+    }
+
+    std::vector<std::wstring> GetMultiStringValue(
+        const std::wstring& sub_key, 
+        const std::wstring& name) const;
+    std::vector<std::wstring> GetMultiStringValue(const std::wstring& name) const {
+        return GetMultiStringValue(std::wstring{}, name);
+    }
+
+    std::uint32_t GetDWordValue(const std::wstring& sub_key, const std::wstring& name) const;
+    std::uint32_t GetDWordValue(const std::wstring& name) const {
+        return GetDWordValue(std::wstring{}, name);
+    }
+
+    std::uint64_t GetQWordValue(const std::wstring& sub_key, const std::wstring& name) const;
+    std::uint64_t GetQWordValue(const std::wstring& name) const {
+        return GetQWordValue(std::wstring{}, name);
+    }
 
     void SetStringValue(const std::wstring& name, const std::wstring& value);
     void SetExpandableStringValue(const std::wstring& name, const std::wstring& value);
@@ -58,7 +85,11 @@ public:
     void SetQWordValue(const std::wstring& name, std::uint64_t value);
 
 private:
-    RegistryValue InnerGetValue(const std::wstring& name, DWORD flags) const;
+    RegistryValue InnerGetValue(
+        const std::wstring& sub_key, 
+        const std::wstring& name, 
+        DWORD flags) const;
+
     void SetValue(const std::wstring& name, DWORD type, const void* data, DWORD data_size);
 
 private:

@@ -66,44 +66,62 @@ void RegistryKey::DeleteValue(const std::wstring& name) {
 }
 
 
-RegistryValue RegistryKey::GetValue(const std::wstring& name) const {
-    return InnerGetValue(name, RRF_RT_ANY);
+RegistryValue RegistryKey::GetValue(const std::wstring& sub_key, const std::wstring& name) const {
+    return InnerGetValue(sub_key, name, RRF_RT_ANY);
 }
 
 
-std::wstring RegistryKey::GetStringValue(const std::wstring& name) const {
-    return InnerGetValue(name, RRF_RT_REG_SZ).ToString();
+std::wstring RegistryKey::GetStringValue(
+    const std::wstring& sub_key, 
+    const std::wstring& name) const {
+
+    return InnerGetValue(sub_key, name, RRF_RT_REG_SZ).ToString();
 }
 
 
-std::wstring RegistryKey::GetExpandableStringValue(const std::wstring& name) const {
-    return InnerGetValue(name, RRF_RT_REG_EXPAND_SZ).ToExpandableString();
+std::wstring RegistryKey::GetExpandableStringValue(
+    const std::wstring& sub_key, 
+    const std::wstring& name) const {
+
+    return InnerGetValue(sub_key, name, RRF_RT_REG_EXPAND_SZ | RRF_NOEXPAND).ToExpandableString();
 }
 
 
-std::vector<std::wstring> RegistryKey::GetMultiStringValue(const std::wstring& name) const {
-    return InnerGetValue(name, RRF_RT_REG_MULTI_SZ).ToMultiString();
+std::vector<std::wstring> RegistryKey::GetMultiStringValue(
+    const std::wstring& sub_key, 
+    const std::wstring& name) const {
+
+    return InnerGetValue(sub_key, name, RRF_RT_REG_MULTI_SZ).ToMultiString();
 }
 
 
-std::uint32_t RegistryKey::GetDWordValue(const std::wstring& name) const {
-    return InnerGetValue(name, RRF_RT_REG_DWORD).ToDWord();
+std::uint32_t RegistryKey::GetDWordValue(
+    const std::wstring& sub_key, 
+    const std::wstring& name) const {
+
+    return InnerGetValue(sub_key, name, RRF_RT_REG_DWORD).ToDWord();
 }
 
 
-std::uint64_t RegistryKey::GetQWordValue(const std::wstring& name) const {
-    return InnerGetValue(name, RRF_RT_REG_QWORD).ToQWord();
+std::uint64_t RegistryKey::GetQWordValue(
+    const std::wstring& sub_key, 
+    const std::wstring& name) const {
+
+    return InnerGetValue(sub_key, name, RRF_RT_REG_QWORD).ToQWord();
 }
 
 
-RegistryValue RegistryKey::InnerGetValue(const std::wstring& name, DWORD flags) const {
+RegistryValue RegistryKey::InnerGetValue(
+    const std::wstring& sub_key, 
+    const std::wstring& name, 
+    DWORD flags) const {
 
     DWORD value_type{};
     DWORD buffer_size{ 128 };
     std::vector<std::byte> buffer(buffer_size);
     LSTATUS result = RegGetValue(
         handle_,
-        nullptr,
+        sub_key.c_str(),
         name.c_str(),
         flags,
         &value_type,
@@ -115,7 +133,7 @@ RegistryValue RegistryKey::InnerGetValue(const std::wstring& name, DWORD flags) 
         buffer.resize(buffer_size);
         result = RegGetValue(
             handle_,
-            nullptr,
+            sub_key.c_str(),
             name.c_str(),
             flags,
             &value_type,
