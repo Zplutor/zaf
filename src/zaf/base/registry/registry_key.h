@@ -48,6 +48,9 @@ public:
 
     std::wstring GetStringValue(const std::wstring& name);
     void SetStringValue(const std::wstring& name, const std::wstring& value);
+
+    std::vector<std::wstring> GetMultiStringValue(const std::wstring& name);
+    void SetMultiStringValue(const std::wstring& name, const std::vector<std::wstring>& value);
     
     std::uint32_t GetDWordValue(const std::wstring& name);
     void SetDWordValue(const std::wstring& name, std::uint32_t value);

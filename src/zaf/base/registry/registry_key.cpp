@@ -75,7 +75,6 @@ std::wstring RegistryKey::GetStringValue(const std::wstring& name) {
     return InnerGetValue(name, RRF_RT_REG_SZ).ToString();
 }
 
-
 void RegistryKey::SetStringValue(const std::wstring& name, const std::wstring& value) {
     SetValue(
         name,
@@ -85,10 +84,20 @@ void RegistryKey::SetStringValue(const std::wstring& name, const std::wstring& v
 }
 
 
+std::vector<std::wstring> RegistryKey::GetMultiStringValue(const std::wstring& name) {
+    return InnerGetValue(name, RRF_RT_REG_MULTI_SZ).ToMultiString();
+}
+
+void RegistryKey::SetMultiStringValue(
+    const std::wstring& name, 
+    const std::vector<std::wstring>& value) {
+
+}
+
+
 std::uint32_t RegistryKey::GetDWordValue(const std::wstring& name) {
     return InnerGetValue(name, RRF_RT_REG_DWORD).ToDWord();
 }
-
 
 void RegistryKey::SetDWordValue(const std::wstring& name, std::uint32_t value) {
     SetValue(name, REG_DWORD, &value, sizeof(value));
@@ -98,7 +107,6 @@ void RegistryKey::SetDWordValue(const std::wstring& name, std::uint32_t value) {
 std::uint64_t RegistryKey::GetQWordValue(const std::wstring& name) {
     return InnerGetValue(name, RRF_RT_REG_QWORD).ToQWord();
 }
-
 
 void RegistryKey::SetQWordValue(const std::wstring& name, std::uint64_t value) {
     SetValue(name, REG_QWORD, &value, sizeof(value));

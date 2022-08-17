@@ -78,4 +78,68 @@ TEST_F(RegistryTest, GetStringValue) {
     string = key.GetStringValue(NotNullTerminatedStringValueName);
     ASSERT_EQ(string.length(), std::wcslen(NotNullTerminatedStringValue));
     ASSERT_EQ(string, NotNullTerminatedStringValue);
+
+    constexpr const wchar_t* LongStringValueName = L"LongString";
+    constexpr const wchar_t* LongStringValue =
+        L"01234567890123456789012345678901234567890123456789"
+        L"skhfkhoi32901ojlfljd;fe903e3oejop3k210393ijfknckdj"
+        L"kj90022919903j93eok3mifj390339jf393ei93ei93ie30iof";
+    RegSetKeyValue(
+        HKEY_CURRENT_USER,
+        RegistryTestPath,
+        LongStringValueName,
+        REG_SZ,
+        LongStringValue,
+        static_cast<DWORD>(std::wcslen(LongStringValue)) * 2);
+
+    string = key.GetStringValue(LongStringValueName);
+    ASSERT_EQ(string, LongStringValue);
+}
+
+
+TEST_F(RegistryTest, GetMultiStringValue) {
+
+    constexpr const wchar_t MultiStringValue[] = L"one\0two\0three\0\0";
+    const std::vector<std::wstring> ExpectedMultiStrings{
+        L"one",
+        L"two",
+        L"three"
+    };
+
+    constexpr const wchar_t* NullTerminatedStringValueName = L"NullTerminatedMultiString";
+    RegSetKeyValue(
+        HKEY_CURRENT_USER,
+        RegistryTestPath,
+        NullTerminatedStringValueName,
+        REG_MULTI_SZ,
+        MultiStringValue,
+        static_cast<DWORD>(std::size(MultiStringValue)) * 2);
+
+    auto key = zaf::Registry::CurrentUser().OpenSubKey(RegistryTestPath);
+    auto multi_string = key.GetMultiStringValue(NullTerminatedStringValueName);
+    ASSERT_EQ(multi_string, ExpectedMultiStrings);
+
+    constexpr const wchar_t* NotNullTerminatedStringValueName = L"NotNullTerminatedMultiString";
+    RegSetKeyValue(
+        HKEY_CURRENT_USER,
+        RegistryTestPath,
+        NotNullTerminatedStringValueName,
+        REG_MULTI_SZ,
+        MultiStringValue,
+        static_cast<DWORD>(std::size(MultiStringValue) - 1) * 2);
+
+    multi_string = key.GetMultiStringValue(NotNullTerminatedStringValueName);
+    ASSERT_EQ(multi_string, ExpectedMultiStrings);
+
+    constexpr const wchar_t* EmptyStringValueName = L"EmptyString";
+    RegSetKeyValue(
+        HKEY_CURRENT_USER,
+        RegistryTestPath,
+        EmptyStringValueName,
+        REG_MULTI_SZ,
+        L"",
+        2); //Write one \0 only.
+
+    multi_string = key.GetMultiStringValue(EmptyStringValueName);
+    ASSERT_TRUE(multi_string.empty());
 }

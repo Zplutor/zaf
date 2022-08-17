@@ -32,16 +32,49 @@ std::wstring RegistryValue::ToString() const {
 
     ZAF_EXPECT(type_ == RegistryValueType::String);
 
-    std::wstring result{
-        reinterpret_cast<const wchar_t*>(buffer_.data()),
-        buffer_.size() / sizeof(wchar_t)
-    };
+    auto string = reinterpret_cast<const wchar_t*>(buffer_.data());
+    auto string_length = buffer_.size() / sizeof(wchar_t);
 
-    if (!result.empty()) {
-        if (result.back() == L'\0') {
-            result.pop_back();
-        }
+    //The string buffer may or may not be terminated with \0.
+    //Remove the last \0 if there is.
+    if (string[string_length - 1] == L'\0') {
+        --string_length;
     }
+
+    return std::wstring{ string, string_length };
+}
+
+
+std::vector<std::wstring> RegistryValue::ToMultiString() const {
+
+    ZAF_EXPECT(type_ == RegistryValueType::MultiString);
+
+    std::vector<std::wstring> result;
+
+    auto multi_string = reinterpret_cast<const wchar_t*>(buffer_.data());
+    auto multi_string_length = buffer_.size() / sizeof(wchar_t);
+
+    std::size_t string_begin_index{};
+    std::size_t current_index{};
+    while (current_index < multi_string_length) {
+
+        if (multi_string[current_index] == L'\0') {
+
+            auto string_length = current_index - string_begin_index;
+            //Empty string is not allowed in multi-string,
+            //ignore if it is.
+            if (string_length > 0) {
+                result.emplace_back(
+                    multi_string + string_begin_index,
+                    current_index - string_begin_index);
+            }
+
+            string_begin_index = current_index + 1;
+        }
+
+        ++current_index;
+    }
+
     return result;
 }
 

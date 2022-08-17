@@ -23,6 +23,7 @@ public:
     }
 
     std::wstring ToString() const;
+    std::vector<std::wstring> ToMultiString() const;
     std::uint32_t ToDWord() const;
     std::uint64_t ToQWord() const;
 
