@@ -78,11 +78,45 @@ public:
         return GetQWordValue(std::wstring{}, name);
     }
 
-    void SetStringValue(const std::wstring& name, const std::wstring& value);
-    void SetExpandableStringValue(const std::wstring& name, const std::wstring& value);
-    void SetMultiStringValue(const std::wstring& name, const std::vector<std::wstring>& value);
-    void SetDWordValue(const std::wstring& name, std::uint32_t value);
-    void SetQWordValue(const std::wstring& name, std::uint64_t value);
+    void SetStringValue(
+        const std::wstring& sub_key, 
+        const std::wstring& name,
+        const std::wstring& value);
+    void SetStringValue(const std::wstring& name, const std::wstring& value) {
+        SetStringValue(std::wstring{}, name, value);
+    }
+
+    void SetExpandableStringValue(
+        const std::wstring& sub_key, 
+        const std::wstring& name, 
+        const std::wstring& value);
+    void SetExpandableStringValue(const std::wstring& name, const std::wstring& value) {
+        SetExpandableStringValue(std::wstring{}, name, value);
+    }
+
+    void SetMultiStringValue(
+        const std::wstring& sub_key,
+        const std::wstring& name,
+        const std::vector<std::wstring>& value);
+    void SetMultiStringValue(const std::wstring& name, const std::vector<std::wstring>& value) {
+        SetMultiStringValue(std::wstring{}, name, value);
+    }
+
+    void SetDWordValue(
+        const std::wstring& sub_key, 
+        const std::wstring& name, 
+        std::uint32_t value);
+    void SetDWordValue(const std::wstring& name, std::uint32_t value) {
+        SetDWordValue(std::wstring{}, name, value);
+    }
+
+    void SetQWordValue(
+        const std::wstring& sub_key,
+        const std::wstring& name,
+        std::uint64_t value);
+    void SetQWordValue(const std::wstring& name, std::uint64_t value) {
+        SetQWordValue(std::wstring{}, name, value);
+    }
 
 private:
     RegistryValue InnerGetValue(
@@ -90,7 +124,12 @@ private:
         const std::wstring& name, 
         DWORD flags) const;
 
-    void SetValue(const std::wstring& name, DWORD type, const void* data, DWORD data_size);
+    void InnerSetValue(
+        const std::wstring& sub_key,
+        const std::wstring& name,
+        DWORD type,
+        const void* data,
+        DWORD data_size);
 
 private:
     HKEY handle_{};

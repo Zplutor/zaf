@@ -1,5 +1,6 @@
 #include <zaf/base/registry/registry_key.h>
 #include <zaf/base/error/system_error.h>
+#include <zaf/base/string/join.h>
 
 namespace zaf {
 
@@ -152,8 +153,13 @@ RegistryValue RegistryKey::InnerGetValue(
 }
 
 
-void RegistryKey::SetStringValue(const std::wstring& name, const std::wstring& value) {
-    SetValue(
+void RegistryKey::SetStringValue(
+    const std::wstring& sub_key, 
+    const std::wstring& name, 
+    const std::wstring& value) {
+
+    InnerSetValue(
+        sub_key,
         name,
         REG_SZ,
         value.c_str(),
@@ -161,38 +167,66 @@ void RegistryKey::SetStringValue(const std::wstring& name, const std::wstring& v
 }
 
 
-void RegistryKey::SetExpandableStringValue(const std::wstring& name, const std::wstring& value) {
+void RegistryKey::SetExpandableStringValue(
+    const std::wstring& sub_key,
+    const std::wstring& name, 
+    const std::wstring& value) {
 
+    InnerSetValue(
+        sub_key,
+        name,
+        REG_EXPAND_SZ,
+        value.c_str(),
+        static_cast<DWORD>((value.length() + 1) * sizeof(wchar_t)));
 }
 
 
 void RegistryKey::SetMultiStringValue(
+    const std::wstring& sub_key,
     const std::wstring& name, 
     const std::vector<std::wstring>& value) {
 
+    auto data = zaf::JoinAsWideString(value, L"\0");
+    data.append(1, L'\0');
+
+    InnerSetValue(
+        sub_key,
+        name,
+        REG_MULTI_SZ,
+        data.data(),
+        static_cast<DWORD>((data.size() + 1) * sizeof(wchar_t)));
 }
 
 
-void RegistryKey::SetDWordValue(const std::wstring& name, std::uint32_t value) {
-    SetValue(name, REG_DWORD, &value, sizeof(value));
+void RegistryKey::SetDWordValue(
+    const std::wstring& sub_key,
+    const std::wstring& name,
+    std::uint32_t value) {
+
+    InnerSetValue(sub_key, name, REG_DWORD, &value, sizeof(value));
 }
 
 
-void RegistryKey::SetQWordValue(const std::wstring& name, std::uint64_t value) {
-    SetValue(name, REG_QWORD, &value, sizeof(value));
+void RegistryKey::SetQWordValue(
+    const std::wstring& sub_key,
+    const std::wstring& name, 
+    std::uint64_t value) {
+
+    InnerSetValue(sub_key, name, REG_QWORD, &value, sizeof(value));
 }
 
 
-void RegistryKey::SetValue(
+void RegistryKey::InnerSetValue(
+    const std::wstring& sub_key,
     const std::wstring& name,
     DWORD type, 
     const void* data,
     DWORD data_size) {
 
-    LSTATUS result = RegSetValueEx(
+    LSTATUS result = RegSetKeyValue(
         handle_, 
+        sub_key.c_str(),
         name.c_str(),
-        0, 
         type,
         reinterpret_cast<const BYTE*>(data),
         data_size);
