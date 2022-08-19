@@ -186,7 +186,10 @@ void RegistryKey::SetMultiStringValue(
     const std::wstring& name, 
     const std::vector<std::wstring>& value) {
 
-    auto data = zaf::JoinAsWideString(value, L"\0");
+    std::wstring data;
+    for (const auto& each_string : value) {
+        data.append(each_string).append(1, L'\0');
+    }
     data.append(1, L'\0');
 
     InnerSetValue(
@@ -194,7 +197,7 @@ void RegistryKey::SetMultiStringValue(
         name,
         REG_MULTI_SZ,
         data.data(),
-        static_cast<DWORD>((data.size() + 1) * sizeof(wchar_t)));
+        static_cast<DWORD>(data.size() * sizeof(wchar_t)));
 }
 
 

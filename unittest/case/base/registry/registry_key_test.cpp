@@ -6,8 +6,11 @@ namespace {
 
 class RegistryTest : public testing::Test {
 public:
-    void TearDown() override {
+    void SetUp() override {
+        RegDeleteKey(HKEY_CURRENT_USER, RegistryTestPath);
+    }
 
+    void TearDown() override {
         RegDeleteKey(HKEY_CURRENT_USER, RegistryTestPath);
     }
 
@@ -345,4 +348,67 @@ TEST_F(RegistryTest, SetExpandableStringValueWithSubKey) {
         StringValueName);
 
     ASSERT_EQ(string, StringValue);
+}
+
+
+TEST_F(RegistryTest, SetMultiStringValue) {
+
+    constexpr const wchar_t* MultiStringValueName = L"MultiStringValue";
+
+    auto key = zaf::Registry::CurrentUser().CreateSubKey(
+        RegistryTestPath, 
+        zaf::RegistryRights::Write);
+
+    std::vector<std::wstring> multi_string{
+        L"aaa",
+        L"bb",
+        L"c"
+    };
+    key.SetMultiStringValue(MultiStringValueName, multi_string);
+
+    DWORD data_type{};
+    std::wstring data(100, L'\0');
+    DWORD data_length = data.size() * sizeof(wchar_t);
+    RegGetValue(
+        HKEY_CURRENT_USER,
+        RegistryTestPath,
+        MultiStringValueName,
+        RRF_RT_REG_MULTI_SZ,
+        &data_type,
+        &data[0],
+        &data_length);
+
+    ASSERT_EQ(data_type, REG_MULTI_SZ);
+
+    std::size_t expected_length{};
+    for (const auto& each_string : multi_string) {
+        expected_length += each_string.length() + 1;
+    }
+    expected_length += 1;
+
+    ASSERT_EQ(data_length, expected_length * 2);
+    ASSERT_EQ(std::memcmp(data.data(), L"aaa\0bb\0c\0\0", data_length), 0);
+}
+
+
+TEST_F(RegistryTest, SetMultiStringValueWithSubKey) {
+
+    constexpr const wchar_t* MultiStringValueName = L"MultiStringValue";
+
+    std::vector<std::wstring> multi_string{
+        L"d",
+        L"ee",
+        L"fff"
+    };
+
+    zaf::Registry::CurrentUser().SetMultiStringValue(
+        RegistryTestPath, 
+        MultiStringValueName, 
+        multi_string);
+
+    auto actual = zaf::Registry::CurrentUser().GetMultiStringValue(
+        RegistryTestPath,
+        MultiStringValueName);
+
+    ASSERT_EQ(actual, multi_string);
 }
