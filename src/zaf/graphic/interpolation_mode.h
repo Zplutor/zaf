@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/base/direct2d.h>
+#include <zaf/object/enum_declaration.h>
 
 namespace zaf {
 
@@ -12,5 +13,8 @@ enum class InterpolationMode {
     Anisotropic = D2D1_INTERPOLATION_MODE_ANISOTROPIC,
     HighQualityCubic = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC,
 };
+
+ZAF_DECLARE_ENUM(InterpolationMode)
+ZAF_ENABLE_ENUM_BOXING(InterpolationMode)
 
 }

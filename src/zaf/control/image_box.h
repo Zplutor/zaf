@@ -29,11 +29,11 @@ public:
     void SetFilePath(const std::filesystem::path& file_path);
     void SetURI(const std::wstring& uri);
 
-    ImageLayout GetImageLayout() const;
-    void SetImageLayout(ImageLayout image_layout);
+    ImageLayout ImageLayout() const;
+    void SetImageLayout(zaf::ImageLayout image_layout);
 
-    InterpolationMode GetInterpolationMode() const;
-    void SetInterpolationMode(InterpolationMode mode);
+    InterpolationMode InterpolationMode() const;
+    void SetInterpolationMode(zaf::InterpolationMode mode);
 
 protected:
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;

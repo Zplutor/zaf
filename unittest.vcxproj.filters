@@ -310,6 +310,9 @@
     <ClCompile Include="unittest\case\base\registry\registry_key_test.cpp">
       <Filter>case\base\registry</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\control\image_box_parse_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

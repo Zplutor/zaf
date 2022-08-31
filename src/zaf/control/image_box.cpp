@@ -14,6 +14,8 @@ const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
 
 
 ZAF_DEFINE_TYPE(ImageBox)
+ZAF_DEFINE_TYPE_PROPERTY(ImageLayout)
+ZAF_DEFINE_TYPE_PROPERTY(InterpolationMode)
 ZAF_DEFINE_TYPE_END
 
 
@@ -43,7 +45,7 @@ void ImageBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     auto content_rect = ContentRect();
 
     canvas.PushClippingRect(content_rect);
-    internal::DrawImage(canvas, content_rect, GetImageLayout(), bitmap, GetInterpolationMode());
+    internal::DrawImage(canvas, content_rect, ImageLayout(), bitmap, InterpolationMode());
     canvas.PopClippingRect();
 }
 
@@ -120,9 +122,9 @@ zaf::Size ImageBox::CalculatePreferredContentSize(const zaf::Size& max_size) con
 }
 
 
-ImageLayout ImageBox::GetImageLayout() const {
+ImageLayout ImageBox::ImageLayout() const {
 
-    auto image_layout = GetPropertyMap().TryGetProperty<ImageLayout>(kImageLayoutPropertyName);
+    auto image_layout = GetPropertyMap().TryGetProperty<zaf::ImageLayout>(kImageLayoutPropertyName);
     if (image_layout) {
         return *image_layout;
     }
@@ -131,16 +133,18 @@ ImageLayout ImageBox::GetImageLayout() const {
     }
 }
 
-void ImageBox::SetImageLayout(ImageLayout image_layout) {
+void ImageBox::SetImageLayout(zaf::ImageLayout image_layout) {
 
     GetPropertyMap().SetProperty(kImageLayoutPropertyName, image_layout);
     NeedRepaint();
 }
 
 
-InterpolationMode ImageBox::GetInterpolationMode() const {
+InterpolationMode ImageBox::InterpolationMode() const {
 
-    auto mode = GetPropertyMap().TryGetProperty<InterpolationMode>(kInterpolationModePropertyName);
+    auto mode = GetPropertyMap().TryGetProperty<zaf::InterpolationMode>(
+        kInterpolationModePropertyName);
+
     if (mode != nullptr) {
         return *mode;
     }
@@ -149,7 +153,7 @@ InterpolationMode ImageBox::GetInterpolationMode() const {
     }
 }
 
-void ImageBox::SetInterpolationMode(InterpolationMode mode) {
+void ImageBox::SetInterpolationMode(zaf::InterpolationMode mode) {
 
     GetPropertyMap().SetProperty(kInterpolationModePropertyName, mode);
     NeedRepaint();

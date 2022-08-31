@@ -127,6 +127,7 @@
     <ClCompile Include="src\zaf\graphic\image\wic\bitmap_decoder.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\bitmap_decode_frame.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\pixel_format.cpp" />
+    <ClCompile Include="src\zaf\graphic\interpolation_mode.cpp" />
     <ClCompile Include="src\zaf\graphic\render_bitmap.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />

@@ -676,6 +676,9 @@
     <ClCompile Include="src\zaf\base\registry\registry_value.cpp">
       <Filter>zaf\base\registry</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\interpolation_mode.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
