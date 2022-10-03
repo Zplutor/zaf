@@ -354,7 +354,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\wxwork.rc">
+    <ResourceCompile Include="src\im.rc">
       <Filter>src</Filter>
     </ResourceCompile>
   </ItemGroup>
