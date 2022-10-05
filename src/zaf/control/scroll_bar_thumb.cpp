@@ -19,6 +19,7 @@ void ScrollBarThumb::Initialize() {
     __super::Initialize();
 
     SetCanFocused(false);
+    SetPadding(zaf::Frame{ 2, 0, 2, 0 });
 }
 
 
@@ -32,17 +33,8 @@ void ScrollBarThumb::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     Canvas::StateGuard state_guard(canvas);
 
-    auto thumb_rect = ContentRect();
-    const float spacing = 2;
-    if (IsHorizontal()) {
-        thumb_rect.Inflate(0, -spacing);
-    }
-    else {
-        thumb_rect.Inflate(-spacing, 0);
-    }
-
     canvas.SetBrushWithColor(GetThumbColor());
-    canvas.DrawRectangle(thumb_rect);
+    canvas.DrawRectangle(ContentRect());
 }
 
 
