@@ -261,6 +261,22 @@ public:
         return wic_rect;
     }
 
+    const Point& Position() const {
+        return position;
+    }
+
+    void SetPosition(const Point& position) {
+        this->position = position;
+    }
+
+    const Size& Size() const {
+        return size;
+    }
+
+    void SetSize(const zaf::Size& size) {
+        this->size = size;
+    }
+
 public:
     /**
      Position of the rectangle.
@@ -270,7 +286,7 @@ public:
     /**
      Size of the rectangle.
      */
-    Size size;
+    zaf::Size size;
 };
 
 

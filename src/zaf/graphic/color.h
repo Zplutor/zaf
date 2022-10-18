@@ -171,6 +171,38 @@ public:
         return RGB(r * 255, g * 255, b * 255);
     }
 
+    float R() const {
+        return r;
+    }
+
+    void SetR(float r) {
+        this->r = r;
+    }
+
+    float G() const {
+        return g;
+    }
+
+    void SetG(float g) {
+        this->g = g;
+    }
+
+    float B() const {
+        return b;
+    }
+
+    void SetB(float b) {
+        this->b = b;
+    }
+
+    float A() const {
+        return a;
+    }
+
+    void SetA(float a) {
+        this->a = a;
+    }
+
 public:
     /**
      Red component of the color.

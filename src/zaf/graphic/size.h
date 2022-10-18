@@ -84,6 +84,22 @@ public:
         return size;
     }
 
+    float Width() const {
+        return width;
+    }
+
+    void SetWidth(float width) {
+        this->width = width;
+    }
+
+    float Height() const {
+        return height;
+    }
+
+    void SetHeight(float height) {
+        this->height = height;
+    }
+
 public:
     /**
      Width of the size.

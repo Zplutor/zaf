@@ -77,6 +77,38 @@ public:
         return rect;
     }
 
+    float Left() const {
+        return left;
+    }
+
+    void SetLeft(float left) {
+        this->left = left;
+    }
+
+    float Top() const {
+        return top;
+    }
+
+    void SetTop(float top) {
+        this->top = top;
+    }
+
+    float Right() const {
+        return right;
+    }
+
+    void SetRight(float right) {
+        this->right = right;
+    }
+
+    float Bottom() const {
+        return bottom;
+    }
+
+    void SetBottom(float bottom) {
+        this->bottom = bottom;
+    }
+
 public:
     /**
      Left edge thickness.

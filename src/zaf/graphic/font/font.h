@@ -26,6 +26,39 @@ public:
     static Font FromLOGFONT(const LOGFONT& logfont);
 
 public:
+    const std::wstring FamilyName() const {
+        return family_name;
+    }
+
+    void SetFamilyName(const std::wstring& name) {
+        family_name = name;
+    }
+
+    float Size() const {
+        return size;
+    }
+
+    void SetSize(float size) {
+        this->size = size;
+    }
+
+    FontWeight Weight() const {
+        return weight;
+    }
+
+    void SetWeight(FontWeight weight) {
+        this->weight = weight;
+    }
+
+    bool HasUnderline() const {
+        return has_underline;
+    }
+
+    void SetHasUnderline(bool has) {
+        has_underline = has;
+    }
+
+public:
     /**
      Font family name.
 

@@ -45,8 +45,32 @@ public:
         return d2d1_rounded_rect;
     }
 
+    const Rect& Rect() const {
+        return rect;
+    }
+
+    void SetRect(const zaf::Rect& rect) {
+        this->rect = rect;
+    }
+
+    float XRadius() const {
+        return x_radius;
+    }
+
+    void SetXRadius(float x_radius) {
+        this->x_radius = x_radius;
+    }
+
+    float YRadius() const {
+        return y_radius;
+    }
+
+    void SetYRadius(float y_radius) {
+        this->y_radius = y_radius;
+    }
+
 public:
-    Rect rect;
+    zaf::Rect rect;
     float x_radius;
     float y_radius;
 };

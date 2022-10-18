@@ -57,6 +57,30 @@ public:
         return ellipse;
     }
 
+    const Point& Position() const {
+        return position;
+    }
+
+    void SetPosition(const Point& position) {
+        this->position = position;
+    }
+
+    float XRadius() const {
+        return x_radius;
+    }
+
+    void SetXRadius(float x_radius) {
+        this->x_radius = x_radius;
+    }
+
+    float YRadius() const {
+        return y_radius;
+    }
+
+    void SetYRadius(float y_radius) {
+        this->y_radius = y_radius;
+    }
+
 public:
     Point position;
     float x_radius;

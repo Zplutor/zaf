@@ -43,11 +43,20 @@ public:
     ZAF_DECLARE_TYPE
 
 public:
+    int DerivedValue() const {
+        return derived_value;
+    }
+
+    void SetDerivedValue(int value) {
+        derived_value = value;
+    }
+
+public:
     int derived_value{};
 };
 
 ZAF_DEFINE_TYPE(Derived)
-ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(DerivedValue, derived_value)
+ZAF_DEFINE_TYPE_PROPERTY(DerivedValue)
 ZAF_DEFINE_TYPE_END
 
 
@@ -142,11 +151,21 @@ class PropertyNodeBase : public zaf::Object {
 public:
     ZAF_DECLARE_TYPE
 
-    int BaseValue{};
+public:
+    int BaseValue() const {
+        return base_value;
+    }
+
+    void SetBaseValue(int value) {
+        base_value = value;
+    }
+
+public:
+    int base_value{};
 };
 
 ZAF_DEFINE_TYPE(PropertyNodeBase)
-ZAF_DEFINE_TYPE_PROPERTY_WITH_FIELD(BaseValue, BaseValue)
+ZAF_DEFINE_TYPE_PROPERTY(BaseValue)
 ZAF_DEFINE_TYPE_END
 
 class PropertyNodeDerived : public PropertyNodeBase {
@@ -174,7 +193,7 @@ TEST(ParsingTest, ParsePropertyNode) {
         PropertyNodeDerived object;
         parser->ParseFromNode(*node, object);
 
-        ASSERT_EQ(object.BaseValue, 11);
+        ASSERT_EQ(object.base_value, 11);
     }
 
     //Property with base class name.
@@ -190,7 +209,7 @@ TEST(ParsingTest, ParsePropertyNode) {
         PropertyNodeDerived object;
         parser->ParseFromNode(*node, object);
 
-        ASSERT_EQ(object.BaseValue, 12);
+        ASSERT_EQ(object.base_value, 12);
     }
 }
 

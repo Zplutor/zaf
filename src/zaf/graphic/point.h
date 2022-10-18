@@ -113,6 +113,22 @@ public:
         return point;
     }
 
+    float X() const {
+        return x;
+    }
+
+    void SetX(float x) {
+        this->x = x;
+    }
+
+    float Y() const {
+        return y;
+    }
+
+    void SetY(float y) {
+        this->y = y;
+    }
+
 public:
     /**
      X-coordinate of the point.
