@@ -16,6 +16,7 @@ const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
 ZAF_DEFINE_TYPE(ImageBox)
 ZAF_DEFINE_TYPE_PROPERTY(ImageLayout)
 ZAF_DEFINE_TYPE_PROPERTY(InterpolationMode)
+ZAF_DEFINE_TYPE_PROPERTY(URI)
 ZAF_DEFINE_TYPE_END
 
 

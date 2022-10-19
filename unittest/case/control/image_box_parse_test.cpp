@@ -40,3 +40,17 @@ TEST(ImageBoxParseTest, InterpolationMode) {
     ASSERT_NE(image_box, nullptr);
     ASSERT_EQ(image_box->InterpolationMode(), zaf::InterpolationMode::Anisotropic);
 }
+
+
+TEST(ImageBoxParseTest, URI) {
+
+    auto image_box = CreateImageBoxFromXaml(R"(<ImageBox URI="file:///C:/image.png" />)");
+    ASSERT_NE(image_box, nullptr);
+
+    image_box = CreateImageBoxFromXaml(R"(
+        <ImageBox>
+            <ImageBox.URI>file:///C:/image.png</ImageBox.URI>
+        </ImageBox>
+    )");
+    ASSERT_NE(image_box, nullptr);
+}
