@@ -277,6 +277,22 @@ public:
         this->size = size;
     }
 
+    float Left() const {
+        return position.x;
+    }
+
+    float Top() const {
+        return position.y;
+    }
+
+    float Right() const {
+        return position.x + size.width;
+    }
+
+    float Bottom() const {
+        return position.y + size.height;
+    }
+
 public:
     /**
      Position of the rectangle.
