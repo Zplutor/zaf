@@ -30,6 +30,10 @@ public:
         return handle_;
     }
 
+    explicit operator bool() const {
+        return !!handle_;
+    }
+
     RegistryKey CreateSubKey(const std::wstring& sub_key) {
         return CreateSubKey(sub_key, RegistryRights::Read | RegistryRights::Write);
     }

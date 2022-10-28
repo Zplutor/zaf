@@ -21,6 +21,34 @@ protected:
 }
 
 
+TEST_F(RegistryTest, BoolTest) {
+
+    zaf::RegistryKey key;
+    if (key) {
+        GTEST_FAIL();
+    }
+
+    if (!key) {
+
+    }
+    else {
+        GTEST_FAIL();
+    }
+
+    key = zaf::Registry::CurrentUser();
+    if (key) {
+        
+    }
+    else {
+        GTEST_FAIL();
+    }
+
+    if (!key) {
+        GTEST_FAIL();
+    }
+}
+
+
 TEST_F(RegistryTest, GetNumericValue) {
 
     constexpr const wchar_t* DWordValueName = L"DWord";

@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <WindowsX.h>
+#include <fstream>
 #include <zaf/application.h>
 #include <zaf/base/log.h>
 #include <zaf/base/container/utility/find.h>
