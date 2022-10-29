@@ -307,11 +307,14 @@
     <ClCompile Include="unittest\case\string\join_test.cpp">
       <Filter>case\base\string</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\base\registry\registry_key_test.cpp">
+    <ClCompile Include="unittest\case\base\registry\registry_key_get_value_test.cpp">
       <Filter>case\base\registry</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\control\image_box_parse_test.cpp">
       <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\registry\registry_key_basic_test.cpp">
+      <Filter>case\base\registry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -323,6 +326,9 @@
     </ClInclude>
     <ClInclude Include="unittest\utility\assert.h">
       <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="unittest\case\base\registry\registry_test.h">
+      <Filter>case\base\registry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

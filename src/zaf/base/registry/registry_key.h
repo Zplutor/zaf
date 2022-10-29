@@ -15,21 +15,29 @@ class RegistryKey : NonCopyable {
 public:
     RegistryKey() = default;
     explicit RegistryKey(HKEY handle) : handle_(handle)  { }
+    RegistryKey(HKEY handle, RegistryView view) : handle_(handle), view_(view) { }
 
     ~RegistryKey();
 
-    RegistryKey(RegistryKey&& other) : handle_(other.handle_) {
+    RegistryKey(RegistryKey&& other) : handle_(other.handle_), view_(other.view_) {
         other.handle_ = nullptr;
+        other.view_ = zaf::RegistryView::Default;
     }
 
     RegistryKey& operator=(RegistryKey&& other) {
         handle_ = other.handle_;
+        view_ = other.view_;
         other.handle_ = nullptr;
+        other.view_ = zaf::RegistryView::Default;
         return *this;
     }
 
     HKEY Handle() const {
         return handle_;
+    }
+
+    RegistryView View() const {
+        return view_;
     }
 
     explicit operator bool() const {

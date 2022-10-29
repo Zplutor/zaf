@@ -1,53 +1,7 @@
 #include <Windows.h>
 #include <gtest/gtest.h>
 #include <zaf/base/registry/registry.h>
-
-namespace {
-
-class RegistryTest : public testing::Test {
-public:
-    void SetUp() override {
-        RegDeleteKey(HKEY_CURRENT_USER, RegistryTestPath);
-    }
-
-    void TearDown() override {
-        RegDeleteKey(HKEY_CURRENT_USER, RegistryTestPath);
-    }
-
-protected:
-    static constexpr const wchar_t* RegistryTestPath = L"Software\\Zaf\\Unittest\\Registry";
-};
-
-}
-
-
-TEST_F(RegistryTest, BoolTest) {
-
-    zaf::RegistryKey key;
-    if (key) {
-        GTEST_FAIL();
-    }
-
-    if (!key) {
-
-    }
-    else {
-        GTEST_FAIL();
-    }
-
-    key = zaf::Registry::CurrentUser();
-    if (key) {
-        
-    }
-    else {
-        GTEST_FAIL();
-    }
-
-    if (!key) {
-        GTEST_FAIL();
-    }
-}
-
+#include "registry_test.h"
 
 TEST_F(RegistryTest, GetNumericValue) {
 
@@ -304,7 +258,7 @@ TEST_F(RegistryTest, SetStringValue) {
 
     DWORD data_type{};
     std::wstring data(100, L'\0');
-    DWORD data_length = data.size() * sizeof(wchar_t);
+    DWORD data_length = static_cast<DWORD>(data.size() * sizeof(wchar_t));
     RegGetValue(
         HKEY_CURRENT_USER,
         RegistryTestPath,
@@ -345,7 +299,7 @@ TEST_F(RegistryTest, SetExpandableStringValue) {
 
     DWORD data_type{};
     std::wstring data(100, L'\0');
-    DWORD data_length = data.size() * sizeof(wchar_t);
+    DWORD data_length = static_cast<DWORD>(data.size() * sizeof(wchar_t));
     RegGetValue(
         HKEY_CURRENT_USER,
         RegistryTestPath,
@@ -396,7 +350,7 @@ TEST_F(RegistryTest, SetMultiStringValue) {
 
     DWORD data_type{};
     std::wstring data(100, L'\0');
-    DWORD data_length = data.size() * sizeof(wchar_t);
+    DWORD data_length = static_cast<DWORD>(data.size() * sizeof(wchar_t));
     RegGetValue(
         HKEY_CURRENT_USER,
         RegistryTestPath,
