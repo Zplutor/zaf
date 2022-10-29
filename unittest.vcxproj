@@ -391,6 +391,7 @@
     <ClCompile Include="unittest\case\base\registry\registry_create_sub_key_test.cpp" />
     <ClCompile Include="unittest\case\base\registry\registry_get_value_test.cpp" />
     <ClCompile Include="unittest\case\base\registry\registry_open_sub_key_test.cpp" />
+    <ClCompile Include="unittest\case\base\registry\registry_set_value_test.cpp" />
     <ClCompile Include="unittest\case\base\registry\registry_test.cpp" />
     <ClCompile Include="unittest\case\base\stream_test.cpp" />
     <ClCompile Include="unittest\case\base\string\case_conversion_test.cpp" />

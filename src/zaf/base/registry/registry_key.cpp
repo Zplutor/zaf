@@ -94,55 +94,79 @@ void RegistryKey::DeleteValue(const std::wstring& name) {
 }
 
 
-RegistryValue RegistryKey::GetValue(const std::wstring& sub_key, const std::wstring& name) const {
-    return InnerGetValue(sub_key, name, RRF_RT_ANY);
+RegistryValue RegistryKey::InnerGetGenericValue(
+    const std::wstring& sub_key,
+    const std::wstring& name,
+    std::optional<RegistryView> view) const {
+
+    return InnerGetValue(sub_key, name, RRF_RT_ANY, view);
 }
 
 
-std::wstring RegistryKey::GetStringValue(
+std::wstring RegistryKey::InnerGetStringValue(
     const std::wstring& sub_key, 
-    const std::wstring& name) const {
+    const std::wstring& name,
+    std::optional<RegistryView> view) const {
 
-    return InnerGetValue(sub_key, name, RRF_RT_REG_SZ).ToString();
+    return InnerGetValue(sub_key, name, RRF_RT_REG_SZ, view).ToString();
 }
 
 
-std::wstring RegistryKey::GetExpandableStringValue(
+std::wstring RegistryKey::InnerGetExpandableStringValue(
     const std::wstring& sub_key, 
-    const std::wstring& name) const {
+    const std::wstring& name,
+    std::optional<RegistryView> view) const {
 
-    return InnerGetValue(sub_key, name, RRF_RT_REG_EXPAND_SZ | RRF_NOEXPAND).ToExpandableString();
+    auto value = InnerGetValue(sub_key, name, RRF_RT_REG_EXPAND_SZ | RRF_NOEXPAND, view);
+    return value.ToExpandableString();
 }
 
 
-std::vector<std::wstring> RegistryKey::GetMultiStringValue(
+std::vector<std::wstring> RegistryKey::InnerGetMultiStringValue(
     const std::wstring& sub_key, 
-    const std::wstring& name) const {
+    const std::wstring& name,
+    std::optional<RegistryView> view) const {
 
-    return InnerGetValue(sub_key, name, RRF_RT_REG_MULTI_SZ).ToMultiString();
+    return InnerGetValue(sub_key, name, RRF_RT_REG_MULTI_SZ, view).ToMultiString();
 }
 
 
-std::uint32_t RegistryKey::GetDWordValue(
+std::uint32_t RegistryKey::InnerGetDWordValue(
     const std::wstring& sub_key, 
-    const std::wstring& name) const {
+    const std::wstring& name,
+    std::optional<RegistryView> view) const {
 
-    return InnerGetValue(sub_key, name, RRF_RT_REG_DWORD).ToDWord();
+    return InnerGetValue(sub_key, name, RRF_RT_REG_DWORD, view).ToDWord();
 }
 
 
-std::uint64_t RegistryKey::GetQWordValue(
+std::uint64_t RegistryKey::InnerGetQWordValue(
     const std::wstring& sub_key, 
-    const std::wstring& name) const {
+    const std::wstring& name,
+    std::optional<RegistryView> view) const {
 
-    return InnerGetValue(sub_key, name, RRF_RT_REG_QWORD).ToQWord();
+    return InnerGetValue(sub_key, name, RRF_RT_REG_QWORD, view).ToQWord();
 }
 
 
 RegistryValue RegistryKey::InnerGetValue(
     const std::wstring& sub_key, 
     const std::wstring& name, 
-    DWORD flags) const {
+    DWORD expected_value_type,
+    std::optional<RegistryView> view) const {
+
+    DWORD flags = expected_value_type;
+
+    if (!sub_key.empty()) {
+
+        auto sub_key_view = GetViewForSubKey(view);
+        if (sub_key_view == zaf::RegistryView::Registry32) {
+            flags |= RRF_SUBKEY_WOW6432KEY;
+        }
+        else if (sub_key_view == zaf::RegistryView::Registry64) {
+            flags |= RRF_SUBKEY_WOW6464KEY;
+        }
+    }
 
     DWORD value_type{};
     DWORD buffer_size{ 128 };

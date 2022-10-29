@@ -93,38 +93,106 @@ public:
 
     void DeleteValue(const std::wstring& name);
 
-    RegistryValue GetValue(const std::wstring& sub_key, const std::wstring& name) const;
     RegistryValue GetValue(const std::wstring& name) const {
-        return GetValue(std::wstring{}, name);
+        return InnerGetGenericValue({}, name, std::nullopt);
     }
 
-    std::wstring GetStringValue(const std::wstring& sub_key, const std::wstring& name) const;
+    RegistryValue GetValue(const std::wstring& sub_key, const std::wstring& name) const {
+        return InnerGetGenericValue(sub_key, name, std::nullopt);
+    }
+
+    RegistryValue GetValue(
+        const std::wstring& sub_key, 
+        const std::wstring& name, 
+        RegistryView view) const {
+
+        return InnerGetGenericValue(sub_key, name, view);
+    }
+
     std::wstring GetStringValue(const std::wstring& name) const {
-        return GetStringValue(std::wstring{}, name);
+        return InnerGetStringValue({}, name, std::nullopt);
+    }
+
+    std::wstring GetStringValue(const std::wstring& sub_key, const std::wstring& name) const {
+        return InnerGetStringValue(sub_key, name, std::nullopt);
+    }
+
+    std::wstring GetStringValue(
+        const std::wstring& sub_key, 
+        const std::wstring& name, 
+        RegistryView view) const {
+
+        return InnerGetStringValue(sub_key, name, view);
+    }
+
+    std::wstring GetExpandableStringValue(const std::wstring& name) const {
+        return InnerGetExpandableStringValue({}, name, std::nullopt);
     }
 
     std::wstring GetExpandableStringValue(
-        const std::wstring& sub_key, 
-        const std::wstring& name) const;
-    std::wstring GetExpandableStringValue(const std::wstring& name) const {
-        return GetExpandableStringValue(std::wstring{}, name);
+        const std::wstring& sub_key,
+        const std::wstring& name) const {
+
+        return InnerGetExpandableStringValue(sub_key, name, std::nullopt);
+    }
+    
+    std::wstring GetExpandableStringValue(
+        const std::wstring& sub_key,
+        const std::wstring& name,
+        RegistryView view) const {
+
+        return InnerGetExpandableStringValue(sub_key, name, view);
+    }
+
+    std::vector<std::wstring> GetMultiStringValue(const std::wstring& name) const {
+        return InnerGetMultiStringValue({}, name, std::nullopt);
     }
 
     std::vector<std::wstring> GetMultiStringValue(
-        const std::wstring& sub_key, 
-        const std::wstring& name) const;
-    std::vector<std::wstring> GetMultiStringValue(const std::wstring& name) const {
-        return GetMultiStringValue(std::wstring{}, name);
+        const std::wstring& sub_key,
+        const std::wstring& name) const {
+
+        return InnerGetMultiStringValue(sub_key, name, std::nullopt);
     }
 
-    std::uint32_t GetDWordValue(const std::wstring& sub_key, const std::wstring& name) const;
+    std::vector<std::wstring> GetMultiStringValue(
+        const std::wstring& sub_key,
+        const std::wstring& name,
+        RegistryView view) {
+
+        return InnerGetMultiStringValue(sub_key, name, view);
+    }
+    
     std::uint32_t GetDWordValue(const std::wstring& name) const {
-        return GetDWordValue(std::wstring{}, name);
+        return InnerGetDWordValue({}, name, std::nullopt);
     }
 
-    std::uint64_t GetQWordValue(const std::wstring& sub_key, const std::wstring& name) const;
+    std::uint32_t GetDWordValue(const std::wstring& sub_key, const std::wstring& name) const {
+        return InnerGetDWordValue(sub_key, name, std::nullopt);
+    }
+    
+    std::uint32_t GetDWordValue(
+        const std::wstring& sub_key,
+        const std::wstring& name,
+        RegistryView view) const {
+
+        return InnerGetDWordValue(sub_key, name, view);
+    }
+
     std::uint64_t GetQWordValue(const std::wstring& name) const {
-        return GetQWordValue(std::wstring{}, name);
+        return InnerGetQWordValue({}, name, std::nullopt);
+    }
+
+    std::uint64_t GetQWordValue(const std::wstring& sub_key, const std::wstring& name) const {
+        return InnerGetQWordValue(sub_key, name, std::nullopt);
+    }
+
+    std::uint64_t GetQWordValue(
+        const std::wstring& sub_key, 
+        const std::wstring& name, 
+        RegistryView view) const {
+
+        return InnerGetQWordValue(sub_key, name, view);
     }
 
     void SetStringValue(
@@ -180,10 +248,41 @@ private:
 
     void InnerDeleteSubKey(const std::wstring& sub_key, std::optional<RegistryView> view);
 
+    RegistryValue InnerGetGenericValue(
+        const std::wstring& sub_key, 
+        const std::wstring& name,
+        std::optional<RegistryView> view) const;
+
+    std::wstring InnerGetStringValue(
+        const std::wstring& sub_key,
+        const std::wstring& name,
+        std::optional<RegistryView> view) const;
+
+    std::wstring InnerGetExpandableStringValue(
+        const std::wstring& sub_key,
+        const std::wstring& name,
+        std::optional<RegistryView> view) const;
+
+    std::vector<std::wstring> InnerGetMultiStringValue(
+        const std::wstring& sub_key,
+        const std::wstring& name,
+        std::optional<RegistryView> view) const;
+
+    std::uint32_t InnerGetDWordValue(
+        const std::wstring& sub_key, 
+        const std::wstring& name,
+        std::optional<RegistryView> view) const;
+
+    std::uint64_t InnerGetQWordValue(
+        const std::wstring& sub_key,
+        const std::wstring& name,
+        std::optional<RegistryView> view) const;
+
     RegistryValue InnerGetValue(
         const std::wstring& sub_key, 
         const std::wstring& name, 
-        DWORD flags) const;
+        DWORD expected_value_type,
+        std::optional<RegistryView> view) const;
 
     void InnerSetValue(
         const std::wstring& sub_key,
