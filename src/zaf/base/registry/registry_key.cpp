@@ -67,7 +67,7 @@ RegistryKey RegistryKey::InnerOpenSubKey(
         &sub_key_handle);
 
     ZAF_THROW_IF_SYSTEM_ERROR(result);
-    return RegistryKey{ sub_key_handle };
+    return RegistryKey{ sub_key_handle, new_key_view };
 }
 
 

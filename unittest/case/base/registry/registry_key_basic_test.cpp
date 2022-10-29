@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/base/registry/registry.h>
 
-TEST(RegistryBasicTest, Construct) {
+TEST(RegistryKeyBasicTest, Construct) {
 
     {
         zaf::RegistryKey key;
@@ -23,7 +23,7 @@ TEST(RegistryBasicTest, Construct) {
 }
 
 
-TEST(RegistryBasicTest, Move) {
+TEST(RegistryKeyBasicTest, Move) {
 
     zaf::RegistryKey key1(HKEY_LOCAL_MACHINE, zaf::RegistryView::Registry64);
 
@@ -42,7 +42,7 @@ TEST(RegistryBasicTest, Move) {
 }
 
 
-TEST(RegistryBasicTest, BoolTest) {
+TEST(RegistryKeyBasicTest, BoolTest) {
 
     zaf::RegistryKey key;
     if (key) {

@@ -3,7 +3,15 @@
 #include <zaf/base/registry/registry.h>
 #include "registry_test.h"
 
-TEST_F(RegistryTest, GetNumericValue) {
+namespace {
+
+class RegistryGetValueTest : public RegistryTest {
+
+};
+
+}
+
+TEST_F(RegistryGetValueTest, GetNumericValue) {
 
     constexpr const wchar_t* DWordValueName = L"DWord";
     constexpr std::uint32_t DWordValue = 0xaccdef78;
@@ -36,7 +44,7 @@ TEST_F(RegistryTest, GetNumericValue) {
 }
 
 
-TEST_F(RegistryTest, GetStringValue) {
+TEST_F(RegistryGetValueTest, GetStringValue) {
 
     constexpr const wchar_t* NullTerminatedStringValueName = L"NullTerminatedString";
     constexpr const wchar_t* NullTerminatedStringValue = L"This is a null-terminated string.";
@@ -89,7 +97,7 @@ TEST_F(RegistryTest, GetStringValue) {
 }
 
 
-TEST_F(RegistryTest, GetExpandableStringValue) {
+TEST_F(RegistryGetValueTest, GetExpandableStringValue) {
 
     constexpr const wchar_t* ExpandableStringValueName = L"ExpandableStringValue";
     constexpr const wchar_t* ExpandableStringValue = L"This is an expandable %path%.";
@@ -112,7 +120,7 @@ TEST_F(RegistryTest, GetExpandableStringValue) {
 }
 
 
-TEST_F(RegistryTest, GetMultiStringValue) {
+TEST_F(RegistryGetValueTest, GetMultiStringValue) {
 
     constexpr const wchar_t MultiStringValue[] = L"one\0two\0three\0\0";
     const std::vector<std::wstring> ExpectedMultiStrings{
@@ -165,7 +173,7 @@ TEST_F(RegistryTest, GetMultiStringValue) {
 }
 
 
-TEST_F(RegistryTest, SetDWordValue) {
+TEST_F(RegistryGetValueTest, SetDWordValue) {
 
     constexpr const wchar_t* DWordValueName = L"DWord";
     constexpr std::uint32_t DWordValue = 0x1232239d;
@@ -193,7 +201,7 @@ TEST_F(RegistryTest, SetDWordValue) {
 }
 
 
-TEST_F(RegistryTest, SetDWordValueWithSubKey) {
+TEST_F(RegistryGetValueTest, SetDWordValueWithSubKey) {
 
     constexpr const wchar_t* DWordValueName = L"DWord";
     constexpr std::uint32_t DWordValue = 0x38dcb122;
@@ -205,7 +213,7 @@ TEST_F(RegistryTest, SetDWordValueWithSubKey) {
 }
 
 
-TEST_F(RegistryTest, SetQWordValue) {
+TEST_F(RegistryGetValueTest, SetQWordValue) {
 
     constexpr const wchar_t* QWordValueName = L"QWord";
     constexpr std::uint64_t QWordValue = 0x230923f32381b444;
@@ -233,7 +241,7 @@ TEST_F(RegistryTest, SetQWordValue) {
 }
 
 
-TEST_F(RegistryTest, SetQWordValueWithSubKey) {
+TEST_F(RegistryGetValueTest, SetQWordValueWithSubKey) {
 
     constexpr const wchar_t* QWordValueName = L"QWord";
     constexpr std::uint64_t QWordValue = 0x3238823842929928;
@@ -245,7 +253,7 @@ TEST_F(RegistryTest, SetQWordValueWithSubKey) {
 }
 
 
-TEST_F(RegistryTest, SetStringValue) {
+TEST_F(RegistryGetValueTest, SetStringValue) {
 
     constexpr const wchar_t* StringValueName = L"StringValue";
     constexpr const wchar_t* StringValue = L"This is a string.";
@@ -274,7 +282,7 @@ TEST_F(RegistryTest, SetStringValue) {
 }
 
 
-TEST_F(RegistryTest, SetStringValueWithSubKey) {
+TEST_F(RegistryGetValueTest, SetStringValueWithSubKey) {
 
     constexpr const wchar_t* StringValueName = L"StringValue";
     constexpr const wchar_t* StringValue = L"This is a string in sub key.";
@@ -286,7 +294,7 @@ TEST_F(RegistryTest, SetStringValueWithSubKey) {
 }
 
 
-TEST_F(RegistryTest, SetExpandableStringValue) {
+TEST_F(RegistryGetValueTest, SetExpandableStringValue) {
 
     constexpr const wchar_t* StringValueName = L"ExpandableStringValue";
     constexpr const wchar_t* StringValue = L"This is %path%";
@@ -315,7 +323,7 @@ TEST_F(RegistryTest, SetExpandableStringValue) {
 }
 
 
-TEST_F(RegistryTest, SetExpandableStringValueWithSubKey) {
+TEST_F(RegistryGetValueTest, SetExpandableStringValueWithSubKey) {
 
     constexpr const wchar_t* StringValueName = L"ExpandableStringValue";
     constexpr const wchar_t* StringValue = L"This is a %path%.";
@@ -333,7 +341,7 @@ TEST_F(RegistryTest, SetExpandableStringValueWithSubKey) {
 }
 
 
-TEST_F(RegistryTest, SetMultiStringValue) {
+TEST_F(RegistryGetValueTest, SetMultiStringValue) {
 
     constexpr const wchar_t* MultiStringValueName = L"MultiStringValue";
 
@@ -373,7 +381,7 @@ TEST_F(RegistryTest, SetMultiStringValue) {
 }
 
 
-TEST_F(RegistryTest, SetMultiStringValueWithSubKey) {
+TEST_F(RegistryGetValueTest, SetMultiStringValueWithSubKey) {
 
     constexpr const wchar_t* MultiStringValueName = L"MultiStringValue";
 
