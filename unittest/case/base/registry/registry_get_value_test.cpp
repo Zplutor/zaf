@@ -6,7 +6,50 @@
 namespace {
 
 class RegistryGetValueTest : public RegistryTest {
+protected:
+    static void WriteWOW64TestValues() {
 
+        //Write to 64 view.
+        auto key64 = zaf::Registry::CurrentUser().CreateSubKey(RegistryWOW64TestPath);
+        key64.SetDWordValue(WOW64DWord, WOW64DWordValue64);
+        key64.SetQWordValue(WOW64QWord, WOW64QWordValue64);
+        key64.SetStringValue(WOW64String, WOW64StringValue64);
+        key64.SetExpandableStringValue(WOW64ExpandableString, WOW64ExpandableStringValue64);
+        key64.SetMultiStringValue(WOW64MultiString, WOW64MultiStringValue64());
+
+        //Write to 32 view.
+        auto key32 = zaf::Registry::CurrentUser().CreateSubKey(RegistryWOW64TestPath_32View);
+        key32.SetDWordValue(WOW64DWord, WOW64DWordValue32);
+        key32.SetQWordValue(WOW64QWord, WOW64QWordValue32);
+        key32.SetStringValue(WOW64String, WOW64StringValue32);
+        key32.SetExpandableStringValue(WOW64ExpandableString, WOW64ExpandableStringValue32);
+        key32.SetMultiStringValue(WOW64MultiString, WOW64MultiStringValue32());
+    }
+
+protected:
+    static constexpr const wchar_t* WOW64DWord = L"DWord";
+    static constexpr std::uint32_t WOW64DWordValue64 = 64;
+    static constexpr std::uint32_t WOW64DWordValue32 = 32;
+
+    static constexpr const wchar_t* WOW64QWord = L"QWord";
+    static constexpr std::uint64_t WOW64QWordValue64 = 6464;
+    static constexpr std::uint64_t WOW64QWordValue32 = 3232;
+
+    static constexpr const wchar_t* WOW64String = L"String";
+    static constexpr const wchar_t* WOW64StringValue64 = L"64";
+    static constexpr const wchar_t* WOW64StringValue32 = L"32";
+
+    static constexpr const wchar_t* WOW64ExpandableString = L"ExpandableString";
+    static constexpr const wchar_t* WOW64ExpandableStringValue64 = L"e64";
+    static constexpr const wchar_t* WOW64ExpandableStringValue32 = L"e32";
+
+    static constexpr const wchar_t* WOW64MultiString = L"MultiString";
+    static std::vector<std::wstring> WOW64MultiStringValue64() {
+        return { L"6", L"4" };
+    }
+    static std::vector<std::wstring> WOW64MultiStringValue32() {
+        return { L"3", L"2" };
+    }
 };
 
 }
@@ -170,4 +213,116 @@ TEST_F(RegistryGetValueTest, GetMultiStringValue) {
         RegistryTestPath, 
         NullTerminatedStringValueName);
     ASSERT_EQ(multi_string, ExpectedMultiStrings);
+}
+
+
+TEST_F(RegistryGetValueTest, GetValueFrom32View) {
+
+    WriteWOW64TestValues();
+
+    auto root_key = zaf::Registry::CurrentUser();
+
+    auto dword = root_key.GetDWordValue(
+        RegistryWOW64TestPath, 
+        WOW64DWord, 
+        zaf::RegistryView::Registry32);
+    ASSERT_EQ(dword, WOW64DWordValue32);
+
+    auto qword = root_key.GetQWordValue(
+        RegistryWOW64TestPath, 
+        WOW64QWord, 
+        zaf::RegistryView::Registry32);
+    ASSERT_EQ(qword, WOW64QWordValue32);
+
+    auto string = root_key.GetStringValue(
+        RegistryWOW64TestPath, 
+        WOW64String, 
+        zaf::RegistryView::Registry32);
+    ASSERT_EQ(string, WOW64StringValue32);
+
+    auto expandable_string = root_key.GetExpandableStringValue(
+        RegistryWOW64TestPath,
+        WOW64ExpandableString,
+        zaf::RegistryView::Registry32);
+    ASSERT_EQ(expandable_string, WOW64ExpandableStringValue32);
+
+    auto multi_string = root_key.GetMultiStringValue(
+        RegistryWOW64TestPath, 
+        WOW64MultiString, 
+        zaf::RegistryView::Registry32);
+    ASSERT_EQ(multi_string, WOW64MultiStringValue32());
+
+    auto key32 = zaf::Registry::CurrentUser().OpenSubKey(
+        RegistryWOW64TestPath,
+        zaf::RegistryView::Registry32);
+    ASSERT_EQ(key32.GetDWordValue(WOW64DWord), WOW64DWordValue32);
+    ASSERT_EQ(key32.GetQWordValue(WOW64QWord), WOW64QWordValue32);
+    ASSERT_EQ(key32.GetStringValue(WOW64String), WOW64StringValue32);
+    ASSERT_EQ(key32.GetExpandableStringValue(WOW64ExpandableString), WOW64ExpandableStringValue32);
+    ASSERT_EQ(key32.GetMultiStringValue(WOW64MultiString), WOW64MultiStringValue32());
+}
+
+
+TEST_F(RegistryGetValueTest, GetValueFrom64View) {
+
+    WriteWOW64TestValues();
+
+    auto root_key = zaf::Registry::CurrentUser();
+
+    auto dword = root_key.GetDWordValue(
+        RegistryWOW64TestPath,
+        WOW64DWord,
+        zaf::RegistryView::Registry64);
+    ASSERT_EQ(dword, WOW64DWordValue64);
+
+    auto qword = root_key.GetQWordValue(
+        RegistryWOW64TestPath,
+        WOW64QWord,
+        zaf::RegistryView::Registry64);
+    ASSERT_EQ(qword, WOW64QWordValue64);
+
+    auto string = root_key.GetStringValue(
+        RegistryWOW64TestPath,
+        WOW64String,
+        zaf::RegistryView::Registry64);
+    ASSERT_EQ(string, WOW64StringValue64);
+
+    auto expandable_string = root_key.GetExpandableStringValue(
+        RegistryWOW64TestPath,
+        WOW64ExpandableString,
+        zaf::RegistryView::Registry64);
+    ASSERT_EQ(expandable_string, WOW64ExpandableStringValue64);
+
+    auto multi_string = root_key.GetMultiStringValue(
+        RegistryWOW64TestPath,
+        WOW64MultiString,
+        zaf::RegistryView::Registry64);
+    ASSERT_EQ(multi_string, WOW64MultiStringValue64());
+
+    auto key64 = zaf::Registry::CurrentUser().OpenSubKey(
+        RegistryWOW64TestPath,
+        zaf::RegistryView::Registry64);
+    ASSERT_EQ(key64.GetDWordValue(WOW64DWord), WOW64DWordValue64);
+    ASSERT_EQ(key64.GetQWordValue(WOW64QWord), WOW64QWordValue64);
+    ASSERT_EQ(key64.GetStringValue(WOW64String), WOW64StringValue64);
+    ASSERT_EQ(key64.GetExpandableStringValue(WOW64ExpandableString), WOW64ExpandableStringValue64);
+    ASSERT_EQ(key64.GetMultiStringValue(WOW64MultiString), WOW64MultiStringValue64());
+}
+
+
+TEST_F(RegistryGetValueTest, GetValueWithDifferentView) {
+
+    WriteWOW64TestValues();
+
+    std::wstring key_path = RegistryWOW64TestPath;
+    auto last_delimiter = key_path.find_last_of(L'\\');
+
+    auto sub_key_name = key_path.substr(last_delimiter + 1);
+    key_path.resize(last_delimiter);
+
+    auto key = zaf::Registry::CurrentUser().OpenSubKey(key_path, zaf::RegistryView::Registry64);
+
+    ASSERT_THROW(
+        key.GetStringValue(sub_key_name, WOW64String, zaf::RegistryView::Registry32), 
+        std::logic_error);
 }
