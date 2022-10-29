@@ -1,4 +1,5 @@
 #include <zaf/base/registry/registry_key.h>
+#include <zaf/base/error/check.h>
 #include <zaf/base/error/system_error.h>
 #include <zaf/base/string/join.h>
 
@@ -26,18 +27,23 @@ RegistryKey::~RegistryKey() {
 }
 
 
-RegistryKey RegistryKey::CreateSubKey(const std::wstring& sub_key, RegistryRights rights) {
+RegistryKey RegistryKey::InnerCreateSubKey(
+    const std::wstring& sub_key,
+    RegistryRights rights,
+    std::optional<RegistryView> view) {
+
+    auto new_key_view = GetViewForSubKey(view);
 
     HKEY sub_key_handle{};
     LSTATUS result = RegCreateKeyEx(
         handle_,
         sub_key.c_str(),
         0,
-        nullptr, 
-        0,
-        static_cast<REGSAM>(rights),
         nullptr,
-        &sub_key_handle, 
+        0,
+        static_cast<REGSAM>(rights) | static_cast<REGSAM>(new_key_view),
+        nullptr,
+        &sub_key_handle,
         nullptr);
 
     ZAF_THROW_IF_SYSTEM_ERROR(result);
@@ -45,18 +51,39 @@ RegistryKey RegistryKey::CreateSubKey(const std::wstring& sub_key, RegistryRight
 }
 
 
-RegistryKey RegistryKey::OpenSubKey(const std::wstring& sub_key, RegistryRights rights) {
+RegistryKey RegistryKey::InnerOpenSubKey(
+    const std::wstring& sub_key,
+    RegistryRights rights,
+    std::optional<RegistryView> view) {
+
+    auto new_key_view = GetViewForSubKey(view);
 
     HKEY sub_key_handle{};
     LSTATUS result = RegOpenKeyEx(
         handle_, 
         sub_key.c_str(),
         0, 
-        static_cast<REGSAM>(rights),
+        static_cast<REGSAM>(rights) | static_cast<REGSAM>(new_key_view),
         &sub_key_handle);
 
     ZAF_THROW_IF_SYSTEM_ERROR(result);
     return RegistryKey{ sub_key_handle };
+}
+
+
+void RegistryKey::InnerDeleteSubKey(
+    const std::wstring& sub_key, 
+    std::optional<RegistryView> view) {
+
+    auto sub_key_view = GetViewForSubKey(view);
+
+    LSTATUS result = RegDeleteKeyEx(
+        handle_, 
+        sub_key.c_str(),
+        static_cast<REGSAM>(sub_key_view),
+        0);
+
+    ZAF_THROW_IF_SYSTEM_ERROR(result);
 }
 
 
@@ -235,6 +262,16 @@ void RegistryKey::InnerSetValue(
         data_size);
 
     ZAF_THROW_IF_SYSTEM_ERROR(result);
+}
+
+
+RegistryView RegistryKey::GetViewForSubKey(std::optional<RegistryView> expected_view) const {
+
+    if (expected_view.has_value() && (view_ != RegistryView::Default)) {
+        ZAF_EXPECT(*expected_view == view_);
+    }
+
+    return expected_view.value_or(view_);
 }
 
 }

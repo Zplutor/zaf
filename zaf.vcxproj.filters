@@ -1630,5 +1630,8 @@
     <ClInclude Include="src\zaf\base\registry\registry_value_type.h">
       <Filter>zaf\base\registry</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\registry\registry_view.h">
+      <Filter>zaf\base\registry</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

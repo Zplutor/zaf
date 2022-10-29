@@ -1,11 +1,13 @@
 #pragma once
 
 #include <Windows.h>
+#include <optional>
 #include <string>
 #include <vector>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/registry/registry_rights.h>
 #include <zaf/base/registry/registry_value.h>
+#include <zaf/base/registry/registry_view.h>
 
 namespace zaf {
 
@@ -35,16 +37,51 @@ public:
     }
 
     RegistryKey CreateSubKey(const std::wstring& sub_key) {
-        return CreateSubKey(sub_key, RegistryRights::Read | RegistryRights::Write);
+        return InnerCreateSubKey(
+            sub_key,
+            RegistryRights::Read | RegistryRights::Write,
+            std::nullopt);
     }
 
-    RegistryKey CreateSubKey(const std::wstring& sub_key, RegistryRights rights);
+    RegistryKey CreateSubKey(const std::wstring& sub_key, RegistryRights rights) {
+        return InnerCreateSubKey(sub_key, rights, std::nullopt);
+    }
+
+    RegistryKey CreateSubKey(const std::wstring& sub_key, RegistryView view) {
+        return InnerCreateSubKey(sub_key, RegistryRights::Read | RegistryRights::Write, view);
+    }
+
+    RegistryKey CreateSubKey(
+        const std::wstring& sub_key,
+        RegistryView view,
+        RegistryRights rights) {
+
+        return InnerCreateSubKey(sub_key, rights, view);
+    }
     
     RegistryKey OpenSubKey(const std::wstring& sub_key) {
-        return OpenSubKey(sub_key, RegistryRights::Read);
+        return InnerOpenSubKey(sub_key, RegistryRights::Read, std::nullopt);
     }
 
-    RegistryKey OpenSubKey(const std::wstring& sub_key, RegistryRights rights);
+    RegistryKey OpenSubKey(const std::wstring& sub_key, RegistryRights rights) {
+        return InnerOpenSubKey(sub_key, rights, std::nullopt);
+    }
+
+    RegistryKey OpenSubKey(const std::wstring& sub_key, RegistryView view) {
+        return InnerOpenSubKey(sub_key, RegistryRights::Read, view);
+    }
+
+    RegistryKey OpenSubKey(const std::wstring& sub_key, RegistryView view, RegistryRights rights) {
+        return InnerOpenSubKey(sub_key, rights, view);
+    }
+
+    void DeleteSubKey(const std::wstring& sub_key) {
+        InnerDeleteSubKey(sub_key, std::nullopt);
+    }
+
+    void DeleteSubKey(const std::wstring& sub_key, RegistryView view) {
+        InnerDeleteSubKey(sub_key, view);
+    }
 
     void DeleteValue(const std::wstring& name);
 
@@ -123,6 +160,18 @@ public:
     }
 
 private:
+    RegistryKey InnerCreateSubKey(
+        const std::wstring& sub_key, 
+        RegistryRights rights,
+        std::optional<RegistryView> view);
+
+    RegistryKey InnerOpenSubKey(
+        const std::wstring& sub_key,
+        RegistryRights rights,
+        std::optional<RegistryView> view);
+
+    void InnerDeleteSubKey(const std::wstring& sub_key, std::optional<RegistryView> view);
+
     RegistryValue InnerGetValue(
         const std::wstring& sub_key, 
         const std::wstring& name, 
@@ -135,8 +184,11 @@ private:
         const void* data,
         DWORD data_size);
 
+    RegistryView GetViewForSubKey(std::optional<RegistryView> expected_view) const;
+
 private:
     HKEY handle_{};
+    RegistryView view_{ RegistryView::Default };
 };
 
 }
