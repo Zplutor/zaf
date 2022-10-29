@@ -6,6 +6,7 @@
 namespace zaf {
 
 enum class RegistryRights : REGSAM {
+    None = 0,
     Read = KEY_READ,
     Write = KEY_WRITE,
 };

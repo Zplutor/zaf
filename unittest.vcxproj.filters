@@ -316,6 +316,9 @@
     <ClCompile Include="unittest\case\base\registry\registry_key_basic_test.cpp">
       <Filter>case\base\registry</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\registry\registry_key_create_sub_key_test.cpp">
+      <Filter>case\base\registry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
