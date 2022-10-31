@@ -1,9 +1,9 @@
 #pragma once
 
 #include <zaf/control/layout/axis_alignment.h>
-#include <zaf/control/layout/control_alignment.h>
 #include <zaf/control/layout/layout_direction.h>
 #include <zaf/control/layout/layouter.h>
+#include <zaf/graphic/size.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
@@ -11,7 +11,6 @@ namespace internal {
 class LinearLayoutLengthCalculatItem;
 }
 
-class Size;
 
 class LinearLayouter : public Layouter {
 public:
@@ -26,20 +25,20 @@ public:
         direction_ = direction;
     }
 
-    ControlAlignment ControlAlignment() const {
-        return control_alignment_;
-    }
-
-    void SetControlAlignment(zaf::ControlAlignment alignment) {
-        control_alignment_ = alignment;
-    }
-
-    AxisAlignment AxisAlignment() const {
+    zaf::AxisAlignment AxisAlignment() const {
         return axis_alignment_;
     }
 
     void SetAxisAlignment(zaf::AxisAlignment alignment) {
         axis_alignment_ = alignment;
+    }
+
+    zaf::AxisAlignment CrossAxisAlignment() const {
+        return cross_axis_alignment_;
+    }
+
+    void SetCrossAxisAlignment(zaf::AxisAlignment alignment) {
+        cross_axis_alignment_ = alignment;
     }
 
     void Layout(
@@ -71,16 +70,14 @@ private:
         float length, 
         const Size& content_size) const;
 
-    float CalculateAxisOffset(float control_length, float content_length) const;
-
     bool IsVertical() const {
         return direction_ == LayoutDirection::TopToBottom;
     }
 
 private:
     LayoutDirection direction_{ LayoutDirection::LeftToRight };
-    zaf::ControlAlignment control_alignment_{ ControlAlignment::Leading };
-    zaf::AxisAlignment axis_alignment_{ AxisAlignment::Near };
+    zaf::AxisAlignment axis_alignment_{ AxisAlignment::Start };
+    zaf::AxisAlignment cross_axis_alignment_{ AxisAlignment::Start };
 };
 
 

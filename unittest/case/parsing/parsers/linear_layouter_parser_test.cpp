@@ -20,34 +20,34 @@ TEST(LinearLayouterPraserTest, ParseDirection) {
 }
 
 
-TEST(LinearLayouterPraserTest, ParseControlAlignment) {
+TEST(LinearLayouterPraserTest, ParseAxisAlignment) {
 
-    auto result = TestEnumProperty<LinearLayouter, ControlAlignment>(
-        "ControlAlignment",
+    auto result = TestEnumProperty<LinearLayouter, AxisAlignment>(
+        "AxisAlignment",
         {
-            { ControlAlignment::Leading, "Leading" },
-            { ControlAlignment::Tailing, "Tailing" },
-            { ControlAlignment::Center, "Center" },
+            { AxisAlignment::Start, "Start" },
+            { AxisAlignment::End, "End" },
+            { AxisAlignment::Center, "Center" },
         },
         [](LinearLayouter& layouter) {
-            return layouter.ControlAlignment();
+            return layouter.AxisAlignment();
         }
     );
     ASSERT_TRUE(result);
 }
 
 
-TEST(LinearLayouterPraserTest, ParseAxisAlignment) {
+TEST(LinearLayouterPraserTest, ParseCrossAxisAlignment) {
 
     auto result = TestEnumProperty<LinearLayouter, AxisAlignment>(
-        "AxisAlignment",
+        "CrossAxisAlignment",
         {
-            { AxisAlignment::Near, "Near" },
-            { AxisAlignment::Far, "Far" },
+            { AxisAlignment::Start, "Start" },
+            { AxisAlignment::End, "End" },
             { AxisAlignment::Center, "Center" },
         },
         [](LinearLayouter& layouter) {
-            return layouter.AxisAlignment();
+            return layouter.CrossAxisAlignment();
         }
     );
     ASSERT_TRUE(result);

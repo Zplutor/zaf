@@ -5,8 +5,8 @@
 namespace zaf {
 
 enum class AxisAlignment {
-    Near,
-    Far,
+    Start,
+    End,
     Center,
 };
 

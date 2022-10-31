@@ -348,15 +348,15 @@ TEST(ControlParserTest, ParseLayouter) {
     xaml = R"(
         <Control>
             <Control.Layouter>
-                <LinearLayouter ControlAlignment="Center" AxisAlignment="Center" />
+                <LinearLayouter AxisAlignment="Center" CrossAxisAlignment="Center" />
             </Control.Layouter>
         </Control>
     )";
     control = CreateControlFromXaml(xaml);
     layouter = std::dynamic_pointer_cast<zaf::LinearLayouter>(control->Layouter());
     ASSERT_NE(layouter, nullptr);
-    ASSERT_EQ(layouter->ControlAlignment(), zaf::ControlAlignment::Center);
     ASSERT_EQ(layouter->AxisAlignment(), zaf::AxisAlignment::Center);
+    ASSERT_EQ(layouter->CrossAxisAlignment(), zaf::AxisAlignment::Center);
 }
 
 

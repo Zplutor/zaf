@@ -58,22 +58,22 @@ public:
 };
 
 
-float CalculateAxisOffset(
+float CalculateCrossAxisOffset(
     float length,
     float avaliable_length,
-    AxisAlignment axis_alignment) {
+    AxisAlignment cross_axis_alignment) {
 
-    if (axis_alignment == AxisAlignment::Near) {
+    if (cross_axis_alignment == AxisAlignment::Start) {
         return 0;
     }
 
     float space_length = avaliable_length - length;
 
-    if (axis_alignment == AxisAlignment::Far) {
+    if (cross_axis_alignment == AxisAlignment::End) {
         return space_length;
     }
 
-    if (axis_alignment == AxisAlignment::Center) {
+    if (cross_axis_alignment == AxisAlignment::Center) {
         return space_length / 2;
     }
 
@@ -89,7 +89,7 @@ public:
         float position,
         float length,
         const Size& content_size,
-        AxisAlignment axis_alignment) {
+        AxisAlignment cross_axis_alignment) {
 
         auto current_dimension_info = CalculateCurrentDimensionPositionAndLength(
             control, 
@@ -99,7 +99,7 @@ public:
         auto other_dimension_info = CalculateOtherDimensionPositionAndLength(
             control,
             content_size, 
-            axis_alignment);
+            cross_axis_alignment);
 
         if (IsHeightDimension) {
             std::swap(current_dimension_info, other_dimension_info);
@@ -137,7 +137,7 @@ private:
     static std::pair<float, float> CalculateOtherDimensionPositionAndLength(
         const Control& control,
         const Size& content_size,
-        AxisAlignment axis_alignment) {
+        AxisAlignment cross_axis_alignment) {
 
         using Dimension = DimensionTraits<!IsHeightDimension>;
 
@@ -155,7 +155,7 @@ private:
         //Calculate position.
         float position = 
             Dimension::GetHeadingMargin(margin) +
-            CalculateAxisOffset(length, avaliable_length, axis_alignment);
+            CalculateCrossAxisOffset(length, avaliable_length, cross_axis_alignment);
 
         return std::make_pair(position, length);
     }
@@ -165,8 +165,8 @@ private:
 
 ZAF_DEFINE_TYPE(LinearLayouter)
 ZAF_DEFINE_TYPE_PROPERTY(Direction)
-ZAF_DEFINE_TYPE_PROPERTY(ControlAlignment)
 ZAF_DEFINE_TYPE_PROPERTY(AxisAlignment)
+ZAF_DEFINE_TYPE_PROPERTY(CrossAxisAlignment)
 ZAF_DEFINE_TYPE_END
 
 
@@ -259,18 +259,18 @@ float LinearLayouter::CalculatePositionOffset(
     const std::vector<float>& children_positions,
     float content_length) const {
 
-    if (control_alignment_ == ControlAlignment::Leading) {
+    if (axis_alignment_ == AxisAlignment::Start) {
         return 0;
     }
     
     float total_length = children_positions.back() - children_positions.front();
     float space_length = content_length - total_length;
 
-    if (control_alignment_ == ControlAlignment::Tailing) {
+    if (axis_alignment_ == AxisAlignment::End) {
         return space_length;
     }
 
-    if (control_alignment_ == ControlAlignment::Center) {
+    if (axis_alignment_ == AxisAlignment::Center) {
         return space_length / 2;
     }
 
@@ -315,7 +315,7 @@ Rect LinearLayouter::GetChildRect(
             position,
             length, 
             content_size, 
-            axis_alignment_);
+            cross_axis_alignment_);
     }
     else {
         return ControlRectCalculator<false>::Calculate(
@@ -323,30 +323,8 @@ Rect LinearLayouter::GetChildRect(
             position,
             length,
             content_size,
-            axis_alignment_);
+            cross_axis_alignment_);
     }
-}
-
-
-float LinearLayouter::CalculateAxisOffset(
-    float control_length,
-    float content_length) const {
-
-    if (axis_alignment_ == AxisAlignment::Near) {
-        return 0;
-    }
-
-    float space_length = content_length - control_length;
-
-    if (axis_alignment_ == AxisAlignment::Far) {
-        return space_length;
-    }
-
-    if (axis_alignment_ == AxisAlignment::Center) {
-        return space_length / 2;
-    }
-
-    return 0;
 }
 
 

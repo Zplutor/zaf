@@ -5,10 +5,10 @@
 
 namespace {
 
-class LinearLayouterControlAlignmentTest : public testing::Test {
+class LinearLayouterAxisAlignmentTest : public testing::Test {
 protected:
     void RunTest(
-        zaf::ControlAlignment alignment,
+        zaf::AxisAlignment alignment,
         float parent_length,
         float child_length,
         const std::vector<float>& expected_children_positions) {
@@ -23,7 +23,7 @@ protected:
     }
 
     void RunTestWithMargin(
-        zaf::ControlAlignment alignment,
+        zaf::AxisAlignment alignment,
         float parent_length,
         float child_length,
         float child_heading_margin,
@@ -44,7 +44,7 @@ protected:
 
 private:
     void InnerRunTest(
-        zaf::ControlAlignment alignment,
+        zaf::AxisAlignment alignment,
         float parent_length,
         float child_length,
         float child_heading_margin,
@@ -53,7 +53,7 @@ private:
         bool test_height) {
 
         auto layouter = zaf::Create<zaf::LinearLayouter>();
-        layouter->SetControlAlignment(alignment);
+        layouter->SetAxisAlignment(alignment);
         layouter->SetDirection(
             test_height ? zaf::LayoutDirection::TopToBottom : zaf::LayoutDirection::LeftToRight);
 
@@ -95,7 +95,7 @@ private:
 };
 
 
-class LinearLayouterAxisAlignmentTest : public testing::Test {
+class LinearLayouterCrossAxisAlignmentTest : public testing::Test {
 protected:
     void RunTest(
         zaf::AxisAlignment alignment, 
@@ -138,7 +138,7 @@ private:
         bool test_height) {
 
         auto layouter = zaf::Create<zaf::LinearLayouter>();
-        layouter->SetAxisAlignment(alignment);
+        layouter->SetCrossAxisAlignment(alignment);
 
         auto parent = zaf::Create<zaf::Control>();
 
@@ -174,66 +174,66 @@ private:
 
 }
 
-TEST_F(LinearLayouterControlAlignmentTest, LeadingControlAlignment) {
+TEST_F(LinearLayouterAxisAlignmentTest, Start) {
 
-    RunTest(zaf::ControlAlignment::Leading, 100, 10, { 0 });
-    RunTest(zaf::ControlAlignment::Leading, 100, 200, { 0 });
-    RunTest(zaf::ControlAlignment::Leading, 100, 10, { 0, 10 });
-    RunTest(zaf::ControlAlignment::Leading, 100, 50, { 0, 50 });
-    RunTest(zaf::ControlAlignment::Leading, 100, 40, { 0, 40, 80, 120 });
+    RunTest(zaf::AxisAlignment::Start, 100, 10, { 0 });
+    RunTest(zaf::AxisAlignment::Start, 100, 200, { 0 });
+    RunTest(zaf::AxisAlignment::Start, 100, 10, { 0, 10 });
+    RunTest(zaf::AxisAlignment::Start, 100, 50, { 0, 50 });
+    RunTest(zaf::AxisAlignment::Start, 100, 40, { 0, 40, 80, 120 });
 
-    RunTestWithMargin(zaf::ControlAlignment::Leading, 100, 10, 5, 10, { 5 });
-    RunTestWithMargin(zaf::ControlAlignment::Leading, 100, 10, 5, 10, { 5, 30 });
+    RunTestWithMargin(zaf::AxisAlignment::Start, 100, 10, 5, 10, { 5 });
+    RunTestWithMargin(zaf::AxisAlignment::Start, 100, 10, 5, 10, { 5, 30 });
 }
 
 
-TEST_F(LinearLayouterControlAlignmentTest, TailingControlAlignment) {
+TEST_F(LinearLayouterAxisAlignmentTest, End) {
 
-    RunTest(zaf::ControlAlignment::Tailing, 100, 10, { 90 });
-    RunTest(zaf::ControlAlignment::Tailing, 100, 200, { -100 });
-    RunTest(zaf::ControlAlignment::Tailing, 100, 10, { 70, 80, 90 });
-    RunTest(zaf::ControlAlignment::Tailing, 100, 50, { 0, 50 });
-    RunTest(zaf::ControlAlignment::Tailing, 100, 40, { -60, -20, 20, 60 });
+    RunTest(zaf::AxisAlignment::End, 100, 10, { 90 });
+    RunTest(zaf::AxisAlignment::End, 100, 200, { -100 });
+    RunTest(zaf::AxisAlignment::End, 100, 10, { 70, 80, 90 });
+    RunTest(zaf::AxisAlignment::End, 100, 50, { 0, 50 });
+    RunTest(zaf::AxisAlignment::End, 100, 40, { -60, -20, 20, 60 });
 
-    RunTestWithMargin(zaf::ControlAlignment::Tailing, 100, 10, 5, 10, { 80 });
-    RunTestWithMargin(zaf::ControlAlignment::Tailing, 100, 10, 5, 10, { 55, 80 });
+    RunTestWithMargin(zaf::AxisAlignment::End, 100, 10, 5, 10, { 80 });
+    RunTestWithMargin(zaf::AxisAlignment::End, 100, 10, 5, 10, { 55, 80 });
 }
 
 
-TEST_F(LinearLayouterControlAlignmentTest, CenterControlAlignment) {
+TEST_F(LinearLayouterAxisAlignmentTest, Center) {
 
-    RunTest(zaf::ControlAlignment::Center, 100, 10, { 45 });
-    RunTest(zaf::ControlAlignment::Center, 100, 200, { -50 });
-    RunTest(zaf::ControlAlignment::Center, 100, 10, { 40, 50 });
-    RunTest(zaf::ControlAlignment::Center, 100, 50, { 0, 50 });
-    RunTest(zaf::ControlAlignment::Center, 100, 40, { -30, 10, 50, 90 });
+    RunTest(zaf::AxisAlignment::Center, 100, 10, { 45 });
+    RunTest(zaf::AxisAlignment::Center, 100, 200, { -50 });
+    RunTest(zaf::AxisAlignment::Center, 100, 10, { 40, 50 });
+    RunTest(zaf::AxisAlignment::Center, 100, 50, { 0, 50 });
+    RunTest(zaf::AxisAlignment::Center, 100, 40, { -30, 10, 50, 90 });
 
-    RunTestWithMargin(zaf::ControlAlignment::Center, 100, 10, 5, 10, { 42.5 });
-    RunTestWithMargin(zaf::ControlAlignment::Center, 100, 10, 5, 10, { 30, 55 });
+    RunTestWithMargin(zaf::AxisAlignment::Center, 100, 10, 5, 10, { 42.5 });
+    RunTestWithMargin(zaf::AxisAlignment::Center, 100, 10, 5, 10, { 30, 55 });
 }
 
 
-TEST_F(LinearLayouterAxisAlignmentTest, NearAxisAlignment) {
+TEST_F(LinearLayouterCrossAxisAlignmentTest, Start) {
 
-    RunTest(zaf::AxisAlignment::Near, 50, 10, 0);
-    RunTest(zaf::AxisAlignment::Near, 50, 50, 0);
-    RunTest(zaf::AxisAlignment::Near, 50, 90, 0);
+    RunTest(zaf::AxisAlignment::Start, 50, 10, 0);
+    RunTest(zaf::AxisAlignment::Start, 50, 50, 0);
+    RunTest(zaf::AxisAlignment::Start, 50, 90, 0);
 
-    RunTestWithMargin(zaf::AxisAlignment::Near, 50, 10, 5, 10, 5);
+    RunTestWithMargin(zaf::AxisAlignment::Start, 50, 10, 5, 10, 5);
 }
 
 
-TEST_F(LinearLayouterAxisAlignmentTest, FarAxisAlignment) {
+TEST_F(LinearLayouterCrossAxisAlignmentTest, End) {
 
-    RunTest(zaf::AxisAlignment::Far, 50, 10, 40);
-    RunTest(zaf::AxisAlignment::Far, 50, 50, 0);
-    RunTest(zaf::AxisAlignment::Far, 50, 90, -40);
+    RunTest(zaf::AxisAlignment::End, 50, 10, 40);
+    RunTest(zaf::AxisAlignment::End, 50, 50, 0);
+    RunTest(zaf::AxisAlignment::End, 50, 90, -40);
 
-    RunTestWithMargin(zaf::AxisAlignment::Far, 50, 10, 5, 10, 30);
+    RunTestWithMargin(zaf::AxisAlignment::End, 50, 10, 5, 10, 30);
 }
 
 
-TEST_F(LinearLayouterAxisAlignmentTest, CenterAxisAlignment) {
+TEST_F(LinearLayouterCrossAxisAlignmentTest, Center) {
 
     RunTest(zaf::AxisAlignment::Center, 50, 10, 20);
     RunTest(zaf::AxisAlignment::Center, 50, 50, 0);

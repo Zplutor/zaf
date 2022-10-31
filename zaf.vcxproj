@@ -99,7 +99,6 @@
     <ClCompile Include="src\zaf\control\internal\triangle_geometry.cpp" />
     <ClCompile Include="src\zaf\control\layout\anchor_layouter.cpp" />
     <ClCompile Include="src\zaf\control\layout\axis_alignment.cpp" />
-    <ClCompile Include="src\zaf\control\layout\control_alignment.cpp" />
     <ClCompile Include="src\zaf\control\layout\internal\linear_layout_length_calculating.cpp" />
     <ClCompile Include="src\zaf\control\layout\layouter.cpp" />
     <ClCompile Include="src\zaf\control\layout\layout_direction.cpp" />
@@ -332,7 +331,6 @@
     <ClInclude Include="src\zaf\control\internal\triangle_geometry.h" />
     <ClInclude Include="src\zaf\control\layout\anchor_layouter.h" />
     <ClInclude Include="src\zaf\control\layout\axis_alignment.h" />
-    <ClInclude Include="src\zaf\control\layout\control_alignment.h" />
     <ClInclude Include="src\zaf\control\layout\internal\linear_layout_length_calculating.h" />
     <ClInclude Include="src\zaf\control\layout\layout_direction.h" />
     <ClInclude Include="src\zaf\control\layout\layouter.h" />

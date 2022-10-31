@@ -637,9 +637,6 @@
     <ClCompile Include="src\zaf\control\layout\layout_direction.cpp">
       <Filter>zaf\control\layout</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\layout\control_alignment.cpp">
-      <Filter>zaf\control\layout</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\layout\axis_alignment.cpp">
       <Filter>zaf\control\layout</Filter>
     </ClCompile>
@@ -1088,9 +1085,6 @@
       <Filter>zaf\control\layout</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\layout_direction.h">
-      <Filter>zaf\control\layout</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\layout\control_alignment.h">
       <Filter>zaf\control\layout</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\axis_alignment.h">
