@@ -24,11 +24,17 @@ TEST(LinearBoxTest, Normal) {
 
 TEST(LinearBoxTest, Parse) {
 
-    std::wstring xaml = LR"(<VerticalBox />)";
+    std::wstring xaml = LR"(<VerticalBox AxisAlignment="Start" CrossAxisAlignment="End" />)";
     auto vertical_box = zaf::CreateObjectFromXaml<zaf::VerticalBox>(xaml);
     ASSERT_NE(vertical_box, nullptr);
+    ASSERT_EQ(vertical_box->Direction(), zaf::LayoutDirection::TopToBottom);
+    ASSERT_EQ(vertical_box->AxisAlignment(), zaf::AxisAlignment::Start);
+    ASSERT_EQ(vertical_box->CrossAxisAlignment(), zaf::AxisAlignment::End);
 
-    xaml = LR"(<HorizontalBox />)";
+    xaml = LR"(<HorizontalBox AxisAlignment="End" CrossAxisAlignment="Start" />)";
     auto horizontal_box = zaf::CreateObjectFromXaml<zaf::HorizontalBox>(xaml);
     ASSERT_NE(horizontal_box, nullptr);
+    ASSERT_EQ(horizontal_box->Direction(), zaf::LayoutDirection::LeftToRight);
+    ASSERT_EQ(horizontal_box->AxisAlignment(), zaf::AxisAlignment::End);
+    ASSERT_EQ(horizontal_box->CrossAxisAlignment(), zaf::AxisAlignment::Start);
 }
