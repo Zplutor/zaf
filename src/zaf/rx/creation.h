@@ -34,6 +34,26 @@ Observable<T> Create(std::function<Subscription(Observer<T>)> procedure) {
 template<typename T>
 Observable<T> Create(
     std::shared_ptr<Scheduler> schduler,
+    std::function<void(Observer<T>)> procedure) {
+
+    auto bridged_procedure = [procedure = std::move(procedure)](
+        const std::shared_ptr<internal::InnerObserver>& observer,
+        CancelToken cancel_token) {
+
+        procedure(Observer<T>{ observer });
+    };
+
+    auto observable = std::make_shared<internal::AsyncCustomizedObservable>(
+        std::move(schduler),
+        std::move(bridged_procedure));
+
+    return Observable<T>(std::move(observable));
+}
+
+
+template<typename T>
+Observable<T> Create(
+    std::shared_ptr<Scheduler> schduler,
     std::function<void(Observer<T>, CancelToken)> procedure) {
 
     auto bridged_procedure = [procedure = std::move(procedure)](
