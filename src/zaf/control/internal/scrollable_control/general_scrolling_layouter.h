@@ -18,10 +18,10 @@ private:
         bool& need_vertical_scroll_bar,
         bool& need_horizontal_scroll_bar);
 
-    void LayoutScrollContentControl(const zaf::Size& scroll_content_size);
+    void AdjustScrollBarValueRanges(const Size& scroll_content_size);
+    Size CalculateScrollSize(const Size& expected_content_size) const;
 
-    void AdjustScrollBarValueRanges();
-    Size GetScrollSize();
+    void LayoutScrollContentControl(const Size& scroll_content_size);
 };
 
 }

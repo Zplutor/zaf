@@ -52,3 +52,27 @@ TEST(ScrollableControlTest, EnableScrollBar) {
     ASSERT_TRUE(scrollable_control->VerticalScrollBar()->IsEnabled());
     ASSERT_TRUE(scrollable_control->HorizontalScrollBar()->IsEnabled());
 }
+
+
+TEST(ScrollableControlTest, ReserveScrollContentPositionAfterLayout) {
+
+    auto scrollable_control = Create<ScrollableControl>();
+    scrollable_control->SetSize(Size{ 110, 110 });
+    scrollable_control->SetAllowHorizontalScroll(true);
+    scrollable_control->SetAllowVerticalScroll(true);
+    scrollable_control->SetAutoScrollContentSize(true);
+    scrollable_control->SetScrollBarThickness(10);
+
+    auto scroll_content = scrollable_control->ScrollContent();
+    scroll_content->SetFixedSize(Size{ 200, 200 });
+
+    scrollable_control->HorizontalScrollBar()->SetValue(50);
+    scrollable_control->VerticalScrollBar()->SetValue(50);
+
+    ASSERT_EQ(scroll_content->X(), -50);
+    ASSERT_EQ(scroll_content->Y(), -50);
+
+    scrollable_control->SetSize(Size{ 150, 150 });
+    ASSERT_EQ(scroll_content->X(), -50);
+    ASSERT_EQ(scroll_content->Y(), -50);
+}
