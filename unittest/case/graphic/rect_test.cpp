@@ -3,7 +3,7 @@
 
 using namespace zaf;
 
-TEST(Rect, Contain) {
+TEST(RectTest, Contain) {
 
     ASSERT_FALSE(zaf::Rect(0, 0, 0, 0).Contain(zaf::Point(0, 0)));
     ASSERT_FALSE(zaf::Rect(0, 0, 0, 0).Contain(zaf::Point(1, 1)));
@@ -28,7 +28,7 @@ TEST(Rect, Contain) {
 }
 
 
-TEST(Rect, Intersect) {
+TEST(RectTest, Intersect) {
 
     auto test = [](const zaf::Rect& intersected_rect, const zaf::Rect& expected_rect) {
         zaf::Rect primary_rect(0, 0, 10, 10);
@@ -53,7 +53,7 @@ TEST(Rect, Intersect) {
 }
 
 
-TEST(Rect, Union) {
+TEST(RectTest, Union) {
 
     const Rect origin_rect{ 0, 0, 10, 10 };
 
@@ -74,7 +74,7 @@ TEST(Rect, Union) {
 }
 
 
-TEST(Rect, Subtract) {
+TEST(RectTest, Subtract) {
 
     const Rect origin_rect(0, 0, 10, 10);
 
@@ -103,7 +103,7 @@ TEST(Rect, Subtract) {
 }
 
 
-TEST(Rect, InflateWithFrame) {
+TEST(RectTest, InflateWithFrame) {
 
     auto test = [](const zaf::Frame& frame, const zaf::Rect& expected_rect) {
         zaf::Rect rect(0, 0, 5, 5);
@@ -116,7 +116,7 @@ TEST(Rect, InflateWithFrame) {
 }
 
 
-TEST(Rect, DeflateWithFrame) {
+TEST(RectTest, DeflateWithFrame) {
 
     auto test = [](const zaf::Frame& frame, const zaf::Rect& expected_rect) {
         zaf::Rect rect(0, 0, 10, 10);
@@ -126,4 +126,30 @@ TEST(Rect, DeflateWithFrame) {
 
     ASSERT_TRUE(test(zaf::Frame(0, 0, 0, 0), zaf::Rect(0, 0, 10, 10)));
     ASSERT_TRUE(test(zaf::Frame(1, 2, 3, 4), zaf::Rect(1, 2, 6, 4)));
+}
+
+
+TEST(RectTest, Hash) {
+
+    Rect rect1{ 9, 9, 99, 99 };
+    Rect rect2{ 9, 9, 99, 99 };
+    ASSERT_EQ(rect1.Hash(), rect2.Hash());
+}
+
+
+TEST(RectTest, IsEqual) {
+
+    Rect rect1{ 9, 9, 99, 99 };
+    Rect rect2{ 9, 9, 99, 99 };
+    ASSERT_TRUE(rect1.IsEqual(rect2));
+
+    Rect rect3{ 7, 8, 89, 83 };
+    ASSERT_FALSE(rect1.IsEqual(rect3));
+}
+
+
+TEST(RectTest, ToString) {
+
+    Rect rect{ 500, 400, 640, 480 };
+    ASSERT_EQ(rect.ToString(), L"{500,400},{640,480}");
 }

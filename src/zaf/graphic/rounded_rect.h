@@ -45,6 +45,8 @@ public:
         return d2d1_rounded_rect;
     }
 
+    std::wstring ToString() const override;
+
     const Rect& Rect() const {
         return rect;
     }

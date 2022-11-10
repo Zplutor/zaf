@@ -1,5 +1,6 @@
 #include <zaf/graphic/point.h>
 #include <zaf/base/as.h>
+#include <zaf/base/string/to_string.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/object/parsing/internal/utility.h>
 
@@ -30,5 +31,10 @@ ZAF_DEFINE_TYPE_PROPERTY(Y)
 ZAF_DEFINE_TYPE_END
 
 ZAF_DEFINE_EQUALITY(Point)
+
+
+std::wstring Point::ToString() const {
+    return ToWideString(x) + L',' + ToWideString(y);
+}
 
 }

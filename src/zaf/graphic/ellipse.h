@@ -57,6 +57,8 @@ public:
         return ellipse;
     }
 
+    std::wstring ToString() const override;
+
     const Point& Position() const {
         return position;
     }

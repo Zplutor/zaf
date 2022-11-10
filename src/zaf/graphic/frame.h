@@ -77,6 +77,8 @@ public:
         return rect;
     }
 
+    std::wstring ToString() const override;
+
     float Left() const {
         return left;
     }

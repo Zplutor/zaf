@@ -1,4 +1,5 @@
 #include <zaf/graphic/rounded_rect.h>
+#include <zaf/base/string/to_string.h>
 #include <zaf/object/equality.h>
 #include <zaf/object/type_definition.h>
 
@@ -11,6 +12,11 @@ ZAF_DEFINE_TYPE_PROPERTY(Rect)
 ZAF_DEFINE_TYPE_END
 
 ZAF_DEFINE_EQUALITY(RoundedRect)
+
+
+std::wstring RoundedRect::ToString() const {
+    return L'{' + rect.ToString() + L"}," + ToWideString(x_radius) + L',' + ToWideString(y_radius);
+}
 
 
 bool operator==(const RoundedRect& rounded_rect1, const RoundedRect& rounded_rect2) {

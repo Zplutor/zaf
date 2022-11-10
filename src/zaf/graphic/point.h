@@ -113,6 +113,8 @@ public:
         return point;
     }
 
+    std::wstring ToString() const override;
+
     float X() const {
         return x;
     }

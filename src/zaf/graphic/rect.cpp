@@ -107,4 +107,9 @@ const Rect Rect::Infinite(
     std::numeric_limits<float>::infinity(),
     std::numeric_limits<float>::infinity());
 
+
+std::wstring Rect::ToString() const {
+    return L'{' + position.ToString() + L"},{" + size.ToString() + L'}';
+}
+
 }

@@ -84,6 +84,8 @@ public:
         return size;
     }
 
+    std::wstring ToString() const override;
+
     float Width() const {
         return width;
     }

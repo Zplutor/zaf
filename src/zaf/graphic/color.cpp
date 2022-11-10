@@ -2,6 +2,7 @@
 #include <optional>
 #include <zaf/base/as.h>
 #include <zaf/base/string/to_numeric.h>
+#include <zaf/base/string/to_string.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/type_definition.h>
@@ -211,6 +212,15 @@ const Color& Color::White() {
 const Color& Color::Yellow() {
     static Color yellow{ 1, 1, 0 };
     return yellow;
+}
+
+
+std::wstring Color::ToString() const {
+    return 
+        ToWideString(r) + L',' + 
+        ToWideString(g) + L',' + 
+        ToWideString(b) + L',' + 
+        ToWideString(a);
 }
 
 }

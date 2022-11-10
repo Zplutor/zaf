@@ -261,6 +261,8 @@ public:
         return wic_rect;
     }
 
+    std::wstring ToString() const override;
+
     const Point& Position() const {
         return position;
     }

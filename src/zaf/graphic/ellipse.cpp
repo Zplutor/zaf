@@ -1,4 +1,5 @@
 #include <zaf/graphic/ellipse.h>
+#include <zaf/base/string/to_string.h>
 #include <zaf/object/type_definition.h>
 
 namespace zaf {
@@ -10,6 +11,14 @@ ZAF_DEFINE_TYPE_PROPERTY(YRadius)
 ZAF_DEFINE_TYPE_END
 
 ZAF_DEFINE_EQUALITY(Ellipse)
+
+
+std::wstring Ellipse::ToString() const {
+    return 
+        L'{' + position.ToString() + L"}," + 
+        ToWideString(x_radius) + L',' + 
+        ToWideString(y_radius);
+}
 
 
 bool operator==(const Ellipse& ellipse1, const Ellipse& ellipse2) {

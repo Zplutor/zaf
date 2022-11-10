@@ -171,6 +171,8 @@ public:
         return RGB(r * 255, g * 255, b * 255);
     }
 
+    std::wstring ToString() const override;
+
     float R() const {
         return r;
     }

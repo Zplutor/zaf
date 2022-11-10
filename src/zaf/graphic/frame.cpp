@@ -1,6 +1,7 @@
 #include <zaf/graphic/frame.h>
 #include <zaf/base/as.h>
 #include <zaf/base/string/to_numeric.h>
+#include <zaf/base/string/to_string.h>
 #include <zaf/object/parsing/internal/utility.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_utility.h>
@@ -56,5 +57,13 @@ ZAF_DEFINE_TYPE_END
 
 ZAF_DEFINE_EQUALITY(Frame)
 
+
+std::wstring Frame::ToString() const {
+    return
+        ToWideString(left) + L',' +
+        ToWideString(top) + L',' +
+        ToWideString(right) + L',' +
+        ToWideString(bottom);
+}
 
 }

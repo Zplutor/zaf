@@ -331,6 +331,24 @@
     <ClCompile Include="unittest\case\base\registry\registry_set_value_test.cpp">
       <Filter>case\base\registry</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\graphic\size_test.cpp">
+      <Filter>case\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\point_test.cpp">
+      <Filter>case\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\frame_test.cpp">
+      <Filter>case\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\rounded_rect_test.cpp">
+      <Filter>case\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\ellipse_test.cpp">
+      <Filter>case\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\color_test.cpp">
+      <Filter>case\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

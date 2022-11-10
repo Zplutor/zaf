@@ -1,5 +1,6 @@
 #include <zaf/graphic/size.h>
 #include <zaf/base/as.h>
+#include <zaf/base/string/to_string.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/object/parsing/internal/utility.h>
 
@@ -28,5 +29,10 @@ ZAF_DEFINE_TYPE_PROPERTY(Height)
 ZAF_DEFINE_TYPE_END
 
 ZAF_DEFINE_EQUALITY(Size)
+
+
+std::wstring Size::ToString() const {
+    return ToWideString(width) + L',' + ToWideString(height);
+}
 
 }
