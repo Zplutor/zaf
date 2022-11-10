@@ -2,11 +2,18 @@
 
 #include <cstdint>
 #include <iomanip>
+#include <optional>
 #include <sstream>
 #include <string>
 #include <type_traits>
 
 namespace zaf {
+
+enum class FloatFormat {
+    Default,
+    Fixed,
+    Scientific,
+};
 
 /**
  Defines options that control the format when converting a numeric value 
@@ -54,29 +61,19 @@ public:
         return precision_;
     }
 
-    /**
-     Set whether use scientific notation.
+    FloatFormat FloatFormat() const {
+        return float_format_;
+    }
 
-     This option is for floating point numeric only.
-
-     The default value is false.
-     */
-    ToStringOptions& UseScientificNotation(bool use) {
-        use_scientific_notation_ = use;
+    ToStringOptions& FloatFormat(zaf::FloatFormat format) {
+        float_format_ = format;
         return *this;
     }
 
-    /**
-     Get whether use scientific notation.
-     */
-    bool UseScientificNotation() const {
-        return use_scientific_notation_;
-    }
-
 private:
-    int base_ = 10;
-    int precision_ = 6;
-    bool use_scientific_notation_ = false;
+    int base_{ 10 };
+    int precision_{ 6 };
+    zaf::FloatFormat float_format_{ zaf::FloatFormat::Default };
 };
 
 
@@ -208,12 +205,19 @@ struct FloatToStringConverter {
 
         std::basic_ostringstream<CharType> stream;
         stream.imbue(std::locale::classic());
-        if (options.UseScientificNotation()) {
-            stream << std::scientific;
-        }
-        else {
+
+        switch (options.FloatFormat()) {
+        case FloatFormat::Fixed:
             stream << std::fixed;
+            break;
+        case FloatFormat::Scientific:
+            stream << std::scientific;
+            break;
+        default:
+            stream << std::defaultfloat;
+            break;
         }
+
         stream << std::setprecision(options.Precision());
         stream << numeric_type;
         return stream.str();

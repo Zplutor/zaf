@@ -113,13 +113,13 @@ TEST(ToString, Integer) {
 }
 
 
-#define TEST_FLOAT_TO_STRING(type, precision, scientific, value, expected)  \
+#define TEST_FLOAT_TO_STRING(type, precision, format, value, expected)  \
 {                                                                           \
 std::string str;                                                            \
 std::wstring wstr;                                                          \
 type v = value;                                                             \
 zaf::ToStringOptions options;                                               \
-options.Precision(precision).UseScientificNotation(scientific);             \
+options.Precision(precision).FloatFormat(format);                           \
 str = zaf::ToString(v, options);                                            \
 ASSERT_EQ(expected, str);                                                   \
 wstr = zaf::ToWideString(v, options);                                       \
@@ -128,39 +128,94 @@ ASSERT_EQ(L##expected, wstr);                                               \
 
 TEST(ToString, Float) {
 
-    TEST_FLOAT_TO_STRING(float, 1, false, 0.f, "0.0");
-    TEST_FLOAT_TO_STRING(float, 1, false, 0.1f, "0.1");
-    TEST_FLOAT_TO_STRING(float, 1, false, -0.1f, "-0.1");
-    TEST_FLOAT_TO_STRING(float, 5, false, 3.14159f, "3.14159");
-    TEST_FLOAT_TO_STRING(float, 5, false, -3.14159f, "-3.14159");
-    TEST_FLOAT_TO_STRING(float, 2, false, 765.43f, "765.43");
-    TEST_FLOAT_TO_STRING(float, 2, false, -765.43f, "-765.43");
-    TEST_FLOAT_TO_STRING(float, 6, true, 1.175494e-38f, "1.175494e-38");
-    TEST_FLOAT_TO_STRING(float, 6, true, -1.175494e-38f, "-1.175494e-38");
-    TEST_FLOAT_TO_STRING(float, 6, true, 3.402823e38f, "3.402823e+38");
-    TEST_FLOAT_TO_STRING(float, 6, true, -3.402823e38f, "-3.402823e+38");
+    TEST_FLOAT_TO_STRING(float, 3, zaf::FloatFormat::Default, 1.f, "1");
+    TEST_FLOAT_TO_STRING(float, 3, zaf::FloatFormat::Default, 1.2f, "1.2");
+    TEST_FLOAT_TO_STRING(float, 3, zaf::FloatFormat::Default, 1.23f, "1.23");
+    TEST_FLOAT_TO_STRING(float, 3, zaf::FloatFormat::Default, 1.234f, "1.23");
+    TEST_FLOAT_TO_STRING(float, 3, zaf::FloatFormat::Default, 1.235f, "1.24");
+    TEST_FLOAT_TO_STRING(float, 1, zaf::FloatFormat::Fixed, 0.f, "0.0");
+    TEST_FLOAT_TO_STRING(float, 1, zaf::FloatFormat::Fixed, 0.1f, "0.1");
+    TEST_FLOAT_TO_STRING(float, 1, zaf::FloatFormat::Fixed, -0.1f, "-0.1");
+    TEST_FLOAT_TO_STRING(float, 5, zaf::FloatFormat::Fixed, 3.14159f, "3.14159");
+    TEST_FLOAT_TO_STRING(float, 5, zaf::FloatFormat::Fixed, -3.14159f, "-3.14159");
+    TEST_FLOAT_TO_STRING(float, 2, zaf::FloatFormat::Fixed, 765.43f, "765.43");
+    TEST_FLOAT_TO_STRING(float, 2, zaf::FloatFormat::Fixed, -765.43f, "-765.43");
+    TEST_FLOAT_TO_STRING(float, 6, zaf::FloatFormat::Scientific, 1.175494e-38f, "1.175494e-38");
+    TEST_FLOAT_TO_STRING(float, 6, zaf::FloatFormat::Scientific, -1.175494e-38f, "-1.175494e-38");
+    TEST_FLOAT_TO_STRING(float, 6, zaf::FloatFormat::Scientific, 3.402823e38f, "3.402823e+38");
+    TEST_FLOAT_TO_STRING(float, 6, zaf::FloatFormat::Scientific, -3.402823e38f, "-3.402823e+38");
 
-    TEST_FLOAT_TO_STRING(double, 1, false, 0., "0.0");
-    TEST_FLOAT_TO_STRING(double, 1, false, 0.1, "0.1");
-    TEST_FLOAT_TO_STRING(double, 1, false, -0.1, "-0.1");
-    TEST_FLOAT_TO_STRING(double, 5, false, 3.14159, "3.14159");
-    TEST_FLOAT_TO_STRING(double, 5, false, -3.14159, "-3.14159");
-    TEST_FLOAT_TO_STRING(double, 2, false, 765.43, "765.43");
-    TEST_FLOAT_TO_STRING(double, 2, false, -765.43, "-765.43");
-    TEST_FLOAT_TO_STRING(double, 16, true, 2.2250738585072014e-308, "2.2250738585072014e-308");
-    TEST_FLOAT_TO_STRING(double, 16, true, -2.2250738585072014e-308, "-2.2250738585072014e-308");
-    TEST_FLOAT_TO_STRING(double, 16, true, 1.7976931348623157e308, "1.7976931348623157e+308");
-    TEST_FLOAT_TO_STRING(double, 16, true, -1.7976931348623157e308, "-1.7976931348623157e+308");
+    TEST_FLOAT_TO_STRING(double, 3, zaf::FloatFormat::Default, 1.f, "1");
+    TEST_FLOAT_TO_STRING(double, 3, zaf::FloatFormat::Default, 1.2f, "1.2");
+    TEST_FLOAT_TO_STRING(double, 3, zaf::FloatFormat::Default, 1.23f, "1.23");
+    TEST_FLOAT_TO_STRING(double, 3, zaf::FloatFormat::Default, 1.234f, "1.23");
+    TEST_FLOAT_TO_STRING(double, 3, zaf::FloatFormat::Default, 1.235f, "1.24");
+    TEST_FLOAT_TO_STRING(double, 1, zaf::FloatFormat::Fixed, 0., "0.0");
+    TEST_FLOAT_TO_STRING(double, 1, zaf::FloatFormat::Fixed, 0.1, "0.1");
+    TEST_FLOAT_TO_STRING(double, 1, zaf::FloatFormat::Fixed, -0.1, "-0.1");
+    TEST_FLOAT_TO_STRING(double, 5, zaf::FloatFormat::Fixed, 3.14159, "3.14159");
+    TEST_FLOAT_TO_STRING(double, 5, zaf::FloatFormat::Fixed, -3.14159, "-3.14159");
+    TEST_FLOAT_TO_STRING(double, 2, zaf::FloatFormat::Fixed, 765.43, "765.43");
+    TEST_FLOAT_TO_STRING(double, 2, zaf::FloatFormat::Fixed, -765.43, "-765.43");
+    TEST_FLOAT_TO_STRING(
+        double,
+        16, 
+        zaf::FloatFormat::Scientific,
+        2.2250738585072014e-308,
+        "2.2250738585072014e-308");
+    TEST_FLOAT_TO_STRING(
+        double,
+        16,
+        zaf::FloatFormat::Scientific,
+        -2.2250738585072014e-308,
+        "-2.2250738585072014e-308");
+    TEST_FLOAT_TO_STRING(
+        double, 
+        16, 
+        zaf::FloatFormat::Scientific, 
+        1.7976931348623157e308, 
+        "1.7976931348623157e+308");
+    TEST_FLOAT_TO_STRING(
+        double, 
+        16, 
+        zaf::FloatFormat::Scientific, 
+        -1.7976931348623157e308, 
+        "-1.7976931348623157e+308");
 
-    TEST_FLOAT_TO_STRING(long double, 1, false, 0., "0.0");
-    TEST_FLOAT_TO_STRING(long double, 1, false, 0.1, "0.1");
-    TEST_FLOAT_TO_STRING(long double, 1, false, -0.1, "-0.1");
-    TEST_FLOAT_TO_STRING(long double, 5, false, 3.14159, "3.14159");
-    TEST_FLOAT_TO_STRING(long double, 5, false, -3.14159, "-3.14159");
-    TEST_FLOAT_TO_STRING(long double, 2, false, 765.43, "765.43");
-    TEST_FLOAT_TO_STRING(long double, 2, false, -765.43, "-765.43");
-    TEST_FLOAT_TO_STRING(long double, 16, true, 2.2250738585072014e-308, "2.2250738585072014e-308");
-    TEST_FLOAT_TO_STRING(long double, 16, true, -2.2250738585072014e-308, "-2.2250738585072014e-308");
-    TEST_FLOAT_TO_STRING(long double, 16, true, 1.7976931348623157e308, "1.7976931348623157e+308");
-    TEST_FLOAT_TO_STRING(long double, 16, true, -1.7976931348623157e308, "-1.7976931348623157e+308");
+    TEST_FLOAT_TO_STRING(long double, 3, zaf::FloatFormat::Default, 1.f, "1");
+    TEST_FLOAT_TO_STRING(long double, 3, zaf::FloatFormat::Default, 1.2f, "1.2");
+    TEST_FLOAT_TO_STRING(long double, 3, zaf::FloatFormat::Default, 1.23f, "1.23");
+    TEST_FLOAT_TO_STRING(long double, 3, zaf::FloatFormat::Default, 1.234f, "1.23");
+    TEST_FLOAT_TO_STRING(long double, 3, zaf::FloatFormat::Default, 1.235f, "1.24");
+    TEST_FLOAT_TO_STRING(long double, 1, zaf::FloatFormat::Fixed, 0., "0.0");
+    TEST_FLOAT_TO_STRING(long double, 1, zaf::FloatFormat::Fixed, 0.1, "0.1");
+    TEST_FLOAT_TO_STRING(long double, 1, zaf::FloatFormat::Fixed, -0.1, "-0.1");
+    TEST_FLOAT_TO_STRING(long double, 5, zaf::FloatFormat::Fixed, 3.14159, "3.14159");
+    TEST_FLOAT_TO_STRING(long double, 5, zaf::FloatFormat::Fixed, -3.14159, "-3.14159");
+    TEST_FLOAT_TO_STRING(long double, 2, zaf::FloatFormat::Fixed, 765.43, "765.43");
+    TEST_FLOAT_TO_STRING(long double, 2, zaf::FloatFormat::Fixed, -765.43, "-765.43");
+    TEST_FLOAT_TO_STRING(
+        long double,
+        16, 
+        zaf::FloatFormat::Scientific,
+        2.2250738585072014e-308, 
+        "2.2250738585072014e-308");
+    TEST_FLOAT_TO_STRING(
+        long double,
+        16, 
+        zaf::FloatFormat::Scientific,
+        -2.2250738585072014e-308,
+        "-2.2250738585072014e-308");
+    TEST_FLOAT_TO_STRING(
+        long double, 
+        16, 
+        zaf::FloatFormat::Scientific, 
+        1.7976931348623157e308, 
+        "1.7976931348623157e+308");
+    TEST_FLOAT_TO_STRING(
+        long double,
+        16, 
+        zaf::FloatFormat::Scientific,
+        -1.7976931348623157e308, 
+        "-1.7976931348623157e+308");
 }
