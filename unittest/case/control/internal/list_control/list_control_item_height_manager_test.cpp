@@ -1,5 +1,6 @@
 #include <numeric>
 #include <gtest/gtest.h>
+#include <zaf/base/container/utility/range.h>
 #include <zaf/base/define.h>
 #include <zaf/control/internal/list_control/list_control_item_height_manager.h>
 #include <zaf/control/list_control_delegate.h>
@@ -27,6 +28,10 @@ public:
         }
     }
 
+    float GetItemSpacing() override {
+        return item_spacing;
+    }
+
     void AddItems(std::size_t index, std::size_t count) {
         item_count += count;
         NotifyDataAdd(index, count);
@@ -45,6 +50,7 @@ public:
     std::size_t item_count = 0;
     bool has_variable_item_heights = false;
     float item_height = 10;
+    float item_spacing = 0;
     float variable_item_height_adjustment = 0;
 };
 
@@ -74,7 +80,7 @@ protected:
             ASSERT_EQ(item_source_->item_height, position_and_height.second);
         }
 
-        auto index_and_count = item_height_manager_->GetItemIndexAndCount(0, item_source_->item_count * item_source_->item_height);
+        auto index_and_count = item_height_manager_->GetItemRange(0, item_source_->item_count * item_source_->item_height);
         ASSERT_EQ(0, index_and_count.first);
         ASSERT_EQ(item_source_->item_count, index_and_count.second);
     }
@@ -95,19 +101,35 @@ protected:
 
         ASSERT_EQ(total_height, item_height_manager_->GetTotalHeight());
 
-        auto index_and_count = item_height_manager_->GetItemIndexAndCount(0, 100);
+        auto index_and_count = item_height_manager_->GetItemRange(0, 100);
         ASSERT_EQ(0, index_and_count.first);
         ASSERT_EQ(item_source_->item_count, index_and_count.second);
     }
 
-    bool TestGetItemIndexAndCount(
+    bool TestGetItemRange(
         float begin_position,
         float end_position,
         std::size_t expected_index,
         std::size_t expected_count) const {
 
-        auto index_and_count = item_height_manager_->GetItemIndexAndCount(begin_position, end_position);
+        auto index_and_count = item_height_manager_->GetItemRange(begin_position, end_position);
         return (index_and_count.first == expected_index) && (index_and_count.second == expected_count);
+    }
+
+    bool CheckItemPositionsAndHeights(const std::vector<std::pair<float, float>>& expected) {
+
+        if (item_height_manager_->GetItemCount() != expected.size()) {
+            return false;
+        }
+
+        for (auto index : zaf::Range(0, expected.size())) {
+            if (item_height_manager_->GetItemPositionAndHeight(index) != expected[index]) {
+                return false;
+            }
+        }
+
+        const auto& last = expected.back();
+        return item_height_manager_->GetTotalHeight() == last.first + last.second;
     }
 
 protected:
@@ -154,24 +176,40 @@ TEST_F(ListControlItemHeightManagerTest, GetTotalHeight) {
         ASSERT_EQ(expected_total_height, item_height_manager_->GetTotalHeight());
     };
 
-    //Fixed item heights
+    //Fixed item heights without spacing
     item_source_->has_variable_item_heights = false;
+    item_source_->item_spacing = 0;
     test(0, 0);
     test(1, 10);
     test(999, 9990);
 
-    //Variable item heights
+    //Fixed item heights with spacing
+    item_source_->has_variable_item_heights = false;
+    item_source_->item_spacing = 2;
+    test(0, 0);
+    test(1, 10);
+    test(5, 58);
+    
+    //Variable item heights without spacing
     item_source_->has_variable_item_heights = true;
+    item_source_->item_spacing = 0;
     test(0, 0);
     test(1, 10);
     test(2, 21);
     test(11, 155);
+
+    //Variable item heights with spacing
+    item_source_->has_variable_item_heights = true;
+    item_source_->item_spacing = 2;
+    test(0, 0);
+    test(1, 10);
+    test(2, 23);
+    test(11, 175);
 }
 
 
-TEST_F(ListControlItemHeightManagerTest, GetItemPositionAndHeight) {
+TEST_F(ListControlItemHeightManagerTest, GetItemPositionAndHeight_FixedHeight_NoSpacing) {
 
-    //Fixed item heights
     item_source_->has_variable_item_heights = false;
 
     item_source_->item_count = 0;
@@ -193,13 +231,42 @@ TEST_F(ListControlItemHeightManagerTest, GetItemPositionAndHeight) {
         ASSERT_EQ(index * 10, position_and_height.first);
         ASSERT_EQ(10, position_and_height.second);
     }
+}
 
-    //Variable item heights
+
+TEST_F(ListControlItemHeightManagerTest, GetItemPositionAndHeight_FixedHeight_Spacing) {
+
+    item_source_->has_variable_item_heights = false;
+    item_source_->item_spacing = 4;
+
+    item_source_->item_count = 3;
+    item_height_manager_->ReloadItemHeights();
+
+    auto result = item_height_manager_->GetItemPositionAndHeight(0);
+    ASSERT_EQ(result.first, 0);
+    ASSERT_EQ(result.second, 10);
+
+    result = item_height_manager_->GetItemPositionAndHeight(1);
+    ASSERT_EQ(result.first, 14);
+    ASSERT_EQ(result.second, 10);
+
+    result = item_height_manager_->GetItemPositionAndHeight(2);
+    ASSERT_EQ(result.first, 28);
+    ASSERT_EQ(result.second, 10);
+
+    result = item_height_manager_->GetItemPositionAndHeight(3);
+    ASSERT_EQ(result.first, 0);
+    ASSERT_EQ(result.second, 0);
+}
+
+
+TEST_F(ListControlItemHeightManagerTest, GetItemPositionAndHeight_VariableHeight_NoSpacing) {
+
     item_source_->has_variable_item_heights = true;
 
     item_source_->item_count = 0;
     item_height_manager_->ReloadItemHeights();
-    position_and_height = item_height_manager_->GetItemPositionAndHeight(0);
+    auto position_and_height = item_height_manager_->GetItemPositionAndHeight(0);
     ASSERT_EQ(0, position_and_height.first);
     ASSERT_EQ(0, position_and_height.second);
 
@@ -225,84 +292,157 @@ TEST_F(ListControlItemHeightManagerTest, GetItemPositionAndHeight) {
 }
 
 
-TEST_F(ListControlItemHeightManagerTest, GetItemIndexAndCountWithFixedItemHeights) {
+TEST_F(ListControlItemHeightManagerTest, GetItemPositionAndHeight_VariableHeight_Spacing) {
+
+    item_source_->has_variable_item_heights = true;
+    item_source_->item_spacing = 4;
+    item_source_->item_count = 3;
+    item_height_manager_->ReloadItemHeights();
+
+    auto position_and_height = item_height_manager_->GetItemPositionAndHeight(0);
+    ASSERT_EQ(position_and_height.first, 0);
+    ASSERT_EQ(position_and_height.second, 10);
+
+    position_and_height = item_height_manager_->GetItemPositionAndHeight(1);
+    ASSERT_EQ(position_and_height.first, 14);
+    ASSERT_EQ(position_and_height.second, 11);
+
+    position_and_height = item_height_manager_->GetItemPositionAndHeight(2);
+    ASSERT_EQ(position_and_height.first, 29);
+    ASSERT_EQ(position_and_height.second, 12);
+}
+
+
+TEST_F(ListControlItemHeightManagerTest, GetItemRange_FixedHeight_NoSpacing) {
 
     item_source_->has_variable_item_heights = false;
 
     //No item
     item_source_->item_count = 0;
     item_height_manager_->ReloadItemHeights();
-    ASSERT_TRUE(TestGetItemIndexAndCount(0, 10, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(0, 10, 0, 0));
 
     item_source_->item_count = 3;
     item_height_manager_->ReloadItemHeights();
 
     //Invalid range
-    ASSERT_TRUE(TestGetItemIndexAndCount(-1, -3, 0, 0));
-    ASSERT_TRUE(TestGetItemIndexAndCount(4, 0, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(-1, -3, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(-10, 20, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(4, 0, 0, 0));
+
+    //Empty range
+    ASSERT_TRUE(TestGetItemRange(0, 0, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(5, 5, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(10, 10, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(20, 20, 0, 0));
 
     //Valid range
-    ASSERT_TRUE(TestGetItemIndexAndCount(0, 0, 0, 1));
-    ASSERT_TRUE(TestGetItemIndexAndCount(5, 5, 0, 1));
-    ASSERT_TRUE(TestGetItemIndexAndCount(10, 10, 1, 1));
-    ASSERT_TRUE(TestGetItemIndexAndCount(20, 20, 2, 1));
-
-    ASSERT_TRUE(TestGetItemIndexAndCount(0, 1, 0, 1));
-    ASSERT_TRUE(TestGetItemIndexAndCount(0, 10, 0, 1));
-    ASSERT_TRUE(TestGetItemIndexAndCount(0, 30, 0, 3));
-    ASSERT_TRUE(TestGetItemIndexAndCount(0, 100, 0, 3));
-    ASSERT_TRUE(TestGetItemIndexAndCount(11, 24, 1, 2));
+    ASSERT_TRUE(TestGetItemRange(0, 1, 0, 1));
+    ASSERT_TRUE(TestGetItemRange(0, 10, 0, 1));
+    ASSERT_TRUE(TestGetItemRange(0, 30, 0, 3));
+    ASSERT_TRUE(TestGetItemRange(0, 100, 0, 3));
+    ASSERT_TRUE(TestGetItemRange(11, 24, 1, 2));
 
     //Out of range
-    ASSERT_TRUE(TestGetItemIndexAndCount(30, 30, 0, 0));
-    ASSERT_TRUE(TestGetItemIndexAndCount(30, 40, 0, 0));
-    ASSERT_TRUE(TestGetItemIndexAndCount(31, 32, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(30, 30, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(30, 40, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(31, 32, 0, 0));
 }
 
 
-TEST_F(ListControlItemHeightManagerTest, GetItemIndexAndCountWithVariableItemHeights) {
+TEST_F(ListControlItemHeightManagerTest, GetItemRange_FixedHeight_Spacing) {
+
+    item_source_->has_variable_item_heights = false;
+    item_source_->item_spacing = 6;
+    item_source_->item_count = 3;
+    item_height_manager_->ReloadItemHeights();
+
+    ASSERT_TRUE(TestGetItemRange(0, 5, 0, 1));
+    ASSERT_TRUE(TestGetItemRange(0, 13, 0, 1));
+    ASSERT_TRUE(TestGetItemRange(0, 16, 0, 1));
+    ASSERT_TRUE(TestGetItemRange(0, 20, 0, 2));
+    ASSERT_TRUE(TestGetItemRange(0, 32, 0, 2));
+    ASSERT_TRUE(TestGetItemRange(0, 100, 0, 3));
+
+    ASSERT_TRUE(TestGetItemRange(13, 16, 1, 0));
+    ASSERT_TRUE(TestGetItemRange(13, 24, 1, 1));
+
+    ASSERT_TRUE(TestGetItemRange(42, 43, 0, 0));
+}
+
+
+TEST_F(ListControlItemHeightManagerTest, GetItemRange_VariableHeight_NoSpacing) {
 
     item_source_->has_variable_item_heights = true;
 
     //No item
     item_source_->item_count = 0;
     item_height_manager_->ReloadItemHeights();
-    ASSERT_TRUE(TestGetItemIndexAndCount(0, 10, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(0, 10, 0, 0));
 
     item_source_->item_count = 3;
     item_height_manager_->ReloadItemHeights();
 
     //Invalid range
-    ASSERT_TRUE(TestGetItemIndexAndCount(1, 0, 0, 0));
-    ASSERT_TRUE(TestGetItemIndexAndCount(4, 0, 0, 0));
-    ASSERT_TRUE(TestGetItemIndexAndCount(-1, -1, 0, 0));
-    ASSERT_TRUE(TestGetItemIndexAndCount(-1, 1, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(1, 0, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(4, 0, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(-1, -1, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(-1, 1, 0, 0));
+
+    //Empty range
+    ASSERT_TRUE(TestGetItemRange(0, 0, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(5, 5, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(10, 10, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(21, 21, 0, 0));
 
     //Valid range
-    ASSERT_TRUE(TestGetItemIndexAndCount(0, 0, 0, 1));
-    ASSERT_TRUE(TestGetItemIndexAndCount(5, 5, 0, 1));
-    ASSERT_TRUE(TestGetItemIndexAndCount(10, 10, 1, 1));
-    ASSERT_TRUE(TestGetItemIndexAndCount(21, 21, 2, 1));
-
-    ASSERT_TRUE(TestGetItemIndexAndCount(0, 10, 0, 1));
-    ASSERT_TRUE(TestGetItemIndexAndCount(0, 30, 0, 3));
-    ASSERT_TRUE(TestGetItemIndexAndCount(0, 100, 0, 3));
-    ASSERT_TRUE(TestGetItemIndexAndCount(10, 20, 1, 1));
-    ASSERT_TRUE(TestGetItemIndexAndCount(11, 21, 1, 1));
-    ASSERT_TRUE(TestGetItemIndexAndCount(11, 24, 1, 2));
-    ASSERT_TRUE(TestGetItemIndexAndCount(20, 30, 1, 2));
+    ASSERT_TRUE(TestGetItemRange(0, 10, 0, 1));
+    ASSERT_TRUE(TestGetItemRange(0, 30, 0, 3));
+    ASSERT_TRUE(TestGetItemRange(0, 100, 0, 3));
+    ASSERT_TRUE(TestGetItemRange(10, 20, 1, 1));
+    ASSERT_TRUE(TestGetItemRange(11, 21, 1, 1));
+    ASSERT_TRUE(TestGetItemRange(11, 24, 1, 2));
+    ASSERT_TRUE(TestGetItemRange(20, 30, 1, 2));
 
     //Ouf of range
-    ASSERT_TRUE(TestGetItemIndexAndCount(33, 40, 0, 0));
-    ASSERT_TRUE(TestGetItemIndexAndCount(34, 50, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(33, 40, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(34, 50, 0, 0));
 }
 
 
-TEST_F(ListControlItemHeightManagerTest, AddItemsWithFixedItemHeights) {
+TEST_F(ListControlItemHeightManagerTest, GetItemRange_VariableHeight_Spacing) {
+
+    item_source_->has_variable_item_heights = true;
+    item_source_->item_spacing = 4;
+    item_source_->item_count = 3;
+    item_height_manager_->ReloadItemHeights();
+
+    ASSERT_TRUE(TestGetItemRange(0, 5, 0, 1));
+    ASSERT_TRUE(TestGetItemRange(0, 13, 0, 1));
+    ASSERT_TRUE(TestGetItemRange(0, 14, 0, 1));
+    ASSERT_TRUE(TestGetItemRange(0, 25, 0, 2));
+    ASSERT_TRUE(TestGetItemRange(0, 26, 0, 2));
+    ASSERT_TRUE(TestGetItemRange(0, 42, 0, 3));
+    ASSERT_TRUE(TestGetItemRange(0, 60, 0, 3));
+
+    ASSERT_TRUE(TestGetItemRange(10, 14, 1, 0));
+    ASSERT_TRUE(TestGetItemRange(10, 16, 1, 1));
+
+    ASSERT_TRUE(TestGetItemRange(16, 27, 1, 1));
+
+    ASSERT_TRUE(TestGetItemRange(42, 50, 0, 0));
+    ASSERT_TRUE(TestGetItemRange(43, 50, 0, 0));
+}
+
+
+TEST_F(ListControlItemHeightManagerTest, AddItems_FixedHeight) {
 
     item_source_->has_variable_item_heights = false;
 
-    auto test_add_items = [this](std::size_t initial_count, std::size_t add_index, std::size_t add_count) {
+    auto test_add_items = [this](
+        std::size_t initial_count,
+        std::size_t add_index,
+        std::size_t add_count) {
 
         item_source_->item_count = initial_count;
         item_height_manager_->ReloadItemHeights();
@@ -333,7 +473,7 @@ TEST_F(ListControlItemHeightManagerTest, AddItemsWithFixedItemHeights) {
 }
 
 
-TEST_F(ListControlItemHeightManagerTest, AddItemsWithVariableItemHeights) {
+TEST_F(ListControlItemHeightManagerTest, AddItems_VariableHeight_NoSpacing) {
 
     item_source_->has_variable_item_heights = true;
 
@@ -373,11 +513,73 @@ TEST_F(ListControlItemHeightManagerTest, AddItemsWithVariableItemHeights) {
 }
 
 
-TEST_F(ListControlItemHeightManagerTest, RemoveItemsWithFixedItemHeights) {
+TEST_F(ListControlItemHeightManagerTest, AddItems_VariableHeight_Spacing) {
+
+    auto test = [this](
+        std::size_t initial_count,
+        std::size_t add_index,
+        std::size_t add_count,
+        const std::vector<std::pair<float, float>>& expected) {
+
+        item_source_->item_count = initial_count;
+        item_height_manager_->ReloadItemHeights();
+        item_source_->AddItems(add_index, add_count);
+        return CheckItemPositionsAndHeights(expected);
+    };
+
+    item_source_->has_variable_item_heights = true;
+    item_source_->item_spacing = 4;
+
+    //Add items to empty item source
+    ASSERT_TRUE(test(0, 0, 1, { { 0.f, 10.f } }));
+    ASSERT_TRUE(test(0, 0, 3, { 
+        { 0.f, 10.f },
+        { 14.f, 11.f },
+        { 29.f, 12.f },
+    }));
+
+    //Add items to head
+    ASSERT_TRUE(test(3, 0, 3, {
+        { 0.f, 10.f },
+        { 14.f, 11.f },
+        { 29.f, 12.f },
+        { 45.f, 10.f },  //old
+        { 59.f, 11.f }, //old
+        { 74.f, 12.f }, //old
+    }));
+
+    //Add items to middle
+    ASSERT_TRUE(test(5, 2, 3, {
+        { 0.f, 10.f },  //old
+        { 14.f, 11.f }, //old
+        { 29.f, 12.f }, 
+        { 45.f, 13.f },
+        { 62.f, 14.f },
+        { 80.f, 12.f }, //old
+        { 96.f, 13.f }, //old
+        { 113.f, 14.f }, //old
+    }));
+
+    //Add items to tail
+    ASSERT_TRUE(test(3, 3, 3, {
+        { 0.f, 10.f },  //old
+        { 14.f, 11.f }, //old
+        { 29.f, 12.f }, //old
+        { 45.f, 13.f },
+        { 62.f, 14.f },
+        { 80.f, 15.f },
+    }));
+}
+
+
+TEST_F(ListControlItemHeightManagerTest, RemoveItems_FixedHeight) {
 
     item_source_->has_variable_item_heights = false;
 
-    auto test_remove_items = [this](std::size_t initial_count, std::size_t remove_index, std::size_t remove_count) {
+    auto test_remove_items = [this](
+        std::size_t initial_count,
+        std::size_t remove_index,
+        std::size_t remove_count) {
 
         item_source_->item_count = initial_count;
         item_height_manager_->ReloadItemHeights();
@@ -406,7 +608,7 @@ TEST_F(ListControlItemHeightManagerTest, RemoveItemsWithFixedItemHeights) {
 }
 
 
-TEST_F(ListControlItemHeightManagerTest, RemoveItemsWithVariableItemHeights) {
+TEST_F(ListControlItemHeightManagerTest, RemoveItems_VariableHeight_NoSpacing) {
 
     item_source_->has_variable_item_heights = true;
 
@@ -442,7 +644,44 @@ TEST_F(ListControlItemHeightManagerTest, RemoveItemsWithVariableItemHeights) {
 }
 
 
-TEST_F(ListControlItemHeightManagerTest, UpdateItemsWithFixedItemHeights) {
+TEST_F(ListControlItemHeightManagerTest, RemoveItems_VariableHeight_Spacing) {
+
+    auto test = [this](
+        std::size_t initial_count,
+        std::size_t remove_index,
+        std::size_t remove_count,
+        const std::vector<std::pair<float, float>>& expected) {
+
+        item_source_->item_count = initial_count;
+        item_height_manager_->ReloadItemHeights();
+        item_source_->RemoveItems(remove_index, remove_count);
+        return CheckItemPositionsAndHeights(expected);
+    };
+
+    item_source_->has_variable_item_heights = true;
+    item_source_->item_spacing = 4;
+
+    ASSERT_TRUE(test(5, 0, 2, {
+        { 0.f, 12.f },
+        { 16.f, 13.f },
+        { 33.f, 14.f },
+    }));
+
+    ASSERT_TRUE(test(5, 2, 2, {
+        { 0.f, 10.f },
+        { 14.f, 11.f },
+        { 29.f, 14.f },
+    }));
+
+    ASSERT_TRUE(test(5, 3, 2, {
+        { 0.f, 10.f },
+        { 14.f, 11.f },
+        { 29.f, 12.f },
+    }));
+}
+
+
+TEST_F(ListControlItemHeightManagerTest, UpdateItems_FixedHeight) {
 
     item_source_->has_variable_item_heights = false;
 
@@ -474,7 +713,7 @@ TEST_F(ListControlItemHeightManagerTest, UpdateItemsWithFixedItemHeights) {
 }
 
 
-TEST_F(ListControlItemHeightManagerTest, UpdateItemsWithVariableItemHeights) {
+TEST_F(ListControlItemHeightManagerTest, UpdateItems_VariableHeight_NoSpacing) {
 
     item_source_->has_variable_item_heights = true;
 
@@ -509,4 +748,58 @@ TEST_F(ListControlItemHeightManagerTest, UpdateItemsWithVariableItemHeights) {
     //Update tail
     test_update_items(2, 1, 1, { 10, 12 });
     test_update_items(7, 4, 3, { 10, 11, 12, 13, 15, 16, 17 });
+}
+
+
+TEST_F(ListControlItemHeightManagerTest, UpdateItems_VariableHeight_Spacing) {
+
+    auto test = [this](
+        std::size_t initial_count,
+        std::size_t update_index,
+        std::size_t update_count,
+        const std::vector<std::pair<float, float>>& expected) {
+
+        item_source_->item_count = initial_count;
+        item_source_->variable_item_height_adjustment = 0;
+        item_height_manager_->ReloadItemHeights();
+
+        item_source_->variable_item_height_adjustment = 2;
+        item_source_->UpdateItems(update_index, update_count);
+        return CheckItemPositionsAndHeights(expected);
+    };
+
+    item_source_->has_variable_item_heights = true;
+    item_source_->item_spacing = 4;
+
+    ASSERT_TRUE(test(5, 0, 5, {
+        { 0.f, 12.f },
+        { 16.f, 13.f }, 
+        { 33.f, 14.f },
+        { 51.f, 15.f },
+        { 70.f, 16.f },
+    }));
+
+    ASSERT_TRUE(test(5, 0, 2, {
+        { 0.f, 12.f },
+        { 16.f, 13.f },
+        { 33.f, 12.f },
+        { 49.f, 13.f },
+        { 66.f, 14.f },
+    }));
+
+    ASSERT_TRUE(test(5, 1, 2, {
+        { 0.f, 10.f },
+        { 14.f, 13.f },
+        { 31.f, 14.f },
+        { 49.f, 13.f },
+        { 66.f, 14.f },
+    }));
+
+    ASSERT_TRUE(test(5, 3, 2, {
+        { 0.f, 10.f },
+        { 14.f, 11.f },
+        { 29.f, 12.f },
+        { 45.f, 15.f },
+        { 64.f, 16.f },
+    }));
 }

@@ -25,7 +25,7 @@ void ListControlSingleSelectStrategy::EndChangingSelectionByMouseUp(
     const Point& position,
     const MouseMessage& message) {
 
-    if (mouse_selected_index_and_count_.second == 0) {
+    if (!mouse_selected_index_) {
         return;
     }
 
@@ -34,8 +34,8 @@ void ListControlSingleSelectStrategy::EndChangingSelectionByMouseUp(
 
         list_control->NotifySelectionChange(
             ListSelectionChangeReason::ReplaceSelection, 
-            mouse_selected_index_and_count_.first,
-            mouse_selected_index_and_count_.second);
+            *mouse_selected_index_,
+            1);
     }
 }
 
@@ -67,22 +67,16 @@ bool ListControlSingleSelectStrategy::ChangeSelectionByKeyDown(const KeyMessage&
 
 void ListControlSingleSelectStrategy::SelectItemWithMouseEvent(const Point& position) {
     
-    mouse_selected_index_and_count_ = GetItemHeightManager()->GetItemIndexAndCount(
-        position.y, 
-        position.y);
-
-    if (mouse_selected_index_and_count_.second == 0) {
+    mouse_selected_index_ = GetItemHeightManager()->GetItemIndex(position.y);
+    if (!mouse_selected_index_) {
         return;
     }
 
     auto list_control = GetListControl();
     if (list_control) {
 
-        list_control->ReplaceSelection(
-            mouse_selected_index_and_count_.first,
-            mouse_selected_index_and_count_.second);
-
-        list_control->ScrollToItemAtIndex(mouse_selected_index_and_count_.first);
+        list_control->ReplaceSelection(*mouse_selected_index_, 1);
+        list_control->ScrollToItemAtIndex(*mouse_selected_index_);
     }
 }
 

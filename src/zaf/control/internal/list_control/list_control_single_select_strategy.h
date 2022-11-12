@@ -25,7 +25,7 @@ private:
     void SelectItemWithMouseEvent(const Point& position);
 
 private:
-    std::pair<std::size_t, std::size_t> mouse_selected_index_and_count_;
+    std::optional<std::size_t> mouse_selected_index_;
 };
 
 }

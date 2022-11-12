@@ -12,7 +12,9 @@ public:
 
     std::pair<float, float> GetItemPositionAndHeight(std::size_t index) override;
 
-    std::pair<std::size_t, std::size_t> GetItemIndexAndCount(
+    std::optional<std::size_t> GetItemIndex(float position) override;
+
+    std::pair<std::size_t, std::size_t> GetItemRange(
         float begin_position,
         float end_position) override;
 
@@ -31,7 +33,12 @@ public:
     void OnItemRemove(const ListDataSourceDataRemoveInfo& event_info) override;
 
 private:
+    std::pair<float, float> InnerGetItemPositionAndHeight(std::size_t index) const;
+    std::optional<std::size_t> InnerGetItemIndex(float position, bool skip_spacing) const;
+
+private:
     std::vector<float> item_positions_;
+    float item_spacing_{};
 };
 
 }

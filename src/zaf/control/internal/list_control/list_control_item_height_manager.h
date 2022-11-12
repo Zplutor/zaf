@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/internal/list_control/list_control_item_height_strategy.h>
 #include <zaf/control/list_control_delegate.h>
@@ -19,7 +20,11 @@ public:
     void ReloadItemHeights();
 
     std::pair<float, float> GetItemPositionAndHeight(std::size_t index) const;
-    std::pair<std::size_t, std::size_t> GetItemIndexAndCount(
+
+    std::optional<std::size_t> GetItemIndex(float position) const;
+
+    //Note that the range is [begin_position, end_position)
+    std::pair<std::size_t, std::size_t> GetItemRange(
         float begin_position, 
         float end_position) const;
 

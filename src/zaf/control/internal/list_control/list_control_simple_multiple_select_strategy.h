@@ -22,7 +22,7 @@ public:
     bool ChangeSelectionByKeyDown(const KeyMessage& message) override;
 
 private:
-    std::pair<std::size_t, std::size_t> mouse_selected_index_and_count_;
+    std::optional<std::size_t> mouse_selected_index_;
     bool is_mouse_selected_index_selected_{};
 };
 

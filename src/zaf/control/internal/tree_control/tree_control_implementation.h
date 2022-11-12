@@ -75,6 +75,8 @@ public:
         std::size_t item_index,
         const std::shared_ptr<Object>& item_data) override;
 
+    float GetItemSpacing() override;
+
     std::wstring GetItemText(
         std::size_t item_index,
         const std::shared_ptr<Object>& item_data) override;

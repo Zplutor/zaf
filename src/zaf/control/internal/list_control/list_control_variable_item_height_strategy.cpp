@@ -8,16 +8,16 @@ void ListControlVariableItemHeightStrategy::Initialize(
 
     __super::Initialize(data_source, delegate);
 
+    item_spacing_ = delegate.GetItemSpacing();
     item_positions_.reserve(ItemCount() + 1);
 
     float position = 0;
-
     for (std::size_t index = 0; index < ItemCount(); ++index) {
 
         item_positions_.push_back(position);
 
         auto item_data = data_source.GetDataAtIndex(index);
-        position += delegate.EstimateItemHeight(index, item_data);
+        position += delegate.EstimateItemHeight(index, item_data) + item_spacing_;
     }
 
     item_positions_.push_back(position);
@@ -27,56 +27,88 @@ void ListControlVariableItemHeightStrategy::Initialize(
 std::pair<float, float> ListControlVariableItemHeightStrategy::GetItemPositionAndHeight(
     std::size_t index) {
 
-    float position = 0;
-    float height = 0;
+    return InnerGetItemPositionAndHeight(index);
+}
 
-    position = item_positions_[index];
-    height = item_positions_[index + 1] - position;
+
+std::pair<float, float> ListControlVariableItemHeightStrategy::InnerGetItemPositionAndHeight(
+    std::size_t index) const {
+
+    ZAF_EXPECT(index < item_positions_.size() - 1);
+
+    float position = item_positions_[index];
+    float height = item_positions_[index + 1] - position - item_spacing_;
 
     return std::make_pair(position, height);
 }
 
 
-std::pair<std::size_t, std::size_t> ListControlVariableItemHeightStrategy::GetItemIndexAndCount(
+std::optional<std::size_t> ListControlVariableItemHeightStrategy::GetItemIndex(float position) {
+    return InnerGetItemIndex(position, false);
+}
+
+
+std::optional<std::size_t> ListControlVariableItemHeightStrategy::InnerGetItemIndex(
+    float position,
+    bool skip_spacing) const {
+
+    auto iterator = std::upper_bound(item_positions_.begin(), item_positions_.end(), position);
+    if (iterator == item_positions_.begin() ||
+        iterator == item_positions_.end()) {
+        return std::nullopt;
+    }
+
+    std::advance(iterator, -1);
+    std::size_t index = std::distance(item_positions_.begin(), iterator);
+
+    auto item_position_height = InnerGetItemPositionAndHeight(index);
+    if (item_position_height.first + item_position_height.second <= position) {
+        //Psition is in spacing.
+        if (!skip_spacing) {
+            return std::nullopt;
+        }
+        index++;
+    }
+
+    if (index >= ItemCount()) {
+        return std::nullopt;
+    }
+    return index;
+}
+
+
+std::pair<std::size_t, std::size_t> ListControlVariableItemHeightStrategy::GetItemRange(
     float begin_position,
     float end_position) {
 
-    std::size_t index = 0;
-    std::size_t count = 0;
+    ZAF_EXPECT(begin_position < end_position);
 
-    //It is meaningless if the end_position is less than begin_position.
-    if (begin_position <= end_position) {
-
-        auto begin_iterator = std::upper_bound(item_positions_.begin(), item_positions_.end(), begin_position);
-        if ((begin_iterator != item_positions_.begin()) && (begin_iterator != item_positions_.end())) {
-
-            std::advance(begin_iterator, -1);
-            index = std::distance(item_positions_.begin(), begin_iterator);
-
-            auto end_iterator = std::lower_bound(item_positions_.begin(), item_positions_.end(), end_position);
-            if (end_iterator != item_positions_.end()) {
-
-                if (begin_iterator == end_iterator) {
-                    count = 1;
-                }
-                else {
-                    count = std::distance(begin_iterator, end_iterator);
-                }
-            }
-            else {
-                count = ItemCount() - index;
-            }
-        }
+    auto begin_index = InnerGetItemIndex(begin_position, true);
+    if (!begin_index) {
+        return {};
     }
 
-    return std::make_pair(index, count);
+    auto end_iterator = std::lower_bound(
+        item_positions_.begin(), 
+        item_positions_.end(),
+        end_position);
+
+    std::size_t end_index{};
+    if (end_iterator != item_positions_.end()) {
+        end_index = std::distance(item_positions_.begin(), end_iterator);
+    }
+    else {
+        end_index = ItemCount();
+    }
+
+    return std::make_pair(*begin_index, end_index - *begin_index);
 }
 
 
 float ListControlVariableItemHeightStrategy::GetTotalHeight() {
 
-    if (!item_positions_.empty()) {
-        return item_positions_.back();
+    if (item_positions_.size() > 1) {
+        return item_positions_.back() - item_spacing_;
     }
     else {
         return 0;
@@ -108,7 +140,7 @@ void ListControlVariableItemHeightStrategy::OnItemAdd(
         item_positions_[current_index] = current_position;
 
         auto item_data = data_source.GetDataAtIndex(current_index);
-        current_position += delegate.EstimateItemHeight(current_index, item_data);
+        current_position += delegate.EstimateItemHeight(current_index, item_data) + item_spacing_;
     }
 
     //Update position for old items.
@@ -138,7 +170,7 @@ void ListControlVariableItemHeightStrategy::OnItemUpdate(
 
         auto item_data = data_source.GetDataAtIndex(current_index);
         float height = delegate.EstimateItemHeight(current_index, item_data);
-        current_heights += height;
+        current_heights += height + item_spacing_;
     }
 
     float difference = current_heights - previous_heights;

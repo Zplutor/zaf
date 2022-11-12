@@ -398,7 +398,7 @@ void ListControlImplementation::GetVisibleItemsRange(std::size_t& index, std::si
         return;
     }
 
-    auto index_and_count = item_height_manager_->GetItemIndexAndCount(begin_position, end_position);
+    auto index_and_count = item_height_manager_->GetItemRange(begin_position, end_position);
     index = index_and_count.first;
     count = index_and_count.second;
 
@@ -505,7 +505,12 @@ std::shared_ptr<ListItem> ListControlImplementation::CreateItem(std::size_t inde
 
     auto item_data = data_source->GetDataAtIndex(index);
     auto list_item = delegate->CreateItem(index, item_data);
-    list_item->SetText(delegate->GetItemText(index, item_data));
+
+    auto item_text = delegate->GetItemText(index, item_data);
+    if (!item_text.empty()) {
+        list_item->SetText(item_text);
+    }
+    
     delegate->LoadItem(list_item, index, item_data);
 
     auto position_and_height = item_height_manager_->GetItemPositionAndHeight(index);
@@ -884,13 +889,7 @@ std::optional<std::size_t> ListControlImplementation::FindItemIndexAtPosition(
     }
 
     float adjusted_position = position.y + visible_scroll_content_rect.position.y;
-
-    auto index_and_count = item_height_manager_->GetItemIndexAndCount(adjusted_position, adjusted_position);
-    if (index_and_count.second == 0) {
-        return std::nullopt;
-    }
-
-    return index_and_count.first;
+    return item_height_manager_->GetItemIndex(adjusted_position);
 }
 
 

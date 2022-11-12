@@ -19,6 +19,10 @@ public:
         return 0;
     }
 
+    virtual float GetItemSpacing() {
+        return 0;
+    }
+
     virtual std::wstring GetItemText(
         const std::shared_ptr<Object>& parent_item_data,
         std::size_t item_index,

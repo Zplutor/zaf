@@ -92,17 +92,33 @@ std::pair<float, float> ListControlItemHeightManager::GetItemPositionAndHeight(
 }
 
 
-std::pair<std::size_t, std::size_t> ListControlItemHeightManager::GetItemIndexAndCount(
+std::optional<std::size_t> ListControlItemHeightManager::GetItemIndex(float position) const {
+
+    if (position < 0) {
+        return std::nullopt;
+    }
+
+    if (!strategy_) {
+        return std::nullopt;
+    }
+
+    return strategy_->GetItemIndex(position);
+}
+
+
+std::pair<std::size_t, std::size_t> ListControlItemHeightManager::GetItemRange(
     float begin_position, 
     float end_position) const {
 
-    //It is meaningless if the end_position is less than begin_position.
-    if (begin_position <= end_position) {
-        if (strategy_) {
-            return strategy_->GetItemIndexAndCount(begin_position, end_position);
-        }
+    if (begin_position < 0 || begin_position >= end_position) {
+        return {};
     }
-    return {};
+
+    if (!strategy_) {
+        return {};
+    }
+
+    return strategy_->GetItemRange(begin_position, end_position);
 }
 
 

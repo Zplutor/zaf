@@ -48,12 +48,10 @@ void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEvent(
     const Point& position,
     bool is_mouse_moving) {
 
-    auto index_and_count = GetItemHeightManager()->GetItemIndexAndCount(position.y, position.y);
-    if (index_and_count.second == 0) {
+    auto index = GetItemHeightManager()->GetItemIndex(position.y);
+    if (!index) {
         return;
     }
-
-    std::size_t current_index = index_and_count.first;
 
     bool is_pressing_shift_key = GetKeyState(VK_SHIFT) < 0;
     bool is_pressing_control_key = GetKeyState(VK_CONTROL) < 0;
@@ -65,19 +63,19 @@ void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEvent(
 
     if (is_pressing_shift_key) {
 
-        SelectItemsBetweenFocusedAndSpecified(current_index);
+        SelectItemsBetweenFocusedAndSpecified(*index);
     }
     else if (is_pressing_control_key) {
 
-        SelectItemsByMouseEventWithControlKey(current_index, is_mouse_moving);
+        SelectItemsByMouseEventWithControlKey(*index, is_mouse_moving);
     }
     else {
 
         if (! is_mouse_moving) {
-            focused_index_ = current_index;
+            focused_index_ = *index;
         }
 
-        SelectItemsBetweenFocusedAndSpecified(current_index);
+        SelectItemsBetweenFocusedAndSpecified(*index);
     }
 }
 

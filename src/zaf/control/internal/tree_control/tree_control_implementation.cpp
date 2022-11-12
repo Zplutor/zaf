@@ -324,6 +324,16 @@ float TreeControlImplementation::EstimateItemHeight(
 }
 
 
+float TreeControlImplementation::GetItemSpacing() {
+
+    auto delegate = delegate_.lock();
+    if (delegate) {
+        return delegate->GetItemSpacing();
+    }
+    return 0;
+}
+
+
 std::optional<float> TreeControlImplementation::InnerEstimateItemHeight(
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
