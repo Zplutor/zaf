@@ -1,11 +1,13 @@
 #include <Windows.h>
 #include <WindowsX.h>
 #include <fstream>
+#include <charconv>
 #include <zaf/application.h>
 #include <zaf/base/log.h>
 #include <zaf/base/container/utility/find.h>
 #include <zaf/base/container/utility/range.h>
 #include <zaf/base/stream.h>
+#include <zaf/base/string/to_string.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 #include <zaf/window/dialog.h>
@@ -43,6 +45,7 @@
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/object/internal/property_helper.h>
+#include <zaf/control/property_grid.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
@@ -56,20 +59,15 @@ public:
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        auto container = zaf::Create<zaf::VerticalBox>();
-        container->SetBorder(zaf::Frame{ 2 });
-        container->SetBorderColor(zaf::Color::Red());
-        container->SetAutoHeight(true);
-
-        this->RootControl()->AddChild(container);
-
         auto label = zaf::Create<zaf::Label>();
-        label->SetBorder(zaf::Frame{ 1 });
-        label->SetBorderColor(zaf::Color::Black());
-        label->SetText(L"Confirm to import zplutor.tortoisegit.ra-bundle?");
-        label->SetWordWrapping(zaf::WordWrapping::Character);
-        label->SetAutoHeight(true);
-        container->AddChild(label);
+        label->SetText(L"Example");
+        label->SetFixedHeight(30);
+        this->RootControl()->AddChild(label);
+
+        auto property_grid = zaf::Create<zaf::PropertyGrid>();
+        property_grid->SetTargetObject(label);
+
+        this->RootControl()->AddChild(property_grid);
     }
 };
 

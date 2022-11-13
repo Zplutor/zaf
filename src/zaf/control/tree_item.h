@@ -29,6 +29,8 @@ protected:
      Get the rect of expand button, related to its content rect's coordinate system.
      */
     virtual zaf::Rect GetExpandButtonRect();
+    
+    zaf::Rect GetItemContentRect();
 
 private:
     friend class internal::TreeControlImplementation;

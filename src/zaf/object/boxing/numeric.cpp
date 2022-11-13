@@ -3,6 +3,7 @@
 #include <zaf/base/as.h>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/base/string/to_numeric.h>
+#include <zaf/base/string/to_string.h>
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/object/parsing/object_parser.h>
@@ -55,7 +56,7 @@ std::size_t BoxedTypeName::Hash() const {                                       
     return std::hash<typename BoxedTypeName::ValueType>()(Value());                                \
 }                                                                                                  \
 std::wstring BoxedTypeName::ToString() const {                                                     \
-    return std::to_wstring(Value());                                                               \
+    return zaf::ToWideString(Value());                                                             \
 }                                                                                                
 
 
