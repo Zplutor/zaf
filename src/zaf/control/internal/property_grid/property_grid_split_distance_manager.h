@@ -19,6 +19,7 @@ class PropertyGridSplitDistanceManager : SubscriptionHost, NonCopyable {
 public:
     PropertyGridSplitDistanceManager();
 
+    //Note that the distance is starting from the left edge of property grid.
     float CurrentDistance() const {
         return current_distance_;
     }

@@ -33,7 +33,13 @@ void PropertyGridData::InspectValueProperties() {
     std::reverse(value_type_chain.begin(), value_type_chain.end());
 
     for (auto each_type : value_type_chain) {
-        zaf::Append(value_properties_, each_type->GetProperties());
+
+        for (auto property : each_type->GetProperties()) {
+
+            if (property->CanGet()) {
+                value_properties_.push_back(property);
+            }
+        }
     }
 }
 

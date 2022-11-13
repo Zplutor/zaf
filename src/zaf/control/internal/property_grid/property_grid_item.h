@@ -25,6 +25,7 @@ private:
     void InitializeValueLabel();
     std::shared_ptr<Label> CreateLabel() const;
     void InitializeSplitControl();
+    void SetSplitDistance(float new_distance);
 
 private:
     std::shared_ptr<PropertyGridData> data_;

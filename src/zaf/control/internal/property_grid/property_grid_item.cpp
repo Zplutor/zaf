@@ -36,7 +36,7 @@ void PropertyGridItem::Initialize() {
             [this](const PropertyGridSplitDistanceChangeInfo& event_info) {
 
             if (this != event_info.changing_item.get()) {
-                split_control_->SetSplitBarDistance(event_info.new_distance);
+                SetSplitDistance(event_info.new_distance); 
             }
         });
     }
@@ -97,11 +97,6 @@ void PropertyGridItem::InitializeSplitControl() {
     split_control_->SetFirstPane(name_label_);
     split_control_->SetSecondPane(value_label_);
 
-    auto manager = split_distance_manager_.lock();
-    if (manager) {
-        split_control_->SetSplitBarDistance(manager->CurrentDistance());
-    }
-
     Subscriptions() += split_control_->SplitBarDistanceChangeEvent().Subscribe(
         [this](const SplitControlSplitBarDistanceChangeInfo& event_info) {
 
@@ -110,7 +105,9 @@ void PropertyGridItem::InitializeSplitControl() {
 
             PropertyGridSplitDistanceChangeInfo event_info;
             event_info.changing_item = As<PropertyGridItem>(shared_from_this());
-            event_info.new_distance = split_control_->GetSplitBarDistance();
+            event_info.new_distance = 
+                this->GetItemContentRect().Left() + split_control_->GetSplitBarDistance();
+
             manager->DistanceChangeSubject().GetObserver().OnNext(event_info);
         }
     });
@@ -119,11 +116,25 @@ void PropertyGridItem::InitializeSplitControl() {
 }
 
 
+void PropertyGridItem::SetSplitDistance(float new_distance) {
+
+    auto revised_distance = new_distance - this->GetItemContentRect().Left();
+    split_control_->SetSplitBarDistance(revised_distance);
+}
+
+
 void PropertyGridItem::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    split_control_->SetRect(this->GetItemContentRect());
+    auto update_guard = split_control_->BeginUpdate();
+
+    split_control_->SetRect(GetItemContentRect());
+
+    auto manager = split_distance_manager_.lock();
+    if (manager) {
+        SetSplitDistance(manager->CurrentDistance());
+    }
 }
 
 
