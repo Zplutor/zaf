@@ -9,7 +9,14 @@ class PropertyGridData : public zaf::Object {
 public:
     PropertyGridData(
         zaf::ObjectProperty* property,
-        const std::shared_ptr<zaf::Object>& value);
+        const std::shared_ptr<zaf::Object>& value,
+        const std::vector<zaf::ObjectProperty*>& value_properties)
+        :
+        property_(property),
+        value_(value),
+        value_properties_(value_properties) {
+
+    }
 
     zaf::ObjectProperty* Property() const {
         return property_;
@@ -22,9 +29,6 @@ public:
     const std::vector<zaf::ObjectProperty*>& ValueProperties() const {
         return value_properties_;
     }
-
-private:
-    void InspectValueProperties();
 
 private:
     zaf::ObjectProperty* property_{};

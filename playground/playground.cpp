@@ -67,6 +67,13 @@ public:
         auto property_grid = zaf::Create<zaf::PropertyGrid>();
         property_grid->SetTargetObject(label);
 
+        auto reload = zaf::Create<zaf::Button>();
+        reload->SetText(L"Reload");
+        reload->SetFixedHeight(30);
+        Subscriptions() += reload->ClickEvent().Subscribe([property_grid](const zaf::ControlClickInfo&) {
+            property_grid->Reload();
+        });
+        this->RootControl()->AddChild(reload);
         this->RootControl()->AddChild(property_grid);
     }
 };

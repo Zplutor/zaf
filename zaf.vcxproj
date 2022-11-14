@@ -89,7 +89,6 @@
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_simple_multiple_select_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_single_select_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_variable_item_height_strategy.cpp" />
-    <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_data.cpp" />
     <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_tree_data_source.cpp" />
     <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_tree_delegate.cpp" />
     <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_item.cpp" />
@@ -120,7 +119,6 @@
     <ClCompile Include="src\zaf\control\list_item.cpp" />
     <ClCompile Include="src\zaf\control\list_item_container.cpp" />
     <ClCompile Include="src\zaf\control\property_grid.cpp" />
-    <ClCompile Include="src\zaf\control\property_grid_data_source.cpp" />
     <ClCompile Include="src\zaf\control\radio_button.cpp" />
     <ClCompile Include="src\zaf\control\scrollable_control.cpp" />
     <ClCompile Include="src\zaf\control\scroll_bar.cpp" />
@@ -363,7 +361,7 @@
     <ClInclude Include="src\zaf\control\list_item.h" />
     <ClInclude Include="src\zaf\control\list_item_container.h" />
     <ClInclude Include="src\zaf\control\property_grid.h" />
-    <ClInclude Include="src\zaf\control\property_grid_data_source.h" />
+    <ClInclude Include="src\zaf\control\property_grid_filter.h" />
     <ClInclude Include="src\zaf\control\radio_button.h" />
     <ClInclude Include="src\zaf\control\scrollable_control.h" />
     <ClInclude Include="src\zaf\control\scroll_bar.h" />
