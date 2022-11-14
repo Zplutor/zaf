@@ -682,10 +682,10 @@
     <ClCompile Include="src\zaf\control\property_grid.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_data_source.cpp">
+    <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_tree_data_source.cpp">
       <Filter>zaf\control\internal\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_delegate.cpp">
+    <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_tree_delegate.cpp">
       <Filter>zaf\control\internal\property_grid</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_data.cpp">
@@ -705,6 +705,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_split_distance_manager.cpp">
       <Filter>zaf\control\internal\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\property_grid_data_source.cpp">
+      <Filter>zaf\control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1660,10 +1663,10 @@
     <ClInclude Include="src\zaf\control\property_grid.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\property_grid\property_grid_data_source.h">
+    <ClInclude Include="src\zaf\control\internal\property_grid\property_grid_tree_data_source.h">
       <Filter>zaf\control\internal\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\property_grid\property_grid_delegate.h">
+    <ClInclude Include="src\zaf\control\internal\property_grid\property_grid_tree_delegate.h">
       <Filter>zaf\control\internal\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\property_grid\property_grid_data.h">
@@ -1683,6 +1686,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\property_grid\property_grid_split_distance_manager.h">
       <Filter>zaf\control\internal\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid_data_source.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

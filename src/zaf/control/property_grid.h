@@ -4,8 +4,8 @@
 
 namespace zaf {
 namespace internal {
-class PropertyGridDataSource;
-class PropertyGridDelegate;
+class PropertyGridTreeDataSource;
+class PropertyGridTreeDelegate;
 class TreeControlImplementation;
 }
 
@@ -20,9 +20,9 @@ protected:
     void Layout(const zaf::Rect&) override;
 
 private:
-    std::shared_ptr<internal::PropertyGridDataSource> data_source_;
-    std::shared_ptr<internal::PropertyGridDelegate> delegate_;
-    std::shared_ptr<internal::TreeControlImplementation> implementation_;
+    std::shared_ptr<internal::PropertyGridTreeDataSource> tree_data_source_;
+    std::shared_ptr<internal::PropertyGridTreeDelegate> tree_delegate_;
+    std::shared_ptr<internal::TreeControlImplementation> tree_implementation_;
 };
 
 }

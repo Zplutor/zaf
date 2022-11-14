@@ -5,9 +5,9 @@
 
 namespace zaf::internal {
 
-class PropertyGridDelegate : public TreeControlDelegate {
+class PropertyGridTreeDelegate : public TreeControlDelegate {
 public:
-    PropertyGridDelegate();
+    PropertyGridTreeDelegate();
 
     float EstimateItemHeight(
         const std::shared_ptr<Object>& parent_item_data,

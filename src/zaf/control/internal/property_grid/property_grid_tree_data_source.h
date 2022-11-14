@@ -7,9 +7,9 @@
 
 namespace zaf::internal {
 
-class PropertyGridDataSource : public TreeDataSource {
+class PropertyGridTreeDataSource : public TreeDataSource {
 public:
-    explicit PropertyGridDataSource(const std::shared_ptr<Object>& target_object);
+    explicit PropertyGridTreeDataSource(const std::shared_ptr<Object>& target_object);
 
     bool DoesDataHasChildren(const std::shared_ptr<Object>& data);
 

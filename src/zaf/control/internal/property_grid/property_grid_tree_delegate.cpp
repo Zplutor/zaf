@@ -1,4 +1,4 @@
-#include <zaf/control/internal/property_grid/property_grid_delegate.h>
+#include <zaf/control/internal/property_grid/property_grid_tree_delegate.h>
 #include <zaf/base/as.h>
 #include <zaf/control/internal/property_grid/property_grid_data.h>
 #include <zaf/control/internal/property_grid/property_grid_item.h>
@@ -6,13 +6,13 @@
 
 namespace zaf::internal {
 
-PropertyGridDelegate::PropertyGridDelegate() : 
+PropertyGridTreeDelegate::PropertyGridTreeDelegate() : 
     split_distance_manager_(std::make_shared<PropertyGridSplitDistanceManager>()) {
 
 }
 
 
-std::shared_ptr<TreeItem> PropertyGridDelegate::CreateItem(
+std::shared_ptr<TreeItem> PropertyGridTreeDelegate::CreateItem(
     const std::shared_ptr<Object>& parent_item_data,
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
