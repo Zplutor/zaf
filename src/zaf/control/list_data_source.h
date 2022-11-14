@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/creation.h>
 #include <zaf/object/object.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
@@ -24,7 +25,7 @@ public:
     }
 
     virtual std::shared_ptr<Object> GetDataAtIndex(std::size_t index) {
-        return Object::Dumb();
+        return Create<Object>();
     }
 
     /**

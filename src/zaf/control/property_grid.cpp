@@ -16,10 +16,10 @@ void PropertyGrid::Initialize() {
 
     __super::Initialize();
 
-    data_source_ = std::make_shared<internal::PropertyGridDataSource>(Object::Dumb());
+    data_source_ = std::make_shared<internal::PropertyGridDataSource>(Create<Object>());
     delegate_ = std::make_shared<internal::PropertyGridDelegate>();
 
-    auto item_container = zaf::Create<ListItemContainer>();
+    auto item_container = Create<ListItemContainer>();
 
     internal::TreeControlImplementation::InitializeParameters initialize_parameters;
     initialize_parameters.item_container = item_container;

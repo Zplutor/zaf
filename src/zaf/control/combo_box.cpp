@@ -411,7 +411,7 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
         }
     }
     else {
-        height = delegate->EstimateItemHeight(0, Object::Dumb()) * visible_item_count;
+        height = delegate->EstimateItemHeight(0, nullptr) * visible_item_count;
     }
 
     if (height == 0) {

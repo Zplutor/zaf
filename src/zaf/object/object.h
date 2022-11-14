@@ -14,7 +14,6 @@ class ObjectType;
 class Object {
 public:
     static ObjectType* const Type;
-    static const std::shared_ptr<Object>& Dumb();
 
 public:
     Object() = default;

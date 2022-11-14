@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/base/define.h>
+#include <zaf/creation.h>
 #include <zaf/object/object.h>
 #include <zaf/rx/subject.h>
 
@@ -24,7 +25,7 @@ public:
         const std::shared_ptr<Object>& parent_data,
         std::size_t index) {
 
-        return Object::Dumb();
+        return Create<Object>();
     }
 
     Observable<TreeDataSourceDataAddInfo> DataAddEvent() {

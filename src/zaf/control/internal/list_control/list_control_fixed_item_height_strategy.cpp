@@ -8,7 +8,7 @@ void ListControlFixedItemHeightStrategy::Initialize(
 
     __super::Initialize(data_source, delegate);
 
-    item_height_ = delegate.EstimateItemHeight(0, Object::Dumb());
+    item_height_ = delegate.EstimateItemHeight(0, nullptr);
     item_spacing_ = delegate.GetItemSpacing();
 }
 

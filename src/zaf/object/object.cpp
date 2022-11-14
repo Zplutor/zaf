@@ -2,6 +2,7 @@
 #include <zaf/object/object_type.h>
 #include <sstream>
 #include <zaf/base/error/system_error.h>
+#include <zaf/creation.h>
 #include <zaf/object/parsing/internal/default_object_parser.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_reader.h>
@@ -24,7 +25,7 @@ public:
     }
 
     std::shared_ptr<Object> CreateInstance() const override {
-        return Object::Dumb();
+        return Create<Object>();
     }
 
 protected:
@@ -58,12 +59,6 @@ void ParseObject(ObjectType& type, Object& object) {
     type.GetParser()->ParseFromNode(*root_node, object);
 }
 
-}
-
-const std::shared_ptr<Object>& Object::Dumb() {
-
-    static auto empty_object = std::make_shared<Object>();
-    return empty_object;
 }
 
 
