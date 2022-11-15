@@ -45,25 +45,38 @@ void InspectorWindow::Initialize() {
 
     RootControl()->SetLayouter(Create<VerticalLayouter>());
 
+    InitializeSplitControl();
     InitializeToolbar();
     InitializeTreeControl();
+    InitializePropertyGrid();
+}
+
+
+void InspectorWindow::InitializeSplitControl() {
+
+    split_control_ = Create<SplitControl>();
+    split_control_->SetIsHorizontalSplit(true);
+    split_control_->GetFirstPane()->SetLayouter(Create<VerticalLayouter>());
+    split_control_->GetSecondPane()->SetLayouter(Create<VerticalLayouter>());
+
+    RootControl()->AddChild(split_control_);
 }
 
 
 void InspectorWindow::InitializeToolbar() {
 
-    auto select_inspector_control_button = Create<Button>();
-    select_inspector_control_button->SetText(L"Select");
-    Subscriptions() += select_inspector_control_button->ClickEvent().Subscribe(std::bind([this]() {
+    auto select_button = Create<Button>();
+    select_button->SetText(L"Select");
+    Subscriptions() += select_button->ClickEvent().Subscribe(std::bind([this]() {
         target_window_->BeginSelectInspectedControl();
     }));
 
     auto toolbar = Create<Control>();
     toolbar->SetFixedHeight(40);
     toolbar->SetLayouter(Create<HorizontalLayouter>());
-    toolbar->AddChild(select_inspector_control_button);
+    toolbar->AddChild(select_button);
 
-    RootControl()->AddChild(toolbar);
+    split_control_->GetFirstPane()->AddChild(toolbar);
 }
 
 
@@ -71,6 +84,7 @@ void InspectorWindow::InitializeTreeControl() {
 
     tree_control_ = Create<TreeControl>();
     tree_control_->SetBorder(Frame(0));
+    tree_control_->SetAutoHideScrollBars(true);
 
     data_source_ = Create<internal::InspectDataSource>(target_window_);
     tree_control_->SetDelegate(std::dynamic_pointer_cast<TreeControlDelegate>(shared_from_this()));
@@ -79,7 +93,25 @@ void InspectorWindow::InitializeTreeControl() {
     tree_control_->ExpandItem(target_window_);
     tree_control_->ExpandItem(target_window_->RootControl());
 
-    RootControl()->AddChild(tree_control_);
+    Subscriptions() += tree_control_->SelectionChangeEvent().Subscribe(std::bind([this]() {
+
+        auto selected_item = tree_control_->GetFirstSelectedItem();
+        if (selected_item) {
+            property_grid_->SetTargetObject(selected_item);
+        }
+    }));
+
+    split_control_->GetFirstPane()->AddChild(tree_control_);
+}
+
+
+void InspectorWindow::InitializePropertyGrid() {
+
+    property_grid_ = Create<PropertyGrid>();
+    property_grid_->SetBorder(zaf::Frame{});
+    property_grid_->SetAutoHideScrollBars(true);
+
+    split_control_->GetSecondPane()->AddChild(property_grid_);
 }
 
 
@@ -237,5 +269,16 @@ std::shared_ptr<internal::InspectorPort> InspectorWindow::GetPort() {
     return std::dynamic_pointer_cast<internal::InspectorPort>(shared_from_this());
 }
 
+
+void InspectorWindow::OnWindowDestroyed(HWND handle) {
+
+    __super::OnWindowDestroyed(handle);
+
+    //Clear objects to avoid circular reference.
+    RootControl()->RemoveAllChildren();
+    tree_control_.reset();
+    split_control_.reset();
+    property_grid_.reset();
+}
 
 }

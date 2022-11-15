@@ -12,12 +12,18 @@ class TreeControlImplementation;
 
 class PropertyGrid : public ScrollableControl {
 public:
+    ZAF_DECLARE_TYPE;
+
+public:
     PropertyGrid();
 
+    std::shared_ptr<Object> TargetObject() const {
+        return target_object_;
+    }
+
     void SetTargetObject(const std::shared_ptr<Object>& object);
-    void SetTargetObject(
-        const std::shared_ptr<Object>& object, 
-        const std::shared_ptr<PropertyGridFilter>& filter);
+
+    void SetFilter(const std::shared_ptr<PropertyGridFilter>& filter);
 
     void Reload();
 
@@ -26,6 +32,11 @@ protected:
     void Layout(const zaf::Rect&) override;
 
 private:
+    void ReCreateDataSource();
+
+private:
+    std::shared_ptr<Object> target_object_;
+    std::shared_ptr<PropertyGridFilter> filter_;
     std::shared_ptr<internal::PropertyGridTreeDataSource> tree_data_source_;
     std::shared_ptr<internal::PropertyGridTreeDelegate> tree_delegate_;
     std::shared_ptr<internal::TreeControlImplementation> tree_implementation_;

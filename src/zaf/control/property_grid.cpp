@@ -3,8 +3,13 @@
 #include <zaf/control/internal/property_grid/property_grid_tree_delegate.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
 #include <zaf/control/list_item_container.h>
+#include <zaf/object/type_definition.h>
 
 namespace zaf {
+
+ZAF_DEFINE_TYPE(PropertyGrid)
+ZAF_DEFINE_TYPE_END;
+
 
 PropertyGrid::PropertyGrid() : 
     tree_implementation_(std::make_shared<internal::TreeControlImplementation>(*this)) {
@@ -16,9 +21,12 @@ void PropertyGrid::Initialize() {
 
     __super::Initialize();
 
+    target_object_ = Create<Object>();
+    filter_ = std::make_shared<PropertyGridFilter>();
+
     tree_data_source_ = std::make_shared<internal::PropertyGridTreeDataSource>(
-        Create<Object>(),
-        std::make_shared<PropertyGridFilter>());
+        target_object_,
+        filter_);
 
     tree_delegate_ = std::make_shared<internal::PropertyGridTreeDelegate>();
 
@@ -40,22 +48,29 @@ void PropertyGrid::Layout(const zaf::Rect& previous_rect) {
 
 
 void PropertyGrid::SetTargetObject(const std::shared_ptr<Object>& object) {
-    SetTargetObject(object, std::make_shared<PropertyGridFilter>());
+    target_object_ = object;
+    ReCreateDataSource();
 }
 
 
-void PropertyGrid::SetTargetObject(
-    const std::shared_ptr<Object>& object,
-    const std::shared_ptr<PropertyGridFilter>& filter) {
+void PropertyGrid::SetFilter(const std::shared_ptr<PropertyGridFilter>& filter) {
+    filter_ = filter;
+    ReCreateDataSource();
+}
 
-    tree_data_source_ = std::make_shared<internal::PropertyGridTreeDataSource>(object, filter);
+
+void PropertyGrid::ReCreateDataSource() {
+
+    tree_data_source_ = std::make_shared<internal::PropertyGridTreeDataSource>(
+        target_object_,
+        filter_);
+
     tree_implementation_->SetDataSource(tree_data_source_);
 }
 
 
 void PropertyGrid::Reload() {
 
-    //tree_data_source_->Reload();
     tree_implementation_->Reload();
 }
 

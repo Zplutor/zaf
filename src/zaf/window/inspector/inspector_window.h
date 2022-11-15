@@ -1,6 +1,8 @@
 #pragma once
 
 #include <zaf/window/window.h>
+#include <zaf/control/property_grid.h>
+#include <zaf/control/split_control.h>
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/window/inspector/internal/inspector_port.h>
 
@@ -39,6 +41,7 @@ public:
 
 protected:
     void Initialize() override;
+    void OnWindowDestroyed(HWND handle) override;
 
 private:
     friend class Window;
@@ -46,12 +49,16 @@ private:
     std::shared_ptr<internal::InspectorPort> GetPort();
 
 private:
+    void InitializeSplitControl();
     void InitializeToolbar();
     void InitializeTreeControl();
+    void InitializePropertyGrid();
     void ChangeHighlightObject(const std::shared_ptr<Object>& object);
 
 private:
+    std::shared_ptr<SplitControl> split_control_;
     std::shared_ptr<TreeControl> tree_control_;
+    std::shared_ptr<PropertyGrid> property_grid_;
     std::shared_ptr<internal::InspectDataSource> data_source_;
     std::shared_ptr<Window> target_window_;
 
