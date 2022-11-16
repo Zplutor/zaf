@@ -1219,9 +1219,6 @@
     <ClInclude Include="src\zaf\control\list_control_delegate.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\no_circular_pointer.h">
-      <Filter>zaf\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\list_box.h">
       <Filter>zaf\control</Filter>
     </ClInclude>

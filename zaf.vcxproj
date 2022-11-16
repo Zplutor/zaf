@@ -456,7 +456,6 @@
     <ClInclude Include="src\zaf\graphic\matrix.h" />
     <ClInclude Include="src\zaf\internal\enumerator.h" />
     <ClInclude Include="src\zaf\internal\message_loop.h" />
-    <ClInclude Include="src\zaf\internal\no_circular_pointer.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
     <ClInclude Include="src\zaf\internal\system_message_window.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
