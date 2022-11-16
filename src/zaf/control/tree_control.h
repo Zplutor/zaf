@@ -2,7 +2,6 @@
 
 #include <zaf/control/scrollable_control.h>
 #include <zaf/control/selection_mode.h>
-#include <zaf/internal/no_circular_pointer.h>
 #include <zaf/rx/observable.h>
 
 namespace zaf {
@@ -25,8 +24,8 @@ public:
     TreeControl();
     ~TreeControl();
 
-    void SetDataSource(const std::shared_ptr<TreeDataSource>& data_source);
-    void SetDelegate(const std::shared_ptr<TreeControlDelegate>& delegate);
+    void SetDataSource(const std::weak_ptr<TreeDataSource>& data_source);
+    void SetDelegate(const std::weak_ptr<TreeControlDelegate>& delegate);
 
     bool AutoAdjustScrollBarSmallChange() const;
     void SetAutoAdjustScrollBarSmallChange(bool value);
@@ -66,8 +65,8 @@ private:
 
 private:
     std::shared_ptr<ListItemContainer> item_container_;
-    internal::NoCircularPointer<TreeDataSource> data_source_;
-    internal::NoCircularPointer<TreeControlDelegate> delegate_;
+    std::weak_ptr<TreeDataSource> data_source_;
+    std::weak_ptr<TreeControlDelegate> delegate_;
     std::shared_ptr<internal::TreeControlImplementation> implementation_;
 };
 

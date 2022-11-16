@@ -24,7 +24,6 @@ enum class ListSelectionChangeReason {
 };
 
 class ListControlImplementation : public std::enable_shared_from_this<ListControlImplementation> {
-
 public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<ListDataSource>&)>;
     using DelegateChangeEvent = std::function<void(const std::shared_ptr<ListControlDelegate>&)>;
@@ -36,8 +35,8 @@ public:
 
     class InitializeParameters {
     public:
-        std::shared_ptr<ListDataSource> data_source;
-        std::shared_ptr<ListControlDelegate> delegate;
+        std::weak_ptr<ListDataSource> data_source;
+        std::weak_ptr<ListControlDelegate> delegate;
         std::shared_ptr<ListItemContainer> item_container;
         DataSourceChangeEvent data_source_change_event;
         DelegateChangeEvent delegate_change_event;
@@ -53,8 +52,8 @@ public:
     ListControlImplementation& operator=(const ListControlImplementation&) = delete;
 
     void Initialize(const InitializeParameters& parameters);
-    void SetDataSource(const std::shared_ptr<ListDataSource>& data_source);
-    void SetDelegate(const std::shared_ptr<ListControlDelegate>& delegate);
+    void SetDataSource(const std::weak_ptr<ListDataSource>& data_source);
+    void SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
     void SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
 
     SelectionMode GetSelectionMode() const {
@@ -109,8 +108,8 @@ private:
         std::size_t count);
 
 private:
-    void InstallDataSource(const std::shared_ptr<ListDataSource>& data_source);
-    void InstallDelegate(const std::shared_ptr<ListControlDelegate>& delegate);
+    void InstallDataSource(const std::weak_ptr<ListDataSource>& data_source);
+    void InstallDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
     void InstallItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
 
     void RegisterScrollBarEvents();

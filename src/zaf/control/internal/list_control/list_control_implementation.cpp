@@ -148,16 +148,16 @@ void ListControlImplementation::AdjustScrollBarSmallChange() {
 }
 
 
-void ListControlImplementation::SetDataSource(const std::shared_ptr<ListDataSource>& data_source) {
+void ListControlImplementation::SetDataSource(const std::weak_ptr<ListDataSource>& data_source) {
 
     UnregisterDataSourceEvents();
 
-    auto previous_data_source = data_source_.lock();
+    auto previous_data_source = data_source_;
 
     InstallDataSource(data_source);
 
     if (data_source_change_event_) {
-        data_source_change_event_(previous_data_source);
+        data_source_change_event_(previous_data_source.lock());
     }
 
     Reload();
@@ -165,16 +165,13 @@ void ListControlImplementation::SetDataSource(const std::shared_ptr<ListDataSour
 
 
 void ListControlImplementation::InstallDataSource(
-    const std::shared_ptr<ListDataSource>& data_source) {
-
-    ZAF_EXPECT(data_source);
+    const std::weak_ptr<ListDataSource>& data_source) {
 
     data_source_ = data_source;
 
     //Re-create item height manager once data source is changed, bacause item height manager 
     //depends on notifications of data source.
-    item_height_manager_ = std::make_shared<internal::ListControlItemHeightManager>(
-        data_source_.lock());
+    item_height_manager_ = std::make_shared<internal::ListControlItemHeightManager>(data_source_);
 
     item_container_->SetSelectStrategy(CreateSelectStrategy());
 
@@ -215,14 +212,14 @@ void ListControlImplementation::UnregisterDataSourceEvents() {
 }
 
 
-void ListControlImplementation::SetDelegate(const std::shared_ptr<ListControlDelegate>& delegate) {
+void ListControlImplementation::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
 
-    auto previous_delegate = delegate_.lock();
+    auto previous_delegate = delegate_;
     
     InstallDelegate(delegate);
 
     if (delegate_change_event_) {
-        delegate_change_event_(previous_delegate);
+        delegate_change_event_(previous_delegate.lock());
     }
 
     Reload();
@@ -230,12 +227,10 @@ void ListControlImplementation::SetDelegate(const std::shared_ptr<ListControlDel
 
 
 void ListControlImplementation::InstallDelegate(
-    const std::shared_ptr<ListControlDelegate>& delegate) {
-
-    ZAF_EXPECT(delegate);
+    const std::weak_ptr<ListControlDelegate>& delegate) {
 
     delegate_ = delegate;
-    item_height_manager_->ResetDelegate(delegate_.lock());
+    item_height_manager_->ResetDelegate(delegate_);
 }
 
 

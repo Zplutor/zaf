@@ -402,16 +402,19 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
     auto data_source = drop_down_list_box_->GetDataSource();
     auto delegate = drop_down_list_box_->GetDelegate();
 
-    if (delegate->HasVariableItemHeight()) {
+    if (data_source && delegate) {
 
-        std::size_t item_count = data_source->GetDataCount();
-        for (auto index : Range(std::min(item_count, visible_item_count))) {
-            auto item_data = data_source->GetDataAtIndex(index);
-            height += delegate->EstimateItemHeight(index, item_data);
+        if (delegate->HasVariableItemHeight()) {
+
+            std::size_t item_count = data_source->GetDataCount();
+            for (auto index : Range(std::min(item_count, visible_item_count))) {
+                auto item_data = data_source->GetDataAtIndex(index);
+                height += delegate->EstimateItemHeight(index, item_data);
+            }
         }
-    }
-    else {
-        height = delegate->EstimateItemHeight(0, nullptr) * visible_item_count;
+        else {
+            height = delegate->EstimateItemHeight(0, nullptr) * visible_item_count;
+        }
     }
 
     if (height == 0) {
@@ -526,10 +529,15 @@ void ComboBox::DropDownListBoxSelectionChange() {
     auto selected_index = drop_down_list_box_->GetFirstSelectedItemIndex();
     if (selected_index) {
 
+        std::wstring text;
+
         auto delegate = drop_down_list_box_->GetDelegate();
-        auto text = delegate->GetItemText(
-            *selected_index, 
-            drop_down_list_box_->GetItemDataAtIndex(*selected_index));
+        if (delegate) {
+
+            text = delegate->GetItemText(
+                *selected_index,
+                drop_down_list_box_->GetItemDataAtIndex(*selected_index));
+        }
 
         ChangeSelectionText(text, TextChangeSource::DropDownListBox);
         NotifySelectionChange();

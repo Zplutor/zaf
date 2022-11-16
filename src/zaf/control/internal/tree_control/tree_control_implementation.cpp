@@ -1,4 +1,5 @@
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
+#include <zaf/base/as.h>
 #include <zaf/base/container/utility/contain.h>
 #include <zaf/base/container/utility/find.h>
 #include <zaf/base/container/utility/range.h>
@@ -70,10 +71,8 @@ void TreeControlImplementation::InitializeListImplementation(
 
     ListControlImplementation::InitializeParameters list_initialize_parameters;
     list_initialize_parameters.item_container = parameters.item_container;
-    list_initialize_parameters.data_source =
-        std::dynamic_pointer_cast<ListDataSource>(shared_from_this());
-    list_initialize_parameters.delegate =
-        std::dynamic_pointer_cast<ListControlDelegate>(shared_from_this());
+    list_initialize_parameters.data_source = As<ListDataSource>(shared_from_this());
+    list_initialize_parameters.delegate = As<ListControlDelegate>(shared_from_this());
     list_initialize_parameters.item_container_change_event = parameters.item_container_change_event;
 
     list_initialize_parameters.selection_change_event = std::bind(
@@ -87,9 +86,7 @@ void TreeControlImplementation::InitializeListImplementation(
 
 
 void TreeControlImplementation::InstallDataSource(
-    const std::shared_ptr<TreeDataSource>& data_source) {
-
-    ZAF_EXPECT(data_source);
+    const std::weak_ptr<TreeDataSource>& data_source) {
 
     UnregisterDataSourceEvents();
 
@@ -123,34 +120,32 @@ void TreeControlImplementation::UnregisterDataSourceEvents() {
 
 
 void TreeControlImplementation::InstallDelegate(
-    const std::shared_ptr<TreeControlDelegate>& delegate) {
-
-    ZAF_EXPECT(delegate);
+    const std::weak_ptr<TreeControlDelegate>& delegate) {
 
     delegate_ = delegate;
 }
 
 
-void TreeControlImplementation::SetDataSource(const std::shared_ptr<TreeDataSource>& data_source) {
+void TreeControlImplementation::SetDataSource(const std::weak_ptr<TreeDataSource>& data_source) {
 
-    auto previous_data_source = data_source_.lock();
+    auto previous_data_source = data_source_;
     InstallDataSource(data_source);
 
     if (data_source_change_event_) {
-        data_source_change_event_(previous_data_source);
+        data_source_change_event_(previous_data_source.lock());
     }
 
     Reload();
 }
 
 
-void TreeControlImplementation::SetDelegate(const std::shared_ptr<TreeControlDelegate>& delegate) {
+void TreeControlImplementation::SetDelegate(const std::weak_ptr<TreeControlDelegate>& delegate) {
 
-    auto previous_delegate = delegate_.lock();
+    auto previous_delegate = delegate_;
     InstallDelegate(delegate);
 
     if (delegate_change_event_) {
-        delegate_change_event_(previous_delegate);
+        delegate_change_event_(previous_delegate.lock());
     }
 
     Reload();

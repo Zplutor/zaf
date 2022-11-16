@@ -12,10 +12,10 @@ namespace zaf::internal {
 
 class ListControlItemHeightManager : NonCopyable {
 public:
-    ListControlItemHeightManager(const std::shared_ptr<ListDataSource>& data_source);
+    ListControlItemHeightManager(const std::weak_ptr<ListDataSource>& data_source);
     ~ListControlItemHeightManager();
 
-    void ResetDelegate(const std::shared_ptr<ListControlDelegate>& delegate);
+    void ResetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
 
     void ReloadItemHeights();
 

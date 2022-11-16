@@ -25,8 +25,8 @@ public:
     class InitializeParameters {
     public:
         std::shared_ptr<ListItemContainer> item_container;
-        std::shared_ptr<TreeDataSource> data_source;
-        std::shared_ptr<TreeControlDelegate> delegate;
+        std::weak_ptr<TreeDataSource> data_source;
+        std::weak_ptr<TreeControlDelegate> delegate;
         DataSourceChangeEvent data_source_change_event;
         DelegateChangeEvent delegate_change_event;
         ListControlImplementation::ItemContainerChangeEvent item_container_change_event;
@@ -48,8 +48,8 @@ public:
 
     void Initialize(const InitializeParameters& parameters);
 
-    void SetDataSource(const std::shared_ptr<TreeDataSource>& data_source);
-    void SetDelegate(const std::shared_ptr<TreeControlDelegate>& delegate);
+    void SetDataSource(const std::weak_ptr<TreeDataSource>& data_source);
+    void SetDelegate(const std::weak_ptr<TreeControlDelegate>& delegate);
 
     void Reload();
 
@@ -94,10 +94,10 @@ public:
 
 private:
     void InitializeListImplementation(const InitializeParameters& parameters);
-    void InstallDataSource(const std::shared_ptr<TreeDataSource>& data_source);
+    void InstallDataSource(const std::weak_ptr<TreeDataSource>& data_source);
     void RegisterDataSourceEvents();
     void UnregisterDataSourceEvents();
-    void InstallDelegate(const std::shared_ptr<TreeControlDelegate>& delegate);
+    void InstallDelegate(const std::weak_ptr<TreeControlDelegate>& delegate);
 
     void ReloadRootNode();
 

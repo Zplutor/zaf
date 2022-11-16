@@ -26,8 +26,12 @@ void ListBox::Initialize() {
     
     __super::Initialize();
 
-    SetDataSource(std::make_shared<ListBoxDataSource>());
-    SetDelegate(std::make_shared<ListBoxDelegate>());
+    data_source_ = std::make_shared<ListBoxDataSource>();
+    SetDataSource(data_source_);
+
+    delegate_ = std::make_shared<ListBoxDelegate>();
+    delegate_->SetItemHeight(default_item_height_);
+    SetDelegate(delegate_);
 }
 
 
@@ -35,7 +39,12 @@ void ListBox::DataSourceChange(const std::shared_ptr<ListDataSource>& previous_d
 
     __super::DataSourceChange(previous_data_source);
 
-    data_source_ = dynamic_cast<ListBoxDataSource*>(GetDataSource().get());
+    auto new_data_source = GetDataSource();
+    if (data_source_ == new_data_source) {
+        return;
+    }
+
+    data_source_ = As<ListBoxDataSource>(new_data_source);
     ZAF_EXPECT(data_source_);
 }
 
@@ -44,10 +53,15 @@ void ListBox::DelegateChange(const std::shared_ptr<ListControlDelegate>& previou
 
     __super::DelegateChange(previous_delegate);
 
-    delegate_ = dynamic_cast<ListBoxDelegate*>(GetDelegate().get());
-    if (delegate_) {
-        delegate_->SetItemHeight(default_item_height_);
+    auto new_delegate = GetDelegate();
+    if (delegate_ == new_delegate) {
+        return;
     }
+
+    delegate_ = As<ListBoxDelegate>(new_delegate);
+    ZAF_EXPECT(delegate_);
+
+    delegate_->SetItemHeight(default_item_height_);
 }
 
 

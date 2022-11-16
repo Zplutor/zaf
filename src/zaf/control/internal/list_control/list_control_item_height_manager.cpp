@@ -5,7 +5,7 @@
 namespace zaf::internal {
 
 ListControlItemHeightManager::ListControlItemHeightManager(
-    const std::shared_ptr<ListDataSource>& item_source) : data_source_(item_source) {
+    const std::weak_ptr<ListDataSource>& data_source) : data_source_(data_source) {
 
     RegisterDataSourceEvents();
 }
@@ -50,7 +50,7 @@ void ListControlItemHeightManager::UnregisterDataSourceEvents() {
 
 
 void ListControlItemHeightManager::ResetDelegate(
-    const std::shared_ptr<ListControlDelegate>& delegate) {
+    const std::weak_ptr<ListControlDelegate>& delegate) {
 
     delegate_ = delegate;
     ReloadItemHeights();

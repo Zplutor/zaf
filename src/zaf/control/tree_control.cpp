@@ -17,13 +17,10 @@ constexpr const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionCh
 }
 
 ZAF_DEFINE_TYPE(TreeControl)
-    //ZAF_DEFINE_TYPE_PARSER(ListControlParser)
 ZAF_DEFINE_TYPE_END
 
 
 TreeControl::TreeControl() :
-    data_source_(this),
-    delegate_(this),
     implementation_(std::make_shared<internal::TreeControlImplementation>(*this)) {
 
 }
@@ -39,13 +36,9 @@ void TreeControl::Initialize() {
     __super::Initialize();
 
     item_container_ = Create<ListItemContainer>();
-    data_source_ = Create<TreeDataSource>();
-    delegate_ = Create<TreeControlDelegate>();
 
     internal::TreeControlImplementation::InitializeParameters initialize_parameters;
     initialize_parameters.item_container = item_container_;
-    initialize_parameters.data_source = data_source_.GetSharedPointer();
-    initialize_parameters.delegate = delegate_.GetSharedPointer();
     initialize_parameters.data_source_change_event =
         std::bind(&TreeControl::DataSourceChange, this, std::placeholders::_1);
     initialize_parameters.delegate_change_event =
@@ -70,21 +63,17 @@ void TreeControl::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void TreeControl::SetDataSource(const std::shared_ptr<TreeDataSource>& data_source) {
-
-    ZAF_EXPECT(data_source);
+void TreeControl::SetDataSource(const std::weak_ptr<TreeDataSource>& data_source) {
 
     data_source_ = data_source;
-    implementation_->SetDataSource(data_source_.GetSharedPointer());
+    implementation_->SetDataSource(data_source_);
 }
 
 
-void TreeControl::SetDelegate(const std::shared_ptr<TreeControlDelegate>& delegate) {
-
-    ZAF_EXPECT(delegate);
+void TreeControl::SetDelegate(const std::weak_ptr<TreeControlDelegate>& delegate) {
 
     delegate_ = delegate;
-    implementation_->SetDelegate(delegate_.GetSharedPointer());
+    implementation_->SetDelegate(delegate_);
 }
 
 

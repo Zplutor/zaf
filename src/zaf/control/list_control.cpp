@@ -22,8 +22,6 @@ ZAF_DEFINE_TYPE_END
 
 
 ListControl::ListControl() : 
-    data_source_(this),
-    delegate_(this),
     implementation_(std::make_shared<internal::ListControlImplementation>(*this)){
 
 }
@@ -39,13 +37,9 @@ void ListControl::Initialize() {
     __super::Initialize();
 
     item_container_ = Create<ListItemContainer>();
-    data_source_ = Create<ListDataSource>();
-    delegate_ = Create<ListControlDelegate>();
 
     internal::ListControlImplementation::InitializeParameters initialize_parameters;
     initialize_parameters.item_container = item_container_;
-    initialize_parameters.data_source = data_source_.GetSharedPointer();
-    initialize_parameters.delegate = delegate_.GetSharedPointer();
 
     initialize_parameters.data_source_change_event = 
         std::bind(&ListControl::DataSourceChange, this, std::placeholders::_1);
@@ -76,21 +70,17 @@ void ListControl::OnVerticalScrollBarChanged(
 }
 
 
-void ListControl::SetDataSource(const std::shared_ptr<ListDataSource>& data_source) {
-
-    ZAF_EXPECT(data_source);
+void ListControl::SetDataSource(const std::weak_ptr<ListDataSource>& data_source) {
 
     data_source_ = data_source;
-    implementation_->SetDataSource(data_source_.GetSharedPointer());
+    implementation_->SetDataSource(data_source_);
 }
 
 
-void ListControl::SetDelegate(const std::shared_ptr<ListControlDelegate>& delegate) {
-
-    ZAF_EXPECT(delegate);
+void ListControl::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
 
     delegate_ = delegate;
-    implementation_->SetDelegate(delegate_.GetSharedPointer());
+    implementation_->SetDelegate(delegate_);
 }
 
 
@@ -114,7 +104,12 @@ std::size_t ListControl::GetItemCount() const {
 
 
 std::shared_ptr<Object> ListControl::GetItemDataAtIndex(std::size_t index) const {
-    return data_source_->GetDataAtIndex(index);
+
+    auto data_source = data_source_.lock();
+    if (data_source) {
+        return data_source->GetDataAtIndex(index);
+    }
+    return Create<Object>();
 }
 
 

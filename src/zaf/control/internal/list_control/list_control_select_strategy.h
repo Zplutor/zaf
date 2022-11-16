@@ -22,7 +22,7 @@ public:
         return list_control_.lock();
     }
 
-    void SetListControl(const std::shared_ptr<ListControlImplementation>& list_control) {
+    void SetListControl(const std::weak_ptr<ListControlImplementation> list_control) {
         list_control_ = list_control;
     }
 

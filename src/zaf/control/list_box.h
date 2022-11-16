@@ -43,8 +43,8 @@ protected:
     void DelegateChange(const std::shared_ptr<ListControlDelegate>& previous_delegate) override;
 
 private:
-    ListBoxDataSource* data_source_{};
-    ListBoxDelegate* delegate_{};
+    std::shared_ptr<ListBoxDataSource> data_source_;
+    std::shared_ptr<ListBoxDelegate> delegate_{};
 
     float default_item_height_{ 18 };
 };

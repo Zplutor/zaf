@@ -31,7 +31,7 @@ public:
         std::size_t item_index, 
         const std::shared_ptr<Object>& item_data) {
 
-        return 16;
+        return 0;
     }
 
     virtual float GetItemSpacing() {
@@ -42,7 +42,7 @@ public:
         std::size_t item_index,
         const std::shared_ptr<Object>& item_data) {
 
-        return item_data->ToString();
+        return {};
     }
 
     virtual std::shared_ptr<ListItem> CreateItem(

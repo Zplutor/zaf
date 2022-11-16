@@ -7,7 +7,6 @@
 #include <zaf/control/selection_mode.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/creation.h>
-#include <zaf/internal/no_circular_pointer.h>
 #include <zaf/rx/observable.h>
 
 namespace zaf {
@@ -39,16 +38,16 @@ public:
     ~ListControl();
 
     std::shared_ptr<ListDataSource> GetDataSource() const {
-        return data_source_.GetSharedPointer();
+        return data_source_.lock();
     }
 
-    void SetDataSource(const std::shared_ptr<ListDataSource>& data_source);
+    void SetDataSource(const std::weak_ptr<ListDataSource>& data_source);
 
     std::shared_ptr<ListControlDelegate> GetDelegate() const {
-        return delegate_.GetSharedPointer();
+        return delegate_.lock();
     }
 
-    void SetDelegate(const std::shared_ptr<ListControlDelegate>& delegate);
+    void SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
 
     /**
      Get item container.
@@ -192,8 +191,8 @@ private:
 
 private:
     std::shared_ptr<ListItemContainer> item_container_;
-    internal::NoCircularPointer<ListDataSource> data_source_;
-    internal::NoCircularPointer<ListControlDelegate> delegate_;
+    std::weak_ptr<ListDataSource> data_source_;
+    std::weak_ptr<ListControlDelegate> delegate_;
     std::shared_ptr<internal::ListControlImplementation> implementation_;
 };
 
