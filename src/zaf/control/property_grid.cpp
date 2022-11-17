@@ -1,7 +1,7 @@
 #include <zaf/control/property_grid.h>
-#include <zaf/control/internal/property_grid/property_grid_split_distance_manager.h>
-#include <zaf/control/internal/property_grid/property_grid_tree_data_source.h>
-#include <zaf/control/internal/property_grid/property_grid_tree_delegate.h>
+#include <zaf/control/property_grid/internal/property_grid_split_distance_manager.h>
+#include <zaf/control/property_grid/internal/property_grid_tree_data_source.h>
+#include <zaf/control/property_grid/internal/property_grid_tree_delegate.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
 #include <zaf/control/list_item_container.h>
 #include <zaf/object/type_definition.h>

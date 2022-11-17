@@ -1,7 +1,7 @@
-#include <zaf/control/internal/property_grid/property_grid_tree_delegate.h>
+#include <zaf/control/property_grid/internal/property_grid_tree_delegate.h>
 #include <zaf/base/as.h>
-#include <zaf/control/internal/property_grid/property_grid_data.h>
-#include <zaf/control/internal/property_grid/property_grid_item.h>
+#include <zaf/control/property_grid/internal/property_grid_data.h>
+#include <zaf/control/property_grid/internal/property_grid_item.h>
 #include <zaf/creation.h>
 
 namespace zaf::internal {

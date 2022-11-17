@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/error/check.h>
-#include <zaf/control/internal/property_grid/property_grid_data.h>
+#include <zaf/control/property_grid/internal/property_grid_data.h>
 #include <zaf/control/property_grid/type_config_factory.h>
 #include <zaf/control/tree_data_source.h>
 #include <zaf/object/object_type.h>

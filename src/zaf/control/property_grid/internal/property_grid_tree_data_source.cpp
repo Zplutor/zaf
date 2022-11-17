@@ -1,4 +1,4 @@
-#include <zaf/control/internal/property_grid/property_grid_tree_data_source.h>
+#include <zaf/control/property_grid/internal/property_grid_tree_data_source.h>
 #include <zaf/base/as.h>
 #include <zaf/base/container/utility/append.h>
 #include <zaf/creation.h>

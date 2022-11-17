@@ -1,7 +1,7 @@
 #pragma once
 
-#include <zaf/control/internal/property_grid/property_grid_data.h>
-#include <zaf/control/internal/property_grid/property_grid_split_distance_manager.h>
+#include <zaf/control/property_grid/internal/property_grid_data.h>
+#include <zaf/control/property_grid/internal/property_grid_split_distance_manager.h>
 #include <zaf/control/label.h>
 #include <zaf/control/property_grid/value_view.h>
 #include <zaf/control/split_control.h>

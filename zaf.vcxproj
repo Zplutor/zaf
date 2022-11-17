@@ -89,10 +89,6 @@
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_simple_multiple_select_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_single_select_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_variable_item_height_strategy.cpp" />
-    <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_tree_data_source.cpp" />
-    <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_tree_delegate.cpp" />
-    <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_item.cpp" />
-    <ClCompile Include="src\zaf\control\internal\property_grid\property_grid_split_distance_manager.cpp" />
     <ClCompile Include="src\zaf\control\internal\range_manager.cpp" />
     <ClCompile Include="src\zaf\control\internal\scrollable_control\general_scrolling_layouter.cpp" />
     <ClCompile Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.cpp" />
@@ -119,6 +115,10 @@
     <ClCompile Include="src\zaf\control\list_item.cpp" />
     <ClCompile Include="src\zaf\control\list_item_container.cpp" />
     <ClCompile Include="src\zaf\control\property_grid.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\internal\property_grid_item.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\internal\property_grid_split_distance_manager.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\internal\property_grid_tree_data_source.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\internal\property_grid_tree_delegate.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\text_value_view.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\type_config.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\type_config_factory.cpp" />
@@ -330,11 +330,6 @@
     <ClInclude Include="src\zaf\control\internal\list_control\list_control_simple_multiple_select_strategy.h" />
     <ClInclude Include="src\zaf\control\internal\list_control\list_control_single_select_strategy.h" />
     <ClInclude Include="src\zaf\control\internal\list_control\list_control_variable_item_height_strategy.h" />
-    <ClInclude Include="src\zaf\control\internal\property_grid\property_grid_data.h" />
-    <ClInclude Include="src\zaf\control\internal\property_grid\property_grid_tree_data_source.h" />
-    <ClInclude Include="src\zaf\control\internal\property_grid\property_grid_tree_delegate.h" />
-    <ClInclude Include="src\zaf\control\internal\property_grid\property_grid_item.h" />
-    <ClInclude Include="src\zaf\control\internal\property_grid\property_grid_split_distance_manager.h" />
     <ClInclude Include="src\zaf\control\internal\range_manager.h" />
     <ClInclude Include="src\zaf\control\internal\range_map.h" />
     <ClInclude Include="src\zaf\control\internal\scrollable_control\general_scrolling_layouter.h" />
@@ -365,6 +360,11 @@
     <ClInclude Include="src\zaf\control\list_item.h" />
     <ClInclude Include="src\zaf\control\list_item_container.h" />
     <ClInclude Include="src\zaf\control\property_grid.h" />
+    <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_data.h" />
+    <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_item.h" />
+    <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_split_distance_manager.h" />
+    <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_tree_data_source.h" />
+    <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_tree_delegate.h" />
     <ClInclude Include="src\zaf\control\property_grid\text_value_view.h" />
     <ClInclude Include="src\zaf\control\property_grid\type_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\type_config_factory.h" />

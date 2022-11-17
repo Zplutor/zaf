@@ -1,4 +1,4 @@
-#include <zaf/control/internal/property_grid/property_grid_item.h>
+#include <zaf/control/property_grid/internal/property_grid_item.h>
 #include <zaf/base/as.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
