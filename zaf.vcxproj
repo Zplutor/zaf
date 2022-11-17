@@ -119,6 +119,10 @@
     <ClCompile Include="src\zaf\control\list_item.cpp" />
     <ClCompile Include="src\zaf\control\list_item_container.cpp" />
     <ClCompile Include="src\zaf\control\property_grid.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\text_value_view.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\type_config.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\type_config_factory.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\value_view.cpp" />
     <ClCompile Include="src\zaf\control\radio_button.cpp" />
     <ClCompile Include="src\zaf\control\scrollable_control.cpp" />
     <ClCompile Include="src\zaf\control\scroll_bar.cpp" />
@@ -361,7 +365,10 @@
     <ClInclude Include="src\zaf\control\list_item.h" />
     <ClInclude Include="src\zaf\control\list_item_container.h" />
     <ClInclude Include="src\zaf\control\property_grid.h" />
-    <ClInclude Include="src\zaf\control\property_grid_filter.h" />
+    <ClInclude Include="src\zaf\control\property_grid\text_value_view.h" />
+    <ClInclude Include="src\zaf\control\property_grid\type_config.h" />
+    <ClInclude Include="src\zaf\control\property_grid\type_config_factory.h" />
+    <ClInclude Include="src\zaf\control\property_grid\value_view.h" />
     <ClInclude Include="src\zaf\control\radio_button.h" />
     <ClInclude Include="src\zaf\control\scrollable_control.h" />
     <ClInclude Include="src\zaf\control\scroll_bar.h" />

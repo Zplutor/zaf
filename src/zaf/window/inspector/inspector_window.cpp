@@ -269,16 +269,4 @@ std::shared_ptr<internal::InspectorPort> InspectorWindow::GetPort() {
     return std::dynamic_pointer_cast<internal::InspectorPort>(shared_from_this());
 }
 
-
-void InspectorWindow::OnWindowDestroyed(HWND handle) {
-
-    __super::OnWindowDestroyed(handle);
-
-    //Clear objects to avoid circular reference.
-    RootControl()->RemoveAllChildren();
-    tree_control_.reset();
-    split_control_.reset();
-    property_grid_.reset();
-}
-
 }

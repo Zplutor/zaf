@@ -2,7 +2,7 @@
 
 #include <zaf/base/error/check.h>
 #include <zaf/control/internal/property_grid/property_grid_data.h>
-#include <zaf/control/property_grid_filter.h>
+#include <zaf/control/property_grid/type_config_factory.h>
 #include <zaf/control/tree_data_source.h>
 #include <zaf/object/object_type.h>
 
@@ -12,7 +12,7 @@ class PropertyGridTreeDataSource : public TreeDataSource {
 public:
     explicit PropertyGridTreeDataSource(
         const std::shared_ptr<Object>& target_object,
-        const std::shared_ptr<PropertyGridFilter>& filter);
+        const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory);
 
     bool DoesDataHasChildren(const std::shared_ptr<Object>& data);
 
@@ -31,7 +31,7 @@ private:
 
 private:
     std::shared_ptr<PropertyGridData> root_data_;
-    std::shared_ptr<PropertyGridFilter> filter_;
+    std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
 };
 
 }

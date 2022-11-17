@@ -1,10 +1,11 @@
 #pragma once
 
-#include <zaf/control/property_grid_filter.h>
+#include <zaf/control/property_grid/type_config_factory.h>
 #include <zaf/control/scrollable_control.h>
 
 namespace zaf {
 namespace internal {
+class PropertyGridSplitDistanceManager;
 class PropertyGridTreeDataSource;
 class PropertyGridTreeDelegate;
 class TreeControlImplementation;
@@ -23,7 +24,7 @@ public:
 
     void SetTargetObject(const std::shared_ptr<Object>& object);
 
-    void SetFilter(const std::shared_ptr<PropertyGridFilter>& filter);
+    void SetTypeConfigFactory(const std::shared_ptr<property_grid::TypeConfigFactory>& factory);
 
     void Reload();
 
@@ -33,10 +34,12 @@ protected:
 
 private:
     void ReCreateDataSource();
+    void ReCreateDelegate();
 
 private:
+    std::shared_ptr<internal::PropertyGridSplitDistanceManager> split_distance_manager_;
     std::shared_ptr<Object> target_object_;
-    std::shared_ptr<PropertyGridFilter> filter_;
+    std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
     std::shared_ptr<internal::PropertyGridTreeDataSource> tree_data_source_;
     std::shared_ptr<internal::PropertyGridTreeDelegate> tree_delegate_;
     std::shared_ptr<internal::TreeControlImplementation> tree_implementation_;

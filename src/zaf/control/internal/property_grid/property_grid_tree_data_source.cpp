@@ -7,12 +7,12 @@ namespace zaf::internal {
 
 PropertyGridTreeDataSource::PropertyGridTreeDataSource(
     const std::shared_ptr<Object>& target_object,
-    const std::shared_ptr<PropertyGridFilter>& filter)
+    const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory)
     :
-    filter_(filter) {
+    type_config_factory_(type_config_factory) {
 
     ZAF_EXPECT(target_object);
-    ZAF_EXPECT(filter_);
+    ZAF_EXPECT(type_config_factory_);
     root_data_ = CreateData(nullptr, target_object);
 }
 
@@ -48,7 +48,8 @@ std::vector<ObjectProperty*> PropertyGridTreeDataSource::InspectProperties(
         zaf::Append(result, each_type->GetProperties());
     }
 
-    filter_->FilterProperties(value, result);
+    auto type_config = type_config_factory_->GetConfig(value->GetType());
+    type_config->FilterProperties(result);
     return result;
 }
 

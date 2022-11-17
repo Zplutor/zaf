@@ -41,7 +41,6 @@ public:
 
 protected:
     void Initialize() override;
-    void OnWindowDestroyed(HWND handle) override;
 
 private:
     friend class Window;

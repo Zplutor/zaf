@@ -12,9 +12,11 @@ constexpr std::uint32_t DelimiterLineColor = 0xeeeeee;
 
 PropertyGridItem::PropertyGridItem(
     const std::shared_ptr<PropertyGridData>& data,
+    const std::shared_ptr<property_grid::ValueView>& value_view,
     const std::shared_ptr<PropertyGridSplitDistanceManager>& split_distance_manager)
     :
     data_(data),
+    value_view_(value_view),
     split_distance_manager_(split_distance_manager) {
 
 }
@@ -46,7 +48,7 @@ void PropertyGridItem::Initialize() {
 void PropertyGridItem::InitializeSubControls() {
 
     InitializeNameLabel();
-    InitializeValueLabel();
+    InitializeValueView();
     InitializeSplitControl();
 }
 
@@ -60,15 +62,10 @@ void PropertyGridItem::InitializeNameLabel() {
 }
 
 
-void PropertyGridItem::InitializeValueLabel() {
+void PropertyGridItem::InitializeValueView() {
 
-    value_label_ = CreateLabel();
-    value_label_->SetPadding(Frame{ 4, 0, 4, 0 });
-
-    auto value = data_->Value();
-    if (value) {
-        value_label_->SetText(value->ToString());
-    }
+    value_view_->SetPadding(Frame{ 4, 0, 4, 0 });
+    value_view_->SetValue(data_->Value());
 }
 
 
@@ -95,7 +92,7 @@ void PropertyGridItem::InitializeSplitControl() {
     split_control_->SetIsHorizontalSplit(false);
     split_control_->GetSplitBar()->SetSplitterColor(Color::FromRGB(DelimiterLineColor));
     split_control_->SetFirstPane(name_label_);
-    split_control_->SetSecondPane(value_label_);
+    split_control_->SetSecondPane(value_view_);
 
     Subscriptions() += split_control_->SplitBarDistanceChangeEvent().Subscribe(
         [this](const SplitControlSplitBarDistanceChangeInfo& event_info) {
