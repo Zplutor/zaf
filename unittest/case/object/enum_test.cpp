@@ -12,6 +12,10 @@ enum class TestType {
     First,
     Second,
     Third,
+
+    One = First,
+    Two = Second,
+    Three = Third,
 };
 
 ZAF_DECLARE_ENUM(TestType)
@@ -20,6 +24,9 @@ ZAF_DEFINE_ENUM(TestType)
 ZAF_DEFINE_ENUM_VALUE(First)
 ZAF_DEFINE_ENUM_VALUE(Second)
 ZAF_DEFINE_ENUM_VALUE(Third)
+ZAF_DEFINE_ENUM_VALUE(One)
+ZAF_DEFINE_ENUM_VALUE(Two)
+ZAF_DEFINE_ENUM_VALUE(Three)
 ZAF_DEFINE_ENUM_END
 
 }
@@ -64,6 +71,11 @@ TEST(EnumTest, ToString) {
     ASSERT_EQ(zaf::Box(TestType::Second)->ToString(), L"Second");
     ASSERT_EQ(zaf::Box(TestType::Third)->ToString(), L"Third");
 
+    //Alias enum value still generates original name.
+    ASSERT_EQ(zaf::Box(TestType::One)->ToString(), L"First");
+    ASSERT_EQ(zaf::Box(TestType::Two)->ToString(), L"Second");
+    ASSERT_EQ(zaf::Box(TestType::Three)->ToString(), L"Third");
+
     ASSERT_EQ(zaf::Box(static_cast<TestType>(1374))->ToString(), L"1374");
 }
 
@@ -87,6 +99,32 @@ TEST(EnumTest, FindValue) {
 
     object = TestTypeEnum::EnumType()->FindValue(L"Fourth");
     ASSERT_EQ(object, nullptr);
+
+    //Alias
+    object = TestTypeEnum::EnumType()->FindValue(L"One");
+    ASSERT_NE(object, nullptr);
+    value = zaf::Unbox<TestType>(object);
+    ASSERT_EQ(*value, TestType::One);
+
+    object = TestTypeEnum::EnumType()->FindValue(L"Two");
+    ASSERT_NE(object, nullptr);
+    value = zaf::Unbox<TestType>(object);
+    ASSERT_EQ(*value, TestType::Two);
+
+    object = TestTypeEnum::EnumType()->FindValue(L"Three");
+    ASSERT_NE(object, nullptr);
+    value = zaf::Unbox<TestType>(object);
+    ASSERT_EQ(*value, TestType::Three);
+}
+
+
+TEST(EnumTest, GetAllValues) {
+
+    auto all_values = TestTypeEnum::EnumType()->GetAllValues();
+    ASSERT_EQ(all_values.size(), 3);
+    ASSERT_EQ(zaf::Unbox<TestType>(*all_values[0]), TestType::First);
+    ASSERT_EQ(zaf::Unbox<TestType>(*all_values[1]), TestType::Second);
+    ASSERT_EQ(zaf::Unbox<TestType>(*all_values[2]), TestType::Third);
 }
 
 
