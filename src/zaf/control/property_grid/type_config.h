@@ -15,6 +15,11 @@ public:
     virtual void FilterProperties(std::vector<ObjectProperty*>& properties) { }
 
     virtual std::shared_ptr<ValueView> CreateValueView();
+
+protected:
+    static void ArrangeProperties(
+        std::vector<ObjectProperty*>& properties, 
+        const std::vector<std::wstring>& expected_order);
 };
 
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <zaf/control/property_grid/type_config_factory.h>
 #include <zaf/control/scrollable_control.h>
 
 namespace zaf {
@@ -9,6 +8,10 @@ class PropertyGridSplitDistanceManager;
 class PropertyGridTreeDataSource;
 class PropertyGridTreeDelegate;
 class TreeControlImplementation;
+}
+
+namespace property_grid {
+class TypeConfigFactory;
 }
 
 class PropertyGrid : public ScrollableControl {

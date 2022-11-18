@@ -43,7 +43,8 @@ void DrawTextWithIcon(
     canvas.SetBrushWithColor(control.TextColor());
     canvas.DrawTextLayout(text_layout, text_rect.position);
     
-    if (control.IsFocused()) {
+    //Do not paint focus rectangle frame if there is no text at all.
+    if (control.IsFocused() && text_metrics.Width() > 0 && text_metrics.Height() > 0 ) {
 
         Rect focus_rect;
         focus_rect.position.x = text_rect.position.x + text_metrics.Left();

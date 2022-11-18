@@ -718,6 +718,27 @@
     <ClCompile Include="src\zaf\control\property_grid\internal\property_grid_tree_delegate.cpp">
       <Filter>zaf\control\property_grid\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\property_grid\size_config.cpp">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\property_grid\rect_config.cpp">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\property_grid\control_config.cpp">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\property_grid\frame_config.cpp">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\property_grid\color_config.cpp">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\property_grid\enum_value_view.cpp">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\property_grid\bool_value_view.cpp">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1704,6 +1725,33 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_tree_delegate.h">
       <Filter>zaf\control\property_grid\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\size_config.h">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\rect_config.h">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\control_config.h">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\frame_config.h">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\color_config.h">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\enum_value_view.h">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\enum_config.h">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\bool_value_view.h">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\bool_config.h">
+      <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

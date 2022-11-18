@@ -28,6 +28,7 @@ void PropertyGridItem::Initialize() {
 
     this->SetBorder(Frame{ 0, 0, 0, 1 });
     this->SetBorderColor(Color::FromRGB(DelimiterLineColor));
+    this->SetPadding(Frame{ 2, 0, 0, 0});
 
     InitializeSubControls();
 
@@ -64,8 +65,22 @@ void PropertyGridItem::InitializeNameLabel() {
 
 void PropertyGridItem::InitializeValueView() {
 
-    value_view_->SetPadding(Frame{ 4, 0, 4, 0 });
+    value_view_->SetAccessMethod([this]() {
+
+        auto property = data_->Property();
+        if (property->CanGet() && property->CanSet()) {
+            return property_grid::AccessMethod::ReadWrite;
+        }
+
+        if (property->CanGet()) {
+            return property_grid::AccessMethod::ReadOnly;
+        }
+
+        return property_grid::AccessMethod::WriteOnly;
+    }());
+
     value_view_->SetValue(data_->Value());
+    value_view_->SetPadding(Frame{ 4, 0, 4, 0 });
 }
 
 
@@ -90,9 +105,16 @@ void PropertyGridItem::InitializeSplitControl() {
 
     split_control_ = Create<SplitControl>();
     split_control_->SetIsHorizontalSplit(false);
-    split_control_->GetSplitBar()->SetSplitterColor(Color::FromRGB(DelimiterLineColor));
     split_control_->SetFirstPane(name_label_);
     split_control_->SetSecondPane(value_view_);
+
+    split_control_->GetSplitBar()->SetSplitterColorPicker([](const Control& control) {
+    
+        if (control.IsSelected()) {
+            return Color::FromRGB(internal::ControlSelectedColorRGB);
+        }
+        return Color::FromRGB(DelimiterLineColor);
+    }); 
 
     Subscriptions() += split_control_->SplitBarDistanceChangeEvent().Subscribe(
         [this](const SplitControlSplitBarDistanceChangeInfo& event_info) {
