@@ -30,8 +30,6 @@ protected:
      */
     virtual zaf::Rect GetExpandButtonRect();
     
-    zaf::Rect GetItemContentRect();
-
 private:
     friend class internal::TreeControlImplementation;
 

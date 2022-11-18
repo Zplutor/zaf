@@ -125,7 +125,7 @@ void PropertyGridItem::InitializeSplitControl() {
             PropertyGridSplitDistanceChangeInfo event_info;
             event_info.changing_item = As<PropertyGridItem>(shared_from_this());
             event_info.new_distance = 
-                this->GetItemContentRect().Left() + split_control_->GetSplitBarDistance();
+                this->GetTextRect().Left() + split_control_->GetSplitBarDistance();
 
             manager->DistanceChangeSubject().GetObserver().OnNext(event_info);
         }
@@ -137,7 +137,7 @@ void PropertyGridItem::InitializeSplitControl() {
 
 void PropertyGridItem::SetSplitDistance(float new_distance) {
 
-    auto revised_distance = new_distance - this->GetItemContentRect().Left();
+    auto revised_distance = new_distance - this->GetTextRect().Left();
     split_control_->SetSplitBarDistance(revised_distance);
 }
 
@@ -148,7 +148,7 @@ void PropertyGridItem::Layout(const zaf::Rect& previous_rect) {
 
     auto update_guard = split_control_->BeginUpdate();
 
-    split_control_->SetRect(GetItemContentRect());
+    split_control_->SetRect(GetTextRect());
 
     auto manager = split_distance_manager_.lock();
     if (manager) {
