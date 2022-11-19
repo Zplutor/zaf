@@ -26,18 +26,17 @@ void PropertyGrid::Initialize() {
     target_object_ = Create<Object>();
     type_config_factory_ = std::make_shared<property_grid::TypeConfigFactory>();
 
-    tree_data_source_ = std::make_shared<property_grid::internal::DataSource>(
-        target_object_,
-        type_config_factory_);
+    data_source_ = std::make_shared<property_grid::internal::DataSource>(type_config_factory_);
+    data_source_->SetTargetObject(target_object_);
 
-    tree_delegate_ = std::make_shared<property_grid::internal::Delegate>(
+    delegate_ = std::make_shared<property_grid::internal::Delegate>(
         type_config_factory_,
         split_distance_manager_);
 
     internal::TreeControlImplementation::InitializeParameters initialize_parameters;
     initialize_parameters.item_container = Create<ListItemContainer>();
-    initialize_parameters.data_source = tree_data_source_;
-    initialize_parameters.delegate = tree_delegate_;
+    initialize_parameters.data_source = data_source_;
+    initialize_parameters.delegate = delegate_;
 
     tree_implementation_->Initialize(initialize_parameters);
 }
@@ -68,27 +67,26 @@ void PropertyGrid::SetTypeConfigFactory(
 
 void PropertyGrid::ReCreateDataSource() {
 
-    tree_data_source_ = std::make_shared<property_grid::internal::DataSource>(
-        target_object_,
-        type_config_factory_);
+    data_source_ = std::make_shared<property_grid::internal::DataSource>(type_config_factory_);
+    data_source_->SetTargetObject(target_object_);
 
-    tree_implementation_->SetDataSource(tree_data_source_);
+    tree_implementation_->SetDataSource(data_source_);
 }
 
 
 void PropertyGrid::ReCreateDelegate() {
 
-    tree_delegate_ = std::make_shared<property_grid::internal::Delegate>(
+    delegate_ = std::make_shared<property_grid::internal::Delegate>(
         type_config_factory_, 
         split_distance_manager_);
 
-    tree_implementation_->SetDelegate(tree_delegate_);
+    tree_implementation_->SetDelegate(delegate_);
 }
 
 
-void PropertyGrid::Reload() {
+void PropertyGrid::RefreshValues() {
 
-    tree_implementation_->Reload();
+    data_source_->RefreshValues();
 }
 
 }

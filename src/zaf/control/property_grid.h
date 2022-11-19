@@ -9,9 +9,9 @@ class TreeControlImplementation;
 
 namespace property_grid {
 namespace internal {
-class SplitDistanceManager;
 class DataSource;
 class Delegate;
+class SplitDistanceManager;
 }
 class TypeConfigFactory;
 }
@@ -31,7 +31,7 @@ public:
 
     void SetTypeConfigFactory(const std::shared_ptr<property_grid::TypeConfigFactory>& factory);
 
-    void Reload();
+    void RefreshValues();
 
 protected:
     void Initialize() override;
@@ -45,8 +45,8 @@ private:
     std::shared_ptr<property_grid::internal::SplitDistanceManager> split_distance_manager_;
     std::shared_ptr<Object> target_object_;
     std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
-    std::shared_ptr<property_grid::internal::DataSource> tree_data_source_;
-    std::shared_ptr<property_grid::internal::Delegate> tree_delegate_;
+    std::shared_ptr<property_grid::internal::DataSource> data_source_;
+    std::shared_ptr<property_grid::internal::Delegate> delegate_;
     std::shared_ptr<internal::TreeControlImplementation> tree_implementation_;
 
 };

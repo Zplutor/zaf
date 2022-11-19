@@ -745,6 +745,9 @@
     <ClCompile Include="src\zaf\control\property_grid\property_list.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\property_grid\internal\data.cpp">
+      <Filter>zaf\control\property_grid\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1764,6 +1767,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\property_list.h">
       <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\internal\data_observer.h">
+      <Filter>zaf\control\property_grid\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

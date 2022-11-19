@@ -120,6 +120,7 @@
     <ClCompile Include="src\zaf\control\property_grid\control_config.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\enum_value_view.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\frame_config.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\internal\data.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\internal\item.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\internal\split_distance_manager.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\internal\data_source.cpp" />
@@ -377,6 +378,7 @@
     <ClInclude Include="src\zaf\control\property_grid\enum_value_view.h" />
     <ClInclude Include="src\zaf\control\property_grid\frame_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\internal\data.h" />
+    <ClInclude Include="src\zaf\control\property_grid\internal\data_observer.h" />
     <ClInclude Include="src\zaf\control\property_grid\internal\item.h" />
     <ClInclude Include="src\zaf\control\property_grid\internal\split_distance_manager.h" />
     <ClInclude Include="src\zaf\control\property_grid\internal\data_source.h" />

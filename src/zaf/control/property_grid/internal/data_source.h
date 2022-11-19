@@ -1,19 +1,21 @@
 #pragma once
 
-#include <zaf/base/error/check.h>
 #include <zaf/control/property_grid/internal/data.h>
-#include <zaf/control/property_grid/property_table.h>
+#include <zaf/control/property_grid/internal/data_observer.h>
 #include <zaf/control/property_grid/type_config_factory.h>
 #include <zaf/control/tree_data_source.h>
-#include <zaf/object/object_type.h>
 
 namespace zaf::property_grid::internal {
 
-class DataSource : public TreeDataSource {
+class DataSource : 
+    public TreeDataSource, 
+    public DataObserver, 
+    public std::enable_shared_from_this<DataSource> {
+
 public:
-    explicit DataSource(
-        const std::shared_ptr<Object>& target_object,
-        const std::shared_ptr<TypeConfigFactory>& type_config_factory);
+    explicit DataSource(const std::shared_ptr<TypeConfigFactory>& type_config_factory);
+
+    void SetTargetObject(const std::shared_ptr<Object>& target_object);
 
     bool DoesDataHasChildren(const std::shared_ptr<Object>& data);
 
@@ -23,16 +25,11 @@ public:
         const std::shared_ptr<Object>& parent_data,
         std::size_t index);
 
-private:
-    static std::vector<ObjectType*> GetObjectTypeChain(const Object& object);
-    static PropertyTable CreatePropertyTable(const std::vector<ObjectType*>& types);
+    void RefreshValues();
 
-private:
-    std::shared_ptr<Data> CreateData(
-        ObjectProperty* property,
-        const std::shared_ptr<Object>& value) const; 
-
-    std::vector<ObjectProperty*> InspectProperties(const std::shared_ptr<Object>& value) const;
+    void OnDataChildrenUpdate(
+        const std::shared_ptr<Data>& data,
+        std::size_t children_count) override;
 
 private:
     std::shared_ptr<Data> root_data_;
