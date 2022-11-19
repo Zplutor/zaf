@@ -45,7 +45,12 @@ std::vector<ObjectProperty*> PropertyGridTreeDataSource::InspectProperties(
 
     std::vector<ObjectProperty*> result;
     for (auto each_type : value_type_chain) {
-        zaf::Append(result, each_type->GetProperties());
+        for (auto each_property : each_type->GetProperties()) {
+            //Write only properties are not supported.
+            if (each_property->CanGet()) {
+                result.push_back(each_property);
+            }
+        }
     }
 
     auto type_config = type_config_factory_->GetConfig(value->GetType());
