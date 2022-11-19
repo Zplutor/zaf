@@ -17,8 +17,11 @@ void EnumValueView::Initialize() {
 }
 
 
-void EnumValueView::SetAccessMethod(AccessMethod) {
+void EnumValueView::SetAccessMethod(AccessMethod access_method) {
 
+    if (access_method == AccessMethod::ReadOnly) {
+        combo_box_->SetIsEnabled(false);
+    }
 }
 
 

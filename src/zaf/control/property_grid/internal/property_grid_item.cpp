@@ -67,16 +67,11 @@ void PropertyGridItem::InitializeValueView() {
 
     value_view_->SetAccessMethod([this]() {
 
-        auto property = data_->Property();
-        if (property->CanGet() && property->CanSet()) {
+        if (data_->Property()->CanSet()) {
             return property_grid::AccessMethod::ReadWrite;
         }
 
-        if (property->CanGet()) {
-            return property_grid::AccessMethod::ReadOnly;
-        }
-
-        return property_grid::AccessMethod::WriteOnly;
+        return property_grid::AccessMethod::ReadOnly;
     }());
 
     value_view_->SetValue(data_->Value());

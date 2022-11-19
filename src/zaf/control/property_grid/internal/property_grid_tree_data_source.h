@@ -2,6 +2,7 @@
 
 #include <zaf/base/error/check.h>
 #include <zaf/control/property_grid/internal/property_grid_data.h>
+#include <zaf/control/property_grid/property_table.h>
 #include <zaf/control/property_grid/type_config_factory.h>
 #include <zaf/control/tree_data_source.h>
 #include <zaf/object/object_type.h>
@@ -21,6 +22,10 @@ public:
     std::shared_ptr<Object> GetChildDataAtIndex(
         const std::shared_ptr<Object>& parent_data,
         std::size_t index);
+
+private:
+    static std::vector<ObjectType*> GetObjectTypeChain(const Object& object);
+    static property_grid::PropertyTable CreatePropertyTable(const std::vector<ObjectType*>& types);
 
 private:
     std::shared_ptr<PropertyGridData> CreateData(

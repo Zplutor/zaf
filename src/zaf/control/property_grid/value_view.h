@@ -7,7 +7,6 @@ namespace zaf::property_grid {
 enum class AccessMethod {
     ReadWrite,
     ReadOnly,
-    WriteOnly,
 };
 
 class ValueView : public Control {

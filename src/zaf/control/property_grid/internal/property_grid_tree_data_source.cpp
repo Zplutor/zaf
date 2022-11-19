@@ -32,30 +32,54 @@ std::vector<ObjectProperty*> PropertyGridTreeDataSource::InspectProperties(
         return {};
     }
 
-    std::vector<ObjectType*> value_type_chain;
+    std::vector<ObjectType*> value_type_chain = GetObjectTypeChain(*value);
+    property_grid::PropertyTable property_table = CreatePropertyTable(value_type_chain);
 
-    auto value_type = value->GetType();
-    value_type_chain.push_back(value_type);
+    auto type_config = type_config_factory_->GetConfig(value->GetType());
+    type_config->FilterProperties(property_table);
+        
+    std::vector<ObjectProperty*> result;
+    for (auto& each_pair : property_table.Inner()) {
+        zaf::Append(result, each_pair.second.Inner());
+    }
+    return result;
+}
 
-    while (value_type = value_type->GetBase()) {
-        value_type_chain.push_back(value_type);
+
+std::vector<ObjectType*> PropertyGridTreeDataSource::GetObjectTypeChain(const Object& object) {
+
+    std::vector<ObjectType*> type_chain;
+
+    auto type = object.GetType();
+    type_chain.push_back(type);
+
+    while (type = type->GetBase()) {
+        type_chain.push_back(type);
     }
 
-    std::reverse(value_type_chain.begin(), value_type_chain.end());
+    std::reverse(type_chain.begin(), type_chain.end());
+    return type_chain;
+}
 
-    std::vector<ObjectProperty*> result;
-    for (auto each_type : value_type_chain) {
+
+property_grid::PropertyTable PropertyGridTreeDataSource::CreatePropertyTable(
+    const std::vector<ObjectType*>& types) {
+
+    std::vector<std::pair<ObjectType*, property_grid::PropertyList>> property_table_inner;
+    for (auto each_type : types) {
+
+        std::vector<ObjectProperty*> property_list_inner;
         for (auto each_property : each_type->GetProperties()) {
             //Write only properties are not supported.
             if (each_property->CanGet()) {
-                result.push_back(each_property);
+                property_list_inner.push_back(each_property);
             }
         }
+
+        property_table_inner.emplace_back(each_type, std::move(property_list_inner));
     }
 
-    auto type_config = type_config_factory_->GetConfig(value->GetType());
-    type_config->FilterProperties(result);
-    return result;
+    return property_grid::PropertyTable(std::move(property_table_inner));
 }
 
 

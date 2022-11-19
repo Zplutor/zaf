@@ -2,9 +2,9 @@
 
 namespace zaf::property_grid {
 
-void ColorConfig::FilterProperties(std::vector<ObjectProperty*>& properties) {
+void ColorConfig::FilterProperties(PropertyTable& property_table) {
 
-    properties.clear();
+    property_table.Clear();
 }
 
 }

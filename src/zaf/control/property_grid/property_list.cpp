@@ -1,46 +1,46 @@
-#include <zaf/control/property_grid/type_config.h>
-#include <map>
-#include <string_view>
+#include <zaf/control/property_grid/property_list.h>
 #include <zaf/base/container/utility/contain.h>
+#include <zaf/base/container/utility/erase.h>
 #include <zaf/base/container/utility/find.h>
 #include <zaf/base/container/utility/range.h>
-#include <zaf/base/container/utility/sort.h>
-#include <zaf/control/property_grid/enum_value_view.h>
-#include <zaf/control/property_grid/text_value_view.h>
-#include <zaf/creation.h>
 
 namespace zaf::property_grid {
 
-std::shared_ptr<ValueView> TypeConfig::CreateValueView() {
+PropertyList::PropertyList(std::vector<ObjectProperty*> inner) : inner_(std::move(inner)) {
 
-    return Create<TextValueView>();
 }
 
 
-void TypeConfig::ArrangeProperties_deprecated(
-    std::vector<ObjectProperty*>& properties,
-    const std::vector<std::wstring>& prioritized_properties) {
+void PropertyList::EraseByNames(const std::set<std::wstring>& property_names) {
+
+    EraseIf(inner_, [&property_names](auto property) {
+        return Contain(property_names, property->GetName());
+    });
+}
+
+
+void PropertyList::SortByNames(const std::vector<std::wstring>& property_names) {
 
     std::map<std::wstring_view, std::size_t> prioritized_orders;
-    for (auto index : zaf::Range(0, prioritized_properties.size())) {
-        prioritized_orders[prioritized_properties[index]] = index;
+    for (auto index : zaf::Range(0, property_names.size())) {
+        prioritized_orders[property_names[index]] = index;
     }
 
     //Bring prioritized properties to front.
     auto non_prioritized_iterator = std::stable_partition(
-        properties.begin(), 
-        properties.end(), 
+        inner_.begin(),
+        inner_.end(),
         [&prioritized_orders](auto property) {
 
-        return Contain(prioritized_orders, property->GetName());
+        return zaf::Contain(prioritized_orders, property->GetName());
     });
 
     //Sort prioritized properties.
     std::sort(
-        properties.begin(),
+        inner_.begin(),
         non_prioritized_iterator,
         [&prioritized_orders](auto property1, auto property2) {
-    
+
         auto index1 = Find(prioritized_orders, property1->GetName());
         auto index2 = Find(prioritized_orders, property2->GetName());
 

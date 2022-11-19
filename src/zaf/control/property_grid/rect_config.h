@@ -6,7 +6,7 @@ namespace zaf::property_grid {
 
 class RectConfig : public TypeConfig {
 public:
-    void FilterProperties(std::vector<ObjectProperty*>& properties) override;
+    void FilterProperties(PropertyTable& property_table) override;
 };
 
 }

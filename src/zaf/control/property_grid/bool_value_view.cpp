@@ -19,9 +19,6 @@ void BoolValueView::SetAccessMethod(AccessMethod access_method) {
     if (access_method == AccessMethod::ReadOnly) {
         check_box_->SetIsEnabled(false);
     }
-    else if (access_method == AccessMethod::WriteOnly) {
-        check_box_->SetBoxBorderColor(Color::Gray());
-    }
 }
 
 

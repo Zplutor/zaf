@@ -124,6 +124,8 @@
     <ClCompile Include="src\zaf\control\property_grid\internal\property_grid_split_distance_manager.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\internal\property_grid_tree_data_source.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\internal\property_grid_tree_delegate.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\property_list.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\property_table.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\rect_config.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\size_config.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\text_value_view.cpp" />
@@ -379,6 +381,8 @@
     <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_split_distance_manager.h" />
     <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_tree_data_source.h" />
     <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_tree_delegate.h" />
+    <ClInclude Include="src\zaf\control\property_grid\property_list.h" />
+    <ClInclude Include="src\zaf\control\property_grid\property_table.h" />
     <ClInclude Include="src\zaf\control\property_grid\rect_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\size_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\text_value_view.h" />
