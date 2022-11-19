@@ -16,11 +16,6 @@ public:
     virtual void FilterProperties(PropertyTable& property_table) { }
 
     virtual std::shared_ptr<ValueView> CreateValueView();
-
-protected:
-    static void ArrangeProperties_deprecated(
-        std::vector<ObjectProperty*>& properties, 
-        const std::vector<std::wstring>& expected_order);
 };
 
 }
