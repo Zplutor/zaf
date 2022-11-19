@@ -1647,7 +1647,9 @@ void Control::RouteMouseMoveMessage(const Point& position, const MouseMessage& m
 bool Control::RouteMessage(const Point& position, const MouseMessage& message) {
 
     auto child = FindChildAtPosition(position);
-    if (child != nullptr) {
+
+    //A disabled child cannot handle messges.
+    if (child && child->IsEnabled()) {
         return child->RouteMessage(ToChildPoint(position, child), message);
     }
     
