@@ -106,8 +106,10 @@ void Data::ResetValue(const std::shared_ptr<Object>& value) {
         each_child->ResetValue(new_value);
     }
 
-    if (auto observer = observer_.lock()) {
-        observer->OnDataChildrenUpdate(shared_from_this(), children_->size());
+    if (!children_->empty()) {
+        if (auto observer = observer_.lock()) {
+            observer->OnDataChildrenUpdate(shared_from_this(), children_->size());
+        }
     }
 }
 

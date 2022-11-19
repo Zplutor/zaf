@@ -60,7 +60,7 @@ void DataSource::OnDataChildrenUpdate(
     const std::shared_ptr<Data>& data,
     std::size_t children_count) {
 
-    NotifyDataUpdate(data, 0, children_count);
+    NotifyDataUpdate(data == root_data_ ? nullptr : data, 0, children_count);
 }
 
 }
