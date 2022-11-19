@@ -1,16 +1,16 @@
 #pragma once
 
 #include <zaf/control/tree_control_delegate.h>
-#include <zaf/control/property_grid/internal/property_grid_split_distance_manager.h>
+#include <zaf/control/property_grid/internal/split_distance_manager.h>
 #include <zaf/control/property_grid/type_config_factory.h>
 
-namespace zaf::internal {
+namespace zaf::property_grid::internal {
 
-class PropertyGridTreeDelegate : public TreeControlDelegate {
+class Delegate : public TreeControlDelegate {
 public:
-    PropertyGridTreeDelegate(
-        const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory,
-        const std::shared_ptr<PropertyGridSplitDistanceManager>& split_distance_manager);
+    Delegate(
+        const std::shared_ptr<TypeConfigFactory>& type_config_factory,
+        const std::shared_ptr<SplitDistanceManager>& split_distance_manager);
 
     float EstimateItemHeight(
         const std::shared_ptr<Object>& parent_item_data,
@@ -26,8 +26,8 @@ public:
         const std::shared_ptr<Object>& item_data) override;
 
 private:
-    std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
-    std::shared_ptr<PropertyGridSplitDistanceManager> split_distance_manager_;
+    std::shared_ptr<TypeConfigFactory> type_config_factory_;
+    std::shared_ptr<SplitDistanceManager> split_distance_manager_;
 };
 
 }

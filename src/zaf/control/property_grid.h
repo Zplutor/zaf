@@ -4,13 +4,15 @@
 
 namespace zaf {
 namespace internal {
-class PropertyGridSplitDistanceManager;
-class PropertyGridTreeDataSource;
-class PropertyGridTreeDelegate;
 class TreeControlImplementation;
 }
 
 namespace property_grid {
+namespace internal {
+class SplitDistanceManager;
+class DataSource;
+class Delegate;
+}
 class TypeConfigFactory;
 }
 
@@ -40,11 +42,11 @@ private:
     void ReCreateDelegate();
 
 private:
-    std::shared_ptr<internal::PropertyGridSplitDistanceManager> split_distance_manager_;
+    std::shared_ptr<property_grid::internal::SplitDistanceManager> split_distance_manager_;
     std::shared_ptr<Object> target_object_;
     std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
-    std::shared_ptr<internal::PropertyGridTreeDataSource> tree_data_source_;
-    std::shared_ptr<internal::PropertyGridTreeDelegate> tree_delegate_;
+    std::shared_ptr<property_grid::internal::DataSource> tree_data_source_;
+    std::shared_ptr<property_grid::internal::Delegate> tree_delegate_;
     std::shared_ptr<internal::TreeControlImplementation> tree_implementation_;
 
 };

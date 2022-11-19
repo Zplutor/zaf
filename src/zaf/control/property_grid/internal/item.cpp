@@ -1,19 +1,19 @@
-#include <zaf/control/property_grid/internal/property_grid_item.h>
+#include <zaf/control/property_grid/internal/item.h>
 #include <zaf/base/as.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
 
-namespace zaf::internal {
+namespace zaf::property_grid::internal {
 namespace {
 
 constexpr std::uint32_t DelimiterLineColor = 0xeeeeee;
 
 }
 
-PropertyGridItem::PropertyGridItem(
-    const std::shared_ptr<PropertyGridData>& data,
-    const std::shared_ptr<property_grid::ValueView>& value_view,
-    const std::shared_ptr<PropertyGridSplitDistanceManager>& split_distance_manager)
+Item::Item(
+    const std::shared_ptr<Data>& data,
+    const std::shared_ptr<ValueView>& value_view,
+    const std::shared_ptr<SplitDistanceManager>& split_distance_manager)
     :
     data_(data),
     value_view_(value_view),
@@ -22,7 +22,7 @@ PropertyGridItem::PropertyGridItem(
 }
 
 
-void PropertyGridItem::Initialize() {
+void Item::Initialize() {
 
     __super::Initialize();
 
@@ -36,7 +36,7 @@ void PropertyGridItem::Initialize() {
     if (manager) {
 
         Subscriptions() += manager->DistanceChangeSubject().GetObservable().Subscribe(
-            [this](const PropertyGridSplitDistanceChangeInfo& event_info) {
+            [this](const SplitDistanceChangeInfo& event_info) {
 
             if (this != event_info.changing_item.get()) {
                 SetSplitDistance(event_info.new_distance); 
@@ -46,7 +46,7 @@ void PropertyGridItem::Initialize() {
 }
 
 
-void PropertyGridItem::InitializeSubControls() {
+void Item::InitializeSubControls() {
 
     InitializeNameLabel();
     InitializeValueView();
@@ -54,7 +54,7 @@ void PropertyGridItem::InitializeSubControls() {
 }
 
 
-void PropertyGridItem::InitializeNameLabel() {
+void Item::InitializeNameLabel() {
 
     name_label_ = CreateLabel();
     name_label_->SetPadding(Frame{ 0, 0, 4, 0 });
@@ -63,7 +63,7 @@ void PropertyGridItem::InitializeNameLabel() {
 }
 
 
-void PropertyGridItem::InitializeValueView() {
+void Item::InitializeValueView() {
 
     value_view_->SetAccessMethod([this]() {
 
@@ -79,7 +79,7 @@ void PropertyGridItem::InitializeValueView() {
 }
 
 
-std::shared_ptr<Label> PropertyGridItem::CreateLabel() const {
+std::shared_ptr<Label> Item::CreateLabel() const {
 
     auto result = Create<Label>();
     result->SetParagraphAlignment(ParagraphAlignment::Center);
@@ -89,14 +89,14 @@ std::shared_ptr<Label> PropertyGridItem::CreateLabel() const {
             return Color::White();
         }
         else {
-            return Color::FromRGB(internal::ControlNormalTextColorRGB);
+            return Color::FromRGB(zaf::internal::ControlNormalTextColorRGB);
         }
     });
     return result;
 }
 
 
-void PropertyGridItem::InitializeSplitControl() {
+void Item::InitializeSplitControl() {
 
     split_control_ = Create<SplitControl>();
     split_control_->SetIsHorizontalSplit(false);
@@ -106,7 +106,7 @@ void PropertyGridItem::InitializeSplitControl() {
     split_control_->GetSplitBar()->SetSplitterColorPicker([](const Control& control) {
     
         if (control.IsSelected()) {
-            return Color::FromRGB(internal::ControlSelectedColorRGB);
+            return Color::FromRGB(zaf::internal::ControlSelectedColorRGB);
         }
         return Color::FromRGB(DelimiterLineColor);
     }); 
@@ -117,8 +117,8 @@ void PropertyGridItem::InitializeSplitControl() {
         auto manager = split_distance_manager_.lock();
         if (manager) {
 
-            PropertyGridSplitDistanceChangeInfo event_info;
-            event_info.changing_item = As<PropertyGridItem>(shared_from_this());
+            SplitDistanceChangeInfo event_info;
+            event_info.changing_item = As<Item>(shared_from_this());
             event_info.new_distance = 
                 this->GetTextRect().Left() + split_control_->GetSplitBarDistance();
 
@@ -130,14 +130,14 @@ void PropertyGridItem::InitializeSplitControl() {
 }
 
 
-void PropertyGridItem::SetSplitDistance(float new_distance) {
+void Item::SetSplitDistance(float new_distance) {
 
     auto revised_distance = new_distance - this->GetTextRect().Left();
     split_control_->SetSplitBarDistance(revised_distance);
 }
 
 
-void PropertyGridItem::Layout(const zaf::Rect& previous_rect) {
+void Item::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 

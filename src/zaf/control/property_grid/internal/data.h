@@ -3,11 +3,11 @@
 #include <zaf/object/object.h>
 #include <zaf/object/object_property.h>
 
-namespace zaf::internal {
+namespace zaf::property_grid::internal {
 
-class PropertyGridData : public zaf::Object {
+class Data : public zaf::Object {
 public:
-    PropertyGridData(
+    Data(
         zaf::ObjectProperty* property,
         const std::shared_ptr<zaf::Object>& value,
         const std::vector<zaf::ObjectProperty*>& value_properties)

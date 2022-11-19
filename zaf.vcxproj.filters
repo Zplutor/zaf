@@ -706,16 +706,16 @@
     <ClCompile Include="src\zaf\control\property_grid\text_value_view.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\internal\property_grid_item.cpp">
+    <ClCompile Include="src\zaf\control\property_grid\internal\item.cpp">
       <Filter>zaf\control\property_grid\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\internal\property_grid_split_distance_manager.cpp">
+    <ClCompile Include="src\zaf\control\property_grid\internal\split_distance_manager.cpp">
       <Filter>zaf\control\property_grid\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\internal\property_grid_tree_data_source.cpp">
+    <ClCompile Include="src\zaf\control\property_grid\internal\data_source.cpp">
       <Filter>zaf\control\property_grid\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\internal\property_grid_tree_delegate.cpp">
+    <ClCompile Include="src\zaf\control\property_grid\internal\delegate.cpp">
       <Filter>zaf\control\property_grid\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid\size_config.cpp">
@@ -1717,19 +1717,19 @@
     <ClInclude Include="src\zaf\control\property_grid\text_value_view.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_data.h">
+    <ClInclude Include="src\zaf\control\property_grid\internal\data.h">
       <Filter>zaf\control\property_grid\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_item.h">
+    <ClInclude Include="src\zaf\control\property_grid\internal\item.h">
       <Filter>zaf\control\property_grid\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_split_distance_manager.h">
+    <ClInclude Include="src\zaf\control\property_grid\internal\split_distance_manager.h">
       <Filter>zaf\control\property_grid\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_tree_data_source.h">
+    <ClInclude Include="src\zaf\control\property_grid\internal\data_source.h">
       <Filter>zaf\control\property_grid\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\internal\property_grid_tree_delegate.h">
+    <ClInclude Include="src\zaf\control\property_grid\internal\delegate.h">
       <Filter>zaf\control\property_grid\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\size_config.h">

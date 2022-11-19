@@ -1,13 +1,13 @@
-#include <zaf/control/property_grid/internal/property_grid_tree_data_source.h>
+#include <zaf/control/property_grid/internal/data_source.h>
 #include <zaf/base/as.h>
 #include <zaf/base/container/utility/append.h>
 #include <zaf/creation.h>
 
-namespace zaf::internal {
+namespace zaf::property_grid::internal {
 
-PropertyGridTreeDataSource::PropertyGridTreeDataSource(
+DataSource::DataSource(
     const std::shared_ptr<Object>& target_object,
-    const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory)
+    const std::shared_ptr<TypeConfigFactory>& type_config_factory)
     :
     type_config_factory_(type_config_factory) {
 
@@ -17,15 +17,15 @@ PropertyGridTreeDataSource::PropertyGridTreeDataSource(
 }
 
 
-std::shared_ptr<PropertyGridData> PropertyGridTreeDataSource::CreateData(
+std::shared_ptr<Data> DataSource::CreateData(
     ObjectProperty* property,
     const std::shared_ptr<Object>& value) const {
 
-    return std::make_shared<PropertyGridData>(property, value, InspectProperties(value));
+    return std::make_shared<Data>(property, value, InspectProperties(value));
 }
 
 
-std::vector<ObjectProperty*> PropertyGridTreeDataSource::InspectProperties(
+std::vector<ObjectProperty*> DataSource::InspectProperties(
     const std::shared_ptr<Object>& value) const {
 
     if (!value) {
@@ -46,7 +46,7 @@ std::vector<ObjectProperty*> PropertyGridTreeDataSource::InspectProperties(
 }
 
 
-std::vector<ObjectType*> PropertyGridTreeDataSource::GetObjectTypeChain(const Object& object) {
+std::vector<ObjectType*> DataSource::GetObjectTypeChain(const Object& object) {
 
     std::vector<ObjectType*> type_chain;
 
@@ -62,10 +62,10 @@ std::vector<ObjectType*> PropertyGridTreeDataSource::GetObjectTypeChain(const Ob
 }
 
 
-property_grid::PropertyTable PropertyGridTreeDataSource::CreatePropertyTable(
+PropertyTable DataSource::CreatePropertyTable(
     const std::vector<ObjectType*>& types) {
 
-    std::vector<std::pair<ObjectType*, property_grid::PropertyList>> property_table_inner;
+    std::vector<std::pair<ObjectType*, PropertyList>> property_table_inner;
     for (auto each_type : types) {
 
         std::vector<ObjectProperty*> property_list_inner;
@@ -79,30 +79,30 @@ property_grid::PropertyTable PropertyGridTreeDataSource::CreatePropertyTable(
         property_table_inner.emplace_back(each_type, std::move(property_list_inner));
     }
 
-    return property_grid::PropertyTable(std::move(property_table_inner));
+    return PropertyTable(std::move(property_table_inner));
 }
 
 
-bool PropertyGridTreeDataSource::DoesDataHasChildren(const std::shared_ptr<Object>& data) {
+bool DataSource::DoesDataHasChildren(const std::shared_ptr<Object>& data) {
 
-    auto target_data = data ? As<PropertyGridData>(data) : root_data_;
+    auto target_data = data ? As<Data>(data) : root_data_;
     return !target_data->ValueProperties().empty();
 }
 
 
-std::size_t PropertyGridTreeDataSource::GetChildDataCount(
+std::size_t DataSource::GetChildDataCount(
     const std::shared_ptr<Object>& parent_data) {
 
-    auto target_data = parent_data ? As<PropertyGridData>(parent_data) : root_data_;
+    auto target_data = parent_data ? As<Data>(parent_data) : root_data_;
     return target_data->ValueProperties().size();
 }
 
 
-std::shared_ptr<Object> PropertyGridTreeDataSource::GetChildDataAtIndex(
+std::shared_ptr<Object> DataSource::GetChildDataAtIndex(
     const std::shared_ptr<Object>& parent_data,
     std::size_t index) {
 
-    auto target_data = parent_data ? As<PropertyGridData>(parent_data) : root_data_;
+    auto target_data = parent_data ? As<Data>(parent_data) : root_data_;
 
     const auto& value_properties = target_data->ValueProperties();
     ZAF_EXPECT(index < value_properties.size());

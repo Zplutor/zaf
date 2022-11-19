@@ -1,7 +1,7 @@
 #include <zaf/control/property_grid.h>
-#include <zaf/control/property_grid/internal/property_grid_split_distance_manager.h>
-#include <zaf/control/property_grid/internal/property_grid_tree_data_source.h>
-#include <zaf/control/property_grid/internal/property_grid_tree_delegate.h>
+#include <zaf/control/property_grid/internal/data_source.h>
+#include <zaf/control/property_grid/internal/delegate.h>
+#include <zaf/control/property_grid/internal/split_distance_manager.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
 #include <zaf/control/list_item_container.h>
 #include <zaf/object/type_definition.h>
@@ -13,7 +13,7 @@ ZAF_DEFINE_TYPE_END;
 
 
 PropertyGrid::PropertyGrid() : 
-    split_distance_manager_(std::make_shared<internal::PropertyGridSplitDistanceManager>()),
+    split_distance_manager_(std::make_shared<property_grid::internal::SplitDistanceManager>()),
     tree_implementation_(std::make_shared<internal::TreeControlImplementation>(*this)) {
 
 }
@@ -26,11 +26,11 @@ void PropertyGrid::Initialize() {
     target_object_ = Create<Object>();
     type_config_factory_ = std::make_shared<property_grid::TypeConfigFactory>();
 
-    tree_data_source_ = std::make_shared<internal::PropertyGridTreeDataSource>(
+    tree_data_source_ = std::make_shared<property_grid::internal::DataSource>(
         target_object_,
         type_config_factory_);
 
-    tree_delegate_ = std::make_shared<internal::PropertyGridTreeDelegate>(
+    tree_delegate_ = std::make_shared<property_grid::internal::Delegate>(
         type_config_factory_,
         split_distance_manager_);
 
@@ -68,7 +68,7 @@ void PropertyGrid::SetTypeConfigFactory(
 
 void PropertyGrid::ReCreateDataSource() {
 
-    tree_data_source_ = std::make_shared<internal::PropertyGridTreeDataSource>(
+    tree_data_source_ = std::make_shared<property_grid::internal::DataSource>(
         target_object_,
         type_config_factory_);
 
@@ -78,7 +78,7 @@ void PropertyGrid::ReCreateDataSource() {
 
 void PropertyGrid::ReCreateDelegate() {
 
-    tree_delegate_ = std::make_shared<internal::PropertyGridTreeDelegate>(
+    tree_delegate_ = std::make_shared<property_grid::internal::Delegate>(
         type_config_factory_, 
         split_distance_manager_);
 
