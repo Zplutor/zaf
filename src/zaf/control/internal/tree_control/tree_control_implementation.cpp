@@ -205,6 +205,31 @@ std::shared_ptr<Object> TreeControlImplementation::GetFirstSelectedItem() const 
 }
 
 
+void TreeControlImplementation::VisitExpandedTree(TreeVisitor& visitor) const {
+
+    auto root_node = tree_data_manager_.GetNodeAtIndexPath({});
+    if (root_node) {
+        VisitExpandedTreeNode(*root_node, visitor);
+    }
+}
+
+
+void TreeControlImplementation::VisitExpandedTreeNode(
+    const TreeNode& node,
+    TreeVisitor& visitor) const {
+
+    visitor.VisitNode(node.data);
+
+    visitor.EnterNode();
+    for (const auto& each_child : node.children) {
+        if (each_child->is_expanded) {
+            VisitExpandedTreeNode(*each_child, visitor);
+        }
+    }
+    visitor.ExitNode();
+}
+
+
 void TreeControlImplementation::SelectItem(const std::shared_ptr<Object>& data) {
 
     auto list_index = GetDataListIndex(data);

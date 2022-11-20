@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/control/property_grid_node.h>
 #include <zaf/control/scrollable_control.h>
 
 namespace zaf {
@@ -32,6 +33,10 @@ public:
     void SetTypeConfigFactory(const std::shared_ptr<property_grid::TypeConfigFactory>& factory);
 
     void RefreshValues();
+    void Reload();
+
+    PropertyGridNode GetExpandedNodeTree() const;
+    void ExpandNodeTree(const PropertyGridNode& tree);
 
 protected:
     void Initialize() override;
@@ -40,6 +45,7 @@ protected:
 private:
     void ReCreateDataSource();
     void ReCreateDelegate();
+    void ExpandChildNodes(const PropertyGridNode& node, const std::shared_ptr<Object>& node_data);
 
 private:
     std::shared_ptr<property_grid::internal::SplitDistanceManager> split_distance_manager_;

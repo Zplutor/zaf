@@ -3,6 +3,7 @@
 #include <zaf/control/internal/list_control/list_control_implementation.h>
 #include <zaf/control/internal/tree_control/tree_data_manager.h>
 #include <zaf/control/internal/tree_control/tree_index_mapping.h>
+#include <zaf/control/internal/tree_control/tree_visitor.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/tree_control_delegate.h>
@@ -55,6 +56,8 @@ public:
 
     std::vector<std::shared_ptr<Object>> GetAllSelectedItems() const;
     std::shared_ptr<Object> GetFirstSelectedItem() const;
+
+    void VisitExpandedTree(TreeVisitor& visitor) const;
 
     void SelectItem(const std::shared_ptr<Object>& data);
     void UnselectItem(const std::shared_ptr<Object>& data);
@@ -115,6 +118,8 @@ private:
         const IndexPath& index_path);
 
     bool IsIndexPathExpanded(const IndexPath& index_path) const;
+
+    void VisitExpandedTreeNode(const TreeNode& node, TreeVisitor& visitor) const;
 
     void SetItemSelectionState(
         const std::shared_ptr<TreeItem>& item, 

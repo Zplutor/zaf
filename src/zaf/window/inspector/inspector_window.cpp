@@ -97,7 +97,11 @@ void InspectorWindow::InitializeTreeControl() {
 
         auto selected_item = tree_control_->GetFirstSelectedItem();
         if (selected_item) {
+
+            //Retain expanded properties after switching target control.
+            auto expanded_node_tree = property_grid_->GetExpandedNodeTree();
             property_grid_->SetTargetObject(selected_item);
+            property_grid_->ExpandNodeTree(expanded_node_tree);
         }
     }));
 

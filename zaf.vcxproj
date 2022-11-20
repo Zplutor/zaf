@@ -121,6 +121,7 @@
     <ClCompile Include="src\zaf\control\property_grid\enum_value_view.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\frame_config.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\internal\data.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\internal\expanded_node_visitor.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\internal\item.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\internal\split_distance_manager.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\internal\data_source.cpp" />
@@ -352,6 +353,7 @@
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_node.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_node_children_adder.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_node_expander.h" />
+    <ClInclude Include="src\zaf\control\internal\tree_control\tree_visitor.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\utility.h" />
     <ClInclude Include="src\zaf\control\internal\triangle_geometry.h" />
     <ClInclude Include="src\zaf\control\layout\anchor_layouter.h" />
@@ -379,6 +381,7 @@
     <ClInclude Include="src\zaf\control\property_grid\frame_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\internal\data.h" />
     <ClInclude Include="src\zaf\control\property_grid\internal\data_observer.h" />
+    <ClInclude Include="src\zaf\control\property_grid\internal\expanded_node_visitor.h" />
     <ClInclude Include="src\zaf\control\property_grid\internal\item.h" />
     <ClInclude Include="src\zaf\control\property_grid\internal\split_distance_manager.h" />
     <ClInclude Include="src\zaf\control\property_grid\internal\data_source.h" />
@@ -391,6 +394,7 @@
     <ClInclude Include="src\zaf\control\property_grid\type_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\type_config_factory.h" />
     <ClInclude Include="src\zaf\control\property_grid\value_view.h" />
+    <ClInclude Include="src\zaf\control\property_grid_node.h" />
     <ClInclude Include="src\zaf\control\radio_button.h" />
     <ClInclude Include="src\zaf\control\scrollable_control.h" />
     <ClInclude Include="src\zaf\control\scroll_bar.h" />
