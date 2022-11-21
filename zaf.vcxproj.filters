@@ -751,6 +751,9 @@
     <ClCompile Include="src\zaf\control\property_grid\internal\expanded_node_visitor.cpp">
       <Filter>zaf\control\property_grid\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\property_grid\color_value_view.cpp">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1782,6 +1785,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\internal\expanded_node_visitor.h">
       <Filter>zaf\control\property_grid\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\color_value_view.h">
+      <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

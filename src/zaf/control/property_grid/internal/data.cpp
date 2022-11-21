@@ -5,6 +5,7 @@ namespace zaf::property_grid::internal {
 Data::Data(
     zaf::ObjectProperty* property,
     const std::shared_ptr<zaf::Object>& value,
+    bool is_parent_read_only,
     const std::shared_ptr<TypeConfigFactory>& type_config_factory,
     const std::weak_ptr<DataObserver>& observer)
     :
@@ -13,6 +14,8 @@ Data::Data(
     type_config_factory_(type_config_factory),
     observer_(observer) {
 
+    bool is_self_read_only = property ? !property->CanSet() : false;
+    is_read_only_ = is_parent_read_only || is_self_read_only;
 }
 
 
@@ -45,6 +48,7 @@ std::vector<std::shared_ptr<Data>> Data::LoadChildren() const {
             auto child_data = std::make_shared<Data>(
                 each_property,
                 each_property->GetValue(*value_), 
+                is_read_only_,
                 type_config_factory_,
                 observer_);
 

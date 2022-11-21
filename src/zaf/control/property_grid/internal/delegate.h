@@ -17,7 +17,7 @@ public:
         std::size_t item_index,
         const std::shared_ptr<Object>& item_data) override {
 
-        return 21;
+        return 22;
     }
 
     std::shared_ptr<TreeItem> CreateItem(

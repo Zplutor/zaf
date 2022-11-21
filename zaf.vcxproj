@@ -117,6 +117,7 @@
     <ClCompile Include="src\zaf\control\property_grid.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\bool_value_view.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\color_config.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\color_value_view.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\control_config.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\enum_value_view.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\frame_config.cpp" />
@@ -375,6 +376,7 @@
     <ClInclude Include="src\zaf\control\property_grid\bool_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\bool_value_view.h" />
     <ClInclude Include="src\zaf\control\property_grid\color_config.h" />
+    <ClInclude Include="src\zaf\control\property_grid\color_value_view.h" />
     <ClInclude Include="src\zaf\control\property_grid\control_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\enum_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\enum_value_view.h" />

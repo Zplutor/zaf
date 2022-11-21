@@ -16,8 +16,14 @@ void TextValueView::Initialize() {
 }
 
 
-void TextValueView::SetAccessMethod(AccessMethod) {
+void TextValueView::SetAccessMethod(AccessMethod access_method) {
 
+    if (access_method == AccessMethod::ReadOnly) {
+        label_->SetTextColor(Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB));
+    }
+    else {
+        label_->SetTextColor(Color::FromRGB(zaf::internal::ControlNormalTextColorRGB));
+    }
 }
 
 

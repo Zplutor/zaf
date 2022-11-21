@@ -16,6 +16,7 @@ public:
     Data(
         zaf::ObjectProperty* property,
         const std::shared_ptr<Object>& value,
+        bool is_parent_read_only,
         const std::shared_ptr<TypeConfigFactory>& type_config_factory,
         const std::weak_ptr<DataObserver>& observer);
 
@@ -25,6 +26,10 @@ public:
 
     const std::shared_ptr<Object>& Value() const {
         return value_;
+    }
+
+    bool IsReadOnly() const {
+        return is_read_only_;
     }
 
     const std::vector<std::shared_ptr<Data>>& Children();
@@ -41,6 +46,7 @@ private:
 private:
     zaf::ObjectProperty* property_{};
     std::shared_ptr<Object> value_{};
+    bool is_read_only_{};
     std::shared_ptr<TypeConfigFactory> type_config_factory_;
     std::weak_ptr<DataObserver> observer_;
 

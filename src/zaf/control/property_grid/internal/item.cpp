@@ -67,11 +67,10 @@ void Item::InitializeValueView() {
 
     value_view_->SetAccessMethod([this]() {
 
-        if (data_->Property()->CanSet()) {
-            return property_grid::AccessMethod::ReadWrite;
+        if (data_->IsReadOnly()) {
+            return property_grid::AccessMethod::ReadOnly;
         }
-
-        return property_grid::AccessMethod::ReadOnly;
+        return property_grid::AccessMethod::ReadWrite;
     }());
 
     value_view_->SetValue(data_->Value());
@@ -84,13 +83,18 @@ std::shared_ptr<Label> Item::CreateLabel() const {
     auto result = Create<Label>();
     result->SetParagraphAlignment(ParagraphAlignment::Center);
     result->SetTextTrimming(TextTrimming::Granularity::Character);
-    result->SetTextColorPicker([](const Control& control) {
+
+    result->SetTextColorPicker([this](const Control& control) {
+
         if (control.IsSelected()) {
             return Color::White();
         }
-        else {
-            return Color::FromRGB(zaf::internal::ControlNormalTextColorRGB);
+
+        if (data_->IsReadOnly()) {
+            return Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB);
         }
+
+        return Color::FromRGB(zaf::internal::ControlNormalTextColorRGB);
     });
     return result;
 }

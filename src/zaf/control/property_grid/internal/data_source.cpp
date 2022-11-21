@@ -17,6 +17,7 @@ void DataSource::SetTargetObject(const std::shared_ptr<Object>& target_object) {
     root_data_ = std::make_shared<Data>(
         nullptr,
         target_object,
+        false,
         type_config_factory_,
         shared_from_this());
 }
