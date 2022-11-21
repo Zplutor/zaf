@@ -14,10 +14,25 @@ protected:
     void Initialize() override;
 
 private:
+    class ColorSquare : public Control {
+    public:
+        void SetColor(const Color& color);
+
+    protected:
+        void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+
+    private:
+        void PaintTransparentColorSmallSquares(Canvas& canvas);
+
+    private:
+        Color color_;
+    };
+
+private:
     void SetLabelText(const Color& color);
 
 private:
-    std::shared_ptr<Control> color_box_;
+    std::shared_ptr<ColorSquare> color_square_;
     std::shared_ptr<Label> color_label_;
 };
 
