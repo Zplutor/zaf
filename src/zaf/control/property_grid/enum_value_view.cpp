@@ -25,17 +25,16 @@ void EnumValueView::SetAccessMethod(AccessMethod access_method) {
 }
 
 
-void EnumValueView::SetValue(const std::shared_ptr<Object>& object) {
+void EnumValueView::SetValue(const std::shared_ptr<Object>& value) {
 
-    if (!object) {
-        return;
-    }
-
-    auto enum_type = dynamic_cast<EnumType*>(object->GetType());
+    auto enum_type = dynamic_cast<EnumType*>(value->GetType());
     ZAF_EXPECT(enum_type);
 
     auto all_enum_values = enum_type->GetAllValues();
-    InitializeComboBoxValues(all_enum_values, object);
+    InitializeComboBoxValues(all_enum_values, value);
+
+    Subscriptions() += combo_box_->SelectionChangeEvent().Subscribe(
+        std::bind(&EnumValueView::OnSelectionChanged, this));
 }
 
 
@@ -54,6 +53,12 @@ void EnumValueView::InitializeComboBoxValues(
             drop_down_list->SelectItemAtIndex(index);
         }
     }
+}
+
+
+void EnumValueView::OnSelectionChanged() {
+
+    NotifyValueChanged(combo_box_->GetDropDownListBox()->GetFirstSelectedItemData());
 }
 
 }

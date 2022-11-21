@@ -53,7 +53,7 @@ std::shared_ptr<Object> DataSource::GetChildDataAtIndex(
 
 void DataSource::RefreshValues() {
 
-    root_data_->ResetValue(root_data_->Value());
+    root_data_->ChangeValueFromUpToDown(root_data_->Value());
 }
 
 

@@ -29,7 +29,7 @@ const std::vector<std::shared_ptr<Data>>& Data::Children() {
 }
 
 
-std::vector<std::shared_ptr<Data>> Data::LoadChildren() const {
+std::vector<std::shared_ptr<Data>> Data::LoadChildren() {
 
     if (!value_) {
         return {};
@@ -51,6 +51,9 @@ std::vector<std::shared_ptr<Data>> Data::LoadChildren() const {
                 is_read_only_,
                 type_config_factory_,
                 observer_);
+
+            Subscriptions() += child_data->ValueChangedEvent().Subscribe(
+                std::bind(&Data::OnChildValueChanged, this, std::placeholders::_1));
 
             result.push_back(child_data);
         }
@@ -96,7 +99,7 @@ PropertyTable Data::CreatePropertyTable(
 }
 
 
-void Data::ResetValue(const std::shared_ptr<Object>& value) {
+void Data::ChangeValueFromUpToDown(const std::shared_ptr<Object>& value) {
 
     value_ = value;
 
@@ -107,13 +110,34 @@ void Data::ResetValue(const std::shared_ptr<Object>& value) {
     for (const auto& each_child : *children_) {
 
         auto new_value = each_child->Property()->GetValue(*value_);
-        each_child->ResetValue(new_value);
+        each_child->ChangeValueFromUpToDown(new_value);
     }
 
     if (!children_->empty()) {
         if (auto observer = observer_.lock()) {
             observer->OnDataChildrenUpdate(shared_from_this(), children_->size());
         }
+    }
+}
+
+
+void Data::ChangeValueFromDownToUp(const std::shared_ptr<Object>& value) {
+
+    value_ = value;
+
+    value_changed_subject_.GetObserver().OnNext(shared_from_this());
+}
+
+
+void Data::OnChildValueChanged(const std::shared_ptr<Data>& child) {
+
+    child->Property()->SetValue(*value_, child->Value());
+
+    if (property_) {
+        value_changed_subject_.GetObserver().OnNext(shared_from_this());
+    }
+    else {
+        ChangeValueFromUpToDown(value_);
     }
 }
 

@@ -18,6 +18,8 @@ private:
         const std::vector<std::shared_ptr<Object>>& values, 
         const std::shared_ptr<Object>& selected_object);
 
+    void OnSelectionChanged();
+
 private:
     std::shared_ptr<ComboBox> combo_box_;
 };

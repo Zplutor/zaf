@@ -75,6 +75,14 @@ void Item::InitializeValueView() {
 
     value_view_->SetValue(data_->Value());
     value_view_->SetPadding(Frame{ 4, 0, 4, 0 });
+
+    Subscriptions() += value_view_->ValueChangedEvent().Subscribe(
+        [this](const std::shared_ptr<Object>& new_value) {
+    
+        if (!new_value->IsEqual(*data_->Value())) {
+            data_->ChangeValueFromDownToUp(new_value);
+        }
+    });
 }
 
 

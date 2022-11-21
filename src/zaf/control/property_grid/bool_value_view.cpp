@@ -24,9 +24,11 @@ void BoolValueView::SetAccessMethod(AccessMethod access_method) {
 
 void BoolValueView::SetValue(const std::shared_ptr<Object>& object) {
 
-    if (object) {
-        check_box_->SetIsChecked(Unbox<bool>(*object));
-    }
+    check_box_->SetIsChecked(Unbox<bool>(*object));
+
+    Subscriptions() += check_box_->CheckStateChangeEvent().Subscribe(std::bind([this]() {
+        NotifyValueChanged(Box(check_box_->IsChecked()));
+    }));
 }
 
 }
