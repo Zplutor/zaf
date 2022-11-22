@@ -4,6 +4,7 @@
 #include <zaf/control/property_grid/bool_config.h>
 #include <zaf/control/property_grid/color_config.h>
 #include <zaf/control/property_grid/control_config.h>
+#include <zaf/control/property_grid/editable_type_config.h>
 #include <zaf/control/property_grid/enum_config.h>
 #include <zaf/control/property_grid/frame_config.h>
 #include <zaf/control/property_grid/rect_config.h>
@@ -13,6 +14,7 @@
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/size.h>
 #include <zaf/object/boxing/boolean.h>
+#include <zaf/object/boxing/numeric.h>
 #include <zaf/object/enum_type.h>
 
 namespace zaf::property_grid {
@@ -31,6 +33,7 @@ std::shared_ptr<TypeConfig> GetObjectTypeConfig(ObjectType* type) {
         { Boolean::Type, ConfigGetter<BoolConfig> },
         { Color::Type, ConfigGetter<ColorConfig> },
         { Control::Type, ConfigGetter<ControlConfig> },
+        { Float::Type, ConfigGetter<EditableTypeConfig> },
         { Frame::Type, ConfigGetter<FrameConfig> },
         { Rect::Type, ConfigGetter<RectConfig> },
         { Size::Type, ConfigGetter<SizeConfig> },

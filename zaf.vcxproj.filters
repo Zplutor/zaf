@@ -754,6 +754,9 @@
     <ClCompile Include="src\zaf\control\property_grid\color_value_view.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\property_grid\editable_value_view.cpp">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1787,6 +1790,12 @@
       <Filter>zaf\control\property_grid\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\color_value_view.h">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\editable_value_view.h">
+      <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid\editable_type_config.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
   </ItemGroup>

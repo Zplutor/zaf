@@ -42,6 +42,9 @@ void PropertyGrid::Initialize() {
     initialize_parameters.delegate = delegate_;
 
     tree_implementation_->Initialize(initialize_parameters);
+
+    //TextBox cannot use cached painting.
+    this->ScrollContent()->SetIsCachedPaintingEnabled(false);
 }
 
 
