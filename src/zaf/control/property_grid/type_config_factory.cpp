@@ -7,11 +7,13 @@
 #include <zaf/control/property_grid/editable_type_config.h>
 #include <zaf/control/property_grid/enum_config.h>
 #include <zaf/control/property_grid/frame_config.h>
+#include <zaf/control/property_grid/point_config.h>
 #include <zaf/control/property_grid/rect_config.h>
 #include <zaf/control/property_grid/size_config.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
+#include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
 #include <zaf/object/boxing/boolean.h>
 #include <zaf/object/boxing/numeric.h>
@@ -33,10 +35,20 @@ std::shared_ptr<TypeConfig> GetObjectTypeConfig(ObjectType* type) {
         { Boolean::Type, ConfigGetter<BoolConfig> },
         { Color::Type, ConfigGetter<ColorConfig> },
         { Control::Type, ConfigGetter<ControlConfig> },
-        { Float::Type, ConfigGetter<EditableTypeConfig> },
         { Frame::Type, ConfigGetter<FrameConfig> },
         { Rect::Type, ConfigGetter<RectConfig> },
+        { Point::Type, ConfigGetter<PointConfig> },
         { Size::Type, ConfigGetter<SizeConfig> },
+        { Int8::Type, ConfigGetter<EditableTypeConfig> },
+        { UInt8::Type, ConfigGetter<EditableTypeConfig> },
+        { Int16::Type, ConfigGetter<EditableTypeConfig> },
+        { UInt16::Type, ConfigGetter<EditableTypeConfig> },
+        { Int32::Type, ConfigGetter<EditableTypeConfig> },
+        { UInt32::Type, ConfigGetter<EditableTypeConfig> },
+        { Int64::Type, ConfigGetter<EditableTypeConfig> },
+        { UInt64::Type, ConfigGetter<EditableTypeConfig> },
+        { Float::Type, ConfigGetter<EditableTypeConfig> },
+        { Double::Type, ConfigGetter<EditableTypeConfig> },
     };
 
     auto current_type = type;
