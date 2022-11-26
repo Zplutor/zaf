@@ -1,5 +1,6 @@
 #include <zaf/control/property_grid/editable_value_view.h>
 #include <zaf/creation.h>
+#include <zaf/internal/theme.h>
 #include <zaf/window/message/keyboard_message.h>
 
 namespace zaf::property_grid {
@@ -10,6 +11,7 @@ void EditableValueView::Initialize() {
 
     text_box_ = Create<TextBox>();
     text_box_->SetBorder(Frame{});
+    text_box_->SetBackgroundColor(Color::Transparent());
     text_box_->SetParagraphAlignment(ParagraphAlignment::Center);
     this->AddChild(text_box_);
 }
@@ -17,7 +19,13 @@ void EditableValueView::Initialize() {
 
 void EditableValueView::SetAccessMethod(AccessMethod access_method) {
 
-    text_box_->SetIsReadOnly(access_method == AccessMethod::ReadOnly);
+    bool is_read_only = access_method == AccessMethod::ReadOnly;
+    text_box_->SetIsEnabled(!is_read_only);
+
+    text_box_->SetTextColor(Color::FromRGB(
+        is_read_only ? 
+        zaf::internal::ControlDisabledTextColorRGB : 
+        zaf::internal::ControlNormalTextColorRGB));
 }
 
 
