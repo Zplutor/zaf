@@ -14,7 +14,15 @@ public:
         Object& object) {
 
         auto& point = As<Point>(object);
-        internal::ParseAttributeToDoubleFloats(attribute_value, point.x, point.y);
+
+        bool is_succeeded = internal::ParseAttributeToDoubleFloats(
+            attribute_value, 
+            point.x, 
+            point.y);
+
+        if (!is_succeeded) {
+            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        }
     }
 
     void ParseFromNode(const XamlNode& node, Object& object) override {

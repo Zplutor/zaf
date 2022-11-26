@@ -417,9 +417,13 @@
     <ClCompile Include="unittest\case\graphic\color_test.cpp" />
     <ClCompile Include="unittest\case\graphic\ellipse_test.cpp" />
     <ClCompile Include="unittest\case\graphic\font\font_weight_test.cpp" />
+    <ClCompile Include="unittest\case\graphic\frame_parser_test.cpp" />
     <ClCompile Include="unittest\case\graphic\frame_test.cpp" />
+    <ClCompile Include="unittest\case\graphic\point_parser_test.cpp" />
     <ClCompile Include="unittest\case\graphic\point_test.cpp" />
+    <ClCompile Include="unittest\case\graphic\rect_parser_test.cpp" />
     <ClCompile Include="unittest\case\graphic\rounded_rect_test.cpp" />
+    <ClCompile Include="unittest\case\graphic\size_parser_test.cpp" />
     <ClCompile Include="unittest\case\graphic\size_test.cpp" />
     <ClCompile Include="unittest\case\object\boxing\boolean_test.cpp" />
     <ClCompile Include="unittest\case\object\boxing\boxed_object_equality_test.cpp" />
@@ -437,12 +441,8 @@
     <ClCompile Include="unittest\case\parsing\parsers\control_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\ellipse_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\font_parser_test.cpp" />
-    <ClCompile Include="unittest\case\parsing\parsers\frame_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\linear_layouter_parser_test.cpp" />
-    <ClCompile Include="unittest\case\parsing\parsers\point_parser_test.cpp" />
-    <ClCompile Include="unittest\case\parsing\parsers\rect_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\rounded_rect_parser_test.cpp" />
-    <ClCompile Include="unittest\case\parsing\parsers\size_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\textual_control_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\parsers\window_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\xaml_reader_test.cpp" />

@@ -133,22 +133,10 @@
     <ClCompile Include="unittest\case\base\string\split_test.cpp">
       <Filter>case\base\string</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\parsing\parsers\point_parser_test.cpp">
-      <Filter>case\parsing\parsers</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\parsing\xaml_reader_test.cpp">
       <Filter>case\parsing</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\parsing\parsers\size_parser_test.cpp">
-      <Filter>case\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\parsing\parsers\rect_parser_test.cpp">
-      <Filter>case\parsing\parsers</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\parsing\parsers\rounded_rect_parser_test.cpp">
-      <Filter>case\parsing\parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\parsing\parsers\frame_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\parsing\parsers\ellipse_parser_test.cpp">
@@ -347,6 +335,18 @@
       <Filter>case\graphic</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\graphic\color_test.cpp">
+      <Filter>case\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\size_parser_test.cpp">
+      <Filter>case\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\point_parser_test.cpp">
+      <Filter>case\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\frame_parser_test.cpp">
+      <Filter>case\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\rect_parser_test.cpp">
       <Filter>case\graphic</Filter>
     </ClCompile>
   </ItemGroup>

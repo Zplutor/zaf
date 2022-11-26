@@ -7,7 +7,7 @@
 #include <zaf/object/parsing/xaml_reader.h>
 #include "utility/assert.h"
 
-TEST(PointParser, ParseFromAttribute) {
+TEST(PointParserTest, ParseFromAttribute) {
 
     zaf::Point point;
     point.GetType()->GetParser()->ParseFromAttribute(L"33,44", point);
@@ -16,7 +16,7 @@ TEST(PointParser, ParseFromAttribute) {
 }
 
 
-TEST(PointParser, ParseFromNode) {
+TEST(PointParserTest, ParseFromNode) {
 
     auto xaml = R"(
         <Point X="53" Y="54" />
@@ -40,7 +40,7 @@ TEST(PointParser, ParseFromNode) {
 }
 
 
-TEST(PointParser, ParseToInvalidObject) {
+TEST(PointParserTest, ParseToInvalidObject) {
 
     auto parser = zaf::Point::Type->GetParser();
     zaf::Object object;
@@ -49,4 +49,13 @@ TEST(PointParser, ParseToInvalidObject) {
 
     //auto xaml_node = zaf::XamlReader::FromString(L"<Point X=\"18\" />")->Read();
     //ASSERT_THROW_ERRC(parser->ParseFromNode(*xaml_node, object), zaf::BasicErrc::InvalidCast);
+}
+
+
+TEST(PointParserTest, ParseInvalidValue) {
+
+    auto parser = zaf::Point::Type->GetParser();
+    zaf::Point point;
+
+    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"dd,cc", point), zaf::BasicErrc::InvalidValue);
 }

@@ -12,7 +12,15 @@ public:
     void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
 
         auto& size = As<Size>(object);
-        internal::ParseAttributeToDoubleFloats(attribute_value, size.width, size.height);
+
+        bool is_succeeded = internal::ParseAttributeToDoubleFloats(
+            attribute_value, 
+            size.width, 
+            size.height);
+
+        if (!is_succeeded) {
+            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        }
     }
 
     void ParseFromNode(const XamlNode& node, Object& object) override {

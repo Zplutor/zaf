@@ -7,7 +7,7 @@
 #include <zaf/object/parsing/xaml_reader.h>
 #include "utility/assert.h"
 
-TEST(FrameParser, ParseFromAttribute) {
+TEST(FrameParserTest, ParseFromAttribute) {
 
     zaf::Frame frame;
     auto parser = zaf::Frame::Type->GetParser();
@@ -19,7 +19,7 @@ TEST(FrameParser, ParseFromAttribute) {
 }
 
 
-TEST(FrameParser, ParseFromNodeWithAttribute) {
+TEST(FrameParserTest, ParseFromNodeWithAttribute) {
 
     auto xaml = R"(
         <Frame Left="20" Top="21" Right="22" Bottom="23" />
@@ -46,7 +46,7 @@ TEST(FrameParser, ParseFromNodeWithAttribute) {
 }
 
 
-TEST(FrameParser, ParseFromNodeWithValue) {
+TEST(FrameParserTest, ParseFromNodeWithValue) {
 
     auto xaml = "<Frame>9,8,7,6</Frame>";
     auto node = zaf::XamlReader::FromString(xaml)->Read();
@@ -57,7 +57,7 @@ TEST(FrameParser, ParseFromNodeWithValue) {
 }
 
 
-TEST(FramePraser, ParseToInvalidObject) {
+TEST(FrameParserTest, ParseToInvalidObject) {
 
     auto parser = zaf::Frame::Type->GetParser();
     zaf::Object object;
@@ -66,6 +66,15 @@ TEST(FramePraser, ParseToInvalidObject) {
         parser->ParseFromAttribute(L"1,1,1,1", object), 
         zaf::BasicErrc::InvalidCast);
 
-    //auto node = zaf::XamlReader::FromString(L"<Frame>2,2,2,2</Frame>")->Read();
-    //ASSERT_THROW_ERRC(parser->ParseFromNode(*node, object), zaf::BasicErrc::InvalidCast);
+    auto node = zaf::XamlReader::FromString(L"<Frame>2,2,2,2</Frame>")->Read();
+    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, object), zaf::BasicErrc::InvalidCast);
+}
+
+
+TEST(FrameParserTest, ParseInvalidValue) {
+
+    auto parser = zaf::Frame::Type->GetParser();
+    zaf::Frame frame;
+
+    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"uiok", frame), zaf::BasicErrc::InvalidValue);
 }

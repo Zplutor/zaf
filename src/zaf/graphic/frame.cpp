@@ -35,12 +35,16 @@ private:
             return;
         }
 
-        internal::ParseAttributeToQuaterFloats(
+        bool is_succeeded = internal::ParseAttributeToQuaterFloats(
             value,
             frame.left,
             frame.top,
             frame.right,
             frame.bottom);
+
+        if (!is_succeeded) {
+            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        }
     }
 };
 

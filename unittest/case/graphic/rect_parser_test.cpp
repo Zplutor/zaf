@@ -5,7 +5,7 @@
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/parsing/xaml_reader.h>
 
-TEST(RectParser, ParseFromNode) {
+TEST(RectParserTest, ParseFromNode) {
 
     auto xaml = "<Rect Position=\"10,11\" Size=\"12,13\" />";
     auto node = zaf::XamlReader::FromString(xaml)->Read();
