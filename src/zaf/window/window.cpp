@@ -14,7 +14,6 @@
 #include <zaf/object/parsing/xaml_node_parse_helper.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
-#include <zaf/window/caret.h>
 #include <zaf/window/inspector/inspector_window.h>
 #include <zaf/window/internal/window_class_registry.h>
 #include <zaf/window/tooltip_window.h>
@@ -634,13 +633,6 @@ void Window::Repaint() {
     root_control_->Repaint(canvas, dirty_rect);
 
     PaintInspectedControl(canvas, dirty_rect);
-
-    if (caret_ != nullptr) {
-        const zaf::Rect& caret_rect = caret_->GetRect();
-        if (caret_rect.HasIntersection(dirty_rect)) {
-            caret_->Repaint(canvas);
-        }
-    }
 
     try {
         renderer_.EndDraw();
@@ -1701,16 +1693,6 @@ void Window::InitializeRootControl(const std::shared_ptr<Control>& control) {
     }
 
     OnRootControlChanged(previous_root_control);
-}
-
-
-const std::shared_ptr<Caret>& Window::Caret() {
-
-    if (caret_ == nullptr) {
-        caret_ = std::make_shared<zaf::Caret>();
-        caret_->SetWindow(shared_from_this());
-    }
-    return caret_;
 }
 
 

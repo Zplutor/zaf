@@ -2,13 +2,13 @@
 #include <cassert>
 #include <zaf/base/event_utility.h>
 #include <zaf/base/log.h>
+#include <zaf/control/caret.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/window/caret.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
@@ -199,6 +199,10 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         0);
 
     gdi_interop_render_target->ReleaseDC(nullptr);
+
+    if (caret_) {
+        caret_->Paint(canvas, dirty_rect);
+    }
 }
 
 
@@ -934,9 +938,8 @@ void TextBox::OnFocusGain() {
 
 void TextBox::OnFocusLose() {
 
-    auto window = Window();
-    if (window != nullptr) {
-        window->Caret()->Hide();
+    if (caret_) {
+        caret_->SetIsVisible(false);
     }
 
     if (text_service_ != nullptr) {
@@ -1195,18 +1198,28 @@ void TextBox::TextHostBridge::TxViewChange(BOOL fUpdate) {
 
 BOOL TextBox::TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) {
 
-    auto window = GetWindow();
-    if (window == nullptr) {
+    auto text_box = text_box_.lock();
+    if (!text_box) {
+        return FALSE;
+    }
+
+    auto window = text_box->Window();
+    if (!window) {
         return FALSE;
     }
 
     float dpi = window->GetDPI();
-    zaf::Size size{
+
+    zaf::Size caret_size{
         ToDIPs(static_cast<float>(xWidth), dpi),
         ToDIPs(static_cast<float>(yHeight), dpi)
     };
 
-    window->Caret()->SetSize(size);
+    if (!text_box->caret_) {
+        text_box->caret_ = Create<Caret>(text_box);
+    }
+
+    text_box->caret_->SetSize(caret_size);
     return TRUE;
 }
 
@@ -1214,7 +1227,7 @@ BOOL TextBox::TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeigh
 BOOL TextBox::TextHostBridge::TxShowCaret(BOOL fShow) {
 
     auto text_box = text_box_.lock();
-    if (text_box == nullptr) {
+    if (!text_box) {
         return FALSE;
     }
 
@@ -1225,18 +1238,11 @@ BOOL TextBox::TextHostBridge::TxShowCaret(BOOL fShow) {
         return FALSE;
     }
 
-    auto window = GetWindow();
-    if (window == nullptr) {
+    if (!text_box->caret_) {
         return FALSE;
     }
     
-    const auto& caret = window->Caret();
-    if (fShow) {
-        caret->Show();
-    }
-    else {
-        caret->Hide();
-    }
+    text_box->caret_->SetIsVisible(!!fShow);
     return TRUE;
 }
 
@@ -1244,22 +1250,32 @@ BOOL TextBox::TextHostBridge::TxShowCaret(BOOL fShow) {
 BOOL TextBox::TextHostBridge::TxSetCaretPos(INT x, INT y) {
 
     auto text_box = text_box_.lock();
-    if (text_box == nullptr) {
+    if (!text_box) {
+        return FALSE;
+    }
+
+    if (!text_box->caret_) {
         return FALSE;
     }
 
     auto window = text_box->Window();
-    if (window == nullptr) {
+    if (!window) {
         return FALSE;
     }
     
     float dpi = window->GetDPI();
-    Point position{
+    Point absolute_position{
         ToDIPs(static_cast<float>(x), dpi),
         ToDIPs(static_cast<float>(y), dpi) + text_box->GetPaintContentOffset(nullptr)
     };
 
-    window->Caret()->SetPosition(position);
+    auto text_box_absolute_position = text_box->AbsoluteRect().position;
+
+    Point new_position;
+    new_position.x = absolute_position.x - text_box_absolute_position.x;
+    new_position.y = absolute_position.y - text_box_absolute_position.y;
+
+    text_box->caret_->SetPosition(new_position);
     return TRUE;
 }
 

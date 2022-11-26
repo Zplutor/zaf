@@ -1,0 +1,161 @@
+#include <zaf/control/caret.h>
+#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/dpi.h>
+#include <zaf/object/type_definition.h>
+#include <zaf/rx/timer.h>
+#include <zaf/window/window.h>
+
+namespace zaf {
+
+ZAF_DEFINE_TYPE(Caret)
+ZAF_DEFINE_TYPE_PROPERTY(Rect)
+ZAF_DEFINE_TYPE_PROPERTY(Position)
+ZAF_DEFINE_TYPE_PROPERTY(Size)
+ZAF_DEFINE_TYPE_PROPERTY(IsVisible)
+ZAF_DEFINE_TYPE_END
+
+
+Caret::Caret(const std::weak_ptr<Control>& owner) : owner_(owner) {
+
+}
+
+
+Caret::~Caret() {
+
+    if (IsVisible()) {
+        DestroySystemCaret();
+    }
+}
+
+
+void Caret::SetRect(const zaf::Rect& rect) {
+
+    if (rect_ == rect) {
+        return;
+    }
+
+    rect_ = rect;
+
+    if (IsVisible()) {
+        ShowCaret();
+    }
+}
+
+
+void Caret::SetIsVisible(bool is_visible) {
+
+    if (is_visible_ == is_visible) {
+        return;
+    }
+
+    is_visible_ = is_visible;
+
+    if (is_visible_) {
+        ShowCaret();
+    }
+    else {
+        HideCaret();
+    }
+}
+
+
+void Caret::ShowCaret() {
+
+    //The system caret is not for rendering, but for making IME window follow the input focus.
+    CreateSystemCaret();
+    NeedRepaint();
+
+    UINT blink_time = GetCaretBlinkTime();
+    if (blink_time == 0) {
+        blink_time = 1000;
+    }
+
+    is_blink_on_ = true;
+
+    blink_timer_subscription_ = rx::Interval(std::chrono::milliseconds(blink_time)).Subscribe(
+        [this](int) {
+        
+        is_blink_on_ = !is_blink_on_;
+        NeedRepaint();
+    });
+}
+
+
+void Caret::HideCaret() {
+
+    DestroySystemCaret();
+    NeedRepaint();
+
+    blink_timer_subscription_.Unsubscribe();
+}
+
+
+void Caret::NeedRepaint() {
+
+    auto owner = owner_.lock();
+    if (owner) {
+        owner->NeedRepaintRect(rect_);
+    }
+}
+
+
+void Caret::CreateSystemCaret() {
+
+    auto owner = owner_.lock();
+    if (!owner) {
+        return;
+    }
+
+    auto window = owner->Window();
+    if (!window) {
+        return;
+    }
+
+    auto owner_absolute_position = owner->AbsoluteRect().position;
+
+    auto caret_absolute_rect = Rect();
+    caret_absolute_rect.position.x += owner_absolute_position.x;
+    caret_absolute_rect.position.y += owner_absolute_position.y;
+
+    caret_absolute_rect = FromDIPs(caret_absolute_rect, window->GetDPI());
+    CreateCaret(
+        window->Handle(),
+        nullptr,
+        static_cast<int>(caret_absolute_rect.size.width),
+        static_cast<int>(caret_absolute_rect.size.height)
+    );
+
+    SetCaretPos(
+        static_cast<int>(caret_absolute_rect.position.x),
+        static_cast<int>(caret_absolute_rect.position.y));
+}
+
+
+void Caret::DestroySystemCaret() {
+    DestroyCaret();
+}
+
+
+void Caret::Paint(Canvas& owner_canvas, const zaf::Rect& dirty_rect) {
+
+    if (!IsVisible()) {
+        return;
+    }
+
+    if (!is_blink_on_) {
+        return;
+    }
+
+    if (!rect_.HasIntersection(dirty_rect)) {
+        return;
+    }
+
+    owner_canvas.SaveState();
+
+    owner_canvas.SetBrushWithColor(Color::Black());
+    owner_canvas.DrawRectangle(rect_);
+
+    owner_canvas.RestoreState();
+}
+
+}

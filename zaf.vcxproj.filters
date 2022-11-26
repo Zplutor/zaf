@@ -165,9 +165,6 @@
     <ClCompile Include="src\zaf\base\log.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\window\caret.cpp">
-      <Filter>zaf\window</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\window\window.cpp">
       <Filter>zaf\window</Filter>
     </ClCompile>
@@ -757,6 +754,9 @@
     <ClCompile Include="src\zaf\control\property_grid\editable_value_view.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\caret.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -770,9 +770,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\direct2d.h">
       <Filter>zaf\base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\window\caret.h">
-      <Filter>zaf\window</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\window.h">
       <Filter>zaf\window</Filter>
@@ -1797,6 +1794,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\editable_type_config.h">
       <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\caret.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

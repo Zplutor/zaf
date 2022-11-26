@@ -11,6 +11,7 @@
 
 namespace zaf {
 
+class Caret;
 class TextBoxSelectionChangeInfo;
 
 /**
@@ -385,6 +386,7 @@ private:
 private:
     std::shared_ptr<TextHostBridge> text_host_bridge_;
     CComPtr<ITextServices> text_service_;
+    std::shared_ptr<zaf::Caret> caret_;
     DWORD property_bits_;
     CHARFORMATW character_format_;
     PARAFORMAT paragraph_format_;

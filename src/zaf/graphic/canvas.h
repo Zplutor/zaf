@@ -153,7 +153,6 @@ private:
     };
 
 private:
-    friend class Caret;
     friend class Control;
     friend class Window;
 

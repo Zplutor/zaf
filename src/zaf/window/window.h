@@ -19,7 +19,6 @@ class InspectorPort;
 class WindowClass;
 }
 
-class Caret;
 class HitTestMessage;
 class InspectorWindow;
 class MouseMessage;
@@ -424,11 +423,6 @@ public:
     }
 
     /**
-     Get the caret associates with the window.
-     */
-    const std::shared_ptr<Caret>& Caret();
-
-    /**
      Get the renderer of the window.
      */
     Renderer& Renderer() {
@@ -591,7 +585,6 @@ protected:
 
 private:
     friend class Application;
-    friend class Caret;
     friend class Control;
     friend class InspectorWindow;
     friend class internal::MessageLoop;
@@ -684,7 +677,6 @@ private:
     std::shared_ptr<Control> capturing_mouse_control_;
     std::shared_ptr<Control> focused_control_;
     std::weak_ptr<Control> last_focused_control_;
-    std::shared_ptr<zaf::Caret> caret_;
     std::shared_ptr<TooltipWindow> tooltip_window_;
 
     PropertyMap property_map_;

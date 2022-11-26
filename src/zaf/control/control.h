@@ -930,6 +930,7 @@ protected:
     virtual void OnDPIChanged();
 
 private:
+    friend class Caret;
     friend class Window;
 
     void SetWindow(const std::shared_ptr<zaf::Window>& window) {
