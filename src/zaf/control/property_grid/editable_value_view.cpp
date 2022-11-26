@@ -13,6 +13,7 @@ void EditableValueView::Initialize() {
     text_box_->SetBorder(Frame{});
     text_box_->SetBackgroundColor(Color::Transparent());
     text_box_->SetParagraphAlignment(ParagraphAlignment::Center);
+    text_box_->SetAllowBeep(false);
     this->AddChild(text_box_);
 }
 

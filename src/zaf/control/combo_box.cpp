@@ -63,7 +63,8 @@ void ComboBox::Initialize() {
 
     __super::Initialize();
 
-    SetBorder(Frame(1));
+    SetBorder(Frame{ 1 });
+    SetTextInset(Frame{ 3, 1, 1, 1 });
 
     SetBackgroundColorPicker([](const Control& control) {
 
@@ -210,8 +211,22 @@ void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 zaf::Rect ComboBox::GetTextRect() {
 
     auto rect = __super::GetTextRect();
-    rect.Deflate(zaf::Frame(3, 1, GetDropDownButtonWidth() + 1, 1));
+
+    auto deflated_frame = text_inset_;
+    deflated_frame.right -= GetDropDownButtonWidth();
+    rect.Deflate(deflated_frame);
     return rect;
+}
+
+
+void ComboBox::SetTextInset(const Frame& inset) {
+
+    if (text_inset_ == inset) {
+        return;
+    }
+
+    text_inset_ = inset;
+    NeedRelayout();
 }
 
 

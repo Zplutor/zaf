@@ -1,7 +1,7 @@
 #pragma once
 
-#include <zaf/control/label.h>
 #include <zaf/control/property_grid/value_view.h>
+#include <zaf/control/text_box.h>
 
 namespace zaf::property_grid {
 
@@ -12,11 +12,16 @@ public:
 
 protected:
     void Initialize() override;
+    bool OnKeyDown(const KeyMessage& message) override;
 
 private:
     class ColorSquare : public Control {
     public:
-        void SetColor(const Color& color);
+        const Color& Color() const {
+            return color_;
+        }
+
+        void SetColor(const zaf::Color& color);
 
     protected:
         void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
@@ -25,15 +30,18 @@ private:
         void PaintTransparentColorSmallSquares(Canvas& canvas);
 
     private:
-        Color color_;
+        zaf::Color color_;
     };
 
 private:
-    void SetLabelText(const Color& color);
+    void InitializeColorSquare();
+    void InitializeTextBox();
+    void ChangeColorByTextBox();
+    void SetColorToTextBox(const Color& color);
 
 private:
     std::shared_ptr<ColorSquare> color_square_;
-    std::shared_ptr<Label> color_label_;
+    std::shared_ptr<TextBox> color_text_box_;
 };
 
 }

@@ -26,6 +26,12 @@ public:
     ComboBox();
     ~ComboBox();
 
+    Frame TextInset() const {
+        return text_inset_;
+    }
+
+    void SetTextInset(const Frame& inset);
+
     /**
      Get the color picker of drop down button.
      */
@@ -271,6 +277,8 @@ private:
 private:
     std::shared_ptr<ComboBoxEditTextBox> edit_text_box_;
     Subscription edit_text_box_subscription_;
+    Frame text_inset_;
+
     std::shared_ptr<internal::ComboBoxDropDownWindow> drop_down_window_;
     std::shared_ptr<ComboBoxDropDownListBox> drop_down_list_box_;
     Subscription drop_down_list_box_subscription_;

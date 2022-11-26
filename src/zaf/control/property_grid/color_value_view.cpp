@@ -7,6 +7,7 @@
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/theme.h>
+#include <zaf/window/message/keyboard_message.h>
 
 namespace zaf::property_grid {
 
@@ -14,27 +15,70 @@ void ColorValueView::Initialize() {
 
     __super::Initialize();
 
+    InitializeColorSquare();
+    InitializeTextBox();
+}
+
+
+void ColorValueView::InitializeColorSquare() {
+
     color_square_ = Create<ColorSquare>();
     color_square_->SetFixedWidth(28);
     color_square_->SetBorder(Frame{ 1 });
     color_square_->SetBorderColor(Color::Black());
     color_square_->SetMargin(Frame{ 0, 2, 4, 2 });
+    this->AddChild(color_square_);
+}
 
-    color_label_ = Create<Label>();
-    color_label_->SetParagraphAlignment(ParagraphAlignment::Center);
 
-    this->AddChildren({ color_square_, color_label_ });
+void ColorValueView::InitializeTextBox() {
+
+    color_text_box_ = Create<TextBox>();
+    color_text_box_->SetBorder(Frame{});
+    color_text_box_->SetBackgroundColor(Color::Transparent());
+    color_text_box_->SetParagraphAlignment(ParagraphAlignment::Center);
+    color_text_box_->SetAllowBeep(false);
+
+    Subscriptions() += color_text_box_->FocusChangeEvent().Subscribe(std::bind([this]() {
+    
+        if (!color_text_box_->IsFocused()) {
+            ChangeColorByTextBox();
+        }
+    }));
+
+    this->AddChild(color_text_box_);
+}
+
+
+void ColorValueView::ChangeColorByTextBox() {
+
+    auto text = color_text_box_->Text();
+
+    try {
+
+        auto new_color = Create<Color>();
+        Color::Type->GetParser()->ParseFromAttribute(text, *new_color);
+
+        if (*new_color == color_square_->Color()) {
+            return;
+        }
+
+        NotifyValueChanged(new_color);
+    }
+    catch (const Error&) {
+        SetColorToTextBox(color_square_->Color());
+    }
 }
 
 
 void ColorValueView::SetAccessMethod(AccessMethod access_method) {
 
-    if (access_method == AccessMethod::ReadOnly) {
-        color_label_->SetTextColor(Color::FromRGB(internal::ControlDisabledTextColorRGB));
-    }
-    else {
-        color_label_->SetTextColor(Color::FromRGB(internal::ControlNormalTextColorRGB));
-    }
+    bool is_readonly = access_method == AccessMethod::ReadOnly;
+    color_text_box_->SetIsEnabled(!is_readonly);
+    color_text_box_->SetTextColor(Color::FromRGB(
+        is_readonly ? 
+        internal::ControlDisabledTextColorRGB : 
+        internal::ControlNormalTextColorRGB));
 }
 
 
@@ -42,7 +86,7 @@ void ColorValueView::SetValue(const std::shared_ptr<Object>& object) {
 
     if (!object) {
         color_square_->SetIsVisible(false);
-        color_label_->SetIsVisible(false);
+        color_text_box_->SetIsVisible(false);
         return;
     }
 
@@ -52,11 +96,11 @@ void ColorValueView::SetValue(const std::shared_ptr<Object>& object) {
     color_square_->SetColor(*color);
     color_square_->SetIsVisible(true);
 
-    SetLabelText(*color);
+    SetColorToTextBox(*color);
 }
 
 
-void ColorValueView::SetLabelText(const Color& color) {
+void ColorValueView::SetColorToTextBox(const Color& color) {
 
     auto float_to_hex = [](float value) {
 
@@ -76,12 +120,23 @@ void ColorValueView::SetLabelText(const Color& color) {
         text.append(float_to_hex(each_value));
     }
 
-    color_label_->SetText(text);
-    color_square_->SetIsVisible(true);
+    color_text_box_->SetText(text);
+    color_text_box_->SetIsVisible(true);
 }
 
 
-void ColorValueView::ColorSquare::SetColor(const Color& color) {
+bool ColorValueView::OnKeyDown(const KeyMessage& message) {
+
+    if (message.VirtualKey() == VK_RETURN) {
+        ChangeColorByTextBox();
+        return true;
+    }
+
+    return __super::OnKeyDown(message);
+}
+
+
+void ColorValueView::ColorSquare::SetColor(const zaf::Color& color) {
     color_ = color;
     NeedRepaint();
 }
