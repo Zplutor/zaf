@@ -21,6 +21,10 @@ void DrawTextWithIcon(
     text_rect.position.x += x_offset;
     text_rect.size.width -= x_offset;
 
+    if (text_rect.size.width <= 0) {
+        return;
+    }
+
     text_layout.SetMaxWidth(text_rect.size.width);
     text_layout.SetMaxHeight(text_rect.size.height);
 

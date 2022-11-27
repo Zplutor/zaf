@@ -24,13 +24,16 @@ public:
         return current_distance_;
     }
 
+    void UpdateDefaultDistance(float distance);
+
     const zaf::Subject<SplitDistanceChangeInfo>& DistanceChangeSubject() const {
         return distance_change_subject_;
     }
 
 private:
     zaf::Subject<SplitDistanceChangeInfo> distance_change_subject_;
-    float current_distance_{ 150 };
+    float current_distance_{};
+    bool is_distance_default_{ true };
 };
 
 }
