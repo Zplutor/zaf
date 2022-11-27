@@ -25,9 +25,17 @@ const wchar_t* const kSplitterColorPickerPropertyName = L"SplitterColorPicker";
 
 
 ZAF_DEFINE_TYPE(SplitControl)
+ZAF_DEFINE_TYPE_PROPERTY(IsHorizontalSplit)
+ZAF_DEFINE_TYPE_PROPERTY(SplitBarThickness)
+ZAF_DEFINE_TYPE_PROPERTY(SplitDistance)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(SplitBar)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(FirstPane)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(SecondPane)
 ZAF_DEFINE_TYPE_END
 
-ZAF_DEFINE_TYPE(SplitControlSplitBar)
+ZAF_DEFINE_TYPE(SplitBar)
+ZAF_DEFINE_TYPE_PROPERTY(IsHorizontal)
+ZAF_DEFINE_TYPE_PROPERTY(SplitterColor)
 ZAF_DEFINE_TYPE_END
 
 
@@ -45,7 +53,7 @@ void SplitControl::Initialize() {
 
     __super::Initialize();
 
-    split_bar_ = Create<SplitControlSplitBar>();
+    split_bar_ = Create<zaf::SplitBar>();
     InitializeSplitBar();
 
     first_pane_ = Create<Control>();
@@ -96,7 +104,7 @@ void SplitControl::Layout(const zaf::Rect& previous_rect) {
         std::swap(primary_length, secondly_length);
     }
 
-    float split_bar_thickness = GetSplitBarThickness();
+    float split_bar_thickness = SplitBarThickness();
     float split_bar_distance = GetUnflippedSplitBarDistance();
 
     zaf::Rect split_bar_rect(
@@ -162,12 +170,12 @@ void SplitControl::UpdateActualSplitBarDistance() {
         actual_split_bar_distance_ = distance;
 
         //Raise the event.
-        auto event_observer = GetEventObserver<SplitControlSplitBarDistanceChangeInfo>(
+        auto event_observer = GetEventObserver<SplitControlSplitDistanceChangeInfo>(
             GetPropertyMap(),
             kSplitBarDistanceChangeEventPropertyName);
 
         if (event_observer) {
-            SplitControlSplitBarDistanceChangeInfo event_info(
+            SplitControlSplitDistanceChangeInfo event_info(
                 std::dynamic_pointer_cast<SplitControl>(shared_from_this()),
                 previous_distance);
             event_observer->OnNext(event_info);
@@ -195,7 +203,7 @@ void SplitControl::SetIsHorizontalSplit(bool is_horizontal) {
 }
 
 
-float SplitControl::GetSplitBarThickness() const {
+float SplitControl::SplitBarThickness() const {
 
     auto thickness = GetPropertyMap().TryGetProperty<float>(kSplitBarThicknessPropertyName);
     if (thickness != nullptr) {
@@ -213,11 +221,11 @@ void SplitControl::SetSplitBarThickness(float thickness) {
 }
 
 
-float SplitControl::GetSplitBarDistance() const {
+float SplitControl::SplitDistance() const {
     return actual_split_bar_distance_;
 }
 
-void SplitControl::SetSplitBarDistance(float expected_distance) {
+void SplitControl::SetSplitDistance(float expected_distance) {
 
     if (expected_split_bar_distance_.has_value() &&
         expected_split_bar_distance_.value() == expected_distance) {
@@ -336,33 +344,33 @@ void SplitControl::SetIsSplitBarDistanceFlipped(bool is_flipped) {
 float SplitControl::GetAvaliableSplitBarMaxDistance() const {
 
     auto content_size = ContentSize();
-    float avaliable_max_distance = (IsHorizontalSplit() ? content_size.height : content_size.width) - GetSplitBarThickness();
+    float avaliable_max_distance = (IsHorizontalSplit() ? content_size.height : content_size.width) - SplitBarThickness();
     return (std::max)(avaliable_max_distance, 0.f);
 }
 
 
 float SplitControl::GetUnflippedSplitBarDistance() const {
 
-    auto distance = GetSplitBarDistance();
+    auto distance = SplitDistance();
     bool is_flipped = IsSplitBarDistanceFlipped();
 
     if (is_flipped) {
         auto content_size = ContentSize();
-        distance = (IsHorizontalSplit() ? content_size.height : content_size.width) - GetSplitBarThickness() - distance;
+        distance = (IsHorizontalSplit() ? content_size.height : content_size.width) - SplitBarThickness() - distance;
     }
 
     return distance;
 }
 
 
-Observable<SplitControlSplitBarDistanceChangeInfo> SplitControl::SplitBarDistanceChangeEvent() {
-    return GetEventObservable<SplitControlSplitBarDistanceChangeInfo>(
+Observable<SplitControlSplitDistanceChangeInfo> SplitControl::SplitBarDistanceChangeEvent() {
+    return GetEventObservable<SplitControlSplitDistanceChangeInfo>(
         GetPropertyMap(),
         kSplitBarDistanceChangeEventPropertyName);
 }
 
 
-void SplitControl::SetSplitBar(const std::shared_ptr<SplitControlSplitBar>& split_bar) {
+void SplitControl::SetSplitBar(const std::shared_ptr<zaf::SplitBar>& split_bar) {
 
     if (split_bar_ == split_bar) {
         return;
@@ -415,7 +423,7 @@ void SplitControl::SetPane(
 
 void SplitControl::SplitBarBeginDrag() {
     split_bar_begin_drag_mouse_position_ = GetSplitBarDragPosition();
-    split_bar_begin_drag_distance_ = GetSplitBarDistance();
+    split_bar_begin_drag_distance_ = SplitDistance();
 }
 
 
@@ -427,7 +435,7 @@ void SplitControl::SplitBarDrag() {
         difference *= -1;
     }
     float new_distance = split_bar_begin_drag_distance_ + difference;
-    SetSplitBarDistance(new_distance); 
+    SetSplitDistance(new_distance); 
 }
 
 
@@ -444,18 +452,18 @@ float SplitControl::GetSplitBarDragPosition() const {
 }
 
 
-SplitControlSplitBar::SplitControlSplitBar() {
+SplitBar::SplitBar() {
 
 }
 
 
-void SplitControlSplitBar::Initialize() {
+void SplitBar::Initialize() {
 
     __super::Initialize();
 }
 
 
-void SplitControlSplitBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void SplitBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -475,12 +483,12 @@ void SplitControlSplitBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     }
 
     Canvas::StateGuard state_guard(canvas);
-    canvas.SetBrushWithColor(GetSplitterColor());
+    canvas.SetBrushWithColor(SplitterColor());
     canvas.DrawLine(start_point, end_point, 1);
 }
 
 
-ColorPicker SplitControlSplitBar::GetSplitterColorPicker() const {
+ColorPicker SplitBar::SplitterColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kSplitterColorPickerPropertyName);
     if ((color_picker != nullptr) && (*color_picker != nullptr)) {
@@ -493,32 +501,32 @@ ColorPicker SplitControlSplitBar::GetSplitterColorPicker() const {
 }
 
 
-void SplitControlSplitBar::SetSplitterColorPicker(const ColorPicker& color_picker) {
+void SplitBar::SetSplitterColorPicker(const ColorPicker& color_picker) {
     GetPropertyMap().SetProperty(kSplitterColorPickerPropertyName, color_picker);
     NeedRepaint();
 }
 
 
-void SplitControlSplitBar::ChangeMouseCursor(const Message& message, bool& is_changed) {
+void SplitBar::ChangeMouseCursor(const Message& message, bool& is_changed) {
 
     SetCursor(LoadCursor(nullptr, IsHorizontal() ? IDC_SIZENS : IDC_SIZEWE));
     is_changed = true;
 }
 
 
-bool SplitControlSplitBar::OnMouseMove(const Point& position, const MouseMessage& message) {
+bool SplitBar::OnMouseMove(const Point& position, const MouseMessage& message) {
 
     if (IsCapturingMouse()) {
 
-        SplitControlSplitBarDragInfo event_info;
-        event_info.split_bar = std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this());
+        SplitBarDragInfo event_info;
+        event_info.split_bar = std::dynamic_pointer_cast<SplitBar>(shared_from_this());
         drag_event_.GetObserver().OnNext(event_info);
     }
     return true;
 }
 
 
-bool SplitControlSplitBar::OnMouseDown(const Point& position, const MouseMessage& message) {
+bool SplitBar::OnMouseDown(const Point& position, const MouseMessage& message) {
 
     if (message.MouseButton() == MouseButton::Left) {
         CaptureMouse();
@@ -527,7 +535,7 @@ bool SplitControlSplitBar::OnMouseDown(const Point& position, const MouseMessage
 }
 
 
-bool SplitControlSplitBar::OnMouseUp(const Point& position, const MouseMessage& message) {
+bool SplitBar::OnMouseUp(const Point& position, const MouseMessage& message) {
 
     if (IsCapturingMouse()) {
         ReleaseMouse();
@@ -536,18 +544,18 @@ bool SplitControlSplitBar::OnMouseUp(const Point& position, const MouseMessage& 
 }
 
 
-void SplitControlSplitBar::OnMouseCapture() {
+void SplitBar::OnMouseCapture() {
 
-    SplitControlSplitBarBeginDragInfo event_info;
-    event_info.split_bar = std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this());
+    SplitBarBeginDragInfo event_info;
+    event_info.split_bar = std::dynamic_pointer_cast<SplitBar>(shared_from_this());
     begin_drag_event_.GetObserver().OnNext(event_info);
 }
 
 
-void SplitControlSplitBar::OnMouseRelease() {
+void SplitBar::OnMouseRelease() {
 
-    SplitControlSplitBarEndDragInfo event_info;
-    event_info.split_bar = std::dynamic_pointer_cast<SplitControlSplitBar>(shared_from_this());
+    SplitBarEndDragInfo event_info;
+    event_info.split_bar = std::dynamic_pointer_cast<SplitBar>(shared_from_this());
     end_drag_event_.GetObserver().OnNext(event_info);
 }
 

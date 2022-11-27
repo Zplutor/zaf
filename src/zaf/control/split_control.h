@@ -7,11 +7,11 @@
 
 namespace zaf {
 
-class SplitControlSplitBar;
-class SplitControlSplitBarBeginDragInfo;
-class SplitControlSplitBarDistanceChangeInfo;
-class SplitControlSplitBarDragInfo;
-class SplitControlSplitBarEndDragInfo;
+class SplitBar;
+class SplitBarBeginDragInfo;
+class SplitBarDragInfo;
+class SplitBarEndDragInfo;
+class SplitControlSplitDistanceChangeInfo;
 
 class SplitControl : public Control {
 public:
@@ -24,11 +24,11 @@ public:
     bool IsHorizontalSplit() const;
     void SetIsHorizontalSplit(bool is_horizontal);
 
-    float GetSplitBarThickness() const;
+    float SplitBarThickness() const;
     void SetSplitBarThickness(float thickness);
 
-    float GetSplitBarDistance() const;
-    void SetSplitBarDistance(float distance);
+    float SplitDistance() const;
+    void SetSplitDistance(float distance);
 
     float GetMinSplitBarDistance() const;
     void SetMinSplitBarDistance(float distance);
@@ -39,21 +39,21 @@ public:
     bool IsSplitBarDistanceFlipped() const;
     void SetIsSplitBarDistanceFlipped(bool is_flipped);
 
-    Observable<SplitControlSplitBarDistanceChangeInfo> SplitBarDistanceChangeEvent();
+    Observable<SplitControlSplitDistanceChangeInfo> SplitBarDistanceChangeEvent();
 
-    const std::shared_ptr<SplitControlSplitBar>& GetSplitBar() const {
+    const std::shared_ptr<zaf::SplitBar>& SplitBar() const {
         return split_bar_;
     }
 
-    void SetSplitBar(const std::shared_ptr<SplitControlSplitBar>& split_bar);
+    void SetSplitBar(const std::shared_ptr<zaf::SplitBar>& split_bar);
 
-    const std::shared_ptr<Control>& GetFirstPane() const {
+    const std::shared_ptr<Control>& FirstPane() const {
         return first_pane_;
     }
 
     void SetFirstPane(const std::shared_ptr<Control>& pane);
 
-    const std::shared_ptr<Control>& GetSecondPane() const {
+    const std::shared_ptr<Control>& SecondPane() const {
         return second_pane_;
     }
 
@@ -64,7 +64,7 @@ protected:
     void Layout(const zaf::Rect& previous_rect) override;
     void OnRectChanged(const zaf::Rect& previous_rect) override;
 
-    virtual void SplitBarChange(const std::shared_ptr<SplitControlSplitBar>& previous_split_bar) { }
+    virtual void SplitBarChange(const std::shared_ptr<zaf::SplitBar>& previous_split_bar) { }
     virtual void FirstPaneChange(const std::shared_ptr<Control>& previous_pane) { }
     virtual void SecondPaneChange(const std::shared_ptr<Control>& previous_pane) { }
 
@@ -88,7 +88,7 @@ private:
     float GetSplitBarDragPosition() const;
 
 private:
-    std::shared_ptr<SplitControlSplitBar> split_bar_;
+    std::shared_ptr<zaf::SplitBar> split_bar_;
     std::shared_ptr<Control> first_pane_;
     std::shared_ptr<Control> second_pane_;
 
@@ -104,9 +104,9 @@ private:
 };
 
 
-class SplitControlSplitBarDistanceChangeInfo {
+class SplitControlSplitDistanceChangeInfo {
 public:
-    SplitControlSplitBarDistanceChangeInfo(
+    SplitControlSplitDistanceChangeInfo(
         const std::shared_ptr<SplitControl>& split_control,
         float previous_distance)
         : 
@@ -129,12 +129,12 @@ private:
 };
 
 
-class SplitControlSplitBar : public Control {
+class SplitBar : public Control {
 public:
     ZAF_DECLARE_TYPE
 
 public:
-    SplitControlSplitBar();
+    SplitBar();
 
     bool IsHorizontal() const {
         return is_horizontal_;
@@ -144,26 +144,26 @@ public:
         is_horizontal_ = is_horizontal;
     }
 
-    ColorPicker GetSplitterColorPicker() const;
+    ColorPicker SplitterColorPicker() const;
     void SetSplitterColorPicker(const ColorPicker& color_picker);
 
-    Color GetSplitterColor() const {
-        return GetSplitterColorPicker()(*this);
+    Color SplitterColor() const {
+        return SplitterColorPicker()(*this);
     }
 
     void SetSplitterColor(const Color& color) {
         SetSplitterColorPicker([color](const Control&) { return color; });
     }
 
-    Observable<SplitControlSplitBarBeginDragInfo> BeginDragEvent() {
+    Observable<SplitBarBeginDragInfo> BeginDragEvent() {
         return begin_drag_event_.GetObservable();
     }
 
-    Observable<SplitControlSplitBarDragInfo> DragEvent() {
+    Observable<SplitBarDragInfo> DragEvent() {
         return drag_event_.GetObservable();
     }
 
-    Observable<SplitControlSplitBarEndDragInfo> EndDragEvent() {
+    Observable<SplitBarEndDragInfo> EndDragEvent() {
         return end_drag_event_.GetObservable();
     }
 
@@ -180,25 +180,25 @@ protected:
 private:
     bool is_horizontal_ = false;
 
-    Subject<SplitControlSplitBarBeginDragInfo> begin_drag_event_;
-    Subject<SplitControlSplitBarDragInfo> drag_event_;
-    Subject<SplitControlSplitBarEndDragInfo> end_drag_event_;
+    Subject<SplitBarBeginDragInfo> begin_drag_event_;
+    Subject<SplitBarDragInfo> drag_event_;
+    Subject<SplitBarEndDragInfo> end_drag_event_;
 };
 
 
-class SplitControlSplitBarBeginDragInfo {
+class SplitBarBeginDragInfo {
 public:
-    std::shared_ptr<SplitControlSplitBar> split_bar;
+    std::shared_ptr<SplitBar> split_bar;
 };
 
-class SplitControlSplitBarDragInfo {
+class SplitBarDragInfo {
 public:
-    std::shared_ptr<SplitControlSplitBar> split_bar;
+    std::shared_ptr<SplitBar> split_bar;
 };
 
-class SplitControlSplitBarEndDragInfo {
+class SplitBarEndDragInfo {
 public:
-    std::shared_ptr<SplitControlSplitBar> split_bar;
+    std::shared_ptr<SplitBar> split_bar;
 };
 
 }

@@ -115,7 +115,7 @@ void Item::InitializeSplitControl() {
     split_control_->SetFirstPane(name_label_);
     split_control_->SetSecondPane(value_view_);
 
-    split_control_->GetSplitBar()->SetSplitterColorPicker([](const Control& control) {
+    split_control_->SplitBar()->SetSplitterColorPicker([](const Control& control) {
     
         if (control.IsSelected()) {
             return Color::FromRGB(zaf::internal::ControlSelectedColorRGB);
@@ -124,7 +124,7 @@ void Item::InitializeSplitControl() {
     }); 
 
     Subscriptions() += split_control_->SplitBarDistanceChangeEvent().Subscribe(
-        [this](const SplitControlSplitBarDistanceChangeInfo& event_info) {
+        [this](const SplitControlSplitDistanceChangeInfo& event_info) {
 
         auto manager = split_distance_manager_.lock();
         if (manager) {
@@ -132,7 +132,7 @@ void Item::InitializeSplitControl() {
             SplitDistanceChangeInfo event_info;
             event_info.changing_item = As<Item>(shared_from_this());
             event_info.new_distance = 
-                this->GetTextRect().Left() + split_control_->GetSplitBarDistance();
+                this->GetTextRect().Left() + split_control_->SplitDistance();
 
             manager->DistanceChangeSubject().GetObserver().OnNext(event_info);
         }
@@ -145,7 +145,7 @@ void Item::InitializeSplitControl() {
 void Item::SetSplitDistance(float new_distance) {
 
     auto revised_distance = new_distance - this->GetTextRect().Left();
-    split_control_->SetSplitBarDistance(revised_distance);
+    split_control_->SetSplitDistance(revised_distance);
 }
 
 

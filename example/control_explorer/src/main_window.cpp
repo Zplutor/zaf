@@ -44,7 +44,7 @@ void MainWindow::Initialize() {
     root_control->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
 
     primary_split_control_ = zaf::Create<zaf::SplitControl>();
-    primary_split_control_->SetSplitBarDistance(200);
+    primary_split_control_->SetSplitDistance(200);
     primary_split_control_->SetMinSplitBarDistance(100);
     primary_split_control_->SetMaxSplitBarDistance(300);
     root_control->AddChild(primary_split_control_);
@@ -78,7 +78,7 @@ void MainWindow::InitializeControlExplorePanel() {
     control_property_panel_ = zaf::Create<ControlPropertyPanel>();
 
     secondly_split_control_ = zaf::Create<zaf::SplitControl>();
-    secondly_split_control_->SetSplitBarDistance(200);
+    secondly_split_control_->SetSplitDistance(200);
     secondly_split_control_->SetMinSplitBarDistance(200);
     secondly_split_control_->SetMaxSplitBarDistance(400);
     secondly_split_control_->SetIsHorizontalSplit(true);

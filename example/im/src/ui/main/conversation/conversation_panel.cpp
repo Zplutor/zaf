@@ -8,10 +8,10 @@ void ConversationPanel::Initialize() {
     conversation_avatar_manager_ = std::make_shared<ConversationAvatarManager>();
 
     SetIsHorizontalSplit(false);
-    SetSplitBarDistance(250);
+    SetSplitDistance(250);
     SetMinSplitBarDistance(250);
     SetMaxSplitBarDistance(300);
-    GetSplitBar()->SetSplitterColor(zaf::Color::FromRGB(0xD5DDE7));
+    SplitBar()->SetSplitterColor(zaf::Color::FromRGB(0xD5DDE7));
 
     InitializeLeftPane();
     InitializeRightPane();
@@ -20,7 +20,7 @@ void ConversationPanel::Initialize() {
 
 void ConversationPanel::InitializeLeftPane() {
 
-    const auto& left_pane = GetFirstPane();
+    const auto& left_pane = FirstPane();
     left_pane->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
     conversation_list_view_ = zaf::Create<ConversationListView>();
@@ -35,7 +35,7 @@ void ConversationPanel::InitializeLeftPane() {
 
 void ConversationPanel::InitializeRightPane() {
 
-    const auto& right_panel = GetSecondPane();
+    const auto& right_panel = SecondPane();
     right_panel->SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
 }
 
@@ -71,5 +71,5 @@ void ConversationPanel::InitializeConversationDetailView() {
     }
 
     conversation_detail_view_ = zaf::Create<ConversationDetailView>();
-    GetSecondPane()->AddChild(conversation_detail_view_);
+    SecondPane()->AddChild(conversation_detail_view_);
 }

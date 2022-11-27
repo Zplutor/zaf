@@ -48,7 +48,7 @@ std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateSplitBarThicknes
     auto split_control = GetSplitControl();
     return CreateFloatPropertyItem(
         L"Split bar thickness",
-        [split_control]() { return split_control->GetSplitBarThickness(); },
+        [split_control]() { return split_control->SplitBarThickness(); },
         [split_control](float value) { split_control->SetSplitBarThickness(value); });
 }
 
@@ -80,8 +80,8 @@ std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateSplitBarDistance
     auto split_control = GetSplitControl();
     return CreateFloatPropertyItem(
         L"Split bar distance",
-        [split_control]() { return split_control->GetSplitBarDistance(); },
-        [split_control](float value) { split_control->SetSplitBarDistance(value); },
+        [split_control]() { return split_control->SplitDistance(); },
+        [split_control](float value) { split_control->SetSplitDistance(value); },
         [split_control](const std::function<void()>& callback) {
 
             split_control->Subscriptions() +=

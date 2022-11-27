@@ -56,8 +56,8 @@ void InspectorWindow::InitializeSplitControl() {
 
     split_control_ = Create<SplitControl>();
     split_control_->SetIsHorizontalSplit(true);
-    split_control_->GetFirstPane()->SetLayouter(Create<VerticalLayouter>());
-    split_control_->GetSecondPane()->SetLayouter(Create<VerticalLayouter>());
+    split_control_->FirstPane()->SetLayouter(Create<VerticalLayouter>());
+    split_control_->SecondPane()->SetLayouter(Create<VerticalLayouter>());
 
     RootControl()->AddChild(split_control_);
 }
@@ -76,7 +76,7 @@ void InspectorWindow::InitializeToolbar() {
     toolbar->SetLayouter(Create<HorizontalLayouter>());
     toolbar->AddChild(select_button);
 
-    split_control_->GetFirstPane()->AddChild(toolbar);
+    split_control_->FirstPane()->AddChild(toolbar);
 }
 
 
@@ -105,7 +105,7 @@ void InspectorWindow::InitializeTreeControl() {
         }
     }));
 
-    split_control_->GetFirstPane()->AddChild(tree_control_);
+    split_control_->FirstPane()->AddChild(tree_control_);
 }
 
 
@@ -115,7 +115,7 @@ void InspectorWindow::InitializePropertyGrid() {
     property_grid_->SetBorder(zaf::Frame{});
     property_grid_->SetAutoHideScrollBars(true);
 
-    split_control_->GetSecondPane()->AddChild(property_grid_);
+    split_control_->SecondPane()->AddChild(property_grid_);
 }
 
 
