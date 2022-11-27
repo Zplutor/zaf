@@ -8,17 +8,13 @@
 #include <zaf/serialization/properties.h>
 #include <zaf/window/message/mouse_message.h>
 
-#ifdef min
 #undef min
-#endif
+#undef max
 
 namespace zaf {
 namespace {
 
-const wchar_t* const kIsHorizontalSplitPropertyName = L"IsHorizontalSplit";
-const wchar_t* const kIsSplitBarDistanceFlippedPropertyName = L"IsSplitBarDistanceFlipped";
 const wchar_t* const kSplitBarDistanceChangeEventPropertyName = L"SplitBarDistanceChangeEvent";
-const wchar_t* const kSplitBarThicknessPropertyName = L"SplitBarThickness";
 const wchar_t* const kSplitterColorPickerPropertyName = L"SplitterColorPicker";
 
 }
@@ -28,6 +24,10 @@ ZAF_DEFINE_TYPE(SplitControl)
 ZAF_DEFINE_TYPE_PROPERTY(IsHorizontalSplit)
 ZAF_DEFINE_TYPE_PROPERTY(SplitBarThickness)
 ZAF_DEFINE_TYPE_PROPERTY(SplitDistance)
+ZAF_DEFINE_TYPE_PROPERTY(FirstPaneMinLength)
+ZAF_DEFINE_TYPE_PROPERTY(FirstPaneMaxLength)
+ZAF_DEFINE_TYPE_PROPERTY(SecondPaneMinLength)
+ZAF_DEFINE_TYPE_PROPERTY(SecondPaneMaxLength)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(SplitBar)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(FirstPane)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(SecondPane)
@@ -95,37 +95,38 @@ void SplitControl::UninitializeSplitBar() {
 
 void SplitControl::Layout(const zaf::Rect& previous_rect) {
 
-    bool is_horizontal = IsHorizontalSplit();
-
     auto content_size = ContentSize();
-    float primary_length = content_size.width;
-    float secondly_length = content_size.height;
-    if (is_horizontal) {
-        std::swap(primary_length, secondly_length);
+    if (IsHorizontalSplit()) {
+        std::swap(content_size.width, content_size.height);
     }
 
-    float split_bar_thickness = SplitBarThickness();
-    float split_bar_distance = GetUnflippedSplitBarDistance();
+    zaf::Rect split_bar_rect(actual_split_distance_, 0, SplitBarThickness(), content_size.height);
 
-    zaf::Rect split_bar_rect(
-        split_bar_distance, 
-        0,
-        split_bar_thickness, 
-        secondly_length);
-    
+    auto first_pane_margin = FirstPane()->Margin();
+    if (IsHorizontalSplit()) {
+        std::swap(first_pane_margin.left, first_pane_margin.top);
+        std::swap(first_pane_margin.right, first_pane_margin.bottom);
+    }
+
     zaf::Rect first_pane_rect(
-        0, 
-        0,
-        split_bar_distance,
-        secondly_length);
+        first_pane_margin.left,
+        first_pane_margin.top,
+        actual_split_distance_ - first_pane_margin.Width(),
+        content_size.height - first_pane_margin.Height());
+    
+    auto second_pane_margin = SecondPane()->Margin();
+    if (IsHorizontalSplit()) {
+        std::swap(second_pane_margin.left, second_pane_margin.top);
+        std::swap(second_pane_margin.right, second_pane_margin.bottom);
+    }
 
     zaf::Rect second_pane_rect(
-        split_bar_distance + split_bar_thickness,
-        0,
-        primary_length - split_bar_distance - split_bar_thickness,
-        secondly_length);
+        split_bar_rect.Right() + second_pane_margin.left,
+        second_pane_margin.top,
+        content_size.width - split_bar_rect.Right() - second_pane_margin.Width(),
+        content_size.height - second_pane_margin.Height());
 
-    if (is_horizontal) {
+    if (IsHorizontalSplit()) {
         std::swap(split_bar_rect.position.x, split_bar_rect.position.y);
         std::swap(split_bar_rect.size.width, split_bar_rect.size.height);
         std::swap(first_pane_rect.position.x, first_pane_rect.position.y);
@@ -144,222 +145,122 @@ void SplitControl::OnRectChanged(const zaf::Rect& previous_rect) {
 
     __super::OnRectChanged(previous_rect);
 
-    if (previous_rect.size != Size()) {
-        UpdateActualSplitBarDistance();
-    }
-}
-
-
-void SplitControl::UpdateActualSplitBarDistance() {
-
-    float distance = 0;
-    if (expected_split_bar_distance_.has_value()) {
-        distance = *expected_split_bar_distance_;
-    }
-    else {
-        auto content_size = ContentSize();
-        distance = (IsHorizontalSplit() ? content_size.height : content_size.width) / 2;
-    }
-
-    distance = (std::max)(distance, GetMinSplitBarDistance());
-    distance = std::min(distance, GetMaxSplitBarDistance());
-
-    if (distance != actual_split_bar_distance_) {
-
-        auto previous_distance = actual_split_bar_distance_;
-        actual_split_bar_distance_ = distance;
-
-        //Raise the event.
-        auto event_observer = GetEventObserver<SplitControlSplitDistanceChangeInfo>(
-            GetPropertyMap(),
-            kSplitBarDistanceChangeEventPropertyName);
-
-        if (event_observer) {
-            SplitControlSplitDistanceChangeInfo event_info(
-                std::dynamic_pointer_cast<SplitControl>(shared_from_this()),
-                previous_distance);
-            event_observer->OnNext(event_info);
+    if (IsHorizontalSplit()) {
+        if (previous_rect.size.height == Height()) {
+            return;
         }
     }
+    else {
+        if (previous_rect.size.width == Width()) {
+            return;
+        }
+    }
+
+    if (UpdateActualSplitDistance()) {
+        NeedRelayout();
+    }
 }
 
 
-bool SplitControl::IsHorizontalSplit() const {
+bool SplitControl::UpdateActualSplitDistance() {
 
-    auto is_horizontal = GetPropertyMap().TryGetProperty<bool>(kIsHorizontalSplitPropertyName);
-    if (is_horizontal != nullptr) {
-        return *is_horizontal;
+    float total_length{};
+    float min_distance{};
+    float max_distance{};
+    GetSplitDistanceLimit(total_length, min_distance, max_distance);
+
+    float distance = 0;
+    if (expected_split_distance_.has_value()) {
+        distance = *expected_split_distance_;
     }
     else {
+        distance = (total_length - SplitBarThickness()) / 2;
+    }
+
+    distance = std::max(distance, min_distance);
+    distance = std::min(distance, max_distance);
+
+    if (distance == actual_split_distance_) {
         return false;
     }
+
+    auto previous_distance = actual_split_distance_;
+    actual_split_distance_ = distance;
+
+    //Raise the event.
+    auto event_observer = GetEventObserver<SplitControlSplitDistanceChangeInfo>(
+        GetPropertyMap(),
+        kSplitBarDistanceChangeEventPropertyName);
+
+    if (event_observer) {
+        event_observer->OnNext(SplitControlSplitDistanceChangeInfo{
+            As<SplitControl>(shared_from_this()),
+            previous_distance
+        });
+    }
+
+    return true;
 }
+
+
+void SplitControl::GetSplitDistanceLimit(float& total_length, float& min, float& max) const {
+
+    auto content_size = ContentSize();
+    total_length = IsHorizontalSplit() ? content_size.height : content_size.width;
+
+    //Revise min max within total length.
+    float first_pane_max = 
+        std::min(first_pane_max_length_, std::max(total_length - SplitBarThickness(), 0.f));
+
+    float second_pane_flipped_max = 
+        std::max(total_length - SplitBarThickness() - second_pane_min_length_, 0.f);
+
+    float second_pane_flipped_min = 
+        std::max(total_length - SplitBarThickness() - second_pane_max_length_, 0.f);
+
+    min = std::max(first_pane_min_length_, second_pane_flipped_min);
+    max = std::min(first_pane_max, second_pane_flipped_max);
+}
+
 
 void SplitControl::SetIsHorizontalSplit(bool is_horizontal) {
 
-    GetPropertyMap().SetProperty(kIsHorizontalSplitPropertyName, is_horizontal);
+    if (is_horizontal_split_ == is_horizontal) {
+        return;
+    }
+
+    is_horizontal_split_ = is_horizontal;
     split_bar_->SetIsHorizontal(is_horizontal);
+
+    UpdateActualSplitDistance();
     NeedRelayout();
 }
 
-
-float SplitControl::SplitBarThickness() const {
-
-    auto thickness = GetPropertyMap().TryGetProperty<float>(kSplitBarThicknessPropertyName);
-    if (thickness != nullptr) {
-        return *thickness;
-    }
-    else {
-        return 3;
-    }
-}
 
 void SplitControl::SetSplitBarThickness(float thickness) {
 
-    GetPropertyMap().SetProperty(kSplitBarThicknessPropertyName, thickness);
+    if (split_bar_thickness_ == thickness) {
+        return;
+    }
+
+    split_bar_thickness_ = thickness;
+    UpdateActualSplitDistance();
     NeedRelayout();
 }
 
-
-float SplitControl::SplitDistance() const {
-    return actual_split_bar_distance_;
-}
 
 void SplitControl::SetSplitDistance(float expected_distance) {
 
-    if (expected_split_bar_distance_.has_value() &&
-        expected_split_bar_distance_.value() == expected_distance) {
+    if (expected_split_distance_.has_value() &&
+        expected_split_distance_.value() == expected_distance) {
         return;
     }
 
-    //Revise the distance
-    float revised_distance = expected_distance;
-    if (expected_split_bar_min_distance_.has_value()) {
-        revised_distance = (std::max)(revised_distance, expected_split_bar_min_distance_.value());
+    expected_split_distance_ = expected_distance;
+
+    if (UpdateActualSplitDistance()) {
+        NeedRelayout();
     }
-    if (expected_split_bar_max_distance_.has_value()) {
-        revised_distance = std::min(revised_distance, expected_split_bar_max_distance_.value());
-    }
-
-    expected_split_bar_distance_ = revised_distance;
-
-    UpdateActualSplitBarDistance();
-    NeedRelayout();
-}
-
-
-float SplitControl::GetMinSplitBarDistance() const {
-
-    float avaliable_max_size = GetAvaliableSplitBarMaxDistance();
-
-    if (expected_split_bar_min_distance_.has_value()) {
-        return std::min(expected_split_bar_min_distance_.value(), avaliable_max_size);
-    }
-    else {
-        return 0;
-    }
-}
-
-void SplitControl::SetMinSplitBarDistance(float min_distance) {
-
-    if (expected_split_bar_min_distance_.has_value() &&
-        expected_split_bar_min_distance_.value() == min_distance) {
-        return;
-    }
-
-    expected_split_bar_min_distance_ = (std::max)(min_distance, 0.f);
-
-    //Revise the max distance.
-    if (expected_split_bar_max_distance_.has_value() &&
-        expected_split_bar_max_distance_.value() < min_distance) {
-        expected_split_bar_max_distance_ = min_distance;
-    }
-
-    //Revise the distance.
-    if (expected_split_bar_distance_.has_value() &&
-        expected_split_bar_distance_.value() < min_distance) {
-        expected_split_bar_distance_ = min_distance;
-    }
-
-    UpdateActualSplitBarDistance();
-    NeedRelayout();
-}
-
-
-float SplitControl::GetMaxSplitBarDistance() const {
-
-    float avaliable_max_distance = GetAvaliableSplitBarMaxDistance();
-
-    if (expected_split_bar_max_distance_.has_value()) {
-        return std::min(expected_split_bar_max_distance_.value(), avaliable_max_distance);
-    }
-    else {
-        return avaliable_max_distance;
-    }
-}
-
-void SplitControl::SetMaxSplitBarDistance(float max_distance) {
-
-    if (expected_split_bar_max_distance_.has_value() &&
-        expected_split_bar_max_distance_.value() == max_distance) {
-        return;
-    }
-
-    expected_split_bar_max_distance_ = (std::max)(max_distance, 0.f);
-
-    //Revised the min distance.
-    if (expected_split_bar_min_distance_.has_value() &&
-        expected_split_bar_min_distance_.value() > max_distance) {
-        expected_split_bar_min_distance_ = max_distance;
-    }
-
-    //Revised the distance.
-    if (expected_split_bar_distance_.has_value() &&
-        expected_split_bar_distance_.value() > max_distance) {
-        expected_split_bar_distance_ = max_distance;
-    }
-
-    UpdateActualSplitBarDistance();
-    NeedRelayout();
-}
-
-
-bool SplitControl::IsSplitBarDistanceFlipped() const {
-
-    auto is_flipped = GetPropertyMap().TryGetProperty<bool>(kIsSplitBarDistanceFlippedPropertyName);
-    if (is_flipped != nullptr) {
-        return *is_flipped;
-    }
-
-    return false;
-}
-
-void SplitControl::SetIsSplitBarDistanceFlipped(bool is_flipped) {
-
-    GetPropertyMap().SetProperty(kIsSplitBarDistanceFlippedPropertyName, is_flipped);
-    NeedRelayout();
-}
-
-
-float SplitControl::GetAvaliableSplitBarMaxDistance() const {
-
-    auto content_size = ContentSize();
-    float avaliable_max_distance = (IsHorizontalSplit() ? content_size.height : content_size.width) - SplitBarThickness();
-    return (std::max)(avaliable_max_distance, 0.f);
-}
-
-
-float SplitControl::GetUnflippedSplitBarDistance() const {
-
-    auto distance = SplitDistance();
-    bool is_flipped = IsSplitBarDistanceFlipped();
-
-    if (is_flipped) {
-        auto content_size = ContentSize();
-        distance = (IsHorizontalSplit() ? content_size.height : content_size.width) - SplitBarThickness() - distance;
-    }
-
-    return distance;
 }
 
 
@@ -385,17 +286,23 @@ void SplitControl::SetSplitBar(const std::shared_ptr<zaf::SplitBar>& split_bar) 
         InitializeSplitBar();
     }
 
-    SplitBarChange(previous_split_bar);
+    OnSplitBarChanged(previous_split_bar);
 }
 
 
 void SplitControl::SetFirstPane(const std::shared_ptr<Control>& pane) {
-    SetPane(first_pane_, pane, std::bind(&SplitControl::FirstPaneChange, this, std::placeholders::_1));
+    SetPane(
+        first_pane_, 
+        pane, 
+        std::bind(&SplitControl::OnFirstPaneChanged, this, std::placeholders::_1));
 }
 
 
 void SplitControl::SetSecondPane(const std::shared_ptr<Control>& pane) {
-    SetPane(second_pane_, pane, std::bind(&SplitControl::SecondPaneChange, this, std::placeholders::_1));
+    SetPane(
+        second_pane_, 
+        pane, 
+        std::bind(&SplitControl::OnSecondPaneChanged, this, std::placeholders::_1));
 }
 
 
@@ -421,6 +328,50 @@ void SplitControl::SetPane(
 }
 
 
+void SplitControl::SetFirstPaneMinLength(float length) {
+    SetPaneLimitLength(length, true, first_pane_min_length_, first_pane_max_length_);
+}
+
+
+void SplitControl::SetFirstPaneMaxLength(float length) {
+    SetPaneLimitLength(length, false, first_pane_min_length_, first_pane_max_length_);
+}
+
+
+void SplitControl::SetSecondPaneMinLength(float length) {
+    SetPaneLimitLength(length, true, second_pane_min_length_, second_pane_max_length_);
+}
+
+
+void SplitControl::SetSecondPaneMaxLength(float length) {
+    SetPaneLimitLength(length, false, second_pane_min_length_, second_pane_max_length_);
+}
+
+
+void SplitControl::SetPaneLimitLength(
+    float new_length, 
+    bool is_setting_min, 
+    float& min,
+    float& max) {
+
+    float& setting_value = is_setting_min ? min : max;
+    if (setting_value == new_length) {
+        return;
+    }
+
+    setting_value = new_length;
+
+    float& other_value = is_setting_min ? max : min;
+    if (min > max) {
+        other_value = setting_value;
+    }
+
+    if (UpdateActualSplitDistance()) {
+        NeedRelayout();
+    }
+}
+
+
 void SplitControl::SplitBarBeginDrag() {
     split_bar_begin_drag_mouse_position_ = GetSplitBarDragPosition();
     split_bar_begin_drag_distance_ = SplitDistance();
@@ -431,9 +382,6 @@ void SplitControl::SplitBarDrag() {
 
     float mouse_position = GetSplitBarDragPosition();
     float difference = mouse_position - split_bar_begin_drag_mouse_position_;
-    if (IsSplitBarDistanceFlipped()) {
-        difference *= -1;
-    }
     float new_distance = split_bar_begin_drag_distance_ + difference;
     SetSplitDistance(new_distance); 
 }

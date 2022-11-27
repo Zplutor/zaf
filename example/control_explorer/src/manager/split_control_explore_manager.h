@@ -15,8 +15,5 @@ private:
 
     std::shared_ptr<PropertyItem> CreateSplitBarThicknessPropertyItem();
     std::shared_ptr<PropertyItem> CreateIsHorizontalSplitPropertyItem();
-    std::shared_ptr<PropertyItem> CreateIsSplitBarDistanceFlippedPropertyItem();
     std::shared_ptr<PropertyItem> CreateSplitBarDistancePropertyItem();
-    std::shared_ptr<PropertyItem> CreateMinimumSplitBarDistancePropertyItem();
-    std::shared_ptr<PropertyItem> CreateMaximumSplitBarDistancePropertyItem();
 };

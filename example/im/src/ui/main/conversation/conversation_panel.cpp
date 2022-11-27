@@ -9,8 +9,8 @@ void ConversationPanel::Initialize() {
 
     SetIsHorizontalSplit(false);
     SetSplitDistance(250);
-    SetMinSplitBarDistance(250);
-    SetMaxSplitBarDistance(300);
+    SetFirstPaneMinLength(250);
+    SetFirstPaneMaxLength(300);
     SplitBar()->SetSplitterColor(zaf::Color::FromRGB(0xD5DDE7));
 
     InitializeLeftPane();

@@ -21,23 +21,23 @@ public:
     SplitControl();
     ~SplitControl();
 
-    bool IsHorizontalSplit() const;
+    bool IsHorizontalSplit() const {
+        return is_horizontal_split_;
+    }
+
     void SetIsHorizontalSplit(bool is_horizontal);
 
-    float SplitBarThickness() const;
+    float SplitBarThickness() const {
+        return split_bar_thickness_;
+    }
+
     void SetSplitBarThickness(float thickness);
 
-    float SplitDistance() const;
+    float SplitDistance() const {
+        return actual_split_distance_;
+    }
+
     void SetSplitDistance(float distance);
-
-    float GetMinSplitBarDistance() const;
-    void SetMinSplitBarDistance(float distance);
-
-    float GetMaxSplitBarDistance() const;
-    void SetMaxSplitBarDistance(float distance);
-
-    bool IsSplitBarDistanceFlipped() const;
-    void SetIsSplitBarDistanceFlipped(bool is_flipped);
 
     Observable<SplitControlSplitDistanceChangeInfo> SplitBarDistanceChangeEvent();
 
@@ -59,28 +59,52 @@ public:
 
     void SetSecondPane(const std::shared_ptr<Control>& pane);
 
+    float FirstPaneMinLength() const {
+        return first_pane_min_length_;
+    }
+
+    void SetFirstPaneMinLength(float length);
+
+    float FirstPaneMaxLength() const {
+        return first_pane_max_length_;
+    }
+
+    void SetFirstPaneMaxLength(float length);
+
+    float SecondPaneMinLength() const {
+        return second_pane_min_length_;
+    }
+
+    void SetSecondPaneMinLength(float length);
+
+    float SecondPaneMaxLength() const {
+        return second_pane_max_length_;
+    }
+
+    void SetSecondPaneMaxLength(float length);
+
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect& previous_rect) override;
     void OnRectChanged(const zaf::Rect& previous_rect) override;
 
-    virtual void SplitBarChange(const std::shared_ptr<zaf::SplitBar>& previous_split_bar) { }
-    virtual void FirstPaneChange(const std::shared_ptr<Control>& previous_pane) { }
-    virtual void SecondPaneChange(const std::shared_ptr<Control>& previous_pane) { }
+    virtual void OnSplitBarChanged(const std::shared_ptr<zaf::SplitBar>& previous_split_bar) { }
+    virtual void OnFirstPaneChanged(const std::shared_ptr<Control>& previous_pane) { }
+    virtual void OnSecondPaneChanged(const std::shared_ptr<Control>& previous_pane) { }
 
 private:
     void InitializeSplitBar();
     void UninitializeSplitBar();
 
-    void UpdateActualSplitBarDistance();
-
-    float GetAvaliableSplitBarMaxDistance() const;
-    float GetUnflippedSplitBarDistance() const;
+    bool UpdateActualSplitDistance();
+    void GetSplitDistanceLimit(float& total_length, float& min, float& max) const;
 
     void SetPane(
         std::shared_ptr<Control>& pane,
         const std::shared_ptr<Control>& new_pane, 
         const std::function<void(const std::shared_ptr<Control>&)>& notification);
+
+    void SetPaneLimitLength(float new_length, bool is_setting_min, float& min, float& max);
 
     void SplitBarBeginDrag();
     void SplitBarDrag();
@@ -94,10 +118,14 @@ private:
 
     zaf::SubscriptionHolder split_bar_subscriptions_;
 
-    float actual_split_bar_distance_ = 0;
-    std::optional<float> expected_split_bar_distance_;
-    std::optional<float> expected_split_bar_min_distance_;
-    std::optional<float> expected_split_bar_max_distance_;
+    bool is_horizontal_split_{};
+    float split_bar_thickness_{ 3.f };
+    float first_pane_min_length_{};
+    float first_pane_max_length_{ (std::numeric_limits<float>::max)() };
+    float second_pane_min_length_{};
+    float second_pane_max_length_{ (std::numeric_limits<float>::max)() };
+    float actual_split_distance_ = 0;
+    std::optional<float> expected_split_distance_;
 
     float split_bar_begin_drag_mouse_position_ = 0;
     float split_bar_begin_drag_distance_ = 0;

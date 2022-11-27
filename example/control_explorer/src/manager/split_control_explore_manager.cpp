@@ -35,10 +35,7 @@ void SplitControlExploreManager::CreatePropertyItems(std::vector<std::shared_ptr
     items.insert(items.end(), {
         CreateSplitBarThicknessPropertyItem(),
         CreateIsHorizontalSplitPropertyItem(),
-        CreateIsSplitBarDistanceFlippedPropertyItem(),
         CreateSplitBarDistancePropertyItem(),
-        CreateMinimumSplitBarDistancePropertyItem(),
-        CreateMaximumSplitBarDistancePropertyItem(),
     });
 }
 
@@ -64,17 +61,6 @@ std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateIsHorizontalSpli
 }
 
 
-std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateIsSplitBarDistanceFlippedPropertyItem() {
-
-    auto split_control = GetSplitControl();
-    return CreateCheckBoxPropertyItem(
-        L"Is split bar distance flipped",
-        [split_control]() { return split_control->IsSplitBarDistanceFlipped(); },
-        [split_control](bool value) { split_control->SetIsSplitBarDistanceFlipped(value); },
-        nullptr);
-}
-
-
 std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateSplitBarDistancePropertyItem() {
 
     auto split_control = GetSplitControl();
@@ -90,31 +76,3 @@ std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateSplitBarDistance
 }
 
 
-std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateMinimumSplitBarDistancePropertyItem() {
-
-    auto split_control = GetSplitControl();
-    return CreateFloatPropertyItem(
-        L"Minimum split bar distance",
-        [split_control]() { return split_control->GetMinSplitBarDistance(); },
-        [split_control](float value) { split_control->SetMinSplitBarDistance(value); },
-        [split_control](const std::function<void()>& callback) {
-
-            split_control->Subscriptions() +=
-                split_control->SplitBarDistanceChangeEvent().Subscribe(std::bind(callback));
-        });
-}
-
-
-std::shared_ptr<PropertyItem> SplitControlExploreManager::CreateMaximumSplitBarDistancePropertyItem() {
-
-    auto split_control = GetSplitControl();
-    return CreateFloatPropertyItem(
-        L"Maximum split bar distance",
-        [split_control]() { return split_control->GetMaxSplitBarDistance(); },
-        [split_control](float value) { split_control->SetMaxSplitBarDistance(value); },
-        [split_control](const std::function<void()>& callback) {
-
-            split_control->Subscriptions() +=
-                split_control->SplitBarDistanceChangeEvent().Subscribe(std::bind(callback));
-        });
-}
