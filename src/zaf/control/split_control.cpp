@@ -156,13 +156,13 @@ void SplitControl::OnRectChanged(const zaf::Rect& previous_rect) {
         }
     }
 
-    if (UpdateActualSplitDistance()) {
+    if (UpdateActualSplitDistance(false)) {
         NeedRelayout();
     }
 }
 
 
-bool SplitControl::UpdateActualSplitDistance() {
+bool SplitControl::UpdateActualSplitDistance(bool is_by_dragging) {
 
     float total_length{};
     float min_distance{};
@@ -188,14 +188,15 @@ bool SplitControl::UpdateActualSplitDistance() {
     actual_split_distance_ = distance;
 
     //Raise the event.
-    auto event_observer = GetEventObserver<SplitControlSplitDistanceChangeInfo>(
+    auto event_observer = GetEventObserver<SplitControlSplitDistanceChangedInfo>(
         GetPropertyMap(),
         kSplitBarDistanceChangeEventPropertyName);
 
     if (event_observer) {
-        event_observer->OnNext(SplitControlSplitDistanceChangeInfo{
+        event_observer->OnNext(SplitControlSplitDistanceChangedInfo{
             As<SplitControl>(shared_from_this()),
-            previous_distance
+            previous_distance,
+            is_by_dragging
         });
     }
 
@@ -232,7 +233,7 @@ void SplitControl::SetIsHorizontalSplit(bool is_horizontal) {
     is_horizontal_split_ = is_horizontal;
     split_bar_->SetIsHorizontal(is_horizontal);
 
-    UpdateActualSplitDistance();
+    UpdateActualSplitDistance(false);
     NeedRelayout();
 }
 
@@ -244,28 +245,33 @@ void SplitControl::SetSplitBarThickness(float thickness) {
     }
 
     split_bar_thickness_ = thickness;
-    UpdateActualSplitDistance();
+    UpdateActualSplitDistance(false);
     NeedRelayout();
 }
 
 
 void SplitControl::SetSplitDistance(float expected_distance) {
+    InnerSetSplitDistance(expected_distance, false);
+}
+
+
+void SplitControl::InnerSetSplitDistance(float distance, bool is_by_dragging) {
 
     if (expected_split_distance_.has_value() &&
-        expected_split_distance_.value() == expected_distance) {
+        expected_split_distance_.value() == distance) {
         return;
     }
 
-    expected_split_distance_ = expected_distance;
+    expected_split_distance_ = distance;
 
-    if (UpdateActualSplitDistance()) {
+    if (UpdateActualSplitDistance(is_by_dragging)) {
         NeedRelayout();
     }
 }
 
 
-Observable<SplitControlSplitDistanceChangeInfo> SplitControl::SplitBarDistanceChangeEvent() {
-    return GetEventObservable<SplitControlSplitDistanceChangeInfo>(
+Observable<SplitControlSplitDistanceChangedInfo> SplitControl::SplitBarDistanceChangeEvent() {
+    return GetEventObservable<SplitControlSplitDistanceChangedInfo>(
         GetPropertyMap(),
         kSplitBarDistanceChangeEventPropertyName);
 }
@@ -366,7 +372,7 @@ void SplitControl::SetPaneLimitLength(
         other_value = setting_value;
     }
 
-    if (UpdateActualSplitDistance()) {
+    if (UpdateActualSplitDistance(false)) {
         NeedRelayout();
     }
 }
@@ -383,7 +389,7 @@ void SplitControl::SplitBarDrag() {
     float mouse_position = GetSplitBarDragPosition();
     float difference = mouse_position - split_bar_begin_drag_mouse_position_;
     float new_distance = split_bar_begin_drag_distance_ + difference;
-    SetSplitDistance(new_distance); 
+    InnerSetSplitDistance(new_distance, true); 
 }
 
 

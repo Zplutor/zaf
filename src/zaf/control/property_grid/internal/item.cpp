@@ -132,7 +132,7 @@ void Item::InitializeSplitControl() {
     }); 
 
     Subscriptions() += split_control_->SplitBarDistanceChangeEvent().Subscribe(
-        [this](const SplitControlSplitDistanceChangeInfo& event_info) {
+        [this](const SplitControlSplitDistanceChangedInfo& event_info) {
 
         //Don't raise event again if it is handling distance changed event.
         if (is_handling_split_distance_event_.Value()) {
@@ -142,12 +142,13 @@ void Item::InitializeSplitControl() {
         auto manager = split_distance_manager_.lock();
         if (manager) {
 
-            SplitDistanceChangedInfo event_info;
-            event_info.changing_item = As<Item>(shared_from_this());
-            event_info.new_distance = 
+            SplitDistanceChangedInfo new_event_info;
+            new_event_info.changing_item = As<Item>(shared_from_this());
+            new_event_info.new_distance =
                 this->GetTextRect().Left() + split_control_->SplitDistance();
+            new_event_info.is_changed_by_dragging = event_info.IsChangedByDragging();
 
-            manager->DistanceChangedSubject().GetObserver().OnNext(event_info);
+            manager->DistanceChangedSubject().GetObserver().OnNext(new_event_info);
         }
     });
 

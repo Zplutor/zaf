@@ -11,7 +11,7 @@ class SplitBar;
 class SplitBarBeginDragInfo;
 class SplitBarDragInfo;
 class SplitBarEndDragInfo;
-class SplitControlSplitDistanceChangeInfo;
+class SplitControlSplitDistanceChangedInfo;
 
 class SplitControl : public Control {
 public:
@@ -39,7 +39,7 @@ public:
 
     void SetSplitDistance(float distance);
 
-    Observable<SplitControlSplitDistanceChangeInfo> SplitBarDistanceChangeEvent();
+    Observable<SplitControlSplitDistanceChangedInfo> SplitBarDistanceChangeEvent();
 
     const std::shared_ptr<zaf::SplitBar>& SplitBar() const {
         return split_bar_;
@@ -96,7 +96,9 @@ private:
     void InitializeSplitBar();
     void UninitializeSplitBar();
 
-    bool UpdateActualSplitDistance();
+    void InnerSetSplitDistance(float distance, bool is_by_dragging);
+
+    bool UpdateActualSplitDistance(bool is_by_dragging);
     void GetSplitDistanceLimit(float& total_length, float& min, float& max) const;
 
     void SetPane(
@@ -132,14 +134,16 @@ private:
 };
 
 
-class SplitControlSplitDistanceChangeInfo {
+class SplitControlSplitDistanceChangedInfo {
 public:
-    SplitControlSplitDistanceChangeInfo(
+    SplitControlSplitDistanceChangedInfo(
         const std::shared_ptr<SplitControl>& split_control,
-        float previous_distance)
+        float previous_distance,
+        bool is_changed_by_dragging)
         : 
         split_control_(split_control),
-        previous_distance_(previous_distance) {
+        previous_distance_(previous_distance),
+        is_changed_by_dragging_(is_changed_by_dragging) {
 
     }
 
@@ -151,9 +155,14 @@ public:
         return previous_distance_;
     }
 
+    bool IsChangedByDragging() const {
+        return is_changed_by_dragging_;
+    }
+
 private:
     std::shared_ptr<zaf::SplitControl> split_control_;
     float previous_distance_{};
+    bool is_changed_by_dragging_{};
 };
 
 

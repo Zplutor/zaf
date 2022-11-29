@@ -15,6 +15,7 @@ class SplitDistanceChangedInfo {
 public:
     std::shared_ptr<Item> changing_item;
     float new_distance{};
+    bool is_changed_by_dragging{};
 };
 
 class SplitDistanceManager : SubscriptionHost, NonCopyable {

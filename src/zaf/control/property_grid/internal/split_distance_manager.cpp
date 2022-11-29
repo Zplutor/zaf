@@ -8,7 +8,7 @@ SplitDistanceManager::SplitDistanceManager() {
     Subscriptions() += distance_changed_subject_.GetObservable().Subscribe(
         [this](const SplitDistanceChangedInfo& event_info) {
     
-        if (is_distance_default_ && event_info.new_distance == current_distance_) {
+        if (is_distance_default_ && !event_info.is_changed_by_dragging) {
             return;
         }
 
