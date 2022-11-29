@@ -8,6 +8,10 @@ SplitDistanceManager::SplitDistanceManager() {
     Subscriptions() += distance_changed_subject_.GetObservable().Subscribe(
         [this](const SplitDistanceChangedInfo& event_info) {
     
+        if (!event_info.changing_item) {
+            return;
+        }
+
         if (is_distance_default_ && !event_info.is_changed_by_dragging) {
             return;
         }
@@ -20,9 +24,15 @@ SplitDistanceManager::SplitDistanceManager() {
 
 void SplitDistanceManager::UpdateDefaultDistance(float distance) {
 
-    if (is_distance_default_) {
-        current_distance_ = distance;
+    if (!is_distance_default_) {
+        return;
     }
+
+    current_distance_ = distance;
+
+    SplitDistanceChangedInfo event_info;
+    event_info.new_distance = current_distance_;
+    distance_changed_subject_.GetObserver().OnNext(event_info);
 }
 
 
