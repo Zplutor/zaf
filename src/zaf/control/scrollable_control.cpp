@@ -100,7 +100,7 @@ void ScrollableControl::InitializeScrollContentControl(const std::shared_ptr<Con
         self_scrolling_control_->SetAutoHideScrollBars(AutoHideScrollBars());   
     }
 
-    scroll_content_rect_change_subscription_ = scroll_content_control_->RectChangeEvent().Subscribe(
+    scroll_content_rect_change_subscription_ = scroll_content_control_->RectChangedEvent().Subscribe(
         std::bind(&ScrollableControl::OnScrollContentRectChange, this, std::placeholders::_1));
 }
 
@@ -149,7 +149,7 @@ void ScrollableControl::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void ScrollableControl::OnScrollContentRectChange(const ControlRectChangeInfo& event_info) {
+void ScrollableControl::OnScrollContentRectChange(const ControlRectChangedInfo& event_info) {
 
     if (is_layouting_) {
         return;

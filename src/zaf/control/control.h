@@ -630,7 +630,7 @@ public:
 
      This event is raised when the control's rect is changed.
      */
-    Observable<ControlRectChangeInfo> RectChangeEvent();
+    Observable<ControlRectChangedInfo> RectChangedEvent();
 
     /**
      Get focus change event.
@@ -645,6 +645,8 @@ public:
 
     Observable<ControlClickInfo> ClickEvent();
     Observable<ControlDoubleClickInfo> DoubleClickEvent();
+
+    Observable<ControlParentChangedInfo> ParentChangedEvent();
 
 protected:
     void InvokeInitialize() override;
@@ -928,6 +930,8 @@ protected:
     virtual void OnIsSelectedChanged();
 
     virtual void OnDPIChanged();
+
+    virtual void OnParentChanged(const std::shared_ptr<Control>& previous_parent);
 
 private:
     friend class Caret;

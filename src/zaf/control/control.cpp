@@ -69,11 +69,12 @@ constexpr const wchar_t* const kLayouterPropertyName = L"Layouter";
 constexpr const wchar_t* const kMouseEnterEventPropertyName = L"MouseEnterEvent";
 constexpr const wchar_t* const kMouseLeaveEventPropertyName = L"MouseLeaveEvent";
 constexpr const wchar_t* const kMouseHoverEventPropertyName = L"MouseHoverEvent";
-constexpr const wchar_t* const kRectChangeEventPropertyName = L"RectChangeEvent";
+constexpr const wchar_t* const kRectChangeEventPropertyName = L"RectChangedEvent";
 constexpr const wchar_t* const CanClickPropertyName = L"CanClick";
 constexpr const wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
 constexpr const wchar_t* const ClickEventPropertyName = L"ClickEvent";
 constexpr const wchar_t* const DoubleClickEventPropertyName = L"DoubleClickEvent";
+constexpr const wchar_t* const ParentChangedEventPropertyName = L"ParentChangedEvent";
 constexpr const wchar_t* const TooltipPropertyName = L"Tooltip";
 
 constexpr bool DefaultCanFocused = false;
@@ -559,12 +560,12 @@ void Control::SetRect(const zaf::Rect& rect) {
     }
 
     //Trigger the rect change event.
-    auto event_observer = GetEventObserver<ControlRectChangeInfo>(
+    auto event_observer = GetEventObserver<ControlRectChangedInfo>(
         GetPropertyMap(),
         kRectChangeEventPropertyName);
 
     if (event_observer) {
-        ControlRectChangeInfo event_info(shared_from_this(), previous_rect);
+        ControlRectChangedInfo event_info(shared_from_this(), previous_rect);
         event_observer->OnNext(event_info);
     }
 }
@@ -995,36 +996,42 @@ void Control::SetLayouter(const std::shared_ptr<zaf::Layouter>& layouter) {
 
 void Control::SetParent(const std::shared_ptr<Control>& parent) {
 
-    auto need_release_renderer_resources = [this, &parent]() {
+    auto previous_parent = parent_.lock();
+    if (previous_parent == parent) {
+        return;
+    }
 
-        auto previous_parent = parent_.lock();
-        if (previous_parent == nullptr) {
+    bool need_release_renderer_resources = [&previous_parent, &parent]() {
+
+        if (!previous_parent) {
             return false;
         }
 
-        if (parent == nullptr) {
+        if (!parent) {
             return true;
         }
 
         auto previous_window = previous_parent->Window();
-        if (previous_window == nullptr) {
+        if (!previous_window) {
             return false;
         }
 
         auto new_window = parent->Window();
-        if (new_window == nullptr) {
+        if (!new_window) {
             return true;
         }
 
         return previous_window != new_window;
-    };
+    }();
 
-    if (need_release_renderer_resources()) {
+    if (need_release_renderer_resources) {
         ReleaseRendererResources();
     }
 
     float old_dpi = GetDPI();
     parent_ = parent;
+
+    OnParentChanged(previous_parent);
 
     if (old_dpi != GetDPI()) {
         OnDPIChanged();
@@ -1560,8 +1567,8 @@ void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
 }
 
 
-Observable<ControlRectChangeInfo> Control::RectChangeEvent() {
-    return GetEventObservable<ControlRectChangeInfo>(
+Observable<ControlRectChangedInfo> Control::RectChangedEvent() {
+    return GetEventObservable<ControlRectChangedInfo>(
         GetPropertyMap(), 
         kRectChangeEventPropertyName);
 }
@@ -2003,6 +2010,31 @@ void Control::OnDPIChanged() {
     for (const auto& each_child : children_) {
         each_child->OnDPIChanged();
     }
+}
+
+
+void Control::OnParentChanged(const std::shared_ptr<Control>& previous_parent) {
+
+    auto observer = GetEventObserver<ControlParentChangedInfo>(
+        GetPropertyMap(),
+        ParentChangedEventPropertyName);
+
+    if (!observer) {
+        return;
+    }
+
+    observer->OnNext(ControlParentChangedInfo{
+        shared_from_this(),
+        previous_parent
+    });
+}
+
+
+Observable<ControlParentChangedInfo> Control::ParentChangedEvent() {
+
+    return GetEventObservable<ControlParentChangedInfo>(
+        GetPropertyMap(),
+        ParentChangedEventPropertyName);
 }
 
 

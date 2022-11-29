@@ -33,18 +33,24 @@ void Item::Initialize() {
     InitializeSubControls();
 
     auto manager = split_distance_manager_.lock();
-    if (manager) {
-
-        Subscriptions() += manager->DistanceChangeSubject().GetObservable().Subscribe(
-            [this](const SplitDistanceChangeInfo& event_info) {
-
-            auto guard = is_handling_split_distance_event_.BeginSet(true);
-
-            if (this != event_info.changing_item.get()) {
-                SetAbsoluteSplitDistance(event_info.new_distance); 
-            }
-        });
+    if (!manager) {
+        return;
     }
+
+    Subscriptions() += manager->DistanceChangedSubject().GetObservable().Subscribe(
+        [this](const SplitDistanceChangedInfo& event_info) {
+
+        auto guard = is_handling_split_distance_event_.BeginSet(true);
+
+        if (this != event_info.changing_item.get()) {
+            SetAbsoluteSplitDistance(event_info.new_distance); 
+        }
+    });
+
+    Subscriptions() += manager->MaxSplitControlXChangedEvent().Subscribe([this](float new_x) {
+
+        SetFirstPaneMinLength(new_x);
+    });
 }
 
 
@@ -136,12 +142,12 @@ void Item::InitializeSplitControl() {
         auto manager = split_distance_manager_.lock();
         if (manager) {
 
-            SplitDistanceChangeInfo event_info;
+            SplitDistanceChangedInfo event_info;
             event_info.changing_item = As<Item>(shared_from_this());
             event_info.new_distance = 
                 this->GetTextRect().Left() + split_control_->SplitDistance();
 
-            manager->DistanceChangeSubject().GetObserver().OnNext(event_info);
+            manager->DistanceChangedSubject().GetObserver().OnNext(event_info);
         }
     });
 
@@ -156,6 +162,17 @@ void Item::SetAbsoluteSplitDistance(float new_distance) {
 }
 
 
+void Item::SetFirstPaneMinLength(float max_x) {
+
+    auto difference = max_x - split_control_->X();
+    if (difference < 0) {
+        return;
+    }
+
+    split_control_->SetFirstPaneMinLength(difference);
+}
+
+
 void Item::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
@@ -166,7 +183,28 @@ void Item::Layout(const zaf::Rect& previous_rect) {
 
     auto manager = split_distance_manager_.lock();
     if (manager) {
+
+        SetFirstPaneMinLength(manager->MaxSplitControlX());
         SetAbsoluteSplitDistance(manager->CurrentDistance());
+    }
+}
+
+
+void Item::OnParentChanged(const std::shared_ptr<Control>& previous_parent) {
+
+    __super::OnParentChanged(previous_parent);
+
+    auto split_distance_manager = split_distance_manager_.lock();
+    if (!split_distance_manager) {
+        return;
+    }
+
+    auto new_parent = Parent();
+    if (new_parent) {
+        split_distance_manager->OnSplitControlAdd(split_control_);
+    }
+    else {
+        split_distance_manager->OnSplitControlRemove(split_control_);
     }
 }
 

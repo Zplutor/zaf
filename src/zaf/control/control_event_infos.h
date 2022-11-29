@@ -99,9 +99,9 @@ private:
 };
 
 
-class ControlRectChangeInfo : public ControlEventInfo {
+class ControlRectChangedInfo : public ControlEventInfo {
 public:
-    ControlRectChangeInfo(
+    ControlRectChangedInfo(
         const std::shared_ptr<zaf::Control>& control,
         const Rect& previous_rect)
         : 
@@ -116,6 +116,26 @@ public:
 
 private:
     zaf::Rect previous_rect_;
+};
+
+
+class ControlParentChangedInfo : public ControlEventInfo {
+public:
+    ControlParentChangedInfo(
+        const std::shared_ptr<zaf::Control>& control,
+        const std::shared_ptr<zaf::Control>& previous_parent) 
+        : 
+        ControlEventInfo(control), 
+        previous_parent_(previous_parent) {
+    
+    }
+
+    const std::shared_ptr<zaf::Control>& PreviousParent() const {
+        return previous_parent_;
+    }
+
+private:
+    std::shared_ptr<zaf::Control> previous_parent_;
 };
 
 }

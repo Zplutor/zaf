@@ -10,7 +10,7 @@ void ControlViewPanel::SetExploredControl(const std::shared_ptr<zaf::Control>& c
     explored_control_ = control;
 
     if (explored_control_ != nullptr) {
-        explored_control_subscription_ = explored_control_->RectChangeEvent().Subscribe(
+        explored_control_subscription_ = explored_control_->RectChangedEvent().Subscribe(
             std::bind(&ControlViewPanel::ExploredControlRectChanged, this, std::placeholders::_1));
 
         AddChild(explored_control_);
@@ -18,7 +18,7 @@ void ControlViewPanel::SetExploredControl(const std::shared_ptr<zaf::Control>& c
 }
 
 
-void ControlViewPanel::ExploredControlRectChanged(const zaf::ControlRectChangeInfo& event_info) {
+void ControlViewPanel::ExploredControlRectChanged(const zaf::ControlRectChangedInfo& event_info) {
 
     if (event_info.Control() != explored_control_) {
         return;

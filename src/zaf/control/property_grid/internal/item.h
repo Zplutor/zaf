@@ -21,6 +21,7 @@ public:
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect& previous_rect) override;
+    void OnParentChanged(const std::shared_ptr<Control>& previous_parent) override;
 
 private:
     void InitializeSubControls();
@@ -29,6 +30,7 @@ private:
     std::shared_ptr<Label> CreateLabel() const;
     void InitializeSplitControl();
     void SetAbsoluteSplitDistance(float new_distance);
+    void SetFirstPaneMinLength(float max_x);
 
 private:
     std::shared_ptr<Data> data_;

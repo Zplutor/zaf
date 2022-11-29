@@ -10,7 +10,7 @@ protected:
     void Layout(const zaf::Rect&) override;
 
 private:
-    void ExploredControlRectChanged(const zaf::ControlRectChangeInfo& event_info);
+    void ExploredControlRectChanged(const zaf::ControlRectChangedInfo& event_info);
 
 private:
     std::shared_ptr<zaf::Control> explored_control_;
