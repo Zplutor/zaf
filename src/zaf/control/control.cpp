@@ -1805,7 +1805,7 @@ void Control::OnMouseHover(const std::shared_ptr<Control>& hovered_control) {
 bool Control::OnMouseDown(const Point& position, const MouseMessage& message) {
 
     if (message.MouseButton() == MouseButton::Left) {
-        if (HandleClickOnMouseDown()) {
+        if (HandleClickOnMouseDown(position)) {
             return true;
         }
     }
@@ -1819,7 +1819,7 @@ bool Control::OnMouseDown(const Point& position, const MouseMessage& message) {
 }
 
 
-bool Control::HandleClickOnMouseDown() {
+bool Control::HandleClickOnMouseDown(const Point& position) {
 
     //Do not handle if cannot click.
     if (!CanClick()) {
@@ -1836,7 +1836,7 @@ bool Control::HandleClickOnMouseDown() {
         //Raise double click event.
         if (current_time - last_time <= GetDoubleClickTime()) {
             should_raise_click_event_ = false;
-            RaiseDoubleClickEvent();
+            RaiseDoubleClickEvent(position);
             return true;
         }
     }
@@ -1897,7 +1897,7 @@ void Control::RaiseClickEvent() {
 }
 
 
-void Control::RaiseDoubleClickEvent() {
+void Control::RaiseDoubleClickEvent(const Point& position) {
 
     if (!CanDoubleClick()) {
         return;
@@ -1910,9 +1910,10 @@ void Control::RaiseDoubleClickEvent() {
         DoubleClickEventPropertyName);
 
     if (observer) {
-
-        ControlDoubleClickInfo event_info(shared_from_this());
-        observer->OnNext(event_info);
+        observer->OnNext(ControlDoubleClickInfo{
+            shared_from_this(),
+            position
+        });
     }
 }
 

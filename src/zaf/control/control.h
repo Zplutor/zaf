@@ -705,7 +705,7 @@ protected:
 
     void RaiseContentChangedEvent();
     void RaiseClickEvent();
-    void RaiseDoubleClickEvent();
+    void RaiseDoubleClickEvent(const Point& position);
 
     /**
      Get the mutable property map.
@@ -1003,7 +1003,7 @@ private:
 
     void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
 
-    bool HandleClickOnMouseDown();
+    bool HandleClickOnMouseDown(const Point& position);
     bool HandleClickOnMouseUp();
 
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;

@@ -29,7 +29,18 @@ public:
 
 class ControlDoubleClickInfo : public ControlEventInfo {
 public:
-    using ControlEventInfo::ControlEventInfo;
+    ControlDoubleClickInfo(const std::shared_ptr<zaf::Control>& control, const Point& position) :
+        ControlEventInfo(control), 
+        position_(position) {
+
+    }
+
+    const Point& Position() const {
+        return position_;
+    }
+
+private:
+    Point position_;
 };
 
 
