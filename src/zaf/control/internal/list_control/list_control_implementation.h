@@ -32,6 +32,7 @@ public:
         ListSelectionChangeReason change_type, 
         std::size_t index, 
         std::size_t count)>;
+    using ItemDoubleClickEvent = std::function<void(std::size_t)>;
 
     class InitializeParameters {
     public:
@@ -42,6 +43,7 @@ public:
         DelegateChangeEvent delegate_change_event;
         ItemContainerChangeEvent item_container_change_event;
         SelectionChangeEvent selection_change_event;
+        ItemDoubleClickEvent item_double_click_event;
     };
 
 public:
@@ -111,6 +113,7 @@ private:
     void InstallDataSource(const std::weak_ptr<ListDataSource>& data_source);
     void InstallDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
     void InstallItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
+    void OnItemContainerDoubleClick(const ControlDoubleClickInfo& event_info);
 
     void RegisterScrollBarEvents();
     void UnregisterScrollBarEvents(const std::shared_ptr<ScrollBar>& scroll_bar);
@@ -177,6 +180,7 @@ private:
     std::weak_ptr<ListControlDelegate> delegate_;
 
     SubscriptionHolder data_source_subscriptions_;
+    SubscriptionHolder item_container_subscriptions_;
 
     std::shared_ptr<ListControlItemHeightManager> item_height_manager_;
     ListControlItemSelectionManager item_selection_manager_;
@@ -195,6 +199,7 @@ private:
     DelegateChangeEvent delegate_change_event_;
     ItemContainerChangeEvent item_container_change_event_;
     SelectionChangeEvent selection_change_event_;
+    ItemDoubleClickEvent item_double_click_event_;
 };
 
 }

@@ -1903,7 +1903,7 @@ void Control::RaiseDoubleClickEvent(const Point& position) {
         return;
     }
 
-    OnDoubleClick();
+    OnDoubleClick(position);
 
     auto observer = GetEventObserver<ControlDoubleClickInfo>(
         GetPropertyMap(),
@@ -1923,7 +1923,7 @@ void Control::OnClick() {
 }
 
 
-void Control::OnDoubleClick() {
+void Control::OnDoubleClick(const Point& position) {
 
 }
 

@@ -16,6 +16,7 @@ class ListControlImplementation;
 
 class ListItemContainer;
 class ListControlDelegate;
+class ListControlItemDoubleClickInfo;
 class ListControlSelectionChangeInfo;
 class ListDataSource;
 
@@ -165,6 +166,8 @@ public:
      */
     std::optional<std::size_t> FindItemIndexAtPosition(const Point& position) const;
 
+    Observable<ListControlItemDoubleClickInfo> ItemDoubleClickEvent();
+
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect& previous_rect) override;
@@ -187,7 +190,8 @@ protected:
     void OnIsEnabledChanged() override;
 
 private:
-    void SelectionChange();
+    void OnSelectionChanged();
+    void OnItemDoubleClick(std::size_t item_index);
 
 private:
     std::shared_ptr<ListItemContainer> item_container_;
@@ -210,6 +214,31 @@ public:
 
 private:
     std::shared_ptr<zaf::ListControl> list_control_;
+};
+
+
+class ListControlItemDoubleClickInfo {
+public:
+    ListControlItemDoubleClickInfo(
+        const std::shared_ptr<ListControl>& list_control, 
+        std::size_t item_index) 
+        :
+        list_control_(list_control),
+        item_index_(item_index) {
+
+    }
+
+    const std::shared_ptr<ListControl>& ListControl() const {
+        return list_control_;
+    }
+
+    std::size_t ItemIndex() const {
+        return item_index_;
+    }
+
+private:
+    std::shared_ptr<zaf::ListControl> list_control_;
+    std::size_t item_index_{};
 };
 
 }

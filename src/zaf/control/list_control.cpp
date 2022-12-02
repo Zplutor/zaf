@@ -14,8 +14,13 @@
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
+namespace {
 
-static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
+constexpr const wchar_t* ItemDoubleClickEventPropertyName = L"ItemDoubleClickEvent";
+constexpr const wchar_t* SelectionChangeEventPropertyName = L"SelectionChangeEvent";
+
+}
+
 
 ZAF_DEFINE_TYPE(ListControl)
 ZAF_DEFINE_TYPE_END
@@ -47,7 +52,10 @@ void ListControl::Initialize() {
         std::bind(&ListControl::DelegateChange, this, std::placeholders::_1);
     initialize_parameters.item_container_change_event = 
         std::bind(&ListControl::ItemContainerChange, this, std::placeholders::_1);
-    initialize_parameters.selection_change_event = std::bind(&ListControl::SelectionChange, this);
+    initialize_parameters.selection_change_event = 
+        std::bind(&ListControl::OnSelectionChanged, this);
+    initialize_parameters.item_double_click_event = 
+        std::bind(&ListControl::OnItemDoubleClick, this, std::placeholders::_1);
 
     implementation_->Initialize(initialize_parameters);
 }
@@ -132,10 +140,9 @@ void ListControl::SetSelectionMode(SelectionMode selection_mode) {
 
 
 Observable<ListControlSelectionChangeInfo> ListControl::SelectionChangeEvent() {
-
     return GetEventObservable<ListControlSelectionChangeInfo>(
         GetPropertyMap(),
-        kSelectionChangeEventPropertyName);
+        SelectionChangeEventPropertyName);
 }
 
 
@@ -210,11 +217,11 @@ std::optional<std::size_t> ListControl::FindItemIndexAtPosition(const Point& pos
 }
 
 
-void ListControl::SelectionChange() {
+void ListControl::OnSelectionChanged() {
 
     auto observer = GetEventObserver<ListControlSelectionChangeInfo>(
         GetPropertyMap(), 
-        kSelectionChangeEventPropertyName);
+        SelectionChangeEventPropertyName);
 
     if (!observer) {
         return;
@@ -223,6 +230,29 @@ void ListControl::SelectionChange() {
     ListControlSelectionChangeInfo event_info(
         std::dynamic_pointer_cast<ListControl>(shared_from_this()));
     observer->OnNext(event_info);
+}
+
+
+Observable<ListControlItemDoubleClickInfo> ListControl::ItemDoubleClickEvent() {
+    return GetEventObservable<ListControlItemDoubleClickInfo>(
+        GetPropertyMap(),
+        ItemDoubleClickEventPropertyName);
+}
+
+
+void ListControl::OnItemDoubleClick(std::size_t item_index) {
+
+    auto observer = GetEventObserver<ListControlItemDoubleClickInfo>(
+        GetPropertyMap(),
+        ItemDoubleClickEventPropertyName);
+
+    if (observer) {
+
+        observer->OnNext(ListControlItemDoubleClickInfo{
+            As<ListControl>(shared_from_this()),
+            item_index
+        });
+    }
 }
 
 }

@@ -15,6 +15,8 @@ void ListItemContainer::Initialize() {
 
     SetBackgroundColor(Color::Transparent());
     SetCanFocused(true);
+    SetCanClick(true);
+    SetCanDoubleClick(true);
     SetLayouter(CreateLayouter(std::bind(
         &ListItemContainer::LayoutItems,
         this,
@@ -49,13 +51,12 @@ bool ListItemContainer::OnMouseDown(const Point& position, const MouseMessage& m
 
     SetIsFocused(true);
 
-    if (message.MouseButton() != MouseButton::Left) {
-        return __super::OnMouseDown(position, message);
+    if (message.MouseButton() == MouseButton::Left) {
+        CaptureMouse();
+        select_strategy_->BeginChangingSelectionByMouseDown(position, message);
     }
-
-    CaptureMouse();
-    select_strategy_->BeginChangingSelectionByMouseDown(position, message);
-    return true;
+    
+    return __super::OnMouseDown(position, message);
 }
 
 

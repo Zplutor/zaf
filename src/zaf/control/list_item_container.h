@@ -25,7 +25,8 @@ protected:
 private:
     friend class internal::ListControlImplementation;
 
-    void SetSelectStrategy(const std::shared_ptr<internal::ListControlSelectStrategy>& select_strategy) {
+    void SetSelectStrategy(
+        const std::shared_ptr<internal::ListControlSelectStrategy>& select_strategy) {
         select_strategy_ = select_strategy;
     }
 

@@ -243,6 +243,7 @@ void ListControlImplementation::SetItemContainer(
 
     auto previous_item_container = item_container_;
 
+    item_container_subscriptions_.Clear();
     InstallItemContainer(item_container);
 
     if (item_container_change_event_) {
@@ -260,7 +261,28 @@ void ListControlImplementation::InstallItemContainer(
 
     item_container_ = item_container;
     item_container_->SetSelectStrategy(CreateSelectStrategy());
+
+    item_container_subscriptions_ += item_container_->DoubleClickEvent().Subscribe(
+        std::bind(
+            &ListControlImplementation::OnItemContainerDoubleClick, 
+            this, 
+            std::placeholders::_1));
+
     owner_.SetScrollContent(item_container_);
+}
+
+
+void ListControlImplementation::OnItemContainerDoubleClick(
+    const ControlDoubleClickInfo& event_info) {
+
+    if (!item_double_click_event_) {
+        return;
+    }
+
+    auto index = FindItemIndexAtPosition(event_info.Position());
+    if (index) {
+        item_double_click_event_(*index);
+    }
 }
 
 

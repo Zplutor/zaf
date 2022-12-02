@@ -823,7 +823,7 @@ protected:
     virtual bool OnMouseUp(const Point& position, const MouseMessage& message);
 
     virtual void OnClick();
-    virtual void OnDoubleClick();
+    virtual void OnDoubleClick(const Point& position);
 
     /**
      Process the mouse wheel notification.
