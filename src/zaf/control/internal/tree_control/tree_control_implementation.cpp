@@ -77,9 +77,15 @@ void TreeControlImplementation::InitializeListImplementation(
 
     list_initialize_parameters.selection_change_event = std::bind(
         &TreeControlImplementation::OnListSelectionChange,
-        this, std::placeholders::_1,
+        this,
+        std::placeholders::_1,
         std::placeholders::_2,
         std::placeholders::_3);
+
+    list_initialize_parameters.item_double_click_event = std::bind(
+        &TreeControlImplementation::OnListItemDoubleClick, 
+        this, 
+        std::placeholders::_1);
 
     list_implementation_->Initialize(list_initialize_parameters);
 }
@@ -679,6 +685,22 @@ bool TreeControlImplementation::ChangeItemExpandState(
     }
     else {
         return CollapseItemUI(index_path, *list_item_index, false);
+    }
+}
+
+
+void TreeControlImplementation::OnListItemDoubleClick(std::size_t list_index) {
+
+    auto index_path = tree_index_mapping_.GetIndexPathAtIndex(list_index);
+    if (index_path.empty()) {
+        return;
+    }
+
+    if (IsIndexPathExpanded(index_path)) {
+        CollapseItemUI(index_path, list_index, true);
+    }
+    else {
+        ExpandItemUI(index_path, list_index, true);
     }
 }
 

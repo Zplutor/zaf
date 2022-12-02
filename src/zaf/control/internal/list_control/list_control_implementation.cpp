@@ -87,6 +87,7 @@ void ListControlImplementation::Initialize(const InitializeParameters& parameter
     delegate_change_event_ = parameters.delegate_change_event;
     item_container_change_event_ = parameters.item_container_change_event;
     selection_change_event_ = parameters.selection_change_event;
+    item_double_click_event_ = parameters.item_double_click_event;
 
     //Item container must be the first.
     InstallItemContainer(parameters.item_container);

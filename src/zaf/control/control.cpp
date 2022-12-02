@@ -1835,6 +1835,7 @@ bool Control::HandleClickOnMouseDown(const Point& position) {
 
         //Raise double click event.
         if (current_time - last_time <= GetDoubleClickTime()) {
+            last_mouse_down_time_ = 0;
             should_raise_click_event_ = false;
             RaiseDoubleClickEvent(position);
             return true;
