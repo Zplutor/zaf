@@ -537,10 +537,7 @@ std::shared_ptr<ListItem> ListControlImplementation::CreateItem(std::size_t inde
     item_rect.size.height = position_and_height.second;
     list_item->SetRect(item_rect);
 
-    if (item_selection_manager_.IsIndexSelected(index)) {
-        list_item->SetIsSelected(true);
-    }
-
+    list_item->SetIsSelected(item_selection_manager_.IsIndexSelected(index));
     return list_item;
 }
 

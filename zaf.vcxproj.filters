@@ -757,6 +757,9 @@
     <ClCompile Include="src\zaf\control\caret.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\tree_item_container.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1800,6 +1803,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\point_config.h">
       <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\tree_item_container.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

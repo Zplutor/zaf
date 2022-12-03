@@ -9,12 +9,12 @@ namespace internal {
 class TreeControlImplementation;
 }
 
-class ListItemContainer;
 class TreeControlDelegate;
 class TreeControlItemCollapseInfo;
 class TreeControlItemExpandInfo;
 class TreeControlSelectionChangeInfo;
 class TreeDataSource;
+class TreeItemContainer;
 
 class TreeControl : public ScrollableControl {
 public:
@@ -55,8 +55,6 @@ protected:
 
     virtual void DataSourceChange(const std::shared_ptr<TreeDataSource>& previous_data_source) { }
     virtual void DelegateChange(const std::shared_ptr<TreeControlDelegate>& previous_delegate) { }
-    virtual void ItemContainerChange(
-        const std::shared_ptr<ListItemContainer>& previous_item_container) { }
 
 private:
     void SelectionChange();
@@ -64,7 +62,7 @@ private:
     void ItemCollapse(const std::shared_ptr<Object>& data);
 
 private:
-    std::shared_ptr<ListItemContainer> item_container_;
+    std::shared_ptr<TreeItemContainer> item_container_;
     std::weak_ptr<TreeDataSource> data_source_;
     std::weak_ptr<TreeControlDelegate> delegate_;
     std::shared_ptr<internal::TreeControlImplementation> implementation_;

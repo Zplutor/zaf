@@ -56,6 +56,12 @@ void TreeControlImplementation::Initialize(const InitializeParameters& parameter
     InstallDelegate(parameters.delegate);
     InitializeListImplementation(parameters);
 
+    item_container_subscriptions_ += parameters.item_container->ChangeExpandStateEvent().Subscribe(
+        std::bind(
+            &TreeControlImplementation::OnChangeExpandStateByArrowKeys, 
+            this, 
+            std::placeholders::_1));
+
     data_source_change_event_ = parameters.data_source_change_event;
     delegate_change_event_ = parameters.delegate_change_event;
     selection_change_event_ = parameters.selection_change_event;
@@ -461,7 +467,9 @@ void TreeControlImplementation::LoadItem(
 
     tree_item->SetIndentLevel(index_path.size() - 1);
     SetItemExpandState(tree_item, item_data, index_path);
-    SetItemSelectionState(tree_item, item_data);
+
+    //Note that we don't need to set item selection state here, because it will be set in list 
+    //control implementation.
 }
 
 
@@ -495,15 +503,6 @@ bool TreeControlImplementation::IsIndexPathExpanded(const IndexPath& index_path)
     }
 
     return tree_node->is_expanded;
-}
-
-
-void TreeControlImplementation::SetItemSelectionState(
-    const std::shared_ptr<TreeItem>& item, 
-    const std::shared_ptr<Object>& item_data) {
-
-    bool is_selected = tree_data_manager_.IsNodeSelected(item_data);
-    item->SetIsSelected(is_selected);
 }
 
 
@@ -701,6 +700,57 @@ void TreeControlImplementation::OnListItemDoubleClick(std::size_t list_index) {
     }
     else {
         ExpandItemUI(index_path, list_index, true);
+    }
+}
+
+
+void TreeControlImplementation::OnChangeExpandStateByArrowKeys(bool is_to_expand) {
+
+    //Support changing expand state with arrow keys in only single selection mode.
+    if (list_implementation_->GetSelectionMode() != SelectionMode::Single) {
+        return;
+    }
+
+    auto selected_index = list_implementation_->GetFirstSelectedItemIndex();
+    if (!selected_index) {
+        return;
+    }
+
+    auto index_path = tree_index_mapping_.GetIndexPathAtIndex(*selected_index);
+    if (index_path.empty()) {
+        return;
+    }
+
+    bool is_index_path_expanded = IsIndexPathExpanded(index_path);
+
+    if (is_to_expand) {
+
+        if (!is_index_path_expanded) {
+            ExpandItemUI(index_path, selected_index, true);
+        }
+        else {
+            selected_index = GetChildListIndex(index_path, 0);
+            if (selected_index) {
+                list_implementation_->SelectItemAtIndex(*selected_index);
+            }
+        }
+    }
+    else {
+        if (is_index_path_expanded) {
+            CollapseItemUI(index_path, selected_index, true);
+        }
+        else {
+            auto parent_index_path = index_path;
+            parent_index_path.pop_back();
+            selected_index = tree_index_mapping_.GetIndexAtIndexPath(parent_index_path);
+            if (selected_index) {
+                list_implementation_->SelectItemAtIndex(*selected_index);
+            }
+        }
+    }
+
+    if (selected_index) {
+        list_implementation_->ScrollToItemAtIndex(*selected_index);
     }
 }
 

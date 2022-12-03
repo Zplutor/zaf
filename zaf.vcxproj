@@ -150,6 +150,7 @@
     <ClCompile Include="src\zaf\control\tree_control.cpp" />
     <ClCompile Include="src\zaf\control\tree_data_source.cpp" />
     <ClCompile Include="src\zaf\control\tree_item.cpp" />
+    <ClCompile Include="src\zaf\control\tree_item_container.cpp" />
     <ClCompile Include="src\zaf\control\tree_item_expand_button.cpp" />
     <ClCompile Include="src\zaf\graphic\alignment.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_weight.cpp" />
@@ -418,6 +419,7 @@
     <ClInclude Include="src\zaf\control\tree_control_delegate.h" />
     <ClInclude Include="src\zaf\control\tree_data_source.h" />
     <ClInclude Include="src\zaf\control\tree_item.h" />
+    <ClInclude Include="src\zaf\control\tree_item_container.h" />
     <ClInclude Include="src\zaf\control\tree_item_expand_button.h" />
     <ClInclude Include="src\zaf\creation.h" />
     <ClInclude Include="src\zaf\graphic\alignment.h" />

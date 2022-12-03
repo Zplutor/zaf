@@ -1,9 +1,10 @@
 #include <zaf/control/tree_control.h>
 #include <zaf/base/error/check.h>
 #include <zaf/base/event_utility.h>
+#include <zaf/control/internal/tree_control/tree_control_implementation.h>
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/tree_data_source.h>
-#include <zaf/control/internal/tree_control/tree_control_implementation.h>
+#include <zaf/control/tree_item_container.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 
@@ -35,7 +36,7 @@ void TreeControl::Initialize() {
 
     __super::Initialize();
 
-    item_container_ = Create<ListItemContainer>();
+    item_container_ = Create<TreeItemContainer>();
 
     internal::TreeControlImplementation::InitializeParameters initialize_parameters;
     initialize_parameters.item_container = item_container_;
@@ -43,8 +44,6 @@ void TreeControl::Initialize() {
         std::bind(&TreeControl::DataSourceChange, this, std::placeholders::_1);
     initialize_parameters.delegate_change_event =
         std::bind(&TreeControl::DelegateChange, this, std::placeholders::_1);
-    initialize_parameters.item_container_change_event =
-        std::bind(&TreeControl::ItemContainerChange, this, std::placeholders::_1);
     initialize_parameters.selection_change_event = std::bind(&TreeControl::SelectionChange, this);
     initialize_parameters.item_expand_event = 
         std::bind(&TreeControl::ItemExpand, this, std::placeholders::_1);

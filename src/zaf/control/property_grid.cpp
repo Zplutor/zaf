@@ -6,7 +6,7 @@
 #include <zaf/control/property_grid/internal/expanded_node_visitor.h>
 #include <zaf/control/property_grid/internal/split_distance_manager.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
-#include <zaf/control/list_item_container.h>
+#include <zaf/control/tree_item_container.h>
 #include <zaf/object/type_definition.h>
 
 namespace zaf {
@@ -37,7 +37,7 @@ void PropertyGrid::Initialize() {
         split_distance_manager_);
 
     internal::TreeControlImplementation::InitializeParameters initialize_parameters;
-    initialize_parameters.item_container = Create<ListItemContainer>();
+    initialize_parameters.item_container = Create<TreeItemContainer>();
     initialize_parameters.data_source = data_source_;
     initialize_parameters.delegate = delegate_;
 

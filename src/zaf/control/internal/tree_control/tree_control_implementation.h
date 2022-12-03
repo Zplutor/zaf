@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/base/non_copyable.h>
 #include <zaf/control/internal/list_control/list_control_implementation.h>
 #include <zaf/control/internal/tree_control/tree_data_manager.h>
 #include <zaf/control/internal/tree_control/tree_index_mapping.h>
@@ -8,13 +9,15 @@
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/tree_data_source.h>
+#include <zaf/control/tree_item_container.h>
 
 namespace zaf::internal {
 
 class TreeControlImplementation : 
     public ListDataSource, 
     public ListControlDelegate,
-    public std::enable_shared_from_this<TreeControlImplementation> {
+    public std::enable_shared_from_this<TreeControlImplementation>,
+    NonCopyable {
 
 public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<TreeDataSource>&)>;
@@ -25,7 +28,7 @@ public:
 
     class InitializeParameters {
     public:
-        std::shared_ptr<ListItemContainer> item_container;
+        std::shared_ptr<TreeItemContainer> item_container;
         std::weak_ptr<TreeDataSource> data_source;
         std::weak_ptr<TreeControlDelegate> delegate;
         DataSourceChangeEvent data_source_change_event;
@@ -39,9 +42,6 @@ public:
 public:
     TreeControlImplementation(ScrollableControl& owner);
     ~TreeControlImplementation() = default;
-
-    TreeControlImplementation(const TreeControlImplementation&) = delete;
-    TreeControlImplementation& operator=(const TreeControlImplementation&) = delete;
 
     internal::ListControlImplementation& GetListImplementation() const {
         return *list_implementation_;
@@ -121,10 +121,6 @@ private:
 
     void VisitExpandedTreeNode(const TreeNode& node, TreeVisitor& visitor) const;
 
-    void SetItemSelectionState(
-        const std::shared_ptr<TreeItem>& item, 
-        const std::shared_ptr<Object>& item_data);
-
     bool ExpandItemUI(
         const IndexPath& index_path,
         const std::optional<std::size_t>& list_index, 
@@ -142,6 +138,7 @@ private:
         const std::optional<std::size_t>& list_index,
         bool update_item);
     void OnListItemDoubleClick(std::size_t list_index);
+    void OnChangeExpandStateByArrowKeys(bool is_to_expand);
 
     void UpdateItem(const IndexPath& index_path);
     void CheckIfItemHasChildren(const IndexPath& index_path, std::size_t list_index);
@@ -190,6 +187,7 @@ private:
     ItemExpandEvent item_expand_event_;
     ItemCollapseEvent item_collapse_event_;
 
+    SubscriptionHolder item_container_subscriptions_;
     SubscriptionHolder data_source_subscriptions_;
     
     TreeIndexMapping tree_index_mapping_;
