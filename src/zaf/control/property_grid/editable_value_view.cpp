@@ -14,6 +14,17 @@ void EditableValueView::Initialize() {
     text_box_->SetBackgroundColor(Color::Transparent());
     text_box_->SetParagraphAlignment(ParagraphAlignment::Center);
     text_box_->SetAllowBeep(false);
+
+    Subscriptions() += text_box_->FocusChangeEvent().Subscribe(std::bind([this]() {
+
+        if (text_box_->IsFocused()) {
+            NotifyShouldSelectItem();
+        }
+        else {
+            ChangeValue();
+        }
+    }));
+
     this->AddChild(text_box_);
 }
 
@@ -34,13 +45,6 @@ void EditableValueView::SetValue(const std::shared_ptr<Object>& value) {
 
     value_ = value;
     text_box_->SetText(value_->ToString());
-
-    Subscriptions() += text_box_->FocusChangeEvent().Subscribe(std::bind([this]() {
-    
-        if (!text_box_->IsFocused()) {
-            ChangeValue();
-        }
-    }));
 }
 
 

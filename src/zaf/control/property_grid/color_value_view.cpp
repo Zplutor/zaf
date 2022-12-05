@@ -41,7 +41,10 @@ void ColorValueView::InitializeTextBox() {
 
     Subscriptions() += color_text_box_->FocusChangeEvent().Subscribe(std::bind([this]() {
     
-        if (!color_text_box_->IsFocused()) {
+        if (color_text_box_->IsFocused()) {
+            NotifyShouldSelectItem();
+        }
+        else {
             ChangeColorByTextBox();
         }
     }));

@@ -14,6 +14,13 @@ void EnumValueView::Initialize() {
     combo_box_ = Create<ComboBox>();
     combo_box_->SetBorder(Frame{});
     combo_box_->SetTextInset(Frame{ 0, 1, 1, 1 });
+
+    Subscriptions() += combo_box_->FocusChangeEvent().Subscribe(std::bind([this]() {
+        if (combo_box_->IsFocused()) {
+            NotifyShouldSelectItem();
+        }
+    }));
+
     this->AddChild(combo_box_);
 }
 

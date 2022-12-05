@@ -34,7 +34,8 @@ void PropertyGrid::Initialize() {
 
     delegate_ = std::make_shared<property_grid::internal::Delegate>(
         type_config_factory_,
-        split_distance_manager_);
+        split_distance_manager_,
+        tree_implementation_);
 
     internal::TreeControlImplementation::InitializeParameters initialize_parameters;
     initialize_parameters.item_container = Create<TreeItemContainer>();
@@ -86,7 +87,8 @@ void PropertyGrid::ReCreateDelegate() {
 
     delegate_ = std::make_shared<property_grid::internal::Delegate>(
         type_config_factory_, 
-        split_distance_manager_);
+        split_distance_manager_,
+        tree_implementation_);
 
     tree_implementation_->SetDelegate(delegate_);
 }

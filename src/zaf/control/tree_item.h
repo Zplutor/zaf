@@ -12,13 +12,11 @@ class TreeItemExpandButton;
 
 class TreeItem : public ListItem {
 public:
-    std::size_t GetIndentLevel() const {
+    std::size_t IndentLevel() const {
         return indent_level_;
     }
 
-    void SetIndentLevel(std::size_t deep);
-
-    void SetExpandState(ExpandState expand_state);
+    ExpandState ExpandState() const;
 
 protected:
     void Initialize() override;
@@ -38,6 +36,9 @@ private:
 
         tree_control_implementation_ = implementation;
     }
+
+    void SetIndentLevel(std::size_t deep);
+    void SetExpandState(zaf::ExpandState expand_state);
 
 private:
     void ExpandButtonClick();

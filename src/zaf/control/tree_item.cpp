@@ -55,7 +55,12 @@ zaf::Rect TreeItem::GetExpandButtonRect() {
 }
 
 
-void TreeItem::SetExpandState(ExpandState expand_state) {
+ExpandState TreeItem::ExpandState() const {
+    return expand_button_->GetExpandState();
+}
+
+
+void TreeItem::SetExpandState(zaf::ExpandState expand_state) {
     expand_button_->SetExpandState(expand_state);
 }
 
