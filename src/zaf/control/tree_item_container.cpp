@@ -5,6 +5,10 @@ namespace zaf {
 
 bool TreeItemContainer::OnKeyDown(const KeyMessage& message) {
 
+    if (__super::OnKeyDown(message)) {
+        return true;
+    }
+
     std::optional<bool> is_to_expand;
     if (message.VirtualKey() == VK_LEFT) {
         is_to_expand = false;
@@ -18,7 +22,7 @@ bool TreeItemContainer::OnKeyDown(const KeyMessage& message) {
         return true;
     }
 
-    return __super::OnKeyDown(message);
+    return false;
 }
 
 }

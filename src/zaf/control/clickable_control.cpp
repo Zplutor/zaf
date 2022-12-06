@@ -106,23 +106,31 @@ void ClickableControl::OnMouseRelease() {
 
 bool ClickableControl::OnKeyDown(const KeyMessage& message) {
 
+    if (__super::OnKeyDown(message)) {
+        return true;
+    }
+
     if (message.VirtualKey() == VK_SPACE) {
         BeginPress(PressType::Key);
         return true;
     }
     
-    return __super::OnKeyDown(message);
+    return false;
 }
 
 
 bool ClickableControl::OnKeyUp(const KeyMessage& message) {
+
+    if (__super::OnKeyUp(message)) {
+        return true;
+    }
 
     if (message.VirtualKey() == VK_SPACE) {
         EndPress(PressType::Key);
         return true;
     }
 
-    return __super::OnKeyUp(message);
+    return false;
 }
 
 

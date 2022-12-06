@@ -12,7 +12,6 @@ public:
 
 protected:
     void Initialize() override;
-    bool OnKeyDown(const KeyMessage& message) override;
     void ChangeValue();
 
 private:

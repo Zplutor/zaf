@@ -646,6 +646,10 @@ public:
     Observable<ControlClickInfo> ClickEvent();
     Observable<ControlDoubleClickInfo> DoubleClickEvent();
 
+    Observable<ControlKeyDownInfo> KeyDownEvent();
+    Observable<ControlKeyUpInfo> KeyUpEvent();
+    Observable<ControlCharInputInfo> CharInputEvent();
+
     Observable<ControlParentChangedInfo> ParentChangedEvent();
 
 protected:

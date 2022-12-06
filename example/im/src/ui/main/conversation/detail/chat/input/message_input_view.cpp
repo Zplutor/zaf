@@ -15,6 +15,8 @@ void MessageInputView::Initialize() {
     text_box_->SetBackgroundColor(zaf::Color::Transparent());
     Subscriptions() += text_box_->FocusChangeEvent().Subscribe(
         std::bind(&MessageInputView::TextBoxFocusChange, this));
+    Subscriptions() += text_box_->KeyDownEvent().Subscribe(
+        std::bind(&MessageInputView::TextBoxKeyDown, this, std::placeholders::_1));
     AddChild(text_box_);
 
     send_button_ = zaf::Create<zaf::Button>();
@@ -60,12 +62,10 @@ void MessageInputView::SendButtonClick() {
 }
 
 
-bool MessageInputView::OnKeyDown(const zaf::KeyMessage& message) {
+void MessageInputView::TextBoxKeyDown(const zaf::ControlKeyDownInfo& event_info) {
 
-    if (message.VirtualKey() == VK_RETURN) {
+    if (event_info.KeyMessage().VirtualKey() == VK_RETURN) {
         send_button_->Click();
-        return true;
+        event_info.SetIsHandled(true);
     }
-    
-    return __super::OnKeyDown(message);
 }

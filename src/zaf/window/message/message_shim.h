@@ -1,16 +1,14 @@
 #pragma once
 
+#include <zaf/base/non_copyable.h>
 #include <zaf/window/message/message.h>
 
 namespace zaf {
 
-class MessageShim {
+class MessageShim : NonCopyable {
 public:
     explicit MessageShim(const Message& inner) : inner_(inner) { }
     virtual ~MessageShim() = default;
-
-    MessageShim(const MessageShim&) = delete;
-    MessageShim& operator=(const MessageShim&) = delete;
 
     MessageShim(MessageShim&&) = default;
     MessageShim& operator=(MessageShim&&) = default;

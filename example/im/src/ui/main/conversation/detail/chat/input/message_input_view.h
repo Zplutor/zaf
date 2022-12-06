@@ -13,12 +13,10 @@ public:
         conversation_id_ = conversation->id;
     }
 
-protected:
-    bool OnKeyDown(const zaf::KeyMessage& message) override;
-
 private:
     void TextBoxFocusChange();
     void SendButtonClick();
+    void TextBoxKeyDown(const zaf::ControlKeyDownInfo& event_info);
 
 private:
     std::shared_ptr<zaf::TextBox> text_box_;

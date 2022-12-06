@@ -112,6 +112,10 @@ protected:
 
     bool OnKeyDown(const zaf::KeyMessage& message) override {
 
+        if (__super::OnKeyDown(message)) {
+            return true;
+        }
+
         if (message.VirtualKey() == VK_RETURN) {
 
             if (!GetDropDownListBox()->GetFirstSelectedItemIndex()) {
@@ -120,7 +124,7 @@ protected:
             return true;
         }
         
-        return __super::OnKeyDown(message);
+        return false;
     }
 
 private:

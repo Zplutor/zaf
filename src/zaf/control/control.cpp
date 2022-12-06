@@ -73,7 +73,10 @@ constexpr const wchar_t* const kRectChangeEventPropertyName = L"RectChangedEvent
 constexpr const wchar_t* const CanClickPropertyName = L"CanClick";
 constexpr const wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
 constexpr const wchar_t* const ClickEventPropertyName = L"ClickEvent";
+constexpr const wchar_t* const CharInputEventPropertyName = L"CharInputEvent";
 constexpr const wchar_t* const DoubleClickEventPropertyName = L"DoubleClickEvent";
+constexpr const wchar_t* const KeyDownEventPropertyName = L"KeyDown";
+constexpr const wchar_t* const KeyUpEventPropertyName = L"KeyUp";
 constexpr const wchar_t* const ParentChangedEventPropertyName = L"ParentChangedEvent";
 constexpr const wchar_t* const TooltipPropertyName = L"Tooltip";
 
@@ -1953,37 +1956,76 @@ void Control::OnMouseRelease() {
 
 bool Control::OnKeyDown(const KeyMessage& message) {
 
-    auto parent = Parent();
-    if (parent != nullptr) {
-        return parent->OnKeyDown(message);
+    auto observer = GetEventObserver<ControlKeyDownInfo>(
+        GetPropertyMap(),
+        KeyDownEventPropertyName);
+
+    if (observer) {
+
+        auto is_handled = std::make_shared<bool>(false);
+        observer->OnNext(ControlKeyDownInfo{ shared_from_this(), message.Inner(), is_handled });
+
+        if (*is_handled) {
+            return true;
+        }
     }
-    else {
-        return false;
-    }
+
+    return false;
+}
+
+
+Observable<ControlKeyDownInfo> Control::KeyDownEvent() {
+    return GetEventObservable<ControlKeyDownInfo>(GetPropertyMap(), KeyDownEventPropertyName);
 }
 
 
 bool Control::OnKeyUp(const KeyMessage& message) {
 
-    auto parent = Parent();
-    if (parent != nullptr) {
-        return parent->OnKeyUp(message);
+    auto observer = GetEventObserver<ControlKeyUpInfo>(
+        GetPropertyMap(),
+        KeyUpEventPropertyName);
+
+    if (observer) {
+
+        auto is_handled = std::make_shared<bool>(false);
+        observer->OnNext(ControlKeyUpInfo{ shared_from_this(), message.Inner(), is_handled });
+
+        if (*is_handled) {
+            return true;
+        }
     }
-    else {
-        return false;
-    }
+
+    return false;
+}
+
+
+Observable<ControlKeyUpInfo> Control::KeyUpEvent() {
+    return GetEventObservable<ControlKeyUpInfo>(GetPropertyMap(), KeyUpEventPropertyName);
 }
 
 
 bool Control::OnCharInput(const CharMessage& message) {
 
-    auto parent = Parent(); 
-    if (parent != nullptr) {
-        return parent->OnCharInput(message);
+    auto observer = GetEventObserver<ControlCharInputInfo>(
+        GetPropertyMap(), 
+        CharInputEventPropertyName);
+
+    if (observer) {
+
+        auto is_handled = std::make_shared<bool>(false);
+        observer->OnNext(ControlCharInputInfo{ shared_from_this(), message.Inner(), is_handled });
+
+        if (*is_handled) {
+            return true;
+        }
     }
-    else {
-        return false;
-    }
+
+    return false;
+}
+
+
+Observable<ControlCharInputInfo> Control::CharInputEvent() {
+    return GetEventObservable<ControlCharInputInfo>(GetPropertyMap(), CharInputEventPropertyName);
 }
 
 

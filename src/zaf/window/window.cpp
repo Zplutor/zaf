@@ -568,22 +568,13 @@ bool Window::HandleMessage(const Message& message, LRESULT& result) {
         return true;
 
     case WM_KEYDOWN: 
-        if (focused_control_ != nullptr) {
-            return focused_control_->OnKeyDown(KeyMessage{ message });
-        }
-        return false;
+        return OnKeyDown(message);
 
     case WM_KEYUP:
-        if (focused_control_ != nullptr) {
-            return focused_control_->OnKeyUp(KeyMessage{ message });
-        }
-        return false;
+        return OnKeyUp(message);
 
     case WM_CHAR:
-        if (focused_control_ != nullptr) {
-            return focused_control_->OnCharInput(CharMessage{ message });
-        }
-        return false;
+        return OnCharInput(message);
 
     case WM_CLOSE:
         return ! HandleCloseMessage();
@@ -990,6 +981,72 @@ bool Window::ChangeMouseCursor(const Message& message) {
     }
 
     return is_changed;
+}
+
+
+bool Window::OnKeyDown(const Message& message) {
+
+    if (!focused_control_) {
+        return false;
+    }
+
+    KeyMessage key_message{ message };
+
+    auto current_control = focused_control_;
+    while (current_control) {
+
+        auto is_handled = current_control->OnKeyDown(key_message);
+        if (is_handled) {
+            return true;
+        }
+
+        current_control = current_control->Parent();
+    }
+    return false;
+}
+
+
+bool Window::OnKeyUp(const Message& message) {
+
+    if (!focused_control_) {
+        return false;
+    }
+
+    KeyMessage key_message{ message };
+
+    auto current_control = focused_control_;
+    while (current_control) {
+
+        auto is_handled = current_control->OnKeyUp(key_message);
+        if (is_handled) {
+            return true;
+        }
+
+        current_control = current_control->Parent();
+    }
+    return false;
+}
+
+
+bool Window::OnCharInput(const Message& message) {
+
+    if (!focused_control_) {
+        return false;
+    }
+
+    CharMessage char_message{ message };
+
+    auto current_control = focused_control_;
+    while (current_control) {
+
+        auto is_handled = current_control->OnCharInput(char_message);
+        if (is_handled) {
+            return true;
+        }
+
+        current_control = current_control->Parent();
+    }
+    return false;
 }
 
 

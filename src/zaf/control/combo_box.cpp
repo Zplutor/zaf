@@ -470,6 +470,10 @@ void ComboBox::DropDownListBoxMouseMove(const Point& position) {
 
 bool ComboBox::OnKeyDown(const KeyMessage& message) {
 
+    if (__super::OnKeyDown(message)) {
+        return true;
+    }
+
     auto key = message.VirtualKey();
     if ((key == VK_UP) || (key == VK_DOWN)) {
 
@@ -493,7 +497,7 @@ bool ComboBox::OnKeyDown(const KeyMessage& message) {
         }
     }
     
-    return __super::OnKeyDown(message);
+    return false;
 }
 
 
@@ -697,14 +701,16 @@ bool ComboBoxDropDownListBox::OnMouseMove(const Point& position, const MouseMess
 
 bool ComboBoxEditTextBox::OnKeyDown(const KeyMessage& message) {
 
+    bool is_handled = __super::OnKeyDown(message);
+
     auto key = message.VirtualKey(); 
     if (key == VK_UP || key == VK_DOWN || key == VK_RETURN) {
 
-        //Call the default handler to derives the event to its parent - combo box.
-        return Control::OnKeyDown(message);
+        //Return false to derives the event to its parent - combo box.
+        return false;
     }
     else {
-        return __super::OnKeyDown(message);
+        return is_handled;
     }
 }
 

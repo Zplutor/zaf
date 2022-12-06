@@ -642,6 +642,9 @@ private:
     void TrackMouse(bool is_non_client);
     void OnMouseHover(const Message& message);
     void OnMouseLeave(const Message& message);
+    bool OnKeyDown(const Message& message);
+    bool OnKeyUp(const Message& message);
+    bool OnCharInput(const Message& message);
     void TryToShowTooltipWindow();
     void HideTooltipWindow();
     bool ChangeMouseCursor(const Message& message);

@@ -873,58 +873,61 @@ bool TextBox::OnMouseUp(const Point& position, const MouseMessage& message) {
 
 bool TextBox::OnKeyDown(const KeyMessage& message) {
     
-    if (text_service_ != nullptr) {
-
-        HRESULT result = text_service_->TxSendMessage(
-            WM_KEYDOWN, 
-            message.WParam(),
-            message.LParam(),
-            nullptr);
-
-        if (result == S_OK) {
-            return true;
-        }
+    if (__super::OnKeyDown(message)) {
+        return true;
     }
-    
-    return __super::OnKeyDown(message);
+
+    if (!text_service_) {
+        return false;
+    }
+
+    HRESULT result = text_service_->TxSendMessage(
+        WM_KEYDOWN, 
+        message.WParam(),
+        message.LParam(),
+        nullptr);
+
+    return true;
 }
 
 
 bool TextBox::OnKeyUp(const KeyMessage& message) {
 
-    if (text_service_ != nullptr) {
-
-        HRESULT result = text_service_->TxSendMessage(
-            WM_KEYUP, 
-            message.WParam(),
-            message.LParam(), 
-            nullptr);
-
-        if (result == S_OK) {
-            return true;
-        }
+    if (__super::OnKeyUp(message)) {
+        return true;
     }
-    
-    return __super::OnKeyUp(message);
+
+    if (!text_service_) {
+        return false;
+    }
+
+    HRESULT result = text_service_->TxSendMessage(
+        WM_KEYUP, 
+        message.WParam(),
+        message.LParam(), 
+        nullptr);
+
+    return true;
 }
 
 
 bool TextBox::OnCharInput(const CharMessage& message) {
 
-    if (text_service_ != nullptr) {
-
-        HRESULT result = text_service_->TxSendMessage(
-            WM_CHAR, 
-            message.WParam(),
-            message.LParam(),
-            nullptr);
-
-        if (result == S_OK) {
-            return true;
-        }
+    if (__super::OnCharInput(message)) {
+        return true;
     }
 
-    return __super::OnCharInput(message);
+    if (!text_service_) {
+        return false;
+    }
+
+    HRESULT result = text_service_->TxSendMessage(
+        WM_CHAR, 
+        message.WParam(),
+        message.LParam(),
+        nullptr);
+
+    return true;
 }
 
 

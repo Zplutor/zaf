@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/graphic/rect.h>
+#include <zaf/window/message/keyboard_message.h>
 
 namespace zaf {
 
@@ -18,6 +19,46 @@ public:
 
 private:
     std::shared_ptr<zaf::Control> control_;
+};
+
+
+class ControlParentChangedInfo : public ControlEventInfo {
+public:
+    ControlParentChangedInfo(
+        const std::shared_ptr<zaf::Control>& control,
+        const std::shared_ptr<zaf::Control>& previous_parent)
+        :
+        ControlEventInfo(control),
+        previous_parent_(previous_parent) {
+
+    }
+
+    const std::shared_ptr<zaf::Control>& PreviousParent() const {
+        return previous_parent_;
+    }
+
+private:
+    std::shared_ptr<zaf::Control> previous_parent_;
+};
+
+
+class ControlRectChangedInfo : public ControlEventInfo {
+public:
+    ControlRectChangedInfo(
+        const std::shared_ptr<zaf::Control>& control,
+        const Rect& previous_rect)
+        :
+        ControlEventInfo(control),
+        previous_rect_(previous_rect) {
+
+    }
+
+    const zaf::Rect& PreviousRect() const {
+        return previous_rect_;
+    }
+
+private:
+    zaf::Rect previous_rect_;
 };
 
 
@@ -110,43 +151,39 @@ private:
 };
 
 
-class ControlRectChangedInfo : public ControlEventInfo {
+template<typename MessageShim>
+class ControlKeyInfo : public ControlEventInfo {
 public:
-    ControlRectChangedInfo(
+    ControlKeyInfo(
         const std::shared_ptr<zaf::Control>& control,
-        const Rect& previous_rect)
-        : 
+        const Message& message,
+        const std::shared_ptr<bool>& is_handled)
+        :
         ControlEventInfo(control),
-        previous_rect_(previous_rect) {
+        message_(message),
+        is_handled_(is_handled) {
 
     }
 
-    const zaf::Rect& PreviousRect() const {
-        return previous_rect_;
+    MessageShim KeyMessage() const {
+        return MessageShim{ message_ };
     }
 
-private:
-    zaf::Rect previous_rect_;
-};
-
-
-class ControlParentChangedInfo : public ControlEventInfo {
-public:
-    ControlParentChangedInfo(
-        const std::shared_ptr<zaf::Control>& control,
-        const std::shared_ptr<zaf::Control>& previous_parent) 
-        : 
-        ControlEventInfo(control), 
-        previous_parent_(previous_parent) {
-    
+    bool IsHandled() const {
+        return *is_handled_;
     }
 
-    const std::shared_ptr<zaf::Control>& PreviousParent() const {
-        return previous_parent_;
+    void SetIsHandled(bool is_handled) const {
+        *is_handled_ = is_handled;
     }
 
 private:
-    std::shared_ptr<zaf::Control> previous_parent_;
+    Message message_;
+    std::shared_ptr<bool> is_handled_;
 };
+
+using ControlKeyDownInfo = ControlKeyInfo<KeyMessage>;
+using ControlKeyUpInfo = ControlKeyInfo<KeyMessage>;
+using ControlCharInputInfo = ControlKeyInfo<CharMessage>;
 
 }

@@ -25,6 +25,15 @@ void EditableValueView::Initialize() {
         }
     }));
 
+    Subscriptions() += text_box_->KeyDownEvent().Subscribe(
+        [this](const ControlKeyDownInfo& event_info) {
+    
+        if (event_info.KeyMessage().VirtualKey() == VK_RETURN) {
+            ChangeValue();
+            event_info.SetIsHandled(true);
+        }
+    });
+
     this->AddChild(text_box_);
 }
 
@@ -45,17 +54,6 @@ void EditableValueView::SetValue(const std::shared_ptr<Object>& value) {
 
     value_ = value;
     text_box_->SetText(value_->ToString());
-}
-
-
-bool EditableValueView::OnKeyDown(const KeyMessage& message) {
-
-    if (message.VirtualKey() == VK_RETURN) {
-        ChangeValue();
-        return true;
-    }
-    
-    return __super::OnKeyDown(message);
 }
 
 
