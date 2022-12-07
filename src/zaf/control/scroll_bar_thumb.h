@@ -101,8 +101,8 @@ private:
     }
 
 private:
-    bool is_horizontal_;
-    bool is_dragging_;
+    bool is_horizontal_{};
+    bool is_dragging_{};
 
     Subject<ScrollBarThumbBeginDragInfo> begin_drag_event_;
     Subject<ScrollBarThumbDragInfo> drag_event_;

@@ -396,6 +396,10 @@ void ScrollableControl::SetScrollBarThickness(float thickness) {
 
 bool ScrollableControl::OnMouseWheel(const Point& position, const MouseWheelMessage& message) {
 
+    if (__super::OnMouseWheel(position, message)) {
+        return true;
+    }
+
     std::shared_ptr<ScrollBar> scroll_bar;
 
     if (message.IsHorizontalWheeling()) {

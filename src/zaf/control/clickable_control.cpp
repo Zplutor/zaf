@@ -9,6 +9,11 @@
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
+namespace {
+
+constexpr const wchar_t* const ClickEventPropertyName = L"ClickEvent";
+
+}
 
 ZAF_DEFINE_TYPE(ClickableControl)
 ZAF_DEFINE_TYPE_END
@@ -30,12 +35,18 @@ ClickableControl::~ClickableControl() {
 void ClickableControl::Initialize() {
     __super::Initialize();
     SetCanFocused(true);
-    SetCanClick(true);
 }
 
 
 void ClickableControl::Click() {
-    RaiseClickEvent();
+
+    auto observer = GetEventObserver<ClickableControlClickInfo>(
+        GetPropertyMap(),
+        ClickEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(ClickableControlClickInfo{ As<ClickableControl>(shared_from_this()) });
+    }
 }
 
 
@@ -61,7 +72,9 @@ void ClickableControl::OnMouseLeave(const std::shared_ptr<Control>& leaved_contr
 
 bool ClickableControl::OnMouseMove(const Point& position, const MouseMessage& message) {
 
-    __super::OnMouseMove(position, message);
+    if (__super::OnMouseMove(position, message)) {
+        return true;
+    }
 
     CheckIsMousePressed(position, message);
     return true;
@@ -69,6 +82,10 @@ bool ClickableControl::OnMouseMove(const Point& position, const MouseMessage& me
 
 
 bool ClickableControl::OnMouseDown(const Point& position, const MouseMessage& message) {
+
+    if (__super::OnMouseDown(position, message)) {
+        return true;
+    }
 
     if (message.MouseButton() == MouseButton::Left) {
         SetIsFocused(true);
@@ -81,14 +98,17 @@ bool ClickableControl::OnMouseDown(const Point& position, const MouseMessage& me
 
 bool ClickableControl::OnMouseUp(const Point& position, const MouseMessage& message) {
 
+    if (__super::OnMouseUp(position, message)) {
+        return true;
+    }
+
     if (is_mouse_press_) {
         if (message.MouseButton() == MouseButton::Left) {
             EndPress(PressType::Mouse);
-            return true;
         }
     }
 
-    return __super::OnMouseUp(position, message);
+    return true;
 }
 
 
@@ -222,6 +242,11 @@ void ClickableControl::OnFocusGain() {
 
 void ClickableControl::OnFocusLose() {
     NeedRepaint();
+}
+
+
+Observable<ClickableControlClickInfo> ClickableControl::ClickEvent() {
+    return GetEventObservable<ClickableControlClickInfo>(GetPropertyMap(), ClickEventPropertyName);
 }
 
 }

@@ -126,13 +126,13 @@ void Dialog::AddDialogButton(const std::shared_ptr<Button>& button, DialogResult
     DialogButtonItem item;
     item.dialog_result = dialog_result;
     item.click_event_subscription = button->ClickEvent().Subscribe(
-        [this](const ControlClickInfo& event_info) {
+        [this](const ClickableControlClickInfo& event_info) {
 
-            if (!RootControl()->IsAncestorOf(event_info.Control())) {
+            if (!RootControl()->IsAncestorOf(event_info.ClickableControl())) {
                 return;
             }
 
-            auto button = std::dynamic_pointer_cast<Button>(event_info.Control());
+            auto button = std::dynamic_pointer_cast<Button>(event_info.ClickableControl());
             auto iterator = dialog_buttons_.find(button);
             if (iterator == dialog_buttons_.end()) {
                 return;

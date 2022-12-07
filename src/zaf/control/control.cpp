@@ -70,9 +70,7 @@ constexpr const wchar_t* const kMouseEnterEventPropertyName = L"MouseEnterEvent"
 constexpr const wchar_t* const kMouseLeaveEventPropertyName = L"MouseLeaveEvent";
 constexpr const wchar_t* const kMouseHoverEventPropertyName = L"MouseHoverEvent";
 constexpr const wchar_t* const kRectChangeEventPropertyName = L"RectChangedEvent";
-constexpr const wchar_t* const CanClickPropertyName = L"CanClick";
 constexpr const wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
-constexpr const wchar_t* const ClickEventPropertyName = L"ClickEvent";
 constexpr const wchar_t* const CharInputEventPropertyName = L"CharInputEvent";
 constexpr const wchar_t* const DoubleClickEventPropertyName = L"DoubleClickEvent";
 constexpr const wchar_t* const KeyDownEventPropertyName = L"KeyDown";
@@ -124,7 +122,6 @@ ZAF_DEFINE_TYPE_PROPERTY(BackgroundImageLayout)
 ZAF_DEFINE_TYPE_PROPERTY(BackgroundImage)
 ZAF_DEFINE_TYPE_PROPERTY(Parent)
 ZAF_DEFINE_TYPE_PROPERTY(Window)
-ZAF_DEFINE_TYPE_PROPERTY(CanClick)
 ZAF_DEFINE_TYPE_PROPERTY(CanDoubleClick)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(Layouter)
 ZAF_DEFINE_TYPE_PROPERTY(Tooltip)
@@ -1505,16 +1502,6 @@ void Control::ReleaseCachedPaintingRenderer() {
 }
 
 
-bool Control::CanClick() const {
-    auto value = GetPropertyMap().TryGetProperty<bool>(CanClickPropertyName);
-    return value ? *value : false;
-}
-
-void Control::SetCanClick(bool can_click) {
-    GetPropertyMap().SetProperty(CanClickPropertyName, can_click);
-}
-
-
 bool Control::CanDoubleClick() const {
     auto value = GetPropertyMap().TryGetProperty<bool>(CanDoubleClickPropertyName);
     return value ? *value : false;
@@ -1605,11 +1592,6 @@ Observable<ControlMouseHoverInfo> Control::MouseHoverEvent() {
 }
 
 
-Observable<ControlClickInfo> Control::ClickEvent() {
-    return GetEventObservable<ControlClickInfo>(GetPropertyMap(), ClickEventPropertyName);
-}
-
-
 Observable<ControlDoubleClickInfo> Control::DoubleClickEvent() {
     return GetEventObservable<ControlDoubleClickInfo>(
         GetPropertyMap(), 
@@ -1654,19 +1636,22 @@ void Control::RouteMouseMoveMessage(const Point& position, const MouseMessage& m
 }
 
 
-bool Control::RouteMessage(const Point& position, const MouseMessage& message) {
+bool Control::RouteMouseMessage(const Point& position, const MouseMessage& message) {
 
     auto child = FindChildAtPosition(position);
 
     //A disabled child cannot handle messges.
     if (child && child->IsEnabled()) {
-        return child->RouteMessage(ToChildPoint(position, child), message);
+        if (child->RouteMouseMessage(ToChildPoint(position, child), message)) {
+            return true;
+        }
     }
     
-    if (IsEnabled()) {
-        return InterpretMessage(position, message);
+    if (!IsEnabled()) {
+        return false;
     }
-    return false;
+
+    return HandleMouseMessage(position, message);
 }
 
 
@@ -1684,7 +1669,7 @@ Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& 
 }
 
 
-bool Control::InterpretMessage(const Point& position, const MouseMessage& message) {
+bool Control::HandleMouseMessage(const Point& position, const MouseMessage& message) {
 
     switch (message.ID()) {
     case WM_MOUSEMOVE:
@@ -1704,7 +1689,7 @@ bool Control::InterpretMessage(const Point& position, const MouseMessage& messag
 
     case WM_MOUSEWHEEL:
     case WM_MOUSEHWHEEL:
-        return OnMouseWheel(position, dynamic_cast<const MouseWheelMessage&>(message));
+        return OnMouseWheel(position, As<MouseWheelMessage>(message));
 
     default:
         return false;
@@ -1734,14 +1719,7 @@ void Control::ChangeMouseCursor(const Message& message, bool& is_changed) {
 
 
 bool Control::OnMouseMove(const Point& position, const MouseMessage& message) {
-
-    auto parent = Parent();
-    if (parent != nullptr) {
-        return parent->OnMouseMove(ToParentPoint(position), message);
-    }
-    else {
-        return false;
-    }
+    return false;
 }
 
 
@@ -1808,96 +1786,40 @@ void Control::OnMouseHover(const std::shared_ptr<Control>& hovered_control) {
 bool Control::OnMouseDown(const Point& position, const MouseMessage& message) {
 
     if (message.MouseButton() == MouseButton::Left) {
-        if (HandleClickOnMouseDown(position)) {
+        if (HandleDoubleClickOnMouseDown(position)) {
             return true;
         }
-    }
-
-    auto parent = Parent();
-    if (parent) {
-        return parent->OnMouseDown(ToParentPoint(position), message);
     }
 
     return false;
 }
 
 
-bool Control::HandleClickOnMouseDown(const Point& position) {
+bool Control::HandleDoubleClickOnMouseDown(const Point& position) {
 
-    //Do not handle if cannot click.
-    if (!CanClick()) {
+    if (!CanDoubleClick()) {
         return false;
     }
 
     //Check if need to raise double click.
-    if (CanDoubleClick()) {
+    std::uint32_t current_time = GetTickCount();
+    if (current_time - last_mouse_down_time_ <= GetDoubleClickTime()) {
 
-        std::uint32_t current_time = GetTickCount();
-        std::uint32_t last_time = last_mouse_down_time_;
-        last_mouse_down_time_ = current_time;
-
-        //Raise double click event.
-        if (current_time - last_time <= GetDoubleClickTime()) {
+        if (last_mouse_down_position_ == position) {
             last_mouse_down_time_ = 0;
-            should_raise_click_event_ = false;
             RaiseDoubleClickEvent(position);
             return true;
         }
     }
 
-    //Set a flag that indicates a click event should be raised on mouse up.
-    should_raise_click_event_ = true;
-    return true;
-}
-
-
-bool Control::OnMouseUp(const Point& position, const MouseMessage& message) {
-
-    if (message.MouseButton() == MouseButton::Left) {
-        if (HandleClickOnMouseUp()) {
-            return true;
-        }
-    }
-
-    auto parent = Parent();
-    if (parent) {
-        return parent->OnMouseUp(ToParentPoint(position), message);
-    }
-
+    last_mouse_down_time_ = current_time;
+    last_mouse_down_position_ = position;
     return false;
 }
 
 
-bool Control::HandleClickOnMouseUp() {
-
-    //Do not handle if can not click.
-    if (!CanClick()) {
-        return false;
-    }
-
-    //Raise a click event if it should be.
-    if (should_raise_click_event_) {
-        RaiseClickEvent();
-        should_raise_click_event_ = false;
-    }
-    return true;
-}
-
-
-void Control::RaiseClickEvent() {
-
-    if (!CanClick()) {
-        return;
-    }
-
-    OnClick();
-
-    auto observer = GetEventObserver<ControlClickInfo>(GetPropertyMap(), ClickEventPropertyName);
-    if (observer) {
-
-        ControlClickInfo event_info(shared_from_this());
-        observer->OnNext(event_info);
-    }
+bool Control::OnMouseUp(const Point& position, const MouseMessage& message) {
+    return false;
 }
 
 
@@ -1933,14 +1855,7 @@ void Control::OnDoubleClick(const Point& position) {
 
 
 bool Control::OnMouseWheel(const Point& position, const MouseWheelMessage& message) {
-
-    auto parent = Parent();
-    if (parent != nullptr) {
-        return parent->OnMouseWheel(ToParentPoint(position), message);
-    }
-    else {
-        return false;
-    }
+    return false;
 }
 
 

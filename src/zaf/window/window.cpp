@@ -829,12 +829,12 @@ bool Window::HandleMouseMessage(const MouseMessage& message) {
 
     if (is_capturing_mouse) {
 
-        return capturing_mouse_control_->RouteMessage(
+        return capturing_mouse_control_->RouteMouseMessage(
             get_mouse_position_to_capturing_control(), 
             message);
     }
     else {
-        return root_control_->RouteMessage(message.MousePosition(), message);
+        return root_control_->RouteMouseMessage(message.MousePosition(), message);
     }
 }
 

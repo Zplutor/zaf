@@ -687,7 +687,7 @@ void ComboBoxDropDownListBox::Initialize() {
 
 bool ComboBoxDropDownListBox::OnMouseMove(const Point& position, const MouseMessage& message) {
 
-    bool result = __super::OnMouseMove(position, message);
+    bool is_handled = __super::OnMouseMove(position, message);
 
     if (! IsCapturingMouse()) {
         if (mouse_move_callback_ != nullptr) {
@@ -695,7 +695,7 @@ bool ComboBoxDropDownListBox::OnMouseMove(const Point& position, const MouseMess
         }
     }
 
-    return result;
+    return is_handled;
 }
 
 

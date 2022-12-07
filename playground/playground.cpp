@@ -70,9 +70,9 @@ public:
         auto reload = zaf::Create<zaf::Button>();
         reload->SetText(L"Refresh");
         reload->SetFixedHeight(30);
-        Subscriptions() += reload->ClickEvent().Subscribe([property_grid](const zaf::ControlClickInfo&) {
+        Subscriptions() += reload->ClickEvent().Subscribe(std::bind([property_grid]() {
             property_grid->RefreshValues();
-        });
+        }));
         this->RootControl()->AddChild(reload);
         this->RootControl()->AddChild(property_grid);
     }

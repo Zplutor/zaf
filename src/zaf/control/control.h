@@ -579,9 +579,6 @@ public:
 
     void SetIsCachedPaintingEnabled(bool value);
 
-    bool CanClick() const;
-    void SetCanClick(bool can_click);
-
     bool CanDoubleClick() const;
     void SetCanDoubleClick(bool can_double_click);
 
@@ -643,7 +640,6 @@ public:
     Observable<ControlMouseLeaveInfo> MouseLeaveEvent();
     Observable<ControlMouseHoverInfo> MouseHoverEvent();
 
-    Observable<ControlClickInfo> ClickEvent();
     Observable<ControlDoubleClickInfo> DoubleClickEvent();
 
     Observable<ControlKeyDownInfo> KeyDownEvent();
@@ -708,7 +704,6 @@ protected:
     virtual zaf::Size CalculatePreferredContentSize(const zaf::Size& bound_size) const;
 
     void RaiseContentChangedEvent();
-    void RaiseClickEvent();
     void RaiseDoubleClickEvent(const Point& position);
 
     /**
@@ -759,10 +754,10 @@ protected:
 
      @return
         Indicates that whether the notification has been processed by the control,
-        and should not delivered to the system.
+        and should not delivered to the parent.
 
-     This method is called when a WM_MOUSEMOVE message is received. Derived classes should 
-     call the same method of base class if they don't process the notification.
+     This method is called when a WM_MOUSEMOVE message is received. Derived classes should call the 
+     same method of base class.
      */
     virtual bool OnMouseMove(const Point& position, const MouseMessage& message);
 
@@ -800,11 +795,11 @@ protected:
         Information about the mouse down message (e.g. WM_LBUTTONDOWN).
 
      @return
-        Indicates that whether the notification has been processed by the control, 
-        and should not delivered to the system. 
+        Indicates that whether the notification has been processed by the control, and should not 
+        delivered to the parent. 
 
-     This method is called when a mouse button is pressed within the control. Derived classes 
-     should call the same method of base class if they don't process the notifiction.
+     This method is called when a mouse button is pressed within the control. Derived classes should 
+     call the same method of base class.
      */
     virtual bool OnMouseDown(const Point& position, const MouseMessage& message);
 
@@ -819,10 +814,10 @@ protected:
 
      @return
         Indicates that whether the notification has been processed by the control,
-        and should not delivered to the system.
+        and should not delivered to the parent.
 
      This method is called when a mouse button is released within the control. Derived classes 
-     should call the same method of base class if they don't process the notifiction.
+     should call the same method of base class.
      */
     virtual bool OnMouseUp(const Point& position, const MouseMessage& message);
 
@@ -840,10 +835,10 @@ protected:
 
      @return
         Indicates that whether the notification has been processed by the control,
-        and should not delivered to the system.   
+        and should not delivered to the parent.   
 
-     This method is called when the mouse wheel within the control. Derived classes
-     should call the same method of base class if they don't process the notification.
+     This method is called when the mouse wheel within the control. Derived classes should call the 
+     same method of base class.
      */
     virtual bool OnMouseWheel(const Point& position, const MouseWheelMessage& message);
 
@@ -950,8 +945,7 @@ private:
     void IsCapturingMouseChanged(bool is_capturing_mouse);
     void HandleMouveHover();
     void RouteMouseMoveMessage(const Point& position, const MouseMessage& message);
-    bool RouteMessage(const Point& position, const MouseMessage& message);
-    bool InterpretMessage(const Point& position, const MouseMessage& message);
+    bool RouteMouseMessage(const Point& position, const MouseMessage& message);
 
 private:
     friend class internal::ControlUpdateLock;
@@ -1007,8 +1001,8 @@ private:
 
     void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
 
-    bool HandleClickOnMouseDown(const Point& position);
-    bool HandleClickOnMouseUp();
+    bool HandleMouseMessage(const Point& position, const MouseMessage& message);
+    bool HandleDoubleClickOnMouseDown(const Point& position);
 
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
 
@@ -1042,8 +1036,8 @@ private:
     Frame border_;
     Frame padding_;
 
-    bool should_raise_click_event_{};
     std::uint32_t last_mouse_down_time_{};
+    Point last_mouse_down_position_;
 
     PropertyMap property_map_;
 };

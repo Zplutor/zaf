@@ -8,8 +8,7 @@ namespace zaf {
 ZAF_DEFINE_TYPE(ScrollBarThumb)
 ZAF_DEFINE_TYPE_END
 
-ScrollBarThumb::ScrollBarThumb() :
-    is_dragging_(false) {
+ScrollBarThumb::ScrollBarThumb() {
 
 }
 
@@ -97,7 +96,7 @@ void ScrollBarThumb::OnMouseRelease() {
 
 bool ScrollBarThumb::OnMouseMove(const Point& position, const MouseMessage& message) {
 
-    bool result = ClickableControl::OnMouseMove(position, message);
+    bool is_handled = __super::OnMouseMove(position, message);
 
     if (is_dragging_) {
 
@@ -106,7 +105,7 @@ bool ScrollBarThumb::OnMouseMove(const Point& position, const MouseMessage& mess
         drag_event_.GetObserver().OnNext(event_info);
     }
 
-    return result;
+    return is_handled;
 }
 
 }

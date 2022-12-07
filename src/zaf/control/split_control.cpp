@@ -470,17 +470,26 @@ void SplitBar::ChangeMouseCursor(const Message& message, bool& is_changed) {
 
 bool SplitBar::OnMouseMove(const Point& position, const MouseMessage& message) {
 
+    if (__super::OnMouseMove(position, message)) {
+        return true;
+    }
+
     if (IsCapturingMouse()) {
 
         SplitBarDragInfo event_info;
         event_info.split_bar = std::dynamic_pointer_cast<SplitBar>(shared_from_this());
         drag_event_.GetObserver().OnNext(event_info);
+        return true;
     }
-    return true;
+    return false;
 }
 
 
 bool SplitBar::OnMouseDown(const Point& position, const MouseMessage& message) {
+
+    if (__super::OnMouseDown(position, message)) {
+        return true;
+    }
 
     if (message.MouseButton() == MouseButton::Left) {
         CaptureMouse();
@@ -490,6 +499,10 @@ bool SplitBar::OnMouseDown(const Point& position, const MouseMessage& message) {
 
 
 bool SplitBar::OnMouseUp(const Point& position, const MouseMessage& message) {
+
+    if (__super::OnMouseDown(position, message)) {
+        return true;
+    }
 
     if (IsCapturingMouse()) {
         ReleaseMouse();

@@ -5,6 +5,8 @@
 
 namespace zaf {
 
+class ClickableControlClickInfo;
+
 /**
  Represents a clickable control.   
 
@@ -29,6 +31,8 @@ public:
      Perform a click action on the control.
      */
     void Click();
+
+    Observable<ClickableControlClickInfo> ClickEvent();
 
 protected:
     void Initialize() override;
@@ -60,6 +64,22 @@ private:
     bool is_pressed_;
     bool is_mouse_press_;
     bool is_key_press_;
+};
+
+
+class ClickableControlClickInfo {
+public:
+    explicit ClickableControlClickInfo(const std::shared_ptr<ClickableControl>& control) : 
+        control_(control) {
+
+    }
+
+    const std::shared_ptr<ClickableControl>& ClickableControl() const {
+        return control_;
+    }
+
+private:
+    std::shared_ptr<zaf::ClickableControl> control_;
 };
 
 }

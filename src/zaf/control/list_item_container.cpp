@@ -15,7 +15,6 @@ void ListItemContainer::Initialize() {
 
     SetBackgroundColor(Color::Transparent());
     SetCanFocused(true);
-    SetCanClick(true);
     SetCanDoubleClick(true);
     SetLayouter(CreateLayouter(std::bind(
         &ListItemContainer::LayoutItems,
@@ -49,40 +48,51 @@ void ListItemContainer::LayoutItems(
 
 bool ListItemContainer::OnMouseDown(const Point& position, const MouseMessage& message) {
 
+    if (__super::OnMouseDown(position, message)) {
+        return true;
+    }
+
     SetIsFocused(true);
 
     if (message.MouseButton() == MouseButton::Left) {
         CaptureMouse();
         select_strategy_->BeginChangingSelectionByMouseDown(position, message);
     }
-    
-    return __super::OnMouseDown(position, message);
+
+    return true;
 }
 
 
 bool ListItemContainer::OnMouseMove(const Point& position, const MouseMessage& message) {
 
+    if (__super::OnMouseMove(position, message)) {
+        return true;
+    }
+
     if (IsCapturingMouse()) {
         select_strategy_->ChangeSelectionByMouseMove(position, message);
         return true;
     }
-    else {
-        return __super::OnMouseMove(position, message);
-    }
+
+    return false;
 }
 
 
 bool ListItemContainer::OnMouseUp(const Point& position, const MouseMessage& message) {
 
-    if (message.MouseButton() != MouseButton::Left) {
-        return __super::OnMouseUp(position, message);
+    if (__super::OnMouseUp(position, message)) {
+        return true;
     }
 
-    if (IsCapturingMouse()) {
-        ReleaseMouse();
-    }
+    if (message.MouseButton() == MouseButton::Left) {
+    
+        if (IsCapturingMouse()) {
+            ReleaseMouse();
+        }
 
-    select_strategy_->EndChangingSelectionByMouseUp(position, message);
+        select_strategy_->EndChangingSelectionByMouseUp(position, message);
+    }
+    
     return true;
 }
 
