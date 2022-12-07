@@ -1844,11 +1844,6 @@ void Control::RaiseDoubleClickEvent(const Point& position) {
 }
 
 
-void Control::OnClick() {
-    
-}
-
-
 void Control::OnDoubleClick(const Point& position) {
 
 }

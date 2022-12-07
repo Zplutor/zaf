@@ -39,6 +39,11 @@ void ClickableControl::Initialize() {
 
 
 void ClickableControl::Click() {
+    OnClick();
+}
+
+
+void ClickableControl::OnClick() {
 
     auto observer = GetEventObserver<ClickableControlClickInfo>(
         GetPropertyMap(),
