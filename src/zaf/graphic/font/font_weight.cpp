@@ -72,4 +72,10 @@ ZAF_DEFINE_TYPE(FontWeight)
 ZAF_DEFINE_TYPE_PARSER(FontWeightParser)
 ZAF_DEFINE_TYPE_END
 
+ZAF_DEFINE_EQUALITY(FontWeight)
+
+std::wstring FontWeight::ToString() const {
+    return std::to_wstring(value_);
+}
+
 }

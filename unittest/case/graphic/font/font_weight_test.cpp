@@ -8,6 +8,32 @@
 #include <zaf/object/parsing/xaml_reader.h>
 #include "utility/assert.h"
 
+TEST(FontWeightTest, Hash) {
+
+    zaf::FontWeight weight1 = 111;
+    zaf::FontWeight weight2 = 111;
+    ASSERT_EQ(weight1.Hash(), weight2.Hash());
+}
+
+
+TEST(FontWeightTest, IsEqual) {
+
+    zaf::FontWeight weight1 = zaf::FontWeight::ExtraBlack;
+    zaf::FontWeight weight2 = zaf::FontWeight::ExtraBlack;
+    ASSERT_TRUE(weight1.IsEqual(weight2));
+
+    zaf::FontWeight weight3 = zaf::FontWeight::Bold;
+    ASSERT_FALSE(weight1.IsEqual(weight3));
+}
+
+
+TEST(FontWeightTest, ToString) {
+
+    zaf::FontWeight weight = 173;
+    ASSERT_EQ(weight.ToString(), L"173");
+}
+
+
 TEST(FontWeightTest, ParseInvalidAttributeValue) {
 
     auto parser = zaf::FontWeight::Type->GetParser();

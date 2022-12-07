@@ -1,5 +1,8 @@
 #pragma once
 
+#include <zaf/base/hash.h>
+#include <zaf/base/relation_operator.h>
+#include <zaf/object/equality.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
@@ -10,6 +13,7 @@ namespace zaf {
 class FontWeight : public Object {
 public:
     ZAF_DECLARE_TYPE
+    ZAF_DECLARE_EQUALITY
 
 public:
     /**
@@ -78,15 +82,31 @@ public:
     static const int Maximum = 999;
 
 public:
-    constexpr FontWeight() = default;
-    constexpr FontWeight(int value) : value_(value) { }
+    FontWeight() = default;
+    FontWeight(int value) : value_(value) { }
+
+    int Value() const {
+        return value_;
+    }
 
     constexpr operator int() const {
         return value_;
     }
 
+    std::wstring ToString() const override;
+
 private:
     int value_{};
 };
 
+}
+
+
+namespace std {
+template<>
+struct hash<zaf::FontWeight> {
+    std::size_t operator()(const zaf::FontWeight& font_weight) {
+        return zaf::CalculateHash(font_weight.Value());
+    }
+};
 }
