@@ -58,6 +58,8 @@ public:
         has_underline = has;
     }
 
+    std::wstring ToString() const override;
+
 public:
     /**
      Font family name.

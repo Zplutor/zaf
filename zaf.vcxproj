@@ -133,6 +133,7 @@
     <ClCompile Include="src\zaf\control\property_grid\property_table.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\rect_config.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\size_config.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\textual_control_config.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\text_value_view.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\type_config.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\type_config_factory.cpp" />
@@ -398,6 +399,7 @@
     <ClInclude Include="src\zaf\control\property_grid\property_table.h" />
     <ClInclude Include="src\zaf\control\property_grid\rect_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\size_config.h" />
+    <ClInclude Include="src\zaf\control\property_grid\textual_control_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\text_value_view.h" />
     <ClInclude Include="src\zaf\control\property_grid\type_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\type_config_factory.h" />

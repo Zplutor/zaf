@@ -280,7 +280,7 @@ void ListControlImplementation::OnItemContainerDoubleClick(
         return;
     }
 
-    auto index = FindItemIndexAtPosition(event_info.Position());
+    auto index = item_height_manager_->GetItemIndex(event_info.Position().y);
     if (index) {
         item_double_click_event_(*index);
     }

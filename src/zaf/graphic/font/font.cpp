@@ -49,4 +49,8 @@ Font Font::FromLOGFONT(const LOGFONT& logfont) {
 }
 
 
+std::wstring Font::ToString() const {
+    return family_name;
+}
+
 }

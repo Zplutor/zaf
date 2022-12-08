@@ -39,6 +39,15 @@ void ColorValueView::InitializeTextBox() {
     color_text_box_->SetParagraphAlignment(ParagraphAlignment::Center);
     color_text_box_->SetAllowBeep(false);
 
+    Subscriptions() += color_text_box_->KeyDownEvent().Subscribe(
+        [this](const ControlKeyDownInfo& event_info) {
+    
+        if (event_info.KeyMessage().VirtualKey() == VK_RETURN) {
+            ChangeColorByTextBox();
+            event_info.SetIsHandled(true);
+        }
+    });
+
     Subscriptions() += color_text_box_->FocusChangeEvent().Subscribe(std::bind([this]() {
     
         if (color_text_box_->IsFocused()) {
@@ -125,21 +134,6 @@ void ColorValueView::SetColorToTextBox(const Color& color) {
 
     color_text_box_->SetText(text);
     color_text_box_->SetIsVisible(true);
-}
-
-
-bool ColorValueView::OnKeyDown(const KeyMessage& message) {
-
-    if (__super::OnKeyDown(message)) {
-        return true;
-    }
-
-    if (message.VirtualKey() == VK_RETURN) {
-        ChangeColorByTextBox();
-        return true;
-    }
-
-    return false;
 }
 
 
