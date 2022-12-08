@@ -49,8 +49,9 @@ private:
 
 private:
     void InitializeSplitControl();
-    void InitializeToolbar();
+    void InitializeFirstPaneToolbar();
     void InitializeTreeControl();
+    void InitializeSecondPaneToolbar();
     void InitializePropertyGrid();
     void ChangeHighlightObject(const std::shared_ptr<Object>& object);
 

@@ -12,7 +12,9 @@ namespace zaf {
 namespace {
 
 constexpr float DefaultWindowWidth = 600;
-constexpr float DefaultWindowHeight = 600;
+constexpr float DefaultWindowHeight = 800;
+
+constexpr float ToolbarHeight = 30;
 
 }
 
@@ -46,8 +48,11 @@ void InspectorWindow::Initialize() {
     RootControl()->SetLayouter(Create<VerticalLayouter>());
 
     InitializeSplitControl();
-    InitializeToolbar();
+
+    InitializeFirstPaneToolbar();
     InitializeTreeControl();
+
+    InitializeSecondPaneToolbar();
     InitializePropertyGrid();
 }
 
@@ -63,7 +68,7 @@ void InspectorWindow::InitializeSplitControl() {
 }
 
 
-void InspectorWindow::InitializeToolbar() {
+void InspectorWindow::InitializeFirstPaneToolbar() {
 
     auto select_button = Create<Button>();
     select_button->SetText(L"Select");
@@ -72,7 +77,7 @@ void InspectorWindow::InitializeToolbar() {
     }));
 
     auto toolbar = Create<Control>();
-    toolbar->SetFixedHeight(40);
+    toolbar->SetFixedHeight(ToolbarHeight);
     toolbar->SetLayouter(Create<HorizontalLayouter>());
     toolbar->AddChild(select_button);
 
@@ -106,6 +111,23 @@ void InspectorWindow::InitializeTreeControl() {
     }));
 
     split_control_->FirstPane()->AddChild(tree_control_);
+}
+
+
+void InspectorWindow::InitializeSecondPaneToolbar() {
+
+    auto refresh_button = Create<Button>();
+    refresh_button->SetText(L"Refresh");
+    Subscriptions() += refresh_button->ClickEvent().Subscribe(std::bind([this]() {
+        property_grid_->RefreshValues();
+    }));
+
+    auto toolbar = Create<Control>();
+    toolbar->SetFixedHeight(ToolbarHeight);
+    toolbar->SetLayouter(Create<HorizontalLayouter>());
+    toolbar->AddChild(refresh_button);
+
+    split_control_->SecondPane()->AddChild(toolbar);
 }
 
 
