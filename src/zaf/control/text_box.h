@@ -301,8 +301,7 @@ protected:
     bool OnKeyUp(const KeyMessage& message) override;
     bool OnCharInput(const CharMessage& message) override;
 
-    void OnFocusGain() override;
-    void OnFocusLose() override;
+    void OnFocusChanged() override;
 
 private:
     class TextHostBridge : public ITextHost {

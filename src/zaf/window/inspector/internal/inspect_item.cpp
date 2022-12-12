@@ -16,7 +16,7 @@ void InspectItem::SetIsHighlight(bool is_highlight) {
 
     is_highlight_ = is_highlight;
 
-    SetBorderColor(is_highlight_ ? Color::FromRGB(ControlSelectedColorRGB) : Color::Transparent());
+    SetBorderColor(is_highlight_ ? Color::FromRGB(ControlSelectedActivedColorRGB) : Color::Transparent());
 }
 
 }

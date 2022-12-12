@@ -126,7 +126,7 @@ void Item::InitializeSplitControl() {
     split_control_->SplitBar()->SetSplitterColorPicker([](const Control& control) {
     
         if (control.IsSelected()) {
-            return Color::FromRGB(zaf::internal::ControlSelectedColorRGB);
+            return Color::FromRGB(zaf::internal::ControlSelectedActivedColorRGB);
         }
         return Color::FromRGB(DelimiterLineColor);
     }); 

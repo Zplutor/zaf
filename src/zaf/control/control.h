@@ -430,12 +430,12 @@ public:
     /**
      Determinte whether the control is the direct parent of specified control.
      */
-    bool IsParentOf(const std::shared_ptr<Control>& child) const;
+    bool IsParentOf(const std::shared_ptr<const Control>& child) const;
 
     /**
      Determinte whether the control is the ancestor of specified control.
      */
-    bool IsAncestorOf(const std::shared_ptr<Control>& child) const;
+    bool IsAncestorOf(const std::shared_ptr<const Control>& child) const;
 
     /**
      Get the control's parent.
@@ -623,6 +623,16 @@ public:
     }
 
     /**
+     Requires the control to repaint.
+     */
+    void NeedRepaint();
+
+    /**
+     Requires the control to repaint specified rectangle area.
+     */
+    void NeedRepaintRect(const zaf::Rect& rect);
+
+    /**
      Get rect change event.
 
      This event is raised when the control's rect is changed.
@@ -664,16 +674,6 @@ protected:
      Derived classes can override this method to paint the control.
      */
     virtual void Paint(Canvas& canvas, const zaf::Rect& dirty_rect);
-
-    /**
-     Require the control to repaint.
-     */
-    void NeedRepaint();
-
-    /**
-     Require the control to repaint specified rectangle area.
-     */
-    void NeedRepaintRect(const zaf::Rect& rect);
 
     /**
      Release the renderer-dependent resources.
@@ -882,20 +882,12 @@ protected:
     virtual bool OnCharInput(const CharMessage& message);
 
     /**
-     Process the focus gain notification.
+     Process the focus changed notification. 
 
-     This method is called when the control gained the focus. Derived classes should call the 
-     same method of base class if they don't process the notification.
+     This method is called when the control's focus state changed. Dervied classes should call the 
+     same method of base class to raise the focus changed event.
      */
-    virtual void OnFocusGain();
-
-    /**
-     Process the focus lose notification.
-
-     This method is called when the control lost the focus. Derived classes should call the 
-     same method of base class if they don't process the notification.
-     */
-    virtual void OnFocusLose();
+    virtual void OnFocusChanged();
 
     /**
      Process the rect change notification.

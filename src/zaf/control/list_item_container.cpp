@@ -1,4 +1,5 @@
 #include <zaf/control/list_item_container.h>
+#include <zaf/base/as.h>
 #include <zaf/control/internal/list_control/list_control_single_select_strategy.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -105,6 +106,24 @@ bool ListItemContainer::OnKeyDown(const KeyMessage& message) {
 
     bool is_handled = select_strategy_->ChangeSelectionByKeyDown(message);
     return is_handled;
+}
+
+
+void ListItemContainer::OnFocusChanged() {
+
+    for (const auto& each_child : Children()) {
+
+        auto list_item = As<ListItem>(each_child);
+        if (!list_item) {
+            continue;
+        }
+
+        if (list_item->IsSelected()) {
+            list_item->NeedRepaint();
+        }
+    }
+
+    __super::OnFocusChanged();
 }
 
 }

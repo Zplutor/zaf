@@ -240,13 +240,11 @@ void ClickableControl::CheckIsMousePressed(const Point& position, const MouseMes
 }
 
 
-void ClickableControl::OnFocusGain() {
-    NeedRepaint();
-}
+void ClickableControl::OnFocusChanged() {
 
-
-void ClickableControl::OnFocusLose() {
     NeedRepaint();
+
+    __super::OnFocusChanged();
 }
 
 

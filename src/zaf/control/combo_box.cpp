@@ -668,7 +668,9 @@ void ComboBox::NotifySelectionChange() {
 }
 
 
-void ComboBox::OnFocusGain() {
+void ComboBox::OnFocusChanged() {
+
+    __super::OnFocusChanged();
 
     if (IsEditable()) {
         edit_text_box_->SetIsFocused(true);

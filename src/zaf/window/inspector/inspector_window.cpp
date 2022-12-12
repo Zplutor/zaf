@@ -101,13 +101,18 @@ void InspectorWindow::InitializeTreeControl() {
     Subscriptions() += tree_control_->SelectionChangeEvent().Subscribe(std::bind([this]() {
 
         auto selected_item = tree_control_->GetFirstSelectedItem();
-        if (selected_item) {
-
-            //Retain expanded properties after switching target control.
-            auto expanded_node_tree = property_grid_->GetExpandedNodeTree();
-            property_grid_->SetTargetObject(selected_item);
-            property_grid_->ExpandNodeTree(expanded_node_tree);
+        if (!selected_item) {
+            return;
         }
+
+        if (selected_item == property_grid_->TargetObject()) {
+            return;
+        }
+
+        //Retain expanded properties after switching target control.
+        auto expanded_node_tree = property_grid_->GetExpandedNodeTree();
+        property_grid_->SetTargetObject(selected_item);
+        property_grid_->ExpandNodeTree(expanded_node_tree);
     }));
 
     split_control_->FirstPane()->AddChild(tree_control_);

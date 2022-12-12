@@ -1188,12 +1188,12 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
 }
 
 
-bool Control::IsParentOf(const std::shared_ptr<Control>& child) const {
+bool Control::IsParentOf(const std::shared_ptr<const Control>& child) const {
     return child->Parent().get() == this;
 }
 
 
-bool Control::IsAncestorOf(const std::shared_ptr<Control>& child) const {
+bool Control::IsAncestorOf(const std::shared_ptr<const Control>& child) const {
 
     auto ancestor = child->Parent();
     while (ancestor != nullptr) {
@@ -1467,21 +1467,7 @@ void Control::IsFocusedChanged(bool is_focused) {
 
     is_focused_ = is_focused;
 
-    if (is_focused_) {
-        OnFocusGain();
-    }
-    else {
-        OnFocusLose();
-    }
-
-    auto event_observer = GetEventObserver<ControlFocusChangeInfo>(
-        GetPropertyMap(),
-        kFocusChangeEventPropertyName);
-
-    if (event_observer) {
-        ControlFocusChangeInfo event_info(shared_from_this());
-        event_observer->OnNext(event_info);
-    }
+    OnFocusChanged();
 }
 
 
@@ -1939,13 +1925,16 @@ Observable<ControlCharInputInfo> Control::CharInputEvent() {
 }
 
 
-void Control::OnFocusGain() {
+void Control::OnFocusChanged() {
 
-}
+    auto event_observer = GetEventObserver<ControlFocusChangeInfo>(
+        GetPropertyMap(),
+        kFocusChangeEventPropertyName);
 
-
-void Control::OnFocusLose() {
-
+    if (event_observer) {
+        ControlFocusChangeInfo event_info(shared_from_this());
+        event_observer->OnNext(event_info);
+    }
 }
 
 

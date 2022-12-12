@@ -21,6 +21,7 @@ protected:
     bool OnMouseMove(const Point& position, const MouseMessage& message) override;
     bool OnMouseUp(const Point& position, const MouseMessage& message) override;
     bool OnKeyDown(const KeyMessage& message) override;
+    void OnFocusChanged() override;
 
 private:
     friend class internal::ListControlImplementation;

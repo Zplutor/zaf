@@ -45,8 +45,7 @@ protected:
     void OnMouseRelease() override;
     bool OnKeyDown(const KeyMessage& message) override;
     bool OnKeyUp(const KeyMessage& message) override;
-    void OnFocusGain() override;
-    void OnFocusLose() override;
+    void OnFocusChanged() override;
 
     virtual void OnClick();
 

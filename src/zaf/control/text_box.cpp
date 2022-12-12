@@ -931,23 +931,23 @@ bool TextBox::OnCharInput(const CharMessage& message) {
 }
 
 
-void TextBox::OnFocusGain() {
+void TextBox::OnFocusChanged() {
 
-    if (text_service_ != nullptr) {
-        text_service_->TxSendMessage(WM_SETFOCUS, 0, 0, nullptr);
+    if (text_service_) {
+
+        if (this->IsFocused()) {
+            text_service_->TxSendMessage(WM_SETFOCUS, 0, 0, nullptr);
+        }
+        else {
+            if (caret_) {
+                caret_->SetIsVisible(false);
+            }
+
+            text_service_->TxSendMessage(WM_KILLFOCUS, 0, 0, nullptr);
+        }
     }
-}
 
-
-void TextBox::OnFocusLose() {
-
-    if (caret_) {
-        caret_->SetIsVisible(false);
-    }
-
-    if (text_service_ != nullptr) {
-        text_service_->TxSendMessage(WM_KILLFOCUS, 0, 0, nullptr);
-    }
+    __super::OnFocusChanged();
 }
 
 

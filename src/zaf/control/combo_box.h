@@ -153,7 +153,7 @@ protected:
 
     void OnClick() override;
     bool OnKeyDown(const KeyMessage& message) override;
-    void OnFocusGain() override;
+    void OnFocusChanged() override;
 
     void OnTextChanged() override;
 
