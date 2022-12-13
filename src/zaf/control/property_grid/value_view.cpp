@@ -1,7 +1,8 @@
 #include <zaf/control/property_grid/value_view.h>
+#include <zaf/base/as.h>
 #include <zaf/control/layout/linear_layouter.h>
+#include <zaf/control/list_item.h>
 #include <zaf/creation.h>
-#include <zaf/internal/theme.h>
 #include <zaf/window/window.h>
 
 namespace zaf::property_grid {
@@ -16,36 +17,19 @@ void ValueView::Initialize() {
     this->SetBorder(Frame{ 0, 1, 1, 1});
     this->SetBorderColorPicker([](const Control& control) {
     
-        const auto& view = dynamic_cast<const ValueView&>(control);
+        auto parent = control.Parent();
+        while (parent) {
 
-        if (!view.IsSelected()) {
-            return Color::White();
+            auto list_item = As<ListItem>(parent);
+            if (list_item) {
+                return list_item->BackgroundColor();
+            }
+
+            parent = parent->Parent();
         }
 
-        return Color::FromRGB(
-            view.IsWithinFocusedControl() ? 
-            internal::ControlSelectedActivedColorRGB :
-            internal::ControlSelectedInActivedColorRGB);
+        return Color::White();
     });
-}
-
-
-//TODO: duplicated codes with ListItem.
-bool ValueView::IsWithinFocusedControl() const {
-
-    auto window = this->Window();
-    if (!window) {
-        return false;
-    }
-
-    auto focused_control = window->FocusedControl();
-    if (!focused_control) {
-        return false;
-    }
-
-    return
-        this->IsAncestorOf(focused_control) ||
-        focused_control->IsAncestorOf(shared_from_this());
 }
 
 }

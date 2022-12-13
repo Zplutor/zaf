@@ -9,7 +9,7 @@ protected:
     void Initialize() override;
 
 private:
-    bool IsWithinFocusedControl() const;
+    bool IsWithinFocusedContext() const;
 };
 
 }

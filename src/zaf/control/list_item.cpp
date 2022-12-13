@@ -1,5 +1,7 @@
 #include <zaf/control/list_item.h>
+#include <zaf/base/as.h>
 #include <zaf/control/layout/linear_layouter.h>
+#include <zaf/control/list_item_container.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
 #include <zaf/window/window.h>
@@ -21,7 +23,7 @@ void ListItem::Initialize() {
         }
 
         return Color::FromRGB(
-            item.IsWithinFocusedControl() ? 
+            item.IsWithinFocusedContext() ? 
             internal::ControlSelectedActivedColorRGB :
             internal::ControlSelectedInActivedColorRGB);
     });
@@ -39,7 +41,7 @@ void ListItem::Initialize() {
 }
 
 
-bool ListItem::IsWithinFocusedControl() const {
+bool ListItem::IsWithinFocusedContext() const {
 
     auto window = this->Window();
     if (!window) {
@@ -51,9 +53,14 @@ bool ListItem::IsWithinFocusedControl() const {
         return false;
     }
 
+    auto container = As<ListItemContainer>(Parent());
+    if (!container) {
+        return false;
+    }
+
     return 
-        this->IsAncestorOf(focused_control) ||
-        focused_control->IsAncestorOf(shared_from_this());
+        container == focused_control ||
+        container->IsAncestorOf(focused_control);
 }
 
 }

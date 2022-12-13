@@ -1,5 +1,6 @@
 #include <zaf/control/property_grid/internal/item.h>
 #include <zaf/base/as.h>
+#include <zaf/control/list_item.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
 
@@ -125,9 +126,17 @@ void Item::InitializeSplitControl() {
 
     split_control_->SplitBar()->SetSplitterColorPicker([](const Control& control) {
     
-        if (control.IsSelected()) {
-            return Color::FromRGB(zaf::internal::ControlSelectedActivedColorRGB);
+        auto parent = control.Parent();
+        while (parent) {
+
+            auto list_item = As<ListItem>(parent);
+            if (list_item) {
+                return list_item->BackgroundColor();
+            }
+
+            parent = parent->Parent();
         }
+
         return Color::FromRGB(DelimiterLineColor);
     }); 
 

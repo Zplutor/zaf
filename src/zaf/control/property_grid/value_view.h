@@ -35,9 +35,6 @@ protected:
     }
 
 private:
-    bool IsWithinFocusedControl() const;
-
-private:
     Subject<std::shared_ptr<Object>> value_changed_event_;
     Subject<ValueView*> should_select_event_;
 };
