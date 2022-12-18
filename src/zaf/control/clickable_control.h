@@ -36,8 +36,8 @@ public:
 
 protected:
     void Initialize() override;
-    void OnMouseEnter(const std::shared_ptr<Control>& entered_control) override;
-    void OnMouseLeave(const std::shared_ptr<Control>& leaved_control) override;
+    void OnMouseEnter(const MouseEnterInfo& event_info) override;
+    void OnMouseLeave(const MouseLeaveInfo& event_info) override;
     bool OnMouseMove(const Point& position, const MouseMessage& message) override;
     bool OnMouseDown(const Point& position, const MouseMessage& message) override;
     bool OnMouseUp(const Point& position, const MouseMessage& message) override;

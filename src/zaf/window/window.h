@@ -594,6 +594,9 @@ private:
     void SetMouseOverControl(
         const std::shared_ptr<Control>& mouse_over_control, 
         const MouseMessage& message);
+    void ChangeControlMouseOverState(
+        const std::shared_ptr<Control>& target_control,
+        bool is_mouse_over);
     void SetCaptureMouseControl(const std::shared_ptr<Control>& capture_control, bool is_releasing);
     void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
 

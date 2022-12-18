@@ -55,21 +55,21 @@ void ClickableControl::OnClick() {
 }
 
 
-void ClickableControl::OnMouseEnter(const std::shared_ptr<Control>& entered_control) {
+void ClickableControl::OnMouseEnter(const MouseEnterInfo& event_info) {
 
-    __super::OnMouseEnter(entered_control);
+    __super::OnMouseEnter(event_info);
 
-    if (entered_control.get() == this) {
+    if (event_info.Source().get() == this) {
         NeedRepaint();
     }
 }
 
 
-void ClickableControl::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
+void ClickableControl::OnMouseLeave(const MouseLeaveInfo& event_info) {
 
-    __super::OnMouseLeave(leaved_control);
+    __super::OnMouseLeave(event_info);
 
-    if (leaved_control.get() == this) {
+    if (event_info.Source().get() == this) {
         NeedRepaint();
     }
 }

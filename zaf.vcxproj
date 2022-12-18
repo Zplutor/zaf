@@ -72,6 +72,7 @@
     <ClCompile Include="src\zaf\control\control.cpp" />
     <ClCompile Include="src\zaf\control\control_binder.cpp" />
     <ClCompile Include="src\zaf\control\event\double_click_info.cpp" />
+    <ClCompile Include="src\zaf\control\event\mouse_event_info.cpp" />
     <ClCompile Include="src\zaf\control\event\parent_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\rect_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\image_box.cpp" />
@@ -330,6 +331,7 @@
     <ClInclude Include="src\zaf\control\control_update_guard.h" />
     <ClInclude Include="src\zaf\control\event\double_click_info.h" />
     <ClInclude Include="src\zaf\control\event\keyboard_event_info.h" />
+    <ClInclude Include="src\zaf\control\event\mouse_event_info.h" />
     <ClInclude Include="src\zaf\control\event\parent_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\rect_changed_info.h" />
     <ClInclude Include="src\zaf\control\expand_state.h" />

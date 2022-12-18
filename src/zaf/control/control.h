@@ -13,6 +13,7 @@
 #include <zaf/control/color_picker.h>
 #include <zaf/control/event/double_click_info.h>
 #include <zaf/control/event/keyboard_event_info.h>
+#include <zaf/control/event/mouse_event_info.h>
 #include <zaf/control/event/parent_changed_info.h>
 #include <zaf/control/event/rect_changed_info.h>
 #include <zaf/control/image_layout.h>
@@ -648,8 +649,8 @@ public:
      */
     Observable<ControlFocusChangeInfo> FocusChangeEvent();
 
-    Observable<ControlMouseEnterInfo> MouseEnterEvent();
-    Observable<ControlMouseLeaveInfo> MouseLeaveEvent();
+    Observable<MouseEnterInfo> MouseEnterEvent();
+    Observable<MouseLeaveInfo> MouseLeaveEvent();
     Observable<ControlMouseHoverInfo> MouseHoverEvent();
 
     Observable<DoubleClickInfo> DoubleClickEvent();
@@ -763,27 +764,8 @@ protected:
      */
     virtual bool OnMouseMove(const Point& position, const MouseMessage& message);
 
-    /**
-     Process the mouse enter notification.
-
-     @param entered_control
-         The control which mouse enters. It is the current control or its children.
-
-     This method is called when the mouse has entered the control. Derived classes should 
-     call the same method of base class if they don't process the notification.
-     */
-    virtual void OnMouseEnter(const std::shared_ptr<Control>& entered_control);
-
-    /**
-     Process the mouse leave notification.
-
-     @param entered_control
-         The control which mouse leaves. It is the current control or its children.
-
-     This method is called when the mouse has left the control. Derived classes should 
-     call the same method of base class if they don't process the notifiction.
-     */
-    virtual void OnMouseLeave(const std::shared_ptr<Control>& leaved_control);
+    virtual void OnMouseEnter(const MouseEnterInfo& event_info);
+    virtual void OnMouseLeave(const MouseLeaveInfo& event_info);
 
     virtual void OnMouseHover(const std::shared_ptr<Control>& hovered_control);
 
@@ -903,7 +885,7 @@ private:
         window_ = window;
     }
 
-    void IsMouseOverChanged(bool is_mouse_over);
+    void SetIsMouseOverByWindow(bool is_mouse_over);
     void IsFocusedChanged(bool is_focused);
     void IsCapturingMouseChanged(bool is_capturing_mouse);
     void HandleMouveHover();

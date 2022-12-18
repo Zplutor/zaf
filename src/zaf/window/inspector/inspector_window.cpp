@@ -210,7 +210,7 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
     item->SetIsHighlight(item_data == highlight_object_);
 
     Subscriptions() += item->MouseEnterEvent().Subscribe(
-        [this, item_data](const ControlMouseEnterInfo& event_info) {
+        [this, item_data](const MouseEnterInfo& event_info) {
 
         ChangeHighlightObject(item_data);
 
@@ -221,7 +221,7 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
     });
 
     Subscriptions() += item->MouseLeaveEvent().Subscribe(
-        [this, item_data](const ControlMouseLeaveInfo& event_info) {
+        [this, item_data](const MouseLeaveInfo& event_info) {
 
         if (highlight_object_ != item_data) {
             return;

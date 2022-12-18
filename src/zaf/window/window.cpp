@@ -1135,7 +1135,7 @@ void Window::SetMouseOverControl(
     mouse_over_control_ = mouse_over_control;
 
     if (old_control ) {
-        old_control->IsMouseOverChanged(false);
+        ChangeControlMouseOverState(old_control, false);
     }
 
     if (mouse_over_control_ != nullptr) {
@@ -1151,7 +1151,7 @@ void Window::SetMouseOverControl(
             reinterpret_cast<WPARAM>(Handle()),
             MAKELPARAM(message.HitTestResult(), message.ID()));
 
-        mouse_over_control_->IsMouseOverChanged(true);
+        ChangeControlMouseOverState(mouse_over_control_, true);
 
         //Track mouse again to generate next mouse hover message.
         //TODO: Find out whether the new control is in non-client area.
@@ -1159,6 +1159,26 @@ void Window::SetMouseOverControl(
     }
 
     HideTooltipWindow();
+}
+
+
+void Window::ChangeControlMouseOverState(
+    const std::shared_ptr<Control>& target_control,
+    bool is_mouse_over) {
+
+    target_control->SetIsMouseOverByWindow(is_mouse_over);
+
+    //Raise and route event.
+    internal::MouseOverInfo event_info{ target_control };
+
+    for (auto control = target_control; control; control = control->Parent()) {
+        if (is_mouse_over) {
+            control->OnMouseEnter(event_info);
+        }
+        else {
+            control->OnMouseLeave(event_info);
+        }
+    }
 }
 
 

@@ -17,11 +17,11 @@ protected:
 
     zaf::Rect GetTextRect() override;
 
-    void OnMouseEnter(const std::shared_ptr<zaf::Control>& control) override {
+    void OnMouseEnter(const zaf::MouseEnterInfo& event_info) override {
         NeedRepaint();
     }
 
-    void OnMouseLeave(const std::shared_ptr<zaf::Control>& control) override {
+    void OnMouseLeave(const zaf::MouseLeaveInfo& event_info) override {
         NeedRepaint();
     }
 

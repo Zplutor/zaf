@@ -1372,20 +1372,8 @@ void Control::OnIsSelectedChanged() {
 }
 
 
-void Control::IsMouseOverChanged(bool is_mouse_over) {
-
-    if (is_mouse_over_ == is_mouse_over) {
-        return;
-    }
-
+void Control::SetIsMouseOverByWindow(bool is_mouse_over) {
     is_mouse_over_ = is_mouse_over;
-
-    if (is_mouse_over_) {
-        OnMouseEnter(shared_from_this());
-    }
-    else {
-        OnMouseLeave(shared_from_this());
-    }
 }
 
 
@@ -1556,15 +1544,15 @@ Observable<ControlFocusChangeInfo> Control::FocusChangeEvent() {
 }
 
 
-Observable<ControlMouseEnterInfo> Control::MouseEnterEvent() {
-    return GetEventObservable<ControlMouseEnterInfo>(
+Observable<MouseEnterInfo> Control::MouseEnterEvent() {
+    return GetEventObservable<MouseEnterInfo>(
         GetPropertyMap(), 
         kMouseEnterEventPropertyName);
 }
 
 
-Observable<ControlMouseLeaveInfo> Control::MouseLeaveEvent() {
-    return GetEventObservable<ControlMouseLeaveInfo>(
+Observable<MouseLeaveInfo> Control::MouseLeaveEvent() {
+    return GetEventObservable<MouseLeaveInfo>(
         GetPropertyMap(), 
         kMouseLeaveEventPropertyName);
 }
@@ -1708,38 +1696,26 @@ bool Control::OnMouseMove(const Point& position, const MouseMessage& message) {
 }
 
 
-void Control::OnMouseEnter(const std::shared_ptr<Control>& entered_control) {
+void Control::OnMouseEnter(const MouseEnterInfo& event_info) {
 
-    auto event_observer = GetEventObserver<ControlMouseEnterInfo>(
+    auto event_observer = GetEventObserver<MouseEnterInfo>(
         GetPropertyMap(),
         kMouseEnterEventPropertyName);
 
     if (event_observer) {
-
-        ControlMouseEnterInfo event_info(shared_from_this(), entered_control);
         event_observer->OnNext(event_info);
-    }
-
-    if (auto parent = Parent()) {
-        parent->OnMouseEnter(entered_control);
     }
 }
 
 
-void Control::OnMouseLeave(const std::shared_ptr<Control>& leaved_control) {
+void Control::OnMouseLeave(const MouseLeaveInfo& event_info) {
 
-    auto event_observer = GetEventObserver<ControlMouseLeaveInfo>(
+    auto event_observer = GetEventObserver<MouseLeaveInfo>(
         GetPropertyMap(),
         kMouseLeaveEventPropertyName);
 
     if (event_observer) {
-
-        ControlMouseLeaveInfo event_info(shared_from_this(), leaved_control);
         event_observer->OnNext(event_info);
-    }
-
-    if (auto parent = Parent()) {
-        parent->OnMouseLeave(leaved_control);
     }
 }
 
