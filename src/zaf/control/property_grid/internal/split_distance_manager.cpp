@@ -41,9 +41,9 @@ void SplitDistanceManager::OnSplitControlAdd(const std::shared_ptr<SplitControl>
     UpdateMaxSplitControlXOnAdd(*split_control);
 
     auto subscription = split_control->RectChangedEvent().Subscribe(
-        [this](const ControlRectChangedInfo& event_info) {
+        [this](const RectChangedInfo& event_info) {
 
-        auto& split_control = As<SplitControl>(*event_info.Control());
+        auto& split_control = As<SplitControl>(*event_info.Source());
         if (split_control.Rect().Left() == event_info.PreviousRect().Left()) {
             return;
         }

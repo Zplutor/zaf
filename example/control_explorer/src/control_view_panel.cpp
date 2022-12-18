@@ -18,9 +18,9 @@ void ControlViewPanel::SetExploredControl(const std::shared_ptr<zaf::Control>& c
 }
 
 
-void ControlViewPanel::ExploredControlRectChanged(const zaf::ControlRectChangedInfo& event_info) {
+void ControlViewPanel::ExploredControlRectChanged(const zaf::RectChangedInfo& event_info) {
 
-    if (event_info.Control() != explored_control_) {
+    if (event_info.Source() != explored_control_) {
         return;
     }
 

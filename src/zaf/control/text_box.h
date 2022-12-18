@@ -297,9 +297,9 @@ protected:
     bool OnMouseDown(const Point& position, const MouseMessage& message) override;
     bool OnMouseUp(const Point& position, const MouseMessage& message) override;
 
-    bool OnKeyDown(const KeyMessage& message) override;
-    bool OnKeyUp(const KeyMessage& message) override;
-    bool OnCharInput(const CharMessage& message) override;
+    void OnKeyDown(const KeyDownInfo& event_info) override;
+    void OnKeyUp(const KeyUpInfo& event_info) override;
+    void OnCharInput(const CharInputInfo& event_info) override;
 
     void OnFocusChanged() override;
 

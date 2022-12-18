@@ -154,6 +154,12 @@
     <Filter Include="zaf\control\property_grid\internal">
       <UniqueIdentifier>{3d547d53-7cdf-4255-88dd-e5cd590dc731}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\base\event">
+      <UniqueIdentifier>{2ad894ba-24eb-46df-87df-a53de41e3a1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\control\event">
+      <UniqueIdentifier>{2b04ea79-647a-4b12-b6e7-18af04a54ac9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -762,6 +768,15 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid\textual_control_config.cpp">
       <Filter>zaf\control\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\event\double_click_info.cpp">
+      <Filter>zaf\control\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\event\parent_changed_info.cpp">
+      <Filter>zaf\control\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\event\rect_changed_info.cpp">
+      <Filter>zaf\control\event</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1812,6 +1827,24 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\textual_control_config.h">
       <Filter>zaf\control\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\event\event_info.h">
+      <Filter>zaf\base\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\event\routed_event_info.h">
+      <Filter>zaf\base\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\double_click_info.h">
+      <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\keyboard_event_info.h">
+      <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\parent_changed_info.h">
+      <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\rect_changed_info.h">
+      <Filter>zaf\control\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

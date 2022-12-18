@@ -871,63 +871,69 @@ bool TextBox::OnMouseUp(const Point& position, const MouseMessage& message) {
 }
 
 
-bool TextBox::OnKeyDown(const KeyMessage& message) {
+void TextBox::OnKeyDown(const KeyDownInfo& event_info) {
     
-    if (__super::OnKeyDown(message)) {
-        return true;
+    __super::OnKeyDown(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
     if (!text_service_) {
-        return false;
+        return;
     }
 
     HRESULT result = text_service_->TxSendMessage(
         WM_KEYDOWN, 
-        message.WParam(),
-        message.LParam(),
+        event_info.Message().WParam(),
+        event_info.Message().LParam(),
         nullptr);
 
-    return true;
+    event_info.MarkAsHandled();
 }
 
 
-bool TextBox::OnKeyUp(const KeyMessage& message) {
+void TextBox::OnKeyUp(const KeyUpInfo& event_info) {
 
-    if (__super::OnKeyUp(message)) {
-        return true;
+    __super::OnKeyUp(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
     if (!text_service_) {
-        return false;
+        return;
     }
 
     HRESULT result = text_service_->TxSendMessage(
         WM_KEYUP, 
-        message.WParam(),
-        message.LParam(), 
+        event_info.Message().WParam(),
+        event_info.Message().LParam(),
         nullptr);
 
-    return true;
+    event_info.MarkAsHandled();
 }
 
 
-bool TextBox::OnCharInput(const CharMessage& message) {
+void TextBox::OnCharInput(const CharInputInfo& event_info) {
 
-    if (__super::OnCharInput(message)) {
-        return true;
+    __super::OnCharInput(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
     if (!text_service_) {
-        return false;
+        return;
     }
 
     HRESULT result = text_service_->TxSendMessage(
         WM_CHAR, 
-        message.WParam(),
-        message.LParam(),
+        event_info.Message().WParam(),
+        event_info.Message().LParam(),
         nullptr);
 
-    return true;
+    event_info.MarkAsHandled();
 }
 
 

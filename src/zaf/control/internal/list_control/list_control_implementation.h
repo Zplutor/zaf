@@ -113,7 +113,7 @@ private:
     void InstallDataSource(const std::weak_ptr<ListDataSource>& data_source);
     void InstallDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
     void InstallItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
-    void OnItemContainerDoubleClick(const ControlDoubleClickInfo& event_info);
+    void OnItemContainerDoubleClick(const DoubleClickInfo& event_info);
 
     void RegisterScrollBarEvents();
     void UnregisterScrollBarEvents(const std::shared_ptr<ScrollBar>& scroll_bar);

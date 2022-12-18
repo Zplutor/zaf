@@ -62,10 +62,10 @@ void MessageInputView::SendButtonClick() {
 }
 
 
-void MessageInputView::TextBoxKeyDown(const zaf::ControlKeyDownInfo& event_info) {
+void MessageInputView::TextBoxKeyDown(const zaf::KeyDownInfo& event_info) {
 
-    if (event_info.KeyMessage().VirtualKey() == VK_RETURN) {
+    if (event_info.Message().VirtualKey() == VK_RETURN) {
         send_button_->Click();
-        event_info.SetIsHandled(true);
+        event_info.MarkAsHandled();
     }
 }

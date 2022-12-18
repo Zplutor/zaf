@@ -31,13 +31,15 @@ public:
     }
 
 protected:
-    bool OnKeyDown(const zaf::KeyMessage& message) override {
+    void OnKeyDown(const zaf::KeyDownInfo& event_info) override {
 
-        if (__super::OnKeyDown(message)) {
-            return true;
+        __super::OnKeyDown(event_info);
+
+        if (event_info.IsHandled()) {
+            return;
         }
 
-        if (message.VirtualKey() == VK_RETURN) {
+        if (event_info.Message().VirtualKey() == VK_RETURN) {
 
             SHORT control_key_state = GetKeyState(VK_CONTROL);
             if ((control_key_state >> 15) == 0) {
@@ -45,11 +47,10 @@ protected:
                 if (value_change_event_ != nullptr) {
                     value_change_event_(*this);
                 }
-                return true;
+
+                event_info.MarkAsHandled();
             }
         }
-
-        return false;
     }
 
 private:

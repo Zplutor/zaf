@@ -149,13 +149,13 @@ void ScrollableControl::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void ScrollableControl::OnScrollContentRectChange(const ControlRectChangedInfo& event_info) {
+void ScrollableControl::OnScrollContentRectChange(const RectChangedInfo& event_info) {
 
     if (is_layouting_) {
         return;
     }
 
-    if (event_info.Control()->Size() != event_info.PreviousRect().size) {
+    if (As<Control>(event_info.Source())->Size() != event_info.PreviousRect().size) {
         NeedRelayout();
     }
 }

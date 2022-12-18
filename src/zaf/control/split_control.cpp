@@ -141,17 +141,17 @@ void SplitControl::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void SplitControl::OnRectChanged(const zaf::Rect& previous_rect) {
+void SplitControl::OnRectChanged(const RectChangedInfo& event_info) {
 
-    __super::OnRectChanged(previous_rect);
+    __super::OnRectChanged(event_info);
 
     if (IsHorizontalSplit()) {
-        if (previous_rect.size.height == Height()) {
+        if (event_info.PreviousRect().size.height == Height()) {
             return;
         }
     }
     else {
-        if (previous_rect.size.width == Width()) {
+        if (event_info.PreviousRect().size.width == Width()) {
             return;
         }
     }

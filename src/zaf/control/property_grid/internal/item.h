@@ -21,7 +21,7 @@ public:
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect& previous_rect) override;
-    void OnParentChanged(const std::shared_ptr<Control>& previous_parent) override;
+    void OnParentChanged(const ParentChangedInfo& event_info) override;
 
 private:
     void InitializeSubControls();

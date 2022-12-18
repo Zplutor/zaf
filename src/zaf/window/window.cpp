@@ -990,19 +990,13 @@ bool Window::OnKeyDown(const Message& message) {
         return false;
     }
 
-    KeyMessage key_message{ message };
+    KeyDownInfo event_info{ focused_control_, message };
 
-    auto current_control = focused_control_;
-    while (current_control) {
-
-        auto is_handled = current_control->OnKeyDown(key_message);
-        if (is_handled) {
-            return true;
-        }
-
-        current_control = current_control->Parent();
+    for (auto control = focused_control_; control; control = control->Parent()) {
+        control->OnKeyDown(event_info);
     }
-    return false;
+
+    return event_info.IsHandled();
 }
 
 
@@ -1012,19 +1006,13 @@ bool Window::OnKeyUp(const Message& message) {
         return false;
     }
 
-    KeyMessage key_message{ message };
+    KeyUpInfo event_info{ focused_control_, message };
 
-    auto current_control = focused_control_;
-    while (current_control) {
-
-        auto is_handled = current_control->OnKeyUp(key_message);
-        if (is_handled) {
-            return true;
-        }
-
-        current_control = current_control->Parent();
+    for (auto control = focused_control_; control; control = control->Parent()) {
+        control->OnKeyUp(event_info);
     }
-    return false;
+
+    return event_info.IsHandled();
 }
 
 
@@ -1034,19 +1022,13 @@ bool Window::OnCharInput(const Message& message) {
         return false;
     }
 
-    CharMessage char_message{ message };
-
-    auto current_control = focused_control_;
-    while (current_control) {
-
-        auto is_handled = current_control->OnCharInput(char_message);
-        if (is_handled) {
-            return true;
-        }
-
-        current_control = current_control->Parent();
+    CharInputInfo event_info{ focused_control_, message };
+    
+    for (auto control = focused_control_; control; control = control->Parent()) {
+        control->OnCharInput(event_info);
     }
-    return false;
+
+    return event_info.IsHandled();
 }
 
 

@@ -468,23 +468,27 @@ void ComboBox::DropDownListBoxMouseMove(const Point& position) {
 }
 
 
-bool ComboBox::OnKeyDown(const KeyMessage& message) {
+void ComboBox::OnKeyDown(const KeyDownInfo& event_info) {
 
-    if (__super::OnKeyDown(message)) {
-        return true;
+    __super::OnKeyDown(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    auto key = message.VirtualKey();
+    bool is_handled{};
+
+    auto key = event_info.Message().VirtualKey();
     if ((key == VK_UP) || (key == VK_DOWN)) {
 
         if (SelectNextDropDownListItem(key == VK_UP)) {
-            return true;
+            is_handled = true;
         }
     }
     else if ((key == VK_RETURN) || (key == VK_ESCAPE)) {
 
         ConfirmSelection(key == VK_ESCAPE);
-        return true;
+        is_handled = true;
     }
     else if (key == VK_SPACE) {
         
@@ -493,11 +497,13 @@ bool ComboBox::OnKeyDown(const KeyMessage& message) {
         //of clickable control triggered. So omit the event to 
         //prevent this problem.
         if (IsEditable()) {
-            return true;
+            is_handled = true;
         }
     }
     
-    return false;
+    if (is_handled) {
+        event_info.MarkAsHandled();
+    }
 }
 
 
@@ -701,18 +707,18 @@ bool ComboBoxDropDownListBox::OnMouseMove(const Point& position, const MouseMess
 }
 
 
-bool ComboBoxEditTextBox::OnKeyDown(const KeyMessage& message) {
+void ComboBoxEditTextBox::OnKeyDown(const KeyDownInfo& event_info) {
 
-    bool is_handled = __super::OnKeyDown(message);
+    __super::OnKeyDown(event_info);
 
-    auto key = message.VirtualKey(); 
+    auto key = event_info.Message().VirtualKey(); 
     if (key == VK_UP || key == VK_DOWN || key == VK_RETURN) {
 
         //Return false to derives the event to its parent - combo box.
-        return false;
+        //return false;
     }
     else {
-        return is_handled;
+        //return is_handled;
     }
 }
 

@@ -274,7 +274,7 @@ void ListControlImplementation::InstallItemContainer(
 
 
 void ListControlImplementation::OnItemContainerDoubleClick(
-    const ControlDoubleClickInfo& event_info) {
+    const DoubleClickInfo& event_info) {
 
     if (!item_double_click_event_) {
         return;

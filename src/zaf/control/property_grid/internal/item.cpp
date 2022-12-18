@@ -200,9 +200,9 @@ void Item::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void Item::OnParentChanged(const std::shared_ptr<Control>& previous_parent) {
+void Item::OnParentChanged(const ParentChangedInfo& event_info) {
 
-    __super::OnParentChanged(previous_parent);
+    __super::OnParentChanged(event_info);
 
     auto split_distance_manager = split_distance_manager_.lock();
     if (!split_distance_manager) {

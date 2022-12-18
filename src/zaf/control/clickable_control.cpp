@@ -129,33 +129,33 @@ void ClickableControl::OnMouseRelease() {
 }
 
 
-bool ClickableControl::OnKeyDown(const KeyMessage& message) {
+void ClickableControl::OnKeyDown(const KeyDownInfo& event_info) {
 
-    if (__super::OnKeyDown(message)) {
-        return true;
+    __super::OnKeyDown(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    if (message.VirtualKey() == VK_SPACE) {
+    if (event_info.Message().VirtualKey() == VK_SPACE) {
         BeginPress(PressType::Key);
-        return true;
+        event_info.MarkAsHandled();
     }
-    
-    return false;
 }
 
 
-bool ClickableControl::OnKeyUp(const KeyMessage& message) {
+void ClickableControl::OnKeyUp(const KeyUpInfo& event_info) {
 
-    if (__super::OnKeyUp(message)) {
-        return true;
+    __super::OnKeyUp(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    if (message.VirtualKey() == VK_SPACE) {
+    if (event_info.Message().VirtualKey() == VK_SPACE) {
         EndPress(PressType::Key);
-        return true;
+        event_info.MarkAsHandled();
     }
-
-    return false;
 }
 
 

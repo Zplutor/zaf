@@ -69,7 +69,7 @@ constexpr const wchar_t* const kLayouterPropertyName = L"Layouter";
 constexpr const wchar_t* const kMouseEnterEventPropertyName = L"MouseEnterEvent";
 constexpr const wchar_t* const kMouseLeaveEventPropertyName = L"MouseLeaveEvent";
 constexpr const wchar_t* const kMouseHoverEventPropertyName = L"MouseHoverEvent";
-constexpr const wchar_t* const kRectChangeEventPropertyName = L"RectChangedEvent";
+constexpr const wchar_t* const RectChangedEventPropertyName = L"RectChangedEvent";
 constexpr const wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
 constexpr const wchar_t* const CharInputEventPropertyName = L"CharInputEvent";
 constexpr const wchar_t* const DoubleClickEventPropertyName = L"DoubleClickEvent";
@@ -531,9 +531,6 @@ void Control::SetRect(const zaf::Rect& rect) {
 
     rect_ = new_rect;
 
-    //Notify rect change.
-    OnRectChanged(previous_rect);
-
     if (rect_.size != previous_rect.size) {
 
         ReleaseCachedPaintingRenderer();
@@ -545,34 +542,35 @@ void Control::SetRect(const zaf::Rect& rect) {
     //The focused control need to be notified while its absolute position changed, 
     //so that it can relayout its elements, if needed.
     auto window = Window();
-    if (window != nullptr) {
+    if (window) {
         auto focused_control = window->FocusedControl();
-        if (focused_control != nullptr) {
+        if (focused_control) {
             if (IsAncestorOf(focused_control)) {
                 focused_control->NeedRelayout();
             }
         }
     }
 
+    //Notify rect change.
+    RectChangedInfo event_info{ shared_from_this(), previous_rect };
+    OnRectChanged(event_info);
+
     auto parent = Parent();
-    if (parent != nullptr) {
+    if (parent) {
         parent->OnChildRectChanged(shared_from_this(), previous_rect);
-    }
-
-    //Trigger the rect change event.
-    auto event_observer = GetEventObserver<ControlRectChangedInfo>(
-        GetPropertyMap(),
-        kRectChangeEventPropertyName);
-
-    if (event_observer) {
-        ControlRectChangedInfo event_info(shared_from_this(), previous_rect);
-        event_observer->OnNext(event_info);
     }
 }
 
 
-void Control::OnRectChanged(const zaf::Rect& previous_rect) {
+void Control::OnRectChanged(const RectChangedInfo& event_info) {
 
+    auto event_observer = GetEventObserver<RectChangedInfo>(
+        GetPropertyMap(),
+        RectChangedEventPropertyName);
+
+    if (event_observer) {
+        event_observer->OnNext(event_info);
+    }
 }
 
 
@@ -1031,7 +1029,8 @@ void Control::SetParent(const std::shared_ptr<Control>& parent) {
     float old_dpi = GetDPI();
     parent_ = parent;
 
-    OnParentChanged(previous_parent);
+    ParentChangedInfo event_info{ shared_from_this(), previous_parent };
+    OnParentChanged(event_info);
 
     if (old_dpi != GetDPI()) {
         OnDPIChanged();
@@ -1543,10 +1542,10 @@ void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
 }
 
 
-Observable<ControlRectChangedInfo> Control::RectChangedEvent() {
-    return GetEventObservable<ControlRectChangedInfo>(
+Observable<RectChangedInfo> Control::RectChangedEvent() {
+    return GetEventObservable<RectChangedInfo>(
         GetPropertyMap(), 
-        kRectChangeEventPropertyName);
+        RectChangedEventPropertyName);
 }
 
 
@@ -1578,8 +1577,8 @@ Observable<ControlMouseHoverInfo> Control::MouseHoverEvent() {
 }
 
 
-Observable<ControlDoubleClickInfo> Control::DoubleClickEvent() {
-    return GetEventObservable<ControlDoubleClickInfo>(
+Observable<DoubleClickInfo> Control::DoubleClickEvent() {
+    return GetEventObservable<DoubleClickInfo>(
         GetPropertyMap(), 
         DoubleClickEventPropertyName);
 }
@@ -1815,23 +1814,20 @@ void Control::RaiseDoubleClickEvent(const Point& position) {
         return;
     }
 
-    OnDoubleClick(position);
+    DoubleClickInfo event_info{ shared_from_this(), position };
+    OnDoubleClick(event_info);
+}
 
-    auto observer = GetEventObserver<ControlDoubleClickInfo>(
+
+void Control::OnDoubleClick(const DoubleClickInfo& event_info) {
+
+    auto observer = GetEventObserver<DoubleClickInfo>(
         GetPropertyMap(),
         DoubleClickEventPropertyName);
 
     if (observer) {
-        observer->OnNext(ControlDoubleClickInfo{
-            shared_from_this(),
-            position
-        });
+        observer->OnNext(event_info);
     }
-}
-
-
-void Control::OnDoubleClick(const Point& position) {
-
 }
 
 
@@ -1850,78 +1846,54 @@ void Control::OnMouseRelease() {
 }
 
 
-bool Control::OnKeyDown(const KeyMessage& message) {
+void Control::OnKeyDown(const KeyDownInfo& event_info) {
 
-    auto observer = GetEventObserver<ControlKeyDownInfo>(
+    auto observer = GetEventObserver<KeyDownInfo>(
         GetPropertyMap(),
         KeyDownEventPropertyName);
 
     if (observer) {
-
-        auto is_handled = std::make_shared<bool>(false);
-        observer->OnNext(ControlKeyDownInfo{ shared_from_this(), message.Inner(), is_handled });
-
-        if (*is_handled) {
-            return true;
-        }
+        observer->OnNext(event_info);
     }
-
-    return false;
 }
 
 
-Observable<ControlKeyDownInfo> Control::KeyDownEvent() {
-    return GetEventObservable<ControlKeyDownInfo>(GetPropertyMap(), KeyDownEventPropertyName);
+Observable<KeyDownInfo> Control::KeyDownEvent() {
+    return GetEventObservable<KeyDownInfo>(GetPropertyMap(), KeyDownEventPropertyName);
 }
 
 
-bool Control::OnKeyUp(const KeyMessage& message) {
+void Control::OnKeyUp(const KeyUpInfo& event_info) {
 
-    auto observer = GetEventObserver<ControlKeyUpInfo>(
+    auto observer = GetEventObserver<KeyUpInfo>(
         GetPropertyMap(),
         KeyUpEventPropertyName);
 
     if (observer) {
-
-        auto is_handled = std::make_shared<bool>(false);
-        observer->OnNext(ControlKeyUpInfo{ shared_from_this(), message.Inner(), is_handled });
-
-        if (*is_handled) {
-            return true;
-        }
+        observer->OnNext(event_info);
     }
-
-    return false;
 }
 
 
-Observable<ControlKeyUpInfo> Control::KeyUpEvent() {
-    return GetEventObservable<ControlKeyUpInfo>(GetPropertyMap(), KeyUpEventPropertyName);
+Observable<KeyUpInfo> Control::KeyUpEvent() {
+    return GetEventObservable<KeyUpInfo>(GetPropertyMap(), KeyUpEventPropertyName);
 }
 
 
-bool Control::OnCharInput(const CharMessage& message) {
+void Control::OnCharInput(const CharInputInfo& event_info) {
 
-    auto observer = GetEventObserver<ControlCharInputInfo>(
+    auto observer = GetEventObserver<CharInputInfo>(
         GetPropertyMap(), 
         CharInputEventPropertyName);
 
     if (observer) {
-
-        auto is_handled = std::make_shared<bool>(false);
-        observer->OnNext(ControlCharInputInfo{ shared_from_this(), message.Inner(), is_handled });
-
-        if (*is_handled) {
-            return true;
-        }
+        observer->OnNext(event_info);
     }
-
-    return false;
 }
 
 
-Observable<ControlCharInputInfo> Control::CharInputEvent() {
-    return GetEventObservable<ControlCharInputInfo>(GetPropertyMap(), CharInputEventPropertyName);
+Observable<CharInputInfo> Control::CharInputEvent() {
+    return GetEventObservable<CharInputInfo>(GetPropertyMap(), CharInputEventPropertyName);
 }
 
 
@@ -1956,26 +1928,21 @@ void Control::OnDPIChanged() {
 }
 
 
-void Control::OnParentChanged(const std::shared_ptr<Control>& previous_parent) {
+void Control::OnParentChanged(const ParentChangedInfo& event_info) {
 
-    auto observer = GetEventObserver<ControlParentChangedInfo>(
+    auto observer = GetEventObserver<ParentChangedInfo>(
         GetPropertyMap(),
         ParentChangedEventPropertyName);
 
-    if (!observer) {
-        return;
+    if (observer) {
+        observer->OnNext(event_info);
     }
-
-    observer->OnNext(ControlParentChangedInfo{
-        shared_from_this(),
-        previous_parent
-    });
 }
 
 
-Observable<ControlParentChangedInfo> Control::ParentChangedEvent() {
+Observable<ParentChangedInfo> Control::ParentChangedEvent() {
 
-    return GetEventObservable<ControlParentChangedInfo>(
+    return GetEventObservable<ParentChangedInfo>(
         GetPropertyMap(),
         ParentChangedEventPropertyName);
 }

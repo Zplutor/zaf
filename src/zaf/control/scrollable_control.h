@@ -240,7 +240,7 @@ private:
     void InitializeHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar);
     void InitializeScrollBarCorner(const std::shared_ptr<Control>& corner);
     void InitializeLayouter();
-    void OnScrollContentRectChange(const ControlRectChangedInfo& event_info);
+    void OnScrollContentRectChange(const RectChangedInfo& event_info);
 
 private:
     std::shared_ptr<ScrollBar> vertical_scroll_bar_;

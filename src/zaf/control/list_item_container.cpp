@@ -98,14 +98,18 @@ bool ListItemContainer::OnMouseUp(const Point& position, const MouseMessage& mes
 }
 
 
-bool ListItemContainer::OnKeyDown(const KeyMessage& message) {
+void ListItemContainer::OnKeyDown(const KeyDownInfo& event_info) {
 
-    if (__super::OnKeyDown(message)) {
-        return true;
+    __super::OnKeyDown(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    bool is_handled = select_strategy_->ChangeSelectionByKeyDown(message);
-    return is_handled;
+    bool is_handled = select_strategy_->ChangeSelectionByKeyDown(event_info.Message());
+    if (is_handled) {
+        event_info.MarkAsHandled();
+    }
 }
 
 

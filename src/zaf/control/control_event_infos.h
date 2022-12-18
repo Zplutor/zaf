@@ -1,7 +1,7 @@
 #pragma once
 
+#include <zaf/base/event/routed_event_info.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/window/message/keyboard_message.h>
 
 namespace zaf {
 
@@ -19,63 +19,6 @@ public:
 
 private:
     std::shared_ptr<zaf::Control> control_;
-};
-
-
-class ControlParentChangedInfo : public ControlEventInfo {
-public:
-    ControlParentChangedInfo(
-        const std::shared_ptr<zaf::Control>& control,
-        const std::shared_ptr<zaf::Control>& previous_parent)
-        :
-        ControlEventInfo(control),
-        previous_parent_(previous_parent) {
-
-    }
-
-    const std::shared_ptr<zaf::Control>& PreviousParent() const {
-        return previous_parent_;
-    }
-
-private:
-    std::shared_ptr<zaf::Control> previous_parent_;
-};
-
-
-class ControlRectChangedInfo : public ControlEventInfo {
-public:
-    ControlRectChangedInfo(
-        const std::shared_ptr<zaf::Control>& control,
-        const Rect& previous_rect)
-        :
-        ControlEventInfo(control),
-        previous_rect_(previous_rect) {
-
-    }
-
-    const zaf::Rect& PreviousRect() const {
-        return previous_rect_;
-    }
-
-private:
-    zaf::Rect previous_rect_;
-};
-
-
-class ControlDoubleClickInfo : public ControlEventInfo {
-public:
-    ControlDoubleClickInfo(const std::shared_ptr<zaf::Control>& control, const Point& position) :
-        ControlEventInfo(control), 
-        position_(position) {
-
-    }
-
-    const Point& Position() const {
-        return position_;
-    }
-
-private:
-    Point position_;
 };
 
 
@@ -143,41 +86,5 @@ public:
 private:
     std::shared_ptr<zaf::Control> leaved_control_;
 };
-
-
-template<typename MessageShim>
-class ControlKeyInfo : public ControlEventInfo {
-public:
-    ControlKeyInfo(
-        const std::shared_ptr<zaf::Control>& control,
-        const Message& message,
-        const std::shared_ptr<bool>& is_handled)
-        :
-        ControlEventInfo(control),
-        message_(message),
-        is_handled_(is_handled) {
-
-    }
-
-    MessageShim KeyMessage() const {
-        return MessageShim{ message_ };
-    }
-
-    bool IsHandled() const {
-        return *is_handled_;
-    }
-
-    void SetIsHandled(bool is_handled) const {
-        *is_handled_ = is_handled;
-    }
-
-private:
-    Message message_;
-    std::shared_ptr<bool> is_handled_;
-};
-
-using ControlKeyDownInfo = ControlKeyInfo<KeyMessage>;
-using ControlKeyUpInfo = ControlKeyInfo<KeyMessage>;
-using ControlCharInputInfo = ControlKeyInfo<CharMessage>;
 
 }

@@ -86,7 +86,7 @@ public:
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect& previous_rect) override;
-    void OnRectChanged(const zaf::Rect& previous_rect) override;
+    void OnRectChanged(const RectChangedInfo& event_info) override;
 
     virtual void OnSplitBarChanged(const std::shared_ptr<zaf::SplitBar>& previous_split_bar) { }
     virtual void OnFirstPaneChanged(const std::shared_ptr<Control>& previous_pane) { }

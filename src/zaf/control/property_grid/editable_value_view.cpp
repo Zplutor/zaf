@@ -26,11 +26,11 @@ void EditableValueView::Initialize() {
     }));
 
     Subscriptions() += text_box_->KeyDownEvent().Subscribe(
-        [this](const ControlKeyDownInfo& event_info) {
+        [this](const KeyDownInfo& event_info) {
     
-        if (event_info.KeyMessage().VirtualKey() == VK_RETURN) {
+        if (event_info.Message().VirtualKey() == VK_RETURN) {
             ChangeValue();
-            event_info.SetIsHandled(true);
+            event_info.MarkAsHandled();
         }
     });
 

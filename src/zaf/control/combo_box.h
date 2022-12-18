@@ -152,7 +152,7 @@ protected:
     zaf::Rect GetTextRect() override;
 
     void OnClick() override;
-    bool OnKeyDown(const KeyMessage& message) override;
+    void OnKeyDown(const KeyDownInfo& event_info) override;
     void OnFocusChanged() override;
 
     void OnTextChanged() override;
@@ -339,7 +339,7 @@ public:
     ZAF_DECLARE_TYPE
 
 public:
-    bool OnKeyDown(const KeyMessage& message) override;
+    void OnKeyDown(const KeyDownInfo& event_info) override;
 };
 
 }

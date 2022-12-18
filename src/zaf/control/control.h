@@ -11,6 +11,10 @@
 #include <zaf/control/anchor.h>
 #include <zaf/control/control_event_infos.h>
 #include <zaf/control/color_picker.h>
+#include <zaf/control/event/double_click_info.h>
+#include <zaf/control/event/keyboard_event_info.h>
+#include <zaf/control/event/parent_changed_info.h>
+#include <zaf/control/event/rect_changed_info.h>
 #include <zaf/control/image_layout.h>
 #include <zaf/control/image_picker.h>
 #include <zaf/control/layout/layouter.h>
@@ -32,8 +36,6 @@ class InspectorPort;
 }
 
 class Canvas;
-class CharMessage;
-class KeyMessage;
 class Message;
 class MouseMessage;
 class MouseWheelMessage;
@@ -637,7 +639,7 @@ public:
 
      This event is raised when the control's rect is changed.
      */
-    Observable<ControlRectChangedInfo> RectChangedEvent();
+    Observable<RectChangedInfo> RectChangedEvent();
 
     /**
      Get focus change event.
@@ -650,13 +652,13 @@ public:
     Observable<ControlMouseLeaveInfo> MouseLeaveEvent();
     Observable<ControlMouseHoverInfo> MouseHoverEvent();
 
-    Observable<ControlDoubleClickInfo> DoubleClickEvent();
+    Observable<DoubleClickInfo> DoubleClickEvent();
 
-    Observable<ControlKeyDownInfo> KeyDownEvent();
-    Observable<ControlKeyUpInfo> KeyUpEvent();
-    Observable<ControlCharInputInfo> CharInputEvent();
+    Observable<KeyDownInfo> KeyDownEvent();
+    Observable<KeyUpInfo> KeyUpEvent();
+    Observable<CharInputInfo> CharInputEvent();
 
-    Observable<ControlParentChangedInfo> ParentChangedEvent();
+    Observable<ParentChangedInfo> ParentChangedEvent();
 
 protected:
     void InvokeInitialize() override;
@@ -821,7 +823,7 @@ protected:
      */
     virtual bool OnMouseUp(const Point& position, const MouseMessage& message);
 
-    virtual void OnDoubleClick(const Point& position);
+    virtual void OnDoubleClick(const DoubleClickInfo& event_info);
 
     /**
      Process the mouse wheel notification.
@@ -857,29 +859,9 @@ protected:
      */
     virtual void OnMouseRelease();
 
-    /**
-     Process the key down notification.
-
-     This method is called when a key is pressed at mean while the control is focused. Derived 
-     classes should call the same method of base class if they don't process the notification.
-     */
-    virtual bool OnKeyDown(const KeyMessage& message);
-
-    /**
-     Process the key up notification.
-
-     This method is called when a key is released at mean while the control is focused. Derived 
-     classes should call the same method of base class if they don't process the notification.
-     */
-    virtual bool OnKeyUp(const KeyMessage& message);
-
-    /**
-     Process the char input notification.
-
-     This method is called when a char is inputed at mean while the control is focused. Derived 
-     classes should call the same method of base class if they don't process the notification.
-     */
-    virtual bool OnCharInput(const CharMessage& message);
+    virtual void OnKeyDown(const KeyDownInfo& event_info);
+    virtual void OnKeyUp(const KeyUpInfo& event_info);
+    virtual void OnCharInput(const CharInputInfo& event_info);
 
     /**
      Process the focus changed notification. 
@@ -889,17 +871,7 @@ protected:
      */
     virtual void OnFocusChanged();
 
-    /**
-     Process the rect change notification.
-
-     This method is called when the control change its rect. Derived classes must call the 
-     same method of base class.
-
-     If the size is changed, this method is called before calling Layout method. You don't 
-     need to call NeedRelayout method in this method, and you should layout children in Layout
-     method instead of this method.
-     */
-    virtual void OnRectChanged(const zaf::Rect& previous_rect);
+    virtual void OnRectChanged(const RectChangedInfo& event_info);
 
     /**
      Process the is visible change notification.
@@ -921,7 +893,7 @@ protected:
 
     virtual void OnDPIChanged();
 
-    virtual void OnParentChanged(const std::shared_ptr<Control>& previous_parent);
+    virtual void OnParentChanged(const ParentChangedInfo& event_info);
 
 private:
     friend class Caret;

@@ -71,6 +71,9 @@
     <ClCompile Include="src\zaf\control\combo_box.cpp" />
     <ClCompile Include="src\zaf\control\control.cpp" />
     <ClCompile Include="src\zaf\control\control_binder.cpp" />
+    <ClCompile Include="src\zaf\control\event\double_click_info.cpp" />
+    <ClCompile Include="src\zaf\control\event\parent_changed_info.cpp" />
+    <ClCompile Include="src\zaf\control\event\rect_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\image_box.cpp" />
     <ClCompile Include="src\zaf\control\image_layout.cpp" />
     <ClCompile Include="src\zaf\control\image_picker.cpp" />
@@ -266,6 +269,8 @@
     <ClInclude Include="src\zaf\base\container\utility\range.h" />
     <ClInclude Include="src\zaf\base\error\basic_error.h" />
     <ClInclude Include="src\zaf\base\error\check.h" />
+    <ClInclude Include="src\zaf\base\event\event_info.h" />
+    <ClInclude Include="src\zaf\base\event\routed_event_info.h" />
     <ClInclude Include="src\zaf\base\hash.h" />
     <ClInclude Include="src\zaf\base\non_copyable.h" />
     <ClInclude Include="src\zaf\base\none.h" />
@@ -323,6 +328,10 @@
     <ClInclude Include="src\zaf\control\control_binder.h" />
     <ClInclude Include="src\zaf\control\control_event_infos.h" />
     <ClInclude Include="src\zaf\control\control_update_guard.h" />
+    <ClInclude Include="src\zaf\control\event\double_click_info.h" />
+    <ClInclude Include="src\zaf\control\event\keyboard_event_info.h" />
+    <ClInclude Include="src\zaf\control\event\parent_changed_info.h" />
+    <ClInclude Include="src\zaf\control\event\rect_changed_info.h" />
     <ClInclude Include="src\zaf\control\expand_state.h" />
     <ClInclude Include="src\zaf\control\image_box.h" />
     <ClInclude Include="src\zaf\control\image_layout.h" />

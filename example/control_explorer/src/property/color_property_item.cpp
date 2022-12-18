@@ -110,21 +110,21 @@ protected:
         NeedRepaint();
     }
 
-    bool OnKeyDown(const zaf::KeyMessage& message) override {
+    void OnKeyDown(const zaf::KeyDownInfo& event_info) override {
 
-        if (__super::OnKeyDown(message)) {
-            return true;
+        __super::OnKeyDown(event_info);
+
+        if (event_info.IsHandled()) {
+            return;
         }
 
-        if (message.VirtualKey() == VK_RETURN) {
+        if (event_info.Message().VirtualKey() == VK_RETURN) {
 
             if (!GetDropDownListBox()->GetFirstSelectedItemIndex()) {
                 SetText(ColorToText(selected_color_));
             }
-            return true;
+            event_info.MarkAsHandled();
         }
-        
-        return false;
     }
 
 private:

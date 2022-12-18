@@ -10,7 +10,7 @@ class TreeControlImplementation;
 
 class TreeItemContainer : public ListItemContainer {
 protected:
-    bool OnKeyDown(const KeyMessage& message) override;
+    void OnKeyDown(const KeyDownInfo& event_info) override;
 
 private:
     friend class internal::TreeControlImplementation;

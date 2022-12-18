@@ -16,7 +16,7 @@ public:
 private:
     void TextBoxFocusChange();
     void SendButtonClick();
-    void TextBoxKeyDown(const zaf::ControlKeyDownInfo& event_info);
+    void TextBoxKeyDown(const zaf::KeyDownInfo& event_info);
 
 private:
     std::shared_ptr<zaf::TextBox> text_box_;

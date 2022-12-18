@@ -20,7 +20,7 @@ protected:
     bool OnMouseDown(const Point& position, const MouseMessage& message) override;
     bool OnMouseMove(const Point& position, const MouseMessage& message) override;
     bool OnMouseUp(const Point& position, const MouseMessage& message) override;
-    bool OnKeyDown(const KeyMessage& message) override;
+    void OnKeyDown(const KeyDownInfo& event_info) override;
     void OnFocusChanged() override;
 
 private:
