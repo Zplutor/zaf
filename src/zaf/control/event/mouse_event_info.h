@@ -17,5 +17,6 @@ public:
 
 using MouseEnterInfo = internal::MouseOverInfo;
 using MouseLeaveInfo = internal::MouseOverInfo;
+using MouseHoverInfo = internal::MouseOverInfo;
 
 }

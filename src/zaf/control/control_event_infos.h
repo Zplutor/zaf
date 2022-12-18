@@ -27,24 +27,4 @@ public:
     using ControlEventInfo::ControlEventInfo;
 };
 
-
-class ControlMouseHoverInfo : public ControlEventInfo {
-public:
-    ControlMouseHoverInfo(
-        const std::shared_ptr<zaf::Control>& control,
-        const std::shared_ptr<zaf::Control>& hovered_control)
-        :
-        ControlEventInfo(control),
-        hovered_control_(hovered_control) {
-
-    }
-
-    const std::shared_ptr<zaf::Control>& HoveredControl() const {
-        return hovered_control_;
-    }
-
-private:
-    std::shared_ptr<zaf::Control> hovered_control_;
-};
-
 }

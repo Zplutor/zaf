@@ -1558,8 +1558,8 @@ Observable<MouseLeaveInfo> Control::MouseLeaveEvent() {
 }
 
 
-Observable<ControlMouseHoverInfo> Control::MouseHoverEvent() {
-    return GetEventObservable<ControlMouseHoverInfo>(
+Observable<MouseHoverInfo> Control::MouseHoverEvent() {
+    return GetEventObservable<MouseHoverInfo>(
         GetPropertyMap(),
         kMouseHoverEventPropertyName);
 }
@@ -1720,26 +1720,14 @@ void Control::OnMouseLeave(const MouseLeaveInfo& event_info) {
 }
 
 
-void Control::HandleMouveHover() {
+void Control::OnMouseHover(const MouseHoverInfo& event_info) {
 
-    OnMouseHover(shared_from_this());
-}
-
-
-void Control::OnMouseHover(const std::shared_ptr<Control>& hovered_control) {
-
-    auto event_observer = GetEventObserver<ControlMouseHoverInfo>(
+    auto event_observer = GetEventObserver<MouseHoverInfo>(
         GetPropertyMap(),
         kMouseHoverEventPropertyName);
 
     if (event_observer) {
-
-        ControlMouseHoverInfo event_info(shared_from_this(), hovered_control);
         event_observer->OnNext(event_info);
-    }
-
-    if (auto parent = Parent()) {
-        parent->OnMouseHover(hovered_control);
     }
 }
 

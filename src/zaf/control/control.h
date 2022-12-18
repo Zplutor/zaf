@@ -651,7 +651,7 @@ public:
 
     Observable<MouseEnterInfo> MouseEnterEvent();
     Observable<MouseLeaveInfo> MouseLeaveEvent();
-    Observable<ControlMouseHoverInfo> MouseHoverEvent();
+    Observable<MouseHoverInfo> MouseHoverEvent();
 
     Observable<DoubleClickInfo> DoubleClickEvent();
 
@@ -766,8 +766,7 @@ protected:
 
     virtual void OnMouseEnter(const MouseEnterInfo& event_info);
     virtual void OnMouseLeave(const MouseLeaveInfo& event_info);
-
-    virtual void OnMouseHover(const std::shared_ptr<Control>& hovered_control);
+    virtual void OnMouseHover(const MouseHoverInfo& event_info);
 
     /**
      Process the mouse down notification.
@@ -888,7 +887,6 @@ private:
     void SetIsMouseOverByWindow(bool is_mouse_over);
     void IsFocusedChanged(bool is_focused);
     void IsCapturingMouseChanged(bool is_capturing_mouse);
-    void HandleMouveHover();
     void RouteMouseMoveMessage(const Point& position, const MouseMessage& message);
     bool RouteMouseMessage(const Point& position, const MouseMessage& message);
 

@@ -941,7 +941,11 @@ void Window::OnMouseHover(const Message& message) {
     }
 
     if (mouse_over_control_) {
-        mouse_over_control_->HandleMouveHover();
+        //Raise and route mouse hover event.
+        MouseHoverInfo event_info{ mouse_over_control_ };
+        for (auto control = mouse_over_control_; control; control = control->Parent()) {
+            control->OnMouseHover(event_info);
+        }
     }
 
     TryToShowTooltipWindow();
