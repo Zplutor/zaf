@@ -213,7 +213,7 @@ zaf::Rect ComboBox::GetTextRect() {
     auto rect = __super::GetTextRect();
 
     auto deflated_frame = text_inset_;
-    deflated_frame.right -= GetDropDownButtonWidth();
+    deflated_frame.right += GetDropDownButtonWidth();
     rect.Deflate(deflated_frame);
     return rect;
 }
@@ -697,8 +697,12 @@ void ComboBoxDropDownListBox::OnMouseMove(const MouseMoveInfo& event_info) {
 
     __super::OnMouseMove(event_info);
 
-    if (! IsCapturingMouse()) {
-        if (mouse_move_callback_ != nullptr) {
+    if (event_info.IsHandled()) {
+        return;
+    }
+
+    if (!IsCapturingMouse()) {
+        if (mouse_move_callback_) {
             mouse_move_callback_(event_info.PositionAtSender());
         }
     }
