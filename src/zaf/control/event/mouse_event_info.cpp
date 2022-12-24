@@ -3,8 +3,23 @@
 
 namespace zaf::internal {
 
-MouseOverInfo::MouseOverInfo(const std::shared_ptr<Control>& source) :
-    RoutedEventInfo(source) {
+MouseEventSharedState::MouseEventSharedState(
+    const std::shared_ptr<Control>& source,
+    const zaf::Message& message,
+    const Point& position_at_source)
+    :
+    RoutedEventSharedState(source),
+    message_(message),
+    position_at_source_(position_at_source) {
+
+}
+
+
+MouseOverEventInfo::MouseOverEventInfo(
+    const std::shared_ptr<RoutedEventSharedState>& state,
+    const std::shared_ptr<Control>& sender) 
+    :
+    RoutedEventInfo(state, sender) {
 
 }
 

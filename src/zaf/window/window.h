@@ -639,6 +639,8 @@ private:
     void UpdateWindowRect();
     bool RedirectMouseWheelMessage(const Message& message);
     bool HandleMouseMessage(const MouseMessage& message);
+    void FindMouseOverControl(const MouseMessage& message);
+    bool RouteMouseEvent(const MouseMessage& message);
     void HighlightControlAtPosition(const Point& position);
     void SelectInspectedControl();
     void TrackMouseByMouseMove(const MouseMessage& message);

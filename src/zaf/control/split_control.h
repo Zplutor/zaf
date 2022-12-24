@@ -208,9 +208,9 @@ protected:
     void Initialize() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     void ChangeMouseCursor(const Message& message, bool& is_changed) override;
-    bool OnMouseMove(const Point& position, const MouseMessage& message) override;
-    bool OnMouseDown(const Point& position, const MouseMessage& message) override;
-    bool OnMouseUp(const Point& position, const MouseMessage& message) override;
+    void OnMouseMove(const MouseMoveInfo& event_info) override;
+    void OnMouseDown(const MouseDownInfo& event_info) override;
+    void OnMouseUp(const MouseUpInfo& event_info) override;
     void OnMouseCapture() override;
     void OnMouseRelease() override;
 

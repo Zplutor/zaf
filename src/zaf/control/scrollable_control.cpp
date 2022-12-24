@@ -394,15 +394,17 @@ void ScrollableControl::SetScrollBarThickness(float thickness) {
 }
 
 
-bool ScrollableControl::OnMouseWheel(const Point& position, const MouseWheelMessage& message) {
+void ScrollableControl::OnMouseWheel(const MouseWheelInfo& event_info) {
 
-    if (__super::OnMouseWheel(position, message)) {
-        return true;
+    __super::OnMouseWheel(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
     std::shared_ptr<ScrollBar> scroll_bar;
 
-    if (message.IsHorizontalWheeling()) {
+    if (event_info.Message().IsHorizontalWheeling()) {
         scroll_bar = horizontal_scroll_bar_;   
     }
     else {
@@ -410,10 +412,10 @@ bool ScrollableControl::OnMouseWheel(const Point& position, const MouseWheelMess
     }
 
     if (scroll_bar->IsVisible() && scroll_bar->IsEnabled()) {
-        scroll_bar->Wheel(message.WheelingDistance());
+        scroll_bar->Wheel(event_info.Message().WheelingDistance());
     }
 
-    return true;
+    event_info.MarkAsHandled();
 }
 
 

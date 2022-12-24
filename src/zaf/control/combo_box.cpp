@@ -693,17 +693,15 @@ void ComboBoxDropDownListBox::Initialize() {
 }
 
 
-bool ComboBoxDropDownListBox::OnMouseMove(const Point& position, const MouseMessage& message) {
+void ComboBoxDropDownListBox::OnMouseMove(const MouseMoveInfo& event_info) {
 
-    bool is_handled = __super::OnMouseMove(position, message);
+    __super::OnMouseMove(event_info);
 
     if (! IsCapturingMouse()) {
         if (mouse_move_callback_ != nullptr) {
-            mouse_move_callback_(position);
+            mouse_move_callback_(event_info.PositionAtSender());
         }
     }
-
-    return is_handled;
 }
 
 

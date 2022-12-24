@@ -636,6 +636,12 @@ public:
     void NeedRepaintRect(const zaf::Rect& rect);
 
     /**
+     Translate a point in current control's coordinate system to which in parent's coordinate 
+     system.
+     */
+    Point TranslateToParentPoint(const Point& point) const;
+
+    /**
      Get rect change event.
 
      This event is raised when the control's rect is changed.
@@ -746,83 +752,16 @@ protected:
      */
     virtual void ChangeMouseCursor(const Message& message, bool& is_changed);
 
-    /**
-     Process the mouse move notificaiton.
-
-     @param position
-        The mouse position in the control's coordinate.
-
-     @param message
-        Information about the WM_MOUSEMOVE message.
-
-     @return
-        Indicates that whether the notification has been processed by the control,
-        and should not delivered to the parent.
-
-     This method is called when a WM_MOUSEMOVE message is received. Derived classes should call the 
-     same method of base class.
-     */
-    virtual bool OnMouseMove(const Point& position, const MouseMessage& message);
-
+    virtual void OnMouseMove(const MouseMoveInfo& event_info);
     virtual void OnMouseEnter(const MouseEnterInfo& event_info);
     virtual void OnMouseLeave(const MouseLeaveInfo& event_info);
     virtual void OnMouseHover(const MouseHoverInfo& event_info);
 
-    /**
-     Process the mouse down notification.
-
-     @param position
-        The mouse position in the control's coordinate.
-
-     @param message
-        Information about the mouse down message (e.g. WM_LBUTTONDOWN).
-
-     @return
-        Indicates that whether the notification has been processed by the control, and should not 
-        delivered to the parent. 
-
-     This method is called when a mouse button is pressed within the control. Derived classes should 
-     call the same method of base class.
-     */
-    virtual bool OnMouseDown(const Point& position, const MouseMessage& message);
-
-    /**
-     Process the mouse up notification.
-
-     @param position
-        The mouse position in the control's coordinate.
-
-     @param message
-        Information about the mouse up message (e.g. WM_LBUTTONUP).
-
-     @return
-        Indicates that whether the notification has been processed by the control,
-        and should not delivered to the parent.
-
-     This method is called when a mouse button is released within the control. Derived classes 
-     should call the same method of base class.
-     */
-    virtual bool OnMouseUp(const Point& position, const MouseMessage& message);
+    virtual void OnMouseDown(const MouseDownInfo& event_info);
+    virtual void OnMouseUp(const MouseUpInfo& event_info);
 
     virtual void OnDoubleClick(const DoubleClickInfo& event_info);
-
-    /**
-     Process the mouse wheel notification.
-
-     @param position
-        The mouse position in the control's coordinate.
-
-     @param message
-        Information about the mouse wheel message (e.g. WM_MOUSEWHEEL).
-
-     @return
-        Indicates that whether the notification has been processed by the control,
-        and should not delivered to the parent.   
-
-     This method is called when the mouse wheel within the control. Derived classes should call the 
-     same method of base class.
-     */
-    virtual bool OnMouseWheel(const Point& position, const MouseWheelMessage& message);
+    virtual void OnMouseWheel(const MouseWheelInfo& event_info);
 
     /**
      Process the mouse capture notification.
@@ -887,8 +826,7 @@ private:
     void SetIsMouseOverByWindow(bool is_mouse_over);
     void IsFocusedChanged(bool is_focused);
     void IsCapturingMouseChanged(bool is_capturing_mouse);
-    void RouteMouseMoveMessage(const Point& position, const MouseMessage& message);
-    bool RouteMouseMessage(const Point& position, const MouseMessage& message);
+    void FindMouseOverControl(const Point& position, const MouseMessage& message);
 
 private:
     friend class internal::ControlUpdateLock;
@@ -925,13 +863,6 @@ private:
     void OnChildRectChanged(const std::shared_ptr<Control>& child, const zaf::Rect& previous_rect);
 
     /**
-     Translate a point to which in parent's coordinate system.
-     */
-    Point ToParentPoint(const Point& point) {
-        return Point(point.x + rect_.position.x, point.y + rect_.position.y);
-    }
-
-    /**
      Tanslate a point to which in specified child's coordinate system.
      */
     Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const;
@@ -944,7 +875,6 @@ private:
 
     void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
 
-    bool HandleMouseMessage(const Point& position, const MouseMessage& message);
     bool HandleDoubleClickOnMouseDown(const Point& position);
 
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;

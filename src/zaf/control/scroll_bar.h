@@ -208,9 +208,9 @@ protected:
     void Initialize() override;
     void Layout(const zaf::Rect& previous_rect) override;
 
-    bool OnMouseDown(const Point& position, const MouseMessage& message) override;
-    bool OnMouseUp(const Point& position, const MouseMessage& message) override;
-    bool OnMouseWheel(const Point& position, const MouseWheelMessage& message) override;
+    void OnMouseDown(const MouseDownInfo& event_info) override;
+    void OnMouseUp(const MouseUpInfo& event_info) override;
+    void OnMouseWheel(const MouseWheelInfo& event_info) override;
     void OnMouseCapture() override;
     void OnMouseRelease() override;
 

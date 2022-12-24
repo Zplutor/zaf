@@ -812,29 +812,33 @@ bool TextBox::ChangeMouseCursor() {
 }
 
 
-bool TextBox::OnMouseMove(const Point& position, const MouseMessage& message) {
+void TextBox::OnMouseMove(const MouseMoveInfo& event_info) {
 
-    if (__super::OnMouseMove(position, message)) {
-        return true;
+    __super::OnMouseMove(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
     if (text_service_) {
 
         HRESULT result = text_service_->TxSendMessage(
             WM_MOUSEMOVE,
-            message.WParam(),
-            message.LParam(),
+            event_info.Message().WParam(),
+            event_info.Message().LParam(),
             nullptr);
     }
 
-    return true;
+    event_info.MarkAsHandled();
 }
 
 
-bool TextBox::OnMouseDown(const Point& position, const MouseMessage& message) {
+void TextBox::OnMouseDown(const MouseDownInfo& event_info) {
 
-    if (__super::OnMouseDown(position, message)) {
-        return true;
+    __super::OnMouseDown(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
     SetIsFocused(true);
@@ -843,31 +847,33 @@ bool TextBox::OnMouseDown(const Point& position, const MouseMessage& message) {
 
         HRESULT result = text_service_->TxSendMessage(
             WM_LBUTTONDOWN, 
-            message.WParam(),
-            message.LParam(), 
+            event_info.Message().WParam(),
+            event_info.Message().LParam(), 
             nullptr);
     }
 
-    return true;
+    event_info.MarkAsHandled();
 }
 
 
-bool TextBox::OnMouseUp(const Point& position, const MouseMessage& message) {
+void TextBox::OnMouseUp(const MouseUpInfo& event_info) {
 
-    if (__super::OnMouseUp(position, message)) {
-        return true;
+    __super::OnMouseUp(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
     if (text_service_) {
 
         HRESULT result = text_service_->TxSendMessage(
             WM_LBUTTONUP, 
-            message.WParam(), 
-            message.LParam(),
+            event_info.Message().WParam(), 
+            event_info.Message().LParam(),
             nullptr);
     }
 
-    return true;
+    event_info.MarkAsHandled();
 }
 
 

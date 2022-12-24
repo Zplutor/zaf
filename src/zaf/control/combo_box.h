@@ -317,7 +317,7 @@ public:
 
 protected:
     void Initialize() override;
-    bool OnMouseMove(const Point& position, const MouseMessage& message) override;
+    void OnMouseMove(const MouseMoveInfo& event_info) override;
 
 private:
     friend class ComboBox;

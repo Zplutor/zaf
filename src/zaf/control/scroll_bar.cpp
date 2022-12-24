@@ -407,29 +407,35 @@ Observable<ScrollBarScrollInfo> ScrollBar::ScrollEvent() {
 }
 
 
-bool ScrollBar::OnMouseDown(const Point& position, const MouseMessage& message) {
+void ScrollBar::OnMouseDown(const MouseDownInfo& event_info) {
 
-    if (__super::OnMouseDown(position, message)) {
-        return true;
+    __super::OnMouseDown(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    if (message.MouseButton() == MouseButton::Left) {
+    if (event_info.Message().MouseButton() == MouseButton::Left) {
+
         CaptureMouse();
+        event_info.MarkAsHandled();
     }
-    return true;
 }
 
 
-bool ScrollBar::OnMouseUp(const Point& position, const MouseMessage& message) {
+void ScrollBar::OnMouseUp(const MouseUpInfo& event_info) {
 
-    if (__super::OnMouseUp(position, message)) {
-        return true;
+    __super::OnMouseUp(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    if (message.MouseButton() == MouseButton::Left) {
+    if (event_info.Message().MouseButton() == MouseButton::Left) {
+
         ReleaseMouse();
+        event_info.MarkAsHandled();
     }
-    return true;
 }
 
 
@@ -543,16 +549,19 @@ zaf::Rect ScrollBar::GetThumbSlotRect() const {
 }
 
 
-bool ScrollBar::OnMouseWheel(const Point& position, const MouseWheelMessage& message) {
+void ScrollBar::OnMouseWheel(const MouseWheelInfo& event_info) {
 
-    if (__super::OnMouseWheel(position, message)) {
-        return true;
+    __super::OnMouseWheel(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    if (message.IsHorizontalWheeling() == IsHorizontal()) {
-        Wheel(message.WheelingDistance());
+    if (event_info.Message().IsHorizontalWheeling() == IsHorizontal()) {
+
+        Wheel(event_info.Message().WheelingDistance());
+        event_info.MarkAsHandled();
     }
-    return true;
 }
 
 

@@ -43,6 +43,75 @@ constexpr const wchar_t* const kHandleMessageEventPropertyName = L"HandleMessage
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
 
 
+Point TranslateAbsolutePositionToControlPosition(
+    const Point& absolute_position, 
+    const Control& control ) {
+
+    zaf::Rect control_absolute_rect = control.AbsoluteRect();
+
+    Point result;
+    result.x = absolute_position.x - control_absolute_rect.position.x;
+    result.y = absolute_position.y - control_absolute_rect.position.y;
+    return result;
+}
+
+
+template<typename E>
+bool RouteKeyboardEventGeneric(
+    const std::shared_ptr<Control>& source, 
+    const Message& message,
+    void (Control::*event_function)(const E&)) {
+
+    if (!source) {
+        return false;
+    }
+
+    auto event_info_state = std::make_shared<internal::KeyboardEventSharedState>(source, message);
+
+    for (auto sender = source; sender; sender = sender->Parent()) {
+
+        E event_info{ event_info_state, sender };
+        (sender.get()->*event_function)(event_info);
+    }
+
+    return event_info_state->IsHandled();
+}
+
+
+template<typename E>
+bool RouteMouseEventGeneric(
+    const std::shared_ptr<Control>& source,
+    const MouseMessage& message,
+    void (Control::*event_function)(const E&)) {
+
+    if (!source) {
+        return false;
+    }
+
+    auto position_at_source = TranslateAbsolutePositionToControlPosition(
+        message.MousePosition(), 
+        *source);
+
+    auto event_info_state = std::make_shared<internal::MouseEventSharedState>(
+        source, 
+        message.Inner(), 
+        position_at_source);
+
+    auto sender = source;
+    auto position_at_sender = position_at_source;
+    while (sender) {
+
+        E event_info{ event_info_state, sender, position_at_sender };
+        (sender.get()->*event_function)(event_info);
+
+        position_at_sender = sender->TranslateToParentPoint(position_at_sender);
+        sender = sender->Parent();
+    }
+
+    return event_info_state->IsHandled();
+}
+
+
 zaf::Rect ToAlignedPixelsRect(const zaf::Rect& rect, float dpi) {
     return Align(FromDIPs(rect, dpi));
 }
@@ -786,17 +855,6 @@ bool Window::RedirectMouseWheelMessage(const Message& message) {
 
 bool Window::HandleMouseMessage(const MouseMessage& message) {
 
-    bool is_capturing_mouse = capturing_mouse_control_ != nullptr;
-    auto get_mouse_position_to_capturing_control = [this, &message]() {
-
-        zaf::Rect control_rect = capturing_mouse_control_->AbsoluteRect();
-        Point mouse_position = message.MousePosition();
-
-        return Point(
-            mouse_position.x - control_rect.position.x,
-            mouse_position.y - control_rect.position.y);
-    };
-
     if (message.ID() == WM_MOUSEMOVE || message.ID() == WM_NCMOUSEMOVE) {
 
         if (is_selecting_inspector_control_) {
@@ -805,21 +863,13 @@ bool Window::HandleMouseMessage(const MouseMessage& message) {
         }
 
         TrackMouseByMouseMove(message);
-
-        if (is_capturing_mouse) {
-            capturing_mouse_control_->RouteMouseMoveMessage(
-                get_mouse_position_to_capturing_control(),
-                message);
-        }
-        else {
-            root_control_->RouteMouseMoveMessage(message.MousePosition(), message);
-        }
     }
     else {
 
         HideTooltipWindow();
 
         if (message.ID() == WM_LBUTTONDOWN || message.ID() == WM_RBUTTONDOWN) {
+
             if (is_selecting_inspector_control_) {
                 SelectInspectedControl();
                 return true;
@@ -827,14 +877,70 @@ bool Window::HandleMouseMessage(const MouseMessage& message) {
         }
     }
 
-    if (is_capturing_mouse) {
+    FindMouseOverControl(message);
+    return RouteMouseEvent(message);
+}
 
-        return capturing_mouse_control_->RouteMouseMessage(
-            get_mouse_position_to_capturing_control(), 
-            message);
+
+void Window::FindMouseOverControl(const MouseMessage& message) {
+
+    std::shared_ptr<Control> begin_control;
+    Point position_at_begin_control;
+
+    if (capturing_mouse_control_) {
+
+        begin_control = capturing_mouse_control_;
+
+        position_at_begin_control = TranslateAbsolutePositionToControlPosition(
+            message.MousePosition(),
+            *begin_control);
     }
     else {
-        return root_control_->RouteMouseMessage(message.MousePosition(), message);
+
+        begin_control = root_control_;
+        position_at_begin_control = message.MousePosition();
+    }
+
+    begin_control->FindMouseOverControl(position_at_begin_control, message);
+}
+
+
+bool Window::RouteMouseEvent(const MouseMessage& message) {
+
+    switch (message.ID()) {
+    case WM_MOUSEMOVE:
+        return RouteMouseEventGeneric<MouseMoveInfo>(
+            mouse_over_control_,
+            message,
+            &Control::OnMouseMove);
+
+    case WM_LBUTTONDOWN:
+    case WM_NCLBUTTONDOWN:
+    case WM_MBUTTONDOWN:
+    case WM_RBUTTONDOWN:
+        return RouteMouseEventGeneric<MouseDownInfo>(
+            mouse_over_control_,
+            message,
+            &Control::OnMouseDown);
+
+    case WM_LBUTTONUP:
+    case WM_NCLBUTTONUP:
+    case WM_MBUTTONUP:
+    case WM_RBUTTONUP:
+        return RouteMouseEventGeneric<MouseUpInfo>(
+            mouse_over_control_,
+            message,
+            &Control::OnMouseUp);
+
+    case WM_MOUSEWHEEL:
+    case WM_MOUSEHWHEEL:
+        return RouteMouseEventGeneric<MouseWheelInfo>(
+            mouse_over_control_,
+            message,
+            &Control::OnMouseWheel);
+        
+    default:
+        return false;
     }
 }
 
@@ -941,10 +1047,11 @@ void Window::OnMouseHover(const Message& message) {
     }
 
     if (mouse_over_control_) {
+
         //Raise and route mouse hover event.
-        MouseHoverInfo event_info{ mouse_over_control_ };
+        auto event_info_state = std::make_shared<RoutedEventSharedState>(mouse_over_control_);
         for (auto control = mouse_over_control_; control; control = control->Parent()) {
-            control->OnMouseHover(event_info);
+            control->OnMouseHover(MouseHoverInfo{ event_info_state, control });
         }
     }
 
@@ -989,50 +1096,20 @@ bool Window::ChangeMouseCursor(const Message& message) {
 
 
 bool Window::OnKeyDown(const Message& message) {
-
-    if (!focused_control_) {
-        return false;
-    }
-
-    KeyDownInfo event_info{ focused_control_, message };
-
-    for (auto control = focused_control_; control; control = control->Parent()) {
-        control->OnKeyDown(event_info);
-    }
-
-    return event_info.IsHandled();
+    return RouteKeyboardEventGeneric<KeyDownInfo>(focused_control_, message, &Control::OnKeyDown);
 }
 
 
 bool Window::OnKeyUp(const Message& message) {
-
-    if (!focused_control_) {
-        return false;
-    }
-
-    KeyUpInfo event_info{ focused_control_, message };
-
-    for (auto control = focused_control_; control; control = control->Parent()) {
-        control->OnKeyUp(event_info);
-    }
-
-    return event_info.IsHandled();
+    return RouteKeyboardEventGeneric<KeyUpInfo>(focused_control_, message, &Control::OnKeyUp);
 }
 
 
 bool Window::OnCharInput(const Message& message) {
-
-    if (!focused_control_) {
-        return false;
-    }
-
-    CharInputInfo event_info{ focused_control_, message };
-    
-    for (auto control = focused_control_; control; control = control->Parent()) {
-        control->OnCharInput(event_info);
-    }
-
-    return event_info.IsHandled();
+    return RouteKeyboardEventGeneric<CharInputInfo>(
+        focused_control_, 
+        message,
+        &Control::OnCharInput);
 }
 
 
@@ -1173,9 +1250,13 @@ void Window::ChangeControlMouseOverState(
     target_control->SetIsMouseOverByWindow(is_mouse_over);
 
     //Raise and route event.
-    internal::MouseOverInfo event_info{ target_control };
+    auto event_info_state = 
+        std::make_shared<RoutedEventSharedState>(target_control);
 
     for (auto control = target_control; control; control = control->Parent()) {
+
+        internal::MouseOverEventInfo event_info{ event_info_state, control };
+
         if (is_mouse_over) {
             control->OnMouseEnter(event_info);
         }

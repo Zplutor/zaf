@@ -75,45 +75,54 @@ void ClickableControl::OnMouseLeave(const MouseLeaveInfo& event_info) {
 }
 
 
-bool ClickableControl::OnMouseMove(const Point& position, const MouseMessage& message) {
+void ClickableControl::OnMouseMove(const MouseMoveInfo& event_info) {
 
-    if (__super::OnMouseMove(position, message)) {
-        return true;
+    __super::OnMouseMove(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    CheckIsMousePressed(position, message);
-    return true;
+    bool is_handled = CheckIsMousePressed(event_info.PositionAtSender(), event_info.Message());
+    if (is_handled) {
+        event_info.MarkAsHandled();
+    }
 }
 
 
-bool ClickableControl::OnMouseDown(const Point& position, const MouseMessage& message) {
+void ClickableControl::OnMouseDown(const MouseDownInfo& event_info) {
 
-    if (__super::OnMouseDown(position, message)) {
-        return true;
+    __super::OnMouseDown(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    if (message.MouseButton() == MouseButton::Left) {
+    if (event_info.Message().MouseButton() == MouseButton::Left) {
+
         SetIsFocused(true);
         BeginPress(PressType::Mouse);
-        CheckIsMousePressed(position, message);
+        CheckIsMousePressed(event_info.PositionAtSender(), event_info.Message());
+
+        event_info.MarkAsHandled();
     }
-    return true;
 }
 
 
-bool ClickableControl::OnMouseUp(const Point& position, const MouseMessage& message) {
+void ClickableControl::OnMouseUp(const MouseUpInfo& event_info) {
 
-    if (__super::OnMouseUp(position, message)) {
-        return true;
+    __super::OnMouseUp(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
     if (is_mouse_press_) {
-        if (message.MouseButton() == MouseButton::Left) {
+        if (event_info.Message().MouseButton() == MouseButton::Left) {
             EndPress(PressType::Mouse);
+            event_info.MarkAsHandled();
         }
     }
-
-    return true;
 }
 
 
@@ -209,10 +218,10 @@ void ClickableControl::EndPress(PressType press_type) {
 }
 
 
-void ClickableControl::CheckIsMousePressed(const Point& position, const MouseMessage& message) {
+bool ClickableControl::CheckIsMousePressed(const Point& position, const MouseMessage& message) {
 
     if (! is_mouse_press_) {
-        return;
+        return false;
     }
 
     bool is_pressed = false;
@@ -237,6 +246,8 @@ void ClickableControl::CheckIsMousePressed(const Point& position, const MouseMes
     if (need_repaint) {
         NeedRepaint();
     }
+
+    return true;
 }
 
 

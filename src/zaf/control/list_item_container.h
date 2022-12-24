@@ -17,9 +17,9 @@ public:
 
 protected:
     void Initialize() override;
-    bool OnMouseDown(const Point& position, const MouseMessage& message) override;
-    bool OnMouseMove(const Point& position, const MouseMessage& message) override;
-    bool OnMouseUp(const Point& position, const MouseMessage& message) override;
+    void OnMouseDown(const MouseDownInfo& event_info) override;
+    void OnMouseMove(const MouseMoveInfo& event_info) override;
+    void OnMouseUp(const MouseUpInfo& event_info) override;
     void OnKeyDown(const KeyDownInfo& event_info) override;
     void OnFocusChanged() override;
 

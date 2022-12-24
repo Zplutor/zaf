@@ -781,6 +781,9 @@
     <ClCompile Include="src\zaf\control\event\mouse_event_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\event\keyboard_event_info.cpp">
+      <Filter>zaf\control\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

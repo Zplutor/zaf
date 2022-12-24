@@ -80,21 +80,25 @@ void ComboBoxDropDownWindow::Container::OnMouseRelease() {
 }
 
 
-bool ComboBoxDropDownWindow::Container::OnMouseMove(const Point& position, const MouseMessage& message) {
+void ComboBoxDropDownWindow::Container::OnMouseMove(const MouseMoveInfo& event_info) {
+
+    __super::OnMouseMove(event_info);
 
     if (originally_cursor_ != nullptr) {
         SetCursor(originally_cursor_);
     }
-    return true;
 }
 
 
-bool ComboBoxDropDownWindow::Container::OnMouseUp(const Point& position, const MouseMessage& message) {
+void ComboBoxDropDownWindow::Container::OnMouseUp(const MouseUpInfo& event_info) {
 
-    if (!Rect().Contain(position)) {
+    __super::OnMouseUp(event_info);
+
+    if (!Rect().Contain(event_info.PositionAtSender())) {
+
         ReleaseMouse();
+        event_info.MarkAsHandled();
     }
-    return true;
 }
 
 

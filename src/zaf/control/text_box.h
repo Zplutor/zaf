@@ -293,9 +293,9 @@ protected:
     void Layout(const zaf::Rect& previous_rect) override;
 
     void ChangeMouseCursor(const Message& message, bool& is_changed) override;
-    bool OnMouseMove(const Point& position, const MouseMessage& message) override;
-    bool OnMouseDown(const Point& position, const MouseMessage& message) override;
-    bool OnMouseUp(const Point& position, const MouseMessage& message) override;
+    void OnMouseMove(const MouseMoveInfo& event_info) override;
+    void OnMouseDown(const MouseDownInfo& event_info) override;
+    void OnMouseUp(const MouseUpInfo& event_info) override;
 
     void OnKeyDown(const KeyDownInfo& event_info) override;
     void OnKeyUp(const KeyUpInfo& event_info) override;

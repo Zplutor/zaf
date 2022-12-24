@@ -4,23 +4,42 @@
 #include <zaf/window/message/keyboard_message.h>
 
 namespace zaf {
+
+class Control;
+
 namespace internal {
 
-template<typename MessageShim>
-class KeyboardEventInfo : public RoutedEventInfo {
+class KeyboardEventSharedState : public RoutedEventSharedState {
 public:
-    KeyboardEventInfo(const std::shared_ptr<Object>& source, const Message& message) :
-        RoutedEventInfo(source),
-        message_(message) {
+    KeyboardEventSharedState(const std::shared_ptr<Control>& source, const zaf::Message& message);
 
-    }
-
-    MessageShim Message() const {
-        return MessageShim{ message_ };
+    const zaf::Message Message() const {
+        return message_;
     }
 
 private:
     zaf::Message message_;
+};
+
+
+template<typename MessageShim>
+class KeyboardEventInfo : public RoutedEventInfo {
+public:
+    KeyboardEventInfo(
+        const std::shared_ptr<KeyboardEventSharedState>& state,
+        const std::shared_ptr<Control>& sender) 
+        :
+        RoutedEventInfo(state, sender),
+        state_(state) {
+
+    }
+
+    MessageShim Message() const {
+        return MessageShim{ state_->Message() };
+    }
+
+private:
+    std::shared_ptr<KeyboardEventSharedState> state_;
 };
 
 }

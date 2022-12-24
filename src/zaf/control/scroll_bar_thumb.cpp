@@ -94,9 +94,9 @@ void ScrollBarThumb::OnMouseRelease() {
 }
 
 
-bool ScrollBarThumb::OnMouseMove(const Point& position, const MouseMessage& message) {
+void ScrollBarThumb::OnMouseMove(const MouseMoveInfo& event_info) {
 
-    bool is_handled = __super::OnMouseMove(position, message);
+    __super::OnMouseMove(event_info);
 
     if (is_dragging_) {
 
@@ -104,8 +104,6 @@ bool ScrollBarThumb::OnMouseMove(const Point& position, const MouseMessage& mess
         event_info.scroll_bar_thumb = std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this());
         drag_event_.GetObserver().OnNext(event_info);
     }
-
-    return is_handled;
 }
 
 }

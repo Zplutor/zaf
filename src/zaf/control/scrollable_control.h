@@ -175,7 +175,7 @@ protected:
     void Initialize() override;
     void Layout(const zaf::Rect& previous_rect) override;
 
-    bool OnMouseWheel(const Point& position, const MouseWheelMessage& message) override;
+    void OnMouseWheel(const MouseWheelInfo& event_info) override;
 
     /**
      This method is called when the vertical scroll bar is changed.

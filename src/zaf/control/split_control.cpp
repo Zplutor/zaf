@@ -468,46 +468,54 @@ void SplitBar::ChangeMouseCursor(const Message& message, bool& is_changed) {
 }
 
 
-bool SplitBar::OnMouseMove(const Point& position, const MouseMessage& message) {
+void SplitBar::OnMouseMove(const MouseMoveInfo& event_info) {
 
-    if (__super::OnMouseMove(position, message)) {
-        return true;
+    __super::OnMouseMove(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
     if (IsCapturingMouse()) {
 
-        SplitBarDragInfo event_info;
-        event_info.split_bar = std::dynamic_pointer_cast<SplitBar>(shared_from_this());
-        drag_event_.GetObserver().OnNext(event_info);
-        return true;
+        SplitBarDragInfo drag_event_info;
+        drag_event_info.split_bar = std::dynamic_pointer_cast<SplitBar>(shared_from_this());
+        drag_event_.GetObserver().OnNext(drag_event_info);
+
+        event_info.MarkAsHandled();
     }
-    return false;
 }
 
 
-bool SplitBar::OnMouseDown(const Point& position, const MouseMessage& message) {
+void SplitBar::OnMouseDown(const MouseDownInfo& event_info) {
 
-    if (__super::OnMouseDown(position, message)) {
-        return true;
+    __super::OnMouseDown(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    if (message.MouseButton() == MouseButton::Left) {
+    if (event_info.Message().MouseButton() == MouseButton::Left) {
+
         CaptureMouse();
+        event_info.MarkAsHandled();
     }
-    return true;
 }
 
 
-bool SplitBar::OnMouseUp(const Point& position, const MouseMessage& message) {
+void SplitBar::OnMouseUp(const MouseUpInfo& event_info) {
 
-    if (__super::OnMouseDown(position, message)) {
-        return true;
+    __super::OnMouseUp(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
     if (IsCapturingMouse()) {
+
         ReleaseMouse();
+        event_info.MarkAsHandled();
     }
-    return true;
 }
 
 

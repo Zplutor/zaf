@@ -47,54 +47,68 @@ void ListItemContainer::LayoutItems(
 }
 
 
-bool ListItemContainer::OnMouseDown(const Point& position, const MouseMessage& message) {
+void ListItemContainer::OnMouseDown(const MouseDownInfo& event_info) {
 
-    if (__super::OnMouseDown(position, message)) {
-        return true;
+    __super::OnMouseDown(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
     SetIsFocused(true);
 
-    if (message.MouseButton() == MouseButton::Left) {
+    if (event_info.Message().MouseButton() == MouseButton::Left) {
+
         CaptureMouse();
-        select_strategy_->BeginChangingSelectionByMouseDown(position, message);
+
+        select_strategy_->BeginChangingSelectionByMouseDown(
+            event_info.PositionAtSender(), 
+            event_info.Message());
     }
 
-    return true;
+    event_info.MarkAsHandled();
 }
 
 
-bool ListItemContainer::OnMouseMove(const Point& position, const MouseMessage& message) {
+void ListItemContainer::OnMouseMove(const MouseMoveInfo& event_info) {
 
-    if (__super::OnMouseMove(position, message)) {
-        return true;
+    __super::OnMouseMove(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
     if (IsCapturingMouse()) {
-        select_strategy_->ChangeSelectionByMouseMove(position, message);
-        return true;
-    }
 
-    return false;
+        select_strategy_->ChangeSelectionByMouseMove(
+            event_info.PositionAtSender(),
+            event_info.Message());
+
+        event_info.MarkAsHandled();
+    }
 }
 
 
-bool ListItemContainer::OnMouseUp(const Point& position, const MouseMessage& message) {
+void ListItemContainer::OnMouseUp(const MouseUpInfo& event_info) {
 
-    if (__super::OnMouseUp(position, message)) {
-        return true;
+    __super::OnMouseUp(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    if (message.MouseButton() == MouseButton::Left) {
+    if (event_info.Message().MouseButton() == MouseButton::Left) {
     
         if (IsCapturingMouse()) {
             ReleaseMouse();
         }
 
-        select_strategy_->EndChangingSelectionByMouseUp(position, message);
+        select_strategy_->EndChangingSelectionByMouseUp(
+            event_info.PositionAtSender(), 
+            event_info.Message());
+
+        event_info.MarkAsHandled();
     }
-    
-    return true;
 }
 
 

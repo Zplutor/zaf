@@ -396,11 +396,7 @@ void Control::NeedRepaintRect(const zaf::Rect& rect) {
         return;
     }
 
-    Point position_in_parent = ToParentPoint(repaint_rect.position);
-    const auto& parent_border = parent->Border();
-    const auto& parent_padding = parent->Padding();
-    position_in_parent.x += parent_border.left + parent_padding.left;
-    position_in_parent.y += parent_border.top + parent_padding.top;
+    Point position_in_parent = TranslateToParentPoint(repaint_rect.position);
 
     zaf::Rect repaint_rect_in_parent(position_in_parent, repaint_rect.size);
     repaint_rect_in_parent.Intersect(parent->ContentRect());
@@ -1587,44 +1583,43 @@ const Point Control::GetMousePosition() const {
 }
 
 
-void Control::RouteMouseMoveMessage(const Point& position, const MouseMessage& message) {
+void Control::FindMouseOverControl(const Point& position, const MouseMessage& message) {
+
+    auto window = Window();
+    if (!window) {
+        return;
+    }
+
+    //Clear mouse over control if current control is disabled.
+    if (!IsEnabled()) {
+        window->SetMouseOverControl(nullptr, MouseMessage{ Message{} });
+        return;
+    }
 
     auto child = FindChildAtPosition(position);
-    if (child != nullptr) {
-        child->RouteMouseMoveMessage(ToChildPoint(position, child), message);
-    }
-    else {
+    if (child && child->IsEnabled()) {
 
-        auto window = Window();
-        if (window != nullptr) {
-
-            if (IsEnabled()) {
-                window->SetMouseOverControl(shared_from_this(), message);
-            }
-            else {
-                window->SetMouseOverControl(nullptr, MouseMessage{ Message{} });
-            }
-        }
+        child->FindMouseOverControl(ToChildPoint(position, child), message);
+        return;
     }
+
+    window->SetMouseOverControl(shared_from_this(), message);
 }
 
 
-bool Control::RouteMouseMessage(const Point& position, const MouseMessage& message) {
+Point Control::TranslateToParentPoint(const Point& point) const {
 
-    auto child = FindChildAtPosition(position);
+    auto result = point;
+    result.x += this->X(); 
+    result.y += this->Y(); 
 
-    //A disabled child cannot handle messges.
-    if (child && child->IsEnabled()) {
-        if (child->RouteMouseMessage(ToChildPoint(position, child), message)) {
-            return true;
-        }
-    }
-    
-    if (!IsEnabled()) {
-        return false;
+    auto parent = Parent();
+    if (parent) {
+        result.x += parent->Padding().Left() + parent->Border().Left();
+        result.y += parent->Padding().Top() + parent->Border().Top();
     }
 
-    return HandleMouseMessage(position, message);
+    return result;
 }
 
 
@@ -1639,34 +1634,6 @@ Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& 
     point_in_child.y -= child_position.y + border.top + padding.top;
 
     return point_in_child;
-}
-
-
-bool Control::HandleMouseMessage(const Point& position, const MouseMessage& message) {
-
-    switch (message.ID()) {
-    case WM_MOUSEMOVE:
-        return OnMouseMove(position, message);
-
-    case WM_LBUTTONDOWN:
-    case WM_NCLBUTTONDOWN:
-    case WM_MBUTTONDOWN:
-    case WM_RBUTTONDOWN:
-        return OnMouseDown(position, message);
-
-    case WM_LBUTTONUP:
-    case WM_NCLBUTTONUP:
-    case WM_MBUTTONUP:
-    case WM_RBUTTONUP:
-        return OnMouseUp(position, message);
-
-    case WM_MOUSEWHEEL:
-    case WM_MOUSEHWHEEL:
-        return OnMouseWheel(position, As<MouseWheelMessage>(message));
-
-    default:
-        return false;
-    }
 }
 
 
@@ -1691,8 +1658,8 @@ void Control::ChangeMouseCursor(const Message& message, bool& is_changed) {
 }
 
 
-bool Control::OnMouseMove(const Point& position, const MouseMessage& message) {
-    return false;
+void Control::OnMouseMove(const MouseMoveInfo& event_info) {
+
 }
 
 
@@ -1732,15 +1699,17 @@ void Control::OnMouseHover(const MouseHoverInfo& event_info) {
 }
 
 
-bool Control::OnMouseDown(const Point& position, const MouseMessage& message) {
+void Control::OnMouseDown(const MouseDownInfo& event_info) {
 
-    if (message.MouseButton() == MouseButton::Left) {
-        if (HandleDoubleClickOnMouseDown(position)) {
-            return true;
-        }
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    return false;
+    if (event_info.Message().MouseButton() == MouseButton::Left) {
+        if (HandleDoubleClickOnMouseDown(event_info.PositionAtSender())) {
+            event_info.MarkAsHandled();
+        }
+    }
 }
 
 
@@ -1767,8 +1736,8 @@ bool Control::HandleDoubleClickOnMouseDown(const Point& position) {
 }
 
 
-bool Control::OnMouseUp(const Point& position, const MouseMessage& message) {
-    return false;
+void Control::OnMouseUp(const MouseUpInfo& event_info) {
+
 }
 
 
@@ -1795,8 +1764,8 @@ void Control::OnDoubleClick(const DoubleClickInfo& event_info) {
 }
 
 
-bool Control::OnMouseWheel(const Point& position, const MouseWheelMessage& message) {
-    return false;
+void Control::OnMouseWheel(const MouseWheelInfo& event_info) {
+
 }
 
 
