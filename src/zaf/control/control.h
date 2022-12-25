@@ -514,9 +514,9 @@ public:
     }
 
     /**
-     Get a value indicating that whether one of the control's children is under mouse cursor.
+     Get a value indicating that whether the control or any of its children is under mouse cursor.
      */
-    bool IsMouseOverIndirectly() const;
+    bool ContainMouse() const;
 
     /**
      Get a value indicating that whether the control can be focused.

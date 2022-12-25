@@ -1373,15 +1373,19 @@ void Control::SetIsMouseOverByWindow(bool is_mouse_over) {
 }
 
 
-bool Control::IsMouseOverIndirectly() const {
+bool Control::ContainMouse() const {
+
+    if (IsMouseOver()) {
+        return true;
+    }
 
     auto window = Window();
-    if (window == nullptr) {
+    if (!window) {
         return false;
     }
 
     const auto& mouse_over_control = window->MouseOverControl();
-    if (mouse_over_control == nullptr) {
+    if (!mouse_over_control) {
         return false;
     }
 
