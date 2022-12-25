@@ -64,7 +64,6 @@ public:
 constexpr const wchar_t* const kAnchorPropertyName = L"Anchor";
 constexpr const wchar_t* const kBackgroundImageLayoutPropertyName = L"BackgroundImageLayout";
 constexpr const wchar_t* const kBackgroundImagePickerPropertyName = L"BackgroundImagePicker";
-constexpr const wchar_t* const kFocusChangeEventPropertyName = L"FocusChangeEvent";
 constexpr const wchar_t* const kLayouterPropertyName = L"Layouter";
 constexpr const wchar_t* const kMouseEnterEventPropertyName = L"MouseEnterEvent";
 constexpr const wchar_t* const kMouseLeaveEventPropertyName = L"MouseLeaveEvent";
@@ -73,6 +72,8 @@ constexpr const wchar_t* const RectChangedEventPropertyName = L"RectChangedEvent
 constexpr const wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
 constexpr const wchar_t* const CharInputEventPropertyName = L"CharInputEvent";
 constexpr const wchar_t* const DoubleClickEventPropertyName = L"DoubleClickEvent";
+constexpr const wchar_t* const FocusGainedEventPropertyName = L"FocusGainedEvent";
+constexpr const wchar_t* const FocusLostEventPropertyName = L"FocusLostEvent";
 constexpr const wchar_t* const KeyDownEventPropertyName = L"KeyDown";
 constexpr const wchar_t* const KeyUpEventPropertyName = L"KeyUp";
 constexpr const wchar_t* const ParentChangedEventPropertyName = L"ParentChangedEvent";
@@ -1446,15 +1447,8 @@ void Control::SetIsFocused(bool is_focused) {
 }
 
 
-void Control::IsFocusedChanged(bool is_focused) {
-
-    if (is_focused_ == is_focused) {
-        return;
-    }
-
+void Control::SetIsFocusedByWindow(bool is_focused) {
     is_focused_ = is_focused;
-
-    OnFocusChanged();
 }
 
 
@@ -1537,10 +1531,15 @@ Observable<RectChangedInfo> Control::RectChangedEvent() {
 }
 
 
-Observable<ControlFocusChangeInfo> Control::FocusChangeEvent() {
-    return GetEventObservable<ControlFocusChangeInfo>(
+Observable<FocusGainedInfo> Control::FocusGainedEvent() {
+    return GetEventObservable<FocusGainedInfo>(
         GetPropertyMap(),
-        kFocusChangeEventPropertyName);
+        FocusGainedEventPropertyName);
+}
+
+
+Observable<FocusLostInfo> Control::FocusLostEvent() {
+    return GetEventObservable<FocusLostInfo>(GetPropertyMap(), FocusLostEventPropertyName);
 }
 
 
@@ -1834,15 +1833,23 @@ Observable<CharInputInfo> Control::CharInputEvent() {
 }
 
 
-void Control::OnFocusChanged() {
+void Control::OnFocusGained(const FocusGainedInfo& event_info) {
 
-    auto event_observer = GetEventObserver<ControlFocusChangeInfo>(
+    auto observer = GetEventObserver<FocusGainedInfo>(
         GetPropertyMap(),
-        kFocusChangeEventPropertyName);
+        FocusGainedEventPropertyName);
 
-    if (event_observer) {
-        ControlFocusChangeInfo event_info(shared_from_this());
-        event_observer->OnNext(event_info);
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+void Control::OnFocusLost(const FocusLostInfo& event_info) {
+
+    auto observer = GetEventObserver<FocusLostInfo>(GetPropertyMap(), FocusLostEventPropertyName);
+    if (observer) {
+        observer->OnNext(event_info);
     }
 }
 

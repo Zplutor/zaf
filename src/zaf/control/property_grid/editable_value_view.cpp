@@ -15,14 +15,12 @@ void EditableValueView::Initialize() {
     text_box_->SetParagraphAlignment(ParagraphAlignment::Center);
     text_box_->SetAllowBeep(false);
 
-    Subscriptions() += text_box_->FocusChangeEvent().Subscribe(std::bind([this]() {
+    Subscriptions() += text_box_->FocusGainedEvent().Subscribe(std::bind([this]() {
+        NotifyShouldSelectItem();
+    }));
 
-        if (text_box_->IsFocused()) {
-            NotifyShouldSelectItem();
-        }
-        else {
-            ChangeValue();
-        }
+    Subscriptions() += text_box_->FocusLostEvent().Subscribe(std::bind([this]() {
+        ChangeValue();
     }));
 
     Subscriptions() += text_box_->KeyDownEvent().Subscribe(

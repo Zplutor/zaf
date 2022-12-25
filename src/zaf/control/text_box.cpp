@@ -943,23 +943,41 @@ void TextBox::OnCharInput(const CharInputInfo& event_info) {
 }
 
 
-void TextBox::OnFocusChanged() {
+void TextBox::OnFocusGained(const FocusGainedInfo& event_info) {
 
-    if (text_service_) {
+    __super::OnFocusGained(event_info);
 
-        if (this->IsFocused()) {
-            text_service_->TxSendMessage(WM_SETFOCUS, 0, 0, nullptr);
-        }
-        else {
-            if (caret_) {
-                caret_->SetIsVisible(false);
-            }
-
-            text_service_->TxSendMessage(WM_KILLFOCUS, 0, 0, nullptr);
-        }
+    if (event_info.IsHandled()) {
+        return;
     }
 
-    __super::OnFocusChanged();
+    if (!text_service_) {
+        return;
+    }
+
+    text_service_->TxSendMessage(WM_SETFOCUS, 0, 0, nullptr);
+    event_info.MarkAsHandled();
+}
+
+
+void TextBox::OnFocusLost(const FocusLostInfo& event_info) {
+
+    __super::OnFocusLost(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
+    }
+
+    if (!text_service_) {
+        return;
+    }
+
+    if (caret_) {
+        caret_->SetIsVisible(false);
+    }
+
+    text_service_->TxSendMessage(WM_KILLFOCUS, 0, 0, nullptr);
+    event_info.MarkAsHandled();
 }
 
 

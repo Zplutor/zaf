@@ -13,7 +13,9 @@ void MessageInputView::Initialize() {
     text_box_ = zaf::Create<zaf::TextBox>();
     text_box_->SetBorder(zaf::Frame(0));
     text_box_->SetBackgroundColor(zaf::Color::Transparent());
-    Subscriptions() += text_box_->FocusChangeEvent().Subscribe(
+    Subscriptions() += text_box_->FocusGainedEvent().Subscribe(
+        std::bind(&MessageInputView::TextBoxFocusChange, this));
+    Subscriptions() += text_box_->FocusLostEvent().Subscribe(
         std::bind(&MessageInputView::TextBoxFocusChange, this));
     Subscriptions() += text_box_->KeyDownEvent().Subscribe(
         std::bind(&MessageInputView::TextBoxKeyDown, this, std::placeholders::_1));

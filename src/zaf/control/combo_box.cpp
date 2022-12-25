@@ -664,12 +664,18 @@ void ComboBox::NotifySelectionChange() {
 }
 
 
-void ComboBox::OnFocusChanged() {
+void ComboBox::OnFocusGained(const FocusGainedInfo& event_info) {
 
-    __super::OnFocusChanged();
+    __super::OnFocusGained(event_info);
+
+    if (event_info.IsHandled()) {
+        return;
+    }
 
     if (IsEditable()) {
+
         edit_text_box_->SetIsFocused(true);
+        event_info.MarkAsHandled();
     }
 }
 

@@ -127,7 +127,9 @@ void ListItemContainer::OnKeyDown(const KeyDownInfo& event_info) {
 }
 
 
-void ListItemContainer::OnFocusChanged() {
+void ListItemContainer::OnFocusGained(const FocusGainedInfo& event_info) {
+
+    __super::OnFocusGained(event_info);
 
     for (const auto& each_child : Children()) {
 
@@ -140,8 +142,24 @@ void ListItemContainer::OnFocusChanged() {
             list_item->NeedRepaint();
         }
     }
+}
 
-    __super::OnFocusChanged();
+
+void ListItemContainer::OnFocusLost(const FocusLostInfo& event_info) {
+
+    __super::OnFocusLost(event_info);
+
+    for (const auto& each_child : Children()) {
+
+        auto list_item = As<ListItem>(each_child);
+        if (!list_item) {
+            continue;
+        }
+
+        if (list_item->IsSelected()) {
+            list_item->NeedRepaint();
+        }
+    }
 }
 
 }

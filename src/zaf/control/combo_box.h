@@ -153,7 +153,7 @@ protected:
 
     void OnClick() override;
     void OnKeyDown(const KeyDownInfo& event_info) override;
-    void OnFocusChanged() override;
+    void OnFocusGained(const FocusGainedInfo& event_info) override;
 
     void OnTextChanged() override;
 

@@ -597,8 +597,11 @@ private:
     void ChangeControlMouseOverState(
         const std::shared_ptr<Control>& target_control,
         bool is_mouse_over);
-    void SetCaptureMouseControl(const std::shared_ptr<Control>& capture_control, bool is_releasing);
+    void SetCaptureMouseControl(
+        const std::shared_ptr<Control>& capture_control,
+        bool is_releasing);
     void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
+    void ChangeControlFocusState(const std::shared_ptr<Control>& target_control, bool is_focused);
 
     void SetHighlightControl(const std::shared_ptr<Control>& inspected_control);
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;

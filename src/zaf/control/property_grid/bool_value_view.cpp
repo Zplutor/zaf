@@ -11,11 +11,9 @@ void BoolValueView::Initialize() {
     check_box_ = Create<CheckBox>();
     check_box_->SetParagraphAlignment(ParagraphAlignment::Center);
 
-    Subscriptions() += check_box_->FocusChangeEvent().Subscribe(std::bind([this]() {
+    Subscriptions() += check_box_->FocusGainedEvent().Subscribe(std::bind([this]() {
     
-        if (check_box_->IsFocused()) {
-            NotifyShouldSelectItem();
-        }
+        NotifyShouldSelectItem();
     }));
 
     this->AddChild(check_box_);

@@ -16,12 +16,10 @@ public:
 
         SetParagraphAlignment(zaf::ParagraphAlignment::Center);
 
-        Subscriptions() += FocusChangeEvent().Subscribe(std::bind([this]() {
+        Subscriptions() += FocusLostEvent().Subscribe(std::bind([this]() {
 
-            if (!IsFocused()) {
-                if (value_change_event_ != nullptr) {
-                    value_change_event_(*this);
-                }
+            if (value_change_event_ != nullptr) {
+                value_change_event_(*this);
             }
         }));
     }

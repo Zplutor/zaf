@@ -301,7 +301,8 @@ protected:
     void OnKeyUp(const KeyUpInfo& event_info) override;
     void OnCharInput(const CharInputInfo& event_info) override;
 
-    void OnFocusChanged() override;
+    void OnFocusGained(const FocusGainedInfo& event_info) override;
+    void OnFocusLost(const FocusLostInfo& event_info) override;
 
 private:
     class TextHostBridge : public ITextHost {

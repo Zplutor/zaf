@@ -9,9 +9,9 @@
 #include <vector>
 #include <zaf/base/auto_reset_value.h>
 #include <zaf/control/anchor.h>
-#include <zaf/control/control_event_infos.h>
 #include <zaf/control/color_picker.h>
 #include <zaf/control/event/double_click_info.h>
+#include <zaf/control/event/focus_event_info.h>
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/event/mouse_event_info.h>
 #include <zaf/control/event/parent_changed_info.h>
@@ -648,12 +648,8 @@ public:
      */
     Observable<RectChangedInfo> RectChangedEvent();
 
-    /**
-     Get focus change event.
-
-     This event is raised when the control's focus is changed.
-     */
-    Observable<ControlFocusChangeInfo> FocusChangeEvent();
+    Observable<FocusGainedInfo> FocusGainedEvent();
+    Observable<FocusLostInfo> FocusLostEvent();
 
     Observable<MouseEnterInfo> MouseEnterEvent();
     Observable<MouseLeaveInfo> MouseLeaveEvent();
@@ -783,13 +779,8 @@ protected:
     virtual void OnKeyUp(const KeyUpInfo& event_info);
     virtual void OnCharInput(const CharInputInfo& event_info);
 
-    /**
-     Process the focus changed notification. 
-
-     This method is called when the control's focus state changed. Dervied classes should call the 
-     same method of base class to raise the focus changed event.
-     */
-    virtual void OnFocusChanged();
+    virtual void OnFocusGained(const FocusGainedInfo& event_info);
+    virtual void OnFocusLost(const FocusLostInfo& event_info);
 
     virtual void OnRectChanged(const RectChangedInfo& event_info);
 
@@ -824,7 +815,7 @@ private:
     }
 
     void SetIsMouseOverByWindow(bool is_mouse_over);
-    void IsFocusedChanged(bool is_focused);
+    void SetIsFocusedByWindow(bool is_focused);
     void IsCapturingMouseChanged(bool is_capturing_mouse);
     void FindMouseOverControl(const Point& position, const MouseMessage& message);
 

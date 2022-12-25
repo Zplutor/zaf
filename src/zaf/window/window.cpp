@@ -1166,7 +1166,7 @@ void Window::HandleDestroyMessage() {
     }
 
     if (focused_control_ != nullptr) {
-        focused_control_->IsFocusedChanged(false);
+        focused_control_->SetIsFocusedByWindow(false);
         focused_control_ = nullptr;
     }
 
@@ -1345,17 +1345,44 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_contr
         }
     }
 
-    if (previous_focused_control != nullptr) {
-        previous_focused_control->IsFocusedChanged(false);
-    }
-
     focused_control_ = new_focused_control;
 
-    if (new_focused_control != nullptr) {
-        new_focused_control->IsFocusedChanged(true);
+    if (previous_focused_control) {
+        ChangeControlFocusState(previous_focused_control, false);
+    }
+
+    if (new_focused_control) {
+        ChangeControlFocusState(new_focused_control, true);
     }
 
     OnFocusedControlChanged(previous_focused_control);
+}
+
+
+void Window::ChangeControlFocusState(
+    const std::shared_ptr<Control>& target_control, 
+    bool is_focused) {
+
+    target_control->SetIsFocusedByWindow(is_focused);
+
+    //Raise and route event.
+    auto event_info_state = std::make_shared<RoutedEventSharedState>(target_control);
+
+    for (auto sender = target_control; sender; sender = sender->Parent()) {
+
+        internal::FocusEventInfo event_info{ event_info_state, sender };
+        if (is_focused) {
+            sender->OnFocusGained(event_info);
+        }
+        else {
+            sender->OnFocusLost(event_info);
+        }
+
+        //Stop routing event if focused control is changed during the routing.
+        if (target_control->IsFocused() != is_focused) {
+            break;
+        }
+    }
 }
 
 
