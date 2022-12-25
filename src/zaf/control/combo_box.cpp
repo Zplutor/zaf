@@ -490,16 +490,6 @@ void ComboBox::OnKeyDown(const KeyDownInfo& event_info) {
         ConfirmSelection(key == VK_ESCAPE);
         is_handled = true;
     }
-    else if (key == VK_SPACE) {
-        
-        //The edit text box processes the space key down event,
-        //but it still delivers this event to here, then click event
-        //of clickable control triggered. So omit the event to 
-        //prevent this problem.
-        if (IsEditable()) {
-            is_handled = true;
-        }
-    }
     
     if (is_handled) {
         event_info.MarkAsHandled();
@@ -711,17 +701,13 @@ void ComboBoxDropDownListBox::OnMouseMove(const MouseMoveInfo& event_info) {
 
 void ComboBoxEditTextBox::OnKeyDown(const KeyDownInfo& event_info) {
 
+    //Don't handle these key events, so that they can be handled in combo box.
+    auto key = event_info.Message().VirtualKey();
+    if (key == VK_UP || key == VK_DOWN || key == VK_RETURN || key == VK_ESCAPE) {
+        return;
+    }
+
     __super::OnKeyDown(event_info);
-
-    auto key = event_info.Message().VirtualKey(); 
-    if (key == VK_UP || key == VK_DOWN || key == VK_RETURN) {
-
-        //Return false to derives the event to its parent - combo box.
-        //return false;
-    }
-    else {
-        //return is_handled;
-    }
 }
 
 }
