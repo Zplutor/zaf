@@ -124,17 +124,20 @@ void Item::InitializeSplitControl() {
     split_control_->SetFirstPane(name_label_);
     split_control_->SetSecondPane(value_view_);
 
-    split_control_->SplitBar()->SetSplitterColorPicker([](const Control& control) {
-    
-        auto parent = control.Parent();
-        while (parent) {
+    split_control_->SplitBar()->SetSplitterColorPicker([this](const Control& control) {
 
-            auto list_item = As<ListItem>(parent);
-            if (list_item) {
-                return list_item->BackgroundColor();
+        if (this->IsSelected()) {
+
+            auto parent = control.Parent();
+            while (parent) {
+
+                auto list_item = As<ListItem>(parent);
+                if (list_item) {
+                    return list_item->BackgroundColor();
+                }
+
+                parent = parent->Parent();
             }
-
-            parent = parent->Parent();
         }
 
         return Color::FromRGB(DelimiterLineColor);
