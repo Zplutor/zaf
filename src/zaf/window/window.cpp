@@ -855,6 +855,11 @@ bool Window::RedirectMouseWheelMessage(const Message& message) {
 
 bool Window::HandleMouseMessage(const MouseMessage& message) {
 
+    Point position_at_begin_routing_control;
+    auto begin_routing_control = GetBeginRoutingControlForMouseMessage(
+        message, 
+        position_at_begin_routing_control);
+
     if (message.ID() == WM_MOUSEMOVE || message.ID() == WM_NCMOUSEMOVE) {
 
         if (is_selecting_inspector_control_) {
@@ -863,6 +868,8 @@ bool Window::HandleMouseMessage(const MouseMessage& message) {
         }
 
         TrackMouseByMouseMove(message);
+
+        begin_routing_control->FindMouseOverControl(position_at_begin_routing_control, message);
     }
     else {
 
@@ -877,40 +884,50 @@ bool Window::HandleMouseMessage(const MouseMessage& message) {
         }
     }
 
-    FindMouseOverControl(message);
-    return RouteMouseEvent(message);
+    return RouteMouseEvent(begin_routing_control, position_at_begin_routing_control, message);
 }
 
 
-void Window::FindMouseOverControl(const MouseMessage& message) {
+std::shared_ptr<Control> Window::GetBeginRoutingControlForMouseMessage(
+    const MouseMessage& message,
+    Point& position_at_control) const {
 
-    std::shared_ptr<Control> begin_control;
-    Point position_at_begin_control;
+    std::shared_ptr<Control> result;
 
     if (capturing_mouse_control_) {
 
-        begin_control = capturing_mouse_control_;
+        result = capturing_mouse_control_;
 
-        position_at_begin_control = TranslateAbsolutePositionToControlPosition(
+        position_at_control = TranslateAbsolutePositionToControlPosition(
             message.MousePosition(),
-            *begin_control);
+            *result);
     }
     else {
 
-        begin_control = root_control_;
-        position_at_begin_control = message.MousePosition();
+        result = root_control_;
+        position_at_control = message.MousePosition();
     }
 
-    begin_control->FindMouseOverControl(position_at_begin_control, message);
+    return result;
 }
 
 
-bool Window::RouteMouseEvent(const MouseMessage& message) {
+bool Window::RouteMouseEvent(
+    const std::shared_ptr<Control>& begin_routing_control,
+    const Point& position_at_begin_routing_control, 
+    const MouseMessage& message) {
+
+    auto event_source_control = begin_routing_control->FindEnabledControlAtPosition(
+        position_at_begin_routing_control);
+
+    if (!event_source_control) {
+        return false;
+    }
 
     switch (message.ID()) {
     case WM_MOUSEMOVE:
         return RouteMouseEventGeneric<MouseMoveInfo>(
-            mouse_over_control_,
+            event_source_control,
             message,
             &Control::OnMouseMove);
 
@@ -919,7 +936,7 @@ bool Window::RouteMouseEvent(const MouseMessage& message) {
     case WM_MBUTTONDOWN:
     case WM_RBUTTONDOWN:
         return RouteMouseEventGeneric<MouseDownInfo>(
-            mouse_over_control_,
+            event_source_control,
             message,
             &Control::OnMouseDown);
 
@@ -928,14 +945,14 @@ bool Window::RouteMouseEvent(const MouseMessage& message) {
     case WM_MBUTTONUP:
     case WM_RBUTTONUP:
         return RouteMouseEventGeneric<MouseUpInfo>(
-            mouse_over_control_,
+            event_source_control,
             message,
             &Control::OnMouseUp);
 
     case WM_MOUSEWHEEL:
     case WM_MOUSEHWHEEL:
         return RouteMouseEventGeneric<MouseWheelInfo>(
-            mouse_over_control_,
+            event_source_control,
             message,
             &Control::OnMouseWheel);
         

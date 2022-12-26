@@ -818,6 +818,7 @@ private:
     void SetIsFocusedByWindow(bool is_focused);
     void IsCapturingMouseChanged(bool is_capturing_mouse);
     void FindMouseOverControl(const Point& position, const MouseMessage& message);
+    std::shared_ptr<Control> FindEnabledControlAtPosition(const Point& position);
 
 private:
     friend class internal::ControlUpdateLock;

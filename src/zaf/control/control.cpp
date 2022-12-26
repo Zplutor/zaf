@@ -1593,20 +1593,29 @@ void Control::FindMouseOverControl(const Point& position, const MouseMessage& me
         return;
     }
 
-    //Clear mouse over control if current control is disabled.
-    if (!IsEnabled()) {
+    auto found_control = FindEnabledControlAtPosition(position);
+    if (found_control) {
+        window->SetMouseOverControl(found_control, message);
+    }
+    else {
         window->SetMouseOverControl(nullptr, MouseMessage{ Message{} });
-        return;
+    }
+}
+
+
+std::shared_ptr<Control> Control::FindEnabledControlAtPosition(const Point& position) {
+
+    //There is no enabled control if current control is disabled.
+    if (!IsEnabled()) {
+        return nullptr;
     }
 
     auto child = FindChildAtPosition(position);
     if (child && child->IsEnabled()) {
-
-        child->FindMouseOverControl(ToChildPoint(position, child), message);
-        return;
+        return child->FindEnabledControlAtPosition(ToChildPoint(position, child));
     }
 
-    window->SetMouseOverControl(shared_from_this(), message);
+    return shared_from_this();
 }
 
 
