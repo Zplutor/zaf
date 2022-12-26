@@ -9,6 +9,7 @@
 #include <zaf/control/text_box.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/graphic/dpi.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
@@ -400,9 +401,9 @@ void ComboBox::PopupDropDownWindow() {
 
     window_rect = Align(window_rect);
 
-    POINT screen_position = window_rect.position.ToPOINT();
+    POINT screen_position = FromDIPs(window_rect.position, window->GetDPI()).ToPOINT();
     ClientToScreen(window->Handle(), &screen_position);
-    window_rect.position = Point::FromPOINT(screen_position);
+    window_rect.position = ToDIPs(Point::FromPOINT(screen_position), window->GetDPI());
 
     drop_down_window_->SetOwner(window);
     drop_down_window_->SetRect(window_rect);
