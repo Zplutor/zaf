@@ -23,7 +23,7 @@ void ListItem::Initialize() {
         }
 
         return Color::FromRGB(
-            item.IsWithinFocusedContext() ? 
+            item.IsInFocusContext() ?
             internal::ControlSelectedActivedColorRGB :
             internal::ControlSelectedInActivedColorRGB);
     });
@@ -41,26 +41,13 @@ void ListItem::Initialize() {
 }
 
 
-bool ListItem::IsWithinFocusedContext() const {
-
-    auto window = this->Window();
-    if (!window) {
-        return false;
-    }
-
-    auto focused_control = window->FocusedControl();
-    if (!focused_control) {
-        return false;
-    }
+bool ListItem::IsInFocusContext() const {
 
     auto container = As<ListItemContainer>(Parent());
-    if (!container) {
-        return false;
+    if (container) {
+        return container->ContainFocus();
     }
-
-    return 
-        container == focused_control ||
-        container->IsAncestorOf(focused_control);
+    return false;
 }
 
 }

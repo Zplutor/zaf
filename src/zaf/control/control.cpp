@@ -1452,6 +1452,26 @@ void Control::SetIsFocusedByWindow(bool is_focused) {
 }
 
 
+bool Control::ContainFocus() const {
+
+    if (IsFocused()) {
+        return true;
+    }
+
+    auto window = Window();
+    if (!window) {
+        return false;
+    }
+
+    const auto& focused_control = window->FocusedControl();
+    if (!focused_control) {
+        return false;
+    }
+
+    return IsAncestorOf(focused_control);
+}
+
+
 void Control::SetIsCachedPaintingEnabled(bool value) {
 
     if (is_cached_painting_enabled_ == value) {

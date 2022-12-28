@@ -576,6 +576,8 @@ public:
      */
     void SetIsFocused(bool is_focused);
 
+    bool ContainFocus() const;
+
     bool IsCachedPaintingEnabled() const {
         return is_cached_painting_enabled_;
     }
