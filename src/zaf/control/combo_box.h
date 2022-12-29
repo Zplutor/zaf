@@ -321,7 +321,7 @@ protected:
     void OnMouseMove(const MouseMoveInfo& event_info) override;
 
 private:
-    class Delegate : public ListBoxDelegate {
+    class DropDownListBoxDelegate : public ListBoxDelegate {
     public:
         std::shared_ptr<ListItem> CreateItem(
             std::size_t item_index,

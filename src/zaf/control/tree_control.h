@@ -53,8 +53,13 @@ protected:
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
 
-    virtual void DataSourceChange(const std::shared_ptr<TreeDataSource>& previous_data_source) { }
-    virtual void DelegateChange(const std::shared_ptr<TreeControlDelegate>& previous_delegate) { }
+    virtual void OnDataSourceChanged(const std::shared_ptr<TreeDataSource>& previous_data_source) { 
+    
+    }
+
+    virtual void OnDelegateChanged(const std::shared_ptr<TreeControlDelegate>& previous_delegate) { 
+    
+    }
 
 private:
     void SelectionChange();

@@ -40,6 +40,6 @@ std::shared_ptr<PropertyItem> ListBoxExploreManager::CreateDefaultItemHeightProp
     auto list_box = GetListBox();
     return CreateFloatPropertyItem(
         L"Default item height",
-        [list_box]() { return list_box->GetDefaultItemHeight(); },
+        [list_box]() { return list_box->DefaultItemHeight(); },
         [list_box](float value) { list_box->SetDefaultItemHeight(value); });
 }

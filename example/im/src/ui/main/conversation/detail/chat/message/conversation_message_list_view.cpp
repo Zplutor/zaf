@@ -36,7 +36,7 @@ void ConversationMessageListView::Initialize() {
     SetAutoAdjustScrollBarSmallChange(false);
     SetAutoScrollBarLargeChange(false);
     SetBackgroundColor(zaf::Color::FromRGB(0xECF0F3));
-    GetItemContainer()->SetPadding(zaf::Frame(15, 0, 15, 13));
+    ItemContainer()->SetPadding(zaf::Frame(15, 0, 15, 13));
     SetDataSource(std::dynamic_pointer_cast<zaf::ListDataSource>(shared_from_this()));
     SetDelegate(std::dynamic_pointer_cast<zaf::ListControlDelegate>(shared_from_this()));
 
@@ -138,7 +138,7 @@ float ConversationMessageListView::EstimateItemHeight(
         return 0;
     }
     
-    return message_item_infos_[index]->message_item->DeterminateHeight(GetItemContainer()->ContentSize().width);
+    return message_item_infos_[index]->message_item->DeterminateHeight(ItemContainer()->ContentSize().width);
 }
 
 

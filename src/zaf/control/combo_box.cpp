@@ -415,8 +415,8 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
 
     float height = 0;
 
-    auto data_source = drop_down_list_box_->GetDataSource();
-    auto delegate = drop_down_list_box_->GetDelegate();
+    auto data_source = drop_down_list_box_->DataSource();
+    auto delegate = drop_down_list_box_->Delegate();
 
     if (data_source && delegate) {
 
@@ -547,7 +547,7 @@ void ComboBox::DropDownListBoxSelectionChange() {
 
         std::wstring text;
 
-        auto delegate = drop_down_list_box_->GetDelegate();
+        auto delegate = drop_down_list_box_->Delegate();
         if (delegate) {
 
             text = delegate->GetItemText(
@@ -685,7 +685,7 @@ void ComboBoxDropDownListBox::Initialize() {
 
     __super::Initialize();
 
-    SetDelegate(std::make_shared<Delegate>());
+    SetDelegate(std::make_shared<DropDownListBoxDelegate>());
 
     SetAllowHorizontalScroll(false);
     SetAutoHideScrollBars(true);
@@ -708,7 +708,7 @@ void ComboBoxDropDownListBox::OnMouseMove(const MouseMoveInfo& event_info) {
 }
 
 
-std::shared_ptr<ListItem> ComboBoxDropDownListBox::Delegate::CreateItem(
+std::shared_ptr<ListItem> ComboBoxDropDownListBox::DropDownListBoxDelegate::CreateItem(
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
 

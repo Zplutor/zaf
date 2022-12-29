@@ -38,13 +38,13 @@ public:
     ListControl();
     ~ListControl();
 
-    std::shared_ptr<ListDataSource> GetDataSource() const {
+    std::shared_ptr<ListDataSource> DataSource() const {
         return data_source_.lock();
     }
 
     void SetDataSource(const std::weak_ptr<ListDataSource>& data_source);
 
-    std::shared_ptr<ListControlDelegate> GetDelegate() const {
+    std::shared_ptr<ListControlDelegate> Delegate() const {
         return delegate_.lock();
     }
 
@@ -53,7 +53,7 @@ public:
     /**
      Get item container.
      */
-    const std::shared_ptr<ListItemContainer>& GetItemContainer() const {
+    const std::shared_ptr<ListItemContainer>& ItemContainer() const {
         return item_container_;
     }
 
@@ -84,7 +84,7 @@ public:
 
      The default selection mode is Single.
      */
-    SelectionMode GetSelectionMode() const;
+    SelectionMode SelectionMode() const;
 
     /**
      Set seletion mode.
@@ -93,7 +93,7 @@ public:
      to None; and only the first selected item would remain selected
      if selection mode is set to Single.
      */
-    void SetSelectionMode(SelectionMode selection_mode);
+    void SetSelectionMode(zaf::SelectionMode selection_mode);
 
     /**
      Get selection change event.
@@ -177,15 +177,20 @@ protected:
      This method is called when the data source is changed. Derived classes must call the same 
      method of base class.
      */
-    virtual void DataSourceChange(const std::shared_ptr<ListDataSource>& previous_data_source) { }
+    virtual void OnDataSourceChanged(const std::shared_ptr<ListDataSource>& previous_data_source) { 
 
-    virtual void DelegateChange(const std::shared_ptr<ListControlDelegate>& previous_delegate) { }
+    }
+
+    virtual void OnDelegateChanged(const std::shared_ptr<ListControlDelegate>& previous_delegate) { 
+    
+    }
 
     /**
      This method is called when the item container is changed. Derived classes must call the same 
      method of base class.
      */
-    virtual void ItemContainerChange(const std::shared_ptr<ListItemContainer>& previous_item_container) { }
+    virtual void OnItemContainerChanged(
+        const std::shared_ptr<ListItemContainer>& previous_item_container) { }
 
     void OnIsEnabledChanged() override;
 

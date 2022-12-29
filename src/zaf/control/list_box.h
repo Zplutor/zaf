@@ -23,7 +23,7 @@ public:
 
      The default height is 18.
      */
-    float GetDefaultItemHeight() const {
+    float DefaultItemHeight() const {
         return default_item_height_;
     }
 
@@ -39,8 +39,8 @@ public:
 
 protected:
     void Initialize() override;
-    void DataSourceChange(const std::shared_ptr<ListDataSource>& previous_data_source) override;
-    void DelegateChange(const std::shared_ptr<ListControlDelegate>& previous_delegate) override;
+    void OnDataSourceChanged(const std::shared_ptr<ListDataSource>& previous_data_source) override;
+    void OnDelegateChanged(const std::shared_ptr<ListControlDelegate>& previous_delegate) override;
 
 private:
     std::shared_ptr<ListBoxDataSource> data_source_;

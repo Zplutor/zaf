@@ -41,9 +41,9 @@ void TreeControl::Initialize() {
     internal::TreeControlImplementation::InitializeParameters initialize_parameters;
     initialize_parameters.item_container = item_container_;
     initialize_parameters.data_source_change_event =
-        std::bind(&TreeControl::DataSourceChange, this, std::placeholders::_1);
+        std::bind(&TreeControl::OnDataSourceChanged, this, std::placeholders::_1);
     initialize_parameters.delegate_change_event =
-        std::bind(&TreeControl::DelegateChange, this, std::placeholders::_1);
+        std::bind(&TreeControl::OnDelegateChanged, this, std::placeholders::_1);
     initialize_parameters.selection_change_event = std::bind(&TreeControl::SelectionChange, this);
     initialize_parameters.item_expand_event = 
         std::bind(&TreeControl::ItemExpand, this, std::placeholders::_1);

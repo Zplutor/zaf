@@ -35,11 +35,11 @@ void ListBox::Initialize() {
 }
 
 
-void ListBox::DataSourceChange(const std::shared_ptr<ListDataSource>& previous_data_source) {
+void ListBox::OnDataSourceChanged(const std::shared_ptr<ListDataSource>& previous_data_source) {
 
-    __super::DataSourceChange(previous_data_source);
+    __super::OnDataSourceChanged(previous_data_source);
 
-    auto new_data_source = GetDataSource();
+    auto new_data_source = DataSource();
     if (data_source_ == new_data_source) {
         return;
     }
@@ -49,11 +49,11 @@ void ListBox::DataSourceChange(const std::shared_ptr<ListDataSource>& previous_d
 }
 
 
-void ListBox::DelegateChange(const std::shared_ptr<ListControlDelegate>& previous_delegate) {
+void ListBox::OnDelegateChanged(const std::shared_ptr<ListControlDelegate>& previous_delegate) {
 
-    __super::DelegateChange(previous_delegate);
+    __super::OnDelegateChanged(previous_delegate);
 
-    auto new_delegate = GetDelegate();
+    auto new_delegate = Delegate();
     if (delegate_ == new_delegate) {
         return;
     }

@@ -47,11 +47,11 @@ void ListControl::Initialize() {
     initialize_parameters.item_container = item_container_;
 
     initialize_parameters.data_source_change_event = 
-        std::bind(&ListControl::DataSourceChange, this, std::placeholders::_1);
+        std::bind(&ListControl::OnDataSourceChanged, this, std::placeholders::_1);
     initialize_parameters.delegate_change_event = 
-        std::bind(&ListControl::DelegateChange, this, std::placeholders::_1);
+        std::bind(&ListControl::OnDelegateChanged, this, std::placeholders::_1);
     initialize_parameters.item_container_change_event = 
-        std::bind(&ListControl::ItemContainerChange, this, std::placeholders::_1);
+        std::bind(&ListControl::OnItemContainerChanged, this, std::placeholders::_1);
     initialize_parameters.selection_change_event = 
         std::bind(&ListControl::OnSelectionChanged, this);
     initialize_parameters.item_double_click_event = 
@@ -130,11 +130,11 @@ void ListControl::SetAutoAdjustScrollBarSmallChange(bool value) {
 }
 
 
-SelectionMode ListControl::GetSelectionMode() const {
+SelectionMode ListControl::SelectionMode() const {
     return implementation_->GetSelectionMode();
 }
 
-void ListControl::SetSelectionMode(SelectionMode selection_mode) {
+void ListControl::SetSelectionMode(zaf::SelectionMode selection_mode) {
     implementation_->SetSelectionMode(selection_mode);
 }
 
