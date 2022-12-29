@@ -38,6 +38,16 @@ private:
         const zaf::Rect& previous_rect,
         const std::vector<std::shared_ptr<Control>>& children);
 
+    void RepaintSelectedItemsOnFocusChanged(
+        const std::shared_ptr<Control>& focus_changed_control,
+        const std::shared_ptr<Control>& focus_changing_control);
+
+    bool AreControlsSelfOrChildren(
+        const std::shared_ptr<Control>& control1,
+        const std::shared_ptr<Control>& control2) const;
+
+    void RepaintSelectedItems();
+
 private:
     std::shared_ptr<internal::ListControlSelectStrategy> select_strategy_;
 };

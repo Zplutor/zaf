@@ -131,23 +131,52 @@ void ListItemContainer::OnFocusGained(const FocusGainedInfo& event_info) {
 
     __super::OnFocusGained(event_info);
 
-    for (const auto& each_child : Children()) {
-
-        auto list_item = As<ListItem>(each_child);
-        if (!list_item) {
-            continue;
-        }
-
-        if (list_item->IsSelected()) {
-            list_item->NeedRepaint();
-        }
-    }
+    RepaintSelectedItemsOnFocusChanged(
+        As<Control>(event_info.Source()), 
+        event_info.LostFocusControl());
 }
 
 
 void ListItemContainer::OnFocusLost(const FocusLostInfo& event_info) {
 
     __super::OnFocusLost(event_info);
+
+    RepaintSelectedItemsOnFocusChanged(
+        As<Control>(event_info.Source()),
+        event_info.GainedFocusControl());
+}
+
+
+void ListItemContainer::RepaintSelectedItemsOnFocusChanged(
+    const std::shared_ptr<Control>& focus_changed_control,
+    const std::shared_ptr<Control>& focus_changing_control) {
+
+    if (AreControlsSelfOrChildren(focus_changed_control, focus_changing_control)) {
+        return;
+    }
+
+    RepaintSelectedItems();
+}
+
+
+bool ListItemContainer::AreControlsSelfOrChildren(
+    const std::shared_ptr<Control>& control1,
+    const std::shared_ptr<Control>& control2) const {
+
+    auto is_self_or_child = [this](const std::shared_ptr<Control>& control) {
+
+        if (!control) {
+            return false;
+        }
+
+        return (this == control.get()) || this->IsAncestorOf(control);
+    };
+
+    return is_self_or_child(control1) && is_self_or_child(control2);
+}
+
+
+void ListItemContainer::RepaintSelectedItems() {
 
     for (const auto& each_child : Children()) {
 

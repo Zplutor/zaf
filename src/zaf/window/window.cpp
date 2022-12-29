@@ -112,6 +112,32 @@ bool RouteMouseEventGeneric(
 }
 
 
+template<typename E>
+void RouteFocusEventGeneric(
+    const std::shared_ptr<Control>& source,
+    const std::shared_ptr<Control>& chaning_control,
+    void (Control::*event_function)(const E&)) {
+
+    auto event_info_state = std::make_shared<internal::FocusEventSharedState>(
+        source, 
+        chaning_control);
+
+    bool original_is_focused = source->IsFocused();
+
+    for (auto sender = source; sender; sender = sender->Parent()) {
+
+        E event_info{ event_info_state, sender };
+        (sender.get()->*event_function)(event_info);
+
+        //Stop routing event if focused control is changed during the routing.
+        if (source->IsFocused() != original_is_focused) {
+            break;
+        }
+    }
+
+}
+
+
 zaf::Rect ToAlignedPixelsRect(const zaf::Rect& rect, float dpi) {
     return Align(FromDIPs(rect, dpi));
 }
@@ -1365,11 +1391,11 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_contr
     focused_control_ = new_focused_control;
 
     if (previous_focused_control) {
-        ChangeControlFocusState(previous_focused_control, false);
+        ChangeControlFocusState(previous_focused_control, new_focused_control, false);
     }
 
     if (new_focused_control) {
-        ChangeControlFocusState(new_focused_control, true);
+        ChangeControlFocusState(new_focused_control, previous_focused_control, true);
     }
 
     OnFocusedControlChanged(previous_focused_control);
@@ -1378,27 +1404,24 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_contr
 
 void Window::ChangeControlFocusState(
     const std::shared_ptr<Control>& target_control, 
+    const std::shared_ptr<Control>& changing_control,
     bool is_focused) {
 
     target_control->SetIsFocusedByWindow(is_focused);
 
-    //Raise and route event.
-    auto event_info_state = std::make_shared<RoutedEventSharedState>(target_control);
+    if (is_focused) {
 
-    for (auto sender = target_control; sender; sender = sender->Parent()) {
+        RouteFocusEventGeneric<FocusGainedInfo>(
+            target_control,
+            changing_control,
+            &Control::OnFocusGained);
+    }
+    else {
 
-        internal::FocusEventInfo event_info{ event_info_state, sender };
-        if (is_focused) {
-            sender->OnFocusGained(event_info);
-        }
-        else {
-            sender->OnFocusLost(event_info);
-        }
-
-        //Stop routing event if focused control is changed during the routing.
-        if (target_control->IsFocused() != is_focused) {
-            break;
-        }
+        RouteFocusEventGeneric<FocusLostInfo>(
+            target_control, 
+            changing_control,
+            &Control::OnFocusLost);
     }
 }
 

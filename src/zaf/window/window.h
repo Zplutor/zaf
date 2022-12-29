@@ -601,7 +601,10 @@ private:
         const std::shared_ptr<Control>& capture_control,
         bool is_releasing);
     void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
-    void ChangeControlFocusState(const std::shared_ptr<Control>& target_control, bool is_focused);
+    void ChangeControlFocusState(
+        const std::shared_ptr<Control>& target_control, 
+        const std::shared_ptr<Control>& changing_control,
+        bool is_focused);
 
     void SetHighlightControl(const std::shared_ptr<Control>& inspected_control);
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
