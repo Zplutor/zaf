@@ -685,6 +685,8 @@ void ComboBoxDropDownListBox::Initialize() {
 
     __super::Initialize();
 
+    SetDelegate(std::make_shared<Delegate>());
+
     SetAllowHorizontalScroll(false);
     SetAutoHideScrollBars(true);
 }
@@ -703,6 +705,26 @@ void ComboBoxDropDownListBox::OnMouseMove(const MouseMoveInfo& event_info) {
             mouse_move_callback_(event_info.PositionAtSender());
         }
     }
+}
+
+
+std::shared_ptr<ListItem> ComboBoxDropDownListBox::Delegate::CreateItem(
+    std::size_t item_index,
+    const std::shared_ptr<Object>& item_data) {
+
+    auto result = __super::CreateItem(item_index, item_data);
+
+    result->SetBackgroundColorPicker([](const Control& control) {
+
+        //Drop down list is always inactive, display active selection color instead of inactive
+        //selection color.
+        return 
+            control.IsSelected() ? 
+            Color::FromRGB(internal::ControlSelectedActivedColorRGB) :
+            Color::Transparent();
+    });
+
+    return result;
 }
 
 

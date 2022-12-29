@@ -3,6 +3,7 @@
 #include <optional>
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/list_box.h>
+#include <zaf/control/list_box_delegate.h>
 #include <zaf/control/text_box.h>
 #include <zaf/rx/observable.h>
 
@@ -318,6 +319,14 @@ public:
 protected:
     void Initialize() override;
     void OnMouseMove(const MouseMoveInfo& event_info) override;
+
+private:
+    class Delegate : public ListBoxDelegate {
+    public:
+        std::shared_ptr<ListItem> CreateItem(
+            std::size_t item_index,
+            const std::shared_ptr<Object>& item_data) override;
+    };
 
 private:
     friend class ComboBox;
