@@ -523,13 +523,14 @@ std::shared_ptr<ListItem> ListControlImplementation::CreateItem(std::size_t inde
 
     auto item_data = data_source->GetDataAtIndex(index);
     auto list_item = delegate->CreateItem(index, item_data);
+    list_item->SetItemData(item_data);
 
     auto item_text = delegate->GetItemText(index, item_data);
     if (!item_text.empty()) {
         list_item->SetText(item_text);
     }
     
-    delegate->LoadItem(list_item, index, item_data);
+    delegate->LoadItem(list_item, index);
 
     auto position_and_height = item_height_manager_->GetItemPositionAndHeight(index);
     Rect item_rect;

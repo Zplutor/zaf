@@ -52,10 +52,7 @@ public:
         return Create<ListItem>();
     }
 
-    virtual void LoadItem(
-        const std::shared_ptr<ListItem>& item,
-        std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) { }
+    virtual void LoadItem(const std::shared_ptr<ListItem>& item, std::size_t item_index) { }
 };
 
 }

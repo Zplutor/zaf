@@ -57,8 +57,7 @@ std::shared_ptr<zaf::ListItem> ConversationListView::CreateItem(
 
 void ConversationListView::LoadItem(
     const std::shared_ptr<zaf::ListItem>& item,
-    std::size_t index, 
-    const std::shared_ptr<zaf::Object>& data) {
+    std::size_t index) {
 
     if (index >= conversations_.size()) {
         return;

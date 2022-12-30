@@ -88,10 +88,7 @@ public:
         std::size_t item_index,
         const std::shared_ptr<Object>& item_data) override;
 
-    void LoadItem(
-        const std::shared_ptr<ListItem>& item,
-        std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override;
+    void LoadItem(const std::shared_ptr<ListItem>& item, std::size_t item_index) override;
 
     bool ChangeItemExpandState(const std::shared_ptr<TreeItem>& item, bool new_is_expanded);
 
@@ -112,10 +109,7 @@ private:
         std::size_t item_index,
         const std::shared_ptr<Object>& item_data);
 
-    void SetItemExpandState(
-        const std::shared_ptr<TreeItem>& item, 
-        const std::shared_ptr<Object>& item_data,
-        const IndexPath& index_path);
+    void SetItemExpandState(const std::shared_ptr<TreeItem>& item, const IndexPath& index_path);
 
     bool IsIndexPathExpanded(const IndexPath& index_path) const;
 

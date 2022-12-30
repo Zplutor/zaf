@@ -42,8 +42,7 @@ public:
     virtual void LoadItem(
         const std::shared_ptr<TreeItem>& item,
         const std::shared_ptr<Object>& parent_item_data,
-        std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) { }
+        std::size_t item_index) { }
 
     virtual bool CanExpandItem(
         const std::shared_ptr<Object>& parent_item_data,

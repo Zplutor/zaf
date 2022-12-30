@@ -20,10 +20,7 @@ public:
         std::size_t index, 
         const std::shared_ptr<zaf::Object>& data) override;
 
-    void LoadItem(
-        const std::shared_ptr<zaf::ListItem>& item,
-        std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override;
+    void LoadItem(const std::shared_ptr<zaf::ListItem>& item, std::size_t item_index) override;
 
     void SetConversation(const std::shared_ptr<Conversation>& conversation);
 

@@ -150,18 +150,17 @@ private:
         }
 
         void LoadItem(
-            const std::shared_ptr<zaf::ListItem>& item,
-            std::size_t item_index,
-            const std::shared_ptr<Object>& item_data) override {
+            const std::shared_ptr<zaf::ListItem>& item, 
+            std::size_t item_index) override {
 
-            __super::LoadItem(item, item_index, item_data);
+            __super::LoadItem(item, item_index);
 
             auto color_item = dynamic_cast<ColorItem*>(item.get());
             if (!color_item) {
                 return;
             }
 
-            auto color = zaf::Unbox<zaf::Color>(item_data);
+            auto color = zaf::Unbox<zaf::Color>(color_item->ItemData());
             if (!color) {
                 return;
             }
