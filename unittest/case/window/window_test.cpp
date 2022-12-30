@@ -132,3 +132,27 @@ TEST(WindowTest, SetContentSize) {
     //After creating handle, content size should not changed.
     ASSERT_EQ(window->ContentSize(), adjusted_content_size);
 }
+
+
+TEST(WindowTest, RemoveFocusedControl) {
+
+    auto control = zaf::Create<zaf::Control>();
+    auto window = zaf::Create<zaf::Window>();
+    window->RootControl()->AddChild(control);
+
+    control->SetCanFocused(true);
+    control->SetIsFocused(true);
+    ASSERT_EQ(window->FocusedControl(), control);
+
+    //RemoveChild
+    window->RootControl()->RemoveChild(control);
+    ASSERT_EQ(window->FocusedControl(), nullptr);
+
+    window->RootControl()->AddChild(control);
+    control->SetIsFocused(true);
+    ASSERT_EQ(window->FocusedControl(), control);
+
+    //RemoveAllChildren
+    window->RootControl()->RemoveAllChildren();
+    ASSERT_EQ(window->FocusedControl(), nullptr);
+}

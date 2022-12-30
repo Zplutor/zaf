@@ -1083,7 +1083,7 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
         return;
     }
 
-    child->SetParent(nullptr);
+    RemoveChildFromParent(*child);
 
     auto removed_iterator = std::find(children_.begin(), children_.end(), child);
     if (removed_iterator == children_.end()) {
@@ -1113,11 +1113,22 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 void Control::RemoveAllChildren() {
 
     for (const auto& each_child : children_) {
-        each_child->SetParent(nullptr);
+        RemoveChildFromParent(*each_child);
     }
 
     children_.clear();
     NeedRepaint();
+}
+
+
+void Control::RemoveChildFromParent(Control& child) {
+
+    //Remove its focus before removing from parent.
+    if (child.IsFocused()) {
+        child.SetIsFocused(false);
+    }
+
+    child.SetParent(nullptr);
 }
 
 
