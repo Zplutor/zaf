@@ -1083,7 +1083,18 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
         return;
     }
 
-    RemoveChildFromParent(*child);
+    //Remove focus before removing child.
+    auto window = Window();
+    if (window) {
+        auto focused_control = window->FocusedControl();
+        if (focused_control) {
+            if (child == focused_control || child->IsAncestorOf(focused_control)) {
+                focused_control->SetIsFocused(false);
+            }
+        }
+    }
+
+    child->SetParent(nullptr);
 
     auto removed_iterator = std::find(children_.begin(), children_.end(), child);
     if (removed_iterator == children_.end()) {
@@ -1112,23 +1123,26 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
 
 void Control::RemoveAllChildren() {
 
+    std::shared_ptr<Control> focused_control;
+    auto window = Window();
+    if (window) {
+        focused_control = window->FocusedControl();
+    }
+
     for (const auto& each_child : children_) {
-        RemoveChildFromParent(*each_child);
+
+        //Remove focus before removing children.
+        if (focused_control) {
+            if (each_child == focused_control || each_child->IsAncestorOf(focused_control)) {
+                focused_control->SetIsFocused(false);
+            }
+        }
+
+        each_child->SetParent(nullptr);
     }
 
     children_.clear();
     NeedRepaint();
-}
-
-
-void Control::RemoveChildFromParent(Control& child) {
-
-    //Remove its focus before removing from parent.
-    if (child.IsFocused()) {
-        child.SetIsFocused(false);
-    }
-
-    child.SetParent(nullptr);
 }
 
 

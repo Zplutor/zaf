@@ -828,8 +828,6 @@ private:
     void EndUpdate();
 
 private:
-    static void RemoveChildFromParent(Control& child);
-
     /**
      The entry point to repaint the control.
 

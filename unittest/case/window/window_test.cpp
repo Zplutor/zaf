@@ -156,3 +156,31 @@ TEST(WindowTest, RemoveFocusedControl) {
     window->RootControl()->RemoveAllChildren();
     ASSERT_EQ(window->FocusedControl(), nullptr);
 }
+
+
+TEST(WindowTest, RemoveFocusedControlIndirectly) {
+
+    auto focused_control = zaf::Create<zaf::Control>();
+    focused_control->SetCanFocused(true);
+
+    auto parent = zaf::Create<zaf::Control>();
+    parent->AddChild(focused_control);
+
+    auto window = zaf::Create<zaf::Window>();
+    window->RootControl()->AddChild(parent);
+
+    focused_control->SetIsFocused(true);
+    ASSERT_EQ(window->FocusedControl(), focused_control);
+
+    //RemoveChild
+    window->RootControl()->RemoveChild(parent);
+    ASSERT_EQ(window->FocusedControl(), nullptr);
+
+    window->RootControl()->AddChild(parent);
+    focused_control->SetIsFocused(true);
+    ASSERT_EQ(window->FocusedControl(), focused_control);
+
+    //RemoveAllChildren
+    window->RootControl()->RemoveAllChildren();
+    ASSERT_EQ(window->FocusedControl(), nullptr);
+}
