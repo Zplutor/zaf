@@ -1,4 +1,5 @@
 #include <zaf/control/internal/list_control/list_control_implementation.h>
+#include <zaf/base/as.h>
 #include <zaf/base/container/utility/range.h>
 #include <zaf/base/error/check.h>
 #include <zaf/control/internal/list_control/list_control_extended_multiple_select_strategy.h>
@@ -269,12 +270,23 @@ void ListControlImplementation::InstallItemContainer(
             this, 
             std::placeholders::_1));
 
+    item_container_subscriptions_ += item_container_->FocusGainedEvent().Subscribe(
+        std::bind(
+            &ListControlImplementation::OnItemContainerGainedFocus,
+            this,
+            std::placeholders::_1));
+
+    item_container_subscriptions_ += item_container_->FocusLostEvent().Subscribe(
+        std::bind(
+            &ListControlImplementation::OnItemContainerLostFocus,
+            this,
+            std::placeholders::_1));
+
     owner_.SetScrollContent(item_container_);
 }
 
 
-void ListControlImplementation::OnItemContainerDoubleClick(
-    const DoubleClickInfo& event_info) {
+void ListControlImplementation::OnItemContainerDoubleClick(const DoubleClickInfo& event_info) {
 
     if (!item_double_click_event_) {
         return;
@@ -283,6 +295,41 @@ void ListControlImplementation::OnItemContainerDoubleClick(
     auto index = item_height_manager_->GetItemIndex(event_info.Position().y);
     if (index) {
         item_double_click_event_(*index);
+    }
+}
+
+
+void ListControlImplementation::OnItemContainerGainedFocus(const FocusGainedInfo& event_info) {
+
+    auto focused_control = As<Control>(event_info.Source());
+    if (!focused_control) {
+        return;
+    }
+
+    if (focused_control == item_container_) {
+        return;
+    }
+
+    for (auto control = focused_control; control; control = control->Parent()) {
+
+        auto list_item = As<ListItem>(control);
+        if (list_item) {
+            last_focused_item_data_ = list_item->ItemData();
+        }
+    }
+}
+
+
+void ListControlImplementation::OnItemContainerLostFocus(const FocusLostInfo& event_info) {
+
+    //Focus was taken from other control outside list control, clear last_focused_item_data_.
+    auto last_focused_item_data = last_focused_item_data_.lock();
+    if (last_focused_item_data == event_info.Source()) {
+
+        if (event_info.GainedFocusControl()) {
+            last_focused_item_data_.reset();
+            return;
+        }
     }
 }
 
@@ -346,6 +393,7 @@ void ListControlImplementation::Reload() {
 
         visible_items_.clear();
         first_visible_item_index_ = 0;
+        last_focused_item_data_.reset();
     }
 
     UpdateContentHeight();
@@ -452,6 +500,7 @@ void ListControlImplementation::AdjustVisibleItems(
         if (head_change_count > 0) {
             auto new_head_items = CreateItems(new_index, head_change_count);
             visible_items_.insert(visible_items_.begin(), new_head_items.begin(), new_head_items.end());
+            RecoverLastFocusedItem(new_head_items);
         }
     }
 
@@ -462,6 +511,7 @@ void ListControlImplementation::AdjustVisibleItems(
         if (tail_change_count > 0) {
             auto new_tail_items = CreateItems(new_index + new_count - tail_change_count, tail_change_count);
             visible_items_.insert(visible_items_.end(), new_tail_items.begin(), new_tail_items.end());
+            RecoverLastFocusedItem(new_tail_items);
         }
     }
 }
@@ -483,6 +533,24 @@ void ListControlImplementation::RemoveTailVisibleItems(std::size_t count) {
         auto item = visible_items_.back();
         visible_items_.pop_back();
         item_container_->RemoveChild(item);
+    }
+}
+
+
+void ListControlImplementation::RecoverLastFocusedItem(
+    const std::vector<std::shared_ptr<ListItem>>& items) {
+
+    auto last_focused_item_data = last_focused_item_data_.lock();
+    if (!last_focused_item_data) {
+        return;
+    }
+
+    for (const auto& each_item : items) {
+
+        if (each_item->ItemData() == last_focused_item_data) {
+            each_item->RecoverFocus();
+            break;
+        }
     }
 }
 
@@ -734,6 +802,8 @@ void ListControlImplementation::UpdateVisibleItemsByUpdatingItems(
     std::size_t intersect_begin_update_index = std::max(index, first_visible_item_index_);
     std::size_t intersect_end_update_index = (std::min)(end_update_index, end_visible_item_index);
 
+    std::vector<std::shared_ptr<ListItem>> new_items;
+
     for (std::size_t current_index = intersect_begin_update_index; current_index < intersect_end_update_index; ++current_index) {
 
         std::size_t visible_item_index = current_index - first_visible_item_index_;
@@ -744,7 +814,11 @@ void ListControlImplementation::UpdateVisibleItemsByUpdatingItems(
         auto new_item = CreateItem(current_index);
         item_container_->AddChild(new_item);
         visible_items_[visible_item_index] = new_item;
+
+        new_items.push_back(new_item);
     }
+
+    RecoverLastFocusedItem(new_items);
 }
 
 

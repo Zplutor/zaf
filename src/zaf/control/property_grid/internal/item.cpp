@@ -222,4 +222,8 @@ void Item::OnParentChanged(const ParentChangedInfo& event_info) {
 }
 
 
+void Item::RecoverFocus() {
+    value_view_->RecoverFocus();
+}
+
 }

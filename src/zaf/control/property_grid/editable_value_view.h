@@ -10,6 +10,8 @@ public:
     void SetAccessMethod(AccessMethod) override;
     void SetValue(const std::shared_ptr<Object>& value) override;
 
+    void RecoverFocus() override;
+
 protected:
     void Initialize() override;
     void ChangeValue();

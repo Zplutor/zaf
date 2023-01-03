@@ -75,4 +75,9 @@ void EditableValueView::ChangeValue() {
     }
 }
 
+
+void EditableValueView::RecoverFocus() {
+    text_box_->SetIsFocused(true);
+}
+
 }

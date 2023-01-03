@@ -114,6 +114,8 @@ private:
     void InstallDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
     void InstallItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
     void OnItemContainerDoubleClick(const DoubleClickInfo& event_info);
+    void OnItemContainerGainedFocus(const FocusGainedInfo& event_info);
+    void OnItemContainerLostFocus(const FocusLostInfo& event_info);
 
     void RegisterScrollBarEvents();
     void UnregisterScrollBarEvents(const std::shared_ptr<ScrollBar>& scroll_bar);
@@ -136,6 +138,7 @@ private:
     void RemoveTailVisibleItems(std::size_t count);
     std::vector<std::shared_ptr<ListItem>> CreateItems(std::size_t index, std::size_t count);
     std::shared_ptr<ListItem> CreateItem(std::size_t index);
+    void RecoverLastFocusedItem(const std::vector<std::shared_ptr<ListItem>>& items);
 
     void ItemAdd(const ListDataSourceDataAddInfo& event_info);
     void AddItemsBeforeVisibleItems(
@@ -184,6 +187,7 @@ private:
 
     std::shared_ptr<ListControlItemHeightManager> item_height_manager_;
     ListControlItemSelectionManager item_selection_manager_;
+    std::weak_ptr<Object> last_focused_item_data_;
 
     Subscription vertical_scroll_bar_subscription_;
 

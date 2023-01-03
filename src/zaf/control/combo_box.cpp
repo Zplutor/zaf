@@ -57,6 +57,10 @@ ComboBox::~ComboBox() {
 
     UninitializeDropDownListBox();
     UninitializeEditTextBox();
+
+    if (drop_down_window_) {
+        drop_down_window_->Close();
+    }
 }
 
 
@@ -538,6 +542,11 @@ void ComboBox::DropDownListBoxSelectionChange() {
     if (drop_down_list_box_action_.Get() == DropDownListBoxAction::Nothing) {
         return;
     }
+
+    //Current control could be removed from parent and be destroyed during the handling of 
+    //selection changed event, "this" would become a dangling pointer in such case. So we keep a
+    //shared pointer here to prevent it from being destroyed.
+    auto life_holder = shared_from_this();
 
     //Selection is changed, do not recover previous selected index.
     need_recover_selected_index_ = false;

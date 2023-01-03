@@ -135,6 +135,11 @@ void ColorValueView::SetColorToTextBox(const Color& color) {
 }
 
 
+void ColorValueView::RecoverFocus() {
+    color_text_box_->SetIsFocused(true);
+}
+
+
 void ColorValueView::ColorSquare::SetColor(const zaf::Color& color) {
     color_ = color;
     NeedRepaint();

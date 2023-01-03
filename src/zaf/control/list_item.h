@@ -16,6 +16,8 @@ public:
 protected:
     void Initialize() override;
 
+    virtual void RecoverFocus();
+
 private:
     friend class internal::ListControlImplementation;
 

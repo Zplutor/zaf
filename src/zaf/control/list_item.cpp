@@ -50,4 +50,9 @@ bool ListItem::IsInFocusContext() const {
     return false;
 }
 
+
+void ListItem::RecoverFocus() {
+
+}
+
 }
