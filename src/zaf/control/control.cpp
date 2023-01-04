@@ -76,6 +76,8 @@ constexpr const wchar_t* const FocusGainedEventPropertyName = L"FocusGainedEvent
 constexpr const wchar_t* const FocusLostEventPropertyName = L"FocusLostEvent";
 constexpr const wchar_t* const KeyDownEventPropertyName = L"KeyDown";
 constexpr const wchar_t* const KeyUpEventPropertyName = L"KeyUp";
+constexpr const wchar_t* const MouseDownEventPropertyName = L"MouseDown";
+constexpr const wchar_t* const MouseUpEventPropertyName = L"MouseUp";
 constexpr const wchar_t* const ParentChangedEventPropertyName = L"ParentChangedEvent";
 constexpr const wchar_t* const TooltipPropertyName = L"Tooltip";
 
@@ -1609,6 +1611,16 @@ Observable<MouseHoverInfo> Control::MouseHoverEvent() {
 }
 
 
+Observable<MouseDownInfo> Control::MouseDownEvent() {
+    return GetEventObservable<MouseDownInfo>(GetPropertyMap(), MouseDownEventPropertyName);
+}
+
+
+Observable<MouseUpInfo> Control::MouseUpEvent() {
+    return GetEventObservable<MouseUpInfo>(GetPropertyMap(), MouseUpEventPropertyName);
+}
+
+
 Observable<DoubleClickInfo> Control::DoubleClickEvent() {
     return GetEventObservable<DoubleClickInfo>(
         GetPropertyMap(), 
@@ -1758,6 +1770,11 @@ void Control::OnMouseHover(const MouseHoverInfo& event_info) {
 
 void Control::OnMouseDown(const MouseDownInfo& event_info) {
 
+    auto observer = GetEventObserver<MouseDownInfo>(GetPropertyMap(), MouseDownEventPropertyName);
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+
     if (event_info.IsHandled()) {
         return;
     }
@@ -1795,6 +1812,10 @@ bool Control::HandleDoubleClickOnMouseDown(const Point& position) {
 
 void Control::OnMouseUp(const MouseUpInfo& event_info) {
 
+    auto observer = GetEventObserver<MouseUpInfo>(GetPropertyMap(), MouseUpEventPropertyName);
+    if (observer) {
+        observer->OnNext(event_info);
+    }
 }
 
 

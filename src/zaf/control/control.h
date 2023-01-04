@@ -657,6 +657,8 @@ public:
     Observable<MouseLeaveInfo> MouseLeaveEvent();
     Observable<MouseHoverInfo> MouseHoverEvent();
 
+    Observable<MouseDownInfo> MouseDownEvent();
+    Observable<MouseUpInfo> MouseUpEvent();
     Observable<DoubleClickInfo> DoubleClickEvent();
 
     Observable<KeyDownInfo> KeyDownEvent();
