@@ -9,7 +9,7 @@ Zaf has following features:
 
 Due to these features, zaf also has following requirement:
 
-* Visual Studio 2013 or newer compiler.
+* Visual Studio 2022 or newer compiler.
 * Windows 7 or newer operating system.
 
 Zaf is still on first time step. 
