@@ -3,7 +3,7 @@
 
 namespace zaf {
 
-std::string ToUTF8String(const std::wstring& wide_string) {
+std::string ToUTF8String(std::wstring_view wide_string) {
 
     int required_size = WideCharToMultiByte(
         CP_UTF8,
@@ -36,18 +36,13 @@ std::string ToUTF8String(const std::wstring& wide_string) {
 }
 
 
-std::wstring FromUTF8String(const std::string& utf8_string) {
-    return FromUTF8String(utf8_string.data(), utf8_string.size());
-}
-
-
-std::wstring FromUTF8String(const char* utf8_string, std::size_t length) {
+std::wstring FromUTF8String(std::string_view utf8_string) {
 
     int required_size = MultiByteToWideChar(
         CP_UTF8,
         0,
-        utf8_string,
-        static_cast<int>(length),
+        utf8_string.data(),
+        static_cast<int>(utf8_string.size()),
         nullptr,
         0);
 
@@ -61,8 +56,8 @@ std::wstring FromUTF8String(const char* utf8_string, std::size_t length) {
     int result_size = MultiByteToWideChar(
         CP_UTF8,
         0,
-        utf8_string,
-        static_cast<int>(length),
+        utf8_string.data(),
+        static_cast<int>(utf8_string.size()),
         &result[0],
         required_size);
 
