@@ -289,7 +289,7 @@ bool ToNumeric(const CharType* string, const ToNumericOptions& options, CharType
     typedef std::conditional <
         std::is_floating_point<NumericType>::value,
         StringToFloatConverter<NumericType, CharType>,
-        std::conditional<
+        typename std::conditional<
             std::is_signed<NumericType>::value,
             StringToSignedIntegerConverter<NumericType, CharType>,
             StringToUnsignedIntegerConverter<NumericType, CharType>

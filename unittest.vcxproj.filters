@@ -352,6 +352,9 @@
     <ClCompile Include="unittest\case\control\split_control_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\string\encoding_conversion_test.cpp">
+      <Filter>case\base\string</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

@@ -1,28 +1,19 @@
 #include <deque>
 #include <vector>
-#include <utility>
 #include <gtest/gtest.h>
 #include <zaf/base/container/utility/sort.h>
 
 namespace {
 
-using namespace std::rel_ops;
-
 class Object {
 public:
     Object(int v, const std::string& t) : value(v), tag(t) { }
 
+    auto operator<=>(const Object& other) const = default;
+
     int value{};
     std::string tag{};
 };
-
-bool operator<(const Object& o1, const Object& o2) {
-    return o1.value < o2.value;
-}
-
-bool operator==(const Object& o1, const Object& o2) {
-    return (o1.value == o2.value) && (o1.tag == o2.tag);
-}
 
 
 template<template<typename E, typename ...> class C>

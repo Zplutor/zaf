@@ -45,7 +45,7 @@ std::shared_ptr<XamlReader> CreateXamlReaderFromMemory(const void* data, std::si
 
 
 std::shared_ptr<XamlReader> XamlReader::FromString(const std::wstring& xaml) {
-    return FromString(ToUtf8String(xaml));
+    return FromString(ToUTF8String(xaml));
 }
 
 

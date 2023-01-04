@@ -18,7 +18,7 @@ struct StringConversionShim<std::string> {
     }
 
     static std::string From(const std::wstring& string) {
-        return ToUtf8String(string);
+        return ToUTF8String(string);
     }
 };
 
@@ -27,7 +27,7 @@ template<>
 struct StringConversionShim<std::wstring> {
 
     static std::wstring From(const std::string& string) {
-        return FromUtf8String(string);
+        return FromUTF8String(string);
     }
 
     static const std::wstring& From(const std::wstring& string) {

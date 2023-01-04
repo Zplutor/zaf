@@ -15,9 +15,9 @@ TEST(TrimTest, TrimSpace) {
     zaf::Trim(string);
     ASSERT_EQ(string, "");
 
-    string = u8" 我 ";
+    string = reinterpret_cast<const char*>(u8" 我 ");
     zaf::Trim(string);
-    ASSERT_EQ(string, u8"我");
+    ASSERT_EQ(string, reinterpret_cast<const char*>(u8"我"));
 }
 
 

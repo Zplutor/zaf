@@ -110,7 +110,7 @@ public:
      */
     template<typename PropertyType>
     PropertyType& SetProperty(const std::wstring& property_name, const PropertyType& property_value) {
-        auto value = std::make_shared<GetTypedValueType<PropertyType>::Type>(property_value);
+        auto value = std::make_shared<typename GetTypedValueType<PropertyType>::Type>(property_value);
         properties_[property_name] = value;
         return *value->GetValuePointer();
     }

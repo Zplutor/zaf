@@ -20,7 +20,7 @@ std::shared_ptr<T> CreateObjectFromXaml(const std::string& xaml) {
 
 template<typename T = Object>
 std::shared_ptr<T> CreateObjectFromXaml(const std::wstring& xaml) {
-    return CreateObjectFromXaml<T>(ToUtf8String(xaml));
+    return CreateObjectFromXaml<T>(ToUTF8String(xaml));
 }
 
 }

@@ -16,7 +16,7 @@ void TestJoin(const C& container, const std::string& expected) {
     ASSERT_EQ(string, expected);
 
     std::wstring wstring = zaf::JoinAsWideString(container);
-    ASSERT_EQ(wstring, zaf::FromUtf8String(expected));
+    ASSERT_EQ(wstring, zaf::FromUTF8String(expected));
 }
 
 }
@@ -78,7 +78,7 @@ TEST(JoinTest, JoinWithConverter) {
     ASSERT_EQ(string, "1a 2b 3c");
 
     std::wstring wstring = zaf::JoinAsWideString(container, [](const auto& each_pair) {
-        return zaf::FromUtf8String(std::to_string(each_pair.first) + each_pair.second);
+        return zaf::FromUTF8String(std::to_string(each_pair.first) + each_pair.second);
     });
     ASSERT_EQ(wstring, L"1a 2b 3c");
 }
@@ -99,7 +99,7 @@ TEST(JoinTest, JoinWithDelimiterAndConverter) {
     ASSERT_EQ(string, "aa100/bb100/cc100/dd100");
 
     std::wstring wstring = zaf::JoinAsWideString(container, L"/", [](const auto& each_pair) {
-        return zaf::FromUtf8String(each_pair.first + std::to_string(each_pair.second));
+        return zaf::FromUTF8String(each_pair.first + std::to_string(each_pair.second));
     });
     ASSERT_EQ(wstring, L"aa100/bb100/cc100/dd100");
 }

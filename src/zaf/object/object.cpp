@@ -110,7 +110,7 @@ std::wstring Object::ToString() const {
     std::ostringstream stream;
     stream << this << ' ' << typeid(*this).name();
 
-    return FromUtf8String(stream.str());
+    return FromUTF8String(stream.str());
 }
 
 
