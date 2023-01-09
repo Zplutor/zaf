@@ -358,7 +358,7 @@ std::vector<ResourceItem> GenerateInputResourceItems() {
         else {
 
             ResourceItem resource_item;
-            resource_item.path = std::move(full_path);
+            resource_item.path = full_path;
 
             if (!each_item.name.empty()) {
                 resource_item.name = each_item.name;
