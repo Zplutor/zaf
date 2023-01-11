@@ -65,6 +65,23 @@ TEST_F(TestZrcb, DefaultOptions) {
 }
 
 
+TEST_F(TestZrcb, SpecifyFilePaths) {
+
+    auto input_path = GetInputDirectoryPath();
+
+    std::wstring argument =
+        L"\"" + (input_path / "file1.txt").wstring() + L"\" "
+        L"\"" + (input_path / "file2.txt").wstring() + L"\"";
+
+    RunZrcb(argument);
+
+    ASSERT_TRUE(CheckOutputRC(FindDefaultOutputRCFile(), {
+        { L"file1.txt", BuildInputResourcePath(L"file1.txt") },
+        { L"file2.txt", BuildInputResourcePath(L"file2.txt") },
+    }));
+}
+
+
 TEST_F(TestZrcb, SpecifyNameForDirectory) {
 
     std::wostringstream argument_stream;
