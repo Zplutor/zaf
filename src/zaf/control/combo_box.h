@@ -156,7 +156,7 @@ protected:
     void OnKeyDown(const KeyDownInfo& event_info) override;
     void OnFocusGained(const FocusGainedInfo& event_info) override;
 
-    void OnTextChanged() override;
+    void OnTextChanged(const TextChangedInfo& event_info) override;
 
     /**
      This method is called when the selection is changed.

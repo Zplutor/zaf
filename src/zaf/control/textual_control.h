@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/control/control.h>
+#include <zaf/control/event/text_changed_info.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
@@ -16,7 +17,6 @@ namespace zaf {
 class Font;
 class TextFormat;
 class TextLayout;
-class TextualControlTextChangeInfo;
 
 /**
  Represents a textual control.
@@ -194,7 +194,7 @@ public:
 
      This event is raised when the text is changed.
      */
-    Observable<TextualControlTextChangeInfo> TextChangeEvent();
+    Observable<TextChangedInfo> TextChangedEvent();
 
 protected:
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
@@ -224,7 +224,7 @@ protected:
      */
     void RaiseTextChangedEvent();
 
-    virtual void OnTextChanged() { }
+    virtual void OnTextChanged(const TextChangedInfo& event_info);
 
 private:
     TextLayout CreateTextLayout() const;
@@ -235,22 +235,6 @@ private:
 
 private:
     mutable TextLayout text_layout_;
-};
-
-
-class TextualControlTextChangeInfo {
-public:
-    TextualControlTextChangeInfo(const std::shared_ptr<TextualControl>& textual_control) :
-        textual_control_(textual_control) {
-
-    }
-
-    const std::shared_ptr<TextualControl>& TextualControl() const {
-        return textual_control_;
-    }
-
-private:
-    std::shared_ptr<zaf::TextualControl> textual_control_;
 };
 
 }

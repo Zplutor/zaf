@@ -36,10 +36,10 @@ std::shared_ptr<PropertyItem> CreateComboBoxPropertyItem(
         }
     };
 
-    combo_box->Subscriptions() += combo_box->TextChangeEvent().Subscribe(
-        [value_change, update_value](const zaf::TextualControlTextChangeInfo& event_info) {
+    combo_box->Subscriptions() += combo_box->TextChangedEvent().Subscribe(
+        [value_change, update_value](const zaf::TextChangedInfo& event_info) {
 
-            auto combo_box = dynamic_cast<zaf::ComboBox*>(event_info.TextualControl().get());
+            auto combo_box = zaf::As<zaf::ComboBox>(event_info.Source());
 
             auto value = combo_box->Text();
             value_change(value);

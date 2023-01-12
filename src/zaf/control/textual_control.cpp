@@ -23,7 +23,7 @@ static void SetFontToTextLayout(const Font& font, const TextRange& range, TextLa
 static const wchar_t* const kDefaultFontPropertyName = L"DefaultFont";
 static const wchar_t* const kDefaultTextColorPickerPropertyName = L"DefaultTextColorPicker";
 static const wchar_t* const kFontsPropertyName = L"Fonts";
-static const wchar_t* const kTextChangeEventPropertyName = L"TextChangeEvent";
+static const wchar_t* const TextChangedEventPropertyName = L"TextChangedEvent";
 static const wchar_t* const kTextColorPickersPropertyName = L"TextColorPickers";
 static const wchar_t* const kTextTrimmingPropertyName = L"TextTrimming";
 
@@ -482,30 +482,29 @@ void TextualControl::SetTextTrimming(const TextTrimming& text_trimming) {
 }
 
 
-Observable<TextualControlTextChangeInfo> TextualControl::TextChangeEvent() {
-
-    return GetEventObservable<TextualControlTextChangeInfo>(
-        GetPropertyMap(), 
-        kTextChangeEventPropertyName);
+Observable<TextChangedInfo> TextualControl::TextChangedEvent() {
+    return GetEventObservable<TextChangedInfo>(GetPropertyMap(), TextChangedEventPropertyName);
 }
 
 
 void TextualControl::RaiseTextChangedEvent() {
 
-    OnTextChanged();
-
-    auto event_observer = GetEventObserver<TextualControlTextChangeInfo>(
-        GetPropertyMap(),
-        kTextChangeEventPropertyName);
-
-    if (event_observer) {
-
-        TextualControlTextChangeInfo event_info(
-            std::dynamic_pointer_cast<TextualControl>(shared_from_this()));
-        event_observer->OnNext(event_info);
-    }
+    TextChangedInfo event_info{ As<TextualControl>(shared_from_this())};
+    OnTextChanged(event_info);
 
     RaiseContentChangedEvent();
+}
+
+
+void TextualControl::OnTextChanged(const TextChangedInfo& event_info) {
+
+    auto event_observer = GetEventObserver<TextChangedInfo>(
+        GetPropertyMap(),
+        TextChangedEventPropertyName);
+
+    if (event_observer) {
+        event_observer->OnNext(event_info);
+    }
 }
 
 

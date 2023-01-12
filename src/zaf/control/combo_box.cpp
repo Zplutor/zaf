@@ -142,7 +142,7 @@ void ComboBox::InitializeEditTextBox() {
     edit_text_box_->SetIsMultiline(false);
     edit_text_box_->SetAcceptReturn(false);
 
-    edit_text_box_subscription_ = edit_text_box_->TextChangeEvent().Subscribe(
+    edit_text_box_subscription_ = edit_text_box_->TextChangedEvent().Subscribe(
         std::bind(&ComboBox::EditTextBoxTextChange, this));
 }
 
@@ -629,9 +629,9 @@ void ComboBox::ChangeSelectionText(const std::wstring& text, TextChangeSource so
 }
 
 
-void ComboBox::OnTextChanged() {
+void ComboBox::OnTextChanged(const TextChangedInfo& event_info) {
 
-    __super::OnTextChanged();
+    __super::OnTextChanged(event_info);
 
     if (text_change_source_.Get() != TextChangeSource::DropDownListBox) {
 
