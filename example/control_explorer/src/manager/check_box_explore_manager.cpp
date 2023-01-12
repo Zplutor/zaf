@@ -31,10 +31,10 @@ std::shared_ptr<PropertyItem> CheckBoxExploreManager::CreateCanAutoChangeCheckSt
     return CreateCheckBoxPropertyItem(
         L"Can auto check",
         [check_box]() {
-            return check_box->CanAutoChangeCheckState();
+            return check_box->AutoChangeCheckState();
         },
         [check_box](bool value) {
-            check_box->SetCanAutoChangeCheckState(value);
+            check_box->SetAutoChangeCheckState(value);
         },
         nullptr);
 }
@@ -66,7 +66,7 @@ std::shared_ptr<PropertyItem> CheckBoxExploreManager::CreateIsCheckedPropertyIte
         [check_box](bool value) { check_box->SetIsChecked(value); },
         [check_box](const std::function<void()>& callback) {
             check_box->Subscriptions() +=
-                check_box->CheckStateChangeEvent().Subscribe(std::bind(callback));
+                check_box->CheckStateChangedEvent().Subscribe(std::bind(callback));
         });
 }
 
@@ -82,11 +82,11 @@ std::shared_ptr<PropertyItem> CheckBoxExploreManager::CreateCheckStatePropertyIt
             { L"Indeterminate", zaf::CheckState::Indeterminate },
             { L"Unchecked", zaf::CheckState::Unchecked },
         },
-        [check_box]() { return check_box->GetCheckState(); },
+        [check_box]() { return check_box->CheckState(); },
         [check_box](zaf::CheckState value) { check_box->SetCheckState(value); },
         [check_box](const std::function<void()>& callback) { 
             check_box->Subscriptions() +=
-                check_box->CheckStateChangeEvent().Subscribe(std::bind(callback));
+                check_box->CheckStateChangedEvent().Subscribe(std::bind(callback));
         });
 }
 

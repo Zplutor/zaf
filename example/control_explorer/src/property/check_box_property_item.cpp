@@ -1,4 +1,5 @@
 #include "property/check_box_property_item.h"
+#include <zaf/base/as.h>
 #include <zaf/control/check_box.h>
 #include <zaf/creation.h>
 
@@ -12,10 +13,11 @@ std::shared_ptr<PropertyItem> CreateCheckBoxPropertyItem(
     check_box->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
     check_box->SetIsChecked(get_value());
 
-    check_box->Subscriptions() += check_box->CheckStateChangeEvent().Subscribe(
-        [get_value, value_change](const zaf::CheckBoxCheckStateChangeInfo& event_info) {
-            value_change(event_info.CheckBox()->IsChecked());
-            event_info.CheckBox()->SetIsChecked(get_value());
+    check_box->Subscriptions() += check_box->CheckStateChangedEvent().Subscribe(
+        [get_value, value_change](const zaf::CheckStateChangedInfo& event_info) {
+            auto check_box = zaf::As<zaf::CheckBox>(event_info.Source());
+            value_change(check_box->IsChecked());
+            check_box->SetIsChecked(get_value());
         }
     );
 

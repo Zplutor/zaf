@@ -32,7 +32,7 @@ void BoolValueView::SetValue(const std::shared_ptr<Object>& object) {
 
     check_box_->SetIsChecked(Unbox<bool>(*object));
 
-    Subscriptions() += check_box_->CheckStateChangeEvent().Subscribe(std::bind([this]() {
+    Subscriptions() += check_box_->CheckStateChangedEvent().Subscribe(std::bind([this]() {
         NotifyValueChanged(Box(check_box_->IsChecked()));
     }));
 }

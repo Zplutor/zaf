@@ -5,8 +5,8 @@
 using namespace zaf;
 
 TEST(CheckBoxParser, ParseCanAutoChangeCheckState) {
-    ASSERT_TRUE(TestBooleanProperty<CheckBox>("CanAutoChangeCheckState", [](CheckBox& check_box) {
-        return check_box.CanAutoChangeCheckState();
+    ASSERT_TRUE(TestBooleanProperty<CheckBox>("AutoChangeCheckState", [](CheckBox& check_box) {
+        return check_box.AutoChangeCheckState();
     }));
 }
 
@@ -35,7 +35,7 @@ TEST(CheckBoxParser, ParseCheckState) {
             { CheckState::Indeterminate, "Indeterminate" },
         },
         [](CheckBox& check_box) {
-            return check_box.GetCheckState();
+            return check_box.CheckState();
         }
     );
     ASSERT_TRUE(result);

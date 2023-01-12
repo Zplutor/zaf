@@ -2,11 +2,10 @@
 
 #include <zaf/control/check_state.h>
 #include <zaf/control/clickable_control.h>
+#include <zaf/control/event/check_state_changed_info.h>
 #include <zaf/rx/observable.h>
 
 namespace zaf {
-
-class CheckBoxCheckStateChangeInfo;
 
 /**
  Represents a check box control.    
@@ -22,14 +21,14 @@ public:
     /**
      Get the box border color.
      */
-    Color GetBoxBorderColor() const {
-        return GetBoxBorderColorPicker()(*this);
+    Color BoxBorderColor() const {
+        return BoxBorderColorPicker()(*this);
     }
 
     /**
      Get the color picker of the box border.
      */
-    ColorPicker GetBoxBorderColorPicker() const;
+    ColorPicker BoxBorderColorPicker() const;
 
     /**
      Set the box border color.
@@ -46,14 +45,14 @@ public:
     /**
      Get the box background color.
      */
-    Color GetBoxBackgroundColor() const {
-        return GetBoxBackgroundColorPicker()(*this);
+    Color BoxBackgroundColor() const {
+        return BoxBackgroundColorPicker()(*this);
     }
 
     /**
      Get the color picker of the box background.
      */
-    ColorPicker GetBoxBackgroundColorPicker() const;
+    ColorPicker BoxBackgroundColorPicker() const;
 
     /**
      Set the box background color.
@@ -73,13 +72,13 @@ public:
 
      The default value is true.
      */
-    bool CanAutoChangeCheckState() const;
+    bool AutoChangeCheckState() const;
 
     /**
      Set a value indicating that whether the check box changes its check state when
      it is clicked.
      */
-    void SetCanAutoChangeCheckState(bool can_change);
+    void SetAutoChangeCheckState(bool can_change);
 
     /**
      Get a value indicating that whether the check box can be in indeterminate state.
@@ -101,14 +100,14 @@ public:
 
      The default value is CheckState::Unchecked.
      */
-    CheckState GetCheckState() const {
+    CheckState CheckState() const {
         return check_state_;
     }
 
     /**
      Set the check state of the check box.
      */
-    void SetCheckState(CheckState check_state);
+    void SetCheckState(zaf::CheckState check_state);
 
     /**
      Get a value indicating that whether the check box is checked.
@@ -120,7 +119,7 @@ public:
      The default value is false.
      */
     bool IsChecked() const {
-        CheckState check_state = GetCheckState();
+        zaf::CheckState check_state = CheckState();
         return (check_state == CheckState::Checked) || (check_state == CheckState::Indeterminate);
     }
 
@@ -139,7 +138,7 @@ public:
     /**
      Get the check state change event.
      */
-    Observable<CheckBoxCheckStateChangeInfo> CheckStateChangeEvent();
+    Observable<CheckStateChangedInfo> CheckStateChangedEvent();
 
 protected:
     void Initialize() override;
@@ -151,23 +150,7 @@ private:
     void PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const;
 
 private:
-    CheckState check_state_;
-};
-
-
-class CheckBoxCheckStateChangeInfo {
-public:
-    CheckBoxCheckStateChangeInfo(const std::shared_ptr<CheckBox>& check_box) : 
-        check_box_(check_box) {
-
-    }
-
-    const std::shared_ptr<CheckBox>& CheckBox() const {
-        return check_box_;
-    }
-
-private:
-    std::shared_ptr<zaf::CheckBox> check_box_;
+    zaf::CheckState check_state_;
 };
 
 }
