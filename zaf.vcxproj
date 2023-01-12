@@ -333,7 +333,6 @@
     <ClInclude Include="src\zaf\control\combo_box.h" />
     <ClInclude Include="src\zaf\control\control.h" />
     <ClInclude Include="src\zaf\control\control_binder.h" />
-    <ClInclude Include="src\zaf\control\control_event_infos.h" />
     <ClInclude Include="src\zaf\control\control_update_guard.h" />
     <ClInclude Include="src\zaf\control\event\check_state_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\click_info.h" />
