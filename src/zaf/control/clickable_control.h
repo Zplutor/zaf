@@ -48,7 +48,7 @@ protected:
     void OnFocusLost(const FocusLostInfo& event_info) override;
 
     /**
-    Handles click operation. This method would be call when the control is clicked.
+    Handles click notification. This method would be call when the control is clicked.
 
     The default implementation raises click event. Derived classes should call the same method of
     base class to raise the event if they override it.

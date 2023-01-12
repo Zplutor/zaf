@@ -213,7 +213,7 @@ void TextualControl::SetText(const std::wstring& text) {
 
     ReleaseTextLayout();
     NeedRepaint();
-    RaiseTextChangedEvent();
+    NotifyTextChanged();
 }
 
 
@@ -487,7 +487,7 @@ Observable<TextChangedInfo> TextualControl::TextChangedEvent() {
 }
 
 
-void TextualControl::RaiseTextChangedEvent() {
+void TextualControl::NotifyTextChanged() {
 
     TextChangedInfo event_info{ As<TextualControl>(shared_from_this())};
     OnTextChanged(event_info);
