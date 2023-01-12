@@ -198,6 +198,8 @@ Observable<RadioButtonSelectStateChangeInfo> RadioButton::SelectStateChangeEvent
 
 void RadioButton::OnClick(const ClickInfo& event_info) {
 
+    __super::OnClick(event_info);
+
     if (CanAutoSelect()) {
         SetSelected();
     }

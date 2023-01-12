@@ -382,6 +382,8 @@ void ComboBox::SetEditTextBox(const std::shared_ptr<ComboBoxEditTextBox>& text_b
 
 void ComboBox::OnClick(const ClickInfo& event_info) {
 
+    __super::OnClick(event_info);
+
     //Save current selected index in order to recover when the window closed.
     recovered_selected_index_ = drop_down_list_box_->GetFirstSelectedItemIndex();
     need_recover_selected_index_ = true;
