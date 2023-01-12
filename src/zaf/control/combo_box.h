@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <zaf/control/clickable_control.h>
+#include <zaf/control/event/combo_box_selection_changed_info.h>
 #include <zaf/control/list_box.h>
 #include <zaf/control/list_box_delegate.h>
 #include <zaf/control/text_box.h>
@@ -14,7 +15,6 @@ class ComboBoxDropDownWindow;
 
 class ComboBoxDropDownListBox;
 class ComboBoxEditTextBox;
-class ComboBoxSelectionChangeInfo;
 
 /**
  Represents a combo box control.
@@ -36,7 +36,7 @@ public:
     /**
      Get the color picker of drop down button.
      */
-    ColorPicker GetDropDownButtonColorPicker() const;
+    ColorPicker DropDownButtonColorPicker() const;
 
     /**
      Set the color picker of drop down button.
@@ -46,8 +46,8 @@ public:
     /**
      Get the current color of drop down button.
      */
-    Color GetDropDownButtonColor() const {
-        return GetDropDownButtonColorPicker()(*this);
+    Color DropDownButtonColor() const {
+        return DropDownButtonColorPicker()(*this);
     }
 
     /**
@@ -62,7 +62,7 @@ public:
 
      The default width is 12.
      */
-    float GetDropDownButtonWidth() const;
+    float DropDownButtonWidth() const;
 
     /**
      Set the width of drop down button.
@@ -77,7 +77,7 @@ public:
 
      The default count is 1.
      */
-    std::size_t GetMinVisibleItemCount() const;
+    std::size_t MinVisibleItemCount() const;
 
     /**
      Set the minimum visible item count in drop down list.
@@ -92,7 +92,7 @@ public:
 
      The default count is the maximum value of std::size_t.
      */
-    std::size_t GetMaxVisibleItemCount() const;
+    std::size_t MaxVisibleItemCount() const;
 
     /**
      Set the maximum visible item count in drop down list.
@@ -116,12 +116,12 @@ public:
 
      This event is raised when the selection of combo box is changed.
      */
-    Observable<ComboBoxSelectionChangeInfo> SelectionChangeEvent();
+    Observable<ComboBoxSelectionChangedInfo> SelectionChangedEvent();
 
     /**
      Get the drop down list box used in combo box.
      */
-    const std::shared_ptr<ComboBoxDropDownListBox>& GetDropDownListBox() const {
+    const std::shared_ptr<ComboBoxDropDownListBox>& DropDownListBox() const {
         return drop_down_list_box_;
     }
 
@@ -135,7 +135,7 @@ public:
     /**
      Get the edit text box used in combo box.
      */
-    const std::shared_ptr<ComboBoxEditTextBox>& GetEditTextBox() const {
+    const std::shared_ptr<ComboBoxEditTextBox>& EditTextBox() const {
         return edit_text_box_;
     }
 
@@ -163,7 +163,7 @@ protected:
 
      Derived classes must call the same method of base class.
      */
-    virtual void SelectionChange() { }
+    virtual void OnSelectionChanged(const ComboBoxSelectionChangedInfo& event_info);
 
     /**
      This method is called when the drop down list box is changed.
@@ -173,7 +173,8 @@ protected:
 
      Derived classes must call the same method of base class.
      */
-    virtual void DropDownListBoxChange(const std::shared_ptr<ComboBoxDropDownListBox>& previous_drop_down_list_box) { }
+    virtual void OnDropDownListBoxChanged(
+        const std::shared_ptr<ComboBoxDropDownListBox>& previous_drop_down_list_box) { }
 
     /**
      This method is called when the edit text box is changed.
@@ -183,7 +184,7 @@ protected:
 
      Derived classes must call the same method of base class.
      */
-    virtual void EditTextBoxChange(const std::shared_ptr<TextBox>& previous_edit_text_box) { }
+    virtual void OnEditTextBoxChanged(const std::shared_ptr<TextBox>& previous_edit_text_box) { }
 
 private:
     enum class DropDownListBoxAction {
@@ -290,22 +291,6 @@ private:
 
     std::optional<std::size_t> recovered_selected_index_;
     bool need_recover_selected_index_{};
-};
-
-
-class ComboBoxSelectionChangeInfo {
-public:
-    ComboBoxSelectionChangeInfo(const std::shared_ptr<ComboBox>& combo_box) : 
-        combo_box_(combo_box) {
-
-    }
-
-    const std::shared_ptr<ComboBox>& ComboBox() const {
-        return combo_box_;
-    }
-
-private:
-    std::shared_ptr<zaf::ComboBox> combo_box_;
 };
 
 

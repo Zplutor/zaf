@@ -7,7 +7,7 @@ std::shared_ptr<zaf::Control> ComboBoxExploreManager::CreateExploredControl() {
 
     auto combo_box = zaf::Create<zaf::ComboBox>();
     combo_box->SetSize(zaf::Size(100, 30));
-    auto drop_down_list = combo_box->GetDropDownListBox();
+    auto drop_down_list = combo_box->DropDownListBox();
     drop_down_list->AddItem(zaf::Box(L"Apple"));
     drop_down_list->AddItem(zaf::Box(L"Boy"));
     drop_down_list->AddItem(zaf::Box(L"Cat"));
@@ -45,7 +45,7 @@ std::shared_ptr<PropertyItem> ComboBoxExploreManager::CreateDropDownButtonWidthP
     auto combo_box = GetComboBox();
     return CreateFloatPropertyItem(
         L"Drop down button width",
-        [combo_box]() { return combo_box->GetDropDownButtonWidth(); },
+        [combo_box]() { return combo_box->DropDownButtonWidth(); },
         [combo_box](float value) { combo_box->SetDropDownButtonWidth(value); });
 }
 
@@ -55,7 +55,7 @@ std::shared_ptr<PropertyItem> ComboBoxExploreManager::CreateMinimumVisibleItemCo
     auto combo_box = GetComboBox();
     return CreateIntegerPropertyItem(
         L"Minimum visible item count",
-        [combo_box]() { return combo_box->GetMinVisibleItemCount(); },
+        [combo_box]() { return combo_box->MinVisibleItemCount(); },
         [combo_box](std::int64_t value) { combo_box->SetMinVisibleItemCount(static_cast<std::size_t>(value)); });
 }
 
@@ -65,6 +65,6 @@ std::shared_ptr<PropertyItem> ComboBoxExploreManager::CreateMaximumVisibleItemCo
     auto combo_box = GetComboBox();
     return CreateIntegerPropertyItem(
         L"Maximum visible item count",
-        [combo_box]() { return combo_box->GetMaxVisibleItemCount(); },
+        [combo_box]() { return combo_box->MaxVisibleItemCount(); },
         [combo_box](std::int64_t value) { combo_box->SetMaxVisibleItemCount(static_cast<std::size_t>(value)); });
 }

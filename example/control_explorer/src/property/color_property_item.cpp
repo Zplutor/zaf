@@ -36,7 +36,7 @@ public:
 
         __super::Initialize();
 
-        auto drop_down_list_box = GetDropDownListBox();
+        auto drop_down_list_box = DropDownListBox();
         drop_down_list_box->SetDelegate(std::make_shared<ColorListBoxDelegate>());
 
         for (const auto& each_info : g_color_infos) {
@@ -53,7 +53,7 @@ public:
         selected_color_ = color;
 
         bool has_selected = false;
-        auto drop_down_list_box = GetDropDownListBox();
+        auto drop_down_list_box = DropDownListBox();
         for (std::size_t index = 0; index < drop_down_list_box->GetItemCount(); ++index) {
 
             auto item_data = drop_down_list_box->GetItemDataAtIndex(index);
@@ -91,11 +91,11 @@ protected:
         return text_rect;
     }
 
-    void SelectionChange() override {
+    void OnSelectionChanged(const zaf::ComboBoxSelectionChangedInfo& event_info) override {
 
-        __super::SelectionChange();
+        __super::OnSelectionChanged(event_info);
 
-        auto drop_down_list_box = GetDropDownListBox();
+        auto drop_down_list_box = DropDownListBox();
         auto selected_item_data = drop_down_list_box->GetFirstSelectedItemData();
         if (!selected_item_data) {
             return;
@@ -120,7 +120,7 @@ protected:
 
         if (event_info.Message().VirtualKey() == VK_RETURN) {
 
-            if (!GetDropDownListBox()->GetFirstSelectedItemIndex()) {
+            if (!DropDownListBox()->GetFirstSelectedItemIndex()) {
                 SetText(ColorToText(selected_color_));
             }
             event_info.MarkAsHandled();
@@ -279,10 +279,10 @@ std::shared_ptr<PropertyItem> CreateColorPropertyItem(
 
     color_combo_box->SetSelectedColor(get_color());
 
-    color_combo_box->Subscriptions() += color_combo_box->SelectionChangeEvent().Subscribe(
-        [get_color, color_change](const zaf::ComboBoxSelectionChangeInfo& event_info) {
+    color_combo_box->Subscriptions() += color_combo_box->SelectionChangedEvent().Subscribe(
+        [get_color, color_change](const zaf::ComboBoxSelectionChangedInfo& event_info) {
 
-            auto color_combo_box = std::dynamic_pointer_cast<ColorComboBox>(event_info.ComboBox());
+            auto color_combo_box = zaf::As<ColorComboBox>(event_info.Source());
             auto selected_color = color_combo_box->GetSelectedColor();
             color_change(selected_color);
             color_combo_box->SetSelectedColor(get_color());

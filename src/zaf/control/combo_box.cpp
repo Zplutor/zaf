@@ -1,5 +1,6 @@
 #include <zaf/control/combo_box.h>
 #include <algorithm>
+#include <zaf/base/as.h>
 #include <zaf/base/container/utility/range.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/control/button.h>
@@ -30,12 +31,18 @@ const wchar_t* const kDropDownButtonWidthPropertyName = L"DropDownButtonWidth";
 const wchar_t* const kIsEditablePropertyName = L"IsEditable";
 const wchar_t* const kMaxVisibleItemCountPropertyName = L"MaxVisibleItemCount";
 const wchar_t* const kMinVisibleItemCountPropertyName = L"MinVisibleItemCount";
-const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
+const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangedEvent";
 
 }
 
 
 ZAF_DEFINE_TYPE(ComboBox)
+ZAF_DEFINE_TYPE_PROPERTY(DropDownButtonColor)
+ZAF_DEFINE_TYPE_PROPERTY(DropDownButtonWidth)
+ZAF_DEFINE_TYPE_PROPERTY(DropDownListBox)
+ZAF_DEFINE_TYPE_PROPERTY(EditTextBox)
+ZAF_DEFINE_TYPE_PROPERTY(MinVisibleItemCount)
+ZAF_DEFINE_TYPE_PROPERTY(MaxVisibleItemCount)
 ZAF_DEFINE_TYPE_END
 
 ZAF_DEFINE_TYPE(ComboBoxDropDownListBox)
@@ -171,7 +178,7 @@ void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
-    float button_width = GetDropDownButtonWidth();
+    float button_width = DropDownButtonWidth();
     auto button_rect = ContentRect();
     button_rect.position.x = button_rect.position.x + button_rect.size.width - button_width;
     button_rect.size.width = button_width;
@@ -208,7 +215,7 @@ void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     sink.Close();
 
     Canvas::StateGuard state_guard(canvas);
-    canvas.SetBrushWithColor(GetDropDownButtonColor());
+    canvas.SetBrushWithColor(DropDownButtonColor());
     canvas.DrawGeometry(path);
 }
 
@@ -218,7 +225,7 @@ zaf::Rect ComboBox::GetTextRect() {
     auto rect = __super::GetTextRect();
 
     auto deflated_frame = text_inset_;
-    deflated_frame.right += GetDropDownButtonWidth();
+    deflated_frame.right += DropDownButtonWidth();
     rect.Deflate(deflated_frame);
     return rect;
 }
@@ -235,7 +242,7 @@ void ComboBox::SetTextInset(const Frame& inset) {
 }
 
 
-ColorPicker ComboBox::GetDropDownButtonColorPicker() const {
+ColorPicker ComboBox::DropDownButtonColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kDropDownButtonColorPickerPropertyName);
     if (color_picker != nullptr) {
@@ -253,7 +260,7 @@ void ComboBox::SetDropDownButtonColorPicker(const ColorPicker& color_picker) {
 }
 
 
-float ComboBox::GetDropDownButtonWidth() const {
+float ComboBox::DropDownButtonWidth() const {
 
     auto width = GetPropertyMap().TryGetProperty<float>(kDropDownButtonWidthPropertyName);
     if (width != nullptr) {
@@ -271,7 +278,7 @@ void ComboBox::SetDropDownButtonWidth(float width) {
 }
 
 
-std::size_t ComboBox::GetMinVisibleItemCount() const {
+std::size_t ComboBox::MinVisibleItemCount() const {
 
     auto count = GetPropertyMap().TryGetProperty<std::size_t>(kMinVisibleItemCountPropertyName);
     if (count != nullptr) {
@@ -284,13 +291,13 @@ std::size_t ComboBox::GetMinVisibleItemCount() const {
 
 void ComboBox::SetMinVisibleItemCount(std::size_t count) {
 
-    auto max_count = GetMaxVisibleItemCount();
+    auto max_count = MaxVisibleItemCount();
     auto revised_count = std::min(count, max_count);
     GetPropertyMap().SetProperty(kMinVisibleItemCountPropertyName, revised_count);
 }
 
 
-std::size_t ComboBox::GetMaxVisibleItemCount() const {
+std::size_t ComboBox::MaxVisibleItemCount() const {
 
     auto count = GetPropertyMap().TryGetProperty<std::size_t>(kMaxVisibleItemCountPropertyName);
     if (count != nullptr) {
@@ -304,7 +311,7 @@ std::size_t ComboBox::GetMaxVisibleItemCount() const {
 
 void ComboBox::SetMaxVisibleItemCount(std::size_t count) {
 
-    auto min_count = GetMinVisibleItemCount();
+    auto min_count = MinVisibleItemCount();
     auto revised_count = std::max(count, min_count);
     GetPropertyMap().SetProperty(kMaxVisibleItemCountPropertyName, revised_count);
 }
@@ -331,9 +338,9 @@ void ComboBox::SetIsEditable(bool is_editable) {
 }
 
 
-Observable<ComboBoxSelectionChangeInfo> ComboBox::SelectionChangeEvent() {
+Observable<ComboBoxSelectionChangedInfo> ComboBox::SelectionChangedEvent() {
 
-    return GetEventObservable<ComboBoxSelectionChangeInfo>(
+    return GetEventObservable<ComboBoxSelectionChangedInfo>(
         GetPropertyMap(),
         kSelectionChangeEventPropertyName);
 }
@@ -352,7 +359,7 @@ void ComboBox::SetDropDownListBox(const std::shared_ptr<ComboBoxDropDownListBox>
     drop_down_list_box_ = list_box == nullptr ? Create<ComboBoxDropDownListBox>() : list_box;
     InitializeDropDownListBox();
 
-    DropDownListBoxChange(previous_drop_down_list_box);
+    OnDropDownListBoxChanged(previous_drop_down_list_box);
 }
 
 
@@ -369,7 +376,7 @@ void ComboBox::SetEditTextBox(const std::shared_ptr<ComboBoxEditTextBox>& text_b
     edit_text_box_ = text_box == nullptr ? Create<ComboBoxEditTextBox>() : text_box;
     InitializeEditTextBox();
 
-    EditTextBoxChange(previous_edit_text_box);
+    OnEditTextBoxChanged(previous_edit_text_box);
 }
 
 
@@ -395,8 +402,8 @@ void ComboBox::PopupDropDownWindow() {
     window_rect.position.y += Height() - 2;
 
     std::size_t visible_item_count = drop_down_list_box_->GetItemCount();
-    visible_item_count = std::max(visible_item_count, GetMinVisibleItemCount());
-    visible_item_count = std::min(visible_item_count, GetMaxVisibleItemCount());
+    visible_item_count = std::max(visible_item_count, MinVisibleItemCount());
+    visible_item_count = std::min(visible_item_count, MaxVisibleItemCount());
 
     auto drop_down_list_box_border = drop_down_list_box_->Border();
 
@@ -658,19 +665,19 @@ void ComboBox::OnTextChanged(const TextChangedInfo& event_info) {
 
 
 void ComboBox::NotifySelectionChange() {
+    OnSelectionChanged(ComboBoxSelectionChangedInfo{ As<ComboBox>(shared_from_this()) });
+}
 
-    SelectionChange();
 
-    auto observer = GetEventObserver<ComboBoxSelectionChangeInfo>(
+void ComboBox::OnSelectionChanged(const ComboBoxSelectionChangedInfo& event_info) {
+
+    auto observer = GetEventObserver<ComboBoxSelectionChangedInfo>(
         GetPropertyMap(),
         kSelectionChangeEventPropertyName);
 
-    if (!observer) {
-        return;
+    if (observer) {
+        observer->OnNext(event_info);
     }
-
-    ComboBoxSelectionChangeInfo event_info(std::dynamic_pointer_cast<ComboBox>(shared_from_this()));
-    observer->OnNext(event_info);
 }
 
 

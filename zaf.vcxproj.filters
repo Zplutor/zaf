@@ -796,6 +796,9 @@
     <ClCompile Include="src\zaf\control\event\check_state_changed_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\event\combo_box_selection_changed_info.cpp">
+      <Filter>zaf\control\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1877,6 +1880,9 @@
       <Filter>zaf\control\event</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\check_state_changed_info.h">
+      <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\combo_box_selection_changed_info.h">
       <Filter>zaf\control\event</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,7 +11,7 @@ std::shared_ptr<PropertyItem> CreateComboBoxPropertyItem(
 
     auto combo_box = zaf::Create<zaf::ComboBox>();
 
-    auto drop_down_list = combo_box->GetDropDownListBox();
+    auto drop_down_list = combo_box->DropDownListBox();
     auto current_value = get_value();
     for (const auto& each_value : values) {
         drop_down_list->AddItem(zaf::Box(each_value));
@@ -22,7 +22,7 @@ std::shared_ptr<PropertyItem> CreateComboBoxPropertyItem(
 
     auto update_value = [combo_box, get_value]() {
         auto value = get_value();
-        auto drop_down_list = combo_box->GetDropDownListBox();
+        auto drop_down_list = combo_box->DropDownListBox();
         for (std::size_t index = 0; index < drop_down_list->GetItemCount(); ++index) {
 
             auto item_data = drop_down_list->GetItemDataAtIndex(index);

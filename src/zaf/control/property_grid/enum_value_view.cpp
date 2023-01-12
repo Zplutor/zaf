@@ -39,7 +39,7 @@ void EnumValueView::SetValue(const std::shared_ptr<Object>& value) {
     auto all_enum_values = enum_type->GetAllValues();
     InitializeComboBoxValues(all_enum_values, value);
 
-    Subscriptions() += combo_box_->SelectionChangeEvent().Subscribe(
+    Subscriptions() += combo_box_->SelectionChangedEvent().Subscribe(
         std::bind(&EnumValueView::OnSelectionChanged, this));
 }
 
@@ -48,7 +48,7 @@ void EnumValueView::InitializeComboBoxValues(
     const std::vector<std::shared_ptr<Object>>& values,
     const std::shared_ptr<Object>& selected_object) {
 
-    auto drop_down_list = combo_box_->GetDropDownListBox();
+    auto drop_down_list = combo_box_->DropDownListBox();
     auto update_gurad = drop_down_list->BeginUpdate();
 
     for (auto index : zaf::Range(0, values.size())) {
@@ -64,7 +64,7 @@ void EnumValueView::InitializeComboBoxValues(
 
 void EnumValueView::OnSelectionChanged() {
 
-    NotifyValueChanged(combo_box_->GetDropDownListBox()->GetFirstSelectedItemData());
+    NotifyValueChanged(combo_box_->DropDownListBox()->GetFirstSelectedItemData());
 }
 
 
