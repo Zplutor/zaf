@@ -1,11 +1,10 @@
 #pragma once
 
+#include <zaf/control/event/click_info.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/rx/observable.h>
 
 namespace zaf {
-
-class ClickableControlClickInfo;
 
 /**
  Represents a clickable control.   
@@ -32,7 +31,7 @@ public:
      */
     void Click();
 
-    Observable<ClickableControlClickInfo> ClickEvent();
+    Observable<ClickInfo> ClickEvent();
 
 protected:
     void Initialize() override;
@@ -48,7 +47,7 @@ protected:
     void OnFocusGained(const FocusGainedInfo& event_info) override;
     void OnFocusLost(const FocusLostInfo& event_info) override;
 
-    virtual void OnClick();
+    virtual void OnClick(const ClickInfo& event_info);
 
 private:
     enum class PressType {
@@ -65,22 +64,6 @@ private:
     bool is_pressed_;
     bool is_mouse_press_;
     bool is_key_press_;
-};
-
-
-class ClickableControlClickInfo {
-public:
-    explicit ClickableControlClickInfo(const std::shared_ptr<ClickableControl>& control) : 
-        control_(control) {
-
-    }
-
-    const std::shared_ptr<ClickableControl>& ClickableControl() const {
-        return control_;
-    }
-
-private:
-    std::shared_ptr<zaf::ClickableControl> control_;
 };
 
 }

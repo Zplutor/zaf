@@ -787,6 +787,9 @@
     <ClCompile Include="src\zaf\control\event\focus_event_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\event\click_info.cpp">
+      <Filter>zaf\control\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1859,6 +1862,9 @@
       <Filter>zaf\control\event</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\focus_event_info.h">
+      <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\click_info.h">
       <Filter>zaf\control\event</Filter>
     </ClInclude>
   </ItemGroup>

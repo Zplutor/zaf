@@ -230,7 +230,7 @@ Observable<CheckBoxCheckStateChangeInfo> CheckBox::CheckStateChangeEvent() {
 }
 
 
-void CheckBox::OnClick() {
+void CheckBox::OnClick(const ClickInfo& event_info) {
 
     if (! CanAutoChangeCheckState()) {
         return;

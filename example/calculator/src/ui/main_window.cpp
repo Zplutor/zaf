@@ -1,4 +1,5 @@
 #include "ui/main_window.h"
+#include <zaf/base/as.h>
 #include <zaf/control/button.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/font/font.h>
@@ -111,9 +112,9 @@ float MainWindow::GetContentWidth() const {
 }
 
 
-void MainWindow::ButtonClick(const zaf::ClickableControlClickInfo& event_info) {
+void MainWindow::ButtonClick(const zaf::ClickInfo& event_info) {
 
-    auto button = dynamic_cast<zaf::Button*>(event_info.ClickableControl().get());
+    auto button = zaf::As<zaf::Button>(event_info.Source());
     auto button_text = button->Text();
     if (button_text == L"=") {
 

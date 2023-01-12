@@ -152,7 +152,7 @@ protected:
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     zaf::Rect GetTextRect() override;
 
-    void OnClick() override;
+    void OnClick(const ClickInfo& event_info) override;
     void OnKeyDown(const KeyDownInfo& event_info) override;
     void OnFocusGained(const FocusGainedInfo& event_info) override;
 

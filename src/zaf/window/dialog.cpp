@@ -1,4 +1,5 @@
 #include <zaf/window/dialog.h>
+#include <zaf/base/as.h>
 #include <zaf/control/button.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/window/message/keyboard_message.h>
@@ -126,13 +127,14 @@ void Dialog::AddDialogButton(const std::shared_ptr<Button>& button, DialogResult
     DialogButtonItem item;
     item.dialog_result = dialog_result;
     item.click_event_subscription = button->ClickEvent().Subscribe(
-        [this](const ClickableControlClickInfo& event_info) {
+        [this](const ClickInfo& event_info) {
 
-            if (!RootControl()->IsAncestorOf(event_info.ClickableControl())) {
+            auto button = As<Button>(event_info.Source());
+
+            if (!RootControl()->IsAncestorOf(button)) {
                 return;
             }
 
-            auto button = std::dynamic_pointer_cast<Button>(event_info.ClickableControl());
             auto iterator = dialog_buttons_.find(button);
             if (iterator == dialog_buttons_.end()) {
                 return;

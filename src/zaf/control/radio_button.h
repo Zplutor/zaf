@@ -151,7 +151,7 @@ protected:
     void Initialize() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     zaf::Rect GetTextRect() override;
-    void OnClick() override;
+    void OnClick(const ClickInfo& event_info) override;
 
 private:
     void PaintRadio(Canvas& canvas, const zaf::Rect& radio_rect);

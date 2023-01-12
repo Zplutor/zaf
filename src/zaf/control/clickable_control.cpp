@@ -39,18 +39,20 @@ void ClickableControl::Initialize() {
 
 
 void ClickableControl::Click() {
-    OnClick();
+
+    ClickInfo click_info{ As<ClickableControl>(shared_from_this()) };
+    OnClick(click_info);
 }
 
 
-void ClickableControl::OnClick() {
+void ClickableControl::OnClick(const ClickInfo& event_info) {
 
-    auto observer = GetEventObserver<ClickableControlClickInfo>(
+    auto observer = GetEventObserver<ClickInfo>(
         GetPropertyMap(),
         ClickEventPropertyName);
 
     if (observer) {
-        observer->OnNext(ClickableControlClickInfo{ As<ClickableControl>(shared_from_this()) });
+        observer->OnNext(event_info);
     }
 }
 
@@ -267,8 +269,8 @@ void ClickableControl::OnFocusLost(const FocusLostInfo& event_info) {
 }
 
 
-Observable<ClickableControlClickInfo> ClickableControl::ClickEvent() {
-    return GetEventObservable<ClickableControlClickInfo>(GetPropertyMap(), ClickEventPropertyName);
+Observable<ClickInfo> ClickableControl::ClickEvent() {
+    return GetEventObservable<ClickInfo>(GetPropertyMap(), ClickEventPropertyName);
 }
 
 }

@@ -15,7 +15,7 @@ private:
     void InitializeTextBoxes();
     void InitializeButtons();
     float GetContentWidth() const;
-    void ButtonClick(const zaf::ClickableControlClickInfo& event_info);
+    void ButtonClick(const zaf::ClickInfo& event_info);
 
 private:
     std::shared_ptr<zaf::TextBox> input_text_box_;
