@@ -217,6 +217,14 @@ protected:
     }
 
     /**
+    Notifies that the text of control is changed.
+
+    If a derived class overrides SetText() and implements its own text management, it should call 
+    this method after the text is changed in order to raise text changed event.
+    */
+    void NotifyTextChanged();
+
+    /**
     Handles text changed notification. This method would be called after the text of control is 
     changed.
 
@@ -226,8 +234,6 @@ protected:
     virtual void OnTextChanged(const TextChangedInfo& event_info);
 
 private:
-    void NotifyTextChanged();
-
     TextLayout CreateTextLayout() const;
     TextFormat CreateTextFormat(const zaf::Font& default_font) const;
     void SetRangedFontsToTextLayout(TextLayout& text_layout) const;

@@ -1534,7 +1534,7 @@ HRESULT TextBox::TextHostBridge::TxNotify(DWORD iNotify, void *pv) {
     switch (iNotify) {
 
         case EN_CHANGE: {
-            text_box->RaiseTextChangedEvent();
+            text_box->NotifyTextChanged();
             return S_OK;
         }
 

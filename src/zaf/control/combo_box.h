@@ -159,10 +159,12 @@ protected:
     void OnTextChanged(const TextChangedInfo& event_info) override;
 
     /**
-     This method is called when the selection is changed.
+    Handles selection changed notification. This method would be called after the selection of 
+    combo box is changed.
 
-     Derived classes must call the same method of base class.
-     */
+    The default implementation raises selection changed event. Derived classes should call the same
+    method of base class to raise the event if they override it.
+    */
     virtual void OnSelectionChanged(const ComboBoxSelectionChangedInfo& event_info);
 
     /**
