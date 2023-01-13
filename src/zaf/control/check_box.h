@@ -72,13 +72,13 @@ public:
 
      The default value is true.
      */
-    bool AutoChangeCheckState() const;
+    bool AutoCheck() const;
 
     /**
      Set a value indicating that whether the check box changes its check state when
      it is clicked.
      */
-    void SetAutoChangeCheckState(bool can_change);
+    void SetAutoCheck(bool auto_check);
 
     /**
      Get a value indicating that whether the check box can be in indeterminate state.

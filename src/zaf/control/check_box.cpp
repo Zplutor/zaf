@@ -18,7 +18,7 @@ namespace {
 
 const wchar_t* const kBoxBackgroundColorPickerPropertyName = L"BoxBackgroundColorPicker";
 const wchar_t* const kBoxBorderColorPickerPropertyName = L"BoxBorderColorPicker";
-const wchar_t* const kCanAutoChangeCheckStatePropertyName = L"AutoChangeCheckState";
+const wchar_t* const AutoCheckPropertyName = L"AutoCheck";
 const wchar_t* const kCanBeIndeterminatePropertyName = L"CanBeIndeterminate";
 const wchar_t* const CheckStateChangedEventPropertyName = L"CheckStateChangedEvent";
 
@@ -26,7 +26,7 @@ const wchar_t* const CheckStateChangedEventPropertyName = L"CheckStateChangedEve
 
 
 ZAF_DEFINE_TYPE(CheckBox)
-ZAF_DEFINE_TYPE_PROPERTY(AutoChangeCheckState)
+ZAF_DEFINE_TYPE_PROPERTY(AutoCheck)
 ZAF_DEFINE_TYPE_PROPERTY(BoxBackgroundColor)
 ZAF_DEFINE_TYPE_PROPERTY(BoxBorderColor)
 ZAF_DEFINE_TYPE_PROPERTY(CanBeIndeterminate)
@@ -165,9 +165,9 @@ void CheckBox::SetBoxBackgroundColorPicker(const ColorPicker& color_picker) {
 }
 
 
-bool CheckBox::AutoChangeCheckState() const {
+bool CheckBox::AutoCheck() const {
 
-    auto value = GetPropertyMap().TryGetProperty<bool>(kCanAutoChangeCheckStatePropertyName);
+    auto value = GetPropertyMap().TryGetProperty<bool>(AutoCheckPropertyName);
     if (value != nullptr) {
         return *value;
     }
@@ -177,8 +177,8 @@ bool CheckBox::AutoChangeCheckState() const {
 }
 
 
-void CheckBox::SetAutoChangeCheckState(bool can_change) {
-    GetPropertyMap().SetProperty(kCanAutoChangeCheckStatePropertyName, can_change);
+void CheckBox::SetAutoCheck(bool auto_check) {
+    GetPropertyMap().SetProperty(AutoCheckPropertyName, auto_check);
 }
 
 
@@ -235,7 +235,7 @@ void CheckBox::OnClick(const ClickInfo& event_info) {
 
     __super::OnClick(event_info);
 
-    if (! AutoChangeCheckState()) {
+    if (! AutoCheck()) {
         return;
     }
 

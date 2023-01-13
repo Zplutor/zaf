@@ -5,8 +5,8 @@
 using namespace zaf;
 
 TEST(CheckBoxParser, ParseCanAutoChangeCheckState) {
-    ASSERT_TRUE(TestBooleanProperty<CheckBox>("AutoChangeCheckState", [](CheckBox& check_box) {
-        return check_box.AutoChangeCheckState();
+    ASSERT_TRUE(TestBooleanProperty<CheckBox>("AutoCheck", [](CheckBox& check_box) {
+        return check_box.AutoCheck();
     }));
 }
 

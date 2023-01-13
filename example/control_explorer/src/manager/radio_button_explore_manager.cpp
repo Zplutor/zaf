@@ -12,17 +12,17 @@ std::shared_ptr<zaf::Control> RadioButtonExploreManager::CreateExploredControl()
 
     target_radio_button_ = zaf::Create<zaf::RadioButton>();
     target_radio_button_->SetText(L"Radio button");
-    target_radio_button_->SetGroup(group);
+    target_radio_button_->SetAssociatedGroup(group);
     container->AddChild(target_radio_button_);
 
     auto other_radio_button1 = zaf::Create<zaf::RadioButton>();
     other_radio_button1->SetText(L"Other radio button 1");
-    other_radio_button1->SetGroup(group);
+    other_radio_button1->SetAssociatedGroup(group);
     container->AddChild(other_radio_button1);
 
     auto other_radio_button2 = zaf::Create<zaf::RadioButton>();
     other_radio_button2->SetText(L"Other radio button 2");
-    other_radio_button2->SetGroup(group);
+    other_radio_button2->SetAssociatedGroup(group);
     container->AddChild(other_radio_button2);
 
     return container;
@@ -45,8 +45,8 @@ std::shared_ptr<PropertyItem> RadioButtonExploreManager::CreateCanAutoSelectProp
     auto radio_button = GetRadioButton();
     return CreateCheckBoxPropertyItem(
         L"Can auto select",
-        [radio_button]() { return radio_button->CanAutoSelect(); },
-        [radio_button](bool value) { radio_button->SetCanAutoSelect(value); },
+        [radio_button]() { return radio_button->AutoCheck(); },
+        [radio_button](bool value) { radio_button->SetAutoCheck(value); },
         nullptr);
 }
 
@@ -56,11 +56,11 @@ std::shared_ptr<PropertyItem> RadioButtonExploreManager::CreateIsSelectedPropert
     auto radio_button = GetRadioButton();
     return CreateCheckBoxPropertyItem(
         L"Is selected",
-        [radio_button]() { return radio_button->IsSelected(); },
-        [radio_button](bool value) { if (value) { radio_button->SetSelected(); } },
+        [radio_button]() { return radio_button->IsChecked(); },
+        [radio_button](bool value) { if (value) { radio_button->SetIsChecked(true); } },
         [radio_button](const std::function<void()>& callback) {
 
             radio_button->Subscriptions() +=
-                radio_button->SelectStateChangeEvent().Subscribe(std::bind(callback));
+                radio_button->CheckStateChangedEvent().Subscribe(std::bind(callback));
         });
 }

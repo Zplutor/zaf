@@ -1,14 +1,13 @@
 #pragma once 
 
 #include <zaf/control/clickable_control.h>
+#include <zaf/control/event/check_state_changed_info.h>
 #include <zaf/rx/observable.h>
 
-namespace zaf{
-
-class RadioButtonSelectStateChangeInfo;
+namespace zaf {
 
 /**
- Represents a radio button conrol.    
+ Represents a radio button conrol.
  */
 class RadioButton : public ClickableControl {
 public:
@@ -18,15 +17,15 @@ public:
     /**
      Represents a radio button group.
 
-     Radio buttons associate with the same group cannot be selected at the same time.
-     Use RadioButton::SetGroup method to associate a radio buton with a group.
+     Radio buttons associate with the same group cannot be checked at the same time.
+     Use RadioButton::SetAssociatedGroup method to associate a radio buton with a group.
      */
     class Group {
     public:
         /**
          Get associated radio buttons.
          */
-        const std::vector<std::shared_ptr<RadioButton>> GetRadioButtons() const;
+        const std::vector<std::shared_ptr<RadioButton>> RadioButtons() const;
 
     private:
         friend class RadioButton;
@@ -34,7 +33,7 @@ public:
         void Add(const std::shared_ptr<RadioButton>& radio_button);
         void Remove(const std::shared_ptr<RadioButton>& radio_button);
 
-        void RadioButtonSelected(const std::shared_ptr<RadioButton>& radio_button);
+        void OnRadioButtonChecked(const std::shared_ptr<RadioButton>& radio_button);
 
     private:
         std::vector<std::weak_ptr<RadioButton>> radio_buttons_;
@@ -47,14 +46,14 @@ public:
     /**
      Get radio border color.
      */
-    Color GetRadioBorderColor() const {
-        return GetRadioBorderColorPicker()(*this);
+    Color RadioBorderColor() const {
+        return RadioBorderColorPicker()(*this);
     }
 
     /**
      Get the color picker of radio border.
      */
-    ColorPicker GetRadioBorderColorPicker() const;
+    ColorPicker RadioBorderColorPicker() const;
 
     /**
      Set radio border color.
@@ -71,14 +70,14 @@ public:
     /**
      Get radio background color.
      */
-    Color GetRadioBackgroundColor() {
-        return GetRadioBackgroundColorPicker()(*this);
+    Color RadioBackgroundColor() {
+        return RadioBackgroundColorPicker()(*this);
     }
 
     /**
      Get the color picker of radio background.
      */
-    ColorPicker GetRadioBackgroundColorPicker() const;
+    ColorPicker RadioBackgroundColorPicker() const;
 
     /**
      Set radio background color.
@@ -98,54 +97,57 @@ public:
      @return
         Return nullptr if there is no associated group.
      */
-    const std::shared_ptr<Group>& GetGroup() const {
+    const std::shared_ptr<Group>& AssociatedGroup() const {
         return group_;
     }
 
     /**
      Set the associated group.
 
-     The first radio button associates with a group would be selected.
-     The later associated radio buttons would be unselected.
+     The first radio button associates with a group would be checked.
+     The later associated radio buttons would be unchecked.
 
      If group is nullptr, the association would be removed.
      */
-    void SetGroup(const std::shared_ptr<Group>& group);
+    void SetAssociatedGroup(const std::shared_ptr<Group>& group);
 
     /**
-     Get a value indicating whether the radio button changes its select state automatically 
+     Get a value indicating whether the radio button changes its check state automatically
      when it is clicked.
 
      The default value is true.
      */
-    bool CanAutoSelect() const;
+    bool AutoCheck() const;
 
     /**
-     Set a value indicating whether the radio button changes its select state automatically 
+     Set a value indicating whether the radio button changes its check state automatically
      when it is clicked.
      */
-    void SetCanAutoSelect(bool can_auto_select);
+    void SetAutoCheck(bool auto_check);
 
     /**
-     Get a value indicating whether the radio button is selected.
+     Get a value indicating whether the radio button is checked.
      */
-    bool IsSelected() const {
-        return is_selected_;
+    bool IsChecked() const {
+        return is_checked_;
     }
 
     /**
-     Set the radio button selected.
+     Sets a value indicating that whether the radio button is checked.
 
-     Other radio buttons associate with the same group would be unselected.
+     Note that the purpose of this method is to check a radio button, rather than to uncheck a
+     radio button.
+
+     If a radio button is checked, other radio buttons associate with the same group would be
+     unchecked automatically.
      */
-    void SetSelected() {
-        SetIsSelected(true);
+    void SetIsChecked(bool is_checked) {
+        if (is_checked) {
+            ChangeCheckState(true);
+        }
     }
 
-    /**
-     Get the select state change event.
-     */
-    Observable<RadioButtonSelectStateChangeInfo> SelectStateChangeEvent();
+    Observable<CheckStateChangedInfo> CheckStateChangedEvent();
 
 protected:
     void Initialize() override;
@@ -153,34 +155,27 @@ protected:
     zaf::Rect GetTextRect() override;
     void OnClick(const ClickInfo& event_info) override;
 
+    /**
+    Handles check state changed notification. 
+
+    The default implementation raises check state changed event. Derived classes should call the 
+    same method of base class to raise the event if they override it.
+    */
+    virtual void OnCheckStateChanged(const CheckStateChangedInfo& event_info);
+
 private:
     void PaintRadio(Canvas& canvas, const zaf::Rect& radio_rect);
 
-    void SetUnselected() {
-        SetIsSelected(false);
+    //Called by Group internally.
+    void Uncheck() {
+        ChangeCheckState(false);
     }
 
-    void SetIsSelected(bool is_selected);
+    void ChangeCheckState(bool is_checked);
 
 private:
-    bool is_selected_;
+    bool is_checked_;
     std::shared_ptr<Group> group_;
-};
-
-
-class RadioButtonSelectStateChangeInfo {
-public:
-    RadioButtonSelectStateChangeInfo(const std::shared_ptr<RadioButton>& radio_button) :
-        radio_button_(radio_button) {
-
-    }
-
-    const std::shared_ptr<RadioButton>& RadioButton() const {
-        return radio_button_;
-    }
-
-private:
-    std::shared_ptr<zaf::RadioButton> radio_button_;
 };
 
 }

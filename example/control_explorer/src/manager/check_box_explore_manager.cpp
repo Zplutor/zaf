@@ -31,10 +31,10 @@ std::shared_ptr<PropertyItem> CheckBoxExploreManager::CreateCanAutoChangeCheckSt
     return CreateCheckBoxPropertyItem(
         L"Can auto check",
         [check_box]() {
-            return check_box->AutoChangeCheckState();
+            return check_box->AutoCheck();
         },
         [check_box](bool value) {
-            check_box->SetAutoChangeCheckState(value);
+            check_box->SetAutoCheck(value);
         },
         nullptr);
 }
