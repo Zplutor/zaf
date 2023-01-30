@@ -14,6 +14,7 @@ public:
 
 protected:
     void Initialize() override;
+    void OnTextBoxFocusLost(const FocusLostInfo& event_info);
     void ChangeValue();
 
 private:

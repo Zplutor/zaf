@@ -16,7 +16,7 @@
 
 static const struct {
     const wchar_t* name;
-    std::function<std::shared_ptr<ExploreManager>()> createor;
+    std::function<std::shared_ptr<ExploreManager>()> creator;
 } kControlNameAndCreators[] = {
     L"Button", []() { return std::make_shared<ButtonExploreManager>(); },
     L"CheckBox", []() { return std::make_shared<CheckBoxExploreManager>(); },
@@ -119,7 +119,7 @@ void MainWindow::ControlListBoxSelectionChange() {
 void MainWindow::LoadControlExploreManager(const std::shared_ptr<ExploreManager>& explore_manager) {
 
     control_view_panel_->SetExploredControl(explore_manager->GetExploredControl());
-    control_property_panel_->SetPropertyItems(explore_manager->GetPropertyItems());
+    control_property_panel_->SetExploredControl(explore_manager->GetExploredControl());
 }
 
 
@@ -127,8 +127,8 @@ static std::shared_ptr<ExploreManager> CreateExploreManager(const std::wstring& 
 
     for (const auto& each_item : kControlNameAndCreators) {
         if (control_name == each_item.name) {
-            if (each_item.createor != nullptr) {
-                return each_item.createor();
+            if (each_item.creator != nullptr) {
+                return each_item.creator();
             }
         }
     }

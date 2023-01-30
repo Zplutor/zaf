@@ -1,15 +1,13 @@
 #pragma once
 
-#include <zaf/control/scrollable_control.h>
-
-class PropertyItem;
+#include <zaf/control/property_grid.h>
 
 class ControlPropertyPanel : public zaf::Control {
 public:
     void Initialize() override;
 
-    void SetPropertyItems(const std::vector<std::shared_ptr<PropertyItem>>& items);
+    void SetExploredControl(const std::shared_ptr<zaf::Control>& control);
 
 private:
-    std::shared_ptr<zaf::ScrollableControl> scrollable_control_;
+    std::shared_ptr<zaf::PropertyGrid> property_grid_;
 };

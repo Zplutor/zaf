@@ -19,9 +19,8 @@ void EditableValueView::Initialize() {
         NotifyShouldSelectItem();
     }));
 
-    Subscriptions() += text_box_->FocusLostEvent().Subscribe(std::bind([this]() {
-        ChangeValue();
-    }));
+    Subscriptions() += text_box_->FocusLostEvent().Subscribe(
+        std::bind(&EditableValueView::OnTextBoxFocusLost, this, std::placeholders::_1));
 
     Subscriptions() += text_box_->KeyDownEvent().Subscribe(
         [this](const KeyDownInfo& event_info) {
@@ -72,6 +71,16 @@ void EditableValueView::ChangeValue() {
     }
     catch (const Error&) {
         text_box_->SetText(value_->ToString());
+    }
+}
+
+
+void EditableValueView::OnTextBoxFocusLost(const FocusLostInfo& event_info) {
+
+    //Commit new value only when focus is transferred to other control.
+    //Value should not be committed in some situations, such as when window loses focus.
+    if (event_info.GainedFocusControl()) {
+        ChangeValue();
     }
 }
 
