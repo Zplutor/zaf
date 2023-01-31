@@ -31,7 +31,10 @@ public:
     float GetTotalHeight() const;
 
     std::size_t GetItemCount() const {
-        return strategy_->ItemCount();
+        if (strategy_) {
+            return strategy_->ItemCount();
+        }
+        return 0;
     }
 
 private:

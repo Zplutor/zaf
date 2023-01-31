@@ -1,6 +1,7 @@
 #pragma once
 
 #include <deque>
+#include <zaf/base/auto_reset_value.h>
 #include <zaf/control/internal/list_control/list_control_item_selection_manager.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
@@ -124,6 +125,8 @@ private:
     void RegisterDataSourceEvents();
     void UnregisterDataSourceEvents();
 
+    void InnerReload(bool retain_state);
+
     void UpdateContentHeight();
     void UpdateVisibleItems();
     void GetVisibleItemsRange(std::size_t& index, std::size_t& count);
@@ -140,7 +143,8 @@ private:
     std::shared_ptr<ListItem> CreateItem(std::size_t index);
     void RecoverLastFocusedItem(const std::vector<std::shared_ptr<ListItem>>& items);
 
-    void ItemAdd(const ListDataSourceDataAddInfo& event_info);
+    void OnItemAdd(const ListDataSourceDataAddInfo& event_info);
+    void HandleItemAdd(const ListDataSourceDataAddInfo& event_info);
     void AddItemsBeforeVisibleItems(
         std::size_t index, 
         std::size_t count, 
@@ -150,7 +154,8 @@ private:
         std::size_t count, 
         float position_difference);
 
-    void ItemRemove(const ListDataSourceDataRemoveInfo& event_info);
+    void OnItemRemove(const ListDataSourceDataRemoveInfo& event_info);
+    void HandleItemRemove(const ListDataSourceDataRemoveInfo& event_info);
     void RemoveItemsBeforeVisibleItems(
         std::size_t index, 
         std::size_t count, 
@@ -160,13 +165,15 @@ private:
         std::size_t count, 
         float position_difference);
 
-    void ItemUpdate(const ListDataSourceDataUpdateInfo& event_info);
+    void OnItemUpdate(const ListDataSourceDataUpdateInfo& event_info);
+    void HandleItemUpdate(const ListDataSourceDataUpdateInfo& event_info);
     void AdjustVisibleItemPositionsByUpdatingItems(
         std::size_t index, 
         std::size_t count, 
         float position_difference);
     void UpdateVisibleItemsByUpdatingItems(std::size_t index, std::size_t count);
 
+    void RefreshItemsIfNeeded();
     float AdjustContentHeight();
     void SetScrollContentHeight(float height);
     void AdjustVisibleItemPositions(std::size_t begin_adjust_index, float difference);
@@ -194,7 +201,9 @@ private:
     float current_total_height_{};
     std::size_t first_visible_item_index_{};
     std::deque<std::shared_ptr<ListItem>> visible_items_;
-    bool disable_on_layout_{};
+    AutoResetValue<bool> disable_on_layout_;
+    AutoResetValue<bool> is_handling_data_source_event_;
+    bool refresh_after_data_source_event_{};
 
     SelectionMode selection_mode_{ SelectionMode::Single };
     bool auto_adjust_scroll_bar_small_change_{ true };

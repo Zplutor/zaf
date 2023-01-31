@@ -190,19 +190,19 @@ void ListControlImplementation::RegisterDataSourceEvents() {
 
     data_source_subscriptions_ += data_source->DataAddEvent().Subscribe(
         std::bind(
-            &ListControlImplementation::ItemAdd, 
+            &ListControlImplementation::OnItemAdd, 
             this, 
             std::placeholders::_1));
 
     data_source_subscriptions_ += data_source->DataRemoveEvent().Subscribe(
         std::bind(
-            &ListControlImplementation::ItemRemove,
+            &ListControlImplementation::OnItemRemove,
             this, 
             std::placeholders::_1));
 
     data_source_subscriptions_ += data_source->DataUpdateEvent().Subscribe(
         std::bind(
-            &ListControlImplementation::ItemUpdate,
+            &ListControlImplementation::OnItemUpdate,
             this, 
             std::placeholders::_1));
 }
@@ -360,7 +360,7 @@ void ListControlImplementation::SetSelectionMode(SelectionMode mode) {
 
 void ListControlImplementation::OnLayout() {
 
-    if (!disable_on_layout_) {
+    if (!disable_on_layout_.Value()) {
         UpdateVisibleItems();
     }
 }
@@ -379,9 +379,16 @@ void ListControlImplementation::OnVerticalScrollBarChange(
 
 
 void ListControlImplementation::Reload() {
+    InnerReload(false);
+}
 
-    //Remove selected indexes.
-    UnselectAllItems();
+
+void ListControlImplementation::InnerReload(bool retain_state) {
+
+    if (!retain_state) {
+        //Remove selected indexes.
+        UnselectAllItems();
+    }
 
     //Remove all visible items.
     if (!visible_items_.empty()) {
@@ -392,8 +399,11 @@ void ListControlImplementation::Reload() {
         }
 
         visible_items_.clear();
-        first_visible_item_index_ = 0;
-        last_focused_item_data_.reset();
+
+        if (!retain_state) {
+            first_visible_item_index_ = 0;
+            last_focused_item_data_.reset();
+        }
     }
 
     UpdateContentHeight();
@@ -611,7 +621,20 @@ std::shared_ptr<ListItem> ListControlImplementation::CreateItem(std::size_t inde
 }
 
 
-void ListControlImplementation::ItemAdd(const ListDataSourceDataAddInfo& event_info) {
+void ListControlImplementation::OnItemAdd(const ListDataSourceDataAddInfo& event_info) {
+
+    if (is_handling_data_source_event_.Value()) {
+        refresh_after_data_source_event_ = true;
+        return;
+    }
+
+    auto reset_gurad = is_handling_data_source_event_.BeginSet(true);
+    HandleItemAdd(event_info);
+    RefreshItemsIfNeeded();
+}
+
+
+void ListControlImplementation::HandleItemAdd(const ListDataSourceDataAddInfo& event_info) {
 
     //Adjust scroll bar small change if there is no items before adding.
     bool need_adjust_scroll_bar_small_change = visible_items_.empty();
@@ -685,7 +708,20 @@ void ListControlImplementation::AddItemsInMiddleOfVisibleItems(
 }
 
 
-void ListControlImplementation::ItemRemove(const ListDataSourceDataRemoveInfo& event_info) {
+void ListControlImplementation::OnItemRemove(const ListDataSourceDataRemoveInfo& event_info) {
+
+    if (is_handling_data_source_event_.Value()) {
+        refresh_after_data_source_event_ = true;
+        return;
+    }
+
+    auto reset_guard = is_handling_data_source_event_.BeginSet(true);
+    HandleItemRemove(event_info);
+    RefreshItemsIfNeeded();
+}
+
+
+void ListControlImplementation::HandleItemRemove(const ListDataSourceDataRemoveInfo& event_info) {
 
     bool selection_changed = item_selection_manager_.AdjustSelectionByRemovingIndexes(
         event_info.index,
@@ -745,7 +781,20 @@ void ListControlImplementation::RemoveItemsInMiddleOfVisibleItems(
 }
 
 
-void ListControlImplementation::ItemUpdate(const ListDataSourceDataUpdateInfo& event_info) {
+void ListControlImplementation::OnItemUpdate(const ListDataSourceDataUpdateInfo& event_info) {
+
+    if (is_handling_data_source_event_.Value()) {
+        refresh_after_data_source_event_ = true;
+        return;
+    }
+
+    auto reset_gurad = is_handling_data_source_event_.BeginSet(true);
+    HandleItemUpdate(event_info);
+    RefreshItemsIfNeeded();
+}
+
+
+void ListControlImplementation::HandleItemUpdate(const ListDataSourceDataUpdateInfo& event_info) {
 
     auto update_guard = item_container_->BeginUpdate();
 
@@ -804,7 +853,9 @@ void ListControlImplementation::UpdateVisibleItemsByUpdatingItems(
 
     std::vector<std::shared_ptr<ListItem>> new_items;
 
-    for (std::size_t current_index = intersect_begin_update_index; current_index < intersect_end_update_index; ++current_index) {
+    for (std::size_t current_index = intersect_begin_update_index; 
+         current_index < intersect_end_update_index; 
+         ++current_index) {
 
         std::size_t visible_item_index = current_index - first_visible_item_index_;
 
@@ -822,6 +873,17 @@ void ListControlImplementation::UpdateVisibleItemsByUpdatingItems(
 }
 
 
+void ListControlImplementation::RefreshItemsIfNeeded() {
+
+    if (!refresh_after_data_source_event_) {
+        return;
+    }
+
+    refresh_after_data_source_event_ = false;
+    InnerReload(true);
+}
+
+
 float ListControlImplementation::AdjustContentHeight() {
 
     float old_total_height = current_total_height_;
@@ -830,10 +892,8 @@ float ListControlImplementation::AdjustContentHeight() {
     if (old_total_height != new_total_height) {
 
         //Disable OnLayout() for preventing from reentering.
-        disable_on_layout_ = true;
+        auto reset_guard = disable_on_layout_.BeginSet(true);
         SetScrollContentHeight(new_total_height);
-        disable_on_layout_ = false;
-
         return new_total_height - old_total_height;
     }
     else {
