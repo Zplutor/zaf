@@ -1,13 +1,10 @@
 #pragma once
 
 #include <zaf/control/clickable_control.h>
+#include <zaf/control/event/scroll_bar_thumb_event_info.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf {
-
-class ScrollBarThumbBeginDragInfo;
-class ScrollBarThumbDragInfo;
-class ScrollBarThumbEndDragInfo;
 
 /**
  Represents a thumb control in a control.
@@ -22,14 +19,14 @@ public:
     /**
      Get thumb color.
      */
-    Color GetThumbColor() const {
-        return GetThumbColorPicker()(*this);
+    Color ThumbColor() const {
+        return ThumbColorPicker()(*this);
     }
 
     /**
      Get the color picker of thumb.
      */
-    ColorPicker GetThumbColorPicker() const;
+    ColorPicker ThumbColorPicker() const;
 
     /**
      Set thumb color.
@@ -107,22 +104,6 @@ private:
     Subject<ScrollBarThumbBeginDragInfo> begin_drag_event_;
     Subject<ScrollBarThumbDragInfo> drag_event_;
     Subject<ScrollBarThumbEndDragInfo> end_drag_event_;
-};
-
-
-class ScrollBarThumbBeginDragInfo {
-public:
-    std::shared_ptr<ScrollBarThumb> scroll_bar_thumb;
-};
-
-class ScrollBarThumbDragInfo {
-public:
-    std::shared_ptr<ScrollBarThumb> scroll_bar_thumb;
-};
-
-class ScrollBarThumbEndDragInfo {
-public:
-    std::shared_ptr<ScrollBarThumb> scroll_bar_thumb;
 };
 
 }

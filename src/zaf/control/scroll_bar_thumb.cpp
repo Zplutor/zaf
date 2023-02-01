@@ -6,6 +6,8 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(ScrollBarThumb)
+ZAF_DEFINE_TYPE_PROPERTY(ThumbColor)
+ZAF_DEFINE_TYPE_PROPERTY(IsHorizontal)
 ZAF_DEFINE_TYPE_END
 
 ScrollBarThumb::ScrollBarThumb() {
@@ -32,12 +34,12 @@ void ScrollBarThumb::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     Canvas::StateGuard state_guard(canvas);
 
-    canvas.SetBrushWithColor(GetThumbColor());
+    canvas.SetBrushWithColor(ThumbColor());
     canvas.DrawRectangle(ContentRect());
 }
 
 
-ColorPicker ScrollBarThumb::GetThumbColorPicker() const {
+ColorPicker ScrollBarThumb::ThumbColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::ThumbColorPicker);
     if (color_picker != nullptr && *color_picker != nullptr) {
@@ -76,8 +78,7 @@ void ScrollBarThumb::OnMouseCapture() {
 
     is_dragging_ = true;
 
-    ScrollBarThumbBeginDragInfo event_info;
-    event_info.scroll_bar_thumb = std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this());
+    ScrollBarThumbBeginDragInfo event_info{ As<ScrollBarThumb>(shared_from_this())};
     begin_drag_event_.GetObserver().OnNext(event_info);
 }
 
@@ -88,8 +89,7 @@ void ScrollBarThumb::OnMouseRelease() {
 
     is_dragging_ = false;
 
-    ScrollBarThumbEndDragInfo event_info;
-    event_info.scroll_bar_thumb = std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this());
+    ScrollBarThumbEndDragInfo event_info{ As<ScrollBarThumb>(shared_from_this()) };
     end_drag_event_.GetObserver().OnNext(event_info);
 }
 
@@ -100,8 +100,7 @@ void ScrollBarThumb::OnMouseMove(const MouseMoveInfo& event_info) {
 
     if (is_dragging_) {
 
-        ScrollBarThumbDragInfo event_info;
-        event_info.scroll_bar_thumb = std::dynamic_pointer_cast<ScrollBarThumb>(shared_from_this());
+        ScrollBarThumbDragInfo event_info{ As<ScrollBarThumb>(shared_from_this()) };
         drag_event_.GetObserver().OnNext(event_info);
     }
 }

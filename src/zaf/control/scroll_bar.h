@@ -4,6 +4,7 @@
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/event/scroll_bar_arrow_event_info.h>
 #include <zaf/control/event/scroll_bar_scroll_info.h>
+#include <zaf/control/event/scroll_bar_thumb_event_info.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
 #include <zaf/rx/subscription_holder.h>
@@ -12,9 +13,6 @@ namespace zaf {
 
 class ScrollBarArrow;
 class ScrollBarThumb;
-class ScrollBarThumbBeginDragInfo;
-class ScrollBarThumbDragInfo;
-class ScrollBarThumbEndDragInfo;
 class Timer;
 
 /**
