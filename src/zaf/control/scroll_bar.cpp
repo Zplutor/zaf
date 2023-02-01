@@ -26,6 +26,17 @@ constexpr int kTimerContinuousInterval = 50;
 }
 
 ZAF_DEFINE_TYPE(ScrollBar)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(IncrementalArrow)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(DecrementalArrow)
+ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(Thumb)
+ZAF_DEFINE_TYPE_PROPERTY(IsHorizontal)
+ZAF_DEFINE_TYPE_PROPERTY(ArrowLength)
+ZAF_DEFINE_TYPE_PROPERTY(Value)
+ZAF_DEFINE_TYPE_PROPERTY(MinValue)
+ZAF_DEFINE_TYPE_PROPERTY(MaxValue)
+ZAF_DEFINE_TYPE_PROPERTY(SmallChange)
+ZAF_DEFINE_TYPE_PROPERTY(LargeChange)
+ZAF_DEFINE_TYPE_PROPERTY(PageSize)
 ZAF_DEFINE_TYPE_END
 
 ScrollBar::ScrollBar() : 
@@ -159,7 +170,7 @@ void ScrollBar::SetThumb(const std::shared_ptr<ScrollBarThumb>& thumb) {
 }
 
 
-float ScrollBar::GetArrowLength() const {
+float ScrollBar::ArrowLength() const {
 
     auto length = GetPropertyMap().TryGetProperty<float>(property::ArrowLength);
     if (length != nullptr) {
@@ -232,7 +243,7 @@ void ScrollBar::ChangeValueRange(int min_value, int max_value, bool max_value_ha
 }
 
 
-int ScrollBar::GetSmallChange() const {
+int ScrollBar::SmallChange() const {
 
     auto value = GetPropertyMap().TryGetProperty<int>(property::SmallChange);
     if (value != nullptr) {
@@ -248,14 +259,14 @@ void ScrollBar::SetSmallChange(int value) {
 }
 
 
-int ScrollBar::GetLargeChange() const {
+int ScrollBar::LargeChange() const {
 
     auto value = GetPropertyMap().TryGetProperty<int>(property::LargeChange);
     if (value) {
         return *value;
     }
     else {
-        return GetSmallChange();
+        return SmallChange();
     }
 }
 
@@ -288,11 +299,11 @@ void ScrollBar::Wheel(int distance) {
     //-1 means scroll a whole screen. But we don't know how many values per screen
     //here, so use large change value instead.
     if (multiple == -1) {
-        change_value = GetLargeChange();
+        change_value = LargeChange();
         multiple = 1;
     }
     else {
-        change_value = GetSmallChange();
+        change_value = SmallChange();
     }
     
     double expected_change_value = change_count * change_value * multiple;
@@ -322,7 +333,7 @@ void ScrollBar::Layout(const zaf::Rect& previous_rect) {
         bar_length = rect.size.height;
     }
 
-    float arrow_length = GetArrowLength();
+    float arrow_length = ArrowLength();
     zaf::Size arrow_size(bar_thickness, arrow_length);
     zaf::Rect decremental_arrow_rect(zaf::Rect(Point(), arrow_size));
     zaf::Rect incremental_arrow_rect(zaf::Rect(Point(0, bar_length - arrow_length), arrow_size));
@@ -370,7 +381,7 @@ void ScrollBar::CalculateThumbPositionAndLength(
 
 float ScrollBar::CalculateThumbLength(float track_length) {
 
-    int page_size = GetPageSize();
+    int page_size = PageSize();
 
     int total_size = max_value_ - min_value_ + page_size;
     if (total_size == 0) {
@@ -481,13 +492,13 @@ void ScrollBar::ApplyTimerEvent() {
     if (timer_event_ == TimerEvent::Increment) {
 
         if (incremental_arrow_->IsPressed()) {
-            SetValue(value_ + GetSmallChange());
+            SetValue(value_ + SmallChange());
         }
     }
     else if (timer_event_ == TimerEvent::Decrement) {
 
         if (decremental_arrow_->IsPressed()) {
-            SetValue(value_ - GetSmallChange());
+            SetValue(value_ - SmallChange());
         }
     }
     else if (timer_event_ == TimerEvent::PageRoll) {
@@ -519,10 +530,10 @@ void ScrollBar::ApplyTimerEvent() {
         }
 
         if (is_page_decrement) {
-            SetValue(value_ - GetLargeChange());
+            SetValue(value_ - LargeChange());
         }
         else {
-            SetValue(value_ + GetLargeChange());
+            SetValue(value_ + LargeChange());
         }
     }
 }
@@ -632,7 +643,7 @@ float ScrollBar::GetValuePerThumbSlotPoint() {
     else {
         thumb_scroll_length = bar_size.height - thumb_size.height;
     }
-    thumb_scroll_length -= GetArrowLength() * 2;
+    thumb_scroll_length -= ArrowLength() * 2;
 
     int value_range = max_value_ - min_value_;
     return value_range / thumb_scroll_length;

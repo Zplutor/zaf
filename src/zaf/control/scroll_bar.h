@@ -3,6 +3,7 @@
 #include <optional>
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/event/scroll_bar_arrow_event_info.h>
+#include <zaf/control/event/scroll_bar_scroll_info.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
 #include <zaf/rx/subscription_holder.h>
@@ -10,7 +11,6 @@
 namespace zaf {
 
 class ScrollBarArrow;
-class ScrollBarScrollInfo;
 class ScrollBarThumb;
 class ScrollBarThumbBeginDragInfo;
 class ScrollBarThumbDragInfo;
@@ -30,7 +30,7 @@ public:
     /**
      Get the incremental arrow.
      */
-    const std::shared_ptr<ScrollBarArrow>& GetIncrementalArrow() const {
+    const std::shared_ptr<ScrollBarArrow>& IncrementalArrow() const {
         return incremental_arrow_;
     }
 
@@ -44,7 +44,7 @@ public:
     /**
      Get the decremental arrow.
      */
-    const std::shared_ptr<ScrollBarArrow>& GetDecrementalArrow() const {
+    const std::shared_ptr<ScrollBarArrow>& DecrementalArrow() const {
         return decremental_arrow_;
     }
 
@@ -58,7 +58,7 @@ public:
     /**
      Get the thumb.
      */
-    const std::shared_ptr<ScrollBarThumb>& GetThumb() const {
+    const std::shared_ptr<ScrollBarThumb>& Thumb() const {
         return thumb_;
     }
 
@@ -93,7 +93,7 @@ public:
      The default length is the same as scroll bar's thickness, 
      use SetArrowLength method to change it.
      */
-    float GetArrowLength() const;
+    float ArrowLength() const;
 
     /**
      Set the length of arrow controls.
@@ -105,7 +105,7 @@ public:
 
      The default value is 0.
      */
-    int GetValue() const {
+    int Value() const {
         return value_;
     }
 
@@ -124,7 +124,7 @@ public:
 
      The default value is 0.
      */
-    int GetMinValue() const {
+    int MinValue() const {
         return min_value_;
     }
 
@@ -143,7 +143,7 @@ public:
 
      The default value is 0.
      */
-    int GetMaxValue() const {
+    int MaxValue() const {
         return max_value_;
     }
 
@@ -177,13 +177,13 @@ public:
         ChangeValueRange(min_value, max_value, false);
     }
 
-    int GetSmallChange() const;
+    int SmallChange() const;
     void SetSmallChange(int value);
 
-    int GetLargeChange() const;
+    int LargeChange() const;
     void SetLargeChange(int value);
 
-    int GetPageSize() const {
+    int PageSize() const {
         return page_size_;
     }
     void SetPageSize(int value);
@@ -274,21 +274,6 @@ private:
     TimerEvent timer_event_;
 
     double remaining_wheel_change_value_;
-};
-
-
-class ScrollBarScrollInfo {
-public:
-    ScrollBarScrollInfo(const std::shared_ptr<ScrollBar>& scroll_bar) : scroll_bar_(scroll_bar) {
-        
-    }
-
-    const std::shared_ptr<ScrollBar>& ScrollBar() const {
-        return scroll_bar_;
-    }
-
-private:
-    std::shared_ptr<zaf::ScrollBar> scroll_bar_;
 };
 
 }

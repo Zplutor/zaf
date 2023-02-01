@@ -1,4 +1,5 @@
 #include <zaf/control/internal/scrollable_control/general_scrolling_layouter.h>
+#include <zaf/base/as.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scrollable_control.h>
 
@@ -161,8 +162,8 @@ void GeneralScrollingLayouter::LayoutScrollContentControl(const zaf::Size& scrol
     const auto& margin = scroll_content_control->Margin();
 
     Rect new_rect;
-    new_rect.position.x = margin.left - static_cast<float>(GetHorizontalScrollBar()->GetValue());
-    new_rect.position.y = margin.top - static_cast<float>(GetVerticalScrollBar()->GetValue());
+    new_rect.position.x = margin.left - static_cast<float>(GetHorizontalScrollBar()->Value());
+    new_rect.position.y = margin.top - static_cast<float>(GetVerticalScrollBar()->Value());
     new_rect.size = scroll_content_size;
 
     scroll_content_control->SetRect(new_rect);
@@ -172,14 +173,14 @@ void GeneralScrollingLayouter::LayoutScrollContentControl(const zaf::Size& scrol
 void GeneralScrollingLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) {
 
     const auto& scroll_content_control = GetScrollableControl()->ScrollContent();
-
     Rect content_rect = scroll_content_control->Rect();
 
-    if (event_info.ScrollBar()->IsHorizontal()) {
-        content_rect.position.x = static_cast<float>(-event_info.ScrollBar()->GetValue());
+    auto scroll_bar = As<ScrollBar>(event_info.Source());
+    if (scroll_bar->IsHorizontal()) {
+        content_rect.position.x = static_cast<float>(-scroll_bar->Value());
     }
     else {
-        content_rect.position.y = static_cast<float>(-event_info.ScrollBar()->GetValue());
+        content_rect.position.y = static_cast<float>(-scroll_bar->Value());
     }
 
     scroll_content_control->SetRect(content_rect);

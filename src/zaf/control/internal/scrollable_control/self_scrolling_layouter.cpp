@@ -1,4 +1,5 @@
 #include <zaf/control/internal/scrollable_control/self_scrolling_layouter.h>
+#include <zaf/base/as.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scrollable_control.h>
 #include <zaf/control/self_scrolling_control.h>
@@ -97,8 +98,10 @@ void SelfScrollingLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_inf
         return;
     }
 
-    int value = event_info.ScrollBar()->GetValue();
-    if (event_info.ScrollBar()->IsHorizontal()) {
+    auto scroll_bar = As<ScrollBar>(event_info.Source());
+
+    int value = scroll_bar->Value();
+    if (scroll_bar->IsHorizontal()) {
         GetSelfScrollingControl()->HorizontallyScroll(value);
     }
     else {
