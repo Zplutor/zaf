@@ -1,12 +1,11 @@
 #pragma once
 
 #include <zaf/control/clickable_control.h>
+#include <zaf/control/arrow_direction.h>
+#include <zaf/control/event/scroll_bar_arrow_event_info.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf {
-
-class ScrollBarArrowBeginPressInfo;
-class ScrollBarArrowEndPressInfo;
 
 /**
  Represents an arrow control in a scroll bar.
@@ -16,46 +15,19 @@ public:
     ZAF_DECLARE_TYPE
 
 public:
-    /**
-     Defines directions of an arrow.
-     */
-    enum class Direction {
-
-        /**
-         The arrow's direction is left.
-         */
-        Left,
-
-        /**
-         The arrow's direction is up.
-         */
-        Up,
-
-        /**
-         The arrow's direction is right.
-        */
-        Right,
-
-        /**
-         The arrow's direction is down.
-        */
-        Down,
-    };
-
-public:
     ScrollBarArrow();
 
     /**
      Get arrow color.
      */
-    Color GetArrowColor() const {
-        return GetArrowColorPicker()(*this);
+    Color ArrowColor() const {
+        return ArrowColorPicker()(*this);
     }
 
     /**
      Get the color picker of arrow.
      */
-    ColorPicker GetArrowColorPicker() const;
+    ColorPicker ArrowColorPicker() const;
 
     /**
      Set arrow color.
@@ -74,8 +46,8 @@ public:
 
      The default direction is up.
      */
-    Direction GetDirection() const {
-        return direction_;
+    zaf::ArrowDirection ArrowDirection() const {
+        return arrow_direction_;
     }
 
     /**
@@ -105,27 +77,16 @@ protected:
 private:
     friend class ScrollBar;
 
-    void SetDirection(Direction direction) {
-        direction_ = direction;
+    void SetDirection(zaf::ArrowDirection direction) {
+        arrow_direction_ = direction;
         NeedRepaint();
     }
 
 private:
-    Direction direction_;
+    zaf::ArrowDirection arrow_direction_;
 
     Subject<ScrollBarArrowBeginPressInfo> begin_press_event_;
     Subject<ScrollBarArrowEndPressInfo> end_press_event_;
-};
-
-
-class ScrollBarArrowBeginPressInfo {
-public:
-    std::shared_ptr<ScrollBarArrow> scroll_bar_arrow;
-};
-
-class ScrollBarArrowEndPressInfo {
-public:
-    std::shared_ptr<ScrollBarArrow> scroll_bar_arrow;
 };
 
 }

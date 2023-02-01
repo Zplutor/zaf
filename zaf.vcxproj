@@ -62,6 +62,7 @@
     <ClCompile Include="src\zaf\base\stream.cpp" />
     <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp" />
     <ClCompile Include="src\zaf\base\timer.cpp" />
+    <ClCompile Include="src\zaf\control\arrow_direction.cpp" />
     <ClCompile Include="src\zaf\control\button.cpp" />
     <ClCompile Include="src\zaf\control\caret.cpp" />
     <ClCompile Include="src\zaf\control\check_box.cpp" />
@@ -80,6 +81,7 @@
     <ClCompile Include="src\zaf\control\event\mouse_event_info.cpp" />
     <ClCompile Include="src\zaf\control\event\parent_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\rect_changed_info.cpp" />
+    <ClCompile Include="src\zaf\control\event\scroll_bar_arrow_event_info.cpp" />
     <ClCompile Include="src\zaf\control\event\text_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\image_box.cpp" />
     <ClCompile Include="src\zaf\control\image_layout.cpp" />
@@ -324,6 +326,7 @@
     <ClInclude Include="src\zaf\base\timer.h" />
     <ClInclude Include="src\zaf\config.h" />
     <ClInclude Include="src\zaf\control\anchor.h" />
+    <ClInclude Include="src\zaf\control\arrow_direction.h" />
     <ClInclude Include="src\zaf\control\button.h" />
     <ClInclude Include="src\zaf\control\caret.h" />
     <ClInclude Include="src\zaf\control\check_box.h" />
@@ -343,6 +346,7 @@
     <ClInclude Include="src\zaf\control\event\mouse_event_info.h" />
     <ClInclude Include="src\zaf\control\event\parent_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\rect_changed_info.h" />
+    <ClInclude Include="src\zaf\control\event\scroll_bar_arrow_event_info.h" />
     <ClInclude Include="src\zaf\control\event\text_changed_info.h" />
     <ClInclude Include="src\zaf\control\expand_state.h" />
     <ClInclude Include="src\zaf\control\image_box.h" />

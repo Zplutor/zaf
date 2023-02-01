@@ -111,10 +111,10 @@ void ScrollBar::UninitializeThumb(const std::shared_ptr<ScrollBarThumb>& thumb) 
 void ScrollBar::ApplyOrientationToChildren() {
 
     incremental_arrow_->SetDirection(
-        is_horizontal_ ? ScrollBarArrow::Direction::Right : ScrollBarArrow::Direction::Down
+        is_horizontal_ ? ArrowDirection::Right : ArrowDirection::Down
     );
     decremental_arrow_->SetDirection(
-        is_horizontal_ ? ScrollBarArrow::Direction::Left : ScrollBarArrow::Direction::Up
+        is_horizontal_ ? ArrowDirection::Left : ArrowDirection::Up
     );
     thumb_->SetIsHorizontal(is_horizontal_);
 }
@@ -567,10 +567,10 @@ void ScrollBar::OnMouseWheel(const MouseWheelInfo& event_info) {
 
 void ScrollBar::ArrowBeginPress(const ScrollBarArrowBeginPressInfo& event_info) {
 
-    if (event_info.scroll_bar_arrow == incremental_arrow_) {
+    if (event_info.Source() == incremental_arrow_) {
         BeginTimer(TimerEvent::Increment);
     }
-    else if (event_info.scroll_bar_arrow == decremental_arrow_) {
+    else if (event_info.Source() == decremental_arrow_) {
         BeginTimer(TimerEvent::Decrement);
     }
 }

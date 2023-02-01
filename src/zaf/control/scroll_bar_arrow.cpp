@@ -7,9 +7,11 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(ScrollBarArrow)
+ZAF_DEFINE_TYPE_PROPERTY(ArrowColor)
+ZAF_DEFINE_TYPE_PROPERTY(ArrowDirection)
 ZAF_DEFINE_TYPE_END
 
-ScrollBarArrow::ScrollBarArrow() : direction_(Direction::Up) {
+ScrollBarArrow::ScrollBarArrow() : arrow_direction_(ArrowDirection::Up) {
 
 }
 
@@ -26,22 +28,24 @@ void ScrollBarArrow::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
-    Direction direction = GetDirection();
+    zaf::ArrowDirection direction = ArrowDirection();
 
     float bottom_edge_length =
-        (direction == Direction::Up || direction == Direction::Down) ? Width() : Height();
+        (direction == zaf::ArrowDirection::Up || direction == zaf::ArrowDirection::Down) ? 
+        Width() :
+        Height();
 
     bottom_edge_length /= 2;
 
     float rotate_angle = 0;
     switch (direction) {
-    case Direction::Left:
+    case zaf::ArrowDirection::Left:
         rotate_angle = 270;
         break;
-    case Direction::Right:
+    case zaf::ArrowDirection::Right:
         rotate_angle = 90;
         break;
-    case Direction::Down:
+    case zaf::ArrowDirection::Down:
         rotate_angle = 180;
         break;
     default:
@@ -55,12 +59,12 @@ void ScrollBarArrow::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         rotate_angle);
 
     Canvas::StateGuard state_guard(canvas);
-    canvas.SetBrushWithColor(GetArrowColor());
+    canvas.SetBrushWithColor(ArrowColor());
     canvas.DrawGeometry(triangle_geometry);
 }
 
 
-ColorPicker ScrollBarArrow::GetArrowColorPicker() const {
+ColorPicker ScrollBarArrow::ArrowColorPicker() const {
 
     auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::ArrowColorPicker);
     if ((color_picker != nullptr) && (*color_picker != nullptr)) {
@@ -101,8 +105,7 @@ void ScrollBarArrow::OnMouseCapture() {
 
     ClickableControl::OnMouseCapture();
 
-    ScrollBarArrowBeginPressInfo event_info;
-    event_info.scroll_bar_arrow = std::dynamic_pointer_cast<ScrollBarArrow>(shared_from_this());
+    ScrollBarArrowBeginPressInfo event_info{ As<ScrollBarArrow>(shared_from_this()) };
     begin_press_event_.GetObserver().OnNext(event_info);
 }
 
@@ -111,8 +114,7 @@ void ScrollBarArrow::OnMouseRelease() {
 
     ClickableControl::OnMouseRelease();
 
-    ScrollBarArrowEndPressInfo event_info;
-    event_info.scroll_bar_arrow = std::dynamic_pointer_cast<ScrollBarArrow>(shared_from_this());
+    ScrollBarArrowBeginPressInfo event_info{ As<ScrollBarArrow>(shared_from_this()) };
     end_press_event_.GetObserver().OnNext(event_info);
 }
 

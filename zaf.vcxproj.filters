@@ -799,6 +799,12 @@
     <ClCompile Include="src\zaf\control\event\combo_box_selection_changed_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\event\scroll_bar_arrow_event_info.cpp">
+      <Filter>zaf\control\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\arrow_direction.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1881,6 +1887,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\combo_box_selection_changed_info.h">
       <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\scroll_bar_arrow_event_info.h">
+      <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\arrow_direction.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
