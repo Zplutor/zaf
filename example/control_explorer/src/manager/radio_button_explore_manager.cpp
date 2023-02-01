@@ -1,6 +1,5 @@
 #include "manager/radio_button_explore_manager.h"
 #include <zaf/control/layout/linear_layouter.h>
-#include "property/check_box_property_item.h"
 
 std::shared_ptr<zaf::Control> RadioButtonExploreManager::CreateExploredControl() {
 
@@ -26,41 +25,4 @@ std::shared_ptr<zaf::Control> RadioButtonExploreManager::CreateExploredControl()
     container->AddChild(other_radio_button2);
 
     return container;
-}
-
-
-void RadioButtonExploreManager::CreatePropertyItems(std::vector<std::shared_ptr<PropertyItem>>& items) {
-
-    __super::CreatePropertyItems(items);
-
-    items.insert(items.end(), {
-        CreateCanAutoSelectPropertyItem(),
-        CreateIsSelectedPropertyItem(),
-    });
-}
-
-
-std::shared_ptr<PropertyItem> RadioButtonExploreManager::CreateCanAutoSelectPropertyItem() {
-
-    auto radio_button = GetRadioButton();
-    return CreateCheckBoxPropertyItem(
-        L"Can auto select",
-        [radio_button]() { return radio_button->AutoCheck(); },
-        [radio_button](bool value) { radio_button->SetAutoCheck(value); },
-        nullptr);
-}
-
-
-std::shared_ptr<PropertyItem> RadioButtonExploreManager::CreateIsSelectedPropertyItem() {
-
-    auto radio_button = GetRadioButton();
-    return CreateCheckBoxPropertyItem(
-        L"Is selected",
-        [radio_button]() { return radio_button->IsChecked(); },
-        [radio_button](bool value) { if (value) { radio_button->SetIsChecked(true); } },
-        [radio_button](const std::function<void()>& callback) {
-
-            radio_button->Subscriptions() +=
-                radio_button->CheckStateChangedEvent().Subscribe(std::bind(callback));
-        });
 }

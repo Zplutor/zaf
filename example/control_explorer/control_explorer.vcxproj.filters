@@ -7,9 +7,6 @@
     <Filter Include="src\manager">
       <UniqueIdentifier>{2d70a5a5-aad2-4f88-95f3-bd1f5bd0500a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\property">
-      <UniqueIdentifier>{60d7232b-c2f0-4417-81dd-67bbb1d54c57}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -20,27 +17,6 @@
     </ClCompile>
     <ClCompile Include="src\control_view_panel.cpp">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\property\text_property_item.cpp">
-      <Filter>src\property</Filter>
-    </ClCompile>
-    <ClCompile Include="src\property\property_item.cpp">
-      <Filter>src\property</Filter>
-    </ClCompile>
-    <ClCompile Include="src\property\number_property_item.cpp">
-      <Filter>src\property</Filter>
-    </ClCompile>
-    <ClCompile Include="src\property\check_box_property_item.cpp">
-      <Filter>src\property</Filter>
-    </ClCompile>
-    <ClCompile Include="src\property\combo_box_property_item.cpp">
-      <Filter>src\property</Filter>
-    </ClCompile>
-    <ClCompile Include="src\manager\control_explore_manager.cpp">
-      <Filter>src\manager</Filter>
-    </ClCompile>
-    <ClCompile Include="src\manager\textual_control_explore_manager.cpp">
-      <Filter>src\manager</Filter>
     </ClCompile>
     <ClCompile Include="src\manager\button_explore_manager.cpp">
       <Filter>src\manager</Filter>
@@ -66,17 +42,11 @@
     <ClCompile Include="src\control_property_panel.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\property\frame_property_item.cpp">
-      <Filter>src\property</Filter>
-    </ClCompile>
     <ClCompile Include="src\manager\scroll_bar_explore_manager.cpp">
       <Filter>src\manager</Filter>
     </ClCompile>
     <ClCompile Include="src\manager\split_control_explore_manager.cpp">
       <Filter>src\manager</Filter>
-    </ClCompile>
-    <ClCompile Include="src\property\color_property_item.cpp">
-      <Filter>src\property</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -86,23 +56,8 @@
     <ClInclude Include="src\control_view_panel.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\property\property_item.h">
-      <Filter>src\property</Filter>
-    </ClInclude>
     <ClInclude Include="src\manager\explore_manager.h">
       <Filter>src\manager</Filter>
-    </ClInclude>
-    <ClInclude Include="src\property\text_property_item.h">
-      <Filter>src\property</Filter>
-    </ClInclude>
-    <ClInclude Include="src\property\number_property_item.h">
-      <Filter>src\property</Filter>
-    </ClInclude>
-    <ClInclude Include="src\property\check_box_property_item.h">
-      <Filter>src\property</Filter>
-    </ClInclude>
-    <ClInclude Include="src\property\combo_box_property_item.h">
-      <Filter>src\property</Filter>
     </ClInclude>
     <ClInclude Include="src\manager\control_explore_manager.h">
       <Filter>src\manager</Filter>
@@ -134,17 +89,11 @@
     <ClInclude Include="src\control_property_panel.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\property\frame_property_item.h">
-      <Filter>src\property</Filter>
-    </ClInclude>
     <ClInclude Include="src\manager\scroll_bar_explore_manager.h">
       <Filter>src\manager</Filter>
     </ClInclude>
     <ClInclude Include="src\manager\split_control_explore_manager.h">
       <Filter>src\manager</Filter>
-    </ClInclude>
-    <ClInclude Include="src\property\color_property_item.h">
-      <Filter>src\property</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
