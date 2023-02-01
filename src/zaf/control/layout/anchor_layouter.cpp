@@ -1,5 +1,6 @@
 #include <zaf/control/layout/anchor_layouter.h>
 #include <zaf/control/control.h>
+#include <zaf/creation.h>
 
 namespace zaf {
 namespace {
@@ -100,7 +101,8 @@ public:
 
 
 std::shared_ptr<Layouter> GetAnchorLayouter() {
-    return std::make_shared<AnchorLayouter>();
+    static auto layouter = zaf::Create<AnchorLayouter>();
+    return layouter;
 }
 
 }
