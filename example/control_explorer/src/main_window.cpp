@@ -119,7 +119,7 @@ void MainWindow::ControlListBoxSelectionChange() {
 void MainWindow::LoadControlExploreManager(const std::shared_ptr<ExploreManager>& explore_manager) {
 
     control_view_panel_->SetExploredControl(explore_manager->GetExploredControl());
-    control_property_panel_->SetExploredControl(explore_manager->GetExploredControl());
+    control_property_panel_->SetExploredControl(explore_manager->GetTargetControl());
 }
 
 

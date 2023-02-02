@@ -7,7 +7,6 @@ class RadioButtonExploreManager : public TextualControlExploreManager {
 public:
     std::shared_ptr<zaf::Control> CreateExploredControl() override;
 
-protected:
     std::shared_ptr<zaf::Control> GetTargetControl() override {
         return target_radio_button_;
     }

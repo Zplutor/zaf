@@ -12,13 +12,13 @@ public:
         return control_;
     }
 
+    std::shared_ptr<zaf::Control> GetTargetControl() override {
+        return GetExploredControl();
+    }
+
 protected:
     virtual std::shared_ptr<zaf::Control> CreateExploredControl() {
         return zaf::Create<zaf::Control>();
-    }
-
-    virtual std::shared_ptr<zaf::Control> GetTargetControl() {
-        return GetExploredControl();
     }
 
 private:

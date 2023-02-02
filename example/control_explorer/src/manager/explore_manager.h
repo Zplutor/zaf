@@ -9,4 +9,5 @@ public:
     ExploreManager& operator=(const ExploreManager&) = delete;
 
     virtual std::shared_ptr<zaf::Control> GetExploredControl() = 0;
+    virtual std::shared_ptr<zaf::Control> GetTargetControl() = 0;
 };
