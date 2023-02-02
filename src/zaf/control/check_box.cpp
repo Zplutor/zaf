@@ -55,6 +55,19 @@ void CheckBox::Initialize() {
 }
 
 
+zaf::Size CheckBox::CalculatePreferredContentSize(const zaf::Size& max_size) const {
+
+    auto extra_icon_width = internal::IconSize + internal::IconMargin;
+
+    auto revised_max_size = max_size;
+    revised_max_size.width -= extra_icon_width;
+
+    auto result = __super::CalculatePreferredContentSize(revised_max_size);
+    result.width += extra_icon_width;
+    return result;
+}
+
+
 void CheckBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     
     __super::Paint(canvas, dirty_rect);
@@ -70,7 +83,6 @@ void CheckBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         canvas,
         *this,
         text_layout, 
-        12,
         std::bind(&CheckBox::PaintBox, this, std::placeholders::_1, std::placeholders::_2));
 }
 

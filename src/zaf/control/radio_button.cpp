@@ -43,6 +43,19 @@ void RadioButton::Initialize() {
 }
 
 
+zaf::Size RadioButton::CalculatePreferredContentSize(const zaf::Size& max_size) const {
+
+    auto extra_icon_width = internal::IconSize + internal::IconMargin;
+
+    auto revised_max_size = max_size;
+    revised_max_size.width -= extra_icon_width;
+
+    auto result = __super::CalculatePreferredContentSize(revised_max_size);
+    result.width += extra_icon_width;
+    return result;
+}
+
+
 void RadioButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
@@ -58,7 +71,6 @@ void RadioButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         canvas,
         *this,
         text_layout,
-        12, 
         std::bind(&RadioButton::PaintRadio, this, std::placeholders::_1, std::placeholders::_2));
 }
 
