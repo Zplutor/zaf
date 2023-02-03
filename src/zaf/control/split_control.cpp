@@ -14,7 +14,7 @@
 namespace zaf {
 namespace {
 
-const wchar_t* const kSplitBarDistanceChangeEventPropertyName = L"SplitBarDistanceChangeEvent";
+const wchar_t* const kSplitDistanceChangedEventPropertyName = L"SplitDistanceChangedEvent";
 const wchar_t* const kSplitterColorPickerPropertyName = L"SplitterColorPicker";
 
 }
@@ -188,12 +188,12 @@ bool SplitControl::UpdateActualSplitDistance(bool is_by_dragging) {
     actual_split_distance_ = distance;
 
     //Raise the event.
-    auto event_observer = GetEventObserver<SplitControlSplitDistanceChangedInfo>(
+    auto event_observer = GetEventObserver<SplitDistanceChangedInfo>(
         GetPropertyMap(),
-        kSplitBarDistanceChangeEventPropertyName);
+        kSplitDistanceChangedEventPropertyName);
 
     if (event_observer) {
-        event_observer->OnNext(SplitControlSplitDistanceChangedInfo{
+        event_observer->OnNext(SplitDistanceChangedInfo{
             As<SplitControl>(shared_from_this()),
             previous_distance,
             is_by_dragging
@@ -270,10 +270,10 @@ void SplitControl::InnerSetSplitDistance(float distance, bool is_by_dragging) {
 }
 
 
-Observable<SplitControlSplitDistanceChangedInfo> SplitControl::SplitBarDistanceChangeEvent() {
-    return GetEventObservable<SplitControlSplitDistanceChangedInfo>(
+Observable<SplitDistanceChangedInfo> SplitControl::SplitDistanceChangedEvent() {
+    return GetEventObservable<SplitDistanceChangedInfo>(
         GetPropertyMap(),
-        kSplitBarDistanceChangeEventPropertyName);
+        kSplitDistanceChangedEventPropertyName);
 }
 
 
@@ -478,8 +478,7 @@ void SplitBar::OnMouseMove(const MouseMoveInfo& event_info) {
 
     if (IsCapturingMouse()) {
 
-        SplitBarDragInfo drag_event_info;
-        drag_event_info.split_bar = std::dynamic_pointer_cast<SplitBar>(shared_from_this());
+        SplitBarDragInfo drag_event_info{ As<SplitBar>(shared_from_this()) };
         drag_event_.GetObserver().OnNext(drag_event_info);
 
         event_info.MarkAsHandled();
@@ -521,16 +520,14 @@ void SplitBar::OnMouseUp(const MouseUpInfo& event_info) {
 
 void SplitBar::OnMouseCapture() {
 
-    SplitBarBeginDragInfo event_info;
-    event_info.split_bar = std::dynamic_pointer_cast<SplitBar>(shared_from_this());
+    SplitBarBeginDragInfo event_info{ As<SplitBar>(shared_from_this()) };
     begin_drag_event_.GetObserver().OnNext(event_info);
 }
 
 
 void SplitBar::OnMouseRelease() {
 
-    SplitBarEndDragInfo event_info;
-    event_info.split_bar = std::dynamic_pointer_cast<SplitBar>(shared_from_this());
+    SplitBarEndDragInfo event_info{ As<SplitBar>(shared_from_this()) };
     end_drag_event_.GetObserver().OnNext(event_info);
 }
 

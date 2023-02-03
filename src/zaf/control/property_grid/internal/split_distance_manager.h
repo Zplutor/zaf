@@ -11,7 +11,7 @@ namespace zaf::property_grid::internal {
 
 class Item;
 
-class SplitDistanceChangedInfo {
+class ItemSplitDistanceChangedInfo {
 public:
     std::shared_ptr<Item> changing_item;
     float new_distance{};
@@ -29,7 +29,7 @@ public:
 
     void UpdateDefaultDistance(float distance);
 
-    const Subject<SplitDistanceChangedInfo>& DistanceChangedSubject() const {
+    const Subject<ItemSplitDistanceChangedInfo>& DistanceChangedSubject() const {
         return distance_changed_subject_;
     }
 
@@ -48,7 +48,7 @@ private:
     void UpdateMaxSplitControlXOnAdd(const SplitControl& added_split_control);
 
 private:
-    Subject<SplitDistanceChangedInfo> distance_changed_subject_;
+    Subject<ItemSplitDistanceChangedInfo> distance_changed_subject_;
     float current_distance_{};
     bool is_distance_default_{ true };
 

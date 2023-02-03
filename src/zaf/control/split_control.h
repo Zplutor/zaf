@@ -2,16 +2,14 @@
 
 #include <optional>
 #include <zaf/control/control.h>
+#include <zaf/control/event/split_bar_event_info.h>
+#include <zaf/control/event/split_distance_changed_info.h>
 #include <zaf/rx/subject.h>
 #include <zaf/rx/subscription_holder.h>
 
 namespace zaf {
 
 class SplitBar;
-class SplitBarBeginDragInfo;
-class SplitBarDragInfo;
-class SplitBarEndDragInfo;
-class SplitControlSplitDistanceChangedInfo;
 
 class SplitControl : public Control {
 public:
@@ -39,7 +37,7 @@ public:
 
     void SetSplitDistance(float distance);
 
-    Observable<SplitControlSplitDistanceChangedInfo> SplitBarDistanceChangeEvent();
+    Observable<SplitDistanceChangedInfo> SplitDistanceChangedEvent();
 
     const std::shared_ptr<zaf::SplitBar>& SplitBar() const {
         return split_bar_;
@@ -134,38 +132,6 @@ private:
 };
 
 
-class SplitControlSplitDistanceChangedInfo {
-public:
-    SplitControlSplitDistanceChangedInfo(
-        const std::shared_ptr<SplitControl>& split_control,
-        float previous_distance,
-        bool is_changed_by_dragging)
-        : 
-        split_control_(split_control),
-        previous_distance_(previous_distance),
-        is_changed_by_dragging_(is_changed_by_dragging) {
-
-    }
-
-    const std::shared_ptr<SplitControl>& SplitControl() const {
-        return split_control_;
-    }
-
-    float PreviousDistance() const {
-        return previous_distance_;
-    }
-
-    bool IsChangedByDragging() const {
-        return is_changed_by_dragging_;
-    }
-
-private:
-    std::shared_ptr<zaf::SplitControl> split_control_;
-    float previous_distance_{};
-    bool is_changed_by_dragging_{};
-};
-
-
 class SplitBar : public Control {
 public:
     ZAF_DECLARE_TYPE
@@ -220,22 +186,6 @@ private:
     Subject<SplitBarBeginDragInfo> begin_drag_event_;
     Subject<SplitBarDragInfo> drag_event_;
     Subject<SplitBarEndDragInfo> end_drag_event_;
-};
-
-
-class SplitBarBeginDragInfo {
-public:
-    std::shared_ptr<SplitBar> split_bar;
-};
-
-class SplitBarDragInfo {
-public:
-    std::shared_ptr<SplitBar> split_bar;
-};
-
-class SplitBarEndDragInfo {
-public:
-    std::shared_ptr<SplitBar> split_bar;
 };
 
 }

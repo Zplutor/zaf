@@ -6,7 +6,7 @@ namespace zaf::property_grid::internal {
 SplitDistanceManager::SplitDistanceManager() {
 
     Subscriptions() += distance_changed_subject_.GetObservable().Subscribe(
-        [this](const SplitDistanceChangedInfo& event_info) {
+        [this](const ItemSplitDistanceChangedInfo& event_info) {
     
         if (!event_info.changing_item) {
             return;
@@ -30,7 +30,7 @@ void SplitDistanceManager::UpdateDefaultDistance(float distance) {
 
     current_distance_ = distance;
 
-    SplitDistanceChangedInfo event_info;
+    ItemSplitDistanceChangedInfo event_info;
     event_info.new_distance = current_distance_;
     distance_changed_subject_.GetObserver().OnNext(event_info);
 }

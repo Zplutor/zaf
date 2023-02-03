@@ -39,7 +39,7 @@ void Item::Initialize() {
     }
 
     Subscriptions() += manager->DistanceChangedSubject().GetObservable().Subscribe(
-        [this](const SplitDistanceChangedInfo& event_info) {
+        [this](const ItemSplitDistanceChangedInfo& event_info) {
 
         auto guard = is_handling_split_distance_event_.BeginSet(true);
 
@@ -143,8 +143,8 @@ void Item::InitializeSplitControl() {
         return Color::FromRGB(DelimiterLineColor);
     }); 
 
-    Subscriptions() += split_control_->SplitBarDistanceChangeEvent().Subscribe(
-        [this](const SplitControlSplitDistanceChangedInfo& event_info) {
+    Subscriptions() += split_control_->SplitDistanceChangedEvent().Subscribe(
+        [this](const SplitDistanceChangedInfo& event_info) {
 
         //Don't raise event again if it is handling distance changed event.
         if (is_handling_split_distance_event_.Value()) {
@@ -154,7 +154,7 @@ void Item::InitializeSplitControl() {
         auto manager = split_distance_manager_.lock();
         if (manager) {
 
-            SplitDistanceChangedInfo new_event_info;
+            ItemSplitDistanceChangedInfo new_event_info;
             new_event_info.changing_item = As<Item>(shared_from_this());
             new_event_info.new_distance =
                 this->GetTextRect().Left() + split_control_->SplitDistance();

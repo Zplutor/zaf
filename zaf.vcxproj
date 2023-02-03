@@ -84,6 +84,8 @@
     <ClCompile Include="src\zaf\control\event\scroll_bar_arrow_event_info.cpp" />
     <ClCompile Include="src\zaf\control\event\scroll_bar_scroll_info.cpp" />
     <ClCompile Include="src\zaf\control\event\scroll_bar_thumb_event_info.cpp" />
+    <ClCompile Include="src\zaf\control\event\split_bar_event_info.cpp" />
+    <ClCompile Include="src\zaf\control\event\split_distance_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\text_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\image_box.cpp" />
     <ClCompile Include="src\zaf\control\image_layout.cpp" />
@@ -351,6 +353,8 @@
     <ClInclude Include="src\zaf\control\event\scroll_bar_arrow_event_info.h" />
     <ClInclude Include="src\zaf\control\event\scroll_bar_scroll_info.h" />
     <ClInclude Include="src\zaf\control\event\scroll_bar_thumb_event_info.h" />
+    <ClInclude Include="src\zaf\control\event\split_bar_event_info.h" />
+    <ClInclude Include="src\zaf\control\event\split_distance_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\text_changed_info.h" />
     <ClInclude Include="src\zaf\control\expand_state.h" />
     <ClInclude Include="src\zaf\control\image_box.h" />
