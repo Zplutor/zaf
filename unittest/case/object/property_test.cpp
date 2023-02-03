@@ -93,7 +93,7 @@ ZAF_DEFINE_TYPE_END
 TEST(PropertyTest, ReadWrite) {
 
     PropertyHost host;
-    auto property = host.GetType()->FindProperty(L"ReadWrite");
+    auto property = host.GetType()->GetProperty(L"ReadWrite");
     ASSERT_NE(property, nullptr);
     ASSERT_EQ(property->GetName(), L"ReadWrite");
     ASSERT_TRUE(property->CanGet());
@@ -111,7 +111,7 @@ TEST(PropertyTest, ReadWrite) {
 TEST(PropertyTest, ReadOnly) {
 
     PropertyHost host;
-    auto property = host.GetType()->FindProperty(L"ReadOnly");
+    auto property = host.GetType()->GetProperty(L"ReadOnly");
     ASSERT_NE(property, nullptr);
     ASSERT_EQ(property->GetName(), L"ReadOnly");
     ASSERT_TRUE(property->CanGet());
@@ -130,7 +130,7 @@ TEST(PropertyTest, ReadOnly) {
 TEST(PropertyTest, WriteOnly) {
 
     PropertyHost host;
-    auto property = host.GetType()->FindProperty(L"WriteOnly");
+    auto property = host.GetType()->GetProperty(L"WriteOnly");
     ASSERT_NE(property, nullptr);
     ASSERT_EQ(property->GetName(), L"WriteOnly");
     ASSERT_FALSE(property->CanGet());
@@ -147,7 +147,7 @@ TEST(PropertyTest, WriteOnly) {
 TEST(PropertyTest, NumericType) {
 
     PropertyHost host;
-    auto property = host.GetType()->FindProperty(L"FloatType");
+    auto property = host.GetType()->GetProperty(L"FloatType");
     ASSERT_NE(property, nullptr);
 
     auto type = property->GetValueType();
@@ -158,7 +158,7 @@ TEST(PropertyTest, NumericType) {
 TEST(PropertyTest, StringType) {
 
     PropertyHost host;
-    auto property = host.GetType()->FindProperty(L"StringType");
+    auto property = host.GetType()->GetProperty(L"StringType");
     ASSERT_NE(property, nullptr);
 
     auto type = property->GetValueType();
@@ -169,7 +169,7 @@ TEST(PropertyTest, StringType) {
 TEST(PropertyTest, ObjectType) {
 
     PropertyHost host;
-    auto property = host.GetType()->FindProperty(L"SizeType");
+    auto property = host.GetType()->GetProperty(L"SizeType");
     ASSERT_NE(property, nullptr);
 
     auto type = property->GetValueType();
@@ -180,7 +180,7 @@ TEST(PropertyTest, ObjectType) {
 TEST(PropertyType, BoxedObject) {
 
     PropertyHost host;
-    auto property = host.GetType()->FindProperty(L"BoxedObject");
+    auto property = host.GetType()->GetProperty(L"BoxedObject");
     ASSERT_NE(property, nullptr);
 
     ASSERT_TRUE(property->CanGet());
@@ -199,7 +199,7 @@ TEST(PropertyType, BoxedObject) {
 TEST(PropertyType, Image) {
 
     PropertyHost host;
-    auto property = host.GetType()->FindProperty(L"Image");
+    auto property = host.GetType()->GetProperty(L"Image");
     ASSERT_NE(property, nullptr);
 
     ASSERT_TRUE(property->CanGet());
@@ -221,7 +221,7 @@ TEST(PropertyTest, ErrorValueType) {
 
     //Method property
     {
-        auto property = host.GetType()->FindProperty(L"ReadWrite");
+        auto property = host.GetType()->GetProperty(L"ReadWrite");
         auto frame = zaf::Create<zaf::Frame>();
         ASSERT_THROW_ERRC(property->GetValue(*frame), zaf::BasicErrc::InvalidCast);
         ASSERT_THROW_ERRC(property->SetValue(host, frame), zaf::BasicErrc::InvalidCast);

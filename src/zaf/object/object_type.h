@@ -51,7 +51,7 @@ public:
         return properties_;
     }
 
-    ObjectProperty* FindProperty(std::wstring_view name) const;
+    ObjectProperty* GetProperty(std::wstring_view name) const;
 
 protected:
     virtual ObjectParser* GetSelfParser() const;

@@ -89,7 +89,7 @@ void ObjectType::RegisterProperty(ObjectProperty* property) {
 }
 
 
-ObjectProperty* ObjectType::FindProperty(std::wstring_view name) const {
+ObjectProperty* ObjectType::GetProperty(std::wstring_view name) const {
 
     auto iterator = std::lower_bound(
         properties_.begin(),

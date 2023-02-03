@@ -16,7 +16,7 @@ ObjectProperty* FindPropertyByAttribute(const Object& object, const std::wstring
     auto type = object.GetType();
     while (type) {
 
-        auto property = type->FindProperty(property_name);
+        auto property = type->GetProperty(property_name);
         if (property) {
             return property;
         }
@@ -94,7 +94,7 @@ ObjectProperty* FindPropertyByNode(const Object& object, const std::wstring& nod
     auto type = object.GetType();
     while (type) {
 
-        auto property = type->FindProperty(property_name);
+        auto property = type->GetProperty(property_name);
         if (property) {
             return property;
         }
