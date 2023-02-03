@@ -23,10 +23,6 @@ public:
         return Object::Type;
     }
 
-    ObjectType* GetBaseType() const {
-        return nullptr;
-    }
-
     virtual bool IsEqual(const Object& other) const;
     virtual std::size_t Hash() const;
 
