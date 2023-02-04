@@ -624,6 +624,7 @@ private:
     void InitializeRootControl(const std::shared_ptr<Control>& control);
     void CreateWindowHandle();
     void HandleCreateMessage(HWND handle);
+    bool HandleWMNCCALCSIZE(const Message& message, LRESULT& result);
     zaf::Rect GetInitialRect(float dpi) const;
     void CreateRenderer();
     void RecreateRenderer();

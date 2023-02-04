@@ -518,34 +518,18 @@ void Window::RaiseHandleMessageEvent(const Message& message, LRESULT result) {
 
 bool Window::HandleMessage(const Message& message, LRESULT& result) {
 
-    auto is_customized_style = [this]() {
-        return !IsPopup() && !HasBorder();
-    };
-
     switch (message.id) {
     case WM_CREATE:
         HandleCreateMessage(message.hwnd);
         return true;
 
     case WM_NCCALCSIZE:
-        if (is_customized_style()) {
-            result = TRUE;
-            return true;
-        }
-        return false;
-        
-    case WM_NCACTIVATE:
-        //Work around to hide the odd border when the window is activated or inactivated.
-        if (is_customized_style()) {
-            result = TRUE;
-            return true;
-        }
-        return false;
-        
+        return HandleWMNCCALCSIZE(message, result);
+
     case WM_ERASEBKGND:
         result = TRUE;
         return true;
-
+        
     case WM_PAINT:
         Repaint();
         return true;
@@ -833,6 +817,27 @@ void Window::UpdateWindowRect() {
     RECT rect{};
     GetWindowRect(handle_, &rect);
     rect_ = ToDIPs(Rect::FromRECT(rect), GetDPI());
+}
+
+
+bool Window::HandleWMNCCALCSIZE(const Message& message, LRESULT& result) {
+
+    //WM_NCCALCSIZE must be passed to default window procedure if wparam is FALSE, no matter if
+    //the window has customized style, otherwise the window could have some odd behaviors.
+    if (message.wparam == FALSE) {
+        return false;
+    }
+
+    //We need to remove the default window frame in WM_NCCALCSIZE for overlapped window without 
+    //boder. It is no need to do that for popup window without boder.
+    bool has_customized_style = !IsPopup() && !HasBorder();
+    if (!has_customized_style) {
+        return false;
+    }
+
+    //Return TRUE to remove the default window frame.
+    result = TRUE;
+    return true;
 }
 
 
