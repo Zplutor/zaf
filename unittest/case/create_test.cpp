@@ -45,7 +45,7 @@ TEST(CreateTest, CreateZafObject) {
     ASSERT_EQ(object->InitialValue(), 105);
     ASSERT_TRUE(object->HasInitialized());
 
-    object = zaf::Create(new Object(240));
+    object = zaf::Init(new Object(240));
     ASSERT_NE(object, nullptr);
     ASSERT_EQ(object->InitialValue(), 240);
     ASSERT_TRUE(object->HasInitialized());
@@ -62,7 +62,7 @@ TEST(CreateTest, CreateNonZafObject) {
     ASSERT_NE(string, nullptr);
     ASSERT_EQ(*string, "nonzafobject");
 
-    string = zaf::Create(new std::string("pointer"));
+    string = zaf::Init(new std::string("pointer"));
     ASSERT_NE(string, nullptr);
     ASSERT_EQ(*string, "pointer");
 }
