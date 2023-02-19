@@ -43,31 +43,4 @@ public:
     using WindowEventInfo::WindowEventInfo;
 };
 
-
-class WindowHandleMessageInfo : public WindowEventInfo {
-public:
-    WindowHandleMessageInfo(
-        const std::shared_ptr<zaf::Window>& window,
-        const zaf::Message& message,
-        LRESULT result)
-        :
-        WindowEventInfo(window),
-        message_(message),
-        result_(result) {
-
-    }
-
-    const Message& Message() const {
-        return message_;
-    }
-
-    LRESULT Result() const {
-        return result_;
-    }
-
-private:
-    zaf::Message message_;
-    LRESULT result_{};
-};
-
 }

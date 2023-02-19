@@ -160,6 +160,9 @@
     <Filter Include="zaf\control\event">
       <UniqueIdentifier>{2b04ea79-647a-4b12-b6e7-18af04a54ac9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\window\event">
+      <UniqueIdentifier>{27adc10e-557f-475f-92e2-c64615cdbfad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -816,6 +819,12 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\event\split_bar_event_info.cpp">
       <Filter>zaf\control\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\event\message_received_info.cpp">
+      <Filter>zaf\window\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\event\message_handled_info.cpp">
+      <Filter>zaf\window\event</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1917,6 +1926,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\split_bar_event_info.h">
       <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\event\message_received_info.h">
+      <Filter>zaf\window\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\event\message_handled_info.h">
+      <Filter>zaf\window\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

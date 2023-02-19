@@ -9,6 +9,8 @@
 #include <zaf/rx/subscription_host.h>
 #include <zaf/serialization/property_map.h>
 #include <zaf/window/activate_option.h>
+#include <zaf/window/event/message_handled_info.h>
+#include <zaf/window/event/message_received_info.h>
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/window_event_infos.h>
@@ -443,7 +445,8 @@ public:
      */
     Observable<WindowDestroyInfo> DestroyEvent();
 
-    Observable<WindowHandleMessageInfo> HandleMessageEvent();
+    Observable<MessageReceivedInfo> MessageReceivedEvent();
+    Observable<MessageHandledInfo> MessageHandledEvent();
 
     /**
      Get position of the mouse cursor in current window's coordinate system.
@@ -502,22 +505,8 @@ protected:
      */
     virtual bool PreprocessMessage(const KeyMessage& message);
 
-    /**
-     This method is called when the window receives a message.
-
-     @param message
-        Contains information of the message.
-
-     @param result
-        An output parameter stores the result of handling the message.
-
-     @return
-        Return true if the method handles the message, otherwise return false.
-
-     Derived classes should always call the same method of super class if it doesn't handle 
-     the message.
-     */
-    virtual bool HandleMessage(const Message& message, LRESULT& result);
+    virtual void OnMessageReceived(const MessageReceivedInfo& event_info);
+    virtual void OnMessageHandled(const MessageHandledInfo& event_info);
 
     virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
 
@@ -623,8 +612,8 @@ private:
 private:
     void InitializeRootControl(const std::shared_ptr<Control>& control);
     void CreateWindowHandle();
-    void HandleCreateMessage(HWND handle);
-    bool HandleWMNCCALCSIZE(const Message& message, LRESULT& result);
+    LRESULT HandleWMCREATE(const Message& message);
+    std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
     zaf::Rect GetInitialRect(float dpi) const;
     void CreateRenderer();
     void RecreateRenderer();
@@ -636,10 +625,12 @@ private:
     void SwitchFocusedControlByTabKey(bool backward);
     bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);
 
-    void Repaint();
+    LRESULT RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam);
+    void RaiseMessageReceivedEvent(const MessageReceivedInfo& event_info);
+    std::optional<LRESULT> HandleMessage(const Message& message);
+
+    void HandleWMPAINT();
     void PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect);
-    bool HandleMessageEntrance(const Message& message, LRESULT& result);
-    void RaiseHandleMessageEvent(const Message& message, LRESULT result);
     void Resize(UINT width, UINT height);
     void HandleSizeMessage(const Message& message);
     void HandleMoveMessage();

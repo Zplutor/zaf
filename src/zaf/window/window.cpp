@@ -39,7 +39,8 @@ constexpr const wchar_t* const kIsSizablePropertyName = L"IsSizable";
 constexpr const wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
 constexpr const wchar_t* const kIsTopmostPropertyName = L"IsTopmost";
 constexpr const wchar_t* const kOwnerPropertyName = L"Owner";
-constexpr const wchar_t* const kHandleMessageEventPropertyName = L"HandleMessageEvent";
+constexpr const wchar_t* const MessageReceivedEventPropertyName = L"MessageReceivedEvent";
+constexpr const wchar_t* const MessageHandledEventPropertyName = L"MessageHandledEvent";
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
 
 
@@ -227,11 +228,7 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wpar
 
     auto window = GetWindowFromHandle(hwnd);
     if (window) {
-
-        LRESULT result = 0;
-        if (window->HandleMessageEntrance(Message{ hwnd, message_id, wparam, lparam }, result)) {
-            return result;    
-        }
+        return window->RouteWindowMessage(hwnd, message_id, wparam, lparam);
     }
 
     return CallWindowProc(DefWindowProc, hwnd, message_id, wparam, lparam);
@@ -310,20 +307,22 @@ void Window::CreateWindowHandle() {
 }
 
 
-void Window::HandleCreateMessage(HWND handle) {
+LRESULT Window::HandleWMCREATE(const Message& message) {
 
-    auto dpi = static_cast<float>(GetDpiForWindow(handle));
+    auto dpi = static_cast<float>(GetDpiForWindow(message.hwnd));
     auto initial_rect = GetInitialRect(dpi);
     auto rect_in_pixels = ToAlignedPixelsRect(initial_rect, dpi);
 
     SetWindowPos(
-        handle,
+        message.hwnd,
         nullptr,
         static_cast<int>(rect_in_pixels.position.x),
         static_cast<int>(rect_in_pixels.position.y),
         static_cast<int>(rect_in_pixels.size.width),
         static_cast<int>(rect_in_pixels.size.height),
         SWP_NOZORDER | SWP_NOACTIVATE);
+
+    return 0;
 }
 
 
@@ -489,50 +488,74 @@ bool Window::TryToPreprocessInspectorShortcutMessage(const KeyMessage& message) 
 }
 
 
-bool Window::HandleMessageEntrance(const Message& message, LRESULT& result) {
+LRESULT Window::RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam) {
 
-    bool is_handled = HandleMessage(message, result);
-    RaiseHandleMessageEvent(message, result);
-    return is_handled;
+    Message message{ hwnd, id, wparam, lparam };
+
+    //Route message received event first.
+    MessageReceivedInfo message_received_info{ shared_from_this(), message };
+    OnMessageReceived(message_received_info);
+
+    //Check if the message has been handled, pass it to default window procedure if not.
+    auto handle_result = message_received_info.HandleResult();
+    if (!handle_result) {
+        handle_result = CallWindowProc(DefWindowProc, hwnd, id, wparam, lparam);
+    }
+
+    //Route message handled event then.
+    MessageHandledInfo message_handled_info{ shared_from_this(), message, *handle_result };
+    OnMessageHandled(message_handled_info);
+
+    return *handle_result;
 }
 
 
-void Window::RaiseHandleMessageEvent(const Message& message, LRESULT result) {
+void Window::OnMessageReceived(const MessageReceivedInfo& event_info) {
 
-    if (message.id == WM_NCDESTROY) {
+    RaiseMessageReceivedEvent(event_info);
+    if (event_info.IsHandled()) {
         return;
     }
 
-    auto event_observer = GetEventObserver<WindowHandleMessageInfo>(
+    auto result = HandleMessage(event_info.Message());
+    if (result) {
+        event_info.MarkAsHandled(*result);
+    }
+}
+
+
+void Window::RaiseMessageReceivedEvent(const MessageReceivedInfo& event_info) {
+
+    if (event_info.Message().id == WM_NCDESTROY) {
+        return;
+    }
+
+    auto event_observer = GetEventObserver<MessageReceivedInfo>(
         GetPropertyMap(),
-        kHandleMessageEventPropertyName);
+        MessageReceivedEventPropertyName);
 
-    if (!event_observer) {
-        return;
+    if (event_observer) {
+        event_observer->OnNext(event_info);
     }
-
-    WindowHandleMessageInfo event_info(shared_from_this(), message, result);
-    event_observer->OnNext(event_info);
 }
 
 
-bool Window::HandleMessage(const Message& message, LRESULT& result) {
+std::optional<LRESULT> Window::HandleMessage(const Message& message) {
 
     switch (message.id) {
     case WM_CREATE:
-        HandleCreateMessage(message.hwnd);
-        return true;
+        return HandleWMCREATE(message);
 
     case WM_NCCALCSIZE:
-        return HandleWMNCCALCSIZE(message, result);
+        return HandleWMNCCALCSIZE(message);
 
     case WM_ERASEBKGND:
-        result = TRUE;
-        return true;
+        //Don't erase background to avoid blinking.
+        return TRUE;
         
     case WM_PAINT:
-        Repaint();
-        return true;
+        HandleWMPAINT();
+        return 0;
 
     case WM_GETMINMAXINFO: {
         auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.lparam);
@@ -540,41 +563,39 @@ bool Window::HandleMessage(const Message& message, LRESULT& result) {
         min_max_info->ptMinTrackSize.y = static_cast<LONG>(MinHeight());
         min_max_info->ptMaxTrackSize.x = static_cast<LONG>(MaxWidth());
         min_max_info->ptMaxTrackSize.y = static_cast<LONG>(MaxHeight());
-        result = 0;
-        return true;
+        return 0;
     }
 
     case WM_SIZE:
         HandleSizeMessage(message);
-        return true;
+        return 0;
 
     case WM_MOVE:
         HandleMoveMessage();
-        return true;
+        return 0;
 
     case WM_SETFOCUS:
         if (auto last_focused_control = last_focused_control_.lock()) {
             last_focused_control_.reset();
             SetFocusedControl(last_focused_control);
         }
-        return true;
+        return 0;
 
     case WM_KILLFOCUS: 
         last_focused_control_ = FocusedControl();
         SetFocusedControl(nullptr);
-        return true;
+        return 0;
 
     case WM_MOUSEACTIVATE: {
         auto activate_option = ActivateOption();
         bool no_activate = (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
         bool discard_message = (activate_option & ActivateOption::DiscardMouseMessage) == ActivateOption::DiscardMouseMessage;
         if (no_activate) {
-            result = discard_message ? MA_NOACTIVATEANDEAT : MA_NOACTIVATE;
+            return discard_message ? MA_NOACTIVATEANDEAT : MA_NOACTIVATE;
         }
         else {
-            result = discard_message ? MA_ACTIVATEANDEAT : MA_ACTIVATE;
+            return discard_message ? MA_ACTIVATEANDEAT : MA_ACTIVATE;
         }
-        return true;
     }
 
     case WM_CAPTURECHANGED: {
@@ -587,42 +608,45 @@ bool Window::HandleMessage(const Message& message, LRESULT& result) {
 
             OnCapturingMouseControlChanged(previous_control);
         }
-        result = 0;
-        return true;
+        return 0;
     }
 
     case WM_NCHITTEST: {
         auto hit_test_result = HitTest(HitTestMessage{ message });
         if (hit_test_result) {
-            result = static_cast<LRESULT>(*hit_test_result);
-            return true;
+            return static_cast<LRESULT>(*hit_test_result);
         }
         else {
-            return false;
+            return std::nullopt;
         }
     }
 
     case WM_SETCURSOR: {
         bool is_changed = ChangeMouseCursor(message);
         if (is_changed) {
-            result = TRUE;
-            return true;
+            return TRUE;
         }
         else {
-            return false;
+            return std::nullopt;
         }
     }
 
     case WM_MOUSEWHEEL:
-    case WM_MOUSEHWHEEL:
+    case WM_MOUSEHWHEEL: {
         //Mouse wheel messages are not sent to an unfocused window even if it captures
         //the mouse, because these messages are only sent to focused window.
         //But we wish these messages have the same behaviour as other mouse input messages,
         //so the messages are redircted to the window which is capturing the mouse.
         if (RedirectMouseWheelMessage(message)) {
-            return true;
+            return 0;
         }
-        return HandleMouseMessage(MouseWheelMessage{ message });
+
+        if (HandleMouseMessage(MouseWheelMessage{ message })) {
+            return 0;
+        }
+
+        return std::nullopt;
+    }
 
     case WM_MOUSEMOVE:
     case WM_NCMOUSEMOVE:
@@ -633,46 +657,74 @@ bool Window::HandleMessage(const Message& message, LRESULT& result) {
     case WM_MBUTTONDOWN:
     case WM_MBUTTONUP:
     case WM_RBUTTONDOWN:
-    case WM_RBUTTONUP:
-        return HandleMouseMessage(MouseMessage{ message });
+    case WM_RBUTTONUP: {
+        if (HandleMouseMessage(MouseMessage{ message })) {
+            return 0;
+        }
+        return std::nullopt;
+    }
 
     case WM_MOUSEHOVER:
     case WM_NCMOUSEHOVER:
         OnMouseHover(message);
-        return true;
+        return 0;
 
     case WM_MOUSELEAVE:
     case WM_NCMOUSELEAVE:
         OnMouseLeave(message);
-        return true;
+        return 0;
 
     case WM_KEYDOWN: 
-        return OnKeyDown(message);
+        if (OnKeyDown(message)) {
+            return 0;
+        }
+        return std::nullopt;
 
     case WM_KEYUP:
-        return OnKeyUp(message);
+        if (OnKeyUp(message)) {
+            return 0;
+        }
+        return std::nullopt;
 
     case WM_CHAR:
-        return OnCharInput(message);
+        if (OnCharInput(message)) {
+            return 0;
+        }
+        return std::nullopt;
 
     case WM_CLOSE:
-        return ! HandleCloseMessage();
+        if (!HandleCloseMessage()) {
+            return 0;
+        }
+        return std::nullopt;
 
     case WM_DESTROY:
         HandleDestroyMessage();
-        return true;
+        return 0;
 
     case WM_NCDESTROY:
         Application::Instance().UnregisterWindow(shared_from_this());
-        return true;
+        return 0;
 
     default:
-        return false;
+        return std::nullopt;
     }
 }
 
 
-void Window::Repaint() {
+void Window::OnMessageHandled(const MessageHandledInfo& event_info) {
+
+    auto observer = GetEventObserver<MessageHandledInfo>(
+        GetPropertyMap(), 
+        MessageHandledEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+void Window::HandleWMPAINT() {
 
     zaf::Rect dirty_rect;
 
@@ -820,24 +872,23 @@ void Window::UpdateWindowRect() {
 }
 
 
-bool Window::HandleWMNCCALCSIZE(const Message& message, LRESULT& result) {
+std::optional<LRESULT> Window::HandleWMNCCALCSIZE(const Message& message) {
 
     //WM_NCCALCSIZE must be passed to default window procedure if wparam is FALSE, no matter if
     //the window has customized style, otherwise the window could have some odd behaviors.
     if (message.wparam == FALSE) {
-        return false;
+        return std::nullopt;
     }
 
     //We need to remove the default window frame in WM_NCCALCSIZE for overlapped window without 
     //boder. It is no need to do that for popup window without boder.
     bool has_customized_style = !IsPopup() && !HasBorder();
     if (!has_customized_style) {
-        return false;
+        return std::nullopt;
     }
 
     //Return TRUE to remove the default window frame.
-    result = TRUE;
-    return true;
+    return TRUE;
 }
 
 
@@ -1922,10 +1973,17 @@ Observable<WindowDestroyInfo> Window::DestroyEvent() {
 }
 
 
-Observable<WindowHandleMessageInfo> Window::HandleMessageEvent() {
-    return GetEventObservable<WindowHandleMessageInfo>(
+Observable<MessageReceivedInfo> Window::MessageReceivedEvent() {
+    return GetEventObservable<MessageReceivedInfo>(
         GetPropertyMap(), 
-        kHandleMessageEventPropertyName);
+        MessageReceivedEventPropertyName);
+}
+
+
+Observable<MessageHandledInfo> Window::MessageHandledEvent() {
+    return GetEventObservable<MessageHandledInfo>(
+        GetPropertyMap(), 
+        MessageHandledEventPropertyName);
 }
 
 

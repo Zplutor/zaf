@@ -13,7 +13,7 @@ class KeyboardEventSharedState : public RoutedEventSharedState {
 public:
     KeyboardEventSharedState(const std::shared_ptr<Control>& source, const zaf::Message& message);
 
-    const zaf::Message Message() const {
+    const zaf::Message& Message() const {
         return message_;
     }
 
