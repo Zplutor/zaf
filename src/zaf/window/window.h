@@ -505,7 +505,33 @@ protected:
      */
     virtual bool PreprocessMessage(const KeyMessage& message);
 
+    /**
+    Handle message received event. This method is called when the window receives a message, but 
+    before passing it to the default window procedure.
+
+    @param event_info
+        Information of the event. Call event_info.MarkAsHandled() to prevent the message from being
+        passed to the default window procedure.
+
+    The default implementation of this method will raise MessageReceivedEvent first, and then do 
+    some default handling according to different message. Event handlers might call 
+    MarkAsHandle() as well, in such case the default handling wouldn't be called. 
+
+    Derived classes must call the same method of base class, unless they have special needs to 
+    change default handling of the message.
+    */
     virtual void OnMessageReceived(const MessageReceivedInfo& event_info);
+
+    /**
+    Handle message handled event. The method is called after the message is handled, including the 
+    default window procedure.
+
+    @param event_info
+        Information of the event.
+
+    The default implementation of this method will raise MessageHandledEvent. Derived classes 
+    should call the same method of base class.
+    */
     virtual void OnMessageHandled(const MessageHandledInfo& event_info);
 
     virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
