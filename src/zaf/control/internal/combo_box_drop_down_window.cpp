@@ -28,12 +28,6 @@ void ComboBoxDropDownWindow::OnWindowShown() {
 }
 
 
-void ComboBoxDropDownWindow::OnWindowDestroyed(HWND handle) {
-
-    __super::OnWindowDestroyed(handle);
-}
-
-
 void ComboBoxDropDownWindow::OnCapturingMouseControlChanged(const std::shared_ptr<Control>& previous_control) {
     
     if (CapturingMouseControl() == nullptr) {

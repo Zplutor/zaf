@@ -93,7 +93,7 @@ public:
 
 protected:
     bool PreprocessMessage(const KeyMessage& message) override;
-    void OnWindowDestroyed(HWND handle) override;
+    void OnWindowDestroyed(const WindowDestroyedInfo& event_info) override;
     void OnWindowShown() override;
     void OnFocusedControlChanged(const std::shared_ptr<Control>& previous_focused_control) override;
 

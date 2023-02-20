@@ -37,10 +37,4 @@ private:
     bool can_close_{ true };
 };
 
-
-class WindowDestroyInfo : public WindowEventInfo {
-public:
-    using WindowEventInfo::WindowEventInfo;
-};
-
 }

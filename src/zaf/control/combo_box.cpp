@@ -106,7 +106,7 @@ void ComboBox::Initialize() {
     drop_down_window_->SetActivateOption(ActivateOption::NoActivate);
     drop_down_window_->SetInitialRectStyle(InitialRectStyle::Custom);
 
-    Subscriptions() += drop_down_window_->DestroyEvent().Subscribe(
+    Subscriptions() += drop_down_window_->WindowDestroyedEvent().Subscribe(
         std::bind(&ComboBox::DropDownWindowDestroy, this));
 
     drop_down_list_box_ = Create<ComboBoxDropDownListBox>();

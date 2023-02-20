@@ -11,6 +11,7 @@
 #include <zaf/window/activate_option.h>
 #include <zaf/window/event/message_handled_info.h>
 #include <zaf/window/event/message_received_info.h>
+#include <zaf/window/event/window_destroyed_info.h>
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/window_event_infos.h>
@@ -441,9 +442,9 @@ public:
     Observable<WindowCloseInfo> CloseEvent();
 
     /**
-     Get the destroy event.
+     Get window destroyed event.
      */
-    Observable<WindowDestroyInfo> DestroyEvent();
+    Observable<WindowDestroyedInfo> WindowDestroyedEvent();
 
     Observable<MessageReceivedInfo> MessageReceivedEvent();
     Observable<MessageHandledInfo> MessageHandledEvent();
@@ -523,7 +524,7 @@ protected:
     virtual void OnMessageReceived(const MessageReceivedInfo& event_info);
 
     /**
-    Handle message handled event. The method is called after the message is handled, including the 
+    Handle message handled event. This method is called after the message is handled, including the 
     default window procedure.
 
     @param event_info
@@ -544,14 +545,16 @@ protected:
     virtual void OnWindowCreated() { }
 
     /**
-     This method is called after the window destroyed.
+    Handle window destoryed event. This method is called after the window handles WM_DESTROY 
+    message.
 
-     @param handle
-        The handle of the window has been destroyed.
+    @param event_info
+        Information of the event.
 
-     Derived classes must call the same method of super class.
-     */
-    virtual void OnWindowDestroyed(HWND handle);
+    The default implementation of this method raises WindowDestroyedEvent. Derived classes should
+    call the same method of base calss.
+    */
+    virtual void OnWindowDestroyed(const WindowDestroyedInfo& event_info);
 
     /**
      This method is called after the window shown.
@@ -683,7 +686,7 @@ private:
     void HideTooltipWindow();
     bool ChangeMouseCursor(const Message& message);
     bool HandleCloseMessage();
-    void HandleDestroyMessage();
+    void HandleWMDESTROY();
     
     void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
     void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
