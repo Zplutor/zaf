@@ -16,8 +16,8 @@ class ActivateMessage : public MessageShim {
 public:
     using MessageShim::MessageShim;
 
-    ActivateState State() const {
-        return static_cast<ActivateState>(LOWORD(Inner().wparam));
+    zaf::ActivateState ActivateState() const {
+        return static_cast<zaf::ActivateState>(LOWORD(Inner().wparam));
     }
 
     bool IsWindowMinimized() const {
