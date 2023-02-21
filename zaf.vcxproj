@@ -260,6 +260,7 @@
     <ClCompile Include="src\zaf\rx\timer.cpp" />
     <ClCompile Include="src\zaf\window\activate_option.cpp" />
     <ClCompile Include="src\zaf\window\dialog.cpp" />
+    <ClCompile Include="src\zaf\window\event\closing_info.cpp" />
     <ClCompile Include="src\zaf\window\event\message_handled_info.cpp" />
     <ClCompile Include="src\zaf\window\event\message_received_info.cpp" />
     <ClCompile Include="src\zaf\window\event\destroyed_info.cpp" />
@@ -623,6 +624,7 @@
     <ClInclude Include="src\zaf\window\activate_option.h" />
     <ClInclude Include="src\zaf\window\dialog.h" />
     <ClInclude Include="src\zaf\window\dialog_result.h" />
+    <ClInclude Include="src\zaf\window\event\closing_info.h" />
     <ClInclude Include="src\zaf\window\event\message_handled_info.h" />
     <ClInclude Include="src\zaf\window\event\message_received_info.h" />
     <ClInclude Include="src\zaf\window\event\destroyed_info.h" />
@@ -645,7 +647,6 @@
     <ClInclude Include="src\zaf\window\message_only_window.h" />
     <ClInclude Include="src\zaf\window\tooltip_window.h" />
     <ClInclude Include="src\zaf\window\window.h" />
-    <ClInclude Include="src\zaf\window\window_event_infos.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CC24D55C-A412-446C-96D3-C77A4E4CFA07}</ProjectGuid>

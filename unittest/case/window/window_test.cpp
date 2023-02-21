@@ -184,3 +184,21 @@ TEST(WindowTest, RemoveFocusedControlIndirectly) {
     window->RootControl()->RemoveAllChildren();
     ASSERT_EQ(window->FocusedControl(), nullptr);
 }
+
+
+TEST(WindowTest, Close) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->CreateHandle();
+    window->Close();
+    ASSERT_EQ(window->Handle(), nullptr);
+
+    window->CreateHandle();
+    window->Subscriptions() += window->ClosingEvent().Subscribe(
+        [](const zaf::ClosingInfo& event_info) {
+
+        event_info.SetCanClose(false);
+    });
+    window->Close();
+    ASSERT_NE(window->Handle(), nullptr);
+}

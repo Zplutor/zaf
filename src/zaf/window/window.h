@@ -9,12 +9,12 @@
 #include <zaf/rx/subscription_host.h>
 #include <zaf/serialization/property_map.h>
 #include <zaf/window/activate_option.h>
+#include <zaf/window/event/closing_info.h>
 #include <zaf/window/event/destroyed_info.h>
 #include <zaf/window/event/message_handled_info.h>
 #include <zaf/window/event/message_received_info.h>
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
-#include <zaf/window/window_event_infos.h>
 
 namespace zaf {
 namespace internal {
@@ -439,7 +439,7 @@ public:
         return handle_;
     }
 
-    Observable<WindowCloseInfo> CloseEvent();
+    Observable<ClosingInfo> ClosingEvent();
 
     /**
      Get window destroyed event.
@@ -543,6 +543,18 @@ protected:
      Dervied classes must call the same method of super class.
      */
     virtual void OnWindowCreated() { }
+
+    /**
+    Handle window closing event. This method is called when the window receives WM_CLOSE message.
+
+    @param event_info
+        Information of the event. Call event_info.SetCanClose() to indicate that whether the window
+        is allowed to close.
+
+    The default implementation of this method raises ClosingEvent. Derived classes should call the
+    same method of base class.
+    */
+    virtual void OnClosing(const ClosingInfo& event_info);
 
     /**
     Handle window destoryed event. This method is called after the window handles WM_DESTROY 
@@ -685,7 +697,7 @@ private:
     void TryToShowTooltipWindow();
     void HideTooltipWindow();
     bool ChangeMouseCursor(const Message& message);
-    bool HandleCloseMessage();
+    bool HandleWMCLOSE();
     void HandleWMDESTROY();
     
     void CaptureMouseWithControl(const std::shared_ptr<Control>& control);

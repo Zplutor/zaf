@@ -28,7 +28,7 @@ namespace {
 constexpr const wchar_t* const kActivateOptionPropertyName = L"ActivateOption";
 constexpr const wchar_t* const kCanMaximizePropertyName = L"CanMaximize";
 constexpr const wchar_t* const kCanMinimizePropertyName = L"CanMinimize";
-constexpr const wchar_t* const kCloseEventPropertyName = L"CloseEvent";
+constexpr const wchar_t* const ClosingEventPropertyName = L"ClosingEvent";
 constexpr const wchar_t* const DestroyedEventPropertyName = L"DestroyedEvent";
 constexpr const wchar_t* const kHasBorderPropertyName = L"HasBorder";
 constexpr const wchar_t* const kHasSystemMenuPropertyName = L"HasSystemMenu";
@@ -693,7 +693,7 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return std::nullopt;
 
     case WM_CLOSE:
-        if (!HandleCloseMessage()) {
+        if (!HandleWMCLOSE()) {
             return 0;
         }
         return std::nullopt;
@@ -1240,20 +1240,20 @@ void Window::HideTooltipWindow() {
 }
 
 
-bool Window::HandleCloseMessage() {
+bool Window::HandleWMCLOSE() {
 
-    bool can_close{ true };
+    ClosingInfo event_info{ shared_from_this() };
+    OnClosing(event_info);
+    return event_info.CanClose();
+}
 
-    auto close_event = GetEventObserver<WindowCloseInfo>(GetPropertyMap(), kCloseEventPropertyName);
-    if (close_event) {
 
-        WindowCloseInfo event_info(shared_from_this());
-        close_event->OnNext(event_info);
+void Window::OnClosing(const ClosingInfo& event_info) {
 
-        can_close = event_info.CanClose();
+    auto observer = GetEventObserver<ClosingInfo>(GetPropertyMap(), ClosingEventPropertyName);
+    if (observer) {
+        observer->OnNext(event_info);
     }
-
-    return can_close;
 }
 
 
@@ -1961,8 +1961,8 @@ void Window::InitializeRootControl(const std::shared_ptr<Control>& control) {
 }
 
 
-Observable<WindowCloseInfo> Window::CloseEvent() {
-    return GetEventObservable<WindowCloseInfo>(GetPropertyMap(), kCloseEventPropertyName);
+Observable<ClosingInfo> Window::ClosingEvent() {
+    return GetEventObservable<ClosingInfo>(GetPropertyMap(), ClosingEventPropertyName);
 }
 
 
