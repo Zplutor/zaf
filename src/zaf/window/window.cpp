@@ -29,7 +29,7 @@ constexpr const wchar_t* const kActivateOptionPropertyName = L"ActivateOption";
 constexpr const wchar_t* const kCanMaximizePropertyName = L"CanMaximize";
 constexpr const wchar_t* const kCanMinimizePropertyName = L"CanMinimize";
 constexpr const wchar_t* const kCloseEventPropertyName = L"CloseEvent";
-constexpr const wchar_t* const WindowDestroyedEventPropertyName = L"WindowDestroyedEvent";
+constexpr const wchar_t* const DestroyedEventPropertyName = L"DestroyedEvent";
 constexpr const wchar_t* const kHasBorderPropertyName = L"HasBorder";
 constexpr const wchar_t* const kHasSystemMenuPropertyName = L"HasSystemMenu";
 constexpr const wchar_t* const kHasTitleBarPropertyName = L"HasTitleBar";
@@ -1277,15 +1277,15 @@ void Window::HandleWMDESTROY() {
     renderer_.Reset();
     tooltip_window_.reset();
 
-    OnWindowDestroyed(WindowDestroyedInfo{ shared_from_this(), old_handle });
+    OnDestroyed(DestroyedInfo{ shared_from_this(), old_handle });
 }
 
 
-void Window::OnWindowDestroyed(const WindowDestroyedInfo& event_info) {
+void Window::OnDestroyed(const DestroyedInfo& event_info) {
 
-    auto event_observer = GetEventObserver<WindowDestroyedInfo>(
+    auto event_observer = GetEventObserver<DestroyedInfo>(
         GetPropertyMap(),
-        WindowDestroyedEventPropertyName);
+        DestroyedEventPropertyName);
 
     if (event_observer) {
         event_observer->OnNext(event_info);
@@ -1966,10 +1966,10 @@ Observable<WindowCloseInfo> Window::CloseEvent() {
 }
 
 
-Observable<WindowDestroyedInfo> Window::WindowDestroyedEvent() {
-    return GetEventObservable<WindowDestroyedInfo>(
+Observable<DestroyedInfo> Window::DestroyedEvent() {
+    return GetEventObservable<DestroyedInfo>(
         GetPropertyMap(), 
-        WindowDestroyedEventPropertyName);
+        DestroyedEventPropertyName);
 }
 
 

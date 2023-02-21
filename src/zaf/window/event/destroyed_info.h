@@ -6,9 +6,9 @@ namespace zaf {
 
 class Window;
 
-class WindowDestroyedInfo : public EventInfo {
+class DestroyedInfo : public EventInfo {
 public:
-    explicit WindowDestroyedInfo(
+    explicit DestroyedInfo(
         const std::shared_ptr<Window>& source, 
         HWND original_window_handle);
 

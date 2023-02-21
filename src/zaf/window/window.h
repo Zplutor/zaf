@@ -9,9 +9,9 @@
 #include <zaf/rx/subscription_host.h>
 #include <zaf/serialization/property_map.h>
 #include <zaf/window/activate_option.h>
+#include <zaf/window/event/destroyed_info.h>
 #include <zaf/window/event/message_handled_info.h>
 #include <zaf/window/event/message_received_info.h>
-#include <zaf/window/event/window_destroyed_info.h>
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/window_event_infos.h>
@@ -444,7 +444,7 @@ public:
     /**
      Get window destroyed event.
      */
-    Observable<WindowDestroyedInfo> WindowDestroyedEvent();
+    Observable<DestroyedInfo> DestroyedEvent();
 
     Observable<MessageReceivedInfo> MessageReceivedEvent();
     Observable<MessageHandledInfo> MessageHandledEvent();
@@ -551,10 +551,10 @@ protected:
     @param event_info
         Information of the event.
 
-    The default implementation of this method raises WindowDestroyedEvent. Derived classes should
+    The default implementation of this method raises DestroyedEvent. Derived classes should
     call the same method of base calss.
     */
-    virtual void OnWindowDestroyed(const WindowDestroyedInfo& event_info);
+    virtual void OnDestroyed(const DestroyedInfo& event_info);
 
     /**
      This method is called after the window shown.

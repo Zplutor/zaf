@@ -88,9 +88,9 @@ bool Dialog::PreprocessMessage(const KeyMessage& message) {
 }
 
 
-void Dialog::OnWindowDestroyed(const WindowDestroyedInfo& event_info) {
+void Dialog::OnDestroyed(const DestroyedInfo& event_info) {
 
-    __super::OnWindowDestroyed(event_info);
+    __super::OnDestroyed(event_info);
 
     if (is_showing_modally_) {
         PostQuitMessage(0);

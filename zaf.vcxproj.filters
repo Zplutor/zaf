@@ -826,7 +826,7 @@
     <ClCompile Include="src\zaf\window\event\message_handled_info.cpp">
       <Filter>zaf\window\event</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\window\event\window_destroyed_info.cpp">
+    <ClCompile Include="src\zaf\window\event\destroyed_info.cpp">
       <Filter>zaf\window\event</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1936,7 +1936,7 @@
     <ClInclude Include="src\zaf\window\event\message_handled_info.h">
       <Filter>zaf\window\event</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\window\event\window_destroyed_info.h">
+    <ClInclude Include="src\zaf\window\event\destroyed_info.h">
       <Filter>zaf\window\event</Filter>
     </ClInclude>
   </ItemGroup>
