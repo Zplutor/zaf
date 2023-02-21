@@ -128,9 +128,9 @@ void TooltipWindow::Initialize() {
 }
 
 
-void TooltipWindow::OnWindowCreated() {
+void TooltipWindow::OnHandleCreated(const zaf::HandleCreatedInfo& event_info) {
 
-    __super::OnWindowCreated();
+    __super::OnHandleCreated(event_info);
 
     DWORD ex_style = GetWindowLong(this->Handle(), GWL_EXSTYLE);
     ex_style |= WS_EX_TRANSPARENT | WS_EX_LAYERED;

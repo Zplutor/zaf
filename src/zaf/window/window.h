@@ -11,6 +11,7 @@
 #include <zaf/window/activate_option.h>
 #include <zaf/window/event/closing_info.h>
 #include <zaf/window/event/destroyed_info.h>
+#include <zaf/window/event/handle_created_info.h>
 #include <zaf/window/event/message_handled_info.h>
 #include <zaf/window/event/message_received_info.h>
 #include <zaf/window/initial_rect_style.h>
@@ -439,6 +440,8 @@ public:
         return handle_;
     }
 
+    Observable<HandleCreatedInfo> HandleCreatedEvent();
+
     Observable<ClosingInfo> ClosingEvent();
 
     /**
@@ -538,14 +541,18 @@ protected:
     virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
 
     /**
-     This method is called after the window created.
+    Handles handle created event. This method is called after the window handle is created.
 
-     Dervied classes must call the same method of super class.
+    @param event_info
+        Information of the event.
+
+    The default implementation of this method raises HandleCreatedEvent. Dervied classes should 
+    call the same method of base class.
      */
-    virtual void OnWindowCreated() { }
+    virtual void OnHandleCreated(const HandleCreatedInfo& event_info);
 
     /**
-    Handle window closing event. This method is called when the window receives WM_CLOSE message.
+    Handles window closing event. This method is called when the window receives WM_CLOSE message.
 
     @param event_info
         Information of the event. Call event_info.SetCanClose() to indicate that whether the window
@@ -557,7 +564,7 @@ protected:
     virtual void OnClosing(const ClosingInfo& event_info);
 
     /**
-    Handle window destoryed event. This method is called after the window handles WM_DESTROY 
+    Handles window destoryed event. This method is called after the window handles WM_DESTROY 
     message.
 
     @param event_info

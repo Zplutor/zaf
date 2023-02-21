@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <zaf/base/as.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/dpi.h>
@@ -183,6 +184,22 @@ TEST(WindowTest, RemoveFocusedControlIndirectly) {
     //RemoveAllChildren
     window->RootControl()->RemoveAllChildren();
     ASSERT_EQ(window->FocusedControl(), nullptr);
+}
+
+
+TEST(WindowTest, CreateHandle) {
+
+    auto window = zaf::Create<zaf::Window>();
+
+    HWND handle{};
+
+    window->Subscriptions() += window->HandleCreatedEvent().Subscribe(
+        [&handle](const zaf::HandleCreatedInfo& event_info) {
+
+        handle = zaf::As<zaf::Window>(event_info.Source())->Handle();
+    });
+
+    ASSERT_EQ(window->Handle(), handle);
 }
 
 

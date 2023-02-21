@@ -42,6 +42,7 @@ constexpr const wchar_t* const kOwnerPropertyName = L"Owner";
 constexpr const wchar_t* const MessageReceivedEventPropertyName = L"MessageReceivedEvent";
 constexpr const wchar_t* const MessageHandledEventPropertyName = L"MessageHandledEvent";
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
+constexpr const wchar_t* const HandleCreatedEventPropertyName = L"HandleCreatedEvent";
 
 
 Point TranslateAbsolutePositionToControlPosition(
@@ -303,7 +304,24 @@ void Window::CreateWindowHandle() {
     CreateRenderer();
     Application::Instance().RegisterWindow(shared_from_this());
 
-    OnWindowCreated();
+    OnHandleCreated(HandleCreatedInfo{ shared_from_this() });
+}
+
+
+void Window::OnHandleCreated(const HandleCreatedInfo& event_info) {
+
+    auto observer = GetEventObserver<HandleCreatedInfo>(
+        GetPropertyMap(), 
+        HandleCreatedEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<HandleCreatedInfo> Window::HandleCreatedEvent() {
+    return GetEventObservable<HandleCreatedInfo>(GetPropertyMap(), HandleCreatedEventPropertyName);
 }
 
 

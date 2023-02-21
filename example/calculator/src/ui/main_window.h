@@ -9,7 +9,7 @@ public:
     void Initialize() override;
 
 protected:
-    void OnWindowCreated() override;
+    void OnHandleCreated(const zaf::HandleCreatedInfo& event_info) override;
 
 private:
     void InitializeTextBoxes();

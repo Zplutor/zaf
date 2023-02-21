@@ -14,7 +14,7 @@ public:
 
 protected:
     void Initialize() override;
-    void OnWindowCreated() override;
+    void OnHandleCreated(const zaf::HandleCreatedInfo& event_info) override;
 
 private:
     std::shared_ptr<Label> label_;

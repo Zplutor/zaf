@@ -20,9 +20,9 @@ void MainWindow::Initialize() {
 }
 
 
-void MainWindow::OnWindowCreated() {
+void MainWindow::OnHandleCreated(const zaf::HandleCreatedInfo& event_info) {
 
-    __super::OnWindowCreated();
+    __super::OnHandleCreated(event_info);
 
     InitializeTextBoxes();
     InitializeButtons();
