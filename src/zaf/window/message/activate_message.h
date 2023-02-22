@@ -17,15 +17,15 @@ public:
     using MessageShim::MessageShim;
 
     zaf::ActivateState ActivateState() const {
-        return static_cast<zaf::ActivateState>(LOWORD(Inner().wparam));
+        return static_cast<zaf::ActivateState>(LOWORD(WParam()));
     }
 
     bool IsWindowMinimized() const {
-        return (HIWORD(Inner().wparam) != 0);
+        return (HIWORD(WParam()) != 0);
     }
 
     HWND EffectingWindowHandle() const {
-        return reinterpret_cast<HWND>(Inner().lparam);
+        return reinterpret_cast<HWND>(LParam());
     }
 };
 
