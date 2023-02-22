@@ -24,7 +24,7 @@ protected:
         Subscriptions() += this->MessageReceivedEvent().Subscribe(
             [this](const zaf::MessageReceivedInfo& event_info) {
 
-            if (event_info.Message().id == TestMessage) {
+            if (event_info.Message().ID() == TestMessage) {
                 message_received_event_sequence = ++current_sequence_;
             }
         });
@@ -32,7 +32,7 @@ protected:
         Subscriptions() += this->MessageHandledEvent().Subscribe(
             [this](const zaf::MessageHandledInfo& event_info) {
 
-            if (event_info.Message().id == TestMessage) {
+            if (event_info.Message().ID() == TestMessage) {
                 message_handled_event_sequence = ++current_sequence_;
             }
         });
@@ -40,26 +40,26 @@ protected:
 
     void OnMessageReceived(const zaf::MessageReceivedInfo& event_info) override {
 
-        if (event_info.Message().id == TestMessage) {
+        if (event_info.Message().ID() == TestMessage) {
             on_message_received1_sequence = ++current_sequence_;
         }
 
         __super::OnMessageReceived(event_info);
 
-        if (event_info.Message().id == TestMessage) {
+        if (event_info.Message().ID() == TestMessage) {
             on_message_received2_sequence = ++current_sequence_;
         }
     }
 
     void OnMessageHandled(const zaf::MessageHandledInfo& event_info) override {
 
-        if (event_info.Message().id == TestMessage) {
+        if (event_info.Message().ID() == TestMessage) {
             on_message_handled1_sequence = ++current_sequence_;
         }
 
         __super::OnMessageHandled(event_info);
 
-        if (event_info.Message().id == TestMessage) {
+        if (event_info.Message().ID() == TestMessage) {
             on_message_handled2_sequence = ++current_sequence_;
         }
     }

@@ -14,19 +14,19 @@ public:
     MessageShim& operator=(MessageShim&&) = default;
 
     HWND WindowHandle() const {
-        return inner_.hwnd;
+        return inner_.WindowHandle();
     }
 
     UINT ID() const {
-        return inner_.id;
+        return inner_.ID();
     }
 
     WPARAM WParam() const {
-        return inner_.wparam;
+        return inner_.WParam();
     }
 
     LPARAM LParam() const {
-        return inner_.lparam;
+        return inner_.LParam();
     }
 
     const Message& Inner() const {

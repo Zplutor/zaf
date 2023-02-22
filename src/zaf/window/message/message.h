@@ -12,31 +12,45 @@ public:
     Message() = default;
 
     Message(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam) : 
-        hwnd(hwnd),
-        id(id), 
-        wparam(wparam),
-        lparam(lparam) { }
+        hwnd_(hwnd),
+        id_(id), 
+        wparam_(wparam),
+        lparam_(lparam) { }
 
 public:
     /**
      The window handle.
      */
-    HWND hwnd{};
+    HWND WindowHandle() const {
+        return hwnd_;
+    }
 
     /**
      The message identifier.
      */
-    UINT id{};
+    UINT ID() const {
+        return id_;
+    }
 
     /**
      The WPARAM argument.
      */
-    WPARAM wparam{};
+    WPARAM WParam() const {
+        return wparam_;
+    }
 
     /**
      The LPARAM argument.
      */
-    LPARAM lparam{};
+    LPARAM LParam() const {
+        return lparam_;
+    }
+
+private:
+    HWND hwnd_{};
+    UINT id_{};
+    WPARAM wparam_{};
+    LPARAM lparam_{};
 };
 
 }

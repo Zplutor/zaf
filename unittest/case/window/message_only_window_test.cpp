@@ -14,8 +14,8 @@ TEST(MessageOnlyWindowTest, ReceiveMessage) {
 
     SendMessage(window.GetHandle(), WM_USER + 123, 47, 39);
 
-    ASSERT_EQ(received_message.hwnd, window.GetHandle());
-    ASSERT_EQ(received_message.id, WM_USER + 123);
-    ASSERT_EQ(received_message.wparam, 47);
-    ASSERT_EQ(received_message.lparam, 39);
+    ASSERT_EQ(received_message.WindowHandle(), window.GetHandle());
+    ASSERT_EQ(received_message.ID(), WM_USER + 123);
+    ASSERT_EQ(received_message.WParam(), 47);
+    ASSERT_EQ(received_message.LParam(), 39);
 }

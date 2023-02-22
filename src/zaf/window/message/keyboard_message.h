@@ -24,7 +24,7 @@ public:
      Get the virtual key.
      */
     DWORD VirtualKey() const {
-        return static_cast<DWORD>(Inner().wparam);
+        return static_cast<DWORD>(WParam());
     }
 };
 
@@ -40,7 +40,7 @@ public:
      Get the char.
      */
     wchar_t Char() const {
-        return static_cast<wchar_t>(Inner().wparam);
+        return static_cast<wchar_t>(WParam());
     }
 };
 

@@ -15,24 +15,24 @@ Point MouseMessage::MousePosition() const {
 
     bool need_transform = [this]() {
 
-        if (!IsClientAreaMouseMessage(Inner().id)) {
+        if (!IsClientAreaMouseMessage(ID())) {
             return true;
         }
 
-        if (Inner().id == WM_MOUSEWHEEL || Inner().id == WM_MOUSEHWHEEL) {
+        if (ID() == WM_MOUSEWHEEL || ID() == WM_MOUSEHWHEEL) {
             return true;
         }
 
         return false;
     }();
 
-    return internal::GetMousePositionFromLPARAM(Inner().hwnd, Inner().lparam, need_transform);
+    return internal::GetMousePositionFromLPARAM(WindowHandle(), LParam(), need_transform);
 }
 
 
 MouseButton MouseMessage::MouseButton() const {
 
-    switch (Inner().id) {
+    switch (ID()) {
     case WM_LBUTTONDOWN:
     case WM_LBUTTONUP:
     case WM_NCLBUTTONDOWN:
@@ -59,11 +59,11 @@ MouseButton MouseMessage::MouseButton() const {
 
 MouseKey MouseMessage::PressedMouseKeys() const {
 
-    if (IsClientAreaMouseMessage(Inner().id)) {
-        return static_cast<MouseKey>(Inner().wparam);
+    if (IsClientAreaMouseMessage(ID())) {
+        return static_cast<MouseKey>(WParam());
     }
     
-    switch (Inner().id) {
+    switch (ID()) {
     case WM_NCLBUTTONDOWN:
         return MouseKey::LeftButton;
     case WM_NCMBUTTONDOWN:
@@ -78,11 +78,11 @@ MouseKey MouseMessage::PressedMouseKeys() const {
 
 zaf::HitTestResult MouseMessage::HitTestResult() const {
 
-    if (IsClientAreaMouseMessage(Inner().id)) {
+    if (IsClientAreaMouseMessage(ID())) {
         return zaf::HitTestResult::ClientArea;
     }
     else {
-        return static_cast<zaf::HitTestResult>(Inner().wparam);
+        return static_cast<zaf::HitTestResult>(WParam());
     }
 }
 

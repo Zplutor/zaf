@@ -327,12 +327,12 @@ Observable<HandleCreatedInfo> Window::HandleCreatedEvent() {
 
 LRESULT Window::HandleWMCREATE(const Message& message) {
 
-    auto dpi = static_cast<float>(GetDpiForWindow(message.hwnd));
+    auto dpi = static_cast<float>(GetDpiForWindow(message.WindowHandle()));
     auto initial_rect = GetInitialRect(dpi);
     auto rect_in_pixels = ToAlignedPixelsRect(initial_rect, dpi);
 
     SetWindowPos(
-        message.hwnd,
+        message.WindowHandle(),
         nullptr,
         static_cast<int>(rect_in_pixels.position.x),
         static_cast<int>(rect_in_pixels.position.y),
@@ -456,7 +456,7 @@ bool Window::PreprocessMessage(const KeyMessage& message) {
 
 bool Window::TryToPreprocessTabKeyMessage(const KeyMessage& message) {
 
-    if (message.Inner().id != WM_KEYDOWN || message.VirtualKey() != VK_TAB) {
+    if (message.ID() != WM_KEYDOWN || message.VirtualKey() != VK_TAB) {
         return false;
     }
 
@@ -486,7 +486,7 @@ void Window::SwitchFocusedControlByTabKey(bool backward) {
 
 bool Window::TryToPreprocessInspectorShortcutMessage(const KeyMessage& message) {
 #ifndef NDEBUG
-    if (message.Inner().id != WM_KEYDOWN) {
+    if (message.ID() != WM_KEYDOWN) {
         return false;
     }
 
@@ -544,7 +544,7 @@ void Window::OnMessageReceived(const MessageReceivedInfo& event_info) {
 
 void Window::RaiseMessageReceivedEvent(const MessageReceivedInfo& event_info) {
 
-    if (event_info.Message().id == WM_NCDESTROY) {
+    if (event_info.Message().ID() == WM_NCDESTROY) {
         return;
     }
 
@@ -560,7 +560,7 @@ void Window::RaiseMessageReceivedEvent(const MessageReceivedInfo& event_info) {
 
 std::optional<LRESULT> Window::HandleMessage(const Message& message) {
 
-    switch (message.id) {
+    switch (message.ID()) {
     case WM_CREATE:
         return HandleWMCREATE(message);
 
@@ -576,7 +576,7 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_GETMINMAXINFO: {
-        auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.lparam);
+        auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.LParam());
         min_max_info->ptMinTrackSize.x = static_cast<LONG>(MinWidth());
         min_max_info->ptMinTrackSize.y = static_cast<LONG>(MinHeight());
         min_max_info->ptMaxTrackSize.x = static_cast<LONG>(MaxWidth());
@@ -861,8 +861,8 @@ void Window::HandleSizeMessage(const Message& message) {
     }
 
     zaf::Size size{
-        static_cast<float>(LOWORD(message.lparam)),
-        static_cast<float>(HIWORD(message.lparam)) 
+        static_cast<float>(LOWORD(message.LParam())),
+        static_cast<float>(HIWORD(message.LParam()))
     };
 
     if (renderer_ != nullptr) {
@@ -894,7 +894,7 @@ std::optional<LRESULT> Window::HandleWMNCCALCSIZE(const Message& message) {
 
     //WM_NCCALCSIZE must be passed to default window procedure if wparam is FALSE, no matter if
     //the window has customized style, otherwise the window could have some odd behaviors.
-    if (message.wparam == FALSE) {
+    if (message.WParam() == FALSE) {
         return std::nullopt;
     }
 
@@ -948,7 +948,12 @@ bool Window::RedirectMouseWheelMessage(const Message& message) {
         return false;
     }
 
-    PostMessage(capturing_mouse_window->Handle(), message.id, message.wparam, message.lparam);
+    PostMessage(
+        capturing_mouse_window->Handle(), 
+        message.ID(),
+        message.WParam(),
+        message.LParam());
+
     return true;
 }
 
@@ -1147,12 +1152,12 @@ void Window::OnMouseHover(const Message& message) {
     bool is_tracking_mouse = [&]() {
 
         if (track_mouse_mode_ == TrackMouseMode::ClientArea &&
-            message.id == WM_MOUSEHOVER) {
+            message.ID() == WM_MOUSEHOVER) {
             return true;
         }
 
         if (track_mouse_mode_ == TrackMouseMode::NonClientArea &&
-            message.id == WM_NCMOUSEHOVER) {
+            message.ID() == WM_NCMOUSEHOVER) {
             return true;
         }
 
@@ -1181,12 +1186,12 @@ void Window::OnMouseLeave(const Message& message) {
     bool is_tracking_mouse = [&]() {
     
         if (track_mouse_mode_ == TrackMouseMode::ClientArea &&
-            message.id == WM_MOUSELEAVE) {
+            message.ID() == WM_MOUSELEAVE) {
             return true;
         }
 
         if (track_mouse_mode_ == TrackMouseMode::NonClientArea &&
-            message.id == WM_NCMOUSELEAVE) {
+            message.ID() == WM_NCMOUSELEAVE) {
             return true;
         }
 

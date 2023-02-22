@@ -91,14 +91,14 @@ public:
      Get a value indicating that whether the wheeling is horizontal.
      */
     bool IsHorizontalWheeling() const {
-        return (Inner().id == WM_MOUSEHWHEEL);
+        return (ID() == WM_MOUSEHWHEEL);
     }
     
     /**
      Get the wheeling distance.
      */
     int WheelingDistance() const {
-        return static_cast<short>(HIWORD(Inner().wparam));
+        return static_cast<short>(HIWORD(WParam()));
     }
 };
 

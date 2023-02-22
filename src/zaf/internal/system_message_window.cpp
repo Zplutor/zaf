@@ -7,7 +7,7 @@ SystemMessageWindow::SystemMessageWindow() : message_only_window_(nullptr) {
     Subscriptions() += message_only_window_.ReceiveMessageEvent().Subscribe(
         [this](const Message& message) {
     
-        if (message.id == WM_ENDSESSION) {
+        if (message.ID() == WM_ENDSESSION) {
             session_ended_subject_.GetObserver().OnNext(SessionEndedInfo{});
         }
     });
