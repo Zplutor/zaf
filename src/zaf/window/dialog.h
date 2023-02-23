@@ -94,7 +94,7 @@ public:
 protected:
     bool PreprocessMessage(const KeyMessage& message) override;
     void OnDestroyed(const DestroyedInfo& event_info) override;
-    void OnWindowShown() override;
+    void OnShow(const ShowInfo& event_info) override;
     void OnFocusedControlChanged(const std::shared_ptr<Control>& previous_focused_control) override;
 
 private:

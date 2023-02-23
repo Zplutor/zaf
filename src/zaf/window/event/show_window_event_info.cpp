@@ -1,9 +1,9 @@
-#include <zaf/window/event/show_info.h>
+#include <zaf/window/event/show_window_event_info.h>
 #include <zaf/window/window.h>
 
-namespace zaf {
+namespace zaf::internal {
 
-ShowInfo::ShowInfo(
+ShowWindowEventInfo::ShowWindowEventInfo(
     const std::shared_ptr<Window>& source,
     const ShowWindowMessage& message)
     : 

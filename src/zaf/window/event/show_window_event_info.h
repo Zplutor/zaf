@@ -7,9 +7,11 @@ namespace zaf {
 
 class Window;
 
-class ShowInfo : public EventInfo {
+namespace internal {
+
+class ShowWindowEventInfo : public EventInfo {
 public:
-    explicit ShowInfo(
+    explicit ShowWindowEventInfo(
         const std::shared_ptr<Window>& source,
         const ShowWindowMessage& message);
 
@@ -20,5 +22,10 @@ public:
 private:
     zaf::Message message_;
 };
+
+}
+
+using ShowInfo = internal::ShowWindowEventInfo;
+using HideInfo = internal::ShowWindowEventInfo;
 
 }

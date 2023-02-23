@@ -203,6 +203,33 @@ TEST(WindowTest, CreateHandle) {
 }
 
 
+TEST(WindowTest, ShowWindowEvent) {
+
+    bool is_show_event_called{};
+    bool is_hide_event_called{};
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
+    window->SetRect(zaf::Rect{ 0, 0, 1, 1 });
+
+    window->Subscriptions() += window->ShowEvent().Subscribe(
+        [&is_show_event_called](const zaf::ShowInfo& event_info) {
+        is_show_event_called = true;
+    });
+
+    window->Subscriptions() += window->HideEvent().Subscribe(
+        [&is_hide_event_called](const zaf::HideInfo& event_info) {
+        is_hide_event_called = true;
+    });
+
+    window->Show();
+    ASSERT_TRUE(is_show_event_called);
+
+    window->Hide();
+    ASSERT_TRUE(is_hide_event_called);
+}
+
+
 TEST(WindowTest, Close) {
 
     auto window = zaf::Create<zaf::Window>();

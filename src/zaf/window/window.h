@@ -14,7 +14,7 @@
 #include <zaf/window/event/handle_created_info.h>
 #include <zaf/window/event/message_handled_info.h>
 #include <zaf/window/event/message_received_info.h>
-#include <zaf/window/event/show_info.h>
+#include <zaf/window/event/show_window_event_info.h>
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
 
@@ -444,10 +444,16 @@ public:
     Observable<HandleCreatedInfo> HandleCreatedEvent();
 
     /**
-    Window show event. This event is raised when the window receives WM_SHOWWINDOW message, which 
-    is sent when the window is about to be shown or hidden.
+    Window show event. This event is raised when the window receives WM_SHOWWINDOW message, whose
+    WPARAM is TRUE.
     */
     Observable<ShowInfo> ShowEvent();
+
+    /**
+    Window hide event. This event is raised when the window receives WM_SHOWWINDOW message, whose
+    WPARAM is FALSE.
+    */
+    Observable<HideInfo> HideEvent();
 
     Observable<ClosingInfo> ClosingEvent();
 
@@ -560,7 +566,7 @@ protected:
 
     /**
     Handles window show event. This method is called when the window receives WM_SHOWWINDOW 
-    message, which is sent when the window is about to be shown or hidden.
+    message, whose WPARAM is TRUE.
 
     @param event_info
         Information of the event.
@@ -569,6 +575,18 @@ protected:
     base class.
     */
     virtual void OnShow(const ShowInfo& event_info);
+
+    /**
+    Handles window hide event. This method is called when the window receives WM_SHOWWINDOW 
+    message, whose WPARAM is FALSE.
+
+    @param event_info
+        Information of the event.
+
+    The default implementation raises HideEvent. Derived classes should call the same method of
+    base class.
+    */
+    virtual void OnHide(const HideInfo& event_info);
 
     /**
     Handles window closing event. This method is called when the window receives WM_CLOSE message.

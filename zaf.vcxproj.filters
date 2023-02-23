@@ -835,7 +835,7 @@
     <ClCompile Include="src\zaf\window\event\handle_created_info.cpp">
       <Filter>zaf\window\event</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\window\event\show_info.cpp">
+    <ClCompile Include="src\zaf\window\event\show_window_event_info.cpp">
       <Filter>zaf\window\event</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1954,7 +1954,7 @@
     <ClInclude Include="src\zaf\window\message\show_window_message.h">
       <Filter>zaf\window\message</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\window\event\show_info.h">
+    <ClInclude Include="src\zaf\window\event\show_window_event_info.h">
       <Filter>zaf\window\event</Filter>
     </ClInclude>
   </ItemGroup>

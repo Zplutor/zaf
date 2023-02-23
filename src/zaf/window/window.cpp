@@ -44,6 +44,7 @@ constexpr const wchar_t* const MessageHandledEventPropertyName = L"MessageHandle
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
 constexpr const wchar_t* const HandleCreatedEventPropertyName = L"HandleCreatedEvent";
 constexpr const wchar_t* const ShowEventPropertyName = L"ShowEvent";
+constexpr const wchar_t* const HideEventPropertyName = L"HideEvent";
 
 
 Point TranslateAbsolutePositionToControlPosition(
@@ -859,7 +860,14 @@ void Window::NeedRepaintRect(const zaf::Rect& rect) {
 
 void Window::HandleWMSHOWWINDOW(const ShowWindowMessage& message) {
 
-    OnShow(ShowInfo{ shared_from_this(), message });
+    internal::ShowWindowEventInfo event_info{ shared_from_this(), message };
+
+    if (message.IsHidden()) {
+        OnHide(event_info);
+    }
+    else {
+        OnShow(event_info);
+    }
 }
 
 
@@ -874,6 +882,20 @@ void Window::OnShow(const ShowInfo& event_info) {
 
 Observable<ShowInfo> Window::ShowEvent() {
     return GetEventObservable<ShowInfo>(GetPropertyMap(), ShowEventPropertyName);
+}
+
+
+void Window::OnHide(const HideInfo& event_info) {
+
+    auto observer = GetEventObserver<HideInfo>(GetPropertyMap(), HideEventPropertyName);
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<HideInfo> Window::HideEvent() {
+    return GetEventObservable<HideInfo>(GetPropertyMap(), HideEventPropertyName);
 }
 
 

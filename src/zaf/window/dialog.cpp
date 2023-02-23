@@ -98,9 +98,9 @@ void Dialog::OnDestroyed(const DestroyedInfo& event_info) {
 }
 
 
-void Dialog::OnWindowShown() {
+void Dialog::OnShow(const ShowInfo& event_info) {
 
-    __super::OnWindowShown();
+    __super::OnShow(event_info);
 
     SetCurrentDefaultButton(default_button_);
 }
