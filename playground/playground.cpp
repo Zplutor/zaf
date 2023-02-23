@@ -39,6 +39,7 @@
 #include <zaf/control/tree_data_source.h>
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/scroll_bar.h>
+#include <zaf/control/scroll_bar_thumb.h>
 #include <zaf/control/check_box.h>
 #include <zaf/rx/creation.h>
 #include <zaf/rx/cancel.h>
@@ -48,6 +49,22 @@
 #include <zaf/control/property_grid.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
+
+
+class Thumb : public zaf::ScrollBarThumb {
+protected:
+    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override {
+
+        if (!IsEnabled()) {
+            return;
+        }
+
+        zaf::Canvas::StateGuard state_guard(canvas);
+
+        canvas.SetBrushWithColor(ThumbColor());
+        canvas.DrawRoundedRectangle(zaf::RoundedRect{ ContentRect(), 5, 5 });
+    }
+};
 
 
 class Window : public zaf::Window {
@@ -66,6 +83,10 @@ public:
 
         auto property_grid = zaf::Create<zaf::PropertyGrid>();
         property_grid->SetTargetObject(label);
+        property_grid->VerticalScrollBar()->SetArrowLength(0);
+        property_grid->SetAllowHorizontalScroll(false);
+        property_grid->VerticalScrollBar()->SetThumb(zaf::Create<Thumb>());
+        property_grid->VerticalScrollBar()->SetPadding(zaf::Frame{ 0, 2, 0, 2 });
 
         auto reload = zaf::Create<zaf::Button>();
         reload->SetText(L"Refresh");

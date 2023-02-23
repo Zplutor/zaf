@@ -319,18 +319,18 @@ void ScrollBar::Wheel(int distance) {
 
 void ScrollBar::Layout(const zaf::Rect& previous_rect) {
 
-    const zaf::Rect& rect = Rect();
+    auto content_rect = ContentRect();
 
     float bar_thickness = 0;
     float bar_length = 0;
 
     if (is_horizontal_) {
-        bar_thickness = rect.size.height;
-        bar_length = rect.size.width;
+        bar_thickness = content_rect.size.height;
+        bar_length = content_rect.size.width;
     }
     else {
-        bar_thickness = rect.size.width;
-        bar_length = rect.size.height;
+        bar_thickness = content_rect.size.width;
+        bar_length = content_rect.size.height;
     }
 
     float arrow_length = ArrowLength();
