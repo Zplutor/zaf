@@ -15,7 +15,7 @@ public:
 
 protected:
     void Initialize() override;
-    void OnWindowShown() override;
+    void OnShow(const ShowInfo& event_info) override;
     void OnCapturingMouseControlChanged(const std::shared_ptr<Control>& previous_control);
 
 private:

@@ -265,6 +265,7 @@
     <ClCompile Include="src\zaf\window\event\message_handled_info.cpp" />
     <ClCompile Include="src\zaf\window\event\message_received_info.cpp" />
     <ClCompile Include="src\zaf\window\event\destroyed_info.cpp" />
+    <ClCompile Include="src\zaf\window\event\show_info.cpp" />
     <ClCompile Include="src\zaf\window\initial_rect_style.cpp" />
     <ClCompile Include="src\zaf\window\inspector\inspector_window.cpp" />
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_control_item.cpp" />
@@ -630,6 +631,7 @@
     <ClInclude Include="src\zaf\window\event\message_handled_info.h" />
     <ClInclude Include="src\zaf\window\event\message_received_info.h" />
     <ClInclude Include="src\zaf\window\event\destroyed_info.h" />
+    <ClInclude Include="src\zaf\window\event\show_info.h" />
     <ClInclude Include="src\zaf\window\initial_rect_style.h" />
     <ClInclude Include="src\zaf\window\inspector\inspector_window.h" />
     <ClInclude Include="src\zaf\window\inspector\internal\inspector_port.h" />
@@ -646,6 +648,7 @@
     <ClInclude Include="src\zaf\window\message\message.h" />
     <ClInclude Include="src\zaf\window\message\message_shim.h" />
     <ClInclude Include="src\zaf\window\message\mouse_message.h" />
+    <ClInclude Include="src\zaf\window\message\show_window_message.h" />
     <ClInclude Include="src\zaf\window\message_only_window.h" />
     <ClInclude Include="src\zaf\window\tooltip_window.h" />
     <ClInclude Include="src\zaf\window\window.h" />

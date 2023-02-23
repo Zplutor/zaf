@@ -14,6 +14,7 @@
 #include <zaf/window/event/handle_created_info.h>
 #include <zaf/window/event/message_handled_info.h>
 #include <zaf/window/event/message_received_info.h>
+#include <zaf/window/event/show_info.h>
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
 
@@ -442,6 +443,12 @@ public:
 
     Observable<HandleCreatedInfo> HandleCreatedEvent();
 
+    /**
+    Window show event. This event is raised when the window receives WM_SHOWWINDOW message, which 
+    is sent when the window is about to be shown or hidden.
+    */
+    Observable<ShowInfo> ShowEvent();
+
     Observable<ClosingInfo> ClosingEvent();
 
     /**
@@ -552,6 +559,18 @@ protected:
     virtual void OnHandleCreated(const HandleCreatedInfo& event_info);
 
     /**
+    Handles window show event. This method is called when the window receives WM_SHOWWINDOW 
+    message, which is sent when the window is about to be shown or hidden.
+
+    @param event_info
+        Information of the event.
+
+    The default implementation raises ShowEvent. Derived classes should call the same method of 
+    base class.
+    */
+    virtual void OnShow(const ShowInfo& event_info);
+
+    /**
     Handles window closing event. This method is called when the window receives WM_CLOSE message.
 
     @param event_info
@@ -574,13 +593,6 @@ protected:
     call the same method of base calss.
     */
     virtual void OnDestroyed(const DestroyedInfo& event_info);
-
-    /**
-     This method is called after the window shown.
-
-     Derived classes must call the same method of super class.
-     */
-    virtual void OnWindowShown() { }
 
     virtual void OnRootControlChanged(const std::shared_ptr<Control>& previous_root_control) { } 
 
@@ -680,6 +692,7 @@ private:
     void HandleWMPAINT();
     void PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect);
     void Resize(UINT width, UINT height);
+    void HandleWMSHOWWINDOW(const ShowWindowMessage& message);
     void HandleSizeMessage(const Message& message);
     void HandleMoveMessage();
     void UpdateWindowRect();

@@ -43,6 +43,7 @@ constexpr const wchar_t* const MessageReceivedEventPropertyName = L"MessageRecei
 constexpr const wchar_t* const MessageHandledEventPropertyName = L"MessageHandledEvent";
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
 constexpr const wchar_t* const HandleCreatedEventPropertyName = L"HandleCreatedEvent";
+constexpr const wchar_t* const ShowEventPropertyName = L"ShowEvent";
 
 
 Point TranslateAbsolutePositionToControlPosition(
@@ -584,6 +585,10 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
     }
 
+    case WM_SHOWWINDOW:
+        HandleWMSHOWWINDOW(ShowWindowMessage{ message });
+        return 0;
+
     case WM_SIZE:
         HandleSizeMessage(message);
         return 0;
@@ -849,6 +854,26 @@ void Window::NeedRepaintRect(const zaf::Rect& rect) {
         RECT win32_rect = ToAlignedPixelsRect(rect, GetDPI()).ToRECT();
         InvalidateRect(handle_, &win32_rect, FALSE);
     }
+}
+
+
+void Window::HandleWMSHOWWINDOW(const ShowWindowMessage& message) {
+
+    OnShow(ShowInfo{ shared_from_this(), message });
+}
+
+
+void Window::OnShow(const ShowInfo& event_info) {
+
+    auto observer = GetEventObserver<ShowInfo>(GetPropertyMap(), ShowEventPropertyName);
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<ShowInfo> Window::ShowEvent() {
+    return GetEventObservable<ShowInfo>(GetPropertyMap(), ShowEventPropertyName);
 }
 
 
@@ -2043,8 +2068,6 @@ void Window::Show() {
     auto activate_option = ActivateOption();
     bool no_activate = (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
     ShowWindow(handle_, no_activate ? SW_SHOWNA : SW_SHOW);
-
-    OnWindowShown();
 }
 
 

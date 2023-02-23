@@ -21,9 +21,9 @@ void ComboBoxDropDownWindow::Initialize() {
 }
 
 
-void ComboBoxDropDownWindow::OnWindowShown() {
+void ComboBoxDropDownWindow::OnShow(const ShowInfo& event_info) {
 
-    __super::OnWindowShown();
+    __super::OnShow(event_info);
     container_->CaptureMouse();
 }
 
