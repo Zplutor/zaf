@@ -1746,7 +1746,7 @@ ActivateOption Window::ActivateOption() const {
         return *option;
     }
     else {
-        return ActivateOption::None;
+        return ActivateOption::Normal;
     }
 }
 

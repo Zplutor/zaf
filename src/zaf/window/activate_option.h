@@ -15,7 +15,7 @@ enum class ActivateOption {
     /**
      The window is activated as normal.
      */
-    None = 0,
+    Normal = 0,
 
     /**
      The window is not allow to be activated.
