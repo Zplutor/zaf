@@ -11,6 +11,7 @@
 #include <zaf/window/activate_option.h>
 #include <zaf/window/event/closing_info.h>
 #include <zaf/window/event/destroyed_info.h>
+#include <zaf/window/event/window_focus_event_info.h>
 #include <zaf/window/event/handle_created_info.h>
 #include <zaf/window/event/message_handled_info.h>
 #include <zaf/window/event/message_received_info.h>
@@ -455,6 +456,16 @@ public:
     */
     Observable<HideInfo> HideEvent();
 
+    /**
+    Window gained focus event. This event is raised when the window receives WM_SETFOCUS message.
+    */
+    Observable<WindowFocusGainedInfo> FocusGainedEvent();
+
+    /**
+    Window lost focus event. This event is raised when the window receives WM_KILLFOCUS message.
+    */
+    Observable<WindowFocusLostInfo> FocusLostEvent();
+
     Observable<ClosingInfo> ClosingEvent();
 
     /**
@@ -589,6 +600,30 @@ protected:
     virtual void OnHide(const HideInfo& event_info);
 
     /**
+    Handles window focus gained event. This method is called when the window receives WM_SETFOCUS
+    message.
+
+    @param event_info
+        Information of the event.
+
+    The default implementation raises FocusGainedEvent. Derived classes should call the same method
+    of base class.
+    */
+    virtual void OnFocusGained(const WindowFocusGainedInfo& event_info);
+
+    /**
+    Handles window focus lost event. This method is called when the window receives WM_KILLFOCUS
+    message.
+
+    @param event_info
+        Information of the event.
+
+    The default implementation raises FocusLostEvent. Derived classes should call the same method
+    of base calss.
+    */
+    virtual void OnFocusLost(const WindowFocusLostInfo& event_info);
+
+    /**
     Handles window closing event. This method is called when the window receives WM_CLOSE message.
 
     @param event_info
@@ -711,6 +746,8 @@ private:
     void PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect);
     void Resize(UINT width, UINT height);
     void HandleWMSHOWWINDOW(const ShowWindowMessage& message);
+    void HandleWMSETFOCUS(const SetFocusMessage& message);
+    void HandleWMKILLFOCUS(const KillFocusMessage& message);
     void HandleSizeMessage(const Message& message);
     void HandleMoveMessage();
     void UpdateWindowRect();

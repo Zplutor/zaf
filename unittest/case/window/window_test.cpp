@@ -230,6 +230,34 @@ TEST(WindowTest, ShowWindowEvent) {
 }
 
 
+TEST(WindowTest, FocusEvent) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
+    window->SetRect(zaf::Rect{ 0, 0, 1, 1 });
+    window->Show();
+
+    bool is_focus_lost_event_called{};
+    bool is_focus_gained_event_called{};
+
+    window->Subscriptions() += window->FocusLostEvent().Subscribe(
+        [&is_focus_lost_event_called](const zaf::WindowFocusLostInfo& event_info) {
+        is_focus_lost_event_called = true;
+    });
+
+    window->Subscriptions() += window->FocusGainedEvent().Subscribe(
+        [&is_focus_gained_event_called](const zaf::WindowFocusGainedInfo& event_info) {
+        is_focus_gained_event_called = true;
+    });
+
+    SetFocus(nullptr);
+    ASSERT_TRUE(is_focus_lost_event_called);
+
+    SetFocus(window->Handle());
+    ASSERT_TRUE(is_focus_gained_event_called);
+}
+
+
 TEST(WindowTest, Close) {
 
     auto window = zaf::Create<zaf::Window>();

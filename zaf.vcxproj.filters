@@ -838,6 +838,9 @@
     <ClCompile Include="src\zaf\window\event\show_window_event_info.cpp">
       <Filter>zaf\window\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\event\window_focus_event_info.cpp">
+      <Filter>zaf\window\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1955,6 +1958,12 @@
       <Filter>zaf\window\message</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\event\show_window_event_info.h">
+      <Filter>zaf\window\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\message\focus_message.h">
+      <Filter>zaf\window\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\event\window_focus_event_info.h">
       <Filter>zaf\window\event</Filter>
     </ClInclude>
   </ItemGroup>

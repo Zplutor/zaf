@@ -45,6 +45,8 @@ constexpr const wchar_t* const kTitlePropertyName = L"Title";
 constexpr const wchar_t* const HandleCreatedEventPropertyName = L"HandleCreatedEvent";
 constexpr const wchar_t* const ShowEventPropertyName = L"ShowEvent";
 constexpr const wchar_t* const HideEventPropertyName = L"HideEvent";
+constexpr const wchar_t* const FocusGainedEventPropertyName = L"FocusGainedEvent";
+constexpr const wchar_t* const FocusLostEventPropertyName = L"FocusLostEvent";
 
 
 Point TranslateAbsolutePositionToControlPosition(
@@ -599,15 +601,11 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_SETFOCUS:
-        if (auto last_focused_control = last_focused_control_.lock()) {
-            last_focused_control_.reset();
-            SetFocusedControl(last_focused_control);
-        }
+        HandleWMSETFOCUS(SetFocusMessage{ message });
         return 0;
 
     case WM_KILLFOCUS: 
-        last_focused_control_ = FocusedControl();
-        SetFocusedControl(nullptr);
+        HandleWMKILLFOCUS(KillFocusMessage{ message });
         return 0;
 
     case WM_MOUSEACTIVATE: {
@@ -896,6 +894,64 @@ void Window::OnHide(const HideInfo& event_info) {
 
 Observable<HideInfo> Window::HideEvent() {
     return GetEventObservable<HideInfo>(GetPropertyMap(), HideEventPropertyName);
+}
+
+
+void Window::HandleWMSETFOCUS(const SetFocusMessage& message) {
+
+    if (auto last_focused_control = last_focused_control_.lock()) {
+        last_focused_control_.reset();
+        SetFocusedControl(last_focused_control);
+    }
+
+    OnFocusGained(WindowFocusGainedInfo{ shared_from_this(), message.Inner() });
+}
+
+
+void Window::OnFocusGained(const WindowFocusGainedInfo& event_info) {
+
+    auto observer = GetEventObserver<WindowFocusGainedInfo>(
+        GetPropertyMap(), 
+        FocusGainedEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<WindowFocusGainedInfo> Window::FocusGainedEvent() {
+    return GetEventObservable<WindowFocusGainedInfo>(
+        GetPropertyMap(), 
+        FocusGainedEventPropertyName);
+}
+
+
+void Window::HandleWMKILLFOCUS(const KillFocusMessage& message) {
+
+    last_focused_control_ = FocusedControl();
+    SetFocusedControl(nullptr);
+
+    OnFocusLost(WindowFocusLostInfo{ shared_from_this(), message.Inner() });
+}
+
+
+void Window::OnFocusLost(const WindowFocusLostInfo& event_info) {
+
+    auto observer = GetEventObserver<WindowFocusLostInfo>(
+        GetPropertyMap(),
+        FocusLostEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<WindowFocusLostInfo> Window::FocusLostEvent() {
+    return GetEventObservable<WindowFocusLostInfo>(
+        GetPropertyMap(),
+        FocusLostEventPropertyName);
 }
 
 
