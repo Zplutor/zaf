@@ -4,7 +4,7 @@ namespace zaf::internal {
 
 SystemMessageWindow::SystemMessageWindow() : message_only_window_(nullptr) {
 
-    Subscriptions() += message_only_window_.ReceiveMessageEvent().Subscribe(
+    Subscriptions() += message_only_window_.MessageReceivedEvent().Subscribe(
         [this](const Message& message) {
     
         if (message.ID() == WM_ENDSESSION) {

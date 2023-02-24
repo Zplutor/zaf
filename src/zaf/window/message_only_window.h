@@ -4,16 +4,19 @@
 
 namespace zaf {
 
+/**
+A window that is used only for receiving messages.
+*/
 class MessageOnlyWindow {
 public:
     MessageOnlyWindow() : inner_(HWND_MESSAGE) { }
 
-    HWND GetHandle() const {
-        return inner_.GetHandle();
+    HWND Handle() const {
+        return inner_.Handle();
     }
 
-    Observable<Message> ReceiveMessageEvent() {
-        return inner_.ReceiveMessageEvent();
+    Observable<Message> MessageReceivedEvent() {
+        return inner_.MessageReceivedEvent();
     }
 
 private:

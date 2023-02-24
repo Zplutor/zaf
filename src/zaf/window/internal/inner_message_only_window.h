@@ -1,24 +1,22 @@
 #pragma once
 
+#include <zaf/base/non_copyable.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
 #include <zaf/window/message/message.h>
 
 namespace zaf::internal {
 
-class InnerMessageOnlyWindow {
+class InnerMessageOnlyWindow : public NonCopyable {
 public:
     InnerMessageOnlyWindow(HWND parent_window_handle);
     ~InnerMessageOnlyWindow();
 
-    InnerMessageOnlyWindow(const InnerMessageOnlyWindow&) = delete;
-    InnerMessageOnlyWindow& operator=(const InnerMessageOnlyWindow&) = delete;
-
-    HWND GetHandle() const {
+    HWND Handle() const {
         return handle_;
     }
 
-    Observable<Message> ReceiveMessageEvent() {
+    Observable<Message> MessageReceivedEvent() {
         return subject_.GetObservable();
     }
 
@@ -27,7 +25,7 @@ private:
     static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam);
 
 private:
-    void OnReceiveMessage(UINT id, WPARAM wparam, LPARAM lparam);
+    void OnMessageReceived(UINT id, WPARAM wparam, LPARAM lparam);
 
 private:
     HWND handle_{};

@@ -4,7 +4,7 @@
 namespace zaf::internal {
 namespace {
 
-constexpr const wchar_t* const MessageOnlyWindowClassName = L"ZafMessageOnlyWindowClass";
+constexpr const wchar_t* const MessageOnlyWindowClassName = L"ZafMsg";
 
 }
 
@@ -32,12 +32,14 @@ InnerMessageOnlyWindow::InnerMessageOnlyWindow(HWND parent_window_handle) {
 
     SetLastError(ERROR_SUCCESS);
 
-    SetWindowLongPtr(
+    LONG_PTR result = SetWindowLongPtr(
         handle_,
         GWLP_USERDATA,
         reinterpret_cast<ULONG_PTR>(this));
 
-    ZAF_THROW_IF_SYSTEM_ERROR(GetLastError());
+    if (result == 0) {
+        ZAF_THROW_IF_SYSTEM_ERROR(GetLastError());
+    }
 }
 
 
@@ -76,14 +78,14 @@ LRESULT CALLBACK InnerMessageOnlyWindow::WindowProcedure(
     LONG_PTR user_data = GetWindowLongPtr(hwnd, GWLP_USERDATA);
     auto window = reinterpret_cast<InnerMessageOnlyWindow*>(user_data);
     if (window) {
-        window->OnReceiveMessage(id, wparam, lparam);
+        window->OnMessageReceived(id, wparam, lparam);
     }
 
     return CallWindowProc(DefWindowProc, hwnd, id, wparam, lparam);
 }
 
 
-void InnerMessageOnlyWindow::OnReceiveMessage(UINT id, WPARAM wparam, LPARAM lparam) {
+void InnerMessageOnlyWindow::OnMessageReceived(UINT id, WPARAM wparam, LPARAM lparam) {
 
     subject_.GetObserver().OnNext(Message{ handle_, id, wparam, lparam });
 }
