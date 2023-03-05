@@ -50,23 +50,6 @@
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
-
-class Thumb : public zaf::ScrollBarThumb {
-protected:
-    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override {
-
-        if (!IsEnabled()) {
-            return;
-        }
-
-        zaf::Canvas::StateGuard state_guard(canvas);
-
-        canvas.SetBrushWithColor(ThumbColor());
-        canvas.DrawRoundedRectangle(zaf::RoundedRect{ ContentRect(), 5, 5 });
-    }
-};
-
-
 class Window : public zaf::Window {
 public:
     void AfterParse() override {
@@ -76,26 +59,9 @@ public:
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        auto label = zaf::Create<zaf::Label>();
-        label->SetText(L"Example");
-        label->SetFixedHeight(30);
-        this->RootControl()->AddChild(label);
-
-        auto property_grid = zaf::Create<zaf::PropertyGrid>();
-        property_grid->SetTargetObject(label);
-        property_grid->VerticalScrollBar()->SetArrowLength(0);
-        property_grid->SetAllowHorizontalScroll(false);
-        property_grid->VerticalScrollBar()->SetThumb(zaf::Create<Thumb>());
-        property_grid->VerticalScrollBar()->SetPadding(zaf::Frame{ 0, 2, 0, 2 });
-
-        auto reload = zaf::Create<zaf::Button>();
-        reload->SetText(L"Refresh");
-        reload->SetFixedHeight(30);
-        Subscriptions() += reload->ClickEvent().Subscribe(std::bind([property_grid]() {
-            property_grid->RefreshValues();
-        }));
-        this->RootControl()->AddChild(reload);
-        this->RootControl()->AddChild(property_grid);
+        auto text_box = zaf::Create<zaf::TextBox>();
+        text_box->SetFontSize(22);
+        this->RootControl()->AddChild(text_box);
     }
 };
 

@@ -1249,6 +1249,11 @@ BOOL TextBox::TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeigh
         ToDIPs(static_cast<float>(yHeight), dpi)
     };
 
+    //Revise width. If the width is less than 1 point, it could dispear.
+    if (caret_size.width < 1) {
+        caret_size.width = 1;
+    }
+
     if (!text_box->caret_) {
         text_box->caret_ = Create<Caret>(text_box);
     }
