@@ -17,7 +17,7 @@ namespace zaf {
 namespace {
 
 constexpr const wchar_t* ItemDoubleClickEventPropertyName = L"ItemDoubleClickEvent";
-constexpr const wchar_t* SelectionChangeEventPropertyName = L"SelectionChangeEvent";
+constexpr const wchar_t* SelectionChangedEventPropertyName = L"SelectionChangedEvent";
 
 }
 
@@ -53,7 +53,7 @@ void ListControl::Initialize() {
     initialize_parameters.item_container_change_event = 
         std::bind(&ListControl::OnItemContainerChanged, this, std::placeholders::_1);
     initialize_parameters.selection_change_event = 
-        std::bind(&ListControl::OnSelectionChanged, this);
+        std::bind(&ListControl::OnCoreSelectionChanged, this);
     initialize_parameters.item_double_click_event = 
         std::bind(&ListControl::OnItemDoubleClick, this, std::placeholders::_1);
 
@@ -139,10 +139,10 @@ void ListControl::SetSelectionMode(zaf::SelectionMode selection_mode) {
 }
 
 
-Observable<ListControlSelectionChangeInfo> ListControl::SelectionChangeEvent() {
-    return GetEventObservable<ListControlSelectionChangeInfo>(
+Observable<ListControlSelectionChangedInfo> ListControl::SelectionChangedEvent() {
+    return GetEventObservable<ListControlSelectionChangedInfo>(
         GetPropertyMap(),
-        SelectionChangeEventPropertyName);
+        SelectionChangedEventPropertyName);
 }
 
 
@@ -217,19 +217,22 @@ std::optional<std::size_t> ListControl::FindItemIndexAtPosition(const Point& pos
 }
 
 
-void ListControl::OnSelectionChanged() {
+void ListControl::OnCoreSelectionChanged() {
 
-    auto observer = GetEventObserver<ListControlSelectionChangeInfo>(
+    ListControlSelectionChangedInfo event_info{ zaf::As<ListControl>(shared_from_this()) };
+    OnSelectionChanged(event_info);
+}
+
+
+void ListControl::OnSelectionChanged(const ListControlSelectionChangedInfo& event_info) {
+
+    auto observer = GetEventObserver<ListControlSelectionChangedInfo>(
         GetPropertyMap(), 
-        SelectionChangeEventPropertyName);
+        SelectionChangedEventPropertyName);
 
-    if (!observer) {
-        return;
+    if (observer) {
+        observer->OnNext(event_info);
     }
-
-    ListControlSelectionChangeInfo event_info(
-        std::dynamic_pointer_cast<ListControl>(shared_from_this()));
-    observer->OnNext(event_info);
 }
 
 

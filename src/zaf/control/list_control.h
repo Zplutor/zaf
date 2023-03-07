@@ -2,6 +2,7 @@
 
 #include <deque>
 #include <zaf/base/define.h>
+#include <zaf/control/event/list_control_selection_changed_info.h>
 #include <zaf/control/list_item.h>
 #include <zaf/control/scrollable_control.h>
 #include <zaf/control/selection_mode.h>
@@ -17,7 +18,6 @@ class ListControlImplementation;
 class ListItemContainer;
 class ListControlDelegate;
 class ListControlItemDoubleClickInfo;
-class ListControlSelectionChangeInfo;
 class ListDataSource;
 
 /**
@@ -96,11 +96,11 @@ public:
     void SetSelectionMode(zaf::SelectionMode selection_mode);
 
     /**
-     Get selection change event.
+     Get selection changed event.
 
      This event is raised when selection is changed.
      */
-    Observable<ListControlSelectionChangeInfo> SelectionChangeEvent();
+    Observable<ListControlSelectionChangedInfo> SelectionChangedEvent();
 
     /**
      Select the item at specifed index.
@@ -194,8 +194,10 @@ protected:
 
     void OnIsEnabledChanged() override;
 
+    virtual void OnSelectionChanged(const ListControlSelectionChangedInfo& event_info);
+
 private:
-    void OnSelectionChanged();
+    void OnCoreSelectionChanged();
     void OnItemDoubleClick(std::size_t item_index);
 
 private:
@@ -203,22 +205,6 @@ private:
     std::weak_ptr<ListDataSource> data_source_;
     std::weak_ptr<ListControlDelegate> delegate_;
     std::shared_ptr<internal::ListControlImplementation> implementation_;
-};
-
-
-class ListControlSelectionChangeInfo {
-public:
-    ListControlSelectionChangeInfo(const std::shared_ptr<ListControl>& list_control) : 
-        list_control_(list_control) {
-
-    }
-
-    const std::shared_ptr<ListControl>& ListControl() const {
-        return list_control_;
-    }
-
-private:
-    std::shared_ptr<zaf::ListControl> list_control_;
 };
 
 

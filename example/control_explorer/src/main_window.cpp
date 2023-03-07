@@ -61,7 +61,7 @@ void MainWindow::InitializeControlListPanel() {
     control_list_box_->SetAllowHorizontalScroll(false);
     control_list_box_->SetAutoHideScrollBars(true);
 
-    Subscriptions() += control_list_box_->SelectionChangeEvent().Subscribe(
+    Subscriptions() += control_list_box_->SelectionChangedEvent().Subscribe(
         std::bind(&MainWindow::ControlListBoxSelectionChange, this));
 
     for (const auto& each_item : kControlNameAndCreators) {

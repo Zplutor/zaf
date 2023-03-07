@@ -122,7 +122,7 @@ void ComboBox::InitializeDropDownListBox() {
     drop_down_list_box_->SetMouseMoveCallback(
         std::bind(&ComboBox::DropDownListBoxMouseMove, this, std::placeholders::_1));
 
-    drop_down_list_box_subscription_ = drop_down_list_box_->SelectionChangeEvent().Subscribe(
+    drop_down_list_box_subscription_ = drop_down_list_box_->SelectionChangedEvent().Subscribe(
         std::bind(&ComboBox::DropDownListBoxSelectionChange, this));
 
     drop_down_window_->SetListControl(drop_down_list_box_);
