@@ -191,6 +191,7 @@ ZAF_DEFINE_TYPE_PROPERTY(InitialRectStyle)
 ZAF_DEFINE_TYPE_PROPERTY(Rect)
 ZAF_DEFINE_TYPE_PROPERTY(Position)
 ZAF_DEFINE_TYPE_PROPERTY(Size)
+ZAF_DEFINE_TYPE_PROPERTY(ContentRect)
 ZAF_DEFINE_TYPE_PROPERTY(ContentSize)
 ZAF_DEFINE_TYPE_PROPERTY(ContentWidth)
 ZAF_DEFINE_TYPE_PROPERTY(ContentHeight)
@@ -1680,6 +1681,11 @@ void Window::SetRect(const zaf::Rect& rect) {
             static_cast<int>(new_rect.size.height),
             SWP_NOZORDER | SWP_NOACTIVATE);
     }
+}
+
+
+zaf::Rect Window::ContentRect() const {
+    return zaf::Rect{ Point{}, ContentSize() };
 }
 
 

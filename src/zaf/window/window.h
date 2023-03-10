@@ -133,6 +133,8 @@ public:
         SetRect(zaf::Rect(Rect().position, size));
     }
 
+    zaf::Rect ContentRect() const;
+
     zaf::Size ContentSize() const;
     void SetContentSize(const zaf::Size& size);
 
