@@ -853,6 +853,9 @@
     <ClCompile Include="src\zaf\control\event\mouse_capture_event_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\event\mouse_capture_control_changed_info.cpp">
+      <Filter>zaf\window\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1989,6 +1992,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\mouse_capture_event_info.h">
       <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\event\mouse_capture_control_changed_info.h">
+      <Filter>zaf\window\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

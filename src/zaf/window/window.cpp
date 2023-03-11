@@ -41,6 +41,8 @@ constexpr const wchar_t* const kIsTopmostPropertyName = L"IsTopmost";
 constexpr const wchar_t* const kOwnerPropertyName = L"Owner";
 constexpr const wchar_t* const MessageReceivedEventPropertyName = L"MessageReceivedEvent";
 constexpr const wchar_t* const MessageHandledEventPropertyName = L"MessageHandledEvent";
+constexpr const wchar_t* const MouseCaptureControlChangedEventPropertyName = 
+    L"MouseCaptureControlChangedEvent";
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
 constexpr const wchar_t* const HandleCreatedEventPropertyName = L"HandleCreatedEvent";
 constexpr const wchar_t* const ShowEventPropertyName = L"ShowEvent";
@@ -215,7 +217,7 @@ ZAF_DEFINE_TYPE_PROPERTY(IsToolWindow)
 ZAF_DEFINE_TYPE_PROPERTY(IsTopmost)
 ZAF_DEFINE_TYPE_PROPERTY(Title)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(RootControl)
-ZAF_DEFINE_TYPE_PROPERTY(CapturingMouseControl)
+ZAF_DEFINE_TYPE_PROPERTY(MouseCaptureControl)
 ZAF_DEFINE_TYPE_PROPERTY(MouseOverControl)
 ZAF_DEFINE_TYPE_PROPERTY(FocusedControl)
 ZAF_DEFINE_TYPE_PROPERTY(IsVisible)
@@ -622,15 +624,7 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
     }
 
     case WM_CAPTURECHANGED: {
-        if (capturing_mouse_control_ != nullptr) {
-
-            auto previous_control = capturing_mouse_control_;
-
-            capturing_mouse_control_->IsCapturingMouseChanged(false);
-            capturing_mouse_control_ = nullptr;
-
-            OnCapturingMouseControlChanged(previous_control);
-        }
+        CancelMouseCapture();
         return 0;
     }
 
@@ -1103,9 +1097,9 @@ std::shared_ptr<Control> Window::GetBeginRoutingControlForMouseMessage(
 
     std::shared_ptr<Control> result;
 
-    if (capturing_mouse_control_) {
+    if (mouse_capture_control_) {
 
-        result = capturing_mouse_control_;
+        result = mouse_capture_control_;
 
         position_at_control = TranslateAbsolutePositionToControlPosition(
             message.MousePosition(),
@@ -1386,10 +1380,7 @@ void Window::OnClosing(const ClosingInfo& event_info) {
 
 void Window::HandleWMDESTROY() {
 
-    if (capturing_mouse_control_ != nullptr) {
-        capturing_mouse_control_->IsCapturingMouseChanged(false);
-        capturing_mouse_control_ = nullptr;
-    }
+    CancelMouseCapture();
 
     if (focused_control_ != nullptr) {
         focused_control_->SetIsFocusedByWindow(false);
@@ -1491,7 +1482,7 @@ void Window::ChangeControlMouseOverState(
 }
 
 
-void Window::SetCaptureMouseControl(
+void Window::SetMouseCaptureControl(
     const std::shared_ptr<Control>& capture_control,
     bool is_releasing) {
 
@@ -1510,7 +1501,7 @@ void Window::SetCaptureMouseControl(
 
 void Window::CaptureMouseWithControl(const std::shared_ptr<Control>& control) {
     
-    auto previous_control = capturing_mouse_control_;
+    auto previous_control = mouse_capture_control_;
     if (previous_control == control) {
         return;
     }
@@ -1527,22 +1518,62 @@ void Window::CaptureMouseWithControl(const std::shared_ptr<Control>& control) {
         SetCapture(Handle());
     }
 
-    capturing_mouse_control_ = control;
-    capturing_mouse_control_->IsCapturingMouseChanged(true);
+    mouse_capture_control_ = control;
+    mouse_capture_control_->IsCapturingMouseChanged(true);
 
-    OnCapturingMouseControlChanged(previous_control);
+    OnMouseCaptureControlChanged(MouseCaptureControlChangedInfo{ 
+        shared_from_this(),
+        previous_control 
+    });
 }
 
 
 void Window::ReleaseMouseWithControl(const std::shared_ptr<Control>& control) {
 
-    if (capturing_mouse_control_ != control) {
+    if (mouse_capture_control_ != control) {
         return;
     }
 
     //ReleaseCapture sends a WM_CAPTURECAHNGED message to the window, 
-    //in which message handler will set capturing_mouse_control_ to nullptr.
+    //in which message handler will set mouse_capture_control_ to nullptr.
     ReleaseCapture();
+}
+
+
+void Window::CancelMouseCapture() {
+
+    if (!mouse_capture_control_) {
+        return;
+    }
+
+    //Set mouse_capture_control_ to nullptr before raising events to avoid reentering issues.
+    auto previous_control = mouse_capture_control_;
+    mouse_capture_control_ = nullptr;
+    previous_control->IsCapturingMouseChanged(false);
+
+    OnMouseCaptureControlChanged(MouseCaptureControlChangedInfo{
+        shared_from_this(),
+        previous_control
+    });
+}
+
+
+void Window::OnMouseCaptureControlChanged(const MouseCaptureControlChangedInfo& event_info) {
+
+    auto observer = GetEventObserver<MouseCaptureControlChangedInfo>(
+        GetPropertyMap(), 
+        MouseCaptureControlChangedEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<MouseCaptureControlChangedInfo> Window::MouseCaptureControlChangedEvent() {
+    return GetEventObservable<MouseCaptureControlChangedInfo>(
+        GetPropertyMap(), 
+        MouseCaptureControlChangedEventPropertyName);
 }
 
 

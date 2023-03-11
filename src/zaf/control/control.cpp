@@ -1546,7 +1546,7 @@ void Control::CaptureMouse() {
 
     auto window = Window();
     if (window != nullptr) {
-        window->SetCaptureMouseControl(shared_from_this(), false);
+        window->SetMouseCaptureControl(shared_from_this(), false);
     }
 }
 
@@ -1555,7 +1555,7 @@ void Control::ReleaseMouse() {
 
     auto window = Window();
     if (window != nullptr) {
-        window->SetCaptureMouseControl(shared_from_this(), true);
+        window->SetMouseCaptureControl(shared_from_this(), true);
     }
 }
 

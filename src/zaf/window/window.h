@@ -15,6 +15,7 @@
 #include <zaf/window/event/handle_created_info.h>
 #include <zaf/window/event/message_handled_info.h>
 #include <zaf/window/event/message_received_info.h>
+#include <zaf/window/event/mouse_capture_control_changed_info.h>
 #include <zaf/window/event/show_window_event_info.h>
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
@@ -410,11 +411,17 @@ public:
     void SetRootControl(const std::shared_ptr<Control>& control);
 
     /**
-     Get the control which is capturing mouse in the window.
+     Gets the control which captures mouse in the window.
      */
-    const std::shared_ptr<Control>& CapturingMouseControl() const {
-        return capturing_mouse_control_;
+    const std::shared_ptr<Control>& MouseCaptureControl() const {
+        return mouse_capture_control_;
     }
+
+    /**
+    Gets mouse capture control changed event. This event is raised after the mouse capture control 
+    changed.
+    */
+    Observable<MouseCaptureControlChangedInfo> MouseCaptureControlChangedEvent();
 
     /**
      Get the control which is under mouse cursor.
@@ -663,15 +670,13 @@ protected:
         const std::shared_ptr<Control>& previous_focused_control) { }
 
     /**
-     This method is called after the capturing mouse control changed.
+    Handles mouse capture changed event. This method is called after the mouse capture control
+    changed.
 
-     @param previous_capture_control
-         The previous capture mouse control, may be nullptr.
-
-     Derived classes must call the same method of super class.
-     */
-    virtual void OnCapturingMouseControlChanged(
-        const std::shared_ptr<Control>& previous_capturing_control) { }
+    The default implementation raise MouseCaptureChangedEvent. Derived classes should call the same 
+    method of base class.
+    */
+    virtual void OnMouseCaptureControlChanged(const MouseCaptureControlChangedInfo& event_info);
 
     /**
      Get the window's property map.
@@ -701,9 +706,10 @@ private:
     void ChangeControlMouseOverState(
         const std::shared_ptr<Control>& target_control,
         bool is_mouse_over);
-    void SetCaptureMouseControl(
+    void SetMouseCaptureControl(
         const std::shared_ptr<Control>& capture_control,
         bool is_releasing);
+    void CancelMouseCapture();
     void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
     void ChangeControlFocusState(
         const std::shared_ptr<Control>& target_control, 
@@ -803,7 +809,7 @@ private:
 
     std::shared_ptr<Control> root_control_;
     std::shared_ptr<Control> mouse_over_control_;
-    std::shared_ptr<Control> capturing_mouse_control_;
+    std::shared_ptr<Control> mouse_capture_control_;
     std::shared_ptr<Control> focused_control_;
     std::weak_ptr<Control> last_focused_control_;
     std::shared_ptr<TooltipWindow> tooltip_window_;

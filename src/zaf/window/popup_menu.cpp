@@ -40,12 +40,18 @@ void PopupMenu::OnShow(const ShowInfo& event_info) {
 
     RootControl()->CaptureMouse();
 
-    mouse_down_subscription_ = RootControl()->MouseDownEvent().Subscribe(
+    root_control_subscriptions_ += RootControl()->MouseDownEvent().Subscribe(
         [this](const MouseDownInfo& event_info) {
     
         if (!ContentRect().Contain(event_info.PositionAtSender())) {
             Close();
         }
+    });
+
+    root_control_subscriptions_ += RootControl()->MouseReleasedEvent().Subscribe(
+        [this](const MouseReleasedInfo& event_info) {
+    
+        Close();
     });
 }
 

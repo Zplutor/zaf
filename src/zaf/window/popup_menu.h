@@ -14,7 +14,7 @@ protected:
     void OnShow(const ShowInfo& event_info) override;
 
 private:
-    Subscription mouse_down_subscription_;
+    SubscriptionHolder root_control_subscriptions_;
 };
 
 }

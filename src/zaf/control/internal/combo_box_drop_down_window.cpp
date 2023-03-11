@@ -28,11 +28,14 @@ void ComboBoxDropDownWindow::OnShow(const ShowInfo& event_info) {
 }
 
 
-void ComboBoxDropDownWindow::OnCapturingMouseControlChanged(const std::shared_ptr<Control>& previous_control) {
+void ComboBoxDropDownWindow::OnMouseCaptureControlChanged(
+    const MouseCaptureControlChangedInfo& event_info) {
     
-    if (CapturingMouseControl() == nullptr) {
+    __super::OnMouseCaptureControlChanged(event_info);
 
-        if (previous_control == container_) {
+    if (MouseCaptureControl() == nullptr) {
+
+        if (event_info.PreviousControl() == container_) {
             Close();
         }
         else {
