@@ -17,6 +17,7 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/image/image.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/graphic/dpi.h>
 #include <zaf/control/list_box.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/internal/reflection_manager.h>
@@ -78,7 +79,13 @@ protected:
             auto context_menu = zaf::Create<zaf::PopupMenu>();
             context_menu->SetOwner(shared_from_this());
             context_menu->SetSize(zaf::Size{ 200, 400 });
-            context_menu->Show();
+
+            auto mouse_position = zaf::MouseMessage(event_info.Message()).MousePosition();
+            auto mouse_position_in_pixels = zaf::FromDIPs(mouse_position, this->GetDPI()).ToPOINT();
+
+            ::ClientToScreen(event_info.Message().WindowHandle(), &mouse_position_in_pixels);
+
+            context_menu->Popup(zaf::ToDIPs(zaf::Point::FromPOINT(mouse_position_in_pixels), this->GetDPI()));
         }
     }
 

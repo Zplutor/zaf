@@ -21,8 +21,8 @@ protected:
 private:
     class Container : public Control {
     protected:
-        void OnMouseCapture() override;
-        void OnMouseRelease() override;
+        void OnMouseCaptured(const MouseCapturedInfo& event_info) override;
+        void OnMouseReleased(const MouseReleasedInfo& event_info) override;
         void OnMouseMove(const MouseMoveInfo& event_info) override;
         void OnMouseUp(const MouseUpInfo& event_info) override;
 

@@ -59,8 +59,10 @@ public:
     using MessageShim::MessageShim;
 
     /**
-     Get the mouse position in window's client area coordinate.
-     */
+    Gets the mouse position in window's client area coordinate.
+
+    The mouse position is in DIPs.
+    */
     Point MousePosition() const;
 
     /**

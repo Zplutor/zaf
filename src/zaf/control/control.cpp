@@ -76,7 +76,9 @@ constexpr const wchar_t* const FocusGainedEventPropertyName = L"FocusGainedEvent
 constexpr const wchar_t* const FocusLostEventPropertyName = L"FocusLostEvent";
 constexpr const wchar_t* const KeyDownEventPropertyName = L"KeyDown";
 constexpr const wchar_t* const KeyUpEventPropertyName = L"KeyUp";
+constexpr const wchar_t* const MouseCapturedEventPropertyName = L"MouseCaptured";
 constexpr const wchar_t* const MouseDownEventPropertyName = L"MouseDown";
+constexpr const wchar_t* const MouseReleasedEventPropertyName = L"MouseReleased";
 constexpr const wchar_t* const MouseUpEventPropertyName = L"MouseUp";
 constexpr const wchar_t* const ParentChangedEventPropertyName = L"ParentChangedEvent";
 constexpr const wchar_t* const TooltipPropertyName = L"Tooltip";
@@ -1562,11 +1564,12 @@ void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
 
     is_capturing_mouse_ = is_capturing_mouse;
 
+    internal::MouseCaptureEventInfo event_info{ shared_from_this() };
     if (is_capturing_mouse_) {
-        OnMouseCapture();
+        OnMouseCaptured(event_info);
     }
     else {
-        OnMouseRelease();
+        OnMouseReleased(event_info);
     }
 }
 
@@ -1847,13 +1850,37 @@ void Control::OnMouseWheel(const MouseWheelInfo& event_info) {
 }
 
 
-void Control::OnMouseCapture() {
+void Control::OnMouseCaptured(const MouseCapturedInfo& event_info) {
 
+    auto observer = GetEventObserver<MouseCapturedInfo>(
+        GetPropertyMap(), 
+        MouseCapturedEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
 }
 
 
-void Control::OnMouseRelease() {
+Observable<MouseCapturedInfo> Control::MouseCapturedEvent() {
+    return GetEventObservable<MouseCapturedInfo>(GetPropertyMap(), MouseCapturedEventPropertyName);
+}
 
+
+void Control::OnMouseReleased(const MouseReleasedInfo& event_info) {
+
+    auto observer = GetEventObserver<MouseReleasedInfo>(
+        GetPropertyMap(), 
+        MouseReleasedEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<MouseReleasedInfo> Control::MouseReleasedEvent() {
+    return GetEventObservable<MouseReleasedInfo>(GetPropertyMap(), MouseReleasedEventPropertyName);
 }
 
 

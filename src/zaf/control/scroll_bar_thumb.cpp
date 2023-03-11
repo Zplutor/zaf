@@ -72,25 +72,25 @@ void ScrollBarThumb::SetThumbColorPicker(const ColorPicker& color_picker) {
 }
 
 
-void ScrollBarThumb::OnMouseCapture() {
+void ScrollBarThumb::OnMouseCaptured(const MouseCapturedInfo& event_info) {
 
-    ClickableControl::OnMouseCapture();
+    __super::OnMouseCaptured(event_info);
 
     is_dragging_ = true;
 
-    ScrollBarThumbBeginDragInfo event_info{ As<ScrollBarThumb>(shared_from_this())};
-    begin_drag_event_.GetObserver().OnNext(event_info);
+    ScrollBarThumbBeginDragInfo begin_drag_event_info{ As<ScrollBarThumb>(shared_from_this())};
+    begin_drag_event_.GetObserver().OnNext(begin_drag_event_info);
 }
 
 
-void ScrollBarThumb::OnMouseRelease() {
+void ScrollBarThumb::OnMouseReleased(const MouseReleasedInfo& event_info) {
 
-    ClickableControl::OnMouseRelease();
+    __super::OnMouseReleased(event_info);
 
     is_dragging_ = false;
 
-    ScrollBarThumbEndDragInfo event_info{ As<ScrollBarThumb>(shared_from_this()) };
-    end_drag_event_.GetObserver().OnNext(event_info);
+    ScrollBarThumbEndDragInfo end_drag_event_info{ As<ScrollBarThumb>(shared_from_this()) };
+    end_drag_event_.GetObserver().OnNext(end_drag_event_info);
 }
 
 

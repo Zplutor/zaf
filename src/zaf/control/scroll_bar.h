@@ -208,8 +208,8 @@ protected:
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseUp(const MouseUpInfo& event_info) override;
     void OnMouseWheel(const MouseWheelInfo& event_info) override;
-    void OnMouseCapture() override;
-    void OnMouseRelease() override;
+    void OnMouseCaptured(const MouseCapturedInfo& event_info) override;
+    void OnMouseReleased(const MouseReleasedInfo& event_info) override;
 
 private:
     enum class TimerEvent {

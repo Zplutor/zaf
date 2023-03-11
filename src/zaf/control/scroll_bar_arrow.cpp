@@ -101,21 +101,21 @@ void ScrollBarArrow::SetArrowColorPicker(const ColorPicker& color_picker) {
 }
 
 
-void ScrollBarArrow::OnMouseCapture() {
+void ScrollBarArrow::OnMouseCaptured(const MouseCapturedInfo& event_info) {
 
-    ClickableControl::OnMouseCapture();
+    __super::OnMouseCaptured(event_info);
 
-    ScrollBarArrowBeginPressInfo event_info{ As<ScrollBarArrow>(shared_from_this()) };
-    begin_press_event_.GetObserver().OnNext(event_info);
+    ScrollBarArrowBeginPressInfo begin_press_event_info{ As<ScrollBarArrow>(shared_from_this()) };
+    begin_press_event_.GetObserver().OnNext(begin_press_event_info);
 }
 
 
-void ScrollBarArrow::OnMouseRelease() {
+void ScrollBarArrow::OnMouseReleased(const MouseReleasedInfo& event_info) {
 
-    ClickableControl::OnMouseRelease();
+    __super::OnMouseReleased(event_info);
 
-    ScrollBarArrowBeginPressInfo event_info{ As<ScrollBarArrow>(shared_from_this()) };
-    end_press_event_.GetObserver().OnNext(event_info);
+    ScrollBarArrowBeginPressInfo begin_press_event_info{ As<ScrollBarArrow>(shared_from_this()) };
+    end_press_event_.GetObserver().OnNext(begin_press_event_info);
 }
 
 }

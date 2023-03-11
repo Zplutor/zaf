@@ -518,17 +518,21 @@ void SplitBar::OnMouseUp(const MouseUpInfo& event_info) {
 }
 
 
-void SplitBar::OnMouseCapture() {
+void SplitBar::OnMouseCaptured(const MouseCapturedInfo& event_info) {
 
-    SplitBarBeginDragInfo event_info{ As<SplitBar>(shared_from_this()) };
-    begin_drag_event_.GetObserver().OnNext(event_info);
+    __super::OnMouseCaptured(event_info);
+
+    SplitBarBeginDragInfo begin_drag_event_info{ As<SplitBar>(shared_from_this()) };
+    begin_drag_event_.GetObserver().OnNext(begin_drag_event_info);
 }
 
 
-void SplitBar::OnMouseRelease() {
+void SplitBar::OnMouseReleased(const MouseReleasedInfo& event_info) {
 
-    SplitBarEndDragInfo event_info{ As<SplitBar>(shared_from_this()) };
-    end_drag_event_.GetObserver().OnNext(event_info);
+    __super::OnMouseReleased(event_info);
+
+    SplitBarEndDragInfo end_drag_event_info{ As<SplitBar>(shared_from_this()) };
+    end_drag_event_.GetObserver().OnNext(end_drag_event_info);
 }
 
 

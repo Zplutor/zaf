@@ -13,6 +13,7 @@
 #include <zaf/control/event/double_click_info.h>
 #include <zaf/control/event/focus_event_info.h>
 #include <zaf/control/event/keyboard_event_info.h>
+#include <zaf/control/event/mouse_capture_event_info.h>
 #include <zaf/control/event/mouse_event_info.h>
 #include <zaf/control/event/parent_changed_info.h>
 #include <zaf/control/event/rect_changed_info.h>
@@ -596,9 +597,21 @@ public:
     void CaptureMouse();
 
     /**
+    Gets mouse captured event. This event is raised after the control calling CaptureMouse() and 
+    capturing mouse successfully.
+    */
+    Observable<MouseCapturedInfo> MouseCapturedEvent();
+
+    /**
      Release the mouse.
      */
     void ReleaseMouse();
+
+    /**
+    Gets mouse released event. This event is raised after the control releasing mouse capture with 
+    ReleaseMouse(), or losing mouse capture passively.
+    */
+    Observable<MouseReleasedInfo> MouseReleasedEvent();
 
     /**
      The the mouse position in control's coordinate.
@@ -764,20 +777,22 @@ protected:
     virtual void OnMouseWheel(const MouseWheelInfo& event_info);
 
     /**
-     Process the mouse capture notification.
+    Handles mouse captured event. This method is called after the control calling CaptureMouse() 
+    and capturing mouse successfully.
 
-     This method is called when the control captured the mouse. Derived classes
-     should call the same method of base class if they don't process the notification.
-     */
-    virtual void OnMouseCapture();
+    The default implementation raises MouseCapturedEvent. Derived classes should call the same 
+    method of base class.
+    */
+    virtual void OnMouseCaptured(const MouseCapturedInfo& event_info);
 
     /**
-     Process the mouse release notification.
+    Handles mouse released event. This method is called after the control releasing mouse capture 
+    with ReleaseMouse(), or losing mouse capture passively.
 
-     This method is called when the control release the mouse. Derived classes
-     should call the same method of base class if they don't process the notification.
-     */
-    virtual void OnMouseRelease();
+    The default implementation raises MouseReleasedEvent. Derived classes should call the same 
+    method of base class.
+    */
+    virtual void OnMouseReleased(const MouseReleasedInfo& event_info);
 
     virtual void OnKeyDown(const KeyDownInfo& event_info);
     virtual void OnKeyUp(const KeyUpInfo& event_info);

@@ -450,12 +450,18 @@ void ScrollBar::OnMouseUp(const MouseUpInfo& event_info) {
 }
 
 
-void ScrollBar::OnMouseCapture() {
+void ScrollBar::OnMouseCaptured(const MouseCapturedInfo& event_info) {
+
+    __super::OnMouseCaptured(event_info);
+
     BeginTimer(TimerEvent::PageRoll);
 }
 
 
-void ScrollBar::OnMouseRelease() {
+void ScrollBar::OnMouseReleased(const MouseReleasedInfo& event_info) {
+
+    __super::OnMouseReleased(event_info);
+
     timer_.reset();
 }
 

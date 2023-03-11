@@ -177,8 +177,8 @@ protected:
     void OnMouseMove(const MouseMoveInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseUp(const MouseUpInfo& event_info) override;
-    void OnMouseCapture() override;
-    void OnMouseRelease() override;
+    void OnMouseCaptured(const MouseCapturedInfo& event_info) override;
+    void OnMouseReleased(const MouseReleasedInfo& event_info) override;
 
 private:
     bool is_horizontal_ = false;

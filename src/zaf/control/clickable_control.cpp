@@ -128,13 +128,19 @@ void ClickableControl::OnMouseUp(const MouseUpInfo& event_info) {
 }
 
 
-void ClickableControl::OnMouseCapture() {
+void ClickableControl::OnMouseCaptured(const MouseCapturedInfo& event_info) {
+
+    __super::OnMouseCaptured(event_info);
+
     is_pressed_ = true;
     NeedRepaint();
 }
 
 
-void ClickableControl::OnMouseRelease() {
+void ClickableControl::OnMouseReleased(const MouseReleasedInfo& event_info) {
+
+    __super::OnMouseReleased(event_info);
+
     is_pressed_ = false;
     NeedRepaint();
 }
