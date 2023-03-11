@@ -2,6 +2,7 @@
 
 #include <deque>
 #include <zaf/base/define.h>
+#include <zaf/control/event/list_control_item_double_click_info.h>
 #include <zaf/control/event/list_control_selection_changed_info.h>
 #include <zaf/control/list_item.h>
 #include <zaf/control/scrollable_control.h>
@@ -17,7 +18,6 @@ class ListControlImplementation;
 
 class ListItemContainer;
 class ListControlDelegate;
-class ListControlItemDoubleClickInfo;
 class ListDataSource;
 
 /**
@@ -205,31 +205,6 @@ private:
     std::weak_ptr<ListDataSource> data_source_;
     std::weak_ptr<ListControlDelegate> delegate_;
     std::shared_ptr<internal::ListControlImplementation> implementation_;
-};
-
-
-class ListControlItemDoubleClickInfo {
-public:
-    ListControlItemDoubleClickInfo(
-        const std::shared_ptr<ListControl>& list_control, 
-        std::size_t item_index) 
-        :
-        list_control_(list_control),
-        item_index_(item_index) {
-
-    }
-
-    const std::shared_ptr<ListControl>& ListControl() const {
-        return list_control_;
-    }
-
-    std::size_t ItemIndex() const {
-        return item_index_;
-    }
-
-private:
-    std::shared_ptr<zaf::ListControl> list_control_;
-    std::size_t item_index_{};
 };
 
 }

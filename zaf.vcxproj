@@ -78,6 +78,7 @@
     <ClCompile Include="src\zaf\control\event\double_click_info.cpp" />
     <ClCompile Include="src\zaf\control\event\focus_event_info.cpp" />
     <ClCompile Include="src\zaf\control\event\keyboard_event_info.cpp" />
+    <ClCompile Include="src\zaf\control\event\list_control_item_double_click_info.cpp" />
     <ClCompile Include="src\zaf\control\event\list_control_selection_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\mouse_event_info.cpp" />
     <ClCompile Include="src\zaf\control\event\parent_changed_info.cpp" />
@@ -355,6 +356,7 @@
     <ClInclude Include="src\zaf\control\event\double_click_info.h" />
     <ClInclude Include="src\zaf\control\event\focus_event_info.h" />
     <ClInclude Include="src\zaf\control\event\keyboard_event_info.h" />
+    <ClInclude Include="src\zaf\control\event\list_control_item_double_click_info.h" />
     <ClInclude Include="src\zaf\control\event\list_control_selection_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\mouse_event_info.h" />
     <ClInclude Include="src\zaf\control\event\parent_changed_info.h" />
