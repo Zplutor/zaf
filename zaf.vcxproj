@@ -261,6 +261,7 @@
     <ClCompile Include="src\zaf\rx\subscription_host.cpp" />
     <ClCompile Include="src\zaf\rx\timer.cpp" />
     <ClCompile Include="src\zaf\window\activate_option.cpp" />
+    <ClCompile Include="src\zaf\window\popup_menu.cpp" />
     <ClCompile Include="src\zaf\window\dialog.cpp" />
     <ClCompile Include="src\zaf\window\event\closing_info.cpp" />
     <ClCompile Include="src\zaf\window\event\handle_created_info.cpp" />
@@ -629,6 +630,7 @@
     <ClInclude Include="src\zaf\serialization\property_map.h" />
     <ClInclude Include="src\zaf\application_event_infos.h" />
     <ClInclude Include="src\zaf\window\activate_option.h" />
+    <ClInclude Include="src\zaf\window\popup_menu.h" />
     <ClInclude Include="src\zaf\window\dialog.h" />
     <ClInclude Include="src\zaf\window\dialog_result.h" />
     <ClInclude Include="src\zaf\window\event\closing_info.h" />

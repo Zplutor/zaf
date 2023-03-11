@@ -1491,7 +1491,9 @@ void Window::ChangeControlMouseOverState(
 }
 
 
-void Window::SetCaptureMouseControl(const std::shared_ptr<Control>& capture_control, bool is_releasing) {
+void Window::SetCaptureMouseControl(
+    const std::shared_ptr<Control>& capture_control,
+    bool is_releasing) {
 
     if (capture_control == nullptr) {
         return;

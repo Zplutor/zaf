@@ -847,6 +847,9 @@
     <ClCompile Include="src\zaf\control\event\list_control_item_double_click_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\popup_menu.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1977,6 +1980,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\list_control_item_double_click_info.h">
       <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\popup_menu.h">
+      <Filter>zaf\window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

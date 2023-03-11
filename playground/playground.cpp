@@ -47,11 +47,12 @@
 #include <zaf/rx/timer.h>
 #include <zaf/object/internal/property_helper.h>
 #include <zaf/control/property_grid.h>
+#include <zaf/window/popup_menu.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
 class Window : public zaf::Window {
-public:
+protected:
     void AfterParse() override {
 
         __super::AfterParse();
@@ -59,10 +60,31 @@ public:
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        auto text_box = zaf::Create<zaf::TextBox>();
-        text_box->SetFontSize(22);
-        this->RootControl()->AddChild(text_box);
+        text_box_ = zaf::Create<zaf::TextBox>();
+        text_box_->SetFontSize(22);
+
+        button_ = zaf::Create<zaf::Button>();
+        button_->SetFixedHeight(30);
+
+        this->RootControl()->AddChildren({ text_box_, button_ });
     }
+
+    void OnMessageHandled(const zaf::MessageHandledInfo& event_info) override {
+
+        __super::OnMessageHandled(event_info);
+
+        if (event_info.Message().ID() == WM_RBUTTONDOWN) {
+
+            auto context_menu = zaf::Create<zaf::PopupMenu>();
+            context_menu->SetOwner(shared_from_this());
+            context_menu->SetSize(zaf::Size{ 200, 400 });
+            context_menu->Show();
+        }
+    }
+
+private:
+    std::shared_ptr<zaf::TextBox> text_box_;
+    std::shared_ptr<zaf::Button> button_;
 };
 
 
