@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <zaf/base/auto_reset_value.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/renderer/window_renderer.h>
@@ -804,6 +805,11 @@ private:
     HWND handle_{};
     zaf::Rect rect_{ 0, 0, 640, 480 };
     WindowRenderer renderer_;
+
+    //A flag to avoid reentering.
+    //It might be better to define a enum to indicate different states of window handle, rather 
+    //than a single bool flag. It will be done later once it becomes necessary.
+    AutoResetValue<bool> is_being_destroyed_{ false };
 
     TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };
 

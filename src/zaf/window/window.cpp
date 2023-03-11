@@ -1380,6 +1380,13 @@ void Window::OnClosing(const ClosingInfo& event_info) {
 
 void Window::HandleWMDESTROY() {
 
+    //Avoid reentering.
+    if (is_being_destroyed_.Value()) {
+        return;
+    }
+
+    auto guard = is_being_destroyed_.BeginSet(true);
+
     CancelMouseCapture();
 
     if (focused_control_ != nullptr) {
@@ -2219,6 +2226,12 @@ bool Window::IsFocused() const {
 
 
 void Window::Close() {
+
+    //Do nothing if the window is being destroyed.
+    if (is_being_destroyed_.Value()) {
+        return;
+    }
+
     SendMessage(Handle(), WM_CLOSE, 0, 0);
 }
 
