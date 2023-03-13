@@ -859,6 +859,9 @@
     <ClCompile Include="src\zaf\window\event\root_control_changed_info.cpp">
       <Filter>zaf\window\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\menu_item.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2001,6 +2004,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\event\root_control_changed_info.h">
       <Filter>zaf\window\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\menu_item.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

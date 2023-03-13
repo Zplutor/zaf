@@ -134,6 +134,7 @@
     <ClCompile Include="src\zaf\control\list_data_source.cpp" />
     <ClCompile Include="src\zaf\control\list_item.cpp" />
     <ClCompile Include="src\zaf\control\list_item_container.cpp" />
+    <ClCompile Include="src\zaf\control\menu_item.cpp" />
     <ClCompile Include="src\zaf\control\property_grid.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\bool_value_view.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\color_config.cpp" />
@@ -425,6 +426,7 @@
     <ClInclude Include="src\zaf\control\list_data_source.h" />
     <ClInclude Include="src\zaf\control\list_item.h" />
     <ClInclude Include="src\zaf\control\list_item_container.h" />
+    <ClInclude Include="src\zaf\control\menu_item.h" />
     <ClInclude Include="src\zaf\control\property_grid.h" />
     <ClInclude Include="src\zaf\control\property_grid\bool_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\bool_value_view.h" />

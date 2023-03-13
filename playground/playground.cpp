@@ -78,6 +78,19 @@ protected:
 
             auto context_menu = zaf::Create<zaf::PopupMenu>();
             context_menu->SetOwner(shared_from_this());
+
+            for (int count = 0; count < 5; ++count) {
+
+                auto menu_item = zaf::Create<zaf::MenuItem>();
+                menu_item->SetText(L"Menu item " + std::to_wstring(count));
+
+                Subscriptions() += menu_item->MouseUpEvent().Subscribe([](const zaf::MouseUpInfo& event_info) {
+                    event_info.IsHandled();
+                });
+
+                context_menu->AddMenuItem(menu_item);
+            }
+
             context_menu->SetSize(zaf::Size{ 200, 400 });
 
             auto mouse_position = zaf::MouseMessage(event_info.Message()).MousePosition();
