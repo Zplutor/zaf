@@ -45,6 +45,7 @@ constexpr const wchar_t* const MouseCaptureControlChangedEventPropertyName =
     L"MouseCaptureControlChangedEvent";
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
 constexpr const wchar_t* const HandleCreatedEventPropertyName = L"HandleCreatedEvent";
+constexpr const wchar_t* const RootControlChangedEventPropertyName = L"RootControlChangedEvent";
 constexpr const wchar_t* const ShowEventPropertyName = L"ShowEvent";
 constexpr const wchar_t* const HideEventPropertyName = L"HideEvent";
 constexpr const wchar_t* const FocusGainedEventPropertyName = L"FocusGainedEvent";
@@ -2129,7 +2130,26 @@ void Window::InitializeRootControl(const std::shared_ptr<Control>& control) {
         root_control_->SetRect(Rect::FromRECT(client_rect));
     }
 
-    OnRootControlChanged(previous_root_control);
+    OnRootControlChanged(RootControlChangedInfo{ shared_from_this(), previous_root_control });
+}
+
+
+void Window::OnRootControlChanged(const RootControlChangedInfo& event_info) {
+    
+    auto observer = GetEventObserver<RootControlChangedInfo>(
+        GetPropertyMap(),
+        RootControlChangedEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<RootControlChangedInfo> Window::RootControlChangedEvent() {
+    return GetEventObservable<RootControlChangedInfo>(
+        GetPropertyMap(), 
+        RootControlChangedEventPropertyName);
 }
 
 

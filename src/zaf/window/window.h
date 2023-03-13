@@ -12,12 +12,13 @@
 #include <zaf/window/activate_option.h>
 #include <zaf/window/event/closing_info.h>
 #include <zaf/window/event/destroyed_info.h>
-#include <zaf/window/event/window_focus_event_info.h>
 #include <zaf/window/event/handle_created_info.h>
 #include <zaf/window/event/message_handled_info.h>
 #include <zaf/window/event/message_received_info.h>
 #include <zaf/window/event/mouse_capture_control_changed_info.h>
+#include <zaf/window/event/root_control_changed_info.h>
 #include <zaf/window/event/show_window_event_info.h>
+#include <zaf/window/event/window_focus_event_info.h>
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
 
@@ -411,6 +412,8 @@ public:
      */
     void SetRootControl(const std::shared_ptr<Control>& control);
 
+    Observable<RootControlChangedInfo> RootControlChangedEvent();
+
     /**
      Gets the control which captures mouse in the window.
      */
@@ -657,7 +660,7 @@ protected:
     */
     virtual void OnDestroyed(const DestroyedInfo& event_info);
 
-    virtual void OnRootControlChanged(const std::shared_ptr<Control>& previous_root_control) { } 
+    virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
 
     /**
      This method is called after the focused control changed.
