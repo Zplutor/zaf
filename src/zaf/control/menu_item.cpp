@@ -1,38 +1,105 @@
 #include <zaf/control/menu_item.h>
+#include <zaf/control/internal/triangle_geometry.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
+#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/dpi.h>
+#include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
+#include <zaf/window/popup_menu.h>
 
 namespace zaf {
+namespace {
+
+constexpr float SubMenuArrowWidth = 8.f;
+constexpr float SubMenuArrowMargin = 4.f;
+
+}
 
 void MenuItem::Initialize() {
 
     __super::Initialize();
 
-    /*
-    SetLayouter(Create<HorizontalLayouter>());
-    auto child = Create<Control>();
-    child->SetBackgroundColor(zaf::Color::Red());
-    child->SetFixedWidth(20);
-    this->AddChild(child);
-    */
-
     SetFixedHeight(30);
     SetPadding(Frame{ 8, 8, 8, 8 });
     SetTextAlignment(TextAlignment::Left);
     SetParagraphAlignment(ParagraphAlignment::Center);
+    SetTextTrimming(TextTrimming::Granularity::Word);
 
     Subscriptions() += MouseEnterEvent().Subscribe([this](const MouseEnterInfo& event_info) {
-        if (event_info.Sender().get() == this) {
-            AdjustAppearence();
-        }
+        AdjustAppearence();
     });
 
     Subscriptions() += MouseLeaveEvent().Subscribe([this](const MouseLeaveInfo& event_info) {
-        if (event_info.Sender().get() == this) {
-            AdjustAppearence();
-        }
+        AdjustAppearence();
     });
+
+    Subscriptions() += MouseHoverEvent().Subscribe([this](const MouseHoverInfo& event_info) {
+        PopupSubMenu();
+    });
+}
+
+
+void MenuItem::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+
+    __super::Paint(canvas, dirty_rect);
+
+    auto sub_menu_arrow_rect = GetSubMenuArrowRect();
+    if (sub_menu_arrow_rect.IsEmpty()) {
+        return;
+    }
+
+    auto triangle_geometry = internal::CreateTriangleGeometry(
+        sub_menu_arrow_rect.size.width,
+        sub_menu_arrow_rect.size.height,
+        SubMenuArrowWidth,
+        90);
+
+    Point transform_position = ContentRect().position;
+    transform_position.AddOffset(sub_menu_arrow_rect.position);
+
+    auto transformed_geometry = GraphicFactory::Instance().CreateTransformedGeometry(
+        triangle_geometry,
+        TransformMatrix::Translation(transform_position));
+
+    Canvas::StateGuard guard{ canvas };
+    auto color = ContainMouse() ? Color::White() : Color::Black();
+    canvas.SetBrushWithColor(color);
+    canvas.DrawGeometry(transformed_geometry);
+}
+
+
+zaf::Rect MenuItem::GetTextRect() {
+
+    auto result = __super::GetTextRect();
+    result.Subtract(GetSubMenuArrowRect());
+    result.size.width -= SubMenuArrowMargin;
+    return result;
+}
+
+
+zaf::Rect MenuItem::GetSubMenuArrowRect() const {
+
+    if (!sub_menu_ || !sub_menu_->HasMenuItem()) {
+        return zaf::Rect{};
+    }
+
+    zaf::Rect result{ zaf::Point{}, ContentSize() };
+    result.position.x = result.Right() - SubMenuArrowWidth;
+    result.size.width = SubMenuArrowWidth;
+    return result;
+}
+
+
+zaf::Size MenuItem::CalculatePreferredContentSize(const zaf::Size& bound_size) const {
+
+    auto result = __super::CalculatePreferredContentSize(bound_size);
+
+    if (HasSubMenuItem()) {
+        result.width += SubMenuArrowMargin + SubMenuArrowWidth;
+    }
+
+    return result;
 }
 
 
@@ -45,6 +112,67 @@ void MenuItem::AdjustAppearence() {
         contain_mouse ? 
         zaf::Color::FromRGB(internal::ControlSelectedActivedColorRGB) : 
         zaf::Color::White());
+}
+
+
+void MenuItem::AddSubMenuItem(const std::shared_ptr<MenuItem>& sub_menu_item) {
+
+    bool need_repaint{};
+    if (!sub_menu_) {
+        sub_menu_ = Create<PopupMenu>();
+        need_repaint = true;
+    }
+
+    sub_menu_->AddMenuItem(sub_menu_item);
+
+    if (need_repaint) {
+        NeedRepaint();
+    }
+}
+
+
+void MenuItem::RemoveSubMenuItem(const std::shared_ptr<MenuItem>& sub_menu_item) {
+
+    if (!sub_menu_) {
+        return;
+    }
+
+    sub_menu_->RemoveMenuItem(sub_menu_item);
+
+    if (!sub_menu_->HasMenuItem()) {
+        NeedRepaint();
+    }
+}
+
+
+bool MenuItem::HasSubMenuItem() const {
+
+    if (sub_menu_) {
+        return sub_menu_->HasMenuItem();
+    }
+    return false;
+}
+
+
+void MenuItem::PopupSubMenu() {
+
+    if (!sub_menu_) {
+        return;
+    }
+
+    auto window = Window();
+    if (!window) {
+        return;
+    }
+
+    auto absolute_rect = this->AbsoluteRect();
+    Point popup_position;
+    popup_position.x = absolute_rect.Right();
+    popup_position.y = absolute_rect.Top();
+
+    popup_position = window->ToScreenPosition(popup_position);
+    sub_menu_->SetOwner(window);
+    sub_menu_->Popup(popup_position);
 }
 
 }

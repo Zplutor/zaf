@@ -8,8 +8,15 @@ namespace zaf {
 
 class PopupMenu : public Window {
 public:
+    ZAF_DECLARE_TYPE;
+
+public:
     void AddMenuItem(const std::shared_ptr<MenuItem>& menu_item);
     void RemoveMenuItem(const std::shared_ptr<MenuItem>& menu_item);
+
+    bool HasMenuItem() const {
+        return !menu_item_infos_.empty();
+    }
 
     void Popup(const Point& position_in_screen);
 

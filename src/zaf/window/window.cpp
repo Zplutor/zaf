@@ -2194,6 +2194,19 @@ Point Window::GetMousePosition() const {
 }
 
 
+Point Window::ToScreenPosition(const Point& position) const {
+
+    auto dpi = GetDPI();
+    auto position_in_pixel = FromDIPs(position, dpi);
+
+    auto point = position_in_pixel.ToPOINT();
+    ClientToScreen(Handle(), &point);
+
+    auto result = Point::FromPOINT(point);
+    return ToDIPs(result, dpi);
+}
+
+
 float Window::GetDPI() const {
 
     if (Handle()) {

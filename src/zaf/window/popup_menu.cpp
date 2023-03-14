@@ -2,8 +2,13 @@
 #include <zaf/base/container/utility/erase.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
+#include <zaf/object/type_definition.h>
 
 namespace zaf {
+
+ZAF_DEFINE_TYPE(PopupMenu)
+ZAF_DEFINE_TYPE_END
+
 
 void PopupMenu::Initialize() {
 
@@ -112,6 +117,11 @@ zaf::Size PopupMenu::CalculateMenuSize() const {
         //All menu items have set fixed height.
         result.height += each_child->Height();
     }
+
+    //Width in float will be truncated when setting window width in integer, 
+    //so we ceil the value here.
+    //Note: this should be done within window itself.
+    result.width = std::ceilf(result.width);
 
     result.width = std::max(result.width, 100.f);
     return result;

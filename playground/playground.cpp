@@ -88,17 +88,19 @@ protected:
                     event_info.IsHandled();
                 });
 
+                if (count == 2) {
+                    for (int sub_count = 0; sub_count < 3; ++sub_count) {
+                        auto sub_menu_item = zaf::Create<zaf::MenuItem>();
+                        sub_menu_item->SetText(L"Sub menu item " + std::to_wstring(sub_count));
+                        menu_item->AddSubMenuItem(sub_menu_item);
+                    }
+                }
+
                 context_menu->AddMenuItem(menu_item);
             }
 
-            context_menu->SetSize(zaf::Size{ 200, 400 });
-
             auto mouse_position = zaf::MouseMessage(event_info.Message()).MousePosition();
-            auto mouse_position_in_pixels = zaf::FromDIPs(mouse_position, this->GetDPI()).ToPOINT();
-
-            ::ClientToScreen(event_info.Message().WindowHandle(), &mouse_position_in_pixels);
-
-            context_menu->Popup(zaf::ToDIPs(zaf::Point::FromPOINT(mouse_position_in_pixels), this->GetDPI()));
+            context_menu->Popup(ToScreenPosition(mouse_position));
         }
     }
 
