@@ -1,4 +1,6 @@
 #include <zaf/control/menu_item.h>
+#include <zaf/base/as.h>
+#include <zaf/base/event_utility.h>
 #include <zaf/control/internal/triangle_geometry.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
@@ -13,6 +15,9 @@ namespace {
 
 constexpr float SubMenuArrowWidth = 8.f;
 constexpr float SubMenuArrowMargin = 4.f;
+
+constexpr const wchar_t* SubMenuShowEventPropertyName = L"SubMenuShowEvent";
+constexpr const wchar_t* SubMenuCloseEventPropertyName = L"SubMenuCloseEvent";
 
 }
 
@@ -32,10 +37,6 @@ void MenuItem::Initialize() {
 
     Subscriptions() += MouseLeaveEvent().Subscribe([this](const MouseLeaveInfo& event_info) {
         AdjustAppearence();
-    });
-
-    Subscriptions() += MouseHoverEvent().Subscribe([this](const MouseHoverInfo& event_info) {
-        PopupSubMenu();
     });
 }
 
@@ -117,17 +118,47 @@ void MenuItem::AdjustAppearence() {
 
 void MenuItem::AddSubMenuItem(const std::shared_ptr<MenuItem>& sub_menu_item) {
 
-    bool need_repaint{};
-    if (!sub_menu_) {
-        sub_menu_ = Create<PopupMenu>();
-        need_repaint = true;
-    }
+    CheckCreateSubMenu();
+
+    bool need_repaint = !HasSubMenuItem();
 
     sub_menu_->AddMenuItem(sub_menu_item);
 
     if (need_repaint) {
         NeedRepaint();
     }
+}
+
+
+void MenuItem::CheckCreateSubMenu() {
+
+    if (sub_menu_) {
+        return;
+    }
+
+    sub_menu_ = Create<PopupMenu>();
+    Subscriptions() += sub_menu_->ShowEvent().Subscribe([this](const ShowInfo& event_info) {
+    
+        auto observer = GetEventObserver<SubMenuShowInfo>(
+            GetPropertyMap(),
+            SubMenuShowEventPropertyName);
+
+        if (observer) {
+            observer->OnNext(SubMenuShowInfo{ As<MenuItem>(shared_from_this()) });
+        }
+    });
+
+    Subscriptions() += sub_menu_->DestroyedEvent().Subscribe(
+        [this](const DestroyedInfo& event_info) {
+    
+        auto observer = GetEventObserver<SubMenuCloseInfo>(
+            GetPropertyMap(),
+            SubMenuCloseEventPropertyName);
+
+        if (observer) {
+            observer->OnNext(SubMenuCloseInfo{ As<MenuItem>(shared_from_this()) });
+        }
+    });
 }
 
 
@@ -173,6 +204,24 @@ void MenuItem::PopupSubMenu() {
     popup_position = window->ToScreenPosition(popup_position);
     sub_menu_->SetOwner(window);
     sub_menu_->Popup(popup_position);
+}
+
+
+Observable<SubMenuShowInfo> MenuItem::SubMenuShowEvent() {
+    return GetEventObservable<SubMenuShowInfo>(GetPropertyMap(), SubMenuShowEventPropertyName);
+}
+
+
+void MenuItem::CloseSubMenu() {
+
+    if (sub_menu_) {
+        sub_menu_->Close();
+    }
+}
+
+
+Observable<SubMenuCloseInfo> MenuItem::SubMenuCloseEvent() {
+    return GetEventObservable<SubMenuCloseInfo>(GetPropertyMap(), SubMenuCloseEventPropertyName);
 }
 
 }

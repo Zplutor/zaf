@@ -74,7 +74,7 @@ protected:
 
         __super::OnMessageHandled(event_info);
 
-        if (event_info.Message().ID() == WM_RBUTTONDOWN) {
+        if (event_info.Message().ID() == WM_RBUTTONUP) {
 
             auto context_menu = zaf::Create<zaf::PopupMenu>();
             context_menu->SetOwner(shared_from_this());

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/control/event/sub_menu_popup_event.h>
 #include <zaf/control/textual_control.h>
 
 namespace zaf {
@@ -13,6 +14,12 @@ public:
 
     bool HasSubMenuItem() const;
 
+    void PopupSubMenu();
+    void CloseSubMenu();
+
+    Observable<SubMenuShowInfo> SubMenuShowEvent();
+    Observable<SubMenuCloseInfo> SubMenuCloseEvent();
+
 protected:
     void Initialize() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
@@ -22,7 +29,7 @@ protected:
 private:
     zaf::Rect GetSubMenuArrowRect() const;
     void AdjustAppearence();
-    void PopupSubMenu();
+    void CheckCreateSubMenu();
 
 private:
     std::shared_ptr<PopupMenu> sub_menu_;

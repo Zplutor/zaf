@@ -1,5 +1,6 @@
 #include <zaf/window/popup_menu.h>
 #include <zaf/base/container/utility/erase.h>
+#include <zaf/base/log.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
 #include <zaf/object/type_definition.h>
@@ -28,22 +29,11 @@ void PopupMenu::Initialize() {
 }
 
 
-void PopupMenu::OnHandleCreated(const HandleCreatedInfo& event_info) {
-
-    __super::OnHandleCreated(event_info);
-
-    auto owner = Owner();
-    if (!owner) {
-        return;
-    }
-}
-
-
 void PopupMenu::OnShow(const ShowInfo& event_info) {
 
     __super::OnShow(event_info);
 
-    RootControl()->CaptureMouse();
+    //RootControl()->CaptureMouse();
 
     root_control_subscriptions_.Clear();
 
@@ -58,7 +48,9 @@ void PopupMenu::OnShow(const ShowInfo& event_info) {
     root_control_subscriptions_ += RootControl()->MouseReleasedEvent().Subscribe(
         [this](const MouseReleasedInfo& event_info) {
 
-        Close();
+        if (!showing_sub_menu_item_.lock()) {
+            Close();
+        }
     });
 }
 
@@ -69,16 +61,63 @@ void PopupMenu::AddMenuItem(const std::shared_ptr<MenuItem>& menu_item) {
 
     auto menu_item_info = std::make_unique<MenuItemInfo>();
     menu_item_info->menu_item = menu_item;
-    menu_item_info->subscriptions += menu_item->MouseUpEvent().Subscribe(
-        [this, menu_item](const MouseUpInfo& event_info) {
-
-        this->Close();
-    });
+    InitializeMenuItem(*menu_item_info);
 
     menu_item_infos_.push_back(std::move(menu_item_info));
     RootControl()->AddChild(menu_item);
 
     //TODO: Update window height if menu is being shown.
+}
+
+
+void PopupMenu::InitializeMenuItem(MenuItemInfo& item_info) {
+
+    auto& subscriptions = item_info.subscriptions;
+    const auto& menu_item = item_info.menu_item;
+
+    subscriptions += menu_item->MouseUpEvent().Subscribe(
+        std::bind(&PopupMenu::OnMenuItemClick, this, std::placeholders::_1));
+
+    subscriptions += menu_item->MouseHoverEvent().Subscribe(
+        std::bind(&PopupMenu::OnMenuItemHover, this, std::placeholders::_1));
+
+    subscriptions += menu_item->SubMenuShowEvent().Subscribe(
+        std::bind(&PopupMenu::OnSubMenuShow, this, std::placeholders::_1));
+
+    subscriptions += menu_item->SubMenuCloseEvent().Subscribe(
+        std::bind(&PopupMenu::OnSubMenuClose, this, std::placeholders::_1));
+}
+
+
+void PopupMenu::OnMenuItemClick(const MouseUpInfo& event_info) {
+
+    auto menu_item = As<MenuItem>(event_info.Sender());
+    if (menu_item && !menu_item->HasSubMenuItem()) {
+        this->Close();
+        EnableWindow(Owner()->Handle(), TRUE);
+    }
+}
+
+
+void PopupMenu::OnMenuItemHover(const MouseHoverInfo& event_info) {
+
+    auto menu_item = As<MenuItem>(event_info.Sender());
+    if (!menu_item || !menu_item->HasSubMenuItem()) {
+        return;
+    }
+
+    showing_sub_menu_item_ = menu_item;
+    menu_item->PopupSubMenu();
+}
+
+
+void PopupMenu::OnSubMenuShow(const SubMenuShowInfo& event_info) {
+
+}
+
+
+void PopupMenu::OnSubMenuClose(const SubMenuCloseInfo& event_info) {
+
 }
 
 
@@ -102,6 +141,49 @@ void PopupMenu::Popup(const Point& position_in_screen) {
     this->SetContentSize(CalculateMenuSize());
 
     this->Show();
+
+    SetCapture(Owner()->Handle());
+
+    ZAF_LOG() << "Menu handle: " << this->Handle();
+
+    Subscriptions() += Owner()->MessageReceivedEvent().Subscribe([this](const MessageReceivedInfo& event_info) {
+    
+        auto id = event_info.Message().ID();
+
+        if (id >= WM_MOUSEFIRST && id <= WM_MOUSELAST) {
+
+            POINT mouse_position{};
+            mouse_position.x = GET_X_LPARAM(event_info.Message().LParam());
+            mouse_position.y = GET_Y_LPARAM(event_info.Message().LParam());
+
+            ClientToScreen(Owner()->Handle(), &mouse_position);
+            ScreenToClient(this->Handle(), &mouse_position);
+
+            ZAF_LOG() << "X: " << mouse_position.x << ", Y: " << mouse_position.y;
+
+            LRESULT result = SendMessage(
+                this->Handle(),
+                event_info.Message().ID(), 
+                event_info.Message().WParam(), 
+                MAKELPARAM(mouse_position.x, mouse_position.y));
+
+            event_info.MarkAsHandled(result);
+        }
+    });
+}
+
+
+void PopupMenu::OnMessageReceived(const MessageReceivedInfo& event_info) {
+
+    if (event_info.Message().ID() == WM_MOUSEMOVE) {
+
+        MouseMessage mm{ event_info.Message() };
+        auto mp = mm.MousePosition();
+
+        ZAF_LOG() << "MenuX: " << mp.x << ", MenuY: " << mp.y;
+    }
+
+    __super::OnMessageReceived(event_info);
 }
 
 
@@ -125,6 +207,14 @@ zaf::Size PopupMenu::CalculateMenuSize() const {
 
     result.width = std::max(result.width, 100.f);
     return result;
+}
+
+
+void PopupMenu::OnDestroyed(const DestroyedInfo& event_info) {
+
+    __super::OnDestroyed(event_info);
+
+    ReleaseCapture();
 }
 
 }

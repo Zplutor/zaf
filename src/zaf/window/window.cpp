@@ -1073,6 +1073,14 @@ bool Window::HandleMouseMessage(const MouseMessage& message) {
 
         TrackMouseByMouseMove(message);
 
+        if (this->GetType()->GetName() == L"PopupMenu") {
+            auto position = message.MousePosition();
+            if ((1 < position.x && position.x < 100) &&
+                (1 < position.y && position.y < 100)) {
+                int x = 0;
+            }
+        }
+
         begin_routing_control->FindMouseOverControl(position_at_begin_routing_control, message);
     }
     else {
