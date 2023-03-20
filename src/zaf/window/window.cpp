@@ -1073,14 +1073,6 @@ bool Window::HandleMouseMessage(const MouseMessage& message) {
 
         TrackMouseByMouseMove(message);
 
-        if (this->GetType()->GetName() == L"PopupMenu") {
-            auto position = message.MousePosition();
-            if ((1 < position.x && position.x < 100) &&
-                (1 < position.y && position.y < 100)) {
-                int x = 0;
-            }
-        }
-
         begin_routing_control->FindMouseOverControl(position_at_begin_routing_control, message);
     }
     else {
@@ -1236,6 +1228,14 @@ void Window::TrackMouseByMouseMove(const MouseMessage& message) {
 
 void Window::TrackMouse(bool is_non_client) {
 
+    //Don't track mouse if the mouse is being captured and the caputring window is not current 
+    //window. This would happend if WM_MOUSEMOVE message is redirected from a capturing window to 
+    //another window (this is the way how PopupMenu works).
+    auto capturing_window = GetCapture();
+    if (capturing_window && capturing_window != Handle()) {
+        return;
+    }
+
     TRACKMOUSEEVENT track_mouse_event_param {};
     track_mouse_event_param.cbSize = sizeof(track_mouse_event_param);
     track_mouse_event_param.dwFlags = TME_LEAVE | TME_HOVER;
@@ -1255,25 +1255,6 @@ void Window::TrackMouse(bool is_non_client) {
 
 
 void Window::OnMouseHover(const Message& message) {
-
-    bool is_tracking_mouse = [&]() {
-
-        if (track_mouse_mode_ == TrackMouseMode::ClientArea &&
-            message.ID() == WM_MOUSEHOVER) {
-            return true;
-        }
-
-        if (track_mouse_mode_ == TrackMouseMode::NonClientArea &&
-            message.ID() == WM_NCMOUSEHOVER) {
-            return true;
-        }
-
-        return false;
-    }();
-
-    if (!is_tracking_mouse) {
-        return;
-    }
 
     if (mouse_over_control_) {
 

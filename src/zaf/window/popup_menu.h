@@ -22,9 +22,7 @@ public:
 
 protected:
     void Initialize() override;
-    void OnShow(const ShowInfo& event_info) override;
     void OnDestroyed(const DestroyedInfo& event_info) override;
-    void OnMessageReceived(const MessageReceivedInfo& event_info) override;
 
 private:
     class MenuItemInfo : NonCopyable {
@@ -34,14 +32,20 @@ private:
     };
 
 private:
+    zaf::Size CalculateMenuSize() const;
+    void OnOwnerMessageRecevied(const MessageReceivedInfo& event_info);
+    std::optional<LRESULT> RedirectOwnerMessage(const Message& message);
+    std::optional<LRESULT> RedirectOwnerMouseMessage(const Message& message);
+    void OnRootControlMouseDown(const MouseDownInfo& event_info);
+
     void InitializeMenuItem(MenuItemInfo& item_info);
     void OnMenuItemClick(const MouseUpInfo& event_info);
     void OnMenuItemHover(const MouseHoverInfo& event_info);
     void OnSubMenuShow(const SubMenuShowInfo& event_info);
     void OnSubMenuClose(const SubMenuCloseInfo& event_info);
-    zaf::Size CalculateMenuSize() const;
 
 private:
+    SubscriptionHolder owner_subscriptions_;
     SubscriptionHolder root_control_subscriptions_;
 
     std::vector<std::unique_ptr<MenuItemInfo>> menu_item_infos_;

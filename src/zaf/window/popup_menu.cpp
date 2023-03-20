@@ -29,29 +29,120 @@ void PopupMenu::Initialize() {
 }
 
 
-void PopupMenu::OnShow(const ShowInfo& event_info) {
+void PopupMenu::Popup(const Point& position_in_screen) {
 
-    __super::OnShow(event_info);
+    //There must be an owner to popup menu.
+    auto owner = Owner();
+    ZAF_EXPECT(owner);
 
-    //RootControl()->CaptureMouse();
+    this->SetPosition(position_in_screen);
+    this->SetContentSize(CalculateMenuSize());
+    this->Show();
 
-    root_control_subscriptions_.Clear();
+    //If owner is a popup menu, current menu is a sub menu, thus no need to initialize owner 
+    //releated stuffs.
+    if (!As<PopupMenu>(owner)) {
+
+        SetCapture(owner->Handle());
+
+        owner_subscriptions_ += Owner()->MessageReceivedEvent().Subscribe(
+            std::bind(&PopupMenu::OnOwnerMessageRecevied, this, std::placeholders::_1));
+    }
 
     root_control_subscriptions_ += RootControl()->MouseDownEvent().Subscribe(
-        [this](const MouseDownInfo& event_info) {
+        std::bind(&PopupMenu::OnRootControlMouseDown, this, std::placeholders::_1));
+}
 
-        if (!ContentRect().Contain(event_info.PositionAtSender())) {
-            Close();
-        }
-    });
 
-    root_control_subscriptions_ += RootControl()->MouseReleasedEvent().Subscribe(
-        [this](const MouseReleasedInfo& event_info) {
+zaf::Size PopupMenu::CalculateMenuSize() const {
 
-        if (!showing_sub_menu_item_.lock()) {
-            Close();
-        }
-    });
+    zaf::Size result;
+
+    for (const auto& each_child : RootControl()->Children()) {
+
+        auto preferred_size = each_child->CalculatePreferredSize();
+        result.width = std::max(result.width, preferred_size.width);
+
+        //All menu items have set fixed height.
+        result.height += each_child->Height();
+    }
+
+    //Width in float will be truncated when setting window width in integer, 
+    //so we ceil the value here.
+    //Note: this should be done within window itself.
+    result.width = std::ceilf(result.width);
+
+    result.width = std::max(result.width, 100.f);
+    return result;
+}
+
+
+void PopupMenu::OnOwnerMessageRecevied(const MessageReceivedInfo& event_info) {
+
+    const auto& message = event_info.Message();
+
+    //Dismiss popup menu if owner capture is lost.
+    if (message.ID() == WM_CAPTURECHANGED) {
+        this->Close();
+        return;
+    }
+
+    auto result = RedirectOwnerMessage(event_info.Message());
+    if (result) {
+        event_info.MarkAsHandled(*result);
+    }
+}
+
+
+std::optional<LRESULT> PopupMenu::RedirectOwnerMessage(const Message& message) {
+
+    return RedirectOwnerMouseMessage(message);
+}
+
+
+std::optional<LRESULT> PopupMenu::RedirectOwnerMouseMessage(const Message& message) {
+
+    bool should_redirect = 
+        (WM_MOUSEFIRST <= message.ID() && message.ID() <= WM_MOUSELAST) ||
+        message.ID() == WM_MOUSEHOVER;
+
+    if (!should_redirect) {
+        return std::nullopt;
+    }
+
+    POINT mouse_position{};
+    mouse_position.x = GET_X_LPARAM(message.LParam());
+    mouse_position.y = GET_Y_LPARAM(message.LParam());
+
+    ClientToScreen(Owner()->Handle(), &mouse_position);
+    ScreenToClient(this->Handle(), &mouse_position);
+
+    return SendMessage(
+        this->Handle(),
+        message.ID(),
+        message.WParam(),
+        MAKELPARAM(mouse_position.x, mouse_position.y));
+}
+
+
+void PopupMenu::OnRootControlMouseDown(const MouseDownInfo& event_info) {
+
+    if (!ContentRect().Contain(event_info.PositionAtSender())) {
+        this->Close();
+    }
+}
+
+
+void PopupMenu::OnDestroyed(const DestroyedInfo& event_info) {
+
+    __super::OnDestroyed(event_info);
+
+    if (GetCapture() == Owner()->Handle()) {
+        ReleaseCapture();
+    }
+
+    owner_subscriptions_.Clear();
+    root_control_subscriptions_.Clear();
 }
 
 
@@ -94,7 +185,6 @@ void PopupMenu::OnMenuItemClick(const MouseUpInfo& event_info) {
     auto menu_item = As<MenuItem>(event_info.Sender());
     if (menu_item && !menu_item->HasSubMenuItem()) {
         this->Close();
-        EnableWindow(Owner()->Handle(), TRUE);
     }
 }
 
@@ -132,89 +222,6 @@ void PopupMenu::RemoveMenuItem(const std::shared_ptr<MenuItem>& menu_item) {
     RootControl()->RemoveChild(menu_item);
 
     //TODO: Update window height if menu is being shown.
-}
-
-
-void PopupMenu::Popup(const Point& position_in_screen) {
-
-    this->SetPosition(position_in_screen);
-    this->SetContentSize(CalculateMenuSize());
-
-    this->Show();
-
-    SetCapture(Owner()->Handle());
-
-    ZAF_LOG() << "Menu handle: " << this->Handle();
-
-    Subscriptions() += Owner()->MessageReceivedEvent().Subscribe([this](const MessageReceivedInfo& event_info) {
-    
-        auto id = event_info.Message().ID();
-
-        if (id >= WM_MOUSEFIRST && id <= WM_MOUSELAST) {
-
-            POINT mouse_position{};
-            mouse_position.x = GET_X_LPARAM(event_info.Message().LParam());
-            mouse_position.y = GET_Y_LPARAM(event_info.Message().LParam());
-
-            ClientToScreen(Owner()->Handle(), &mouse_position);
-            ScreenToClient(this->Handle(), &mouse_position);
-
-            ZAF_LOG() << "X: " << mouse_position.x << ", Y: " << mouse_position.y;
-
-            LRESULT result = SendMessage(
-                this->Handle(),
-                event_info.Message().ID(), 
-                event_info.Message().WParam(), 
-                MAKELPARAM(mouse_position.x, mouse_position.y));
-
-            event_info.MarkAsHandled(result);
-        }
-    });
-}
-
-
-void PopupMenu::OnMessageReceived(const MessageReceivedInfo& event_info) {
-
-    if (event_info.Message().ID() == WM_MOUSEMOVE) {
-
-        MouseMessage mm{ event_info.Message() };
-        auto mp = mm.MousePosition();
-
-        ZAF_LOG() << "MenuX: " << mp.x << ", MenuY: " << mp.y;
-    }
-
-    __super::OnMessageReceived(event_info);
-}
-
-
-zaf::Size PopupMenu::CalculateMenuSize() const {
-
-    zaf::Size result;
-
-    for (const auto& each_child : RootControl()->Children()) {
-
-        auto preferred_size = each_child->CalculatePreferredSize();
-        result.width = std::max(result.width, preferred_size.width);
-
-        //All menu items have set fixed height.
-        result.height += each_child->Height();
-    }
-
-    //Width in float will be truncated when setting window width in integer, 
-    //so we ceil the value here.
-    //Note: this should be done within window itself.
-    result.width = std::ceilf(result.width);
-
-    result.width = std::max(result.width, 100.f);
-    return result;
-}
-
-
-void PopupMenu::OnDestroyed(const DestroyedInfo& event_info) {
-
-    __super::OnDestroyed(event_info);
-
-    ReleaseCapture();
 }
 
 }
