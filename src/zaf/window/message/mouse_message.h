@@ -52,8 +52,22 @@ ZAF_ENABLE_FLAG_ENUM(MouseKey);
 
 
 /**
- Wraps information of a Win32 mouse message.
- */
+Wraps information of a Win32 mouse message.
+
+It can be used for these messages:
+WM_MOUSEMOVE
+WM_NCMOUSEMOVE
+WM_LBUTTONDOWN
+WM_NCLBUTTONDOWN
+WM_LBUTTONUP
+WM_NCLBUTTONUP
+WM_MBUTTONDOWN
+WM_MBUTTONUP
+WM_RBUTTONDOWN
+WM_RBUTTONUP
+WM_MOUSEWHEEL
+WM_MOUSEHWHEEL
+*/
 class MouseMessage : public MessageShim {
 public:
     using MessageShim::MessageShim;
@@ -83,8 +97,10 @@ public:
 
 
 /**
- Wraps information of a Win32 mouse wheel message.
- */
+Wraps information of a Win32 mouse wheel message.
+
+It can be used for WM_MOUSEWHEEL and WM_MOUSEHWHEEL.
+*/
 class MouseWheelMessage : public MouseMessage {
 public:
     using MouseMessage::MouseMessage;

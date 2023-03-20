@@ -495,6 +495,7 @@ public:
     Point GetMousePosition() const;
 
     Point ToScreenPosition(const Point& position_in_window) const;
+    Point FromScreenPosition(const Point& position_in_screen) const;
 
     float GetDPI() const;
 
