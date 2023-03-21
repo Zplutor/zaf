@@ -25,6 +25,7 @@ protected:
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     zaf::Rect GetTextRect() override;
     zaf::Size CalculatePreferredContentSize(const zaf::Size& bound_size) const override;
+    void OnIsSelectedChanged() override;
 
 private:
     zaf::Rect GetSubMenuArrowRect() const;

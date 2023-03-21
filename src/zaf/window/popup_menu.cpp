@@ -4,6 +4,8 @@
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
 #include <zaf/object/type_definition.h>
+#include <zaf/rx/scheduler.h>
+#include <zaf/rx/timer.h>
 
 namespace zaf {
 
@@ -102,10 +104,7 @@ std::optional<LRESULT> PopupMenu::RedirectOwnerMessage(const Message& message) {
 
 std::optional<LRESULT> PopupMenu::RedirectOwnerMouseMessage(const Message& message) {
 
-    bool should_redirect = 
-        (WM_MOUSEFIRST <= message.ID() && message.ID() <= WM_MOUSELAST) ||
-        message.ID() == WM_MOUSEHOVER;
-
+    bool should_redirect = (WM_MOUSEFIRST <= message.ID() && message.ID() <= WM_MOUSELAST);
     if (!should_redirect) {
         return std::nullopt;
     }
@@ -169,8 +168,11 @@ void PopupMenu::InitializeMenuItem(MenuItemInfo& item_info) {
     subscriptions += menu_item->MouseUpEvent().Subscribe(
         std::bind(&PopupMenu::OnMenuItemClick, this, std::placeholders::_1));
 
-    subscriptions += menu_item->MouseHoverEvent().Subscribe(
-        std::bind(&PopupMenu::OnMenuItemHover, this, std::placeholders::_1));
+    subscriptions += menu_item->MouseEnterEvent().Subscribe(
+        std::bind(&PopupMenu::OnMenuItemMouseEnter, this, std::placeholders::_1));
+
+    subscriptions += menu_item->MouseLeaveEvent().Subscribe(
+        std::bind(&PopupMenu::OnMenuItemMouseLeave, this, std::placeholders::_1));
 
     subscriptions += menu_item->SubMenuShowEvent().Subscribe(
         std::bind(&PopupMenu::OnSubMenuShow, this, std::placeholders::_1));
@@ -189,15 +191,44 @@ void PopupMenu::OnMenuItemClick(const MouseUpInfo& event_info) {
 }
 
 
-void PopupMenu::OnMenuItemHover(const MouseHoverInfo& event_info) {
+void PopupMenu::OnMenuItemMouseEnter(const MouseEnterInfo& event_info) {
 
     auto menu_item = As<MenuItem>(event_info.Sender());
-    if (!menu_item || !menu_item->HasSubMenuItem()) {
+    if (!menu_item) {
         return;
     }
 
-    showing_sub_menu_item_ = menu_item;
-    menu_item->PopupSubMenu();
+    menu_item->SetIsSelected(true);
+    selected_menu_item_ = menu_item;
+    
+    if (menu_item->HasSubMenuItem()) {
+
+        UINT hover_time{};
+        SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &hover_time, 0);
+
+        sub_menu_popup_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
+            .ObserveOn(Scheduler::Main())
+            .Subscribe(std::bind([this]() {
+
+            if (auto menu_item = selected_menu_item_.lock()) {
+                menu_item->PopupSubMenu();
+            }
+        }));
+    }
+}
+
+
+void PopupMenu::OnMenuItemMouseLeave(const MouseLeaveInfo& event_info) {
+
+    auto menu_item = As<MenuItem>(event_info.Sender());
+    if (!menu_item) {
+        return;
+    }
+
+    menu_item->SetIsSelected(false);
+
+    sub_menu_popup_timer_.Unsubscribe();
+    selected_menu_item_.reset();
 }
 
 

@@ -30,14 +30,6 @@ void MenuItem::Initialize() {
     SetTextAlignment(TextAlignment::Left);
     SetParagraphAlignment(ParagraphAlignment::Center);
     SetTextTrimming(TextTrimming::Granularity::Word);
-
-    Subscriptions() += MouseEnterEvent().Subscribe([this](const MouseEnterInfo& event_info) {
-        AdjustAppearence();
-    });
-
-    Subscriptions() += MouseLeaveEvent().Subscribe([this](const MouseLeaveInfo& event_info) {
-        AdjustAppearence();
-    });
 }
 
 
@@ -104,13 +96,13 @@ zaf::Size MenuItem::CalculatePreferredContentSize(const zaf::Size& bound_size) c
 }
 
 
-void MenuItem::AdjustAppearence() {
+void MenuItem::OnIsSelectedChanged() {
 
-    bool contain_mouse = ContainMouse();
+    __super::OnIsSelectedChanged();
 
-    SetTextColor(contain_mouse ? zaf::Color::White() : zaf::Color::Black());
+    SetTextColor(IsSelected() ? zaf::Color::White() : zaf::Color::Black());
     SetBackgroundColor(
-        contain_mouse ? 
+        IsSelected() ?
         zaf::Color::FromRGB(internal::ControlSelectedActivedColorRGB) : 
         zaf::Color::White());
 }

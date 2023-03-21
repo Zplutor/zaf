@@ -1387,6 +1387,8 @@ void Control::SetIsSelected(bool is_selected) {
 
     is_selected_ = is_selected;
     NeedRepaint();
+
+    OnIsSelectedChanged();
 }
 
 

@@ -40,7 +40,8 @@ private:
 
     void InitializeMenuItem(MenuItemInfo& item_info);
     void OnMenuItemClick(const MouseUpInfo& event_info);
-    void OnMenuItemHover(const MouseHoverInfo& event_info);
+    void OnMenuItemMouseEnter(const MouseEnterInfo& event_info);
+    void OnMenuItemMouseLeave(const MouseLeaveInfo& event_info);
     void OnSubMenuShow(const SubMenuShowInfo& event_info);
     void OnSubMenuClose(const SubMenuCloseInfo& event_info);
 
@@ -49,7 +50,8 @@ private:
     SubscriptionHolder root_control_subscriptions_;
 
     std::vector<std::unique_ptr<MenuItemInfo>> menu_item_infos_;
-    std::weak_ptr<MenuItem> showing_sub_menu_item_;
+    Subscription sub_menu_popup_timer_;
+    std::weak_ptr<MenuItem> selected_menu_item_;
 };
 
 }
