@@ -17,9 +17,11 @@ private:
     void OnOwnerMessageReceived(const MessageReceivedInfo& event_info);
     bool RedirectOwnerMessage(const Message& message);
     bool RedirectOwnerMouseMessage(const Message& message);
+    void RedirectMouseMoveMessage(const Message& message);
 
 private:
     std::vector<std::weak_ptr<PopupMenu>> menus_;
+    std::weak_ptr<PopupMenu> mouse_over_menu_;
 };
 
 }

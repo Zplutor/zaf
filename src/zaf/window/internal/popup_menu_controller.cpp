@@ -100,6 +100,11 @@ bool PopupMenuController::RedirectOwnerMouseMessage(const Message& message) {
         return false;
     }
 
+    if (message.ID() == WM_MOUSEMOVE) {
+        RedirectMouseMoveMessage(message);
+        return true;
+    }
+
     //menus_ might be modified during SendMessage(), thus a copy is needed.
     auto menus = menus_;
     for (const auto& each_menu : menus) {
@@ -124,6 +129,42 @@ bool PopupMenuController::RedirectOwnerMouseMessage(const Message& message) {
     }
 
     return true;
+}
+
+
+void PopupMenuController::RedirectMouseMoveMessage(const Message& message) {
+
+    POINT mouse_position_at_screen{};
+    mouse_position_at_screen.x = GET_X_LPARAM(message.LParam());
+    mouse_position_at_screen.y = GET_Y_LPARAM(message.LParam());
+    ClientToScreen(message.WindowHandle(), &mouse_position_at_screen);
+
+    //Find mouse over menu.
+    for (auto iterator = menus_.rbegin(); iterator != menus_.rend(); ++iterator) {
+
+        auto current_menu = iterator->lock();
+        if (!current_menu) {
+            continue;
+        }
+
+        POINT mouse_position_at_menu = mouse_position_at_screen;
+        ScreenToClient(current_menu->Handle(), &mouse_position_at_menu);
+
+        RECT menu_rect{};
+        GetClientRect(current_menu->Handle(), &menu_rect);
+
+        if (PtInRect(&menu_rect, mouse_position_at_menu)) {
+            
+            SendMessage(
+                current_menu->Handle(),
+                message.ID(),
+                message.WParam(),
+                MAKELPARAM(mouse_position_at_menu.x, mouse_position_at_menu.y));
+            
+            mouse_over_menu_ = current_menu;
+            break;
+        }
+    }
 }
 
 }
