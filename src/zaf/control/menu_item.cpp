@@ -129,6 +129,7 @@ void MenuItem::CheckCreateSubMenu() {
     }
 
     sub_menu_ = Create<PopupMenu>();
+
     Subscriptions() += sub_menu_->ShowEvent().Subscribe([this](const ShowInfo& event_info) {
     
         auto observer = GetEventObserver<SubMenuShowInfo>(
@@ -183,8 +184,8 @@ void MenuItem::PopupSubMenu() {
         return;
     }
 
-    auto window = Window();
-    if (!window) {
+    auto owning_menu = As<PopupMenu>(Window());
+    if (!owning_menu) {
         return;
     }
 
@@ -193,8 +194,8 @@ void MenuItem::PopupSubMenu() {
     popup_position.x = absolute_rect.Right();
     popup_position.y = absolute_rect.Top();
 
-    popup_position = window->ToScreenPosition(popup_position);
-    sub_menu_->SetOwner(window);
+    popup_position = owning_menu->ToScreenPosition(popup_position);
+    sub_menu_->SetOwner(owning_menu);
     sub_menu_->Popup(popup_position);
 }
 

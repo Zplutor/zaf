@@ -865,6 +865,9 @@
     <ClCompile Include="src\zaf\control\event\sub_menu_popup_event.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\internal\popup_menu_controller.cpp">
+      <Filter>zaf\window\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2013,6 +2016,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\sub_menu_popup_event.h">
       <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\internal\popup_menu_controller.h">
+      <Filter>zaf\window\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

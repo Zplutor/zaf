@@ -5,6 +5,9 @@
 #include <zaf/window/window.h>
 
 namespace zaf {
+namespace internal {
+class PopupMenuController;
+}
 
 class PopupMenu : public Window {
 public:
@@ -32,10 +35,8 @@ private:
     };
 
 private:
+    void InitializeController();
     zaf::Size CalculateMenuSize() const;
-    void OnOwnerMessageRecevied(const MessageReceivedInfo& event_info);
-    std::optional<LRESULT> RedirectOwnerMessage(const Message& message);
-    std::optional<LRESULT> RedirectOwnerMouseMessage(const Message& message);
     void OnRootControlMouseDown(const MouseDownInfo& event_info);
 
     void InitializeMenuItem(MenuItemInfo& item_info);
@@ -46,7 +47,7 @@ private:
     void OnSubMenuClose(const SubMenuCloseInfo& event_info);
 
 private:
-    SubscriptionHolder owner_subscriptions_;
+    std::shared_ptr<internal::PopupMenuController> controller_;
     SubscriptionHolder root_control_subscriptions_;
 
     std::vector<std::unique_ptr<MenuItemInfo>> menu_item_infos_;

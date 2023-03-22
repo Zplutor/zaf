@@ -6,6 +6,7 @@
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
+#include <zaf/window/internal/popup_menu_controller.h>
 
 namespace zaf {
 
@@ -34,25 +35,32 @@ void PopupMenu::Initialize() {
 void PopupMenu::Popup(const Point& position_in_screen) {
 
     //There must be an owner to popup menu.
-    auto owner = Owner();
-    ZAF_EXPECT(owner);
+    ZAF_EXPECT(Owner());
 
     this->SetPosition(position_in_screen);
     this->SetContentSize(CalculateMenuSize());
     this->Show();
 
-    //If owner is a popup menu, current menu is a sub menu, thus no need to initialize owner 
-    //releated stuffs.
-    if (!As<PopupMenu>(owner)) {
-
-        SetCapture(owner->Handle());
-
-        owner_subscriptions_ += Owner()->MessageReceivedEvent().Subscribe(
-            std::bind(&PopupMenu::OnOwnerMessageRecevied, this, std::placeholders::_1));
-    }
+    InitializeController();
 
     root_control_subscriptions_ += RootControl()->MouseDownEvent().Subscribe(
         std::bind(&PopupMenu::OnRootControlMouseDown, this, std::placeholders::_1));
+}
+
+
+void PopupMenu::InitializeController() {
+
+    if (!controller_) {
+        auto owning_menu = As<PopupMenu>(Owner());
+        if (owning_menu) {
+            controller_ = owning_menu->controller_;
+        }
+        else {
+            controller_ = Create<internal::PopupMenuController>();
+        }
+    }
+
+    controller_->PushMenu(As<PopupMenu>(shared_from_this()));
 }
 
 
@@ -79,51 +87,6 @@ zaf::Size PopupMenu::CalculateMenuSize() const {
 }
 
 
-void PopupMenu::OnOwnerMessageRecevied(const MessageReceivedInfo& event_info) {
-
-    const auto& message = event_info.Message();
-
-    //Dismiss popup menu if owner capture is lost.
-    if (message.ID() == WM_CAPTURECHANGED) {
-        this->Close();
-        return;
-    }
-
-    auto result = RedirectOwnerMessage(event_info.Message());
-    if (result) {
-        event_info.MarkAsHandled(*result);
-    }
-}
-
-
-std::optional<LRESULT> PopupMenu::RedirectOwnerMessage(const Message& message) {
-
-    return RedirectOwnerMouseMessage(message);
-}
-
-
-std::optional<LRESULT> PopupMenu::RedirectOwnerMouseMessage(const Message& message) {
-
-    bool should_redirect = (WM_MOUSEFIRST <= message.ID() && message.ID() <= WM_MOUSELAST);
-    if (!should_redirect) {
-        return std::nullopt;
-    }
-
-    POINT mouse_position{};
-    mouse_position.x = GET_X_LPARAM(message.LParam());
-    mouse_position.y = GET_Y_LPARAM(message.LParam());
-
-    ClientToScreen(Owner()->Handle(), &mouse_position);
-    ScreenToClient(this->Handle(), &mouse_position);
-
-    return SendMessage(
-        this->Handle(),
-        message.ID(),
-        message.WParam(),
-        MAKELPARAM(mouse_position.x, mouse_position.y));
-}
-
-
 void PopupMenu::OnRootControlMouseDown(const MouseDownInfo& event_info) {
 
     if (!ContentRect().Contain(event_info.PositionAtSender())) {
@@ -136,12 +99,8 @@ void PopupMenu::OnDestroyed(const DestroyedInfo& event_info) {
 
     __super::OnDestroyed(event_info);
 
-    if (GetCapture() == Owner()->Handle()) {
-        ReleaseCapture();
-    }
-
-    owner_subscriptions_.Clear();
     root_control_subscriptions_.Clear();
+    controller_->PopMenu(*this);
 }
 
 
