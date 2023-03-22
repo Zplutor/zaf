@@ -14,13 +14,4 @@ MouseEventSharedState::MouseEventSharedState(
 
 }
 
-
-MouseOverEventInfo::MouseOverEventInfo(
-    const std::shared_ptr<RoutedEventSharedState>& state,
-    const std::shared_ptr<Control>& sender) 
-    :
-    RoutedEventInfo(state, sender) {
-
-}
-
 }

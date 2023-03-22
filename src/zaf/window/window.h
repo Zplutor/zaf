@@ -712,7 +712,8 @@ private:
         const MouseMessage& message);
     void ChangeControlMouseOverState(
         const std::shared_ptr<Control>& target_control,
-        bool is_mouse_over);
+        bool is_mouse_over,
+        const std::shared_ptr<Control>& changed_control);
     void SetMouseCaptureControl(
         const std::shared_ptr<Control>& capture_control,
         bool is_releasing);

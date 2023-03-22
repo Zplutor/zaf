@@ -139,6 +139,26 @@ void PopupMenuController::RedirectMouseMoveMessage(const Message& message) {
     mouse_position_at_screen.y = GET_Y_LPARAM(message.LParam());
     ClientToScreen(message.WindowHandle(), &mouse_position_at_screen);
 
+    auto new_mouse_over_menu = FindMouseOverMenu(mouse_position_at_screen);
+
+    auto old_mouse_over_menu = last_mouse_over_menu_.lock();
+    if (old_mouse_over_menu && old_mouse_over_menu != new_mouse_over_menu) {
+
+        //Mouse over menu is changed, redirect mouse move messge to previous menu to update its 
+        //state.
+        SendMouseMessageToMenu(*old_mouse_over_menu, message, mouse_position_at_screen);
+    }
+
+    if (new_mouse_over_menu) {
+        SendMouseMessageToMenu(*new_mouse_over_menu, message, mouse_position_at_screen);
+        last_mouse_over_menu_ = new_mouse_over_menu;
+    }
+}
+
+
+std::shared_ptr<PopupMenu> PopupMenuController::FindMouseOverMenu(
+    const POINT& mouse_position_at_screen) const {
+
     //Find mouse over menu.
     for (auto iterator = menus_.rbegin(); iterator != menus_.rend(); ++iterator) {
 
@@ -147,24 +167,31 @@ void PopupMenuController::RedirectMouseMoveMessage(const Message& message) {
             continue;
         }
 
-        POINT mouse_position_at_menu = mouse_position_at_screen;
-        ScreenToClient(current_menu->Handle(), &mouse_position_at_menu);
-
         RECT menu_rect{};
-        GetClientRect(current_menu->Handle(), &menu_rect);
+        GetWindowRect(current_menu->Handle(), &menu_rect);
 
-        if (PtInRect(&menu_rect, mouse_position_at_menu)) {
-            
-            SendMessage(
-                current_menu->Handle(),
-                message.ID(),
-                message.WParam(),
-                MAKELPARAM(mouse_position_at_menu.x, mouse_position_at_menu.y));
-            
-            mouse_over_menu_ = current_menu;
-            break;
+        if (PtInRect(&menu_rect, mouse_position_at_screen)) {
+            return current_menu;
         }
     }
+
+    return nullptr;
+}
+
+
+void PopupMenuController::SendMouseMessageToMenu(
+    const PopupMenu& menu,
+    const Message& message, 
+    const POINT& mouse_position_at_screen) {
+
+    POINT mouse_position_at_menu = mouse_position_at_screen;
+    ScreenToClient(menu.Handle(), &mouse_position_at_menu);
+
+    SendMessage(
+        menu.Handle(),
+        message.ID(),
+        message.WParam(),
+        MAKELPARAM(mouse_position_at_menu.x, mouse_position_at_menu.y));
 }
 
 }

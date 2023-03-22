@@ -868,6 +868,15 @@
     <ClCompile Include="src\zaf\window\internal\popup_menu_controller.cpp">
       <Filter>zaf\window\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\event\selected_menu_item_changed_info.cpp">
+      <Filter>zaf\window\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\event\mouse_over_event_info.cpp">
+      <Filter>zaf\control\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\event\mouse_hover_info.cpp">
+      <Filter>zaf\control\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2019,6 +2028,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\internal\popup_menu_controller.h">
       <Filter>zaf\window\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\event\selected_menu_item_changed_info.h">
+      <Filter>zaf\window\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\mouse_over_event_info.h">
+      <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\mouse_hover_info.h">
+      <Filter>zaf\control\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

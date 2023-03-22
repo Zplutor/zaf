@@ -1,5 +1,6 @@
 #include <zaf/window/popup_menu.h>
 #include <zaf/base/container/utility/erase.h>
+#include <zaf/base/event_utility.h>
 #include <zaf/base/log.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
@@ -9,6 +10,12 @@
 #include <zaf/window/internal/popup_menu_controller.h>
 
 namespace zaf {
+namespace {
+
+constexpr const wchar_t* SelectedMenuItemChangedEventPropertyName = 
+    L"SelectedMenuItemChangedEvent";
+
+}
 
 ZAF_DEFINE_TYPE(PopupMenu)
 ZAF_DEFINE_TYPE_END
@@ -132,12 +139,6 @@ void PopupMenu::InitializeMenuItem(MenuItemInfo& item_info) {
 
     subscriptions += menu_item->MouseLeaveEvent().Subscribe(
         std::bind(&PopupMenu::OnMenuItemMouseLeave, this, std::placeholders::_1));
-
-    subscriptions += menu_item->SubMenuShowEvent().Subscribe(
-        std::bind(&PopupMenu::OnSubMenuShow, this, std::placeholders::_1));
-
-    subscriptions += menu_item->SubMenuCloseEvent().Subscribe(
-        std::bind(&PopupMenu::OnSubMenuClose, this, std::placeholders::_1));
 }
 
 
@@ -157,23 +158,66 @@ void PopupMenu::OnMenuItemMouseEnter(const MouseEnterInfo& event_info) {
         return;
     }
 
+    auto previous_selected_menu_item = selected_menu_item_.lock();
+
     menu_item->SetIsSelected(true);
     selected_menu_item_ = menu_item;
+
+    RaiseSelectedMenuItemChangedEvent(previous_selected_menu_item);
     
     if (menu_item->HasSubMenuItem()) {
-
-        UINT hover_time{};
-        SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &hover_time, 0);
-
-        sub_menu_popup_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
-            .ObserveOn(Scheduler::Main())
-            .Subscribe(std::bind([this]() {
-
-            if (auto menu_item = selected_menu_item_.lock()) {
-                menu_item->PopupSubMenu();
-            }
-        }));
+        TryToShowSubMenu(menu_item);
     }
+    else {
+        TryToCloseSubMenu(menu_item);
+    }
+}
+
+
+void PopupMenu::TryToShowSubMenu(const std::shared_ptr<MenuItem>& menu_item) {
+
+    close_sub_menu_timer_.Unsubscribe();
+
+    auto showing_sub_menu_item = showing_sub_menu_item_.lock();
+    if (showing_sub_menu_item == menu_item) {
+        return;
+    }
+
+    std::weak_ptr<MenuItem> menu_item_to_show{ menu_item };
+
+    UINT hover_time{};
+    SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &hover_time, 0);
+
+    show_sub_menu_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
+        .ObserveOn(Scheduler::Main())
+        .Subscribe(std::bind([this, menu_item_to_show]() {
+    
+        auto showing_menu_item = menu_item_to_show.lock();
+        if (showing_menu_item) {
+            showing_menu_item->PopupSubMenu();
+            showing_sub_menu_item_ = showing_menu_item;
+        }
+    }));
+}
+
+
+void PopupMenu::TryToCloseSubMenu(const std::shared_ptr<MenuItem>& menu_item) {
+
+    show_sub_menu_timer_.Unsubscribe();
+
+    UINT hover_time{};
+    SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &hover_time, 0);
+
+    close_sub_menu_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
+        .ObserveOn(Scheduler::Main())
+        .Subscribe(std::bind([this]() {
+
+        auto showing_menu_item = showing_sub_menu_item_.lock();
+        if (showing_menu_item) {
+            showing_menu_item->CloseSubMenu();
+            showing_sub_menu_item_.reset();
+        }
+    }));
 }
 
 
@@ -186,18 +230,37 @@ void PopupMenu::OnMenuItemMouseLeave(const MouseLeaveInfo& event_info) {
 
     menu_item->SetIsSelected(false);
 
-    sub_menu_popup_timer_.Unsubscribe();
+    show_sub_menu_timer_.Unsubscribe();
+
+    auto previous_selected_menu_item = selected_menu_item_.lock();
     selected_menu_item_.reset();
+
+    if (!event_info.EnteredControl()) {
+        RaiseSelectedMenuItemChangedEvent(previous_selected_menu_item);
+    }
 }
 
 
-void PopupMenu::OnSubMenuShow(const SubMenuShowInfo& event_info) {
+void PopupMenu::RaiseSelectedMenuItemChangedEvent(
+    const std::shared_ptr<MenuItem>& preivous_selected_menu_item) {
 
+    auto observer = GetEventObserver<SelectedMenuItemChangedInfo>(
+        GetPropertyMap(), 
+        SelectedMenuItemChangedEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(SelectedMenuItemChangedInfo{ 
+            As<PopupMenu>(shared_from_this()),
+            preivous_selected_menu_item
+        });
+    }
 }
 
 
-void PopupMenu::OnSubMenuClose(const SubMenuCloseInfo& event_info) {
-
+Observable<SelectedMenuItemChangedInfo> PopupMenu::SelectedMenuItemChangedEvent() {
+    return GetEventObservable<SelectedMenuItemChangedInfo>(
+        GetPropertyMap(), 
+        SelectedMenuItemChangedEventPropertyName);
 }
 
 

@@ -82,6 +82,8 @@
     <ClCompile Include="src\zaf\control\event\list_control_selection_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\mouse_capture_event_info.cpp" />
     <ClCompile Include="src\zaf\control\event\mouse_event_info.cpp" />
+    <ClCompile Include="src\zaf\control\event\mouse_hover_info.cpp" />
+    <ClCompile Include="src\zaf\control\event\mouse_over_event_info.cpp" />
     <ClCompile Include="src\zaf\control\event\parent_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\rect_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\scroll_bar_arrow_event_info.cpp" />
@@ -264,6 +266,7 @@
     <ClCompile Include="src\zaf\rx\subscription_host.cpp" />
     <ClCompile Include="src\zaf\rx\timer.cpp" />
     <ClCompile Include="src\zaf\window\activate_option.cpp" />
+    <ClCompile Include="src\zaf\window\event\selected_menu_item_changed_info.cpp" />
     <ClCompile Include="src\zaf\window\event\mouse_capture_control_changed_info.cpp" />
     <ClCompile Include="src\zaf\window\event\root_control_changed_info.cpp" />
     <ClCompile Include="src\zaf\window\internal\popup_menu_controller.cpp" />
@@ -367,6 +370,8 @@
     <ClInclude Include="src\zaf\control\event\list_control_selection_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\mouse_capture_event_info.h" />
     <ClInclude Include="src\zaf\control\event\mouse_event_info.h" />
+    <ClInclude Include="src\zaf\control\event\mouse_hover_info.h" />
+    <ClInclude Include="src\zaf\control\event\mouse_over_event_info.h" />
     <ClInclude Include="src\zaf\control\event\parent_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\rect_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\scroll_bar_arrow_event_info.h" />
@@ -639,6 +644,7 @@
     <ClInclude Include="src\zaf\serialization\property_map.h" />
     <ClInclude Include="src\zaf\application_event_infos.h" />
     <ClInclude Include="src\zaf\window\activate_option.h" />
+    <ClInclude Include="src\zaf\window\event\selected_menu_item_changed_info.h" />
     <ClInclude Include="src\zaf\window\event\mouse_capture_control_changed_info.h" />
     <ClInclude Include="src\zaf\window\event\root_control_changed_info.h" />
     <ClInclude Include="src\zaf\window\internal\popup_menu_controller.h" />

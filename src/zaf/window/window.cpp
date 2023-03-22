@@ -1428,7 +1428,7 @@ void Window::SetMouseOverControl(
     mouse_over_control_ = mouse_over_control;
 
     if (old_control ) {
-        ChangeControlMouseOverState(old_control, false);
+        ChangeControlMouseOverState(old_control, false, mouse_over_control_);
     }
 
     if (mouse_over_control_ != nullptr) {
@@ -1444,7 +1444,7 @@ void Window::SetMouseOverControl(
             reinterpret_cast<WPARAM>(Handle()),
             MAKELPARAM(message.HitTestResult(), message.ID()));
 
-        ChangeControlMouseOverState(mouse_over_control_, true);
+        ChangeControlMouseOverState(mouse_over_control_, true, old_control);
 
         //Track mouse again to generate next mouse hover message.
         //TODO: Find out whether the new control is in non-client area.
@@ -1457,23 +1457,23 @@ void Window::SetMouseOverControl(
 
 void Window::ChangeControlMouseOverState(
     const std::shared_ptr<Control>& target_control,
-    bool is_mouse_over) {
+    bool is_mouse_over,
+    const std::shared_ptr<Control>& changed_control) {
 
     target_control->SetIsMouseOverByWindow(is_mouse_over);
 
     //Raise and route event.
-    auto event_info_state = 
-        std::make_shared<RoutedEventSharedState>(target_control);
+    auto event_info_state = std::make_shared<internal::MouseOverEventSharedState>(
+        target_control, 
+        changed_control);
 
     for (auto control = target_control; control; control = control->Parent()) {
 
-        internal::MouseOverEventInfo event_info{ event_info_state, control };
-
         if (is_mouse_over) {
-            control->OnMouseEnter(event_info);
+            control->OnMouseEnter(MouseEnterInfo{ event_info_state, control });
         }
         else {
-            control->OnMouseLeave(event_info);
+            control->OnMouseLeave(MouseLeaveInfo{ event_info_state, control });
         }
     }
 }

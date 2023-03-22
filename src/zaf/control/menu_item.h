@@ -29,7 +29,6 @@ protected:
 
 private:
     zaf::Rect GetSubMenuArrowRect() const;
-    void AdjustAppearence();
     void CheckCreateSubMenu();
 
 private:

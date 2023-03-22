@@ -63,14 +63,6 @@ private:
     Point position_at_sender_;
 };
 
-
-class MouseOverEventInfo : public RoutedEventInfo {
-public:
-    explicit MouseOverEventInfo(
-        const std::shared_ptr<RoutedEventSharedState>& state, 
-        const std::shared_ptr<Control>& sender);
-};
-
 }
 
 
@@ -78,9 +70,5 @@ using MouseMoveInfo = internal::MouseEventInfo<MouseMessage>;
 using MouseDownInfo = internal::MouseEventInfo<MouseMessage>;
 using MouseUpInfo = internal::MouseEventInfo<MouseMessage>;
 using MouseWheelInfo = internal::MouseEventInfo<MouseWheelMessage>;
-
-using MouseEnterInfo = internal::MouseOverEventInfo;
-using MouseLeaveInfo = internal::MouseOverEventInfo;
-using MouseHoverInfo = internal::MouseOverEventInfo;
 
 }

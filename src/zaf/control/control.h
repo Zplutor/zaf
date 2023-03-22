@@ -15,6 +15,8 @@
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/event/mouse_capture_event_info.h>
 #include <zaf/control/event/mouse_event_info.h>
+#include <zaf/control/event/mouse_hover_info.h>
+#include <zaf/control/event/mouse_over_event_info.h>
 #include <zaf/control/event/parent_changed_info.h>
 #include <zaf/control/event/rect_changed_info.h>
 #include <zaf/control/image_layout.h>
