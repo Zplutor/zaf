@@ -139,6 +139,12 @@ void PopupMenu::InitializeMenuItem(MenuItemInfo& item_info) {
 
     subscriptions += menu_item->MouseLeaveEvent().Subscribe(
         std::bind(&PopupMenu::OnMenuItemMouseLeave, this, std::placeholders::_1));
+
+    subscriptions += menu_item->SubMenuShowEvent().Subscribe(
+        std::bind(&PopupMenu::OnSubMenuShow, this, std::placeholders::_1));
+
+    subscriptions += menu_item->SubMenuCloseEvent().Subscribe(
+        std::bind(&PopupMenu::OnSubMenuClose, this, std::placeholders::_1));
 }
 
 
@@ -154,23 +160,42 @@ void PopupMenu::OnMenuItemClick(const MouseUpInfo& event_info) {
 void PopupMenu::OnMenuItemMouseEnter(const MouseEnterInfo& event_info) {
 
     auto menu_item = As<MenuItem>(event_info.Sender());
-    if (!menu_item) {
-        return;
+    if (menu_item) {
+        SelectMenuItem(menu_item);
     }
+}
+
+
+void PopupMenu::SelectMenuItem(const std::shared_ptr<MenuItem>& menu_item) {
 
     auto previous_selected_menu_item = selected_menu_item_.lock();
+    UnselectCurrentMenuItem();
 
     menu_item->SetIsSelected(true);
     selected_menu_item_ = menu_item;
 
     RaiseSelectedMenuItemChangedEvent(previous_selected_menu_item);
-    
+
     if (menu_item->HasSubMenuItem()) {
         TryToShowSubMenu(menu_item);
     }
     else {
         TryToCloseSubMenu(menu_item);
     }
+}
+
+
+void PopupMenu::UnselectCurrentMenuItem() {
+
+    auto selected_menu_item = selected_menu_item_.lock();
+    if (!selected_menu_item) {
+        return;
+    }
+
+    selected_menu_item->SetIsSelected(false);
+
+    show_sub_menu_timer_.Unsubscribe();
+    selected_menu_item_.reset();
 }
 
 
@@ -216,6 +241,7 @@ void PopupMenu::TryToCloseSubMenu(const std::shared_ptr<MenuItem>& menu_item) {
         if (showing_menu_item) {
             showing_menu_item->CloseSubMenu();
             showing_sub_menu_item_.reset();
+            showing_sub_menu_subscriptions_.Clear();
         }
     }));
 }
@@ -228,14 +254,19 @@ void PopupMenu::OnMenuItemMouseLeave(const MouseLeaveInfo& event_info) {
         return;
     }
 
-    menu_item->SetIsSelected(false);
-
-    show_sub_menu_timer_.Unsubscribe();
-
     auto previous_selected_menu_item = selected_menu_item_.lock();
-    selected_menu_item_.reset();
+    if (previous_selected_menu_item == menu_item) {
+        UnselectCurrentMenuItem();
+    }
 
-    if (!event_info.EnteredControl()) {
+    //If there is no mouse over control, or it is not in a MenuItem, raise a selected menu item
+    //changed event.
+    auto entered_control = event_info.EnteredControl();
+    while (entered_control && !As<MenuItem>(entered_control)) {
+        entered_control = entered_control->Parent();
+    }
+
+    if (!entered_control) {
         RaiseSelectedMenuItemChangedEvent(previous_selected_menu_item);
     }
 }
@@ -261,6 +292,35 @@ Observable<SelectedMenuItemChangedInfo> PopupMenu::SelectedMenuItemChangedEvent(
     return GetEventObservable<SelectedMenuItemChangedInfo>(
         GetPropertyMap(), 
         SelectedMenuItemChangedEventPropertyName);
+}
+
+
+void PopupMenu::OnSubMenuShow(const SubMenuShowInfo& event_info) {
+
+    auto menu_item = As<MenuItem>(event_info.Source());
+    if (!menu_item) {
+        return;
+    }
+
+    const auto& sub_menu = menu_item->SubMenu();
+    if (!sub_menu) {
+        return;
+    }
+
+    showing_sub_menu_subscriptions_ += sub_menu->RootControl()->MouseEnterEvent().Subscribe(
+        [this](const MouseEnterInfo& event_info) {
+
+        auto showing_sub_menu_item = showing_sub_menu_item_.lock();
+        if (showing_sub_menu_item) {
+            SelectMenuItem(showing_sub_menu_item);
+        }
+    });
+}
+
+
+void PopupMenu::OnSubMenuClose(const SubMenuShowInfo& event_info) {
+
+    showing_sub_menu_subscriptions_.Clear();
 }
 
 

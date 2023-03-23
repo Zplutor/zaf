@@ -56,7 +56,7 @@ void MenuItem::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         TransformMatrix::Translation(transform_position));
 
     Canvas::StateGuard guard{ canvas };
-    auto color = ContainMouse() ? Color::White() : Color::Black();
+    auto color = IsSelected() ? Color::White() : Color::Black();
     canvas.SetBrushWithColor(color);
     canvas.DrawGeometry(transformed_geometry);
 }
@@ -65,8 +65,10 @@ void MenuItem::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 zaf::Rect MenuItem::GetTextRect() {
 
     auto result = __super::GetTextRect();
-    result.Subtract(GetSubMenuArrowRect());
-    result.size.width -= SubMenuArrowMargin;
+    if (HasSubMenuItem()) {
+        result.Subtract(GetSubMenuArrowRect());
+        result.size.width -= SubMenuArrowMargin;
+    }
     return result;
 }
 

@@ -49,11 +49,15 @@ private:
     void InitializeMenuItem(MenuItemInfo& item_info);
     void OnMenuItemClick(const MouseUpInfo& event_info);
     void OnMenuItemMouseEnter(const MouseEnterInfo& event_info);
+    void SelectMenuItem(const std::shared_ptr<MenuItem>& menu_item);
+    void UnselectCurrentMenuItem();
     void TryToShowSubMenu(const std::shared_ptr<MenuItem>& menu_item);
     void TryToCloseSubMenu(const std::shared_ptr<MenuItem>& menu_item);
     void OnMenuItemMouseLeave(const MouseLeaveInfo& event_info);
     void RaiseSelectedMenuItemChangedEvent(
         const std::shared_ptr<MenuItem>& preivous_selected_menu_item);
+    void OnSubMenuShow(const SubMenuShowInfo& event_info);
+    void OnSubMenuClose(const SubMenuShowInfo& event_info);
 
 private:
     std::shared_ptr<internal::PopupMenuController> controller_;
@@ -63,6 +67,7 @@ private:
     std::weak_ptr<MenuItem> selected_menu_item_;
 
     std::weak_ptr<MenuItem> showing_sub_menu_item_;
+    SubscriptionHolder showing_sub_menu_subscriptions_;
     Subscription show_sub_menu_timer_;
     Subscription close_sub_menu_timer_;
 };

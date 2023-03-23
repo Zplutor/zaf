@@ -17,6 +17,10 @@ public:
     void PopupSubMenu();
     void CloseSubMenu();
 
+    const std::shared_ptr<PopupMenu>& SubMenu() const {
+        return sub_menu_;
+    }
+
     Observable<SubMenuShowInfo> SubMenuShowEvent();
     Observable<SubMenuCloseInfo> SubMenuCloseEvent();
 
