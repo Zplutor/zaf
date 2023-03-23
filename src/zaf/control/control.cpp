@@ -78,6 +78,7 @@ constexpr const wchar_t* const KeyDownEventPropertyName = L"KeyDown";
 constexpr const wchar_t* const KeyUpEventPropertyName = L"KeyUp";
 constexpr const wchar_t* const MouseCapturedEventPropertyName = L"MouseCaptured";
 constexpr const wchar_t* const MouseDownEventPropertyName = L"MouseDown";
+constexpr const wchar_t* const MouseMoveEventPropertyName = L"MouseMove";
 constexpr const wchar_t* const MouseReleasedEventPropertyName = L"MouseReleased";
 constexpr const wchar_t* const MouseUpEventPropertyName = L"MouseUp";
 constexpr const wchar_t* const ParentChangedEventPropertyName = L"ParentChangedEvent";
@@ -1734,6 +1735,18 @@ void Control::ChangeMouseCursor(const Message& message, bool& is_changed) {
 
 void Control::OnMouseMove(const MouseMoveInfo& event_info) {
 
+    auto event_observer = GetEventObserver<MouseMoveInfo>(
+        GetPropertyMap(), 
+        MouseMoveEventPropertyName);
+
+    if (event_observer) {
+        event_observer->OnNext(event_info);
+    }
+}
+
+
+Observable<MouseMoveInfo> Control::MouseMoveEvent() {
+    return GetEventObservable<MouseMoveInfo>(GetPropertyMap(), MouseMoveEventPropertyName);
 }
 
 

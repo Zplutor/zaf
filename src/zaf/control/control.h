@@ -668,6 +668,8 @@ public:
     Observable<FocusGainedInfo> FocusGainedEvent();
     Observable<FocusLostInfo> FocusLostEvent();
 
+    Observable<MouseMoveInfo> MouseMoveEvent();
+
     Observable<MouseEnterInfo> MouseEnterEvent();
     Observable<MouseLeaveInfo> MouseLeaveEvent();
     Observable<MouseHoverInfo> MouseHoverEvent();
