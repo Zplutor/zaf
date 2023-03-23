@@ -52,6 +52,25 @@
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
+
+void AddSubMenuItemsToMenuItem(zaf::MenuItem& menu_item, int deep) {
+
+    if (deep >= 2) {
+        return;
+    }
+
+    for (int count = 0; count < 3; ++count) {
+
+        auto sub_menu_item = zaf::Create<zaf::MenuItem>();
+        sub_menu_item->SetText(L"Sub menu item " + std::to_wstring(count));
+
+        menu_item.AddSubMenuItem(sub_menu_item);
+
+        AddSubMenuItemsToMenuItem(*sub_menu_item, deep + 1);
+    }
+}
+
+
 class Window : public zaf::Window {
 protected:
     void AfterParse() override {
@@ -88,12 +107,8 @@ protected:
                     event_info.IsHandled();
                 });
 
-                if (count == 2) {
-                    for (int sub_count = 0; sub_count < 3; ++sub_count) {
-                        auto sub_menu_item = zaf::Create<zaf::MenuItem>();
-                        sub_menu_item->SetText(L"Sub menu item " + std::to_wstring(sub_count));
-                        menu_item->AddSubMenuItem(sub_menu_item);
-                    }
+                if (count > 2) {
+                    AddSubMenuItemsToMenuItem(*menu_item, 0);
                 }
 
                 context_menu->AddMenuItem(menu_item);

@@ -50,6 +50,9 @@ void PopupMenu::Popup(const Point& position_in_screen) {
 
     InitializeController();
 
+    root_control_subscriptions_ += RootControl()->MouseEnterEvent().Subscribe(
+        std::bind(&PopupMenu::OnRootControlMouseEnter, this, std::placeholders::_1));
+
     root_control_subscriptions_ += RootControl()->MouseDownEvent().Subscribe(
         std::bind(&PopupMenu::OnRootControlMouseDown, this, std::placeholders::_1));
 }
@@ -94,6 +97,38 @@ zaf::Size PopupMenu::CalculateMenuSize() const {
 }
 
 
+void PopupMenu::OnRootControlMouseEnter(const MouseEnterInfo& event_info) {
+    ResetOwnerSelectedMenuItemBySubMenu();
+}
+
+
+void PopupMenu::ResetOwnerSelectedMenuItemBySubMenu() {
+
+    auto parent_menu = As<PopupMenu>(Owner());
+    if (parent_menu) {
+        parent_menu->ResetSelectedMenuItemBySubMenu();
+    }
+}
+
+
+void PopupMenu::ResetSelectedMenuItemBySubMenu() {
+
+    auto showing_sub_menu_item = showing_sub_menu_item_.lock();
+    if (!showing_sub_menu_item) {
+        return;
+    }
+
+    auto selected_menu_item = selected_menu_item_.lock();
+    if (selected_menu_item == showing_sub_menu_item) {
+        return;
+    }
+
+    SelectSpecifiedMenuItem(showing_sub_menu_item);
+
+    ResetOwnerSelectedMenuItemBySubMenu();
+}
+
+
 void PopupMenu::OnRootControlMouseDown(const MouseDownInfo& event_info) {
 
     if (!ContentRect().Contain(event_info.PositionAtSender())) {
@@ -106,7 +141,13 @@ void PopupMenu::OnDestroyed(const DestroyedInfo& event_info) {
 
     __super::OnDestroyed(event_info);
 
+    UnselectCurrentMenuItem();
+
     root_control_subscriptions_.Clear();
+    showing_sub_menu_item_.reset();
+    show_sub_menu_timer_.Unsubscribe();
+    close_sub_menu_timer_.Unsubscribe();
+
     controller_->PopMenu(*this);
 }
 
@@ -139,12 +180,6 @@ void PopupMenu::InitializeMenuItem(MenuItemInfo& item_info) {
 
     subscriptions += menu_item->MouseLeaveEvent().Subscribe(
         std::bind(&PopupMenu::OnMenuItemMouseLeave, this, std::placeholders::_1));
-
-    subscriptions += menu_item->SubMenuShowEvent().Subscribe(
-        std::bind(&PopupMenu::OnSubMenuShow, this, std::placeholders::_1));
-
-    subscriptions += menu_item->SubMenuCloseEvent().Subscribe(
-        std::bind(&PopupMenu::OnSubMenuClose, this, std::placeholders::_1));
 }
 
 
@@ -161,26 +196,39 @@ void PopupMenu::OnMenuItemMouseEnter(const MouseEnterInfo& event_info) {
 
     auto menu_item = As<MenuItem>(event_info.Sender());
     if (menu_item) {
-        SelectMenuItem(menu_item);
+        SelectSpecifiedMenuItem(menu_item);
     }
 }
 
 
-void PopupMenu::SelectMenuItem(const std::shared_ptr<MenuItem>& menu_item) {
+void PopupMenu::SelectSpecifiedMenuItem(const std::shared_ptr<MenuItem>& menu_item) {
 
     auto previous_selected_menu_item = selected_menu_item_.lock();
+    if (previous_selected_menu_item == menu_item) {
+        return;
+    }
+
     UnselectCurrentMenuItem();
 
     menu_item->SetIsSelected(true);
     selected_menu_item_ = menu_item;
-
     RaiseSelectedMenuItemChangedEvent(previous_selected_menu_item);
 
-    if (menu_item->HasSubMenuItem()) {
-        TryToShowSubMenu(menu_item);
+    auto showing_sub_menu_item = showing_sub_menu_item_.lock();
+    //The new selected menu item is differ to the menu item that showing sub menu, delay to close 
+    //the sub menu.
+    if (showing_sub_menu_item != menu_item) {
+
+        DelayCloseSubMenu();
+
+        //The new selected menu item has a sub menu, delay to show the sub menu.
+        if (menu_item->HasSubMenuItem()) {
+            DelayShowSubMenu();
+        }
     }
+    //They are the same menu item, cancel closing sub menu.
     else {
-        TryToCloseSubMenu(menu_item);
+        close_sub_menu_timer_.Unsubscribe();
     }
 }
 
@@ -199,36 +247,28 @@ void PopupMenu::UnselectCurrentMenuItem() {
 }
 
 
-void PopupMenu::TryToShowSubMenu(const std::shared_ptr<MenuItem>& menu_item) {
-
-    close_sub_menu_timer_.Unsubscribe();
-
-    auto showing_sub_menu_item = showing_sub_menu_item_.lock();
-    if (showing_sub_menu_item == menu_item) {
-        return;
-    }
-
-    std::weak_ptr<MenuItem> menu_item_to_show{ menu_item };
+void PopupMenu::DelayShowSubMenu() {
 
     UINT hover_time{};
     SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &hover_time, 0);
 
     show_sub_menu_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
         .ObserveOn(Scheduler::Main())
-        .Subscribe(std::bind([this, menu_item_to_show]() {
+        .Subscribe(std::bind([this]() {
     
-        auto showing_menu_item = menu_item_to_show.lock();
-        if (showing_menu_item) {
-            showing_menu_item->PopupSubMenu();
-            showing_sub_menu_item_ = showing_menu_item;
+        CloseCurrentSubMenu();
+        close_sub_menu_timer_.Unsubscribe();
+
+        auto new_showing_sub_menu_item = selected_menu_item_.lock();
+        if (new_showing_sub_menu_item) {
+            new_showing_sub_menu_item->PopupSubMenu();
+            showing_sub_menu_item_ = new_showing_sub_menu_item;
         }
     }));
 }
 
 
-void PopupMenu::TryToCloseSubMenu(const std::shared_ptr<MenuItem>& menu_item) {
-
-    show_sub_menu_timer_.Unsubscribe();
+void PopupMenu::DelayCloseSubMenu() {
 
     UINT hover_time{};
     SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &hover_time, 0);
@@ -237,13 +277,18 @@ void PopupMenu::TryToCloseSubMenu(const std::shared_ptr<MenuItem>& menu_item) {
         .ObserveOn(Scheduler::Main())
         .Subscribe(std::bind([this]() {
 
-        auto showing_menu_item = showing_sub_menu_item_.lock();
-        if (showing_menu_item) {
-            showing_menu_item->CloseSubMenu();
-            showing_sub_menu_item_.reset();
-            showing_sub_menu_subscriptions_.Clear();
-        }
+        CloseCurrentSubMenu();
     }));
+}
+
+
+void PopupMenu::CloseCurrentSubMenu() {
+
+    auto showing_menu_item = showing_sub_menu_item_.lock();
+    if (showing_menu_item) {
+        showing_menu_item->CloseSubMenu();
+        showing_sub_menu_item_.reset();
+    }
 }
 
 
@@ -292,35 +337,6 @@ Observable<SelectedMenuItemChangedInfo> PopupMenu::SelectedMenuItemChangedEvent(
     return GetEventObservable<SelectedMenuItemChangedInfo>(
         GetPropertyMap(), 
         SelectedMenuItemChangedEventPropertyName);
-}
-
-
-void PopupMenu::OnSubMenuShow(const SubMenuShowInfo& event_info) {
-
-    auto menu_item = As<MenuItem>(event_info.Source());
-    if (!menu_item) {
-        return;
-    }
-
-    const auto& sub_menu = menu_item->SubMenu();
-    if (!sub_menu) {
-        return;
-    }
-
-    showing_sub_menu_subscriptions_ += sub_menu->RootControl()->MouseEnterEvent().Subscribe(
-        [this](const MouseEnterInfo& event_info) {
-
-        auto showing_sub_menu_item = showing_sub_menu_item_.lock();
-        if (showing_sub_menu_item) {
-            SelectMenuItem(showing_sub_menu_item);
-        }
-    });
-}
-
-
-void PopupMenu::OnSubMenuClose(const SubMenuShowInfo& event_info) {
-
-    showing_sub_menu_subscriptions_.Clear();
 }
 
 
