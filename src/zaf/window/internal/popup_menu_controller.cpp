@@ -100,6 +100,11 @@ bool PopupMenuController::RedirectOwnerMouseMessage(const Message& message) {
         return false;
     }
 
+    //Mouse wheel is not supported currently, donot redirect these two messages.
+    if (message.ID() == WM_MOUSEWHEEL || message.ID() == WM_MOUSEHWHEEL) {
+        return false;
+    }
+
     if (message.ID() == WM_MOUSEMOVE) {
         RedirectMouseMoveMessage(message);
         return true;
