@@ -54,6 +54,7 @@ private:
     void OnMenuItemMouseEnter(const MouseEnterInfo& event_info);
     void SelectSpecifiedMenuItem(const std::shared_ptr<MenuItem>& menu_item);
     void UnselectCurrentMenuItem();
+    void CancelSubMenuSelection();
     void DelayShowSubMenu();
     void DelayCloseSubMenu();
     void CloseCurrentSubMenu();

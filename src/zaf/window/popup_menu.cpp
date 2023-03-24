@@ -119,11 +119,9 @@ void PopupMenu::ResetSelectedMenuItemBySubMenu() {
     }
 
     auto selected_menu_item = selected_menu_item_.lock();
-    if (selected_menu_item == showing_sub_menu_item) {
-        return;
+    if (selected_menu_item != showing_sub_menu_item) {
+        SelectSpecifiedMenuItem(showing_sub_menu_item);
     }
-
-    SelectSpecifiedMenuItem(showing_sub_menu_item);
 
     ResetOwnerSelectedMenuItemBySubMenu();
 }
@@ -195,8 +193,16 @@ void PopupMenu::OnMenuItemClick(const MouseUpInfo& event_info) {
 void PopupMenu::OnMenuItemMouseEnter(const MouseEnterInfo& event_info) {
 
     auto menu_item = As<MenuItem>(event_info.Sender());
-    if (menu_item) {
-        SelectSpecifiedMenuItem(menu_item);
+    if (!menu_item) {
+        return;
+    }
+
+    SelectSpecifiedMenuItem(menu_item);
+
+    //If the mouse move to another menu item, cancel sub menu's selection.
+    auto showing_sub_menu_item = showing_sub_menu_item_.lock();
+    if (showing_sub_menu_item && showing_sub_menu_item != menu_item) {
+        CancelSubMenuSelection();
     }
 }
 
@@ -244,6 +250,25 @@ void PopupMenu::UnselectCurrentMenuItem() {
 
     show_sub_menu_timer_.Unsubscribe();
     selected_menu_item_.reset();
+}
+
+
+void PopupMenu::CancelSubMenuSelection() {
+
+    auto showing_sub_menu_item = showing_sub_menu_item_.lock();
+    if (!showing_sub_menu_item) {
+        return;
+    }
+
+    auto sub_menu = showing_sub_menu_item->SubMenu();
+    if (!sub_menu) {
+        return;
+    }
+
+    sub_menu->UnselectCurrentMenuItem();
+
+    //Recursively
+    sub_menu->CancelSubMenuSelection();
 }
 
 
