@@ -185,7 +185,7 @@ void PopupMenu::OnMenuItemClick(const MouseUpInfo& event_info) {
 
     auto menu_item = As<MenuItem>(event_info.Sender());
     if (menu_item && !menu_item->HasSubMenuItem()) {
-        this->Close();
+        controller_->CloseAllMenus();
     }
 }
 

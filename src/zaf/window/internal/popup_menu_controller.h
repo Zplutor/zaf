@@ -15,6 +15,8 @@ public:
     void PushMenu(const std::shared_ptr<PopupMenu>& menu);
     void PopMenu(const PopupMenu& menu);
 
+    void CloseAllMenus();
+
 private:
     static void SendMouseMessageToMenu(
         const PopupMenu& menu,
@@ -23,7 +25,6 @@ private:
 
 private:
     void InitializeOwnerMessageRedirection();
-    void CloseAllMenus();
     void OnOwnerMessageReceived(const MessageReceivedInfo& event_info);
     bool HandleOwnerMessage(const Message& message);
     bool HandleOwnerMouseMessage(const Message& message);
