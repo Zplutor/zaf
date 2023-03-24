@@ -41,10 +41,18 @@ void PopupMenuController::PopMenu(const PopupMenu& menu) {
     menus_.erase(menus_.begin() + *menu_index, menus_.end());
 
     if (owner) {
+
         if (GetCapture() == owner->Handle()) {
             ReleaseCapture();
         }
+
         Subscriptions().Clear();
+
+        //Recover the focus of owner.
+        auto focused_control = owner_focused_control_.lock();
+        if (focused_control) {
+            focused_control->SetIsFocused(true);
+        }
     }
 }
 
@@ -59,6 +67,12 @@ void PopupMenuController::InitializeOwnerMessageRedirection() {
 
     const auto& owner = menu->Owner();
     ZAF_EXPECT(owner);
+
+    auto focused_control = owner->FocusedControl();
+    if (focused_control) {
+        focused_control->SetIsFocused(false);
+        owner_focused_control_ = focused_control;
+    }
 
     SetCapture(owner->Handle());
 

@@ -31,6 +31,7 @@ private:
     std::shared_ptr<PopupMenu> FindMenuAtPosition(const POINT& mouse_position_at_screen) const;
 
 private:
+    std::weak_ptr<Control> owner_focused_control_;
     std::vector<std::weak_ptr<PopupMenu>> menus_;
     std::weak_ptr<PopupMenu> last_mouse_over_menu_;
 };
