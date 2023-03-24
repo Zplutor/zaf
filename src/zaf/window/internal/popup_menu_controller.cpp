@@ -15,10 +15,12 @@ void PopupMenuController::PushMenu(const std::shared_ptr<PopupMenu>& menu) {
 void PopupMenuController::PopMenu(const PopupMenu& menu) {
 
     std::optional<std::size_t> menu_index;
-    for (auto index = menus_.size() - 1; index >= 0; --index) {
+    for (auto reverse_index = menus_.size(); reverse_index > 0; --reverse_index) {
 
+        auto index = reverse_index - 1;
         auto current_menu = menus_[index].lock();
         if (current_menu.get() == &menu) {
+
             menu_index = index;
             break;
         }
