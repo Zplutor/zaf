@@ -23,11 +23,11 @@ private:
 
 private:
     void InitializeOwnerMessageRedirection();
+    void CloseAllMenus();
     void OnOwnerMessageReceived(const MessageReceivedInfo& event_info);
-    bool RedirectOwnerMessage(const Message& message);
-    bool RedirectOwnerMouseMessage(const Message& message);
-    void RedirectMouseMoveMessage(const Message& message);
-    std::shared_ptr<PopupMenu> FindMouseOverMenu(const POINT& mouse_position_at_screen) const;
+    bool HandleOwnerMessage(const Message& message);
+    bool HandleOwnerMouseMessage(const Message& message);
+    std::shared_ptr<PopupMenu> FindMenuAtPosition(const POINT& mouse_position_at_screen) const;
 
 private:
     std::vector<std::weak_ptr<PopupMenu>> menus_;

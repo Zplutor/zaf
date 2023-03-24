@@ -67,106 +67,106 @@ void PopupMenuController::InitializeOwnerMessageRedirection() {
 }
 
 
+void PopupMenuController::CloseAllMenus() {
+
+    if (menus_.empty()) {
+        return;
+    }
+
+    auto first_menu = menus_.front().lock();
+    if (first_menu) {
+        first_menu->Close();
+    }
+}
+
+
 void PopupMenuController::OnOwnerMessageReceived(const MessageReceivedInfo& event_info) {
 
     const auto& message = event_info.Message();
 
-    //Dismiss all popup menus if owner's capture is lost.
+    //Close all popup menus if owner's capture is lost.
     if (message.ID() == WM_CAPTURECHANGED) {
-        if (!menus_.empty()) {
-            auto first_menu = menus_.front().lock();
-            if (first_menu) {
-                first_menu->Close();
-            }
-        }
+        CloseAllMenus();
+        event_info.MarkAsHandled(0);
         return;
     }
 
-    bool is_redirected = RedirectOwnerMessage(event_info.Message());
+    bool is_redirected = HandleOwnerMessage(event_info.Message());
     if (is_redirected) {
-        event_info.MarkAsHandled(true);
+        event_info.MarkAsHandled(0);
     }
 }
 
 
-bool PopupMenuController::RedirectOwnerMessage(const Message& message) {
+bool PopupMenuController::HandleOwnerMessage(const Message& message) {
 
-    return RedirectOwnerMouseMessage(message);
+    if (WM_MOUSEFIRST <= message.ID() && message.ID() <= WM_MOUSELAST) {
+        return HandleOwnerMouseMessage(message);
+    }
+
+    return false;
 }
 
 
-bool PopupMenuController::RedirectOwnerMouseMessage(const Message& message) {
+bool PopupMenuController::HandleOwnerMouseMessage(const Message& message) {
 
-    bool should_redirect = (WM_MOUSEFIRST <= message.ID() && message.ID() <= WM_MOUSELAST);
-    if (!should_redirect) {
-        return false;
-    }
-
-    //Mouse wheel is not supported currently, donot redirect these two messages.
+    //Mouse wheel is not supported currently, do not redirect these two messages.
     if (message.ID() == WM_MOUSEWHEEL || message.ID() == WM_MOUSEHWHEEL) {
         return false;
     }
-
-    if (message.ID() == WM_MOUSEMOVE) {
-        RedirectMouseMoveMessage(message);
-        return true;
-    }
-
-    //menus_ might be modified during SendMessage(), thus a copy is needed.
-    auto menus = menus_;
-    for (const auto& each_menu : menus) {
-
-        auto menu = each_menu.lock();
-        if (!menu) {
-            continue;
-        }
-
-        POINT mouse_position{};
-        mouse_position.x = GET_X_LPARAM(message.LParam());
-        mouse_position.y = GET_Y_LPARAM(message.LParam());
-
-        ClientToScreen(message.WindowHandle(), &mouse_position);
-        ScreenToClient(menu->Handle(), &mouse_position);
-
-        SendMessage(
-            menu->Handle(),
-            message.ID(),
-            message.WParam(),
-            MAKELPARAM(mouse_position.x, mouse_position.y));
-    }
-
-    return true;
-}
-
-
-void PopupMenuController::RedirectMouseMoveMessage(const Message& message) {
 
     POINT mouse_position_at_screen{};
     mouse_position_at_screen.x = GET_X_LPARAM(message.LParam());
     mouse_position_at_screen.y = GET_Y_LPARAM(message.LParam());
     ClientToScreen(message.WindowHandle(), &mouse_position_at_screen);
+    auto new_mouse_over_menu = FindMenuAtPosition(mouse_position_at_screen);
 
-    auto new_mouse_over_menu = FindMouseOverMenu(mouse_position_at_screen);
-
-    auto old_mouse_over_menu = last_mouse_over_menu_.lock();
-    if (old_mouse_over_menu && old_mouse_over_menu != new_mouse_over_menu) {
-
-        //Mouse over menu is changed, redirect mouse move messge to previous menu to update its 
-        //state.
-        SendMouseMessageToMenu(*old_mouse_over_menu, message, mouse_position_at_screen);
+    //Close all menus if mouse down outside any menu.
+    if (!new_mouse_over_menu) {
+        if (message.ID() == WM_LBUTTONDOWN || 
+            message.ID() == WM_RBUTTONDOWN || 
+            message.ID() == WM_MBUTTONDOWN) {
+            CloseAllMenus();
+            //Indicate that the messge is not handled, so that the owner can continue to handle 
+            //the mouse down message.
+            return false;
+        }
     }
 
+    auto last_mouse_over_menu = last_mouse_over_menu_.lock();
+    std::shared_ptr<PopupMenu> old_menu_to_redirect_mouse_move;
+    
     if (new_mouse_over_menu) {
-        SendMouseMessageToMenu(*new_mouse_over_menu, message, mouse_position_at_screen);
+
+        //If mouse over menu is changed, mouse move messge is needed to be redirect to the old one
+        //to update its state.
+        if (message.ID() == WM_MOUSEMOVE) {
+            if (last_mouse_over_menu && last_mouse_over_menu != new_mouse_over_menu) {
+                old_menu_to_redirect_mouse_move = last_mouse_over_menu;
+            }
+        }
+
+        last_mouse_over_menu = new_mouse_over_menu;
         last_mouse_over_menu_ = new_mouse_over_menu;
     }
+
+    if (old_menu_to_redirect_mouse_move) {
+        SendMouseMessageToMenu(
+            *old_menu_to_redirect_mouse_move, 
+            message,
+            mouse_position_at_screen);
+    }
+
+    if (last_mouse_over_menu) {
+        SendMouseMessageToMenu(*last_mouse_over_menu, message, mouse_position_at_screen);
+    }
+    return true;
 }
 
 
-std::shared_ptr<PopupMenu> PopupMenuController::FindMouseOverMenu(
+std::shared_ptr<PopupMenu> PopupMenuController::FindMenuAtPosition(
     const POINT& mouse_position_at_screen) const {
 
-    //Find mouse over menu.
     for (auto iterator = menus_.rbegin(); iterator != menus_.rend(); ++iterator) {
 
         auto current_menu = iterator->lock();
