@@ -285,11 +285,12 @@
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_data_source.cpp" />
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_item.cpp" />
     <ClCompile Include="src\zaf\window\internal\inner_message_only_window.cpp" />
-    <ClCompile Include="src\zaf\window\internal\window_class_registry.cpp" />
     <ClCompile Include="src\zaf\window\message\internal\mouse_position_conversion.cpp" />
     <ClCompile Include="src\zaf\window\message\mouse_message.cpp" />
     <ClCompile Include="src\zaf\window\tooltip_window.cpp" />
     <ClCompile Include="src\zaf\window\window.cpp" />
+    <ClCompile Include="src\zaf\window\window_class.cpp" />
+    <ClCompile Include="src\zaf\window\window_class_registry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\precompiled.h" />
@@ -665,7 +666,6 @@
     <ClInclude Include="src\zaf\window\inspector\internal\inspect_data_source.h" />
     <ClInclude Include="src\zaf\window\inspector\internal\inspect_item.h" />
     <ClInclude Include="src\zaf\window\internal\inner_message_only_window.h" />
-    <ClInclude Include="src\zaf\window\internal\window_class_registry.h" />
     <ClInclude Include="src\zaf\window\message\activate_message.h" />
     <ClInclude Include="src\zaf\window\message\hit_test_message.h" />
     <ClInclude Include="src\zaf\window\message\hit_test_result.h" />
@@ -679,6 +679,9 @@
     <ClInclude Include="src\zaf\window\message_only_window.h" />
     <ClInclude Include="src\zaf\window\tooltip_window.h" />
     <ClInclude Include="src\zaf\window\window.h" />
+    <ClInclude Include="src\zaf\window\window_class.h" />
+    <ClInclude Include="src\zaf\window\window_class_properties.h" />
+    <ClInclude Include="src\zaf\window\window_class_registry.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CC24D55C-A412-446C-96D3-C77A4E4CFA07}</ProjectGuid>

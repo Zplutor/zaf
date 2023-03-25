@@ -25,13 +25,14 @@
 namespace zaf {
 namespace internal {
 class InspectorPort;
-class WindowClass;
 }
 
 class HitTestMessage;
 class InspectorWindow;
 class MouseMessage;
 class TooltipWindow;
+class WindowClass;
+class WindowClassRegistry;
 enum class HitTestResult;
 
 
@@ -48,14 +49,13 @@ class Window :
 public:
     ZAF_DECLARE_TYPE
 
-    static constexpr const wchar_t* const DefaultClassName = L"ZafDef";
-
 public:
     /**
      Construct the instance.
      */
     Window();
     Window(const std::wstring& window_class_name);
+    Window(const std::shared_ptr<WindowClass>& window_class);
 
     /**
      Destruct the instance.
@@ -65,7 +65,9 @@ public:
     Window(const Window&) = delete;
     Window& operator=(const Window&) = delete;
 
-    const std::wstring& ClassName() const;
+    const std::shared_ptr<WindowClass>& Class() const {
+        return class_;
+    }
 
     /**
      Get the owner window.
@@ -704,7 +706,7 @@ private:
     friend class Control;
     friend class InspectorWindow;
     friend class internal::MessageLoop;
-    friend class internal::WindowClass;
+    friend class WindowClassRegistry;
 
     void NeedRepaintRect(const zaf::Rect& rect);
     void SetMouseOverControl(
@@ -808,7 +810,7 @@ private:
         bool is_extra_style);
 
 private:
-    std::shared_ptr<internal::WindowClass> class_;
+    std::shared_ptr<WindowClass> class_;
     HWND handle_{};
     zaf::Rect rect_{ 0, 0, 640, 480 };
     WindowRenderer renderer_;

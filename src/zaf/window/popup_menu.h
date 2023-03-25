@@ -15,6 +15,8 @@ public:
     ZAF_DECLARE_TYPE;
 
 public:
+    PopupMenu();
+
     void AddMenuItem(const std::shared_ptr<MenuItem>& menu_item);
     void RemoveMenuItem(const std::shared_ptr<MenuItem>& menu_item);
 

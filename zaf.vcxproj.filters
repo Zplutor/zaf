@@ -679,9 +679,6 @@
     <ClCompile Include="src\zaf\control\internal\image_box\image_player_factory.cpp">
       <Filter>zaf\control\internal\image_box</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\window\internal\window_class_registry.cpp">
-      <Filter>zaf\window\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\registry\registry_value.cpp">
       <Filter>zaf\base\registry</Filter>
     </ClCompile>
@@ -876,6 +873,12 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\event\mouse_hover_info.cpp">
       <Filter>zaf\control\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\window_class.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\window_class_registry.cpp">
+      <Filter>zaf\window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1789,9 +1792,6 @@
     <ClInclude Include="src\zaf\control\internal\image_box\image_player_factory.h">
       <Filter>zaf\control\internal\image_box</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\window\internal\window_class_registry.h">
-      <Filter>zaf\window\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\non_copyable.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
@@ -2037,6 +2037,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\mouse_hover_info.h">
       <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\window_class.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\window_class_properties.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\window_class_registry.h">
+      <Filter>zaf\window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -11,8 +11,8 @@
 #include <zaf/internal/system_message_window.h>
 #include <zaf/resource/resource_factory.h>
 #include <zaf/rx/internal/rx_runtime.h>
-#include <zaf/window/internal/window_class_registry.h>
 #include <zaf/window/window.h>
+#include <zaf/window/window_class_registry.h>
 
 namespace zaf {
 
@@ -77,9 +77,9 @@ void Application::Initialize(const InitializeParameters& parameters) {
 
     imaging_factory_.reset(new wic::ImagingFactory(imaging_factory_handle.Detach()));
 
-    window_class_registry_ = std::make_unique<internal::WindowClassRegistry>(
+    window_class_registry_.reset(new WindowClassRegistry(
         parameters.window_icon, 
-        parameters.window_small_icon);
+        parameters.window_small_icon));
 
     InitializeSystemMessageWindow();
     delegate_ = parameters.delegate;

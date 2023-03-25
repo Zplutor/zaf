@@ -4,22 +4,24 @@
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/window/window.h>
+#include <zaf/window/window_class.h>
+#include <zaf/window/window_class_registry.h>
 
 TEST(WindowTest, ClassName) {
 
     //Default class name
     auto window = zaf::Create<zaf::Window>();
-    ASSERT_EQ(window->ClassName(), zaf::Window::DefaultClassName);
+    ASSERT_EQ(window->Class()->Name(), zaf::WindowClassRegistry::DefaultWindowClassName);
 
     window->CreateHandle();
     wchar_t buffer[100]{};
     GetClassName(window->Handle(), buffer, 100);
-    ASSERT_EQ(std::wcscmp(buffer, zaf::Window::DefaultClassName), 0);
+    ASSERT_EQ(std::wcscmp(buffer, zaf::WindowClassRegistry::DefaultWindowClassName), 0);
 
     //Custom class name
     const std::wstring custom_class_name(L"CustomClassName");
     window = zaf::Create<zaf::Window>(custom_class_name);
-    ASSERT_EQ(window->ClassName(), custom_class_name);
+    ASSERT_EQ(window->Class()->Name(), custom_class_name);
 
     window->CreateHandle();
     GetClassName(window->Handle(), buffer, 100);

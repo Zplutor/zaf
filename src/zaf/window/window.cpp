@@ -15,12 +15,12 @@
 #include <zaf/object/type_definition.h>
 #include <zaf/serialization/properties.h>
 #include <zaf/window/inspector/inspector_window.h>
-#include <zaf/window/internal/window_class_registry.h>
 #include <zaf/window/tooltip_window.h>
 #include <zaf/window/message/hit_test_message.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
+#include <zaf/window/window_class_registry.h>
 
 namespace zaf {
 namespace {
@@ -244,15 +244,18 @@ LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wpar
 }
 
 
-Window::Window() : 
-    class_(Application::Instance().GetWindowClassRegistry().GetWindowClass(DefaultClassName)) {
+Window::Window() : class_(WindowClassRegistry::Instance().GetDefaultWindowClass()) {
 
 }
 
 
-Window::Window(const std::wstring& window_class_name) :
-    class_(Application::Instance().GetWindowClassRegistry().GetWindowClass(window_class_name)) {
+Window::Window(const std::wstring& window_class_name) {
+    class_ = WindowClassRegistry::Instance().GetOrRegisterWindowClass(window_class_name, nullptr);
+}
 
+
+Window::Window(const std::shared_ptr<WindowClass>& window_class) : class_(window_class) {
+    ZAF_EXPECT(class_);
 }
 
 
@@ -266,11 +269,6 @@ void Window::Initialize() {
     __super::Initialize();
 
     InitializeRootControl(Create<Control>());
-}
-
-
-const std::wstring& Window::ClassName() const {
-    return class_->Name();
 }
 
 
