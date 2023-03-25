@@ -13,16 +13,6 @@
 namespace zaf {
 namespace {
 
-std::shared_ptr<WindowClass> GetPopupMenuWindowClass() {
-
-    return WindowClassRegistry::Instance().GetOrRegisterWindowClass(
-        L"ZafPop", 
-        [](WindowClassProperties& class_properties) {
-
-        class_properties.SetStyle(class_properties.Style() | WindowClassStyle::DropShadow);
-    });
-}
-
 constexpr const wchar_t* SelectedMenuItemChangedEventPropertyName = 
     L"SelectedMenuItemChangedEvent";
 
@@ -32,7 +22,7 @@ ZAF_DEFINE_TYPE(PopupMenu)
 ZAF_DEFINE_TYPE_END
 
 
-PopupMenu::PopupMenu() : Window(GetPopupMenuWindowClass()) {
+PopupMenu::PopupMenu() {
 
 }
 
