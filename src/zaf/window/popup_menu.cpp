@@ -126,7 +126,7 @@ void PopupMenu::ResetSelectedMenuItemBySubMenu() {
 
     auto selected_menu_item = selected_menu_item_.lock();
     if (selected_menu_item != showing_sub_menu_item) {
-        SelectSpecifiedMenuItem(showing_sub_menu_item);
+        SelectSpecifiedMenuItem(showing_sub_menu_item, true);
     }
 
     ResetOwnerSelectedMenuItemBySubMenu();
@@ -138,6 +138,17 @@ void PopupMenu::OnRootControlMouseDown(const MouseDownInfo& event_info) {
     if (!ContentRect().Contain(event_info.PositionAtSender())) {
         this->Close();
     }
+}
+
+
+void PopupMenu::OnMessageReceived(const MessageReceivedInfo& event_info) {
+
+    if (event_info.Message().ID() == WM_KEYDOWN) {
+        HandleKeyDownMessage(KeyMessage{ event_info.Message() });
+        event_info.MarkAsHandled(0);
+    }
+
+    __super::OnMessageReceived(event_info);
 }
 
 
@@ -214,7 +225,7 @@ void PopupMenu::OnMenuItemMouseEnter(const MouseEnterInfo& event_info) {
         return;
     }
 
-    SelectSpecifiedMenuItem(menu_item);
+    SelectSpecifiedMenuItem(menu_item, true);
 
     //If the mouse move to another menu item, cancel sub menu's selection.
     auto showing_sub_menu_item = showing_sub_menu_item_.lock();
@@ -224,20 +235,22 @@ void PopupMenu::OnMenuItemMouseEnter(const MouseEnterInfo& event_info) {
 }
 
 
-void PopupMenu::SelectSpecifiedMenuItem(const std::shared_ptr<MenuItem>& menu_item) {
+void PopupMenu::SelectSpecifiedMenuItem(
+    const std::shared_ptr<MenuItem>& menu_item,
+    bool show_sub_menu) {
 
     auto previous_selected_menu_item = selected_menu_item_.lock();
-    if (previous_selected_menu_item == menu_item) {
-        return;
+    if (previous_selected_menu_item != menu_item) {
+    
+        UnselectCurrentMenuItem();
+
+        menu_item->SetIsSelected(true);
+        selected_menu_item_ = menu_item;
+        RaiseSelectedMenuItemChangedEvent(previous_selected_menu_item);
     }
 
-    UnselectCurrentMenuItem();
-
-    menu_item->SetIsSelected(true);
-    selected_menu_item_ = menu_item;
-    RaiseSelectedMenuItemChangedEvent(previous_selected_menu_item);
-
     auto showing_sub_menu_item = showing_sub_menu_item_.lock();
+
     //The new selected menu item is differ to the menu item that showing sub menu, delay to close 
     //the sub menu.
     if (showing_sub_menu_item != menu_item) {
@@ -245,7 +258,7 @@ void PopupMenu::SelectSpecifiedMenuItem(const std::shared_ptr<MenuItem>& menu_it
         DelayCloseSubMenu();
 
         //The new selected menu item has a sub menu, delay to show the sub menu.
-        if (menu_item->HasSubMenuItem()) {
+        if (show_sub_menu && menu_item->HasSubMenuItem()) {
             DelayShowSubMenu();
         }
     }
@@ -321,10 +334,7 @@ void PopupMenu::DelayCloseSubMenu() {
 
     close_sub_menu_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
         .ObserveOn(Scheduler::Main())
-        .Subscribe(std::bind([this]() {
-
-        CloseCurrentSubMenu();
-    }));
+        .Subscribe(std::bind(&PopupMenu::CloseCurrentSubMenu, this));
 }
 
 
@@ -397,6 +407,79 @@ void PopupMenu::RemoveMenuItem(const std::shared_ptr<MenuItem>& menu_item) {
     RootControl()->RemoveChild(menu_item);
 
     //TODO: Update window height if menu is being shown.
+}
+
+
+void PopupMenu::HandleKeyDownMessage(const KeyMessage& message) {
+
+    if (message.VirtualKey() == VK_UP) {
+        ChangeSelectedMenuItemByKey(true);
+    }
+    else if (message.VirtualKey() == VK_DOWN) {
+        ChangeSelectedMenuItemByKey(false);
+    }
+    else if (message.VirtualKey() == VK_LEFT) {
+        if (As<PopupMenu>(Owner())) {
+            this->Close();
+        }
+    }
+    else if (message.VirtualKey() == VK_RIGHT) {
+        ShowCurrentSubMenu();
+    }
+}
+
+
+void PopupMenu::ChangeSelectedMenuItemByKey(bool up) {
+
+    auto selected_index = GetNextSelectedMenuItemIndex(up);
+    SelectSpecifiedMenuItem(menu_item_infos_[selected_index]->menu_item, false);
+}
+
+
+std::size_t PopupMenu::GetNextSelectedMenuItemIndex(bool up) const {
+
+    auto selected_index = GetSelectedMenuItemIndex();
+    if (!selected_index) {
+        return up ? menu_item_infos_.size() - 1 : 0;
+    }
+
+    if (up) {
+
+        if (*selected_index == 0) {
+            return menu_item_infos_.size() - 1;
+        }
+        return *selected_index - 1;
+    }
+    else {
+
+        if (*selected_index == menu_item_infos_.size() - 1) {
+            return 0;
+        }
+        return *selected_index + 1;
+    }
+}
+
+
+std::optional<std::size_t> PopupMenu::GetSelectedMenuItemIndex() const {
+
+    auto selected_menu_item = selected_menu_item_.lock();
+    if (!selected_menu_item) {
+        return std::nullopt;
+    }
+
+    auto iterator = std::find_if(
+        menu_item_infos_.begin(),
+        menu_item_infos_.end(),
+        [&selected_menu_item](const auto& item_info) {
+
+        return item_info->menu_item == selected_menu_item;
+    });
+
+    if (iterator == menu_item_infos_.end()) {
+        return std::nullopt;
+    }
+
+    return std::distance(menu_item_infos_.begin(), iterator);
 }
 
 }

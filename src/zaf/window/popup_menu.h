@@ -34,6 +34,7 @@ public:
 
 protected:
     void Initialize() override;
+    void OnMessageReceived(const MessageReceivedInfo& event_info) override;
     void OnDestroyed(const DestroyedInfo& event_info) override;
 
 private:
@@ -54,7 +55,7 @@ private:
     void InitializeMenuItem(MenuItemInfo& item_info);
     void OnMenuItemClick(const MouseUpInfo& event_info);
     void OnMenuItemMouseEnter(const MouseEnterInfo& event_info);
-    void SelectSpecifiedMenuItem(const std::shared_ptr<MenuItem>& menu_item);
+    void SelectSpecifiedMenuItem(const std::shared_ptr<MenuItem>& menu_item, bool show_sub_menu);
     void UnselectCurrentMenuItem();
     void CancelSubMenuSelection();
     void DelayShowSubMenu();
@@ -64,6 +65,11 @@ private:
     void OnMenuItemMouseLeave(const MouseLeaveInfo& event_info);
     void RaiseSelectedMenuItemChangedEvent(
         const std::shared_ptr<MenuItem>& preivous_selected_menu_item);
+
+    void HandleKeyDownMessage(const KeyMessage& message);
+    void ChangeSelectedMenuItemByKey(bool up);
+    std::size_t GetNextSelectedMenuItemIndex(bool up) const;
+    std::optional<std::size_t> GetSelectedMenuItemIndex() const;
 
 private:
     std::shared_ptr<internal::PopupMenuController> controller_;

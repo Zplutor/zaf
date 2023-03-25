@@ -5,6 +5,7 @@ namespace zaf::internal {
 void PopupMenuController::PushMenu(const std::shared_ptr<PopupMenu>& menu) {
 
     menus_.push_back(menu);
+    key_focus_menu_ = menu;
 
     if (menus_.size() == 1) {
         InitializeOwnerMessageRedirection();
@@ -39,6 +40,10 @@ void PopupMenuController::PopMenu(const PopupMenu& menu) {
     }
 
     menus_.erase(menus_.begin() + *menu_index, menus_.end());
+
+    if (!menus_.empty()) {
+        key_focus_menu_ = menus_.back();
+    }
 
     if (owner) {
 
@@ -96,17 +101,8 @@ void PopupMenuController::CloseAllMenus() {
 
 void PopupMenuController::OnOwnerMessageReceived(const MessageReceivedInfo& event_info) {
 
-    const auto& message = event_info.Message();
-
-    //Close all popup menus if owner's capture is lost.
-    if (message.ID() == WM_CAPTURECHANGED) {
-        CloseAllMenus();
-        event_info.MarkAsHandled(0);
-        return;
-    }
-
-    bool is_redirected = HandleOwnerMessage(event_info.Message());
-    if (is_redirected) {
+    bool is_handled = HandleOwnerMessage(event_info.Message());
+    if (is_handled) {
         event_info.MarkAsHandled(0);
     }
 }
@@ -114,8 +110,18 @@ void PopupMenuController::OnOwnerMessageReceived(const MessageReceivedInfo& even
 
 bool PopupMenuController::HandleOwnerMessage(const Message& message) {
 
+    //Close all popup menus if owner's capture is lost.
+    if (message.ID() == WM_CAPTURECHANGED) {
+        CloseAllMenus();
+        return true;
+    }
+
     if (WM_MOUSEFIRST <= message.ID() && message.ID() <= WM_MOUSELAST) {
         return HandleOwnerMouseMessage(message);
+    }
+
+    if (message.ID() == WM_KEYDOWN) {
+        return HandleOwnerKeyDownMessage(KeyMessage{ message });
     }
 
     return false;
@@ -213,6 +219,23 @@ void PopupMenuController::SendMouseMessageToMenu(
         message.ID(),
         message.WParam(),
         MAKELPARAM(mouse_position_at_menu.x, mouse_position_at_menu.y));
+}
+
+
+bool PopupMenuController::HandleOwnerKeyDownMessage(const KeyMessage& message) {
+
+    if (message.VirtualKey() == VK_ESCAPE) {
+        CloseAllMenus();
+        return true;
+    }
+
+    auto key_focus_menu = key_focus_menu_.lock();
+    if (key_focus_menu) {
+        SendMessage(key_focus_menu->Handle(), message.ID(), message.WParam(), message.LParam());
+        return true;
+    }
+
+    return false;
 }
 
 }

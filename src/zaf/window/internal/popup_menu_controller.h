@@ -29,11 +29,13 @@ private:
     bool HandleOwnerMessage(const Message& message);
     bool HandleOwnerMouseMessage(const Message& message);
     std::shared_ptr<PopupMenu> FindMenuAtPosition(const POINT& mouse_position_at_screen) const;
+    bool HandleOwnerKeyDownMessage(const KeyMessage& message);
 
 private:
     std::weak_ptr<Control> owner_focused_control_;
     std::vector<std::weak_ptr<PopupMenu>> menus_;
     std::weak_ptr<PopupMenu> last_mouse_over_menu_;
+    std::weak_ptr<PopupMenu> key_focus_menu_;
 };
 
 }
