@@ -190,7 +190,18 @@ void PopupMenu::InitializeMenuItem(MenuItemInfo& item_info) {
 void PopupMenu::OnMenuItemClick(const MouseUpInfo& event_info) {
 
     auto menu_item = As<MenuItem>(event_info.Sender());
-    if (menu_item && !menu_item->HasSubMenuItem()) {
+    if (!menu_item) {
+        return;
+    }
+
+    if (menu_item->HasSubMenuItem()) {
+
+        auto showing_sub_menu_item = showing_sub_menu_item_.lock();
+        if (showing_sub_menu_item != menu_item) {
+            ShowCurrentSubMenu();
+        }
+    }
+    else {
         controller_->CloseAllMenus();
     }
 }
@@ -285,17 +296,21 @@ void PopupMenu::DelayShowSubMenu() {
 
     show_sub_menu_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
         .ObserveOn(Scheduler::Main())
-        .Subscribe(std::bind([this]() {
-    
-        CloseCurrentSubMenu();
-        close_sub_menu_timer_.Unsubscribe();
+        .Subscribe(std::bind(&PopupMenu::ShowCurrentSubMenu, this));
+}
 
-        auto new_showing_sub_menu_item = selected_menu_item_.lock();
-        if (new_showing_sub_menu_item) {
-            new_showing_sub_menu_item->PopupSubMenu();
-            showing_sub_menu_item_ = new_showing_sub_menu_item;
-        }
-    }));
+
+void PopupMenu::ShowCurrentSubMenu() {
+
+    CloseCurrentSubMenu();
+    close_sub_menu_timer_.Unsubscribe();
+    show_sub_menu_timer_.Unsubscribe();
+
+    auto new_showing_sub_menu_item = selected_menu_item_.lock();
+    if (new_showing_sub_menu_item) {
+        new_showing_sub_menu_item->PopupSubMenu();
+        showing_sub_menu_item_ = new_showing_sub_menu_item;
+    }
 }
 
 

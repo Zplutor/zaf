@@ -58,6 +58,7 @@ private:
     void UnselectCurrentMenuItem();
     void CancelSubMenuSelection();
     void DelayShowSubMenu();
+    void ShowCurrentSubMenu();
     void DelayCloseSubMenu();
     void CloseCurrentSubMenu();
     void OnMenuItemMouseLeave(const MouseLeaveInfo& event_info);
