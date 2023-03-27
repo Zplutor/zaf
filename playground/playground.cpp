@@ -99,7 +99,7 @@ protected:
             auto context_menu = zaf::Create<zaf::PopupMenu>();
             context_menu->SetOwner(shared_from_this());
 
-            for (int count = 0; count < 5; ++count) {
+            for (int count = 0; count < 6; ++count) {
 
                 auto menu_item = zaf::Create<zaf::MenuItem>();
                 menu_item->SetText(L"Menu item " + std::to_wstring(count));
@@ -114,6 +114,10 @@ protected:
 
                 if (count > 2) {
                     AddSubMenuItemsToMenuItem(*menu_item, 0);
+                }
+
+                if (count == 5) {
+                    menu_item->SetIsEnabled(false);
                 }
 
                 context_menu->AddMenuItem(menu_item);

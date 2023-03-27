@@ -9,6 +9,9 @@ class PopupMenu;
 
 class MenuItem : public TextualControl {
 public:
+    ZAF_DECLARE_TYPE;
+
+public:
     void AddSubMenuItem(const std::shared_ptr<MenuItem>& sub_menu_item);
     void RemoveSubMenuItem(const std::shared_ptr<MenuItem>& sub_menu_item);
 
@@ -34,6 +37,7 @@ protected:
     virtual zaf::Rect GetSubMenuArrowRect();
 
 private:
+    void PaintSubMenuArrow(Canvas& canvas);
     void CheckCreateSubMenu();
 
 private:

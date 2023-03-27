@@ -8,6 +8,7 @@
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
+#include <zaf/object/type_definition.h>
 #include <zaf/window/popup_menu.h>
 
 namespace zaf {
@@ -20,6 +21,9 @@ constexpr const wchar_t* SubMenuShowEventPropertyName = L"SubMenuShowEvent";
 constexpr const wchar_t* SubMenuCloseEventPropertyName = L"SubMenuCloseEvent";
 
 }
+
+ZAF_DEFINE_TYPE(MenuItem)
+ZAF_DEFINE_TYPE_END;
 
 void MenuItem::Initialize() {
 
@@ -36,6 +40,12 @@ void MenuItem::Initialize() {
 void MenuItem::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
+
+    PaintSubMenuArrow(canvas);
+}
+
+
+void MenuItem::PaintSubMenuArrow(Canvas& canvas) {
 
     auto sub_menu_arrow_rect = GetSubMenuArrowRect();
     if (sub_menu_arrow_rect.IsEmpty()) {
@@ -56,8 +66,7 @@ void MenuItem::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         TransformMatrix::Translation(transform_position));
 
     Canvas::StateGuard guard{ canvas };
-    auto color = IsSelected() ? Color::White() : Color::Black();
-    canvas.SetBrushWithColor(color);
+    canvas.SetBrushWithColor(this->TextColor());
     canvas.DrawGeometry(transformed_geometry);
 }
 
