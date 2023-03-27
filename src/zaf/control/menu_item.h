@@ -31,8 +31,9 @@ protected:
     zaf::Size CalculatePreferredContentSize(const zaf::Size& bound_size) const override;
     void OnIsSelectedChanged() override;
 
+    virtual zaf::Rect GetSubMenuArrowRect();
+
 private:
-    zaf::Rect GetSubMenuArrowRect() const;
     void CheckCreateSubMenu();
 
 private:

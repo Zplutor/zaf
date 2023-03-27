@@ -73,10 +73,10 @@ zaf::Rect MenuItem::GetTextRect() {
 }
 
 
-zaf::Rect MenuItem::GetSubMenuArrowRect() const {
+zaf::Rect MenuItem::GetSubMenuArrowRect() {
 
-    if (!sub_menu_ || !sub_menu_->HasMenuItem()) {
-        return zaf::Rect{};
+    if (!HasSubMenuItem()) {
+        return {};
     }
 
     zaf::Rect result{ zaf::Point{}, ContentSize() };

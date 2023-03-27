@@ -49,6 +49,7 @@
 #include <zaf/object/internal/property_helper.h>
 #include <zaf/control/property_grid.h>
 #include <zaf/window/popup_menu.h>
+#include <zaf/control/menu_separator.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
@@ -106,6 +107,10 @@ protected:
                 Subscriptions() += menu_item->MouseUpEvent().Subscribe([](const zaf::MouseUpInfo& event_info) {
                     event_info.IsHandled();
                 });
+
+                if (count == 2) {
+                    context_menu->AddMenuItem(zaf::Create<zaf::MenuSeparator>());
+                }
 
                 if (count > 2) {
                     AddSubMenuItemsToMenuItem(*menu_item, 0);

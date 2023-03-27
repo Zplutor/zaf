@@ -880,6 +880,9 @@
     <ClCompile Include="src\zaf\window\window_class_registry.cpp">
       <Filter>zaf\window</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\menu_separator.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2046,6 +2049,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\window_class_registry.h">
       <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\menu_separator.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
