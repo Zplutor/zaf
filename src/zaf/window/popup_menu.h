@@ -70,6 +70,7 @@ private:
     void ChangeSelectedMenuItemByKey(bool up);
     std::size_t GetNextSelectedMenuItemIndex(bool up) const;
     std::optional<std::size_t> GetSelectedMenuItemIndex() const;
+    void ShowSubMenuByKey();
 
 private:
     std::shared_ptr<internal::PopupMenuController> controller_;

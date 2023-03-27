@@ -424,7 +424,7 @@ void PopupMenu::HandleKeyDownMessage(const KeyMessage& message) {
         }
     }
     else if (message.VirtualKey() == VK_RIGHT) {
-        ShowCurrentSubMenu();
+        ShowSubMenuByKey();
     }
 }
 
@@ -480,6 +480,22 @@ std::optional<std::size_t> PopupMenu::GetSelectedMenuItemIndex() const {
     }
 
     return std::distance(menu_item_infos_.begin(), iterator);
+}
+
+
+void PopupMenu::ShowSubMenuByKey() {
+
+    ShowCurrentSubMenu();
+
+    //Select the first menu item of sub menu.
+    auto showing_sub_menu_item = showing_sub_menu_item_.lock();
+    if (showing_sub_menu_item) {
+
+        const auto& sub_menu = showing_sub_menu_item->SubMenu();
+        if (sub_menu) {
+            sub_menu->ChangeSelectedMenuItemByKey(false);
+        }
+    }
 }
 
 }
