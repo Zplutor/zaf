@@ -24,7 +24,8 @@ public:
         return !menu_item_infos_.empty();
     }
 
-    void Popup(const Point& position_in_screen);
+    void Popup(const std::shared_ptr<Control>& control, const Point& position_in_control);
+    void Popup(const std::shared_ptr<Window>& window, const Point& position_in_window);
 
     std::shared_ptr<MenuItem> SelectedMenuItem() const {
         return selected_menu_item_.lock();

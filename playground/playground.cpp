@@ -97,7 +97,6 @@ protected:
         if (event_info.Message().ID() == WM_RBUTTONUP) {
 
             auto context_menu = zaf::Create<zaf::PopupMenu>();
-            context_menu->SetOwner(shared_from_this());
 
             for (int count = 0; count < 6; ++count) {
 
@@ -124,7 +123,7 @@ protected:
             }
 
             auto mouse_position = zaf::MouseMessage(event_info.Message()).MousePosition();
-            context_menu->Popup(ToScreenPosition(mouse_position));
+            context_menu->Popup(shared_from_this(), mouse_position);
         }
     }
 

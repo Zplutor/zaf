@@ -45,11 +45,25 @@ void PopupMenu::Initialize() {
 }
 
 
-void PopupMenu::Popup(const Point& position_in_screen) {
+void PopupMenu::Popup(const std::shared_ptr<Control>& control, const Point& position_in_control) {
 
-    //There must be an owner to popup menu.
-    ZAF_EXPECT(Owner());
+    ZAF_EXPECT(control);
 
+    auto window = control->Window();
+    ZAF_EXPECT(window);
+
+    auto position_in_window = position_in_control;
+    position_in_window.AddOffset(control->AbsoluteRect().position);
+    Popup(window, position_in_window);
+}
+
+
+void PopupMenu::Popup(const std::shared_ptr<Window>& window, const Point& position_in_window) {
+
+    ZAF_EXPECT(window);
+    SetOwner(window);
+
+    auto position_in_screen = window->ToScreenPosition(position_in_window);
     this->SetPosition(position_in_screen);
     this->SetContentSize(CalculateMenuSize());
     this->Show();

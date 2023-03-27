@@ -205,9 +205,7 @@ void MenuItem::PopupSubMenu() {
     popup_position.x = absolute_rect.Right();
     popup_position.y = absolute_rect.Top();
 
-    popup_position = owning_menu->ToScreenPosition(popup_position);
-    sub_menu_->SetOwner(owning_menu);
-    sub_menu_->Popup(popup_position);
+    sub_menu_->Popup(owning_menu, popup_position);
 }
 
 
