@@ -27,6 +27,8 @@ public:
     void Popup(const std::shared_ptr<Control>& control, const Point& position_in_control);
     void Popup(const std::shared_ptr<Window>& window, const Point& position_in_window);
 
+    void PopupAsSubMenu(const std::shared_ptr<MenuItem>& owner_menu_item);
+
     std::shared_ptr<MenuItem> SelectedMenuItem() const {
         return selected_menu_item_.lock();
     }
@@ -46,8 +48,17 @@ private:
     };
 
 private:
+    void InnerPopup(
+        const std::shared_ptr<Window>& owner, 
+        const Point& position_in_screen, 
+        const zaf::Size& menu_content_size);
     void InitializeController();
-    zaf::Size CalculateMenuSize() const;
+    zaf::Size CalculateMenuContentSize() const;
+    Point CalculateMenuPosition(
+        const Point& expected_position, 
+        const zaf::Size& menu_content_size,
+        const Window& owner) const;
+    float CalculateMenuX(float expected_x, float menu_width, float work_area_width) const;
     void OnRootControlMouseEnter(const MouseEnterInfo& event_info);
     void ResetOwnerSelectedMenuItemBySubMenu();
     void ResetSelectedMenuItemBySubMenu();

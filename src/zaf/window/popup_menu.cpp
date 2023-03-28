@@ -4,6 +4,7 @@
 #include <zaf/base/log.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
+#include <zaf/graphic/dpi.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
@@ -61,11 +62,37 @@ void PopupMenu::Popup(const std::shared_ptr<Control>& control, const Point& posi
 void PopupMenu::Popup(const std::shared_ptr<Window>& window, const Point& position_in_window) {
 
     ZAF_EXPECT(window);
-    SetOwner(window);
+
+    auto menu_content_size = CalculateMenuContentSize();
 
     auto position_in_screen = window->ToScreenPosition(position_in_window);
+    auto menu_position = CalculateMenuPosition(position_in_screen, menu_content_size, *window);
+
+    InnerPopup(window, menu_position, menu_content_size);
+}
+
+
+void PopupMenu::PopupAsSubMenu(const std::shared_ptr<MenuItem>& owner_menu_item) {
+
+    ZAF_EXPECT(owner_menu_item);
+
+    auto owner_menu = As<PopupMenu>(owner_menu_item->Window());
+    ZAF_EXPECT(owner_menu);
+
+
+}
+
+
+void PopupMenu::InnerPopup(
+    const std::shared_ptr<Window>& owner,
+    const Point& position_in_screen,
+    const zaf::Size& menu_content_size) {
+
+    ZAF_EXPECT(owner);
+    this->SetOwner(owner);
+
     this->SetPosition(position_in_screen);
-    this->SetContentSize(CalculateMenuSize());
+    this->SetContentSize(menu_content_size);
     this->Show();
 
     InitializeController();
@@ -94,7 +121,7 @@ void PopupMenu::InitializeController() {
 }
 
 
-zaf::Size PopupMenu::CalculateMenuSize() const {
+zaf::Size PopupMenu::CalculateMenuContentSize() const {
 
     zaf::Size result;
 
@@ -114,6 +141,41 @@ zaf::Size PopupMenu::CalculateMenuSize() const {
 
     result.width = std::max(result.width, 100.f);
     return result;
+}
+
+
+Point PopupMenu::CalculateMenuPosition(
+    const Point& expected_position,
+    const zaf::Size& menu_content_size,
+    const Window& owner) const {
+
+    RECT work_area_in_pixels{};
+    SystemParametersInfo(SPI_GETWORKAREA, 0, &work_area_in_pixels, 0);
+    auto work_area_in_dips = ToDIPs(zaf::Rect::FromRECT(work_area_in_pixels), owner.GetDPI());
+
+    float x = CalculateMenuX(
+        expected_position.x,
+        menu_content_size.width,
+        work_area_in_dips.size.width);
+
+    return Point{ x, expected_position.y };
+}
+
+
+float PopupMenu::CalculateMenuX(float expected_x, float menu_width, float work_area_width) const {
+
+    float menu_x_at_right = expected_x + menu_width;
+    float menu_show_width_at_right = (std::min)(menu_x_at_right, work_area_width) - expected_x;
+
+    float menu_x_at_left = expected_x - menu_width;
+    float menu_show_width_at_left = 
+        (menu_x_at_left + menu_width) - (std::max)(menu_x_at_left, 0.f);
+
+    if (menu_show_width_at_right < menu_show_width_at_left) {
+        return menu_x_at_left;
+    }
+
+    return expected_x;
 }
 
 
