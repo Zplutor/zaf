@@ -98,7 +98,7 @@ protected:
 
             auto context_menu = zaf::Create<zaf::PopupMenu>();
 
-            for (int count = 0; count < 6; ++count) {
+            for (int count = 0; count < 10; ++count) {
 
                 auto menu_item = zaf::Create<zaf::MenuItem>();
                 menu_item->SetText(L"Menu item " + std::to_wstring(count));
@@ -111,7 +111,7 @@ protected:
                     context_menu->AddMenuItem(zaf::Create<zaf::MenuSeparator>());
                 }
 
-                if (count > 2) {
+                if (count > 2 && count < 6) {
                     AddSubMenuItemsToMenuItem(*menu_item, 0);
                 }
 

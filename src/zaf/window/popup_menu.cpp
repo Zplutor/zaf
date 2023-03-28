@@ -66,7 +66,7 @@ void PopupMenu::Popup(const std::shared_ptr<Window>& window, const Point& positi
     auto menu_content_size = CalculateMenuContentSize();
 
     auto position_in_screen = window->ToScreenPosition(position_in_window);
-    auto menu_position = CalculateMenuPosition(position_in_screen, menu_content_size, *window);
+    auto menu_position = CalculateMenuPosition(position_in_screen, menu_content_size, 0, *window);
 
     InnerPopup(window, menu_position, menu_content_size);
 }
@@ -79,7 +79,19 @@ void PopupMenu::PopupAsSubMenu(const std::shared_ptr<MenuItem>& owner_menu_item)
     auto owner_menu = As<PopupMenu>(owner_menu_item->Window());
     ZAF_EXPECT(owner_menu);
 
+    auto position_in_window = owner_menu_item->AbsoluteRect().position;
+    position_in_window.x += owner_menu_item->Width();
+    auto position_in_screen = owner_menu->ToScreenPosition(position_in_window);
 
+    auto menu_content_size = CalculateMenuContentSize();
+
+    auto menu_position = CalculateMenuPosition(
+        position_in_screen, 
+        menu_content_size, 
+        owner_menu_item->Width(),
+        *owner_menu);
+
+    InnerPopup(owner_menu, menu_position, menu_content_size);
 }
 
 
@@ -146,36 +158,48 @@ zaf::Size PopupMenu::CalculateMenuContentSize() const {
 
 Point PopupMenu::CalculateMenuPosition(
     const Point& expected_position,
-    const zaf::Size& menu_content_size,
-    const Window& owner) const {
+    const zaf::Size& menu_size,
+    float offset_at_left,
+    const Window& owner) {
 
     RECT work_area_in_pixels{};
     SystemParametersInfo(SPI_GETWORKAREA, 0, &work_area_in_pixels, 0);
     auto work_area_in_dips = ToDIPs(zaf::Rect::FromRECT(work_area_in_pixels), owner.GetDPI());
 
-    float x = CalculateMenuX(
+    float x = CalculateMenuPositionAtSingleAxis(
         expected_position.x,
-        menu_content_size.width,
-        work_area_in_dips.size.width);
+        menu_size.width,
+        work_area_in_dips.size.width,
+        offset_at_left);
 
-    return Point{ x, expected_position.y };
+    float y = CalculateMenuPositionAtSingleAxis(
+        expected_position.y,
+        menu_size.height, 
+        work_area_in_dips.size.height,
+        0);
+
+    return Point{ x, y };
 }
 
 
-float PopupMenu::CalculateMenuX(float expected_x, float menu_width, float work_area_width) const {
+float PopupMenu::CalculateMenuPositionAtSingleAxis(
+    float expected,
+    float menu_length,
+    float work_area_length,
+    float offset_at_opposite) {
 
-    float menu_x_at_right = expected_x + menu_width;
-    float menu_show_width_at_right = (std::min)(menu_x_at_right, work_area_width) - expected_x;
+    float menu_position = expected + menu_length;
+    float menu_shown_length = (std::min)(menu_position, work_area_length) - expected;
 
-    float menu_x_at_left = expected_x - menu_width;
-    float menu_show_width_at_left = 
-        (menu_x_at_left + menu_width) - (std::max)(menu_x_at_left, 0.f);
+    float menu_position_at_opposite = expected - menu_length - offset_at_opposite;
+    float menu_shown_length_at_opposite = 
+        (menu_position_at_opposite + menu_length) - (std::max)(menu_position_at_opposite, 0.f);
 
-    if (menu_show_width_at_right < menu_show_width_at_left) {
-        return menu_x_at_left;
+    if (menu_shown_length < menu_shown_length_at_opposite) {
+        return menu_position_at_opposite;
     }
 
-    return expected_x;
+    return expected;
 }
 
 

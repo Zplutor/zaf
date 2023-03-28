@@ -48,17 +48,25 @@ private:
     };
 
 private:
+    static Point CalculateMenuPosition(
+        const Point& expected_position, 
+        const zaf::Size& menu_size,
+        float offset_at_left,
+        const Window& owner);
+
+    static float CalculateMenuPositionAtSingleAxis(
+        float expected, 
+        float menu_length, 
+        float work_area_length,
+        float offset_at_opposite);
+
+private:
     void InnerPopup(
         const std::shared_ptr<Window>& owner, 
         const Point& position_in_screen, 
         const zaf::Size& menu_content_size);
     void InitializeController();
     zaf::Size CalculateMenuContentSize() const;
-    Point CalculateMenuPosition(
-        const Point& expected_position, 
-        const zaf::Size& menu_content_size,
-        const Window& owner) const;
-    float CalculateMenuX(float expected_x, float menu_width, float work_area_width) const;
     void OnRootControlMouseEnter(const MouseEnterInfo& event_info);
     void ResetOwnerSelectedMenuItemBySubMenu();
     void ResetSelectedMenuItemBySubMenu();

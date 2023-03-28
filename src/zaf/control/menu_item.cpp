@@ -191,21 +191,9 @@ bool MenuItem::HasSubMenuItem() const {
 
 void MenuItem::PopupSubMenu() {
 
-    if (!sub_menu_) {
-        return;
+    if (sub_menu_) {
+        sub_menu_->PopupAsSubMenu(As<MenuItem>(shared_from_this()));
     }
-
-    auto owning_menu = As<PopupMenu>(Window());
-    if (!owning_menu) {
-        return;
-    }
-
-    auto absolute_rect = this->AbsoluteRect();
-    Point popup_position;
-    popup_position.x = absolute_rect.Right();
-    popup_position.y = absolute_rect.Top();
-
-    sub_menu_->Popup(owning_menu, popup_position);
 }
 
 
