@@ -88,7 +88,8 @@ private:
 
     void HandleKeyDownMessage(const KeyMessage& message);
     void ChangeSelectedMenuItemByKey(bool up);
-    std::size_t GetNextSelectedMenuItemIndex(bool up) const;
+    std::shared_ptr<MenuItem> GetPreviousMenuItemToSelect() const;
+    std::shared_ptr<MenuItem> GetNextMenuItemToSelect() const;
     std::optional<std::size_t> GetSelectedMenuItemIndex() const;
     void ShowSubMenuByKey();
 

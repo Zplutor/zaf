@@ -531,32 +531,58 @@ void PopupMenu::HandleKeyDownMessage(const KeyMessage& message) {
 
 void PopupMenu::ChangeSelectedMenuItemByKey(bool up) {
 
-    auto selected_index = GetNextSelectedMenuItemIndex(up);
-    SelectSpecifiedMenuItem(menu_item_infos_[selected_index]->menu_item, false);
+    auto menu_item = up ? GetPreviousMenuItemToSelect() : GetNextMenuItemToSelect();
+    if (menu_item) {
+        SelectSpecifiedMenuItem(menu_item, false);
+    }
 }
 
 
-std::size_t PopupMenu::GetNextSelectedMenuItemIndex(bool up) const {
+std::shared_ptr<MenuItem> PopupMenu::GetPreviousMenuItemToSelect() const {
+
+    std::size_t begin_find_index{};
 
     auto selected_index = GetSelectedMenuItemIndex();
-    if (!selected_index) {
-        return up ? menu_item_infos_.size() - 1 : 0;
-    }
-
-    if (up) {
-
-        if (*selected_index == 0) {
-            return menu_item_infos_.size() - 1;
-        }
-        return *selected_index - 1;
+    if (selected_index && selected_index > 0) {
+        begin_find_index = *selected_index;
     }
     else {
-
-        if (*selected_index == menu_item_infos_.size() - 1) {
-            return 0;
-        }
-        return *selected_index + 1;
+        begin_find_index = menu_item_infos_.size();
     }
+
+    for (auto index = begin_find_index; index > 0; --index) {
+
+        const auto& menu_item = menu_item_infos_[index - 1]->menu_item;
+        if (menu_item->IsEnabled()) {
+            return menu_item;
+        }
+    }
+
+    return nullptr;
+}
+
+
+std::shared_ptr<MenuItem> PopupMenu::GetNextMenuItemToSelect() const {
+
+    std::size_t begin_find_index{};
+
+    auto selected_index = GetSelectedMenuItemIndex();
+    if (selected_index) {
+        begin_find_index = (*selected_index + 1) % menu_item_infos_.size();
+    }
+    else {
+        begin_find_index = 0;
+    }
+
+    for (auto index = begin_find_index; index < menu_item_infos_.size(); ++index) {
+
+        const auto& menu_item = menu_item_infos_[index]->menu_item;
+        if (menu_item->IsEnabled()) {
+            return menu_item;
+        }
+    }
+
+    return nullptr;
 }
 
 
