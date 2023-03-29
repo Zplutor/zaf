@@ -47,10 +47,10 @@ public:
     @param control
         The control which popup menu shows on.
 
-    @param position_in_control
+    @param position_on_control
         Position of the popup menu's top-left corner, in the control's coordinate.
     */
-    void Popup(const std::shared_ptr<Control>& control, const Point& position_in_control);
+    void PopupOnControl(const std::shared_ptr<Control>& control, const Point& position_on_control);
 
     /**
     Shows popup menu on a specified window.
@@ -58,10 +58,10 @@ public:
     @param window
         The window which popup menu shows on.
 
-    @param position_in_window
+    @param position_on_window
         Position of the popup menu's top-left corner, in the window's coordinate.
     */
-    void Popup(const std::shared_ptr<Window>& window, const Point& position_in_window);
+    void PopupOnWindow(const std::shared_ptr<Window>& window, const Point& position_on_window);
 
     /**
     Shows popup menu as a sub menu of a specified menu item.

@@ -41,26 +41,30 @@ void PopupMenu::Initialize() {
 }
 
 
-void PopupMenu::Popup(const std::shared_ptr<Control>& control, const Point& position_in_control) {
+void PopupMenu::PopupOnControl(
+    const std::shared_ptr<Control>& control,
+    const Point& position_on_control) {
 
     ZAF_EXPECT(control);
 
     auto window = control->Window();
     ZAF_EXPECT(window);
 
-    auto position_in_window = position_in_control;
-    position_in_window.AddOffset(control->AbsoluteRect().position);
-    Popup(window, position_in_window);
+    auto position_on_window = position_on_control;
+    position_on_window.AddOffset(control->AbsoluteRect().position);
+    PopupOnWindow(window, position_on_window);
 }
 
 
-void PopupMenu::Popup(const std::shared_ptr<Window>& window, const Point& position_in_window) {
+void PopupMenu::PopupOnWindow(
+    const std::shared_ptr<Window>& window, 
+    const Point& position_on_window) {
 
     ZAF_EXPECT(window);
 
     auto menu_content_size = CalculateMenuContentSize();
 
-    auto position_in_screen = window->ToScreenPosition(position_in_window);
+    auto position_in_screen = window->ToScreenPosition(position_on_window);
     auto menu_position = CalculateMenuPosition(position_in_screen, menu_content_size, 0, *window);
 
     InnerPopup(window, menu_position, menu_content_size);
