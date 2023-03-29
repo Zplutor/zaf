@@ -10,29 +10,77 @@ namespace internal {
 class PopupMenuController;
 }
 
+/**
+Represents a popup menu.
+*/
 class PopupMenu : public Window {
 public:
     ZAF_DECLARE_TYPE;
 
 public:
-    PopupMenu();
+    /**
+    Adds a menu item to popup menu.
 
+    @param menu_item
+        The menu_item being added.
+    */
     void AddMenuItem(const std::shared_ptr<MenuItem>& menu_item);
+
+    /**
+    Removes a specified menu item from popup menu.
+
+    @param menu_item
+        The menu_item being removed.
+    */
     void RemoveMenuItem(const std::shared_ptr<MenuItem>& menu_item);
 
+    /**
+    Determinates if popup menu has menu item.
+    */
     bool HasMenuItem() const {
         return !menu_item_infos_.empty();
     }
 
+    /**
+    Shows popup menu on a specified control.
+
+    @param control
+        The control which popup menu shows on.
+
+    @param position_in_control
+        Position of the popup menu's top-left corner, in the control's coordinate.
+    */
     void Popup(const std::shared_ptr<Control>& control, const Point& position_in_control);
+
+    /**
+    Shows popup menu on a specified window.
+
+    @param window
+        The window which popup menu shows on.
+
+    @param position_in_window
+        Position of the popup menu's top-left corner, in the window's coordinate.
+    */
     void Popup(const std::shared_ptr<Window>& window, const Point& position_in_window);
 
+    /**
+    Shows popup menu as a sub menu of a specified menu item.
+
+    @param owner_menu_item
+        The menu_item which popup menu shows for.
+    */
     void PopupAsSubMenu(const std::shared_ptr<MenuItem>& owner_menu_item);
 
+    /**
+    Gets the selected menu item in popup menu.
+    */
     std::shared_ptr<MenuItem> SelectedMenuItem() const {
         return selected_menu_item_.lock();
     }
 
+    /**
+    Gets the event which is raised when the selected menu item is changed.
+    */
     Observable<SelectedMenuItemChangedInfo> SelectedMenuItemChangedEvent();
 
 protected:

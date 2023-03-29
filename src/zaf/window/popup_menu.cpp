@@ -23,11 +23,6 @@ ZAF_DEFINE_TYPE(PopupMenu)
 ZAF_DEFINE_TYPE_END
 
 
-PopupMenu::PopupMenu() {
-
-}
-
-
 void PopupMenu::Initialize() {
 
     __super::Initialize();
