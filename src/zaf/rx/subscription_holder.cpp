@@ -15,13 +15,13 @@ SubscriptionHolder::~SubscriptionHolder() {
 
 
 SubscriptionHolder& SubscriptionHolder::operator+=(const Subscription& subscription) {
-    inner_->Add(subscription.GetInner());
+    inner_->Add(subscription.Inner());
     return *this;
 }
 
 
 SubscriptionHolder& SubscriptionHolder::operator+=(const TagItem& item) {
-    inner_->Add(item.tag, item.subscription.GetInner());
+    inner_->Add(item.tag, item.subscription.Inner());
     return *this;
 }
 

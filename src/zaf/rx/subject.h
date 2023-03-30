@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/subject/inner_subject.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/observer.h>
@@ -7,15 +8,9 @@
 namespace zaf {
 
 template<typename T>
-class Subject {
+class Subject : NonCopyable {
 public:
     Subject() : inner_(std::make_unique<internal::InnerSubject>()) { }
-
-    Subject(const Subject&) = delete;
-    Subject& operator=(const Subject&) = delete;
-
-    Subject(Subject&&) = default;
-    Subject& operator=(Subject&&) = default;
 
     Observable<T> GetObservable() const {
         return Observable<T>(inner_->GetObservable());

@@ -23,7 +23,7 @@ public:
 
     void Unsubscribe();
 
-    const std::shared_ptr<internal::InnerSubscription>& GetInner() const {
+    const std::shared_ptr<internal::InnerSubscription>& Inner() const {
         return inner_;
     }
 
@@ -33,11 +33,11 @@ private:
 
 
 inline bool operator<(const Subscription& subscription1, const Subscription& subscription2) {
-    return subscription1.GetInner() < subscription2.GetInner();
+    return subscription1.Inner() < subscription2.Inner();
 }
 
 inline bool operator==(const Subscription& subscription1, const Subscription& subscription2) {
-    return subscription1.GetInner() == subscription2.GetInner();
+    return subscription1.Inner() == subscription2.Inner();
 }
 
 }

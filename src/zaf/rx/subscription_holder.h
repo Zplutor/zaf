@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <zaf/base/non_copyable.h>
 #include <zaf/rx/subscription.h>
 
 namespace zaf {
@@ -8,7 +9,7 @@ namespace internal {
 class InnerSubscriptionHolder;
 }
 
-class SubscriptionHolder {
+class SubscriptionHolder : NonCopyable {
 public:
     class TagItem {
     public:
@@ -19,9 +20,6 @@ public:
 public:
     SubscriptionHolder();
     ~SubscriptionHolder();
-
-    SubscriptionHolder(const SubscriptionHolder&) = delete;
-    SubscriptionHolder& operator=(const SubscriptionHolder&) = delete;
 
     SubscriptionHolder& operator+=(const Subscription& subscription);
     SubscriptionHolder& operator+=(const TagItem& item);

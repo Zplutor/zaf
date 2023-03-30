@@ -45,7 +45,7 @@ public:
 
     [[nodiscard]]
     Subscription Subscribe(const Observer<T>& observer) {
-        return Subscription{ inner_->Subscribe(observer.GetInner()) };
+        return Subscription{ inner_->Subscribe(observer.Inner()) };
     }
 
     Observable SubscribeOn(std::shared_ptr<Scheduler> scheculer) {
@@ -56,7 +56,7 @@ public:
         return Observable{ inner_->ObserveOn(std::move(scheduler)) };
     }
 
-    const std::shared_ptr<internal::InnerObservable>& GetInner() const {
+    const std::shared_ptr<internal::InnerObservable>& Inner() const {
         return inner_;
     }
 

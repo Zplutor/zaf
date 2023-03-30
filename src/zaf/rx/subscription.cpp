@@ -8,8 +8,7 @@ Subscription::Subscription() : inner_(internal::InnerSubscription::Empty()) {
 }
 
 
-Subscription::Subscription(Subscription&& other) : 
-    inner_(std::move(other.inner_)) {
+Subscription::Subscription(Subscription&& other) : inner_(std::move(other.inner_)) {
 
     other.inner_ = internal::InnerSubscription::Empty();
 }

@@ -43,7 +43,7 @@ public:
         inner_->OnCompleted();
     }
 
-    const std::shared_ptr<internal::InnerObserver>& GetInner() const {
+    const std::shared_ptr<internal::InnerObserver>& Inner() const {
         return inner_;
     }
 

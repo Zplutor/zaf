@@ -21,7 +21,7 @@ Observable<T> Create(std::function<Subscription(Observer<T>)> procedure) {
         const std::shared_ptr<internal::InnerObserver>& observer) {
     
         auto subscription = procedure(Observer<T>{ observer });
-        return subscription.GetInner();
+        return subscription.Inner();
     };
 
     auto customized_observable = 
