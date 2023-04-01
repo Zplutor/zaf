@@ -12,7 +12,7 @@ InnerSubscriptionSet::~InnerSubscriptionSet() {
 void InnerSubscriptionSet::Add(
     const std::shared_ptr<InnerSubscription>& subscription) {
 
-    auto core = subscription->GetCore();
+    auto core = subscription->Core();
     if (!core) {
         return;
     }
@@ -41,7 +41,7 @@ void InnerSubscriptionSet::OnNoTagSubscriptionFinish(
     EraseIf(no_tag_items_, [core, notification_id](const auto& item) {
         
         return 
-            (item.subscription->GetCore().get() == core) && 
+            (item.subscription->Core().get() == core) && 
             (item.finish_notification_id == notification_id);
     });
 }
@@ -51,7 +51,7 @@ void InnerSubscriptionSet::Add(
     const std::string& tag,
     const std::shared_ptr<InnerSubscription>& subscription) {
 
-    auto core = subscription->GetCore();
+    auto core = subscription->Core();
     if (!core) {
         return;
     }
@@ -90,7 +90,7 @@ void InnerSubscriptionSet::OnIdSubscriptionFinish(
     auto iterator = tag_items_.begin();
     while (iterator != tag_items_.end()) {
 
-        if ((iterator->second.subscription->GetCore().get() == core) && 
+        if ((iterator->second.subscription->Core().get() == core) && 
             (iterator->second.finish_notification_id = notification_id)) {
 
             iterator = tag_items_.erase(iterator);
@@ -133,7 +133,7 @@ void InnerSubscriptionSet::Clear() {
 
 void InnerSubscriptionSet::UnregisterItemNotification(const Item& item) {
 
-    item.subscription->GetCore()->UnregisterFinishNotification(item.finish_notification_id);
+    item.subscription->Core()->UnregisterFinishNotification(item.finish_notification_id);
 }
 
 

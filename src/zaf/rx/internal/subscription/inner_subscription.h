@@ -19,7 +19,7 @@ public:
 
     void Unsubscribe();
 
-    const std::shared_ptr<SubscriptionCore>& GetCore() {
+    const std::shared_ptr<SubscriptionCore>& Core() {
         return core_;
     }
 
