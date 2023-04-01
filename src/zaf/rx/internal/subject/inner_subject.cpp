@@ -39,7 +39,7 @@ InnerSubject::~InnerSubject() {
 }
 
 
-std::shared_ptr<SubscriptionCore> InnerSubject::Subscribe(
+std::shared_ptr<InnerSubscription> InnerSubject::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
     auto subscription_core = std::make_shared<SubjectSubscriptionCore>(
@@ -47,7 +47,8 @@ std::shared_ptr<SubscriptionCore> InnerSubject::Subscribe(
         std::dynamic_pointer_cast<InnerSubject>(shared_from_this()));
    
     subscription_cores_.push_back(subscription_core);
-    return subscription_core;
+
+    return std::make_shared<InnerSubscription>(subscription_core);
 }
 
 

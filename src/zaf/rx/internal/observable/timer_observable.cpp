@@ -1,4 +1,5 @@
 #include <zaf/rx/internal/observable/timer_observable.h>
+#include <zaf/rx/internal/subscription/inner_subscription.h>
 #include <zaf/rx/internal/subscription/subscription_core.h>
 #include <zaf/rx/internal/rx_runtime.h>
 #include <zaf/rx/internal/timer_manager.h>
@@ -114,7 +115,7 @@ TimerObservable::TimerObservable(
 }
 
 
-std::shared_ptr<SubscriptionCore> TimerObservable::Subscribe(
+std::shared_ptr<InnerSubscription> TimerObservable::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
     auto subscription_core = std::make_shared<TimerSubscriptionCore>(
@@ -124,7 +125,7 @@ std::shared_ptr<SubscriptionCore> TimerObservable::Subscribe(
         observer);
 
     subscription_core->Subscribe();
-    return subscription_core;
+    return std::make_shared<InnerSubscription>(subscription_core);
 }
 
 }

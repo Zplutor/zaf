@@ -3,7 +3,7 @@
 #include <map>
 #include <mutex>
 #include <vector>
-#include <zaf/base/non_copyable.h>
+#include <zaf/rx/internal/subscription/inner_subscription.h>
 #include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::internal {
@@ -13,11 +13,14 @@ public:
     InnerSubscriptionSet() = default;
     ~InnerSubscriptionSet();
 
-    void Add(const std::shared_ptr<SubscriptionCore>& subscription);
+    InnerSubscriptionHolder(const InnerSubscriptionHolder&) = delete;
+    InnerSubscriptionHolder& operator=(const InnerSubscriptionHolder&) = delete;
+
+    void Add(const std::shared_ptr<InnerSubscription>& subscription);
 
     void Add(
         const std::string& tag, 
-        const std::shared_ptr<SubscriptionCore>& subscription);
+        const std::shared_ptr<InnerSubscription>& subscription);
 
     void Remove(const std::string& tag);
 
@@ -28,7 +31,7 @@ public:
 private:
     class Item {
     public:
-        std::shared_ptr<SubscriptionCore> subscription;
+        std::shared_ptr<InnerSubscription> subscription;
         int finish_notification_id{};
     };
 

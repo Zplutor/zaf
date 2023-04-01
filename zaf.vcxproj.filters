@@ -534,6 +534,8 @@
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription_set.cpp">
       <Filter>zaf\rx\internal\subscription</Filter>
+    </ClCompile>    <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription.cpp">
+      <Filter>zaf\rx\internal\subscription</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\subject\inner_subject_indirect.cpp">
       <Filter>zaf\rx\internal\subject</Filter>
@@ -879,9 +881,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\menu_separator.cpp">
       <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\subscription\empty_subscription_core.cpp">
-      <Filter>zaf\rx\internal\subscription</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1572,6 +1571,8 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_set.h">
       <Filter>zaf\rx\internal\subscription</Filter>
+    </ClInclude>    <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription.h">
+      <Filter>zaf\rx\internal\subscription</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subject\inner_subject_indirect.h">
       <Filter>zaf\rx\internal\subject</Filter>
@@ -2049,9 +2050,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\menu_separator.h">
       <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\subscription\empty_subscription_core.h">
-      <Filter>zaf\rx\internal\subscription</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

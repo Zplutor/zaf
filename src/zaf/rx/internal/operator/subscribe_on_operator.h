@@ -11,7 +11,7 @@ public:
         std::shared_ptr<InnerObservable> source,
         std::shared_ptr<Scheduler> scheduler);
 
-    std::shared_ptr<SubscriptionCore> Subscribe(
+    std::shared_ptr<InnerSubscription> Subscribe(
         const std::shared_ptr<InnerObserver>& observer) override;
 
 private:
