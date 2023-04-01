@@ -27,6 +27,7 @@ class ResourceFactory;
 class URILoader;
 class Window;
 class WindowClassRegistry;
+class WindowHolder;
 
 class InitializeParameters {
 public:
@@ -151,8 +152,8 @@ public:
 private:
     friend class Window;
 
-    void RegisterWindow(const std::shared_ptr<Window>& window);
-    void UnregisterWindow(const std::shared_ptr<Window>& window);
+    void RegisterShownWindow(const std::shared_ptr<WindowHolder>& window_holder);
+    void UnregisterShownWindow(const std::shared_ptr<WindowHolder>& window_holder);
 
 private:
     friend class internal::RxRuntime;
@@ -185,7 +186,7 @@ private:
     std::unique_ptr<WindowClassRegistry> window_class_registry_;
     std::shared_ptr<internal::SystemMessageWindow> system_message_window_;
     std::weak_ptr<Window> main_window_;
-    std::set<std::shared_ptr<Window>> windows_;
+    std::set<std::shared_ptr<WindowHolder>> window_holders_;
 
     std::shared_ptr<ApplicationDelegate> delegate_;
 

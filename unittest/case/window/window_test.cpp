@@ -13,7 +13,7 @@ TEST(WindowTest, ClassName) {
     auto window = zaf::Create<zaf::Window>();
     ASSERT_EQ(window->Class()->Name(), zaf::WindowClassRegistry::DefaultWindowClassName);
 
-    window->CreateHandle();
+    auto holder = window->CreateHandle();
     wchar_t buffer[100]{};
     GetClassName(window->Handle(), buffer, 100);
     ASSERT_EQ(std::wcscmp(buffer, zaf::WindowClassRegistry::DefaultWindowClassName), 0);
@@ -23,7 +23,7 @@ TEST(WindowTest, ClassName) {
     window = zaf::Create<zaf::Window>(custom_class_name);
     ASSERT_EQ(window->Class()->Name(), custom_class_name);
 
-    window->CreateHandle();
+    holder = window->CreateHandle();
     GetClassName(window->Handle(), buffer, 100);
     ASSERT_EQ(std::wcscmp(buffer, custom_class_name.c_str()), 0);
 }
@@ -38,7 +38,7 @@ TEST(WindowTest, SetRectBeforeCreate) {
     window->SetRect(initial_rect);
     ASSERT_EQ(window->Rect(), initial_rect);
 
-    window->CreateHandle();
+    auto holder = window->CreateHandle();
     //After creating the window, Rect() should use the actual window rect.
     auto pixel_rect = zaf::Align(zaf::FromDIPs(initial_rect, window->GetDPI()));
     auto rect_after_create = zaf::ToDIPs(pixel_rect, window->GetDPI());
@@ -53,7 +53,7 @@ TEST(WindowTest, SetRectBeforeCreate) {
 TEST(WindowTest, SetRectAfterCreate) {
 
     auto window = zaf::Create<zaf::Window>();
-    window->CreateHandle();
+    auto holder = window->CreateHandle();
 
     zaf::Rect rect{ 10.25, 20.25, 400.25, 500.25 };
     window->SetRect(rect);
@@ -76,7 +76,7 @@ TEST(WindowTest, GetRectAfterChangeRect) {
     window->SetRect(zaf::Rect{ 100, 100, 400, 400 });
 
     //Simulate user resize the window.
-    window->CreateHandle();
+    auto holder = window->CreateHandle();
     SetWindowPos(
         window->Handle(),
         nullptr,
@@ -91,7 +91,7 @@ TEST(WindowTest, GetRectAfterChangeRect) {
     ASSERT_EQ(window->Rect(), new_rect);
 
     //Simulate user move the window.
-    window->CreateHandle();
+    holder = window->CreateHandle();
     SetWindowPos(
         window->Handle(),
         nullptr,
@@ -130,7 +130,7 @@ TEST(WindowTest, SetContentSize) {
     adjusted_content_size.height = std::floor(content_size.height);
     ASSERT_EQ(window->ContentSize(), adjusted_content_size);
 
-    window->CreateHandle();
+    auto holder = window->CreateHandle();
 
     //After creating handle, content size should not changed.
     ASSERT_EQ(window->ContentSize(), adjusted_content_size);
@@ -263,11 +263,11 @@ TEST(WindowTest, FocusEvent) {
 TEST(WindowTest, Close) {
 
     auto window = zaf::Create<zaf::Window>();
-    window->CreateHandle();
+    auto holder = window->CreateHandle();
     window->Close();
     ASSERT_EQ(window->Handle(), nullptr);
 
-    window->CreateHandle();
+    holder = window->CreateHandle();
     window->Subscriptions() += window->ClosingEvent().Subscribe(
         [](const zaf::ClosingInfo& event_info) {
 

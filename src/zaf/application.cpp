@@ -13,6 +13,7 @@
 #include <zaf/rx/internal/rx_runtime.h>
 #include <zaf/window/window.h>
 #include <zaf/window/window_class_registry.h>
+#include <zaf/window/window_holder.h>
 
 namespace zaf {
 
@@ -112,7 +113,7 @@ void Application::Run() {
     internal::MessageLoop message_loop;
     message_loop.Run();
 
-    windows_.clear();
+    window_holders_.clear();
 
     NotifyApplicationEndRun();
 }
@@ -156,9 +157,13 @@ void Application::Terminate() {
 void Application::DestroyAllWindows() {
 
     //Copy is needed because windows_ will be modified during closing windows.
-    auto all_windows = windows_;
-    for (const auto& each_window : all_windows) {
-        each_window->Destroy();
+    auto all_holders = window_holders_;
+    for (const auto& each_holder : all_holders) {
+
+        const auto& window = each_holder->Window();
+        if (window) {
+            window->Destroy();
+        }
     }
 }
 
@@ -190,17 +195,20 @@ float Application::GetSystemDPI() const {
 }
 
 
-void Application::RegisterWindow(const std::shared_ptr<Window>& window) {
-    windows_.insert(window);
+void Application::RegisterShownWindow(const std::shared_ptr<WindowHolder>& window_holder) {
+
+    ZAF_EXPECT(window_holder->Window());
+
+    window_holders_.insert(window_holder);
 }
 
 
-void Application::UnregisterWindow(const std::shared_ptr<Window>& window) {
+void Application::UnregisterShownWindow(const std::shared_ptr<WindowHolder>& window_holder) {
 
-    windows_.erase(window);
+    window_holders_.erase(window_holder);
 
     auto main_window = main_window_.lock();
-    if (main_window == window) {
+    if (main_window == window_holder->Window()) {
         Terminate();
     }
 }

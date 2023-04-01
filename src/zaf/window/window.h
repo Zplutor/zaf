@@ -33,6 +33,7 @@ class MouseMessage;
 class TooltipWindow;
 class WindowClass;
 class WindowClassRegistry;
+class WindowHolder;
 enum class HitTestResult;
 
 
@@ -525,9 +526,22 @@ public:
 
     void Destroy();
 
-    void CreateHandle() {
-        CheckCreateWindowHandle();
-    }
+    /**
+    Creates the handle of window explicit.
+
+    @return
+        Returns a WindowHolder instance. The handle will be auto destroyed if the holder is 
+        destructed. In order to use the handle, you must keep the holder alive during usage.
+
+    The same holder will be returned for the same handle. If the handle is destroyed before the 
+    the holder destructed, the holder will be detached. A new holder will be returned the next time
+    calling this method.
+
+    If Show() method is called to show the window, the holder will be registered to application to 
+    keep the window alive.
+    */
+    [[nodiscard]]
+    std::shared_ptr<WindowHolder> CreateHandle();
 
     void ShowInspectorWindow();
 
@@ -748,7 +762,7 @@ private:
     zaf::Rect GetInitialRect(float dpi) const;
     void CreateRenderer();
     void RecreateRenderer();
-    void CheckCreateWindowHandle();
+    std::shared_ptr<WindowHolder> CreateWindowHandleIfNeeded();
     void GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const;
     zaf::Size AdjustContentSizeToWindowSize(const zaf::Size& content_size) const;
 
@@ -792,6 +806,7 @@ private:
     bool ChangeMouseCursor(const Message& message);
     bool HandleWMCLOSE();
     void HandleWMDESTROY();
+    void HandleWMNCDESTROY();
     
     void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
     void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
@@ -812,6 +827,7 @@ private:
 private:
     std::shared_ptr<WindowClass> class_;
     HWND handle_{};
+    std::weak_ptr<WindowHolder> holder_;
     zaf::Rect rect_{ 0, 0, 640, 480 };
     WindowRenderer renderer_;
 

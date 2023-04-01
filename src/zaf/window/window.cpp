@@ -21,6 +21,7 @@
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window_class_registry.h>
+#include <zaf/window/window_holder.h>
 
 namespace zaf {
 namespace {
@@ -308,7 +309,6 @@ void Window::CreateWindowHandle() {
     root_control_->SetRect(ToDIPs(Rect::FromRECT(client_rect), dpi));
 
     CreateRenderer();
-    Application::Instance().RegisterWindow(shared_from_this());
 
     OnHandleCreated(HandleCreatedInfo{ shared_from_this() });
 }
@@ -394,11 +394,28 @@ void Window::RecreateRenderer() {
 }
 
 
-void Window::CheckCreateWindowHandle() {
+std::shared_ptr<WindowHolder> Window::CreateHandle() {
+    return CreateWindowHandleIfNeeded();
+}
 
-    if (!Handle()) {
-        CreateWindowHandle();
+
+std::shared_ptr<WindowHolder> Window::CreateWindowHandleIfNeeded() {
+
+    if (Handle()) {
+
+        auto holder = holder_.lock();
+        ZAF_EXPECT(holder);
+        return holder;
     }
+
+    CreateWindowHandle();
+
+    auto holder = holder_.lock();
+    ZAF_EXPECT(!holder);
+
+    holder = std::make_shared<WindowHolder>(shared_from_this());
+    holder_ = holder;
+    return holder;
 }
 
 
@@ -719,7 +736,7 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_NCDESTROY:
-        Application::Instance().UnregisterWindow(shared_from_this());
+        HandleWMNCDESTROY();
         return 0;
 
     default:
@@ -1402,6 +1419,19 @@ void Window::OnDestroyed(const DestroyedInfo& event_info) {
 
     if (event_observer) {
         event_observer->OnNext(event_info);
+    }
+}
+
+
+void Window::HandleWMNCDESTROY() {
+
+    auto holder = holder_.lock();
+    if (holder) {
+
+        Application::Instance().UnregisterShownWindow(holder);
+
+        holder->Detach();
+        holder_.reset();
     }
 }
 
@@ -2220,7 +2250,8 @@ float Window::GetDPI() const {
 
 void Window::Show() {
 
-    CheckCreateWindowHandle();
+    auto holder = CreateWindowHandleIfNeeded();
+    Application::Instance().RegisterShownWindow(holder);
 
     auto activate_option = ActivateOption();
     bool no_activate = (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;

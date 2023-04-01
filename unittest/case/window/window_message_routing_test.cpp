@@ -74,7 +74,7 @@ private:
 TEST(WindowTest, MessageRoutingSequence) {
 
     auto window = zaf::Create<TestWindow>();
-    window->CreateHandle();
+    auto holder = window->CreateHandle();
 
     SendMessage(window->Handle(), TestMessage, 0, 0);
 
