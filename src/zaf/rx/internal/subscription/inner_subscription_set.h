@@ -3,8 +3,8 @@
 #include <map>
 #include <mutex>
 #include <vector>
+#include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::internal {
 
@@ -12,9 +12,6 @@ class InnerSubscriptionSet : NonCopyable {
 public:
     InnerSubscriptionSet() = default;
     ~InnerSubscriptionSet();
-
-    InnerSubscriptionHolder(const InnerSubscriptionHolder&) = delete;
-    InnerSubscriptionHolder& operator=(const InnerSubscriptionHolder&) = delete;
 
     void Add(const std::shared_ptr<InnerSubscription>& subscription);
 
