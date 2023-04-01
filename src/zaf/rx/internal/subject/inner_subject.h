@@ -7,12 +7,12 @@
 
 namespace zaf::internal {
 
-class SubjectCore : 
+class InnerSubject : 
     public InnerObservable, 
     public InnerObserver {
 
 public:
-    ~SubjectCore();
+    ~InnerSubject();
 
     std::shared_ptr<SubscriptionCore> Subscribe(
         const std::shared_ptr<InnerObserver>& observer) override;

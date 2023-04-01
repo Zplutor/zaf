@@ -1,4 +1,4 @@
-﻿#include <zaf/rx/internal/subject/subject_core.h>
+﻿#include <zaf/rx/internal/subject/inner_subject.h>
 #include <algorithm>
 #include <zaf/base/container/utility/erase.h>
 
@@ -9,7 +9,7 @@ class SubjectSubscriptionCore : public SubscriptionCore {
 public:
     SubjectSubscriptionCore(
         std::shared_ptr<InnerObserver> observer,
-        std::weak_ptr<SubjectCore> subject_core) 
+        std::weak_ptr<InnerSubject> subject_core) 
         : 
         SubscriptionCore(std::move(observer)),
         subject_core_(std::move(subject_core)) {
@@ -26,12 +26,12 @@ protected:
     }
 
 private:
-    std::weak_ptr<SubjectCore> subject_core_;
+    std::weak_ptr<InnerSubject> subject_core_;
 };
 
 }
 
-SubjectCore::~SubjectCore() {
+InnerSubject::~InnerSubject() {
 
     for (const auto& each_core : subscription_cores_) {
         each_core->FinishSubscription();
@@ -39,19 +39,19 @@ SubjectCore::~SubjectCore() {
 }
 
 
-std::shared_ptr<SubscriptionCore> SubjectCore::Subscribe(
+std::shared_ptr<SubscriptionCore> InnerSubject::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
     auto subscription_core = std::make_shared<SubjectSubscriptionCore>(
         observer,
-        std::dynamic_pointer_cast<SubjectCore>(shared_from_this()));
+        std::dynamic_pointer_cast<InnerSubject>(shared_from_this()));
    
     subscription_cores_.push_back(subscription_core);
     return subscription_core;
 }
 
 
-void SubjectCore::OnNext(const std::any& value) {
+void InnerSubject::OnNext(const std::any& value) {
 
     auto copied_subscription_cores = subscription_cores_;
     for (const auto& each_core : copied_subscription_cores) {
@@ -60,7 +60,7 @@ void SubjectCore::OnNext(const std::any& value) {
 }
 
 
-void SubjectCore::OnError(const Error& error) {
+void InnerSubject::OnError(const Error& error) {
 
     auto copied_subscription_cores = subscription_cores_;
     for (const auto& each_core : copied_subscription_cores) {
@@ -69,7 +69,7 @@ void SubjectCore::OnError(const Error& error) {
 }
 
 
-void SubjectCore::OnCompleted() {
+void InnerSubject::OnCompleted() {
 
     auto copied_subscription_cores = subscription_cores_;
     for (const auto& each_core : copied_subscription_cores) {
@@ -78,7 +78,7 @@ void SubjectCore::OnCompleted() {
 }
 
 
-void SubjectCore::Unsubscribe(SubscriptionCore* subscription_core) {
+void InnerSubject::Unsubscribe(SubscriptionCore* subscription_core) {
 
     EraseIf(subscription_cores_, [subscription_core](const auto& core) {
         return core.get() == subscription_core;
