@@ -16,7 +16,7 @@ public:
         std::shared_ptr<Scheduler> scheduler,
         AsyncProcedure procedure);
 
-    std::shared_ptr<InnerSubscription> Subscribe(
+    std::shared_ptr<SubscriptionCore> Subscribe(
         const std::shared_ptr<InnerObserver>& observer) override;
 
 private:

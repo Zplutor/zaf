@@ -1,29 +1,37 @@
 #include <zaf/rx/subscription.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/base/error/check.h>
+#include <zaf/rx/internal/subscription/empty_subscription_core.h>
 
 namespace zaf {
 
-Subscription::Subscription() : inner_(internal::InnerSubscription::Empty()) {
+Subscription::Subscription() : core_(internal::EmptySubscriptionCore::Instance()) {
 
 }
 
 
-Subscription::Subscription(Subscription&& other) : inner_(std::move(other.inner_)) {
+Subscription::Subscription(std::shared_ptr<internal::SubscriptionCore> core) : 
+    core_(std::move(core)) {
 
-    other.inner_ = internal::InnerSubscription::Empty();
+    ZAF_EXPECT(core_);
+}
+
+
+Subscription::Subscription(Subscription&& other) : core_(std::move(other.core_)) {
+
+    other.core_ = internal::EmptySubscriptionCore::Instance();
 }
 
 
 Subscription& Subscription::operator=(Subscription&& other) {
 
-    inner_ = std::move(other.inner_);
-    other.inner_ = internal::InnerSubscription::Empty();
+    core_ = std::move(other.core_);
+    other.core_ = internal::EmptySubscriptionCore::Instance();
     return *this;
 }
 
 
 void Subscription::Unsubscribe() {
-    inner_->Unsubscribe();
+    core_->Unsubscribe();
 }
 
 }

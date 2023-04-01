@@ -5,15 +5,20 @@
 
 namespace zaf {
 namespace internal {
-class InnerSubscription;
+class SubscriptionCore;
 }
 
 class Subscription {
 public:
+    /**
+    Constructs an empty subscription.
+    */
     Subscription();
 
-    explicit Subscription(std::shared_ptr<internal::InnerSubscription> inner) :
-        inner_(std::move(inner)) { }
+    /**
+    Constructs a subscription with specified core.
+    */
+    explicit Subscription(std::shared_ptr<internal::SubscriptionCore> core);
 
     Subscription(const Subscription&) = default;
     Subscription& operator=(const Subscription&) = default;
@@ -23,12 +28,12 @@ public:
 
     void Unsubscribe();
 
-    const std::shared_ptr<internal::InnerSubscription>& Inner() const {
-        return inner_;
+    const std::shared_ptr<internal::SubscriptionCore>& Inner() const {
+        return core_;
     }
 
 private:
-    std::shared_ptr<internal::InnerSubscription> inner_;
+    std::shared_ptr<internal::SubscriptionCore> core_;
 };
 
 

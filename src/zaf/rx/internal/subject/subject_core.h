@@ -14,7 +14,7 @@ class SubjectCore :
 public:
     ~SubjectCore();
 
-    std::shared_ptr<InnerSubscription> Subscribe(
+    std::shared_ptr<SubscriptionCore> Subscribe(
         const std::shared_ptr<InnerObserver>& observer) override;
 
     void OnNext(const std::any& value) override;

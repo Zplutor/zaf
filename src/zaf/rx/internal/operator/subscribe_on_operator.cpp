@@ -1,6 +1,5 @@
 #include <zaf/rx/internal/operator/subscribe_on_operator.h>
 #include <zaf/base/error/check.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
 #include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::internal {
@@ -75,7 +74,7 @@ private:
 private:
     std::shared_ptr<InnerObservable> source_;
     std::shared_ptr<Scheduler> scheduler_;
-    std::shared_ptr<InnerSubscription> source_subscription_;
+    std::shared_ptr<SubscriptionCore> source_subscription_;
     std::atomic<bool> is_unsubscribed_{};
 };
 
@@ -93,7 +92,7 @@ SubscribeOnOperator::SubscribeOnOperator(
 }
 
 
-std::shared_ptr<InnerSubscription> SubscribeOnOperator::Subscribe(
+std::shared_ptr<SubscriptionCore> SubscribeOnOperator::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
     ZAF_EXPECT(observer);
@@ -104,8 +103,7 @@ std::shared_ptr<InnerSubscription> SubscribeOnOperator::Subscribe(
         observer);
 
     subscription_core->Subscribe();
-
-    return std::make_shared<InnerSubscription>(subscription_core);
+    return subscription_core;
 }
 
 }

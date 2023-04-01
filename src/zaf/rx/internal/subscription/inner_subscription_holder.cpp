@@ -9,14 +9,9 @@ InnerSubscriptionHolder::~InnerSubscriptionHolder() {
 
 
 void InnerSubscriptionHolder::Add(
-    const std::shared_ptr<InnerSubscription>& subscription) {
+    const std::shared_ptr<SubscriptionCore>& subscription) {
 
-    auto core = subscription->GetCore();
-    if (!core) {
-        return;
-    }
-
-    auto notification_id = core->RegisterFinishNotification(std::bind(
+    auto notification_id = subscription->RegisterFinishNotification(std::bind(
         &InnerSubscriptionHolder::OnNoTagSubscriptionFinish, 
         this, 
         std::placeholders::_1,
@@ -40,7 +35,7 @@ void InnerSubscriptionHolder::OnNoTagSubscriptionFinish(
     EraseIf(no_tag_items_, [core, notification_id](const auto& item) {
         
         return 
-            (item.subscription->GetCore().get() == core) && 
+            (item.subscription.get() == core) && 
             (item.finish_notification_id == notification_id);
     });
 }
@@ -48,14 +43,9 @@ void InnerSubscriptionHolder::OnNoTagSubscriptionFinish(
 
 void InnerSubscriptionHolder::Add(
     const std::string& tag,
-    const std::shared_ptr<InnerSubscription>& subscription) {
+    const std::shared_ptr<SubscriptionCore>& subscription) {
 
-    auto core = subscription->GetCore();
-    if (!core) {
-        return;
-    }
-
-    auto notification_id = core->RegisterFinishNotification(std::bind(
+    auto notification_id = subscription->RegisterFinishNotification(std::bind(
         &InnerSubscriptionHolder::OnIdSubscriptionFinish, 
         this, 
         std::placeholders::_1,
@@ -89,7 +79,7 @@ void InnerSubscriptionHolder::OnIdSubscriptionFinish(
     auto iterator = tag_items_.begin();
     while (iterator != tag_items_.end()) {
 
-        if ((iterator->second.subscription->GetCore().get() == core) && 
+        if ((iterator->second.subscription.get() == core) && 
             (iterator->second.finish_notification_id = notification_id)) {
 
             iterator = tag_items_.erase(iterator);
@@ -132,7 +122,7 @@ void InnerSubscriptionHolder::Clear() {
 
 void InnerSubscriptionHolder::UnregisterItemNotification(const Item& item) {
 
-    item.subscription->GetCore()->UnregisterFinishNotification(item.finish_notification_id);
+    item.subscription->UnregisterFinishNotification(item.finish_notification_id);
 }
 
 }

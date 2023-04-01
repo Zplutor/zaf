@@ -1,6 +1,5 @@
 #include <zaf/rx/internal/operator/observe_on_operator.h>
 #include <zaf/rx/internal/inner_observer.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
 #include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::internal {
@@ -21,7 +20,7 @@ public:
     
     }
 
-    void AttachSourceSubscription(std::shared_ptr<InnerSubscription> source_subscription) {
+    void AttachSourceSubscription(std::shared_ptr<SubscriptionCore> source_subscription) {
         source_subscription_ = std::move(source_subscription);
     }
 
@@ -76,7 +75,7 @@ private:
 
 private:
     std::shared_ptr<Scheduler> scheduler_;
-    std::shared_ptr<InnerSubscription> source_subscription_;
+    std::shared_ptr<SubscriptionCore> source_subscription_;
     std::atomic<bool> is_unsubscribed_{ false };
 };
 
@@ -92,13 +91,13 @@ ObserveOnOperator::ObserveOnOperator(
 }
 
 
-std::shared_ptr<InnerSubscription> ObserveOnOperator::Subscribe(
+std::shared_ptr<SubscriptionCore> ObserveOnOperator::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
     auto observe_on_observer = std::make_shared<ObserveOnObserver>(observer, scheduler_);
     auto source_subscription = source_->Subscribe(observe_on_observer);
     observe_on_observer->AttachSourceSubscription(source_subscription);
-    return std::make_shared<InnerSubscription>(observe_on_observer);
+    return observe_on_observer;
 }
 
 }
