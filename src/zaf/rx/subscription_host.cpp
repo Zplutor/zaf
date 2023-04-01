@@ -2,13 +2,13 @@
 
 namespace zaf {
 
-SubscriptionHolder& SubscriptionHost::Subscriptions() {
+SubscriptionSet& SubscriptionHost::Subscriptions() {
 
-    std::call_once(subscription_holder_once_flag_, [this]() {
-        subscription_holder_ = std::make_unique<zaf::SubscriptionHolder>();
+    std::call_once(subscriptions_once_flag_, [this]() {
+        subscriptions_ = std::make_unique<zaf::SubscriptionSet>();
     });
 
-    return *subscription_holder_;
+    return *subscriptions_;
 }
 
 }

@@ -10,7 +10,7 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scrollable_control.h>
 #include <zaf/control/selection_mode.h>
-#include <zaf/rx/subscription_holder.h>
+#include <zaf/rx/subscription_set.h>
 
 namespace zaf::internal {
 
@@ -189,8 +189,8 @@ private:
     std::weak_ptr<ListDataSource> data_source_;
     std::weak_ptr<ListControlDelegate> delegate_;
 
-    SubscriptionHolder data_source_subscriptions_;
-    SubscriptionHolder item_container_subscriptions_;
+    SubscriptionSet data_source_subscriptions_;
+    SubscriptionSet item_container_subscriptions_;
 
     std::shared_ptr<ListControlItemHeightManager> item_height_manager_;
     ListControlItemSelectionManager item_selection_manager_;

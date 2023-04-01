@@ -481,7 +481,7 @@
     <ClCompile Include="src\zaf\rx\internal\subscription\subscription_core.cpp">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\subscription_holder.cpp">
+    <ClCompile Include="src\zaf\rx\subscription_set.cpp">
       <Filter>zaf\rx</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_data_manager.cpp">
@@ -532,7 +532,7 @@
     <ClCompile Include="src\zaf\rx\internal\inner_observer.cpp">
       <Filter>zaf\rx\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription_holder.cpp">
+    <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription_set.cpp">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core_indirect.cpp">
@@ -1489,7 +1489,7 @@
     <ClInclude Include="src\zaf\rx\internal\subscription\subscription_core.h">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\subscription_holder.h">
+    <ClInclude Include="src\zaf\rx\subscription_set.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\subscription_host.h">
@@ -1570,7 +1570,7 @@
     <ClInclude Include="src\zaf\rx\internal\inner_observer.h">
       <Filter>zaf\rx\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_holder.h">
+    <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_set.h">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core_indirect.h">

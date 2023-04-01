@@ -8,10 +8,10 @@
 
 namespace zaf::internal {
 
-class InnerSubscriptionHolder : NonCopyable {
+class InnerSubscriptionSet : NonCopyable {
 public:
-    InnerSubscriptionHolder() = default;
-    ~InnerSubscriptionHolder();
+    InnerSubscriptionSet() = default;
+    ~InnerSubscriptionSet();
 
     void Add(const std::shared_ptr<SubscriptionCore>& subscription);
 
@@ -22,6 +22,8 @@ public:
     void Remove(const std::string& tag);
 
     void Clear();
+
+    std::size_t Count() const;
 
 private:
     class Item {
@@ -38,7 +40,7 @@ private:
     void OnIdSubscriptionFinish(SubscriptionCore* core, int notification_id);
 
 private:
-    std::mutex lock_;
+    mutable std::mutex lock_;
     std::vector<Item> no_tag_items_;
     std::map<std::string, Item> tag_items_;
 };

@@ -92,7 +92,7 @@ private:
     class MenuItemInfo : NonCopyable {
     public:
         std::shared_ptr<MenuItem> menu_item;
-        SubscriptionHolder subscriptions;
+        SubscriptionSet subscriptions;
     };
 
 private:
@@ -143,7 +143,7 @@ private:
 
 private:
     std::shared_ptr<internal::PopupMenuController> controller_;
-    SubscriptionHolder root_control_subscriptions_;
+    SubscriptionSet root_control_subscriptions_;
 
     std::vector<std::unique_ptr<MenuItemInfo>> menu_item_infos_;
     std::weak_ptr<MenuItem> selected_menu_item_;

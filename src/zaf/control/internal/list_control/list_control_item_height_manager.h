@@ -6,7 +6,7 @@
 #include <zaf/control/internal/list_control/list_control_item_height_strategy.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
-#include <zaf/rx/subscription_holder.h>
+#include <zaf/rx/subscription_set.h>
 
 namespace zaf::internal {
 
@@ -48,7 +48,7 @@ private:
 private:
     std::weak_ptr<ListDataSource> data_source_{};
     std::weak_ptr<ListControlDelegate> delegate_{};
-    SubscriptionHolder data_source_subscriptions_;
+    SubscriptionSet data_source_subscriptions_;
     std::unique_ptr<ListControlItemHeightStrategy> strategy_;
 };
 

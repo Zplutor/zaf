@@ -1,18 +1,23 @@
-#include <zaf/rx/internal/subscription/inner_subscription_holder.h>
+#include <zaf/rx/internal/subscription/inner_subscription_set.h>
 #include <zaf/base/container/utility/erase.h>
+#include <zaf/rx/internal/subscription/empty_subscription_core.h>
 
 namespace zaf::internal {
 
-InnerSubscriptionHolder::~InnerSubscriptionHolder() {
+InnerSubscriptionSet::~InnerSubscriptionSet() {
     Clear();
 }
 
 
-void InnerSubscriptionHolder::Add(
+void InnerSubscriptionSet::Add(
     const std::shared_ptr<SubscriptionCore>& subscription) {
 
+    if (subscription == EmptySubscriptionCore::Instance()) {
+        return;
+    }
+
     auto notification_id = subscription->RegisterFinishNotification(std::bind(
-        &InnerSubscriptionHolder::OnNoTagSubscriptionFinish, 
+        &InnerSubscriptionSet::OnNoTagSubscriptionFinish, 
         this, 
         std::placeholders::_1,
         std::placeholders::_2));
@@ -26,7 +31,7 @@ void InnerSubscriptionHolder::Add(
 }
 
 
-void InnerSubscriptionHolder::OnNoTagSubscriptionFinish(
+void InnerSubscriptionSet::OnNoTagSubscriptionFinish(
     SubscriptionCore* core, 
     int notification_id) {
 
@@ -41,12 +46,16 @@ void InnerSubscriptionHolder::OnNoTagSubscriptionFinish(
 }
 
 
-void InnerSubscriptionHolder::Add(
+void InnerSubscriptionSet::Add(
     const std::string& tag,
     const std::shared_ptr<SubscriptionCore>& subscription) {
 
+    if (subscription == EmptySubscriptionCore::Instance()) {
+        return;
+    }
+
     auto notification_id = subscription->RegisterFinishNotification(std::bind(
-        &InnerSubscriptionHolder::OnIdSubscriptionFinish, 
+        &InnerSubscriptionSet::OnIdSubscriptionFinish, 
         this, 
         std::placeholders::_1,
         std::placeholders::_2));
@@ -70,7 +79,7 @@ void InnerSubscriptionHolder::Add(
 }
 
 
-void InnerSubscriptionHolder::OnIdSubscriptionFinish(
+void InnerSubscriptionSet::OnIdSubscriptionFinish(
     SubscriptionCore* core, 
     int notification_id) {
 
@@ -91,7 +100,7 @@ void InnerSubscriptionHolder::OnIdSubscriptionFinish(
 }
 
 
-void InnerSubscriptionHolder::Remove(const std::string& id) {
+void InnerSubscriptionSet::Remove(const std::string& id) {
 
     std::scoped_lock<std::mutex> lock(lock_);
 
@@ -104,7 +113,7 @@ void InnerSubscriptionHolder::Remove(const std::string& id) {
 }
 
 
-void InnerSubscriptionHolder::Clear() {
+void InnerSubscriptionSet::Clear() {
 
     std::scoped_lock<std::mutex> lock(lock_);
 
@@ -120,9 +129,16 @@ void InnerSubscriptionHolder::Clear() {
 }
 
 
-void InnerSubscriptionHolder::UnregisterItemNotification(const Item& item) {
+void InnerSubscriptionSet::UnregisterItemNotification(const Item& item) {
 
     item.subscription->UnregisterFinishNotification(item.finish_notification_id);
+}
+
+
+std::size_t InnerSubscriptionSet::Count() const {
+
+    std::scoped_lock<std::mutex> lock(lock_);
+    return no_tag_items_.size() + tag_items_.size();
 }
 
 }

@@ -7,7 +7,7 @@
 #include <zaf/control/event/scroll_bar_thumb_event_info.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
-#include <zaf/rx/subscription_holder.h>
+#include <zaf/rx/subscription_set.h>
 
 namespace zaf {
 
@@ -253,9 +253,9 @@ private:
     std::shared_ptr<ScrollBarArrow> decremental_arrow_;
     std::shared_ptr<ScrollBarThumb> thumb_;
 
-    zaf::SubscriptionHolder incremental_arrow_subscriptions_;
-    zaf::SubscriptionHolder decremental_arrow_subscriptions_;
-    zaf::SubscriptionHolder thumb_subscriptions_;
+    zaf::SubscriptionSet incremental_arrow_subscriptions_;
+    zaf::SubscriptionSet decremental_arrow_subscriptions_;
+    zaf::SubscriptionSet thumb_subscriptions_;
 
     bool is_horizontal_;
 

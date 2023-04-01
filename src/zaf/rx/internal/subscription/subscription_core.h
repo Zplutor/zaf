@@ -32,7 +32,7 @@ protected:
     virtual void OnUnsubscribe() = 0;
 
 private:
-    friend class InnerSubscriptionHolder;
+    friend class InnerSubscriptionSet;
 
     std::optional<int> RegisterFinishNotification(FinishNotification callback);
     void UnregisterFinishNotification(int id);
