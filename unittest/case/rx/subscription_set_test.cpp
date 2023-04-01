@@ -70,7 +70,7 @@ TEST(RxSubscriptionSetTest, CancelSubscriptionWithTag) {
     ASSERT_EQ(values, expected);
 }
 
-/*
+
 TEST(RxSubscriptionSetTest, CancelSubscriptionByDestruction) {
 
     zaf::Subject<std::string> subject;
@@ -92,4 +92,3 @@ TEST(RxSubscriptionSetTest, CancelSubscriptionByDestruction) {
     std::vector<std::string> expected{ "before", "before"};
     ASSERT_EQ(values, expected);
 }
-*/
