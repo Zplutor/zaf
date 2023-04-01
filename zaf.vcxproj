@@ -253,7 +253,7 @@
     <ClCompile Include="src\zaf\rx\internal\operator\subscribe_on_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\rx_runtime.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core.cpp" />
-    <ClCompile Include="src\zaf\rx\internal\subject\inner_subject.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\subject\subject_core_indirect.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subscription\empty_subscription_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subscription\subscription_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription_holder.cpp" />
@@ -624,7 +624,7 @@
     <ClInclude Include="src\zaf\rx\internal\rx_runtime.h" />
     <ClInclude Include="src\zaf\rx\internal\scheduler\single_thread_scheduler.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core.h" />
-    <ClInclude Include="src\zaf\rx\internal\subject\inner_subject.h" />
+    <ClInclude Include="src\zaf\rx\internal\subject\subject_core_indirect.h" />
     <ClInclude Include="src\zaf\rx\internal\subscription\empty_subscription_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_holder.h" />
     <ClInclude Include="src\zaf\rx\internal\subscription\subscription_core.h" />

@@ -21,6 +21,7 @@ public:
     void OnError(const Error& error) override;
     void OnCompleted() override;
 
+    //Called by SubjectSubscriptionCore.
     void Unsubscribe(SubscriptionCore* subscription_core);
 
 private:

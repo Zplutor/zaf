@@ -361,6 +361,9 @@
     <ClCompile Include="unittest\case\window\window_message_routing_test.cpp">
       <Filter>case\window</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\rx\subject_test.cpp">
+      <Filter>case\rx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
