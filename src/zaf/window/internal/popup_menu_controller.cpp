@@ -32,6 +32,7 @@ std::shared_ptr<Window> PopupMenuController::InitializeOwner(
         owner->SetInitialRectStyle(InitialRectStyle::Custom);
         owner->SetIsToolWindow(true);
         owner->SetActivateOption(ActivateOption::NoActivate);
+        menu->SetOwner(owner);
     }
 
     owner_holder_ = owner->CreateHandle();
@@ -48,6 +49,8 @@ void PopupMenuController::InitializeOwnerMessageRedirection(
         owner_focused_control_ = focused_control;
     }
 
+    //Only foreground window can get capture.
+    SetForegroundWindow(owner->Handle());
     SetCapture(owner->Handle());
 
     Subscriptions() += owner->MessageReceivedEvent().Subscribe(

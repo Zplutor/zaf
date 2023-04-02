@@ -123,7 +123,8 @@ protected:
             }
 
             auto mouse_position = zaf::MouseMessage(event_info.Message()).MousePosition();
-            context_menu->PopupOnWindow(shared_from_this(), mouse_position);
+            //context_menu->PopupOnWindow(shared_from_this(), mouse_position);
+            context_menu->PopupOnScreen(this->ToScreenPosition(mouse_position));
         }
     }
 
