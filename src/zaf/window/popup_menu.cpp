@@ -34,6 +34,7 @@ void PopupMenu::Initialize() {
     this->SetIsSizable(false);
     this->SetInitialRectStyle(InitialRectStyle::Custom);
     this->SetActivateOption(ActivateOption::NoActivate);
+    this->SetIsTopmost(true);
 
     auto root_control = this->RootControl();
     root_control->SetLayouter(Create<VerticalLayouter>());
@@ -71,6 +72,11 @@ void PopupMenu::PopupOnWindow(
 }
 
 
+void PopupMenu::PopupOnScreen(const Point& position_on_screen) {
+    InnerPopup(nullptr, position_on_screen, CalculateMenuContentSize());
+}
+
+
 void PopupMenu::PopupAsSubMenu(const std::shared_ptr<MenuItem>& owner_menu_item) {
 
     ZAF_EXPECT(owner_menu_item);
@@ -99,14 +105,16 @@ void PopupMenu::InnerPopup(
     const Point& position_in_screen,
     const zaf::Size& menu_content_size) {
 
-    ZAF_EXPECT(owner);
-    this->SetOwner(owner);
+    //Owner might be null if the menu popups on screen.
+    if (owner) {
+        this->SetOwner(owner);
+    }
+
+    InitializeController();
 
     this->SetPosition(position_in_screen);
     this->SetContentSize(menu_content_size);
     this->Show();
-
-    InitializeController();
 
     root_control_subscriptions_ += RootControl()->MouseEnterEvent().Subscribe(
         std::bind(&PopupMenu::OnRootControlMouseEnter, this, std::placeholders::_1));

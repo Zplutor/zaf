@@ -64,6 +64,14 @@ public:
     void PopupOnWindow(const std::shared_ptr<Window>& window, const Point& position_on_window);
 
     /**
+    Shows popup menu on screen.
+
+    @param position_on_screen
+        Position of the popup menu's top-left corner on screen.
+    */
+    void PopupOnScreen(const Point& position_on_screen);
+
+    /**
     Shows popup menu as a sub menu of a specified menu item.
 
     @param owner_menu_item

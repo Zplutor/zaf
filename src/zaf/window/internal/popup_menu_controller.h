@@ -24,7 +24,9 @@ private:
         const POINT& mouse_position_at_screen);
 
 private:
-    void InitializeOwnerMessageRedirection();
+    void InitializeFirstMenu(const std::shared_ptr<PopupMenu>& menu);
+    std::shared_ptr<Window> InitializeOwner(const std::shared_ptr<PopupMenu>& menu);
+    void InitializeOwnerMessageRedirection(const std::shared_ptr<Window>& owner);
     void OnOwnerMessageReceived(const MessageReceivedInfo& event_info);
     bool HandleOwnerMessage(const Message& message);
     bool HandleOwnerMouseMessage(const Message& message);
@@ -32,6 +34,7 @@ private:
     bool HandleOwnerKeyDownMessage(const KeyMessage& message);
 
 private:
+    std::shared_ptr<WindowHolder> owner_holder_;
     std::weak_ptr<Control> owner_focused_control_;
     std::vector<std::weak_ptr<PopupMenu>> menus_;
     std::weak_ptr<PopupMenu> last_mouse_over_menu_;

@@ -1,4 +1,5 @@
 #include <zaf/window/internal/popup_menu_controller.h>
+#include <zaf/creation.h>
 
 namespace zaf::internal {
 
@@ -8,8 +9,49 @@ void PopupMenuController::PushMenu(const std::shared_ptr<PopupMenu>& menu) {
     key_focus_menu_ = menu;
 
     if (menus_.size() == 1) {
-        InitializeOwnerMessageRedirection();
+        InitializeFirstMenu(menu);
     }
+}
+
+
+void PopupMenuController::InitializeFirstMenu(const std::shared_ptr<PopupMenu>& menu) {
+
+    auto owner = InitializeOwner(menu);
+    InitializeOwnerMessageRedirection(owner);
+}
+
+
+std::shared_ptr<Window> PopupMenuController::InitializeOwner(
+    const std::shared_ptr<PopupMenu>& menu) {
+
+    auto owner = menu->Owner();
+    if (!owner) {
+        //Create an invisible window to be the owner of the menu if there is no owner specified.
+        owner = Create<Window>();
+        owner->SetRect(Rect{});
+        owner->SetInitialRectStyle(InitialRectStyle::Custom);
+        owner->SetIsToolWindow(true);
+        owner->SetActivateOption(ActivateOption::NoActivate);
+    }
+
+    owner_holder_ = owner->CreateHandle();
+    return owner;
+}
+
+
+void PopupMenuController::InitializeOwnerMessageRedirection(
+    const std::shared_ptr<Window>& owner) {
+
+    auto focused_control = owner->FocusedControl();
+    if (focused_control) {
+        focused_control->SetIsFocused(false);
+        owner_focused_control_ = focused_control;
+    }
+
+    SetCapture(owner->Handle());
+
+    Subscriptions() += owner->MessageReceivedEvent().Subscribe(
+        std::bind(&PopupMenuController::OnOwnerMessageReceived, this, std::placeholders::_1));
 }
 
 
@@ -59,30 +101,6 @@ void PopupMenuController::PopMenu(const PopupMenu& menu) {
             focused_control->SetIsFocused(true);
         }
     }
-}
-
-
-void PopupMenuController::InitializeOwnerMessageRedirection() {
-
-    ZAF_EXPECT(menus_.size() == 1);
-    auto menu = menus_.front().lock();
-    if (!menu) {
-        return;
-    }
-
-    const auto& owner = menu->Owner();
-    ZAF_EXPECT(owner);
-
-    auto focused_control = owner->FocusedControl();
-    if (focused_control) {
-        focused_control->SetIsFocused(false);
-        owner_focused_control_ = focused_control;
-    }
-
-    SetCapture(owner->Handle());
-
-    Subscriptions() += owner->MessageReceivedEvent().Subscribe(
-        std::bind(&PopupMenuController::OnOwnerMessageReceived, this, std::placeholders::_1));
 }
 
 
