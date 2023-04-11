@@ -62,31 +62,67 @@ static const GUID MyOLEObjectID =
 
 class MyOLEObject : public IOleObject, public IViewObject {
 public:
-    HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override {
+    HRESULT Draw(
+        DWORD dwDrawAspect,
+        LONG lindex,
+        void* pvAspect,
+        DVTARGETDEVICE* ptd,
+        HDC hdcTargetDev,
+        HDC hdcDraw,
+        LPCRECTL lprcBounds,
+        LPCRECTL lprcWBounds,
+        BOOL(STDMETHODCALLTYPE* pfnContinue)(ULONG_PTR dwContinue),
+        ULONG_PTR dwContinue) override {
 
-        if (!ppvObj)
-            return E_INVALIDARG;
-
-        *ppvObj = NULL;
-        if (riid == IID_IUnknown || riid == IID_IOleObject || riid == IID_IViewObject) {
-            *ppvObj = (LPVOID)this;
-            AddRef();
-            return NOERROR;
+        if (dwDrawAspect != DVASPECT_CONTENT) {
+            return E_NOTIMPL;
         }
-        return E_NOINTERFACE;
+
+        RECT rect{};
+        rect.left = lprcBounds->left;
+        rect.top = lprcBounds->top;
+        rect.right = lprcBounds->right;
+        rect.bottom = lprcBounds->bottom;
+
+        FillRect(hdcDraw, &rect, GetStockBrush(BLACK_BRUSH));
+
+        return S_OK;
     }
 
-    ULONG AddRef() override {
-        InterlockedIncrement(&m_cRef);
-        return m_cRef;
+    HRESULT GetColorSet(
+        DWORD dwDrawAspect,
+        LONG lindex,
+        void* pvAspect,
+        DVTARGETDEVICE* ptd,
+        HDC hicTargetDev,
+        LOGPALETTE** ppColorSet) override {
+        return E_NOTIMPL;
     }
 
-    ULONG Release() override {
-        ULONG ulRefCount = InterlockedDecrement(&m_cRef);
-        if (0 == m_cRef) {
-            delete this;
-        }
-        return ulRefCount;
+    HRESULT Freeze(
+        DWORD dwDrawAspect,
+        LONG lindex,
+        void* pvAspect,
+        DWORD* pdwFreeze) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT Unfreeze(DWORD dwFreeze) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT SetAdvise(
+        DWORD aspects,
+        DWORD advf,
+        IAdviseSink* pAdvSink) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT GetAdvise(
+        DWORD* pAspects,
+        DWORD* pAdvf,
+        IAdviseSink** ppAdvSink) override {
+        return E_NOTIMPL;
     }
 
     HRESULT STDMETHODCALLTYPE SetClientSite(IOleClientSite* pClientSite) override {
@@ -181,67 +217,45 @@ public:
         return E_NOTIMPL;
     }
 
-    HRESULT Draw(
-        DWORD dwDrawAspect,
-        LONG lindex,
-        void* pvAspect,
-        DVTARGETDEVICE* ptd,
-        HDC hdcTargetDev,
-        HDC hdcDraw,
-        LPCRECTL lprcBounds,
-        LPCRECTL lprcWBounds,
-        BOOL(STDMETHODCALLTYPE* pfnContinue)(ULONG_PTR dwContinue),
-        ULONG_PTR dwContinue) override {
+    HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override {
 
-        if (dwDrawAspect != DVASPECT_CONTENT) {
-            return E_NOTIMPL;
+        if (!ppvObj)
+            return E_INVALIDARG;
+
+        *ppvObj = NULL;
+
+        if (riid == IID_IUnknown) {
+            *ppvObj = (IOleObject*)this;
+            AddRef();
+            return S_OK;
         }
 
-        RECT rect{};
-        rect.left = lprcBounds->left;
-        rect.top = lprcBounds->top;
-        rect.right = lprcBounds->right;
-        rect.bottom = lprcBounds->bottom;
+        if (riid == IID_IOleObject) {
+            *ppvObj = (IOleObject*)this;
+            AddRef();
+            return S_OK;
+        }
 
-        FillRect(hdcDraw, &rect, GetStockBrush(BLACK_BRUSH));
+        if (riid == IID_IViewObject) {
+            *ppvObj = (IViewObject*)this;
+            AddRef();
+            return S_OK;
+        }
 
-        return S_OK;
+        return E_NOINTERFACE;
     }
 
-    HRESULT GetColorSet(
-        DWORD dwDrawAspect,
-        LONG lindex,
-        void* pvAspect,
-        DVTARGETDEVICE* ptd,
-        HDC hicTargetDev,
-        LOGPALETTE** ppColorSet) override {
-        return E_NOTIMPL;
+    ULONG AddRef() override {
+        InterlockedIncrement(&m_cRef);
+        return m_cRef;
     }
 
-    HRESULT Freeze(
-        DWORD dwDrawAspect,
-        LONG lindex,
-        void* pvAspect,
-        DWORD* pdwFreeze) override {
-        return E_NOTIMPL;
-    }
-
-    HRESULT Unfreeze(DWORD dwFreeze) override {
-        return E_NOTIMPL;
-    }
-
-    HRESULT SetAdvise(
-        DWORD aspects,
-        DWORD advf,
-        IAdviseSink* pAdvSink) override {
-        return E_NOTIMPL;
-    }
-
-    HRESULT GetAdvise(
-        DWORD* pAspects,
-        DWORD* pAdvf,
-        IAdviseSink** ppAdvSink) override {
-        return E_NOTIMPL;
+    ULONG Release() override {
+        ULONG ulRefCount = InterlockedDecrement(&m_cRef);
+        if (0 == m_cRef) {
+            delete this;
+        }
+        return ulRefCount;
     }
 
 private:
@@ -282,6 +296,8 @@ private:
 
         CComPtr<MyOLEObject> my_object = new MyOLEObject();
 
+        HRESULT hresult = OleSetContainedObject(static_cast<IOleObject*>(my_object), TRUE);
+
         REOBJECT object_info{};
         object_info.cbStruct = sizeof(object_info);
         object_info.cp = 0;
@@ -297,9 +313,9 @@ private:
         size_in_pixels.cy = 30;
         AtlPixelToHiMetric(&size_in_pixels, &object_info.sizel);
 
-        HRESULT hresult = rich_edit_ole->InsertObject(&object_info);
+        hresult = rich_edit_ole->InsertObject(&object_info);
 
-        hresult = OleSetContainedObject(static_cast<IOleObject*>(my_object), TRUE);
+        
 
         int x = 0;
     }
