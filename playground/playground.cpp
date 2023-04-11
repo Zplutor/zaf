@@ -1,5 +1,9 @@
 #include <Windows.h>
 #include <WindowsX.h>
+#include <richedit.h>
+#include <richole.h>
+#include <atlbase.h>
+#include <atlctl.h>
 #include <fstream>
 #include <charconv>
 #include <zaf/application.h>
@@ -51,26 +55,201 @@
 #include <zaf/window/popup_menu.h>
 #include <zaf/control/menu_separator.h>
 
+// {E16F8ACD-5B3A-4167-A449-DC570DD44459}
+static const GUID MyOLEObjectID =
+{ 0xe16f8acd, 0x5b3a, 0x4167, { 0xa4, 0x49, 0xdc, 0x57, 0xd, 0xd4, 0x44, 0x59 } };
+
+
+class MyOLEObject : public IOleObject, public IViewObject {
+public:
+    HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override {
+
+        if (!ppvObj)
+            return E_INVALIDARG;
+
+        *ppvObj = NULL;
+        if (riid == IID_IUnknown || riid == IID_IOleObject || riid == IID_IViewObject) {
+            *ppvObj = (LPVOID)this;
+            AddRef();
+            return NOERROR;
+        }
+        return E_NOINTERFACE;
+    }
+
+    ULONG AddRef() override {
+        InterlockedIncrement(&m_cRef);
+        return m_cRef;
+    }
+
+    ULONG Release() override {
+        ULONG ulRefCount = InterlockedDecrement(&m_cRef);
+        if (0 == m_cRef) {
+            delete this;
+        }
+        return ulRefCount;
+    }
+
+    HRESULT STDMETHODCALLTYPE SetClientSite(IOleClientSite* pClientSite) override {
+
+        //client_site_ = pClientSite;
+        return S_OK;
+    }
+
+    HRESULT GetClientSite(IOleClientSite** ppClientSite) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT SetHostNames(LPCOLESTR szContainerApp, LPCOLESTR szContainerObj) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT Close(DWORD dwSaveOption) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT SetMoniker(DWORD dwWhichMoniker, IMoniker* pmk) override {
+        return S_OK;
+    }
+
+    HRESULT GetMoniker(DWORD dwAssign, DWORD dwWhichMoniker, IMoniker** ppmk) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT InitFromData(IDataObject* pDataObject, BOOL fCreation, DWORD dwReserved) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT GetClipboardData(DWORD dwReserved, IDataObject** ppDataObject) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT DoVerb(
+        LONG iVerb,
+        LPMSG lpmsg,
+        IOleClientSite* pActiveSite,
+        LONG lindex,
+        HWND hwndParent,
+        LPCRECT lprcPosRect) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT EnumVerbs(IEnumOLEVERB** ppEnumOleVerb) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT Update(void) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT IsUpToDate(void) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT GetUserClassID(CLSID* pClsid) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT GetUserType(DWORD dwFormOfType, LPOLESTR* pszUserType) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT SetExtent(DWORD dwDrawAspect, SIZEL* psizel) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT GetExtent(DWORD dwDrawAspect, SIZEL* psizel) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT Advise(IAdviseSink* pAdvSink, DWORD* pdwConnection) override {
+        return S_OK;
+    }
+
+    HRESULT Unadvise(DWORD dwConnection) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT EnumAdvise(IEnumSTATDATA** ppenumAdvise) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT GetMiscStatus(DWORD dwAspect, DWORD* pdwStatus) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT SetColorScheme(LOGPALETTE* pLogpal) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT Draw(
+        DWORD dwDrawAspect,
+        LONG lindex,
+        void* pvAspect,
+        DVTARGETDEVICE* ptd,
+        HDC hdcTargetDev,
+        HDC hdcDraw,
+        LPCRECTL lprcBounds,
+        LPCRECTL lprcWBounds,
+        BOOL(STDMETHODCALLTYPE* pfnContinue)(ULONG_PTR dwContinue),
+        ULONG_PTR dwContinue) override {
+
+        if (dwDrawAspect != DVASPECT_CONTENT) {
+            return E_NOTIMPL;
+        }
+
+        RECT rect{};
+        rect.left = lprcBounds->left;
+        rect.top = lprcBounds->top;
+        rect.right = lprcBounds->right;
+        rect.bottom = lprcBounds->bottom;
+
+        FillRect(hdcDraw, &rect, GetStockBrush(BLACK_BRUSH));
+
+        return S_OK;
+    }
+
+    HRESULT GetColorSet(
+        DWORD dwDrawAspect,
+        LONG lindex,
+        void* pvAspect,
+        DVTARGETDEVICE* ptd,
+        HDC hicTargetDev,
+        LOGPALETTE** ppColorSet) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT Freeze(
+        DWORD dwDrawAspect,
+        LONG lindex,
+        void* pvAspect,
+        DWORD* pdwFreeze) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT Unfreeze(DWORD dwFreeze) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT SetAdvise(
+        DWORD aspects,
+        DWORD advf,
+        IAdviseSink* pAdvSink) override {
+        return E_NOTIMPL;
+    }
+
+    HRESULT GetAdvise(
+        DWORD* pAspects,
+        DWORD* pAdvf,
+        IAdviseSink** ppAdvSink) override {
+        return E_NOTIMPL;
+    }
+
+private:
+    ULONG m_cRef{ 1 };
+    CComPtr<IOleClientSite> client_site_;
+};
+
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
-
-
-void AddSubMenuItemsToMenuItem(zaf::MenuItem& menu_item, int deep) {
-
-    if (deep >= 2) {
-        return;
-    }
-
-    for (int count = 0; count < 3; ++count) {
-
-        auto sub_menu_item = zaf::Create<zaf::MenuItem>();
-        sub_menu_item->SetText(L"Sub menu item " + std::to_wstring(count));
-
-        menu_item.AddSubMenuItem(sub_menu_item);
-
-        AddSubMenuItemsToMenuItem(*sub_menu_item, deep + 1);
-    }
-}
-
 
 class Window : public zaf::Window {
 protected:
@@ -84,53 +263,49 @@ protected:
         text_box_ = zaf::Create<zaf::TextBox>();
         text_box_->SetFontSize(22);
 
-        button_ = zaf::Create<zaf::Button>();
-        button_->SetFixedHeight(30);
+        this->RootControl()->AddChild(text_box_);
 
-        this->RootControl()->AddChildren({ text_box_, button_ });
+        InitializeOLEObject();
     }
 
-    void OnMessageHandled(const zaf::MessageHandledInfo& event_info) override {
+private:
+    void InitializeOLEObject() {
 
-        __super::OnMessageHandled(event_info);
+        auto text_service = text_box_->GetITextServices();
 
-        if (event_info.Message().ID() == WM_RBUTTONUP) {
+        CComPtr<IRichEditOle> rich_edit_ole{};
+        LRESULT lresult{};
+        text_service->TxSendMessage(EM_GETOLEINTERFACE, 0, (LPARAM)&rich_edit_ole, &lresult);
 
-            auto context_menu = zaf::Create<zaf::PopupMenu>();
+        CComPtr<IOleClientSite> client_site{};
+        rich_edit_ole->GetClientSite(&client_site);
 
-            for (int count = 0; count < 10; ++count) {
+        CComPtr<MyOLEObject> my_object = new MyOLEObject();
 
-                auto menu_item = zaf::Create<zaf::MenuItem>();
-                menu_item->SetText(L"Menu item " + std::to_wstring(count));
+        REOBJECT object_info{};
+        object_info.cbStruct = sizeof(object_info);
+        object_info.cp = 0;
+        object_info.clsid = MyOLEObjectID;
+        object_info.poleobj = my_object;
+        object_info.dvaspect = DVASPECT_CONTENT;
+        object_info.dwFlags = 0;
+        object_info.polesite = client_site;
+        object_info.pstg = nullptr;
 
-                Subscriptions() += menu_item->MouseUpEvent().Subscribe([](const zaf::MouseUpInfo& event_info) {
-                    event_info.IsHandled();
-                });
+        SIZEL size_in_pixels{};
+        size_in_pixels.cx = 100;
+        size_in_pixels.cy = 30;
+        AtlPixelToHiMetric(&size_in_pixels, &object_info.sizel);
 
-                if (count == 2) {
-                    context_menu->AddMenuItem(zaf::Create<zaf::MenuSeparator>());
-                }
+        HRESULT hresult = rich_edit_ole->InsertObject(&object_info);
 
-                if (count > 2 && count < 6) {
-                    AddSubMenuItemsToMenuItem(*menu_item, 0);
-                }
+        hresult = OleSetContainedObject(static_cast<IOleObject*>(my_object), TRUE);
 
-                if (count == 5) {
-                    menu_item->SetIsEnabled(false);
-                }
-
-                context_menu->AddMenuItem(menu_item);
-            }
-
-            auto mouse_position = zaf::MouseMessage(event_info.Message()).MousePosition();
-            //context_menu->PopupOnWindow(shared_from_this(), mouse_position);
-            context_menu->PopupOnScreen(this->ToScreenPosition(mouse_position));
-        }
+        int x = 0;
     }
 
 private:
     std::shared_ptr<zaf::TextBox> text_box_;
-    std::shared_ptr<zaf::Button> button_;
 };
 
 
