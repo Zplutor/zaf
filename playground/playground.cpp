@@ -60,8 +60,70 @@ static const GUID MyOLEObjectID =
 { 0xe16f8acd, 0x5b3a, 0x4167, { 0xa4, 0x49, 0xdc, 0x57, 0xd, 0xd4, 0x44, 0x59 } };
 
 
-class MyOLEObject : public IOleObject, public IViewObject {
+class MyOLEObject : 
+    public IOleObject, 
+    public IViewObject {
+
 public:
+    HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override {
+
+        if (!ppvObj)
+            return E_INVALIDARG;
+
+        *ppvObj = NULL;
+
+        if (riid == IID_IUnknown) {
+            *ppvObj = (IOleObject*)this;
+            AddRef();
+            return S_OK;
+        }
+
+        if (riid == IID_IOleObject) {
+            *ppvObj = (IOleObject*)this;
+            AddRef();
+            return S_OK;
+        }
+
+        if (riid == IID_IViewObject) {
+            *ppvObj = (IViewObject*)this;
+            AddRef();
+            return S_OK;
+        }
+
+        if (riid == IID_IOleWindow) {
+            *ppvObj = (IOleWindow*)this;
+            AddRef();
+            return S_OK;
+        }
+
+        if (riid == IID_IOleInPlaceObject) {
+            *ppvObj = (IOleInPlaceObject*)this;
+            AddRef();
+            return S_OK;
+        }
+
+        if (riid == IID_IOleInPlaceObjectWindowless) {
+            *ppvObj = (IOleInPlaceObjectWindowless*)this;
+            AddRef();
+            return S_OK;
+        }
+
+        return E_NOINTERFACE;
+    }
+
+    ULONG AddRef() override {
+        InterlockedIncrement(&m_cRef);
+        return m_cRef;
+    }
+
+    ULONG Release() override {
+        ULONG ulRefCount = InterlockedDecrement(&m_cRef);
+        if (0 == m_cRef) {
+            delete this;
+        }
+        return ulRefCount;
+    }
+
     HRESULT Draw(
         DWORD dwDrawAspect,
         LONG lindex,
@@ -128,7 +190,7 @@ public:
     HRESULT STDMETHODCALLTYPE SetClientSite(IOleClientSite* pClientSite) override {
 
         //client_site_ = pClientSite;
-        return S_OK;
+        return E_NOTIMPL;
     }
 
     HRESULT GetClientSite(IOleClientSite** ppClientSite) override {
@@ -144,7 +206,7 @@ public:
     }
 
     HRESULT SetMoniker(DWORD dwWhichMoniker, IMoniker* pmk) override {
-        return S_OK;
+        return E_NOTIMPL;
     }
 
     HRESULT GetMoniker(DWORD dwAssign, DWORD dwWhichMoniker, IMoniker** ppmk) override {
@@ -217,47 +279,6 @@ public:
         return E_NOTIMPL;
     }
 
-    HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override {
-
-        if (!ppvObj)
-            return E_INVALIDARG;
-
-        *ppvObj = NULL;
-
-        if (riid == IID_IUnknown) {
-            *ppvObj = (IOleObject*)this;
-            AddRef();
-            return S_OK;
-        }
-
-        if (riid == IID_IOleObject) {
-            *ppvObj = (IOleObject*)this;
-            AddRef();
-            return S_OK;
-        }
-
-        if (riid == IID_IViewObject) {
-            *ppvObj = (IViewObject*)this;
-            AddRef();
-            return S_OK;
-        }
-
-        return E_NOINTERFACE;
-    }
-
-    ULONG AddRef() override {
-        InterlockedIncrement(&m_cRef);
-        return m_cRef;
-    }
-
-    ULONG Release() override {
-        ULONG ulRefCount = InterlockedDecrement(&m_cRef);
-        if (0 == m_cRef) {
-            delete this;
-        }
-        return ulRefCount;
-    }
-
 private:
     ULONG m_cRef{ 1 };
     CComPtr<IOleClientSite> client_site_;
@@ -304,18 +325,19 @@ private:
         object_info.clsid = MyOLEObjectID;
         object_info.poleobj = my_object;
         object_info.dvaspect = DVASPECT_CONTENT;
-        object_info.dwFlags = 0;
+        object_info.dwFlags = REO_BELOWBASELINE;
         object_info.polesite = client_site;
         object_info.pstg = nullptr;
 
+        auto size = zaf::FromDIPs(zaf::Size{ 100, 30 }, this->GetDPI());
+
         SIZEL size_in_pixels{};
-        size_in_pixels.cx = 100;
-        size_in_pixels.cy = 30;
+        size_in_pixels.cx = (LONG)size.width;
+        size_in_pixels.cy = (LONG)size.height;
         AtlPixelToHiMetric(&size_in_pixels, &object_info.sizel);
 
         hresult = rich_edit_ole->InsertObject(&object_info);
 
-        
 
         int x = 0;
     }
