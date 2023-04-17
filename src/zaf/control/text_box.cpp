@@ -9,6 +9,8 @@
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/object/type_definition.h>
+#include <zaf/rx/scheduler.h>
+#include <zaf/rx/timer.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
@@ -1320,11 +1322,25 @@ BOOL TextBox::TextHostBridge::TxSetCaretPos(INT x, INT y) {
 
 
 BOOL TextBox::TextHostBridge::TxSetTimer(UINT idTimer, UINT uTimeout) {
-    return FALSE;
+
+    timers_[idTimer] = rx::Interval(std::chrono::milliseconds(uTimeout))
+        .ObserveOn(Scheduler::Main())
+        .Subscribe([this, idTimer](int) {
+    
+        auto text_box = text_box_.lock();
+        if (text_box) {
+
+            auto text_service = text_box->GetITextServices();
+            text_service->TxSendMessage(WM_TIMER, idTimer, 0, nullptr);
+        }
+    });
+
+    return TRUE;
 }
 
 
 void TextBox::TextHostBridge::TxKillTimer(UINT idTimer) {
+    timers_.erase(idTimer);
 }
 
 
@@ -1657,7 +1673,7 @@ HWND TextBox::TextHostBridge::GetWindowHandle() const {
 
 static ITextServices* CreateTextService(ITextHost* text_host) {
 
-    HMODULE module_handle = LoadLibrary(L"riched20.dll");
+    HMODULE module_handle = LoadLibrary(L"msftedit.dll");
     if (module_handle == nullptr) {
         return nullptr;
     }

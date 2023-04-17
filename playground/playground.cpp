@@ -297,6 +297,7 @@ protected:
 
         text_box_ = zaf::Create<zaf::TextBox>();
         text_box_->SetFontSize(22);
+        text_box_->SetIsMultiline(true);
 
         this->RootControl()->AddChild(text_box_);
 

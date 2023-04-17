@@ -364,6 +364,7 @@ private:
 
     private:
         std::weak_ptr<TextBox> text_box_;
+        std::map<UINT, Subscription> timers_;
     };
 
 private:
