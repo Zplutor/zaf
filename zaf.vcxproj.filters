@@ -163,6 +163,9 @@
     <Filter Include="zaf\window\event">
       <UniqueIdentifier>{27adc10e-557f-475f-92e2-c64615cdbfad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\rich_edit">
+      <UniqueIdentifier>{ec7c2eeb-2a1a-4f63-9852-164089ec078f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -885,6 +888,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\window\window_holder.cpp">
       <Filter>zaf\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\rich_edit\embedded_object.cpp">
+      <Filter>zaf\control\rich_edit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2058,6 +2064,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\window_holder.h">
       <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\rich_edit\embedded_object.h">
+      <Filter>zaf\control\rich_edit</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
