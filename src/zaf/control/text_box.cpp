@@ -74,7 +74,7 @@ static const wchar_t* const kScrollValuesChangeEventPropertyName = L"ScrollValue
 static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
 static const wchar_t* const kTextValidatorPropertyName = L"TextValidator";
 
-static const DWORD kDefaultPropertyBits = TXTBIT_ALLOWBEEP;
+static const DWORD kDefaultPropertyBits = TXTBIT_D2DDWRITE | TXTBIT_ALLOWBEEP;
 static const Frame kDefaultInset;
 static const std::uint32_t kDefaultMaxLength = std::numeric_limits<std::uint32_t>::max();
 static const wchar_t kDefaultPasswordCharacter = L'*';
@@ -171,7 +171,8 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
-    if (text_service_ == nullptr) {
+    auto window = Window();
+    if (!window) {
         return;
     }
 
@@ -179,52 +180,14 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     //before painting.
     ReviseTextColor();
 
-    auto render_target = canvas.GetRenderer().GetHandle();
-    CComPtr<ID2D1GdiInteropRenderTarget> gdi_interop_render_target;
-    render_target->QueryInterface(IID_ID2D1GdiInteropRenderTarget, reinterpret_cast<void**>(&gdi_interop_render_target));
+    auto bounds_rect = FromDIPs(this->ContentRect(), window->GetDPI()).ToRECT();
+    auto update_rect = FromDIPs(dirty_rect, window->GetDPI()).ToRECT();
 
-    HDC hdc = nullptr;
-    HRESULT result = gdi_interop_render_target->GetDC(D2D1_DC_INITIALIZE_MODE_COPY, &hdc);
-    if (FAILED(result)) {
-        return;
-    }
-
-    auto window = Window();
-    if (!window) {
-        return;
-    }
-
-    BeginPath(hdc);
-    RECT path_rect = FromDIPs(canvas.GetAbsolutePaintableRect(), window->GetDPI()).ToRECT();
-    //Clip path not include the tail edges of rectangle, 
-    //so increase the right and bottom values.
-    path_rect.right += 1;
-    path_rect.bottom += 1;
-    Rectangle(hdc, path_rect.left, path_rect.top, path_rect.right, path_rect.bottom);
-    EndPath(hdc);
-    SelectClipPath(hdc, RGN_COPY);
-
-    auto absolute_content_rect = GetAbsoluteContentRect();
-    absolute_content_rect.position.y += GetPaintContentOffset(hdc);
-
-    auto absolute_content_rect_in_pixels = Align(FromDIPs(absolute_content_rect, window->GetDPI()));
-    RECT win32_rect = absolute_content_rect_in_pixels.ToRECT();
-
-    text_service_->TxDraw(
-        DVASPECT_CONTENT,
-        0,
-        nullptr,
-        nullptr,
-        hdc,
-        nullptr,
-        reinterpret_cast<LPCRECTL>(&win32_rect),
-        nullptr,
-        &win32_rect,
-        nullptr,
-        0,
-        0);
-
-    gdi_interop_render_target->ReleaseDC(nullptr);
+    text_service_->TxDrawD2D(
+        canvas.GetRenderer().GetHandle(),
+        reinterpret_cast<const RECTL*>(&bounds_rect),
+        &update_rect,
+        TXTVIEW_ACTIVE);
 
     if (caret_) {
         caret_->Paint(canvas, dirty_rect);

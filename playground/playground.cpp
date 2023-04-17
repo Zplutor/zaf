@@ -90,24 +90,6 @@ public:
             return S_OK;
         }
 
-        if (riid == IID_IOleWindow) {
-            *ppvObj = (IOleWindow*)this;
-            AddRef();
-            return S_OK;
-        }
-
-        if (riid == IID_IOleInPlaceObject) {
-            *ppvObj = (IOleInPlaceObject*)this;
-            AddRef();
-            return S_OK;
-        }
-
-        if (riid == IID_IOleInPlaceObjectWindowless) {
-            *ppvObj = (IOleInPlaceObjectWindowless*)this;
-            AddRef();
-            return S_OK;
-        }
-
         return E_NOINTERFACE;
     }
 
@@ -326,7 +308,7 @@ private:
         object_info.clsid = MyOLEObjectID;
         object_info.poleobj = my_object;
         object_info.dvaspect = DVASPECT_CONTENT;
-        object_info.dwFlags = REO_BELOWBASELINE;
+        object_info.dwFlags = REO_BELOWBASELINE | REO_OWNERDRAWSELECT;
         object_info.polesite = client_site;
         object_info.pstg = nullptr;
 
