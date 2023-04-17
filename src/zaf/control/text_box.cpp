@@ -1,5 +1,6 @@
 #include <zaf/control/text_box.h>
 #include <cassert>
+#include <zaf/base/error/system_error.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
@@ -18,13 +19,6 @@
 
 #undef max
 
-EXTERN_C const IID IID_ITextServices = {
-    0x8d33f740,
-    0xcf58,
-    0x11ce,
-    { 0xa8, 0x9d, 0x00, 0xaa, 0x00, 0x6c, 0xad, 0xc5 }
-};
-
 EXTERN_C const IID IID_ITextHost = {
     0xc5bdd8d0,
     0xd26e,
@@ -33,8 +27,42 @@ EXTERN_C const IID IID_ITextHost = {
 };
 
 namespace zaf {
+namespace {
 
-static ITextServices* CreateTextService(ITextHost* text_host);
+CComPtr<ITextServices2> CreateTextService(ITextHost* text_host) {
+
+    HMODULE module_handle = LoadLibrary(L"msftedit.dll");
+    if (!module_handle) {
+        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+    }
+
+    using CreateTextServicesFunction = HRESULT(_stdcall*)(IUnknown*, ITextHost*, IUnknown**);
+    auto create_function = reinterpret_cast<CreateTextServicesFunction>(
+        GetProcAddress(module_handle, "CreateTextServices"));
+
+    if (!create_function) {
+        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+    }
+
+    auto iid_text_service2 = reinterpret_cast<const IID*>(
+        GetProcAddress(module_handle, "IID_ITextServices2"));
+
+    if (!iid_text_service2) {
+        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+    }
+
+    CComPtr<IUnknown> unknown;
+    HRESULT hresult = create_function(nullptr, text_host, &unknown);
+    ZAF_THROW_IF_COM_ERROR(hresult);
+
+    CComPtr<ITextServices2> text_service;
+    hresult = unknown->QueryInterface(*iid_text_service2, reinterpret_cast<void**>(&text_service));
+    ZAF_THROW_IF_COM_ERROR(hresult);
+
+    return text_service;
+}
+
+}
 
 static const wchar_t* const kAcceptReturnPropertyName = L"AcceptReturn";
 static const wchar_t* const kAcceptTabPropertyName = L"AcceptTab";
@@ -124,12 +152,7 @@ void TextBox::InitializeTextService() {
     text_host_bridge_ = std::make_shared<TextHostBridge>(shared_this);
 
     text_service_ = CreateTextService(text_host_bridge_.get());
-    if (text_service_ == nullptr) {
-        return;
-    }
-
     text_service_->OnTxInPlaceActivate(nullptr);
-
     text_service_->TxSendMessage(
         EM_SETEVENTMASK, 0, ENM_CHANGE | ENM_SELCHANGE | ENM_PROTECTED,
         nullptr);
@@ -1669,33 +1692,5 @@ HWND TextBox::TextHostBridge::GetWindowHandle() const {
 
     return window->Handle();
 }
-
-
-static ITextServices* CreateTextService(ITextHost* text_host) {
-
-    HMODULE module_handle = LoadLibrary(L"msftedit.dll");
-    if (module_handle == nullptr) {
-        return nullptr;
-    }
-
-    typedef HRESULT(_stdcall*CreateTextServicesFunction)(IUnknown*, ITextHost*, IUnknown**);
-    auto create_text_services = reinterpret_cast<CreateTextServicesFunction>(
-        GetProcAddress(module_handle, "CreateTextServices")
-    );
-    if (create_text_services == nullptr) {
-        return nullptr;
-    }
-
-    CComPtr<IUnknown> service;
-    HRESULT result = create_text_services(nullptr, text_host, &service);
-    if (FAILED(result)) {
-        return nullptr;
-    }
-
-    ITextServices* text_service = nullptr;
-    service->QueryInterface(IID_ITextServices, reinterpret_cast<void**>(&text_service));
-    return text_service;
-}
-
 
 }
