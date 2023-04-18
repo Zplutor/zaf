@@ -34,7 +34,7 @@ public:
      Get the number of fonts.
      */
     std::size_t GetFontCount() const {
-        return GetHandle()->GetFontCount();
+        return Inner()->GetFontCount();
     }
 
     /**

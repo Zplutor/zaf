@@ -56,7 +56,7 @@ std::shared_ptr<XamlReader> XamlReader::FromString(const std::string& xaml) {
 
 std::shared_ptr<XamlReader> XamlReader::FromStream(const Stream& stream) {
 
-    auto stream_handle = stream.GetHandle();
+    auto stream_handle = stream.Inner();
     auto xaml_reader_handle = CreateHandle(stream_handle);
 
     stream_handle->AddRef();

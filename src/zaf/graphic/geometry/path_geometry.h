@@ -61,7 +61,7 @@ public:
 
 private:
     ID2D1PathGeometry* GetActualHandle() const {
-        return static_cast<ID2D1PathGeometry*>(GetHandle());
+        return static_cast<ID2D1PathGeometry*>(Inner());
     }
 
 private:

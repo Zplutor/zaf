@@ -26,8 +26,8 @@ public:
         const Size& size, 
         ImageInterpolationMode interpolation_mode) {
 
-        HRESULT com_error = GetHandle()->Initialize(
-            image_source.GetHandle(),
+        HRESULT com_error = Inner()->Initialize(
+            image_source.Inner(),
             static_cast<UINT>(size.width), 
             static_cast<UINT>(size.height),
             static_cast<WICBitmapInterpolationMode>(interpolation_mode));
@@ -35,8 +35,8 @@ public:
         ZAF_THROW_IF_COM_ERROR(com_error);
     }
 
-    IWICBitmapScaler* GetHandle() const {
-        return static_cast<IWICBitmapScaler*>(__super::GetHandle());
+    IWICBitmapScaler* Inner() const {
+        return static_cast<IWICBitmapScaler*>(__super::Inner());
     }
 };
 

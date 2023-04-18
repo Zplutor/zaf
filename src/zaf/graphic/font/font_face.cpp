@@ -6,7 +6,7 @@ namespace zaf {
 const FontFamily FontFace::GetFontFamily() const {
 
     IDWriteFontFamily* family_handle = nullptr;
-    HRESULT result = GetHandle()->GetFontFamily(&family_handle);
+    HRESULT result = Inner()->GetFontFamily(&family_handle);
     
     return FontFamily(family_handle);
 }

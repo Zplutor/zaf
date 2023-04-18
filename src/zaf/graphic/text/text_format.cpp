@@ -7,7 +7,7 @@ TextTrimming TextFormat::GetTextTrimming() const {
 
     DWRITE_TRIMMING dwrite_trimming = { };
     IDWriteInlineObject* dwrite_inline_object = nullptr;
-    HRESULT hresult = GetHandle()->GetTrimming(&dwrite_trimming, &dwrite_inline_object);
+    HRESULT hresult = Inner()->GetTrimming(&dwrite_trimming, &dwrite_inline_object);
 
     ZAF_THROW_IF_COM_ERROR(hresult);
 
@@ -26,7 +26,7 @@ void TextFormat::SetTextTrimming(const TextTrimming& text_trimming) {
     dwrite_trimming.granularity = static_cast<DWRITE_TRIMMING_GRANULARITY>(text_trimming.granularity);
     dwrite_trimming.delimiter = text_trimming.delimiter;
     dwrite_trimming.delimiterCount = text_trimming.delimiter_count;
-    HRESULT hresult = GetHandle()->SetTrimming(&dwrite_trimming, text_trimming.trimming_sign.GetHandle());
+    HRESULT hresult = Inner()->SetTrimming(&dwrite_trimming, text_trimming.trimming_sign.Inner());
     
     ZAF_THROW_IF_COM_ERROR(hresult);
 }

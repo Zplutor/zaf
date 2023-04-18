@@ -13,14 +13,14 @@ public:
     explicit Stream(IWICStream* handle) : COMObject(handle) { }
 
     void InitializeFromMemory(void* data, std::size_t size) {
-        HRESULT com_error = GetHandle()->InitializeFromMemory(
+        HRESULT com_error = Inner()->InitializeFromMemory(
             reinterpret_cast<BYTE*>(data),
             static_cast<DWORD>(size));
         ZAF_THROW_IF_COM_ERROR(com_error);
     }
 
     void InitializeFromStream(const zaf::Stream& stream) {
-        HRESULT com_error = GetHandle()->InitializeFromIStream(stream.GetHandle());
+        HRESULT com_error = Inner()->InitializeFromIStream(stream.Inner());
         ZAF_THROW_IF_COM_ERROR(com_error);
     }
 };

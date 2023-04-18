@@ -62,14 +62,14 @@ public:
     static ImagingFactory& Instance();
 
 public:
-    IWICImagingFactory* GetHandle() const {
-        return static_cast<IWICImagingFactory*>(__super::GetHandle());
+    IWICImagingFactory* Inner() const {
+        return static_cast<IWICImagingFactory*>(__super::Inner());
     }
 
 
     wic::Stream CreateStream() {
         IWICStream* handle{};
-        HRESULT com_error = GetHandle()->CreateStream(&handle);
+        HRESULT com_error = Inner()->CreateStream(&handle);
         ZAF_THROW_IF_COM_ERROR(com_error);
         return wic::Stream{ handle };
     }
@@ -105,7 +105,7 @@ public:
         const BitmapCreateFromHBITMAPOptions& options) {
 
         IWICBitmap* handle{};
-        HRESULT com_error = GetHandle()->CreateBitmapFromHBITMAP(
+        HRESULT com_error = Inner()->CreateBitmapFromHBITMAP(
             bitmap,
             options.palette,
             static_cast<WICBitmapAlphaChannelOption>(options.alpha_channel_option),
@@ -121,7 +121,7 @@ public:
 
     BitmapScaler CreateBitmapScaler() {
         IWICBitmapScaler* handle{};
-        HRESULT com_error = GetHandle()->CreateBitmapScaler(&handle);
+        HRESULT com_error = Inner()->CreateBitmapScaler(&handle);
         ZAF_THROW_IF_COM_ERROR(com_error);
         return wic::BitmapScaler{ handle };
     }
@@ -129,7 +129,7 @@ public:
 
     Palette CreatePalette() {
         IWICPalette* handle{};
-        HRESULT com_error = GetHandle()->CreatePalette(&handle);
+        HRESULT com_error = Inner()->CreatePalette(&handle);
         ZAF_THROW_IF_COM_ERROR(com_error);
         return Palette{ handle };
     }

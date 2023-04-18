@@ -12,7 +12,7 @@ public:
     explicit Layer(ID2D1Layer* handle) : COMObject(handle) { }
 
     const Size GetSize() const {
-        return Size::FromD2D1SIZEF(GetHandle()->GetSize());
+        return Size::FromD2D1SIZEF(Inner()->GetSize());
     }
 };
 

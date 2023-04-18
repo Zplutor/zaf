@@ -13,8 +13,8 @@ public:
 
     MetadataQueryReader GetMetadataQuerier() const;
 
-    IWICBitmapFrameDecode* GetHandle() const {
-        return static_cast<IWICBitmapFrameDecode*>(__super::GetHandle());
+    IWICBitmapFrameDecode* Inner() const {
+        return static_cast<IWICBitmapFrameDecode*>(__super::Inner());
     }
 };
 

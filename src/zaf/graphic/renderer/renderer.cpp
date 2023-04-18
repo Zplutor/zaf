@@ -27,7 +27,7 @@ BitmapRenderer Renderer::CreateCompatibleRenderer(const CreateCompatibleRenderer
     }
 
     ID2D1BitmapRenderTarget* handle = nullptr;
-    HRESULT com_error = GetHandle()->CreateCompatibleRenderTarget(
+    HRESULT com_error = Inner()->CreateCompatibleRenderTarget(
         d2d_desired_size_pointer, 
         d2d_desired_pixel_size_pointer,
         nullptr,
@@ -42,7 +42,7 @@ BitmapRenderer Renderer::CreateCompatibleRenderer(const CreateCompatibleRenderer
 SolidColorBrush Renderer::CreateSolidColorBrush(const Color& color) {
 
     ID2D1SolidColorBrush* brush_handle = nullptr;
-    HRESULT result = GetHandle()->CreateSolidColorBrush(color.ToD2D1COLORF(), &brush_handle);
+    HRESULT result = Inner()->CreateSolidColorBrush(color.ToD2D1COLORF(), &brush_handle);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return SolidColorBrush(brush_handle);
@@ -52,7 +52,7 @@ SolidColorBrush Renderer::CreateSolidColorBrush(const Color& color) {
 BitmapBrush Renderer::CreateBitmapBrush(const RenderBitmap& bitmap) {
 
     ID2D1BitmapBrush* handle = nullptr;
-    HRESULT result = GetHandle()->CreateBitmapBrush(bitmap.GetHandle(), &handle);
+    HRESULT result = Inner()->CreateBitmapBrush(bitmap.Inner(), &handle);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return BitmapBrush(handle);
@@ -64,10 +64,10 @@ Layer Renderer::InnerCreateLayer(const Size* size) {
     ID2D1Layer* layer_handle = nullptr;
     HRESULT result = 0;
     if (size != nullptr) {
-        GetHandle()->CreateLayer(size->ToD2D1SIZEF(), &layer_handle);
+        Inner()->CreateLayer(size->ToD2D1SIZEF(), &layer_handle);
     }
     else {
-        GetHandle()->CreateLayer(&layer_handle);
+        Inner()->CreateLayer(&layer_handle);
     }
 
     ZAF_THROW_IF_COM_ERROR(result);
@@ -78,7 +78,7 @@ Layer Renderer::InnerCreateLayer(const Size* size) {
 RenderBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& properties) {
 
     ID2D1Bitmap* handle = nullptr;
-    HRESULT com_error = GetHandle()->CreateBitmap(size.ToD2D1SIZEU(), properties.Inner(), &handle);
+    HRESULT com_error = Inner()->CreateBitmap(size.ToD2D1SIZEU(), properties.Inner(), &handle);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
     return RenderBitmap(handle);
@@ -87,7 +87,7 @@ RenderBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& pr
 
 RenderBitmap Renderer::CreateBitmap(const wic::BitmapSource& image_source) {
 
-    auto wic_image_factory_handle = wic::ImagingFactory::Instance().GetHandle();
+    auto wic_image_factory_handle = wic::ImagingFactory::Instance().Inner();
 
     CComPtr<IWICFormatConverter> format_converter;
     HRESULT result = wic_image_factory_handle->CreateFormatConverter(&format_converter);
@@ -95,7 +95,7 @@ RenderBitmap Renderer::CreateBitmap(const wic::BitmapSource& image_source) {
     ZAF_THROW_IF_COM_ERROR(result);
 
     result = format_converter->Initialize(
-        image_source.GetHandle(),
+        image_source.Inner(),
         GUID_WICPixelFormat32bppPBGRA,
         WICBitmapDitherTypeNone,
         nullptr,
@@ -105,7 +105,7 @@ RenderBitmap Renderer::CreateBitmap(const wic::BitmapSource& image_source) {
     ZAF_THROW_IF_COM_ERROR(result);
 
     ID2D1Bitmap* handle = nullptr;
-    result = GetHandle()->CreateBitmapFromWicBitmap(format_converter, &handle);
+    result = Inner()->CreateBitmapFromWicBitmap(format_converter, &handle);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return RenderBitmap(handle);
@@ -124,8 +124,8 @@ void Renderer::DrawBitmap(
         d2d1_rect = bitmap_rect->ToD2D1RECTF();
     }
 
-    GetHandle()->DrawBitmap(
-        bitmap.GetHandle(),
+    Inner()->DrawBitmap(
+        bitmap.Inner(),
         destination_rect.ToD2D1RECTF(),
         opacity,
         static_cast<D2D1_BITMAP_INTERPOLATION_MODE>(interpolation_mode),
@@ -134,7 +134,7 @@ void Renderer::DrawBitmap(
 
 
 void Renderer::PushLayer(const Layer& layer, const LayerParameters& parameters) {
-    GetHandle()->PushLayer(parameters.Inner(), layer.GetHandle());
+    Inner()->PushLayer(parameters.Inner(), layer.Inner());
 }
 
 

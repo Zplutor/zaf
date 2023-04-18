@@ -34,7 +34,7 @@ public:
      Gets the number of font families in the collection.
      */
     std::size_t GetFontFamilyCount() const {
-        return GetHandle()->GetFontFamilyCount();
+        return Inner()->GetFontFamilyCount();
     }
 
     /**

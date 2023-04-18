@@ -25,7 +25,7 @@ public:
      Gets the number of language/string pairs.
      */
     std::size_t GetCount() const {
-        return GetHandle()->GetCount();
+        return Inner()->GetCount();
     }
 
     /**

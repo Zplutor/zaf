@@ -35,7 +35,7 @@ private:
         ValueType value{ };
 
         PROPVARIANT variant = { 0 };
-        HRESULT result = GetHandle()->GetMetadataByName(query_expression.c_str(), &variant);
+        HRESULT result = Inner()->GetMetadataByName(query_expression.c_str(), &variant);
         ZAF_THROW_IF_COM_ERROR(result);
 
         result = get_value(variant, value);

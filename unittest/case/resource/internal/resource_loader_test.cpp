@@ -132,7 +132,7 @@ TEST(ResourceLoaderTest, LoadNoneImage) {
 
     ResourceLoader loader;
     auto stream = loader.Load(L"", L"resource_loader_test/text.txt", 192.f);
-    ASSERT_FALSE(stream.IsNull());
+    ASSERT_TRUE(stream.IsValid());
 }
 
 

@@ -11,8 +11,8 @@ public:
 
     RenderBitmap GetBitmap() const;
 
-    ID2D1BitmapRenderTarget* GetHandle() const {
-        return static_cast<ID2D1BitmapRenderTarget*>(__super::GetHandle());
+    ID2D1BitmapRenderTarget* Inner() const {
+        return static_cast<ID2D1BitmapRenderTarget*>(__super::Inner());
     }
 };
 

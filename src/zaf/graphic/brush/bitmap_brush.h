@@ -13,24 +13,24 @@ public:
 
     const RenderBitmap GetBitmap() const {
         ID2D1Bitmap* handle = nullptr;
-        GetHandle()->GetBitmap(&handle);
+        Inner()->GetBitmap(&handle);
         return RenderBitmap(handle);
     }
 
     void SetBitmap(const RenderBitmap& bitmap) {
-        GetHandle()->SetBitmap(bitmap.GetHandle());
+        Inner()->SetBitmap(bitmap.Inner());
     }
 
     InterpolationMode GetInterpolationMode() const {
-        return static_cast<InterpolationMode>(GetHandle()->GetInterpolationMode());
+        return static_cast<InterpolationMode>(Inner()->GetInterpolationMode());
     }
 
     void SetInterpolationMode(InterpolationMode mode) {
-        GetHandle()->SetInterpolationMode(static_cast<D2D1_BITMAP_INTERPOLATION_MODE>(mode));
+        Inner()->SetInterpolationMode(static_cast<D2D1_BITMAP_INTERPOLATION_MODE>(mode));
     }
 
-    ID2D1BitmapBrush* GetHandle() const {
-        return static_cast<ID2D1BitmapBrush*>(__super::GetHandle());
+    ID2D1BitmapBrush* Inner() const {
+        return static_cast<ID2D1BitmapBrush*>(__super::Inner());
     }
 };
 

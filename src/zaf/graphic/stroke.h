@@ -36,39 +36,39 @@ public:
     explicit Stroke(ID2D1StrokeStyle* handle) : COMObject(handle) { }
 
     CapStyle GetStartCapStyle() const {
-        return static_cast<CapStyle>(GetHandle()->GetStartCap());
+        return static_cast<CapStyle>(Inner()->GetStartCap());
     }
 
     CapStyle GetEndCapStyle() const {
-        return static_cast<CapStyle>(GetHandle()->GetEndCap());
+        return static_cast<CapStyle>(Inner()->GetEndCap());
     }
 
     CapStyle GetDashCapStyle() const {
-        return static_cast<CapStyle>(GetHandle()->GetDashCap());
+        return static_cast<CapStyle>(Inner()->GetDashCap());
     }
 
     LineJoinStyle GetLineJoinStyle() const {
-        return static_cast<LineJoinStyle>(GetHandle()->GetLineJoin());
+        return static_cast<LineJoinStyle>(Inner()->GetLineJoin());
     }
 
     float GetMiterLimit() const {
-        return GetHandle()->GetMiterLimit();
+        return Inner()->GetMiterLimit();
     }
 
     DashStyle GetDashStyle() const {
-        return static_cast<DashStyle>(GetHandle()->GetDashStyle());
+        return static_cast<DashStyle>(Inner()->GetDashStyle());
     }
 
     float GetDashOffset() const {
-        return GetHandle()->GetDashOffset();
+        return Inner()->GetDashOffset();
     }
 
     std::vector<float> GetDashPattern() const {
 
-        auto count = GetHandle()->GetDashesCount();
+        auto count = Inner()->GetDashesCount();
 
         std::vector<float> dash_pattern(count);
-        GetHandle()->GetDashes(dash_pattern.data(), count);
+        Inner()->GetDashes(dash_pattern.data(), count);
         return dash_pattern;
     }
 };

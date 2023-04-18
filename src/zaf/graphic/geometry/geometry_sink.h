@@ -135,7 +135,7 @@ public:
      state.
      */
     void SetFillMode(FillMode fill_mode) {
-        GetHandle()->SetFillMode(static_cast<D2D1_FILL_MODE>(fill_mode));
+        Inner()->SetFillMode(static_cast<D2D1_FILL_MODE>(fill_mode));
     }
 
     /**
@@ -146,7 +146,7 @@ public:
      is called again and a different set of segment flags is specified.
      */
     void SetSegmentFlag(SegmentFlag flag) {
-        GetHandle()->SetSegmentFlags(static_cast<D2D1_PATH_SEGMENT>(flag));
+        Inner()->SetSegmentFlags(static_cast<D2D1_PATH_SEGMENT>(flag));
     }
 
     /**
@@ -172,7 +172,7 @@ public:
      the Close method is called.
      */
     void EndFigure(EndFigureOption option) {
-        GetHandle()->EndFigure(static_cast<D2D1_FIGURE_END>(option));
+        Inner()->EndFigure(static_cast<D2D1_FIGURE_END>(option));
     }
 
     /**
@@ -210,7 +210,7 @@ public:
      call for each call to BeginFigure.
      */
     void Close() {
-        HRESULT result = GetHandle()->Close();
+        HRESULT result = Inner()->Close();
         ZAF_THROW_IF_COM_ERROR(result);
     }
 

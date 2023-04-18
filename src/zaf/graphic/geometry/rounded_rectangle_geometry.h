@@ -12,12 +12,12 @@ public:
 
     RoundedRect GetRoundedRect() const {
         D2D1_ROUNDED_RECT rounded_rect = { 0 };
-        GetHandle()->GetRoundedRect(&rounded_rect);
+        Inner()->GetRoundedRect(&rounded_rect);
         return RoundedRect::FromD2D1ROUNDEDRECT(rounded_rect);
     }
 
-    ID2D1RoundedRectangleGeometry* GetHandle() const {
-        return static_cast<ID2D1RoundedRectangleGeometry*>(__super::GetHandle());
+    ID2D1RoundedRectangleGeometry* Inner() const {
+        return static_cast<ID2D1RoundedRectangleGeometry*>(__super::Inner());
     }
 };
 

@@ -6,7 +6,7 @@ namespace zaf::wic {
 
 void Palette::InitializeFromCustomColors(const std::uint32_t* colors, std::size_t color_count) {
 
-    HRESULT com_error = GetHandle()->InitializeCustom(
+    HRESULT com_error = Inner()->InitializeCustom(
         const_cast<WICColor*>(colors), 
         static_cast<UINT>(color_count));
     ZAF_THROW_IF_COM_ERROR(com_error);
@@ -15,7 +15,7 @@ void Palette::InitializeFromCustomColors(const std::uint32_t* colors, std::size_
 
 void Palette::InitializeFromPredefinedType(Type type, bool add_transparent_color) {
 
-    HRESULT com_error = GetHandle()->InitializePredefined(
+    HRESULT com_error = Inner()->InitializePredefined(
         static_cast<WICBitmapPaletteType>(type),
         add_transparent_color);
 
@@ -25,7 +25,7 @@ void Palette::InitializeFromPredefinedType(Type type, bool add_transparent_color
 
 void Palette::InitializeFromPalette(const Palette& palette) {
 
-    HRESULT com_error = GetHandle()->InitializeFromPalette(palette.GetHandle());
+    HRESULT com_error = Inner()->InitializeFromPalette(palette.Inner());
     ZAF_THROW_IF_COM_ERROR(com_error);
 }
 
@@ -35,8 +35,8 @@ void Palette::InitializeFromImage(
     std::size_t color_count,
     bool add_transparent_color) {
 
-    HRESULT com_error = GetHandle()->InitializeFromBitmap(
-        image.GetHandle(),
+    HRESULT com_error = Inner()->InitializeFromBitmap(
+        image.Inner(),
         static_cast<UINT>(color_count),
         add_transparent_color);
 
@@ -47,7 +47,7 @@ void Palette::InitializeFromImage(
 std::size_t Palette::GetColorCount() const {
 
     UINT count = 0;
-    HRESULT com_error = GetHandle()->GetColorCount(&count);
+    HRESULT com_error = Inner()->GetColorCount(&count);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
     return count;
@@ -57,7 +57,7 @@ std::size_t Palette::GetColorCount() const {
 void Palette::GetColors(std::size_t count, std::uint32_t* colors, std::size_t& actual_count) const {
 
     UINT temp_actual_count = 0;
-    HRESULT com_error = GetHandle()->GetColors(static_cast<UINT>(count), colors, &temp_actual_count);
+    HRESULT com_error = Inner()->GetColors(static_cast<UINT>(count), colors, &temp_actual_count);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
     actual_count = temp_actual_count;
@@ -67,7 +67,7 @@ void Palette::GetColors(std::size_t count, std::uint32_t* colors, std::size_t& a
 Palette::Type Palette::GetType() const {
 
     WICBitmapPaletteType type = WICBitmapPaletteTypeCustom;
-    HRESULT com_error = GetHandle()->GetType(&type);
+    HRESULT com_error = Inner()->GetType(&type);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
     return static_cast<Type>(type);
@@ -77,7 +77,7 @@ Palette::Type Palette::GetType() const {
 bool Palette::HasAlpha() const {
 
     BOOL has_alpha = FALSE;
-    HRESULT com_error = GetHandle()->HasAlpha(&has_alpha);
+    HRESULT com_error = Inner()->HasAlpha(&has_alpha);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
     return has_alpha != 0;
@@ -87,7 +87,7 @@ bool Palette::HasAlpha() const {
 bool Palette::IsBlackWhite() const {
 
     BOOL is_black_white = FALSE;
-    HRESULT com_error = GetHandle()->IsBlackWhite(&is_black_white);
+    HRESULT com_error = Inner()->IsBlackWhite(&is_black_white);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
     return is_black_white != 0;
@@ -97,7 +97,7 @@ bool Palette::IsBlackWhite() const {
 bool Palette::IsGrayscale() const {
 
     BOOL is_grayscale = FALSE;
-    HRESULT com_error = GetHandle()->IsGrayscale(&is_grayscale);
+    HRESULT com_error = Inner()->IsGrayscale(&is_grayscale);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
     return is_grayscale != 0;

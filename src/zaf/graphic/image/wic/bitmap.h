@@ -36,8 +36,8 @@ public:
 
     Lock GetLock(const Rect& rect, LockFlag flags);
 
-    IWICBitmap* GetHandle() const {
-        return static_cast<IWICBitmap*>(__super::GetHandle());
+    IWICBitmap* Inner() const {
+        return static_cast<IWICBitmap*>(__super::Inner());
     }
 };
 

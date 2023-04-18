@@ -1,81 +1,98 @@
 #pragma once
 
+#include <unknwn.h>
+#include <type_traits>
+
 namespace zaf {
 
 template<typename T>
 class COMObject {
 public:
-    COMObject() : handle_(nullptr) { 
+    static_assert(std::is_base_of_v<IUnknown, T>);
+
+    COMObject() : inner_(nullptr) { 
 
     }
 
-    explicit COMObject(T* handle) : handle_(handle) {
-    
-    }
+    explicit COMObject(T* inner) : inner_(inner) {
 
-    COMObject(const COMObject& other) : handle_(other.handle_) {
-        if (handle_ != nullptr) {
-            handle_->AddRef();
-        }
-    }
-
-    COMObject(COMObject&& other) : handle_(other.handle_) {
-        other.handle_ = nullptr;
     }
 
     virtual ~COMObject() {
         Reset();
     }
 
+    COMObject(const COMObject& other) : inner_(other.inner_) {
+        if (inner_) {
+            inner_->AddRef();
+        }
+    }
+
+    COMObject(COMObject&& other) : inner_(other.inner_) {
+        other.inner_ = nullptr;
+    }
+
     COMObject& operator=(const COMObject& other) {
         Reset();
-        handle_ = other.handle_;
-        if (handle_ != nullptr) {
-            handle_->AddRef();
+        inner_ = other.inner_;
+        if (inner_) {
+            inner_->AddRef();
         }
         return *this;
     }
 
     COMObject& operator=(COMObject&& other) {
         Reset();
-        handle_ = other.handle_;
-        other.handle_ = nullptr;
+        inner_ = other.inner_;
+        other.inner_ = nullptr;
         return *this;
     }
 
     bool operator==(std::nullptr_t null) const {
-        return IsNull();
+        return !IsValid();
     }
 
     bool operator!=(std::nullptr_t null) const {
-        return ! IsNull();
+        return IsValid();
     }
 
     bool operator==(const COMObject& other) const {
-        return handle_ == other.handle_;
+        return inner_ == other.inner_;
     }
 
     bool operator!=(const COMObject& other) const {
-        return handle_ != other.handle_;
+        return inner_ != other.inner_;
+    }
+
+    explicit operator bool() const {
+        return IsValid();
+    }
+
+    T* operator->() const {
+        return inner_;
     }
 
     void Reset() {
-        if (handle_ != nullptr) {
-            handle_->Release();
-            handle_ = nullptr;
+        Reset(nullptr);
+    }
+
+    void Reset(T* new_inner) {
+        if (inner_) {
+            inner_->Release();
         }
+        inner_ = new_inner;
     }
 
-    bool IsNull() const {
-        return handle_ == nullptr;
+    bool IsValid() const {
+        return !!inner_;
     }
 
-    T* GetHandle() const {
-        return handle_;
+    T* Inner() const {
+        return inner_;
     }
 
 private:
-    T* handle_;
+    T* inner_;
 };
 
 }

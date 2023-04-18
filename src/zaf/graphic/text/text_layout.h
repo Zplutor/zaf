@@ -33,14 +33,14 @@ public:
      Get the layout maximum width.
      */
     float GetMaxWidth() const {
-        return GetHandle()->GetMaxWidth();
+        return Inner()->GetMaxWidth();
     }
 
     /**
      Set the layout maximum width.
      */
     void SetMaxWidth(float max_width) {
-        HRESULT result = GetHandle()->SetMaxWidth(max_width);
+        HRESULT result = Inner()->SetMaxWidth(max_width);
         ZAF_THROW_IF_COM_ERROR(result);
     }
 
@@ -48,14 +48,14 @@ public:
      Get the layout maximum height.
      */
     float GetMaxHeight() const {
-        return GetHandle()->GetMaxHeight();
+        return Inner()->GetMaxHeight();
     }
 
     /**
      Set the layout maximum height.
      */
     void SetMaxHeight(float max_height) {
-        HRESULT result = GetHandle()->SetMaxHeight(max_height);
+        HRESULT result = Inner()->SetMaxHeight(max_height);
         ZAF_THROW_IF_COM_ERROR(result);
     }
 
@@ -82,7 +82,7 @@ public:
          Text range to which this change applies.
      */
     void SetFontFamilyName(const std::wstring& font_family_name, const TextRange& range) {
-        HRESULT result = GetHandle()->SetFontFamilyName(font_family_name.c_str(), range.ToDWRITETEXTRANGE());
+        HRESULT result = Inner()->SetFontFamilyName(font_family_name.c_str(), range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }
 
@@ -109,7 +109,7 @@ public:
          Text range to which this change applies.
      */
     void SetFontSize(float size, const TextRange& range) {
-        HRESULT result = GetHandle()->SetFontSize(size, range.ToDWRITETEXTRANGE());
+        HRESULT result = Inner()->SetFontSize(size, range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }
 
@@ -136,7 +136,7 @@ public:
          The text range to which this change applies.
      */
     void SetFontStyle(FontStyle font_style, const TextRange& range) {
-        HRESULT result = GetHandle()->SetFontStyle(static_cast<DWRITE_FONT_STYLE>(font_style), range.ToDWRITETEXTRANGE());
+        HRESULT result = Inner()->SetFontStyle(static_cast<DWRITE_FONT_STYLE>(font_style), range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }
 
@@ -163,7 +163,7 @@ public:
          Text range to which this change applies.
      */
     void SetFontWeight(int weight, const TextRange& range) {
-        HRESULT result = GetHandle()->SetFontWeight(static_cast<DWRITE_FONT_WEIGHT>(weight), range.ToDWRITETEXTRANGE());
+        HRESULT result = Inner()->SetFontWeight(static_cast<DWRITE_FONT_WEIGHT>(weight), range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }
 
@@ -190,7 +190,7 @@ public:
          Text range to which this change applies.
      */
     void SetHasUnderline(bool has_underline, const TextRange& range) {
-        HRESULT result = GetHandle()->SetUnderline(has_underline ? TRUE : FALSE, range.ToDWRITETEXTRANGE());
+        HRESULT result = Inner()->SetUnderline(has_underline ? TRUE : FALSE, range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }
 
@@ -217,7 +217,7 @@ public:
          Text range to which this change applies.
      */
     void SetBrush(const Brush& brush, const TextRange& range) {
-        HRESULT result = GetHandle()->SetDrawingEffect(brush.GetHandle(), range.ToDWRITETEXTRANGE());
+        HRESULT result = Inner()->SetDrawingEffect(brush.Inner(), range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }
 
@@ -234,8 +234,8 @@ public:
      */
     TextMetrics GetMetrics() const;
 
-    IDWriteTextLayout* GetHandle() const {
-        return static_cast<IDWriteTextLayout*>(__super::GetHandle());
+    IDWriteTextLayout* Inner() const {
+        return static_cast<IDWriteTextLayout*>(__super::Inner());
     }
 };
 

@@ -33,7 +33,7 @@ public:
 
 private:
     ID2D1RectangleGeometry* GetActualHandle() const {
-        return static_cast<ID2D1RectangleGeometry*>(GetHandle());
+        return static_cast<ID2D1RectangleGeometry*>(Inner());
     }
 };
 

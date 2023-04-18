@@ -19,14 +19,14 @@ public:
      Get opacity.
      */
     float GetOpacity() const {
-        return GetHandle()->GetOpacity();
+        return Inner()->GetOpacity();
     }
 
     /**
      Set opacity.
      */
     void SetOpacity(float opacity) {
-        GetHandle()->SetOpacity(opacity);
+        Inner()->SetOpacity(opacity);
     }
 };
 

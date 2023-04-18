@@ -19,14 +19,14 @@ public:
      Get the size, in device-independent pixels (DIPs), of the bitmap.
      */
     Size GetSize() const {
-        return Size::FromD2D1SIZEF(GetHandle()->GetSize());
+        return Size::FromD2D1SIZEF(Inner()->GetSize());
     }
 
     /**
      Get the size, in device-dependent units (pixels), of the bitmap.
      */
     Size GetPixelSize() const {
-        return Size::FromD2D1SIZEU(GetHandle()->GetPixelSize());
+        return Size::FromD2D1SIZEU(Inner()->GetPixelSize());
     }
 
     /**
@@ -38,16 +38,16 @@ public:
      */
     std::pair<float, float> GetDpi() const {
         std::pair<float, float> pair;
-        GetHandle()->GetDpi(&pair.first, &pair.second);
+        Inner()->GetDpi(&pair.first, &pair.second);
         return pair;
     }
 
     PixelProperties GetPixelProperties() const {
-        return PixelProperties{ GetHandle()->GetPixelFormat() };
+        return PixelProperties{ Inner()->GetPixelFormat() };
     }
 
     void CopyFromBitmap(const RenderBitmap& bitmap) {
-        HRESULT com_error = GetHandle()->CopyFromBitmap(nullptr, bitmap.GetHandle(), nullptr);
+        HRESULT com_error = Inner()->CopyFromBitmap(nullptr, bitmap.Inner(), nullptr);
         ZAF_THROW_IF_COM_ERROR(com_error);
     }
 

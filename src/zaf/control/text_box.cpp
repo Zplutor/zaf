@@ -195,7 +195,7 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     auto update_rect = FromDIPs(dirty_rect, window->GetDPI()).ToRECT();
 
     text_service_->TxDrawD2D(
-        canvas.GetRenderer().GetHandle(),
+        canvas.GetRenderer().Inner(),
         reinterpret_cast<const RECTL*>(&bounds_rect),
         &update_rect,
         TXTVIEW_ACTIVE);
@@ -1226,7 +1226,7 @@ void TextBox::ScrollValuesChange(bool is_horizontal) {
 
 void TextBox::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) {
 
-    ZAF_EXPECT(!object.IsNull());
+    ZAF_EXPECT(object.IsValid());
 
     CComPtr<IRichEditOle> rich_edit_ole{};
     HRESULT hresult = text_service_->TxSendMessage(
@@ -1243,15 +1243,15 @@ void TextBox::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) {
 
     REOBJECT object_info{};
     object_info.cbStruct = sizeof(object_info);
-    object_info.clsid = object.GetHandle()->ClassID();
-    object_info.poleobj = object.GetHandle();
+    object_info.clsid = object.Inner()->ClassID();
+    object_info.poleobj = object.Inner();
     object_info.polesite = client_site;
     object_info.pstg = nullptr;
     object_info.cp = REO_CP_SELECTION;
     object_info.dvaspect = DVASPECT_CONTENT;
     object_info.dwFlags = REO_BELOWBASELINE | REO_OWNERDRAWSELECT;
 
-    auto object_size = FromDIPs(object.GetHandle()->Size(), this->GetDPI()).ToSIZEL();
+    auto object_size = FromDIPs(object.Inner()->Size(), this->GetDPI()).ToSIZEL();
     AtlPixelToHiMetric(&object_size, &object_info.sizel);
 
     hresult = rich_edit_ole->InsertObject(&object_info);

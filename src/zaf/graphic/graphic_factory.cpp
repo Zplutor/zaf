@@ -71,7 +71,7 @@ Renderer GraphicFactory::CreateBitmapRenderer(
 
     ID2D1RenderTarget* handle = nullptr;
     HRESULT com_error = d2d_factory_handle_->CreateWicBitmapRenderTarget(
-        image_source.GetHandle(),
+        image_source.Inner(),
         properties.Inner(),
         &handle);
 
@@ -129,7 +129,7 @@ TransformedGeometry GraphicFactory::CreateTransformedGeometry(
 
     ID2D1TransformedGeometry* handle = nullptr;
     HRESULT result = d2d_factory_handle_->CreateTransformedGeometry(
-        geometry.GetHandle(),
+        geometry.Inner(),
         transform_matrix.ToD2D1MATRIX3X2F(),
         &handle);
 
@@ -158,7 +158,7 @@ TextFormat GraphicFactory::CreateTextFormat(const TextFormatProperties& properti
     IDWriteTextFormat* handle = nullptr;
     HRESULT result = dwrite_factory_handle_->CreateTextFormat(
         properties.font_family_name.c_str(),
-        properties.font_collection == nullptr ? nullptr : properties.font_collection->GetHandle(),
+        properties.font_collection == nullptr ? nullptr : properties.font_collection->Inner(),
         static_cast<DWRITE_FONT_WEIGHT>(properties.font_weight),
         DWRITE_FONT_STYLE_NORMAL,
         DWRITE_FONT_STRETCH_NORMAL,
@@ -178,7 +178,7 @@ TextLayout GraphicFactory::CreateTextLayout(const TextLayoutProperties& properti
     HRESULT result = dwrite_factory_handle_->CreateTextLayout(
         properties.text.c_str(), 
         static_cast<UINT32>(properties.text.length()),
-        properties.text_format.GetHandle(), 
+        properties.text_format.Inner(), 
         properties.width, 
         properties.height,
         &handle
@@ -203,7 +203,7 @@ TextInlineObject GraphicFactory::CreateCreateEllipsisTrimmingSign(
     const TextFormat& text_format) {
 
     IDWriteInlineObject* handle = nullptr;
-    HRESULT hresult = dwrite_factory_handle_->CreateEllipsisTrimmingSign(text_format.GetHandle(), &handle);
+    HRESULT hresult = dwrite_factory_handle_->CreateEllipsisTrimmingSign(text_format.Inner(), &handle);
 
     ZAF_THROW_IF_COM_ERROR(hresult);
     return TextInlineObject(handle);

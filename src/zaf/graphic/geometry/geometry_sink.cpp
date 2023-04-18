@@ -11,7 +11,7 @@ void GeometrySink::BeginFigure(const Point& start_position, BeginFigureOption op
         coordinate_origin_,
         aligned_coordinate_origin_);
 
-    GetHandle()->BeginFigure(
+    Inner()->BeginFigure(
         aligned_start_position.ToD2D1POINT2F(),
         static_cast<D2D1_FIGURE_BEGIN>(option));
 }
@@ -25,7 +25,7 @@ void GeometrySink::AddLine(const Point& end_point) {
         coordinate_origin_, 
         aligned_coordinate_origin_);
 
-    GetHandle()->AddLine(aligned_end_point.ToD2D1POINT2F());
+    Inner()->AddLine(aligned_end_point.ToD2D1POINT2F());
 }
 
 
@@ -45,12 +45,12 @@ void GeometrySink::AddLines(const std::vector<Point>& points) {
         d2d_points.push_back(aligned_point.ToD2D1POINT2F());
     }
 
-    GetHandle()->AddLines(d2d_points.data(), static_cast<UINT32>(d2d_points.size()));
+    Inner()->AddLines(d2d_points.data(), static_cast<UINT32>(d2d_points.size()));
 }
 
 
 void GeometrySink::AddArc(const ArcSegment& arc_segment) {
-    GetHandle()->AddArc(arc_segment.Inner());
+    Inner()->AddArc(arc_segment.Inner());
 }
 
 }
