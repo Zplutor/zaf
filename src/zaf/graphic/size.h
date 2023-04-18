@@ -63,6 +63,26 @@ public:
     }
 
     /**
+    Convert to SIZE structure.
+    */
+    SIZE ToSIZE() const {
+
+        SIZE result;
+        result.cx = static_cast<LONG>(width);
+        result.cy = static_cast<LONG>(height);
+        return result;
+    }
+
+    /**
+    Convert to SIZEL structure.
+    */
+    SIZEL ToSIZEL() const {
+
+        //SIZEL is the same as SIZE.
+        return ToSIZE();
+    }
+
+    /**
      Convert to D2D1_SIZE_F structure.
      */
     D2D1_SIZE_F ToD2D1SIZEF() const {

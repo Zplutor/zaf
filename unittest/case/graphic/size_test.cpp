@@ -25,3 +25,21 @@ TEST(SizeTest, ToString) {
     zaf::Size size{ 132, 444 };
     ASSERT_EQ(size.ToString(), L"132,444");
 }
+
+
+TEST(SizeTest, ToSIZE) {
+
+    zaf::Size size{ 98, 89 };
+    SIZE size_structure = size.ToSIZE();
+    ASSERT_EQ(size_structure.cx, 98);
+    ASSERT_EQ(size_structure.cy, 89);
+}
+
+
+TEST(SizeTest, ToSIZEL) {
+
+    zaf::Size size{ 76, 37 };
+    SIZEL sizel = size.ToSIZEL();
+    ASSERT_EQ(sizel.cx, 76);
+    ASSERT_EQ(sizel.cy, 37);
+}

@@ -101,7 +101,7 @@ HRESULT EmbeddedObject::IsUpToDate(void) {
 
 
 HRESULT EmbeddedObject::GetUserClassID(CLSID* pClsid) {
-    *pClsid = GetClassID();
+    *pClsid = this->ClassID();
     return S_OK;
 }
 

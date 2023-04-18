@@ -1,9 +1,13 @@
 #include <zaf/control/text_box.h>
+#include <atlwin.h>
+#include <richole.h>
+#include <tom.h>
 #include <cassert>
 #include <zaf/base/error/system_error.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
+#include <zaf/control/rich_edit/embedded_object.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
@@ -24,6 +28,13 @@ EXTERN_C const IID IID_ITextHost = {
     0xd26e,
     0x11ce,
     { 0xa8, 0x9e, 0x00, 0xaa, 0x00, 0x6c, 0xad, 0xc5 }
+};
+
+EXTERN_C const IID IID_ITextDocument = {
+    0x8cc497c0,
+    0xa1df,
+    0x11ce,
+    { 0x80, 0x98, 0x00, 0xaa, 0x00, 0x47, 0xbe, 0x5d }
 };
 
 namespace zaf {
@@ -189,6 +200,8 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         &update_rect,
         TXTVIEW_ACTIVE);
 
+    PaintEmbeddedObjects(canvas, dirty_rect);
+
     if (caret_) {
         caret_->Paint(canvas, dirty_rect);
     }
@@ -207,6 +220,83 @@ void TextBox::ReviseTextColor() {
 
         if (text_service_ != nullptr) {
             text_service_->OnTxPropertyBitsChange(TXTBIT_CHARFORMATCHANGE, TXTBIT_CHARFORMATCHANGE);
+        }
+    }
+}
+
+
+void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) {
+
+    CComPtr<IRichEditOle> rich_edit_ole{};
+    HRESULT hresult = text_service_->TxSendMessage(
+        EM_GETOLEINTERFACE,
+        0,
+        reinterpret_cast<LPARAM>(&rich_edit_ole),
+        nullptr);
+
+    if (FAILED(hresult)) {
+        return;
+    }
+
+    LONG object_count = rich_edit_ole->GetObjectCount();
+    if (object_count <= 0) {
+        return;
+    }
+
+    CComPtr<ITextDocument> text_document;
+    hresult = rich_edit_ole->QueryInterface(
+        IID_ITextDocument,
+        reinterpret_cast<void**>(&text_document));
+
+    if (FAILED(hresult)) {
+        return;
+    }
+
+    for (LONG index = 0; index < object_count; ++index) {
+
+        REOBJECT object_info{};
+        object_info.cbStruct = sizeof(object_info);
+        hresult = rich_edit_ole->GetObject(index, &object_info, REO_GETOBJ_NO_INTERFACES);
+        if (FAILED(hresult)) {
+            continue;
+        }
+
+        CComPtr<ITextRange> text_range;
+        hresult = text_document->Range(object_info.cp, object_info.cp, &text_range);
+        if (FAILED(hresult)) {
+            continue;
+        }
+
+        CComPtr<IUnknown> unknown;
+        hresult = text_range->GetEmbeddedObject(&unknown);
+        if (FAILED(hresult)) {
+            continue;
+        }
+
+        auto embedded_object = dynamic_cast<rich_edit::EmbeddedObject*>(unknown.p);
+        if (!embedded_object) {
+            continue;
+        }
+
+        long x{};
+        long y{};
+        hresult = text_range->GetPoint(tomClientCoord | TA_TOP | TA_LEFT, &x, &y);
+        if (FAILED(hresult)) {
+            continue;
+        }
+
+        Point object_position{ static_cast<float>(x), static_cast<float>(y) };
+        object_position = ToDIPs(object_position, this->GetDPI());
+        object_position.SubtractOffset(this->GetAbsoluteContentRect().position);
+        zaf::Rect object_rect{ object_position, embedded_object->Size() };
+
+        if (dirty_rect.HasIntersection(object_rect)) {
+
+            canvas.PushTransformLayer(object_rect, object_rect);
+            canvas.BeginPaint();
+            embedded_object->Paint(canvas);
+            canvas.EndPaint();
+            canvas.PopTransformLayer();
         }
     }
 }
@@ -1131,6 +1221,41 @@ void TextBox::ScrollValuesChange(bool is_horizontal) {
         event_info.is_horizontal = is_horizontal;
         event_observer->OnNext(event_info);
     }
+}
+
+
+void TextBox::InsertObject(const ComObject<rich_edit::EmbeddedObject>& object) {
+
+    ZAF_EXPECT(!object.IsNull());
+
+    CComPtr<IRichEditOle> rich_edit_ole{};
+    HRESULT hresult = text_service_->TxSendMessage(
+        EM_GETOLEINTERFACE, 
+        0, 
+        reinterpret_cast<LPARAM>(&rich_edit_ole), 
+        nullptr);
+
+    ZAF_THROW_IF_COM_ERROR(hresult);
+
+    CComPtr<IOleClientSite> client_site;
+    hresult = rich_edit_ole->GetClientSite(&client_site);
+    ZAF_THROW_IF_COM_ERROR(hresult);
+
+    REOBJECT object_info{};
+    object_info.cbStruct = sizeof(object_info);
+    object_info.clsid = object.GetHandle()->ClassID();
+    object_info.poleobj = object.GetHandle();
+    object_info.polesite = client_site;
+    object_info.pstg = nullptr;
+    object_info.cp = REO_CP_SELECTION;
+    object_info.dvaspect = DVASPECT_CONTENT;
+    object_info.dwFlags = REO_BELOWBASELINE | REO_OWNERDRAWSELECT;
+
+    auto object_size = FromDIPs(object.GetHandle()->Size(), this->GetDPI()).ToSIZEL();
+    AtlPixelToHiMetric(&object_size, &object_info.sizel);
+
+    hresult = rich_edit_ole->InsertObject(&object_info);
+    ZAF_THROW_IF_COM_ERROR(hresult);
 }
 
 

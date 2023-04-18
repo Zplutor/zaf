@@ -155,6 +155,7 @@ private:
 private:
     friend class Control;
     friend class Window;
+    friend class TextBox;
 
     void PushTransformLayer(const Rect& rect, const Rect& paintable_rect);
     void PopTransformLayer();

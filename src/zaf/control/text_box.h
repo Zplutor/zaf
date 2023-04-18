@@ -10,6 +10,9 @@
 #include <zaf/graphic/text/text_range.h>
 
 namespace zaf {
+namespace rich_edit {
+class EmbeddedObject;
+}
 
 class Caret;
 class TextBoxSelectionChangeInfo;
@@ -283,6 +286,8 @@ public:
      */
     void ScrollRightToEnd();
 
+    void InsertObject(const ComObject<rich_edit::EmbeddedObject>& object);
+
     ITextServices* GetITextServices() const {
         return text_service_.p;
     }
@@ -370,6 +375,7 @@ private:
 private:
     void InitializeTextService();
     void ReviseTextColor();
+    void PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect);
     float GetPaintContentOffset(HDC hdc);
     void ResetRequiredHeight();
     const zaf::Rect GetAbsoluteContentRect() const;

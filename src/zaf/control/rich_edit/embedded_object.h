@@ -20,7 +20,7 @@ public:
         size_ = size;
     }
 
-    virtual GUID GetClassID() = 0;
+    virtual GUID ClassID() const = 0;
     virtual void Paint(Canvas& canvas) = 0;
 
     //IUnknown interfaces
