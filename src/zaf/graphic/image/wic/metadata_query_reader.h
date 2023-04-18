@@ -14,10 +14,10 @@
 
 namespace zaf::wic {
 
-class MetadataQueryReader : public ComObject<IWICMetadataQueryReader> {
+class MetadataQueryReader : public COMObject<IWICMetadataQueryReader> {
 public:
     MetadataQueryReader() { }
-    explicit MetadataQueryReader(IWICMetadataQueryReader* handle) : ComObject(handle) { }
+    explicit MetadataQueryReader(IWICMetadataQueryReader* handle) : COMObject(handle) { }
 
     template<typename ValueType>
     ValueType QueryMetadata(const std::wstring& query_expression) const {

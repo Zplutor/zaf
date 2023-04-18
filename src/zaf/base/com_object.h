@@ -3,31 +3,31 @@
 namespace zaf {
 
 template<typename T>
-class ComObject {
+class COMObject {
 public:
-    ComObject() : handle_(nullptr) { 
+    COMObject() : handle_(nullptr) { 
 
     }
 
-    explicit ComObject(T* handle) : handle_(handle) {
+    explicit COMObject(T* handle) : handle_(handle) {
     
     }
 
-    ComObject(const ComObject& other) : handle_(other.handle_) {
+    COMObject(const COMObject& other) : handle_(other.handle_) {
         if (handle_ != nullptr) {
             handle_->AddRef();
         }
     }
 
-    ComObject(ComObject&& other) : handle_(other.handle_) {
+    COMObject(COMObject&& other) : handle_(other.handle_) {
         other.handle_ = nullptr;
     }
 
-    virtual ~ComObject() {
+    virtual ~COMObject() {
         Reset();
     }
 
-    ComObject& operator=(const ComObject& other) {
+    COMObject& operator=(const COMObject& other) {
         Reset();
         handle_ = other.handle_;
         if (handle_ != nullptr) {
@@ -36,7 +36,7 @@ public:
         return *this;
     }
 
-    ComObject& operator=(ComObject&& other) {
+    COMObject& operator=(COMObject&& other) {
         Reset();
         handle_ = other.handle_;
         other.handle_ = nullptr;
@@ -51,11 +51,11 @@ public:
         return ! IsNull();
     }
 
-    bool operator==(const ComObject& other) const {
+    bool operator==(const COMObject& other) const {
         return handle_ == other.handle_;
     }
 
-    bool operator!=(const ComObject& other) const {
+    bool operator!=(const COMObject& other) const {
         return handle_ != other.handle_;
     }
 

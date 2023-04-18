@@ -5,10 +5,10 @@
 
 namespace zaf {
 
-class TextInlineObject : public ComObject<IDWriteInlineObject> {
+class TextInlineObject : public COMObject<IDWriteInlineObject> {
 public:
     TextInlineObject() { }
-    TextInlineObject(IDWriteInlineObject* handle) : ComObject(handle) { }
+    TextInlineObject(IDWriteInlineObject* handle) : COMObject(handle) { }
 };
 
 }

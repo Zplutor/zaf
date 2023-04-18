@@ -8,7 +8,7 @@
 
 namespace zaf {
 
-class Stream : public ComObject<IStream> {
+class Stream : public COMObject<IStream> {
 public:
     enum class SeekOrigin {
         Begin = STREAM_SEEK_SET,
@@ -24,7 +24,7 @@ public:
 
 public:
     Stream() { }
-    Stream(IStream* handle) : ComObject(handle) { }
+    Stream(IStream* handle) : COMObject(handle) { }
 
     std::int64_t GetLength() const;
 

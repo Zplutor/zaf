@@ -9,10 +9,10 @@ namespace zaf::wic {
 
 class Palette;
 
-class BitmapSource : public ComObject<IWICBitmapSource> {
+class BitmapSource : public COMObject<IWICBitmapSource> {
 public:
     BitmapSource() { }
-    explicit BitmapSource(IWICBitmapSource* handle) : ComObject(handle) { }
+    explicit BitmapSource(IWICBitmapSource* handle) : COMObject(handle) { }
 
     Size GetSize() const;
 

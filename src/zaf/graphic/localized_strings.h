@@ -12,14 +12,14 @@ namespace zaf {
 /**
  Represents a collection of strings indexed by locale name.   
  */
-class LocalizedStrings : public ComObject<IDWriteLocalizedStrings> {
+class LocalizedStrings : public COMObject<IDWriteLocalizedStrings> {
 public:
     typedef internal::ComContainerEnumerator<LocalizedStrings, std::pair<std::wstring, std::wstring>> Enumerator;
     typedef internal::ComContainerEnumerator<LocalizedStrings, std::wstring> StringEnumerator;
 
 public:
     LocalizedStrings() { }
-    explicit LocalizedStrings(IDWriteLocalizedStrings* handle) : ComObject(handle) { }
+    explicit LocalizedStrings(IDWriteLocalizedStrings* handle) : COMObject(handle) { }
 
     /**
      Gets the number of language/string pairs.

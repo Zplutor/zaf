@@ -14,7 +14,7 @@ namespace zaf {
 
  You should create TextFormat instances via GraphicFactory::CreateTextFormat.
  */
-class TextFormat : public ComObject<IDWriteTextFormat> {
+class TextFormat : public COMObject<IDWriteTextFormat> {
 public:
     TextFormat() { }
 
@@ -24,7 +24,7 @@ public:
      The instance takes over the lifetime of handle, and would release the handle
      when destroyed.
      */
-    explicit TextFormat(IDWriteTextFormat* handle) : ComObject(handle) { 
+    explicit TextFormat(IDWriteTextFormat* handle) : COMObject(handle) { 
         
     }
 

@@ -14,7 +14,7 @@ namespace zaf {
  Describes a geometric path that can contain lines, arcs, cubic Bezier curves,
  and quadratic Bezier curves.
  */
-class GeometrySink : public ComObject<ID2D1GeometrySink> {
+class GeometrySink : public COMObject<ID2D1GeometrySink> {
 public:
     /**
      Specifies how the intersecting areas of geometries or figures are combined
@@ -122,7 +122,7 @@ public:
         const Point& coordinate_origin,
         const Point& aligned_coordinate_origin) 
         :
-        ComObject(handle),
+        COMObject(handle),
         coordinate_origin_(coordinate_origin),
         aligned_coordinate_origin_(aligned_coordinate_origin) { }
 

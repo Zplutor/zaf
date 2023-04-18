@@ -28,10 +28,10 @@ namespace zaf {
 
 class BitmapRenderer;
 
-class Renderer : public ComObject<ID2D1RenderTarget> {
+class Renderer : public COMObject<ID2D1RenderTarget> {
 public:
     Renderer() { }
-    explicit Renderer(ID2D1RenderTarget* handle) : ComObject(handle) { }
+    explicit Renderer(ID2D1RenderTarget* handle) : COMObject(handle) { }
 
     float GetDPI() const {
         float x{};

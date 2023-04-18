@@ -13,7 +13,7 @@ namespace zaf {
 
  This is a base class of all concrete geometry.
  */
-class Geometry : public ComObject<ID2D1Geometry>{
+class Geometry : public COMObject<ID2D1Geometry>{
 public:
     /**
      Specifies the different methods by which two geometries can be combined.
@@ -83,7 +83,7 @@ public:
      The geometry instance takes over the lifetime of handle. It would
      release the handle when destroyed.
      */
-    explicit Geometry(ID2D1Geometry* handle) : ComObject(handle) { }
+    explicit Geometry(ID2D1Geometry* handle) : COMObject(handle) { }
 };
 
 }

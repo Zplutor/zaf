@@ -10,10 +10,10 @@ namespace zaf {
 
  This is a base class of all concrete brush.
  */
-class Brush : public ComObject<ID2D1Brush> {
+class Brush : public COMObject<ID2D1Brush> {
 public:
     Brush() { }
-    explicit Brush(ID2D1Brush* handle) : ComObject(handle) { }
+    explicit Brush(ID2D1Brush* handle) : COMObject(handle) { }
 
     /**
      Get opacity.

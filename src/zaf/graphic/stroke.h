@@ -6,7 +6,7 @@
 
 namespace zaf {
 
-class Stroke : public ComObject<ID2D1StrokeStyle> {
+class Stroke : public COMObject<ID2D1StrokeStyle> {
 public:
     enum class CapStyle {
         Flat = 0,
@@ -33,7 +33,7 @@ public:
 
 public:
     Stroke() { }
-    explicit Stroke(ID2D1StrokeStyle* handle) : ComObject(handle) { }
+    explicit Stroke(ID2D1StrokeStyle* handle) : COMObject(handle) { }
 
     CapStyle GetStartCapStyle() const {
         return static_cast<CapStyle>(GetHandle()->GetStartCap());

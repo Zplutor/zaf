@@ -96,7 +96,7 @@ protected:
 private:
     void InitializeOLEObject() {
 
-        zaf::ComObject<zaf::rich_edit::EmbeddedObject> object{ new MyOLEObject };
+        zaf::COMObject<zaf::rich_edit::EmbeddedObject> object{ new MyOLEObject };
 
         text_box_->InsertObject(object);
     }

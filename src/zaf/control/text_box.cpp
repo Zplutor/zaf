@@ -1224,7 +1224,7 @@ void TextBox::ScrollValuesChange(bool is_horizontal) {
 }
 
 
-void TextBox::InsertObject(const ComObject<rich_edit::EmbeddedObject>& object) {
+void TextBox::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) {
 
     ZAF_EXPECT(!object.IsNull());
 

@@ -9,7 +9,7 @@ namespace zaf::wic {
 
 class BitmapSource;
 
-class Palette : public ComObject<IWICPalette> {
+class Palette : public COMObject<IWICPalette> {
 public:
     enum class Type {
         Custom = WICBitmapPaletteTypeCustom,
@@ -30,7 +30,7 @@ public:
 
 public:
     Palette() { }
-    explicit Palette(IWICPalette* handle) : ComObject(handle) { }
+    explicit Palette(IWICPalette* handle) : COMObject(handle) { }
 
     void InitializeFromCustomColors(const std::uint32_t* colors, std::size_t color_count);
 

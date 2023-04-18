@@ -57,7 +57,7 @@ public:
 };
 
 
-class ImagingFactory : public ComObject<IWICImagingFactory> {
+class ImagingFactory : public COMObject<IWICImagingFactory> {
 public:
     static ImagingFactory& Instance();
 
@@ -137,7 +137,7 @@ public:
 private:
     friend class zaf::Application;
 
-    explicit ImagingFactory(IWICImagingFactory* handle) : ComObject(handle) { }
+    explicit ImagingFactory(IWICImagingFactory* handle) : COMObject(handle) { }
 };
 
 }

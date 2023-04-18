@@ -7,10 +7,10 @@
 
 namespace zaf::wic {
 
-class Stream : public ComObject<IWICStream> {
+class Stream : public COMObject<IWICStream> {
 public:
     Stream() { }
-    explicit Stream(IWICStream* handle) : ComObject(handle) { }
+    explicit Stream(IWICStream* handle) : COMObject(handle) { }
 
     void InitializeFromMemory(void* data, std::size_t size) {
         HRESULT com_error = GetHandle()->InitializeFromMemory(

@@ -286,7 +286,7 @@ public:
      */
     void ScrollRightToEnd();
 
-    void InsertObject(const ComObject<rich_edit::EmbeddedObject>& object);
+    void InsertObject(const COMObject<rich_edit::EmbeddedObject>& object);
 
     ITextServices* GetITextServices() const {
         return text_service_.p;

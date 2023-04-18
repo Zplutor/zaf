@@ -10,10 +10,10 @@ namespace zaf {
 
 class FontFamily;
 
-class FontFace : public ComObject<IDWriteFont> {
+class FontFace : public COMObject<IDWriteFont> {
 public:
     FontFace() { }
-    explicit FontFace(IDWriteFont* handle) : ComObject(handle) { }
+    explicit FontFace(IDWriteFont* handle) : COMObject(handle) { }
 
     const FontFamily GetFontFamily() const;
 

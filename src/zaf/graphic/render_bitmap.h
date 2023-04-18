@@ -10,10 +10,10 @@ namespace zaf {
 
 class Renderer;
 
-class RenderBitmap : public ComObject<ID2D1Bitmap> {
+class RenderBitmap : public COMObject<ID2D1Bitmap> {
 public:
     RenderBitmap() { }
-    explicit RenderBitmap(ID2D1Bitmap* handle) : ComObject(handle) { }
+    explicit RenderBitmap(ID2D1Bitmap* handle) : COMObject(handle) { }
 
     /**
      Get the size, in device-independent pixels (DIPs), of the bitmap.

@@ -9,10 +9,10 @@ class Palette;
 
 class Bitmap : public BitmapSource {
 public:
-    class Lock : public ComObject<IWICBitmapLock> {
+    class Lock : public COMObject<IWICBitmapLock> {
     public:
         Lock() { }
-        explicit Lock(IWICBitmapLock* handle) : ComObject(handle) { }
+        explicit Lock(IWICBitmapLock* handle) : COMObject(handle) { }
 
         Size GetSize() const;
 

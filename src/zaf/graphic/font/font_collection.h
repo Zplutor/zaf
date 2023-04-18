@@ -16,7 +16,7 @@ namespace zaf {
  The font collection can be used to discover what font families and fonts are available, and to
  obtain some metadata about the fonts.
  */
-class FontCollection : public ComObject<IDWriteFontCollection> {
+class FontCollection : public COMObject<IDWriteFontCollection> {
 public:
     typedef internal::ComContainerEnumerator<FontCollection, FontFamily> Enumerator;
 
@@ -28,7 +28,7 @@ public:
 
      The instance takes over the lifetime of handle, and releases it when destroyed.
      */
-    explicit FontCollection(IDWriteFontCollection* handle) : ComObject(handle) { }
+    explicit FontCollection(IDWriteFontCollection* handle) : COMObject(handle) { }
 
     /**
      Gets the number of font families in the collection.

@@ -14,7 +14,7 @@ class FontCollection;
 /**
  Represents a family of related fonts.
  */
-class FontFamily : public ComObject<IDWriteFontFamily> {
+class FontFamily : public COMObject<IDWriteFontFamily> {
 public:
     FontFamily() { }
 
@@ -23,7 +23,7 @@ public:
 
      The instance takes over the lifetime of handle, and would release it when destroyed.
      */
-    explicit FontFamily(IDWriteFontFamily* handle) : ComObject(handle) { }
+    explicit FontFamily(IDWriteFontFamily* handle) : COMObject(handle) { }
 
     /**
      Get the font collection that contains the fonts.

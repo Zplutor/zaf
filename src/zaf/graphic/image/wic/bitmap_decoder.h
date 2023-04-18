@@ -11,10 +11,10 @@ namespace zaf::wic {
 
 class Palette;
 
-class BitmapDecoder : public ComObject<IWICBitmapDecoder> {
+class BitmapDecoder : public COMObject<IWICBitmapDecoder> {
 public:
     BitmapDecoder() { }
-    explicit BitmapDecoder(IWICBitmapDecoder* handle) : ComObject(handle) { }
+    explicit BitmapDecoder(IWICBitmapDecoder* handle) : COMObject(handle) { }
 
     ContainerFormat GetContainerFormat() const;
 
