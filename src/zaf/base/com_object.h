@@ -22,22 +22,27 @@ public:
         Reset();
     }
 
-    COMObject(const COMObject& other) : inner_(other.inner_) {
-        if (inner_) {
-            inner_->AddRef();
-        }
+    COMObject(const COMObject& other) {
+        CopyFrom(other.Inner());
     }
 
-    COMObject(COMObject&& other) : inner_(other.inner_) {
-        other.inner_ = nullptr;
+    template<typename K, std::enable_if_t<std::is_base_of_v<T, K>, int> = 0>
+    COMObject(const COMObject<K>& other) {
+        CopyFrom(other.Inner());
+    }
+
+    COMObject(COMObject&& other) : inner_(other.Detach()) {
+
+    }
+
+    template<typename K, std::enable_if_t<std::is_base_of_v<T, K>, int> = 0>
+    COMObject(COMObject<K>&& other) : inner_(other.Detach()) {
+
     }
 
     COMObject& operator=(const COMObject& other) {
         Reset();
-        inner_ = other.inner_;
-        if (inner_) {
-            inner_->AddRef();
-        }
+        CopyFrom(other.Inner());
         return *this;
     }
 
@@ -72,8 +77,9 @@ public:
         return inner_;
     }
 
-    void Reset() {
+    void** Reset() {
         Reset(nullptr);
+        return reinterpret_cast<void**>(&inner_);
     }
 
     void Reset(T* new_inner) {
@@ -83,12 +89,26 @@ public:
         inner_ = new_inner;
     }
 
+    T* Detach() {
+        auto result = inner_;
+        inner_ = nullptr;
+        return result;
+    }
+
     bool IsValid() const {
         return !!inner_;
     }
 
     T* Inner() const {
         return inner_;
+    }
+
+private:
+    void CopyFrom(T* inner) {
+        inner_ = inner;
+        if (inner_) {
+            inner_->AddRef();
+        }
     }
 
 private:

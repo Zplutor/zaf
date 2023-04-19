@@ -5,13 +5,13 @@
 
 namespace {
 
-class TestCOMObject : public IUnknown, zaf::NonCopyable {
+class BaseCOMObject : public IUnknown, zaf::NonCopyable {
 public:
-    TestCOMObject() : is_deleted_(std::make_shared<bool>(false)) {
+    BaseCOMObject() : is_deleted_(std::make_shared<bool>(false)) {
 
     }
 
-    ~TestCOMObject() {
+    ~BaseCOMObject() {
         *is_deleted_ = true;
     }
 
@@ -36,6 +36,13 @@ public:
     }
 
     HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override {
+
+        if (riid == IID_IUnknown) {
+            *ppvObj = this;
+            AddRef();
+            return S_OK;
+        }
+
         return E_NOINTERFACE;
     }
 
@@ -44,23 +51,48 @@ private:
     std::shared_ptr<bool> is_deleted_;
 };
 
+
+class DerivedCOMObject : public BaseCOMObject {
+public:
+
+};
+
 }
 
 
 TEST(COMObjectTest, TypeAssert) {
 
     zaf::COMObject<IUnknown> unknown;
-    zaf::COMObject<TestCOMObject> ole_object;
+    zaf::COMObject<BaseCOMObject> ole_object;
 
     //Compile will fail if uncomment below line.
     //zaf::COMObject<int> i;
 }
 
 
-TEST(COMObjectTest, ConstructionWithValue) {
+TEST(COMObjectTest, Construction) {
 
-    zaf::COMObject<TestCOMObject> object(new TestCOMObject());
-    ASSERT_EQ(object.Inner()->ReferenceCount(), 1);
+    {
+        zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
+        ASSERT_EQ(object.Inner()->ReferenceCount(), 1);
+    }
+
+    {
+        zaf::COMObject<BaseCOMObject> object(new DerivedCOMObject());
+        ASSERT_EQ(object.Inner()->ReferenceCount(), 1);
+        ASSERT_NE(dynamic_cast<DerivedCOMObject*>(object.Inner()), nullptr);
+    }
+}
+
+
+TEST(COMObjectTest, Destruction) {
+
+    std::shared_ptr<bool> is_deleted;
+    {
+        zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
+        is_deleted = object->IsDeleted();
+    }
+    ASSERT_TRUE(is_deleted);
 }
 
 
@@ -68,8 +100,8 @@ TEST(COMObjectTest, CopyConstruction) {
 
     //Copy construct from a valid object.
     {
-        zaf::COMObject<TestCOMObject> object(new TestCOMObject());
-        zaf::COMObject<TestCOMObject> copy_object(object);
+        zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
+        zaf::COMObject<BaseCOMObject> copy_object(object);
 
         ASSERT_TRUE(object.IsValid());
         ASSERT_EQ(object.Inner(), copy_object.Inner());
@@ -78,11 +110,43 @@ TEST(COMObjectTest, CopyConstruction) {
 
     //Copy construct from an invalid object.
     {
-        zaf::COMObject<TestCOMObject> object;
-        zaf::COMObject<TestCOMObject> copy_object(object);
+        zaf::COMObject<BaseCOMObject> object;
+        zaf::COMObject<BaseCOMObject> copy_object(object);
 
         ASSERT_FALSE(object.IsValid());
         ASSERT_FALSE(copy_object.IsValid());
+    }
+
+    //Copy construct from valid derived COMObject.
+    {
+        zaf::COMObject<DerivedCOMObject> derived_object(new DerivedCOMObject());
+        zaf::COMObject<BaseCOMObject> base_object(derived_object);
+        ASSERT_TRUE(base_object.IsValid());
+        ASSERT_EQ(base_object.Inner(), derived_object.Inner());
+        ASSERT_EQ(base_object->ReferenceCount(), 2);
+    }
+
+    //Copy construct from invalid derived COMObject.
+    {
+        zaf::COMObject<DerivedCOMObject> derived_object;
+        zaf::COMObject<BaseCOMObject> base_object(derived_object);
+        ASSERT_FALSE(derived_object.IsValid());
+        ASSERT_FALSE(base_object.IsValid());
+    }
+
+    //Implicit convert from derived COMObject.
+    {
+        auto function1 = [](const zaf::COMObject<BaseCOMObject>& object) {
+            return !!dynamic_cast<DerivedCOMObject*>(object.Inner());
+        };
+
+        auto function2 = [](zaf::COMObject<BaseCOMObject> object) {
+            return !!dynamic_cast<DerivedCOMObject*>(object.Inner());
+        };
+
+        zaf::COMObject<DerivedCOMObject> derived_object(new DerivedCOMObject());
+        ASSERT_TRUE(function1(derived_object));
+        ASSERT_TRUE(function2(derived_object));
     }
 }
 
@@ -91,23 +155,48 @@ TEST(COMObjectTest, CopyAssignment) {
 
     //Copy assign from a valid object.
     {
-        zaf::COMObject<TestCOMObject> object(new TestCOMObject());
-        zaf::COMObject<TestCOMObject> copy_object;
-        copy_object = object;
+        zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
+        zaf::COMObject<BaseCOMObject> other_object(new BaseCOMObject());
+        auto is_deleted = other_object->IsDeleted();
+        other_object = object;
 
+        ASSERT_TRUE(*is_deleted);
         ASSERT_TRUE(object.IsValid());
-        ASSERT_EQ(object.Inner(), copy_object.Inner());
+        ASSERT_EQ(object.Inner(), other_object.Inner());
         ASSERT_EQ(object.Inner()->ReferenceCount(), 2);
     }
 
     //Copy assign from an invalid object.
     {
-        zaf::COMObject<TestCOMObject> object;
-        zaf::COMObject<TestCOMObject> copy_object;
-        copy_object = object;
+        zaf::COMObject<BaseCOMObject> object;
+        zaf::COMObject<BaseCOMObject> other_object;
+        other_object = object;
 
         ASSERT_FALSE(object.IsValid());
-        ASSERT_FALSE(copy_object.IsValid());
+        ASSERT_FALSE(other_object.IsValid());
+    }
+
+    //Copy assign from valid derived COMObject.
+    {
+        zaf::COMObject<DerivedCOMObject> derived_object(new DerivedCOMObject());
+        zaf::COMObject<BaseCOMObject> base_object(new BaseCOMObject());
+        auto is_deleted = base_object->IsDeleted();
+        base_object = derived_object;
+
+        ASSERT_TRUE(*is_deleted);
+        ASSERT_TRUE(base_object.IsValid());
+        ASSERT_EQ(base_object.Inner(), derived_object.Inner());
+        ASSERT_EQ(base_object->ReferenceCount(), 2);
+    }
+
+    //Copy assign from invalid derived COMObject.
+    {
+        zaf::COMObject<DerivedCOMObject> derived_object;
+        zaf::COMObject<BaseCOMObject> base_object;
+        base_object = derived_object;
+
+        ASSERT_FALSE(derived_object.IsValid());
+        ASSERT_FALSE(base_object.IsValid());
     }
 }
 
@@ -116,9 +205,11 @@ TEST(COMObjectTest, MoveConstruction) {
 
     //Move construct from a valid object.
     {
-        zaf::COMObject<TestCOMObject> object(new TestCOMObject());
-        zaf::COMObject<TestCOMObject> other_object(std::move(object));
+        zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
+        auto is_deleted = object->IsDeleted();
+        zaf::COMObject<BaseCOMObject> other_object(std::move(object));
 
+        ASSERT_FALSE(*is_deleted);
         ASSERT_FALSE(object.IsValid());
         ASSERT_TRUE(other_object.IsValid());
         ASSERT_EQ(other_object.Inner()->ReferenceCount(), 1);
@@ -126,11 +217,32 @@ TEST(COMObjectTest, MoveConstruction) {
 
     //Move construct from an invalid object.
     {
-        zaf::COMObject<TestCOMObject> object;
-        zaf::COMObject<TestCOMObject> other_object(std::move(object));
+        zaf::COMObject<BaseCOMObject> object;
+        zaf::COMObject<BaseCOMObject> other_object(std::move(object));
 
         ASSERT_FALSE(object.IsValid());
         ASSERT_FALSE(other_object.IsValid());
+    }
+
+    //Move construct from valid derived object.
+    {
+        zaf::COMObject<DerivedCOMObject> derived_object(new DerivedCOMObject());
+        auto is_deleted = derived_object->IsDeleted();
+        zaf::COMObject<BaseCOMObject> base_object(std::move(derived_object));
+
+        ASSERT_FALSE(*is_deleted);
+        ASSERT_FALSE(derived_object.IsValid());
+        ASSERT_TRUE(base_object.IsValid());
+        ASSERT_EQ(base_object.Inner()->ReferenceCount(), 1);
+    }
+
+    //Move construct from invalid derived object.
+    {
+        zaf::COMObject<DerivedCOMObject> derived_object;
+        zaf::COMObject<BaseCOMObject> base_object(std::move(derived_object));
+
+        ASSERT_FALSE(derived_object.IsValid());
+        ASSERT_FALSE(base_object.IsValid());
     }
 }
 
@@ -139,8 +251,8 @@ TEST(COMObjectTest, MoveAssignment) {
 
     //Move assign from a valid object.
     {
-        zaf::COMObject<TestCOMObject> object(new TestCOMObject());
-        zaf::COMObject<TestCOMObject> other_object;
+        zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
+        zaf::COMObject<BaseCOMObject> other_object;
         other_object = std::move(object);
 
         ASSERT_FALSE(object.IsValid());
@@ -150,8 +262,8 @@ TEST(COMObjectTest, MoveAssignment) {
 
     //Move assign from an invalid object.
     {
-        zaf::COMObject<TestCOMObject> object;
-        zaf::COMObject<TestCOMObject> other_object;
+        zaf::COMObject<BaseCOMObject> object;
+        zaf::COMObject<BaseCOMObject> other_object;
         other_object = std::move(object);
 
         ASSERT_FALSE(object.IsValid());
@@ -163,7 +275,7 @@ TEST(COMObjectTest, MoveAssignment) {
 TEST(COMObjectTest, OperatorBool) {
 
     {
-        zaf::COMObject<TestCOMObject> object;
+        zaf::COMObject<BaseCOMObject> object;
         bool has_value{};
         if (object) {
             has_value = true;
@@ -172,7 +284,7 @@ TEST(COMObjectTest, OperatorBool) {
     }
 
     {
-        zaf::COMObject<TestCOMObject> object(new TestCOMObject());
+        zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
         bool has_value{};
         if (object) {
             has_value = true;
@@ -185,13 +297,13 @@ TEST(COMObjectTest, OperatorBool) {
 TEST(COMObjectTest, CompareWithNullptr) {
 
     {
-        zaf::COMObject<TestCOMObject> object;
+        zaf::COMObject<BaseCOMObject> object;
         ASSERT_TRUE(object == nullptr);
         ASSERT_FALSE(object != nullptr);
     }
 
     {
-        zaf::COMObject<TestCOMObject> object(new TestCOMObject());
+        zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
         ASSERT_FALSE(object == nullptr);
         ASSERT_TRUE(object != nullptr);
     }
@@ -201,12 +313,12 @@ TEST(COMObjectTest, CompareWithNullptr) {
 TEST(COMObjectTest, IsValid) {
 
     {
-        zaf::COMObject<TestCOMObject> object;
+        zaf::COMObject<BaseCOMObject> object;
         ASSERT_FALSE(object.IsValid());
     }
 
     {
-        zaf::COMObject<TestCOMObject> object(new TestCOMObject());
+        zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
         ASSERT_TRUE(object.IsValid());
     }
 }
@@ -214,11 +326,11 @@ TEST(COMObjectTest, IsValid) {
 
 TEST(COMObjectTest, Reset) {
 
-    zaf::COMObject<TestCOMObject> object;
+    zaf::COMObject<BaseCOMObject> object;
     object.Reset();
     ASSERT_FALSE(object.IsValid());
 
-    object.Reset(new TestCOMObject());
+    object.Reset(new BaseCOMObject());
     ASSERT_TRUE(object.IsValid());
     ASSERT_EQ(object->ReferenceCount(), 1);
 
@@ -229,8 +341,22 @@ TEST(COMObjectTest, Reset) {
 }
 
 
+TEST(COMObjectTest, ResetAndQueryInterface) {
+
+    zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
+
+    zaf::COMObject<IUnknown> unknown;
+    HRESULT hresult = object->QueryInterface(IID_IUnknown, unknown.Reset());
+
+    ASSERT_EQ(hresult, S_OK);
+    ASSERT_TRUE(unknown.IsValid());
+    ASSERT_EQ(object.Inner(), unknown.Inner());
+    ASSERT_EQ(object->ReferenceCount(), 2);
+}
+
+
 TEST(COMObjecTest, OperatorArrow) {
 
-    zaf::COMObject<TestCOMObject> object(new TestCOMObject());
+    zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
     ASSERT_EQ(object->ReferenceCount(), 1);
 }
