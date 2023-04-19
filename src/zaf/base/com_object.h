@@ -112,6 +112,16 @@ public:
         return !!inner_;
     }
 
+    template<typename K>
+    COMObject<K> As() const {
+        COMObject<K> result;
+        HRESULT hresult = inner_->QueryInterface(__uuidof(K), result.Reset());
+        if (FAILED(hresult)) {
+            result.Reset();
+        }
+        return result;
+    }
+
     T* Inner() const {
         return inner_;
     }

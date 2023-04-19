@@ -385,3 +385,16 @@ TEST(COMObjecTest, OperatorArrow) {
     zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
     ASSERT_EQ(object->ReferenceCount(), 1);
 }
+
+
+TEST(COMObjectTest, As) {
+
+    zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
+
+    auto unknown = object.As<IUnknown>();
+    ASSERT_TRUE(unknown.IsValid());
+    ASSERT_EQ(object.Inner(), unknown.Inner());
+
+    auto ole_object = object.As<IOleObject>();
+    ASSERT_FALSE(ole_object.IsValid());
+}
