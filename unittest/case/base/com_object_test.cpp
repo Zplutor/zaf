@@ -252,9 +252,11 @@ TEST(COMObjectTest, MoveAssignment) {
     //Move assign from a valid object.
     {
         zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
-        zaf::COMObject<BaseCOMObject> other_object;
+        zaf::COMObject<BaseCOMObject> other_object(new BaseCOMObject());
+        auto is_deleted = other_object->IsDeleted();
         other_object = std::move(object);
 
+        ASSERT_TRUE(*is_deleted);
         ASSERT_FALSE(object.IsValid());
         ASSERT_TRUE(other_object.IsValid());
         ASSERT_EQ(other_object.Inner()->ReferenceCount(), 1);
@@ -268,6 +270,29 @@ TEST(COMObjectTest, MoveAssignment) {
 
         ASSERT_FALSE(object.IsValid());
         ASSERT_FALSE(other_object.IsValid());
+    }
+
+    //Move assign from valid derived object.
+    {
+        zaf::COMObject<DerivedCOMObject> derived(new DerivedCOMObject());
+        zaf::COMObject<BaseCOMObject> base(new BaseCOMObject());;
+        auto is_deleted = base->IsDeleted();
+        base = std::move(derived);
+
+        ASSERT_TRUE(*is_deleted);
+        ASSERT_FALSE(derived.IsValid());
+        ASSERT_TRUE(base.IsValid());
+        ASSERT_EQ(base->ReferenceCount(), 1);
+    }
+
+    //Move assign from invalid derived object.
+    {
+        zaf::COMObject<DerivedCOMObject> derived;
+        zaf::COMObject<BaseCOMObject> base;
+        base = std::move(derived);
+
+        ASSERT_FALSE(derived.IsValid());
+        ASSERT_FALSE(base.IsValid());
     }
 }
 

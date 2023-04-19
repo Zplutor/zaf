@@ -46,10 +46,23 @@ public:
         return *this;
     }
 
+    template<typename K, std::enable_if_t<std::is_base_of_v<T, K>, int> = 0>
+    COMObject& operator=(const COMObject<K>& other) {
+        Reset();
+        CopyFrom(other.Inner());
+        return *this;
+    }
+
     COMObject& operator=(COMObject&& other) {
         Reset();
-        inner_ = other.inner_;
-        other.inner_ = nullptr;
+        inner_ = other.Detach();
+        return *this;
+    }
+
+    template<typename K, std::enable_if_t<std::is_base_of_v<T, K>, int> = 0>
+    COMObject& operator=(COMObject<K>&& other) {
+        Reset();
+        inner_ = other.Detach();
         return *this;
     }
 
