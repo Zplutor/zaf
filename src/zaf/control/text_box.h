@@ -289,7 +289,7 @@ public:
     void InsertObject(const COMObject<rich_edit::EmbeddedObject>& object);
 
     ITextServices* GetITextServices() const {
-        return text_service_.p;
+        return text_service_.Inner();
     }
 
     void VerticallyScroll(int new_value) override;
@@ -396,7 +396,7 @@ private:
 
 private:
     std::shared_ptr<TextHostBridge> text_host_bridge_;
-    CComPtr<ITextServices2> text_service_;
+    COMObject<ITextServices2> text_service_;
     std::shared_ptr<zaf::Caret> caret_;
     DWORD property_bits_;
     CHARFORMATW character_format_;

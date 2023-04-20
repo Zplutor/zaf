@@ -40,7 +40,7 @@ EXTERN_C const IID IID_ITextDocument = {
 namespace zaf {
 namespace {
 
-CComPtr<ITextServices2> CreateTextService(ITextHost* text_host) {
+COMObject<ITextServices2> CreateTextService(ITextHost* text_host) {
 
     HMODULE module_handle = LoadLibrary(L"msftedit.dll");
     if (!module_handle) {
@@ -62,12 +62,12 @@ CComPtr<ITextServices2> CreateTextService(ITextHost* text_host) {
         ZAF_THROW_SYSTEM_ERROR(GetLastError());
     }
 
-    CComPtr<IUnknown> unknown;
-    HRESULT hresult = create_function(nullptr, text_host, &unknown);
+    COMObject<IUnknown> unknown;
+    HRESULT hresult = create_function(nullptr, text_host, unknown.Store());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
-    CComPtr<ITextServices2> text_service;
-    hresult = unknown->QueryInterface(*iid_text_service2, reinterpret_cast<void**>(&text_service));
+    COMObject<ITextServices2> text_service;
+    hresult = unknown->QueryInterface(*iid_text_service2, text_service.StoreVoid());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     return text_service;
@@ -227,11 +227,11 @@ void TextBox::ReviseTextColor() {
 
 void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
-    CComPtr<IRichEditOle> rich_edit_ole{};
+    COMObject<IRichEditOle> rich_edit_ole{};
     HRESULT hresult = text_service_->TxSendMessage(
         EM_GETOLEINTERFACE,
         0,
-        reinterpret_cast<LPARAM>(&rich_edit_ole),
+        reinterpret_cast<LPARAM>(rich_edit_ole.Store()),
         nullptr);
 
     if (FAILED(hresult)) {
@@ -243,12 +243,8 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
         return;
     }
 
-    CComPtr<ITextDocument> text_document;
-    hresult = rich_edit_ole->QueryInterface(
-        IID_ITextDocument,
-        reinterpret_cast<void**>(&text_document));
-
-    if (FAILED(hresult)) {
+    auto text_document = rich_edit_ole.As<ITextDocument>();
+    if (!text_document) {
         return;
     }
 
@@ -261,19 +257,19 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
             continue;
         }
 
-        CComPtr<ITextRange> text_range;
-        hresult = text_document->Range(object_info.cp, object_info.cp, &text_range);
+        COMObject<ITextRange> text_range;
+        hresult = text_document->Range(object_info.cp, object_info.cp, text_range.Store());
         if (FAILED(hresult)) {
             continue;
         }
 
-        CComPtr<IUnknown> unknown;
-        hresult = text_range->GetEmbeddedObject(&unknown);
+        COMObject<IUnknown> unknown;
+        hresult = text_range->GetEmbeddedObject(unknown.Store());
         if (FAILED(hresult)) {
             continue;
         }
 
-        auto embedded_object = dynamic_cast<rich_edit::EmbeddedObject*>(unknown.p);
+        auto embedded_object = dynamic_cast<rich_edit::EmbeddedObject*>(unknown.Inner());
         if (!embedded_object) {
             continue;
         }
@@ -1228,24 +1224,24 @@ void TextBox::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) {
 
     ZAF_EXPECT(object.IsValid());
 
-    CComPtr<IRichEditOle> rich_edit_ole{};
+    COMObject<IRichEditOle> rich_edit_ole{};
     HRESULT hresult = text_service_->TxSendMessage(
         EM_GETOLEINTERFACE, 
         0, 
-        reinterpret_cast<LPARAM>(&rich_edit_ole), 
+        reinterpret_cast<LPARAM>(rich_edit_ole.Store()),
         nullptr);
 
     ZAF_THROW_IF_COM_ERROR(hresult);
 
-    CComPtr<IOleClientSite> client_site;
-    hresult = rich_edit_ole->GetClientSite(&client_site);
+    COMObject<IOleClientSite> client_site;
+    hresult = rich_edit_ole->GetClientSite(client_site.Store());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     REOBJECT object_info{};
     object_info.cbStruct = sizeof(object_info);
     object_info.clsid = object.Inner()->ClassID();
     object_info.poleobj = object.Inner();
-    object_info.polesite = client_site;
+    object_info.polesite = client_site.Inner();
     object_info.pstg = nullptr;
     object_info.cp = REO_CP_SELECTION;
     object_info.dvaspect = DVASPECT_CONTENT;
