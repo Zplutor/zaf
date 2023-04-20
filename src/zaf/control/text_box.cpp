@@ -1397,24 +1397,13 @@ BOOL TextBox::TextHostBridge::TxSetCaretPos(INT x, INT y) {
         return FALSE;
     }
 
-    auto window = text_box->Window();
-    if (!window) {
-        return FALSE;
-    }
-    
-    float dpi = window->GetDPI();
-    Point absolute_position{
+    float dpi = text_box->GetDPI();
+    Point caret_position{
         ToDIPs(static_cast<float>(x), dpi),
         ToDIPs(static_cast<float>(y), dpi) + text_box->GetPaintContentOffset(nullptr)
     };
 
-    auto text_box_absolute_position = text_box->AbsoluteRect().position;
-
-    Point new_position;
-    new_position.x = absolute_position.x - text_box_absolute_position.x;
-    new_position.y = absolute_position.y - text_box_absolute_position.y;
-
-    text_box->caret_->SetPosition(new_position);
+    text_box->caret_->SetPosition(caret_position);
     return TRUE;
 }
 
@@ -1501,12 +1490,7 @@ HRESULT TextBox::TextHostBridge::TxGetClientRect(LPRECT prc) {
         return S_OK;
     }
 
-    auto window = text_box->Window();
-    if (!window) {
-        return S_OK;
-    }
-
-    *prc = Align(FromDIPs(text_box->GetAbsoluteContentRect(), window->GetDPI())).ToRECT();
+    *prc = Align(FromDIPs(text_box->Rect(), text_box->GetDPI())).ToRECT();
     return S_OK;
 }
 
