@@ -49,26 +49,31 @@ void Application::Initialize(const InitializeParameters& parameters) {
     ZAF_THROW_IF_COM_ERROR(result);
 
     //Create Direct2D factory.
-    CComPtr<ID2D1Factory> d2d_factory_handle;
-    result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2d_factory_handle);
+    COMObject<ID2D1Factory> d2d_factory_handle;
+    result = D2D1CreateFactory(
+        D2D1_FACTORY_TYPE_SINGLE_THREADED,
+        __uuidof(ID2D1Factory), 
+        d2d_factory_handle.Reset());
+
     ZAF_THROW_IF_COM_ERROR(result);
 
     //Create DWrite factory.
-    CComPtr<IDWriteFactory> dwrite_factory_handle;
+    COMObject<IDWriteFactory> dwrite_factory_handle;
     result = DWriteCreateFactory(
         DWRITE_FACTORY_TYPE_SHARED,
         __uuidof(IDWriteFactory),
-        reinterpret_cast<IUnknown**>(&dwrite_factory_handle));
+        reinterpret_cast<IUnknown**>(dwrite_factory_handle.Reset()));
 
     ZAF_THROW_IF_COM_ERROR(result);
 
     //Create WIC imaging factory
-    CComPtr<IWICImagingFactory> imaging_factory_handle;
+    COMObject<IWICImagingFactory> imaging_factory_handle;
     result = CoCreateInstance(
         CLSID_WICImagingFactory,
         nullptr,
         CLSCTX_INPROC_SERVER,
-        IID_PPV_ARGS(&imaging_factory_handle));
+        __uuidof(IWICImagingFactory),
+        imaging_factory_handle.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
 

@@ -115,10 +115,7 @@ public:
     template<typename K>
     COMObject<K> As() const {
         COMObject<K> result;
-        HRESULT hresult = inner_->QueryInterface(__uuidof(K), result.Reset());
-        if (FAILED(hresult)) {
-            result.Reset();
-        }
+        inner_->QueryInterface(__uuidof(K), result.Reset());
         return result;
     }
 
