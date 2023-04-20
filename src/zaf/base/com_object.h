@@ -90,9 +90,8 @@ public:
         return inner_;
     }
 
-    void** Reset() {
+    void Reset() {
         Reset(nullptr);
-        return reinterpret_cast<void**>(&inner_);
     }
 
     void Reset(T* new_inner) {
@@ -115,8 +114,17 @@ public:
     template<typename K>
     COMObject<K> As() const {
         COMObject<K> result;
-        inner_->QueryInterface(__uuidof(K), result.Reset());
+        inner_->QueryInterface(__uuidof(K), result.StoreVoid());
         return result;
+    }
+
+    T** Store() {
+        Reset();
+        return &inner_;
+    }
+
+    void** StoreVoid() {
+        return reinterpret_cast<void**>(Store());
     }
 
     T* Inner() const {

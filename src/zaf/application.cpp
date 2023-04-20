@@ -50,11 +50,7 @@ void Application::Initialize(const InitializeParameters& parameters) {
 
     //Create Direct2D factory.
     COMObject<ID2D1Factory> d2d_factory_handle;
-    result = D2D1CreateFactory(
-        D2D1_FACTORY_TYPE_SINGLE_THREADED,
-        __uuidof(ID2D1Factory), 
-        d2d_factory_handle.Reset());
-
+    result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, d2d_factory_handle.Store());
     ZAF_THROW_IF_COM_ERROR(result);
 
     //Create DWrite factory.
@@ -62,7 +58,7 @@ void Application::Initialize(const InitializeParameters& parameters) {
     result = DWriteCreateFactory(
         DWRITE_FACTORY_TYPE_SHARED,
         __uuidof(IDWriteFactory),
-        reinterpret_cast<IUnknown**>(dwrite_factory_handle.Reset()));
+        reinterpret_cast<IUnknown**>(dwrite_factory_handle.Store()));
 
     ZAF_THROW_IF_COM_ERROR(result);
 
@@ -73,7 +69,7 @@ void Application::Initialize(const InitializeParameters& parameters) {
         nullptr,
         CLSCTX_INPROC_SERVER,
         __uuidof(IWICImagingFactory),
-        imaging_factory_handle.Reset());
+        imaging_factory_handle.StoreVoid());
 
     ZAF_THROW_IF_COM_ERROR(result);
 

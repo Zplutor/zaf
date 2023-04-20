@@ -11,33 +11,34 @@ namespace {
 
 IXmlReader* CreateHandle(IUnknown* input) {
 
-    CComPtr<IXmlReader> handle;
-    HRESULT result = CreateXmlReader(
-        __uuidof(IXmlReader),
-        reinterpret_cast<void**>(&handle), 
-        nullptr);
-
+    COMObject<IXmlReader> handle;
+    HRESULT result = CreateXmlReader(__uuidof(IXmlReader), handle.StoreVoid(), nullptr);
     ZAF_THROW_IF_COM_ERROR(result);
 
     result = handle->SetInput(input);
-
     ZAF_THROW_IF_COM_ERROR(result);
+
     return handle.Detach();
 }
 
 
 std::shared_ptr<XamlReader> CreateXamlReaderFromMemory(const void* data, std::size_t length) {
 
-    CComPtr<IStream> stream = SHCreateMemStream(
+    IStream* stream = SHCreateMemStream(
         reinterpret_cast<const BYTE*>(data), 
         static_cast<UINT>(length));
-    if (stream == nullptr) {
+
+    if (!stream) {
         ZAF_THROW_IF_COM_ERROR(E_OUTOFMEMORY);
     }
 
-    auto handle = CreateHandle(stream.p);
+    //Exception might be thrown in CreateHande(), use COMObject<> to avoid leak.
+    COMObject<IStream> scoped_stream{ stream };
+    auto handle = CreateHandle(stream);
 
-    stream.Detach();
+    //After creating XamlReader, the ownership of stream is transferred to XamlReader, so detach it
+    //here.
+    scoped_stream.Detach();
     return std::make_shared<XamlReader>(handle);
 }
 

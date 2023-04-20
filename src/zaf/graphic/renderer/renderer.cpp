@@ -89,8 +89,8 @@ RenderBitmap Renderer::CreateBitmap(const wic::BitmapSource& image_source) {
 
     auto wic_image_factory_handle = wic::ImagingFactory::Instance().Inner();
 
-    CComPtr<IWICFormatConverter> format_converter;
-    HRESULT result = wic_image_factory_handle->CreateFormatConverter(&format_converter);
+    COMObject<IWICFormatConverter> format_converter;
+    HRESULT result = wic_image_factory_handle->CreateFormatConverter(format_converter.Store());
 
     ZAF_THROW_IF_COM_ERROR(result);
 
@@ -105,7 +105,7 @@ RenderBitmap Renderer::CreateBitmap(const wic::BitmapSource& image_source) {
     ZAF_THROW_IF_COM_ERROR(result);
 
     ID2D1Bitmap* handle = nullptr;
-    result = Inner()->CreateBitmapFromWicBitmap(format_converter, &handle);
+    result = Inner()->CreateBitmapFromWicBitmap(format_converter.Inner(), &handle);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return RenderBitmap(handle);
