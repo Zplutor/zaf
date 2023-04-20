@@ -1,6 +1,5 @@
 #include <zaf/control/text_box.h>
 #include <atlwin.h>
-#include <richole.h>
 #include <tom.h>
 #include <cassert>
 #include <zaf/base/error/system_error.h>
@@ -182,21 +181,16 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
-    auto window = Window();
-    if (!window) {
-        return;
-    }
-
     //If text color got from text color picker has been changed, set it to CHARFORMAT 
     //before painting.
     ReviseTextColor();
 
-    auto bounds_rect = FromDIPs(this->ContentRect(), window->GetDPI()).ToRECT();
-    auto update_rect = FromDIPs(dirty_rect, window->GetDPI()).ToRECT();
+    auto bounds_rect = FromDIPs(this->ContentRect(), this->GetDPI()).ToRECTL();
+    auto update_rect = FromDIPs(dirty_rect, this->GetDPI()).ToRECT();
 
     text_service_->TxDrawD2D(
         canvas.GetRenderer().Inner(),
-        reinterpret_cast<const RECTL*>(&bounds_rect),
+        &bounds_rect,
         &update_rect,
         TXTVIEW_ACTIVE);
 
@@ -227,23 +221,13 @@ void TextBox::ReviseTextColor() {
 
 void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
-    COMObject<IRichEditOle> rich_edit_ole{};
-    HRESULT hresult = text_service_->TxSendMessage(
-        EM_GETOLEINTERFACE,
-        0,
-        reinterpret_cast<LPARAM>(rich_edit_ole.Store()),
-        nullptr);
-
-    if (FAILED(hresult)) {
-        return;
-    }
-
-    LONG object_count = rich_edit_ole->GetObjectCount();
+    auto ole_interface = GetOLEInterface();
+    LONG object_count = ole_interface->GetObjectCount();
     if (object_count <= 0) {
         return;
     }
 
-    auto text_document = rich_edit_ole.As<ITextDocument>();
+    auto text_document = ole_interface.As<ITextDocument>();
     if (!text_document) {
         return;
     }
@@ -252,7 +236,7 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
 
         REOBJECT object_info{};
         object_info.cbStruct = sizeof(object_info);
-        hresult = rich_edit_ole->GetObject(index, &object_info, REO_GETOBJ_NO_INTERFACES);
+        HRESULT hresult = ole_interface->GetObject(index, &object_info, REO_GETOBJ_NO_INTERFACES);
         if (FAILED(hresult)) {
             continue;
         }
@@ -274,23 +258,23 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
             continue;
         }
 
-        long x{};
-        long y{};
-        hresult = text_range->GetPoint(tomClientCoord | TA_TOP | TA_LEFT, &x, &y);
+        long object_x{};
+        long object_y{};
+        hresult = text_range->GetPoint(tomClientCoord | TA_TOP | TA_LEFT, &object_x, &object_y);
         if (FAILED(hresult)) {
             continue;
         }
 
-        Point object_position{ static_cast<float>(x), static_cast<float>(y) };
+        Point object_position{ static_cast<float>(object_x), static_cast<float>(object_y) };
         object_position = ToDIPs(object_position, this->GetDPI());
-        object_position.SubtractOffset(this->GetAbsoluteContentRect().position);
         zaf::Rect object_rect{ object_position, embedded_object->Size() };
 
-        if (dirty_rect.HasIntersection(object_rect)) {
+        auto dirty_rect_in_object = Rect::Intersect(dirty_rect, object_rect);
+        if (!dirty_rect_in_object.IsEmpty()) {
 
             canvas.PushTransformLayer(object_rect, object_rect);
             canvas.BeginPaint();
-            embedded_object->Paint(canvas);
+            embedded_object->Paint(canvas, dirty_rect_in_object);
             canvas.EndPaint();
             canvas.PopTransformLayer();
         }
@@ -1224,17 +1208,10 @@ void TextBox::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) {
 
     ZAF_EXPECT(object.IsValid());
 
-    COMObject<IRichEditOle> rich_edit_ole{};
-    HRESULT hresult = text_service_->TxSendMessage(
-        EM_GETOLEINTERFACE, 
-        0, 
-        reinterpret_cast<LPARAM>(rich_edit_ole.Store()),
-        nullptr);
-
-    ZAF_THROW_IF_COM_ERROR(hresult);
+    auto ole_interface = GetOLEInterface();
 
     COMObject<IOleClientSite> client_site;
-    hresult = rich_edit_ole->GetClientSite(client_site.Store());
+    HRESULT hresult = ole_interface->GetClientSite(client_site.Store());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     REOBJECT object_info{};
@@ -1250,8 +1227,22 @@ void TextBox::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) {
     auto object_size = FromDIPs(object.Inner()->Size(), this->GetDPI()).ToSIZEL();
     AtlPixelToHiMetric(&object_size, &object_info.sizel);
 
-    hresult = rich_edit_ole->InsertObject(&object_info);
+    hresult = ole_interface->InsertObject(&object_info);
     ZAF_THROW_IF_COM_ERROR(hresult);
+}
+
+
+COMObject<IRichEditOle> TextBox::GetOLEInterface() const {
+
+    COMObject<IRichEditOle> result{};
+    HRESULT hresult = text_service_->TxSendMessage(
+        EM_GETOLEINTERFACE,
+        0,
+        reinterpret_cast<LPARAM>(result.Store()),
+        nullptr);
+
+    ZAF_THROW_IF_COM_ERROR(hresult);
+    return result;
 }
 
 

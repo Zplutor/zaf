@@ -66,7 +66,7 @@ public:
         return { 0xe16f8acd, 0x5b3a, 0x4167, { 0xa4, 0x49, 0xdc, 0x57, 0xd, 0xd4, 0x44, 0x59 } };
     }
 
-    void Paint(zaf::Canvas& canvas) override {
+    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override {
 
         canvas.SetBrushWithColor(zaf::Color::Green());
         canvas.DrawRectangle(zaf::Rect{ zaf::Point{}, this->Size() });
@@ -85,6 +85,8 @@ protected:
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
         text_box_ = zaf::Create<zaf::TextBox>();
+        text_box_->SetMargin(zaf::Frame{ 10, 10, 10, 10 });
+        text_box_->SetBorder(zaf::Frame{ 10, 10, 10, 10 });
         text_box_->SetFontSize(22);
         text_box_->SetIsMultiline(true);
 

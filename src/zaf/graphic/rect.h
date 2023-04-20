@@ -221,6 +221,19 @@ public:
         rect.bottom = static_cast<LONG>(position.y + size.height);
         return rect;
     }
+
+    /**
+    Convert to RECTL structure.
+    */
+    RECTL ToRECTL() const{
+
+        RECTL rect;
+        rect.left = static_cast<LONG>(position.x);
+        rect.top = static_cast<LONG>(position.y);
+        rect.right = static_cast<LONG>(position.x + size.width);
+        rect.bottom = static_cast<LONG>(position.y + size.height);
+        return rect;
+    }
     
     /**
      Convert to D2D1_RECT_F structure.

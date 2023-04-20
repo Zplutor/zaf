@@ -2,6 +2,7 @@
 
 #include <oleidl.h>
 #include <zaf/base/non_copyable.h>
+#include <zaf/graphic/rect.h>
 #include <zaf/graphic/size.h>
 
 namespace zaf {
@@ -21,7 +22,7 @@ public:
     }
 
     virtual GUID ClassID() const = 0;
-    virtual void Paint(Canvas& canvas) = 0;
+    virtual void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) = 0;
 
     //IUnknown interfaces
     HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override;

@@ -2,6 +2,7 @@
 
 #include <atlbase.h>
 #include <Richedit.h>
+#include <richole.h>
 #include <TextServ.h>
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/text_validator.h>
@@ -288,9 +289,11 @@ public:
 
     void InsertObject(const COMObject<rich_edit::EmbeddedObject>& object);
 
-    ITextServices* GetITextServices() const {
-        return text_service_.Inner();
+    const COMObject<ITextServices2>& GetITextServices() const {
+        return text_service_;
     }
+
+    COMObject<IRichEditOle> GetOLEInterface() const;
 
     void VerticallyScroll(int new_value) override;
     void HorizontallyScroll(int new_value) override;
