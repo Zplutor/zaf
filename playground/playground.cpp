@@ -91,6 +91,7 @@ protected:
         text_box_->SetIsMultiline(true);
 
         this->RootControl()->AddChild(text_box_);
+        this->RootControl()->SetBackgroundColor(zaf::Color::Yellow());
 
         InitializeOLEObject();
     }

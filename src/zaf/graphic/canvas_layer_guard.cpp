@@ -3,7 +3,7 @@
 
 namespace zaf {
 
-CanvasLayerGuard::~CanvasLayerGuard() {
+void CanvasLayerGuard::PopLayer() {
     if (canvas_) {
         canvas_->PopLayer();
     }

@@ -11,18 +11,14 @@
 
 namespace zaf {
 
-Canvas::Canvas(Renderer& renderer, const Rect& canvas_rect, const Rect& paintable_rect) :
-    renderer_(renderer) {
-
-    //Push an initial layer.
-    internal::CanvasLayer layer;
-    layer.rect = canvas_rect;
-    layer.aligned_rect = Align(canvas_rect);
-    layer.paintable_rect = paintable_rect;
-    layer.aligned_paintable_rect = Align(paintable_rect);
-    layers_.push(layer);
+Canvas::Canvas(zaf::Renderer& renderer) : renderer_(renderer) {
 
     SaveState();
+}
+
+
+Canvas::~Canvas() {
+
 }
 
 
@@ -45,16 +41,23 @@ internal::CanvasLayer Canvas::CreateNewLayer(
     const Rect& layer_rect,
     const Rect& paintable_rect) const {
 
-    const auto& current_layer = layers_.top();
+    const internal::CanvasLayer* current_layer{};
+    if (!layers_.empty()) {
+        current_layer = &layers_.top();
+    }
 
     internal::CanvasLayer new_layer;
     new_layer.rect = layer_rect;
-    new_layer.rect.AddOffset(current_layer.rect.position);
+    if (current_layer) {
+        new_layer.rect.AddOffset(current_layer->rect.position);
+    }
     new_layer.aligned_rect = Align(new_layer.rect);
 
     new_layer.paintable_rect = paintable_rect;
-    new_layer.paintable_rect.AddOffset(current_layer.rect.position);
-    new_layer.paintable_rect.Intersect(current_layer.paintable_rect);
+    if (current_layer) {
+        new_layer.paintable_rect.AddOffset(current_layer->rect.position);
+        new_layer.paintable_rect.Intersect(current_layer->paintable_rect);
+    }
     new_layer.paintable_rect.Intersect(new_layer.rect);
     new_layer.aligned_paintable_rect = Align(new_layer.paintable_rect);
     return new_layer;
@@ -63,13 +66,18 @@ internal::CanvasLayer Canvas::CreateNewLayer(
 
 void Canvas::PopLayer() {
 
-    //At least one layer is required remaining in stack.
-    ZAF_EXPECT(layers_.size() > 1);
+    ZAF_EXPECT(!layers_.empty());
 
     layers_.pop();
 
     renderer_.PopAxisAlignedClipping();
-    renderer_.Transform(TransformMatrix::Translation(layers_.top().aligned_rect.position));
+
+    if (!layers_.empty()) {
+        renderer_.Transform(TransformMatrix::Translation(layers_.top().aligned_rect.position));
+    }
+    else {
+        renderer_.Transform(TransformMatrix::Identity);
+    }
 }
 
 

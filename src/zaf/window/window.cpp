@@ -775,19 +775,21 @@ void Window::HandleWMPAINT() {
     ValidateRect(handle_, nullptr);
 
     renderer_.BeginDraw();
-
-    Canvas canvas(renderer_, root_control_->Rect(), dirty_rect);
-
-    //Paint window background color first.
+    Canvas canvas(renderer_);
     {
-        Canvas::StateGuard state_guard(canvas);
-        canvas.SetBrushWithColor(Color::FromRGB(internal::ControlBackgroundColorRGB));
-        canvas.DrawRectangle(dirty_rect);
+        auto layer_guard = canvas.PushLayer(root_control_->Rect(), dirty_rect);
+
+        //Paint window background color first.
+        {
+            Canvas::StateGuard state_guard(canvas);
+            canvas.SetBrushWithColor(Color::FromRGB(internal::ControlBackgroundColorRGB));
+            canvas.DrawRectangle(dirty_rect);
+        }
+
+        root_control_->Repaint(canvas, dirty_rect);
+
+        PaintInspectedControl(canvas, dirty_rect);
     }
-
-    root_control_->Repaint(canvas, dirty_rect);
-
-    PaintInspectedControl(canvas, dirty_rect);
 
     try {
         renderer_.EndDraw();

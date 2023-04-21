@@ -189,7 +189,7 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     auto update_rect = FromDIPs(dirty_rect, this->GetDPI()).ToRECT();
 
     text_service_->TxDrawD2D(
-        canvas.GetRenderer().Inner(),
+        canvas.Renderer().Inner(),
         &bounds_rect,
         &update_rect,
         TXTVIEW_ACTIVE);
@@ -272,11 +272,8 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
         auto dirty_rect_in_object = Rect::Intersect(dirty_rect, object_rect);
         if (!dirty_rect_in_object.IsEmpty()) {
 
-            canvas.PushTransformLayer(object_rect, object_rect);
-            canvas.BeginPaint();
+            auto layer_guard = canvas.PushLayer(object_rect, object_rect);
             embedded_object->Paint(canvas, dirty_rect_in_object);
-            canvas.EndPaint();
-            canvas.PopTransformLayer();
         }
     }
 }

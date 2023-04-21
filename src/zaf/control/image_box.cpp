@@ -38,7 +38,7 @@ void ImageBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         return;
     }
 
-    auto bitmap = image_player_->GetRenderBitmap(canvas.GetRenderer());
+    auto bitmap = image_player_->GetRenderBitmap(canvas.Renderer());
     if (bitmap == nullptr) {
         return;
     }

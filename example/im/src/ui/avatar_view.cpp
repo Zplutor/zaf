@@ -8,12 +8,12 @@ void AvatarView::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
         return;
     }
 
-    auto bitmap = canvas.GetRenderer().CreateBitmap(image_source_);
+    auto bitmap = canvas.Renderer().CreateBitmap(image_source_);
     if (bitmap == nullptr) {
         return;
     }
 
-    auto bitmap_brush = canvas.GetRenderer().CreateBitmapBrush(bitmap);
+    auto bitmap_brush = canvas.Renderer().CreateBitmapBrush(bitmap);
     if (bitmap_brush == nullptr) {
         return;
     }

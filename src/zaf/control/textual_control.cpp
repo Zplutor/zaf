@@ -102,7 +102,7 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     text_layout.SetMaxWidth(text_rect.size.width);
     text_layout.SetMaxHeight(text_rect.size.height);
 
-    SetTextColorsToTextLayout(text_layout, canvas.GetRenderer());
+    SetTextColorsToTextLayout(text_layout, canvas.Renderer());
 
     Canvas::StateGuard state_guard(canvas);
     canvas.SetBrushWithColor(TextColor());

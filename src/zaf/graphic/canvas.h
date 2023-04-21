@@ -82,21 +82,12 @@ public:
 
     @param renderer
         The renderer to which the canvas paints to.
-
-    @param canvas_rect
-        The rectangle area of canvas in renderer.
-
-    @param paintable_rect
-        The rectangle area that canvas can paint in renderer. It is a sub area of canvas_rect.
     */
-    Canvas(Renderer& renderer, const Rect& canvas_rect, const Rect& paintable_rect);
+    explicit Canvas(Renderer& renderer);
+    ~Canvas();
 
-    Renderer& GetRenderer() {
+    zaf::Renderer& Renderer() {
         return renderer_;
-    }
-
-    Rect GetAbsolutePaintableRect() const {
-        return layers_.top().paintable_rect;
     }
 
     /**
@@ -106,8 +97,8 @@ public:
         The rectangle area of the new layer, in current layer coordinate.
 
     @param paintable_rect
-        The rectangle area that can be painted in the new layer, in current layer coordinate. It is
-        a sub area of layer_rect.
+        The rectangle area that can be painted in the new layer, in current layer coordinate. It's
+        normally a sub area of layer_rect.
     */
     [[nodiscard]]
     CanvasLayerGuard PushLayer(const Rect& layer_rect, const Rect& paintable_rect);
@@ -201,7 +192,7 @@ private:
     }
 
 private:
-    Renderer renderer_;
+    zaf::Renderer renderer_;
     std::stack<internal::CanvasLayer> layers_;
     std::vector<std::shared_ptr<State>> states_;
 };

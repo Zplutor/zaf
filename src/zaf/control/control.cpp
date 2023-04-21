@@ -231,7 +231,7 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_
     if (cached_renderer_ == nullptr) {
         CreateCompatibleRendererOptions options;
         options.DesiredSize(control_size);
-        cached_renderer_ = canvas.GetRenderer().CreateCompatibleRenderer(options);
+        cached_renderer_ = canvas.Renderer().CreateCompatibleRenderer(options);
         valid_cached_renderer_rect_ = zaf::Rect{};
     }
 
@@ -245,15 +245,14 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_
     if (!calculate_result.actual_dirty_rect.IsEmpty()) {
 
         cached_renderer_.BeginDraw();
+        Canvas cached_painting_canvas(cached_renderer_);
+        {
+            auto layer_guard = cached_painting_canvas.PushLayer(
+                zaf::Rect{ Point{}, control_size },
+                calculate_result.actual_dirty_rect);
 
-        zaf::Rect canvas_rect{ Point{}, control_size };
-        Canvas cached_painting_canvas(
-            cached_renderer_, 
-            canvas_rect, 
-            calculate_result.actual_dirty_rect);
-
-        RepaintControl(cached_painting_canvas, calculate_result.actual_dirty_rect, true);
-
+            RepaintControl(cached_painting_canvas, calculate_result.actual_dirty_rect, true);
+        }
         cached_renderer_.EndDraw();
 
         //Update valid cached rect after repainting.
@@ -261,23 +260,19 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_
     }
 
     //Paint into canvas from cached renderer.
-    canvas.BeginPaint();
     canvas.DrawBitmap(
         cached_renderer_.GetBitmap(),
         dirty_rect, 
         DrawImageOptions().SourceRect(dirty_rect));
-    canvas.EndPaint();
 }
 
 
 void Control::RepaintControl(Canvas& canvas, const zaf::Rect& dirty_rect, bool need_clear) {
 
-    canvas.BeginPaint();
     if (need_clear) {
         canvas.Clear();
     }
     Paint(canvas, dirty_rect);
-    canvas.EndPaint();
 
     RepaintChildren(canvas, dirty_rect);
 }
@@ -296,9 +291,6 @@ void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect) {
         return;
     }
 
-    const auto& border = Border();
-    const auto& padding = Padding();
-
     for (const auto& child : children_) {
 
         //Don't paint the child if it is not visible.
@@ -307,19 +299,17 @@ void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect) {
         }
 
         zaf::Rect child_rect = child->Rect();
-        child_rect.position.x += border.left + padding.left;
-        child_rect.position.y += border.top + padding.top;
+        child_rect.position.AddOffset(content_rect.position);
 
+        //No need to paint the child if its rect not dirty.
         zaf::Rect child_dirty_rect = zaf::Rect::Intersect(child_rect, dirty_rect);
         if (child_dirty_rect.IsEmpty()) {
             continue;
         }
 
-        canvas.PushTransformLayer(child_rect, content_rect);
-        child_dirty_rect.position.x -= child_rect.position.x;
-        child_dirty_rect.position.y -= child_rect.position.y;
+        auto layer_guard = canvas.PushLayer(child_rect, child_dirty_rect);
+        child_dirty_rect.position.SubtractOffset(child_rect.position);
         child->Repaint(canvas, child_dirty_rect);
-        canvas.PopTransformLayer();
     }
 }
 
@@ -369,7 +359,7 @@ void Control::DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_re
         return;
     }
     
-    auto render_bitmap = background_image->CreateRenderBitmap(canvas.GetRenderer());
+    auto render_bitmap = background_image->CreateRenderBitmap(canvas.Renderer());
     if (render_bitmap == nullptr) {
         return;
     }
