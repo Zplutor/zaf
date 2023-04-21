@@ -209,9 +209,8 @@ void Control::EndUpdate() {
 
 void Control::Repaint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
-    if (! IsVisible()) {
-        return;
-    }
+    //Make sure the control repaints only if it is visible.
+    ZAF_EXPECT(IsSelfVisible());
 
     if (IsCachedPaintingEnabled()) {
         RepaintUsingCachedPainting(canvas, dirty_rect);
@@ -280,6 +279,18 @@ void Control::RepaintControl(Canvas& canvas, const zaf::Rect& dirty_rect, bool n
     Paint(canvas, dirty_rect);
     canvas.EndPaint();
 
+    RepaintChildren(canvas, dirty_rect);
+}
+
+
+void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect) {
+
+    //No need to repaint if there is no child.
+    if (children_.empty()) {
+        return;
+    }
+
+    //No need to repaint if the content rect is not dirty.
     zaf::Rect content_rect = ContentRect();
     if (!content_rect.HasIntersection(dirty_rect)) {
         return;
@@ -289,6 +300,11 @@ void Control::RepaintControl(Canvas& canvas, const zaf::Rect& dirty_rect, bool n
     const auto& padding = Padding();
 
     for (const auto& child : children_) {
+
+        //Don't paint the child if it is not visible.
+        if (!child->IsSelfVisible()) {
+            continue;
+        }
 
         zaf::Rect child_rect = child->Rect();
         child_rect.position.x += border.left + padding.left;

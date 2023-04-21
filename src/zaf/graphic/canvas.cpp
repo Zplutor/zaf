@@ -11,52 +11,100 @@
 
 namespace zaf {
 
-Canvas::Canvas(const Renderer& renderer, const Rect& renderer_rect, const Rect& paintable_rect) :
+Canvas::Canvas(Renderer& renderer, const Rect& canvas_rect, const Rect& paintable_rect) :
     renderer_(renderer) {
 
-    TransformLayer transformed_layer;
-    transformed_layer.rect = renderer_rect;
-    transformed_layer.aligned_rect = Align(renderer_rect);
-    transformed_layer.paintable_rect = paintable_rect;
-    transformed_layer.aligned_paintable_rect = Align(paintable_rect);
-    transform_layers_.push(transformed_layer);
+    //Push an initial layer.
+    internal::CanvasLayer layer;
+    layer.rect = canvas_rect;
+    layer.aligned_rect = Align(canvas_rect);
+    layer.paintable_rect = paintable_rect;
+    layer.aligned_paintable_rect = Align(paintable_rect);
+    layers_.push(layer);
 
     SaveState();
 }
 
 
+CanvasLayerGuard Canvas::PushLayer(const Rect& layer_rect, const Rect& paintable_rect) {
+
+    auto new_layer = CreateNewLayer(layer_rect, paintable_rect);
+    layers_.push(new_layer);
+
+    renderer_.Transform(TransformMatrix::Translation(new_layer.aligned_rect.position));
+
+    Rect clipping_rect = new_layer.aligned_paintable_rect;
+    clipping_rect.SubtractOffset(new_layer.aligned_rect.position);
+    renderer_.PushAxisAlignedClipping(clipping_rect, AntialiasMode::PerPrimitive);
+
+    return CanvasLayerGuard{ this };
+}
+
+
+internal::CanvasLayer Canvas::CreateNewLayer(
+    const Rect& layer_rect,
+    const Rect& paintable_rect) const {
+
+    const auto& current_layer = layers_.top();
+
+    internal::CanvasLayer new_layer;
+    new_layer.rect = layer_rect;
+    new_layer.rect.AddOffset(current_layer.rect.position);
+    new_layer.aligned_rect = Align(new_layer.rect);
+
+    new_layer.paintable_rect = paintable_rect;
+    new_layer.paintable_rect.AddOffset(current_layer.rect.position);
+    new_layer.paintable_rect.Intersect(current_layer.paintable_rect);
+    new_layer.paintable_rect.Intersect(new_layer.rect);
+    new_layer.aligned_paintable_rect = Align(new_layer.paintable_rect);
+    return new_layer;
+}
+
+
+void Canvas::PopLayer() {
+
+    //At least one layer is required remaining in stack.
+    ZAF_EXPECT(layers_.size() > 1);
+
+    layers_.pop();
+
+    renderer_.PopAxisAlignedClipping();
+    renderer_.Transform(TransformMatrix::Translation(layers_.top().aligned_rect.position));
+}
+
+
 void Canvas::PushTransformLayer(const Rect& rect, const Rect& paintable_rect) {
 
-    const auto& current_transform_layer = transform_layers_.top();
+    const auto& current_layer = layers_.top();
 
     Rect new_transform_rect = rect;
-    new_transform_rect.position.x += current_transform_layer.rect.position.x;
-    new_transform_rect.position.y += current_transform_layer.rect.position.y;
+    new_transform_rect.position.x += current_layer.rect.position.x;
+    new_transform_rect.position.y += current_layer.rect.position.y;
 
     Rect new_paintable_rect = paintable_rect;
-    new_paintable_rect.position.x += current_transform_layer.rect.position.x;
-    new_paintable_rect.position.y += current_transform_layer.rect.position.y;
-    new_paintable_rect.Intersect(current_transform_layer.paintable_rect);
+    new_paintable_rect.position.x += current_layer.rect.position.x;
+    new_paintable_rect.position.y += current_layer.rect.position.y;
+    new_paintable_rect.Intersect(current_layer.paintable_rect);
     new_paintable_rect.Intersect(new_transform_rect);
 
-    TransformLayer new_transform_layer;
-    new_transform_layer.rect = new_transform_rect;
-    new_transform_layer.aligned_rect = Align(new_transform_rect);
-    new_transform_layer.paintable_rect = new_paintable_rect;
-    new_transform_layer.aligned_paintable_rect = Align(new_paintable_rect);
+    internal::CanvasLayer new_layer;
+    new_layer.rect = new_transform_rect;
+    new_layer.aligned_rect = Align(new_transform_rect);
+    new_layer.paintable_rect = new_paintable_rect;
+    new_layer.aligned_paintable_rect = Align(new_paintable_rect);
 
-    transform_layers_.push(new_transform_layer);
+    layers_.push(new_layer);
 }
 
 
 void Canvas::PopTransformLayer() {
-    transform_layers_.pop();
+    layers_.pop();
 }
 
 
 void Canvas::BeginPaint() {
 
-    const auto& current_transform_layer = transform_layers_.top();
+    const auto& current_transform_layer = layers_.top();
     const auto& aligned_rect = current_transform_layer.aligned_rect;
 
     renderer_.Transform(TransformMatrix::Translation(aligned_rect.position));
@@ -287,7 +335,7 @@ PathGeometry Canvas::CreatePathGeometry() const {
 
     ZAF_THROW_IF_COM_ERROR(result);
 
-    const auto& current_transform_layer = transform_layers_.top();
+    const auto& current_transform_layer = layers_.top();
     return PathGeometry(
         handle, 
         current_transform_layer.rect.position, 

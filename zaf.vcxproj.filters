@@ -892,6 +892,9 @@
     <ClCompile Include="src\zaf\control\rich_edit\embedded_object.cpp">
       <Filter>zaf\control\rich_edit</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\canvas_layer_guard.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2067,6 +2070,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\rich_edit\embedded_object.h">
       <Filter>zaf\control\rich_edit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\canvas_layer_guard.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\internal\canvas_layer.h">
+      <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

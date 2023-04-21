@@ -4,8 +4,10 @@
 #include <stack>
 #include <string>
 #include <zaf/graphic/brush/solid_color_brush.h>
+#include <zaf/graphic/canvas_layer_guard.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/internal/alignment_helper.h>
+#include <zaf/graphic/internal/canvas_layer.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/renderer/renderer.h>
 
@@ -54,7 +56,7 @@ private:
 };
 
 
-class Canvas {
+class Canvas : NonCopyable {
 public:
     class StateGuard {
     public:
@@ -75,18 +77,40 @@ public:
     };
 
 public:
-    Canvas(const Renderer& renderer, const Rect& renderer_rect, const Rect& paintable_rect);
+    /**
+    Constructs a canvas with specified renderer and rects.
 
-    Canvas(Canvas&) = delete;
-    Canvas& operator=(const Canvas&) = delete;
+    @param renderer
+        The renderer to which the canvas paints to.
+
+    @param canvas_rect
+        The rectangle area of canvas in renderer.
+
+    @param paintable_rect
+        The rectangle area that canvas can paint in renderer. It is a sub area of canvas_rect.
+    */
+    Canvas(Renderer& renderer, const Rect& canvas_rect, const Rect& paintable_rect);
 
     Renderer& GetRenderer() {
         return renderer_;
     }
 
     Rect GetAbsolutePaintableRect() const {
-        return transform_layers_.top().paintable_rect;
+        return layers_.top().paintable_rect;
     }
+
+    /**
+    Pushes a new layer into canvas.
+
+    @param layer_rect
+        The rectangle area of the new layer, in current layer coordinate.
+
+    @param paintable_rect
+        The rectangle area that can be painted in the new layer, in current layer coordinate. It is
+        a sub area of layer_rect.
+    */
+    [[nodiscard]]
+    CanvasLayerGuard PushLayer(const Rect& layer_rect, const Rect& paintable_rect);
 
     void SaveState();
     void RestoreState();
@@ -144,18 +168,11 @@ private:
         std::vector<Rect> clipping_rects;
     };
 
-    class TransformLayer {
-    public:
-        Rect rect;
-        Rect aligned_rect;
-        Rect paintable_rect;
-        Rect aligned_paintable_rect;
-    };
-
 private:
     friend class Control;
     friend class Window;
     friend class TextBox;
+    friend class CanvasLayerGuard;
 
     void PushTransformLayer(const Rect& rect, const Rect& paintable_rect);
     void PopTransformLayer();
@@ -163,7 +180,11 @@ private:
     void BeginPaint();
     void EndPaint();
 
+    void PopLayer();
+
 private:
+    internal::CanvasLayer CreateNewLayer(const Rect& layer_rect, const Rect& paintable_rect) const;
+
     void ApplyState(const std::shared_ptr<State>& state);
     void CancelState(const std::shared_ptr<State>& state);
     std::shared_ptr<State> GetCurrentState() const;
@@ -171,17 +192,17 @@ private:
     template<typename T>
     T AlignWithTransformLayer(const T& object, float stroke_width = 0) const {
 
-        const auto& current_transform_layer = transform_layers_.top();
+        const auto& current_layer = layers_.top();
         return internal::AlignInRelatedCoordinateSystem(
             object, 
             stroke_width, 
-            current_transform_layer.rect.position, 
-            current_transform_layer.aligned_rect.position);
+            current_layer.rect.position, 
+            current_layer.aligned_rect.position);
     }
 
 private:
     Renderer renderer_;
-    std::stack<TransformLayer> transform_layers_;
+    std::stack<internal::CanvasLayer> layers_;
     std::vector<std::shared_ptr<State>> states_;
 };
 

@@ -856,12 +856,13 @@ private:
          Canvas used to paint the content of control.
 
      @param dirty_rect
-         The rect in control's coordinate needed to repaint.
+         The rect in control coordinate needed to repaint.
      */
     void Repaint(Canvas& canvas, const zaf::Rect& dirty_rect);
 
     void RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_rect);
     void RepaintControl(Canvas& canvas, const zaf::Rect& dirty_rect, bool need_clear);
+    void RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect);
     void RecalculateCachedPaintingRect(const zaf::Rect& repaint_rect);
     void ReleaseCachedPaintingRenderer();
     void DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect);
