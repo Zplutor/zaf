@@ -842,7 +842,7 @@ void Window::PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect) 
     };
 
     Canvas::StateGuard state_guard(canvas);
-    canvas.PushClippingRect(dirty_rect);
+    auto clipping_guard = canvas.PushClipping(dirty_rect);
 
     //Draw content rect.
     draw_frame(content_rect, zaf::Rect{}, internal::InspectedControlContentColor);
@@ -855,8 +855,6 @@ void Window::PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect) 
 
     //Draw margin rect.
     draw_frame(margin_rect, control_rect, internal::InspectedControlMarginColor);
-
-    canvas.PopClippingRect();
 }
 
 

@@ -179,6 +179,7 @@
     <ClCompile Include="src\zaf\control\tree_item_container.cpp" />
     <ClCompile Include="src\zaf\control\tree_item_expand_button.cpp" />
     <ClCompile Include="src\zaf\graphic\alignment.cpp" />
+    <ClCompile Include="src\zaf\graphic\canvas_clipping_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas_region_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_weight.cpp" />
     <ClCompile Include="src\zaf\graphic\image\uri_image.cpp" />
@@ -491,6 +492,7 @@
     <ClInclude Include="src\zaf\control\tree_item_expand_button.h" />
     <ClInclude Include="src\zaf\creation.h" />
     <ClInclude Include="src\zaf\graphic\alignment.h" />
+    <ClInclude Include="src\zaf\graphic\canvas_clipping_guard.h" />
     <ClInclude Include="src\zaf\graphic\canvas_region_guard.h" />
     <ClInclude Include="src\zaf\graphic\dpi.h" />
     <ClInclude Include="src\zaf\graphic\geometry\arc_segment.h" />

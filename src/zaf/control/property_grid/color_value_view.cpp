@@ -160,7 +160,7 @@ void ColorValueView::ColorSquare::Paint(Canvas& canvas, const zaf::Rect& dirty_r
 void ColorValueView::ColorSquare::PaintTransparentColorSmallSquares(Canvas& canvas) {
 
     auto content_rect = ContentRect();
-    canvas.PushClippingRect(content_rect);
+    auto clipping_guard = canvas.PushClipping(content_rect);
 
     canvas.SetBrushWithColor(Color::White());
     canvas.DrawRectangle(content_rect);
@@ -188,8 +188,6 @@ void ColorValueView::ColorSquare::PaintTransparentColorSmallSquares(Canvas& canv
             canvas.DrawRectangle(square_rect);
         }
     }
-
-    canvas.PopClippingRect();
 }
 
 }

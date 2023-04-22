@@ -44,10 +44,8 @@ void ImageBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     }
 
     auto content_rect = ContentRect();
-
-    canvas.PushClippingRect(content_rect);
+    auto clipping_guard = canvas.PushClipping(content_rect);
     internal::DrawImage(canvas, content_rect, ImageLayout(), bitmap, InterpolationMode());
-    canvas.PopClippingRect();
 }
 
 

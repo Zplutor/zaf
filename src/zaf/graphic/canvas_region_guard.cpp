@@ -5,7 +5,7 @@ namespace zaf {
 
 void CanvasRegionGuard::PopRegion() {
     if (canvas_) {
-        canvas_->PopRegion();
+        canvas_->PopRegion(std::move(clipping_guard_));
     }
 }
 

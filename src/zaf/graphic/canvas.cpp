@@ -30,9 +30,9 @@ CanvasRegionGuard Canvas::PushRegion(const Rect& region_rect, const Rect& painta
 
     Rect clipping_rect = new_region.aligned_paintable_rect;
     clipping_rect.SubtractOffset(new_region.aligned_rect.position);
-    renderer_.PushAxisAlignedClipping(clipping_rect, AntialiasMode::PerPrimitive);
+    auto clipping_guard = PushClipping(clipping_rect);
 
-    return CanvasRegionGuard{ this };
+    return CanvasRegionGuard{ this, std::move(clipping_guard) };
 }
 
 
@@ -63,13 +63,16 @@ internal::CanvasRegion Canvas::CreateNewRegion(
 }
 
 
-void Canvas::PopRegion() {
+void Canvas::PopRegion(CanvasClippingGuard&& clipping_guard) {
 
     ZAF_EXPECT(!regions_.empty());
 
     regions_.pop();
 
-    renderer_.PopAxisAlignedClipping();
+    //Destroy clipping guard to pop the clipping.
+    {
+        auto temp_clipping_guard = std::move(clipping_guard);
+    }
 
     if (!regions_.empty()) {
         renderer_.Transform(TransformMatrix::Translation(regions_.top().aligned_rect.position));
@@ -80,35 +83,31 @@ void Canvas::PopRegion() {
 }
 
 
-void Canvas::PushClippingRect(const Rect& rect) {
+CanvasClippingGuard Canvas::PushClipping(const Rect& clipping_rect) {
 
-    auto absolute_clipping_rect = AlignWithRegion(rect);
+    auto aligned_clipping_rect = AlignWithRegion(clipping_rect);
+    renderer_.PushAxisAlignedClipping(aligned_clipping_rect, zaf::AntialiasMode::PerPrimitive);
 
-    GetCurrentState()->clipping_rects.push_back(absolute_clipping_rect);
-    renderer_.PushAxisAlignedClipping(absolute_clipping_rect, zaf::AntialiasMode::PerPrimitive);
+    return CanvasClippingGuard{ this, ++current_clipping_tag_ };
 }
 
 
-void Canvas::PopClippingRect() {
+void Canvas::PopClipping(std::size_t tag) {
 
-    GetCurrentState()->clipping_rects.pop_back();
+    //Detect mismatch push and pop.
+    ZAF_EXPECT(tag == current_clipping_tag_);
+
     renderer_.PopAxisAlignedClipping();
+    --current_clipping_tag_;
 }
 
 
 void Canvas::SaveState() {
 
-    if (! states_.empty()) {
-
-        auto current_state = states_.back();
-        CancelState(current_state);
-    }
-
     auto new_state = std::make_shared<State>();
     new_state->brush = renderer_.CreateSolidColorBrush(Color::White());
 
     states_.push_back(new_state);
-    ApplyState(new_state);
 }
 
 
@@ -117,32 +116,10 @@ void Canvas::RestoreState() {
     if (! states_.empty()) {
 
         auto current_state = states_.back();
-        CancelState(current_state);
         states_.pop_back();
-
-        if (! states_.empty()) {
-            current_state = states_.back();
-            ApplyState(current_state);
-        }
     }
     else {
         ZAF_ALERT();
-    }
-}
-
-
-void Canvas::ApplyState(const std::shared_ptr<State>& state) {
-
-    for (const auto& each_rect : state->clipping_rects) {
-        renderer_.PushAxisAlignedClipping(each_rect, zaf::AntialiasMode::PerPrimitive);
-    }
-}
-
-
-void Canvas::CancelState(const std::shared_ptr<State>& state) {
-
-    for (const auto& each_rect : state->clipping_rects) {
-        renderer_.PopAxisAlignedClipping();
     }
 }
 

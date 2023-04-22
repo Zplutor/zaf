@@ -4,6 +4,7 @@
 #include <stack>
 #include <string>
 #include <zaf/graphic/brush/solid_color_brush.h>
+#include <zaf/graphic/canvas_clipping_guard.h>
 #include <zaf/graphic/canvas_region_guard.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/internal/alignment_helper.h>
@@ -108,6 +109,20 @@ public:
     [[nodiscard]]
     CanvasRegionGuard PushRegion(const Rect& region_rect, const Rect& paintable_rect);
 
+    /**
+    Pushes a clipping area into canvas. 
+
+    @param clipping_rect
+        The retangle area of the clipping, in current region coordinate. After pushing, only 
+        painting operations that occur in this area have effect.
+
+    @return 
+        A guard that auto pops the clipping on destruction. You should keep the guard during 
+        painting with the clipping and destroy it after painting.
+    */
+    [[nodiscard]]
+    CanvasClippingGuard PushClipping(const Rect& clipping_rect);
+
     void SaveState();
     void RestoreState();
 
@@ -123,9 +138,6 @@ public:
     void SetStroke(const Stroke& stroke) {
         GetCurrentState()->stroke = stroke;
     }
-
-    void PushClippingRect(const Rect& rect);
-    void PopClippingRect();
 
     void Clear();
 
@@ -161,21 +173,20 @@ private:
     public:
         Brush brush;
         Stroke stroke;
-        std::vector<Rect> clipping_rects;
     };
 
 private:
+    friend class CanvasClippingGuard;
     friend class CanvasRegionGuard;
 
-    void PopRegion();
+    void PopRegion(CanvasClippingGuard&& clipping_guard);
+    void PopClipping(std::size_t tag);
 
 private:
     internal::CanvasRegion CreateNewRegion(
         const Rect& region_rect,
         const Rect& paintable_rect) const;
 
-    void ApplyState(const std::shared_ptr<State>& state);
-    void CancelState(const std::shared_ptr<State>& state);
     std::shared_ptr<State> GetCurrentState() const;
 
     template<typename T>
@@ -193,6 +204,7 @@ private:
     zaf::Renderer renderer_;
     std::stack<internal::CanvasRegion> regions_;
     std::vector<std::shared_ptr<State>> states_;
+    std::size_t current_clipping_tag_{};
 };
 
 }

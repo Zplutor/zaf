@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
+#include <zaf/graphic/canvas_clipping_guard.h>
 
 namespace zaf {
 
@@ -12,7 +13,9 @@ public:
 
     }
 
-    explicit CanvasRegionGuard(Canvas* canvas) : canvas_(canvas) {
+    CanvasRegionGuard(Canvas* canvas, CanvasClippingGuard&& clipping_guard) : 
+        canvas_(canvas),
+        clipping_guard_(std::move(clipping_guard)) {
 
     }
 
@@ -20,13 +23,17 @@ public:
         PopRegion();
     }
 
-    CanvasRegionGuard(CanvasRegionGuard&& other) : canvas_(other.canvas_) {
+    CanvasRegionGuard(CanvasRegionGuard&& other) : 
+        canvas_(other.canvas_), 
+        clipping_guard_(std::move(other.clipping_guard_)) {
+
         other.canvas_ = nullptr;
     }
 
     CanvasRegionGuard& operator=(CanvasRegionGuard&& other) {
         PopRegion();
         canvas_ = other.canvas_;
+        clipping_guard_ = std::move(other.clipping_guard_);
         other.canvas_ = nullptr;
         return *this;
     }
@@ -36,6 +43,7 @@ private:
 
 private:
     Canvas* canvas_;
+    CanvasClippingGuard clipping_guard_;
 };
 
 }
