@@ -65,7 +65,7 @@ void MenuItem::PaintSubMenuArrow(Canvas& canvas) {
         triangle_geometry,
         TransformMatrix::Translation(transform_position));
 
-    Canvas::StateGuard guard{ canvas };
+    auto state_guard = canvas.PushState();
     canvas.SetBrushWithColor(this->TextColor());
     canvas.DrawGeometry(transformed_geometry);
 }

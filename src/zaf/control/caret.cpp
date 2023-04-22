@@ -150,12 +150,9 @@ void Caret::Paint(Canvas& owner_canvas, const zaf::Rect& dirty_rect) {
         return;
     }
 
-    owner_canvas.SaveState();
-
+    auto state_guard = owner_canvas.PushState();
     owner_canvas.SetBrushWithColor(Color::Black());
     owner_canvas.DrawRectangle(rect_);
-
-    owner_canvas.RestoreState();
 }
 
 }

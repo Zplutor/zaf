@@ -32,7 +32,7 @@ void ScrollBarThumb::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         return;
     }
 
-    Canvas::StateGuard state_guard(canvas);
+    auto state_guard = canvas.PushState();
 
     canvas.SetBrushWithColor(ThumbColor());
     canvas.DrawRectangle(ContentRect());

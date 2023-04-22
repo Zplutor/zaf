@@ -13,7 +13,9 @@ namespace zaf {
 Canvas::Canvas(zaf::Renderer& renderer) : renderer_(renderer) {
 
     //Add an initial state.
-    states_.push(internal::CanvasState{});
+    internal::CanvasState initial_state;
+    initial_state.brush = renderer.CreateSolidColorBrush(Color::White());
+    states_.push(initial_state);
 }
 
 
@@ -138,51 +140,8 @@ void Canvas::SetStroke(const Stroke& stroke) {
 }
 
 
-Brush Canvas::GetCurrentBrush() {
-
-    auto& current_state = states_.top();
-    if (current_state.brush) {
-        return current_state.brush;
-    }
-}
-
-
-Stroke Canvas::GetCurrentStroke() {
-
-}
-
-
-void Canvas::SaveState() {
-
-    auto new_state = std::make_shared<State>();
-    new_state->brush = renderer_.CreateSolidColorBrush(Color::White());
-
-    states_.push_back(new_state);
-}
-
-
-void Canvas::RestoreState() {
-
-    if (! states_.empty()) {
-
-        auto current_state = states_.back();
-        states_.pop_back();
-    }
-    else {
-        ZAF_ALERT();
-    }
-}
-
-
-std::shared_ptr<Canvas::State> Canvas::GetCurrentState() const {
-
-    if (! states_.empty()) {
-        return states_.back();
-    }
-    else {
-        ZAF_ALERT();
-        return nullptr;
-    }
+const internal::CanvasState& Canvas::CurrentState() const {
+    return states_.top();
 }
 
 
@@ -193,67 +152,67 @@ void Canvas::Clear() {
 
 void Canvas::DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
 
-    auto state = GetCurrentState();
+    const auto& state = CurrentState();
     renderer_.DrawLine(
         AlignWithRegion(from_point, stroke_width),
         AlignWithRegion(to_point, stroke_width),
-        state->brush,
+        state.brush,
         stroke_width,
-        state->stroke);
+        state.stroke);
 }
 
 
 void Canvas::DrawRectangle(const Rect& rect) {
-    auto state = GetCurrentState();
-    renderer_.DrawRectangle(AlignWithRegion(rect), state->brush);
+    const auto& state = CurrentState();
+    renderer_.DrawRectangle(AlignWithRegion(rect), state.brush);
 }
 
 
 void Canvas::DrawRectangleFrame(const Rect& rect, float stroke_width) {
-    auto state = GetCurrentState();
+    const auto& state = CurrentState();
     renderer_.DrawRectangleFrame(
         AlignWithRegion(rect, stroke_width),
-        state->brush,
+        state.brush,
         stroke_width,
-        state->stroke);
+        state.stroke);
 }
 
 
 void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect) {
-    auto state = GetCurrentState();
-    renderer_.DrawRoundedRectangle(AlignWithRegion(rounded_rect), state->brush);
+    const auto& state = CurrentState();
+    renderer_.DrawRoundedRectangle(AlignWithRegion(rounded_rect), state.brush);
 }
 
 
 void Canvas::DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width) {
-
-    auto state = GetCurrentState();
+    const auto& state = CurrentState();
     renderer_.DrawRoundedRectangleFrame(
         AlignWithRegion(rounded_rect, stroke_width),
-        state->brush,
+        state.brush,
         stroke_width,
-        state->stroke);
+        state.stroke);
 }
 
 
 void Canvas::DrawEllipse(const Ellipse& ellipse) {
-    auto state = GetCurrentState();
-    renderer_.DrawEllipse(AlignWithRegion(ellipse), state->brush);
+    const auto& state = CurrentState();
+    renderer_.DrawEllipse(AlignWithRegion(ellipse), state.brush);
 }
 
 
 void Canvas::DrawEllipseFrame(const Ellipse& ellipse, float stroke_width) {
-    auto state = GetCurrentState();
+    const auto& state = CurrentState();
     renderer_.DrawEllipseFrame(
         AlignWithRegion(ellipse, stroke_width),
-        state->brush,
+        state.brush,
         stroke_width,
-        state->stroke);
+        state.stroke);
 }
 
 
 void Canvas::DrawGeometry(const Geometry& geometry) {
-    renderer_.DrawGeometry(geometry, GetCurrentState()->brush, Brush());
+    const auto& state = CurrentState();
+    renderer_.DrawGeometry(geometry, state.brush, Brush{});
 }
 
 
@@ -272,8 +231,8 @@ void Canvas::DrawGeometryFrame(const Geometry& geometry, float stroke_width) {
         drew_geometry = geometry;
     }
 
-    auto state = GetCurrentState();
-    renderer_.DrawGeometryFrame(drew_geometry, state->brush, stroke_width, state->stroke);
+    const auto& state = CurrentState();
+    renderer_.DrawGeometryFrame(drew_geometry, state.brush, stroke_width, state.stroke);
 }
 
 
@@ -282,20 +241,21 @@ void Canvas::DrawTextFormat(
     const TextFormat& text_format, 
     const Rect& rect) {
 
+    const auto& state = CurrentState();
     renderer_.DrawTextFormat(
         text, 
         text_format, 
         AlignWithRegion(rect),
-        GetCurrentState()->brush);
+        state.brush);
 }
 
 
 void Canvas::DrawTextLayout(const TextLayout& text_layout, const Point& position) {
-
+    const auto& state = CurrentState();
     renderer_.DrawTextLayout(
         text_layout, 
         AlignWithRegion(position), 
-        GetCurrentState()->brush);
+        state.brush);
 }
 
 

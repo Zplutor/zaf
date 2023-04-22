@@ -316,7 +316,7 @@ void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
-    Canvas::StateGuard state_guard(canvas);
+    auto state_guard = canvas.PushState();
 
     zaf::Rect control_rect{ Point{}, Size() };
 

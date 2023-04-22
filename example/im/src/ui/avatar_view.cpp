@@ -30,8 +30,7 @@ void AvatarView::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
         return;
     }
 
-    zaf::Canvas::StateGuard state_guard(canvas);
-
+    auto state_guard = canvas.PushState();
     canvas.SetBrush(bitmap_brush);
     canvas.DrawGeometry(rounded_rect_geometry);
 }

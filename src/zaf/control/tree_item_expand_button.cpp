@@ -31,7 +31,7 @@ void TreeItemExpandButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         buttom_edge_length, 
         rotate_angle);
 
-    Canvas::StateGuard guard(canvas);
+    auto state_guard = canvas.PushState();
 
     auto color = IsSelected() ? Color::White() : Color::Black();
     canvas.SetBrushWithColor(color);

@@ -61,25 +61,6 @@ private:
 
 class Canvas : NonCopyable {
 public:
-    class StateGuard {
-    public:
-        StateGuard(Canvas& canvas) : canvas_(canvas) {
-            canvas_.SaveState();
-        }
-
-        ~StateGuard() {
-            canvas_.RestoreState();
-        }
-
-    private:
-        StateGuard(StateGuard&) = delete;
-        StateGuard& operator=(const StateGuard&) = delete;
-
-    private:
-        Canvas& canvas_;
-    };
-
-public:
     /**
     Constructs a canvas with specified renderer and rects.
 
@@ -175,8 +156,7 @@ private:
         const Rect& region_rect,
         const Rect& paintable_rect) const;
 
-    Brush GetCurrentBrush();
-    Stroke GetCurrentStroke();
+    const internal::CanvasState& CurrentState() const;
 
     template<typename T>
     T AlignWithRegion(const T& object, float stroke_width = 0) const {
@@ -193,11 +173,8 @@ private:
     zaf::Renderer renderer_;
     std::stack<internal::CanvasRegion> regions_;
     std::size_t current_clipping_tag_{};
-
     std::stack<internal::CanvasState> states_;
     std::size_t current_state_tag_{};
-    Brush default_brush_;
-    Stroke default_stroke_;
 };
 
 }

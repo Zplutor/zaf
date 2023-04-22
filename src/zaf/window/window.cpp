@@ -781,7 +781,7 @@ void Window::HandleWMPAINT() {
 
         //Paint window background color first.
         {
-            Canvas::StateGuard state_guard(canvas);
+            auto state_guard = canvas.PushState();
             canvas.SetBrushWithColor(Color::FromRGB(internal::ControlBackgroundColorRGB));
             canvas.DrawRectangle(dirty_rect);
         }
@@ -841,7 +841,7 @@ void Window::PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect) 
         canvas.DrawGeometry(frame_geometry);
     };
 
-    Canvas::StateGuard state_guard(canvas);
+    auto state_guard = canvas.PushState();
     auto clipping_guard = canvas.PushClipping(dirty_rect);
 
     //Draw content rect.

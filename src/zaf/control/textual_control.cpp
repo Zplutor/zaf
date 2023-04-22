@@ -104,7 +104,7 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     SetTextColorsToTextLayout(text_layout, canvas.Renderer());
 
-    Canvas::StateGuard state_guard(canvas);
+    auto state_guard = canvas.PushState();
     canvas.SetBrushWithColor(TextColor());
     auto clipping_guard = canvas.PushClipping(text_rect);
     canvas.DrawTextLayout(text_layout, text_rect.position);

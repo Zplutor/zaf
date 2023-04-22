@@ -80,7 +80,7 @@ void Button::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     if (IsDefault()) {
 
-        Canvas::StateGuard state_guard(canvas);
+        auto state_guard = canvas.PushState();
         canvas.SetBrushWithColor(Color::FromRGB(internal::ButtonActivedBorderColorRGB));
         canvas.DrawRectangleFrame(ContentRect(), 1);
     }
