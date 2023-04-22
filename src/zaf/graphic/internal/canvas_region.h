@@ -5,9 +5,9 @@
 namespace zaf::internal {
 
 /**
-Note: all rects are in canvas coordinate, rather in upper layer coordinate.
+Note: all rects are in canvas coordinate, rather in upper region coordinate.
 */
-class CanvasLayer {
+class CanvasRegion {
 public:
     Rect rect;
     Rect aligned_rect;

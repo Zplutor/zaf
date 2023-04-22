@@ -247,7 +247,7 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_
         cached_renderer_.BeginDraw();
         Canvas cached_painting_canvas(cached_renderer_);
         {
-            auto layer_guard = cached_painting_canvas.PushLayer(
+            auto layer_guard = cached_painting_canvas.PushRegion(
                 zaf::Rect{ Point{}, control_size },
                 calculate_result.actual_dirty_rect);
 
@@ -307,7 +307,7 @@ void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect) {
             continue;
         }
 
-        auto layer_guard = canvas.PushLayer(child_rect, child_dirty_rect);
+        auto layer_guard = canvas.PushRegion(child_rect, child_dirty_rect);
         child_dirty_rect.position.SubtractOffset(child_rect.position);
         child->Repaint(canvas, child_dirty_rect);
     }

@@ -4,10 +4,10 @@
 #include <stack>
 #include <string>
 #include <zaf/graphic/brush/solid_color_brush.h>
-#include <zaf/graphic/canvas_layer_guard.h>
+#include <zaf/graphic/canvas_region_guard.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/internal/alignment_helper.h>
-#include <zaf/graphic/internal/canvas_layer.h>
+#include <zaf/graphic/internal/canvas_region.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/renderer/renderer.h>
 
@@ -91,17 +91,22 @@ public:
     }
 
     /**
-    Pushes a new layer into canvas.
+    Pushes a new region into canvas.
 
-    @param layer_rect
-        The rectangle area of the new layer, in current layer coordinate.
+    @param region_rect
+        The rectangle area of the new region, in current region coordinate. After pushing, the 
+        orgin of coordinate of the canvas moves to the position of this rectangle area.
 
     @param paintable_rect
-        The rectangle area that can be painted in the new layer, in current layer coordinate. It's
-        normally a sub area of layer_rect.
+        The rectangle area that can be painted in the new region, in current region coordinate. 
+        It's normally a sub area of region_rect.
+
+    @return 
+        A guard that auto pops the region on destruction. You should keep the guard during painting
+        in the region and destroy it after painting.
     */
     [[nodiscard]]
-    CanvasLayerGuard PushLayer(const Rect& layer_rect, const Rect& paintable_rect);
+    CanvasRegionGuard PushRegion(const Rect& region_rect, const Rect& paintable_rect);
 
     void SaveState();
     void RestoreState();
@@ -160,40 +165,33 @@ private:
     };
 
 private:
-    friend class Control;
-    friend class Window;
-    friend class TextBox;
-    friend class CanvasLayerGuard;
+    friend class CanvasRegionGuard;
 
-    void PushTransformLayer(const Rect& rect, const Rect& paintable_rect);
-    void PopTransformLayer();
-
-    void BeginPaint();
-    void EndPaint();
-
-    void PopLayer();
+    void PopRegion();
 
 private:
-    internal::CanvasLayer CreateNewLayer(const Rect& layer_rect, const Rect& paintable_rect) const;
+    internal::CanvasRegion CreateNewRegion(
+        const Rect& region_rect,
+        const Rect& paintable_rect) const;
 
     void ApplyState(const std::shared_ptr<State>& state);
     void CancelState(const std::shared_ptr<State>& state);
     std::shared_ptr<State> GetCurrentState() const;
 
     template<typename T>
-    T AlignWithTransformLayer(const T& object, float stroke_width = 0) const {
+    T AlignWithRegion(const T& object, float stroke_width = 0) const {
 
-        const auto& current_layer = layers_.top();
+        const auto& current_region = regions_.top();
         return internal::AlignInRelatedCoordinateSystem(
             object, 
             stroke_width, 
-            current_layer.rect.position, 
-            current_layer.aligned_rect.position);
+            current_region.rect.position, 
+            current_region.aligned_rect.position);
     }
 
 private:
     zaf::Renderer renderer_;
-    std::stack<internal::CanvasLayer> layers_;
+    std::stack<internal::CanvasRegion> regions_;
     std::vector<std::shared_ptr<State>> states_;
 };
 

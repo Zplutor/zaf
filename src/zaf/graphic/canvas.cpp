@@ -6,7 +6,6 @@
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/geometry/rounded_rectangle_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
-#include <zaf/graphic/layer_parameters.h>
 #include <zaf/graphic/text/text_format.h>
 
 namespace zaf {
@@ -22,58 +21,58 @@ Canvas::~Canvas() {
 }
 
 
-CanvasLayerGuard Canvas::PushLayer(const Rect& layer_rect, const Rect& paintable_rect) {
+CanvasRegionGuard Canvas::PushRegion(const Rect& region_rect, const Rect& paintable_rect) {
 
-    auto new_layer = CreateNewLayer(layer_rect, paintable_rect);
-    layers_.push(new_layer);
+    auto new_region = CreateNewRegion(region_rect, paintable_rect);
+    regions_.push(new_region);
 
-    renderer_.Transform(TransformMatrix::Translation(new_layer.aligned_rect.position));
+    renderer_.Transform(TransformMatrix::Translation(new_region.aligned_rect.position));
 
-    Rect clipping_rect = new_layer.aligned_paintable_rect;
-    clipping_rect.SubtractOffset(new_layer.aligned_rect.position);
+    Rect clipping_rect = new_region.aligned_paintable_rect;
+    clipping_rect.SubtractOffset(new_region.aligned_rect.position);
     renderer_.PushAxisAlignedClipping(clipping_rect, AntialiasMode::PerPrimitive);
 
-    return CanvasLayerGuard{ this };
+    return CanvasRegionGuard{ this };
 }
 
 
-internal::CanvasLayer Canvas::CreateNewLayer(
-    const Rect& layer_rect,
+internal::CanvasRegion Canvas::CreateNewRegion(
+    const Rect& region_rect,
     const Rect& paintable_rect) const {
 
-    const internal::CanvasLayer* current_layer{};
-    if (!layers_.empty()) {
-        current_layer = &layers_.top();
+    const internal::CanvasRegion* current_region{};
+    if (!regions_.empty()) {
+        current_region = &regions_.top();
     }
 
-    internal::CanvasLayer new_layer;
-    new_layer.rect = layer_rect;
-    if (current_layer) {
-        new_layer.rect.AddOffset(current_layer->rect.position);
+    internal::CanvasRegion new_region;
+    new_region.rect = region_rect;
+    if (current_region) {
+        new_region.rect.AddOffset(current_region->rect.position);
     }
-    new_layer.aligned_rect = Align(new_layer.rect);
+    new_region.aligned_rect = Align(new_region.rect);
 
-    new_layer.paintable_rect = paintable_rect;
-    if (current_layer) {
-        new_layer.paintable_rect.AddOffset(current_layer->rect.position);
-        new_layer.paintable_rect.Intersect(current_layer->paintable_rect);
+    new_region.paintable_rect = paintable_rect;
+    if (current_region) {
+        new_region.paintable_rect.AddOffset(current_region->rect.position);
+        new_region.paintable_rect.Intersect(current_region->paintable_rect);
     }
-    new_layer.paintable_rect.Intersect(new_layer.rect);
-    new_layer.aligned_paintable_rect = Align(new_layer.paintable_rect);
-    return new_layer;
+    new_region.paintable_rect.Intersect(new_region.rect);
+    new_region.aligned_paintable_rect = Align(new_region.paintable_rect);
+    return new_region;
 }
 
 
-void Canvas::PopLayer() {
+void Canvas::PopRegion() {
 
-    ZAF_EXPECT(!layers_.empty());
+    ZAF_EXPECT(!regions_.empty());
 
-    layers_.pop();
+    regions_.pop();
 
     renderer_.PopAxisAlignedClipping();
 
-    if (!layers_.empty()) {
-        renderer_.Transform(TransformMatrix::Translation(layers_.top().aligned_rect.position));
+    if (!regions_.empty()) {
+        renderer_.Transform(TransformMatrix::Translation(regions_.top().aligned_rect.position));
     }
     else {
         renderer_.Transform(TransformMatrix::Identity);
@@ -81,57 +80,9 @@ void Canvas::PopLayer() {
 }
 
 
-void Canvas::PushTransformLayer(const Rect& rect, const Rect& paintable_rect) {
-
-    const auto& current_layer = layers_.top();
-
-    Rect new_transform_rect = rect;
-    new_transform_rect.position.x += current_layer.rect.position.x;
-    new_transform_rect.position.y += current_layer.rect.position.y;
-
-    Rect new_paintable_rect = paintable_rect;
-    new_paintable_rect.position.x += current_layer.rect.position.x;
-    new_paintable_rect.position.y += current_layer.rect.position.y;
-    new_paintable_rect.Intersect(current_layer.paintable_rect);
-    new_paintable_rect.Intersect(new_transform_rect);
-
-    internal::CanvasLayer new_layer;
-    new_layer.rect = new_transform_rect;
-    new_layer.aligned_rect = Align(new_transform_rect);
-    new_layer.paintable_rect = new_paintable_rect;
-    new_layer.aligned_paintable_rect = Align(new_paintable_rect);
-
-    layers_.push(new_layer);
-}
-
-
-void Canvas::PopTransformLayer() {
-    layers_.pop();
-}
-
-
-void Canvas::BeginPaint() {
-
-    const auto& current_transform_layer = layers_.top();
-    const auto& aligned_rect = current_transform_layer.aligned_rect;
-
-    renderer_.Transform(TransformMatrix::Translation(aligned_rect.position));
-
-    Rect paintable_rect = current_transform_layer.aligned_paintable_rect;
-    paintable_rect.SubtractOffset(aligned_rect.position);
-    renderer_.PushAxisAlignedClipping(paintable_rect, AntialiasMode::PerPrimitive);
-}
-
-
-void Canvas::EndPaint() {
-    renderer_.PopAxisAlignedClipping();
-    renderer_.Transform(TransformMatrix::Identity);
-}
-
-
 void Canvas::PushClippingRect(const Rect& rect) {
 
-    auto absolute_clipping_rect = AlignWithTransformLayer(rect);
+    auto absolute_clipping_rect = AlignWithRegion(rect);
 
     GetCurrentState()->clipping_rects.push_back(absolute_clipping_rect);
     renderer_.PushAxisAlignedClipping(absolute_clipping_rect, zaf::AntialiasMode::PerPrimitive);
@@ -217,8 +168,8 @@ void Canvas::DrawLine(const Point& from_point, const Point& to_point, float stro
 
     auto state = GetCurrentState();
     renderer_.DrawLine(
-        AlignWithTransformLayer(from_point, stroke_width),
-        AlignWithTransformLayer(to_point, stroke_width),
+        AlignWithRegion(from_point, stroke_width),
+        AlignWithRegion(to_point, stroke_width),
         state->brush,
         stroke_width,
         state->stroke);
@@ -227,14 +178,14 @@ void Canvas::DrawLine(const Point& from_point, const Point& to_point, float stro
 
 void Canvas::DrawRectangle(const Rect& rect) {
     auto state = GetCurrentState();
-    renderer_.DrawRectangle(AlignWithTransformLayer(rect), state->brush);
+    renderer_.DrawRectangle(AlignWithRegion(rect), state->brush);
 }
 
 
 void Canvas::DrawRectangleFrame(const Rect& rect, float stroke_width) {
     auto state = GetCurrentState();
     renderer_.DrawRectangleFrame(
-        AlignWithTransformLayer(rect, stroke_width),
+        AlignWithRegion(rect, stroke_width),
         state->brush,
         stroke_width,
         state->stroke);
@@ -243,7 +194,7 @@ void Canvas::DrawRectangleFrame(const Rect& rect, float stroke_width) {
 
 void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect) {
     auto state = GetCurrentState();
-    renderer_.DrawRoundedRectangle(AlignWithTransformLayer(rounded_rect), state->brush);
+    renderer_.DrawRoundedRectangle(AlignWithRegion(rounded_rect), state->brush);
 }
 
 
@@ -251,7 +202,7 @@ void Canvas::DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float st
 
     auto state = GetCurrentState();
     renderer_.DrawRoundedRectangleFrame(
-        AlignWithTransformLayer(rounded_rect, stroke_width),
+        AlignWithRegion(rounded_rect, stroke_width),
         state->brush,
         stroke_width,
         state->stroke);
@@ -260,14 +211,14 @@ void Canvas::DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float st
 
 void Canvas::DrawEllipse(const Ellipse& ellipse) {
     auto state = GetCurrentState();
-    renderer_.DrawEllipse(AlignWithTransformLayer(ellipse), state->brush);
+    renderer_.DrawEllipse(AlignWithRegion(ellipse), state->brush);
 }
 
 
 void Canvas::DrawEllipseFrame(const Ellipse& ellipse, float stroke_width) {
     auto state = GetCurrentState();
     renderer_.DrawEllipseFrame(
-        AlignWithTransformLayer(ellipse, stroke_width),
+        AlignWithRegion(ellipse, stroke_width),
         state->brush,
         stroke_width,
         state->stroke);
@@ -307,7 +258,7 @@ void Canvas::DrawTextFormat(
     renderer_.DrawTextFormat(
         text, 
         text_format, 
-        AlignWithTransformLayer(rect),
+        AlignWithRegion(rect),
         GetCurrentState()->brush);
 }
 
@@ -316,7 +267,7 @@ void Canvas::DrawTextLayout(const TextLayout& text_layout, const Point& position
 
     renderer_.DrawTextLayout(
         text_layout, 
-        AlignWithTransformLayer(position), 
+        AlignWithRegion(position), 
         GetCurrentState()->brush);
 }
 
@@ -328,7 +279,7 @@ void Canvas::DrawBitmap(
 
     renderer_.DrawBitmap(
         bitmap, 
-        AlignWithTransformLayer(destination_rect),
+        AlignWithRegion(destination_rect),
         options.Opacity(),
         options.InterpolationMode(),
         options.SourceRect());
@@ -343,17 +294,17 @@ PathGeometry Canvas::CreatePathGeometry() const {
 
     ZAF_THROW_IF_COM_ERROR(result);
 
-    const auto& current_transform_layer = layers_.top();
+    const auto& current_region = regions_.top();
     return PathGeometry(
         handle, 
-        current_transform_layer.rect.position, 
-        current_transform_layer.aligned_rect.position);
+        current_region.rect.position, 
+        current_region.aligned_rect.position);
 }
 
 
 RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect) const {
 
-    Rect aligned_rect = AlignWithTransformLayer(rect);
+    Rect aligned_rect = AlignWithRegion(rect);
     return GraphicFactory::Instance().CreateRectangleGeometry(aligned_rect);
 }
 
@@ -361,14 +312,14 @@ RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect) const {
 RoundedRectangleGeometry Canvas::CreateRoundedRectangleGeometry(
     const RoundedRect& rounded_rect) const {
 
-    RoundedRect aligned_rounded_rect = AlignWithTransformLayer(rounded_rect);
+    RoundedRect aligned_rounded_rect = AlignWithRegion(rounded_rect);
     return GraphicFactory::Instance().CreateRoundedRectangleGeometry(aligned_rounded_rect);
 }
 
 
 EllipseGeometry Canvas::CreateEllipseGeometry(const Ellipse& ellipse) const {
 
-    Ellipse aligned_ellipse = AlignWithTransformLayer(ellipse);
+    Ellipse aligned_ellipse = AlignWithRegion(ellipse);
     return GraphicFactory::Instance().CreateEllipseGeometry(ellipse);
 }
 

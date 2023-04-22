@@ -272,7 +272,7 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
         auto dirty_rect_in_object = Rect::Intersect(dirty_rect, object_rect);
         if (!dirty_rect_in_object.IsEmpty()) {
 
-            auto layer_guard = canvas.PushLayer(object_rect, object_rect);
+            auto layer_guard = canvas.PushRegion(object_rect, object_rect);
             embedded_object->Paint(canvas, dirty_rect_in_object);
         }
     }

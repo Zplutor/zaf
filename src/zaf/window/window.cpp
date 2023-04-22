@@ -777,7 +777,7 @@ void Window::HandleWMPAINT() {
     renderer_.BeginDraw();
     Canvas canvas(renderer_);
     {
-        auto layer_guard = canvas.PushLayer(root_control_->Rect(), dirty_rect);
+        auto layer_guard = canvas.PushRegion(root_control_->Rect(), dirty_rect);
 
         //Paint window background color first.
         {
