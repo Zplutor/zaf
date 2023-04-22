@@ -6,9 +6,11 @@
 #include <zaf/graphic/brush/solid_color_brush.h>
 #include <zaf/graphic/canvas_clipping_guard.h>
 #include <zaf/graphic/canvas_region_guard.h>
+#include <zaf/graphic/canvas_state_guard.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/internal/alignment_helper.h>
 #include <zaf/graphic/internal/canvas_region.h>
+#include <zaf/graphic/internal/canvas_state.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/renderer/renderer.h>
 
@@ -123,21 +125,12 @@ public:
     [[nodiscard]]
     CanvasClippingGuard PushClipping(const Rect& clipping_rect);
 
-    void SaveState();
-    void RestoreState();
+    [[nodiscard]]
+    CanvasStateGuard PushState();
 
-    void SetBrush(const Brush& brush) {
-        GetCurrentState()->brush = brush;
-    }
-
-    void SetBrushWithColor(const Color& color) {
-        auto brush = renderer_.CreateSolidColorBrush(color);
-        SetBrush(brush);
-    }
-
-    void SetStroke(const Stroke& stroke) {
-        GetCurrentState()->stroke = stroke;
-    }
+    void SetBrush(const Brush& brush);
+    void SetBrushWithColor(const Color& color);
+    void SetStroke(const Stroke& stroke);
 
     void Clear();
 
@@ -169,25 +162,21 @@ public:
     EllipseGeometry CreateEllipseGeometry(const Ellipse& ellipse) const;
 
 private:
-    class State {
-    public:
-        Brush brush;
-        Stroke stroke;
-    };
-
-private:
     friend class CanvasClippingGuard;
     friend class CanvasRegionGuard;
+    friend class CanvasStateGuard;
 
     void PopRegion(CanvasClippingGuard&& clipping_guard);
     void PopClipping(std::size_t tag);
+    void PopState(std::size_t tag);
 
 private:
     internal::CanvasRegion CreateNewRegion(
         const Rect& region_rect,
         const Rect& paintable_rect) const;
 
-    std::shared_ptr<State> GetCurrentState() const;
+    Brush GetCurrentBrush();
+    Stroke GetCurrentStroke();
 
     template<typename T>
     T AlignWithRegion(const T& object, float stroke_width = 0) const {
@@ -203,8 +192,12 @@ private:
 private:
     zaf::Renderer renderer_;
     std::stack<internal::CanvasRegion> regions_;
-    std::vector<std::shared_ptr<State>> states_;
     std::size_t current_clipping_tag_{};
+
+    std::stack<internal::CanvasState> states_;
+    std::size_t current_state_tag_{};
+    Brush default_brush_;
+    Stroke default_stroke_;
 };
 
 }

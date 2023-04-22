@@ -12,7 +12,8 @@ namespace zaf {
 
 Canvas::Canvas(zaf::Renderer& renderer) : renderer_(renderer) {
 
-    SaveState();
+    //Add an initial state.
+    states_.push(internal::CanvasState{});
 }
 
 
@@ -99,6 +100,55 @@ void Canvas::PopClipping(std::size_t tag) {
 
     renderer_.PopAxisAlignedClipping();
     --current_clipping_tag_;
+}
+
+
+CanvasStateGuard Canvas::PushState() {
+
+    //Copy current state as new state.
+    auto new_state = states_.top();
+    states_.push(new_state);
+    return CanvasStateGuard{ this, ++current_state_tag_ };
+}
+
+
+void Canvas::PopState(std::size_t tag) {
+
+    //Detect mismatch push and pop.
+    ZAF_EXPECT(tag == current_state_tag_);
+
+    states_.pop();
+    --current_state_tag_;
+}
+
+
+void Canvas::SetBrush(const Brush& brush) {
+    states_.top().brush = brush;
+}
+
+
+void Canvas::SetBrushWithColor(const Color& color) {
+    auto brush = renderer_.CreateSolidColorBrush(color);
+    SetBrush(brush);
+}
+
+
+void Canvas::SetStroke(const Stroke& stroke) {
+    states_.top().stroke = stroke;
+}
+
+
+Brush Canvas::GetCurrentBrush() {
+
+    auto& current_state = states_.top();
+    if (current_state.brush) {
+        return current_state.brush;
+    }
+}
+
+
+Stroke Canvas::GetCurrentStroke() {
+
 }
 
 
