@@ -164,59 +164,175 @@ void Canvas::DrawLine(const Point& from_point, const Point& to_point, float stro
 
 void Canvas::DrawRectangle(const Rect& rect) {
     const auto& state = CurrentState();
-    renderer_.DrawRectangle(AlignWithRegion(rect), state.brush);
+    DrawRectangle(rect, state.brush);
+}
+
+
+void Canvas::DrawRectangle(const Rect& rect, const Brush& brush) {
+    renderer_.DrawRectangle(AlignWithRegion(rect), brush);
 }
 
 
 void Canvas::DrawRectangleFrame(const Rect& rect, float stroke_width) {
     const auto& state = CurrentState();
-    renderer_.DrawRectangleFrame(
-        AlignWithRegion(rect, stroke_width),
-        state.brush,
-        stroke_width,
-        state.stroke);
+    DrawRectangleFrame(rect, stroke_width, state.brush, state.stroke);
+}
+
+
+void Canvas::DrawRectangleFrame(const Rect& rect, float stroke_width, const Brush& brush) {
+    const auto& state = CurrentState();
+    DrawRectangleFrame(rect, stroke_width, brush, state.stroke);
+}
+
+
+void Canvas::DrawRectangleFrame(const Rect& rect, float stroke_width, const Stroke& stroke) {
+    const auto& state = CurrentState();
+    DrawRectangleFrame(rect, stroke_width, state.brush, stroke);
+}
+
+
+void Canvas::DrawRectangleFrame(
+    const Rect& rect,
+    float stroke_width,
+    const Brush& brush,
+    const Stroke& stroke) {
+
+    renderer_.DrawRectangleFrame(AlignWithRegion(rect, stroke_width), brush, stroke_width, stroke);
 }
 
 
 void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect) {
     const auto& state = CurrentState();
-    renderer_.DrawRoundedRectangle(AlignWithRegion(rounded_rect), state.brush);
+    DrawRoundedRectangle(rounded_rect, state.brush);
+}
+
+
+void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush) {
+    renderer_.DrawRoundedRectangle(AlignWithRegion(rounded_rect), brush);
 }
 
 
 void Canvas::DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width) {
     const auto& state = CurrentState();
+    DrawRoundedRectangleFrame(rounded_rect, stroke_width, state.brush, state.stroke);
+}
+
+
+void Canvas::DrawRoundedRectangleFrame(
+    const RoundedRect& rounded_rect,
+    float stroke_width,
+    const Brush& brush) {
+
+    const auto& state = CurrentState();
+    DrawRoundedRectangleFrame(rounded_rect, stroke_width, brush, state.stroke);
+}
+
+
+void Canvas::DrawRoundedRectangleFrame(
+    const RoundedRect& rounded_rect,
+    float stroke_width,
+    const Stroke& stroke) {
+
+    const auto& state = CurrentState();
+    DrawRoundedRectangleFrame(rounded_rect, stroke_width, state.brush, stroke);
+}
+
+
+void Canvas::DrawRoundedRectangleFrame(
+    const RoundedRect& rounded_rect,
+    float stroke_width,
+    const Brush& brush,
+    const Stroke& stroke) {
+
     renderer_.DrawRoundedRectangleFrame(
         AlignWithRegion(rounded_rect, stroke_width),
-        state.brush,
+        brush,
         stroke_width,
-        state.stroke);
+        stroke);
 }
 
 
 void Canvas::DrawEllipse(const Ellipse& ellipse) {
     const auto& state = CurrentState();
-    renderer_.DrawEllipse(AlignWithRegion(ellipse), state.brush);
+    renderer_.DrawEllipse(ellipse, state.brush);
+}
+
+
+void Canvas::DrawEllipse(const Ellipse& ellipse, const Brush& brush) {
+    renderer_.DrawEllipse(AlignWithRegion(ellipse), brush);
 }
 
 
 void Canvas::DrawEllipseFrame(const Ellipse& ellipse, float stroke_width) {
     const auto& state = CurrentState();
+    DrawEllipseFrame(ellipse, stroke_width, state.brush, state.stroke);
+}
+
+
+void Canvas::DrawEllipseFrame(const Ellipse& ellipse, float stroke_width, const Brush& brush) {
+    const auto& state = CurrentState();
+    DrawEllipseFrame(ellipse, stroke_width, brush, state.stroke);
+}
+
+
+void Canvas::DrawEllipseFrame(const Ellipse& ellipse, float stroke_width, const Stroke& stroke) {
+    const auto& state = CurrentState();
+    DrawEllipseFrame(ellipse, stroke_width, state.brush, stroke);
+}
+
+
+void Canvas::DrawEllipseFrame(
+    const Ellipse& ellipse,
+    float stroke_width,
+    const Brush& brush,
+    const Stroke& stroke) {
+
     renderer_.DrawEllipseFrame(
         AlignWithRegion(ellipse, stroke_width),
-        state.brush,
+        brush,
         stroke_width,
-        state.stroke);
+        stroke);
 }
 
 
 void Canvas::DrawGeometry(const Geometry& geometry) {
     const auto& state = CurrentState();
-    renderer_.DrawGeometry(geometry, state.brush, Brush{});
+    DrawGeometry(geometry, state.brush);
+}
+
+
+void Canvas::DrawGeometry(const Geometry& geometry, const Brush& brush) {
+    renderer_.DrawGeometry(geometry, brush, Brush{});
 }
 
 
 void Canvas::DrawGeometryFrame(const Geometry& geometry, float stroke_width) {
+    const auto& state = CurrentState();
+    DrawGeometryFrame(geometry, stroke_width, state.brush, state.stroke);
+}
+
+
+void Canvas::DrawGeometryFrame(const Geometry& geometry, float stroke_width, const Brush& brush) {
+    const auto& state = CurrentState();
+    DrawGeometryFrame(geometry, stroke_width, brush, state.stroke);
+}
+
+
+void Canvas::DrawGeometryFrame(
+    const Geometry& geometry, 
+    float stroke_width, 
+    const Stroke& stroke) {
+
+    const auto& state = CurrentState();
+    DrawGeometryFrame(geometry, stroke_width, state.brush, stroke);
+}
+
+
+void Canvas::DrawGeometryFrame(
+    const Geometry& geometry,
+    float stroke_width,
+    const Brush& brush,
+    const Stroke& stroke) {
 
     Geometry drew_geometry;
 
@@ -224,15 +340,14 @@ void Canvas::DrawGeometryFrame(const Geometry& geometry, float stroke_width) {
     float offset = AlignmentOffsetForLine(stroke_width);
     if (offset != 0) {
         drew_geometry = GraphicFactory::Instance().CreateTransformedGeometry(
-            geometry, 
+            geometry,
             TransformMatrix::Translation(Point(offset, offset)));
     }
     else {
         drew_geometry = geometry;
     }
 
-    const auto& state = CurrentState();
-    renderer_.DrawGeometryFrame(drew_geometry, state.brush, stroke_width, state.stroke);
+    renderer_.DrawGeometryFrame(drew_geometry, brush, stroke_width, stroke);
 }
 
 
@@ -242,20 +357,32 @@ void Canvas::DrawTextFormat(
     const Rect& rect) {
 
     const auto& state = CurrentState();
-    renderer_.DrawTextFormat(
-        text, 
-        text_format, 
-        AlignWithRegion(rect),
-        state.brush);
+    DrawTextFormat(text, text_format, rect, state.brush);
+}
+
+
+void Canvas::DrawTextFormat(
+    const std::wstring& text,
+    const TextFormat& text_format,
+    const Rect& rect,
+    const Brush& brush) {
+
+    renderer_.DrawTextFormat(text, text_format, AlignWithRegion(rect), brush);
 }
 
 
 void Canvas::DrawTextLayout(const TextLayout& text_layout, const Point& position) {
     const auto& state = CurrentState();
-    renderer_.DrawTextLayout(
-        text_layout, 
-        AlignWithRegion(position), 
-        state.brush);
+    DrawTextLayout(text_layout, position, state.brush);
+}
+
+
+void Canvas::DrawTextLayout(
+    const TextLayout& text_layout, 
+    const Point& position,
+    const Brush& brush) {
+
+    renderer_.DrawTextLayout(text_layout, AlignWithRegion(position), brush);
 }
 
 

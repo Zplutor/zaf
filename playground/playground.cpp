@@ -68,8 +68,9 @@ public:
 
     void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override {
 
-        canvas.SetBrushWithColor(zaf::Color::Green());
-        canvas.DrawRectangle(zaf::Rect{ zaf::Point{}, this->Size() });
+        canvas.DrawRectangle(
+            zaf::Rect{ zaf::Point{}, this->Size() },
+            canvas.Renderer().CreateSolidColorBrush(zaf::Color::Green()));
     }
 };
 

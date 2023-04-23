@@ -269,10 +269,13 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
         object_position = ToDIPs(object_position, this->GetDPI());
         zaf::Rect object_rect{ object_position, embedded_object->Size() };
 
-        auto dirty_rect_in_object = Rect::Intersect(dirty_rect, object_rect);
-        if (!dirty_rect_in_object.IsEmpty()) {
+        auto dirty_rect_of_object = Rect::Intersect(dirty_rect, object_rect);
+        if (!dirty_rect_of_object.IsEmpty()) {
 
-            auto layer_guard = canvas.PushRegion(object_rect, object_rect);
+            auto region_guard = canvas.PushRegion(object_rect, dirty_rect_of_object);
+
+            auto dirty_rect_in_object = dirty_rect_of_object;
+            dirty_rect_in_object.SubtractOffset(object_rect.position);
             embedded_object->Paint(canvas, dirty_rect_in_object);
         }
     }

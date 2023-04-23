@@ -898,6 +898,9 @@
     <ClCompile Include="src\zaf\graphic\canvas_clipping_guard.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\canvas_state_guard.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2081,6 +2084,9 @@
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\canvas_clipping_guard.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\canvas_state_guard.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
   </ItemGroup>

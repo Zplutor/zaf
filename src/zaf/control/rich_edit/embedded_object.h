@@ -22,6 +22,16 @@ public:
     }
 
     virtual GUID ClassID() const = 0;
+
+    /**
+    Paints the embedded object. 
+
+    @param canvas
+        The canvas to which the object paints.
+
+    @param dirty_rect
+        A rectangle area that needs to be painted, in object coordindate.
+    */
     virtual void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) = 0;
 
     //IUnknown interfaces

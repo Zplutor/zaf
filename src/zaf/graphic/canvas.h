@@ -118,19 +118,68 @@ public:
     void DrawLine(const Point& from_point, const Point& to_point, float stroke_width);
 
     void DrawRectangle(const Rect& rect);
+    void DrawRectangle(const Rect& rect, const Brush& brush);
+
     void DrawRectangleFrame(const Rect& rect, float stroke_width);
+    void DrawRectangleFrame(const Rect& rect, float stroke_width, const Brush& brush);
+    void DrawRectangleFrame(const Rect& rect, float stroke_width, const Stroke& stroke);
+    void DrawRectangleFrame(
+        const Rect& rect,
+        float stroke_width,
+        const Brush& brush,
+        const Stroke& stroke);
 
     void DrawRoundedRectangle(const RoundedRect& rounded_rect);
+    void DrawRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush);
+
     void DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width);
+    void DrawRoundedRectangleFrame(
+        const RoundedRect& rounded_rect, 
+        float stroke_width, 
+        const Brush& brush);
+    void DrawRoundedRectangleFrame(
+        const RoundedRect& rounded_rect,
+        float stroke_width,
+        const Stroke& stroke);
+    void DrawRoundedRectangleFrame(
+        const RoundedRect& rounded_rect,
+        float stroke_width,
+        const Brush& brush,
+        const Stroke& stroke);
 
     void DrawEllipse(const Ellipse& ellipse);
+    void DrawEllipse(const Ellipse& ellipse, const Brush& brush);
+
     void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width);
+    void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width, const Brush& brush);
+    void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width, const Stroke& stroke);
+    void DrawEllipseFrame(
+        const Ellipse& ellipse, 
+        float stroke_width, 
+        const Brush& brush,
+        const Stroke& stroke);
 
     void DrawGeometry(const Geometry& geometry);
+    void DrawGeometry(const Geometry& geometry, const Brush& brush);
+
     void DrawGeometryFrame(const Geometry& geometry, float stroke_width);
+    void DrawGeometryFrame(const Geometry& geometry, float stroke_width, const Brush& brush);
+    void DrawGeometryFrame(const Geometry& geometry, float stroke_width, const Stroke& stroke);
+    void DrawGeometryFrame(
+        const Geometry& geometry, 
+        float stroke_width, 
+        const Brush& brush, 
+        const Stroke& stroke);
 
     void DrawTextFormat(const std::wstring& text, const TextFormat& text_format, const Rect& rect);
+    void DrawTextFormat(
+        const std::wstring& text, 
+        const TextFormat& text_format, 
+        const Rect& rect,
+        const Brush& brush);
+
     void DrawTextLayout(const TextLayout& text_layout, const Point& position);
+    void DrawTextLayout(const TextLayout& text_layout, const Point& position, const Brush& brush);
 
     void DrawBitmap(
         const RenderBitmap& bitmap,

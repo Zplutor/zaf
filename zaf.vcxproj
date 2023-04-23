@@ -181,6 +181,7 @@
     <ClCompile Include="src\zaf\graphic\alignment.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas_clipping_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas_region_guard.cpp" />
+    <ClCompile Include="src\zaf\graphic\canvas_state_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_weight.cpp" />
     <ClCompile Include="src\zaf\graphic\image\uri_image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image.cpp" />
@@ -494,6 +495,7 @@
     <ClInclude Include="src\zaf\graphic\alignment.h" />
     <ClInclude Include="src\zaf\graphic\canvas_clipping_guard.h" />
     <ClInclude Include="src\zaf\graphic\canvas_region_guard.h" />
+    <ClInclude Include="src\zaf\graphic\canvas_state_guard.h" />
     <ClInclude Include="src\zaf\graphic\dpi.h" />
     <ClInclude Include="src\zaf\graphic\geometry\arc_segment.h" />
     <ClInclude Include="src\zaf\graphic\geometry\ellipse_geometry.h" />
