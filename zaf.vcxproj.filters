@@ -907,9 +907,6 @@
     <ClCompile Include="src\zaf\control\rich_edit\internal\text_host_bridge.cpp">
       <Filter>zaf\control\rich_edit\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\rich_edit\object_context.cpp">
-      <Filter>zaf\control\rich_edit</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

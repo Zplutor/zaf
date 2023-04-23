@@ -77,6 +77,11 @@ public:
             zaf::Rect{ zaf::Point{}, this->Size() },
             canvas.Renderer().CreateSolidColorBrush(color));
     }
+
+    bool ChangeMouseCursor(bool is_in_selection_range) override {
+        SetCursor(LoadCursor(nullptr, IDC_APPSTARTING));
+        return true;
+    }
 };
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);

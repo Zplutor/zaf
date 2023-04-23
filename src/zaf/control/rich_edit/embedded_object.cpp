@@ -2,6 +2,11 @@
 
 namespace zaf::rich_edit {
 
+bool EmbeddedObject::ChangeMouseCursor(bool is_in_selection_range) {
+    return false;
+}
+
+
 HRESULT EmbeddedObject::QueryInterface(REFIID riid, LPVOID* ppvObj) {
 
     if (!ppvObj) {

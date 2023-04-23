@@ -330,6 +330,9 @@ private:
     void ResetRequiredHeight();
     const zaf::Rect GetAbsoluteContentRect() const;
     bool ChangeMouseCursor();
+    COMObject<rich_edit::EmbeddedObject> FindObjectAtMousePosition(
+        const Point& position_in_text_box,
+        bool& is_in_selection_range) const;
     bool HasPropertyBit(DWORD bit) const;
     void ChangePropertyBit(DWORD bit, bool is_set);
     void ChangeScrollBarPropertyBits(DWORD bits, bool is_set);

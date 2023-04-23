@@ -855,16 +855,22 @@ void TextBox::ChangeMouseCursor(const Message& message, bool& is_changed) {
 
 bool TextBox::ChangeMouseCursor() {
 
-    if (text_service_ == nullptr) {
+    if (!text_service_) {
         return false;
     }
 
     auto window = Window();
-    if (window == nullptr) {
+    if (!window) {
         return false;
     }
 
     Point mouse_position = FromDIPs(window->GetMousePosition(), window->GetDPI());
+
+    bool is_in_selection_range{};
+    auto embedded_object = FindObjectAtMousePosition(mouse_position, is_in_selection_range);
+    if (embedded_object) {
+        return embedded_object->ChangeMouseCursor(is_in_selection_range);
+    }
 
     HRESULT result = text_service_->OnTxSetCursor(
         DVASPECT_CONTENT,
@@ -883,6 +889,51 @@ bool TextBox::ChangeMouseCursor() {
     }
 
     return true;
+}
+
+
+COMObject<rich_edit::EmbeddedObject> TextBox::FindObjectAtMousePosition(
+    const Point& position_in_text_box,
+    bool& is_in_selection_range) const {
+
+    auto ole_interface = GetOLEInterface();
+    auto text_document = ole_interface.As<ITextDocument>();
+    if (!text_document) {
+        return {};
+    }
+
+    COMObject<ITextRange> text_range;
+    HRESULT hresult = text_document->RangeFromPoint(
+        static_cast<long>(position_in_text_box.x),
+        static_cast<long>(position_in_text_box.y),
+        text_range.Store());
+
+    if (FAILED(hresult)) {
+        return {};
+    }
+
+    COMObject<IUnknown> ole_object;
+    hresult = text_range->GetEmbeddedObject(ole_object.Store());
+    if (FAILED(hresult)) {
+        return {};
+    }
+
+    COMObject<rich_edit::EmbeddedObject> result{ 
+        dynamic_cast<rich_edit::EmbeddedObject*>(ole_object.Inner()) 
+    };
+
+    LONG object_position{};
+    hresult = text_range->GetStart(&object_position);
+    if (FAILED(hresult)) {
+        return {};
+    }
+
+    auto selection_range = this->GetSelectionRange();
+    is_in_selection_range =
+        object_position >= selection_range.index &&
+        object_position < selection_range.index + selection_range.length;
+
+    return result;
 }
 
 
