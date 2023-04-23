@@ -66,11 +66,13 @@ public:
         return { 0xe16f8acd, 0x5b3a, 0x4167, { 0xa4, 0x49, 0xdc, 0x57, 0xd, 0xd4, 0x44, 0x59 } };
     }
 
-    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override {
+    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect, bool is_selected) override {
+
+        auto color = is_selected ? zaf::Color::Blue() : zaf::Color::Green();
 
         canvas.DrawRectangle(
             zaf::Rect{ zaf::Point{}, this->Size() },
-            canvas.Renderer().CreateSolidColorBrush(zaf::Color::Green()));
+            canvas.Renderer().CreateSolidColorBrush(color));
     }
 };
 

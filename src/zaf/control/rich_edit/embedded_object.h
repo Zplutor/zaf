@@ -31,8 +31,11 @@ public:
 
     @param dirty_rect
         A rectangle area that needs to be painted, in object coordindate.
+
+    @param is_selected
+        Whether the object is selected.
     */
-    virtual void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) = 0;
+    virtual void Paint(Canvas& canvas, const zaf::Rect& dirty_rect, bool is_selected) = 0;
 
     //IUnknown interfaces
     HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override;

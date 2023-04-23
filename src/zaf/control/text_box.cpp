@@ -233,6 +233,8 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
         return;
     }
 
+    auto selection_range = this->GetSelectionRange();
+
     for (LONG index = 0; index < object_count; ++index) {
 
         REOBJECT object_info{};
@@ -271,14 +273,19 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
         zaf::Rect object_rect{ object_position, embedded_object->Size() };
 
         auto dirty_rect_of_object = Rect::Intersect(dirty_rect, object_rect);
-        if (!dirty_rect_of_object.IsEmpty()) {
-
-            auto region_guard = canvas.PushRegion(object_rect, dirty_rect_of_object);
-
-            auto dirty_rect_in_object = dirty_rect_of_object;
-            dirty_rect_in_object.SubtractOffset(object_rect.position);
-            embedded_object->Paint(canvas, dirty_rect_in_object);
+        if (dirty_rect_of_object.IsEmpty()) {
+            continue;
         }
+
+        bool is_selected =
+            object_info.cp >= selection_range.index &&
+            object_info.cp < selection_range.index + selection_range.length;
+
+        auto region_guard = canvas.PushRegion(object_rect, dirty_rect_of_object);
+
+        auto dirty_rect_in_object = dirty_rect_of_object;
+        dirty_rect_in_object.SubtractOffset(object_rect.position);
+        embedded_object->Paint(canvas, dirty_rect_in_object, is_selected);
     }
 }
 
