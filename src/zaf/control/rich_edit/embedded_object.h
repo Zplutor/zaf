@@ -2,6 +2,7 @@
 
 #include <oleidl.h>
 #include <zaf/base/non_copyable.h>
+#include <zaf/control/rich_edit/object_context.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/size.h>
 
@@ -32,10 +33,13 @@ public:
     @param dirty_rect
         A rectangle area that needs to be painted, in object coordindate.
 
-    @param is_selected
-        Whether the object is selected.
+    @param context
+        An object to get context information of the object.
     */
-    virtual void Paint(Canvas& canvas, const zaf::Rect& dirty_rect, bool is_selected) = 0;
+    virtual void Paint(
+        Canvas& canvas,
+        const zaf::Rect& dirty_rect,
+        const ObjectContext& context) = 0;
 
     //IUnknown interfaces
     HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override;

@@ -277,15 +277,22 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
             continue;
         }
 
-        bool is_selected =
-            object_info.cp >= selection_range.index &&
-            object_info.cp < selection_range.index + selection_range.length;
-
         auto region_guard = canvas.PushRegion(object_rect, dirty_rect_of_object);
 
         auto dirty_rect_in_object = dirty_rect_of_object;
         dirty_rect_in_object.SubtractOffset(object_rect.position);
-        embedded_object->Paint(canvas, dirty_rect_in_object, is_selected);
+
+        bool is_in_selection_range =
+            object_info.cp >= selection_range.index &&
+            object_info.cp < selection_range.index + selection_range.length;
+
+        rich_edit::ObjectContext object_context{
+            static_cast<std::size_t>(object_info.cp),
+            !!(object_info.dwFlags & REO_SELECTED),
+            is_in_selection_range
+        };
+
+        embedded_object->Paint(canvas, dirty_rect_in_object, object_context);
     }
 }
 
