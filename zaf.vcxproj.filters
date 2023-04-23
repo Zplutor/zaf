@@ -166,6 +166,9 @@
     <Filter Include="zaf\control\rich_edit">
       <UniqueIdentifier>{ec7c2eeb-2a1a-4f63-9852-164089ec078f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\rich_edit\internal">
+      <UniqueIdentifier>{b5583898-07c9-4578-a342-356958aa28fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -900,6 +903,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\canvas_state_guard.cpp">
       <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\rich_edit\internal\text_host_bridge.cpp">
+      <Filter>zaf\control\rich_edit\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2088,6 +2094,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\canvas_state_guard.h">
       <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\rich_edit\internal\text_host_bridge.h">
+      <Filter>zaf\control\rich_edit\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

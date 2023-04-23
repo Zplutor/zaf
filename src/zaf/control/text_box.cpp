@@ -7,6 +7,7 @@
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
 #include <zaf/control/rich_edit/embedded_object.h>
+#include <zaf/control/rich_edit/internal/text_host_bridge.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
@@ -72,6 +73,12 @@ COMObject<ITextServices2> CreateTextService(ITextHost* text_host) {
     return text_service;
 }
 
+constexpr DWORD kDefaultPropertyBits = TXTBIT_D2DDWRITE | TXTBIT_ALLOWBEEP;
+constexpr std::uint32_t kDefaultMaxLength = std::numeric_limits<std::uint32_t>::max();
+constexpr wchar_t kDefaultPasswordCharacter = L'*';
+constexpr DWORD kDefaultScrollBarProperty = 
+    ES_AUTOVSCROLL | ES_AUTOHSCROLL | WS_VSCROLL | WS_HSCROLL;
+
 }
 
 static const wchar_t* const kAcceptReturnPropertyName = L"AcceptReturn";
@@ -83,12 +90,6 @@ static const wchar_t* const kScrollBarChangeEventPropertyName = L"ScrollBarChang
 static const wchar_t* const kScrollValuesChangeEventPropertyName = L"ScrollValuesChangeEvent";
 static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
 static const wchar_t* const kTextValidatorPropertyName = L"TextValidator";
-
-static const DWORD kDefaultPropertyBits = TXTBIT_D2DDWRITE | TXTBIT_ALLOWBEEP;
-static const Frame kDefaultInset;
-static const std::uint32_t kDefaultMaxLength = std::numeric_limits<std::uint32_t>::max();
-static const wchar_t kDefaultPasswordCharacter = L'*';
-static const DWORD kDefaultScrollBarProperty = ES_AUTOVSCROLL | ES_AUTOHSCROLL | WS_VSCROLL | WS_HSCROLL;
 
 
 ZAF_DEFINE_TYPE(TextBox)
@@ -159,7 +160,7 @@ void TextBox::Initialize() {
 void TextBox::InitializeTextService() {
 
     auto shared_this = std::dynamic_pointer_cast<TextBox>(shared_from_this());
-    text_host_bridge_ = std::make_shared<TextHostBridge>(shared_this);
+    text_host_bridge_ = std::make_shared<rich_edit::internal::TextHostBridge>(shared_this);
 
     text_service_ = CreateTextService(text_host_bridge_.get());
     text_service_->OnTxInPlaceActivate(nullptr);
@@ -361,7 +362,7 @@ Frame TextBox::GetInset() const {
         return *inset;
     }
     else {
-        return kDefaultInset;
+        return Frame{};
     }
 }
 
@@ -1204,6 +1205,19 @@ void TextBox::ScrollValuesChange(bool is_horizontal) {
 }
 
 
+void TextBox::RaiseSelectionChangedEvent() {
+
+    auto event_observer = GetEventObserver<TextBoxSelectionChangeInfo>(
+        GetPropertyMap(),
+        kSelectionChangeEventPropertyName);
+
+    if (event_observer) {
+        TextBoxSelectionChangeInfo event_info(As<TextBox>(shared_from_this()));
+        event_observer->OnNext(event_info);
+    }
+}
+
+
 void TextBox::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) {
 
     ZAF_EXPECT(object.IsValid());
@@ -1243,513 +1257,6 @@ COMObject<IRichEditOle> TextBox::GetOLEInterface() const {
 
     ZAF_THROW_IF_COM_ERROR(hresult);
     return result;
-}
-
-
-TextBox::TextHostBridge::TextHostBridge(const std::shared_ptr<TextBox>& text_box) :
-    text_box_(text_box) {
-
-}
-
-
-HRESULT TextBox::TextHostBridge::QueryInterface(REFIID riid, void** ppvObject) {
-
-    if (ppvObject == nullptr) {
-        return E_POINTER;
-    }
-
-    if ((riid == IID_IUnknown) || (riid == IID_ITextHost)) {
-        *ppvObject = this;
-        return S_OK;
-    }
-
-    *ppvObject = nullptr;
-    return E_NOINTERFACE;
-}
-
-
-HDC TextBox::TextHostBridge::TxGetDC() {
-    return GetDC(GetWindowHandle());
-}
-
-
-INT TextBox::TextHostBridge::TxReleaseDC(HDC hdc) {
-    return ReleaseDC(GetWindowHandle(), hdc);
-}
-
-
-BOOL TextBox::TextHostBridge::TxShowScrollBar(INT fnBar, BOOL fShow) {
-
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        text_box->ScrollBarChange();
-    }
-    return TRUE;
-}
-
-
-BOOL TextBox::TextHostBridge::TxEnableScrollBar(INT fuSBFlags, INT fuArrowflags) {
-
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        text_box->ScrollBarChange();
-    }
-    return TRUE;
-}
-
-
-BOOL TextBox::TextHostBridge::TxSetScrollRange(INT fnBar, LONG nMinPos, INT nMaxPos, BOOL fRedraw) {
-
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        text_box->ScrollValuesChange(fnBar == SB_HORZ);
-    }
-    return TRUE;
-}
-
-
-BOOL TextBox::TextHostBridge::TxSetScrollPos(INT fnBar, INT nPos, BOOL fRedraw) {
-
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        text_box->ScrollValuesChange(fnBar == SB_HORZ);
-    }
-    return TRUE;
-}
-
-
-void TextBox::TextHostBridge::TxInvalidateRect(LPCRECT prc, BOOL fMode) {
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        text_box->NeedRepaint();
-    }
-}
-
-
-void TextBox::TextHostBridge::TxViewChange(BOOL fUpdate) {
-}
-
-
-BOOL TextBox::TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) {
-
-    auto text_box = text_box_.lock();
-    if (!text_box) {
-        return FALSE;
-    }
-
-    auto window = text_box->Window();
-    if (!window) {
-        return FALSE;
-    }
-
-    float dpi = window->GetDPI();
-
-    zaf::Size caret_size{
-        ToDIPs(static_cast<float>(xWidth), dpi),
-        ToDIPs(static_cast<float>(yHeight), dpi)
-    };
-
-    //Revise width. If the width is less than 1 point, it could dispear.
-    if (caret_size.width < 1) {
-        caret_size.width = 1;
-    }
-
-    if (!text_box->caret_) {
-        text_box->caret_ = Create<Caret>(text_box);
-    }
-
-    text_box->caret_->SetSize(caret_size);
-    return TRUE;
-}
-
-
-BOOL TextBox::TextHostBridge::TxShowCaret(BOOL fShow) {
-
-    auto text_box = text_box_.lock();
-    if (!text_box) {
-        return FALSE;
-    }
-
-    //Sometimes TxShowCaret would be called even when the 
-    //text box is unfocused. This would mess up the caret,
-    //so only response to this method while focused.
-    if (! text_box->IsFocused()) {
-        return FALSE;
-    }
-
-    if (!text_box->caret_) {
-        return FALSE;
-    }
-    
-    text_box->caret_->SetIsVisible(!!fShow);
-    return TRUE;
-}
-
-
-BOOL TextBox::TextHostBridge::TxSetCaretPos(INT x, INT y) {
-
-    auto text_box = text_box_.lock();
-    if (!text_box) {
-        return FALSE;
-    }
-
-    if (!text_box->caret_) {
-        return FALSE;
-    }
-
-    float dpi = text_box->GetDPI();
-    Point caret_position{
-        ToDIPs(static_cast<float>(x), dpi),
-        ToDIPs(static_cast<float>(y), dpi) + text_box->GetPaintContentOffset(nullptr)
-    };
-
-    text_box->caret_->SetPosition(caret_position);
-    return TRUE;
-}
-
-
-BOOL TextBox::TextHostBridge::TxSetTimer(UINT idTimer, UINT uTimeout) {
-
-    timers_[idTimer] = rx::Interval(std::chrono::milliseconds(uTimeout))
-        .ObserveOn(Scheduler::Main())
-        .Subscribe([this, idTimer](int) {
-    
-        auto text_box = text_box_.lock();
-        if (text_box) {
-
-            auto text_service = text_box->GetITextServices();
-            text_service->TxSendMessage(WM_TIMER, idTimer, 0, nullptr);
-        }
-    });
-
-    return TRUE;
-}
-
-
-void TextBox::TextHostBridge::TxKillTimer(UINT idTimer) {
-    timers_.erase(idTimer);
-}
-
-
-void TextBox::TextHostBridge::TxScrollWindowEx(INT dx, INT dy, LPCRECT lprcScroll, LPCRECT lprcClip, HRGN hrgnUpdate, LPRECT lprcUpdate, UINT fuScroll) {
-}
-
-
-void TextBox::TextHostBridge::TxSetCapture(BOOL fCapture) {
-
-    auto text_box = text_box_.lock();
-    if (text_box == nullptr) {
-        return;
-    }
-
-    if (fCapture) {
-        text_box->CaptureMouse();
-    }
-    else {
-        text_box->ReleaseMouse();
-    }
-}
-
-
-void TextBox::TextHostBridge::TxSetFocus() {
-    
-}
-
-
-void TextBox::TextHostBridge::TxSetCursor(HCURSOR hcur, BOOL fText) {
-    SetCursor(hcur);
-}
-
-
-BOOL TextBox::TextHostBridge::TxScreenToClient(LPPOINT lppt) {
-    return FALSE;
-}
-
-
-BOOL TextBox::TextHostBridge::TxClientToScreen(LPPOINT lppt) {
-    return FALSE;
-}
-
-
-HRESULT TextBox::TextHostBridge::TxActivate(LONG * plOldState) {
-    return E_NOTIMPL;
-}
-
-
-HRESULT TextBox::TextHostBridge::TxDeactivate(LONG lNewState) {
-    return E_NOTIMPL;
-}
-
-
-HRESULT TextBox::TextHostBridge::TxGetClientRect(LPRECT prc) {
-
-    *prc = RECT{};
-
-    auto text_box = text_box_.lock();
-    if (!text_box) {
-        return S_OK;
-    }
-
-    *prc = Align(FromDIPs(text_box->Rect(), text_box->GetDPI())).ToRECT();
-    return S_OK;
-}
-
-
-HRESULT TextBox::TextHostBridge::TxGetViewInset(LPRECT prc) {
-    
-    *prc = RECT{};
-
-    auto text_box = text_box_.lock();
-    if (!text_box) {
-        return S_OK;
-    }
-
-    auto window = text_box->Window();
-    if (!window) {
-        return S_OK;
-    }
-
-    *prc = FromDIPs(text_box->GetInset(), window->GetDPI()).ToRECT();
-    return S_OK;
-}
-
-
-HRESULT TextBox::TextHostBridge::TxGetCharFormat(const CHARFORMATW **ppCF) {
-
-    auto text_box = text_box_.lock(); 
-    if (text_box != nullptr) {
-        *ppCF = &(text_box->character_format_);
-        return S_OK;
-    }
-    else {
-        return E_NOTIMPL;
-    }
-}
-
-
-HRESULT TextBox::TextHostBridge::TxGetParaFormat(const PARAFORMAT **ppPF) {
-
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        *ppPF = &(text_box->paragraph_format_);
-        return S_OK;
-    }
-    else {
-        return E_NOTIMPL;
-    }
-}
-
-
-COLORREF TextBox::TextHostBridge::TxGetSysColor(int nIndex) {
-    return GetSysColor(nIndex);
-}
-
-
-HRESULT TextBox::TextHostBridge::TxGetBackStyle(TXTBACKSTYLE *pstyle) {
-    *pstyle = TXTBACK_TRANSPARENT;
-    return S_OK;
-}
-
-
-HRESULT TextBox::TextHostBridge::TxGetMaxLength(DWORD *plength) {
-
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        *plength = text_box->GetMaxLength();
-    }
-    else {
-        *plength = kDefaultMaxLength;
-    }
-
-    return S_OK;
-}
-
-
-HRESULT TextBox::TextHostBridge::TxGetScrollBars(DWORD *pdwScrollBar) {
-
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        *pdwScrollBar = text_box->scroll_bar_property_;
-    }
-    else {
-        *pdwScrollBar = kDefaultScrollBarProperty;
-    }
-
-    return S_OK;
-}
-
-
-HRESULT TextBox::TextHostBridge::TxGetPasswordChar(_Out_ TCHAR *pch) {
-
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        *pch = text_box->GetPasswordCharacter();
-    }
-    else {
-        *pch = kDefaultPasswordCharacter;
-    }
-
-    return S_OK;
-}
-
-
-HRESULT TextBox::TextHostBridge::TxGetAcceleratorPos(LONG *pcp) {
-    return E_NOTIMPL;
-}
-
-
-HRESULT TextBox::TextHostBridge::TxGetExtent(LPSIZEL lpExtent) {
-    return E_NOTIMPL;
-}
-
-
-HRESULT TextBox::TextHostBridge::OnTxCharFormatChange(const CHARFORMATW * pCF) {
-    return E_NOTIMPL;
-}
-
-
-HRESULT TextBox::TextHostBridge::OnTxParaFormatChange(const PARAFORMAT * pPF) {
-    return E_NOTIMPL;
-}
-
-
-HRESULT TextBox::TextHostBridge::TxGetPropertyBits(DWORD dwMask, DWORD *pdwBits) {
-
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        *pdwBits = dwMask & text_box->property_bits_;
-    }
-    else {
-        *pdwBits = kDefaultPropertyBits;
-    }
-    
-    return S_OK;
-}
-
-
-HRESULT TextBox::TextHostBridge::TxNotify(DWORD iNotify, void *pv) {
-
-    auto text_box = text_box_.lock();
-    if (text_box == nullptr) {
-        return S_OK;
-    }
-
-    switch (iNotify) {
-
-        case EN_CHANGE: {
-            text_box->NotifyTextChanged();
-            return S_OK;
-        }
-
-        case EN_SELCHANGE: {
-
-            auto event_observer = GetEventObserver<TextBoxSelectionChangeInfo>(
-                text_box->GetPropertyMap(),
-                kSelectionChangeEventPropertyName);
-
-            if (event_observer) {
-                TextBoxSelectionChangeInfo event_info(text_box);
-                event_observer->OnNext(event_info);
-            }
-            return S_OK;
-        }
-
-        case EN_PROTECTED: {
-            bool allowed = NotifyProtected(*reinterpret_cast<ENPROTECTED*>(pv));
-            return allowed ? S_OK : S_FALSE;
-        }
-
-        default:
-            return S_OK;
-    }
-}
-
-
-bool TextBox::TextHostBridge::NotifyProtected(const ENPROTECTED& info) const {
-
-    auto text_box = text_box_.lock();
-    if (text_box == nullptr) {
-        return true;
-    }
-
-    auto validator = text_box->GetTextValidator();
-    if (validator == nullptr) {
-        return true;
-    }
-
-    auto get_new_text = [&info](std::wstring& new_text) -> bool {
-    
-        if (info.msg == WM_CHAR) {
-            new_text.assign(1, static_cast<wchar_t>(info.wParam));
-            return true;
-        }
-        
-        if (info.msg == WM_PASTE) {
-
-            BOOL is_succeeded = OpenClipboard(nullptr);
-            if (! is_succeeded) {
-                return false;
-            }
-
-            bool result = false;
-            HANDLE data = GetClipboardData(CF_UNICODETEXT);
-            if (data != nullptr) {
-                new_text.assign(reinterpret_cast<wchar_t*>(data));
-                result = true;
-            }
-
-            CloseClipboard();
-            return result;
-        }
-
-        return false;
-    };
-
-    std::wstring new_text;
-    bool has_got_new_text = get_new_text(new_text);
-    if (has_got_new_text) {
-        return validator(*text_box, new_text);
-    }
-    else {
-        return true;
-    }
-}
-
-
-HIMC TextBox::TextHostBridge::TxImmGetContext() {
-    return nullptr;
-}
-
-
-void TextBox::TextHostBridge::TxImmReleaseContext(HIMC himc) {
-}
-
-
-HRESULT TextBox::TextHostBridge::TxGetSelectionBarWidth(LONG *lSelBarWidth) {
-    *lSelBarWidth = 0;
-    return S_OK;
-}
-
-
-std::shared_ptr<Window> TextBox::TextHostBridge::GetWindow() const {
-
-    auto text_box = text_box_.lock();
-    if (text_box == nullptr) {
-        return nullptr;
-    }
-
-    return text_box->Window();
-}
-
-
-HWND TextBox::TextHostBridge::GetWindowHandle() const {
-
-    auto window = GetWindow();
-    if (window == nullptr) {
-        return nullptr;
-    }
-
-    return window->Handle();
 }
 
 }

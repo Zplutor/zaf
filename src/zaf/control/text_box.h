@@ -12,6 +12,9 @@
 
 namespace zaf {
 namespace rich_edit {
+namespace internal {
+class TextHostBridge;
+}
 class EmbeddedObject;
 }
 
@@ -317,63 +320,7 @@ protected:
     void OnFocusLost(const FocusLostInfo& event_info) override;
 
 private:
-    class TextHostBridge : public ITextHost {
-    public:
-        TextHostBridge(const std::shared_ptr<TextBox>& text_box);
-
-        HRESULT __stdcall QueryInterface(REFIID riid, void** ppvObject) override;
-        ULONG __stdcall AddRef(void) override { return 0; }
-        ULONG  __stdcall Release(void) override { return 0; }
-        HDC TxGetDC() override;
-        INT    TxReleaseDC(HDC hdc) override;
-        BOOL TxShowScrollBar(INT fnBar, BOOL fShow) override;
-        BOOL TxEnableScrollBar(INT fuSBFlags, INT fuArrowflags) override;
-        BOOL TxSetScrollRange(INT fnBar, LONG nMinPos, INT nMaxPos, BOOL fRedraw) override;
-        BOOL TxSetScrollPos(INT fnBar, INT nPos, BOOL fRedraw) override;
-        void TxInvalidateRect(LPCRECT prc, BOOL fMode) override;
-        void TxViewChange(BOOL fUpdate) override;
-        BOOL TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) override;
-        BOOL TxShowCaret(BOOL fShow) override;
-        BOOL TxSetCaretPos(INT x, INT y) override;
-        BOOL TxSetTimer(UINT idTimer, UINT uTimeout) override;
-        void TxKillTimer(UINT idTimer) override;
-        void TxScrollWindowEx(INT dx, INT dy, LPCRECT lprcScroll, LPCRECT lprcClip, HRGN hrgnUpdate, LPRECT lprcUpdate, UINT fuScroll) override;
-        void TxSetCapture(BOOL fCapture) override;
-        void TxSetFocus() override;
-        void TxSetCursor(HCURSOR hcur, BOOL fText) override;
-        BOOL TxScreenToClient(LPPOINT lppt) override;
-        BOOL TxClientToScreen(LPPOINT lppt) override;
-        HRESULT    TxActivate(LONG * plOldState) override;
-        HRESULT    TxDeactivate(LONG lNewState) override;
-        HRESULT    TxGetClientRect(LPRECT prc) override;
-        HRESULT    TxGetViewInset(LPRECT prc) override;
-        HRESULT    TxGetCharFormat(const CHARFORMATW **ppCF) override;
-        HRESULT    TxGetParaFormat(const PARAFORMAT **ppPF) override;
-        COLORREF TxGetSysColor(int nIndex) override;
-        HRESULT    TxGetBackStyle(TXTBACKSTYLE *pstyle) override;
-        HRESULT    TxGetMaxLength(DWORD *plength) override;
-        HRESULT    TxGetScrollBars(DWORD *pdwScrollBar) override;
-        HRESULT    TxGetPasswordChar(_Out_ TCHAR *pch) override;
-        HRESULT    TxGetAcceleratorPos(LONG *pcp) override;
-        HRESULT    TxGetExtent(LPSIZEL lpExtent) override;
-        HRESULT    OnTxCharFormatChange(const CHARFORMATW * pCF) override;
-        HRESULT    OnTxParaFormatChange(const PARAFORMAT * pPF) override;
-        HRESULT    TxGetPropertyBits(DWORD dwMask, DWORD *pdwBits) override;
-        HRESULT    TxNotify(DWORD iNotify, void *pv) override;
-        HIMC TxImmGetContext() override;
-        void TxImmReleaseContext(HIMC himc) override;
-        HRESULT    TxGetSelectionBarWidth(LONG *lSelBarWidth) override;
-
-    private:
-        std::shared_ptr<zaf::Window> GetWindow() const;
-        HWND GetWindowHandle() const;
-
-        bool NotifyProtected(const ENPROTECTED& info) const;
-
-    private:
-        std::weak_ptr<TextBox> text_box_;
-        std::map<UINT, Subscription> timers_;
-    };
+    friend class rich_edit::internal::TextHostBridge;
 
 private:
     void InitializeTextService();
@@ -396,9 +343,10 @@ private:
     void Scroll(bool is_horizontal, int new_value);
     void ScrollBarChange();
     void ScrollValuesChange(bool is_horizontal);
+    void RaiseSelectionChangedEvent();
 
 private:
-    std::shared_ptr<TextHostBridge> text_host_bridge_;
+    std::shared_ptr<rich_edit::internal::TextHostBridge> text_host_bridge_;
     COMObject<ITextServices2> text_service_;
     std::shared_ptr<zaf::Caret> caret_;
     DWORD property_bits_;
