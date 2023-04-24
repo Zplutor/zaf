@@ -922,25 +922,22 @@ COMObject<rich_edit::EmbeddedObject> TextBox::FindObjectAtMousePosition(
         return {};
     }
 
-    long i{};
-    text_range->GetStart(&i);
-    ZAF_LOG() << "Position: " << i;
-
     COMObject<IUnknown> ole_object;
     hresult = text_range->GetEmbeddedObject(ole_object.Store());
     if (FAILED(hresult)) {
         return {};
     }
 
-    COMObject<rich_edit::EmbeddedObject> result{ 
-        dynamic_cast<rich_edit::EmbeddedObject*>(ole_object.Inner()) 
-    };
-
-    LONG object_position{};
-    hresult = text_range->GetStart(&object_position);
-    if (FAILED(hresult)) {
+    auto embedded_object = dynamic_cast<rich_edit::EmbeddedObject*>(ole_object.Inner());
+    if (!embedded_object) {
         return {};
     }
+
+    embedded_object->AddRef();
+    COMObject<rich_edit::EmbeddedObject> result{ embedded_object };
+
+    LONG object_position{};
+    text_range->GetStart(&object_position);
 
     auto selection_range = this->GetSelectionRange();
     is_in_selection_range =

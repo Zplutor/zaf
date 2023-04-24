@@ -14,6 +14,8 @@ namespace rich_edit {
 
 class EmbeddedObject : public IOleObject, NonCopyable {
 public:
+    virtual ~EmbeddedObject() = default;
+
     const zaf::Size& Size() const {
         return size_;
     }
