@@ -330,7 +330,6 @@ private:
     void ResetRequiredHeight();
     bool ChangeMouseCursor();
     COMObject<rich_edit::EmbeddedObject> FindObjectAtMousePosition(
-        const Point& position_in_text_box,
         bool& is_in_selection_range) const;
     bool HasPropertyBit(DWORD bit) const;
     void ChangePropertyBit(DWORD bit, bool is_set);

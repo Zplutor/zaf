@@ -230,12 +230,45 @@ void TextHostBridge::TxSetCursor(HCURSOR hcur, BOOL fText) {
 
 
 BOOL TextHostBridge::TxScreenToClient(LPPOINT lppt) {
-    return FALSE;
+
+    auto text_box = text_box_.lock();
+    if (!text_box) {
+        return FALSE;
+    }
+
+    auto window = text_box->Window();
+    if (!window) {
+        return FALSE;
+    }
+
+    //Convert to position in window.
+    ScreenToClient(window->Handle(), lppt);
+
+    /*
+    //Convert to position in text box content.
+    auto absolute_content_rect = text_box->AbsoluteContentRect();
+    absolute_content_rect = FromDIPs(absolute_content_rect, window->GetDPI());
+
+    lppt->x -= static_cast<LONG>(absolute_content_rect.position.x);
+    lppt->y -= static_cast<LONG>(absolute_content_rect.position.y);
+    */
+    return TRUE;
 }
 
 
 BOOL TextHostBridge::TxClientToScreen(LPPOINT lppt) {
-    return FALSE;
+
+    auto text_box = text_box_.lock();
+    if (!text_box) {
+        return FALSE;
+    }
+
+    auto window = text_box->Window();
+    if (!window) {
+        return FALSE;
+    }
+
+    return ClientToScreen(window->Handle(), lppt);
 }
 
 
@@ -249,6 +282,8 @@ HRESULT TextHostBridge::TxDeactivate(LONG lNewState) {
 }
 
 
+//According to the documentation: "The client rectangle is expressed in client coordinates of the 
+//containing window".
 HRESULT TextHostBridge::TxGetClientRect(LPRECT prc) {
 
     *prc = RECT{};

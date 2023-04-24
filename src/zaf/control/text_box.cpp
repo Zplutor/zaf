@@ -875,7 +875,7 @@ bool TextBox::ChangeMouseCursor() {
     Point mouse_position = FromDIPs(window->GetMousePosition(), window->GetDPI());
 
     bool is_in_selection_range{};
-    auto embedded_object = FindObjectAtMousePosition(mouse_position, is_in_selection_range);
+    auto embedded_object = FindObjectAtMousePosition(is_in_selection_range);
     if (embedded_object) {
         return embedded_object->ChangeMouseCursor(is_in_selection_range);
     }
@@ -901,7 +901,6 @@ bool TextBox::ChangeMouseCursor() {
 
 
 COMObject<rich_edit::EmbeddedObject> TextBox::FindObjectAtMousePosition(
-    const Point& position_in_text_box,
     bool& is_in_selection_range) const {
 
     auto ole_interface = GetOLEInterface();
@@ -910,15 +909,22 @@ COMObject<rich_edit::EmbeddedObject> TextBox::FindObjectAtMousePosition(
         return {};
     }
 
+    POINT mouse_position{};
+    GetCursorPos(&mouse_position);
+
     COMObject<ITextRange> text_range;
     HRESULT hresult = text_document->RangeFromPoint(
-        static_cast<long>(position_in_text_box.x),
-        static_cast<long>(position_in_text_box.y),
+        mouse_position.x,
+        mouse_position.y,
         text_range.Store());
 
     if (FAILED(hresult)) {
         return {};
     }
+
+    long i{};
+    text_range->GetStart(&i);
+    ZAF_LOG() << "Position: " << i;
 
     COMObject<IUnknown> ole_object;
     hresult = text_range->GetEmbeddedObject(ole_object.Store());
