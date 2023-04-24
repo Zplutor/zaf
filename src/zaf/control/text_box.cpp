@@ -186,8 +186,17 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     //before painting.
     ReviseTextColor();
 
-    auto bounds_rect = FromDIPs(this->ContentRect(), this->GetDPI()).ToRECTL();
-    auto update_rect = FromDIPs(dirty_rect, this->GetDPI()).ToRECT();
+    //Note: all painting operations are in content coordinate.
+    auto content_rect = this->ContentRect();
+    auto content_region_guard = canvas.PushRegion(content_rect, dirty_rect);
+
+    zaf::Rect bounds_in_content;
+    bounds_in_content.size = content_rect.size;
+    auto bounds_rect = FromDIPs(bounds_in_content, this->GetDPI()).ToRECTL();
+
+    zaf::Rect update_area_in_content = dirty_rect;
+    update_area_in_content.SubtractOffset(content_rect.position);
+    auto update_rect = FromDIPs(update_area_in_content, this->GetDPI()).ToRECT();
 
     text_service_->TxDrawD2D(
         canvas.Renderer().Inner(),
@@ -195,10 +204,10 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         &update_rect,
         TXTVIEW_ACTIVE);
 
-    PaintEmbeddedObjects(canvas, dirty_rect);
+    PaintEmbeddedObjects(canvas, update_area_in_content);
 
     if (caret_) {
-        caret_->Paint(canvas, dirty_rect);
+        caret_->Paint(canvas, update_area_in_content);
     }
 }
 
@@ -233,6 +242,7 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
         return;
     }
 
+    auto absolute_content_rect = this->AbsoluteContentRect();
     auto selection_range = this->GetSelectionRange();
 
     for (LONG index = 0; index < object_count; ++index) {
@@ -261,17 +271,24 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
             continue;
         }
 
-        long object_x{};
-        long object_y{};
-        hresult = text_range->GetPoint(tomClientCoord | TA_TOP | TA_LEFT, &object_x, &object_y);
+        //Note: GetPoint() returns position in window coordinate, 
+        //see TextHostBridge::TxGetClientRect().
+        long absolute_x{};
+        long absolute_y{};
+        hresult = text_range->GetPoint(
+            tomClientCoord | TA_TOP | TA_LEFT,
+            &absolute_x, 
+            &absolute_y);
+
         if (FAILED(hresult)) {
             continue;
         }
 
-        Point object_position{ static_cast<float>(object_x), static_cast<float>(object_y) };
+        Point object_position{ static_cast<float>(absolute_x), static_cast<float>(absolute_y) };
         object_position = ToDIPs(object_position, this->GetDPI());
-        zaf::Rect object_rect{ object_position, embedded_object->Size() };
+        object_position.SubtractOffset(absolute_content_rect.position);
 
+        zaf::Rect object_rect{ object_position, embedded_object->Size() };
         auto dirty_rect_of_object = Rect::Intersect(dirty_rect, object_rect);
         if (dirty_rect_of_object.IsEmpty()) {
             continue;
@@ -357,15 +374,6 @@ void TextBox::ResetRequiredHeight() {
 
 zaf::Rect TextBox::GetTextRect() {
     return zaf::Rect();
-}
-
-
-const zaf::Rect TextBox::GetAbsoluteContentRect() const {
-
-    auto rect = AbsoluteRect();
-    rect.Deflate(Border());
-    rect.Deflate(Padding());
-    return rect;
 }
 
 

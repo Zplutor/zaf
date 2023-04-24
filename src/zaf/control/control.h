@@ -286,6 +286,8 @@ public:
         NeedRelayout();
     }
 
+    zaf::Rect AbsoluteContentRect() const;
+
     /**
      Get the control's content rect, related to its coordinate system.
      */

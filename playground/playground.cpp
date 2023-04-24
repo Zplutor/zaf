@@ -101,8 +101,13 @@ protected:
         text_box_->SetFontSize(22);
         text_box_->SetIsMultiline(true);
 
-        this->RootControl()->AddChild(text_box_);
-        this->RootControl()->SetBackgroundColor(zaf::Color::Yellow());
+        auto container = zaf::Create<zaf::Control>();
+        container->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
+        container->AddChild(text_box_);
+        container->SetPadding(zaf::Frame{ 10, 10, 10, 10 });
+        container->SetBackgroundColor(zaf::Color::Yellow());
+
+        this->RootControl()->AddChild(container);
 
         InitializeOLEObject();
     }

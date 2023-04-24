@@ -94,6 +94,7 @@ constexpr bool DefaultIsVisible = true;
 ZAF_DEFINE_TYPE(Control)
 ZAF_DEFINE_TYPE_PARSER(ControlParser)
 ZAF_DEFINE_TYPE_PROPERTY(Rect)
+ZAF_DEFINE_TYPE_PROPERTY(AbsoluteContentRect)
 ZAF_DEFINE_TYPE_PROPERTY(AbsoluteRect)
 ZAF_DEFINE_TYPE_PROPERTY(Position)
 ZAF_DEFINE_TYPE_PROPERTY(X)
@@ -892,6 +893,14 @@ Anchor Control::Anchor() const {
 
 void Control::SetAnchor(zaf::Anchor anchor) {
     GetPropertyMap().SetProperty(kAnchorPropertyName, anchor);
+}
+
+
+zaf::Rect Control::AbsoluteContentRect() const {
+
+    auto result = ContentRect();
+    result.AddOffset(AbsoluteRect().position);
+    return result;
 }
 
 

@@ -2,6 +2,7 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/object/type_definition.h>
+#include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/window/window.h>
 
@@ -72,8 +73,9 @@ void Caret::ShowCaret() {
 
     is_blink_on_ = true;
 
-    blink_timer_subscription_ = rx::Interval(std::chrono::milliseconds(blink_time)).Subscribe(
-        [this](int) {
+    blink_timer_subscription_ = rx::Interval(std::chrono::milliseconds(blink_time))
+        .ObserveOn(Scheduler::Main())
+        .Subscribe([this](int) {
         
         is_blink_on_ = !is_blink_on_;
         NeedRepaint();
@@ -93,9 +95,13 @@ void Caret::HideCaret() {
 void Caret::NeedRepaint() {
 
     auto owner = owner_.lock();
-    if (owner) {
-        owner->NeedRepaintRect(rect_);
+    if (!owner) {
+        return;
     }
+
+    auto repaint_rect = rect_;
+    repaint_rect.AddOffset(owner->ContentRect().position);
+    owner->NeedRepaintRect(repaint_rect);
 }
 
 
@@ -111,13 +117,12 @@ void Caret::CreateSystemCaret() {
         return;
     }
 
-    auto owner_absolute_position = owner->AbsoluteRect().position;
+    auto owner_absolute_content_rect = owner->AbsoluteContentRect();
 
     auto caret_absolute_rect = Rect();
-    caret_absolute_rect.position.x += owner_absolute_position.x;
-    caret_absolute_rect.position.y += owner_absolute_position.y;
-
+    caret_absolute_rect.AddOffset(owner_absolute_content_rect.position);
     caret_absolute_rect = FromDIPs(caret_absolute_rect, window->GetDPI());
+
     CreateCaret(
         window->Handle(),
         nullptr,

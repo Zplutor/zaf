@@ -12,6 +12,9 @@ class Caret : public Object, NonCopyable {
 public:
     ZAF_DECLARE_TYPE;
 
+    /**
+    Construct a caret which belongs to the specified control.
+    */
     explicit Caret(const std::weak_ptr<Control>& owner);
     ~Caret();
 
@@ -19,12 +22,22 @@ public:
         return rect_;
     }
 
+    /**
+    Sets rect of the caret.
+
+    Note that the position of rect is in owner content coordinate.
+    */
     void SetRect(const zaf::Rect& rect);
 
     const Point& Position() const {
         return rect_.position;
     }
 
+    /**
+    Sets position of the caret.
+
+    Note that the position is in owner content coordinate.
+    */
     void SetPosition(const Point& position) {
         SetRect(zaf::Rect{ position, rect_.size });
     }
@@ -43,6 +56,15 @@ public:
 
     void SetIsVisible(bool is_visible);
 
+    /**
+    Paints the caret.
+
+    @param owner_canvas
+        The canvas of owner. It should have been pushed a region of content area.
+
+    @param dirty_rect
+        A rectangle area that need to be painted, in owner content coordinate.
+    */
     void Paint(Canvas& owner_canvas, const zaf::Rect& dirty_rect);
 
 private:

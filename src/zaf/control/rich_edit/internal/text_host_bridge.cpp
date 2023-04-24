@@ -159,11 +159,17 @@ BOOL TextHostBridge::TxSetCaretPos(INT x, INT y) {
         return FALSE;
     }
 
+    //Note: x and y are in window coordinate, while the position of caret is in control content
+    //coordinate.
+
     float dpi = text_box->GetDPI();
     Point caret_position{
         ToDIPs(static_cast<float>(x), dpi),
         ToDIPs(static_cast<float>(y), dpi) + text_box->GetPaintContentOffset(nullptr)
     };
+
+    auto absolute_content_rect = text_box->AbsoluteContentRect();
+    caret_position.SubtractOffset(absolute_content_rect.position);
 
     text_box->caret_->SetPosition(caret_position);
     return TRUE;
@@ -252,7 +258,12 @@ HRESULT TextHostBridge::TxGetClientRect(LPRECT prc) {
         return S_OK;
     }
 
-    *prc = Align(FromDIPs(text_box->Rect(), text_box->GetDPI())).ToRECT();
+    //Returns the rect of rich edit in window.
+    auto absolute_content_rect = text_box->AbsoluteContentRect();
+    auto pixels_rect = FromDIPs(absolute_content_rect, text_box->GetDPI());
+    auto aligned_rect = Align(pixels_rect);
+
+    *prc = aligned_rect.ToRECT();
     return S_OK;
 }
 

@@ -328,7 +328,6 @@ private:
     void PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect);
     float GetPaintContentOffset(HDC hdc);
     void ResetRequiredHeight();
-    const zaf::Rect GetAbsoluteContentRect() const;
     bool ChangeMouseCursor();
     COMObject<rich_edit::EmbeddedObject> FindObjectAtMousePosition(
         const Point& position_in_text_box,
