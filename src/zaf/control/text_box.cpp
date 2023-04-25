@@ -192,6 +192,7 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     auto content_region_guard = canvas.PushRegion(content_rect, dirty_rect);
 
     zaf::Rect bounds_in_content;
+    bounds_in_content.position.y = GetContentVerticalOffset();
     bounds_in_content.size = content_rect.size;
     auto bounds_rect = FromDIPs(bounds_in_content, this->GetDPI()).ToRECTL();
 
@@ -311,7 +312,7 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
 }
 
 
-float TextBox::GetPaintContentOffset(HDC hdc) {
+float TextBox::GetContentVerticalOffset() {
 
     if (IsMultiline()) {
         return 0;
@@ -324,22 +325,12 @@ float TextBox::GetPaintContentOffset(HDC hdc) {
 
     if (required_height_ == 0) {
 
-        if (hdc == nullptr) {
-            return 0;
-        }
-
-        auto window = Window();
-        if (!window) {
-            return 0;
-        }
-
         LONG width = std::numeric_limits<LONG>::max();
         LONG height = 0;
         SIZEL extent_size = { -1, -1 };
 
         HRESULT result = text_service_->TxGetNaturalSize(
             DVASPECT_CONTENT,
-            hdc,
             nullptr,
             nullptr,
             nullptr,
@@ -349,7 +340,7 @@ float TextBox::GetPaintContentOffset(HDC hdc) {
             &height);
 
         if (SUCCEEDED(result)) {
-            required_height_ = ToDIPs(static_cast<float>(height), window->GetDPI());
+            required_height_ = ToDIPs(static_cast<float>(height), this->GetDPI());
         }
     }
 

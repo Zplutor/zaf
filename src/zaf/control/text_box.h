@@ -326,7 +326,7 @@ private:
     void InitializeTextService();
     void ReviseTextColor();
     void PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect);
-    float GetPaintContentOffset(HDC hdc);
+    float GetContentVerticalOffset();
     void ResetRequiredHeight();
     bool ChangeMouseCursor();
     bool HasPropertyBit(DWORD bit) const;

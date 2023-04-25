@@ -165,7 +165,7 @@ BOOL TextHostBridge::TxSetCaretPos(INT x, INT y) {
     float dpi = text_box->GetDPI();
     Point caret_position{
         ToDIPs(static_cast<float>(x), dpi),
-        ToDIPs(static_cast<float>(y), dpi) + text_box->GetPaintContentOffset(nullptr)
+        ToDIPs(static_cast<float>(y), dpi)
     };
 
     auto absolute_content_rect = text_box->AbsoluteContentRect();
@@ -241,18 +241,7 @@ BOOL TextHostBridge::TxScreenToClient(LPPOINT lppt) {
         return FALSE;
     }
 
-    //Convert to position in window.
-    ScreenToClient(window->Handle(), lppt);
-
-    /*
-    //Convert to position in text box content.
-    auto absolute_content_rect = text_box->AbsoluteContentRect();
-    absolute_content_rect = FromDIPs(absolute_content_rect, window->GetDPI());
-
-    lppt->x -= static_cast<LONG>(absolute_content_rect.position.x);
-    lppt->y -= static_cast<LONG>(absolute_content_rect.position.y);
-    */
-    return TRUE;
+    return ScreenToClient(window->Handle(), lppt);
 }
 
 
@@ -295,6 +284,8 @@ HRESULT TextHostBridge::TxGetClientRect(LPRECT prc) {
 
     //Returns the rect of rich edit in window.
     auto absolute_content_rect = text_box->AbsoluteContentRect();
+    absolute_content_rect.position.y += text_box->GetContentVerticalOffset();
+
     auto pixels_rect = FromDIPs(absolute_content_rect, text_box->GetDPI());
     auto aligned_rect = Align(pixels_rect);
 
