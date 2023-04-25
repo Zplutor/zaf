@@ -57,7 +57,7 @@ OLEHelper::TextRangeWithObject OLEHelper::FindTextRangeContainingObjectUnderMous
     const COMObject<IRichEditOle>& ole_interface,
     const POINT& mouse_position_in_screen) {
 
-    auto text_document = ole_interface.As<ITextDocument>();
+    auto text_document = ole_interface.Query<ITextDocument>();
     if (!text_document) {
         return {};
     }
@@ -120,14 +120,7 @@ COMObject<EmbeddedObject> OLEHelper::GetObjectInTextRange(
         return {};
     }
 
-    auto embedded_object = dynamic_cast<rich_edit::EmbeddedObject*>(ole_object.Inner());
-    if (!embedded_object) {
-        return {};
-    }
-
-    embedded_object->AddRef();
-    COMObject<rich_edit::EmbeddedObject> result{ embedded_object };
-    return result;
+    return ole_object.As<rich_edit::EmbeddedObject>();
 }
 
 }

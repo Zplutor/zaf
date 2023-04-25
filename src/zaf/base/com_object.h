@@ -14,6 +14,10 @@ public:
 
     }
 
+    COMObject(std::nullptr_t) : inner_(nullptr) {
+
+    }
+
     explicit COMObject(T* inner) : inner_(inner) {
 
     }
@@ -111,10 +115,19 @@ public:
         return !!inner_;
     }
 
-    template<typename K>
-    COMObject<K> As() const {
-        COMObject<K> result;
-        inner_->QueryInterface(__uuidof(K), result.StoreVoid());
+    template<typename I>
+    COMObject<I> Query() const {
+        COMObject<I> result;
+        inner_->QueryInterface(__uuidof(I), result.StoreVoid());
+        return result;
+    }
+
+    template<typename C>
+    COMObject<C> As() const {
+        COMObject<C> result{ dynamic_cast<C*>(Inner()) };
+        if (result) {
+            result->AddRef();
+        }
         return result;
     }
 

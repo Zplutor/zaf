@@ -238,7 +238,7 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
         return;
     }
 
-    auto text_document = ole_interface.As<ITextDocument>();
+    auto text_document = ole_interface.Query<ITextDocument>();
     if (!text_document) {
         return;
     }
@@ -340,6 +340,7 @@ float TextBox::GetPaintContentOffset(HDC hdc) {
         HRESULT result = text_service_->TxGetNaturalSize(
             DVASPECT_CONTENT,
             hdc,
+            nullptr,
             nullptr,
             nullptr,
             TXTNS_FITTOCONTENT,

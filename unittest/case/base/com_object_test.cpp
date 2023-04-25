@@ -82,6 +82,11 @@ TEST(COMObjectTest, Construction) {
         ASSERT_EQ(object.Inner()->ReferenceCount(), 1);
         ASSERT_NE(dynamic_cast<DerivedCOMObject*>(object.Inner()), nullptr);
     }
+
+    //Implicit convertible from nullptr.
+    {
+        zaf::COMObject<BaseCOMObject> object = nullptr;
+    }
 }
 
 
@@ -387,14 +392,25 @@ TEST(COMObjecTest, OperatorArrow) {
 }
 
 
-TEST(COMObjectTest, As) {
+TEST(COMObjectTest, Query) {
 
     zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
 
-    auto unknown = object.As<IUnknown>();
+    auto unknown = object.Query<IUnknown>();
     ASSERT_TRUE(unknown.IsValid());
     ASSERT_EQ(object.Inner(), unknown.Inner());
 
-    auto ole_object = object.As<IOleObject>();
+    auto ole_object = object.Query<IOleObject>();
     ASSERT_FALSE(ole_object.IsValid());
+}
+
+
+TEST(COMObjectTest, As) {
+
+    zaf::COMObject<BaseCOMObject> base(new DerivedCOMObject());
+
+    auto derived = base.As<DerivedCOMObject>();
+    ASSERT_TRUE(derived.IsValid());
+    ASSERT_EQ(derived.Inner(), base.Inner());
+    ASSERT_EQ(derived->ReferenceCount(), 2);
 }
