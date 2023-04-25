@@ -27,6 +27,10 @@ public:
      */
     TextRange(std::size_t index, std::size_t length) : index(index), length(length) { }
 
+    bool Contain(std::size_t position) const {
+        return (index <= position) && (position < index + length);
+    }
+
     /**
      Convert the instance to a DWRITE_TEXT_RANGE structure.
      */

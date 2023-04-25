@@ -79,7 +79,7 @@ public:
     }
 
     bool ChangeMouseCursor(bool is_in_selection_range) override {
-        SetCursor(LoadCursor(nullptr, IDC_APPSTARTING));
+        SetCursor(LoadCursor(nullptr, IDC_HAND));
         return true;
     }
 };

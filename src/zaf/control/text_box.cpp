@@ -7,6 +7,7 @@
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
 #include <zaf/control/rich_edit/embedded_object.h>
+#include <zaf/control/rich_edit/internal/ole_helper.h>
 #include <zaf/control/rich_edit/internal/text_host_bridge.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
@@ -299,14 +300,10 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
         auto dirty_rect_in_object = dirty_rect_of_object;
         dirty_rect_in_object.SubtractOffset(object_rect.position);
 
-        bool is_in_selection_range =
-            object_info.cp >= selection_range.index &&
-            object_info.cp < selection_range.index + selection_range.length;
-
         rich_edit::ObjectContext object_context{
             static_cast<std::size_t>(object_info.cp),
             !!(object_info.dwFlags & REO_SELECTED),
-            is_in_selection_range
+            selection_range.Contain(object_info.cp)
         };
 
         embedded_object->Paint(canvas, dirty_rect_in_object, object_context);
@@ -863,6 +860,16 @@ void TextBox::ChangeMouseCursor(const Message& message, bool& is_changed) {
 
 bool TextBox::ChangeMouseCursor() {
 
+    //Try to change mouse cursor with objects first.
+    auto object_info = rich_edit::internal::OLEHelper::FindObjectUnderMouse(*this);
+    if (object_info.object) {
+
+        bool is_in_selection_range = this->GetSelectionRange().Contain(object_info.position);
+        if (object_info.object->ChangeMouseCursor(is_in_selection_range)) {
+            return true;
+        }
+    }
+
     if (!text_service_) {
         return false;
     }
@@ -873,13 +880,6 @@ bool TextBox::ChangeMouseCursor() {
     }
 
     Point mouse_position = FromDIPs(window->GetMousePosition(), window->GetDPI());
-
-    bool is_in_selection_range{};
-    auto embedded_object = FindObjectAtMousePosition(is_in_selection_range);
-    if (embedded_object) {
-        return embedded_object->ChangeMouseCursor(is_in_selection_range);
-    }
-
     HRESULT result = text_service_->OnTxSetCursor(
         DVASPECT_CONTENT,
         0,
@@ -895,56 +895,7 @@ bool TextBox::ChangeMouseCursor() {
     if (FAILED(result)) {
         return false;
     }
-
     return true;
-}
-
-
-COMObject<rich_edit::EmbeddedObject> TextBox::FindObjectAtMousePosition(
-    bool& is_in_selection_range) const {
-
-    auto ole_interface = GetOLEInterface();
-    auto text_document = ole_interface.As<ITextDocument>();
-    if (!text_document) {
-        return {};
-    }
-
-    POINT mouse_position{};
-    GetCursorPos(&mouse_position);
-
-    COMObject<ITextRange> text_range;
-    HRESULT hresult = text_document->RangeFromPoint(
-        mouse_position.x,
-        mouse_position.y,
-        text_range.Store());
-
-    if (FAILED(hresult)) {
-        return {};
-    }
-
-    COMObject<IUnknown> ole_object;
-    hresult = text_range->GetEmbeddedObject(ole_object.Store());
-    if (FAILED(hresult)) {
-        return {};
-    }
-
-    auto embedded_object = dynamic_cast<rich_edit::EmbeddedObject*>(ole_object.Inner());
-    if (!embedded_object) {
-        return {};
-    }
-
-    embedded_object->AddRef();
-    COMObject<rich_edit::EmbeddedObject> result{ embedded_object };
-
-    LONG object_position{};
-    text_range->GetStart(&object_position);
-
-    auto selection_range = this->GetSelectionRange();
-    is_in_selection_range =
-        object_position >= selection_range.index &&
-        object_position < selection_range.index + selection_range.length;
-
-    return result;
 }
 
 
