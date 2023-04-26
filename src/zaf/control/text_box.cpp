@@ -279,7 +279,7 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
         long absolute_x{};
         long absolute_y{};
         hresult = text_range->GetPoint(
-            tomClientCoord | TA_TOP | TA_LEFT,
+            tomAllowOffClient | tomClientCoord | TA_TOP | TA_LEFT,
             &absolute_x, 
             &absolute_y);
 
