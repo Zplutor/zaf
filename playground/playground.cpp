@@ -100,7 +100,7 @@ protected:
         text_box_->SetBorder(zaf::Frame{ 10, 10, 10, 10 });
         text_box_->SetFontSize(22);
         //text_box_->SetIsMultiline(true);
-        //text_box_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
+        text_box_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
 
         auto container = zaf::Create<zaf::Control>();
         container->SetLayouter(zaf::Create<zaf::VerticalLayouter>());

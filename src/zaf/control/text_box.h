@@ -311,6 +311,7 @@ protected:
     void OnMouseMove(const MouseMoveInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseUp(const MouseUpInfo& event_info) override;
+    Point AdjustMousePositionIntoRichEdit(const Point& position_in_control);
 
     void OnKeyDown(const KeyDownInfo& event_info) override;
     void OnKeyUp(const KeyUpInfo& event_info) override;
@@ -327,7 +328,7 @@ private:
     void ReviseTextColor();
     void PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect);
     float GetContentVerticalOffset();
-    void ResetRequiredHeight();
+    void ResetCachedTextHeight();
     bool ChangeMouseCursor();
     bool HasPropertyBit(DWORD bit) const;
     void ChangePropertyBit(DWORD bit, bool is_set);
@@ -352,7 +353,7 @@ private:
     CHARFORMATW character_format_;
     PARAFORMAT paragraph_format_;
     DWORD scroll_bar_property_;
-    float required_height_;
+    std::optional<float> cached_text_height_;
     Color text_color_;
 };
 

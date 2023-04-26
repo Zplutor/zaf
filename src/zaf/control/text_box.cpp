@@ -104,7 +104,6 @@ TextBox::TextBox() :
     character_format_(),
     paragraph_format_(),
     scroll_bar_property_(kDefaultScrollBarProperty),
-    required_height_(0),
     text_color_(Color::Black()) {
 
     character_format_.cbSize = sizeof(character_format_);
@@ -314,16 +313,17 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
 
 float TextBox::GetContentVerticalOffset() {
 
+    //Due to some problems, multi-line rich edit doesn't support ParagraphAlignment for now.
     if (IsMultiline()) {
         return 0;
     }
-    
+
     auto paragraph_alignment = ParagraphAlignment();
     if (paragraph_alignment == ParagraphAlignment::Near) {
         return 0;
     }
 
-    if (required_height_ == 0) {
+    if (!cached_text_height_) {
 
         LONG width = std::numeric_limits<LONG>::max();
         LONG height = 0;
@@ -339,16 +339,18 @@ float TextBox::GetContentVerticalOffset() {
             &width,
             &height);
 
-        if (SUCCEEDED(result)) {
-            required_height_ = ToDIPs(static_cast<float>(height), this->GetDPI());
+        if (FAILED(result)) {
+            return 0;
         }
+
+        cached_text_height_ = ToDIPs(static_cast<float>(height), this->GetDPI());
     }
 
     if (paragraph_alignment == ParagraphAlignment::Center) {
-        return (ContentSize().height - required_height_) / 2;
+        return (ContentSize().height - *cached_text_height_) / 2;
     }
     else if (paragraph_alignment == ParagraphAlignment::Far) {
-        return ContentSize().height - required_height_;
+        return ContentSize().height - *cached_text_height_;
     }
     else {
         return 0;
@@ -356,8 +358,8 @@ float TextBox::GetContentVerticalOffset() {
 }
 
 
-void TextBox::ResetRequiredHeight() {
-    required_height_ =0 ;
+void TextBox::ResetCachedTextHeight() {
+    cached_text_height_.reset();
 }
 
 
@@ -557,7 +559,7 @@ zaf::Font TextBox::Font() const {
 
 void TextBox::SetFont(const zaf::Font& font) {
 
-    ResetRequiredHeight();
+    ResetCachedTextHeight();
 
     character_format_.dwMask |= CFM_PROTECTED;
     character_format_.dwEffects |= CFM_PROTECTED;
@@ -852,6 +854,19 @@ void TextBox::ChangeMouseCursor(const Message& message, bool& is_changed) {
 
 bool TextBox::ChangeMouseCursor() {
 
+    //Don't change mouse cursor if the mouse is not in content rect.
+    auto mouse_position_in_control = this->GetMousePosition();
+    if (!this->ContentRect().Contain(mouse_position_in_control)) {
+        return false;
+    }
+
+    //Rich edit will not change mouse cursor if the mouse position is above rich edit, so we adjust
+    //mouse position to the top of rich edit if it is in vertical offset area.
+    mouse_position_in_control = AdjustMousePositionIntoRichEdit(mouse_position_in_control);
+
+    auto mouse_position_in_window = mouse_position_in_control;
+    mouse_position_in_window.AddOffset(this->AbsoluteRect().position);
+
     //Try to change mouse cursor with objects first.
     auto object_info = rich_edit::internal::OLEHelper::FindObjectUnderMouse(*this);
     if (object_info.object) {
@@ -862,16 +877,7 @@ bool TextBox::ChangeMouseCursor() {
         }
     }
 
-    if (!text_service_) {
-        return false;
-    }
-
-    auto window = Window();
-    if (!window) {
-        return false;
-    }
-
-    Point mouse_position = FromDIPs(window->GetMousePosition(), window->GetDPI());
+    Point mouse_position_in_rich_edit = FromDIPs(mouse_position_in_window, this->GetDPI());
     HRESULT result = text_service_->OnTxSetCursor(
         DVASPECT_CONTENT,
         0,
@@ -880,8 +886,8 @@ bool TextBox::ChangeMouseCursor() {
         nullptr,
         nullptr,
         nullptr,
-        static_cast<INT>(mouse_position.x),
-        static_cast<INT>(mouse_position.y)
+        static_cast<INT>(mouse_position_in_rich_edit.x),
+        static_cast<INT>(mouse_position_in_rich_edit.y)
     );
 
     if (FAILED(result)) {
@@ -899,15 +905,8 @@ void TextBox::OnMouseMove(const MouseMoveInfo& event_info) {
         return;
     }
 
-    if (text_service_) {
-
-        HRESULT result = text_service_->TxSendMessage(
-            WM_MOUSEMOVE,
-            event_info.Message().WParam(),
-            event_info.Message().LParam(),
-            nullptr);
-    }
-
+    const auto& message = event_info.Message();
+    text_service_->TxSendMessage(message.ID(), message.WParam(), message.LParam(), nullptr);
     event_info.MarkAsHandled();
 }
 
@@ -922,15 +921,8 @@ void TextBox::OnMouseDown(const MouseDownInfo& event_info) {
 
     SetIsFocused(true);
 
-    if (text_service_) {
-
-        HRESULT result = text_service_->TxSendMessage(
-            WM_LBUTTONDOWN, 
-            event_info.Message().WParam(),
-            event_info.Message().LParam(), 
-            nullptr);
-    }
-
+    const auto& message = event_info.Message();
+    text_service_->TxSendMessage(message.ID(), message.WParam(), message.LParam(), nullptr);
     event_info.MarkAsHandled();
 }
 
@@ -943,16 +935,36 @@ void TextBox::OnMouseUp(const MouseUpInfo& event_info) {
         return;
     }
 
-    if (text_service_) {
+    const auto& message = event_info.Message();
+    text_service_->TxSendMessage(message.ID(), message.WParam(), message.LParam(), nullptr);
+    event_info.MarkAsHandled();
+}
 
-        HRESULT result = text_service_->TxSendMessage(
-            WM_LBUTTONUP, 
-            event_info.Message().WParam(), 
-            event_info.Message().LParam(),
-            nullptr);
+
+Point TextBox::AdjustMousePositionIntoRichEdit(const Point& position_in_control) {
+
+    //There is a vertical offset to the position of rich edit if ParagraphAlignemnt is set to 
+    //Center or Bottom. In order to make mouse operations within the offset area apply to rich 
+    //edit, we modify the position as if it is in the area of rich edit.
+
+    //No offset, no need to adjust.
+    float vertical_offset = GetContentVerticalOffset();
+    if (vertical_offset == 0) {
+        return position_in_control;
     }
 
-    event_info.MarkAsHandled();
+    zaf::Rect offset_area_rect = ContentRect();
+    offset_area_rect.size.height = vertical_offset;
+
+    //Position is not in offset area, no need to adjust.
+    if (!offset_area_rect.Contain(position_in_control)) {
+        return position_in_control;
+    }
+
+    //Position is in offset area, adjust to the top of rich edit area.
+    Point result = position_in_control;
+    result.y = offset_area_rect.Bottom();
+    return result;
 }
 
 
