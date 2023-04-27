@@ -33,7 +33,7 @@ CanvasRegionGuard Canvas::PushRegion(const Rect& region_rect, const Rect& painta
 
     Rect clipping_rect = new_region.aligned_paintable_rect;
     clipping_rect.SubtractOffset(new_region.aligned_rect.position);
-    auto clipping_guard = PushClipping(clipping_rect);
+    auto clipping_guard = InnerPushClipping(clipping_rect);
 
     return CanvasRegionGuard{ this, std::move(clipping_guard) };
 }
@@ -89,8 +89,13 @@ void Canvas::PopRegion(CanvasClippingGuard&& clipping_guard) {
 CanvasClippingGuard Canvas::PushClipping(const Rect& clipping_rect) {
 
     auto aligned_clipping_rect = AlignWithRegion(clipping_rect);
-    renderer_.PushAxisAlignedClipping(aligned_clipping_rect, zaf::AntialiasMode::PerPrimitive);
+    return InnerPushClipping(aligned_clipping_rect);
+}
 
+
+CanvasClippingGuard Canvas::InnerPushClipping(const Rect& clipping_rect) {
+
+    renderer_.PushAxisAlignedClipping(clipping_rect, zaf::AntialiasMode::PerPrimitive);
     return CanvasClippingGuard{ this, ++current_clipping_tag_ };
 }
 

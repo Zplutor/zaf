@@ -308,6 +308,11 @@ void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect) {
             continue;
         }
 
+        child_dirty_rect.Intersect(content_rect);
+        if (child_dirty_rect.IsEmpty()) {
+            continue;
+        }
+
         auto layer_guard = canvas.PushRegion(child_rect, child_dirty_rect);
         child_dirty_rect.position.SubtractOffset(child_rect.position);
         child->Repaint(canvas, child_dirty_rect);

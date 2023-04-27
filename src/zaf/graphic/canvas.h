@@ -205,6 +205,8 @@ private:
         const Rect& region_rect,
         const Rect& paintable_rect) const;
 
+    CanvasClippingGuard InnerPushClipping(const Rect& clipping_rect);
+
     const internal::CanvasState& CurrentState() const;
 
     template<typename T>
