@@ -41,7 +41,7 @@ public:
     virtual void Paint(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
-        const ObjectContext& context) = 0;
+        const PaintContext& context) = 0;
 
     /**
     Changes the mouse cursor.
@@ -54,6 +54,10 @@ public:
         be set; otherwise returns false.
     */
     virtual bool ChangeMouseCursor(bool is_in_selection_range);
+
+    virtual void OnMouseDown(const MouseDownContext& context);
+    virtual void OnMouseUp(const MouseUpContext& context);
+    virtual void OnDoubleClick(const DoubleClickContext& context);
 
     //IUnknown interfaces
     HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override;

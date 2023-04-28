@@ -302,13 +302,14 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
         auto dirty_rect_in_object = dirty_rect_of_object;
         dirty_rect_in_object.SubtractOffset(object_rect.position);
 
-        rich_edit::ObjectContext object_context{
-            static_cast<std::size_t>(object_info.cp),
-            !!(object_info.dwFlags & REO_SELECTED),
-            selection_range.Contain(object_info.cp)
-        };
-
-        embedded_object->Paint(canvas, dirty_rect_in_object, object_context);
+        embedded_object->Paint(
+            canvas,
+            dirty_rect_in_object, 
+            rich_edit::PaintContext{
+                static_cast<std::size_t>(object_info.cp),
+                selection_range.Contain(object_info.cp)
+            }
+        );
     }
 }
 
@@ -872,9 +873,7 @@ bool TextBox::ChangeMouseCursor() {
     //Try to change mouse cursor with objects first.
     auto object_info = rich_edit::internal::OLEHelper::FindObjectUnderMouse(*this);
     if (object_info.object) {
-
-        bool is_in_selection_range = this->GetSelectionRange().Contain(object_info.position);
-        if (object_info.object->ChangeMouseCursor(is_in_selection_range)) {
+        if (object_info.object->ChangeMouseCursor(object_info.is_in_selection_range)) {
             return true;
         }
     }
@@ -916,12 +915,26 @@ void TextBox::OnMouseMove(const MouseMoveInfo& event_info) {
 void TextBox::OnMouseDown(const MouseDownInfo& event_info) {
 
     __super::OnMouseDown(event_info);
-
     if (event_info.IsHandled()) {
         return;
     }
 
     SetIsFocused(true);
+
+    auto object_info = rich_edit::internal::OLEHelper::FindObjectUnderMouse(*this);
+    if (object_info.object) {
+        
+        object_info.object->OnMouseDown(rich_edit::MouseDownContext{
+            object_info.text_position,
+            object_info.is_in_selection_range,
+            object_info.mouse_position_in_object,
+            event_info
+        });
+
+        if (event_info.IsHandled()) {
+            return;
+        }
+    }
 
     const auto& message = event_info.Message();
     text_service_->TxSendMessage(message.ID(), message.WParam(), message.LParam(), nullptr);
@@ -932,9 +945,23 @@ void TextBox::OnMouseDown(const MouseDownInfo& event_info) {
 void TextBox::OnMouseUp(const MouseUpInfo& event_info) {
 
     __super::OnMouseUp(event_info);
-
     if (event_info.IsHandled()) {
         return;
+    }
+
+    auto object_info = rich_edit::internal::OLEHelper::FindObjectUnderMouse(*this);
+    if (object_info.object) {
+
+        object_info.object->OnMouseUp(rich_edit::MouseUpContext{
+            object_info.text_position,
+            object_info.is_in_selection_range,
+            object_info.mouse_position_in_object,
+            event_info
+        });
+
+        if (event_info.IsHandled()) {
+            return;
+        }
     }
 
     const auto& message = event_info.Message();

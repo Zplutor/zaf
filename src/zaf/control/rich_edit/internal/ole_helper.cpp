@@ -1,5 +1,6 @@
 #include <zaf/control/rich_edit/internal/ole_helper.h>
 #include <zaf/graphic/dpi.h>
+#include <zaf/window/window.h>
 
 namespace zaf::rich_edit::internal {
 
@@ -40,15 +41,23 @@ OLEHelper::ObjectInfo OLEHelper::FindObjectUnderMouse(const TextBox& text_box) {
         return {};
     }
 
-    long object_position{};
-    hresult = text_range->GetStart(&object_position);
+    long text_position{};
+    hresult = text_range->GetStart(&text_position);
     if (FAILED(hresult)) {
         return {};
     }
 
     ObjectInfo result;
     result.object = object;
-    result.position = static_cast<std::size_t>(object_position);
+    result.text_position = static_cast<std::size_t>(text_position);
+    result.is_in_selection_range = text_box.GetSelectionRange().Contain(result.text_position);
+
+    POINT mouse_position_in_object = mouse_position;
+    mouse_position_in_object.x -= object_rect.left;
+    mouse_position_in_object.y -= object_rect.top;
+    result.mouse_position_in_object = ToDIPs(
+        Point::FromPOINT(mouse_position_in_object), 
+        text_box.GetDPI());
     return result;
 }
 

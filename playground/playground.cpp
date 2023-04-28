@@ -69,13 +69,23 @@ public:
     void Paint(
         zaf::Canvas& canvas,
         const zaf::Rect& dirty_rect, 
-        const zaf::rich_edit::ObjectContext& context) override {
+        const zaf::rich_edit::PaintContext& context) override {
 
         auto color = context.IsInSelectionRange() ? zaf::Color::Blue() : zaf::Color::Green();
 
         canvas.DrawRectangle(
             zaf::Rect{ zaf::Point{}, this->Size() },
             canvas.Renderer().CreateSolidColorBrush(color));
+    }
+
+    void OnMouseDown(const zaf::rich_edit::MouseDownContext& context) override {
+
+        context.EventInfo().MarkAsHandled();
+    }
+
+    void OnMouseUp(const zaf::rich_edit::MouseUpContext& context) override {
+
+        context.EventInfo().MarkAsHandled();
     }
 
     bool ChangeMouseCursor(bool is_in_selection_range) override {

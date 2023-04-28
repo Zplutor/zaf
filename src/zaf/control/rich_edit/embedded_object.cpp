@@ -7,6 +7,21 @@ bool EmbeddedObject::ChangeMouseCursor(bool is_in_selection_range) {
 }
 
 
+void EmbeddedObject::OnMouseDown(const MouseDownContext& context) {
+
+}
+
+
+void EmbeddedObject::OnMouseUp(const MouseUpContext& context) {
+
+}
+
+
+void EmbeddedObject::OnDoubleClick(const DoubleClickContext& context) {
+
+}
+
+
 HRESULT EmbeddedObject::QueryInterface(REFIID riid, LPVOID* ppvObj) {
 
     if (!ppvObj) {

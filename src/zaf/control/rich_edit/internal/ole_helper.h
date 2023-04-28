@@ -13,7 +13,9 @@ class OLEHelper {
 public:
     struct ObjectInfo {
         COMObject<EmbeddedObject> object;
-        std::size_t position{};
+        std::size_t text_position{};
+        bool is_in_selection_range{};
+        Point mouse_position_in_object;
     };
 
     static ObjectInfo FindObjectUnderMouse(const TextBox& text_box);
