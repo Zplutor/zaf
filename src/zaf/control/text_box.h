@@ -307,7 +307,7 @@ protected:
     zaf::Rect GetTextRect() override;
     void Layout(const zaf::Rect& previous_rect) override;
 
-    void ChangeMouseCursor(const Message& message, bool& is_changed) override;
+    void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) override;
     void OnMouseMove(const MouseMoveInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseUp(const MouseUpInfo& event_info) override;

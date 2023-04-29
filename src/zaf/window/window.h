@@ -803,7 +803,7 @@ private:
     bool OnCharInput(const Message& message);
     void TryToShowTooltipWindow();
     void HideTooltipWindow();
-    bool ChangeMouseCursor(const Message& message);
+    bool HandleWMSETCURSOR(const Message& message);
     bool HandleWMCLOSE();
     void HandleWMDESTROY();
     void HandleWMNCDESTROY();

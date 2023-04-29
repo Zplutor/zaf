@@ -655,13 +655,10 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
     }
 
     case WM_SETCURSOR: {
-        bool is_changed = ChangeMouseCursor(message);
-        if (is_changed) {
+        if (HandleWMSETCURSOR(message)) {
             return TRUE;
         }
-        else {
-            return std::nullopt;
-        }
+        return std::nullopt;
     }
 
     case WM_MOUSEWHEEL:
@@ -1308,15 +1305,21 @@ void Window::OnMouseLeave(const Message& message) {
 }
 
 
-bool Window::ChangeMouseCursor(const Message& message) {
+bool Window::HandleWMSETCURSOR(const Message& message) {
 
-    bool is_changed = false;
-
-    if (mouse_over_control_ != nullptr) {
-        mouse_over_control_->ChangeMouseCursor(message, is_changed);
+    if (!mouse_over_control_) {
+        return false;
     }
 
-    return is_changed;
+    auto event_state = std::make_shared<internal::MouseCursorChangingState>(
+        mouse_over_control_,
+        message);
+
+    for (auto sender = mouse_over_control_; sender; sender = sender->Parent()) {
+        sender->OnMouseCursorChanging(MouseCursorChangingInfo{ event_state, sender });
+    }
+
+    return event_state->IsHandled();
 }
 
 

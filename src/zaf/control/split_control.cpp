@@ -461,10 +461,15 @@ void SplitBar::SetSplitterColorPicker(const ColorPicker& color_picker) {
 }
 
 
-void SplitBar::ChangeMouseCursor(const Message& message, bool& is_changed) {
+void SplitBar::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
+
+    __super::OnMouseCursorChanging(event_info);
+    if (event_info.IsHandled()) {
+        return;
+    }
 
     SetCursor(LoadCursor(nullptr, IsHorizontal() ? IDC_SIZENS : IDC_SIZEWE));
-    is_changed = true;
+    event_info.MarkAsHandled();
 }
 
 

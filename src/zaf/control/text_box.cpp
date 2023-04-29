@@ -844,14 +844,15 @@ void TextBox::SetAcceptReturn(bool accept_return) {
 }
 
 
-void TextBox::ChangeMouseCursor(const Message& message, bool& is_changed) {
+void TextBox::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 
-    if (ChangeMouseCursor()) {
-        is_changed = true;
+    __super::OnMouseCursorChanging(event_info);
+    if (event_info.IsHandled()) {
+        return;
     }
-    else {
-        __super::ChangeMouseCursor(message, is_changed);
-    }
+
+    ChangeMouseCursor();
+    event_info.MarkAsHandled();
 }
 
 

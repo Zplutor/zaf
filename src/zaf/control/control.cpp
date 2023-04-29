@@ -77,6 +77,7 @@ constexpr const wchar_t* const FocusLostEventPropertyName = L"FocusLostEvent";
 constexpr const wchar_t* const KeyDownEventPropertyName = L"KeyDown";
 constexpr const wchar_t* const KeyUpEventPropertyName = L"KeyUp";
 constexpr const wchar_t* const MouseCapturedEventPropertyName = L"MouseCaptured";
+constexpr const wchar_t* const MouseCursorChangingEventPropertyName = L"MouseCursorChangingEvent";
 constexpr const wchar_t* const MouseDownEventPropertyName = L"MouseDown";
 constexpr const wchar_t* const MouseMoveEventPropertyName = L"MouseMove";
 constexpr const wchar_t* const MouseReleasedEventPropertyName = L"MouseReleased";
@@ -1744,12 +1745,22 @@ std::optional<HitTestResult> Control::HitTest(const HitTestMessage& message) {
 }
 
 
-void Control::ChangeMouseCursor(const Message& message, bool& is_changed) {
+void Control::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 
-    auto parent = Parent();
-    if (parent != nullptr) {
-        parent->ChangeMouseCursor(message, is_changed);
+    auto observer = GetEventObserver<MouseCursorChangingInfo>(
+        GetPropertyMap(),
+        MouseCursorChangingEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
     }
+}
+
+
+Observable<MouseCursorChangingInfo> Control::MouseCursorChangingEvent() {
+    return GetEventObservable<MouseCursorChangingInfo>(
+        GetPropertyMap(),
+        MouseCursorChangingEventPropertyName);
 }
 
 

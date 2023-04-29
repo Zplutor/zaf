@@ -81,6 +81,7 @@
     <ClCompile Include="src\zaf\control\event\list_control_item_double_click_info.cpp" />
     <ClCompile Include="src\zaf\control\event\list_control_selection_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\mouse_capture_event_info.cpp" />
+    <ClCompile Include="src\zaf\control\event\mouse_cursor_changing_info.cpp" />
     <ClCompile Include="src\zaf\control\event\mouse_event_info.cpp" />
     <ClCompile Include="src\zaf\control\event\mouse_hover_info.cpp" />
     <ClCompile Include="src\zaf\control\event\mouse_over_event_info.cpp" />
@@ -378,6 +379,7 @@
     <ClInclude Include="src\zaf\control\event\list_control_item_double_click_info.h" />
     <ClInclude Include="src\zaf\control\event\list_control_selection_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\mouse_capture_event_info.h" />
+    <ClInclude Include="src\zaf\control\event\mouse_cursor_changing_info.h" />
     <ClInclude Include="src\zaf\control\event\mouse_event_info.h" />
     <ClInclude Include="src\zaf\control\event\mouse_hover_info.h" />
     <ClInclude Include="src\zaf\control\event\mouse_over_event_info.h" />
@@ -666,6 +668,7 @@
     <ClInclude Include="src\zaf\window\event\mouse_capture_control_changed_info.h" />
     <ClInclude Include="src\zaf\window\event\root_control_changed_info.h" />
     <ClInclude Include="src\zaf\window\internal\popup_menu_controller.h" />
+    <ClInclude Include="src\zaf\window\message\set_cursor_message.h" />
     <ClInclude Include="src\zaf\window\popup_menu.h" />
     <ClInclude Include="src\zaf\window\dialog.h" />
     <ClInclude Include="src\zaf\window\dialog_result.h" />

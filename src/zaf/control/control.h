@@ -14,6 +14,7 @@
 #include <zaf/control/event/focus_event_info.h>
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/event/mouse_capture_event_info.h>
+#include <zaf/control/event/mouse_cursor_changing_info.h>
 #include <zaf/control/event/mouse_event_info.h>
 #include <zaf/control/event/mouse_hover_info.h>
 #include <zaf/control/event/mouse_over_event_info.h>
@@ -670,6 +671,7 @@ public:
     Observable<FocusGainedInfo> FocusGainedEvent();
     Observable<FocusLostInfo> FocusLostEvent();
 
+    Observable<MouseCursorChangingInfo> MouseCursorChangingEvent();
     Observable<MouseMoveInfo> MouseMoveEvent();
 
     Observable<MouseEnterInfo> MouseEnterEvent();
@@ -758,18 +760,13 @@ protected:
     virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
 
     /**
-     Change the mouse cursor.
+    Handles mouse cursor changing event. This method is called when the mouse is over current 
+    control and the window receives WM_SETCURSOR message.
 
-     @param message
-        Information about the WM_SETCURSOR message.
-
-     @param is_changed
-        An output parameter. If the cursor has been changed, it should be set to true.
-
-     This method is called when a WM_SETCURSOR message is received. Derived classes should 
-     call the same method of base class if they don't change the cursor.
-     */
-    virtual void ChangeMouseCursor(const Message& message, bool& is_changed);
+    The default implementation raises MouseCursorChangingEvent. Derived classes should call the
+    same method of base class.
+    */
+    virtual void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info);
 
     virtual void OnMouseMove(const MouseMoveInfo& event_info);
     virtual void OnMouseEnter(const MouseEnterInfo& event_info);
