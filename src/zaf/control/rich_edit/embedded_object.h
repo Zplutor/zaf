@@ -43,18 +43,7 @@ public:
         const zaf::Rect& dirty_rect,
         const PaintContext& context) = 0;
 
-    /**
-    Changes the mouse cursor.
-
-    @param is_in_selection_range
-        Whether the object is in selection range.
-
-    @return
-        Returns true if the object has changed the cursor, in such case the default cursor will not
-        be set; otherwise returns false.
-    */
-    virtual bool ChangeMouseCursor(bool is_in_selection_range);
-
+    virtual void OnMouseCursorChanging(const MouseCursorChangingContext& context);
     virtual void OnMouseDown(const MouseDownContext& context);
     virtual void OnMouseUp(const MouseUpContext& context);
     virtual void OnDoubleClick(const DoubleClickContext& context);

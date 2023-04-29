@@ -329,7 +329,7 @@ private:
     void PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect);
     float GetContentVerticalOffset();
     void ResetCachedTextHeight();
-    bool ChangeMouseCursor();
+    void HandleMouseCursorChanging(const MouseCursorChangingInfo& event_info);
     bool HasPropertyBit(DWORD bit) const;
     void ChangePropertyBit(DWORD bit, bool is_set);
     void ChangeScrollBarPropertyBits(DWORD bits, bool is_set);

@@ -2,8 +2,8 @@
 
 namespace zaf::rich_edit {
 
-bool EmbeddedObject::ChangeMouseCursor(bool is_in_selection_range) {
-    return false;
+void EmbeddedObject::OnMouseCursorChanging(const MouseCursorChangingContext& context) {
+
 }
 
 

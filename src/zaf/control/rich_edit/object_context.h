@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/control/event/double_click_info.h>
+#include <zaf/control/event/mouse_cursor_changing_info.h>
 #include <zaf/control/event/mouse_event_info.h>
 
 namespace zaf::rich_edit {
@@ -75,7 +76,7 @@ private:
 
 
 using PaintContext = internal::ObjectContext;
-using MouseCursorContext = internal::ObjectMouseContext;
+using MouseCursorChangingContext = internal::ObjectMouseEventContext<MouseCursorChangingInfo>;
 using MouseDownContext = internal::ObjectMouseEventContext<MouseDownInfo>;
 using MouseUpContext = internal::ObjectMouseEventContext<MouseUpInfo>;
 using DoubleClickContext = internal::ObjectMouseEventContext<DoubleClickInfo>;

@@ -851,17 +851,16 @@ void TextBox::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
         return;
     }
 
-    ChangeMouseCursor();
-    event_info.MarkAsHandled();
+    HandleMouseCursorChanging(event_info);
 }
 
 
-bool TextBox::ChangeMouseCursor() {
+void TextBox::HandleMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 
     //Don't change mouse cursor if the mouse is not in content rect.
     auto mouse_position_in_control = this->GetMousePosition();
     if (!this->ContentRect().Contain(mouse_position_in_control)) {
-        return false;
+        return;
     }
 
     //Rich edit will not change mouse cursor if the mouse position is above rich edit, so we adjust
@@ -874,8 +873,16 @@ bool TextBox::ChangeMouseCursor() {
     //Try to change mouse cursor with objects first.
     auto object_info = rich_edit::internal::OLEHelper::FindObjectUnderMouse(*this);
     if (object_info.object) {
-        if (object_info.object->ChangeMouseCursor(object_info.is_in_selection_range)) {
-            return true;
+
+        object_info.object->OnMouseCursorChanging(rich_edit::MouseCursorChangingContext{
+            object_info.text_position,
+            object_info.is_in_selection_range,
+            object_info.mouse_position_in_object,
+            event_info
+        });
+
+        if (event_info.IsHandled()) {
+            return;
         }
     }
 
@@ -892,10 +899,9 @@ bool TextBox::ChangeMouseCursor() {
         static_cast<INT>(mouse_position_in_rich_edit.y)
     );
 
-    if (FAILED(result)) {
-        return false;
+    if (SUCCEEDED(result)) {
+        event_info.MarkAsHandled();
     }
-    return true;
 }
 
 

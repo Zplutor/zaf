@@ -88,9 +88,10 @@ public:
         context.EventInfo().MarkAsHandled();
     }
 
-    bool ChangeMouseCursor(bool is_in_selection_range) override {
+    void OnMouseCursorChanging(
+        const zaf::rich_edit::MouseCursorChangingContext& context) override {
         SetCursor(LoadCursor(nullptr, IDC_HAND));
-        return true;
+        context.EventInfo().MarkAsHandled();
     }
 };
 
