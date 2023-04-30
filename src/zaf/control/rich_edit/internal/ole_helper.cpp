@@ -21,7 +21,6 @@ OLEHelper::ObjectInfo OLEHelper::FindObjectUnderMouse(const TextBox& text_box) {
 
     //Note: the object found from rich edit is not always under mouse cursor, so we double check to 
     //make sure it is.
-
     long object_x{};
     long object_y{};
     HRESULT hresult = text_range->GetPoint(tomStart | TA_TOP | TA_LEFT, &object_x, &object_y);
@@ -30,15 +29,24 @@ OLEHelper::ObjectInfo OLEHelper::FindObjectUnderMouse(const TextBox& text_box) {
     }
 
     auto object_size = FromDIPs(object->Size(), text_box.GetDPI()).ToSIZE();
-
-    RECT object_rect;
-    object_rect.left = object_x;
-    object_rect.top = object_y;
-    object_rect.right = object_x + object_size.cx;
-    object_rect.bottom = object_y + object_size.cy;
-
-    if (!PtInRect(&object_rect, mouse_position)) {
-        return {};
+    if (text_box.IsMultiline()) {
+        //For multi-line rich edit, we check if the mouse is in the whole object rectangle area.
+        RECT object_rect;
+        object_rect.left = object_x;
+        object_rect.top = object_y;
+        object_rect.right = object_x + object_size.cx;
+        object_rect.bottom = object_y + object_size.cy;
+        if (!PtInRect(&object_rect, mouse_position)) {
+            return {};
+        }
+    }
+    else {
+        //For single-line rich edit, we just check if the mouse is in the horizontal range of 
+        //object.
+        if ((mouse_position.x < object_x) ||
+            (mouse_position.x >= object_x + object_size.cx)) {
+            return {};
+        }
     }
 
     long text_position{};
@@ -53,8 +61,8 @@ OLEHelper::ObjectInfo OLEHelper::FindObjectUnderMouse(const TextBox& text_box) {
     result.is_in_selection_range = text_box.GetSelectionRange().Contain(result.text_position);
 
     POINT mouse_position_in_object = mouse_position;
-    mouse_position_in_object.x -= object_rect.left;
-    mouse_position_in_object.y -= object_rect.top;
+    mouse_position_in_object.x -= object_x;
+    mouse_position_in_object.y -= object_y;
     result.mouse_position_in_object = ToDIPs(
         Point::FromPOINT(mouse_position_in_object), 
         text_box.GetDPI());
