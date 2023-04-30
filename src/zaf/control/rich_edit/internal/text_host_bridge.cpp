@@ -9,7 +9,7 @@
 
 namespace zaf::rich_edit::internal {
 
-TextHostBridge::TextHostBridge(const std::weak_ptr<TextBox>& text_box) : text_box_(text_box) {
+TextHostBridge::TextHostBridge(const std::weak_ptr<RichEdit>& rich_edit) : rich_edit_(rich_edit) {
 
 }
 
@@ -42,9 +42,9 @@ INT TextHostBridge::TxReleaseDC(HDC hdc) {
 
 BOOL TextHostBridge::TxShowScrollBar(INT fnBar, BOOL fShow) {
 
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        text_box->ScrollBarChange();
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit != nullptr) {
+        rich_edit->ScrollBarChange();
     }
     return TRUE;
 }
@@ -52,9 +52,9 @@ BOOL TextHostBridge::TxShowScrollBar(INT fnBar, BOOL fShow) {
 
 BOOL TextHostBridge::TxEnableScrollBar(INT fuSBFlags, INT fuArrowflags) {
 
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        text_box->ScrollBarChange();
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit != nullptr) {
+        rich_edit->ScrollBarChange();
     }
     return TRUE;
 }
@@ -62,9 +62,9 @@ BOOL TextHostBridge::TxEnableScrollBar(INT fuSBFlags, INT fuArrowflags) {
 
 BOOL TextHostBridge::TxSetScrollRange(INT fnBar, LONG nMinPos, INT nMaxPos, BOOL fRedraw) {
 
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        text_box->ScrollValuesChange(fnBar == SB_HORZ);
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit != nullptr) {
+        rich_edit->ScrollValuesChange(fnBar == SB_HORZ);
     }
     return TRUE;
 }
@@ -72,18 +72,18 @@ BOOL TextHostBridge::TxSetScrollRange(INT fnBar, LONG nMinPos, INT nMaxPos, BOOL
 
 BOOL TextHostBridge::TxSetScrollPos(INT fnBar, INT nPos, BOOL fRedraw) {
 
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        text_box->ScrollValuesChange(fnBar == SB_HORZ);
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit != nullptr) {
+        rich_edit->ScrollValuesChange(fnBar == SB_HORZ);
     }
     return TRUE;
 }
 
 
 void TextHostBridge::TxInvalidateRect(LPCRECT prc, BOOL fMode) {
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        text_box->NeedRepaint();
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit != nullptr) {
+        rich_edit->NeedRepaint();
     }
 }
 
@@ -94,12 +94,12 @@ void TextHostBridge::TxViewChange(BOOL fUpdate) {
 
 BOOL TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) {
 
-    auto text_box = text_box_.lock();
-    if (!text_box) {
+    auto rich_edit = rich_edit_.lock();
+    if (!rich_edit) {
         return FALSE;
     }
 
-    auto window = text_box->Window();
+    auto window = rich_edit->Window();
     if (!window) {
         return FALSE;
     }
@@ -116,62 +116,62 @@ BOOL TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) {
         caret_size.width = 1;
     }
 
-    if (!text_box->caret_) {
-        text_box->caret_ = Create<Caret>(text_box);
+    if (!rich_edit->caret_) {
+        rich_edit->caret_ = Create<Caret>(rich_edit);
     }
 
-    text_box->caret_->SetSize(caret_size);
+    rich_edit->caret_->SetSize(caret_size);
     return TRUE;
 }
 
 
 BOOL TextHostBridge::TxShowCaret(BOOL fShow) {
 
-    auto text_box = text_box_.lock();
-    if (!text_box) {
+    auto rich_edit = rich_edit_.lock();
+    if (!rich_edit) {
         return FALSE;
     }
 
     //Sometimes TxShowCaret would be called even when the 
-    //text box is unfocused. This would mess up the caret,
+    //rich edit is unfocused. This would mess up the caret,
     //so only response to this method while focused.
-    if (!text_box->IsFocused()) {
+    if (!rich_edit->IsFocused()) {
         return FALSE;
     }
 
-    if (!text_box->caret_) {
+    if (!rich_edit->caret_) {
         return FALSE;
     }
 
-    text_box->caret_->SetIsVisible(!!fShow);
+    rich_edit->caret_->SetIsVisible(!!fShow);
     return TRUE;
 }
 
 
 BOOL TextHostBridge::TxSetCaretPos(INT x, INT y) {
 
-    auto text_box = text_box_.lock();
-    if (!text_box) {
+    auto rich_edit = rich_edit_.lock();
+    if (!rich_edit) {
         return FALSE;
     }
 
-    if (!text_box->caret_) {
+    if (!rich_edit->caret_) {
         return FALSE;
     }
 
     //Note: x and y are in window coordinate, while the position of caret is in control content
     //coordinate.
 
-    float dpi = text_box->GetDPI();
+    float dpi = rich_edit->GetDPI();
     Point caret_position{
         ToDIPs(static_cast<float>(x), dpi),
         ToDIPs(static_cast<float>(y), dpi)
     };
 
-    auto absolute_content_rect = text_box->AbsoluteContentRect();
+    auto absolute_content_rect = rich_edit->AbsoluteContentRect();
     caret_position.SubtractOffset(absolute_content_rect.position);
 
-    text_box->caret_->SetPosition(caret_position);
+    rich_edit->caret_->SetPosition(caret_position);
     return TRUE;
 }
 
@@ -182,10 +182,10 @@ BOOL TextHostBridge::TxSetTimer(UINT idTimer, UINT uTimeout) {
         .ObserveOn(Scheduler::Main())
         .Subscribe([this, idTimer](int) {
 
-        auto text_box = text_box_.lock();
-        if (text_box) {
+        auto rich_edit = rich_edit_.lock();
+        if (rich_edit) {
 
-            auto text_service = text_box->GetITextServices();
+            auto text_service = rich_edit->GetITextServices();
             text_service->TxSendMessage(WM_TIMER, idTimer, 0, nullptr);
         }
     });
@@ -205,16 +205,16 @@ void TextHostBridge::TxScrollWindowEx(INT dx, INT dy, LPCRECT lprcScroll, LPCREC
 
 void TextHostBridge::TxSetCapture(BOOL fCapture) {
 
-    auto text_box = text_box_.lock();
-    if (text_box == nullptr) {
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit == nullptr) {
         return;
     }
 
     if (fCapture) {
-        text_box->CaptureMouse();
+        rich_edit->CaptureMouse();
     }
     else {
-        text_box->ReleaseMouse();
+        rich_edit->ReleaseMouse();
     }
 }
 
@@ -231,12 +231,12 @@ void TextHostBridge::TxSetCursor(HCURSOR hcur, BOOL fText) {
 
 BOOL TextHostBridge::TxScreenToClient(LPPOINT lppt) {
 
-    auto text_box = text_box_.lock();
-    if (!text_box) {
+    auto rich_edit = rich_edit_.lock();
+    if (!rich_edit) {
         return FALSE;
     }
 
-    auto window = text_box->Window();
+    auto window = rich_edit->Window();
     if (!window) {
         return FALSE;
     }
@@ -247,12 +247,12 @@ BOOL TextHostBridge::TxScreenToClient(LPPOINT lppt) {
 
 BOOL TextHostBridge::TxClientToScreen(LPPOINT lppt) {
 
-    auto text_box = text_box_.lock();
-    if (!text_box) {
+    auto rich_edit = rich_edit_.lock();
+    if (!rich_edit) {
         return FALSE;
     }
 
-    auto window = text_box->Window();
+    auto window = rich_edit->Window();
     if (!window) {
         return FALSE;
     }
@@ -277,16 +277,16 @@ HRESULT TextHostBridge::TxGetClientRect(LPRECT prc) {
 
     *prc = RECT{};
 
-    auto text_box = text_box_.lock();
-    if (!text_box) {
+    auto rich_edit = rich_edit_.lock();
+    if (!rich_edit) {
         return S_OK;
     }
 
     //Returns the rect of rich edit in window.
-    auto absolute_content_rect = text_box->AbsoluteContentRect();
-    absolute_content_rect.position.y += text_box->GetContentVerticalOffset();
+    auto absolute_content_rect = rich_edit->AbsoluteContentRect();
+    absolute_content_rect.position.y += rich_edit->GetContentVerticalOffset();
 
-    auto pixels_rect = FromDIPs(absolute_content_rect, text_box->GetDPI());
+    auto pixels_rect = FromDIPs(absolute_content_rect, rich_edit->GetDPI());
     auto aligned_rect = Align(pixels_rect);
 
     *prc = aligned_rect.ToRECT();
@@ -298,26 +298,26 @@ HRESULT TextHostBridge::TxGetViewInset(LPRECT prc) {
 
     *prc = RECT{};
 
-    auto text_box = text_box_.lock();
-    if (!text_box) {
+    auto rich_edit = rich_edit_.lock();
+    if (!rich_edit) {
         return S_OK;
     }
 
-    auto window = text_box->Window();
+    auto window = rich_edit->Window();
     if (!window) {
         return S_OK;
     }
 
-    *prc = FromDIPs(text_box->GetInset(), window->GetDPI()).ToRECT();
+    *prc = FromDIPs(rich_edit->GetInset(), window->GetDPI()).ToRECT();
     return S_OK;
 }
 
 
 HRESULT TextHostBridge::TxGetCharFormat(const CHARFORMATW** ppCF) {
 
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        *ppCF = &(text_box->character_format_);
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit != nullptr) {
+        *ppCF = &(rich_edit->character_format_);
         return S_OK;
     }
     else {
@@ -328,9 +328,9 @@ HRESULT TextHostBridge::TxGetCharFormat(const CHARFORMATW** ppCF) {
 
 HRESULT TextHostBridge::TxGetParaFormat(const PARAFORMAT** ppPF) {
 
-    auto text_box = text_box_.lock();
-    if (text_box != nullptr) {
-        *ppPF = &(text_box->paragraph_format_);
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit != nullptr) {
+        *ppPF = &(rich_edit->paragraph_format_);
         return S_OK;
     }
     else {
@@ -352,9 +352,9 @@ HRESULT TextHostBridge::TxGetBackStyle(TXTBACKSTYLE* pstyle) {
 
 HRESULT TextHostBridge::TxGetMaxLength(DWORD* plength) {
 
-    auto text_box = text_box_.lock();
-    if (text_box) {
-        *plength = text_box->GetMaxLength();
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit) {
+        *plength = rich_edit->GetMaxLength();
     }
     return S_OK;
 }
@@ -362,9 +362,9 @@ HRESULT TextHostBridge::TxGetMaxLength(DWORD* plength) {
 
 HRESULT TextHostBridge::TxGetScrollBars(DWORD* pdwScrollBar) {
 
-    auto text_box = text_box_.lock();
-    if (text_box) {
-        *pdwScrollBar = text_box->scroll_bar_property_;
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit) {
+        *pdwScrollBar = rich_edit->scroll_bar_property_;
     }
     return S_OK;
 }
@@ -372,9 +372,9 @@ HRESULT TextHostBridge::TxGetScrollBars(DWORD* pdwScrollBar) {
 
 HRESULT TextHostBridge::TxGetPasswordChar(_Out_ TCHAR* pch) {
 
-    auto text_box = text_box_.lock();
-    if (text_box) {
-        *pch = text_box->GetPasswordCharacter();
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit) {
+        *pch = rich_edit->GetPasswordCharacter();
     }
     return S_OK;
 }
@@ -402,9 +402,9 @@ HRESULT TextHostBridge::OnTxParaFormatChange(const PARAFORMAT* pPF) {
 
 HRESULT TextHostBridge::TxGetPropertyBits(DWORD dwMask, DWORD* pdwBits) {
 
-    auto text_box = text_box_.lock();
-    if (text_box) {
-        *pdwBits = dwMask & text_box->property_bits_;
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit) {
+        *pdwBits = dwMask & rich_edit->property_bits_;
     }
     return S_OK;
 }
@@ -412,8 +412,8 @@ HRESULT TextHostBridge::TxGetPropertyBits(DWORD dwMask, DWORD* pdwBits) {
 
 HRESULT TextHostBridge::TxNotify(DWORD iNotify, void* pv) {
 
-    auto text_box = text_box_.lock();
-    if (text_box == nullptr) {
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit == nullptr) {
         return S_OK;
     }
 
@@ -422,13 +422,13 @@ HRESULT TextHostBridge::TxNotify(DWORD iNotify, void* pv) {
         //Single line rich edit doesn't need to reset cached text height on text changed, but multi
         //line rich edit does. Uncomment this line if multi line rich edit supports 
         //ParagraphAlignment.
-        //text_box->ResetCachedTextHeight();
-        text_box->NotifyTextChanged();
+        //rich_edit->ResetCachedTextHeight();
+        rich_edit->NotifyTextChanged();
         return S_OK;
     }
 
     case EN_SELCHANGE: {
-        text_box->RaiseSelectionChangedEvent();
+        rich_edit->RaiseSelectionChangedEvent();
         return S_OK;
     }
 
@@ -445,12 +445,12 @@ HRESULT TextHostBridge::TxNotify(DWORD iNotify, void* pv) {
 
 bool TextHostBridge::NotifyProtected(const ENPROTECTED& info) const {
 
-    auto text_box = text_box_.lock();
-    if (text_box == nullptr) {
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit == nullptr) {
         return true;
     }
 
-    auto validator = text_box->GetTextValidator();
+    auto validator = rich_edit->GetTextValidator();
     if (validator == nullptr) {
         return true;
     }
@@ -486,7 +486,7 @@ bool TextHostBridge::NotifyProtected(const ENPROTECTED& info) const {
     std::wstring new_text;
     bool has_got_new_text = get_new_text(new_text);
     if (has_got_new_text) {
-        return validator(*text_box, new_text);
+        return validator(*rich_edit, new_text);
     }
     else {
         return true;
@@ -511,12 +511,12 @@ HRESULT TextHostBridge::TxGetSelectionBarWidth(LONG* lSelBarWidth) {
 
 std::shared_ptr<Window> TextHostBridge::GetWindow() const {
 
-    auto text_box = text_box_.lock();
-    if (text_box == nullptr) {
+    auto rich_edit = rich_edit_.lock();
+    if (rich_edit == nullptr) {
         return nullptr;
     }
 
-    return text_box->Window();
+    return rich_edit->Window();
 }
 
 

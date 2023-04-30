@@ -5,7 +5,7 @@
 #include <zaf/control/event/combo_box_selection_changed_info.h>
 #include <zaf/control/list_box.h>
 #include <zaf/control/list_box_delegate.h>
-#include <zaf/control/text_box.h>
+#include <zaf/control/rich_edit.h>
 #include <zaf/rx/observable.h>
 
 namespace zaf {
@@ -14,7 +14,7 @@ class ComboBoxDropDownWindow;
 }
 
 class ComboBoxDropDownListBox;
-class ComboBoxEditTextBox;
+class ComboBoxEditBox;
 
 /**
  Represents a combo box control.
@@ -133,18 +133,18 @@ public:
     void SetDropDownListBox(const std::shared_ptr<ComboBoxDropDownListBox>& list_box);
 
     /**
-     Get the edit text box used in combo box.
+     Get the edit box used in combo box.
      */
-    const std::shared_ptr<ComboBoxEditTextBox>& EditTextBox() const {
-        return edit_text_box_;
+    const std::shared_ptr<ComboBoxEditBox>& EditBox() const {
+        return edit_box_;
     }
 
     /**
-     Set a new edit text box to combo box.
+     Set a new edit box to combo box.
 
-     Setting a nullptr would reset the edit text box to a default one.
+     Setting a nullptr would reset the edit box to a default one.
      */
-    void SetEditTextBox(const std::shared_ptr<ComboBoxEditTextBox>& text_box);
+    void SetEditBox(const std::shared_ptr<ComboBoxEditBox>& edit_box);
 
 protected:
     void Initialize() override;
@@ -179,14 +179,14 @@ protected:
         const std::shared_ptr<ComboBoxDropDownListBox>& previous_drop_down_list_box) { }
 
     /**
-     This method is called when the edit text box is changed.
+     This method is called when the edit box is changed.
 
-     @param previous_edit_text_box
-         The previous edit text box, may be nullptr.
+     @param previous_edit_box
+         The previous edit box, may be nullptr.
 
      Derived classes must call the same method of base class.
      */
-    virtual void OnEditTextBoxChanged(const std::shared_ptr<TextBox>& previous_edit_text_box) { }
+    virtual void OnEditBoxChanged(const std::shared_ptr<RichEdit>& previous_edit_box) { }
 
 private:
     enum class DropDownListBoxAction {
@@ -195,7 +195,7 @@ private:
         Nothing,
     };
 
-    enum class EditTextBoxAction {
+    enum class EditBoxAction {
         ChangeText,
         Nothing,
     };
@@ -203,7 +203,7 @@ private:
     enum class TextChangeSource {
         None,
         DropDownListBox,
-        EditTextBox,
+        EditBox,
     };
 
     template<typename ValueType>
@@ -261,8 +261,8 @@ private:
     void InitializeDropDownListBox();
     void UninitializeDropDownListBox();
 
-    void InitializeEditTextBox();
-    void UninitializeEditTextBox();
+    void InitializeEditBox();
+    void UninitializeEditBox();
 
     void PopupDropDownWindow();
     float CalculateDropDownListHeight(std::size_t visible_item_count);
@@ -272,15 +272,15 @@ private:
     bool SelectNextDropDownListItem(bool reverse);
 
     void DropDownListBoxSelectionChange();
-    void EditTextBoxTextChange();
+    void EditBoxTextChange();
     void ConfirmSelection(bool discard_drop_down_list_selection);
 
     void ChangeSelectionText(const std::wstring& text, TextChangeSource source);
     void NotifySelectionChange();
 
 private:
-    std::shared_ptr<ComboBoxEditTextBox> edit_text_box_;
-    Subscription edit_text_box_subscription_;
+    std::shared_ptr<ComboBoxEditBox> edit_box_;
+    Subscription edit_box_subscription_;
     Frame text_inset_;
 
     std::shared_ptr<internal::ComboBoxDropDownWindow> drop_down_window_;
@@ -288,7 +288,7 @@ private:
     Subscription drop_down_list_box_subscription_;
 
     GuardedValue<DropDownListBoxAction> drop_down_list_box_action_;
-    GuardedValue<EditTextBoxAction> edit_text_box_action_;
+    GuardedValue<EditBoxAction> edit_box_action_;
     GuardedValue<TextChangeSource> text_change_source_;
 
     std::optional<std::size_t> recovered_selected_index_;
@@ -328,9 +328,9 @@ private:
 
 
 /**
- Represents an edit text box control used in combo box.
+ Represents an edit box control used in combo box.
  */
-class ComboBoxEditTextBox : public TextBox {
+class ComboBoxEditBox : public RichEdit {
 public:
     ZAF_DECLARE_TYPE
 

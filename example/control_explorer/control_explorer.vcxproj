@@ -330,7 +330,7 @@
     <ClCompile Include="src\manager\radio_button_explore_manager.cpp" />
     <ClCompile Include="src\manager\scroll_bar_explore_manager.cpp" />
     <ClCompile Include="src\manager\split_control_explore_manager.cpp" />
-    <ClCompile Include="src\manager\text_box_explore_manager.cpp" />
+    <ClCompile Include="src\manager\rich_edit_explore_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\control_property_panel.h" />
@@ -347,7 +347,7 @@
     <ClInclude Include="src\manager\scroll_bar_explore_manager.h" />
     <ClInclude Include="src\manager\split_control_explore_manager.h" />
     <ClInclude Include="src\manager\textual_control_explore_manager.h" />
-    <ClInclude Include="src\manager\text_box_explore_manager.h" />
+    <ClInclude Include="src\manager\rich_edit_explore_manager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

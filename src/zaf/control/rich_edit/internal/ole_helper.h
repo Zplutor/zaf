@@ -5,7 +5,7 @@
 #include <TOM.h>
 #include <zaf/base/com_object.h>
 #include <zaf/control/rich_edit/embedded_object.h>
-#include <zaf/control/text_box.h>
+#include <zaf/control/rich_edit.h>
 
 namespace zaf::rich_edit::internal {
 
@@ -18,7 +18,7 @@ public:
         Point mouse_position_in_object;
     };
 
-    static ObjectInfo FindObjectUnderMouse(const TextBox& text_box);
+    static ObjectInfo FindObjectUnderMouse(const RichEdit& rich_edit);
 
 private:
     struct TextRangeWithObject {

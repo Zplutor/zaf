@@ -16,7 +16,7 @@ void ColorValueView::Initialize() {
     __super::Initialize();
 
     InitializeColorSquare();
-    InitializeTextBox();
+    InitializeRichEdit();
 }
 
 
@@ -31,38 +31,38 @@ void ColorValueView::InitializeColorSquare() {
 }
 
 
-void ColorValueView::InitializeTextBox() {
+void ColorValueView::InitializeRichEdit() {
 
-    color_text_box_ = Create<TextBox>();
-    color_text_box_->SetBorder(Frame{});
-    color_text_box_->SetBackgroundColor(Color::Transparent());
-    color_text_box_->SetParagraphAlignment(ParagraphAlignment::Center);
-    color_text_box_->SetAllowBeep(false);
+    color_edit_ = Create<RichEdit>();
+    color_edit_->SetBorder(Frame{});
+    color_edit_->SetBackgroundColor(Color::Transparent());
+    color_edit_->SetParagraphAlignment(ParagraphAlignment::Center);
+    color_edit_->SetAllowBeep(false);
 
-    Subscriptions() += color_text_box_->KeyDownEvent().Subscribe(
+    Subscriptions() += color_edit_->KeyDownEvent().Subscribe(
         [this](const KeyDownInfo& event_info) {
     
         if (event_info.Message().VirtualKey() == VK_RETURN) {
-            ChangeColorByTextBox();
+            ChangeColorByEdit();
             event_info.MarkAsHandled();
         }
     });
 
-    Subscriptions() += color_text_box_->FocusGainedEvent().Subscribe(std::bind([this]() {
+    Subscriptions() += color_edit_->FocusGainedEvent().Subscribe(std::bind([this]() {
         NotifyShouldSelectItem();
     }));
 
-    Subscriptions() += color_text_box_->FocusLostEvent().Subscribe(std::bind([this]() {
-        ChangeColorByTextBox();
+    Subscriptions() += color_edit_->FocusLostEvent().Subscribe(std::bind([this]() {
+        ChangeColorByEdit();
     }));
 
-    this->AddChild(color_text_box_);
+    this->AddChild(color_edit_);
 }
 
 
-void ColorValueView::ChangeColorByTextBox() {
+void ColorValueView::ChangeColorByEdit() {
 
-    auto text = color_text_box_->Text();
+    auto text = color_edit_->Text();
 
     try {
 
@@ -76,7 +76,7 @@ void ColorValueView::ChangeColorByTextBox() {
         NotifyValueChanged(new_color);
     }
     catch (const Error&) {
-        SetColorToTextBox(color_square_->Color());
+        SetColorToEdit(color_square_->Color());
     }
 }
 
@@ -84,8 +84,8 @@ void ColorValueView::ChangeColorByTextBox() {
 void ColorValueView::SetAccessMethod(AccessMethod access_method) {
 
     bool is_readonly = access_method == AccessMethod::ReadOnly;
-    color_text_box_->SetIsEnabled(!is_readonly);
-    color_text_box_->SetTextColor(Color::FromRGB(
+    color_edit_->SetIsEnabled(!is_readonly);
+    color_edit_->SetTextColor(Color::FromRGB(
         is_readonly ? 
         internal::ControlDisabledTextColorRGB : 
         internal::ControlNormalTextColorRGB));
@@ -96,7 +96,7 @@ void ColorValueView::SetValue(const std::shared_ptr<Object>& object) {
 
     if (!object) {
         color_square_->SetIsVisible(false);
-        color_text_box_->SetIsVisible(false);
+        color_edit_->SetIsVisible(false);
         return;
     }
 
@@ -106,11 +106,11 @@ void ColorValueView::SetValue(const std::shared_ptr<Object>& object) {
     color_square_->SetColor(*color);
     color_square_->SetIsVisible(true);
 
-    SetColorToTextBox(*color);
+    SetColorToEdit(*color);
 }
 
 
-void ColorValueView::SetColorToTextBox(const Color& color) {
+void ColorValueView::SetColorToEdit(const Color& color) {
 
     auto float_to_hex = [](float value) {
 
@@ -130,13 +130,13 @@ void ColorValueView::SetColorToTextBox(const Color& color) {
         text.append(float_to_hex(each_value));
     }
 
-    color_text_box_->SetText(text);
-    color_text_box_->SetIsVisible(true);
+    color_edit_->SetText(text);
+    color_edit_->SetIsVisible(true);
 }
 
 
 void ColorValueView::RecoverFocus() {
-    color_text_box_->SetIsFocused(true);
+    color_edit_->SetIsFocused(true);
 }
 
 

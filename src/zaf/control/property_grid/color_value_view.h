@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/control/property_grid/value_view.h>
-#include <zaf/control/text_box.h>
+#include <zaf/control/rich_edit.h>
 
 namespace zaf::property_grid {
 
@@ -35,13 +35,13 @@ private:
 
 private:
     void InitializeColorSquare();
-    void InitializeTextBox();
-    void ChangeColorByTextBox();
-    void SetColorToTextBox(const Color& color);
+    void InitializeRichEdit();
+    void ChangeColorByEdit();
+    void SetColorToEdit(const Color& color);
 
 private:
     std::shared_ptr<ColorSquare> color_square_;
-    std::shared_ptr<TextBox> color_text_box_;
+    std::shared_ptr<RichEdit> color_edit_;
 };
 
 }

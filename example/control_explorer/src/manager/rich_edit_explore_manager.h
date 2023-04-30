@@ -1,9 +1,9 @@
 #pragma once
 
-#include <zaf/control/text_box.h>
+#include <zaf/control/rich_edit.h>
 #include "manager/textual_control_explore_manager.h"
 
-class TextBoxExploreManager : public TextualControlExploreManager {
+class RichEditExploreManager : public TextualControlExploreManager {
 public:
     std::shared_ptr<zaf::Control> CreateExploredControl() override;
 };

@@ -9,20 +9,20 @@ void EditableValueView::Initialize() {
 
     __super::Initialize(); 
 
-    text_box_ = Create<TextBox>();
-    text_box_->SetBorder(Frame{});
-    text_box_->SetBackgroundColor(Color::Transparent());
-    text_box_->SetParagraphAlignment(ParagraphAlignment::Center);
-    text_box_->SetAllowBeep(false);
+    rich_edit_ = Create<RichEdit>();
+    rich_edit_->SetBorder(Frame{});
+    rich_edit_->SetBackgroundColor(Color::Transparent());
+    rich_edit_->SetParagraphAlignment(ParagraphAlignment::Center);
+    rich_edit_->SetAllowBeep(false);
 
-    Subscriptions() += text_box_->FocusGainedEvent().Subscribe(std::bind([this]() {
+    Subscriptions() += rich_edit_->FocusGainedEvent().Subscribe(std::bind([this]() {
         NotifyShouldSelectItem();
     }));
 
-    Subscriptions() += text_box_->FocusLostEvent().Subscribe(
-        std::bind(&EditableValueView::OnTextBoxFocusLost, this, std::placeholders::_1));
+    Subscriptions() += rich_edit_->FocusLostEvent().Subscribe(
+        std::bind(&EditableValueView::OnRichEditFocusLost, this, std::placeholders::_1));
 
-    Subscriptions() += text_box_->KeyDownEvent().Subscribe(
+    Subscriptions() += rich_edit_->KeyDownEvent().Subscribe(
         [this](const KeyDownInfo& event_info) {
     
         if (event_info.Message().VirtualKey() == VK_RETURN) {
@@ -31,16 +31,16 @@ void EditableValueView::Initialize() {
         }
     });
 
-    this->AddChild(text_box_);
+    this->AddChild(rich_edit_);
 }
 
 
 void EditableValueView::SetAccessMethod(AccessMethod access_method) {
 
     bool is_read_only = access_method == AccessMethod::ReadOnly;
-    text_box_->SetIsEnabled(!is_read_only);
+    rich_edit_->SetIsEnabled(!is_read_only);
 
-    text_box_->SetTextColor(Color::FromRGB(
+    rich_edit_->SetTextColor(Color::FromRGB(
         is_read_only ? 
         zaf::internal::ControlDisabledTextColorRGB : 
         zaf::internal::ControlNormalTextColorRGB));
@@ -50,13 +50,13 @@ void EditableValueView::SetAccessMethod(AccessMethod access_method) {
 void EditableValueView::SetValue(const std::shared_ptr<Object>& value) {
 
     value_ = value;
-    text_box_->SetText(value_->ToString());
+    rich_edit_->SetText(value_->ToString());
 }
 
 
 void EditableValueView::ChangeValue() {
 
-    auto new_text = text_box_->Text();
+    auto new_text = rich_edit_->Text();
     if (new_text.empty() || new_text == value_->ToString()) {
         return;
     }
@@ -70,12 +70,12 @@ void EditableValueView::ChangeValue() {
         NotifyValueChanged(new_value);
     }
     catch (const Error&) {
-        text_box_->SetText(value_->ToString());
+        rich_edit_->SetText(value_->ToString());
     }
 }
 
 
-void EditableValueView::OnTextBoxFocusLost(const FocusLostInfo& event_info) {
+void EditableValueView::OnRichEditFocusLost(const FocusLostInfo& event_info) {
 
     //Commit new value only when focus is transferred to other control.
     //Value should not be committed in some situations, such as when window loses focus.
@@ -86,7 +86,7 @@ void EditableValueView::OnTextBoxFocusLost(const FocusLostInfo& event_info) {
 
 
 void EditableValueView::RecoverFocus() {
-    text_box_->SetIsFocused(true);
+    rich_edit_->SetIsFocused(true);
 }
 
 }

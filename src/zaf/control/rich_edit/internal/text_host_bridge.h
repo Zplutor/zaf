@@ -2,13 +2,13 @@
 
 #include <Richedit.h>
 #include <TextServ.h>
-#include <zaf/control/text_box.h>
+#include <zaf/control/rich_edit.h>
 
 namespace zaf::rich_edit::internal {
 
 class TextHostBridge : public ITextHost {
 public:
-    explicit TextHostBridge(const std::weak_ptr<TextBox>& text_box);
+    explicit TextHostBridge(const std::weak_ptr<RichEdit>& rich_edit);
 
     HRESULT QueryInterface(REFIID riid, void** ppvObject) override;
     ULONG AddRef(void) override { return 0; }
@@ -61,7 +61,7 @@ private:
     bool NotifyProtected(const ENPROTECTED& info) const;
 
 private:
-    std::weak_ptr<TextBox> text_box_;
+    std::weak_ptr<RichEdit> rich_edit_;
     std::map<UINT, Subscription> timers_;
 };
 

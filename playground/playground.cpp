@@ -16,7 +16,7 @@
 #include <zaf/window/window.h>
 #include <zaf/window/dialog.h>
 #include <zaf/control/button.h>
-#include <zaf/control/text_box.h>
+#include <zaf/control/rich_edit.h>
 #include <zaf/window/message/hit_test_result.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/image/image.h>
@@ -106,16 +106,16 @@ protected:
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        text_box_ = zaf::Create<zaf::TextBox>();
-        text_box_->SetMargin(zaf::Frame{ 10, 10, 10, 10 });
-        text_box_->SetBorder(zaf::Frame{ 10, 10, 10, 10 });
-        text_box_->SetFontSize(22);
-        //text_box_->SetIsMultiline(true);
-        //text_box_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
+        rich_edit_ = zaf::Create<zaf::RichEdit>();
+        rich_edit_->SetMargin(zaf::Frame{ 10, 10, 10, 10 });
+        rich_edit_->SetBorder(zaf::Frame{ 10, 10, 10, 10 });
+        rich_edit_->SetFontSize(22);
+        //rich_edit_->SetIsMultiline(true);
+        //rich_edit_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
 
         auto container = zaf::Create<zaf::Control>();
         container->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
-        container->AddChild(text_box_);
+        container->AddChild(rich_edit_);
         container->SetPadding(zaf::Frame{ 10, 10, 10, 10 });
         container->SetBackgroundColor(zaf::Color::Yellow());
 
@@ -129,11 +129,11 @@ private:
 
         zaf::COMObject<MyOLEObject> object{ new MyOLEObject };
 
-        text_box_->InsertObject(object);
+        rich_edit_->InsertObject(object);
     }
 
 private:
-    std::shared_ptr<zaf::TextBox> text_box_;
+    std::shared_ptr<zaf::RichEdit> rich_edit_;
 };
 
 

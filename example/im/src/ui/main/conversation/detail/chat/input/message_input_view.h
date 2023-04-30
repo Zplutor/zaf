@@ -2,7 +2,7 @@
 
 #include <zaf/control/button.h>
 #include <zaf/control/control.h>
-#include <zaf/control/text_box.h>
+#include <zaf/control/rich_edit.h>
 #include "entity/conversation.h"
 
 class MessageInputView : public zaf::Control {
@@ -14,12 +14,12 @@ public:
     }
 
 private:
-    void TextBoxFocusChange();
+    void RichEditFocusChange();
     void SendButtonClick();
-    void TextBoxKeyDown(const zaf::KeyDownInfo& event_info);
+    void RichEditKeyDown(const zaf::KeyDownInfo& event_info);
 
 private:
-    std::shared_ptr<zaf::TextBox> text_box_;
+    std::shared_ptr<zaf::RichEdit> rich_edit_;
     std::shared_ptr<zaf::Button> send_button_;
 
     Id conversation_id_ = InvalidId;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/control/property_grid/value_view.h>
-#include <zaf/control/text_box.h>
+#include <zaf/control/rich_edit.h>
 
 namespace zaf::property_grid {
 
@@ -14,12 +14,12 @@ public:
 
 protected:
     void Initialize() override;
-    void OnTextBoxFocusLost(const FocusLostInfo& event_info);
+    void OnRichEditFocusLost(const FocusLostInfo& event_info);
     void ChangeValue();
 
 private:
     std::shared_ptr<Object> value_;
-    std::shared_ptr<TextBox> text_box_;
+    std::shared_ptr<RichEdit> rich_edit_;
 };
 
 }

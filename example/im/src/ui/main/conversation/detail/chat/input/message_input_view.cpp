@@ -10,16 +10,16 @@ void MessageInputView::Initialize() {
 
     SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-    text_box_ = zaf::Create<zaf::TextBox>();
-    text_box_->SetBorder(zaf::Frame(0));
-    text_box_->SetBackgroundColor(zaf::Color::Transparent());
-    Subscriptions() += text_box_->FocusGainedEvent().Subscribe(
-        std::bind(&MessageInputView::TextBoxFocusChange, this));
-    Subscriptions() += text_box_->FocusLostEvent().Subscribe(
-        std::bind(&MessageInputView::TextBoxFocusChange, this));
-    Subscriptions() += text_box_->KeyDownEvent().Subscribe(
-        std::bind(&MessageInputView::TextBoxKeyDown, this, std::placeholders::_1));
-    AddChild(text_box_);
+    rich_edit_ = zaf::Create<zaf::RichEdit>();
+    rich_edit_->SetBorder(zaf::Frame(0));
+    rich_edit_->SetBackgroundColor(zaf::Color::Transparent());
+    Subscriptions() += rich_edit_->FocusGainedEvent().Subscribe(
+        std::bind(&MessageInputView::RichEditFocusChange, this));
+    Subscriptions() += rich_edit_->FocusLostEvent().Subscribe(
+        std::bind(&MessageInputView::RichEditFocusChange, this));
+    Subscriptions() += rich_edit_->KeyDownEvent().Subscribe(
+        std::bind(&MessageInputView::RichEditKeyDown, this, std::placeholders::_1));
+    AddChild(rich_edit_);
 
     send_button_ = zaf::Create<zaf::Button>();
     send_button_->SetBorder(zaf::Frame(0));
@@ -42,29 +42,29 @@ void MessageInputView::Initialize() {
 
     AddChild(send_button_container);
 
-    TextBoxFocusChange();
+    RichEditFocusChange();
 }
 
 
-void MessageInputView::TextBoxFocusChange() {
-    SetBackgroundColor(zaf::Color::FromRGB(text_box_->IsFocused() ? 0xF3F7FA : 0xECF0F3));
+void MessageInputView::RichEditFocusChange() {
+    SetBackgroundColor(zaf::Color::FromRGB(rich_edit_->IsFocused() ? 0xF3F7FA : 0xECF0F3));
 }
 
 
 void MessageInputView::SendButtonClick() {
 
-    auto content = text_box_->Text();
+    auto content = rich_edit_->Text();
     if (content.empty()) {
         return;
     }
 
     Service::GetInstance().SendMessageToConversation(content, conversation_id_);
 
-    text_box_->SetText(std::wstring());
+    rich_edit_->SetText(std::wstring());
 }
 
 
-void MessageInputView::TextBoxKeyDown(const zaf::KeyDownInfo& event_info) {
+void MessageInputView::RichEditKeyDown(const zaf::KeyDownInfo& event_info) {
 
     if (event_info.Message().VirtualKey() == VK_RETURN) {
         send_button_->Click();

@@ -4,7 +4,7 @@
 
 namespace zaf::rich_edit::internal {
 
-OLEHelper::ObjectInfo OLEHelper::FindObjectUnderMouse(const TextBox& text_box) {
+OLEHelper::ObjectInfo OLEHelper::FindObjectUnderMouse(const RichEdit& rich_edit) {
 
     POINT mouse_position{};
     if (!GetCursorPos(&mouse_position)) {
@@ -12,7 +12,7 @@ OLEHelper::ObjectInfo OLEHelper::FindObjectUnderMouse(const TextBox& text_box) {
     }
 
     auto [text_range, object] = FindTextRangeContainingObjectUnderMouse(
-        text_box.GetOLEInterface(),
+        rich_edit.GetOLEInterface(),
         mouse_position);
 
     if (!text_range || !object) {
@@ -28,8 +28,8 @@ OLEHelper::ObjectInfo OLEHelper::FindObjectUnderMouse(const TextBox& text_box) {
         return {};
     }
 
-    auto object_size = FromDIPs(object->Size(), text_box.GetDPI()).ToSIZE();
-    if (text_box.IsMultiline()) {
+    auto object_size = FromDIPs(object->Size(), rich_edit.GetDPI()).ToSIZE();
+    if (rich_edit.IsMultiline()) {
         //For multi-line rich edit, we check if the mouse is in the whole object rectangle area.
         RECT object_rect;
         object_rect.left = object_x;
@@ -58,14 +58,14 @@ OLEHelper::ObjectInfo OLEHelper::FindObjectUnderMouse(const TextBox& text_box) {
     ObjectInfo result;
     result.object = object;
     result.text_position = static_cast<std::size_t>(text_position);
-    result.is_in_selection_range = text_box.GetSelectionRange().Contain(result.text_position);
+    result.is_in_selection_range = rich_edit.GetSelectionRange().Contain(result.text_position);
 
     POINT mouse_position_in_object = mouse_position;
     mouse_position_in_object.x -= object_x;
     mouse_position_in_object.y -= object_y;
     result.mouse_position_in_object = ToDIPs(
         Point::FromPOINT(mouse_position_in_object), 
-        text_box.GetDPI());
+        rich_edit.GetDPI());
     return result;
 }
 

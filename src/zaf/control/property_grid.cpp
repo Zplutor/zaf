@@ -44,7 +44,7 @@ void PropertyGrid::Initialize() {
 
     tree_implementation_->Initialize(initialize_parameters);
 
-    //TextBox cannot use cached painting.
+    //RichEdit cannot use cached painting.
     this->ScrollContent()->SetIsCachedPaintingEnabled(false);
 }
 

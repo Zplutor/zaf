@@ -1,4 +1,4 @@
-#include <zaf/control/text_box.h>
+#include <zaf/control/rich_edit.h>
 #include <atlwin.h>
 #include <tom.h>
 #include <cassert>
@@ -93,13 +93,13 @@ static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChang
 static const wchar_t* const kTextValidatorPropertyName = L"TextValidator";
 
 
-ZAF_DEFINE_TYPE(TextBox)
+ZAF_DEFINE_TYPE(RichEdit)
 ZAF_DEFINE_TYPE_PROPERTY(IsReadOnly)
 ZAF_DEFINE_TYPE_PROPERTY(IsMultiline)
 ZAF_DEFINE_TYPE_END
 
 
-TextBox::TextBox() : 
+RichEdit::RichEdit() : 
     property_bits_(kDefaultPropertyBits),
     character_format_(),
     paragraph_format_(),
@@ -111,12 +111,12 @@ TextBox::TextBox() :
 }
 
 
-TextBox::~TextBox() {
+RichEdit::~RichEdit() {
 
 }
 
 
-void TextBox::Initialize() {
+void RichEdit::Initialize() {
 
     __super::Initialize();
 
@@ -134,9 +134,9 @@ void TextBox::Initialize() {
 
     SetBackgroundColorPicker([](const Control& control) {
 
-        const auto& text_box = dynamic_cast<const TextBox&>(control);
+        const auto& rich_edit = dynamic_cast<const RichEdit&>(control);
 
-        if (text_box.IsReadOnly() || !text_box.IsEnabled()) {
+        if (rich_edit.IsReadOnly() || !rich_edit.IsEnabled()) {
             return Color::FromRGB(0xEEEEEE);;
         }
 
@@ -157,9 +157,9 @@ void TextBox::Initialize() {
 }
 
 
-void TextBox::InitializeTextService() {
+void RichEdit::InitializeTextService() {
 
-    auto shared_this = std::dynamic_pointer_cast<TextBox>(shared_from_this());
+    auto shared_this = std::dynamic_pointer_cast<RichEdit>(shared_from_this());
     text_host_bridge_ = std::make_shared<rich_edit::internal::TextHostBridge>(shared_this);
 
     text_service_ = CreateTextService(text_host_bridge_.get());
@@ -170,7 +170,7 @@ void TextBox::InitializeTextService() {
 }
 
 
-void TextBox::Layout(const zaf::Rect& previous_rect) {
+void RichEdit::Layout(const zaf::Rect& previous_rect) {
 
     if (text_service_ != nullptr) {
         text_service_->OnTxPropertyBitsChange(TXTBIT_CLIENTRECTCHANGE, TXTBIT_CLIENTRECTCHANGE);
@@ -178,7 +178,7 @@ void TextBox::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void RichEdit::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -215,7 +215,7 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-void TextBox::ReviseTextColor() {
+void RichEdit::ReviseTextColor() {
 
     auto text_color = TextColor();
     if (text_color_ != text_color) {
@@ -232,7 +232,7 @@ void TextBox::ReviseTextColor() {
 }
 
 
-void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     auto ole_interface = GetOLEInterface();
     LONG object_count = ole_interface->GetObjectCount();
@@ -314,7 +314,7 @@ void TextBox::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) 
 }
 
 
-float TextBox::GetContentVerticalOffset() {
+float RichEdit::GetContentVerticalOffset() {
 
     //Due to some problems, multi-line rich edit doesn't support ParagraphAlignment for now.
     if (IsMultiline()) {
@@ -361,17 +361,17 @@ float TextBox::GetContentVerticalOffset() {
 }
 
 
-void TextBox::ResetCachedTextHeight() {
+void RichEdit::ResetCachedTextHeight() {
     cached_text_height_.reset();
 }
 
 
-zaf::Rect TextBox::GetTextRect() {
+zaf::Rect RichEdit::GetTextRect() {
     return zaf::Rect();
 }
 
 
-Frame TextBox::GetInset() const {
+Frame RichEdit::GetInset() const {
 
     auto inset = GetPropertyMap().TryGetProperty<Frame>(kInsetPropertyName);
     if (inset != nullptr) {
@@ -383,7 +383,7 @@ Frame TextBox::GetInset() const {
 }
 
 
-void TextBox::SetInset(const Frame& inset) {
+void RichEdit::SetInset(const Frame& inset) {
 
     GetPropertyMap().SetProperty(kInsetPropertyName, inset);
 
@@ -393,7 +393,7 @@ void TextBox::SetInset(const Frame& inset) {
 }
 
 
-std::uint32_t TextBox::GetMaxLength() const {
+std::uint32_t RichEdit::GetMaxLength() const {
 
     auto max_length = GetPropertyMap().TryGetProperty<std::uint32_t>(kMaxLengthPropertyName);
     if (max_length != nullptr) {
@@ -405,7 +405,7 @@ std::uint32_t TextBox::GetMaxLength() const {
 }
 
 
-void TextBox::SetMaxLength(std::uint32_t max_length) {
+void RichEdit::SetMaxLength(std::uint32_t max_length) {
 
     GetPropertyMap().SetProperty(kMaxLengthPropertyName, max_length);
 
@@ -415,16 +415,16 @@ void TextBox::SetMaxLength(std::uint32_t max_length) {
 }
 
 
-bool TextBox::UsePasswordCharacter() const {
+bool RichEdit::UsePasswordCharacter() const {
     return HasPropertyBit(TXTBIT_USEPASSWORD);
 }
 
-void TextBox::SetUsePasswordCharacter(bool use_password_char) {
+void RichEdit::SetUsePasswordCharacter(bool use_password_char) {
     ChangePropertyBit(TXTBIT_USEPASSWORD, use_password_char);
 }
 
 
-wchar_t TextBox::GetPasswordCharacter() const {
+wchar_t RichEdit::GetPasswordCharacter() const {
     
     auto password_char = GetPropertyMap().TryGetProperty<wchar_t>(kPasswordCharacterPropertyName);
     if (password_char != nullptr) {
@@ -435,7 +435,7 @@ wchar_t TextBox::GetPasswordCharacter() const {
     }
 }
 
-void TextBox::SetPasswordCharacter(wchar_t password_char) {
+void RichEdit::SetPasswordCharacter(wchar_t password_char) {
 
     GetPropertyMap().SetProperty(kPasswordCharacterPropertyName, password_char);
 
@@ -445,35 +445,35 @@ void TextBox::SetPasswordCharacter(wchar_t password_char) {
 }
 
 
-bool TextBox::IsMultiline() const {
+bool RichEdit::IsMultiline() const {
     return HasPropertyBit(TXTBIT_MULTILINE);
 }
 
-void TextBox::SetIsMultiline(bool is_multiline) {
+void RichEdit::SetIsMultiline(bool is_multiline) {
     ChangePropertyBit(TXTBIT_MULTILINE, is_multiline);
 }
 
 
-bool TextBox::IsReadOnly() const {
+bool RichEdit::IsReadOnly() const {
     return HasPropertyBit(TXTBIT_READONLY);
 }
 
-void TextBox::SetIsReadOnly(bool is_read_only) {
+void RichEdit::SetIsReadOnly(bool is_read_only) {
     ChangePropertyBit(TXTBIT_READONLY, is_read_only);
     NeedRepaint();
 }
 
 
-bool TextBox::AllowBeep() const {
+bool RichEdit::AllowBeep() const {
     return HasPropertyBit(TXTBIT_ALLOWBEEP);
 }
 
-void TextBox::SetAllowBeep(bool allow_beep) {
+void RichEdit::SetAllowBeep(bool allow_beep) {
     ChangePropertyBit(TXTBIT_ALLOWBEEP, allow_beep);
 }
 
 
-TextRange TextBox::GetSelectionRange() const {
+TextRange RichEdit::GetSelectionRange() const {
 
     TextRange range;
 
@@ -490,7 +490,7 @@ TextRange TextBox::GetSelectionRange() const {
     return range;
 }
 
-void TextBox::SetSelectionRange(const TextRange& range) {
+void RichEdit::SetSelectionRange(const TextRange& range) {
 
     if (text_service_ == nullptr) {
         return;
@@ -503,7 +503,7 @@ void TextBox::SetSelectionRange(const TextRange& range) {
 }
 
 
-std::wstring TextBox::Text() const {
+std::wstring RichEdit::Text() const {
 
     std::wstring text;
     if (text_service_ != nullptr) {
@@ -520,7 +520,7 @@ std::wstring TextBox::Text() const {
     return text;
 }
 
-void TextBox::SetText(const std::wstring& text) {
+void RichEdit::SetText(const std::wstring& text) {
 
     if (text_service_ != nullptr) {
 
@@ -535,7 +535,7 @@ void TextBox::SetText(const std::wstring& text) {
 }
 
 
-TextValidator TextBox::GetTextValidator() const {
+TextValidator RichEdit::GetTextValidator() const {
 
     auto validator = GetPropertyMap().TryGetProperty<TextValidator>(kTextValidatorPropertyName);
     if (validator != nullptr) {
@@ -545,13 +545,13 @@ TextValidator TextBox::GetTextValidator() const {
     return nullptr;
 }
 
-void TextBox::SetTextValidator(const TextValidator& validator) {
+void RichEdit::SetTextValidator(const TextValidator& validator) {
 
     GetPropertyMap().SetProperty(kTextValidatorPropertyName, validator);
 }
 
 
-zaf::Font TextBox::Font() const {
+zaf::Font RichEdit::Font() const {
 
     zaf::Font font;
     font.family_name = character_format_.szFaceName;
@@ -560,7 +560,7 @@ zaf::Font TextBox::Font() const {
     return font;
 }
 
-void TextBox::SetFont(const zaf::Font& font) {
+void RichEdit::SetFont(const zaf::Font& font) {
 
     ResetCachedTextHeight();
 
@@ -587,7 +587,7 @@ void TextBox::SetFont(const zaf::Font& font) {
 }
 
 
-TextAlignment TextBox::TextAlignment() const {
+TextAlignment RichEdit::TextAlignment() const {
 
     switch (paragraph_format_.wAlignment) {
         case PFA_CENTER:
@@ -601,7 +601,7 @@ TextAlignment TextBox::TextAlignment() const {
     }
 }
 
-void TextBox::SetTextAlignment(zaf::TextAlignment alignment) {
+void RichEdit::SetTextAlignment(zaf::TextAlignment alignment) {
 
     paragraph_format_.dwMask |= PFM_ALIGNMENT;
 
@@ -626,21 +626,21 @@ void TextBox::SetTextAlignment(zaf::TextAlignment alignment) {
 }
 
 
-WordWrapping TextBox::WordWrapping() const {
+WordWrapping RichEdit::WordWrapping() const {
     return HasPropertyBit(TXTBIT_WORDWRAP) ? WordWrapping::Wrap : WordWrapping::NoWrap;
 }
 
-void TextBox::SetWordWrapping(zaf::WordWrapping word_wrapping) {
+void RichEdit::SetWordWrapping(zaf::WordWrapping word_wrapping) {
     ChangePropertyBit(TXTBIT_WORDWRAP, word_wrapping != WordWrapping::NoWrap);
 }
 
 
-bool TextBox::HasPropertyBit(DWORD bit) const {
+bool RichEdit::HasPropertyBit(DWORD bit) const {
     return (property_bits_ & bit) != 0;
 }
 
 
-void TextBox::ChangePropertyBit(DWORD bit, bool is_set) {
+void RichEdit::ChangePropertyBit(DWORD bit, bool is_set) {
 
     if (is_set) {
         property_bits_ |= bit;
@@ -655,22 +655,22 @@ void TextBox::ChangePropertyBit(DWORD bit, bool is_set) {
 }
 
 
-void TextBox::SetAllowVerticalScroll(bool allow) {
+void RichEdit::SetAllowVerticalScroll(bool allow) {
     ChangeScrollBarPropertyBits(ES_AUTOVSCROLL | WS_VSCROLL, allow);
 }
 
 
-void TextBox::SetAllowHorizontalScroll(bool allow) {
+void RichEdit::SetAllowHorizontalScroll(bool allow) {
     ChangeScrollBarPropertyBits(ES_AUTOHSCROLL | WS_HSCROLL, allow);
 }
 
 
-void TextBox::SetAutoHideScrollBars(bool auto_hide) {
+void RichEdit::SetAutoHideScrollBars(bool auto_hide) {
     ChangeScrollBarPropertyBits(ES_DISABLENOSCROLL, ! auto_hide);
 }
 
 
-void TextBox::ChangeScrollBarPropertyBits(DWORD bits, bool is_set) {
+void RichEdit::ChangeScrollBarPropertyBits(DWORD bits, bool is_set) {
 
     if (is_set) {
         scroll_bar_property_ |= bits;
@@ -685,17 +685,17 @@ void TextBox::ChangeScrollBarPropertyBits(DWORD bits, bool is_set) {
 }
 
 
-bool TextBox::CanShowVerticalScrollBar() {
+bool RichEdit::CanShowVerticalScrollBar() {
     return CanEnableVerticalScrollBar() || (scroll_bar_property_ & ES_DISABLENOSCROLL);
 }
 
 
-bool TextBox::CanShowHorizontalScrollBar() {
+bool RichEdit::CanShowHorizontalScrollBar() {
     return CanEnableHorizontalScrollBar() || (scroll_bar_property_ & ES_DISABLENOSCROLL);
 }
 
 
-bool TextBox::CanEnableVerticalScrollBar() {
+bool RichEdit::CanEnableVerticalScrollBar() {
 
     BOOL is_enabled = FALSE;
 
@@ -707,7 +707,7 @@ bool TextBox::CanEnableVerticalScrollBar() {
 }
 
 
-bool TextBox::CanEnableHorizontalScrollBar() {
+bool RichEdit::CanEnableHorizontalScrollBar() {
 
     BOOL is_enabled = FALSE;
 
@@ -719,7 +719,7 @@ bool TextBox::CanEnableHorizontalScrollBar() {
 }
 
 
-void TextBox::GetVerticalScrollValues(
+void RichEdit::GetVerticalScrollValues(
     int& current_value, 
     int& min_value,
     int& max_value,
@@ -729,7 +729,7 @@ void TextBox::GetVerticalScrollValues(
 }
 
 
-void TextBox::GetHorizontalScrollValues(
+void RichEdit::GetHorizontalScrollValues(
     int& current_value, 
     int& min_value,
     int& max_value,
@@ -739,7 +739,7 @@ void TextBox::GetHorizontalScrollValues(
 }
 
 
-void TextBox::GetScrollValues(
+void RichEdit::GetScrollValues(
     bool is_horizontal, 
     int& current_value, 
     int& min_value, 
@@ -774,14 +774,14 @@ void TextBox::GetScrollValues(
 }
 
 
-Observable<TextBoxSelectionChangeInfo> TextBox::SelectionChangeEvent() {
-    return GetEventObservable<TextBoxSelectionChangeInfo>(
+Observable<RichEditSelectionChangeInfo> RichEdit::SelectionChangeEvent() {
+    return GetEventObservable<RichEditSelectionChangeInfo>(
         GetPropertyMap(), 
         kSelectionChangeEventPropertyName);
 }
 
 
-Observable<SelfScrollingControlScrollBarChangInfo> TextBox::ScrollBarChangeEvent() {
+Observable<SelfScrollingControlScrollBarChangInfo> RichEdit::ScrollBarChangeEvent() {
 
     return GetEventObservable<SelfScrollingControlScrollBarChangInfo>(
         GetPropertyMap(),
@@ -789,7 +789,7 @@ Observable<SelfScrollingControlScrollBarChangInfo> TextBox::ScrollBarChangeEvent
 }
 
 
-Observable<SelfScrollingControlScrollValuesChangeInfo> TextBox::ScrollValuesChangeEvent() {
+Observable<SelfScrollingControlScrollValuesChangeInfo> RichEdit::ScrollValuesChangeEvent() {
 
     return GetEventObservable<SelfScrollingControlScrollValuesChangeInfo>(
         GetPropertyMap(),
@@ -797,7 +797,7 @@ Observable<SelfScrollingControlScrollValuesChangeInfo> TextBox::ScrollValuesChan
 }
 
 
-bool TextBox::AcceptKeyMessage(const KeyMessage& message) {
+bool RichEdit::AcceptKeyMessage(const KeyMessage& message) {
 
     switch (message.VirtualKey()) {
     case VK_TAB:
@@ -812,7 +812,7 @@ bool TextBox::AcceptKeyMessage(const KeyMessage& message) {
 }
 
 
-bool TextBox::AcceptTab() const {
+bool RichEdit::AcceptTab() const {
 
     auto accept_tab = GetPropertyMap().TryGetProperty<bool>(kAcceptTabPropertyName);
     if (accept_tab != nullptr) {
@@ -823,12 +823,12 @@ bool TextBox::AcceptTab() const {
     }
 }
 
-void TextBox::SetAcceptTab(bool accept_tab) {
+void RichEdit::SetAcceptTab(bool accept_tab) {
     GetPropertyMap().SetProperty(kAcceptTabPropertyName, accept_tab);
 }
 
 
-bool TextBox::AcceptReturn() const {
+bool RichEdit::AcceptReturn() const {
 
     auto accept_return = GetPropertyMap().TryGetProperty<bool>(kAcceptReturnPropertyName);
     if (accept_return != nullptr) {
@@ -839,12 +839,12 @@ bool TextBox::AcceptReturn() const {
     }
 }
 
-void TextBox::SetAcceptReturn(bool accept_return) {
+void RichEdit::SetAcceptReturn(bool accept_return) {
     GetPropertyMap().SetProperty(kAcceptReturnPropertyName, accept_return);
 }
 
 
-void TextBox::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
+void RichEdit::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 
     __super::OnMouseCursorChanging(event_info);
     if (event_info.IsHandled()) {
@@ -855,7 +855,7 @@ void TextBox::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 }
 
 
-void TextBox::HandleMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
+void RichEdit::HandleMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 
     //Don't change mouse cursor if the mouse is not in content rect.
     auto mouse_position_in_control = this->GetMousePosition();
@@ -905,7 +905,7 @@ void TextBox::HandleMouseCursorChanging(const MouseCursorChangingInfo& event_inf
 }
 
 
-void TextBox::OnMouseMove(const MouseMoveInfo& event_info) {
+void RichEdit::OnMouseMove(const MouseMoveInfo& event_info) {
 
     __super::OnMouseMove(event_info);
 
@@ -919,7 +919,7 @@ void TextBox::OnMouseMove(const MouseMoveInfo& event_info) {
 }
 
 
-void TextBox::OnMouseDown(const MouseDownInfo& event_info) {
+void RichEdit::OnMouseDown(const MouseDownInfo& event_info) {
 
     __super::OnMouseDown(event_info);
     if (event_info.IsHandled()) {
@@ -949,7 +949,7 @@ void TextBox::OnMouseDown(const MouseDownInfo& event_info) {
 }
 
 
-void TextBox::OnMouseUp(const MouseUpInfo& event_info) {
+void RichEdit::OnMouseUp(const MouseUpInfo& event_info) {
 
     __super::OnMouseUp(event_info);
     if (event_info.IsHandled()) {
@@ -977,7 +977,7 @@ void TextBox::OnMouseUp(const MouseUpInfo& event_info) {
 }
 
 
-Point TextBox::AdjustMousePositionIntoRichEdit(const Point& position_in_control) {
+Point RichEdit::AdjustMousePositionIntoRichEdit(const Point& position_in_control) {
 
     //There is a vertical offset to the position of rich edit if ParagraphAlignemnt is set to 
     //Center or Bottom. In order to make mouse operations within the offset area apply to rich 
@@ -1004,7 +1004,7 @@ Point TextBox::AdjustMousePositionIntoRichEdit(const Point& position_in_control)
 }
 
 
-void TextBox::OnKeyDown(const KeyDownInfo& event_info) {
+void RichEdit::OnKeyDown(const KeyDownInfo& event_info) {
     
     __super::OnKeyDown(event_info);
 
@@ -1026,7 +1026,7 @@ void TextBox::OnKeyDown(const KeyDownInfo& event_info) {
 }
 
 
-void TextBox::OnKeyUp(const KeyUpInfo& event_info) {
+void RichEdit::OnKeyUp(const KeyUpInfo& event_info) {
 
     __super::OnKeyUp(event_info);
 
@@ -1048,7 +1048,7 @@ void TextBox::OnKeyUp(const KeyUpInfo& event_info) {
 }
 
 
-void TextBox::OnCharInput(const CharInputInfo& event_info) {
+void RichEdit::OnCharInput(const CharInputInfo& event_info) {
 
     __super::OnCharInput(event_info);
 
@@ -1070,7 +1070,7 @@ void TextBox::OnCharInput(const CharInputInfo& event_info) {
 }
 
 
-void TextBox::OnFocusGained(const FocusGainedInfo& event_info) {
+void RichEdit::OnFocusGained(const FocusGainedInfo& event_info) {
 
     __super::OnFocusGained(event_info);
 
@@ -1087,7 +1087,7 @@ void TextBox::OnFocusGained(const FocusGainedInfo& event_info) {
 }
 
 
-void TextBox::OnFocusLost(const FocusLostInfo& event_info) {
+void RichEdit::OnFocusLost(const FocusLostInfo& event_info) {
 
     __super::OnFocusLost(event_info);
 
@@ -1108,7 +1108,7 @@ void TextBox::OnFocusLost(const FocusLostInfo& event_info) {
 }
 
 
-bool TextBox::CanUndo() const {
+bool RichEdit::CanUndo() const {
 
     if (text_service_ != nullptr) {
         LRESULT can_undo = FALSE;
@@ -1121,7 +1121,7 @@ bool TextBox::CanUndo() const {
 }
 
 
-bool TextBox::Undo() {
+bool RichEdit::Undo() {
 
     if (text_service_ != nullptr) {
         LRESULT undo_result = FALSE;
@@ -1134,7 +1134,7 @@ bool TextBox::Undo() {
 }
 
 
-bool TextBox::CanRedo() const {
+bool RichEdit::CanRedo() const {
 
     if (text_service_ != nullptr) {
         LRESULT can_redo = FALSE;
@@ -1147,7 +1147,7 @@ bool TextBox::CanRedo() const {
 }
 
 
-bool TextBox::Redo() {
+bool RichEdit::Redo() {
 
     if (text_service_ != nullptr) {
         LRESULT redo_result = FALSE;
@@ -1160,42 +1160,42 @@ bool TextBox::Redo() {
 }
 
 
-void TextBox::ScrollUpByLine() {
+void RichEdit::ScrollUpByLine() {
     SendScrollMessage(false, SB_LINEUP);
 }
 
 
-void TextBox::ScrollDownByLine() {
+void RichEdit::ScrollDownByLine() {
     SendScrollMessage(false, SB_LINEDOWN);
 }
 
 
-void TextBox::ScrollUpByPage() {
+void RichEdit::ScrollUpByPage() {
     SendScrollMessage(false, SB_PAGEUP);
 }
 
 
-void TextBox::ScrollDownByPage() {
+void RichEdit::ScrollDownByPage() {
     SendScrollMessage(false, SB_PAGEDOWN);
 }
 
 
-void TextBox::ScrollUpToBegin() {
+void RichEdit::ScrollUpToBegin() {
     SendScrollMessage(false, SB_TOP);
 }
 
 
-void TextBox::ScrollDownToEnd() {
+void RichEdit::ScrollDownToEnd() {
     SendScrollMessage(false, SB_BOTTOM);
 }
 
 
-void TextBox::ScrollLeftToBegin() {
+void RichEdit::ScrollLeftToBegin() {
     SendScrollMessage(true, SB_LEFT);
 }
 
 
-void TextBox::ScrollRightToEnd() {
+void RichEdit::ScrollRightToEnd() {
 
     //Don't use WM_HSCROLL with SB_RIGHT, because it would scroll "too far",
     //not the result expected.
@@ -1212,7 +1212,7 @@ void TextBox::ScrollRightToEnd() {
 }
 
 
-void TextBox::SendScrollMessage(bool is_horizontal, WORD scroll_type) {
+void RichEdit::SendScrollMessage(bool is_horizontal, WORD scroll_type) {
 
     if (text_service_ != nullptr) {
         text_service_->TxSendMessage(is_horizontal ? WM_HSCROLL : WM_VSCROLL, MAKEWPARAM(scroll_type, 0), 0, nullptr);
@@ -1220,17 +1220,17 @@ void TextBox::SendScrollMessage(bool is_horizontal, WORD scroll_type) {
 }
 
 
-void TextBox::VerticallyScroll(int new_value) {
+void RichEdit::VerticallyScroll(int new_value) {
     Scroll(false, new_value);
 }
 
 
-void TextBox::HorizontallyScroll(int new_value) {
+void RichEdit::HorizontallyScroll(int new_value) {
     Scroll(true, new_value);
 }
 
 
-void TextBox::Scroll(bool is_horizontal, int new_value) {
+void RichEdit::Scroll(bool is_horizontal, int new_value) {
 
     if (text_service_ == nullptr) {
         return;
@@ -1241,7 +1241,7 @@ void TextBox::Scroll(bool is_horizontal, int new_value) {
 }
 
 
-void TextBox::ScrollBarChange() {
+void RichEdit::ScrollBarChange() {
 
     auto event_observer = GetEventObserver<SelfScrollingControlScrollBarChangInfo>(
         GetPropertyMap(),
@@ -1256,7 +1256,7 @@ void TextBox::ScrollBarChange() {
 }
 
 
-void TextBox::ScrollValuesChange(bool is_horizontal) {
+void RichEdit::ScrollValuesChange(bool is_horizontal) {
 
     auto event_observer = GetEventObserver<SelfScrollingControlScrollValuesChangeInfo>(
         GetPropertyMap(),
@@ -1272,20 +1272,20 @@ void TextBox::ScrollValuesChange(bool is_horizontal) {
 }
 
 
-void TextBox::RaiseSelectionChangedEvent() {
+void RichEdit::RaiseSelectionChangedEvent() {
 
-    auto event_observer = GetEventObserver<TextBoxSelectionChangeInfo>(
+    auto event_observer = GetEventObserver<RichEditSelectionChangeInfo>(
         GetPropertyMap(),
         kSelectionChangeEventPropertyName);
 
     if (event_observer) {
-        TextBoxSelectionChangeInfo event_info(As<TextBox>(shared_from_this()));
+        RichEditSelectionChangeInfo event_info(As<RichEdit>(shared_from_this()));
         event_observer->OnNext(event_info);
     }
 }
 
 
-void TextBox::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) {
+void RichEdit::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) {
 
     ZAF_EXPECT(object.IsValid());
 
@@ -1313,7 +1313,7 @@ void TextBox::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) {
 }
 
 
-COMObject<IRichEditOle> TextBox::GetOLEInterface() const {
+COMObject<IRichEditOle> RichEdit::GetOLEInterface() const {
 
     COMObject<IRichEditOle> result{};
     HRESULT hresult = text_service_->TxSendMessage(

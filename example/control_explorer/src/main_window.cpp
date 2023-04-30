@@ -10,9 +10,9 @@
 #include "manager/label_explore_manager.h"
 #include "manager/list_box_explore_manager.h"
 #include "manager/radio_button_explore_manager.h"
+#include "manager/rich_edit_explore_manager.h"
 #include "manager/scroll_bar_explore_manager.h"
 #include "manager/split_control_explore_manager.h"
-#include "manager/text_box_explore_manager.h"
 
 static const struct {
     const wchar_t* name;
@@ -27,7 +27,7 @@ static const struct {
     L"RadioButton", []() { return std::make_shared<RadioButtonExploreManager>(); },
     L"ScrollBar", []() { return std::make_shared<ScrollBarExploreManager>(); },
     L"SplitControl", []() { return std::make_shared<SplitControlExploreManager>(); },
-    L"TextBox", []() { return std::make_shared<TextBoxExploreManager>(); },
+    L"RichEdit", []() { return std::make_shared<RichEditExploreManager>(); },
 };
 
 static std::shared_ptr<ExploreManager> CreateExploreManager(const std::wstring& control_name);

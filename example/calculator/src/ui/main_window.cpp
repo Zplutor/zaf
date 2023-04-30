@@ -24,36 +24,36 @@ void MainWindow::OnHandleCreated(const zaf::HandleCreatedInfo& event_info) {
 
     __super::OnHandleCreated(event_info);
 
-    InitializeTextBoxes();
+    InitializeRichEdits();
     InitializeButtons();
 }
 
 
-void MainWindow::InitializeTextBoxes() {
+void MainWindow::InitializeRichEdits() {
 
-    input_text_box_ = zaf::Create<zaf::TextBox>();
-    input_text_box_->SetRect(zaf::Rect(0, 0, GetContentWidth(), 30));
-    input_text_box_->SetIsReadOnly(true);
-    input_text_box_->SetBackgroundColor(zaf::Color::White());
-    input_text_box_->SetBorder(zaf::Frame(0));
-    input_text_box_->SetInset(50);
+    input_rich_edit_ = zaf::Create<zaf::RichEdit>();
+    input_rich_edit_->SetRect(zaf::Rect(0, 0, GetContentWidth(), 30));
+    input_rich_edit_->SetIsReadOnly(true);
+    input_rich_edit_->SetBackgroundColor(zaf::Color::White());
+    input_rich_edit_->SetBorder(zaf::Frame(0));
+    input_rich_edit_->SetInset(50);
 
-    output_text_box_ = zaf::Create<zaf::TextBox>();
-    output_text_box_->SetRect(zaf::Rect(0, 30, GetContentWidth(), 50));
-    output_text_box_->SetIsReadOnly(true);
-    output_text_box_->SetBackgroundColor(zaf::Color::White());
-    output_text_box_->SetBorder(zaf::Frame(0));
-    output_text_box_->SetInset(50);
+    output_rich_edit_ = zaf::Create<zaf::RichEdit>();
+    output_rich_edit_->SetRect(zaf::Rect(0, 30, GetContentWidth(), 50));
+    output_rich_edit_->SetIsReadOnly(true);
+    output_rich_edit_->SetBackgroundColor(zaf::Color::White());
+    output_rich_edit_->SetBorder(zaf::Frame(0));
+    output_rich_edit_->SetInset(50);
     zaf::Font font;
     font.size = 36;
-    output_text_box_->SetFont(font);
+    output_rich_edit_->SetFont(font);
 
     auto container = zaf::Create<zaf::Control>();
     container->SetRect(zaf::Rect(kContentMargin, kContentMargin, GetContentWidth(), 80));
     container->SetBorder(zaf::Frame(1));
     container->SetBorderColor(zaf::Color::FromRGB(0x808080));
-    container->AddChild(input_text_box_);
-    container->AddChild(output_text_box_);
+    container->AddChild(input_rich_edit_);
+    container->AddChild(output_rich_edit_);
 
     RootControl()->AddChild(container);
 }
@@ -118,25 +118,25 @@ void MainWindow::ButtonClick(const zaf::ClickInfo& event_info) {
     auto button_text = button->Text();
     if (button_text == L"=") {
 
-        auto result = Calculator().Calculate(input_text_box_->Text());
+        auto result = Calculator().Calculate(input_rich_edit_->Text());
         if (result->error == CalculateResult::Error::None) {
-            output_text_box_->SetText(result->text);
+            output_rich_edit_->SetText(result->text);
         }
         else {
-            output_text_box_->SetText(L"ERROR");
+            output_rich_edit_->SetText(L"ERROR");
         }
     }
     else if (button_text == L"C") {
-        input_text_box_->SetText(L"");
-        output_text_box_->SetText(L"");
+        input_rich_edit_->SetText(L"");
+        output_rich_edit_->SetText(L"");
     }
     else if (button_text == L"¡û") {
-        auto current_text = input_text_box_->Text();
-        input_text_box_->SetText(current_text.substr(0, current_text.length() - 1));
+        auto current_text = input_rich_edit_->Text();
+        input_rich_edit_->SetText(current_text.substr(0, current_text.length() - 1));
     }
     else {
         
-        input_text_box_->SetText(input_text_box_->Text() + button_text);
-        input_text_box_->ScrollRightToEnd();
+        input_rich_edit_->SetText(input_rich_edit_->Text() + button_text);
+        input_rich_edit_->ScrollRightToEnd();
     }
 }

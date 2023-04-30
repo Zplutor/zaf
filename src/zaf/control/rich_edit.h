@@ -19,18 +19,18 @@ class EmbeddedObject;
 }
 
 class Caret;
-class TextBoxSelectionChangeInfo;
+class RichEditSelectionChangeInfo;
 
 /**
- Represents a text box control.   
+ Represents a rich edit control.   
  */
-class TextBox : public TextualControl, public SelfScrollingControl {
+class RichEdit : public TextualControl, public SelfScrollingControl {
 public:
     ZAF_DECLARE_TYPE
 
 public:
-    TextBox();
-    ~TextBox();
+    RichEdit();
+    ~RichEdit();
 
     /**
      Get the dimensions of the white space inset around the text.
@@ -90,31 +90,31 @@ public:
     void SetPasswordCharacter(wchar_t password_char);
 
     /**
-     Get a value indicating that whether the text box is multiline.
+     Get a value indicating that whether the rich edit is multiline.
 
      The default value is false.
      */
     bool IsMultiline() const;
 
     /**
-     Set value indicating that whether the text box is multiline.
+     Set value indicating that whether the rich edit is multiline.
      */
     void SetIsMultiline(bool is_multiline);
 
     /**
-     Get a value indicating that whether the text box is read only.
+     Get a value indicating that whether the rich edit is read only.
 
      The default value is falsel
      */
     bool IsReadOnly() const;
 
     /**
-     Set a value indicating that whether the text box is read only.
+     Set a value indicating that whether the rich edit is read only.
      */
     void SetIsReadOnly(bool is_read_only);
 
     /**
-     Get a value indicating that whether the text box allows beep when an
+     Get a value indicating that whether the rich edit allows beep when an
      invalid character is inputted.
 
      The default value is true.
@@ -122,7 +122,7 @@ public:
     bool AllowBeep() const;
 
     /**
-     Set a value indicating that whether the text box allows beep when an
+     Set a value indicating that whether the rich edit allows beep when an
      invalid character is inputted.
      */
     void SetAllowBeep(bool allow_beep);
@@ -143,7 +143,7 @@ public:
     /**
      Get text validator.
 
-     The default validator is nullptr, means the text box accepts any
+     The default validator is nullptr, means the rich edit accepts any
      inputted text.
      */
     TextValidator GetTextValidator() const;
@@ -190,14 +190,14 @@ public:
 
      This event is raise when selected text is changed.
      */
-    Observable<TextBoxSelectionChangeInfo> SelectionChangeEvent();
+    Observable<RichEditSelectionChangeInfo> SelectionChangeEvent();
     Observable<SelfScrollingControlScrollBarChangInfo> ScrollBarChangeEvent() override;
     Observable<SelfScrollingControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
 
     bool AcceptKeyMessage(const KeyMessage& message) override;
 
     /**
-     Get a value indicating that whether the text box accepts TAB character when the
+     Get a value indicating that whether the rich edit accepts TAB character when the
      TAB key is pressed.
 
      The default value is false.
@@ -205,13 +205,13 @@ public:
     bool AcceptTab() const;
 
     /**
-     Set a value indicating that whether the text box accepts TAB character when the
+     Set a value indicating that whether the rich edit accepts TAB character when the
      TAB key is pressed.
      */
     void SetAcceptTab(bool accept_tab);
 
     /**
-     Get a value indicating that whether the text box accepts return character when the
+     Get a value indicating that whether the rich edit accepts return character when the
      return key is pressed.
 
      The default value is false.
@@ -219,13 +219,13 @@ public:
     bool AcceptReturn() const;
 
     /**
-     Set a value indicating that whether the text box accepts return character when the
+     Set a value indicating that whether the rich edit accepts return character when the
      return key is pressed.
      */
     void SetAcceptReturn(bool accept_return);
 
     /**
-     Determine whether the text box can be undone.
+     Determine whether the rich edit can be undone.
      */
     bool CanUndo() const;
 
@@ -238,7 +238,7 @@ public:
     bool Undo();
 
     /**
-     Determine whether the text box can be redone.
+     Determine whether the rich edit can be redone.
      */
     bool CanRedo() const;
 
@@ -358,18 +358,19 @@ private:
 };
 
 
-class TextBoxSelectionChangeInfo {
+class RichEditSelectionChangeInfo {
 public:
-    TextBoxSelectionChangeInfo(const std::shared_ptr<TextBox>& text_box) : text_box_(text_box) {
+    RichEditSelectionChangeInfo(const std::shared_ptr<RichEdit>& rich_edit) :
+        rich_edit_(rich_edit) {
 
     }
 
-    const std::shared_ptr<TextBox>& TextBox() const {
-        return text_box_;
+    const std::shared_ptr<RichEdit>& RichEdit() const {
+        return rich_edit_;
     }
 
 private:
-    std::shared_ptr<zaf::TextBox> text_box_;
+    std::shared_ptr<zaf::RichEdit> rich_edit_;
 };
 
 }
