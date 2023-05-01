@@ -89,7 +89,7 @@ static const wchar_t* const kMaxLengthPropertyName = L"MaxLength";
 static const wchar_t* const kPasswordCharacterPropertyName = L"PasswordCharacter";
 static const wchar_t* const kScrollBarChangeEventPropertyName = L"ScrollBarChangeEvent";
 static const wchar_t* const kScrollValuesChangeEventPropertyName = L"ScrollValuesChangeEvent";
-static const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
+static const wchar_t* const kSelectionChangedEventPropertyName = L"SelectionChangedEvent";
 static const wchar_t* const kTextValidatorPropertyName = L"TextValidator";
 
 
@@ -165,7 +165,9 @@ void RichEdit::InitializeTextService() {
     text_service_ = CreateTextService(text_host_bridge_.get());
     text_service_->OnTxInPlaceActivate(nullptr);
     text_service_->TxSendMessage(
-        EM_SETEVENTMASK, 0, ENM_CHANGE | ENM_SELCHANGE | ENM_PROTECTED,
+        EM_SETEVENTMASK,
+        0,
+        ENM_CHANGE | ENM_SELCHANGE | ENM_PROTECTED, 
         nullptr);
 }
 
@@ -564,9 +566,6 @@ void RichEdit::SetFont(const zaf::Font& font) {
 
     ResetCachedTextHeight();
 
-    character_format_.dwMask |= CFM_PROTECTED;
-    character_format_.dwEffects |= CFM_PROTECTED;
-
     character_format_.dwMask |= CFM_FACE;
     wcscpy_s(character_format_.szFaceName, font.family_name.c_str());
 
@@ -777,10 +776,10 @@ void RichEdit::GetScrollValues(
 }
 
 
-Observable<RichEditSelectionChangeInfo> RichEdit::SelectionChangeEvent() {
-    return GetEventObservable<RichEditSelectionChangeInfo>(
+Observable<RichEditSelectionChangedInfo> RichEdit::SelectionChangedEvent() {
+    return GetEventObservable<RichEditSelectionChangedInfo>(
         GetPropertyMap(), 
-        kSelectionChangeEventPropertyName);
+        kSelectionChangedEventPropertyName);
 }
 
 
@@ -1275,16 +1274,39 @@ void RichEdit::ScrollValuesChange(bool is_horizontal) {
 }
 
 
-void RichEdit::RaiseSelectionChangedEvent() {
+void RichEdit::HandleSelectionChangedNotification() {
+    OnSelectionChanged(RichEditSelectionChangedInfo{ As<RichEdit>(shared_from_this()) });
+}
 
-    auto event_observer = GetEventObserver<RichEditSelectionChangeInfo>(
+
+void RichEdit::OnSelectionChanged(const RichEditSelectionChangedInfo& event_info) {
+
+    auto event_observer = GetEventObserver<RichEditSelectionChangedInfo>(
         GetPropertyMap(),
-        kSelectionChangeEventPropertyName);
+        kSelectionChangedEventPropertyName);
 
     if (event_observer) {
-        RichEditSelectionChangeInfo event_info(As<RichEdit>(shared_from_this()));
         event_observer->OnNext(event_info);
     }
+}
+
+
+void RichEdit::HandleTextChangedNotification() {
+
+    //In order to make text changing event work, we rely on EN_PROTECTED notification. But the
+    //protected text range isn't extended automatically by rich edit when text changed, so we 
+    //update the protected text range to the whole text ourselves.
+    CHARFORMAT char_format{};
+    char_format.cbSize = sizeof(char_format);
+    char_format.dwMask = CFM_PROTECTED;
+    char_format.dwEffects = CFE_PROTECTED;
+    text_service_->TxSendMessage(
+        EM_SETCHARFORMAT, 
+        SCF_ALL,
+        reinterpret_cast<LPARAM>(&char_format),
+        nullptr);
+
+    NotifyTextChanged();
 }
 
 

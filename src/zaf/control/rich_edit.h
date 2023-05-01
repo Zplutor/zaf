@@ -4,6 +4,7 @@
 #include <Richedit.h>
 #include <richole.h>
 #include <TextServ.h>
+#include <zaf/control/event/rich_edit_selection_changed_info.h>
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/text_validator.h>
 #include <zaf/control/textual_control.h>
@@ -19,7 +20,7 @@ class EmbeddedObject;
 }
 
 class Caret;
-class RichEditSelectionChangeInfo;
+class RichEditSelectionChangedInfo;
 
 /**
  Represents a rich edit control.   
@@ -186,11 +187,11 @@ public:
         int& page_value) override;
 
     /**
-     Get selection change event.
+     Get selection changed event.
 
      This event is raise when selected text is changed.
      */
-    Observable<RichEditSelectionChangeInfo> SelectionChangeEvent();
+    Observable<RichEditSelectionChangedInfo> SelectionChangedEvent();
     Observable<SelfScrollingControlScrollBarChangInfo> ScrollBarChangeEvent() override;
     Observable<SelfScrollingControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
 
@@ -311,7 +312,6 @@ protected:
     void OnMouseMove(const MouseMoveInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseUp(const MouseUpInfo& event_info) override;
-    Point AdjustMousePositionIntoRichEdit(const Point& position_in_control);
 
     void OnKeyDown(const KeyDownInfo& event_info) override;
     void OnKeyUp(const KeyUpInfo& event_info) override;
@@ -320,8 +320,13 @@ protected:
     void OnFocusGained(const FocusGainedInfo& event_info) override;
     void OnFocusLost(const FocusLostInfo& event_info) override;
 
+    virtual void OnSelectionChanged(const RichEditSelectionChangedInfo& event_info);
+
 private:
     friend class rich_edit::internal::TextHostBridge;
+
+    void HandleSelectionChangedNotification();
+    void HandleTextChangedNotification();
 
 private:
     void InitializeTextService();
@@ -330,6 +335,7 @@ private:
     float GetContentVerticalOffset();
     void ResetCachedTextHeight();
     void HandleMouseCursorChanging(const MouseCursorChangingInfo& event_info);
+    Point AdjustMousePositionIntoRichEdit(const Point& position_in_control);
     bool HasPropertyBit(DWORD bit) const;
     void ChangePropertyBit(DWORD bit, bool is_set);
     void ChangeScrollBarPropertyBits(DWORD bits, bool is_set);
@@ -343,7 +349,6 @@ private:
     void Scroll(bool is_horizontal, int new_value);
     void ScrollBarChange();
     void ScrollValuesChange(bool is_horizontal);
-    void RaiseSelectionChangedEvent();
 
 private:
     std::shared_ptr<rich_edit::internal::TextHostBridge> text_host_bridge_;
@@ -355,22 +360,6 @@ private:
     DWORD scroll_bar_property_;
     std::optional<float> cached_text_height_;
     Color text_color_;
-};
-
-
-class RichEditSelectionChangeInfo {
-public:
-    RichEditSelectionChangeInfo(const std::shared_ptr<RichEdit>& rich_edit) :
-        rich_edit_(rich_edit) {
-
-    }
-
-    const std::shared_ptr<RichEdit>& RichEdit() const {
-        return rich_edit_;
-    }
-
-private:
-    std::shared_ptr<zaf::RichEdit> rich_edit_;
 };
 
 }

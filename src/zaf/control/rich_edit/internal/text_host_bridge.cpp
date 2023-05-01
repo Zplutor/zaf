@@ -423,12 +423,12 @@ HRESULT TextHostBridge::TxNotify(DWORD iNotify, void* pv) {
         //line rich edit does. Uncomment this line if multi line rich edit supports 
         //ParagraphAlignment.
         //rich_edit->ResetCachedTextHeight();
-        rich_edit->NotifyTextChanged();
+        rich_edit->HandleTextChangedNotification();
         return S_OK;
     }
 
     case EN_SELCHANGE: {
-        rich_edit->RaiseSelectionChangedEvent();
+        rich_edit->HandleSelectionChangedNotification();
         return S_OK;
     }
 

@@ -913,6 +913,9 @@
     <ClCompile Include="src\zaf\control\event\mouse_cursor_changing_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\event\rich_edit_selection_changed_info.cpp">
+      <Filter>zaf\control\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2115,6 +2118,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\message\set_cursor_message.h">
       <Filter>zaf\window\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\rich_edit_selection_changed_info.h">
+      <Filter>zaf\control\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
