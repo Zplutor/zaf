@@ -111,6 +111,16 @@ protected:
         rich_edit_->SetBorder(zaf::Frame{ 10, 10, 10, 10 });
         rich_edit_->SetFontSize(22);
         rich_edit_->SetIsMultiline(true);
+        rich_edit_->SetAllowBeep(false);
+        Subscriptions() += rich_edit_->TextChangingEvent().Subscribe(
+            [this](const zaf::TextChangingInfo& event_info) {
+        
+            if (event_info.Reason() == zaf::TextChangeReason::Paste) {
+                zaf::COMObject<MyOLEObject> object{ new MyOLEObject };
+                rich_edit_->InsertObject(object);
+                event_info.SetCanChange(false);
+            }
+        });
 
         auto container = zaf::Create<zaf::ScrollableControl>();
         container->SetScrollContent(rich_edit_);

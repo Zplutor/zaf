@@ -446,12 +446,17 @@ HRESULT TextHostBridge::TxNotify(DWORD iNotify, void* pv) {
 bool TextHostBridge::NotifyProtected(const ENPROTECTED& info) const {
 
     auto rich_edit = rich_edit_.lock();
-    if (rich_edit == nullptr) {
-        return true;
+    if (!rich_edit) {
+        return false;
+    }
+
+    bool can_change = rich_edit->HandleProtectedNotification(info);
+    if (!can_change) {
+        return false;
     }
 
     auto validator = rich_edit->GetTextValidator();
-    if (validator == nullptr) {
+    if (!validator) {
         return true;
     }
 

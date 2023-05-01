@@ -88,6 +88,7 @@
     <ClCompile Include="src\zaf\control\event\parent_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\rect_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\rich_edit_selection_changed_info.cpp" />
+    <ClCompile Include="src\zaf\control\event\text_changing_info.cpp" />
     <ClCompile Include="src\zaf\control\event\scroll_bar_arrow_event_info.cpp" />
     <ClCompile Include="src\zaf\control\event\scroll_bar_scroll_info.cpp" />
     <ClCompile Include="src\zaf\control\event\scroll_bar_thumb_event_info.cpp" />
@@ -387,6 +388,7 @@
     <ClInclude Include="src\zaf\control\event\parent_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\rect_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\rich_edit_selection_changed_info.h" />
+    <ClInclude Include="src\zaf\control\event\text_changing_info.h" />
     <ClInclude Include="src\zaf\control\event\scroll_bar_arrow_event_info.h" />
     <ClInclude Include="src\zaf\control\event\scroll_bar_scroll_info.h" />
     <ClInclude Include="src\zaf\control\event\scroll_bar_thumb_event_info.h" />

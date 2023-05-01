@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dwrite.h>
+#include <Richedit.h>
 
 namespace zaf {
 
@@ -14,6 +15,20 @@ public:
      */
     static TextRange FromDWRITETEXTRANGE(const DWRITE_TEXT_RANGE& text_range) {
         return TextRange(text_range.startPosition, text_range.length);
+    }
+
+    /**
+    Convers a CHARRANGE structure to TextRange.
+    */
+    static TextRange FromCHARRANGE(const CHARRANGE& char_range) {
+
+        auto length = char_range.cpMax - char_range.cpMin;
+
+        return TextRange{
+            static_cast<std::size_t>(char_range.cpMin < 0 ? 0 : char_range.cpMin),
+            static_cast<std::size_t>(
+                length < 0 ? (std::numeric_limits<std::size_t>::max)() : length)
+        };
     }
 
 public:

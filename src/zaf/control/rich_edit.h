@@ -5,6 +5,7 @@
 #include <richole.h>
 #include <TextServ.h>
 #include <zaf/control/event/rich_edit_selection_changed_info.h>
+#include <zaf/control/event/text_changing_info.h>
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/text_validator.h>
 #include <zaf/control/textual_control.h>
@@ -192,6 +193,9 @@ public:
      This event is raise when selected text is changed.
      */
     Observable<RichEditSelectionChangedInfo> SelectionChangedEvent();
+
+    Observable<TextChangingInfo> TextChangingEvent();
+
     Observable<SelfScrollingControlScrollBarChangInfo> ScrollBarChangeEvent() override;
     Observable<SelfScrollingControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
 
@@ -321,12 +325,14 @@ protected:
     void OnFocusLost(const FocusLostInfo& event_info) override;
 
     virtual void OnSelectionChanged(const RichEditSelectionChangedInfo& event_info);
+    virtual void OnTextChanging(const TextChangingInfo& event_info);
 
 private:
     friend class rich_edit::internal::TextHostBridge;
 
     void HandleSelectionChangedNotification();
     void HandleTextChangedNotification();
+    bool HandleProtectedNotification(const ENPROTECTED& notification_info);
 
 private:
     void InitializeTextService();
@@ -349,6 +355,7 @@ private:
     void Scroll(bool is_horizontal, int new_value);
     void ScrollBarChange();
     void ScrollValuesChange(bool is_horizontal);
+    bool RaiseTextChangingEvent(const ENPROTECTED& notification_info);
 
 private:
     std::shared_ptr<rich_edit::internal::TextHostBridge> text_host_bridge_;

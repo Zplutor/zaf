@@ -91,6 +91,7 @@ static const wchar_t* const kScrollBarChangeEventPropertyName = L"ScrollBarChang
 static const wchar_t* const kScrollValuesChangeEventPropertyName = L"ScrollValuesChangeEvent";
 static const wchar_t* const kSelectionChangedEventPropertyName = L"SelectionChangedEvent";
 static const wchar_t* const kTextValidatorPropertyName = L"TextValidator";
+static const wchar_t* const TextChangingEventPropertyName = L"TextChangingEvent";
 
 
 ZAF_DEFINE_TYPE(RichEdit)
@@ -477,19 +478,9 @@ void RichEdit::SetAllowBeep(bool allow_beep) {
 
 TextRange RichEdit::GetSelectionRange() const {
 
-    TextRange range;
-
-    if (text_service_ != nullptr) {
-
-        CHARRANGE char_range = { 0 };
-        text_service_->TxSendMessage(EM_EXGETSEL, 0, reinterpret_cast<LPARAM>(&char_range), nullptr);
-
-        range.index = char_range.cpMin < 0 ? 0 : char_range.cpMin;
-        auto length = char_range.cpMax - char_range.cpMin;
-        range.length = length < 0 ? std::numeric_limits<std::size_t>::max() : length;
-    }
-
-    return range;
+    CHARRANGE char_range{};
+    text_service_->TxSendMessage(EM_EXGETSEL, 0, reinterpret_cast<LPARAM>(&char_range), nullptr);
+    return TextRange::FromCHARRANGE(char_range);
 }
 
 void RichEdit::SetSelectionRange(const TextRange& range) {
@@ -1307,6 +1298,57 @@ void RichEdit::HandleTextChangedNotification() {
         nullptr);
 
     NotifyTextChanged();
+}
+
+
+bool RichEdit::HandleProtectedNotification(const ENPROTECTED& notification_info) {
+    return RaiseTextChangingEvent(notification_info);
+}
+
+
+bool RichEdit::RaiseTextChangingEvent(const ENPROTECTED& notification_info) {
+
+    TextChangeReason reason{ TextChangeReason::Unknown };
+    if (notification_info.msg == WM_CHAR) {
+        reason = TextChangeReason::KeyInput;
+    }
+    else if (notification_info.msg == WM_PASTE) {
+        reason = TextChangeReason::Paste;
+    }
+
+    Message triggered_message{
+        notification_info.nmhdr.hwndFrom,
+        notification_info.msg,
+        notification_info.wParam,
+        notification_info.lParam
+    };
+
+    TextChangingInfo event_info{
+        As<RichEdit>(shared_from_this()),
+        reason,
+        TextRange::FromCHARRANGE(notification_info.chrg),
+        triggered_message
+    };
+
+    OnTextChanging(event_info);
+    return event_info.CanChange();
+}
+
+
+void RichEdit::OnTextChanging(const TextChangingInfo& event_info) {
+
+    auto observer = GetEventObserver<TextChangingInfo>(
+        GetPropertyMap(),
+        TextChangingEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<TextChangingInfo> RichEdit::TextChangingEvent() {
+    return GetEventObservable<TextChangingInfo>(GetPropertyMap(), TextChangingEventPropertyName);
 }
 
 
