@@ -110,12 +110,10 @@ protected:
         rich_edit_->SetMargin(zaf::Frame{ 10, 10, 10, 10 });
         rich_edit_->SetBorder(zaf::Frame{ 10, 10, 10, 10 });
         rich_edit_->SetFontSize(22);
-        //rich_edit_->SetIsMultiline(true);
-        //rich_edit_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
+        rich_edit_->SetIsMultiline(true);
 
-        auto container = zaf::Create<zaf::Control>();
-        container->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
-        container->AddChild(rich_edit_);
+        auto container = zaf::Create<zaf::ScrollableControl>();
+        container->SetScrollContent(rich_edit_);
         container->SetPadding(zaf::Frame{ 10, 10, 10, 10 });
         container->SetBackgroundColor(zaf::Color::Yellow());
 

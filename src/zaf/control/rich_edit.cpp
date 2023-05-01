@@ -767,6 +767,9 @@ void RichEdit::GetScrollValues(
         return;
     }
 
+    //If the rich edit is too small, page might be a negative value, which is not allowed.
+    page = std::max(page, 0L);
+
     current_value = current;
     min_value = min;
     max_value = std::max(max - page, 0L);
