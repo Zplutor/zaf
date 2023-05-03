@@ -919,6 +919,9 @@
     <ClCompile Include="src\zaf\control\event\text_changing_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\base\clipboard.cpp">
+      <Filter>zaf\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2127,6 +2130,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\text_changing_info.h">
       <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\clipboard.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

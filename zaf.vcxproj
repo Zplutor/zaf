@@ -54,6 +54,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release-MT|x64'">precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="src\zaf\application.cpp" />
+    <ClCompile Include="src\zaf\base\clipboard.cpp" />
     <ClCompile Include="src\zaf\base\error\basic_error.cpp" />
     <ClCompile Include="src\zaf\base\error\com_error.cpp" />
     <ClCompile Include="src\zaf\base\log.cpp" />
@@ -309,6 +310,7 @@
     <ClInclude Include="src\zaf\application_delegate.h" />
     <ClInclude Include="src\zaf\base\as.h" />
     <ClInclude Include="src\zaf\base\auto_reset_value.h" />
+    <ClInclude Include="src\zaf\base\clipboard.h" />
     <ClInclude Include="src\zaf\base\container\utility\copy.h" />
     <ClInclude Include="src\zaf\base\container\utility\range.h" />
     <ClInclude Include="src\zaf\base\error\basic_error.h" />
