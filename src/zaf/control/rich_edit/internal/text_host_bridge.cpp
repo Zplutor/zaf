@@ -419,10 +419,8 @@ HRESULT TextHostBridge::TxNotify(DWORD iNotify, void* pv) {
 
     switch (iNotify) {
     case EN_CHANGE: {
-        //Single line rich edit doesn't need to reset cached text height on text changed, but multi
-        //line rich edit does. Uncomment this line if multi line rich edit supports 
-        //ParagraphAlignment.
-        //rich_edit->ResetCachedTextHeight();
+        //Reset cached text height to update vertical alignment position.
+        rich_edit->ResetCachedTextHeight();
         rich_edit->HandleTextChangedNotification();
         return S_OK;
     }

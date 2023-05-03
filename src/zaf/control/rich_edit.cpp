@@ -108,6 +108,9 @@ RichEdit::RichEdit() :
     text_color_(Color::Black()) {
 
     character_format_.cbSize = sizeof(character_format_);
+    character_format_.dwMask |= CFM_PROTECTED;
+    character_format_.dwEffects |= CFM_PROTECTED;
+
     paragraph_format_.cbSize = sizeof(paragraph_format_);
 }
 
