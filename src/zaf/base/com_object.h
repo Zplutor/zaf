@@ -156,4 +156,10 @@ private:
     T* inner_;
 };
 
+
+template<typename Class, typename... ArgumentTypes>
+COMObject<Class> MakeCOMObject(ArgumentTypes&&... arguments) {
+    return COMObject<Class>{ new Class(std::forward<ArgumentTypes>(arguments)...) };
+}
+
 }
