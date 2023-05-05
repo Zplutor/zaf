@@ -6,6 +6,7 @@
 #include <TextServ.h>
 #include <zaf/control/event/rich_edit_selection_changed_info.h>
 #include <zaf/control/event/text_changing_info.h>
+#include <zaf/control/rich_edit/ole_interface.h>
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/text_validator.h>
 #include <zaf/control/textual_control.h>
@@ -301,7 +302,16 @@ public:
         return text_service_;
     }
 
-    COMObject<IRichEditOle> GetOLEInterface() const;
+    /**
+    Gets OLE interface of rich edit.
+
+    @return
+        The OLE interface.
+
+    @throw zaf::Error
+        Any error when getting the OLE interface.
+    */
+    rich_edit::OLEInterface GetOLEInterface() const;
 
     void VerticallyScroll(int new_value) override;
     void HorizontallyScroll(int new_value) override;

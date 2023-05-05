@@ -1383,9 +1383,9 @@ void RichEdit::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) 
 }
 
 
-COMObject<IRichEditOle> RichEdit::GetOLEInterface() const {
+rich_edit::OLEInterface RichEdit::GetOLEInterface() const {
 
-    COMObject<IRichEditOle> result{};
+    rich_edit::OLEInterface result;
     HRESULT hresult = text_service_->TxSendMessage(
         EM_GETOLEINTERFACE,
         0,

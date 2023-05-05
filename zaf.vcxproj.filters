@@ -922,6 +922,9 @@
     <ClCompile Include="src\zaf\base\clipboard.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\rich_edit\ole_interface.cpp">
+      <Filter>zaf\control\rich_edit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2133,6 +2136,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\clipboard.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\rich_edit\ole_interface.h">
+      <Filter>zaf\control\rich_edit</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
