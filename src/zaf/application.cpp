@@ -30,8 +30,8 @@ Application::Application() : is_initialized_(false) {
 
 Application::~Application() {
 
-    //Ensure to destroy all windows when exiting applications.
-    DestroyAllWindows();
+    //Make sure that all windows are destroyed before exiting application.
+    assert(window_holders_.empty());
 }
 
 
