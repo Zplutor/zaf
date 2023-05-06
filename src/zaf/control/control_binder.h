@@ -17,7 +17,7 @@ std::shared_ptr<Control> BridgedFindControl(const Control& control, const wchar_
 std::shared_ptr<Control> BridgedFindControl(const Window& window, const wchar_t* name);
 
 template<typename T>
-class ControlBinder : NonCopyable {
+class ControlBinder : NonCopyableNonMovable {
 public:
     ControlBinder(const Control* owner, const wchar_t* name) : 
         owner_is_window_(false),

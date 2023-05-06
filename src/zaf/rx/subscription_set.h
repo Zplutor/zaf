@@ -9,7 +9,7 @@ namespace internal {
 class InnerSubscriptionSet;
 }
 
-class SubscriptionSet : NonCopyable {
+class SubscriptionSet : NonCopyableNonMovable {
 public:
     class TagItem {
     public:

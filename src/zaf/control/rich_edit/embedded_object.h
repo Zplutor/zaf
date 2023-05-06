@@ -12,7 +12,7 @@ class Canvas;
 
 namespace rich_edit {
 
-class EmbeddedObject : public IOleObject, NonCopyable {
+class EmbeddedObject : public IOleObject, NonCopyableNonMovable {
 public:
     virtual ~EmbeddedObject() = default;
 

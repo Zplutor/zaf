@@ -8,7 +8,7 @@ namespace zaf {
 
 class Canvas;
 
-class Caret : public Object, NonCopyable {
+class Caret : public Object, NonCopyableNonMovable {
 public:
     ZAF_DECLARE_TYPE;
 

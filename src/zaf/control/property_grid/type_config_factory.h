@@ -6,7 +6,7 @@
 
 namespace zaf::property_grid {
 
-class TypeConfigFactory : NonCopyable {
+class TypeConfigFactory : NonCopyableNonMovable {
 public:
     TypeConfigFactory() = default;
     virtual ~TypeConfigFactory() = default;

@@ -17,7 +17,7 @@ class TreeControlImplementation :
     public ListDataSource, 
     public ListControlDelegate,
     public std::enable_shared_from_this<TreeControlImplementation>,
-    NonCopyable {
+    NonCopyableNonMovable {
 
 public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<TreeDataSource>&)>;

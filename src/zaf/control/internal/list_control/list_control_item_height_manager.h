@@ -10,7 +10,7 @@
 
 namespace zaf::internal {
 
-class ListControlItemHeightManager : NonCopyable {
+class ListControlItemHeightManager : NonCopyableNonMovable {
 public:
     ListControlItemHeightManager(const std::weak_ptr<ListDataSource>& data_source);
     ~ListControlItemHeightManager();

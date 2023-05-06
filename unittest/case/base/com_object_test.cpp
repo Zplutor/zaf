@@ -5,7 +5,7 @@
 
 namespace {
 
-class BaseCOMObject : public IUnknown, zaf::NonCopyable {
+class BaseCOMObject : public IUnknown, zaf::NonCopyableNonMovable {
 public:
     BaseCOMObject() : is_deleted_(std::make_shared<bool>(false)) {
 

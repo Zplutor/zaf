@@ -6,7 +6,7 @@ namespace zaf::property_grid::internal {
 
 class Data;
 
-class DataObserver : NonCopyable {
+class DataObserver : NonCopyableNonMovable {
 public:
     DataObserver() = default;
     virtual ~DataObserver() = default;

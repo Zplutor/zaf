@@ -5,7 +5,7 @@
 namespace zaf {
 
 template<typename T>
-class AutoResetValue : NonCopyable {
+class AutoResetValue : NonCopyableNonMovable {
 public:
     class Guard : NonCopyable {
     public:

@@ -18,7 +18,7 @@ public:
     bool is_changed_by_dragging{};
 };
 
-class SplitDistanceManager : SubscriptionHost, NonCopyable {
+class SplitDistanceManager : SubscriptionHost, NonCopyableNonMovable {
 public:
     SplitDistanceManager();
 

@@ -7,7 +7,7 @@
 
 namespace zaf::internal {
 
-class InnerMessageOnlyWindow : public NonCopyable {
+class InnerMessageOnlyWindow : public NonCopyableNonMovable {
 public:
     InnerMessageOnlyWindow(HWND parent_window_handle);
     ~InnerMessageOnlyWindow();

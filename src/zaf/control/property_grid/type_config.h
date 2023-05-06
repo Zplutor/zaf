@@ -8,7 +8,7 @@
 
 namespace zaf::property_grid {
 
-class TypeConfig : NonCopyable {
+class TypeConfig : NonCopyableNonMovable {
 public:
     TypeConfig() = default;
     virtual ~TypeConfig() = default;

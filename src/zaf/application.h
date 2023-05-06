@@ -44,7 +44,7 @@ public:
 
  There is only one instance of Application, which can use Instance method to get.
  */
-class Application : public SubscriptionHost {
+class Application : public SubscriptionHost, NonCopyableNonMovable {
 public:
     /**
      Get the singleton instance.
@@ -165,9 +165,6 @@ private:
 private:
     Application();
     ~Application();
-
-    Application(const Application&) = delete;
-    Application& operator=(const Application&) = delete;
 
     void InitializeSystemMessageWindow();
 

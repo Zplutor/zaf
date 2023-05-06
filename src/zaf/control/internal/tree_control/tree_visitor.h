@@ -5,7 +5,7 @@
 
 namespace zaf::internal {
 
-class TreeVisitor : NonCopyable {
+class TreeVisitor : NonCopyableNonMovable {
 public:
     TreeVisitor() = default;
     virtual ~TreeVisitor() = default;

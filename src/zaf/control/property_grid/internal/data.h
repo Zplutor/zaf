@@ -17,7 +17,7 @@ class Data :
     public Object, 
     public std::enable_shared_from_this<Data>, 
     SubscriptionHost,
-    NonCopyable {
+    NonCopyableNonMovable {
 
 public:
     Data(

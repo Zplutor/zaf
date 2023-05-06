@@ -8,7 +8,7 @@ namespace zaf {
 
 class Application;
 
-class WindowClassRegistry : SubscriptionHost, NonCopyable {
+class WindowClassRegistry : SubscriptionHost, NonCopyableNonMovable {
 public:
     static WindowClassRegistry& Instance();
 

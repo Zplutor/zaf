@@ -97,7 +97,7 @@ protected:
     void OnDestroyed(const DestroyedInfo& event_info) override;
 
 private:
-    class MenuItemInfo : NonCopyable {
+    class MenuItemInfo : NonCopyableNonMovable {
     public:
         std::shared_ptr<MenuItem> menu_item;
         SubscriptionSet subscriptions;

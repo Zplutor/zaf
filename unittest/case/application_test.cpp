@@ -3,6 +3,11 @@
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 
+static_assert(!std::is_copy_constructible_v<zaf::Application>);
+static_assert(!std::is_copy_assignable_v<zaf::Application>);
+static_assert(!std::is_move_constructible_v<zaf::Application>);
+static_assert(!std::is_move_assignable_v<zaf::Application>);
+
 TEST(ApplicationTest, MainWindowDestroyed) {
 
     //In this test case, check if there is runtime exception on main window destroyed.

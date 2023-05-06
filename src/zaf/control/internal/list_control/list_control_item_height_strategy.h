@@ -6,7 +6,7 @@
 
 namespace zaf::internal {
 
-class ListControlItemHeightStrategy : NonCopyable {
+class ListControlItemHeightStrategy : NonCopyableNonMovable {
 public:
     virtual ~ListControlItemHeightStrategy() = default;
 

@@ -8,7 +8,7 @@ namespace zaf {
 
 class WindowClassRegistry;
 
-class WindowClass : NonCopyable {
+class WindowClass : NonCopyableNonMovable {
 public:
     ~WindowClass();
 

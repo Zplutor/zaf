@@ -8,7 +8,7 @@
 
 namespace zaf::internal {
 
-class InnerSubscriptionSet : NonCopyable {
+class InnerSubscriptionSet : NonCopyableNonMovable {
 public:
     InnerSubscriptionSet() = default;
     ~InnerSubscriptionSet();

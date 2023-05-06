@@ -59,7 +59,7 @@ private:
 };
 
 
-class Canvas : NonCopyable {
+class Canvas : NonCopyableNonMovable {
 public:
     /**
     Constructs a canvas with specified renderer and rects.
