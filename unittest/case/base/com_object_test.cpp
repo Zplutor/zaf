@@ -371,12 +371,12 @@ TEST(COMObjectTest, Reset) {
 }
 
 
-TEST(COMObjectTest, StoreVoid) {
+TEST(COMObjectTest, ResetAsVoid) {
 
     zaf::COMObject<BaseCOMObject> object(new BaseCOMObject());
 
     zaf::COMObject<IUnknown> unknown;
-    HRESULT hresult = object->QueryInterface(IID_IUnknown, unknown.StoreVoid());
+    HRESULT hresult = object->QueryInterface(IID_IUnknown, unknown.ResetAsVoid());
 
     ASSERT_EQ(hresult, S_OK);
     ASSERT_TRUE(unknown.IsValid());

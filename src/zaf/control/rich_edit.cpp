@@ -64,11 +64,11 @@ COMObject<ITextServices2> CreateTextService(ITextHost* text_host) {
     }
 
     COMObject<IUnknown> unknown;
-    HRESULT hresult = create_function(nullptr, text_host, unknown.Store());
+    HRESULT hresult = create_function(nullptr, text_host, unknown.Reset());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     COMObject<ITextServices2> text_service;
-    hresult = unknown->QueryInterface(*iid_text_service2, text_service.StoreVoid());
+    hresult = unknown->QueryInterface(*iid_text_service2, text_service.ResetAsVoid());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     return text_service;
@@ -264,13 +264,13 @@ void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect)
         }
 
         COMObject<ITextRange> text_range;
-        hresult = text_document->Range(object_info.cp, object_info.cp, text_range.Store());
+        hresult = text_document->Range(object_info.cp, object_info.cp, text_range.Reset());
         if (FAILED(hresult)) {
             continue;
         }
 
         COMObject<IUnknown> unknown;
-        hresult = text_range->GetEmbeddedObject(unknown.Store());
+        hresult = text_range->GetEmbeddedObject(unknown.Reset());
         if (FAILED(hresult)) {
             continue;
         }
@@ -1362,7 +1362,7 @@ void RichEdit::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) 
     auto ole_interface = GetOLEInterface();
 
     COMObject<IOleClientSite> client_site;
-    HRESULT hresult = ole_interface->GetClientSite(client_site.Store());
+    HRESULT hresult = ole_interface->GetClientSite(client_site.Reset());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     REOBJECT object_info{};
@@ -1389,7 +1389,7 @@ rich_edit::OLEInterface RichEdit::GetOLEInterface() const {
     HRESULT hresult = text_service_->TxSendMessage(
         EM_GETOLEINTERFACE,
         0,
-        reinterpret_cast<LPARAM>(result.Store()),
+        reinterpret_cast<LPARAM>(result.Reset()),
         nullptr);
 
     ZAF_THROW_IF_COM_ERROR(hresult);

@@ -83,7 +83,7 @@ OLEHelper::TextRangeWithObject OLEHelper::FindTextRangeContainingObjectUnderMous
     HRESULT hresult = text_document->RangeFromPoint(
         mouse_position_in_screen.x,
         mouse_position_in_screen.y,
-        text_range.Store());
+        text_range.Reset());
 
     if (FAILED(hresult)) {
         return {};
@@ -111,7 +111,7 @@ OLEHelper::TextRangeWithObject OLEHelper::FindTextRangeContainingObjectUnderMous
     }
 
     auto revised_position = text_range_position - 1;
-    hresult = text_document->Range(revised_position, revised_position, text_range.Store());
+    hresult = text_document->Range(revised_position, revised_position, text_range.Reset());
     if (FAILED(hresult)) {
         return {};
     }
@@ -132,7 +132,7 @@ COMObject<EmbeddedObject> OLEHelper::GetObjectInTextRange(
     const COMObject<ITextRange>& text_range) {
 
     COMObject<IUnknown> ole_object;
-    HRESULT hresult = text_range->GetEmbeddedObject(ole_object.Store());
+    HRESULT hresult = text_range->GetEmbeddedObject(ole_object.Reset());
     if (FAILED(hresult)) {
         return {};
     }

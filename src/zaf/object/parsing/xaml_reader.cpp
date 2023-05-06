@@ -12,7 +12,7 @@ namespace {
 IXmlReader* CreateHandle(IUnknown* input) {
 
     COMObject<IXmlReader> handle;
-    HRESULT result = CreateXmlReader(__uuidof(IXmlReader), handle.StoreVoid(), nullptr);
+    HRESULT result = CreateXmlReader(__uuidof(IXmlReader), handle.ResetAsVoid(), nullptr);
     ZAF_THROW_IF_COM_ERROR(result);
 
     result = handle->SetInput(input);

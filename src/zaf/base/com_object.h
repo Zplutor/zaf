@@ -94,8 +94,13 @@ public:
         return inner_;
     }
 
-    void Reset() {
+    T** Reset() {
         Reset(nullptr);
+        return &inner_;
+    }
+
+    void** ResetAsVoid() {
+        return reinterpret_cast<void**>(Reset());
     }
 
     void Reset(T* new_inner) {
@@ -118,7 +123,7 @@ public:
     template<typename I>
     COMObject<I> Query() const {
         COMObject<I> result;
-        inner_->QueryInterface(__uuidof(I), result.StoreVoid());
+        inner_->QueryInterface(__uuidof(I), result.ResetAsVoid());
         return result;
     }
 
@@ -129,15 +134,6 @@ public:
             result->AddRef();
         }
         return result;
-    }
-
-    T** Store() {
-        Reset();
-        return &inner_;
-    }
-
-    void** StoreVoid() {
-        return reinterpret_cast<void**>(Store());
     }
 
     T* Inner() const {
