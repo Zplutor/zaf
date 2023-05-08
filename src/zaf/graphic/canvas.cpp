@@ -173,6 +173,11 @@ void Canvas::DrawRectangle(const Rect& rect) {
 }
 
 
+void Canvas::DrawRectangle(const Rect& rect, const Color& color) {
+    DrawRectangle(rect, renderer_.CreateSolidColorBrush(color));
+}
+
+
 void Canvas::DrawRectangle(const Rect& rect, const Brush& brush) {
     renderer_.DrawRectangle(AlignWithRegion(rect), brush);
 }
@@ -209,6 +214,11 @@ void Canvas::DrawRectangleFrame(
 void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect) {
     const auto& state = CurrentState();
     DrawRoundedRectangle(rounded_rect, state.brush);
+}
+
+
+void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect, const Color& color) {
+    DrawRoundedRectangle(rounded_rect, renderer_.CreateSolidColorBrush(color));
 }
 
 
@@ -370,6 +380,16 @@ void Canvas::DrawTextFormat(
     const std::wstring& text,
     const TextFormat& text_format,
     const Rect& rect,
+    const Color& color) {
+
+    DrawTextFormat(text, text_format, rect, renderer_.CreateSolidColorBrush(color));
+}
+
+
+void Canvas::DrawTextFormat(
+    const std::wstring& text,
+    const TextFormat& text_format,
+    const Rect& rect,
     const Brush& brush) {
 
     renderer_.DrawTextFormat(text, text_format, AlignWithRegion(rect), brush);
@@ -379,6 +399,15 @@ void Canvas::DrawTextFormat(
 void Canvas::DrawTextLayout(const TextLayout& text_layout, const Point& position) {
     const auto& state = CurrentState();
     DrawTextLayout(text_layout, position, state.brush);
+}
+
+
+void Canvas::DrawTextLayout(
+    const TextLayout& text_layout, 
+    const Point& position, 
+    const Color& color) {
+
+    DrawTextLayout(text_layout, position, renderer_.CreateSolidColorBrush(color));
 }
 
 

@@ -118,6 +118,7 @@ public:
     void DrawLine(const Point& from_point, const Point& to_point, float stroke_width);
 
     void DrawRectangle(const Rect& rect);
+    void DrawRectangle(const Rect& rect, const Color& color);
     void DrawRectangle(const Rect& rect, const Brush& brush);
 
     void DrawRectangleFrame(const Rect& rect, float stroke_width);
@@ -130,6 +131,7 @@ public:
         const Stroke& stroke);
 
     void DrawRoundedRectangle(const RoundedRect& rounded_rect);
+    void DrawRoundedRectangle(const RoundedRect& rounded_rect, const Color& color);
     void DrawRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush);
 
     void DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width);
@@ -173,12 +175,18 @@ public:
 
     void DrawTextFormat(const std::wstring& text, const TextFormat& text_format, const Rect& rect);
     void DrawTextFormat(
+        const std::wstring& text,
+        const TextFormat& text_format,
+        const Rect& rect,
+        const Color& color);
+    void DrawTextFormat(
         const std::wstring& text, 
         const TextFormat& text_format, 
         const Rect& rect,
         const Brush& brush);
 
     void DrawTextLayout(const TextLayout& text_layout, const Point& position);
+    void DrawTextLayout(const TextLayout& text_layout, const Point& position, const Color& color);
     void DrawTextLayout(const TextLayout& text_layout, const Point& position, const Brush& brush);
 
     void DrawBitmap(
