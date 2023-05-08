@@ -5,29 +5,17 @@ namespace zaf {
 
 TextTrimming TextFormat::GetTextTrimming() const {
 
-    DWRITE_TRIMMING dwrite_trimming = { };
-    IDWriteInlineObject* dwrite_inline_object = nullptr;
-    HRESULT hresult = Inner()->GetTrimming(&dwrite_trimming, &dwrite_inline_object);
+    TextTrimming result;
+    HRESULT hresult = Inner()->GetTrimming(&result.Inner(), result.Sign().Reset());
 
     ZAF_THROW_IF_COM_ERROR(hresult);
-
-    TextTrimming text_trimming;
-    text_trimming.granularity = static_cast<TextTrimming::Granularity>(dwrite_trimming.granularity);
-    text_trimming.delimiter = dwrite_trimming.delimiter;
-    text_trimming.delimiter_count = dwrite_trimming.delimiterCount;
-    text_trimming.trimming_sign = dwrite_inline_object;
-    return text_trimming;
+    return result;
 }
 
 
-void TextFormat::SetTextTrimming(const TextTrimming& text_trimming) {
+void TextFormat::SetTextTrimming(const TextTrimming& trimming) {
 
-    DWRITE_TRIMMING dwrite_trimming = { };
-    dwrite_trimming.granularity = static_cast<DWRITE_TRIMMING_GRANULARITY>(text_trimming.granularity);
-    dwrite_trimming.delimiter = text_trimming.delimiter;
-    dwrite_trimming.delimiterCount = text_trimming.delimiter_count;
-    HRESULT hresult = Inner()->SetTrimming(&dwrite_trimming, text_trimming.trimming_sign.Inner());
-    
+    HRESULT hresult = Inner()->SetTrimming(&trimming.Inner(), trimming.Sign().Inner());
     ZAF_THROW_IF_COM_ERROR(hresult);
 }
 

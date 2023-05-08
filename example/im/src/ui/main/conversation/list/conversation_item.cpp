@@ -106,7 +106,7 @@ void ConversationItem::InitializeTitleLabel() {
     font.family_name = L"Î¢ÈíÑÅºÚ";
     font.size = 14;
     title_label_->SetFont(font);
-    title_label_->SetTextTrimming(zaf::TextTrimming::Granularity::Character);
+    title_label_->SetTextTrimming(zaf::TextTrimmingGranularity::Character);
 
     AddChild(title_label_);
 }
@@ -135,7 +135,7 @@ void ConversationItem::InitializeDigestLabel() {
     font.family_name = L"Î¢ÈíÑÅºÚ";
     font.size = 12;
     digest_label_->SetFont(font);
-    digest_label_->SetTextTrimming(zaf::TextTrimming::Granularity::Character);
+    digest_label_->SetTextTrimming(zaf::TextTrimmingGranularity::Character);
 
     AddChild(digest_label_);
 }

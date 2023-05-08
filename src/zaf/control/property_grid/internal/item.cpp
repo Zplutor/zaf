@@ -99,7 +99,7 @@ std::shared_ptr<Label> Item::CreateLabel() const {
 
     auto result = Create<Label>();
     result->SetParagraphAlignment(ParagraphAlignment::Center);
-    result->SetTextTrimming(TextTrimming::Granularity::Character);
+    result->SetTextTrimming(TextTrimmingGranularity::Character);
 
     result->SetTextColorPicker([this](const Control& control) {
 

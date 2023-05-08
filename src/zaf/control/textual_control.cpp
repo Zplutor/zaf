@@ -30,10 +30,10 @@ static const wchar_t* const kTextTrimmingPropertyName = L"TextTrimming";
 namespace {
 
 void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_format) {
-    if (text_trimming.granularity != TextTrimming::Granularity::None) {
-        if (text_trimming.trimming_sign == nullptr) {
-            text_trimming.trimming_sign = 
-                GraphicFactory::Instance().CreateEllipsisTrimmingSign(text_format);
+    if (text_trimming.Granularity() != TextTrimmingGranularity::None) {
+        if (text_trimming.Sign() == nullptr) {
+            text_trimming.SetSign(
+                GraphicFactory::Instance().CreateEllipsisTrimmingSign(text_format));
         }
     }
 }
@@ -142,7 +142,7 @@ TextFormat TextualControl::CreateTextFormat(const zaf::Font& default_font) const
     text_format.SetParagraphAlignment(ParagraphAlignment());
     text_format.SetWordWrapping(WordWrapping());
 
-    auto text_trimming = GetTextTrimming();
+    auto text_trimming = TextTrimming();
     ReviseTextTrimmingSign(text_trimming, text_format);
     text_format.SetTextTrimming(text_trimming);
 
@@ -457,17 +457,19 @@ void TextualControl::SetWordWrapping(zaf::WordWrapping word_wrapping) {
 }
 
 
-TextTrimming TextualControl::GetTextTrimming() const {
+TextTrimming TextualControl::TextTrimming() const {
 
-    auto text_trimming = GetPropertyMap().TryGetProperty<TextTrimming>(kTextTrimmingPropertyName);
+    auto text_trimming = GetPropertyMap().TryGetProperty<zaf::TextTrimming>(
+        kTextTrimmingPropertyName);
+
     if (text_trimming != nullptr) {
         return *text_trimming;
     }
 
-    return TextTrimming();
+    return zaf::TextTrimming();
 }
 
-void TextualControl::SetTextTrimming(const TextTrimming& text_trimming) {
+void TextualControl::SetTextTrimming(const zaf::TextTrimming& text_trimming) {
 
     GetPropertyMap().SetProperty(kTextTrimmingPropertyName, text_trimming);
 

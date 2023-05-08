@@ -180,12 +180,12 @@ public:
      */
     virtual void SetWordWrapping(zaf::WordWrapping word_wrapping);
 
-    TextTrimming GetTextTrimming() const;
-    void SetTextTrimming(const TextTrimming& text_trimming);
+    zaf::TextTrimming TextTrimming() const;
+    void SetTextTrimming(const zaf::TextTrimming& text_trimming);
 
-    void SetTextTrimming(TextTrimming::Granularity text_trimming_granularity) {
-        TextTrimming text_trimming;
-        text_trimming.granularity = text_trimming_granularity;
+    void SetTextTrimming(TextTrimmingGranularity text_trimming_granularity) {
+        zaf::TextTrimming text_trimming;
+        text_trimming.SetGranularity(text_trimming_granularity);
         SetTextTrimming(text_trimming);
     }
 

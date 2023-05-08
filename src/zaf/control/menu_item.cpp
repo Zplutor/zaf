@@ -33,7 +33,7 @@ void MenuItem::Initialize() {
     SetPadding(Frame{ 8, 8, 8, 8 });
     SetTextAlignment(TextAlignment::Left);
     SetParagraphAlignment(ParagraphAlignment::Center);
-    SetTextTrimming(TextTrimming::Granularity::Word);
+    SetTextTrimming(TextTrimmingGranularity::Word);
 }
 
 

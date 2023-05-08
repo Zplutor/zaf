@@ -10,7 +10,7 @@ void TextValueView::Initialize() {
 
     label_ = Create<Label>();
     label_->SetParagraphAlignment(ParagraphAlignment::Center);
-    label_->SetTextTrimming(zaf::TextTrimming::Granularity::Character);
+    label_->SetTextTrimming(zaf::TextTrimmingGranularity::Character);
 
     this->AddChild(label_);
 }

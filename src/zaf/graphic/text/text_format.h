@@ -71,7 +71,7 @@ public:
     }
 
     TextTrimming GetTextTrimming() const;
-    void SetTextTrimming(const TextTrimming& text_trimming);
+    void SetTextTrimming(const TextTrimming& trimming);
 };
 
 }
