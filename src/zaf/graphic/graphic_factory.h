@@ -107,7 +107,7 @@ public:
      */
     FontCollection GetSystemFontCollection();
 
-    TextInlineObject CreateCreateEllipsisTrimmingSign(const TextFormat& text_format);
+    TextInlineObject CreateEllipsisTrimmingSign(const TextFormat& text_format);
 
     /**
      Get the underlying ID2D1Factory instance.

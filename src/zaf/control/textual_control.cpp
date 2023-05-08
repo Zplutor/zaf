@@ -33,7 +33,7 @@ void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_
     if (text_trimming.granularity != TextTrimming::Granularity::None) {
         if (text_trimming.trimming_sign == nullptr) {
             text_trimming.trimming_sign = 
-                GraphicFactory::Instance().CreateCreateEllipsisTrimmingSign(text_format);
+                GraphicFactory::Instance().CreateEllipsisTrimmingSign(text_format);
         }
     }
 }

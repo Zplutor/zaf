@@ -199,11 +199,13 @@ FontCollection GraphicFactory::GetSystemFontCollection() {
 }
 
 
-TextInlineObject GraphicFactory::CreateCreateEllipsisTrimmingSign(
+TextInlineObject GraphicFactory::CreateEllipsisTrimmingSign(
     const TextFormat& text_format) {
 
     IDWriteInlineObject* handle = nullptr;
-    HRESULT hresult = dwrite_factory_handle_->CreateEllipsisTrimmingSign(text_format.Inner(), &handle);
+    HRESULT hresult = dwrite_factory_handle_->CreateEllipsisTrimmingSign(
+        text_format.Inner(), 
+        &handle);
 
     ZAF_THROW_IF_COM_ERROR(hresult);
     return TextInlineObject(handle);
