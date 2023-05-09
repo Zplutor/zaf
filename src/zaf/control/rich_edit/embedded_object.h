@@ -46,7 +46,10 @@ public:
     virtual void OnMouseCursorChanging(const MouseCursorChangingContext& context);
     virtual void OnMouseDown(const MouseDownContext& context);
     virtual void OnMouseUp(const MouseUpContext& context);
-    virtual void OnDoubleClick(const DoubleClickContext& context);
+
+    //TODO: DoubleClickInfo should be a routed event so that there is IsHandled() to indicate that
+    //the event is handled.
+    virtual bool OnDoubleClick(const DoubleClickContext& context);
 
     //IUnknown interfaces
     HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override;

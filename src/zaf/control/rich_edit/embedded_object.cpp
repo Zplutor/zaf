@@ -17,8 +17,8 @@ void EmbeddedObject::OnMouseUp(const MouseUpContext& context) {
 }
 
 
-void EmbeddedObject::OnDoubleClick(const DoubleClickContext& context) {
-
+bool EmbeddedObject::OnDoubleClick(const DoubleClickContext& context) {
+    return false;
 }
 
 

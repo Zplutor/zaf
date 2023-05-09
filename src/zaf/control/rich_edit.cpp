@@ -125,6 +125,7 @@ void RichEdit::Initialize() {
     __super::Initialize();
 
     SetCanFocused(true);
+    SetCanDoubleClick(true);
     SetBorder(Frame(1));
 
     //Initialize CHARFORMATW and PARAFORMAT.
@@ -970,6 +971,42 @@ void RichEdit::OnMouseUp(const MouseUpInfo& event_info) {
     const auto& message = event_info.Message();
     text_service_->TxSendMessage(message.ID(), message.WParam(), message.LParam(), nullptr);
     event_info.MarkAsHandled();
+}
+
+
+void RichEdit::OnDoubleClick(const DoubleClickInfo& event_info) {
+
+    __super::OnDoubleClick(event_info);
+
+    auto object_info = rich_edit::internal::OLEHelper::FindObjectUnderMouse(*this);
+    if (object_info.object) {
+
+        bool is_handled = object_info.object->OnDoubleClick(rich_edit::DoubleClickContext{
+            object_info.text_position,
+            object_info.is_in_selection_range,
+            object_info.mouse_position_in_object,
+            event_info
+        });
+
+        if (is_handled) {
+            return;
+        }
+    }
+
+    auto window = this->Window();
+    if (!window) {
+        return;
+    }
+
+    POINT mouse_position{};
+    GetCursorPos(&mouse_position);
+    ScreenToClient(window->Handle(), &mouse_position);
+
+    text_service_->TxSendMessage(
+        WM_LBUTTONDBLCLK,
+        0,
+        MAKELPARAM(static_cast<WORD>(mouse_position.x), static_cast<WORD>(mouse_position.y)),
+        nullptr);
 }
 
 

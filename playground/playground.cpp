@@ -93,6 +93,11 @@ public:
         SetCursor(LoadCursor(nullptr, IDC_HAND));
         context.EventInfo().MarkAsHandled();
     }
+
+    bool OnDoubleClick(const zaf::rich_edit::DoubleClickContext& context) override {
+        MessageBox(nullptr, L"Double click!", L"", MB_OK);
+        return true;
+    }
 };
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);

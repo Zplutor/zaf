@@ -326,6 +326,7 @@ protected:
     void OnMouseMove(const MouseMoveInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseUp(const MouseUpInfo& event_info) override;
+    void OnDoubleClick(const DoubleClickInfo& event_info) override;
 
     void OnKeyDown(const KeyDownInfo& event_info) override;
     void OnKeyUp(const KeyUpInfo& event_info) override;
