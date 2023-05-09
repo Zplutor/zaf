@@ -9,12 +9,17 @@
 namespace zaf {
 
 class Canvas;
+class RichEdit;
 
 namespace rich_edit {
 
 class EmbeddedObject : public IOleObject, NonCopyableNonMovable {
 public:
     virtual ~EmbeddedObject() = default;
+
+    std::shared_ptr<RichEdit> Host() const {
+        return host_.lock();
+    }
 
     const zaf::Size& Size() const {
         return size_;
@@ -86,8 +91,16 @@ public:
     HRESULT SetColorScheme(LOGPALETTE* pLogpal) override;
 
 private:
+    friend class RichEdit;
+
+    void SetHost(const std::weak_ptr<RichEdit>& host) {
+        host_ = host;
+    }
+
+private:
     LONG reference_count_{ 1 };
     zaf::Size size_;
+    std::weak_ptr<RichEdit> host_;
 };
 
 }

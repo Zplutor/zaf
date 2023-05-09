@@ -29,15 +29,17 @@ private:
 };
 
 
-class ObjectMouseContext : ObjectContext {
+class ObjectMouseContext : public ObjectContext {
 public:
     ObjectMouseContext(
         std::size_t position,
         bool is_in_selection_range,
-        const Point& mouse_position)
+        const Point& mouse_position,
+        const Point& object_position)
         :
         ObjectContext(position, is_in_selection_range),
-        mouse_position_(mouse_position) {
+        mouse_position_(mouse_position),
+        object_position_(object_position) {
 
     }
 
@@ -45,21 +47,27 @@ public:
         return mouse_position_;
     }
 
+    const Point& ObjectPositionInScreen() const {
+        return object_position_;
+    }
+
 private:
     Point mouse_position_;
+    Point object_position_;
 };
 
 
 template<typename E>
-class ObjectMouseEventContext : ObjectMouseContext {
+class ObjectMouseEventContext : public ObjectMouseContext {
 public:
     ObjectMouseEventContext(
         std::size_t position,
         bool is_in_selection_range,
         const Point& mouse_position,
+        const Point& object_position,
         const E& event_info)
         :
-        ObjectMouseContext(position, is_in_selection_range, mouse_position),
+        ObjectMouseContext(position, is_in_selection_range, mouse_position, object_position),
         event_info_(event_info) {
 
     }

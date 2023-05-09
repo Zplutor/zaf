@@ -16,6 +16,7 @@ public:
         std::size_t text_position{};
         bool is_in_selection_range{};
         Point mouse_position_in_object;
+        Point object_position_in_screen;
     };
 
     static ObjectInfo FindObjectUnderMouse(const RichEdit& rich_edit);

@@ -66,6 +66,11 @@ OLEHelper::ObjectInfo OLEHelper::FindObjectUnderMouse(const RichEdit& rich_edit)
     result.mouse_position_in_object = ToDIPs(
         Point::FromPOINT(mouse_position_in_object), 
         rich_edit.GetDPI());
+
+    result.object_position_in_screen = ToDIPs(
+        Point{ static_cast<float>(object_x), static_cast<float>(object_y) },
+        rich_edit.GetDPI());
+
     return result;
 }
 

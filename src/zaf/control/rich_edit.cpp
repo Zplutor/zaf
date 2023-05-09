@@ -875,6 +875,7 @@ void RichEdit::HandleMouseCursorChanging(const MouseCursorChangingInfo& event_in
             object_info.text_position,
             object_info.is_in_selection_range,
             object_info.mouse_position_in_object,
+            object_info.object_position_in_screen,
             event_info
         });
 
@@ -932,6 +933,7 @@ void RichEdit::OnMouseDown(const MouseDownInfo& event_info) {
             object_info.text_position,
             object_info.is_in_selection_range,
             object_info.mouse_position_in_object,
+            object_info.object_position_in_screen,
             event_info
         });
 
@@ -960,6 +962,7 @@ void RichEdit::OnMouseUp(const MouseUpInfo& event_info) {
             object_info.text_position,
             object_info.is_in_selection_range,
             object_info.mouse_position_in_object,
+            object_info.object_position_in_screen,
             event_info
         });
 
@@ -985,6 +988,7 @@ void RichEdit::OnDoubleClick(const DoubleClickInfo& event_info) {
             object_info.text_position,
             object_info.is_in_selection_range,
             object_info.mouse_position_in_object,
+            object_info.object_position_in_screen,
             event_info
         });
 
@@ -1417,6 +1421,8 @@ void RichEdit::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) 
 
     hresult = ole_interface->InsertObject(&object_info);
     ZAF_THROW_IF_COM_ERROR(hresult);
+
+    object->SetHost(As<RichEdit>(shared_from_this()));
 }
 
 

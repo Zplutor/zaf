@@ -69,7 +69,8 @@ HRESULT EmbeddedObject::SetHostNames(LPCOLESTR szContainerApp, LPCOLESTR szConta
 
 
 HRESULT EmbeddedObject::Close(DWORD dwSaveOption) {
-    return E_NOTIMPL;
+    host_.reset();
+    return S_OK;
 }
 
 
