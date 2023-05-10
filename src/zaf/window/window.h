@@ -10,6 +10,7 @@
 #include <zaf/rx/subscription_host.h>
 #include <zaf/serialization/property_map.h>
 #include <zaf/window/activate_option.h>
+#include <zaf/window/event/activate_event_info.h>
 #include <zaf/window/event/closing_info.h>
 #include <zaf/window/event/destroyed_info.h>
 #include <zaf/window/event/handle_created_info.h>
@@ -462,15 +463,27 @@ public:
 
     /**
     Window show event. This event is raised when the window receives WM_SHOWWINDOW message, whose
-    WPARAM is TRUE.
+    wParam is TRUE.
     */
     Observable<ShowInfo> ShowEvent();
 
     /**
     Window hide event. This event is raised when the window receives WM_SHOWWINDOW message, whose
-    WPARAM is FALSE.
+    wParam is FALSE.
     */
     Observable<HideInfo> HideEvent();
+
+    /**
+    Window activated event. This event is raised when the window receives WM_ACTIVATE message, 
+    whose wParam is WA_ACTIVE or WA_CLICKACTIVE.
+    */
+    Observable<ActivatedInfo> ActivatedEvent();
+
+    /**
+    Window deactivated event. This event is raised when the window receives WM_ACTIVATE message,
+    whose wParam is WA_INACTIVE.
+    */
+    Observable<DeactivatedInfo> DeactivatedEvent();
 
     /**
     Window gained focus event. This event is raised when the window receives WM_SETFOCUS message.
@@ -609,7 +622,7 @@ protected:
 
     /**
     Handles window show event. This method is called when the window receives WM_SHOWWINDOW 
-    message, whose WPARAM is TRUE.
+    message, whose wParam is TRUE.
 
     @param event_info
         Information of the event.
@@ -621,7 +634,7 @@ protected:
 
     /**
     Handles window hide event. This method is called when the window receives WM_SHOWWINDOW 
-    message, whose WPARAM is FALSE.
+    message, whose wParam is FALSE.
 
     @param event_info
         Information of the event.
@@ -630,6 +643,30 @@ protected:
     base class.
     */
     virtual void OnHide(const HideInfo& event_info);
+
+    /**
+    Handles window activated event. This event is raised when the window receives WM_ACTIVATE
+    message, whose wParam is WA_ACTIVE or WA_CLICKACTIVE.
+
+    @param event_info
+        Information of the event.
+
+    The default implementation raises WindowActivatedEvent. Derived class should call the same 
+    method of base class.
+    */
+    virtual void OnActivated(const ActivatedInfo& event_info);
+
+    /**
+    Handles window deactivated event. This event is raised when the window receives WM_ACTIVATE
+    message, whose wParam is WA_INACTIVE.
+
+    @param event_info
+        Information of the event.
+
+    The default implementation raises WindowDeactivatedEvent. Derived class should call the same
+    method of base class.
+    */
+    virtual void OnDeactivated(const DeactivatedInfo& event_info);
 
     /**
     Handles window focus gained event. This method is called when the window receives WM_SETFOCUS
@@ -778,6 +815,7 @@ private:
     void PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect);
     void Resize(UINT width, UINT height);
     void HandleWMSHOWWINDOW(const ShowWindowMessage& message);
+    void HandleWMACTIVATE(const ActivateMessage& message);
     void HandleWMSETFOCUS(const SetFocusMessage& message);
     void HandleWMKILLFOCUS(const KillFocusMessage& message);
     void HandleSizeMessage(const Message& message);

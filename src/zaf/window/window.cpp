@@ -51,6 +51,8 @@ constexpr const wchar_t* const ShowEventPropertyName = L"ShowEvent";
 constexpr const wchar_t* const HideEventPropertyName = L"HideEvent";
 constexpr const wchar_t* const FocusGainedEventPropertyName = L"FocusGainedEvent";
 constexpr const wchar_t* const FocusLostEventPropertyName = L"FocusLostEvent";
+constexpr const wchar_t* const ActivatedEventPropertyName = L"ActivatedEvent";
+constexpr const wchar_t* const DeactivatedEventPropertyName = L"DeactivatedEvent";
 
 
 Point TranslateAbsolutePositionToControlPosition(
@@ -611,6 +613,10 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         HandleWMSHOWWINDOW(ShowWindowMessage{ message });
         return 0;
 
+    case WM_ACTIVATE:
+        HandleWMACTIVATE(ActivateMessage{ message });
+        return 0;
+
     case WM_SIZE:
         HandleSizeMessage(message);
         return 0;
@@ -902,6 +908,50 @@ void Window::OnHide(const HideInfo& event_info) {
 
 Observable<HideInfo> Window::HideEvent() {
     return GetEventObservable<HideInfo>(GetPropertyMap(), HideEventPropertyName);
+}
+
+
+void Window::HandleWMACTIVATE(const ActivateMessage& message) {
+
+    internal::ActivateEventInfo event_info{ shared_from_this(), message };
+
+    if (event_info.Message().ActivateState() != ActivateState::Inactive) {
+        OnActivated(event_info);
+    }
+    else {
+        OnDeactivated(event_info);
+    }
+}
+
+
+void Window::OnActivated(const ActivatedInfo& event_info) {
+
+    auto observer = GetEventObserver<ActivatedInfo>(GetPropertyMap(), ActivatedEventPropertyName);
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<ActivatedInfo> Window::ActivatedEvent() {
+    return GetEventObservable<ActivatedInfo>(GetPropertyMap(), ActivatedEventPropertyName);
+}
+
+
+void Window::OnDeactivated(const DeactivatedInfo& event_info) {
+
+    auto observer = GetEventObserver<DeactivatedInfo>(
+        GetPropertyMap(), 
+        DeactivatedEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<DeactivatedInfo> Window::DeactivatedEvent() {
+    return GetEventObservable<DeactivatedInfo>(GetPropertyMap(), DeactivatedEventPropertyName);
 }
 
 
