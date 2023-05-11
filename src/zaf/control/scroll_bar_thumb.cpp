@@ -20,7 +20,27 @@ void ScrollBarThumb::Initialize() {
     __super::Initialize();
 
     SetCanFocused(false);
-    SetPadding(zaf::Frame{ 2, 0, 2, 0 });
+    SetIsHorizontal(false);
+}
+
+
+void ScrollBarThumb::SetIsHorizontal(bool is_horizontal) {
+
+    is_horizontal_ = is_horizontal;
+
+    constexpr float padding_value = 2;
+    zaf::Frame padding;
+    if (is_horizontal_) {
+        padding.top = padding_value;
+        padding.bottom = padding_value;
+    }
+    else {
+        padding.left = padding_value;
+        padding.right = padding_value;
+    }
+
+    SetPadding(padding);
+
 }
 
 

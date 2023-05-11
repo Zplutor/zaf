@@ -93,9 +93,7 @@ protected:
 private:
     friend class ScrollBar;
 
-    void SetIsHorizontal(bool is_horizontal) {
-        is_horizontal_ = is_horizontal;
-    }
+    void SetIsHorizontal(bool is_horizontal);
 
 private:
     bool is_horizontal_{};

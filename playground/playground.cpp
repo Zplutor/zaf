@@ -115,7 +115,7 @@ protected:
         rich_edit_->SetMargin(zaf::Frame{ 10, 10, 10, 10 });
         rich_edit_->SetBorder(zaf::Frame{ 10, 10, 10, 10 });
         rich_edit_->SetFontSize(22);
-        //rich_edit_->SetIsMultiline(true);
+        rich_edit_->SetIsMultiline(true);
         rich_edit_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
         rich_edit_->SetAllowBeep(false);
         Subscriptions() += rich_edit_->TextChangingEvent().Subscribe(
