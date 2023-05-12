@@ -134,8 +134,8 @@ protected:
         container->SetBackgroundColor(zaf::Color::Yellow());
 
         this->RootControl()->AddChild(container);
-
         InitializeOLEObject();
+        InitializeButton();
     }
 
 private:
@@ -144,6 +144,19 @@ private:
         zaf::COMObject<MyOLEObject> object{ new MyOLEObject };
 
         rich_edit_->InsertObject(object);
+    }
+
+    void InitializeButton() {
+
+        auto button = zaf::Create<zaf::Button>();
+        button->SetFixedHeight(30);
+        Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
+        
+            auto text = rich_edit_->Text();
+            text += ' ';
+        }));
+
+        RootControl()->AddChild(button);
     }
 
 private:

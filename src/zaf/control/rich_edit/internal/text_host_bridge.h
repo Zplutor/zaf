@@ -9,6 +9,7 @@ namespace zaf::rich_edit::internal {
 class TextHostBridge : public ITextHost {
 public:
     explicit TextHostBridge(const std::weak_ptr<RichEdit>& rich_edit);
+    ~TextHostBridge();
 
     HRESULT QueryInterface(REFIID riid, void** ppvObject) override;
     ULONG AddRef(void) override { return 0; }

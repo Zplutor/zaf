@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string_view>
 #include <zaf/control/control.h>
 #include <zaf/control/event/text_changed_info.h>
 #include <zaf/graphic/font/font_weight.h>
@@ -17,6 +18,7 @@ namespace zaf {
 class Font;
 class TextFormat;
 class TextLayout;
+class TextSource;
 
 /**
  Represents a textual control.
@@ -41,12 +43,14 @@ public:
     /**
      Get text.
      */
-    virtual std::wstring Text() const;
+    std::wstring Text() const;
 
     /**
      Set text.
      */
-    virtual void SetText(const std::wstring& text);
+    void SetText(const std::wstring& text);
+
+    void SetTextSource(std::unique_ptr<TextSource> text_source);
 
     /**
      Get the default text color.
@@ -197,6 +201,7 @@ public:
     Observable<TextChangedInfo> TextChangedEvent();
 
 protected:
+    void Initialize() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
     void ReleaseRendererResources() override {
@@ -209,12 +214,7 @@ protected:
 
     virtual zaf::Rect GetTextRect();
 
-    TextLayout GetTextLayout() const {
-        if (text_layout_ == nullptr) {
-            text_layout_ = CreateTextLayout();
-        }
-        return text_layout_;
-    }
+    TextLayout GetTextLayout() const;
 
     /**
     Notifies that the text of control is changed.
@@ -234,6 +234,8 @@ protected:
     virtual void OnTextChanged(const TextChangedInfo& event_info);
 
 private:
+    void AfterTextChanged(bool need_send_notification);
+
     TextLayout CreateTextLayout() const;
     TextFormat CreateTextFormat(const zaf::Font& default_font) const;
     void SetRangedFontsToTextLayout(TextLayout& text_layout) const;
@@ -241,6 +243,7 @@ private:
     void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer);
 
 private:
+    std::unique_ptr<TextSource> text_source_;
     mutable TextLayout text_layout_;
 };
 

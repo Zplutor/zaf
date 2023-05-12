@@ -140,9 +140,6 @@ public:
      */
     void SetSelectionRange(const TextRange& range);
 
-    std::wstring Text() const override;
-    void SetText(const std::wstring& text) override;
-
     /**
      Get text validator.
 

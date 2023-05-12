@@ -8,6 +8,7 @@
 #include <zaf/control/caret.h>
 #include <zaf/control/rich_edit/embedded_object.h>
 #include <zaf/control/rich_edit/internal/ole_helper.h>
+#include <zaf/control/rich_edit/internal/rich_edit_text_source.h>
 #include <zaf/control/rich_edit/internal/text_host_bridge.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
@@ -159,6 +160,9 @@ void RichEdit::Initialize() {
     });
 
     InitializeTextService();
+    
+    auto text_source = std::make_unique<rich_edit::internal::RichEditTextSource>(text_service_);
+    SetTextSource(std::move(text_source));
 }
 
 
@@ -497,38 +501,6 @@ void RichEdit::SetSelectionRange(const TextRange& range) {
     char_range.cpMin = static_cast<LONG>(range.index);
     char_range.cpMax = static_cast<LONG>(range.index + range.length);
     text_service_->TxSendMessage(EM_EXSETSEL, 0, reinterpret_cast<LPARAM>(&char_range), nullptr);
-}
-
-
-std::wstring RichEdit::Text() const {
-
-    std::wstring text;
-    if (text_service_ != nullptr) {
-
-        BSTR text_buffer = nullptr;
-        HRESULT result = text_service_->TxGetText(&text_buffer);
-        if (SUCCEEDED(result) && text_buffer != nullptr) {
-
-            text.assign(text_buffer);
-            SysFreeString(text_buffer);
-        }
-    }
-
-    return text;
-}
-
-void RichEdit::SetText(const std::wstring& text) {
-
-    if (text_service_ != nullptr) {
-
-        text_service_->TxSetText(text.c_str());
-
-        ReleaseTextLayout();
-
-        //Sometimes the text service would not require to repaint after
-        //setting text, so do it here.
-        NeedRepaint();
-    }
 }
 
 

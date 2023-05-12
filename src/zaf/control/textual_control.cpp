@@ -1,6 +1,7 @@
 #include <zaf/control/textual_control.h>
 #include <zaf/base/event_utility.h>
 #include <zaf/control/internal/range_map.h>
+#include <zaf/control/text_source.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
@@ -76,6 +77,14 @@ TextualControl::~TextualControl() {
 }
 
 
+void TextualControl::Initialize() {
+
+    __super::Initialize();
+
+    SetTextSource(TextSource::Default());
+}
+
+
 void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
@@ -108,6 +117,14 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     canvas.SetBrushWithColor(TextColor());
     auto clipping_guard = canvas.PushClipping(text_rect);
     canvas.DrawTextLayout(text_layout, text_rect.position);
+}
+
+
+TextLayout TextualControl::GetTextLayout() const {
+    if (!text_layout_) {
+        text_layout_ = CreateTextLayout();
+    }
+    return text_layout_;
 }
 
 
@@ -194,26 +211,49 @@ zaf::Rect TextualControl::GetTextRect() {
 
 std::wstring TextualControl::Text() const {
 
-    auto text = GetPropertyMap().TryGetProperty<std::wstring>(property::Text);
-    if (text != nullptr) {
-        return *text;
+    auto text = text_source_->GetText();
+    auto string_view = std::get_if<std::wstring_view>(&text);
+    if (string_view) {
+        return std::wstring{ *string_view };
     }
-    else {
-        return std::wstring();
+
+    auto string = std::get_if<std::wstring>(&text);
+    if (string) {
+        return *string;
     }
+
+    return {};
 }
+
 
 void TextualControl::SetText(const std::wstring& text) {
 
-    if (text == Text()) {
+    auto result = text_source_->SetText(text);
+    if (!result.IsChanged()) {
         return;
     }
 
-    GetPropertyMap().SetProperty(property::Text, text);
+    AfterTextChanged(!result.IsNotificationSent());
+}
+
+
+void TextualControl::SetTextSource(std::unique_ptr<TextSource> text_source) {
+
+    ZAF_EXPECT(text_source);
+
+    text_source_ = std::move(text_source);
+    AfterTextChanged(true);
+}
+
+
+void TextualControl::AfterTextChanged(bool need_send_notification) {
 
     ReleaseTextLayout();
     NeedRepaint();
-    NotifyTextChanged();
+
+    if (need_send_notification) {
+        NotifyTextChanged();
+    }
 }
 
 

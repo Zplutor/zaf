@@ -14,6 +14,11 @@ TextHostBridge::TextHostBridge(const std::weak_ptr<RichEdit>& rich_edit) : rich_
 }
 
 
+TextHostBridge::~TextHostBridge() {
+
+}
+
+
 HRESULT TextHostBridge::QueryInterface(REFIID riid, void** ppvObject) {
 
     if (ppvObject == nullptr) {
