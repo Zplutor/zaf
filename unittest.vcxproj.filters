@@ -376,6 +376,9 @@
     <ClCompile Include="unittest\case\base\non_copyable_test.cpp">
       <Filter>case\base</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\clipboard_test.cpp">
+      <Filter>case\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
