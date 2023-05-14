@@ -3,7 +3,7 @@
 
 namespace zaf::rich_edit::internal {
 
-RichEditTextSource::RichEditTextSource(const COMObject<ITextServices2>& text_service) : 
+RichEditTextSource::RichEditTextSource(ITextServices2* text_service) : 
     text_service_(text_service)  {
 
     ZAF_EXPECT(text_service_);

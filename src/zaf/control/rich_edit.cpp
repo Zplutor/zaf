@@ -161,7 +161,12 @@ void RichEdit::Initialize() {
 
     InitializeTextService();
     
-    auto text_source = std::make_unique<rich_edit::internal::RichEditTextSource>(text_service_);
+    //TextSource lives longer than TestHostBridge. If we pass ITextService2 as COMObject to
+    //TextSource and increase its reference count, it will live longer than TextHostBridge as well, 
+    //causing dangling pointer accessing on its destruction. So we just pass it as a raw pointer  
+    //and don't increase its reference count to avoid the problem.
+    auto text_source = std::make_unique<rich_edit::internal::RichEditTextSource>(
+        text_service_.Inner());
     SetTextSource(std::move(text_source));
 }
 
