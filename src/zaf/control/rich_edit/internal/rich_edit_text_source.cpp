@@ -10,6 +10,23 @@ RichEditTextSource::RichEditTextSource(ITextServices2* text_service) :
 }
 
 
+std::size_t RichEditTextSource::GetTextLength() {
+
+    GETTEXTLENGTHEX param{};
+    param.flags = GTL_DEFAULT;
+    param.codepage = 1200; //Unicode
+
+    LRESULT length{};
+    text_service_->TxSendMessage(
+        EM_GETTEXTLENGTHEX,
+        reinterpret_cast<WPARAM>(&param),
+        0,
+        &length);
+
+    return length;
+}
+
+
 std::variant<std::wstring_view, std::wstring> RichEditTextSource::GetText() {
 
     std::wstring text;

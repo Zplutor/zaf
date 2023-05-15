@@ -36,9 +36,7 @@ public:
     /**
      Get text length.
      */
-    std::size_t TextLength() const {
-        return Text().length();
-    }
+    std::size_t TextLength() const;
 
     /**
      Get text.

@@ -209,6 +209,11 @@ zaf::Rect TextualControl::GetTextRect() {
 }
 
 
+std::size_t TextualControl::TextLength() const {
+    return text_source_->GetTextLength();
+}
+
+
 std::wstring TextualControl::Text() const {
 
     auto text = text_source_->GetText();

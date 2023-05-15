@@ -39,6 +39,7 @@ public:
     TextSource() = default;
     virtual ~TextSource() = default;
 
+    virtual std::size_t GetTextLength() = 0;
     virtual std::variant<std::wstring_view, std::wstring> GetText() = 0;
     virtual TextSourceChangeResult SetText(const std::wstring& text) = 0;
 };

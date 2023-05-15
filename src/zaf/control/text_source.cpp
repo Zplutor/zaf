@@ -5,6 +5,10 @@ namespace {
 
 class DefaultTextSource : public TextSource {
 public:
+    std::size_t GetTextLength() override {
+        return text_.length();
+    }
+
     std::variant<std::wstring_view, std::wstring> GetText() override {
         return std::wstring_view{ text_ };
     }

@@ -11,6 +11,7 @@ class RichEditTextSource : public TextSource {
 public:
     explicit RichEditTextSource(ITextServices2* text_service);
 
+    std::size_t GetTextLength() override;
     std::variant<std::wstring_view, std::wstring> GetText() override;
     TextSourceChangeResult SetText(const std::wstring& text) override;
 
