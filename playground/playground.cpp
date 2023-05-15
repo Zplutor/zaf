@@ -115,7 +115,7 @@ protected:
         rich_edit_->SetMargin(zaf::Frame{ 10, 10, 10, 10 });
         rich_edit_->SetBorder(zaf::Frame{ 10, 10, 10, 10 });
         rich_edit_->SetFontSize(22);
-        rich_edit_->SetIsMultiline(true);
+        //rich_edit_->SetIsMultiline(true);
         rich_edit_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
         rich_edit_->SetAllowBeep(false);
         Subscriptions() += rich_edit_->TextChangingEvent().Subscribe(
@@ -128,12 +128,8 @@ protected:
             }
         });
 
-        auto container = zaf::Create<zaf::ScrollableControl>();
-        container->SetScrollContent(rich_edit_);
-        container->SetPadding(zaf::Frame{ 10, 10, 10, 10 });
-        container->SetBackgroundColor(zaf::Color::Yellow());
+        RootControl()->AddChild(rich_edit_);
 
-        this->RootControl()->AddChild(container);
         InitializeOLEObject();
         InitializeButton();
     }
@@ -151,9 +147,9 @@ private:
         auto button = zaf::Create<zaf::Button>();
         button->SetFixedHeight(30);
         Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
-        
-            auto text = rich_edit_->Text();
-            text += ' ';
+
+            auto preferred_size = rich_edit_->CalculatePreferredSize(zaf::Size{ 300, 500 });
+            rich_edit_->SetFixedSize(preferred_size);
         }));
 
         RootControl()->AddChild(button);

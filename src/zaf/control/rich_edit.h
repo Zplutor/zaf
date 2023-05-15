@@ -318,6 +318,7 @@ protected:
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     zaf::Rect GetTextRect() override;
     void Layout(const zaf::Rect& previous_rect) override;
+    zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
 
     void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) override;
     void OnMouseMove(const MouseMoveInfo& event_info) override;

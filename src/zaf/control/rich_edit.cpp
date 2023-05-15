@@ -194,6 +194,45 @@ void RichEdit::Layout(const zaf::Rect& previous_rect) {
 }
 
 
+zaf::Size RichEdit::CalculatePreferredContentSize(const zaf::Size& max_size) const {
+
+    auto float_to_long = [](float f) -> LONG {
+        if (f > std::numeric_limits<LONG>::max()) {
+            return std::numeric_limits<LONG>::max();
+        }
+        else {
+            return static_cast<LONG>(f);
+        }
+    };
+
+    auto width = float_to_long(max_size.width);
+
+    // Height must be 0 in order to get accurate height.
+    LONG height = 0; 
+
+    //Use -1,-1 to disable zooming.
+    SIZE extend{ -1, -1 };
+
+    HRESULT hresult = text_service_->TxGetNaturalSize(
+        DVASPECT_CONTENT,
+        nullptr,
+        nullptr,
+        nullptr,
+        TXTNS_FITTOCONTENT,
+        &extend,
+        &width,
+        &height);
+
+    if (FAILED(hresult)) {
+        return {};
+    }
+
+    zaf::Size result{ static_cast<float>(width), static_cast<float>(height) };
+    result = ToDIPs(result, this->GetDPI());
+    return result;
+}
+
+
 void RichEdit::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
@@ -344,25 +383,12 @@ float RichEdit::GetContentVerticalOffset() {
 
     if (!cached_text_height_) {
 
-        LONG width = std::numeric_limits<LONG>::max();
-        LONG height = 0;
-        SIZEL extent_size = { -1, -1 };
+        auto preferred_size = CalculatePreferredContentSize(zaf::Size{ 
+            std::numeric_limits<float>::max(),
+            std::numeric_limits<float>::max()
+        });
 
-        HRESULT result = text_service_->TxGetNaturalSize(
-            DVASPECT_CONTENT,
-            nullptr,
-            nullptr,
-            nullptr,
-            TXTNS_FITTOCONTENT,
-            &extent_size,
-            &width,
-            &height);
-
-        if (FAILED(result)) {
-            return 0;
-        }
-
-        cached_text_height_ = ToDIPs(static_cast<float>(height), this->GetDPI());
+        cached_text_height_ = preferred_size.height;
     }
 
     if (paragraph_alignment == ParagraphAlignment::Center) {
