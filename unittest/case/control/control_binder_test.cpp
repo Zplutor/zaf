@@ -108,3 +108,20 @@ TEST(ControlBinderTest, NotFound) {
         static_cast<std::shared_ptr<zaf::Label>>(binder), 
         zaf::BasicErrc::NameNotFound);
 }
+
+
+TEST(ControlBinderTest, OperatorStar) {
+
+    {
+        auto control = zaf::Create<TestControl>();
+        zaf::Label& label = *control->label;
+        label.SetText(L"settext");
+        ASSERT_EQ(label.Text(), control->GetText());
+    }
+
+    {
+        std::shared_ptr<const TestControl> control = zaf::Create<TestControl>();
+        const zaf::Label& label = *control->label;
+        ASSERT_EQ(label.Text(), control->GetText());
+    }
+}

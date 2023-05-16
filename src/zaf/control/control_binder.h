@@ -44,6 +44,15 @@ public:
         return mutable_this->operator->();
     }
 
+    T& operator*() {
+        return *GetBoundControl();
+    }
+
+    const T& operator*() const {
+        auto mutable_this = const_cast<ControlBinder<T>*>(this);
+        return mutable_this->operator*();
+    }
+
     operator std::shared_ptr<T>() {
         return GetBoundControl();
     }
