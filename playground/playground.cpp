@@ -180,8 +180,14 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
     auto window = zaf::Create<Window>();
     window->SetIsSizable(true);
     window->SetHasTitleBar(true);
-    window->SetContentSize(zaf::Size{ 600, 400 });
+    window->SetContentSize(zaf::Size{ 200, 100 });
+
+    ZAF_LOG() << "SizeBefore: " << window->Size().ToString();
+
     window->Show();
+
+    window->SetContentSize(zaf::Size{ 200, 100 });
+    ZAF_LOG() << "SizeAfter: " << window->Size().ToString();
 
     zaf::Application::Instance().SetMainWindow(window);
 }

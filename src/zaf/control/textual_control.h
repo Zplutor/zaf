@@ -199,7 +199,6 @@ public:
     Observable<TextChangedInfo> TextChangedEvent();
 
 protected:
-    void Initialize() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
     void ReleaseRendererResources() override {

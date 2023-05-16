@@ -67,21 +67,15 @@ ZAF_DEFINE_TYPE_PROPERTY(WordWrapping)
 ZAF_DEFINE_TYPE_END
 
 
-TextualControl::TextualControl() {
+//Note: cannot use SetTextSource() to set initial text source because text changed event will be 
+//raised.
+TextualControl::TextualControl() : text_source_(TextSource::Default()) {
     
 }
 
 
 TextualControl::~TextualControl() {
 
-}
-
-
-void TextualControl::Initialize() {
-
-    __super::Initialize();
-
-    SetTextSource(TextSource::Default());
 }
 
 
