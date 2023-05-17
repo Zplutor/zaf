@@ -112,54 +112,42 @@ protected:
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
         rich_edit_ = zaf::Create<zaf::RichEdit>();
-        rich_edit_->SetMargin(zaf::Frame{ 10, 10, 10, 10 });
-        rich_edit_->SetBorder(zaf::Frame{ 10, 10, 10, 10 });
         rich_edit_->SetFontSize(22);
+        rich_edit_->SetBorder(zaf::Frame{});
         rich_edit_->SetIsMultiline(true);
-        rich_edit_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
         rich_edit_->SetAllowBeep(false);
-        Subscriptions() += rich_edit_->TextChangingEvent().Subscribe(
-            [this](const zaf::TextChangingInfo& event_info) {
-        
-            if (event_info.Reason() == zaf::TextChangeReason::Paste) {
-                zaf::COMObject<MyOLEObject> object{ new MyOLEObject };
-                rich_edit_->InsertObject(object);
-                event_info.SetCanChange(false);
-            }
-        });
 
         auto scrollable = zaf::Create<zaf::ScrollableControl>();
+        scrollable->SetBorder(zaf::Frame{});
         scrollable->SetScrollContent(rich_edit_);
+        scrollable->SetAutoHideScrollBars(true);
 
         RootControl()->AddChild(scrollable);
 
-        InitializeOLEObject();
         InitializeButton();
     }
 
 private:
-    void InitializeOLEObject() {
-
-        zaf::COMObject<MyOLEObject> object{ new MyOLEObject };
-
-        rich_edit_->InsertObject(object);
-    }
-
     void InitializeButton() {
 
-        auto button = zaf::Create<zaf::Button>();
-        button->SetFixedHeight(30);
-        Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
+        button_ = zaf::Create<zaf::Button>();
+        button_->SetFixedHeight(30);
+        Subscriptions() += button_->ClickEvent().Subscribe(std::bind([this]() {
 
             auto preferred_size = rich_edit_->CalculatePreferredSize();
-            ZAF_LOG() << preferred_size.ToString();
+
+            ZAF_LOG() << "RichEdit preferred size: " << preferred_size.ToString();
+
+            preferred_size.height += button_->Height();
+            this->SetContentSize(preferred_size);
         }));
 
-        RootControl()->AddChild(button);
+        RootControl()->AddChild(button_);
     }
 
 private:
     std::shared_ptr<zaf::RichEdit> rich_edit_;
+    std::shared_ptr<zaf::Button> button_;
 };
 
 

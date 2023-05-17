@@ -474,13 +474,8 @@ void Control::OnChildRectChanged(
 
 void Control::Layout(const zaf::Rect& previous_rect) {
 
-    //Avoid auto resize when layouting children.
-    auto update_guard = BeginUpdate();
-
     auto layouter = Layouter();
     if (layouter) {
-
-        auto layout_guard = is_layouting_.BeginSet(true);
         layouter->Layout(*this, previous_rect, Children());
     }
 }
@@ -497,6 +492,11 @@ void Control::NeedRelayout(const zaf::Rect& previous_rect) {
         update_state_->need_relayout = true;
     }
     else {
+
+        //Avoid auto resize when layouting children.
+        auto update_guard = BeginUpdate();
+
+        auto layout_guard = is_layouting_.BeginSet(true);
         Layout(previous_rect);
     }
 }
