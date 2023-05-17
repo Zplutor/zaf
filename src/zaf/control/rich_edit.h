@@ -104,6 +104,8 @@ public:
      */
     void SetIsMultiline(bool is_multiline);
 
+    std::size_t LineCount() const;
+
     /**
      Get a value indicating that whether the rich edit is read only.
 

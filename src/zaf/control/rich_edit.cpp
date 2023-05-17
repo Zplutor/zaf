@@ -496,6 +496,15 @@ void RichEdit::SetIsMultiline(bool is_multiline) {
 }
 
 
+std::size_t RichEdit::LineCount() const {
+
+    //Line count is never less than 1.
+    LRESULT result{ 1 };
+    text_service_->TxSendMessage(EM_GETLINECOUNT, 0, 0, &result);
+    return static_cast<std::size_t>(result);
+}
+
+
 bool RichEdit::IsReadOnly() const {
     return HasPropertyBit(TXTBIT_READONLY);
 }
