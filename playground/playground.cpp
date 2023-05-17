@@ -115,7 +115,7 @@ protected:
         rich_edit_->SetMargin(zaf::Frame{ 10, 10, 10, 10 });
         rich_edit_->SetBorder(zaf::Frame{ 10, 10, 10, 10 });
         rich_edit_->SetFontSize(22);
-        //rich_edit_->SetIsMultiline(true);
+        rich_edit_->SetIsMultiline(true);
         rich_edit_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
         rich_edit_->SetAllowBeep(false);
         Subscriptions() += rich_edit_->TextChangingEvent().Subscribe(
@@ -128,7 +128,10 @@ protected:
             }
         });
 
-        RootControl()->AddChild(rich_edit_);
+        auto scrollable = zaf::Create<zaf::ScrollableControl>();
+        scrollable->SetScrollContent(rich_edit_);
+
+        RootControl()->AddChild(scrollable);
 
         InitializeOLEObject();
         InitializeButton();
@@ -148,8 +151,8 @@ private:
         button->SetFixedHeight(30);
         Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
 
-            auto preferred_size = rich_edit_->CalculatePreferredSize(zaf::Size{ 300, 500 });
-            rich_edit_->SetFixedSize(preferred_size);
+            auto preferred_size = rich_edit_->CalculatePreferredSize();
+            ZAF_LOG() << preferred_size.ToString();
         }));
 
         RootControl()->AddChild(button);
@@ -180,14 +183,8 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
     auto window = zaf::Create<Window>();
     window->SetIsSizable(true);
     window->SetHasTitleBar(true);
-    window->SetContentSize(zaf::Size{ 200, 100 });
-
-    ZAF_LOG() << "SizeBefore: " << window->Size().ToString();
 
     window->Show();
-
-    window->SetContentSize(zaf::Size{ 200, 100 });
-    ZAF_LOG() << "SizeAfter: " << window->Size().ToString();
 
     zaf::Application::Instance().SetMainWindow(window);
 }

@@ -218,7 +218,7 @@ zaf::Size RichEdit::CalculatePreferredContentSize(const zaf::Size& max_size) con
         nullptr,
         nullptr,
         nullptr,
-        TXTNS_FITTOCONTENT,
+        TXTNS_FITTOCONTENT3 | TXTNS_INCLUDELASTLINE,
         &extend,
         &width,
         &height);
