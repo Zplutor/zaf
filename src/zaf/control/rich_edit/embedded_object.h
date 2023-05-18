@@ -56,6 +56,8 @@ public:
     //the event is handled.
     virtual bool OnDoubleClick(const DoubleClickContext& context);
 
+    void NeedRepaint();
+
     //IUnknown interfaces
     HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override;
     ULONG AddRef() override;

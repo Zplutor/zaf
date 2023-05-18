@@ -1,4 +1,5 @@
 #include <zaf/control/rich_edit/embedded_object.h>
+#include <zaf/control/rich_edit.h>
 
 namespace zaf::rich_edit {
 
@@ -19,6 +20,15 @@ void EmbeddedObject::OnMouseUp(const MouseUpContext& context) {
 
 bool EmbeddedObject::OnDoubleClick(const DoubleClickContext& context) {
     return false;
+}
+
+
+void EmbeddedObject::NeedRepaint() {
+
+    auto host = Host();
+    if (host) {
+        host->NeedRepaint();
+    }
 }
 
 
