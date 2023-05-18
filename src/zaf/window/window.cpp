@@ -53,6 +53,7 @@ constexpr const wchar_t* const FocusGainedEventPropertyName = L"FocusGainedEvent
 constexpr const wchar_t* const FocusLostEventPropertyName = L"FocusLostEvent";
 constexpr const wchar_t* const ActivatedEventPropertyName = L"ActivatedEvent";
 constexpr const wchar_t* const DeactivatedEventPropertyName = L"DeactivatedEvent";
+constexpr const wchar_t* const SizeChangedEventPropertyName = L"SizeChangedEvent";
 
 
 Point TranslateAbsolutePositionToControlPosition(
@@ -618,7 +619,7 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_SIZE:
-        HandleSizeMessage(message);
+        HandleWMSIZEMessage(message);
         return 0;
 
     case WM_MOVE:
@@ -1013,7 +1014,7 @@ Observable<WindowFocusLostInfo> Window::FocusLostEvent() {
 }
 
 
-void Window::HandleSizeMessage(const Message& message) {
+void Window::HandleWMSIZEMessage(const Message& message) {
 
     //Don't handle size message during window creation procedure,
     //because the object state is inconsistent until creation completed.
@@ -1034,6 +1035,26 @@ void Window::HandleSizeMessage(const Message& message) {
     root_control_->SetRect(root_control_rect);
 
     UpdateWindowRect();
+    OnSizeChanged(WindowSizeChangedInfo{ shared_from_this() });
+}
+
+
+void Window::OnSizeChanged(const WindowSizeChangedInfo& event_info) {
+
+    auto observer = GetEventObserver<WindowSizeChangedInfo>(
+        GetPropertyMap(),
+        SizeChangedEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() {
+    return GetEventObservable<WindowSizeChangedInfo>(
+        GetPropertyMap(), 
+        SizeChangedEventPropertyName);
 }
 
 

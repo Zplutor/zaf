@@ -934,6 +934,9 @@
     <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.cpp">
       <Filter>zaf\control\rich_edit\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\event\window_size_changed_info.cpp">
+      <Filter>zaf\window\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2157,6 +2160,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.h">
       <Filter>zaf\control\rich_edit\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\event\window_size_changed_info.h">
+      <Filter>zaf\window\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

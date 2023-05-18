@@ -20,6 +20,7 @@
 #include <zaf/window/event/root_control_changed_info.h>
 #include <zaf/window/event/show_window_event_info.h>
 #include <zaf/window/event/window_focus_event_info.h>
+#include <zaf/window/event/window_size_changed_info.h>
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
 
@@ -258,6 +259,8 @@ public:
      Set window's maximum height.
      */
     void SetMaxHeight(float max_height);
+
+    Observable<WindowSizeChangedInfo> SizeChangedEvent();
 
     /**
      Get window's activate option.
@@ -645,6 +648,18 @@ protected:
     virtual void OnHide(const HideInfo& event_info);
 
     /**
+    Handles window size changed event. This method is called when the window receives WM_SIZE
+    message.
+
+    @param event_info
+        Information of the event.
+
+    The default implementation raises SizeChangedEvent. Derived classes should call the same method
+    of base class.
+    */
+    virtual void OnSizeChanged(const WindowSizeChangedInfo& event_info);
+
+    /**
     Handles window activated event. This event is raised when the window receives WM_ACTIVATE
     message, whose wParam is WA_ACTIVE or WA_CLICKACTIVE.
 
@@ -818,7 +833,7 @@ private:
     void HandleWMACTIVATE(const ActivateMessage& message);
     void HandleWMSETFOCUS(const SetFocusMessage& message);
     void HandleWMKILLFOCUS(const KillFocusMessage& message);
-    void HandleSizeMessage(const Message& message);
+    void HandleWMSIZEMessage(const Message& message);
     void HandleMoveMessage();
     void UpdateWindowRect();
     bool RedirectMouseWheelMessage(const Message& message);
