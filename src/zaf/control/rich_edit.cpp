@@ -544,6 +544,16 @@ void RichEdit::SetSelectionRange(const TextRange& range) {
 }
 
 
+void RichEdit::ReplaceSelectedText(const std::wstring& text) {
+
+    text_service_->TxSendMessage(
+        EM_REPLACESEL,
+        FALSE,
+        reinterpret_cast<LPARAM>(text.c_str()),
+        nullptr);
+}
+
+
 TextValidator RichEdit::GetTextValidator() const {
 
     auto validator = GetPropertyMap().TryGetProperty<TextValidator>(kTextValidatorPropertyName);

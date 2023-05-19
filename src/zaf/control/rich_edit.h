@@ -142,6 +142,8 @@ public:
      */
     void SetSelectionRange(const TextRange& range);
 
+    void ReplaceSelectedText(const std::wstring& text);
+
     /**
      Get text validator.
 
