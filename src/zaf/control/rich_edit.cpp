@@ -371,14 +371,16 @@ void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect)
 
 float RichEdit::GetContentVerticalOffset() {
 
-    //Due to some problems, multi-line rich edit doesn't support ParagraphAlignment for now.
-    if (IsMultiline()) {
-        return 0;
-    }
-
     auto paragraph_alignment = ParagraphAlignment();
     if (paragraph_alignment == ParagraphAlignment::Near) {
         return 0;
+    }
+
+    if (IsMultiline()) {
+        //For multi-line rich edit, don't use offset if there is vertical scroll bar.
+        if (this->CanEnableVerticalScrollBar()) {
+            return 0;
+        }
     }
 
     if (!cached_text_height_) {

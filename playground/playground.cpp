@@ -116,6 +116,7 @@ protected:
         rich_edit_->SetBorder(zaf::Frame{});
         rich_edit_->SetIsMultiline(true);
         rich_edit_->SetAllowBeep(false);
+        rich_edit_->SetParagraphAlignment(zaf::ParagraphAlignment::Far);
 
         auto scrollable = zaf::Create<zaf::ScrollableControl>();
         scrollable->SetBorder(zaf::Frame{});
