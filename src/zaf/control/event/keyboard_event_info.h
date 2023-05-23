@@ -48,4 +48,8 @@ using KeyDownInfo = internal::KeyboardEventInfo<KeyMessage>;
 using KeyUpInfo = internal::KeyboardEventInfo<KeyMessage>;
 using CharInputInfo = internal::KeyboardEventInfo<CharMessage>;
 
+using SysKeyDownInfo = internal::KeyboardEventInfo<KeyMessage>;
+using SysKeyUpInfo = internal::KeyboardEventInfo<KeyMessage>;
+using SysCharInputInfo = internal::KeyboardEventInfo<CharMessage>;
+
 }

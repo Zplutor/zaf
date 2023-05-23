@@ -712,19 +712,19 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_KEYDOWN: 
-        if (OnKeyDown(message)) {
+        if (HandleWMKEYDOWN(message)) {
             return 0;
         }
         return std::nullopt;
 
     case WM_KEYUP:
-        if (OnKeyUp(message)) {
+        if (HandleWMKEYUP(message)) {
             return 0;
         }
         return std::nullopt;
 
     case WM_CHAR:
-        if (OnCharInput(message)) {
+        if (HandleWMCHAR(message)) {
             return 0;
         }
         return std::nullopt;
@@ -1394,17 +1394,17 @@ bool Window::HandleWMSETCURSOR(const Message& message) {
 }
 
 
-bool Window::OnKeyDown(const Message& message) {
+bool Window::HandleWMKEYDOWN(const Message& message) {
     return RouteKeyboardEventGeneric<KeyDownInfo>(focused_control_, message, &Control::OnKeyDown);
 }
 
 
-bool Window::OnKeyUp(const Message& message) {
+bool Window::HandleWMKEYUP(const Message& message) {
     return RouteKeyboardEventGeneric<KeyUpInfo>(focused_control_, message, &Control::OnKeyUp);
 }
 
 
-bool Window::OnCharInput(const Message& message) {
+bool Window::HandleWMCHAR(const Message& message) {
     return RouteKeyboardEventGeneric<CharInputInfo>(
         focused_control_, 
         message,

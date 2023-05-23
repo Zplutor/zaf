@@ -851,9 +851,9 @@ private:
     void TrackMouse(bool is_non_client);
     void OnMouseHover(const Message& message);
     void OnMouseLeave(const Message& message);
-    bool OnKeyDown(const Message& message);
-    bool OnKeyUp(const Message& message);
-    bool OnCharInput(const Message& message);
+    bool HandleWMKEYDOWN(const Message& message);
+    bool HandleWMKEYUP(const Message& message);
+    bool HandleWMCHAR(const Message& message);
     void TryToShowTooltipWindow();
     void HideTooltipWindow();
     bool HandleWMSETCURSOR(const Message& message);
