@@ -686,6 +686,10 @@ public:
     Observable<KeyUpInfo> KeyUpEvent();
     Observable<CharInputInfo> CharInputEvent();
 
+    Observable<SysKeyDownInfo> SysKeyDownEvent();
+    Observable<SysKeyUpInfo> SysKeyUpEvent();
+    Observable<SysCharInputInfo> SysCharInputEvent();
+
     Observable<ParentChangedInfo> ParentChangedEvent();
 
 protected:
@@ -800,6 +804,10 @@ protected:
     virtual void OnKeyDown(const KeyDownInfo& event_info);
     virtual void OnKeyUp(const KeyUpInfo& event_info);
     virtual void OnCharInput(const CharInputInfo& event_info);
+
+    virtual void OnSysKeyDown(const SysKeyDownInfo& event_info);
+    virtual void OnSysKeyUp(const SysKeyUpInfo& event_info);
+    virtual void OnSysCharInput(const SysCharInputInfo& event_info);
 
     virtual void OnFocusGained(const FocusGainedInfo& event_info);
     virtual void OnFocusLost(const FocusLostInfo& event_info);

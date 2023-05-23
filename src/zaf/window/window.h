@@ -854,6 +854,9 @@ private:
     bool HandleWMKEYDOWN(const Message& message);
     bool HandleWMKEYUP(const Message& message);
     bool HandleWMCHAR(const Message& message);
+    bool HandleWMSYSKEYDOWN(const Message& message);
+    bool HandleWMSYSKEYUP(const Message& message);
+    bool HandleWMSYSCHAR(const Message& message);
     void TryToShowTooltipWindow();
     void HideTooltipWindow();
     bool HandleWMSETCURSOR(const Message& message);

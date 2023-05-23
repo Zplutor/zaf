@@ -84,6 +84,9 @@ constexpr const wchar_t* const MouseReleasedEventPropertyName = L"MouseReleased"
 constexpr const wchar_t* const MouseUpEventPropertyName = L"MouseUp";
 constexpr const wchar_t* const ParentChangedEventPropertyName = L"ParentChangedEvent";
 constexpr const wchar_t* const TooltipPropertyName = L"Tooltip";
+constexpr const wchar_t* const SysKeyDownEventPropertyName = L"SysKeyDownEvent";
+constexpr const wchar_t* const SysKeyUpEventPropertyName = L"SysKeyUpEvent";
+constexpr const wchar_t* const SysCharInputEventPropertyName = L"SysCharInputEvent";
 
 constexpr bool DefaultCanFocused = false;
 constexpr bool DefaultIsEnabled = true;
@@ -1978,6 +1981,57 @@ void Control::OnCharInput(const CharInputInfo& event_info) {
 
 Observable<CharInputInfo> Control::CharInputEvent() {
     return GetEventObservable<CharInputInfo>(GetPropertyMap(), CharInputEventPropertyName);
+}
+
+
+void Control::OnSysKeyDown(const SysKeyDownInfo& event_info) {
+
+    auto observer = GetEventObserver<SysKeyDownInfo>(
+        GetPropertyMap(),
+        SysKeyDownEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<SysKeyDownInfo> Control::SysKeyDownEvent() {
+    return GetEventObservable<SysKeyDownInfo>(GetPropertyMap(), SysKeyDownEventPropertyName);
+}
+
+
+void Control::OnSysKeyUp(const SysKeyUpInfo& event_info) {
+
+    auto observer = GetEventObserver<SysKeyUpInfo>(
+        GetPropertyMap(),
+        SysKeyUpEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<SysKeyUpInfo> Control::SysKeyUpEvent() {
+    return GetEventObservable<SysKeyUpInfo>(GetPropertyMap(), SysKeyUpEventPropertyName);
+}
+
+
+void Control::OnSysCharInput(const SysCharInputInfo& event_info) {
+
+    auto observer = GetEventObserver<SysCharInputInfo>(
+        GetPropertyMap(),
+        SysCharInputEventPropertyName);
+
+    if (observer) {
+        observer->OnNext(event_info);
+    }
+}
+
+
+Observable<SysCharInputInfo> Control::SysCharInputEvent() {
+    return GetEventObservable<SysCharInputInfo>(GetPropertyMap(), SysCharInputEventPropertyName);
 }
 
 

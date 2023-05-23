@@ -729,6 +729,24 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         }
         return std::nullopt;
 
+    case WM_SYSKEYDOWN:
+        if (HandleWMSYSKEYDOWN(message)) {
+            return 0;
+        }
+        return std::nullopt;
+
+    case WM_SYSKEYUP:
+        if (HandleWMSYSKEYUP(message)) {
+            return 0;
+        }
+        return std::nullopt;
+
+    case WM_SYSCHAR:
+        if (HandleWMSYSCHAR(message)) {
+            return 0;
+        }
+        return std::nullopt;
+
     case WM_CLOSE:
         if (!HandleWMCLOSE()) {
             return 0;
@@ -1409,6 +1427,30 @@ bool Window::HandleWMCHAR(const Message& message) {
         focused_control_, 
         message,
         &Control::OnCharInput);
+}
+
+
+bool Window::HandleWMSYSKEYDOWN(const Message& message) {
+    return RouteKeyboardEventGeneric<SysKeyDownInfo>(
+        focused_control_,
+        message, 
+        &Control::OnSysKeyDown);
+}
+
+
+bool Window::HandleWMSYSKEYUP(const Message& message) {
+    return RouteKeyboardEventGeneric<SysKeyUpInfo>(
+        focused_control_, 
+        message,
+        &Control::OnSysKeyUp);
+}
+
+
+bool Window::HandleWMSYSCHAR(const Message& message) {
+    return RouteKeyboardEventGeneric<SysCharInputInfo>(
+        focused_control_, 
+        message,
+        &Control::OnSysCharInput);
 }
 
 
