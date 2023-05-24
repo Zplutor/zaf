@@ -29,6 +29,11 @@ public:
         size_ = size;
     }
 
+    /**
+    Gets object position in screen.
+    */
+    Point GetPositionInScreen() const;
+
     virtual GUID ClassID() const = 0;
 
     /**

@@ -171,6 +171,7 @@
     <ClCompile Include="src\zaf\control\rich_edit\internal\ole_helper.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\text_host_bridge.cpp" />
+    <ClCompile Include="src\zaf\control\rich_edit\object_info.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\ole_interface.cpp" />
     <ClCompile Include="src\zaf\control\scrollable_control.cpp" />
     <ClCompile Include="src\zaf\control\scroll_bar.cpp" />
@@ -493,6 +494,7 @@
     <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\text_host_bridge.h" />
     <ClInclude Include="src\zaf\control\rich_edit\object_context.h" />
+    <ClInclude Include="src\zaf\control\rich_edit\object_info.h" />
     <ClInclude Include="src\zaf\control\rich_edit\ole_interface.h" />
     <ClInclude Include="src\zaf\control\scrollable_control.h" />
     <ClInclude Include="src\zaf\control\scroll_bar.h" />

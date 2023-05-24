@@ -135,12 +135,7 @@ private:
         button_->SetFixedHeight(30);
         Subscriptions() += button_->ClickEvent().Subscribe(std::bind([this]() {
 
-            auto preferred_size = rich_edit_->CalculatePreferredSize();
-
-            ZAF_LOG() << "RichEdit preferred size: " << preferred_size.ToString();
-
-            preferred_size.height += button_->Height();
-            this->SetContentSize(preferred_size);
+            rich_edit_->InsertObject(zaf::MakeCOMObject<MyOLEObject>());
         }));
 
         RootControl()->AddChild(button_);

@@ -3,19 +3,23 @@
 
 namespace zaf::rich_edit {
 
-COMObject<IOleObject> OLEInterface::GetObjectAt(std::size_t object_index) const {
+ObjectInfo OLEInterface::GetObjectInfoAt(std::size_t object_index) const {
 
-    REOBJECT object_info{};
-    object_info.cbStruct = sizeof(object_info);
+    REOBJECT inner{};
+    inner.cbStruct = sizeof(inner);
 
     HRESULT hresult = Inner()->GetObject(
         static_cast<LONG>(object_index),
-        &object_info,
+        &inner,
         REO_GETOBJ_POLEOBJ);
 
     ZAF_THROW_IF_COM_ERROR(hresult);
+    return ObjectInfo{ inner };
+}
 
-    return COMObject<IOleObject>{ object_info.poleobj };
+
+COMObject<IOleObject> OLEInterface::GetObjectAt(std::size_t object_index) const {
+    return GetObjectInfoAt(object_index).Object();
 }
 
 }
