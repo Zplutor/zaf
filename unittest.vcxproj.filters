@@ -76,6 +76,9 @@
     <Filter Include="case\base\registry">
       <UniqueIdentifier>{4881bfee-e85d-406f-8253-0cc407f40937}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\base\event">
+      <UniqueIdentifier>{2fe45b27-03ba-4754-8874-4abfe4107a6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -384,6 +387,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\rich_edit_test.cpp">
       <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\event\event_test.cpp">
+      <Filter>case\base\event</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

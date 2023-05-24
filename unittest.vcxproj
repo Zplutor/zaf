@@ -385,6 +385,7 @@
     <ClCompile Include="unittest\case\base\container\utility\sort_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\union_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\unique_test.cpp" />
+    <ClCompile Include="unittest\case\base\event\event_test.cpp" />
     <ClCompile Include="unittest\case\base\flag_enum_test.cpp" />
     <ClCompile Include="unittest\case\base\hash_test.cpp" />
     <ClCompile Include="unittest\case\base\non_copyable_test.cpp" />

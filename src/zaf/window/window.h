@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <zaf/base/auto_reset_value.h>
+#include <zaf/base/event/event.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/renderer/window_renderer.h>
@@ -260,7 +261,7 @@ public:
      */
     void SetMaxHeight(float max_height);
 
-    Observable<WindowSizeChangedInfo> SizeChangedEvent();
+    Observable<WindowSizeChangedInfo> SizeChangedEvent() const;
 
     /**
      Get window's activate option.
@@ -419,7 +420,7 @@ public:
      */
     void SetRootControl(const std::shared_ptr<Control>& control);
 
-    Observable<RootControlChangedInfo> RootControlChangedEvent();
+    Observable<RootControlChangedInfo> RootControlChangedEvent() const;
 
     /**
      Gets the control which captures mouse in the window.
@@ -432,7 +433,7 @@ public:
     Gets mouse capture control changed event. This event is raised after the mouse capture control 
     changed.
     */
-    Observable<MouseCaptureControlChangedInfo> MouseCaptureControlChangedEvent();
+    Observable<MouseCaptureControlChangedInfo> MouseCaptureControlChangedEvent() const;
 
     /**
      Get the control which is under mouse cursor.
@@ -462,51 +463,51 @@ public:
         return handle_;
     }
 
-    Observable<HandleCreatedInfo> HandleCreatedEvent();
+    Observable<HandleCreatedInfo> HandleCreatedEvent() const;
 
     /**
     Window show event. This event is raised when the window receives WM_SHOWWINDOW message, whose
     wParam is TRUE.
     */
-    Observable<ShowInfo> ShowEvent();
+    Observable<ShowInfo> ShowEvent() const;
 
     /**
     Window hide event. This event is raised when the window receives WM_SHOWWINDOW message, whose
     wParam is FALSE.
     */
-    Observable<HideInfo> HideEvent();
+    Observable<HideInfo> HideEvent() const;
 
     /**
     Window activated event. This event is raised when the window receives WM_ACTIVATE message, 
     whose wParam is WA_ACTIVE or WA_CLICKACTIVE.
     */
-    Observable<ActivatedInfo> ActivatedEvent();
+    Observable<ActivatedInfo> ActivatedEvent() const;
 
     /**
     Window deactivated event. This event is raised when the window receives WM_ACTIVATE message,
     whose wParam is WA_INACTIVE.
     */
-    Observable<DeactivatedInfo> DeactivatedEvent();
+    Observable<DeactivatedInfo> DeactivatedEvent() const;
 
     /**
     Window gained focus event. This event is raised when the window receives WM_SETFOCUS message.
     */
-    Observable<WindowFocusGainedInfo> FocusGainedEvent();
+    Observable<WindowFocusGainedInfo> FocusGainedEvent() const;
 
     /**
     Window lost focus event. This event is raised when the window receives WM_KILLFOCUS message.
     */
-    Observable<WindowFocusLostInfo> FocusLostEvent();
+    Observable<WindowFocusLostInfo> FocusLostEvent() const;
 
-    Observable<ClosingInfo> ClosingEvent();
+    Observable<ClosingInfo> ClosingEvent() const;
 
     /**
      Get window destroyed event.
      */
-    Observable<DestroyedInfo> DestroyedEvent();
+    Observable<DestroyedInfo> DestroyedEvent() const;
 
-    Observable<MessageReceivedInfo> MessageReceivedEvent();
-    Observable<MessageHandledInfo> MessageHandledEvent();
+    Observable<MessageReceivedInfo> MessageReceivedEvent() const;
+    Observable<MessageHandledInfo> MessageHandledEvent() const;
 
     /**
      Get position of the mouse cursor in current window's coordinate system.
@@ -906,6 +907,21 @@ private:
     std::weak_ptr<InspectorWindow> inspector_window_;
     std::shared_ptr<Control> highlight_control_;
     bool is_selecting_inspector_control_{};
+
+    Event<HandleCreatedInfo> handle_created_event_;
+    Event<DestroyedInfo> destroyed_event_;
+    Event<MessageReceivedInfo> message_received_event_;
+    Event<MessageHandledInfo> message_handled_event_;
+    Event<ShowInfo> show_event_;
+    Event<HideInfo> hide_event_;
+    Event<ActivatedInfo> activated_event_;
+    Event<DeactivatedInfo> deactivated_event_;
+    Event<WindowFocusGainedInfo> focus_gained_event_;
+    Event<WindowFocusLostInfo> focus_lost_event_;
+    Event<ClosingInfo> closing_event_;
+    Event<WindowSizeChangedInfo> size_changed_event_;
+    Event<RootControlChangedInfo> root_control_changed_event_;
+    Event<MouseCaptureControlChangedInfo> mouse_capture_control_changed_event_;
 };
 
 

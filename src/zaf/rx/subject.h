@@ -8,7 +8,7 @@
 namespace zaf {
 
 template<typename T>
-class Subject : NonCopyableNonMovable {
+class Subject : NonCopyable {
 public:
     Subject() : inner_(internal::CreateInnerSubject()) { }
 

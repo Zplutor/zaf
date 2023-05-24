@@ -29,8 +29,6 @@ namespace {
 constexpr const wchar_t* const kActivateOptionPropertyName = L"ActivateOption";
 constexpr const wchar_t* const kCanMaximizePropertyName = L"CanMaximize";
 constexpr const wchar_t* const kCanMinimizePropertyName = L"CanMinimize";
-constexpr const wchar_t* const ClosingEventPropertyName = L"ClosingEvent";
-constexpr const wchar_t* const DestroyedEventPropertyName = L"DestroyedEvent";
 constexpr const wchar_t* const kHasBorderPropertyName = L"HasBorder";
 constexpr const wchar_t* const kHasSystemMenuPropertyName = L"HasSystemMenu";
 constexpr const wchar_t* const kHasTitleBarPropertyName = L"HasTitleBar";
@@ -40,20 +38,9 @@ constexpr const wchar_t* const kIsSizablePropertyName = L"IsSizable";
 constexpr const wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
 constexpr const wchar_t* const kIsTopmostPropertyName = L"IsTopmost";
 constexpr const wchar_t* const kOwnerPropertyName = L"Owner";
-constexpr const wchar_t* const MessageReceivedEventPropertyName = L"MessageReceivedEvent";
-constexpr const wchar_t* const MessageHandledEventPropertyName = L"MessageHandledEvent";
 constexpr const wchar_t* const MouseCaptureControlChangedEventPropertyName = 
     L"MouseCaptureControlChangedEvent";
 constexpr const wchar_t* const kTitlePropertyName = L"Title";
-constexpr const wchar_t* const HandleCreatedEventPropertyName = L"HandleCreatedEvent";
-constexpr const wchar_t* const RootControlChangedEventPropertyName = L"RootControlChangedEvent";
-constexpr const wchar_t* const ShowEventPropertyName = L"ShowEvent";
-constexpr const wchar_t* const HideEventPropertyName = L"HideEvent";
-constexpr const wchar_t* const FocusGainedEventPropertyName = L"FocusGainedEvent";
-constexpr const wchar_t* const FocusLostEventPropertyName = L"FocusLostEvent";
-constexpr const wchar_t* const ActivatedEventPropertyName = L"ActivatedEvent";
-constexpr const wchar_t* const DeactivatedEventPropertyName = L"DeactivatedEvent";
-constexpr const wchar_t* const SizeChangedEventPropertyName = L"SizeChangedEvent";
 
 
 Point TranslateAbsolutePositionToControlPosition(
@@ -318,19 +305,12 @@ void Window::CreateWindowHandle() {
 
 
 void Window::OnHandleCreated(const HandleCreatedInfo& event_info) {
-
-    auto observer = GetEventObserver<HandleCreatedInfo>(
-        GetPropertyMap(), 
-        HandleCreatedEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    handle_created_event_.Raise(event_info);
 }
 
 
-Observable<HandleCreatedInfo> Window::HandleCreatedEvent() {
-    return GetEventObservable<HandleCreatedInfo>(GetPropertyMap(), HandleCreatedEventPropertyName);
+Observable<HandleCreatedInfo> Window::HandleCreatedEvent() const {
+    return handle_created_event_.GetObservable();
 }
 
 
@@ -570,17 +550,14 @@ void Window::OnMessageReceived(const MessageReceivedInfo& event_info) {
 
 void Window::RaiseMessageReceivedEvent(const MessageReceivedInfo& event_info) {
 
-    if (event_info.Message().ID() == WM_NCDESTROY) {
-        return;
+    if (event_info.Message().ID() != WM_NCDESTROY) {
+        message_received_event_.Raise(event_info);
     }
+}
 
-    auto event_observer = GetEventObserver<MessageReceivedInfo>(
-        GetPropertyMap(),
-        MessageReceivedEventPropertyName);
 
-    if (event_observer) {
-        event_observer->OnNext(event_info);
-    }
+Observable<MessageReceivedInfo> Window::MessageReceivedEvent() const {
+    return message_received_event_.GetObservable();
 }
 
 
@@ -768,14 +745,12 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
 
 
 void Window::OnMessageHandled(const MessageHandledInfo& event_info) {
+    message_handled_event_.Raise(event_info);
+}
 
-    auto observer = GetEventObserver<MessageHandledInfo>(
-        GetPropertyMap(), 
-        MessageHandledEventPropertyName);
 
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+Observable<MessageHandledInfo> Window::MessageHandledEvent() const {
+    return message_handled_event_.GetObservable();
 }
 
 
@@ -903,30 +878,22 @@ void Window::HandleWMSHOWWINDOW(const ShowWindowMessage& message) {
 
 
 void Window::OnShow(const ShowInfo& event_info) {
-
-    auto observer = GetEventObserver<ShowInfo>(GetPropertyMap(), ShowEventPropertyName);
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    show_event_.Raise(event_info);
 }
 
 
-Observable<ShowInfo> Window::ShowEvent() {
-    return GetEventObservable<ShowInfo>(GetPropertyMap(), ShowEventPropertyName);
+Observable<ShowInfo> Window::ShowEvent() const {
+    return show_event_.GetObservable();
 }
 
 
 void Window::OnHide(const HideInfo& event_info) {
-
-    auto observer = GetEventObserver<HideInfo>(GetPropertyMap(), HideEventPropertyName);
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    hide_event_.Raise(event_info);
 }
 
 
-Observable<HideInfo> Window::HideEvent() {
-    return GetEventObservable<HideInfo>(GetPropertyMap(), HideEventPropertyName);
+Observable<HideInfo> Window::HideEvent() const {
+    return hide_event_.GetObservable();
 }
 
 
@@ -944,33 +911,22 @@ void Window::HandleWMACTIVATE(const ActivateMessage& message) {
 
 
 void Window::OnActivated(const ActivatedInfo& event_info) {
-
-    auto observer = GetEventObserver<ActivatedInfo>(GetPropertyMap(), ActivatedEventPropertyName);
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    activated_event_.Raise(event_info);
 }
 
 
-Observable<ActivatedInfo> Window::ActivatedEvent() {
-    return GetEventObservable<ActivatedInfo>(GetPropertyMap(), ActivatedEventPropertyName);
+Observable<ActivatedInfo> Window::ActivatedEvent() const {
+    return activated_event_.GetObservable();
 }
 
 
 void Window::OnDeactivated(const DeactivatedInfo& event_info) {
-
-    auto observer = GetEventObserver<DeactivatedInfo>(
-        GetPropertyMap(), 
-        DeactivatedEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    deactivated_event_.Raise(event_info);
 }
 
 
-Observable<DeactivatedInfo> Window::DeactivatedEvent() {
-    return GetEventObservable<DeactivatedInfo>(GetPropertyMap(), DeactivatedEventPropertyName);
+Observable<DeactivatedInfo> Window::DeactivatedEvent() const {
+    return deactivated_event_.GetObservable();
 }
 
 
@@ -986,21 +942,12 @@ void Window::HandleWMSETFOCUS(const SetFocusMessage& message) {
 
 
 void Window::OnFocusGained(const WindowFocusGainedInfo& event_info) {
-
-    auto observer = GetEventObserver<WindowFocusGainedInfo>(
-        GetPropertyMap(), 
-        FocusGainedEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    focus_gained_event_.Raise(event_info);
 }
 
 
-Observable<WindowFocusGainedInfo> Window::FocusGainedEvent() {
-    return GetEventObservable<WindowFocusGainedInfo>(
-        GetPropertyMap(), 
-        FocusGainedEventPropertyName);
+Observable<WindowFocusGainedInfo> Window::FocusGainedEvent() const {
+    return focus_gained_event_.GetObservable();
 }
 
 
@@ -1014,21 +961,12 @@ void Window::HandleWMKILLFOCUS(const KillFocusMessage& message) {
 
 
 void Window::OnFocusLost(const WindowFocusLostInfo& event_info) {
-
-    auto observer = GetEventObserver<WindowFocusLostInfo>(
-        GetPropertyMap(),
-        FocusLostEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    focus_lost_event_.Raise(event_info);
 }
 
 
-Observable<WindowFocusLostInfo> Window::FocusLostEvent() {
-    return GetEventObservable<WindowFocusLostInfo>(
-        GetPropertyMap(),
-        FocusLostEventPropertyName);
+Observable<WindowFocusLostInfo> Window::FocusLostEvent() const {
+    return focus_lost_event_.GetObservable();
 }
 
 
@@ -1058,21 +996,12 @@ void Window::HandleWMSIZEMessage(const Message& message) {
 
 
 void Window::OnSizeChanged(const WindowSizeChangedInfo& event_info) {
-
-    auto observer = GetEventObserver<WindowSizeChangedInfo>(
-        GetPropertyMap(),
-        SizeChangedEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    size_changed_event_.Raise(event_info);
 }
 
 
-Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() {
-    return GetEventObservable<WindowSizeChangedInfo>(
-        GetPropertyMap(), 
-        SizeChangedEventPropertyName);
+Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() const {
+    return size_changed_event_.GetObservable();
 }
 
 
@@ -1491,11 +1420,12 @@ bool Window::HandleWMCLOSE() {
 
 
 void Window::OnClosing(const ClosingInfo& event_info) {
+    closing_event_.Raise(event_info);
+}
 
-    auto observer = GetEventObserver<ClosingInfo>(GetPropertyMap(), ClosingEventPropertyName);
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+
+Observable<ClosingInfo> Window::ClosingEvent() const {
+    return closing_event_.GetObservable();
 }
 
 
@@ -1528,14 +1458,12 @@ void Window::HandleWMDESTROY() {
 
 
 void Window::OnDestroyed(const DestroyedInfo& event_info) {
+    destroyed_event_.Raise(event_info);
+}
 
-    auto event_observer = GetEventObserver<DestroyedInfo>(
-        GetPropertyMap(),
-        DestroyedEventPropertyName);
 
-    if (event_observer) {
-        event_observer->OnNext(event_info);
-    }
+Observable<DestroyedInfo> Window::DestroyedEvent() const {
+    return destroyed_event_.GetObservable();
 }
 
 
@@ -1700,21 +1628,12 @@ void Window::CancelMouseCapture() {
 
 
 void Window::OnMouseCaptureControlChanged(const MouseCaptureControlChangedInfo& event_info) {
-
-    auto observer = GetEventObserver<MouseCaptureControlChangedInfo>(
-        GetPropertyMap(), 
-        MouseCaptureControlChangedEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    mouse_capture_control_changed_event_.Raise(event_info);
 }
 
 
-Observable<MouseCaptureControlChangedInfo> Window::MouseCaptureControlChangedEvent() {
-    return GetEventObservable<MouseCaptureControlChangedInfo>(
-        GetPropertyMap(), 
-        MouseCaptureControlChangedEventPropertyName);
+Observable<MouseCaptureControlChangedInfo> Window::MouseCaptureControlChangedEvent() const {
+    return mouse_capture_control_changed_event_.GetObservable();
 }
 
 
@@ -2268,47 +2187,12 @@ void Window::InitializeRootControl(const std::shared_ptr<Control>& control) {
 
 
 void Window::OnRootControlChanged(const RootControlChangedInfo& event_info) {
-    
-    auto observer = GetEventObserver<RootControlChangedInfo>(
-        GetPropertyMap(),
-        RootControlChangedEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    root_control_changed_event_.Raise(event_info);
 }
 
 
-Observable<RootControlChangedInfo> Window::RootControlChangedEvent() {
-    return GetEventObservable<RootControlChangedInfo>(
-        GetPropertyMap(), 
-        RootControlChangedEventPropertyName);
-}
-
-
-Observable<ClosingInfo> Window::ClosingEvent() {
-    return GetEventObservable<ClosingInfo>(GetPropertyMap(), ClosingEventPropertyName);
-}
-
-
-Observable<DestroyedInfo> Window::DestroyedEvent() {
-    return GetEventObservable<DestroyedInfo>(
-        GetPropertyMap(), 
-        DestroyedEventPropertyName);
-}
-
-
-Observable<MessageReceivedInfo> Window::MessageReceivedEvent() {
-    return GetEventObservable<MessageReceivedInfo>(
-        GetPropertyMap(), 
-        MessageReceivedEventPropertyName);
-}
-
-
-Observable<MessageHandledInfo> Window::MessageHandledEvent() {
-    return GetEventObservable<MessageHandledInfo>(
-        GetPropertyMap(), 
-        MessageHandledEventPropertyName);
+Observable<RootControlChangedInfo> Window::RootControlChangedEvent() const {
+    return root_control_changed_event_.GetObservable();
 }
 
 
