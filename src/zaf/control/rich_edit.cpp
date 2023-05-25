@@ -377,8 +377,16 @@ float RichEdit::GetContentVerticalOffset() {
     }
 
     if (IsMultiline()) {
+
         //For multi-line rich edit, don't use offset if there is vertical scroll bar.
-        if (this->CanEnableVerticalScrollBar()) {
+        int current{};
+        int min{};
+        int max{};
+        int page{};
+        this->GetVerticalScrollValues(current, min, max, page);
+
+        bool has_vertical_bar = (min != max);
+        if (has_vertical_bar) {
             return 0;
         }
     }
@@ -716,11 +724,9 @@ bool RichEdit::CanShowHorizontalScrollBar() {
 bool RichEdit::CanEnableVerticalScrollBar() {
 
     BOOL is_enabled = FALSE;
-
     if (text_service_ != nullptr) {
         text_service_->TxGetVScroll(nullptr, nullptr, nullptr, nullptr, &is_enabled);
     }
-
     return (is_enabled != FALSE);
 }
 
