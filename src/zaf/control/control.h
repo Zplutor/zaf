@@ -915,8 +915,14 @@ private:
     BitmapRenderer cached_renderer_;
     zaf::Rect valid_cached_renderer_rect_;
 
+    zaf::Anchor anchor_{ zaf::Anchor::None };
     bool auto_width_{};
     bool auto_height_{};
+    float min_width_{};
+    float max_width_{ (std::numeric_limits<float>::max)() };
+    float min_height_{};
+    float max_height_{ (std::numeric_limits<float>::max)() };
+    std::shared_ptr<zaf::Layouter> layouter_;
     AutoResetValue<bool> is_auto_resizing_{ false };
     AutoResetValue<bool> is_layouting_{ false };
 
@@ -924,9 +930,12 @@ private:
     bool is_capturing_mouse_;
     bool is_focused_;
     bool can_focused_;
+    bool can_double_click_{ false };
     bool is_enabled_;
     bool is_visible_;
     bool is_selected_{};
+    bool can_tab_stop_{ true };
+    std::optional<std::size_t> tab_index_;
 
     zaf::Rect rect_;
     Frame margin_;
@@ -935,6 +944,14 @@ private:
 
     std::uint32_t last_mouse_down_time_{};
     Point last_mouse_down_position_;
+
+    ColorPicker background_color_picker_;
+    ColorPicker border_color_picker_;
+    ImageLayout background_image_layout_{ ImageLayout::None };
+    ImagePicker background_image_picker_;
+
+    std::wstring name_;
+    std::wstring tooltip_;
 
     PropertyMap property_map_;
 

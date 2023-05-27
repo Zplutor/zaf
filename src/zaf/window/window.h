@@ -1,15 +1,16 @@
 #pragma once
 
 #include <Windows.h>
+#include <optional>
 #include <zaf/base/auto_reset_value.h>
 #include <zaf/base/event/event.h>
+#include <zaf/base/non_copyable.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/renderer/window_renderer.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/object/object.h>
 #include <zaf/rx/subscription_host.h>
-#include <zaf/serialization/property_map.h>
 #include <zaf/window/activate_option.h>
 #include <zaf/window/event/activate_event_info.h>
 #include <zaf/window/event/closing_info.h>
@@ -48,7 +49,8 @@ enum class HitTestResult;
 class Window : 
     public Object, 
     public SubscriptionHost, 
-    public std::enable_shared_from_this<Window> {
+    public std::enable_shared_from_this<Window>,
+    NonCopyableNonMovable {
 
 public:
     ZAF_DECLARE_TYPE
@@ -58,16 +60,13 @@ public:
      Construct the instance.
      */
     Window();
-    Window(const std::wstring& window_class_name);
-    Window(const std::shared_ptr<WindowClass>& window_class);
+    explicit Window(const std::wstring& window_class_name);
+    explicit Window(const std::shared_ptr<WindowClass>& window_class);
 
     /**
      Destruct the instance.
      */
     virtual ~Window();
-
-    Window(const Window&) = delete;
-    Window& operator=(const Window&) = delete;
 
     const std::shared_ptr<WindowClass>& Class() const {
         return class_;
@@ -406,7 +405,7 @@ public:
     /**
      Set window's title.
      */
-    void SetTitle(const std::wstring& title);
+    void SetTitle(std::wstring_view title);
 
     /**
      Get window's root control.
@@ -754,20 +753,6 @@ protected:
     */
     virtual void OnMouseCaptureControlChanged(const MouseCaptureControlChangedInfo& event_info);
 
-    /**
-     Get the window's property map.
-     */
-    PropertyMap& GetPropertyMap() {
-        return property_map_;
-    }
-
-    /**
-     Get the window's property map.
-     */
-    const PropertyMap& GetPropertyMap() const {
-        return property_map_;
-    }
-
 private:
     friend class Application;
     friend class Control;
@@ -871,7 +856,7 @@ private:
     void ReviseHasTitleBar();
 
     void SetStyleProperty(
-        const std::wstring& property_name,
+        bool& property_value,
         DWORD style_value,
         bool is_set,
         bool is_extra_style);
@@ -893,6 +878,25 @@ private:
     //than a single bool flag. It will be done later once it becomes necessary.
     AutoResetValue<bool> is_being_destroyed_{ false };
 
+    std::weak_ptr<Window> owner_;
+    std::wstring title_;
+
+    zaf::InitialRectStyle initial_rect_style_{ zaf::InitialRectStyle::CenterInOwner };
+    zaf::ActivateOption activate_option_{ zaf::ActivateOption::Normal };
+    bool is_popup_{ false };
+    bool has_border_{ true };
+    bool has_title_bar_{ true };
+    bool has_system_menu_{ true };
+    bool is_sizable_{ true };
+    bool can_maximize_{ true };
+    bool can_minimize_{ true };
+    bool is_tool_window_{ false };
+    bool is_topmost_{ false };
+    std::optional<float> min_width_;
+    std::optional<float> max_width_;
+    std::optional<float> min_height_;
+    std::optional<float> max_height_;
+
     TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };
 
     std::shared_ptr<Control> root_control_;
@@ -901,8 +905,6 @@ private:
     std::shared_ptr<Control> focused_control_;
     std::weak_ptr<Control> last_focused_control_;
     std::shared_ptr<TooltipWindow> tooltip_window_;
-
-    PropertyMap property_map_;
 
     std::weak_ptr<InspectorWindow> inspector_window_;
     std::shared_ptr<Control> highlight_control_;

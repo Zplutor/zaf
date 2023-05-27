@@ -60,13 +60,6 @@ public:
     }
 };
 
-constexpr const wchar_t* const kAnchorPropertyName = L"Anchor";
-constexpr const wchar_t* const kBackgroundImageLayoutPropertyName = L"BackgroundImageLayout";
-constexpr const wchar_t* const kBackgroundImagePickerPropertyName = L"BackgroundImagePicker";
-constexpr const wchar_t* const kLayouterPropertyName = L"Layouter";
-constexpr const wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
-constexpr const wchar_t* const TooltipPropertyName = L"Tooltip";
-
 constexpr bool DefaultCanFocused = false;
 constexpr bool DefaultIsEnabled = true;
 constexpr bool DefaultIsVisible = true;
@@ -584,19 +577,12 @@ void Control::SetMargin(const Frame& margin) {
 
 
 float Control::MinWidth() const {
-
-    auto min_width = GetPropertyMap().TryGetProperty<float>(property::MinWidth);
-    if (min_width != nullptr) {
-        return *min_width;
-    }
-    else {
-        return 0;
-    }
+    return min_width_;
 }
 
 void Control::SetMinWidth(float min_width) {
 
-    GetPropertyMap().SetProperty(property::MinWidth, min_width);
+    min_width_ = min_width;
 
     if (MaxWidth() < min_width) {
         SetMaxWidth(min_width);
@@ -609,19 +595,12 @@ void Control::SetMinWidth(float min_width) {
 
 
 float Control::MaxWidth() const {
-
-    auto max_width = GetPropertyMap().TryGetProperty<float>(property::MaxWidth);
-    if (max_width != nullptr) {
-        return *max_width;
-    }
-    else {
-        return std::numeric_limits<float>::max();
-    }
+    return max_width_;
 }
 
 void Control::SetMaxWidth(float max_width) {
 
-    GetPropertyMap().SetProperty(property::MaxWidth, max_width);
+    max_width_ = max_width;
 
     if (MinWidth() > max_width) {
         SetMinWidth(max_width);
@@ -634,19 +613,12 @@ void Control::SetMaxWidth(float max_width) {
 
 
 float Control::MinHeight() const {
-
-    auto min_height = GetPropertyMap().TryGetProperty<float>(property::MinHeight);
-    if (min_height != nullptr) {
-        return *min_height;
-    }
-    else {
-        return 0;
-    }
+    return min_height_;
 }
 
 void Control::SetMinHeight(float min_height) {
 
-    GetPropertyMap().SetProperty(property::MinHeight, min_height);
+    min_height_ = min_height;
 
     if (MaxHeight() < min_height) {
         SetMaxHeight(min_height);
@@ -659,19 +631,12 @@ void Control::SetMinHeight(float min_height) {
 
 
 float Control::MaxHeight() const {
-
-    auto max_height = GetPropertyMap().TryGetProperty<float>(property::MaxHeight);
-    if (max_height != nullptr) {
-        return *max_height;
-    }
-    else {
-        return std::numeric_limits<float>::max();
-    }
+    return max_height_;
 }
 
 void Control::SetMaxHeight(float max_height) {
 
-    GetPropertyMap().SetProperty(property::MaxHeight, max_height);
+    max_height_ = max_height;
 
     if (MinHeight() > max_height) {
         SetMinHeight(max_height);
@@ -868,17 +833,12 @@ void Control::RaiseContentChangedEvent() {
 
 
 Anchor Control::Anchor() const {
-
-    auto anchor = GetPropertyMap().TryGetProperty<zaf::Anchor>(kAnchorPropertyName);
-    if (anchor != nullptr) {
-        return *anchor;
-    }
-    return Anchor::None;
+    return anchor_;
 }
 
 
 void Control::SetAnchor(zaf::Anchor anchor) {
-    GetPropertyMap().SetProperty(kAnchorPropertyName, anchor);
+    anchor_ = anchor;
 }
 
 
@@ -901,96 +861,77 @@ zaf::Rect Control::ContentRect() const {
 
 ImagePicker Control::BackgroundImagePicker() const {
 
-    auto image_picker = GetPropertyMap().TryGetProperty<ImagePicker>(
-        kBackgroundImagePickerPropertyName);
-
-    if (image_picker && *image_picker) {
-        return *image_picker;
+    if (background_image_picker_) {
+        return background_image_picker_;
     }
     return CreateImagePicker(nullptr);
 }
 
 
 void Control::SetBackgroundImagePicker(const ImagePicker& image_picker) {
-
-    GetPropertyMap().SetProperty(kBackgroundImagePickerPropertyName, image_picker);
+    background_image_picker_ = image_picker;
     NeedRepaint();
 }
 
 
 ImageLayout Control::BackgroundImageLayout() const {
-
-    auto layout = GetPropertyMap().TryGetProperty<ImageLayout>(kBackgroundImageLayoutPropertyName);
-    if (layout) {
-        return *layout;
-    }
-    return ImageLayout::None;
+    return background_image_layout_;
 }
 
 void Control::SetBackgroundImageLayout(ImageLayout image_layout) {
-
-    GetPropertyMap().SetProperty(kBackgroundImageLayoutPropertyName, image_layout);
+    background_image_layout_ = image_layout;
     NeedRepaint();
 }
 
 
 ColorPicker Control::BackgroundColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::BackgroundColorPicker);
-    if ((color_picker != nullptr) && (*color_picker != nullptr)) {
-        return *color_picker;
+    if (background_color_picker_) {
+        return background_color_picker_;
     }
-    else {
-        return [](const Control&) {
-            return Color::Transparent();
-        };
-    }
+
+    return [](const Control&) {
+        return Color::Transparent();
+    };
 }
 
 
 void Control::SetBackgroundColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(property::BackgroundColorPicker, color_picker);
+    background_color_picker_ = color_picker;
     NeedRepaint();
 }
 
 
 ColorPicker Control::BorderColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::BorderColorPicker);
-    if ((color_picker != nullptr) && (*color_picker != nullptr)) {
-        return *color_picker;
+    if (border_color_picker_) {
+        return border_color_picker_;
     }
-    else {
-        return [](const Control&) {
-            return Color::FromRGB(internal::ControlBackgroundColorRGB);
-        };
-    }
+
+    return [](const Control&) {
+        return Color::FromRGB(internal::ControlBackgroundColorRGB);
+    };
 }
 
 
 void Control::SetBorderColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(property::BorderColorPicker, color_picker);
+    border_color_picker_ = color_picker;
     NeedRepaint();
 }
 
 
 std::shared_ptr<Layouter> Control::Layouter() const {
 
-    auto layouter = GetPropertyMap().TryGetProperty<std::shared_ptr<zaf::Layouter>>(
-        kLayouterPropertyName
-    );
-    if (layouter && *layouter) {
-        return *layouter;
+    if (layouter_) {
+        return layouter_;
     }
-    else {
-        return GetAnchorLayouter();
-    }
+    return GetAnchorLayouter();
 }
 
 void Control::SetLayouter(const std::shared_ptr<zaf::Layouter>& layouter) {
-    GetPropertyMap().SetProperty(kLayouterPropertyName, layouter);
+    layouter_ = layouter;
     NeedRelayout();
 }
 
@@ -1237,19 +1178,12 @@ bool Control::IsAncestorOf(const std::shared_ptr<const Control>& child) const {
 
 
 std::wstring Control::Name() const {
-
-    auto name = GetPropertyMap().TryGetProperty<std::wstring>(property::Name);
-    if (name != nullptr) {
-        return *name;
-    }
-    else {
-        return std::wstring();
-    }
+    return name_;
 }
 
 
 void Control::SetName(const std::wstring& name) {
-    GetPropertyMap().SetProperty(property::Name, name);
+    name_ = name;
 }
 
 
@@ -1428,38 +1362,22 @@ bool Control::ContainMouse() const {
 
 
 bool Control::CanTabStop() const {
-
-    auto can_tab_stop = GetPropertyMap().TryGetProperty<bool>(property::CanTabStop);
-    if (can_tab_stop != nullptr) {
-        return *can_tab_stop;
-    }
-    else {
-        return true;
-    }
+    return can_tab_stop_;
 }
 
 
 void Control::SetCanTabStop(bool can_tab_stop) {
-
-    GetPropertyMap().SetProperty(property::CanTabStop, can_tab_stop);
+    can_tab_stop_ = can_tab_stop;
 }
 
 
 std::optional<std::size_t> Control::TabIndex() const {
-
-    auto tab_index = GetPropertyMap().TryGetProperty<std::size_t>(property::TabIndex);
-    if (tab_index != nullptr) {
-        return *tab_index;
-    }
-    else {
-        return std::nullopt;
-    }
+    return tab_index_;
 }
 
 
 void Control::SetTabIndex(std::size_t tab_index) {
-
-    GetPropertyMap().SetProperty(property::TabIndex, tab_index);
+    tab_index_ = tab_index;
 }
 
 
@@ -1523,26 +1441,20 @@ void Control::ReleaseCachedPaintingRenderer() {
 
 
 bool Control::CanDoubleClick() const {
-    auto value = GetPropertyMap().TryGetProperty<bool>(CanDoubleClickPropertyName);
-    return value ? *value : false;
+    return can_double_click_;
 }
 
 void Control::SetCanDoubleClick(bool can_double_click) {
-    GetPropertyMap().SetProperty(CanDoubleClickPropertyName, can_double_click);
+    can_double_click_ = can_double_click;
 }
 
 
 std::wstring Control::Tooltip() const {
-
-    auto value = GetPropertyMap().TryGetProperty<std::wstring>(TooltipPropertyName);
-    if (value) {
-        return *value;
-    }
-    return std::wstring{};
+    return tooltip_;
 }
 
 void Control::SetTooltip(const std::wstring& tooltip) {
-    GetPropertyMap().SetProperty(TooltipPropertyName, tooltip);
+    tooltip_ = tooltip;
 }
 
 

@@ -25,23 +25,6 @@
 namespace zaf {
 namespace {
 
-constexpr const wchar_t* const kActivateOptionPropertyName = L"ActivateOption";
-constexpr const wchar_t* const kCanMaximizePropertyName = L"CanMaximize";
-constexpr const wchar_t* const kCanMinimizePropertyName = L"CanMinimize";
-constexpr const wchar_t* const kHasBorderPropertyName = L"HasBorder";
-constexpr const wchar_t* const kHasSystemMenuPropertyName = L"HasSystemMenu";
-constexpr const wchar_t* const kHasTitleBarPropertyName = L"HasTitleBar";
-constexpr const wchar_t* const kInitialRectStylePropertyName = L"InitialRectStyle";
-constexpr const wchar_t* const kIsPopupPropertyName = L"IsPopup";
-constexpr const wchar_t* const kIsSizablePropertyName = L"IsSizable";
-constexpr const wchar_t* const kIsToolWindowPropertyName = L"IsToolWindow";
-constexpr const wchar_t* const kIsTopmostPropertyName = L"IsTopmost";
-constexpr const wchar_t* const kOwnerPropertyName = L"Owner";
-constexpr const wchar_t* const MouseCaptureControlChangedEventPropertyName = 
-    L"MouseCaptureControlChangedEvent";
-constexpr const wchar_t* const kTitlePropertyName = L"Title";
-
-
 Point TranslateAbsolutePositionToControlPosition(
     const Point& absolute_position, 
     const Control& control ) {
@@ -1700,44 +1683,25 @@ void Window::ChangeControlFocusState(
 
 
 std::shared_ptr<Window> Window::Owner() const {
-
-    auto owner = GetPropertyMap().TryGetProperty<std::weak_ptr<Window>>(kOwnerPropertyName);
-    if (owner) {
-        return owner->lock();
-    }
-    else {
-        return nullptr;
-    }
+    return owner_.lock();
 }
 
 
 void Window::SetOwner(const std::shared_ptr<Window>& owner) {
 
     if (!Handle()) {
-
-        std::weak_ptr<Window> weak_owner = owner;
-        GetPropertyMap().SetProperty(kOwnerPropertyName, weak_owner);
+        owner_ = owner;
     }
 }
 
 
 InitialRectStyle Window::InitialRectStyle() const {
-
-    auto style = 
-        GetPropertyMap().TryGetProperty<zaf::InitialRectStyle>(kInitialRectStylePropertyName);
-
-    if (style != nullptr) {
-        return *style;
-    }
-    else {
-        return InitialRectStyle::CenterInScreen;
-    }
+    return initial_rect_style_;
 }
 
 
 void Window::SetInitialRectStyle(zaf::InitialRectStyle initial_rect_style) {
-
-    GetPropertyMap().SetProperty(kInitialRectStylePropertyName, initial_rect_style);
+    initial_rect_style_ = initial_rect_style;
 }
 
 
@@ -1846,9 +1810,8 @@ zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) c
 
 float Window::MinWidth() const {
 
-    auto width = GetPropertyMap().TryGetProperty<float>(property::MinWidth);
-    if (width != nullptr) {
-        return *width;
+    if (min_width_) {
+        return *min_width_;
     }
     return static_cast<float>(GetSystemMetrics(SM_CXMINTRACK));
 }
@@ -1856,7 +1819,7 @@ float Window::MinWidth() const {
 
 void Window::SetMinWidth(float min_width) {
 
-    GetPropertyMap().SetProperty(property::MinWidth, min_width);
+    min_width_ = min_width;
 
     if (MaxWidth() < min_width) {
         SetMaxWidth(min_width);
@@ -1870,9 +1833,8 @@ void Window::SetMinWidth(float min_width) {
 
 float Window::MaxWidth() const {
 
-    auto width = GetPropertyMap().TryGetProperty<float>(property::MaxWidth);
-    if (width != nullptr) {
-        return *width;
+    if (max_width_) {
+        return *max_width_;
     }
     return static_cast<float>(GetSystemMetrics(SM_CXMAXTRACK));
 }
@@ -1880,7 +1842,7 @@ float Window::MaxWidth() const {
 
 void Window::SetMaxWidth(float max_width) {
 
-    GetPropertyMap().SetProperty(property::MaxWidth, max_width);
+    max_width_ = max_width;
 
     if (MinWidth() > max_width) {
         SetMinWidth(max_width);
@@ -1894,9 +1856,8 @@ void Window::SetMaxWidth(float max_width) {
 
 float Window::MinHeight() const {
 
-    auto height = GetPropertyMap().TryGetProperty<float>(property::MinHeight);
-    if (height != nullptr) {
-        return *height;
+    if (min_height_) {
+        return *min_height_;
     }
     return static_cast<float>(GetSystemMetrics(SM_CYMINTRACK));
 }
@@ -1904,7 +1865,7 @@ float Window::MinHeight() const {
 
 void Window::SetMinHeight(float min_height) {
 
-    GetPropertyMap().SetProperty(property::MinHeight, min_height);
+    min_height_ = min_height;
 
     if (MaxHeight() < min_height) {
         SetMaxHeight(min_height);
@@ -1918,9 +1879,8 @@ void Window::SetMinHeight(float min_height) {
 
 float Window::MaxHeight() const {
 
-    auto height = GetPropertyMap().TryGetProperty<float>(property::MaxHeight);
-    if (height != nullptr) {
-        return *height;
+    if (max_height_) {
+        return *max_height_;
     }
     return static_cast<float>(GetSystemMetrics(SM_CYMAXTRACK));
 }
@@ -1928,7 +1888,7 @@ float Window::MaxHeight() const {
 
 void Window::SetMaxHeight(float max_height) {
 
-    GetPropertyMap().SetProperty(property::MaxHeight, max_height);
+    max_height_ = max_height;
 
     if (MinHeight() > max_height) {
         SetMinHeight(max_height);
@@ -1941,55 +1901,44 @@ void Window::SetMaxHeight(float max_height) {
 
 
 ActivateOption Window::ActivateOption() const {
-
-    auto option = GetPropertyMap().TryGetProperty<zaf::ActivateOption>(kActivateOptionPropertyName);
-    if (option != nullptr) {
-        return *option;
-    }
-    else {
-        return ActivateOption::Normal;
-    }
+    return activate_option_;
 }
 
 void Window::SetActivateOption(zaf::ActivateOption option) {
-
     if (!Handle()) {
-        GetPropertyMap().SetProperty(kActivateOptionPropertyName, option);
+        activate_option_ = option;
     }
 }
 
 
 bool Window::IsPopup() const {
-    auto value = GetPropertyMap().TryGetProperty<bool>(kIsPopupPropertyName);
-    return value ? *value : false;
+    return is_popup_;
 }
 
 void Window::SetIsPopup(bool is_popup) {
 
     if (!Handle()) {
-        GetPropertyMap().SetProperty(kIsPopupPropertyName, is_popup);
+        is_popup_ = is_popup;
         ReviseHasTitleBar();
     }
 }
 
 
 bool Window::HasBorder() const {
-    auto value = GetPropertyMap().TryGetProperty<bool>(kHasBorderPropertyName);
-    return value ? *value : true;
+    return has_border_;
 }
 
 void Window::SetHasBorder(bool has_border) {
 
     if (!Handle()) {
-        GetPropertyMap().SetProperty(kHasBorderPropertyName, has_border);
+        has_border_ = has_border;
         ReviseHasTitleBar();
     }
 }
 
 
 bool Window::HasTitleBar() const {
-    auto value = GetPropertyMap().TryGetProperty<bool>(kHasTitleBarPropertyName);
-    return value ? *value : true;
+    return has_title_bar_;
 }
 
 
@@ -2005,7 +1954,7 @@ void Window::SetHasTitleBar(bool has_title_bar) {
         }
     }
 
-    GetPropertyMap().SetProperty(kHasTitleBarPropertyName, has_title_bar);
+    has_title_bar_ = has_title_bar;
 
     if (HasBorder()) {
         SetStyleToHandle(WS_CAPTION, has_title_bar, false);
@@ -2021,13 +1970,12 @@ void Window::ReviseHasTitleBar() {
 
 
 bool Window::IsSizable() const {
-    auto value = GetPropertyMap().TryGetProperty<bool>(kIsSizablePropertyName);
-    return value ? *value : true;
+    return is_sizable_;
 }
 
 void Window::SetIsSizable(bool is_sizable) {
 
-    GetPropertyMap().SetProperty(kIsSizablePropertyName, is_sizable);
+    is_sizable_ = is_sizable;
 
     if (HasBorder()) {
         SetStyleToHandle(WS_SIZEBOX, is_sizable, false);
@@ -2036,73 +1984,60 @@ void Window::SetIsSizable(bool is_sizable) {
 
 
 bool Window::HasSystemMenu() const {
-    auto value = GetPropertyMap().TryGetProperty<bool>(kHasSystemMenuPropertyName);
-    return value ? *value : true;
+    return has_system_menu_;
 }
 
 void Window::SetHasSystemMenu(bool has_system_menu) {
-    SetStyleProperty(kHasSystemMenuPropertyName, WS_SYSMENU, has_system_menu, false);
+    SetStyleProperty(has_system_menu_, WS_SYSMENU, has_system_menu, false);
 }
 
 
 bool Window::CanMinimize() const {
-    auto value = GetPropertyMap().TryGetProperty<bool>(kCanMinimizePropertyName);
-    return value ? *value : true;
+    return can_minimize_;
 }
 
 void Window::SetCanMinimize(bool can_minimize) {
-    SetStyleProperty(kCanMinimizePropertyName, WS_MINIMIZEBOX, can_minimize, false);
+    SetStyleProperty(can_minimize_, WS_MINIMIZEBOX, can_minimize, false);
 }
 
 
 bool Window::CanMaximize() const {
-    auto value = GetPropertyMap().TryGetProperty<bool>(kCanMaximizePropertyName);
-    return value ? *value : true;
+    return can_maximize_;
 }
 
 void Window::SetCanMaximize(bool has_maximize_button) {
-    SetStyleProperty(kCanMaximizePropertyName, WS_MAXIMIZEBOX, has_maximize_button, false);
+    SetStyleProperty(can_maximize_, WS_MAXIMIZEBOX, has_maximize_button, false);
 }
 
 
 bool Window::IsToolWindow() const {
-
-    auto is_set = GetPropertyMap().TryGetProperty<bool>(kIsToolWindowPropertyName);
-    if (is_set != nullptr) {
-        return *is_set;
-    }
-    return false;
+    return is_tool_window_;
 }
 
 void Window::SetIsToolWindow(bool is_tool_window) {
-    SetStyleProperty(kIsToolWindowPropertyName, WS_EX_TOOLWINDOW, is_tool_window, true);
+    SetStyleProperty(is_tool_window_, WS_EX_TOOLWINDOW, is_tool_window, true);
 }
 
 
 bool Window::IsTopmost() const {
-
-    auto is_set = GetPropertyMap().TryGetProperty<bool>(kIsTopmostPropertyName);
-    if (is_set) {
-        return *is_set;
-    }
-    return false;
+    return is_topmost_;
 }
 
 
 void Window::SetIsTopmost(bool is_topmost) {
-    SetStyleProperty(kIsTopmostPropertyName, WS_EX_TOPMOST, is_topmost, true);
+    SetStyleProperty(is_topmost_, WS_EX_TOPMOST, is_topmost, true);
 }
 
 
 void Window::SetStyleProperty(
-    const std::wstring& property_name,
+    bool& property_value,
     DWORD style_value,
     bool is_set,
     bool is_extra_style) {
 
-    GetPropertyMap().SetProperty(property_name, is_set);
+    property_value = is_set;
 
-    if (! !Handle()) {
+    if (Handle()) {
         SetStyleToHandle(style_value, is_set, is_extra_style);
     }
 }
@@ -2126,14 +2061,7 @@ void Window::SetStyleToHandle(DWORD style_value, bool is_set, bool is_extra_styl
 std::wstring Window::Title() const {
 
     if (!Handle()) {
-
-        auto title = GetPropertyMap().TryGetProperty<std::wstring>(kTitlePropertyName);
-        if (title != nullptr) {
-            return *title;
-        }
-        else {
-            return std::wstring();
-        }
+        return title_;
     }
     else {
 
@@ -2145,12 +2073,12 @@ std::wstring Window::Title() const {
 }
 
 
-void Window::SetTitle(const std::wstring& title) {
+void Window::SetTitle(std::wstring_view title) {
 
-    GetPropertyMap().SetProperty(kTitlePropertyName, title);
+    title_ = title;
 
-    if (! !Handle()) {
-        SetWindowText(handle_, title.c_str());
+    if (Handle()) {
+        SetWindowText(handle_, title_.c_str());
     }
 }
 
