@@ -28,6 +28,9 @@ private:
     friend class Dialog;
 
     void SetIsDefault(bool is_default);
+
+private:
+    bool is_default_{ false };
 };
 
 }

@@ -1,5 +1,4 @@
 #include <zaf/control/textual_control.h>
-#include <zaf/control/internal/range_map.h>
 #include <zaf/control/text_source.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/renderer/renderer.h>
@@ -12,20 +11,6 @@
 #include <zaf/serialization/properties.h>
 
 namespace zaf {
-
-typedef internal::RangeMap<Font> FontRangeMap;
-typedef internal::RangeMap<ColorPicker> TextColorPickerRangeMap;
-
-static std::shared_ptr<FontRangeMap> TryGetFontRangeMap(const PropertyMap& property_map);
-static std::shared_ptr<TextColorPickerRangeMap> TryGetTextColorPickersRangeMap(const PropertyMap& property_map);
-static void SetFontToTextLayout(const Font& font, const TextRange& range, TextLayout& text_layout);
-
-static const wchar_t* const kDefaultFontPropertyName = L"DefaultFont";
-static const wchar_t* const kDefaultTextColorPickerPropertyName = L"DefaultTextColorPicker";
-static const wchar_t* const kFontsPropertyName = L"Fonts";
-static const wchar_t* const kTextColorPickersPropertyName = L"TextColorPickers";
-static const wchar_t* const kTextTrimmingPropertyName = L"TextTrimming";
-
 namespace {
 
 void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_format) {
@@ -35,6 +20,15 @@ void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_
                 GraphicFactory::Instance().CreateEllipsisTrimmingSign(text_format));
         }
     }
+}
+
+
+void SetFontToTextLayout(const Font& font, const TextRange& range, TextLayout& text_layout) {
+
+    text_layout.SetFontFamilyName(font.family_name, range);
+    text_layout.SetFontSize(font.size, range);
+    text_layout.SetFontWeight(font.weight, range);
+    text_layout.SetHasUnderline(font.has_underline, range);
 }
 
 
@@ -161,12 +155,11 @@ TextFormat TextualControl::CreateTextFormat(const zaf::Font& default_font) const
 
 void TextualControl::SetRangedFontsToTextLayout(TextLayout& text_layout) const {
 
-    auto fonts = TryGetFontRangeMap(GetPropertyMap());
-    if (fonts == nullptr) {
+    if (!font_range_map_) {
         return;
     }
 
-    auto ranges_and_fonts = fonts->GetAllRangesAndValues();
+    auto ranges_and_fonts = font_range_map_->GetAllRangesAndValues();
     for (const auto& each_pair : ranges_and_fonts) {
 
         TextRange range(each_pair.first.first, each_pair.first.second);
@@ -177,12 +170,11 @@ void TextualControl::SetRangedFontsToTextLayout(TextLayout& text_layout) const {
 
 void TextualControl::SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) {
 
-    auto text_color_pickers = TryGetTextColorPickersRangeMap(GetPropertyMap());
-    if (text_color_pickers == nullptr) {
+    if (!text_color_picker_map_) {
         return;
     }
 
-    auto ranges_and_text_color_pickers = text_color_pickers->GetAllRangesAndValues();
+    auto ranges_and_text_color_pickers = text_color_picker_map_->GetAllRangesAndValues();
     for (const auto& each_pair : ranges_and_text_color_pickers) {
 
         auto brush = renderer.CreateSolidColorBrush(each_pair.second(*this));
@@ -256,36 +248,32 @@ void TextualControl::AfterTextChanged(bool need_send_notification) {
 
 ColorPicker TextualControl::TextColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kDefaultTextColorPickerPropertyName);
-    if ((color_picker != nullptr) && (*color_picker != nullptr)) {
-        return *color_picker;
+    if (default_text_color_picker_) {
+        return default_text_color_picker_;
     }
-    else {
 
-        return [](const Control& control) {
-            if (control.IsEnabled()) {
-                return Color::FromRGB(internal::ControlNormalTextColorRGB);
-            }
-            else {
-                return Color::FromRGB(internal::ControlDisabledTextColorRGB);
-            }
-        };
-    }
+    return [](const Control& control) {
+        if (control.IsEnabled()) {
+            return Color::FromRGB(internal::ControlNormalTextColorRGB);
+        }
+        else {
+            return Color::FromRGB(internal::ControlDisabledTextColorRGB);
+        }
+    };
 }
 
 void TextualControl::SetTextColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(kDefaultTextColorPickerPropertyName, color_picker);
+    default_text_color_picker_ = color_picker;
     NeedRepaint();
 }
 
 
 ColorPicker TextualControl::GetTextColorPickerAtPosition(std::size_t position) const {
 
-    auto color_pickers = TryGetTextColorPickersRangeMap(GetPropertyMap());
-    if (color_pickers != nullptr) {
+    if (text_color_picker_map_) {
 
-        auto color_picker = color_pickers->GetValueAtPosition(position);
+        auto color_picker = text_color_picker_map_->GetValueAtPosition(position);
         if (color_picker != nullptr) {
             return color_picker;
         }
@@ -295,17 +283,15 @@ ColorPicker TextualControl::GetTextColorPickerAtPosition(std::size_t position) c
 }
 
 
-void TextualControl::SetTextColorPickerAtRange(const ColorPicker& color_picker, const TextRange& range) {
+void TextualControl::SetTextColorPickerAtRange(
+    const ColorPicker& color_picker, 
+    const TextRange& range) {
 
-    auto color_pickers = GetPropertyMap().GetProperty<std::shared_ptr<TextColorPickerRangeMap>>(
-        kTextColorPickersPropertyName, 
-        []() { return std::make_shared<TextColorPickerRangeMap>(); });
-
-    if (color_picker == nullptr) {
-        return;
+    if (!text_color_picker_map_) {
+        text_color_picker_map_ = std::make_shared<internal::RangeMap<ColorPicker>>();
     }
 
-    color_pickers->AddValueToRange(color_picker, range.index, range.length);
+    text_color_picker_map_->AddValueToRange(color_picker, range.index, range.length);
 
     ReleaseTextLayout();
     NeedRepaint();
@@ -314,12 +300,7 @@ void TextualControl::SetTextColorPickerAtRange(const ColorPicker& color_picker, 
 
 void TextualControl::ResetTextColorPickers() {
 
-    auto color_pickers = TryGetTextColorPickersRangeMap(GetPropertyMap());
-    if (color_pickers == nullptr) {
-        return;
-    }
-
-    color_pickers->RemoveAllValues();
+    text_color_picker_map_.reset();
 
     ReleaseTextLayout();
     NeedRepaint();
@@ -328,18 +309,15 @@ void TextualControl::ResetTextColorPickers() {
 
 Font TextualControl::Font() const {
 
-    auto font = GetPropertyMap().TryGetProperty<zaf::Font>(kDefaultFontPropertyName);
-    if (font != nullptr) {
-        return *font;
+    if (default_font_) {
+        return *default_font_;
     }
-    else {
-        return Font::Default();
-    };
+    return Font::Default();
 }
 
 void TextualControl::SetFont(const zaf::Font& font) {
 
-    GetPropertyMap().SetProperty(kDefaultFontPropertyName, font);
+    default_font_ = font;
 
     ReleaseTextLayout(); 
     NeedRepaint();
@@ -372,11 +350,10 @@ void TextualControl::SetFontWeight(zaf::FontWeight weight) {
 
 Font TextualControl::GetFontAtPosition(std::size_t position) const {
     
-    auto fonts = TryGetFontRangeMap(GetPropertyMap());
-    if (fonts != nullptr) {
-            
+    if (font_range_map_) {
+
         bool is_existent = false;
-        auto font = fonts->GetValueAtPosition(position, &is_existent);
+        auto font = font_range_map_->GetValueAtPosition(position, &is_existent);
 
         if (is_existent) {
             return font;
@@ -389,15 +366,11 @@ Font TextualControl::GetFontAtPosition(std::size_t position) const {
 
 void TextualControl::SetFontAtRange(const zaf::Font& font, const TextRange& range) {
 
-    auto fonts = GetPropertyMap().GetProperty<std::shared_ptr<FontRangeMap>>(
-        kFontsPropertyName,
-        []() { return std::make_shared<FontRangeMap>(); });
-
-    if (fonts == nullptr) {
-        return;
+    if (!font_range_map_) {
+        font_range_map_ = std::make_shared<internal::RangeMap<zaf::Font>>();
     }
 
-    fonts->AddValueToRange(font, range.index, range.length);
+    font_range_map_->AddValueToRange(font, range.index, range.length);
 
     if (text_layout_ != nullptr) {
         SetFontToTextLayout(font, range, text_layout_);
@@ -409,12 +382,7 @@ void TextualControl::SetFontAtRange(const zaf::Font& font, const TextRange& rang
 
 void TextualControl::ResetFonts() {
 
-    auto fonts = TryGetFontRangeMap(GetPropertyMap());
-    if (fonts == nullptr) {
-        return;
-    }
-
-    fonts->RemoveAllValues();
+    font_range_map_.reset();
 
     ReleaseTextLayout();
     NeedRepaint();
@@ -422,21 +390,12 @@ void TextualControl::ResetFonts() {
 
 
 TextAlignment TextualControl::TextAlignment() const {
-
-    auto text_alignment = 
-        GetPropertyMap().TryGetProperty<zaf::TextAlignment>(property::TextAlignment);
-
-    if (text_alignment != nullptr) {
-        return *text_alignment;
-    }
-    else {
-        return TextAlignment::Leading;
-    }
+    return text_alignment_;
 }
 
 void TextualControl::SetTextAlignment(zaf::TextAlignment alignment) {
 
-    GetPropertyMap().SetProperty(property::TextAlignment, alignment);
+    text_alignment_ = alignment;
 
     if (text_layout_ != nullptr) {
         text_layout_.SetTextAlignment(alignment);
@@ -447,21 +406,12 @@ void TextualControl::SetTextAlignment(zaf::TextAlignment alignment) {
 
 
 ParagraphAlignment TextualControl::ParagraphAlignment() const {
-
-    auto paragraph_alignment = 
-        GetPropertyMap().TryGetProperty<zaf::ParagraphAlignment>(property::ParagraphAlignment);
-
-    if (paragraph_alignment != nullptr) {
-        return *paragraph_alignment;
-    }
-    else {
-        return ParagraphAlignment::Near;
-    }
+    return paragraph_alignment;
 }
 
 void TextualControl::SetParagraphAlignment(zaf::ParagraphAlignment alignment) {
 
-    GetPropertyMap().SetProperty(property::ParagraphAlignment, alignment);
+    paragraph_alignment = alignment;
 
     if (text_layout_ != nullptr) {
         text_layout_.SetParagraphAlignment(alignment);
@@ -472,19 +422,12 @@ void TextualControl::SetParagraphAlignment(zaf::ParagraphAlignment alignment) {
 
 
 WordWrapping TextualControl::WordWrapping() const {
-
-    auto word_wrapping = GetPropertyMap().TryGetProperty<zaf::WordWrapping>(property::WordWrapping);
-    if (word_wrapping != nullptr) {
-        return *word_wrapping;
-    }
-    else {
-        return WordWrapping::NoWrap;
-    }
+    return word_wrapping_;
 }
 
 void TextualControl::SetWordWrapping(zaf::WordWrapping word_wrapping) {
 
-    GetPropertyMap().SetProperty(property::WordWrapping, word_wrapping);
+    word_wrapping_ = word_wrapping;
 
     if (text_layout_ != nullptr) {
         text_layout_.SetWordWrapping(word_wrapping);
@@ -495,20 +438,12 @@ void TextualControl::SetWordWrapping(zaf::WordWrapping word_wrapping) {
 
 
 TextTrimming TextualControl::TextTrimming() const {
-
-    auto text_trimming = GetPropertyMap().TryGetProperty<zaf::TextTrimming>(
-        kTextTrimmingPropertyName);
-
-    if (text_trimming != nullptr) {
-        return *text_trimming;
-    }
-
-    return zaf::TextTrimming();
+    return text_trimming_;
 }
 
 void TextualControl::SetTextTrimming(const zaf::TextTrimming& text_trimming) {
 
-    GetPropertyMap().SetProperty(kTextTrimmingPropertyName, text_trimming);
+    text_trimming_ = text_trimming;
 
     if (text_layout_ != nullptr) {
 
@@ -559,39 +494,6 @@ zaf::Size TextualControl::CalculatePreferredContentSize(const zaf::Size& max_siz
         metrics.Width();
 
     return zaf::Size{ width, metrics.Height() };
-}
-
-
-static std::shared_ptr<FontRangeMap> TryGetFontRangeMap(const PropertyMap& property_map) {
-
-    auto fonts_pointer = property_map.TryGetProperty<std::shared_ptr<FontRangeMap>>(kFontsPropertyName);
-    if (fonts_pointer != nullptr) {
-        return *fonts_pointer;
-    }
-    else {
-        return nullptr;
-    }
-}
-
-
-static std::shared_ptr<TextColorPickerRangeMap> TryGetTextColorPickersRangeMap(const PropertyMap& property_map) {
-
-    auto color_pickers_pointer = property_map.TryGetProperty<std::shared_ptr<TextColorPickerRangeMap>>(kTextColorPickersPropertyName);
-    if (color_pickers_pointer != nullptr) {
-        return *color_pickers_pointer;
-    }
-    else {
-        return nullptr;
-    }
-}
-
-
-static void SetFontToTextLayout(const Font& font, const TextRange& range, TextLayout& text_layout) {
-
-    text_layout.SetFontFamilyName(font.family_name, range);
-    text_layout.SetFontSize(font.size, range);
-    text_layout.SetFontWeight(font.weight, range);
-    text_layout.SetHasUnderline(font.has_underline, range);
 }
 
 }

@@ -94,20 +94,13 @@ void Button::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 
 bool Button::IsDefault() const {
-
-    auto is_default = GetPropertyMap().TryGetProperty<bool>(kIsDefaultPropertyName);
-    if (is_default != nullptr) {
-        return *is_default;
-    }
-    else {
-        return false;
-    }
+    return is_default_;
 }
 
 
 void Button::SetIsDefault(bool is_default) {
 
-    GetPropertyMap().SetProperty(kIsDefaultPropertyName, is_default);
+    is_default_ = is_default;
     NeedRepaint();
 }
 

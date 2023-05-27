@@ -3,6 +3,8 @@
 #include <string_view>
 #include <zaf/control/control.h>
 #include <zaf/control/event/text_changed_info.h>
+#include <zaf/control/internal/range_map.h>
+#include <zaf/graphic/font/font.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
@@ -15,7 +17,6 @@
 
 namespace zaf {
 
-class Font;
 class TextFormat;
 class TextLayout;
 class TextSource;
@@ -242,6 +243,15 @@ private:
 private:
     std::unique_ptr<TextSource> text_source_;
     mutable TextLayout text_layout_;
+
+    std::optional<zaf::Font> default_font_;
+    std::shared_ptr<internal::RangeMap<zaf::Font>> font_range_map_;
+    ColorPicker default_text_color_picker_;
+    std::shared_ptr<internal::RangeMap<ColorPicker>> text_color_picker_map_;
+    zaf::TextAlignment text_alignment_{ zaf::TextAlignment::Left };
+    zaf::ParagraphAlignment paragraph_alignment{ zaf::ParagraphAlignment::Top };
+    zaf::WordWrapping word_wrapping_{ zaf::WordWrapping::NoWrap };
+    zaf::TextTrimming text_trimming_;
 
     Event<TextChangedInfo> text_changed_event_;
 };
