@@ -24,8 +24,8 @@ public:
         return sub_menu_;
     }
 
-    Observable<SubMenuShowInfo> SubMenuShowEvent();
-    Observable<SubMenuCloseInfo> SubMenuCloseEvent();
+    Observable<SubMenuShowInfo> SubMenuShowEvent() const;
+    Observable<SubMenuCloseInfo> SubMenuCloseEvent() const;
 
 protected:
     void Initialize() override;
@@ -42,6 +42,9 @@ private:
 
 private:
     std::shared_ptr<PopupMenu> sub_menu_;
+
+    Event<SubMenuShowInfo> sub_menu_show_event_;
+    Event<SubMenuCloseInfo> sub_menu_close_event_;
 };
 
 }

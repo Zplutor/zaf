@@ -2,7 +2,6 @@
 #include <Windowsx.h>
 #include <zaf/application.h>
 #include <zaf/base/error/system_error.h>
-#include <zaf/base/event_utility.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>

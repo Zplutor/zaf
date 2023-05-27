@@ -89,7 +89,7 @@ public:
     /**
     Gets the event which is raised when the selected menu item is changed.
     */
-    Observable<SelectedMenuItemChangedInfo> SelectedMenuItemChangedEvent();
+    Observable<SelectedMenuItemChangedInfo> SelectedMenuItemChangedEvent() const;
 
 protected:
     void Initialize() override;
@@ -159,6 +159,8 @@ private:
     std::weak_ptr<MenuItem> showing_sub_menu_item_;
     Subscription show_sub_menu_timer_;
     Subscription close_sub_menu_timer_;
+
+    Event<SelectedMenuItemChangedInfo> selected_menu_item_changed_event_;
 };
 
 }

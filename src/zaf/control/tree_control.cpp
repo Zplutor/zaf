@@ -1,6 +1,5 @@
 #include <zaf/control/tree_control.h>
 #include <zaf/base/error/check.h>
-#include <zaf/base/event_utility.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/tree_data_source.h>
@@ -9,13 +8,6 @@
 #include <zaf/rx/subject.h>
 
 namespace zaf {
-namespace {
-
-constexpr const wchar_t* const kItemCollapseEventProperyName = L"ItemCollapseEvent";
-constexpr const wchar_t* const kItemExpandEventPropertyName = L"ItemExpandEvent";
-constexpr const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangeEvent";
-
-}
 
 ZAF_DEFINE_TYPE(TreeControl)
 ZAF_DEFINE_TYPE_END
@@ -132,75 +124,45 @@ void TreeControl::ReloadItem(const std::shared_ptr<Object>& data) {
 
 void TreeControl::SelectionChange() {
 
-    auto observer = GetEventObserver<TreeControlSelectionChangeInfo>(
-        GetPropertyMap(), 
-        kSelectionChangeEventPropertyName);
-
-    if (!observer) {
-        return;
-    }
-
     TreeControlSelectionChangeInfo event_info(
         std::dynamic_pointer_cast<TreeControl>(shared_from_this()));
-    observer->OnNext(event_info);
+
+    selection_changed_event_.Raise(event_info);
 }
 
 
-Observable<TreeControlSelectionChangeInfo> TreeControl::SelectionChangeEvent() {
-
-    return GetEventObservable<TreeControlSelectionChangeInfo>(
-        GetPropertyMap(),
-        kSelectionChangeEventPropertyName);
+Observable<TreeControlSelectionChangeInfo> TreeControl::SelectionChangeEvent() const {
+    return selection_changed_event_.GetObservable();
 }
 
 
 void TreeControl::ItemExpand(const std::shared_ptr<Object>& data) {
 
-    auto observer = GetEventObserver<TreeControlItemExpandInfo>(
-        GetPropertyMap(),
-        kItemExpandEventPropertyName);
-
-    if (!observer) {
-        return;
-    }
-
     TreeControlItemExpandInfo event_info(
         std::dynamic_pointer_cast<TreeControl>(shared_from_this()),
         data);
-    observer->OnNext(event_info);
+
+    item_expand_event_.Raise(event_info);
 }
 
 
-Observable<TreeControlItemExpandInfo> TreeControl::ItemExpandEvent() {
-
-    return GetEventObservable<TreeControlItemExpandInfo>(
-        GetPropertyMap(),
-        kItemExpandEventPropertyName);
+Observable<TreeControlItemExpandInfo> TreeControl::ItemExpandEvent() const {
+    return item_expand_event_.GetObservable();
 }
 
 
 void TreeControl::ItemCollapse(const std::shared_ptr<Object>& data) {
 
-    auto observer = GetEventObserver<TreeControlItemCollapseInfo>(
-        GetPropertyMap(),
-        kItemCollapseEventProperyName);
-
-    if (!observer) {
-        return;
-    }
-
     TreeControlItemCollapseInfo event_info(
         std::dynamic_pointer_cast<TreeControl>(shared_from_this()), 
         data);
-    observer->OnNext(event_info);
+
+    item_collapse_event_.Raise(event_info);
 }
 
 
-Observable<TreeControlItemCollapseInfo> TreeControl::ItemCollapseEvent() {
-
-    return GetEventObservable<TreeControlItemCollapseInfo>(
-        GetPropertyMap(),
-        kItemCollapseEventProperyName);
+Observable<TreeControlItemCollapseInfo> TreeControl::ItemCollapseEvent() const {
+    return item_collapse_event_.GetObservable();
 }
 
 }

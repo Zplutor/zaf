@@ -1,6 +1,5 @@
 #include <zaf/control/split_control.h>
 #include <algorithm>
-#include <zaf/base/event_utility.h>
 #include <zaf/base/log.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
@@ -14,7 +13,6 @@
 namespace zaf {
 namespace {
 
-const wchar_t* const kSplitDistanceChangedEventPropertyName = L"SplitDistanceChangedEvent";
 const wchar_t* const kSplitterColorPickerPropertyName = L"SplitterColorPicker";
 
 }
@@ -188,17 +186,11 @@ bool SplitControl::UpdateActualSplitDistance(bool is_by_dragging) {
     actual_split_distance_ = distance;
 
     //Raise the event.
-    auto event_observer = GetEventObserver<SplitDistanceChangedInfo>(
-        GetPropertyMap(),
-        kSplitDistanceChangedEventPropertyName);
-
-    if (event_observer) {
-        event_observer->OnNext(SplitDistanceChangedInfo{
-            As<SplitControl>(shared_from_this()),
-            previous_distance,
-            is_by_dragging
-        });
-    }
+    split_distance_changed_event_.Raise(SplitDistanceChangedInfo{
+        As<SplitControl>(shared_from_this()),
+        previous_distance,
+        is_by_dragging
+    });
 
     return true;
 }
@@ -270,10 +262,8 @@ void SplitControl::InnerSetSplitDistance(float distance, bool is_by_dragging) {
 }
 
 
-Observable<SplitDistanceChangedInfo> SplitControl::SplitDistanceChangedEvent() {
-    return GetEventObservable<SplitDistanceChangedInfo>(
-        GetPropertyMap(),
-        kSplitDistanceChangedEventPropertyName);
+Observable<SplitDistanceChangedInfo> SplitControl::SplitDistanceChangedEvent() const {
+    return split_distance_changed_event_.GetObservable();
 }
 
 

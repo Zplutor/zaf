@@ -1,6 +1,5 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/base/error/check.h>
-#include <zaf/base/event_utility.h>
 #include <zaf/base/timer.h>
 #include <zaf/control/scroll_bar_arrow.h>
 #include <zaf/control/scroll_bar_thumb.h>
@@ -17,8 +16,6 @@
 
 namespace zaf {
 namespace {
-
-constexpr const wchar_t* const kScrollEventPropertyName = L"ScrollEvent";
 
 constexpr int kTimerInitialInterval = 300;
 constexpr int kTimerContinuousInterval = 50;
@@ -209,15 +206,9 @@ void ScrollBar::SetValue(int value) {
 
         NeedRelayout();
 
-        auto event_observer = GetEventObserver<ScrollBarScrollInfo>(
-            GetPropertyMap(), 
-            kScrollEventPropertyName);
-
-        if (event_observer) {
-            ScrollBarScrollInfo event_info(
-                std::dynamic_pointer_cast<ScrollBar>(shared_from_this()));
-            event_observer->OnNext(event_info);
-        }
+        scroll_event_.Raise(ScrollBarScrollInfo{
+            std::dynamic_pointer_cast<ScrollBar>(shared_from_this()) 
+        });
     }
 }
 
@@ -413,8 +404,8 @@ void ScrollBar::ChangeVerticalRectToHorizontalRect(zaf::Rect& rect) {
 }
 
 
-Observable<ScrollBarScrollInfo> ScrollBar::ScrollEvent() {
-    return GetEventObservable<ScrollBarScrollInfo>(GetPropertyMap(), kScrollEventPropertyName);
+Observable<ScrollBarScrollInfo> ScrollBar::ScrollEvent() const {
+    return scroll_event_.GetObservable();
 }
 
 

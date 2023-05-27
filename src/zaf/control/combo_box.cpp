@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <zaf/base/as.h>
 #include <zaf/base/container/utility/range.h>
-#include <zaf/base/event_utility.h>
 #include <zaf/control/button.h>
 #include <zaf/control/internal/combo_box_drop_down_window.h>
 #include <zaf/control/list_control_delegate.h>
@@ -31,7 +30,6 @@ const wchar_t* const kDropDownButtonWidthPropertyName = L"DropDownButtonWidth";
 const wchar_t* const kIsEditablePropertyName = L"IsEditable";
 const wchar_t* const kMaxVisibleItemCountPropertyName = L"MaxVisibleItemCount";
 const wchar_t* const kMinVisibleItemCountPropertyName = L"MinVisibleItemCount";
-const wchar_t* const kSelectionChangeEventPropertyName = L"SelectionChangedEvent";
 
 }
 
@@ -338,11 +336,13 @@ void ComboBox::SetIsEditable(bool is_editable) {
 }
 
 
-Observable<ComboBoxSelectionChangedInfo> ComboBox::SelectionChangedEvent() {
+Observable<ComboBoxSelectionChangedInfo> ComboBox::SelectionChangedEvent() const {
+    return selection_changed_event_.GetObservable();
+}
 
-    return GetEventObservable<ComboBoxSelectionChangedInfo>(
-        GetPropertyMap(),
-        kSelectionChangeEventPropertyName);
+
+void ComboBox::OnSelectionChanged(const ComboBoxSelectionChangedInfo& event_info) {
+    selection_changed_event_.Raise(event_info);
 }
 
 
@@ -668,18 +668,6 @@ void ComboBox::OnTextChanged(const TextChangedInfo& event_info) {
 
 void ComboBox::NotifySelectionChange() {
     OnSelectionChanged(ComboBoxSelectionChangedInfo{ As<ComboBox>(shared_from_this()) });
-}
-
-
-void ComboBox::OnSelectionChanged(const ComboBoxSelectionChangedInfo& event_info) {
-
-    auto observer = GetEventObserver<ComboBoxSelectionChangedInfo>(
-        GetPropertyMap(),
-        kSelectionChangeEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
 }
 
 

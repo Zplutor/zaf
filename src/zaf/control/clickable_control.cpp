@@ -1,5 +1,4 @@
 #include <zaf/control/clickable_control.h>
-#include <zaf/base/event_utility.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/object_type.h>
@@ -9,11 +8,6 @@
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
-namespace {
-
-constexpr const wchar_t* const ClickEventPropertyName = L"ClickEvent";
-
-}
 
 ZAF_DEFINE_TYPE(ClickableControl)
 ZAF_DEFINE_TYPE_END
@@ -46,14 +40,12 @@ void ClickableControl::Click() {
 
 
 void ClickableControl::OnClick(const ClickInfo& event_info) {
+    click_event_.Raise(event_info);
+}
 
-    auto observer = GetEventObserver<ClickInfo>(
-        GetPropertyMap(),
-        ClickEventPropertyName);
 
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+Observable<ClickInfo> ClickableControl::ClickEvent() const {
+    return click_event_.GetObservable();
 }
 
 
@@ -272,11 +264,6 @@ void ClickableControl::OnFocusLost(const FocusLostInfo& event_info) {
     __super::OnFocusLost(event_info);
 
     NeedRepaint();
-}
-
-
-Observable<ClickInfo> ClickableControl::ClickEvent() {
-    return GetEventObservable<ClickInfo>(GetPropertyMap(), ClickEventPropertyName);
 }
 
 }

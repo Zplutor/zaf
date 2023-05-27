@@ -1,5 +1,4 @@
 #include <zaf/control/textual_control.h>
-#include <zaf/base/event_utility.h>
 #include <zaf/control/internal/range_map.h>
 #include <zaf/control/text_source.h>
 #include <zaf/graphic/canvas.h>
@@ -24,7 +23,6 @@ static void SetFontToTextLayout(const Font& font, const TextRange& range, TextLa
 static const wchar_t* const kDefaultFontPropertyName = L"DefaultFont";
 static const wchar_t* const kDefaultTextColorPickerPropertyName = L"DefaultTextColorPicker";
 static const wchar_t* const kFontsPropertyName = L"Fonts";
-static const wchar_t* const TextChangedEventPropertyName = L"TextChangedEvent";
 static const wchar_t* const kTextColorPickersPropertyName = L"TextColorPickers";
 static const wchar_t* const kTextTrimmingPropertyName = L"TextTrimming";
 
@@ -523,8 +521,8 @@ void TextualControl::SetTextTrimming(const zaf::TextTrimming& text_trimming) {
 }
 
 
-Observable<TextChangedInfo> TextualControl::TextChangedEvent() {
-    return GetEventObservable<TextChangedInfo>(GetPropertyMap(), TextChangedEventPropertyName);
+Observable<TextChangedInfo> TextualControl::TextChangedEvent() const {
+    return text_changed_event_.GetObservable();
 }
 
 
@@ -538,14 +536,7 @@ void TextualControl::NotifyTextChanged() {
 
 
 void TextualControl::OnTextChanged(const TextChangedInfo& event_info) {
-
-    auto event_observer = GetEventObserver<TextChangedInfo>(
-        GetPropertyMap(),
-        TextChangedEventPropertyName);
-
-    if (event_observer) {
-        event_observer->OnNext(event_info);
-    }
+    text_changed_event_.Raise(event_info);
 }
 
 

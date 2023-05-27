@@ -5,7 +5,6 @@
 #include <zaf/base/define.h>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/check.h>
-#include <zaf/base/event_utility.h>
 #include <zaf/control/internal/cached_painting.h>
 #include <zaf/control/internal/control_updating.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
@@ -65,28 +64,8 @@ constexpr const wchar_t* const kAnchorPropertyName = L"Anchor";
 constexpr const wchar_t* const kBackgroundImageLayoutPropertyName = L"BackgroundImageLayout";
 constexpr const wchar_t* const kBackgroundImagePickerPropertyName = L"BackgroundImagePicker";
 constexpr const wchar_t* const kLayouterPropertyName = L"Layouter";
-constexpr const wchar_t* const kMouseEnterEventPropertyName = L"MouseEnterEvent";
-constexpr const wchar_t* const kMouseLeaveEventPropertyName = L"MouseLeaveEvent";
-constexpr const wchar_t* const kMouseHoverEventPropertyName = L"MouseHoverEvent";
-constexpr const wchar_t* const RectChangedEventPropertyName = L"RectChangedEvent";
 constexpr const wchar_t* const CanDoubleClickPropertyName = L"CanDoubleClick";
-constexpr const wchar_t* const CharInputEventPropertyName = L"CharInputEvent";
-constexpr const wchar_t* const DoubleClickEventPropertyName = L"DoubleClickEvent";
-constexpr const wchar_t* const FocusGainedEventPropertyName = L"FocusGainedEvent";
-constexpr const wchar_t* const FocusLostEventPropertyName = L"FocusLostEvent";
-constexpr const wchar_t* const KeyDownEventPropertyName = L"KeyDown";
-constexpr const wchar_t* const KeyUpEventPropertyName = L"KeyUp";
-constexpr const wchar_t* const MouseCapturedEventPropertyName = L"MouseCaptured";
-constexpr const wchar_t* const MouseCursorChangingEventPropertyName = L"MouseCursorChangingEvent";
-constexpr const wchar_t* const MouseDownEventPropertyName = L"MouseDown";
-constexpr const wchar_t* const MouseMoveEventPropertyName = L"MouseMove";
-constexpr const wchar_t* const MouseReleasedEventPropertyName = L"MouseReleased";
-constexpr const wchar_t* const MouseUpEventPropertyName = L"MouseUp";
-constexpr const wchar_t* const ParentChangedEventPropertyName = L"ParentChangedEvent";
 constexpr const wchar_t* const TooltipPropertyName = L"Tooltip";
-constexpr const wchar_t* const SysKeyDownEventPropertyName = L"SysKeyDownEvent";
-constexpr const wchar_t* const SysKeyUpEventPropertyName = L"SysKeyUpEvent";
-constexpr const wchar_t* const SysCharInputEventPropertyName = L"SysCharInputEvent";
 
 constexpr bool DefaultCanFocused = false;
 constexpr bool DefaultIsEnabled = true;
@@ -581,14 +560,12 @@ void Control::SetRect(const zaf::Rect& rect) {
 
 
 void Control::OnRectChanged(const RectChangedInfo& event_info) {
+    rect_changed_event_.Raise(event_info);
+}
 
-    auto event_observer = GetEventObserver<RectChangedInfo>(
-        GetPropertyMap(),
-        RectChangedEventPropertyName);
 
-    if (event_observer) {
-        event_observer->OnNext(event_info);
-    }
+Observable<RectChangedInfo> Control::RectChangedEvent() const {
+    return rect_changed_event_.GetObservable();
 }
 
 
@@ -1601,63 +1578,6 @@ void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
 }
 
 
-Observable<RectChangedInfo> Control::RectChangedEvent() {
-    return GetEventObservable<RectChangedInfo>(
-        GetPropertyMap(), 
-        RectChangedEventPropertyName);
-}
-
-
-Observable<FocusGainedInfo> Control::FocusGainedEvent() {
-    return GetEventObservable<FocusGainedInfo>(
-        GetPropertyMap(),
-        FocusGainedEventPropertyName);
-}
-
-
-Observable<FocusLostInfo> Control::FocusLostEvent() {
-    return GetEventObservable<FocusLostInfo>(GetPropertyMap(), FocusLostEventPropertyName);
-}
-
-
-Observable<MouseEnterInfo> Control::MouseEnterEvent() {
-    return GetEventObservable<MouseEnterInfo>(
-        GetPropertyMap(), 
-        kMouseEnterEventPropertyName);
-}
-
-
-Observable<MouseLeaveInfo> Control::MouseLeaveEvent() {
-    return GetEventObservable<MouseLeaveInfo>(
-        GetPropertyMap(), 
-        kMouseLeaveEventPropertyName);
-}
-
-
-Observable<MouseHoverInfo> Control::MouseHoverEvent() {
-    return GetEventObservable<MouseHoverInfo>(
-        GetPropertyMap(),
-        kMouseHoverEventPropertyName);
-}
-
-
-Observable<MouseDownInfo> Control::MouseDownEvent() {
-    return GetEventObservable<MouseDownInfo>(GetPropertyMap(), MouseDownEventPropertyName);
-}
-
-
-Observable<MouseUpInfo> Control::MouseUpEvent() {
-    return GetEventObservable<MouseUpInfo>(GetPropertyMap(), MouseUpEventPropertyName);
-}
-
-
-Observable<DoubleClickInfo> Control::DoubleClickEvent() {
-    return GetEventObservable<DoubleClickInfo>(
-        GetPropertyMap(), 
-        DoubleClickEventPropertyName);
-}
-
-
 const Point Control::GetMousePosition() const {
 
     auto window = Window();
@@ -1749,83 +1669,58 @@ std::optional<HitTestResult> Control::HitTest(const HitTestMessage& message) {
 
 
 void Control::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
-
-    auto observer = GetEventObserver<MouseCursorChangingInfo>(
-        GetPropertyMap(),
-        MouseCursorChangingEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    mouse_cursor_changing_event_.Raise(event_info);
 }
 
 
-Observable<MouseCursorChangingInfo> Control::MouseCursorChangingEvent() {
-    return GetEventObservable<MouseCursorChangingInfo>(
-        GetPropertyMap(),
-        MouseCursorChangingEventPropertyName);
+Observable<MouseCursorChangingInfo> Control::MouseCursorChangingEvent() const {
+    return mouse_cursor_changing_event_.GetObservable();
 }
 
 
 void Control::OnMouseMove(const MouseMoveInfo& event_info) {
-
-    auto event_observer = GetEventObserver<MouseMoveInfo>(
-        GetPropertyMap(), 
-        MouseMoveEventPropertyName);
-
-    if (event_observer) {
-        event_observer->OnNext(event_info);
-    }
+    mouse_move_event_.Raise(event_info);
 }
 
 
-Observable<MouseMoveInfo> Control::MouseMoveEvent() {
-    return GetEventObservable<MouseMoveInfo>(GetPropertyMap(), MouseMoveEventPropertyName);
+Observable<MouseMoveInfo> Control::MouseMoveEvent() const {
+    return mouse_move_event_.GetObservable();
 }
 
 
 void Control::OnMouseEnter(const MouseEnterInfo& event_info) {
+    mouse_enter_event_.Raise(event_info);
+}
 
-    auto event_observer = GetEventObserver<MouseEnterInfo>(
-        GetPropertyMap(),
-        kMouseEnterEventPropertyName);
 
-    if (event_observer) {
-        event_observer->OnNext(event_info);
-    }
+Observable<MouseEnterInfo> Control::MouseEnterEvent() const {
+    return mouse_enter_event_.GetObservable();
 }
 
 
 void Control::OnMouseLeave(const MouseLeaveInfo& event_info) {
+    mouse_leave_event_.Raise(event_info);
+}
 
-    auto event_observer = GetEventObserver<MouseLeaveInfo>(
-        GetPropertyMap(),
-        kMouseLeaveEventPropertyName);
 
-    if (event_observer) {
-        event_observer->OnNext(event_info);
-    }
+Observable<MouseLeaveInfo> Control::MouseLeaveEvent() const {
+    return mouse_leave_event_.GetObservable();
 }
 
 
 void Control::OnMouseHover(const MouseHoverInfo& event_info) {
+    mouse_hover_event_.Raise(event_info);
+}
 
-    auto event_observer = GetEventObserver<MouseHoverInfo>(
-        GetPropertyMap(),
-        kMouseHoverEventPropertyName);
 
-    if (event_observer) {
-        event_observer->OnNext(event_info);
-    }
+Observable<MouseHoverInfo> Control::MouseHoverEvent() const {
+    return mouse_hover_event_.GetObservable();
 }
 
 
 void Control::OnMouseDown(const MouseDownInfo& event_info) {
 
-    auto observer = GetEventObserver<MouseDownInfo>(GetPropertyMap(), MouseDownEventPropertyName);
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    mouse_down_event_.Raise(event_info);
 
     if (event_info.IsHandled()) {
         return;
@@ -1862,12 +1757,18 @@ bool Control::HandleDoubleClickOnMouseDown(const Point& position) {
 }
 
 
-void Control::OnMouseUp(const MouseUpInfo& event_info) {
+Observable<MouseDownInfo> Control::MouseDownEvent() const {
+    return mouse_down_event_.GetObservable();
+}
 
-    auto observer = GetEventObserver<MouseUpInfo>(GetPropertyMap(), MouseUpEventPropertyName);
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+
+void Control::OnMouseUp(const MouseUpInfo& event_info) {
+    mouse_up_event_.Raise(event_info);
+}
+
+
+Observable<MouseUpInfo> Control::MouseUpEvent() const {
+    return mouse_up_event_.GetObservable();
 }
 
 
@@ -1883,14 +1784,12 @@ void Control::RaiseDoubleClickEvent(const Point& position) {
 
 
 void Control::OnDoubleClick(const DoubleClickInfo& event_info) {
+    double_click_event_.Raise(event_info);
+}
 
-    auto observer = GetEventObserver<DoubleClickInfo>(
-        GetPropertyMap(),
-        DoubleClickEventPropertyName);
 
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+Observable<DoubleClickInfo> Control::DoubleClickEvent() const {
+    return double_click_event_.GetObservable();
 }
 
 
@@ -1900,159 +1799,102 @@ void Control::OnMouseWheel(const MouseWheelInfo& event_info) {
 
 
 void Control::OnMouseCaptured(const MouseCapturedInfo& event_info) {
-
-    auto observer = GetEventObserver<MouseCapturedInfo>(
-        GetPropertyMap(), 
-        MouseCapturedEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    mouse_captured_event_.Raise(event_info);
 }
 
 
-Observable<MouseCapturedInfo> Control::MouseCapturedEvent() {
-    return GetEventObservable<MouseCapturedInfo>(GetPropertyMap(), MouseCapturedEventPropertyName);
+Observable<MouseCapturedInfo> Control::MouseCapturedEvent() const {
+    return mouse_captured_event_.GetObservable();
 }
 
 
 void Control::OnMouseReleased(const MouseReleasedInfo& event_info) {
-
-    auto observer = GetEventObserver<MouseReleasedInfo>(
-        GetPropertyMap(), 
-        MouseReleasedEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    mouse_released_event_.Raise(event_info);
 }
 
 
-Observable<MouseReleasedInfo> Control::MouseReleasedEvent() {
-    return GetEventObservable<MouseReleasedInfo>(GetPropertyMap(), MouseReleasedEventPropertyName);
+Observable<MouseReleasedInfo> Control::MouseReleasedEvent() const {
+    return mouse_released_event_.GetObservable();
 }
 
 
 void Control::OnKeyDown(const KeyDownInfo& event_info) {
-
-    auto observer = GetEventObserver<KeyDownInfo>(
-        GetPropertyMap(),
-        KeyDownEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    key_down_event_.Raise(event_info);
 }
 
 
-Observable<KeyDownInfo> Control::KeyDownEvent() {
-    return GetEventObservable<KeyDownInfo>(GetPropertyMap(), KeyDownEventPropertyName);
+Observable<KeyDownInfo> Control::KeyDownEvent() const {
+    return key_down_event_.GetObservable();
 }
 
 
 void Control::OnKeyUp(const KeyUpInfo& event_info) {
-
-    auto observer = GetEventObserver<KeyUpInfo>(
-        GetPropertyMap(),
-        KeyUpEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    key_up_event_.Raise(event_info);
 }
 
 
-Observable<KeyUpInfo> Control::KeyUpEvent() {
-    return GetEventObservable<KeyUpInfo>(GetPropertyMap(), KeyUpEventPropertyName);
+Observable<KeyUpInfo> Control::KeyUpEvent() const {
+    return key_up_event_.GetObservable();
 }
 
 
 void Control::OnCharInput(const CharInputInfo& event_info) {
-
-    auto observer = GetEventObserver<CharInputInfo>(
-        GetPropertyMap(), 
-        CharInputEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    char_input_event_.Raise(event_info);
 }
 
 
-Observable<CharInputInfo> Control::CharInputEvent() {
-    return GetEventObservable<CharInputInfo>(GetPropertyMap(), CharInputEventPropertyName);
+Observable<CharInputInfo> Control::CharInputEvent() const {
+    return char_input_event_.GetObservable();
 }
 
 
 void Control::OnSysKeyDown(const SysKeyDownInfo& event_info) {
-
-    auto observer = GetEventObserver<SysKeyDownInfo>(
-        GetPropertyMap(),
-        SysKeyDownEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    sys_key_down_event_.Raise(event_info);
 }
 
 
-Observable<SysKeyDownInfo> Control::SysKeyDownEvent() {
-    return GetEventObservable<SysKeyDownInfo>(GetPropertyMap(), SysKeyDownEventPropertyName);
+Observable<SysKeyDownInfo> Control::SysKeyDownEvent() const {
+    return sys_key_down_event_.GetObservable();
 }
 
 
 void Control::OnSysKeyUp(const SysKeyUpInfo& event_info) {
-
-    auto observer = GetEventObserver<SysKeyUpInfo>(
-        GetPropertyMap(),
-        SysKeyUpEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    sys_key_up_event_.Raise(event_info);
 }
 
 
-Observable<SysKeyUpInfo> Control::SysKeyUpEvent() {
-    return GetEventObservable<SysKeyUpInfo>(GetPropertyMap(), SysKeyUpEventPropertyName);
+Observable<SysKeyUpInfo> Control::SysKeyUpEvent() const {
+    return sys_key_up_event_.GetObservable();
 }
 
 
 void Control::OnSysCharInput(const SysCharInputInfo& event_info) {
-
-    auto observer = GetEventObserver<SysCharInputInfo>(
-        GetPropertyMap(),
-        SysCharInputEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    sys_char_input_event_.Raise(event_info);
 }
 
 
-Observable<SysCharInputInfo> Control::SysCharInputEvent() {
-    return GetEventObservable<SysCharInputInfo>(GetPropertyMap(), SysCharInputEventPropertyName);
+Observable<SysCharInputInfo> Control::SysCharInputEvent() const {
+    return sys_char_input_event_.GetObservable();
 }
 
 
 void Control::OnFocusGained(const FocusGainedInfo& event_info) {
+    focus_gained_event_.Raise(event_info);
+}
 
-    auto observer = GetEventObserver<FocusGainedInfo>(
-        GetPropertyMap(),
-        FocusGainedEventPropertyName);
 
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+Observable<FocusGainedInfo> Control::FocusGainedEvent() const {
+    return focus_gained_event_.GetObservable();
 }
 
 
 void Control::OnFocusLost(const FocusLostInfo& event_info) {
+    focus_lost_event_.Raise(event_info);
+}
 
-    auto observer = GetEventObserver<FocusLostInfo>(GetPropertyMap(), FocusLostEventPropertyName);
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+
+Observable<FocusLostInfo> Control::FocusLostEvent() const {
+    return focus_lost_event_.GetObservable();
 }
 
 
@@ -2075,22 +1917,12 @@ void Control::OnDPIChanged() {
 
 
 void Control::OnParentChanged(const ParentChangedInfo& event_info) {
-
-    auto observer = GetEventObserver<ParentChangedInfo>(
-        GetPropertyMap(),
-        ParentChangedEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    parent_changed_event_.Raise(event_info);
 }
 
 
-Observable<ParentChangedInfo> Control::ParentChangedEvent() {
-
-    return GetEventObservable<ParentChangedInfo>(
-        GetPropertyMap(),
-        ParentChangedEventPropertyName);
+Observable<ParentChangedInfo> Control::ParentChangedEvent() const {
+    return parent_changed_event_.GetObservable();
 }
 
 

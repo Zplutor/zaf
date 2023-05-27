@@ -3,7 +3,6 @@
 #include <tom.h>
 #include <cassert>
 #include <zaf/base/error/system_error.h>
-#include <zaf/base/event_utility.h>
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
 #include <zaf/control/rich_edit/embedded_object.h>
@@ -88,11 +87,7 @@ static const wchar_t* const kAcceptTabPropertyName = L"AcceptTab";
 static const wchar_t* const kInsetPropertyName = L"Inset";
 static const wchar_t* const kMaxLengthPropertyName = L"MaxLength";
 static const wchar_t* const kPasswordCharacterPropertyName = L"PasswordCharacter";
-static const wchar_t* const kScrollBarChangeEventPropertyName = L"ScrollBarChangeEvent";
-static const wchar_t* const kScrollValuesChangeEventPropertyName = L"ScrollValuesChangeEvent";
-static const wchar_t* const kSelectionChangedEventPropertyName = L"SelectionChangedEvent";
 static const wchar_t* const kTextValidatorPropertyName = L"TextValidator";
-static const wchar_t* const TextChangingEventPropertyName = L"TextChangingEvent";
 
 
 ZAF_DEFINE_TYPE(RichEdit)
@@ -801,26 +796,13 @@ void RichEdit::GetScrollValues(
 }
 
 
-Observable<RichEditSelectionChangedInfo> RichEdit::SelectionChangedEvent() {
-    return GetEventObservable<RichEditSelectionChangedInfo>(
-        GetPropertyMap(), 
-        kSelectionChangedEventPropertyName);
-}
-
-
 Observable<SelfScrollingControlScrollBarChangInfo> RichEdit::ScrollBarChangeEvent() {
-
-    return GetEventObservable<SelfScrollingControlScrollBarChangInfo>(
-        GetPropertyMap(),
-        kScrollBarChangeEventPropertyName);
+    return scroll_bar_change_event_.GetObservable();
 }
 
 
 Observable<SelfScrollingControlScrollValuesChangeInfo> RichEdit::ScrollValuesChangeEvent() {
-
-    return GetEventObservable<SelfScrollingControlScrollValuesChangeInfo>(
-        GetPropertyMap(),
-        kScrollValuesChangeEventPropertyName);
+    return scroll_values_change_event_.GetObservable();
 }
 
 
@@ -1310,32 +1292,18 @@ void RichEdit::Scroll(bool is_horizontal, int new_value) {
 
 void RichEdit::ScrollBarChange() {
 
-    auto event_observer = GetEventObserver<SelfScrollingControlScrollBarChangInfo>(
-        GetPropertyMap(),
-        kScrollBarChangeEventPropertyName);
-
-    if (event_observer) {
-
-        SelfScrollingControlScrollBarChangInfo event_info;
-        event_info.self_scrolling_control = this;
-        event_observer->OnNext(event_info);
-    }
+    SelfScrollingControlScrollBarChangInfo event_info;
+    event_info.self_scrolling_control = this;
+    scroll_bar_change_event_.Raise(event_info);
 }
 
 
 void RichEdit::ScrollValuesChange(bool is_horizontal) {
 
-    auto event_observer = GetEventObserver<SelfScrollingControlScrollValuesChangeInfo>(
-        GetPropertyMap(),
-        kScrollValuesChangeEventPropertyName);
-
-    if (event_observer) {
-
-        SelfScrollingControlScrollValuesChangeInfo event_info;
-        event_info.self_scrolling_control = this;
-        event_info.is_horizontal = is_horizontal;
-        event_observer->OnNext(event_info);
-    }
+    SelfScrollingControlScrollValuesChangeInfo event_info;
+    event_info.self_scrolling_control = this;
+    event_info.is_horizontal = is_horizontal;
+    scroll_values_change_event_.Raise(event_info);
 }
 
 
@@ -1345,14 +1313,12 @@ void RichEdit::HandleSelectionChangedNotification() {
 
 
 void RichEdit::OnSelectionChanged(const RichEditSelectionChangedInfo& event_info) {
+    selection_changed_event_.Raise(event_info);
+}
 
-    auto event_observer = GetEventObserver<RichEditSelectionChangedInfo>(
-        GetPropertyMap(),
-        kSelectionChangedEventPropertyName);
 
-    if (event_observer) {
-        event_observer->OnNext(event_info);
-    }
+Observable<RichEditSelectionChangedInfo> RichEdit::SelectionChangedEvent() const {
+    return selection_changed_event_.GetObservable();
 }
 
 
@@ -1410,19 +1376,12 @@ bool RichEdit::RaiseTextChangingEvent(const ENPROTECTED& notification_info) {
 
 
 void RichEdit::OnTextChanging(const TextChangingInfo& event_info) {
-
-    auto observer = GetEventObserver<TextChangingInfo>(
-        GetPropertyMap(),
-        TextChangingEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    text_changing_event_.Raise(event_info);
 }
 
 
-Observable<TextChangingInfo> RichEdit::TextChangingEvent() {
-    return GetEventObservable<TextChangingInfo>(GetPropertyMap(), TextChangingEventPropertyName);
+Observable<TextChangingInfo> RichEdit::TextChangingEvent() const {
+    return text_changing_event_.GetObservable();
 }
 
 

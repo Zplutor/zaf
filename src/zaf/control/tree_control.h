@@ -45,9 +45,9 @@ public:
 
     void ReloadItem(const std::shared_ptr<Object>& data);
 
-    Observable<TreeControlSelectionChangeInfo> SelectionChangeEvent();
-    Observable<TreeControlItemExpandInfo> ItemExpandEvent();
-    Observable<TreeControlItemCollapseInfo> ItemCollapseEvent();
+    Observable<TreeControlSelectionChangeInfo> SelectionChangeEvent() const;
+    Observable<TreeControlItemExpandInfo> ItemExpandEvent() const;
+    Observable<TreeControlItemCollapseInfo> ItemCollapseEvent() const;
 
 protected:
     void Initialize() override;
@@ -71,6 +71,10 @@ private:
     std::weak_ptr<TreeDataSource> data_source_;
     std::weak_ptr<TreeControlDelegate> delegate_;
     std::shared_ptr<internal::TreeControlImplementation> implementation_;
+
+    Event<TreeControlSelectionChangeInfo> selection_changed_event_;
+    Event<TreeControlItemExpandInfo> item_expand_event_;
+    Event<TreeControlItemCollapseInfo> item_collapse_event_;
 };
 
 

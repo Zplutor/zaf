@@ -37,7 +37,7 @@ public:
 
     void SetSplitDistance(float distance);
 
-    Observable<SplitDistanceChangedInfo> SplitDistanceChangedEvent();
+    Observable<SplitDistanceChangedInfo> SplitDistanceChangedEvent() const;
 
     const std::shared_ptr<zaf::SplitBar>& SplitBar() const {
         return split_bar_;
@@ -129,6 +129,8 @@ private:
 
     float split_bar_begin_drag_mouse_position_ = 0;
     float split_bar_begin_drag_distance_ = 0;
+
+    Event<SplitDistanceChangedInfo> split_distance_changed_event_;
 };
 
 

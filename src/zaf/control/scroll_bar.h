@@ -199,7 +199,7 @@ public:
 
      This event is raised when the scroll value is changed.
      */
-    Observable<ScrollBarScrollInfo> ScrollEvent();
+    Observable<ScrollBarScrollInfo> ScrollEvent() const;
 
 protected:
     void Initialize() override;
@@ -272,6 +272,8 @@ private:
     TimerEvent timer_event_;
 
     double remaining_wheel_change_value_;
+
+    Event<ScrollBarScrollInfo> scroll_event_;
 };
 
 }

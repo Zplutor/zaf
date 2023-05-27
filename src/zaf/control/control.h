@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <zaf/base/auto_reset_value.h>
+#include <zaf/base/event/event.h>
 #include <zaf/control/anchor.h>
 #include <zaf/control/color_picker.h>
 #include <zaf/control/event/double_click_info.h>
@@ -605,7 +606,7 @@ public:
     Gets mouse captured event. This event is raised after the control calling CaptureMouse() and 
     capturing mouse successfully.
     */
-    Observable<MouseCapturedInfo> MouseCapturedEvent();
+    Observable<MouseCapturedInfo> MouseCapturedEvent() const;
 
     /**
      Release the mouse.
@@ -616,7 +617,7 @@ public:
     Gets mouse released event. This event is raised after the control releasing mouse capture with 
     ReleaseMouse(), or losing mouse capture passively.
     */
-    Observable<MouseReleasedInfo> MouseReleasedEvent();
+    Observable<MouseReleasedInfo> MouseReleasedEvent() const;
 
     /**
      The the mouse position in control's coordinate.
@@ -666,31 +667,31 @@ public:
 
      This event is raised when the control's rect is changed.
      */
-    Observable<RectChangedInfo> RectChangedEvent();
+    Observable<RectChangedInfo> RectChangedEvent() const;
 
-    Observable<FocusGainedInfo> FocusGainedEvent();
-    Observable<FocusLostInfo> FocusLostEvent();
+    Observable<FocusGainedInfo> FocusGainedEvent() const;
+    Observable<FocusLostInfo> FocusLostEvent() const;
 
-    Observable<MouseCursorChangingInfo> MouseCursorChangingEvent();
-    Observable<MouseMoveInfo> MouseMoveEvent();
+    Observable<MouseCursorChangingInfo> MouseCursorChangingEvent() const;
+    Observable<MouseMoveInfo> MouseMoveEvent() const;
 
-    Observable<MouseEnterInfo> MouseEnterEvent();
-    Observable<MouseLeaveInfo> MouseLeaveEvent();
-    Observable<MouseHoverInfo> MouseHoverEvent();
+    Observable<MouseEnterInfo> MouseEnterEvent() const;
+    Observable<MouseLeaveInfo> MouseLeaveEvent() const;
+    Observable<MouseHoverInfo> MouseHoverEvent() const;
 
-    Observable<MouseDownInfo> MouseDownEvent();
-    Observable<MouseUpInfo> MouseUpEvent();
-    Observable<DoubleClickInfo> DoubleClickEvent();
+    Observable<MouseDownInfo> MouseDownEvent() const;
+    Observable<MouseUpInfo> MouseUpEvent() const;
+    Observable<DoubleClickInfo> DoubleClickEvent() const;
 
-    Observable<KeyDownInfo> KeyDownEvent();
-    Observable<KeyUpInfo> KeyUpEvent();
-    Observable<CharInputInfo> CharInputEvent();
+    Observable<KeyDownInfo> KeyDownEvent() const;
+    Observable<KeyUpInfo> KeyUpEvent() const;
+    Observable<CharInputInfo> CharInputEvent() const;
 
-    Observable<SysKeyDownInfo> SysKeyDownEvent();
-    Observable<SysKeyUpInfo> SysKeyUpEvent();
-    Observable<SysCharInputInfo> SysCharInputEvent();
+    Observable<SysKeyDownInfo> SysKeyDownEvent() const;
+    Observable<SysKeyUpInfo> SysKeyUpEvent() const;
+    Observable<SysCharInputInfo> SysCharInputEvent() const;
 
-    Observable<ParentChangedInfo> ParentChangedEvent();
+    Observable<ParentChangedInfo> ParentChangedEvent() const;
 
 protected:
     void InvokeInitialize() override;
@@ -936,6 +937,27 @@ private:
     Point last_mouse_down_position_;
 
     PropertyMap property_map_;
+
+    Event<RectChangedInfo> rect_changed_event_;
+    Event<FocusGainedInfo> focus_gained_event_;
+    Event<FocusLostInfo> focus_lost_event_;
+    Event<MouseCursorChangingInfo> mouse_cursor_changing_event_;
+    Event<MouseMoveInfo> mouse_move_event_;
+    Event<MouseEnterInfo> mouse_enter_event_;
+    Event<MouseLeaveInfo> mouse_leave_event_;
+    Event<MouseHoverInfo> mouse_hover_event_;
+    Event<MouseDownInfo> mouse_down_event_;
+    Event<MouseUpInfo> mouse_up_event_;
+    Event<DoubleClickInfo> double_click_event_;
+    Event<KeyDownInfo> key_down_event_;
+    Event<KeyUpInfo> key_up_event_;
+    Event<CharInputInfo> char_input_event_;
+    Event<SysKeyDownInfo> sys_key_down_event_;
+    Event<SysKeyUpInfo> sys_key_up_event_;
+    Event<SysCharInputInfo> sys_char_input_event_;
+    Event<ParentChangedInfo> parent_changed_event_;
+    Event<MouseCapturedInfo> mouse_captured_event_;
+    Event<MouseReleasedInfo> mouse_released_event_;
 };
 
 }

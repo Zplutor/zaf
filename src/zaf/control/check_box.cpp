@@ -1,7 +1,6 @@
 #include <zaf/control/check_box.h>
 #include <zaf/base/as.h>
 #include <zaf/base/error/check.h>
-#include <zaf/base/event_utility.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
@@ -20,7 +19,6 @@ const wchar_t* const kBoxBackgroundColorPickerPropertyName = L"BoxBackgroundColo
 const wchar_t* const kBoxBorderColorPickerPropertyName = L"BoxBorderColorPicker";
 const wchar_t* const AutoCheckPropertyName = L"AutoCheck";
 const wchar_t* const kCanBeIndeterminatePropertyName = L"CanBeIndeterminate";
-const wchar_t* const CheckStateChangedEventPropertyName = L"CheckStateChangedEvent";
 
 }
 
@@ -225,21 +223,12 @@ void CheckBox::SetCheckState(zaf::CheckState check_state) {
     check_state_ = check_state;
     NeedRepaint();
 
-    auto observer = GetEventObserver<CheckStateChangedInfo>(
-        GetPropertyMap(),
-        CheckStateChangedEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(CheckStateChangedInfo{ As<CheckBox>(shared_from_this()) });
-    }
+    check_state_changed_event_.Raise(CheckStateChangedInfo{ As<CheckBox>(shared_from_this()) });
 }
 
 
-Observable<CheckStateChangedInfo> CheckBox::CheckStateChangedEvent() {
-
-    return GetEventObservable<CheckStateChangedInfo>(
-        GetPropertyMap(), 
-        CheckStateChangedEventPropertyName);
+Observable<CheckStateChangedInfo> CheckBox::CheckStateChangedEvent() const {
+    return check_state_changed_event_.GetObservable();
 }
 
 

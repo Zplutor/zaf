@@ -1119,9 +1119,6 @@
     <ClInclude Include="src\zaf\window\dialog.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\event_utility.h">
-      <Filter>zaf\base</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\internal\theme.h">
       <Filter>zaf\internal</Filter>
     </ClInclude>

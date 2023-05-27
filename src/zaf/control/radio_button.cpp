@@ -1,6 +1,5 @@
 #include <zaf/control/radio_button.h>
 #include <algorithm>
-#include <zaf/base/event_utility.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
@@ -198,22 +197,12 @@ void RadioButton::ChangeCheckState(bool is_checked) {
 
 
 void RadioButton::OnCheckStateChanged(const CheckStateChangedInfo& event_info) {
-
-    auto observer = GetEventObserver<CheckStateChangedInfo>(
-        GetPropertyMap(),
-        CheckStateChangedEventProprtyName);
-
-    if (observer) {
-        observer->OnNext(event_info);
-    }
+    check_state_changed_event_.Raise(event_info);
 }
 
 
-Observable<CheckStateChangedInfo> RadioButton::CheckStateChangedEvent() {
-
-    return GetEventObservable<CheckStateChangedInfo>(
-        GetPropertyMap(),
-        CheckStateChangedEventProprtyName);
+Observable<CheckStateChangedInfo> RadioButton::CheckStateChangedEvent() const {
+    return check_state_changed_event_.GetObservable();
 }
 
 

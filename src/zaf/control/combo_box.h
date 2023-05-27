@@ -116,7 +116,7 @@ public:
 
      This event is raised when the selection of combo box is changed.
      */
-    Observable<ComboBoxSelectionChangedInfo> SelectionChangedEvent();
+    Observable<ComboBoxSelectionChangedInfo> SelectionChangedEvent() const;
 
     /**
      Get the drop down list box used in combo box.
@@ -293,6 +293,8 @@ private:
 
     std::optional<std::size_t> recovered_selected_index_;
     bool need_recover_selected_index_{};
+
+    Event<ComboBoxSelectionChangedInfo> selection_changed_event_;
 };
 
 

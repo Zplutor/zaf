@@ -194,9 +194,9 @@ public:
 
      This event is raise when selected text is changed.
      */
-    Observable<RichEditSelectionChangedInfo> SelectionChangedEvent();
+    Observable<RichEditSelectionChangedInfo> SelectionChangedEvent() const;
 
-    Observable<TextChangingInfo> TextChangingEvent();
+    Observable<TextChangingInfo> TextChangingEvent() const;
 
     Observable<SelfScrollingControlScrollBarChangInfo> ScrollBarChangeEvent() override;
     Observable<SelfScrollingControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
@@ -380,6 +380,11 @@ private:
     DWORD scroll_bar_property_;
     std::optional<float> cached_text_height_;
     Color text_color_;
+
+    Event<TextChangingInfo> text_changing_event_;
+    Event<RichEditSelectionChangedInfo> selection_changed_event_;
+    Event<SelfScrollingControlScrollBarChangInfo> scroll_bar_change_event_;
+    Event<SelfScrollingControlScrollValuesChangeInfo> scroll_values_change_event_;
 };
 
 }

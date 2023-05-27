@@ -100,7 +100,7 @@ public:
 
      This event is raised when selection is changed.
      */
-    Observable<ListControlSelectionChangedInfo> SelectionChangedEvent();
+    Observable<ListControlSelectionChangedInfo> SelectionChangedEvent() const;
 
     /**
      Select the item at specifed index.
@@ -166,7 +166,7 @@ public:
      */
     std::optional<std::size_t> FindItemIndexAtPosition(const Point& position) const;
 
-    Observable<ListControlItemDoubleClickInfo> ItemDoubleClickEvent();
+    Observable<ListControlItemDoubleClickInfo> ItemDoubleClickEvent() const;
 
 protected:
     void Initialize() override;
@@ -205,6 +205,9 @@ private:
     std::weak_ptr<ListDataSource> data_source_;
     std::weak_ptr<ListControlDelegate> delegate_;
     std::shared_ptr<internal::ListControlImplementation> implementation_;
+
+    Event<ListControlSelectionChangedInfo> selection_changed_event_;
+    Event<ListControlItemDoubleClickInfo> item_double_click_event_;
 };
 
 }

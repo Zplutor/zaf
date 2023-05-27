@@ -1,6 +1,5 @@
 #include <zaf/control/menu_item.h>
 #include <zaf/base/as.h>
-#include <zaf/base/event_utility.h>
 #include <zaf/control/internal/triangle_geometry.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
@@ -16,9 +15,6 @@ namespace {
 
 constexpr float SubMenuArrowWidth = 8.f;
 constexpr float SubMenuArrowMargin = 4.f;
-
-constexpr const wchar_t* SubMenuShowEventPropertyName = L"SubMenuShowEvent";
-constexpr const wchar_t* SubMenuCloseEventPropertyName = L"SubMenuCloseEvent";
 
 }
 
@@ -142,26 +138,13 @@ void MenuItem::CheckCreateSubMenu() {
     sub_menu_ = Create<PopupMenu>();
 
     Subscriptions() += sub_menu_->ShowEvent().Subscribe([this](const ShowInfo& event_info) {
-    
-        auto observer = GetEventObserver<SubMenuShowInfo>(
-            GetPropertyMap(),
-            SubMenuShowEventPropertyName);
-
-        if (observer) {
-            observer->OnNext(SubMenuShowInfo{ As<MenuItem>(shared_from_this()) });
-        }
+        sub_menu_show_event_.Raise(SubMenuShowInfo{ As<MenuItem>(shared_from_this()) });
     });
 
     Subscriptions() += sub_menu_->DestroyedEvent().Subscribe(
         [this](const DestroyedInfo& event_info) {
-    
-        auto observer = GetEventObserver<SubMenuCloseInfo>(
-            GetPropertyMap(),
-            SubMenuCloseEventPropertyName);
 
-        if (observer) {
-            observer->OnNext(SubMenuCloseInfo{ As<MenuItem>(shared_from_this()) });
-        }
+        sub_menu_close_event_.Raise(SubMenuCloseInfo{ As<MenuItem>(shared_from_this()) });
     });
 }
 
@@ -197,8 +180,8 @@ void MenuItem::PopupSubMenu() {
 }
 
 
-Observable<SubMenuShowInfo> MenuItem::SubMenuShowEvent() {
-    return GetEventObservable<SubMenuShowInfo>(GetPropertyMap(), SubMenuShowEventPropertyName);
+Observable<SubMenuShowInfo> MenuItem::SubMenuShowEvent() const {
+    return sub_menu_show_event_.GetObservable();
 }
 
 
@@ -210,8 +193,8 @@ void MenuItem::CloseSubMenu() {
 }
 
 
-Observable<SubMenuCloseInfo> MenuItem::SubMenuCloseEvent() {
-    return GetEventObservable<SubMenuCloseInfo>(GetPropertyMap(), SubMenuCloseEventPropertyName);
+Observable<SubMenuCloseInfo> MenuItem::SubMenuCloseEvent() const {
+    return sub_menu_close_event_.GetObservable();
 }
 
 }

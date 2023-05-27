@@ -147,7 +147,7 @@ public:
         }
     }
 
-    Observable<CheckStateChangedInfo> CheckStateChangedEvent();
+    Observable<CheckStateChangedInfo> CheckStateChangedEvent() const;
 
 protected:
     void Initialize() override;
@@ -177,6 +177,8 @@ private:
 private:
     bool is_checked_;
     std::shared_ptr<Group> group_;
+
+    Event<CheckStateChangedInfo> check_state_changed_event_;
 };
 
 }

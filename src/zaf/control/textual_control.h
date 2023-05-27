@@ -196,7 +196,7 @@ public:
 
      This event is raised when the text is changed.
      */
-    Observable<TextChangedInfo> TextChangedEvent();
+    Observable<TextChangedInfo> TextChangedEvent() const;
 
 protected:
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
@@ -242,6 +242,8 @@ private:
 private:
     std::unique_ptr<TextSource> text_source_;
     mutable TextLayout text_layout_;
+
+    Event<TextChangedInfo> text_changed_event_;
 };
 
 }

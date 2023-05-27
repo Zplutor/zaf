@@ -138,7 +138,7 @@ public:
     /**
      Get the check state change event.
      */
-    Observable<CheckStateChangedInfo> CheckStateChangedEvent();
+    Observable<CheckStateChangedInfo> CheckStateChangedEvent() const;
 
 protected:
     void Initialize() override;
@@ -152,6 +152,8 @@ private:
 
 private:
     zaf::CheckState check_state_;
+
+    Event<CheckStateChangedInfo> check_state_changed_event_;
 };
 
 }

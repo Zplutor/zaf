@@ -31,7 +31,7 @@ public:
      */
     void Click();
 
-    Observable<ClickInfo> ClickEvent();
+    Observable<ClickInfo> ClickEvent() const;
 
 protected:
     void Initialize() override;
@@ -70,6 +70,8 @@ private:
     bool is_pressed_;
     bool is_mouse_press_;
     bool is_key_press_;
+
+    Event<ClickInfo> click_event_;
 };
 
 }

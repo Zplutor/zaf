@@ -1,6 +1,5 @@
 #include <zaf/window/popup_menu.h>
 #include <zaf/base/container/utility/erase.h>
-#include <zaf/base/event_utility.h>
 #include <zaf/base/log.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
@@ -12,12 +11,6 @@
 #include <zaf/window/window_class_registry.h>
 
 namespace zaf {
-namespace {
-
-constexpr const wchar_t* SelectedMenuItemChangedEventPropertyName = 
-    L"SelectedMenuItemChangedEvent";
-
-}
 
 ZAF_DEFINE_TYPE(PopupMenu)
 ZAF_DEFINE_TYPE_END
@@ -483,23 +476,15 @@ void PopupMenu::OnMenuItemMouseLeave(const MouseLeaveInfo& event_info) {
 void PopupMenu::RaiseSelectedMenuItemChangedEvent(
     const std::shared_ptr<MenuItem>& preivous_selected_menu_item) {
 
-    auto observer = GetEventObserver<SelectedMenuItemChangedInfo>(
-        GetPropertyMap(), 
-        SelectedMenuItemChangedEventPropertyName);
-
-    if (observer) {
-        observer->OnNext(SelectedMenuItemChangedInfo{ 
-            As<PopupMenu>(shared_from_this()),
-            preivous_selected_menu_item
-        });
-    }
+    selected_menu_item_changed_event_.Raise(SelectedMenuItemChangedInfo{
+        As<PopupMenu>(shared_from_this()),
+        preivous_selected_menu_item
+    });
 }
 
 
-Observable<SelectedMenuItemChangedInfo> PopupMenu::SelectedMenuItemChangedEvent() {
-    return GetEventObservable<SelectedMenuItemChangedInfo>(
-        GetPropertyMap(), 
-        SelectedMenuItemChangedEventPropertyName);
+Observable<SelectedMenuItemChangedInfo> PopupMenu::SelectedMenuItemChangedEvent() const {
+    return selected_menu_item_changed_event_.GetObservable();
 }
 
 
