@@ -1,7 +1,6 @@
 #include <zaf/graphic/text/text_trimming.h>
 #include <zaf/object/enum_definition.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/serialization/properties.h>
 
 namespace zaf {
 

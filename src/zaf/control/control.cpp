@@ -19,7 +19,6 @@
 #include <zaf/object/parsing/xaml_node_parse_helper.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
-#include <zaf/serialization/properties.h>
 #include <zaf/window/inspector/internal/inspector_port.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>

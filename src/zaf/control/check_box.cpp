@@ -10,18 +10,8 @@
 #include <zaf/object/object_type.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
-#include <zaf/serialization/properties.h>
 
 namespace zaf {
-namespace {
-
-const wchar_t* const kBoxBackgroundColorPickerPropertyName = L"BoxBackgroundColorPicker";
-const wchar_t* const kBoxBorderColorPickerPropertyName = L"BoxBorderColorPicker";
-const wchar_t* const AutoCheckPropertyName = L"AutoCheck";
-const wchar_t* const kCanBeIndeterminatePropertyName = L"CanBeIndeterminate";
-
-}
-
 
 ZAF_DEFINE_TYPE(CheckBox)
 ZAF_DEFINE_TYPE_PROPERTY(AutoCheck)
@@ -139,76 +129,58 @@ zaf::Rect CheckBox::GetTextRect() {
 
 ColorPicker CheckBox::BoxBorderColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBoxBorderColorPickerPropertyName);
-    if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
-        return *color_picker;
+    if (box_border_color_picker_) {
+        return box_border_color_picker_;
     }
-    else {
-        return internal::GetBoxBorderColorPicker();
-    }
+
+    return internal::GetBoxBorderColorPicker();
 }
 
 
 void CheckBox::SetBoxBorderColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(kBoxBorderColorPickerPropertyName, color_picker);
+    box_border_color_picker_ = color_picker;
     NeedRepaint();
 }
 
 
 ColorPicker CheckBox::BoxBackgroundColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kBoxBackgroundColorPickerPropertyName);
-    if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
-        return *color_picker;
+    if (box_background_color_picker_) {
+        return box_background_color_picker_;
     }
-    else {
-        return internal::GetBoxBackgroundColorPicker();
-    }
+
+    return internal::GetBoxBackgroundColorPicker();
 }
 
 
 void CheckBox::SetBoxBackgroundColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(kBoxBackgroundColorPickerPropertyName, color_picker);
+    box_background_color_picker_ = color_picker;
     NeedRepaint();
 }
 
 
 bool CheckBox::AutoCheck() const {
-
-    auto value = GetPropertyMap().TryGetProperty<bool>(AutoCheckPropertyName);
-    if (value != nullptr) {
-        return *value;
-    }
-    else {
-        return true;
-    }
+    return auto_check_;
 }
 
 
 void CheckBox::SetAutoCheck(bool auto_check) {
-    GetPropertyMap().SetProperty(AutoCheckPropertyName, auto_check);
+    auto_check_ = auto_check;
 }
 
 
 bool CheckBox::CanBeIndeterminate() const {
-
-    auto value = GetPropertyMap().TryGetProperty<bool>(kCanBeIndeterminatePropertyName);
-    if (value != nullptr) {
-        return *value;
-    }
-    else {
-        return false;
-    }
+    return can_be_indeterminate_;
 }
 
 
-void CheckBox::SetCanBeIndeterminate(bool can_be_ndeterminate) {
+void CheckBox::SetCanBeIndeterminate(bool can_be_indeterminate) {
 
-    GetPropertyMap().SetProperty(kCanBeIndeterminatePropertyName, can_be_ndeterminate);
+    can_be_indeterminate_ = can_be_indeterminate;
 
-    if (! can_be_ndeterminate && (CheckState() == CheckState::Indeterminate)) {
+    if (!can_be_indeterminate && (CheckState() == CheckState::Indeterminate)) {
         SetCheckState(CheckState::Checked);
     }
 }

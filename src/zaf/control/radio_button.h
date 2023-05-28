@@ -175,8 +175,12 @@ private:
     void ChangeCheckState(bool is_checked);
 
 private:
+    bool auto_check_{ true };
     bool is_checked_;
     std::shared_ptr<Group> group_;
+
+    ColorPicker radio_background_color_picker_;
+    ColorPicker radio_border_color_picker_;
 
     Event<CheckStateChangedInfo> check_state_changed_event_;
 };

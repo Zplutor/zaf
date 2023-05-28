@@ -18,14 +18,6 @@ std::shared_ptr<Control> CreateDefaultScrollContentControl() {
     return control;
 }
 
-constexpr const wchar_t* const kAllowHorizontalScrollPropertyName = L"AllowHorizontalScroll";
-constexpr const wchar_t* const kAllowVerticalScrollPropertyName = L"AllowVerticalScroll";
-constexpr const wchar_t* const kAutoScrollBarLargeChangePropertyName = L"AutoScrollBarLargeChange";
-constexpr const wchar_t* const kAutoScrollContentWidthPropertyName = L"AutoScrollContentWidth";
-constexpr const wchar_t* const kAutoScrollContentHeightPropertyName = L"AutoScrollContentHeight";
-constexpr const wchar_t* const kAutoHideScrollBarsPropertyName = L"AutoHideScrollBars";
-constexpr const wchar_t* const kScrollBarThicknessPropertyName = L"ScrollBarThickness";
-
 }
 
 
@@ -162,20 +154,13 @@ void ScrollableControl::OnScrollContentRectChange(const RectChangedInfo& event_i
 
 
 bool ScrollableControl::AllowVerticalScroll() const {
-
-    auto allow_scroll = GetPropertyMap().TryGetProperty<bool>(kAllowVerticalScrollPropertyName);
-    if (allow_scroll != nullptr) {
-        return *allow_scroll;
-    }
-    else {
-        return true;
-    }
+    return allow_vertical_scroll_;
 }
 
 
 void ScrollableControl::SetAllowVerticalScroll(bool allow_scroll) {
 
-    GetPropertyMap().SetProperty(kAllowVerticalScrollPropertyName, allow_scroll);
+    allow_vertical_scroll_ = allow_scroll;
 
     if (self_scrolling_control_ != nullptr) {
         self_scrolling_control_->SetAllowVerticalScroll(allow_scroll);
@@ -186,20 +171,13 @@ void ScrollableControl::SetAllowVerticalScroll(bool allow_scroll) {
 
 
 bool ScrollableControl::AllowHorizontalScroll() const {
-
-    auto allow_scroll = GetPropertyMap().TryGetProperty<bool>(kAllowHorizontalScrollPropertyName);
-    if (allow_scroll != nullptr) {
-        return *allow_scroll;
-    }
-    else {
-        return true;
-    }
+    return allow_horizontal_scroll_;
 }
 
 
 void ScrollableControl::SetAllowHorizontalScroll(bool allow_scroll) {
 
-    GetPropertyMap().SetProperty(kAllowHorizontalScrollPropertyName, allow_scroll);
+    allow_horizontal_scroll_ = allow_scroll;
 
     if (self_scrolling_control_ != nullptr) {
         self_scrolling_control_->SetAllowHorizontalScroll(allow_scroll);
@@ -210,20 +188,13 @@ void ScrollableControl::SetAllowHorizontalScroll(bool allow_scroll) {
 
 
 bool ScrollableControl::AutoHideScrollBars() const {
-
-    auto always_show = GetPropertyMap().TryGetProperty<bool>(kAutoHideScrollBarsPropertyName);
-    if (always_show != nullptr) {
-        return *always_show;
-    }
-    else {
-        return false;
-    }
+    return auto_hide_scroll_bars_;
 }
 
 
 void ScrollableControl::SetAutoHideScrollBars(bool auto_hide) {
 
-    GetPropertyMap().SetProperty(kAutoHideScrollBarsPropertyName, auto_hide);
+    auto_hide_scroll_bars_ = auto_hide;
 
     if (self_scrolling_control_ != nullptr) {
         self_scrolling_control_->SetAutoHideScrollBars(auto_hide);
@@ -234,22 +205,13 @@ void ScrollableControl::SetAutoHideScrollBars(bool auto_hide) {
 
 
 bool ScrollableControl::AutoScrollBarLargeChange() const {
-
-    auto value = GetPropertyMap().TryGetProperty<bool>(
-        kAutoScrollBarLargeChangePropertyName);
-
-    if (value) {
-        return *value;
-    }
-    else {
-        return true;
-    }
+    return auto_scroll_bar_large_change_;
 }
 
 
 void ScrollableControl::SetAutoScrollBarLargeChange(bool value) {
 
-    GetPropertyMap().SetProperty(kAutoScrollBarLargeChangePropertyName, value);
+    auto_scroll_bar_large_change_ = value;
     NeedRelayout();
 }
 
@@ -330,39 +292,25 @@ void ScrollableControl::SetScrollContent(const std::shared_ptr<Control>& control
 
 
 bool ScrollableControl::AutoScrollContentWidth() const {
-
-    auto value = GetPropertyMap().TryGetProperty<bool>(
-        kAutoScrollContentWidthPropertyName);
-
-    if (value) {
-        return *value;
-    }
-    return true;
+    return auto_scroll_content_width_;
 }
 
 
 void ScrollableControl::SetAutoScrollContentWidth(bool value) {
 
-    GetPropertyMap().SetProperty(kAutoScrollContentWidthPropertyName, value);
+    auto_scroll_content_width_ = value;
     NeedRelayout();
 }
 
 
 bool ScrollableControl::AutoScrollContentHeight() const {
-
-    auto value = GetPropertyMap().TryGetProperty<bool>(
-        kAutoScrollContentHeightPropertyName);
-
-    if (value) {
-        return *value;
-    }
-    return true;
+    return auto_scroll_content_height_;
 }
 
 
 void ScrollableControl::SetAutoScrollContentHeight(bool value) {
 
-    GetPropertyMap().SetProperty(kAutoScrollContentHeightPropertyName, value);
+    auto_scroll_content_height_ = value;
     NeedRelayout();
 }
 
@@ -376,20 +324,13 @@ void ScrollableControl::SetAutoScrollContentSize(bool value) {
 
 
 float ScrollableControl::ScrollBarThickness() const {
-
-    auto thickness = GetPropertyMap().TryGetProperty<float>(kScrollBarThicknessPropertyName);
-    if (thickness != nullptr) {
-        return *thickness;
-    }
-    else {
-        return 17;
-    }
+    return scroll_bar_thickness_;
 }
 
 
 void ScrollableControl::SetScrollBarThickness(float thickness) {
 
-    GetPropertyMap().SetProperty(kScrollBarThicknessPropertyName, thickness);
+    scroll_bar_thickness_ = thickness;
     NeedRelayout();
 }
 

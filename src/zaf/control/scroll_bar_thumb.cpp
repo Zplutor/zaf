@@ -1,7 +1,6 @@
 #include <zaf/control/scroll_bar_thumb.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/serialization/properties.h>
 
 namespace zaf {
 
@@ -61,9 +60,8 @@ void ScrollBarThumb::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 ColorPicker ScrollBarThumb::ThumbColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::ThumbColorPicker);
-    if (color_picker != nullptr && *color_picker != nullptr) {
-        return *color_picker;
+    if (thumb_color_picker_) {
+        return thumb_color_picker_;
     }
     else {
 
@@ -87,7 +85,7 @@ ColorPicker ScrollBarThumb::ThumbColorPicker() const {
 
 void ScrollBarThumb::SetThumbColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(property::ThumbColorPicker, color_picker);
+    thumb_color_picker_ = color_picker;
     NeedRepaint();
 }
 

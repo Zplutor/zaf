@@ -4,7 +4,6 @@
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/serialization/properties.h>
 #include <zaf/window/message/mouse_message.h>
 
 #undef min
@@ -434,9 +433,8 @@ void SplitBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 ColorPicker SplitBar::SplitterColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kSplitterColorPickerPropertyName);
-    if ((color_picker != nullptr) && (*color_picker != nullptr)) {
-        return *color_picker;
+    if (splitter_color_picker_) {
+        return splitter_color_picker_;
     }
 
     return [](const Control&) {
@@ -446,7 +444,7 @@ ColorPicker SplitBar::SplitterColorPicker() const {
 
 
 void SplitBar::SetSplitterColorPicker(const ColorPicker& color_picker) {
-    GetPropertyMap().SetProperty(kSplitterColorPickerPropertyName, color_picker);
+    splitter_color_picker_ = color_picker;
     NeedRepaint();
 }
 

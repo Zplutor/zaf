@@ -8,7 +8,6 @@
 #include <zaf/graphic/text/text_layout_properties.h>
 #include <zaf/internal/theme.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/serialization/properties.h>
 
 namespace zaf {
 namespace {

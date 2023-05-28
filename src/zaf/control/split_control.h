@@ -185,6 +185,8 @@ protected:
 private:
     bool is_horizontal_ = false;
 
+    ColorPicker splitter_color_picker_;
+
     Subject<SplitBarBeginDragInfo> begin_drag_event_;
     Subject<SplitBarDragInfo> drag_event_;
     Subject<SplitBarEndDragInfo> end_drag_event_;

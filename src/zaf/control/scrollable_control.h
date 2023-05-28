@@ -250,6 +250,14 @@ private:
     std::shared_ptr<Control> scroll_content_control_;
     SelfScrollingControl* self_scrolling_control_;
 
+    bool allow_vertical_scroll_{ true };
+    bool allow_horizontal_scroll_{ true };
+    bool auto_scroll_bar_large_change_{ true };
+    bool auto_scroll_content_width_{ true };
+    bool auto_scroll_content_height_{ true };
+    bool auto_hide_scroll_bars_{ false };
+    float scroll_bar_thickness_{ 17 };
+
     std::unique_ptr<internal::ScrollableControlLayouter> layouter_;
     bool is_layouting_{};
     Subscription scroll_content_rect_change_subscription_;

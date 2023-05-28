@@ -257,6 +257,8 @@ private:
     zaf::SubscriptionSet decremental_arrow_subscriptions_;
     zaf::SubscriptionSet thumb_subscriptions_;
 
+    std::optional<float> arrow_length_;
+
     bool is_horizontal_;
 
     int min_value_;
@@ -264,6 +266,8 @@ private:
     int value_;
 
     int page_size_{};
+    int small_change_{ 1 };
+    std::optional<int> large_change_;
 
     int begin_drag_value_;
     Point begin_drag_mouse_position_;

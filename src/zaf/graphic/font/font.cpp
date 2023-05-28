@@ -1,7 +1,6 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/application.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/serialization/properties.h>
 
 namespace zaf {
 

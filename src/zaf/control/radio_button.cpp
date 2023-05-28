@@ -5,14 +5,8 @@
 #include <zaf/internal/theme.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
-#include <zaf/serialization/properties.h>
 
 namespace zaf {
-
-static const wchar_t* const AutoCheckPropertyName = L"AutoCheck";
-static const wchar_t* const kRadioBackgroundColorPickerPropertyName = L"RadioBackgroundColorPicker";
-static const wchar_t* const kRadioBorderColorPickerPropertyName = L"RadioBorderColorPicker";
-static const wchar_t* const CheckStateChangedEventProprtyName = L"CheckStateChangedEvent";
 
 ZAF_DEFINE_TYPE(RadioButton)
 ZAF_DEFINE_TYPE_PROPERTY(AutoCheck)
@@ -105,38 +99,34 @@ zaf::Rect RadioButton::GetTextRect() {
 
 ColorPicker RadioButton::RadioBorderColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kRadioBorderColorPickerPropertyName);
-    if ( (color_picker != nullptr) && (*color_picker != nullptr) ) {
-        return *color_picker;
+    if (radio_border_color_picker_) {
+        return radio_border_color_picker_;
     }
-    else {
-        return internal::GetBoxBorderColorPicker();
-    }
+
+    return internal::GetBoxBorderColorPicker();
 }
 
 
 void RadioButton::SetRadioBorderColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(kRadioBorderColorPickerPropertyName, color_picker);
+    radio_border_color_picker_ = color_picker;
     NeedRepaint();
 }
 
 
 ColorPicker RadioButton::RadioBackgroundColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kRadioBackgroundColorPickerPropertyName);
-    if ((color_picker != nullptr) && (*color_picker != nullptr)) {
-        return *color_picker;
+    if (radio_background_color_picker_) {
+        return radio_background_color_picker_;
     }
-    else {
-        return internal::GetBoxBackgroundColorPicker();
-    }
+
+    return internal::GetBoxBackgroundColorPicker();
 }
 
 
 void RadioButton::SetRadioBackgroundColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(kRadioBackgroundColorPickerPropertyName, color_picker);
+    radio_background_color_picker_ = color_picker;
     NeedRepaint();
 }
 
@@ -161,19 +151,12 @@ void RadioButton::SetAssociatedGroup(const std::shared_ptr<Group>& group) {
 
 
 bool RadioButton::AutoCheck() const {
-
-    auto value = GetPropertyMap().TryGetProperty<bool>(AutoCheckPropertyName);
-    if (value != nullptr) {
-        return *value;
-    }
-    else {
-        return true;
-    }
+    return auto_check_;
 }
 
 
-void RadioButton::SetAutoCheck(bool can_change) {
-    GetPropertyMap().SetProperty(AutoCheckPropertyName, can_change);
+void RadioButton::SetAutoCheck(bool auto_check) {
+    auto_check_ = auto_check;
 }
 
 

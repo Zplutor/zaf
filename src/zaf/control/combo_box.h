@@ -279,10 +279,15 @@ private:
     void NotifySelectionChange();
 
 private:
+    bool is_editable_{ false };
     std::shared_ptr<ComboBoxEditBox> edit_box_;
     Subscription edit_box_subscription_;
     Frame text_inset_;
 
+    ColorPicker drop_down_button_color_picker_;
+    float drop_down_button_width_{ 12 };
+    std::size_t min_visible_item_count_{ 1 };
+    std::size_t max_visible_item_count_{ std::numeric_limits<std::size_t>::max() };
     std::shared_ptr<internal::ComboBoxDropDownWindow> drop_down_window_;
     std::shared_ptr<ComboBoxDropDownListBox> drop_down_list_box_;
     Subscription drop_down_list_box_subscription_;

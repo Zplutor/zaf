@@ -2,7 +2,6 @@
 #include <zaf/control/internal/triangle_geometry.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/serialization/properties.h>
 
 namespace zaf {
 
@@ -66,9 +65,8 @@ void ScrollBarArrow::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 ColorPicker ScrollBarArrow::ArrowColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(property::ArrowColorPicker);
-    if ((color_picker != nullptr) && (*color_picker != nullptr)) {
-        return *color_picker;
+    if (arrow_color_picker_) {
+        return arrow_color_picker_;
     }
     else {
 
@@ -96,7 +94,7 @@ ColorPicker ScrollBarArrow::ArrowColorPicker() const {
 
 void ScrollBarArrow::SetArrowColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(property::ArrowColorPicker, color_picker);
+    arrow_color_picker_ = color_picker;
     NeedRepaint();
 }
 

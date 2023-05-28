@@ -151,7 +151,12 @@ private:
     void PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const;
 
 private:
+    bool auto_check_{ true };
+    bool can_be_indeterminate_{ false };
     zaf::CheckState check_state_;
+
+    ColorPicker box_background_color_picker_;
+    ColorPicker box_border_color_picker_;
 
     Event<CheckStateChangedInfo> check_state_changed_event_;
 };

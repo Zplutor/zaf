@@ -14,7 +14,6 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/serialization/properties.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/window.h>
 
@@ -23,16 +22,6 @@
 #endif
 
 namespace zaf {
-namespace {
-
-const wchar_t* const kDropDownButtonColorPickerPropertyName = L"DropDownButtonColorPicker";
-const wchar_t* const kDropDownButtonWidthPropertyName = L"DropDownButtonWidth";
-const wchar_t* const kIsEditablePropertyName = L"IsEditable";
-const wchar_t* const kMaxVisibleItemCountPropertyName = L"MaxVisibleItemCount";
-const wchar_t* const kMinVisibleItemCountPropertyName = L"MinVisibleItemCount";
-
-}
-
 
 ZAF_DEFINE_TYPE(ComboBox)
 ZAF_DEFINE_TYPE_PROPERTY(DropDownButtonColor)
@@ -242,68 +231,45 @@ void ComboBox::SetTextInset(const Frame& inset) {
 
 ColorPicker ComboBox::DropDownButtonColorPicker() const {
 
-    auto color_picker = GetPropertyMap().TryGetProperty<ColorPicker>(kDropDownButtonColorPickerPropertyName);
-    if (color_picker != nullptr) {
-        return *color_picker;
+    if (drop_down_button_color_picker_) {
+        return drop_down_button_color_picker_;
     }
-    else {
-        return [](const Control&) { return Color::Black(); };
-    }
+
+    return [](const Control&) { return Color::Black(); };
 }
 
 void ComboBox::SetDropDownButtonColorPicker(const ColorPicker& color_picker) {
 
-    GetPropertyMap().SetProperty(kDropDownButtonColorPickerPropertyName, color_picker);
+    drop_down_button_color_picker_ = color_picker;
     NeedRepaint();
 }
 
 
 float ComboBox::DropDownButtonWidth() const {
-
-    auto width = GetPropertyMap().TryGetProperty<float>(kDropDownButtonWidthPropertyName);
-    if (width != nullptr) {
-        return *width;
-    }
-    else {
-        return 12;
-    }
+    return drop_down_button_width_;
 }
 
 void ComboBox::SetDropDownButtonWidth(float width) {
 
-    GetPropertyMap().SetProperty(kDropDownButtonWidthPropertyName, width);
+    drop_down_button_width_ = width;
     NeedRepaint();
 }
 
 
 std::size_t ComboBox::MinVisibleItemCount() const {
-
-    auto count = GetPropertyMap().TryGetProperty<std::size_t>(kMinVisibleItemCountPropertyName);
-    if (count != nullptr) {
-        return *count;
-    }
-    else {
-        return 1;
-    }
+    return min_visible_item_count_;
 }
 
 void ComboBox::SetMinVisibleItemCount(std::size_t count) {
 
     auto max_count = MaxVisibleItemCount();
     auto revised_count = std::min(count, max_count);
-    GetPropertyMap().SetProperty(kMinVisibleItemCountPropertyName, revised_count);
+    min_visible_item_count_ = revised_count;
 }
 
 
 std::size_t ComboBox::MaxVisibleItemCount() const {
-
-    auto count = GetPropertyMap().TryGetProperty<std::size_t>(kMaxVisibleItemCountPropertyName);
-    if (count != nullptr) {
-        return *count;
-    }
-    else {
-        return std::numeric_limits<std::size_t>::max();
-    }
+    return max_visible_item_count_;
 }
 
 
@@ -311,25 +277,18 @@ void ComboBox::SetMaxVisibleItemCount(std::size_t count) {
 
     auto min_count = MinVisibleItemCount();
     auto revised_count = std::max(count, min_count);
-    GetPropertyMap().SetProperty(kMaxVisibleItemCountPropertyName, revised_count);
+    max_visible_item_count_ = revised_count;
 }
 
 
 bool ComboBox::IsEditable() const {
-    
-    auto is_editable = GetPropertyMap().TryGetProperty<bool>(kIsEditablePropertyName);
-    if (is_editable != nullptr) {
-        return *is_editable;
-    }
-    else {
-        return false;
-    }
+    return is_editable_;
 }
 
 
 void ComboBox::SetIsEditable(bool is_editable) {
     
-    GetPropertyMap().SetProperty(kIsEditablePropertyName, is_editable);
+    is_editable_ = is_editable;
 
     edit_box_->SetText(Text());
     edit_box_->SetIsVisible(is_editable);

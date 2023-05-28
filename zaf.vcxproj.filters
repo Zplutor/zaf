@@ -58,9 +58,6 @@
     <Filter Include="zaf\control\internal\scrollable_control">
       <UniqueIdentifier>{3895c0e4-4a91-4965-8af7-be9344ec8ebb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\serialization">
-      <UniqueIdentifier>{7205d02a-edfd-4def-9a34-b80b80d1ed3e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\base\container">
       <UniqueIdentifier>{8f617298-ecbd-4034-9e95-5d4d9592fb2c}</UniqueIdentifier>
     </Filter>
@@ -1254,14 +1251,8 @@
     <ClInclude Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.h">
       <Filter>zaf\control\internal\scrollable_control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\serialization\properties.h">
-      <Filter>zaf\serialization</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\stream.h">
       <Filter>zaf\base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\serialization\property_map.h">
-      <Filter>zaf\serialization</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\number.h">
       <Filter>zaf\base</Filter>

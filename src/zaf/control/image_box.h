@@ -47,6 +47,8 @@ private:
 
 private:
     std::unique_ptr<internal::ImagePlayer> image_player_;
+    zaf::ImageLayout image_layout_{ zaf::ImageLayout::None };
+    zaf::InterpolationMode interpolation_mode_{ zaf::InterpolationMode::Linear };
 };
 
 }

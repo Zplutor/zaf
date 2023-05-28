@@ -4,7 +4,6 @@
 #include <zaf/control/list_box_data_source.h>
 #include <zaf/creation.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/serialization/properties.h>
 
 namespace zaf {
 

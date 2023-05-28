@@ -10,7 +10,6 @@
 #include <zaf/internal/theme.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
-#include <zaf/serialization/properties.h>
 
 namespace zaf {
 

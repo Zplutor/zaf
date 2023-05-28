@@ -11,7 +11,6 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/serialization/properties.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -169,11 +168,10 @@ void ScrollBar::SetThumb(const std::shared_ptr<ScrollBarThumb>& thumb) {
 
 float ScrollBar::ArrowLength() const {
 
-    auto length = GetPropertyMap().TryGetProperty<float>(property::ArrowLength);
-    if (length != nullptr) {
-        return *length;
+    if (arrow_length_) {
+        return *arrow_length_;
     }
-        
+
     if (IsHorizontal()) {
         return Height();
     }
@@ -185,7 +183,7 @@ float ScrollBar::ArrowLength() const {
 
 void ScrollBar::SetArrowLength(float length) {
 
-    GetPropertyMap().SetProperty(property::ArrowLength, length);
+    arrow_length_ = length;
     NeedRelayout();
 }
 
@@ -235,34 +233,25 @@ void ScrollBar::ChangeValueRange(int min_value, int max_value, bool max_value_ha
 
 
 int ScrollBar::SmallChange() const {
-
-    auto value = GetPropertyMap().TryGetProperty<int>(property::SmallChange);
-    if (value != nullptr) {
-        return *value;
-    }
-    else {
-        return 1;
-    }
+    return small_change_;
 }
 
 void ScrollBar::SetSmallChange(int value) {
-    GetPropertyMap().SetProperty(property::SmallChange, value);
+    small_change_ = value;
 }
 
 
 int ScrollBar::LargeChange() const {
 
-    auto value = GetPropertyMap().TryGetProperty<int>(property::LargeChange);
-    if (value) {
-        return *value;
+    if (large_change_) {
+        return *large_change_;
     }
-    else {
-        return SmallChange();
-    }
+
+    return SmallChange();
 }
 
 void ScrollBar::SetLargeChange(int value) {
-    GetPropertyMap().SetProperty(property::LargeChange, value);
+    large_change_ = value;
 }
 
 

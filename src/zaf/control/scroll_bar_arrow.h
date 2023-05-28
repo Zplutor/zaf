@@ -85,6 +85,8 @@ private:
 private:
     zaf::ArrowDirection arrow_direction_;
 
+    ColorPicker arrow_color_picker_;
+
     Subject<ScrollBarArrowBeginPressInfo> begin_press_event_;
     Subject<ScrollBarArrowEndPressInfo> end_press_event_;
 };

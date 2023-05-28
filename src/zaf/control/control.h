@@ -32,7 +32,6 @@
 #include <zaf/object/object.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subscription_host.h>
-#include <zaf/serialization/property_map.h>
 
 namespace zaf {
 namespace internal {
@@ -742,20 +741,6 @@ protected:
     void RaiseDoubleClickEvent(const Point& position);
 
     /**
-     Get the mutable property map.
-     */
-    PropertyMap& GetPropertyMap() {
-        return property_map_;
-    }
-
-    /**
-     Get the immutable property map.
-     */
-    const PropertyMap& GetPropertyMap() const {
-        return property_map_;
-    }
-
-    /**
      Get a value indicating that whether the control is capturing the mouse.
      */
     bool IsCapturingMouse() const {
@@ -952,8 +937,6 @@ private:
 
     std::wstring name_;
     std::wstring tooltip_;
-
-    PropertyMap property_map_;
 
     Event<RectChangedInfo> rect_changed_event_;
     Event<FocusGainedInfo> focus_gained_event_;

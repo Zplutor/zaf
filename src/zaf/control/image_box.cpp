@@ -5,13 +5,6 @@
 #include <zaf/object/type_definition.h>
 
 namespace zaf {
-namespace {
-
-const wchar_t* const kImageLayoutPropertyName = L"ImageLayout";
-const wchar_t* const kInterpolationModePropertyName = L"InterpolationMode";
-
-}
-
 
 ZAF_DEFINE_TYPE(ImageBox)
 ZAF_DEFINE_TYPE_PROPERTY(ImageLayout)
@@ -122,39 +115,23 @@ zaf::Size ImageBox::CalculatePreferredContentSize(const zaf::Size& max_size) con
 
 
 ImageLayout ImageBox::ImageLayout() const {
-
-    auto image_layout = GetPropertyMap().TryGetProperty<zaf::ImageLayout>(kImageLayoutPropertyName);
-    if (image_layout) {
-        return *image_layout;
-    }
-    else {
-        return ImageLayout::None;
-    }
+    return image_layout_;
 }
 
 void ImageBox::SetImageLayout(zaf::ImageLayout image_layout) {
 
-    GetPropertyMap().SetProperty(kImageLayoutPropertyName, image_layout);
+    image_layout_ = image_layout;
     NeedRepaint();
 }
 
 
 InterpolationMode ImageBox::InterpolationMode() const {
-
-    auto mode = GetPropertyMap().TryGetProperty<zaf::InterpolationMode>(
-        kInterpolationModePropertyName);
-
-    if (mode != nullptr) {
-        return *mode;
-    }
-    else {
-        return InterpolationMode::Linear;
-    }
+    return interpolation_mode_;
 }
 
 void ImageBox::SetInterpolationMode(zaf::InterpolationMode mode) {
 
-    GetPropertyMap().SetProperty(kInterpolationModePropertyName, mode);
+    interpolation_mode_ = mode;
     NeedRepaint();
 }
 

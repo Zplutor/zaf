@@ -99,6 +99,8 @@ private:
     bool is_horizontal_{};
     bool is_dragging_{};
 
+    ColorPicker thumb_color_picker_;
+
     Subject<ScrollBarThumbBeginDragInfo> begin_drag_event_;
     Subject<ScrollBarThumbDragInfo> drag_event_;
     Subject<ScrollBarThumbEndDragInfo> end_drag_event_;

@@ -75,19 +75,10 @@ COMObject<ITextServices2> CreateTextService(ITextHost* text_host) {
 }
 
 constexpr DWORD kDefaultPropertyBits = TXTBIT_D2DDWRITE | TXTBIT_ALLOWBEEP;
-constexpr std::uint32_t kDefaultMaxLength = std::numeric_limits<std::uint32_t>::max();
-constexpr wchar_t kDefaultPasswordCharacter = L'*';
 constexpr DWORD kDefaultScrollBarProperty = 
     ES_AUTOVSCROLL | ES_AUTOHSCROLL | WS_VSCROLL | WS_HSCROLL;
 
 }
-
-static const wchar_t* const kAcceptReturnPropertyName = L"AcceptReturn";
-static const wchar_t* const kAcceptTabPropertyName = L"AcceptTab";
-static const wchar_t* const kInsetPropertyName = L"Inset";
-static const wchar_t* const kMaxLengthPropertyName = L"MaxLength";
-static const wchar_t* const kPasswordCharacterPropertyName = L"PasswordCharacter";
-static const wchar_t* const kTextValidatorPropertyName = L"TextValidator";
 
 
 ZAF_DEFINE_TYPE(RichEdit)
@@ -419,20 +410,13 @@ zaf::Rect RichEdit::GetTextRect() {
 
 
 Frame RichEdit::GetInset() const {
-
-    auto inset = GetPropertyMap().TryGetProperty<Frame>(kInsetPropertyName);
-    if (inset != nullptr) {
-        return *inset;
-    }
-    else {
-        return Frame{};
-    }
+    return inset_;
 }
 
 
 void RichEdit::SetInset(const Frame& inset) {
 
-    GetPropertyMap().SetProperty(kInsetPropertyName, inset);
+    inset_ = inset;
 
     if (text_service_ != nullptr) {
         text_service_->OnTxPropertyBitsChange(TXTBIT_VIEWINSETCHANGE, TXTBIT_VIEWINSETCHANGE);
@@ -441,20 +425,13 @@ void RichEdit::SetInset(const Frame& inset) {
 
 
 std::uint32_t RichEdit::GetMaxLength() const {
-
-    auto max_length = GetPropertyMap().TryGetProperty<std::uint32_t>(kMaxLengthPropertyName);
-    if (max_length != nullptr) {
-        return *max_length;
-    }
-    else {
-        return kDefaultMaxLength;
-    }
+    return max_length_;
 }
 
 
 void RichEdit::SetMaxLength(std::uint32_t max_length) {
 
-    GetPropertyMap().SetProperty(kMaxLengthPropertyName, max_length);
+    max_length_ = max_length;
 
     if (text_service_ != nullptr) {
         text_service_->OnTxPropertyBitsChange(TXTBIT_MAXLENGTHCHANGE, TXTBIT_MAXLENGTHCHANGE);
@@ -472,19 +449,12 @@ void RichEdit::SetUsePasswordCharacter(bool use_password_char) {
 
 
 wchar_t RichEdit::GetPasswordCharacter() const {
-    
-    auto password_char = GetPropertyMap().TryGetProperty<wchar_t>(kPasswordCharacterPropertyName);
-    if (password_char != nullptr) {
-        return *password_char;
-    }
-    else {
-        return kDefaultPasswordCharacter;
-    }
+    return password_char_;
 }
 
 void RichEdit::SetPasswordCharacter(wchar_t password_char) {
 
-    GetPropertyMap().SetProperty(kPasswordCharacterPropertyName, password_char);
+    password_char_ = password_char;
 
     if ((text_service_ != nullptr) && UsePasswordCharacter()) {
         text_service_->OnTxPropertyBitsChange(TXTBIT_USEPASSWORD, TXTBIT_USEPASSWORD);
@@ -560,18 +530,11 @@ void RichEdit::ReplaceSelectedText(const std::wstring& text) {
 
 
 TextValidator RichEdit::GetTextValidator() const {
-
-    auto validator = GetPropertyMap().TryGetProperty<TextValidator>(kTextValidatorPropertyName);
-    if (validator != nullptr) {
-        return *validator;
-    }
-
-    return nullptr;
+    return text_validator_;
 }
 
 void RichEdit::SetTextValidator(const TextValidator& validator) {
-
-    GetPropertyMap().SetProperty(kTextValidatorPropertyName, validator);
+    text_validator_ = validator;
 }
 
 
@@ -822,34 +785,20 @@ bool RichEdit::AcceptKeyMessage(const KeyMessage& message) {
 
 
 bool RichEdit::AcceptTab() const {
-
-    auto accept_tab = GetPropertyMap().TryGetProperty<bool>(kAcceptTabPropertyName);
-    if (accept_tab != nullptr) {
-        return *accept_tab;
-    }
-    else {
-        return false;
-    }
+    return accept_tab_;
 }
 
 void RichEdit::SetAcceptTab(bool accept_tab) {
-    GetPropertyMap().SetProperty(kAcceptTabPropertyName, accept_tab);
+    accept_tab_ = accept_tab;
 }
 
 
 bool RichEdit::AcceptReturn() const {
-
-    auto accept_return = GetPropertyMap().TryGetProperty<bool>(kAcceptReturnPropertyName);
-    if (accept_return != nullptr) {
-        return *accept_return;
-    }
-    else {
-        return false;
-    }
+    return accept_return_;
 }
 
 void RichEdit::SetAcceptReturn(bool accept_return) {
-    GetPropertyMap().SetProperty(kAcceptReturnPropertyName, accept_return);
+    accept_return_ = accept_return;
 }
 
 

@@ -371,6 +371,13 @@ private:
     bool RaiseTextChangingEvent(const ENPROTECTED& notification_info);
 
 private:
+    bool accept_return_{ false };
+    bool accept_tab_{ false };
+    Frame inset_;
+    std::uint32_t max_length_{ std::numeric_limits<std::uint32_t>::max() };
+    wchar_t password_char_{ L'*' };
+    TextValidator text_validator_;
+
     std::shared_ptr<rich_edit::internal::TextHostBridge> text_host_bridge_;
     COMObject<ITextServices2> text_service_;
     std::shared_ptr<zaf::Caret> caret_;
