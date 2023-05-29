@@ -203,6 +203,27 @@ TEST(COMObjectTest, CopyAssignment) {
         ASSERT_FALSE(derived_object.IsValid());
         ASSERT_FALSE(base_object.IsValid());
     }
+
+    //Self copy assignment.
+    {
+        zaf::COMObject<BaseCOMObject> object{ new BaseCOMObject() };
+        object = object;
+        ASSERT_TRUE(object.IsValid());
+        ASSERT_EQ(object->ReferenceCount(), 1);
+    }
+
+    //Indirect self copy assignment.
+    {
+        zaf::COMObject<DerivedCOMObject> derived_object{ new DerivedCOMObject() };
+        zaf::COMObject<BaseCOMObject> base_object{ derived_object };
+
+        base_object = derived_object;
+        ASSERT_TRUE(base_object.IsValid());
+        ASSERT_EQ(base_object->ReferenceCount(), 2);
+
+        ASSERT_TRUE(derived_object.IsValid());
+        ASSERT_EQ(derived_object->ReferenceCount(), 2);
+    }
 }
 
 
@@ -299,6 +320,26 @@ TEST(COMObjectTest, MoveAssignment) {
         ASSERT_FALSE(derived.IsValid());
         ASSERT_FALSE(base.IsValid());
     }
+
+    //Self move assignment.
+    {
+        zaf::COMObject<BaseCOMObject> object{ new BaseCOMObject() };
+        object = std::move(object);
+        ASSERT_TRUE(object.IsValid());
+        ASSERT_EQ(object->ReferenceCount(), 1);
+    }
+
+    //Indirect self move assignment.
+    {
+        zaf::COMObject<DerivedCOMObject> derived_object{ new DerivedCOMObject() };
+        zaf::COMObject<BaseCOMObject> base_object{ derived_object };
+
+        base_object = std::move(derived_object);
+        ASSERT_TRUE(base_object.IsValid());
+        ASSERT_EQ(base_object->ReferenceCount(), 1);
+
+        ASSERT_FALSE(derived_object.IsValid());
+    }
 }
 
 
@@ -356,18 +397,35 @@ TEST(COMObjectTest, IsValid) {
 
 TEST(COMObjectTest, Reset) {
 
-    zaf::COMObject<BaseCOMObject> object;
-    object.Reset();
-    ASSERT_FALSE(object.IsValid());
+    {
+        zaf::COMObject<BaseCOMObject> object;
+        object.Reset();
+        ASSERT_FALSE(object.IsValid());
+    }
 
-    object.Reset(new BaseCOMObject());
-    ASSERT_TRUE(object.IsValid());
-    ASSERT_EQ(object->ReferenceCount(), 1);
+    {
+        zaf::COMObject<BaseCOMObject> object;
+        object.Reset(new BaseCOMObject());
+        ASSERT_TRUE(object.IsValid());
+        ASSERT_EQ(object->ReferenceCount(), 1);
+    }
 
-    auto is_deleted = object->IsDeleted();
-    object.Reset();
-    ASSERT_FALSE(object.IsValid());
-    ASSERT_TRUE(*is_deleted);
+    {
+        zaf::COMObject<BaseCOMObject> object{ new BaseCOMObject() };
+        auto is_deleted = object->IsDeleted();
+        object.Reset();
+        ASSERT_FALSE(object.IsValid());
+        ASSERT_TRUE(*is_deleted);
+    }
+
+    //Reset to itself.
+    {
+        zaf::COMObject<BaseCOMObject> object{ new BaseCOMObject() };
+        object.Reset(object.Inner());
+
+        ASSERT_TRUE(object.IsValid());
+        ASSERT_EQ(object->ReferenceCount(), 1);
+    }
 }
 
 

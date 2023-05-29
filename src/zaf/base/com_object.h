@@ -45,8 +45,10 @@ public:
     }
 
     COMObject& operator=(const COMObject& other) {
-        Reset();
-        CopyFrom(other.Inner());
+        if (this != &other) {
+            Reset();
+            CopyFrom(other.Inner());
+        }
         return *this;
     }
 
@@ -58,8 +60,10 @@ public:
     }
 
     COMObject& operator=(COMObject&& other) {
-        Reset();
-        inner_ = other.Detach();
+        if (this != &other) {
+            Reset();
+            inner_ = other.Detach();
+        }
         return *this;
     }
 
@@ -104,10 +108,12 @@ public:
     }
 
     void Reset(T* new_inner) {
-        if (inner_) {
-            inner_->Release();
+        if (inner_ != new_inner) {
+            if (inner_) {
+                inner_->Release();
+            }
+            inner_ = new_inner;
         }
-        inner_ = new_inner;
     }
 
     T* Detach() {
