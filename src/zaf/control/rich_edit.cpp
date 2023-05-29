@@ -409,6 +409,54 @@ zaf::Rect RichEdit::GetTextRect() {
 }
 
 
+std::wstring RichEdit::GetText(rich_edit::TextFlag flag) const {
+
+    constexpr UINT CodePage = 1200; //Unicode code page.
+
+    GETTEXTLENGTHEX text_length_options{};
+    text_length_options.codepage = CodePage;
+    text_length_options.flags = 
+        GTL_NUMCHARS | GTL_CLOSE | 
+        (flag == rich_edit::TextFlag::UseCRLF ? GTL_USECRLF : GTL_DEFAULT);
+
+    LRESULT text_length_in_chars{};
+    HRESULT hresult = text_service_->TxSendMessage(
+        EM_GETTEXTLENGTHEX, 
+        reinterpret_cast<WPARAM>(&text_length_options),
+        0,
+        &text_length_in_chars);
+
+    if (FAILED(hresult) || text_length_in_chars == E_INVALIDARG) {
+        return {};
+    }
+
+    //Text length returned from EM_GETTEXTLENGTHEX doesn't contain the null terminator, and the 
+    //buffer passed to EM_GETTEXTEX is required to contain null terminator, so we add one more 
+    //char to text length.
+    text_length_in_chars++;
+    std::wstring text(text_length_in_chars, L'\0');
+
+    GETTEXTEX text_options{};
+    text_options.cb = static_cast<DWORD>(text_length_in_chars * sizeof(wchar_t));
+    text_options.codepage = CodePage;
+    text_options.flags = (flag == rich_edit::TextFlag::UseCRLF ? GT_USECRLF : GT_DEFAULT);
+
+    LRESULT actual_length_in_chars{};
+    hresult = text_service_->TxSendMessage(
+        EM_GETTEXTEX, 
+        reinterpret_cast<WPARAM>(&text_options),
+        reinterpret_cast<LPARAM>(&text[0]),
+        &actual_length_in_chars);
+
+    if (FAILED(hresult)) {
+        return {};
+    }
+
+    text.resize(actual_length_in_chars);
+    return text;
+}
+
+
 Frame RichEdit::GetInset() const {
     return inset_;
 }

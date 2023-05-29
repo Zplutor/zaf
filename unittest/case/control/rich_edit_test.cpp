@@ -41,3 +41,17 @@ TEST(RichEditTest, TextLength) {
     rich_edit->InsertObject(zaf::MakeCOMObject<TestEmbeddedObject>());
     ASSERT_EQ(rich_edit->TextLength(), 3);
 }
+
+
+TEST(RichEditTest, GetText) {
+
+    auto rich_edit = zaf::Create<zaf::RichEdit>();
+    rich_edit->SetIsMultiline(true);
+    rich_edit->SetText(L"line1\rline2\r\nline3\r\n");
+
+    auto text = rich_edit->GetText(zaf::rich_edit::TextFlag::Default);
+    ASSERT_EQ(text, L"line1\rline2\rline3\r");
+
+    text = rich_edit->GetText(zaf::rich_edit::TextFlag::UseCRLF);
+    ASSERT_EQ(text, L"line1\r\nline2\r\nline3\r\n");
+}

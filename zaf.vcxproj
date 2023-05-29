@@ -496,6 +496,7 @@
     <ClInclude Include="src\zaf\control\rich_edit\object_context.h" />
     <ClInclude Include="src\zaf\control\rich_edit\object_info.h" />
     <ClInclude Include="src\zaf\control\rich_edit\ole_interface.h" />
+    <ClInclude Include="src\zaf\control\rich_edit\text_flag.h" />
     <ClInclude Include="src\zaf\control\scrollable_control.h" />
     <ClInclude Include="src\zaf\control\scroll_bar.h" />
     <ClInclude Include="src\zaf\control\scroll_bar_arrow.h" />

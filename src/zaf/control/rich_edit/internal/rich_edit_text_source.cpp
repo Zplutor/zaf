@@ -13,7 +13,7 @@ RichEditTextSource::RichEditTextSource(ITextServices2* text_service) :
 std::size_t RichEditTextSource::GetTextLength() {
 
     GETTEXTLENGTHEX param{};
-    param.flags = GTL_DEFAULT;
+    param.flags = GTL_DEFAULT | GTL_PRECISE | GTL_NUMCHARS;
     param.codepage = 1200; //Unicode
 
     LRESULT length{};

@@ -116,7 +116,7 @@ protected:
         rich_edit_->SetBorder(zaf::Frame{});
         rich_edit_->SetIsMultiline(true);
         rich_edit_->SetAllowBeep(false);
-        rich_edit_->SetParagraphAlignment(zaf::ParagraphAlignment::Far);
+        rich_edit_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
 
         auto scrollable = zaf::Create<zaf::ScrollableControl>();
         scrollable->SetBorder(zaf::Frame{});
@@ -135,7 +135,13 @@ private:
         button_->SetFixedHeight(30);
         Subscriptions() += button_->ClickEvent().Subscribe(std::bind([this]() {
 
-            rich_edit_->InsertObject(zaf::MakeCOMObject<MyOLEObject>());
+            auto text = rich_edit_->GetText(zaf::rich_edit::TextFlag::UseCRLF);
+            text += L"\r\n";
+            OutputDebugString(text.c_str());
+
+            auto t = rich_edit_->Text();
+            t += L"\r\n";
+            OutputDebugString(t.c_str());
         }));
 
         RootControl()->AddChild(button_);

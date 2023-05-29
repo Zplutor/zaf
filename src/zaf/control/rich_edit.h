@@ -7,6 +7,7 @@
 #include <zaf/control/event/rich_edit_selection_changed_info.h>
 #include <zaf/control/event/text_changing_info.h>
 #include <zaf/control/rich_edit/ole_interface.h>
+#include <zaf/control/rich_edit/text_flag.h>
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/text_validator.h>
 #include <zaf/control/textual_control.h>
@@ -34,6 +35,8 @@ public:
 public:
     RichEdit();
     ~RichEdit();
+
+    std::wstring GetText(rich_edit::TextFlag flag) const;
 
     /**
      Get the dimensions of the white space inset around the text.

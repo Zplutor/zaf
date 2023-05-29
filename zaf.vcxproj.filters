@@ -2161,5 +2161,8 @@
     <ClInclude Include="src\zaf\base\event\event.h">
       <Filter>zaf\base\event</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\control\rich_edit\text_flag.h">
+      <Filter>zaf\control\rich_edit</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
