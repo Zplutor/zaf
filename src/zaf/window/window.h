@@ -405,7 +405,7 @@ public:
     /**
      Set window's title.
      */
-    void SetTitle(std::wstring_view title);
+    void SetTitle(const std::wstring& title);
 
     /**
      Get window's root control.

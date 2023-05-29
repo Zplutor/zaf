@@ -2072,7 +2072,7 @@ std::wstring Window::Title() const {
 }
 
 
-void Window::SetTitle(std::wstring_view title) {
+void Window::SetTitle(const std::wstring& title) {
 
     title_ = title;
 
