@@ -239,24 +239,24 @@ TEST(WindowTest, FocusEvent) {
     window->SetRect(zaf::Rect{ 0, 0, 1, 1 });
     window->Show();
 
-    bool is_focus_lost_event_called{};
-    bool is_focus_gained_event_called{};
+    auto is_focus_lost_event_called = std::make_shared<bool>();
+    auto is_focus_gained_event_called = std::make_shared<bool>();
 
     window->Subscriptions() += window->FocusLostEvent().Subscribe(
-        [&is_focus_lost_event_called](const zaf::WindowFocusLostInfo& event_info) {
-        is_focus_lost_event_called = true;
+        [is_focus_lost_event_called](const zaf::WindowFocusLostInfo& event_info) {
+        *is_focus_lost_event_called = true;
     });
 
     window->Subscriptions() += window->FocusGainedEvent().Subscribe(
-        [&is_focus_gained_event_called](const zaf::WindowFocusGainedInfo& event_info) {
-        is_focus_gained_event_called = true;
+        [is_focus_gained_event_called](const zaf::WindowFocusGainedInfo& event_info) {
+        *is_focus_gained_event_called = true;
     });
 
     SetFocus(nullptr);
-    ASSERT_TRUE(is_focus_lost_event_called);
+    ASSERT_TRUE(*is_focus_lost_event_called);
 
     SetFocus(window->Handle());
-    ASSERT_TRUE(is_focus_gained_event_called);
+    ASSERT_TRUE(*is_focus_gained_event_called);
 }
 
 
