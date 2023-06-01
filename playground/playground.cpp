@@ -80,12 +80,10 @@ public:
 
     void OnMouseDown(const zaf::rich_edit::MouseDownContext& context) override {
 
-        context.EventInfo().MarkAsHandled();
     }
 
     void OnMouseUp(const zaf::rich_edit::MouseUpContext& context) override {
 
-        context.EventInfo().MarkAsHandled();
     }
 
     void OnMouseCursorChanging(
@@ -135,13 +133,7 @@ private:
         button_->SetFixedHeight(30);
         Subscriptions() += button_->ClickEvent().Subscribe(std::bind([this]() {
 
-            auto text = rich_edit_->GetText(zaf::rich_edit::TextFlag::UseCRLF);
-            text += L"\r\n";
-            OutputDebugString(text.c_str());
-
-            auto t = rich_edit_->Text();
-            t += L"\r\n";
-            OutputDebugString(t.c_str());
+            rich_edit_->InsertObject(zaf::MakeCOMObject<MyOLEObject>());
         }));
 
         RootControl()->AddChild(button_);

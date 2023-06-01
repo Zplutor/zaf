@@ -168,6 +168,9 @@
     <ClCompile Include="src\zaf\control\property_grid\value_view.cpp" />
     <ClCompile Include="src\zaf\control\radio_button.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\embedded_object.cpp" />
+    <ClCompile Include="src\zaf\control\rich_edit\internal\data_format_enumerator.cpp" />
+    <ClCompile Include="src\zaf\control\rich_edit\internal\data_object.cpp" />
+    <ClCompile Include="src\zaf\control\rich_edit\internal\ole_callback.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\ole_helper.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\text_host_bridge.cpp" />
@@ -490,6 +493,9 @@
     <ClInclude Include="src\zaf\control\property_grid_node.h" />
     <ClInclude Include="src\zaf\control\radio_button.h" />
     <ClInclude Include="src\zaf\control\rich_edit\embedded_object.h" />
+    <ClInclude Include="src\zaf\control\rich_edit\internal\data_format_enumerator.h" />
+    <ClInclude Include="src\zaf\control\rich_edit\internal\data_object.h" />
+    <ClInclude Include="src\zaf\control\rich_edit\internal\ole_callback.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_helper.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\text_host_bridge.h" />

@@ -6,6 +6,7 @@
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
 #include <zaf/control/rich_edit/embedded_object.h>
+#include <zaf/control/rich_edit/internal/ole_callback.h>
 #include <zaf/control/rich_edit/internal/ole_helper.h>
 #include <zaf/control/rich_edit/internal/rich_edit_text_source.h>
 #include <zaf/control/rich_edit/internal/text_host_bridge.h>
@@ -169,6 +170,15 @@ void RichEdit::InitializeTextService() {
         0,
         ENM_CHANGE | ENM_SELCHANGE | ENM_PROTECTED, 
         nullptr);
+
+    /*
+    auto ole_callback = MakeCOMObject<rich_edit::internal::OLECallback>(shared_this);
+    text_service_->TxSendMessage(
+        EM_SETOLECALLBACK, 
+        0,
+        reinterpret_cast<LPARAM>(ole_callback.Inner()), 
+        nullptr);
+    */
 }
 
 
