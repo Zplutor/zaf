@@ -171,14 +171,12 @@ void RichEdit::InitializeTextService() {
         ENM_CHANGE | ENM_SELCHANGE | ENM_PROTECTED, 
         nullptr);
 
-    /*
     auto ole_callback = MakeCOMObject<rich_edit::internal::OLECallback>(shared_this);
     text_service_->TxSendMessage(
         EM_SETOLECALLBACK, 
         0,
         reinterpret_cast<LPARAM>(ole_callback.Inner()), 
         nullptr);
-    */
 }
 
 

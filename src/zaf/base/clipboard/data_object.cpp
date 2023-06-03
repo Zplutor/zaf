@@ -1,7 +1,29 @@
-#include <zaf/control/rich_edit/internal/data_object.h>
-#include <zaf/control/rich_edit/internal/data_format_enumerator.h>
+#include <zaf/base/clipboard/data_object.h>
+#include <zaf/base/clipboard/data_format_enumerator.h>
 
-namespace zaf::rich_edit::internal {
+namespace zaf {
+namespace {
+
+bool AreFORMATETCsEqual(const FORMATETC& format1, const FORMATETC& format2) {
+    return
+        (format1.cfFormat == format2.cfFormat) &&
+        (format1.dwAspect == format2.dwAspect) &&
+        (format1.lindex == format2.lindex) &&
+        (format1.ptd == format2.ptd) &&
+        (format1.tymed == format2.tymed);
+}
+
+}
+
+DataObject::DataObject() : formats_(std::make_shared<DataFormatList>()) {
+
+}
+
+
+void DataObject::AddFormat(std::shared_ptr<DataFormat> format) {
+    formats_->push_back(std::move(format));
+}
+
 
 HRESULT DataObject::QueryInterface(REFIID riid, LPVOID* ppvObj) {
 
@@ -36,18 +58,16 @@ ULONG DataObject::Release() {
 
 HRESULT DataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium) {
 
-    std::wstring string = L"|str|";
+    for (const auto& each_format : *formats_) {
 
-    std::size_t memory_size = string.size() * sizeof(wchar_t*);
-    auto hglobal = GlobalAlloc(GMEM_MOVEABLE, memory_size);
-    auto memory = GlobalLock(hglobal);
-    std::memcpy(memory, string.data(), memory_size);
-    GlobalUnlock(hglobal);
+        auto format_info = each_format->GetFORMATECT();
+        if (AreFORMATETCsEqual(*pformatetcIn, format_info)) {
+            *pmedium = each_format->GetSTGMEDIUM();
+            return S_OK;
+        }
+    }
 
-    pmedium->tymed = TYMED_HGLOBAL;
-    pmedium->hGlobal = hglobal;
-
-    return S_OK;
+    return DV_E_FORMATETC;;
 }
 
 
@@ -77,7 +97,7 @@ HRESULT DataObject::EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC** ppenumForm
         return E_NOTIMPL;
     }
 
-    *ppenumFormatEtc = new DataFormatEnumerator();
+    *ppenumFormatEtc = new DataFormatEnumerator(formats_);
     return S_OK;
 }
 

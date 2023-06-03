@@ -391,6 +391,9 @@
     <ClCompile Include="unittest\case\base\event\event_test.cpp">
       <Filter>case\base\event</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\global_mem_test.cpp">
+      <Filter>case\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

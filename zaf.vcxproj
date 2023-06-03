@@ -55,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\application.cpp" />
     <ClCompile Include="src\zaf\base\clipboard.cpp" />
+    <ClCompile Include="src\zaf\base\clipboard\data_format_enumerator.cpp" />
+    <ClCompile Include="src\zaf\base\clipboard\data_object.cpp" />
+    <ClCompile Include="src\zaf\base\clipboard\text_format.cpp" />
     <ClCompile Include="src\zaf\base\error\basic_error.cpp" />
     <ClCompile Include="src\zaf\base\error\com_error.cpp" />
     <ClCompile Include="src\zaf\base\log.cpp" />
@@ -168,8 +171,6 @@
     <ClCompile Include="src\zaf\control\property_grid\value_view.cpp" />
     <ClCompile Include="src\zaf\control\radio_button.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\embedded_object.cpp" />
-    <ClCompile Include="src\zaf\control\rich_edit\internal\data_format_enumerator.cpp" />
-    <ClCompile Include="src\zaf\control\rich_edit\internal\data_object.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\ole_callback.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\ole_helper.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.cpp" />
@@ -320,6 +321,13 @@
     <ClInclude Include="src\zaf\base\as.h" />
     <ClInclude Include="src\zaf\base\auto_reset_value.h" />
     <ClInclude Include="src\zaf\base\clipboard.h" />
+    <ClInclude Include="src\zaf\base\clipboard\clipboard_format.h" />
+    <ClInclude Include="src\zaf\base\clipboard\data_format.h" />
+    <ClInclude Include="src\zaf\base\clipboard\data_format_enumerator.h" />
+    <ClInclude Include="src\zaf\base\clipboard\data_format_info.h" />
+    <ClInclude Include="src\zaf\base\clipboard\data_medium.h" />
+    <ClInclude Include="src\zaf\base\clipboard\data_object.h" />
+    <ClInclude Include="src\zaf\base\clipboard\text_format.h" />
     <ClInclude Include="src\zaf\base\container\utility\copy.h" />
     <ClInclude Include="src\zaf\base\container\utility\range.h" />
     <ClInclude Include="src\zaf\base\error\basic_error.h" />
@@ -327,6 +335,7 @@
     <ClInclude Include="src\zaf\base\event\event.h" />
     <ClInclude Include="src\zaf\base\event\event_info.h" />
     <ClInclude Include="src\zaf\base\event\routed_event_info.h" />
+    <ClInclude Include="src\zaf\base\global_mem.h" />
     <ClInclude Include="src\zaf\base\hash.h" />
     <ClInclude Include="src\zaf\base\non_copyable.h" />
     <ClInclude Include="src\zaf\base\none.h" />
@@ -493,8 +502,6 @@
     <ClInclude Include="src\zaf\control\property_grid_node.h" />
     <ClInclude Include="src\zaf\control\radio_button.h" />
     <ClInclude Include="src\zaf\control\rich_edit\embedded_object.h" />
-    <ClInclude Include="src\zaf\control\rich_edit\internal\data_format_enumerator.h" />
-    <ClInclude Include="src\zaf\control\rich_edit\internal\data_object.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_callback.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_helper.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.h" />

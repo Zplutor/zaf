@@ -1,6 +1,12 @@
-#include <zaf/control/rich_edit/internal/data_format_enumerator.h>
+#include <zaf/base/clipboard/data_format_enumerator.h>
 
-namespace zaf::rich_edit::internal {
+namespace zaf {
+
+DataFormatEnumerator::DataFormatEnumerator(std::shared_ptr<DataFormatList> formats) : 
+    formats_(std::move(formats)) {
+
+}
+
 
 HRESULT DataFormatEnumerator::QueryInterface(REFIID riid, LPVOID* ppvObj) {
 
@@ -35,28 +41,41 @@ ULONG DataFormatEnumerator::Release() {
 
 HRESULT DataFormatEnumerator::Next(ULONG celt, FORMATETC* rgelt, ULONG* pceltFetched) {
 
-    if (index_ < count_) {
-        rgelt->cfFormat = CF_UNICODETEXT;
-        rgelt->ptd = nullptr;
-        rgelt->dwAspect = DVASPECT_CONTENT;
-        rgelt->lindex = -1;
-        rgelt->tymed = TYMED_HGLOBAL;
-
-        ++index_;
-        return S_OK;
+    if (current_index_ >= formats_->size()) {
+        return S_FALSE;
     }
-    return S_FALSE;
+
+    ULONG format_index{};
+
+    auto end_index = (std::min)(current_index_ + celt, formats_->size());
+    for (; current_index_ < end_index; ++current_index_) {
+
+        rgelt[format_index] = (*formats_)[current_index_]->GetFORMATECT();
+        ++format_index;
+    }
+
+    if (pceltFetched) {
+        *pceltFetched = format_index;
+    }
+
+    return S_OK;
 }
 
 
 HRESULT DataFormatEnumerator::Skip(ULONG celt) {
-    return E_NOTIMPL;
+
+    auto new_index = current_index_ + celt;
+    if (new_index > formats_->size()) {
+        return S_FALSE;
+    }
+
+    current_index_ = new_index;
+    return S_OK;
 }
 
 
 HRESULT DataFormatEnumerator::Reset(void) {
-    count_ = 2;
-    index_ = 0;
+    current_index_ = 0;
     return S_OK;
 }
 

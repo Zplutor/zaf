@@ -1,11 +1,14 @@
 #pragma once
 
 #include <oleidl.h>
+#include <zaf/base/clipboard/data_format.h>
 
-namespace zaf::rich_edit::internal {
+namespace zaf {
 
 class DataFormatEnumerator : public IEnumFORMATETC {
 public:
+    explicit DataFormatEnumerator(std::shared_ptr<DataFormatList> formats);
+
     //IUnknown interfaces
     HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override;
     ULONG AddRef() override;
@@ -19,8 +22,8 @@ public:
 
 private:
     LONG reference_count_{ 1 };
-    std::size_t count_{};
-    std::size_t index_{};
+    std::shared_ptr<DataFormatList> formats_;
+    std::size_t current_index_{};
 };
 
 }

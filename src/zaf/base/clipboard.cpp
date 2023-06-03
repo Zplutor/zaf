@@ -2,6 +2,7 @@
 #include <strsafe.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/error/system_error.h>
+#include <zaf/base/global_mem.h>
 #include <zaf/base/non_copyable.h>
 
 namespace zaf {
@@ -14,44 +15,6 @@ public:
     ~ClipboardGuard() {
         CloseClipboard();
     }
-};
-
-
-class GlobalMemoryGuard : NonCopyableNonMovable {
-public:
-    GlobalMemoryGuard(HGLOBAL handle) : handle_(handle) { };
-
-    ~GlobalMemoryGuard() {
-        if (handle_) {
-            GlobalFree(handle_);
-        }
-    }
-
-    HGLOBAL Handle() const {
-        return handle_;
-    }
-
-    void Detach() {
-        handle_ = nullptr;
-    }
-
-private:
-    HGLOBAL handle_{};
-};
-
-
-class GlobalLockGuard : NonCopyableNonMovable {
-public:
-    GlobalLockGuard(HGLOBAL handle) : handle_(handle) { }
-
-    ~GlobalLockGuard() {
-        if (handle_) {
-            GlobalUnlock(handle_);
-        }
-    }
-
-private:
-    HGLOBAL handle_{};
 };
 
 }
@@ -91,35 +54,26 @@ void Clipboard::SetText(std::wstring_view text) {
 
     {
         auto memory_size = (text.length() + 1) * sizeof(wchar_t);
-        GlobalMemoryGuard memory_guard = GlobalAlloc(GMEM_MOVEABLE, memory_size);
-        if (!memory_guard.Handle()) {
-            ZAF_THROW_SYSTEM_ERROR(GetLastError());
-        }
-
-        LPVOID memory = GlobalLock(memory_guard.Handle());
-        if (!memory) {
-            ZAF_THROW_SYSTEM_ERROR(GetLastError());
-        }
-
+        auto memory = GlobalMem::Alloc(memory_size, GlobalMemFlags::Movable);
         {
-            GlobalLockGuard lock_guard(memory_guard.Handle());
+            auto lock = memory.Lock();
 
             HRESULT hresult = StringCchCopy(
-                reinterpret_cast<wchar_t*>(memory),
+                reinterpret_cast<wchar_t*>(lock.Pointer()),
                 text.length() + 1,
                 text.data());
 
             ZAF_THROW_IF_COM_ERROR(hresult);
         }
 
-        auto data_handle = SetClipboardData(CF_UNICODETEXT, memory_guard.Handle());
+        auto data_handle = SetClipboardData(CF_UNICODETEXT, memory.Handle());
         if (!data_handle) {
             ZAF_THROW_SYSTEM_ERROR(GetLastError());
         }
 
         //According to offical documentation, the memory shouldn't be freed if SetClipboardData() 
         //succeeded.
-        memory_guard.Detach();
+        auto handle = memory.Detach();
     }
 }
 

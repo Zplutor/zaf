@@ -1,11 +1,16 @@
 #pragma once
 
 #include <oleidl.h>
+#include <zaf/base/clipboard/data_format.h>
 
-namespace zaf::rich_edit::internal {
+namespace zaf {
 
 class DataObject : public IDataObject {
 public:
+    DataObject();
+
+    void AddFormat(std::shared_ptr<DataFormat> format);
+
     //IUnknown interfaces
     HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override;
     ULONG AddRef() override;
@@ -28,6 +33,7 @@ public:
 
 private:
     LONG reference_count_{ 1 };
+    std::shared_ptr<DataFormatList> formats_;
 };
 
 }

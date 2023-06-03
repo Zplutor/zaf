@@ -1,5 +1,6 @@
 #include <zaf/control/rich_edit/internal/ole_callback.h>
-#include <zaf/control/rich_edit/internal/data_object.h>
+#include <zaf/base/clipboard/data_object.h>
+#include <zaf/base/clipboard/text_format.h>
 
 namespace zaf::rich_edit::internal {
 
@@ -83,7 +84,11 @@ HRESULT OLECallback::ContextSensitiveHelp(BOOL fEnterMode) {
 
 
 HRESULT OLECallback::GetClipboardData(CHARRANGE* lpchrg, DWORD reco, LPDATAOBJECT* lplpdataobj) {
-    *lplpdataobj = new DataObject();
+
+    auto data_object = new DataObject();
+    data_object->AddFormat(std::make_shared<TextDataFormat>(L"|TextFormat|"));
+
+    *lplpdataobj = data_object;
     return S_OK;
 }
 
