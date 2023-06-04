@@ -1,5 +1,5 @@
 #include <zaf/clipboard/internal/data_object_impl.h>
-#include <zaf/clipboard/internal/format_enumerator.h>
+#include <zaf/clipboard/internal/enum_formatetc_impl.h>
 #include <zaf/clipboard/internal/medium_wrapping.h>
 
 namespace zaf::clipboard::internal {
@@ -124,7 +124,7 @@ HRESULT DataObjectImpl::EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC** ppenum
         return E_NOTIMPL;
     }
 
-    *ppenumFormatEtc = new FormatEnumerator{ format_items_ };
+    *ppenumFormatEtc = new EnumFORMATETCImpl{ format_items_ };
     return S_OK;
 }
 

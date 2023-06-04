@@ -66,7 +66,7 @@
     <ClCompile Include="src\zaf\clipboard\data_object.cpp" />
     <ClCompile Include="src\zaf\clipboard\format.cpp" />
     <ClCompile Include="src\zaf\clipboard\format_enumerator.cpp" />
-    <ClCompile Include="src\zaf\clipboard\internal\format_enumerator.cpp" />
+    <ClCompile Include="src\zaf\clipboard\internal\enum_formatetc_impl.cpp" />
     <ClCompile Include="src\zaf\clipboard\internal\data_object_impl.cpp" />
     <ClCompile Include="src\zaf\clipboard\internal\medium_wrapping.cpp" />
     <ClCompile Include="src\zaf\clipboard\medium.cpp" />
@@ -384,7 +384,7 @@
     <ClInclude Include="src\zaf\clipboard\format_enumerator.h" />
     <ClInclude Include="src\zaf\clipboard\format_type.h" />
     <ClInclude Include="src\zaf\clipboard\internal\format_item.h" />
-    <ClInclude Include="src\zaf\clipboard\internal\format_enumerator.h" />
+    <ClInclude Include="src\zaf\clipboard\internal\enum_formatetc_impl.h" />
     <ClInclude Include="src\zaf\clipboard\internal\data_object_impl.h" />
     <ClInclude Include="src\zaf\clipboard\internal\medium_wrapper.h" />
     <ClInclude Include="src\zaf\clipboard\internal\medium_wrapping.h" />

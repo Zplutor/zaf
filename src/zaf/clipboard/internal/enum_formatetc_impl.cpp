@@ -1,14 +1,14 @@
-#include <zaf/clipboard/internal/format_enumerator.h>
+#include <zaf/clipboard/internal/enum_formatetc_impl.h>
 
 namespace zaf::clipboard::internal {
 
-FormatEnumerator::FormatEnumerator(std::shared_ptr<FormatItemList> format_items) :
+EnumFORMATETCImpl::EnumFORMATETCImpl(std::shared_ptr<FormatItemList> format_items) :
     format_items_(std::move(format_items)) {
 
 }
 
 
-HRESULT FormatEnumerator::QueryInterface(REFIID riid, LPVOID* ppvObj) {
+HRESULT EnumFORMATETCImpl::QueryInterface(REFIID riid, LPVOID* ppvObj) {
 
     if (!ppvObj) {
         return E_INVALIDARG;
@@ -25,12 +25,12 @@ HRESULT FormatEnumerator::QueryInterface(REFIID riid, LPVOID* ppvObj) {
 }
 
 
-ULONG FormatEnumerator::AddRef() {
+ULONG EnumFORMATETCImpl::AddRef() {
     return InterlockedIncrement(&reference_count_);
 }
 
 
-ULONG FormatEnumerator::Release() {
+ULONG EnumFORMATETCImpl::Release() {
     ULONG result = InterlockedDecrement(&reference_count_);
     if (result == 0) {
         delete this;
@@ -39,7 +39,7 @@ ULONG FormatEnumerator::Release() {
 }
 
 
-HRESULT FormatEnumerator::Next(ULONG celt, FORMATETC* rgelt, ULONG* pceltFetched) {
+HRESULT EnumFORMATETCImpl::Next(ULONG celt, FORMATETC* rgelt, ULONG* pceltFetched) {
 
     if (current_index_ >= format_items_->size()) {
         return S_FALSE;
@@ -61,7 +61,7 @@ HRESULT FormatEnumerator::Next(ULONG celt, FORMATETC* rgelt, ULONG* pceltFetched
 }
 
 
-HRESULT FormatEnumerator::Skip(ULONG celt) {
+HRESULT EnumFORMATETCImpl::Skip(ULONG celt) {
 
     auto new_index = current_index_ + celt;
     if (new_index > format_items_->size()) {
@@ -73,13 +73,13 @@ HRESULT FormatEnumerator::Skip(ULONG celt) {
 }
 
 
-HRESULT FormatEnumerator::Reset(void) {
+HRESULT EnumFORMATETCImpl::Reset(void) {
     current_index_ = 0;
     return S_OK;
 }
 
 
-HRESULT FormatEnumerator::Clone(IEnumFORMATETC** ppenum) {
+HRESULT EnumFORMATETCImpl::Clone(IEnumFORMATETC** ppenum) {
     return E_NOTIMPL;
 }
 

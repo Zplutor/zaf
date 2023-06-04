@@ -5,9 +5,9 @@
 
 namespace zaf::clipboard::internal {
 
-class FormatEnumerator : public IEnumFORMATETC {
+class EnumFORMATETCImpl : public IEnumFORMATETC {
 public:
-    explicit FormatEnumerator(std::shared_ptr<FormatItemList> format_items);
+    explicit EnumFORMATETCImpl(std::shared_ptr<FormatItemList> format_items);
 
     //IUnknown interfaces
     HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override;

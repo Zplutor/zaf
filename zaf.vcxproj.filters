@@ -958,7 +958,7 @@
     <ClCompile Include="src\zaf\clipboard\data_object.cpp">
       <Filter>zaf\clipboard</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\clipboard\internal\format_enumerator.cpp">
+    <ClCompile Include="src\zaf\clipboard\internal\enum_formatetc_impl.cpp">
       <Filter>zaf\clipboard\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\clipboard\internal\data_object_impl.cpp">
@@ -2233,7 +2233,7 @@
     <ClInclude Include="src\zaf\clipboard\data_object.h">
       <Filter>zaf\clipboard</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\clipboard\internal\format_enumerator.h">
+    <ClInclude Include="src\zaf\clipboard\internal\enum_formatetc_impl.h">
       <Filter>zaf\clipboard\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\clipboard\internal\data_object_impl.h">
