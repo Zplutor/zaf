@@ -2,9 +2,9 @@
 
 #include <ObjIdl.h>
 
-namespace zaf {
+namespace zaf::clipboard {
 
-enum class DataMediumType {
+enum class MediumType {
     Null = TYMED_NULL,
     GlobalMem = TYMED_HGLOBAL,
     File = TYMED_FILE,

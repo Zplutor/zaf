@@ -1,9 +1,9 @@
 #pragma once
 
 #include <oleidl.h>
-#include <zaf/base/clipboard/internal/data_format_item.h>
+#include <zaf/clipboard/internal/format_item.h>
 
-namespace zaf {
+namespace zaf::clipboard::internal {
 
 class DataObjectImpl : public IDataObject {
 public:
@@ -30,13 +30,8 @@ public:
     HRESULT EnumDAdvise(IEnumSTATDATA** ppenumAdvise) override;
 
 private:
-    friend class DataObject;
-
-    void SetFormatData(const DataFormat& format, std::shared_ptr<ClipboardData> data);
-
-private:
     LONG reference_count_{ 1 };
-    std::shared_ptr<internal::DataFormatItemList> format_items_;
+    std::shared_ptr<FormatItemList> format_items_;
 };
 
 }

@@ -1,0 +1,61 @@
+#include <gtest/gtest.h>
+#include <zaf/clipboard/format.h>
+
+using namespace zaf::clipboard;
+
+TEST(FormatTest, Equal) {
+
+    {
+        Format format1{ FormatType::Text, MediumType::GlobalMem };
+        Format format2{ FormatType::Text, MediumType::GlobalMem };
+        ASSERT_TRUE(format1 == format2);
+    }
+
+    {
+        Format format1{ FormatType::Text, MediumType::GlobalMem };
+        FORMATETC format2{};
+        format2.cfFormat = CF_UNICODETEXT;
+        format2.tymed = TYMED_HGLOBAL;
+        format2.dwAspect = DVASPECT_CONTENT;
+        format2.lindex = -1;
+        ASSERT_TRUE(format1 == format2);
+        ASSERT_TRUE(format2 == format1);
+    }
+}
+
+
+TEST(FormatTest, NotEqual) {
+
+    Format format1{ FormatType::Text, MediumType::GlobalMem };
+
+    {
+        FORMATETC format2 = format1.Inner();
+        format2.cfFormat = CF_DIB;
+        ASSERT_FALSE(format1 == format2);
+    }
+
+    {
+        FORMATETC format2 = format1.Inner();
+        format2.dwAspect = DVASPECT_ICON;
+        ASSERT_FALSE(format1 == format2);
+    }
+
+    {
+        FORMATETC format2 = format1.Inner();
+        format2.lindex = 0;
+        ASSERT_FALSE(format1 == format2);
+    }
+
+    {
+        FORMATETC format2 = format1.Inner();
+        DVTARGETDEVICE device{};
+        format2.ptd = &device;
+        ASSERT_FALSE(format1 == format2);
+    }
+
+    {
+        FORMATETC format2 = format1.Inner();
+        format2.tymed = TYMED_FILE;
+        ASSERT_FALSE(format1 == format2);
+    }
+}

@@ -1,14 +1,14 @@
-#include <zaf/base/clipboard/data_format_enumerator.h>
+#include <zaf/clipboard/internal/format_enumerator.h>
 
-namespace zaf {
+namespace zaf::clipboard::internal {
 
-DataFormatEnumerator::DataFormatEnumerator(std::shared_ptr<internal::DataFormatItemList> items) :
-    format_items_(std::move(items)) {
+FormatEnumerator::FormatEnumerator(std::shared_ptr<FormatItemList> format_items) :
+    format_items_(std::move(format_items)) {
 
 }
 
 
-HRESULT DataFormatEnumerator::QueryInterface(REFIID riid, LPVOID* ppvObj) {
+HRESULT FormatEnumerator::QueryInterface(REFIID riid, LPVOID* ppvObj) {
 
     if (!ppvObj) {
         return E_INVALIDARG;
@@ -25,12 +25,12 @@ HRESULT DataFormatEnumerator::QueryInterface(REFIID riid, LPVOID* ppvObj) {
 }
 
 
-ULONG DataFormatEnumerator::AddRef() {
+ULONG FormatEnumerator::AddRef() {
     return InterlockedIncrement(&reference_count_);
 }
 
 
-ULONG DataFormatEnumerator::Release() {
+ULONG FormatEnumerator::Release() {
     ULONG result = InterlockedDecrement(&reference_count_);
     if (result == 0) {
         delete this;
@@ -39,7 +39,7 @@ ULONG DataFormatEnumerator::Release() {
 }
 
 
-HRESULT DataFormatEnumerator::Next(ULONG celt, FORMATETC* rgelt, ULONG* pceltFetched) {
+HRESULT FormatEnumerator::Next(ULONG celt, FORMATETC* rgelt, ULONG* pceltFetched) {
 
     if (current_index_ >= format_items_->size()) {
         return S_FALSE;
@@ -61,7 +61,7 @@ HRESULT DataFormatEnumerator::Next(ULONG celt, FORMATETC* rgelt, ULONG* pceltFet
 }
 
 
-HRESULT DataFormatEnumerator::Skip(ULONG celt) {
+HRESULT FormatEnumerator::Skip(ULONG celt) {
 
     auto new_index = current_index_ + celt;
     if (new_index > format_items_->size()) {
@@ -73,13 +73,13 @@ HRESULT DataFormatEnumerator::Skip(ULONG celt) {
 }
 
 
-HRESULT DataFormatEnumerator::Reset(void) {
+HRESULT FormatEnumerator::Reset(void) {
     current_index_ = 0;
     return S_OK;
 }
 
 
-HRESULT DataFormatEnumerator::Clone(IEnumFORMATETC** ppenum) {
+HRESULT FormatEnumerator::Clone(IEnumFORMATETC** ppenum) {
     return E_NOTIMPL;
 }
 

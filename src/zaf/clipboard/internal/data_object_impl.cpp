@@ -1,28 +1,45 @@
-#include <zaf/base/clipboard/data_object_impl.h>
-#include <zaf/base/clipboard/data_format_enumerator.h>
+#include <zaf/clipboard/internal/data_object_impl.h>
+#include <zaf/clipboard/internal/format_enumerator.h>
+#include <zaf/clipboard/internal/medium_wrapping.h>
 
-namespace zaf {
+namespace zaf::clipboard::internal {
 namespace {
 
-bool AreFORMATETCsEqual(const FORMATETC& format1, const FORMATETC& format2) {
-    return
-        (format1.cfFormat == format2.cfFormat) &&
-        (format1.dwAspect == format2.dwAspect) &&
-        (format1.lindex == format2.lindex) &&
-        (format1.ptd == format2.ptd) &&
-        (format1.tymed == format2.tymed);
+Medium DeepCopyMedium(const FORMATETC& format, const STGMEDIUM& medium) {
+
+    auto new_medium = ShallowCopySTGMEDIUM(medium);
+    switch (new_medium.tymed) {
+        case TYMED_HGLOBAL:
+            new_medium.hGlobal = OleDuplicateData(new_medium.hGlobal, format.cfFormat, 0);
+            break;
+        case TYMED_GDI:
+            new_medium.hBitmap = reinterpret_cast<HBITMAP>(OleDuplicateData(
+                new_medium.hBitmap,
+                format.cfFormat, 
+                0));
+            break;
+        case TYMED_MFPICT:
+            new_medium.hMetaFilePict = OleDuplicateData(
+                new_medium.hMetaFilePict, 
+                format.cfFormat,
+                0);
+            break;
+        case TYMED_ENHMF:
+            new_medium.hEnhMetaFile = reinterpret_cast<HENHMETAFILE>(OleDuplicateData(
+                new_medium.hEnhMetaFile, 
+                format.cfFormat,
+                0));
+            break;
+        default:
+            break;
+    }
+    return Medium{ new_medium };
 }
 
 }
 
-DataObjectImpl::DataObjectImpl() : 
-    format_items_(std::make_shared<internal::DataFormatItemList>()) {
+DataObjectImpl::DataObjectImpl() : format_items_(std::make_shared<FormatItemList>()) {
 
-}
-
-
-void DataObjectImpl::SetFormatData(const DataFormat& format, std::shared_ptr<ClipboardData> data) {
-    format_items_->emplace_back(format, std::move(data));
 }
 
 
@@ -61,9 +78,9 @@ HRESULT DataObjectImpl::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium) {
 
     for (const auto& each_item : *format_items_) {
 
-        if (AreFORMATETCsEqual(each_item.Format().Inner(), *pformatetcIn)) {
+        if (each_item.Format() == *pformatetcIn) {
 
-            auto medium = each_item.Data()->SaveToMedium(each_item.Format());
+            auto medium = each_item.Medium();
             *pmedium = medium.Detach();
             return S_OK;
         }
@@ -89,7 +106,15 @@ HRESULT DataObjectImpl::GetCanonicalFormatEtc(FORMATETC* pformatectIn, FORMATETC
 
 
 HRESULT DataObjectImpl::SetData(FORMATETC* pformatetc, STGMEDIUM* pmedium, BOOL fRelease) {
-    return E_NOTIMPL;
+
+    Format format{ *pformatetc };
+    if (fRelease) {
+        format_items_->emplace_back(format, Medium{ *pmedium });
+    }
+    else {
+        format_items_->emplace_back(format, DeepCopyMedium(*pformatetc, *pmedium));
+    }
+    return S_OK;
 }
 
 
@@ -99,7 +124,7 @@ HRESULT DataObjectImpl::EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC** ppenum
         return E_NOTIMPL;
     }
 
-    *ppenumFormatEtc = new DataFormatEnumerator{ format_items_ };
+    *ppenumFormatEtc = new FormatEnumerator{ format_items_ };
     return S_OK;
 }
 
