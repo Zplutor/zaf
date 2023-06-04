@@ -48,6 +48,7 @@ public:
         return GlobalMem{ handle };
     }
 
+public:
     explicit GlobalMem(HGLOBAL handle) : handle_(handle) {
 
     }

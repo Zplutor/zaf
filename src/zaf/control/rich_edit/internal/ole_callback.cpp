@@ -1,5 +1,7 @@
 #include <zaf/control/rich_edit/internal/ole_callback.h>
+#include <zaf/base/as.h>
 #include <zaf/clipboard/data_object.h>
+#include <zaf/clipboard/drop_files_data.h>
 
 namespace zaf::rich_edit::internal {
 
@@ -80,11 +82,13 @@ HRESULT OLECallback::QueryAcceptData(
     auto enumerator = data_object.EnumerateFormats();
     while (auto format = enumerator.Next()) {
 
-        auto t = format->Type();
-        auto mt = format->MediumType();
-    }
+        if (format->Type() == clipboard::FormatType::DropFiles) {
 
-    auto t = data_object.GetText();
+            auto data = data_object.GetData(format->Type());
+            auto drop_file_data = As<clipboard::DropFilesData>(data);
+            break;
+        }
+    }
 
     return E_NOTIMPL;
 }

@@ -14,6 +14,7 @@ bool AreFORMATETCsEqual(const FORMATETC& format1, const FORMATETC& format2) {
 
 }
 
+
 Format::Format() {
 
     inner_.dwAspect = DVASPECT_CONTENT;

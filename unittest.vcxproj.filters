@@ -406,6 +406,9 @@
     <ClCompile Include="unittest\case\clipboard\text_data_test.cpp">
       <Filter>case\clipboard</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\clipboard\drop_files_data_test.cpp">
+      <Filter>case\clipboard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

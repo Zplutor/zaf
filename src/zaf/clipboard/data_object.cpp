@@ -2,6 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/clipboard/format.h>
 #include <zaf/clipboard/internal/data_object_impl.h>
+#include <zaf/clipboard/drop_files_data.h>
 #include <zaf/clipboard/text_data.h>
 #include <zaf/clipboard/unknown_data.h>
 #include <zaf/base/error/com_error.h>
@@ -33,6 +34,9 @@ std::shared_ptr<ClipboardData> DataObject::GetData(FormatType format_type) const
     auto result = [format_type]() -> std::shared_ptr<ClipboardData> {
         if (format_type == FormatType::Text) {
             return std::make_shared<TextData>();
+        }
+        if (format_type == FormatType::DropFiles) {
+            return std::make_shared<DropFilesData>();
         }
         return std::make_shared<UnknownData>();
     }();
