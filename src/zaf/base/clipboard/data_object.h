@@ -1,39 +1,30 @@
 #pragma once
 
-#include <oleidl.h>
-#include <zaf/base/clipboard/data_format.h>
+#include <ObjIdl.h>
+#include <zaf/base/clipboard/clipboard_data.h>
+#include <zaf/base/com_object.h>
 
 namespace zaf {
 
-class DataObject : public IDataObject {
+class DataObject {
 public:
     DataObject();
+    explicit DataObject(COMObject<IDataObject> inner);
 
-    void AddFormat(std::shared_ptr<DataFormat> format);
+    std::shared_ptr<ClipboardData> GetData(DataFormatID format_id) const;
+    std::wstring GetText() const;
 
-    //IUnknown interfaces
-    HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override;
-    ULONG AddRef() override;
-    ULONG Release() override;
+    void SetData(DataFormatID format_id, std::shared_ptr<ClipboardData> data);
 
-    //IDataObject interfaces
-    HRESULT GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium) override;
-    HRESULT GetDataHere(FORMATETC* pformatetc, STGMEDIUM* pmedium) override;
-    HRESULT QueryGetData(FORMATETC* pformatetc) override;
-    HRESULT GetCanonicalFormatEtc(FORMATETC* pformatectIn, FORMATETC* pformatetcOut) override;
-    HRESULT SetData(FORMATETC* pformatetc, STGMEDIUM* pmedium, BOOL fRelease) override;
-    HRESULT EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC** ppenumFormatEtc) override;
-    HRESULT DAdvise(
-        FORMATETC* pformatetc,
-        DWORD advf,
-        IAdviseSink* pAdvSink,
-        DWORD* pdwConnection) override;
-    HRESULT DUnadvise(DWORD dwConnection) override;
-    HRESULT EnumDAdvise(IEnumSTATDATA** ppenumAdvise) override;
+    const COMObject<IDataObject>& Inner() const {
+        return inner_;
+    }
 
 private:
-    LONG reference_count_{ 1 };
-    std::shared_ptr<DataFormatList> formats_;
+    void InnerGetData(DataFormatID format_id, ClipboardData& data) const;
+
+private:
+    COMObject<IDataObject> inner_;
 };
 
 }

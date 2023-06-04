@@ -2,8 +2,8 @@
 
 namespace zaf {
 
-DataFormatEnumerator::DataFormatEnumerator(std::shared_ptr<DataFormatList> formats) : 
-    formats_(std::move(formats)) {
+DataFormatEnumerator::DataFormatEnumerator(std::shared_ptr<internal::DataFormatItemList> items) :
+    format_items_(std::move(items)) {
 
 }
 
@@ -41,23 +41,22 @@ ULONG DataFormatEnumerator::Release() {
 
 HRESULT DataFormatEnumerator::Next(ULONG celt, FORMATETC* rgelt, ULONG* pceltFetched) {
 
-    if (current_index_ >= formats_->size()) {
+    if (current_index_ >= format_items_->size()) {
         return S_FALSE;
     }
 
     ULONG format_index{};
 
-    auto end_index = (std::min)(current_index_ + celt, formats_->size());
+    auto end_index = (std::min)(current_index_ + celt, format_items_->size());
     for (; current_index_ < end_index; ++current_index_) {
 
-        rgelt[format_index] = (*formats_)[current_index_]->GetFORMATECT();
+        rgelt[format_index] = (*format_items_)[current_index_].Format().Inner();
         ++format_index;
     }
 
     if (pceltFetched) {
         *pceltFetched = format_index;
     }
-
     return S_OK;
 }
 
@@ -65,7 +64,7 @@ HRESULT DataFormatEnumerator::Next(ULONG celt, FORMATETC* rgelt, ULONG* pceltFet
 HRESULT DataFormatEnumerator::Skip(ULONG celt) {
 
     auto new_index = current_index_ + celt;
-    if (new_index > formats_->size()) {
+    if (new_index > format_items_->size()) {
         return S_FALSE;
     }
 

@@ -949,10 +949,13 @@
     <ClCompile Include="src\zaf\base\clipboard\data_format_enumerator.cpp">
       <Filter>zaf\base\clipboard</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\clipboard\data_object.cpp">
+    <ClCompile Include="src\zaf\base\clipboard\data_object_impl.cpp">
       <Filter>zaf\base\clipboard</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\clipboard\text_format.cpp">
+    <ClCompile Include="src\zaf\base\clipboard\text_data.cpp">
+      <Filter>zaf\base\clipboard</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\base\clipboard\data_object.cpp">
       <Filter>zaf\base\clipboard</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2185,10 +2188,7 @@
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_callback.h">
       <Filter>zaf\control\rich_edit\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\clipboard\clipboard_format.h">
-      <Filter>zaf\base\clipboard</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\clipboard\data_format_info.h">
+    <ClInclude Include="src\zaf\base\clipboard\data_format.h">
       <Filter>zaf\base\clipboard</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\clipboard\data_medium.h">
@@ -2197,17 +2197,32 @@
     <ClInclude Include="src\zaf\base\clipboard\data_format_enumerator.h">
       <Filter>zaf\base\clipboard</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\clipboard\data_object.h">
+    <ClInclude Include="src\zaf\base\clipboard\data_object_impl.h">
       <Filter>zaf\base\clipboard</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\clipboard\data_format.h">
-      <Filter>zaf\base\clipboard</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\clipboard\text_format.h">
+    <ClInclude Include="src\zaf\base\clipboard\text_data.h">
       <Filter>zaf\base\clipboard</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\global_mem.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\clipboard\data_object.h">
+      <Filter>zaf\base\clipboard</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\clipboard\clipboard_data.h">
+      <Filter>zaf\base\clipboard</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\clipboard\data_medium_type.h">
+      <Filter>zaf\base\clipboard</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\clipboard\data_format_id.h">
+      <Filter>zaf\base\clipboard</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\clipboard\unknown_data.h">
+      <Filter>zaf\base\clipboard</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\clipboard\internal\data_format_item.h">
+      <Filter>zaf\base\clipboard\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

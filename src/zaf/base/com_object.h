@@ -10,6 +10,12 @@ class COMObject {
 public:
     static_assert(std::is_base_of_v<IUnknown, T>);
 
+    static COMObject<T> FromPtr(T* pointer) {
+        pointer->AddRef();
+        return COMObject<T>{ pointer };
+    }
+
+public:
     COMObject() : inner_(nullptr) { 
 
     }

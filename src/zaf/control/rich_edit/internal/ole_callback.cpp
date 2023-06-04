@@ -1,6 +1,6 @@
 #include <zaf/control/rich_edit/internal/ole_callback.h>
+#include <zaf/base/clipboard/data_object_impl.h>
 #include <zaf/base/clipboard/data_object.h>
-#include <zaf/base/clipboard/text_format.h>
 
 namespace zaf::rich_edit::internal {
 
@@ -74,6 +74,12 @@ HRESULT OLECallback::QueryAcceptData(
     DWORD reco,
     BOOL fReally,
     HGLOBAL hMetaPict) {
+
+    auto data_object_inner = COMObject<IDataObject>::FromPtr(lpdataobj);
+    DataObject data_object{ data_object_inner };
+
+    auto t = data_object.GetText();
+
     return E_NOTIMPL;
 }
 
@@ -85,8 +91,8 @@ HRESULT OLECallback::ContextSensitiveHelp(BOOL fEnterMode) {
 
 HRESULT OLECallback::GetClipboardData(CHARRANGE* lpchrg, DWORD reco, LPDATAOBJECT* lplpdataobj) {
 
-    auto data_object = new DataObject();
-    data_object->AddFormat(std::make_shared<TextDataFormat>(L"|TextFormat|"));
+    auto data_object = new DataObjectImpl();
+    //data_object->AddFormat(std::make_shared<TextData>(L"|TextFormat|"));
 
     *lplpdataobj = data_object;
     return S_OK;

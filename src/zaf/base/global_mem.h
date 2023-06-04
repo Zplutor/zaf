@@ -96,7 +96,7 @@ public:
     }
 
     [[nodiscard]]
-    GlobalMemLock Lock() {
+    GlobalMemLock Lock() const {
         LPVOID pointer = GlobalLock(handle_);
         if (!pointer) {
             ZAF_THROW_SYSTEM_ERROR(GetLastError());
