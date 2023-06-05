@@ -57,6 +57,7 @@
     <ClCompile Include="src\zaf\base\clipboard.cpp" />
     <ClCompile Include="src\zaf\base\error\basic_error.cpp" />
     <ClCompile Include="src\zaf\base\error\com_error.cpp" />
+    <ClCompile Include="src\zaf\base\global_mem.cpp" />
     <ClCompile Include="src\zaf\base\log.cpp" />
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp" />
     <ClCompile Include="src\zaf\base\registry\registry_value.cpp" />

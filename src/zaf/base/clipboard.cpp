@@ -53,18 +53,7 @@ void Clipboard::SetText(std::wstring_view text) {
     }
 
     {
-        auto memory_size = (text.length() + 1) * sizeof(wchar_t);
-        auto memory = GlobalMem::Alloc(memory_size, GlobalMemFlags::Movable);
-        {
-            auto lock = memory.Lock();
-
-            HRESULT hresult = StringCchCopy(
-                reinterpret_cast<wchar_t*>(lock.Pointer()),
-                text.length() + 1,
-                text.data());
-
-            ZAF_THROW_IF_COM_ERROR(hresult);
-        }
+        auto memory = GlobalMem::FromString(text, GlobalMemFlags::Movable);
 
         auto data_handle = SetClipboardData(CF_UNICODETEXT, memory.Handle());
         if (!data_handle) {

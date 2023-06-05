@@ -976,6 +976,9 @@
     <ClCompile Include="src\zaf\clipboard\drop_files_data.cpp">
       <Filter>zaf\clipboard</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\base\global_mem.cpp">
+      <Filter>zaf\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

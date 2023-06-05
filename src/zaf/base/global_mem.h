@@ -40,13 +40,8 @@ private:
 
 class GlobalMem : NonCopyable {
 public:
-    static GlobalMem Alloc(std::size_t size, GlobalMemFlags flags) {
-        auto handle = GlobalAlloc(static_cast<UINT>(flags), size);
-        if (!handle) {
-            ZAF_THROW_SYSTEM_ERROR(GetLastError());
-        }
-        return GlobalMem{ handle };
-    }
+    static GlobalMem Alloc(std::size_t size, GlobalMemFlags flags);
+    static GlobalMem FromString(std::wstring_view string, GlobalMemFlags flags);
 
 public:
     explicit GlobalMem(HGLOBAL handle) : handle_(handle) {
@@ -97,13 +92,7 @@ public:
     }
 
     [[nodiscard]]
-    GlobalMemLock Lock() const {
-        LPVOID pointer = GlobalLock(handle_);
-        if (!pointer) {
-            ZAF_THROW_SYSTEM_ERROR(GetLastError());
-        }
-        return GlobalMemLock{ handle_, pointer };
-    }
+    GlobalMemLock Lock() const;
 
 private:
     HGLOBAL handle_{};

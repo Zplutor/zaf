@@ -12,14 +12,7 @@ TextData::TextData(std::wstring text) : text_(std::move(text)) {
 Medium TextData::SaveToMedium(const Format& format) {
 
     if (format.Type() == FormatType::Text && format.MediumType() == MediumType::GlobalMem) {
-
-        std::size_t memory_size = (text_.length() + 1) * sizeof(wchar_t);
-        auto memory = GlobalMem::Alloc(memory_size, GlobalMemFlags::Movable);
-        {
-            auto lock = memory.Lock();
-            std::memcpy(lock.Pointer(), text_.c_str(), memory_size);
-        }
-        return Medium::FromGlobalMem(std::move(memory));
+        return Medium::FromGlobalMem(GlobalMem::FromString(text_, GlobalMemFlags::Movable));
     }
 
     ZAF_THROW_ERRC(BasicErrc::Unsupported);
