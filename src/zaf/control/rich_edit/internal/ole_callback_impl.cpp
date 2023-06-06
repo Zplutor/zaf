@@ -1,16 +1,17 @@
-#include <zaf/control/rich_edit/internal/ole_callback.h>
+#include <zaf/control/rich_edit/internal/ole_callback_impl.h>
 #include <zaf/base/as.h>
 #include <zaf/clipboard/data_object.h>
 #include <zaf/clipboard/drop_files_data.h>
 
 namespace zaf::rich_edit::internal {
 
-OLECallback::OLECallback(std::weak_ptr<RichEdit> host) : host_(std::move(host)) {
+OLECallbackImpl::OLECallbackImpl(std::shared_ptr<OLECallback> callback) : 
+    callback_(std::move(callback)) {
 
 }
 
 
-HRESULT OLECallback::QueryInterface(REFIID riid, LPVOID* ppvObj) {
+HRESULT OLECallbackImpl::QueryInterface(REFIID riid, LPVOID* ppvObj) {
 
     if (!ppvObj) {
         return E_INVALIDARG;
@@ -27,12 +28,12 @@ HRESULT OLECallback::QueryInterface(REFIID riid, LPVOID* ppvObj) {
 }
 
 
-ULONG OLECallback::AddRef() {
+ULONG OLECallbackImpl::AddRef() {
     return InterlockedIncrement(&reference_count_);
 }
 
 
-ULONG OLECallback::Release() {
+ULONG OLECallbackImpl::Release() {
     ULONG result = InterlockedDecrement(&reference_count_);
     if (result == 0) {
         delete this;
@@ -41,12 +42,12 @@ ULONG OLECallback::Release() {
 }
 
 
-HRESULT OLECallback::GetNewStorage(LPSTORAGE* lplpstg) {
+HRESULT OLECallbackImpl::GetNewStorage(LPSTORAGE* lplpstg) {
     return E_NOTIMPL;
 }
 
 
-HRESULT OLECallback::GetInPlaceContext(
+HRESULT OLECallbackImpl::GetInPlaceContext(
     LPOLEINPLACEFRAME* lplpFrame,
     LPOLEINPLACEUIWINDOW* lplpDoc,
     LPOLEINPLACEFRAMEINFO lpFrameInfo) {
@@ -54,22 +55,22 @@ HRESULT OLECallback::GetInPlaceContext(
 }
 
 
-HRESULT OLECallback::ShowContainerUI(BOOL fShow) {
+HRESULT OLECallbackImpl::ShowContainerUI(BOOL fShow) {
     return E_NOTIMPL;
 }
 
 
-HRESULT OLECallback::QueryInsertObject(LPCLSID lpclsid, LPSTORAGE lpstg, LONG cp) {
+HRESULT OLECallbackImpl::QueryInsertObject(LPCLSID lpclsid, LPSTORAGE lpstg, LONG cp) {
     return S_OK;
 }
 
 
-HRESULT OLECallback::DeleteObject(LPOLEOBJECT lpoleobj) {
+HRESULT OLECallbackImpl::DeleteObject(LPOLEOBJECT lpoleobj) {
     return E_NOTIMPL;
 }
 
 
-HRESULT OLECallback::QueryAcceptData(
+HRESULT OLECallbackImpl::QueryAcceptData(
     LPDATAOBJECT lpdataobj, 
     CLIPFORMAT* lpcfFormat, 
     DWORD reco,
@@ -79,27 +80,28 @@ HRESULT OLECallback::QueryAcceptData(
     auto data_object_inner = COMObject<IDataObject>::FromPtr(lpdataobj);
     clipboard::DataObject data_object{ data_object_inner };
 
-    auto enumerator = data_object.EnumerateFormats();
-    while (auto format = enumerator.Next()) {
+    auto expected_format_type = static_cast<clipboard::FormatType>(*lpcfFormat);
 
-        if (format->Type() == clipboard::FormatType::DropFiles) {
+    bool accept = callback_->QueryAcceptData(
+        data_object,
+        expected_format_type,
+        static_cast<ClipboardOperation>(reco),
+        !!fReally);
 
-            auto data = data_object.GetData(format->Type());
-            auto drop_file_data = As<clipboard::DropFilesData>(data);
-            break;
-        }
+    if (accept) {
+        *lpcfFormat = static_cast<CLIPFORMAT>(expected_format_type);
+        return S_OK;
     }
+    return E_ABORT;
+}
 
+
+HRESULT OLECallbackImpl::ContextSensitiveHelp(BOOL fEnterMode) {
     return E_NOTIMPL;
 }
 
 
-HRESULT OLECallback::ContextSensitiveHelp(BOOL fEnterMode) {
-    return E_NOTIMPL;
-}
-
-
-HRESULT OLECallback::GetClipboardData(CHARRANGE* lpchrg, DWORD reco, LPDATAOBJECT* lplpdataobj) {
+HRESULT OLECallbackImpl::GetClipboardData(CHARRANGE* lpchrg, DWORD reco, LPDATAOBJECT* lplpdataobj) {
 
     //auto data_object = new DataObjectImpl();
     //data_object->AddFormat(std::make_shared<TextData>(L"|TextFormat|"));
@@ -109,12 +111,12 @@ HRESULT OLECallback::GetClipboardData(CHARRANGE* lpchrg, DWORD reco, LPDATAOBJEC
 }
 
 
-HRESULT OLECallback::GetDragDropEffect(BOOL fDrag, DWORD grfKeyState, LPDWORD pdwEffect) {
+HRESULT OLECallbackImpl::GetDragDropEffect(BOOL fDrag, DWORD grfKeyState, LPDWORD pdwEffect) {
     return E_NOTIMPL;
 }
 
 
-HRESULT OLECallback::GetContextMenu(
+HRESULT OLECallbackImpl::GetContextMenu(
     WORD seltype,
     LPOLEOBJECT lpoleobj,
     CHARRANGE* lpchrg,

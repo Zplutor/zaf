@@ -940,7 +940,7 @@
     <ClCompile Include="src\zaf\control\rich_edit\object_info.cpp">
       <Filter>zaf\control\rich_edit</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\rich_edit\internal\ole_callback.cpp">
+    <ClCompile Include="src\zaf\control\rich_edit\internal\ole_callback_impl.cpp">
       <Filter>zaf\control\rich_edit\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\clipboard\medium.cpp">
@@ -2203,7 +2203,7 @@
     <ClInclude Include="src\zaf\control\rich_edit\text_flag.h">
       <Filter>zaf\control\rich_edit</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\rich_edit\internal\ole_callback.h">
+    <ClInclude Include="src\zaf\control\rich_edit\internal\ole_callback_impl.h">
       <Filter>zaf\control\rich_edit\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\global_mem.h">
@@ -2256,6 +2256,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\clipboard\clipboard.h">
       <Filter>zaf\clipboard</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\rich_edit\ole_callback.h">
+      <Filter>zaf\control\rich_edit</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

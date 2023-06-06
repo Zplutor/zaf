@@ -2,11 +2,12 @@
 #include <atlwin.h>
 #include <tom.h>
 #include <cassert>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/system_error.h>
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
 #include <zaf/control/rich_edit/embedded_object.h>
-#include <zaf/control/rich_edit/internal/ole_callback.h>
+#include <zaf/control/rich_edit/internal/ole_callback_impl.h>
 #include <zaf/control/rich_edit/internal/ole_helper.h>
 #include <zaf/control/rich_edit/internal/rich_edit_text_source.h>
 #include <zaf/control/rich_edit/internal/text_host_bridge.h>
@@ -169,13 +170,6 @@ void RichEdit::InitializeTextService() {
         EM_SETEVENTMASK,
         0,
         ENM_CHANGE | ENM_SELCHANGE | ENM_PROTECTED, 
-        nullptr);
-
-    auto ole_callback = MakeCOMObject<rich_edit::internal::OLECallback>(shared_this);
-    text_service_->TxSendMessage(
-        EM_SETOLECALLBACK, 
-        0,
-        reinterpret_cast<LPARAM>(ole_callback.Inner()), 
         nullptr);
 }
 
@@ -1431,6 +1425,27 @@ rich_edit::OLEInterface RichEdit::GetOLEInterface() const {
 
     ZAF_THROW_IF_COM_ERROR(hresult);
     return result;
+}
+
+
+void RichEdit::SetOLECallback(std::shared_ptr<rich_edit::OLECallback> callback) {
+
+    callback->SetHost(As<RichEdit>(shared_from_this()));
+    auto ole_callback = MakeCOMObject<rich_edit::internal::OLECallbackImpl>(std::move(callback));
+
+    LRESULT lresult{};
+    HRESULT hresult = text_service_->TxSendMessage(
+        EM_SETOLECALLBACK,
+        0,
+        reinterpret_cast<LPARAM>(ole_callback.Inner()),
+        &lresult);
+
+    ZAF_THROW_IF_COM_ERROR(hresult);
+
+    if (lresult == 0) {
+        //Fails to set OLE callback due to unknown error.
+        ZAF_THROW_ERRC(BasicErrc::Unknown);
+    }
 }
 
 }

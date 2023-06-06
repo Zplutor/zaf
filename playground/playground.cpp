@@ -55,6 +55,7 @@
 #include <zaf/window/popup_menu.h>
 #include <zaf/control/menu_separator.h>
 #include <zaf/control/rich_edit/embedded_object.h>
+#include <zaf/control/rich_edit/ole_callback.h>
 
 class MyOLEObject : public zaf::rich_edit::EmbeddedObject {
 public:
@@ -98,6 +99,21 @@ public:
     }
 };
 
+
+
+class MyOLECallback : public zaf::rich_edit::OLECallback {
+public:
+    bool QueryAcceptData(
+        const zaf::clipboard::DataObject& data_object,
+        zaf::clipboard::FormatType& expected_format_type,
+        zaf::rich_edit::ClipboardOperation operation,
+        bool really_drop) override {
+
+        return true;
+    }
+};
+
+
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
 class Window : public zaf::Window {
@@ -115,6 +131,7 @@ protected:
         rich_edit_->SetIsMultiline(true);
         rich_edit_->SetAllowBeep(false);
         rich_edit_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
+        rich_edit_->SetOLECallback(zaf::Create<MyOLECallback>());
 
         auto scrollable = zaf::Create<zaf::ScrollableControl>();
         scrollable->SetBorder(zaf::Frame{});

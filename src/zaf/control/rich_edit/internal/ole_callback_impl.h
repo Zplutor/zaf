@@ -2,13 +2,13 @@
 
 #include <Richedit.h>
 #include <RichOle.h>
-#include <zaf/control/rich_edit.h>
+#include <zaf/control/rich_edit/ole_callback.h>
 
 namespace zaf::rich_edit::internal {
 
-class OLECallback : public IRichEditOleCallback {
+class OLECallbackImpl : public IRichEditOleCallback {
 public:
-	explicit OLECallback(std::weak_ptr<RichEdit> host);
+	explicit OLECallbackImpl(std::shared_ptr<OLECallback> callback);
 
     //IUnknown interfaces
     __declspec(nothrow) HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override;
@@ -50,7 +50,7 @@ public:
 
 private:
     LONG reference_count_{ 1 };
-	std::weak_ptr<RichEdit> host_;
+	std::shared_ptr<OLECallback> callback_;
 };
 
 }

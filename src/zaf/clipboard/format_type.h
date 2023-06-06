@@ -5,6 +5,7 @@
 namespace zaf::clipboard {
 
 enum class FormatType {
+    Indeterminate = 0,
     Text = CF_UNICODETEXT,
     DropFiles = CF_HDROP,
 };

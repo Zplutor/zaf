@@ -20,6 +20,7 @@ namespace internal {
 class TextHostBridge;
 }
 class EmbeddedObject;
+class OLECallback;
 }
 
 class Caret;
@@ -316,6 +317,8 @@ public:
         Any error when getting the OLE interface.
     */
     rich_edit::OLEInterface GetOLEInterface() const;
+
+    void SetOLECallback(std::shared_ptr<rich_edit::OLECallback> callback);
 
     void VerticallyScroll(int new_value) override;
     void HorizontallyScroll(int new_value) override;

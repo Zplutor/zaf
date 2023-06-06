@@ -7,7 +7,8 @@ namespace zaf {
 
 enum class BasicErrc {
 
-    NameNotFound = 1,
+    Unknown = 1,
+    NameNotFound,
     Unsupported,
     InvalidValue,
     InvalidCast,
