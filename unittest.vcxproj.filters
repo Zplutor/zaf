@@ -382,9 +382,6 @@
     <ClCompile Include="unittest\case\base\non_copyable_test.cpp">
       <Filter>case\base</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\base\clipboard_test.cpp">
-      <Filter>case\base</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\control\text_source_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
@@ -407,6 +404,9 @@
       <Filter>case\clipboard</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\clipboard\drop_files_data_test.cpp">
+      <Filter>case\clipboard</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\clipboard\clipboard_test.cpp">
       <Filter>case\clipboard</Filter>
     </ClCompile>
   </ItemGroup>

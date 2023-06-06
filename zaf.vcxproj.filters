@@ -922,9 +922,6 @@
     <ClCompile Include="src\zaf\control\event\text_changing_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\clipboard.cpp">
-      <Filter>zaf\base</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\rich_edit\ole_interface.cpp">
       <Filter>zaf\control\rich_edit</Filter>
     </ClCompile>
@@ -978,6 +975,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\base\global_mem.cpp">
       <Filter>zaf\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\clipboard\clipboard.cpp">
+      <Filter>zaf\clipboard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2179,9 +2179,6 @@
     <ClInclude Include="src\zaf\control\event\text_changing_info.h">
       <Filter>zaf\control\event</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\clipboard.h">
-      <Filter>zaf\base</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\rich_edit\ole_interface.h">
       <Filter>zaf\control\rich_edit</Filter>
     </ClInclude>
@@ -2255,6 +2252,9 @@
       <Filter>zaf\clipboard</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\clipboard\drop_files_data.h">
+      <Filter>zaf\clipboard</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\clipboard\clipboard.h">
       <Filter>zaf\clipboard</Filter>
     </ClInclude>
   </ItemGroup>

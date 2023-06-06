@@ -54,7 +54,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release-MT|x64'">precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="src\zaf\application.cpp" />
-    <ClCompile Include="src\zaf\base\clipboard.cpp" />
     <ClCompile Include="src\zaf\base\error\basic_error.cpp" />
     <ClCompile Include="src\zaf\base\error\com_error.cpp" />
     <ClCompile Include="src\zaf\base\global_mem.cpp" />
@@ -64,6 +63,7 @@
     <ClCompile Include="src\zaf\base\stream.cpp" />
     <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp" />
     <ClCompile Include="src\zaf\base\timer.cpp" />
+    <ClCompile Include="src\zaf\clipboard\clipboard.cpp" />
     <ClCompile Include="src\zaf\clipboard\data_object.cpp" />
     <ClCompile Include="src\zaf\clipboard\drop_files_data.cpp" />
     <ClCompile Include="src\zaf\clipboard\format.cpp" />
@@ -328,7 +328,6 @@
     <ClInclude Include="src\zaf\application_delegate.h" />
     <ClInclude Include="src\zaf\base\as.h" />
     <ClInclude Include="src\zaf\base\auto_reset_value.h" />
-    <ClInclude Include="src\zaf\base\clipboard.h" />
     <ClInclude Include="src\zaf\base\container\utility\copy.h" />
     <ClInclude Include="src\zaf\base\container\utility\range.h" />
     <ClInclude Include="src\zaf\base\error\basic_error.h" />
@@ -380,6 +379,7 @@
     <ClInclude Include="src\zaf\base\string\to_string.h" />
     <ClInclude Include="src\zaf\base\string\trim.h" />
     <ClInclude Include="src\zaf\base\timer.h" />
+    <ClInclude Include="src\zaf\clipboard\clipboard.h" />
     <ClInclude Include="src\zaf\clipboard\clipboard_data.h" />
     <ClInclude Include="src\zaf\clipboard\data_object.h" />
     <ClInclude Include="src\zaf\clipboard\drop_files_data.h" />

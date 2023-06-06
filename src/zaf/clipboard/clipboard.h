@@ -2,7 +2,7 @@
 
 #include <string_view>
 
-namespace zaf {
+namespace zaf::clipboard {
 
 class Clipboard {
 public:
