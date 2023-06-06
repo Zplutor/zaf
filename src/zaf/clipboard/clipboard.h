@@ -10,8 +10,10 @@ public:
     Gets unicode format text from clipboard.
 
     @return
-        A string with unicode format. If there is no specified format in clipboard, an empty string
-        is returned.
+        A string with unicode format.
+
+    @throw zaf::Error
+        Throws if fails to get unicode format text from clipboard.
     */
     static std::wstring GetText();
 

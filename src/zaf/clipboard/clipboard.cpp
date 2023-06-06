@@ -10,7 +10,13 @@ namespace {
 
 class ClipboardGuard : NonCopyableNonMovable {
 public:
-    ClipboardGuard() = default;
+    ClipboardGuard() {
+
+        BOOL is_succeeded = OpenClipboard(nullptr);
+        if (!is_succeeded) {
+            ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        }
+    }
 
     ~ClipboardGuard() {
         CloseClipboard();
@@ -21,33 +27,22 @@ public:
 
 std::wstring Clipboard::GetText() {
 
-    BOOL is_succeeded = OpenClipboard(nullptr);
-    if (!is_succeeded) {
-        return {};
-    }
-
-    std::wstring result;
+    ClipboardGuard clipbaord;
 
     HANDLE data = GetClipboardData(CF_UNICODETEXT);
-    if (data) {
-        result.assign(reinterpret_cast<wchar_t*>(data));
+    if (!data) {
+        ZAF_THROW_SYSTEM_ERROR(GetLastError());
     }
 
-    CloseClipboard();
-    return result;
+    return std::wstring{ reinterpret_cast<wchar_t*>(data) };
 }
 
 
 void Clipboard::SetText(std::wstring_view text) {
 
-    BOOL is_succeeded = OpenClipboard(nullptr);
-    if (!is_succeeded) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
-    }
-
     ClipboardGuard guard;
 
-    is_succeeded = EmptyClipboard();
+    BOOL is_succeeded = EmptyClipboard();
     if (!is_succeeded) {
         ZAF_THROW_SYSTEM_ERROR(GetLastError());
     }
