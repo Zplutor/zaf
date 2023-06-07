@@ -979,6 +979,9 @@
     <ClCompile Include="src\zaf\clipboard\clipboard.cpp">
       <Filter>zaf\clipboard</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\rich_edit\ole_callback.cpp">
+      <Filter>zaf\control\rich_edit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

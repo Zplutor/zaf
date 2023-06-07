@@ -7,8 +7,17 @@
 namespace zaf::rich_edit {
 
 enum class ClipboardOperation {
-    Drop = RECO_DROP,
+    Copy = RECO_COPY,
+    Cut = RECO_CUT,
     Paste = RECO_PASTE,
+    Drop = RECO_DROP,
+};
+
+
+enum class OperationResult {
+    OK,
+    Cancel,
+    Pending,
 };
 
 
@@ -21,11 +30,81 @@ public:
         return host_.lock();
     }
 
-    virtual bool QueryAcceptData(
-        const clipboard::DataObject& data_object,
-        clipboard::FormatType& expected_format_type,
+    /**
+    Determines whether the rich edit can insert specified clipboard data.
+
+    @param operation
+        The operation which is processing. It can be ClipboardOperation::Paste or
+        ClipboardOperation::Drop.
+
+    @param data_object
+        The data object which is being operated.
+
+    @param format_type
+        The format type of data object which is expected to used.
+
+    @return 
+        Returns OperationResult::OK to indicate that the rich edit can insert the data.
+        Returns OperationResult::Cancel to indicate that the rich edit can't insert the data and 
+        the operation should be cancelled.
+        Returns OperationResult::Pending to indicate that the rich edit uses its default checking 
+        to determine.
+    */
+    virtual OperationResult CanInsertClipboardData(
         ClipboardOperation operation,
-        bool really_drop) = 0;
+        const clipboard::DataObject& data_object,
+        clipboard::FormatType format_type);
+
+    /**
+    Inserts specified clipboard data to the rich edit.
+
+    @param operation
+        The operation which is processing. It can be ClipboardOperation::Paste or
+        ClipboardOperation::Drop.
+
+    @param data_object
+        The data object which is being inserted.
+
+    @param format_type
+        The format type of data object which is expected to used. If OperationResult::Pending is 
+        returned and format_type is modified, the default handling will insert the data to the rich
+        edit with specified format type.
+
+    @return
+        Returns OperationResult::OK to indicate that the data has been inserted to the rich edit
+        and to suppress the default handling.
+        Returns OperationResult::Cancel to indicate that the data can't be inserted and to cancel 
+        the operation.
+        Returns OperationResult::Pending to indicate to use default handling to insert the data.
+    */
+    virtual OperationResult InsertClipboardData(
+        ClipboardOperation operation,
+        const clipboard::DataObject& data_object,
+        clipboard::FormatType& format_type);
+
+    /**
+    Gets clipboard data for specified text range in rich edit.
+    
+    @param operation
+        The operation which is processing. It can be ClipboardOperation::Copy or
+        ClipboardOperation::Cut.
+
+    @param text_range
+        The text range.
+
+    @param data_object
+        The returned data object.
+
+    @return
+        Returns OperationResult::OK to indicate that the data object has been returned.
+        Returns OperationResult::Cancel to indicate that the data object is failed to get and to 
+        cancel the operation.
+        Returns OperationResult::Pending to indicate to use default handling to get clipboard data.
+    */
+    virtual OperationResult GetClipboardData(
+        ClipboardOperation operation,
+        const TextRange& text_range,
+        clipboard::DataObject& data_object);
 
 private:
     friend class RichEdit;

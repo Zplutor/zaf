@@ -103,14 +103,7 @@ public:
 
 class MyOLECallback : public zaf::rich_edit::OLECallback {
 public:
-    bool QueryAcceptData(
-        const zaf::clipboard::DataObject& data_object,
-        zaf::clipboard::FormatType& expected_format_type,
-        zaf::rich_edit::ClipboardOperation operation,
-        bool really_drop) override {
 
-        return true;
-    }
 };
 
 

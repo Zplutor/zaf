@@ -82,17 +82,29 @@ HRESULT OLECallbackImpl::QueryAcceptData(
 
     auto expected_format_type = static_cast<clipboard::FormatType>(*lpcfFormat);
 
-    bool accept = callback_->QueryAcceptData(
-        data_object,
-        expected_format_type,
-        static_cast<ClipboardOperation>(reco),
-        !!fReally);
+    OperationResult operation_result{ OperationResult::Pending };
+    if (fReally) {
+        operation_result = callback_->InsertClipboardData(
+            static_cast<ClipboardOperation>(reco),
+            data_object,
+            expected_format_type);
+    }
+    else {
+        operation_result = callback_->CanInsertClipboardData(
+            static_cast<ClipboardOperation>(reco), 
+            data_object,
+            expected_format_type);
+    }
 
-    if (accept) {
+    switch (operation_result) {
+    case OperationResult::OK:
+        return S_FALSE;
+    case OperationResult::Pending:
         *lpcfFormat = static_cast<CLIPFORMAT>(expected_format_type);
         return S_OK;
+    default:
+        return E_ABORT;
     }
-    return E_ABORT;
 }
 
 
@@ -101,13 +113,29 @@ HRESULT OLECallbackImpl::ContextSensitiveHelp(BOOL fEnterMode) {
 }
 
 
-HRESULT OLECallbackImpl::GetClipboardData(CHARRANGE* lpchrg, DWORD reco, LPDATAOBJECT* lplpdataobj) {
+HRESULT OLECallbackImpl::GetClipboardData(
+    CHARRANGE* lpchrg,
+    DWORD reco, 
+    LPDATAOBJECT* lplpdataobj) {
 
-    //auto data_object = new DataObjectImpl();
-    //data_object->AddFormat(std::make_shared<TextData>(L"|TextFormat|"));
+    clipboard::DataObject data_object;
 
-    //*lplpdataobj = data_object;
-    return E_NOTIMPL;
+    auto operation_result = callback_->GetClipboardData(
+        static_cast<ClipboardOperation>(reco),
+        TextRange::FromCHARRANGE(*lpchrg),
+        data_object);
+
+    switch (operation_result) {
+    case OperationResult::OK: {
+        auto data_object_ptr = data_object.Inner();
+        *lplpdataobj = data_object_ptr.Detach();
+        return S_OK;
+    }
+    case OperationResult::Pending:
+        return E_NOTIMPL;
+    default:
+        return E_ABORT;
+    }
 }
 
 
