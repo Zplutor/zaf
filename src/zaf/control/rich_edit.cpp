@@ -1428,9 +1428,12 @@ rich_edit::OLEInterface RichEdit::GetOLEInterface() const {
 }
 
 
-void RichEdit::SetOLECallback(std::shared_ptr<rich_edit::OLECallback> callback) {
+void RichEdit::SetOLECallback(std::weak_ptr<rich_edit::OLECallback> callback) {
 
-    callback->SetHost(As<RichEdit>(shared_from_this()));
+    auto shared_callback = callback.lock();
+    ZAF_EXPECT(shared_callback);
+
+    shared_callback->SetHost(As<RichEdit>(shared_from_this()));
     auto ole_callback = MakeCOMObject<rich_edit::internal::OLECallbackImpl>(std::move(callback));
 
     LRESULT lresult{};

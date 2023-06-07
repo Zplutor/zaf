@@ -318,7 +318,7 @@ public:
     */
     rich_edit::OLEInterface GetOLEInterface() const;
 
-    void SetOLECallback(std::shared_ptr<rich_edit::OLECallback> callback);
+    void SetOLECallback(std::weak_ptr<rich_edit::OLECallback> callback);
 
     void VerticallyScroll(int new_value) override;
     void HorizontallyScroll(int new_value) override;

@@ -5,7 +5,7 @@
 
 namespace zaf::rich_edit::internal {
 
-OLECallbackImpl::OLECallbackImpl(std::shared_ptr<OLECallback> callback) : 
+OLECallbackImpl::OLECallbackImpl(std::weak_ptr<OLECallback> callback) :
     callback_(std::move(callback)) {
 
 }
@@ -77,6 +77,12 @@ HRESULT OLECallbackImpl::QueryAcceptData(
     BOOL fReally,
     HGLOBAL hMetaPict) {
 
+    auto callback = callback_.lock();
+    if (!callback) {
+        assert(false);
+        return E_NOTIMPL;
+    }
+
     auto data_object_inner = COMObject<IDataObject>::FromPtr(lpdataobj);
     clipboard::DataObject data_object{ data_object_inner };
 
@@ -84,13 +90,13 @@ HRESULT OLECallbackImpl::QueryAcceptData(
 
     OperationResult operation_result{ OperationResult::Pending };
     if (fReally) {
-        operation_result = callback_->InsertClipboardData(
+        operation_result = callback->InsertClipboardData(
             static_cast<ClipboardOperation>(reco),
             data_object,
             expected_format_type);
     }
     else {
-        operation_result = callback_->CanInsertClipboardData(
+        operation_result = callback->CanInsertClipboardData(
             static_cast<ClipboardOperation>(reco), 
             data_object,
             expected_format_type);
@@ -118,9 +124,14 @@ HRESULT OLECallbackImpl::GetClipboardData(
     DWORD reco, 
     LPDATAOBJECT* lplpdataobj) {
 
-    clipboard::DataObject data_object;
+    auto callback = callback_.lock();
+    if (!callback) {
+        assert(false);
+        return E_NOTIMPL;
+    }
 
-    auto operation_result = callback_->GetClipboardData(
+    clipboard::DataObject data_object;
+    auto operation_result = callback->GetClipboardData(
         static_cast<ClipboardOperation>(reco),
         TextRange::FromCHARRANGE(*lpchrg),
         data_object);

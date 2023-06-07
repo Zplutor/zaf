@@ -8,7 +8,7 @@ namespace zaf::rich_edit::internal {
 
 class OLECallbackImpl : public IRichEditOleCallback {
 public:
-	explicit OLECallbackImpl(std::shared_ptr<OLECallback> callback);
+	explicit OLECallbackImpl(std::weak_ptr<OLECallback> callback);
 
     //IUnknown interfaces
     __declspec(nothrow) HRESULT QueryInterface(REFIID riid, LPVOID* ppvObj) override;
@@ -50,7 +50,7 @@ public:
 
 private:
     LONG reference_count_{ 1 };
-	std::shared_ptr<OLECallback> callback_;
+	std::weak_ptr<OLECallback> callback_;
 };
 
 }
