@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <cstdint>
 
 namespace zaf::clipboard {
 
