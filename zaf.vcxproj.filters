@@ -982,6 +982,9 @@
     <ClCompile Include="src\zaf\control\rich_edit\ole_callback.cpp">
       <Filter>zaf\control\rich_edit</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\base\base64.cpp">
+      <Filter>zaf\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2262,6 +2265,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\rich_edit\ole_callback.h">
       <Filter>zaf\control\rich_edit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\base64.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
