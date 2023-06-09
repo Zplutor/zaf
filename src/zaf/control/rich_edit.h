@@ -38,6 +38,7 @@ public:
     ~RichEdit();
 
     std::wstring GetText(rich_edit::TextFlag flag) const;
+    std::wstring GetTextInRange(const TextRange& range) const;
 
     /**
      Get the dimensions of the white space inset around the text.

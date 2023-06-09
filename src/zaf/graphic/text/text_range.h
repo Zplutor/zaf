@@ -57,6 +57,18 @@ public:
         return text_range;
     }
 
+    CHARRANGE ToCHARRANGE() const {
+
+        CHARRANGE result;
+        result.cpMin = static_cast<LONG>(index);
+        result.cpMax = 
+            (length == (std::numeric_limits<std::size_t>::max)()) ? 
+            -1 : 
+            static_cast<LONG>(index + length);
+
+        return result;
+    }
+
 public:
     /**
      The start index.

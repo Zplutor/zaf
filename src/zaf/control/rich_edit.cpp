@@ -459,6 +459,36 @@ std::wstring RichEdit::GetText(rich_edit::TextFlag flag) const {
 }
 
 
+std::wstring RichEdit::GetTextInRange(const TextRange& range) const {
+
+    std::size_t buffer_length = (std::min)(range.length, this->TextLength());
+    if (buffer_length == 0) {
+        return std::wstring{};
+    }
+
+    ++buffer_length; // for the null terminator.
+    std::wstring buffer(buffer_length, L'\0');
+
+    TEXTRANGE text_range_info{};
+    text_range_info.chrg = range.ToCHARRANGE();
+    text_range_info.lpstrText = &buffer[0];
+
+    LRESULT lresult{};
+    HRESULT hresult = text_service_->TxSendMessage(
+        EM_GETTEXTRANGE,
+        0,
+        reinterpret_cast<LPARAM>(&text_range_info),
+        &lresult);
+
+    if (FAILED(hresult)) {
+        return {};
+    }
+
+    buffer.resize(lresult);
+    return buffer;
+}
+
+
 Frame RichEdit::GetInset() const {
     return inset_;
 }
