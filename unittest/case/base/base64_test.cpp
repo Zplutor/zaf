@@ -9,8 +9,13 @@ struct TestItem {
 };
 
 std::vector<TestItem> g_test_items{
-    //{ "", "" }, 
+    { "", "" }, 
     { "a", "YQ==" },
+    { "ab", "YWI=" },
+    { "abc", "YWJj" },
+    { "abcd", "YWJjZA==" },
+    { "abcde", "YWJjZGU=" },
+    { "abcdef", "YWJjZGVm" },
 };
 
 }

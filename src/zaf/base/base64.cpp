@@ -53,18 +53,20 @@ std::string Base64Encode(const void* data, std::size_t size) {
 
     for (auto current = begin; current < end; ++current) {
 
+        std::uint8_t unit = pending << (UnitBits - pending_bits);
+
         int consume_bits = UnitBits - pending_bits;
         pending_bits = ByteBits - consume_bits;
 
         pending = *current << consume_bits;
         pending >>= consume_bits;
 
-        std::uint8_t unit = *current >> pending_bits;
+        unit |= *current >> pending_bits;
         result += EncodeTable[unit];
 
         if (pending_bits == UnitBits) {
-            std::uint8_t next_unit = *current & 0b00111111;
-            result += EncodeTable[next_unit];
+            result += EncodeTable[pending];
+            pending = 0;
             pending_bits = 0;
         }
     }
@@ -74,7 +76,7 @@ std::string Base64Encode(const void* data, std::size_t size) {
         std::uint8_t unit = pending << (UnitBits - pending_bits);
         result += EncodeTable[unit];
 
-        auto padding_count = result.length() % 4;
+        auto padding_count = 4 - result.length() % 4;
         result.append(padding_count, '=');
     }
 
@@ -101,46 +103,25 @@ std::vector<std::byte> Base64Decode(std::string_view encoded) {
             break;
         }
 
-        auto decoded_byte = DecodeChar(*current);
+        auto unit = DecodeChar(*current);
 
         if (pending_bits == 0) {
 
-            pending = decoded_byte;
+            pending = unit;
             pending_bits = UnitBits;
         }
-        else if (pending_bits == 6) {
+        else {
 
-            std::uint8_t byte = pending << (ByteBits - pending_bits);
-            byte |= decoded_byte >> (ByteBits - pending_bits);
+            int consume_bits = ByteBits - pending_bits;
+            pending_bits = UnitBits - consume_bits;
+
+            std::uint8_t byte = pending << consume_bits;
+            byte |= unit >> (UnitBits - consume_bits);
             result.push_back(static_cast<std::byte>(byte));
 
-            pending_bits = (ByteBits - pending_bits);
-
-            pending = decoded_byte << (ByteBits - pending_bits);
-            pending >>= (ByteBits - pending_bits);
+            pending = unit << pending_bits;
+            pending >>= pending_bits;
         }
-        else if (pending_bits == 4) {
-
-            std::uint8_t byte = pending << 4;
-            byte |= (decoded_byte & 0b00111100) >> 2;
-            result.push_back(static_cast<std::byte>(byte));
-
-            pending = (decoded_byte & 0b00000011);
-            pending_bits = 2;
-        }
-        else if (pending_bits == 2) {
-
-            std::uint8_t byte = pending << 6;
-            byte |= (decoded_byte & 0b00111111);
-            result.push_back(static_cast<std::byte>(byte));
-
-            pending = 0;
-            pending_bits = 0;
-        }
-    }
-
-    if (pending_bits != 0 && pending != 0) {
-        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
     }
 
     for (; current < encoded.end(); ++current) {
