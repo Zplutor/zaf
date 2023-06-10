@@ -27,14 +27,20 @@ public:
 
 std::wstring Clipboard::GetText() {
 
-    ClipboardGuard clipbaord;
+    ClipboardGuard clipboard;
 
-    HANDLE data = GetClipboardData(CF_UNICODETEXT);
-    if (!data) {
+    HANDLE handle = GetClipboardData(CF_UNICODETEXT);
+    if (!handle) {
         ZAF_THROW_SYSTEM_ERROR(GetLastError());
     }
 
-    return std::wstring{ reinterpret_cast<wchar_t*>(data) };
+    auto pointer = GlobalLock(handle);
+    if (!pointer) {
+        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+    }
+
+    GlobalMemLock lock{ handle, pointer };
+    return std::wstring{ reinterpret_cast<wchar_t*>(pointer) };
 }
 
 
