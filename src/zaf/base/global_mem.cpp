@@ -39,4 +39,11 @@ GlobalMemLock GlobalMem::Lock() const {
     return GlobalMemLock{ handle_, pointer };
 }
 
+
+std::wstring GlobalMem::ToString() const {
+
+    auto lock = Lock();
+    return std::wstring{ reinterpret_cast<const wchar_t*>(lock.Pointer()) };
+}
+
 }

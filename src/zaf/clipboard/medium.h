@@ -43,8 +43,18 @@ public:
         return inner_;
     }
 
-    bool VisitGlobalMem(const std::function<void(const GlobalMem&)>& visitor) const;
-    bool VisitFile(const std::function<void(const std::filesystem::path&)>& visitor) const;
+    void VisitGlobalMem(const std::function<void(const GlobalMem&)>& visitor) const;
+
+    /**
+    Gets string from global memory.
+
+    @throw zaf::Error
+        Fails to get string from global memory.
+
+    @throw std::logic_error
+        Medium type is not global memory.
+    */
+    std::wstring ToString() const;
 
 private:
     STGMEDIUM inner_{};

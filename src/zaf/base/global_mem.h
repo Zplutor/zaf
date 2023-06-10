@@ -94,6 +94,8 @@ public:
     [[nodiscard]]
     GlobalMemLock Lock() const;
 
+    std::wstring ToString() const;
+
 private:
     HGLOBAL handle_{};
 };

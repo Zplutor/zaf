@@ -1,4 +1,5 @@
 #include <zaf/clipboard/medium.h>
+#include <zaf/base/error/check.h>
 #include <zaf/clipboard/internal/medium_wrapping.h>
 
 namespace zaf::clipboard {
@@ -66,21 +67,29 @@ STGMEDIUM Medium::Detach() {
 }
 
 
-bool Medium::VisitGlobalMem(const std::function<void(const GlobalMem&)>& visitor) const {
+void Medium::VisitGlobalMem(const std::function<void(const GlobalMem&)>& visitor) const {
 
-    if (Type() != MediumType::GlobalMem) {
-        return false;
-    }
+    ZAF_EXPECT(Type() == MediumType::GlobalMem);
 
     GlobalMem global_mem{ inner_.hGlobal };
-    visitor(global_mem);
-    auto handle = global_mem.Detach();
-    return true;
+    try {
+        visitor(global_mem);
+        auto handle = global_mem.Detach();
+    }
+    catch (...) {
+        auto handle = global_mem.Detach();
+        throw;
+    }
 }
 
 
-bool Medium::VisitFile(const std::function<void(const std::filesystem::path&)>& visitor) const {
-    return false;
+std::wstring Medium::ToString() const {
+
+    std::wstring result;
+    VisitGlobalMem([&result](const GlobalMem& global_mem) {
+        result = global_mem.ToString();
+    });
+    return result;
 }
 
 }
