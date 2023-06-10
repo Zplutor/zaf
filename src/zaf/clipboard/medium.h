@@ -3,6 +3,7 @@
 #include <objidl.h>
 #include <filesystem>
 #include <functional>
+#include <string_view>
 #include <zaf/base/global_mem.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/clipboard/medium_type.h>
@@ -11,6 +12,10 @@ namespace zaf::clipboard {
 
 class Medium {
 public:
+    /**
+    Creates a medium from specified string, using movable global memory as storage.
+    */
+    static Medium FromString(std::wstring_view string);
     static Medium FromGlobalMem(GlobalMem global_mem);
 
 public:

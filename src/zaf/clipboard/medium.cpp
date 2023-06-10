@@ -3,6 +3,11 @@
 
 namespace zaf::clipboard {
 
+Medium Medium::FromString(std::wstring_view string) {
+    return FromGlobalMem(GlobalMem::FromString(string, GlobalMemFlags::Movable));
+}
+
+
 Medium Medium::FromGlobalMem(GlobalMem global_mem) {
     STGMEDIUM inner{};
     inner.tymed = TYMED_HGLOBAL;
