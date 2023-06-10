@@ -461,31 +461,33 @@ std::wstring RichEdit::GetText(rich_edit::TextFlag flag) const {
 
 std::wstring RichEdit::GetTextInRange(const TextRange& range) const {
 
-    std::size_t buffer_length = (std::min)(range.length, this->TextLength());
-    if (buffer_length == 0) {
-        return std::wstring{};
+    //EM_RANGETEXT returns inconsistent string with other text getting methods, like WCH_EMBEDDING
+    //chars will be replaced to spaces. So we use ITextDocument instead.
+
+    auto text_document = this->GetOLEInterface().Query<ITextDocument>();
+    if (!text_document) {
+        return {};
     }
 
-    ++buffer_length; // for the null terminator.
-    std::wstring buffer(buffer_length, L'\0');
-
-    TEXTRANGE text_range_info{};
-    text_range_info.chrg = range.ToCHARRANGE();
-    text_range_info.lpstrText = &buffer[0];
-
-    LRESULT lresult{};
-    HRESULT hresult = text_service_->TxSendMessage(
-        EM_GETTEXTRANGE,
-        0,
-        reinterpret_cast<LPARAM>(&text_range_info),
-        &lresult);
+    zaf::COMObject<ITextRange> text_range;
+    HRESULT hresult = text_document->Range(
+        static_cast<long>(range.index),
+        static_cast<long>(range.index + range.length),
+        text_range.Reset());
 
     if (FAILED(hresult)) {
         return {};
     }
 
-    buffer.resize(lresult);
-    return buffer;
+    BSTR bstr{};
+    hresult = text_range->GetText(&bstr);
+    if (FAILED(hresult)) {
+        return {};
+    }
+
+    std::wstring result{ bstr };
+    SysFreeString(bstr);
+    return result;
 }
 
 
