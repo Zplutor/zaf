@@ -21,17 +21,26 @@ public:
 
     static ObjectInfo FindObjectUnderMouse(const RichEdit& rich_edit);
 
+    static ObjectInfo FindObjectAtScreenPosition(
+        const RichEdit& rich_edit, 
+        const POINT& position_in_pixels);
+
 private:
-    struct TextRangeWithObject {
-        COMObject<ITextRange> text_range;
+    struct InnerObjectInfo {
         COMObject<EmbeddedObject> object;
+        int object_x{};
+        int object_y{};
+        long text_position{};
     };
 
-    static TextRangeWithObject FindTextRangeContainingObjectUnderMouse(
-        const COMObject<IRichEditOle>& ole_interface,
-        const POINT& mouse_position_in_screen);
+    static std::optional<InnerObjectInfo> InnerFindObjectAtPosition(
+        const RichEdit& rich_edit,
+        const POINT& position_in_screen);
 
-    static COMObject<EmbeddedObject> GetObjectInTextRange(const COMObject<ITextRange>& text_range);
+    static std::optional<InnerObjectInfo> GetObjectInTextRange(
+        const RichEdit& rich_edit,
+        const COMObject<ITextRange>& text_range,
+        const POINT& position_in_screen);
 };
 
 }

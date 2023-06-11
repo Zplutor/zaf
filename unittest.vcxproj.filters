@@ -82,6 +82,12 @@
     <Filter Include="case\clipboard">
       <UniqueIdentifier>{d66be29a-5421-4bd5-b37e-e1ed4bc3dfdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\control\rich_edit">
+      <UniqueIdentifier>{bcf71299-9357-4173-a78d-6cffe91b012f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\control\rich_edit\internal">
+      <UniqueIdentifier>{039ad57e-0a2c-42a8-ac7e-6ae0de0c0fc1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -411,6 +417,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\base\base64_test.cpp">
       <Filter>case\base</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\rich_edit\internal\ole_helper_test.cpp">
+      <Filter>case\control\rich_edit\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
