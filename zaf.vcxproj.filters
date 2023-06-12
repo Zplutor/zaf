@@ -991,6 +991,9 @@
     <ClCompile Include="src\zaf\clipboard\clipboard_data.cpp">
       <Filter>zaf\clipboard</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\rich_edit\internal\ole_object_impl.cpp">
+      <Filter>zaf\control\rich_edit\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2277,6 +2280,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\clipboard\internal\clipboard_data_registry.h">
       <Filter>zaf\clipboard\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\rich_edit\internal\ole_object_impl.h">
+      <Filter>zaf\control\rich_edit\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

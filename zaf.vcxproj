@@ -184,6 +184,7 @@
     <ClCompile Include="src\zaf\control\rich_edit\embedded_object.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\ole_callback_impl.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\ole_helper.cpp" />
+    <ClCompile Include="src\zaf\control\rich_edit\internal\ole_object_impl.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\text_host_bridge.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\object_info.cpp" />
@@ -526,6 +527,7 @@
     <ClInclude Include="src\zaf\control\rich_edit\embedded_object.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_callback_impl.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_helper.h" />
+    <ClInclude Include="src\zaf\control\rich_edit\internal\ole_object_impl.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\text_host_bridge.h" />
     <ClInclude Include="src\zaf\control\rich_edit\object_context.h" />

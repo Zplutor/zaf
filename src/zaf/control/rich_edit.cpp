@@ -9,6 +9,7 @@
 #include <zaf/control/rich_edit/embedded_object.h>
 #include <zaf/control/rich_edit/internal/ole_callback_impl.h>
 #include <zaf/control/rich_edit/internal/ole_helper.h>
+#include <zaf/control/rich_edit/internal/ole_object_impl.h>
 #include <zaf/control/rich_edit/internal/rich_edit_text_source.h>
 #include <zaf/control/rich_edit/internal/text_host_bridge.h>
 #include <zaf/graphic/alignment.h>
@@ -1416,9 +1417,9 @@ Observable<TextChangingInfo> RichEdit::TextChangingEvent() const {
 }
 
 
-void RichEdit::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) {
+void RichEdit::InsertObject(std::shared_ptr<rich_edit::EmbeddedObject> object) {
 
-    ZAF_EXPECT(object.IsValid());
+    ZAF_EXPECT(object);
 
     auto ole_interface = GetOLEInterface();
 
@@ -1426,17 +1427,19 @@ void RichEdit::InsertObject(const COMObject<rich_edit::EmbeddedObject>& object) 
     HRESULT hresult = ole_interface->GetClientSite(client_site.Reset());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
+    auto ole_object = MakeCOMObject<rich_edit::internal::OLEObjectImpl>(object);
+
     REOBJECT object_info{};
     object_info.cbStruct = sizeof(object_info);
-    object_info.clsid = object.Inner()->ClassID();
-    object_info.poleobj = object.Inner();
+    object_info.clsid = object->ClassID();
+    object_info.poleobj = ole_object.Inner();
     object_info.polesite = client_site.Inner();
     object_info.pstg = nullptr;
     object_info.cp = REO_CP_SELECTION;
     object_info.dvaspect = DVASPECT_CONTENT;
     object_info.dwFlags = REO_BELOWBASELINE | REO_OWNERDRAWSELECT;
 
-    auto object_size = FromDIPs(object.Inner()->Size(), this->GetDPI()).ToSIZEL();
+    auto object_size = FromDIPs(object->Size(), this->GetDPI()).ToSIZEL();
     AtlPixelToHiMetric(&object_size, &object_info.sizel);
 
     hresult = ole_interface->InsertObject(&object_info);

@@ -302,7 +302,7 @@ public:
      */
     void ScrollRightToEnd();
 
-    void InsertObject(const COMObject<rich_edit::EmbeddedObject>& object);
+    void InsertObject(std::shared_ptr<rich_edit::EmbeddedObject> object);
 
     const COMObject<ITextServices2>& GetITextServices() const {
         return text_service_;
