@@ -65,10 +65,12 @@
     <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp" />
     <ClCompile Include="src\zaf\base\timer.cpp" />
     <ClCompile Include="src\zaf\clipboard\clipboard.cpp" />
+    <ClCompile Include="src\zaf\clipboard\clipboard_data.cpp" />
     <ClCompile Include="src\zaf\clipboard\data_object.cpp" />
     <ClCompile Include="src\zaf\clipboard\drop_files_data.cpp" />
     <ClCompile Include="src\zaf\clipboard\format.cpp" />
     <ClCompile Include="src\zaf\clipboard\format_enumerator.cpp" />
+    <ClCompile Include="src\zaf\clipboard\internal\clipboard_data_registry.cpp" />
     <ClCompile Include="src\zaf\clipboard\internal\enum_formatetc_impl.cpp" />
     <ClCompile Include="src\zaf\clipboard\internal\data_object_impl.cpp" />
     <ClCompile Include="src\zaf\clipboard\internal\medium_wrapping.cpp" />
@@ -389,6 +391,7 @@
     <ClInclude Include="src\zaf\clipboard\format.h" />
     <ClInclude Include="src\zaf\clipboard\format_enumerator.h" />
     <ClInclude Include="src\zaf\clipboard\format_type.h" />
+    <ClInclude Include="src\zaf\clipboard\internal\clipboard_data_registry.h" />
     <ClInclude Include="src\zaf\clipboard\internal\format_item.h" />
     <ClInclude Include="src\zaf\clipboard\internal\enum_formatetc_impl.h" />
     <ClInclude Include="src\zaf\clipboard\internal\data_object_impl.h" />

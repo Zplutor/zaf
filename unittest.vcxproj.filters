@@ -421,6 +421,9 @@
     <ClCompile Include="unittest\case\control\rich_edit\internal\ole_helper_test.cpp">
       <Filter>case\control\rich_edit\internal</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\clipboard\data_object_test.cpp">
+      <Filter>case\clipboard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

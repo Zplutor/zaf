@@ -3,10 +3,14 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/clipboard/format.h>
 #include <zaf/clipboard/medium.h>
+#include <zaf/object/object.h>
 
 namespace zaf::clipboard {
 
-class ClipboardData : NonCopyableNonMovable {
+class ClipboardData : public Object, NonCopyableNonMovable {
+public:
+    ZAF_DECLARE_TYPE;
+
 public:
     ClipboardData() = default;
     virtual ~ClipboardData() = default;

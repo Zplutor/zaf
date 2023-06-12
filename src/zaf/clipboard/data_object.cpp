@@ -1,5 +1,6 @@
 #include <zaf/clipboard/data_object.h>
 #include <zaf/base/as.h>
+#include <zaf/clipboard/clipboard.h>
 #include <zaf/clipboard/format.h>
 #include <zaf/clipboard/internal/data_object_impl.h>
 #include <zaf/clipboard/drop_files_data.h>
@@ -31,15 +32,16 @@ FormatEnumerator DataObject::EnumerateFormats() const {
 
 std::shared_ptr<ClipboardData> DataObject::GetData(FormatType format_type) const {
 
-    auto result = [format_type]() -> std::shared_ptr<ClipboardData> {
-        if (format_type == FormatType::Text) {
-            return std::make_shared<TextData>();
-        }
-        if (format_type == FormatType::DropFiles) {
-            return std::make_shared<DropFilesData>();
-        }
-        return std::make_shared<UnknownData>();
-    }();
+    std::shared_ptr<ClipboardData> result;
+
+    auto data_type = Clipboard::GetRegisteredClipboardData(format_type);
+    if (data_type) {
+        result = As<ClipboardData>(data_type->CreateInstance());
+        ZAF_EXPECT(result);
+    }
+    else {
+        result = std::make_shared<UnknownData>();
+    }
 
     InnerGetData(format_type, *result);
     return result;

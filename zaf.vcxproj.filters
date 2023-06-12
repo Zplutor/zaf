@@ -985,6 +985,12 @@
     <ClCompile Include="src\zaf\base\base64.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\clipboard\internal\clipboard_data_registry.cpp">
+      <Filter>zaf\clipboard\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\clipboard\clipboard_data.cpp">
+      <Filter>zaf\clipboard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2268,6 +2274,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\base64.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\clipboard\internal\clipboard_data_registry.h">
+      <Filter>zaf\clipboard\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

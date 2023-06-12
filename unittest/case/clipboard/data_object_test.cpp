@@ -1,0 +1,68 @@
+#include <gtest/gtest.h>
+#include <zaf/base/as.h>
+#include <zaf/clipboard/clipboard.h>
+#include <zaf/clipboard/data_object.h>
+#include <zaf/clipboard/text_data.h>
+#include <zaf/clipboard/unknown_data.h>
+#include <zaf/object/type_definition.h>
+
+using namespace zaf::clipboard;
+
+namespace {
+
+class TestClipboardData : public ClipboardData {
+public:
+    ZAF_DECLARE_TYPE;
+
+    Medium SaveToMedium(const Format& format) override {
+        return {};
+    }
+
+    void LoadFromMedium(const Format& format, const Medium& medium) override {
+
+    }
+};
+
+ZAF_DEFINE_TYPE(TestClipboardData);
+ZAF_DEFINE_TYPE_END;
+
+}
+
+TEST(DataObjectTest, SetAndGetText) {
+
+    constexpr const wchar_t* TestText = L"DataObjectTestText";
+
+    DataObject data_object;
+    data_object.SetText(TestText);
+    auto result = data_object.GetText();
+    ASSERT_EQ(result, TestText);
+}
+
+
+TEST(DataObjectTest, GetUnknownData) {
+
+    auto format_type = MakePrivateFormatType(78);
+
+    DataObject data_object;
+    data_object.SetData(format_type, std::make_shared<TestClipboardData>());
+
+    auto got_data = data_object.GetData(format_type);
+    ASSERT_NE(got_data, nullptr);
+    auto unknown_data = zaf::As<UnknownData>(got_data);
+    ASSERT_NE(unknown_data, nullptr);
+}
+
+
+TEST(DataObjectTest, GetRegisteredData) {
+
+    auto format_type = MakePrivateFormatType(1);
+    Clipboard::RegisterClipboardData(format_type, TestClipboardData::Type);
+
+    DataObject data_object;
+    data_object.SetData(format_type, std::make_shared<TestClipboardData>());
+
+    auto got_data = data_object.GetData(format_type);
+    ASSERT_NE(got_data, nullptr);
+    auto unknown_data = zaf::As<TestClipboardData>(got_data);
+    ASSERT_NE(unknown_data, nullptr);
+}

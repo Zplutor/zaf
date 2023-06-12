@@ -1,8 +1,12 @@
 #include <zaf/clipboard/drop_files_data.h>
 #include <ShlObj.h>
 #include <zaf/base/error/basic_error.h>
+#include <zaf/object/type_definition.h>
 
 namespace zaf::clipboard {
+
+ZAF_DEFINE_TYPE(DropFilesData)
+ZAF_DEFINE_TYPE_END;
 
 DropFilesData::DropFilesData(std::vector<std::filesystem::path> file_paths) : 
     paths_(std::move(file_paths)) {
