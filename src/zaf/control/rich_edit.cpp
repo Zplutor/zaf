@@ -278,82 +278,85 @@ void RichEdit::ReviseTextColor() {
 
 void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
-    auto ole_interface = GetOLEInterface();
-    LONG object_count = ole_interface->GetObjectCount();
-    if (object_count <= 0) {
-        return;
-    }
+    try {
 
-    auto text_document = ole_interface.Query<ITextDocument>();
-    if (!text_document) {
-        return;
-    }
+        auto ole_interface = GetOLEInterface();
 
-    auto absolute_content_rect = this->AbsoluteContentRect();
-    auto selection_range = this->GetSelectionRange();
-
-    for (LONG index = 0; index < object_count; ++index) {
-
-        REOBJECT object_info{};
-        object_info.cbStruct = sizeof(object_info);
-        HRESULT hresult = ole_interface->GetObject(index, &object_info, REO_GETOBJ_NO_INTERFACES);
-        if (FAILED(hresult)) {
-            continue;
+        auto object_count = ole_interface.GetObjectCount();
+        if (object_count <= 0) {
+            return;
         }
 
-        COMObject<ITextRange> text_range;
-        hresult = text_document->Range(object_info.cp, object_info.cp, text_range.Reset());
-        if (FAILED(hresult)) {
-            continue;
+        auto text_document = ole_interface.Query<ITextDocument>();
+        if (!text_document) {
+            return;
         }
 
-        COMObject<IUnknown> unknown;
-        hresult = text_range->GetEmbeddedObject(unknown.Reset());
-        if (FAILED(hresult)) {
-            continue;
-        }
+        auto absolute_content_rect = this->AbsoluteContentRect();
+        auto selection_range = this->GetSelectionRange();
 
-        auto embedded_object = dynamic_cast<rich_edit::EmbeddedObject*>(unknown.Inner());
-        if (!embedded_object) {
-            continue;
-        }
+        for (std::size_t index = 0; index < object_count; ++index) {
 
-        //Note: GetPoint() returns position in window coordinate, 
-        //see TextHostBridge::TxGetClientRect().
-        long absolute_x{};
-        long absolute_y{};
-        hresult = text_range->GetPoint(
-            tomAllowOffClient | tomClientCoord | TA_TOP | TA_LEFT,
-            &absolute_x, 
-            &absolute_y);
+            auto object_info = ole_interface.GetObjectInfoAt(index);
 
-        if (FAILED(hresult)) {
-            continue;
-        }
-
-        Point object_position{ static_cast<float>(absolute_x), static_cast<float>(absolute_y) };
-        object_position = ToDIPs(object_position, this->GetDPI());
-        object_position.SubtractOffset(absolute_content_rect.position);
-
-        zaf::Rect object_rect{ object_position, embedded_object->Size() };
-        auto dirty_rect_of_object = Rect::Intersect(dirty_rect, object_rect);
-        if (dirty_rect_of_object.IsEmpty()) {
-            continue;
-        }
-
-        auto region_guard = canvas.PushRegion(object_rect, dirty_rect_of_object);
-
-        auto dirty_rect_in_object = dirty_rect_of_object;
-        dirty_rect_in_object.SubtractOffset(object_rect.position);
-
-        embedded_object->Paint(
-            canvas,
-            dirty_rect_in_object, 
-            rich_edit::PaintContext{
-                static_cast<std::size_t>(object_info.cp),
-                selection_range.Contain(object_info.cp)
+            auto embedded_object = rich_edit::EmbeddedObject::TryFromCOMPtr(object_info.Object());
+            if (!embedded_object) {
+                continue;
             }
-        );
+
+            COMObject<ITextRange> text_range;
+            HRESULT hresult = text_document->Range(
+                static_cast<long>(object_info.Index()),
+                static_cast<long>(object_info.Index()),
+                text_range.Reset());
+
+            if (FAILED(hresult)) {
+                continue;
+            }
+
+            //Note: GetPoint() returns position in window coordinate, 
+            //see TextHostBridge::TxGetClientRect().
+            long absolute_x{};
+            long absolute_y{};
+            hresult = text_range->GetPoint(
+                tomAllowOffClient | tomClientCoord | TA_TOP | TA_LEFT,
+                &absolute_x,
+                &absolute_y);
+
+            if (FAILED(hresult)) {
+                continue;
+            }
+
+            Point object_position{ 
+                static_cast<float>(absolute_x), 
+                static_cast<float>(absolute_y) 
+            };
+            object_position = ToDIPs(object_position, this->GetDPI());
+            object_position.SubtractOffset(absolute_content_rect.position);
+
+            zaf::Rect object_rect{ object_position, embedded_object->Size() };
+            auto dirty_rect_of_object = Rect::Intersect(dirty_rect, object_rect);
+            if (dirty_rect_of_object.IsEmpty()) {
+                continue;
+            }
+
+            auto region_guard = canvas.PushRegion(object_rect, dirty_rect_of_object);
+
+            auto dirty_rect_in_object = dirty_rect_of_object;
+            dirty_rect_in_object.SubtractOffset(object_rect.position);
+
+            embedded_object->Paint(
+                canvas,
+                dirty_rect_in_object,
+                rich_edit::PaintContext{
+                    static_cast<std::size_t>(object_info.Index()),
+                    selection_range.Contain(object_info.Index())
+                }
+            );
+        }
+    }
+    catch (const zaf::Error&) {
+
     }
 }
 

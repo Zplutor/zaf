@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Unknwn.h>
+#include <optional>
+#include <zaf/base/com_object.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/rich_edit/object_context.h>
 #include <zaf/graphic/rect.h>
@@ -14,9 +17,20 @@ namespace rich_edit {
 
 class EmbeddedObject : public NonCopyableNonMovable {
 public:
-    static std::shared_ptr<EmbeddedObject> TryFromCOMPtr(const COMObject<IUnknown>& ptr);
+    /**
+    Tries to get EmbeddedObject from specified COM pointer.
+
+    @param ptr
+        The specified COM pointer, can be nullptr.
+
+    @return
+        Returns a pointer to EmbeddedObject if it is contained in the COM pointer. Returns nullptr
+        if not.
+    */
+    static std::shared_ptr<EmbeddedObject> TryFromCOMPtr(const COMObject<IUnknown>& ptr) noexcept;
 
 public:
+    EmbeddedObject() = default;
     virtual ~EmbeddedObject() = default;
 
     std::shared_ptr<RichEdit> Host() const {
@@ -32,9 +46,28 @@ public:
     }
 
     /**
-    Gets object position in screen.
+    Gets character index of the object.
+
+    @return
+        Returns character index of the object. Returns std::nullopt if the object is not in a rich
+        edit.
+
+    @throw zaf::Error
+        Thrown on failure.
     */
-    Point GetPositionInScreen() const;
+    std::optional<std::size_t> GetCharIndex() const;
+
+    /**
+    Gets position of the object in screen.
+
+    @return
+        Returns position of the object in screen. Returns std::nullopt if the object is not in a
+        rich edit.
+
+    @throw zaf::Error
+        Thrown on failure.
+    */
+    std::optional<Point> GetPositionInScreen() const;
 
     virtual GUID ClassID() const = 0;
 

@@ -22,4 +22,9 @@ COMObject<IOleObject> OLEInterface::GetObjectAt(std::size_t object_index) const 
     return GetObjectInfoAt(object_index).Object();
 }
 
+
+std::shared_ptr<EmbeddedObject> OLEInterface::GetEmbeddedObjectAt(std::size_t object_index) const {
+    return EmbeddedObject::TryFromCOMPtr(GetObjectAt(object_index));
+}
+
 }

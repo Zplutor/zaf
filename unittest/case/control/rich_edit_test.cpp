@@ -38,7 +38,7 @@ TEST(RichEditTest, TextLength) {
 
     //Embedded object
     rich_edit->SetText(L"11");
-    rich_edit->InsertObject(zaf::MakeCOMObject<TestEmbeddedObject>());
+    rich_edit->InsertObject(zaf::Create<TestEmbeddedObject>());
     ASSERT_EQ(rich_edit->TextLength(), 3);
 }
 

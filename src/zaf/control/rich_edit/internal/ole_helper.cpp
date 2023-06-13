@@ -112,7 +112,7 @@ std::optional<OLEHelper::InnerObjectInfo> OLEHelper::GetObjectInTextRange(
         return {};
     }
 
-    auto object = ole_object.As<rich_edit::EmbeddedObject>();
+    auto object = EmbeddedObject::TryFromCOMPtr(ole_object);
     if (!object) {
         return {};
     }

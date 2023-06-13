@@ -2,27 +2,11 @@
 #include <TOM.h>
 #include <zaf/base/container/utility/range.h>
 #include <zaf/control/rich_edit.h>
+#include <zaf/control/rich_edit/internal/ole_object_impl.h>
 #include <zaf/graphic/dpi.h>
 
 namespace zaf::rich_edit {
 namespace {
-
-std::optional<std::size_t> GetObjectCharIndex(
-    const OLEInterface& ole_interface,
-    const EmbeddedObject* object) {
-
-    //Loop over all objects to find index of current object.
-    for (auto index : zaf::Range(0, ole_interface.GetObjectCount())) {
-
-        auto object_info = ole_interface.GetObjectInfoAt(index);
-        if (object == object_info.Object().As<EmbeddedObject>().Inner()) {
-            return object_info.Index();
-        }
-    }
-
-    return std::nullopt;
-}
-
 
 Point GetObjectPositionInScreenInPixels(
     const OLEInterface& ole_interface, 
@@ -52,33 +36,56 @@ Point GetObjectPositionInScreenInPixels(
 }
 
 
-std::shared_ptr<EmbeddedObject> EmbeddedObject::TryFromCOMPtr(const COMObject<IUnknown>& ptr) {
+std::shared_ptr<EmbeddedObject> EmbeddedObject::TryFromCOMPtr(
+    const COMObject<IUnknown>& ptr) noexcept {
 
-
+    auto ole_object_impl = ptr.As<internal::OLEObjectImpl>();
+    if (ole_object_impl) {
+        return ole_object_impl->EmbeddedObject();
+    }
+    return nullptr;
 }
 
 
-Point EmbeddedObject::GetPositionInScreen() const {
+std::optional<std::size_t> EmbeddedObject::GetCharIndex() const {
 
     auto host = Host();
     if (!host) {
-        return {};
+        return std::nullopt;
     }
 
-    try {
+    auto ole_interface = host->GetOLEInterface();
 
-        auto ole_interface = host->GetOLEInterface();
-        auto object_index = GetObjectCharIndex(ole_interface, this);
-        if (!object_index) {
-            return {};
+    //Loop over all objects to find index of current object.
+    for (auto index : zaf::Range(0, ole_interface.GetObjectCount())) {
+
+        auto object_info = ole_interface.GetObjectInfoAt(index);
+
+        auto embedded_object = EmbeddedObject::TryFromCOMPtr(object_info.Object());
+        if (embedded_object.get() == this) {
+            return object_info.Index();
         }
+    }
 
-        auto position_in_pixels = GetObjectPositionInScreenInPixels(ole_interface, *object_index);
-        return ToDIPs(position_in_pixels, host->GetDPI());
+    return std::nullopt;
+}
+
+
+std::optional<Point> EmbeddedObject::GetPositionInScreen() const {
+
+    auto host = Host();
+    if (!host) {
+        return std::nullopt;
     }
-    catch (const Error&) {
-        return {};
+
+    auto object_index = GetCharIndex();
+    if (!object_index) {
+        return std::nullopt;
     }
+
+    auto ole_interface = host->GetOLEInterface();
+    auto position_in_pixels = GetObjectPositionInScreenInPixels(ole_interface, *object_index);
+    return ToDIPs(position_in_pixels, host->GetDPI());
 }
 
 

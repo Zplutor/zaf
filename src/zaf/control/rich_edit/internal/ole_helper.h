@@ -12,7 +12,7 @@ namespace zaf::rich_edit::internal {
 class OLEHelper {
 public:
     struct ObjectInfo {
-        COMObject<EmbeddedObject> object;
+        std::shared_ptr<EmbeddedObject> object;
         std::size_t text_position{};
         bool is_in_selection_range{};
         Point mouse_position_in_object;
@@ -27,7 +27,7 @@ public:
 
 private:
     struct InnerObjectInfo {
-        COMObject<EmbeddedObject> object;
+        std::shared_ptr<EmbeddedObject> object;
         int object_x{};
         int object_y{};
         long text_position{};
