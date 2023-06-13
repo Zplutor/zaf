@@ -3,17 +3,17 @@
 #include <dwrite.h>
 #include <cstdint>
 #include <memory>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/graphic/font/font_style.h>
 
 namespace zaf {
 
 class FontFamily;
 
-class FontFace : public COMObject<IDWriteFont> {
+class FontFace : public COMPtr<IDWriteFont> {
 public:
     FontFace() { }
-    explicit FontFace(IDWriteFont* handle) : COMObject(handle) { }
+    explicit FontFace(IDWriteFont* handle) : COMPtr(handle) { }
 
     const FontFamily GetFontFamily() const;
 

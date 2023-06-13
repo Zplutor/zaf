@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/graphic/brush/bitmap_brush.h>
@@ -28,10 +28,10 @@ namespace zaf {
 
 class BitmapRenderer;
 
-class Renderer : public COMObject<ID2D1RenderTarget> {
+class Renderer : public COMPtr<ID2D1RenderTarget> {
 public:
     Renderer() { }
-    explicit Renderer(ID2D1RenderTarget* handle) : COMObject(handle) { }
+    explicit Renderer(ID2D1RenderTarget* handle) : COMPtr(handle) { }
 
     float GetDPI() const {
         float x{};

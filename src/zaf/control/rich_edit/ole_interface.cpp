@@ -18,7 +18,7 @@ ObjectInfo OLEInterface::GetObjectInfoAt(std::size_t object_index) const {
 }
 
 
-COMObject<IOleObject> OLEInterface::GetObjectAt(std::size_t object_index) const {
+COMPtr<IOleObject> OLEInterface::GetObjectAt(std::size_t object_index) const {
     return GetObjectInfoAt(object_index).Object();
 }
 

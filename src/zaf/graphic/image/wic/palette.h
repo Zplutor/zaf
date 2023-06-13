@@ -3,13 +3,13 @@
 #include <wincodec.h>
 #include <cstddef>
 #include <cstdint>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 
 namespace zaf::wic {
 
 class BitmapSource;
 
-class Palette : public COMObject<IWICPalette> {
+class Palette : public COMPtr<IWICPalette> {
 public:
     enum class Type {
         Custom = WICBitmapPaletteTypeCustom,
@@ -30,7 +30,7 @@ public:
 
 public:
     Palette() { }
-    explicit Palette(IWICPalette* handle) : COMObject(handle) { }
+    explicit Palette(IWICPalette* handle) : COMPtr(handle) { }
 
     void InitializeFromCustomColors(const std::uint32_t* colors, std::size_t color_count);
 

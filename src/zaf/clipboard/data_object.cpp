@@ -10,19 +10,19 @@
 
 namespace zaf::clipboard {
 
-DataObject::DataObject() : inner_(MakeCOMObject<internal::DataObjectImpl>()) {
+DataObject::DataObject() : inner_(MakeCOMPtr<internal::DataObjectImpl>()) {
 
 }
 
 
-DataObject::DataObject(COMObject<IDataObject> inner) : inner_(std::move(inner)) {
+DataObject::DataObject(COMPtr<IDataObject> inner) : inner_(std::move(inner)) {
 
 }
 
 
 FormatEnumerator DataObject::EnumerateFormats() const {
 
-    COMObject<IEnumFORMATETC> enumerator_inner;
+    COMPtr<IEnumFORMATETC> enumerator_inner;
     HRESULT hresult = inner_->EnumFormatEtc(DATADIR_GET, enumerator_inner.Reset());
     ZAF_THROW_IF_COM_ERROR(hresult);
 

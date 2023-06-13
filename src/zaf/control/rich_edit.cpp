@@ -44,7 +44,7 @@ EXTERN_C const IID IID_ITextDocument = {
 namespace zaf {
 namespace {
 
-COMObject<ITextServices2> CreateTextService(ITextHost* text_host) {
+COMPtr<ITextServices2> CreateTextService(ITextHost* text_host) {
 
     HMODULE module_handle = LoadLibrary(L"msftedit.dll");
     if (!module_handle) {
@@ -66,11 +66,11 @@ COMObject<ITextServices2> CreateTextService(ITextHost* text_host) {
         ZAF_THROW_SYSTEM_ERROR(GetLastError());
     }
 
-    COMObject<IUnknown> unknown;
+    COMPtr<IUnknown> unknown;
     HRESULT hresult = create_function(nullptr, text_host, unknown.Reset());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
-    COMObject<ITextServices2> text_service;
+    COMPtr<ITextServices2> text_service;
     hresult = unknown->QueryInterface(*iid_text_service2, text_service.ResetAsVoid());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
@@ -150,7 +150,7 @@ void RichEdit::Initialize() {
 
     InitializeTextService();
     
-    //TextSource lives longer than TestHostBridge. If we pass ITextService2 as COMObject to
+    //TextSource lives longer than TestHostBridge. If we pass ITextService2 as COMPtr to
     //TextSource and increase its reference count, it will live longer than TextHostBridge as well, 
     //causing dangling pointer accessing on its destruction. So we just pass it as a raw pointer  
     //and don't increase its reference count to avoid the problem.
@@ -304,7 +304,7 @@ void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect)
                 continue;
             }
 
-            COMObject<ITextRange> text_range;
+            COMPtr<ITextRange> text_range;
             HRESULT hresult = text_document->Range(
                 static_cast<long>(object_info.Index()),
                 static_cast<long>(object_info.Index()),
@@ -473,7 +473,7 @@ std::wstring RichEdit::GetTextInRange(const TextRange& range) const {
         return {};
     }
 
-    zaf::COMObject<ITextRange> text_range;
+    zaf::COMPtr<ITextRange> text_range;
     HRESULT hresult = text_document->Range(
         static_cast<long>(range.index),
         static_cast<long>(range.index + range.length),
@@ -1426,11 +1426,11 @@ void RichEdit::InsertObject(std::shared_ptr<rich_edit::EmbeddedObject> object) {
 
     auto ole_interface = GetOLEInterface();
 
-    COMObject<IOleClientSite> client_site;
+    COMPtr<IOleClientSite> client_site;
     HRESULT hresult = ole_interface->GetClientSite(client_site.Reset());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
-    auto ole_object = MakeCOMObject<rich_edit::internal::OLEObjectImpl>(object);
+    auto ole_object = MakeCOMPtr<rich_edit::internal::OLEObjectImpl>(object);
 
     REOBJECT object_info{};
     object_info.cbStruct = sizeof(object_info);
@@ -1472,7 +1472,7 @@ void RichEdit::SetOLECallback(std::weak_ptr<rich_edit::OLECallback> callback) {
     ZAF_EXPECT(shared_callback);
 
     shared_callback->SetHost(As<RichEdit>(shared_from_this()));
-    auto ole_callback = MakeCOMObject<rich_edit::internal::OLECallbackImpl>(std::move(callback));
+    auto ole_callback = MakeCOMPtr<rich_edit::internal::OLECallbackImpl>(std::move(callback));
 
     LRESULT lresult{};
     HRESULT hresult = text_service_->TxSendMessage(

@@ -17,7 +17,7 @@ Point GetObjectPositionInScreenInPixels(
         return {};
     }
 
-    COMObject<ITextRange> text_range;
+    COMPtr<ITextRange> text_range;
     HRESULT hresult = text_document->Range(
         static_cast<long>(char_index), 
         static_cast<long>(char_index + 1), 
@@ -37,7 +37,7 @@ Point GetObjectPositionInScreenInPixels(
 
 
 std::shared_ptr<EmbeddedObject> EmbeddedObject::TryFromCOMPtr(
-    const COMObject<IUnknown>& ptr) noexcept {
+    const COMPtr<IUnknown>& ptr) noexcept {
 
     auto ole_object_impl = ptr.As<internal::OLEObjectImpl>();
     if (ole_object_impl) {

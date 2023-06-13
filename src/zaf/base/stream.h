@@ -4,11 +4,11 @@
 #include <cstddef>
 #include <cstdint>
 #include <filesystem>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 
 namespace zaf {
 
-class Stream : public COMObject<IStream> {
+class Stream : public COMPtr<IStream> {
 public:
     enum class SeekOrigin {
         Begin = STREAM_SEEK_SET,
@@ -24,7 +24,7 @@ public:
 
 public:
     Stream() { }
-    Stream(IStream* handle) : COMObject(handle) { }
+    Stream(IStream* handle) : COMPtr(handle) { }
 
     std::int64_t GetLength() const;
 

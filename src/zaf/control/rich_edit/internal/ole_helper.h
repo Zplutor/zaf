@@ -3,7 +3,7 @@
 #include <Richedit.h>
 #include <richole.h>
 #include <TOM.h>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/control/rich_edit/embedded_object.h>
 #include <zaf/control/rich_edit.h>
 
@@ -39,7 +39,7 @@ private:
 
     static std::optional<InnerObjectInfo> GetObjectInTextRange(
         const RichEdit& rich_edit,
-        const COMObject<ITextRange>& text_range,
+        const COMPtr<ITextRange>& text_range,
         const POINT& position_in_screen);
 };
 

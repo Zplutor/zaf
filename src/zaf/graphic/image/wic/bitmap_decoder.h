@@ -2,7 +2,7 @@
 
 #include <wincodec.h>
 #include <memory>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/graphic/image/wic/container_format.h>
 #include <zaf/graphic/image/wic/bitmap_decode_frame.h>
 #include <zaf/graphic/image/wic/metadata_query_reader.h>
@@ -11,10 +11,10 @@ namespace zaf::wic {
 
 class Palette;
 
-class BitmapDecoder : public COMObject<IWICBitmapDecoder> {
+class BitmapDecoder : public COMPtr<IWICBitmapDecoder> {
 public:
     BitmapDecoder() { }
-    explicit BitmapDecoder(IWICBitmapDecoder* handle) : COMObject(handle) { }
+    explicit BitmapDecoder(IWICBitmapDecoder* handle) : COMPtr(handle) { }
 
     ContainerFormat GetContainerFormat() const;
 

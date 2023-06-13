@@ -83,8 +83,7 @@ HRESULT OLECallbackImpl::QueryAcceptData(
         return E_NOTIMPL;
     }
 
-    auto data_object_inner = COMObject<IDataObject>::FromPtr(lpdataobj);
-    clipboard::DataObject data_object{ data_object_inner };
+    clipboard::DataObject data_object{ ToCOMPtrNotOwn(lpdataobj) };
 
     auto expected_format_type = static_cast<clipboard::FormatType>(*lpcfFormat);
 

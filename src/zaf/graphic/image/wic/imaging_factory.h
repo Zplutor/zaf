@@ -2,7 +2,7 @@
 
 #include <wincodec.h>
 #include <filesystem>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/graphic/image/wic/bitmap.h>
 #include <zaf/graphic/image/wic/bitmap_decoder.h>
@@ -57,7 +57,7 @@ public:
 };
 
 
-class ImagingFactory : public COMObject<IWICImagingFactory> {
+class ImagingFactory : public COMPtr<IWICImagingFactory> {
 public:
     static ImagingFactory& Instance();
 
@@ -137,7 +137,7 @@ public:
 private:
     friend class zaf::Application;
 
-    explicit ImagingFactory(IWICImagingFactory* handle) : COMObject(handle) { }
+    explicit ImagingFactory(IWICImagingFactory* handle) : COMPtr(handle) { }
 };
 
 }

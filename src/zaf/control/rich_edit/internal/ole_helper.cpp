@@ -56,7 +56,7 @@ std::optional<OLEHelper::InnerObjectInfo> OLEHelper::InnerFindObjectAtPosition(
         return {};
     }
 
-    COMObject<ITextRange> text_range;
+    COMPtr<ITextRange> text_range;
     HRESULT hresult = text_document->RangeFromPoint(
         position_in_screen.x,
         position_in_screen.y,
@@ -103,10 +103,10 @@ std::optional<OLEHelper::InnerObjectInfo> OLEHelper::InnerFindObjectAtPosition(
 
 std::optional<OLEHelper::InnerObjectInfo> OLEHelper::GetObjectInTextRange(
     const RichEdit& rich_edit,
-    const COMObject<ITextRange>& text_range,
+    const COMPtr<ITextRange>& text_range,
     const POINT& position_in_screen) {
 
-    COMObject<IUnknown> ole_object;
+    COMPtr<IUnknown> ole_object;
     HRESULT hresult = text_range->GetEmbeddedObject(ole_object.Reset());
     if (FAILED(hresult)) {
         return {};

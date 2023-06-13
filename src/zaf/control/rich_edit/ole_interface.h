@@ -2,13 +2,13 @@
 
 #include <Richedit.h>
 #include <richole.h>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/control/rich_edit/embedded_object.h>
 #include <zaf/control/rich_edit/object_info.h>
 
 namespace zaf::rich_edit {
 
-class OLEInterface : public COMObject<IRichEditOle> {
+class OLEInterface : public COMPtr<IRichEditOle> {
 public:
     /**
     Gets total count of OLE objects in rich edit.
@@ -43,7 +43,7 @@ public:
     @throw zaf::Error
         object_index is invalid, or other errors.
     */
-    COMObject<IOleObject> GetObjectAt(std::size_t object_index) const;
+    COMPtr<IOleObject> GetObjectAt(std::size_t object_index) const;
 
     /**
     Gets OLE object at specified index and transform it to EmbeddedObject, if can.

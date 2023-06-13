@@ -1,7 +1,7 @@
 #pragma once
 
 #include <dwrite.h>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/text_trimming.h>
@@ -14,7 +14,7 @@ namespace zaf {
 
  You should create TextFormat instances via GraphicFactory::CreateTextFormat.
  */
-class TextFormat : public COMObject<IDWriteTextFormat> {
+class TextFormat : public COMPtr<IDWriteTextFormat> {
 public:
     TextFormat() { }
 
@@ -24,7 +24,7 @@ public:
      The instance takes over the lifetime of handle, and would release the handle
      when destroyed.
      */
-    explicit TextFormat(IDWriteTextFormat* handle) : COMObject(handle) { 
+    explicit TextFormat(IDWriteTextFormat* handle) : COMPtr(handle) { 
         
     }
 

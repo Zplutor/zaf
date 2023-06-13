@@ -6,51 +6,46 @@
 namespace zaf {
 
 template<typename T>
-class COMObject {
+class COMPtr {
 public:
     static_assert(std::is_base_of_v<IUnknown, T>);
 
-    static COMObject<T> FromPtr(T* pointer) {
-        pointer->AddRef();
-        return COMObject<T>{ pointer };
-    }
-
 public:
-    COMObject() : inner_(nullptr) { 
+    COMPtr() : inner_(nullptr) { 
 
     }
 
-    COMObject(std::nullptr_t) : inner_(nullptr) {
+    COMPtr(std::nullptr_t) : inner_(nullptr) {
 
     }
 
-    explicit COMObject(T* inner) : inner_(inner) {
+    explicit COMPtr(T* inner) : inner_(inner) {
 
     }
 
-    virtual ~COMObject() {
+    virtual ~COMPtr() {
         Reset();
     }
 
-    COMObject(const COMObject& other) {
+    COMPtr(const COMPtr& other) {
         CopyFrom(other.Inner());
     }
 
     template<typename K, std::enable_if_t<std::is_base_of_v<T, K>, int> = 0>
-    COMObject(const COMObject<K>& other) {
+    COMPtr(const COMPtr<K>& other) {
         CopyFrom(other.Inner());
     }
 
-    COMObject(COMObject&& other) : inner_(other.Detach()) {
+    COMPtr(COMPtr&& other) : inner_(other.Detach()) {
 
     }
 
     template<typename K, std::enable_if_t<std::is_base_of_v<T, K>, int> = 0>
-    COMObject(COMObject<K>&& other) : inner_(other.Detach()) {
+    COMPtr(COMPtr<K>&& other) : inner_(other.Detach()) {
 
     }
 
-    COMObject& operator=(const COMObject& other) {
+    COMPtr& operator=(const COMPtr& other) {
         if (this != &other) {
             Reset();
             CopyFrom(other.Inner());
@@ -59,13 +54,13 @@ public:
     }
 
     template<typename K, std::enable_if_t<std::is_base_of_v<T, K>, int> = 0>
-    COMObject& operator=(const COMObject<K>& other) {
+    COMPtr& operator=(const COMPtr<K>& other) {
         Reset();
         CopyFrom(other.Inner());
         return *this;
     }
 
-    COMObject& operator=(COMObject&& other) {
+    COMPtr& operator=(COMPtr&& other) {
         if (this != &other) {
             Reset();
             inner_ = other.Detach();
@@ -74,7 +69,7 @@ public:
     }
 
     template<typename K, std::enable_if_t<std::is_base_of_v<T, K>, int> = 0>
-    COMObject& operator=(COMObject<K>&& other) {
+    COMPtr& operator=(COMPtr<K>&& other) {
         Reset();
         inner_ = other.Detach();
         return *this;
@@ -88,11 +83,11 @@ public:
         return IsValid();
     }
 
-    bool operator==(const COMObject& other) const {
+    bool operator==(const COMPtr& other) const {
         return inner_ == other.inner_;
     }
 
-    bool operator!=(const COMObject& other) const {
+    bool operator!=(const COMPtr& other) const {
         return inner_ != other.inner_;
     }
 
@@ -133,15 +128,15 @@ public:
     }
 
     template<typename I>
-    COMObject<I> Query() const {
-        COMObject<I> result;
+    COMPtr<I> Query() const {
+        COMPtr<I> result;
         inner_->QueryInterface(__uuidof(I), result.ResetAsVoid());
         return result;
     }
 
     template<typename C>
-    COMObject<C> As() const {
-        COMObject<C> result{ dynamic_cast<C*>(Inner()) };
+    COMPtr<C> As() const {
+        COMPtr<C> result{ dynamic_cast<C*>(Inner()) };
         if (result) {
             result->AddRef();
         }
@@ -166,8 +161,29 @@ private:
 
 
 template<typename Class, typename... ArgumentTypes>
-COMObject<Class> MakeCOMObject(ArgumentTypes&&... arguments) {
-    return COMObject<Class>{ new Class(std::forward<ArgumentTypes>(arguments)...) };
+COMPtr<Class> MakeCOMPtr(ArgumentTypes&&... arguments) {
+    return COMPtr<Class>{ new Class(std::forward<ArgumentTypes>(arguments)...) };
+}
+
+
+/**
+Converts a raw COM pointer to COMPtr, doesn't call AddRef() on the pointer. That is, transfers the 
+ownership of the pointer to COMPtr.
+*/
+template<typename T>
+COMPtr<T> ToCOMPtr(T* ptr) noexcept {
+    return COMPtr<T>{ ptr };
+}
+
+
+/**
+Converts a raw COM pointer to COMPtr, calls AddRef() on the pointer. That is, the ownership of the
+pointer isn't transferred.
+*/
+template<typename T>
+COMPtr<T> ToCOMPtrNotOwn(T* ptr) noexcept {
+    ptr->AddRef();
+    return COMPtr<T>{ ptr };
 }
 
 }

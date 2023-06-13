@@ -1,12 +1,12 @@
 ﻿#pragma once
 
 #include <vector>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/base/direct2d.h>
 
 namespace zaf {
 
-class Stroke : public COMObject<ID2D1StrokeStyle> {
+class Stroke : public COMPtr<ID2D1StrokeStyle> {
 public:
     enum class CapStyle {
         Flat = 0,
@@ -33,7 +33,7 @@ public:
 
 public:
     Stroke() { }
-    explicit Stroke(ID2D1StrokeStyle* handle) : COMObject(handle) { }
+    explicit Stroke(ID2D1StrokeStyle* handle) : COMPtr(handle) { }
 
     CapStyle GetStartCapStyle() const {
         return static_cast<CapStyle>(Inner()->GetStartCap());

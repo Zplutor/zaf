@@ -349,7 +349,7 @@
     <ClInclude Include="src\zaf\base\registry\registry_value_type.h" />
     <ClInclude Include="src\zaf\base\registry\registry_view.h" />
     <ClInclude Include="src\zaf\base\source_site.h" />
-    <ClInclude Include="src\zaf\base\com_object.h" />
+    <ClInclude Include="src\zaf\base\com_ptr.h" />
     <ClInclude Include="src\zaf\base\container\utility\append.h" />
     <ClInclude Include="src\zaf\base\container\utility\classify.h" />
     <ClInclude Include="src\zaf\base\container\utility\contain.h" />

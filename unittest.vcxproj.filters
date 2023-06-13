@@ -382,7 +382,7 @@
     <ClCompile Include="unittest\case\window\window_holder_test.cpp">
       <Filter>case\window</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\base\com_object_test.cpp">
+    <ClCompile Include="unittest\case\base\com_ptr_test.cpp">
       <Filter>case\base</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\non_copyable_test.cpp">

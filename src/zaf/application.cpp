@@ -49,12 +49,12 @@ void Application::Initialize(const InitializeParameters& parameters) {
     ZAF_THROW_IF_COM_ERROR(result);
 
     //Create Direct2D factory.
-    COMObject<ID2D1Factory> d2d_factory_handle;
+    COMPtr<ID2D1Factory> d2d_factory_handle;
     result = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, d2d_factory_handle.Reset());
     ZAF_THROW_IF_COM_ERROR(result);
 
     //Create DWrite factory.
-    COMObject<IDWriteFactory> dwrite_factory_handle;
+    COMPtr<IDWriteFactory> dwrite_factory_handle;
     result = DWriteCreateFactory(
         DWRITE_FACTORY_TYPE_SHARED,
         __uuidof(IDWriteFactory),
@@ -63,7 +63,7 @@ void Application::Initialize(const InitializeParameters& parameters) {
     ZAF_THROW_IF_COM_ERROR(result);
 
     //Create WIC imaging factory
-    COMObject<IWICImagingFactory> imaging_factory_handle;
+    COMPtr<IWICImagingFactory> imaging_factory_handle;
     result = CoCreateInstance(
         CLSID_WICImagingFactory,
         nullptr,

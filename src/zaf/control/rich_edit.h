@@ -304,7 +304,7 @@ public:
 
     void InsertObject(std::shared_ptr<rich_edit::EmbeddedObject> object);
 
-    const COMObject<ITextServices2>& GetITextServices() const {
+    const COMPtr<ITextServices2>& GetITextServices() const {
         return text_service_;
     }
 
@@ -386,7 +386,7 @@ private:
     TextValidator text_validator_;
 
     std::shared_ptr<rich_edit::internal::TextHostBridge> text_host_bridge_;
-    COMObject<ITextServices2> text_service_;
+    COMPtr<ITextServices2> text_service_;
     std::shared_ptr<zaf::Caret> caret_;
     DWORD property_bits_;
     CHARFORMATW character_format_;

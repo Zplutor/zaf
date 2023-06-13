@@ -2,7 +2,7 @@
 
 #include <Richedit.h>
 #include <TextServ.h>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/control/text_source.h>
 
 namespace zaf::rich_edit::internal {

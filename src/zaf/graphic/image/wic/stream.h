@@ -1,16 +1,16 @@
 #pragma once
 
 #include <wincodec.h>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/stream.h>
 
 namespace zaf::wic {
 
-class Stream : public COMObject<IWICStream> {
+class Stream : public COMPtr<IWICStream> {
 public:
     Stream() { }
-    explicit Stream(IWICStream* handle) : COMObject(handle) { }
+    explicit Stream(IWICStream* handle) : COMPtr(handle) { }
 
     void InitializeFromMemory(void* data, std::size_t size) {
         HRESULT com_error = Inner()->InitializeFromMemory(

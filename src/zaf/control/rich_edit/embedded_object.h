@@ -2,7 +2,7 @@
 
 #include <Unknwn.h>
 #include <optional>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/rich_edit/object_context.h>
 #include <zaf/graphic/rect.h>
@@ -27,7 +27,7 @@ public:
         Returns a pointer to EmbeddedObject if it is contained in the COM pointer. Returns nullptr
         if not.
     */
-    static std::shared_ptr<EmbeddedObject> TryFromCOMPtr(const COMObject<IUnknown>& ptr) noexcept;
+    static std::shared_ptr<EmbeddedObject> TryFromCOMPtr(const COMPtr<IUnknown>& ptr) noexcept;
 
 public:
     EmbeddedObject() = default;

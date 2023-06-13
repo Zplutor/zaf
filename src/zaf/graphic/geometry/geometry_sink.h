@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/flag_enum.h>
@@ -14,7 +14,7 @@ namespace zaf {
  Describes a geometric path that can contain lines, arcs, cubic Bezier curves,
  and quadratic Bezier curves.
  */
-class GeometrySink : public COMObject<ID2D1GeometrySink> {
+class GeometrySink : public COMPtr<ID2D1GeometrySink> {
 public:
     /**
      Specifies how the intersecting areas of geometries or figures are combined
@@ -122,7 +122,7 @@ public:
         const Point& coordinate_origin,
         const Point& aligned_coordinate_origin) 
         :
-        COMObject(handle),
+        COMPtr(handle),
         coordinate_origin_(coordinate_origin),
         aligned_coordinate_origin_(aligned_coordinate_origin) { }
 

@@ -2,7 +2,7 @@
 
 #include <Richedit.h>
 #include <richole.h>
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 
 namespace zaf::rich_edit {
 
@@ -15,7 +15,7 @@ public:
         return static_cast<std::size_t>(inner_.cp);
     }
 
-    COMObject<IOleObject> Object() const {
+    COMPtr<IOleObject> Object() const {
         return object_;
     }
 
@@ -25,9 +25,9 @@ public:
 
 private:
     REOBJECT inner_{};
-    COMObject<IOleObject> object_;
-    COMObject<IOleClientSite> client_site_;
-    COMObject<IStorage> storage_;
+    COMPtr<IOleObject> object_;
+    COMPtr<IOleClientSite> client_site_;
+    COMPtr<IStorage> storage_;
 };
 
 }

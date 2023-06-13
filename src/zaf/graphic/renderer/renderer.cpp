@@ -89,7 +89,7 @@ RenderBitmap Renderer::CreateBitmap(const wic::BitmapSource& image_source) {
 
     auto wic_image_factory_handle = wic::ImagingFactory::Instance().Inner();
 
-    COMObject<IWICFormatConverter> format_converter;
+    COMPtr<IWICFormatConverter> format_converter;
     HRESULT result = wic_image_factory_handle->CreateFormatConverter(format_converter.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);

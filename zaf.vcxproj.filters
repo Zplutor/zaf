@@ -1236,7 +1236,7 @@
     <ClInclude Include="src\zaf\control\image_box.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\com_object.h">
+    <ClInclude Include="src\zaf\base\com_ptr.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\brush\bitmap_brush.h">

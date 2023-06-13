@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/com_object.h>
+#include <zaf/base/com_ptr.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/graphic/bitmap_properties.h>
@@ -10,10 +10,10 @@ namespace zaf {
 
 class Renderer;
 
-class RenderBitmap : public COMObject<ID2D1Bitmap> {
+class RenderBitmap : public COMPtr<ID2D1Bitmap> {
 public:
     RenderBitmap() { }
-    explicit RenderBitmap(ID2D1Bitmap* handle) : COMObject(handle) { }
+    explicit RenderBitmap(ID2D1Bitmap* handle) : COMPtr(handle) { }
 
     /**
      Get the size, in device-independent pixels (DIPs), of the bitmap.
