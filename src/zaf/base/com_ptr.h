@@ -11,15 +11,15 @@ public:
     static_assert(std::is_base_of_v<IUnknown, T>);
 
 public:
-    COMPtr() : inner_(nullptr) { 
+    COMPtr() noexcept : inner_(nullptr) { 
 
     }
 
-    COMPtr(std::nullptr_t) : inner_(nullptr) {
+    COMPtr(std::nullptr_t) noexcept : inner_(nullptr) {
 
     }
 
-    explicit COMPtr(T* inner) : inner_(inner) {
+    explicit COMPtr(T* inner) noexcept : inner_(inner) {
 
     }
 
@@ -27,25 +27,25 @@ public:
         Reset();
     }
 
-    COMPtr(const COMPtr& other) {
+    COMPtr(const COMPtr& other) noexcept {
         CopyFrom(other.Inner());
     }
 
     template<typename K, std::enable_if_t<std::is_base_of_v<T, K>, int> = 0>
-    COMPtr(const COMPtr<K>& other) {
+    COMPtr(const COMPtr<K>& other) noexcept {
         CopyFrom(other.Inner());
     }
 
-    COMPtr(COMPtr&& other) : inner_(other.Detach()) {
+    COMPtr(COMPtr&& other) noexcept : inner_(other.Detach()) {
 
     }
 
     template<typename K, std::enable_if_t<std::is_base_of_v<T, K>, int> = 0>
-    COMPtr(COMPtr<K>&& other) : inner_(other.Detach()) {
+    COMPtr(COMPtr<K>&& other) noexcept : inner_(other.Detach()) {
 
     }
 
-    COMPtr& operator=(const COMPtr& other) {
+    COMPtr& operator=(const COMPtr& other) noexcept {
         if (this != &other) {
             Reset();
             CopyFrom(other.Inner());
@@ -54,13 +54,13 @@ public:
     }
 
     template<typename K, std::enable_if_t<std::is_base_of_v<T, K>, int> = 0>
-    COMPtr& operator=(const COMPtr<K>& other) {
+    COMPtr& operator=(const COMPtr<K>& other) noexcept {
         Reset();
         CopyFrom(other.Inner());
         return *this;
     }
 
-    COMPtr& operator=(COMPtr&& other) {
+    COMPtr& operator=(COMPtr&& other) noexcept {
         if (this != &other) {
             Reset();
             inner_ = other.Detach();
@@ -69,46 +69,46 @@ public:
     }
 
     template<typename K, std::enable_if_t<std::is_base_of_v<T, K>, int> = 0>
-    COMPtr& operator=(COMPtr<K>&& other) {
+    COMPtr& operator=(COMPtr<K>&& other) noexcept {
         Reset();
         inner_ = other.Detach();
         return *this;
     }
 
-    bool operator==(std::nullptr_t null) const {
+    bool operator==(std::nullptr_t null) const noexcept {
         return !IsValid();
     }
 
-    bool operator!=(std::nullptr_t null) const {
+    bool operator!=(std::nullptr_t null) const noexcept {
         return IsValid();
     }
 
-    bool operator==(const COMPtr& other) const {
+    bool operator==(const COMPtr& other) const noexcept {
         return inner_ == other.inner_;
     }
 
-    bool operator!=(const COMPtr& other) const {
+    bool operator!=(const COMPtr& other) const noexcept {
         return inner_ != other.inner_;
     }
 
-    explicit operator bool() const {
+    explicit operator bool() const noexcept {
         return IsValid();
     }
 
-    T* operator->() const {
+    T* operator->() const noexcept {
         return inner_;
     }
 
-    T** Reset() {
+    T** Reset() noexcept {
         Reset(nullptr);
         return &inner_;
     }
 
-    void** ResetAsVoid() {
+    void** ResetAsVoid() noexcept {
         return reinterpret_cast<void**>(Reset());
     }
 
-    void Reset(T* new_inner) {
+    void Reset(T* new_inner) noexcept {
         if (inner_ != new_inner) {
             if (inner_) {
                 inner_->Release();
@@ -117,25 +117,25 @@ public:
         }
     }
 
-    T* Detach() {
+    T* Detach() noexcept {
         auto result = inner_;
         inner_ = nullptr;
         return result;
     }
 
-    bool IsValid() const {
+    bool IsValid() const noexcept {
         return !!inner_;
     }
 
     template<typename I>
-    COMPtr<I> Query() const {
+    COMPtr<I> Query() const noexcept {
         COMPtr<I> result;
         inner_->QueryInterface(__uuidof(I), result.ResetAsVoid());
         return result;
     }
 
     template<typename C>
-    COMPtr<C> As() const {
+    COMPtr<C> As() const noexcept {
         COMPtr<C> result{ dynamic_cast<C*>(Inner()) };
         if (result) {
             result->AddRef();
@@ -143,7 +143,7 @@ public:
         return result;
     }
 
-    T* Inner() const {
+    T* Inner() const noexcept {
         return inner_;
     }
 

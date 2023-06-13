@@ -472,3 +472,22 @@ TEST(COMPtrTest, As) {
     ASSERT_EQ(derived.Inner(), base.Inner());
     ASSERT_EQ(derived->ReferenceCount(), 2);
 }
+
+
+TEST(COMPtrTest, ToCOMPtr) {
+
+    {
+        auto ptr = new BaseObject();
+        auto com_ptr = zaf::ToCOMPtr(ptr);
+        ASSERT_EQ(com_ptr->ReferenceCount(), 1);
+    }
+
+    {
+        auto ptr = new BaseObject();
+        auto com_ptr = zaf::ToCOMPtrNotOwn(ptr);
+        ASSERT_EQ(com_ptr->ReferenceCount(), 2);
+        ptr->Release();
+    }
+}
+
+
