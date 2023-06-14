@@ -25,7 +25,7 @@ void Palette::InitializeFromPredefinedType(Type type, bool add_transparent_color
 
 void Palette::InitializeFromPalette(const Palette& palette) {
 
-    HRESULT com_error = Inner()->InitializeFromPalette(palette.Inner());
+    HRESULT com_error = Inner()->InitializeFromPalette(palette.Inner().Inner());
     ZAF_THROW_IF_COM_ERROR(com_error);
 }
 
@@ -36,7 +36,7 @@ void Palette::InitializeFromImage(
     bool add_transparent_color) {
 
     HRESULT com_error = Inner()->InitializeFromBitmap(
-        image.Inner(),
+        image.Inner().Inner(),
         static_cast<UINT>(color_count),
         add_transparent_color);
 

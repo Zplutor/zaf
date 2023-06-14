@@ -5,11 +5,11 @@ namespace zaf::wic {
 
 MetadataQueryReader BitmapDecodeFrame::GetMetadataQuerier() const {
 
-    IWICMetadataQueryReader* handle = nullptr;
-    HRESULT result = Inner()->GetMetadataQueryReader(&handle);
+    COMPtr<IWICMetadataQueryReader> ptr;
+    HRESULT result = Inner()->GetMetadataQueryReader(ptr.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return MetadataQueryReader(handle);
+    return MetadataQueryReader(ptr);
 }
 
 }

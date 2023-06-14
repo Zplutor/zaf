@@ -18,8 +18,10 @@ enum class ImageInterpolationMode {
 
 class BitmapScaler : public BitmapSource {
 public:
-    BitmapScaler() { }
-    BitmapScaler(IWICBitmapScaler* handle) : BitmapSource(handle) { }
+    BitmapScaler() = default;
+    explicit BitmapScaler(COMPtr<IWICBitmapScaler> ptr) : 
+        BitmapSource(ptr), 
+        inner_(std::move(ptr)) { }
 
     void Initialize(
         const BitmapSource& image_source, 
@@ -27,7 +29,7 @@ public:
         ImageInterpolationMode interpolation_mode) {
 
         HRESULT com_error = Inner()->Initialize(
-            image_source.Inner(),
+            image_source.Inner().Inner(),
             static_cast<UINT>(size.width), 
             static_cast<UINT>(size.height),
             static_cast<WICBitmapInterpolationMode>(interpolation_mode));
@@ -35,9 +37,12 @@ public:
         ZAF_THROW_IF_COM_ERROR(com_error);
     }
 
-    IWICBitmapScaler* Inner() const {
-        return static_cast<IWICBitmapScaler*>(__super::Inner());
+    const COMPtr<IWICBitmapScaler>& Inner() const noexcept {
+        return inner_;
     }
+
+private:
+    COMPtr<IWICBitmapScaler> inner_;
 };
 
 }

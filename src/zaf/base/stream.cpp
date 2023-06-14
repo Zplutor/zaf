@@ -211,37 +211,39 @@ private:
 
 Stream Stream::FromMemory(const void* data, std::size_t size) {
 
-    auto handle = SHCreateMemStream(reinterpret_cast<const BYTE*>(data), static_cast<UINT>(size));
-    if (!handle) {
+    auto ptr = SHCreateMemStream(reinterpret_cast<const BYTE*>(data), static_cast<UINT>(size));
+    if (!ptr) {
         ZAF_THROW_IF_COM_ERROR(E_OUTOFMEMORY);
     }
 
-    return Stream{ handle };
+    return Stream{ ToCOMPtr(ptr) };
 }
 
 
 Stream Stream::FromMemoryNotOwn(const void* data, std::size_t size) {
-    return new NotOwnedMemoryStream{ 
-        reinterpret_cast<const BYTE*>(data),
-        static_cast<ULONG>(size),
-        0 
+
+    return Stream{ 
+        MakeCOMPtr<NotOwnedMemoryStream>(
+            reinterpret_cast<const BYTE*>(data),
+            static_cast<ULONG>(size),
+            0)
     };
 }
 
 
 Stream Stream::FromFile(const std::filesystem::path& path) {
 
-    IStream* handle{};
+    COMPtr<IStream> inner;
     HRESULT hresult = SHCreateStreamOnFileEx(
         path.c_str(),
         STGM_READ, 
         FILE_ATTRIBUTE_NORMAL, 
         FALSE, 
         nullptr, 
-        &handle);
+        inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(hresult);
-    return Stream{ handle };
+    return Stream{ inner };
 }
 
 

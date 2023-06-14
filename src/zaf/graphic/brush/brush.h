@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 
 namespace zaf {
@@ -10,10 +10,9 @@ namespace zaf {
 
  This is a base class of all concrete brush.
  */
-class Brush : public COMPtr<ID2D1Brush> {
+class Brush : public COMObject<ID2D1Brush> {
 public:
-    Brush() { }
-    explicit Brush(ID2D1Brush* handle) : COMPtr(handle) { }
+    using COMObject::COMObject;
 
     /**
      Get opacity.

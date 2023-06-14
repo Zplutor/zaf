@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <functional>
 #include <vector>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/base/error/com_error.h>
 
 #undef max
@@ -14,10 +14,9 @@
 
 namespace zaf::wic {
 
-class MetadataQueryReader : public COMPtr<IWICMetadataQueryReader> {
+class MetadataQueryReader : public COMObject<IWICMetadataQueryReader> {
 public:
-    MetadataQueryReader() { }
-    explicit MetadataQueryReader(IWICMetadataQueryReader* handle) : COMPtr(handle) { }
+    using COMObject::COMObject;
 
     template<typename ValueType>
     ValueType QueryMetadata(const std::wstring& query_expression) const {
@@ -172,14 +171,14 @@ private:
         static HRESULT Convert(const PROPVARIANT& variant, MetadataQueryReader& value) {
 
             if (variant.vt != VT_UNKNOWN) {
-                value.Reset();
+                value = MetadataQueryReader{};
                 return DISP_E_TYPEMISMATCH;
             }
 
-            IWICMetadataQueryReader* handle = nullptr;
-            HRESULT result = variant.punkVal->QueryInterface(&handle);
+            COMPtr<IWICMetadataQueryReader> inner;
+            HRESULT result = variant.punkVal->QueryInterface(inner.Reset());
 
-            value = MetadataQueryReader(handle);
+            value = MetadataQueryReader{ inner };
             return result;
         }
     };

@@ -8,17 +8,19 @@ namespace zaf {
 
 class BitmapBrush : public Brush {
 public:
-    BitmapBrush() { }
-    explicit BitmapBrush(ID2D1BitmapBrush* handle) : Brush(handle) { }
+    BitmapBrush() = default;
+    explicit BitmapBrush(COMPtr<ID2D1BitmapBrush> inner) : 
+        Brush(inner),
+        inner_(std::move(inner)) { }
 
     const RenderBitmap GetBitmap() const {
-        ID2D1Bitmap* handle = nullptr;
-        Inner()->GetBitmap(&handle);
-        return RenderBitmap(handle);
+        COMPtr<ID2D1Bitmap> inner;
+        Inner()->GetBitmap(inner.Reset());
+        return RenderBitmap(inner);
     }
 
     void SetBitmap(const RenderBitmap& bitmap) {
-        Inner()->SetBitmap(bitmap.Inner());
+        Inner()->SetBitmap(bitmap.Inner().Inner());
     }
 
     InterpolationMode GetInterpolationMode() const {
@@ -29,9 +31,12 @@ public:
         Inner()->SetInterpolationMode(static_cast<D2D1_BITMAP_INTERPOLATION_MODE>(mode));
     }
 
-    ID2D1BitmapBrush* Inner() const {
-        return static_cast<ID2D1BitmapBrush*>(__super::Inner());
+    const COMPtr<ID2D1BitmapBrush>& Inner() const noexcept {
+        return inner_;
     }
+
+private:
+    COMPtr<ID2D1BitmapBrush> inner_;
 };
 
 }

@@ -12,33 +12,31 @@ namespace zaf {
  */
 class SolidColorBrush : public Brush {
 public:
-    SolidColorBrush() { }
-
-    /**
-     Construct the instance with specified handle.
-
-     See also Brush::Brush.
-     */
-    explicit SolidColorBrush(ID2D1SolidColorBrush* handle) : Brush(handle) { }
+    SolidColorBrush() = default;
+    explicit SolidColorBrush(COMPtr<ID2D1SolidColorBrush> inner) : 
+        Brush(inner),
+        inner_(std::move(inner)) { }
 
     /**
      Get color of brush.
      */
     const Color GetColor() const {
-        return Color::FromD2D1COLORF(GetActualHandle()->GetColor());
+        return Color::FromD2D1COLORF(Inner()->GetColor());
     }
 
     /**
      Set color of brush.
      */
     void SetColor(const Color& color) {
-        GetActualHandle()->SetColor(color.ToD2D1COLORF());
+        Inner()->SetColor(color.ToD2D1COLORF());
+    }
+
+    const COMPtr<ID2D1SolidColorBrush>& Inner() const noexcept {
+        return inner_;
     }
 
 private:
-    ID2D1SolidColorBrush* GetActualHandle() const {
-        return static_cast<ID2D1SolidColorBrush*>(Inner());
-    }
+    COMPtr<ID2D1SolidColorBrush> inner_;
 };
 
 }

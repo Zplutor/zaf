@@ -3,7 +3,7 @@
 #include <Richedit.h>
 #include <richole.h>
 #include <TOM.h>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/control/rich_edit/embedded_object.h>
 #include <zaf/control/rich_edit.h>
 

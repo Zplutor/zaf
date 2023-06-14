@@ -2,7 +2,7 @@
 
 #include <Richedit.h>
 #include <richole.h>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 
 namespace zaf::rich_edit {
 

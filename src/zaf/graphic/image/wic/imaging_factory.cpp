@@ -13,16 +13,16 @@ BitmapDecoder ImagingFactory::CreateDecoderFromFile(
     const std::filesystem::path& file_path,
     const DecoderCreateOptions& options) {
 
-    IWICBitmapDecoder* handle{};
+    COMPtr<IWICBitmapDecoder> ptr;
     HRESULT result = Inner()->CreateDecoderFromFilename(
         file_path.c_str(),
         nullptr,
         GENERIC_READ,
         static_cast<WICDecodeOptions>(options.decode_options),
-        &handle);
+        ptr.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return BitmapDecoder{ handle };
+    return BitmapDecoder{ ptr };
 }
 
 
@@ -30,30 +30,30 @@ BitmapDecoder ImagingFactory::CreateDecoderFromStream(
     const Stream& stream,
     const DecoderCreateOptions& options) {
 
-    IWICBitmapDecoder* handle{};
+    COMPtr<IWICBitmapDecoder> ptr;
     HRESULT com_error = Inner()->CreateDecoderFromStream(
-        stream.Inner(),
+        stream.Inner().Inner(),
         nullptr,
         static_cast<WICDecodeOptions>(options.decode_options),
-        &handle);
+        ptr.Reset());
 
     ZAF_THROW_IF_COM_ERROR(com_error);
-    return BitmapDecoder{ handle };
+    return BitmapDecoder{ ptr };
 }
 
 
 Bitmap ImagingFactory::CreateBitmap(const Size& size, const BitmapCreateOptions& options) {
 
-    IWICBitmap* handle{};
+    COMPtr<IWICBitmap> ptr;
     HRESULT com_error = Inner()->CreateBitmap(
         static_cast<UINT>(size.width),
         static_cast<UINT>(size.height),
         ToWICPixelFormatGUID(options.pixel_format),
         static_cast<WICBitmapCreateCacheOption>(options.cache_option),
-        &handle);
+        ptr.Reset());
 
     ZAF_THROW_IF_COM_ERROR(com_error);
-    return Bitmap{ handle };
+    return Bitmap{ ptr };
 }
 
 }

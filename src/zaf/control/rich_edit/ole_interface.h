@@ -2,14 +2,16 @@
 
 #include <Richedit.h>
 #include <richole.h>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/control/rich_edit/embedded_object.h>
 #include <zaf/control/rich_edit/object_info.h>
 
 namespace zaf::rich_edit {
 
-class OLEInterface : public COMPtr<IRichEditOle> {
+class OLEInterface : public COMObject<IRichEditOle> {
 public:
+    using COMObject::COMObject;
+
     /**
     Gets total count of OLE objects in rich edit.
     */

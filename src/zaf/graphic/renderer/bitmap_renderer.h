@@ -6,14 +6,19 @@ namespace zaf {
 
 class BitmapRenderer : public Renderer {
 public:
-    BitmapRenderer() { }
-    BitmapRenderer(ID2D1BitmapRenderTarget* handle) : Renderer(handle) { }
+    BitmapRenderer() = default;
+    BitmapRenderer(COMPtr<ID2D1BitmapRenderTarget> ptr) :
+        Renderer(ptr),
+        inner_(std::move(ptr)) { }
 
     RenderBitmap GetBitmap() const;
 
-    ID2D1BitmapRenderTarget* Inner() const {
-        return static_cast<ID2D1BitmapRenderTarget*>(__super::Inner());
+    const COMPtr<ID2D1BitmapRenderTarget>& Inner() const noexcept {
+        return inner_;
     }
+
+private:
+    COMPtr<ID2D1BitmapRenderTarget> inner_;
 };
 
 }

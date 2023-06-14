@@ -77,7 +77,7 @@ void Application::Initialize(const InitializeParameters& parameters) {
         d2d_factory_handle.Detach(),
         dwrite_factory_handle.Detach()));
 
-    imaging_factory_.reset(new wic::ImagingFactory(imaging_factory_handle.Detach()));
+    imaging_factory_.reset(new wic::ImagingFactory(imaging_factory_handle));
 
     window_class_registry_.reset(new WindowClassRegistry(
         parameters.window_icon, 

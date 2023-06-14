@@ -1,7 +1,7 @@
 #pragma once
 
 #include <dwrite.h>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/text_trimming.h>
@@ -14,19 +14,9 @@ namespace zaf {
 
  You should create TextFormat instances via GraphicFactory::CreateTextFormat.
  */
-class TextFormat : public COMPtr<IDWriteTextFormat> {
+class TextFormat : public COMObject<IDWriteTextFormat> {
 public:
-    TextFormat() { }
-
-    /**
-     Construct the instance with specified handle. 
-
-     The instance takes over the lifetime of handle, and would release the handle
-     when destroyed.
-     */
-    explicit TextFormat(IDWriteTextFormat* handle) : COMPtr(handle) { 
-        
-    }
+    using COMObject::COMObject;
 
     /**
      Get the alignment option of text relative to the layout box's leading and trailing edge.

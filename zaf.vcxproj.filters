@@ -2284,5 +2284,8 @@
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_object_impl.h">
       <Filter>zaf\control\rich_edit\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\com_object.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

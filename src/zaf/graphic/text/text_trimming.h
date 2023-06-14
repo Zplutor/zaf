@@ -51,10 +51,6 @@ public:
         return sign_;
     }
 
-    TextInlineObject& Sign() {
-        return sign_;
-    }
-
     void SetSign(const TextInlineObject& sign) {
         sign_ = sign;
     }

@@ -2,7 +2,7 @@
 
 #include <Unknwn.h>
 #include <optional>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/rich_edit/object_context.h>
 #include <zaf/graphic/rect.h>

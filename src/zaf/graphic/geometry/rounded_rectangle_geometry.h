@@ -8,7 +8,9 @@ namespace zaf {
 class RoundedRectangleGeometry : public Geometry {
 public:
     RoundedRectangleGeometry() = default;
-    RoundedRectangleGeometry(ID2D1RoundedRectangleGeometry* handle) : Geometry(handle) { }
+    RoundedRectangleGeometry(COMPtr<ID2D1RoundedRectangleGeometry> inner) : 
+        Geometry(inner),
+        inner_(std::move(inner)) { }
 
     RoundedRect GetRoundedRect() const {
         D2D1_ROUNDED_RECT rounded_rect = { 0 };
@@ -16,9 +18,12 @@ public:
         return RoundedRect::FromD2D1ROUNDEDRECT(rounded_rect);
     }
 
-    ID2D1RoundedRectangleGeometry* Inner() const {
-        return static_cast<ID2D1RoundedRectangleGeometry*>(__super::Inner());
+    const COMPtr<ID2D1RoundedRectangleGeometry>& Inner() const noexcept {
+        return inner_;
     }
+
+private:
+    COMPtr<ID2D1RoundedRectangleGeometry> inner_;
 };
 
 }

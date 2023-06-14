@@ -8,14 +8,21 @@ namespace zaf::wic {
 
 class BitmapDecodeFrame : public BitmapSource {
 public:
-    BitmapDecodeFrame() { }
-    explicit BitmapDecodeFrame(IWICBitmapFrameDecode* handle) : BitmapSource(handle) { }
+    BitmapDecodeFrame() = default;
+    explicit BitmapDecodeFrame(COMPtr<IWICBitmapFrameDecode> ptr) :
+        BitmapSource(ptr), 
+        inner_(std::move(ptr)) {
+
+    }
 
     MetadataQueryReader GetMetadataQuerier() const;
 
-    IWICBitmapFrameDecode* Inner() const {
-        return static_cast<IWICBitmapFrameDecode*>(__super::Inner());
+    const COMPtr<IWICBitmapFrameDecode>& Inner() const noexcept {
+        return inner_;
     }
+
+private:
+    COMPtr<IWICBitmapFrameDecode> inner_;
 };
 
 }

@@ -3,7 +3,7 @@
 #include <dwrite.h>
 #include <cstdint>
 #include <memory>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/graphic/font/font_face.h>
 #include <zaf/graphic/localized_strings.h>
 
@@ -14,16 +14,9 @@ class FontCollection;
 /**
  Represents a family of related fonts.
  */
-class FontFamily : public COMPtr<IDWriteFontFamily> {
+class FontFamily : public COMObject<IDWriteFontFamily> {
 public:
-    FontFamily() { }
-
-    /**
-     Construct the instance with specified handle.
-
-     The instance takes over the lifetime of handle, and would release it when destroyed.
-     */
-    explicit FontFamily(IDWriteFontFamily* handle) : COMPtr(handle) { }
+    using COMObject::COMObject;
 
     /**
      Get the font collection that contains the fonts.

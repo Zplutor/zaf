@@ -2,17 +2,16 @@
 
 #include <wincodec.h>
 #include <cstdint>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/graphic/rect.h>
 
 namespace zaf::wic {
 
 class Palette;
 
-class BitmapSource : public COMPtr<IWICBitmapSource> {
+class BitmapSource : public COMObject<IWICBitmapSource> {
 public:
-    BitmapSource() { }
-    explicit BitmapSource(IWICBitmapSource* handle) : COMPtr(handle) { }
+    using COMObject::COMObject;
 
     Size GetSize() const;
 

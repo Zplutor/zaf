@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <optional>
 #include <string>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/internal/enumerator.h>
 
 namespace zaf {
@@ -12,14 +12,13 @@ namespace zaf {
 /**
  Represents a collection of strings indexed by locale name.   
  */
-class LocalizedStrings : public COMPtr<IDWriteLocalizedStrings> {
+class LocalizedStrings : public COMObject<IDWriteLocalizedStrings> {
 public:
     typedef internal::ComContainerEnumerator<LocalizedStrings, std::pair<std::wstring, std::wstring>> Enumerator;
     typedef internal::ComContainerEnumerator<LocalizedStrings, std::wstring> StringEnumerator;
 
 public:
-    LocalizedStrings() { }
-    explicit LocalizedStrings(IDWriteLocalizedStrings* handle) : COMPtr(handle) { }
+    using COMObject::COMObject;
 
     /**
      Gets the number of language/string pairs.

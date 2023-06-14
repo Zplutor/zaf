@@ -2,7 +2,7 @@
 
 #include <wincodec.h>
 #include <filesystem>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/graphic/image/wic/bitmap.h>
 #include <zaf/graphic/image/wic/bitmap_decoder.h>
@@ -57,21 +57,16 @@ public:
 };
 
 
-class ImagingFactory : public COMPtr<IWICImagingFactory> {
+class ImagingFactory : public COMObject<IWICImagingFactory> {
 public:
     static ImagingFactory& Instance();
 
 public:
-    IWICImagingFactory* Inner() const {
-        return static_cast<IWICImagingFactory*>(__super::Inner());
-    }
-
-
     wic::Stream CreateStream() {
-        IWICStream* handle{};
-        HRESULT com_error = Inner()->CreateStream(&handle);
+        COMPtr<IWICStream> ptr;
+        HRESULT com_error = Inner()->CreateStream(ptr.Reset());
         ZAF_THROW_IF_COM_ERROR(com_error);
-        return wic::Stream{ handle };
+        return wic::Stream{ ptr };
     }
 
 
@@ -104,15 +99,15 @@ public:
         HBITMAP bitmap,
         const BitmapCreateFromHBITMAPOptions& options) {
 
-        IWICBitmap* handle{};
+        COMPtr<IWICBitmap> ptr;
         HRESULT com_error = Inner()->CreateBitmapFromHBITMAP(
             bitmap,
             options.palette,
             static_cast<WICBitmapAlphaChannelOption>(options.alpha_channel_option),
-            &handle);
+            ptr.Reset());
 
         ZAF_THROW_IF_COM_ERROR(com_error);
-        return Bitmap{ handle };
+        return Bitmap{ ptr };
     }
 
     Bitmap CreateBitmapFromHBITMAP(HBITMAP bitmap) {
@@ -120,24 +115,24 @@ public:
     }
 
     BitmapScaler CreateBitmapScaler() {
-        IWICBitmapScaler* handle{};
-        HRESULT com_error = Inner()->CreateBitmapScaler(&handle);
+        COMPtr<IWICBitmapScaler> ptr;
+        HRESULT com_error = Inner()->CreateBitmapScaler(ptr.Reset());
         ZAF_THROW_IF_COM_ERROR(com_error);
-        return wic::BitmapScaler{ handle };
+        return wic::BitmapScaler{ ptr };
     }
 
 
     Palette CreatePalette() {
-        IWICPalette* handle{};
-        HRESULT com_error = Inner()->CreatePalette(&handle);
+        COMPtr<IWICPalette> ptr;
+        HRESULT com_error = Inner()->CreatePalette(ptr.Reset());
         ZAF_THROW_IF_COM_ERROR(com_error);
-        return Palette{ handle };
+        return Palette{ ptr };
     }
 
 private:
     friend class zaf::Application;
 
-    explicit ImagingFactory(IWICImagingFactory* handle) : COMPtr(handle) { }
+    using COMObject::COMObject;
 };
 
 }

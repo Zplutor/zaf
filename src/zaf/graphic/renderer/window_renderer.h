@@ -6,17 +6,22 @@ namespace zaf {
 
 class WindowRenderer : public Renderer {
 public:
-    WindowRenderer() { }
-    explicit WindowRenderer(ID2D1HwndRenderTarget* handle) : Renderer(handle) { }
+    WindowRenderer() = default;
+    explicit WindowRenderer(COMPtr<ID2D1HwndRenderTarget> inner) :
+        Renderer(inner),
+        inner_(std::move(inner)) { }
 
     void Resize(const Size& size) {
         HRESULT result = Inner()->Resize(size.ToD2D1SIZEU());
         ZAF_THROW_IF_COM_ERROR(result);
     }
 
-    ID2D1HwndRenderTarget* Inner() const {
-        return static_cast<ID2D1HwndRenderTarget*>(__super::Inner());
+    const COMPtr<ID2D1HwndRenderTarget>& Inner() const noexcept {
+        return inner_;
     }
+
+private:
+    COMPtr<ID2D1HwndRenderTarget> inner_;
 };
 
 }

@@ -20,14 +20,10 @@ namespace zaf {
  */
 class TextLayout : public TextFormat {
 public:
-    TextLayout() { }
-
-    /**
-     Create the instance with specified handle.
-
-     See also TextFormat::TextFormat.
-     */
-    explicit TextLayout(IDWriteTextLayout* handle) : TextFormat(handle) { }
+    TextLayout() = default;
+    explicit TextLayout(COMPtr<IDWriteTextLayout> inner) : 
+        TextFormat(inner),
+        inner_(std::move(inner)) { }
 
     /**
      Get the layout maximum width.
@@ -217,7 +213,9 @@ public:
          Text range to which this change applies.
      */
     void SetBrush(const Brush& brush, const TextRange& range) {
-        HRESULT result = Inner()->SetDrawingEffect(brush.Inner(), range.ToDWRITETEXTRANGE());
+        HRESULT result = Inner()->SetDrawingEffect(
+            brush.Inner().Inner(), 
+            range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }
 
@@ -234,9 +232,12 @@ public:
      */
     TextMetrics GetMetrics() const;
 
-    IDWriteTextLayout* Inner() const {
-        return static_cast<IDWriteTextLayout*>(__super::Inner());
+    const COMPtr<IDWriteTextLayout>& Inner() const noexcept {
+        return inner_;
     }
+
+private:
+    COMPtr<IDWriteTextLayout> inner_;
 };
 
 }

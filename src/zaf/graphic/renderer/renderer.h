@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/graphic/brush/bitmap_brush.h>
@@ -28,10 +28,9 @@ namespace zaf {
 
 class BitmapRenderer;
 
-class Renderer : public COMPtr<ID2D1RenderTarget> {
+class Renderer : public COMObject<ID2D1RenderTarget> {
 public:
-    Renderer() { }
-    explicit Renderer(ID2D1RenderTarget* handle) : COMPtr(handle) { }
+    using COMObject::COMObject;
 
     float GetDPI() const {
         float x{};
@@ -81,13 +80,13 @@ public:
         Inner()->DrawLine(
             from_point.ToD2D1POINT2F(),
             to_point.ToD2D1POINT2F(),
-            brush.Inner(),
+            brush.Inner().Inner(),
             stroke_width,
-            stroke.Inner());
+            stroke.Inner().Inner());
     }
 
     void DrawRectangle(const Rect& rect, const Brush& brush) {
-        Inner()->FillRectangle(rect.ToD2D1RECTF(), brush.Inner());
+        Inner()->FillRectangle(rect.ToD2D1RECTF(), brush.Inner().Inner());
     }
 
     void DrawRectangleFrame(
@@ -98,13 +97,13 @@ public:
 
         Inner()->DrawRectangle(
             rect.ToD2D1RECTF(),
-            brush.Inner(),
+            brush.Inner().Inner(),
             stroke_width,
-            stroke.Inner());
+            stroke.Inner().Inner());
     }
 
     void DrawRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush) {
-        Inner()->FillRoundedRectangle(rounded_rect.ToD2D1ROUNDEDRECT(), brush.Inner());
+        Inner()->FillRoundedRectangle(rounded_rect.ToD2D1ROUNDEDRECT(), brush.Inner().Inner());
     }
 
     void DrawRoundedRectangleFrame(
@@ -115,13 +114,13 @@ public:
 
         Inner()->DrawRoundedRectangle(
             rounded_rect.ToD2D1ROUNDEDRECT(),
-            brush.Inner(),
+            brush.Inner().Inner(),
             stroke_width,
-            stroke.Inner());
+            stroke.Inner().Inner());
     }
 
     void DrawEllipse(const Ellipse& ellipse, const Brush& brush) {
-        Inner()->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush.Inner());
+        Inner()->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush.Inner().Inner());
     }
 
     void DrawEllipseFrame(
@@ -132,9 +131,9 @@ public:
 
         Inner()->DrawEllipse(
             ellipse.ToD2D1ELLIPSE(),
-            brush.Inner(),
+            brush.Inner().Inner(),
             stroke_width,
-            stroke.Inner());
+            stroke.Inner().Inner());
     }
 
     void DrawGeometry(
@@ -143,9 +142,9 @@ public:
         const Brush& opacity_brush) {
 
         Inner()->FillGeometry(
-            geometry.Inner(),
-            brush.Inner(),
-            opacity_brush.Inner());
+            geometry.Inner().Inner(),
+            brush.Inner().Inner(),
+            opacity_brush.Inner().Inner());
     }
 
     void DrawGeometryFrame(
@@ -155,10 +154,10 @@ public:
         const Stroke& stroke) {
 
         Inner()->DrawGeometry(
-            geometry.Inner(),
-            brush.Inner(),
+            geometry.Inner().Inner(),
+            brush.Inner().Inner(),
             stroke_width,
-            stroke.Inner());
+            stroke.Inner().Inner());
     }
 
     void DrawTextFormat(
@@ -170,9 +169,9 @@ public:
         Inner()->DrawText(
             text.c_str(),
             static_cast<UINT32>(text.length()),
-            text_format.Inner(),
+            text_format.Inner().Inner(),
             rect.ToD2D1RECTF(),
-            brush.Inner());
+            brush.Inner().Inner());
     }
 
     void DrawTextLayout(
@@ -180,7 +179,10 @@ public:
         const Point& position,
         const Brush& brush) {
 
-        Inner()->DrawTextLayout(position.ToD2D1POINT2F(), text_layout.Inner(), brush.Inner());
+        Inner()->DrawTextLayout(
+            position.ToD2D1POINT2F(), 
+            text_layout.Inner().Inner(),
+            brush.Inner().Inner());
     }
 
     void DrawBitmap(
@@ -191,7 +193,9 @@ public:
         const Rect* bitmap_rect);
 
     void PushAxisAlignedClipping(const Rect& rect, AntialiasMode antialias_mode) {
-        Inner()->PushAxisAlignedClip(rect.ToD2D1RECTF(), static_cast<D2D1_ANTIALIAS_MODE>(antialias_mode));
+        Inner()->PushAxisAlignedClip(
+            rect.ToD2D1RECTF(), 
+            static_cast<D2D1_ANTIALIAS_MODE>(antialias_mode));
     }
 
     void PopAxisAlignedClipping() {

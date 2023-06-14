@@ -2,7 +2,7 @@
 
 #include <ObjIdl.h>
 #include <optional>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/clipboard/format.h>
 
 namespace zaf::clipboard {

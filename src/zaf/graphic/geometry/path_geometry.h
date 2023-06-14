@@ -14,24 +14,21 @@ namespace zaf {
 class PathGeometry : public Geometry {
 public:
     PathGeometry() = default;
-
-    /**
-     Construct the instance with specified handle.
-
-     See also Geometry::Geometry.
-     */
-    explicit PathGeometry(ID2D1PathGeometry* handle) : Geometry(handle) { } 
+    explicit PathGeometry(COMPtr<ID2D1PathGeometry> inner) : 
+        Geometry(inner), 
+        inner_(std::move(inner)) { }
 
     /**
      Construct the instance with specified handle, as well as an origin of coordinate that used to
      align geometry.
      */
     PathGeometry(
-        ID2D1PathGeometry* handle,
+        COMPtr<ID2D1PathGeometry> inner,
         const Point& coordinate_origin, 
         const Point& aligned_coordinate_origin)
         :
-        Geometry(handle), 
+        Geometry(inner),
+        inner_(std::move(inner)),
         coordinate_origin_(coordinate_origin),
         aligned_coordinate_origin_(aligned_coordinate_origin) { }
 
@@ -59,12 +56,12 @@ public:
      */
     GeometrySink Open();
 
-private:
-    ID2D1PathGeometry* GetActualHandle() const {
-        return static_cast<ID2D1PathGeometry*>(Inner());
+    const COMPtr<ID2D1PathGeometry>& Inner() const noexcept {
+        return inner_;
     }
 
 private:
+    COMPtr<ID2D1PathGeometry> inner_;
     Point coordinate_origin_;
     Point aligned_coordinate_origin_;
 };

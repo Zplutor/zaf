@@ -19,15 +19,17 @@ public:
 
      See also Geometry::Geometry.
      */
-    TransformedGeometry(ID2D1TransformedGeometry* handle) : Geometry(handle) { }
+    TransformedGeometry(COMPtr<ID2D1TransformedGeometry> inner) :
+        Geometry(inner),
+        inner_(std::move(inner)) { }
 
     /**
      Get the source geometry of this transformed geometry.
      */
     std::shared_ptr<Geometry> GetSourceGeometry() const {
-        ID2D1Geometry* handle = nullptr;
-        GetActualHandle()->GetSourceGeometry(&handle);
-        return std::make_shared<Geometry>(handle);
+        COMPtr<ID2D1Geometry> inner;
+        Inner()->GetSourceGeometry(inner.Reset());
+        return std::make_shared<Geometry>(inner);
     }
 
     /**
@@ -35,14 +37,16 @@ public:
      */
     TransformMatrix GetTransformMatrix() const {
         D2D1::Matrix3x2F matrix;
-        GetActualHandle()->GetTransform(&matrix);
+        Inner()->GetTransform(&matrix);
         return TransformMatrix::FromD2D1MATRIX3X2F(matrix);
     }
 
-private:
-    ID2D1TransformedGeometry* GetActualHandle() const {
-        return static_cast<ID2D1TransformedGeometry*>(Inner());
+    const COMPtr<ID2D1TransformedGeometry>& Inner() const noexcept {
+        return inner_;
     }
+
+private:
+    COMPtr<ID2D1TransformedGeometry> inner_;
 };
 
 }

@@ -3,7 +3,7 @@
 #include <dwrite.h>
 #include <memory>
 #include <string>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/graphic/font/font_family.h>
 #include <zaf/internal/enumerator.h>
 
@@ -16,19 +16,12 @@ namespace zaf {
  The font collection can be used to discover what font families and fonts are available, and to
  obtain some metadata about the fonts.
  */
-class FontCollection : public COMPtr<IDWriteFontCollection> {
+class FontCollection : public COMObject<IDWriteFontCollection> {
 public:
     typedef internal::ComContainerEnumerator<FontCollection, FontFamily> Enumerator;
 
 public:
-    FontCollection() { }
-
-    /**
-     Construct the instance with specified handle.
-
-     The instance takes over the lifetime of handle, and releases it when destroyed.
-     */
-    explicit FontCollection(IDWriteFontCollection* handle) : COMPtr(handle) { }
+    using COMObject::COMObject;
 
     /**
      Gets the number of font families in the collection.

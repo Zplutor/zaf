@@ -9,10 +9,9 @@ class Palette;
 
 class Bitmap : public BitmapSource {
 public:
-    class Lock : public COMPtr<IWICBitmapLock> {
+    class Lock : public COMObject<IWICBitmapLock> {
     public:
-        Lock() { }
-        explicit Lock(IWICBitmapLock* handle) : COMPtr(handle) { }
+        using COMObject::COMObject;
 
         Size GetSize() const;
 
@@ -27,8 +26,8 @@ public:
     };
 
 public:
-    Bitmap() { }
-    explicit Bitmap(IWICBitmap* handle) : BitmapSource(handle) { }
+    Bitmap() = default;
+    explicit Bitmap(COMPtr<IWICBitmap> ptr) : BitmapSource(ptr), inner_(std::move(ptr)) { }
     
     void SetResolution(double x, double y);
 
@@ -36,9 +35,12 @@ public:
 
     Lock GetLock(const Rect& rect, LockFlag flags);
 
-    IWICBitmap* Inner() const {
-        return static_cast<IWICBitmap*>(__super::Inner());
+    const COMPtr<IWICBitmap>& Inner() const noexcept {
+        return inner_;
     }
+
+private:
+    COMPtr<IWICBitmap> inner_;
 };
 
 

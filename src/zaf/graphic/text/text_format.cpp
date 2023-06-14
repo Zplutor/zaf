@@ -6,16 +6,21 @@ namespace zaf {
 TextTrimming TextFormat::GetTextTrimming() const {
 
     TextTrimming result;
-    HRESULT hresult = Inner()->GetTrimming(&result.Inner(), result.Sign().Reset());
-
+    COMPtr<IDWriteInlineObject> trimming_sign;
+    HRESULT hresult = Inner()->GetTrimming(&result.Inner(), trimming_sign.Reset());
     ZAF_THROW_IF_COM_ERROR(hresult);
+
+    result.SetSign(TextInlineObject{ trimming_sign });
     return result;
 }
 
 
 void TextFormat::SetTextTrimming(const TextTrimming& trimming) {
 
-    HRESULT hresult = Inner()->SetTrimming(&trimming.Inner(), trimming.Sign().Inner());
+    HRESULT hresult = Inner()->SetTrimming(
+        &trimming.Inner(), 
+        trimming.Sign().Inner().Inner());
+
     ZAF_THROW_IF_COM_ERROR(hresult);
 }
 

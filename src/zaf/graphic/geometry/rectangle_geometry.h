@@ -13,13 +13,9 @@ namespace zaf {
 class RectangleGeometry : public Geometry {
 public:
     RectangleGeometry() = default;
-
-    /**
-     Construct the instance with specified handle.
-
-     See also Geometry::Geometry.
-     */
-    explicit RectangleGeometry(ID2D1RectangleGeometry* handle) : Geometry(handle) { }
+    explicit RectangleGeometry(COMPtr<ID2D1RectangleGeometry> inner) :
+        Geometry(inner),
+        inner_(std::move(inner)) { }
 
     /**
      Get the rectangle area.
@@ -27,14 +23,16 @@ public:
     Rect GetRect() const {
 
         D2D1_RECT_F rect = { 0 };
-        GetActualHandle()->GetRect(&rect);
+        Inner()->GetRect(&rect);
         return Rect::FromD2D1RECTF(rect);
     }
 
-private:
-    ID2D1RectangleGeometry* GetActualHandle() const {
-        return static_cast<ID2D1RectangleGeometry*>(Inner());
+    const COMPtr<ID2D1RectangleGeometry>& Inner() const noexcept {
+        return inner_;
     }
+
+private:
+    COMPtr<ID2D1RectangleGeometry> inner_;
 };
 
 }

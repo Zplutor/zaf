@@ -123,12 +123,12 @@ Brush TextLayout::GetBrush(std::size_t position, TextRange* range) {
 
     ZAF_THROW_IF_COM_ERROR(result);
 
-    ID2D1Brush* brush_handle = nullptr;
-    result = drawing_effect->QueryInterface(&brush_handle);
+    COMPtr<ID2D1Brush> brush_inner;
+    result = drawing_effect->QueryInterface(brush_inner.Reset());
     drawing_effect->Release();
     ZAF_THROW_IF_COM_ERROR(result);
 
-    return Brush(brush_handle);
+    return Brush(brush_inner);
 }
 
 

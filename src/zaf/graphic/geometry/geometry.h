@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
@@ -13,7 +13,7 @@ namespace zaf {
 
  This is a base class of all concrete geometry.
  */
-class Geometry : public COMPtr<ID2D1Geometry>{
+class Geometry : public COMObject<ID2D1Geometry>{
 public:
     /**
      Specifies the different methods by which two geometries can be combined.
@@ -66,24 +66,16 @@ public:
         const GeometrySink& sink) {
 
         HRESULT result = geometry1.Inner()->CombineWithGeometry(
-            geometry2.Inner(),
+            geometry2.Inner().Inner(),
             static_cast<D2D1_COMBINE_MODE>(combine_mode),
             nullptr,
-            sink.Inner());
+            sink.Inner().Inner());
 
         ZAF_THROW_IF_COM_ERROR(result);
     }
 
 public:
-    Geometry() { }
-
-    /**
-     Construct the instance with specified handle.
-
-     The geometry instance takes over the lifetime of handle. It would
-     release the handle when destroyed.
-     */
-    explicit Geometry(ID2D1Geometry* handle) : COMPtr(handle) { }
+    using COMObject::COMObject;
 };
 
 }
