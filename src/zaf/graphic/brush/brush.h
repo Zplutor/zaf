@@ -14,6 +14,8 @@ class Brush : public COMObject<ID2D1Brush> {
 public:
     using COMObject::COMObject;
 
+    virtual ~Brush() = default;
+
     /**
      Get opacity.
      */

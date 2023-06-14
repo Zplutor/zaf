@@ -76,6 +76,8 @@ public:
 
 public:
     using COMObject::COMObject;
+
+    virtual ~Geometry() = default;
 };
 
 }

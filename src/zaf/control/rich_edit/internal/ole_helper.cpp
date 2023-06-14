@@ -51,7 +51,7 @@ std::optional<OLEHelper::InnerObjectInfo> OLEHelper::InnerFindObjectAtPosition(
     const RichEdit& rich_edit,
     const POINT& position_in_screen) {
 
-    auto text_document = rich_edit.GetOLEInterface().Query<ITextDocument>();
+    auto text_document = rich_edit.GetOLEInterface().Inner().Query<ITextDocument>();
     if (!text_document) {
         return {};
     }

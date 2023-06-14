@@ -5,10 +5,10 @@ namespace zaf {
 
 const FontFamily FontFace::GetFontFamily() const {
 
-    IDWriteFontFamily* family_handle = nullptr;
-    HRESULT result = Inner()->GetFontFamily(&family_handle);
+    COMPtr<IDWriteFontFamily> family_inner;
+    HRESULT result = Inner()->GetFontFamily(family_inner.Reset());
     
-    return FontFamily(family_handle);
+    return FontFamily(family_inner);
 }
 
 }

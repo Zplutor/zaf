@@ -10,12 +10,12 @@
 
 namespace zaf::clipboard {
 
-DataObject::DataObject() : inner_(MakeCOMPtr<internal::DataObjectImpl>()) {
+DataObject::DataObject() : DataObject(MakeCOMPtr<internal::DataObjectImpl>()) {
 
 }
 
 
-DataObject::DataObject(COMPtr<IDataObject> inner) : inner_(std::move(inner)) {
+DataObject::DataObject(COMPtr<IDataObject> inner) : COMObject(std::move(inner)) {
 
 }
 
@@ -23,7 +23,7 @@ DataObject::DataObject(COMPtr<IDataObject> inner) : inner_(std::move(inner)) {
 FormatEnumerator DataObject::EnumerateFormats() const {
 
     COMPtr<IEnumFORMATETC> enumerator_inner;
-    HRESULT hresult = inner_->EnumFormatEtc(DATADIR_GET, enumerator_inner.Reset());
+    HRESULT hresult = Inner()->EnumFormatEtc(DATADIR_GET, enumerator_inner.Reset());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     return FormatEnumerator{ enumerator_inner };
@@ -54,7 +54,7 @@ void DataObject::InnerGetData(FormatType format_type, ClipboardData& data) const
     auto format_inner = format.Inner();
 
     STGMEDIUM medium_inner{};
-    HRESULT hresult = inner_->GetData(&format_inner, &medium_inner);
+    HRESULT hresult = Inner()->GetData(&format_inner, &medium_inner);
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     data.LoadFromMedium(format, Medium{ medium_inner });
@@ -82,7 +82,7 @@ void DataObject::InnerSetData(FormatType format_type, ClipboardData& data) {
     auto medium = data.SaveToMedium(format);
     auto medium_inner = medium.Inner();
 
-    HRESULT hresult = inner_->SetData(
+    HRESULT hresult = Inner()->SetData(
         &format_inner,
         &medium_inner,
         TRUE);

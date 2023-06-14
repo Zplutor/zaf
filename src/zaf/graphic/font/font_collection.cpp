@@ -6,11 +6,11 @@ namespace zaf {
 
 FontFamily FontCollection::GetFontFamily(std::size_t index) const {
 
-    IDWriteFontFamily* font_family_handle = nullptr;
-    HRESULT result = Inner()->GetFontFamily(static_cast<UINT32>(index), &font_family_handle);
+    COMPtr<IDWriteFontFamily> font_family_inner;
+    HRESULT result = Inner()->GetFontFamily(static_cast<UINT32>(index), font_family_inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return FontFamily(font_family_handle);
+    return FontFamily(font_family_inner);
 }
 
 

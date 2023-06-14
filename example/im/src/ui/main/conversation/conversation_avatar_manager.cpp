@@ -57,14 +57,14 @@ zaf::wic::BitmapSource ConversationAvatarManager::CombineMultiUserConversationAv
     zaf::wic::BitmapCreateOptions options;
     options.pixel_format = zaf::wic::PixelFormat::BGR32;
     auto image_source = zaf::wic::ImagingFactory::Instance().CreateBitmap(image_size, options);
-    if (image_source == nullptr) {
+    if (!image_source) {
         return zaf::wic::BitmapSource();
     }
 
     zaf::RendererProperties renderer_properties;
     auto renderer = 
         zaf::GraphicFactory::Instance().CreateBitmapRenderer(image_source, renderer_properties);
-    if (renderer == nullptr) {
+    if (!renderer) {
         return zaf::wic::BitmapSource();
     }
 
@@ -84,7 +84,7 @@ static std::vector<zaf::wic::BitmapSource> GetConversationMemberAvatarImages(con
     for (auto each_id : member_ids) {
 
         auto image = user_avatar_manager.GetUserAvatarImage(each_id);
-        if (image == nullptr) {
+        if (!image) {
             continue;
         }
 
@@ -194,7 +194,7 @@ static void DrawMemberAvatarImagesToConversationAvatarRenderer(
             zaf::wic::ImageInterpolationMode::Fant);
 
         auto render_bitmap = renderer.CreateBitmap(bitmap_scaler);
-        if (render_bitmap == nullptr) {
+        if (!render_bitmap) {
             continue;
         }
 

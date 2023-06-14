@@ -51,7 +51,7 @@ void BitmapSource::CopyPixels(
 
 void BitmapSource::CopyPalette(Palette& palette) const {
 
-    HRESULT com_error = Inner()->CopyPalette(palette.Inner());
+    HRESULT com_error = Inner()->CopyPalette(palette.Inner().Inner());
     ZAF_THROW_IF_COM_ERROR(com_error);
 }
 

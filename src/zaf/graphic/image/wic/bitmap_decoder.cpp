@@ -16,7 +16,7 @@ ContainerFormat BitmapDecoder::GetContainerFormat() const {
 
 void BitmapDecoder::CopyPalette(Palette& palette) const {
 
-    HRESULT com_error = Inner()->CopyPalette(palette.Inner());
+    HRESULT com_error = Inner()->CopyPalette(palette.Inner().Inner());
     ZAF_THROW_IF_COM_ERROR(com_error);
 }
 
@@ -33,21 +33,21 @@ std::size_t BitmapDecoder::GetFrameCount() const {
 
 BitmapDecodeFrame BitmapDecoder::GetFrame(std::size_t index) const {
 
-    IWICBitmapFrameDecode* handle = nullptr;
-    HRESULT result = Inner()->GetFrame(static_cast<UINT>(index), &handle);
+    COMPtr<IWICBitmapFrameDecode> inner;
+    HRESULT result = Inner()->GetFrame(static_cast<UINT>(index), inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return BitmapDecodeFrame(handle);
+    return BitmapDecodeFrame(inner);
 }
 
 
 MetadataQueryReader BitmapDecoder::GetMetadataQuerier() const {
 
-    IWICMetadataQueryReader* handle = nullptr;
-    HRESULT result = Inner()->GetMetadataQueryReader(&handle);
+    COMPtr<IWICMetadataQueryReader> inner;
+    HRESULT result = Inner()->GetMetadataQueryReader(inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return MetadataQueryReader(handle);
+    return MetadataQueryReader(inner);
 }
 
 }

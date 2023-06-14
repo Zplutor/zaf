@@ -13,6 +13,8 @@ class BitmapSource : public COMObject<IWICBitmapSource> {
 public:
     using COMObject::COMObject;
 
+    virtual ~BitmapSource() = default;
+
     Size GetSize() const;
 
     std::pair<double, double> GetResolution() const;

@@ -13,7 +13,7 @@ void Bitmap::SetResolution(double x, double y) {
 
 void Bitmap::SetPalette(const Palette& palette) {
 
-    HRESULT com_error = Inner()->SetPalette(palette.Inner());
+    HRESULT com_error = Inner()->SetPalette(palette.Inner().Inner());
     ZAF_THROW_IF_COM_ERROR(com_error);
 }
 
@@ -21,11 +21,11 @@ void Bitmap::SetPalette(const Palette& palette) {
 Bitmap::Lock Bitmap::GetLock(const Rect& rect, LockFlag flags) {
 
     auto wic_rect = rect.ToWICRect();
-    IWICBitmapLock* handle = nullptr;
-    HRESULT com_error = Inner()->Lock(&wic_rect, static_cast<DWORD>(flags), &handle);
+    COMPtr<IWICBitmapLock> inner;
+    HRESULT com_error = Inner()->Lock(&wic_rect, static_cast<DWORD>(flags), inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(com_error);
-    return Lock{ handle };
+    return Lock{ inner };
 }
 
 

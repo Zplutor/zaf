@@ -4,17 +4,17 @@
 
 void AvatarView::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
 
-    if (image_source_ == nullptr) {
+    if (!image_source_) {
         return;
     }
 
     auto bitmap = canvas.Renderer().CreateBitmap(image_source_);
-    if (bitmap == nullptr) {
+    if (!bitmap) {
         return;
     }
 
     auto bitmap_brush = canvas.Renderer().CreateBitmapBrush(bitmap);
-    if (bitmap_brush == nullptr) {
+    if (!bitmap_brush) {
         return;
     }
 
@@ -26,7 +26,7 @@ void AvatarView::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
     auto rounded_rect_geometry = 
         zaf::GraphicFactory::Instance().CreateRoundedRectangleGeometry(rounded_rect);
 
-    if (rounded_rect_geometry == nullptr) {
+    if (!rounded_rect_geometry) {
         return;
     }
 

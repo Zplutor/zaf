@@ -32,6 +32,8 @@ class Renderer : public COMObject<ID2D1RenderTarget> {
 public:
     using COMObject::COMObject;
 
+    virtual ~Renderer() = default;
+
     float GetDPI() const {
         float x{};
         float y{};

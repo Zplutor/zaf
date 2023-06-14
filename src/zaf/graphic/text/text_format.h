@@ -18,6 +18,8 @@ class TextFormat : public COMObject<IDWriteTextFormat> {
 public:
     using COMObject::COMObject;
 
+    virtual ~TextFormat() = default;
+
     /**
      Get the alignment option of text relative to the layout box's leading and trailing edge.
      */

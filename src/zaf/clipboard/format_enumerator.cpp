@@ -3,7 +3,7 @@
 
 namespace zaf::clipboard {
 
-FormatEnumerator::FormatEnumerator(COMPtr<IEnumFORMATETC> inner) : inner_(std::move(inner)) {
+FormatEnumerator::FormatEnumerator(COMPtr<IEnumFORMATETC> inner) : COMObject(std::move(inner)) {
 
 }
 
@@ -11,7 +11,7 @@ FormatEnumerator::FormatEnumerator(COMPtr<IEnumFORMATETC> inner) : inner_(std::m
 std::optional<Format> FormatEnumerator::Next() {
 
     FORMATETC inner{};
-    HRESULT hresult = inner_->Next(1, &inner, nullptr);
+    HRESULT hresult = Inner()->Next(1, &inner, nullptr);
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     if (hresult == S_OK) {
@@ -23,7 +23,7 @@ std::optional<Format> FormatEnumerator::Next() {
 
 void FormatEnumerator::Reset() {
 
-    HRESULT hresult = inner_->Reset();
+    HRESULT hresult = Inner()->Reset();
     ZAF_THROW_IF_COM_ERROR(hresult);
 }
 

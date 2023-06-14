@@ -14,7 +14,7 @@ namespace {
 
 void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_format) {
     if (text_trimming.Granularity() != TextTrimmingGranularity::None) {
-        if (text_trimming.Sign() == nullptr) {
+        if (!text_trimming.Sign()) {
             text_trimming.SetSign(
                 GraphicFactory::Instance().CreateEllipsisTrimmingSign(text_format));
         }
@@ -89,7 +89,7 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     text_rect.size.height = (std::min)(text_rect.size.height, content_rect.size.height);
 
     auto text_layout = GetTextLayout();
-    if (text_layout == nullptr) {
+    if (!text_layout) {
         return;
     }
 
@@ -183,7 +183,7 @@ void TextualControl::SetTextColorsToTextLayout(TextLayout& text_layout, Renderer
 
 
 void TextualControl::ReleaseTextLayout() {
-    text_layout_.Reset();
+    text_layout_ = {};
 }
 
 
@@ -371,7 +371,7 @@ void TextualControl::SetFontAtRange(const zaf::Font& font, const TextRange& rang
 
     font_range_map_->AddValueToRange(font, range.index, range.length);
 
-    if (text_layout_ != nullptr) {
+    if (text_layout_) {
         SetFontToTextLayout(font, range, text_layout_);
     }
 
@@ -396,7 +396,7 @@ void TextualControl::SetTextAlignment(zaf::TextAlignment alignment) {
 
     text_alignment_ = alignment;
 
-    if (text_layout_ != nullptr) {
+    if (text_layout_) {
         text_layout_.SetTextAlignment(alignment);
     }
 
@@ -412,7 +412,7 @@ void TextualControl::SetParagraphAlignment(zaf::ParagraphAlignment alignment) {
 
     paragraph_alignment = alignment;
 
-    if (text_layout_ != nullptr) {
+    if (text_layout_) {
         text_layout_.SetParagraphAlignment(alignment);
     }
 
@@ -428,7 +428,7 @@ void TextualControl::SetWordWrapping(zaf::WordWrapping word_wrapping) {
 
     word_wrapping_ = word_wrapping;
 
-    if (text_layout_ != nullptr) {
+    if (text_layout_) {
         text_layout_.SetWordWrapping(word_wrapping);
     }
 
@@ -444,7 +444,7 @@ void TextualControl::SetTextTrimming(const zaf::TextTrimming& text_trimming) {
 
     text_trimming_ = text_trimming;
 
-    if (text_layout_ != nullptr) {
+    if (text_layout_) {
 
         auto applied_text_trimming = text_trimming;
         ReviseTextTrimmingSign(applied_text_trimming, text_layout_);
@@ -477,7 +477,7 @@ void TextualControl::OnTextChanged(const TextChangedInfo& event_info) {
 zaf::Size TextualControl::CalculatePreferredContentSize(const zaf::Size& max_size) const {
 
     auto text_layout = GetTextLayout();
-    if (text_layout == nullptr) {
+    if (!text_layout) {
         return zaf::Size();
     }
     

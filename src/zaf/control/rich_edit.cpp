@@ -246,7 +246,7 @@ void RichEdit::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     auto update_rect = FromDIPs(update_area_in_content, this->GetDPI()).ToRECT();
 
     text_service_->TxDrawD2D(
-        canvas.Renderer().Inner(),
+        canvas.Renderer().Inner().Inner(),
         &bounds_rect,
         &update_rect,
         TXTVIEW_ACTIVE);
@@ -287,7 +287,7 @@ void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect)
             return;
         }
 
-        auto text_document = ole_interface.Query<ITextDocument>();
+        auto text_document = ole_interface.Inner().Query<ITextDocument>();
         if (!text_document) {
             return;
         }
@@ -468,7 +468,7 @@ std::wstring RichEdit::GetTextInRange(const TextRange& range) const {
     //EM_RANGETEXT returns inconsistent string with other text getting methods, like WCH_EMBEDDING
     //chars will be replaced to spaces. So we use ITextDocument instead.
 
-    auto text_document = this->GetOLEInterface().Query<ITextDocument>();
+    auto text_document = this->GetOLEInterface().Inner().Query<ITextDocument>();
     if (!text_document) {
         return {};
     }
@@ -1427,7 +1427,7 @@ void RichEdit::InsertObject(std::shared_ptr<rich_edit::EmbeddedObject> object) {
     auto ole_interface = GetOLEInterface();
 
     COMPtr<IOleClientSite> client_site;
-    HRESULT hresult = ole_interface->GetClientSite(client_site.Reset());
+    HRESULT hresult = ole_interface.Inner()->GetClientSite(client_site.Reset());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     auto ole_object = MakeCOMPtr<rich_edit::internal::OLEObjectImpl>(object);
@@ -1445,7 +1445,7 @@ void RichEdit::InsertObject(std::shared_ptr<rich_edit::EmbeddedObject> object) {
     auto object_size = FromDIPs(object->Size(), this->GetDPI()).ToSIZEL();
     AtlPixelToHiMetric(&object_size, &object_info.sizel);
 
-    hresult = ole_interface->InsertObject(&object_info);
+    hresult = ole_interface.Inner()->InsertObject(&object_info);
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     object->SetHost(As<RichEdit>(shared_from_this()));
@@ -1454,15 +1454,15 @@ void RichEdit::InsertObject(std::shared_ptr<rich_edit::EmbeddedObject> object) {
 
 rich_edit::OLEInterface RichEdit::GetOLEInterface() const {
 
-    rich_edit::OLEInterface result;
+    COMPtr<IRichEditOle> inner;
     HRESULT hresult = text_service_->TxSendMessage(
         EM_GETOLEINTERFACE,
         0,
-        reinterpret_cast<LPARAM>(result.Reset()),
+        reinterpret_cast<LPARAM>(inner.Reset()),
         nullptr);
 
     ZAF_THROW_IF_COM_ERROR(hresult);
-    return result;
+    return rich_edit::OLEInterface{ inner };
 }
 
 

@@ -21,7 +21,7 @@ zaf::wic::BitmapSource UserAvatarManager::GetUserAvatarImage(Id user_id) {
     }
 
     auto image = CreateUserAvatarImage(user_id);
-    if (image == nullptr) {
+    if (!image) {
         return zaf::wic::BitmapSource();
     }
 

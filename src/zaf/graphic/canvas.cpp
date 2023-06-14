@@ -436,15 +436,15 @@ void Canvas::DrawBitmap(
 
 PathGeometry Canvas::CreatePathGeometry() const {
 
-    ID2D1PathGeometry* handle{};
+    COMPtr<ID2D1PathGeometry> inner;
     HRESULT result = 
-        GraphicFactory::Instance().GetDirect2dFactoryHandle()->CreatePathGeometry(&handle);
+        GraphicFactory::Instance().GetDirect2dFactoryHandle()->CreatePathGeometry(inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
 
     const auto& current_region = regions_.top();
     return PathGeometry(
-        handle, 
+        inner, 
         current_region.rect.position, 
         current_region.aligned_rect.position);
 }

@@ -63,7 +63,7 @@ void CheckBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     auto state_guard = canvas.PushState();
 
     auto text_layout = GetTextLayout();
-    if (text_layout == nullptr) {
+    if (!text_layout) {
         return;
     }
 
@@ -95,12 +95,12 @@ void CheckBox::PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const {
     else if (check_state == CheckState::Checked) {
 
         auto path = canvas.CreatePathGeometry();
-        if (path == nullptr) {
+        if (!path) {
             return;
         }
 
         auto sink = path.Open();
-        if (sink == nullptr) {
+        if (!sink) {
             return;
         }
 

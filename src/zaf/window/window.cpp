@@ -964,7 +964,7 @@ void Window::HandleWMSIZEMessage(const Message& message) {
         static_cast<float>(HIWORD(message.LParam()))
     };
 
-    if (renderer_ != nullptr) {
+    if (renderer_) {
         renderer_.Resize(size);
     }
 
@@ -1431,7 +1431,7 @@ void Window::HandleWMDESTROY() {
     HWND old_handle = handle_;
 
     handle_ = nullptr;
-    renderer_.Reset();
+    renderer_ = {};
     tooltip_window_.reset();
 
     OnDestroyed(DestroyedInfo{ shared_from_this(), old_handle });

@@ -56,7 +56,7 @@ void RadioButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     auto state_guard = canvas.PushState();
 
     auto text_layout = GetTextLayout();
-    if (text_layout == nullptr) {
+    if (!text_layout) {
         return;
     }
 

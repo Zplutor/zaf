@@ -7,15 +7,12 @@
 
 namespace zaf::clipboard {
 
-class FormatEnumerator {
+class FormatEnumerator : public COMObject<IEnumFORMATETC> {
 public:
     explicit FormatEnumerator(COMPtr<IEnumFORMATETC> inner);
 
     std::optional<Format> Next();
     void Reset();
-
-private:
-    COMPtr<IEnumFORMATETC> inner_;
 };
 
 }

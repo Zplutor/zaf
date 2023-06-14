@@ -204,7 +204,7 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_
     control_size.height = std::ceil(control_size.height);
 
     //Create the cached renderer if it is not created.
-    if (cached_renderer_ == nullptr) {
+    if (!cached_renderer_) {
         CreateCompatibleRendererOptions options;
         options.DesiredSize(control_size);
         cached_renderer_ = canvas.Renderer().CreateCompatibleRenderer(options);
@@ -341,7 +341,7 @@ void Control::DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_re
     }
     
     auto render_bitmap = background_image->CreateRenderBitmap(canvas.Renderer());
-    if (render_bitmap == nullptr) {
+    if (!render_bitmap) {
         return;
     }
 
@@ -399,7 +399,7 @@ void Control::NeedRepaintRect(const zaf::Rect& rect) {
 
 void Control::RecalculateCachedPaintingRect(const zaf::Rect& repaint_rect) {
 
-    if (cached_renderer_ == nullptr) {
+    if (!cached_renderer_) {
         return;
     }
 
@@ -1434,7 +1434,7 @@ void Control::SetIsCachedPaintingEnabled(bool value) {
 
 
 void Control::ReleaseCachedPaintingRenderer() {
-    cached_renderer_ = nullptr;
+    cached_renderer_ = {};
     valid_cached_renderer_rect_ = {};
 }
 

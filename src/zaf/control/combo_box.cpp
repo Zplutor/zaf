@@ -186,12 +186,12 @@ void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     Point bottom_point(center_point.x, center_point.y + half_height);
 
     auto path = canvas.CreatePathGeometry();
-    if (path == nullptr) {
+    if (!path) {
         return;
     }
 
     auto sink = path.Open();
-    if (sink == nullptr) {
+    if (!sink) {
         return;
     }
 

@@ -32,7 +32,7 @@ void ImageBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     }
 
     auto bitmap = image_player_->GetRenderBitmap(canvas.Renderer());
-    if (bitmap == nullptr) {
+    if (!bitmap) {
         return;
     }
 

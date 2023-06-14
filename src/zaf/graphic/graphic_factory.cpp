@@ -53,15 +53,15 @@ WindowRenderer GraphicFactory::CreateWindowRenderer(HWND window_handle) {
     renderer_properties.pixelFormat.alphaMode = D2D1_ALPHA_MODE_PREMULTIPLIED;
     renderer_properties.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
 
-    ID2D1HwndRenderTarget* renderer_handle = nullptr;
+    COMPtr<ID2D1HwndRenderTarget> renderer_inner;
     HRESULT result = d2d_factory_handle_->CreateHwndRenderTarget(
         renderer_properties, 
         D2D1::HwndRenderTargetProperties(window_handle, renderer_size),
-        &renderer_handle
+        renderer_inner.Reset()
     );
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return WindowRenderer(renderer_handle);
+    return WindowRenderer(renderer_inner);
 }
 
 
@@ -69,57 +69,61 @@ Renderer GraphicFactory::CreateBitmapRenderer(
     const wic::Bitmap& image_source,
     const RendererProperties& properties) {
 
-    ID2D1RenderTarget* handle = nullptr;
+    COMPtr<ID2D1RenderTarget> inner;
     HRESULT com_error = d2d_factory_handle_->CreateWicBitmapRenderTarget(
-        image_source.Inner(),
+        image_source.Inner().Inner(),
         properties.Inner(),
-        &handle);
+        inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(com_error);
-    return Renderer(handle);
+    return Renderer(inner);
 }
 
 
 RectangleGeometry GraphicFactory::CreateRectangleGeometry(const Rect& rect) {
 
-    ID2D1RectangleGeometry* handle = nullptr;
-    HRESULT result = d2d_factory_handle_->CreateRectangleGeometry(rect.ToD2D1RECTF(), &handle);
+    COMPtr<ID2D1RectangleGeometry> inner;
+    HRESULT result = d2d_factory_handle_->CreateRectangleGeometry(
+        rect.ToD2D1RECTF(),
+        inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return RectangleGeometry(handle);
+    return RectangleGeometry(inner);
 }
 
 
 RoundedRectangleGeometry GraphicFactory::CreateRoundedRectangleGeometry(
     const RoundedRect& rounded_rect) {
 
-    ID2D1RoundedRectangleGeometry* handle = nullptr;
+    COMPtr<ID2D1RoundedRectangleGeometry> inner;
     HRESULT result = d2d_factory_handle_->CreateRoundedRectangleGeometry(
         rounded_rect.ToD2D1ROUNDEDRECT(),
-        &handle);
+        inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return RoundedRectangleGeometry(handle);
+    return RoundedRectangleGeometry(inner);
 }
 
 
 EllipseGeometry GraphicFactory::CreateEllipseGeometry(const Ellipse& ellipse) {
 
-    ID2D1EllipseGeometry* handle{};
-    HRESULT result = d2d_factory_handle_->CreateEllipseGeometry(ellipse.ToD2D1ELLIPSE(), &handle);
+    COMPtr<ID2D1EllipseGeometry> inner;
+    HRESULT result = d2d_factory_handle_->CreateEllipseGeometry(
+        ellipse.ToD2D1ELLIPSE(),
+        inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return EllipseGeometry{ handle };
+    return EllipseGeometry{ inner };
 }
 
 
 PathGeometry GraphicFactory::CreatePathGeometry() {
 
-    ID2D1PathGeometry* handle = nullptr;
-    HRESULT result = d2d_factory_handle_->CreatePathGeometry(&handle);
+    COMPtr<ID2D1PathGeometry> inner;
+    HRESULT result = d2d_factory_handle_->CreatePathGeometry(inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return PathGeometry(handle);
+    return PathGeometry(inner);
 }
 
 
@@ -127,88 +131,88 @@ TransformedGeometry GraphicFactory::CreateTransformedGeometry(
     const Geometry& geometry,
     const TransformMatrix& transform_matrix) {
 
-    ID2D1TransformedGeometry* handle = nullptr;
+    COMPtr<ID2D1TransformedGeometry> inner;
     HRESULT result = d2d_factory_handle_->CreateTransformedGeometry(
-        geometry.Inner(),
+        geometry.Inner().Inner(),
         transform_matrix.ToD2D1MATRIX3X2F(),
-        &handle);
+        inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return TransformedGeometry(handle);
+    return TransformedGeometry(inner);
 }
 
 
 Stroke GraphicFactory::CreateStroke(const StrokeProperties& properties) {
     
-    ID2D1StrokeStyle* handle = nullptr;
+    COMPtr<ID2D1StrokeStyle> inner;
     HRESULT result = d2d_factory_handle_->CreateStrokeStyle(
         properties.Inner(),
         properties.DashPattern().data(),
         static_cast<UINT32>(properties.DashPattern().size()),
-        &handle
+        inner.Reset()
     );
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return Stroke(handle);
+    return Stroke(inner);
 }
 
 
 TextFormat GraphicFactory::CreateTextFormat(const TextFormatProperties& properties) {
 
-    IDWriteTextFormat* handle = nullptr;
+    COMPtr<IDWriteTextFormat> inner;
     HRESULT result = dwrite_factory_handle_->CreateTextFormat(
         properties.font_family_name.c_str(),
-        properties.font_collection == nullptr ? nullptr : properties.font_collection->Inner(),
+        properties.font_collection ? properties.font_collection->Inner().Inner() : nullptr,
         static_cast<DWRITE_FONT_WEIGHT>(properties.font_weight),
         DWRITE_FONT_STYLE_NORMAL,
         DWRITE_FONT_STRETCH_NORMAL,
         properties.font_size,
         properties.locale_name.c_str(),
-        &handle
+        inner.Reset()
     );
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return TextFormat(handle);
+    return TextFormat(inner);
 }
 
 
 TextLayout GraphicFactory::CreateTextLayout(const TextLayoutProperties& properties) {
 
-    IDWriteTextLayout* handle = nullptr;
+    COMPtr<IDWriteTextLayout> inner;
     HRESULT result = dwrite_factory_handle_->CreateTextLayout(
         properties.text.c_str(), 
         static_cast<UINT32>(properties.text.length()),
-        properties.text_format.Inner(), 
+        properties.text_format.Inner().Inner(),
         properties.width, 
         properties.height,
-        &handle
+        inner.Reset()
     );
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return TextLayout(handle);
+    return TextLayout(inner);
 }
 
 
 FontCollection GraphicFactory::GetSystemFontCollection() {
 
-    IDWriteFontCollection* handle = nullptr;
-    HRESULT result = dwrite_factory_handle_->GetSystemFontCollection(&handle);
+    COMPtr<IDWriteFontCollection> inner;
+    HRESULT result = dwrite_factory_handle_->GetSystemFontCollection(inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return FontCollection(handle);
+    return FontCollection(inner);
 }
 
 
 TextInlineObject GraphicFactory::CreateEllipsisTrimmingSign(
     const TextFormat& text_format) {
 
-    IDWriteInlineObject* handle = nullptr;
+    COMPtr<IDWriteInlineObject> inner;
     HRESULT hresult = dwrite_factory_handle_->CreateEllipsisTrimmingSign(
-        text_format.Inner(), 
-        &handle);
+        text_format.Inner().Inner(),
+        inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(hresult);
-    return TextInlineObject(handle);
+    return TextInlineObject(inner);
 }
 
 }

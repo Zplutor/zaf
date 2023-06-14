@@ -49,7 +49,7 @@ RenderBitmap GifPlayer::GetRenderBitmap(Renderer& renderer) {
 
 bool GifPlayer::Initialize(Renderer& renderer) {
 
-    if (composed_frame_renderer_ != nullptr) {
+    if (!composed_frame_renderer_) {
         return true;
     }
 
@@ -162,13 +162,13 @@ void GifPlayer::ClearBackground() {
 void GifPlayer::OverlayNextFrame() {
 
     auto next_frame = image_decoder_.GetFrame(next_frame_index_);
-    if (next_frame == nullptr) {
+    if (!next_frame) {
         return;
     }
 
     //Get metadata from frame.
     auto frame_metadata_querier = next_frame.GetMetadataQuerier();
-    if (frame_metadata_querier == nullptr) {
+    if (!frame_metadata_querier) {
         return;
     }
 
@@ -197,7 +197,7 @@ void GifPlayer::OverlayNextFrame() {
     }
     
     auto bitmap = composed_frame_renderer_.CreateBitmap(next_frame);
-    if (bitmap != nullptr) {
+    if (!bitmap) {
 
         composed_frame_renderer_.DrawBitmap(
             bitmap, 
@@ -218,12 +218,12 @@ void GifPlayer::SaveFrame() {
 
     //Get current frame bitmap.
     auto current_bitmap = composed_frame_renderer_.GetBitmap();
-    if (current_bitmap == nullptr) {
+    if (!current_bitmap) {
         return;
     }
 
     //Create the saved frame bitmap if it has not been created.
-    if (saved_frame_bitmap_ == nullptr) {
+    if (!saved_frame_bitmap_) {
         
         auto size = current_bitmap.GetPixelSize();
         auto dpi = current_bitmap.GetDpi();
@@ -234,7 +234,7 @@ void GifPlayer::SaveFrame() {
         bitmap_properties.SetPixelProperties(current_bitmap.GetPixelProperties());
 
         saved_frame_bitmap_ = composed_frame_renderer_.CreateBitmap(size, bitmap_properties);
-        if (saved_frame_bitmap_ == nullptr) {
+        if (!saved_frame_bitmap_) {
             return;
         }
     }
@@ -246,12 +246,12 @@ void GifPlayer::SaveFrame() {
 
 void GifPlayer::RestoreFrame() {
 
-    if (saved_frame_bitmap_ == nullptr) {
+    if (!saved_frame_bitmap_) {
         return;
     }
 
     auto current_bitmap = composed_frame_renderer_.GetBitmap();
-    if (current_bitmap == nullptr) {
+    if (!current_bitmap) {
         return;
     }
 
@@ -300,8 +300,8 @@ bool GifPlayer::HasReachedLastLoop() const {
 
 void GifPlayer::Reset() {
 
-    composed_frame_renderer_.Reset();
-    saved_frame_bitmap_.Reset();
+    composed_frame_renderer_ = {};
+    saved_frame_bitmap_ = {};
     delay_timer_.reset();
 
     frame_count_ = 0;
