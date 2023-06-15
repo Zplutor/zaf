@@ -10,8 +10,19 @@ namespace zaf::clipboard {
 
 class DataObject : public COMObject<IDataObject> {
 public:
-    DataObject();
-    explicit DataObject(COMPtr<IDataObject> inner);
+    /**
+    Creates a valid DataObject.
+
+    @return
+        Returns a valid DataObject.
+
+    DataObjects created with the default constructor is invalid and unusable. Use this method to 
+    create a valid DataObject.
+    */
+    static DataObject Create();
+    
+public:
+    using COMObject::COMObject;
 
     FormatEnumerator EnumerateFormats() const;
 

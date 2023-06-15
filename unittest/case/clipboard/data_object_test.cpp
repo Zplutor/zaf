@@ -28,11 +28,28 @@ ZAF_DEFINE_TYPE_END;
 
 }
 
+
+TEST(DataObjectTest, Construct) {
+
+    //DataObject created with the default constructor is invalid.
+    {
+        DataObject data_object;
+        ASSERT_FALSE(data_object.IsValid());
+    }
+
+    //DataObject created with Create() is valid.
+    {
+        DataObject data_object = DataObject::Create();
+        ASSERT_TRUE(data_object.IsValid());
+    }
+}
+
+
 TEST(DataObjectTest, SetAndGetText) {
 
     constexpr const wchar_t* TestText = L"DataObjectTestText";
 
-    DataObject data_object;
+    auto data_object = DataObject::Create();
     data_object.SetText(TestText);
     auto result = data_object.GetText();
     ASSERT_EQ(result, TestText);
@@ -43,7 +60,7 @@ TEST(DataObjectTest, GetUnknownData) {
 
     auto format_type = MakePrivateFormatType(78);
 
-    DataObject data_object;
+    auto data_object = DataObject::Create();
     data_object.SetData(format_type, std::make_shared<TestClipboardData>());
 
     auto got_data = data_object.GetData(format_type);
@@ -58,7 +75,7 @@ TEST(DataObjectTest, GetRegisteredData) {
     auto format_type = MakePrivateFormatType(1);
     Clipboard::RegisterClipboardData(format_type, TestClipboardData::Type);
 
-    DataObject data_object;
+    auto data_object = DataObject::Create();
     data_object.SetData(format_type, std::make_shared<TestClipboardData>());
 
     auto got_data = data_object.GetData(format_type);

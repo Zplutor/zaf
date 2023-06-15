@@ -10,13 +10,8 @@
 
 namespace zaf::clipboard {
 
-DataObject::DataObject() : DataObject(MakeCOMPtr<internal::DataObjectImpl>()) {
-
-}
-
-
-DataObject::DataObject(COMPtr<IDataObject> inner) : COMObject(std::move(inner)) {
-
+DataObject DataObject::Create() {
+    return DataObject{ MakeCOMPtr<internal::DataObjectImpl>() };
 }
 
 
