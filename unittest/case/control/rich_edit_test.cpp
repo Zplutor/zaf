@@ -55,3 +55,19 @@ TEST(RichEditTest, GetText) {
     text = rich_edit->GetText(zaf::rich_edit::TextFlag::UseCRLF);
     ASSERT_EQ(text, L"line1\r\nline2\r\nline3\r\n");
 }
+
+
+TEST(RichEditTest, CalculatePreferrenceSize) {
+
+    //Multi-line and word wrapping could cause bad result.
+    //Make sure it has been resolved.
+    auto rich_edit = zaf::Create<zaf::RichEdit>();
+    rich_edit->SetFontSize(10);
+    rich_edit->SetWordWrapping(zaf::WordWrapping::Wrap);
+    rich_edit->SetIsMultiline(true);
+    rich_edit->SetBorder(zaf::Frame{});
+    rich_edit->SetText(L"abcdefghijklmn");
+
+    auto result = rich_edit->CalculatePreferredSize();
+    ASSERT_GT(result.width, 20);
+}

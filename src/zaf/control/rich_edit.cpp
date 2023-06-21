@@ -181,6 +181,10 @@ void RichEdit::InitializeTextService() {
 
 void RichEdit::Layout(const zaf::Rect& previous_rect) {
 
+    if (this->Size() != previous_rect.size) {
+        ResetCachedTextHeight();
+    }
+
     if (text_service_ != nullptr) {
         text_service_->OnTxPropertyBitsChange(TXTBIT_CLIENTRECTCHANGE, TXTBIT_CLIENTRECTCHANGE);
     }
@@ -189,16 +193,22 @@ void RichEdit::Layout(const zaf::Rect& previous_rect) {
 
 zaf::Size RichEdit::CalculatePreferredContentSize(const zaf::Size& max_size) const {
 
+    auto max_size_in_pixel = FromDIPs(max_size, GetDPI());
+
     auto float_to_long = [](float f) -> LONG {
-        if (f > std::numeric_limits<LONG>::max()) {
-            return std::numeric_limits<LONG>::max();
+        //The magic number of max width that TxGetNaturalSize() can accept without problem.
+        //If rich edit enables multi-line and word wrapping, and the width passed to
+        //TxGetNaturalSize() is greater than this number, an incorrect result will be returned.
+        constexpr LONG Max = 286331152;
+        if (f > Max) {
+            return Max;
         }
         else {
             return static_cast<LONG>(f);
         }
     };
 
-    auto width = float_to_long(max_size.width);
+    LONG width = float_to_long(max_size_in_pixel.width);
 
     // Height must be 0 in order to get accurate height.
     LONG height = 0; 
@@ -390,7 +400,7 @@ float RichEdit::GetContentVerticalOffset() {
     if (!cached_text_height_) {
 
         auto preferred_size = CalculatePreferredContentSize(zaf::Size{ 
-            std::numeric_limits<float>::max(),
+            this->ContentSize().width,
             std::numeric_limits<float>::max()
         });
 
@@ -705,6 +715,7 @@ WordWrapping RichEdit::WordWrapping() const {
 }
 
 void RichEdit::SetWordWrapping(zaf::WordWrapping word_wrapping) {
+    ResetCachedTextHeight();
     ChangePropertyBit(TXTBIT_WORDWRAP, word_wrapping != WordWrapping::NoWrap);
 }
 
