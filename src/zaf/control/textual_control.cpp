@@ -329,9 +329,13 @@ float TextualControl::FontSize() const {
 
 void TextualControl::SetFontSize(float size) {
 
-    auto new_font = Font();
-    new_font.size = size;
-    SetFont(new_font);
+    auto font = Font();
+    if (font.size == size) {
+        return;
+    }
+
+    font.size = size;
+    SetFont(font);
 }
 
 
@@ -341,9 +345,13 @@ FontWeight TextualControl::FontWeight() const {
 
 void TextualControl::SetFontWeight(zaf::FontWeight weight) {
 
-    auto new_font = Font();
-    new_font.weight = weight;
-    SetFont(new_font);
+    auto font = Font();
+    if (font.weight == weight) {
+        return;
+    }
+
+    font.weight = weight;
+    SetFont(font);
 }
 
 
