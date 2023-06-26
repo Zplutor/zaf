@@ -7,7 +7,7 @@ namespace {
 std::wstring InnerFromUTF8String(
     const char* utf8_string,
     std::size_t utf8_string_length,
-    UTF8ConversionFlags flags) {
+    FromUTF8Flags flags) {
 
     if (utf8_string_length == 0) {
         return {};
@@ -46,7 +46,7 @@ std::wstring InnerFromUTF8String(
 
 }
 
-std::string ToUTF8String(std::wstring_view wide_string, UTF8ConversionFlags flags) {
+std::string ToUTF8String(std::wstring_view wide_string, ToUTF8Flags flags) {
 
     if (wide_string.empty()) {
         return {};
@@ -88,12 +88,12 @@ std::string ToUTF8String(std::wstring_view wide_string, UTF8ConversionFlags flag
 }
 
 
-std::wstring FromUTF8String(std::string_view utf8_string, UTF8ConversionFlags flags) {
+std::wstring FromUTF8String(std::string_view utf8_string, FromUTF8Flags flags) {
     return InnerFromUTF8String(utf8_string.data(), utf8_string.length(), flags);
 }
 
 
-std::wstring FromUTF8String(std::u8string_view utf8_string, UTF8ConversionFlags flags) {
+std::wstring FromUTF8String(std::u8string_view utf8_string, FromUTF8Flags flags) {
     return InnerFromUTF8String(
         reinterpret_cast<const char*>(utf8_string.data()),
         utf8_string.length(),

@@ -6,17 +6,16 @@
 namespace zaf {
 
 /**
-Flags to control conversion between UTF-8 encoded string and wide string.
+Flags to control conversion of wide string to UTF-8 encoded string.
 */
-enum class UTF8ConversionFlags {
+enum class ToUTF8Flags {
     None = 0,
 
     /**
     Conversion will fail if there are invalid chars in the string.
     */
-    FailOnInvalidChars = MB_ERR_INVALID_CHARS,
+    FailOnInvalidChars = WC_ERR_INVALID_CHARS,
 };
-
 
 /**
 Converts a wide string to an UTF-8 encoded string.
@@ -35,8 +34,20 @@ Converts a wide string to an UTF-8 encoded string.
 */
 std::string ToUTF8String(
     std::wstring_view wide_string, 
-    UTF8ConversionFlags flags = UTF8ConversionFlags::None);
+    ToUTF8Flags flags = ToUTF8Flags::None);
 
+
+/**
+Flags to control conversion of UTF-8 encoded string to wide string.
+*/
+enum class FromUTF8Flags {
+    None = 0,
+
+    /**
+    Conversion will fail if there are invalid chars in the string.
+    */
+    FailOnInvalidChars = MB_ERR_INVALID_CHARS,
+};
 
 /**
 Converts an UTF-8 encoded string to a wide string.
@@ -55,10 +66,10 @@ Converts an UTF-8 encoded string to a wide string.
 */
 std::wstring FromUTF8String(
     std::string_view utf8_string,
-    UTF8ConversionFlags flags = UTF8ConversionFlags::None);
+    FromUTF8Flags flags = FromUTF8Flags::None);
 
 std::wstring FromUTF8String(
     std::u8string_view utf8_string, 
-    UTF8ConversionFlags flags = UTF8ConversionFlags::None);
+    FromUTF8Flags flags = FromUTF8Flags::None);
 
 }
