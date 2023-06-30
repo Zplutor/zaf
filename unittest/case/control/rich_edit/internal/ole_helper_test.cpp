@@ -110,11 +110,11 @@ TEST_F(OLEHelperTest, FindObjectAtScreenPosition_SingleObjectOnly) {
 TEST_F(OLEHelperTest, FindObjectAtScreenPosition_ObjectAlongWithText) {
 
     const auto& rich_edit = GetRichEdit();
-    rich_edit->ReplaceSelectedText(L"----");
+    rich_edit->InsertText(L"----");
     auto preceding_text_width = rich_edit->CalculatePreferredSize().width;
     preceding_text_width = std::ceil(preceding_text_width);
     rich_edit->InsertObject(zaf::Create<OLEObject>());
-    rich_edit->ReplaceSelectedText(L"++++");
+    rich_edit->InsertText(L"++++");
 
     auto test = [&rich_edit](const zaf::Point& screen_position) {
         auto position_in_pixels = zaf::FromDIPs(screen_position, rich_edit->GetDPI()).ToPOINT();

@@ -619,11 +619,11 @@ void RichEdit::SetSelectionRange(const TextRange& range) {
 }
 
 
-void RichEdit::ReplaceSelectedText(const std::wstring& text) {
+void RichEdit::InsertText(const std::wstring& text) {
 
     text_service_->TxSendMessage(
         EM_REPLACESEL,
-        FALSE,
+        TRUE,
         reinterpret_cast<LPARAM>(text.c_str()),
         nullptr);
 }
