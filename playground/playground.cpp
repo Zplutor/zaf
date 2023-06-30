@@ -56,56 +56,7 @@
 #include <zaf/control/menu_separator.h>
 #include <zaf/control/rich_edit/embedded_object.h>
 #include <zaf/control/rich_edit/ole_callback.h>
-
-class MyOLEObject : public zaf::rich_edit::EmbeddedObject {
-public:
-    MyOLEObject() {
-        this->SetSize(zaf::Size{ 100, 30 });
-    }
-
-    GUID ClassID() const override {
-        return { 0xe16f8acd, 0x5b3a, 0x4167, { 0xa4, 0x49, 0xdc, 0x57, 0xd, 0xd4, 0x44, 0x59 } };
-    }
-
-    void Paint(
-        zaf::Canvas& canvas,
-        const zaf::Rect& dirty_rect, 
-        const zaf::rich_edit::PaintContext& context) override {
-
-        auto color = context.IsInSelectionRange() ? zaf::Color::Blue() : zaf::Color::Green();
-
-        canvas.DrawRectangle(
-            zaf::Rect{ zaf::Point{}, this->Size() },
-            canvas.Renderer().CreateSolidColorBrush(color));
-    }
-
-    void OnMouseDown(const zaf::rich_edit::MouseDownContext& context) override {
-
-    }
-
-    void OnMouseUp(const zaf::rich_edit::MouseUpContext& context) override {
-
-    }
-
-    void OnMouseCursorChanging(
-        const zaf::rich_edit::MouseCursorChangingContext& context) override {
-        SetCursor(LoadCursor(nullptr, IDC_HAND));
-        context.EventInfo().MarkAsHandled();
-    }
-
-    bool OnDoubleClick(const zaf::rich_edit::DoubleClickContext& context) override {
-        MessageBox(nullptr, L"Double click!", L"", MB_OK);
-        return true;
-    }
-};
-
-
-
-class MyOLECallback : public zaf::rich_edit::OLECallback {
-public:
-
-};
-
+#include <zaf/control/text_box.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
@@ -118,21 +69,11 @@ protected:
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        rich_edit_ = zaf::Create<zaf::RichEdit>();
-        rich_edit_->SetFontSize(22);
-        rich_edit_->SetBorder(zaf::Frame{});
-        rich_edit_->SetIsMultiline(true);
-        rich_edit_->SetAllowBeep(false);
-        rich_edit_->SetWordWrapping(zaf::WordWrapping::Wrap);
-        rich_edit_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
-        //rich_edit_->SetOLECallback(zaf::Create<MyOLECallback>());
+        text_box_ = zaf::Create<zaf::TextBox>();
+        text_box_->SetFontSize(20);
+        text_box_->SetText(L"This is a text box.\r\nNext line.\r\nThis is the third line.");
 
-        auto scrollable = zaf::Create<zaf::ScrollableControl>();
-        scrollable->SetBorder(zaf::Frame{});
-        scrollable->SetScrollContent(rich_edit_);
-        scrollable->SetAutoHideScrollBars(true);
-
-        RootControl()->AddChild(scrollable);
+        RootControl()->AddChild(text_box_);
 
         InitializeButton();
     }
@@ -149,7 +90,7 @@ private:
     }
 
 private:
-    std::shared_ptr<zaf::RichEdit> rich_edit_;
+    std::shared_ptr<zaf::TextBox> text_box_;
     std::shared_ptr<zaf::Button> button_;
 };
 

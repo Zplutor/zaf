@@ -198,6 +198,7 @@
     <ClCompile Include="src\zaf\control\split_control.cpp" />
     <ClCompile Include="src\zaf\control\textual_control.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit.cpp" />
+    <ClCompile Include="src\zaf\control\text_box.cpp" />
     <ClCompile Include="src\zaf\control\text_source.cpp" />
     <ClCompile Include="src\zaf\control\text_validator.cpp" />
     <ClCompile Include="src\zaf\control\linear_box.cpp" />
@@ -547,6 +548,7 @@
     <ClInclude Include="src\zaf\control\split_control.h" />
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\rich_edit.h" />
+    <ClInclude Include="src\zaf\control\text_box.h" />
     <ClInclude Include="src\zaf\control\text_source.h" />
     <ClInclude Include="src\zaf\control\text_validator.h" />
     <ClInclude Include="src\zaf\control\linear_box.h" />
