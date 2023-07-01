@@ -1000,6 +1000,9 @@
     <ClCompile Include="src\zaf\control\text_box.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\base\range.cpp">
+      <Filter>zaf\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1111,9 +1114,6 @@
       <Filter>zaf\graphic\font</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\text_layout.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\text_range.h">
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\text_layout_properties.h">
@@ -1482,9 +1482,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\source_site.h">
       <Filter>zaf\base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\container\utility\range.h">
-      <Filter>zaf\base\container\utility</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\check.h">
       <Filter>zaf\base\error</Filter>
@@ -2298,6 +2295,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\text_box.h">
       <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\range.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -132,7 +132,7 @@ HRESULT OLECallbackImpl::GetClipboardData(
     auto data_object = clipboard::DataObject::Create();
     auto operation_result = callback->GetClipboardData(
         static_cast<ClipboardOperation>(reco),
-        TextRange::FromCHARRANGE(*lpchrg),
+        Range::FromCHARRANGE(*lpchrg),
         data_object);
 
     switch (operation_result) {

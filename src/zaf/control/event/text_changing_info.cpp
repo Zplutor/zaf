@@ -6,7 +6,7 @@ namespace zaf {
 TextChangingInfo::TextChangingInfo(
     const std::shared_ptr<RichEdit>& source,
     TextChangeReason reason,
-    const zaf::TextRange& text_range,
+    const Range& text_range,
     const Message& triggered_message)
     :
     EventInfo(source),

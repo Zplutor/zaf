@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/container/utility/range.h>
+#include <zaf/base/range.h>
 #include <zaf/control/internal/tree_control/tree_index_mapping.h>
 
 using namespace zaf::internal;
@@ -90,7 +90,7 @@ TEST_F(TreeIndexMappingTest, GetIndexPathAtIndexOnSingleLevelTree) {
     TreeIndexMapping mapping;
     mapping.node_child_count_pairs.push_back(std::make_pair(zaf::IndexPath{}, node_count));
 
-    for (auto index : zaf::Range(node_count)) {
+    for (auto index : zaf::Range(0, node_count)) {
 
         auto index_path = mapping.GetIndexPathAtIndex(index);
         ASSERT_EQ(index_path, zaf::IndexPath{ index });
@@ -125,7 +125,7 @@ TEST_F(TreeIndexMappingTest, GetIndexAtIndexPathOnSingleLevelTree) {
     TreeIndexMapping mapping;
     mapping.node_child_count_pairs.push_back(std::make_pair(zaf::IndexPath{}, node_count));
 
-    for (auto index : zaf::Range(node_count)) {
+    for (auto index : zaf::Range(0, node_count)) {
 
         auto got_index = mapping.GetIndexAtIndexPath(zaf::IndexPath{ index });
         ASSERT_TRUE(got_index.has_value());

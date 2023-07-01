@@ -1,7 +1,7 @@
 #include <zaf/control/internal/list_control/list_control_implementation.h>
 #include <zaf/base/as.h>
-#include <zaf/base/container/utility/range.h>
 #include <zaf/base/error/check.h>
+#include <zaf/base/range.h>
 #include <zaf/control/internal/list_control/list_control_extended_multiple_select_strategy.h>
 #include <zaf/control/internal/list_control/list_control_item_height_manager.h>
 #include <zaf/control/internal/list_control/list_control_simple_multiple_select_strategy.h>
@@ -1046,7 +1046,7 @@ std::optional<std::size_t> ListControlImplementation::FindItemIndexAtPosition(
 std::optional<std::size_t> ListControlImplementation::GetListItemIndex(
     const std::shared_ptr<ListItem>& item) {
 
-    for (auto index : zaf::Range(visible_items_.size())) {
+    for (auto index : Range(0, visible_items_.size())) {
 
         if (visible_items_[index] == item) {
             return index + first_visible_item_index_;

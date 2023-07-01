@@ -1,6 +1,6 @@
 #include <zaf/control/internal/tree_control/tree_index_mapping.h>
-#include <zaf/base/container/utility/range.h>
 #include <zaf/base/error/check.h>
+#include <zaf/base/range.h>
 #include <zaf/control/internal/tree_control/utility.h>
 
 namespace zaf::internal {
@@ -158,7 +158,7 @@ bool IsGreaterOrEqualInSameParent(const IndexPath& path1, const IndexPath& path2
         return false;
     }
 
-    for (auto index : zaf::Range(path1.size() - 1)) {
+    for (auto index : Range(0, path1.size() - 1)) {
         if (path1[index] != path2[index]) {
             return false;
         }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string_view>
+#include <zaf/base/range.h>
 #include <zaf/control/control.h>
 #include <zaf/control/event/text_changed_info.h>
 #include <zaf/control/internal/range_map.h>
@@ -9,7 +10,6 @@
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/text_layout.h>
-#include <zaf/graphic/text/text_range.h>
 #include <zaf/graphic/text/text_trimming.h>
 #include <zaf/graphic/text/word_wrapping.h>
 
@@ -87,7 +87,7 @@ public:
     /**
      Set color at specified text range.
      */
-    void SetTextColorAtRange(const Color& color, const TextRange& range) {
+    void SetTextColorAtRange(const Color& color, const Range& range) {
         SetTextColorPickerAtRange(CreateColorPicker(color), range);
     }
 
@@ -101,7 +101,7 @@ public:
     /**
      Set color picker at specified text range.
      */
-    void SetTextColorPickerAtRange(const ColorPicker& color_picker, const TextRange& range);
+    void SetTextColorPickerAtRange(const ColorPicker& color_picker, const Range& range);
 
     /**
      Reset all particular text color pickers to default text color picker.
@@ -138,7 +138,7 @@ public:
     /**
      Set font at specified text range.
      */
-    virtual void SetFontAtRange(const zaf::Font& font, const TextRange& range);
+    virtual void SetFontAtRange(const zaf::Font& font, const Range& range);
 
     /**
      Reset all particular fonts to default font.

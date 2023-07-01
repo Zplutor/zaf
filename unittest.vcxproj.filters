@@ -190,9 +190,6 @@
     <ClCompile Include="unittest\case\parsers\uri_image_parser_test.cpp">
       <Filter>case\parsing\parsers</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\base\container\utility\range_test.cpp">
-      <Filter>case\base\container\utility</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\control\linear_box_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
@@ -423,6 +420,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\clipboard\data_object_test.cpp">
       <Filter>case\clipboard</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\range_test.cpp">
+      <Filter>case\base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/event/event_info.h>
-#include <zaf/graphic/text/text_range.h>
+#include <zaf/base/range.h>
 #include <zaf/window/message/message.h>
 
 namespace zaf {
@@ -19,14 +19,14 @@ public:
     TextChangingInfo(
         const std::shared_ptr<RichEdit>& source,
         TextChangeReason reason,
-        const zaf::TextRange& text_range,
+        const Range& text_range,
         const Message& triggered_message);
 
     TextChangeReason Reason() const {
         return reason_;
     }
 
-    const zaf::TextRange& TextRange() const {
+    const Range& TextRange() const {
         return text_range_;
     }
 
@@ -44,7 +44,7 @@ public:
 
 private:
     TextChangeReason reason_{ TextChangeReason::Unknown };
-    zaf::TextRange text_range_;
+    Range text_range_;
     Message triggered_message_;
     std::shared_ptr<bool> can_change_{};
 };

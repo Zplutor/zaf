@@ -1,7 +1,7 @@
 #include <zaf/control/property_grid/color_value_view.h>
 #include <sstream>
 #include <zaf/base/as.h>
-#include <zaf/base/container/utility/range.h>
+#include <zaf/base/range.h>
 #include <zaf/base/string/case_conversion.h>
 #include <zaf/base/string/to_string.h>
 #include <zaf/creation.h>
@@ -172,8 +172,8 @@ void ColorValueView::ColorSquare::PaintTransparentColorSmallSquares(Canvas& canv
     auto dim_square_color = Color::FromRGB(0xe5e5e5);
     canvas.SetBrushWithColor(dim_square_color);
 
-    for (auto line : zaf::Range(0, line_count)) {
-        for (auto column : zaf::Range(0, column_count)) {
+    for (auto line : Range(0, line_count)) {
+        for (auto column : Range(0, column_count)) {
 
             bool should_paint = ((column + line % 2) % 2 == 0);
             if (!should_paint) {

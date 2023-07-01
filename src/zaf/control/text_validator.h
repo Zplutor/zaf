@@ -6,7 +6,6 @@
 namespace zaf {
 
 class RichEdit;
-class TextRange;
 
 /**
  Prototype of text validator.

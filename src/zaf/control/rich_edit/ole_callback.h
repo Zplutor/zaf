@@ -103,7 +103,7 @@ public:
     */
     virtual OperationResult GetClipboardData(
         ClipboardOperation operation,
-        const TextRange& text_range,
+        const Range& text_range,
         clipboard::DataObject& data_object);
 
 private:

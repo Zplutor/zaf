@@ -1,5 +1,5 @@
 #include <zaf/window/tooltip_window.h>
-#include <zaf/base/container/utility/range.h>
+#include <zaf/base/range.h>
 #include <zaf/control/label.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/dpi.h>
@@ -14,7 +14,7 @@ int CalculateCursorHeight(const std::uint8_t* buffer, int byte_count, const BITM
 
     int result{};
 
-    for (auto index : zaf::Range(0, line_count)) {
+    for (auto index : Range(0, line_count)) {
 
         auto line_start = buffer + (index * line_length);
         auto line_end = buffer + ((index + 1) * line_length);

@@ -1,8 +1,8 @@
 #include <zaf/control/internal/tree_control/tree_data_manager.h>
 #include <zaf/base/container/utility/contain.h>
 #include <zaf/base/container/utility/find.h>
-#include <zaf/base/container/utility/range.h>
 #include <zaf/base/error/check.h>
+#include <zaf/base/range.h>
 
 namespace zaf::internal {
 
@@ -175,7 +175,7 @@ void TreeDataManager::AddChildrenToExpandedNode(
     auto& parent_children = parent_node.children;
     ZAF_EXPECT(child_index <= parent_children.size());
 
-    for (auto index : zaf::Range(child_index, parent_children.size())) {
+    for (auto index : Range::FromIndexPair(child_index, parent_children.size())) {
 
         const auto& child_node = parent_children[index];
         if (child_node) {

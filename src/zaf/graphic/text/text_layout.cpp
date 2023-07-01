@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-std::wstring TextLayout::GetFontFamilyName(std::size_t position, TextRange* range) const {
+std::wstring TextLayout::GetFontFamilyName(std::size_t position, Range* range) const {
 
     UINT32 family_name_length = 0;
     HRESULT result = Inner()->GetFontFamilyNameLength(
@@ -29,14 +29,14 @@ std::wstring TextLayout::GetFontFamilyName(std::size_t position, TextRange* rang
     ZAF_THROW_IF_COM_ERROR(result);
 
     if (range != nullptr) {
-        *range = TextRange::FromDWRITETEXTRANGE(text_range);
+        *range = Range::FromDWRITETEXTRANGE(text_range);
     }
 
     return buffer.get();
 }
 
 
-float TextLayout::GetFontSize(std::size_t position, TextRange* range) const {
+float TextLayout::GetFontSize(std::size_t position, Range* range) const {
 
     float font_size = 0;
     DWRITE_TEXT_RANGE text_range = { 0 };
@@ -48,14 +48,14 @@ float TextLayout::GetFontSize(std::size_t position, TextRange* range) const {
     ZAF_THROW_IF_COM_ERROR(result);
     
     if (range != nullptr) {
-        *range = TextRange::FromDWRITETEXTRANGE(text_range);
+        *range = Range::FromDWRITETEXTRANGE(text_range);
     }
 
     return font_size;
 }
 
 
-FontStyle TextLayout::GetFontStyle(std::size_t position, TextRange* range) const {
+FontStyle TextLayout::GetFontStyle(std::size_t position, Range* range) const {
 
     DWRITE_FONT_STYLE font_style = DWRITE_FONT_STYLE_NORMAL;
     DWRITE_TEXT_RANGE text_range = { 0 };
@@ -67,14 +67,14 @@ FontStyle TextLayout::GetFontStyle(std::size_t position, TextRange* range) const
     ZAF_THROW_IF_COM_ERROR(result);
 
     if (range != nullptr) {
-        *range = TextRange::FromDWRITETEXTRANGE(text_range);
+        *range = Range::FromDWRITETEXTRANGE(text_range);
     }
 
     return static_cast<FontStyle>(font_style);
 }
 
 
-int TextLayout::GetFontWeight(std::size_t position, TextRange* range) const {
+int TextLayout::GetFontWeight(std::size_t position, Range* range) const {
 
     DWRITE_FONT_WEIGHT font_weight = static_cast<DWRITE_FONT_WEIGHT>(0);
     DWRITE_TEXT_RANGE text_range = { 0 };
@@ -86,14 +86,14 @@ int TextLayout::GetFontWeight(std::size_t position, TextRange* range) const {
     ZAF_THROW_IF_COM_ERROR(result);
 
     if (range != nullptr) {
-        *range = TextRange::FromDWRITETEXTRANGE(text_range);
+        *range = Range::FromDWRITETEXTRANGE(text_range);
     }
 
     return font_weight;
 }
 
 
-bool TextLayout::HasUnderline(std::size_t position, TextRange* range) const {
+bool TextLayout::HasUnderline(std::size_t position, Range* range) const {
 
     BOOL has_underline = FALSE;
     DWRITE_TEXT_RANGE text_range = { 0 };
@@ -105,14 +105,14 @@ bool TextLayout::HasUnderline(std::size_t position, TextRange* range) const {
     ZAF_THROW_IF_COM_ERROR(result);
 
     if (range != nullptr) {
-        *range = TextRange::FromDWRITETEXTRANGE(text_range);
+        *range = Range::FromDWRITETEXTRANGE(text_range);
     }
 
     return has_underline ? TRUE : FALSE;
 }
 
 
-Brush TextLayout::GetBrush(std::size_t position, TextRange* range) {
+Brush TextLayout::GetBrush(std::size_t position, Range* range) {
 
     IUnknown* drawing_effect = nullptr;
     DWRITE_TEXT_RANGE text_range = { 0 };

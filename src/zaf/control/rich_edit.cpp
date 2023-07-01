@@ -477,7 +477,7 @@ std::wstring RichEdit::GetText(rich_edit::TextFlag flag) const {
 }
 
 
-std::wstring RichEdit::GetTextInRange(const TextRange& range) const {
+std::wstring RichEdit::GetTextInRange(const Range& range) const {
 
     //EM_RANGETEXT returns inconsistent string with other text getting methods, like WCH_EMBEDDING
     //chars will be replaced to spaces. So we use ITextDocument instead.
@@ -599,22 +599,20 @@ void RichEdit::SetAllowBeep(bool allow_beep) {
 }
 
 
-TextRange RichEdit::GetSelectionRange() const {
+Range RichEdit::GetSelectionRange() const {
 
     CHARRANGE char_range{};
     text_service_->TxSendMessage(EM_EXGETSEL, 0, reinterpret_cast<LPARAM>(&char_range), nullptr);
-    return TextRange::FromCHARRANGE(char_range);
+    return Range::FromCHARRANGE(char_range);
 }
 
-void RichEdit::SetSelectionRange(const TextRange& range) {
+void RichEdit::SetSelectionRange(const Range& range) {
 
     if (text_service_ == nullptr) {
         return;
     }
 
-    CHARRANGE char_range = { 0 };
-    char_range.cpMin = static_cast<LONG>(range.index);
-    char_range.cpMax = static_cast<LONG>(range.index + range.length);
+    CHARRANGE char_range = range.ToCHARRANGE();
     text_service_->TxSendMessage(EM_EXSETSEL, 0, reinterpret_cast<LPARAM>(&char_range), nullptr);
 }
 
@@ -1464,7 +1462,7 @@ bool RichEdit::RaiseTextChangingEvent(const ENPROTECTED& notification_info) {
     TextChangingInfo event_info{
         As<RichEdit>(shared_from_this()),
         reason,
-        TextRange::FromCHARRANGE(notification_info.chrg),
+        Range::FromCHARRANGE(notification_info.chrg),
         triggered_message
     };
 

@@ -22,7 +22,7 @@ void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_
 }
 
 
-void SetFontToTextLayout(const Font& font, const TextRange& range, TextLayout& text_layout) {
+void SetFontToTextLayout(const Font& font, const Range& range, TextLayout& text_layout) {
 
     text_layout.SetFontFamilyName(font.family_name, range);
     text_layout.SetFontSize(font.size, range);
@@ -38,7 +38,7 @@ void SetDefaultFontOtherPropertiesToTextLayout(
 
     if (font.has_underline) {
 
-        TextRange range{ 0, text_length };
+        Range range{ 0, text_length };
         text_layout.SetHasUnderline(true, range);
     }
 }
@@ -161,7 +161,7 @@ void TextualControl::SetRangedFontsToTextLayout(TextLayout& text_layout) const {
     auto ranges_and_fonts = font_range_map_->GetAllRangesAndValues();
     for (const auto& each_pair : ranges_and_fonts) {
 
-        TextRange range(each_pair.first.first, each_pair.first.second);
+        Range range(each_pair.first.first, each_pair.first.second);
         SetFontToTextLayout(each_pair.second, range, text_layout);
     }
 }
@@ -177,7 +177,7 @@ void TextualControl::SetTextColorsToTextLayout(TextLayout& text_layout, Renderer
     for (const auto& each_pair : ranges_and_text_color_pickers) {
 
         auto brush = renderer.CreateSolidColorBrush(each_pair.second(*this));
-        text_layout.SetBrush(brush, TextRange(each_pair.first.first, each_pair.first.second));
+        text_layout.SetBrush(brush, Range(each_pair.first.first, each_pair.first.second));
     }
 }
 
@@ -284,7 +284,7 @@ ColorPicker TextualControl::GetTextColorPickerAtPosition(std::size_t position) c
 
 void TextualControl::SetTextColorPickerAtRange(
     const ColorPicker& color_picker, 
-    const TextRange& range) {
+    const Range& range) {
 
     if (!text_color_picker_map_) {
         text_color_picker_map_ = std::make_shared<internal::RangeMap<ColorPicker>>();
@@ -371,7 +371,7 @@ Font TextualControl::GetFontAtPosition(std::size_t position) const {
 }
 
 
-void TextualControl::SetFontAtRange(const zaf::Font& font, const TextRange& range) {
+void TextualControl::SetFontAtRange(const zaf::Font& font, const Range& range) {
 
     if (!font_range_map_) {
         font_range_map_ = std::make_shared<internal::RangeMap<zaf::Font>>();

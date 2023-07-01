@@ -2,9 +2,9 @@
 #include <zaf/base/as.h>
 #include <zaf/base/container/utility/contain.h>
 #include <zaf/base/container/utility/find.h>
-#include <zaf/base/container/utility/range.h>
 #include <zaf/base/container/utility/sort.h>
 #include <zaf/base/error/check.h>
+#include <zaf/base/range.h>
 #include <zaf/control/internal/tree_control/utility.h>
 
 namespace zaf::internal {
@@ -20,7 +20,7 @@ std::vector<std::pair<std::size_t, std::size_t>> MergeAdjacentListIndexes(
     std::size_t range_length = 1;
     std::size_t last_index = range_index;
 
-    for (auto i : zaf::Range(1u, list_indexes.size())) {
+    for (auto i : Range::FromIndexPair(1u, list_indexes.size())) {
 
         auto current_index = list_indexes[i];
 
@@ -839,7 +839,7 @@ void TreeControlImplementation::ModifySelection(
         tree_data_manager_.UnselectAllNodes();
     }
 
-    for (auto list_index : zaf::Range(index, index + count)) {
+    for (auto list_index : Range(index, count)) {
 
         auto index_path = tree_index_mapping_.GetIndexPathAtIndex(list_index);
         if (index_path.empty()) {
@@ -858,7 +858,7 @@ void TreeControlImplementation::ModifySelection(
 
 void TreeControlImplementation::RemoveSelection(std::size_t index, std::size_t count) {
 
-    for (auto list_index : zaf::Range(index, index + count)) {
+    for (auto list_index : Range(index, count)) {
 
         auto index_path = tree_index_mapping_.GetIndexPathAtIndex(list_index);
         if (index_path.empty()) {
@@ -1042,7 +1042,7 @@ std::vector<std::size_t> TreeControlImplementation::UpdateChildItem(
     std::vector<std::size_t> result;
 
     IndexPath child_index_path = *index_path;
-    for (auto index : zaf::Range(index, index + count)) {
+    for (auto index : Range(index, count)) {
 
         child_index_path.push_back(index);
 

@@ -1,7 +1,7 @@
 #include <zaf/control/property_grid/enum_value_view.h>
-#include <zaf/base/container/utility/range.h>
 #include <zaf/base/container/utility/sort.h>
 #include <zaf/base/container/utility/unique.h>
+#include <zaf/base/range.h>
 #include <zaf/object/enum_type.h>
 #include <zaf/creation.h>
 
@@ -51,7 +51,7 @@ void EnumValueView::InitializeComboBoxValues(
     auto drop_down_list = combo_box_->DropDownListBox();
     auto update_gurad = drop_down_list->BeginUpdate();
 
-    for (auto index : zaf::Range(0, values.size())) {
+    for (auto index : Range(0, values.size())) {
 
         drop_down_list->AddItem(values[index]);
 

@@ -1,6 +1,6 @@
 #include <zaf/control/rich_edit/embedded_object.h>
 #include <TOM.h>
-#include <zaf/base/container/utility/range.h>
+#include <zaf/base/range.h>
 #include <zaf/control/rich_edit.h>
 #include <zaf/control/rich_edit/internal/ole_object_impl.h>
 #include <zaf/graphic/dpi.h>
@@ -57,7 +57,7 @@ std::optional<std::size_t> EmbeddedObject::GetCharIndex() const {
     auto ole_interface = host->GetOLEInterface();
 
     //Loop over all objects to find index of current object.
-    for (auto index : zaf::Range(0, ole_interface.GetObjectCount())) {
+    for (auto index : Range(0, ole_interface.GetObjectCount())) {
 
         auto object_info = ole_interface.GetObjectInfoAt(index);
 

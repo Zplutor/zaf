@@ -4,12 +4,12 @@
 #include <string>
 #include <vector>
 #include <zaf/base/error/com_error.h>
+#include <zaf/base/range.h>
 #include <zaf/graphic/brush/brush.h>
 #include <zaf/graphic/font/font_style.h>
 #include <zaf/graphic/text/line_metrics.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_metrics.h>
-#include <zaf/graphic/text/text_range.h>
 
 namespace zaf {
 
@@ -66,7 +66,7 @@ public:
          This means the run has the exact formatting as the position specified, including but not limited to 
          the font family name. This parameter can be nullptr.
      */
-    std::wstring GetFontFamilyName(std::size_t position, TextRange* range) const;
+    std::wstring GetFontFamilyName(std::size_t position, Range* range) const;
 
     /**
      Set font family name for text within a specified text range.
@@ -77,7 +77,7 @@ public:
      @param range
          Text range to which this change applies.
      */
-    void SetFontFamilyName(const std::wstring& font_family_name, const TextRange& range) {
+    void SetFontFamilyName(const std::wstring& font_family_name, const Range& range) {
         HRESULT result = Inner()->SetFontFamilyName(font_family_name.c_str(), range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }
@@ -93,7 +93,7 @@ public:
          This means the run has the exact formatting as the position specified, including but not limited to the
          font size. This parameter can be nullptr.
      */
-    float GetFontSize(std::size_t position, TextRange* range) const;
+    float GetFontSize(std::size_t position, Range* range) const;
 
     /**
      Set the font size for text within a specified text range.
@@ -104,7 +104,7 @@ public:
      @param range
          Text range to which this change applies.
      */
-    void SetFontSize(float size, const TextRange& range) {
+    void SetFontSize(float size, const Range& range) {
         HRESULT result = Inner()->SetFontSize(size, range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }
@@ -120,7 +120,7 @@ public:
          This means the run has the exact formatting as the position specified, including but not limited 
          to the font style. This parameter can be nullptr.
      */
-    FontStyle GetFontStyle(std::size_t position, TextRange* range) const;
+    FontStyle GetFontStyle(std::size_t position, Range* range) const;
 
     /**
      Set the font style for text within a text range.
@@ -131,7 +131,7 @@ public:
      @param range
          The text range to which this change applies.
      */
-    void SetFontStyle(FontStyle font_style, const TextRange& range) {
+    void SetFontStyle(FontStyle font_style, const Range& range) {
         HRESULT result = Inner()->SetFontStyle(static_cast<DWRITE_FONT_STYLE>(font_style), range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }
@@ -147,7 +147,7 @@ public:
          This means the run has the exact formatting as the position specified, including but not limited 
          to the font weight. This parameter can be nullptr.
      */
-    int GetFontWeight(std::size_t position, TextRange* range) const;
+    int GetFontWeight(std::size_t position, Range* range) const;
 
     /**
      Set the font weight for text within a text range.
@@ -158,7 +158,7 @@ public:
      @param range
          Text range to which this change applies.
      */
-    void SetFontWeight(int weight, const TextRange& range) {
+    void SetFontWeight(int weight, const Range& range) {
         HRESULT result = Inner()->SetFontWeight(static_cast<DWRITE_FONT_WEIGHT>(weight), range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }
@@ -174,7 +174,7 @@ public:
          This means the run has the exact formatting as the position specified, including but not limited 
          to the underline. This parameter can be nullptr.
      */
-    bool HasUnderline(std::size_t position, TextRange* range) const;
+    bool HasUnderline(std::size_t position, Range* range) const;
 
     /**
      Set underlining for text within a specified text range.
@@ -185,7 +185,7 @@ public:
      @param range
          Text range to which this change applies.
      */
-    void SetHasUnderline(bool has_underline, const TextRange& range) {
+    void SetHasUnderline(bool has_underline, const Range& range) {
         HRESULT result = Inner()->SetUnderline(has_underline ? TRUE : FALSE, range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }
@@ -201,7 +201,7 @@ public:
          by position. This means the run has the exact formatting as the position specified, including 
          but not limited to the drawing effect. This parameter can be nullptr.
      */
-    Brush GetBrush(std::size_t position, TextRange* range);
+    Brush GetBrush(std::size_t position, Range* range);
 
     /**
      Set brush for text within a specified text range.
@@ -212,7 +212,7 @@ public:
      @param range
          Text range to which this change applies.
      */
-    void SetBrush(const Brush& brush, const TextRange& range) {
+    void SetBrush(const Brush& brush, const Range& range) {
         HRESULT result = Inner()->SetDrawingEffect(
             brush.Inner().Inner(), 
             range.ToDWRITETEXTRANGE());

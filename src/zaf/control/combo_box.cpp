@@ -1,7 +1,7 @@
 #include <zaf/control/combo_box.h>
 #include <algorithm>
 #include <zaf/base/as.h>
-#include <zaf/base/container/utility/range.h>
+#include <zaf/base/range.h>
 #include <zaf/control/button.h>
 #include <zaf/control/internal/combo_box_drop_down_window.h>
 #include <zaf/control/list_control_delegate.h>
@@ -395,7 +395,7 @@ float ComboBox::CalculateDropDownListHeight(std::size_t visible_item_count) {
         if (delegate->HasVariableItemHeight()) {
 
             std::size_t item_count = data_source->GetDataCount();
-            for (auto index : Range(std::min(item_count, visible_item_count))) {
+            for (auto index : Range(0, std::min(item_count, visible_item_count))) {
                 auto item_data = data_source->GetDataAtIndex(index);
                 height += delegate->EstimateItemHeight(index, item_data);
             }
@@ -618,7 +618,7 @@ void ComboBox::OnTextChanged(const TextChangedInfo& event_info) {
             //Select all text in edit box if the change is from other source 
             //and edit box is focused.
             if (edit_box_->IsFocused()) {
-                edit_box_->SetSelectionRange(TextRange(0, text.length()));
+                edit_box_->SetSelectionRange(Range(0, text.length()));
             }
         }
     }

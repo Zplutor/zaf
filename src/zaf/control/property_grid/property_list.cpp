@@ -2,7 +2,7 @@
 #include <zaf/base/container/utility/contain.h>
 #include <zaf/base/container/utility/erase.h>
 #include <zaf/base/container/utility/find.h>
-#include <zaf/base/container/utility/range.h>
+#include <zaf/base/range.h>
 
 namespace zaf::property_grid {
 
@@ -22,7 +22,7 @@ void PropertyList::EraseByNames(const std::set<std::wstring>& property_names) {
 void PropertyList::SortByNames(const std::vector<std::wstring>& property_names) {
 
     std::map<std::wstring_view, std::size_t> prioritized_orders;
-    for (auto index : zaf::Range(0, property_names.size())) {
+    for (auto index : Range(0, property_names.size())) {
         prioritized_orders[property_names[index]] = index;
     }
 

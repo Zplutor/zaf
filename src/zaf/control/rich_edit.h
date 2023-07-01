@@ -4,6 +4,7 @@
 #include <Richedit.h>
 #include <richole.h>
 #include <TextServ.h>
+#include <zaf/base/range.h>
 #include <zaf/control/event/rich_edit_selection_changed_info.h>
 #include <zaf/control/event/text_changing_info.h>
 #include <zaf/control/rich_edit/ole_interface.h>
@@ -12,7 +13,6 @@
 #include <zaf/control/text_validator.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/frame.h>
-#include <zaf/graphic/text/text_range.h>
 
 namespace zaf {
 namespace rich_edit {
@@ -38,7 +38,7 @@ public:
     ~RichEdit();
 
     std::wstring GetText(rich_edit::TextFlag flag) const;
-    std::wstring GetTextInRange(const TextRange& range) const;
+    std::wstring GetTextInRange(const Range& range) const;
 
     /**
      Get the dimensions of the white space inset around the text.
@@ -140,12 +140,12 @@ public:
     /**
      Get the slected text range.
      */
-    TextRange GetSelectionRange() const;
+    Range GetSelectionRange() const;
 
     /**
      Set the slected text range.
      */
-    void SetSelectionRange(const TextRange& range);
+    void SetSelectionRange(const Range& range);
 
     void InsertText(const std::wstring& text);
 

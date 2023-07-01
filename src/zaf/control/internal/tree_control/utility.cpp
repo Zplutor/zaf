@@ -1,5 +1,5 @@
 #include <zaf/control/internal/tree_control/utility.h>
-#include <zaf/base/container/utility/range.h>
+#include <zaf/base/range.h>
 
 namespace zaf::internal {
 
@@ -9,7 +9,7 @@ bool IsAncestorOf(const IndexPath& ancestor, const IndexPath& path) {
         return false;
     }
 
-    for (auto index : zaf::Range(ancestor.size())) {
+    for (auto index : Range(0, ancestor.size())) {
 
         if (ancestor[index] != path[index]) {
             return false;
