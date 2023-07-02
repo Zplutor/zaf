@@ -136,6 +136,7 @@
     <ClCompile Include="src\zaf\control\internal\scrollable_control\general_scrolling_layouter.cpp" />
     <ClCompile Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.cpp" />
     <ClCompile Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.cpp" />
+    <ClCompile Include="src\zaf\control\internal\textual_control\general_textual_core.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_control_implementation.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_index_mapping.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_data_manager.cpp" />
@@ -187,7 +188,7 @@
     <ClCompile Include="src\zaf\control\rich_edit\internal\ole_callback_impl.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\ole_helper.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\ole_object_impl.cpp" />
-    <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.cpp" />
+    <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_core.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\text_host_bridge.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\object_info.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\ole_callback.cpp" />
@@ -200,7 +201,6 @@
     <ClCompile Include="src\zaf\control\textual_control.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit.cpp" />
     <ClCompile Include="src\zaf\control\text_box.cpp" />
-    <ClCompile Include="src\zaf\control\text_source.cpp" />
     <ClCompile Include="src\zaf\control\text_validator.cpp" />
     <ClCompile Include="src\zaf\control\linear_box.cpp" />
     <ClCompile Include="src\zaf\control\tree_control.cpp" />
@@ -472,6 +472,8 @@
     <ClInclude Include="src\zaf\control\internal\scrollable_control\general_scrolling_layouter.h" />
     <ClInclude Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.h" />
     <ClInclude Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.h" />
+    <ClInclude Include="src\zaf\control\internal\textual_control\general_textual_core.h" />
+    <ClInclude Include="src\zaf\control\internal\textual_control\textual_control_core.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_control_implementation.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_index_mapping.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_data_helpers.h" />
@@ -533,7 +535,7 @@
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_callback_impl.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_helper.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_object_impl.h" />
-    <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.h" />
+    <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_core.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\text_host_bridge.h" />
     <ClInclude Include="src\zaf\control\rich_edit\object_context.h" />
     <ClInclude Include="src\zaf\control\rich_edit\object_info.h" />
@@ -550,7 +552,6 @@
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\rich_edit.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />
-    <ClInclude Include="src\zaf\control\text_source.h" />
     <ClInclude Include="src\zaf\control\text_validator.h" />
     <ClInclude Include="src\zaf\control\linear_box.h" />
     <ClInclude Include="src\zaf\control\tree_control.h" />

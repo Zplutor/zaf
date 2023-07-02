@@ -1,10 +1,8 @@
 #pragma once
 
-#include <string_view>
 #include <zaf/base/range.h>
 #include <zaf/control/control.h>
 #include <zaf/control/event/text_changed_info.h>
-#include <zaf/control/internal/range_map.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
@@ -16,10 +14,12 @@
 #undef max
 
 namespace zaf {
+namespace internal {
+class TextualControlCore;
+}
 
 class TextFormat;
 class TextLayout;
-class TextSource;
 
 /**
  Represents a textual control.
@@ -48,8 +48,6 @@ public:
      Set text.
      */
     void SetText(const std::wstring& text);
-
-    void SetTextSource(std::unique_ptr<TextSource> text_source);
 
     /**
      Get the default text color.
@@ -115,12 +113,12 @@ public:
 
      Return Font::Default() if this property has not been set.
      */
-    virtual Font Font() const;
+    Font Font() const;
 
     /**
      Set default font.
      */
-    virtual void SetFont(const zaf::Font& font);
+    void SetFont(const zaf::Font& font);
 
     float FontSize() const;
     void SetFontSize(float size);
@@ -133,55 +131,55 @@ public:
 
      Return Default() if the font at this position has not been set.
      */
-    virtual zaf::Font GetFontAtPosition(std::size_t position) const;
+    zaf::Font GetFontAtPosition(std::size_t position) const;
 
     /**
      Set font at specified text range.
      */
-    virtual void SetFontAtRange(const zaf::Font& font, const Range& range);
+    void SetFontAtRange(const zaf::Font& font, const Range& range);
 
     /**
      Reset all particular fonts to default font.
 
      This method removes all fonts that set with SetFontAtRange.
      */
-    virtual void ResetFonts();
+    void ResetFonts();
 
     /**
      Get text alignment.
 
      The default value is TextAlignment::Leading.
      */
-    virtual TextAlignment TextAlignment() const;
+    TextAlignment TextAlignment() const;
 
     /**
      Set text alignment.
      */
-    virtual void SetTextAlignment(zaf::TextAlignment alignment);
+    void SetTextAlignment(zaf::TextAlignment alignment);
 
     /**
      Get paragraph alignemnt.
 
      The default value is ParagraphAlignment::Near;
     */
-    virtual ParagraphAlignment ParagraphAlignment() const;
+    ParagraphAlignment ParagraphAlignment() const;
 
     /**
      Set paragraph alignment.
      */
-    virtual void SetParagraphAlignment(zaf::ParagraphAlignment alignment);
+    void SetParagraphAlignment(zaf::ParagraphAlignment alignment);
 
     /**
      Get word wrapping.
 
      The default value is WordWrapping::NoWrap;
      */
-    virtual WordWrapping WordWrapping() const;
+    WordWrapping WordWrapping() const;
 
     /**
      Set word wrapping.
      */
-    virtual void SetWordWrapping(zaf::WordWrapping word_wrapping);
+    void SetWordWrapping(zaf::WordWrapping word_wrapping);
 
     zaf::TextTrimming TextTrimming() const;
     void SetTextTrimming(const zaf::TextTrimming& text_trimming);
@@ -200,13 +198,17 @@ public:
     Observable<TextChangedInfo> TextChangedEvent() const;
 
 protected:
+    TextualControl(std::unique_ptr<internal::TextualControlCore> core);
+
+    void Initialize() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
-    void ReleaseRendererResources() override {
-        ReleaseTextLayout();
-    }
+    virtual void PaintText(
+        Canvas& canvas, 
+        const zaf::Rect& dirty_rect, 
+        const zaf::Rect& text_rect);
 
-    void ReleaseTextLayout();
+    void ReleaseRendererResources() override;
 
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
 
@@ -232,26 +234,7 @@ protected:
     virtual void OnTextChanged(const TextChangedInfo& event_info);
 
 private:
-    void AfterTextChanged(bool need_send_notification);
-
-    TextLayout CreateTextLayout() const;
-    TextFormat CreateTextFormat(const zaf::Font& default_font) const;
-    void SetRangedFontsToTextLayout(TextLayout& text_layout) const;
-
-    void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer);
-
-private:
-    std::unique_ptr<TextSource> text_source_;
-    mutable TextLayout text_layout_;
-
-    std::optional<zaf::Font> default_font_;
-    std::shared_ptr<internal::RangeMap<zaf::Font>> font_range_map_;
-    ColorPicker default_text_color_picker_;
-    std::shared_ptr<internal::RangeMap<ColorPicker>> text_color_picker_map_;
-    zaf::TextAlignment text_alignment_{ zaf::TextAlignment::Left };
-    zaf::ParagraphAlignment paragraph_alignment{ zaf::ParagraphAlignment::Top };
-    zaf::WordWrapping word_wrapping_{ zaf::WordWrapping::NoWrap };
-    zaf::TextTrimming text_trimming_;
+    std::unique_ptr<internal::TextualControlCore> core_;
 
     Event<TextChangedInfo> text_changed_event_;
 };

@@ -17,6 +17,7 @@
 namespace zaf {
 namespace rich_edit {
 namespace internal {
+class RichEditCore;
 class TextHostBridge;
 }
 class EmbeddedObject;
@@ -62,14 +63,14 @@ public:
     }
 
     /**
-     Get the maximum length of text. 
+     Get the maximum length of text.
 
      The default value is the maximum of std::uint32_t.
      */
     std::uint32_t GetMaxLength() const;
 
     /**
-     Set the maximum length of text. 
+     Set the maximum length of text.
      */
     void SetMaxLength(std::uint32_t max_length);
 
@@ -79,7 +80,7 @@ public:
      The default value is false.
      */
     bool UsePasswordCharacter() const;
-    
+
     /**
      Set a value indicating that whether all characters is shown as password character.
      */
@@ -162,15 +163,6 @@ public:
      */
     void SetTextValidator(const TextValidator& validator);
 
-    zaf::Font Font() const override;
-    void SetFont(const zaf::Font& font) override;
-
-    zaf::TextAlignment TextAlignment() const override;
-    void SetTextAlignment(zaf::TextAlignment alignment) override;
-
-    zaf::WordWrapping WordWrapping() const override;
-    void SetWordWrapping(zaf::WordWrapping word_wrapping) override;
-
     void SetAllowVerticalScroll(bool allow) override;
     void SetAllowHorizontalScroll(bool allow) override;
 
@@ -183,15 +175,15 @@ public:
     bool CanEnableHorizontalScrollBar() override;
 
     void GetVerticalScrollValues(
-        int& current_value, 
+        int& current_value,
         int& min_value,
         int& max_value,
         int& page_value) override;
 
     void GetHorizontalScrollValues(
-        int& current_value, 
+        int& current_value,
         int& min_value,
-        int& max_value, 
+        int& max_value,
         int& page_value) override;
 
     /**
@@ -257,7 +249,7 @@ public:
     /**
      Redo the last undone operation.
 
-     @return 
+     @return
         Return a value indicating that whether the redoing succeeds.
      */
     bool Redo();
@@ -350,6 +342,7 @@ protected:
     virtual void OnTextChanging(const TextChangingInfo& event_info);
 
 private:
+    friend class rich_edit::internal::RichEditCore;
     friend class rich_edit::internal::TextHostBridge;
 
     void HandleSelectionChangedNotification();
@@ -368,8 +361,8 @@ private:
     void ChangePropertyBit(DWORD bit, bool is_set);
     void ChangeScrollBarPropertyBits(DWORD bits, bool is_set);
     void GetScrollValues(
-        bool is_horizontal, 
-        int& current_value, 
+        bool is_horizontal,
+        int& current_value,
         int& min_value,
         int& max_value,
         int& page_value);

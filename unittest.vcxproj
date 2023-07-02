@@ -418,6 +418,7 @@
     <ClCompile Include="unittest\case\control\internal\list_control\list_control_item_height_manager_test.cpp" />
     <ClCompile Include="unittest\case\control\internal\list_control\list_control_item_selection_manager_test.cpp" />
     <ClCompile Include="unittest\case\control\internal\range_manager_test.cpp" />
+    <ClCompile Include="unittest\case\control\internal\textual_control\general_textual_core_test.cpp" />
     <ClCompile Include="unittest\case\control\internal\tree_control\tree_index_mapping_test.cpp" />
     <ClCompile Include="unittest\case\control\layout\internal\linear_layout_length_calculating_test.cpp" />
     <ClCompile Include="unittest\case\control\layout\linear_layouter_test.cpp" />
@@ -429,7 +430,6 @@
     <ClCompile Include="unittest\case\control\scrollable_control_test.cpp" />
     <ClCompile Include="unittest\case\control\split_control_test.cpp" />
     <ClCompile Include="unittest\case\control\textual_control_test.cpp" />
-    <ClCompile Include="unittest\case\control\text_source_test.cpp" />
     <ClCompile Include="unittest\case\create_test.cpp" />
     <ClCompile Include="unittest\case\graphic\color_test.cpp" />
     <ClCompile Include="unittest\case\graphic\ellipse_test.cpp" />

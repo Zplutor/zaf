@@ -10,7 +10,7 @@
 #include <zaf/control/rich_edit/internal/ole_callback_impl.h>
 #include <zaf/control/rich_edit/internal/ole_helper.h>
 #include <zaf/control/rich_edit/internal/ole_object_impl.h>
-#include <zaf/control/rich_edit/internal/rich_edit_text_source.h>
+#include <zaf/control/rich_edit/internal/rich_edit_core.h>
 #include <zaf/control/rich_edit/internal/text_host_bridge.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
@@ -95,6 +95,7 @@ ZAF_DEFINE_TYPE_END
 
 
 RichEdit::RichEdit() : 
+    TextualControl(std::make_unique<rich_edit::internal::RichEditCore>()),
     property_bits_(kDefaultPropertyBits),
     character_format_(),
     paragraph_format_(),
@@ -153,14 +154,6 @@ void RichEdit::Initialize() {
     });
 
     InitializeTextService();
-    
-    //TextSource lives longer than TestHostBridge. If we pass ITextService2 as COMPtr to
-    //TextSource and increase its reference count, it will live longer than TextHostBridge as well, 
-    //causing dangling pointer accessing on its destruction. So we just pass it as a raw pointer  
-    //and don't increase its reference count to avoid the problem.
-    auto text_source = std::make_unique<rich_edit::internal::RichEditTextSource>(
-        text_service_.Inner());
-    SetTextSource(std::move(text_source));
 }
 
 
@@ -633,88 +626,6 @@ TextValidator RichEdit::GetTextValidator() const {
 
 void RichEdit::SetTextValidator(const TextValidator& validator) {
     text_validator_ = validator;
-}
-
-
-zaf::Font RichEdit::Font() const {
-
-    zaf::Font font;
-    font.family_name = character_format_.szFaceName;
-    font.size = static_cast<float>(character_format_.yHeight) / 15;
-    font.weight = (character_format_.dwEffects & CFE_BOLD) ? FontWeight::Bold : FontWeight::Regular;
-    return font;
-}
-
-void RichEdit::SetFont(const zaf::Font& font) {
-
-    ResetCachedTextHeight();
-
-    character_format_.dwMask |= CFM_FACE;
-    wcscpy_s(character_format_.szFaceName, font.family_name.c_str());
-
-    character_format_.dwMask |= CFM_SIZE;
-    character_format_.yHeight = static_cast<LONG>(font.size * 15);
-
-    character_format_.dwMask |= CFM_BOLD;
-    if (font.weight > FontWeight::Bold) {
-        character_format_.dwEffects |= CFE_BOLD;
-    }
-    else {
-        character_format_.dwEffects &= ~CFE_BOLD;
-    }
-
-    if (text_service_ != nullptr) {
-        text_service_->OnTxPropertyBitsChange(TXTBIT_CHARFORMATCHANGE, TXTBIT_CHARFORMATCHANGE);
-    }
-}
-
-
-TextAlignment RichEdit::TextAlignment() const {
-
-    switch (paragraph_format_.wAlignment) {
-        case PFA_CENTER:
-            return TextAlignment::Center;
-        case PFA_LEFT:
-            return TextAlignment::Leading;
-        case PFA_RIGHT:
-            return TextAlignment::Tailing;
-        default:
-            return TextAlignment::Leading;
-    }
-}
-
-void RichEdit::SetTextAlignment(zaf::TextAlignment alignment) {
-
-    paragraph_format_.dwMask |= PFM_ALIGNMENT;
-
-    switch (alignment) {
-        case TextAlignment::Center:
-            paragraph_format_.wAlignment = PFA_CENTER;
-            break;
-        case TextAlignment::Leading:
-            paragraph_format_.wAlignment = PFA_LEFT;
-            break;
-        case TextAlignment::Tailing:
-            paragraph_format_.wAlignment = PFA_RIGHT;
-            break;
-        default:
-            ZAF_ALERT();
-            break;
-    }
-
-    if (text_service_ != nullptr) {
-        text_service_->OnTxPropertyBitsChange(TXTBIT_PARAFORMATCHANGE, TXTBIT_PARAFORMATCHANGE);
-    }
-}
-
-
-WordWrapping RichEdit::WordWrapping() const {
-    return HasPropertyBit(TXTBIT_WORDWRAP) ? WordWrapping::Wrap : WordWrapping::NoWrap;
-}
-
-void RichEdit::SetWordWrapping(zaf::WordWrapping word_wrapping) {
-    ResetCachedTextHeight();
-    ChangePropertyBit(TXTBIT_WORDWRAP, word_wrapping != WordWrapping::NoWrap);
 }
 
 

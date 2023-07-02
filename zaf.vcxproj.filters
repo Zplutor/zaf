@@ -172,6 +172,9 @@
     <Filter Include="zaf\clipboard\internal">
       <UniqueIdentifier>{8ab0c80f-e9e3-4b46-924f-83ffb58701f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\internal\textual_control">
+      <UniqueIdentifier>{76b2ba5f-47b5-4f3f-a646-07cc26712900}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -928,12 +931,6 @@
     <ClCompile Include="src\zaf\window\event\activate_event_info.cpp">
       <Filter>zaf\window\event</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\text_source.cpp">
-      <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.cpp">
-      <Filter>zaf\control\rich_edit\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\window\event\window_size_changed_info.cpp">
       <Filter>zaf\window\event</Filter>
     </ClCompile>
@@ -1002,6 +999,12 @@
     </ClCompile>
     <ClCompile Include="src\zaf\base\range.cpp">
       <Filter>zaf\base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual_control\general_textual_core.cpp">
+      <Filter>zaf\control\internal\textual_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_core.cpp">
+      <Filter>zaf\control\rich_edit\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2203,12 +2206,6 @@
     <ClInclude Include="src\zaf\window\event\activate_event_info.h">
       <Filter>zaf\window\event</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\text_source.h">
-      <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_text_source.h">
-      <Filter>zaf\control\rich_edit\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\window\event\window_size_changed_info.h">
       <Filter>zaf\window\event</Filter>
     </ClInclude>
@@ -2298,6 +2295,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\range.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual_control\textual_control_core.h">
+      <Filter>zaf\control\internal\textual_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual_control\general_textual_core.h">
+      <Filter>zaf\control\internal\textual_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_core.h">
+      <Filter>zaf\control\rich_edit\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
