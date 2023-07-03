@@ -56,8 +56,9 @@ public:
     virtual void SetWordWrapping(WordWrapping word_wrapping) = 0;
 
     virtual TextTrimming GetTextTrimming() = 0;
-    virtual void SetTextTrimming(const zaf::TextTrimming& text_trimming) = 0;
+    virtual void SetTextTrimming(const TextTrimming& text_trimming) = 0;
 
+    virtual Size CalculateTextSize(const Size& boundary_size) = 0;
     virtual void PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect) = 0;
     virtual void ReleaseRendererResources() = 0;
 };

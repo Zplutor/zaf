@@ -848,7 +848,7 @@ void ListControlImplementation::UpdateVisibleItemsByUpdatingItems(
         return;
     }
 
-    std::size_t intersect_begin_update_index = std::max(index, first_visible_item_index_);
+    std::size_t intersect_begin_update_index = (std::max)(index, first_visible_item_index_);
     std::size_t intersect_end_update_index = (std::min)(end_update_index, end_visible_item_index);
 
     std::vector<std::shared_ptr<ListItem>> new_items;
@@ -1107,7 +1107,7 @@ void ListControlImplementation::ChangeSelection(std::size_t index, std::size_t c
         item_selection_manager_.RemoveSelection(index, count);
     }
 
-    std::size_t intersect_begin_index = std::max(index, first_visible_item_index_);
+    std::size_t intersect_begin_index = (std::max)(index, first_visible_item_index_);
     std::size_t intersect_end_index = 
         (std::min)(index + count, first_visible_item_index_ + visible_items_.size());
 

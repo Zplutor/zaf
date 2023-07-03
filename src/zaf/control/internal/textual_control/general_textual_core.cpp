@@ -221,6 +221,25 @@ void GeneralTextualCore::SetTextTrimming(const zaf::TextTrimming& text_trimming)
 }
 
 
+Size GeneralTextualCore::CalculateTextSize(const Size& boundary_size) {
+
+    auto text_layout = GetTextLayout();
+
+    text_layout.SetMaxWidth(boundary_size.width);
+    text_layout.SetMaxHeight(boundary_size.height);
+
+    auto metrics = text_layout.GetMetrics();
+
+    //Note that if TextAlignment is set to Center, WidthIncludingTrailingWhitespace would be 0.
+    auto width =
+        metrics.WidthIncludingTrailingWhitespace() != 0 ?
+        metrics.WidthIncludingTrailingWhitespace() :
+        metrics.Width();
+
+    return zaf::Size{ width, metrics.Height() };
+}
+
+
 void GeneralTextualCore::PaintText(
     Canvas& canvas,  
     const Rect& dirty_rect, 

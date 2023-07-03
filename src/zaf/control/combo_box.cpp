@@ -276,7 +276,7 @@ std::size_t ComboBox::MaxVisibleItemCount() const {
 void ComboBox::SetMaxVisibleItemCount(std::size_t count) {
 
     auto min_count = MinVisibleItemCount();
-    auto revised_count = std::max(count, min_count);
+    auto revised_count = (std::max)(count, min_count);
     max_visible_item_count_ = revised_count;
 }
 
@@ -363,8 +363,8 @@ void ComboBox::PopupDropDownWindow() {
     window_rect.position.y += Height() - 2;
 
     std::size_t visible_item_count = drop_down_list_box_->GetItemCount();
-    visible_item_count = std::max(visible_item_count, MinVisibleItemCount());
-    visible_item_count = std::min(visible_item_count, MaxVisibleItemCount());
+    visible_item_count = (std::max)(visible_item_count, MinVisibleItemCount());
+    visible_item_count = (std::min)(visible_item_count, MaxVisibleItemCount());
 
     auto drop_down_list_box_border = drop_down_list_box_->Border();
 

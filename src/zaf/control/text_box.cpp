@@ -1,4 +1,5 @@
 #include <zaf/control/text_box.h>
+#include <zaf/base/as.h>
 #include <zaf/base/log.h>
 #include <zaf/control/internal/textual_control/text_box_core.h>
 #include <zaf/graphic/canvas.h>
@@ -157,6 +158,11 @@ void TextBox::OnMouseUp(const MouseUpInfo& event_info) {
     is_selecting_ = false;
 
     NeedRepaint();
+}
+
+
+TextLayout TextBox::GetTextLayout() {
+    return As<internal::TextBoxCore>(Core())->GetTextLayout();
 }
 
 }

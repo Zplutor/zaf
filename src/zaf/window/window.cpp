@@ -1757,8 +1757,8 @@ zaf::Size Window::ContentSize() const {
         auto adjusted_size = AdjustContentSizeToWindowSize(zaf::Size{});
 
         auto result = Size();
-        result.width = std::max(result.width - adjusted_size.width, 0.f);
-        result.height = std::max(result.height - adjusted_size.height, 0.f);
+        result.width = (std::max)(result.width - adjusted_size.width, 0.f);
+        result.height = (std::max)(result.height - adjusted_size.height, 0.f);
         return result;
     }
 }

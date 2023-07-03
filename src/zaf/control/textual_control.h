@@ -7,11 +7,8 @@
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
-#include <zaf/graphic/text/text_layout.h>
 #include <zaf/graphic/text/text_trimming.h>
 #include <zaf/graphic/text/word_wrapping.h>
-
-#undef max
 
 namespace zaf {
 namespace internal {
@@ -200,6 +197,10 @@ public:
 protected:
     explicit TextualControl(std::unique_ptr<internal::TextualControlCore> core);
 
+    zaf::internal::TextualControlCore* Core() const {
+        return core_.get();
+    }
+
     void Initialize() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
@@ -208,8 +209,6 @@ protected:
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
 
     virtual zaf::Rect DetermineTextRect();
-
-    TextLayout GetTextLayout() const;
 
     /**
     Notifies that the text of control is changed.

@@ -71,11 +71,6 @@ void TextualControl::ReleaseRendererResources() {
 }
 
 
-TextLayout TextualControl::GetTextLayout() const {
-    return dynamic_cast<internal::GeneralTextualCore*>(core_.get())->GetTextLayout();
-}
-
-
 zaf::Rect TextualControl::DetermineTextRect() {
     return zaf::Rect{ zaf::Point{}, ContentSize() };
 }
@@ -257,24 +252,7 @@ void TextualControl::OnTextChanged(const TextChangedInfo& event_info) {
 
 
 zaf::Size TextualControl::CalculatePreferredContentSize(const zaf::Size& max_size) const {
-
-    auto text_layout = GetTextLayout();
-    if (!text_layout) {
-        return zaf::Size();
-    }
-    
-    text_layout.SetMaxWidth(max_size.width);
-    text_layout.SetMaxHeight(max_size.height);
-
-    auto metrics = text_layout.GetMetrics();
-
-    //Note that if TextAlignment is set to Center, WidthIncludingTrailingWhitespace would be 0.
-    auto width =
-        metrics.WidthIncludingTrailingWhitespace() != 0 ?
-        metrics.WidthIncludingTrailingWhitespace() :
-        metrics.Width();
-
-    return zaf::Size{ width, metrics.Height() };
+    return core_->CalculateTextSize(max_size);
 }
 
 }

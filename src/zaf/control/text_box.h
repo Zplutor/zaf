@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/control/textual_control.h>
+#include <zaf/graphic/text/text_layout.h>
 
 namespace zaf {
 namespace internal {
@@ -25,6 +26,8 @@ private:
 
     //Called from TextBoxCore to paint selection background.
     void PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_rect);
+
+    TextLayout GetTextLayout();
 
 private:
     bool is_selecting_{};

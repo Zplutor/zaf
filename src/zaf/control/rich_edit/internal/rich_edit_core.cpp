@@ -280,6 +280,12 @@ void RichEditCore::SetTextTrimming(const zaf::TextTrimming& text_trimming) {
 }
 
 
+Size RichEditCore::CalculateTextSize(const Size& boundary_size) {
+    //Nothing to do. We calculate the size in RichEdit.
+    return {};
+}
+
+
 void RichEditCore::PaintText(
     Canvas& canvas,
     const Rect& dirty_rect,

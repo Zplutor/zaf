@@ -39,6 +39,7 @@ public:
     TextTrimming GetTextTrimming() override;
     void SetTextTrimming(const zaf::TextTrimming& text_trimming) override;
 
+    Size CalculateTextSize(const Size& boundary_size) override;
     void PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect) override;
     void ReleaseRendererResources() override;
 

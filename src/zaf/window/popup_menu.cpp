@@ -140,7 +140,7 @@ zaf::Size PopupMenu::CalculateMenuContentSize() const {
     for (const auto& each_child : RootControl()->Children()) {
 
         auto preferred_size = each_child->CalculatePreferredSize();
-        result.width = std::max(result.width, preferred_size.width);
+        result.width = (std::max)(result.width, preferred_size.width);
 
         //All menu items have set fixed height.
         result.height += each_child->Height();
@@ -151,7 +151,7 @@ zaf::Size PopupMenu::CalculateMenuContentSize() const {
     //Note: this should be done within window itself.
     result.width = std::ceilf(result.width);
 
-    result.width = std::max(result.width, 100.f);
+    result.width = (std::max)(result.width, 100.f);
     return result;
 }
 

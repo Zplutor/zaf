@@ -376,7 +376,7 @@ private:
     bool accept_return_{ false };
     bool accept_tab_{ false };
     Frame inset_;
-    std::uint32_t max_length_{ std::numeric_limits<std::uint32_t>::max() };
+    std::uint32_t max_length_{ (std::numeric_limits<std::uint32_t>::max)() };
     wchar_t password_char_{ L'*' };
     TextValidator text_validator_;
 
