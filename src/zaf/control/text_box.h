@@ -50,6 +50,8 @@ private:
     TextLayout GetTextLayout() const;
 
 private:
+    internal::TextBoxCore* core_{};
+
     std::optional<std::pair<std::size_t, std::size_t>> selecting_indexes_;
     Range selection_range_;
 

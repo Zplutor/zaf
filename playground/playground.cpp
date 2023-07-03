@@ -70,7 +70,7 @@ protected:
 
         text_box_ = zaf::Create<zaf::TextBox>();
         text_box_->SetFontSize(20);
-        text_box_->SetText(L"This is a text box.\r\nNext line.\r\nThis is the third line.");
+        text_box_->SetText(L"This is a text box.\r\nLine after CRLF.\nLine after LF.\rLine after CR.");
 
         RootControl()->AddChild(text_box_);
 

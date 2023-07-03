@@ -20,6 +20,8 @@ void TextBox::Initialize() {
 
     __super::Initialize();
 
+    core_ = As<internal::TextBoxCore>(Core());
+
     SetBackgroundColor(Color::White());
 
     caret_ = zaf::Create<zaf::Caret>(As<TextBox>(shared_from_this()));
@@ -36,6 +38,10 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 
 void TextBox::PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_rect) {
+
+    if (selection_range_.length == 0) {
+        return;
+    }
 
     auto text_layout = GetTextLayout();
 
@@ -69,11 +75,20 @@ void TextBox::PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_re
 
     auto brush = canvas.Renderer().CreateSolidColorBrush(zaf::Color::FromARGB(0x7FAADCFF));
 
+    auto text = std::get<0>(core_->GetText());
+
     for (UINT32 index = 0; index < metrics_count; ++index) {
 
         const auto& metrics = buffer.get()[index];
         
         zaf::Rect rect{ metrics.left, metrics.top, metrics.width, metrics.height };
+
+        //Draw extra space to represent line breaks
+        auto last_index = metrics.textPosition + metrics.length - 1;
+        if (text[last_index] == L'\n' || text[last_index] == L'\r') {
+            rect.size.width += metrics.height / 3;
+        }
+
         canvas.DrawRectangle(rect, brush);
     }
 }
@@ -227,7 +242,7 @@ void TextBox::UpdateSelectionByMouse(const TextIndexInfo& index_info, bool begin
 
 
 TextLayout TextBox::GetTextLayout() const {
-    return As<internal::TextBoxCore>(Core())->GetTextLayout();
+    return core_->GetTextLayout();
 }
 
 }
