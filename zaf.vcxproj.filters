@@ -1006,6 +1006,9 @@
     <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_core.cpp">
       <Filter>zaf\control\rich_edit\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual_control\text_box_core.cpp">
+      <Filter>zaf\control\internal\textual_control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2304,6 +2307,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_core.h">
       <Filter>zaf\control\rich_edit\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual_control\text_box_core.h">
+      <Filter>zaf\control\internal\textual_control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

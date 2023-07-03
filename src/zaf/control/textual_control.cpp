@@ -62,15 +62,6 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     text_rect.size.width = (std::min)(text_rect.size.width, content_rect.size.width);
     text_rect.size.height = (std::min)(text_rect.size.height, content_rect.size.height);
 
-    PaintText(canvas, dirty_rect, text_rect);
-}
-
-
-void TextualControl::PaintText(
-    Canvas& canvas,
-    const zaf::Rect& dirty_rect,
-    const zaf::Rect& text_rect) {
-
     core_->PaintText(canvas, dirty_rect, text_rect);
 }
 

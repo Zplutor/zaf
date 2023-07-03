@@ -1,5 +1,6 @@
 #include <zaf/control/text_box.h>
 #include <zaf/base/log.h>
+#include <zaf/control/internal/textual_control/text_box_core.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
 
@@ -8,11 +9,8 @@ namespace zaf {
 ZAF_DEFINE_TYPE(TextBox)
 ZAF_DEFINE_TYPE_END
 
-void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+TextBox::TextBox() : TextualControl(std::make_unique<internal::TextBoxCore>()) {
 
-    __super::Paint(canvas, dirty_rect);
-
-    PaintSelectionBackground(canvas, dirty_rect);
 }
 
 

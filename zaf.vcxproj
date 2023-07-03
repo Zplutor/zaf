@@ -137,6 +137,7 @@
     <ClCompile Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.cpp" />
     <ClCompile Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.cpp" />
     <ClCompile Include="src\zaf\control\internal\textual_control\general_textual_core.cpp" />
+    <ClCompile Include="src\zaf\control\internal\textual_control\text_box_core.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_control_implementation.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_index_mapping.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_data_manager.cpp" />
@@ -474,6 +475,7 @@
     <ClInclude Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.h" />
     <ClInclude Include="src\zaf\control\internal\textual_control\general_textual_core.h" />
     <ClInclude Include="src\zaf\control\internal\textual_control\textual_control_core.h" />
+    <ClInclude Include="src\zaf\control\internal\textual_control\text_box_core.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_control_implementation.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_index_mapping.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_data_helpers.h" />
