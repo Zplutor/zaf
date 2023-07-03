@@ -122,7 +122,7 @@ void CheckBox::PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const {
 }
 
 
-zaf::Rect CheckBox::GetTextRect() {
+zaf::Rect CheckBox::DetermineTextRect() {
     return zaf::Rect();
 }
 

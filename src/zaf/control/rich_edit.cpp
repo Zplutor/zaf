@@ -417,7 +417,7 @@ void RichEdit::ResetCachedTextHeight() {
 }
 
 
-zaf::Rect RichEdit::GetTextRect() {
+zaf::Rect RichEdit::DetermineTextRect() {
     return zaf::Rect();
 }
 

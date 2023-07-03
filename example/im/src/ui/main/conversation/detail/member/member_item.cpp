@@ -47,9 +47,9 @@ void MemberItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-zaf::Rect MemberItem::GetTextRect() {
+zaf::Rect MemberItem::DetermineTextRect() {
 
-    auto text_rect = __super::GetTextRect();
+    auto text_rect = __super::DetermineTextRect();
     text_rect.Deflate(zaf::Frame(IconSize + 5, 0, 0, 0));
     return text_rect;
 }

@@ -21,7 +21,7 @@ public:
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect& previous_rect) override;
-    zaf::Rect GetTextRect() override;
+    zaf::Rect DetermineTextRect() override;
 
     /**
      Get the rect of expand button, related to its content rect's coordinate system.

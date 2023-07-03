@@ -153,7 +153,7 @@ protected:
     void Initialize() override;
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
-    zaf::Rect GetTextRect() override;
+    zaf::Rect DetermineTextRect() override;
     void OnClick(const ClickInfo& event_info) override;
 
     /**

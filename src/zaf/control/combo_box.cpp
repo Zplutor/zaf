@@ -156,7 +156,7 @@ void ComboBox::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    auto edit_box_rect = GetTextRect();
+    auto edit_box_rect = DetermineTextRect();
     edit_box_->SetRect(edit_box_rect);
 }
 
@@ -207,9 +207,9 @@ void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-zaf::Rect ComboBox::GetTextRect() {
+zaf::Rect ComboBox::DetermineTextRect() {
 
-    auto rect = __super::GetTextRect();
+    auto rect = __super::DetermineTextRect();
 
     auto deflated_frame = text_inset_;
     deflated_frame.right += DropDownButtonWidth();

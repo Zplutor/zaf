@@ -15,7 +15,7 @@ public:
 protected:
     void Paint(zaf::Canvas& canvas, const zaf::Rect&) override;;
 
-    zaf::Rect GetTextRect() override;
+    zaf::Rect DetermineTextRect() override;
 
     void OnMouseEnter(const zaf::MouseEnterInfo& event_info) override {
         NeedRepaint();

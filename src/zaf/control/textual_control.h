@@ -198,7 +198,7 @@ public:
     Observable<TextChangedInfo> TextChangedEvent() const;
 
 protected:
-    TextualControl(std::unique_ptr<internal::TextualControlCore> core);
+    explicit TextualControl(std::unique_ptr<internal::TextualControlCore> core);
 
     void Initialize() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
@@ -212,7 +212,7 @@ protected:
 
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
 
-    virtual zaf::Rect GetTextRect();
+    virtual zaf::Rect DetermineTextRect();
 
     TextLayout GetTextLayout() const;
 

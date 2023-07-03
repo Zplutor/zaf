@@ -35,7 +35,7 @@ void MenuSeparator::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-zaf::Rect MenuSeparator::GetTextRect() {
+zaf::Rect MenuSeparator::DetermineTextRect() {
     //Don't draw any text for separator.
     return {};
 }

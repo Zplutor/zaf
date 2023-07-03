@@ -150,7 +150,7 @@ protected:
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
-    zaf::Rect GetTextRect() override;
+    zaf::Rect DetermineTextRect() override;
 
     void OnClick(const ClickInfo& event_info) override;
     void OnKeyDown(const KeyDownInfo& event_info) override;

@@ -33,7 +33,7 @@ void TreeItem::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-zaf::Rect TreeItem::GetTextRect() {
+zaf::Rect TreeItem::DetermineTextRect() {
 
     float left = (indent_level_ + 1) * ExpandButtonSize + ExpandButtonMargin;
 

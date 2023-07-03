@@ -157,7 +157,7 @@ void Item::InitializeSplitControl() {
             ItemSplitDistanceChangedInfo new_event_info;
             new_event_info.changing_item = As<Item>(shared_from_this());
             new_event_info.new_distance =
-                this->GetTextRect().Left() + split_control_->SplitDistance();
+                this->DetermineTextRect().Left() + split_control_->SplitDistance();
             new_event_info.is_changed_by_dragging = event_info.IsChangedByDragging();
 
             manager->DistanceChangedSubject().GetObserver().OnNext(new_event_info);
@@ -170,7 +170,7 @@ void Item::InitializeSplitControl() {
 
 void Item::SetAbsoluteSplitDistance(float new_distance) {
 
-    auto revised_distance = new_distance - this->GetTextRect().Left();
+    auto revised_distance = new_distance - this->DetermineTextRect().Left();
     split_control_->SetSplitDistance(revised_distance);
 }
 
@@ -192,7 +192,7 @@ void Item::Layout(const zaf::Rect& previous_rect) {
 
     auto update_guard = split_control_->BeginUpdate();
 
-    split_control_->SetRect(GetTextRect());
+    split_control_->SetRect(DetermineTextRect());
 
     auto manager = split_distance_manager_.lock();
     if (manager) {

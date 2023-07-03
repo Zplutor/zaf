@@ -67,9 +67,9 @@ void MenuItem::PaintSubMenuArrow(Canvas& canvas) {
 }
 
 
-zaf::Rect MenuItem::GetTextRect() {
+zaf::Rect MenuItem::DetermineTextRect() {
 
-    auto result = __super::GetTextRect();
+    auto result = __super::DetermineTextRect();
     if (HasSubMenuItem()) {
         result.Subtract(GetSubMenuArrowRect());
         result.size.width -= SubMenuArrowMargin;

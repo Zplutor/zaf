@@ -92,7 +92,7 @@ void RadioButton::PaintRadio(Canvas& canvas, const zaf::Rect& radio_rect) {
 }
 
 
-zaf::Rect RadioButton::GetTextRect() {
+zaf::Rect RadioButton::DetermineTextRect() {
     return zaf::Rect();
 }
 
