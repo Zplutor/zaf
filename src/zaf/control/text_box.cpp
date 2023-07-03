@@ -1,6 +1,7 @@
 #include <zaf/control/text_box.h>
 #include <zaf/base/as.h>
 #include <zaf/base/log.h>
+#include <zaf/control/caret.h>
 #include <zaf/control/internal/textual_control/text_box_core.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
@@ -12,6 +13,25 @@ ZAF_DEFINE_TYPE_END
 
 TextBox::TextBox() : TextualControl(std::make_unique<internal::TextBoxCore>()) {
 
+}
+
+
+void TextBox::Initialize() {
+
+    __super::Initialize();
+
+    SetBackgroundColor(Color::White());
+
+    caret_ = zaf::Create<zaf::Caret>(As<TextBox>(shared_from_this()));
+}
+
+
+void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+
+    __super::Paint(canvas, dirty_rect);
+
+    auto region_guard = canvas.PushRegion(ContentRect(), dirty_rect);
+    caret_->Paint(canvas, dirty_rect);
 }
 
 
@@ -86,15 +106,14 @@ void TextBox::OnMouseDown(const MouseDownInfo& event_info) {
 
 void TextBox::HandleMouseDown(const MouseDownInfo& event_info) {
 
-    auto index = FindTextIndexAtPoint(event_info.PositionAtSource());
-    if (!index) {
+    auto index_info = FindTextIndexAtPoint(event_info.PositionAtSource());
+    if (!index_info) {
         return;
     }
 
     CaptureMouse();
 
-    selecting_indexes_ = std::make_pair(*index, *index);
-    DetermineSelectionRange();
+    UpdateSelectionByMouse(*index_info, true);
     NeedRepaint();
 }
 
@@ -117,13 +136,12 @@ void TextBox::HandleMouseMove(const MouseMoveInfo& event_info) {
         return;
     }
 
-    auto index = FindTextIndexAtPoint(event_info.PositionAtSource());
-    if (!index) {
+    auto index_info = FindTextIndexAtPoint(event_info.PositionAtSource());
+    if (!index_info) {
         return;
     }
 
-    selecting_indexes_->second = *index;
-    DetermineSelectionRange();
+    UpdateSelectionByMouse(*index_info, false);
     NeedRepaint();
 }
 
@@ -148,11 +166,9 @@ void TextBox::HandleMouseUp(const MouseUpInfo& event_info) {
 
     ReleaseMouse();
 
-    auto index = FindTextIndexAtPoint(event_info.PositionAtSource());
-    if (index) {
-
-        selecting_indexes_->second = *index;
-        DetermineSelectionRange();
+    auto index_info = FindTextIndexAtPoint(event_info.PositionAtSource());
+    if (index_info) {
+        UpdateSelectionByMouse(*index_info, false);
     }
 
     selecting_indexes_.reset();
@@ -160,7 +176,7 @@ void TextBox::HandleMouseUp(const MouseUpInfo& event_info) {
 }
 
 
-std::optional<std::size_t> TextBox::FindTextIndexAtPoint(const Point& point) const {
+std::optional<TextBox::TextIndexInfo> TextBox::FindTextIndexAtPoint(const Point& point) const {
 
     auto text_layout = GetTextLayout();
 
@@ -178,23 +194,35 @@ std::optional<std::size_t> TextBox::FindTextIndexAtPoint(const Point& point) con
         return std::nullopt;
     }
 
+    TextIndexInfo result;
+    result.index = metrics.textPosition;
+    result.rect = zaf::Rect{ metrics.left, metrics.top, 1, metrics.height };
     if (is_tailing) {
-        return metrics.textPosition + 1;
+        ++result.index;
+        result.rect.position.x += metrics.width;
     }
-
-    return metrics.textPosition;
+    return result;
 }
 
 
-void TextBox::DetermineSelectionRange() {
+void TextBox::UpdateSelectionByMouse(const TextIndexInfo& index_info, bool begin_selection) {
 
-    if (!selecting_indexes_) {
-        return;
+    if (begin_selection) {
+        selecting_indexes_ = std::make_pair(index_info.index, index_info.index);
+    }
+    else {
+        if (!selecting_indexes_) {
+            return;
+        }
+        selecting_indexes_->second = index_info.index;
     }
 
     selection_range_ = Range::FromIndexPair(
         (std::min)(selecting_indexes_->first, selecting_indexes_->second),
         (std::max)(selecting_indexes_->first, selecting_indexes_->second));
+
+    caret_->SetRect(Align(index_info.rect));
+    caret_->SetIsVisible(true);
 }
 
 
