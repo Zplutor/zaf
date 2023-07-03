@@ -19,13 +19,10 @@ void TextBox::PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_re
 
     auto text_layout = GetTextLayout();
 
-    auto min = (std::min)(begin_select_index_, end_select_index_);
-    auto max = (std::max)(begin_select_index_, end_select_index_);
-
     UINT32 metrics_count{};
     HRESULT hresult = text_layout.Inner()->HitTestTextRange(
-        static_cast<UINT32>(min),
-        static_cast<UINT32>(max - min),
+        static_cast<UINT32>(selection_range_.index),
+        static_cast<UINT32>(selection_range_.length),
         0,
         0,
         nullptr,
@@ -38,8 +35,8 @@ void TextBox::PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_re
 
     auto buffer = std::make_unique<DWRITE_HIT_TEST_METRICS[]>(metrics_count);
     hresult = text_layout.Inner()->HitTestTextRange(
-        static_cast<UINT32>(min),
-        static_cast<UINT32>(max - min),
+        static_cast<UINT32>(selection_range_.index),
+        static_cast<UINT32>(selection_range_.length),
         0,
         0,
         buffer.get(),
@@ -75,68 +72,95 @@ void TextBox::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 }
 
 
-void TextBox::OnMouseMove(const MouseMoveInfo& event_info) {
+void TextBox::OnMouseDown(const MouseDownInfo& event_info) {
 
-    __super::OnMouseMove(event_info);
-
-    if (!is_selecting_) {
+    __super::OnMouseDown(event_info);
+    if (event_info.IsHandled()) {
         return;
     }
 
-    auto text_layout = GetTextLayout();
+    HandleMouseDown(event_info);
+    event_info.MarkAsHandled();
+}
 
-    BOOL is_tailing{};
-    BOOL is_inside{};
-    DWRITE_HIT_TEST_METRICS metrics{};
-    HRESULT hresult = text_layout.Inner()->HitTestPoint(
-        event_info.PositionAtSource().x,
-        event_info.PositionAtSource().y,
-        &is_tailing,
-        &is_inside,
-        &metrics);
 
-    if (FAILED(hresult)) {
+void TextBox::HandleMouseDown(const MouseDownInfo& event_info) {
+
+    auto index = FindTextIndexAtPoint(event_info.PositionAtSource());
+    if (!index) {
         return;
     }
 
-    end_select_index_ = metrics.textPosition;
+    CaptureMouse();
 
+    selecting_indexes_ = std::make_pair(*index, *index);
+    DetermineSelectionRange();
     NeedRepaint();
 }
 
 
-void TextBox::OnMouseDown(const MouseDownInfo& event_info) {
+void TextBox::OnMouseMove(const MouseMoveInfo& event_info) {
 
-    __super::OnMouseDown(event_info);
-
-    auto text_layout = GetTextLayout();
-
-    BOOL is_tailing{};
-    BOOL is_inside{};
-    DWRITE_HIT_TEST_METRICS metrics{};
-    HRESULT hresult = text_layout.Inner()->HitTestPoint(
-        event_info.PositionAtSource().x,
-        event_info.PositionAtSource().y,
-        &is_tailing,
-        &is_inside,
-        &metrics);
-
-    if (FAILED(hresult)) {
+    __super::OnMouseMove(event_info);
+    if (event_info.IsHandled()) {
         return;
     }
 
-    begin_select_index_ = metrics.textPosition;
-    is_selecting_ = true;
+    HandleMouseMove(event_info);
+    event_info.MarkAsHandled();
+}
+
+
+void TextBox::HandleMouseMove(const MouseMoveInfo& event_info) {
+
+    if (!selecting_indexes_) {
+        return;
+    }
+
+    auto index = FindTextIndexAtPoint(event_info.PositionAtSource());
+    if (!index) {
+        return;
+    }
+
+    selecting_indexes_->second = *index;
+    DetermineSelectionRange();
+    NeedRepaint();
 }
 
 
 void TextBox::OnMouseUp(const MouseUpInfo& event_info) {
 
     __super::OnMouseUp(event_info);
-
-    if (!is_selecting_) {
+    if (event_info.IsHandled()) {
         return;
     }
+
+    HandleMouseUp(event_info);
+    event_info.MarkAsHandled();
+}
+
+
+void TextBox::HandleMouseUp(const MouseUpInfo& event_info) {
+
+    if (!selecting_indexes_) {
+        return;
+    }
+
+    ReleaseMouse();
+
+    auto index = FindTextIndexAtPoint(event_info.PositionAtSource());
+    if (index) {
+
+        selecting_indexes_->second = *index;
+        DetermineSelectionRange();
+    }
+
+    selecting_indexes_.reset();
+    NeedRepaint();
+}
+
+
+std::optional<std::size_t> TextBox::FindTextIndexAtPoint(const Point& point) const {
 
     auto text_layout = GetTextLayout();
 
@@ -144,24 +168,37 @@ void TextBox::OnMouseUp(const MouseUpInfo& event_info) {
     BOOL is_inside{};
     DWRITE_HIT_TEST_METRICS metrics{};
     HRESULT hresult = text_layout.Inner()->HitTestPoint(
-        event_info.PositionAtSource().x,
-        event_info.PositionAtSource().y,
+        point.x,
+        point.y,
         &is_tailing,
         &is_inside,
         &metrics);
 
     if (FAILED(hresult)) {
-        return;
+        return std::nullopt;
     }
 
-    end_select_index_ = metrics.textPosition;
-    is_selecting_ = false;
+    if (is_tailing) {
+        return metrics.textPosition + 1;
+    }
 
-    NeedRepaint();
+    return metrics.textPosition;
 }
 
 
-TextLayout TextBox::GetTextLayout() {
+void TextBox::DetermineSelectionRange() {
+
+    if (!selecting_indexes_) {
+        return;
+    }
+
+    selection_range_ = Range::FromIndexPair(
+        (std::min)(selecting_indexes_->first, selecting_indexes_->second),
+        (std::max)(selecting_indexes_->first, selecting_indexes_->second));
+}
+
+
+TextLayout TextBox::GetTextLayout() const {
     return As<internal::TextBoxCore>(Core())->GetTextLayout();
 }
 
