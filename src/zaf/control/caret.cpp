@@ -35,6 +35,11 @@ void Caret::SetRect(const zaf::Rect& rect) {
         return;
     }
 
+    //Repaint the old rect to clear the previous caret.
+    if (IsVisible()) {
+        NeedRepaint();
+    }
+
     rect_ = rect;
 
     if (IsVisible()) {
