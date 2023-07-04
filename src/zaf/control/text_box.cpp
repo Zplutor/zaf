@@ -254,8 +254,6 @@ void TextBox::UpdateSelectionByMouse(const TextIndexInfo& index_info, bool begin
         caret_index_ = index_info.index;
     }
 
-    begin_key_select_index_.reset();
-
     selection_range_ = Range::FromIndexPair(
         (std::min)(*begin_mouse_select_index_, caret_index_),
         (std::max)(*begin_mouse_select_index_, caret_index_));
@@ -353,21 +351,24 @@ void TextBox::ForwardCaretIndex(bool is_selecting_range) {
 
 void TextBox::UpdateCaretIndex(std::size_t new_index, bool is_selecting_range) {
 
-    if (is_selecting_range) {
-        if (!begin_key_select_index_) {
-            begin_key_select_index_ = caret_index_;
-        }
-    }
-    else {
-        begin_key_select_index_.reset();
-    }
-
+    auto old_index = caret_index_;
     caret_index_ = (std::min)(new_index, core_->GetTextLength());
 
-    auto begin_select_index = begin_key_select_index_.value_or(caret_index_);
-    selection_range_ = Range::FromIndexPair(
-        (std::min)(begin_select_index, caret_index_),
-        (std::max)(begin_select_index, caret_index_));
+    std::size_t selection_begin = caret_index_;
+    std::size_t selection_end = caret_index_;
+    if (is_selecting_range) {
+
+        if (old_index == selection_range_.Index()) {
+            selection_begin = (std::min)(caret_index_, selection_range_.EndIndex());
+            selection_end = (std::max)(caret_index_, selection_range_.EndIndex());
+        }
+        else if (old_index == selection_range_.EndIndex()) {
+            selection_begin = (std::min)(selection_range_.Index(), caret_index_);
+            selection_end = (std::max)(selection_range_.Index(), caret_index_);
+        }
+    }
+
+    selection_range_ = Range::FromIndexPair(selection_begin, selection_end);
     
     UpdateCaretAtCurrentIndex();
     NeedRepaint();

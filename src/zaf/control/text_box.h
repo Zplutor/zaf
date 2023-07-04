@@ -63,7 +63,6 @@ private:
     internal::TextBoxCore* core_{};
 
     std::optional<std::size_t> begin_mouse_select_index_;
-    std::optional<std::size_t> begin_key_select_index_;
     Range selection_range_;
     std::size_t caret_index_{};
     std::shared_ptr<Caret> caret_;
