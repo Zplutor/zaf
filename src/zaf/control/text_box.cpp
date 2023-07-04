@@ -338,10 +338,10 @@ void TextBox::ForwardCaretIndex(bool is_selecting_range) {
 
         ++new_index;
 
-        if (new_index < text.length() - 1) {
+        if (new_index < text.length()) {
 
             //Skip CRLF line break.
-            if (text[new_index] == L'\r' && text[new_index + 1] == L'\n') {
+            if (text[caret_index_] == L'\r' && text[new_index] == L'\n') {
                 ++new_index;
             }
         }
