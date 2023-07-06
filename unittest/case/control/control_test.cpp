@@ -270,4 +270,31 @@ TEST(ControlTest, WindowChangedEvent) {
         ASSERT_TRUE(parent_previous_window.has_value());
         ASSERT_EQ(*parent_previous_window, window);
     }
+
+    //Set a control as root control of a window, the event should be raised.
+    {
+        zaf::SubscriptionSet subscriptions;
+
+        auto window = zaf::Create<zaf::Window>();
+
+        std::optional<std::shared_ptr<zaf::Window>> old_root_previous_window;
+        subscriptions += window->RootControl()->WindowChangedEvent().Subscribe(
+            [&old_root_previous_window](const zaf::WindowChangedInfo& event_info) {
+            old_root_previous_window = event_info.PreviousWindow();
+        });
+
+        std::optional<std::shared_ptr<zaf::Window>> new_root_previous_window;
+        auto control = zaf::Create<zaf::Control>();
+        subscriptions += control->WindowChangedEvent().Subscribe(
+            [&new_root_previous_window](const zaf::WindowChangedInfo& event_info) {
+            new_root_previous_window = event_info.PreviousWindow();
+        });
+        
+        window->SetRootControl(control);
+
+        ASSERT_TRUE(old_root_previous_window.has_value());
+        ASSERT_EQ(old_root_previous_window, window);
+        ASSERT_TRUE(new_root_previous_window.has_value());
+        ASSERT_EQ(*new_root_previous_window, nullptr);
+    }
 }

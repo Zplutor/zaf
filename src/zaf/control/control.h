@@ -864,6 +864,7 @@ private:
     void DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect);
 
     void SetParent(const std::shared_ptr<Control>& parent);
+    void InnerRemoveChild(const std::shared_ptr<Control>& child, bool set_parent_to_null);
 
     void ApplyAutoSizeOnRectChanged(zaf::Size& new_size);
     void AutoResizeToPreferredSize();

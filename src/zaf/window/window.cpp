@@ -2094,13 +2094,18 @@ void Window::InitializeRootControl(const std::shared_ptr<Control>& control) {
     }
 
     auto previous_root_control = root_control_;
-    if (previous_root_control != nullptr) {
+    if (previous_root_control) {
+
         previous_root_control->ReleaseRendererResources();
         previous_root_control->SetWindow(nullptr);
+        previous_root_control->RaiseWindowChangedEvent(shared_from_this());
     }
 
     root_control_ = control;
+
+    auto old_window = root_control_->Window();
     root_control_->SetWindow(shared_from_this());
+    root_control_->RaiseWindowChangedEvent(old_window);
 
     if (!!Handle()) {
         RECT client_rect{};

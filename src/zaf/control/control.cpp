@@ -1003,11 +1003,11 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
 
     if (previous_parent != nullptr) {
         //Remove child from previous parent
-        previous_parent->RemoveChild(child);
+        previous_parent->InnerRemoveChild(child, false);
     }
 
-    child->SetParent(shared_from_this());
     children_.push_back(child);
+    child->SetParent(shared_from_this());
 
     NeedRelayout();
     NeedRepaintRect(child->Rect());
@@ -1032,6 +1032,11 @@ void Control::AddChildren(const std::vector<std::shared_ptr<Control>>& children)
 
 
 void Control::RemoveChild(const std::shared_ptr<Control>& child) {
+    InnerRemoveChild(child, true);
+}
+
+
+void Control::InnerRemoveChild(const std::shared_ptr<Control>& child, bool set_parent_to_null) {
 
     auto current_parent = child->Parent();
     if (current_parent.get() != this) {
@@ -1050,15 +1055,15 @@ void Control::RemoveChild(const std::shared_ptr<Control>& child) {
         }
     }
 
-    child->SetParent(nullptr);
-
     auto removed_iterator = std::find(children_.begin(), children_.end(), child);
-    if (removed_iterator == children_.end()) {
-        return;
-    }
+    ZAF_EXPECT(removed_iterator != children_.end());
 
     auto removed_index = std::distance(children_.begin(), removed_iterator);
     children_.erase(removed_iterator);
+
+    if (set_parent_to_null) {
+        child->SetParent(nullptr);
+    }
 
     //The child's rect may be changed while calling NeedRelayout(), leading to a wrong repaint rect
     //while calling NeedRepaintRect(), so we preserve the original rect before calling 
