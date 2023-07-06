@@ -343,6 +343,8 @@ protected:
 
     void OnFocusGained(const FocusGainedInfo& event_info) override;
     void OnFocusLost(const FocusLostInfo& event_info) override;
+    
+    void OnWindowChanged(const WindowChangedInfo& event_info) override;
 
     virtual void OnSelectionChanged(const RichEditSelectionChangedInfo& event_info);
     virtual void OnTextChanging(const TextChangingInfo& event_info);
@@ -394,6 +396,7 @@ private:
     DWORD scroll_bar_property_;
     std::optional<float> cached_text_height_;
     Color text_color_;
+    Subscription ime_message_subscription_;
 
     Event<TextChangingInfo> text_changing_event_;
     Event<RichEditSelectionChangedInfo> selection_changed_event_;

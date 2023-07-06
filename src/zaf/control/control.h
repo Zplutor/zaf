@@ -21,6 +21,7 @@
 #include <zaf/control/event/mouse_over_event_info.h>
 #include <zaf/control/event/parent_changed_info.h>
 #include <zaf/control/event/rect_changed_info.h>
+#include <zaf/control/event/window_changed_info.h>
 #include <zaf/control/image_layout.h>
 #include <zaf/control/image_picker.h>
 #include <zaf/control/layout/layouter.h>
@@ -691,6 +692,7 @@ public:
     Observable<SysCharInputInfo> SysCharInputEvent() const;
 
     Observable<ParentChangedInfo> ParentChangedEvent() const;
+    Observable<WindowChangedInfo> WindowChangedEvent() const;
 
 protected:
     void InvokeInitialize() override;
@@ -821,6 +823,7 @@ protected:
     virtual void OnDPIChanged();
 
     virtual void OnParentChanged(const ParentChangedInfo& event_info);
+    virtual void OnWindowChanged(const WindowChangedInfo& event_info);
 
 private:
     friend class Caret;
@@ -885,6 +888,9 @@ private:
     void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
 
     bool HandleDoubleClickOnMouseDown(const Point& position);
+
+    void RaiseWindowChangedEvent(const std::shared_ptr<zaf::Window>& previous_window);
+    void RaiseDPIChangedEvent();
 
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
 
@@ -956,6 +962,7 @@ private:
     Event<SysKeyUpInfo> sys_key_up_event_;
     Event<SysCharInputInfo> sys_char_input_event_;
     Event<ParentChangedInfo> parent_changed_event_;
+    Event<WindowChangedInfo> window_changed_event_;
     Event<MouseCapturedInfo> mouse_captured_event_;
     Event<MouseReleasedInfo> mouse_released_event_;
 };

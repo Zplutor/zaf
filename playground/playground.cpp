@@ -143,8 +143,6 @@ private:
         button_ = zaf::Create<zaf::Button>();
         button_->SetFixedHeight(30);
         Subscriptions() += button_->ClickEvent().Subscribe(std::bind([this]() {
-
-            rich_edit_->InsertObject(zaf::Create<MyOLEObject>());
         }));
 
         RootControl()->AddChild(button_);

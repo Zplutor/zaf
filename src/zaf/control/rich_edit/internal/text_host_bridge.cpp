@@ -503,11 +503,21 @@ bool TextHostBridge::NotifyProtected(const ENPROTECTED& info) const {
 
 
 HIMC TextHostBridge::TxImmGetContext() {
+
+    auto window = GetWindow();
+    if (window) {
+        return ImmGetContext(window->Handle());
+    }
     return nullptr;
 }
 
 
 void TextHostBridge::TxImmReleaseContext(HIMC himc) {
+
+    auto window = GetWindow();
+    if (window) {
+        ImmReleaseContext(window->Handle(), himc);
+    }
 }
 
 

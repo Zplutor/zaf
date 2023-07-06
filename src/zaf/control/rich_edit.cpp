@@ -1207,6 +1207,54 @@ void RichEdit::OnFocusLost(const FocusLostInfo& event_info) {
 }
 
 
+void RichEdit::OnWindowChanged(const WindowChangedInfo& event_info) {
+
+    __super::OnWindowChanged(event_info);
+
+    ime_message_subscription_.Unsubscribe();
+
+    auto window = Window();
+    if (!window) {
+        return;
+    }
+
+    ime_message_subscription_ = window->MessageReceivedEvent().Subscribe(
+        [this](const MessageReceivedInfo& event_info) {
+    
+        if (event_info.IsHandled()) {
+            return;
+        }
+
+        //Forward IME messages to RichEdit.
+        const auto& message = event_info.Message();
+        switch (message.ID()) {
+            case WM_IME_STARTCOMPOSITION:
+            case WM_IME_ENDCOMPOSITION:
+            case WM_IME_COMPOSITION:
+            case WM_IME_COMPOSITIONFULL:
+            case WM_IME_KEYDOWN:
+            case WM_IME_KEYUP:
+            case WM_IME_CHAR:
+            case WM_IME_CONTROL:
+            case WM_IME_NOTIFY:
+            case WM_IME_REQUEST:
+            case WM_IME_SELECT: {
+                LRESULT lresult{};
+                text_service_->TxSendMessage(
+                    message.ID(),
+                    message.WParam(),
+                    message.LParam(), 
+                    &lresult);
+                event_info.MarkAsHandled(lresult);
+                break;
+            }
+            default:
+                break;
+        }
+    });
+}
+
+
 bool RichEdit::CanUndo() const {
 
     if (text_service_ != nullptr) {

@@ -59,6 +59,13 @@ public:
     }
 };
 
+float GetDPIFromWindow(const std::shared_ptr<Window>& window) {
+    if (window) {
+        return window->GetDPI();
+    }
+    return Application::Instance().GetSystemDPI();
+}
+
 constexpr bool DefaultCanFocused = false;
 constexpr bool DefaultIsEnabled = true;
 constexpr bool DefaultIsVisible = true;
@@ -942,22 +949,22 @@ void Control::SetParent(const std::shared_ptr<Control>& parent) {
         return;
     }
 
-    bool need_release_renderer_resources = [&previous_parent, &parent]() {
+    std::shared_ptr<zaf::Window> previous_window;
+    if (previous_parent) {
+        previous_window = previous_parent->Window();
+    }
 
-        if (!previous_parent) {
-            return false;
-        }
+    std::shared_ptr<zaf::Window> new_window;
+    if (parent) {
+        new_window = parent->Window();
+    }
 
-        if (!parent) {
-            return true;
-        }
+    bool need_release_renderer_resources = [&previous_window, &new_window]() {
 
-        auto previous_window = previous_parent->Window();
         if (!previous_window) {
             return false;
         }
 
-        auto new_window = parent->Window();
         if (!new_window) {
             return true;
         }
@@ -969,14 +976,17 @@ void Control::SetParent(const std::shared_ptr<Control>& parent) {
         ReleaseRendererResources();
     }
 
-    float old_dpi = GetDPI();
     parent_ = parent;
 
-    ParentChangedInfo event_info{ shared_from_this(), previous_parent };
-    OnParentChanged(event_info);
+    ParentChangedInfo parent_changed_info{ shared_from_this(), previous_parent };
+    OnParentChanged(parent_changed_info);
 
-    if (old_dpi != GetDPI()) {
-        OnDPIChanged();
+    if (previous_window != new_window) {
+        RaiseWindowChangedEvent(previous_window);
+    }
+
+    if (GetDPIFromWindow(previous_window) != GetDPIFromWindow(new_window)) {
+        RaiseDPIChangedEvent();
     }
 }
 
@@ -1810,20 +1820,22 @@ Observable<FocusLostInfo> Control::FocusLostEvent() const {
 
 
 float Control::GetDPI() const {
+    return GetDPIFromWindow(Window());
+}
 
-    auto window = Window();
-    if (window) {
-        return window->GetDPI();
+
+void Control::RaiseDPIChangedEvent() {
+
+    OnDPIChanged();
+
+    for (const auto& each_child : Children()) {
+        each_child->RaiseDPIChangedEvent();
     }
-    return Application::Instance().GetSystemDPI();
 }
 
 
 void Control::OnDPIChanged() {
 
-    for (const auto& each_child : children_) {
-        each_child->OnDPIChanged();
-    }
 }
 
 
@@ -1834,6 +1846,27 @@ void Control::OnParentChanged(const ParentChangedInfo& event_info) {
 
 Observable<ParentChangedInfo> Control::ParentChangedEvent() const {
     return parent_changed_event_.GetObservable();
+}
+
+
+void Control::RaiseWindowChangedEvent(const std::shared_ptr<zaf::Window>& previous_window) {
+
+    WindowChangedInfo window_changed_info{ shared_from_this(), previous_window };
+    OnWindowChanged(window_changed_info);
+
+    for (const auto& each_child : Children()) {
+        each_child->RaiseWindowChangedEvent(previous_window);
+    }
+}
+
+
+void Control::OnWindowChanged(const WindowChangedInfo& event_info) {
+    window_changed_event_.Raise(event_info);
+}
+
+
+Observable<WindowChangedInfo> Control::WindowChangedEvent() const {
+    return window_changed_event_.GetObservable();
 }
 
 
