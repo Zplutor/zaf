@@ -4,6 +4,7 @@
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/linear_box.h>
 #include <zaf/creation.h>
+#include <zaf/window/window.h>
 
 TEST(ControlTest, Update) {
 
@@ -156,4 +157,117 @@ TEST(ControlTest, AutoSize) {
     //Children visiblity chagned.
     child->SetIsVisible(false);
     ASSERT_EQ(parent->Size(), zaf::Size(0, 0));
+}
+
+
+TEST(ControlTest, WindowChangedEvent) {
+
+    //Add/Remove a child to parent which is not in a window, should not raise the event.
+    {
+        zaf::SubscriptionSet subscriptions;
+
+        auto parent = zaf::Create<zaf::Control>();
+        auto child = zaf::Create<zaf::Control>();
+
+        subscriptions += child->WindowChangedEvent().Subscribe(
+            [](const zaf::WindowChangedInfo& event_info) {
+            GTEST_FAIL();
+        });
+        parent->AddChild(child);
+
+        //Remove a child from parent which is not in a window, should not raise the event.
+        parent->RemoveChild(child);
+    }
+
+    //Add parent to a window, both parent and child should raise the event.
+    {
+        zaf::SubscriptionSet subscriptions;
+
+        auto parent = zaf::Create<zaf::Control>();
+        auto child = zaf::Create<zaf::Control>();
+        parent->AddChild(child);
+
+        std::optional<std::shared_ptr<zaf::Window>> child_previous_window;
+        subscriptions += child->WindowChangedEvent().Subscribe(
+            [&child_previous_window](const zaf::WindowChangedInfo& event_info) {
+            child_previous_window = event_info.PreviousWindow();
+        });
+
+        std::optional<std::shared_ptr<zaf::Window>> parent_previous_window;
+        subscriptions += parent->WindowChangedEvent().Subscribe(
+            [&parent_previous_window](const zaf::WindowChangedInfo& event_info) {
+            parent_previous_window = event_info.PreviousWindow();
+        });
+
+        auto window = zaf::Create<zaf::Window>();
+        window->RootControl()->AddChild(parent);
+
+        ASSERT_TRUE(child_previous_window.has_value());
+        ASSERT_EQ(*child_previous_window, nullptr);
+        ASSERT_TRUE(parent_previous_window.has_value());
+        ASSERT_EQ(*parent_previous_window, nullptr);
+    }
+
+    //Remove parent from a window, both parent and child should raise the event.
+    {
+        zaf::SubscriptionSet subscriptions;
+
+        auto parent = zaf::Create<zaf::Control>();
+        auto child = zaf::Create<zaf::Control>();
+        parent->AddChild(child);
+
+        auto window = zaf::Create<zaf::Window>();
+        window->RootControl()->AddChild(parent);
+
+        std::optional<std::shared_ptr<zaf::Window>> child_previous_window;
+        subscriptions += child->WindowChangedEvent().Subscribe(
+            [&child_previous_window](const zaf::WindowChangedInfo& event_info) {
+            child_previous_window = event_info.PreviousWindow();
+        });
+
+        std::optional<std::shared_ptr<zaf::Window>> parent_previous_window;
+        subscriptions += parent->WindowChangedEvent().Subscribe(
+            [&parent_previous_window](const zaf::WindowChangedInfo& event_info) {
+            parent_previous_window = event_info.PreviousWindow();
+        });
+
+        window->RootControl()->RemoveChild(parent);
+
+        ASSERT_TRUE(child_previous_window.has_value());
+        ASSERT_EQ(*child_previous_window, window);
+        ASSERT_TRUE(parent_previous_window.has_value());
+        ASSERT_EQ(*parent_previous_window, window);
+    }
+
+    //Set parent to a different window, both parent and child should raise the event.
+    {
+        zaf::SubscriptionSet subscriptions;
+
+        auto parent = zaf::Create<zaf::Control>();
+        auto child = zaf::Create<zaf::Control>();
+        parent->AddChild(child);
+
+        auto window = zaf::Create<zaf::Window>();
+        window->RootControl()->AddChild(parent);
+
+        std::optional<std::shared_ptr<zaf::Window>> child_previous_window;
+        subscriptions += child->WindowChangedEvent().Subscribe(
+            [&child_previous_window](const zaf::WindowChangedInfo& event_info) {
+            child_previous_window = event_info.PreviousWindow();
+        });
+
+        std::optional<std::shared_ptr<zaf::Window>> parent_previous_window;
+        subscriptions += parent->WindowChangedEvent().Subscribe(
+            [&parent_previous_window](const zaf::WindowChangedInfo& event_info) {
+            parent_previous_window = event_info.PreviousWindow();
+        });
+
+        auto new_window = zaf::Create<zaf::Window>();
+        new_window->RootControl()->AddChild(parent);
+
+        ASSERT_TRUE(child_previous_window.has_value());
+        ASSERT_EQ(*child_previous_window, window);
+        ASSERT_TRUE(parent_previous_window.has_value());
+        ASSERT_EQ(*parent_previous_window, window);
+    }
 }
