@@ -29,7 +29,7 @@ void DrawTextWithIcon(
     text_layout.SetMaxWidth(text_rect.size.width);
     text_layout.SetMaxHeight(text_rect.size.height);
 
-    auto line_metrics = text_layout.GetLineMetrics(1);
+    auto line_metrics = text_layout.GetLineMetrics();
     if (line_metrics.empty()) {
         return;
     }

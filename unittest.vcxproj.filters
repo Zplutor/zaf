@@ -91,6 +91,9 @@
     <Filter Include="case\control\internal\textual_control">
       <UniqueIdentifier>{d1bd964d-9f5b-49a4-836b-bff876737c75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\graphic\text">
+      <UniqueIdentifier>{9f98b1e4-8ed9-4b7c-b690-e788ca27e601}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -426,6 +429,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\internal\textual_control\general_textual_core_test.cpp">
       <Filter>case\control\internal\textual_control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\unittest\case\graphic\text\text_layout_test.cpp">
+      <Filter>case\graphic\text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

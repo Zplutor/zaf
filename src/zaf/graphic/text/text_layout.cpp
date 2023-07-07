@@ -132,20 +132,26 @@ Brush TextLayout::GetBrush(std::size_t position, Range* range) {
 }
 
 
-std::vector<LineMetrics> TextLayout::GetLineMetrics(std::size_t max_line_count) const {
+std::vector<LineMetrics> TextLayout::GetLineMetrics() const {
 
-    std::vector<LineMetrics> line_metrics;
-    line_metrics.resize(max_line_count);
+    UINT32 line_count{};
+    HRESULT hresult = Inner()->GetLineMetrics(nullptr, 0, &line_count);
+    if (hresult != E_NOT_SUFFICIENT_BUFFER) {
+        ZAF_THROW_IF_COM_ERROR(hresult);
+    }
 
-    UINT32 actual_line_count = 0;
-    HRESULT result = Inner()->GetLineMetrics(
-        reinterpret_cast<DWRITE_LINE_METRICS*>(line_metrics.data()),
-        static_cast<UINT32>(line_metrics.size()),
-        &actual_line_count);
+    std::vector<LineMetrics> result;
+    result.resize(line_count);
 
-    ZAF_THROW_IF_COM_ERROR(result);
+    hresult = Inner()->GetLineMetrics(
+        reinterpret_cast<DWRITE_LINE_METRICS*>(result.data()),
+        static_cast<UINT32>(result.size()),
+        &line_count);
 
-    return line_metrics;
+    ZAF_THROW_IF_COM_ERROR(hresult);
+
+    result.resize(line_count);
+    return result;
 }
 
 

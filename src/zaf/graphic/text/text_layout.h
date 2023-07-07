@@ -221,11 +221,8 @@ public:
 
     /**
      Retrieves the information about each individual text line of the text string.
-
-     @param max_line_count
-         The maximum number of lines to retrieves.
      */
-    std::vector<LineMetrics> GetLineMetrics(std::size_t max_line_count) const;
+    std::vector<LineMetrics> GetLineMetrics() const;
 
     /**
      Retrieves overall metrics for the formatted text.
