@@ -240,7 +240,7 @@ void Window::Initialize() {
 
     __super::Initialize();
 
-    InitializeRootControl(Create<Control>());
+    SetRootControl(Create<Control>());
 }
 
 
@@ -2083,15 +2083,16 @@ void Window::SetTitle(const std::wstring& title) {
 
 
 void Window::SetRootControl(const std::shared_ptr<Control>& control) {
-    InitializeRootControl(control != nullptr ? control : Create<Control>());
-}
 
+    ZAF_EXPECT(control);
+    ZAF_EXPECT(!control->Parent());
 
-void Window::InitializeRootControl(const std::shared_ptr<Control>& control) {
-
+    //The same root control is allowed to be set multiple times.
     if (root_control_ == control) {
         return;
     }
+
+    ZAF_EXPECT(!control->Window());
 
     auto previous_root_control = root_control_;
     if (previous_root_control) {

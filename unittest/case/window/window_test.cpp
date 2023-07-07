@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/as.h>
+#include <zaf/control/label.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/dpi.h>
@@ -275,4 +276,47 @@ TEST(WindowTest, Close) {
     });
     window->Close();
     ASSERT_NE(window->Handle(), nullptr);
+}
+
+
+TEST(WindowTest, SetRootControl) {
+
+    //Set root control with invalid argument.
+    {
+        auto window = zaf::Create<zaf::Window>();
+
+        //Set nullptr.
+        ASSERT_THROW(window->SetRootControl(nullptr), std::logic_error);
+
+        //Set a new one which is the root control of another window.
+        auto other_window = zaf::Create<zaf::Window>();
+        ASSERT_THROW(window->SetRootControl(other_window->RootControl()), std::logic_error);
+
+        //Set a new one which has parent.
+        auto parent = zaf::Create<zaf::Control>();
+        auto child = zaf::Create<zaf::Control>();
+        parent->AddChild(child);
+        ASSERT_THROW(window->SetRootControl(child), std::logic_error);
+    }
+
+    //The same root control can be set multiple times.
+    {
+        auto window = zaf::Create<zaf::Window>();
+
+        auto root_control = window->RootControl();
+        window->SetRootControl(root_control);
+        ASSERT_EQ(window->RootControl(), root_control);
+
+        window->SetRootControl(root_control);
+        ASSERT_EQ(window->RootControl(), root_control);
+    }
+
+    //Replace root control.
+    {
+        auto window = zaf::Create<zaf::Window>();
+
+        auto label = zaf::Create<zaf::Label>();
+        window->SetRootControl(label);
+        ASSERT_EQ(window->RootControl(), label);
+    }
 }

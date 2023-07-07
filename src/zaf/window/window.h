@@ -415,8 +415,15 @@ public:
     }
 
     /**
-     Set window's root control.
-     */
+    Sets specified control as the root control of the window.
+
+    @param control
+        The new root control. It can't be nullptr, can't be the root control of another window, and
+        can't have parent.
+
+    @throw std::logic_error
+        Thrown if control doesn't meet the precondiction.
+    */
     void SetRootControl(const std::shared_ptr<Control>& control);
 
     Observable<RootControlChangedInfo> RootControlChangedEvent() const;
@@ -793,7 +800,6 @@ private:
     static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 private:
-    void InitializeRootControl(const std::shared_ptr<Control>& control);
     void CreateWindowHandle();
     LRESULT HandleWMCREATE(const Message& message);
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
