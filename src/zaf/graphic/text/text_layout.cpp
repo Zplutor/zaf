@@ -165,4 +165,34 @@ TextMetrics TextLayout::GetMetrics() const {
     return text_metrics;
 }
 
+
+HitTestIndexResult TextLayout::HitTestIndex(std::size_t index, bool is_trailing_hit) const {
+
+    HitTestIndexResult result;
+    HRESULT hresult = Inner()->HitTestTextPosition(
+        static_cast<UINT32>(index),
+        is_trailing_hit,
+        &result.Inner().x,
+        &result.Inner().y,
+        reinterpret_cast<DWRITE_HIT_TEST_METRICS*>(&result.Inner().metrics));
+
+    ZAF_THROW_IF_COM_ERROR(hresult);
+    return result;
+}
+
+
+HitTestPointResult TextLayout::HitTestPoint(const Point& point) const {
+
+    HitTestPointResult result;
+    HRESULT hresult = Inner()->HitTestPoint(
+        point.x,
+        point.y,
+        &result.Inner().is_trailing_hit,
+        &result.Inner().is_inside,
+        reinterpret_cast<DWRITE_HIT_TEST_METRICS*>(&result.Inner().metrics));
+
+    ZAF_THROW_IF_COM_ERROR(hresult);
+    return result;
+}
+
 }

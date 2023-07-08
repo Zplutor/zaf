@@ -2311,5 +2311,8 @@
     <ClInclude Include="src\zaf\control\internal\textual_control\text_box_core.h">
       <Filter>zaf\control\internal\textual_control</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\hit_test_result.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

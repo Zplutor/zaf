@@ -7,6 +7,8 @@
 #include <zaf/base/range.h>
 #include <zaf/graphic/brush/brush.h>
 #include <zaf/graphic/font/font_style.h>
+#include <zaf/graphic/point.h>
+#include <zaf/graphic/text/hit_test_result.h>
 #include <zaf/graphic/text/line_metrics.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_metrics.h>
@@ -228,6 +230,9 @@ public:
      Retrieves overall metrics for the formatted text.
      */
     TextMetrics GetMetrics() const;
+
+    HitTestIndexResult HitTestIndex(std::size_t index, bool is_trailing_hit) const;
+    HitTestPointResult HitTestPoint(const Point& point) const;
 
     const COMPtr<IDWriteTextLayout>& Inner() const noexcept {
         return inner_;

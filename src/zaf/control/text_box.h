@@ -36,6 +36,13 @@ private:
         zaf::Rect rect{};
     };
 
+    class LineInfo {
+    public:
+        std::size_t line_char_index{};
+        float line_y{};
+        float line_height{};
+    };
+
 private:
     friend class zaf::internal::TextBoxCore;
 
@@ -48,14 +55,18 @@ private:
     void HandleMouseDown(const MouseDownInfo& event_info);
     void HandleMouseMove(const MouseMoveInfo& event_info);
     void HandleMouseUp(const MouseUpInfo& event_info);
-
     std::optional<TextIndexInfo> FindTextIndexAtPoint(const Point& point) const;
+    void SetSelectionByMouse(const TextIndexInfo& index_info, bool begin_selection);
 
-    void UpdateSelectionByMouse(const TextIndexInfo& index_info, bool begin_selection);
-
+    void HandleKeyDown(const KeyDownInfo& event_info);
     void BackwardCaretIndex(bool is_selecting_range);
     void ForwardCaretIndex(bool is_selecting_range);
-    void UpdateCaretIndex(std::size_t caret_index, bool is_selecting_range);
+    void UpwardCaretIndex(bool is_selecting_range);
+    void DownwardCaretIndex(bool is_selecting_range);
+    void UpdateCaretIndexVertically(bool is_downward, bool is_selecting_range);
+    LineInfo LocateCurrentLineInfo();
+    void SetCaretIndex(std::size_t caret_index, bool is_selecting_range, bool update_caret_x);
+    void UpdateCaretLastX();
     void UpdateCaretAtCurrentIndex();
     void ShowCaret(const zaf::Rect& caret_rect);
 
@@ -66,6 +77,7 @@ private:
     Range selection_range_;
     std::size_t caret_index_{};
     std::shared_ptr<Caret> caret_;
+    float caret_last_x_{};
 };
 
 }

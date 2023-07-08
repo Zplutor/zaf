@@ -9,8 +9,8 @@
 namespace zaf {
 namespace {
 
-Rect GetCaretRect(const DWRITE_HIT_TEST_METRICS& metrics) {
-    return Rect{ metrics.left, metrics.top, 1, metrics.height };
+Rect GetCaretRect(const HitTestMetrics& metrics) {
+    return Rect{ metrics.Left(), metrics.Top(), 1, metrics.Height() };
 }
 
 }
@@ -149,7 +149,7 @@ void TextBox::HandleMouseDown(const MouseDownInfo& event_info) {
 
     CaptureMouse();
 
-    UpdateSelectionByMouse(*index_info, true);
+    SetSelectionByMouse(*index_info, true);
     NeedRepaint();
 }
 
@@ -177,7 +177,7 @@ void TextBox::HandleMouseMove(const MouseMoveInfo& event_info) {
         return;
     }
 
-    UpdateSelectionByMouse(*index_info, false);
+    SetSelectionByMouse(*index_info, false);
     NeedRepaint();
 }
 
@@ -204,7 +204,7 @@ void TextBox::HandleMouseUp(const MouseUpInfo& event_info) {
 
     auto index_info = FindTextIndexAtPoint(event_info.PositionAtSource());
     if (index_info) {
-        UpdateSelectionByMouse(*index_info, false);
+        SetSelectionByMouse(*index_info, false);
     }
 
     begin_mouse_select_index_.reset();
@@ -214,34 +214,20 @@ void TextBox::HandleMouseUp(const MouseUpInfo& event_info) {
 
 std::optional<TextBox::TextIndexInfo> TextBox::FindTextIndexAtPoint(const Point& point) const {
 
-    auto text_layout = GetTextLayout();
-
-    BOOL is_tailing{};
-    BOOL is_inside{};
-    DWRITE_HIT_TEST_METRICS metrics{};
-    HRESULT hresult = text_layout.Inner()->HitTestPoint(
-        point.x,
-        point.y,
-        &is_tailing,
-        &is_inside,
-        &metrics);
-
-    if (FAILED(hresult)) {
-        return std::nullopt;
-    }
+    auto hit_test_result = GetTextLayout().HitTestPoint(point);
 
     TextIndexInfo result;
-    result.index = metrics.textPosition;
-    result.rect = GetCaretRect(metrics);
-    if (is_tailing) {
+    result.index = hit_test_result.Metrics().TextIndex();
+    result.rect = GetCaretRect(hit_test_result.Metrics());
+    if (hit_test_result.IsTrailingHit()) {
         ++result.index;
-        result.rect.position.x += metrics.width;
+        result.rect.position.x += hit_test_result.Metrics().Width();
     }
     return result;
 }
 
 
-void TextBox::UpdateSelectionByMouse(const TextIndexInfo& index_info, bool begin_selection) {
+void TextBox::SetSelectionByMouse(const TextIndexInfo& index_info, bool begin_selection) {
 
     if (begin_selection) {
         begin_mouse_select_index_ = index_info.index;
@@ -258,6 +244,7 @@ void TextBox::UpdateSelectionByMouse(const TextIndexInfo& index_info, bool begin
         (std::min)(*begin_mouse_select_index_, caret_index_),
         (std::max)(*begin_mouse_select_index_, caret_index_));
 
+    UpdateCaretLastX();
     ShowCaret(index_info.rect);
 }
 
@@ -293,6 +280,13 @@ void TextBox::OnKeyDown(const KeyDownInfo& event_info) {
         return;
     }
 
+    HandleKeyDown(event_info);
+    event_info.MarkAsHandled();
+}
+
+
+void TextBox::HandleKeyDown(const KeyDownInfo& event_info) {
+
     bool is_selecting_range = !!(GetKeyState(VK_SHIFT) >> 15);
 
     auto virtual_key = event_info.Message().VirtualKey();
@@ -301,6 +295,12 @@ void TextBox::OnKeyDown(const KeyDownInfo& event_info) {
     }
     else if (virtual_key == VK_RIGHT) {
         ForwardCaretIndex(is_selecting_range);
+    }
+    else if (virtual_key == VK_UP) {
+        UpwardCaretIndex(is_selecting_range);
+    }
+    else if (virtual_key == VK_DOWN) {
+        DownwardCaretIndex(is_selecting_range);
     }
 }
 
@@ -323,7 +323,7 @@ void TextBox::BackwardCaretIndex(bool is_selecting_range) {
         }
     }
 
-    UpdateCaretIndex(new_index, is_selecting_range);
+    SetCaretIndex(new_index, is_selecting_range, true);
 }
 
 
@@ -345,11 +345,70 @@ void TextBox::ForwardCaretIndex(bool is_selecting_range) {
         }
     }
 
-    UpdateCaretIndex(new_index, is_selecting_range);
+    SetCaretIndex(new_index, is_selecting_range, true);
 }
 
 
-void TextBox::UpdateCaretIndex(std::size_t new_index, bool is_selecting_range) {
+void TextBox::UpwardCaretIndex(bool is_selecting_range) {
+    UpdateCaretIndexVertically(false, is_selecting_range);
+}
+
+
+void TextBox::DownwardCaretIndex(bool is_selecting_range) {
+    UpdateCaretIndexVertically(true, is_selecting_range);
+}
+
+
+void TextBox::UpdateCaretIndexVertically(bool is_downward, bool is_selecting_range) {
+
+    auto caret_hit_test_result = GetTextLayout().HitTestIndex(caret_index_, false);
+
+    auto current_line_info = LocateCurrentLineInfo();
+    auto previous_line_y = caret_hit_test_result.Metrics().Top();
+    if (is_downward) {
+        previous_line_y += current_line_info.line_height;
+    }
+    else {
+        previous_line_y -= current_line_info.line_height;
+    }
+    previous_line_y = (std::max)(previous_line_y, 0.f);
+
+    auto previous_line_hit_test_result = GetTextLayout().HitTestPoint(
+        Point{ caret_last_x_, previous_line_y });
+
+    auto new_index = previous_line_hit_test_result.Metrics().TextIndex();
+    if (previous_line_hit_test_result.IsTrailingHit()) {
+        ++new_index;
+    }
+
+    SetCaretIndex(new_index, is_selecting_range, false);
+}
+
+
+TextBox::LineInfo TextBox::LocateCurrentLineInfo() {
+
+    auto line_metrics = GetTextLayout().GetLineMetrics();
+
+    LineInfo line_info;
+
+    for (const auto& each_line : line_metrics) {
+
+        line_info.line_height = each_line.Height();
+
+        auto line_end_index = line_info.line_char_index + each_line.Length();
+        if (line_info.line_char_index <= caret_index_ && caret_index_ < line_end_index) {
+            break;
+        }
+
+        line_info.line_y += each_line.Height();
+        line_info.line_char_index = line_end_index;
+    }
+
+    return line_info;
+}
+
+
+void TextBox::SetCaretIndex(std::size_t new_index, bool is_selecting_range, bool update_caret_x) {
 
     auto old_index = caret_index_;
     caret_index_ = (std::min)(new_index, core_->GetTextLength());
@@ -370,26 +429,25 @@ void TextBox::UpdateCaretIndex(std::size_t new_index, bool is_selecting_range) {
 
     selection_range_ = Range::FromIndexPair(selection_begin, selection_end);
     
+    if (update_caret_x) {
+        UpdateCaretLastX();
+    }
+
     UpdateCaretAtCurrentIndex();
     NeedRepaint();
 }
 
 
+void TextBox::UpdateCaretLastX() {
+    auto hit_test_result = GetTextLayout().HitTestIndex(caret_index_, false);
+    caret_last_x_ = hit_test_result.X();
+}
+
+
 void TextBox::UpdateCaretAtCurrentIndex() {
 
-    FLOAT x{};
-    FLOAT y{};
-    DWRITE_HIT_TEST_METRICS metrics{};
-    HRESULT hresult = GetTextLayout().Inner()->HitTestTextPosition(
-        static_cast<UINT32>(caret_index_),
-        FALSE,
-        &x,
-        &y,
-        &metrics);
-
-    if (SUCCEEDED(hresult)) {
-        ShowCaret(GetCaretRect(metrics));
-    }
+    auto hit_test_result = GetTextLayout().HitTestIndex(caret_index_, false);
+    ShowCaret(GetCaretRect(hit_test_result.Metrics()));
 }
 
 
