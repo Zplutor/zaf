@@ -1,6 +1,7 @@
 #include <zaf/control/text_box.h>
 #include <zaf/base/as.h>
 #include <zaf/base/log.h>
+#include <zaf/clipboard/clipboard.h>
 #include <zaf/control/caret.h>
 #include <zaf/control/internal/textual_control/text_box_core.h>
 #include <zaf/graphic/canvas.h>
@@ -287,20 +288,27 @@ void TextBox::OnKeyDown(const KeyDownInfo& event_info) {
 
 void TextBox::HandleKeyDown(const KeyDownInfo& event_info) {
 
-    bool is_selecting_range = !!(GetKeyState(VK_SHIFT) >> 15);
+    constexpr auto is_shift_pressed = []() {
+        return !!(GetKeyState(VK_SHIFT) >> 15);
+    };
 
     auto virtual_key = event_info.Message().VirtualKey();
     if (virtual_key == VK_LEFT) {
-        BackwardCaretIndex(is_selecting_range);
+        BackwardCaretIndex(is_shift_pressed());
     }
     else if (virtual_key == VK_RIGHT) {
-        ForwardCaretIndex(is_selecting_range);
+        ForwardCaretIndex(is_shift_pressed());
     }
     else if (virtual_key == VK_UP) {
-        UpwardCaretIndex(is_selecting_range);
+        UpwardCaretIndex(is_shift_pressed());
     }
     else if (virtual_key == VK_DOWN) {
-        DownwardCaretIndex(is_selecting_range);
+        DownwardCaretIndex(is_shift_pressed());
+    }
+    else if (virtual_key == L'C') {
+        if (GetKeyState(VK_CONTROL) >> 15) {
+            HandleCopy();
+        }
     }
 }
 
@@ -455,6 +463,14 @@ void TextBox::ShowCaret(const zaf::Rect& caret_rect) {
 
     caret_->SetRect(Align(caret_rect));
     caret_->SetIsVisible(true);
+}
+
+
+void TextBox::HandleCopy() {
+
+    auto text = GetText();
+    auto copied_text = text.substr(selection_range_.index, selection_range_.length);
+    clipboard::Clipboard::SetText(copied_text);
 }
 
 }

@@ -70,6 +70,8 @@ private:
     void UpdateCaretAtCurrentIndex();
     void ShowCaret(const zaf::Rect& caret_rect);
 
+    void HandleCopy();
+
 private:
     internal::TextBoxCore* core_{};
 
