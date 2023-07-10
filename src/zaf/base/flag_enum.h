@@ -62,4 +62,10 @@ public:
     static constexpr bool Value = Test(nullptr);
 };
 
+
+template<typename T>
+bool HasFlag(T value, T flag) {
+    return (value & flag) == flag;
+}
+
 }

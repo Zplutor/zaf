@@ -29,3 +29,21 @@ TEST(FlagEnumTest, IsFlagEnum) {
     ASSERT_FALSE(zaf::IsFlagEnum<NonFlag>::Value);
     ASSERT_FALSE(zaf::IsFlagEnum<int>::Value);
 }
+
+
+TEST(FlagEnumTest, HasFlag) {
+
+    Flag flag{};
+    ASSERT_TRUE(zaf::HasFlag(flag, Flag::Zero));
+    ASSERT_FALSE(zaf::HasFlag(flag, Flag::One));
+    ASSERT_FALSE(zaf::HasFlag(flag, Flag::Two));
+    ASSERT_FALSE(zaf::HasFlag(flag, Flag::Three));
+    ASSERT_FALSE(zaf::HasFlag(flag, Flag::Four));
+
+    flag = Flag::One | Flag::Three;
+    ASSERT_TRUE(zaf::HasFlag(flag, Flag::Zero));
+    ASSERT_TRUE(zaf::HasFlag(flag, Flag::One));
+    ASSERT_FALSE(zaf::HasFlag(flag, Flag::Two));
+    ASSERT_TRUE(zaf::HasFlag(flag, Flag::Three));
+    ASSERT_FALSE(zaf::HasFlag(flag, Flag::Four));
+}
