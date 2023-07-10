@@ -3,6 +3,8 @@
 #include <dwrite.h>
 #include <Richedit.h>
 #include <zaf/base/error/check.h>
+#include <zaf/base/hash.h>
+#include <zaf/object/equality.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
@@ -13,6 +15,7 @@ Describes a range using start index and length.
 class Range : public Object {
 public:
     ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_EQUALITY;
 
     /**
     Gets an infinite range whose start index is 0 and length is the max value.
@@ -112,6 +115,16 @@ public:
         return result;
     }
 
+    std::wstring ToString() const override;
+
+    friend bool operator==(const Range& range1, const Range& range2) {
+        return std::tie(range1.index, range1.length) == std::tie(range2.index, range2.length);
+    }
+
+    friend auto operator<=>(const Range& range1, const Range& range2) {
+        return std::tie(range1.index, range1.length) <=> std::tie(range2.index, range2.length);
+    }
+
 public:
     std::size_t index{};
     std::size_t length{};
@@ -171,4 +184,14 @@ public:
     }
 };
 
+}
+
+
+namespace std {
+template<>
+struct hash<zaf::Range> {
+    std::size_t operator()(const zaf::Range& range) {
+        return zaf::CalculateHash(range.index, range.length);
+    }
+};
 }

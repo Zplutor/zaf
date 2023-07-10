@@ -139,3 +139,82 @@ TEST(RangeTest, ToCHARRANGE) {
         ASSERT_EQ(char_range.cpMax, 56);
     }
 }
+
+
+TEST(RangeTest, ToString) {
+
+    zaf::Range range;
+    ASSERT_EQ(range.ToString(), L"0,0");
+
+    range.index = 2424;
+    range.length = 778982;
+    ASSERT_EQ(range.ToString(), L"2424,778982");
+}
+
+
+TEST(RangeTest, Comparison) {
+
+    //Equal
+    {
+        zaf::Range r1;
+        zaf::Range r2;
+        ASSERT_TRUE(r1 == r2);
+
+        r1 = zaf::Range{ 10, 10 };
+        r2 = zaf::Range{ 10, 10 };
+        ASSERT_TRUE(r1 == r2);
+    }
+
+    //Not equal
+    {
+        zaf::Range r1;
+        zaf::Range r2{ 1, 2 };
+        ASSERT_TRUE(r1 != r2);
+
+        r1 = zaf::Range{ 8, 8 };
+        r2 = zaf::Range{ 8, 7 };
+        ASSERT_TRUE(r1 != r2);
+
+        r1 = zaf::Range{ 5, 98 };
+        r2 = zaf::Range{ 6, 98 };
+        ASSERT_TRUE(r1 != r2);
+    }
+
+    //Less
+    {
+        zaf::Range r1{ 3, 3 };
+        zaf::Range r2{ 4, 0};
+        ASSERT_TRUE(r1 < r2);
+
+        r1 = zaf::Range{ 3, 0 };
+        r2 = zaf::Range{ 3, 1 };
+        ASSERT_TRUE(r1 < r2);
+    }
+}
+
+
+TEST(RangeTest, IsEqual) {
+
+    zaf::Range r1;
+    zaf::Range r2;
+    ASSERT_TRUE(r1.IsEqual(r2));
+
+    r1 = zaf::Range{ 0, 5 };
+    r2 = zaf::Range{ 0, 5 };
+    ASSERT_TRUE(r1.IsEqual(r2));
+
+    r2 = zaf::Range{ 0, 4 };
+    ASSERT_FALSE(r1.IsEqual(r2));
+}
+
+
+TEST(RangeTest, Hash) {
+
+    zaf::Range r1;
+    zaf::Range r2;
+    ASSERT_EQ(r1.Hash(), r2.Hash());
+
+    r1 = zaf::Range{ 78, 33 };
+    r2 = zaf::Range{ 78, 33 };
+    ASSERT_EQ(r1.Hash(), r2.Hash());
+}
