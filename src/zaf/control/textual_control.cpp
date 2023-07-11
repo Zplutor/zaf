@@ -49,7 +49,11 @@ void TextualControl::Layout(const zaf::Rect& previous_rect) {
     __super::Layout(previous_rect);
 
     auto text_rect = DetermineTextRect();
-    core_->LayoutText(text_rect.size);
+
+    zaf::Size layout_size;
+    layout_size.width = (std::max)(text_rect.size.width, 0.f);
+    layout_size.height = (std::max)(text_rect.size.height, 0.f);
+    core_->LayoutText(layout_size);
 }
 
 

@@ -83,8 +83,7 @@ protected:
         rich_edit_->SetFontSize(20);
         rich_edit_->SetTextAlignment(zaf::TextAlignment::Center);
         rich_edit_->SetIsMultiline(true);
-        //rich_edit_->SetText(L"This is rich edit. This is rich edit. This is rich edit. This is rich edit. ");
-        rich_edit_->SetText(L"This is rich edit.\r\nLine 1\r\nLine2");
+        rich_edit_->SetText(L"This is rich edit.This is rich edit.This is rich edit.This is rich edit.This is rich edit.This is rich edit.\r\nLine 1\r\nLine2");
 
         RootControl()->AddChild(text_box_);
         RootControl()->AddChild(rich_edit_);
