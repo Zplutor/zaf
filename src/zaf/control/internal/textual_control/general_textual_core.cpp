@@ -225,6 +225,7 @@ Size GeneralTextualCore::CalculateTextSize(const Size& boundary_size) {
 
     auto text_layout = GetTextLayout();
 
+    //Set layout size to boundary size for calculation.
     text_layout.SetMaxWidth(boundary_size.width);
     text_layout.SetMaxHeight(boundary_size.height);
 
@@ -236,7 +237,22 @@ Size GeneralTextualCore::CalculateTextSize(const Size& boundary_size) {
         metrics.WidthIncludingTrailingWhitespace() :
         metrics.Width();
 
+    //Recover layout size.
+    text_layout.SetMaxWidth(layout_size_.width);
+    text_layout.SetMaxHeight(layout_size_.height);
+
     return zaf::Size{ width, metrics.Height() };
+}
+
+
+void GeneralTextualCore::LayoutText(const Size& layout_size) {
+
+    layout_size_ = layout_size;
+
+    if (text_layout_) {
+        text_layout_.SetMaxWidth(layout_size_.width);
+        text_layout_.SetMaxHeight(layout_size_.height);
+    }
 }
 
 
@@ -251,13 +267,12 @@ void GeneralTextualCore::PaintText(
     }
 
     auto text_layout = GetTextLayout();
-    text_layout.SetMaxWidth(text_rect.size.width);
-    text_layout.SetMaxHeight(text_rect.size.height);
 
     SetTextColorsToTextLayout(text_layout, canvas.Renderer(), *owner);
 
     auto state_guard = canvas.PushState();
     canvas.SetBrushWithColor(GetTextColorPicker()(*owner));
+
     auto clipping_guard = canvas.PushClipping(text_rect);
     canvas.DrawTextLayout(text_layout, text_rect.position);
 }
@@ -301,6 +316,8 @@ TextLayout GeneralTextualCore::CreateTextLayout() const {
     TextLayoutProperties text_layout_properties;
     text_layout_properties.text = text_;
     text_layout_properties.text_format = CreateTextFormat();
+    text_layout_properties.width = layout_size_.width;
+    text_layout_properties.height = layout_size_.height;
     auto text_layout = GraphicFactory::Instance().CreateTextLayout(text_layout_properties);
 
     if (default_font_.has_underline) {

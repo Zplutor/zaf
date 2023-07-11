@@ -202,6 +202,7 @@ protected:
     }
 
     void Initialize() override;
+    void Layout(const zaf::Rect&) override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
     void ReleaseRendererResources() override;

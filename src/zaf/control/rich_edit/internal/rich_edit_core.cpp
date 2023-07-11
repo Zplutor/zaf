@@ -286,6 +286,11 @@ Size RichEditCore::CalculateTextSize(const Size& boundary_size) {
 }
 
 
+void RichEditCore::LayoutText(const Size& text_size) {
+    //Nothing to do.
+}
+
+
 void RichEditCore::PaintText(
     Canvas& canvas,
     const Rect& dirty_rect,

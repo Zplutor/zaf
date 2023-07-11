@@ -44,6 +44,15 @@ void TextualControl::Initialize() {
 }
 
 
+void TextualControl::Layout(const zaf::Rect& previous_rect) {
+
+    __super::Layout(previous_rect);
+
+    auto text_rect = DetermineTextRect();
+    core_->LayoutText(text_rect.size);
+}
+
+
 void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
