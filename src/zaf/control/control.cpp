@@ -559,12 +559,49 @@ void Control::SetRect(const zaf::Rect& rect) {
 
 
 void Control::OnRectChanged(const RectChangedInfo& event_info) {
+
     rect_changed_event_.Raise(event_info);
+
+    if (this->Rect().position != event_info.PreviousRect().position) {
+
+        OnPositionChanged(PositionChangedInfo{ 
+            shared_from_this(),
+            event_info.PreviousRect().position 
+        });
+    }
+
+    if (this->Rect().size != event_info.PreviousRect().size) {
+
+        OnSizeChanged(SizeChangedInfo{ 
+            shared_from_this(), 
+            event_info.PreviousRect().size
+        });
+    }
 }
 
 
 Observable<RectChangedInfo> Control::RectChangedEvent() const {
     return rect_changed_event_.GetObservable();
+}
+
+
+void Control::OnPositionChanged(const PositionChangedInfo& event_info) {
+    position_changed_event_.Raise(event_info);
+}
+
+
+Observable<PositionChangedInfo> Control::PositionChangedEvent() const {
+    return position_changed_event_.GetObservable();
+}
+
+
+void Control::OnSizeChanged(const SizeChangedInfo& event_info) {
+    size_changed_event_.Raise(event_info);
+}
+
+
+Observable<SizeChangedInfo> Control::SizeChangedEvent() const {
+    return size_changed_event_.GetObservable();
 }
 
 

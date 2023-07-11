@@ -285,3 +285,87 @@ TEST(ControlTest, WindowChangedEvent) {
         ASSERT_EQ(new_control_event_info->new_window, window);
     }
 }
+
+
+TEST(ControlTest, RectChangedEvent) {
+
+    struct EventInfo {
+        bool rect_changed_raised{};
+        zaf::Rect old_rect;
+        bool position_changed_raised{};
+        zaf::Point old_position;
+        bool size_changed_raised{};
+        zaf::Size old_size;
+    };
+
+    auto subscribe_event = [](const std::shared_ptr<zaf::Control>& control) {
+    
+        auto result = std::make_shared<EventInfo>();
+
+        auto& subscriptions = zaf::Application::Instance().Subscriptions();
+        subscriptions += control->RectChangedEvent().Subscribe(
+            [result](const zaf::RectChangedInfo& event_info) {
+        
+            result->rect_changed_raised = true;
+            result->old_rect = event_info.PreviousRect();
+        });
+
+        subscriptions += control->PositionChangedEvent().Subscribe(
+            [result](const zaf::PositionChangedInfo& event_info) {
+        
+            result->position_changed_raised = true;
+            result->old_position = event_info.PreviousPosition();
+        });
+
+        subscriptions += control->SizeChangedEvent().Subscribe(
+            [result](const zaf::SizeChangedInfo& event_info) {
+
+            result->size_changed_raised = true;
+            result->old_size = event_info.PreviousSize();
+        });
+
+        return result;
+    };
+
+    auto control = zaf::Create<zaf::Control>();
+    auto event_info = subscribe_event(control);
+
+    control->SetRect(zaf::Rect{ 10, 10, 100, 100 });
+    ASSERT_TRUE(event_info->rect_changed_raised);
+    ASSERT_EQ(event_info->old_rect, zaf::Rect());
+    ASSERT_TRUE(event_info->position_changed_raised);
+    ASSERT_EQ(event_info->old_position, zaf::Point());
+    ASSERT_TRUE(event_info->size_changed_raised);
+    ASSERT_EQ(event_info->old_size, zaf::Size());
+
+    *event_info = {};
+    control->SetRect(zaf::Rect{ 10, 10, 100, 100 });
+    ASSERT_FALSE(event_info->rect_changed_raised);
+    ASSERT_FALSE(event_info->position_changed_raised);
+    ASSERT_FALSE(event_info->size_changed_raised);
+
+    *event_info = {};
+    control->SetRect(zaf::Rect{ 20, 20, 200, 200 });
+    ASSERT_TRUE(event_info->rect_changed_raised);
+    ASSERT_EQ(event_info->old_rect, zaf::Rect(10, 10, 100, 100));
+    ASSERT_TRUE(event_info->position_changed_raised);
+    ASSERT_EQ(event_info->old_position, zaf::Point(10, 10));
+    ASSERT_TRUE(event_info->size_changed_raised);
+    ASSERT_EQ(event_info->old_size, zaf::Size(100, 100));
+
+    *event_info = {};
+    control->SetRect(zaf::Rect{ 30, 30, 200, 200 });
+    ASSERT_TRUE(event_info->rect_changed_raised);
+    ASSERT_EQ(event_info->old_rect, zaf::Rect(20, 20, 200, 200));
+    ASSERT_TRUE(event_info->position_changed_raised);
+    ASSERT_EQ(event_info->old_position, zaf::Point(20, 20));
+    ASSERT_FALSE(event_info->size_changed_raised);
+
+    *event_info = {};
+    control->SetRect(zaf::Rect{ 30, 30, 300, 300 });
+    ASSERT_TRUE(event_info->rect_changed_raised);
+    ASSERT_EQ(event_info->old_rect, zaf::Rect(30, 30, 200, 200));
+    ASSERT_FALSE(event_info->position_changed_raised);
+    ASSERT_TRUE(event_info->size_changed_raised);
+    ASSERT_EQ(event_info->old_size, zaf::Size(200, 200));
+}

@@ -70,9 +70,24 @@ protected:
 
         text_box_ = zaf::Create<zaf::TextBox>();
         text_box_->SetFontSize(20);
-        text_box_->SetText(L"This is a text box.\r\nLine after CRLF.\nLine after LF.\rLine after CR.");
+        text_box_->SetTextAlignment(zaf::TextAlignment::Center);
+        text_box_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
+
+        std::wstring content;
+        for (int line = 0; line < 20; ++line) {
+            content += L"Line " + std::to_wstring(line) + L"\r\n";
+        }
+        text_box_->SetText(content);
+
+        rich_edit_ = zaf::Create<zaf::RichEdit>();
+        rich_edit_->SetFontSize(20);
+        rich_edit_->SetTextAlignment(zaf::TextAlignment::Center);
+        rich_edit_->SetIsMultiline(true);
+        //rich_edit_->SetText(L"This is rich edit. This is rich edit. This is rich edit. This is rich edit. ");
+        rich_edit_->SetText(L"This is rich edit.\r\nLine 1\r\nLine2");
 
         RootControl()->AddChild(text_box_);
+        RootControl()->AddChild(rich_edit_);
 
         InitializeButton();
     }
@@ -90,6 +105,7 @@ private:
 
 private:
     std::shared_ptr<zaf::TextBox> text_box_;
+    std::shared_ptr<zaf::RichEdit> rich_edit_;
     std::shared_ptr<zaf::Button> button_;
 };
 

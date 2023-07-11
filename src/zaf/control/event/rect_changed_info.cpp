@@ -12,4 +12,24 @@ RectChangedInfo::RectChangedInfo(
 
 }
 
+
+PositionChangedInfo::PositionChangedInfo(
+    const std::shared_ptr<Control>& source,
+    const Point& previous_position)
+    :
+    EventInfo(source),
+    previous_position_(previous_position) {
+
+}
+
+
+SizeChangedInfo::SizeChangedInfo(
+    const std::shared_ptr<Control>& source,
+    const Size& previous_size)
+    :
+    EventInfo(source),
+    previous_size_(previous_size) {
+
+}
+
 }

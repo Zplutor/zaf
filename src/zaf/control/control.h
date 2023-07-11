@@ -668,6 +668,8 @@ public:
      This event is raised when the control's rect is changed.
      */
     Observable<RectChangedInfo> RectChangedEvent() const;
+    Observable<PositionChangedInfo> PositionChangedEvent() const;
+    Observable<SizeChangedInfo> SizeChangedEvent() const;
 
     Observable<FocusGainedInfo> FocusGainedEvent() const;
     Observable<FocusLostInfo> FocusLostEvent() const;
@@ -800,7 +802,28 @@ protected:
     virtual void OnFocusGained(const FocusGainedInfo& event_info);
     virtual void OnFocusLost(const FocusLostInfo& event_info);
 
+    /**
+    Handles rect changed event. This method is called after the rect of the control changed.
+
+    The default implementation raises RectChangedEvent, calls OnPositionChanged() if the position
+    is changed, and calls OnSizeChanged() if the size is changed.
+    */
     virtual void OnRectChanged(const RectChangedInfo& event_info);
+
+    /**
+    Handles position changed event. This method is called after the position of the control
+    changed.
+
+    The default implementation raises SizeChangedEvent.
+    */
+    virtual void OnPositionChanged(const PositionChangedInfo& event_info);
+
+    /**
+    Handles size changed event. This method is called after the size of the control changed.
+
+    The default implementation raises SizeChangedEvent.
+    */
+    virtual void OnSizeChanged(const SizeChangedInfo& event_info);
 
     /**
      Process the is visible change notification.
@@ -946,6 +969,8 @@ private:
     std::wstring tooltip_;
 
     Event<RectChangedInfo> rect_changed_event_;
+    Event<PositionChangedInfo> position_changed_event_;
+    Event<SizeChangedInfo> size_changed_event_;
     Event<FocusGainedInfo> focus_gained_event_;
     Event<FocusLostInfo> focus_lost_event_;
     Event<MouseCursorChangingInfo> mouse_cursor_changing_event_;
