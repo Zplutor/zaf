@@ -48,6 +48,16 @@ TextLayout TextBox::GetTextLayout() const {
 }
 
 
+void TextBox::Layout(const zaf::Rect& previous_rect) {
+
+    __super::Layout(previous_rect);
+
+    if (caret_->IsVisible()) {
+        UpdateCaretAtCurrentIndex();
+    }
+}
+
+
 void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
