@@ -75,7 +75,7 @@ protected:
 
         std::wstring content;
         for (int line = 0; line < 20; ++line) {
-            content += L"Line " + std::to_wstring(line) + L"\r\n";
+            content += L"========== Line " + std::to_wstring(line) + L" ==========\r\n";
         }
         text_box_->SetText(content);
 
@@ -86,7 +86,7 @@ protected:
         rich_edit_->SetText(L"This is rich edit.This is rich edit.This is rich edit.This is rich edit.This is rich edit.This is rich edit.\r\nLine 1\r\nLine2");
 
         RootControl()->AddChild(text_box_);
-        RootControl()->AddChild(rich_edit_);
+        //RootControl()->AddChild(rich_edit_);
 
         InitializeButton();
     }

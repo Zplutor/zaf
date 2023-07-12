@@ -59,8 +59,8 @@ public:
     virtual void SetTextTrimming(const TextTrimming& text_trimming) = 0;
 
     virtual Size CalculateTextSize(const Size& boundary_size) = 0;
-    virtual void LayoutText(const Size& text_size) = 0;
-    virtual void PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect) = 0;
+    virtual void LayoutText(const Rect& layout_rect) = 0;
+    virtual void PaintText(Canvas& canvas, const Rect& dirty_rect) = 0;
     virtual void ReleaseRendererResources() = 0;
 };
 

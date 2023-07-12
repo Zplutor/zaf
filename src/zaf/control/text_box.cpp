@@ -114,6 +114,20 @@ void TextBox::PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_re
 }
 
 
+zaf::Rect TextBox::DetermineTextRect() {
+
+    auto text_layout = GetTextLayout();
+    auto metrics = text_layout.GetMetrics();
+
+    auto content_size = ContentSize();
+
+    zaf::Rect result;
+    result.size.width = (std::max)(content_size.width, metrics.Width());
+    result.size.height = (std::max)(content_size.height, metrics.Height());
+    return result;
+}
+
+
 void TextBox::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 
     __super::OnMouseCursorChanging(event_info);

@@ -51,8 +51,8 @@ public:
     void SetTextTrimming(const TextTrimming& text_trimming) override;
 
     Size CalculateTextSize(const Size& boundary_size) override;
-    void LayoutText(const Size& layout_size) override;
-    void PaintText(Canvas& canvas, const Rect& dirty_rect, const Rect& text_rect) override;
+    void LayoutText(const Rect& layout_rect) override;
+    void PaintText(Canvas& canvas, const Rect& dirty_rect) override;
     void ReleaseRendererResources() override;
 
     TextLayout GetTextLayout();
@@ -83,7 +83,7 @@ private:
     WordWrapping word_wrapping_{ WordWrapping::NoWrap };
     TextTrimming text_trimming_;
 
-    Size layout_size_;
+    Rect layout_rect_;
     TextLayout text_layout_;
 };
 

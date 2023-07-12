@@ -49,33 +49,16 @@ void TextualControl::Layout(const zaf::Rect& previous_rect) {
     __super::Layout(previous_rect);
 
     auto text_rect = DetermineTextRect();
-
-    zaf::Size layout_size;
-    layout_size.width = (std::max)(text_rect.size.width, 0.f);
-    layout_size.height = (std::max)(text_rect.size.height, 0.f);
-    core_->LayoutText(layout_size);
+    text_rect.size.width = (std::max)(text_rect.size.width, 0.f);
+    text_rect.size.height = (std::max)(text_rect.size.height, 0.f);
+    core_->LayoutText(text_rect);
 }
 
 
 void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
-
-    zaf::Rect text_rect = DetermineTextRect();
-    if (text_rect.size.width <= 0 || text_rect.size.height <= 0) {
-        return;
-    }
-
-    //Text rect is related to content rect's coordinate system, transfer it to control's coordinate 
-    //system.
-    auto content_rect = ContentRect();
-    text_rect.position.x += content_rect.position.x;
-    text_rect.position.y += content_rect.position.y;
-    //Prevent text rect exceeds content rect.
-    text_rect.size.width = (std::min)(text_rect.size.width, content_rect.size.width);
-    text_rect.size.height = (std::min)(text_rect.size.height, content_rect.size.height);
-
-    core_->PaintText(canvas, dirty_rect, text_rect);
+    core_->PaintText(canvas, dirty_rect);
 }
 
 

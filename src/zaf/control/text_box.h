@@ -21,6 +21,7 @@ public:
 protected:
     void Initialize() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    zaf::Rect DetermineTextRect() override;
     void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseMove(const MouseMoveInfo& event_info) override;
