@@ -48,8 +48,27 @@ void TextBox::Layout(const zaf::Rect& previous_rect) {
     auto metrics = text_layout.GetMetrics();
 
     auto content_size = ContentSize();
-    text_rect_.size.width = (std::max)(content_size.width, metrics.Width());
-    text_rect_.size.height = (std::max)(content_size.height, metrics.Height());
+    if (content_size.width >= metrics.Width()) {
+        text_rect_.size.width = content_size.width;
+        text_rect_.position.x = 0;
+    }
+    else {
+        text_rect_.size.width = metrics.Width();
+        if (text_rect_.Right() < content_size.width) {
+            text_rect_.position.x += content_size.width - text_rect_.Right();
+        }
+    }
+
+    if (content_size.height >= metrics.Height()) {
+        text_rect_.size.height = content_size.height;
+        text_rect_.position.y = 0;
+    }
+    else {
+        text_rect_.size.height = metrics.Height();
+        if (text_rect_.Bottom() < content_size.height) {
+            text_rect_.position.y += content_size.height - text_rect_.Bottom();
+        }
+    }
 
     __super::Layout(previous_rect);
 
