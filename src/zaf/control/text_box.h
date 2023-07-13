@@ -58,16 +58,16 @@ private:
     void HandleMouseMove(const MouseMoveInfo& event_info);
     void HandleMouseUp(const MouseUpInfo& event_info);
     std::optional<TextIndexInfo> FindTextIndexAtPoint(const Point& point) const;
-    void SetSelectionByMouse(const TextIndexInfo& index_info, bool begin_selection);
 
     void HandleKeyDown(const KeyDownInfo& event_info);
-    void BackwardCaretIndex(bool is_selecting_range);
-    void ForwardCaretIndex(bool is_selecting_range);
-    void UpwardCaretIndex(bool is_selecting_range);
-    void DownwardCaretIndex(bool is_selecting_range);
-    void UpdateCaretIndexVertically(bool is_downward, bool is_selecting_range);
+    void BackwardCaretIndex(bool expand_selection);
+    void ForwardCaretIndex(bool expand_selection);
+    void UpwardCaretIndex(bool expand_selection);
+    void DownwardCaretIndex(bool expand_selection);
+    void UpdateCaretIndexVertically(bool is_downward, bool expand_selection);
     LineInfo LocateCurrentLineInfo();
-    void SetCaretIndex(std::size_t caret_index, bool is_selecting_range, bool update_caret_x);
+    void SetCaretIndexByMouse(const TextIndexInfo& index_info, bool begin_selection);
+    void SetCaretIndex(std::size_t caret_index, bool expand_selection, bool update_caret_x);
     void UpdateCaretLastX();
     void UpdateCaretAtCurrentIndex();
     void ShowCaret(const zaf::Rect& caret_rect);

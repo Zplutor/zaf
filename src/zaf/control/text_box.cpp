@@ -174,8 +174,7 @@ void TextBox::HandleMouseDown(const MouseDownInfo& event_info) {
 
     CaptureMouse();
 
-    SetSelectionByMouse(*index_info, true);
-    NeedRepaint();
+    SetCaretIndexByMouse(*index_info, true);
 }
 
 
@@ -202,8 +201,7 @@ void TextBox::HandleMouseMove(const MouseMoveInfo& event_info) {
         return;
     }
 
-    SetSelectionByMouse(*index_info, false);
-    NeedRepaint();
+    SetCaretIndexByMouse(*index_info, false);
 }
 
 
@@ -229,11 +227,10 @@ void TextBox::HandleMouseUp(const MouseUpInfo& event_info) {
 
     auto index_info = FindTextIndexAtPoint(event_info.PositionAtSource());
     if (index_info) {
-        SetSelectionByMouse(*index_info, false);
+        SetCaretIndexByMouse(*index_info, false);
     }
 
     begin_mouse_select_index_.reset();
-    NeedRepaint();
 }
 
 
@@ -249,28 +246,6 @@ std::optional<TextBox::TextIndexInfo> TextBox::FindTextIndexAtPoint(const Point&
         result.rect.position.x += hit_test_result.Metrics().Width();
     }
     return result;
-}
-
-
-void TextBox::SetSelectionByMouse(const TextIndexInfo& index_info, bool begin_selection) {
-
-    if (begin_selection) {
-        begin_mouse_select_index_ = index_info.index;
-        caret_index_ = index_info.index;
-    }
-    else {
-        if (!begin_mouse_select_index_) {
-            return;
-        }
-        caret_index_ = index_info.index;
-    }
-
-    selection_range_ = Range::FromIndexPair(
-        (std::min)(*begin_mouse_select_index_, caret_index_),
-        (std::max)(*begin_mouse_select_index_, caret_index_));
-
-    UpdateCaretLastX();
-    ShowCaret(index_info.rect);
 }
 
 
@@ -337,7 +312,7 @@ void TextBox::HandleKeyDown(const KeyDownInfo& event_info) {
 }
 
 
-void TextBox::BackwardCaretIndex(bool is_selecting_range) {
+void TextBox::BackwardCaretIndex(bool expand_selection) {
 
     std::size_t new_index = caret_index_;
     if (new_index > 0) {
@@ -355,11 +330,11 @@ void TextBox::BackwardCaretIndex(bool is_selecting_range) {
         }
     }
 
-    SetCaretIndex(new_index, is_selecting_range, true);
+    SetCaretIndex(new_index, expand_selection, true);
 }
 
 
-void TextBox::ForwardCaretIndex(bool is_selecting_range) {
+void TextBox::ForwardCaretIndex(bool expand_selection) {
 
     auto text = GetText();
 
@@ -377,7 +352,7 @@ void TextBox::ForwardCaretIndex(bool is_selecting_range) {
         }
     }
 
-    SetCaretIndex(new_index, is_selecting_range, true);
+    SetCaretIndex(new_index, expand_selection, true);
 }
 
 
@@ -391,7 +366,7 @@ void TextBox::DownwardCaretIndex(bool is_selecting_range) {
 }
 
 
-void TextBox::UpdateCaretIndexVertically(bool is_downward, bool is_selecting_range) {
+void TextBox::UpdateCaretIndexVertically(bool is_downward, bool expand_selection) {
 
     auto caret_hit_test_result = GetTextLayout().HitTestIndex(caret_index_, false);
 
@@ -413,7 +388,7 @@ void TextBox::UpdateCaretIndexVertically(bool is_downward, bool is_selecting_ran
         ++new_index;
     }
 
-    SetCaretIndex(new_index, is_selecting_range, false);
+    SetCaretIndex(new_index, expand_selection, false);
 }
 
 
@@ -440,14 +415,37 @@ TextBox::LineInfo TextBox::LocateCurrentLineInfo() {
 }
 
 
-void TextBox::SetCaretIndex(std::size_t new_index, bool is_selecting_range, bool update_caret_x) {
+void TextBox::SetCaretIndexByMouse(const TextIndexInfo& index_info, bool begin_selection) {
+
+    if (begin_selection) {
+        begin_mouse_select_index_ = index_info.index;
+        caret_index_ = index_info.index;
+    }
+    else {
+        if (!begin_mouse_select_index_) {
+            return;
+        }
+        caret_index_ = index_info.index;
+    }
+
+    selection_range_ = Range::FromIndexPair(
+        (std::min)(*begin_mouse_select_index_, caret_index_),
+        (std::max)(*begin_mouse_select_index_, caret_index_));
+
+    UpdateCaretLastX();
+    ShowCaret(index_info.rect);
+    NeedRepaint();
+}
+
+
+void TextBox::SetCaretIndex(std::size_t new_index, bool expand_selection, bool update_caret_x) {
 
     auto old_index = caret_index_;
     caret_index_ = (std::min)(new_index, core_->GetTextLength());
 
     std::size_t selection_begin = caret_index_;
     std::size_t selection_end = caret_index_;
-    if (is_selecting_range) {
+    if (expand_selection) {
 
         if (old_index == selection_range_.Index()) {
             selection_begin = (std::min)(caret_index_, selection_range_.EndIndex());
