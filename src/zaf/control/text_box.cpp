@@ -8,13 +8,6 @@
 #include <zaf/object/type_definition.h>
 
 namespace zaf {
-namespace {
-
-Rect GetCaretRect(const HitTestMetrics& metrics) {
-    return Rect{ metrics.Left(), metrics.Top(), 1, metrics.Height() };
-}
-
-}
 
 ZAF_DEFINE_TYPE(TextBox)
 ZAF_DEFINE_TYPE_END
@@ -50,11 +43,24 @@ TextLayout TextBox::GetTextLayout() const {
 
 void TextBox::Layout(const zaf::Rect& previous_rect) {
 
+    //Update text rect before layouting.
+    auto text_layout = GetTextLayout();
+    auto metrics = text_layout.GetMetrics();
+
+    auto content_size = ContentSize();
+    text_rect_.size.width = (std::max)(content_size.width, metrics.Width());
+    text_rect_.size.height = (std::max)(content_size.height, metrics.Height());
+
     __super::Layout(previous_rect);
 
     if (caret_->IsVisible()) {
         UpdateCaretAtCurrentIndex();
     }
+}
+
+
+zaf::Rect TextBox::DetermineTextRect() {
+    return text_rect_;
 }
 
 
@@ -103,8 +109,11 @@ void TextBox::PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_re
         return;
     }
 
-    auto brush = canvas.Renderer().CreateSolidColorBrush(zaf::Color::FromARGB(0x7FAADCFF));
+    zaf::Rect region_rect = text_rect_;
+    region_rect.AddOffset(ContentRect().position);
+    auto region_guard = canvas.PushRegion(region_rect, region_rect);
 
+    auto brush = canvas.Renderer().CreateSolidColorBrush(zaf::Color::FromARGB(0x7FAADCFF));
     auto text = std::get<0>(core_->GetText());
 
     for (UINT32 index = 0; index < metrics_count; ++index) {
@@ -121,20 +130,6 @@ void TextBox::PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_re
 
         canvas.DrawRectangle(rect, brush);
     }
-}
-
-
-zaf::Rect TextBox::DetermineTextRect() {
-
-    auto text_layout = GetTextLayout();
-    auto metrics = text_layout.GetMetrics();
-
-    auto content_size = ContentSize();
-
-    zaf::Rect result;
-    result.size.width = (std::max)(content_size.width, metrics.Width());
-    result.size.height = (std::max)(content_size.height, metrics.Height());
-    return result;
 }
 
 
@@ -167,14 +162,14 @@ void TextBox::HandleMouseDown(const MouseDownInfo& event_info) {
 
     this->SetIsFocused(true);
 
-    auto index_info = FindTextIndexAtPoint(event_info.PositionAtSource());
-    if (!index_info) {
+    auto new_index = FindTextIndexAtPoint(event_info.PositionAtSource());
+    if (!new_index) {
         return;
     }
 
     CaptureMouse();
 
-    SetCaretIndexByMouse(*index_info, true);
+    SetCaretIndexByMouse(*new_index, true);
 }
 
 
@@ -196,12 +191,12 @@ void TextBox::HandleMouseMove(const MouseMoveInfo& event_info) {
         return;
     }
 
-    auto index_info = FindTextIndexAtPoint(event_info.PositionAtSource());
-    if (!index_info) {
+    auto new_index = FindTextIndexAtPoint(event_info.PositionAtSource());
+    if (!new_index) {
         return;
     }
 
-    SetCaretIndexByMouse(*index_info, false);
+    SetCaretIndexByMouse(*new_index, false);
 }
 
 
@@ -225,25 +220,25 @@ void TextBox::HandleMouseUp(const MouseUpInfo& event_info) {
 
     ReleaseMouse();
 
-    auto index_info = FindTextIndexAtPoint(event_info.PositionAtSource());
-    if (index_info) {
-        SetCaretIndexByMouse(*index_info, false);
+    auto new_index = FindTextIndexAtPoint(event_info.PositionAtSource());
+    if (new_index) {
+        SetCaretIndexByMouse(*new_index, false);
     }
 
     begin_mouse_select_index_.reset();
 }
 
 
-std::optional<TextBox::TextIndexInfo> TextBox::FindTextIndexAtPoint(const Point& point) const {
+std::optional<std::size_t> TextBox::FindTextIndexAtPoint(const Point& point_in_control) const {
 
-    auto hit_test_result = GetTextLayout().HitTestPoint(point);
+    auto point_in_text_rect = point_in_control;
+    point_in_text_rect.SubtractOffset(ContentRect().position);
+    point_in_text_rect.SubtractOffset(text_rect_.position);
 
-    TextIndexInfo result;
-    result.index = hit_test_result.Metrics().TextIndex();
-    result.rect = GetCaretRect(hit_test_result.Metrics());
+    auto hit_test_result = GetTextLayout().HitTestPoint(point_in_text_rect);
+    std::size_t result = hit_test_result.Metrics().TextIndex();
     if (hit_test_result.IsTrailingHit()) {
-        ++result.index;
-        result.rect.position.x += hit_test_result.Metrics().Width();
+        ++result;
     }
     return result;
 }
@@ -415,26 +410,24 @@ TextBox::LineInfo TextBox::LocateCurrentLineInfo() {
 }
 
 
-void TextBox::SetCaretIndexByMouse(const TextIndexInfo& index_info, bool begin_selection) {
+void TextBox::SetCaretIndexByMouse(std::size_t new_index, bool begin_selection) {
 
     if (begin_selection) {
-        begin_mouse_select_index_ = index_info.index;
-        caret_index_ = index_info.index;
+        begin_mouse_select_index_ = new_index;
+        caret_index_ = new_index;
     }
     else {
         if (!begin_mouse_select_index_) {
             return;
         }
-        caret_index_ = index_info.index;
+        caret_index_ = new_index;
     }
 
     selection_range_ = Range::FromIndexPair(
         (std::min)(*begin_mouse_select_index_, caret_index_),
         (std::max)(*begin_mouse_select_index_, caret_index_));
 
-    UpdateCaretLastX();
-    ShowCaret(index_info.rect);
-    NeedRepaint();
+    AfterSetCaretIndex(true);
 }
 
 
@@ -458,33 +451,70 @@ void TextBox::SetCaretIndex(std::size_t new_index, bool expand_selection, bool u
     }
 
     selection_range_ = Range::FromIndexPair(selection_begin, selection_end);
-    
-    if (update_caret_x) {
-        UpdateCaretLastX();
-    }
-
-    UpdateCaretAtCurrentIndex();
-    NeedRepaint();
+    AfterSetCaretIndex(update_caret_x);
 }
 
 
-void TextBox::UpdateCaretLastX() {
+void TextBox::AfterSetCaretIndex(bool update_caret_x) {
+
     auto hit_test_result = GetTextLayout().HitTestIndex(caret_index_, false);
-    caret_last_x_ = hit_test_result.X();
+    const auto& metrics = hit_test_result.Metrics();
+
+    EnsureCaretVisible(metrics);
+
+    if (update_caret_x) {
+        caret_last_x_ = metrics.Left();
+    }
+
+    ShowCaret(metrics);
+    NeedRepaint();
 }
 
 
 void TextBox::UpdateCaretAtCurrentIndex() {
 
     auto hit_test_result = GetTextLayout().HitTestIndex(caret_index_, false);
-    ShowCaret(GetCaretRect(hit_test_result.Metrics()));
+    ShowCaret(hit_test_result.Metrics());
 }
 
 
-void TextBox::ShowCaret(const zaf::Rect& caret_rect) {
+void TextBox::ShowCaret(const HitTestMetrics& metrics) {
+
+    zaf::Rect caret_rect{ metrics.Left(), metrics.Top(), 1, metrics.Height() };
+    caret_rect.AddOffset(text_rect_.position);
 
     caret_->SetRect(Align(caret_rect));
     caret_->SetIsVisible(true);
+}
+
+
+void TextBox::EnsureCaretVisible(const HitTestMetrics& metrics) {
+
+    float x_begin = metrics.Left() + text_rect_.Left();
+    if (x_begin < 0) {
+        text_rect_.position.x -= x_begin;
+    }
+    else {
+        float x_end = metrics.Left() + metrics.Width() + text_rect_.Left();
+        auto content_size = ContentSize();
+        if (x_end >= content_size.width) {
+            text_rect_.position.x += content_size.width - x_end;
+        }
+    }
+
+    float y_begin = metrics.Top() + text_rect_.Top();
+    if (y_begin < 0) {
+        text_rect_.position.y -= y_begin;
+    }
+    else {
+        float y_end = metrics.Top() + metrics.Height() + text_rect_.Top();
+        auto content_size = ContentSize();
+        if (y_end >= content_size.height) {
+            text_rect_.position.y += content_size.height - y_end;
+        }
+    }
+
+    core_->LayoutText(text_rect_);
 }
 
 

@@ -75,7 +75,7 @@ protected:
 
         std::wstring content;
         for (int line = 0; line < 20; ++line) {
-            content += L"========== Line " + std::to_wstring(line) + L" ==========\r\n";
+            content += L"========== Line " + std::to_wstring(line) + L" 1234567890\r\n";
         }
         text_box_->SetText(content);
 

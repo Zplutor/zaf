@@ -21,8 +21,8 @@ public:
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
-    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     zaf::Rect DetermineTextRect() override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseMove(const MouseMoveInfo& event_info) override;
@@ -57,7 +57,7 @@ private:
     void HandleMouseDown(const MouseDownInfo& event_info);
     void HandleMouseMove(const MouseMoveInfo& event_info);
     void HandleMouseUp(const MouseUpInfo& event_info);
-    std::optional<TextIndexInfo> FindTextIndexAtPoint(const Point& point) const;
+    std::optional<std::size_t> FindTextIndexAtPoint(const Point& point_in_control) const;
 
     void HandleKeyDown(const KeyDownInfo& event_info);
     void BackwardCaretIndex(bool expand_selection);
@@ -66,11 +66,12 @@ private:
     void DownwardCaretIndex(bool expand_selection);
     void UpdateCaretIndexVertically(bool is_downward, bool expand_selection);
     LineInfo LocateCurrentLineInfo();
-    void SetCaretIndexByMouse(const TextIndexInfo& index_info, bool begin_selection);
+    void SetCaretIndexByMouse(std::size_t new_index, bool begin_selection);
     void SetCaretIndex(std::size_t caret_index, bool expand_selection, bool update_caret_x);
-    void UpdateCaretLastX();
+    void AfterSetCaretIndex(bool update_caret_x);
     void UpdateCaretAtCurrentIndex();
-    void ShowCaret(const zaf::Rect& caret_rect);
+    void ShowCaret(const HitTestMetrics& metrics);
+    void EnsureCaretVisible(const HitTestMetrics& metrics);
 
     void HandleCopy();
 
@@ -82,6 +83,8 @@ private:
     std::size_t caret_index_{};
     std::shared_ptr<Caret> caret_;
     float caret_last_x_{};
+
+    zaf::Rect text_rect_;
 };
 
 }
