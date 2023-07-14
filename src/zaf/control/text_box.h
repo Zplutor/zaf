@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/base/range.h>
+#include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/text/text_layout.h>
 
@@ -11,7 +12,7 @@ class TextBoxCore;
 
 class Caret;
 
-class TextBox : public TextualControl {
+class TextBox : public TextualControl, public SelfScrollingControl {
 public:
     ZAF_DECLARE_TYPE;
 
@@ -31,13 +32,31 @@ protected:
     void OnFocusLost(const FocusLostInfo& event_info) override;
     void OnKeyDown(const KeyDownInfo& event_info) override;
 
-private:
-    class TextIndexInfo {
-    public:
-        std::size_t index{};
-        zaf::Rect rect{};
-    };
+    //Methods from SelfScrollingControl
+    void SetAllowVerticalScroll(bool allow) override;
+    void SetAllowHorizontalScroll(bool allow) override;
+    void SetAutoHideScrollBars(bool auto_hide) override;
+    bool CanShowVerticalScrollBar() override;
+    bool CanShowHorizontalScrollBar() override;
+    bool CanEnableVerticalScrollBar() override;
+    bool CanEnableHorizontalScrollBar() override;
+    void GetVerticalScrollValues(
+        int& current_value,
+        int& min_value,
+        int& max_value,
+        int& page_value) override;
+    void GetHorizontalScrollValues(
+        int& current_value,
+        int& min_value,
+        int& max_value,
+        int& page_value) override;
 
+    Observable<SelfScrollingControlScrollBarChangInfo> ScrollBarChangeEvent() override;
+    Observable<SelfScrollingControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
+    void VerticallyScroll(int new_value) override;
+    void HorizontallyScroll(int new_value) override;
+
+private:
     class LineInfo {
     public:
         std::size_t line_char_index{};
@@ -53,6 +72,8 @@ private:
 
     std::wstring_view GetText() const;
     TextLayout GetTextLayout() const;
+
+    void UpdateTextRectOnLayout();
 
     void HandleMouseDown(const MouseDownInfo& event_info);
     void HandleMouseMove(const MouseMoveInfo& event_info);
@@ -85,6 +106,12 @@ private:
     float caret_last_x_{};
 
     zaf::Rect text_rect_;
+
+    bool allow_vertical_scroll_{ true };
+    bool allow_horizontal_scroll_{ true };
+
+    Event<SelfScrollingControlScrollBarChangInfo> scroll_bar_change_event_;
+    Event<SelfScrollingControlScrollValuesChangeInfo> scroll_values_change_event_;
 };
 
 }

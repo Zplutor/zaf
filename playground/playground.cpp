@@ -68,30 +68,55 @@ protected:
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
+        auto horizontal_box = zaf::Create<zaf::HorizontalBox>();
+        horizontal_box->AddChild(InitializeTextBox());
+        horizontal_box->AddChild(InitializeRichEdit());
+        RootControl()->AddChild(horizontal_box);
+
+        Subscriptions() += rich_edit_->TextChangedEvent().Subscribe(
+            [this](const zaf::TextChangedInfo& event_info) {
+        
+            text_box_->SetText(rich_edit_->Text());
+        });
+
+        rich_edit_->SetText(GenerateInitialText());
+        InitializeButton();
+    }
+
+private:
+    std::shared_ptr<zaf::Control> InitializeTextBox() {
+
         text_box_ = zaf::Create<zaf::TextBox>();
         text_box_->SetFontSize(20);
         text_box_->SetTextAlignment(zaf::TextAlignment::Center);
         text_box_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
 
-        std::wstring content;
-        for (int line = 0; line < 20; ++line) {
-            content += L"========== Line " + std::to_wstring(line) + L" 1234567890\r\n";
-        }
-        text_box_->SetText(content);
-
-        rich_edit_ = zaf::Create<zaf::RichEdit>();
-        rich_edit_->SetFontSize(20);
-        rich_edit_->SetTextAlignment(zaf::TextAlignment::Center);
-        rich_edit_->SetIsMultiline(true);
-        rich_edit_->SetText(L"This is rich edit.This is rich edit.This is rich edit.This is rich edit.This is rich edit.This is rich edit.\r\nLine 1\r\nLine2");
-
-        RootControl()->AddChild(text_box_);
-        //RootControl()->AddChild(rich_edit_);
-
-        InitializeButton();
+        auto scroll_control = zaf::Create<zaf::ScrollableControl>();
+        scroll_control->SetScrollContent(text_box_);
+        return scroll_control;
     }
 
-private:
+    std::shared_ptr<zaf::Control> InitializeRichEdit() {
+
+        rich_edit_ = zaf::Create<zaf::RichEdit>();
+        rich_edit_->SetIsMultiline(true);
+        rich_edit_->SetFontSize(20);
+        rich_edit_->SetBorder({});
+
+        auto scroll_control = zaf::Create<zaf::ScrollableControl>();
+        scroll_control->SetScrollContent(rich_edit_);
+        return scroll_control;
+    }
+
+    std::wstring GenerateInitialText() {
+
+        std::wstring content;
+        for (int line = 0; line < 40; ++line) {
+            content += L"========== Line " + std::to_wstring(line) + L" 1234567890\r\n";
+        }
+        return content;
+    }
+
     void InitializeButton() {
 
         button_ = zaf::Create<zaf::Button>();
@@ -127,6 +152,7 @@ int WINAPI WinMain(
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
 
     auto window = zaf::Create<Window>();
+    window->SetSize(zaf::Size{ 1200, 600 });
     window->SetIsSizable(true);
     window->SetHasTitleBar(true);
 

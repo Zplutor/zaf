@@ -44,37 +44,56 @@ TextLayout TextBox::GetTextLayout() const {
 void TextBox::Layout(const zaf::Rect& previous_rect) {
 
     //Update text rect before layouting.
-    auto text_layout = GetTextLayout();
-    auto metrics = text_layout.GetMetrics();
-
-    auto content_size = ContentSize();
-    if (content_size.width >= metrics.Width()) {
-        text_rect_.size.width = content_size.width;
-        text_rect_.position.x = 0;
-    }
-    else {
-        text_rect_.size.width = metrics.Width();
-        if (text_rect_.Right() < content_size.width) {
-            text_rect_.position.x += content_size.width - text_rect_.Right();
-        }
-    }
-
-    if (content_size.height >= metrics.Height()) {
-        text_rect_.size.height = content_size.height;
-        text_rect_.position.y = 0;
-    }
-    else {
-        text_rect_.size.height = metrics.Height();
-        if (text_rect_.Bottom() < content_size.height) {
-            text_rect_.position.y += content_size.height - text_rect_.Bottom();
-        }
-    }
+    UpdateTextRectOnLayout();
 
     __super::Layout(previous_rect);
 
     if (caret_->IsVisible()) {
         UpdateCaretAtCurrentIndex();
     }
+}
+
+
+void TextBox::UpdateTextRectOnLayout() {
+
+    constexpr auto update_single_dimension = [](
+        float content_length, 
+        float metrics_length,
+        bool allow_scroll,
+        float& text_position, 
+        float& text_length) {
+    
+        if ((content_length >= metrics_length) || !allow_scroll) {
+            text_length = content_length;
+            text_position = 0;
+        }
+        else {
+            text_length = metrics_length;
+            auto text_end_position = text_position + text_length;
+            if (text_end_position < content_length) {
+                text_position += content_length - text_end_position;
+            }
+        }
+    };
+
+    auto metrics = GetTextLayout().GetMetrics();
+    auto content_size = ContentSize();
+
+    //Update x and width.
+    update_single_dimension(
+        content_size.width, 
+        metrics.Width(), 
+        allow_horizontal_scroll_,
+        text_rect_.position.x,
+        text_rect_.size.width);
+
+    //Update y and height.
+    update_single_dimension(
+        content_size.height,
+        metrics.Height(),
+        allow_vertical_scroll_,
+        text_rect_.position.y,
+        text_rect_.size.height);
 }
 
 
@@ -509,31 +528,169 @@ void TextBox::ShowCaret(const HitTestMetrics& metrics) {
 
 void TextBox::EnsureCaretVisible(const HitTestMetrics& metrics) {
 
-    float x_begin = metrics.Left() + text_rect_.Left();
-    if (x_begin < 0) {
-        text_rect_.position.x -= x_begin;
-    }
-    else {
-        float x_end = metrics.Left() + metrics.Width() + text_rect_.Left();
-        auto content_size = ContentSize();
-        if (x_end >= content_size.width) {
-            text_rect_.position.x += content_size.width - x_end;
+    constexpr auto update_single_dimension = [](
+        float content_length,
+        float metrics_position, 
+        float metrics_length,
+        float& text_position) {
+    
+        float begin = metrics_position + text_position;
+        if (begin < 0) {
+            text_position -= begin;
+            return true;
         }
+        else {
+            float end = metrics_position + metrics_length + text_position;
+            if (end >= content_length) {
+                text_position += content_length - end;
+                return true;
+            }
+        }
+        return false;
+    };
+
+    auto content_size = ContentSize();
+
+    //Update x.
+    auto x_changed = update_single_dimension(
+        content_size.width,
+        metrics.Left(),
+        metrics.Width(),
+        text_rect_.position.x);
+
+    //Update y.
+    auto y_changed = update_single_dimension(
+        content_size.height, 
+        metrics.Top(),
+        metrics.Height(), 
+        text_rect_.position.y);
+
+    if (x_changed) {
+        SelfScrollingControlScrollValuesChangeInfo event_info;
+        event_info.self_scrolling_control = this;
+        event_info.is_horizontal = true;
+        scroll_values_change_event_.Raise(event_info);
     }
 
-    float y_begin = metrics.Top() + text_rect_.Top();
-    if (y_begin < 0) {
-        text_rect_.position.y -= y_begin;
-    }
-    else {
-        float y_end = metrics.Top() + metrics.Height() + text_rect_.Top();
-        auto content_size = ContentSize();
-        if (y_end >= content_size.height) {
-            text_rect_.position.y += content_size.height - y_end;
-        }
+    if (y_changed) {
+        SelfScrollingControlScrollValuesChangeInfo event_info;
+        event_info.self_scrolling_control = this;
+        event_info.is_horizontal = false;
+        scroll_values_change_event_.Raise(event_info);
     }
 
+    if (x_changed || y_changed) {
+        core_->LayoutText(text_rect_);
+    }
+}
+
+
+void TextBox::SetAllowVerticalScroll(bool allow) {
+
+    allow_vertical_scroll_ = allow;
+    NeedRelayout();
+    NeedRepaint();
+}
+
+
+void TextBox::SetAllowHorizontalScroll(bool allow) {
+
+    allow_horizontal_scroll_ = allow;
+    NeedRelayout();
+    NeedRepaint();
+}
+
+
+void TextBox::SetAutoHideScrollBars(bool auto_hide) {
+    //Seems no need to do anything.
+}
+
+
+bool TextBox::CanShowVerticalScrollBar() {
+    return true;
+}
+
+
+bool TextBox::CanShowHorizontalScrollBar() {
+    return false;
+}
+
+
+bool TextBox::CanEnableVerticalScrollBar() {
+    return true;
+}
+
+
+bool TextBox::CanEnableHorizontalScrollBar() {
+    return false;
+}
+
+
+void TextBox::GetVerticalScrollValues(
+    int& current_value, 
+    int& min_value,
+    int& max_value,
+    int& page_value) {
+
+    min_value = 0;
+
+    auto content_size = ContentSize();
+    float size_difference = text_rect_.size.height - content_size.height;
+    max_value = static_cast<int>(size_difference);
+
+    current_value = static_cast<int>(-text_rect_.position.y);
+    page_value = static_cast<int>(content_size.height);
+}
+
+
+void TextBox::GetHorizontalScrollValues(
+    int& current_value, 
+    int& min_value,
+    int& max_value,
+    int& page_value) {
+
+    
+}
+
+
+Observable<SelfScrollingControlScrollBarChangInfo> TextBox::ScrollBarChangeEvent() {
+    return scroll_bar_change_event_.GetObservable();
+}
+
+
+Observable<SelfScrollingControlScrollValuesChangeInfo> TextBox::ScrollValuesChangeEvent() {
+    return scroll_values_change_event_.GetObservable();
+}
+
+
+void TextBox::VerticallyScroll(int new_value) {
+
+    auto content_size = ContentSize();
+    float difference = text_rect_.size.height - content_size.height;
+    int rounded_difference = static_cast<int>(difference);
+
+    int revised_value = (std::max)(0, new_value);
+    revised_value = (std::min)(revised_value, rounded_difference);
+
+    float new_y{};
+    if (revised_value == rounded_difference) {
+        new_y = -difference;
+    }
+    else {
+        new_y = static_cast<float>(-revised_value);
+    }
+
+    text_rect_.position.y = new_y;
     core_->LayoutText(text_rect_);
+    if (caret_->IsVisible()) {
+        UpdateCaretAtCurrentIndex();
+    }
+    NeedRepaint();
+}
+
+
+void TextBox::HorizontallyScroll(int new_value) {
+
 }
 
 

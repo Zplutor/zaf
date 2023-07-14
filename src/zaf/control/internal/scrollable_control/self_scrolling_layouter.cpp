@@ -58,6 +58,7 @@ void SelfScrollingLayouter::AdjustScrollBarValue(bool is_horizontal) {
     auto scrollable_control = GetScrollableControl();
     auto self_scrolling_content = GetSelfScrollingControl();
 
+    bool is_enabled{};
     int current_value{};
     int min_value{};
     int max_value{};
@@ -65,6 +66,8 @@ void SelfScrollingLayouter::AdjustScrollBarValue(bool is_horizontal) {
     std::shared_ptr<ScrollBar> scroll_bar;
 
     if (is_horizontal) {
+
+        is_enabled = self_scrolling_content->CanEnableHorizontalScrollBar();
 
         self_scrolling_content->GetHorizontalScrollValues(
             current_value, 
@@ -76,6 +79,8 @@ void SelfScrollingLayouter::AdjustScrollBarValue(bool is_horizontal) {
     }
     else {
 
+        is_enabled = self_scrolling_content->CanEnableVerticalScrollBar();
+
         self_scrolling_content->GetVerticalScrollValues(
             current_value, 
             min_value, 
@@ -86,6 +91,7 @@ void SelfScrollingLayouter::AdjustScrollBarValue(bool is_horizontal) {
     }
 
     auto update_guard = scroll_bar->BeginUpdate();
+    scroll_bar->SetIsEnabled(is_enabled);
     scroll_bar->SetPageSize(page_value);
     scroll_bar->SetValueRange(min_value, max_value);
     scroll_bar->SetValue(current_value);
@@ -113,9 +119,6 @@ void SelfScrollingLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_inf
 void SelfScrollingLayouter::SelfScrollingControlScrollBarChange() {
 
     Layout();
-
-    GetVerticalScrollBar()->SetIsEnabled(GetSelfScrollingControl()->CanEnableVerticalScrollBar());
-    GetHorizontalScrollBar()->SetIsEnabled(GetSelfScrollingControl()->CanEnableHorizontalScrollBar());
 }
 
 
