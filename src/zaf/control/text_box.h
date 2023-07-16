@@ -93,6 +93,16 @@ private:
     void UpdateCaretAtCurrentIndex();
     void ShowCaret(const HitTestMetrics& metrics);
     void EnsureCaretVisible(const HitTestMetrics& metrics);
+    
+    static void GetScrollValues(
+        float content_length,
+        float text_length,
+        float text_position,
+        int& current_value,
+        int& min_value,
+        int& max_value,
+        int& page_value);
+    void DoScroll(int new_value, float content_length, float text_length, float& text_position);
 
     void HandleCopy();
 

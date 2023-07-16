@@ -612,7 +612,7 @@ bool TextBox::CanShowVerticalScrollBar() {
 
 
 bool TextBox::CanShowHorizontalScrollBar() {
-    return false;
+    return true;
 }
 
 
@@ -622,7 +622,7 @@ bool TextBox::CanEnableVerticalScrollBar() {
 
 
 bool TextBox::CanEnableHorizontalScrollBar() {
-    return false;
+    return true;
 }
 
 
@@ -632,14 +632,14 @@ void TextBox::GetVerticalScrollValues(
     int& max_value,
     int& page_value) {
 
-    min_value = 0;
-
-    auto content_size = ContentSize();
-    float size_difference = text_rect_.size.height - content_size.height;
-    max_value = static_cast<int>(size_difference);
-
-    current_value = static_cast<int>(-text_rect_.position.y);
-    page_value = static_cast<int>(content_size.height);
+    GetScrollValues(
+        ContentSize().height,
+        text_rect_.size.height,
+        text_rect_.position.y,
+        current_value, 
+        min_value, 
+        max_value, 
+        page_value);
 }
 
 
@@ -649,7 +649,33 @@ void TextBox::GetHorizontalScrollValues(
     int& max_value,
     int& page_value) {
 
-    
+    GetScrollValues(
+        ContentSize().width,
+        text_rect_.size.width,
+        text_rect_.position.x,
+        current_value,
+        min_value,
+        max_value,
+        page_value);
+}
+
+
+void TextBox::GetScrollValues(
+    float content_length,
+    float text_length,
+    float text_position,
+    int& current_value,
+    int& min_value,
+    int& max_value,
+    int& page_value) {
+
+    min_value = 0;
+
+    float size_difference = text_length - content_length;
+    max_value = static_cast<int>(size_difference);
+
+    current_value = static_cast<int>(-text_position);
+    page_value = static_cast<int>(content_length);
 }
 
 
@@ -664,33 +690,39 @@ Observable<SelfScrollingControlScrollValuesChangeInfo> TextBox::ScrollValuesChan
 
 
 void TextBox::VerticallyScroll(int new_value) {
+    DoScroll(new_value, ContentSize().height, text_rect_.size.height, text_rect_.position.y);
+}
 
-    auto content_size = ContentSize();
-    float difference = text_rect_.size.height - content_size.height;
+
+void TextBox::HorizontallyScroll(int new_value) {
+    DoScroll(new_value, ContentSize().width, text_rect_.size.width, text_rect_.position.x);
+}
+
+
+void TextBox::DoScroll(
+    int new_value, 
+    float content_length, 
+    float text_length, 
+    float& text_position) {
+
+    float difference = text_length - content_length;
     int rounded_difference = static_cast<int>(difference);
 
     int revised_value = (std::max)(0, new_value);
     revised_value = (std::min)(revised_value, rounded_difference);
 
-    float new_y{};
     if (revised_value == rounded_difference) {
-        new_y = -difference;
+        text_position = -difference;
     }
     else {
-        new_y = static_cast<float>(-revised_value);
+        text_position = static_cast<float>(-revised_value);
     }
 
-    text_rect_.position.y = new_y;
     core_->LayoutText(text_rect_);
     if (caret_->IsVisible()) {
         UpdateCaretAtCurrentIndex();
     }
     NeedRepaint();
-}
-
-
-void TextBox::HorizontallyScroll(int new_value) {
-
 }
 
 

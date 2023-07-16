@@ -112,7 +112,10 @@ private:
 
         std::wstring content;
         for (int line = 0; line < 40; ++line) {
-            content += L"========== Line " + std::to_wstring(line) + L" 1234567890\r\n";
+
+            std::wstring padding(30, L'=');
+
+            content += padding + L' ' + std::to_wstring(line) + L' ' + padding + L"\r\n";
         }
         return content;
     }
