@@ -106,8 +106,7 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
-    auto region_guard = canvas.PushRegion(ContentRect(), dirty_rect);
-    caret_->Paint(canvas, dirty_rect);
+    PaintCaret(canvas, dirty_rect);
 }
 
 
@@ -168,6 +167,17 @@ void TextBox::PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_re
 
         canvas.DrawRectangle(rect, brush);
     }
+}
+
+
+void TextBox::PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect) {
+
+    auto content_rect = ContentRect();
+    auto region_guard = canvas.PushRegion(content_rect, dirty_rect);
+
+    auto caret_dirty_rect = dirty_rect;
+    caret_dirty_rect.SubtractOffset(content_rect.position);
+    caret_->Paint(canvas, caret_dirty_rect);
 }
 
 

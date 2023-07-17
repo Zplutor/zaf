@@ -1,9 +1,11 @@
 #include <zaf/control/scrollable_control.h>
+#include <zaf/base/as.h>
 #include <zaf/control/internal/scrollable_control/general_scrolling_layouter.h>
 #include <zaf/control/internal/scrollable_control/self_scrolling_layouter.h>
 #include <zaf/control/rich_edit.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/self_scrolling_control.h>
+#include <zaf/control/text_box.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
 #include <zaf/object/type_definition.h>
@@ -76,11 +78,10 @@ void ScrollableControl::InitializeScrollContentControl(const std::shared_ptr<Con
 
     scroll_content_control_ = control;
 
-    //RichEdit cannot enable cached painting due to incorrect painting behavior.
-    auto rich_edit = dynamic_cast<RichEdit*>(control.get());
-    if (!rich_edit) {
-        scroll_content_control_->SetIsCachedPaintingEnabled(true);
-    }
+    //RichEdit and TextBox cannot enable cached painting due to incorrect painting behavior.
+    scroll_content_control_->SetIsCachedPaintingEnabled([&control]() {
+        return !As<RichEdit>(control) && !As<TextBox>(control);
+    }());
 
     scroll_container_control_->AddChild(scroll_content_control_);
 

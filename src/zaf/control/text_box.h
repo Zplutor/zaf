@@ -70,6 +70,8 @@ private:
     //Called from TextBoxCore to paint selection background.
     void PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_rect);
 
+    void PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect);
+
     std::wstring_view GetText() const;
     TextLayout GetTextLayout() const;
 
