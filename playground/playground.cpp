@@ -93,6 +93,7 @@ private:
 
         auto scroll_control = zaf::Create<zaf::ScrollableControl>();
         scroll_control->SetScrollContent(text_box_);
+        scroll_control->SetAutoHideScrollBars(true);
         return scroll_control;
     }
 
@@ -105,16 +106,16 @@ private:
 
         auto scroll_control = zaf::Create<zaf::ScrollableControl>();
         scroll_control->SetScrollContent(rich_edit_);
+        scroll_control->SetAutoHideScrollBars(true);
         return scroll_control;
     }
 
     std::wstring GenerateInitialText() {
 
         std::wstring content;
-        for (int line = 0; line < 40; ++line) {
+        for (int line = 0; line < 30; ++line) {
 
-            std::wstring padding(30, L'=');
-
+            std::wstring padding(20, L'=');
             content += padding + L' ' + std::to_wstring(line) + L' ' + padding + L"\r\n";
         }
         return content;

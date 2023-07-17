@@ -612,27 +612,45 @@ void TextBox::SetAllowHorizontalScroll(bool allow) {
 
 
 void TextBox::SetAutoHideScrollBars(bool auto_hide) {
-    //Seems no need to do anything.
+    auto_hide_scroll_bars_ = auto_hide;
 }
 
 
 bool TextBox::CanShowVerticalScrollBar() {
+
+    if (!allow_vertical_scroll_) {
+        return false;
+    }
+
+    if (!CanEnableVerticalScrollBar()) {
+        return !auto_hide_scroll_bars_;
+    }
+
     return true;
 }
 
 
 bool TextBox::CanShowHorizontalScrollBar() {
+    
+    if (!allow_horizontal_scroll_) {
+        return false;
+    }
+
+    if (!CanEnableHorizontalScrollBar()) {
+        return !auto_hide_scroll_bars_;
+    }
+
     return true;
 }
 
 
 bool TextBox::CanEnableVerticalScrollBar() {
-    return true;
+    return ContentSize().height < text_rect_.size.height;
 }
 
 
 bool TextBox::CanEnableHorizontalScrollBar() {
-    return true;
+    return ContentSize().width < text_rect_.size.width;
 }
 
 

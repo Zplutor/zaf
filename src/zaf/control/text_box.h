@@ -121,6 +121,7 @@ private:
 
     bool allow_vertical_scroll_{ true };
     bool allow_horizontal_scroll_{ true };
+    bool auto_hide_scroll_bars_{ false };
 
     Event<SelfScrollingControlScrollBarChangInfo> scroll_bar_change_event_;
     Event<SelfScrollingControlScrollValuesChangeInfo> scroll_values_change_event_;
