@@ -898,6 +898,11 @@ zaf::Rect Control::ContentRect() const {
     zaf::Rect content_rect = zaf::Rect(Point(), Size());
     content_rect.Deflate(Border());
     content_rect.Deflate(Padding());
+
+    //Make sure the width and the height are not less than 0.
+    content_rect.size.width = (std::max)(content_rect.size.width, 0.f);
+    content_rect.size.height = (std::max)(content_rect.size.height, 0.f);
+
     return content_rect;
 }
 
