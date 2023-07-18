@@ -1,5 +1,6 @@
 #include <zaf/control/internal/scrollable_control/self_scrolling_layouter.h>
 #include <zaf/base/as.h>
+#include <zaf/base/auto_reset.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scrollable_control.h>
 #include <zaf/control/self_scrolling_control.h>
@@ -29,6 +30,10 @@ SelfScrollingLayouter::~SelfScrollingLayouter() {
 
 
 void SelfScrollingLayouter::Layout() {
+
+    //Not allow reentering.
+    ZAF_EXPECT(!is_layouting_);
+    auto auto_reset = MakeAutoReset(is_layouting_, true);
 
     auto scrollable_control = GetScrollableControl();
     auto self_scrolling_control = GetSelfScrollingControl();
@@ -117,8 +122,7 @@ void SelfScrollingLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_inf
 
 
 void SelfScrollingLayouter::SelfScrollingControlScrollBarChange() {
-
-    Layout();
+    GetScrollableControl()->NeedRelayout();
 }
 
 

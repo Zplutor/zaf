@@ -76,6 +76,7 @@ void TextBox::UpdateTextRectOnLayout() {
         }
     };
 
+    auto old_text_rect = text_rect_;
     auto metrics = GetTextLayout().GetMetrics();
     auto content_size = ContentSize();
 
@@ -94,6 +95,12 @@ void TextBox::UpdateTextRectOnLayout() {
         allow_vertical_scroll_,
         text_rect_.position.y,
         text_rect_.size.height);
+
+    //Notify scroll bars are changed if text rect is changed.
+    if (text_rect_ != old_text_rect) {
+        SelfScrollingControlScrollBarChangInfo event_info{ this };
+        scroll_bar_change_event_.Raise(event_info);
+    }
 }
 
 
@@ -613,6 +620,8 @@ void TextBox::SetAllowHorizontalScroll(bool allow) {
 
 void TextBox::SetAutoHideScrollBars(bool auto_hide) {
     auto_hide_scroll_bars_ = auto_hide;
+    NeedRelayout();
+    NeedRepaint();
 }
 
 

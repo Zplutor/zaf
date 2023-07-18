@@ -29,7 +29,8 @@ private:
         const SelfScrollingControlScrollValuesChangeInfo& event_info);
 
 private:
-    bool is_self_scrolling_ = false;
+    bool is_layouting_{};
+    bool is_self_scrolling_{};
 };
 
 }
