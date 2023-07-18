@@ -1912,9 +1912,6 @@
     <ClInclude Include="src\zaf\base\none.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\auto_reset_value.h">
-      <Filter>zaf\base</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\object\internal\instance_creator.h">
       <Filter>zaf\object\internal</Filter>
     </ClInclude>
@@ -2313,6 +2310,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\hit_test_result.h">
       <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\auto_reset.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

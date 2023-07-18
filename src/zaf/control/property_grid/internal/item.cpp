@@ -1,5 +1,6 @@
 #include <zaf/control/property_grid/internal/item.h>
 #include <zaf/base/as.h>
+#include <zaf/base/auto_reset.h>
 #include <zaf/control/list_item.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
@@ -41,7 +42,7 @@ void Item::Initialize() {
     Subscriptions() += manager->DistanceChangedSubject().GetObservable().Subscribe(
         [this](const ItemSplitDistanceChangedInfo& event_info) {
 
-        auto guard = is_handling_split_distance_event_.BeginSet(true);
+        auto auto_reset = MakeAutoReset(is_handling_split_distance_event_, true);
 
         if (this != event_info.changing_item.get()) {
             SetAbsoluteSplitDistance(event_info.new_distance); 
@@ -147,7 +148,7 @@ void Item::InitializeSplitControl() {
         [this](const SplitDistanceChangedInfo& event_info) {
 
         //Don't raise event again if it is handling distance changed event.
-        if (is_handling_split_distance_event_.Value()) {
+        if (is_handling_split_distance_event_) {
             return;
         }
 

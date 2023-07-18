@@ -369,7 +369,7 @@
     <ClCompile Include="src\unittest\case\graphic\text\text_layout_test.cpp" />
     <ClCompile Include="unittest\case\application_test.cpp" />
     <ClCompile Include="unittest\case\base\as_test.cpp" />
-    <ClCompile Include="unittest\case\base\auto_reset_value_test.cpp" />
+    <ClCompile Include="unittest\case\base\auto_reset_test.cpp" />
     <ClCompile Include="unittest\case\base\base64_test.cpp" />
     <ClCompile Include="unittest\case\base\com_ptr_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\append_test.cpp" />

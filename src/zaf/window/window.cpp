@@ -1,6 +1,7 @@
 #include <zaf/window/window.h>
 #include <Windowsx.h>
 #include <zaf/application.h>
+#include <zaf/base/auto_reset.h>
 #include <zaf/base/error/system_error.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
@@ -1413,11 +1414,11 @@ Observable<ClosingInfo> Window::ClosingEvent() const {
 void Window::HandleWMDESTROY() {
 
     //Avoid reentering.
-    if (is_being_destroyed_.Value()) {
+    if (is_being_destroyed_) {
         return;
     }
 
-    auto guard = is_being_destroyed_.BeginSet(true);
+    auto auto_reset = MakeAutoReset(is_being_destroyed_, true);
 
     CancelMouseCapture();
 
@@ -2224,7 +2225,7 @@ bool Window::IsFocused() const {
 void Window::Close() {
 
     //Do nothing if the window is being destroyed.
-    if (is_being_destroyed_.Value()) {
+    if (is_being_destroyed_) {
         return;
     }
 

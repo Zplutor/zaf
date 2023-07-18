@@ -1,5 +1,6 @@
 #include <zaf/control/internal/list_control/list_control_implementation.h>
 #include <zaf/base/as.h>
+#include <zaf/base/auto_reset.h>
 #include <zaf/base/error/check.h>
 #include <zaf/base/range.h>
 #include <zaf/control/internal/list_control/list_control_extended_multiple_select_strategy.h>
@@ -360,7 +361,7 @@ void ListControlImplementation::SetSelectionMode(SelectionMode mode) {
 
 void ListControlImplementation::OnLayout() {
 
-    if (!disable_on_layout_.Value()) {
+    if (!disable_on_layout_) {
         UpdateVisibleItems();
     }
 }
@@ -623,12 +624,12 @@ std::shared_ptr<ListItem> ListControlImplementation::CreateItem(std::size_t inde
 
 void ListControlImplementation::OnItemAdd(const ListDataSourceDataAddInfo& event_info) {
 
-    if (is_handling_data_source_event_.Value()) {
+    if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
         return;
     }
 
-    auto reset_gurad = is_handling_data_source_event_.BeginSet(true);
+    auto auto_reset = MakeAutoReset(is_handling_data_source_event_, true);
     HandleItemAdd(event_info);
     RefreshItemsIfNeeded();
 }
@@ -710,12 +711,12 @@ void ListControlImplementation::AddItemsInMiddleOfVisibleItems(
 
 void ListControlImplementation::OnItemRemove(const ListDataSourceDataRemoveInfo& event_info) {
 
-    if (is_handling_data_source_event_.Value()) {
+    if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
         return;
     }
 
-    auto reset_guard = is_handling_data_source_event_.BeginSet(true);
+    auto auto_reset = MakeAutoReset(is_handling_data_source_event_, true);
     HandleItemRemove(event_info);
     RefreshItemsIfNeeded();
 }
@@ -783,12 +784,12 @@ void ListControlImplementation::RemoveItemsInMiddleOfVisibleItems(
 
 void ListControlImplementation::OnItemUpdate(const ListDataSourceDataUpdateInfo& event_info) {
 
-    if (is_handling_data_source_event_.Value()) {
+    if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
         return;
     }
 
-    auto reset_gurad = is_handling_data_source_event_.BeginSet(true);
+    auto auto_reset = MakeAutoReset(is_handling_data_source_event_, true);
     HandleItemUpdate(event_info);
     RefreshItemsIfNeeded();
 }
@@ -892,7 +893,7 @@ float ListControlImplementation::AdjustContentHeight() {
     if (old_total_height != new_total_height) {
 
         //Disable OnLayout() for preventing from reentering.
-        auto reset_guard = disable_on_layout_.BeginSet(true);
+        auto auto_reset = MakeAutoReset(disable_on_layout_, true);
         SetScrollContentHeight(new_total_height);
         return new_total_height - old_total_height;
     }

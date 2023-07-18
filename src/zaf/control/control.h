@@ -7,7 +7,6 @@
 #include <set>
 #include <string>
 #include <vector>
-#include <zaf/base/auto_reset_value.h>
 #include <zaf/base/event/event.h>
 #include <zaf/control/anchor.h>
 #include <zaf/control/color_picker.h>
@@ -938,8 +937,8 @@ private:
     float min_height_{};
     float max_height_{ (std::numeric_limits<float>::max)() };
     std::shared_ptr<zaf::Layouter> layouter_;
-    AutoResetValue<bool> is_auto_resizing_{ false };
-    AutoResetValue<bool> is_layouting_{ false };
+    bool is_auto_resizing_{ false };
+    bool is_layouting_{ false };
 
     bool is_mouse_over_;
     bool is_capturing_mouse_;

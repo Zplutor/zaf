@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <zaf/application.h>
 #include <zaf/base/as.h>
+#include <zaf/base/auto_reset.h>
 #include <zaf/base/define.h>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/check.h>
@@ -446,7 +447,7 @@ void Control::OnChildRectChanged(
         NeedRepaintRect(previous_rect);
     }
 
-    if (!is_layouting_.Value() || (auto_width_ || auto_height_)) {
+    if (!is_layouting_ || (auto_width_ || auto_height_)) {
         NeedRelayout();
     }
     AutoResizeToPreferredSize();
@@ -477,7 +478,7 @@ void Control::NeedRelayout(const zaf::Rect& previous_rect) {
         //Avoid auto resize when layouting children.
         auto update_guard = BeginUpdate();
 
-        auto layout_guard = is_layouting_.BeginSet(true);
+        auto auto_reset = MakeAutoReset(is_layouting_, true);
         Layout(previous_rect);
     }
 }
@@ -758,7 +759,7 @@ zaf::Size Control::CalculatePreferredContentSize(const zaf::Size& bound_size) co
 
 void Control::ApplyAutoSizeOnRectChanged(zaf::Size& new_size) {
 
-    if (is_auto_resizing_.Value()) {
+    if (is_auto_resizing_) {
         return;
     }
 
@@ -792,7 +793,7 @@ void Control::AutoResizeToPreferredSize() {
     auto preferred_size = CalculatePreferredSizeForAutoSize(Size());
 
     auto update_guard = BeginUpdate();
-    auto auto_resize_guard = is_auto_resizing_.BeginSet(true);
+    auto auto_reset = MakeAutoReset(is_auto_resizing_, true);
 
     if (auto_width_) {
         SetFixedWidth(preferred_size.width);

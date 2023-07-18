@@ -298,9 +298,6 @@
     <ClCompile Include="unittest\case\resource\internal\resource_loader_test.cpp">
       <Filter>case\resource\internal</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\base\auto_reset_value_test.cpp">
-      <Filter>case\base</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\object\object_test.cpp">
       <Filter>case\object</Filter>
     </ClCompile>
@@ -432,6 +429,9 @@
     </ClCompile>
     <ClCompile Include="src\unittest\case\graphic\text\text_layout_test.cpp">
       <Filter>case\graphic\text</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\auto_reset_test.cpp">
+      <Filter>case\base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

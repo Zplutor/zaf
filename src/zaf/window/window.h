@@ -2,7 +2,6 @@
 
 #include <Windows.h>
 #include <optional>
-#include <zaf/base/auto_reset_value.h>
 #include <zaf/base/event/event.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/control.h>
@@ -882,7 +881,7 @@ private:
     //A flag to avoid reentering.
     //It might be better to define a enum to indicate different states of window handle, rather 
     //than a single bool flag. It will be done later once it becomes necessary.
-    AutoResetValue<bool> is_being_destroyed_{ false };
+    bool is_being_destroyed_{ false };
 
     std::weak_ptr<Window> owner_;
     std::wstring title_;

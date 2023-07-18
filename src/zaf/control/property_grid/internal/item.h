@@ -1,6 +1,5 @@
 #pragma once
 
-#include <zaf/base/auto_reset_value.h>
 #include <zaf/control/property_grid/internal/data.h>
 #include <zaf/control/property_grid/internal/split_distance_manager.h>
 #include <zaf/control/label.h>
@@ -41,7 +40,7 @@ private:
     std::shared_ptr<property_grid::ValueView> value_view_;
 
     std::weak_ptr<SplitDistanceManager> split_distance_manager_;
-    AutoResetValue<bool> is_handling_split_distance_event_{};
+    bool is_handling_split_distance_event_{};
 };
 
 }

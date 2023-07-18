@@ -1,7 +1,6 @@
 #pragma once
 
 #include <deque>
-#include <zaf/base/auto_reset_value.h>
 #include <zaf/control/internal/list_control/list_control_item_selection_manager.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
@@ -201,8 +200,8 @@ private:
     float current_total_height_{};
     std::size_t first_visible_item_index_{};
     std::deque<std::shared_ptr<ListItem>> visible_items_;
-    AutoResetValue<bool> disable_on_layout_;
-    AutoResetValue<bool> is_handling_data_source_event_;
+    bool disable_on_layout_{};
+    bool is_handling_data_source_event_{};
     bool refresh_after_data_source_event_{};
 
     SelectionMode selection_mode_{ SelectionMode::Single };
