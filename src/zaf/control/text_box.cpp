@@ -10,6 +10,8 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(TextBox)
+ZAF_DEFINE_TYPE_PROPERTY(SelectedText)
+ZAF_DEFINE_TYPE_PROPERTY(SelectionRange)
 ZAF_DEFINE_TYPE_END
 
 TextBox::TextBox() : TextualControl(std::make_unique<internal::TextBoxCore>()) {
@@ -492,6 +494,14 @@ void TextBox::SetSelectionRange(const Range& range) {
 }
 
 
+std::wstring TextBox::SelectedText() const {
+
+    auto text = GetText();
+    auto selected_text = text.substr(selection_range_.index, selection_range_.length);
+    return std::wstring{ selected_text };
+}
+
+
 void TextBox::SetCaretIndexByMouse(std::size_t new_index, bool begin_selection) {
 
     if (begin_selection) {
@@ -544,6 +554,11 @@ void TextBox::AfterSetCaretIndex(bool update_caret_x) {
 
     auto hit_test_result = GetTextLayout().HitTestIndex(caret_index_, false);
     const auto& metrics = hit_test_result.Metrics();
+
+    //If content size is empty, the cooridnate of metrics will be less than 0, which is abnormal.
+    if (metrics.Left() < 0 || metrics.Top() < 0) {
+        return;
+    }
 
     EnsureCaretVisible(metrics);
 

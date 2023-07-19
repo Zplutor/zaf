@@ -25,3 +25,23 @@ TEST(TextBoxTest, SelectionRange) {
     text_box->SetText(L"abcde");
     ASSERT_EQ(text_box->SelectionRange(), zaf::Range());
 }
+
+
+TEST(TextBoxTest, SelectedText) {
+
+    auto text_box = zaf::Create<zaf::TextBox>();
+    ASSERT_EQ(text_box->SelectedText(), L"");
+
+    text_box->SetText(L"0123456789");
+    text_box->SetSelectionRange(zaf::Range{ 4, 0 });
+    ASSERT_EQ(text_box->SelectedText(), L"");
+
+    text_box->SetSelectionRange(zaf::Range{ 3, 1 });
+    ASSERT_EQ(text_box->SelectedText(), L"3");
+
+    text_box->SetSelectionRange(zaf::Range{ 10, 1 });
+    ASSERT_EQ(text_box->SelectedText(), L"");
+
+    text_box->SetSelectionRange(zaf::Range{ 0, 10 });
+    ASSERT_EQ(text_box->SelectedText(), L"0123456789");
+}

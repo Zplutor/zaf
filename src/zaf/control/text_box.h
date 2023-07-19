@@ -12,6 +12,9 @@ class TextBoxCore;
 
 class Caret;
 
+/**
+A readonly control to display and select text.
+*/
 class TextBox : public TextualControl, public SelfScrollingControl {
 public:
     ZAF_DECLARE_TYPE;
@@ -21,6 +24,8 @@ public:
 
     const Range& SelectionRange() const;
     void SetSelectionRange(const Range& range);
+
+    std::wstring SelectedText() const;
 
 protected:
     void Initialize() override;
