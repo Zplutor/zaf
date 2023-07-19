@@ -94,6 +94,7 @@ private:
         auto scroll_control = zaf::Create<zaf::ScrollableControl>();
         scroll_control->SetScrollContent(text_box_);
         scroll_control->SetAutoHideScrollBars(true);
+        scroll_control->VerticalScrollBar()->SetLargeChange(20);
         return scroll_control;
     }
 
@@ -126,6 +127,8 @@ private:
         button_ = zaf::Create<zaf::Button>();
         button_->SetFixedHeight(30);
         Subscriptions() += button_->ClickEvent().Subscribe(std::bind([this]() {
+
+            text_box_->SetSelectionRange(zaf::Range{ 2, 5 });
         }));
 
         RootControl()->AddChild(button_);

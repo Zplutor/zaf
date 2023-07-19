@@ -380,7 +380,7 @@ void TextBox::BackwardCaretIndex(bool expand_selection) {
         }
     }
 
-    SetCaretIndex(new_index, expand_selection, true);
+    SetCaretIndexByKey(new_index, expand_selection, true);
 }
 
 
@@ -402,7 +402,7 @@ void TextBox::ForwardCaretIndex(bool expand_selection) {
         }
     }
 
-    SetCaretIndex(new_index, expand_selection, true);
+    SetCaretIndexByKey(new_index, expand_selection, true);
 }
 
 
@@ -438,7 +438,7 @@ void TextBox::UpdateCaretIndexVertically(bool is_downward, bool expand_selection
         ++new_index;
     }
 
-    SetCaretIndex(new_index, expand_selection, false);
+    SetCaretIndexByKey(new_index, expand_selection, false);
 }
 
 
@@ -465,6 +465,33 @@ TextBox::LineInfo TextBox::LocateCurrentLineInfo() {
 }
 
 
+void TextBox::OnTextChanged(const TextChangedInfo& event_info) {
+
+    //Reset selection range on text changed. Note that this should be done before calling the same
+    //method of base class.
+    SetSelectionRange(Range{});
+
+    __super::OnTextChanged(event_info);
+}
+
+
+const Range& TextBox::SelectionRange() const {
+    return selection_range_;
+}
+
+
+void TextBox::SetSelectionRange(const Range& range) {
+
+    auto text_length = core_->GetTextLength();
+    auto begin_index = (std::min)(range.index, text_length);
+    auto end_index = (std::min)(range.EndIndex(), text_length);
+    selection_range_ = Range::FromIndexPair(begin_index, end_index);
+
+    caret_index_ = selection_range_.EndIndex();
+    AfterSetCaretIndex(true);
+}
+
+
 void TextBox::SetCaretIndexByMouse(std::size_t new_index, bool begin_selection) {
 
     if (begin_selection) {
@@ -486,7 +513,10 @@ void TextBox::SetCaretIndexByMouse(std::size_t new_index, bool begin_selection) 
 }
 
 
-void TextBox::SetCaretIndex(std::size_t new_index, bool expand_selection, bool update_caret_x) {
+void TextBox::SetCaretIndexByKey(
+    std::size_t new_index, 
+    bool expand_selection,
+    bool update_caret_x) {
 
     auto old_index = caret_index_;
     caret_index_ = (std::min)(new_index, core_->GetTextLength());
@@ -539,7 +569,10 @@ void TextBox::ShowCaret(const HitTestMetrics& metrics) {
     caret_rect.AddOffset(text_rect_.position);
 
     caret_->SetRect(Align(caret_rect));
-    caret_->SetIsVisible(true);
+
+    if (this->IsFocused()) {
+        caret_->SetIsVisible(true);
+    }
 }
 
 

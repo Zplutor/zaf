@@ -19,10 +19,14 @@ public:
 public:
     TextBox();
 
+    const Range& SelectionRange() const;
+    void SetSelectionRange(const Range& range);
+
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
     zaf::Rect DetermineTextRect() override;
+    void OnTextChanged(const TextChangedInfo& event_info) override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
@@ -90,7 +94,7 @@ private:
     void UpdateCaretIndexVertically(bool is_downward, bool expand_selection);
     LineInfo LocateCurrentLineInfo();
     void SetCaretIndexByMouse(std::size_t new_index, bool begin_selection);
-    void SetCaretIndex(std::size_t caret_index, bool expand_selection, bool update_caret_x);
+    void SetCaretIndexByKey(std::size_t caret_index, bool expand_selection, bool update_caret_x);
     void AfterSetCaretIndex(bool update_caret_x);
     void UpdateCaretAtCurrentIndex();
     void ShowCaret(const HitTestMetrics& metrics);
