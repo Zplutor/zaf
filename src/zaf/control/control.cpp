@@ -1074,6 +1074,17 @@ void Control::AddChildren(const std::vector<std::shared_ptr<Control>>& children)
 }
 
 
+void Control::RemoveChildAtIndex(std::size_t index) {
+
+    ZAF_EXPECT(index < children_.size());
+
+    //We must use an local variable to maintain the life of the child for it will be accessed after 
+    //deleted during remove.
+    auto child = children_[index];
+    RemoveChild(child);
+}
+
+
 void Control::RemoveChild(const std::shared_ptr<Control>& child) {
     InnerRemoveChild(child, true);
 }

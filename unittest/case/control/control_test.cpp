@@ -392,3 +392,34 @@ TEST(ControlTest, RectChangedEvent) {
     ASSERT_TRUE(event_info->size_changed_raised);
     ASSERT_EQ(event_info->old_size, zaf::Size(200, 200));
 }
+
+
+TEST(ControlTest, RemoveChildAtIndex) {
+
+    auto parent = zaf::Create<zaf::Control>();
+    ASSERT_THROW(parent->RemoveChildAtIndex(0), std::logic_error);
+
+    for (int count = 0; count < 4; ++count) {
+        auto child = zaf::Create<zaf::Control>();
+        child->SetName(std::to_wstring(count));
+        parent->AddChild(child);
+    }
+
+    parent->RemoveChildAtIndex(1);
+    ASSERT_EQ(parent->ChildCount(), 3);
+    ASSERT_EQ(parent->GetChildAtIndex(0)->Name(), L"0");
+    ASSERT_EQ(parent->GetChildAtIndex(1)->Name(), L"2");
+    ASSERT_EQ(parent->GetChildAtIndex(2)->Name(), L"3");
+
+    parent->RemoveChildAtIndex(2);
+    ASSERT_EQ(parent->ChildCount(), 2);
+    ASSERT_EQ(parent->GetChildAtIndex(0)->Name(), L"0");
+    ASSERT_EQ(parent->GetChildAtIndex(1)->Name(), L"2");
+
+    parent->RemoveChildAtIndex(0);
+    ASSERT_EQ(parent->ChildCount(), 1);
+    ASSERT_EQ(parent->GetChildAtIndex(0)->Name(), L"2");
+
+    parent->RemoveChildAtIndex(0);
+    ASSERT_EQ(parent->ChildCount(), 0);
+}

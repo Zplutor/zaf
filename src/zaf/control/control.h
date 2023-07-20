@@ -406,7 +406,18 @@ public:
     void AddChildren(const std::vector<std::shared_ptr<Control>>& children);
 
     /**
-     Remoe specified child from the control.
+    Removes a child at the specified index.
+
+    @param index
+        Index of the child being removed.
+
+    @throw std::logic_error
+        Thrown if index is out of range.
+    */
+    void RemoveChildAtIndex(std::size_t index);
+
+    /**
+     Removes specified child from the control.
      */
     void RemoveChild(const std::shared_ptr<Control>& child);
 
