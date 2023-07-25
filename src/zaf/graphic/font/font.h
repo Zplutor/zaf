@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <string>
+#include <zaf/base/hash.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/object/object.h>
 
@@ -12,7 +13,8 @@ namespace zaf {
  */
 class Font : public Object {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_EQUALITY;
 
 public:
     /**
@@ -26,7 +28,20 @@ public:
     static Font FromLOGFONT(const LOGFONT& logfont);
 
 public:
-    const std::wstring FamilyName() const {
+    Font() = default;
+
+    explicit Font(std::wstring_view family_name) : family_name(family_name) { }
+
+    Font(std::wstring_view family_name, float size) : family_name(family_name), size(size) { }
+
+    Font(std::wstring_view family_name, float size, FontWeight weight) : 
+        family_name(family_name), 
+        size(size), 
+        weight(weight) {
+
+    }
+
+    const std::wstring& FamilyName() const {
         return family_name;
     }
 
@@ -60,6 +75,18 @@ public:
 
     std::wstring ToString() const override;
 
+    friend bool operator==(const Font& font1, const Font& font2) {
+        return 
+            std::tie(font1.family_name, font1.size, font1.weight, font1.has_underline) ==
+            std::tie(font2.family_name, font2.size, font2.weight, font2.has_underline);
+    }
+
+    friend auto operator<=>(const Font& font1, const Font& font2) {
+        return
+            std::tie(font1.family_name, font1.size, font1.weight, font1.has_underline) <=>
+            std::tie(font2.family_name, font2.size, font2.weight, font2.has_underline);
+    }
+
 public:
     /**
      Font family name.
@@ -88,4 +115,14 @@ public:
     bool has_underline{};
 };
 
+}
+
+
+namespace std {
+template<>
+struct hash<zaf::Font> {
+    std::size_t operator()(const zaf::Font& font) {
+        return zaf::CalculateHash(font.family_name, font.size, font.weight, font.has_underline);
+    }
+};
 }

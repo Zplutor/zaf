@@ -1,5 +1,6 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/application.h>
+#include <zaf/base/string/to_string.h>
 #include <zaf/object/type_definition.h>
 
 namespace zaf {
@@ -11,6 +12,7 @@ ZAF_DEFINE_TYPE_PROPERTY(Weight)
 ZAF_DEFINE_TYPE_PROPERTY(HasUnderline)
 ZAF_DEFINE_TYPE_END
 
+ZAF_DEFINE_EQUALITY(Font);
 
 Font Font::Default() {
 
@@ -49,7 +51,7 @@ Font Font::FromLOGFONT(const LOGFONT& logfont) {
 
 
 std::wstring Font::ToString() const {
-    return family_name;
+    return family_name + L',' + ToWideString(size) + L',' + weight.ToString();
 }
 
 }
