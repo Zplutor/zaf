@@ -811,6 +811,11 @@ void TextBox::DoScroll(
 }
 
 
+std::size_t TextBox::LineCount() const {
+    return GetTextLayout().GetMetrics().LineCount();
+}
+
+
 void TextBox::HandleCopy() {
 
     auto text = GetText();

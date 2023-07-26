@@ -22,6 +22,8 @@ public:
 public:
     TextBox();
 
+    std::size_t LineCount() const;
+
     const Range& SelectionRange() const;
     void SetSelectionRange(const Range& range);
 
