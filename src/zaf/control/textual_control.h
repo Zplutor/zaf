@@ -117,6 +117,9 @@ public:
      */
     void SetFont(const zaf::Font& font);
 
+    std::wstring FontFamily() const;
+    void SetFontFamily(const std::wstring& family);
+
     float FontSize() const;
     void SetFontSize(float size);
 
@@ -227,6 +230,9 @@ protected:
     method of base class to raise the event if they override it.
     */
     virtual void OnTextChanged(const TextChangedInfo& event_info);
+
+private:
+    void InnerSetFont(const zaf::Font& new_font);
 
 private:
     std::unique_ptr<internal::TextualControlCore> core_;

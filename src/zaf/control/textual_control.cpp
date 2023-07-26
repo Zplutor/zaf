@@ -12,6 +12,7 @@ ZAF_DEFINE_TYPE_PROPERTY(Text)
 ZAF_DEFINE_TYPE_PROPERTY(TextLength)
 ZAF_DEFINE_TYPE_PROPERTY(TextColor)
 ZAF_DEFINE_TYPE_PROPERTY(Font)
+ZAF_DEFINE_TYPE_PROPERTY(FontFamily)
 ZAF_DEFINE_TYPE_PROPERTY(FontSize)
 ZAF_DEFINE_TYPE_PROPERTY(FontWeight)
 ZAF_DEFINE_TYPE_PROPERTY(TextAlignment)
@@ -141,7 +142,26 @@ Font TextualControl::Font() const {
 }
 
 void TextualControl::SetFont(const zaf::Font& font) {
-    core_->SetFont(font);
+    if (font != Font()) {
+        InnerSetFont(font);
+    }
+}
+
+void TextualControl::InnerSetFont(const zaf::Font& new_font) {
+    core_->SetFont(new_font);
+}
+
+
+std::wstring TextualControl::FontFamily() const {
+    return Font().family_name;
+}
+
+void TextualControl::SetFontFamily(const std::wstring& family) {
+    auto font = Font();
+    if (font.family_name != family) {
+        font.family_name = family;
+        InnerSetFont(font);
+    }
 }
 
 
@@ -150,14 +170,11 @@ float TextualControl::FontSize() const {
 }
 
 void TextualControl::SetFontSize(float size) {
-
     auto font = Font();
-    if (font.size == size) {
-        return;
+    if (font.size != size) {
+        font.size = size;
+        InnerSetFont(font);
     }
-
-    font.size = size;
-    SetFont(font);
 }
 
 
@@ -166,14 +183,11 @@ FontWeight TextualControl::FontWeight() const {
 }
 
 void TextualControl::SetFontWeight(zaf::FontWeight weight) {
-
     auto font = Font();
-    if (font.weight == weight) {
-        return;
+    if (font.weight != weight) {
+        font.weight = weight;
+        InnerSetFont(font);
     }
-
-    font.weight = weight;
-    SetFont(font);
 }
 
 
