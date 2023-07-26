@@ -149,6 +149,7 @@ void TextualControl::SetFont(const zaf::Font& font) {
 
 void TextualControl::InnerSetFont(const zaf::Font& new_font) {
     core_->SetFont(new_font);
+    RaiseContentChangedEvent();
 }
 
 

@@ -14,4 +14,9 @@ TEST(TextualControlTest, AutoSize) {
     ASSERT_EQ(control->MaxHeight(), control->Height());
     ASSERT_EQ(control->MinWidth(), control->Width());
     ASSERT_EQ(control->MinHeight(), control->Height());
+
+    //Auto size after change font.
+    auto old_size = control->Size();
+    control->SetFont(zaf::Font{ L"", 100 });
+    ASSERT_NE(control->Size(), old_size);
 }
