@@ -86,7 +86,7 @@ void TextBox::UpdateTextRectOnLayout() {
     update_single_dimension(
         content_size.width, 
         metrics.Width(), 
-        allow_horizontal_scroll_,
+        allow_horizontal_scroll_ && (WordWrapping() == WordWrapping::NoWrap),
         text_rect_.position.x,
         text_rect_.size.width);
 
