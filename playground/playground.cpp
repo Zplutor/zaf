@@ -79,7 +79,7 @@ protected:
             text_box_->SetText(rich_edit_->Text());
         });
 
-        rich_edit_->SetText(GenerateInitialText());
+        //rich_edit_->SetText(GenerateInitialText());
         InitializeButton();
     }
 

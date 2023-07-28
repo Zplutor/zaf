@@ -469,6 +469,10 @@ TextBox::LineInfo TextBox::LocateCurrentLineInfo() {
 
 void TextBox::OnTextChanged(const TextChangedInfo& event_info) {
 
+    //Clear previous text rect and re-calulate it.
+    text_rect_ = {};
+    NeedRelayout();
+
     //Reset selection range on text changed. Note that this should be done before calling the same
     //method of base class.
     SetSelectionRange(Range{});
@@ -615,6 +619,9 @@ void TextBox::EnsureCaretVisible(const HitTestMetrics& metrics) {
     };
 
     auto content_size = ContentSize();
+    if (content_size.width <= 0 || content_size.height <= 0) {
+        return;
+    }
 
     //Update x.
     auto x_changed = update_single_dimension(
