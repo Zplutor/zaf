@@ -13,6 +13,7 @@ void TextualControlConfig::FilterProperties(PropertyTable& property_table) {
     }
 
     list->EraseByNames({
+        L"FontFamily",
         L"FontSize",
         L"FontWeight",
     });
