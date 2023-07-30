@@ -159,7 +159,11 @@ void TextBox::PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_re
     region_rect.AddOffset(ContentRect().position);
     auto region_guard = canvas.PushRegion(region_rect, region_rect);
 
-    auto brush = canvas.Renderer().CreateSolidColorBrush(zaf::Color::FromARGB(0x7FAADCFF));
+    //Use the same color as rich edit.
+    auto background_color = zaf::Color::FromCOLORREF(GetSysColor(COLOR_HIGHLIGHT));
+    background_color.a = 100.f / 255.f;
+
+    auto brush = canvas.Renderer().CreateSolidColorBrush(background_color);
     auto text = std::get<0>(core_->GetText());
 
     for (UINT32 index = 0; index < metrics_count; ++index) {
