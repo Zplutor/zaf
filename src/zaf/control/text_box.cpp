@@ -111,6 +111,40 @@ zaf::Rect TextBox::DetermineTextRect() {
 }
 
 
+ColorPicker TextBox::SelectionBackgroundColorPicker() const {
+
+    if (selection_background_color_picker_) {
+        return selection_background_color_picker_;
+    }
+
+    return [](const Control& control) {
+
+        if (control.ContainFocus()) {
+            //Use the same color as rich edit.
+            auto color = zaf::Color::FromCOLORREF(GetSysColor(COLOR_HIGHLIGHT));
+            color.a = 100.f / 255.f;
+            return color;
+        }
+
+        return Color::FromRGB(0xE4E4E4);
+    };
+}
+
+void TextBox::SetSelectionBackgroundColorPicker(ColorPicker picker) {
+    selection_background_color_picker_ = std::move(picker);
+    NeedRepaint();
+}
+
+
+Color TextBox::SelectionBackgroundColor() const {
+    return SelectionBackgroundColorPicker()(*this);
+}
+
+void TextBox::SetSelectionBackgroundColor(const Color& color) {
+    SetSelectionBackgroundColorPicker(CreateColorPicker(color));
+}
+
+
 void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
@@ -159,10 +193,7 @@ void TextBox::PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_re
     region_rect.AddOffset(ContentRect().position);
     auto region_guard = canvas.PushRegion(region_rect, region_rect);
 
-    //Use the same color as rich edit.
-    auto background_color = zaf::Color::FromCOLORREF(GetSysColor(COLOR_HIGHLIGHT));
-    background_color.a = 100.f / 255.f;
-
+    auto background_color = SelectionBackgroundColor();
     auto brush = canvas.Renderer().CreateSolidColorBrush(background_color);
     auto text = std::get<0>(core_->GetText());
 
@@ -308,24 +339,26 @@ std::optional<std::size_t> TextBox::FindTextIndexAtPoint(const Point& point_in_c
 void TextBox::OnFocusGained(const FocusGainedInfo& event_info) {
 
     __super::OnFocusGained(event_info);
-    if (event_info.IsHandled()) {
-        return;
-    }
 
     UpdateCaretAtCurrentIndex();
     event_info.MarkAsHandled();
+
+    if (selection_range_.length > 0) {
+        NeedRepaint();
+    }
 }
 
 
 void TextBox::OnFocusLost(const FocusLostInfo& event_info) {
 
     __super::OnFocusLost(event_info);
-    if (event_info.IsHandled()) {
-        return;
-    }
 
     caret_->SetIsVisible(false);
     event_info.MarkAsHandled();
+
+    if (selection_range_.length > 0) {
+        NeedRepaint();
+    }
 }
 
 

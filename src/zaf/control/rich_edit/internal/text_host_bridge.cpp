@@ -345,6 +345,24 @@ HRESULT TextHostBridge::TxGetParaFormat(const PARAFORMAT** ppPF) {
 
 
 COLORREF TextHostBridge::TxGetSysColor(int nIndex) {
+
+    auto rich_edit = rich_edit_.lock();
+    if (!rich_edit) {
+        return 0;
+    }
+
+    //Use custom colors for selected text if rich edit doesn't have focus.
+    if (!rich_edit->ContainFocus()) {
+
+        if (nIndex == COLOR_HIGHLIGHT) {
+            return RGB(0xE4, 0xE4, 0xE4);
+        }
+
+        if (nIndex == COLOR_HIGHLIGHTTEXT) {
+            return RGB(0, 0, 0);
+        }
+    }
+
     return GetSysColor(nIndex);
 }
 

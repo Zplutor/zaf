@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/base/range.h>
+#include <zaf/control/color_picker.h>
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/text/text_layout.h>
@@ -26,6 +27,12 @@ public:
 
     const Range& SelectionRange() const;
     void SetSelectionRange(const Range& range);
+
+    ColorPicker SelectionBackgroundColorPicker() const;
+    void SetSelectionBackgroundColorPicker(ColorPicker picker);
+
+    Color SelectionBackgroundColor() const;
+    void SetSelectionBackgroundColor(const Color& color);
 
     std::wstring SelectedText() const;
 
@@ -136,6 +143,8 @@ private:
 
     Event<SelfScrollingControlScrollBarChangInfo> scroll_bar_change_event_;
     Event<SelfScrollingControlScrollValuesChangeInfo> scroll_values_change_event_;
+
+    ColorPicker selection_background_color_picker_;
 };
 
 }
