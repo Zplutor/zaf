@@ -518,6 +518,11 @@ void TextBox::OnTextChanged(const TextChangedInfo& event_info) {
 }
 
 
+std::size_t TextBox::CaretIndex() const {
+    return caret_index_;
+}
+
+
 const Range& TextBox::SelectionRange() const {
     return selection_range_;
 }

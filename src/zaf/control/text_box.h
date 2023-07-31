@@ -25,6 +25,8 @@ public:
 
     std::size_t LineCount() const;
 
+    std::size_t CaretIndex() const;
+
     const Range& SelectionRange() const;
     void SetSelectionRange(const Range& range);
 
