@@ -198,6 +198,9 @@
     <ClCompile Include="src\zaf\control\scroll_bar.cpp" />
     <ClCompile Include="src\zaf\control\scroll_bar_arrow.cpp" />
     <ClCompile Include="src\zaf\control\scroll_bar_thumb.cpp" />
+    <ClCompile Include="src\zaf\control\spin_box.cpp" />
+    <ClCompile Include="src\zaf\control\spin_button.cpp" />
+    <ClCompile Include="src\zaf\control\spin_edit.cpp" />
     <ClCompile Include="src\zaf\control\split_control.cpp" />
     <ClCompile Include="src\zaf\control\textual_control.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit.cpp" />
@@ -550,6 +553,9 @@
     <ClInclude Include="src\zaf\control\scroll_bar_thumb.h" />
     <ClInclude Include="src\zaf\control\selection_mode.h" />
     <ClInclude Include="src\zaf\control\self_scrolling_control.h" />
+    <ClInclude Include="src\zaf\control\spin_box.h" />
+    <ClInclude Include="src\zaf\control\spin_button.h" />
+    <ClInclude Include="src\zaf\control\spin_edit.h" />
     <ClInclude Include="src\zaf\control\split_control.h" />
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\rich_edit.h" />

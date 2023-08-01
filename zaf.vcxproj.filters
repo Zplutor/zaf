@@ -1009,6 +1009,15 @@
     <ClCompile Include="src\zaf\control\internal\textual_control\text_box_core.cpp">
       <Filter>zaf\control\internal\textual_control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\spin_box.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\spin_button.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\spin_edit.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2313,6 +2322,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\auto_reset.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\spin_box.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\spin_button.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\spin_edit.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
