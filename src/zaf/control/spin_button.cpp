@@ -22,6 +22,47 @@ void SpinButton::SetDirection(ArrowDirection direction) {
 }
 
 
+ColorPicker SpinButton::ArrowColorPicker() const {
+
+    if (arrow_color_picker_) {
+        return arrow_color_picker_;
+    }
+
+    return [](const Control& control) {
+
+        const auto& button = dynamic_cast<const SpinButton&>(control);
+
+        if (!button.IsEnabled()) {
+            return Color::FromRGB(0xc0c0c0);
+        }
+
+        if (button.IsPressed()) {
+            return Color::FromRGB(0x306DD9);
+        }
+
+        if (button.IsMouseOver()) {
+            return Color::FromRGB(0x5080ef);
+        }
+
+        return Color::Black();
+    };
+}
+
+void SpinButton::SetArrowColorPicker(ColorPicker picker) {
+    arrow_color_picker_ = std::move(picker);
+    NeedRepaint();
+}
+
+
+Color SpinButton::ArrowColor() const {
+    return ArrowColorPicker()(*this);
+}
+
+void SpinButton::SetArrowColor(const Color& color) {
+    SetArrowColorPicker(CreateColorPicker(color));
+}
+
+
 void SpinButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
@@ -36,7 +77,7 @@ void SpinButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
         Direction() == ArrowDirection::Up ? 0.f : 180.f);
 
     auto state_guard = canvas.PushState();
-    canvas.SetBrushWithColor(zaf::Color::Black());
+    canvas.SetBrushWithColor(ArrowColor());
     canvas.DrawGeometry(triangle_geometry);
 }
 
