@@ -7,6 +7,9 @@ namespace zaf {
 class SpinEdit : public RichEdit {
 public:
     ZAF_DECLARE_TYPE;
+
+protected:
+    void Initialize() override;
 };
 
 }

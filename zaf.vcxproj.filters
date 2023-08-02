@@ -1018,6 +1018,9 @@
     <ClCompile Include="src\zaf\control\spin_edit.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\event\spin_box_value_changed_info.cpp">
+      <Filter>zaf\control\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2331,6 +2334,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\spin_edit.h">
       <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\spin_box_value_changed_info.h">
+      <Filter>zaf\control\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
