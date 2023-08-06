@@ -398,6 +398,11 @@ void TextBox::HandleKeyDown(const KeyDownInfo& event_info) {
             HandleCopy();
         }
     }
+    else if (virtual_key == L'A') {
+        if (GetKeyState(VK_CONTROL) >> 15) {
+            HandleSelectAll();
+        }
+    }
 }
 
 
@@ -870,6 +875,11 @@ void TextBox::HandleCopy() {
     auto text = GetText();
     auto copied_text = text.substr(selection_range_.index, selection_range_.length);
     clipboard::Clipboard::SetText(copied_text);
+}
+
+
+void TextBox::HandleSelectAll() {
+    SetSelectionRange(Range::Infinite());
 }
 
 }

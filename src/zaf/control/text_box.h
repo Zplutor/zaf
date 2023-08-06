@@ -127,6 +127,7 @@ private:
     void DoScroll(int new_value, float content_length, float text_length, float& text_position);
 
     void HandleCopy();
+    void HandleSelectAll();
 
 private:
     internal::TextBoxCore* core_{};
