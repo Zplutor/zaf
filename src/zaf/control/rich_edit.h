@@ -150,6 +150,10 @@ public:
 
     void InsertText(const std::wstring& text);
 
+    void Copy();
+    void Cut();
+    void Paste();
+
     /**
      Get text validator.
 

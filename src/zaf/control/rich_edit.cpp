@@ -620,6 +620,21 @@ void RichEdit::InsertText(const std::wstring& text) {
 }
 
 
+void RichEdit::Copy() {
+    text_service_->TxSendMessage(WM_COPY, 0, 0, nullptr);
+}
+
+
+void RichEdit::Cut() {
+    text_service_->TxSendMessage(WM_CUT, 0, 0, nullptr);
+}
+
+
+void RichEdit::Paste() {
+    text_service_->TxSendMessage(WM_PASTE, 0, 0, nullptr);
+}
+
+
 TextValidator RichEdit::GetTextValidator() const {
     return text_validator_;
 }
