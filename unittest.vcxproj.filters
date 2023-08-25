@@ -94,6 +94,9 @@
     <Filter Include="case\graphic\text">
       <UniqueIdentifier>{9f98b1e4-8ed9-4b7c-b690-e788ca27e601}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\crypto">
+      <UniqueIdentifier>{04b89b98-f9be-4b20-ac72-26ed2130744b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -438,6 +441,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\graphic\font\font_test.cpp">
       <Filter>case\graphic\font</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\crypto\md5_test.cpp">
+      <Filter>case\crypto</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

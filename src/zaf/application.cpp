@@ -5,6 +5,7 @@
 #include <zaf/base/error/check.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/creation.h>
+#include <zaf/crypto/internal/crypto_manager.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/message_loop.h>
@@ -217,6 +218,15 @@ void Application::UnregisterShownWindow(const std::shared_ptr<WindowHolder>& win
 
 void Application::SetMainWindow(const std::shared_ptr<Window>& window) {
     main_window_ = window;
+}
+
+
+crypto::internal::CryptoManager& Application::CryptoManager() {
+
+    std::call_once(crypto_manager_once_flag_, [this]() {
+        crypto_manager_ = std::make_unique<crypto::internal::CryptoManager>();
+    });
+    return *crypto_manager_;
 }
 
 }

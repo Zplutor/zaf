@@ -175,6 +175,12 @@
     <Filter Include="zaf\control\internal\textual_control">
       <UniqueIdentifier>{76b2ba5f-47b5-4f3f-a646-07cc26712900}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\crypto">
+      <UniqueIdentifier>{da150aeb-bed5-4750-9172-4529175af2d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\crypto\internal">
+      <UniqueIdentifier>{38112824-6961-4393-96c1-55e4f749f33f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1020,6 +1026,12 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\event\spin_box_value_changed_info.cpp">
       <Filter>zaf\control\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\crypto\internal\crypto_manager.cpp">
+      <Filter>zaf\crypto\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\crypto\md5.cpp">
+      <Filter>zaf\crypto</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2337,6 +2349,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\spin_box_value_changed_info.h">
       <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\crypto\internal\crypto_manager.h">
+      <Filter>zaf\crypto\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\crypto\internal\algorithm_provider.h">
+      <Filter>zaf\crypto\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\crypto\md5.h">
+      <Filter>zaf\crypto</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

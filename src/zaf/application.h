@@ -12,6 +12,10 @@
 #include <zaf/rx/subscription_host.h>
 
 namespace zaf {
+namespace crypto::internal {
+class CryptoManager;
+}
+
 namespace internal {
 class RxRuntime;
 class SystemMessageWindow;
@@ -157,10 +161,12 @@ private:
 
 private:
     friend class internal::RxRuntime;
-
     internal::RxRuntime& GetRxRuntime() const {
         return *rx_runtime_;
     }
+
+    friend class crypto::internal::CryptoManager;
+    crypto::internal::CryptoManager& CryptoManager();
 
 private:
     Application();
@@ -184,6 +190,9 @@ private:
     std::shared_ptr<internal::SystemMessageWindow> system_message_window_;
     std::weak_ptr<Window> main_window_;
     std::set<std::shared_ptr<WindowHolder>> window_holders_;
+
+    std::unique_ptr<crypto::internal::CryptoManager> crypto_manager_;
+    std::once_flag crypto_manager_once_flag_;
 
     std::shared_ptr<ApplicationDelegate> delegate_;
 
