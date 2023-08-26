@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <bcrypt.h>
+#include <zaf/base/byte_array.h>
 #include <zaf/base/non_copyable.h>
 
 namespace zaf::crypto {
@@ -15,7 +16,7 @@ public:
     void Update(const char* input, std::size_t size);
     void Update(const unsigned char* input, std::size_t size);
 
-    std::vector<std::byte> Finish();
+    ByteArray Finish();
 
 private:
     BCRYPT_HASH_HANDLE handle_{};

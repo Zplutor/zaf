@@ -445,6 +445,9 @@
     <ClCompile Include="unittest\case\crypto\md5_test.cpp">
       <Filter>case\crypto</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\byte_array_test.cpp">
+      <Filter>case\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

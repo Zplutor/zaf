@@ -53,7 +53,7 @@ void MD5::Update(const unsigned char* input, std::size_t size) {
 }
 
 
-std::vector<std::byte> MD5::Finish() {
+ByteArray MD5::Finish() {
 
     DWORD hash_length{};
     ULONG output_size{};
@@ -69,9 +69,9 @@ std::vector<std::byte> MD5::Finish() {
         ZAF_THROW_ERRC(BasicErrc::Unknown);
     }
 
-    std::vector<std::byte> hash(hash_length, std::byte(0));
+    ByteArray hash{ hash_length };
 
-    status = BCryptFinishHash(handle_, reinterpret_cast<PUCHAR>(hash.data()), hash_length, 0);
+    status = BCryptFinishHash(handle_, reinterpret_cast<PUCHAR>(hash.Data()), hash_length, 0);
     if (status != 0) {
         ZAF_THROW_ERRC(BasicErrc::Unknown);
     }

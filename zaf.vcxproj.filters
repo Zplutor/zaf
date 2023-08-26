@@ -1033,6 +1033,9 @@
     <ClCompile Include="src\zaf\crypto\md5.cpp">
       <Filter>zaf\crypto</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\base\byte_array.cpp">
+      <Filter>zaf\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2358,6 +2361,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\crypto\md5.h">
       <Filter>zaf\crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\byte_array.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

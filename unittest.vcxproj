@@ -371,6 +371,7 @@
     <ClCompile Include="unittest\case\base\as_test.cpp" />
     <ClCompile Include="unittest\case\base\auto_reset_test.cpp" />
     <ClCompile Include="unittest\case\base\base64_test.cpp" />
+    <ClCompile Include="unittest\case\base\byte_array_test.cpp" />
     <ClCompile Include="unittest\case\base\com_ptr_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\append_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\classify_test.cpp" />
