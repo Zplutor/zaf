@@ -118,8 +118,6 @@ void Application::Run() {
     window_holders_.clear();
 
     NotifyApplicationEndRun();
-
-    crypto_manager_.reset();
 }
 
 

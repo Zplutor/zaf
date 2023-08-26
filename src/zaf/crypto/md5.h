@@ -1,25 +1,12 @@
 #pragma once
 
-#include <Windows.h>
-#include <bcrypt.h>
-#include <zaf/base/byte_array.h>
-#include <zaf/base/non_copyable.h>
+#include <zaf/crypto/hash_algorithm.h>
 
 namespace zaf::crypto {
 
-class MD5 : NonCopyable {
+class MD5 : public HashAlgorithm {
 public:
     MD5();
-    ~MD5();
-
-    void Update(const std::byte* input, std::size_t size);
-    void Update(const char* input, std::size_t size);
-    void Update(const unsigned char* input, std::size_t size);
-
-    ByteArray Finish();
-
-private:
-    BCRYPT_HASH_HANDLE handle_{};
 };
 
 }

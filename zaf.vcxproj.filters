@@ -1036,6 +1036,12 @@
     <ClCompile Include="src\zaf\base\byte_array.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\crypto\hash_algorithm.cpp">
+      <Filter>zaf\crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\crypto\sha.cpp">
+      <Filter>zaf\crypto</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2364,6 +2370,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\byte_array.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\crypto\hash_algorithm.h">
+      <Filter>zaf\crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\crypto\sha.h">
+      <Filter>zaf\crypto</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
