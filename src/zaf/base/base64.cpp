@@ -8,30 +8,30 @@ namespace {
 constexpr int ByteBits = 8;
 constexpr int UnitBits = 6;
 
-constexpr char EncodeTable[] =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    "abcdefghijklmnopqrstuvwxyz"
-    "0123456789+/";
+constexpr wchar_t EncodeTable[] =
+    L"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    L"abcdefghijklmnopqrstuvwxyz"
+    L"0123456789+/";
 
-std::uint8_t DecodeChar(char ch) {
+std::uint8_t DecodeChar(wchar_t ch) {
 
-    if ('A' <= ch && ch <= 'Z') {
-        return ch - 'A';
+    if (L'A' <= ch && ch <= L'Z') {
+        return ch - L'A';
     }
 
-    if ('a' <= ch && ch <= 'z') {
-        return ch - 'a' + 26;
+    if (L'a' <= ch && ch <= L'z') {
+        return ch - L'a' + 26;
     }
 
-    if ('0' <= ch && ch <= '9') {
-        return ch - '0' + 26 + 26;
+    if (L'0' <= ch && ch <= L'9') {
+        return ch - L'0' + 26 + 26;
     }
 
-    if (ch == '+') {
+    if (ch == L'+') {
         return 62;
     }
 
-    if (ch == '/') {
+    if (ch == L'/') {
         return 63;
     }
 
@@ -40,9 +40,9 @@ std::uint8_t DecodeChar(char ch) {
 
 }
 
-std::string Base64Encode(const void* data, std::size_t size) {
+std::wstring Base64Encode(const void* data, std::size_t size) {
 
-    std::string result;
+    std::wstring result;
     result.reserve(static_cast<std::size_t>(size * 1.4));
 
     auto begin = reinterpret_cast<const std::uint8_t*>(data);
@@ -77,14 +77,14 @@ std::string Base64Encode(const void* data, std::size_t size) {
         result += EncodeTable[unit];
 
         auto padding_count = 4 - result.length() % 4;
-        result.append(padding_count, '=');
+        result.append(padding_count, L'=');
     }
 
     return result;
 }
 
 
-std::vector<std::byte> Base64Decode(std::string_view encoded) {
+std::vector<std::byte> Base64Decode(std::wstring_view encoded) {
 
     if (encoded.length() % 4 != 0) {
         ZAF_THROW_ERRC(BasicErrc::InvalidValue);
@@ -98,7 +98,7 @@ std::vector<std::byte> Base64Decode(std::string_view encoded) {
     auto current = encoded.begin();
     for (; current < encoded.end(); ++current) {
 
-        if (*current == '=') {
+        if (*current == L'=') {
             ++current;
             break;
         }
@@ -125,7 +125,7 @@ std::vector<std::byte> Base64Decode(std::string_view encoded) {
     }
 
     for (; current < encoded.end(); ++current) {
-        if (*current != '=') {
+        if (*current != L'=') {
             ZAF_THROW_ERRC(BasicErrc::InvalidValue);
         }
     }

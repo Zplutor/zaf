@@ -5,17 +5,17 @@ namespace {
 
 struct TestItem {
     std::string raw;
-    std::string encoded;
+    std::wstring encoded;
 };
 
 std::vector<TestItem> g_test_items{
-    { "", "" }, 
-    { "a", "YQ==" },
-    { "ab", "YWI=" },
-    { "abc", "YWJj" },
-    { "abcd", "YWJjZA==" },
-    { "abcde", "YWJjZGU=" },
-    { "abcdef", "YWJjZGVm" },
+    { "", L"" },
+    { "a", L"YQ==" },
+    { "ab", L"YWI=" },
+    { "abc", L"YWJj" },
+    { "abcd", L"YWJjZA==" },
+    { "abcde", L"YWJjZGU=" },
+    { "abcdef", L"YWJjZGVm" },
 };
 
 }
