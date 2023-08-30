@@ -143,15 +143,32 @@ public:
     void SetAutoScrollContentSize(bool value);
 
     /**
-     Get scroll bar thickness.
+     Get vertical scroll bar thickness.
 
      The default value is 17.
      */
-    float ScrollBarThickness() const;
+    float VerticalScrollBarThickness() const;
 
     /**
-     Set scroll bar thickness.
+     Set vertical scroll bar thickness.
      */
+    void SetVerticalScrollBarThickness(float thickness);
+
+    /**
+     Get horizontal scroll bar thickness.
+
+     The default value is 17.
+     */
+    float HorizontalScrollBarThickness() const;
+
+    /**
+     Set horizontal scroll bar thickness.
+     */
+    void SetHorizontalScrollBarThickness(float thickness);
+
+    /**
+    Set both vertical and horizontal scroll bar thickness.
+    */
     void SetScrollBarThickness(float thickness);
 
     /**
@@ -256,7 +273,8 @@ private:
     bool auto_scroll_content_width_{ true };
     bool auto_scroll_content_height_{ true };
     bool auto_hide_scroll_bars_{ false };
-    float scroll_bar_thickness_{ 17 };
+    float vertical_scroll_bar_thickness_{ 17 };
+    float horizontal_scroll_bar_thickness_{ 17 };
 
     std::unique_ptr<internal::ScrollableControlLayouter> layouter_;
     bool is_layouting_{};

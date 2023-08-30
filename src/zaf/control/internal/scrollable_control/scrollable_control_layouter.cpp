@@ -60,17 +60,22 @@ void ScrollableControlLayouter::LayoutScrollBars(
     bool need_horizontal_scroll_bar) {
 
     auto content_size = GetScrollableControl()->ContentSize();
-    float scroll_bar_thickness = GetScrollableControl()->ScrollBarThickness();
+    float vertical_scroll_bar_thickness = GetScrollableControl()->VerticalScrollBarThickness();
+    float horizontal_scroll_bar_thickness = GetScrollableControl()->HorizontalScrollBarThickness();
 
     //Layout vertical scroll bar
     GetVerticalScrollBar()->SetIsVisible(need_vertical_scroll_bar);
     if (need_vertical_scroll_bar) {
 
+        auto vertical_scroll_bar_height =
+            content_size.height - 
+            (need_horizontal_scroll_bar ? horizontal_scroll_bar_thickness : 0);
+
         Rect vertical_scroll_bar_rect(
-            content_size.width - scroll_bar_thickness,
+            content_size.width - vertical_scroll_bar_thickness,
             0,
-            scroll_bar_thickness,
-            content_size.height - (need_horizontal_scroll_bar ? scroll_bar_thickness : 0)
+            vertical_scroll_bar_thickness,
+            vertical_scroll_bar_height
         );
         GetVerticalScrollBar()->SetRect(vertical_scroll_bar_rect);
     }
@@ -81,9 +86,9 @@ void ScrollableControlLayouter::LayoutScrollBars(
 
         Rect horizontal_scroll_bar_rect(
             0,
-            content_size.height - scroll_bar_thickness,
-            content_size.width - (need_vertical_scroll_bar ? scroll_bar_thickness : 0),
-            scroll_bar_thickness
+            content_size.height - horizontal_scroll_bar_thickness,
+            content_size.width - (need_vertical_scroll_bar ? vertical_scroll_bar_thickness : 0),
+            horizontal_scroll_bar_thickness
         );
         GetHorizontalScrollBar()->SetRect(horizontal_scroll_bar_rect);
     }
@@ -95,10 +100,10 @@ void ScrollableControlLayouter::LayoutScrollBars(
         corner->SetIsVisible(true);
 
         Rect corner_rect(
-            content_size.width - scroll_bar_thickness,
-            content_size.height - scroll_bar_thickness,
-            scroll_bar_thickness,
-            scroll_bar_thickness);
+            content_size.width - vertical_scroll_bar_thickness,
+            content_size.height - horizontal_scroll_bar_thickness,
+            vertical_scroll_bar_thickness,
+            horizontal_scroll_bar_thickness);
 
         corner->SetRect(corner_rect);
     }

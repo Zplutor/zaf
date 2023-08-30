@@ -75,7 +75,7 @@ Size GeneralScrollingLayouter::DeterminateScrollContentSize(
     determinate_vertical();
 
     if (need_vertical_scroll_bar) {
-        container_size.width -= scrollable_control->ScrollBarThickness();
+        container_size.width -= scrollable_control->VerticalScrollBarThickness();
     }
 
     //Second, determinate content width and if need horizontal scroll bar.
@@ -95,7 +95,7 @@ Size GeneralScrollingLayouter::DeterminateScrollContentSize(
 
     if (need_horizontal_scroll_bar) {
 
-        container_size.height -= scrollable_control->ScrollBarThickness();
+        container_size.height -= scrollable_control->HorizontalScrollBarThickness();
 
         //Last, revise content height and if need vertical scroll bar again, because the height of 
         // container is changed.

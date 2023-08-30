@@ -33,8 +33,10 @@ ZAF_DEFINE_TYPE_PROPERTY(AutoScrollContentWidth)
 ZAF_DEFINE_TYPE_PROPERTY(AutoHideScrollBars)
 ZAF_DEFINE_TYPE_PROPERTY(ScrollBarThickness)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(HorizontalScrollBar)
+ZAF_DEFINE_TYPE_PROPERTY(HorizontalScrollBarThickness)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(ScrollBarCorner)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(VerticalScrollBar)
+ZAF_DEFINE_TYPE_PROPERTY(VerticalScrollBarThickness)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(ScrollContent)
 ZAF_DEFINE_TYPE_END
 
@@ -324,15 +326,30 @@ void ScrollableControl::SetAutoScrollContentSize(bool value) {
 }
 
 
-float ScrollableControl::ScrollBarThickness() const {
-    return scroll_bar_thickness_;
+float ScrollableControl::VerticalScrollBarThickness() const {
+    return vertical_scroll_bar_thickness_;
+}
+
+void ScrollableControl::SetVerticalScrollBarThickness(float thickness) {
+    vertical_scroll_bar_thickness_ = thickness;
+    NeedRelayout();
+}
+
+
+float ScrollableControl::HorizontalScrollBarThickness() const {
+    return horizontal_scroll_bar_thickness_;
+}
+
+void ScrollableControl::SetHorizontalScrollBarThickness(float thickness) {
+    horizontal_scroll_bar_thickness_ = thickness;
+    NeedRelayout();
 }
 
 
 void ScrollableControl::SetScrollBarThickness(float thickness) {
-
-    scroll_bar_thickness_ = thickness;
-    NeedRelayout();
+    auto update_guard = BeginUpdate();
+    SetVerticalScrollBarThickness(thickness);
+    SetHorizontalScrollBarThickness(thickness);
 }
 
 
