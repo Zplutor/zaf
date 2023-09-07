@@ -51,3 +51,37 @@ TEST(TrimTest, ToTrimmed) {
     });
     ASSERT_EQ(trimmed_wstring, L"2");
 }
+
+
+TEST(TrimTest, TrimStart) {
+
+    auto test = [](std::string_view input, std::string_view expected) {
+        std::string string(input);
+        zaf::TrimStart(string);
+        return string == expected;
+    };
+    
+    ASSERT_TRUE(test("", ""));
+    ASSERT_TRUE(test(" ", ""));
+    ASSERT_TRUE(test("  ", ""));
+    ASSERT_TRUE(test("123", "123"));
+    ASSERT_TRUE(test(" 123 ", "123 "));
+    ASSERT_TRUE(test("  123 ", "123 "));
+}
+
+
+TEST(TrimTest, TrimEnd) {
+
+    auto test = [](std::string_view input, std::string_view expected) {
+        std::string string(input);
+        zaf::TrimEnd(string);
+        return string == expected;
+    };
+
+    ASSERT_TRUE(test("", ""));
+    ASSERT_TRUE(test(" ", ""));
+    ASSERT_TRUE(test("  ", ""));
+    ASSERT_TRUE(test("123", "123"));
+    ASSERT_TRUE(test(" 123 ", " 123"));
+    ASSERT_TRUE(test(" 123  ", " 123"));
+}

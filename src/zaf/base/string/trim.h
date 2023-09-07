@@ -19,38 +19,60 @@ inline bool IsSpace(wchar_t ch) {
 
 }
 
+
+template<typename C, typename P>
+void TrimStart(std::basic_string<C>& string, P&& predicate) {
+
+    std::size_t last_trim_index{};
+    for (last_trim_index = 0; last_trim_index < string.length(); ++last_trim_index) {
+
+        if (!predicate(string[last_trim_index])) {
+            break;
+        }
+    }
+
+    if (last_trim_index != 0) {
+        string.erase(0, last_trim_index);
+    }
+}
+
+
+template<typename C>
+void TrimStart(std::basic_string<C>& string) {
+    TrimStart(string, [](C ch) {
+        return internal::IsSpace(ch);
+    });
+}
+
+
+template<typename C, typename P>
+void TrimEnd(std::basic_string<C>& string, P&& predicate) {
+
+    auto iterator = string.rbegin();
+    for (; iterator != string.rend(); ++iterator) {
+
+        if (!predicate(*iterator)) {
+            break;
+        }
+    }
+
+    std::size_t remain_length = std::distance(iterator, string.rend());
+    string.resize(remain_length);
+}
+
+
+template<typename C>
+void TrimEnd(std::basic_string<C>& string) {
+    TrimEnd(string, [](C ch) {
+        return internal::IsSpace(ch);
+    });
+}
+
+
 template<typename C, typename P>
 void Trim(std::basic_string<C>& string, P&& predicate) {
-
-    if (string.empty()) {
-        return;
-    }
-
-    std::size_t end_index{};
-    for (end_index = string.length() - 1; end_index > 0; --end_index) {
-
-        if (!predicate(string[end_index])) {
-            break;
-        }
-    }
-
-    end_index++;
-
-    if (end_index != string.length()) {
-        string.erase(end_index, string.length() - end_index);
-    }
-
-    std::size_t begin_index{};
-    for (begin_index = 0; begin_index < end_index; ++begin_index) {
-
-        if (!predicate(string[begin_index])) {
-            break;
-        }
-    }
-
-    if (begin_index != 0) {
-        string.erase(0, begin_index);
-    }
+    TrimEnd(string, predicate);
+    TrimStart(string, predicate);
 }
 
 
