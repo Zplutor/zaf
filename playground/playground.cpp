@@ -91,6 +91,12 @@ private:
         text_box_->SetTextAlignment(zaf::TextAlignment::Center);
         text_box_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
 
+        zaf::LineSpacing line_spacing;
+        line_spacing.SetMethod(zaf::LineSpacingMethod::Uniform);
+        line_spacing.SetLineHeight(50);
+        line_spacing.SetBaseline(40);
+        text_box_->SetLineSpacing(line_spacing);
+
         auto scroll_control = zaf::Create<zaf::ScrollableControl>();
         scroll_control->SetScrollContent(text_box_);
         scroll_control->SetAutoHideScrollBars(true);

@@ -4,6 +4,7 @@
 #include <optional>
 #include <zaf/control/internal/range_map.h>
 #include <zaf/control/internal/textual_control/textual_control_core.h>
+#include <zaf/graphic/text/line_spacing.h>
 #include <zaf/graphic/text/text_layout.h>
 
 namespace zaf::internal {
@@ -50,6 +51,11 @@ public:
     }
     void SetTextTrimming(const TextTrimming& text_trimming) override;
 
+    LineSpacing GetLineSpacing() override {
+        return line_spacing_;
+    }
+    void SetLineSpacing(const LineSpacing& line_spacing) override;
+
     Size CalculateTextSize(const Size& boundary_size) override;
     void LayoutText(const Rect& layout_rect) override;
     void PaintText(Canvas& canvas, const Rect& dirty_rect) override;
@@ -82,6 +88,7 @@ private:
     ParagraphAlignment paragraph_alignment_{ ParagraphAlignment::Near };
     WordWrapping word_wrapping_{ WordWrapping::NoWrap };
     TextTrimming text_trimming_;
+    LineSpacing line_spacing_;
 
     Rect layout_rect_;
     TextLayout text_layout_;

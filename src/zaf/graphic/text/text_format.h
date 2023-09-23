@@ -2,6 +2,7 @@
 
 #include <dwrite.h>
 #include <zaf/base/com_object.h>
+#include <zaf/graphic/text/line_spacing.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/text_trimming.h>
@@ -64,6 +65,9 @@ public:
 
     TextTrimming GetTextTrimming() const;
     void SetTextTrimming(const TextTrimming& trimming);
+
+    LineSpacing GetLineSpacing() const;
+    void SetLineSpacing(const LineSpacing& line_spacing);
 };
 
 }

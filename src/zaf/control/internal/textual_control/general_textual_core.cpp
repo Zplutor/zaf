@@ -220,6 +220,18 @@ void GeneralTextualCore::SetTextTrimming(const zaf::TextTrimming& text_trimming)
 }
 
 
+void GeneralTextualCore::SetLineSpacing(const LineSpacing& line_spacing) {
+
+    line_spacing_ = line_spacing;
+
+    if (text_layout_) {
+        text_layout_.SetLineSpacing(line_spacing);
+    }
+
+    NotifyRepaint();
+}
+
+
 Size GeneralTextualCore::CalculateTextSize(const Size& boundary_size) {
 
     auto text_layout = GetTextLayout();
@@ -345,6 +357,7 @@ TextFormat GeneralTextualCore::CreateTextFormat() const {
     text_format.SetTextAlignment(text_alignment_);
     text_format.SetParagraphAlignment(paragraph_alignment_);
     text_format.SetWordWrapping(word_wrapping_);
+    text_format.SetLineSpacing(line_spacing_);
 
     auto text_trimming = text_trimming_;
     ReviseTextTrimmingSign(text_trimming, text_format);

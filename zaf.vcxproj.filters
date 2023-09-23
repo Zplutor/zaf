@@ -2374,5 +2374,8 @@
     <ClInclude Include="src\zaf\crypto\sha.h">
       <Filter>zaf\crypto</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\line_spacing.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

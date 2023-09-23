@@ -5,6 +5,7 @@
 #include <zaf/control/event/text_changed_info.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/font/font_weight.h>
+#include <zaf/graphic/text/line_spacing.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/text_trimming.h>
@@ -189,6 +190,9 @@ public:
         text_trimming.SetGranularity(text_trimming_granularity);
         SetTextTrimming(text_trimming);
     }
+
+    zaf::LineSpacing LineSpacing() const;
+    void SetLineSpacing(const zaf::LineSpacing& line_spacing);
 
     /**
      Get text change event.

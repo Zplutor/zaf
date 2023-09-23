@@ -243,6 +243,15 @@ void TextualControl::SetTextTrimming(const zaf::TextTrimming& text_trimming) {
 }
 
 
+zaf::LineSpacing TextualControl::LineSpacing() const {
+    return core_->GetLineSpacing();
+}
+
+void TextualControl::SetLineSpacing(const zaf::LineSpacing& line_spacing) {
+    core_->SetLineSpacing(line_spacing);
+}
+
+
 Observable<TextChangedInfo> TextualControl::TextChangedEvent() const {
     return text_changed_event_.GetObservable();
 }

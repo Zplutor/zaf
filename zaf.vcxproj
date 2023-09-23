@@ -649,6 +649,7 @@
     <ClInclude Include="src\zaf\graphic\stroke_properties.h" />
     <ClInclude Include="src\zaf\graphic\text\hit_test_result.h" />
     <ClInclude Include="src\zaf\graphic\text\line_metrics.h" />
+    <ClInclude Include="src\zaf\graphic\text\line_spacing.h" />
     <ClInclude Include="src\zaf\graphic\text\paragraph_alignment.h" />
     <ClInclude Include="src\zaf\graphic\text\text_alignment.h" />
     <ClInclude Include="src\zaf\graphic\text\text_format.h" />

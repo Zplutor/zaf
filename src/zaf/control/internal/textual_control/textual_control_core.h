@@ -7,6 +7,7 @@
 #include <zaf/control/color_picker.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/graphic/text/line_spacing.h>
 #include <zaf/graphic/text/paragraph_alignment.h>
 #include <zaf/graphic/text/text_alignment.h>
 #include <zaf/graphic/text/text_trimming.h>
@@ -57,6 +58,9 @@ public:
 
     virtual TextTrimming GetTextTrimming() = 0;
     virtual void SetTextTrimming(const TextTrimming& text_trimming) = 0;
+
+    virtual LineSpacing GetLineSpacing() = 0;
+    virtual void SetLineSpacing(const LineSpacing& line_spacing) = 0;
 
     virtual Size CalculateTextSize(const Size& boundary_size) = 0;
     virtual void LayoutText(const Rect& layout_rect) = 0;

@@ -280,6 +280,16 @@ void RichEditCore::SetTextTrimming(const zaf::TextTrimming& text_trimming) {
 }
 
 
+LineSpacing RichEditCore::GetLineSpacing() {
+    return {};
+}
+
+
+void RichEditCore::SetLineSpacing(const LineSpacing& line_spacing) {
+    //Unsupported.
+}
+
+
 Size RichEditCore::CalculateTextSize(const Size& boundary_size) {
     //Nothing to do. We calculate the size in RichEdit.
     return {};
