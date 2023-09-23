@@ -1155,9 +1155,6 @@
     <ClInclude Include="src\zaf\graphic\text\text_layout.h">
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\text_layout_properties.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\line_metrics.h">
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>

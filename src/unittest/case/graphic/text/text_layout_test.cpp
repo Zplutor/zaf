@@ -1,18 +1,15 @@
 #include <gtest/gtest.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/text/text_format_properties.h>
-#include <zaf/graphic/text/text_layout_properties.h>
 
 TEST(TextLayoutTest, GetLineMetrics) {
 
     auto create_text_layout = [](const std::wstring& text) {
         auto text_format = zaf::GraphicFactory::Instance().CreateTextFormat({});
-        zaf::TextLayoutProperties text_layout_properties;
-        text_layout_properties.text = text;
-        text_layout_properties.text_format = text_format;
-        text_layout_properties.width = 10000;
-        text_layout_properties.height = 10000;
-        return zaf::GraphicFactory::Instance().CreateTextLayout(text_layout_properties);
+        return zaf::GraphicFactory::Instance().CreateTextLayout(
+            text,
+            text_format,
+            zaf::Size{ 10000, 10000 });
     };
 
     //Empty text

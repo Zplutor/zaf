@@ -655,7 +655,6 @@
     <ClInclude Include="src\zaf\graphic\text\text_format_properties.h" />
     <ClInclude Include="src\zaf\graphic\text\text_inline_object.h" />
     <ClInclude Include="src\zaf\graphic\text\text_layout.h" />
-    <ClInclude Include="src\zaf\graphic\text\text_layout_properties.h" />
     <ClInclude Include="src\zaf\graphic\text\text_metrics.h" />
     <ClInclude Include="src\zaf\graphic\text\text_trimming.h" />
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />

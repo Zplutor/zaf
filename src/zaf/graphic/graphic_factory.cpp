@@ -5,7 +5,6 @@
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/text/text_format_properties.h>
-#include <zaf/graphic/text/text_layout_properties.h>
 
 namespace zaf {
 
@@ -176,15 +175,18 @@ TextFormat GraphicFactory::CreateTextFormat(const TextFormatProperties& properti
 }
 
 
-TextLayout GraphicFactory::CreateTextLayout(const TextLayoutProperties& properties) {
+TextLayout GraphicFactory::CreateTextLayout(
+    std::wstring_view text, 
+    const TextFormat& text_format, 
+    const zaf::Size& layout_size) {
 
     COMPtr<IDWriteTextLayout> inner;
     HRESULT result = dwrite_factory_handle_->CreateTextLayout(
-        properties.text.c_str(), 
-        static_cast<UINT32>(properties.text.length()),
-        properties.text_format.Inner().Inner(),
-        properties.width, 
-        properties.height,
+        text.data(),
+        static_cast<UINT32>(text.length()),
+        text_format.Inner().Inner(),
+        layout_size.width,
+        layout_size.height,
         inner.Reset()
     );
 

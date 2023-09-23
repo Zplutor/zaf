@@ -23,7 +23,6 @@ class Application;
 class Rect;
 class StrokeProperties;
 class TextFormatProperties;
-class TextLayoutProperties;
 class TransformMatrix;
 
 /**
@@ -92,12 +91,15 @@ public:
     TextFormat CreateTextFormat(const TextFormatProperties& properties);
 
     /**
-     Create a text layout with specified properties.
+    Create a text layout.
 
-     @return
-         Return nullptr if failed.
-     */
-    TextLayout CreateTextLayout(const TextLayoutProperties& properties);
+    @throw zaf::Error 
+        Thrown if fail.
+    */
+    TextLayout CreateTextLayout(
+        std::wstring_view text, 
+        const TextFormat& text_format,
+        const zaf::Size& layout_size);
 
     /**
      Get a font collection representing the set of installed fonts.
