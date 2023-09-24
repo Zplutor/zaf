@@ -195,4 +195,38 @@ HitTestPointResult TextLayout::HitTestPoint(const Point& point) const {
     return result;
 }
 
+
+std::vector<HitTestMetrics> TextLayout::HitTestRange(const Range& range) const {
+
+    UINT32 metrics_count{};
+    HRESULT hresult = Inner()->HitTestTextRange(
+        static_cast<UINT32>(range.index),
+        static_cast<UINT32>(range.length),
+        0,
+        0,
+        nullptr,
+        0,
+        &metrics_count);
+
+    if (hresult != E_NOT_SUFFICIENT_BUFFER) {
+        ZAF_THROW_IF_COM_ERROR(hresult);
+        return {};
+    }
+
+    std::vector<HitTestMetrics> result;
+    result.resize(metrics_count);
+
+    hresult = Inner()->HitTestTextRange(
+        static_cast<UINT32>(range.index),
+        static_cast<UINT32>(range.length),
+        0,
+        0,
+        reinterpret_cast<DWRITE_HIT_TEST_METRICS*>(&result[0]),
+        metrics_count,
+        &metrics_count);
+
+    ZAF_THROW_IF_COM_ERROR(hresult);
+    return result;
+}
+
 }

@@ -153,60 +153,35 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-void TextBox::PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void TextBox::PaintTextBackground(
+    Canvas& canvas,
+    const zaf::Rect& dirty_rect,
+    const TextLayout& text_layout,
+    const zaf::Rect& layout_rect) {
 
     if (selection_range_.length == 0) {
         return;
     }
 
-    auto text_layout = GetTextLayout();
-
-    UINT32 metrics_count{};
-    HRESULT hresult = text_layout.Inner()->HitTestTextRange(
-        static_cast<UINT32>(selection_range_.index),
-        static_cast<UINT32>(selection_range_.length),
-        0,
-        0,
-        nullptr,
-        0,
-        &metrics_count);
-
-    if (hresult != E_NOT_SUFFICIENT_BUFFER) {
+    auto metrics_list = text_layout.HitTestRange(selection_range_);
+    if (metrics_list.empty()) {
         return;
     }
 
-    auto buffer = std::make_unique<DWRITE_HIT_TEST_METRICS[]>(metrics_count);
-    hresult = text_layout.Inner()->HitTestTextRange(
-        static_cast<UINT32>(selection_range_.index),
-        static_cast<UINT32>(selection_range_.length),
-        0,
-        0,
-        buffer.get(),
-        metrics_count,
-        &metrics_count);
-
-    if (FAILED(hresult)) {
-        return;
-    }
-
-    zaf::Rect region_rect = text_rect_;
-    region_rect.AddOffset(ContentRect().position);
-    auto region_guard = canvas.PushRegion(region_rect, region_rect);
+    auto region_guard = canvas.PushRegion(layout_rect, layout_rect);
 
     auto background_color = SelectionBackgroundColor();
     auto brush = canvas.Renderer().CreateSolidColorBrush(background_color);
     auto text = std::get<0>(core_->GetText());
 
-    for (UINT32 index = 0; index < metrics_count; ++index) {
+    for (const auto& metrics : metrics_list) {
 
-        const auto& metrics = buffer.get()[index];
-        
-        zaf::Rect rect{ metrics.left, metrics.top, metrics.width, metrics.height };
+        zaf::Rect rect = metrics.Rect();
 
         //Draw extra space to represent line breaks
-        auto last_index = metrics.textPosition + metrics.length - 1;
+        auto last_index = metrics.TextIndex() + metrics.Length() - 1;
         if (text[last_index] == L'\n' || text[last_index] == L'\r') {
-            rect.size.width += metrics.height / 3;
+            rect.size.width += metrics.Height() / 3;
         }
 
         canvas.DrawRectangle(rect, brush);

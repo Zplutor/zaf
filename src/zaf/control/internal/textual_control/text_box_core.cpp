@@ -11,17 +11,21 @@ void TextBoxCore::Initialize(const std::shared_ptr<TextualControl>& owner) {
 }
 
 
-void TextBoxCore::PaintText(Canvas& canvas, const Rect& dirty_rect) {
+void TextBoxCore::PaintTextLayout(
+    Canvas& canvas, 
+    const Rect& dirty_rect, 
+    const TextLayout& text_layout, 
+    const Rect& layout_rect) {
 
     auto owner = owner_.lock();
     if (!owner) {
         return;
     }
 
-    //Paint the selection background before painting text.
-    owner->PaintSelectionBackground(canvas, dirty_rect);
+    //Paint background before painting text.
+    owner->PaintTextBackground(canvas, dirty_rect, text_layout, layout_rect);
 
-    __super::PaintText(canvas, dirty_rect);
+    __super::PaintTextLayout(canvas, dirty_rect, text_layout, layout_rect);
 }
 
 }

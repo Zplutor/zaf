@@ -76,6 +76,13 @@ protected:
     void VerticallyScroll(int new_value) override;
     void HorizontallyScroll(int new_value) override;
 
+    //Called from TextBoxCore to paint text background.
+    virtual void PaintTextBackground(
+        Canvas& canvas,
+        const zaf::Rect& dirty_rect,
+        const TextLayout& text_layout, 
+        const zaf::Rect& layout_rect);
+
 private:
     class LineInfo {
     public:
@@ -86,9 +93,6 @@ private:
 
 private:
     friend class zaf::internal::TextBoxCore;
-
-    //Called from TextBoxCore to paint selection background.
-    void PaintSelectionBackground(Canvas& canvas, const zaf::Rect& dirty_rect);
 
     void PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect);
 

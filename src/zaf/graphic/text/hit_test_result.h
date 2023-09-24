@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dwrite.h>
+#include <zaf/graphic/rect.h>
 
 namespace zaf {
 
@@ -28,6 +29,18 @@ public:
 
     float Height() const {
         return height;
+    }
+
+    zaf::Point Position() const {
+        return zaf::Point{ Left(), Top() };
+    }
+
+    zaf::Size Size() const {
+        return zaf::Size{ Width(), Height() };
+    }
+
+    zaf::Rect Rect() const {
+        return zaf::Rect{ Position(), Size() };
     }
 };
 

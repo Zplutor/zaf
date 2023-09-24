@@ -8,7 +8,11 @@ namespace zaf::internal {
 class TextBoxCore : public GeneralTextualCore {
 public:
     void Initialize(const std::shared_ptr<TextualControl>& owner) override;
-    void PaintText(Canvas& canvas, const Rect& dirty_rect) override;
+    void PaintTextLayout(
+        Canvas& canvas,
+        const Rect& dirty_rect,
+        const TextLayout& text_layout,
+        const Rect& layout_rect) override;
 
 private:
     std::weak_ptr<TextBox> owner_;

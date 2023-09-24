@@ -290,9 +290,19 @@ void GeneralTextualCore::PaintText(Canvas& canvas, const Rect& dirty_rect) {
     auto text_layout = GetTextLayout();
     SetTextColorsToTextLayout(text_layout, canvas.Renderer(), *owner);
 
+    PaintTextLayout(canvas, dirty_rect, text_layout, layout_rect_in_control);
+}
+
+
+void GeneralTextualCore::PaintTextLayout(
+    Canvas& canvas,
+    const Rect& dirty_rect,
+    const TextLayout& text_layout,
+    const Rect& layout_rect) {
+
     auto state_guard = canvas.PushState();
-    canvas.SetBrushWithColor(GetTextColorPicker()(*owner));
-    canvas.DrawTextLayout(text_layout, layout_rect_in_control.position);
+    canvas.SetBrushWithColor(GetTextColorPicker()(*owner_.lock()));
+    canvas.DrawTextLayout(text_layout, layout_rect.position);
 }
 
 

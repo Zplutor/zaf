@@ -233,6 +233,7 @@ public:
 
     HitTestIndexResult HitTestIndex(std::size_t index, bool is_trailing_hit) const;
     HitTestPointResult HitTestPoint(const Point& point) const;
+    std::vector<HitTestMetrics> HitTestRange(const Range& range) const;
 
     const COMPtr<IDWriteTextLayout>& Inner() const noexcept {
         return inner_;

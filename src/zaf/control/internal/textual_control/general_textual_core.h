@@ -63,6 +63,12 @@ public:
 
     TextLayout GetTextLayout();
 
+    virtual void PaintTextLayout(
+        Canvas& canvas, 
+        const Rect& dirty_rect,
+        const TextLayout& text_layout,
+        const Rect& layout_rect);
+
 private:
     TextLayout CreateTextLayout() const;
     TextFormat CreateTextFormat() const;
