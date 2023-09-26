@@ -56,6 +56,14 @@ public:
     }
     void SetLineSpacing(const LineSpacing& line_spacing) override;
 
+    bool IgnoreTailingWhiteSpaces() const override {
+        return ignore_tailing_white_spaces_;
+    }
+
+    void SetIgnoreTailingWhiteSpaces(bool value) override {
+        ignore_tailing_white_spaces_ = value;
+    }
+
     Size CalculateTextSize(const Size& boundary_size) override;
     void LayoutText(const Rect& layout_rect) override;
     void PaintText(Canvas& canvas, const Rect& dirty_rect) override;
@@ -95,6 +103,7 @@ private:
     WordWrapping word_wrapping_{ WordWrapping::NoWrap };
     TextTrimming text_trimming_;
     LineSpacing line_spacing_;
+    bool ignore_tailing_white_spaces_{};
 
     Rect layout_rect_;
     TextLayout text_layout_;

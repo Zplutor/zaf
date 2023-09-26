@@ -49,6 +49,19 @@ public:
         return inner_.widthIncludingTrailingWhitespace;
     }
 
+    float GetWidth(bool ignore_trailing_white_spaces) const {
+
+        if (ignore_trailing_white_spaces) {
+            return Width();
+        }
+
+        //Note that if TextAlignment is set to Center, WidthIncludingTrailingWhitespace would be 0.
+        return
+            WidthIncludingTrailingWhitespace() != 0 ?
+            WidthIncludingTrailingWhitespace() :
+            Width();
+    }
+
     /**
      The initial width given to the layout. It can be either larger or smaller than 
      the text content width, depending on whether the text was wrapped.

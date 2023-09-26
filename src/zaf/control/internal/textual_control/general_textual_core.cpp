@@ -242,17 +242,11 @@ Size GeneralTextualCore::CalculateTextSize(const Size& boundary_size) {
 
     auto metrics = text_layout.GetMetrics();
 
-    //Note that if TextAlignment is set to Center, WidthIncludingTrailingWhitespace would be 0.
-    auto width =
-        metrics.WidthIncludingTrailingWhitespace() != 0 ?
-        metrics.WidthIncludingTrailingWhitespace() :
-        metrics.Width();
-
     //Recover layout size.
     text_layout.SetMaxWidth(layout_rect_.size.width);
     text_layout.SetMaxHeight(layout_rect_.size.height);
 
-    return zaf::Size{ width, metrics.Height() };
+    return zaf::Size{ metrics.GetWidth(ignore_tailing_white_spaces_), metrics.Height()};
 }
 
 

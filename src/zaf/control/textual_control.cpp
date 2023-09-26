@@ -8,6 +8,7 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(TextualControl)
+ZAF_DEFINE_TYPE_PROPERTY(IgnoreTailingWhiteSpaces)
 ZAF_DEFINE_TYPE_PROPERTY(Text)
 ZAF_DEFINE_TYPE_PROPERTY(TextLength)
 ZAF_DEFINE_TYPE_PROPERTY(TextColor)
@@ -249,6 +250,16 @@ zaf::LineSpacing TextualControl::LineSpacing() const {
 
 void TextualControl::SetLineSpacing(const zaf::LineSpacing& line_spacing) {
     core_->SetLineSpacing(line_spacing);
+}
+
+
+bool TextualControl::IgnoreTailingWhiteSpaces() const {
+    return core_->IgnoreTailingWhiteSpaces();
+}
+
+
+void TextualControl::SetIgnoreTailingWhiteSpaces(bool value) {
+    core_->SetIgnoreTailingWhiteSpaces(value);
 }
 
 

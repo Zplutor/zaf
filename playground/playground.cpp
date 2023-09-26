@@ -88,9 +88,8 @@ private:
 
         text_box_ = zaf::Create<zaf::TextBox>();
         text_box_->SetFontSize(20);
-        text_box_->SetTextAlignment(zaf::TextAlignment::Center);
+        //text_box_->SetTextAlignment(zaf::TextAlignment::Center);
         text_box_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
-        text_box_->SetPadding(zaf::Frame{ 50 });
 
         auto scroll_control = zaf::Create<zaf::ScrollableControl>();
         scroll_control->SetScrollContent(text_box_);

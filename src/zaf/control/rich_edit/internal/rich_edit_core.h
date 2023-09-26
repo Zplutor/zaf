@@ -42,6 +42,9 @@ public:
     LineSpacing GetLineSpacing() override;
     void SetLineSpacing(const LineSpacing& line_spacing) override;
 
+    bool IgnoreTailingWhiteSpaces() const override;
+    void SetIgnoreTailingWhiteSpaces(bool value) override;
+
     Size CalculateTextSize(const Size& boundary_size) override;
     void LayoutText(const Rect& layout_rect) override;
     void PaintText(Canvas& canvas, const Rect& dirty_rect) override;

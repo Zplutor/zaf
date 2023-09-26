@@ -194,6 +194,9 @@ public:
     zaf::LineSpacing LineSpacing() const;
     void SetLineSpacing(const zaf::LineSpacing& line_spacing);
 
+    bool IgnoreTailingWhiteSpaces() const;
+    void SetIgnoreTailingWhiteSpaces(bool value);
+
     /**
      Get text change event.
 

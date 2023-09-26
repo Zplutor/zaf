@@ -290,6 +290,16 @@ void RichEditCore::SetLineSpacing(const LineSpacing& line_spacing) {
 }
 
 
+bool RichEditCore::IgnoreTailingWhiteSpaces() const {
+    return false;
+}
+
+
+void RichEditCore::SetIgnoreTailingWhiteSpaces(bool value) {
+    //Unsupported.
+}
+
+
 Size RichEditCore::CalculateTextSize(const Size& boundary_size) {
     //Nothing to do. We calculate the size in RichEdit.
     return {};

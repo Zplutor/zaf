@@ -62,6 +62,9 @@ public:
     virtual LineSpacing GetLineSpacing() = 0;
     virtual void SetLineSpacing(const LineSpacing& line_spacing) = 0;
 
+    virtual bool IgnoreTailingWhiteSpaces() const = 0;
+    virtual void SetIgnoreTailingWhiteSpaces(bool value) = 0;
+
     virtual Size CalculateTextSize(const Size& boundary_size) = 0;
     virtual void LayoutText(const Rect& layout_rect) = 0;
     virtual void PaintText(Canvas& canvas, const Rect& dirty_rect) = 0;
