@@ -163,7 +163,7 @@ TextFormat GraphicFactory::CreateTextFormat(const TextFormatProperties& properti
         properties.font_family_name.c_str(),
         properties.font_collection ? properties.font_collection->Inner().Inner() : nullptr,
         static_cast<DWRITE_FONT_WEIGHT>(properties.font_weight),
-        DWRITE_FONT_STYLE_NORMAL,
+        static_cast<DWRITE_FONT_STYLE>(properties.font_style),
         DWRITE_FONT_STRETCH_NORMAL,
         properties.font_size,
         properties.locale_name.c_str(),

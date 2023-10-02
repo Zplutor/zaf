@@ -9,6 +9,7 @@ TEST(FontTest, Construction) {
         ASSERT_EQ(font.family_name, L"");
         ASSERT_EQ(font.size, 0);
         ASSERT_EQ(font.weight, zaf::FontWeight::Regular);
+        ASSERT_EQ(font.style, zaf::FontStyle::Normal);
         ASSERT_EQ(font.has_underline, false);
     }
 
@@ -18,6 +19,7 @@ TEST(FontTest, Construction) {
         ASSERT_EQ(font.family_name, L"ddef");
         ASSERT_EQ(font.size, 0);
         ASSERT_EQ(font.weight, zaf::FontWeight::Regular);
+        ASSERT_EQ(font.style, zaf::FontStyle::Normal);
         ASSERT_EQ(font.has_underline, false);
     }
 
@@ -27,6 +29,7 @@ TEST(FontTest, Construction) {
         ASSERT_EQ(font.family_name, L"tts");
         ASSERT_EQ(font.size, 88);
         ASSERT_EQ(font.weight, zaf::FontWeight::Regular);
+        ASSERT_EQ(font.style, zaf::FontStyle::Normal);
         ASSERT_EQ(font.has_underline, false);
     }
 
@@ -36,6 +39,7 @@ TEST(FontTest, Construction) {
         ASSERT_EQ(font.family_name, L"zae");
         ASSERT_EQ(font.size, 11);
         ASSERT_EQ(font.weight, zaf::FontWeight::ExtraLight);
+        ASSERT_EQ(font.style, zaf::FontStyle::Normal);
         ASSERT_EQ(font.has_underline, false);
     }
 }
@@ -47,6 +51,7 @@ TEST(FontTest, Comparison) {
     font1.family_name = L"consola";
     font1.size = 12;
     font1.weight = zaf::FontWeight::Thin;
+    font1.style = zaf::FontStyle::Italic;
     font1.has_underline = false;
 
     //Equal
@@ -70,6 +75,11 @@ TEST(FontTest, Comparison) {
     ASSERT_TRUE(font1 != font2);
 
     font2 = font1;
+    font2.style = zaf::FontStyle::Oblique;
+    ASSERT_FALSE(font1 == font2);
+    ASSERT_TRUE(font1 != font2);
+
+    font2 = font1;
     font2.has_underline = true;
     ASSERT_FALSE(font1 == font2);
     ASSERT_TRUE(font1 != font2);
@@ -88,6 +98,10 @@ TEST(FontTest, Comparison) {
     ASSERT_TRUE(font1 < font2);
 
     font2 = font1;
+    font2.style = zaf::FontStyle::Oblique;
+    ASSERT_TRUE(font1 < font2);
+
+    font2 = font1;
     font2.has_underline = true;
     ASSERT_TRUE(font1 < font2);
 }
@@ -99,6 +113,7 @@ TEST(FontTest, Hash) {
     font1.family_name = L"aa";
     font1.size = 8;
     font1.weight = zaf::FontWeight::ExtraBold;
+    font1.style = zaf::FontStyle::Italic;
     font1.has_underline = true;
 
     auto font2 = font1;
@@ -112,6 +127,7 @@ TEST(FontTest, IsEqual) {
     font1.family_name = L"aa";
     font1.size = 8;
     font1.weight = zaf::FontWeight::ExtraBold;
+    font1.style = zaf::FontStyle::Oblique;
     font1.has_underline = true;
 
     auto font2 = font1;

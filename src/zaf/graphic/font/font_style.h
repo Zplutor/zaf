@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dwrite.h>
+#include <zaf/object/enum_declaration.h>
 
 namespace zaf {
 
@@ -24,5 +25,8 @@ enum class FontStyle {
      */
     Oblique = DWRITE_FONT_STYLE_OBLIQUE,
 };
+
+ZAF_DECLARE_ENUM(FontStyle)
+ZAF_ENABLE_ENUM_BOXING(FontStyle)
 
 }

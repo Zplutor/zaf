@@ -22,6 +22,7 @@ void SetFontToTextLayout(const Font& font, const Range& range, TextLayout& text_
     text_layout.SetFontFamilyName(font.family_name, range);
     text_layout.SetFontSize(font.size, range);
     text_layout.SetFontWeight(font.weight, range);
+    text_layout.SetFontStyle(font.style, range);
     text_layout.SetHasUnderline(font.has_underline, range);
 }
 
@@ -356,6 +357,7 @@ TextFormat GeneralTextualCore::CreateTextFormat() const {
     text_format_properties.font_family_name = default_font_.family_name;
     text_format_properties.font_size = default_font_.size;
     text_format_properties.font_weight = default_font_.weight;
+    text_format_properties.font_style = default_font_.style;
 
     auto text_format = GraphicFactory::Instance().CreateTextFormat(text_format_properties);
     text_format.SetTextAlignment(text_alignment_);

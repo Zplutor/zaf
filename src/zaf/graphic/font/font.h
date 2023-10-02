@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <string>
 #include <zaf/base/hash.h>
+#include <zaf/graphic/font/font_style.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/object/object.h>
 
@@ -65,6 +66,14 @@ public:
         this->weight = weight;
     }
 
+    FontStyle Style() const {
+        return style;
+    }
+
+    void SetStyle(FontStyle style) {
+        style = style;
+    }
+
     bool HasUnderline() const {
         return has_underline;
     }
@@ -76,15 +85,41 @@ public:
     std::wstring ToString() const override;
 
     friend bool operator==(const Font& font1, const Font& font2) {
-        return 
-            std::tie(font1.family_name, font1.size, font1.weight, font1.has_underline) ==
-            std::tie(font2.family_name, font2.size, font2.weight, font2.has_underline);
+
+        auto tuple1 = std::tie(
+            font1.family_name,
+            font1.size, 
+            font1.weight, 
+            font1.style,
+            font1.has_underline);
+
+        auto tuple2 = std::tie(
+            font2.family_name, 
+            font2.size, 
+            font2.weight, 
+            font2.style,
+            font2.has_underline);
+
+        return tuple1 == tuple2;
     }
 
     friend auto operator<=>(const Font& font1, const Font& font2) {
-        return
-            std::tie(font1.family_name, font1.size, font1.weight, font1.has_underline) <=>
-            std::tie(font2.family_name, font2.size, font2.weight, font2.has_underline);
+
+        auto tuple1 = std::tie(
+            font1.family_name, 
+            font1.size,
+            font1.weight, 
+            font1.style, 
+            font1.has_underline);
+
+        auto tuple2 = std::tie(
+            font2.family_name, 
+            font2.size,
+            font2.weight, 
+            font2.style, 
+            font2.has_underline);
+
+        return tuple1 <=> tuple2;
     }
 
 public:
@@ -112,6 +147,11 @@ public:
      */
     FontWeight weight{ FontWeight::Regular };
 
+    /**
+    Font style.
+    */
+    FontStyle style{ FontStyle::Normal };
+
     bool has_underline{};
 };
 
@@ -122,7 +162,12 @@ namespace std {
 template<>
 struct hash<zaf::Font> {
     std::size_t operator()(const zaf::Font& font) {
-        return zaf::CalculateHash(font.family_name, font.size, font.weight, font.has_underline);
+        return zaf::CalculateHash(
+            font.family_name, 
+            font.size, 
+            font.weight, 
+            font.style, 
+            font.has_underline);
     }
 };
 }

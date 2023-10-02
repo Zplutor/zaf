@@ -222,6 +222,7 @@
     <ClCompile Include="src\zaf\graphic\canvas_clipping_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas_region_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas_state_guard.cpp" />
+    <ClCompile Include="src\zaf\graphic\font\font_style.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_weight.cpp" />
     <ClCompile Include="src\zaf\graphic\image\uri_image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image.cpp" />

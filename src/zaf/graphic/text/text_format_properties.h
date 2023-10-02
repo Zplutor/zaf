@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <zaf/graphic/font/font_style.h>
 #include <zaf/graphic/font/font_weight.h>
 
 namespace zaf {
@@ -39,6 +40,8 @@ public:
      Font weight.
      */
     int font_weight{ FontWeight::Regular };
+
+    FontStyle font_style{ FontStyle::Normal };
 };
 
 }

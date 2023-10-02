@@ -9,6 +9,7 @@ ZAF_DEFINE_TYPE(Font)
 ZAF_DEFINE_TYPE_PROPERTY(FamilyName)
 ZAF_DEFINE_TYPE_PROPERTY(Size)
 ZAF_DEFINE_TYPE_PROPERTY(Weight)
+ZAF_DEFINE_TYPE_PROPERTY(Style)
 ZAF_DEFINE_TYPE_PROPERTY(HasUnderline)
 ZAF_DEFINE_TYPE_END
 
@@ -42,6 +43,10 @@ Font Font::FromLOGFONT(const LOGFONT& logfont) {
     }
     else {
         font.size = height;
+    }
+
+    if (logfont.lfItalic) {
+        font.style = zaf::FontStyle::Italic;
     }
 
     font.has_underline = !!logfont.lfUnderline;

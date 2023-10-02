@@ -1042,6 +1042,9 @@
     <ClCompile Include="src\zaf\crypto\sha.cpp">
       <Filter>zaf\crypto</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\font\font_style.cpp">
+      <Filter>zaf\graphic\font</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
