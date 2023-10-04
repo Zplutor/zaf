@@ -12,7 +12,6 @@ enum class BasicErrc {
     Unsupported,
     InvalidValue,
     InvalidCast,
-    InvalidOperation,
 };
 
 const std::error_category& BasicCategory();

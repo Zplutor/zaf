@@ -123,7 +123,7 @@ TEST(PropertyTest, ReadOnly) {
     ASSERT_NE(value, nullptr);
     ASSERT_EQ(*value, ReadOnlyValue);
 
-    ASSERT_THROW_ERRC(property->SetValue(host, zaf::Box(74)), zaf::BasicErrc::InvalidOperation);
+    ASSERT_THROW_ERRC(property->SetValue(host, zaf::Box(74)), zaf::BasicErrc::Unsupported);
 }
 
 
@@ -140,7 +140,7 @@ TEST(PropertyTest, WriteOnly) {
     property->SetValue(host, zaf::Box(76));
     ASSERT_EQ(host.GetWriteOnlyValue(), 76);
 
-    ASSERT_THROW_ERRC(property->GetValue(host), zaf::BasicErrc::InvalidOperation);
+    ASSERT_THROW_ERRC(property->GetValue(host), zaf::BasicErrc::Unsupported);
 }
 
 
