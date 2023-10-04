@@ -51,7 +51,7 @@ TEST(FontTest, Comparison) {
     font1.family_name = L"consola";
     font1.size = 12;
     font1.weight = zaf::FontWeight::Thin;
-    font1.style = zaf::FontStyle::Italic;
+    font1.style = zaf::FontStyle::Oblique;
     font1.has_underline = false;
 
     //Equal
@@ -75,7 +75,7 @@ TEST(FontTest, Comparison) {
     ASSERT_TRUE(font1 != font2);
 
     font2 = font1;
-    font2.style = zaf::FontStyle::Oblique;
+    font2.style = zaf::FontStyle::Italic;
     ASSERT_FALSE(font1 == font2);
     ASSERT_TRUE(font1 != font2);
 
@@ -98,7 +98,7 @@ TEST(FontTest, Comparison) {
     ASSERT_TRUE(font1 < font2);
 
     font2 = font1;
-    font2.style = zaf::FontStyle::Oblique;
+    font2.style = zaf::FontStyle::Italic;
     ASSERT_TRUE(font1 < font2);
 
     font2 = font1;
