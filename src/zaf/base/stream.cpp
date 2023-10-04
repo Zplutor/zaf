@@ -220,7 +220,7 @@ Stream Stream::FromMemory(const void* data, std::size_t size) {
 }
 
 
-Stream Stream::FromMemoryNotOwn(const void* data, std::size_t size) {
+Stream Stream::FromMemoryNoCopy(const void* data, std::size_t size) {
 
     return Stream{ 
         MakeCOMPtr<NotOwnedMemoryStream>(
@@ -247,9 +247,9 @@ Stream Stream::FromFile(const std::filesystem::path& path) {
 }
 
 
-std::int64_t Stream::GetLength() const {
+std::uint64_t Stream::GetSize() const {
 
-    STATSTG state = { 0 };
+    STATSTG state{};
     HRESULT result = Inner()->Stat(&state, STATFLAG_NONAME);
 
     ZAF_THROW_IF_COM_ERROR(result);
@@ -257,12 +257,17 @@ std::int64_t Stream::GetLength() const {
 }
 
 
-std::int64_t Stream::Seek(SeekOrigin origin, std::int64_t offset) {
+std::uint64_t Stream::GetPosition() const {
+    return const_cast<Stream*>(this)->Seek(SeekOrigin::Current, 0);
+}
+
+
+std::uint64_t Stream::Seek(SeekOrigin origin, std::int64_t offset) {
 
     LARGE_INTEGER move;
     move.QuadPart = offset;
 
-    ULARGE_INTEGER new_position = { 0 };
+    ULARGE_INTEGER new_position{};
     HRESULT result = Inner()->Seek(move, static_cast<DWORD>(origin), &new_position);
 
     ZAF_THROW_IF_COM_ERROR(result);
@@ -270,7 +275,7 @@ std::int64_t Stream::Seek(SeekOrigin origin, std::int64_t offset) {
 }
 
 
-std::size_t Stream::Read(std::size_t size, void* data) const {
+std::uint64_t Stream::Read(std::uint64_t size, void* data) const {
 
     ULONG read_size = 0;
     HRESULT result = Inner()->Read(data, static_cast<ULONG>(size), &read_size);

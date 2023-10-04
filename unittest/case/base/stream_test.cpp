@@ -2,14 +2,39 @@
 #include <zaf/base/error/error.h>
 #include <zaf/base/stream.h>
 
-TEST(StreamTest, FromMemoryNotOwn_Read) {
+TEST(StreamTest, GetPosition) {
+
+    std::string memory("StreamTest.GetPosition");
+    auto stream = zaf::Stream::FromMemory(memory.data(), memory.size());
+    ASSERT_EQ(stream.GetPosition(), 0);
+
+    auto buffer = std::make_unique<std::byte[]>(1);
+    stream.Read(1, buffer.get());
+    ASSERT_EQ(stream.GetPosition(), 1);
+
+    buffer = std::make_unique<std::byte[]>(3);
+    stream.Read(3, buffer.get());
+    ASSERT_EQ(stream.GetPosition(), 4);
+
+    stream.Seek(zaf::SeekOrigin::Begin, 2);
+    ASSERT_EQ(stream.GetPosition(), 2);
+
+    stream.Seek(zaf::SeekOrigin::Current, 3);
+    ASSERT_EQ(stream.GetPosition(), 5);
+
+    stream.Seek(zaf::SeekOrigin::End, 0);
+    ASSERT_EQ(stream.GetPosition(), 22);
+}
+
+
+TEST(StreamTest, FromMemoryNoCopy_Read) {
 
     std::string memory{ "FromMemoryNotOwnFunction" };
 
-    auto stream = zaf::Stream::FromMemoryNotOwn(memory.data(), memory.size());
+    auto stream = zaf::Stream::FromMemoryNoCopy(memory.data(), memory.size());
 
     //Test get length
-    ASSERT_EQ(stream.GetLength(), memory.length());
+    ASSERT_EQ(stream.GetSize(), memory.length());
 
     char buffer[10]{};
     auto read_size = stream.Read(10, buffer);
@@ -29,51 +54,51 @@ TEST(StreamTest, FromMemoryNotOwn_Read) {
 }
 
 
-TEST(StreamTest, FromMemoryNotOwn_Seek) {
+TEST(StreamTest, FromMemoryNoCopy_Seek) {
 
     std::string memory{ "FromMemoryNotOwn_Seek" };
-    auto stream = zaf::Stream::FromMemoryNotOwn(memory.data(), memory.size());
+    auto stream = zaf::Stream::FromMemoryNoCopy(memory.data(), memory.size());
 
-    auto new_seek = stream.Seek(zaf::Stream::SeekOrigin::Begin, 5);
+    auto new_seek = stream.Seek(zaf::SeekOrigin::Begin, 5);
     ASSERT_EQ(new_seek, 5);
     char buffer[10]{};
     auto read_size = stream.Read(4, buffer);
     ASSERT_EQ(read_size, 4);
     ASSERT_EQ(std::memcmp(buffer, "emor", read_size), 0);
 
-    new_seek = stream.Seek(zaf::Stream::SeekOrigin::Current, -3);
+    new_seek = stream.Seek(zaf::SeekOrigin::Current, -3);
     ASSERT_EQ(new_seek, 6);
     read_size = stream.Read(4, buffer);
     ASSERT_EQ(read_size, 4);
     ASSERT_EQ(std::memcmp(buffer, "mory", read_size), 0);
 
-    new_seek = stream.Seek(zaf::Stream::SeekOrigin::End, -9);
+    new_seek = stream.Seek(zaf::SeekOrigin::End, -9);
     ASSERT_EQ(new_seek, 12);
     read_size = stream.Read(4, buffer);
     ASSERT_EQ(read_size, 4);
     ASSERT_EQ(std::memcmp(buffer, "tOwn", read_size), 0);
 
     //Seek to end
-    new_seek = stream.Seek(zaf::Stream::SeekOrigin::Begin, 100);
+    new_seek = stream.Seek(zaf::SeekOrigin::Begin, 100);
     ASSERT_EQ(new_seek, memory.length());
 
-    new_seek = stream.Seek(zaf::Stream::SeekOrigin::Current, 100);
+    new_seek = stream.Seek(zaf::SeekOrigin::Current, 100);
     ASSERT_EQ(new_seek, memory.length());
 
-    new_seek = stream.Seek(zaf::Stream::SeekOrigin::End, 100);
+    new_seek = stream.Seek(zaf::SeekOrigin::End, 100);
     ASSERT_EQ(new_seek, memory.length());
 
     //Exception
-    ASSERT_THROW(stream.Seek(zaf::Stream::SeekOrigin::Begin, -30), zaf::Error);
-    ASSERT_THROW(stream.Seek(zaf::Stream::SeekOrigin::Current, -30), zaf::Error);
-    ASSERT_THROW(stream.Seek(zaf::Stream::SeekOrigin::End, -30), zaf::Error);
+    ASSERT_THROW(stream.Seek(zaf::SeekOrigin::Begin, -30), zaf::Error);
+    ASSERT_THROW(stream.Seek(zaf::SeekOrigin::Current, -30), zaf::Error);
+    ASSERT_THROW(stream.Seek(zaf::SeekOrigin::End, -30), zaf::Error);
 }
 
 
-TEST(StreamTest, FromMemoryNotOwn_Write) {
+TEST(StreamTest, FromMemoryNoCopy_Write) {
 
     std::string memory{ "FromMemoryNotOwn_Write" };
-    auto stream = zaf::Stream::FromMemoryNotOwn(memory.data(), memory.size());
+    auto stream = zaf::Stream::FromMemoryNoCopy(memory.data(), memory.size());
 
     ASSERT_THROW(stream.Write(L"something", 9), zaf::Error);
     ASSERT_EQ(memory, "FromMemoryNotOwn_Write");
