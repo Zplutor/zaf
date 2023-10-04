@@ -134,12 +134,10 @@ public:
         return result;
     }
 
-    template<typename C>
-    COMPtr<C> As() const noexcept {
-        COMPtr<C> result{ dynamic_cast<C*>(Inner()) };
-        if (result) {
-            result->AddRef();
-        }
+    template<typename I>
+    COMPtr<I> Query(const IID& iid) const noexcept {
+        COMPtr<I> result;
+        inner_->QueryInterface(iid, result.ResetAsVoid());
         return result;
     }
 

@@ -5,6 +5,10 @@
 
 namespace zaf::rich_edit::internal {
 
+constexpr GUID IID_OLEObjectImpl = { 
+    0xfedf552, 0xa4e, 0x4085, { 0xa5, 0x40, 0xa8, 0xc4, 0x60, 0x50, 0x24, 0xde } 
+};
+
 class OLEObjectImpl : public IOleObject {
 public:
     explicit OLEObjectImpl(std::shared_ptr<EmbeddedObject> embedded_object);

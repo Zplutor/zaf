@@ -16,7 +16,7 @@ HRESULT OLEObjectImpl::QueryInterface(REFIID riid, LPVOID* ppvObj) {
         return E_INVALIDARG;
     }
 
-    if (riid == IID_IUnknown || riid == IID_IOleObject) {
+    if (riid == IID_IUnknown || riid == IID_IOleObject || riid == IID_OLEObjectImpl) {
         *ppvObj = this;
         AddRef();
         return S_OK;

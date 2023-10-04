@@ -454,23 +454,23 @@ TEST(COMPtrTest, Query) {
 
     zaf::COMPtr<BaseObject> object(new BaseObject());
 
-    auto unknown = object.Query<IUnknown>();
-    ASSERT_TRUE(unknown.IsValid());
-    ASSERT_EQ(object.Inner(), unknown.Inner());
+    {
+        auto unknown = object.Query<IUnknown>();
+        ASSERT_TRUE(unknown.IsValid());
+        ASSERT_EQ(object.Inner(), unknown.Inner());
 
-    auto ole_object = object.Query<IOleObject>();
-    ASSERT_FALSE(ole_object.IsValid());
-}
+        auto ole_object = object.Query<IOleObject>();
+        ASSERT_FALSE(ole_object.IsValid());
+    }
 
+    {
+        auto unknown = object.Query<IUnknown>(IID_IUnknown);
+        ASSERT_TRUE(unknown.IsValid());
+        ASSERT_EQ(object.Inner(), unknown.Inner());
 
-TEST(COMPtrTest, As) {
-
-    zaf::COMPtr<BaseObject> base(new DerivedObject());
-
-    auto derived = base.As<DerivedObject>();
-    ASSERT_TRUE(derived.IsValid());
-    ASSERT_EQ(derived.Inner(), base.Inner());
-    ASSERT_EQ(derived->ReferenceCount(), 2);
+        auto ole_object = object.Query<IOleObject>(IID_IOleObject);
+        ASSERT_FALSE(ole_object.IsValid());
+    }
 }
 
 

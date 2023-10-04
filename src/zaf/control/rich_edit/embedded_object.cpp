@@ -39,7 +39,7 @@ Point GetObjectPositionInScreenInPixels(
 std::shared_ptr<EmbeddedObject> EmbeddedObject::TryFromCOMPtr(
     const COMPtr<IUnknown>& ptr) noexcept {
 
-    auto ole_object_impl = ptr.As<internal::OLEObjectImpl>();
+    auto ole_object_impl = ptr.Query<internal::OLEObjectImpl>(internal::IID_OLEObjectImpl);
     if (ole_object_impl) {
         return ole_object_impl->EmbeddedObject();
     }

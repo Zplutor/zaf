@@ -112,6 +112,11 @@ std::optional<OLEHelper::InnerObjectInfo> OLEHelper::GetObjectInTextRange(
         return {};
     }
 
+    //GetEmbeddedObject() may return S_FALSE and null in some cases.
+    if (!ole_object) {
+        return {};
+    }
+
     auto object = EmbeddedObject::TryFromCOMPtr(ole_object);
     if (!object) {
         return {};
