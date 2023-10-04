@@ -27,12 +27,39 @@ protected:
     }
 };
 
+
+class TestWindow : public zaf::Window {
+public:
+    ZAF_BIND_CONTROL(zaf::Control, root);
+    ZAF_BIND_CONTROL(zaf::Label, child);
+
+protected:
+    void AfterParse() override {
+
+        __super::AfterParse();
+
+        RootControl()->SetName(L"root");
+
+        auto child = zaf::Create<zaf::Label>();
+        child->SetName(L"child");
+        RootControl()->AddChild(child);
+    }
+};
+
 }
 
 TEST(ControlBinderTest, Macro) {
 
-    auto test_control = zaf::Create<TestControl>();
-    ASSERT_EQ(test_control->label->Name(), L"label");
+    {
+        auto test_control = zaf::Create<TestControl>();
+        ASSERT_EQ(test_control->label->Name(), L"label");
+    }
+
+    {
+        auto test_window = zaf::Create<TestWindow>();
+        ASSERT_EQ(test_window->root->Name(), L"root");
+        ASSERT_EQ(test_window->child->Name(), L"child");
+    }
 }
 
 
