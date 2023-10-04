@@ -1,9 +1,15 @@
 #include <zaf/base/stream.h>
 #include <Shlwapi.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/com_error.h>
 
 namespace zaf {
 namespace {
+
+constexpr GUID IID_NotOwnedMemorySteam = { 
+    0xf07062dc, 0x6070, 0x45da, { 0xbc, 0x49, 0x48, 0x32, 0xe2, 0x3, 0xfc, 0xa8 } 
+};
+
 
 class NotOwnedMemoryStream : public IStream {
 public:
@@ -28,7 +34,11 @@ public:
             return E_INVALIDARG;
         }
 
-        if (iid == IID_IUnknown || iid == IID_IStream || iid == IID_ISequentialStream) {
+        if (iid == IID_IUnknown || 
+            iid == IID_IStream || 
+            iid == IID_ISequentialStream ||
+            iid == IID_NotOwnedMemorySteam) {
+
             AddRef();
             *object = reinterpret_cast<void*>(this);
             return NOERROR;
@@ -199,6 +209,10 @@ public:
         return NOERROR;
     }
 
+    const std::byte* Data() const {
+        return reinterpret_cast<const std::byte*>(data_);
+    }
+
 private:
     LONG reference_count_{};
 
@@ -292,6 +306,17 @@ std::size_t Stream::Write(const void* data, std::size_t size) {
 
     ZAF_THROW_IF_COM_ERROR(result);
     return written_size;
+}
+
+
+const std::byte* Stream::GetUnderlyingBuffer() const {
+
+    auto memory_stream = Inner().Query<NotOwnedMemoryStream>(IID_NotOwnedMemorySteam);
+    if (memory_stream) {
+        return memory_stream->Data();
+    }
+
+    ZAF_THROW_ERRC(BasicErrc::Unsupported);
 }
 
 

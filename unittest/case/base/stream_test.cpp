@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/error.h>
 #include <zaf/base/stream.h>
+#include "utility/assert.h"
 
 TEST(StreamTest, GetPosition) {
 
@@ -24,6 +26,23 @@ TEST(StreamTest, GetPosition) {
 
     stream.Seek(zaf::SeekOrigin::End, 0);
     ASSERT_EQ(stream.GetPosition(), 22);
+}
+
+
+TEST(StreamTest, GetUnderlyingBuffer) {
+
+    std::string memory("GetUnderlyingBuffer");
+
+    {
+        auto stream = zaf::Stream::FromMemoryNoCopy(memory.data(), memory.size());
+        auto buffer = stream.GetUnderlyingBuffer();
+        ASSERT_EQ(buffer, reinterpret_cast<const std::byte*>(memory.data()));
+    }
+
+    {
+        auto stream = zaf::Stream::FromMemory(memory.data(), memory.size());
+        ASSERT_THROW_ERRC(stream.GetUnderlyingBuffer(), zaf::BasicErrc::Unsupported);
+    }
 }
 
 

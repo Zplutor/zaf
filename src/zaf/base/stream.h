@@ -70,6 +70,19 @@ public:
     std::size_t Read(std::size_t, void* data) const;
 
     std::size_t Write(const void* data, std::size_t size);
+
+    /**
+    Gets a pointer points to the underlying buffer of the stream.
+
+    Currently, only streams created by FromMemoryNoCopy() support the operation.
+
+    @return
+        An underlying buffer pointer.
+
+    @throw zaf::Error
+        Thrown if the stream doesn't support getting underlying buffer.
+    */
+    const std::byte* GetUnderlyingBuffer() const;
 };
 
 }
