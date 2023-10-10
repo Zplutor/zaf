@@ -1,27 +1,20 @@
 #pragma once
 
-#include <zaf/base/non_copyable.h>
-#include <zaf/rx/internal/subject/inner_subject_indirect.h>
-#include <zaf/rx/observable.h>
-#include <zaf/rx/observer.h>
+#include <zaf/rx/internal/subject/base_subject.h>
 
 namespace zaf {
 
 template<typename T>
-class Subject : NonCopyable {
+class Subject : public internal::BaseSubject<T> {
 public:
-    Subject() : inner_(internal::CreateInnerSubject()) { }
+    Subject() : internal::BaseSubject<T>(internal::CreateInnerSubject()) { }
+};
 
-    Observable<T> GetObservable() const {
-        return Observable<T>{ internal::GetObservableFromInnerSubject(inner_) };
-    }
 
-    Observer<T> GetObserver() const {
-        return Observer<T>{ internal::GetObserverFromInnerSubject(inner_) };
-    }
-
-private:
-    std::shared_ptr<internal::InnerSubject> inner_;
+template<typename T>
+class ReplaySubject : public internal::BaseSubject<T> {
+public:
+    ReplaySubject() : internal::BaseSubject<T>(internal::CreateInnerSubject()) { }
 };
 
 }

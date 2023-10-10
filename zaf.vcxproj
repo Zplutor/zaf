@@ -724,6 +724,7 @@
     <ClInclude Include="src\zaf\rx\internal\operator\subscribe_on_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\rx_runtime.h" />
     <ClInclude Include="src\zaf\rx\internal\scheduler\single_thread_scheduler.h" />
+    <ClInclude Include="src\zaf\rx\internal\subject\base_subject.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\inner_subject.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\inner_subject_indirect.h" />
     <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_set.h" />
