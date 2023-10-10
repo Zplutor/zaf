@@ -1045,6 +1045,9 @@
     <ClCompile Include="src\zaf\graphic\font\font_style.cpp">
       <Filter>zaf\graphic\font</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\subject\inner_replay_subject.cpp">
+      <Filter>zaf\rx\internal\subject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2381,6 +2384,9 @@
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subject\base_subject.h">
+      <Filter>zaf\rx\internal\subject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\subject\inner_replay_subject.h">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClInclude>
   </ItemGroup>

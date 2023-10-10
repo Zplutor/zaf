@@ -474,6 +474,7 @@
     <ClCompile Include="unittest\case\resource\internal\uri_parsing_test.cpp" />
     <ClCompile Include="unittest\case\resource\internal\resource_location_parsing_test.cpp" />
     <ClCompile Include="unittest\case\rx\creation_test.cpp" />
+    <ClCompile Include="unittest\case\rx\replay_subject_test.cpp" />
     <ClCompile Include="unittest\case\rx\subject_test.cpp" />
     <ClCompile Include="unittest\case\rx\subscription_set_test.cpp" />
     <ClCompile Include="unittest\case\string\join_test.cpp" />

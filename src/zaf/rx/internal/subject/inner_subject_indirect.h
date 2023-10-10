@@ -14,6 +14,7 @@ class InnerObserver;
 class InnerSubject;
 
 std::shared_ptr<InnerSubject> CreateInnerSubject();
+std::shared_ptr<InnerSubject> CreateInnerReplaySubject();
 
 std::shared_ptr<InnerObservable> GetObservableFromInnerSubject(
     const std::shared_ptr<InnerSubject>& inner);

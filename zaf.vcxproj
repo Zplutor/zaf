@@ -297,6 +297,7 @@
     <ClCompile Include="src\zaf\rx\internal\operator\observe_on_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\subscribe_on_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\rx_runtime.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\subject\inner_replay_subject.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subject\inner_subject.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subject\inner_subject_indirect.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subscription\subscription_core.cpp" />
@@ -725,6 +726,7 @@
     <ClInclude Include="src\zaf\rx\internal\rx_runtime.h" />
     <ClInclude Include="src\zaf\rx\internal\scheduler\single_thread_scheduler.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\base_subject.h" />
+    <ClInclude Include="src\zaf\rx\internal\subject\inner_replay_subject.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\inner_subject.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\inner_subject_indirect.h" />
     <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_set.h" />

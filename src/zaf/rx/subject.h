@@ -14,7 +14,7 @@ public:
 template<typename T>
 class ReplaySubject : public internal::BaseSubject<T> {
 public:
-    ReplaySubject() : internal::BaseSubject<T>(internal::CreateInnerSubject()) { }
+    ReplaySubject() : internal::BaseSubject<T>(internal::CreateInnerReplaySubject()) { }
 };
 
 }
