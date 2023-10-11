@@ -18,11 +18,11 @@ public:
     BaseSubject(BaseSubject&&) = default;
     BaseSubject& operator=(BaseSubject&&) = default;
 
-    Observable<T> GetObservable() const {
+    Observable<T> AsObservable() const {
         return Observable<T>{ internal::GetObservableFromInnerSubject(inner_) };
     }
 
-    Observer<T> GetObserver() const {
+    Observer<T> AsObserver() const {
         return Observer<T>{ internal::GetObserverFromInnerSubject(inner_) };
     }
 

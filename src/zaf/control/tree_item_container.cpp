@@ -20,7 +20,7 @@ void TreeItemContainer::OnKeyDown(const KeyDownInfo& event_info) {
     }
     
     if (is_to_expand.has_value()) {
-        change_expand_state_event_.GetObserver().OnNext(*is_to_expand);
+        change_expand_state_event_.AsObserver().OnNext(*is_to_expand);
         event_info.MarkAsHandled();
     }
 }

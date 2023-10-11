@@ -28,7 +28,7 @@ private:
     explicit WindowClass(const WindowClassProperties& properties);
 
     Observable<std::wstring> DestroyEvent() {
-        return destroyed_event_.GetObservable();
+        return destroyed_event_.AsObservable();
     }
 
 private:

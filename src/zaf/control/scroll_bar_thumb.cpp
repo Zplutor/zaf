@@ -97,7 +97,7 @@ void ScrollBarThumb::OnMouseCaptured(const MouseCapturedInfo& event_info) {
     is_dragging_ = true;
 
     ScrollBarThumbBeginDragInfo begin_drag_event_info{ As<ScrollBarThumb>(shared_from_this())};
-    begin_drag_event_.GetObserver().OnNext(begin_drag_event_info);
+    begin_drag_event_.AsObserver().OnNext(begin_drag_event_info);
 }
 
 
@@ -108,7 +108,7 @@ void ScrollBarThumb::OnMouseReleased(const MouseReleasedInfo& event_info) {
     is_dragging_ = false;
 
     ScrollBarThumbEndDragInfo end_drag_event_info{ As<ScrollBarThumb>(shared_from_this()) };
-    end_drag_event_.GetObserver().OnNext(end_drag_event_info);
+    end_drag_event_.AsObserver().OnNext(end_drag_event_info);
 }
 
 
@@ -119,7 +119,7 @@ void ScrollBarThumb::OnMouseMove(const MouseMoveInfo& event_info) {
     if (is_dragging_) {
 
         ScrollBarThumbDragInfo event_info{ As<ScrollBarThumb>(shared_from_this()) };
-        drag_event_.GetObserver().OnNext(event_info);
+        drag_event_.AsObserver().OnNext(event_info);
     }
 }
 

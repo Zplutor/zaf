@@ -13,7 +13,7 @@ public:
     SystemMessageWindow();
 
     Observable<SessionEndedInfo> SessionEndedEvent() {
-        return session_ended_subject_.GetObservable();
+        return session_ended_subject_.AsObservable();
     }
 
 private:

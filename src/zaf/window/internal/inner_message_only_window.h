@@ -17,7 +17,7 @@ public:
     }
 
     Observable<Message> MessageReceivedEvent() {
-        return subject_.GetObservable();
+        return subject_.AsObservable();
     }
 
 private:

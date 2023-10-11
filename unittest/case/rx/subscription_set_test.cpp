@@ -35,15 +35,15 @@ TEST(RxSubscriptionSetTest, CancelSubscription) {
     zaf::SubscriptionSet set;
 
     std::vector<std::string> values;
-    set += subject.GetObservable().Subscribe([&values](const std::string& value) {
+    set += subject.AsObservable().Subscribe([&values](const std::string& value) {
         values.push_back(value);
     });
     ASSERT_EQ(set.Count(), 1);
 
-    subject.GetObserver().OnNext("before");
+    subject.AsObserver().OnNext("before");
     set.Clear();
     ASSERT_EQ(set.Count(), 0);
-    subject.GetObserver().OnNext("after");
+    subject.AsObserver().OnNext("after");
 
     std::vector<std::string> expected{ "before" };
     ASSERT_EQ(values, expected);
@@ -56,15 +56,15 @@ TEST(RxSubscriptionSetTest, CancelSubscriptionWithTag) {
     zaf::SubscriptionSet set;
 
     std::vector<std::string> values;
-    set += "tag" / subject.GetObservable().Subscribe([&values](const std::string& value) {
+    set += "tag" / subject.AsObservable().Subscribe([&values](const std::string& value) {
         values.push_back(value);
     });
     ASSERT_EQ(set.Count(), 1);
 
-    subject.GetObserver().OnNext("before");
+    subject.AsObserver().OnNext("before");
     set -= "tag";
     ASSERT_EQ(set.Count(), 0);
-    subject.GetObserver().OnNext("after");
+    subject.AsObserver().OnNext("after");
 
     std::vector<std::string> expected{ "before" };
     ASSERT_EQ(values, expected);
@@ -77,17 +77,17 @@ TEST(RxSubscriptionSetTest, CancelSubscriptionByDestruction) {
     auto set = std::make_unique<zaf::SubscriptionSet>();
 
     std::vector<std::string> values;
-    *set += subject.GetObservable().Subscribe([&values](const std::string& value) {
+    *set += subject.AsObservable().Subscribe([&values](const std::string& value) {
         values.push_back(value);
     });
-    *set += "tag" / subject.GetObservable().Subscribe([&values](const std::string& value) {
+    *set += "tag" / subject.AsObservable().Subscribe([&values](const std::string& value) {
         values.push_back(value);
     });
     ASSERT_EQ(set->Count(), 2);
 
-    subject.GetObserver().OnNext("before");
+    subject.AsObserver().OnNext("before");
     set.reset();
-    subject.GetObserver().OnNext("after");
+    subject.AsObserver().OnNext("after");
 
     std::vector<std::string> expected{ "before", "before"};
     ASSERT_EQ(values, expected);

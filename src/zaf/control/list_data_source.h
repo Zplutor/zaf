@@ -32,21 +32,21 @@ public:
      Get item add event.
      */
     Observable<ListDataSourceDataAddInfo> DataAddEvent() {
-        return data_add_event_.GetObservable();
+        return data_add_event_.AsObservable();
     }
 
     /**
      Get item remove event.
      */
     Observable<ListDataSourceDataRemoveInfo> DataRemoveEvent() {
-        return data_remove_event_.GetObservable();
+        return data_remove_event_.AsObservable();
     }
 
     /**
      Get item update event.
      */
     Observable<ListDataSourceDataUpdateInfo> DataUpdateEvent() {
-        return data_update_event_.GetObservable();
+        return data_update_event_.AsObservable();
     }
 
 protected:

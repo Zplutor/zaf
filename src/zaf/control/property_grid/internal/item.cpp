@@ -39,7 +39,7 @@ void Item::Initialize() {
         return;
     }
 
-    Subscriptions() += manager->DistanceChangedSubject().GetObservable().Subscribe(
+    Subscriptions() += manager->DistanceChangedSubject().AsObservable().Subscribe(
         [this](const ItemSplitDistanceChangedInfo& event_info) {
 
         auto auto_reset = MakeAutoReset(is_handling_split_distance_event_, true);
@@ -161,7 +161,7 @@ void Item::InitializeSplitControl() {
                 this->DetermineTextRect().Left() + split_control_->SplitDistance();
             new_event_info.is_changed_by_dragging = event_info.IsChangedByDragging();
 
-            manager->DistanceChangedSubject().GetObserver().OnNext(new_event_info);
+            manager->DistanceChangedSubject().AsObserver().OnNext(new_event_info);
         }
     });
 

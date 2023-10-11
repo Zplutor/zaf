@@ -51,11 +51,11 @@ public:
     void RemoveConversationAllUnreadMessages(Id conversation_id);
 
     zaf::Observable<std::shared_ptr<Conversation>> GetConversationUpdateEvent() {
-        return conversation_update_event_.GetObservable();
+        return conversation_update_event_.AsObservable();
     }
 
     zaf::Observable<std::shared_ptr<Message>> GetMessageAddEvent() {
-        return message_add_event_.GetObservable();
+        return message_add_event_.AsObservable();
     }
 
 private:

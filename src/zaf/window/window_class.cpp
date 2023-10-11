@@ -16,7 +16,7 @@ WindowClass::~WindowClass() {
         UnregisterClass(reinterpret_cast<LPCWSTR>(atom_), nullptr);
     }
 
-    destroyed_event_.GetObserver().OnNext(properties_.Name());
+    destroyed_event_.AsObserver().OnNext(properties_.Name());
 }
 
 

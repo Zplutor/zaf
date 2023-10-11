@@ -116,7 +116,7 @@ void Timer::RaiseEvent() {
 
     TimerTriggerInfo event_info;
     event_info.timer = shared_from_this();
-    trigger_event_.GetObserver().OnNext(event_info);
+    trigger_event_.AsObserver().OnNext(event_info);
 }
 
 

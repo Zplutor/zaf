@@ -125,7 +125,7 @@ void Data::ChangeValueFromDownToUp(const std::shared_ptr<Object>& value) {
 
     value_ = value;
 
-    value_changed_subject_.GetObserver().OnNext(shared_from_this());
+    value_changed_subject_.AsObserver().OnNext(shared_from_this());
 }
 
 
@@ -134,7 +134,7 @@ void Data::OnChildValueChanged(const std::shared_ptr<Data>& child) {
     child->Property()->SetValue(*value_, child->Value());
 
     if (property_) {
-        value_changed_subject_.GetObserver().OnNext(shared_from_this());
+        value_changed_subject_.AsObserver().OnNext(shared_from_this());
     }
     else {
         ChangeValueFromUpToDown(value_);

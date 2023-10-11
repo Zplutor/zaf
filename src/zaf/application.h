@@ -125,7 +125,7 @@ public:
      Startup works can be done in this event, Such as creating and showing the main window.
      */
     Observable<ApplicationBeginRunInfo> BeginRunEvent() {
-        return begin_run_event_.GetObservable();
+        return begin_run_event_.AsObservable();
     }
 
     /**
@@ -134,7 +134,7 @@ public:
      Cleanup works can be done in this event.
      */
     Observable<ApplicationEndRunInfo> EndRunEvent() {
-        return end_run_event_.GetObservable();
+        return end_run_event_.AsObservable();
     }
 
     /**

@@ -161,15 +161,15 @@ public:
     }
 
     Observable<SplitBarBeginDragInfo> BeginDragEvent() {
-        return begin_drag_event_.GetObservable();
+        return begin_drag_event_.AsObservable();
     }
 
     Observable<SplitBarDragInfo> DragEvent() {
-        return drag_event_.GetObservable();
+        return drag_event_.AsObservable();
     }
 
     Observable<SplitBarEndDragInfo> EndDragEvent() {
-        return end_drag_event_.GetObservable();
+        return end_drag_event_.AsObservable();
     }
 
 protected:

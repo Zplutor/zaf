@@ -18,22 +18,22 @@ public:
     virtual void RecoverFocus();
 
     Observable<std::shared_ptr<Object>> ValueChangedEvent() {
-        return value_changed_event_.GetObservable();
+        return value_changed_event_.AsObservable();
     }
 
     Observable<ValueView*> ShouldSelectEvent() {
-        return should_select_event_.GetObservable();
+        return should_select_event_.AsObservable();
     }
 
 protected:
     void Initialize() override;
 
     void NotifyValueChanged(const std::shared_ptr<Object>& new_value) {
-        value_changed_event_.GetObserver().OnNext(new_value);
+        value_changed_event_.AsObserver().OnNext(new_value);
     }
 
     void NotifyShouldSelectItem() {
-        should_select_event_.GetObserver().OnNext(this);
+        should_select_event_.AsObserver().OnNext(this);
     }
 
 private:

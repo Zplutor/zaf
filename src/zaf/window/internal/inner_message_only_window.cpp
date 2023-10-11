@@ -87,7 +87,7 @@ LRESULT CALLBACK InnerMessageOnlyWindow::WindowProcedure(
 
 void InnerMessageOnlyWindow::OnMessageReceived(UINT id, WPARAM wparam, LPARAM lparam) {
 
-    subject_.GetObserver().OnNext(Message{ handle_, id, wparam, lparam });
+    subject_.AsObserver().OnNext(Message{ handle_, id, wparam, lparam });
 }
 
 }

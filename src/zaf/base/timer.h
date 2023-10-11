@@ -92,7 +92,7 @@ public:
      Get the trigger event.
      */
     Observable<TimerTriggerInfo> TriggerEvent() {
-        return trigger_event_.GetObservable();
+        return trigger_event_.AsObservable();
     }
 
     /**

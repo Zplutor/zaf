@@ -41,7 +41,7 @@ public:
     void OnSplitControlRemove(const std::shared_ptr<SplitControl>& split_control);
 
     Observable<float> MaxSplitControlXChangedEvent() {
-        return max_split_control_x_changed_event_.GetObservable();
+        return max_split_control_x_changed_event_.AsObservable();
     }
 
 private:

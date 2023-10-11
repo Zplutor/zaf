@@ -13,7 +13,7 @@ void RaiseEvent(Subject<T>& subject, std::size_t index, std::size_t count) {
     T event_info;
     event_info.index = index;
     event_info.count = count;
-    subject.GetObserver().OnNext(event_info);
+    subject.AsObserver().OnNext(event_info);
 }
 
 }

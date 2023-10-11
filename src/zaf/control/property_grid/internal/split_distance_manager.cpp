@@ -5,7 +5,7 @@ namespace zaf::property_grid::internal {
 
 SplitDistanceManager::SplitDistanceManager() {
 
-    Subscriptions() += distance_changed_subject_.GetObservable().Subscribe(
+    Subscriptions() += distance_changed_subject_.AsObservable().Subscribe(
         [this](const ItemSplitDistanceChangedInfo& event_info) {
     
         if (!event_info.changing_item) {
@@ -32,7 +32,7 @@ void SplitDistanceManager::UpdateDefaultDistance(float distance) {
 
     ItemSplitDistanceChangedInfo event_info;
     event_info.new_distance = current_distance_;
-    distance_changed_subject_.GetObserver().OnNext(event_info);
+    distance_changed_subject_.AsObserver().OnNext(event_info);
 }
 
 
@@ -62,7 +62,7 @@ void SplitDistanceManager::UpdateMaxSplitControlXOnAdd(const SplitControl& added
     }
 
     max_split_control_x_ = added_split_control.X();
-    max_split_control_x_changed_event_.GetObserver().OnNext(max_split_control_x_);
+    max_split_control_x_changed_event_.AsObserver().OnNext(max_split_control_x_);
 }
 
 
@@ -86,7 +86,7 @@ void SplitDistanceManager::OnSplitControlRemove(
     }
 
     max_split_control_x_ = new_max_x;
-    max_split_control_x_changed_event_.GetObserver().OnNext(max_split_control_x_);
+    max_split_control_x_changed_event_.AsObserver().OnNext(max_split_control_x_);
 }
 
 }

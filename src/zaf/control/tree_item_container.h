@@ -16,7 +16,7 @@ private:
     friend class internal::TreeControlImplementation;
 
     Observable<bool> ChangeExpandStateEvent() {
-        return change_expand_state_event_.GetObservable();
+        return change_expand_state_event_.AsObservable();
     }
 
 private:

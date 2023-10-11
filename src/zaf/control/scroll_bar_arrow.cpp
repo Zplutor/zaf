@@ -104,7 +104,7 @@ void ScrollBarArrow::OnMouseCaptured(const MouseCapturedInfo& event_info) {
     __super::OnMouseCaptured(event_info);
 
     ScrollBarArrowBeginPressInfo begin_press_event_info{ As<ScrollBarArrow>(shared_from_this()) };
-    begin_press_event_.GetObserver().OnNext(begin_press_event_info);
+    begin_press_event_.AsObserver().OnNext(begin_press_event_info);
 }
 
 
@@ -113,7 +113,7 @@ void ScrollBarArrow::OnMouseReleased(const MouseReleasedInfo& event_info) {
     __super::OnMouseReleased(event_info);
 
     ScrollBarArrowBeginPressInfo begin_press_event_info{ As<ScrollBarArrow>(shared_from_this()) };
-    end_press_event_.GetObserver().OnNext(begin_press_event_info);
+    end_press_event_.AsObserver().OnNext(begin_press_event_info);
 }
 
 }

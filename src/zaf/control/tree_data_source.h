@@ -29,15 +29,15 @@ public:
     }
 
     Observable<TreeDataSourceDataAddInfo> DataAddEvent() {
-        return data_add_event_.GetObservable();
+        return data_add_event_.AsObservable();
     }
 
     Observable<TreeDataSourceDataRemoveInfo> DataRemoveEvent() {
-        return data_remove_event_.GetObservable();
+        return data_remove_event_.AsObservable();
     }
 
     Observable<TreeDataSourceDataUpdateInfo> DataUpdateEvent() {
-        return data_update_event_.GetObservable();
+        return data_update_event_.AsObservable();
     }
 
 protected:

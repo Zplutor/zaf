@@ -129,7 +129,7 @@ void Application::NotifyApplicationBeginRun() {
         delegate_->ApplicationBeginRun(event_info);
     }
 
-    auto begin_run_event_observer = begin_run_event_.GetObserver();
+    auto begin_run_event_observer = begin_run_event_.AsObserver();
     begin_run_event_observer.OnNext(event_info);
     begin_run_event_observer.OnCompleted();
 }
@@ -143,7 +143,7 @@ void Application::NotifyApplicationEndRun() {
         delegate_->ApplicationEndRun(event_info);
     }
 
-    auto end_run_event_observer = end_run_event_.GetObserver();
+    auto end_run_event_observer = end_run_event_.AsObserver();
     end_run_event_observer.OnNext(event_info);
     end_run_event_observer.OnCompleted();
 }

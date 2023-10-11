@@ -42,7 +42,7 @@ public:
     const std::vector<std::shared_ptr<Data>>& Children();
 
     Observable<std::shared_ptr<Data>> ValueChangedEvent() {
-        return value_changed_subject_.GetObservable();
+        return value_changed_subject_.AsObservable();
     }
 
     void ChangeValueFromUpToDown(const std::shared_ptr<Object>& value);

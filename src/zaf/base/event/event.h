@@ -13,12 +13,12 @@ public:
         if (!subject_) {
             subject_ = Subject<T>{};
         }
-        return subject_->GetObservable();
+        return subject_->AsObservable();
     }
 
     void Raise(const T& event_info) const {
         if (subject_) {
-            subject_->GetObserver().OnNext(event_info);
+            subject_->AsObserver().OnNext(event_info);
         }
     }
 

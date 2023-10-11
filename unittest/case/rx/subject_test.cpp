@@ -12,16 +12,16 @@ TEST(RxSubjectTest, Normal) {
     zaf::Subject<int> subject;
 
     std::vector<int> values;
-    auto subscription = subject.GetObservable().Subscribe(
+    auto subscription = subject.AsObservable().Subscribe(
         [&values](int value) {
     
         values.push_back(value);
     });
 
-    subject.GetObserver().OnNext(8);
-    subject.GetObserver().OnNext(5); 
-    subject.GetObserver().OnNext(0);
-    subject.GetObserver().OnNext(3);
+    subject.AsObserver().OnNext(8);
+    subject.AsObserver().OnNext(5);
+    subject.AsObserver().OnNext(0);
+    subject.AsObserver().OnNext(3);
 
     std::vector<int> expected{ 8, 5, 0, 3 };
     ASSERT_EQ(values, expected);
@@ -33,15 +33,15 @@ TEST(RxSubjectTest, CancelSubscriptionExplicit) {
     zaf::Subject<int> subject;
 
     std::vector<int> values;
-    auto subscription = subject.GetObservable().Subscribe(
+    auto subscription = subject.AsObservable().Subscribe(
         [&values](int value) {
 
         values.push_back(value);
     });
 
-    subject.GetObserver().OnNext(1);
+    subject.AsObserver().OnNext(1);
     subscription.Unsubscribe();
-    subject.GetObserver().OnNext(2);
+    subject.AsObserver().OnNext(2);
 
     std::vector<int> expected{ 1 };
     ASSERT_EQ(values, expected);
@@ -54,15 +54,15 @@ TEST(RxSubjectTest, CancelSubscriptionImplicit) {
 
     std::vector<int> values;
     {
-        auto subscription = subject.GetObservable().Subscribe(
+        auto subscription = subject.AsObservable().Subscribe(
             [&values](int value) {
 
             values.push_back(value);
         });
 
-        subject.GetObserver().OnNext(1);
+        subject.AsObserver().OnNext(1);
     }
-    subject.GetObserver().OnNext(2);
+    subject.AsObserver().OnNext(2);
 
     std::vector<int> expected{ 1 };
     ASSERT_EQ(values, expected);

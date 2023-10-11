@@ -56,7 +56,7 @@ public:
      This event is raised when the mouse left button is pressed for a while.
      */
     Observable<ScrollBarArrowBeginPressInfo> BeginPressEvent() {
-        return begin_press_event_.GetObservable();
+        return begin_press_event_.AsObservable();
     }
 
     /**
@@ -65,7 +65,7 @@ public:
      This event is raised when the mouse left button is released after being pressed for a while.
      */
     Observable<ScrollBarArrowEndPressInfo> EndPressEvent() {
-        return end_press_event_.GetObservable();
+        return end_press_event_.AsObservable();
     }
 
 protected:

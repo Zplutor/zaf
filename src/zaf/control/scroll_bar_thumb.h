@@ -62,7 +62,7 @@ public:
      This event is raised when the thumb has begain being dragged.
      */
     Observable<ScrollBarThumbBeginDragInfo> BeginDragEvent() {
-        return begin_drag_event_.GetObservable();
+        return begin_drag_event_.AsObservable();
     }
 
     /**
@@ -71,7 +71,7 @@ public:
      This event is raised when the thumb is beging dragged.
      */
     Observable<ScrollBarThumbDragInfo> DragEvent() {
-        return drag_event_.GetObservable();
+        return drag_event_.AsObservable();
     }
 
     /**
@@ -80,7 +80,7 @@ public:
      This event is raised when the thumb has ended being dragged.
      */
     Observable<ScrollBarThumbEndDragInfo> EndDragEvent() {
-        return end_drag_event_.GetObservable();
+        return end_drag_event_.AsObservable();
     }
 
 protected:

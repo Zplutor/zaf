@@ -18,7 +18,7 @@ void RaiseEvent(
     event_info.parent_data = parent_data;
     event_info.index = index;
     event_info.count = count;
-    subject.GetObserver().OnNext(event_info);
+    subject.AsObserver().OnNext(event_info);
 }
 
 }
