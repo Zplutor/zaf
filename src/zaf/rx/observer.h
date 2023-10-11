@@ -31,15 +31,15 @@ public:
     explicit Observer(std::shared_ptr<internal::InnerObserver> inner) : 
         inner_(std::move(inner)) { }
 
-    void OnNext(const T& value) {
+    void OnNext(const T& value) const {
         inner_->OnNext(value);
     }
 
-    void OnError(const Error& error) {
+    void OnError(const Error& error) const {
         inner_->OnError(error);
     }
 
-    void OnCompleted() {
+    void OnCompleted() const {
         inner_->OnCompleted();
     }
 
