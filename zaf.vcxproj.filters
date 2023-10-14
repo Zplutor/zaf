@@ -1048,6 +1048,9 @@
     <ClCompile Include="src\zaf\rx\internal\subject\inner_replay_subject.cpp">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\operator\do_operator.cpp">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2388,6 +2391,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subject\inner_replay_subject.h">
       <Filter>zaf\rx\internal\subject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\operator\do_operator.h">
+      <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

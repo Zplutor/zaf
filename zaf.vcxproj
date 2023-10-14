@@ -294,6 +294,7 @@
     <ClCompile Include="src\zaf\rx\internal\observable\inner_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\just_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\timer_observable.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\operator\do_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\observe_on_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\subscribe_on_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\rx_runtime.cpp" />
@@ -721,6 +722,7 @@
     <ClInclude Include="src\zaf\rx\internal\observable\inner_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\just_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\timer_observable.h" />
+    <ClInclude Include="src\zaf\rx\internal\operator\do_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\observe_on_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\subscribe_on_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\rx_runtime.h" />

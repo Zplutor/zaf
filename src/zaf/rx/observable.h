@@ -56,6 +56,28 @@ public:
         return Observable{ inner_->ObserveOn(std::move(scheduler)) };
     }
 
+    Observable Do(OnNext<T> on_next) {
+        return Do(std::move(on_next), nullptr, nullptr);
+    }
+
+    Observable Do(OnNext<T> on_next, OnCompleted on_completed) {
+        return Do(std::move(on_next), nullptr, std::move(on_completed));
+    }
+
+    Observable Do(OnNext<T> on_next, OnError on_error) {
+        return Do(std::move(on_next), std::move(on_error), nullptr);
+    }
+
+    Observable Do(OnNext<T> on_next, OnError on_error, OnCompleted on_completed) {
+
+        auto do_observer = Observer<T>::Create(
+            std::move(on_next),
+            std::move(on_error),
+            std::move(on_completed));
+
+        return Observable{ inner_->Do(do_observer.Inner()) };
+    }
+
     const std::shared_ptr<internal::InnerObservable>& Inner() const {
         return inner_;
     }

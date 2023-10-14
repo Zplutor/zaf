@@ -25,6 +25,8 @@ public:
 
     std::shared_ptr<InnerObservable> SubscribeOn(std::shared_ptr<Scheduler> scheduler);
     std::shared_ptr<InnerObservable> ObserveOn(std::shared_ptr<Scheduler> scheculer);
+
+    std::shared_ptr<InnerObservable> Do(std::shared_ptr<InnerObserver> do_observer);
 };
 
 }
