@@ -1051,6 +1051,9 @@
     <ClCompile Include="src\zaf\rx\internal\operator\do_operator.cpp">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\layout\stretch_layouter.cpp">
+      <Filter>zaf\control\layout</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2394,6 +2397,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\operator\do_operator.h">
       <Filter>zaf\rx\internal\operator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\layout\stretch_layouter.h">
+      <Filter>zaf\control\layout</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

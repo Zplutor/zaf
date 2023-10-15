@@ -153,6 +153,7 @@
     <ClCompile Include="src\zaf\control\layout\layouter.cpp" />
     <ClCompile Include="src\zaf\control\layout\layout_direction.cpp" />
     <ClCompile Include="src\zaf\control\layout\linear_layouter.cpp" />
+    <ClCompile Include="src\zaf\control\layout\stretch_layouter.cpp" />
     <ClCompile Include="src\zaf\control\list_box.cpp" />
     <ClCompile Include="src\zaf\control\label.cpp" />
     <ClCompile Include="src\zaf\control\list_box_data_source.cpp" />
@@ -506,6 +507,7 @@
     <ClInclude Include="src\zaf\control\layout\layout_direction.h" />
     <ClInclude Include="src\zaf\control\layout\layouter.h" />
     <ClInclude Include="src\zaf\control\layout\linear_layouter.h" />
+    <ClInclude Include="src\zaf\control\layout\stretch_layouter.h" />
     <ClInclude Include="src\zaf\control\list_box.h" />
     <ClInclude Include="src\zaf\control\label.h" />
     <ClInclude Include="src\zaf\control\list_box_data_source.h" />
