@@ -6,36 +6,36 @@
 namespace zaf::internal {
 namespace {
 
-class SubjectSubscriptionCore : public Producer {
+class SubjectProducer : public Producer {
 public:
-    SubjectSubscriptionCore(
+    SubjectProducer(
         std::shared_ptr<InnerObserver> observer,
-        std::weak_ptr<InnerSubject> subject_core) 
+        std::weak_ptr<InnerSubject> subject) 
         : 
         Producer(std::move(observer)),
-        subject_core_(std::move(subject_core)) {
+        subject_(std::move(subject)) {
     
     }
 
 protected:
     void OnUnsubscribe() override {
 
-        auto subject_core = subject_core_.lock();
+        auto subject_core = subject_.lock();
         if (subject_core) {
             subject_core->Unsubscribe(this);
         }
     }
 
 private:
-    std::weak_ptr<InnerSubject> subject_core_;
+    std::weak_ptr<InnerSubject> subject_;
 };
 
 }
 
 InnerSubject::~InnerSubject() {
 
-    for (const auto& each_core : subscription_cores_) {
-        each_core->FinishSubscription();
+    for (const auto& each_producer : producers_) {
+        each_producer->FinishSubscription();
     }
 }
 
@@ -43,47 +43,47 @@ InnerSubject::~InnerSubject() {
 std::shared_ptr<InnerSubscription> InnerSubject::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
-    auto subscription_core = std::make_shared<SubjectSubscriptionCore>(
+    auto producer = std::make_shared<SubjectProducer>(
         observer,
         std::dynamic_pointer_cast<InnerSubject>(shared_from_this()));
    
-    subscription_cores_.push_back(subscription_core);
+    producers_.push_back(producer);
 
-    return std::make_shared<InnerSubscription>(subscription_core);
+    return std::make_shared<InnerSubscription>(producer);
 }
 
 
 void InnerSubject::OnNext(const std::any& value) {
 
-    auto copied_subscription_cores = subscription_cores_;
-    for (const auto& each_core : copied_subscription_cores) {
-        each_core->DeliverOnNext(value);
+    auto copied_producers = producers_;
+    for (const auto& producer : copied_producers) {
+        producer->DeliverOnNext(value);
     }
 }
 
 
 void InnerSubject::OnError(const Error& error) {
 
-    auto copied_subscription_cores = subscription_cores_;
-    for (const auto& each_core : copied_subscription_cores) {
-        each_core->DeliverOnError(error);
+    auto copied_producers = producers_;
+    for (const auto& each_producer : copied_producers) {
+        each_producer->DeliverOnError(error);
     }
 }
 
 
 void InnerSubject::OnCompleted() {
 
-    auto copied_subscription_cores = subscription_cores_;
-    for (const auto& each_core : copied_subscription_cores) {
-        each_core->DeliverOnCompleted();
+    auto copied_producers = producers_;
+    for (const auto& each_producer : copied_producers) {
+        each_producer->DeliverOnCompleted();
     }
 }
 
 
-void InnerSubject::Unsubscribe(Producer* subscription_core) {
+void InnerSubject::Unsubscribe(Producer* unsubscribed_producer) {
 
-    EraseIf(subscription_cores_, [subscription_core](const auto& core) {
-        return core.get() == subscription_core;
+    EraseIf(producers_, [unsubscribed_producer](const auto& producer) {
+        return producer.get() == unsubscribed_producer;
     });
 }
 

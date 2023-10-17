@@ -7,10 +7,7 @@
 
 namespace zaf::internal {
 
-class InnerSubject : 
-    public InnerObservable, 
-    public InnerObserver {
-
+class InnerSubject : public InnerObservable, public InnerObserver {
 public:
     ~InnerSubject();
 
@@ -21,11 +18,11 @@ public:
     void OnError(const Error& error) override;
     void OnCompleted() override;
 
-    //Called by SubjectSubscriptionCore.
-    void Unsubscribe(Producer* subscription_core);
+    //Called by SubjectProducer.
+    void Unsubscribe(Producer* unsubscribed_producer);
 
 private:
-    std::vector<std::shared_ptr<Producer>> subscription_cores_;
+    std::vector<std::shared_ptr<Producer>> producers_;
 };
 
 }
