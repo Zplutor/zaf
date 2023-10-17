@@ -1,6 +1,6 @@
 #include <zaf/rx/internal/observable/timer_observable.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/producer.h>
 #include <zaf/rx/internal/rx_runtime.h>
 #include <zaf/rx/internal/timer_manager.h>
 

@@ -3,7 +3,7 @@
 #include <mutex>
 #include <zaf/rx/internal/observable/inner_observable.h>
 #include <zaf/rx/internal/inner_observer.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/producer.h>
 
 namespace zaf::internal {
 

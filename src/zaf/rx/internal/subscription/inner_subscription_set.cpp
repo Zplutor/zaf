@@ -1,6 +1,6 @@
 #include <zaf/rx/internal/subscription/inner_subscription_set.h>
 #include <zaf/base/container/utility/erase.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/producer.h>
 
 namespace zaf::internal {
 

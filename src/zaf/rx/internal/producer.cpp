@@ -1,4 +1,4 @@
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/producer.h>
 #include <vector>
 
 namespace zaf::internal {

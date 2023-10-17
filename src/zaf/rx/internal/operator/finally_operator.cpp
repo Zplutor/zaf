@@ -2,7 +2,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/inner_observer.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/producer.h>
 
 namespace zaf::internal {
 namespace {
