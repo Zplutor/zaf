@@ -78,6 +78,10 @@ public:
         return Observable{ inner_->Do(do_observer.Inner()) };
     }
 
+    Observable Finally(Work work) {
+        return Observable{ inner_->Finally(std::move(work)) };
+    }
+
     const std::shared_ptr<internal::InnerObservable>& Inner() const {
         return inner_;
     }

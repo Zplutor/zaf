@@ -4,20 +4,18 @@
 #include <optional>
 #include <map>
 #include <mutex>
+#include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/inner_observer.h>
 
 namespace zaf::internal {
 
-class SubscriptionCore {
+class SubscriptionCore : NonCopyableNonMovable {
 public:
     using FinishNotification = std::function<void(SubscriptionCore*, int)>;
 
 public:
-    SubscriptionCore(std::shared_ptr<InnerObserver> observer);
+    explicit SubscriptionCore(std::shared_ptr<InnerObserver> observer);
     virtual ~SubscriptionCore() = default;
-
-    SubscriptionCore(const SubscriptionCore&) = delete;
-    SubscriptionCore& operator=(const SubscriptionCore&) = delete;
 
     void DeliverOnNext(const std::any& any);
     void DeliverOnError(const Error& error);
