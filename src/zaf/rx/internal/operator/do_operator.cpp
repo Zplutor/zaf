@@ -6,13 +6,13 @@
 namespace zaf::internal {
 namespace {
 
-class DoCore : public InnerObserver, public SubscriptionCore {
+class DoProducer : public Producer, public InnerObserver {
 public:
-    DoCore(
+    DoProducer(
         std::shared_ptr<InnerObserver> next_observer,
         std::shared_ptr<InnerObserver> do_observer)
         :
-        SubscriptionCore(std::move(next_observer)),
+        Producer(std::move(next_observer)),
         do_observer_(std::move(do_observer)) {
 
     }
@@ -60,12 +60,12 @@ DoOperator::DoOperator(
 std::shared_ptr<InnerSubscription> DoOperator::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
-    auto do_core = std::make_shared<DoCore>(observer, std::move(do_observer_));
+    auto producer = std::make_shared<DoProducer>(observer, std::move(do_observer_));
 
-    auto source_subscription = source_->Subscribe(do_core);
-    do_core->AttachSourceSubscription(std::move(source_subscription));
+    auto source_subscription = source_->Subscribe(producer);
+    producer->AttachSourceSubscription(std::move(source_subscription));
 
-    return std::make_shared<InnerSubscription>(std::move(do_core));
+    return std::make_shared<InnerSubscription>(std::move(producer));
 }
 
 }

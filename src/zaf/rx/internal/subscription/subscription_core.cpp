@@ -3,20 +3,20 @@
 
 namespace zaf::internal {
 
-SubscriptionCore::SubscriptionCore(std::shared_ptr<InnerObserver> observer) :
+Producer::Producer(std::shared_ptr<InnerObserver> observer) :
     observer_(std::move(observer)) {
 
 }
 
 
-void SubscriptionCore::DeliverOnNext(const std::any& any) {
+void Producer::DeliverOnNext(const std::any& any) {
     if (observer_) {
         observer_->OnNext(any);
     }
 }
 
 
-void SubscriptionCore::DeliverOnError(const Error& error) {
+void Producer::DeliverOnError(const Error& error) {
     if (observer_) {
         observer_->OnError(error);
     }
@@ -24,7 +24,7 @@ void SubscriptionCore::DeliverOnError(const Error& error) {
 }
 
 
-void SubscriptionCore::DeliverOnCompleted() {
+void Producer::DeliverOnCompleted() {
     if (observer_) {
         observer_->OnCompleted();
     }
@@ -32,7 +32,7 @@ void SubscriptionCore::DeliverOnCompleted() {
 }
 
 
-void SubscriptionCore::FinishSubscription() {
+void Producer::FinishSubscription() {
 
     if (SetFinish()) {
         NotifyFinish();
@@ -40,7 +40,7 @@ void SubscriptionCore::FinishSubscription() {
 }
 
 
-void SubscriptionCore::Unsubscribe() {
+void Producer::Unsubscribe() {
 
     if (SetFinish()) {
         OnUnsubscribe();
@@ -49,7 +49,7 @@ void SubscriptionCore::Unsubscribe() {
 }
 
 
-bool SubscriptionCore::SetFinish() {
+bool Producer::SetFinish() {
     
     std::scoped_lock<std::mutex> lock(lock_);
     if (is_finished_) {
@@ -60,7 +60,7 @@ bool SubscriptionCore::SetFinish() {
 }
 
 
-std::optional<int> SubscriptionCore::RegisterFinishNotification(FinishNotification callback) {
+std::optional<int> Producer::RegisterFinishNotification(FinishNotification callback) {
 
     std::scoped_lock<std::mutex> lock(lock_);
     if (is_finished_) {
@@ -73,14 +73,14 @@ std::optional<int> SubscriptionCore::RegisterFinishNotification(FinishNotificati
 }
 
 
-void SubscriptionCore::UnregisterFinishNotification(int id) {
+void Producer::UnregisterFinishNotification(int id) {
 
     std::scoped_lock<std::mutex> lock(lock_);
     finish_notifications_.erase(id);
 }
 
 
-void SubscriptionCore::NotifyFinish() {
+void Producer::NotifyFinish() {
 
     std::map<int, FinishNotification> notifications;
     {

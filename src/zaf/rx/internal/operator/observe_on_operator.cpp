@@ -6,17 +6,17 @@
 namespace zaf::internal {
 namespace {
 
-class ObserveOnObserver : 
+class ObserveOnProducer : 
+    public Producer,
     public InnerObserver, 
-    public SubscriptionCore, 
-    public std::enable_shared_from_this<ObserveOnObserver> {
+    public std::enable_shared_from_this<ObserveOnProducer> {
 
 public:
-    ObserveOnObserver(
+    ObserveOnProducer(
         std::shared_ptr<InnerObserver> next_observer,
         std::shared_ptr<Scheduler> scheduler) 
         :
-        SubscriptionCore(next_observer),
+        Producer(next_observer),
         scheduler_(std::move(scheduler)) { 
     
     }
@@ -28,7 +28,7 @@ public:
     void OnNext(const std::any& value) override {
 
         scheduler_->Schedule(std::bind(
-            &ObserveOnObserver::OnNextOnScheduler,
+            &ObserveOnProducer::OnNextOnScheduler,
             shared_from_this(),
             value));
     }
@@ -36,7 +36,7 @@ public:
     void OnError(const Error& error) override {
 
         scheduler_->Schedule(std::bind(
-            &ObserveOnObserver::OnErrorOnScheduler, 
+            &ObserveOnProducer::OnErrorOnScheduler, 
             shared_from_this(),
             error));
     }
@@ -44,7 +44,7 @@ public:
     void OnCompleted() override {
 
         scheduler_->Schedule(std::bind(
-            &ObserveOnObserver::OnCompletedOnScheduler, 
+            &ObserveOnProducer::OnCompletedOnScheduler, 
             shared_from_this()));
     }
 
@@ -95,10 +95,10 @@ ObserveOnOperator::ObserveOnOperator(
 std::shared_ptr<InnerSubscription> ObserveOnOperator::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
-    auto observe_on_observer = std::make_shared<ObserveOnObserver>(observer, scheduler_);
-    auto source_subscription = source_->Subscribe(observe_on_observer);
-    observe_on_observer->AttachSourceSubscription(source_subscription);
-    return std::make_shared<InnerSubscription>(observe_on_observer);
+    auto producer = std::make_shared<ObserveOnProducer>(observer, scheduler_);
+    auto source_subscription = source_->Subscribe(producer);
+    producer->AttachSourceSubscription(source_subscription);
+    return std::make_shared<InnerSubscription>(producer);
 }
 
 }

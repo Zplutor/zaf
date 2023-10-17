@@ -22,10 +22,10 @@ public:
     void OnCompleted() override;
 
     //Called by SubjectSubscriptionCore.
-    void Unsubscribe(SubscriptionCore* subscription_core);
+    void Unsubscribe(Producer* subscription_core);
 
 private:
-    std::vector<std::shared_ptr<SubscriptionCore>> subscription_cores_;
+    std::vector<std::shared_ptr<Producer>> subscription_cores_;
 };
 
 }

@@ -7,13 +7,13 @@
 namespace zaf::internal {
 namespace {
 
-class FinallyCore : public InnerObserver, public SubscriptionCore {
+class FinallyProducer : public Producer, public InnerObserver {
 public:
-    FinallyCore(
+    FinallyProducer(
         std::shared_ptr<InnerObserver> next_observer,
         Work finally_work)
         :
-        SubscriptionCore(std::move(next_observer)),
+        Producer(std::move(next_observer)),
         finally_work_(std::move(finally_work)) {
 
     }
@@ -80,12 +80,12 @@ FinallyOperator::FinallyOperator(std::shared_ptr<InnerObservable> source, Work f
 std::shared_ptr<InnerSubscription> FinallyOperator::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
-    auto finally_core = std::make_shared<FinallyCore>(observer, std::move(finally_work_));
+    auto producer = std::make_shared<FinallyProducer>(observer, std::move(finally_work_));
 
-    auto source_subscription = source_->Subscribe(finally_core);
-    finally_core->AttachSourceSubscription(std::move(source_subscription));
+    auto source_subscription = source_->Subscribe(producer);
+    producer->AttachSourceSubscription(std::move(source_subscription));
 
-    return std::make_shared<InnerSubscription>(std::move(finally_core));
+    return std::make_shared<InnerSubscription>(std::move(producer));
 }
 
 }

@@ -1,30 +1,28 @@
 #pragma once
 
 #include <memory>
+#include <zaf/base/non_copyable.h>
 
 namespace zaf::internal {
 
-class SubscriptionCore;
+class Producer;
 
-class InnerSubscription {
+class InnerSubscription : NonCopyableNonMovable {
 public:
     static std::shared_ptr<InnerSubscription> Empty();
 
 public:
-    InnerSubscription(std::shared_ptr<SubscriptionCore> core);
+    InnerSubscription(std::shared_ptr<internal::Producer> producer);
     ~InnerSubscription();
-
-    InnerSubscription(const InnerSubscription&) = delete;
-    InnerSubscription& operator=(const InnerSubscription&) = delete;
 
     void Unsubscribe();
 
-    const std::shared_ptr<SubscriptionCore>& Core() {
-        return core_;
+    const std::shared_ptr<Producer>& Producer() {
+        return producer_;
     }
 
 private:
-    std::shared_ptr<SubscriptionCore> core_;
+    std::shared_ptr<internal::Producer> producer_;
 };
 
 }

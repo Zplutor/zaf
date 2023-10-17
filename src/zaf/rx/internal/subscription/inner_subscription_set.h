@@ -36,8 +36,8 @@ private:
     static void UnregisterItemNotification(const Item& item);
 
 private:
-    void OnNoTagSubscriptionFinish(SubscriptionCore* core, int notification_id);
-    void OnIdSubscriptionFinish(SubscriptionCore* core, int notification_id);
+    void OnNoTagSubscriptionFinish(Producer* producer, int notification_id);
+    void OnIdSubscriptionFinish(Producer* producer, int notification_id);
 
 private:
     mutable std::mutex lock_;

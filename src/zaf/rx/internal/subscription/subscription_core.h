@@ -9,13 +9,13 @@
 
 namespace zaf::internal {
 
-class SubscriptionCore : NonCopyableNonMovable {
+class Producer : NonCopyableNonMovable {
 public:
-    using FinishNotification = std::function<void(SubscriptionCore*, int)>;
+    using FinishNotification = std::function<void(Producer*, int)>;
 
 public:
-    explicit SubscriptionCore(std::shared_ptr<InnerObserver> observer);
-    virtual ~SubscriptionCore() = default;
+    explicit Producer(std::shared_ptr<InnerObserver> observer);
+    virtual ~Producer() = default;
 
     void DeliverOnNext(const std::any& any);
     void DeliverOnError(const Error& error);

@@ -9,13 +9,13 @@
 namespace zaf::internal {
 namespace {
 
-class AsyncSubscriptionCore : public SubscriptionCore {
+class AsyncProducer : public Producer {
 public:
-    AsyncSubscriptionCore(
+    AsyncProducer(
         std::shared_ptr<InnerSubscription> subscription,
         CancelTokenSource cancel_token_source)
         :
-        SubscriptionCore(nullptr),
+        Producer(nullptr),
         subscription_(subscription),
         cancel_token_source_(cancel_token_source) {
 
@@ -70,11 +70,11 @@ std::shared_ptr<InnerSubscription> AsyncCustomizedObservable::Subscribe(
     auto nested_observable = std::make_shared<CustomizedObservable>(nested_procedure);
     auto nested_subscription = nested_observable->SubscribeOn(scheduler_)->Subscribe(observer);
 
-    auto subscription_core = std::make_shared<AsyncSubscriptionCore>(
+    auto producer = std::make_shared<AsyncProducer>(
         nested_subscription, 
         cancel_token_source);
 
-    return std::make_shared<InnerSubscription>(subscription_core);
+    return std::make_shared<InnerSubscription>(producer);
 }
 
 

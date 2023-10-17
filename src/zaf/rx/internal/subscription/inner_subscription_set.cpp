@@ -12,12 +12,12 @@ InnerSubscriptionSet::~InnerSubscriptionSet() {
 void InnerSubscriptionSet::Add(
     const std::shared_ptr<InnerSubscription>& subscription) {
 
-    auto core = subscription->Core();
-    if (!core) {
+    auto producer = subscription->Producer();
+    if (!producer) {
         return;
     }
 
-    auto notification_id = core->RegisterFinishNotification(std::bind(
+    auto notification_id = producer->RegisterFinishNotification(std::bind(
         &InnerSubscriptionSet::OnNoTagSubscriptionFinish, 
         this, 
         std::placeholders::_1,
@@ -33,15 +33,15 @@ void InnerSubscriptionSet::Add(
 
 
 void InnerSubscriptionSet::OnNoTagSubscriptionFinish(
-    SubscriptionCore* core, 
+    Producer* producer, 
     int notification_id) {
 
     std::scoped_lock<std::mutex> lock(lock_);
 
-    EraseIf(no_tag_items_, [core, notification_id](const auto& item) {
+    EraseIf(no_tag_items_, [producer, notification_id](const auto& item) {
         
         return 
-            (item.subscription->Core().get() == core) && 
+            (item.subscription->Producer().get() == producer) && 
             (item.finish_notification_id == notification_id);
     });
 }
@@ -51,12 +51,12 @@ void InnerSubscriptionSet::Add(
     const std::string& tag,
     const std::shared_ptr<InnerSubscription>& subscription) {
 
-    auto core = subscription->Core();
-    if (!core) {
+    auto producer = subscription->Producer();
+    if (!producer) {
         return;
     }
 
-    auto notification_id = core->RegisterFinishNotification(std::bind(
+    auto notification_id = producer->RegisterFinishNotification(std::bind(
         &InnerSubscriptionSet::OnIdSubscriptionFinish, 
         this, 
         std::placeholders::_1,
@@ -82,7 +82,7 @@ void InnerSubscriptionSet::Add(
 
 
 void InnerSubscriptionSet::OnIdSubscriptionFinish(
-    SubscriptionCore* core, 
+    Producer* producer, 
     int notification_id) {
 
     std::scoped_lock<std::mutex> lock(lock_);
@@ -90,7 +90,7 @@ void InnerSubscriptionSet::OnIdSubscriptionFinish(
     auto iterator = tag_items_.begin();
     while (iterator != tag_items_.end()) {
 
-        if ((iterator->second.subscription->Core().get() == core) && 
+        if ((iterator->second.subscription->Producer().get() == producer) && 
             (iterator->second.finish_notification_id = notification_id)) {
 
             iterator = tag_items_.erase(iterator);
@@ -133,7 +133,7 @@ void InnerSubscriptionSet::Clear() {
 
 void InnerSubscriptionSet::UnregisterItemNotification(const Item& item) {
 
-    item.subscription->Core()->UnregisterFinishNotification(item.finish_notification_id);
+    item.subscription->Producer()->UnregisterFinishNotification(item.finish_notification_id);
 }
 
 

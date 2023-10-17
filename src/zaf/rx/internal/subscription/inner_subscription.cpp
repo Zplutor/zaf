@@ -10,7 +10,8 @@ std::shared_ptr<InnerSubscription> InnerSubscription::Empty() {
 }
 
 
-InnerSubscription::InnerSubscription(std::shared_ptr<SubscriptionCore> core) : core_(std::move(core)) {
+InnerSubscription::InnerSubscription(std::shared_ptr<internal::Producer> producer) :
+    producer_(std::move(producer)) {
 
 }
 
@@ -21,8 +22,8 @@ InnerSubscription::~InnerSubscription() {
 
 
 void InnerSubscription::Unsubscribe() {
-    if (core_) {
-        core_->Unsubscribe();
+    if (producer_) {
+        producer_->Unsubscribe();
     }
 }
 

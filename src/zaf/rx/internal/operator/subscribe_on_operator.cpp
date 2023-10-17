@@ -6,31 +6,31 @@
 namespace zaf::internal {
 namespace {
 
-class SubscribeOnSubscriptionCore : 
-    public SubscriptionCore, 
+class SubscribeOnProducer : 
+    public Producer, 
     public InnerObserver,
-    public std::enable_shared_from_this<SubscribeOnSubscriptionCore> {
+    public std::enable_shared_from_this<SubscribeOnProducer> {
 
 public:
-    SubscribeOnSubscriptionCore(
+    SubscribeOnProducer(
         std::shared_ptr<InnerObservable> source,
         std::shared_ptr<Scheduler> scheduler,
         std::shared_ptr<InnerObserver> observer) 
         :
-        SubscriptionCore(std::move(observer)),
+        Producer(std::move(observer)),
         source_(std::move(source)),
         scheduler_(std::move(scheduler)) {
     
     }
 
-    ~SubscribeOnSubscriptionCore() {
+    ~SubscribeOnProducer() {
 
     }
 
     void Subscribe() {
 
         scheduler_->Schedule(std::bind(
-            &SubscribeOnSubscriptionCore::SubscribeOnScheduler, 
+            &SubscribeOnProducer::SubscribeOnScheduler, 
             shared_from_this()));
     }
 
@@ -39,7 +39,7 @@ public:
         is_unsubscribed_.store(true);
 
         scheduler_->Schedule(std::bind(
-            &SubscribeOnSubscriptionCore::UnsubscribeOnScheduler,
+            &SubscribeOnProducer::UnsubscribeOnScheduler,
             shared_from_this()));
     }
 
@@ -98,14 +98,14 @@ std::shared_ptr<InnerSubscription> SubscribeOnOperator::Subscribe(
 
     ZAF_EXPECT(observer);
 
-    auto subscription_core = std::make_shared<SubscribeOnSubscriptionCore>(
+    auto producer = std::make_shared<SubscribeOnProducer>(
         source_, 
         scheduler_, 
         observer);
 
-    subscription_core->Subscribe();
+    producer->Subscribe();
 
-    return std::make_shared<InnerSubscription>(subscription_core);
+    return std::make_shared<InnerSubscription>(producer);
 }
 
 }

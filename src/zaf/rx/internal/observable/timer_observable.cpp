@@ -7,18 +7,18 @@
 namespace zaf::internal {
 namespace {
 
-class TimerSubscriptionCore : 
-    public SubscriptionCore, 
-    public std::enable_shared_from_this<TimerSubscriptionCore> {
+class TimerProducer : 
+    public Producer, 
+    public std::enable_shared_from_this<TimerProducer> {
 
 public:
-    TimerSubscriptionCore(
+    TimerProducer(
         std::chrono::steady_clock::duration delay,
         std::optional<std::chrono::steady_clock::duration> interval,
         std::shared_ptr<Scheduler> scheduler,
         std::shared_ptr<InnerObserver> observer)
         :
-        SubscriptionCore(std::move(observer)),
+        Producer(std::move(observer)),
         delay_(std::move(delay)),
         interval_(std::move(interval)),
         scheduler_(std::move(scheduler)) {
@@ -44,7 +44,7 @@ private:
         timer_id_ = timer_manager.SetTimer(
             GetNextTimePoint(),
             scheduler_,
-            std::bind(&TimerSubscriptionCore::OnTimer, shared_from_this()));
+            std::bind(&TimerProducer::OnTimer, shared_from_this()));
     }
 
     std::chrono::steady_clock::time_point GetNextTimePoint() {
@@ -118,14 +118,14 @@ TimerObservable::TimerObservable(
 std::shared_ptr<InnerSubscription> TimerObservable::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
-    auto subscription_core = std::make_shared<TimerSubscriptionCore>(
+    auto producer = std::make_shared<TimerProducer>(
         delay_,
         interval_, 
         scheduler_, 
         observer);
 
-    subscription_core->Subscribe();
-    return std::make_shared<InnerSubscription>(subscription_core);
+    producer->Subscribe();
+    return std::make_shared<InnerSubscription>(producer);
 }
 
 }

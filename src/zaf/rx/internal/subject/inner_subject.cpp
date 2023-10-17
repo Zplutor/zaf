@@ -6,13 +6,13 @@
 namespace zaf::internal {
 namespace {
 
-class SubjectSubscriptionCore : public SubscriptionCore {
+class SubjectSubscriptionCore : public Producer {
 public:
     SubjectSubscriptionCore(
         std::shared_ptr<InnerObserver> observer,
         std::weak_ptr<InnerSubject> subject_core) 
         : 
-        SubscriptionCore(std::move(observer)),
+        Producer(std::move(observer)),
         subject_core_(std::move(subject_core)) {
     
     }
@@ -80,7 +80,7 @@ void InnerSubject::OnCompleted() {
 }
 
 
-void InnerSubject::Unsubscribe(SubscriptionCore* subscription_core) {
+void InnerSubject::Unsubscribe(Producer* subscription_core) {
 
     EraseIf(subscription_cores_, [subscription_core](const auto& core) {
         return core.get() == subscription_core;
