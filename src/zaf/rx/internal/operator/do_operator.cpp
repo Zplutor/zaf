@@ -6,7 +6,11 @@
 namespace zaf::internal {
 namespace {
 
-class DoProducer : public Producer, public InnerObserver {
+class DoProducer :
+    public Producer, 
+    public InnerObserver,
+    public std::enable_shared_from_this<DoProducer> {
+
 public:
     DoProducer(
         std::shared_ptr<InnerObserver> next_observer,
@@ -17,8 +21,8 @@ public:
 
     }
 
-    void AttachSourceSubscription(std::shared_ptr<InnerSubscription> source_subscription) {
-        source_subscription_ = std::move(source_subscription);
+    void Run(const std::shared_ptr<InnerObservable>& source) {
+        source_subscription_ = source->Subscribe(shared_from_this());
     }
 
     void OnNext(const std::any& value) override {
@@ -38,6 +42,8 @@ public:
 
     void OnDispose() override {
         source_subscription_->Unsubscribe();
+        source_subscription_.reset();
+        do_observer_.reset();
     }
 
 private:
@@ -61,10 +67,7 @@ std::shared_ptr<InnerSubscription> DoOperator::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
     auto producer = std::make_shared<DoProducer>(observer, std::move(do_observer_));
-
-    auto source_subscription = source_->Subscribe(producer);
-    producer->AttachSourceSubscription(std::move(source_subscription));
-
+    producer->Run(source_);
     return std::make_shared<InnerSubscription>(std::move(producer));
 }
 

@@ -40,6 +40,8 @@ void Producer::Dispose() {
     //Do disposal.
     if (MarkDisposed()) {
         OnDispose();
+        //Release observer to break potential circular reference.
+        observer_.reset();
     }
 }
 

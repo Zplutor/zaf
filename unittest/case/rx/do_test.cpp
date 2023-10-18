@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/rx/subject.h>
+#include <zaf/rx/internal/producer.h>
+#include <zaf/rx/internal/subscription/inner_subscription.h>
 
 TEST(RxDoTest, OnNext) {
 
@@ -184,4 +186,18 @@ TEST(RxDoTest, Unsubscribe) {
     std::vector<int> expected{ 1, 2 };
     ASSERT_EQ(expected, do_values);
     ASSERT_EQ(expected, observed_values);
+}
+
+
+TEST(RxDoTest, CircularReference) {
+
+    zaf::Subject<int> subject;
+    auto observable = subject.AsObservable().Do([](int) {});
+    auto subscription = observable.Subscribe();
+
+    std::weak_ptr<zaf::internal::Producer> weak_ptr = subscription.Inner()->Producer();
+    subscription = {};
+
+    auto shared_ptr = weak_ptr.lock();
+    ASSERT_EQ(shared_ptr, nullptr);
 }
