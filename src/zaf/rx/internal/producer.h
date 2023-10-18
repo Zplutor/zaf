@@ -44,6 +44,7 @@ protected:
     virtual void OnDispose() = 0;
 
 private:
+    friend class InnerSubscription;
     friend class InnerSubscriptionSet;
 
     using FinishNotification = std::function<void(Producer*, int)>;

@@ -26,6 +26,10 @@ public:
         return Observer<T>{ internal::GetObserverFromInnerSubject(inner_) };
     }
 
+    const std::shared_ptr<internal::InnerSubject>& Inner() const {
+        return inner_;
+    }
+
 protected:
     explicit BaseSubject(std::shared_ptr<internal::InnerSubject> inner) : 
         inner_(std::move(inner)) { }

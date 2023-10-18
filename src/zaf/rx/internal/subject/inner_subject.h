@@ -21,6 +21,11 @@ public:
     //Called by SubjectProducer.
     void Unsubscribe(Producer* unsubscribed_producer);
 
+    //For unittest.
+    std::size_t SubscriptionCount() const {
+        return producers_.size();
+    }
+
 private:
     std::vector<std::shared_ptr<Producer>> producers_;
 };

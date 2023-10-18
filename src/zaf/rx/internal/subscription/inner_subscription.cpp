@@ -13,6 +13,11 @@ const std::shared_ptr<InnerSubscription>& InnerSubscription::Empty() {
 InnerSubscription::InnerSubscription(std::shared_ptr<internal::Producer> producer) :
     producer_(std::move(producer)) {
 
+    if (producer_) {
+        producer_->RegisterFinishNotification([this](internal::Producer*, int) {
+            producer_->Dispose();
+        });
+    }
 }
 
 

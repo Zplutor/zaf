@@ -34,10 +34,6 @@ private:
 
 InnerSubject::~InnerSubject() {
 
-    //TODO: This might be unnecessarily.
-    //for (const auto& each_producer : producers_) {
-        //each_producer->Dispose();
-    //}
 }
 
 

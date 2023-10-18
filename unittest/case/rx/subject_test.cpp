@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/rx/subject.h>
+#include <zaf/rx/internal/subject/inner_subject.h>
 
 static_assert(!std::is_copy_assignable_v<zaf::Subject<int>>);
 static_assert(!std::is_copy_constructible_v<zaf::Subject<int>>);
@@ -66,4 +67,23 @@ TEST(RxSubjectTest, CancelSubscriptionImplicit) {
 
     std::vector<int> expected{ 1 };
     ASSERT_EQ(values, expected);
+}
+
+
+TEST(RxSubjectTest, SubscriptionCount) {
+
+    zaf::Subject<int> subject;
+    ASSERT_EQ(subject.Inner()->SubscriptionCount(), 0);
+
+    auto subscription1 = subject.AsObservable().Subscribe([](int) {});
+    ASSERT_EQ(subject.Inner()->SubscriptionCount(), 1);
+
+    auto subscription2 = subject.AsObservable().Subscribe([](int) {});
+    ASSERT_EQ(subject.Inner()->SubscriptionCount(), 2);
+
+    subscription1.Unsubscribe();
+    ASSERT_EQ(subject.Inner()->SubscriptionCount(), 1);
+
+    subscription2.Unsubscribe();
+    ASSERT_EQ(subject.Inner()->SubscriptionCount(), 0);
 }

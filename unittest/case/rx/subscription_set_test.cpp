@@ -92,3 +92,32 @@ TEST(RxSubscriptionSetTest, CancelSubscriptionByDestruction) {
     std::vector<std::string> expected{ "before", "before"};
     ASSERT_EQ(values, expected);
 }
+
+
+TEST(RxSubscriptionSetTest, RemoveAfterFinish) {
+
+    zaf::SubscriptionSet set;
+    zaf::Subject<std::string> subject;
+
+    //Remove after OnError
+    set += subject.AsObservable().Subscribe([](std::string) {});
+    subject.AsObserver().OnNext("a");
+    ASSERT_EQ(set.Count(), 1);
+    subject.AsObserver().OnError(zaf::Error(std::make_error_code(std::errc::address_in_use)));
+    ASSERT_EQ(set.Count(), 0);
+
+    //Remove after OnCompleted
+    set += subject.AsObservable().Subscribe([](std::string) {});
+    subject.AsObserver().OnNext("b");
+    ASSERT_EQ(set.Count(), 1);
+    subject.AsObserver().OnCompleted();
+    ASSERT_EQ(set.Count(), 0);
+
+    //Remove after Unsuscribe
+    auto subscription = subject.AsObservable().Subscribe([](std::string) {});
+    set += subscription;
+    subject.AsObserver().OnNext("c");
+    ASSERT_EQ(set.Count(), 1);
+    subscription.Unsubscribe();
+    ASSERT_EQ(set.Count(), 0);
+}

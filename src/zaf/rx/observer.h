@@ -18,7 +18,9 @@ public:
         OnCompleted on_completed = nullptr) {
 
         auto bridged_on_next = [on_next](const std::any& value) {
-            on_next(std::any_cast<T>(value));
+            if (on_next) {
+                on_next(std::any_cast<T>(value));
+            }
         };
 
         return Observer(internal::InnerObserver::Create(
