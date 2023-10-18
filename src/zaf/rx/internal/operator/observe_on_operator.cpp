@@ -49,7 +49,7 @@ public:
     }
 
 protected:
-    void OnUnsubscribe() override {
+    void OnDispose() override {
 
         is_unsubscribed_.store(true);
         source_subscription_->Unsubscribe();

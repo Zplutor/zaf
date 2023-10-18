@@ -36,7 +36,7 @@ public:
         DeliverOnCompleted();
     }
 
-    void OnUnsubscribe() override {
+    void OnDispose() override {
         source_subscription_->Unsubscribe();
     }
 

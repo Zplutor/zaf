@@ -22,7 +22,7 @@ public:
     }
 
 protected:
-    void OnUnsubscribe() override {
+    void OnDispose() override {
 
         subscription_->Unsubscribe();
         cancel_token_source_.Cancel();

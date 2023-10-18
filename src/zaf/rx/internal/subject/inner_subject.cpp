@@ -18,7 +18,7 @@ public:
     }
 
 protected:
-    void OnUnsubscribe() override {
+    void OnDispose() override {
 
         auto subject_core = subject_.lock();
         if (subject_core) {
@@ -34,9 +34,10 @@ private:
 
 InnerSubject::~InnerSubject() {
 
-    for (const auto& each_producer : producers_) {
-        each_producer->FinishSubscription();
-    }
+    //TODO: This might be unnecessarily.
+    //for (const auto& each_producer : producers_) {
+        //each_producer->Dispose();
+    //}
 }
 
 

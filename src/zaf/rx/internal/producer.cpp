@@ -20,7 +20,7 @@ void Producer::DeliverOnError(const Error& error) {
     if (observer_) {
         observer_->OnError(error);
     }
-    FinishSubscription();
+    FinishProduce();
 }
 
 
@@ -28,28 +28,31 @@ void Producer::DeliverOnCompleted() {
     if (observer_) {
         observer_->OnCompleted();
     }
-    FinishSubscription();
+    FinishProduce();
 }
 
 
-void Producer::FinishSubscription() {
+void Producer::Dispose() {
 
-    if (SetFinish()) {
+    //Finish the produce before disposal.
+    FinishProduce();
+
+    //Do disposal.
+    if (MarkDisposed()) {
+        OnDispose();
+    }
+}
+
+
+void Producer::FinishProduce() {
+
+    if (MarkFinished()) {
         NotifyFinish();
     }
 }
 
 
-void Producer::Unsubscribe() {
-
-    if (SetFinish()) {
-        OnUnsubscribe();
-        NotifyFinish();
-    }
-}
-
-
-bool Producer::SetFinish() {
+bool Producer::MarkFinished() {
     
     std::scoped_lock<std::mutex> lock(lock_);
     if (is_finished_) {
@@ -91,6 +94,17 @@ void Producer::NotifyFinish() {
     for (const auto& each_pair : notifications) {
         each_pair.second(this, each_pair.first);
     }
+}
+
+
+bool Producer::MarkDisposed() {
+
+    std::scoped_lock<std::mutex> lock(lock_);
+    if (is_disposed_) {
+        return false;
+    }
+    is_disposed_ = true;
+    return true;
 }
 
 }

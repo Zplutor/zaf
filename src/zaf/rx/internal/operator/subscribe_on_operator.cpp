@@ -34,7 +34,7 @@ public:
             shared_from_this()));
     }
 
-    void OnUnsubscribe() override {
+    void OnDispose() override {
 
         is_unsubscribed_.store(true);
 

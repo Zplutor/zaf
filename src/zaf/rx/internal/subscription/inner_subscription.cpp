@@ -3,7 +3,7 @@
 
 namespace zaf::internal {
 
-std::shared_ptr<InnerSubscription> InnerSubscription::Empty() {
+const std::shared_ptr<InnerSubscription>& InnerSubscription::Empty() {
     
     static auto empty_subscription = std::make_shared<InnerSubscription>(nullptr);
     return empty_subscription;
@@ -23,7 +23,7 @@ InnerSubscription::~InnerSubscription() {
 
 void InnerSubscription::Unsubscribe() {
     if (producer_) {
-        producer_->Unsubscribe();
+        producer_->Dispose();
     }
 }
 

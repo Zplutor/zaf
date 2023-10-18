@@ -27,18 +27,14 @@ public:
     }
 
     void OnError(const Error& error) override {
-
-        FinallyCaller caller(std::move(finally_work_));
         DeliverOnError(error);
     }
 
     void OnCompleted() override {
-
-        FinallyCaller caller(std::move(finally_work_));
         DeliverOnCompleted();
     }
 
-    void OnUnsubscribe() override {
+    void OnDispose() override {
 
         source_subscription_->Unsubscribe();
 
@@ -46,21 +42,6 @@ public:
             finally_work_();
         }
     }
-
-private:
-    class FinallyCaller  : zaf::NonCopyableNonMovable {
-    public:
-        explicit FinallyCaller(Work&& work) : work_(std::move(work)) {
-
-        }
-
-        ~FinallyCaller() {
-            work_();
-        }
-
-    private:
-        Work work_;
-    };
 
 private:
     std::shared_ptr<InnerSubscription> source_subscription_;

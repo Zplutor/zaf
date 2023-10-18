@@ -9,7 +9,7 @@ class Producer;
 
 class InnerSubscription : NonCopyableNonMovable {
 public:
-    static std::shared_ptr<InnerSubscription> Empty();
+    static const std::shared_ptr<InnerSubscription>& Empty();
 
 public:
     InnerSubscription(std::shared_ptr<internal::Producer> producer);
