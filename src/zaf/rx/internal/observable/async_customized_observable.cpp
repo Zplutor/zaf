@@ -25,6 +25,7 @@ protected:
     void OnDispose() override {
 
         subscription_->Unsubscribe();
+        subscription_.reset();
         cancel_token_source_.Cancel();
     }
 

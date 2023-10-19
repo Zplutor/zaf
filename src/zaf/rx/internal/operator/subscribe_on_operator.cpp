@@ -1,4 +1,5 @@
 #include <zaf/rx/internal/operator/subscribe_on_operator.h>
+#include <zaf/base/as.h>
 #include <zaf/base/error/check.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
 #include <zaf/rx/internal/producer.h>
@@ -6,11 +7,7 @@
 namespace zaf::internal {
 namespace {
 
-class SubscribeOnProducer : 
-    public Producer, 
-    public InnerObserver,
-    public std::enable_shared_from_this<SubscribeOnProducer> {
-
+class SubscribeOnProducer : public Producer, public InnerObserver {
 public:
     SubscribeOnProducer(
         std::shared_ptr<InnerObservable> source,
@@ -27,20 +24,20 @@ public:
 
     }
 
-    void Subscribe() {
+    void Run() {
 
         scheduler_->Schedule(std::bind(
             &SubscribeOnProducer::SubscribeOnScheduler, 
-            shared_from_this()));
+            As<SubscribeOnProducer>(shared_from_this())));
     }
 
     void OnDispose() override {
 
-        is_unsubscribed_.store(true);
+        is_disposed_.store(true);
 
         scheduler_->Schedule(std::bind(
             &SubscribeOnProducer::UnsubscribeOnScheduler,
-            shared_from_this()));
+            As<SubscribeOnProducer>(shared_from_this())));
     }
 
     void OnNext(const std::any& value) override {
@@ -58,25 +55,28 @@ public:
 private:
     void SubscribeOnScheduler() {
 
-        if (is_unsubscribed_.load()) {
+        if (is_disposed_.load()) {
             return;
         }
 
-        source_subscription_ = source_->Subscribe(shared_from_this());
+        source_subscription_ = source_->Subscribe(As<SubscribeOnProducer>(shared_from_this()));
     }
 
     void UnsubscribeOnScheduler() {
 
         if (source_subscription_) {
             source_subscription_->Unsubscribe();
+            source_subscription_.reset();
         }
+
+        source_.reset();
     }
 
 private:
     std::shared_ptr<InnerObservable> source_;
     std::shared_ptr<Scheduler> scheduler_;
     std::shared_ptr<InnerSubscription> source_subscription_;
-    std::atomic<bool> is_unsubscribed_{};
+    std::atomic<bool> is_disposed_{};
 };
 
 }
@@ -98,13 +98,8 @@ std::shared_ptr<InnerSubscription> SubscribeOnOperator::Subscribe(
 
     ZAF_EXPECT(observer);
 
-    auto producer = std::make_shared<SubscribeOnProducer>(
-        source_, 
-        scheduler_, 
-        observer);
-
-    producer->Subscribe();
-
+    auto producer = std::make_shared<SubscribeOnProducer>(source_, scheduler_, observer);
+    producer->Run();
     return std::make_shared<InnerSubscription>(producer);
 }
 

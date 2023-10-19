@@ -20,7 +20,7 @@ OnCompleted, or after calling Dispose() explicitly.
 Disposed state indicates that any resource held by the producer has been destroyed. A disposed
 state always follows after a finished state. It can only be set after calling Dispose().
 */
-class Producer : NonCopyableNonMovable {
+class Producer : public std::enable_shared_from_this<Producer>, NonCopyableNonMovable {
 public:
     explicit Producer(std::shared_ptr<InnerObserver> observer);
     virtual ~Producer() = default;
@@ -40,6 +40,9 @@ public:
 protected:
     /**
     Overrided by derived classes to do specific disposal work.
+
+    Any shared pointer should be reset in this method, in order to break potential circular 
+    references.
     */
     virtual void OnDispose() = 0;
 

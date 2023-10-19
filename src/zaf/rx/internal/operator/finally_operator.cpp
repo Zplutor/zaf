@@ -1,4 +1,5 @@
 #include <zaf/rx/internal/operator/finally_operator.h>
+#include <zaf/base/as.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/inner_observer.h>
 #include <zaf/rx/internal/producer.h>
@@ -7,11 +8,7 @@
 namespace zaf::internal {
 namespace {
 
-class FinallyProducer :
-    public Producer, 
-    public InnerObserver, 
-    public std::enable_shared_from_this<FinallyProducer> {
-
+class FinallyProducer : public Producer, public InnerObserver {
 public:
     FinallyProducer(
         std::shared_ptr<InnerObserver> next_observer,
@@ -23,7 +20,7 @@ public:
     }
 
     void Run(const std::shared_ptr<InnerObservable>& source) {
-        source_subscription_ = source->Subscribe(shared_from_this());
+        source_subscription_ = source->Subscribe(As<InnerObserver>(shared_from_this()));
     }
 
     void OnNext(const std::any& value) override {

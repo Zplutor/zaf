@@ -466,6 +466,12 @@
     <ClCompile Include="unittest\case\rx\observable_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\rx\observe_on_test.cpp">
+      <Filter>case\rx</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\rx\subscribe_on_test.cpp">
+      <Filter>case\rx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

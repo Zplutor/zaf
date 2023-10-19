@@ -1,4 +1,5 @@
 #include <zaf/rx/internal/observable/timer_observable.h>
+#include <zaf/base/as.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
 #include <zaf/rx/internal/producer.h>
 #include <zaf/rx/internal/rx_runtime.h>
@@ -7,10 +8,7 @@
 namespace zaf::internal {
 namespace {
 
-class TimerProducer : 
-    public Producer, 
-    public std::enable_shared_from_this<TimerProducer> {
-
+class TimerProducer : public Producer {
 public:
     TimerProducer(
         std::chrono::steady_clock::duration delay,
@@ -25,7 +23,7 @@ public:
 
     }
 
-    void Subscribe() {
+    void Run() {
 
         begin_time_point_ = std::chrono::steady_clock::now();
         SetTimer();
@@ -44,7 +42,7 @@ private:
         timer_id_ = timer_manager.SetTimer(
             GetNextTimePoint(),
             scheduler_,
-            std::bind(&TimerProducer::OnTimer, shared_from_this()));
+            std::bind(&TimerProducer::OnTimer, As<TimerProducer>(shared_from_this())));
     }
 
     std::chrono::steady_clock::time_point GetNextTimePoint() {
@@ -124,7 +122,7 @@ std::shared_ptr<InnerSubscription> TimerObservable::Subscribe(
         scheduler_, 
         observer);
 
-    producer->Subscribe();
+    producer->Run();
     return std::make_shared<InnerSubscription>(producer);
 }
 

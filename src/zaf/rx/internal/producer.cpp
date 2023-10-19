@@ -17,6 +17,7 @@ void Producer::DeliverOnNext(const std::any& any) {
 
 
 void Producer::DeliverOnError(const Error& error) {
+    auto keep_alive = shared_from_this();
     if (observer_) {
         observer_->OnError(error);
     }
@@ -25,6 +26,11 @@ void Producer::DeliverOnError(const Error& error) {
 
 
 void Producer::DeliverOnCompleted() {
+    //There is a delicate protection here. 
+    //During the OnCompleted() notification chain, current producer might be released, causing a 
+    //dangling pointer. Exception would occur if execution continue.
+    //So we have to retain a shared pointer to keep producer alive during the notification.
+    auto keep_alive = shared_from_this();
     if (observer_) {
         observer_->OnCompleted();
     }

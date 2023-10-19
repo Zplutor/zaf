@@ -1,4 +1,5 @@
 #include <zaf/rx/internal/operator/do_operator.h>
+#include <zaf/base/as.h>
 #include <zaf/rx/internal/inner_observer.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
 #include <zaf/rx/internal/producer.h>
@@ -6,11 +7,7 @@
 namespace zaf::internal {
 namespace {
 
-class DoProducer :
-    public Producer, 
-    public InnerObserver,
-    public std::enable_shared_from_this<DoProducer> {
-
+class DoProducer : public Producer, public InnerObserver {
 public:
     DoProducer(
         std::shared_ptr<InnerObserver> next_observer,
@@ -22,7 +19,7 @@ public:
     }
 
     void Run(const std::shared_ptr<InnerObservable>& source) {
-        source_subscription_ = source->Subscribe(shared_from_this());
+        source_subscription_ = source->Subscribe(As<InnerObserver>(shared_from_this()));
     }
 
     void OnNext(const std::any& value) override {
