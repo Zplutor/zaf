@@ -17,8 +17,8 @@ void InnerSubscriptionSet::Add(
         return;
     }
 
-    auto notification_id = producer->RegisterFinishNotification(std::bind(
-        &InnerSubscriptionSet::OnNoTagSubscriptionFinish, 
+    auto notification_id = producer->RegisterDisposeNotification(std::bind(
+        &InnerSubscriptionSet::OnNoTagSubscriptionDispose, 
         this, 
         std::placeholders::_1,
         std::placeholders::_2));
@@ -32,7 +32,7 @@ void InnerSubscriptionSet::Add(
 }
 
 
-void InnerSubscriptionSet::OnNoTagSubscriptionFinish(
+void InnerSubscriptionSet::OnNoTagSubscriptionDispose(
     Producer* producer, 
     int notification_id) {
 
@@ -42,7 +42,7 @@ void InnerSubscriptionSet::OnNoTagSubscriptionFinish(
         
         return 
             (item.subscription->Producer().get() == producer) && 
-            (item.finish_notification_id == notification_id);
+            (item.dispose_notification_id == notification_id);
     });
 }
 
@@ -56,8 +56,8 @@ void InnerSubscriptionSet::Add(
         return;
     }
 
-    auto notification_id = producer->RegisterFinishNotification(std::bind(
-        &InnerSubscriptionSet::OnIdSubscriptionFinish, 
+    auto notification_id = producer->RegisterDisposeNotification(std::bind(
+        &InnerSubscriptionSet::OnIdSubscriptionDispose, 
         this, 
         std::placeholders::_1,
         std::placeholders::_2));
@@ -81,7 +81,7 @@ void InnerSubscriptionSet::Add(
 }
 
 
-void InnerSubscriptionSet::OnIdSubscriptionFinish(
+void InnerSubscriptionSet::OnIdSubscriptionDispose(
     Producer* producer, 
     int notification_id) {
 
@@ -91,7 +91,7 @@ void InnerSubscriptionSet::OnIdSubscriptionFinish(
     while (iterator != tag_items_.end()) {
 
         if ((iterator->second.subscription->Producer().get() == producer) && 
-            (iterator->second.finish_notification_id = notification_id)) {
+            (iterator->second.dispose_notification_id = notification_id)) {
 
             iterator = tag_items_.erase(iterator);
         }
@@ -133,7 +133,7 @@ void InnerSubscriptionSet::Clear() {
 
 void InnerSubscriptionSet::UnregisterItemNotification(const Item& item) {
 
-    item.subscription->Producer()->UnregisterFinishNotification(item.finish_notification_id);
+    item.subscription->Producer()->UnregisterDisposeNotification(item.dispose_notification_id);
 }
 
 

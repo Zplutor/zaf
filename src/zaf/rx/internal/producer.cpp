@@ -40,12 +40,15 @@ void Producer::DeliverOnCompleted() {
 
 void Producer::Dispose() {
 
-    //Finish the produce before disposal.
-    FinishProduce();
-
-    //Do disposal.
     if (MarkDisposed()) {
+
+        //Finish the produce before disposal.
+        FinishProduce();
+    
         OnDispose();
+
+        NotifyDispose();
+
         //Release observer to break potential circular reference.
         observer_.reset();
     }
@@ -61,58 +64,73 @@ void Producer::FinishProduce() {
 
 
 bool Producer::MarkFinished() {
-    
-    std::scoped_lock<std::mutex> lock(lock_);
-    if (is_finished_) {
-        return false;
-    }
-    is_finished_ = true;
-    return true;
+    bool expected{ false };
+    return is_finished_.compare_exchange_strong(expected, true);
 }
 
 
-std::optional<int> Producer::RegisterFinishNotification(FinishNotification callback) {
+void Producer::NotifyFinish() {
+
+    FinishNotification notification;
+    {
+        std::scoped_lock<std::mutex> lock(lock_);
+        notification = std::move(finish_notification_);
+    }
+
+    if (notification) {
+        notification();
+    }
+}
+
+
+void Producer::RegisterFinishNotification(FinishNotification callback) {
+
+    std::scoped_lock<std::mutex> lock(lock_);
+    if (is_finished_) {
+        return;
+    }
+
+    finish_notification_ = std::move(callback);
+}
+
+
+std::optional<int> Producer::RegisterDisposeNotification(DisposeNotification callback) {
 
     std::scoped_lock<std::mutex> lock(lock_);
     if (is_finished_) {
         return std::nullopt;
     }
 
-    auto id = ++id_seed_;
-    finish_notifications_[id] = std::move(callback);
+    auto id = ++dispose_notification_id_seed_;
+    dispose_notifications_[id] = std::move(callback);
     return id;
 }
 
 
-void Producer::UnregisterFinishNotification(int id) {
+void Producer::UnregisterDisposeNotification(int id) {
 
     std::scoped_lock<std::mutex> lock(lock_);
-    finish_notifications_.erase(id);
+    dispose_notifications_.erase(id);
 }
 
 
-void Producer::NotifyFinish() {
+bool Producer::MarkDisposed() {
+    bool expected{ false };
+    return is_disposed_.compare_exchange_strong(expected, true);
+}
 
-    std::map<int, FinishNotification> notifications;
+
+void Producer::NotifyDispose() {
+
+    std::map<int, DisposeNotification> notifications;
     {
         std::scoped_lock<std::mutex> lock(lock_);
-        notifications = std::move(finish_notifications_);
+        notifications = std::move(dispose_notifications_);
     }
 
     for (const auto& each_pair : notifications) {
         each_pair.second(this, each_pair.first);
     }
-}
-
-
-bool Producer::MarkDisposed() {
-
-    std::scoped_lock<std::mutex> lock(lock_);
-    if (is_disposed_) {
-        return false;
-    }
-    is_disposed_ = true;
-    return true;
 }
 
 }

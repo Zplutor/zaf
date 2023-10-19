@@ -48,11 +48,19 @@ protected:
 
 private:
     friend class InnerSubscription;
+
+    using FinishNotification = std::function<void()>;
+
+    //Call by InnerSubscription to get notified when producer finishes and then diposes the 
+    //producer.
+    void RegisterFinishNotification(FinishNotification callback);
+
+private:
     friend class InnerSubscriptionSet;
 
-    using FinishNotification = std::function<void(Producer*, int)>;
-    std::optional<int> RegisterFinishNotification(FinishNotification callback);
-    void UnregisterFinishNotification(int id);
+    using DisposeNotification = std::function<void(Producer*, int)>;
+    std::optional<int> RegisterDisposeNotification(DisposeNotification callback);
+    void UnregisterDisposeNotification(int id);
 
 private:
     void FinishProduce();
@@ -60,15 +68,17 @@ private:
     void NotifyFinish();
 
     bool MarkDisposed();
+    void NotifyDispose();
 
 private:
     std::shared_ptr<InnerObserver> observer_;
 
-    bool is_finished_{};
-    bool is_disposed_{};
+    std::atomic<bool> is_finished_{};
+    FinishNotification finish_notification_;
 
-    int id_seed_{};
-    std::map<int, FinishNotification> finish_notifications_;
+    std::atomic<bool> is_disposed_{};
+    int dispose_notification_id_seed_{};
+    std::map<int, DisposeNotification> dispose_notifications_;
 
     std::mutex lock_;
 };

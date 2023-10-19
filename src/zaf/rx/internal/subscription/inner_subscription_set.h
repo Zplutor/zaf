@@ -29,15 +29,15 @@ private:
     class Item {
     public:
         std::shared_ptr<InnerSubscription> subscription;
-        int finish_notification_id{};
+        int dispose_notification_id{};
     };
 
 private:
     static void UnregisterItemNotification(const Item& item);
 
 private:
-    void OnNoTagSubscriptionFinish(Producer* producer, int notification_id);
-    void OnIdSubscriptionFinish(Producer* producer, int notification_id);
+    void OnNoTagSubscriptionDispose(Producer* producer, int notification_id);
+    void OnIdSubscriptionDispose(Producer* producer, int notification_id);
 
 private:
     mutable std::mutex lock_;
