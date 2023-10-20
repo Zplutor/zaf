@@ -45,7 +45,7 @@ TextLayout TextBox::GetTextLayout() const {
 
 void TextBox::Layout(const zaf::Rect& previous_rect) {
 
-    //Update text rect before layouting.
+    //Text rect need to be updated before calling Layout(), as Layout() relies on text rect.
     UpdateTextRectOnLayout();
 
     __super::Layout(previous_rect);
@@ -79,13 +79,13 @@ void TextBox::UpdateTextRectOnLayout() {
     };
 
     auto old_text_rect = text_rect_;
-    auto metrics = GetTextLayout().GetMetrics();
     auto content_size = ContentSize();
+    auto text_size = core_->CalculateTextSize(content_size);
 
     //Update x and width.
     update_single_dimension(
         content_size.width, 
-        metrics.GetWidth(IgnoreTailingWhiteSpaces()), 
+        text_size.width,
         allow_horizontal_scroll_ && (WordWrapping() == WordWrapping::NoWrap),
         text_rect_.position.x,
         text_rect_.size.width);
@@ -93,7 +93,7 @@ void TextBox::UpdateTextRectOnLayout() {
     //Update y and height.
     update_single_dimension(
         content_size.height,
-        metrics.Height(),
+        text_size.height,
         allow_vertical_scroll_,
         text_rect_.position.y,
         text_rect_.size.height);
