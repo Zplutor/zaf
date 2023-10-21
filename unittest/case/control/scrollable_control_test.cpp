@@ -2,6 +2,8 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scrollable_control.h>
 #include <zaf/creation.h>
+#include <zaf/graphic/dpi.h>
+#include <zaf/window/window.h>
 
 using namespace zaf;
 
@@ -75,4 +77,72 @@ TEST(ScrollableControlTest, ReserveScrollContentPositionAfterLayout) {
     scrollable_control->SetSize(Size{ 150, 150 });
     ASSERT_EQ(scroll_content->X(), -50);
     ASSERT_EQ(scroll_content->Y(), -50);
+}
+
+
+TEST(ScrollableControlTest, MouseWheelEvent) {
+
+    auto window = Create<Window>();
+    window->SetInitialRectStyle(InitialRectStyle::Custom);
+    window->SetPosition({});
+    window->SetContentSize(Size{ 200, 200 });
+
+    auto scrollable_control = Create<ScrollableControl>();
+    scrollable_control->SetSize(Size{ 110, 110 });
+    scrollable_control->SetBorder({});
+    scrollable_control->SetAllowHorizontalScroll(true);
+    scrollable_control->SetAllowVerticalScroll(true);
+    scrollable_control->SetScrollBarThickness(10);
+    scrollable_control->SetAutoScrollContentSize(false);
+
+    window->RootControl()->AddChild(scrollable_control);
+
+    auto scroll_content = Create<Control>();
+    scrollable_control->SetScrollContent(scroll_content);
+
+    bool is_handled{};
+    auto subscription = window->RootControl()->MouseWheelEvent().Subscribe(
+        [&](const zaf::MouseWheelInfo& event_info) {
+
+        is_handled = event_info.IsHandled();
+    });
+
+    window->Show();
+
+    auto position_in_screen = FromDIPs(
+        window->ToScreenPosition(Point{ 50, 50 }),
+        window->GetDPI());
+
+    auto lparam = MAKELPARAM(
+        static_cast<WORD>(position_in_screen.x),
+        static_cast<WORD>(position_in_screen.y));
+
+    //MouseWheelEvent should be handled if ScrollableControl handles it.
+    {
+        scroll_content->SetFixedSize({ 200, 200 });
+
+        is_handled = false;
+        ::SendMessage(window->Handle(), WM_MOUSEWHEEL, MAKEWPARAM(0, 120), lparam);
+        ASSERT_TRUE(is_handled);
+
+        is_handled = false;
+        ::SendMessage(window->Handle(), WM_MOUSEHWHEEL, MAKEWPARAM(0, 120), lparam);
+        ASSERT_TRUE(is_handled);
+    }
+
+    //MouseWheelEvent shouldn't be handled if ScrollableControl doesn't handle it.
+    {
+        scroll_content->SetFixedSize({ 100, 100 });
+
+        is_handled = false;
+        ::SendMessage(window->Handle(), WM_MOUSEWHEEL, MAKEWPARAM(0, 120), lparam);
+        ASSERT_FALSE(is_handled);
+
+        is_handled = false;
+        ::SendMessage(window->Handle(), WM_MOUSEHWHEEL, MAKEWPARAM(0, 120), lparam);
+        ASSERT_FALSE(is_handled);
+    }
+
+    subscription.Unsubscribe();
+    window->Destroy();
 }

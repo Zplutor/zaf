@@ -1773,8 +1773,13 @@ Observable<DoubleClickInfo> Control::DoubleClickEvent() const {
 }
 
 
-void Control::OnMouseWheel(const MouseWheelInfo& event_info) {
+Observable<MouseWheelInfo> Control::MouseWheelEvent() const {
+    return mouse_wheel_event_.GetObservable();
+}
 
+
+void Control::OnMouseWheel(const MouseWheelInfo& event_info) {
+    mouse_wheel_event_.Raise(event_info);
 }
 
 

@@ -372,9 +372,8 @@ void ScrollableControl::OnMouseWheel(const MouseWheelInfo& event_info) {
 
     if (scroll_bar->IsVisible() && scroll_bar->IsEnabled()) {
         scroll_bar->Wheel(event_info.Message().WheelingDistance());
+        event_info.MarkAsHandled();
     }
-
-    event_info.MarkAsHandled();
 }
 
 

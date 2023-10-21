@@ -695,6 +695,8 @@ public:
     Observable<MouseUpInfo> MouseUpEvent() const;
     Observable<DoubleClickInfo> DoubleClickEvent() const;
 
+    Observable<MouseWheelInfo> MouseWheelEvent() const;
+
     Observable<KeyDownInfo> KeyDownEvent() const;
     Observable<KeyUpInfo> KeyUpEvent() const;
     Observable<CharInputInfo> CharInputEvent() const;
@@ -990,6 +992,7 @@ private:
     Event<MouseHoverInfo> mouse_hover_event_;
     Event<MouseDownInfo> mouse_down_event_;
     Event<MouseUpInfo> mouse_up_event_;
+    Event<MouseWheelInfo> mouse_wheel_event_;
     Event<DoubleClickInfo> double_click_event_;
     Event<KeyDownInfo> key_down_event_;
     Event<KeyUpInfo> key_up_event_;
