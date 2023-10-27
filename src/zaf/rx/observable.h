@@ -69,13 +69,14 @@ public:
     }
 
     Observable Do(OnNext<T> on_next, OnError on_error, OnCompleted on_completed) {
-
-        auto do_observer = Observer<T>::Create(
+        return Do(Observer<T>::Create(
             std::move(on_next),
             std::move(on_error),
-            std::move(on_completed));
+            std::move(on_completed)));
+    }
 
-        return Observable{ inner_->Do(do_observer.Inner()) };
+    Observable Do(const Observer<T>& observer) {
+        return Observable{ inner_->Do(observer.Inner()) };
     }
 
     Observable Finally(Work work) {
