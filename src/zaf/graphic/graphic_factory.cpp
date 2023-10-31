@@ -49,7 +49,7 @@ WindowRenderer GraphicFactory::CreateWindowRenderer(HWND window_handle) {
 
     D2D1_RENDER_TARGET_PROPERTIES renderer_properties = D2D1::RenderTargetProperties();
     renderer_properties.usage |= D2D1_RENDER_TARGET_USAGE_GDI_COMPATIBLE;
-    renderer_properties.pixelFormat.alphaMode = D2D1_ALPHA_MODE_PREMULTIPLIED;
+    renderer_properties.pixelFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
     renderer_properties.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
 
     COMPtr<ID2D1HwndRenderTarget> renderer_inner;
