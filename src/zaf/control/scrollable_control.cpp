@@ -80,10 +80,13 @@ void ScrollableControl::InitializeScrollContentControl(const std::shared_ptr<Con
 
     scroll_content_control_ = control;
 
-    //RichEdit and TextBox cannot enable cached painting due to incorrect painting behavior.
+    //Note: It's known that cached painting might cause blurry text rendering. We have to disable
+    //it until a solution is found.
+    /*
     scroll_content_control_->SetIsCachedPaintingEnabled([&control]() {
         return !As<RichEdit>(control) && !As<TextBox>(control);
     }());
+    */
 
     scroll_container_control_->AddChild(scroll_content_control_);
 
