@@ -685,16 +685,23 @@ public:
     Observable<FocusLostInfo> FocusLostEvent() const;
 
     Observable<MouseCursorChangingInfo> MouseCursorChangingEvent() const;
+
+    Observable<PreMouseMoveInfo> PreMouseMoveEvent() const;
     Observable<MouseMoveInfo> MouseMoveEvent() const;
 
     Observable<MouseEnterInfo> MouseEnterEvent() const;
     Observable<MouseLeaveInfo> MouseLeaveEvent() const;
     Observable<MouseHoverInfo> MouseHoverEvent() const;
 
+    Observable<PreMouseDownInfo> PreMouseDownEvent() const;
     Observable<MouseDownInfo> MouseDownEvent() const;
+
+    Observable<PreMouseUpInfo> PreMouseUpEvent() const;
     Observable<MouseUpInfo> MouseUpEvent() const;
+
     Observable<DoubleClickInfo> DoubleClickEvent() const;
 
+    Observable<PreMouseWheelInfo> PreMouseWheelEvent() const;
     Observable<MouseWheelInfo> MouseWheelEvent() const;
 
     Observable<KeyDownInfo> KeyDownEvent() const;
@@ -774,15 +781,22 @@ protected:
     */
     virtual void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info);
 
+    virtual void OnPreMouseMove(const PreMouseMoveInfo& event_info);
     virtual void OnMouseMove(const MouseMoveInfo& event_info);
+
     virtual void OnMouseEnter(const MouseEnterInfo& event_info);
     virtual void OnMouseLeave(const MouseLeaveInfo& event_info);
     virtual void OnMouseHover(const MouseHoverInfo& event_info);
 
+    virtual void OnPreMouseDown(const PreMouseDownInfo& event_info);
     virtual void OnMouseDown(const MouseDownInfo& event_info);
+
+    virtual void OnPreMouseUp(const PreMouseUpInfo& event_info);
     virtual void OnMouseUp(const MouseUpInfo& event_info);
 
     virtual void OnDoubleClick(const DoubleClickInfo& event_info);
+
+    virtual void OnPreMouseWheel(const PreMouseWheelInfo& event_info);
     virtual void OnMouseWheel(const MouseWheelInfo& event_info);
 
     /**
@@ -986,12 +1000,16 @@ private:
     Event<FocusGainedInfo> focus_gained_event_;
     Event<FocusLostInfo> focus_lost_event_;
     Event<MouseCursorChangingInfo> mouse_cursor_changing_event_;
+    Event<PreMouseMoveInfo> pre_mouse_move_event_;
     Event<MouseMoveInfo> mouse_move_event_;
     Event<MouseEnterInfo> mouse_enter_event_;
     Event<MouseLeaveInfo> mouse_leave_event_;
     Event<MouseHoverInfo> mouse_hover_event_;
+    Event<PreMouseDownInfo> pre_mouse_down_event_;
     Event<MouseDownInfo> mouse_down_event_;
+    Event<PreMouseUpInfo> pre_mouse_up_event_;
     Event<MouseUpInfo> mouse_up_event_;
+    Event<PreMouseWheelInfo> pre_mouse_wheel_event_;
     Event<MouseWheelInfo> mouse_wheel_event_;
     Event<DoubleClickInfo> double_click_event_;
     Event<KeyDownInfo> key_down_event_;

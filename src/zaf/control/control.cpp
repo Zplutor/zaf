@@ -1658,6 +1658,16 @@ Observable<MouseCursorChangingInfo> Control::MouseCursorChangingEvent() const {
 }
 
 
+void Control::OnPreMouseMove(const PreMouseMoveInfo& event_info) {
+    pre_mouse_move_event_.Raise(event_info);
+}
+
+
+Observable<PreMouseMoveInfo> Control::PreMouseMoveEvent() const {
+    return pre_mouse_move_event_.GetObservable();
+}
+
+
 void Control::OnMouseMove(const MouseMoveInfo& event_info) {
     mouse_move_event_.Raise(event_info);
 }
@@ -1695,6 +1705,16 @@ void Control::OnMouseHover(const MouseHoverInfo& event_info) {
 
 Observable<MouseHoverInfo> Control::MouseHoverEvent() const {
     return mouse_hover_event_.GetObservable();
+}
+
+
+void Control::OnPreMouseDown(const PreMouseDownInfo& event_info) {
+    pre_mouse_down_event_.Raise(event_info);
+}
+
+
+Observable<PreMouseDownInfo> Control::PreMouseDownEvent() const {
+    return pre_mouse_down_event_.GetObservable();
 }
 
 
@@ -1742,6 +1762,16 @@ Observable<MouseDownInfo> Control::MouseDownEvent() const {
 }
 
 
+void Control::OnPreMouseUp(const PreMouseUpInfo& event_info) {
+    pre_mouse_up_event_.Raise(event_info);
+}
+
+
+Observable<PreMouseUpInfo> Control::PreMouseUpEvent() const {
+    return pre_mouse_up_event_.GetObservable();
+}
+
+
 void Control::OnMouseUp(const MouseUpInfo& event_info) {
     mouse_up_event_.Raise(event_info);
 }
@@ -1773,13 +1803,23 @@ Observable<DoubleClickInfo> Control::DoubleClickEvent() const {
 }
 
 
-Observable<MouseWheelInfo> Control::MouseWheelEvent() const {
-    return mouse_wheel_event_.GetObservable();
+void Control::OnPreMouseWheel(const PreMouseWheelInfo& event_info) {
+    pre_mouse_wheel_event_.Raise(event_info);
+}
+
+
+Observable<PreMouseWheelInfo> Control::PreMouseWheelEvent() const {
+    return pre_mouse_wheel_event_.GetObservable();
 }
 
 
 void Control::OnMouseWheel(const MouseWheelInfo& event_info) {
     mouse_wheel_event_.Raise(event_info);
+}
+
+
+Observable<MouseWheelInfo> Control::MouseWheelEvent() const {
+    return mouse_wheel_event_.GetObservable();
 }
 
 
