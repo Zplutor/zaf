@@ -1057,6 +1057,12 @@
     <ClCompile Include="src\zaf\rx\internal\producer.cpp">
       <Filter>zaf\rx\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\mouse_event_routing.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\control_event_invoker.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2406,6 +2412,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\producer.h">
       <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\mouse_event_routing.h">
+      <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\control_event_invoker.h">
+      <Filter>zaf\control\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

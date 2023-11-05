@@ -68,76 +68,34 @@ protected:
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        auto horizontal_box = zaf::Create<zaf::HorizontalBox>();
-        horizontal_box->AddChild(InitializeTextBox());
-        horizontal_box->AddChild(InitializeRichEdit());
-        RootControl()->AddChild(horizontal_box);
+        auto layouter = zaf::Create<zaf::VerticalLayouter>();
+        layouter->SetAxisAlignment(zaf::AxisAlignment::Center);
+        layouter->SetCrossAxisAlignment(zaf::AxisAlignment::Center);
 
-        Subscriptions() += rich_edit_->TextChangedEvent().Subscribe(
-            [this](const zaf::TextChangedInfo& event_info) {
-        
-            text_box_->SetText(rich_edit_->Text());
-        });
-
-        //rich_edit_->SetText(GenerateInitialText());
-        InitializeButton();
-    }
-
-private:
-    std::shared_ptr<zaf::Control> InitializeTextBox() {
-
-        text_box_ = zaf::Create<zaf::TextBox>();
-        text_box_->SetFontSize(20);
-        //text_box_->SetTextAlignment(zaf::TextAlignment::Center);
-        text_box_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
-
-        auto scroll_control = zaf::Create<zaf::ScrollableControl>();
-        scroll_control->SetScrollContent(text_box_);
-        scroll_control->SetAutoHideScrollBars(true);
-        scroll_control->VerticalScrollBar()->SetLargeChange(20);
-        return scroll_control;
-    }
-
-    std::shared_ptr<zaf::Control> InitializeRichEdit() {
-
-        rich_edit_ = zaf::Create<zaf::RichEdit>();
-        rich_edit_->SetIsMultiline(true);
-        rich_edit_->SetFontSize(20);
-        rich_edit_->SetBorder({});
-
-        auto scroll_control = zaf::Create<zaf::ScrollableControl>();
-        scroll_control->SetScrollContent(rich_edit_);
-        scroll_control->SetAutoHideScrollBars(true);
-        return scroll_control;
-    }
-
-    std::wstring GenerateInitialText() {
-
-        std::wstring content;
-        for (int line = 0; line < 30; ++line) {
-
-            std::wstring padding(20, L'=');
-            content += padding + L' ' + std::to_wstring(line) + L' ' + padding + L"\r\n";
-        }
-        return content;
-    }
-
-    void InitializeButton() {
-
-        button_ = zaf::Create<zaf::Button>();
-        button_->SetFixedHeight(30);
-        Subscriptions() += button_->ClickEvent().Subscribe(std::bind([this]() {
-
-            text_box_->SetSelectionRange(zaf::Range{ 2, 5 });
+        auto parent = zaf::Create<zaf::Control>();
+        parent->SetLayouter(layouter);
+        Subscriptions() += parent->MouseDownEvent().Subscribe(std::bind([]() {
+            OutputDebugString(L"Parent MouseDown!\r\n");
         }));
 
-        RootControl()->AddChild(button_);
-    }
+        auto child = zaf::Create<zaf::Button>();
+        child->SetText(L"Child");
+        child->SetFixedSize(zaf::Size(100, 30));
+        Subscriptions() += child->ClickEvent().Subscribe(std::bind([]() {
+            OutputDebugString(L"Child click!\r\n");
+        }));
+        parent->AddChild(child);
 
-private:
-    std::shared_ptr<zaf::TextBox> text_box_;
-    std::shared_ptr<zaf::RichEdit> rich_edit_;
-    std::shared_ptr<zaf::Button> button_;
+        RootControl()->AddChild(parent);
+
+        auto capture = zaf::Create<zaf::Button>();
+        capture->SetFixedHeight(30);
+        capture->SetText(L"Capture mouse");
+        Subscriptions() += capture->ClickEvent().Subscribe(std::bind([parent]() {
+            parent->CaptureMouse();
+        }));
+        RootControl()->AddChild(capture);
+    }
 };
 
 

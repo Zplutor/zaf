@@ -35,6 +35,7 @@
 
 namespace zaf {
 namespace internal {
+class ControlEventInvokerBinder;
 class ControlUpdateLock;
 class ControlUpdateState;
 class InspectorPort;
@@ -673,6 +674,11 @@ public:
     Point TranslateToParentPoint(const Point& point) const;
 
     /**
+     Tanslate a point to which in specified child's coordinate system.
+     */
+    Point TranslateToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const;
+
+    /**
      Get rect change event.
 
      This event is raised when the control's rect is changed.
@@ -877,6 +883,7 @@ protected:
 private:
     friend class Caret;
     friend class Window;
+    friend class internal::ControlEventInvokerBinder;
 
     void SetWindow(const std::shared_ptr<zaf::Window>& window) {
         window_ = window;
@@ -923,11 +930,6 @@ private:
      Called when a child's rect has changed.
      */
     void OnChildRectChanged(const std::shared_ptr<Control>& child, const zaf::Rect& previous_rect);
-
-    /**
-     Tanslate a point to which in specified child's coordinate system.
-     */
-    Point ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const;
 
     std::shared_ptr<Control> InnerFindChildAtPosition(
         const Point& position, 

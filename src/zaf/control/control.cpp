@@ -1212,7 +1212,7 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
             return child;
         }
 
-        auto recursive_child = child->InnerFindChildAtPosition(ToChildPoint(position, child), true);
+        auto recursive_child = child->InnerFindChildAtPosition(TranslateToChildPoint(position, child), true);
         if (recursive_child) {
             return recursive_child;
         }
@@ -1599,7 +1599,7 @@ std::shared_ptr<Control> Control::FindEnabledControlAtPosition(const Point& posi
 
     auto child = FindChildAtPosition(position);
     if (child && child->IsEnabled()) {
-        return child->FindEnabledControlAtPosition(ToChildPoint(position, child));
+        return child->FindEnabledControlAtPosition(TranslateToChildPoint(position, child));
     }
 
     return shared_from_this();
@@ -1622,7 +1622,7 @@ Point Control::TranslateToParentPoint(const Point& point) const {
 }
 
 
-Point Control::ToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const {
+Point Control::TranslateToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const {
 
     const auto& border = Border();
     const auto& padding = Padding();
