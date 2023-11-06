@@ -19,7 +19,7 @@ EventTargetInfo FindEventTargetUpToDown(
         return EventTargetInfo{ control, position };
     }
 
-    auto position_at_child = control->TranslateToChildPoint(position, child);
+    auto position_at_child = control->TranslatePositionToChild(position, child);
     return FindEventTargetUpToDown(child, position_at_child);
 }
 
@@ -38,7 +38,7 @@ EventTargetInfo FindEventTargetDownToUp(
             break;
         }
 
-        current_position = current_control->TranslateToParentPoint(current_position);
+        current_position = current_control->TranslatePositionToParent(current_position);
         current_control = current_control->Parent();
 
         if (current_control->IsEnabled()) {
@@ -103,7 +103,7 @@ bool TunnelEvent(
     for (const auto& each_control : tunnel_path) {
 
         if (parent) {
-            position = parent->TranslateToChildPoint(position, each_control);
+            position = parent->TranslatePositionToChild(position, each_control);
         }
 
         //Invoke event handler.
@@ -139,7 +139,7 @@ bool BubbleEvent(
 
         event_invoker(event_info_state, sender, position_at_sender);
 
-        position_at_sender = sender->TranslateToParentPoint(position_at_sender);
+        position_at_sender = sender->TranslatePositionToParent(position_at_sender);
         sender = sender->Parent();
     }
 

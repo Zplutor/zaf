@@ -397,7 +397,7 @@ void Control::NeedRepaintRect(const zaf::Rect& rect) {
         return;
     }
 
-    Point position_in_parent = TranslateToParentPoint(repaint_rect.position);
+    Point position_in_parent = TranslatePositionToParent(repaint_rect.position);
 
     zaf::Rect repaint_rect_in_parent(position_in_parent, repaint_rect.size);
     repaint_rect_in_parent.Intersect(parent->ContentRect());
@@ -1212,7 +1212,7 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
             return child;
         }
 
-        auto recursive_child = child->InnerFindChildAtPosition(TranslateToChildPoint(position, child), true);
+        auto recursive_child = child->InnerFindChildAtPosition(TranslatePositionToChild(position, child), true);
         if (recursive_child) {
             return recursive_child;
         }
@@ -1599,40 +1599,51 @@ std::shared_ptr<Control> Control::FindEnabledControlAtPosition(const Point& posi
 
     auto child = FindChildAtPosition(position);
     if (child && child->IsEnabled()) {
-        return child->FindEnabledControlAtPosition(TranslateToChildPoint(position, child));
+        return child->FindEnabledControlAtPosition(TranslatePositionToChild(position, child));
     }
 
     return shared_from_this();
 }
 
 
-Point Control::TranslateToParentPoint(const Point& point) const {
-
-    auto result = point;
-    result.x += this->X(); 
-    result.y += this->Y(); 
+Point Control::TranslatePositionToParent(const Point& position) const noexcept {
 
     auto parent = Parent();
-    if (parent) {
-        result.x += parent->Padding().Left() + parent->Border().Left();
-        result.y += parent->Padding().Top() + parent->Border().Top();
+    if (!parent) {
+        return position;
     }
 
+    const auto& this_position = Position();
+    const auto& parent_border = parent->Border();
+    const auto& parent_padding = parent->Padding();
+
+    auto result = position;
+    result.x += this_position.x + parent_border.left + parent_padding.left;
+    result.y += this_position.y + parent_border.top + parent_padding.top;
     return result;
 }
 
 
-Point Control::TranslateToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const {
+Point Control::TranslatePositionToChild(
+    const Point& position, 
+    const std::shared_ptr<Control>& child) const noexcept {
+
+    if (!child) {
+        return position;
+    }
+
+    if (child->Parent().get() != this) {
+        return position;
+    }
 
     const auto& border = Border();
     const auto& padding = Padding();
     const auto& child_position = child->Position();
 
-    Point point_in_child = point;
-    point_in_child.x -= child_position.x + border.left + padding.left;
-    point_in_child.y -= child_position.y + border.top + padding.top;
-
-    return point_in_child;
+    Point result = position;
+    result.x -= child_position.x + border.left + padding.left;
+    result.y -= child_position.y + border.top + padding.top;
+    return result;
 }
 
 

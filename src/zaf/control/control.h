@@ -668,15 +668,36 @@ public:
     void NeedRepaintRect(const zaf::Rect& rect);
 
     /**
-     Translate a point in current control's coordinate system to which in parent's coordinate 
-     system.
-     */
-    Point TranslateToParentPoint(const Point& point) const;
+    Translates a position from the coordinate space of current control to the coordinate space of 
+    its parent control.
+
+    @param position
+        The position in the coordinate space of current control.
+
+    @return 
+        The translated position in the coordinate space of parent control. If there is no parent of
+        current control, the original position is returned.
+    */
+    Point TranslatePositionToParent(const Point& position) const noexcept;
 
     /**
-     Tanslate a point to which in specified child's coordinate system.
-     */
-    Point TranslateToChildPoint(const Point& point, const std::shared_ptr<Control>& child) const;
+    Translates a position from the coordinate space of current control to the coordinate space of 
+    the specified child control.
+
+    @param position
+        The position in the coordinate space of current control.
+
+    @param child
+        The child control to which the position will be translated.
+
+    @return
+        The translated position in the coordinate space of the specified child control. If the
+        child control is not a direct descendant of current control, or it is nullptr, the original
+        position is returned.
+    */
+    Point TranslatePositionToChild(
+        const Point& position, 
+        const std::shared_ptr<Control>& child) const noexcept;
 
     /**
      Get rect change event.

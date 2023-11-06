@@ -185,6 +185,62 @@ TEST(ControlTest, AutoSize) {
 }
 
 
+TEST(ControlTest, TranslatePositionToParent) {
+
+    auto control = zaf::Create<zaf::Control>();
+    control->SetRect(zaf::Rect{ 10, 11, 100, 110 });
+
+    //No parent
+    auto result = control->TranslatePositionToParent(zaf::Point{ 20, 21 });
+    ASSERT_EQ(result, zaf::Point(20, 21));
+
+    //Parent
+    auto parent = zaf::Create<zaf::Control>();
+    parent->SetBorder(zaf::Frame{ 1 });
+    parent->SetPadding(zaf::Frame{ 2 });
+    parent->AddChild(control);
+
+    result = control->TranslatePositionToParent(zaf::Point{ 20, 21 });
+    ASSERT_EQ(result, zaf::Point(33, 35));
+}
+
+
+TEST(ControlTest, TranslatePositionToChild) {
+
+    auto control = zaf::Create<zaf::Control>();
+    control->SetRect(zaf::Rect{ 10, 11, 100, 110 });
+    control->SetBorder(zaf::Frame{ 1 });
+    control->SetPadding(zaf::Frame{ 2 });
+
+    zaf::Point position{ 20, 21 };
+
+    //nullptr
+    auto result = control->TranslatePositionToChild(position, nullptr);
+    ASSERT_EQ(result, position);
+
+    //Not child
+    auto other = zaf::Create<zaf::Control>();
+    result = control->TranslatePositionToChild(position, other);
+    ASSERT_EQ(result, position);
+
+    auto child1 = zaf::Create<zaf::Control>();
+    child1->SetRect(zaf::Rect{ 2, 3, 10, 10 });
+    control->AddChild(child1);
+
+    auto child2 = zaf::Create<zaf::Control>();
+    child2->SetRect(zaf::Rect{ 8, 7, 10, 10 });
+    child1->AddChild(child2);
+
+    //Not direct descendant
+    result = control->TranslatePositionToChild(position, child2);
+    ASSERT_EQ(result, position);
+
+    //Direct descendant
+    result = control->TranslatePositionToChild(position, child1);
+    ASSERT_EQ(result, zaf::Point(15, 15));
+}
+
+
 TEST(ControlTest, WindowChangedEvent) {
 
     struct EventInfo {
