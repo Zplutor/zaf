@@ -4,13 +4,19 @@
 namespace zaf::internal {
 namespace {
 
-std::shared_ptr<Control> FindEventTargetUpToDown(
-    const std::shared_ptr<Control>& control,
+class EventTargetInfo {
+public:
+    std::shared_ptr<Control> control;
+    Point position;
+};
+
+EventTargetInfo FindEventTargetUpToDown(
+    const std::shared_ptr<Control>& control, 
     const Point& position) {
 
     auto child = control->FindChildAtPosition(position);
     if (!child || !child->IsEnabled()) {
-        return control;
+        return EventTargetInfo{ control, position };
     }
 
     auto position_at_child = control->TranslateToChildPoint(position, child);
@@ -18,20 +24,33 @@ std::shared_ptr<Control> FindEventTargetUpToDown(
 }
 
 
-std::shared_ptr<Control> FindEventTargetDownToUp(const std::shared_ptr<Control>& control) {
+EventTargetInfo FindEventTargetDownToUp(
+    const std::shared_ptr<Control>& control,
+    const Point& position) {
 
-    auto current = control;
-    while (current = current->Parent()) {
+    auto current_control = control;
+    auto current_position = position;
 
-        if (current->IsEnabled()) {
-            return current;
+    while (true) {
+
+        auto parent = current_control->Parent();
+        if (!parent) {
+            break;
+        }
+
+        current_position = current_control->TranslateToParentPoint(current_position);
+        current_control = current_control->Parent();
+
+        if (current_control->IsEnabled()) {
+            return EventTargetInfo{ current_control, current_position };
         }
     }
-    return nullptr;
+
+    return {};
 }
 
 
-std::shared_ptr<Control> FindEventTarget(
+EventTargetInfo FindEventTarget(
     const std::shared_ptr<Control>& control,
     const Point& position) {
 
@@ -41,7 +60,7 @@ std::shared_ptr<Control> FindEventTarget(
     }
     //Find from down to up if the control is disabled.
     else {
-        return FindEventTargetDownToUp(control);
+        return FindEventTargetDownToUp(control, position);
     }
 }
 
@@ -61,12 +80,12 @@ std::vector<std::shared_ptr<Control>> BuildTunnelPath(
 }
 
 
-void TunnelEvent(
+bool TunnelEvent(
     const std::vector<std::shared_ptr<Control>>& tunnel_path,
     const MouseMessage& message) {
 
     if (tunnel_path.empty()) {
-        return;
+        return false;
     }
 
     //Event tunneling begins from root control, whose coordinate space is the same as the window.
@@ -92,10 +111,40 @@ void TunnelEvent(
 
         parent = each_control;
     }
+
+    return event_info_state->IsHandled();
 }
 
 
-void BubbleEvent();
+bool BubbleEvent(
+    const std::shared_ptr<Control>& event_target,
+    const Point& position,
+    const MouseMessage& message,
+    bool is_handled_by_tunneling) {
+
+    auto event_info_state = std::make_shared<MouseEventSharedState>(
+        event_target,
+        message.Inner(),
+        position);
+
+    if (is_handled_by_tunneling) {
+        event_info_state->MarkAsHandled();
+    }
+
+    const auto& event_invoker = ControlEventInvokerBinder::GetMouseEventInvoker(message.ID());
+
+    auto sender = event_target;
+    auto position_at_sender = position;
+    while (sender) {
+
+        event_invoker(event_info_state, sender, position_at_sender);
+
+        position_at_sender = sender->TranslateToParentPoint(position_at_sender);
+        sender = sender->Parent();
+    }
+
+    return event_info_state->IsHandled();
+}
 
 }
 
@@ -105,14 +154,22 @@ bool RouteMouseEvent(
     const Point& position_at_begin_routing_control, 
     const MouseMessage& message) {
 
-    auto event_target = FindEventTarget(begin_routing_control, position_at_begin_routing_control);
-    if (!event_target) {
+    auto event_target_info = FindEventTarget(
+        begin_routing_control,
+        position_at_begin_routing_control);
+
+    if (!event_target_info.control) {
         return false;
     }
 
-    auto tunnel_path = BuildTunnelPath(event_target);
-    TunnelEvent(tunnel_path, message);
-    return true;
+    auto tunnel_path = BuildTunnelPath(event_target_info.control);
+    bool is_handled = TunnelEvent(tunnel_path, message);
+
+    return BubbleEvent(
+        event_target_info.control,
+        event_target_info.position,
+        message,
+        is_handled);
 }
 
 }

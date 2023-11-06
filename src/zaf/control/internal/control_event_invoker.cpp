@@ -46,6 +46,7 @@ const ControlEventInvokerBinder::MouseEventBinding&
     ControlEventInvokerBinder::GetMouseEventBinding(UINT message_id) {
 
     switch (message_id) {
+        case WM_NCMOUSEMOVE:
         case WM_MOUSEMOVE: {
             static MouseEventBinding binding{
                 MakeMouseEventInvoker<PreMouseMoveInfo>(&Control::OnPreMouseMove),

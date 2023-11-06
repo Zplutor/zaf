@@ -3,6 +3,7 @@
 #include <zaf/application.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/error/system_error.h>
+#include <zaf/control/internal/mouse_event_routing.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
@@ -54,40 +55,6 @@ bool RouteKeyboardEventGeneric(
 
         E event_info{ event_info_state, sender };
         (sender.get()->*event_function)(event_info);
-    }
-
-    return event_info_state->IsHandled();
-}
-
-
-template<typename E>
-bool RouteMouseEventGeneric(
-    const std::shared_ptr<Control>& source,
-    const MouseMessage& message,
-    void (Control::*event_function)(const E&)) {
-
-    if (!source) {
-        return false;
-    }
-
-    auto position_at_source = TranslateAbsolutePositionToControlPosition(
-        message.MousePosition(), 
-        *source);
-
-    auto event_info_state = std::make_shared<internal::MouseEventSharedState>(
-        source, 
-        message.Inner(), 
-        position_at_source);
-
-    auto sender = source;
-    auto position_at_sender = position_at_source;
-    while (sender) {
-
-        E event_info{ event_info_state, sender, position_at_sender };
-        (sender.get()->*event_function)(event_info);
-
-        position_at_sender = sender->TranslateToParentPoint(position_at_sender);
-        sender = sender->Parent();
     }
 
     return event_info_state->IsHandled();
@@ -1100,7 +1067,7 @@ bool Window::HandleMouseMessage(const MouseMessage& message) {
         }
     }
 
-    return RouteMouseEvent(begin_routing_control, position_at_begin_routing_control, message);
+    return internal::RouteMouseEvent(begin_routing_control, position_at_begin_routing_control, message);
 }
 
 
@@ -1125,56 +1092,6 @@ std::shared_ptr<Control> Window::GetBeginRoutingControlForMouseMessage(
     }
 
     return result;
-}
-
-
-bool Window::RouteMouseEvent(
-    const std::shared_ptr<Control>& begin_routing_control,
-    const Point& position_at_begin_routing_control, 
-    const MouseMessage& message) {
-
-    auto event_source_control = begin_routing_control->FindEnabledControlAtPosition(
-        position_at_begin_routing_control);
-
-    if (!event_source_control) {
-        return false;
-    }
-
-    switch (message.ID()) {
-    case WM_MOUSEMOVE:
-        return RouteMouseEventGeneric<MouseMoveInfo>(
-            event_source_control,
-            message,
-            &Control::OnMouseMove);
-
-    case WM_LBUTTONDOWN:
-    case WM_NCLBUTTONDOWN:
-    case WM_MBUTTONDOWN:
-    case WM_RBUTTONDOWN:
-        return RouteMouseEventGeneric<MouseDownInfo>(
-            event_source_control,
-            message,
-            &Control::OnMouseDown);
-
-    case WM_LBUTTONUP:
-    case WM_NCLBUTTONUP:
-    case WM_MBUTTONUP:
-    case WM_RBUTTONUP:
-        return RouteMouseEventGeneric<MouseUpInfo>(
-            event_source_control,
-            message,
-            &Control::OnMouseUp);
-
-    case WM_MOUSEWHEEL:
-    case WM_MOUSEHWHEEL:
-        return RouteMouseEventGeneric<MouseWheelInfo>(
-            event_source_control,
-            message,
-            &Control::OnMouseWheel);
-        
-    default:
-        return false;
-    }
 }
 
 

@@ -832,10 +832,6 @@ private:
     std::shared_ptr<Control> GetBeginRoutingControlForMouseMessage(
         const MouseMessage& message,
         Point& position_at_control) const;
-    bool RouteMouseEvent(
-        const std::shared_ptr<Control>& begin_routing_control,
-        const Point& position_at_begin_routing_control,
-        const MouseMessage& message);
     void HighlightControlAtPosition(const Point& position);
     void SelectInspectedControl();
     void TrackMouseByMouseMove(const MouseMessage& message);
