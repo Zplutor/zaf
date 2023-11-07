@@ -135,12 +135,17 @@ bool BubbleEvent(
 
     auto sender = event_target;
     auto position_at_sender = position;
-    while (sender) {
+    while (true) {
 
         event_invoker(event_info_state, sender, position_at_sender);
 
+        auto parent = sender->Parent();
+        if (!parent) {
+            break;
+        }
+
         position_at_sender = sender->TranslatePositionToParent(position_at_sender);
-        sender = sender->Parent();
+        sender = parent;
     }
 
     return event_info_state->IsHandled();

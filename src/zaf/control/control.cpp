@@ -1606,12 +1606,10 @@ std::shared_ptr<Control> Control::FindEnabledControlAtPosition(const Point& posi
 }
 
 
-Point Control::TranslatePositionToParent(const Point& position) const noexcept {
+Point Control::TranslatePositionToParent(const Point& position) const {
 
     auto parent = Parent();
-    if (!parent) {
-        return position;
-    }
+    ZAF_EXPECT(parent);
 
     const auto& this_position = Position();
     const auto& parent_border = parent->Border();
@@ -1626,15 +1624,10 @@ Point Control::TranslatePositionToParent(const Point& position) const noexcept {
 
 Point Control::TranslatePositionToChild(
     const Point& position, 
-    const std::shared_ptr<Control>& child) const noexcept {
+    const std::shared_ptr<Control>& child) const {
 
-    if (!child) {
-        return position;
-    }
-
-    if (child->Parent().get() != this) {
-        return position;
-    }
+    ZAF_EXPECT(child);
+    ZAF_EXPECT(child->Parent().get() == this);
 
     const auto& border = Border();
     const auto& padding = Padding();
