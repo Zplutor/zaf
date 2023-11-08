@@ -533,3 +533,63 @@ TEST(ControlTest, IsVisibleInContext) {
     //Control is invisible if parent is invisible.
     ASSERT_FALSE(control->IsVisibleInContext());
 }
+
+
+TEST(ControlTest, IsEnabled) {
+
+    auto control = zaf::Create<zaf::Control>();
+    //Control is enabled by default.
+    ASSERT_TRUE(control->IsEnabled());
+
+    //Set control to disabled.
+    control->SetIsEnabled(false);
+    ASSERT_FALSE(control->IsEnabled());
+
+    //Changing enabled state will raise IsEnabledChangedEvent.
+    zaf::SubscriptionSet subs;
+    bool is_event_raised{};
+    subs += control->IsEnabledChangedEvent().Subscribe(
+        [&](const zaf::IsEnabledChangedInfo& event_info) {
+
+        is_event_raised = true;
+        ASSERT_EQ(event_info.Source(), control);
+    });
+
+    control->SetIsEnabled(true);
+    ASSERT_TRUE(is_event_raised);
+
+    //Setting the same value won't raise the event.
+    is_event_raised = false;
+    control->SetIsEnabled(true);
+    ASSERT_FALSE(is_event_raised);
+}
+
+
+TEST(ControlTest, IsEnabledInContext) {
+
+    auto control = zaf::Create<zaf::Control>();
+    //Control is enabled if there is no parent.
+    ASSERT_TRUE(control->IsEnabledInContext());
+
+    //Control is disabled in context if it is disabled.
+    control->SetIsEnabled(false);
+    ASSERT_FALSE(control->IsEnabledInContext());
+    control->SetIsEnabled(true);
+
+    auto parent = zaf::Create<zaf::Control>();
+    parent->AddChild(control);
+    //Control is enabled if the parent is not in window.
+    ASSERT_TRUE(control->IsEnabledInContext());
+
+    auto window = zaf::Create<zaf::Window>();
+    //Root control of the window is enabled.
+    ASSERT_TRUE(window->RootControl()->IsEnabledInContext());
+
+    window->RootControl()->AddChild(parent);
+    //Control is enabled after attaching to a window.
+    ASSERT_TRUE(control->IsEnabledInContext());
+
+    parent->SetIsEnabled(false);
+    //Control is disabled if parent is disabled.
+    ASSERT_FALSE(control->IsEnabledInContext());
+}
