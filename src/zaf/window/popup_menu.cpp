@@ -545,7 +545,7 @@ std::shared_ptr<MenuItem> PopupMenu::GetPreviousMenuItemToSelect() const {
     for (auto index = begin_find_index; index > 0; --index) {
 
         const auto& menu_item = menu_item_infos_[index - 1]->menu_item;
-        if (menu_item->IsEnabled()) {
+        if (menu_item->IsEnabledInContext()) {
             return menu_item;
         }
     }
@@ -569,7 +569,7 @@ std::shared_ptr<MenuItem> PopupMenu::GetNextMenuItemToSelect() const {
     for (auto index = begin_find_index; index < menu_item_infos_.size(); ++index) {
 
         const auto& menu_item = menu_item_infos_[index]->menu_item;
-        if (menu_item->IsEnabled()) {
+        if (menu_item->IsEnabledInContext()) {
             return menu_item;
         }
     }

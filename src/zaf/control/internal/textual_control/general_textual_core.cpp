@@ -115,7 +115,7 @@ ColorPicker GeneralTextualCore::GetTextColorPicker() {
     }
 
     return [](const Control& control) {
-        if (control.IsEnabled()) {
+        if (control.IsEnabledInContext()) {
             return Color::FromRGB(internal::ControlNormalTextColorRGB);
         }
         else {

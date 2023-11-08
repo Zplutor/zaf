@@ -136,7 +136,7 @@ void RichEdit::Initialize() {
 
         const auto& rich_edit = dynamic_cast<const RichEdit&>(control);
 
-        if (rich_edit.IsReadOnly() || !rich_edit.IsEnabled()) {
+        if (rich_edit.IsReadOnly() || !rich_edit.IsEnabledInContext()) {
             return Color::FromRGB(0xEEEEEE);;
         }
 
@@ -145,7 +145,7 @@ void RichEdit::Initialize() {
 
     SetTextColorPicker([](const Control& control) {
         
-        if (control.IsEnabled()) {
+        if (control.IsEnabledInContext()) {
             return Color::Black();
         }
         else {

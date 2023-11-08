@@ -1551,7 +1551,7 @@ void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_contr
             return;
         }
 
-        if (!new_focused_control->IsEnabled()) {
+        if (!new_focused_control->IsEnabledInContext()) {
             return;
         }
 

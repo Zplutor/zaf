@@ -32,7 +32,7 @@ ColorPicker SpinButton::ArrowColorPicker() const {
 
         const auto& button = dynamic_cast<const SpinButton&>(control);
 
-        if (!button.IsEnabled()) {
+        if (!button.IsEnabledInContext()) {
             return Color::FromRGB(0xc0c0c0);
         }
 

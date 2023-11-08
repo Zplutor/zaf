@@ -79,7 +79,7 @@ const ColorPicker GetBoxBackgroundColorPicker() {
 
         const auto& clickable_control = dynamic_cast<const ClickableControl&>(control);
 
-        if (!clickable_control.IsEnabled()) {
+        if (!clickable_control.IsEnabledInContext()) {
             return Color::FromRGB(internal::ControlBackgroundColorRGB);
         }
 
@@ -102,7 +102,7 @@ const ColorPicker GetBoxBorderColorPicker() {
 
         const auto& clickable_control = dynamic_cast<const ClickableControl&>(control);
 
-        if (!clickable_control.IsEnabled()) {
+        if (!clickable_control.IsEnabledInContext()) {
             return Color::Gray();
         }
 

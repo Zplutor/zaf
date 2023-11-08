@@ -12,6 +12,7 @@
 #include <zaf/control/color_picker.h>
 #include <zaf/control/event/double_click_info.h>
 #include <zaf/control/event/focus_event_info.h>
+#include <zaf/control/event/is_enabled_changed_info.h>
 #include <zaf/control/event/is_visible_changed_info.h>
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/event/mouse_capture_event_info.h>
@@ -513,19 +514,26 @@ public:
     Observable<IsVisibleChangedInfo> IsVisibleChangedEvent() const;
 
     /**
-     Get a value indicating that whether the control is enabled.
+    Determines whether the control is enabled within the context of the parent.
+    */
+    bool IsEnabledInContext() const;
 
-     The default value is true. Note that the return value is always
-     false if parent control is disabled.
-     */
+    /**
+    Determines whether the control itself is enabled. This method doesn't consider whether it is
+    enabled within the context of the parent.
+
+    The default value is true.
+    */
     bool IsEnabled() const;
 
     /**
-     Set a value indicating that whether the control is enabled.
+    Sets whether the control is enabled.
 
-     See also IsEnabled.
-     */
+    Changing the enabled state will raise IsEnabledChangedEvent.
+    */
     void SetIsEnabled(bool is_enabled);
+
+    Observable<IsEnabledChangedInfo> IsEnabledChangedEvent() const;
 
     bool IsSelected() const;
     void SetIsSelected(bool is_selected);
@@ -897,11 +905,11 @@ protected:
     virtual void OnIsVisibleChanged();
 
     /**
-     Process the is enabled change notification.
+    Called when the enabled state of the control itself has changed.
 
-     This method is called when the control is enabled or disabled. Derived classes must call 
-     the same method of base class.
-     */
+    The default implementation raises IsEnabledChangedEvent. Derived classes must call the same
+    method of base class if they override it.
+    */
     virtual void OnIsEnabledChanged();
 
     virtual void OnIsSelectedChanged();
@@ -1031,6 +1039,7 @@ private:
     Event<PositionChangedInfo> position_changed_event_;
     Event<SizeChangedInfo> size_changed_event_;
     Event<IsVisibleChangedInfo> is_visible_changed_event_;
+    Event<IsEnabledChangedInfo> is_enabled_changed_event_;
     Event<FocusGainedInfo> focus_gained_event_;
     Event<FocusLostInfo> focus_lost_event_;
     Event<MouseCursorChangingInfo> mouse_cursor_changing_event_;

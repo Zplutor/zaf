@@ -67,7 +67,7 @@ void ComboBox::Initialize() {
 
     SetBackgroundColorPicker([](const Control& control) {
 
-        if (! control.IsEnabled()) {
+        if (! control.IsEnabledInContext()) {
             return Color::FromRGB(internal::ControlBackgroundColorRGB);
         }
 

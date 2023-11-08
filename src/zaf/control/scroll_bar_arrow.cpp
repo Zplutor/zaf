@@ -74,7 +74,7 @@ ColorPicker ScrollBarArrow::ArrowColorPicker() const {
 
             const auto& arrow = dynamic_cast<const ScrollBarArrow&>(control);
 
-            if (!arrow.IsEnabled()) {
+            if (!arrow.IsEnabledInContext()) {
                 return Color::FromRGB(0xc0c0c0);
             }
 

@@ -37,7 +37,7 @@ void Button::Initialize() {
     
         const auto& button = dynamic_cast<const Button&>(control);
 
-        if (! button.IsEnabled()) {
+        if (! button.IsEnabledInContext()) {
             return Color::FromRGB(0xcccccc);
         }
 
@@ -56,7 +56,7 @@ void Button::Initialize() {
     
         const auto& button = dynamic_cast<const Button&>(control);
 
-        if (! button.IsEnabled()) {
+        if (! button.IsEnabledInContext()) {
             return Color::FromRGB(0xbfbfbf);
         }
 

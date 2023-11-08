@@ -1313,31 +1313,44 @@ Observable<IsVisibleChangedInfo> Control::IsVisibleChangedEvent() const {
 }
 
 
-bool Control::IsEnabled() const {
+bool Control::IsEnabledInContext() const {
 
-    if (! is_enabled_) {
+    if (!IsEnabled()) {
         return false;
     }
 
+    //A control without parent is considered enalbed.
     auto parent = Parent();
-    if (parent == nullptr) {
-        return true;    
+    if (!parent) {
+        return true;
     }
 
-    return parent->IsEnabled();   
+    return parent->IsEnabledInContext();
+}
+
+
+bool Control::IsEnabled() const {
+    return is_enabled_;
 }
 
 
 void Control::SetIsEnabled(bool is_enabled) {
+
+    if (IsEnabled() == is_enabled) {
+        return;
+    }
+
     SetInteractiveProperty(is_enabled, is_enabled_, &Control::OnIsEnabledChanged);
 }
 
 
 void Control::OnIsEnabledChanged() {
+    is_enabled_changed_event_.Raise(IsEnabledChangedInfo{ shared_from_this() });
+}
 
-    for (const auto& each_child : children_) {
-        each_child->OnIsEnabledChanged();
-    }
+
+Observable<IsEnabledChangedInfo> Control::IsEnabledChangedEvent() const {
+    return is_enabled_changed_event_.GetObservable();
 }
 
 
