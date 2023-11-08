@@ -236,8 +236,6 @@ protected:
      */
     virtual void OnScrollContentChanged(const std::shared_ptr<Control>& previous_control) { }
 
-    void OnIsEnabledChanged() override;
-
 private:
     friend class internal::GeneralScrollingLayouter;
     friend class internal::ScrollableControlLayouter;

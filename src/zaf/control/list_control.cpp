@@ -150,16 +150,6 @@ void ListControl::UnselectAllItems() {
 }
 
 
-void ListControl::OnIsEnabledChanged() {
-
-    __super::OnIsEnabledChanged();
-
-    if (! IsEnabled()) {
-        UnselectAllItems();
-    }
-}
-
-
 std::size_t ListControl::GetSelectedItemCount() const {
     return implementation_->GetSelectedItemCount();
 }

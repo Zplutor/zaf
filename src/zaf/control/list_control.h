@@ -192,8 +192,6 @@ protected:
     virtual void OnItemContainerChanged(
         const std::shared_ptr<ListItemContainer>& previous_item_container) { }
 
-    void OnIsEnabledChanged() override;
-
     virtual void OnSelectionChanged(const ListControlSelectionChangedInfo& event_info);
 
 private:

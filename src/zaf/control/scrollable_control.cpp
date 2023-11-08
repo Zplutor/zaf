@@ -380,17 +380,6 @@ void ScrollableControl::OnMouseWheel(const MouseWheelInfo& event_info) {
 }
 
 
-void ScrollableControl::OnIsEnabledChanged() {
-
-    __super::OnIsEnabledChanged();
-
-    if (IsEnabled()) { 
-        //Relayout to refresh scroll bars.
-        NeedRelayout();
-    }
-}
-
-
 zaf::Rect ScrollableControl::GetVisibleScrollContentRect() const {
 
     if (self_scrolling_control_ != nullptr) {
