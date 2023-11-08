@@ -12,6 +12,7 @@
 #include <zaf/control/color_picker.h>
 #include <zaf/control/event/double_click_info.h>
 #include <zaf/control/event/focus_event_info.h>
+#include <zaf/control/event/is_visible_changed_info.h>
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/event/mouse_capture_event_info.h>
 #include <zaf/control/event/mouse_cursor_changing_info.h>
@@ -490,21 +491,26 @@ public:
     std::shared_ptr<Window> Window() const;
 
     /**
-     Get a value indicating that whether the control is visible.
-
-     The default value is true. Note that the return value is always 
-     false if parent control is invisible.
-     */
-    bool IsVisible() const;
-
-    bool IsSelfVisible() const;
+    Determines whether the control is visible within the context of the parent.
+    */
+    bool IsVisibleInContext() const;
 
     /**
-     Set a value indicating that whether the control is visible.
+    Determines whether the control itself is visible. This method doesn't consider the visibility
+    within the context of the parent.
 
-     See also IsVisible. 
-     */
+    The default value is true.
+    */
+    bool IsVisible() const;
+
+    /**
+    Sets the visibility of the control.
+
+    Changing the visibility will raise IsVisibleChangedEvent.
+    */
     void SetIsVisible(bool is_visible);
+
+    Observable<IsVisibleChangedInfo> IsVisibleChangedEvent() const;
 
     /**
      Get a value indicating that whether the control is enabled.
@@ -883,11 +889,11 @@ protected:
     virtual void OnSizeChanged(const SizeChangedInfo& event_info);
 
     /**
-     Process the is visible change notification.
+    Called when the visibility of the control itself has changed.
 
-     This method is called when the control change its visibility. Derived classes must call
-     the same method of base class.
-     */
+    The default implementation raises IsVisibleChangedEvent. Derived classes must call the same
+    method of base class if they override it.
+    */
     virtual void OnIsVisibleChanged();
 
     /**
@@ -1024,6 +1030,7 @@ private:
     Event<RectChangedInfo> rect_changed_event_;
     Event<PositionChangedInfo> position_changed_event_;
     Event<SizeChangedInfo> size_changed_event_;
+    Event<IsVisibleChangedInfo> is_visible_changed_event_;
     Event<FocusGainedInfo> focus_gained_event_;
     Event<FocusLostInfo> focus_lost_event_;
     Event<MouseCursorChangingInfo> mouse_cursor_changing_event_;

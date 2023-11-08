@@ -207,7 +207,7 @@ std::vector<internal::LinearLayoutLengthCalculatItem> LinearLayouter::CalculateC
 
         internal::LinearLayoutLengthCalculatItem item;
 
-        if (each_child->IsSelfVisible()) {
+        if (each_child->IsVisible()) {
 
             item.minimum_length =
                 IsVertical() ? each_child->MinHeight() : each_child->MinWidth();

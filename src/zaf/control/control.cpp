@@ -99,7 +99,6 @@ ZAF_DEFINE_TYPE_PROPERTY(ContentRect)
 ZAF_DEFINE_TYPE_PROPERTY(ContentSize)
 ZAF_DEFINE_TYPE_PROPERTY(Name)
 ZAF_DEFINE_TYPE_PROPERTY(IsVisible)
-ZAF_DEFINE_TYPE_PROPERTY(IsSelfVisible)
 ZAF_DEFINE_TYPE_PROPERTY(IsEnabled)
 ZAF_DEFINE_TYPE_PROPERTY(CanFocused)
 ZAF_DEFINE_TYPE_PROPERTY(CanTabStop)
@@ -194,7 +193,7 @@ void Control::EndUpdate() {
 void Control::Repaint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     //Make sure the control repaints only if it is visible.
-    ZAF_EXPECT(IsSelfVisible());
+    ZAF_EXPECT(IsVisible());
 
     if (IsCachedPaintingEnabled()) {
         RepaintUsingCachedPainting(canvas, dirty_rect);
@@ -278,7 +277,7 @@ void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect) {
     for (const auto& child : children_) {
 
         //Don't paint the child if it is not visible.
-        if (!child->IsSelfVisible()) {
+        if (!child->IsVisible()) {
             continue;
         }
 
@@ -736,7 +735,7 @@ zaf::Size Control::CalculatePreferredContentSize(const zaf::Size& bound_size) co
 
     for (const auto& each_child : Children()) {
 
-        if (!each_child->IsSelfVisible()) {
+        if (!each_child->IsVisible()) {
             continue;
         }
 
@@ -1266,50 +1265,51 @@ std::shared_ptr<Window> Control::Window() const {
 }
 
 
-bool Control::IsVisible() const {
+bool Control::IsVisibleInContext() const {
 
-    if (! is_visible_) {
+    if (!IsVisible()) {
         return false;
     }
 
-    auto parent = Parent(); 
-    if (parent == nullptr) {
+    //A control without parent is considered visible.
+    auto parent = Parent();
+    if (!parent) {
         return true;
     }
 
-    return parent->IsVisible();
+    return parent->IsVisibleInContext();
 }
 
 
-bool Control::IsSelfVisible() const {
+bool Control::IsVisible() const {
     return is_visible_;
 }
 
 
 void Control::SetIsVisible(bool is_visible) {
 
-    bool need_relayout = is_visible_ != is_visible;
+    if (IsVisible() == is_visible) {
+        return;
+    }
 
     SetInteractiveProperty(is_visible, is_visible_, &Control::OnIsVisibleChanged);
 
     //Notify parent to re-layout.
-    if (need_relayout) {
-
-        auto parent = Parent();
-        if (parent) {
-
-            parent->NeedRelayout();
-            parent->AutoResizeToPreferredSize();
-        }
+    auto parent = Parent();
+    if (parent) {
+        parent->NeedRelayout();
+        parent->AutoResizeToPreferredSize();
     }
 }
 
 
 void Control::OnIsVisibleChanged() {
+    is_visible_changed_event_.Raise(IsVisibleChangedInfo{ shared_from_this() });
+}
 
-    for (const auto& each_child : children_) {
-        each_child->OnIsVisibleChanged();
-    }
+
+Observable<IsVisibleChangedInfo> Control::IsVisibleChangedEvent() const {
+    return is_visible_changed_event_.GetObservable();
 }
 
 

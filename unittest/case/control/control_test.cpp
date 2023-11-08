@@ -475,3 +475,61 @@ TEST(ControlTest, RemoveChildAtIndex) {
     parent->RemoveChildAtIndex(0);
     ASSERT_EQ(parent->ChildCount(), 0);
 }
+
+
+TEST(ControlTest, IsVisible) {
+
+    auto control = zaf::Create<zaf::Control>();
+    //Control is visible by default.
+    ASSERT_TRUE(control->IsVisible());
+
+    control->SetIsVisible(false);
+    ASSERT_FALSE(control->IsVisible());
+
+    //Changing visibility will raise IsVisibleChangedEvent.
+    zaf::SubscriptionSet subs;
+    bool is_event_raised{};
+    subs += control->IsVisibleChangedEvent().Subscribe(
+        [&](const zaf::IsVisibleChangedInfo& event_info) {
+
+        is_event_raised = true;
+        ASSERT_EQ(event_info.Source(), control);
+    });
+
+    control->SetIsVisible(true);
+    ASSERT_TRUE(is_event_raised);
+
+    //Setting the same value won't raise the event.
+    is_event_raised = false;
+    control->SetIsVisible(true);
+    ASSERT_FALSE(is_event_raised);
+}
+
+
+TEST(ControlTest, IsVisibleInContext) {
+
+    auto control = zaf::Create<zaf::Control>();
+    //Control is visible if there is no parent.
+    ASSERT_TRUE(control->IsVisibleInContext());
+
+    control->SetIsVisible(false);
+    ASSERT_FALSE(control->IsVisibleInContext());
+    control->SetIsVisible(true);
+
+    auto parent = zaf::Create<zaf::Control>();
+    parent->AddChild(control);
+    //Control is visible if the parent is not in window.
+    ASSERT_TRUE(control->IsVisibleInContext());
+
+    auto window = zaf::Create<zaf::Window>();
+    //Root control of the window is visible.
+    ASSERT_TRUE(window->RootControl()->IsVisibleInContext());
+
+    window->RootControl()->AddChild(parent);
+    //Control is visible after attaching to a window.
+    ASSERT_TRUE(control->IsVisibleInContext());
+
+    parent->SetIsVisible(false);
+    //Control is invisible if parent is invisible.
+    ASSERT_FALSE(control->IsVisibleInContext());
+}

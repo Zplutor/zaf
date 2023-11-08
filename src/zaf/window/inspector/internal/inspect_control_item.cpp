@@ -18,7 +18,7 @@ void InspectControlItem::Initialize() {
             return Color::White();
         }
 
-        return control_->IsVisible() ? Color::Black() : Color::Gray();
+        return control_->IsVisibleInContext() ? Color::Black() : Color::Gray();
     });
 }
 
