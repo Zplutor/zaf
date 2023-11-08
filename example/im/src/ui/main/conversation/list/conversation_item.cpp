@@ -45,7 +45,7 @@ void ConversationItem::Initialize() {
 
         auto& item = dynamic_cast<const ConversationItem&>(control);
 
-        if (item.IsSelected()) {
+        if (item.IsSelectedInContext()) {
             return zaf::Color::FromRGB(0x6495CC);
         }
         
@@ -94,7 +94,7 @@ void ConversationItem::InitializeTitleLabel() {
 
     title_label_->SetTextColorPicker([this](const zaf::Control& control) {
     
-        if (IsSelected()) {
+        if (IsSelectedInContext()) {
             return zaf::Color::White();
         }
         else {
@@ -123,7 +123,7 @@ void ConversationItem::InitializeDigestLabel() {
 
     digest_label_->SetTextColorPicker([this](const zaf::Control& control) {
     
-        if (IsSelected()) {
+        if (IsSelectedInContext()) {
             return zaf::Color::White();
         }
         else {
@@ -147,7 +147,7 @@ void ConversationItem::InitializeTimeLabel() {
     time_label_->SetTextAlignment(zaf::TextAlignment::Tailing);
     time_label_->SetTextColorPicker([this](const Control& control) {
     
-        if (IsSelected()) {
+        if (IsSelectedInContext()) {
             return zaf::Color::White();
         }
         else {

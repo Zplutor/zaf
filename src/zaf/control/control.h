@@ -13,6 +13,7 @@
 #include <zaf/control/event/double_click_info.h>
 #include <zaf/control/event/focus_event_info.h>
 #include <zaf/control/event/is_enabled_changed_info.h>
+#include <zaf/control/event/is_selected_changed_info.h>
 #include <zaf/control/event/is_visible_changed_info.h>
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/event/mouse_capture_event_info.h>
@@ -535,8 +536,27 @@ public:
 
     Observable<IsEnabledChangedInfo> IsEnabledChangedEvent() const;
 
+    /**
+    Determines whether the control is selected within the context of the parent.
+    */
+    bool IsSelectedInContext() const;
+
+    /**
+    Determines whether the control itself is selected. This method doesn't consider whether it is 
+    selected within the context of the parent.
+
+    The default value is false.
+    */
     bool IsSelected() const;
+
+    /**
+    Sets whether the control is selected.
+
+    Changing the selection state will raise IsSelectedChangedEvent.
+    */
     void SetIsSelected(bool is_selected);
+
+    Observable<IsSelectedChangedInfo> IsSelectedChangedEvent() const;
 
     /**
      Get a value indicating that whether the control itself is under mouse cursor.
@@ -912,6 +932,12 @@ protected:
     */
     virtual void OnIsEnabledChanged();
 
+    /**
+    Called when the selection state of the control itself has changed.
+
+    The default implementation raises IsSelectedChangedEvent. Derived classes must call the same
+    method of base class if they override it.
+    */
     virtual void OnIsSelectedChanged();
 
     virtual void OnDPIChanged();
@@ -1040,6 +1066,7 @@ private:
     Event<SizeChangedInfo> size_changed_event_;
     Event<IsVisibleChangedInfo> is_visible_changed_event_;
     Event<IsEnabledChangedInfo> is_enabled_changed_event_;
+    Event<IsSelectedChangedInfo> is_selected_changed_event_;
     Event<FocusGainedInfo> focus_gained_event_;
     Event<FocusLostInfo> focus_lost_event_;
     Event<MouseCursorChangingInfo> mouse_cursor_changing_event_;

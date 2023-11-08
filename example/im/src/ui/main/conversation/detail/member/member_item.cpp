@@ -11,7 +11,7 @@ void MemberItem::Initialize() {
 
     SetBackgroundColorPicker([this](const Control&) {
     
-        if (IsSelected()) {
+        if (IsSelectedInContext()) {
             return zaf::Color::FromRGB(0xAED2F6);
         }
         else if (IsMouseOver()) {

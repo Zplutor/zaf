@@ -1381,24 +1381,30 @@ void Control::SetInteractiveProperty(bool new_value, bool& property_value, void(
 }
 
 
-bool Control::IsSelected() const {
-    
-    if (is_selected_) {
+bool Control::IsSelectedInContext() const {
+
+    if (IsSelected()) {
         return true;
     }
 
+    //Control is not selected if there is no parent.
     auto parent = Parent();
     if (!parent) {
         return false;
     }
 
-    return parent->IsSelected();
+    return parent->IsSelectedInContext();
+}
+
+
+bool Control::IsSelected() const {
+    return is_selected_;
 }
 
 
 void Control::SetIsSelected(bool is_selected) {
 
-    if (is_selected_ == is_selected) {
+    if (IsSelected() == is_selected) {
         return;
     }
 
@@ -1410,10 +1416,12 @@ void Control::SetIsSelected(bool is_selected) {
 
 
 void Control::OnIsSelectedChanged() {
+    is_selected_changed_event_.Raise(IsSelectedChangedInfo{ shared_from_this() });
+}
 
-    for (const auto& each_child : children_) {
-        each_child->OnIsSelectedChanged();
-    }
+
+Observable<IsSelectedChangedInfo> Control::IsSelectedChangedEvent() const {
+    return is_selected_changed_event_.GetObservable();
 }
 
 

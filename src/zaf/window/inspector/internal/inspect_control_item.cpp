@@ -14,7 +14,7 @@ void InspectControlItem::Initialize() {
 
     SetTextColorPicker([this](const Control& item) {
     
-        if (this->IsSelected()) {
+        if (this->IsSelectedInContext()) {
             return Color::White();
         }
 

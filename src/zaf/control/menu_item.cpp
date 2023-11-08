@@ -107,9 +107,9 @@ void MenuItem::OnIsSelectedChanged() {
 
     __super::OnIsSelectedChanged();
 
-    SetTextColor(IsSelected() ? zaf::Color::White() : zaf::Color::Black());
+    SetTextColor(IsSelectedInContext() ? zaf::Color::White() : zaf::Color::Black());
     SetBackgroundColor(
-        IsSelected() ?
+        IsSelectedInContext() ?
         zaf::Color::FromRGB(internal::ControlSelectedActivedColorRGB) : 
         zaf::Color::White());
 }

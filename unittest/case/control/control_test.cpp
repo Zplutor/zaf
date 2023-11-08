@@ -593,3 +593,48 @@ TEST(ControlTest, IsEnabledInContext) {
     //Control is disabled if parent is disabled.
     ASSERT_FALSE(control->IsEnabledInContext());
 }
+
+
+TEST(ControlTest, IsSelected) {
+
+    auto control = zaf::Create<zaf::Control>();
+    ASSERT_FALSE(control->IsSelected());
+
+    control->SetIsSelected(true);
+    ASSERT_TRUE(control->IsSelected());
+
+    bool is_event_raised{};
+
+    zaf::SubscriptionSet subs;
+    subs += control->IsSelectedChangedEvent().Subscribe(
+        [&](const zaf::IsSelectedChangedInfo& event_info) {
+    
+        is_event_raised = true;
+        ASSERT_EQ(event_info.Source(), control);
+    });
+
+    control->SetIsSelected(false);
+    ASSERT_TRUE(is_event_raised);
+
+    is_event_raised = false;
+    control->SetIsSelected(false);
+    ASSERT_FALSE(is_event_raised);
+}
+
+
+TEST(ControlTest, IsSelectedInContext) {
+
+    auto control = zaf::Create<zaf::Control>();
+    ASSERT_FALSE(control->IsSelectedInContext());
+
+    control->SetIsSelected(true);
+    ASSERT_TRUE(control->IsSelectedInContext());
+    control->SetIsSelected(false);
+
+    auto parent = zaf::Create<zaf::Control>();
+    parent->AddChild(control);
+    ASSERT_FALSE(control->IsSelectedInContext());
+
+    parent->SetIsSelected(true);
+    ASSERT_TRUE(control->IsSelectedInContext());
+}

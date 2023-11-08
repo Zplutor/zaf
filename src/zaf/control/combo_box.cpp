@@ -684,7 +684,7 @@ std::shared_ptr<ListItem> ComboBoxDropDownListBox::DropDownListBoxDelegate::Crea
         //Drop down list is always inactive, display active selection color instead of inactive
         //selection color.
         return 
-            control.IsSelected() ? 
+            control.IsSelectedInContext() ?
             Color::FromRGB(internal::ControlSelectedActivedColorRGB) :
             Color::Transparent();
     });

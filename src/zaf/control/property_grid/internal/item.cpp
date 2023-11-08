@@ -104,7 +104,7 @@ std::shared_ptr<Label> Item::CreateLabel() const {
 
     result->SetTextColorPicker([this](const Control& control) {
 
-        if (control.IsSelected()) {
+        if (control.IsSelectedInContext()) {
             return Color::White();
         }
 
@@ -127,7 +127,7 @@ void Item::InitializeSplitControl() {
 
     split_control_->SplitBar()->SetSplitterColorPicker([this](const Control& control) {
 
-        if (this->IsSelected()) {
+        if (this->IsSelectedInContext()) {
 
             auto parent = control.Parent();
             while (parent) {

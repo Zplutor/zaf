@@ -18,7 +18,7 @@ void ListItem::Initialize() {
     SetBackgroundColorPicker([](const Control& control) {
 
         const auto& item = dynamic_cast<const ListItem&>(control);
-        if (!item.IsSelected()) {
+        if (!item.IsSelectedInContext()) {
             return Color::Transparent();
         }
 
@@ -31,7 +31,7 @@ void ListItem::Initialize() {
     SetTextColorPicker([](const Control& control) {
 
         const auto& item = dynamic_cast<const ListItem&>(control);
-        if (item.IsSelected()) {
+        if (item.IsSelectedInContext()) {
             return Color::White();
         }
         else {

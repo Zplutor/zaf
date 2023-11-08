@@ -185,7 +185,7 @@ void ListItemContainer::RepaintSelectedItems() {
             continue;
         }
 
-        if (list_item->IsSelected()) {
+        if (list_item->IsSelectedInContext()) {
             list_item->NeedRepaint();
         }
     }
