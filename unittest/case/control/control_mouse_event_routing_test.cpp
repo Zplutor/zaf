@@ -130,8 +130,8 @@ TEST(ControlMouseEventRoutingTest, IsHandled) {
     });
 
     bool is_handled{};
-    subs += window->RootControl()->MouseMoveEvent().Subscribe([&](
-        const zaf::MouseMoveInfo& event_info) {
+    subs += window->RootControl()->MouseMoveEvent().Subscribe(
+        [&](const zaf::MouseMoveInfo& event_info) {
 
         is_handled = event_info.IsHandled();
     });
@@ -194,7 +194,6 @@ TEST(ControlMouseEventRoutingTest, EventType) {
         ASSERT_EQ(pre_event_message_id, each_message);
         ASSERT_EQ(event_message_id, each_message);
     }
-
 
     zaf::Point position{ 100, 100 };
     position = window->TranslatePositionToScreen(position);
