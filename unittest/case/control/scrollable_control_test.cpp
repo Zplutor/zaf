@@ -110,7 +110,7 @@ TEST(ScrollableControlTest, MouseWheelEvent) {
     window->Show();
 
     auto position_in_screen = FromDIPs(
-        window->ToScreenPosition(Point{ 50, 50 }),
+        window->TranslatePositionToScreen(Point{ 50, 50 }),
         window->GetDPI());
 
     auto lparam = MAKELPARAM(

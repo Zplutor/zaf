@@ -2061,26 +2061,32 @@ Point Window::GetMousePosition() const {
 }
 
 
-Point Window::ToScreenPosition(const Point& position_in_window) const {
+Point Window::TranslatePositionToScreen(const Point& position) const {
+
+    auto handle = Handle();
+    ZAF_EXPECT(handle);
 
     auto dpi = GetDPI();
-    auto position_in_pixel = FromDIPs(position_in_window, dpi);
+    auto position_in_pixel = FromDIPs(position, dpi);
 
     auto point = position_in_pixel.ToPOINT();
-    ClientToScreen(Handle(), &point);
+    ClientToScreen(handle, &point);
 
     auto result = Point::FromPOINT(point);
     return ToDIPs(result, dpi);
 }
 
 
-Point Window::FromScreenPosition(const Point& position_in_screen) const {
+Point Window::TranslatePositionFromScreen(const Point& position_in_screen) const {
+
+    auto handle = Handle();
+    ZAF_EXPECT(handle);
 
     auto dpi = GetDPI();
     auto position_in_pixel = FromDIPs(position_in_screen, dpi);
 
     auto point = position_in_pixel.ToPOINT();
-    ScreenToClient(Handle(), &point);
+    ScreenToClient(handle, &point);
 
     auto result = Point::FromPOINT(point);
     return ToDIPs(result, dpi);

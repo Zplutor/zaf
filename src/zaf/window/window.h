@@ -519,8 +519,33 @@ public:
      */
     Point GetMousePosition() const;
 
-    Point ToScreenPosition(const Point& position_in_window) const;
-    Point FromScreenPosition(const Point& position_in_screen) const;
+    /**
+    Translates a position from the window's client area to screen coordinates.
+
+    @position
+        The position in the window's client area coordinates.
+
+    @return
+        The translated position in screen coordinates.
+
+    @throw std::logic_error
+        Thrown if the window handle hasn't been created yet.
+    */
+    Point TranslatePositionToScreen(const Point& position) const;
+
+    /**
+    Translates a position from the screen coordinates to the window's client area coordinates.
+
+    @position
+        The position in the screen coordinates.
+
+    @return 
+        The translated position in window's client area coordinates.
+
+    @throw std::logic_error
+        Thrown if the window handle hasn't been created yet.
+    */
+    Point TranslatePositionFromScreen(const Point& position) const;
 
     float GetDPI() const;
 

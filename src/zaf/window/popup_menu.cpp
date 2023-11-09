@@ -58,7 +58,7 @@ void PopupMenu::PopupOnWindow(
 
     auto menu_content_size = CalculateMenuContentSize();
 
-    auto position_in_screen = window->ToScreenPosition(position_on_window);
+    auto position_in_screen = window->TranslatePositionToScreen(position_on_window);
     auto menu_position = CalculateMenuPosition(position_in_screen, menu_content_size, 0, *window);
 
     InnerPopup(window, menu_position, menu_content_size);
@@ -79,7 +79,7 @@ void PopupMenu::PopupAsSubMenu(const std::shared_ptr<MenuItem>& owner_menu_item)
 
     auto position_in_window = owner_menu_item->AbsoluteRect().position;
     position_in_window.x += owner_menu_item->Width();
-    auto position_in_screen = owner_menu->ToScreenPosition(position_in_window);
+    auto position_in_screen = owner_menu->TranslatePositionToScreen(position_in_window);
 
     auto menu_content_size = CalculateMenuContentSize();
 

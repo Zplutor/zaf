@@ -197,7 +197,7 @@ TEST(ControlMouseEventRoutingTest, EventType) {
 
 
     zaf::Point position{ 100, 100 };
-    position = window->ToScreenPosition(position);
+    position = window->TranslatePositionToScreen(position);
     auto screen_position = zaf::FromDIPs(position, window->GetDPI());
     auto screen_messages = {
         WM_MOUSEWHEEL,
