@@ -3,6 +3,7 @@
 #include <zaf/application.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/error/system_error.h>
+#include <zaf/control/internal/keyboard_event_routing.h>
 #include <zaf/control/internal/mouse_event_routing.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
@@ -36,28 +37,6 @@ Point TranslateAbsolutePositionToControlPosition(
     result.x = absolute_position.x - control_absolute_rect.position.x;
     result.y = absolute_position.y - control_absolute_rect.position.y;
     return result;
-}
-
-
-template<typename E>
-bool RouteKeyboardEventGeneric(
-    const std::shared_ptr<Control>& source, 
-    const Message& message,
-    void (Control::*event_function)(const E&)) {
-
-    if (!source) {
-        return false;
-    }
-
-    auto event_info_state = std::make_shared<internal::KeyboardEventSharedState>(source, message);
-
-    for (auto sender = source; sender; sender = sender->Parent()) {
-
-        E event_info{ event_info_state, sender };
-        (sender.get()->*event_function)(event_info);
-    }
-
-    return event_info_state->IsHandled();
 }
 
 
@@ -638,37 +617,12 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_KEYDOWN: 
-        if (HandleWMKEYDOWN(message)) {
-            return 0;
-        }
-        return std::nullopt;
-
     case WM_KEYUP:
-        if (HandleWMKEYUP(message)) {
-            return 0;
-        }
-        return std::nullopt;
-
     case WM_CHAR:
-        if (HandleWMCHAR(message)) {
-            return 0;
-        }
-        return std::nullopt;
-
     case WM_SYSKEYDOWN:
-        if (HandleWMSYSKEYDOWN(message)) {
-            return 0;
-        }
-        return std::nullopt;
-
     case WM_SYSKEYUP:
-        if (HandleWMSYSKEYUP(message)) {
-            return 0;
-        }
-        return std::nullopt;
-
     case WM_SYSCHAR:
-        if (HandleWMSYSCHAR(message)) {
+        if (HandleKeyboardMessage(message)) {
             return 0;
         }
         return std::nullopt;
@@ -1240,45 +1194,11 @@ bool Window::HandleWMSETCURSOR(const Message& message) {
 }
 
 
-bool Window::HandleWMKEYDOWN(const Message& message) {
-    return RouteKeyboardEventGeneric<KeyDownInfo>(focused_control_, message, &Control::OnKeyDown);
-}
-
-
-bool Window::HandleWMKEYUP(const Message& message) {
-    return RouteKeyboardEventGeneric<KeyUpInfo>(focused_control_, message, &Control::OnKeyUp);
-}
-
-
-bool Window::HandleWMCHAR(const Message& message) {
-    return RouteKeyboardEventGeneric<CharInputInfo>(
-        focused_control_, 
-        message,
-        &Control::OnCharInput);
-}
-
-
-bool Window::HandleWMSYSKEYDOWN(const Message& message) {
-    return RouteKeyboardEventGeneric<SysKeyDownInfo>(
-        focused_control_,
-        message, 
-        &Control::OnSysKeyDown);
-}
-
-
-bool Window::HandleWMSYSKEYUP(const Message& message) {
-    return RouteKeyboardEventGeneric<SysKeyUpInfo>(
-        focused_control_, 
-        message,
-        &Control::OnSysKeyUp);
-}
-
-
-bool Window::HandleWMSYSCHAR(const Message& message) {
-    return RouteKeyboardEventGeneric<SysCharInputInfo>(
-        focused_control_, 
-        message,
-        &Control::OnSysCharInput);
+bool Window::HandleKeyboardMessage(const Message& message) {
+    if (focused_control_) {
+        return internal::RouteKeyboardEvent(focused_control_, message);
+    }
+    return false;
 }
 
 

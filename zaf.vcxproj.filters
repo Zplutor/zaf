@@ -1072,6 +1072,12 @@
     <ClCompile Include="src\zaf\control\event\is_selected_changed_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\keyboard_event_routing.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\event_routing_utility.cpp">
+      <Filter>zaf\control\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2436,6 +2442,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\is_selected_changed_info.h">
       <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\keyboard_event_routing.h">
+      <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\event_routing_utility.h">
+      <Filter>zaf\control\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

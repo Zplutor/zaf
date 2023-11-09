@@ -29,6 +29,22 @@ MouseEventInvoker MakeMouseEventInvoker(ControlEventFunction<E> event_function) 
         std::placeholders::_3);
 }
 
+
+template<typename E>
+KeyboardEventInvoker MakeKeyboardEventInvoker(ControlEventFunction<E> event_function) {
+
+    auto invoker = [](
+        ControlEventFunction<E> event_function,
+        const std::shared_ptr<KeyboardEventSharedState>& event_state,
+        const std::shared_ptr<Control>& sender) {
+    
+        E event_info{ event_state, sender };
+        (sender.get()->*event_function)(event_info);
+    };
+
+    return std::bind(invoker, event_function, std::placeholders::_1, std::placeholders::_2);
+}
+
 }
 
 
@@ -39,6 +55,18 @@ const MouseEventInvoker& ControlEventInvokerBinder::GetPreMouseEventInvoker(UINT
 
 const MouseEventInvoker& ControlEventInvokerBinder::GetMouseEventInvoker(UINT message_id) {
     return GetMouseEventBinding(message_id).event_invoker;
+}
+
+
+const KeyboardEventInvoker& ControlEventInvokerBinder::GetPreKeyboardEventInvoker(
+    UINT message_id) {
+
+    return GetKeyboardEventBinding(message_id).pre_event_invoker;
+}
+
+
+const KeyboardEventInvoker& ControlEventInvokerBinder::GetKeyboardEventInvoker(UINT message_id) {
+    return GetKeyboardEventBinding(message_id).event_invoker;
 }
 
 
@@ -87,6 +115,64 @@ const ControlEventInvokerBinder::MouseEventBinding&
         }
 
         default: 
+            ZAF_NOT_REACHED();
+    }
+}
+
+
+const ControlEventInvokerBinder::KeyboardEventBinding& 
+    ControlEventInvokerBinder::GetKeyboardEventBinding(UINT message_id) {
+
+    switch (message_id) {
+        case WM_KEYDOWN: {
+            static KeyboardEventBinding binding{
+                MakeKeyboardEventInvoker<PreKeyDownInfo>(&Control::OnPreKeyDown),
+                MakeKeyboardEventInvoker<KeyDownInfo>(&Control::OnKeyDown),
+            };
+            return binding;
+        }
+
+        case WM_KEYUP: {
+            static KeyboardEventBinding binding{
+                MakeKeyboardEventInvoker<PreKeyUpInfo>(&Control::OnPreKeyUp),
+                MakeKeyboardEventInvoker<KeyUpInfo>(&Control::OnKeyUp),
+            };
+            return binding;
+        }
+
+        case WM_CHAR: {
+            static KeyboardEventBinding binding{
+                MakeKeyboardEventInvoker<PreCharInputInfo>(&Control::OnPreCharInput),
+                MakeKeyboardEventInvoker<CharInputInfo>(&Control::OnCharInput),
+            };
+            return binding;
+        }
+
+        case WM_SYSKEYDOWN: {
+            static KeyboardEventBinding binding{
+                MakeKeyboardEventInvoker<PreSysKeyDownInfo>(&Control::OnPreSysKeyDown),
+                MakeKeyboardEventInvoker<SysKeyDownInfo>(&Control::OnSysKeyDown),
+            };
+            return binding;
+        }
+
+        case WM_SYSKEYUP: {
+            static KeyboardEventBinding binding{
+                MakeKeyboardEventInvoker<PreSysKeyUpInfo>(&Control::OnPreSysKeyUp),
+                MakeKeyboardEventInvoker<SysKeyUpInfo>(&Control::OnSysKeyUp),
+            };
+            return binding;
+        }
+
+        case WM_SYSCHAR: {
+            static KeyboardEventBinding binding{
+                MakeKeyboardEventInvoker<PreSysCharInputInfo>(&Control::OnPreSysCharInput),
+                MakeKeyboardEventInvoker<SysCharInputInfo>(&Control::OnSysCharInput),
+            };
+            return binding;
+        }
+
+        default:
             ZAF_NOT_REACHED();
     }
 }

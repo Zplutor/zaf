@@ -769,12 +769,22 @@ public:
     Observable<PreMouseWheelInfo> PreMouseWheelEvent() const;
     Observable<MouseWheelInfo> MouseWheelEvent() const;
 
+    Observable<PreKeyDownInfo> PreKeyDownEvent() const;
     Observable<KeyDownInfo> KeyDownEvent() const;
+
+    Observable<PreKeyUpInfo> PreKeyUpEvent() const;
     Observable<KeyUpInfo> KeyUpEvent() const;
+
+    Observable<PreCharInputInfo> PreCharInputEvent() const;
     Observable<CharInputInfo> CharInputEvent() const;
 
+    Observable<SysKeyDownInfo> PreSysKeyDownEvent() const;
     Observable<SysKeyDownInfo> SysKeyDownEvent() const;
+
+    Observable<SysKeyUpInfo> PreSysKeyUpEvent() const;
     Observable<SysKeyUpInfo> SysKeyUpEvent() const;
+
+    Observable<SysCharInputInfo> PreSysCharInputEvent() const;
     Observable<SysCharInputInfo> SysCharInputEvent() const;
 
     Observable<ParentChangedInfo> ParentChangedEvent() const;
@@ -882,12 +892,22 @@ protected:
     */
     virtual void OnMouseReleased(const MouseReleasedInfo& event_info);
 
+    virtual void OnPreKeyDown(const PreKeyDownInfo& event_info);
     virtual void OnKeyDown(const KeyDownInfo& event_info);
+
+    virtual void OnPreKeyUp(const PreKeyUpInfo& event_info);
     virtual void OnKeyUp(const KeyUpInfo& event_info);
+
+    virtual void OnPreCharInput(const PreCharInputInfo& event_info);
     virtual void OnCharInput(const CharInputInfo& event_info);
 
+    virtual void OnPreSysKeyDown(const PreSysKeyDownInfo& event_info);
     virtual void OnSysKeyDown(const SysKeyDownInfo& event_info);
+
+    virtual void OnPreSysKeyUp(const PreSysKeyUpInfo& event_info);
     virtual void OnSysKeyUp(const SysKeyUpInfo& event_info);
+
+    virtual void OnPreSysCharInput(const PreSysCharInputInfo& event_info);
     virtual void OnSysCharInput(const SysCharInputInfo& event_info);
 
     virtual void OnFocusGained(const FocusGainedInfo& event_info);
@@ -1082,11 +1102,17 @@ private:
     Event<PreMouseWheelInfo> pre_mouse_wheel_event_;
     Event<MouseWheelInfo> mouse_wheel_event_;
     Event<DoubleClickInfo> double_click_event_;
+    Event<PreKeyDownInfo> pre_key_down_event_;
     Event<KeyDownInfo> key_down_event_;
+    Event<PreKeyUpInfo> pre_key_up_event_;
     Event<KeyUpInfo> key_up_event_;
+    Event<PreCharInputInfo> pre_char_input_event_;
     Event<CharInputInfo> char_input_event_;
+    Event<PreSysKeyDownInfo> pre_sys_key_down_event_;
     Event<SysKeyDownInfo> sys_key_down_event_;
+    Event<PreSysKeyUpInfo> pre_sys_key_up_event_;
     Event<SysKeyUpInfo> sys_key_up_event_;
+    Event<PreSysCharInputInfo> pre_sys_char_input_event_;
     Event<SysCharInputInfo> sys_char_input_event_;
     Event<ParentChangedInfo> parent_changed_event_;
     Event<WindowChangedInfo> window_changed_event_;

@@ -1868,6 +1868,16 @@ Observable<MouseReleasedInfo> Control::MouseReleasedEvent() const {
 }
 
 
+void Control::OnPreKeyDown(const PreKeyDownInfo& event_info) {
+    pre_key_down_event_.Raise(event_info);
+}
+
+
+Observable<PreKeyDownInfo> Control::PreKeyDownEvent() const {
+    return pre_key_down_event_.GetObservable();
+}
+
+
 void Control::OnKeyDown(const KeyDownInfo& event_info) {
     key_down_event_.Raise(event_info);
 }
@@ -1875,6 +1885,16 @@ void Control::OnKeyDown(const KeyDownInfo& event_info) {
 
 Observable<KeyDownInfo> Control::KeyDownEvent() const {
     return key_down_event_.GetObservable();
+}
+
+
+void Control::OnPreKeyUp(const PreKeyUpInfo& event_info) {
+    pre_key_up_event_.Raise(event_info);
+}
+
+
+Observable<PreKeyUpInfo> Control::PreKeyUpEvent() const {
+    return pre_key_up_event_.GetObservable();
 }
 
 
@@ -1888,6 +1908,16 @@ Observable<KeyUpInfo> Control::KeyUpEvent() const {
 }
 
 
+void Control::OnPreCharInput(const PreCharInputInfo& event_info) {
+    pre_char_input_event_.Raise(event_info);
+}
+
+
+Observable<PreCharInputInfo> Control::PreCharInputEvent() const {
+    return pre_char_input_event_.GetObservable();
+}
+
+
 void Control::OnCharInput(const CharInputInfo& event_info) {
     char_input_event_.Raise(event_info);
 }
@@ -1895,6 +1925,16 @@ void Control::OnCharInput(const CharInputInfo& event_info) {
 
 Observable<CharInputInfo> Control::CharInputEvent() const {
     return char_input_event_.GetObservable();
+}
+
+
+void Control::OnPreSysKeyDown(const PreSysKeyDownInfo& event_info) {
+    pre_sys_key_down_event_.Raise(event_info);
+}
+
+
+Observable<SysKeyDownInfo> Control::PreSysKeyDownEvent() const {
+    return pre_sys_key_down_event_.GetObservable();
 }
 
 
@@ -1908,6 +1948,16 @@ Observable<SysKeyDownInfo> Control::SysKeyDownEvent() const {
 }
 
 
+void Control::OnPreSysKeyUp(const PreSysKeyUpInfo& event_info) {
+    pre_sys_key_up_event_.Raise(event_info);
+}
+
+
+Observable<SysKeyUpInfo> Control::PreSysKeyUpEvent() const {
+    return pre_sys_key_up_event_.GetObservable();
+}
+
+
 void Control::OnSysKeyUp(const SysKeyUpInfo& event_info) {
     sys_key_up_event_.Raise(event_info);
 }
@@ -1915,6 +1965,16 @@ void Control::OnSysKeyUp(const SysKeyUpInfo& event_info) {
 
 Observable<SysKeyUpInfo> Control::SysKeyUpEvent() const {
     return sys_key_up_event_.GetObservable();
+}
+
+
+void Control::OnPreSysCharInput(const PreSysCharInputInfo& event_info) {
+    pre_sys_char_input_event_.Raise(event_info);
+}
+
+
+Observable<SysCharInputInfo> Control::PreSysCharInputEvent() const {
+    return pre_sys_char_input_event_.GetObservable();
 }
 
 

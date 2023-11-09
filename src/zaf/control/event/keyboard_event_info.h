@@ -44,12 +44,22 @@ private:
 
 }
 
+using PreKeyDownInfo = internal::KeyboardEventInfo<KeyMessage>;
 using KeyDownInfo = internal::KeyboardEventInfo<KeyMessage>;
+
+using PreKeyUpInfo = internal::KeyboardEventInfo<KeyMessage>;
 using KeyUpInfo = internal::KeyboardEventInfo<KeyMessage>;
+
+using PreCharInputInfo = internal::KeyboardEventInfo<CharMessage>;
 using CharInputInfo = internal::KeyboardEventInfo<CharMessage>;
 
+using PreSysKeyDownInfo = internal::KeyboardEventInfo<KeyMessage>;
 using SysKeyDownInfo = internal::KeyboardEventInfo<KeyMessage>;
+
+using PreSysKeyUpInfo = internal::KeyboardEventInfo<KeyMessage>;
 using SysKeyUpInfo = internal::KeyboardEventInfo<KeyMessage>;
+
+using PreSysCharInputInfo = internal::KeyboardEventInfo<CharMessage>;
 using SysCharInputInfo = internal::KeyboardEventInfo<CharMessage>;
 
 }
