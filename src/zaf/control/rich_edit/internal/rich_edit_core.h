@@ -17,14 +17,14 @@ public:
 
     Font GetFont() override;
     void SetFont(const Font& font) override;
-    virtual Font GetFontAtPosition(std::size_t position) override;
-    virtual void SetFontAtRange(const zaf::Font& font, const Range& range) override;
+    virtual Font GetFontAtIndex(std::size_t position) override;
+    virtual void SetFontInRange(const zaf::Font& font, const Range& range) override;
     virtual void ResetFonts() override;
 
     ColorPicker GetTextColorPicker() override;
     void SetTextColorPicker(const ColorPicker& color_picker) override;
-    ColorPicker GetTextColorPickerAtPosition(std::size_t position) override;
-    void SetTextColorPickerAtRange(const ColorPicker& color_picker, const Range& range) override;
+    ColorPicker GetTextColorPickerAtIndex(std::size_t position) override;
+    void SetTextColorPickerInRange(const ColorPicker& color_picker, const Range& range) override;
     void ResetTextColorPickers() override;
 
     TextAlignment GetTextAlignment() override;

@@ -120,16 +120,16 @@ void TextualControl::SetTextColorPicker(const ColorPicker& color_picker) {
 }
 
 
-ColorPicker TextualControl::GetTextColorPickerAtPosition(std::size_t position) const {
-    return core_->GetTextColorPickerAtPosition(position);
+ColorPicker TextualControl::GetTextColorPickerAtIndex(std::size_t index) const {
+    return core_->GetTextColorPickerAtIndex(index);
 }
 
 
-void TextualControl::SetTextColorPickerAtRange(
+void TextualControl::SetTextColorPickerInRange(
     const ColorPicker& color_picker, 
     const Range& range) {
 
-    core_->SetTextColorPickerAtRange(color_picker, range);
+    core_->SetTextColorPickerInRange(color_picker, range);
 }
 
 
@@ -193,13 +193,13 @@ void TextualControl::SetFontWeight(zaf::FontWeight weight) {
 }
 
 
-Font TextualControl::GetFontAtPosition(std::size_t position) const {
-    return core_->GetFontAtPosition(position);
+Font TextualControl::GetFontAtIndex(std::size_t index) const {
+    return core_->GetFontAtIndex(index);
 }
 
 
-void TextualControl::SetFontAtRange(const zaf::Font& font, const Range& range) {
-    core_->SetFontAtRange(font, range);
+void TextualControl::SetFontInRange(const zaf::Font& font, const Range& range) {
+    core_->SetFontInRange(font, range);
 }
 
 

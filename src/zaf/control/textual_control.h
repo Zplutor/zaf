@@ -72,37 +72,38 @@ public:
     void SetTextColorPicker(const ColorPicker& color_picker);
 
     /**
-     Get text color at specified text position.
+    Gets the text color at the specified text index.
 
-     Return TextColor() if the text color at this position has not been set.
-     */
-    Color GetTextColorAtPosition(std::size_t position) const {
-        return GetTextColorPickerAtPosition(position)(*this);
+    Returns the default text color if the text color at the specified index is not set.
+    */
+    Color GetTextColorAtIndex(std::size_t index) const {
+        return GetTextColorPickerAtIndex(index)(*this);
     }
 
     /**
-     Set color at specified text range.
-     */
-    void SetTextColorAtRange(const Color& color, const Range& range) {
-        SetTextColorPickerAtRange(CreateColorPicker(color), range);
+    Set text color in the specified text range.
+    */
+    void SetTextColorInRange(const Color& color, const Range& range) {
+        SetTextColorPickerInRange(CreateColorPicker(color), range);
     }
 
     /**
-     Get text color picker at specified text position.
+    Gets the text color picker at the specified text index.
 
-     Return TextColorPicker() if the text color picker at this position has not been set.
-     */
-    ColorPicker GetTextColorPickerAtPosition(std::size_t position) const;
+    Returns the default text color picker if the text color picker at the specified index is not 
+    set.
+    */
+    ColorPicker GetTextColorPickerAtIndex(std::size_t index) const;
 
     /**
-     Set color picker at specified text range.
-     */
-    void SetTextColorPickerAtRange(const ColorPicker& color_picker, const Range& range);
+    Sets color picker in the specified text range.
+    */
+    void SetTextColorPickerInRange(const ColorPicker& color_picker, const Range& range);
 
     /**
      Reset all particular text color pickers to default text color picker.
 
-     This method removes all text color pickers that set with SetTextColorPickerAtRange.
+     This method removes all text color pickers that set with SetTextColorPickerInRange.
      */
     void ResetTextColorPickers();
 
@@ -128,21 +129,21 @@ public:
     void SetFontWeight(zaf::FontWeight weight);
 
     /**
-     Get font at specified text position.
+    Gets the font at the specified text index.
 
-     Return Default() if the font at this position has not been set.
-     */
-    zaf::Font GetFontAtPosition(std::size_t position) const;
+    Returns Default() if the font at the specified index is not set.
+    */
+    zaf::Font GetFontAtIndex(std::size_t index) const;
 
     /**
-     Set font at specified text range.
-     */
-    void SetFontAtRange(const zaf::Font& font, const Range& range);
+    Sets font in the specified text range.
+    */
+    void SetFontInRange(const zaf::Font& font, const Range& range);
 
     /**
      Reset all particular fonts to default font.
 
-     This method removes all fonts that set with SetFontAtRange.
+     This method removes all fonts that set with SetFontInRange.
      */
     void ResetFonts();
 

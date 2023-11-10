@@ -117,13 +117,13 @@ void RichEditCore::SetFont(const Font& font) {
 }
 
 
-Font RichEditCore::GetFontAtPosition(std::size_t position) {
+Font RichEditCore::GetFontAtIndex(std::size_t position) {
     //Unsupported, always returns default font.
     return GetFont();
 }
 
 
-void RichEditCore::SetFontAtRange(const zaf::Font& font, const Range& range) {
+void RichEditCore::SetFontInRange(const zaf::Font& font, const Range& range) {
     //Unsupported.
 }
 
@@ -161,13 +161,13 @@ void RichEditCore::SetTextColorPicker(const ColorPicker& color_picker) {
 }
 
 
-ColorPicker RichEditCore::GetTextColorPickerAtPosition(std::size_t position) {
+ColorPicker RichEditCore::GetTextColorPickerAtIndex(std::size_t position) {
     //Unsupported. Use the default text color.
     return GetTextColorPicker();
 }
 
 
-void RichEditCore::SetTextColorPickerAtRange(const ColorPicker& color_picker, const Range& range) {
+void RichEditCore::SetTextColorPickerInRange(const ColorPicker& color_picker, const Range& range) {
     //Unsupported.
 }
 

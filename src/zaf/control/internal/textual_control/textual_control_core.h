@@ -35,14 +35,14 @@ public:
 
     virtual Font GetFont() = 0;
     virtual void SetFont(const Font& font) = 0;
-    virtual Font GetFontAtPosition(std::size_t position) = 0;
-    virtual void SetFontAtRange(const zaf::Font& font, const Range& range) = 0;
+    virtual Font GetFontAtIndex(std::size_t position) = 0;
+    virtual void SetFontInRange(const zaf::Font& font, const Range& range) = 0;
     virtual void ResetFonts() = 0;
 
     virtual ColorPicker GetTextColorPicker() = 0;
     virtual void SetTextColorPicker(const ColorPicker& color_picker) = 0;
-    virtual ColorPicker GetTextColorPickerAtPosition(std::size_t position) = 0;
-    virtual void SetTextColorPickerAtRange(
+    virtual ColorPicker GetTextColorPickerAtIndex(std::size_t position) = 0;
+    virtual void SetTextColorPickerInRange(
         const ColorPicker& color_picker, 
         const Range& range) = 0;
     virtual void ResetTextColorPickers() = 0;

@@ -67,7 +67,7 @@ void GeneralTextualCore::SetFont(const Font& font) {
 }
 
 
-Font GeneralTextualCore::GetFontAtPosition(std::size_t position) {
+Font GeneralTextualCore::GetFontAtIndex(std::size_t position) {
 
     if (font_range_map_) {
 
@@ -83,7 +83,7 @@ Font GeneralTextualCore::GetFontAtPosition(std::size_t position) {
 }
 
 
-void GeneralTextualCore::SetFontAtRange(const zaf::Font& font, const Range& range) {
+void GeneralTextualCore::SetFontInRange(const zaf::Font& font, const Range& range) {
 
     if (!font_range_map_) {
         font_range_map_ = std::make_unique<internal::RangeMap<zaf::Font>>();
@@ -133,7 +133,7 @@ void GeneralTextualCore::SetTextColorPicker(const ColorPicker& color_picker) {
 }
 
 
-ColorPicker GeneralTextualCore::GetTextColorPickerAtPosition(std::size_t position) {
+ColorPicker GeneralTextualCore::GetTextColorPickerAtIndex(std::size_t position) {
 
     if (text_color_picker_map_) {
 
@@ -147,7 +147,7 @@ ColorPicker GeneralTextualCore::GetTextColorPickerAtPosition(std::size_t positio
 }
 
 
-void GeneralTextualCore::SetTextColorPickerAtRange(
+void GeneralTextualCore::SetTextColorPickerInRange(
     const ColorPicker& color_picker,
     const Range& range) {
 
