@@ -20,7 +20,7 @@ EventTargetInfo FindEventTargetUpToDown(
         return EventTargetInfo{ control, position };
     }
 
-    auto position_at_child = control->TranslatePositionToChild(position, child);
+    auto position_at_child = control->TranslatePositionToChild(position, *child);
     return FindEventTargetUpToDown(child, position_at_child);
 }
 
@@ -89,7 +89,7 @@ bool TunnelEvent(
     for (const auto& each_control : tunnel_path) {
 
         if (parent) {
-            position = parent->TranslatePositionToChild(position, each_control);
+            position = parent->TranslatePositionToChild(position, *each_control);
         }
 
         //Invoke event handler.

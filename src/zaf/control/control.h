@@ -730,12 +730,9 @@ public:
         The translated position in the coordinate space of the specified child control. 
 
     @throw std::logic_error
-        Thrown if the child control is not a direct descendant of current control, or it is 
-        nullptr.
+        Thrown if the child control is not a direct descendant of current control.
     */
-    Point TranslatePositionToChild(
-        const Point& position, 
-        const std::shared_ptr<Control>& child) const;
+    Point TranslatePositionToChild(const Point& position, const Control& child) const;
 
     /**
      Get rect change event.

@@ -213,12 +213,9 @@ TEST(ControlTest, TranslatePositionToChild) {
 
     zaf::Point position{ 20, 21 };
 
-    //nullptr
-    ASSERT_THROW(control->TranslatePositionToChild(position, nullptr), std::logic_error);
-
     //Not child
     auto other = zaf::Create<zaf::Control>();
-    ASSERT_THROW(control->TranslatePositionToChild(position, other), std::logic_error);
+    ASSERT_THROW(control->TranslatePositionToChild(position, *other), std::logic_error);
 
     auto child1 = zaf::Create<zaf::Control>();
     child1->SetRect(zaf::Rect{ 2, 3, 10, 10 });
@@ -229,10 +226,10 @@ TEST(ControlTest, TranslatePositionToChild) {
     child1->AddChild(child2);
 
     //Not direct descendant
-    ASSERT_THROW(control->TranslatePositionToChild(position, child2), std::logic_error);
+    ASSERT_THROW(control->TranslatePositionToChild(position, *child2), std::logic_error);
 
     //Direct descendant
-    auto result = control->TranslatePositionToChild(position, child1);
+    auto result = control->TranslatePositionToChild(position, *child1);
     ASSERT_EQ(result, zaf::Point(15, 15));
 }
 

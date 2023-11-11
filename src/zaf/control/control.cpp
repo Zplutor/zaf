@@ -1211,7 +1211,10 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
             return child;
         }
 
-        auto recursive_child = child->InnerFindChildAtPosition(TranslatePositionToChild(position, child), true);
+        auto recursive_child = child->InnerFindChildAtPosition(
+            TranslatePositionToChild(position, *child), 
+            true);
+
         if (recursive_child) {
             return recursive_child;
         }
@@ -1620,7 +1623,7 @@ std::shared_ptr<Control> Control::FindEnabledControlAtPosition(const Point& posi
 
     auto child = FindChildAtPosition(position);
     if (child && child->IsEnabled()) {
-        return child->FindEnabledControlAtPosition(TranslatePositionToChild(position, child));
+        return child->FindEnabledControlAtPosition(TranslatePositionToChild(position, *child));
     }
 
     return shared_from_this();
@@ -1643,16 +1646,13 @@ Point Control::TranslatePositionToParent(const Point& position) const {
 }
 
 
-Point Control::TranslatePositionToChild(
-    const Point& position, 
-    const std::shared_ptr<Control>& child) const {
+Point Control::TranslatePositionToChild(const Point& position, const Control& child) const {
 
-    ZAF_EXPECT(child);
-    ZAF_EXPECT(child->Parent().get() == this);
+    ZAF_EXPECT(child.Parent().get() == this);
 
     const auto& border = Border();
     const auto& padding = Padding();
-    const auto& child_position = child->Position();
+    const auto& child_position = child.Position();
 
     Point result = position;
     result.x -= child_position.x + border.left + padding.left;
