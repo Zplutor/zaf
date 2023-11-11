@@ -38,6 +38,20 @@ public:
 
     std::wstring SelectedText() const;
 
+    /**
+    Finds the nearest text index at the specified position in the coordinate space of the text box.
+
+    @param position
+        The position in the coordinate spaces of the text box.
+
+    @return
+        The nearest text index found.
+
+    @throw zaf::Error
+        Thrown if the operation fails.
+    */
+    std::size_t FindTextIndexAtPosition(const Point& position) const;
+
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
@@ -104,7 +118,6 @@ private:
     void HandleMouseDown(const MouseDownInfo& event_info);
     void HandleMouseMove(const MouseMoveInfo& event_info);
     void HandleMouseUp(const MouseUpInfo& event_info);
-    std::optional<std::size_t> FindTextIndexAtPoint(const Point& point_in_control) const;
 
     void HandleKeyDown(const KeyDownInfo& event_info);
     void BackwardCaretIndex(bool expand_selection);
