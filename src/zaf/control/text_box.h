@@ -50,7 +50,7 @@ public:
     @throw zaf::Error
         Thrown if the operation fails.
     */
-    std::size_t FindTextIndexAtPosition(const Point& position) const;
+    std::size_t FindIndexAtPosition(const Point& position) const;
 
 protected:
     void Initialize() override;

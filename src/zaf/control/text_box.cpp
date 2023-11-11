@@ -229,7 +229,7 @@ void TextBox::HandleMouseDown(const MouseDownInfo& event_info) {
 
     this->SetIsFocused(true);
 
-    auto new_index = FindTextIndexAtPosition(event_info.PositionAtSource());
+    auto new_index = FindIndexAtPosition(event_info.PositionAtSource());
     CaptureMouse();
     SetCaretIndexByMouse(new_index, true);
 }
@@ -253,7 +253,7 @@ void TextBox::HandleMouseMove(const MouseMoveInfo& event_info) {
         return;
     }
 
-    auto new_index = FindTextIndexAtPosition(event_info.PositionAtSource());
+    auto new_index = FindIndexAtPosition(event_info.PositionAtSource());
     SetCaretIndexByMouse(new_index, false);
 }
 
@@ -278,14 +278,14 @@ void TextBox::HandleMouseUp(const MouseUpInfo& event_info) {
 
     ReleaseMouse();
 
-    auto new_index = FindTextIndexAtPosition(event_info.PositionAtSource());
+    auto new_index = FindIndexAtPosition(event_info.PositionAtSource());
     SetCaretIndexByMouse(new_index, false);
 
     begin_mouse_select_index_.reset();
 }
 
 
-std::size_t TextBox::FindTextIndexAtPosition(const Point& position) const {
+std::size_t TextBox::FindIndexAtPosition(const Point& position) const {
 
     auto point_in_text_rect = position;
     point_in_text_rect.SubtractOffset(ContentRect().position);
