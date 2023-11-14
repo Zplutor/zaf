@@ -497,7 +497,7 @@ const Range& TextBox::SelectionRange() const {
 }
 
 
-void TextBox::SetSelectionRange(const Range& range) {
+void TextBox::SetSelectionRange(const Range& range, bool scroll_to_selection) {
 
     auto text_length = core_->GetTextLength();
     auto begin_index = (std::min)(range.index, text_length);
@@ -505,7 +505,7 @@ void TextBox::SetSelectionRange(const Range& range) {
     selection_range_ = Range::FromIndexPair(begin_index, end_index);
 
     caret_index_ = selection_range_.EndIndex();
-    AfterSetCaretIndex(true);
+    AfterSetCaretIndex(true, scroll_to_selection);
 }
 
 
@@ -534,7 +534,7 @@ void TextBox::SetCaretIndexByMouse(std::size_t new_index, bool begin_selection) 
         (std::min)(*begin_mouse_select_index_, caret_index_),
         (std::max)(*begin_mouse_select_index_, caret_index_));
 
-    AfterSetCaretIndex(true);
+    AfterSetCaretIndex(true, true);
 }
 
 
@@ -561,11 +561,11 @@ void TextBox::SetCaretIndexByKey(
     }
 
     selection_range_ = Range::FromIndexPair(selection_begin, selection_end);
-    AfterSetCaretIndex(update_caret_x);
+    AfterSetCaretIndex(update_caret_x, true);
 }
 
 
-void TextBox::AfterSetCaretIndex(bool update_caret_x) {
+void TextBox::AfterSetCaretIndex(bool update_caret_x, bool ensure_caret_visible) {
 
     auto hit_test_result = GetTextLayout().HitTestIndex(caret_index_, false);
     const auto& metrics = hit_test_result.Metrics();
@@ -575,7 +575,9 @@ void TextBox::AfterSetCaretIndex(bool update_caret_x) {
         return;
     }
 
-    EnsureCaretVisible(metrics);
+    if (ensure_caret_visible) {
+        EnsureCaretVisible(metrics);
+    }
 
     if (update_caret_x) {
         caret_last_x_ = metrics.Left();

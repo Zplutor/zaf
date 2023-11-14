@@ -28,7 +28,7 @@ public:
     std::size_t CaretIndex() const;
 
     const Range& SelectionRange() const;
-    void SetSelectionRange(const Range& range);
+    void SetSelectionRange(const Range& range, bool scroll_to_selection = true);
 
     ColorPicker SelectionBackgroundColorPicker() const;
     void SetSelectionBackgroundColorPicker(ColorPicker picker);
@@ -128,7 +128,7 @@ private:
     LineInfo LocateCurrentLineInfo();
     void SetCaretIndexByMouse(std::size_t new_index, bool begin_selection);
     void SetCaretIndexByKey(std::size_t caret_index, bool expand_selection, bool update_caret_x);
-    void AfterSetCaretIndex(bool update_caret_x);
+    void AfterSetCaretIndex(bool update_caret_x, bool ensure_caret_visible);
     void UpdateCaretAtCurrentIndex();
     void ShowCaret(const HitTestMetrics& metrics);
     void EnsureCaretVisible(const HitTestMetrics& metrics);

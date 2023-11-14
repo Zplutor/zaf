@@ -68,33 +68,24 @@ protected:
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        auto layouter = zaf::Create<zaf::VerticalLayouter>();
-        layouter->SetAxisAlignment(zaf::AxisAlignment::Center);
-        layouter->SetCrossAxisAlignment(zaf::AxisAlignment::Center);
+        auto text_box = zaf::Create<zaf::TextBox>();
+        text_box->SetFontSize(40);
+        this->RootControl()->AddChild(text_box);
 
-        auto parent = zaf::Create<zaf::Control>();
-        parent->SetLayouter(layouter);
-        Subscriptions() += parent->MouseDownEvent().Subscribe(std::bind([]() {
-            OutputDebugString(L"Parent MouseDown!\r\n");
+        std::wstring text;
+        for (int count = 0; count < 5; ++count) {
+            for (int index = 0; index <= 9; ++index) {
+                text += std::to_wstring(index);
+            }
+        }
+        text_box->SetText(text);
+
+        auto button = zaf::Create<zaf::Button>();
+        button->SetFixedHeight(30);
+        this->RootControl()->AddChild(button);
+        Subscriptions() += button->ClickEvent().Subscribe(std::bind([text_box]() {
+            text_box->SetSelectionRange(zaf::Range(40, 100));
         }));
-
-        auto child = zaf::Create<zaf::Button>();
-        child->SetText(L"Child");
-        child->SetFixedSize(zaf::Size(100, 30));
-        Subscriptions() += child->ClickEvent().Subscribe(std::bind([]() {
-            OutputDebugString(L"Child click!\r\n");
-        }));
-        parent->AddChild(child);
-
-        RootControl()->AddChild(parent);
-
-        auto capture = zaf::Create<zaf::Button>();
-        capture->SetFixedHeight(30);
-        capture->SetText(L"Capture mouse");
-        Subscriptions() += capture->ClickEvent().Subscribe(std::bind([parent]() {
-            parent->CaptureMouse();
-        }));
-        RootControl()->AddChild(capture);
     }
 };
 
