@@ -401,13 +401,13 @@ Observable<ScrollBarScrollInfo> ScrollBar::ScrollEvent() const {
 void ScrollBar::OnMouseDown(const MouseDownInfo& event_info) {
 
     __super::OnMouseDown(event_info);
-
     if (event_info.IsHandled()) {
         return;
     }
 
     if (event_info.Message().MouseButton() == MouseButton::Left) {
 
+        is_pressing_ = true;
         CaptureMouse();
         event_info.MarkAsHandled();
     }
@@ -417,15 +417,17 @@ void ScrollBar::OnMouseDown(const MouseDownInfo& event_info) {
 void ScrollBar::OnMouseUp(const MouseUpInfo& event_info) {
 
     __super::OnMouseUp(event_info);
-
     if (event_info.IsHandled()) {
         return;
     }
 
     if (event_info.Message().MouseButton() == MouseButton::Left) {
 
-        ReleaseMouse();
-        event_info.MarkAsHandled();
+        if (is_pressing_) {
+            is_pressing_ = false;
+            ReleaseMouse();
+            event_info.MarkAsHandled();
+        }
     }
 }
 
