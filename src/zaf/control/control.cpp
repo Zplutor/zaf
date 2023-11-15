@@ -1933,7 +1933,7 @@ void Control::OnPreSysKeyDown(const PreSysKeyDownInfo& event_info) {
 }
 
 
-Observable<SysKeyDownInfo> Control::PreSysKeyDownEvent() const {
+Observable<PreSysKeyDownInfo> Control::PreSysKeyDownEvent() const {
     return pre_sys_key_down_event_.GetObservable();
 }
 
@@ -1953,7 +1953,7 @@ void Control::OnPreSysKeyUp(const PreSysKeyUpInfo& event_info) {
 }
 
 
-Observable<SysKeyUpInfo> Control::PreSysKeyUpEvent() const {
+Observable<PreSysKeyUpInfo> Control::PreSysKeyUpEvent() const {
     return pre_sys_key_up_event_.GetObservable();
 }
 
@@ -1973,7 +1973,7 @@ void Control::OnPreSysCharInput(const PreSysCharInputInfo& event_info) {
 }
 
 
-Observable<SysCharInputInfo> Control::PreSysCharInputEvent() const {
+Observable<PreSysCharInputInfo> Control::PreSysCharInputEvent() const {
     return pre_sys_char_input_event_.GetObservable();
 }
 

@@ -22,7 +22,7 @@ private:
 };
 
 
-template<typename MessageShim>
+template<typename MessageShim, int>
 class KeyboardEventInfo : public RoutedEventInfo {
 public:
     KeyboardEventInfo(
@@ -44,22 +44,22 @@ private:
 
 }
 
-using PreKeyDownInfo = internal::KeyboardEventInfo<KeyMessage>;
-using KeyDownInfo = internal::KeyboardEventInfo<KeyMessage>;
+using PreKeyDownInfo = internal::KeyboardEventInfo<KeyMessage, __LINE__>;
+using KeyDownInfo = internal::KeyboardEventInfo<KeyMessage, __LINE__>;
 
-using PreKeyUpInfo = internal::KeyboardEventInfo<KeyMessage>;
-using KeyUpInfo = internal::KeyboardEventInfo<KeyMessage>;
+using PreKeyUpInfo = internal::KeyboardEventInfo<KeyMessage, __LINE__>;
+using KeyUpInfo = internal::KeyboardEventInfo<KeyMessage, __LINE__>;
 
-using PreCharInputInfo = internal::KeyboardEventInfo<CharMessage>;
-using CharInputInfo = internal::KeyboardEventInfo<CharMessage>;
+using PreCharInputInfo = internal::KeyboardEventInfo<CharMessage, __LINE__>;
+using CharInputInfo = internal::KeyboardEventInfo<CharMessage, __LINE__>;
 
-using PreSysKeyDownInfo = internal::KeyboardEventInfo<KeyMessage>;
-using SysKeyDownInfo = internal::KeyboardEventInfo<KeyMessage>;
+using PreSysKeyDownInfo = internal::KeyboardEventInfo<KeyMessage, __LINE__>;
+using SysKeyDownInfo = internal::KeyboardEventInfo<KeyMessage, __LINE__>;
 
-using PreSysKeyUpInfo = internal::KeyboardEventInfo<KeyMessage>;
-using SysKeyUpInfo = internal::KeyboardEventInfo<KeyMessage>;
+using PreSysKeyUpInfo = internal::KeyboardEventInfo<KeyMessage, __LINE__>;
+using SysKeyUpInfo = internal::KeyboardEventInfo<KeyMessage, __LINE__>;
 
-using PreSysCharInputInfo = internal::KeyboardEventInfo<CharMessage>;
-using SysCharInputInfo = internal::KeyboardEventInfo<CharMessage>;
+using PreSysCharInputInfo = internal::KeyboardEventInfo<CharMessage, __LINE__>;
+using SysCharInputInfo = internal::KeyboardEventInfo<CharMessage, __LINE__>;
 
 }

@@ -775,13 +775,13 @@ public:
     Observable<PreCharInputInfo> PreCharInputEvent() const;
     Observable<CharInputInfo> CharInputEvent() const;
 
-    Observable<SysKeyDownInfo> PreSysKeyDownEvent() const;
+    Observable<PreSysKeyDownInfo> PreSysKeyDownEvent() const;
     Observable<SysKeyDownInfo> SysKeyDownEvent() const;
 
-    Observable<SysKeyUpInfo> PreSysKeyUpEvent() const;
+    Observable<PreSysKeyUpInfo> PreSysKeyUpEvent() const;
     Observable<SysKeyUpInfo> SysKeyUpEvent() const;
 
-    Observable<SysCharInputInfo> PreSysCharInputEvent() const;
+    Observable<PreSysCharInputInfo> PreSysCharInputEvent() const;
     Observable<SysCharInputInfo> SysCharInputEvent() const;
 
     Observable<ParentChangedInfo> ParentChangedEvent() const;

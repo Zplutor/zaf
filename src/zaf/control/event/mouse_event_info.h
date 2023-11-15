@@ -32,7 +32,7 @@ private:
 };
 
 
-template<typename MessageShim>
+template<typename MessageShim, int>
 class MouseEventInfo : public RoutedEventInfo {
 public:
     MouseEventInfo(
@@ -65,16 +65,16 @@ private:
 
 }
 
-using PreMouseMoveInfo = internal::MouseEventInfo<MouseMessage>;
-using MouseMoveInfo = internal::MouseEventInfo<MouseMessage>;
+using PreMouseMoveInfo = internal::MouseEventInfo<MouseMessage, __LINE__>;
+using MouseMoveInfo = internal::MouseEventInfo<MouseMessage, __LINE__>;
 
-using PreMouseDownInfo = internal::MouseEventInfo<MouseMessage>;
-using MouseDownInfo = internal::MouseEventInfo<MouseMessage>;
+using PreMouseDownInfo = internal::MouseEventInfo<MouseMessage, __LINE__>;
+using MouseDownInfo = internal::MouseEventInfo<MouseMessage, __LINE__>;
 
-using PreMouseUpInfo = internal::MouseEventInfo<MouseMessage>;
-using MouseUpInfo = internal::MouseEventInfo<MouseMessage>;
+using PreMouseUpInfo = internal::MouseEventInfo<MouseMessage, __LINE__>;
+using MouseUpInfo = internal::MouseEventInfo<MouseMessage, __LINE__>;
 
-using PreMouseWheelInfo = internal::MouseEventInfo<MouseWheelMessage>;
-using MouseWheelInfo = internal::MouseEventInfo<MouseWheelMessage>;
+using PreMouseWheelInfo = internal::MouseEventInfo<MouseWheelMessage, __LINE__>;
+using MouseWheelInfo = internal::MouseEventInfo<MouseWheelMessage, __LINE__>;
 
 }
