@@ -992,11 +992,6 @@ bool Window::RedirectMouseWheelMessage(const Message& message) {
 
 bool Window::HandleMouseMessage(const MouseMessage& message) {
 
-    Point position_at_begin_routing_control;
-    auto begin_routing_control = GetBeginRoutingControlForMouseMessage(
-        message, 
-        position_at_begin_routing_control);
-
     if (message.ID() == WM_MOUSEMOVE || message.ID() == WM_NCMOUSEMOVE) {
 
         if (is_selecting_inspector_control_) {
@@ -1005,8 +1000,6 @@ bool Window::HandleMouseMessage(const MouseMessage& message) {
         }
 
         TrackMouseByMouseMove(message);
-
-        begin_routing_control->FindMouseOverControl(position_at_begin_routing_control, message);
     }
     else {
 
@@ -1021,7 +1014,48 @@ bool Window::HandleMouseMessage(const MouseMessage& message) {
         }
     }
 
-    return internal::RouteMouseEvent(begin_routing_control, position_at_begin_routing_control, message);
+    return RouteMouseEvent(message);
+}
+
+
+bool Window::RouteMouseEvent(const MouseMessage& message) {
+
+    const auto is_mouse_move = [&message]() {
+        return message.ID() == WM_MOUSEMOVE || message.ID() == WM_NCMOUSEMOVE;
+    };
+
+    Point position_at_begin_routing_control;
+    auto begin_routing_control = GetBeginRoutingControlForMouseMessage(
+        message,
+        position_at_begin_routing_control);
+
+    auto event_target_info = internal::FindMouseEventTarget(
+        begin_routing_control,
+        position_at_begin_routing_control);
+
+    if (!event_target_info.control) {
+        //Need to clear mouse over control if event target is not found for mouse move message.
+        if (is_mouse_move()) {
+            SetMouseOverControl(nullptr, MouseMessage{ Message{} });
+        }
+        return false;
+    }
+
+    //Tunnel the event.
+    bool is_handled = internal::TunnelMouseEvent(event_target_info.control, message);
+    if (!is_handled) {
+        //Change mouse over control if the event is not handled in tunneling phase.
+        if (is_mouse_move()) {
+            SetMouseOverControl(event_target_info.control, message);
+        }
+    }
+
+    //Bubble the event.
+    return internal::BubbleMouseEvent(
+        event_target_info.control, 
+        event_target_info.position,
+        message, 
+        is_handled);
 }
 
 

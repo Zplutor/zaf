@@ -1597,39 +1597,6 @@ const Point Control::GetMousePosition() const {
 }
 
 
-void Control::FindMouseOverControl(const Point& position, const MouseMessage& message) {
-
-    auto window = Window();
-    if (!window) {
-        return;
-    }
-
-    auto found_control = FindEnabledControlAtPosition(position);
-    if (found_control) {
-        window->SetMouseOverControl(found_control, message);
-    }
-    else {
-        window->SetMouseOverControl(nullptr, MouseMessage{ Message{} });
-    }
-}
-
-
-std::shared_ptr<Control> Control::FindEnabledControlAtPosition(const Point& position) {
-
-    //There is no enabled control if current control is disabled.
-    if (!IsEnabled()) {
-        return nullptr;
-    }
-
-    auto child = FindChildAtPosition(position);
-    if (child && child->IsEnabled()) {
-        return child->FindEnabledControlAtPosition(TranslatePositionToChild(position, *child));
-    }
-
-    return shared_from_this();
-}
-
-
 Point Control::TranslatePositionToParent(const Point& position) const {
 
     auto parent = Parent();

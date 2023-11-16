@@ -854,6 +854,7 @@ private:
     void UpdateWindowRect();
     bool RedirectMouseWheelMessage(const Message& message);
     bool HandleMouseMessage(const MouseMessage& message);
+    bool RouteMouseEvent(const MouseMessage& message);
     std::shared_ptr<Control> GetBeginRoutingControlForMouseMessage(
         const MouseMessage& message,
         Point& position_at_control) const;

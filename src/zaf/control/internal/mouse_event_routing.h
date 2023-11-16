@@ -4,9 +4,25 @@
 
 namespace zaf::internal {
 
-bool RouteMouseEvent(
-    const std::shared_ptr<Control>& begin_routing_control,
-    const Point& position_at_begin_routing_control,
+class MouseEventTargetInfo {
+public:
+    std::shared_ptr<Control> control;
+    Point position;
+};
+
+MouseEventTargetInfo FindMouseEventTarget(
+    const std::shared_ptr<Control>& begin_control,
+    const Point& position_at_begin_control);
+
+bool TunnelMouseEvent(
+    const std::shared_ptr<Control>& event_target, 
     const MouseMessage& message);
+
+
+bool BubbleMouseEvent(
+    const std::shared_ptr<Control>& event_target,
+    const Point& position_at_event_target,
+    const MouseMessage& message,
+    bool is_handled_by_tunneling);
 
 }
