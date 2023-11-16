@@ -478,6 +478,9 @@
     <ClCompile Include="unittest\case\control\control_keyboard_event_routing_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\window\window_mouse_over_control_test.cpp">
+      <Filter>case\window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

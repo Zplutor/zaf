@@ -220,29 +220,3 @@ TEST(ControlMouseEventRoutingTest, EventType) {
     window->Destroy();
 }
 
-
-TEST(ControlMouseEventRoutingTest, MouseOverControl) {
-
-    auto window = CreateTestWindow();
-    window->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
-
-    auto child = zaf::Create<zaf::Control>();
-    window->RootControl()->AddChild(child);
-
-    window->Show();
-
-    //There is no mouse over control at first.
-    ASSERT_EQ(window->MouseOverControl(), nullptr);
-
-    //Send a mouse move message to set mouse over control.
-    auto coordinate = zaf::FromDIPs(100, window->GetDPI());
-    SendMessage(window->Handle(), WM_MOUSEMOVE, 0, MAKELPARAM(coordinate, coordinate));
-    ASSERT_EQ(window->MouseOverControl(), child);
-
-    //Cancel the mouse over control.
-    window->RootControl()->SetIsEnabled(false);
-    ASSERT_EQ(window->MouseOverControl(), nullptr);
-    window->RootControl()->SetIsEnabled(true);
-
-    window->Destroy();
-}

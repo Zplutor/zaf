@@ -1357,7 +1357,10 @@ Observable<IsEnabledChangedInfo> Control::IsEnabledChangedEvent() const {
 }
 
 
-void Control::SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)()) {
+void Control::SetInteractiveProperty(
+    bool new_value, 
+    bool& property_value, 
+    void(Control::*notification)()) {
 
     if (property_value == new_value) {
         return;
@@ -1365,10 +1368,14 @@ void Control::SetInteractiveProperty(bool new_value, bool& property_value, void(
 
     if (! new_value) {
 
-        if (IsMouseOver()) {
-            auto window = Window();
-            if (window != nullptr) {
-                window->SetMouseOverControl(nullptr, MouseMessage{ Message{} });
+        //Clear the mouse over control of window if needed.
+        auto window = Window();
+        if (window) {
+            const auto& mouse_over_control = window->MouseOverControl();
+            if (mouse_over_control) {
+                if (this == mouse_over_control.get() || this->IsAncestorOf(mouse_over_control)) {
+                    window->SetMouseOverControl(nullptr, MouseMessage{ Message{} });
+                }
             }
         }
 
