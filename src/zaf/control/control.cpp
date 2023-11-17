@@ -541,7 +541,7 @@ void Control::SetRect(const zaf::Rect& rect) {
     if (window) {
         auto focused_control = window->FocusedControl();
         if (focused_control) {
-            if (IsAncestorOf(focused_control)) {
+            if (IsAncestorOf(*focused_control)) {
                 focused_control->NeedRelayout();
             }
         }
@@ -1102,7 +1102,7 @@ void Control::InnerRemoveChild(const std::shared_ptr<Control>& child, bool set_p
     if (window) {
         auto focused_control = window->FocusedControl();
         if (focused_control) {
-            if (child == focused_control || child->IsAncestorOf(focused_control)) {
+            if (child->IsSameOrAncestorOf(*focused_control)) {
                 focused_control->SetIsFocused(false);
             }
         }
@@ -1147,7 +1147,7 @@ void Control::RemoveAllChildren() {
 
         //Remove focus before removing children.
         if (focused_control) {
-            if (each_child == focused_control || each_child->IsAncestorOf(focused_control)) {
+            if (each_child->IsSameOrAncestorOf(*focused_control)) {
                 focused_control->SetIsFocused(false);
             }
         }
@@ -1226,15 +1226,15 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
 }
 
 
-bool Control::IsParentOf(const std::shared_ptr<const Control>& child) const {
-    return child->Parent().get() == this;
+bool Control::IsParentOf(const Control& control) const {
+    return control.Parent().get() == this;
 }
 
 
-bool Control::IsAncestorOf(const std::shared_ptr<const Control>& child) const {
+bool Control::IsAncestorOf(const Control& control) const {
 
-    auto ancestor = child->Parent();
-    while (ancestor != nullptr) {
+    auto ancestor = control.Parent();
+    while (ancestor) {
 
         if (ancestor.get() == this) {
             return true;
@@ -1244,6 +1244,11 @@ bool Control::IsAncestorOf(const std::shared_ptr<const Control>& child) const {
     }
 
     return false;
+}
+
+
+bool Control::IsSameOrAncestorOf(const Control& control) const {
+    return (this == &control) || this->IsAncestorOf(control);
 }
 
 
@@ -1373,7 +1378,7 @@ void Control::SetInteractiveProperty(
         if (window) {
             const auto& mouse_over_control = window->MouseOverControl();
             if (mouse_over_control) {
-                if (this == mouse_over_control.get() || this->IsAncestorOf(mouse_over_control)) {
+                if (this->IsSameOrAncestorOf(*mouse_over_control)) {
                     window->SetMouseOverControl(nullptr, MouseMessage{ Message{} });
                 }
             }
@@ -1456,7 +1461,7 @@ bool Control::ContainMouse() const {
         return false;
     }
 
-    return IsAncestorOf(mouse_over_control);
+    return IsAncestorOf(*mouse_over_control);
 }
 
 
@@ -1518,7 +1523,7 @@ bool Control::ContainFocus() const {
         return false;
     }
 
-    return IsAncestorOf(focused_control);
+    return IsAncestorOf(*focused_control);
 }
 
 

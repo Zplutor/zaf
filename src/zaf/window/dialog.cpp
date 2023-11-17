@@ -131,7 +131,7 @@ void Dialog::AddDialogButton(const std::shared_ptr<Button>& button, DialogResult
 
             auto button = As<Button>(event_info.Source());
 
-            if (!RootControl()->IsAncestorOf(button)) {
+            if (!RootControl()->IsAncestorOf(*button)) {
                 return;
             }
 

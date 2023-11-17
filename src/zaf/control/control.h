@@ -452,14 +452,21 @@ public:
     }
 
     /**
-     Determinte whether the control is the direct parent of specified control.
-     */
-    bool IsParentOf(const std::shared_ptr<const Control>& child) const;
+    Determines whether the current control is the direct parent of the specified control.
+    */
+    bool IsParentOf(const Control& control) const;
 
     /**
-     Determinte whether the control is the ancestor of specified control.
-     */
-    bool IsAncestorOf(const std::shared_ptr<const Control>& child) const;
+    Determines whether the current control is the direct or indirect parent of the specified 
+    control.
+    */
+    bool IsAncestorOf(const Control& control) const;
+
+    /**
+    Determines whether the current control is either the same as the specified control, or is the
+    direct or indirect parent of the specified control.
+    */
+    bool IsSameOrAncestorOf(const Control& control) const;
 
     /**
      Get the control's parent.

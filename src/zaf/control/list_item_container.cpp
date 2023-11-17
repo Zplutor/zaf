@@ -169,7 +169,7 @@ bool ListItemContainer::AreControlsSelfOrChildren(
             return false;
         }
 
-        return (this == control.get()) || this->IsAncestorOf(control);
+        return this->IsSameOrAncestorOf(*control);
     };
 
     return is_self_or_child(control1) && is_self_or_child(control2);

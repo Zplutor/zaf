@@ -132,7 +132,7 @@ void ScrollBar::SetIncrementalArrow(const std::shared_ptr<ScrollBarArrow>& incre
     auto previous_arrow = incremental_arrow_;
     incremental_arrow_ = incremental_arrow;
 
-    if (IsParentOf(previous_arrow)) {
+    if (IsParentOf(*previous_arrow)) {
         UninitializeArrow(previous_arrow, true);
         InitializeArrow(incremental_arrow_, true);
         ApplyOrientationToChildren();
@@ -145,7 +145,7 @@ void ScrollBar::SetDecrementalArrow(const std::shared_ptr<ScrollBarArrow>& decre
     auto previous_arrow = decremental_arrow_;
     decremental_arrow_ = decremental_arrow;
 
-    if (IsParentOf(previous_arrow)) {
+    if (IsParentOf(*previous_arrow)) {
         UninitializeArrow(previous_arrow, false);
         InitializeArrow(decremental_arrow_, false);
         ApplyOrientationToChildren();
@@ -158,7 +158,7 @@ void ScrollBar::SetThumb(const std::shared_ptr<ScrollBarThumb>& thumb) {
     auto previous_thumb = thumb_;
     thumb_ = thumb;
 
-    if (IsParentOf(previous_thumb)) {
+    if (IsParentOf(*previous_thumb)) {
         UninitializeThumb(previous_thumb);
         InitializeThumb(thumb_);
         ApplyOrientationToChildren();
