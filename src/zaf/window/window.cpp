@@ -2117,6 +2117,12 @@ void Window::Destroy() {
 }
 
 
+WindowMessager Window::Messager() {
+    ZAF_EXPECT(handle_);
+    return WindowMessager{ handle_ };
+}
+
+
 void Window::ShowInspectorWindow() {
 
     if (inspector_window_.lock()) {

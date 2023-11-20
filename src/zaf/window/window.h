@@ -24,6 +24,7 @@
 #include <zaf/window/event/window_size_changed_info.h>
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
+#include <zaf/window/window_messager.h>
 
 namespace zaf {
 namespace internal {
@@ -513,6 +514,17 @@ public:
 
     Observable<MessageReceivedInfo> MessageReceivedEvent() const;
     Observable<MessageHandledInfo> MessageHandledEvent() const;
+
+    /**
+    Gets the messager to send or post messages to the window.
+
+    @return 
+        The messager object. 
+
+    @throw std::logic_error
+        Thrown if the window handle is not created yet.
+    */
+    WindowMessager Messager();
 
     /**
      Get position of the mouse cursor in current window's coordinate system.

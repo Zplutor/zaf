@@ -109,7 +109,7 @@ TEST(ControlMouseEventRoutingTest, RoutingPath) {
     window->Show();
 
     auto coordinate = zaf::FromDIPs(100, window->GetDPI());
-    SendMessage(window->Handle(), WM_MOUSEMOVE, 0, MAKELPARAM(coordinate, coordinate));
+    window->Messager().Send(WM_MOUSEMOVE, 0, MAKELPARAM(coordinate, coordinate));
 
     //Make sure events get called.
     ASSERT_NE(event_seed, 0);
@@ -139,7 +139,7 @@ TEST(ControlMouseEventRoutingTest, IsHandled) {
     window->Show();
 
     auto coordinate = zaf::FromDIPs(100, window->GetDPI());
-    SendMessage(window->Handle(), WM_MOUSEMOVE, 0, MAKELPARAM(coordinate, coordinate));
+    window->Messager().Send(WM_MOUSEMOVE, 0, MAKELPARAM(coordinate, coordinate));
 
     ASSERT_TRUE(is_handled);
 
@@ -189,7 +189,7 @@ TEST(ControlMouseEventRoutingTest, EventType) {
         pre_event_message_id = 0;
         event_message_id = 0;
 
-        SendMessage(window->Handle(), each_message, 0, MAKELPARAM(coordinate, coordinate));
+        window->Messager().Send(each_message, 0, MAKELPARAM(coordinate, coordinate));
 
         ASSERT_EQ(pre_event_message_id, each_message);
         ASSERT_EQ(event_message_id, each_message);
@@ -207,8 +207,7 @@ TEST(ControlMouseEventRoutingTest, EventType) {
         pre_event_message_id = 0;
         event_message_id = 0;
 
-        SendMessage(
-            window->Handle(),
+        window->Messager().Send(
             each_message, 
             0, 
             MAKELPARAM(screen_position.x, screen_position.y));
