@@ -4,6 +4,7 @@
 #include <optional>
 #include <zaf/base/event/event.h>
 #include <zaf/base/non_copyable.h>
+#include <zaf/base/none.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/renderer/window_renderer.h>
@@ -261,6 +262,17 @@ public:
     void SetMaxHeight(float max_height);
 
     Observable<WindowSizeChangedInfo> SizeChangedEvent() const;
+
+    /**
+    Gets an observable that triggers when the window has exited both the sizing and moving states.
+
+    The observable emits immediately if the window is not in a sizing or moving state when
+    subscribed.
+
+    @return
+        An observable that emits when the window is not currently resizing or moving.
+    */
+    Observable<None> WhenNotSizingOrMoving() const;
 
     /**
      Get window's activate option.
@@ -906,6 +918,11 @@ private:
     std::weak_ptr<WindowHolder> holder_;
     zaf::Rect rect_{ 0, 0, 640, 480 };
     WindowRenderer renderer_;
+
+    struct {
+        bool is_sizing_or_moving{};
+        Event<None> exit_sizing_or_moving_event;
+    } handle_specific_state_;
 
     //A flag to avoid reentering.
     //It might be better to define a enum to indicate different states of window handle, rather 

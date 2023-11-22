@@ -15,6 +15,7 @@
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_node_parse_helper.h>
 #include <zaf/object/type_definition.h>
+#include <zaf/rx/creation.h>
 #include <zaf/window/inspector/inspector_window.h>
 #include <zaf/window/tooltip_window.h>
 #include <zaf/window/message/hit_test_message.h>
@@ -523,6 +524,15 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         HandleWMACTIVATE(ActivateMessage{ message });
         return 0;
 
+    case WM_ENTERSIZEMOVE:
+        handle_specific_state_.is_sizing_or_moving = true;
+        return 0;
+
+    case WM_EXITSIZEMOVE:
+        handle_specific_state_.is_sizing_or_moving = false;
+        handle_specific_state_.exit_sizing_or_moving_event.Raise({});
+        return 0;
+
     case WM_SIZE:
         HandleWMSIZEMessage(message);
         return 0;
@@ -905,6 +915,16 @@ void Window::OnSizeChanged(const WindowSizeChangedInfo& event_info) {
 
 Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() const {
     return size_changed_event_.GetObservable();
+}
+
+
+Observable<None> Window::WhenNotSizingOrMoving() const {
+
+    if (!handle_specific_state_.is_sizing_or_moving) {
+        return rx::Just(None{});
+    }
+
+    return handle_specific_state_.exit_sizing_or_moving_event.GetObservable();
 }
 
 
@@ -1303,6 +1323,7 @@ void Window::HandleWMDESTROY() {
     HWND old_handle = handle_;
 
     handle_ = nullptr;
+    handle_specific_state_ = {};
     renderer_ = {};
     tooltip_window_.reset();
 
