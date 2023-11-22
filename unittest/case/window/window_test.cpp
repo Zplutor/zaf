@@ -320,3 +320,84 @@ TEST(WindowTest, SetRootControl) {
         ASSERT_EQ(window->RootControl(), label);
     }
 }
+
+
+TEST(WindowTest, WhenNotSizingOrMoving) {
+
+    auto window = zaf::Create<zaf::Window>();
+    
+    //Observable emits immediate if the handle is not created.
+    {
+        bool on_next_called{};
+        bool on_completed_called{};
+        auto subscription = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+            on_next_called = true;
+        },
+        [&]() {
+            on_completed_called = true;
+        });
+        ASSERT_TRUE(on_next_called);
+        ASSERT_TRUE(on_completed_called);
+    }
+
+    //Observable emits immediate if the handle is created.
+    {
+        auto holder = window->CreateHandle();
+        bool on_next_called{};
+        bool on_completed_called{};
+        auto subscription = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+            on_next_called = true;
+        },
+        [&]() {
+            on_completed_called = true;
+        });
+        ASSERT_TRUE(on_next_called);
+        ASSERT_TRUE(on_completed_called);
+    }
+
+    {
+        //Observable doesn't emit if the window is being resized or moved.
+        auto holder = window->CreateHandle();
+        window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
+
+        int call_count{};
+        bool is_completed_called{};
+        auto subscription = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+            call_count++;
+        },
+        [&]() {
+            is_completed_called = true;
+        });
+        ASSERT_EQ(call_count, 0);
+        ASSERT_FALSE(is_completed_called);
+
+        //Observable emits when the window finishes resizing or moving.
+        window->Messager().Send(WM_EXITSIZEMOVE, 0, 0);
+        ASSERT_EQ(call_count, 1);
+        ASSERT_TRUE(is_completed_called);
+
+        //Previous observable should not emit again.
+        window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
+        window->Messager().Send(WM_EXITSIZEMOVE, 0, 0);
+        ASSERT_EQ(call_count, 1);
+    }
+
+    {
+        //Observable doesn't emit if the window is destroy during resizing or moving.
+        auto holder = window->CreateHandle();
+        window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
+
+        int call_count{};
+        auto subscription = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+            call_count++;
+        });
+        window->Destroy();
+        ASSERT_EQ(call_count, 0);
+
+        holder = window->CreateHandle();
+        //Previous observable should not emit again.
+        window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
+        window->Messager().Send(WM_EXITSIZEMOVE, 0, 0);
+        ASSERT_EQ(call_count, 0);
+    }
+}

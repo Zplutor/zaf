@@ -921,7 +921,7 @@ private:
 
     struct {
         bool is_sizing_or_moving{};
-        Event<None> exit_sizing_or_moving_event;
+        mutable std::optional<Subject<zaf::None>> exit_sizing_or_moving_subject;
     } handle_specific_state_;
 
     //A flag to avoid reentering.

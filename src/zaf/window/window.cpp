@@ -530,7 +530,12 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
 
     case WM_EXITSIZEMOVE:
         handle_specific_state_.is_sizing_or_moving = false;
-        handle_specific_state_.exit_sizing_or_moving_event.Raise({});
+        if (handle_specific_state_.exit_sizing_or_moving_subject) {
+            auto observer = handle_specific_state_.exit_sizing_or_moving_subject->AsObserver();
+            observer.OnNext({});
+            observer.OnCompleted();
+            handle_specific_state_.exit_sizing_or_moving_subject.reset();
+        }
         return 0;
 
     case WM_SIZE:
@@ -924,7 +929,11 @@ Observable<None> Window::WhenNotSizingOrMoving() const {
         return rx::Just(None{});
     }
 
-    return handle_specific_state_.exit_sizing_or_moving_event.GetObservable();
+    if (!handle_specific_state_.exit_sizing_or_moving_subject) {
+        handle_specific_state_.exit_sizing_or_moving_subject.emplace();
+    }
+
+    return handle_specific_state_.exit_sizing_or_moving_subject->AsObservable();
 }
 
 
