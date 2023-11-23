@@ -29,6 +29,10 @@ public:
     void DeliverOnError(const Error& error);
     void DeliverOnCompleted();
 
+    bool IsFinished() const {
+        return is_finished_;
+    }
+
     /**
     Disposes the producer.
 

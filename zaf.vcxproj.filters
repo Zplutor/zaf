@@ -1081,6 +1081,9 @@
     <ClCompile Include="src\zaf\window\window_messager.cpp">
       <Filter>zaf\window</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\operator\flat_map_operator.cpp">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2454,6 +2457,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\window_messager.h">
       <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\operator\flat_map_operator.h">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\operator\flat_mapper.h">
+      <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

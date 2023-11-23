@@ -1,6 +1,7 @@
 #include <zaf/rx/internal/observable/inner_observable.h>
 #include <zaf/rx/internal/operator/do_operator.h>
 #include <zaf/rx/internal/operator/finally_operator.h>
+#include <zaf/rx/internal/operator/flat_map_operator.h>
 #include <zaf/rx/internal/operator/observe_on_operator.h>
 #include <zaf/rx/internal/operator/subscribe_on_operator.h>
 
@@ -29,6 +30,12 @@ std::shared_ptr<InnerObservable> InnerObservable::Do(
 std::shared_ptr<InnerObservable> InnerObservable::Finally(Work work) {
 
     return std::make_shared<FinallyOperator>(shared_from_this(), std::move(work));
+}
+
+
+std::shared_ptr<InnerObservable> InnerObservable::FlatMap(FlatMapper mapper) {
+
+    return std::make_shared<FlatMapOperator>(shared_from_this(), std::move(mapper));
 }
 
 }

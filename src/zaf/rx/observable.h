@@ -83,6 +83,15 @@ public:
         return Observable{ inner_->Finally(std::move(work)) };
     }
 
+    template<typename K>
+    Observable<K> FlatMap(std::function<Observable<K>(const T&)> mapper) {
+        return Observable<K>{
+            inner_->FlatMap([map = std::move(mapper)](const std::any& value) {
+                return map(std::any_cast<T>(value)).Inner();
+            })
+        };
+    }
+
     const std::shared_ptr<internal::InnerObservable>& Inner() const {
         return inner_;
     }

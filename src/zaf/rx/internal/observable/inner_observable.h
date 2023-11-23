@@ -2,6 +2,7 @@
 
 #include <any>
 #include <memory>
+#include <zaf/rx/internal/operator/flat_mapper.h>
 #include <zaf/rx/work.h>
 
 namespace zaf {
@@ -29,6 +30,8 @@ public:
 
     std::shared_ptr<InnerObservable> Do(std::shared_ptr<InnerObserver> do_observer);
     std::shared_ptr<InnerObservable> Finally(Work work);
+
+    std::shared_ptr<InnerObservable> FlatMap(FlatMapper mapper);
 };
 
 }
