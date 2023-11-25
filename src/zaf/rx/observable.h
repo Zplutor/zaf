@@ -84,6 +84,15 @@ public:
     }
 
     template<typename K>
+    Observable<K> Map(std::function<K(const T&)> mapper) {
+        return Observable<K>{
+            inner_->Map([map = std::move(mapper)](const std::any& value) {
+                return map(std::any_cast<T>(value));
+            })
+        };
+    }
+
+    template<typename K>
     Observable<K> FlatMap(std::function<Observable<K>(const T&)> mapper) {
         return Observable<K>{
             inner_->FlatMap([map = std::move(mapper)](const std::any& value) {

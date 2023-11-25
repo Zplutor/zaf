@@ -305,6 +305,7 @@
     <ClCompile Include="src\zaf\rx\internal\operator\do_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\finally_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\flat_map_operator.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\operator\map_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\observe_on_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\subscribe_on_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\producer.cpp" />
@@ -745,6 +746,8 @@
     <ClInclude Include="src\zaf\rx\internal\operator\finally_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\flat_mapper.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\flat_map_operator.h" />
+    <ClInclude Include="src\zaf\rx\internal\operator\mapper.h" />
+    <ClInclude Include="src\zaf\rx\internal\operator\map_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\observe_on_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\subscribe_on_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\producer.h" />

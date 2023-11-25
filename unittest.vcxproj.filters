@@ -484,6 +484,9 @@
     <ClCompile Include="unittest\case\rx\flat_map_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\rx\map_test.cpp">
+      <Filter>case\rx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

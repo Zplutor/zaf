@@ -1084,6 +1084,9 @@
     <ClCompile Include="src\zaf\rx\internal\operator\flat_map_operator.cpp">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\operator\map_operator.cpp">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2462,6 +2465,12 @@
       <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\operator\flat_mapper.h">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\operator\map_operator.h">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\operator\mapper.h">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
   </ItemGroup>
