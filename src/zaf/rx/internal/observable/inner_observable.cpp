@@ -1,4 +1,5 @@
 #include <zaf/rx/internal/observable/inner_observable.h>
+#include <zaf/rx/internal/operator/catch_operator.h>
 #include <zaf/rx/internal/operator/do_operator.h>
 #include <zaf/rx/internal/operator/finally_operator.h>
 #include <zaf/rx/internal/operator/flat_map_operator.h>
@@ -25,6 +26,12 @@ std::shared_ptr<InnerObservable> InnerObservable::Do(
     std::shared_ptr<InnerObserver> do_observer) {
 
     return std::make_shared<DoOperator>(shared_from_this(), std::move(do_observer));
+}
+
+
+std::shared_ptr<InnerObservable> InnerObservable::Catch(CatchHandler handler) {
+
+    return std::make_shared<CatchOperator>(shared_from_this(), std::move(handler));
 }
 
 

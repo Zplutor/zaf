@@ -79,6 +79,14 @@ public:
         return Observable{ inner_->Do(observer.Inner()) };
     }
 
+    Observable Catch(std::function<Observable<T>(const Error&)> handler) {
+        return Observable{ 
+            inner_->Catch([handle = std::move(handler)](const Error& error) {
+                return handle(error).Inner();
+            })
+        };
+    }
+
     Observable Finally(Work work) {
         return Observable{ inner_->Finally(std::move(work)) };
     }
