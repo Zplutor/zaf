@@ -27,9 +27,17 @@ public:
 
     void OnNext(const std::any& value) override {
 
-        auto mapped_observable = mapper_(value);
+        std::shared_ptr<InnerObservable> mapped_observable;
+        try {
+            mapped_observable = mapper_(value);
+        }
+        catch (const zaf::Error& error) {
+            source_subscription_->Unsubscribe();
+            TryToDeliverOnError(error);
+            return;
+        }
 
-        auto sub_id = mapper_subs_count_++;
+        auto sub_id = ++mapper_subs_count_;
         auto mapper_sub = mapped_observable->Subscribe(InnerObserver::Create(
             [this](const std::any& value) {
                 if (!IsFinished()) {
@@ -37,11 +45,14 @@ public:
                 }
             },
             [this, sub_id](const zaf::Error& error) {
-                OnMapperSubFinished(sub_id);
+                //Observer will be destroyed once the subscription is disposed, hence we keep the 
+                //subscription alive until we have done everything.
+                auto sub = OnMapperSubFinished(sub_id);
                 TryToDeliverOnError(error);
             },
             [this, sub_id]() {
-                OnMapperSubFinished(sub_id);
+                //Same as above.
+                auto sub = OnMapperSubFinished(sub_id);
                 TryToDeliverOnCompleted();
             }
         ));
@@ -65,18 +76,23 @@ public:
         source_subscription_->Unsubscribe();
         source_subscription_.reset();
 
-        for (const auto& each_sub : Values(emitting_mapper_subs_)) {
-            each_sub->Unsubscribe();
-        }
         emitting_mapper_subs_.clear();
-
         mapper_ = nullptr;
     }
 
 private:
-    void OnMapperSubFinished(std::size_t sub_id) {
-        emitting_mapper_subs_.erase(sub_id);
+    std::shared_ptr<InnerSubscription> OnMapperSubFinished(std::size_t sub_id) {
+
+        std::shared_ptr<InnerSubscription> sub;
+        auto iterator = emitting_mapper_subs_.find(sub_id);
+        if (iterator != emitting_mapper_subs_.end()) {
+
+            sub = iterator->second;
+            emitting_mapper_subs_.erase(iterator);
+        }
+        
         finished_mapper_subs_.insert(sub_id);
+        return sub;
     }
 
     void TryToDeliverOnError(const zaf::Error& error) {
