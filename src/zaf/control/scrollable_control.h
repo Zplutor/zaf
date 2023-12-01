@@ -77,6 +77,18 @@ public:
      */
     void SetAutoHideScrollBars(bool auto_hide);
 
+    /**
+    Gets a value indicating whether the scroll bars overlay the content.
+
+    The default value is false.
+    */
+    bool UseOverlayScrollBars() const;
+
+    /**
+    Sets whether the scroll bars overlay the content.
+    */
+    void SetUseOverlayScrollBars(bool use);
+
     bool AutoScrollBarLargeChange() const;
     void SetAutoScrollBarLargeChange(bool value);
 
@@ -271,6 +283,7 @@ private:
     bool auto_scroll_content_width_{ true };
     bool auto_scroll_content_height_{ true };
     bool auto_hide_scroll_bars_{ false };
+    bool use_overlay_scroll_bars_{ false };
     float vertical_scroll_bar_thickness_{ 17 };
     float horizontal_scroll_bar_thickness_{ 17 };
 

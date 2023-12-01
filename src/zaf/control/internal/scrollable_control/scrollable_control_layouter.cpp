@@ -118,13 +118,16 @@ void ScrollableControlLayouter::LayoutScrollContainerControl(
     bool need_horizontal_scroll_bar) {
 
     Rect rect(Point(), GetScrollableControl()->ContentSize());
+    
+    if (!GetScrollableControl()->UseOverlayScrollBars()) {
 
-    if (need_vertical_scroll_bar) {
-        rect.size.width -= GetVerticalScrollBar()->Width();
-    }
+        if (need_vertical_scroll_bar) {
+            rect.size.width -= GetVerticalScrollBar()->Width();
+        }
 
-    if (need_horizontal_scroll_bar) {
-        rect.size.height -= GetHorizontalScrollBar()->Height();
+        if (need_horizontal_scroll_bar) {
+            rect.size.height -= GetHorizontalScrollBar()->Height();
+        }
     }
 
     GetScrollableControl()->GetScrollContainerControl()->SetRect(rect);

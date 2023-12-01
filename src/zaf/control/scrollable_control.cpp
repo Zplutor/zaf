@@ -1,5 +1,6 @@
 #include <zaf/control/scrollable_control.h>
 #include <zaf/base/as.h>
+#include <zaf/base/auto_reset.h>
 #include <zaf/control/internal/scrollable_control/general_scrolling_layouter.h>
 #include <zaf/control/internal/scrollable_control/self_scrolling_layouter.h>
 #include <zaf/control/rich_edit.h>
@@ -32,6 +33,7 @@ ZAF_DEFINE_TYPE_PROPERTY(AutoScrollContentSize)
 ZAF_DEFINE_TYPE_PROPERTY(AutoScrollContentWidth)
 ZAF_DEFINE_TYPE_PROPERTY(AutoHideScrollBars)
 ZAF_DEFINE_TYPE_PROPERTY(ScrollBarThickness)
+ZAF_DEFINE_TYPE_PROPERTY(UseOverlayScrollBars)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(HorizontalScrollBar)
 ZAF_DEFINE_TYPE_PROPERTY(HorizontalScrollBarThickness)
 ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(ScrollBarCorner)
@@ -63,13 +65,15 @@ void ScrollableControl::Initialize() {
         return Color::Black();
     });
 
-    InitializeVerticalScrollBar(Create<ScrollBar>());
-    InitializeHorizontalScrollBar(Create<ScrollBar>());
-    InitializeScrollBarCorner(Create<Control>());
-
+    //The container control should be added before the scroll bars to position the container below 
+    //the scroll bars. This ensures that overlay scroll bars are not overlapped by the container.
     scroll_container_control_ = Create<Control>();
     scroll_container_control_->SetBackgroundColor(Color::Transparent());
     AddChild(scroll_container_control_);
+
+    InitializeVerticalScrollBar(Create<ScrollBar>());
+    InitializeHorizontalScrollBar(Create<ScrollBar>());
+    InitializeScrollBarCorner(Create<Control>());
 
     InitializeScrollContentControl(CreateDefaultScrollContentControl());
     InitializeLayouter();
@@ -140,9 +144,8 @@ void ScrollableControl::Layout(const zaf::Rect& previous_rect) {
 
     if (layouter_) {
 
-        is_layouting_ = true;
+        auto auto_reset = MakeAutoReset(is_layouting_, true);
         layouter_->Layout();
-        is_layouting_ = false;
     }
 }
 
@@ -206,6 +209,22 @@ void ScrollableControl::SetAutoHideScrollBars(bool auto_hide) {
         self_scrolling_control_->SetAutoHideScrollBars(auto_hide);
     }
 
+    NeedRelayout();
+}
+
+
+bool ScrollableControl::UseOverlayScrollBars() const {
+    return use_overlay_scroll_bars_;
+}
+
+
+void ScrollableControl::SetUseOverlayScrollBars(bool use) {
+
+    if (use_overlay_scroll_bars_ == use) {
+        return;
+    }
+
+    use_overlay_scroll_bars_ = use;
     NeedRelayout();
 }
 

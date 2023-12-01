@@ -30,7 +30,7 @@ Size GeneralScrollingLayouter::DeterminateScrollContentSize(
     bool& need_vertical_scroll_bar,
     bool& need_horizontal_scroll_bar) {
 
-    auto determinate_if_need_scroll_bar = [this](
+    auto determine_if_need_scroll_bar = [this](
         bool allow, 
         float content_length, 
         float container_length) {
@@ -53,10 +53,10 @@ Size GeneralScrollingLayouter::DeterminateScrollContentSize(
     const auto& content_margin = content_control->Margin();
     const auto& content_size = content_control->Size();
 
-    //First, determinate content height and if need vertical scroll bar.
+    //First, determine the content height and whether the vertical scroll bar is needed.
     float content_height{};
 
-    auto determinate_vertical = [&]() {
+    auto determine_vertical = [&]() {
     
         if (scrollable_control->AutoScrollContentHeight()) {
             content_height = container_size.height - content_margin.Height();
@@ -66,19 +66,19 @@ Size GeneralScrollingLayouter::DeterminateScrollContentSize(
             content_height = content_size.height;
         }
 
-        need_vertical_scroll_bar = determinate_if_need_scroll_bar(
+        need_vertical_scroll_bar = determine_if_need_scroll_bar(
             scrollable_control->AllowVerticalScroll(),
             content_height + content_margin.Height(), 
             container_size.height);
     };
 
-    determinate_vertical();
+    determine_vertical();
 
-    if (need_vertical_scroll_bar) {
+    if (need_vertical_scroll_bar && !scrollable_control->UseOverlayScrollBars()) {
         container_size.width -= scrollable_control->VerticalScrollBarThickness();
     }
 
-    //Second, determinate content width and if need horizontal scroll bar.
+    //Second, determinate the content width and whether the horizontal scroll bar is needed.
     float content_width{};
     if (scrollable_control->AutoScrollContentWidth()) {
         content_width = container_size.width - content_margin.Width();
@@ -88,18 +88,18 @@ Size GeneralScrollingLayouter::DeterminateScrollContentSize(
         content_width = content_size.width;
     }
 
-    need_horizontal_scroll_bar = determinate_if_need_scroll_bar(
+    need_horizontal_scroll_bar = determine_if_need_scroll_bar(
         scrollable_control->AllowHorizontalScroll(),
         content_width + content_margin.Width(), 
         container_size.width);
 
-    if (need_horizontal_scroll_bar) {
+    if (need_horizontal_scroll_bar && !scrollable_control->UseOverlayScrollBars()) {
 
         container_size.height -= scrollable_control->HorizontalScrollBarThickness();
 
-        //Last, revise content height and if need vertical scroll bar again, because the height of 
-        // container is changed.
-        determinate_vertical();
+        //Last, revise the content height and whether the vertical scroll bar is needed again, 
+        //as the height of container is changed.
+        determine_vertical();
     }
 
     return Size{ content_width, content_height };

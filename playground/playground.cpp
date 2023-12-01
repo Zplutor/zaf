@@ -68,24 +68,20 @@ protected:
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        auto text_box = zaf::Create<zaf::TextBox>();
-        text_box->SetFontSize(40);
-        this->RootControl()->AddChild(text_box);
+        auto scrollable_control = zaf::Create<zaf::ScrollableControl>();
+        scrollable_control->SetUseOverlayScrollBars(true);
 
-        std::wstring text;
-        for (int count = 0; count < 5; ++count) {
-            for (int index = 0; index <= 9; ++index) {
-                text += std::to_wstring(index);
-            }
-        }
-        text_box->SetText(text);
+        auto content = zaf::Create<zaf::Control>();
+        content->SetBackgroundColor(zaf::Color::Lime());
+        content->SetFixedSize(zaf::Size{ 500, 500 });
+
+        scrollable_control->SetScrollContent(content);
+
+        this->RootControl()->AddChild(scrollable_control);
 
         auto button = zaf::Create<zaf::Button>();
         button->SetFixedHeight(30);
         this->RootControl()->AddChild(button);
-        Subscriptions() += button->ClickEvent().Subscribe(std::bind([text_box]() {
-            text_box->SetSelectionRange(zaf::Range(40, 100));
-        }));
     }
 };
 
