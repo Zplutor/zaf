@@ -146,3 +146,28 @@ TEST(ScrollableControlTest, MouseWheelEvent) {
     subscription.Unsubscribe();
     window->Destroy();
 }
+
+
+TEST(ScrollableControlTest, UseOverlayScrollBars) {
+
+    auto scroll_control = zaf::Create<zaf::ScrollableControl>();
+    scroll_control->SetAutoHideScrollBars(false);
+    scroll_control->SetBorder({});
+    scroll_control->SetPadding({});
+    scroll_control->SetSize(zaf::Size{ 100, 100 });
+    scroll_control->SetScrollBarThickness(10);
+
+    //No overlay scroll bars
+    scroll_control->SetUseOverlayScrollBars(false);
+    ASSERT_EQ(scroll_control->ScrollContent()->Rect(), zaf::Rect(0, 0, 90, 90));
+    ASSERT_EQ(scroll_control->HorizontalScrollBar()->Rect(), zaf::Rect(0, 90, 90, 10));
+    ASSERT_EQ(scroll_control->VerticalScrollBar()->Rect(), zaf::Rect(90, 0, 10, 90));
+    ASSERT_EQ(scroll_control->ScrollBarCorner()->Rect(), zaf::Rect(90, 90, 10, 10));
+
+    //Use overlay scroll bars
+    scroll_control->SetUseOverlayScrollBars(true);
+    ASSERT_EQ(scroll_control->ScrollContent()->Rect(), zaf::Rect(0, 0, 100, 100));
+    ASSERT_EQ(scroll_control->HorizontalScrollBar()->Rect(), zaf::Rect(0, 90, 90, 10));
+    ASSERT_EQ(scroll_control->VerticalScrollBar()->Rect(), zaf::Rect(90, 0, 10, 90));
+    ASSERT_EQ(scroll_control->ScrollBarCorner()->Rect(), zaf::Rect(90, 90, 10, 10));
+}
