@@ -37,18 +37,7 @@ public:
         }
 
         UnsubscribeSource();
-
-        new_subscription_ = new_observable->Subscribe(InnerObserver::Create(
-            [this](const std::any& value) {
-                DeliverOnNext(value);
-            },
-            [this](const zaf::Error& error) {
-                DeliverOnError(error);
-            },
-            [this]() {
-                DeliverOnCompleted();
-            }
-        ));
+        SubscribeToNewObservable(new_observable);
     }
 
     void OnCompleted() override {
@@ -69,6 +58,31 @@ protected:
     }
 
 private:
+    void SubscribeToNewObservable(const std::shared_ptr<InnerObservable>& observable) {
+
+        //New observable might emit and complete immediately on subscribe, and the current producer 
+        //would be freed immediately as well. Thus, subsequent access to member fields would fail. 
+        //We use a weak pointer to check if the current producer has been freed to avoid this 
+        //issue.
+        auto weak_this = weak_from_this();
+        auto new_subscription = observable->Subscribe(InnerObserver::Create(
+            [this](const std::any& value) {
+                DeliverOnNext(value);
+            },
+            [this](const zaf::Error& error) {
+                DeliverOnError(error);
+            },
+            [this]() {
+                DeliverOnCompleted();
+            }
+        ));
+
+        auto shared_this = weak_this.lock();
+        if (shared_this) {
+            new_subscription_ = std::move(new_subscription);
+        }
+    }
+
     void UnsubscribeSource() {
 
         if (source_subscription_) {

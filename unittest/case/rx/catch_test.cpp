@@ -1,6 +1,7 @@
-#include <gtest/gtest.h>
 #include <optional>
+#include <gtest/gtest.h>
 #include <zaf/base/error/basic_error.h>
+#include <zaf/rx/creation.h>
 #include <zaf/rx/subject.h>
 
 TEST(RxCatchTest, Catch) {
@@ -109,4 +110,30 @@ TEST(RxCatchTest, Catch) {
         ASSERT_EQ(test_data.error->Code(), zaf::make_error_code(zaf::BasicErrc::Unknown));
         ASSERT_EQ(test_data.completed_count, 0);
     }
+}
+
+
+TEST(RxCatchTest, FreeSubscriptionOnCompleted) {
+
+    std::vector<int> result;
+
+    zaf::Subject<int> subject;
+    zaf::Subscription sub;
+    sub = subject.AsObservable().Catch([](const zaf::Error& error) {
+        return zaf::rx::Just(99);
+    })
+    .Subscribe([&](int value) {
+        result.push_back(value);
+    },
+    [&]() {
+        //Freeing the subscription immediately could cause memory access issue, check if this has 
+        //been fixed.
+        sub = {};
+    });
+
+    subject.AsObserver().OnNext(1);
+    subject.AsObserver().OnError(zaf::Error{ make_error_code(zaf::BasicErrc::InvalidValue) });
+
+    std::vector<int> expected{ 1, 99 };
+    ASSERT_EQ(result, expected);
 }
