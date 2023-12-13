@@ -1,9 +1,84 @@
 #include <gtest/gtest.h>
 #include <optional>
 #include <zaf/application.h>
+#include <zaf/base/error/basic_error.h>
 #include <zaf/rx/creation.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/scheduler.h>
+
+TEST(RxEmptyTest, Normal) {
+
+    auto observable = zaf::rx::Empty<int>();
+
+    int on_next_count{};
+    int on_error_count{};
+    int on_completed_count{};
+
+    auto sub = observable.Subscribe([&](int value) {
+        ++on_next_count;
+    }, 
+    [&](const zaf::Error&) {
+        ++on_error_count;
+    },
+    [&]() {
+        ++on_completed_count;
+    });
+
+    ASSERT_EQ(on_next_count, 0);
+    ASSERT_EQ(on_error_count, 0);
+    ASSERT_EQ(on_completed_count, 1);
+}
+
+
+TEST(RxNeverTest, Normal) {
+
+    auto observable = zaf::rx::Never<int>();
+
+    int on_next_count{};
+    int on_error_count{};
+    int on_completed_count{};
+
+    auto sub = observable.Subscribe([&](int value) {
+        ++on_next_count;
+    },
+    [&](const zaf::Error&) {
+        ++on_error_count;
+    },
+    [&]() {
+        ++on_completed_count;
+    });
+
+    ASSERT_EQ(on_next_count, 0);
+    ASSERT_EQ(on_error_count, 0);
+    ASSERT_EQ(on_completed_count, 0);
+}
+
+
+TEST(RxThrowTest, Normal) {
+
+    auto error_code = make_error_code(zaf::BasicErrc::InvalidCast);
+    zaf::Error error{ error_code };
+    auto observable = zaf::rx::Throw<int>(error);
+
+    int on_next_count{};
+    std::error_code catched_error_code;
+    int on_completed_count{};
+
+    auto sub = observable.Subscribe([&](int value) {
+        ++on_next_count;
+    },
+    [&](const zaf::Error& error) {
+        catched_error_code = error.Code();
+    },
+    [&]() {
+        ++on_completed_count;
+    });
+
+    ASSERT_EQ(on_next_count, 0);
+    ASSERT_EQ(catched_error_code, error_code);
+    ASSERT_EQ(on_completed_count, 0);
+}
+
 
 TEST(RxJustTest, Normal) {
 

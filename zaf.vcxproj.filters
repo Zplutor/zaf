@@ -1090,6 +1090,15 @@
     <ClCompile Include="src\zaf\rx\internal\operator\catch_operator.cpp">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observable\empty_observable.cpp">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observable\never_observable.cpp">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observable\throw_observable.cpp">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2481,6 +2490,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\operator\catch_operator.h">
       <Filter>zaf\rx\internal\operator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable\empty_observable.h">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable\never_observable.h">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable\throw_observable.h">
+      <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
