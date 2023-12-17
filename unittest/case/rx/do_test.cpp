@@ -28,65 +28,83 @@ TEST(RxDoTest, OnNext) {
 
 TEST(RxDoTest, OnNextOnCompleted) {
 
+    int call_sequence{};
+
     int do_value{};
-    bool do_completed{};
+    int do_value_sequence{};
+    int do_completed_sequence{};
 
     int observed_value{};
-    bool observed_completed{};
+    int observed_value_sequence{};
+    int observed_completed_sequence{};
 
     zaf::Subject<int> subject;
     auto subscription = subject.AsObservable().Do([&](int value) {
         do_value = value;
+        do_value_sequence = ++call_sequence;
     }, 
     [&]() {
-        do_completed = true;
+        do_completed_sequence = ++call_sequence;
     })
     .Subscribe([&](int value) {
         observed_value = value;
+        observed_value_sequence = ++call_sequence;
     },
     [&]() {
-        observed_completed = true;
+        observed_completed_sequence = ++call_sequence;
     });
 
     subject.AsObserver().OnNext(100);
     subject.AsObserver().OnCompleted();
 
     ASSERT_EQ(do_value, 100);
-    ASSERT_TRUE(do_completed);
     ASSERT_EQ(observed_value, 100);
-    ASSERT_TRUE(observed_completed);
+
+    ASSERT_EQ(do_value_sequence, 1);
+    ASSERT_EQ(observed_value_sequence, 2);
+    ASSERT_EQ(do_completed_sequence, 3);
+    ASSERT_EQ(observed_completed_sequence, 4);
 }
 
 
 TEST(RxDoTest, OnNextOnError) {
 
+    int call_sequence{};
+
     int do_value{};
-    bool do_error{};
+    int do_value_sequence{};
+    int do_error_sequence{};
 
     int observed_value{};
-    bool observed_error{};
+    int observed_value_sequence{};
+    int observed_error_sequence{};
 
     zaf::Subject<int> subject;
     auto subscription = subject.AsObservable().Do([&](int value) {
         do_value = value;
+        do_value_sequence = ++call_sequence;
     },
     [&](const zaf::Error& error) {
-        do_error = true;
+        do_error_sequence = ++call_sequence;
     })
     .Subscribe([&](int value) {
         observed_value = value;
+        observed_value_sequence = ++call_sequence;
     }, 
     [&](const zaf::Error& error) {
-        observed_error = true;
+        observed_error_sequence = ++call_sequence;
     });
 
     subject.AsObserver().OnNext(99);
     subject.AsObserver().OnError(zaf::Error(std::make_error_code(std::errc::bad_message)));
 
     ASSERT_EQ(do_value, 99);
-    ASSERT_TRUE(do_error);
     ASSERT_EQ(observed_value, 99);
-    ASSERT_TRUE(observed_error);
+
+    ASSERT_EQ(do_value_sequence, 1);
+    ASSERT_EQ(observed_value_sequence, 2);
+    ASSERT_EQ(do_error_sequence, 3);
+    ASSERT_EQ(observed_error_sequence, 4);
 }
 
 
