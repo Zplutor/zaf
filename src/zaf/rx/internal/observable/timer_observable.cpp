@@ -78,11 +78,11 @@ private:
             return;
         }
 
-        DeliverOnNext(trigger_count_);
+        EmitOnNext(trigger_count_);
         trigger_count_++;
 
         if (!interval_) {
-            DeliverOnCompleted();
+            EmitOnCompleted();
             return;
         }
 

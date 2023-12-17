@@ -9,14 +9,14 @@ Producer::Producer(std::shared_ptr<InnerObserver> observer) :
 }
 
 
-void Producer::DeliverOnNext(const std::any& any) {
+void Producer::EmitOnNext(const std::any& any) {
     if (observer_) {
         observer_->OnNext(any);
     }
 }
 
 
-void Producer::DeliverOnError(const Error& error) {
+void Producer::EmitOnError(const Error& error) {
     auto keep_alive = shared_from_this();
     if (observer_) {
         observer_->OnError(error);
@@ -25,7 +25,7 @@ void Producer::DeliverOnError(const Error& error) {
 }
 
 
-void Producer::DeliverOnCompleted() {
+void Producer::EmitOnCompleted() {
     //There is a delicate protection here. 
     //During the OnCompleted() notification chain, current producer might be released, causing a 
     //dangling pointer. Exception would occur if execution continue.

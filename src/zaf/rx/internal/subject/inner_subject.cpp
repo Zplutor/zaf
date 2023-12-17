@@ -54,7 +54,7 @@ void InnerSubject::OnNext(const std::any& value) {
 
     auto copied_producers = producers_;
     for (const auto& producer : copied_producers) {
-        producer->DeliverOnNext(value);
+        producer->EmitOnNext(value);
     }
 }
 
@@ -63,7 +63,7 @@ void InnerSubject::OnError(const Error& error) {
 
     auto copied_producers = producers_;
     for (const auto& each_producer : copied_producers) {
-        each_producer->DeliverOnError(error);
+        each_producer->EmitOnError(error);
     }
 }
 
@@ -72,7 +72,7 @@ void InnerSubject::OnCompleted() {
 
     auto copied_producers = producers_;
     for (const auto& each_producer : copied_producers) {
-        each_producer->DeliverOnCompleted();
+        each_producer->EmitOnCompleted();
     }
 }
 

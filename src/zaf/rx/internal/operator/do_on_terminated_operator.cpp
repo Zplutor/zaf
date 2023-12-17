@@ -24,17 +24,17 @@ public:
     }
 
     void OnNext(const std::any& value) override {
-        DeliverOnNext(value);
+        EmitOnNext(value);
     }
 
     void OnError(const Error& error) override {
         on_terminated_();
-        DeliverOnError(error);
+        EmitOnError(error);
     }
 
     void OnCompleted() override {
         on_terminated_();
-        DeliverOnCompleted();
+        EmitOnCompleted();
     }
 
     void OnDispose() override {

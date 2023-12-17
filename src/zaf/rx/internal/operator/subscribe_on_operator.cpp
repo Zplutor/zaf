@@ -41,15 +41,15 @@ public:
     }
 
     void OnNext(const std::any& value) override {
-        DeliverOnNext(value);
+        EmitOnNext(value);
     }
 
     void OnError(const Error& error) override {
-        DeliverOnError(error);
+        EmitOnError(error);
     }
 
     void OnCompleted() override {
-        DeliverOnCompleted();
+        EmitOnCompleted();
     }
 
 private:

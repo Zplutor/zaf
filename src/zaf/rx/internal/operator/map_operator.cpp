@@ -30,7 +30,7 @@ public:
             return;
         }
 
-        DeliverOnNext(mapped_value);
+        EmitOnNext(mapped_value);
     }
 
     void OnError(const Error& error) override {
@@ -39,7 +39,7 @@ public:
 
     void OnCompleted() override {
         if (!IsTerminated()) {
-            DeliverOnCompleted();
+            EmitOnCompleted();
         }
     }
 
@@ -55,7 +55,7 @@ protected:
 private:
     void TryToDeliverOnError(const Error& error) {
         if (!IsTerminated()) {
-            DeliverOnError(error);
+            EmitOnError(error);
         }
     }
 

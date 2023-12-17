@@ -25,9 +25,20 @@ public:
     explicit Producer(std::shared_ptr<InnerObserver> observer);
     virtual ~Producer() = default;
 
-    void DeliverOnNext(const std::any& any);
-    void DeliverOnError(const Error& error);
-    void DeliverOnCompleted();
+    /**
+    Emits a data item to the observer.
+    */
+    void EmitOnNext(const std::any& any);
+
+    /**
+    Emits an error to the observer.
+    */
+    void EmitOnError(const Error& error);
+
+    /**
+    Emits a completion to the observer.
+    */
+    void EmitOnCompleted();
 
     bool IsTerminated() const {
         return is_terminated_;

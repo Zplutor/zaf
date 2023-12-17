@@ -56,19 +56,19 @@ protected:
 private:
     void OnNextOnScheduler(const std::any& value) {
         if (!is_unsubscribed_.load()) {
-            DeliverOnNext(value);
+            EmitOnNext(value);
         }
     }
 
     void OnErrorOnScheduler(const Error& error) {
         if (!is_unsubscribed_.load()) {
-            DeliverOnError(error);
+            EmitOnError(error);
         }
     }
 
     void OnCompletedOnScheduler() {
         if (!is_unsubscribed_.load()) {
-            DeliverOnCompleted();
+            EmitOnCompleted();
         }
     }
 

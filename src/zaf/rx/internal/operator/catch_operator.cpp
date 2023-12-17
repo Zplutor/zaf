@@ -22,7 +22,7 @@ public:
     }
 
     void OnNext(const std::any& value) override {
-        DeliverOnNext(value);
+        EmitOnNext(value);
     }
 
     void OnError(const Error& error) override {
@@ -32,7 +32,7 @@ public:
             new_observable = handler_(error);
         }
         catch (const zaf::Error& error) {
-            DeliverOnError(error);
+            EmitOnError(error);
             return;
         }
 
@@ -41,7 +41,7 @@ public:
     }
 
     void OnCompleted() override {
-        DeliverOnCompleted();
+        EmitOnCompleted();
     }
 
 protected:
@@ -67,13 +67,13 @@ private:
         auto weak_this = weak_from_this();
         auto new_subscription = observable->Subscribe(InnerObserver::Create(
             [this](const std::any& value) {
-                DeliverOnNext(value);
+                EmitOnNext(value);
             },
             [this](const zaf::Error& error) {
-                DeliverOnError(error);
+                EmitOnError(error);
             },
             [this]() {
-                DeliverOnCompleted();
+                EmitOnCompleted();
             }
         ));
 
