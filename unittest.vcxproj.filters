@@ -430,9 +430,6 @@
     <ClCompile Include="unittest\case\control\internal\textual_control\general_textual_core_test.cpp">
       <Filter>case\control\internal\textual_control</Filter>
     </ClCompile>
-    <ClCompile Include="src\unittest\case\graphic\text\text_layout_test.cpp">
-      <Filter>case\graphic\text</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\base\auto_reset_test.cpp">
       <Filter>case\base</Filter>
     </ClCompile>
@@ -492,6 +489,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\rx\do_on_terminated_test.cpp">
       <Filter>case\rx</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\text\text_layout_test.cpp">
+      <Filter>case\graphic\text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
