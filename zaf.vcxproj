@@ -306,6 +306,7 @@
     <ClCompile Include="src\zaf\rx\internal\observable\throw_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\timer_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\catch_operator.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\operator\do_on_terminated_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\do_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\finally_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\flat_map_operator.cpp" />
@@ -751,6 +752,7 @@
     <ClInclude Include="src\zaf\rx\internal\observable\timer_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\catch_handler.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\catch_operator.h" />
+    <ClInclude Include="src\zaf\rx\internal\operator\do_on_terminated_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\do_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\finally_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\flat_mapper.h" />

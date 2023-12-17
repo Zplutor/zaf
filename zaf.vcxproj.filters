@@ -1099,6 +1099,9 @@
     <ClCompile Include="src\zaf\rx\internal\observable\throw_observable.cpp">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\operator\do_on_terminated_operator.cpp">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2499,6 +2502,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observable\throw_observable.h">
       <Filter>zaf\rx\internal\observable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\operator\do_on_terminated_operator.h">
+      <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

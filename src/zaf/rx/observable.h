@@ -79,6 +79,20 @@ public:
         return Observable{ inner_->Do(observer.Inner()) };
     }
 
+    /**
+    Returns an Observable that invokes an action when the current Observable is terminated, either 
+    by completion or error.
+
+    @param action
+        The action to be invoked upon termination of the current observable.
+
+    @return
+        A new observable.
+    */
+    Observable DoOnTerminated(Work action) {
+        return Observable{ inner_->DoOnTerminated(std::move(action)) };
+    }
+
     Observable Catch(std::function<Observable<T>(const Error&)> handler) {
         return Observable{ 
             inner_->Catch([handle = std::move(handler)](const Error& error) {

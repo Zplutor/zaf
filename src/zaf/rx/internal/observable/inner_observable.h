@@ -31,6 +31,7 @@ public:
     std::shared_ptr<InnerObservable> ObserveOn(std::shared_ptr<Scheduler> scheculer);
 
     std::shared_ptr<InnerObservable> Do(std::shared_ptr<InnerObserver> do_observer);
+    std::shared_ptr<InnerObservable> DoOnTerminated(Work work);
     std::shared_ptr<InnerObservable> Catch(CatchHandler handler);
     std::shared_ptr<InnerObservable> Finally(Work work);
 

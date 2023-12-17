@@ -490,6 +490,9 @@
     <ClCompile Include="unittest\case\rx\catch_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\rx\do_on_terminated_test.cpp">
+      <Filter>case\rx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
