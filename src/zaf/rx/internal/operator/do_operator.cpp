@@ -63,7 +63,7 @@ DoOperator::DoOperator(
 std::shared_ptr<InnerSubscription> DoOperator::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
-    auto producer = std::make_shared<DoProducer>(observer, std::move(do_observer_));
+    auto producer = std::make_shared<DoProducer>(observer, do_observer_);
     producer->Run(source_);
     return std::make_shared<InnerSubscription>(std::move(producer));
 }

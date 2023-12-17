@@ -40,10 +40,8 @@ public:
         source_subscription_->Unsubscribe();
         source_subscription_.reset();
 
-        if (finally_work_) {
-            finally_work_();
-            finally_work_ = nullptr;
-        }
+        finally_work_();
+        finally_work_ = nullptr;
     }
 
 private:
@@ -64,7 +62,7 @@ FinallyOperator::FinallyOperator(std::shared_ptr<InnerObservable> source, Work f
 std::shared_ptr<InnerSubscription> FinallyOperator::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
-    auto producer = std::make_shared<FinallyProducer>(observer, std::move(finally_work_));
+    auto producer = std::make_shared<FinallyProducer>(observer, finally_work_);
     producer->Run(source_);
     return std::make_shared<InnerSubscription>(std::move(producer));
 }

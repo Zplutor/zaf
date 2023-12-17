@@ -219,3 +219,20 @@ TEST(RxDoTest, CircularReference) {
     auto shared_ptr = weak_ptr.lock();
     ASSERT_EQ(shared_ptr, nullptr);
 }
+
+
+TEST(RxDoTest, SubscribeMultipleTimes) {
+
+    int call_times{};
+
+    zaf::Subject<int> subject;
+    auto observable = subject.AsObservable().Do([&](int) {
+        ++call_times;
+    });
+
+    auto sub1 = observable.Subscribe();
+    auto sub2 = observable.Subscribe();
+
+    subject.AsObserver().OnNext(1);
+    ASSERT_EQ(call_times, 2);
+}

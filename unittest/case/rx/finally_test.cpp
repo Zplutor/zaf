@@ -90,7 +90,7 @@ TEST(RxFinallyTest, Finally) {
 }
 
 
-TEST(RxFinallyTest, MultipleFinally) {
+TEST(RxFinallyTest, MultipleFinallyOrder) {
 
     int seed{};
     int finally1_value{};
@@ -111,4 +111,21 @@ TEST(RxFinallyTest, MultipleFinally) {
 
     ASSERT_EQ(finally1_value, 1);
     ASSERT_EQ(finally2_value, 2);
+}
+
+
+TEST(RxFinallyTest, SubscribeMultipleTimes) {
+
+    int call_times{};
+
+    zaf::Subject<int> subject;
+    auto observable = subject.AsObservable().Finally([&]() {
+        ++call_times;
+    });
+
+    auto sub1 = observable.Subscribe();
+    auto sub2 = observable.Subscribe();
+
+    subject.AsObserver().OnCompleted();
+    ASSERT_EQ(call_times, 2);
 }

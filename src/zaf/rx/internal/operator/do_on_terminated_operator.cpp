@@ -41,6 +41,7 @@ public:
 
         source_subscription_->Unsubscribe();
         source_subscription_.reset();
+        on_terminated_ = nullptr;
     }
 
 private:
