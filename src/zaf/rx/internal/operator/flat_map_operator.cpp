@@ -40,7 +40,7 @@ public:
         auto sub_id = ++mapper_subs_count_;
         auto mapper_sub = mapped_observable->Subscribe(InnerObserver::Create(
             [this](const std::any& value) {
-                if (!IsFinished()) {
+                if (!IsTerminated()) {
                     DeliverOnNext(value);
                 }
             },
@@ -96,14 +96,14 @@ private:
     }
 
     void TryToDeliverOnError(const zaf::Error& error) {
-        if (!IsFinished()) {
+        if (!IsTerminated()) {
             DeliverOnError(error);
         }
     }
 
     void TryToDeliverOnCompleted() {
 
-        if (IsFinished()) {
+        if (IsTerminated()) {
             return;
         }
 

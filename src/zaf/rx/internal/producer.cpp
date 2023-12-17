@@ -21,7 +21,7 @@ void Producer::DeliverOnError(const Error& error) {
     if (observer_) {
         observer_->OnError(error);
     }
-    FinishProduce();
+    TerminateProduce();
 }
 
 
@@ -34,7 +34,7 @@ void Producer::DeliverOnCompleted() {
     if (observer_) {
         observer_->OnCompleted();
     }
-    FinishProduce();
+    TerminateProduce();
 }
 
 
@@ -42,8 +42,8 @@ void Producer::Dispose() {
 
     if (MarkDisposed()) {
 
-        //Finish the produce before disposal.
-        FinishProduce();
+        //Terminate the produce before disposal.
+        TerminateProduce();
     
         OnDispose();
 
@@ -55,26 +55,26 @@ void Producer::Dispose() {
 }
 
 
-void Producer::FinishProduce() {
+void Producer::TerminateProduce() {
 
-    if (MarkFinished()) {
-        NotifyFinish();
+    if (MarkTerminated()) {
+        NotifyTerminate();
     }
 }
 
 
-bool Producer::MarkFinished() {
+bool Producer::MarkTerminated() {
     bool expected{ false };
-    return is_finished_.compare_exchange_strong(expected, true);
+    return is_terminated_.compare_exchange_strong(expected, true);
 }
 
 
-void Producer::NotifyFinish() {
+void Producer::NotifyTerminate() {
 
-    FinishNotification notification;
+    TerminateNotification notification;
     {
         std::scoped_lock<std::mutex> lock(lock_);
-        notification = std::move(finish_notification_);
+        notification = std::move(terminate_notification_);
     }
 
     if (notification) {
@@ -83,21 +83,21 @@ void Producer::NotifyFinish() {
 }
 
 
-void Producer::RegisterFinishNotification(FinishNotification callback) {
+void Producer::RegisterTerminateNotification(TerminateNotification callback) {
 
     std::scoped_lock<std::mutex> lock(lock_);
-    if (is_finished_) {
+    if (is_terminated_) {
         return;
     }
 
-    finish_notification_ = std::move(callback);
+    terminate_notification_ = std::move(callback);
 }
 
 
 std::optional<int> Producer::RegisterDisposeNotification(DisposeNotification callback) {
 
     std::scoped_lock<std::mutex> lock(lock_);
-    if (is_finished_) {
+    if (is_terminated_) {
         return std::nullopt;
     }
 

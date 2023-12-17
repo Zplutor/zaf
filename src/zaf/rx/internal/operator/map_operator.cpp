@@ -38,7 +38,7 @@ public:
     }
 
     void OnCompleted() override {
-        if (!IsFinished()) {
+        if (!IsTerminated()) {
             DeliverOnCompleted();
         }
     }
@@ -54,7 +54,7 @@ protected:
 
 private:
     void TryToDeliverOnError(const Error& error) {
-        if (!IsFinished()) {
+        if (!IsTerminated()) {
             DeliverOnError(error);
         }
     }

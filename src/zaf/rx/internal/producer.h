@@ -12,13 +12,13 @@ namespace zaf::internal {
 /**
 A producer is responsible for emmiting data sequence.
 
-There are two states of a producer: finished and disposed.
+There are two states of a producer: terminated and disposed.
 
-Finished state indicates that the data sequence has ended. It's often set after OnError and 
+Terminated state indicates that the data sequence has ended. It's often set after OnError and 
 OnCompleted, or after calling Dispose() explicitly.
 
 Disposed state indicates that any resource held by the producer has been destroyed. A disposed
-state always follows after a finished state. It can only be set after calling Dispose().
+state always follows after a terminated state. It can only be set after calling Dispose().
 */
 class Producer : public std::enable_shared_from_this<Producer>, NonCopyableNonMovable {
 public:
@@ -29,8 +29,8 @@ public:
     void DeliverOnError(const Error& error);
     void DeliverOnCompleted();
 
-    bool IsFinished() const {
-        return is_finished_;
+    bool IsTerminated() const {
+        return is_terminated_;
     }
 
     /**
@@ -53,11 +53,11 @@ protected:
 private:
     friend class InnerSubscription;
 
-    using FinishNotification = std::function<void()>;
+    using TerminateNotification = std::function<void()>;
 
-    //Call by InnerSubscription to get notified when producer finishes and then diposes the 
+    //Call by InnerSubscription to get notified when producer terminates and then diposes the 
     //producer.
-    void RegisterFinishNotification(FinishNotification callback);
+    void RegisterTerminateNotification(TerminateNotification callback);
 
 private:
     friend class InnerSubscriptionSet;
@@ -67,9 +67,9 @@ private:
     void UnregisterDisposeNotification(int id);
 
 private:
-    void FinishProduce();
-    bool MarkFinished();
-    void NotifyFinish();
+    void TerminateProduce();
+    bool MarkTerminated();
+    void NotifyTerminate();
 
     bool MarkDisposed();
     void NotifyDispose();
@@ -77,8 +77,8 @@ private:
 private:
     std::shared_ptr<InnerObserver> observer_;
 
-    std::atomic<bool> is_finished_{};
-    FinishNotification finish_notification_;
+    std::atomic<bool> is_terminated_{};
+    TerminateNotification terminate_notification_;
 
     std::atomic<bool> is_disposed_{};
     int dispose_notification_id_seed_{};

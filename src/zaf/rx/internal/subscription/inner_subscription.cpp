@@ -14,7 +14,7 @@ InnerSubscription::InnerSubscription(std::shared_ptr<internal::Producer> produce
     producer_(std::move(producer)) {
 
     if (producer_) {
-        producer_->RegisterFinishNotification([this]() {
+        producer_->RegisterTerminateNotification([this]() {
             producer_->Dispose();
         });
     }
