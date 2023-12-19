@@ -308,9 +308,13 @@ void TextBox::OnDoubleClick(const DoubleClickInfo& event_info) {
     __super::OnDoubleClick(event_info);
 
     std::size_t click_index = FindIndexAtPosition(event_info.Position());
-    auto text = GetText();
+    SelectWordAtIndex(click_index);
+}
 
-    auto word_range = word_extractor_(text, click_index);
+
+void TextBox::SelectWordAtIndex(std::size_t index) {
+
+    auto word_range = word_extractor_(GetText(), index);
     SetSelectionRange(word_range);
 }
 

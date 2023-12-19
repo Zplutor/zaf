@@ -13,7 +13,8 @@ A WordExtractor is used to extract a range of the completed word around the inde
     The input text from which to extract the word range.
 
 @param index 
-    The index around which to extract the completed word range.
+    The index around which to extract the completed word range. It may exceed the lenght of the 
+    text.
 
 @return 
     A range of the completed word around the specified index.

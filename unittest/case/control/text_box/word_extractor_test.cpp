@@ -20,6 +20,7 @@ TEST(WordExtractorTest, Default) {
         ASSERT_EQ(extractor(L"1a2", 1), Range(0, 3));
         ASSERT_EQ(extractor(L"1a2", 2), Range(0, 3));
         ASSERT_EQ(extractor(L"1a2", 3), Range(0, 3));
+        ASSERT_EQ(extractor(L"1a2", 4), Range(0, 3));
     }
 
     {
@@ -37,5 +38,6 @@ TEST(WordExtractorTest, Default) {
         ASSERT_EQ(extractor(text, 10), Range(10, 1));
         ASSERT_EQ(extractor(text, 11), Range(11, 1));
         ASSERT_EQ(extractor(text, 12), Range(11, 1));
+        ASSERT_EQ(extractor(text, 13), Range(11, 1));
     }
 }

@@ -40,8 +40,18 @@ public:
     std::wstring SelectedText() const;
 
     /**
-    Gets the word extractor used to determine the selected word range when double-clicking on the 
-    text box.
+    Selects the completed word around the specified text index.
+
+    @param index
+        The index around which to select. It may exceed the length of the text.
+
+    @remark
+        This method uses WordExtractor() to determine the word range.
+    */
+    void SelectWordAtIndex(std::size_t index);
+
+    /**
+    Gets the word extractor used to determine the word range to be selected.
 
     @return 
         The word extractor. It is guaranteed to be not nullptr.
@@ -49,16 +59,16 @@ public:
     const text_box::WordExtractor& WordExtractor() const noexcept;
 
     /**
-    Sets the word extractor used to determine the selected word range when double-clicking on the 
-    text box.
+    Sets the word extractor used to determine the word range to be selected.
 
     @param extractor
         The extractor to be set. If it is nullptr, the default extractor will be used.
 
     @remark
-        You can set a custom word extractor function to replace the default behavior of determining
-        the completed word to select. If you want to disable the feature of selecting the word on
-        double click, call SetCanDoubleClick() with false.
+        The word extractor is used when the user double clicks on the text box, or when
+        SelectWordAtIndex() is called. You can set a custom word extractor function to replace the 
+        default behavior of determining the completed word to select. If you want to disable the
+        feature of selecting the word on double click, call SetCanDoubleClick() with false.
     */
     void SetWordExtractor(text_box::WordExtractor extractor) noexcept;
 
