@@ -14,7 +14,9 @@ ZAF_DEFINE_TYPE_PROPERTY(SelectedText)
 ZAF_DEFINE_TYPE_PROPERTY(SelectionRange)
 ZAF_DEFINE_TYPE_END
 
-TextBox::TextBox() : TextualControl(std::make_unique<internal::TextBoxCore>()) {
+TextBox::TextBox() : 
+    TextualControl(std::make_unique<internal::TextBoxCore>()), 
+    word_extractor_(text_box::DefaultWordExtractor()) {
 
 }
 
@@ -308,12 +310,23 @@ void TextBox::OnDoubleClick(const DoubleClickInfo& event_info) {
     std::size_t click_index = FindIndexAtPosition(event_info.Position());
     auto text = GetText();
 
-    auto word_range = 
-        word_extractor_ ?
-        word_extractor_(text, click_index) : 
-        text_box::DefaultWordExtractor()(text, click_index);
-
+    auto word_range = word_extractor_(text, click_index);
     SetSelectionRange(word_range);
+}
+
+
+const text_box::WordExtractor& TextBox::WordExtractor() const noexcept {
+    return word_extractor_;
+}
+
+
+void TextBox::SetWordExtractor(text_box::WordExtractor extractor) noexcept {
+    if (extractor) {
+        word_extractor_ = std::move(extractor);
+    }
+    else {
+        word_extractor_ = text_box::DefaultWordExtractor();
+    }
 }
 
 

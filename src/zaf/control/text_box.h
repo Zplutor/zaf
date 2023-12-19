@@ -40,6 +40,29 @@ public:
     std::wstring SelectedText() const;
 
     /**
+    Gets the word extractor used to determine the selected word range when double-clicking on the 
+    text box.
+
+    @return 
+        The word extractor. It is guaranteed to be not nullptr.
+    */
+    const text_box::WordExtractor& WordExtractor() const noexcept;
+
+    /**
+    Sets the word extractor used to determine the selected word range when double-clicking on the 
+    text box.
+
+    @param extractor
+        The extractor to be set. If it is nullptr, the default extractor will be used.
+
+    @remark
+        You can set a custom word extractor function to replace the default behavior of determining
+        the completed word to select. If you want to disable the feature of selecting the word on
+        double click, call SetCanDoubleClick() with false.
+    */
+    void SetWordExtractor(text_box::WordExtractor extractor) noexcept;
+
+    /**
     Finds the nearest text index at the specified position in the coordinate space of the text box.
 
     @param position

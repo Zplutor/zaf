@@ -38,5 +38,4 @@ TEST(WordExtractorTest, Default) {
         ASSERT_EQ(extractor(text, 11), Range(11, 1));
         ASSERT_EQ(extractor(text, 12), Range(11, 1));
     }
-
 }
