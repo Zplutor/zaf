@@ -97,6 +97,9 @@
     <Filter Include="case\crypto">
       <UniqueIdentifier>{04b89b98-f9be-4b20-ac72-26ed2130744b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\control\text_box">
+      <UniqueIdentifier>{8ad079e3-5b51-4ad7-9565-25ca151c1268}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -492,6 +495,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\graphic\text\text_layout_test.cpp">
       <Filter>case\graphic\text</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\text_box\word_extractor_test.cpp">
+      <Filter>case\control\text_box</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

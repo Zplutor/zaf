@@ -71,8 +71,9 @@ protected:
         auto scrollable_control = zaf::Create<zaf::ScrollableControl>();
         scrollable_control->SetUseOverlayScrollBars(true);
 
-        auto content = zaf::Create<zaf::Control>();
-        content->SetBackgroundColor(zaf::Color::Lime());
+        auto content = zaf::Create<zaf::TextBox>();
+        content->SetFontSize(20);
+        content->SetText(L"123 abc 0xab23d  ¡°Ê²Ã´¶«Î÷¡±");
         content->SetFixedSize(zaf::Size{ 500, 500 });
 
         scrollable_control->SetScrollContent(content);

@@ -5,6 +5,7 @@
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/text/text_layout.h>
+#include <zaf/control/text_box/word_extractor.h>
 
 namespace zaf {
 namespace internal {
@@ -62,6 +63,7 @@ protected:
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseMove(const MouseMoveInfo& event_info) override;
     void OnMouseUp(const MouseUpInfo& event_info) override;
+    void OnDoubleClick(const DoubleClickInfo& event_info) override;
     void OnFocusGained(const FocusGainedInfo& event_info) override;
     void OnFocusLost(const FocusLostInfo& event_info) override;
     void OnKeyDown(const KeyDownInfo& event_info) override;
@@ -165,6 +167,7 @@ private:
     Event<SelfScrollingControlScrollValuesChangeInfo> scroll_values_change_event_;
 
     ColorPicker selection_background_color_picker_;
+    text_box::WordExtractor word_extractor_;
 };
 
 }

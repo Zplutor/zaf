@@ -27,6 +27,7 @@ void TextBox::Initialize() {
 
     SetCanFocused(true);
     SetCanTabStop(true);
+    SetCanDoubleClick(true);
     SetBackgroundColor(Color::White());
 
     caret_ = zaf::Create<zaf::Caret>(As<TextBox>(shared_from_this()));
@@ -297,6 +298,22 @@ std::size_t TextBox::FindIndexAtPosition(const Point& position) const {
         ++result;
     }
     return result;
+}
+
+
+void TextBox::OnDoubleClick(const DoubleClickInfo& event_info) {
+
+    __super::OnDoubleClick(event_info);
+
+    std::size_t click_index = FindIndexAtPosition(event_info.Position());
+    auto text = GetText();
+
+    auto word_range = 
+        word_extractor_ ?
+        word_extractor_(text, click_index) : 
+        text_box::DefaultWordExtractor()(text, click_index);
+
+    SetSelectionRange(word_range);
 }
 
 

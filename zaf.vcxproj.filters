@@ -181,6 +181,9 @@
     <Filter Include="zaf\crypto\internal">
       <UniqueIdentifier>{38112824-6961-4393-96c1-55e4f749f33f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\text_box">
+      <UniqueIdentifier>{1787d619-2a2f-408e-9615-1ea92ed1801e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1101,6 +1104,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\operator\do_on_terminated_operator.cpp">
       <Filter>zaf\rx\internal\operator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\text_box\word_extractor.cpp">
+      <Filter>zaf\control\text_box</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2505,6 +2511,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\operator\do_on_terminated_operator.h">
       <Filter>zaf\rx\internal\operator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\text_box\word_extractor.h">
+      <Filter>zaf\control\text_box</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
