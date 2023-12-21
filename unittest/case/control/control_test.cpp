@@ -70,6 +70,16 @@ TEST(ControlTest, GeometryInWindow) {
 }
 
 
+TEST(ControlTest, RectInSelf) {
+
+    auto control = zaf::Create<zaf::Control>();
+    ASSERT_EQ(control->RectInSelf(), zaf::Rect());
+
+    control->SetRect(zaf::Rect{ 10, 10, 100, 100 });
+    ASSERT_EQ(control->RectInSelf(), zaf::Rect(zaf::Point(), zaf::Size(100, 100)));
+}
+
+
 TEST(ControlTest, ContentRect) {
 
     auto control = zaf::Create<zaf::Control>();

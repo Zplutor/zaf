@@ -521,6 +521,11 @@ std::optional<zaf::Rect> Control::RectInWindow() const noexcept {
 }
 
 
+zaf::Rect Control::RectInSelf() const noexcept {
+    return zaf::Rect{ zaf::Point{}, this->Size() };
+}
+
+
 void Control::SetRect(const zaf::Rect& rect) {
 
     zaf::Rect previous_rect = Rect();

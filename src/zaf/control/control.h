@@ -86,6 +86,15 @@ public:
     std::optional<zaf::Rect> RectInWindow() const noexcept;
 
     /**
+    Gets the control's rectangle area in its own coordinate space.
+
+    @return 
+        The rectangle area of the control in its own coordinate space, where the position is always 
+        zero.
+    */
+    zaf::Rect RectInSelf() const noexcept;
+
+    /**
     Gets the control's rectangle area in its container's coordinate space.
 
     @return
