@@ -77,8 +77,6 @@ constexpr bool DefaultIsVisible = true;
 ZAF_DEFINE_TYPE(Control)
 ZAF_DEFINE_TYPE_PARSER(ControlParser)
 ZAF_DEFINE_TYPE_PROPERTY(Rect)
-ZAF_DEFINE_TYPE_PROPERTY(AbsoluteContentRect)
-ZAF_DEFINE_TYPE_PROPERTY(AbsoluteRect)
 ZAF_DEFINE_TYPE_PROPERTY(Position)
 ZAF_DEFINE_TYPE_PROPERTY(X)
 ZAF_DEFINE_TYPE_PROPERTY(Y)
@@ -483,29 +481,43 @@ void Control::NeedRelayout(const zaf::Rect& previous_rect) {
 }
 
 
-zaf::Rect Control::AbsoluteRect() const {
+std::optional<zaf::Point> Control::PositionInWindow() const noexcept {
 
-    auto window = Window();
-    if (window == nullptr) {
-        return zaf::Rect();
-    }
-
-    //No parent, must be the root control, return its rect as the absolute rect.
     auto parent = Parent();
-    if (parent == nullptr) {
-        return Rect();
+
+    //Current control has no parent, it may be the root control of a window.
+    if (!parent) {
+
+        auto window = Window();
+        if (window) {
+            //Current control is the root control, whose position is the position in window.
+            return this->Position();
+        }
+
+        //Current control doesn't belong to any window.
+        return std::nullopt;
     }
 
-    zaf::Rect parent_absolute_rect = parent->AbsoluteRect();
-    const auto& parent_border = parent->Border();
-    const auto& parent_padding = parent->Padding();
+    auto parent_position_in_window = parent->PositionInWindow();
+    if (!parent_position_in_window) {
+        return std::nullopt;
+    }
 
-    return zaf::Rect(
-        parent_absolute_rect.position.x + parent_border.left + parent_padding.left + rect_.position.x,
-        parent_absolute_rect.position.y + parent_border.top + parent_padding.top + rect_.position.y,
-        rect_.size.width,
-        rect_.size.height
-    );
+    auto result = *parent_position_in_window;
+    result.AddOffset(parent->ContentRect().position);
+    result.AddOffset(this->Position());
+    return result;
+}
+
+
+std::optional<zaf::Rect> Control::RectInWindow() const noexcept {
+
+    auto position_in_window = PositionInWindow();
+    if (!position_in_window) {
+        return std::nullopt;
+    }
+
+    return zaf::Rect{ *position_in_window, this->Size() };
 }
 
 
@@ -885,10 +897,15 @@ void Control::SetAnchor(zaf::Anchor anchor) {
 }
 
 
-zaf::Rect Control::AbsoluteContentRect() const {
+std::optional<zaf::Rect> Control::ContentRectInWindow() const noexcept {
+
+    auto rect_in_window = this->RectInWindow();
+    if (!rect_in_window) {
+        return std::nullopt;
+    }
 
     auto result = ContentRect();
-    result.AddOffset(AbsoluteRect().position);
+    result.AddOffset(rect_in_window->position);
     return result;
 }
 
@@ -1602,7 +1619,7 @@ const Point Control::GetMousePosition() const {
     }
     
     Point mouse_position = window->GetMousePosition();
-    Point absolute_position = AbsoluteRect().position;
+    Point absolute_position = *PositionInWindow();
     mouse_position.x -= absolute_position.x;
     mouse_position.y -= absolute_position.y;
     return mouse_position;

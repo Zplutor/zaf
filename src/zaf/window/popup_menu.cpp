@@ -45,7 +45,7 @@ void PopupMenu::PopupOnControl(
     ZAF_EXPECT(window);
 
     auto position_on_window = position_on_control;
-    position_on_window.AddOffset(control->AbsoluteRect().position);
+    position_on_window.AddOffset(*control->PositionInWindow());
     PopupOnWindow(window, position_on_window);
 }
 
@@ -77,7 +77,7 @@ void PopupMenu::PopupAsSubMenu(const std::shared_ptr<MenuItem>& owner_menu_item)
     auto owner_menu = As<PopupMenu>(owner_menu_item->Window());
     ZAF_EXPECT(owner_menu);
 
-    auto position_in_window = owner_menu_item->AbsoluteRect().position;
+    auto position_in_window = *owner_menu_item->PositionInWindow();
     position_in_window.x += owner_menu_item->Width();
     auto position_in_screen = owner_menu->TranslatePositionToScreen(position_in_window);
 

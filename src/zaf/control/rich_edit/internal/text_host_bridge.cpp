@@ -164,6 +164,11 @@ BOOL TextHostBridge::TxSetCaretPos(INT x, INT y) {
         return FALSE;
     }
 
+    auto absolute_content_rect = rich_edit->ContentRectInWindow();
+    if (!absolute_content_rect) {
+        return FALSE;
+    }
+
     //Note: x and y are in window coordinate, while the position of caret is in control content
     //coordinate.
 
@@ -172,9 +177,8 @@ BOOL TextHostBridge::TxSetCaretPos(INT x, INT y) {
         ToDIPs(static_cast<float>(x), dpi),
         ToDIPs(static_cast<float>(y), dpi)
     };
-
-    auto absolute_content_rect = rich_edit->AbsoluteContentRect();
-    caret_position.SubtractOffset(absolute_content_rect.position);
+    
+    caret_position.SubtractOffset(absolute_content_rect->position);
 
     rich_edit->caret_->SetPosition(caret_position);
     return TRUE;
@@ -288,10 +292,14 @@ HRESULT TextHostBridge::TxGetClientRect(LPRECT prc) {
     }
 
     //Returns the rect of rich edit in window.
-    auto absolute_content_rect = rich_edit->AbsoluteContentRect();
-    absolute_content_rect.position.y += rich_edit->GetContentVerticalOffset();
+    auto absolute_content_rect = rich_edit->ContentRectInWindow();
+    if (!absolute_content_rect) {
+        return S_OK;
+    }
 
-    auto pixels_rect = FromDIPs(absolute_content_rect, rich_edit->GetDPI());
+    absolute_content_rect->position.y += rich_edit->GetContentVerticalOffset();
+
+    auto pixels_rect = FromDIPs(*absolute_content_rect, rich_edit->GetDPI());
     auto aligned_rect = Align(pixels_rect);
 
     *prc = aligned_rect.ToRECT();

@@ -358,7 +358,7 @@ void ComboBox::PopupDropDownWindow() {
         return;
     }
 
-    auto window_rect = AbsoluteRect();
+    auto window_rect = *RectInWindow();
     window_rect.Inflate(-1, 0);
     window_rect.position.y += Height() - 2;
 

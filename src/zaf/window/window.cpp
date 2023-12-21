@@ -32,11 +32,14 @@ Point TranslateAbsolutePositionToControlPosition(
     const Point& absolute_position, 
     const Control& control ) {
 
-    zaf::Rect control_absolute_rect = control.AbsoluteRect();
+    auto control_absolute_rect = control.RectInWindow();
+    if (!control_absolute_rect) {
+        return absolute_position;
+    }
 
     Point result;
-    result.x = absolute_position.x - control_absolute_rect.position.x;
-    result.y = absolute_position.y - control_absolute_rect.position.y;
+    result.x = absolute_position.x - control_absolute_rect->position.x;
+    result.y = absolute_position.y - control_absolute_rect->position.y;
     return result;
 }
 
@@ -723,18 +726,22 @@ void Window::PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect) 
         return;
     }
 
-    auto control_rect = highlight_control_->AbsoluteRect();
-    if (!control_rect.HasIntersection(dirty_rect)) {
+    auto control_rect = highlight_control_->RectInWindow();
+    if (!control_rect) {
         return;
     }
 
-    auto padding_rect = control_rect;
+    if (!control_rect->HasIntersection(dirty_rect)) {
+        return;
+    }
+
+    auto padding_rect = *control_rect;
     padding_rect.Deflate(highlight_control_->Border());
 
     auto content_rect = padding_rect;
     content_rect.Deflate(highlight_control_->Padding());
 
-    auto margin_rect = control_rect;
+    auto margin_rect = *control_rect;
     margin_rect.Inflate(highlight_control_->Margin());
 
     auto draw_frame = [&canvas](
@@ -766,10 +773,10 @@ void Window::PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect) 
     draw_frame(padding_rect, content_rect, internal::InspectedControlPaddingColor);
 
     //Draw border rect.
-    draw_frame(control_rect, padding_rect, internal::InspectedControlBorderColor);
+    draw_frame(*control_rect, padding_rect, internal::InspectedControlBorderColor);
 
     //Draw margin rect.
-    draw_frame(margin_rect, control_rect, internal::InspectedControlMarginColor);
+    draw_frame(margin_rect, *control_rect, internal::InspectedControlMarginColor);
 }
 
 
@@ -2184,13 +2191,16 @@ void Window::SetHighlightControl(const std::shared_ptr<Control>& highlight_contr
 
     //Repaint the rect of previous highlight control.
     if (highlight_control_) {
-        NeedRepaintRect(highlight_control_->AbsoluteRect());
+        auto rect_in_window = highlight_control_->RectInWindow();
+        if (rect_in_window) {
+            NeedRepaintRect(*rect_in_window);
+        }
     }
 
     highlight_control_ = highlight_control;
 
     //Repaint the rect of new highlight control.
-    NeedRepaintRect(highlight_control_->AbsoluteRect());
+    NeedRepaintRect(*highlight_control_->RectInWindow());
 }
 
 

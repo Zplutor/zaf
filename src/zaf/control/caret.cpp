@@ -122,7 +122,7 @@ void Caret::CreateSystemCaret() {
         return;
     }
 
-    auto owner_absolute_content_rect = owner->AbsoluteContentRect();
+    auto owner_absolute_content_rect = *owner->ContentRectInWindow();
 
     auto caret_absolute_rect = Rect();
     caret_absolute_rect.AddOffset(owner_absolute_content_rect.position);

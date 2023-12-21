@@ -8,6 +8,68 @@
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 
+TEST(ControlTest, GeometryInWindow) {
+
+    //The control doesn't have parent.
+    {
+        auto control = zaf::Create<zaf::Control>();
+        ASSERT_FALSE(control->PositionInWindow().has_value());
+        ASSERT_FALSE(control->RectInWindow().has_value());
+        ASSERT_FALSE(control->ContentRectInWindow().has_value());
+    }
+
+    //The control is the root control of a window.
+    {
+        auto window = zaf::Create<zaf::Window>();
+        window->SetContentSize(zaf::Size{ 300, 300 });
+        auto holder = window->CreateHandle();
+
+        const auto& root_control = window->RootControl();
+        root_control->SetBorder(zaf::Frame{ 1 });
+        root_control->SetPadding(zaf::Frame{ 2 });
+
+        ASSERT_EQ(root_control->PositionInWindow(), zaf::Point());
+        ASSERT_EQ(root_control->RectInWindow(), zaf::Rect(zaf::Point(), zaf::Size(300, 300)));
+        ASSERT_EQ(
+            root_control->ContentRectInWindow(),
+            zaf::Rect(zaf::Point(3, 3), zaf::Size(294, 294)));
+    }
+
+    //The control belongs to a parent which is not in a window.
+    {
+        auto control = zaf::Create<zaf::Control>();
+        auto parent = zaf::Create<zaf::Control>();
+        parent->AddChild(control);
+
+        ASSERT_FALSE(control->PositionInWindow().has_value());
+        ASSERT_FALSE(control->RectInWindow().has_value());
+        ASSERT_FALSE(control->ContentRectInWindow().has_value());
+    }
+
+    //The control belongs to a parent which is in a window.
+    {
+        auto control = zaf::Create<zaf::Control>();
+        control->SetRect(zaf::Rect{ 11, 12, 90, 80 });
+        control->SetPadding(zaf::Frame{ 2 });
+
+        auto parent = zaf::Create<zaf::Control>();
+        parent->SetBorder(zaf::Frame{ 5, 6, 0, 0 });
+        parent->SetPadding(zaf::Frame{ 20, 30, 0, 0 });
+        parent->AddChild(control);
+
+        auto window = zaf::Create<zaf::Window>();
+        window->RootControl()->AddChild(parent);
+        auto holder = window->CreateHandle();
+
+        ASSERT_EQ(control->PositionInWindow(), zaf::Point(36, 48));
+        ASSERT_EQ(control->RectInWindow(), zaf::Rect(zaf::Point(36, 48), zaf::Size(90, 80)));
+        ASSERT_EQ(
+            control->ContentRectInWindow(),
+            zaf::Rect(zaf::Point(38, 50), zaf::Size(86, 76)));
+    }
+}
+
+
 TEST(ControlTest, ContentRect) {
 
     auto control = zaf::Create<zaf::Control>();

@@ -299,7 +299,11 @@ void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect)
             return;
         }
 
-        auto absolute_content_rect = this->AbsoluteContentRect();
+        auto absolute_content_rect = this->ContentRectInWindow();
+        if (!absolute_content_rect) {
+            return;
+        }
+
         auto selection_range = this->GetSelectionRange();
 
         for (std::size_t index = 0; index < object_count; ++index) {
@@ -339,7 +343,7 @@ void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect)
                 static_cast<float>(absolute_y) 
             };
             object_position = ToDIPs(object_position, this->GetDPI());
-            object_position.SubtractOffset(absolute_content_rect.position);
+            object_position.SubtractOffset(absolute_content_rect->position);
 
             zaf::Rect object_rect{ object_position, embedded_object->Size() };
             auto dirty_rect_of_object = Rect::Intersect(dirty_rect, object_rect);
@@ -851,7 +855,10 @@ void RichEdit::HandleMouseCursorChanging(const MouseCursorChangingInfo& event_in
     mouse_position_in_control = AdjustMousePositionIntoRichEdit(mouse_position_in_control);
 
     auto mouse_position_in_window = mouse_position_in_control;
-    mouse_position_in_window.AddOffset(this->AbsoluteRect().position);
+    auto rect_in_window = this->RectInWindow();
+    if (rect_in_window) {
+        mouse_position_in_window.AddOffset(rect_in_window->position);
+    }
 
     //Try to change mouse cursor with objects first.
     auto object_info = rich_edit::internal::OLEHelper::FindObjectUnderMouse(*this);

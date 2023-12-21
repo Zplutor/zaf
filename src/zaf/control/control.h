@@ -77,29 +77,47 @@ public:
     ControlUpdateGuard BeginUpdate();
 
     /**
-     Get the control's absolute rect which is related to the coordinate system of 
-     window's content rect.
+    Gets the control's rectangle area in the window's coordinate space.
 
-     If the control is not yet placed in a window, am empty rect is returned.
-     */
-    zaf::Rect AbsoluteRect() const;
+    @return 
+        The rectangle area of the control in the window's coordinate space. If the control is not
+        in a window, std::nullopt is returned.
+    */
+    std::optional<zaf::Rect> RectInWindow() const noexcept;
 
     /**
-     Get the control's rect which is related to the coordinate system of parent's
-     content rect.
+    Gets the control's rectangle area in its container's coordinate space.
 
-     The default rect is empty.
-     */
+    @return
+        The rectangle area of the control in its container's coordinate space.
+
+    @remark
+        If the control is the root control of a window, the rect is expressed in the coordinate 
+        space of the window's client area; otherwise the rect is expressed in the coordinate space
+        of its parent's content area.
+
+        The default rect of a control is empty.
+    */
     const zaf::Rect& Rect() const {
         return rect_;
     }
 
     /**
-     Set the control's rect.
+    Sets the control's rectangle area in its container's coordinate space.
 
-     See also Rect.
-     */
+    @param rect
+         The rect to be set.
+    */
     void SetRect(const zaf::Rect& rect);
+
+    /**
+    Gets the control's position in the window's coordinate space.
+
+    @return
+        The position of the control in the window's coordinate space. If the control is not in a 
+        window, std::nullopt is returned.
+    */
+    std::optional<zaf::Point> PositionInWindow() const noexcept;
 
     /**
      Get the control's position which is related to the coordinate system of 
@@ -291,7 +309,14 @@ public:
         NeedRelayout();
     }
 
-    zaf::Rect AbsoluteContentRect() const;
+    /**
+    Gets the control's content's rectangle area in the window's coordinate space.
+
+    @return
+        The rectangle area of the control's content in the window's coordinate space. If the 
+        control is not in a window, std::nullopt is returned.
+    */
+    std::optional<zaf::Rect> ContentRectInWindow() const noexcept;
 
     /**
      Get the control's content rect, related to its coordinate system.
