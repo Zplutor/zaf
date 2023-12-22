@@ -290,16 +290,28 @@ void TextBox::HandleMouseUp(const MouseUpInfo& event_info) {
 
 std::size_t TextBox::FindIndexAtPosition(const Point& position) const {
 
-    auto point_in_text_rect = position;
-    point_in_text_rect.SubtractOffset(ContentRect().position);
-    point_in_text_rect.SubtractOffset(text_rect_.position);
-
-    auto hit_test_result = GetTextLayout().HitTestPoint(point_in_text_rect);
+    auto hit_test_result = HitTestAtPosition(position);
     std::size_t result = hit_test_result.Metrics().TextIndex();
     if (hit_test_result.IsTrailingHit()) {
         ++result;
     }
     return result;
+}
+
+
+bool TextBox::IsPositionInsideText(const Point& position) const {
+
+    auto hit_test_result = HitTestAtPosition(position);
+    return hit_test_result.IsInside();
+}
+
+
+HitTestPointResult TextBox::HitTestAtPosition(const Point& position) const {
+
+    auto position_in_text_rect = position;
+    position_in_text_rect.SubtractOffset(ContentRect().position);
+    position_in_text_rect.SubtractOffset(text_rect_.position);
+    return GetTextLayout().HitTestPoint(position_in_text_rect);
 }
 
 

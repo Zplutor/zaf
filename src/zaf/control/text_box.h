@@ -76,7 +76,7 @@ public:
     Finds the nearest text index at the specified position in the coordinate space of the text box.
 
     @param position
-        The position in the coordinate spaces of the text box.
+        The position in the coordinate space of the text box.
 
     @return
         The nearest text index found.
@@ -85,6 +85,21 @@ public:
         Thrown if the operation fails.
     */
     std::size_t FindIndexAtPosition(const Point& position) const;
+
+    /**
+    Determines whether the specified position in the text box's coordinate space is inside the text
+    string.
+
+    @param position
+        The position in the coordinate space of the text box.
+
+    @return
+        Returns true if the position is inside the text string; otherwise returns false.
+
+    @throw af::Error
+        Thrown if the operation fails.
+    */
+    bool IsPositionInsideText(const Point& position) const;
 
 protected:
     void Initialize() override;
@@ -149,6 +164,8 @@ private:
     TextLayout GetTextLayout() const;
 
     void UpdateTextRectOnLayout();
+
+    HitTestPointResult HitTestAtPosition(const Point& position) const;
 
     void HandleMouseDown(const MouseDownInfo& event_info);
     void HandleMouseMove(const MouseMoveInfo& event_info);

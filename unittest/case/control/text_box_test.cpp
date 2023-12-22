@@ -45,3 +45,23 @@ TEST(TextBoxTest, SelectedText) {
     text_box->SetSelectionRange(zaf::Range{ 0, 10 });
     ASSERT_EQ(text_box->SelectedText(), L"0123456789");
 }
+
+
+TEST(TextBoxTest, IsPositionInsideText) {
+
+    auto text_box = zaf::Create<zaf::TextBox>();
+    text_box->SetText(L"IsPositionInsideText");
+
+    auto preferred_size = text_box->CalculatePreferredSize();
+    text_box->SetSize(preferred_size);
+
+    ASSERT_TRUE(text_box->IsPositionInsideText(zaf::Point{ 0, 0 }));
+    ASSERT_FALSE(text_box->IsPositionInsideText(zaf::Point{ -1, 0 }));
+    ASSERT_FALSE(text_box->IsPositionInsideText(zaf::Point{ 0, -1 }));
+    ASSERT_FALSE(text_box->IsPositionInsideText(zaf::Point{ -1, -1 }));
+    ASSERT_FALSE(text_box->IsPositionInsideText(zaf::Point{ preferred_size.width + 1, 0 }));
+    ASSERT_FALSE(text_box->IsPositionInsideText(zaf::Point{ 0, preferred_size.height + 1 }));
+    ASSERT_FALSE(text_box->IsPositionInsideText(zaf::Point{ 
+        preferred_size.width + 1, preferred_size.height + 1
+    }));
+}
