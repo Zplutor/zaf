@@ -1111,6 +1111,9 @@
     <ClCompile Include="src\zaf\control\control_parser.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\scrollable_control_parser.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2516,6 +2519,9 @@
       <Filter>zaf\control\text_box</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\control_parser.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\scrollable_control_parser.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>

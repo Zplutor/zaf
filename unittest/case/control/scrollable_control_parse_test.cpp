@@ -1,6 +1,10 @@
 #include <gtest/gtest.h>
+#include <zaf/base/as.h>
+#include <zaf/base/error/basic_error.h>
+#include <zaf/control/label.h>
 #include <zaf/control/scrollable_control.h>
 #include "case/parsing/parsers/utility.h"
+#include "utility/assert.h"
 
 using namespace zaf;
 
@@ -70,3 +74,70 @@ TEST(ScrollableControlParseTest, AutoScrollContentWidth) {
 }
 
 
+TEST(ScrollableControlParseTest, ScrollContent) {
+
+    auto xaml = LR"(
+        <ScrollableControl>
+            <ScrollableControl.ScrollContent>
+                <Label Text="ScrollContent" />
+            </ScrollableControl.ScrollContent>
+        </ScrollableControl>
+    )";
+
+    auto scrollable_control = CreateObjectFromXaml<ScrollableControl>(xaml);
+    ASSERT_NE(scrollable_control, nullptr);
+
+    auto label = As<Label>(scrollable_control->ScrollContent());
+    ASSERT_NE(label, nullptr);
+    ASSERT_EQ(label->Text(), L"ScrollContent");
+}
+
+
+TEST(ScrollableControlParseTest, ContentNode) {
+
+    {
+        auto xaml = LR"(
+            <ScrollableControl>
+                <Label Text="ContentNode" />
+            </ScrollableControl>
+        )";
+        auto scrollable_control = CreateObjectFromXaml<ScrollableControl>(xaml);
+        ASSERT_NE(scrollable_control, nullptr);
+        auto label = As<Label>(scrollable_control->ScrollContent());
+        ASSERT_NE(label, nullptr);
+        ASSERT_EQ(label->Text(), L"ContentNode");
+        //Make sure the content node will not be added to children.
+        ASSERT_EQ(scrollable_control->ChildCount(), 4);
+    }
+
+    //Empty content nodes.
+    {
+        auto xaml = LR"(
+            <ScrollableControl>
+            </ScrollableControl>
+        )";
+        auto scrollable_control = CreateObjectFromXaml<ScrollableControl>(xaml);
+        ASSERT_NE(scrollable_control, nullptr);
+    }
+
+    //Multiple content nodes are not allowed.
+    {
+        auto xaml = LR"(
+            <ScrollableControl>
+                <Label />
+                <Label />
+            </ScrollableControl>
+        )";
+        ASSERT_THROW_ERRC(CreateObjectFromXaml<ScrollableControl>(xaml), BasicErrc::InvalidValue);
+    }
+
+    //Invalid object.
+    {
+        auto xaml = LR"(
+            <ScrollableControl>
+                <NoThisObject />
+            </ScrollableControl>
+        )";
+        ASSERT_THROW_ERRC(CreateObjectFromXaml<ScrollableControl>(xaml), BasicErrc::InvalidValue);
+    }
+}
