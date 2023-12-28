@@ -4,6 +4,7 @@
 #include <zaf/control/control.h>
 #include <zaf/object/object.h>
 #include <zaf/object/object_type.h>
+#include <zaf/object/parsing/helpers.h>
 #include <zaf/object/parsing/xaml_reader.h>
 #include <zaf/object/type_definition.h>
 #include "utility/assert.h"
@@ -96,17 +97,29 @@ ZAF_DEFINE_TYPE_END
 
 TEST(ParsingTest, ParserLink) {
 
-    auto xaml = LR"(<Derived DerivedValue="198" BaseValue="891" DerivedValue2="981" />)";
-    auto reader = zaf::XamlReader::FromString(xaml);
-    auto node = reader->Read();
+    {
+        auto xaml = LR"(<Base BaseValue="891" />)";
+        auto base = zaf::CreateObjectFromXaml<Base>(xaml);
+        ASSERT_NE(base, nullptr);
+        ASSERT_EQ(base->base_value, 891);
+    }
 
-    auto parser = Derived2::Type->GetParser();
-    Derived2 object;
-    parser->ParseFromNode(*node, object);
+    {
+        auto xaml = LR"(<Derived DerivedValue="198" BaseValue="891" />)";
+        auto derived = zaf::CreateObjectFromXaml<Derived>(xaml);
+        ASSERT_NE(derived, nullptr);
+        ASSERT_EQ(derived->base_value, 891);
+        ASSERT_EQ(derived->derived_value, 198);
+    }
 
-    ASSERT_EQ(object.base_value, 891);
-    ASSERT_EQ(object.derived_value, 198);
-    ASSERT_EQ(object.derived_value2, 981);
+    {
+        auto xaml = LR"(<Derived2 DerivedValue="198" BaseValue="891" DerivedValue2="981" />)";
+        auto derived2 = zaf::CreateObjectFromXaml<Derived2>(xaml);
+        ASSERT_NE(derived2, nullptr);
+        ASSERT_EQ(derived2->base_value, 891);
+        ASSERT_EQ(derived2->derived_value, 198);
+        ASSERT_EQ(derived2->derived_value2, 981);
+    }
 }
 
 

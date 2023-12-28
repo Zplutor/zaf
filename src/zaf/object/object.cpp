@@ -26,6 +26,11 @@ public:
     std::shared_ptr<Object> CreateInstance() const override {
         return Create<Object>();
     }
+
+    ObjectParser* GetParser() const {
+        static ObjectParser default_parser;
+        return &default_parser;
+    }
 };
 
 

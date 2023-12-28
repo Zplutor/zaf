@@ -4,8 +4,7 @@
 namespace zaf {
 
 ObjectParser* ObjectType::GetParser() const {
-    static ObjectParser default_parser;
-    return &default_parser;
+    return GetBase()->GetParser();
 }
 
 
