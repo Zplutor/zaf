@@ -26,6 +26,8 @@ public:
 
     void ParseFromNode(const zaf::XamlNode& node, zaf::Object& object) override {
 
+        __super::ParseFromNode(node, object);
+
         auto base_value = node.FindAttribute(L"BaseValue");
         if (base_value) {
             dynamic_cast<Base&>(object).base_value = zaf::ToNumeric<int>(base_value->Value());
@@ -68,13 +70,15 @@ public:
     int derived_value2{};
 };
 
-class Derived2Praser : public zaf::ObjectParser {
+class Derived2Praser : public BaseParser {
 public:
     void ParseFromAttribute(const std::wstring& attribute_value, zaf::Object& object) override {
 
     }
 
     void ParseFromNode(const zaf::XamlNode& node, zaf::Object& object) override {
+
+        __super::ParseFromNode(node, object);
 
         auto base_value = node.FindAttribute(L"DerivedValue2");
         if (base_value) {

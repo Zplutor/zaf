@@ -1,0 +1,40 @@
+#include <zaf/control/control_parser.h>
+#include <zaf/base/as.h>
+#include <zaf/control/control.h>
+#include <zaf/object/parsing/xaml_node_parse_helper.h>
+
+namespace zaf {
+
+void ControlParser::ParseFromNode(const XamlNode& node, Object& object) {
+
+    __super::ParseFromNode(node, object);
+
+    auto& control = As<Control>(object);
+    auto update_guard = control.BeginUpdate();
+
+    XamlNodeParseHelper helper(node, control.GetType());
+    auto tab_index = helper.GetFloatProperty(L"TabIndex");
+    if (tab_index) {
+        control.SetTabIndex(static_cast<std::size_t>(*tab_index));
+    }
+
+    ParseContentNodes(node.GetContentNodes(), control);
+}
+
+
+void ControlParser::ParseContentNodes(
+    const std::vector<std::shared_ptr<XamlNode>>& nodes,
+    Control& control) {
+
+    for (const auto& each_node : nodes) {
+
+        auto child_control = internal::CreateObjectFromNode<Control>(each_node);
+        if (!child_control) {
+            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        }
+
+        control.AddChild(child_control);
+    }
+}
+
+}

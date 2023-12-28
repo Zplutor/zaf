@@ -17,6 +17,8 @@ public:
 
     void ParseFromNode(const XamlNode& node, Object& object) override {
 
+        __super::ParseFromNode(node, object);
+
         XamlNodeParseHelper helper(node, object.GetType());
 
         auto uri = helper.GetStringProperty(L"URI");

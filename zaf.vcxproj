@@ -89,6 +89,7 @@
     <ClCompile Include="src\zaf\control\combo_box.cpp" />
     <ClCompile Include="src\zaf\control\control.cpp" />
     <ClCompile Include="src\zaf\control\control_binder.cpp" />
+    <ClCompile Include="src\zaf\control\control_parser.cpp" />
     <ClCompile Include="src\zaf\control\event\check_state_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\click_info.cpp" />
     <ClCompile Include="src\zaf\control\event\combo_box_selection_changed_info.cpp" />
@@ -285,8 +286,8 @@
     <ClCompile Include="src\zaf\object\object.cpp" />
     <ClCompile Include="src\zaf\object\object_type.cpp" />
     <ClCompile Include="src\zaf\object\parsing\helpers.cpp" />
-    <ClCompile Include="src\zaf\object\parsing\internal\default_object_parser.cpp" />
     <ClCompile Include="src\zaf\object\parsing\internal\utility.cpp" />
+    <ClCompile Include="src\zaf\object\parsing\object_parser.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_node.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_node_parse_helper.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_reader.cpp" />
@@ -450,6 +451,7 @@
     <ClInclude Include="src\zaf\control\combo_box.h" />
     <ClInclude Include="src\zaf\control\control.h" />
     <ClInclude Include="src\zaf\control\control_binder.h" />
+    <ClInclude Include="src\zaf\control\control_parser.h" />
     <ClInclude Include="src\zaf\control\control_update_guard.h" />
     <ClInclude Include="src\zaf\control\event\check_state_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\click_info.h" />
@@ -724,7 +726,6 @@
     <ClInclude Include="src\zaf\object\object_property.h" />
     <ClInclude Include="src\zaf\object\object_type.h" />
     <ClInclude Include="src\zaf\object\parsing\helpers.h" />
-    <ClInclude Include="src\zaf\object\parsing\internal\default_object_parser.h" />
     <ClInclude Include="src\zaf\object\parsing\internal\utility.h" />
     <ClInclude Include="src\zaf\object\parsing\object_parser.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_node.h" />

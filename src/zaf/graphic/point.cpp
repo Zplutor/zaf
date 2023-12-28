@@ -24,10 +24,6 @@ public:
             ZAF_THROW_ERRC(BasicErrc::InvalidValue);
         }
     }
-
-    void ParseFromNode(const XamlNode& node, Object& object) override {
-
-    }
 };
 
 }

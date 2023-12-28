@@ -45,7 +45,7 @@ public:
     /**
      Get the parser for the type.
      */
-    ObjectParser* GetParser() const;
+    virtual ObjectParser* GetParser() const;
 
     const std::vector<ObjectProperty*>& GetProperties() const {
         return properties_;
@@ -53,20 +53,12 @@ public:
 
     ObjectProperty* GetProperty(std::wstring_view name) const;
 
-protected:
-    virtual ObjectParser* GetSelfParser() const;
-
 private:
     friend class internal::PropertyRegistrar;
 
     void RegisterProperty(ObjectProperty*);
 
 private:
-    void InitializeParserLink() const;
-
-private:
-    mutable std::once_flag parser_once_flag_;
-    mutable std::unique_ptr<ObjectParser> parser_;
     std::vector<ObjectProperty*> properties_;
 };
 

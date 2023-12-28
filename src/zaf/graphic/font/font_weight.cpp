@@ -17,6 +17,8 @@ public:
 
     void ParseFromNode(const XamlNode& node, Object& object) override {
 
+        __super::ParseFromNode(node, object);
+
         auto content_string = GetContentStringFromXamlNode(node);
         if (content_string) {
             Parse(*content_string, object);

@@ -20,6 +20,8 @@ public:
 
     void ParseFromNode(const XamlNode& node, Object& object) override {
 
+        __super::ParseFromNode(node, object);
+
         if (node.GetContentNodes().empty()) {
             As<T>(object).SetValue(typename T::ValueType{});
             return;

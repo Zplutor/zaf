@@ -1,4 +1,4 @@
-#include <zaf/object/parsing/internal/default_object_parser.h>
+#include <zaf/object/parsing/object_parser.h>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/base/string/split.h>
 #include <zaf/object/object.h>
@@ -8,7 +8,7 @@
 #include <zaf/object/parsing/internal/utility.h>
 #include <zaf/object/creation.h>
 
-namespace zaf::internal {
+namespace zaf {
 namespace {
 
 ObjectProperty* FindPropertyByAttribute(const Object& object, const std::wstring& property_name) {
@@ -29,7 +29,7 @@ ObjectProperty* FindPropertyByAttribute(const Object& object, const std::wstring
 
 
 std::shared_ptr<Object> ParsePropertyValueFromAttribute(
-    const ObjectProperty& property, 
+    const ObjectProperty& property,
     const std::wstring& attribute_value) {
 
     if (property.IsValueTypeDynamic()) {
@@ -146,13 +146,12 @@ void ParseNodes(const XamlNode& node, Object& object) {
 
 }
 
-
-void DefaultObjectParser::ParseFromAttribute(const std::wstring& attribute_value, Object& object) {
+void ObjectParser::ParseFromAttribute(const std::wstring& attribute_value, Object& object) {
     //Nothing to do.
 }
 
 
-void DefaultObjectParser::ParseFromNode(const XamlNode& node, Object& object) {
+void ObjectParser::ParseFromNode(const XamlNode& node, Object& object) {
 
     ParseAttributes(node, object);
     ParseNodes(node, object);

@@ -77,11 +77,9 @@ zaf::Rect ToAlignedPixelsRect(const zaf::Rect& rect, float dpi) {
 
 class WindowParser : public ObjectParser {
 public:
-    void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
-        //Nothing to do.
-    }
-
     void ParseFromNode(const XamlNode& node, Object& reflection_object) override {
+
+        __super::ParseFromNode(node, reflection_object);
 
         auto& window = dynamic_cast<Window&>(reflection_object);
         ParseControls(node, window);

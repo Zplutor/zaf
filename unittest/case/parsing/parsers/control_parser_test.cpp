@@ -391,7 +391,7 @@ TEST(ControlParserTest, ParseChildrenInvalidName) {
         auto control = CreateControlFromXaml(xaml);
     }
     catch (const zaf::Error& error) {
-        has_exception = (error.Code() == zaf::BasicErrc::NameNotFound);
+        has_exception = (error.Code() == zaf::BasicErrc::InvalidValue);
     }
     ASSERT_TRUE(has_exception);
 }

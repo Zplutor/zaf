@@ -6,6 +6,7 @@
 #include <zaf/base/define.h>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/check.h>
+#include <zaf/control/control_parser.h>
 #include <zaf/control/internal/cached_painting.h>
 #include <zaf/control/internal/control_updating.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
@@ -17,7 +18,6 @@
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/image/image.h>
 #include <zaf/internal/theme.h>
-#include <zaf/object/parsing/xaml_node_parse_helper.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 #include <zaf/window/inspector/internal/inspector_port.h>
@@ -30,35 +30,6 @@
 
 namespace zaf {
 namespace {
-
-class ControlParser : public ObjectParser {
-public:
-    void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
-
-    }
-
-    void ParseFromNode(const XamlNode& node, Object& object) override {
-
-        auto& control = As<Control>(object);
-        auto update_guard = control.BeginUpdate();
-
-        XamlNodeParseHelper helper(node, control.GetType());
-        auto tab_index = helper.GetFloatProperty(L"TabIndex");
-        if (tab_index) {
-            control.SetTabIndex(static_cast<std::size_t>(*tab_index));
-        }
-
-        for (const auto& each_node : node.GetContentNodes()) {
-
-            auto child_control = internal::CreateObjectFromNode<Control>(each_node);
-            if (!child_control) {
-                ZAF_THROW_ERRC(BasicErrc::NameNotFound);
-            }
-
-            control.AddChild(child_control);
-        }
-    }
-};
 
 float GetDPIFromWindow(const std::shared_ptr<Window>& window) {
     if (window) {

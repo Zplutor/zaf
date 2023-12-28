@@ -29,7 +29,7 @@ public:                                                                         
     }                                                                                                                                                                                         
 
 #define ZAF_DEFINE_TYPE_PARSER(ParserType)                                                      \
-    zaf::ObjectParser* GetSelfParser() const override {                                         \
+    zaf::ObjectParser* GetParser() const override {                                             \
         static ParserType parser;                                                               \
         return &parser;                                                                         \
     }                                                                                           
