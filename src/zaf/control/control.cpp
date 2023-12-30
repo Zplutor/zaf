@@ -1026,6 +1026,14 @@ void Control::SetParent(const std::shared_ptr<Control>& parent) {
 }
 
 
+void Control::SetChildren(const std::vector<std::shared_ptr<Control>>& children) {
+
+    auto update_guard = BeginUpdate();
+    RemoveAllChildren();
+    AddChildren(children);
+}
+
+
 void Control::AddChild(const std::shared_ptr<Control>& child) {
 
     ZAF_EXPECT(child.get() != this);

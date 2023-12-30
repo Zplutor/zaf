@@ -434,6 +434,14 @@ public:
     }
 
     /**
+    Removes all existing children and adds the specified children to the control.
+
+    @param children
+        The new children to be added.
+    */
+    void SetChildren(const std::vector<std::shared_ptr<Control>>& children);
+
+    /**
      Add specified child to the control.
      */
     void AddChild(const std::shared_ptr<Control>& child);
