@@ -14,7 +14,7 @@ namespace zaf::rx {
 /**
 Creates an observable that emits no items but terminates normally.
 */
-template<typename T>
+template<typename T = zaf::None>
 Observable<T> Empty() {
     return Observable<T>{ internal::EmptyObservable::Instance() };
 }
