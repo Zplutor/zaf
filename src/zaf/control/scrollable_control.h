@@ -288,7 +288,6 @@ private:
     float horizontal_scroll_bar_thickness_{ 17 };
 
     std::unique_ptr<internal::ScrollableControlLayouter> layouter_;
-    bool is_layouting_{};
     Subscription scroll_content_rect_change_subscription_;
 };
 

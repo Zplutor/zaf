@@ -1,6 +1,5 @@
 #include <zaf/control/scrollable_control.h>
 #include <zaf/base/as.h>
-#include <zaf/base/auto_reset.h>
 #include <zaf/control/internal/scrollable_control/general_scrolling_layouter.h>
 #include <zaf/control/internal/scrollable_control/self_scrolling_layouter.h>
 #include <zaf/control/rich_edit.h>
@@ -145,18 +144,12 @@ void ScrollableControl::InitializeLayouter() {
 void ScrollableControl::Layout(const zaf::Rect& previous_rect) {
 
     if (layouter_) {
-
-        auto auto_reset = MakeAutoReset(is_layouting_, true);
         layouter_->Layout();
     }
 }
 
 
 void ScrollableControl::OnScrollContentRectChange(const RectChangedInfo& event_info) {
-
-    if (is_layouting_) {
-        return;
-    }
 
     if (As<Control>(event_info.Source())->Size() != event_info.PreviousRect().size) {
         NeedRelayout();

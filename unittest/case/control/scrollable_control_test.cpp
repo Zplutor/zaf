@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <zaf/base/as.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scrollable_control.h>
 #include <zaf/creation.h>
@@ -30,6 +31,34 @@ TEST(ScrollableControlTest, AutoScrollContentSize) {
     scrollable_control->SetAutoScrollContentSize(false);
     scroll_content_control->SetSize(Size{ 10, 20 });
     ASSERT_EQ(scroll_content_control->Size(), Size(10, 20));
+}
+
+
+//Simulates that the height changs when the width changes.
+class AutoSizeControl : public Control {
+protected:
+    void OnRectChanged(const RectChangedInfo& event_info) override {
+
+        __super::OnRectChanged(event_info);
+
+        if (this->Width() != event_info.PreviousRect().size.width) {
+            this->SetFixedHeight(this->Width() * 2);
+        }
+    }
+};
+
+//Verifies that the scroll value remains correct when the size of the scroll content changes during
+//ScrollableControl layout.
+TEST(ScrollableControlTest, ChangeScrollContentSizeDuringLayout) {
+
+    auto scroll_content = Create<AutoSizeControl>();
+    auto scrollable_control = Create<ScrollableControl>();
+    scrollable_control->SetBorder({});
+    scrollable_control->SetScrollBarThickness(10);
+    scrollable_control->SetScrollContent(scroll_content);
+    scrollable_control->SetSize(Size{ 100, 100 });
+
+    ASSERT_EQ(scrollable_control->VerticalScrollBar()->MaxValue(), 90);
 }
 
 

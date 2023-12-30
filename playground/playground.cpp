@@ -70,10 +70,10 @@ protected:
 
         auto scrollable_control = zaf::Create<zaf::ScrollableControl>();
         scrollable_control->SetUseOverlayScrollBars(true);
+        scrollable_control->SetFixedSize(zaf::Size{ 400, 400 });
 
-        auto content = zaf::Create<zaf::TextBox>();
-        content->SetFontSize(20);
-        content->SetText(L"123 abc 0xab23d  ¡°Ê²Ã´¶«Î÷¡±");
+        auto content = zaf::Create<zaf::Control>();
+        //content->SetBackgroundColor(zaf::Color::Green());
         content->SetFixedSize(zaf::Size{ 500, 500 });
 
         scrollable_control->SetScrollContent(content);
@@ -83,6 +83,11 @@ protected:
         auto button = zaf::Create<zaf::Button>();
         button->SetFixedHeight(30);
         this->RootControl()->AddChild(button);
+
+        Subscriptions() += button->ClickEvent().Subscribe(std::bind([content]() {
+        
+            content->SetFixedHeight(600);
+        }));
     }
 };
 
