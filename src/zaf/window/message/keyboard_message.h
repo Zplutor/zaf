@@ -5,20 +5,11 @@
 namespace zaf {
 
 /**
- Wraps information of a Win32 keyboard message.   
- */
-class KeyboardMessage : public MessageShim {
-public:
-    using MessageShim::MessageShim;
-};
-
-
-/**
  Wraps information of a key message.
  */
-class KeyMessage : public KeyboardMessage {
+class KeyMessage : public MessageShim {
 public:
-    using KeyboardMessage::KeyboardMessage;
+    using MessageShim::MessageShim;
 
     /**
      Get the virtual key.
@@ -32,9 +23,9 @@ public:
 /**
  Wraps information of a char message.
  */
-class CharMessage : public KeyboardMessage {
+class CharMessage : public MessageShim {
 public:
-    using KeyboardMessage::KeyboardMessage;
+    using MessageShim::MessageShim;
 
     /**
      Get the char.
