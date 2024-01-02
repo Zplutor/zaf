@@ -113,3 +113,21 @@ TEST(RxMapTest, ErrorInMapper) {
         ASSERT_EQ(test_data.completed_count, 0);
     }
 }
+
+
+TEST(RxMapTest, SubscribeMultipleTimes) {
+
+    int call_times{};
+
+    zaf::Subject<int> subject;
+    auto observable = subject.AsObservable().Map<std::string>([&](int value) {
+        ++call_times;
+        return std::to_string(value);
+    });
+
+    auto sub1 = observable.Subscribe();
+    auto sub2 = observable.Subscribe();
+
+    subject.AsObserver().OnNext(10);
+    ASSERT_EQ(call_times, 2);
+}

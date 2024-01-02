@@ -76,7 +76,7 @@ MapOperator::MapOperator(std::shared_ptr<InnerObservable> source, Mapper mapper)
 std::shared_ptr<InnerSubscription> MapOperator::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
-    auto producer = std::make_shared<MapProducer>(observer, std::move(mapper_));
+    auto producer = std::make_shared<MapProducer>(observer, mapper_);
     producer->Run(source_);
     return std::make_shared<InnerSubscription>(std::move(producer));
 }

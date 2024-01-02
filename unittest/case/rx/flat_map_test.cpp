@@ -121,3 +121,21 @@ TEST(RxFlatMapTest, ErrorInMapper) {
     ASSERT_EQ(error->Code(), zaf::BasicErrc::InvalidValue);
     ASSERT_EQ(completed_count, 0);
 }
+
+
+TEST(RxFlatMapTest, SubscribeMultipleTimes) {
+
+    int call_times{};
+
+    zaf::Subject<int> subject;
+    auto observable = subject.AsObservable().FlatMap<std::string>([&](int value) {
+        ++call_times;
+        return zaf::rx::Just(std::to_string(value));
+    });
+
+    auto sub1 = observable.Subscribe();
+    auto sub2 = observable.Subscribe();
+
+    subject.AsObserver().OnNext(11);
+    ASSERT_EQ(call_times, 2);
+}

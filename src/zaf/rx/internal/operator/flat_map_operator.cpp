@@ -134,7 +134,7 @@ FlatMapOperator::FlatMapOperator(std::shared_ptr<InnerObservable> source, FlatMa
 std::shared_ptr<InnerSubscription> FlatMapOperator::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
-    auto producer = std::make_shared<FlatMapProducer>(observer, std::move(mapper_));
+    auto producer = std::make_shared<FlatMapProducer>(observer, mapper_);
     producer->Run(source_);
     return std::make_shared<InnerSubscription>(std::move(producer));
 }
