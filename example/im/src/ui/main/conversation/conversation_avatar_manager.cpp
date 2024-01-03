@@ -185,7 +185,7 @@ static void DrawMemberAvatarImagesToConversationAvatarRenderer(
         }
 
         auto avatar_rect = member_avatar_rects[index];
-        avatar_rect = zaf::Align(avatar_rect);
+        avatar_rect = zaf::ToPixelAligned(avatar_rect, renderer.GetDPI());
 
         auto bitmap_scaler = zaf::wic::ImagingFactory::Instance().CreateBitmapScaler();
         bitmap_scaler.Initialize(

@@ -41,8 +41,7 @@ TEST(WindowTest, SetRectBeforeCreate) {
 
     auto holder = window->CreateHandle();
     //After creating the window, Rect() should use the actual window rect.
-    auto pixel_rect = zaf::Align(zaf::FromDIPs(initial_rect, window->GetDPI()));
-    auto rect_after_create = zaf::ToDIPs(pixel_rect, window->GetDPI());
+    auto rect_after_create = zaf::ToPixelAligned(initial_rect, window->GetDPI());
     ASSERT_EQ(window->Rect(), rect_after_create);
 
     window->Destroy();
@@ -60,8 +59,7 @@ TEST(WindowTest, SetRectAfterCreate) {
     window->SetRect(rect);
 
     //After calling SetRect(), the rect should be adjusted to the actual window rect.
-    auto pixel_rect = zaf::Align(zaf::FromDIPs(rect, window->GetDPI()));
-    auto rect_after_set = zaf::ToDIPs(pixel_rect, window->GetDPI());
+    auto rect_after_set = zaf::ToPixelAligned(rect, window->GetDPI());
     ASSERT_EQ(window->Rect(), rect_after_set);
 
     window->Destroy();

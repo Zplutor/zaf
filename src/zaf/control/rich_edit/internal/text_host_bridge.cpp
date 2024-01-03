@@ -299,9 +299,7 @@ HRESULT TextHostBridge::TxGetClientRect(LPRECT prc) {
 
     absolute_content_rect->position.y += rich_edit->GetContentVerticalOffset();
 
-    auto pixels_rect = FromDIPs(*absolute_content_rect, rich_edit->GetDPI());
-    auto aligned_rect = Align(pixels_rect);
-
+    auto aligned_rect = ToPixelAlignedInPixels(*absolute_content_rect, rich_edit->GetDPI());
     *prc = aligned_rect.ToRECT();
     return S_OK;
 }

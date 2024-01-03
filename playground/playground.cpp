@@ -59,6 +59,18 @@
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
+class Control : public zaf::Control {
+protected:
+    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
+
+        __super::Paint(canvas, dirty_rect);
+
+        canvas.SetBrushWithColor(zaf::Color::Red());
+
+        canvas.DrawLine(zaf::Point(0.f, 0.f), zaf::Point(10.f, 0.f), 1.f);
+    }
+};
+
 class Window : public zaf::Window {
 protected:
     void AfterParse() override {
@@ -68,26 +80,23 @@ protected:
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        auto scrollable_control = zaf::Create<zaf::ScrollableControl>();
-        scrollable_control->SetUseOverlayScrollBars(true);
-        scrollable_control->SetFixedSize(zaf::Size{ 400, 400 });
+        /*
+        auto control = zaf::Create<Control>();
+        this->RootControl()->AddChild(control);
+        */
 
-        auto content = zaf::Create<zaf::Control>();
-        //content->SetBackgroundColor(zaf::Color::Green());
-        content->SetFixedSize(zaf::Size{ 500, 500 });
+        auto label = zaf::Create<zaf::Label>();
+        label->SetText(L"ing");
+        label->SetFontSize(16);
+        label->SetAutoSize(true);
+        //label->SetFixedHeight(21.f);
+        //label->SetBackgroundColor(zaf::Color::Red());
 
-        scrollable_control->SetScrollContent(content);
-
-        this->RootControl()->AddChild(scrollable_control);
-
-        auto button = zaf::Create<zaf::Button>();
-        button->SetFixedHeight(30);
-        this->RootControl()->AddChild(button);
-
-        Subscriptions() += button->ClickEvent().Subscribe(std::bind([content]() {
-        
-            content->SetFixedHeight(600);
+        this->Subscriptions() += label->MouseUpEvent().Subscribe(std::bind([label]() {
+            label->NeedRepaint();
         }));
+        
+        this->RootControl()->AddChild(label);
     }
 };
 

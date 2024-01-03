@@ -8,6 +8,7 @@ void GeometrySink::BeginFigure(const Point& start_position, BeginFigureOption op
     Point aligned_start_position = internal::AlignInRelatedCoordinateSystem(
         start_position,
         0,
+        96.f,
         coordinate_origin_,
         aligned_coordinate_origin_);
 
@@ -22,6 +23,7 @@ void GeometrySink::AddLine(const Point& end_point) {
     Point aligned_end_point = internal::AlignInRelatedCoordinateSystem(
         end_point, 
         0,
+        96.f,
         coordinate_origin_, 
         aligned_coordinate_origin_);
 
@@ -39,6 +41,7 @@ void GeometrySink::AddLines(const std::vector<Point>& points) {
         Point aligned_point = internal::AlignInRelatedCoordinateSystem(
             each_point, 
             0,
+            96.f,
             coordinate_origin_, 
             aligned_coordinate_origin_);
 

@@ -646,7 +646,7 @@ void TextBox::ShowCaret(const HitTestMetrics& metrics) {
     zaf::Rect caret_rect{ metrics.Left(), metrics.Top(), 1, metrics.Height() };
     caret_rect.AddOffset(text_rect_.position);
 
-    caret_->SetRect(Align(caret_rect));
+    caret_->SetRect(ToPixelAligned(caret_rect, this->GetDPI()));
 
     if (this->IsFocused()) {
         caret_->SetIsVisible(true);

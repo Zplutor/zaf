@@ -224,6 +224,7 @@ private:
         return internal::AlignInRelatedCoordinateSystem(
             object, 
             stroke_width, 
+            renderer_.GetDPI(),
             current_region.rect.position, 
             current_region.aligned_rect.position);
     }

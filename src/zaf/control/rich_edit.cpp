@@ -244,12 +244,12 @@ void RichEdit::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     zaf::Rect bounds_in_content;
     bounds_in_content.position.y = GetContentVerticalOffset();
     bounds_in_content.size = content_rect.size;
-    bounds_in_content = Align(bounds_in_content);
+    bounds_in_content = ToPixelAligned(bounds_in_content, this->GetDPI());
     auto bounds_rect = FromDIPs(bounds_in_content, this->GetDPI()).ToRECTL();
 
     zaf::Rect update_area_in_content = dirty_rect;
     update_area_in_content.SubtractOffset(content_rect.position);
-    update_area_in_content = Align(update_area_in_content);
+    update_area_in_content = ToPixelAligned(update_area_in_content, this->GetDPI());
     auto update_rect = FromDIPs(update_area_in_content, this->GetDPI()).ToRECT();
 
     text_service_->TxDrawD2D(

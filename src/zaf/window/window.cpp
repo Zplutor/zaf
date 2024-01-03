@@ -70,11 +70,6 @@ void RouteFocusEventGeneric(
 }
 
 
-zaf::Rect ToAlignedPixelsRect(const zaf::Rect& rect, float dpi) {
-    return Align(FromDIPs(rect, dpi));
-}
-
-
 class WindowParser : public ObjectParser {
 public:
     void ParseFromNode(const XamlNode& node, Object& reflection_object) override {
@@ -248,7 +243,7 @@ LRESULT Window::HandleWMCREATE(const Message& message) {
 
     auto dpi = static_cast<float>(GetDpiForWindow(message.WindowHandle()));
     auto initial_rect = GetInitialRect(dpi);
-    auto rect_in_pixels = ToAlignedPixelsRect(initial_rect, dpi);
+    auto rect_in_pixels = ToPixelAlignedInPixels(initial_rect, dpi);
 
     SetWindowPos(
         message.WindowHandle(),
@@ -781,7 +776,7 @@ void Window::PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect) 
 void Window::NeedRepaintRect(const zaf::Rect& rect) {
 
     if (handle_ != nullptr) {
-        RECT win32_rect = ToAlignedPixelsRect(rect, GetDPI()).ToRECT();
+        RECT win32_rect = ToPixelAlignedInPixels(rect, GetDPI()).ToRECT();
         InvalidateRect(handle_, &win32_rect, FALSE);
     }
 }
@@ -1632,7 +1627,7 @@ void Window::SetRect(const zaf::Rect& rect) {
     }
     else {
 
-        auto new_rect = ToAlignedPixelsRect(rect, GetDPI());
+        auto new_rect = ToPixelAlignedInPixels(rect, GetDPI());
 
         SetWindowPos(
             handle_,
@@ -1686,7 +1681,7 @@ zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) c
     auto dpi = GetDPI();
 
     zaf::Rect rect{ zaf::Point{}, content_size };
-    auto rounded_rect = ToAlignedPixelsRect(rect, dpi);
+    auto rounded_rect = ToPixelAlignedInPixels(rect, dpi);
     auto adjusted_rect = rounded_rect.ToRECT();
 
     DWORD style{};

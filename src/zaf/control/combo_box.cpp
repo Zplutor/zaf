@@ -371,7 +371,7 @@ void ComboBox::PopupDropDownWindow() {
     window_rect.size.height =
         CalculateDropDownListHeight(visible_item_count) + drop_down_list_box_border.top + drop_down_list_box_border.bottom;
 
-    window_rect = Align(window_rect);
+    window_rect = ToPixelAligned(window_rect, window->GetDPI());
 
     POINT screen_position = FromDIPs(window_rect.position, window->GetDPI()).ToPOINT();
     ClientToScreen(window->Handle(), &screen_position);

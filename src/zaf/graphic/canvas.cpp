@@ -53,7 +53,7 @@ internal::CanvasRegion Canvas::CreateNewRegion(
     if (current_region) {
         new_region.rect.AddOffset(current_region->rect.position);
     }
-    new_region.aligned_rect = Align(new_region.rect);
+    new_region.aligned_rect = ToPixelAligned(new_region.rect, renderer_.GetDPI());
 
     new_region.paintable_rect = paintable_rect;
     if (current_region) {
@@ -61,7 +61,7 @@ internal::CanvasRegion Canvas::CreateNewRegion(
         new_region.paintable_rect.Intersect(current_region->paintable_rect);
     }
     new_region.paintable_rect.Intersect(new_region.rect);
-    new_region.aligned_paintable_rect = Align(new_region.paintable_rect);
+    new_region.aligned_paintable_rect = ToPixelAligned(new_region.paintable_rect, renderer_.GetDPI());
     return new_region;
 }
 
@@ -352,7 +352,7 @@ void Canvas::DrawGeometryFrame(
     Geometry drew_geometry;
 
     //The geometry is not aligned for line, we need to do it by setting a new transform here.
-    float offset = AlignmentOffsetForLine(stroke_width);
+    float offset = AlignmentOffsetForLine(stroke_width, 96.f);
     if (offset != 0) {
         drew_geometry = GraphicFactory::Instance().CreateTransformedGeometry(
             geometry,
