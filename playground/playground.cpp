@@ -56,6 +56,8 @@
 #include <zaf/control/rich_edit/embedded_object.h>
 #include <zaf/control/rich_edit/ole_callback.h>
 #include <zaf/control/text_box.h>
+#include <zaf/graphic/graphic_factory.h>
+#include <zaf/graphic/stroke_properties.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
@@ -67,6 +69,12 @@ protected:
 
         canvas.SetBrushWithColor(zaf::Color::Red());
 
+        zaf::StrokeProperties stroke_properties;
+        stroke_properties.SetStartCapStyle(zaf::Stroke::CapStyle::Square);
+        auto stroke = zaf::GraphicFactory::Instance().CreateStroke(stroke_properties);
+
+        canvas.SetStroke(stroke);
+
         canvas.DrawLine(zaf::Point(0.f, 0.f), zaf::Point(10.f, 0.f), 1.f);
     }
 };
@@ -77,26 +85,25 @@ protected:
 
         __super::AfterParse();
 
+        auto g = new CustomPathGeometry();
+
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
-        this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
+        //this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        /*
-        auto control = zaf::Create<Control>();
-        this->RootControl()->AddChild(control);
-        */
+        auto check_box = zaf::Create<zaf::CheckBox>();
+        check_box->SetPosition(zaf::Point{ 0.7f, 0.7f });
+        check_box->SetText(L"ing");
+        check_box->SetFontSize(16);
+        check_box->SetAutoSize(true);
 
-        auto label = zaf::Create<zaf::Label>();
-        label->SetText(L"ing");
-        label->SetFontSize(16);
-        label->SetAutoSize(true);
-        //label->SetFixedHeight(21.f);
-        //label->SetBackgroundColor(zaf::Color::Red());
-
-        this->Subscriptions() += label->MouseUpEvent().Subscribe(std::bind([label]() {
-            label->NeedRepaint();
+        this->Subscriptions() += check_box->MouseUpEvent().Subscribe(std::bind([check_box]() {
+            check_box->NeedRepaint();
         }));
         
-        this->RootControl()->AddChild(label);
+        this->RootControl()->AddChild(check_box);
+
+        //auto control = zaf::Create<Control>();
+        //this->RootControl()->AddChild(control);
     }
 };
 

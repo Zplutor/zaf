@@ -82,10 +82,8 @@ Ellipse ToPixelAligned(const Ellipse& ellipse, float stroke_width, float dpi) {
 
 float AlignmentOffsetForLine(float stroke_width, float dpi) {
 
-    float stroke_width_in_pixels = FromDIPs(stroke_width, dpi);
-
-    if (static_cast<int>(std::ceil(stroke_width_in_pixels)) % 2 != 0) {
-        return 0.5;
+    if (static_cast<int>(std::ceil(stroke_width)) % 2 != 0) {
+        return FromDIPs(0.5f, dpi);
     }
     else {
         return 0;
