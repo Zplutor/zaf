@@ -11,9 +11,9 @@
 namespace zaf {
     
 /**
- Describes a geometric path that can contain lines, arcs, cubic Bezier curves,
- and quadratic Bezier curves.
- */
+Describes a geometric path that can contain lines, arcs, cubic Bezier curves, and quadratic Bezier
+curves.
+*/
 class GeometrySink : public COMObject<ID2D1GeometrySink> {
 public:
     /**
@@ -109,22 +109,15 @@ public:
     };
 
 public:
+    /**
+    Constructs an invalid instance.
+    */
     GeometrySink() = default;
 
     /**
-     Construct the instance with specified handle, as well as an origin of coordinate that used to
-     align geometry.
-
-     The instance takes over the lifetime of handle. It would release the handle when destroyed.
-     */
-    GeometrySink(
-        COMPtr<ID2D1GeometrySink> inner,
-        const Point& coordinate_origin,
-        const Point& aligned_coordinate_origin) 
-        :
-        COMObject(std::move(inner)),
-        coordinate_origin_(coordinate_origin),
-        aligned_coordinate_origin_(aligned_coordinate_origin) { }
+    Constructs an instance with a corresponding COM pointer.
+    */
+    GeometrySink(COMPtr<ID2D1GeometrySink> inner) : COMObject(std::move(inner)) { }
 
     /**
      Specifies the method used to determine which points are inside the geometry
@@ -202,9 +195,6 @@ public:
      Closes the geometry sink, indicates whether it is in an error state, and resets the sink's 
      error state.
 
-     @param error_code
-         An output parameter indicating the error, if any.
-
      Do not close the geometry sink while a figure is still in progress; doing so puts the geometry
      sink in an error state. For the close operation to be successful, there must be one EndFigure
      call for each call to BeginFigure.
@@ -213,10 +203,6 @@ public:
         HRESULT result = Inner()->Close();
         ZAF_THROW_IF_COM_ERROR(result);
     }
-
-private:
-    Point coordinate_origin_;
-    Point aligned_coordinate_origin_;
 };
 
 ZAF_ENABLE_FLAG_ENUM(GeometrySink::SegmentFlag);

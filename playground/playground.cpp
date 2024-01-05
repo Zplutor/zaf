@@ -85,8 +85,6 @@ protected:
 
         __super::AfterParse();
 
-        auto g = new CustomPathGeometry();
-
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         //this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 

@@ -30,7 +30,7 @@ GeometrySink PathGeometry::Open() {
     HRESULT result = Inner()->Open(sink_inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return GeometrySink(sink_inner, coordinate_origin_, aligned_coordinate_origin_);
+    return GeometrySink(sink_inner);
 }
 
 }
