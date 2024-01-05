@@ -184,9 +184,6 @@
     <Filter Include="zaf\control\text_box">
       <UniqueIdentifier>{1787d619-2a2f-408e-9615-1ea92ed1801e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\graphic\geometry\internal">
-      <UniqueIdentifier>{0a60ea2a-6be1-41ab-b279-9a7ab6486fa9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1116,12 +1113,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\scrollable_control_parser.cpp">
       <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\geometry\internal\aligned_geometry_sink.cpp">
-      <Filter>zaf\graphic\geometry\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\geometry\internal\aligned_path_geometry.cpp">
-      <Filter>zaf\graphic\geometry\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2533,11 +2524,8 @@
     <ClInclude Include="src\zaf\control\scrollable_control_parser.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\geometry\internal\aligned_geometry_sink.h">
-      <Filter>zaf\graphic\geometry\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\geometry\internal\aligned_path_geometry.h">
-      <Filter>zaf\graphic\geometry\internal</Filter>
+    <ClInclude Include="src\zaf\graphic\internal\alignment_info.h">
+      <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

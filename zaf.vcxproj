@@ -235,8 +235,6 @@
     <ClCompile Include="src\zaf\graphic\canvas_state_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_style.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_weight.cpp" />
-    <ClCompile Include="src\zaf\graphic\geometry\internal\aligned_geometry_sink.cpp" />
-    <ClCompile Include="src\zaf\graphic\geometry\internal\aligned_path_geometry.cpp" />
     <ClCompile Include="src\zaf\graphic\image\uri_image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\internal\utility.cpp" />
@@ -625,8 +623,6 @@
     <ClInclude Include="src\zaf\graphic\dpi.h" />
     <ClInclude Include="src\zaf\graphic\geometry\arc_segment.h" />
     <ClInclude Include="src\zaf\graphic\geometry\ellipse_geometry.h" />
-    <ClInclude Include="src\zaf\graphic\geometry\internal\aligned_geometry_sink.h" />
-    <ClInclude Include="src\zaf\graphic\geometry\internal\aligned_path_geometry.h" />
     <ClInclude Include="src\zaf\graphic\image\uri_image.h" />
     <ClInclude Include="src\zaf\graphic\image\image.h" />
     <ClInclude Include="src\zaf\graphic\image\internal\utility.h" />
@@ -642,6 +638,7 @@
     <ClInclude Include="src\zaf\graphic\image\wic\metadata_query_reader.h" />
     <ClInclude Include="src\zaf\graphic\image\wic\pixel_format.h" />
     <ClInclude Include="src\zaf\graphic\image\wic\stream.h" />
+    <ClInclude Include="src\zaf\graphic\internal\alignment_info.h" />
     <ClInclude Include="src\zaf\graphic\internal\canvas_region.h" />
     <ClInclude Include="src\zaf\graphic\render_bitmap.h" />
     <ClInclude Include="src\zaf\graphic\bitmap_properties.h" />

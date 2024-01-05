@@ -2,7 +2,6 @@
 #include <dwrite.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/graphic/alignment.h>
-#include <zaf/graphic/geometry/internal/aligned_path_geometry.h>
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/geometry/rounded_rectangle_geometry.h>
@@ -437,16 +436,18 @@ void Canvas::DrawBitmap(
 
 PathGeometry Canvas::CreatePathGeometry() const {
 
+    COMPtr<ID2D1PathGeometry> inner;
+    auto factory = GraphicFactory::Instance().GetDirect2dFactoryHandle();
+    HRESULT hresult = factory->CreatePathGeometry(inner.Reset());
+    ZAF_THROW_IF_COM_ERROR(hresult);
+
+    internal::AlignmentInfo alignment_info;
     const auto& current_region = regions_.top();
+    alignment_info.coordinate_origin = current_region.rect.position;
+    alignment_info.aligned_coordinate_origin = current_region.aligned_rect.position;
+    alignment_info.dpi = renderer_.GetDPI();
 
-    auto geometry = GraphicFactory::Instance().CreatePathGeometry();
-    auto aligned = MakeCOMPtr<internal::AlignedPathGeometry>(
-        geometry.Inner(),
-        current_region.rect.position,
-        current_region.aligned_rect.position,
-        renderer_.GetDPI());
-
-    return PathGeometry{ aligned };
+    return PathGeometry{ std::move(inner), alignment_info };
 }
 
 

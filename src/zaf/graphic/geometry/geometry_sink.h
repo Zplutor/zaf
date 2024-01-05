@@ -1,11 +1,13 @@
 #pragma once
 
+#include <optional>
 #include <vector>
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/flag_enum.h>
 #include <zaf/graphic/geometry/arc_segment.h>
+#include <zaf/graphic/internal/alignment_info.h>
 #include <zaf/graphic/point.h>
 
 namespace zaf {
@@ -117,7 +119,18 @@ public:
     /**
     Constructs an instance with a corresponding COM pointer.
     */
-    GeometrySink(COMPtr<ID2D1GeometrySink> inner) : COMObject(std::move(inner)) { }
+    explicit GeometrySink(COMPtr<ID2D1GeometrySink> inner) : COMObject(std::move(inner)) { }
+
+    /**
+    Constructs an instance with a corresponding COM pointer and additional alignment info for 
+    aligning coordinates to pixels.
+
+    @remark 
+        This constructor is used internally by PathGeometry instances that contain alignment info.
+    */
+    GeometrySink(COMPtr<ID2D1GeometrySink> inner, const internal::AlignmentInfo& alignment_info) : 
+        COMObject(std::move(inner)),
+        alignment_info_(alignment_info) { }
 
     /**
      Specifies the method used to determine which points are inside the geometry
@@ -203,6 +216,12 @@ public:
         HRESULT result = Inner()->Close();
         ZAF_THROW_IF_COM_ERROR(result);
     }
+
+private:
+    D2D1_POINT_2F ToAlignedD2DPoint(const Point& point) const;
+
+private:
+    std::optional<internal::AlignmentInfo> alignment_info_;
 };
 
 ZAF_ENABLE_FLAG_ENUM(GeometrySink::SegmentFlag);

@@ -28,9 +28,14 @@ GeometrySink PathGeometry::Open() {
 
     COMPtr<ID2D1GeometrySink> sink_inner;
     HRESULT result = Inner()->Open(sink_inner.Reset());
-
     ZAF_THROW_IF_COM_ERROR(result);
-    return GeometrySink(sink_inner);
+
+    if (alignment_info_) {
+        return GeometrySink{ sink_inner, *alignment_info_ };
+    }
+    else {
+        return GeometrySink{ sink_inner };
+    }
 }
 
 }
