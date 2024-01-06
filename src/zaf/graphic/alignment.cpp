@@ -29,7 +29,13 @@ Rect ToPixelAlignedInPixels(const Rect& rect, float stroke_width, float dpi) {
     float top = std::round(rect_in_pixels.position.y) + offset_in_pixels;
     float right = std::round(rect_in_pixels.Right()) - offset_in_pixels;
     float bottom = std::round(rect_in_pixels.Bottom()) - offset_in_pixels;
-    return Rect{ left, top, right - left, bottom - top };
+
+    return Rect{ 
+        left, 
+        top,
+        (std::max)(right - left, 0.f),
+        (std::max)(bottom - top, 0.f)
+    };
 }
 
 
@@ -41,14 +47,16 @@ Rect ToPixelAligned(const Rect& rect, float stroke_width, float dpi) {
 RoundedRect ToPixelAligned(const RoundedRect& rounded_rect, float stroke_width, float dpi) {
 
     RoundedRect result;
-    result.rect = ToPixelAligned(rounded_rect.rect, dpi);
+    result.rect = ToPixelAligned(rounded_rect.rect, stroke_width, dpi);
 
-    auto offset_in_pixels = AlignmentOffsetForLine(stroke_width, dpi);
     auto x_radius_in_pixels = FromDIPs(rounded_rect.x_radius, dpi);
     auto y_radius_in_pixels = FromDIPs(rounded_rect.y_radius, dpi);
-    result.x_radius = std::round(x_radius_in_pixels) + offset_in_pixels;
-    result.y_radius = std::round(y_radius_in_pixels) + offset_in_pixels;
 
+    auto aligned_x_radius = std::round(x_radius_in_pixels);
+    auto aligned_y_radius = std::round(y_radius_in_pixels);
+
+    result.x_radius = ToDIPs(aligned_x_radius, dpi);
+    result.y_radius = ToDIPs(aligned_y_radius, dpi);
     return result;
 }
 

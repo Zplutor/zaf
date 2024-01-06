@@ -67,15 +67,23 @@ protected:
 
         __super::Paint(canvas, dirty_rect);
 
-        canvas.SetBrushWithColor(zaf::Color::Red());
+        canvas.SetBrushWithColor(zaf::Color::Yellow());
 
-        zaf::StrokeProperties stroke_properties;
-        stroke_properties.SetStartCapStyle(zaf::Stroke::CapStyle::Square);
-        auto stroke = zaf::GraphicFactory::Instance().CreateStroke(stroke_properties);
+        zaf::RoundedRect rounded_rect{ this->RectInSelf(), this->Height() / 2, this->Height() / 2 };
+        canvas.DrawRoundedRectangle(rounded_rect);
 
-        canvas.SetStroke(stroke);
+        canvas.SetBrushWithColor(zaf::Color::Black());
+        canvas.DrawRoundedRectangleFrame(rounded_rect, 1);
 
-        canvas.DrawLine(zaf::Point(0.f, 0.f), zaf::Point(10.f, 0.f), 1.f);
+        /*
+        canvas.SetBrushWithColor(zaf::Color::Yellow());
+
+        zaf::Rect rect{ this->RectInSelf() };
+        canvas.DrawRectangle(rect);
+
+        canvas.SetBrushWithColor(zaf::Color::Black());
+        canvas.DrawRectangleFrame(rect, 1);
+        */
     }
 };
 
@@ -86,8 +94,9 @@ protected:
         __super::AfterParse();
 
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
-        //this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
+        this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
+        /*
         auto check_box = zaf::Create<zaf::CheckBox>();
         check_box->SetPosition(zaf::Point{ 0.7f, 0.7f });
         check_box->SetText(L"ing");
@@ -99,9 +108,12 @@ protected:
         }));
         
         this->RootControl()->AddChild(check_box);
+        */
 
-        //auto control = zaf::Create<Control>();
-        //this->RootControl()->AddChild(control);
+        auto control = zaf::Create<Control>();
+        control->SetMargin(zaf::Frame{ 30, 30, 30, 30 });
+        control->SetFixedSize(zaf::Size{ 40, 40 });
+        this->RootControl()->AddChild(control);
     }
 };
 

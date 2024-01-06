@@ -499,6 +499,9 @@
     <ClCompile Include="unittest\case\control\text_box\word_extractor_test.cpp">
       <Filter>case\control\text_box</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\graphic\alignment_test.cpp">
+      <Filter>case\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

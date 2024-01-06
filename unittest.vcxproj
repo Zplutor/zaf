@@ -439,6 +439,7 @@
     <ClCompile Include="unittest\case\create_test.cpp" />
     <ClCompile Include="unittest\case\crypto\md5_test.cpp" />
     <ClCompile Include="unittest\case\crypto\sha_test.cpp" />
+    <ClCompile Include="unittest\case\graphic\alignment_test.cpp" />
     <ClCompile Include="unittest\case\graphic\color_test.cpp" />
     <ClCompile Include="unittest\case\graphic\ellipse_test.cpp" />
     <ClCompile Include="unittest\case\graphic\font\font_test.cpp" />
