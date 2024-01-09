@@ -213,20 +213,9 @@ public:
      */
     void SetMaxWidth(float max_width);
 
-    void SetFixedWidth(float width) {
-        SetMaxWidth(width);
-        SetMinWidth(width);
-    }
-
-    void SetFixedHeight(float height) {
-        SetMaxHeight(height);
-        SetMinHeight(height);
-    }
-
-    void SetFixedSize(const zaf::Size& size) {
-        SetFixedWidth(size.width);
-        SetFixedHeight(size.height);
-    }
+    void SetFixedWidth(float width);
+    void SetFixedHeight(float height);
+    void SetFixedSize(const zaf::Size& size);
 
     /**
      Get the control's height.
@@ -1051,6 +1040,8 @@ private:
     void SetParent(const std::shared_ptr<Control>& parent);
     void InnerRemoveChild(const std::shared_ptr<Control>& child, bool set_parent_to_null);
 
+    void SetFixedWidthValue(float value);
+    void SetFixedHeightValue(float value);
     void ApplyAutoSizeOnRectChanged(zaf::Size& new_size);
     void AutoResizeToPreferredSize();
     zaf::Size CalculatePreferredSizeForAutoSize(const zaf::Size& control_size) const;

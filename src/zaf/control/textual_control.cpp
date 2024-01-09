@@ -231,7 +231,8 @@ WordWrapping TextualControl::WordWrapping() const {
 }
 
 void TextualControl::SetWordWrapping(zaf::WordWrapping word_wrapping) {
-    return core_->SetWordWrapping(word_wrapping);
+    core_->SetWordWrapping(word_wrapping);
+    RaiseContentChangedEvent();
 }
 
 

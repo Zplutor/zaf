@@ -679,6 +679,37 @@ void Control::SetMaxHeight(float max_height) {
 }
 
 
+void Control::SetFixedWidth(float width) {
+    SetFixedWidthValue(width);
+    SetWidth(width);
+}
+
+
+void Control::SetFixedWidthValue(float value) {
+    min_width_ = value;
+    max_width_ = value;
+}
+
+
+void Control::SetFixedHeight(float height) {
+    SetFixedHeightValue(height);
+    SetHeight(height);
+}
+
+
+void Control::SetFixedHeightValue(float value) {
+    min_height_ = value;
+    max_height_ = value;
+}
+
+
+void Control::SetFixedSize(const zaf::Size& size) {
+    SetFixedWidthValue(size.width);
+    SetFixedHeightValue(size.height);
+    SetSize(size);
+}
+
+
 zaf::Size Control::CalculatePreferredSize() const {
 
     zaf::Size bound_size{ 
@@ -757,10 +788,12 @@ void Control::ApplyAutoSizeOnRectChanged(zaf::Size& new_size) {
     auto preferred_size = CalculatePreferredSizeForAutoSize(new_size);
 
     if (auto_width_) {
+        SetFixedWidthValue(preferred_size.width);
         new_size.width = preferred_size.width;
     }
 
     if (auto_height_) {
+        SetFixedHeightValue(preferred_size.height);
         new_size.height = preferred_size.height;
     }
 }

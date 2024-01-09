@@ -96,24 +96,31 @@ protected:
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        /*
-        auto check_box = zaf::Create<zaf::CheckBox>();
-        check_box->SetPosition(zaf::Point{ 0.7f, 0.7f });
-        check_box->SetText(L"ing");
-        check_box->SetFontSize(16);
-        check_box->SetAutoSize(true);
-
-        this->Subscriptions() += check_box->MouseUpEvent().Subscribe(std::bind([check_box]() {
-            check_box->NeedRepaint();
-        }));
+        auto button = zaf::Create<zaf::Button>();
+        button->SetFixedHeight(30);
+        Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
         
-        this->RootControl()->AddChild(check_box);
-        */
+            auto label1 = zaf::Create<zaf::Label>();
+            label1->SetAutoHeight(true);
+            label1->SetWordWrapping(zaf::WordWrapping::Wrap);
+            label1->SetText(L"Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {");
 
-        auto control = zaf::Create<Control>();
-        control->SetMargin(zaf::Frame{ 30, 30, 30, 30 });
-        control->SetFixedSize(zaf::Size{ 40, 40 });
-        this->RootControl()->AddChild(control);
+            auto label2 = zaf::Create<zaf::Label>();
+            label2->SetAutoHeight(true);
+            label2->SetWordWrapping(zaf::WordWrapping::Wrap);
+            label2->SetText(L"Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {");
+
+            auto container = zaf::Create<zaf::VerticalBox>();
+            container->SetAutoHeight(true);
+            container->AddChildren({
+                label1,
+                label2,
+                });
+
+            this->RootControl()->AddChild(container);
+        }));
+
+        this->RootControl()->AddChild(button);
     }
 };
 

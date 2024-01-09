@@ -176,19 +176,70 @@ TEST(ControlTest, CalculatePreferredSize) {
 }
 
 
-TEST(ControlTest, AutoSizeOnSetRect) {
+TEST(ControlTest, SetFixedWidth) {
 
-    auto label = zaf::Create<zaf::Label>();
-    label->SetText(L"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    label->SetWordWrapping(zaf::WordWrapping::Character);
-    label->SetSize(zaf::Size{ 300, 1000 });
-    label->SetAutoHeight(true);
-    ASSERT_EQ(label->Width(), 300);
+    auto control = zaf::Create<zaf::Control>();
+    control->SetSize(zaf::Size{ 100, 100 });
 
-    auto preferred_size = label->CalculatePreferredSize(zaf::Size{ 30, 1000 });
-    label->SetWidth(30);
-    ASSERT_EQ(label->Width(), 30);
-    ASSERT_EQ(label->Height(), preferred_size.height);
+    std::size_t event_count{};
+    auto sub = control->SizeChangedEvent().Subscribe(std::bind([&event_count]() {
+        ++event_count;
+    }));
+
+    control->SetFixedWidth(33);
+    //SizeChanged event should be raised.
+    ASSERT_EQ(event_count, 1);
+    ASSERT_EQ(control->Size(), zaf::Size(33, 100));
+    ASSERT_EQ(control->MinWidth(), 33);
+    ASSERT_EQ(control->MaxWidth(), 33);
+
+    //Not allow to change the width to other value.
+    control->SetWidth(40);
+    ASSERT_EQ(control->Size(), zaf::Size(33, 100));
+}
+
+
+TEST(ControlTest, SetFixedHeight) {
+
+    auto control = zaf::Create<zaf::Control>();
+    control->SetSize(zaf::Size{ 100, 100 });
+
+    std::size_t event_count{};
+    auto sub = control->SizeChangedEvent().Subscribe(std::bind([&event_count]() {
+        ++event_count;
+    }));
+
+    control->SetFixedHeight(66);
+    //SizeChanged event should be raised.
+    ASSERT_EQ(event_count, 1);
+    ASSERT_EQ(control->Size(), zaf::Size(100, 66));
+    ASSERT_EQ(control->MinHeight(), 66);
+    ASSERT_EQ(control->MaxHeight(), 66);
+
+    //Not allow to change the hieght to other value.
+    control->SetHeight(40);
+    ASSERT_EQ(control->Size(), zaf::Size(100, 66));
+}
+
+
+TEST(ControlTest, SetFixedSize) {
+
+    auto control = zaf::Create<zaf::Control>();
+    control->SetSize(zaf::Size{ 100, 100 });
+
+    std::size_t event_count{};
+    auto sub = control->SizeChangedEvent().Subscribe(std::bind([&event_count]() {
+        ++event_count;
+    }));
+
+    control->SetFixedSize(zaf::Size{ 50, 60 });
+    //The event should be raised once only.
+    ASSERT_EQ(event_count, 1);
+    ASSERT_EQ(control->Size(), zaf::Size(50, 60));
+    ASSERT_EQ(control->MinWidth(), 50);
+    ASSERT_EQ(control->MaxWidth(), 50);
+    ASSERT_EQ(control->MinHeight(), 60);
+    ASSERT_EQ(control->MaxHeight(), 60);
 }
 
 
