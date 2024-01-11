@@ -2125,7 +2125,12 @@ bool Window::IsVisible() const {
 
 
 bool Window::IsFocused() const {
-    return GetFocus() == Handle();
+
+    if (!handle_) {
+        return false;
+    }
+
+    return GetFocus() == handle_;
 }
 
 

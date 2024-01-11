@@ -1541,6 +1541,21 @@ void Control::SetIsFocusedByWindow(bool is_focused) {
 }
 
 
+bool Control::IsInFocusedContext() const {
+    
+    if (IsFocused()) {
+        return true;
+    }
+
+    auto parent = Parent();
+    if (!parent) {
+        return false;
+    }
+
+    return parent->IsInFocusedContext();
+}
+
+
 bool Control::ContainFocus() const {
 
     if (IsFocused()) {

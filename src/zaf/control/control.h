@@ -666,6 +666,11 @@ public:
      */
     void SetIsFocused(bool is_focused);
 
+    /**
+    Determines whether the control itself or its parent is focused.
+    */
+    bool IsInFocusedContext() const;
+
     bool ContainFocus() const;
 
     bool IsCachedPaintingEnabled() const {
