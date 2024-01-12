@@ -601,6 +601,7 @@
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\rich_edit.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />
+    <ClInclude Include="src\zaf\control\text_box\selection_option.h" />
     <ClInclude Include="src\zaf\control\text_box\word_extractor.h" />
     <ClInclude Include="src\zaf\control\text_validator.h" />
     <ClInclude Include="src\zaf\control\linear_box.h" />

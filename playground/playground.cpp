@@ -96,28 +96,14 @@ protected:
         this->RootControl()->SetBackgroundColor(zaf::Color::White());
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
+        auto text_box = zaf::Create<zaf::TextBox>();
+        text_box->SetText(L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());");
+        this->RootControl()->AddChild(text_box);
+
         auto button = zaf::Create<zaf::Button>();
         button->SetFixedHeight(30);
         Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
         
-            auto label1 = zaf::Create<zaf::Label>();
-            label1->SetAutoHeight(true);
-            label1->SetWordWrapping(zaf::WordWrapping::Wrap);
-            label1->SetText(L"Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {");
-
-            auto label2 = zaf::Create<zaf::Label>();
-            label2->SetAutoHeight(true);
-            label2->SetWordWrapping(zaf::WordWrapping::Wrap);
-            label2->SetText(L"Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {");
-
-            auto container = zaf::Create<zaf::VerticalBox>();
-            container->SetAutoHeight(true);
-            container->AddChildren({
-                label1,
-                label2,
-                });
-
-            this->RootControl()->AddChild(container);
         }));
 
         this->RootControl()->AddChild(button);

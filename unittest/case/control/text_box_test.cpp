@@ -20,6 +20,20 @@ TEST(TextBoxTest, SelectionRange) {
     text_box->SetSelectionRange(zaf::Range{ 20, 20 });
     ASSERT_EQ(text_box->SelectionRange(), zaf::Range(10, 0));
 
+    //Set caret to the beginning of the range.
+    text_box->SetSelectionRange(
+        zaf::Range{ 2, 3 }, 
+        zaf::text_box::SelectionOption::SetCaretToBeign);
+    ASSERT_EQ(text_box->SelectionRange(), zaf::Range(2, 3));
+    ASSERT_EQ(text_box->CaretIndex(), 2);
+
+    //Set caret to the end of the range.
+    text_box->SetSelectionRange(
+        zaf::Range{ 2, 3 },
+        zaf::text_box::SelectionOption::SetCaretToEnd);
+    ASSERT_EQ(text_box->SelectionRange(), zaf::Range(2, 3));
+    ASSERT_EQ(text_box->CaretIndex(), 5);
+
     //Selection range should be reset after text changed.
     text_box->SetSelectionRange(zaf::Range::Infinite());
     text_box->SetText(L"abcde");

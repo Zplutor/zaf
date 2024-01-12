@@ -5,6 +5,7 @@
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/text/text_layout.h>
+#include <zaf/control/text_box/selection_option.h>
 #include <zaf/control/text_box/word_extractor.h>
 
 namespace zaf {
@@ -29,7 +30,23 @@ public:
     std::size_t CaretIndex() const;
 
     const Range& SelectionRange() const;
-    void SetSelectionRange(const Range& range, bool scroll_to_selection = true);
+
+    /**
+    Sets the specified selected text range in the text box.
+
+    @param range
+        The range of the selection. The index and length may exceed the length of the text; in such
+        case, the selection range will be adjusted to fit the text.
+
+    @param selection_option
+        The option that controls the behavior when setting the selection range.
+
+    @throw zaf::Error
+        Thrown if the operation fails.
+    */
+    void SetSelectionRange(
+        const Range& range,
+        text_box::SelectionOption selection_option = text_box::SelectionOption::Default);
 
     ColorPicker SelectionBackgroundColorPicker() const;
     void SetSelectionBackgroundColorPicker(ColorPicker picker);
@@ -45,10 +62,18 @@ public:
     @param index
         The index around which to select. It may exceed the length of the text.
 
+    @param selection_option
+        The option that controls the behavior when setting the selection range.
+
+    @throw zaf::Error
+        Thrown if the operation fails.
+
     @remark
         This method uses WordExtractor() to determine the word range.
     */
-    void SelectWordAtIndex(std::size_t index);
+    void SelectWordAtIndex(
+        std::size_t index, 
+        text_box::SelectionOption selection_option = text_box::SelectionOption::Default);
 
     /**
     Gets the word extractor used to determine the word range to be selected.

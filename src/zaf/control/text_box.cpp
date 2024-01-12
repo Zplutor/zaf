@@ -324,10 +324,10 @@ void TextBox::OnDoubleClick(const DoubleClickInfo& event_info) {
 }
 
 
-void TextBox::SelectWordAtIndex(std::size_t index) {
+void TextBox::SelectWordAtIndex(std::size_t index, text_box::SelectionOption selection_option) {
 
     auto word_range = word_extractor_(GetText(), index);
-    SetSelectionRange(word_range);
+    SetSelectionRange(word_range, selection_option);
 }
 
 
@@ -543,15 +543,22 @@ const Range& TextBox::SelectionRange() const {
 }
 
 
-void TextBox::SetSelectionRange(const Range& range, bool scroll_to_selection) {
+void TextBox::SetSelectionRange(const Range& range, text_box::SelectionOption selection_option) {
 
     auto text_length = core_->GetTextLength();
     auto begin_index = (std::min)(range.index, text_length);
     auto end_index = (std::min)(range.EndIndex(), text_length);
     selection_range_ = Range::FromIndexPair(begin_index, end_index);
 
-    caret_index_ = selection_range_.EndIndex();
-    AfterSetCaretIndex(true, scroll_to_selection);
+    if (HasFlag(selection_option, text_box::SelectionOption::SetCaretToBeign)) {
+        caret_index_ = selection_range_.index;
+    }
+    else {
+        caret_index_ = selection_range_.EndIndex();
+    }
+
+    bool scroll_to_caret = HasFlag(selection_option, text_box::SelectionOption::ScrollToCaret);
+    AfterSetCaretIndex(true, scroll_to_caret);
 }
 
 
@@ -891,7 +898,9 @@ void TextBox::HandleCopy() {
 
 
 void TextBox::HandleSelectAll() {
-    SetSelectionRange(Range::Infinite());
+    SetSelectionRange(
+        Range::Infinite(),
+        text_box::SelectionOption::SetCaretToEnd | text_box::SelectionOption::ScrollToCaret);
 }
 
 }
