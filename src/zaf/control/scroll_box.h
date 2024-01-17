@@ -15,24 +15,21 @@ class SelfScrollControl;
 class zaf::Size;
 
 /**
- Represents a scrollable control.
+Represents a container that can scroll its content.
 
- This is the base class of all scrollable control. 
- 
- The scrollable control contains a scroll content control, which would be scrolled when the scroll
- bars changes. You can obatin this control by calling ScrollContent method, and then add
- children to it to build the scroll page. You can also set a custom scroll content control by 
- calling SetScrollContent method.
+A ScrollBox is designed to scroll its scroll content rather than its child controls. The scroll
+content is a single control which is set by SetScrollContent(). A control becomes scrollable after 
+being set as the scroll content of a ScrollBox.
 
- By default, the size of scroll content control would be auto set to scrollable control's visible 
- area size, thus scroll bars would not enabled. To enable scroll bars, you can call SetFixedWidth or
- SetFixedHeight to scroll content control to prevent auto-sizing. Or you can call 
- SetAutoScrollContentWidth and SetAutoScrollContentHeight to disable auto-sizing.
+By default, the scroll content will be resized to match the ScrollBox's visible area automatically,
+thus preventing the scroll bars from being enabled. To enable the scroll bars, you can either set 
+a fixed size to the scroll content to prevent auto-sizing, or call SetAutoScrollContentSize() with
+a false value to disable auto-sizing.
 
- The scroll content control can inherits SelfScrollControl class. In this way, its scrollable control
- doesn't scroll it anymore, instead, the scroll content control scrolls its own content and controls 
- the scroll bars. For more information, see also SelfScrollControl.
- */
+The scroll content control can inherit SelfScrollControl. In this way, the scroll content becomes 
+responsible for scrolling the content by implementing the methods of SelfScrollControl. For more 
+information, see also SelfScrollControl.
+*/
 class ScrollBox : public Control {
 public:
     ZAF_DECLARE_TYPE
