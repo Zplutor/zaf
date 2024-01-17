@@ -289,10 +289,10 @@
     <ClCompile Include="unittest\case\base\as_test.cpp">
       <Filter>case\base</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\control\scrollable_control_parse_test.cpp">
+    <ClCompile Include="unittest\case\control\scroll_box_parse_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\control\scrollable_control_test.cpp">
+    <ClCompile Include="unittest\case\control\scroll_box_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\resource\internal\uri_parsing_test.cpp">

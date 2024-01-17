@@ -8,7 +8,7 @@
 
 using namespace zaf;
 
-TEST(ScrollableControlParseTest, AllowVerticalScroll) {
+TEST(ScrollBoxParseTest, AllowVerticalScroll) {
 
     ASSERT_TRUE(TestBooleanProperty<ScrollBox>(
         "AllowVerticalScroll", 
@@ -19,7 +19,7 @@ TEST(ScrollableControlParseTest, AllowVerticalScroll) {
 }
 
 
-TEST(ScrollableControlParseTest, AllowHorizontalScroll) {
+TEST(ScrollBoxParseTest, AllowHorizontalScroll) {
 
     ASSERT_TRUE(TestBooleanProperty<ScrollBox>(
         "AllowHorizontalScroll",
@@ -30,7 +30,7 @@ TEST(ScrollableControlParseTest, AllowHorizontalScroll) {
 }
 
 
-TEST(ScrollableControlParseTest, AutoHideScrollBars) {
+TEST(ScrollBoxParseTest, AutoHideScrollBars) {
 
     ASSERT_TRUE(TestBooleanProperty<ScrollBox>(
         "AutoHideScrollBars",
@@ -41,7 +41,7 @@ TEST(ScrollableControlParseTest, AutoHideScrollBars) {
 }
 
 
-TEST(ScrollableControlParseTest, AutoScrollBarLargeChange) {
+TEST(ScrollBoxParseTest, AutoScrollBarLargeChange) {
 
     ASSERT_TRUE(TestBooleanProperty<ScrollBox>(
         "AutoScrollBarLargeChange",
@@ -52,7 +52,7 @@ TEST(ScrollableControlParseTest, AutoScrollBarLargeChange) {
 }
 
 
-TEST(ScrollableControlParseTest, AutoScrollContentHeight) {
+TEST(ScrollBoxParseTest, AutoScrollContentHeight) {
 
     ASSERT_TRUE(TestBooleanProperty<ScrollBox>(
         "AutoScrollContentHeight",
@@ -63,7 +63,7 @@ TEST(ScrollableControlParseTest, AutoScrollContentHeight) {
 }
 
 
-TEST(ScrollableControlParseTest, AutoScrollContentWidth) {
+TEST(ScrollBoxParseTest, AutoScrollContentWidth) {
 
     ASSERT_TRUE(TestBooleanProperty<ScrollBox>(
         "AutoScrollContentWidth",
@@ -74,7 +74,7 @@ TEST(ScrollableControlParseTest, AutoScrollContentWidth) {
 }
 
 
-TEST(ScrollableControlParseTest, ScrollContent) {
+TEST(ScrollBoxParseTest, ScrollContent) {
 
     auto xaml = LR"(
         <ScrollBox>
@@ -93,7 +93,7 @@ TEST(ScrollableControlParseTest, ScrollContent) {
 }
 
 
-TEST(ScrollableControlParseTest, ContentNode) {
+TEST(ScrollBoxParseTest, ContentNode) {
 
     {
         auto xaml = LR"(

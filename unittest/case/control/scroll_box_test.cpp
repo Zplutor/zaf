@@ -8,7 +8,7 @@
 
 using namespace zaf;
 
-TEST(ScrollableControlTest, AutoScrollContentSize) {
+TEST(ScrollBoxTest, AutoScrollContentSize) {
 
     auto scrollable_control = Create<ScrollBox>();
     scrollable_control->SetSize(Size{ 100, 100 });
@@ -49,7 +49,7 @@ protected:
 
 //Verifies that the scroll value remains correct when the size of the scroll content changes during
 //ScrollBox layout.
-TEST(ScrollableControlTest, ChangeScrollContentSizeDuringLayout) {
+TEST(ScrollBoxTest, ChangeScrollContentSizeDuringLayout) {
 
     auto scroll_content = Create<AutoSizeControl>();
     auto scrollable_control = Create<ScrollBox>();
@@ -62,7 +62,7 @@ TEST(ScrollableControlTest, ChangeScrollContentSizeDuringLayout) {
 }
 
 
-TEST(ScrollableControlTest, EnableScrollBar) {
+TEST(ScrollBoxTest, EnableScrollBar) {
 
     auto scrollable_control = Create<ScrollBox>();
     scrollable_control->SetSize(Size{ 100, 100 });
@@ -85,7 +85,7 @@ TEST(ScrollableControlTest, EnableScrollBar) {
 }
 
 
-TEST(ScrollableControlTest, ReserveScrollContentPositionAfterLayout) {
+TEST(ScrollBoxTest, ReserveScrollContentPositionAfterLayout) {
 
     auto scrollable_control = Create<ScrollBox>();
     scrollable_control->SetSize(Size{ 110, 110 });
@@ -109,7 +109,7 @@ TEST(ScrollableControlTest, ReserveScrollContentPositionAfterLayout) {
 }
 
 
-TEST(ScrollableControlTest, MouseWheelEvent) {
+TEST(ScrollBoxTest, MouseWheelEvent) {
 
     auto window = Create<Window>();
     window->SetInitialRectStyle(InitialRectStyle::Custom);
@@ -177,7 +177,7 @@ TEST(ScrollableControlTest, MouseWheelEvent) {
 }
 
 
-TEST(ScrollableControlTest, UseOverlayScrollBars) {
+TEST(ScrollBoxTest, UseOverlayScrollBars) {
 
     auto scroll_control = zaf::Create<zaf::ScrollBox>();
     scroll_control->SetAutoHideScrollBars(false);
