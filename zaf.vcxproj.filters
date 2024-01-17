@@ -55,9 +55,6 @@
     <Filter Include="zaf\graphic\renderer">
       <UniqueIdentifier>{06391e47-8d87-4b81-bcba-95a163e421c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\control\internal\scrollable_control">
-      <UniqueIdentifier>{3895c0e4-4a91-4965-8af7-be9344ec8ebb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\base\container">
       <UniqueIdentifier>{8f617298-ecbd-4034-9e95-5d4d9592fb2c}</UniqueIdentifier>
     </Filter>
@@ -183,6 +180,9 @@
     </Filter>
     <Filter Include="zaf\control\text_box">
       <UniqueIdentifier>{1787d619-2a2f-408e-9615-1ea92ed1801e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\control\internal\scroll_box">
+      <UniqueIdentifier>{3895c0e4-4a91-4965-8af7-be9344ec8ebb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -314,15 +314,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\text\text_format.cpp">
       <Filter>zaf\graphic\text</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\scrollable_control\general_scrolling_layouter.cpp">
-      <Filter>zaf\control\internal\scrollable_control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.cpp">
-      <Filter>zaf\control\internal\scrollable_control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.cpp">
-      <Filter>zaf\control\internal\scrollable_control</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\size.cpp">
       <Filter>zaf\graphic</Filter>
@@ -1114,6 +1105,15 @@
     <ClCompile Include="src\zaf\control\scroll_box_parser.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\scroll_box\general_scroll_layouter.cpp">
+      <Filter>zaf\control\internal\scroll_box</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\scroll_box\scroll_box_layouter.cpp">
+      <Filter>zaf\control\internal\scroll_box</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\scroll_box\self_scroll_layouter.cpp">
+      <Filter>zaf\control\internal\scroll_box</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1412,15 +1412,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\text_trimming.h">
       <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\scrollable_control\general_scrolling_layouter.h">
-      <Filter>zaf\control\internal\scrollable_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.h">
-      <Filter>zaf\control\internal\scrollable_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.h">
-      <Filter>zaf\control\internal\scrollable_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\stream.h">
       <Filter>zaf\base</Filter>
@@ -2529,6 +2520,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\text_box\selection_option.h">
       <Filter>zaf\control\text_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\scroll_box\general_scroll_layouter.h">
+      <Filter>zaf\control\internal\scroll_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\scroll_box\scroll_box_layouter.h">
+      <Filter>zaf\control\internal\scroll_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\scroll_box\self_scroll_layouter.h">
+      <Filter>zaf\control\internal\scroll_box</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

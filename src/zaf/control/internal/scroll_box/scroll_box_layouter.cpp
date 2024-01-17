@@ -1,10 +1,10 @@
-#include <zaf/control/internal/scrollable_control/scrollable_control_layouter.h>
+#include <zaf/control/internal/scroll_box/scroll_box_layouter.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_box.h>
 
 namespace zaf::internal {
 
-ScrollableControlLayouter::ScrollableControlLayouter(ScrollBox* scrollable_control) : 
+ScrollBoxLayouter::ScrollBoxLayouter(ScrollBox* scrollable_control) : 
     scrollable_control_(scrollable_control) {
 
     RegisterScrollBarEvent(GetVerticalScrollBar(), false);
@@ -12,14 +12,14 @@ ScrollableControlLayouter::ScrollableControlLayouter(ScrollBox* scrollable_contr
 }
 
 
-ScrollableControlLayouter::~ScrollableControlLayouter() {
+ScrollBoxLayouter::~ScrollBoxLayouter() {
 
     UnregisterScrollBarEvent(true);
     UnregisterScrollBarEvent(false);
 }
 
 
-void ScrollableControlLayouter::ScrollBarChange(
+void ScrollBoxLayouter::ScrollBarChange(
     bool is_horizontal, 
     const std::shared_ptr<ScrollBar>& previous_scroll_bar) {
 
@@ -30,7 +30,7 @@ void ScrollableControlLayouter::ScrollBarChange(
 }
 
 
-void ScrollableControlLayouter::RegisterScrollBarEvent(
+void ScrollBoxLayouter::RegisterScrollBarEvent(
     const std::shared_ptr<ScrollBar>& scroll_bar, 
     bool is_horizontal) {
 
@@ -40,11 +40,11 @@ void ScrollableControlLayouter::RegisterScrollBarEvent(
         vertical_scroll_bar_subscription_;
 
     subscription = scroll_bar->ScrollEvent().Subscribe(
-        std::bind(&ScrollableControlLayouter::ScrollBarScroll, this, std::placeholders::_1));
+        std::bind(&ScrollBoxLayouter::ScrollBarScroll, this, std::placeholders::_1));
 }
 
 
-void ScrollableControlLayouter::UnregisterScrollBarEvent(bool is_horizontal) {
+void ScrollBoxLayouter::UnregisterScrollBarEvent(bool is_horizontal) {
 
     auto& subscription = 
         is_horizontal ? 
@@ -55,7 +55,7 @@ void ScrollableControlLayouter::UnregisterScrollBarEvent(bool is_horizontal) {
 }
 
 
-void ScrollableControlLayouter::LayoutScrollBars(
+void ScrollBoxLayouter::LayoutScrollBars(
     bool need_vertical_scroll_bar, 
     bool need_horizontal_scroll_bar) {
 
@@ -113,7 +113,7 @@ void ScrollableControlLayouter::LayoutScrollBars(
 }
 
 
-void ScrollableControlLayouter::LayoutScrollContainerControl(
+void ScrollBoxLayouter::LayoutScrollContainerControl(
     bool need_vertical_scroll_bar, 
     bool need_horizontal_scroll_bar) {
 

@@ -1,4 +1,4 @@
-#include <zaf/control/internal/scrollable_control/self_scrolling_layouter.h>
+#include <zaf/control/internal/scroll_box/self_scroll_layouter.h>
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/control/scroll_bar.h>
@@ -8,28 +8,28 @@
 namespace zaf {
 namespace internal {
 
-SelfScrollingLayouter::SelfScrollingLayouter(ScrollBox* scrollable_control) : 
-    ScrollableControlLayouter(scrollable_control) {
+SelfScrollLayouter::SelfScrollLayouter(ScrollBox* scrollable_control) : 
+    ScrollBoxLayouter(scrollable_control) {
 
     auto self_scrolling_control = GetSelfScrollingControl();
 
     Subscriptions() += self_scrolling_control->ScrollBarChangeEvent().Subscribe(
-        std::bind(&SelfScrollingLayouter::SelfScrollingControlScrollBarChange, this));
+        std::bind(&SelfScrollLayouter::SelfScrollingControlScrollBarChange, this));
 
     Subscriptions() += self_scrolling_control->ScrollValuesChangeEvent().Subscribe(
        std::bind(
-           &SelfScrollingLayouter::SelfScrollingControlScrollValuesChange, 
+           &SelfScrollLayouter::SelfScrollingControlScrollValuesChange, 
            this, 
            std::placeholders::_1));
 }
 
 
-SelfScrollingLayouter::~SelfScrollingLayouter() {
+SelfScrollLayouter::~SelfScrollLayouter() {
 
 }
 
 
-void SelfScrollingLayouter::Layout() {
+void SelfScrollLayouter::Layout() {
 
     //Not allow reentering.
     ZAF_EXPECT(!is_layouting_);
@@ -58,7 +58,7 @@ void SelfScrollingLayouter::Layout() {
 }
 
 
-void SelfScrollingLayouter::AdjustScrollBarValue(bool is_horizontal) {
+void SelfScrollLayouter::AdjustScrollBarValue(bool is_horizontal) {
 
     auto scrollable_control = GetScrollableControl();
     auto self_scrolling_content = GetSelfScrollingControl();
@@ -103,7 +103,7 @@ void SelfScrollingLayouter::AdjustScrollBarValue(bool is_horizontal) {
 }
 
 
-void SelfScrollingLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) {
+void SelfScrollLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) {
 
     if (is_self_scrolling_) {
         return;
@@ -121,12 +121,12 @@ void SelfScrollingLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_inf
 }
 
 
-void SelfScrollingLayouter::SelfScrollingControlScrollBarChange() {
+void SelfScrollLayouter::SelfScrollingControlScrollBarChange() {
     GetScrollableControl()->NeedRelayout();
 }
 
 
-void SelfScrollingLayouter::SelfScrollingControlScrollValuesChange(
+void SelfScrollLayouter::SelfScrollingControlScrollValuesChange(
     const SelfScrollControlScrollValuesChangeInfo& event_info) {
 
     is_self_scrolling_ = true;

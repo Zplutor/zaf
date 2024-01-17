@@ -1,17 +1,17 @@
-#include <zaf/control/internal/scrollable_control/general_scrolling_layouter.h>
+#include <zaf/control/internal/scroll_box/general_scroll_layouter.h>
 #include <zaf/base/as.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_box.h>
 
 namespace zaf::internal {
 
-GeneralScrollingLayouter::GeneralScrollingLayouter(ScrollBox* scrollable_control) : 
-    ScrollableControlLayouter(scrollable_control) {
+GeneralScrollLayouter::GeneralScrollLayouter(ScrollBox* scrollable_control) : 
+    ScrollBoxLayouter(scrollable_control) {
 
 }
 
 
-void GeneralScrollingLayouter::Layout() {
+void GeneralScrollLayouter::Layout() {
 
     bool need_vertical_scroll_bar = false;
     bool need_horizontal_scroll_bar = false;
@@ -26,7 +26,7 @@ void GeneralScrollingLayouter::Layout() {
 }
 
 
-Size GeneralScrollingLayouter::DeterminateScrollContentSize(
+Size GeneralScrollLayouter::DeterminateScrollContentSize(
     bool& need_vertical_scroll_bar,
     bool& need_horizontal_scroll_bar) {
 
@@ -106,7 +106,7 @@ Size GeneralScrollingLayouter::DeterminateScrollContentSize(
 }
 
 
-void GeneralScrollingLayouter::AdjustScrollBarValueRanges(const zaf::Size& scroll_content_size) {
+void GeneralScrollLayouter::AdjustScrollBarValueRanges(const zaf::Size& scroll_content_size) {
 
     const auto& scroll_container_control = GetScrollableControl()->GetScrollContainerControl();
     const auto& vertical_scroll_bar = GetVerticalScrollBar();
@@ -144,7 +144,7 @@ void GeneralScrollingLayouter::AdjustScrollBarValueRanges(const zaf::Size& scrol
 }
 
 
-Size GeneralScrollingLayouter::CalculateScrollSize(const Size& expected_content_size) const {
+Size GeneralScrollLayouter::CalculateScrollSize(const Size& expected_content_size) const {
 
     const auto& scroll_content_control = GetScrollableControl()->ScrollContent();
     const auto& margin = scroll_content_control->Margin();
@@ -156,7 +156,7 @@ Size GeneralScrollingLayouter::CalculateScrollSize(const Size& expected_content_
 }
 
 
-void GeneralScrollingLayouter::LayoutScrollContentControl(const zaf::Size& scroll_content_size) {
+void GeneralScrollLayouter::LayoutScrollContentControl(const zaf::Size& scroll_content_size) {
 
     const auto& scroll_content_control = GetScrollableControl()->ScrollContent();
     const auto& margin = scroll_content_control->Margin();
@@ -170,7 +170,7 @@ void GeneralScrollingLayouter::LayoutScrollContentControl(const zaf::Size& scrol
 }
 
 
-void GeneralScrollingLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) {
+void GeneralScrollLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) {
 
     const auto& scroll_content_control = GetScrollableControl()->ScrollContent();
     Rect content_rect = scroll_content_control->Rect();

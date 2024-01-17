@@ -143,9 +143,9 @@
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_variable_item_height_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\mouse_event_routing.cpp" />
     <ClCompile Include="src\zaf\control\internal\range_manager.cpp" />
-    <ClCompile Include="src\zaf\control\internal\scrollable_control\general_scrolling_layouter.cpp" />
-    <ClCompile Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.cpp" />
-    <ClCompile Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.cpp" />
+    <ClCompile Include="src\zaf\control\internal\scroll_box\general_scroll_layouter.cpp" />
+    <ClCompile Include="src\zaf\control\internal\scroll_box\scroll_box_layouter.cpp" />
+    <ClCompile Include="src\zaf\control\internal\scroll_box\self_scroll_layouter.cpp" />
     <ClCompile Include="src\zaf\control\internal\textual_control\general_textual_core.cpp" />
     <ClCompile Include="src\zaf\control\internal\textual_control\text_box_core.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_control_implementation.cpp" />
@@ -512,9 +512,9 @@
     <ClInclude Include="src\zaf\control\internal\mouse_event_routing.h" />
     <ClInclude Include="src\zaf\control\internal\range_manager.h" />
     <ClInclude Include="src\zaf\control\internal\range_map.h" />
-    <ClInclude Include="src\zaf\control\internal\scrollable_control\general_scrolling_layouter.h" />
-    <ClInclude Include="src\zaf\control\internal\scrollable_control\scrollable_control_layouter.h" />
-    <ClInclude Include="src\zaf\control\internal\scrollable_control\self_scrolling_layouter.h" />
+    <ClInclude Include="src\zaf\control\internal\scroll_box\general_scroll_layouter.h" />
+    <ClInclude Include="src\zaf\control\internal\scroll_box\scroll_box_layouter.h" />
+    <ClInclude Include="src\zaf\control\internal\scroll_box\self_scroll_layouter.h" />
     <ClInclude Include="src\zaf\control\internal\textual_control\general_textual_core.h" />
     <ClInclude Include="src\zaf\control\internal\textual_control\textual_control_core.h" />
     <ClInclude Include="src\zaf\control\internal\textual_control\text_box_core.h" />

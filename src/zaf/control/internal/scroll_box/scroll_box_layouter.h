@@ -6,13 +6,13 @@
 
 namespace zaf::internal {
 
-class ScrollableControlLayouter {
+class ScrollBoxLayouter {
 public:
-    ScrollableControlLayouter(ScrollBox* scrollable_control);
-    virtual ~ScrollableControlLayouter();
+    ScrollBoxLayouter(ScrollBox* scrollable_control);
+    virtual ~ScrollBoxLayouter();
 
-    ScrollableControlLayouter(const ScrollableControlLayouter&) = delete;
-    ScrollableControlLayouter& operator=(const ScrollableControlLayouter&) = delete;
+    ScrollBoxLayouter(const ScrollBoxLayouter&) = delete;
+    ScrollBoxLayouter& operator=(const ScrollBoxLayouter&) = delete;
 
     void ScrollBarChange(bool is_horizontal, const std::shared_ptr<ScrollBar>& previous_scroll_bar);
 

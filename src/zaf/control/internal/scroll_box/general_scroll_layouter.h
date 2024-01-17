@@ -1,12 +1,12 @@
 #pragma once
 
-#include <zaf/control/internal/scrollable_control/scrollable_control_layouter.h>
+#include <zaf/control/internal/scroll_box/scroll_box_layouter.h>
 
 namespace zaf::internal {
 
-class GeneralScrollingLayouter : public ScrollableControlLayouter {
+class GeneralScrollLayouter : public ScrollBoxLayouter {
 public:
-    GeneralScrollingLayouter(ScrollBox* scrollable_control);
+    GeneralScrollLayouter(ScrollBox* scrollable_control);
 
     void Layout() override;
 

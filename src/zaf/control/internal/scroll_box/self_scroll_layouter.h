@@ -1,16 +1,16 @@
 #pragma once
 
-#include <zaf/control/internal/scrollable_control/scrollable_control_layouter.h>
+#include <zaf/control/internal/scroll_box/scroll_box_layouter.h>
 #include <zaf/control/self_scroll_control.h>
 #include <zaf/rx/subscription_host.h>
 
 namespace zaf {
 namespace internal {
 
-class SelfScrollingLayouter : public ScrollableControlLayouter, public SubscriptionHost {
+class SelfScrollLayouter : public ScrollBoxLayouter, public SubscriptionHost {
 public:
-    SelfScrollingLayouter(ScrollBox* scrollable_control);
-    ~SelfScrollingLayouter();
+    SelfScrollLayouter(ScrollBox* scrollable_control);
+    ~SelfScrollLayouter();
 
     void Layout() override;
 

@@ -1,7 +1,7 @@
 #include <zaf/control/scroll_box.h>
 #include <zaf/base/as.h>
-#include <zaf/control/internal/scrollable_control/general_scrolling_layouter.h>
-#include <zaf/control/internal/scrollable_control/self_scrolling_layouter.h>
+#include <zaf/control/internal/scroll_box/general_scroll_layouter.h>
+#include <zaf/control/internal/scroll_box/self_scroll_layouter.h>
 #include <zaf/control/rich_edit.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_box_parser.h>
@@ -133,10 +133,10 @@ void ScrollBox::InitializeScrollBarCorner(const std::shared_ptr<Control>& corner
 void ScrollBox::InitializeLayouter() {
 
     if (self_scrolling_control_ == nullptr) {
-        layouter_ = std::make_unique<internal::GeneralScrollingLayouter>(this);
+        layouter_ = std::make_unique<internal::GeneralScrollLayouter>(this);
     }
     else {
-        layouter_ = std::make_unique<internal::SelfScrollingLayouter>(this);
+        layouter_ = std::make_unique<internal::SelfScrollLayouter>(this);
     }
 }
 

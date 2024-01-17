@@ -5,9 +5,9 @@
 
 namespace zaf {
 namespace internal {
-class GeneralScrollingLayouter;
-class ScrollableControlLayouter;
-class SelfScrollingLayouter;
+class GeneralScrollLayouter;
+class ScrollBoxLayouter;
+class SelfScrollLayouter;
 }
 
 class ScrollBar;
@@ -249,9 +249,9 @@ protected:
     virtual void OnScrollContentChanged(const std::shared_ptr<Control>& previous_control) { }
 
 private:
-    friend class internal::GeneralScrollingLayouter;
-    friend class internal::ScrollableControlLayouter;
-    friend class internal::SelfScrollingLayouter;
+    friend class internal::GeneralScrollLayouter;
+    friend class internal::ScrollBoxLayouter;
+    friend class internal::SelfScrollLayouter;
 
     const std::shared_ptr<Control>& GetScrollContainerControl() const {
         return scroll_container_control_;
@@ -287,7 +287,7 @@ private:
     float vertical_scroll_bar_thickness_{ 17 };
     float horizontal_scroll_bar_thickness_{ 17 };
 
-    std::unique_ptr<internal::ScrollableControlLayouter> layouter_;
+    std::unique_ptr<internal::ScrollBoxLayouter> layouter_;
     Subscription scroll_content_rect_change_subscription_;
 };
 
