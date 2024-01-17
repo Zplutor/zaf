@@ -1,4 +1,4 @@
-#include <zaf/control/scrollable_control_parser.h>
+#include <zaf/control/scroll_box_parser.h>
 #include <zaf/base/as.h>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/control/scroll_box.h>
@@ -6,7 +6,7 @@
 
 namespace zaf {
 
-void ScrollableControlParser::ParseContentNodes(
+void ScrollBoxParser::ParseContentNodes(
     const std::vector<std::shared_ptr<XamlNode>>& nodes,
     Control& control) {
 

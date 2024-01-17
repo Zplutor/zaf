@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-class ScrollableControlParser : public ControlParser {
+class ScrollBoxParser : public ControlParser {
 public:
     void ParseContentNodes(
         const std::vector<std::shared_ptr<XamlNode>>& nodes,

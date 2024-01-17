@@ -1111,7 +1111,7 @@
     <ClCompile Include="src\zaf\control\control_parser.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\scrollable_control_parser.cpp">
+    <ClCompile Include="src\zaf\control\scroll_box_parser.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2521,7 +2521,7 @@
     <ClInclude Include="src\zaf\control\control_parser.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\scrollable_control_parser.h">
+    <ClInclude Include="src\zaf\control\scroll_box_parser.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\internal\alignment_info.h">

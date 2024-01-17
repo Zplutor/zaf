@@ -4,7 +4,7 @@
 #include <zaf/control/internal/scrollable_control/self_scrolling_layouter.h>
 #include <zaf/control/rich_edit.h>
 #include <zaf/control/scroll_bar.h>
-#include <zaf/control/scrollable_control_parser.h>
+#include <zaf/control/scroll_box_parser.h>
 #include <zaf/control/self_scrolling_control.h>
 #include <zaf/control/text_box.h>
 #include <zaf/creation.h>
@@ -25,7 +25,7 @@ std::shared_ptr<Control> CreateDefaultScrollContentControl() {
 
 
 ZAF_DEFINE_TYPE(ScrollBox)
-ZAF_DEFINE_TYPE_PARSER(ScrollableControlParser)
+ZAF_DEFINE_TYPE_PARSER(ScrollBoxParser)
 ZAF_DEFINE_TYPE_PROPERTY(AllowVerticalScroll)
 ZAF_DEFINE_TYPE_PROPERTY(AllowHorizontalScroll)
 ZAF_DEFINE_TYPE_PROPERTY(AutoScrollBarLargeChange)
