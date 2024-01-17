@@ -788,12 +788,12 @@ void RichEdit::GetScrollValues(
 }
 
 
-Observable<SelfScrollingControlScrollBarChangInfo> RichEdit::ScrollBarChangeEvent() {
+Observable<SelfScrollControlScrollBarChangeInfo> RichEdit::ScrollBarChangeEvent() {
     return scroll_bar_change_event_.GetObservable();
 }
 
 
-Observable<SelfScrollingControlScrollValuesChangeInfo> RichEdit::ScrollValuesChangeEvent() {
+Observable<SelfScrollControlScrollValuesChangeInfo> RichEdit::ScrollValuesChangeEvent() {
     return scroll_values_change_event_.GetObservable();
 }
 
@@ -1321,16 +1321,16 @@ void RichEdit::Scroll(bool is_horizontal, int new_value) {
 
 void RichEdit::ScrollBarChange() {
 
-    SelfScrollingControlScrollBarChangInfo event_info;
-    event_info.self_scrolling_control = this;
+    SelfScrollControlScrollBarChangeInfo event_info;
+    event_info.self_scroll_control = this;
     scroll_bar_change_event_.Raise(event_info);
 }
 
 
 void RichEdit::ScrollValuesChange(bool is_horizontal) {
 
-    SelfScrollingControlScrollValuesChangeInfo event_info;
-    event_info.self_scrolling_control = this;
+    SelfScrollControlScrollValuesChangeInfo event_info;
+    event_info.self_scroll_control = this;
     event_info.is_horizontal = is_horizontal;
     scroll_values_change_event_.Raise(event_info);
 }

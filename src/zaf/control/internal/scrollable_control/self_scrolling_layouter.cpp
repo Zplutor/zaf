@@ -3,7 +3,7 @@
 #include <zaf/base/auto_reset.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_box.h>
-#include <zaf/control/self_scrolling_control.h>
+#include <zaf/control/self_scroll_control.h>
 
 namespace zaf {
 namespace internal {
@@ -127,7 +127,7 @@ void SelfScrollingLayouter::SelfScrollingControlScrollBarChange() {
 
 
 void SelfScrollingLayouter::SelfScrollingControlScrollValuesChange(
-    const SelfScrollingControlScrollValuesChangeInfo& event_info) {
+    const SelfScrollControlScrollValuesChangeInfo& event_info) {
 
     is_self_scrolling_ = true;
     AdjustScrollBarValue(event_info.is_horizontal);

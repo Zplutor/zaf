@@ -5,20 +5,20 @@
 
 namespace zaf {
 
-class SelfScrollingControlScrollBarChangInfo;
-class SelfScrollingControlScrollValuesChangeInfo;
+class SelfScrollControlScrollBarChangeInfo;
+class SelfScrollControlScrollValuesChangeInfo;
 
 /**
  Provides an interface for self scrolling controls to interact with scrollable controls.
 
- Any class that inherits SelfScrollingControl is regarded as a control that can manage its
+ Any class that inherits SelfScrollControl is regarded as a control that can manage its
  own scrolling action. When it is set as the scroll content control to a scrollable control, 
  the later queries and changes the scroll bars information via this interface.
  */
-class SelfScrollingControl {
+class SelfScrollControl {
 public:
-    SelfScrollingControl() { } 
-    virtual ~SelfScrollingControl() { }
+    SelfScrollControl() { } 
+    virtual ~SelfScrollControl() { }
 
     /**
      Set a value indicating that whether the scrollable control allows vertical scrolling.
@@ -79,14 +79,14 @@ public:
 
      This event should be raised when the visibility or usability of scroll bars changed.
      */
-    virtual Observable<SelfScrollingControlScrollBarChangInfo> ScrollBarChangeEvent() = 0;
+    virtual Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() = 0;
 
     /**
      Get scroll value change event of the self scrolling control.
 
      This event should be raise when the scroll values changed.
      */
-    virtual Observable<SelfScrollingControlScrollValuesChangeInfo> ScrollValuesChangeEvent() = 0;
+    virtual Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() = 0;
 
     /**
      Scroll the content by changing the vertical scroll value.
@@ -99,20 +99,20 @@ public:
     virtual void HorizontallyScroll(int new_value) = 0;
 
 private:
-    SelfScrollingControl(const SelfScrollingControl&) = delete;
-    SelfScrollingControl& operator=(const SelfScrollingControl&) = delete;
+    SelfScrollControl(const SelfScrollControl&) = delete;
+    SelfScrollControl& operator=(const SelfScrollControl&) = delete;
 };
 
 
-class SelfScrollingControlScrollBarChangInfo {
+class SelfScrollControlScrollBarChangeInfo {
 public:
-    SelfScrollingControl* self_scrolling_control{};
+    SelfScrollControl* self_scroll_control{};
 };
 
 
-class SelfScrollingControlScrollValuesChangeInfo {
+class SelfScrollControlScrollValuesChangeInfo {
 public:
-    SelfScrollingControl* self_scrolling_control{};
+    SelfScrollControl* self_scroll_control{};
     bool is_horizontal{};
 };
 

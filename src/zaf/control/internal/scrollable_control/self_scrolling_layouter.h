@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/control/internal/scrollable_control/scrollable_control_layouter.h>
-#include <zaf/control/self_scrolling_control.h>
+#include <zaf/control/self_scroll_control.h>
 #include <zaf/rx/subscription_host.h>
 
 namespace zaf {
@@ -18,7 +18,7 @@ protected:
     void ScrollBarScroll(const ScrollBarScrollInfo& event_info) override;
 
 private:
-    SelfScrollingControl* GetSelfScrollingControl() const {
+    SelfScrollControl* GetSelfScrollingControl() const {
         return GetScrollableControl()->GetSelfScrollingControl();
     }
 
@@ -26,7 +26,7 @@ private:
 
     void SelfScrollingControlScrollBarChange();
     void SelfScrollingControlScrollValuesChange(
-        const SelfScrollingControlScrollValuesChangeInfo& event_info);
+        const SelfScrollControlScrollValuesChangeInfo& event_info);
 
 private:
     bool is_layouting_{};

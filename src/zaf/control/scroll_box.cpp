@@ -5,7 +5,7 @@
 #include <zaf/control/rich_edit.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_box_parser.h>
-#include <zaf/control/self_scrolling_control.h>
+#include <zaf/control/self_scroll_control.h>
 #include <zaf/control/text_box.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
@@ -95,7 +95,7 @@ void ScrollBox::InitializeScrollContentControl(const std::shared_ptr<Control>& c
 
     scroll_container_control_->AddChild(scroll_content_control_);
 
-    self_scrolling_control_ = dynamic_cast<SelfScrollingControl*>(control.get());
+    self_scrolling_control_ = dynamic_cast<SelfScrollControl*>(control.get());
     if (self_scrolling_control_ != nullptr) {
 
         self_scrolling_control_->SetAllowVerticalScroll(AllowVerticalScroll());

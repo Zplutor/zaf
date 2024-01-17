@@ -9,7 +9,7 @@
 #include <zaf/control/event/text_changing_info.h>
 #include <zaf/control/rich_edit/ole_interface.h>
 #include <zaf/control/rich_edit/text_flag.h>
-#include <zaf/control/self_scrolling_control.h>
+#include <zaf/control/self_scroll_control.h>
 #include <zaf/control/text_validator.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/frame.h>
@@ -30,7 +30,7 @@ class RichEditSelectionChangedInfo;
 /**
  Represents a rich edit control.   
  */
-class RichEdit : public TextualControl, public SelfScrollingControl {
+class RichEdit : public TextualControl, public SelfScrollControl {
 public:
     ZAF_DECLARE_TYPE
 
@@ -199,8 +199,8 @@ public:
 
     Observable<TextChangingInfo> TextChangingEvent() const;
 
-    Observable<SelfScrollingControlScrollBarChangInfo> ScrollBarChangeEvent() override;
-    Observable<SelfScrollingControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
+    Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() override;
+    Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
 
     bool AcceptKeyMessage(const KeyMessage& message) override;
 
@@ -397,8 +397,8 @@ private:
 
     Event<TextChangingInfo> text_changing_event_;
     Event<RichEditSelectionChangedInfo> selection_changed_event_;
-    Event<SelfScrollingControlScrollBarChangInfo> scroll_bar_change_event_;
-    Event<SelfScrollingControlScrollValuesChangeInfo> scroll_values_change_event_;
+    Event<SelfScrollControlScrollBarChangeInfo> scroll_bar_change_event_;
+    Event<SelfScrollControlScrollValuesChangeInfo> scroll_values_change_event_;
 };
 
 }

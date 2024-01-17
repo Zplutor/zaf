@@ -1260,7 +1260,7 @@
     <ClInclude Include="src\zaf\control\textual_control.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\self_scrolling_control.h">
+    <ClInclude Include="src\zaf\control\self_scroll_control.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\geometry\rectangle_geometry.h">

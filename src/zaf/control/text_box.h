@@ -2,7 +2,7 @@
 
 #include <zaf/base/range.h>
 #include <zaf/control/color_picker.h>
-#include <zaf/control/self_scrolling_control.h>
+#include <zaf/control/self_scroll_control.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/text/text_layout.h>
 #include <zaf/control/text_box/selection_option.h>
@@ -18,7 +18,7 @@ class Caret;
 /**
 A readonly control to display and select text.
 */
-class TextBox : public TextualControl, public SelfScrollingControl {
+class TextBox : public TextualControl, public SelfScrollControl {
 public:
     ZAF_DECLARE_TYPE;
 
@@ -141,7 +141,7 @@ protected:
     void OnFocusLost(const FocusLostInfo& event_info) override;
     void OnKeyDown(const KeyDownInfo& event_info) override;
 
-    //Methods from SelfScrollingControl
+    //Methods from SelfScrollControl
     void SetAllowVerticalScroll(bool allow) override;
     void SetAllowHorizontalScroll(bool allow) override;
     void SetAutoHideScrollBars(bool auto_hide) override;
@@ -160,8 +160,8 @@ protected:
         int& max_value,
         int& page_value) override;
 
-    Observable<SelfScrollingControlScrollBarChangInfo> ScrollBarChangeEvent() override;
-    Observable<SelfScrollingControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
+    Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() override;
+    Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
     void VerticallyScroll(int new_value) override;
     void HorizontallyScroll(int new_value) override;
 
@@ -238,8 +238,8 @@ private:
     bool allow_horizontal_scroll_{ true };
     bool auto_hide_scroll_bars_{ false };
 
-    Event<SelfScrollingControlScrollBarChangInfo> scroll_bar_change_event_;
-    Event<SelfScrollingControlScrollValuesChangeInfo> scroll_values_change_event_;
+    Event<SelfScrollControlScrollBarChangeInfo> scroll_bar_change_event_;
+    Event<SelfScrollControlScrollValuesChangeInfo> scroll_values_change_event_;
 
     ColorPicker selection_background_color_picker_;
     text_box::WordExtractor word_extractor_;

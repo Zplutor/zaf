@@ -11,7 +11,7 @@ class SelfScrollingLayouter;
 }
 
 class ScrollBar;
-class SelfScrollingControl;
+class SelfScrollControl;
 class zaf::Size;
 
 /**
@@ -29,9 +29,9 @@ class zaf::Size;
  SetFixedHeight to scroll content control to prevent auto-sizing. Or you can call 
  SetAutoScrollContentWidth and SetAutoScrollContentHeight to disable auto-sizing.
 
- The scroll content control can inherits SelfScrollingControl class. In this way, its scrollable control
+ The scroll content control can inherits SelfScrollControl class. In this way, its scrollable control
  doesn't scroll it anymore, instead, the scroll content control scrolls its own content and controls 
- the scroll bars. For more information, see also SelfScrollingControl.
+ the scroll bars. For more information, see also SelfScrollControl.
  */
 class ScrollBox : public Control {
 public:
@@ -257,7 +257,7 @@ private:
         return scroll_container_control_;
     }
 
-    SelfScrollingControl* GetSelfScrollingControl() const {
+    SelfScrollControl* GetSelfScrollingControl() const {
         return self_scrolling_control_;
     }
 
@@ -275,7 +275,7 @@ private:
     std::shared_ptr<Control> scroll_bar_corner_;
     std::shared_ptr<Control> scroll_container_control_;
     std::shared_ptr<Control> scroll_content_control_;
-    SelfScrollingControl* self_scrolling_control_;
+    SelfScrollControl* self_scrolling_control_;
 
     bool allow_vertical_scroll_{ true };
     bool allow_horizontal_scroll_{ true };

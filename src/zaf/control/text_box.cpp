@@ -103,7 +103,7 @@ void TextBox::UpdateTextRectOnLayout() {
 
     //Notify scroll bars are changed if text rect is changed.
     if (text_rect_ != old_text_rect) {
-        SelfScrollingControlScrollBarChangInfo event_info{ this };
+        SelfScrollControlScrollBarChangeInfo event_info{ this };
         scroll_bar_change_event_.Raise(event_info);
     }
 }
@@ -704,15 +704,15 @@ void TextBox::EnsureCaretVisible(const HitTestMetrics& metrics) {
         text_rect_.position.y);
 
     if (x_changed) {
-        SelfScrollingControlScrollValuesChangeInfo event_info;
-        event_info.self_scrolling_control = this;
+        SelfScrollControlScrollValuesChangeInfo event_info;
+        event_info.self_scroll_control = this;
         event_info.is_horizontal = true;
         scroll_values_change_event_.Raise(event_info);
     }
 
     if (y_changed) {
-        SelfScrollingControlScrollValuesChangeInfo event_info;
-        event_info.self_scrolling_control = this;
+        SelfScrollControlScrollValuesChangeInfo event_info;
+        event_info.self_scroll_control = this;
         event_info.is_horizontal = false;
         scroll_values_change_event_.Raise(event_info);
     }
@@ -837,12 +837,12 @@ void TextBox::GetScrollValues(
 }
 
 
-Observable<SelfScrollingControlScrollBarChangInfo> TextBox::ScrollBarChangeEvent() {
+Observable<SelfScrollControlScrollBarChangeInfo> TextBox::ScrollBarChangeEvent() {
     return scroll_bar_change_event_.GetObservable();
 }
 
 
-Observable<SelfScrollingControlScrollValuesChangeInfo> TextBox::ScrollValuesChangeEvent() {
+Observable<SelfScrollControlScrollValuesChangeInfo> TextBox::ScrollValuesChangeEvent() {
     return scroll_values_change_event_.GetObservable();
 }
 
