@@ -216,7 +216,7 @@
     <ClCompile Include="src\zaf\control\label.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\scrollable_control.cpp">
+    <ClCompile Include="src\zaf\control\scroll_box.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\rich_edit.cpp">
@@ -1161,7 +1161,7 @@
     <ClInclude Include="src\zaf\control\label.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\scrollable_control.h">
+    <ClInclude Include="src\zaf\control\scroll_box.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\rich_edit.h">

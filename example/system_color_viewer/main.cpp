@@ -1,7 +1,7 @@
 #include <zaf/application.h>
 #include <zaf/control/label.h>
 #include <zaf/control/layout/linear_layouter.h>
-#include <zaf/control/scrollable_control.h>
+#include <zaf/control/scroll_box.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 

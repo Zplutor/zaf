@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/control/scrollable_control.h>
+#include <zaf/control/scroll_box.h>
 #include <zaf/control/selection_mode.h>
 #include <zaf/rx/observable.h>
 

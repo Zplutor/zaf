@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/control/scroll_bar.h>
-#include <zaf/control/scrollable_control.h>
+#include <zaf/control/scroll_box.h>
 #include <zaf/control/self_scrolling_control.h>
 
 namespace zaf {

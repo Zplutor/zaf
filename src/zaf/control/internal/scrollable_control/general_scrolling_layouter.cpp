@@ -1,7 +1,7 @@
 #include <zaf/control/internal/scrollable_control/general_scrolling_layouter.h>
 #include <zaf/base/as.h>
 #include <zaf/control/scroll_bar.h>
-#include <zaf/control/scrollable_control.h>
+#include <zaf/control/scroll_box.h>
 
 namespace zaf::internal {
 

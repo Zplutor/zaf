@@ -1,7 +1,7 @@
 #include <zaf/control/scrollable_control_parser.h>
 #include <zaf/base/as.h>
 #include <zaf/base/error/basic_error.h>
-#include <zaf/control/scrollable_control.h>
+#include <zaf/control/scroll_box.h>
 #include <zaf/object/parsing/internal/utility.h>
 
 namespace zaf {

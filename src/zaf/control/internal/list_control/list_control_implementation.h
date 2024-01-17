@@ -7,7 +7,7 @@
 #include <zaf/control/list_item.h>
 #include <zaf/control/list_item_container.h>
 #include <zaf/control/scroll_bar.h>
-#include <zaf/control/scrollable_control.h>
+#include <zaf/control/scroll_box.h>
 #include <zaf/control/selection_mode.h>
 #include <zaf/rx/subscription_set.h>
 

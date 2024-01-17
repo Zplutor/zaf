@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/control/property_grid_node.h>
-#include <zaf/control/scrollable_control.h>
+#include <zaf/control/scroll_box.h>
 
 namespace zaf {
 namespace internal {

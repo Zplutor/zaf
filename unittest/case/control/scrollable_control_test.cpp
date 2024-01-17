@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/base/as.h>
 #include <zaf/control/scroll_bar.h>
-#include <zaf/control/scrollable_control.h>
+#include <zaf/control/scroll_box.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/window/window.h>

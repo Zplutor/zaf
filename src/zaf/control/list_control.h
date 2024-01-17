@@ -5,7 +5,7 @@
 #include <zaf/control/event/list_control_item_double_click_info.h>
 #include <zaf/control/event/list_control_selection_changed_info.h>
 #include <zaf/control/list_item.h>
-#include <zaf/control/scrollable_control.h>
+#include <zaf/control/scroll_box.h>
 #include <zaf/control/selection_mode.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/creation.h>

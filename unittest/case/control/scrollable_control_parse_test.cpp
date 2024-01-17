@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/control/label.h>
-#include <zaf/control/scrollable_control.h>
+#include <zaf/control/scroll_box.h>
 #include "case/parsing/parsers/utility.h"
 #include "utility/assert.h"
 
