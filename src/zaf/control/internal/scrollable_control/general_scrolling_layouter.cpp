@@ -5,7 +5,7 @@
 
 namespace zaf::internal {
 
-GeneralScrollingLayouter::GeneralScrollingLayouter(ScrollableControl* scrollable_control) : 
+GeneralScrollingLayouter::GeneralScrollingLayouter(ScrollBox* scrollable_control) : 
     ScrollableControlLayouter(scrollable_control) {
 
 }

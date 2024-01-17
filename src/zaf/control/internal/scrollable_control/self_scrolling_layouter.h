@@ -9,7 +9,7 @@ namespace internal {
 
 class SelfScrollingLayouter : public ScrollableControlLayouter, public SubscriptionHost {
 public:
-    SelfScrollingLayouter(ScrollableControl* scrollable_control);
+    SelfScrollingLayouter(ScrollBox* scrollable_control);
     ~SelfScrollingLayouter();
 
     void Layout() override;

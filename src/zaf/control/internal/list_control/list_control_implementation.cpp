@@ -66,7 +66,7 @@ void CalculateRangeDifference(
 
 }
 
-ListControlImplementation::ListControlImplementation(ScrollableControl& owner) : 
+ListControlImplementation::ListControlImplementation(ScrollBox& owner) : 
     owner_(owner) {
 
 }

@@ -17,7 +17,7 @@ class SplitDistanceManager;
 class TypeConfigFactory;
 }
 
-class PropertyGrid : public ScrollableControl {
+class PropertyGrid : public ScrollBox {
 public:
     ZAF_DECLARE_TYPE;
 

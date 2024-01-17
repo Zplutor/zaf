@@ -10,9 +10,9 @@ using namespace zaf;
 
 TEST(ScrollableControlParseTest, AllowVerticalScroll) {
 
-    ASSERT_TRUE(TestBooleanProperty<ScrollableControl>(
+    ASSERT_TRUE(TestBooleanProperty<ScrollBox>(
         "AllowVerticalScroll", 
-        [](ScrollableControl& scrollable_control) {
+        [](ScrollBox& scrollable_control) {
             return scrollable_control.AllowVerticalScroll();
         }
     ));
@@ -21,9 +21,9 @@ TEST(ScrollableControlParseTest, AllowVerticalScroll) {
 
 TEST(ScrollableControlParseTest, AllowHorizontalScroll) {
 
-    ASSERT_TRUE(TestBooleanProperty<ScrollableControl>(
+    ASSERT_TRUE(TestBooleanProperty<ScrollBox>(
         "AllowHorizontalScroll",
-        [](ScrollableControl& scrollable_control) {
+        [](ScrollBox& scrollable_control) {
             return scrollable_control.AllowHorizontalScroll();
         }
     ));
@@ -32,9 +32,9 @@ TEST(ScrollableControlParseTest, AllowHorizontalScroll) {
 
 TEST(ScrollableControlParseTest, AutoHideScrollBars) {
 
-    ASSERT_TRUE(TestBooleanProperty<ScrollableControl>(
+    ASSERT_TRUE(TestBooleanProperty<ScrollBox>(
         "AutoHideScrollBars",
-        [](ScrollableControl& scrollable_control) {
+        [](ScrollBox& scrollable_control) {
             return scrollable_control.AutoHideScrollBars();
         }
     ));
@@ -43,9 +43,9 @@ TEST(ScrollableControlParseTest, AutoHideScrollBars) {
 
 TEST(ScrollableControlParseTest, AutoScrollBarLargeChange) {
 
-    ASSERT_TRUE(TestBooleanProperty<ScrollableControl>(
+    ASSERT_TRUE(TestBooleanProperty<ScrollBox>(
         "AutoScrollBarLargeChange",
-        [](ScrollableControl& scrollable_control) {
+        [](ScrollBox& scrollable_control) {
             return scrollable_control.AutoScrollBarLargeChange();
         }
     ));
@@ -54,9 +54,9 @@ TEST(ScrollableControlParseTest, AutoScrollBarLargeChange) {
 
 TEST(ScrollableControlParseTest, AutoScrollContentHeight) {
 
-    ASSERT_TRUE(TestBooleanProperty<ScrollableControl>(
+    ASSERT_TRUE(TestBooleanProperty<ScrollBox>(
         "AutoScrollContentHeight",
-        [](ScrollableControl& scrollable_control) {
+        [](ScrollBox& scrollable_control) {
             return scrollable_control.AutoScrollContentHeight();
         }
     ));
@@ -65,9 +65,9 @@ TEST(ScrollableControlParseTest, AutoScrollContentHeight) {
 
 TEST(ScrollableControlParseTest, AutoScrollContentWidth) {
 
-    ASSERT_TRUE(TestBooleanProperty<ScrollableControl>(
+    ASSERT_TRUE(TestBooleanProperty<ScrollBox>(
         "AutoScrollContentWidth",
-        [](ScrollableControl& scrollable_control) {
+        [](ScrollBox& scrollable_control) {
             return scrollable_control.AutoScrollContentWidth();
         }
     ));
@@ -77,14 +77,14 @@ TEST(ScrollableControlParseTest, AutoScrollContentWidth) {
 TEST(ScrollableControlParseTest, ScrollContent) {
 
     auto xaml = LR"(
-        <ScrollableControl>
-            <ScrollableControl.ScrollContent>
+        <ScrollBox>
+            <ScrollBox.ScrollContent>
                 <Label Text="ScrollContent" />
-            </ScrollableControl.ScrollContent>
-        </ScrollableControl>
+            </ScrollBox.ScrollContent>
+        </ScrollBox>
     )";
 
-    auto scrollable_control = CreateObjectFromXaml<ScrollableControl>(xaml);
+    auto scrollable_control = CreateObjectFromXaml<ScrollBox>(xaml);
     ASSERT_NE(scrollable_control, nullptr);
 
     auto label = As<Label>(scrollable_control->ScrollContent());
@@ -97,11 +97,11 @@ TEST(ScrollableControlParseTest, ContentNode) {
 
     {
         auto xaml = LR"(
-            <ScrollableControl>
+            <ScrollBox>
                 <Label Text="ContentNode" />
-            </ScrollableControl>
+            </ScrollBox>
         )";
-        auto scrollable_control = CreateObjectFromXaml<ScrollableControl>(xaml);
+        auto scrollable_control = CreateObjectFromXaml<ScrollBox>(xaml);
         ASSERT_NE(scrollable_control, nullptr);
         auto label = As<Label>(scrollable_control->ScrollContent());
         ASSERT_NE(label, nullptr);
@@ -113,31 +113,31 @@ TEST(ScrollableControlParseTest, ContentNode) {
     //Empty content nodes.
     {
         auto xaml = LR"(
-            <ScrollableControl>
-            </ScrollableControl>
+            <ScrollBox>
+            </ScrollBox>
         )";
-        auto scrollable_control = CreateObjectFromXaml<ScrollableControl>(xaml);
+        auto scrollable_control = CreateObjectFromXaml<ScrollBox>(xaml);
         ASSERT_NE(scrollable_control, nullptr);
     }
 
     //Multiple content nodes are not allowed.
     {
         auto xaml = LR"(
-            <ScrollableControl>
+            <ScrollBox>
                 <Label />
                 <Label />
-            </ScrollableControl>
+            </ScrollBox>
         )";
-        ASSERT_THROW_ERRC(CreateObjectFromXaml<ScrollableControl>(xaml), BasicErrc::InvalidValue);
+        ASSERT_THROW_ERRC(CreateObjectFromXaml<ScrollBox>(xaml), BasicErrc::InvalidValue);
     }
 
     //Invalid object.
     {
         auto xaml = LR"(
-            <ScrollableControl>
+            <ScrollBox>
                 <NoThisObject />
-            </ScrollableControl>
+            </ScrollBox>
         )";
-        ASSERT_THROW_ERRC(CreateObjectFromXaml<ScrollableControl>(xaml), BasicErrc::InvalidValue);
+        ASSERT_THROW_ERRC(CreateObjectFromXaml<ScrollBox>(xaml), BasicErrc::InvalidValue);
     }
 }

@@ -16,7 +16,7 @@ class TreeControlSelectionChangeInfo;
 class TreeDataSource;
 class TreeItemContainer;
 
-class TreeControl : public ScrollableControl {
+class TreeControl : public ScrollBox {
 public:
     ZAF_DECLARE_TYPE
 

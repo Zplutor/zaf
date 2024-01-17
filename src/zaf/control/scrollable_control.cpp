@@ -24,7 +24,7 @@ std::shared_ptr<Control> CreateDefaultScrollContentControl() {
 }
 
 
-ZAF_DEFINE_TYPE(ScrollableControl)
+ZAF_DEFINE_TYPE(ScrollBox)
 ZAF_DEFINE_TYPE_PARSER(ScrollableControlParser)
 ZAF_DEFINE_TYPE_PROPERTY(AllowVerticalScroll)
 ZAF_DEFINE_TYPE_PROPERTY(AllowHorizontalScroll)
@@ -44,13 +44,13 @@ ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(ScrollContent)
 ZAF_DEFINE_TYPE_END
 
 
-ScrollableControl::ScrollableControl() :
+ScrollBox::ScrollBox() :
     self_scrolling_control_(nullptr) {
 
 }
 
 
-ScrollableControl::~ScrollableControl() {
+ScrollBox::~ScrollBox() {
 
     //Layouter must be the first member to destroy for unregistering 
     //events from other members.
@@ -58,7 +58,7 @@ ScrollableControl::~ScrollableControl() {
 }
 
 
-void ScrollableControl::Initialize() {
+void ScrollBox::Initialize() {
 
     SetBorder(Frame(1));
 
@@ -81,7 +81,7 @@ void ScrollableControl::Initialize() {
 }
 
 
-void ScrollableControl::InitializeScrollContentControl(const std::shared_ptr<Control>& control) {
+void ScrollBox::InitializeScrollContentControl(const std::shared_ptr<Control>& control) {
 
     scroll_content_control_ = control;
 
@@ -104,18 +104,18 @@ void ScrollableControl::InitializeScrollContentControl(const std::shared_ptr<Con
     }
 
     scroll_content_rect_change_subscription_ = scroll_content_control_->RectChangedEvent().Subscribe(
-        std::bind(&ScrollableControl::OnScrollContentRectChange, this, std::placeholders::_1));
+        std::bind(&ScrollBox::OnScrollContentRectChange, this, std::placeholders::_1));
 }
 
 
-void ScrollableControl::InitializeVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
+void ScrollBox::InitializeVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
     vertical_scroll_bar_ = scroll_bar;
     AddChild(vertical_scroll_bar_);
 }
 
 
-void ScrollableControl::InitializeHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
+void ScrollBox::InitializeHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
     horizontal_scroll_bar_ = scroll_bar;
     horizontal_scroll_bar_->SetIsHorizontal(true);
@@ -123,14 +123,14 @@ void ScrollableControl::InitializeHorizontalScrollBar(const std::shared_ptr<Scro
 }
 
 
-void ScrollableControl::InitializeScrollBarCorner(const std::shared_ptr<Control>& corner) {
+void ScrollBox::InitializeScrollBarCorner(const std::shared_ptr<Control>& corner) {
 
     scroll_bar_corner_ = corner;
     AddChild(scroll_bar_corner_);
 }
 
 
-void ScrollableControl::InitializeLayouter() {
+void ScrollBox::InitializeLayouter() {
 
     if (self_scrolling_control_ == nullptr) {
         layouter_ = std::make_unique<internal::GeneralScrollingLayouter>(this);
@@ -141,7 +141,7 @@ void ScrollableControl::InitializeLayouter() {
 }
 
 
-void ScrollableControl::Layout(const zaf::Rect& previous_rect) {
+void ScrollBox::Layout(const zaf::Rect& previous_rect) {
 
     if (layouter_) {
         layouter_->Layout();
@@ -149,7 +149,7 @@ void ScrollableControl::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void ScrollableControl::OnScrollContentRectChange(const RectChangedInfo& event_info) {
+void ScrollBox::OnScrollContentRectChange(const RectChangedInfo& event_info) {
 
     if (As<Control>(event_info.Source())->Size() != event_info.PreviousRect().size) {
         NeedRelayout();
@@ -157,12 +157,12 @@ void ScrollableControl::OnScrollContentRectChange(const RectChangedInfo& event_i
 }
 
 
-bool ScrollableControl::AllowVerticalScroll() const {
+bool ScrollBox::AllowVerticalScroll() const {
     return allow_vertical_scroll_;
 }
 
 
-void ScrollableControl::SetAllowVerticalScroll(bool allow_scroll) {
+void ScrollBox::SetAllowVerticalScroll(bool allow_scroll) {
 
     allow_vertical_scroll_ = allow_scroll;
 
@@ -174,12 +174,12 @@ void ScrollableControl::SetAllowVerticalScroll(bool allow_scroll) {
 }
 
 
-bool ScrollableControl::AllowHorizontalScroll() const {
+bool ScrollBox::AllowHorizontalScroll() const {
     return allow_horizontal_scroll_;
 }
 
 
-void ScrollableControl::SetAllowHorizontalScroll(bool allow_scroll) {
+void ScrollBox::SetAllowHorizontalScroll(bool allow_scroll) {
 
     allow_horizontal_scroll_ = allow_scroll;
 
@@ -191,12 +191,12 @@ void ScrollableControl::SetAllowHorizontalScroll(bool allow_scroll) {
 }
 
 
-bool ScrollableControl::AutoHideScrollBars() const {
+bool ScrollBox::AutoHideScrollBars() const {
     return auto_hide_scroll_bars_;
 }
 
 
-void ScrollableControl::SetAutoHideScrollBars(bool auto_hide) {
+void ScrollBox::SetAutoHideScrollBars(bool auto_hide) {
 
     auto_hide_scroll_bars_ = auto_hide;
 
@@ -208,12 +208,12 @@ void ScrollableControl::SetAutoHideScrollBars(bool auto_hide) {
 }
 
 
-bool ScrollableControl::UseOverlayScrollBars() const {
+bool ScrollBox::UseOverlayScrollBars() const {
     return use_overlay_scroll_bars_;
 }
 
 
-void ScrollableControl::SetUseOverlayScrollBars(bool use) {
+void ScrollBox::SetUseOverlayScrollBars(bool use) {
 
     if (use_overlay_scroll_bars_ == use) {
         return;
@@ -224,19 +224,19 @@ void ScrollableControl::SetUseOverlayScrollBars(bool use) {
 }
 
 
-bool ScrollableControl::AutoScrollBarLargeChange() const {
+bool ScrollBox::AutoScrollBarLargeChange() const {
     return auto_scroll_bar_large_change_;
 }
 
 
-void ScrollableControl::SetAutoScrollBarLargeChange(bool value) {
+void ScrollBox::SetAutoScrollBarLargeChange(bool value) {
 
     auto_scroll_bar_large_change_ = value;
     NeedRelayout();
 }
 
 
-void ScrollableControl::SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
+void ScrollBox::SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
     auto previous_scroll_bar = vertical_scroll_bar_;
     if (previous_scroll_bar == scroll_bar) {
@@ -254,7 +254,7 @@ void ScrollableControl::SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& s
 }
 
 
-void ScrollableControl::SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
+void ScrollBox::SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_bar) {
 
     auto previous_scroll_bar = horizontal_scroll_bar_;
     if (previous_scroll_bar == scroll_bar) {
@@ -272,7 +272,7 @@ void ScrollableControl::SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>&
 }
 
 
-void ScrollableControl::SetScrollBarCorner(const std::shared_ptr<Control>& control) {
+void ScrollBox::SetScrollBarCorner(const std::shared_ptr<Control>& control) {
 
     auto previous_corner = scroll_bar_corner_;
     if (previous_corner == control) {
@@ -289,7 +289,7 @@ void ScrollableControl::SetScrollBarCorner(const std::shared_ptr<Control>& contr
 }
 
 
-void ScrollableControl::SetScrollContent(const std::shared_ptr<Control>& control) {
+void ScrollBox::SetScrollContent(const std::shared_ptr<Control>& control) {
 
     auto previous_control = scroll_content_control_;
     if (previous_control == control) {
@@ -311,31 +311,31 @@ void ScrollableControl::SetScrollContent(const std::shared_ptr<Control>& control
 }
 
 
-bool ScrollableControl::AutoScrollContentWidth() const {
+bool ScrollBox::AutoScrollContentWidth() const {
     return auto_scroll_content_width_;
 }
 
 
-void ScrollableControl::SetAutoScrollContentWidth(bool value) {
+void ScrollBox::SetAutoScrollContentWidth(bool value) {
 
     auto_scroll_content_width_ = value;
     NeedRelayout();
 }
 
 
-bool ScrollableControl::AutoScrollContentHeight() const {
+bool ScrollBox::AutoScrollContentHeight() const {
     return auto_scroll_content_height_;
 }
 
 
-void ScrollableControl::SetAutoScrollContentHeight(bool value) {
+void ScrollBox::SetAutoScrollContentHeight(bool value) {
 
     auto_scroll_content_height_ = value;
     NeedRelayout();
 }
 
 
-void ScrollableControl::SetAutoScrollContentSize(bool value) {
+void ScrollBox::SetAutoScrollContentSize(bool value) {
 
     auto update_guard = BeginUpdate();
     SetAutoScrollContentWidth(value);
@@ -343,34 +343,34 @@ void ScrollableControl::SetAutoScrollContentSize(bool value) {
 }
 
 
-float ScrollableControl::VerticalScrollBarThickness() const {
+float ScrollBox::VerticalScrollBarThickness() const {
     return vertical_scroll_bar_thickness_;
 }
 
-void ScrollableControl::SetVerticalScrollBarThickness(float thickness) {
+void ScrollBox::SetVerticalScrollBarThickness(float thickness) {
     vertical_scroll_bar_thickness_ = thickness;
     NeedRelayout();
 }
 
 
-float ScrollableControl::HorizontalScrollBarThickness() const {
+float ScrollBox::HorizontalScrollBarThickness() const {
     return horizontal_scroll_bar_thickness_;
 }
 
-void ScrollableControl::SetHorizontalScrollBarThickness(float thickness) {
+void ScrollBox::SetHorizontalScrollBarThickness(float thickness) {
     horizontal_scroll_bar_thickness_ = thickness;
     NeedRelayout();
 }
 
 
-void ScrollableControl::SetScrollBarThickness(float thickness) {
+void ScrollBox::SetScrollBarThickness(float thickness) {
     auto update_guard = BeginUpdate();
     SetVerticalScrollBarThickness(thickness);
     SetHorizontalScrollBarThickness(thickness);
 }
 
 
-void ScrollableControl::OnMouseWheel(const MouseWheelInfo& event_info) {
+void ScrollBox::OnMouseWheel(const MouseWheelInfo& event_info) {
 
     __super::OnMouseWheel(event_info);
 
@@ -394,7 +394,7 @@ void ScrollableControl::OnMouseWheel(const MouseWheelInfo& event_info) {
 }
 
 
-zaf::Rect ScrollableControl::GetVisibleScrollContentRect() const {
+zaf::Rect ScrollBox::GetVisibleScrollContentRect() const {
 
     if (self_scrolling_control_ != nullptr) {
         return scroll_container_control_->Rect();
@@ -409,7 +409,7 @@ zaf::Rect ScrollableControl::GetVisibleScrollContentRect() const {
 }
 
 
-void ScrollableControl::ScrollToScrollContentPosition(const Point& position) {
+void ScrollBox::ScrollToScrollContentPosition(const Point& position) {
 
     if (self_scrolling_control_ != nullptr) {
         return;
@@ -425,25 +425,25 @@ void ScrollableControl::ScrollToScrollContentPosition(const Point& position) {
 }
 
 
-void ScrollableControl::ScrollUpToBegin() {
+void ScrollBox::ScrollUpToBegin() {
     const auto& vertical_scroll_bar = VerticalScrollBar();
     vertical_scroll_bar->SetValue(vertical_scroll_bar->MinValue()); 
 }
 
 
-void ScrollableControl::ScrollDownToEnd() {
+void ScrollBox::ScrollDownToEnd() {
     const auto& vertical_scroll_bar = VerticalScrollBar();
     vertical_scroll_bar->SetValue(vertical_scroll_bar->MaxValue());
 }
 
 
-void ScrollableControl::ScrollLeftToBegin() {
+void ScrollBox::ScrollLeftToBegin() {
     const auto& horizontal_scroll_bar = HorizontalScrollBar();
     horizontal_scroll_bar->SetValue(horizontal_scroll_bar->MinValue());
 }
 
 
-void ScrollableControl::ScrollRightToEnd() {
+void ScrollBox::ScrollRightToEnd() {
     const auto& horizontal_scroll_bar = HorizontalScrollBar();
     horizontal_scroll_bar->SetValue(horizontal_scroll_bar->MaxValue());
 }

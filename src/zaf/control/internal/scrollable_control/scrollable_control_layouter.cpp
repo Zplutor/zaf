@@ -4,7 +4,7 @@
 
 namespace zaf::internal {
 
-ScrollableControlLayouter::ScrollableControlLayouter(ScrollableControl* scrollable_control) : 
+ScrollableControlLayouter::ScrollableControlLayouter(ScrollBox* scrollable_control) : 
     scrollable_control_(scrollable_control) {
 
     RegisterScrollBarEvent(GetVerticalScrollBar(), false);

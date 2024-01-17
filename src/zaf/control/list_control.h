@@ -30,7 +30,7 @@ class ListDataSource;
  which is derived from ListItemSource, and call SetItemSource method to set it into the 
  list control. 
  */
-class ListControl : public ScrollableControl {
+class ListControl : public ScrollBox {
 public:
     ZAF_DECLARE_TYPE
 

@@ -44,7 +44,7 @@ std::vector<std::pair<std::size_t, std::size_t>> MergeAdjacentListIndexes(
 
 }
 
-TreeControlImplementation::TreeControlImplementation(ScrollableControl& owner) :
+TreeControlImplementation::TreeControlImplementation(ScrollBox& owner) :
     list_implementation_(std::make_shared<internal::ListControlImplementation>(owner)) {
 
 }

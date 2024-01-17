@@ -24,7 +24,7 @@ void ScrollableControlParser::ParseContentNodes(
         ZAF_THROW_ERRC(BasicErrc::InvalidValue);
     }
 
-    As<ScrollableControl>(control).SetScrollContent(scroll_content_control);
+    As<ScrollBox>(control).SetScrollContent(scroll_content_control);
 }
 
 }

@@ -10,7 +10,7 @@ using namespace zaf;
 
 TEST(ScrollableControlTest, AutoScrollContentSize) {
 
-    auto scrollable_control = Create<ScrollableControl>();
+    auto scrollable_control = Create<ScrollBox>();
     scrollable_control->SetSize(Size{ 100, 100 });
     scrollable_control->SetBorder(Frame{ 0 });
     scrollable_control->SetScrollBarThickness(10);
@@ -48,11 +48,11 @@ protected:
 };
 
 //Verifies that the scroll value remains correct when the size of the scroll content changes during
-//ScrollableControl layout.
+//ScrollBox layout.
 TEST(ScrollableControlTest, ChangeScrollContentSizeDuringLayout) {
 
     auto scroll_content = Create<AutoSizeControl>();
-    auto scrollable_control = Create<ScrollableControl>();
+    auto scrollable_control = Create<ScrollBox>();
     scrollable_control->SetBorder({});
     scrollable_control->SetScrollBarThickness(10);
     scrollable_control->SetScrollContent(scroll_content);
@@ -64,7 +64,7 @@ TEST(ScrollableControlTest, ChangeScrollContentSizeDuringLayout) {
 
 TEST(ScrollableControlTest, EnableScrollBar) {
 
-    auto scrollable_control = Create<ScrollableControl>();
+    auto scrollable_control = Create<ScrollBox>();
     scrollable_control->SetSize(Size{ 100, 100 });
     scrollable_control->SetAllowHorizontalScroll(true);
     scrollable_control->SetAllowVerticalScroll(true);
@@ -87,7 +87,7 @@ TEST(ScrollableControlTest, EnableScrollBar) {
 
 TEST(ScrollableControlTest, ReserveScrollContentPositionAfterLayout) {
 
-    auto scrollable_control = Create<ScrollableControl>();
+    auto scrollable_control = Create<ScrollBox>();
     scrollable_control->SetSize(Size{ 110, 110 });
     scrollable_control->SetAllowHorizontalScroll(true);
     scrollable_control->SetAllowVerticalScroll(true);
@@ -116,7 +116,7 @@ TEST(ScrollableControlTest, MouseWheelEvent) {
     window->SetPosition({});
     window->SetContentSize(Size{ 200, 200 });
 
-    auto scrollable_control = Create<ScrollableControl>();
+    auto scrollable_control = Create<ScrollBox>();
     scrollable_control->SetSize(Size{ 110, 110 });
     scrollable_control->SetBorder({});
     scrollable_control->SetAllowHorizontalScroll(true);
@@ -146,7 +146,7 @@ TEST(ScrollableControlTest, MouseWheelEvent) {
         static_cast<WORD>(position_in_screen.x),
         static_cast<WORD>(position_in_screen.y));
 
-    //MouseWheelEvent should be handled if ScrollableControl handles it.
+    //MouseWheelEvent should be handled if ScrollBox handles it.
     {
         scroll_content->SetFixedSize({ 200, 200 });
 
@@ -159,7 +159,7 @@ TEST(ScrollableControlTest, MouseWheelEvent) {
         ASSERT_TRUE(is_handled);
     }
 
-    //MouseWheelEvent shouldn't be handled if ScrollableControl doesn't handle it.
+    //MouseWheelEvent shouldn't be handled if ScrollBox doesn't handle it.
     {
         scroll_content->SetFixedSize({ 100, 100 });
 
@@ -179,7 +179,7 @@ TEST(ScrollableControlTest, MouseWheelEvent) {
 
 TEST(ScrollableControlTest, UseOverlayScrollBars) {
 
-    auto scroll_control = zaf::Create<zaf::ScrollableControl>();
+    auto scroll_control = zaf::Create<zaf::ScrollBox>();
     scroll_control->SetAutoHideScrollBars(false);
     scroll_control->SetBorder({});
     scroll_control->SetPadding({});

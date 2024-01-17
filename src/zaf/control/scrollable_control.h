@@ -33,13 +33,13 @@ class zaf::Size;
  doesn't scroll it anymore, instead, the scroll content control scrolls its own content and controls 
  the scroll bars. For more information, see also SelfScrollingControl.
  */
-class ScrollableControl : public Control {
+class ScrollBox : public Control {
 public:
     ZAF_DECLARE_TYPE
 
 public:
-    ScrollableControl();
-    ~ScrollableControl();
+    ScrollBox();
+    ~ScrollBox();
 
     /**
      Get a value indicating that whether the control allows vertical scrolling.

@@ -8,7 +8,7 @@
 namespace zaf {
 namespace internal {
 
-SelfScrollingLayouter::SelfScrollingLayouter(ScrollableControl* scrollable_control) : 
+SelfScrollingLayouter::SelfScrollingLayouter(ScrollBox* scrollable_control) : 
     ScrollableControlLayouter(scrollable_control) {
 
     auto self_scrolling_control = GetSelfScrollingControl();

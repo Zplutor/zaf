@@ -47,7 +47,7 @@ public:
     };
 
 public:
-    ListControlImplementation(ScrollableControl& owner);
+    ListControlImplementation(ScrollBox& owner);
     ~ListControlImplementation();
 
     ListControlImplementation(const ListControlImplementation&) = delete;
@@ -182,7 +182,7 @@ private:
     std::shared_ptr<internal::ListControlSelectStrategy> CreateSelectStrategy();
 
 private:
-    ScrollableControl& owner_;
+    ScrollBox& owner_;
 
     std::shared_ptr<ListItemContainer> item_container_;
     std::weak_ptr<ListDataSource> data_source_;

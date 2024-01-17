@@ -8,7 +8,7 @@ namespace zaf::internal {
 
 class ScrollableControlLayouter {
 public:
-    ScrollableControlLayouter(ScrollableControl* scrollable_control);
+    ScrollableControlLayouter(ScrollBox* scrollable_control);
     virtual ~ScrollableControlLayouter();
 
     ScrollableControlLayouter(const ScrollableControlLayouter&) = delete;
@@ -19,7 +19,7 @@ public:
     virtual void Layout() = 0;
 
 protected:
-    ScrollableControl* GetScrollableControl() const {
+    ScrollBox* GetScrollableControl() const {
         return scrollable_control_;
     }
 
@@ -43,7 +43,7 @@ private:
     void UnregisterScrollBarEvent(bool is_horizontal);
 
 private:
-    ScrollableControl* scrollable_control_;
+    ScrollBox* scrollable_control_;
 
     Subscription horizontal_scroll_bar_subscription_;
     Subscription vertical_scroll_bar_subscription_;

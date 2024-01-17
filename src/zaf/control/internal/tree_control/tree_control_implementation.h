@@ -40,7 +40,7 @@ public:
     };
 
 public:
-    TreeControlImplementation(ScrollableControl& owner);
+    TreeControlImplementation(ScrollBox& owner);
     ~TreeControlImplementation() = default;
 
     internal::ListControlImplementation& GetListImplementation() const {

@@ -86,7 +86,7 @@ static std::shared_ptr<zaf::Control> CreateColorListControl() {
 
     const float item_height = 25;
 
-    auto color_list_control = zaf::Create<zaf::ScrollableControl>();
+    auto color_list_control = zaf::Create<zaf::ScrollBox>();
     color_list_control->SetBorder(zaf::Frame(0, 1, 0, 0));
     color_list_control->SetAutoHideScrollBars(true);
 
