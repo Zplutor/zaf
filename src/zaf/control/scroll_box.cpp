@@ -425,25 +425,25 @@ void ScrollBox::ScrollToScrollContentPosition(const Point& position) {
 }
 
 
-void ScrollBox::ScrollUpToBegin() {
+void ScrollBox::ScrollToTop() {
     const auto& vertical_scroll_bar = VerticalScrollBar();
     vertical_scroll_bar->SetValue(vertical_scroll_bar->MinValue()); 
 }
 
 
-void ScrollBox::ScrollDownToEnd() {
+void ScrollBox::ScrollToBottom() {
     const auto& vertical_scroll_bar = VerticalScrollBar();
     vertical_scroll_bar->SetValue(vertical_scroll_bar->MaxValue());
 }
 
 
-void ScrollBox::ScrollLeftToBegin() {
+void ScrollBox::ScrollToLeft() {
     const auto& horizontal_scroll_bar = HorizontalScrollBar();
     horizontal_scroll_bar->SetValue(horizontal_scroll_bar->MinValue());
 }
 
 
-void ScrollBox::ScrollRightToEnd() {
+void ScrollBox::ScrollToRight() {
     const auto& horizontal_scroll_bar = HorizontalScrollBar();
     horizontal_scroll_bar->SetValue(horizontal_scroll_bar->MaxValue());
 }

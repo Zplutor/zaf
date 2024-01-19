@@ -200,3 +200,35 @@ TEST(ScrollBoxTest, UseOverlayScrollBars) {
     ASSERT_EQ(scroll_control->VerticalScrollBar()->Rect(), zaf::Rect(90, 0, 10, 90));
     ASSERT_EQ(scroll_control->ScrollBarCorner()->Rect(), zaf::Rect(90, 90, 10, 10));
 }
+
+
+TEST(ScrollBoxTest, ScrollTo) {
+
+    auto scroll_box = zaf::Create<zaf::ScrollBox>();
+    scroll_box->SetSize(zaf::Size{ 100, 100 });
+    scroll_box->SetBorder({});
+    scroll_box->SetScrollBarThickness(10);
+    
+    auto content = zaf::Create<zaf::Control>();
+    content->SetFixedSize(zaf::Size{ 200, 200 });
+    scroll_box->SetScrollContent(content);
+
+    const auto& vertical_scroll_bar = scroll_box->VerticalScrollBar();
+    const auto& horizontal_scroll_bar = scroll_box->HorizontalScrollBar();
+
+    scroll_box->ScrollToBottom();
+    ASSERT_EQ(vertical_scroll_bar->Value(), 110);
+    ASSERT_EQ(horizontal_scroll_bar->Value(), 0);
+
+    scroll_box->ScrollToRight();
+    ASSERT_EQ(vertical_scroll_bar->Value(), 110);
+    ASSERT_EQ(horizontal_scroll_bar->Value(), 110);
+
+    scroll_box->ScrollToTop();
+    ASSERT_EQ(vertical_scroll_bar->Value(), 0);
+    ASSERT_EQ(horizontal_scroll_bar->Value(), 110);
+
+    scroll_box->ScrollToLeft();
+    ASSERT_EQ(vertical_scroll_bar->Value(), 0);
+    ASSERT_EQ(horizontal_scroll_bar->Value(), 0);
+}

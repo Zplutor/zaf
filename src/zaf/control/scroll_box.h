@@ -192,10 +192,25 @@ public:
      */
     void ScrollToScrollContentPosition(const Point& position);
 
-    void ScrollUpToBegin();
-    void ScrollDownToEnd();
-    void ScrollLeftToBegin();
-    void ScrollRightToEnd();
+    /**
+    Scrolls to the top of the scroll content.
+    */
+    void ScrollToTop();
+
+    /**
+    Scrolls to the bottom of the scroll content.
+    */
+    void ScrollToBottom();
+
+    /**
+    Scrolls to the left of the scroll content.
+    */
+    void ScrollToLeft();
+
+    /**
+    Scrolls to the right of the scroll content.
+    */
+    void ScrollToRight();
 
 protected:
     void Initialize() override;
