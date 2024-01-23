@@ -14,7 +14,7 @@ MouseEventTargetInfo FindEventTargetUpToDown(
         return MouseEventTargetInfo{ control, position };
     }
 
-    auto position_at_child = control->TranslateToChild(position, *child);
+    auto position_at_child = child->TranslateFromParent(position);
     return FindEventTargetUpToDown(child, position_at_child);
 }
 
@@ -86,7 +86,7 @@ bool TunnelMouseEvent(
     for (const auto& each_control : tunnel_path) {
 
         if (parent) {
-            position = parent->TranslateToChild(position, *each_control);
+            position = each_control->TranslateFromParent(position);
         }
 
         //Invoke event handler.

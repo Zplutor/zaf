@@ -1246,7 +1246,7 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
         }
 
         auto recursive_child = child->InnerFindChildAtPosition(
-            TranslateToChild(position, *child), 
+            child->TranslateFromParent(position),
             true);
 
         if (recursive_child) {
@@ -1674,17 +1674,18 @@ Point Control::TranslateToParent(const Point& position) const {
 }
 
 
-Point Control::TranslateToChild(const Point& position, const Control& child) const {
+Point Control::TranslateFromParent(const Point& position) const {
 
-    ZAF_EXPECT(child.Parent().get() == this);
+    auto parent = Parent();
+    ZAF_EXPECT(parent);
 
-    const auto& border = Border();
-    const auto& padding = Padding();
-    const auto& child_position = child.Position();
+    const auto& this_position = Position();
+    const auto& parent_border = parent->Border();
+    const auto& parent_padding = parent->Padding();
 
     Point result = position;
-    result.x -= child_position.x + border.left + padding.left;
-    result.y -= child_position.y + border.top + padding.top;
+    result.x -= this_position.x + parent_border.left + parent_padding.left;
+    result.y -= this_position.y + parent_border.top + parent_padding.top;
     return result;
 }
 

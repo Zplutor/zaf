@@ -316,7 +316,7 @@ TEST(ControlTest, TranslateToParent) {
     //No parent
     ASSERT_THROW(control->TranslateToParent(zaf::Point{ 20, 21 }), std::logic_error);
 
-    //Parent
+    //Has Parent
     auto parent = zaf::Create<zaf::Control>();
     parent->SetBorder(zaf::Frame{ 1 });
     parent->SetPadding(zaf::Frame{ 2 });
@@ -327,33 +327,22 @@ TEST(ControlTest, TranslateToParent) {
 }
 
 
-TEST(ControlTest, TranslateToChild) {
+TEST(ControlTest, TranslateFromParent) {
 
     auto control = zaf::Create<zaf::Control>();
     control->SetRect(zaf::Rect{ 10, 11, 100, 110 });
-    control->SetBorder(zaf::Frame{ 1 });
-    control->SetPadding(zaf::Frame{ 2 });
 
-    zaf::Point position{ 20, 21 };
+    //No parent
+    ASSERT_THROW(control->TranslateFromParent(zaf::Point{ 20, 21 }), std::logic_error);
 
-    //Not child
-    auto other = zaf::Create<zaf::Control>();
-    ASSERT_THROW(control->TranslateToChild(position, *other), std::logic_error);
+    //Has parent
+    auto parent = zaf::Create<zaf::Control>();
+    parent->SetBorder(zaf::Frame{ 1 });
+    parent->SetPadding(zaf::Frame{ 2 });
+    parent->AddChild(control);
 
-    auto child1 = zaf::Create<zaf::Control>();
-    child1->SetRect(zaf::Rect{ 2, 3, 10, 10 });
-    control->AddChild(child1);
-
-    auto child2 = zaf::Create<zaf::Control>();
-    child2->SetRect(zaf::Rect{ 8, 7, 10, 10 });
-    child1->AddChild(child2);
-
-    //Not direct descendant
-    ASSERT_THROW(control->TranslateToChild(position, *child2), std::logic_error);
-
-    //Direct descendant
-    auto result = control->TranslateToChild(position, *child1);
-    ASSERT_EQ(result, zaf::Point(15, 15));
+    auto result = control->TranslateFromParent(zaf::Point{ 20, 21 });
+    ASSERT_EQ(result, zaf::Point(7, 7));
 }
 
 

@@ -411,11 +411,8 @@ zaf::Rect ScrollBox::GetVisibleScrollContentRect() const {
 
 zaf::Point ScrollBox::TranslateToScrollContent(const zaf::Point& position) const {
 
-    auto position_in_container = TranslateToChild(position, *scroll_container_control_);
-
-    return scroll_container_control_->TranslateToChild(
-        position_in_container,
-        *scroll_content_control_);
+    auto position_in_container = scroll_container_control_->TranslateFromParent(position);
+    return scroll_content_control_->TranslateFromParent(position_in_container);
 }
 
 
