@@ -139,7 +139,7 @@ TEST(ScrollBoxTest, MouseWheelEvent) {
     window->Show();
 
     auto position_in_screen = FromDIPs(
-        window->TranslatePositionToScreen(Point{ 50, 50 }),
+        window->TranslateToScreen(Point{ 50, 50 }),
         window->GetDPI());
 
     auto lparam = MAKELPARAM(
@@ -199,6 +199,30 @@ TEST(ScrollBoxTest, UseOverlayScrollBars) {
     ASSERT_EQ(scroll_control->HorizontalScrollBar()->Rect(), zaf::Rect(0, 90, 90, 10));
     ASSERT_EQ(scroll_control->VerticalScrollBar()->Rect(), zaf::Rect(90, 0, 10, 90));
     ASSERT_EQ(scroll_control->ScrollBarCorner()->Rect(), zaf::Rect(90, 90, 10, 10));
+}
+
+
+TEST(ScrollBoxTest, TranslateToScrollContent) {
+
+    auto scroll_box = zaf::Create<zaf::ScrollBox>();
+    scroll_box->SetSize(zaf::Size{ 100, 100 });
+    scroll_box->SetBorder(zaf::Frame{ 2, 4, 2, 4 });
+    scroll_box->SetPadding(zaf::Frame{ 1, 3, 1, 3 });
+    scroll_box->SetScrollBarThickness(10);
+    scroll_box->ScrollContent()->SetFixedSize(zaf::Size{ 200, 200 });
+
+    zaf::Point position_in_box{ 20, 20 };
+
+    auto translated_position = scroll_box->TranslateToScrollContent(position_in_box);
+    ASSERT_EQ(translated_position, zaf::Point(17, 13));
+
+    scroll_box->ScrollToRight();
+    translated_position = scroll_box->TranslateToScrollContent(position_in_box);
+    ASSERT_EQ(translated_position, zaf::Point(133, 13));
+
+    scroll_box->ScrollToBottom();
+    translated_position = scroll_box->TranslateToScrollContent(position_in_box);
+    ASSERT_EQ(translated_position, zaf::Point(133, 137));
 }
 
 

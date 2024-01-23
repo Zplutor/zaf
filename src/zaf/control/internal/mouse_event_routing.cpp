@@ -14,7 +14,7 @@ MouseEventTargetInfo FindEventTargetUpToDown(
         return MouseEventTargetInfo{ control, position };
     }
 
-    auto position_at_child = control->TranslatePositionToChild(position, *child);
+    auto position_at_child = control->TranslateToChild(position, *child);
     return FindEventTargetUpToDown(child, position_at_child);
 }
 
@@ -33,7 +33,7 @@ MouseEventTargetInfo FindEventTargetDownToUp(
             break;
         }
 
-        current_position = current_control->TranslatePositionToParent(current_position);
+        current_position = current_control->TranslateToParent(current_position);
         current_control = current_control->Parent();
 
         if (current_control->IsEnabled()) {
@@ -86,7 +86,7 @@ bool TunnelMouseEvent(
     for (const auto& each_control : tunnel_path) {
 
         if (parent) {
-            position = parent->TranslatePositionToChild(position, *each_control);
+            position = parent->TranslateToChild(position, *each_control);
         }
 
         //Invoke event handler.
@@ -127,7 +127,7 @@ bool BubbleMouseEvent(
             break;
         }
 
-        position_at_sender = sender->TranslatePositionToParent(position_at_sender);
+        position_at_sender = sender->TranslateToParent(position_at_sender);
         sender = parent;
     }
 

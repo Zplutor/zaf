@@ -186,6 +186,18 @@ public:
     zaf::Rect GetVisibleScrollContentRect() const;
 
     /**
+    Translates a position from the coordinate space of current control to the coordinate space of 
+    its scroll content.
+
+    @param position
+        The position in the coordinate space of current control.
+
+    @return 
+        The translated position in the coordinate space of scroll content.
+    */
+    zaf::Point TranslateToScrollContent(const zaf::Point& position) const;
+
+    /**
      Scroll the scroll content to specified position, in scroll content control's coordinate.
 
      The specified position occurs at left-top cornor of the control after scrolling.

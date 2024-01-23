@@ -2045,7 +2045,7 @@ Point Window::GetMousePosition() const {
 }
 
 
-Point Window::TranslatePositionToScreen(const Point& position) const {
+Point Window::TranslateToScreen(const Point& position) const {
 
     auto handle = Handle();
     ZAF_EXPECT(handle);
@@ -2061,7 +2061,7 @@ Point Window::TranslatePositionToScreen(const Point& position) const {
 }
 
 
-Point Window::TranslatePositionFromScreen(const Point& position_in_screen) const {
+Point Window::TranslateFromScreen(const Point& position_in_screen) const {
 
     auto handle = Handle();
     ZAF_EXPECT(handle);

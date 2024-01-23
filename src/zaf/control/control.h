@@ -757,7 +757,7 @@ public:
     @throw std::logic_error
         Thrown if there is no parent of current control.
     */
-    Point TranslatePositionToParent(const Point& position) const;
+    Point TranslateToParent(const Point& position) const;
 
     /**
     Translates a position from the coordinate space of current control to the coordinate space of 
@@ -775,7 +775,7 @@ public:
     @throw std::logic_error
         Thrown if the child control is not a direct descendant of current control.
     */
-    Point TranslatePositionToChild(const Point& position, const Control& child) const;
+    Point TranslateToChild(const Point& position, const Control& child) const;
 
     /**
      Get rect change event.

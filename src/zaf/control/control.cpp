@@ -365,7 +365,7 @@ void Control::NeedRepaintRect(const zaf::Rect& rect) {
         return;
     }
 
-    Point position_in_parent = TranslatePositionToParent(repaint_rect.position);
+    Point position_in_parent = TranslateToParent(repaint_rect.position);
 
     zaf::Rect repaint_rect_in_parent(position_in_parent, repaint_rect.size);
     repaint_rect_in_parent.Intersect(parent->ContentRect());
@@ -1246,7 +1246,7 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
         }
 
         auto recursive_child = child->InnerFindChildAtPosition(
-            TranslatePositionToChild(position, *child), 
+            TranslateToChild(position, *child), 
             true);
 
         if (recursive_child) {
@@ -1658,7 +1658,7 @@ const Point Control::GetMousePosition() const {
 }
 
 
-Point Control::TranslatePositionToParent(const Point& position) const {
+Point Control::TranslateToParent(const Point& position) const {
 
     auto parent = Parent();
     ZAF_EXPECT(parent);
@@ -1674,7 +1674,7 @@ Point Control::TranslatePositionToParent(const Point& position) const {
 }
 
 
-Point Control::TranslatePositionToChild(const Point& position, const Control& child) const {
+Point Control::TranslateToChild(const Point& position, const Control& child) const {
 
     ZAF_EXPECT(child.Parent().get() == this);
 

@@ -555,7 +555,7 @@ public:
     @throw std::logic_error
         Thrown if the window handle hasn't been created yet.
     */
-    Point TranslatePositionToScreen(const Point& position) const;
+    Point TranslateToScreen(const Point& position) const;
 
     /**
     Translates a position from the screen coordinates to the window's client area coordinates.
@@ -569,7 +569,7 @@ public:
     @throw std::logic_error
         Thrown if the window handle hasn't been created yet.
     */
-    Point TranslatePositionFromScreen(const Point& position) const;
+    Point TranslateFromScreen(const Point& position) const;
 
     float GetDPI() const;
 
