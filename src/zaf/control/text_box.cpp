@@ -4,6 +4,7 @@
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/control/caret.h>
 #include <zaf/control/text_box/internal/text_box_core.h>
+#include <zaf/control/text_box/internal/text_box_editor.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
 
@@ -21,11 +22,17 @@ TextBox::TextBox() :
 }
 
 
+TextBox::~TextBox() {
+
+}
+
+
 void TextBox::Initialize() {
 
     __super::Initialize();
 
     core_ = As<internal::TextBoxCore>(Core());
+    editor_ = std::make_unique<internal::TextBoxEditor>(core_->GetTextModel());
 
     SetCanFocused(true);
     SetCanTabStop(true);
@@ -516,6 +523,18 @@ TextBox::LineInfo TextBox::LocateCurrentLineInfo() {
     }
 
     return line_info;
+}
+
+
+void TextBox::OnCharInput(const CharInputInfo& event_info) {
+
+    __super::OnCharInput(event_info);
+    if (event_info.IsHandled()) {
+        return;
+    }
+
+    editor_->HandleChar(selection_range_, event_info);
+    event_info.MarkAsHandled();
 }
 
 

@@ -11,6 +11,7 @@
 namespace zaf {
 namespace internal {
 class TextBoxCore;
+class TextBoxEditor;
 }
 
 class Caret;
@@ -24,6 +25,7 @@ public:
 
 public:
     TextBox();
+    ~TextBox();
 
     std::size_t LineCount() const;
 
@@ -140,6 +142,7 @@ protected:
     void OnFocusGained(const FocusGainedInfo& event_info) override;
     void OnFocusLost(const FocusLostInfo& event_info) override;
     void OnKeyDown(const KeyDownInfo& event_info) override;
+    void OnCharInput(const CharInputInfo& event_info) override;
 
     //Methods from SelfScrollControl
     void SetAllowVerticalScroll(bool allow) override;
@@ -225,6 +228,7 @@ private:
 
 private:
     internal::TextBoxCore* core_{};
+    std::unique_ptr<internal::TextBoxEditor> editor_;
 
     std::optional<std::size_t> begin_mouse_select_index_;
     Range selection_range_;

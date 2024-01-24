@@ -43,6 +43,9 @@ void TextualControl::Initialize() {
     __super::Initialize();
 
     core_->Initialize(As<TextualControl>(shared_from_this()));
+
+    Subscriptions() += core_->TextChangedEvent().Subscribe(
+        std::bind(&TextualControl::OnCoreTextChanged, this));
 }
 
 
@@ -97,17 +100,7 @@ std::wstring TextualControl::Text() const {
 
 
 void TextualControl::SetText(const std::wstring& text) {
-
-    auto result = core_->SetText(text);
-    if (!result.is_changed) {
-        return;
-    }
-
-    NeedRepaint();
-
-    if (!result.is_notification_sent) {
-        NotifyTextChanged();
-    }
+    core_->SetText(text);
 }
 
 
@@ -269,11 +262,11 @@ Observable<TextChangedInfo> TextualControl::TextChangedEvent() const {
 }
 
 
-void TextualControl::NotifyTextChanged() {
+void TextualControl::OnCoreTextChanged() {
 
-    TextChangedInfo event_info{ As<TextualControl>(shared_from_this())};
-    OnTextChanged(event_info);
+    NeedRepaint();
 
+    OnTextChanged(TextChangedInfo{ As<TextualControl>(shared_from_this()) });
     RaiseContentChangedEvent();
 }
 

@@ -75,6 +75,10 @@ public:
 
     TextLayout GetTextLayout();
 
+    TextModel* GetTextModel() const {
+        return text_model_.get();
+    }
+
     virtual void PaintTextLayout(
         Canvas& canvas, 
         const Rect& dirty_rect,
@@ -91,7 +95,7 @@ private:
         const TextualControl& textual_control) const;
     void ReleaseTextLayout();
     void NotifyRepaint();
-    void OnTextChanged();
+    void OnModelTextChanged();
 
 private:
     std::weak_ptr<TextualControl> owner_;

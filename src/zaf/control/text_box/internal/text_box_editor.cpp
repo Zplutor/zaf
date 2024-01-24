@@ -16,8 +16,8 @@ void TextBoxEditor::HandleKeyUp(const KeyUpInfo& event_info) {
 }
 
 
-void TextBoxEditor::HandleChar(const CharInputInfo& event_info) {
-
+void TextBoxEditor::HandleChar(const Range& selection_range, const CharInputInfo& event_info) {
+    text_model_->SetTextInRange(std::wstring(1, event_info.Message().Char()), selection_range);
 }
 
 }

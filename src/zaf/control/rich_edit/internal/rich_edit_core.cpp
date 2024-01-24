@@ -320,4 +320,9 @@ void RichEditCore::ReleaseRendererResources() {
     //Nothing to do.
 }
 
+
+void RichEditCore::RaiseTextChangedEvent() {
+    __super::RaiseTextChangedEvent();
+}
+
 }

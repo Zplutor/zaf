@@ -39,7 +39,7 @@ void GeneralTextualCore::Initialize(const std::shared_ptr<TextualControl>& owner
     owner_ = owner;
 
     Subscriptions() += text_model_->TextChangedEvent().Subscribe(
-        std::bind(&GeneralTextualCore::OnTextChanged, this));
+        std::bind(&GeneralTextualCore::OnModelTextChanged, this));
 }
 
 
@@ -411,10 +411,9 @@ void GeneralTextualCore::NotifyRepaint() {
 }
 
 
-void GeneralTextualCore::OnTextChanged() {
+void GeneralTextualCore::OnModelTextChanged() {
     ReleaseTextLayout();
-    //TODO: Should we notify repaint here?
-    //NotifyRepaint();
+    RaiseTextChangedEvent();
 }
 
 }

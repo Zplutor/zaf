@@ -2,6 +2,7 @@
 
 #include <variant>
 #include <zaf/base/non_copyable.h>
+#include <zaf/base/none.h>
 #include <zaf/base/range.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/control/color_picker.h>
@@ -69,6 +70,18 @@ public:
     virtual void LayoutText(const Rect& layout_rect) = 0;
     virtual void PaintText(Canvas& canvas, const Rect& dirty_rect) = 0;
     virtual void ReleaseRendererResources() = 0;
+
+    Observable<None> TextChangedEvent() const {
+        return text_changed_event_.AsObservable();
+    }
+
+protected:
+    void RaiseTextChangedEvent() {
+        return text_changed_event_.AsObserver().OnNext({});
+    }
+
+private:
+    Subject<None> text_changed_event_;
 };
 
 }

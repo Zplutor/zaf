@@ -50,6 +50,8 @@ public:
     void PaintText(Canvas& canvas, const Rect& dirty_rect) override;
     void ReleaseRendererResources() override;
 
+    void RaiseTextChangedEvent();
+
 private:
     std::weak_ptr<RichEdit> owner_;
 

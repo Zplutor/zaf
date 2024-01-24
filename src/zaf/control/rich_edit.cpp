@@ -1366,7 +1366,7 @@ void RichEdit::HandleTextChangedNotification() {
         reinterpret_cast<LPARAM>(&char_format),
         nullptr);
 
-    NotifyTextChanged();
+    As<rich_edit::internal::RichEditCore>(Core())->RaiseTextChangedEvent();
 }
 
 

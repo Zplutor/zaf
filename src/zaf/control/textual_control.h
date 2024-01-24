@@ -223,14 +223,6 @@ protected:
     virtual zaf::Rect DetermineTextRect();
 
     /**
-    Notifies that the text of control is changed.
-
-    If a derived class overrides SetText() and implements its own text management, it should call 
-    this method after the text is changed in order to raise text changed event.
-    */
-    void NotifyTextChanged();
-
-    /**
     Handles text changed notification. This method would be called after the text of control is 
     changed.
 
@@ -241,6 +233,7 @@ protected:
 
 private:
     void InnerSetFont(const zaf::Font& new_font);
+    void OnCoreTextChanged();
 
 private:
     std::unique_ptr<internal::TextualControlCore> core_;
