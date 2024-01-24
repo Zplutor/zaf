@@ -13,6 +13,8 @@ namespace zaf::internal {
 
 class GeneralTextualCore : public TextualControlCore, public SubscriptionHost {
 public:
+    GeneralTextualCore();
+
     void Initialize(const std::shared_ptr<TextualControl>& owner) override;
 
     std::size_t GetTextLength() override;
@@ -78,9 +80,6 @@ public:
         const Rect& dirty_rect,
         const TextLayout& text_layout,
         const Rect& layout_rect);
-
-protected:
-    virtual std::unique_ptr<TextModel> CreateTextModel();
 
 private:
     TextLayout CreateTextLayout() const;

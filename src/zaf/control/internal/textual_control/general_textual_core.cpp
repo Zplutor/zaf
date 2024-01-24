@@ -1,6 +1,5 @@
 #include <zaf/control/internal/textual_control/general_textual_core.h>
 #include <zaf/control/control.h>
-#include <zaf/control/internal/textual_control/general_text_model.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/internal/theme.h>
@@ -30,18 +29,17 @@ void SetFontToTextLayout(const Font& font, const Range& range, TextLayout& text_
 }
 
 
+GeneralTextualCore::GeneralTextualCore() : text_model_(std::make_unique<TextModel>()) {
+
+}
+
+
 void GeneralTextualCore::Initialize(const std::shared_ptr<TextualControl>& owner) {
 
     owner_ = owner;
 
-    text_model_ = CreateTextModel();
     Subscriptions() += text_model_->TextChangedEvent().Subscribe(
         std::bind(&GeneralTextualCore::OnTextChanged, this));
-}
-
-
-std::unique_ptr<TextModel> GeneralTextualCore::CreateTextModel() {
-    return std::make_unique<GeneralTextModel>();
 }
 
 
