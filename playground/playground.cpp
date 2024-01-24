@@ -67,23 +67,7 @@ protected:
 
         __super::Paint(canvas, dirty_rect);
 
-        canvas.SetBrushWithColor(zaf::Color::Yellow());
 
-        zaf::RoundedRect rounded_rect{ this->RectInSelf(), this->Height() / 2, this->Height() / 2 };
-        canvas.DrawRoundedRectangle(rounded_rect);
-
-        canvas.SetBrushWithColor(zaf::Color::Black());
-        canvas.DrawRoundedRectangleFrame(rounded_rect, 1);
-
-        /*
-        canvas.SetBrushWithColor(zaf::Color::Yellow());
-
-        zaf::Rect rect{ this->RectInSelf() };
-        canvas.DrawRectangle(rect);
-
-        canvas.SetBrushWithColor(zaf::Color::Black());
-        canvas.DrawRectangleFrame(rect, 1);
-        */
     }
 };
 
@@ -102,8 +86,8 @@ protected:
 
         auto button = zaf::Create<zaf::Button>();
         button->SetFixedHeight(30);
-        Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
-        
+        Subscriptions() += button->ClickEvent().Subscribe(std::bind([this, text_box]() {
+            text_box->SetText(L"Text changed.");
         }));
 
         this->RootControl()->AddChild(button);

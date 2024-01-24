@@ -1,5 +1,6 @@
 #include <zaf/control/internal/textual_control/general_textual_core.h>
 #include <zaf/control/control.h>
+#include <zaf/control/internal/textual_control/general_text_model.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/internal/theme.h>
@@ -30,28 +31,36 @@ void SetFontToTextLayout(const Font& font, const Range& range, TextLayout& text_
 
 
 void GeneralTextualCore::Initialize(const std::shared_ptr<TextualControl>& owner) {
+
     owner_ = owner;
+
+    text_model_ = CreateTextModel();
+    Subscriptions() += text_model_->TextChangedEvent().Subscribe(
+        std::bind(&GeneralTextualCore::OnTextChanged, this));
+}
+
+
+std::unique_ptr<TextModel> GeneralTextualCore::CreateTextModel() {
+    return std::make_unique<GeneralTextModel>();
 }
 
 
 std::size_t GeneralTextualCore::GetTextLength() {
-    return text_.length();
+    return text_model_->GetText().length();
 }
 
 
 std::variant<std::wstring_view, std::wstring> GeneralTextualCore::GetText() {
-    return std::wstring_view{ text_ };
+    return std::wstring_view{ text_model_->GetText() };
 }
 
 
 SetTextResult GeneralTextualCore::SetText(const std::wstring& text) {
 
     SetTextResult result;
-    if (text_ != text) {
+    if (text_model_->GetText() != text) {
 
-        text_ = text; 
-        ReleaseTextLayout();
-
+        text_model_->SetText(text);
         result.is_changed = true;
     }
     return result;
@@ -336,13 +345,15 @@ TextLayout GeneralTextualCore::GetTextLayout() {
 
 TextLayout GeneralTextualCore::CreateTextLayout() const {
 
+    auto text = text_model_->GetText();
+
     auto text_layout = GraphicFactory::Instance().CreateTextLayout(
-        text_, 
+        text,
         CreateTextFormat(),
         layout_rect_.size);
 
     if (default_font_.has_underline) {
-        Range range{ 0, text_.length() };
+        Range range{ 0, text.length() };
         text_layout.SetHasUnderline(true, range);
     }
 
@@ -399,6 +410,13 @@ void GeneralTextualCore::NotifyRepaint() {
     if (owner) {
         owner->NeedRepaint();
     }
+}
+
+
+void GeneralTextualCore::OnTextChanged() {
+    ReleaseTextLayout();
+    //TODO: Should we notify repaint here?
+    //NotifyRepaint();
 }
 
 }

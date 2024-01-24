@@ -3,13 +3,15 @@
 #include <functional>
 #include <optional>
 #include <zaf/control/internal/range_map.h>
+#include <zaf/control/internal/textual_control/text_model.h>
 #include <zaf/control/internal/textual_control/textual_control_core.h>
 #include <zaf/graphic/text/line_spacing.h>
 #include <zaf/graphic/text/text_layout.h>
+#include <zaf/rx/subscription_host.h>
 
 namespace zaf::internal {
 
-class GeneralTextualCore : public TextualControlCore {
+class GeneralTextualCore : public TextualControlCore, public SubscriptionHost {
 public:
     void Initialize(const std::shared_ptr<TextualControl>& owner) override;
 
@@ -77,6 +79,9 @@ public:
         const TextLayout& text_layout,
         const Rect& layout_rect);
 
+protected:
+    virtual std::unique_ptr<TextModel> CreateTextModel();
+
 private:
     TextLayout CreateTextLayout() const;
     TextFormat CreateTextFormat() const;
@@ -87,10 +92,11 @@ private:
         const TextualControl& textual_control) const;
     void ReleaseTextLayout();
     void NotifyRepaint();
+    void OnTextChanged();
 
 private:
     std::weak_ptr<TextualControl> owner_;
-    std::wstring text_;
+    std::unique_ptr<TextModel> text_model_;
 
     zaf::Font default_font_{ Font::Default() };
     std::unique_ptr<internal::RangeMap<Font>> font_range_map_;

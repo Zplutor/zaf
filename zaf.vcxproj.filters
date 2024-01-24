@@ -2530,5 +2530,11 @@
     <ClInclude Include="src\zaf\control\internal\scroll_box\self_scroll_layouter.h">
       <Filter>zaf\control\internal\scroll_box</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual_control\text_model.h">
+      <Filter>zaf\control\internal\textual_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual_control\general_text_model.h">
+      <Filter>zaf\control\internal\textual_control</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
