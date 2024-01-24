@@ -1,4 +1,4 @@
-#include <zaf/control/internal/textual_control/text_box_core.h>
+#include <zaf/control/text_box/internal/text_box_core.h>
 #include <zaf/base/as.h>
 
 namespace zaf::internal {

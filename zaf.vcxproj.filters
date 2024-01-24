@@ -184,6 +184,9 @@
     <Filter Include="zaf\control\internal\scroll_box">
       <UniqueIdentifier>{3895c0e4-4a91-4965-8af7-be9344ec8ebb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\text_box\internal">
+      <UniqueIdentifier>{4589e167-5e8c-4a74-bbff-cae72a3e872a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1000,9 +1003,6 @@
     <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_core.cpp">
       <Filter>zaf\control\rich_edit\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\textual_control\text_box_core.cpp">
-      <Filter>zaf\control\internal\textual_control</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\spin_box.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
@@ -1113,6 +1113,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\scroll_box\self_scroll_layouter.cpp">
       <Filter>zaf\control\internal\scroll_box</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\text_box\internal\text_box_core.cpp">
+      <Filter>zaf\control\text_box\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2392,9 +2395,6 @@
     <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_core.h">
       <Filter>zaf\control\rich_edit\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\textual_control\text_box_core.h">
-      <Filter>zaf\control\internal\textual_control</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\hit_test_result.h">
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>
@@ -2535,6 +2535,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\textual_control\general_text_model.h">
       <Filter>zaf\control\internal\textual_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\text_box\internal\text_box_core.h">
+      <Filter>zaf\control\text_box\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

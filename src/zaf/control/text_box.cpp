@@ -3,7 +3,7 @@
 #include <zaf/base/log.h>
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/control/caret.h>
-#include <zaf/control/internal/textual_control/text_box_core.h>
+#include <zaf/control/text_box/internal/text_box_core.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
 
