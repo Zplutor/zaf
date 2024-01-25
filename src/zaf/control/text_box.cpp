@@ -1,5 +1,6 @@
 #include <zaf/control/text_box.h>
 #include <zaf/base/as.h>
+#include <zaf/base/auto_reset.h>
 #include <zaf/base/log.h>
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/control/caret.h>
@@ -533,7 +534,12 @@ void TextBox::OnCharInput(const CharInputInfo& event_info) {
         return;
     }
 
-    editor_->HandleChar(selection_range_, event_info);
+    auto auto_reset = MakeAutoReset(is_editing_, true);
+
+    auto new_selection_range = editor_->HandleCharInput(selection_range_, event_info);
+    if (new_selection_range != selection_range_) {
+        SetSelectionRange(new_selection_range, text_box::SelectionOption::ScrollToCaret);
+    }
     event_info.MarkAsHandled();
 }
 
@@ -544,9 +550,10 @@ void TextBox::OnTextChanged(const TextChangedInfo& event_info) {
     text_rect_ = {};
     NeedRelayout();
 
-    //Reset selection range on text changed. Note that this should be done before calling the same
-    //method of base class.
-    SetSelectionRange(Range{});
+    //Clear the selection range if it's not editing.
+    if (!is_editing_) {
+        SetSelectionRange(Range{});
+    }
 
     __super::OnTextChanged(event_info);
 }

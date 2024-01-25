@@ -12,10 +12,13 @@ public:
 
     void HandleKeyDown(const KeyDownInfo& event_info);
     void HandleKeyUp(const KeyUpInfo& event_info);
-    void HandleChar(const Range& selection_range, const CharInputInfo& event_info);
+    Range HandleCharInput(const Range& selection_range, const CharInputInfo& event_info);
 
 private:
-    TextModel* text_model_;
+    Range HandleBackspace(const Range& selection_range);
+
+private:
+    TextModel* text_model_{};
 };
 
 }

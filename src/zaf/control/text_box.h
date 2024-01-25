@@ -229,6 +229,7 @@ private:
 private:
     internal::TextBoxCore* core_{};
     std::unique_ptr<internal::TextBoxEditor> editor_;
+    bool is_editing_{};
 
     std::optional<std::size_t> begin_mouse_select_index_;
     Range selection_range_;
