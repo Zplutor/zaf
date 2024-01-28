@@ -1,5 +1,10 @@
 #include <zaf/control/text_box/internal/text_box_editor.h>
 #include <cwctype>
+#include <zaf/base/auto_reset.h>
+#include <zaf/control/internal/textual_control/text_model.h>
+#include <zaf/control/text_box/internal/text_box_core.h>
+#include <zaf/control/text_box/internal/text_box_module_context.h>
+#include <zaf/control/text_box/internal/text_box_selection_manager.h>
 
 namespace zaf::internal {
 namespace {
@@ -41,7 +46,7 @@ bool ShouldIgnoreChar(wchar_t ch) {
 
 }
 
-TextBoxEditor::TextBoxEditor(TextModel* text_model) : text_model_(text_model) {
+TextBoxEditor::TextBoxEditor(TextBoxModuleContext* context) : TextBoxModule(context) {
 
 }
 
@@ -50,47 +55,57 @@ void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
 }
 
 
-void TextBoxEditor::HandleKeyUp(const KeyUpInfo& event_info) {
 
+void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
+
+    auto auto_reset = MakeAutoReset(is_editing_, true);
+
+    auto ch = event_info.Message().Char();
+    auto new_selection_range = HandleChar(ch);
+    if (new_selection_range) {
+
+        Context().SelectionManager().SetSelectionRange(
+            *new_selection_range,
+            text_box::SelectionOption::ScrollToCaret,
+            true);
+    }
 }
 
 
-Range TextBoxEditor::HandleCharInput(
-    const Range& selection_range,
-    const CharInputInfo& event_info) {
-
-    auto ch = event_info.Message().Char();
+std::optional<Range> TextBoxEditor::HandleChar(wchar_t ch) {
 
     //Ignore specific control chars.
     if (ShouldIgnoreChar(ch)) {
-        return selection_range;
+        return std::nullopt;
     }
+
+    const auto& selection_range = Context().SelectionManager().SelectionRange();
 
     //Backspace
     if (ch == '\x8') {
         return HandleBackspace(selection_range);
     }
 
-    std::wstring new_text(1, event_info.Message().Char());
-    text_model_->SetTextInRange(new_text, selection_range);
+    std::wstring new_text(1, ch);
+    Context().Core().GetTextModel()->SetTextInRange(new_text, selection_range);
     return Range{ selection_range.index + 1, 0 };
 }
 
 
-Range TextBoxEditor::HandleBackspace(const Range& selection_range) {
+std::optional<Range> TextBoxEditor::HandleBackspace(const Range& selection_range) {
 
     //Remove the selected text.
     if (selection_range.length > 0) {
-        text_model_->SetTextInRange({}, selection_range);
+        Context().Core().GetTextModel()->SetTextInRange({}, selection_range);
         return Range{ selection_range.index, 0 };
     }
 
     if (selection_range.index == 0) {
-        return selection_range;
+        return std::nullopt;
     }
 
     //Remove the previous char.
-    text_model_->SetTextInRange({}, Range{ selection_range.index - 1, 1 });
+    Context().Core().GetTextModel()->SetTextInRange({}, Range{ selection_range.index - 1, 1 });
     return Range{ selection_range.index - 1, 0 };
 }
 

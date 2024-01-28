@@ -23,7 +23,7 @@ TEST(TextBoxTest, SelectionRange) {
     //Set caret to the beginning of the range.
     text_box->SetSelectionRange(
         zaf::Range{ 2, 3 }, 
-        zaf::text_box::SelectionOption::SetCaretToBeign);
+        zaf::text_box::SelectionOption::SetCaretToBegin);
     ASSERT_EQ(text_box->SelectionRange(), zaf::Range(2, 3));
     ASSERT_EQ(text_box->CaretIndex(), 2);
 

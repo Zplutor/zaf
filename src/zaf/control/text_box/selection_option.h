@@ -28,7 +28,7 @@ enum class SelectionOption {
     /**
     The caret of the text box will be set to the beginning of the selection range.
     */
-    SetCaretToBeign = 1,
+    SetCaretToBegin = 1,
 
     /**
     The text box will scroll to the position of the caret if it is outside the visible area.

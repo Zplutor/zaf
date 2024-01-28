@@ -1123,6 +1123,21 @@
     <ClCompile Include="src\zaf\control\internal\textual_control\text_model.cpp">
       <Filter>zaf\control\internal\textual_control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\text_box\internal\text_box_selection_manager.cpp">
+      <Filter>zaf\control\text_box\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\text_box\internal\text_box_module_context.cpp">
+      <Filter>zaf\control\text_box\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\text_box\internal\text_box_module.cpp">
+      <Filter>zaf\control\text_box\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\text_box\internal\text_box_mouse_input_handler.cpp">
+      <Filter>zaf\control\text_box\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\text_box\internal\text_box_keyboard_input_handler.cpp">
+      <Filter>zaf\control\text_box\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2543,6 +2558,21 @@
       <Filter>zaf\control\text_box\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\text_box\internal\text_box_editor.h">
+      <Filter>zaf\control\text_box\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\text_box\internal\text_box_selection_manager.h">
+      <Filter>zaf\control\text_box\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\text_box\internal\text_box_module.h">
+      <Filter>zaf\control\text_box\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\text_box\internal\text_box_module_context.h">
+      <Filter>zaf\control\text_box\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\text_box\internal\text_box_mouse_input_handler.h">
+      <Filter>zaf\control\text_box\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\text_box\internal\text_box_keyboard_input_handler.h">
       <Filter>zaf\control\text_box\internal</Filter>
     </ClInclude>
   </ItemGroup>

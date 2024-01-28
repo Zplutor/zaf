@@ -11,7 +11,8 @@
 namespace zaf {
 namespace internal {
 class TextBoxCore;
-class TextBoxEditor;
+class TextBoxCaretIndexChangedInfo;
+class TextBoxModuleContext;
 }
 
 class Caret;
@@ -176,14 +177,6 @@ protected:
         const zaf::Rect& layout_rect);
 
 private:
-    class LineInfo {
-    public:
-        std::size_t line_char_index{};
-        float line_y{};
-        float line_height{};
-    };
-
-private:
     friend class zaf::internal::TextBoxCore;
 
     void PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect);
@@ -195,23 +188,10 @@ private:
 
     HitTestPointResult HitTestAtPosition(const Point& position) const;
 
-    void HandleMouseDown(const MouseDownInfo& event_info);
-    void HandleMouseMove(const MouseMoveInfo& event_info);
-    void HandleMouseUp(const MouseUpInfo& event_info);
-
-    void HandleKeyDown(const KeyDownInfo& event_info);
-    void BackwardCaretIndex(bool expand_selection);
-    void ForwardCaretIndex(bool expand_selection);
-    void UpwardCaretIndex(bool expand_selection);
-    void DownwardCaretIndex(bool expand_selection);
-    void UpdateCaretIndexVertically(bool is_downward, bool expand_selection);
-    LineInfo LocateCurrentLineInfo();
-    void SetCaretIndexByMouse(std::size_t new_index, bool begin_selection);
-    void SetCaretIndexByKey(std::size_t caret_index, bool expand_selection, bool update_caret_x);
-    void AfterSetCaretIndex(bool update_caret_x, bool ensure_caret_visible);
     void UpdateCaretAtCurrentIndex();
-    void ShowCaret(const HitTestMetrics& metrics);
-    void EnsureCaretVisible(const HitTestMetrics& metrics);
+    void OnCaretIndexChanged(const internal::TextBoxCaretIndexChangedInfo& event_info);
+    void ShowCaret(const zaf::Rect& char_rect_at_caret);
+    void EnsureCaretVisible(const zaf::Rect& char_rect_at_caret);
     
     static void GetScrollValues(
         float content_length,
@@ -223,19 +203,11 @@ private:
         int& page_value);
     void DoScroll(int new_value, float content_length, float text_length, float& text_position);
 
-    void HandleCopy();
-    void HandleSelectAll();
-
 private:
     internal::TextBoxCore* core_{};
-    std::unique_ptr<internal::TextBoxEditor> editor_;
-    bool is_editing_{};
+    std::unique_ptr<internal::TextBoxModuleContext> module_context_;
 
-    std::optional<std::size_t> begin_mouse_select_index_;
-    Range selection_range_;
-    std::size_t caret_index_{};
     std::shared_ptr<Caret> caret_;
-    float caret_last_x_{};
 
     zaf::Rect text_rect_;
 

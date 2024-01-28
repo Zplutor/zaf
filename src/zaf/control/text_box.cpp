@@ -1,11 +1,13 @@
 #include <zaf/control/text_box.h>
 #include <zaf/base/as.h>
-#include <zaf/base/auto_reset.h>
 #include <zaf/base/log.h>
-#include <zaf/clipboard/clipboard.h>
 #include <zaf/control/caret.h>
 #include <zaf/control/text_box/internal/text_box_core.h>
 #include <zaf/control/text_box/internal/text_box_editor.h>
+#include <zaf/control/text_box/internal/text_box_keyboard_input_handler.h>
+#include <zaf/control/text_box/internal/text_box_module_context.h>
+#include <zaf/control/text_box/internal/text_box_mouse_input_handler.h>
+#include <zaf/control/text_box/internal/text_box_selection_manager.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
 
@@ -33,7 +35,9 @@ void TextBox::Initialize() {
     __super::Initialize();
 
     core_ = As<internal::TextBoxCore>(Core());
-    editor_ = std::make_unique<internal::TextBoxEditor>(core_->GetTextModel());
+    module_context_ = std::make_unique<internal::TextBoxModuleContext>(this, core_);
+    Subscriptions() += module_context_->SelectionManager().CaretIndexChangedEvent().Subscribe(
+        std::bind(&TextBox::OnCaretIndexChanged, this, std::placeholders::_1));
 
     SetCanFocused(true);
     SetCanTabStop(true);
@@ -170,11 +174,12 @@ void TextBox::PaintTextBackground(
     const TextLayout& text_layout,
     const zaf::Rect& layout_rect) {
 
-    if (selection_range_.length == 0) {
+    auto selection_range = this->SelectionRange();
+    if (selection_range.length == 0) {
         return;
     }
 
-    auto metrics_list = text_layout.HitTestRange(selection_range_);
+    auto metrics_list = text_layout.HitTestRange(selection_range);
     if (metrics_list.empty()) {
         return;
     }
@@ -231,18 +236,8 @@ void TextBox::OnMouseDown(const MouseDownInfo& event_info) {
         return;
     }
 
-    HandleMouseDown(event_info);
+    module_context_->MouseInputHandler().HandleMouseDown(event_info);
     event_info.MarkAsHandled();
-}
-
-
-void TextBox::HandleMouseDown(const MouseDownInfo& event_info) {
-
-    this->SetIsFocused(true);
-
-    auto new_index = FindIndexAtPosition(event_info.PositionAtSource());
-    CaptureMouse();
-    SetCaretIndexByMouse(new_index, true);
 }
 
 
@@ -253,19 +248,8 @@ void TextBox::OnMouseMove(const MouseMoveInfo& event_info) {
         return;
     }
 
-    HandleMouseMove(event_info);
+    module_context_->MouseInputHandler().HandleMouseMove(event_info);
     event_info.MarkAsHandled();
-}
-
-
-void TextBox::HandleMouseMove(const MouseMoveInfo& event_info) {
-
-    if (!begin_mouse_select_index_) {
-        return;
-    }
-
-    auto new_index = FindIndexAtPosition(event_info.PositionAtSource());
-    SetCaretIndexByMouse(new_index, false);
 }
 
 
@@ -276,23 +260,8 @@ void TextBox::OnMouseUp(const MouseUpInfo& event_info) {
         return;
     }
 
-    HandleMouseUp(event_info);
+    module_context_->MouseInputHandler().HandleMouseUp(event_info);
     event_info.MarkAsHandled();
-}
-
-
-void TextBox::HandleMouseUp(const MouseUpInfo& event_info) {
-
-    if (!begin_mouse_select_index_) {
-        return;
-    }
-
-    ReleaseMouse();
-
-    auto new_index = FindIndexAtPosition(event_info.PositionAtSource());
-    SetCaretIndexByMouse(new_index, false);
-
-    begin_mouse_select_index_.reset();
 }
 
 
@@ -361,7 +330,7 @@ void TextBox::OnFocusGained(const FocusGainedInfo& event_info) {
     UpdateCaretAtCurrentIndex();
     event_info.MarkAsHandled();
 
-    if (selection_range_.length > 0) {
+    if (this->SelectionRange().length > 0) {
         NeedRepaint();
     }
 }
@@ -374,7 +343,7 @@ void TextBox::OnFocusLost(const FocusLostInfo& event_info) {
     caret_->SetIsVisible(false);
     event_info.MarkAsHandled();
 
-    if (selection_range_.length > 0) {
+    if (this->SelectionRange().length > 0) {
         NeedRepaint();
     }
 }
@@ -387,143 +356,8 @@ void TextBox::OnKeyDown(const KeyDownInfo& event_info) {
         return;
     }
 
-    HandleKeyDown(event_info);
+    module_context_->KeyboardInputHandler().HandleKeyDown(event_info);
     event_info.MarkAsHandled();
-}
-
-
-void TextBox::HandleKeyDown(const KeyDownInfo& event_info) {
-
-    constexpr auto is_shift_pressed = []() {
-        return !!(GetKeyState(VK_SHIFT) >> 15);
-    };
-
-    auto virtual_key = event_info.Message().VirtualKey();
-    if (virtual_key == VK_LEFT) {
-        BackwardCaretIndex(is_shift_pressed());
-    }
-    else if (virtual_key == VK_RIGHT) {
-        ForwardCaretIndex(is_shift_pressed());
-    }
-    else if (virtual_key == VK_UP) {
-        UpwardCaretIndex(is_shift_pressed());
-    }
-    else if (virtual_key == VK_DOWN) {
-        DownwardCaretIndex(is_shift_pressed());
-    }
-    else if (virtual_key == L'C') {
-        if (GetKeyState(VK_CONTROL) >> 15) {
-            HandleCopy();
-        }
-    }
-    else if (virtual_key == L'A') {
-        if (GetKeyState(VK_CONTROL) >> 15) {
-            HandleSelectAll();
-        }
-    }
-}
-
-
-void TextBox::BackwardCaretIndex(bool expand_selection) {
-
-    std::size_t new_index = caret_index_;
-    if (new_index > 0) {
-
-        --new_index;
-
-        if (new_index > 0) {
-
-            //Skip CRLF line break.
-            auto text = GetText();
-            if (text[new_index - 1] == L'\r' && text[new_index] == L'\n') {
-
-                --new_index;
-            }
-        }
-    }
-
-    SetCaretIndexByKey(new_index, expand_selection, true);
-}
-
-
-void TextBox::ForwardCaretIndex(bool expand_selection) {
-
-    auto text = GetText();
-
-    std::size_t new_index = caret_index_;
-    if (new_index < text.length()) {
-
-        ++new_index;
-
-        if (new_index < text.length()) {
-
-            //Skip CRLF line break.
-            if (text[caret_index_] == L'\r' && text[new_index] == L'\n') {
-                ++new_index;
-            }
-        }
-    }
-
-    SetCaretIndexByKey(new_index, expand_selection, true);
-}
-
-
-void TextBox::UpwardCaretIndex(bool is_selecting_range) {
-    UpdateCaretIndexVertically(false, is_selecting_range);
-}
-
-
-void TextBox::DownwardCaretIndex(bool is_selecting_range) {
-    UpdateCaretIndexVertically(true, is_selecting_range);
-}
-
-
-void TextBox::UpdateCaretIndexVertically(bool is_downward, bool expand_selection) {
-
-    auto caret_hit_test_result = GetTextLayout().HitTestIndex(caret_index_, false);
-
-    auto current_line_info = LocateCurrentLineInfo();
-    auto previous_line_y = caret_hit_test_result.Metrics().Top();
-    if (is_downward) {
-        previous_line_y += current_line_info.line_height;
-    }
-    else {
-        previous_line_y -= current_line_info.line_height;
-    }
-    previous_line_y = (std::max)(previous_line_y, 0.f);
-
-    auto previous_line_hit_test_result = GetTextLayout().HitTestPoint(
-        Point{ caret_last_x_, previous_line_y });
-
-    auto new_index = previous_line_hit_test_result.Metrics().TextIndex();
-    if (previous_line_hit_test_result.IsTrailingHit()) {
-        ++new_index;
-    }
-
-    SetCaretIndexByKey(new_index, expand_selection, false);
-}
-
-
-TextBox::LineInfo TextBox::LocateCurrentLineInfo() {
-
-    auto line_metrics = GetTextLayout().GetLineMetrics();
-
-    LineInfo line_info;
-
-    for (const auto& each_line : line_metrics) {
-
-        line_info.line_height = each_line.Height();
-
-        auto line_end_index = line_info.line_char_index + each_line.Length();
-        if (line_info.line_char_index <= caret_index_ && caret_index_ < line_end_index) {
-            break;
-        }
-
-        line_info.line_y += each_line.Height();
-        line_info.line_char_index = line_end_index;
-    }
-
-    return line_info;
 }
 
 
@@ -534,12 +368,7 @@ void TextBox::OnCharInput(const CharInputInfo& event_info) {
         return;
     }
 
-    auto auto_reset = MakeAutoReset(is_editing_, true);
-
-    auto new_selection_range = editor_->HandleCharInput(selection_range_, event_info);
-    if (new_selection_range != selection_range_) {
-        SetSelectionRange(new_selection_range, text_box::SelectionOption::ScrollToCaret);
-    }
+    module_context_->Editor().HandleCharInput(event_info);
     event_info.MarkAsHandled();
 }
 
@@ -551,7 +380,7 @@ void TextBox::OnTextChanged(const TextChangedInfo& event_info) {
     NeedRelayout();
 
     //Clear the selection range if it's not editing.
-    if (!is_editing_) {
+    if (!module_context_->Editor().IsEditing()) {
         SetSelectionRange(Range{});
     }
 
@@ -560,123 +389,51 @@ void TextBox::OnTextChanged(const TextChangedInfo& event_info) {
 
 
 std::size_t TextBox::CaretIndex() const {
-    return caret_index_;
+    return module_context_->SelectionManager().CaretIndex();
 }
 
 
 const Range& TextBox::SelectionRange() const {
-    return selection_range_;
+    return module_context_->SelectionManager().SelectionRange();
 }
 
 
 void TextBox::SetSelectionRange(const Range& range, text_box::SelectionOption selection_option) {
-
-    auto text_length = core_->GetTextLength();
-    auto begin_index = (std::min)(range.index, text_length);
-    auto end_index = (std::min)(range.EndIndex(), text_length);
-    selection_range_ = Range::FromIndexPair(begin_index, end_index);
-
-    if (HasFlag(selection_option, text_box::SelectionOption::SetCaretToBeign)) {
-        caret_index_ = selection_range_.index;
-    }
-    else {
-        caret_index_ = selection_range_.EndIndex();
-    }
-
-    bool scroll_to_caret = HasFlag(selection_option, text_box::SelectionOption::ScrollToCaret);
-    AfterSetCaretIndex(true, scroll_to_caret);
+    module_context_->SelectionManager().SetSelectionRange(range, selection_option, true);
 }
 
 
 std::wstring TextBox::SelectedText() const {
 
     auto text = GetText();
-    auto selected_text = text.substr(selection_range_.index, selection_range_.length);
+    auto selection_range = this->SelectionRange();
+    auto selected_text = text.substr(selection_range.index, selection_range.length);
     return std::wstring{ selected_text };
 }
 
 
-void TextBox::SetCaretIndexByMouse(std::size_t new_index, bool begin_selection) {
+void TextBox::OnCaretIndexChanged(const internal::TextBoxCaretIndexChangedInfo& event_info) {
 
-    if (begin_selection) {
-        begin_mouse_select_index_ = new_index;
-        caret_index_ = new_index;
-    }
-    else {
-        if (!begin_mouse_select_index_) {
-            return;
-        }
-        caret_index_ = new_index;
+    if (event_info.NeedScrollToCaret()) {
+        EnsureCaretVisible(event_info.CharRectAtCaret());
     }
 
-    selection_range_ = Range::FromIndexPair(
-        (std::min)(*begin_mouse_select_index_, caret_index_),
-        (std::max)(*begin_mouse_select_index_, caret_index_));
-
-    AfterSetCaretIndex(true, true);
-}
-
-
-void TextBox::SetCaretIndexByKey(
-    std::size_t new_index, 
-    bool expand_selection,
-    bool update_caret_x) {
-
-    auto old_index = caret_index_;
-    caret_index_ = (std::min)(new_index, core_->GetTextLength());
-
-    std::size_t selection_begin = caret_index_;
-    std::size_t selection_end = caret_index_;
-    if (expand_selection) {
-
-        if (old_index == selection_range_.Index()) {
-            selection_begin = (std::min)(caret_index_, selection_range_.EndIndex());
-            selection_end = (std::max)(caret_index_, selection_range_.EndIndex());
-        }
-        else if (old_index == selection_range_.EndIndex()) {
-            selection_begin = (std::min)(selection_range_.Index(), caret_index_);
-            selection_end = (std::max)(selection_range_.Index(), caret_index_);
-        }
-    }
-
-    selection_range_ = Range::FromIndexPair(selection_begin, selection_end);
-    AfterSetCaretIndex(update_caret_x, true);
-}
-
-
-void TextBox::AfterSetCaretIndex(bool update_caret_x, bool ensure_caret_visible) {
-
-    auto hit_test_result = GetTextLayout().HitTestIndex(caret_index_, false);
-    const auto& metrics = hit_test_result.Metrics();
-
-    //If content size is empty, the cooridnate of metrics will be less than 0, which is abnormal.
-    if (metrics.Left() < 0 || metrics.Top() < 0) {
-        return;
-    }
-
-    if (ensure_caret_visible) {
-        EnsureCaretVisible(metrics);
-    }
-
-    if (update_caret_x) {
-        caret_last_x_ = metrics.Left();
-    }
-
-    ShowCaret(metrics);
+    ShowCaret(event_info.CharRectAtCaret());
     NeedRepaint();
 }
 
 
 void TextBox::UpdateCaretAtCurrentIndex() {
 
-    auto hit_test_result = GetTextLayout().HitTestIndex(caret_index_, false);
-    ShowCaret(hit_test_result.Metrics());
+    auto hit_test_result = GetTextLayout().HitTestIndex(this->CaretIndex(), false);
+    ShowCaret(hit_test_result.Metrics().Rect());
 }
 
 
-void TextBox::ShowCaret(const HitTestMetrics& metrics) {
+void TextBox::ShowCaret(const zaf::Rect& char_rect_at_caret) {
 
-    zaf::Rect caret_rect{ metrics.Left(), metrics.Top(), 1, metrics.Height() };
+    zaf::Rect caret_rect = char_rect_at_caret;
+    caret_rect.size.width = 1;
     caret_rect.AddOffset(text_rect_.position);
 
     caret_->SetRect(ToPixelAligned(caret_rect, this->GetDPI()));
@@ -687,7 +444,7 @@ void TextBox::ShowCaret(const HitTestMetrics& metrics) {
 }
 
 
-void TextBox::EnsureCaretVisible(const HitTestMetrics& metrics) {
+void TextBox::EnsureCaretVisible(const zaf::Rect& char_rect_at_caret) {
 
     constexpr auto update_single_dimension = [](
         float content_length,
@@ -718,15 +475,15 @@ void TextBox::EnsureCaretVisible(const HitTestMetrics& metrics) {
     //Update x.
     auto x_changed = update_single_dimension(
         content_size.width,
-        metrics.Left(),
-        metrics.Width(),
+        char_rect_at_caret.Left(),
+        char_rect_at_caret.size.width,
         text_rect_.position.x);
 
     //Update y.
     auto y_changed = update_single_dimension(
         content_size.height, 
-        metrics.Top(),
-        metrics.Height(), 
+        char_rect_at_caret.Top(),
+        char_rect_at_caret.size.height,
         text_rect_.position.y);
 
     if (x_changed) {
@@ -912,21 +669,6 @@ void TextBox::DoScroll(
 
 std::size_t TextBox::LineCount() const {
     return GetTextLayout().GetMetrics().LineCount();
-}
-
-
-void TextBox::HandleCopy() {
-
-    auto text = GetText();
-    auto copied_text = text.substr(selection_range_.index, selection_range_.length);
-    clipboard::Clipboard::SetText(copied_text);
-}
-
-
-void TextBox::HandleSelectAll() {
-    SetSelectionRange(
-        Range::Infinite(),
-        text_box::SelectionOption::SetCaretToEnd | text_box::SelectionOption::ScrollToCaret);
 }
 
 }

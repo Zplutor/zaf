@@ -219,6 +219,11 @@
     <ClCompile Include="src\zaf\control\text_box.cpp" />
     <ClCompile Include="src\zaf\control\text_box\internal\text_box_core.cpp" />
     <ClCompile Include="src\zaf\control\text_box\internal\text_box_editor.cpp" />
+    <ClCompile Include="src\zaf\control\text_box\internal\text_box_keyboard_input_handler.cpp" />
+    <ClCompile Include="src\zaf\control\text_box\internal\text_box_mouse_input_handler.cpp" />
+    <ClCompile Include="src\zaf\control\text_box\internal\text_box_module.cpp" />
+    <ClCompile Include="src\zaf\control\text_box\internal\text_box_module_context.cpp" />
+    <ClCompile Include="src\zaf\control\text_box\internal\text_box_selection_manager.cpp" />
     <ClCompile Include="src\zaf\control\text_box\word_extractor.cpp" />
     <ClCompile Include="src\zaf\control\text_validator.cpp" />
     <ClCompile Include="src\zaf\control\linear_box.cpp" />
@@ -603,6 +608,11 @@
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\rich_edit.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />
+    <ClInclude Include="src\zaf\control\text_box\internal\text_box_keyboard_input_handler.h" />
+    <ClInclude Include="src\zaf\control\text_box\internal\text_box_mouse_input_handler.h" />
+    <ClInclude Include="src\zaf\control\text_box\internal\text_box_module.h" />
+    <ClInclude Include="src\zaf\control\text_box\internal\text_box_module_context.h" />
+    <ClInclude Include="src\zaf\control\text_box\internal\text_box_selection_manager.h" />
     <ClInclude Include="src\zaf\control\text_box\internal\text_box_core.h" />
     <ClInclude Include="src\zaf\control\text_box\internal\text_box_editor.h" />
     <ClInclude Include="src\zaf\control\text_box\selection_option.h" />
