@@ -5,6 +5,7 @@
 #include <zaf/control/text_box/internal/text_box_editor.h>
 #include <zaf/control/text_box/internal/text_box_module_context.h>
 #include <zaf/control/text_box/internal/text_box_selection_manager.h>
+#include <zaf/input/keyboard.h>
 
 namespace zaf::internal {
 
@@ -21,32 +22,24 @@ void TextBoxKeyboardInputHandler::Initialize() {
 
 void TextBoxKeyboardInputHandler::HandleKeyDown(const KeyDownInfo& event_info) {
 
-    constexpr auto is_shift_pressed = []() {
-        return !!(GetKeyState(VK_SHIFT) >> 15);
-    };
-
     auto virtual_key = event_info.Message().Key();
     if (virtual_key == Key::Left) {
-        BackwardCaretIndex(is_shift_pressed());
+        BackwardCaretIndex(Keyboard::IsShiftDown());
     }
     else if (virtual_key == Key::Right) {
-        ForwardCaretIndex(is_shift_pressed());
+        ForwardCaretIndex(Keyboard::IsShiftDown());
     }
     else if (virtual_key == Key::Up) {
-        UpwardCaretIndex(is_shift_pressed());
+        UpwardCaretIndex(Keyboard::IsShiftDown());
     }
     else if (virtual_key == Key::Down) {
-        DownwardCaretIndex(is_shift_pressed());
+        DownwardCaretIndex(Keyboard::IsShiftDown());
     }
-    else if (virtual_key == Key::C) {
-        if (GetKeyState(VK_CONTROL) >> 15) {
-            HandleCopy();
-        }
+    else if (virtual_key == Key::C && Keyboard::IsCtrlDown()) {
+        HandleCopy();
     }
-    else if (virtual_key == Key::A) {
-        if (GetKeyState(VK_CONTROL) >> 15) {
-            HandleSelectAll();
-        }
+    else if (virtual_key == Key::A && Keyboard::IsCtrlDown()) {
+        HandleSelectAll();
     }
     else {
         Context().Editor().HandleKeyDown(event_info);

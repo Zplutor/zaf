@@ -20,6 +20,21 @@ public:
     */
     static bool IsKeyDown(Key key);
 
+    /**
+    Determines whether the Shift key is down.
+    */
+    static bool IsShiftDown();
+
+    /**
+    Determines whether the CTRL key is down.
+    */
+    static bool IsCtrlDown();
+
+    /**
+    Determines whether the ALT key is down.
+    */
+    static bool IsAltDown();
+
 public:
     Keyboard() = delete;
 };
