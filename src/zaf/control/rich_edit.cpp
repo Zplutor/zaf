@@ -800,11 +800,11 @@ Observable<SelfScrollControlScrollValuesChangeInfo> RichEdit::ScrollValuesChange
 
 bool RichEdit::AcceptKeyMessage(const KeyMessage& message) {
 
-    switch (message.VirtualKey()) {
-    case VK_TAB:
+    switch (message.Key()) {
+    case Key::Tab:
         return AcceptTab();
 
-    case VK_RETURN:
+    case Key::Enter:
         return AcceptReturn();
 
     default:

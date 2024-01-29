@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/input/key.h>
 #include <zaf/window/message/message_shim.h>
 
 namespace zaf {
@@ -12,10 +13,10 @@ public:
     using MessageShim::MessageShim;
 
     /**
-     Get the virtual key.
-     */
-    DWORD VirtualKey() const {
-        return static_cast<DWORD>(WParam());
+    Gets the key.
+    */
+    zaf::Key Key() const {
+        return static_cast<zaf::Key>(WParam());
     }
 };
 

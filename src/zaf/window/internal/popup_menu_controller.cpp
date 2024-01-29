@@ -245,7 +245,7 @@ void PopupMenuController::SendMouseMessageToMenu(
 
 bool PopupMenuController::HandleOwnerKeyDownMessage(const KeyMessage& message) {
 
-    if (message.VirtualKey() == VK_ESCAPE) {
+    if (message.Key() == Key::Escape) {
         CloseAllMenus();
         return true;
     }

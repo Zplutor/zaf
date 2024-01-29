@@ -58,7 +58,7 @@ void SpinBox::InitializeEdit() {
 
     edit_subscriptions_ += edit_->KeyDownEvent().Subscribe([this](const KeyDownInfo& event_info) {
     
-        if (event_info.Message().VirtualKey() == VK_RETURN) {
+        if (event_info.Message().Key() == Key::Enter) {
             CommitEditChange();
             event_info.MarkAsHandled();
         }

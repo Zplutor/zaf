@@ -387,7 +387,7 @@ bool Window::PreprocessMessage(const KeyMessage& message) {
 
 bool Window::TryToPreprocessTabKeyMessage(const KeyMessage& message) {
 
-    if (message.ID() != WM_KEYDOWN || message.VirtualKey() != VK_TAB) {
+    if (message.ID() != WM_KEYDOWN || message.Key() != Key::Tab) {
         return false;
     }
 
@@ -421,7 +421,7 @@ bool Window::TryToPreprocessInspectorShortcutMessage(const KeyMessage& message) 
         return false;
     }
 
-    if (message.VirtualKey() != VK_F12) {
+    if (message.Key() != Key::F12) {
         return false;
     }
 

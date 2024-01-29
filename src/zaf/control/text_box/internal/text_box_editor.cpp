@@ -1,10 +1,12 @@
 #include <zaf/control/text_box/internal/text_box_editor.h>
 #include <cwctype>
 #include <zaf/base/auto_reset.h>
+#include <zaf/clipboard/clipboard.h>
 #include <zaf/control/internal/textual_control/text_model.h>
 #include <zaf/control/text_box/internal/text_box_core.h>
 #include <zaf/control/text_box/internal/text_box_module_context.h>
 #include <zaf/control/text_box/internal/text_box_selection_manager.h>
+#include <zaf/input/keyboard.h>
 
 namespace zaf::internal {
 namespace {
@@ -53,15 +55,19 @@ TextBoxEditor::TextBoxEditor(TextBoxModuleContext* context) : TextBoxModule(cont
 
 void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
 
-    if (event_info.Message().VirtualKey() == VK_DELETE) {
+    auto auto_reset = MakeAutoReset(is_editing_, true);
+
+    auto key = event_info.Message().Key();
+    if (key == Key::Delete) {
         HandleDeleteKeyDown();
+    }
+    else if ((key == Key::V) && Keyboard::IsKeyDown(Key::Ctrl)) {
+        HandlePaste();
     }
 }
 
 
 void TextBoxEditor::HandleDeleteKeyDown() {
-
-    auto auto_reset = MakeAutoReset(is_editing_, true);
 
     const auto& selection_range = Context().SelectionManager().SelectionRange();
     auto new_selection_range = HandleDelete(selection_range);
@@ -144,6 +150,29 @@ std::optional<Range> TextBoxEditor::HandleBackspace(const Range& selection_range
     //Remove the previous char.
     Context().Core().GetTextModel()->SetTextInRange({}, Range{ selection_range.index - 1, 1 });
     return Range{ selection_range.index - 1, 0 };
+}
+
+
+void TextBoxEditor::HandlePaste() {
+
+    try {
+
+        auto text = zaf::clipboard::Clipboard::GetText();
+
+        //Replace the current selection with the text in clipboard.
+        auto selection_range = Context().SelectionManager().SelectionRange();
+        Context().Core().GetTextModel()->SetTextInRange(text, selection_range);
+
+        //Set the caret to the end of the pasted text.
+        Range new_selection_range{ selection_range.index + text.length(), 0 };
+        Context().SelectionManager().SetSelectionRange(
+            new_selection_range,
+            text_box::SelectionOption::ScrollToCaret | text_box::SelectionOption::SetCaretToEnd,
+            true);
+    }
+    catch (const zaf::Error&) {
+
+    }
 }
 
 }

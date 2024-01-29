@@ -12,10 +12,10 @@ void TreeItemContainer::OnKeyDown(const KeyDownInfo& event_info) {
     }
 
     std::optional<bool> is_to_expand;
-    if (event_info.Message().VirtualKey() == VK_LEFT) {
+    if (event_info.Message().Key() == Key::Left) {
         is_to_expand = false;
     }
-    else if (event_info.Message().VirtualKey() == VK_RIGHT) {
+    else if (event_info.Message().Key() == Key::Right) {
         is_to_expand = true;
     }
     

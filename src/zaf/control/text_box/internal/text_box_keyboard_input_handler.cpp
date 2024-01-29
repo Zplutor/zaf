@@ -20,25 +20,25 @@ void TextBoxKeyboardInputHandler::HandleKeyDown(const KeyDownInfo& event_info) {
         return !!(GetKeyState(VK_SHIFT) >> 15);
     };
 
-    auto virtual_key = event_info.Message().VirtualKey();
-    if (virtual_key == VK_LEFT) {
+    auto virtual_key = event_info.Message().Key();
+    if (virtual_key == Key::Left) {
         BackwardCaretIndex(is_shift_pressed());
     }
-    else if (virtual_key == VK_RIGHT) {
+    else if (virtual_key == Key::Right) {
         ForwardCaretIndex(is_shift_pressed());
     }
-    else if (virtual_key == VK_UP) {
+    else if (virtual_key == Key::Up) {
         UpwardCaretIndex(is_shift_pressed());
     }
-    else if (virtual_key == VK_DOWN) {
+    else if (virtual_key == Key::Down) {
         DownwardCaretIndex(is_shift_pressed());
     }
-    else if (virtual_key == L'C') {
+    else if (virtual_key == Key::C) {
         if (GetKeyState(VK_CONTROL) >> 15) {
             HandleCopy();
         }
     }
-    else if (virtual_key == L'A') {
+    else if (virtual_key == Key::A) {
         if (GetKeyState(VK_CONTROL) >> 15) {
             HandleSelectAll();
         }

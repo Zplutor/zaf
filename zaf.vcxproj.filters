@@ -187,6 +187,9 @@
     <Filter Include="zaf\control\text_box\internal">
       <UniqueIdentifier>{4589e167-5e8c-4a74-bbff-cae72a3e872a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\input">
+      <UniqueIdentifier>{746b5796-3832-4421-abdb-fc0b372af572}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1137,6 +1140,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\text_box\internal\text_box_keyboard_input_handler.cpp">
       <Filter>zaf\control\text_box\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\input\keyboard.cpp">
+      <Filter>zaf\input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2574,6 +2580,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\text_box\internal\text_box_keyboard_input_handler.h">
       <Filter>zaf\control\text_box\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\input\keyboard.h">
+      <Filter>zaf\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\input\key.h">
+      <Filter>zaf\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\input\key_state.h">
+      <Filter>zaf\input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

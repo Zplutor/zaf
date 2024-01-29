@@ -62,14 +62,14 @@ bool Dialog::PreprocessMessage(const KeyMessage& message) {
 
     if (message.ID() == WM_KEYDOWN) {
 
-        if ((message.VirtualKey() == VK_RETURN) || (message.VirtualKey() == VK_ESCAPE)) {
+        if ((message.Key() == Key::Enter) || (message.Key() == Key::Escape)) {
 
             auto focused_control = FocusedControl();
             if ((focused_control != nullptr) && focused_control->AcceptKeyMessage(message)) {
                 return false;
             }
 
-            if (message.VirtualKey() == VK_ESCAPE) {
+            if (message.Key() == Key::Escape) {
                 CloseWithResult(DialogResult::Cancel);
                 return true;
             }

@@ -25,7 +25,7 @@ void EditableValueView::Initialize() {
     Subscriptions() += rich_edit_->KeyDownEvent().Subscribe(
         [this](const KeyDownInfo& event_info) {
     
-        if (event_info.Message().VirtualKey() == VK_RETURN) {
+        if (event_info.Message().Key() == Key::Enter) {
             ChangeValue();
             event_info.MarkAsHandled();
         }

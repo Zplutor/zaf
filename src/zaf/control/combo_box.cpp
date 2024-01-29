@@ -451,16 +451,16 @@ void ComboBox::OnKeyDown(const KeyDownInfo& event_info) {
 
     bool is_handled{};
 
-    auto key = event_info.Message().VirtualKey();
-    if ((key == VK_UP) || (key == VK_DOWN)) {
+    auto key = event_info.Message().Key();
+    if ((key == Key::Up) || (key == Key::Down)) {
 
-        if (SelectNextDropDownListItem(key == VK_UP)) {
+        if (SelectNextDropDownListItem(key == Key::Up)) {
             is_handled = true;
         }
     }
-    else if ((key == VK_RETURN) || (key == VK_ESCAPE)) {
+    else if ((key == Key::Enter) || (key == Key::Escape)) {
 
-        ConfirmSelection(key == VK_ESCAPE);
+        ConfirmSelection(key == Key::Escape);
         is_handled = true;
     }
     
@@ -696,8 +696,8 @@ std::shared_ptr<ListItem> ComboBoxDropDownListBox::DropDownListBoxDelegate::Crea
 void ComboBoxEditBox::OnKeyDown(const KeyDownInfo& event_info) {
 
     //Don't handle these key events, so that they can be handled in combo box.
-    auto key = event_info.Message().VirtualKey();
-    if (key == VK_UP || key == VK_DOWN || key == VK_RETURN || key == VK_ESCAPE) {
+    auto key = event_info.Message().Key();
+    if (key == Key::Up || key == Key::Down || key == Key::Enter || key == Key::Escape) {
         return;
     }
 

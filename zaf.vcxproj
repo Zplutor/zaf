@@ -281,6 +281,7 @@
     <ClCompile Include="src\zaf\graphic\text\text_layout.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_trimming.cpp" />
     <ClCompile Include="src\zaf\graphic\text\word_wrapping.cpp" />
+    <ClCompile Include="src\zaf\input\keyboard.cpp" />
     <ClCompile Include="src\zaf\internal\message_loop.cpp" />
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
     <ClCompile Include="src\zaf\internal\system_message_window.cpp" />
@@ -710,6 +711,9 @@
     <ClInclude Include="src\zaf\graphic\text\text_trimming.h" />
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />
     <ClInclude Include="src\zaf\graphic\matrix.h" />
+    <ClInclude Include="src\zaf\input\keyboard.h" />
+    <ClInclude Include="src\zaf\input\key_state.h" />
+    <ClInclude Include="src\zaf\input\key.h" />
     <ClInclude Include="src\zaf\internal\enumerator.h" />
     <ClInclude Include="src\zaf\internal\message_loop.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />

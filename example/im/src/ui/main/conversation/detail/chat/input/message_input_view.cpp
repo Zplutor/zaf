@@ -66,7 +66,7 @@ void MessageInputView::SendButtonClick() {
 
 void MessageInputView::RichEditKeyDown(const zaf::KeyDownInfo& event_info) {
 
-    if (event_info.Message().VirtualKey() == VK_RETURN) {
+    if (event_info.Message().Key() == zaf::Key::Enter) {
         send_button_->Click();
         event_info.MarkAsHandled();
     }

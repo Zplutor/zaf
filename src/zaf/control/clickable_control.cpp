@@ -146,7 +146,7 @@ void ClickableControl::OnKeyDown(const KeyDownInfo& event_info) {
         return;
     }
 
-    if (event_info.Message().VirtualKey() == VK_SPACE) {
+    if (event_info.Message().Key() == Key::Space) {
         BeginPress(PressType::Key);
         event_info.MarkAsHandled();
     }
@@ -161,7 +161,7 @@ void ClickableControl::OnKeyUp(const KeyUpInfo& event_info) {
         return;
     }
 
-    if (event_info.Message().VirtualKey() == VK_SPACE) {
+    if (event_info.Message().Key() == Key::Space) {
         EndPress(PressType::Key);
         event_info.MarkAsHandled();
     }

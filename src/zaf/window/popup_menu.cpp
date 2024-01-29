@@ -504,18 +504,18 @@ void PopupMenu::RemoveMenuItem(const std::shared_ptr<MenuItem>& menu_item) {
 
 void PopupMenu::HandleKeyDownMessage(const KeyMessage& message) {
 
-    if (message.VirtualKey() == VK_UP) {
+    if (message.Key() == Key::Up) {
         ChangeSelectedMenuItemByKey(true);
     }
-    else if (message.VirtualKey() == VK_DOWN) {
+    else if (message.Key() == Key::Down) {
         ChangeSelectedMenuItemByKey(false);
     }
-    else if (message.VirtualKey() == VK_LEFT) {
+    else if (message.Key() == Key::Left) {
         if (As<PopupMenu>(Owner())) {
             this->Close();
         }
     }
-    else if (message.VirtualKey() == VK_RIGHT) {
+    else if (message.Key() == Key::Right) {
         ShowSubMenuByKey();
     }
 }

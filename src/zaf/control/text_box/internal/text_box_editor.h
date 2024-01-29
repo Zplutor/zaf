@@ -26,6 +26,8 @@ private:
     std::optional<Range> HandleChar(wchar_t ch);
     std::optional<Range> HandleBackspace(const Range& selection_range);
 
+    void HandlePaste();
+
 private:
     bool is_editing_{};
 };
