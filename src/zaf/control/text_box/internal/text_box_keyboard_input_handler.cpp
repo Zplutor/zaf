@@ -14,6 +14,11 @@ TextBoxKeyboardInputHandler::TextBoxKeyboardInputHandler(TextBoxModuleContext* c
 }
 
 
+void TextBoxKeyboardInputHandler::Initialize() {
+
+}
+
+
 void TextBoxKeyboardInputHandler::HandleKeyDown(const KeyDownInfo& event_info) {
 
     constexpr auto is_shift_pressed = []() {

@@ -10,6 +10,11 @@ TextBoxSelectionManager::TextBoxSelectionManager(TextBoxModuleContext* context) 
 }
 
 
+void TextBoxSelectionManager::Initialize() {
+
+}
+
+
 void TextBoxSelectionManager::SetSelectionRange(
     const Range& range, 
     text_box::SelectionOption selection_option,

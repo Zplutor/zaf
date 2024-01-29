@@ -16,5 +16,14 @@ TextBoxModuleContext::TextBoxModuleContext(TextBox* owner, TextBoxCore* core) :
 
 }
 
+
+void TextBoxModuleContext::Initialize() {
+
+    selection_manager_->Initialize();
+    mouse_input_handler_->Initialize();
+    keyboard_input_handler_->Initialize();
+    editor_->Initialize();
+}
+
 }
 

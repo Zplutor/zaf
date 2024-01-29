@@ -53,6 +53,11 @@ TextBoxEditor::TextBoxEditor(TextBoxModuleContext* context) : TextBoxModule(cont
 }
 
 
+void TextBoxEditor::Initialize() {
+
+}
+
+
 void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
 
     auto auto_reset = MakeAutoReset(is_editing_, true);

@@ -10,6 +10,8 @@ class TextBoxKeyboardInputHandler : public TextBoxModule {
 public:
     explicit TextBoxKeyboardInputHandler(TextBoxModuleContext* context);
 
+    void Initialize() override;
+
     void HandleKeyDown(const KeyDownInfo& event_info);
 
 private:

@@ -10,6 +10,8 @@ class TextBoxModule : NonCopyableNonMovable {
 public:
     virtual ~TextBoxModule() = default;
 
+    virtual void Initialize() = 0;
+
 protected:
     explicit TextBoxModule(TextBoxModuleContext* context);
 

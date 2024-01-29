@@ -12,6 +12,8 @@ class TextBoxEditor : public TextBoxModule {
 public:
     explicit TextBoxEditor(TextBoxModuleContext* context);
 
+    void Initialize() override;
+
     void HandleKeyDown(const KeyDownInfo& event_info);
     void HandleCharInput(const CharInputInfo& event_info);
 

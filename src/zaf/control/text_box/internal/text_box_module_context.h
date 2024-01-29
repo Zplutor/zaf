@@ -18,6 +18,8 @@ class TextBoxModuleContext : NonCopyableNonMovable {
 public:
     explicit TextBoxModuleContext(TextBox* owner, TextBoxCore* core);
 
+    void Initialize();
+
     TextBox& Owner() const {
         return *owner_;
     }

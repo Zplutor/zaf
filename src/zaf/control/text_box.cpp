@@ -35,7 +35,10 @@ void TextBox::Initialize() {
     __super::Initialize();
 
     core_ = As<internal::TextBoxCore>(Core());
+
     module_context_ = std::make_unique<internal::TextBoxModuleContext>(this, core_);
+    module_context_->Initialize();
+
     Subscriptions() += module_context_->SelectionManager().CaretIndexChangedEvent().Subscribe(
         std::bind(&TextBox::OnCaretIndexChanged, this, std::placeholders::_1));
 

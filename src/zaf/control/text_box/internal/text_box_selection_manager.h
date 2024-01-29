@@ -15,6 +15,8 @@ class TextBoxSelectionManager : public TextBoxModule {
 public:
     explicit TextBoxSelectionManager(TextBoxModuleContext* context);
 
+    void Initialize() override;
+
     const Range& SelectionRange() const {
         return selection_range_;
     }
