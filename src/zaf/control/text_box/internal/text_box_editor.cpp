@@ -52,8 +52,45 @@ TextBoxEditor::TextBoxEditor(TextBoxModuleContext* context) : TextBoxModule(cont
 
 
 void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
+
+    if (event_info.Message().VirtualKey() == VK_DELETE) {
+        HandleDeleteKeyDown();
+    }
 }
 
+
+void TextBoxEditor::HandleDeleteKeyDown() {
+
+    auto auto_reset = MakeAutoReset(is_editing_, true);
+
+    const auto& selection_range = Context().SelectionManager().SelectionRange();
+    auto new_selection_range = HandleDelete(selection_range);
+    if (new_selection_range) {
+
+        Context().SelectionManager().SetSelectionRange(
+            *new_selection_range,
+            text_box::SelectionOption::ScrollToCaret,
+            true);
+    }
+}
+
+
+std::optional<Range> TextBoxEditor::HandleDelete(const Range& selection_range) {
+
+    //Remove the selected text.
+    if (selection_range.length > 0) {
+        Context().Core().GetTextModel()->SetTextInRange({}, selection_range);
+        return Range{ selection_range.index, 0 };
+    }
+
+    if (selection_range.EndIndex() == Context().Core().GetTextLength()) {
+        return std::nullopt;
+    }
+
+    //Remove the current char.
+    Context().Core().GetTextModel()->SetTextInRange({}, Range{ selection_range.index, 1 });
+    return std::nullopt;
+}
 
 
 void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {

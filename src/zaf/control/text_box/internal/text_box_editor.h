@@ -20,6 +20,9 @@ public:
     }
 
 private:
+    void HandleDeleteKeyDown();
+    std::optional<Range> HandleDelete(const Range& selection_range);
+
     std::optional<Range> HandleChar(wchar_t ch);
     std::optional<Range> HandleBackspace(const Range& selection_range);
 

@@ -2,6 +2,7 @@
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/control/text_box.h>
 #include <zaf/control/text_box/internal/text_box_core.h>
+#include <zaf/control/text_box/internal/text_box_editor.h>
 #include <zaf/control/text_box/internal/text_box_module_context.h>
 #include <zaf/control/text_box/internal/text_box_selection_manager.h>
 
@@ -41,6 +42,9 @@ void TextBoxKeyboardInputHandler::HandleKeyDown(const KeyDownInfo& event_info) {
         if (GetKeyState(VK_CONTROL) >> 15) {
             HandleSelectAll();
         }
+    }
+    else {
+        Context().Editor().HandleKeyDown(event_info);
     }
 }
 
