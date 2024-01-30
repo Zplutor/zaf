@@ -5,52 +5,40 @@
 
 namespace zaf::internal {
 
-TextBoxEditCommand::TextBoxEditCommand(EditInfo new_edit_info, EditInfo old_edit_info) :
-    new_edit_info_(std::move(new_edit_info)),
-    old_edit_info_(std::move(old_edit_info)) {
+TextBoxEditCommand::TextBoxEditCommand(EditInfo do_info, EditInfo undo_info) :
+    do_info_(std::move(do_info)),
+    undo_info_(std::move(undo_info)) {
 
 }
 
 
 void TextBoxEditCommand::Do(const TextBoxModuleContext& context) {
-
-    Execute(
-        context,
-        new_edit_info_.text,
-        old_edit_info_.selection_range,
-        new_edit_info_.selection_range,
-        new_edit_info_.caret_at_begin);
+    Execute(context, do_info_);
 }
 
 
 void TextBoxEditCommand::Undo(const TextBoxModuleContext& context) {
-
-    Execute(
-        context,
-        old_edit_info_.text, 
-        new_edit_info_.selection_range,
-        old_edit_info_.selection_range,
-        old_edit_info_.caret_at_begin);
+    Execute(context, undo_info_);
 }
 
 
-void TextBoxEditCommand::Execute(
-    const TextBoxModuleContext& context,
-    const std::wstring& text, 
-    const Range& old_selection_range, 
-    const Range& new_selection_range,
-    bool set_caret_to_begin) {
+void TextBoxEditCommand::Execute(const TextBoxModuleContext& context, const EditInfo& edit_info) {
 
-    context.Core().GetTextModel()->SetTextInRange(text, old_selection_range);
+    context.Core().GetTextModel()->SetTextInRange(
+        edit_info.text, 
+        edit_info.replaced_selection_range);
 
     auto selection_option =
-        set_caret_to_begin ?
+        edit_info.is_caret_at_begin ?
         text_box::SelectionOption::SetCaretToBegin :
         text_box::SelectionOption::SetCaretToEnd;
 
     selection_option |= text_box::SelectionOption::ScrollToCaret;
 
-    context.SelectionManager().SetSelectionRange(new_selection_range, selection_option, true);
+    context.SelectionManager().SetSelectionRange(
+        edit_info.new_selection_range,
+        selection_option, 
+        true);
 }
 
 }

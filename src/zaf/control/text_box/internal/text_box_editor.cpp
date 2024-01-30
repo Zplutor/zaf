@@ -64,7 +64,10 @@ void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
 
     auto key = event_info.Message().Key();
     if (key == Key::Delete) {
-        HandleDeleteKeyDown();
+        auto command = CreateCommandForDelete();
+        if (command) {
+            ExecuteCommand(std::move(command));
+        }
     }
     else if ((key == Key::X) && Keyboard::IsCtrlDown()) {
         HandleCut();
@@ -78,35 +81,21 @@ void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
 }
 
 
-void TextBoxEditor::HandleDeleteKeyDown() {
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommandForDelete() {
 
     const auto& selection_range = Context().SelectionManager().SelectionRange();
-    auto new_selection_range = HandleDelete(selection_range);
-    if (new_selection_range) {
-
-        Context().SelectionManager().SetSelectionRange(
-            *new_selection_range,
-            text_box::SelectionOption::ScrollToCaret,
-            true);
-    }
-}
-
-
-std::optional<Range> TextBoxEditor::HandleDelete(const Range& selection_range) {
 
     //Remove the selected text.
     if (selection_range.length > 0) {
-        Context().Core().GetTextModel()->SetTextInRange({}, selection_range);
-        return Range{ selection_range.index, 0 };
+        return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
     }
 
     if (selection_range.EndIndex() == Context().Core().GetTextLength()) {
-        return std::nullopt;
+        return nullptr;
     }
 
     //Remove the current char.
-    Context().Core().GetTextModel()->SetTextInRange({}, Range{ selection_range.index, 1 });
-    return std::nullopt;
+    return CreateCommand({}, Range{ selection_range.index, 1 }, selection_range);
 }
 
 
@@ -166,44 +155,6 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommandForBackspace() {
 }
 
 
-std::optional<Range> TextBoxEditor::HandleChar(wchar_t ch) {
-
-    //Ignore specific control chars.
-    if (ShouldIgnoreChar(ch)) {
-        return std::nullopt;
-    }
-
-    const auto& selection_range = Context().SelectionManager().SelectionRange();
-
-    //Backspace
-    if (ch == '\x8') {
-        return HandleBackspace(selection_range);
-    }
-
-    std::wstring new_text(1, ch);
-    Context().Core().GetTextModel()->SetTextInRange(new_text, selection_range);
-    return Range{ selection_range.index + 1, 0 };
-}
-
-
-std::optional<Range> TextBoxEditor::HandleBackspace(const Range& selection_range) {
-
-    //Remove the selected text.
-    if (selection_range.length > 0) {
-        Context().Core().GetTextModel()->SetTextInRange({}, selection_range);
-        return Range{ selection_range.index, 0 };
-    }
-
-    if (selection_range.index == 0) {
-        return std::nullopt;
-    }
-
-    //Remove the previous char.
-    Context().Core().GetTextModel()->SetTextInRange({}, Range{ selection_range.index - 1, 1 });
-    return Range{ selection_range.index - 1, 0 };
-}
-
-
 void TextBoxEditor::HandleCut() {
 
     auto selection_range = Context().SelectionManager().SelectionRange();
@@ -247,40 +198,43 @@ void TextBoxEditor::HandlePaste() {
 
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
     std::wstring new_text,
-    const Range& old_selection_range,
+    const Range& replaced_selection_range,
     const Range& new_selection_range) const {
 
-    TextBoxEditCommand::EditInfo new_edit_info{
-        std::move(new_text),
-        new_selection_range,
-        false,
-    };
+    auto& selection_manager = Context().SelectionManager();
+    auto old_caret_index = selection_manager.CaretIndex();
+    auto old_selection_range = selection_manager.SelectionRange();
 
-    auto old_caret_index = Context().SelectionManager().CaretIndex();
     auto old_text = Context().Core().GetTextModel()->GetText().substr(
-        old_selection_range.index,
-        old_selection_range.length);
+        replaced_selection_range.index,
+        replaced_selection_range.length);
 
-    TextBoxEditCommand::EditInfo old_edit_info{
+    TextBoxEditCommand::EditInfo undo_info{
         std::wstring{ old_text },
+        Range{ replaced_selection_range.index, new_text.length() },
         old_selection_range,
         old_caret_index == old_selection_range.index,
     };
 
-    return std::make_unique<TextBoxEditCommand>(
-        std::move(new_edit_info),
-        std::move(old_edit_info));
+    TextBoxEditCommand::EditInfo do_info{
+        std::move(new_text),
+        replaced_selection_range,
+        new_selection_range,
+        false,
+    };
+
+    return std::make_unique<TextBoxEditCommand>(std::move(do_info), std::move(undo_info));
 }
 
 
 void TextBoxEditor::ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command) {
 
+    edit_commands_.erase(edit_commands_.begin() + next_command_index_, edit_commands_.end());
+
     command->Do(Context());
 
     edit_commands_.push_back(std::move(command));
     ++next_command_index_;
-
-    edit_commands_.erase(edit_commands_.begin() + next_command_index_, edit_commands_.end());
 }
 
 

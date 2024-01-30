@@ -23,21 +23,16 @@ public:
     }
 
 private:
-    void HandleDeleteKeyDown();
-    std::optional<Range> HandleDelete(const Range& selection_range);
-
+    std::unique_ptr<TextBoxEditCommand> CreateCommandForDelete();
     std::unique_ptr<TextBoxEditCommand> CreateCommandForChar(wchar_t ch);
     std::unique_ptr<TextBoxEditCommand> CreateCommandForBackspace();
-
-    std::optional<Range> HandleChar(wchar_t ch);
-    std::optional<Range> HandleBackspace(const Range& selection_range);
 
     void HandleCut();
     void HandlePaste();
 
     std::unique_ptr<TextBoxEditCommand> CreateCommand(
         std::wstring new_text,
-        const Range& old_selection_range,
+        const Range& replaced_selection_range,
         const Range& new_selection_range) const;
 
     void ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command);

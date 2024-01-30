@@ -11,27 +11,23 @@ public:
     class EditInfo {
     public:
         std::wstring text;
-        Range selection_range;
-        bool caret_at_begin{};
+        Range replaced_selection_range;
+        Range new_selection_range;
+        bool is_caret_at_begin{};
     };
 
 public:
-    TextBoxEditCommand(EditInfo new_edit_info, EditInfo old_edit_info);
+    TextBoxEditCommand(EditInfo do_info, EditInfo undo_info);
 
     void Do(const TextBoxModuleContext& context);
     void Undo(const TextBoxModuleContext& context);
 
 private:
-    static void Execute(
-        const TextBoxModuleContext& context,
-        const std::wstring& text,
-        const Range& old_selection_range,
-        const Range& new_selection_range,
-        bool set_caret_to_begin);
+    static void Execute(const TextBoxModuleContext& context, const EditInfo& edit_info);
 
 private:
-    EditInfo new_edit_info_;
-    EditInfo old_edit_info_;
+    EditInfo do_info_;
+    EditInfo undo_info_;
 };
 
 }
