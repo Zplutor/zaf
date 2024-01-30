@@ -4,6 +4,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
 #include <zaf/control/event/keyboard_event_info.h>
+#include <zaf/control/text_box/internal/text_box_edit_command.h>
 #include <zaf/control/text_box/internal/text_box_module.h>
 
 namespace zaf::internal {
@@ -25,14 +26,28 @@ private:
     void HandleDeleteKeyDown();
     std::optional<Range> HandleDelete(const Range& selection_range);
 
+    std::unique_ptr<TextBoxEditCommand> CreateCommandForChar(wchar_t ch);
+    std::unique_ptr<TextBoxEditCommand> CreateCommandForBackspace();
+
     std::optional<Range> HandleChar(wchar_t ch);
     std::optional<Range> HandleBackspace(const Range& selection_range);
 
     void HandleCut();
     void HandlePaste();
 
+    std::unique_ptr<TextBoxEditCommand> CreateCommand(
+        std::wstring new_text,
+        const Range& old_selection_range,
+        const Range& new_selection_range) const;
+
+    void ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command);
+    void HandleUndo();
+
 private:
     bool is_editing_{};
+
+    std::vector<std::unique_ptr<TextBoxEditCommand>> edit_commands_;
+    std::size_t next_command_index_{};
 };
 
 }

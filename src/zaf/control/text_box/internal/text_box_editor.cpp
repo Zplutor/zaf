@@ -72,6 +72,9 @@ void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
     else if ((key == Key::V) && Keyboard::IsCtrlDown()) {
         HandlePaste();
     }
+    else if ((key == Key::Z) && Keyboard::IsCtrlDown()) {
+        HandleUndo();
+    }
 }
 
 
@@ -112,14 +115,54 @@ void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
     auto auto_reset = MakeAutoReset(is_editing_, true);
 
     auto ch = event_info.Message().Char();
-    auto new_selection_range = HandleChar(ch);
-    if (new_selection_range) {
-
-        Context().SelectionManager().SetSelectionRange(
-            *new_selection_range,
-            text_box::SelectionOption::ScrollToCaret,
-            true);
+    auto command = CreateCommandForChar(ch);
+    if (!command) {
+        return;
     }
+
+    ExecuteCommand(std::move(command));
+}
+
+
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommandForChar(wchar_t ch) {
+
+    //Ignore specific control chars.
+    if (ShouldIgnoreChar(ch)) {
+        return nullptr;
+    }
+
+    //Backspace
+    if (ch == '\x8') {
+        return CreateCommandForBackspace();
+    }
+
+    const auto& selection_range = Context().SelectionManager().SelectionRange();
+
+    return CreateCommand(
+        std::wstring(1, ch),
+        selection_range,
+        Range{ selection_range.index + 1, 0 });
+}
+
+
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommandForBackspace() {
+
+    const auto& selection_range = Context().SelectionManager().SelectionRange();
+
+    //Remove the selected text.
+    if (selection_range.length > 0) {
+        return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
+    }
+
+    if (selection_range.index == 0) {
+        return nullptr;
+    }
+
+    //Remove the previous char.
+    return CreateCommand(
+        {},
+        Range{ selection_range.index - 1, 1 }, 
+        Range{ selection_range.index - 1, 0 });
 }
 
 
@@ -199,6 +242,57 @@ void TextBoxEditor::HandlePaste() {
     catch (const zaf::Error&) {
 
     }
+}
+
+
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
+    std::wstring new_text,
+    const Range& old_selection_range,
+    const Range& new_selection_range) const {
+
+    TextBoxEditCommand::EditInfo new_edit_info{
+        std::move(new_text),
+        new_selection_range,
+        false,
+    };
+
+    auto old_caret_index = Context().SelectionManager().CaretIndex();
+    auto old_text = Context().Core().GetTextModel()->GetText().substr(
+        old_selection_range.index,
+        old_selection_range.length);
+
+    TextBoxEditCommand::EditInfo old_edit_info{
+        std::wstring{ old_text },
+        old_selection_range,
+        old_caret_index == old_selection_range.index,
+    };
+
+    return std::make_unique<TextBoxEditCommand>(
+        std::move(new_edit_info),
+        std::move(old_edit_info));
+}
+
+
+void TextBoxEditor::ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command) {
+
+    command->Do(Context());
+
+    edit_commands_.push_back(std::move(command));
+    ++next_command_index_;
+
+    edit_commands_.erase(edit_commands_.begin() + next_command_index_, edit_commands_.end());
+}
+
+
+void TextBoxEditor::HandleUndo() {
+
+    if (next_command_index_ == 0) {
+        return;
+    }
+
+    --next_command_index_;
+    const auto& command = edit_commands_[next_command_index_];
+    command->Undo(Context());
 }
 
 }

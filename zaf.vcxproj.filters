@@ -1144,6 +1144,9 @@
     <ClCompile Include="src\zaf\input\keyboard.cpp">
       <Filter>zaf\input</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\text_box\internal\text_box_edit_command.cpp">
+      <Filter>zaf\control\text_box\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2589,6 +2592,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\input\key_state.h">
       <Filter>zaf\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\text_box\internal\text_box_edit_command.h">
+      <Filter>zaf\control\text_box\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
