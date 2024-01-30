@@ -66,7 +66,10 @@ void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
     if (key == Key::Delete) {
         HandleDeleteKeyDown();
     }
-    else if ((key == Key::V) && Keyboard::IsKeyDown(Key::Ctrl)) {
+    else if ((key == Key::X) && Keyboard::IsCtrlDown()) {
+        HandleCut();
+    }
+    else if ((key == Key::V) && Keyboard::IsCtrlDown()) {
         HandlePaste();
     }
 }
@@ -155,6 +158,24 @@ std::optional<Range> TextBoxEditor::HandleBackspace(const Range& selection_range
     //Remove the previous char.
     Context().Core().GetTextModel()->SetTextInRange({}, Range{ selection_range.index - 1, 1 });
     return Range{ selection_range.index - 1, 0 };
+}
+
+
+void TextBoxEditor::HandleCut() {
+
+    auto selection_range = Context().SelectionManager().SelectionRange();
+    auto text = std::get<std::wstring_view>(Context().Core().GetText());
+
+    //Copy the selected text to clipboard.
+    auto selected_text = text.substr(selection_range.index, selection_range.length);
+    clipboard::Clipboard::SetText(selected_text);
+
+    //Remove the selected text.
+    Context().Core().GetTextModel()->SetTextInRange({}, selection_range);
+    Context().SelectionManager().SetSelectionRange(
+        Range{ selection_range.index, 0 }, 
+        text_box::SelectionOption::ScrollToCaret, 
+        true);
 }
 
 

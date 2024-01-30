@@ -28,6 +28,7 @@ private:
     std::optional<Range> HandleChar(wchar_t ch);
     std::optional<Range> HandleBackspace(const Range& selection_range);
 
+    void HandleCut();
     void HandlePaste();
 
 private:
