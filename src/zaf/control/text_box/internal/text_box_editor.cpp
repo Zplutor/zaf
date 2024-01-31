@@ -62,12 +62,49 @@ void TextBoxEditor::Initialize() {
 }
 
 
+void TextBoxEditor::SetCanEdit(bool can_edit) {
+
+    if (can_edit_ == can_edit) {
+        return;
+    }
+
+    can_edit_ = can_edit;
+
+    //Clear all commands if it cannot edit.
+    if (!can_edit_) {
+        ClearCommands();
+    }
+}
+
+
 void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
+
+    if (!can_edit_) {
+        return;
+    }
 
     auto auto_reset = MakeAutoReset(is_editing_, true);
 
     auto key = event_info.Message().Key();
     auto command = HandleKey(key);
+    if (!command) {
+        return;
+    }
+
+    ExecuteCommand(std::move(command));
+}
+
+
+void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
+
+    if (!can_edit_) {
+        return;
+    }
+
+    auto auto_reset = MakeAutoReset(is_editing_, true);
+
+    auto ch = event_info.Message().Char();
+    auto command = HandleChar(ch);
     if (!command) {
         return;
     }
@@ -155,20 +192,6 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandlePaste() {
     catch (const zaf::Error&) {
         return nullptr;
     }
-}
-
-
-void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
-
-    auto auto_reset = MakeAutoReset(is_editing_, true);
-
-    auto ch = event_info.Message().Char();
-    auto command = HandleChar(ch);
-    if (!command) {
-        return;
-    }
-
-    ExecuteCommand(std::move(command));
 }
 
 
@@ -288,6 +311,11 @@ void TextBoxEditor::OnTextModelChanged() {
 
     //If the text is changed by other ways outside the editor, such as SetText() is called, we have
     //to clear the command queue.
+    ClearCommands();
+}
+
+
+void TextBoxEditor::ClearCommands() {
     edit_commands_.clear();
     next_command_index_ = 0;
 }

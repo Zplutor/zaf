@@ -16,6 +16,12 @@ public:
 
     void Initialize() override;
 
+    bool CanEdit() const {
+        return can_edit_;
+    }
+
+    void SetCanEdit(bool can_edit);
+
     void HandleKeyDown(const KeyDownInfo& event_info);
     void HandleCharInput(const CharInputInfo& event_info);
 
@@ -42,8 +48,10 @@ private:
     void HandleRedo();
 
     void OnTextModelChanged();
+    void ClearCommands();
 
 private:
+    bool can_edit_{};
     bool is_editing_{};
 
     std::vector<std::unique_ptr<TextBoxEditCommand>> edit_commands_;

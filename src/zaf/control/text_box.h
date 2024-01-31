@@ -17,9 +17,6 @@ class TextBoxModuleContext;
 
 class Caret;
 
-/**
-A readonly control to display and select text.
-*/
 class TextBox : public TextualControl, public SelfScrollControl {
 public:
     ZAF_DECLARE_TYPE;
@@ -27,6 +24,20 @@ public:
 public:
     TextBox();
     ~TextBox();
+
+    /**
+    Determines whether the text box is read-only.
+
+    @remark
+        A text box is read-only by default. A read-only text box doesn't respond to user input that
+        will modify the text.
+    */
+    bool IsReadOnly() const;
+
+    /**
+    Sets whether the text box is read-only.
+    */
+    void SetIsReadOnly(bool read_only);
 
     std::size_t LineCount() const;
 

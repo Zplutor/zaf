@@ -1,6 +1,36 @@
 #include <gtest/gtest.h>
 #include <zaf/control/text_box.h>
 #include <zaf/creation.h>
+#include <zaf/window/window.h>
+
+TEST(TextBoxTest, IsReadOnly) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
+    window->SetRect(zaf::Rect{ 0, 0, 100, 100 });
+
+    auto text_box = zaf::Create<zaf::TextBox>();
+    window->SetRootControl(text_box);
+
+    window->Show();
+
+    //TextBox is read-only by default.
+    ASSERT_TRUE(text_box->IsReadOnly());
+
+    //A read-only TextBox won't respond to user input.
+    text_box->SetIsFocused(true);
+    ASSERT_TRUE(text_box->IsFocused());
+    window->Messager().Send(WM_CHAR, L'A', 0);
+    ASSERT_EQ(text_box->Text(), std::wstring{});
+
+    //An editable TextBox will respond to user input.
+    text_box->SetIsReadOnly(false);
+    window->Messager().Send(WM_CHAR, L'A', 0);
+    ASSERT_EQ(text_box->Text(), std::wstring{ L'A' });
+
+    window->Destroy();
+}
+
 
 TEST(TextBoxTest, SelectionRange) {
 
