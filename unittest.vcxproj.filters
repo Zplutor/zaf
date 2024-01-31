@@ -502,6 +502,9 @@
     <ClCompile Include="unittest\case\graphic\alignment_test.cpp">
       <Filter>case\graphic</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\utility\test_window.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
@@ -515,6 +518,9 @@
     </ClInclude>
     <ClInclude Include="unittest\case\base\registry\registry_test.h">
       <Filter>case\base\registry</Filter>
+    </ClInclude>
+    <ClInclude Include="unittest\utility\test_window.h">
+      <Filter>utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

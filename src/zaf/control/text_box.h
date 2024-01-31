@@ -44,6 +44,13 @@ public:
     */
     bool CanUndo() const;
 
+    /**
+    Undoes the most recent text modification operation in the text box's history.
+
+    @return
+        Returns true if the operation is successfully undone; or returns false if there are no 
+        operations in the text box's history.
+    */
     bool Undo();
 
     /**
@@ -51,6 +58,13 @@ public:
     */
     bool CanRedo() const;
     
+    /**
+    Redoes the most recently undone text modification operation in the text box's history.
+
+    @return
+        Returns true if the operation is successfully redone; or returns false if there are no 
+        undone operations in the text box's history to redo.
+    */
     bool Redo();
 
     std::size_t LineCount() const;

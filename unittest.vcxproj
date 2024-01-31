@@ -507,6 +507,7 @@
     <ClCompile Include="unittest\case\window\window_mouse_over_control_test.cpp" />
     <ClCompile Include="unittest\case\window\window_test.cpp" />
     <ClCompile Include="unittest\main.cpp" />
+    <ClCompile Include="unittest\utility\test_window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\case\graphic\rect_test.cpp">
@@ -519,6 +520,7 @@
     <ClCompile Include="unittest\case\control\layout\layout_case_test.cpp" />
     <ClInclude Include="unittest\case\parsing\parsers\utility.h" />
     <ClInclude Include="unittest\utility\assert.h" />
+    <ClInclude Include="unittest\utility\test_window.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="unittest\res.rc" />
