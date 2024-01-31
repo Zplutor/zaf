@@ -39,6 +39,7 @@ private:
 
     void ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command);
     void HandleUndo();
+    void HandleRedo();
 
     void OnTextModelChanged();
 

@@ -22,6 +22,7 @@ bool ShouldIgnoreChar(wchar_t ch) {
     case 5:
     case 6:
     case 7:
+    case 11: //VerticalTab. May be supported if vertical text layout is supported.
     case 14:
     case 15:
     case 16:
@@ -91,6 +92,11 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
 
     if ((key == Key::Z) && Keyboard::IsCtrlDown()) {
         HandleUndo();
+        return nullptr;
+    }
+
+    if ((key == Key::Y) && Keyboard::IsCtrlDown()) {
+        HandleRedo();
         return nullptr;
     }
 
@@ -259,6 +265,18 @@ void TextBoxEditor::HandleUndo() {
     --next_command_index_;
     const auto& command = edit_commands_[next_command_index_];
     command->Undo(Context());
+}
+
+
+void TextBoxEditor::HandleRedo() {
+
+    if (next_command_index_ == edit_commands_.size()) {
+        return;
+    }
+
+    const auto& command = edit_commands_[next_command_index_];
+    command->Do(Context());
+    ++next_command_index_;
 }
 
 
