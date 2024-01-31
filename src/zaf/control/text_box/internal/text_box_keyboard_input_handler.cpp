@@ -200,7 +200,12 @@ void TextBoxKeyboardInputHandler::SetCaretIndexByKey(
 
 
 void TextBoxKeyboardInputHandler::HandleCopy() {
-    clipboard::Clipboard::SetText(Context().Owner().SelectedText());
+    try {
+        clipboard::Clipboard::SetText(Context().Owner().SelectedText());
+    }
+    catch (const Error&) {
+
+    }
 }
 
 

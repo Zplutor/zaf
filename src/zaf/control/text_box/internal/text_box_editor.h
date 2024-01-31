@@ -6,10 +6,11 @@
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/text_box/internal/text_box_edit_command.h>
 #include <zaf/control/text_box/internal/text_box_module.h>
+#include <zaf/rx/subscription_host.h>
 
 namespace zaf::internal {
 
-class TextBoxEditor : public TextBoxModule {
+class TextBoxEditor : public TextBoxModule, SubscriptionHost {
 public:
     explicit TextBoxEditor(TextBoxModuleContext* context);
 
@@ -23,12 +24,13 @@ public:
     }
 
 private:
-    std::unique_ptr<TextBoxEditCommand> CreateCommandForDelete();
-    std::unique_ptr<TextBoxEditCommand> CreateCommandForChar(wchar_t ch);
-    std::unique_ptr<TextBoxEditCommand> CreateCommandForBackspace();
+    std::unique_ptr<TextBoxEditCommand> HandleKey(Key key);
+    std::unique_ptr<TextBoxEditCommand> HandleDelete();
+    std::unique_ptr<TextBoxEditCommand> HandleCut();
+    std::unique_ptr<TextBoxEditCommand> HandlePaste();
 
-    void HandleCut();
-    void HandlePaste();
+    std::unique_ptr<TextBoxEditCommand> HandleChar(wchar_t ch);
+    std::unique_ptr<TextBoxEditCommand> HandleBackspace();
 
     std::unique_ptr<TextBoxEditCommand> CreateCommand(
         std::wstring new_text,
@@ -37,6 +39,8 @@ private:
 
     void ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command);
     void HandleUndo();
+
+    void OnTextModelChanged();
 
 private:
     bool is_editing_{};

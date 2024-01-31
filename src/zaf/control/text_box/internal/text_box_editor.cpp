@@ -40,6 +40,7 @@ bool ShouldIgnoreChar(wchar_t ch) {
     case 29:
     case 30:
     case 31:
+    case 127:
         return true;
     default:
         return false;
@@ -55,6 +56,8 @@ TextBoxEditor::TextBoxEditor(TextBoxModuleContext* context) : TextBoxModule(cont
 
 void TextBoxEditor::Initialize() {
 
+    Subscriptions() += Context().Core().GetTextModel()->TextChangedEvent().Subscribe(
+        std::bind(&TextBoxEditor::OnTextModelChanged, this));
 }
 
 
@@ -63,25 +66,39 @@ void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
     auto auto_reset = MakeAutoReset(is_editing_, true);
 
     auto key = event_info.Message().Key();
-    if (key == Key::Delete) {
-        auto command = CreateCommandForDelete();
-        if (command) {
-            ExecuteCommand(std::move(command));
-        }
+    auto command = HandleKey(key);
+    if (!command) {
+        return;
     }
-    else if ((key == Key::X) && Keyboard::IsCtrlDown()) {
-        HandleCut();
-    }
-    else if ((key == Key::V) && Keyboard::IsCtrlDown()) {
-        HandlePaste();
-    }
-    else if ((key == Key::Z) && Keyboard::IsCtrlDown()) {
-        HandleUndo();
-    }
+
+    ExecuteCommand(std::move(command));
 }
 
 
-std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommandForDelete() {
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
+
+    if (key == Key::Delete) {
+        return HandleDelete();
+    }
+
+    if ((key == Key::X) && Keyboard::IsCtrlDown()) {
+        return HandleCut();
+    }
+
+    if ((key == Key::V) && Keyboard::IsCtrlDown()) {
+        return HandlePaste();
+    }
+
+    if ((key == Key::Z) && Keyboard::IsCtrlDown()) {
+        HandleUndo();
+        return nullptr;
+    }
+
+    return nullptr;
+}
+
+
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleDelete() {
 
     const auto& selection_range = Context().SelectionManager().SelectionRange();
 
@@ -99,12 +116,48 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommandForDelete() {
 }
 
 
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleCut() {
+
+    auto selection_range = Context().SelectionManager().SelectionRange();
+    auto text = std::get<std::wstring_view>(Context().Core().GetText());
+
+    //Copy the selected text to clipboard.
+    auto selected_text = text.substr(selection_range.index, selection_range.length);
+    try {
+        clipboard::Clipboard::SetText(selected_text);
+    }
+    catch (const Error&) {
+
+    }
+
+    //Remove the selected text.
+    return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
+}
+
+
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandlePaste() {
+
+    try {
+
+        auto text = zaf::clipboard::Clipboard::GetText();
+
+        //Replace the current selection with the text in clipboard.
+        auto selection_range = Context().SelectionManager().SelectionRange();
+        Range new_selection_range{ selection_range.index + text.length(), 0 };
+        return CreateCommand(text, selection_range, new_selection_range);
+    }
+    catch (const zaf::Error&) {
+        return nullptr;
+    }
+}
+
+
 void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
 
     auto auto_reset = MakeAutoReset(is_editing_, true);
 
     auto ch = event_info.Message().Char();
-    auto command = CreateCommandForChar(ch);
+    auto command = HandleChar(ch);
     if (!command) {
         return;
     }
@@ -113,7 +166,7 @@ void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
 }
 
 
-std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommandForChar(wchar_t ch) {
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleChar(wchar_t ch) {
 
     //Ignore specific control chars.
     if (ShouldIgnoreChar(ch)) {
@@ -122,7 +175,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommandForChar(wchar_t 
 
     //Backspace
     if (ch == '\x8') {
-        return CreateCommandForBackspace();
+        return HandleBackspace();
     }
 
     const auto& selection_range = Context().SelectionManager().SelectionRange();
@@ -134,7 +187,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommandForChar(wchar_t 
 }
 
 
-std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommandForBackspace() {
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBackspace() {
 
     const auto& selection_range = Context().SelectionManager().SelectionRange();
 
@@ -152,47 +205,6 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommandForBackspace() {
         {},
         Range{ selection_range.index - 1, 1 }, 
         Range{ selection_range.index - 1, 0 });
-}
-
-
-void TextBoxEditor::HandleCut() {
-
-    auto selection_range = Context().SelectionManager().SelectionRange();
-    auto text = std::get<std::wstring_view>(Context().Core().GetText());
-
-    //Copy the selected text to clipboard.
-    auto selected_text = text.substr(selection_range.index, selection_range.length);
-    clipboard::Clipboard::SetText(selected_text);
-
-    //Remove the selected text.
-    Context().Core().GetTextModel()->SetTextInRange({}, selection_range);
-    Context().SelectionManager().SetSelectionRange(
-        Range{ selection_range.index, 0 }, 
-        text_box::SelectionOption::ScrollToCaret, 
-        true);
-}
-
-
-void TextBoxEditor::HandlePaste() {
-
-    try {
-
-        auto text = zaf::clipboard::Clipboard::GetText();
-
-        //Replace the current selection with the text in clipboard.
-        auto selection_range = Context().SelectionManager().SelectionRange();
-        Context().Core().GetTextModel()->SetTextInRange(text, selection_range);
-
-        //Set the caret to the end of the pasted text.
-        Range new_selection_range{ selection_range.index + text.length(), 0 };
-        Context().SelectionManager().SetSelectionRange(
-            new_selection_range,
-            text_box::SelectionOption::ScrollToCaret | text_box::SelectionOption::SetCaretToEnd,
-            true);
-    }
-    catch (const zaf::Error&) {
-
-    }
 }
 
 
@@ -247,6 +259,19 @@ void TextBoxEditor::HandleUndo() {
     --next_command_index_;
     const auto& command = edit_commands_[next_command_index_];
     command->Undo(Context());
+}
+
+
+void TextBoxEditor::OnTextModelChanged() {
+
+    if (is_editing_) {
+        return;
+    }
+
+    //If the text is changed by other ways outside the editor, such as SetText() is called, we have
+    //to clear the command queue.
+    edit_commands_.clear();
+    next_command_index_ = 0;
 }
 
 }
