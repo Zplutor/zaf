@@ -37,6 +37,7 @@ enum class Key : int {
     Z = L'Z',
 
     Alt = VK_MENU,
+    Backspace = VK_BACK,
     Ctrl = VK_CONTROL,
     Delete = VK_DELETE,
     Down = VK_DOWN,

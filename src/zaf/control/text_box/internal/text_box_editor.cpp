@@ -141,6 +141,10 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
         return HandleDelete();
     }
 
+    if (key == Key::Backspace && Keyboard::IsCtrlDown()) {
+        return HandleBatchBackspace();
+    }
+
     if ((key == Key::X) && Keyboard::IsCtrlDown()) {
         return HandleCut();
     }
@@ -178,6 +182,32 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleDelete() {
 
     //Remove the current char.
     return CreateCommand({}, Range{ selection_range.index, 1 }, selection_range);
+}
+
+
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
+
+    const auto& selection_range = Context().SelectionManager().SelectionRange();
+
+    //Remove the selected text.
+    if (selection_range.length > 0) {
+        return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
+    }
+
+    //Determine the word range.
+    auto text = Context().Core().GetTextModel()->GetText();
+    auto word_range = Context().Owner().WordExtractor()(text, selection_range.index);
+
+    //Nothing can be removed.
+    if (word_range.index >= selection_range.index) {
+        return nullptr;
+    }
+
+    //Remove text in the word ahead of the caret.
+    return CreateCommand(
+        {}, 
+        Range{ word_range.index, selection_range.index - word_range.index },
+        Range{ word_range.index, 0 });
 }
 
 
