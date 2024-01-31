@@ -230,6 +230,26 @@ void TextBox::SetIsReadOnly(bool read_only) {
 }
 
 
+bool TextBox::CanUndo() const {
+    return module_context_->Editor().CanUndo();
+}
+
+
+bool TextBox::Undo() {
+    return module_context_->Editor().Undo();
+}
+
+
+bool TextBox::CanRedo() const {
+    return module_context_->Editor().CanRedo();
+}
+
+
+bool TextBox::Redo() {
+    return module_context_->Editor().Redo();
+}
+
+
 void TextBox::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 
     __super::OnMouseCursorChanging(event_info);

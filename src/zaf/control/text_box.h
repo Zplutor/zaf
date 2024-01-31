@@ -26,7 +26,7 @@ public:
     ~TextBox();
 
     /**
-    Determines whether the text box is read-only.
+    Indicates whether the text box is read-only.
 
     @remark
         A text box is read-only by default. A read-only text box doesn't respond to user input that
@@ -38,6 +38,20 @@ public:
     Sets whether the text box is read-only.
     */
     void SetIsReadOnly(bool read_only);
+
+    /**
+    Determines whether there are undoable text modification operations in the text box's history.
+    */
+    bool CanUndo() const;
+
+    bool Undo();
+
+    /**
+    Determines whether there are redoable text modification operations in the text box's history.
+    */
+    bool CanRedo() const;
+    
+    bool Redo();
 
     std::size_t LineCount() const;
 

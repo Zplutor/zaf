@@ -77,6 +77,28 @@ void TextBoxEditor::SetCanEdit(bool can_edit) {
 }
 
 
+bool TextBoxEditor::CanUndo() const {
+    return next_command_index_ > 0;
+}
+
+
+bool TextBoxEditor::Undo() {
+    auto auto_reset = MakeAutoReset(is_editing_, true);
+    return HandleUndo();
+}
+
+
+bool TextBoxEditor::CanRedo() const {
+    return next_command_index_ < edit_commands_.size();
+}
+
+
+bool TextBoxEditor::Redo() {
+    auto auto_reset = MakeAutoReset(is_editing_, true);
+    return HandleRedo();
+}
+
+
 void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
 
     if (!can_edit_) {
@@ -279,27 +301,29 @@ void TextBoxEditor::ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command) 
 }
 
 
-void TextBoxEditor::HandleUndo() {
+bool TextBoxEditor::HandleUndo() {
 
-    if (next_command_index_ == 0) {
-        return;
+    if (!CanUndo()) {
+        return false;
     }
 
     --next_command_index_;
     const auto& command = edit_commands_[next_command_index_];
     command->Undo(Context());
+    return true;
 }
 
 
-void TextBoxEditor::HandleRedo() {
+bool TextBoxEditor::HandleRedo() {
 
-    if (next_command_index_ == edit_commands_.size()) {
-        return;
+    if (!CanRedo()) {
+        return false;
     }
 
     const auto& command = edit_commands_[next_command_index_];
     command->Do(Context());
     ++next_command_index_;
+    return true;
 }
 
 

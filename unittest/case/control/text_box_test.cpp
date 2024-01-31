@@ -11,7 +11,6 @@ TEST(TextBoxTest, IsReadOnly) {
 
     auto text_box = zaf::Create<zaf::TextBox>();
     window->SetRootControl(text_box);
-
     window->Show();
 
     //TextBox is read-only by default.
@@ -27,6 +26,37 @@ TEST(TextBoxTest, IsReadOnly) {
     text_box->SetIsReadOnly(false);
     window->Messager().Send(WM_CHAR, L'A', 0);
     ASSERT_EQ(text_box->Text(), std::wstring{ L'A' });
+
+    window->Destroy();
+}
+
+
+TEST(TextBoxTest, CanUndoCanRedo) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
+    window->SetRect(zaf::Rect{ 0, 0, 100, 100 });
+
+    auto text_box = zaf::Create<zaf::TextBox>();
+    text_box->SetIsReadOnly(false);
+    window->SetRootControl(text_box);
+
+    window->Show();
+    text_box->SetIsFocused(true);
+
+    //TextBox cannot undo nor redo at first.
+    ASSERT_FALSE(text_box->CanUndo());
+    ASSERT_FALSE(text_box->CanRedo());
+
+    //Can undo after input.
+    window->Messager().Send(WM_CHAR, L'C', 0);
+    ASSERT_TRUE(text_box->CanUndo());
+    ASSERT_FALSE(text_box->CanRedo());
+
+    //Can redo after undo.
+    text_box->Undo();
+    ASSERT_FALSE(text_box->CanUndo());
+    ASSERT_TRUE(text_box->CanRedo());
 
     window->Destroy();
 }

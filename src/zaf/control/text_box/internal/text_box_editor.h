@@ -22,6 +22,12 @@ public:
 
     void SetCanEdit(bool can_edit);
 
+    bool CanUndo() const;
+    bool Undo();
+
+    bool CanRedo() const;
+    bool Redo();
+
     void HandleKeyDown(const KeyDownInfo& event_info);
     void HandleCharInput(const CharInputInfo& event_info);
 
@@ -44,8 +50,8 @@ private:
         const Range& new_selection_range) const;
 
     void ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command);
-    void HandleUndo();
-    void HandleRedo();
+    bool HandleUndo();
+    bool HandleRedo();
 
     void OnTextModelChanged();
     void ClearCommands();
