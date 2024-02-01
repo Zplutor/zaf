@@ -14,7 +14,7 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(TextBox)
-ZAF_DEFINE_TYPE_PROPERTY(IsReadOnly)
+ZAF_DEFINE_TYPE_PROPERTY(IsEditable)
 ZAF_DEFINE_TYPE_PROPERTY(SelectedText)
 ZAF_DEFINE_TYPE_PROPERTY(SelectionRange)
 ZAF_DEFINE_TYPE_END
@@ -220,13 +220,13 @@ void TextBox::PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-bool TextBox::IsReadOnly() const {
-    return !module_context_->Editor().CanEdit();
+bool TextBox::IsEditable() const {
+    return module_context_->Editor().CanEdit();
 }
 
 
-void TextBox::SetIsReadOnly(bool read_only) {
-    module_context_->Editor().SetCanEdit(!read_only);
+void TextBox::SetIsEditable(bool is_editable) {
+    module_context_->Editor().SetCanEdit(is_editable);
 }
 
 

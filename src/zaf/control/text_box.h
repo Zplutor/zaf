@@ -26,18 +26,18 @@ public:
     ~TextBox();
 
     /**
-    Indicates whether the text box is read-only.
+    Indicates whether the text box is editable.
 
     @remark
-        A text box is read-only by default. A read-only text box doesn't respond to user input that
-        will modify the text.
+        A text box is not editable by default. A non-editable text box doesn't respond to user 
+        input that would modify the text.
     */
-    bool IsReadOnly() const;
+    bool IsEditable() const;
 
     /**
-    Sets whether the text box is read-only.
+    Sets whether the text box is editable.
     */
-    void SetIsReadOnly(bool read_only);
+    void SetIsEditable(bool is_editable);
 
     /**
     Determines whether there are undoable text modification operations in the text box's history.

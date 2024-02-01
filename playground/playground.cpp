@@ -81,7 +81,7 @@ protected:
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
         auto text_box = zaf::Create<zaf::TextBox>();
-        text_box->SetIsReadOnly(false);
+        text_box->SetIsEditable(true);
         text_box->SetText(L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());");
         this->RootControl()->AddChild(text_box);
 

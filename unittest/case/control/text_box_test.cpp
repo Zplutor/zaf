@@ -14,7 +14,7 @@ void TestWithTextBoxInWindow(
         auto text_box = zaf::Create<zaf::TextBox>();
         window.SetRootControl(text_box);
         text_box->SetIsFocused(true);
-        text_box->SetIsReadOnly(false);
+        text_box->SetIsEditable(true);
 
         test(*text_box, window);
     });
@@ -22,21 +22,21 @@ void TestWithTextBoxInWindow(
 
 }
 
-TEST(TextBoxTest, IsReadOnly) {
+TEST(TextBoxTest, IsEditable) {
 
-    //TextBox is read-only by default.
-    ASSERT_TRUE(zaf::Create<zaf::TextBox>()->IsReadOnly());
+    //TextBox is not editable by default.
+    ASSERT_FALSE(zaf::Create<zaf::TextBox>()->IsEditable());
 
     TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {
 
-        text_box.SetIsReadOnly(true);
+        text_box.SetIsEditable(false);
 
-        //A read-only TextBox won't respond to user input.
+        //A non-editable TextBox won't respond to user input.
         window.Messager().Send(WM_CHAR, L'A', 0);
         ASSERT_EQ(text_box.Text(), std::wstring{});
 
         //An editable TextBox will respond to user input.
-        text_box.SetIsReadOnly(false);
+        text_box.SetIsEditable(true);
         window.Messager().Send(WM_CHAR, L'A', 0);
         ASSERT_EQ(text_box.Text(), std::wstring{ L'A' });
     });
