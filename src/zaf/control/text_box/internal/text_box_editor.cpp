@@ -77,6 +77,21 @@ void TextBoxEditor::SetCanEdit(bool can_edit) {
 }
 
 
+void TextBoxEditor::SetAllowUndo(bool allow_undo) {
+
+    if (allow_undo_ == allow_undo) {
+        return;
+    }
+
+    allow_undo_ = allow_undo;
+
+    //Clear all commands if undo is now allowed.
+    if (!allow_undo_) {
+        ClearCommands();
+    }
+}
+
+
 bool TextBoxEditor::CanUndo() const {
     return next_command_index_ > 0;
 }
@@ -357,8 +372,10 @@ void TextBoxEditor::ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command) 
 
     command->Do(Context());
 
-    edit_commands_.push_back(std::move(command));
-    ++next_command_index_;
+    if (AllowUndo()) {
+        edit_commands_.push_back(std::move(command));
+        ++next_command_index_;
+    }
 }
 
 

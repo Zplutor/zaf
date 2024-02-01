@@ -14,6 +14,7 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(TextBox)
+ZAF_DEFINE_TYPE_PROPERTY(AllowUndo)
 ZAF_DEFINE_TYPE_PROPERTY(IsEditable)
 ZAF_DEFINE_TYPE_PROPERTY(SelectedText)
 ZAF_DEFINE_TYPE_PROPERTY(SelectionRange)
@@ -227,6 +228,16 @@ bool TextBox::IsEditable() const {
 
 void TextBox::SetIsEditable(bool is_editable) {
     module_context_->Editor().SetCanEdit(is_editable);
+}
+
+
+bool TextBox::AllowUndo() const {
+    return module_context_->Editor().AllowUndo();
+}
+
+
+void TextBox::SetAllowUndo(bool allow_undo) {
+    module_context_->Editor().SetAllowUndo(allow_undo);
 }
 
 

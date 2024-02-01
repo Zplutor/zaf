@@ -40,6 +40,19 @@ public:
     void SetIsEditable(bool is_editable);
 
     /**
+    Indicates whether the text box allows undo operations.
+
+    @remark
+        A text box allows undo operations by default.
+    */
+    bool AllowUndo() const;
+
+    /**
+    Sets whether the text box allows undo operations.
+    */
+    void SetAllowUndo(bool allow_undo);
+
+    /**
     Determines whether there are undoable text modification operations in the text box's history.
     */
     bool CanUndo() const;

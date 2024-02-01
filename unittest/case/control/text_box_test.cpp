@@ -43,6 +43,26 @@ TEST(TextBoxTest, IsEditable) {
 }
 
 
+TEST(TextBoxTest, AllowUndo) {
+
+    //TextBox allows undo by default.
+    ASSERT_TRUE(zaf::Create<zaf::TextBox>()->AllowUndo());
+
+    TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {
+
+        //TextBox cannot undo after disable undo.
+        window.Messager().Send(WM_CHAR, L'B', 0);
+        text_box.SetAllowUndo(false);
+        ASSERT_FALSE(text_box.CanUndo());
+        ASSERT_FALSE(text_box.Undo());
+
+        window.Messager().Send(WM_CHAR, L'B', 0);
+        ASSERT_FALSE(text_box.CanUndo());
+        ASSERT_FALSE(text_box.Undo());
+    });
+}
+
+
 TEST(TextBoxTest, CanUndoCanRedo) {
 
     TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {

@@ -22,6 +22,12 @@ public:
 
     void SetCanEdit(bool can_edit);
 
+    bool AllowUndo() const {
+        return allow_undo_;
+    }
+
+    void SetAllowUndo(bool allow_undo);
+
     bool CanUndo() const;
     bool Undo();
 
@@ -60,6 +66,7 @@ private:
 
 private:
     bool can_edit_{};
+    bool allow_undo_{ true };
     bool is_editing_{};
 
     std::vector<std::unique_ptr<TextBoxEditCommand>> edit_commands_;
