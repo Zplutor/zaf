@@ -4,111 +4,115 @@
 #include <zaf/window/window.h>
 #include "utility/test_window.h"
 
-TEST(TextBoxTest, IsReadOnly) {
+namespace {
 
-    TestWithWindow([](zaf::Window& window) {
+void TestWithTextBoxInWindow(
+    const std::function<void(zaf::TextBox& text_box, zaf::Window& window)>& test) {
 
+    TestWithWindow([test](zaf::Window& window) {
+    
         auto text_box = zaf::Create<zaf::TextBox>();
         window.SetRootControl(text_box);
+        text_box->SetIsFocused(true);
+        text_box->SetIsReadOnly(false);
 
-        //TextBox is read-only by default.
-        ASSERT_TRUE(text_box->IsReadOnly());
+        test(*text_box, window);
+    });
+}
+
+}
+
+TEST(TextBoxTest, IsReadOnly) {
+
+    //TextBox is read-only by default.
+    ASSERT_TRUE(zaf::Create<zaf::TextBox>()->IsReadOnly());
+
+    TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {
+
+        text_box.SetIsReadOnly(true);
 
         //A read-only TextBox won't respond to user input.
-        text_box->SetIsFocused(true);
-        ASSERT_TRUE(text_box->IsFocused());
         window.Messager().Send(WM_CHAR, L'A', 0);
-        ASSERT_EQ(text_box->Text(), std::wstring{});
+        ASSERT_EQ(text_box.Text(), std::wstring{});
 
         //An editable TextBox will respond to user input.
-        text_box->SetIsReadOnly(false);
+        text_box.SetIsReadOnly(false);
         window.Messager().Send(WM_CHAR, L'A', 0);
-        ASSERT_EQ(text_box->Text(), std::wstring{ L'A' });
+        ASSERT_EQ(text_box.Text(), std::wstring{ L'A' });
     });
 }
 
 
 TEST(TextBoxTest, CanUndoCanRedo) {
 
-    TestWithWindow([](zaf::Window& window) {
-
-        auto text_box = zaf::Create<zaf::TextBox>();
-        text_box->SetIsReadOnly(false);
-        window.SetRootControl(text_box);
-
-        text_box->SetIsFocused(true);
+    TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {
 
         //TextBox cannot undo nor redo at first.
-        ASSERT_FALSE(text_box->CanUndo());
-        ASSERT_FALSE(text_box->CanRedo());
+        ASSERT_FALSE(text_box.CanUndo());
+        ASSERT_FALSE(text_box.CanRedo());
 
         //Can undo after input.
         window.Messager().Send(WM_CHAR, L'C', 0);
-        ASSERT_TRUE(text_box->CanUndo());
-        ASSERT_FALSE(text_box->CanRedo());
+        ASSERT_TRUE(text_box.CanUndo());
+        ASSERT_FALSE(text_box.CanRedo());
 
         //Can redo after undo.
-        text_box->Undo();
-        ASSERT_FALSE(text_box->CanUndo());
-        ASSERT_TRUE(text_box->CanRedo());
+        text_box.Undo();
+        ASSERT_FALSE(text_box.CanUndo());
+        ASSERT_TRUE(text_box.CanRedo());
 
         //Can undo after redo.
-        text_box->Redo();
-        ASSERT_TRUE(text_box->CanUndo());
-        ASSERT_FALSE(text_box->CanRedo());
+        text_box.Redo();
+        ASSERT_TRUE(text_box.CanUndo());
+        ASSERT_FALSE(text_box.CanRedo());
 
         //Can both undo and redo.
         window.Messager().Send(WM_CHAR, L'D', 0);
-        text_box->Undo();
-        ASSERT_TRUE(text_box->CanUndo());
-        ASSERT_TRUE(text_box->CanRedo());
+        text_box.Undo();
+        ASSERT_TRUE(text_box.CanUndo());
+        ASSERT_TRUE(text_box.CanRedo());
 
         //Cannot undo nor redo after SetText();
-        text_box->SetText(L"clear");
-        ASSERT_FALSE(text_box->CanUndo());
-        ASSERT_FALSE(text_box->CanRedo());
+        text_box.SetText(L"clear");
+        ASSERT_FALSE(text_box.CanUndo());
+        ASSERT_FALSE(text_box.CanRedo());
     });
 }
 
 
 TEST(TextBoxTest, UndoRedo) {
 
-    TestWithWindow([](zaf::Window& window) {
-
-        auto text_box = zaf::Create<zaf::TextBox>();
-        window.SetRootControl(text_box);
-        text_box->SetIsReadOnly(false);
-        text_box->SetIsFocused(true);
+    TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {
 
         //Cannot undo nor redo by default.
-        ASSERT_FALSE(text_box->Undo());
-        ASSERT_FALSE(text_box->Redo());
+        ASSERT_FALSE(text_box.Undo());
+        ASSERT_FALSE(text_box.Redo());
 
         //Undo
         window.Messager().Send(WM_CHAR, L'1', 0);
-        ASSERT_TRUE(text_box->Undo());
-        ASSERT_EQ(text_box->Text(), std::wstring{});
+        ASSERT_TRUE(text_box.Undo());
+        ASSERT_EQ(text_box.Text(), std::wstring{});
 
         //Redo
-        ASSERT_TRUE(text_box->Redo());
-        ASSERT_EQ(text_box->Text(), L"1");
+        ASSERT_TRUE(text_box.Redo());
+        ASSERT_EQ(text_box.Text(), L"1");
 
         window.Messager().Send(WM_CHAR, L'2', 0);
         window.Messager().Send(WM_CHAR, L'3', 0);
         window.Messager().Send(WM_CHAR, L'4', 0);
-        ASSERT_TRUE(text_box->Undo());
-        ASSERT_EQ(text_box->Text(), L"123");
-        ASSERT_TRUE(text_box->Undo());
-        ASSERT_EQ(text_box->Text(), L"12");
-        ASSERT_TRUE(text_box->Undo());
-        ASSERT_EQ(text_box->Text(), L"1");
+        ASSERT_TRUE(text_box.Undo());
+        ASSERT_EQ(text_box.Text(), L"123");
+        ASSERT_TRUE(text_box.Undo());
+        ASSERT_EQ(text_box.Text(), L"12");
+        ASSERT_TRUE(text_box.Undo());
+        ASSERT_EQ(text_box.Text(), L"1");
 
-        ASSERT_TRUE(text_box->Redo());
-        ASSERT_EQ(text_box->Text(), L"12");
-        ASSERT_TRUE(text_box->Redo());
-        ASSERT_EQ(text_box->Text(), L"123");
-        ASSERT_TRUE(text_box->Redo());
-        ASSERT_EQ(text_box->Text(), L"1234");
+        ASSERT_TRUE(text_box.Redo());
+        ASSERT_EQ(text_box.Text(), L"12");
+        ASSERT_TRUE(text_box.Redo());
+        ASSERT_EQ(text_box.Text(), L"123");
+        ASSERT_TRUE(text_box.Redo());
+        ASSERT_EQ(text_box.Text(), L"1234");
     });
 }
 
@@ -190,3 +194,20 @@ TEST(TextBoxTest, IsPositionInsideText) {
         preferred_size.width + 1, preferred_size.height + 1
     }));
 }
+
+
+/*
+TEST(TextBoxTest, HandleCtrlBackspace) {
+
+    TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {
+    
+        text_box.SetText(L" abc123 ");
+        text_box.SetSelectionRange(zaf::Range{ 4, 0 });
+
+        window.Messager().Send(WM_KEYDOWN, static_cast<WPARAM>(zaf::Key::Ctrl), 0);
+        window.Messager().Send(WM_KEYDOWN, static_cast<WPARAM>(zaf::Key::Backspace), 0);
+        ASSERT_EQ(text_box.Text(), L" 123 ");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(1, 0));
+    });
+}
+*/

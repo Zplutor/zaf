@@ -138,6 +138,9 @@ void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
 
     if (key == Key::Delete) {
+        if (Keyboard::IsCtrlDown()) {
+            return HandleBatchDelete();
+        }
         return HandleDelete();
     }
 
@@ -185,7 +188,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleDelete() {
 }
 
 
-std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchDelete() {
 
     const auto& selection_range = Context().SelectionManager().SelectionRange();
 
@@ -199,13 +202,41 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
     auto word_range = Context().Owner().WordExtractor()(text, selection_range.index);
 
     //Nothing can be removed.
+    if (word_range.EndIndex() <= selection_range.index) {
+        return nullptr;
+    }
+
+    return CreateCommand(
+        {},
+        Range{ selection_range.index, word_range.EndIndex() - selection_range.index },
+        Range{ selection_range.index, 0 });
+}
+
+
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
+
+    const auto& selection_range = Context().SelectionManager().SelectionRange();
+
+    //Remove the selected text.
+    if (selection_range.length > 0) {
+        return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
+    }
+
+    //Determine the word range. Note that the index used to determine should be prior to the caret 
+    //index.
+    auto text = Context().Core().GetTextModel()->GetText();
+
+    auto determined_index = selection_range.index > 0 ? selection_range.index - 1 : 0;
+    auto word_range = Context().Owner().WordExtractor()(text, determined_index);
+
+    //Nothing can be removed.
     if (word_range.index >= selection_range.index) {
         return nullptr;
     }
 
     //Remove text in the word ahead of the caret.
     return CreateCommand(
-        {}, 
+        {},
         Range{ word_range.index, selection_range.index - word_range.index },
         Range{ word_range.index, 0 });
 }

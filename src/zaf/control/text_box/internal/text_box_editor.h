@@ -38,6 +38,7 @@ public:
 private:
     std::unique_ptr<TextBoxEditCommand> HandleKey(Key key);
     std::unique_ptr<TextBoxEditCommand> HandleDelete();
+    std::unique_ptr<TextBoxEditCommand> HandleBatchDelete();
     std::unique_ptr<TextBoxEditCommand> HandleBatchBackspace();
     std::unique_ptr<TextBoxEditCommand> HandleCut();
     std::unique_ptr<TextBoxEditCommand> HandlePaste();
