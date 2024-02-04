@@ -39,11 +39,11 @@ public:
         }
 
         auto range = range_manager_.GetRangeContainsPosition(position);
-        if (range.second == 0) {
+        if (range.length == 0) {
             return {};
         }
 
-        auto value = Find(values_, range.first);
+        auto value = Find(values_, range.index);
         if (!value) {
             return {};
         }
@@ -54,12 +54,11 @@ public:
         return *value;
     }
 
-    std::vector<std::pair<std::pair<std::size_t, std::size_t>, ValueType>> 
-        GetAllRangesAndValues() const {
+    std::vector<std::pair<Range, ValueType>> GetAllRangesAndValues() const {
 
         std::size_t range_count = range_manager_.GetRangeCount();
 
-        std::vector<std::pair<std::pair<std::size_t, std::size_t>, ValueType>> ranges_and_values;
+        std::vector<std::pair<Range, ValueType>> ranges_and_values;
         ranges_and_values.reserve(range_count);
 
         for (std::size_t index = 0; index < range_count; ++index) {
@@ -67,7 +66,7 @@ public:
             auto range = range_manager_.GetRangeAtIndex(index);
 
             ValueType value;
-            auto value_iterator = values_.find(range.first);
+            auto value_iterator = values_.find(range.index);
             if (value_iterator != values_.end()) {
                 value = value_iterator->second;
             }

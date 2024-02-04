@@ -34,7 +34,7 @@ TEST(RangeManagerTest, AddRangeToEmpty) {
         }
 
         auto range = range_manager.GetRangeAtIndex(0);
-        return (range.first == position) && (range.second == length);
+        return (range.index == position) && (range.length == length);
     };
 
     ASSERT_TRUE(test(0, 1));
@@ -157,7 +157,7 @@ TEST(RangeManagerTest, ExpandRangesWithInvalidRange) {
         }
 
         auto range = range_manager.GetRangeAtIndex(0);
-        return (range.first == 0) && (range.second == 10);
+        return (range.index == 0) && (range.length == 10);
     };
 
     ASSERT_TRUE(test(0, 0));
@@ -208,7 +208,7 @@ TEST(RangeManagerTest, NarrowRangesWithInvalidRange) {
         }
 
         auto range = range_manager.GetRangeAtIndex(0);
-        return (range.first == 0) && (range.second == 10);
+        return (range.index == 0) && (range.length == 10);
     };
 
     ASSERT_TRUE(test(0, 0));
@@ -266,8 +266,8 @@ static bool CheckRanges(
 
         auto actual_range = range_manager.GetRangeAtIndex(index);
 
-        if ((actual_range.first != each_range.first) ||
-            (actual_range.second != each_range.second)) {
+        if ((actual_range.index != each_range.first) ||
+            (actual_range.length != each_range.second)) {
             return false;
         }
 

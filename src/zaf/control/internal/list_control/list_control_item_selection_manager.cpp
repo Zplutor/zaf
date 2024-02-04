@@ -8,7 +8,7 @@ std::size_t ListControlItemSelectionManager::GetAllSelectedCount() const {
     std::size_t count = 0;
 
     for (std::size_t index = 0; index < range_manager_.GetRangeCount(); ++index) {
-        count += range_manager_.GetRangeAtIndex(index).second;
+        count += range_manager_.GetRangeAtIndex(index).length;
     }
 
     return count;
@@ -23,8 +23,8 @@ std::vector<std::size_t> ListControlItemSelectionManager::GetAllSelectedIndexes(
 
         auto range = range_manager_.GetRangeAtIndex(index);
 
-        for (std::size_t index = range.first;
-             index < range.first + range.second;
+        for (std::size_t index = range.index;
+             index < range.index + range.length;
              ++index) {
 
             indexes.push_back(index);

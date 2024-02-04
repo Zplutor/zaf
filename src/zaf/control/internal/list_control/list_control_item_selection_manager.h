@@ -59,7 +59,7 @@ public:
     std::optional<std::size_t> GetFirstSelectedIndex() const {
 
         if (range_manager_.GetRangeCount() != 0) {
-            return range_manager_.GetRangeAtIndex(0).first;
+            return range_manager_.GetRangeAtIndex(0).index;
         }
         else {
             return std::nullopt;

@@ -2,11 +2,13 @@
 
 #include <functional>
 #include <vector>
+#include <zaf/base/non_copyable.h>
+#include <zaf/base/range.h>
 
 namespace zaf {
 namespace internal {
 
-class RangeManager {
+class RangeManager : NonCopyableNonMovable {
 public:
     enum class RangeNotifyType {
         Add,
@@ -28,8 +30,15 @@ public:
 
     }
 
-    bool AddRange(std::size_t position, std::size_t length);
-    void RemoveRange(std::size_t position, std::size_t length);
+    bool AddRange(const Range& new_range);
+    bool AddRange(std::size_t position, std::size_t length) {
+        return AddRange(Range{ position, length });
+    }
+
+    void RemoveRange(const Range& removed_range);
+    void RemoveRange(std::size_t position, std::size_t length) {
+        RemoveRange(Range{ position, length });
+    }
     
     void ExpandRanges(std::size_t position, std::size_t length);
     void NarrowRanges(std::size_t position, std::size_t length);
@@ -40,23 +49,20 @@ public:
         return ranges_.size();
     }
 
-    std::pair<std::size_t, std::size_t> GetRangeAtIndex(std::size_t index) const {
-        if (index < GetRangeCount()) {
+    Range GetRangeAtIndex(std::size_t index) const {
+        if (index < ranges_.size()) {
             return ranges_[index];
         }
         else {
-            return std::make_pair(0, 0);
+            return Range{ 0, 0 };
         }
     }
 
-    std::pair<std::size_t, std::size_t> GetRangeContainsPosition(std::size_t position) const;
+    Range GetRangeContainsPosition(std::size_t position) const;
 
     bool IsPositionInRange(std::size_t position) const {
-        return GetRangeContainsPosition(position).second != 0;
+        return GetRangeContainsPosition(position).length != 0;
     }
-
-    RangeManager(RangeManager&) = delete;
-    RangeManager& operator=(RangeManager&) = delete;
 
 private:
     void SendRangeNotify(
@@ -70,7 +76,7 @@ private:
     }
 
 private:
-    std::vector<std::pair<std::size_t, std::size_t>> ranges_;
+    std::vector<Range> ranges_;
     RangeNotifyCallback notify_callback_;
 };
 
