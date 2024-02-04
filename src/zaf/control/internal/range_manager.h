@@ -1,5 +1,6 @@
 #pragma once
 
+#include <any>
 #include <functional>
 #include <vector>
 #include <zaf/base/non_copyable.h>
@@ -29,6 +30,8 @@ public:
         notify_callback_(notify_callback) {
 
     }
+
+    void AddRange(const Range& new_range, std::any data);
 
     bool AddRange(const Range& new_range);
     bool AddRange(std::size_t position, std::size_t length) {
@@ -65,6 +68,13 @@ public:
     }
 
 private:
+    class Item {
+    public:
+        Range range;
+        std::any data;
+    };
+
+private:
     void SendRangeNotify(
         RangeNotifyType notify_type, 
         std::size_t primary_position, 
@@ -76,6 +86,7 @@ private:
     }
 
 private:
+    std::vector<Item> items_;
     std::vector<Range> ranges_;
     RangeNotifyCallback notify_callback_;
 };

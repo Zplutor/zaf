@@ -90,6 +90,13 @@ public:
     }
 
     /**
+    Determines whether the current range fully contains the other range.
+    */
+    bool Contain(const Range& other) const {
+        return (Index() <= other.Index()) && (other.EndIndex() <= EndIndex());
+    }
+
+    /**
     Converts the range to a DWRITE_TEXT_RANGE structure.
     */
     DWRITE_TEXT_RANGE ToDWRITETEXTRANGE() const {
