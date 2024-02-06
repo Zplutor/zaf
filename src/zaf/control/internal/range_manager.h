@@ -2,6 +2,7 @@
 
 #include <any>
 #include <functional>
+#include <optional>
 #include <vector>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
@@ -11,61 +12,30 @@ namespace internal {
 
 class RangeManager : NonCopyableNonMovable {
 public:
-    enum class RangeNotifyType {
-        Add,
-        Remove,
-        Update,
-        Break,
-    };
+    RangeManager() = default;
 
-    typedef std::function<void(
-        RangeNotifyType notify_type,
-        std::size_t primary_position,
-        std::size_t secondly_position)> RangeNotifyCallback;
-
-public:
-    RangeManager() { }
-
-    RangeManager(const RangeNotifyCallback& notify_callback) : 
-        notify_callback_(notify_callback) {
-
-    }
-
-    void AddRange(const Range& new_range, std::any data);
-
+    bool AddRange(const Range& new_range, std::any data);
     bool AddRange(const Range& new_range);
-    bool AddRange(std::size_t position, std::size_t length) {
-        return AddRange(Range{ position, length });
-    }
+    bool AddRange(std::size_t index, std::size_t length);
 
-    void RemoveRange(const Range& removed_range);
-    void RemoveRange(std::size_t position, std::size_t length) {
-        RemoveRange(Range{ position, length });
-    }
+    bool RemoveRange(const Range& removed_range);
+    bool RemoveRange(std::size_t index, std::size_t length);
+
+    bool InsertSpan(const Range& span_range);
+    bool EraseSpan(const Range& span_range);
     
-    void ExpandRanges(std::size_t position, std::size_t length);
-    void NarrowRanges(std::size_t position, std::size_t length);
+    void Clear();
 
-    void RemoveAllRanges();
-
-    std::size_t GetRangeCount() const {
-        return ranges_.size();
+    std::size_t RangeCount() const {
+        return items_.size();
     }
 
-    Range GetRangeAtIndex(std::size_t index) const {
-        if (index < ranges_.size()) {
-            return ranges_[index];
-        }
-        else {
-            return Range{ 0, 0 };
-        }
-    }
+    const Range& GetRange(std::size_t range_index) const;
+    const std::any& GetRangeData(std::size_t range_index) const;
 
-    Range GetRangeContainsPosition(std::size_t position) const;
+    const std::any* GetRangeDataAtIndex(std::size_t index) const;
 
-    bool IsPositionInRange(std::size_t position) const {
-        return GetRangeContainsPosition(position).length != 0;
-    }
+    bool IsIndexInRange(std::size_t index) const;
 
 private:
     class Item {
@@ -75,20 +45,11 @@ private:
     };
 
 private:
-    void SendRangeNotify(
-        RangeNotifyType notify_type, 
-        std::size_t primary_position, 
-        std::size_t secondly_position) {
-
-        if (notify_callback_) {
-            notify_callback_(notify_type, primary_position, secondly_position);
-        }
-    }
+    bool ReplaceRange(const Range& replaced_range, std::optional<std::any> data);
+    const Item* GetItemAtIndex(std::size_t index) const;
 
 private:
     std::vector<Item> items_;
-    std::vector<Range> ranges_;
-    RangeNotifyCallback notify_callback_;
 };
 
 }

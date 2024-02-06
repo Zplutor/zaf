@@ -8,21 +8,20 @@ namespace internal {
 
 class ListControlItemSelectionManager {
 public:
-    ListControlItemSelectionManager() : 
-        range_manager_(std::bind(&ListControlItemSelectionManager::RangeChangeNotification, this)) {
+    ListControlItemSelectionManager() {
 
     }
 
     void ReplaceSelection(std::size_t index, std::size_t count) {
 
-        range_manager_.RemoveAllRanges();
+        range_manager_.Clear();
         range_manager_.AddRange(index, count);
     }
 
     //Reverts selection at index, and returns new selection state.
     bool RevertSelection(std::size_t index) {
 
-        if (range_manager_.IsPositionInRange(index)) {
+        if (range_manager_.IsIndexInRange(index)) {
             range_manager_.RemoveRange(index, 1);
             return false;
         }
@@ -41,25 +40,21 @@ public:
     }
     
     bool AdjustSelectionByAddingIndexes(std::size_t add_index, std::size_t add_count) {
-        range_changed_ = false;
-        range_manager_.ExpandRanges(add_index, add_count);
-        return range_changed_;
+        return range_manager_.InsertSpan(Range{ add_index, add_count });
     }
 
     bool AdjustSelectionByRemovingIndexes(std::size_t remove_index, std::size_t remove_count) {
-        range_changed_ = false;
-        range_manager_.NarrowRanges(remove_index, remove_count);
-        return range_changed_;
+        return range_manager_.EraseSpan(Range{ remove_index, remove_count });
     }
 
     bool IsIndexSelected(std::size_t index) const {
-        return range_manager_.IsPositionInRange(index);
+        return range_manager_.IsIndexInRange(index);
     }
 
     std::optional<std::size_t> GetFirstSelectedIndex() const {
 
-        if (range_manager_.GetRangeCount() != 0) {
-            return range_manager_.GetRangeAtIndex(0).index;
+        if (range_manager_.RangeCount() != 0) {
+            return range_manager_.GetRange(0).index;
         }
         else {
             return std::nullopt;
@@ -73,13 +68,7 @@ public:
     ListControlItemSelectionManager& operator=(ListControlItemSelectionManager&) = delete;
 
 private:
-    void RangeChangeNotification() {
-        range_changed_ = true;
-    }
-
-private:
     RangeManager range_manager_;
-    bool range_changed_ = false;
 };
 
 }

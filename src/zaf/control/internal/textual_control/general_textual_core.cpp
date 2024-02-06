@@ -78,11 +78,9 @@ Font GeneralTextualCore::GetFontAtIndex(std::size_t position) {
 
     if (font_range_map_) {
 
-        bool is_existent = false;
-        auto font = font_range_map_->GetValueAtPosition(position, &is_existent);
-
-        if (is_existent) {
-            return font;
+        auto font = font_range_map_->GetValueAtIndex(position);
+        if (font) {
+            return *font;
         }
     }
 
@@ -96,7 +94,7 @@ void GeneralTextualCore::SetFontInRange(const zaf::Font& font, const Range& rang
         font_range_map_ = std::make_unique<internal::RangeMap<zaf::Font>>();
     }
 
-    font_range_map_->AddValueToRange(font, range.index, range.length);
+    font_range_map_->AddRange(range, font);
 
     if (text_layout_) {
         SetFontToTextLayout(font, range, text_layout_);
@@ -144,9 +142,9 @@ ColorPicker GeneralTextualCore::GetTextColorPickerAtIndex(std::size_t position) 
 
     if (text_color_picker_map_) {
 
-        auto color_picker = text_color_picker_map_->GetValueAtPosition(position);
-        if (color_picker != nullptr) {
-            return color_picker;
+        auto color_picker = text_color_picker_map_->GetValueAtIndex(position);
+        if (color_picker) {
+            return *color_picker;
         }
     }
 
@@ -162,7 +160,7 @@ void GeneralTextualCore::SetTextColorPickerInRange(
         text_color_picker_map_ = std::make_unique<internal::RangeMap<ColorPicker>>();
     }
 
-    text_color_picker_map_->AddValueToRange(color_picker, range.index, range.length);
+    text_color_picker_map_->AddRange(range, color_picker);
 
     ReleaseTextLayout();
     NotifyRepaint();

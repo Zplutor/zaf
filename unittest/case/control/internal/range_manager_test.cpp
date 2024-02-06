@@ -13,7 +13,7 @@ TEST(RangeManagerTest, AddRangeWithInvalidRange) {
 
     auto test = [&range_manager](std::size_t position, std::size_t length) {
         bool is_succeeded = range_manager.AddRange(position, length);
-        return (!is_succeeded) && (range_manager.GetRangeCount() == 0);
+        return (!is_succeeded) && (range_manager.RangeCount() == 0);
     };
 
     ASSERT_TRUE(test(0, 0));
@@ -29,11 +29,11 @@ TEST(RangeManagerTest, AddRangeToEmpty) {
         RangeManager range_manager;
         range_manager.AddRange(position, length);
 
-        if (range_manager.GetRangeCount() != 1) {
+        if (range_manager.RangeCount() != 1) {
             return false;
         }
 
-        auto range = range_manager.GetRangeAtIndex(0);
+        auto range = range_manager.GetRange(0);
         return (range.index == position) && (range.length == length);
     };
 
@@ -84,7 +84,7 @@ TEST(RangeManagerTest, RemoveRangeWithInvalidRange) {
     auto test = [&range_manager](std::size_t position, std::size_t length) {
 
         range_manager.RemoveRange(position, length);
-        return range_manager.GetRangeCount() == 1;
+        return range_manager.RangeCount() == 1;
     };
 
     ASSERT_TRUE(test(0, 0));
@@ -99,7 +99,7 @@ TEST(RangeManagerTest, RemoveRangeFromEmpty) {
 
         RangeManager range_manager;
         range_manager.RemoveRange(position, length);
-        return range_manager.GetRangeCount() == 0;
+        return range_manager.RangeCount() == 0;
     };
 
     ASSERT_TRUE(test(0, 1));
@@ -143,20 +143,20 @@ TEST(RangeManagerTest, RemoveRangeFromNonEmpty) {
 }
 
 
-TEST(RangeManagerTest, ExpandRangesWithInvalidRange) {
+TEST(RangeManagerTest, InsertSpanWithInvalidRange) {
 
     RangeManager range_manager;
     range_manager.AddRange(0, 10);
 
     auto test = [&range_manager](std::size_t position, std::size_t length) {
 
-        range_manager.ExpandRanges(position, length);
+        range_manager.InsertSpan(zaf::Range{ position, length });
 
-        if (range_manager.GetRangeCount() != 1) {
+        if (range_manager.RangeCount() != 1) {
             return false;
         }
 
-        auto range = range_manager.GetRangeAtIndex(0);
+        auto range = range_manager.GetRange(0);
         return (range.index == 0) && (range.length == 10);
     };
 
@@ -167,7 +167,7 @@ TEST(RangeManagerTest, ExpandRangesWithInvalidRange) {
 }
 
 
-TEST(RangeManagerTest, ExpandRanges) {
+TEST(RangeManagerTest, InsertSpan) {
 
     auto test = [](
         std::size_t position,
@@ -178,7 +178,7 @@ TEST(RangeManagerTest, ExpandRanges) {
         range_manager.AddRange(5, 4);
         range_manager.AddRange(20, 4);
 
-        range_manager.ExpandRanges(position, length);
+        range_manager.InsertSpan(zaf::Range{ position, length });
 
         return CheckRanges(range_manager, expected_ranges);
     };
@@ -194,20 +194,20 @@ TEST(RangeManagerTest, ExpandRanges) {
 
 
 
-TEST(RangeManagerTest, NarrowRangesWithInvalidRange) {
+TEST(RangeManagerTest, EraseSpanWithInvalidRange) {
 
     RangeManager range_manager;
     range_manager.AddRange(0, 10);
 
     auto test = [&range_manager](std::size_t position, std::size_t length) {
 
-        range_manager.NarrowRanges(position, length);
+        range_manager.EraseSpan(zaf::Range{ position, length });
 
-        if (range_manager.GetRangeCount() != 1) {
+        if (range_manager.RangeCount() != 1) {
             return false;
         }
 
-        auto range = range_manager.GetRangeAtIndex(0);
+        auto range = range_manager.GetRange(0);
         return (range.index == 0) && (range.length == 10);
     };
 
@@ -218,7 +218,7 @@ TEST(RangeManagerTest, NarrowRangesWithInvalidRange) {
 }
 
 
-TEST(RangeManagerTest, NarrowRanges) {
+TEST(RangeManagerTest, EraseSpan) {
 
     auto test = [](
         std::size_t position,
@@ -229,7 +229,7 @@ TEST(RangeManagerTest, NarrowRanges) {
         range_manager.AddRange(5, 4);
         range_manager.AddRange(20, 4);
 
-        range_manager.NarrowRanges(position, length);
+        range_manager.EraseSpan(zaf::Range{ position, length });
 
         return CheckRanges(range_manager, expected_ranges);
     };
@@ -257,14 +257,14 @@ static bool CheckRanges(
     const RangeManager& range_manager,
     const std::initializer_list<std::pair<std::size_t, std::size_t>>& expected_ranges) {
 
-    if (range_manager.GetRangeCount() != expected_ranges.size()) {
+    if (range_manager.RangeCount() != expected_ranges.size()) {
         return false;
     }
 
     std::size_t index = 0;
     for (const auto& each_range : expected_ranges) {
 
-        auto actual_range = range_manager.GetRangeAtIndex(index);
+        auto actual_range = range_manager.GetRange(index);
 
         if ((actual_range.index != each_range.first) ||
             (actual_range.length != each_range.second)) {
