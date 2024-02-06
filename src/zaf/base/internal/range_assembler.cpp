@@ -1,29 +1,18 @@
-#include <zaf/control/internal/range_manager.h>
+#include <zaf/base/internal/range_assembler.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 
-bool RangeManager::AddRange(const Range& new_range, std::any value) {
+bool RangeAssembler::AddRange(const Range& new_range, std::any value) {
     return ReplaceRange(new_range, std::move(value));
 }
 
 
-bool RangeManager::AddRange(std::size_t index, std::size_t length) {
-    return AddRange(Range{ index, length }, {});
-}
-
-
-bool RangeManager::RemoveRange(const Range& removed_range) {
+bool RangeAssembler::RemoveRange(const Range& removed_range) {
     return ReplaceRange(removed_range, std::nullopt);
 }
 
 
-bool RangeManager::RemoveRange(std::size_t index, std::size_t length) {
-    return RemoveRange(Range{ index, length });
-}
-
-
-bool RangeManager::ReplaceRange(const Range& replaced_range, std::optional<std::any> value) {
+bool RangeAssembler::ReplaceRange(const Range& replaced_range, std::optional<std::any> value) {
 
     //Ignore empty ranges.
     if (replaced_range.length == 0) {
@@ -110,7 +99,7 @@ bool RangeManager::ReplaceRange(const Range& replaced_range, std::optional<std::
 }
 
 
-bool RangeManager::InsertSpan(const Range& span_range) {
+bool RangeAssembler::InsertSpan(const Range& span_range) {
 
     //Ignore empty spans.
     if (span_range.length == 0) {
@@ -155,7 +144,7 @@ bool RangeManager::InsertSpan(const Range& span_range) {
 }
 
 
-bool RangeManager::EraseSpan(const Range& span_range) {
+bool RangeAssembler::EraseSpan(const Range& span_range) {
 
     //Ignore empty spans.
     if (span_range.length == 0) {
@@ -229,12 +218,12 @@ bool RangeManager::EraseSpan(const Range& span_range) {
 }
 
 
-void RangeManager::Clear() {
+void RangeAssembler::Clear() {
     items_.clear();
 }
 
 
-const RangeManager::Item* RangeManager::FindItemContainsIndex(std::size_t index) const {
+const RangeAssembler::Item* RangeAssembler::FindItemContainsIndex(std::size_t index) const {
 
     for (const auto& each_item : items_) {
 
@@ -247,5 +236,4 @@ const RangeManager::Item* RangeManager::FindItemContainsIndex(std::size_t index)
 }
 
 
-}
 }

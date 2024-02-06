@@ -5,10 +5,9 @@
 #include <vector>
 #include <zaf/base/range.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 
-class RangeManager {
+class RangeAssembler {
 public:
     class Item {
     public:
@@ -20,10 +19,7 @@ public:
 
 public:
     bool AddRange(const Range& new_range, std::any value);
-    bool AddRange(std::size_t index, std::size_t length);
-
     bool RemoveRange(const Range& removed_range);
-    bool RemoveRange(std::size_t index, std::size_t length);
 
     bool InsertSpan(const Range& span_range);
     bool EraseSpan(const Range& span_range);
@@ -32,7 +28,7 @@ public:
 
     const Item* FindItemContainsIndex(std::size_t index) const;
 
-    const ItemList& Items() const {
+    const std::vector<Item>& Items() const {
         return items_;
     }
 
@@ -43,5 +39,4 @@ private:
     ItemList items_;
 };
 
-}
 }

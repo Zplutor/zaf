@@ -190,6 +190,9 @@
     <Filter Include="zaf\input">
       <UniqueIdentifier>{746b5796-3832-4421-abdb-fc0b372af572}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\base\internal">
+      <UniqueIdentifier>{d054dd0f-b32a-4030-ab9e-a7734e8ec6b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1146,6 +1149,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\text_box\internal\text_box_edit_command.cpp">
       <Filter>zaf\control\text_box\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\base\internal\range_assembler.cpp">
+      <Filter>zaf\base\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2595,6 +2601,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\text_box\internal\text_box_edit_command.h">
       <Filter>zaf\control\text_box\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\internal\range_assembler.h">
+      <Filter>zaf\base\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\range_set.h">
+      <Filter>zaf\control\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,15 +1,14 @@
 #pragma once
 
+#include <zaf/base/range.h>
 #include <zaf/control/internal/range_manager.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 
-template<typename ValueType>
-class RangeMap {
+class RangeSet {
 public:
-    bool AddRange(const Range& range, ValueType value) {
-        return range_manager_.AddRange(range, std::move(value));
+    bool AddRange(const Range& range) {
+        return range_manager_.AddRange(range, {});
     }
 
     bool RemoveRange(const Range& range) {
@@ -28,44 +27,36 @@ public:
         range_manager_.Clear();
     }
 
-    const ValueType* GetValueAtIndex(std::size_t index) const {
+    bool ContainsIndex(std::size_t index) const {
+        return !!range_manager_.FindItemContainsIndex(index);
+    }
 
-        auto item = range_manager_.FindItemContainsIndex(index);
-        if (item) {
-            return std::any_cast<ValueType>(&item->value);
-        }
-        return nullptr;
+    bool IsEmpty() const {
+        return range_manager_.Items().empty();
+    }
+
+    std::size_t Count() const {
+        return range_manager_.Items().size();
+    }
+
+    const Range& operator[](std::size_t index) const {
+        return range_manager_.Items()[index].range;
     }
 
 public:
-    class Item {
-    public:
-        explicit Item(const RangeManager::Item& item) : inner_item_(item) {
-
-        }
-
-        const zaf::Range& Range() const {
-            return inner_item_.range;
-        }
-
-        const ValueType& Value() const {
-            return *std::any_cast<ValueType>(&inner_item_.value);
-        }
-
-    private:
-        const RangeManager::Item& inner_item_;
-    };
-
+    /**
+    An iterator used to loop over all ranges in the RangeSet.
+    */
     class Iterator {
     public:
         using iterator_category = std::forward_iterator_tag;
-        using value_type = Item;
+        using value_type = Range;
         using difference_type = std::make_signed_t<std::size_t>;
-        using pointer = Item*;
-        using reference = Item&;
+        using pointer = Range*;
+        using reference = Range&;
 
     public:
-        explicit Iterator(RangeManager::ItemList::const_iterator inner) :
+        explicit Iterator(RangeManager::ItemList::const_iterator inner) : 
             inner_(inner) {
 
         }
@@ -79,8 +70,8 @@ public:
             return Iterator{ ++inner_ };
         }
 
-        value_type operator*() const {
-            return Item{ *inner_ };
+        const value_type& operator*() const {
+            return inner_->range;
         }
 
         bool operator!=(const Iterator& other) const {
@@ -103,5 +94,4 @@ private:
     RangeManager range_manager_;
 };
 
-}
 }

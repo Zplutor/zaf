@@ -13,7 +13,7 @@ TEST(RangeManagerTest, AddRangeWithInvalidRange) {
 
     auto test = [&range_manager](std::size_t position, std::size_t length) {
         bool is_succeeded = range_manager.AddRange(position, length);
-        return (!is_succeeded) && (range_manager.RangeCount() == 0);
+        return (!is_succeeded) && range_manager.Items().empty();
     };
 
     ASSERT_TRUE(test(0, 0));
@@ -29,11 +29,11 @@ TEST(RangeManagerTest, AddRangeToEmpty) {
         RangeManager range_manager;
         range_manager.AddRange(position, length);
 
-        if (range_manager.RangeCount() != 1) {
+        if (range_manager.Items().size() != 1) {
             return false;
         }
 
-        auto range = range_manager.GetRange(0);
+        auto range = range_manager.Items()[0].range;
         return (range.index == position) && (range.length == length);
     };
 
@@ -84,7 +84,7 @@ TEST(RangeManagerTest, RemoveRangeWithInvalidRange) {
     auto test = [&range_manager](std::size_t position, std::size_t length) {
 
         range_manager.RemoveRange(position, length);
-        return range_manager.RangeCount() == 1;
+        return range_manager.Items().size() == 1;
     };
 
     ASSERT_TRUE(test(0, 0));
@@ -99,7 +99,7 @@ TEST(RangeManagerTest, RemoveRangeFromEmpty) {
 
         RangeManager range_manager;
         range_manager.RemoveRange(position, length);
-        return range_manager.RangeCount() == 0;
+        return range_manager.Items().empty();
     };
 
     ASSERT_TRUE(test(0, 1));
@@ -152,11 +152,11 @@ TEST(RangeManagerTest, InsertSpanWithInvalidRange) {
 
         range_manager.InsertSpan(zaf::Range{ position, length });
 
-        if (range_manager.RangeCount() != 1) {
+        if (range_manager.Items().size() != 1) {
             return false;
         }
 
-        auto range = range_manager.GetRange(0);
+        auto range = range_manager.Items()[0].range;
         return (range.index == 0) && (range.length == 10);
     };
 
@@ -203,11 +203,11 @@ TEST(RangeManagerTest, EraseSpanWithInvalidRange) {
 
         range_manager.EraseSpan(zaf::Range{ position, length });
 
-        if (range_manager.RangeCount() != 1) {
+        if (range_manager.Items().size() != 1) {
             return false;
         }
 
-        auto range = range_manager.GetRange(0);
+        auto range = range_manager.Items()[0].range;
         return (range.index == 0) && (range.length == 10);
     };
 
@@ -257,14 +257,14 @@ static bool CheckRanges(
     const RangeManager& range_manager,
     const std::initializer_list<std::pair<std::size_t, std::size_t>>& expected_ranges) {
 
-    if (range_manager.RangeCount() != expected_ranges.size()) {
+    if (range_manager.Items().size() != expected_ranges.size()) {
         return false;
     }
 
     std::size_t index = 0;
     for (const auto& each_range : expected_ranges) {
 
-        auto actual_range = range_manager.GetRange(index);
+        auto actual_range = range_manager.Items()[index].range;
 
         if ((actual_range.index != each_range.first) ||
             (actual_range.length != each_range.second)) {

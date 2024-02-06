@@ -315,11 +315,9 @@ void GeneralTextualCore::SetTextColorsToTextLayout(
         return;
     }
 
-    auto ranges_and_text_color_pickers = text_color_picker_map_->GetAllRangesAndValues();
-    for (const auto& each_pair : ranges_and_text_color_pickers) {
-
-        auto brush = renderer.CreateSolidColorBrush(each_pair.second(textual_control));
-        text_layout.SetBrush(brush, each_pair.first);
+    for (const auto& each_item : *text_color_picker_map_) {
+        auto brush = renderer.CreateSolidColorBrush(each_item.Value()(textual_control));
+        text_layout.SetBrush(brush, each_item.Range());
     }
 }
 
@@ -386,9 +384,8 @@ void GeneralTextualCore::SetRangeFontsToTextLayout(TextLayout& text_layout) cons
         return;
     }
 
-    auto ranges_and_fonts = font_range_map_->GetAllRangesAndValues();
-    for (const auto& each_pair : ranges_and_fonts) {
-        SetFontToTextLayout(each_pair.second, each_pair.first, text_layout);
+    for (const auto& each_item : *font_range_map_) {
+        SetFontToTextLayout(each_item.Value(), each_item.Range(), text_layout);
     }
 }
 
