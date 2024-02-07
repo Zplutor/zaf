@@ -74,3 +74,59 @@ TEST(TextualControlTest, AutoSizeOnSizeChanged) {
     ASSERT_EQ(control->MinHeight(), control->Height());
     ASSERT_EQ(control->MaxHeight(), control->Height());
 }
+
+
+TEST(TextualControlTest, SetFontInRange) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+    control->SetText(L"12345");
+
+    zaf::Font default_font;
+    default_font.size = 30;
+    control->SetFont(default_font);
+
+    zaf::Font font;
+    font.size = 50;
+    control->SetFontInRange(font, zaf::Range{ 2, 2 });
+
+    ASSERT_EQ(control->GetFontAtIndex(0), default_font);
+    ASSERT_EQ(control->GetFontAtIndex(1), default_font);
+    ASSERT_EQ(control->GetFontAtIndex(2), font);
+    ASSERT_EQ(control->GetFontAtIndex(3), font);
+    ASSERT_EQ(control->GetFontAtIndex(4), default_font);
+
+    //Font set in range will be clear after setting a new text.
+    control->SetText(L"123456");
+    ASSERT_EQ(control->GetFontAtIndex(0), default_font);
+    ASSERT_EQ(control->GetFontAtIndex(1), default_font);
+    ASSERT_EQ(control->GetFontAtIndex(2), default_font);
+    ASSERT_EQ(control->GetFontAtIndex(3), default_font);
+    ASSERT_EQ(control->GetFontAtIndex(4), default_font);
+    ASSERT_EQ(control->GetFontAtIndex(5), default_font);
+}
+
+
+TEST(TextualControlTest, SetTextColorInRange) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+    control->SetText(L"12345");
+
+    zaf::Color default_color = zaf::Color::Black();
+    zaf::Color new_color = zaf::Color::Red();
+    control->SetTextColorInRange(new_color, zaf::Range{ 2, 2 });
+
+    ASSERT_EQ(control->GetTextColorAtIndex(0), default_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(1), default_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(2), new_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(3), new_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(4), default_color);
+
+    //Color set in range will be clear after setting a new text.
+    control->SetText(L"123456");
+    ASSERT_EQ(control->GetTextColorAtIndex(0), default_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(1), default_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(2), default_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(3), default_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(4), default_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(5), default_color);
+}

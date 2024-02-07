@@ -16,7 +16,7 @@ void TextModel::SetTextInRange(std::wstring_view text, const Range& range) {
 
     text_.replace(range.index, range.length, text);
 
-    RaiseTextChangedEvent();
+    RaiseTextChangedEvent(range, Range{ range.index, text.length() });
 }
 
 }

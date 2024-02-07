@@ -27,7 +27,7 @@ public:
 
     bool InsertSpan(const Range& span_range);
     bool EraseSpan(const Range& span_range);
-    
+
     void Clear();
 
     const Item* FindItemContainsIndex(std::size_t index) const;

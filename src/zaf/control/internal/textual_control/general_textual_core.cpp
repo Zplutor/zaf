@@ -39,7 +39,7 @@ void GeneralTextualCore::Initialize(const std::shared_ptr<TextualControl>& owner
     owner_ = owner;
 
     Subscriptions() += text_model_->TextChangedEvent().Subscribe(
-        std::bind(&GeneralTextualCore::OnModelTextChanged, this));
+        std::bind(&GeneralTextualCore::OnTextModelChanged, this, std::placeholders::_1));
 }
 
 
@@ -74,27 +74,19 @@ void GeneralTextualCore::SetFont(const Font& font) {
 }
 
 
-Font GeneralTextualCore::GetFontAtIndex(std::size_t position) {
+Font GeneralTextualCore::GetFontAtIndex(std::size_t index) {
 
-    if (font_range_map_) {
-
-        auto font = font_range_map_->GetValueAtIndex(position);
-        if (font) {
-            return *font;
-        }
+    auto font = ranged_font_.GetValueAtIndex(index);
+    if (font) {
+        return *font;
     }
-
-    return Font();
+    return default_font_;
 }
 
 
 void GeneralTextualCore::SetFontInRange(const zaf::Font& font, const Range& range) {
 
-    if (!font_range_map_) {
-        font_range_map_ = std::make_unique<internal::RangeMap<zaf::Font>>();
-    }
-
-    font_range_map_->AddRange(range, font);
+    ranged_font_.AddRange(range, font);
 
     if (text_layout_) {
         SetFontToTextLayout(font, range, text_layout_);
@@ -106,7 +98,7 @@ void GeneralTextualCore::SetFontInRange(const zaf::Font& font, const Range& rang
 
 void GeneralTextualCore::ResetFonts() {
 
-    font_range_map_.reset();
+    ranged_font_.Clear();
 
     ReleaseTextLayout();
     NotifyRepaint();
@@ -138,14 +130,11 @@ void GeneralTextualCore::SetTextColorPicker(const ColorPicker& color_picker) {
 }
 
 
-ColorPicker GeneralTextualCore::GetTextColorPickerAtIndex(std::size_t position) {
+ColorPicker GeneralTextualCore::GetTextColorPickerAtIndex(std::size_t index) {
 
-    if (text_color_picker_map_) {
-
-        auto color_picker = text_color_picker_map_->GetValueAtIndex(position);
-        if (color_picker) {
-            return *color_picker;
-        }
+    auto color_picker = ranged_text_color_picker_.GetValueAtIndex(index);
+    if (color_picker) {
+        return *color_picker;
     }
 
     return GetTextColorPicker();
@@ -156,11 +145,7 @@ void GeneralTextualCore::SetTextColorPickerInRange(
     const ColorPicker& color_picker,
     const Range& range) {
 
-    if (!text_color_picker_map_) {
-        text_color_picker_map_ = std::make_unique<internal::RangeMap<ColorPicker>>();
-    }
-
-    text_color_picker_map_->AddRange(range, color_picker);
+    ranged_text_color_picker_.AddRange(range, color_picker);
 
     ReleaseTextLayout();
     NotifyRepaint();
@@ -169,7 +154,7 @@ void GeneralTextualCore::SetTextColorPickerInRange(
 
 void GeneralTextualCore::ResetTextColorPickers() {
 
-    text_color_picker_map_.reset();
+    ranged_text_color_picker_.Clear();
 
     ReleaseTextLayout();
     NotifyRepaint();
@@ -311,11 +296,7 @@ void GeneralTextualCore::SetTextColorsToTextLayout(
     Renderer& renderer,
     const TextualControl& textual_control) const {
 
-    if (!text_color_picker_map_) {
-        return;
-    }
-
-    for (const auto& each_item : *text_color_picker_map_) {
+    for (const auto& each_item : ranged_text_color_picker_) {
         auto brush = renderer.CreateSolidColorBrush(each_item.Value()(textual_control));
         text_layout.SetBrush(brush, each_item.Range());
     }
@@ -380,11 +361,7 @@ TextFormat GeneralTextualCore::CreateTextFormat() const {
 
 void GeneralTextualCore::SetRangeFontsToTextLayout(TextLayout& text_layout) const {
 
-    if (!font_range_map_) {
-        return;
-    }
-
-    for (const auto& each_item : *font_range_map_) {
+    for (const auto& each_item : ranged_font_) {
         SetFontToTextLayout(each_item.Value(), each_item.Range(), text_layout);
     }
 }
@@ -404,7 +381,14 @@ void GeneralTextualCore::NotifyRepaint() {
 }
 
 
-void GeneralTextualCore::OnModelTextChanged() {
+void GeneralTextualCore::OnTextModelChanged(const TextModelChangedInfo& event_info) {
+
+    ranged_font_.EraseSpan(event_info.ReplacedRange());
+    ranged_font_.InsertSpan(event_info.NewRange());
+
+    ranged_text_color_picker_.EraseSpan(event_info.ReplacedRange());
+    ranged_text_color_picker_.InsertSpan(event_info.NewRange());
+
     ReleaseTextLayout();
     RaiseTextChangedEvent();
 }

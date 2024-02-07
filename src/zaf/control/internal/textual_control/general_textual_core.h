@@ -95,17 +95,17 @@ private:
         const TextualControl& textual_control) const;
     void ReleaseTextLayout();
     void NotifyRepaint();
-    void OnModelTextChanged();
+    void OnTextModelChanged(const TextModelChangedInfo& event_info);
 
 private:
     std::weak_ptr<TextualControl> owner_;
     std::unique_ptr<TextModel> text_model_;
 
     zaf::Font default_font_{ Font::Default() };
-    std::unique_ptr<internal::RangeMap<Font>> font_range_map_;
+    RangeMap<Font> ranged_font_;
 
     ColorPicker default_text_color_picker_;
-    std::unique_ptr<internal::RangeMap<ColorPicker>> text_color_picker_map_;
+    RangeMap<ColorPicker> ranged_text_color_picker_;
 
     TextAlignment text_alignment_{ TextAlignment::Leading };
     ParagraphAlignment paragraph_alignment_{ ParagraphAlignment::Near };
