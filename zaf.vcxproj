@@ -59,7 +59,6 @@
     <ClCompile Include="src\zaf\base\error\basic_error.cpp" />
     <ClCompile Include="src\zaf\base\error\com_error.cpp" />
     <ClCompile Include="src\zaf\base\global_mem.cpp" />
-    <ClCompile Include="src\zaf\base\internal\range_assembler.cpp" />
     <ClCompile Include="src\zaf\base\log.cpp" />
     <ClCompile Include="src\zaf\base\range.cpp" />
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp" />
@@ -390,7 +389,6 @@
     <ClInclude Include="src\zaf\base\event\routed_event_info.h" />
     <ClInclude Include="src\zaf\base\global_mem.h" />
     <ClInclude Include="src\zaf\base\hash.h" />
-    <ClInclude Include="src\zaf\base\internal\range_assembler.h" />
     <ClInclude Include="src\zaf\base\non_copyable.h" />
     <ClInclude Include="src\zaf\base\none.h" />
     <ClInclude Include="src\zaf\base\range.h" />
