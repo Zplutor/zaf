@@ -190,6 +190,9 @@
     <Filter Include="zaf\input">
       <UniqueIdentifier>{746b5796-3832-4421-abdb-fc0b372af572}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\text\internal">
+      <UniqueIdentifier>{1a0cdfc9-00f7-4f9e-a544-82f01a834e29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1146,6 +1149,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\text_box\internal\text_box_edit_command.cpp">
       <Filter>zaf\control\text_box\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\text\internal\text_inline_object_bridge.cpp">
+      <Filter>zaf\graphic\text\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2598,6 +2604,18 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\range_set.h">
       <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_bridge.h">
+      <Filter>zaf\graphic\text\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_painter.h">
+      <Filter>zaf\graphic\text\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\custom_text_inline_object.h">
+      <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\text\text_inline_object_metrics.h">
+      <Filter>zaf\graphic\text</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

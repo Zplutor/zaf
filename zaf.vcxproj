@@ -276,6 +276,7 @@
     <ClCompile Include="src\zaf\graphic\graphic_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\rounded_rect.cpp" />
     <ClCompile Include="src\zaf\graphic\size.cpp" />
+    <ClCompile Include="src\zaf\graphic\text\internal\text_inline_object_bridge.cpp" />
     <ClCompile Include="src\zaf\graphic\text\paragraph_alignment.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_alignment.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_format.cpp" />
@@ -701,7 +702,10 @@
     <ClInclude Include="src\zaf\graphic\size.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
     <ClInclude Include="src\zaf\graphic\stroke_properties.h" />
+    <ClInclude Include="src\zaf\graphic\text\custom_text_inline_object.h" />
     <ClInclude Include="src\zaf\graphic\text\hit_test_result.h" />
+    <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_bridge.h" />
+    <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_painter.h" />
     <ClInclude Include="src\zaf\graphic\text\line_metrics.h" />
     <ClInclude Include="src\zaf\graphic\text\line_spacing.h" />
     <ClInclude Include="src\zaf\graphic\text\paragraph_alignment.h" />
@@ -709,6 +713,7 @@
     <ClInclude Include="src\zaf\graphic\text\text_format.h" />
     <ClInclude Include="src\zaf\graphic\text\text_format_properties.h" />
     <ClInclude Include="src\zaf\graphic\text\text_inline_object.h" />
+    <ClInclude Include="src\zaf\graphic\text\text_inline_object_metrics.h" />
     <ClInclude Include="src\zaf\graphic\text\text_layout.h" />
     <ClInclude Include="src\zaf\graphic\text\text_metrics.h" />
     <ClInclude Include="src\zaf\graphic\text\text_trimming.h" />

@@ -58,16 +58,22 @@
 #include <zaf/control/text_box.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/stroke_properties.h>
+#include <zaf/graphic/text/custom_text_inline_object.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
-class Control : public zaf::Control {
-protected:
-    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
+class InlineObject : public zaf::CustomTextInlineObject {
+public:
+    void Paint(zaf::Canvas& canvas) override {
+        canvas.DrawRectangle(zaf::Rect{ 0, 0, 100, 30 }, zaf::Color::Red());
+    }
 
-        __super::Paint(canvas, dirty_rect);
+    zaf::TextInlineObjectMetrics GetMetrics() override {
 
-
+        zaf::TextInlineObjectMetrics result;
+        result.SetWidth(100);
+        result.SetHeight(30);
+        return result;
     }
 };
 
@@ -85,6 +91,9 @@ protected:
         text_box->SetIsEditable(true);
         text_box->SetText(L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());");
         text_box->SetTextColorInRange(zaf::Color::Red(), zaf::Range{ 5, 6 });
+
+        text_box->SetInlineObject(std::make_shared<InlineObject>(), zaf::Range{ 10, 1 });
+
         this->RootControl()->AddChild(text_box);
 
         auto button = zaf::Create<zaf::Button>();

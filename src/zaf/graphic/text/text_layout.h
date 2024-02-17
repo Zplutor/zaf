@@ -11,6 +11,7 @@
 #include <zaf/graphic/text/hit_test_result.h>
 #include <zaf/graphic/text/line_metrics.h>
 #include <zaf/graphic/text/text_format.h>
+#include <zaf/graphic/text/text_inline_object.h>
 #include <zaf/graphic/text/text_metrics.h>
 
 namespace zaf {
@@ -234,6 +235,8 @@ public:
     HitTestIndexResult HitTestIndex(std::size_t index, bool is_trailing_hit) const;
     HitTestPointResult HitTestPoint(const Point& point) const;
     std::vector<HitTestMetrics> HitTestRange(const Range& range) const;
+
+    void SetInlineObject(const TextInlineObject& object, const Range& range);
 
     const COMPtr<IDWriteTextLayout>& Inner() const noexcept {
         return inner_;
