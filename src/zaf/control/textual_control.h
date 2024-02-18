@@ -3,6 +3,8 @@
 #include <zaf/base/range.h>
 #include <zaf/control/control.h>
 #include <zaf/control/event/text_changed_info.h>
+#include <zaf/control/internal/range_map.h>
+#include <zaf/control/internal/textual_control/text_model.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/graphic/text/line_spacing.h>
@@ -13,7 +15,7 @@
 
 namespace zaf {
 namespace internal {
-class TextualControlCore;
+class TextModel;
 }
 
 class TextFormat;
@@ -112,7 +114,7 @@ public:
 
      Return Font::Default() if this property has not been set.
      */
-    Font Font() const;
+    zaf::Font Font() const;
 
     /**
      Set default font.
@@ -206,12 +208,6 @@ public:
     Observable<TextChangedInfo> TextChangedEvent() const;
 
 protected:
-    explicit TextualControl(std::unique_ptr<internal::TextualControlCore> core);
-
-    zaf::internal::TextualControlCore* Core() const {
-        return core_.get();
-    }
-
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
@@ -232,13 +228,41 @@ protected:
     virtual void OnTextChanged(const TextChangedInfo& event_info);
 
 private:
+    void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const;
+    void PaintTextLayout(
+        Canvas& canvas,
+        const zaf::Rect& dirty_rect,
+        const TextLayout& text_layout,
+        const zaf::Rect& layout_rect);
+
     void InnerSetFont(const zaf::Font& new_font);
-    void OnCoreTextChanged();
+    void OnTextModelChanged(const internal::TextModelChangedInfo&);
+
+    TextLayout GetTextLayout() const;
+    TextLayout CreateTextLayout() const;
+    TextFormat CreateTextFormat() const;
+
+    void ReleaseTextLayout();
 
 private:
-    std::unique_ptr<internal::TextualControlCore> core_;
-
+    std::unique_ptr<internal::TextModel> text_model_;
     Event<TextChangedInfo> text_changed_event_;
+
+    zaf::Font default_font_{ zaf::Font::Default() };
+    internal::RangeMap<zaf::Font> ranged_font_;
+
+    ColorPicker default_text_color_picker_;
+    internal::RangeMap<ColorPicker> ranged_text_color_picker_;
+
+    zaf::TextAlignment text_alignment_{ TextAlignment::Leading };
+    zaf::ParagraphAlignment paragraph_alignment_{ ParagraphAlignment::Near };
+    zaf::WordWrapping word_wrapping_{ WordWrapping::NoWrap };
+    zaf::TextTrimming text_trimming_;
+    zaf::LineSpacing line_spacing_;
+    bool ignore_tailing_white_spaces_{};
+
+    zaf::Rect layout_rect_;
+    mutable TextLayout text_layout_;
 };
 
 }

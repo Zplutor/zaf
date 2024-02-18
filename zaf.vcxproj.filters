@@ -997,9 +997,6 @@
     <ClCompile Include="src\zaf\base\range.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\textual_control\general_textual_core.cpp">
-      <Filter>zaf\control\internal\textual_control</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\spin_box.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
@@ -2411,9 +2408,6 @@
       <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\textual_control\textual_control_core.h">
-      <Filter>zaf\control\internal\textual_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\textual_control\general_textual_core.h">
       <Filter>zaf\control\internal\textual_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\hit_test_result.h">

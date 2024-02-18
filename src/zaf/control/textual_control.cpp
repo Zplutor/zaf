@@ -1,11 +1,35 @@
 #include <zaf/control/textual_control.h>
 #include <zaf/base/as.h>
-#include <zaf/control/internal/textual_control/general_textual_core.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/graphic/graphic_factory.h>
+#include <zaf/graphic/text/text_format_properties.h>
+#include <zaf/internal/theme.h>
 #include <zaf/object/type_definition.h>
 
 namespace zaf {
+namespace {
+
+void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_format) {
+    if (text_trimming.Granularity() != TextTrimmingGranularity::None) {
+        if (!text_trimming.Sign()) {
+            text_trimming.SetSign(
+                GraphicFactory::Instance().CreateEllipsisTrimmingSign(text_format));
+        }
+    }
+}
+
+
+void SetFontToTextLayout(const Font& font, const Range& range, TextLayout& text_layout) {
+
+    text_layout.SetFontFamilyName(font.family_name, range);
+    text_layout.SetFontSize(font.size, range);
+    text_layout.SetFontWeight(font.weight, range);
+    text_layout.SetFontStyle(font.style, range);
+    text_layout.SetHasUnderline(font.has_underline, range);
+}
+
+}
 
 ZAF_DEFINE_TYPE(TextualControl)
 ZAF_DEFINE_TYPE_PROPERTY(IgnoreTailingWhiteSpaces)
@@ -22,14 +46,8 @@ ZAF_DEFINE_TYPE_PROPERTY(WordWrapping)
 ZAF_DEFINE_TYPE_END
 
 
-TextualControl::TextualControl() : core_(std::make_unique<internal::GeneralTextualCore>()) {
+TextualControl::TextualControl() : text_model_(std::make_unique<internal::TextModel>()) {
     
-}
-
-
-TextualControl::TextualControl(std::unique_ptr<internal::TextualControlCore> core) : 
-    core_(std::move(core)) {
-
 }
 
 
@@ -42,10 +60,8 @@ void TextualControl::Initialize() {
 
     __super::Initialize();
 
-    core_->Initialize(As<TextualControl>(shared_from_this()));
-
-    Subscriptions() += core_->TextChangedEvent().Subscribe(
-        std::bind(&TextualControl::OnCoreTextChanged, this));
+    Subscriptions() += text_model_->TextChangedEvent().Subscribe(
+        std::bind(&TextualControl::OnTextModelChanged, this, std::placeholders::_1));
 }
 
 
@@ -53,22 +69,64 @@ void TextualControl::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    auto text_rect = DetermineTextRect();
-    text_rect.size.width = (std::max)(text_rect.size.width, 0.f);
-    text_rect.size.height = (std::max)(text_rect.size.height, 0.f);
-    core_->LayoutText(text_rect);
+    layout_rect_ = DetermineTextRect();
+    layout_rect_.size.width = (std::max)(layout_rect_.size.width, 0.f);
+    layout_rect_.size.height = (std::max)(layout_rect_.size.height, 0.f);
+    
+    if (text_layout_) {
+        text_layout_.SetMaxWidth(layout_rect_.size.width);
+        text_layout_.SetMaxHeight(layout_rect_.size.height);
+    }
 }
 
 
 void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
-    core_->PaintText(canvas, dirty_rect);
+
+    //No need to paint if layout rect is empty.
+    if (layout_rect_.size.width <= 0 || layout_rect_.size.height <= 0) {
+        return;
+    }
+
+    auto content_rect = this->ContentRect();
+
+    auto layout_rect_in_control = layout_rect_;
+    layout_rect_in_control.AddOffset(content_rect.position);
+
+    auto text_boundary = Rect::Intersect(layout_rect_in_control, content_rect);
+    auto clipping_guard = canvas.PushClipping(text_boundary);
+
+    auto text_layout = GetTextLayout();
+    SetTextColorsToTextLayout(text_layout, canvas.Renderer());
+
+    PaintTextLayout(canvas, dirty_rect, text_layout, layout_rect_in_control);
+}
+
+
+void TextualControl::SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const {
+
+    for (const auto& each_item : ranged_text_color_picker_) {
+        auto brush = renderer.CreateSolidColorBrush(each_item.Value()(*this));
+        text_layout.SetBrush(brush, each_item.Range());
+    }
+}
+
+
+void TextualControl::PaintTextLayout(
+    Canvas& canvas,
+    const zaf::Rect& dirty_rect,
+    const TextLayout& text_layout,
+    const zaf::Rect& layout_rect) {
+
+    auto state_guard = canvas.PushState();
+    canvas.SetBrushWithColor(TextColorPicker()(*this));
+    canvas.DrawTextLayout(text_layout, layout_rect.position);
 }
 
 
 void TextualControl::ReleaseRendererResources() {
-    core_->ReleaseRendererResources();
+    ReleaseTextLayout();
 }
 
 
@@ -78,43 +136,56 @@ zaf::Rect TextualControl::DetermineTextRect() {
 
 
 std::size_t TextualControl::TextLength() const {
-    return core_->GetTextLength();
+    return text_model_->GetText().length();
 }
 
 
 std::wstring TextualControl::Text() const {
-
-    auto text = core_->GetText();
-    auto string_view = std::get_if<std::wstring_view>(&text);
-    if (string_view) {
-        return std::wstring{ *string_view };
-    }
-
-    auto string = std::get_if<std::wstring>(&text);
-    if (string) {
-        return std::move(*string);
-    }
-
-    return {};
+    return std::wstring{ text_model_->GetText() };
 }
 
 
 void TextualControl::SetText(const std::wstring& text) {
-    core_->SetText(text);
+    
+    if (text_model_->GetText() != text) {
+        text_model_->SetText(text);
+    }
 }
 
 
 ColorPicker TextualControl::TextColorPicker() const {
-    return core_->GetTextColorPicker();
+
+    if (default_text_color_picker_) {
+        return default_text_color_picker_;
+    }
+
+    return [](const Control& control) {
+        if (control.IsEnabledInContext()) {
+            return Color::FromRGB(internal::ControlNormalTextColorRGB);
+        }
+        else {
+            return Color::FromRGB(internal::ControlDisabledTextColorRGB);
+        }
+    };
 }
 
+
 void TextualControl::SetTextColorPicker(const ColorPicker& color_picker) {
-    core_->SetTextColorPicker(color_picker);
+
+    default_text_color_picker_ = color_picker;
+    ReleaseTextLayout();
+    NeedRepaint();
 }
 
 
 ColorPicker TextualControl::GetTextColorPickerAtIndex(std::size_t index) const {
-    return core_->GetTextColorPickerAtIndex(index);
+
+    auto color_picker = ranged_text_color_picker_.GetValueAtIndex(index);
+    if (color_picker) {
+        return *color_picker;
+    }
+
+    return TextColorPicker();
 }
 
 
@@ -122,17 +193,24 @@ void TextualControl::SetTextColorPickerInRange(
     const ColorPicker& color_picker, 
     const Range& range) {
 
-    core_->SetTextColorPickerInRange(color_picker, range);
+    ranged_text_color_picker_.AddRange(range, color_picker);
+
+    ReleaseTextLayout();
+    NeedRepaint();
 }
 
 
 void TextualControl::ResetTextColorPickers() {
-    core_->ResetTextColorPickers();
+
+    ranged_text_color_picker_.Clear();
+
+    ReleaseTextLayout();
+    NeedRepaint();
 }
 
 
 Font TextualControl::Font() const {
-    return core_->GetFont();
+    return default_font_;
 }
 
 void TextualControl::SetFont(const zaf::Font& font) {
@@ -141,9 +219,14 @@ void TextualControl::SetFont(const zaf::Font& font) {
     }
 }
 
+
 void TextualControl::InnerSetFont(const zaf::Font& new_font) {
-    core_->SetFont(new_font);
+
+    default_font_ = new_font;
+
+    ReleaseTextLayout();
     RaiseContentChangedEvent();
+    NeedRepaint();
 }
 
 
@@ -187,73 +270,126 @@ void TextualControl::SetFontWeight(zaf::FontWeight weight) {
 
 
 Font TextualControl::GetFontAtIndex(std::size_t index) const {
-    return core_->GetFontAtIndex(index);
+
+    auto font = ranged_font_.GetValueAtIndex(index);
+    if (font) {
+        return *font;
+    }
+    return default_font_;
 }
 
 
 void TextualControl::SetFontInRange(const zaf::Font& font, const Range& range) {
-    core_->SetFontInRange(font, range);
+
+    ranged_font_.AddRange(range, font);
+
+    if (text_layout_) {
+        SetFontToTextLayout(font, range, text_layout_);
+    }
+
+    NeedRepaint();
 }
 
 
 void TextualControl::ResetFonts() {
-    core_->ResetFonts();
+
+    ranged_font_.Clear();
+
+    ReleaseTextLayout();
+    NeedRepaint();
 }
 
 
-TextAlignment TextualControl::TextAlignment() const {
-    return core_->GetTextAlignment();
+zaf::TextAlignment TextualControl::TextAlignment() const {
+    return text_alignment_;
 }
 
 void TextualControl::SetTextAlignment(zaf::TextAlignment alignment) {
-    core_->SetTextAlignment(alignment);
+
+    text_alignment_ = alignment;
+
+    if (text_layout_) {
+        text_layout_.SetTextAlignment(alignment);
+    }
+
+    NeedRepaint();
 }
 
 
-ParagraphAlignment TextualControl::ParagraphAlignment() const {
-    return core_->GetParagraphAlignment();
+zaf::ParagraphAlignment TextualControl::ParagraphAlignment() const {
+    return paragraph_alignment_;
 }
 
 void TextualControl::SetParagraphAlignment(zaf::ParagraphAlignment alignment) {
-    core_->SetParagraphAlignment(alignment);
+
+    paragraph_alignment_ = alignment;
+
+    if (text_layout_) {
+        text_layout_.SetParagraphAlignment(alignment);
+    }
+
+    NeedRepaint();
 }
 
 
 WordWrapping TextualControl::WordWrapping() const {
-    return core_->GetWordWrapping();
+    return word_wrapping_;
 }
 
 void TextualControl::SetWordWrapping(zaf::WordWrapping word_wrapping) {
-    core_->SetWordWrapping(word_wrapping);
+
+    word_wrapping_ = word_wrapping;
+
+    if (text_layout_) {
+        text_layout_.SetWordWrapping(word_wrapping);
+    }
+
     RaiseContentChangedEvent();
+    NeedRepaint();
 }
 
 
 TextTrimming TextualControl::TextTrimming() const {
-    return core_->GetTextTrimming();
+    return text_trimming_;
 }
 
 void TextualControl::SetTextTrimming(const zaf::TextTrimming& text_trimming) {
-    core_->SetTextTrimming(text_trimming);
+
+    text_trimming_ = text_trimming;
+
+    if (text_layout_) {
+        auto applied_text_trimming = text_trimming;
+        ReviseTextTrimmingSign(applied_text_trimming, text_layout_);
+        text_layout_.SetTextTrimming(applied_text_trimming);
+    }
+
+    NeedRepaint();
 }
 
 
 zaf::LineSpacing TextualControl::LineSpacing() const {
-    return core_->GetLineSpacing();
+    return line_spacing_;
 }
 
 void TextualControl::SetLineSpacing(const zaf::LineSpacing& line_spacing) {
-    core_->SetLineSpacing(line_spacing);
+
+    line_spacing_ = line_spacing;
+
+    if (text_layout_) {
+        text_layout_.SetLineSpacing(line_spacing);
+    }
+
+    NeedRepaint();
 }
 
 
 bool TextualControl::IgnoreTailingWhiteSpaces() const {
-    return core_->IgnoreTailingWhiteSpaces();
+    return ignore_tailing_white_spaces_;
 }
 
 
 void TextualControl::SetIgnoreTailingWhiteSpaces(bool value) {
-    core_->SetIgnoreTailingWhiteSpaces(value);
+    ignore_tailing_white_spaces_ = value;
 }
 
 
@@ -262,12 +398,20 @@ Observable<TextChangedInfo> TextualControl::TextChangedEvent() const {
 }
 
 
-void TextualControl::OnCoreTextChanged() {
+void TextualControl::OnTextModelChanged(const internal::TextModelChangedInfo& event_info) {
 
-    NeedRepaint();
+    ranged_font_.EraseSpan(event_info.ReplacedRange());
+    ranged_font_.InsertSpan(event_info.NewRange());
+
+    ranged_text_color_picker_.EraseSpan(event_info.ReplacedRange());
+    ranged_text_color_picker_.InsertSpan(event_info.NewRange());
+
+    ReleaseTextLayout();
 
     OnTextChanged(TextChangedInfo{ As<TextualControl>(shared_from_this()) });
     RaiseContentChangedEvent();
+
+    NeedRepaint();
 }
 
 
@@ -277,7 +421,79 @@ void TextualControl::OnTextChanged(const TextChangedInfo& event_info) {
 
 
 zaf::Size TextualControl::CalculatePreferredContentSize(const zaf::Size& max_size) const {
-    return core_->CalculateTextSize(max_size);
+
+    auto text_layout = GetTextLayout();
+
+    //Set layout size to boundary size for calculation.
+    text_layout.SetMaxWidth(max_size.width);
+    text_layout.SetMaxHeight(max_size.height);
+
+    auto metrics = text_layout.GetMetrics();
+
+    //Recover layout size.
+    text_layout.SetMaxWidth(layout_rect_.size.width);
+    text_layout.SetMaxHeight(layout_rect_.size.height);
+
+    return zaf::Size{ metrics.GetWidth(ignore_tailing_white_spaces_), metrics.Height() };
+}
+
+
+TextLayout TextualControl::GetTextLayout() const {
+
+    if (!text_layout_) {
+        text_layout_ = CreateTextLayout();
+    }
+
+    return text_layout_;
+}
+
+
+TextLayout TextualControl::CreateTextLayout() const {
+
+    auto text = text_model_->GetText();
+
+    auto text_layout = GraphicFactory::Instance().CreateTextLayout(
+        text,
+        CreateTextFormat(),
+        layout_rect_.size);
+
+    if (default_font_.has_underline) {
+        Range range{ 0, text.length() };
+        text_layout.SetHasUnderline(true, range);
+    }
+
+    for (const auto& each_item : ranged_font_) {
+        SetFontToTextLayout(each_item.Value(), each_item.Range(), text_layout);
+    }
+
+    return text_layout;
+}
+
+
+TextFormat TextualControl::CreateTextFormat() const {
+
+    TextFormatProperties text_format_properties;
+    text_format_properties.font_family_name = default_font_.family_name;
+    text_format_properties.font_size = default_font_.size;
+    text_format_properties.font_weight = default_font_.weight;
+    text_format_properties.font_style = default_font_.style;
+
+    auto text_format = GraphicFactory::Instance().CreateTextFormat(text_format_properties);
+    text_format.SetTextAlignment(text_alignment_);
+    text_format.SetParagraphAlignment(paragraph_alignment_);
+    text_format.SetWordWrapping(word_wrapping_);
+    text_format.SetLineSpacing(line_spacing_);
+
+    auto text_trimming = text_trimming_;
+    ReviseTextTrimmingSign(text_trimming, text_format);
+    text_format.SetTextTrimming(text_trimming);
+
+    return text_format;
+}
+
+
+void TextualControl::ReleaseTextLayout() {
+    text_layout_ = {};
 }
 
 }
