@@ -1,7 +1,6 @@
 #include <zaf/control/check_box.h>
 #include <zaf/base/as.h>
 #include <zaf/base/error/check.h>
-#include <zaf/control/internal/textual_control/general_textual_core.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>
@@ -63,7 +62,7 @@ void CheckBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     auto state_guard = canvas.PushState();
 
-    auto text_layout = As<internal::GeneralTextualCore>(Core())->GetTextLayout();
+    auto text_layout = GetTextLayout();
 
     internal::DrawTextWithIcon(
         canvas,

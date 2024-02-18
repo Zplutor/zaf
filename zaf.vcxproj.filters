@@ -1108,9 +1108,6 @@
     <ClCompile Include="src\zaf\control\internal\scroll_box\self_scroll_layouter.cpp">
       <Filter>zaf\control\internal\scroll_box</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\text_box\internal\text_box_core.cpp">
-      <Filter>zaf\control\text_box\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\text_box\internal\text_box_editor.cpp">
       <Filter>zaf\control\text_box\internal</Filter>
     </ClCompile>
@@ -2547,9 +2544,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\textual_control\text_model.h">
       <Filter>zaf\control\internal\textual_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\text_box\internal\text_box_core.h">
-      <Filter>zaf\control\text_box\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\text_box\internal\text_box_editor.h">
       <Filter>zaf\control\text_box\internal</Filter>

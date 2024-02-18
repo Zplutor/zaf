@@ -212,11 +212,19 @@ protected:
     void Layout(const zaf::Rect&) override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
+    virtual void PaintTextLayout(
+        Canvas& canvas,
+        const zaf::Rect& dirty_rect,
+        const TextLayout& text_layout,
+        const zaf::Rect& layout_rect);
+
     void ReleaseRendererResources() override;
 
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
 
     virtual zaf::Rect DetermineTextRect();
+
+    TextLayout GetTextLayout() const;
 
     /**
     Handles text changed notification. This method would be called after the text of control is 
@@ -229,16 +237,10 @@ protected:
 
 private:
     void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const;
-    void PaintTextLayout(
-        Canvas& canvas,
-        const zaf::Rect& dirty_rect,
-        const TextLayout& text_layout,
-        const zaf::Rect& layout_rect);
 
     void InnerSetFont(const zaf::Font& new_font);
     void OnTextModelChanged(const internal::TextModelChangedInfo&);
 
-    TextLayout GetTextLayout() const;
     TextLayout CreateTextLayout() const;
     TextFormat CreateTextFormat() const;
 

@@ -2,7 +2,6 @@
 #include <zaf/base/as.h>
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
-#include <zaf/control/text_box/internal/text_box_core.h>
 #include <zaf/control/text_box/internal/text_box_editor.h>
 #include <zaf/control/text_box/internal/text_box_keyboard_input_handler.h>
 #include <zaf/control/text_box/internal/text_box_module_context.h>
@@ -23,7 +22,6 @@ ZAF_DEFINE_TYPE_PROPERTY(SelectionRange)
 ZAF_DEFINE_TYPE_END
 
 TextBox::TextBox() : 
-    TextualControl(std::make_unique<internal::TextBoxCore>()), 
     word_extractor_(text_box::DefaultWordExtractor()),
     inline_object_painter_(std::make_shared<internal::TextInlineObjectPainter>()) {
 
@@ -38,8 +36,6 @@ TextBox::~TextBox() {
 void TextBox::Initialize() {
 
     __super::Initialize();
-
-    core_ = As<internal::TextBoxCore>(Core());
 
     module_context_ = std::make_unique<internal::TextBoxModuleContext>(this, core_);
     module_context_->Initialize();
@@ -57,12 +53,7 @@ void TextBox::Initialize() {
 
 
 std::wstring_view TextBox::GetText() const {
-    return std::get<0>(core_->GetText());
-}
-
-
-TextLayout TextBox::GetTextLayout() const {
-    return core_->GetTextLayout();
+    return 
 }
 
 
@@ -170,11 +161,24 @@ void TextBox::SetSelectionBackgroundColor(const Color& color) {
 
 void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
-    auto guard = inline_object_painter_->BeginPaint(canvas);
-
     __super::Paint(canvas, dirty_rect);
 
     PaintCaret(canvas, dirty_rect);
+}
+
+
+void TextBox::PaintTextLayout(
+    Canvas& canvas,
+    const zaf::Rect& dirty_rect,
+    const TextLayout& text_layout, 
+    const zaf::Rect& text_layout_rect) {
+
+    //Paint background before painting text.
+    PaintTextBackground(canvas, dirty_rect, text_layout, text_layout_rect);
+
+    auto guard = inline_object_painter_->BeginPaint(canvas);
+
+    __super::PaintTextLayout(canvas, dirty_rect, text_layout, text_layout_rect);
 }
 
 

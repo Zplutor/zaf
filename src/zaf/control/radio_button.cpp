@@ -1,6 +1,5 @@
 #include <zaf/control/radio_button.h>
 #include <algorithm>
-#include <zaf/control/internal/textual_control/general_textual_core.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
@@ -56,7 +55,7 @@ void RadioButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     auto state_guard = canvas.PushState();
 
-    auto text_layout = As<internal::GeneralTextualCore>(Core())->GetTextLayout();
+    auto text_layout = GetTextLayout();
 
     internal::DrawTextWithIcon(
         canvas,

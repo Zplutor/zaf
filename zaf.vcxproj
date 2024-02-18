@@ -214,7 +214,6 @@
     <ClCompile Include="src\zaf\control\textual_control.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit.cpp" />
     <ClCompile Include="src\zaf\control\text_box.cpp" />
-    <ClCompile Include="src\zaf\control\text_box\internal\text_box_core.cpp" />
     <ClCompile Include="src\zaf\control\text_box\internal\text_box_editor.cpp" />
     <ClCompile Include="src\zaf\control\text_box\internal\text_box_edit_command.cpp" />
     <ClCompile Include="src\zaf\control\text_box\internal\text_box_keyboard_input_handler.cpp" />
@@ -612,7 +611,6 @@
     <ClInclude Include="src\zaf\control\text_box\internal\text_box_module.h" />
     <ClInclude Include="src\zaf\control\text_box\internal\text_box_module_context.h" />
     <ClInclude Include="src\zaf\control\text_box\internal\text_box_selection_manager.h" />
-    <ClInclude Include="src\zaf\control\text_box\internal\text_box_core.h" />
     <ClInclude Include="src\zaf\control\text_box\internal\text_box_editor.h" />
     <ClInclude Include="src\zaf\control\text_box\selection_option.h" />
     <ClInclude Include="src\zaf\control\text_box\word_extractor.h" />

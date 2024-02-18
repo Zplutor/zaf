@@ -1,5 +1,4 @@
 #include <zaf/control/text_box/internal/text_box_selection_manager.h>
-#include <zaf/control/text_box/internal/text_box_core.h>
 #include <zaf/control/text_box/internal/text_box_module_context.h>
 
 namespace zaf::internal {

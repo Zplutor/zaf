@@ -10,7 +10,6 @@
 
 namespace zaf {
 namespace internal {
-class TextBoxCore;
 class TextBoxCaretIndexChangedInfo;
 class TextBoxModuleContext;
 class TextInlineObjectPainter;
@@ -193,6 +192,11 @@ protected:
     zaf::Rect DetermineTextRect() override;
     void OnTextChanged(const TextChangedInfo& event_info) override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    void PaintTextLayout(
+        Canvas& canvas,
+        const zaf::Rect& dirty_rect,
+        const TextLayout& text_layout, 
+        const zaf::Rect& text_layout_rect) override;
     void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseMove(const MouseMoveInfo& event_info) override;
@@ -227,20 +231,16 @@ protected:
     void VerticallyScroll(int new_value) override;
     void HorizontallyScroll(int new_value) override;
 
-    //Called from TextBoxCore to paint text background.
-    virtual void PaintTextBackground(
+private:
+    void PaintTextBackground(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
-        const TextLayout& text_layout, 
+        const TextLayout& text_layout,
         const zaf::Rect& layout_rect);
-
-private:
-    friend class zaf::internal::TextBoxCore;
 
     void PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect);
 
     std::wstring_view GetText() const;
-    TextLayout GetTextLayout() const;
 
     void UpdateTextRectOnLayout();
 
@@ -262,7 +262,6 @@ private:
     void DoScroll(int new_value, float content_length, float text_length, float& text_position);
 
 private:
-    internal::TextBoxCore* core_{};
     std::unique_ptr<internal::TextBoxModuleContext> module_context_;
 
     std::shared_ptr<Caret> caret_;
