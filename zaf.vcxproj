@@ -108,9 +108,7 @@
     <ClCompile Include="src\zaf\control\event\mouse_over_event_info.cpp" />
     <ClCompile Include="src\zaf\control\event\parent_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\rect_changed_info.cpp" />
-    <ClCompile Include="src\zaf\control\event\rich_edit_selection_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\spin_box_value_changed_info.cpp" />
-    <ClCompile Include="src\zaf\control\event\text_changing_info.cpp" />
     <ClCompile Include="src\zaf\control\event\scroll_bar_arrow_event_info.cpp" />
     <ClCompile Include="src\zaf\control\event\scroll_bar_scroll_info.cpp" />
     <ClCompile Include="src\zaf\control\event\scroll_bar_thumb_event_info.cpp" />
@@ -200,11 +198,11 @@
     <ClCompile Include="src\zaf\control\rich_edit\internal\ole_callback_impl.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\ole_helper.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\ole_object_impl.cpp" />
-    <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_core.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\internal\text_host_bridge.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\object_info.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\ole_callback.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit\ole_interface.cpp" />
+    <ClCompile Include="src\zaf\control\rich_edit\rich_edit_events.cpp" />
     <ClCompile Include="src\zaf\control\scroll_box.cpp" />
     <ClCompile Include="src\zaf\control\scroll_box_parser.cpp" />
     <ClCompile Include="src\zaf\control\scroll_bar.cpp" />
@@ -482,9 +480,7 @@
     <ClInclude Include="src\zaf\control\event\mouse_over_event_info.h" />
     <ClInclude Include="src\zaf\control\event\parent_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\rect_changed_info.h" />
-    <ClInclude Include="src\zaf\control\event\rich_edit_selection_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\spin_box_value_changed_info.h" />
-    <ClInclude Include="src\zaf\control\event\text_changing_info.h" />
     <ClInclude Include="src\zaf\control\event\scroll_bar_arrow_event_info.h" />
     <ClInclude Include="src\zaf\control\event\scroll_bar_scroll_info.h" />
     <ClInclude Include="src\zaf\control\event\scroll_bar_thumb_event_info.h" />
@@ -591,12 +587,12 @@
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_callback_impl.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_helper.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_object_impl.h" />
-    <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_core.h" />
     <ClInclude Include="src\zaf\control\rich_edit\internal\text_host_bridge.h" />
     <ClInclude Include="src\zaf\control\rich_edit\object_context.h" />
     <ClInclude Include="src\zaf\control\rich_edit\object_info.h" />
     <ClInclude Include="src\zaf\control\rich_edit\ole_callback.h" />
     <ClInclude Include="src\zaf\control\rich_edit\ole_interface.h" />
+    <ClInclude Include="src\zaf\control\rich_edit\rich_edit_events.h" />
     <ClInclude Include="src\zaf\control\rich_edit\text_flag.h" />
     <ClInclude Include="src\zaf\control\scroll_box.h" />
     <ClInclude Include="src\zaf\control\scroll_box_parser.h" />

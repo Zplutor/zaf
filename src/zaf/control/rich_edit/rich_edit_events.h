@@ -8,6 +8,8 @@ namespace zaf {
 
 class RichEdit;
 
+namespace rich_edit {
+
 enum class TextChangeReason {
     Unknown,
     KeyInput,
@@ -17,7 +19,7 @@ enum class TextChangeReason {
 class TextChangingInfo : public EventInfo {
 public:
     TextChangingInfo(
-        const std::shared_ptr<RichEdit>& source,
+        std::shared_ptr<RichEdit> source,
         TextChangeReason reason,
         const Range& text_range,
         const Message& triggered_message);
@@ -49,4 +51,17 @@ private:
     std::shared_ptr<bool> can_change_{};
 };
 
+
+class TextChangedInfo : public EventInfo {
+public:
+    explicit TextChangedInfo(std::shared_ptr<RichEdit> source);
+};
+
+
+class SelectionChangedInfo : public EventInfo {
+public:
+    explicit SelectionChangedInfo(std::shared_ptr<RichEdit> source);
+};
+
+}
 }

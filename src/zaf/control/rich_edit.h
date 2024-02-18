@@ -5,19 +5,19 @@
 #include <richole.h>
 #include <TextServ.h>
 #include <zaf/base/range.h>
-#include <zaf/control/event/rich_edit_selection_changed_info.h>
-#include <zaf/control/event/text_changing_info.h>
+#include <zaf/control/control.h>
 #include <zaf/control/rich_edit/ole_interface.h>
 #include <zaf/control/rich_edit/text_flag.h>
 #include <zaf/control/self_scroll_control.h>
 #include <zaf/control/text_validator.h>
-#include <zaf/control/textual_control.h>
+#include <zaf/graphic/color.h>
+#include <zaf/graphic/font/font.h>
+#include <zaf/control/rich_edit/rich_edit_events.h>
 #include <zaf/graphic/frame.h>
 
 namespace zaf {
 namespace rich_edit {
 namespace internal {
-class RichEditCore;
 class TextHostBridge;
 }
 class EmbeddedObject;
@@ -25,21 +25,52 @@ class OLECallback;
 }
 
 class Caret;
-class RichEditSelectionChangedInfo;
 
 /**
  Represents a rich edit control.   
  */
-class RichEdit : public TextualControl, public SelfScrollControl {
+class RichEdit : public Control, public SelfScrollControl {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_TYPE;
 
 public:
     RichEdit();
     ~RichEdit();
 
+    std::size_t TextLength() const;
+
+    std::wstring Text() const;
+    void SetText(const std::wstring& text);
+
     std::wstring GetText(rich_edit::TextFlag flag) const;
     std::wstring GetTextInRange(const Range& range) const;
+
+    zaf::Font Font() const;
+    void SetFont(const zaf::Font& font);
+
+    std::wstring FontFamily() const;
+    void SetFontFamily(const std::wstring& family);
+
+    float FontSize() const;
+    void SetFontSize(float size);
+
+    FontWeight FontWeight() const;
+    void SetFontWeight(zaf::FontWeight weight);
+
+    TextAlignment TextAlignment() const;
+    void SetTextAlignment(zaf::TextAlignment alignment);
+
+    ParagraphAlignment ParagraphAlignment() const;
+    void SetParagraphAlignment(zaf::ParagraphAlignment alignment);
+
+    WordWrapping WordWrapping() const;
+    void SetWordWrapping(zaf::WordWrapping word_wrapping);
+
+    Color TextColor() const;
+    void SetTextColor(const Color& color);
+
+    ColorPicker TextColorPicker() const;
+    void SetTextColorPicker(ColorPicker color_picker);
 
     /**
      Get the dimensions of the white space inset around the text.
@@ -195,9 +226,10 @@ public:
 
      This event is raise when selected text is changed.
      */
-    Observable<RichEditSelectionChangedInfo> SelectionChangedEvent() const;
+    Observable<rich_edit::SelectionChangedInfo> SelectionChangedEvent() const;
 
-    Observable<TextChangingInfo> TextChangingEvent() const;
+    Observable<rich_edit::TextChangingInfo> TextChangingEvent() const;
+    Observable<rich_edit::TextChangedInfo> TextChangedEvent() const;
 
     Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() override;
     Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
@@ -323,7 +355,6 @@ public:
 protected:
     void Initialize() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
-    zaf::Rect DetermineTextRect() override;
     void Layout(const zaf::Rect& previous_rect) override;
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
 
@@ -342,11 +373,10 @@ protected:
     
     void OnWindowChanged(const WindowChangedInfo& event_info) override;
 
-    virtual void OnSelectionChanged(const RichEditSelectionChangedInfo& event_info);
-    virtual void OnTextChanging(const TextChangingInfo& event_info);
+    virtual void OnSelectionChanged(const rich_edit::SelectionChangedInfo& event_info);
+    virtual void OnTextChanging(const rich_edit::TextChangingInfo& event_info);
 
 private:
-    friend class rich_edit::internal::RichEditCore;
     friend class rich_edit::internal::TextHostBridge;
 
     void HandleSelectionChangedNotification();
@@ -390,13 +420,16 @@ private:
     DWORD property_bits_;
     CHARFORMATW character_format_;
     PARAFORMAT paragraph_format_;
+    zaf::ParagraphAlignment paragraph_alignment_{ zaf::ParagraphAlignment::Near };
+    ColorPicker text_color_picker_;
     DWORD scroll_bar_property_;
     std::optional<float> cached_text_height_;
     Color text_color_;
     Subscription ime_message_subscription_;
 
-    Event<TextChangingInfo> text_changing_event_;
-    Event<RichEditSelectionChangedInfo> selection_changed_event_;
+    Event<rich_edit::TextChangingInfo> text_changing_event_;
+    Event<rich_edit::TextChangedInfo> text_changed_event_;
+    Event<rich_edit::SelectionChangedInfo> selection_changed_event_;
     Event<SelfScrollControlScrollBarChangeInfo> scroll_bar_change_event_;
     Event<SelfScrollControlScrollValuesChangeInfo> scroll_values_change_event_;
 };

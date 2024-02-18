@@ -10,13 +10,13 @@
 #include <zaf/control/rich_edit/internal/ole_callback_impl.h>
 #include <zaf/control/rich_edit/internal/ole_helper.h>
 #include <zaf/control/rich_edit/internal/ole_object_impl.h>
-#include <zaf/control/rich_edit/internal/rich_edit_core.h>
 #include <zaf/control/rich_edit/internal/text_host_bridge.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/internal/theme.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
@@ -91,11 +91,20 @@ ZAF_DEFINE_TYPE_PROPERTY(AllowBeep)
 ZAF_DEFINE_TYPE_PROPERTY(IsReadOnly)
 ZAF_DEFINE_TYPE_PROPERTY(IsMultiline)
 ZAF_DEFINE_TYPE_PROPERTY(UsePasswordCharacter)
+ZAF_DEFINE_TYPE_PROPERTY(Text)
+ZAF_DEFINE_TYPE_PROPERTY(TextLength)
+ZAF_DEFINE_TYPE_PROPERTY(TextColor)
+ZAF_DEFINE_TYPE_PROPERTY(Font)
+ZAF_DEFINE_TYPE_PROPERTY(FontFamily)
+ZAF_DEFINE_TYPE_PROPERTY(FontSize)
+ZAF_DEFINE_TYPE_PROPERTY(FontWeight)
+ZAF_DEFINE_TYPE_PROPERTY(TextAlignment)
+ZAF_DEFINE_TYPE_PROPERTY(ParagraphAlignment)
+ZAF_DEFINE_TYPE_PROPERTY(WordWrapping)
 ZAF_DEFINE_TYPE_END
 
 
 RichEdit::RichEdit() : 
-    TextualControl(std::make_unique<rich_edit::internal::RichEditCore>()),
     property_bits_(kDefaultPropertyBits),
     character_format_(),
     paragraph_format_(),
@@ -421,8 +430,39 @@ void RichEdit::ResetCachedTextHeight() {
 }
 
 
-zaf::Rect RichEdit::DetermineTextRect() {
-    return zaf::Rect();
+std::size_t RichEdit::TextLength() const {
+
+    GETTEXTLENGTHEX param{};
+    param.flags = GTL_DEFAULT | GTL_PRECISE | GTL_NUMCHARS;
+    param.codepage = 1200; //Unicode
+
+    LRESULT length{};
+    text_service_->TxSendMessage(
+        EM_GETTEXTLENGTHEX,
+        reinterpret_cast<WPARAM>(&param),
+        0,
+        &length);
+
+    return length;
+}
+
+
+std::wstring RichEdit::Text() const {
+
+    std::wstring text;
+    BSTR text_buffer{};
+    HRESULT result = text_service_->TxGetText(&text_buffer);
+    if (SUCCEEDED(result) && text_buffer) {
+
+        text.assign(text_buffer);
+        SysFreeString(text_buffer);
+    }
+    return text;
+}
+
+
+void RichEdit::SetText(const std::wstring& text) {
+    text_service_->TxSetText(text.c_str());
 }
 
 
@@ -503,6 +543,187 @@ std::wstring RichEdit::GetTextInRange(const Range& range) const {
     std::wstring result{ bstr };
     SysFreeString(bstr);
     return result;
+}
+
+
+Font RichEdit::Font() const {
+
+    zaf::Font font;
+    font.family_name = character_format_.szFaceName;
+    font.size = static_cast<float>(character_format_.yHeight) / 15;
+    font.weight =
+        (character_format_.dwEffects & CFE_BOLD) ?
+        FontWeight::Bold :
+        FontWeight::Regular;
+
+    return font;
+}
+
+
+void RichEdit::SetFont(const zaf::Font& font) {
+
+    ResetCachedTextHeight();
+
+    character_format_.dwMask |= CFM_FACE;
+    wcscpy_s(character_format_.szFaceName, font.family_name.c_str());
+
+    character_format_.dwMask |= CFM_SIZE;
+    character_format_.yHeight = static_cast<LONG>(font.size * 15);
+
+    character_format_.dwMask |= CFM_BOLD;
+    if (font.weight > FontWeight::Bold) {
+        character_format_.dwEffects |= CFE_BOLD;
+    }
+    else {
+        character_format_.dwEffects &= ~CFE_BOLD;
+    }
+
+    if (text_service_) {
+        text_service_->OnTxPropertyBitsChange(
+            TXTBIT_CHARFORMATCHANGE,
+            TXTBIT_CHARFORMATCHANGE);
+    }
+}
+
+
+std::wstring RichEdit::FontFamily() const {
+    return Font().family_name;
+}
+
+
+void RichEdit::SetFontFamily(const std::wstring& family) {
+
+    auto font = Font();
+    font.family_name = family;
+    SetFont(font);
+}
+
+
+float RichEdit::FontSize() const {
+    return Font().size;
+}
+
+
+void RichEdit::SetFontSize(float size) {
+
+    auto font = Font();
+    font.size = size;
+    SetFont(font);
+}
+
+
+FontWeight RichEdit::FontWeight() const {
+    return Font().weight;
+}
+
+
+void RichEdit::SetFontWeight(zaf::FontWeight weight) {
+
+    auto font = Font();
+    font.weight = weight;
+    SetFont(font);
+}
+
+
+TextAlignment RichEdit::TextAlignment() const {
+
+    switch (paragraph_format_.wAlignment) {
+    case PFA_CENTER:
+        return TextAlignment::Center;
+    case PFA_LEFT:
+        return TextAlignment::Leading;
+    case PFA_RIGHT:
+        return TextAlignment::Tailing;
+    default:
+        return TextAlignment::Leading;
+    }
+}
+
+
+void RichEdit::SetTextAlignment(zaf::TextAlignment alignment) {
+
+    paragraph_format_.dwMask |= PFM_ALIGNMENT;
+
+    switch (alignment) {
+    case TextAlignment::Center:
+        paragraph_format_.wAlignment = PFA_CENTER;
+        break;
+    case TextAlignment::Leading:
+        paragraph_format_.wAlignment = PFA_LEFT;
+        break;
+    case TextAlignment::Tailing:
+        paragraph_format_.wAlignment = PFA_RIGHT;
+        break;
+    default:
+        ZAF_ALERT();
+        break;
+    }
+
+    if (text_service_) {
+        text_service_->OnTxPropertyBitsChange(
+            TXTBIT_PARAFORMATCHANGE,
+            TXTBIT_PARAFORMATCHANGE);
+    }
+}
+
+
+ParagraphAlignment RichEdit::ParagraphAlignment() const {
+    return paragraph_alignment_;
+}
+
+
+void RichEdit::SetParagraphAlignment(zaf::ParagraphAlignment alignment) {
+
+    paragraph_alignment_ = alignment;
+
+    ResetCachedTextHeight();
+    NeedRepaint();
+}
+
+
+WordWrapping RichEdit::WordWrapping() const {
+    return HasPropertyBit(TXTBIT_WORDWRAP) ? WordWrapping::Wrap : WordWrapping::NoWrap;
+}
+
+
+void RichEdit::SetWordWrapping(zaf::WordWrapping word_wrapping) {
+
+    ResetCachedTextHeight();
+    ChangePropertyBit(TXTBIT_WORDWRAP, word_wrapping != WordWrapping::NoWrap);
+}
+
+
+Color RichEdit::TextColor() const {
+    return TextColorPicker()(*this);
+}
+
+
+void RichEdit::SetTextColor(const Color& color) {
+    SetTextColorPicker(CreateColorPicker(color));
+}
+
+
+ColorPicker RichEdit::TextColorPicker() const {
+
+    if (text_color_picker_) {
+        return text_color_picker_;
+    }
+
+    return [](const Control& control) {
+        if (control.IsEnabledInContext()) {
+            return Color::FromRGB(zaf::internal::ControlNormalTextColorRGB);
+        }
+        else {
+            return Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB);
+        }
+    };
+}
+
+
+void RichEdit::SetTextColorPicker(ColorPicker color_picker) {
+
+    text_color_picker_ = std::move(color_picker);
+    NeedRepaint();
 }
 
 
@@ -1337,16 +1558,16 @@ void RichEdit::ScrollValuesChange(bool is_horizontal) {
 
 
 void RichEdit::HandleSelectionChangedNotification() {
-    OnSelectionChanged(RichEditSelectionChangedInfo{ As<RichEdit>(shared_from_this()) });
+    OnSelectionChanged(rich_edit::SelectionChangedInfo{ As<RichEdit>(shared_from_this()) });
 }
 
 
-void RichEdit::OnSelectionChanged(const RichEditSelectionChangedInfo& event_info) {
+void RichEdit::OnSelectionChanged(const rich_edit::SelectionChangedInfo& event_info) {
     selection_changed_event_.Raise(event_info);
 }
 
 
-Observable<RichEditSelectionChangedInfo> RichEdit::SelectionChangedEvent() const {
+Observable<rich_edit::SelectionChangedInfo> RichEdit::SelectionChangedEvent() const {
     return selection_changed_event_.GetObservable();
 }
 
@@ -1366,7 +1587,7 @@ void RichEdit::HandleTextChangedNotification() {
         reinterpret_cast<LPARAM>(&char_format),
         nullptr);
 
-    As<rich_edit::internal::RichEditCore>(Core())->RaiseTextChangedEvent();
+    text_changed_event_.Raise(rich_edit::TextChangedInfo{ As<RichEdit>(shared_from_this()) });
 }
 
 
@@ -1377,12 +1598,12 @@ bool RichEdit::HandleProtectedNotification(const ENPROTECTED& notification_info)
 
 bool RichEdit::RaiseTextChangingEvent(const ENPROTECTED& notification_info) {
 
-    TextChangeReason reason{ TextChangeReason::Unknown };
+    rich_edit::TextChangeReason reason{ rich_edit::TextChangeReason::Unknown };
     if (notification_info.msg == WM_CHAR) {
-        reason = TextChangeReason::KeyInput;
+        reason = rich_edit::TextChangeReason::KeyInput;
     }
     else if (notification_info.msg == WM_PASTE) {
-        reason = TextChangeReason::Paste;
+        reason = rich_edit::TextChangeReason::Paste;
     }
 
     Message triggered_message{
@@ -1392,7 +1613,7 @@ bool RichEdit::RaiseTextChangingEvent(const ENPROTECTED& notification_info) {
         notification_info.lParam
     };
 
-    TextChangingInfo event_info{
+    rich_edit::TextChangingInfo event_info{
         As<RichEdit>(shared_from_this()),
         reason,
         Range::FromCHARRANGE(notification_info.chrg),
@@ -1404,13 +1625,18 @@ bool RichEdit::RaiseTextChangingEvent(const ENPROTECTED& notification_info) {
 }
 
 
-void RichEdit::OnTextChanging(const TextChangingInfo& event_info) {
+void RichEdit::OnTextChanging(const rich_edit::TextChangingInfo& event_info) {
     text_changing_event_.Raise(event_info);
 }
 
 
-Observable<TextChangingInfo> RichEdit::TextChangingEvent() const {
+Observable<rich_edit::TextChangingInfo> RichEdit::TextChangingEvent() const {
     return text_changing_event_.GetObservable();
+}
+
+
+Observable<rich_edit::TextChangedInfo> RichEdit::TextChangedEvent() const {
+    return text_changed_event_.GetObservable();
 }
 
 

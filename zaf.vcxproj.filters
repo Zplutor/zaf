@@ -922,12 +922,6 @@
     <ClCompile Include="src\zaf\control\event\mouse_cursor_changing_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\event\rich_edit_selection_changed_info.cpp">
-      <Filter>zaf\control\event</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\event\text_changing_info.cpp">
-      <Filter>zaf\control\event</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\rich_edit\ole_interface.cpp">
       <Filter>zaf\control\rich_edit</Filter>
     </ClCompile>
@@ -1005,9 +999,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\textual_control\general_textual_core.cpp">
       <Filter>zaf\control\internal\textual_control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\rich_edit\internal\rich_edit_core.cpp">
-      <Filter>zaf\control\rich_edit\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\spin_box.cpp">
       <Filter>zaf\control</Filter>
@@ -1152,6 +1143,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\text\internal\text_inline_object_bridge.cpp">
       <Filter>zaf\graphic\text\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\rich_edit\rich_edit_events.cpp">
+      <Filter>zaf\control\rich_edit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2320,12 +2314,6 @@
     <ClInclude Include="src\zaf\window\message\set_cursor_message.h">
       <Filter>zaf\window\message</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\event\rich_edit_selection_changed_info.h">
-      <Filter>zaf\control\event</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\event\text_changing_info.h">
-      <Filter>zaf\control\event</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\rich_edit\ole_interface.h">
       <Filter>zaf\control\rich_edit</Filter>
     </ClInclude>
@@ -2427,9 +2415,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\textual_control\general_textual_core.h">
       <Filter>zaf\control\internal\textual_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\rich_edit\internal\rich_edit_core.h">
-      <Filter>zaf\control\rich_edit\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\hit_test_result.h">
       <Filter>zaf\graphic\text</Filter>
@@ -2616,6 +2601,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\text_inline_object_metrics.h">
       <Filter>zaf\graphic\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\rich_edit\rich_edit_events.h">
+      <Filter>zaf\control\rich_edit</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
