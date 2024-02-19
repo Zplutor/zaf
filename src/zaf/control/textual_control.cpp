@@ -319,7 +319,11 @@ void TextualControl::SetInlineObjectInRange(
         std::move(inline_object),
         inline_object_painter_);
 
-    GetTextLayout().SetInlineObject(TextInlineObject{ bridge }, range);
+    ranged_inline_objects_.AddRange(range, bridge);
+
+    if (text_layout_) {
+        text_layout_.SetInlineObject(TextInlineObject{ std::move(bridge) }, range);
+    }
 }
 
 
@@ -426,6 +430,9 @@ void TextualControl::OnTextModelChanged(const internal::TextModelChangedInfo& ev
     ranged_font_.EraseSpan(event_info.ReplacedRange());
     ranged_font_.InsertSpan(event_info.NewRange());
 
+    ranged_inline_objects_.EraseSpan(event_info.ReplacedRange());
+    ranged_inline_objects_.InsertSpan(event_info.NewRange());
+
     ranged_text_color_picker_.EraseSpan(event_info.ReplacedRange());
     ranged_text_color_picker_.InsertSpan(event_info.NewRange());
 
@@ -487,6 +494,10 @@ TextLayout TextualControl::CreateTextLayout() const {
 
     for (const auto& each_item : ranged_font_) {
         SetFontToTextLayout(each_item.Value(), each_item.Range(), text_layout);
+    }
+
+    for (const auto& each_item : ranged_inline_objects_) {
+        text_layout.SetInlineObject(TextInlineObject{ each_item.Value() }, each_item.Range());
     }
 
     return text_layout;

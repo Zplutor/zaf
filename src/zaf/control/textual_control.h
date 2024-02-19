@@ -15,6 +15,7 @@
 
 namespace zaf {
 namespace internal {
+class TextInlineObjectBridge;
 class TextInlineObjectPainter;
 class TextModel;
 }
@@ -271,6 +272,7 @@ private:
     ColorPicker default_text_color_picker_;
     internal::RangeMap<ColorPicker> ranged_text_color_picker_;
 
+    internal::RangeMap<COMPtr<internal::TextInlineObjectBridge>> ranged_inline_objects_;
     std::shared_ptr<internal::TextInlineObjectPainter> inline_object_painter_;
 
     zaf::TextAlignment text_alignment_{ TextAlignment::Leading };
