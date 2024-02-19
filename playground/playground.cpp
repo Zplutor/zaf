@@ -73,6 +73,7 @@ public:
         zaf::TextInlineObjectMetrics result;
         result.SetWidth(100);
         result.SetHeight(30);
+        result.SetHeightAboveBaseline(24);
         return result;
     }
 };
@@ -92,7 +93,7 @@ protected:
         text_box->SetText(L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());");
         text_box->SetTextColorInRange(zaf::Color::Red(), zaf::Range{ 5, 6 });
 
-        text_box->SetInlineObject(std::make_shared<InlineObject>(), zaf::Range{ 10, 1 });
+        text_box->SetInlineObjectInRange(std::make_shared<InlineObject>(), zaf::Range{ 10, 1 });
 
         this->RootControl()->AddChild(text_box);
 

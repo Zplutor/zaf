@@ -3,6 +3,8 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/graphic_factory.h>
+#include <zaf/graphic/text/internal/text_inline_object_bridge.h>
+#include <zaf/graphic/text/internal/text_inline_object_painter.h>
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/internal/theme.h>
 #include <zaf/object/type_definition.h>
@@ -46,7 +48,8 @@ ZAF_DEFINE_TYPE_PROPERTY(WordWrapping)
 ZAF_DEFINE_TYPE_END
 
 
-TextualControl::TextualControl() {
+TextualControl::TextualControl() : 
+    inline_object_painter_(std::make_shared<internal::TextInlineObjectPainter>()) {
     
 }
 
@@ -94,6 +97,7 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     auto text_layout = GetTextLayout();
     SetTextColorsToTextLayout(text_layout, canvas.Renderer());
 
+    auto inline_object_guard = inline_object_painter_->BeginPaint(canvas);
     PaintTextLayout(canvas, dirty_rect, text_layout, layout_rect_in_control);
 }
 
@@ -304,6 +308,18 @@ void TextualControl::ResetFonts() {
 
     ReleaseTextLayout();
     NeedRepaint();
+}
+
+
+void TextualControl::SetInlineObjectInRange(
+    std::shared_ptr<CustomTextInlineObject> inline_object, 
+    const Range& range) {
+
+    auto bridge = MakeCOMPtr<internal::TextInlineObjectBridge>(
+        std::move(inline_object),
+        inline_object_painter_);
+
+    GetTextLayout().SetInlineObject(TextInlineObject{ bridge }, range);
 }
 
 

@@ -15,9 +15,11 @@
 
 namespace zaf {
 namespace internal {
+class TextInlineObjectPainter;
 class TextModel;
 }
 
+class CustomTextInlineObject;
 class TextFormat;
 class TextLayout;
 
@@ -149,6 +151,10 @@ public:
      */
     void ResetFonts();
 
+    void SetInlineObjectInRange(
+        std::shared_ptr<CustomTextInlineObject> inline_object,
+        const Range& range);
+
     /**
      Get text alignment.
 
@@ -264,6 +270,8 @@ private:
 
     ColorPicker default_text_color_picker_;
     internal::RangeMap<ColorPicker> ranged_text_color_picker_;
+
+    std::shared_ptr<internal::TextInlineObjectPainter> inline_object_painter_;
 
     zaf::TextAlignment text_alignment_{ TextAlignment::Leading };
     zaf::ParagraphAlignment paragraph_alignment_{ ParagraphAlignment::Near };

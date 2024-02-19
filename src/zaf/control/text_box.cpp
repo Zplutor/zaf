@@ -8,8 +8,6 @@
 #include <zaf/control/text_box/internal/text_box_mouse_input_handler.h>
 #include <zaf/control/text_box/internal/text_box_selection_manager.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/text/internal/text_inline_object_bridge.h>
-#include <zaf/graphic/text/internal/text_inline_object_painter.h>
 #include <zaf/object/type_definition.h>
 
 namespace zaf {
@@ -21,9 +19,7 @@ ZAF_DEFINE_TYPE_PROPERTY(SelectedText)
 ZAF_DEFINE_TYPE_PROPERTY(SelectionRange)
 ZAF_DEFINE_TYPE_END
 
-TextBox::TextBox() : 
-    word_extractor_(text_box::DefaultWordExtractor()),
-    inline_object_painter_(std::make_shared<internal::TextInlineObjectPainter>()) {
+TextBox::TextBox() : word_extractor_(text_box::DefaultWordExtractor()) {
 
 }
 
@@ -170,8 +166,6 @@ void TextBox::PaintTextLayout(
 
     //Paint background before painting text.
     PaintTextBackground(canvas, dirty_rect, text_layout, text_layout_rect);
-
-    auto guard = inline_object_painter_->BeginPaint(canvas);
 
     __super::PaintTextLayout(canvas, dirty_rect, text_layout, text_layout_rect);
 }
@@ -719,18 +713,6 @@ void TextBox::DoScroll(
 
 std::size_t TextBox::LineCount() const {
     return GetTextLayout().GetMetrics().LineCount();
-}
-
-
-void TextBox::SetInlineObject(
-    std::shared_ptr<CustomTextInlineObject> inline_object, 
-    const Range& range) {
-
-    auto bridge = MakeCOMPtr<internal::TextInlineObjectBridge>(
-        std::move(inline_object),
-        inline_object_painter_);
-
-    GetTextLayout().SetInlineObject(TextInlineObject{ bridge }, range);
 }
 
 }

@@ -12,7 +12,6 @@ namespace zaf {
 namespace internal {
 class TextBoxCaretIndexChangedInfo;
 class TextBoxModuleContext;
-class TextInlineObjectPainter;
 }
 
 class Caret;
@@ -182,10 +181,6 @@ public:
     */
     bool IsPositionInsideText(const Point& position) const;
 
-    void SetInlineObject(
-        std::shared_ptr<CustomTextInlineObject> inline_object, 
-        const Range& range);
-
 private:
     friend class internal::TextBoxModuleContext;
 
@@ -278,8 +273,6 @@ private:
 
     ColorPicker selection_background_color_picker_;
     text_box::WordExtractor word_extractor_;
-
-    std::shared_ptr<internal::TextInlineObjectPainter> inline_object_painter_;
 };
 
 }
