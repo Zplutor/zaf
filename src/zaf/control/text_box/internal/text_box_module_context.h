@@ -1,14 +1,12 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
+#include <zaf/control/text_box.h>
+#include <zaf/graphic/text/text_layout.h>
 
 namespace zaf {
-
-class TextBox;
-
 namespace internal {
 
-class TextBoxCore;
 class TextBoxEditor;
 class TextBoxMouseInputHandler;
 class TextBoxKeyboardInputHandler;
@@ -16,7 +14,7 @@ class TextBoxSelectionManager;
 
 class TextBoxModuleContext : NonCopyableNonMovable {
 public:
-    explicit TextBoxModuleContext(TextBox* owner, TextBoxCore* core);
+    explicit TextBoxModuleContext(TextBox* owner);
 
     void Initialize();
 
@@ -24,8 +22,12 @@ public:
         return *owner_;
     }
 
-    TextBoxCore& Core() const {
-        return *core_;
+    TextModel& TextModel() const {
+        return owner_->TextModel();
+    }
+
+    TextLayout GetTextLayout() const {
+        return owner_->GetTextLayout();
     }
 
     TextBoxSelectionManager& SelectionManager() const {
@@ -46,7 +48,6 @@ public:
 
 private:
     TextBox* owner_{};
-    TextBoxCore* core_{};
     std::unique_ptr<TextBoxSelectionManager> selection_manager_;
     std::unique_ptr<TextBoxMouseInputHandler> mouse_input_handler_;
     std::unique_ptr<TextBoxKeyboardInputHandler> keyboard_input_handler_;

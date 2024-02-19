@@ -37,7 +37,7 @@ void TextBox::Initialize() {
 
     __super::Initialize();
 
-    module_context_ = std::make_unique<internal::TextBoxModuleContext>(this, core_);
+    module_context_ = std::make_unique<internal::TextBoxModuleContext>(this);
     module_context_->Initialize();
 
     Subscriptions() += module_context_->SelectionManager().CaretIndexChangedEvent().Subscribe(
@@ -49,11 +49,6 @@ void TextBox::Initialize() {
     SetBackgroundColor(Color::White());
 
     caret_ = zaf::Create<zaf::Caret>(As<TextBox>(shared_from_this()));
-}
-
-
-std::wstring_view TextBox::GetText() const {
-    return 
 }
 
 
@@ -94,7 +89,7 @@ void TextBox::UpdateTextRectOnLayout() {
 
     auto old_text_rect = text_rect_;
     auto content_size = ContentSize();
-    auto text_size = core_->CalculateTextSize(content_size);
+    auto text_size = CalculatePreferredContentSize(content_size);
 
     //Update x and width.
     update_single_dimension(
@@ -202,7 +197,7 @@ void TextBox::PaintTextBackground(
 
     auto background_color = SelectionBackgroundColor();
     auto brush = canvas.Renderer().CreateSolidColorBrush(background_color);
-    auto text = std::get<0>(core_->GetText());
+    auto text = TextModel().GetText();
 
     for (const auto& metrics : metrics_list) {
 
@@ -357,7 +352,7 @@ void TextBox::OnDoubleClick(const DoubleClickInfo& event_info) {
 
 void TextBox::SelectWordAtIndex(std::size_t index, text_box::SelectionOption selection_option) {
 
-    auto word_range = word_extractor_(GetText(), index);
+    auto word_range = word_extractor_(TextModel().GetText(), index);
     SetSelectionRange(word_range, selection_option);
 }
 
@@ -459,7 +454,7 @@ void TextBox::SetSelectionRange(const Range& range, text_box::SelectionOption se
 
 std::wstring TextBox::SelectedText() const {
 
-    auto text = GetText();
+    auto text = TextModel().GetText();
     auto selection_range = this->SelectionRange();
     auto selected_text = text.substr(selection_range.index, selection_range.length);
     return std::wstring{ selected_text };
@@ -555,7 +550,7 @@ void TextBox::EnsureCaretVisible(const zaf::Rect& char_rect_at_caret) {
     }
 
     if (x_changed || y_changed) {
-        core_->LayoutText(text_rect_);
+        UpdateTextRect(text_rect_);
     }
 }
 
@@ -713,7 +708,8 @@ void TextBox::DoScroll(
         text_position = static_cast<float>(-revised_value);
     }
 
-    core_->LayoutText(text_rect_);
+    UpdateTextRect(text_rect_);
+
     if (caret_->IsVisible()) {
         UpdateCaretAtCurrentIndex();
     }

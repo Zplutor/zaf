@@ -1,4 +1,5 @@
 #include <zaf/control/text_box/internal/text_box_selection_manager.h>
+#include <zaf/control/text_box.h>
 #include <zaf/control/text_box/internal/text_box_module_context.h>
 
 namespace zaf::internal {
@@ -19,7 +20,7 @@ void TextBoxSelectionManager::SetSelectionRange(
     text_box::SelectionOption selection_option,
     bool update_caret_x) {
 
-    auto text_length = Context().Core().GetTextLength();
+    auto text_length = Context().Owner().TextLength();
     auto begin_index = (std::min)(range.index, text_length);
     auto end_index = (std::min)(range.EndIndex(), text_length);
     selection_range_ = Range::FromIndexPair(begin_index, end_index);
@@ -38,7 +39,7 @@ void TextBoxSelectionManager::SetSelectionRange(
 
 void TextBoxSelectionManager::AfterSetCaretIndex(bool update_caret_x, bool scroll_to_caret) {
 
-    auto hit_test_result = Context().Core().GetTextLayout().HitTestIndex(caret_index_, false);
+    auto hit_test_result = Context().GetTextLayout().HitTestIndex(caret_index_, false);
     const auto& metrics = hit_test_result.Metrics();
 
     //If content size is empty, the cooridnate of metrics will be less than 0, which is abnormal.

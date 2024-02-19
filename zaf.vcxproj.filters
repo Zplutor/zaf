@@ -2404,9 +2404,6 @@
     <ClInclude Include="src\zaf\base\range.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\textual_control\textual_control_core.h">
-      <Filter>zaf\control\internal\textual_control</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\hit_test_result.h">
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>

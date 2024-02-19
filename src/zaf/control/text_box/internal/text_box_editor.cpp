@@ -3,7 +3,6 @@
 #include <zaf/base/auto_reset.h>
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/control/internal/textual_control/text_model.h>
-#include <zaf/control/text_box/internal/text_box_core.h>
 #include <zaf/control/text_box/internal/text_box_module_context.h>
 #include <zaf/control/text_box/internal/text_box_selection_manager.h>
 #include <zaf/input/keyboard.h>
@@ -57,7 +56,7 @@ TextBoxEditor::TextBoxEditor(TextBoxModuleContext* context) : TextBoxModule(cont
 
 void TextBoxEditor::Initialize() {
 
-    Subscriptions() += Context().Core().GetTextModel()->TextChangedEvent().Subscribe(
+    Subscriptions() += Context().TextModel().TextChangedEvent().Subscribe(
         std::bind(&TextBoxEditor::OnTextModelChanged, this));
 }
 
@@ -194,7 +193,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleDelete() {
         return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
     }
 
-    if (selection_range.EndIndex() == Context().Core().GetTextLength()) {
+    if (selection_range.EndIndex() == Context().Owner().TextLength()) {
         return nullptr;
     }
 
@@ -213,7 +212,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchDelete() {
     }
 
     //Determine the word range.
-    auto text = Context().Core().GetTextModel()->GetText();
+    auto text = Context().TextModel().GetText();
     auto word_range = Context().Owner().WordExtractor()(text, selection_range.index);
 
     //Nothing can be removed.
@@ -239,7 +238,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
 
     //Determine the word range. Note that the index used to determine should be prior to the caret 
     //index.
-    auto text = Context().Core().GetTextModel()->GetText();
+    auto text = Context().TextModel().GetText();
 
     auto determined_index = selection_range.index > 0 ? selection_range.index - 1 : 0;
     auto word_range = Context().Owner().WordExtractor()(text, determined_index);
@@ -260,7 +259,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleCut() {
 
     auto selection_range = Context().SelectionManager().SelectionRange();
-    auto text = std::get<std::wstring_view>(Context().Core().GetText());
+    auto text = Context().TextModel().GetText();
 
     //Copy the selected text to clipboard.
     auto selected_text = text.substr(selection_range.index, selection_range.length);
@@ -344,7 +343,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
     auto old_caret_index = selection_manager.CaretIndex();
     auto old_selection_range = selection_manager.SelectionRange();
 
-    auto old_text = Context().Core().GetTextModel()->GetText().substr(
+    auto old_text = Context().TextModel().GetText().substr(
         replaced_selection_range.index,
         replaced_selection_range.length);
 

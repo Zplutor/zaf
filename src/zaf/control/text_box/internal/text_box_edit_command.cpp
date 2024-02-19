@@ -1,6 +1,5 @@
 #include <zaf/control/text_box/internal/text_box_edit_command.h>
 #include <zaf/control/internal/textual_control/text_model.h>
-#include <zaf/control/text_box/internal/text_box_core.h>
 #include <zaf/control/text_box/internal/text_box_selection_manager.h>
 
 namespace zaf::internal {
@@ -24,7 +23,7 @@ void TextBoxEditCommand::Undo(const TextBoxModuleContext& context) {
 
 void TextBoxEditCommand::Execute(const TextBoxModuleContext& context, const EditInfo& edit_info) {
 
-    context.Core().GetTextModel()->SetTextInRange(
+    context.TextModel().SetTextInRange(
         edit_info.text, 
         edit_info.replaced_selection_range);
 

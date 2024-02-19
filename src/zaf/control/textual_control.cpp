@@ -46,7 +46,7 @@ ZAF_DEFINE_TYPE_PROPERTY(WordWrapping)
 ZAF_DEFINE_TYPE_END
 
 
-TextualControl::TextualControl() : text_model_(std::make_unique<internal::TextModel>()) {
+TextualControl::TextualControl() {
     
 }
 
@@ -60,7 +60,7 @@ void TextualControl::Initialize() {
 
     __super::Initialize();
 
-    Subscriptions() += text_model_->TextChangedEvent().Subscribe(
+    Subscriptions() += text_model_.TextChangedEvent().Subscribe(
         std::bind(&TextualControl::OnTextModelChanged, this, std::placeholders::_1));
 }
 
@@ -68,15 +68,9 @@ void TextualControl::Initialize() {
 void TextualControl::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
-
-    layout_rect_ = DetermineTextRect();
-    layout_rect_.size.width = (std::max)(layout_rect_.size.width, 0.f);
-    layout_rect_.size.height = (std::max)(layout_rect_.size.height, 0.f);
     
-    if (text_layout_) {
-        text_layout_.SetMaxWidth(layout_rect_.size.width);
-        text_layout_.SetMaxHeight(layout_rect_.size.height);
-    }
+    auto text_rect = DetermineTextRect();
+    UpdateTextRect(text_rect);
 }
 
 
@@ -85,13 +79,13 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     __super::Paint(canvas, dirty_rect);
 
     //No need to paint if layout rect is empty.
-    if (layout_rect_.size.width <= 0 || layout_rect_.size.height <= 0) {
+    if (text_rect_.size.width <= 0 || text_rect_.size.height <= 0) {
         return;
     }
 
     auto content_rect = this->ContentRect();
 
-    auto layout_rect_in_control = layout_rect_;
+    auto layout_rect_in_control = text_rect_;
     layout_rect_in_control.AddOffset(content_rect.position);
 
     auto text_boundary = Rect::Intersect(layout_rect_in_control, content_rect);
@@ -135,20 +129,33 @@ zaf::Rect TextualControl::DetermineTextRect() {
 }
 
 
+void TextualControl::UpdateTextRect(const zaf::Rect& text_rect) {
+
+    text_rect_ = text_rect;
+    text_rect_.size.width = (std::max)(text_rect_.size.width, 0.f);
+    text_rect_.size.height = (std::max)(text_rect_.size.height, 0.f);
+
+    if (text_layout_) {
+        text_layout_.SetMaxWidth(text_rect_.size.width);
+        text_layout_.SetMaxHeight(text_rect_.size.height);
+    }
+}
+
+
 std::size_t TextualControl::TextLength() const {
-    return text_model_->GetText().length();
+    return text_model_.GetText().length();
 }
 
 
 std::wstring TextualControl::Text() const {
-    return std::wstring{ text_model_->GetText() };
+    return std::wstring{ text_model_.GetText() };
 }
 
 
 void TextualControl::SetText(const std::wstring& text) {
     
-    if (text_model_->GetText() != text) {
-        text_model_->SetText(text);
+    if (text_model_.GetText() != text) {
+        text_model_.SetText(text);
     }
 }
 
@@ -431,8 +438,8 @@ zaf::Size TextualControl::CalculatePreferredContentSize(const zaf::Size& max_siz
     auto metrics = text_layout.GetMetrics();
 
     //Recover layout size.
-    text_layout.SetMaxWidth(layout_rect_.size.width);
-    text_layout.SetMaxHeight(layout_rect_.size.height);
+    text_layout.SetMaxWidth(text_rect_.size.width);
+    text_layout.SetMaxHeight(text_rect_.size.height);
 
     return zaf::Size{ metrics.GetWidth(ignore_tailing_white_spaces_), metrics.Height() };
 }
@@ -450,12 +457,12 @@ TextLayout TextualControl::GetTextLayout() const {
 
 TextLayout TextualControl::CreateTextLayout() const {
 
-    auto text = text_model_->GetText();
+    auto text = text_model_.GetText();
 
     auto text_layout = GraphicFactory::Instance().CreateTextLayout(
         text,
         CreateTextFormat(),
-        layout_rect_.size);
+        text_rect_.size);
 
     if (default_font_.has_underline) {
         Range range{ 0, text.length() };

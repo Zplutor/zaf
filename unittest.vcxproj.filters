@@ -88,9 +88,6 @@
     <Filter Include="case\control\rich_edit\internal">
       <UniqueIdentifier>{039ad57e-0a2c-42a8-ac7e-6ae0de0c0fc1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="case\control\internal\textual_control">
-      <UniqueIdentifier>{d1bd964d-9f5b-49a4-836b-bff876737c75}</UniqueIdentifier>
-    </Filter>
     <Filter Include="case\graphic\text">
       <UniqueIdentifier>{9f98b1e4-8ed9-4b7c-b690-e788ca27e601}</UniqueIdentifier>
     </Filter>
@@ -429,9 +426,6 @@
     </ClCompile>
     <ClCompile Include="unittest\case\base\range_test.cpp">
       <Filter>case\base</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\internal\textual_control\general_textual_core_test.cpp">
-      <Filter>case\control\internal\textual_control</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\auto_reset_test.cpp">
       <Filter>case\base</Filter>

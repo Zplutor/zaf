@@ -186,6 +186,9 @@ public:
         std::shared_ptr<CustomTextInlineObject> inline_object, 
         const Range& range);
 
+private:
+    friend class internal::TextBoxModuleContext;
+
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
@@ -239,8 +242,6 @@ private:
         const zaf::Rect& layout_rect);
 
     void PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect);
-
-    std::wstring_view GetText() const;
 
     void UpdateTextRectOnLayout();
 

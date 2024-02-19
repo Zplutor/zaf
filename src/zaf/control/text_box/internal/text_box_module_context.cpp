@@ -6,9 +6,8 @@
 
 namespace zaf::internal {
 
-TextBoxModuleContext::TextBoxModuleContext(TextBox* owner, TextBoxCore* core) :
+TextBoxModuleContext::TextBoxModuleContext(TextBox* owner) :
     owner_(owner),
-    core_(core),
     selection_manager_(std::make_unique<TextBoxSelectionManager>(this)),
     mouse_input_handler_(std::make_unique<TextBoxMouseInputHandler>(this)),
     keyboard_input_handler_(std::make_unique<TextBoxKeyboardInputHandler>(this)),

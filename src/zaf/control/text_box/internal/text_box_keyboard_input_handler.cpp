@@ -1,7 +1,6 @@
 #include <zaf/control/text_box/internal/text_box_keyboard_input_handler.h>
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/control/text_box.h>
-#include <zaf/control/text_box/internal/text_box_core.h>
 #include <zaf/control/text_box/internal/text_box_editor.h>
 #include <zaf/control/text_box/internal/text_box_module_context.h>
 #include <zaf/control/text_box/internal/text_box_selection_manager.h>
@@ -57,7 +56,7 @@ void TextBoxKeyboardInputHandler::BackwardCaretIndex(bool expand_selection) {
         if (new_index > 0) {
 
             //Skip CRLF line break.
-            auto text = std::get<std::wstring_view>(Context().Core().GetText());
+            auto text = Context().TextModel().GetText();
             if (text[new_index - 1] == L'\r' && text[new_index] == L'\n') {
 
                 --new_index;
@@ -71,7 +70,7 @@ void TextBoxKeyboardInputHandler::BackwardCaretIndex(bool expand_selection) {
 
 void TextBoxKeyboardInputHandler::ForwardCaretIndex(bool expand_selection) {
 
-    auto text = std::get<std::wstring_view>(Context().Core().GetText());
+    auto text = Context().TextModel().GetText();
 
     auto caret_index = Context().SelectionManager().CaretIndex();
     std::size_t new_index = caret_index;
@@ -106,7 +105,7 @@ void TextBoxKeyboardInputHandler::UpdateCaretIndexVertically(
     bool is_downward,
     bool expand_selection) {
 
-    auto text_layout = Context().Core().GetTextLayout();
+    auto text_layout = Context().GetTextLayout();
     auto caret_hit_test_result = text_layout.HitTestIndex(
         Context().SelectionManager().CaretIndex(),
         false);
@@ -135,7 +134,7 @@ void TextBoxKeyboardInputHandler::UpdateCaretIndexVertically(
 
 TextBoxKeyboardInputHandler::LineInfo TextBoxKeyboardInputHandler::LocateCurrentLineInfo() {
 
-    auto line_metrics = Context().Core().GetTextLayout().GetLineMetrics();
+    auto line_metrics = Context().GetTextLayout().GetLineMetrics();
     auto caret_index = Context().SelectionManager().CaretIndex();
 
     LineInfo line_info;
@@ -163,7 +162,7 @@ void TextBoxKeyboardInputHandler::SetCaretIndexByKey(
     bool update_caret_x) {
 
     auto old_index = Context().SelectionManager().CaretIndex();
-    auto caret_index = (std::min)(new_index, Context().Core().GetTextLength());
+    auto caret_index = (std::min)(new_index, Context().Owner().TextLength());
 
     std::size_t selection_begin = caret_index;
     std::size_t selection_end = caret_index;

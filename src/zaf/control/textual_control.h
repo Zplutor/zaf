@@ -223,6 +223,15 @@ protected:
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
 
     virtual zaf::Rect DetermineTextRect();
+    void UpdateTextRect(const zaf::Rect& text_rect);
+
+    const internal::TextModel& TextModel() const {
+        return text_model_;
+    }
+
+    internal::TextModel& TextModel() {
+        return text_model_;
+    }
 
     TextLayout GetTextLayout() const;
 
@@ -247,7 +256,7 @@ private:
     void ReleaseTextLayout();
 
 private:
-    std::unique_ptr<internal::TextModel> text_model_;
+    internal::TextModel text_model_;
     Event<TextChangedInfo> text_changed_event_;
 
     zaf::Font default_font_{ zaf::Font::Default() };
@@ -263,7 +272,7 @@ private:
     zaf::LineSpacing line_spacing_;
     bool ignore_tailing_white_spaces_{};
 
-    zaf::Rect layout_rect_;
+    zaf::Rect text_rect_;
     mutable TextLayout text_layout_;
 };
 
