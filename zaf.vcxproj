@@ -601,6 +601,7 @@
     <ClInclude Include="src\zaf\control\spin_button.h" />
     <ClInclude Include="src\zaf\control\spin_edit.h" />
     <ClInclude Include="src\zaf\control\split_control.h" />
+    <ClInclude Include="src\zaf\control\textual\text_style.h" />
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\rich_edit.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />

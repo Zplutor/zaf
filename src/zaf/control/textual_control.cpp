@@ -31,6 +31,20 @@ void SetFontToTextLayout(const Font& font, const Range& range, TextLayout& text_
     text_layout.SetHasUnderline(font.has_underline, range);
 }
 
+
+void SetInlineObjectToTextLayout(
+    std::shared_ptr<CustomTextInlineObject> object,
+    const Range& range,
+    std::shared_ptr<internal::TextInlineObjectPainter> painter,
+    TextLayout& text_layout) {
+
+    auto bridge = MakeCOMPtr<internal::TextInlineObjectBridge>(
+        std::move(object),
+        std::move(painter));
+
+    text_layout.SetInlineObject(TextInlineObject{ bridge }, range);
+}
+
 }
 
 ZAF_DEFINE_TYPE(TextualControl)
@@ -62,6 +76,15 @@ TextualControl::~TextualControl() {
 void TextualControl::Initialize() {
 
     __super::Initialize();
+
+    text_style_.SetDefaultTextColorPicker([](const Control& control) {
+        if (control.IsEnabledInContext()) {
+            return Color::FromRGB(internal::ControlNormalTextColorRGB);
+        }
+        else {
+            return Color::FromRGB(internal::ControlDisabledTextColorRGB);
+        }
+    });
 
     Subscriptions() += text_model_.TextChangedEvent().Subscribe(
         std::bind(&TextualControl::OnTextModelChanged, this, std::placeholders::_1));
@@ -104,10 +127,12 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 void TextualControl::SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const {
 
-    for (const auto& each_item : ranged_text_color_picker_) {
-        auto brush = renderer.CreateSolidColorBrush(each_item.Value()(*this));
-        text_layout.SetBrush(brush, each_item.Range());
-    }
+    text_style_.VisitRangedTextColorPickers([this, &text_layout, & renderer](
+        const ColorPicker& picker, const Range& range) {
+    
+        auto brush = renderer.CreateSolidColorBrush(picker(*this));
+        text_layout.SetBrush(brush, range);
+    });
 }
 
 
@@ -164,48 +189,27 @@ void TextualControl::SetText(const std::wstring& text) {
 }
 
 
-ColorPicker TextualControl::TextColorPicker() const {
-
-    if (default_text_color_picker_) {
-        return default_text_color_picker_;
-    }
-
-    return [](const Control& control) {
-        if (control.IsEnabledInContext()) {
-            return Color::FromRGB(internal::ControlNormalTextColorRGB);
-        }
-        else {
-            return Color::FromRGB(internal::ControlDisabledTextColorRGB);
-        }
-    };
+const ColorPicker& TextualControl::TextColorPicker() const {
+    return text_style_.DefaultTextColorPicker();
 }
 
 
-void TextualControl::SetTextColorPicker(const ColorPicker& color_picker) {
+void TextualControl::SetTextColorPicker(ColorPicker color_picker) {
 
-    default_text_color_picker_ = color_picker;
+    text_style_.SetDefaultTextColorPicker(std::move(color_picker));
     ReleaseTextLayout();
     NeedRepaint();
 }
 
 
-ColorPicker TextualControl::GetTextColorPickerAtIndex(std::size_t index) const {
-
-    auto color_picker = ranged_text_color_picker_.GetValueAtIndex(index);
-    if (color_picker) {
-        return *color_picker;
-    }
-
-    return TextColorPicker();
+const ColorPicker& TextualControl::GetTextColorPickerAtIndex(std::size_t index) const {
+    return text_style_.GetTextColorPickerAtIndex(index);
 }
 
 
-void TextualControl::SetTextColorPickerInRange(
-    const ColorPicker& color_picker, 
-    const Range& range) {
+void TextualControl::SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
 
-    ranged_text_color_picker_.AddRange(range, color_picker);
-
+    text_style_.SetTextColorPickerInRange(std::move(color_picker), range);
     ReleaseTextLayout();
     NeedRepaint();
 }
@@ -213,15 +217,15 @@ void TextualControl::SetTextColorPickerInRange(
 
 void TextualControl::ResetTextColorPickers() {
 
-    ranged_text_color_picker_.Clear();
+    text_style_.ClearRangedTextColorPickers();
 
     ReleaseTextLayout();
     NeedRepaint();
 }
 
 
-Font TextualControl::Font() const {
-    return default_font_;
+const Font& TextualControl::Font() const {
+    return text_style_.DefaultFont();
 }
 
 void TextualControl::SetFont(const zaf::Font& font) {
@@ -231,9 +235,9 @@ void TextualControl::SetFont(const zaf::Font& font) {
 }
 
 
-void TextualControl::InnerSetFont(const zaf::Font& new_font) {
+void TextualControl::InnerSetFont(zaf::Font new_font) {
 
-    default_font_ = new_font;
+    text_style_.SetDefaultFont(std::move(new_font));
 
     ReleaseTextLayout();
     RaiseContentChangedEvent();
@@ -280,23 +284,18 @@ void TextualControl::SetFontWeight(zaf::FontWeight weight) {
 }
 
 
-Font TextualControl::GetFontAtIndex(std::size_t index) const {
-
-    auto font = ranged_font_.GetValueAtIndex(index);
-    if (font) {
-        return *font;
-    }
-    return default_font_;
+const zaf::Font& TextualControl::GetFontAtIndex(std::size_t index) const {
+    return text_style_.GetFontAtIndex(index);
 }
 
 
-void TextualControl::SetFontInRange(const zaf::Font& font, const Range& range) {
-
-    ranged_font_.AddRange(range, font);
+void TextualControl::SetFontInRange(zaf::Font font, const Range& range) {
 
     if (text_layout_) {
         SetFontToTextLayout(font, range, text_layout_);
     }
+
+    text_style_.SetFontInRange(std::move(font), range);
 
     NeedRepaint();
 }
@@ -304,7 +303,7 @@ void TextualControl::SetFontInRange(const zaf::Font& font, const Range& range) {
 
 void TextualControl::ResetFonts() {
 
-    ranged_font_.Clear();
+    text_style_.ClearRangedFonts();
 
     ReleaseTextLayout();
     NeedRepaint();
@@ -315,15 +314,18 @@ void TextualControl::SetInlineObjectInRange(
     std::shared_ptr<CustomTextInlineObject> inline_object, 
     const Range& range) {
 
-    auto bridge = MakeCOMPtr<internal::TextInlineObjectBridge>(
-        std::move(inline_object),
-        inline_object_painter_);
-
-    ranged_inline_objects_.AddRange(range, bridge);
-
     if (text_layout_) {
+
+        auto bridge = MakeCOMPtr<internal::TextInlineObjectBridge>(
+            inline_object,
+            inline_object_painter_);
+
         text_layout_.SetInlineObject(TextInlineObject{ std::move(bridge) }, range);
     }
+
+    text_style_.SetInlineObjectInRange(std::move(inline_object), range);
+    NeedRelayout();
+    NeedRepaint();
 }
 
 
@@ -427,14 +429,7 @@ Observable<TextChangedInfo> TextualControl::TextChangedEvent() const {
 
 void TextualControl::OnTextModelChanged(const internal::TextModelChangedInfo& event_info) {
 
-    ranged_font_.EraseSpan(event_info.ReplacedRange());
-    ranged_font_.InsertSpan(event_info.NewRange());
-
-    ranged_inline_objects_.EraseSpan(event_info.ReplacedRange());
-    ranged_inline_objects_.InsertSpan(event_info.NewRange());
-
-    ranged_text_color_picker_.EraseSpan(event_info.ReplacedRange());
-    ranged_text_color_picker_.InsertSpan(event_info.NewRange());
+    text_style_.ResizeRange(event_info.ReplacedRange(), event_info.NewRange().length);
 
     ReleaseTextLayout();
 
@@ -487,18 +482,19 @@ TextLayout TextualControl::CreateTextLayout() const {
         CreateTextFormat(),
         text_rect_.size);
 
-    if (default_font_.has_underline) {
+    if (Font().has_underline) {
         Range range{ 0, text.length() };
         text_layout.SetHasUnderline(true, range);
     }
 
-    for (const auto& each_item : ranged_font_) {
-        SetFontToTextLayout(each_item.Value(), each_item.Range(), text_layout);
-    }
+    text_style_.VisitRangedFonts([&text_layout](const zaf::Font& font, const Range& range) {
+        SetFontToTextLayout(font, range, text_layout);
+    });
 
-    for (const auto& each_item : ranged_inline_objects_) {
-        text_layout.SetInlineObject(TextInlineObject{ each_item.Value() }, each_item.Range());
-    }
+    text_style_.VisitRangedInlineObjects([this, &text_layout](
+        const std::shared_ptr<CustomTextInlineObject>& object, const Range& range) {
+        SetInlineObjectToTextLayout(object, range, inline_object_painter_, text_layout);
+    });
 
     return text_layout;
 }
@@ -506,11 +502,13 @@ TextLayout TextualControl::CreateTextLayout() const {
 
 TextFormat TextualControl::CreateTextFormat() const {
 
+    const auto& default_font = Font();
+
     TextFormatProperties text_format_properties;
-    text_format_properties.font_family_name = default_font_.family_name;
-    text_format_properties.font_size = default_font_.size;
-    text_format_properties.font_weight = default_font_.weight;
-    text_format_properties.font_style = default_font_.style;
+    text_format_properties.font_family_name = default_font.family_name;
+    text_format_properties.font_size = default_font.size;
+    text_format_properties.font_weight = default_font.weight;
+    text_format_properties.font_style = default_font.style;
 
     auto text_format = GraphicFactory::Instance().CreateTextFormat(text_format_properties);
     text_format.SetTextAlignment(text_alignment_);

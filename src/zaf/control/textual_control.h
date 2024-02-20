@@ -5,6 +5,7 @@
 #include <zaf/control/event/text_changed_info.h>
 #include <zaf/control/internal/range_map.h>
 #include <zaf/control/internal/textual_control/text_model.h>
+#include <zaf/control/textual/text_style.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/graphic/text/line_spacing.h>
@@ -62,7 +63,7 @@ public:
     /**
      Get the default color picker of text.
      */
-    ColorPicker TextColorPicker() const;
+    const ColorPicker& TextColorPicker() const;
 
     /**
      Set the default text color.
@@ -74,7 +75,7 @@ public:
     /**
      Set the default color picker of text. 
      */
-    void SetTextColorPicker(const ColorPicker& color_picker);
+    void SetTextColorPicker(ColorPicker color_picker);
 
     /**
     Gets the text color at the specified text index.
@@ -98,12 +99,12 @@ public:
     Returns the default text color picker if the text color picker at the specified index is not 
     set.
     */
-    ColorPicker GetTextColorPickerAtIndex(std::size_t index) const;
+    const ColorPicker& GetTextColorPickerAtIndex(std::size_t index) const;
 
     /**
     Sets color picker in the specified text range.
     */
-    void SetTextColorPickerInRange(const ColorPicker& color_picker, const Range& range);
+    void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range);
 
     /**
      Reset all particular text color pickers to default text color picker.
@@ -117,7 +118,7 @@ public:
 
      Return Font::Default() if this property has not been set.
      */
-    zaf::Font Font() const;
+    const zaf::Font& Font() const;
 
     /**
      Set default font.
@@ -138,12 +139,12 @@ public:
 
     Returns Default() if the font at the specified index is not set.
     */
-    zaf::Font GetFontAtIndex(std::size_t index) const;
+    const zaf::Font& GetFontAtIndex(std::size_t index) const;
 
     /**
     Sets font in the specified text range.
     */
-    void SetFontInRange(const zaf::Font& font, const Range& range);
+    void SetFontInRange(zaf::Font, const Range& range);
 
     /**
      Reset all particular fonts to default font.
@@ -254,7 +255,7 @@ protected:
 private:
     void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const;
 
-    void InnerSetFont(const zaf::Font& new_font);
+    void InnerSetFont(zaf::Font new_font);
     void OnTextModelChanged(const internal::TextModelChangedInfo&);
 
     TextLayout CreateTextLayout() const;
@@ -266,13 +267,7 @@ private:
     internal::TextModel text_model_;
     Event<TextChangedInfo> text_changed_event_;
 
-    zaf::Font default_font_{ zaf::Font::Default() };
-    internal::RangeMap<zaf::Font> ranged_font_;
-
-    ColorPicker default_text_color_picker_;
-    internal::RangeMap<ColorPicker> ranged_text_color_picker_;
-
-    internal::RangeMap<COMPtr<internal::TextInlineObjectBridge>> ranged_inline_objects_;
+    TextStyle text_style_;
     std::shared_ptr<internal::TextInlineObjectPainter> inline_object_painter_;
 
     zaf::TextAlignment text_alignment_{ TextAlignment::Leading };
