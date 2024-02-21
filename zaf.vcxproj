@@ -211,6 +211,7 @@
     <ClCompile Include="src\zaf\control\spin_button.cpp" />
     <ClCompile Include="src\zaf\control\spin_edit.cpp" />
     <ClCompile Include="src\zaf\control\split_control.cpp" />
+    <ClCompile Include="src\zaf\control\textual\styled_text.cpp" />
     <ClCompile Include="src\zaf\control\textual_control.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit.cpp" />
     <ClCompile Include="src\zaf\control\text_box.cpp" />
@@ -495,6 +496,7 @@
     <ClInclude Include="src\zaf\control\internal\combo_box_drop_down_window.h" />
     <ClInclude Include="src\zaf\control\internal\control_event_invoker.h" />
     <ClInclude Include="src\zaf\control\internal\control_updating.h" />
+    <ClInclude Include="src\zaf\control\internal\enumerator.h" />
     <ClInclude Include="src\zaf\control\internal\event_routing_utility.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\image_drawing.h" />
@@ -601,6 +603,7 @@
     <ClInclude Include="src\zaf\control\spin_button.h" />
     <ClInclude Include="src\zaf\control\spin_edit.h" />
     <ClInclude Include="src\zaf\control\split_control.h" />
+    <ClInclude Include="src\zaf\control\textual\styled_text.h" />
     <ClInclude Include="src\zaf\control\textual\text_style.h" />
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\rich_edit.h" />

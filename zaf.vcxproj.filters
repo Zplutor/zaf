@@ -1144,6 +1144,9 @@
     <ClCompile Include="src\zaf\control\rich_edit\rich_edit_events.cpp">
       <Filter>zaf\control\rich_edit</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\textual\styled_text.cpp">
+      <Filter>zaf\control\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2595,6 +2598,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual\text_style.h">
       <Filter>zaf\control\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\styled_text.h">
+      <Filter>zaf\control\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\enumerator.h">
+      <Filter>zaf\control\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

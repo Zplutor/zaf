@@ -99,6 +99,8 @@ public:
         return Iterator{ range_manager_.Items().end() };
     }
 
+    using iterator = Iterator;
+
 private:
     RangeManager range_manager_;
 };
