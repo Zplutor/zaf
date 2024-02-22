@@ -189,6 +189,12 @@ void TextualControl::SetText(const std::wstring& text) {
 }
 
 
+void TextualControl::SetTextInRange(std::wstring_view text, const Range& range) {
+
+
+}
+
+
 const ColorPicker& TextualControl::TextColorPicker() const {
     return text_style_.DefaultTextColorPicker();
 }
@@ -297,15 +303,6 @@ void TextualControl::SetFontInRange(zaf::Font font, const Range& range) {
 
     text_style_.SetFontInRange(std::move(font), range);
 
-    NeedRepaint();
-}
-
-
-void TextualControl::ResetFonts() {
-
-    text_style_.ClearRangedFonts();
-
-    ReleaseTextLayout();
     NeedRepaint();
 }
 

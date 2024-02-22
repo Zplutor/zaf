@@ -39,19 +39,42 @@ public:
     ~TextualControl();
 
     /**
-     Get text length.
-     */
+    Gets the length of the text in the textual control.
+    */
     std::size_t TextLength() const;
 
     /**
-     Get text.
-     */
+    Gets the text of the textual control.
+    */
     std::wstring Text() const;
 
     /**
-     Set text.
-     */
+    Sets the text of the textual control.
+
+    @param text
+        The text to set.
+
+    @remark
+        The style of the new text will be set to default.
+    */
     void SetText(const std::wstring& text);
+
+    /**
+    Sets the specified text to the specified range within the existing text.
+
+    @param text
+        The text to set.
+
+    @param range
+        The range within the existing text where the new text will be set.
+
+    @throw zaf::Error
+        Thrown if the range is not entirely within the existing text.
+
+    @remark
+        The style of the new text will be set to default.
+    */
+    void SetTextInRange(std::wstring_view text, const Range& range);
 
     /**
      Get the default text color.
@@ -61,20 +84,21 @@ public:
     }
 
     /**
-     Get the default color picker of text.
-     */
+    Gets the default text color picker of the textual control.
+    */
     const ColorPicker& TextColorPicker() const;
 
     /**
-     Set the default text color.
-     */
+    Sets the default text color.
+    */
     void SetTextColor(const Color& color) {
         SetTextColorPicker(CreateColorPicker(color));
     }
 
     /**
-     Set the default color picker of text. 
-     */
+    Sets the default text color picker of the textual control and applies the color picker to all
+    existing text.
+    */
     void SetTextColorPicker(ColorPicker color_picker);
 
     /**
@@ -114,15 +138,13 @@ public:
     void ResetTextColorPickers();
 
     /**
-     Get default font.
-
-     Return Font::Default() if this property has not been set.
-     */
+    Gets the default font of the textual control.
+    */
     const zaf::Font& Font() const;
 
     /**
-     Set default font.
-     */
+    Sets the default font of the textual control and applies the font to all existing text.
+    */
     void SetFont(const zaf::Font& font);
 
     std::wstring FontFamily() const;
@@ -142,16 +164,18 @@ public:
     const zaf::Font& GetFontAtIndex(std::size_t index) const;
 
     /**
-    Sets font in the specified text range.
+    Sets the specified font to the specified range within the existing text.
+
+    @param font
+        The font to set.
+
+    @param range
+        The range within the existing text where the font will be set.
+
+    @throw zaf::Error
+        Thrown if the range is not entirely within the existing text.
     */
-    void SetFontInRange(zaf::Font, const Range& range);
-
-    /**
-     Reset all particular fonts to default font.
-
-     This method removes all fonts that set with SetFontInRange.
-     */
-    void ResetFonts();
+    void SetFontInRange(zaf::Font font, const Range& range);
 
     void SetInlineObjectInRange(
         std::shared_ptr<CustomTextInlineObject> inline_object,
