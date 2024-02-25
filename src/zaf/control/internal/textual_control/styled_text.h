@@ -10,13 +10,13 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/text/custom_text_inline_object.h>
 
-namespace zaf {
+namespace zaf::internal {
 
-class StyledText {
+class StyledText : NonCopyable {
 private:
-    using RangedFontMap = internal::RangeMap<zaf::Font>;
-    using RangedColorPickerMap = internal::RangeMap<zaf::ColorPicker>;
-    using InlineObjectMap = internal::RangeMap<std::shared_ptr<CustomTextInlineObject>>;
+    using RangedFontMap = RangeMap<zaf::Font>;
+    using RangedColorPickerMap = RangeMap<zaf::ColorPicker>;
+    using InlineObjectMap = RangeMap<std::shared_ptr<CustomTextInlineObject>>;
 
 public:
     class RangedFont : NonCopyable {
@@ -25,10 +25,10 @@ public:
         const Range& Range() const { return inner_.Range(); }
         const Font& Font() const { return inner_.Value(); }
     private:
-        const RangedFontMap::Item& inner_;
+        RangedFontMap::Item inner_;
     };
 
-    using RangedFontEnumerator = internal::WrapEnumerator<RangedFontMap, RangedFont>;
+    using RangedFontEnumerator = WrapEnumerator<RangedFontMap, RangedFont>;
 
     class RangedColorPicker : NonCopyable {
     public:
@@ -36,11 +36,10 @@ public:
         const Range& Range() const { return inner_.Range(); }
         const ColorPicker& ColorPicker() const { return inner_.Value(); }
     private:
-        const RangedColorPickerMap::Item& inner_;
+        RangedColorPickerMap::Item inner_;
     };
 
-    using RangedColorPickerEnumerator = 
-        internal::WrapEnumerator<RangedColorPickerMap, RangedColorPicker>;
+    using RangedColorPickerEnumerator = WrapEnumerator<RangedColorPickerMap, RangedColorPicker>;
 
     class RangedInlineObject : NonCopyable {
     public:
@@ -50,10 +49,10 @@ public:
             return inner_.Value();
         }
     private:
-        const InlineObjectMap::Item& inner_;
+        InlineObjectMap::Item inner_;
     };
 
-    using InlineObjectEnumerator = internal::WrapEnumerator<InlineObjectMap, RangedInlineObject>;
+    using InlineObjectEnumerator = WrapEnumerator<InlineObjectMap, RangedInlineObject>;
 
 public:
     StyledText();

@@ -5,7 +5,6 @@
 #include <zaf/control/event/text_changed_info.h>
 #include <zaf/control/internal/range_map.h>
 #include <zaf/control/internal/textual_control/text_model.h>
-#include <zaf/control/textual/text_style.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/graphic/text/line_spacing.h>
@@ -46,7 +45,7 @@ public:
     /**
     Gets the text of the textual control.
     */
-    std::wstring Text() const;
+    const std::wstring& Text() const;
 
     /**
     Sets the text of the textual control.
@@ -56,8 +55,9 @@ public:
 
     @remark
         The style of the new text will be set to default.
+        TextChangedEvent will be raised after setting the text.
     */
-    void SetText(const std::wstring& text);
+    void SetText(std::wstring text);
 
     /**
     Sets the specified text to the specified range within the existing text.
@@ -68,32 +68,48 @@ public:
     @param range
         The range within the existing text where the new text will be set.
 
-    @throw zaf::Error
+    @throw std::logic_error
         Thrown if the range is not entirely within the existing text.
 
     @remark
         The style of the new text will be set to default.
+        TextChangedEvent will be raised after setting the text.
     */
     void SetTextInRange(std::wstring_view text, const Range& range);
 
     /**
-     Get the default text color.
-     */
-    Color TextColor() const {
-        return TextColorPicker()(*this);
-    }
+    Gets the default text color of the textual control in current state.
+    */
+    Color TextColor() const;
+
+    /**
+    Sets the default text color of the textual control and applies the color to all existing text.
+    */
+    void SetTextColor(const Color& color);
+
+    /**
+    Gets the text color at the specified text index in current state.
+    */
+    Color GetTextColorAtIndex(std::size_t index) const;
+
+    /**
+    Sets the specified text color to the specified range within the existing range.
+
+    @param color
+        The text color to set.
+
+    @param range
+        The range within the existing text where the text color will be set.
+
+    @throw std::logic_error
+        Thrown if the range is not entirely within the existing text.
+    */
+    void SetTextColorInRange(const Color& color, const Range& range);
 
     /**
     Gets the default text color picker of the textual control.
     */
     const ColorPicker& TextColorPicker() const;
-
-    /**
-    Sets the default text color.
-    */
-    void SetTextColor(const Color& color) {
-        SetTextColorPicker(CreateColorPicker(color));
-    }
 
     /**
     Sets the default text color picker of the textual control and applies the color picker to all
@@ -102,40 +118,23 @@ public:
     void SetTextColorPicker(ColorPicker color_picker);
 
     /**
-    Gets the text color at the specified text index.
-
-    Returns the default text color if the text color at the specified index is not set.
-    */
-    Color GetTextColorAtIndex(std::size_t index) const {
-        return GetTextColorPickerAtIndex(index)(*this);
-    }
-
-    /**
-    Set text color in the specified text range.
-    */
-    void SetTextColorInRange(const Color& color, const Range& range) {
-        SetTextColorPickerInRange(CreateColorPicker(color), range);
-    }
-
-    /**
     Gets the text color picker at the specified text index.
-
-    Returns the default text color picker if the text color picker at the specified index is not 
-    set.
     */
     const ColorPicker& GetTextColorPickerAtIndex(std::size_t index) const;
 
     /**
-    Sets color picker in the specified text range.
+    Sets the specified color picker to the specified range within the existing text.
+
+    @param color_picker
+        The text color picker to set.
+
+    @param range
+        The range within the existing text where the text color picker will be set.
+
+    @throw std::logic_error
+        Thrown if the range is not entirely within the existing text.
     */
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range);
-
-    /**
-     Reset all particular text color pickers to default text color picker.
-
-     This method removes all text color pickers that set with SetTextColorPickerInRange.
-     */
-    void ResetTextColorPickers();
 
     /**
     Gets the default font of the textual control.
@@ -145,10 +144,10 @@ public:
     /**
     Sets the default font of the textual control and applies the font to all existing text.
     */
-    void SetFont(const zaf::Font& font);
+    void SetFont(zaf::Font font);
 
-    std::wstring FontFamily() const;
-    void SetFontFamily(const std::wstring& family);
+    const std::wstring& FontFamily() const;
+    void SetFontFamily(std::wstring family);
 
     float FontSize() const;
     void SetFontSize(float size);
@@ -172,7 +171,7 @@ public:
     @param range
         The range within the existing text where the font will be set.
 
-    @throw zaf::Error
+    @throw std::logic_error
         Thrown if the range is not entirely within the existing text.
     */
     void SetFontInRange(zaf::Font font, const Range& range);
@@ -279,7 +278,6 @@ protected:
 private:
     void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const;
 
-    void InnerSetFont(zaf::Font new_font);
     void OnTextModelChanged(const internal::TextModelChangedInfo&);
 
     TextLayout CreateTextLayout() const;
@@ -291,7 +289,6 @@ private:
     internal::TextModel text_model_;
     Event<TextChangedInfo> text_changed_event_;
 
-    TextStyle text_style_;
     std::shared_ptr<internal::TextInlineObjectPainter> inline_object_painter_;
 
     zaf::TextAlignment text_alignment_{ TextAlignment::Leading };

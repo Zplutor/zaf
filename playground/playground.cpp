@@ -59,7 +59,6 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/text/custom_text_inline_object.h>
-#include <zaf/control/textual/styled_text.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 

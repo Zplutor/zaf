@@ -1,6 +1,61 @@
+#include <optional>
 #include <gtest/gtest.h>
 #include <zaf/creation.h>
 #include <zaf/control/textual_control.h>
+
+TEST(TextualControlTest, SetText) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+
+    bool is_event_raised{};
+    auto sub = control->TextChangedEvent().Subscribe(
+        [&is_event_raised](const zaf::TextChangedInfo& event_info) {
+        is_event_raised = true;
+    });
+
+    control->SetText(L"textual");
+    ASSERT_EQ(control->Text(), L"textual");
+    ASSERT_TRUE(is_event_raised);
+
+    //The event will be raised even if the text is the same.
+    is_event_raised = false;
+    control->SetText(L"textual");
+    ASSERT_EQ(control->Text(), L"textual");
+    ASSERT_TRUE(is_event_raised);
+}
+
+
+TEST(TextualControlTest, SetTextInRange) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+
+    bool is_event_raised{};
+    auto sub = control->TextChangedEvent().Subscribe(
+        [&is_event_raised](const zaf::TextChangedInfo& event_info) {
+        is_event_raised = true;
+    });
+
+    control->SetTextInRange(L"textual", zaf::Range{ 0, 0 });
+    ASSERT_EQ(control->Text(), L"textual");
+    ASSERT_TRUE(is_event_raised);
+
+    //The event will be raised even if the text is the same.
+    is_event_raised = false;
+    control->SetTextInRange(L"textual", zaf::Range{ 0, control->TextLength() });
+    ASSERT_EQ(control->Text(), L"textual");
+    ASSERT_TRUE(is_event_raised);
+
+    //Set sub range text
+    is_event_raised = false;
+    control->SetTextInRange(L"EXT", zaf::Range{ 1, 2 });
+    ASSERT_EQ(control->Text(), L"tEXTtual");
+    ASSERT_TRUE(is_event_raised);
+
+    //Invalid range.
+    ASSERT_THROW(control->SetTextInRange(L"abc", zaf::Range{ 8, 2 }), std::logic_error);
+    ASSERT_THROW(control->SetTextInRange(L"abc", zaf::Range{ 9, 1 }), std::logic_error);
+}
+
 
 TEST(TextualControlTest, AutoSize) {
 
@@ -76,6 +131,30 @@ TEST(TextualControlTest, AutoSizeOnSizeChanged) {
 }
 
 
+TEST(TextualControlTest, SetFont) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+    control->SetText(L"012345");
+
+    zaf::Font font_in_range;
+    font_in_range.size = 50;
+    control->SetFontInRange(font_in_range, zaf::Range{ 1, 3 });
+
+    zaf::Font default_font;
+    default_font.size = 30;
+    control->SetFont(default_font);
+    ASSERT_EQ(control->Font(), default_font);
+
+    //Ranged fonts will be clear after SetFont().
+    ASSERT_EQ(control->GetFontAtIndex(0), default_font);
+    ASSERT_EQ(control->GetFontAtIndex(1), default_font);
+    ASSERT_EQ(control->GetFontAtIndex(2), default_font);
+    ASSERT_EQ(control->GetFontAtIndex(3), default_font);
+    ASSERT_EQ(control->GetFontAtIndex(4), default_font);
+    ASSERT_EQ(control->GetFontAtIndex(5), default_font);
+}
+
+
 TEST(TextualControlTest, SetFontInRange) {
 
     auto control = zaf::Create<zaf::TextualControl>();
@@ -103,6 +182,28 @@ TEST(TextualControlTest, SetFontInRange) {
     ASSERT_EQ(control->GetFontAtIndex(3), default_font);
     ASSERT_EQ(control->GetFontAtIndex(4), default_font);
     ASSERT_EQ(control->GetFontAtIndex(5), default_font);
+}
+
+
+TEST(TextualControlTest, SetTextColor) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+    control->SetText(L"012345");
+
+    zaf::Color color_in_range = zaf::Color::Red();
+    control->SetTextColorInRange(color_in_range, zaf::Range{ 1, 3 });
+
+    zaf::Color default_color = zaf::Color::Black();
+    control->SetTextColor(default_color);
+    ASSERT_EQ(control->TextColor(), default_color);
+
+    //Ranged text colors will be clear after SetTextColor().
+    ASSERT_EQ(control->GetTextColorAtIndex(0), default_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(1), default_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(2), default_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(3), default_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(4), default_color);
+    ASSERT_EQ(control->GetTextColorAtIndex(5), default_color);
 }
 
 

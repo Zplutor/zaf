@@ -193,9 +193,6 @@
     <Filter Include="zaf\graphic\text\internal">
       <UniqueIdentifier>{1a0cdfc9-00f7-4f9e-a544-82f01a834e29}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\control\textual">
-      <UniqueIdentifier>{e3791876-58fc-4e10-a801-b9c532cfa1e5}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1144,8 +1141,8 @@
     <ClCompile Include="src\zaf\control\rich_edit\rich_edit_events.cpp">
       <Filter>zaf\control\rich_edit</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\textual\styled_text.cpp">
-      <Filter>zaf\control\textual</Filter>
+    <ClCompile Include="src\zaf\control\internal\textual_control\styled_text.cpp">
+      <Filter>zaf\control\internal\textual_control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2596,14 +2593,11 @@
     <ClInclude Include="src\zaf\control\rich_edit\rich_edit_events.h">
       <Filter>zaf\control\rich_edit</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\textual\text_style.h">
-      <Filter>zaf\control\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\textual\styled_text.h">
-      <Filter>zaf\control\textual</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\internal\enumerator.h">
       <Filter>zaf\control\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual_control\styled_text.h">
+      <Filter>zaf\control\internal\textual_control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

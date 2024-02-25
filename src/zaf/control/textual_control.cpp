@@ -77,7 +77,7 @@ void TextualControl::Initialize() {
 
     __super::Initialize();
 
-    text_style_.SetDefaultTextColorPicker([](const Control& control) {
+    text_model_.SetTextColorPicker([](const Control& control) {
         if (control.IsEnabledInContext()) {
             return Color::FromRGB(internal::ControlNormalTextColorRGB);
         }
@@ -127,12 +127,11 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 void TextualControl::SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const {
 
-    text_style_.VisitRangedTextColorPickers([this, &text_layout, & renderer](
-        const ColorPicker& picker, const Range& range) {
-    
-        auto brush = renderer.CreateSolidColorBrush(picker(*this));
-        text_layout.SetBrush(brush, range);
-    });
+    for (const auto& each_item : text_model_.StyledText().RangedTextColorPicker()) {
+
+        auto brush = renderer.CreateSolidColorBrush(each_item.ColorPicker()(*this));
+        text_layout.SetBrush(brush, each_item.Range());
+    }
 }
 
 
@@ -176,91 +175,77 @@ std::size_t TextualControl::TextLength() const {
 }
 
 
-std::wstring TextualControl::Text() const {
-    return std::wstring{ text_model_.GetText() };
+const std::wstring& TextualControl::Text() const {
+    return text_model_.GetText();
 }
 
 
-void TextualControl::SetText(const std::wstring& text) {
-    
-    if (text_model_.GetText() != text) {
-        text_model_.SetText(text);
-    }
+void TextualControl::SetText(std::wstring text) {
+    text_model_.SetText(std::move(text));
 }
 
 
 void TextualControl::SetTextInRange(std::wstring_view text, const Range& range) {
+    text_model_.SetTextInRange(text, range);
+}
 
 
+Color TextualControl::TextColor() const {
+    return TextColorPicker()(*this);
+}
+
+void TextualControl::SetTextColor(const Color& color) {
+    SetTextColorPicker(CreateColorPicker(color));
+}
+
+
+Color TextualControl::GetTextColorAtIndex(std::size_t index) const {
+    return GetTextColorPickerAtIndex(index)(*this);
+}
+
+
+void TextualControl::SetTextColorInRange(const Color& color, const Range& range) {
+    SetTextColorPickerInRange(CreateColorPicker(color), range);
 }
 
 
 const ColorPicker& TextualControl::TextColorPicker() const {
-    return text_style_.DefaultTextColorPicker();
+    return text_model_.StyledText().DefaultTextColorPicker();
 }
 
 
 void TextualControl::SetTextColorPicker(ColorPicker color_picker) {
-
-    text_style_.SetDefaultTextColorPicker(std::move(color_picker));
-    ReleaseTextLayout();
-    NeedRepaint();
+    text_model_.SetTextColorPicker(std::move(color_picker));
 }
 
 
 const ColorPicker& TextualControl::GetTextColorPickerAtIndex(std::size_t index) const {
-    return text_style_.GetTextColorPickerAtIndex(index);
+    return text_model_.StyledText().GetTextColorPickerAtIndex(index);
 }
 
 
 void TextualControl::SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
-
-    text_style_.SetTextColorPickerInRange(std::move(color_picker), range);
-    ReleaseTextLayout();
-    NeedRepaint();
-}
-
-
-void TextualControl::ResetTextColorPickers() {
-
-    text_style_.ClearRangedTextColorPickers();
-
-    ReleaseTextLayout();
-    NeedRepaint();
+    text_model_.SetTextColorPickerInRange(std::move(color_picker), range);
 }
 
 
 const Font& TextualControl::Font() const {
-    return text_style_.DefaultFont();
+    return text_model_.StyledText().DefaultFont();
 }
 
-void TextualControl::SetFont(const zaf::Font& font) {
-    if (font != Font()) {
-        InnerSetFont(font);
-    }
-}
-
-
-void TextualControl::InnerSetFont(zaf::Font new_font) {
-
-    text_style_.SetDefaultFont(std::move(new_font));
-
-    ReleaseTextLayout();
-    RaiseContentChangedEvent();
-    NeedRepaint();
+void TextualControl::SetFont(zaf::Font font) {
+    text_model_.SetFont(std::move(font));
 }
 
 
-std::wstring TextualControl::FontFamily() const {
+const std::wstring& TextualControl::FontFamily() const {
     return Font().family_name;
 }
 
-void TextualControl::SetFontFamily(const std::wstring& family) {
+void TextualControl::SetFontFamily(std::wstring family) {
     auto font = Font();
-    if (font.family_name != family) {
-        font.family_name = family;
-        InnerSetFont(font);
-    }
+    font.family_name = std::move(family);
+    SetFont(font);
 }
 
 
@@ -270,10 +255,8 @@ float TextualControl::FontSize() const {
 
 void TextualControl::SetFontSize(float size) {
     auto font = Font();
-    if (font.size != size) {
-        font.size = size;
-        InnerSetFont(font);
-    }
+    font.size = size;
+    SetFont(font);
 }
 
 
@@ -283,27 +266,18 @@ FontWeight TextualControl::FontWeight() const {
 
 void TextualControl::SetFontWeight(zaf::FontWeight weight) {
     auto font = Font();
-    if (font.weight != weight) {
-        font.weight = weight;
-        InnerSetFont(font);
-    }
+    font.weight = weight;
+    SetFont(font);
 }
 
 
 const zaf::Font& TextualControl::GetFontAtIndex(std::size_t index) const {
-    return text_style_.GetFontAtIndex(index);
+    return text_model_.StyledText().GetFontAtIndex(index);
 }
 
 
 void TextualControl::SetFontInRange(zaf::Font font, const Range& range) {
-
-    if (text_layout_) {
-        SetFontToTextLayout(font, range, text_layout_);
-    }
-
-    text_style_.SetFontInRange(std::move(font), range);
-
-    NeedRepaint();
+    text_model_.SetFontInRange(std::move(font), range);
 }
 
 
@@ -311,18 +285,7 @@ void TextualControl::SetInlineObjectInRange(
     std::shared_ptr<CustomTextInlineObject> inline_object, 
     const Range& range) {
 
-    if (text_layout_) {
-
-        auto bridge = MakeCOMPtr<internal::TextInlineObjectBridge>(
-            inline_object,
-            inline_object_painter_);
-
-        text_layout_.SetInlineObject(TextInlineObject{ std::move(bridge) }, range);
-    }
-
-    text_style_.SetInlineObjectInRange(std::move(inline_object), range);
-    NeedRelayout();
-    NeedRepaint();
+    text_model_.SetInlineObjectInRange(std::move(inline_object), range);
 }
 
 
@@ -426,12 +389,46 @@ Observable<TextChangedInfo> TextualControl::TextChangedEvent() const {
 
 void TextualControl::OnTextModelChanged(const internal::TextModelChangedInfo& event_info) {
 
-    text_style_.ResizeRange(event_info.ReplacedRange(), event_info.NewRange().length);
+    //Text layout needs to be released if the text is changed or the entire text's attribute is
+    //changed.
+    if (event_info.IsTextChanged() || !event_info.ChangedRange().has_value()) {
+        ReleaseTextLayout();
+    }
+    //Update the text layout if it doesn't need to be released.
+    else if (text_layout_ && !event_info.IsTextColorChanged()) {
 
-    ReleaseTextLayout();
+        const auto& styled_text = text_model_.StyledText();
+        auto range_index = event_info.ChangedRange()->Range().index;
+        Range new_range{ range_index, event_info.ChangedRange()->NewLength() };
 
-    OnTextChanged(TextChangedInfo{ As<TextualControl>(shared_from_this()) });
-    RaiseContentChangedEvent();
+        if (event_info.IsFontChanged()) {
+            const auto& font = styled_text.GetFontAtIndex(range_index);
+            SetFontToTextLayout(font, new_range, text_layout_);
+        }
+
+        if (event_info.IsInlineObjectChanged()) {
+            auto object = styled_text.GetInlineObjectAtIndex(range_index);
+            if (object) {
+                SetInlineObjectToTextLayout(
+                    object,
+                    new_range,
+                    inline_object_painter_,
+                    text_layout_);
+            }
+        }
+    }
+
+    if (event_info.IsTextChanged() || 
+        event_info.IsFontChanged() || 
+        event_info.IsInlineObjectChanged()) {
+
+        NeedRelayout();
+        RaiseContentChangedEvent();
+
+        if (event_info.IsTextChanged()) {
+            OnTextChanged(TextChangedInfo{ As<TextualControl>(shared_from_this()) });
+        }
+    }
 
     NeedRepaint();
 }
@@ -484,14 +481,17 @@ TextLayout TextualControl::CreateTextLayout() const {
         text_layout.SetHasUnderline(true, range);
     }
 
-    text_style_.VisitRangedFonts([&text_layout](const zaf::Font& font, const Range& range) {
-        SetFontToTextLayout(font, range, text_layout);
-    });
+    for (const auto& each_item : text_model_.StyledText().RangedFonts()) {
+        SetFontToTextLayout(each_item.Font(), each_item.Range(), text_layout);
+    }
 
-    text_style_.VisitRangedInlineObjects([this, &text_layout](
-        const std::shared_ptr<CustomTextInlineObject>& object, const Range& range) {
-        SetInlineObjectToTextLayout(object, range, inline_object_painter_, text_layout);
-    });
+    for (const auto& each_item : text_model_.StyledText().InlineObjects()) {
+        SetInlineObjectToTextLayout(
+            each_item.InlineObject(),
+            each_item.Range(),
+            inline_object_painter_,
+            text_layout);
+    }
 
     return text_layout;
 }
