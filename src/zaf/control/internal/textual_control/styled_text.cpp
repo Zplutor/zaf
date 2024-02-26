@@ -108,7 +108,7 @@ void StyledText::SetInlineObjectInRange(
     CheckRange(range);
     ZAF_EXPECT(object);
 
-    inline_objects_.AddRange(range, std::move(object));
+    inline_objects_.AddRange(range, InlineObjectWrapper{ std::move(object) });
 }
 
 
@@ -124,7 +124,7 @@ std::shared_ptr<CustomTextInlineObject> StyledText::GetInlineObjectAtIndex(
 
     auto object = inline_objects_.GetValueAtIndex(index);
     if (object) {
-        return *object;
+        return object->Object();
     }
 
     return nullptr;

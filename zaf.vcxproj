@@ -523,6 +523,7 @@
     <ClInclude Include="src\zaf\control\internal\scroll_box\general_scroll_layouter.h" />
     <ClInclude Include="src\zaf\control\internal\scroll_box\scroll_box_layouter.h" />
     <ClInclude Include="src\zaf\control\internal\scroll_box\self_scroll_layouter.h" />
+    <ClInclude Include="src\zaf\control\internal\textual_control\inline_object_wrapper.h" />
     <ClInclude Include="src\zaf\control\internal\textual_control\styled_text.h" />
     <ClInclude Include="src\zaf\control\internal\textual_control\text_model.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_control_implementation.h" />

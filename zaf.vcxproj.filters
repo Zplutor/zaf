@@ -2602,5 +2602,8 @@
     <ClInclude Include="src\zaf\control\internal\textual_control\styled_text.h">
       <Filter>zaf\control\internal\textual_control</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual_control\inline_object_wrapper.h">
+      <Filter>zaf\control\internal\textual_control</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

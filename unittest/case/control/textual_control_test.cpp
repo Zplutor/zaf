@@ -2,6 +2,8 @@
 #include <gtest/gtest.h>
 #include <zaf/creation.h>
 #include <zaf/control/textual_control.h>
+#include <zaf/graphic/text/custom_text_inline_object.h>
+#include <zaf/object/type_definition.h>
 
 TEST(TextualControlTest, SetText) {
 
@@ -230,4 +232,44 @@ TEST(TextualControlTest, SetTextColorInRange) {
     ASSERT_EQ(control->GetTextColorAtIndex(3), default_color);
     ASSERT_EQ(control->GetTextColorAtIndex(4), default_color);
     ASSERT_EQ(control->GetTextColorAtIndex(5), default_color);
+}
+
+
+namespace {
+
+std::size_t g_object_count{};
+
+class TestInlineObject : public zaf::CustomTextInlineObject {
+public:
+    ZAF_DECLARE_TYPE;
+
+    TestInlineObject() {
+        ++g_object_count;
+    }
+};
+
+ZAF_DEFINE_TYPE(TestInlineObject);
+ZAF_DEFINE_TYPE_END;
+
+}
+
+TEST(TextualControlTest, SetInlineObjectInRange) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+    control->SetText(L"abc");
+
+    auto object = zaf::Create<TestInlineObject>();
+
+    //Invalid range
+    ASSERT_THROW(control->SetInlineObjectInRange(object, zaf::Range{ 0, 4 }), std::logic_error);
+    ASSERT_THROW(control->SetInlineObjectInRange(object, zaf::Range{ 3, 1 }), std::logic_error);
+
+    control->SetInlineObjectInRange(object, zaf::Range{ 1, 2 });
+    ASSERT_EQ(control->GetInlineObjectAtIndex(0), nullptr);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(1), object);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(2), object);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(3), nullptr);
+
+    //Object will not be copied.
+    ASSERT_EQ(g_object_count, 1);
 }

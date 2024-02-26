@@ -1,5 +1,6 @@
 #include <zaf/control/text_box/internal/text_box_keyboard_input_handler.h>
 #include <zaf/clipboard/clipboard.h>
+#include <zaf/control/internal/textual_control/text_model.h>
 #include <zaf/control/text_box.h>
 #include <zaf/control/text_box/internal/text_box_editor.h>
 #include <zaf/control/text_box/internal/text_box_module_context.h>

@@ -3,8 +3,6 @@
 #include <zaf/base/range.h>
 #include <zaf/control/control.h>
 #include <zaf/control/event/text_changed_info.h>
-#include <zaf/control/internal/range_map.h>
-#include <zaf/control/internal/textual_control/text_model.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/graphic/text/line_spacing.h>
@@ -18,6 +16,7 @@ namespace internal {
 class TextInlineObjectBridge;
 class TextInlineObjectPainter;
 class TextModel;
+class TextModelChangedInfo;
 }
 
 class CustomTextInlineObject;
@@ -176,6 +175,8 @@ public:
     */
     void SetFontInRange(zaf::Font font, const Range& range);
 
+    std::shared_ptr<CustomTextInlineObject> GetInlineObjectAtIndex(std::size_t index) const;
+
     void SetInlineObjectInRange(
         std::shared_ptr<CustomTextInlineObject> inline_object,
         const Range& range);
@@ -257,11 +258,11 @@ protected:
     void UpdateTextRect(const zaf::Rect& text_rect);
 
     const internal::TextModel& TextModel() const {
-        return text_model_;
+        return *text_model_;
     }
 
     internal::TextModel& TextModel() {
-        return text_model_;
+        return *text_model_;
     }
 
     TextLayout GetTextLayout() const;
@@ -286,7 +287,7 @@ private:
     void ReleaseTextLayout();
 
 private:
-    internal::TextModel text_model_;
+    std::unique_ptr<internal::TextModel> text_model_;
     Event<TextChangedInfo> text_changed_event_;
 
     std::shared_ptr<internal::TextInlineObjectPainter> inline_object_painter_;

@@ -7,6 +7,7 @@
 #include <zaf/control/color_picker.h>
 #include <zaf/control/internal/enumerator.h>
 #include <zaf/control/internal/range_map.h>
+#include <zaf/control/internal/textual_control/inline_object_wrapper.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/text/custom_text_inline_object.h>
 
@@ -16,7 +17,7 @@ class StyledText : NonCopyable {
 private:
     using RangedFontMap = RangeMap<zaf::Font>;
     using RangedColorPickerMap = RangeMap<zaf::ColorPicker>;
-    using InlineObjectMap = RangeMap<std::shared_ptr<CustomTextInlineObject>>;
+    using InlineObjectMap = RangeMap<InlineObjectWrapper>;
 
 public:
     class RangedFont : NonCopyable {
@@ -46,7 +47,7 @@ public:
         explicit RangedInlineObject(const InlineObjectMap::Item& item) : inner_(item) { }
         const Range& Range() const { return inner_.Range(); }
         const std::shared_ptr<CustomTextInlineObject>& InlineObject() const { 
-            return inner_.Value();
+            return inner_.Value().Object();
         }
     private:
         InlineObjectMap::Item inner_;

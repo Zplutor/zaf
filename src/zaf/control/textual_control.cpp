@@ -1,5 +1,6 @@
 #include <zaf/control/textual_control.h>
 #include <zaf/base/as.h>
+#include <zaf/control/internal/textual_control/text_model.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/graphic_factory.h>
@@ -63,6 +64,7 @@ ZAF_DEFINE_TYPE_END
 
 
 TextualControl::TextualControl() : 
+    text_model_(std::make_unique<internal::TextModel>()),
     inline_object_painter_(std::make_shared<internal::TextInlineObjectPainter>()) {
     
 }
@@ -77,7 +79,7 @@ void TextualControl::Initialize() {
 
     __super::Initialize();
 
-    text_model_.SetTextColorPicker([](const Control& control) {
+    text_model_->SetTextColorPicker([](const Control& control) {
         if (control.IsEnabledInContext()) {
             return Color::FromRGB(internal::ControlNormalTextColorRGB);
         }
@@ -86,7 +88,7 @@ void TextualControl::Initialize() {
         }
     });
 
-    Subscriptions() += text_model_.TextChangedEvent().Subscribe(
+    Subscriptions() += text_model_->TextChangedEvent().Subscribe(
         std::bind(&TextualControl::OnTextModelChanged, this, std::placeholders::_1));
 }
 
@@ -127,7 +129,7 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 void TextualControl::SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const {
 
-    for (const auto& each_item : text_model_.StyledText().RangedTextColorPicker()) {
+    for (const auto& each_item : text_model_->StyledText().RangedTextColorPicker()) {
 
         auto brush = renderer.CreateSolidColorBrush(each_item.ColorPicker()(*this));
         text_layout.SetBrush(brush, each_item.Range());
@@ -171,22 +173,22 @@ void TextualControl::UpdateTextRect(const zaf::Rect& text_rect) {
 
 
 std::size_t TextualControl::TextLength() const {
-    return text_model_.GetText().length();
+    return text_model_->GetText().length();
 }
 
 
 const std::wstring& TextualControl::Text() const {
-    return text_model_.GetText();
+    return text_model_->GetText();
 }
 
 
 void TextualControl::SetText(std::wstring text) {
-    text_model_.SetText(std::move(text));
+    text_model_->SetText(std::move(text));
 }
 
 
 void TextualControl::SetTextInRange(std::wstring_view text, const Range& range) {
-    text_model_.SetTextInRange(text, range);
+    text_model_->SetTextInRange(text, range);
 }
 
 
@@ -210,31 +212,31 @@ void TextualControl::SetTextColorInRange(const Color& color, const Range& range)
 
 
 const ColorPicker& TextualControl::TextColorPicker() const {
-    return text_model_.StyledText().DefaultTextColorPicker();
+    return text_model_->StyledText().DefaultTextColorPicker();
 }
 
 
 void TextualControl::SetTextColorPicker(ColorPicker color_picker) {
-    text_model_.SetTextColorPicker(std::move(color_picker));
+    text_model_->SetTextColorPicker(std::move(color_picker));
 }
 
 
 const ColorPicker& TextualControl::GetTextColorPickerAtIndex(std::size_t index) const {
-    return text_model_.StyledText().GetTextColorPickerAtIndex(index);
+    return text_model_->StyledText().GetTextColorPickerAtIndex(index);
 }
 
 
 void TextualControl::SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
-    text_model_.SetTextColorPickerInRange(std::move(color_picker), range);
+    text_model_->SetTextColorPickerInRange(std::move(color_picker), range);
 }
 
 
 const Font& TextualControl::Font() const {
-    return text_model_.StyledText().DefaultFont();
+    return text_model_->StyledText().DefaultFont();
 }
 
 void TextualControl::SetFont(zaf::Font font) {
-    text_model_.SetFont(std::move(font));
+    text_model_->SetFont(std::move(font));
 }
 
 
@@ -272,12 +274,19 @@ void TextualControl::SetFontWeight(zaf::FontWeight weight) {
 
 
 const zaf::Font& TextualControl::GetFontAtIndex(std::size_t index) const {
-    return text_model_.StyledText().GetFontAtIndex(index);
+    return text_model_->StyledText().GetFontAtIndex(index);
 }
 
 
 void TextualControl::SetFontInRange(zaf::Font font, const Range& range) {
-    text_model_.SetFontInRange(std::move(font), range);
+    text_model_->SetFontInRange(std::move(font), range);
+}
+
+
+std::shared_ptr<CustomTextInlineObject> TextualControl::GetInlineObjectAtIndex(
+    std::size_t index) const {
+
+    return text_model_->StyledText().GetInlineObjectAtIndex(index);
 }
 
 
@@ -285,7 +294,7 @@ void TextualControl::SetInlineObjectInRange(
     std::shared_ptr<CustomTextInlineObject> inline_object, 
     const Range& range) {
 
-    text_model_.SetInlineObjectInRange(std::move(inline_object), range);
+    text_model_->SetInlineObjectInRange(std::move(inline_object), range);
 }
 
 
@@ -397,7 +406,7 @@ void TextualControl::OnTextModelChanged(const internal::TextModelChangedInfo& ev
     //Update the text layout if it doesn't need to be released.
     else if (text_layout_ && !event_info.IsTextColorChanged()) {
 
-        const auto& styled_text = text_model_.StyledText();
+        const auto& styled_text = text_model_->StyledText();
         auto range_index = event_info.ChangedRange()->Range().index;
         Range new_range{ range_index, event_info.ChangedRange()->NewLength() };
 
@@ -469,7 +478,7 @@ TextLayout TextualControl::GetTextLayout() const {
 
 TextLayout TextualControl::CreateTextLayout() const {
 
-    auto text = text_model_.GetText();
+    auto text = text_model_->GetText();
 
     auto text_layout = GraphicFactory::Instance().CreateTextLayout(
         text,
@@ -481,11 +490,11 @@ TextLayout TextualControl::CreateTextLayout() const {
         text_layout.SetHasUnderline(true, range);
     }
 
-    for (const auto& each_item : text_model_.StyledText().RangedFonts()) {
+    for (const auto& each_item : text_model_->StyledText().RangedFonts()) {
         SetFontToTextLayout(each_item.Font(), each_item.Range(), text_layout);
     }
 
-    for (const auto& each_item : text_model_.StyledText().InlineObjects()) {
+    for (const auto& each_item : text_model_->StyledText().InlineObjects()) {
         SetInlineObjectToTextLayout(
             each_item.InlineObject(),
             each_item.Range(),
