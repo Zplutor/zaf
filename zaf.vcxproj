@@ -273,6 +273,7 @@
     <ClCompile Include="src\zaf\graphic\graphic_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\rounded_rect.cpp" />
     <ClCompile Include="src\zaf\graphic\size.cpp" />
+    <ClCompile Include="src\zaf\graphic\text\custom_text_inline_object.cpp" />
     <ClCompile Include="src\zaf\graphic\text\internal\text_inline_object_bridge.cpp" />
     <ClCompile Include="src\zaf\graphic\text\paragraph_alignment.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_alignment.cpp" />

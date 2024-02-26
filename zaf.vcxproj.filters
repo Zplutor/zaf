@@ -1144,6 +1144,9 @@
     <ClCompile Include="src\zaf\control\internal\textual_control\styled_text.cpp">
       <Filter>zaf\control\internal\textual_control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\text\custom_text_inline_object.cpp">
+      <Filter>zaf\graphic\text</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

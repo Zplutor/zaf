@@ -64,11 +64,11 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
 class InlineObject : public zaf::CustomTextInlineObject {
 public:
-    void Paint(zaf::Canvas& canvas) override {
+    void Paint(zaf::Canvas& canvas) const override {
         canvas.DrawRectangle(zaf::Rect{ 0, 0, 100, 30 }, zaf::Color::Red());
     }
 
-    zaf::TextInlineObjectMetrics GetMetrics() override {
+    zaf::TextInlineObjectMetrics GetMetrics() const override {
 
         zaf::TextInlineObjectMetrics result;
         result.SetWidth(100);
