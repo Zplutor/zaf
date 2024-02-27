@@ -33,8 +33,8 @@ void StyledText::SetTextInRange(std::wstring_view text, const Range& range) {
     ranged_fonts_.InsertSpan(new_range);
     ranged_text_color_pickers_.EraseSpan(range);
     ranged_text_color_pickers_.InsertSpan(new_range);
-    inline_objects_.EraseSpan(range);
-    inline_objects_.InsertSpan(new_range);
+
+    inline_objects_.RemoveRangesIntersectWith(range);
 }
 
 
@@ -108,6 +108,7 @@ void StyledText::SetInlineObjectInRange(
     CheckRange(range);
     ZAF_EXPECT(object);
 
+    inline_objects_.RemoveRangesIntersectWith(range);
     inline_objects_.AddRange(range, InlineObjectWrapper{ std::move(object) });
 }
 

@@ -24,6 +24,7 @@ public:
 
     bool RemoveRange(const Range& removed_range);
     bool RemoveRange(std::size_t index, std::size_t length);
+    void RemoveRangesIntersectWith(const Range& range);
 
     bool InsertSpan(const Range& span_range);
     bool EraseSpan(const Range& span_range);

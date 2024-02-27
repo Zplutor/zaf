@@ -24,10 +24,8 @@ class TextFormat;
 class TextLayout;
 
 /**
- Represents a textual control.
-
- This is the base class of all controls that can display text.
- */
+Represents a control that displays text.
+*/
 class TextualControl : public Control {
 public:
     ZAF_DECLARE_TYPE
@@ -145,19 +143,38 @@ public:
     */
     void SetFont(zaf::Font font);
 
+    /**
+    Gets the family name of the default font.
+    */
     const std::wstring& FontFamily() const;
+
+    /**
+    Sets the family name of the default font and applies the font to all existing text.
+    */
     void SetFontFamily(std::wstring family);
 
+    /**
+    Gets the size of the default font.
+    */
     float FontSize() const;
+
+    /**
+    Sets the size of the default font and applies the font to all existing text.
+    */
     void SetFontSize(float size);
 
+    /**
+    Gets the weight of the default font.
+    */
     FontWeight FontWeight() const;
+
+    /**
+    Sets the weight of the default font and applies the font to all existing text.
+    */
     void SetFontWeight(zaf::FontWeight weight);
 
     /**
     Gets the font at the specified text index.
-
-    Returns Default() if the font at the specified index is not set.
     */
     const zaf::Font& GetFontAtIndex(std::size_t index) const;
 
@@ -175,8 +192,40 @@ public:
     */
     void SetFontInRange(zaf::Font font, const Range& range);
 
+    /**
+    Gets the associated inline object at the specified text index.
+
+    @param index
+        The index of the text.
+
+    @return 
+        The inline object associated with the text at specified index, or nullptr if there is no 
+        associated inline object.
+
+    @throw std::logic_error
+        Thrown if index is greater than the length of the text.
+    */
     std::shared_ptr<CustomTextInlineObject> GetInlineObjectAtIndex(std::size_t index) const;
 
+    /**
+    Sets the specified inline object to the specified range within the existing text.
+
+    @param inline_object
+        The inline object to set.
+
+    @param range
+        The range within the existing text where the inline object will be set.
+
+    @throw std::logic_error
+        Thrown if the inline_object is nullptr, or if the inline_object has been set to a textual 
+        control, or if the range is not entirely within the existing text.
+
+    @remark
+        After being set, the inline object is associated with the specified range of text. The 
+        inline object will be displayed instead of the sub-range text. Any content modification to 
+        the sub-range text will remove the association. If there are inline objects that are 
+        already associated with the sub-range text, they will be removed as well.
+    */
     void SetInlineObjectInRange(
         std::shared_ptr<CustomTextInlineObject> inline_object,
         const Range& range);

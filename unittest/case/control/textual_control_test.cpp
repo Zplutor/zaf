@@ -256,20 +256,87 @@ ZAF_DEFINE_TYPE_END;
 TEST(TextualControlTest, SetInlineObjectInRange) {
 
     auto control = zaf::Create<zaf::TextualControl>();
-    control->SetText(L"abc");
+    control->SetText(L"abcd");
 
     auto object = zaf::Create<TestInlineObject>();
 
+    //Null pointer
+    ASSERT_THROW(control->SetInlineObjectInRange(nullptr, zaf::Range{ 0, 1 }), std::logic_error);
+
     //Invalid range
-    ASSERT_THROW(control->SetInlineObjectInRange(object, zaf::Range{ 0, 4 }), std::logic_error);
-    ASSERT_THROW(control->SetInlineObjectInRange(object, zaf::Range{ 3, 1 }), std::logic_error);
+    ASSERT_THROW(control->SetInlineObjectInRange(object, zaf::Range{ 0, 5 }), std::logic_error);
+    ASSERT_THROW(control->SetInlineObjectInRange(object, zaf::Range{ 4, 1 }), std::logic_error);
 
     control->SetInlineObjectInRange(object, zaf::Range{ 1, 2 });
+    auto object2 = zaf::Create<TestInlineObject>();
+    control->SetInlineObjectInRange(object2, zaf::Range{ 3, 1 });
     ASSERT_EQ(control->GetInlineObjectAtIndex(0), nullptr);
     ASSERT_EQ(control->GetInlineObjectAtIndex(1), object);
     ASSERT_EQ(control->GetInlineObjectAtIndex(2), object);
-    ASSERT_EQ(control->GetInlineObjectAtIndex(3), nullptr);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(3), object2);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(4), nullptr);
 
     //Object will not be copied.
-    ASSERT_EQ(g_object_count, 1);
+    ASSERT_EQ(g_object_count, 2);
+}
+
+
+TEST(TextualControlTest, RemoveInlineObjectOnTextChanged) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+    auto check_no_inline_object = [&control]() {
+        for (auto index : zaf::Range{ 0, control->TextLength() }) {
+            if (control->GetInlineObjectAtIndex(index)) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    control->SetText(L"abc");
+    auto object = zaf::Create<TestInlineObject>();
+
+    //Set entire text will remove the inline object.
+    control->SetInlineObjectInRange(object, zaf::Range{ 0, 3 });
+    control->SetText(L"abc");
+    ASSERT_TRUE(check_no_inline_object());
+
+    //Modify the text will remove the inline object.
+    control->SetInlineObjectInRange(object, zaf::Range{ 0, 3 });
+    control->SetTextInRange(L"B", zaf::Range{ 1, 1 });
+    ASSERT_TRUE(check_no_inline_object());
+
+    //Insert text will remove the inline object.
+    control->SetInlineObjectInRange(object, zaf::Range{ 0, 3 });
+    control->SetTextInRange(L"B", zaf::Range{ 1, 0 });
+    ASSERT_TRUE(check_no_inline_object());
+}
+
+
+TEST(TextualControlTest, RemoveInlineObjectOnSetInlineObject) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+    control->SetText(L"abc");
+
+    auto object1 = zaf::Create<TestInlineObject>();
+    control->SetInlineObjectInRange(object1, zaf::Range{ 0, 3 });
+
+    auto object2 = zaf::Create<TestInlineObject>();
+    control->SetInlineObjectInRange(object2, zaf::Range{ 1, 2 });
+
+    ASSERT_EQ(control->GetInlineObjectAtIndex(0), nullptr);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(1), object2);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(2), object2);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(3), nullptr);
+}
+
+
+TEST(TextualControlTest, GetInlineObjectAtIndex) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+    control->SetText(L"0");
+
+    ASSERT_EQ(control->GetInlineObjectAtIndex(0), nullptr);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(1), nullptr);
+    ASSERT_THROW(control->GetInlineObjectAtIndex(2), std::logic_error);
 }
