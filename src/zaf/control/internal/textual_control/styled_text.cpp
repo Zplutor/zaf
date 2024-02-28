@@ -28,15 +28,11 @@ void StyledText::SetTextInRange(std::wstring_view text, const Range& range) {
 
     text_.replace(range.index, range.length, text);
 
-    Range new_range{ range.index, text.length() };
-    ranged_fonts_.EraseSpan(range);
-    ranged_fonts_.InsertSpan(new_range);
-    ranged_text_color_pickers_.EraseSpan(range);
-    ranged_text_color_pickers_.InsertSpan(new_range);
+    ranged_fonts_.ReplaceSpan(range, text.length());
+    ranged_text_color_pickers_.ReplaceSpan(range, text.length());
 
     inline_objects_.RemoveRangesIntersectWith(range);
-    inline_objects_.EraseSpan(range);
-    inline_objects_.InsertSpan(new_range);
+    inline_objects_.ReplaceSpan(range, text.length());
 }
 
 

@@ -134,41 +134,7 @@ bool RangeManager::InsertSpan(const Range& span_range) {
         return false;
     }
 
-    bool range_changed{};
-
-    //Loop over all items to modify ranges.
-    auto iterator = items_.begin();
-    while (iterator != items_.end()) {
-
-        const auto current_range = iterator->range;
-
-        //The span is inserted before or at the current range, advance the current range.
-        if (span_range.index <= current_range.index) {
-
-            iterator->range.index += span_range.length;
-            range_changed = true;
-        }
-        //The span is inserted at the middle of the current range, break the current range.
-        else if (span_range.index < current_range.EndIndex()) {
-
-            //Shorten the length of the head sub range.
-            iterator->range.length = span_range.index - current_range.index;
-
-            //Insert the new tail sub range.
-            Item tail_item;
-            tail_item.range.index = span_range.EndIndex();
-            tail_item.range.length = current_range.EndIndex() - span_range.index;
-            tail_item.value = iterator->value;
-
-            ++iterator;
-            iterator = items_.insert(iterator, std::move(tail_item));
-            range_changed = true;
-        }
-
-        ++iterator;
-    }
-
-    return range_changed;
+    return ReplaceSpan(Range{ span_range.index, 0 }, span_range.length);
 }
 
 
@@ -179,6 +145,12 @@ bool RangeManager::EraseSpan(const Range& span_range) {
         return false;
     }
 
+    return ReplaceSpan(span_range, 0);
+}
+
+
+bool RangeManager::ReplaceSpan(const Range& span_range, std::size_t new_length) {
+
     bool range_changed{};
 
     //Loop over all items to modify ranges.
@@ -187,17 +159,18 @@ bool RangeManager::EraseSpan(const Range& span_range) {
 
         const auto current_range = iterator->range;
 
-        //The span is erased before the current range, retreat the current range.
+        //The span is replaced before the current range, modify the index of the current range.
         if (span_range.EndIndex() <= current_range.index) {
 
             iterator->range.index -= span_range.length;
+            iterator->range.index += new_length;
             ++iterator;
             range_changed = true;
             continue;
         }
 
-        //The current range is fully contained by(or equals to) the erased span, remove the current
-        //range.
+        //The current range is fully contained by(or equals to) the replaced span, remove the 
+        //current range.
         if (span_range.Contains(current_range)) {
 
             iterator = items_.erase(iterator);
@@ -205,31 +178,51 @@ bool RangeManager::EraseSpan(const Range& span_range) {
             continue;
         }
 
-        //The erased span is a portion of the current range, decline the length of the current 
-        //range.
+        //The replaced span is a portion of the current range.
         if ((span_range.index > current_range.index) &&
             (span_range.EndIndex() < current_range.EndIndex())) {
 
-            iterator->range.length -= span_range.length;
-            ++iterator;
-            range_changed = true;
+            //The new length is zero, decline the length of the current range.
+            if (new_length == 0) {
+
+                iterator->range.length -= span_range.length;
+                ++iterator;
+                range_changed = true;
+            }
+            //Otherwise, break the current range.
+            else {
+
+                //Shorten the length of the head sub range.
+                iterator->range.length = span_range.index - current_range.index;
+
+                //Insert the new tail sub range.
+                Item tail_item;
+                tail_item.range.index = span_range.index + new_length;
+                tail_item.range.length = current_range.EndIndex() - span_range.EndIndex();
+                tail_item.value = iterator->value;
+
+                ++iterator;
+                iterator = items_.insert(iterator, std::move(tail_item));
+                ++iterator;
+                range_changed = true;
+            }
             continue;
         }
 
-        //The erased span is overlapped with the head of the current range, modify the current 
-        //range.
+        //The replaced span is overlapped with the head of the current range, modify the index of
+        //the current range.
         if ((span_range.EndIndex() > current_range.index) &&
             (span_range.EndIndex() < current_range.EndIndex())) {
 
-            iterator->range.index = span_range.index;
+            iterator->range.index = span_range.index + new_length;
             iterator->range.length = current_range.EndIndex() - span_range.EndIndex();
             ++iterator;
             range_changed = true;
             continue;
         }
 
-        //The erased span is overlapped with the tail of the current range, modify the current 
-        //span.
+        //The replaced span is overlapped with the tail of the current range, modify the length of
+        //the current span.
         if ((span_range.index > current_range.index) &&
             (span_range.index < current_range.EndIndex())) {
 

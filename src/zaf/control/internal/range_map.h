@@ -28,6 +28,10 @@ public:
         return range_manager_.EraseSpan(span_range);
     }
 
+    bool ReplaceSpan(const Range& span_range, std::size_t new_length) {
+        return range_manager_.ReplaceSpan(span_range, new_length);
+    }
+
     void Clear() {
         range_manager_.Clear();
     }

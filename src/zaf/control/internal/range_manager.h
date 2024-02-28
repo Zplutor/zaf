@@ -28,6 +28,7 @@ public:
 
     bool InsertSpan(const Range& span_range);
     bool EraseSpan(const Range& span_range);
+    bool ReplaceSpan(const Range& span_range, std::size_t new_length);
 
     void Clear();
 
