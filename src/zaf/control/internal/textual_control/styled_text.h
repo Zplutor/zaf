@@ -98,7 +98,7 @@ public:
 
     RangedColorPickerEnumerator RangedTextColorPicker() const;
 
-    void SetInlineObjectInRange(
+    void AttachInlineObjectToRange(
         std::shared_ptr<CustomTextInlineObject> object,
         const Range& range);
 

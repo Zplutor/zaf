@@ -290,11 +290,11 @@ std::shared_ptr<CustomTextInlineObject> TextualControl::GetInlineObjectAtIndex(
 }
 
 
-void TextualControl::SetInlineObjectInRange(
+void TextualControl::AttachInlineObjectToRange(
     std::shared_ptr<CustomTextInlineObject> inline_object, 
     const Range& range) {
 
-    text_model_->SetInlineObjectInRange(std::move(inline_object), range);
+    text_model_->AttachInlineObjectToRange(std::move(inline_object), range);
 }
 
 

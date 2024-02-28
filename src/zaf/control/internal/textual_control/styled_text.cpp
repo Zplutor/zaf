@@ -35,6 +35,8 @@ void StyledText::SetTextInRange(std::wstring_view text, const Range& range) {
     ranged_text_color_pickers_.InsertSpan(new_range);
 
     inline_objects_.RemoveRangesIntersectWith(range);
+    inline_objects_.EraseSpan(range);
+    inline_objects_.InsertSpan(new_range);
 }
 
 
@@ -101,7 +103,7 @@ StyledText::RangedColorPickerEnumerator StyledText::RangedTextColorPicker() cons
 }
 
 
-void StyledText::SetInlineObjectInRange(
+void StyledText::AttachInlineObjectToRange(
     std::shared_ptr<CustomTextInlineObject> object,
     const Range& range) {
 

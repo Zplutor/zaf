@@ -253,7 +253,7 @@ ZAF_DEFINE_TYPE_END;
 
 }
 
-TEST(TextualControlTest, SetInlineObjectInRange) {
+TEST(TextualControlTest, AttachInlineObjectToRange) {
 
     auto control = zaf::Create<zaf::TextualControl>();
     control->SetText(L"abcd");
@@ -261,15 +261,15 @@ TEST(TextualControlTest, SetInlineObjectInRange) {
     auto object = zaf::Create<TestInlineObject>();
 
     //Null pointer
-    ASSERT_THROW(control->SetInlineObjectInRange(nullptr, zaf::Range{ 0, 1 }), std::logic_error);
+    ASSERT_THROW(control->AttachInlineObjectToRange(nullptr, zaf::Range{ 0, 1 }), std::logic_error);
 
     //Invalid range
-    ASSERT_THROW(control->SetInlineObjectInRange(object, zaf::Range{ 0, 5 }), std::logic_error);
-    ASSERT_THROW(control->SetInlineObjectInRange(object, zaf::Range{ 4, 1 }), std::logic_error);
+    ASSERT_THROW(control->AttachInlineObjectToRange(object, zaf::Range{ 0, 5 }), std::logic_error);
+    ASSERT_THROW(control->AttachInlineObjectToRange(object, zaf::Range{ 4, 1 }), std::logic_error);
 
-    control->SetInlineObjectInRange(object, zaf::Range{ 1, 2 });
+    control->AttachInlineObjectToRange(object, zaf::Range{ 1, 2 });
     auto object2 = zaf::Create<TestInlineObject>();
-    control->SetInlineObjectInRange(object2, zaf::Range{ 3, 1 });
+    control->AttachInlineObjectToRange(object2, zaf::Range{ 3, 1 });
     ASSERT_EQ(control->GetInlineObjectAtIndex(0), nullptr);
     ASSERT_EQ(control->GetInlineObjectAtIndex(1), object);
     ASSERT_EQ(control->GetInlineObjectAtIndex(2), object);
@@ -297,37 +297,62 @@ TEST(TextualControlTest, RemoveInlineObjectOnTextChanged) {
     auto object = zaf::Create<TestInlineObject>();
 
     //Set entire text will remove the inline object.
-    control->SetInlineObjectInRange(object, zaf::Range{ 0, 3 });
+    control->AttachInlineObjectToRange(object, zaf::Range{ 0, 3 });
     control->SetText(L"abc");
     ASSERT_TRUE(check_no_inline_object());
 
     //Modify the text will remove the inline object.
-    control->SetInlineObjectInRange(object, zaf::Range{ 0, 3 });
+    control->AttachInlineObjectToRange(object, zaf::Range{ 0, 3 });
     control->SetTextInRange(L"B", zaf::Range{ 1, 1 });
     ASSERT_TRUE(check_no_inline_object());
 
     //Insert text will remove the inline object.
-    control->SetInlineObjectInRange(object, zaf::Range{ 0, 3 });
+    control->AttachInlineObjectToRange(object, zaf::Range{ 0, 3 });
     control->SetTextInRange(L"B", zaf::Range{ 1, 0 });
     ASSERT_TRUE(check_no_inline_object());
 }
 
 
-TEST(TextualControlTest, RemoveInlineObjectOnSetInlineObject) {
+TEST(TextualControlTest, RemoveInlineObjectOnAttachInlineObject) {
 
     auto control = zaf::Create<zaf::TextualControl>();
     control->SetText(L"abc");
 
     auto object1 = zaf::Create<TestInlineObject>();
-    control->SetInlineObjectInRange(object1, zaf::Range{ 0, 3 });
+    control->AttachInlineObjectToRange(object1, zaf::Range{ 0, 3 });
 
     auto object2 = zaf::Create<TestInlineObject>();
-    control->SetInlineObjectInRange(object2, zaf::Range{ 1, 2 });
+    control->AttachInlineObjectToRange(object2, zaf::Range{ 1, 2 });
 
     ASSERT_EQ(control->GetInlineObjectAtIndex(0), nullptr);
     ASSERT_EQ(control->GetInlineObjectAtIndex(1), object2);
     ASSERT_EQ(control->GetInlineObjectAtIndex(2), object2);
     ASSERT_EQ(control->GetInlineObjectAtIndex(3), nullptr);
+}
+
+
+TEST(TextualControlTest, MoveInlineObjectOnTextChanged) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+    control->SetText(L"abc");
+
+    auto object = zaf::Create<TestInlineObject>();
+    control->AttachInlineObjectToRange(object, zaf::Range{ 1, 1 });
+
+    control->SetTextInRange(L"BB", zaf::Range{ 1, 0 });
+    ASSERT_EQ(control->GetInlineObjectAtIndex(0), nullptr);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(1), nullptr);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(2), nullptr);
+    ASSERT_NE(control->GetInlineObjectAtIndex(3), nullptr);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(4), nullptr);
+
+    control->SetTextInRange(L"D", zaf::Range{ 1, 0 });
+    ASSERT_EQ(control->GetInlineObjectAtIndex(0), nullptr);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(1), nullptr);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(2), nullptr);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(3), nullptr);
+    ASSERT_NE(control->GetInlineObjectAtIndex(4), nullptr);
+    ASSERT_EQ(control->GetInlineObjectAtIndex(5), nullptr);
 }
 
 

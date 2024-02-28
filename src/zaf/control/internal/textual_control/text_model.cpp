@@ -58,11 +58,11 @@ void TextModel::SetTextColorPickerInRange(ColorPicker picker, const Range& range
 }
 
 
-void TextModel::SetInlineObjectInRange(
+void TextModel::AttachInlineObjectToRange(
     std::shared_ptr<CustomTextInlineObject> object,
     const Range& range) {
 
-    styled_text_.SetInlineObjectInRange(std::move(object), range);
+    styled_text_.AttachInlineObjectToRange(std::move(object), range);
     RaiseChangedEvent(TextModelAttribute::InlineObject, range, range.length);
 }
 

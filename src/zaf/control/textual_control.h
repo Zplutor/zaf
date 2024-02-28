@@ -193,14 +193,14 @@ public:
     void SetFontInRange(zaf::Font font, const Range& range);
 
     /**
-    Gets the associated inline object at the specified text index.
+    Gets the attached inline object at the specified text index.
 
     @param index
         The index of the text.
 
     @return 
-        The inline object associated with the text at specified index, or nullptr if there is no 
-        associated inline object.
+        The inline object attached to the text at specified index, or nullptr if there is no 
+        attached inline object.
 
     @throw std::logic_error
         Thrown if index is greater than the length of the text.
@@ -208,25 +208,25 @@ public:
     std::shared_ptr<CustomTextInlineObject> GetInlineObjectAtIndex(std::size_t index) const;
 
     /**
-    Sets the specified inline object to the specified range within the existing text.
+    Attaches the specified inline object to the specified range within the existing text.
 
     @param inline_object
-        The inline object to set.
+        The inline object to attach.
 
     @param range
-        The range within the existing text where the inline object will be set.
+        The range within the existing text where the inline object will be attached.
 
     @throw std::logic_error
-        Thrown if the inline_object is nullptr, or if the inline_object has been set to a textual 
-        control, or if the range is not entirely within the existing text.
+        Thrown if the inline_object is nullptr, or if the inline_object has been attached to a
+        textual control, or if the range is not entirely within the existing text.
 
     @remark
-        After being set, the inline object is associated with the specified range of text. The 
-        inline object will be displayed instead of the sub-range text. Any content modification to 
-        the sub-range text will remove the association. If there are inline objects that are 
-        already associated with the sub-range text, they will be removed as well.
+        After being attached, the inline object will be displayed instead of the sub-range text. 
+        Any content modification to the sub-range text will remove the attachment. If there are 
+        inline objects that are already attached with the sub-range text, they will be removed as
+        well.
     */
-    void SetInlineObjectInRange(
+    void AttachInlineObjectToRange(
         std::shared_ptr<CustomTextInlineObject> inline_object,
         const Range& range);
 

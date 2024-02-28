@@ -113,7 +113,7 @@ public:
     void SetTextColorPicker(ColorPicker picker);
     void SetTextColorPickerInRange(ColorPicker picker, const Range& range);
 
-    void SetInlineObjectInRange(
+    void AttachInlineObjectToRange(
         std::shared_ptr<CustomTextInlineObject> object,
         const Range& range);
 
