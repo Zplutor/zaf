@@ -27,7 +27,7 @@ OLEHelper::ObjectInfo OLEHelper::FindObjectAtScreenPosition(
     ObjectInfo result;
     result.object = inner_object_info->object;
     result.text_position = static_cast<std::size_t>(inner_object_info->text_position);
-    result.is_in_selection_range = rich_edit.GetSelectionRange().Contain(result.text_position);
+    result.is_in_selection_range = rich_edit.GetSelectionRange().Contains(result.text_position);
 
     POINT mouse_position_in_object = position_in_pixels;
     mouse_position_in_object.x -= inner_object_info->object_x;

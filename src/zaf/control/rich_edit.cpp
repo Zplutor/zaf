@@ -370,7 +370,7 @@ void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect)
                 dirty_rect_in_object,
                 rich_edit::PaintContext{
                     static_cast<std::size_t>(object_info.Index()),
-                    selection_range.Contain(object_info.Index())
+                    selection_range.Contains(object_info.Index())
                 }
             );
         }

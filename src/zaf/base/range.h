@@ -83,16 +83,16 @@ public:
     }
 
     /**
-    Determines if a specified index is in the range.
+    Determines if the specified index is in the range.
     */
-    bool Contain(std::size_t index) const {
+    bool Contains(std::size_t index) const {
         return (Index() <= index) && (index < EndIndex());
     }
 
     /**
     Determines whether the current range fully contains the other range.
     */
-    bool Contain(const Range& other) const {
+    bool Contains(const Range& other) const {
         return (Index() <= other.Index()) && (other.EndIndex() <= EndIndex());
     }
 

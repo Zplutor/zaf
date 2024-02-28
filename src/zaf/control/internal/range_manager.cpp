@@ -63,7 +63,7 @@ bool RangeManager::ReplaceRange(const Range& replaced_range, std::optional<std::
 
         //The new range contains(or equals to) the current range, the current range should be
         //removed.
-        if (replaced_range.Contain(current_range)) {
+        if (replaced_range.Contains(current_range)) {
             iterator = items_.erase(iterator);
             range_changed = true;
             continue;
@@ -198,7 +198,7 @@ bool RangeManager::EraseSpan(const Range& span_range) {
 
         //The current range is fully contained by(or equals to) the erased span, remove the current
         //range.
-        if (span_range.Contain(current_range)) {
+        if (span_range.Contains(current_range)) {
 
             iterator = items_.erase(iterator);
             range_changed = true;
@@ -255,7 +255,7 @@ const RangeManager::Item* RangeManager::FindItemContainsIndex(std::size_t index)
 
     for (const auto& each_item : items_) {
 
-        if (each_item.range.Contain(index)) {
+        if (each_item.range.Contains(index)) {
             return &each_item;
         }
     }
