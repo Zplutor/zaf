@@ -55,6 +55,20 @@ public:
         return FromIndexPair(char_range.cpMin, char_range.cpMax);
     }
 
+    /**
+    Makes an intersection range of two ranges.
+
+    @return 
+        The intersection range. If there is no intersection between the two ranges, the length of 
+        the result is zero.
+    */
+    static Range MakeIntersection(const Range& range1, const Range& range2) {
+        auto start_index = (std::max)(range1.index, range2.index);
+        auto end_index = (std::min)(range1.EndIndex(), range2.EndIndex());
+        auto intersection_length = (start_index <= end_index) ? (end_index - start_index) : 0;
+        return Range{ start_index, intersection_length };
+    }
+
 public:
     Range() { }
     Range(std::size_t index, std::size_t length) : index(index), length(length) { }

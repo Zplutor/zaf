@@ -107,6 +107,8 @@ public:
     std::shared_ptr<CustomTextInlineObject> GetInlineObjectAtIndex(std::size_t index) const;
     InlineObjectEnumerator InlineObjects() const;
 
+    StyledText Slice(const Range& range) const;
+
 private:
     void CheckRange(const Range& range) const;
 

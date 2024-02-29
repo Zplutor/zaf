@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <zaf/base/range.h>
 
+using namespace zaf;
+
 TEST(RangeTest, Constructor) {
 
     {
@@ -102,6 +104,18 @@ TEST(RangeTest, ContainsRange) {
     ASSERT_TRUE(range.Contains(zaf::Range{ 8, 0 }));
     ASSERT_FALSE(range.Contains(zaf::Range{ 5, 4 }));
     ASSERT_FALSE(range.Contains(zaf::Range{ 5, 5 }));
+}
+
+
+TEST(RangeTest, MakeIntersection) {
+
+    ASSERT_EQ(Range::MakeIntersection(Range(), Range()), Range());
+    ASSERT_EQ(Range::MakeIntersection(Range(10, 10), Range(5, 5)), Range(10, 0));
+    ASSERT_EQ(Range::MakeIntersection(Range(10, 10), Range(8, 4)), Range(10, 2));
+    ASSERT_EQ(Range::MakeIntersection(Range(10, 10), Range(12, 0)), Range(12, 0));
+    ASSERT_EQ(Range::MakeIntersection(Range(10, 10), Range(13, 1)), Range(13, 1));
+    ASSERT_EQ(Range::MakeIntersection(Range(10, 10), Range(15, 10)), Range(15, 5));
+    ASSERT_EQ(Range::MakeIntersection(Range(10, 10), Range(20, 10)), Range(20, 0));
 }
 
 

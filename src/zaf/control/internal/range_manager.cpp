@@ -256,6 +256,5 @@ const RangeManager::Item* RangeManager::FindItemContainsIndex(std::size_t index)
     return nullptr;
 }
 
-
 }
 }

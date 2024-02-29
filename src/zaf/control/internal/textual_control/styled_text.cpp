@@ -135,6 +135,76 @@ StyledText::InlineObjectEnumerator StyledText::InlineObjects() const {
 }
 
 
+StyledText StyledText::Slice(const Range& range) const {
+
+    CheckRange(range);
+
+    StyledText result;
+    result.SetDefaultFont(DefaultFont());
+    result.SetDefaultTextColorPicker(DefaultTextColorPicker());
+
+    if (range.length == 0) {
+        return result;
+    }
+
+    //Text
+    result.SetText(text_.substr(range.index, range.length));
+
+    //Ranged fonts
+    for (const auto& each_item : ranged_fonts_) {
+
+        if (each_item.Range().index >= range.EndIndex()) {
+            continue;
+        }
+
+        if (each_item.Range().EndIndex() <= range.index) {
+            break;
+        }
+
+        auto intersection_range = Range::MakeIntersection(each_item.Range(), range);
+        intersection_range.index -= range.index;
+        result.SetFontInRange(each_item.Value(), intersection_range);
+    }
+
+    //Ranged text color pickers
+    for (const auto& each_item : ranged_text_color_pickers_) {
+
+        if (each_item.Range().index >= range.EndIndex()) {
+            continue;
+        }
+
+        if (each_item.Range().EndIndex() <= range.index) {
+            break;
+        }
+
+        auto intersection_range = Range::MakeIntersection(each_item.Range(), range);
+        intersection_range.index -= range.index;
+        result.SetTextColorPickerInRange(each_item.Value(), intersection_range);
+    }
+
+    //Inline objects.
+    for (const auto& each_item : inline_objects_) {
+
+        if (each_item.Range().index >= range.EndIndex()) {
+            continue;
+        }
+
+        if (each_item.Range().EndIndex() <= range.index) {
+            break;
+        }
+
+        if (range.Contains(each_item.Range())) {
+
+            Range new_range = each_item.Range();
+            new_range.index -= range.index;
+            result.AttachInlineObjectToRange(each_item.Value().Object(), new_range);
+        }
+    }
+
+    return result;
+}
+
+
 void StyledText::CheckRange(const Range& range) const {
 
     ZAF_EXPECT(
