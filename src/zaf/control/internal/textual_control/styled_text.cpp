@@ -146,7 +146,7 @@ StyledTextSlice StyledText::Slice(const Range& range) const {
     //Text
     auto slice_text = text_.substr(range.index, range.length);
 
-    RangedStyle slice_style;
+    RangedTextStyle slice_style;
 
     //Ranged fonts
     for (const auto& each_item : ranged_fonts_) {
@@ -205,11 +205,11 @@ void StyledText::ReplaceSlice(const Range& slice_range, const StyledTextSlice& n
     SetTextInRange(new_slice.Text(), slice_range);
 
     const auto& ranged_style = new_slice.RangedStyle();
-    for (const auto& each_item : ranged_style.RangedFonts()) {
+    for (const auto& each_item : ranged_style.Fonts()) {
         ranged_fonts_.AddRange(each_item.Range(), each_item.Font());
     }
 
-    for (const auto& each_item : ranged_style.RangedTextColorPicker()) {
+    for (const auto& each_item : ranged_style.TextColorPickers()) {
         ranged_text_color_pickers_.AddRange(each_item.Range(), each_item.ColorPicker());
     }
 

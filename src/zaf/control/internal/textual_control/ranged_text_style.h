@@ -9,37 +9,37 @@
 
 namespace zaf::internal {
 
-class RangedStyle {
+class RangedTextStyle {
 public:
-    using RangedFontMap = RangeMap<zaf::Font>;
-    using RangedColorPickerMap = RangeMap<zaf::ColorPicker>;
+    using FontMap = RangeMap<zaf::Font>;
+    using ColorPickerMap = RangeMap<zaf::ColorPicker>;
     using InlineObjectMap = RangeMap<InlineObjectWrapper>;
 
-    class RangedFont : NonCopyable {
+    class FontItem : NonCopyable {
     public:
-        explicit RangedFont(const RangedFontMap::Item& item) : inner_(item) { }
+        explicit FontItem(const FontMap::Item& item) : inner_(item) { }
         const Range& Range() const { return inner_.Range(); }
         const Font& Font() const { return inner_.Value(); }
     private:
-        RangedFontMap::Item inner_;
+        FontMap::Item inner_;
     };
 
-    using RangedFontEnumerator = WrapEnumerator<RangedFontMap, RangedFont>;
+    using FontEnumerator = WrapEnumerator<FontMap, FontItem>;
 
-    class RangedColorPicker : NonCopyable {
+    class ColorPickerItem : NonCopyable {
     public:
-        explicit RangedColorPicker(const RangedColorPickerMap::Item& item) : inner_(item) { }
+        explicit ColorPickerItem(const ColorPickerMap::Item& item) : inner_(item) { }
         const Range& Range() const { return inner_.Range(); }
         const ColorPicker& ColorPicker() const { return inner_.Value(); }
     private:
-        RangedColorPickerMap::Item inner_;
+        ColorPickerMap::Item inner_;
     };
 
-    using RangedColorPickerEnumerator = WrapEnumerator<RangedColorPickerMap, RangedColorPicker>;
+    using ColorPickerEnumerator = WrapEnumerator<ColorPickerMap, ColorPickerItem>;
 
-    class RangedInlineObject : NonCopyable {
+    class InlineObjectItem : NonCopyable {
     public:
-        explicit RangedInlineObject(const InlineObjectMap::Item& item) : inner_(item) { }
+        explicit InlineObjectItem(const InlineObjectMap::Item& item) : inner_(item) { }
         const Range& Range() const { return inner_.Range(); }
         const std::shared_ptr<CustomTextInlineObject>& InlineObject() const {
             return inner_.Value().Object();
@@ -48,32 +48,32 @@ public:
         InlineObjectMap::Item inner_;
     };
 
-    using InlineObjectEnumerator = WrapEnumerator<InlineObjectMap, RangedInlineObject>;
+    using InlineObjectEnumerator = WrapEnumerator<InlineObjectMap, InlineObjectItem>;
 
 public:
-    RangedFontEnumerator RangedFonts() const {
-        return RangedFontEnumerator{ ranged_fonts_ };
+    FontEnumerator Fonts() const {
+        return FontEnumerator{ fonts_ };
     }
 
     const Font* GetFontAtIndex(std::size_t index) const {
-        return ranged_fonts_.GetValueAtIndex(index);
+        return fonts_.GetValueAtIndex(index);
     }
 
     void SetFontInRange(Font font, const Range& range) {
-        ranged_fonts_.AddRange(range, std::move(font));
+        fonts_.AddRange(range, std::move(font));
     }
 
-    RangedColorPickerEnumerator RangedTextColorPicker() const {
-        return RangedColorPickerEnumerator{ ranged_text_color_pickers_ };
+    ColorPickerEnumerator TextColorPickers() const {
+        return ColorPickerEnumerator{ color_pickers_ };
     }
 
     const ColorPicker* GetTextColorPickerAtIndex(std::size_t index) const {
-        return ranged_text_color_pickers_.GetValueAtIndex(index);
+        return color_pickers_.GetValueAtIndex(index);
     }
 
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
         ZAF_EXPECT(color_picker);
-        ranged_text_color_pickers_.AddRange(range, std::move(color_picker));
+        color_pickers_.AddRange(range, std::move(color_picker));
     }
 
     InlineObjectEnumerator InlineObjects() const {
@@ -96,9 +96,15 @@ public:
         inline_objects_.AddRange(range, InlineObjectWrapper{ std::move(object) });
     }
 
+    void Clear() {
+        fonts_.Clear();
+        color_pickers_.Clear();
+        inline_objects_.Clear();
+    }
+
 private:
-    RangedFontMap ranged_fonts_;
-    RangedColorPickerMap ranged_text_color_pickers_;
+    FontMap fonts_;
+    ColorPickerMap color_pickers_;
     InlineObjectMap inline_objects_;
 };
 

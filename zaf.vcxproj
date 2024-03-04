@@ -144,7 +144,6 @@
     <ClCompile Include="src\zaf\control\internal\scroll_box\general_scroll_layouter.cpp" />
     <ClCompile Include="src\zaf\control\internal\scroll_box\scroll_box_layouter.cpp" />
     <ClCompile Include="src\zaf\control\internal\scroll_box\self_scroll_layouter.cpp" />
-    <ClCompile Include="src\zaf\control\internal\textual_control\ranged_style.cpp" />
     <ClCompile Include="src\zaf\control\internal\textual_control\styled_text.cpp" />
     <ClCompile Include="src\zaf\control\internal\textual_control\text_model.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_control_implementation.cpp" />
@@ -525,7 +524,7 @@
     <ClInclude Include="src\zaf\control\internal\scroll_box\scroll_box_layouter.h" />
     <ClInclude Include="src\zaf\control\internal\scroll_box\self_scroll_layouter.h" />
     <ClInclude Include="src\zaf\control\internal\textual_control\inline_object_wrapper.h" />
-    <ClInclude Include="src\zaf\control\internal\textual_control\ranged_style.h" />
+    <ClInclude Include="src\zaf\control\internal\textual_control\ranged_text_style.h" />
     <ClInclude Include="src\zaf\control\internal\textual_control\styled_text.h" />
     <ClInclude Include="src\zaf\control\internal\textual_control\styled_text_slice.h" />
     <ClInclude Include="src\zaf\control\internal\textual_control\text_model.h" />
