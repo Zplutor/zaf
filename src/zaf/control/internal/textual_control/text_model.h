@@ -117,6 +117,8 @@ public:
         std::shared_ptr<CustomTextInlineObject> object,
         const Range& range);
 
+    void ReplaceStyledTextSlice(const Range& replaced_range, const StyledTextSlice& slice);
+
     Observable<TextModelChangedInfo> TextChangedEvent() const {
         return changed_event_.AsObservable();
     }

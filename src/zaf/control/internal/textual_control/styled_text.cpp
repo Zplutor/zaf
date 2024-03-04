@@ -135,20 +135,18 @@ StyledText::InlineObjectEnumerator StyledText::InlineObjects() const {
 }
 
 
-StyledText StyledText::Slice(const Range& range) const {
+StyledTextSlice StyledText::Slice(const Range& range) const {
 
     CheckRange(range);
 
-    StyledText result;
-    result.SetDefaultFont(DefaultFont());
-    result.SetDefaultTextColorPicker(DefaultTextColorPicker());
-
     if (range.length == 0) {
-        return result;
+        return StyledTextSlice{ range.index, {}, {} };
     }
 
     //Text
-    result.SetText(text_.substr(range.index, range.length));
+    auto slice_text = text_.substr(range.index, range.length);
+
+    RangedStyle slice_style;
 
     //Ranged fonts
     for (const auto& each_item : ranged_fonts_) {
@@ -161,9 +159,7 @@ StyledText StyledText::Slice(const Range& range) const {
             break;
         }
 
-        auto intersection_range = Range::MakeIntersection(each_item.Range(), range);
-        intersection_range.index -= range.index;
-        result.SetFontInRange(each_item.Value(), intersection_range);
+        slice_style.SetFontInRange(each_item.Value(), each_item.Range());
     }
 
     //Ranged text color pickers
@@ -177,9 +173,7 @@ StyledText StyledText::Slice(const Range& range) const {
             break;
         }
 
-        auto intersection_range = Range::MakeIntersection(each_item.Range(), range);
-        intersection_range.index -= range.index;
-        result.SetTextColorPickerInRange(each_item.Value(), intersection_range);
+        slice_style.SetTextColorPickerInRange(each_item.Value(), each_item.Range());
     }
 
     //Inline objects.
@@ -194,14 +188,36 @@ StyledText StyledText::Slice(const Range& range) const {
         }
 
         if (range.Contains(each_item.Range())) {
-
             Range new_range = each_item.Range();
-            new_range.index -= range.index;
-            result.AttachInlineObjectToRange(each_item.Value().Object(), new_range);
+            slice_style.AttachInlineObjectToRange(each_item.Value().Object(), new_range);
         }
     }
 
-    return result;
+    return StyledTextSlice{ range.index, std::move(slice_text), std::move(slice_style) };
+}
+
+
+void StyledText::ReplaceSlice(const Range& slice_range, const StyledTextSlice& new_slice) {
+
+    CheckRange(slice_range);
+    ZAF_EXPECT(slice_range.index == new_slice.Index());
+
+    SetTextInRange(new_slice.Text(), slice_range);
+
+    const auto& ranged_style = new_slice.RangedStyle();
+    for (const auto& each_item : ranged_style.RangedFonts()) {
+        ranged_fonts_.AddRange(each_item.Range(), each_item.Font());
+    }
+
+    for (const auto& each_item : ranged_style.RangedTextColorPicker()) {
+        ranged_text_color_pickers_.AddRange(each_item.Range(), each_item.ColorPicker());
+    }
+
+    for (const auto& each_item : ranged_style.InlineObjects()) {
+        inline_objects_.AddRange(
+            each_item.Range(), 
+            InlineObjectWrapper{ std::move(each_item.InlineObject()) });
+    }
 }
 
 

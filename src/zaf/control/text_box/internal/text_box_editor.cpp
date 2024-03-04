@@ -343,20 +343,18 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
     auto old_caret_index = selection_manager.CaretIndex();
     auto old_selection_range = selection_manager.SelectionRange();
 
-    auto old_text = Context().TextModel().GetText().substr(
-        replaced_selection_range.index,
-        replaced_selection_range.length);
+    auto old_text = Context().TextModel().StyledText().Slice(replaced_selection_range);
 
     TextBoxEditCommand::EditInfo undo_info{
-        std::wstring{ old_text },
         Range{ replaced_selection_range.index, new_text.length() },
+        std::move(old_text),
         old_selection_range,
         old_caret_index == old_selection_range.index,
     };
 
     TextBoxEditCommand::EditInfo do_info{
-        std::move(new_text),
         replaced_selection_range,
+        StyledTextSlice{ replaced_selection_range.index, std::move(new_text), {} },
         new_selection_range,
         false,
     };

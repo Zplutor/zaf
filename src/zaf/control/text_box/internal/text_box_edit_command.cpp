@@ -23,9 +23,11 @@ void TextBoxEditCommand::Undo(const TextBoxModuleContext& context) {
 
 void TextBoxEditCommand::Execute(const TextBoxModuleContext& context, const EditInfo& edit_info) {
 
-    context.TextModel().SetTextInRange(
-        edit_info.text, 
-        edit_info.replaced_selection_range);
+    ZAF_EXPECT(edit_info.replaced_range.index == edit_info.styled_text_slice.Index());
+
+    context.TextModel().ReplaceStyledTextSlice(
+        edit_info.replaced_range,
+        edit_info.styled_text_slice);
 
     auto selection_option =
         edit_info.is_caret_at_begin ?

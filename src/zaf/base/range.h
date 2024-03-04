@@ -99,15 +99,26 @@ public:
     /**
     Determines if the specified index is in the range.
     */
-    bool Contains(std::size_t index) const {
+    bool Contains(std::size_t index) const noexcept {
         return (Index() <= index) && (index < EndIndex());
     }
 
     /**
     Determines whether the current range fully contains the other range.
     */
-    bool Contains(const Range& other) const {
+    bool Contains(const Range& other) const noexcept {
         return (Index() <= other.Index()) && (other.EndIndex() <= EndIndex());
+    }
+
+    /**
+    Determines whether the current range intersects with the other range.
+
+    @return
+        Returns true if the current range intersects with the other range, otherwise false.
+        A zero length range doesn't intersect with others.
+    */
+    bool Intersects(const Range& other) const noexcept {
+        return MakeIntersection(*this, other).length > 0;
     }
 
     /**

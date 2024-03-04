@@ -1147,6 +1147,9 @@
     <ClCompile Include="src\zaf\graphic\text\custom_text_inline_object.cpp">
       <Filter>zaf\graphic\text</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual_control\ranged_style.cpp">
+      <Filter>zaf\control\internal\textual_control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2603,6 +2606,12 @@
       <Filter>zaf\control\internal\textual_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\textual_control\inline_object_wrapper.h">
+      <Filter>zaf\control\internal\textual_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual_control\styled_text_slice.h">
+      <Filter>zaf\control\internal\textual_control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual_control\ranged_style.h">
       <Filter>zaf\control\internal\textual_control</Filter>
     </ClInclude>
   </ItemGroup>

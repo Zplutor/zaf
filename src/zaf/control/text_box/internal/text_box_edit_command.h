@@ -2,6 +2,7 @@
 
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
+#include <zaf/control/internal/textual_control/styled_text_slice.h>
 #include <zaf/control/text_box/internal/text_box_module_context.h>
 
 namespace zaf::internal {
@@ -10,9 +11,24 @@ class TextBoxEditCommand : NonCopyableNonMovable {
 public:
     class EditInfo {
     public:
-        std::wstring text;
-        Range replaced_selection_range;
+        /**
+        The range which will be replaced in the original text.
+        */
+        Range replaced_range;
+
+        /**
+        The new styled txt slice which will be set to replaced_range.
+        */
+        StyledTextSlice styled_text_slice;
+
+        /**
+        The selection range which will be set after replacing.
+        */
         Range new_selection_range;
+
+        /**
+        A value indicates whether the caret should be set to the beginning of new_selection_range.
+        */
         bool is_caret_at_begin{};
     };
 

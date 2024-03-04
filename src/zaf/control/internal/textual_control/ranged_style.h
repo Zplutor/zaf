@@ -1,26 +1,20 @@
 #pragma once
 
-#include <string>
 #include <zaf/base/error/check.h>
-#include <zaf/base/non_copyable.h>
-#include <zaf/base/range.h>
 #include <zaf/control/color_picker.h>
 #include <zaf/control/internal/enumerator.h>
 #include <zaf/control/internal/range_map.h>
 #include <zaf/control/internal/textual_control/inline_object_wrapper.h>
-#include <zaf/control/internal/textual_control/styled_text_slice.h>
 #include <zaf/graphic/font/font.h>
-#include <zaf/graphic/text/custom_text_inline_object.h>
 
 namespace zaf::internal {
 
-class StyledText : NonCopyable {
-private:
+class RangedStyle {
+public:
     using RangedFontMap = RangeMap<zaf::Font>;
     using RangedColorPickerMap = RangeMap<zaf::ColorPicker>;
     using InlineObjectMap = RangeMap<InlineObjectWrapper>;
 
-public:
     class RangedFont : NonCopyable {
     public:
         explicit RangedFont(const RangedFontMap::Item& item) : inner_(item) { }
@@ -47,7 +41,7 @@ public:
     public:
         explicit RangedInlineObject(const InlineObjectMap::Item& item) : inner_(item) { }
         const Range& Range() const { return inner_.Range(); }
-        const std::shared_ptr<CustomTextInlineObject>& InlineObject() const { 
+        const std::shared_ptr<CustomTextInlineObject>& InlineObject() const {
             return inner_.Value().Object();
         }
     private:
@@ -57,69 +51,52 @@ public:
     using InlineObjectEnumerator = WrapEnumerator<InlineObjectMap, RangedInlineObject>;
 
 public:
-    StyledText();
-    explicit StyledText(std::wstring text);
-
-    const std::wstring& Text() const {
-        return text_;
+    RangedFontEnumerator RangedFonts() const {
+        return RangedFontEnumerator{ ranged_fonts_ };
     }
 
-    void SetText(std::wstring text);
-    void SetTextInRange(std::wstring_view text, const Range& range);
-    void ClearText();
-
-    const Font& DefaultFont() const {
-        return default_font_;
+    const Font* GetFontAtIndex(std::size_t index) const {
+        return ranged_fonts_.GetValueAtIndex(index);
     }
 
-    void SetDefaultFont(Font font) {
-        default_font_ = std::move(font);
+    void SetFontInRange(Font font, const Range& range) {
+        ranged_fonts_.AddRange(range, std::move(font));
     }
 
-    void SetFontInRange(Font font, const Range& range);
-    void ClearRangedFonts();
-
-    const Font& GetFontAtIndex(std::size_t index) const;
-
-    RangedFontEnumerator RangedFonts() const;
-
-    const ColorPicker& DefaultTextColorPicker() const {
-        return default_text_color_picker_;
+    RangedColorPickerEnumerator RangedTextColorPicker() const {
+        return RangedColorPickerEnumerator{ ranged_text_color_pickers_ };
     }
 
-    void SetDefaultTextColorPicker(ColorPicker color_picker) {
+    const ColorPicker* GetTextColorPickerAtIndex(std::size_t index) const {
+        return ranged_text_color_pickers_.GetValueAtIndex(index);
+    }
+
+    void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
         ZAF_EXPECT(color_picker);
-        default_text_color_picker_ = std::move(color_picker);
+        ranged_text_color_pickers_.AddRange(range, std::move(color_picker));
     }
 
-    void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range);
-    void ClearRangedTextColorPicker();
+    InlineObjectEnumerator InlineObjects() const {
+        return InlineObjectEnumerator{ inline_objects_ };
+    }
 
-    const ColorPicker& GetTextColorPickerAtIndex(std::size_t index) const;
-
-    RangedColorPickerEnumerator RangedTextColorPicker() const;
+    std::shared_ptr<CustomTextInlineObject> GetInlineObjectAtIndex(std::size_t index) const {
+        if (auto wrapper = inline_objects_.GetValueAtIndex(index)) {
+            return wrapper->Object();
+        }
+        return nullptr;
+    }
 
     void AttachInlineObjectToRange(
         std::shared_ptr<CustomTextInlineObject> object,
-        const Range& range);
+        const Range& range) {
 
-    void ClearInlineObjects();
-
-    std::shared_ptr<CustomTextInlineObject> GetInlineObjectAtIndex(std::size_t index) const;
-    InlineObjectEnumerator InlineObjects() const;
-
-    StyledTextSlice Slice(const Range& range) const;
-    void ReplaceSlice(const Range& slice_range, const StyledTextSlice& new_slice);
+        ZAF_EXPECT(object);
+        inline_objects_.RemoveRangesIntersectWith(range);
+        inline_objects_.AddRange(range, InlineObjectWrapper{ std::move(object) });
+    }
 
 private:
-    void CheckRange(const Range& range) const;
-
-private:
-    std::wstring text_;
-
-    Font default_font_{ Font::Default() };
-    ColorPicker default_text_color_picker_{ CreateColorPicker(Color::Black()) };
-
     RangedFontMap ranged_fonts_;
     RangedColorPickerMap ranged_text_color_pickers_;
     InlineObjectMap inline_objects_;

@@ -119,6 +119,27 @@ TEST(RangeTest, MakeIntersection) {
 }
 
 
+TEST(RangeTest, Intersects) {
+
+    ASSERT_FALSE(Range().Intersects(Range()));
+    ASSERT_FALSE(Range(5, 0).Intersects(Range(0, 10)));
+    ASSERT_FALSE(Range(5, 5).Intersects(Range(0, 5)));
+    ASSERT_FALSE(Range(5, 5).Intersects(Range(5, 0)));
+    ASSERT_FALSE(Range(5, 5).Intersects(Range(4, 1)));
+    ASSERT_TRUE(Range(5, 5).Intersects(Range(4, 2)));
+    ASSERT_TRUE(Range(5, 5).Intersects(Range(5, 1)));
+    ASSERT_TRUE(Range(5, 5).Intersects(Range(5, 2)));
+    ASSERT_TRUE(Range(5, 5).Intersects(Range(5, 5)));
+    ASSERT_FALSE(Range(5, 5).Intersects(Range(6, 0)));
+    ASSERT_TRUE(Range(5, 5).Intersects(Range(2, 20)));
+    ASSERT_FALSE(Range(5, 5).Intersects(Range(10, 0)));
+    ASSERT_FALSE(Range(5, 5).Intersects(Range(10, 1)));
+    ASSERT_FALSE(Range(5, 5).Intersects(Range(9, 0)));
+    ASSERT_TRUE(Range(5, 5).Intersects(Range(9, 1)));
+    ASSERT_TRUE(Range(5, 5).Intersects(Range(9, 2)));
+}
+
+
 TEST(RangeTest, UseInRangeFor) {
 
     std::vector<std::size_t> result;

@@ -66,4 +66,10 @@ void TextModel::AttachInlineObjectToRange(
     RaiseChangedEvent(TextModelAttribute::InlineObject, range, range.length);
 }
 
+
+void TextModel::ReplaceStyledTextSlice(const Range& replaced_range, const StyledTextSlice& slice) {
+    styled_text_.ReplaceSlice(replaced_range, slice);
+    RaiseChangedEvent(TextModelAttribute::All);
+}
+
 }
