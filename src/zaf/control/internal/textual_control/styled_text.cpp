@@ -15,24 +15,15 @@ StyledText::StyledText(std::wstring text) : text_(std::move(text)) {
 void StyledText::SetText(std::wstring text) {
 
     text_ = std::move(text);
-
-    ranged_fonts_.Clear();
-    ranged_text_color_pickers_.Clear();
-    inline_objects_.Clear();
+    ranged_style_.Clear();
 }
 
 
 void StyledText::SetTextInRange(std::wstring_view text, const Range& range) {
 
     CheckRange(range);
-
     text_.replace(range.index, range.length, text);
-
-    ranged_fonts_.ReplaceSpan(range, text.length());
-    ranged_text_color_pickers_.ReplaceSpan(range, text.length());
-
-    inline_objects_.RemoveRangesIntersectWith(range);
-    inline_objects_.ReplaceSpan(range, text.length());
+    ranged_style_.ReplaceSpan(range, text.length());
 }
 
 
@@ -44,12 +35,12 @@ void StyledText::ClearText() {
 void StyledText::SetFontInRange(Font font, const Range& range) {
 
     CheckRange(range);
-    ranged_fonts_.AddRange(range, std::move(font));
+    ranged_style_.SetFontInRange(std::move(font), range);
 }
 
 
 void StyledText::ClearRangedFonts() {
-    ranged_fonts_.Clear();
+    ranged_style_.ClearFonts();
 }
 
 
@@ -57,7 +48,7 @@ const Font& StyledText::GetFontAtIndex(std::size_t index) const {
 
     ZAF_EXPECT(index <= text_.length());
 
-    auto font = ranged_fonts_.GetValueAtIndex(index);
+    auto font = ranged_style_.GetFontAtIndex(index);
     if (font) {
         return *font;
     }
@@ -66,19 +57,19 @@ const Font& StyledText::GetFontAtIndex(std::size_t index) const {
 
 
 StyledText::RangedFontEnumerator StyledText::RangedFonts() const {
-    return RangedFontEnumerator{ ranged_fonts_ };
+    return ranged_style_.Fonts();
 }
 
 
 void StyledText::SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
 
     CheckRange(range);
-    ranged_text_color_pickers_.AddRange(range, std::move(color_picker));
+    ranged_style_.SetTextColorPickerInRange(std::move(color_picker), range);
 }
 
 
 void StyledText::ClearRangedTextColorPicker() {
-    ranged_text_color_pickers_.Clear();
+    ranged_style_.ClearTextColorPickers();
 }
 
 
@@ -86,7 +77,7 @@ const ColorPicker& StyledText::GetTextColorPickerAtIndex(std::size_t index) cons
 
     ZAF_EXPECT(index <= text_.length());
 
-    auto picker = ranged_text_color_pickers_.GetValueAtIndex(index);
+    auto picker = ranged_style_.GetTextColorPickerAtIndex(index);
     if (picker) {
         return *picker;
     }
@@ -95,7 +86,7 @@ const ColorPicker& StyledText::GetTextColorPickerAtIndex(std::size_t index) cons
 
 
 StyledText::RangedColorPickerEnumerator StyledText::RangedTextColorPicker() const {
-    return RangedColorPickerEnumerator{ ranged_text_color_pickers_ };
+    return ranged_style_.TextColorPickers();
 }
 
 
@@ -104,15 +95,12 @@ void StyledText::AttachInlineObjectToRange(
     const Range& range) {
 
     CheckRange(range);
-    ZAF_EXPECT(object);
-
-    inline_objects_.RemoveRangesIntersectWith(range);
-    inline_objects_.AddRange(range, InlineObjectWrapper{ std::move(object) });
+    ranged_style_.AttachInlineObjectToRange(std::move(object), range);
 }
 
 
 void StyledText::ClearInlineObjects() {
-    inline_objects_.Clear();
+    ranged_style_.ClearInlineObjects();
 }
 
 
@@ -121,17 +109,16 @@ std::shared_ptr<CustomTextInlineObject> StyledText::GetInlineObjectAtIndex(
 
     ZAF_EXPECT(index <= text_.length());
 
-    auto object = inline_objects_.GetValueAtIndex(index);
+    auto object = ranged_style_.GetInlineObjectAtIndex(index);
     if (object) {
-        return object->Object();
+        return object;
     }
-
     return nullptr;
 }
 
 
 StyledText::InlineObjectEnumerator StyledText::InlineObjects() const {
-    return InlineObjectEnumerator{ inline_objects_ };
+    return ranged_style_.InlineObjects();
 }
 
 
@@ -149,7 +136,7 @@ StyledTextSlice StyledText::Slice(const Range& range) const {
     RangedTextStyle slice_style;
 
     //Ranged fonts
-    for (const auto& each_item : ranged_fonts_) {
+    for (const auto& each_item : ranged_style_.Fonts()) {
 
         if (each_item.Range().index >= range.EndIndex()) {
             continue;
@@ -159,11 +146,11 @@ StyledTextSlice StyledText::Slice(const Range& range) const {
             break;
         }
 
-        slice_style.SetFontInRange(each_item.Value(), each_item.Range());
+        slice_style.SetFontInRange(each_item.Font(), each_item.Range());
     }
 
     //Ranged text color pickers
-    for (const auto& each_item : ranged_text_color_pickers_) {
+    for (const auto& each_item : ranged_style_.TextColorPickers()) {
 
         if (each_item.Range().index >= range.EndIndex()) {
             continue;
@@ -173,11 +160,11 @@ StyledTextSlice StyledText::Slice(const Range& range) const {
             break;
         }
 
-        slice_style.SetTextColorPickerInRange(each_item.Value(), each_item.Range());
+        slice_style.SetTextColorPickerInRange(each_item.ColorPicker(), each_item.Range());
     }
 
     //Inline objects.
-    for (const auto& each_item : inline_objects_) {
+    for (const auto& each_item : ranged_style_.InlineObjects()) {
 
         if (each_item.Range().index >= range.EndIndex()) {
             continue;
@@ -189,7 +176,7 @@ StyledTextSlice StyledText::Slice(const Range& range) const {
 
         if (range.Contains(each_item.Range())) {
             Range new_range = each_item.Range();
-            slice_style.AttachInlineObjectToRange(each_item.Value().Object(), new_range);
+            slice_style.AttachInlineObjectToRange(each_item.InlineObject(), new_range);
         }
     }
 
@@ -206,17 +193,15 @@ void StyledText::ReplaceSlice(const Range& slice_range, const StyledTextSlice& n
 
     const auto& ranged_style = new_slice.RangedStyle();
     for (const auto& each_item : ranged_style.Fonts()) {
-        ranged_fonts_.AddRange(each_item.Range(), each_item.Font());
+        ranged_style_.SetFontInRange(each_item.Font(), each_item.Range());
     }
 
     for (const auto& each_item : ranged_style.TextColorPickers()) {
-        ranged_text_color_pickers_.AddRange(each_item.Range(), each_item.ColorPicker());
+        ranged_style_.SetTextColorPickerInRange(each_item.ColorPicker(), each_item.Range());
     }
 
     for (const auto& each_item : ranged_style.InlineObjects()) {
-        inline_objects_.AddRange(
-            each_item.Range(), 
-            InlineObjectWrapper{ std::move(each_item.InlineObject()) });
+        ranged_style_.AttachInlineObjectToRange(each_item.InlineObject(), each_item.Range());
     }
 }
 

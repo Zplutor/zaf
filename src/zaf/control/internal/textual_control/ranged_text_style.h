@@ -96,6 +96,27 @@ public:
         inline_objects_.AddRange(range, InlineObjectWrapper{ std::move(object) });
     }
 
+    void ReplaceSpan(const Range& span_range, std::size_t new_length) {
+
+        fonts_.ReplaceSpan(span_range, new_length);
+        color_pickers_.ReplaceSpan(span_range, new_length);
+
+        inline_objects_.RemoveRangesIntersectWith(span_range);
+        inline_objects_.ReplaceSpan(span_range, new_length);
+    }
+
+    void ClearFonts() {
+        fonts_.Clear();
+    }
+
+    void ClearTextColorPickers() {
+        color_pickers_.Clear();
+    }
+
+    void ClearInlineObjects() {
+        inline_objects_.Clear();
+    }
+
     void Clear() {
         fonts_.Clear();
         color_pickers_.Clear();

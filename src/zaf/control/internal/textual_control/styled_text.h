@@ -15,46 +15,10 @@
 namespace zaf::internal {
 
 class StyledText : NonCopyable {
-private:
-    using RangedFontMap = RangeMap<zaf::Font>;
-    using RangedColorPickerMap = RangeMap<zaf::ColorPicker>;
-    using InlineObjectMap = RangeMap<InlineObjectWrapper>;
-
 public:
-    class RangedFont : NonCopyable {
-    public:
-        explicit RangedFont(const RangedFontMap::Item& item) : inner_(item) { }
-        const Range& Range() const { return inner_.Range(); }
-        const Font& Font() const { return inner_.Value(); }
-    private:
-        RangedFontMap::Item inner_;
-    };
-
-    using RangedFontEnumerator = WrapEnumerator<RangedFontMap, RangedFont>;
-
-    class RangedColorPicker : NonCopyable {
-    public:
-        explicit RangedColorPicker(const RangedColorPickerMap::Item& item) : inner_(item) { }
-        const Range& Range() const { return inner_.Range(); }
-        const ColorPicker& ColorPicker() const { return inner_.Value(); }
-    private:
-        RangedColorPickerMap::Item inner_;
-    };
-
-    using RangedColorPickerEnumerator = WrapEnumerator<RangedColorPickerMap, RangedColorPicker>;
-
-    class RangedInlineObject : NonCopyable {
-    public:
-        explicit RangedInlineObject(const InlineObjectMap::Item& item) : inner_(item) { }
-        const Range& Range() const { return inner_.Range(); }
-        const std::shared_ptr<CustomTextInlineObject>& InlineObject() const { 
-            return inner_.Value().Object();
-        }
-    private:
-        InlineObjectMap::Item inner_;
-    };
-
-    using InlineObjectEnumerator = WrapEnumerator<InlineObjectMap, RangedInlineObject>;
+    using RangedFontEnumerator = RangedTextStyle::FontEnumerator;
+    using RangedColorPickerEnumerator = RangedTextStyle::ColorPickerEnumerator;
+    using InlineObjectEnumerator = RangedTextStyle::InlineObjectEnumerator;
 
 public:
     StyledText();
@@ -120,9 +84,7 @@ private:
     Font default_font_{ Font::Default() };
     ColorPicker default_text_color_picker_{ CreateColorPicker(Color::Black()) };
 
-    RangedFontMap ranged_fonts_;
-    RangedColorPickerMap ranged_text_color_pickers_;
-    InlineObjectMap inline_objects_;
+    RangedTextStyle ranged_style_;
 };
 
 }
