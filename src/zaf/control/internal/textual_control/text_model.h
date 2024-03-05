@@ -114,7 +114,7 @@ public:
     void SetTextColorPickerInRange(ColorPicker picker, const Range& range);
 
     void AttachInlineObjectToRange(
-        std::shared_ptr<CustomTextInlineObject> object,
+        std::shared_ptr<textual::InlineObject> object,
         const Range& range);
 
     void ReplaceStyledTextSlice(const Range& replaced_range, const StyledTextSlice& slice);

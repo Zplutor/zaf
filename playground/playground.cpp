@@ -58,11 +58,11 @@
 #include <zaf/control/text_box.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/stroke_properties.h>
-#include <zaf/graphic/text/custom_text_inline_object.h>
+#include <zaf/control/textual/inline_object.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
-class InlineObject : public zaf::CustomTextInlineObject {
+class InlineObject : public zaf::textual::InlineObject {
 public:
     void Paint(zaf::Canvas& canvas) const override {
         canvas.DrawRectangle(zaf::Rect{ 0, 0, 100, 30 }, zaf::Color::Red());

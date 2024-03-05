@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/as.h>
-#include <zaf/graphic/text/custom_text_inline_object.h>
+#include <zaf/control/textual/inline_object.h>
 #include <zaf/object/object_type.h>
 
 namespace zaf::internal {
@@ -9,7 +9,7 @@ namespace zaf::internal {
 class InlineObjectWrapper {
 public:
     InlineObjectWrapper() = default;
-    explicit InlineObjectWrapper(std::shared_ptr<CustomTextInlineObject> object) :
+    explicit InlineObjectWrapper(std::shared_ptr<textual::InlineObject> object) :
         object_(std::move(object)) {
 
     }
@@ -32,14 +32,14 @@ public:
         return *this;
     }
 
-    const std::shared_ptr<CustomTextInlineObject>& Object() const {
+    const std::shared_ptr<textual::InlineObject>& Object() const {
         return object_;
     }
 
 private:
     void CopyFromOther(const InlineObjectWrapper& other) {
         if (other.object_) {
-            object_ = As<CustomTextInlineObject>(other.object_->GetType()->CreateInstance());
+            object_ = As<textual::InlineObject>(other.object_->GetType()->CreateInstance());
         }
         else {
             object_ = nullptr;
@@ -51,7 +51,7 @@ private:
     }
 
 private:
-    std::shared_ptr<CustomTextInlineObject> object_;
+    std::shared_ptr<textual::InlineObject> object_;
 };
 
 }

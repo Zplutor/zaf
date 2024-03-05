@@ -212,6 +212,8 @@
     <ClCompile Include="src\zaf\control\spin_button.cpp" />
     <ClCompile Include="src\zaf\control\spin_edit.cpp" />
     <ClCompile Include="src\zaf\control\split_control.cpp" />
+    <ClCompile Include="src\zaf\control\textual\inline_object.cpp" />
+    <ClCompile Include="src\zaf\control\textual\inline_object_events.cpp" />
     <ClCompile Include="src\zaf\control\textual_control.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit.cpp" />
     <ClCompile Include="src\zaf\control\text_box.cpp" />
@@ -273,7 +275,6 @@
     <ClCompile Include="src\zaf\graphic\graphic_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\rounded_rect.cpp" />
     <ClCompile Include="src\zaf\graphic\size.cpp" />
-    <ClCompile Include="src\zaf\graphic\text\custom_text_inline_object.cpp" />
     <ClCompile Include="src\zaf\graphic\text\internal\text_inline_object_bridge.cpp" />
     <ClCompile Include="src\zaf\graphic\text\paragraph_alignment.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_alignment.cpp" />
@@ -608,6 +609,8 @@
     <ClInclude Include="src\zaf\control\spin_button.h" />
     <ClInclude Include="src\zaf\control\spin_edit.h" />
     <ClInclude Include="src\zaf\control\split_control.h" />
+    <ClInclude Include="src\zaf\control\textual\inline_object.h" />
+    <ClInclude Include="src\zaf\control\textual\inline_object_events.h" />
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\rich_edit.h" />
     <ClInclude Include="src\zaf\control\text_box.h" />
@@ -700,7 +703,6 @@
     <ClInclude Include="src\zaf\graphic\size.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
     <ClInclude Include="src\zaf\graphic\stroke_properties.h" />
-    <ClInclude Include="src\zaf\graphic\text\custom_text_inline_object.h" />
     <ClInclude Include="src\zaf\graphic\text\hit_test_result.h" />
     <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_bridge.h" />
     <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_painter.h" />

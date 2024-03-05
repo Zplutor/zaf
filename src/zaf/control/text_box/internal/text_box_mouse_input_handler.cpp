@@ -1,5 +1,6 @@
 #include <zaf/control/text_box/internal/text_box_mouse_input_handler.h>
 #include <zaf/base/auto_reset.h>
+#include <zaf/control/internal/textual_control/text_model.h>
 #include <zaf/control/text_box.h>
 #include <zaf/control/text_box/internal/text_box_module_context.h>
 #include <zaf/control/text_box/internal/text_box_selection_manager.h>
@@ -16,6 +17,18 @@ void TextBoxMouseInputHandler::Initialize() {
 
     Subscriptions() += Context().SelectionManager().CaretIndexChangedEvent().Subscribe(
         std::bind(&TextBoxMouseInputHandler::OnCaretIndexChanged, this));
+}
+
+
+void TextBoxMouseInputHandler::HandleMouseCursorChanging(
+    const MouseCursorChangingInfo& event_info) {
+
+    const auto& text_box = Context().Owner();
+    auto index = text_box.FindIndexAtPosition(text_box.GetMousePosition());
+    auto inline_object = Context().TextModel().StyledText().GetInlineObjectAtIndex(index);
+    if (inline_object) {
+        
+    }
 }
 
 

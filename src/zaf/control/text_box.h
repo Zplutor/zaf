@@ -15,7 +15,6 @@ class TextBoxModuleContext;
 }
 
 class Caret;
-class CustomTextInlineObject;
 
 class TextBox : public TextualControl, public SelfScrollControl {
 public:

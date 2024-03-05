@@ -34,7 +34,7 @@ void SetFontToTextLayout(const Font& font, const Range& range, TextLayout& text_
 
 
 void SetInlineObjectToTextLayout(
-    std::shared_ptr<CustomTextInlineObject> object,
+    std::shared_ptr<textual::InlineObject> object,
     const Range& range,
     std::shared_ptr<internal::TextInlineObjectPainter> painter,
     TextLayout& text_layout) {
@@ -283,7 +283,7 @@ void TextualControl::SetFontInRange(zaf::Font font, const Range& range) {
 }
 
 
-std::shared_ptr<CustomTextInlineObject> TextualControl::GetInlineObjectAtIndex(
+std::shared_ptr<textual::InlineObject> TextualControl::GetInlineObjectAtIndex(
     std::size_t index) const {
 
     return text_model_->StyledText().GetInlineObjectAtIndex(index);
@@ -291,7 +291,7 @@ std::shared_ptr<CustomTextInlineObject> TextualControl::GetInlineObjectAtIndex(
 
 
 void TextualControl::AttachInlineObjectToRange(
-    std::shared_ptr<CustomTextInlineObject> inline_object, 
+    std::shared_ptr<textual::InlineObject> inline_object,
     const Range& range) {
 
     text_model_->AttachInlineObjectToRange(std::move(inline_object), range);

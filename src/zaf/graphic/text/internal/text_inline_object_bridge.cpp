@@ -4,7 +4,7 @@
 namespace zaf::internal {
 
 TextInlineObjectBridge::TextInlineObjectBridge(
-    std::shared_ptr<CustomTextInlineObject> custom_object,
+    std::shared_ptr<textual::InlineObject> custom_object,
     std::shared_ptr<TextInlineObjectPainter> painter)
     :
     custom_object_(std::move(custom_object)),

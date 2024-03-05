@@ -91,7 +91,7 @@ StyledText::RangedColorPickerEnumerator StyledText::RangedTextColorPicker() cons
 
 
 void StyledText::AttachInlineObjectToRange(
-    std::shared_ptr<CustomTextInlineObject> object,
+    std::shared_ptr<textual::InlineObject> object,
     const Range& range) {
 
     CheckRange(range);
@@ -104,7 +104,7 @@ void StyledText::ClearInlineObjects() {
 }
 
 
-std::shared_ptr<CustomTextInlineObject> StyledText::GetInlineObjectAtIndex(
+std::shared_ptr<textual::InlineObject> StyledText::GetInlineObjectAtIndex(
     std::size_t index) const {
 
     ZAF_EXPECT(index <= text_.length());

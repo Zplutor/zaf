@@ -19,7 +19,10 @@ class TextModel;
 class TextModelChangedInfo;
 }
 
-class CustomTextInlineObject;
+namespace textual {
+class InlineObject;
+}
+
 class TextFormat;
 class TextLayout;
 
@@ -205,7 +208,7 @@ public:
     @throw std::logic_error
         Thrown if index is greater than the length of the text.
     */
-    std::shared_ptr<CustomTextInlineObject> GetInlineObjectAtIndex(std::size_t index) const;
+    std::shared_ptr<textual::InlineObject> GetInlineObjectAtIndex(std::size_t index) const;
 
     /**
     Attaches the specified inline object to the specified range within the existing text.
@@ -227,7 +230,7 @@ public:
         well.
     */
     void AttachInlineObjectToRange(
-        std::shared_ptr<CustomTextInlineObject> inline_object,
+        std::shared_ptr<textual::InlineObject> inline_object,
         const Range& range);
 
     /**

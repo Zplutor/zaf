@@ -9,8 +9,8 @@
 #include <zaf/control/internal/range_map.h>
 #include <zaf/control/internal/textual_control/inline_object_wrapper.h>
 #include <zaf/control/internal/textual_control/styled_text_slice.h>
+#include <zaf/control/textual/inline_object.h>
 #include <zaf/graphic/font/font.h>
-#include <zaf/graphic/text/custom_text_inline_object.h>
 
 namespace zaf::internal {
 
@@ -64,12 +64,12 @@ public:
     RangedColorPickerEnumerator RangedTextColorPicker() const;
 
     void AttachInlineObjectToRange(
-        std::shared_ptr<CustomTextInlineObject> object,
+        std::shared_ptr<textual::InlineObject> object,
         const Range& range);
 
     void ClearInlineObjects();
 
-    std::shared_ptr<CustomTextInlineObject> GetInlineObjectAtIndex(std::size_t index) const;
+    std::shared_ptr<textual::InlineObject> GetInlineObjectAtIndex(std::size_t index) const;
     InlineObjectEnumerator InlineObjects() const;
 
     StyledTextSlice Slice(const Range& range) const;

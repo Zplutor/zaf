@@ -41,7 +41,7 @@ public:
     public:
         explicit InlineObjectItem(const InlineObjectMap::Item& item) : inner_(item) { }
         const Range& Range() const { return inner_.Range(); }
-        const std::shared_ptr<CustomTextInlineObject>& InlineObject() const {
+        const std::shared_ptr<textual::InlineObject>& InlineObject() const {
             return inner_.Value().Object();
         }
     private:
@@ -80,7 +80,7 @@ public:
         return InlineObjectEnumerator{ inline_objects_ };
     }
 
-    std::shared_ptr<CustomTextInlineObject> GetInlineObjectAtIndex(std::size_t index) const {
+    std::shared_ptr<textual::InlineObject> GetInlineObjectAtIndex(std::size_t index) const {
         if (auto wrapper = inline_objects_.GetValueAtIndex(index)) {
             return wrapper->Object();
         }
@@ -88,7 +88,7 @@ public:
     }
 
     void AttachInlineObjectToRange(
-        std::shared_ptr<CustomTextInlineObject> object,
+        std::shared_ptr<textual::InlineObject> object,
         const Range& range) {
 
         ZAF_EXPECT(object);

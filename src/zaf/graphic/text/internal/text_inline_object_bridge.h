@@ -1,7 +1,7 @@
 #pragma once
 
 #include <dwrite.h>
-#include <zaf/graphic/text/custom_text_inline_object.h>
+#include <zaf/control/textual/inline_object.h>
 #include <zaf/graphic/text/internal/text_inline_object_painter.h>
 
 namespace zaf::internal {
@@ -15,7 +15,7 @@ constexpr GUID IID_TextInlineObjectBridge = {
 class TextInlineObjectBridge : public IDWriteInlineObject {
 public:
     TextInlineObjectBridge(
-        std::shared_ptr<CustomTextInlineObject> custom_object,
+        std::shared_ptr<textual::InlineObject> custom_object,
         std::shared_ptr<TextInlineObjectPainter> painter);
 
     HRESULT __stdcall QueryInterface(REFIID riid, void** ppvObject) override;
@@ -40,7 +40,7 @@ public:
 
 private:
     LONG reference_count_{ 1 };
-    std::shared_ptr<CustomTextInlineObject> custom_object_;
+    std::shared_ptr<textual::InlineObject> custom_object_;
     std::shared_ptr<TextInlineObjectPainter> painter_;
 };
 

@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include <zaf/creation.h>
 #include <zaf/control/textual_control.h>
-#include <zaf/graphic/text/custom_text_inline_object.h>
+#include <zaf/control/textual/inline_object.h>
 #include <zaf/object/type_definition.h>
 
 TEST(TextualControlTest, SetText) {
@@ -239,7 +239,7 @@ namespace {
 
 std::size_t g_object_count{};
 
-class TestInlineObject : public zaf::CustomTextInlineObject {
+class TestInlineObject : public zaf::textual::InlineObject {
 public:
     ZAF_DECLARE_TYPE;
 
