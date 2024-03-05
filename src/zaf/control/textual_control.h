@@ -335,6 +335,10 @@ private:
 
     TextLayout CreateTextLayout() const;
     TextFormat CreateTextFormat() const;
+    void SetInlineObjectToTextLayout(
+        std::shared_ptr<textual::InlineObject> object,
+        const Range& range,
+        TextLayout& text_layout) const;
 
     void ReleaseTextLayout();
 

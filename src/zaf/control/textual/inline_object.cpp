@@ -6,14 +6,13 @@ namespace zaf::textual {
 ZAF_DEFINE_TYPE(InlineObject)
 ZAF_DEFINE_TYPE_END;
 
-
-void InlineObject::Paint(Canvas& canvas) const {
-
+TextInlineObjectMetrics InlineObject::GetMetrics() const {
+    return {};
 }
 
 
-TextInlineObjectMetrics InlineObject::GetMetrics() const {
-    return {};
+void InlineObject::Paint(Canvas& canvas) const {
+
 }
 
 

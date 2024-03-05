@@ -32,20 +32,6 @@ void SetFontToTextLayout(const Font& font, const Range& range, TextLayout& text_
     text_layout.SetHasUnderline(font.has_underline, range);
 }
 
-
-void SetInlineObjectToTextLayout(
-    std::shared_ptr<textual::InlineObject> object,
-    const Range& range,
-    std::shared_ptr<internal::TextInlineObjectPainter> painter,
-    TextLayout& text_layout) {
-
-    auto bridge = MakeCOMPtr<internal::TextInlineObjectBridge>(
-        std::move(object),
-        std::move(painter));
-
-    text_layout.SetInlineObject(TextInlineObject{ bridge }, range);
-}
-
 }
 
 ZAF_DEFINE_TYPE(TextualControl)
@@ -294,6 +280,9 @@ void TextualControl::AttachInlineObjectToRange(
     std::shared_ptr<textual::InlineObject> inline_object,
     const Range& range) {
 
+    ZAF_EXPECT(inline_object);
+    ZAF_EXPECT(!inline_object->Host());
+
     text_model_->AttachInlineObjectToRange(std::move(inline_object), range);
 }
 
@@ -418,11 +407,7 @@ void TextualControl::OnTextModelChanged(const internal::TextModelChangedInfo& ev
         if (event_info.IsInlineObjectChanged()) {
             auto object = styled_text.GetInlineObjectAtIndex(range_index);
             if (object) {
-                SetInlineObjectToTextLayout(
-                    object,
-                    new_range,
-                    inline_object_painter_,
-                    text_layout_);
+                SetInlineObjectToTextLayout(object, new_range, text_layout_);
             }
         }
     }
@@ -495,11 +480,7 @@ TextLayout TextualControl::CreateTextLayout() const {
     }
 
     for (const auto& each_item : text_model_->StyledText().InlineObjects()) {
-        SetInlineObjectToTextLayout(
-            each_item.InlineObject(),
-            each_item.Range(),
-            inline_object_painter_,
-            text_layout);
+        SetInlineObjectToTextLayout(each_item.InlineObject(), each_item.Range(), text_layout);
     }
 
     return text_layout;
@@ -527,6 +508,23 @@ TextFormat TextualControl::CreateTextFormat() const {
     text_format.SetTextTrimming(text_trimming);
 
     return text_format;
+}
+
+
+void TextualControl::SetInlineObjectToTextLayout(
+    std::shared_ptr<textual::InlineObject> object, 
+    const Range& range,
+    TextLayout& text_layout) const {
+    
+    //It's this elegant?
+    auto host = As<TextualControl>(std::const_pointer_cast<Control>(shared_from_this()));
+    object->SetHost(std::move(host));
+
+    auto bridge = MakeCOMPtr<internal::TextInlineObjectBridge>(
+        std::move(object),
+        std::move(inline_object_painter_));
+
+    text_layout.SetInlineObject(TextInlineObject{ bridge }, range);
 }
 
 

@@ -24,11 +24,11 @@ void TextBoxMouseInputHandler::HandleMouseCursorChanging(
     const MouseCursorChangingInfo& event_info) {
 
     const auto& text_box = Context().Owner();
-    auto index = text_box.FindIndexAtPosition(text_box.GetMousePosition());
-    auto inline_object = Context().TextModel().StyledText().GetInlineObjectAtIndex(index);
-    if (inline_object) {
+
+    //auto inline_object = Context().TextModel().StyledText().GetInlineObjectAtIndex(index);
+    //if (inline_object) {
         
-    }
+    //}
 }
 
 

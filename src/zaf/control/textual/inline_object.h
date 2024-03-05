@@ -8,6 +8,11 @@
 namespace zaf {
 
 class Canvas;
+class TextualControl;
+
+namespace internal {
+class TextInlineObjectBridge;
+}
 
 namespace textual {
 
@@ -18,13 +23,28 @@ public:
 public:
     InlineObject() = default;
 
-    virtual void Paint(Canvas& canvas) const;
+    std::shared_ptr<TextualControl> Host() const {
+        return host_.lock();
+    }
+
     virtual TextInlineObjectMetrics GetMetrics() const;
 
 protected:
+    virtual void Paint(Canvas& canvas) const;
     virtual void OnMouseCursorChanging(const textual::MouseCursorChangingInfo& event_info);
     virtual void OnMouseDown();
     virtual void OnMouseUp();
+
+private:
+    friend class TextualControl;
+    friend class internal::TextInlineObjectBridge;
+
+    void SetHost(std::shared_ptr<TextualControl> host) {
+        host_ = std::move(host);
+    }
+
+private:
+    std::weak_ptr<TextualControl> host_;
 };
 
 }
