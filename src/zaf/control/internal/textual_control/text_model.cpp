@@ -62,13 +62,20 @@ void TextModel::AttachInlineObjectToRange(
     std::shared_ptr<textual::InlineObject> object,
     const Range& range) {
 
-    styled_text_.AttachInlineObjectToRange(std::move(object), range);
+    styled_text_.AttachInlineObjectToRange(object, range);
+    RaiseInlineObjectAttachedEvent(std::move(object));
     RaiseChangedEvent(TextModelAttribute::InlineObject, range, range.length);
 }
 
 
 void TextModel::ReplaceStyledTextSlice(const Range& replaced_range, const StyledTextSlice& slice) {
+
     styled_text_.ReplaceSlice(replaced_range, slice);
+
+    for (const auto& each_item : slice.RangedStyle().InlineObjects()) {
+        RaiseInlineObjectAttachedEvent(each_item.InlineObject());
+    }
+
     RaiseChangedEvent(TextModelAttribute::All);
 }
 

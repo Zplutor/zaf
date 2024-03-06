@@ -74,6 +74,9 @@ void TextualControl::Initialize() {
         }
     });
 
+    Subscriptions() += text_model_->InlineObjectAttachedEvent().Subscribe(
+        std::bind(&TextualControl::OnInlineObjectAttached, this, std::placeholders::_1));
+
     Subscriptions() += text_model_->TextChangedEvent().Subscribe(
         std::bind(&TextualControl::OnTextModelChanged, this, std::placeholders::_1));
 }
@@ -385,6 +388,11 @@ Observable<TextChangedInfo> TextualControl::TextChangedEvent() const {
 }
 
 
+void TextualControl::OnInlineObjectAttached(const internal::InlineObjectAttachedInfo& event_info) {
+    event_info.InlineObject()->SetHost(As<TextualControl>(shared_from_this()));
+}
+
+
 void TextualControl::OnTextModelChanged(const internal::TextModelChangedInfo& event_info) {
 
     //Text layout needs to be released if the text is changed or the entire text's attribute is
@@ -516,10 +524,6 @@ void TextualControl::SetInlineObjectToTextLayout(
     const Range& range,
     TextLayout& text_layout) const {
     
-    //It's this elegant?
-    auto host = As<TextualControl>(std::const_pointer_cast<Control>(shared_from_this()));
-    object->SetHost(std::move(host));
-
     auto bridge = MakeCOMPtr<internal::TextInlineObjectBridge>(
         std::move(object),
         std::move(inline_object_painter_));

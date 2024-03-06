@@ -22,6 +22,22 @@ enum class TextModelAttribute : std::uint32_t {
 ZAF_ENABLE_FLAG_ENUM(TextModelAttribute);
 
 
+class InlineObjectAttachedInfo {
+public:
+    explicit InlineObjectAttachedInfo(std::shared_ptr<textual::InlineObject> inline_object) :
+        inline_object_(std::move(inline_object))  {
+
+    }
+
+    const std::shared_ptr<textual::InlineObject>& InlineObject() const {
+        return inline_object_;
+    }
+
+private:
+    std::shared_ptr<textual::InlineObject> inline_object_;
+};
+
+
 class TextModelChangedInfo {
 public:
     class ChangedRangeInfo {
@@ -119,11 +135,21 @@ public:
 
     void ReplaceStyledTextSlice(const Range& replaced_range, const StyledTextSlice& slice);
 
+    Observable<InlineObjectAttachedInfo> InlineObjectAttachedEvent() const {
+        return inline_object_attached_event_.AsObservable();
+    }
+
     Observable<TextModelChangedInfo> TextChangedEvent() const {
         return changed_event_.AsObservable();
     }
 
 private:
+    void RaiseInlineObjectAttachedEvent(std::shared_ptr<textual::InlineObject> inline_object) {
+        inline_object_attached_event_.AsObserver().OnNext(InlineObjectAttachedInfo{
+            std::move(inline_object) 
+        });
+    }
+
     void RaiseChangedEvent(TextModelAttribute attributes) {
         changed_event_.AsObserver().OnNext(TextModelChangedInfo{ attributes });
     }
@@ -143,6 +169,7 @@ private:
 private:
     internal::StyledText styled_text_;
     Subject<TextModelChangedInfo> changed_event_;
+    Subject<InlineObjectAttachedInfo> inline_object_attached_event_;
 };
 
 }

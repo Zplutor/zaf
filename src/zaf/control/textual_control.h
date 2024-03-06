@@ -13,6 +13,7 @@
 
 namespace zaf {
 namespace internal {
+class InlineObjectAttachedInfo;
 class TextInlineObjectBridge;
 class TextInlineObjectPainter;
 class TextModel;
@@ -331,6 +332,7 @@ protected:
 private:
     void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const;
 
+    void OnInlineObjectAttached(const internal::InlineObjectAttachedInfo&);
     void OnTextModelChanged(const internal::TextModelChangedInfo&);
 
     TextLayout CreateTextLayout() const;
