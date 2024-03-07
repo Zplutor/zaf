@@ -15,20 +15,4 @@ void InlineObject::Paint(Canvas& canvas) const {
 
 }
 
-
-void InlineObject::OnMouseCursorChanging(
-    const textual::MouseCursorChangingInfo& event_info) {
-
-}
-
-
-void InlineObject::OnMouseDown() {
-
-}
-
-
-void InlineObject::OnMouseUp() {
-    
-}
-
 }

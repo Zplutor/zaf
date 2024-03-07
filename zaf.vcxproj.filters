@@ -1153,6 +1153,9 @@
     <ClCompile Include="src\zaf\control\textual\inline_object_events.cpp">
       <Filter>zaf\control\textual</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\textual\dynamic_inline_object.cpp">
+      <Filter>zaf\control\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2618,6 +2621,9 @@
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual\inline_object.h">
+      <Filter>zaf\control\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\dynamic_inline_object.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/control/textual/inline_object_events.h>
 #include <zaf/object/object.h>
 #include <zaf/graphic/text/text_inline_object_metrics.h>
 
@@ -32,9 +31,6 @@ public:
 
 protected:
     virtual void Paint(Canvas& canvas) const;
-    virtual void OnMouseCursorChanging(const textual::MouseCursorChangingInfo& event_info);
-    virtual void OnMouseDown();
-    virtual void OnMouseUp();
 
 private:
     friend class TextualControl;
