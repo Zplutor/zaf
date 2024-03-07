@@ -14,6 +14,12 @@ public:
 
     }
 
+    ~InlineObjectWrapper() {
+        if (object_) {
+            object_->SetHost(nullptr);
+        }
+    }
+
     InlineObjectWrapper(const InlineObjectWrapper& other) {
         CopyFromOther(other);
     }

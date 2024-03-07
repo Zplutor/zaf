@@ -11,6 +11,7 @@ class Canvas;
 class TextualControl;
 
 namespace internal {
+class InlineObjectWrapper;
 class TextInlineObjectBridge;
 }
 
@@ -37,6 +38,7 @@ protected:
 
 private:
     friend class TextualControl;
+    friend class internal::InlineObjectWrapper;
     friend class internal::TextInlineObjectBridge;
 
     void SetHost(std::shared_ptr<TextualControl> host) {
