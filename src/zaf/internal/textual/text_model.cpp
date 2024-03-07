@@ -1,4 +1,4 @@
-#include <zaf/control/internal/textual_control/text_model.h>
+#include <zaf/internal/textual/text_model.h>
 #include <zaf/base/error/check.h>
 
 namespace zaf::internal {

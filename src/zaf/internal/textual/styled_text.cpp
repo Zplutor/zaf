@@ -1,4 +1,4 @@
-#include <zaf/control/internal/textual_control/styled_text.h>
+#include <zaf/internal/textual/styled_text.h>
 
 namespace zaf::internal {
 

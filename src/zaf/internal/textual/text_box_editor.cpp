@@ -1,10 +1,10 @@
-#include <zaf/control/text_box/internal/text_box_editor.h>
+#include <zaf/internal/textual/text_box_editor.h>
 #include <cwctype>
 #include <zaf/base/auto_reset.h>
 #include <zaf/clipboard/clipboard.h>
-#include <zaf/control/internal/textual_control/text_model.h>
-#include <zaf/control/text_box/internal/text_box_module_context.h>
-#include <zaf/control/text_box/internal/text_box_selection_manager.h>
+#include <zaf/internal/textual/text_model.h>
+#include <zaf/internal/textual/text_box_module_context.h>
+#include <zaf/internal/textual/text_box_selection_manager.h>
 #include <zaf/input/keyboard.h>
 
 namespace zaf::internal {

@@ -4,8 +4,8 @@
 #include <zaf/control/color_picker.h>
 #include <zaf/control/internal/enumerator.h>
 #include <zaf/control/internal/range_map.h>
-#include <zaf/control/internal/textual_control/inline_object_wrapper.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/internal/textual/inline_object_wrapper.h>
 
 namespace zaf::internal {
 

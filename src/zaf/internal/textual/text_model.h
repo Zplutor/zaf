@@ -5,7 +5,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/none.h>
 #include <zaf/base/range.h>
-#include <zaf/control/internal/textual_control/styled_text.h>
+#include <zaf/internal/textual/styled_text.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf::internal {

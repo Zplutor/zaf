@@ -2,8 +2,8 @@
 
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
-#include <zaf/control/internal/textual_control/styled_text_slice.h>
-#include <zaf/control/text_box/internal/text_box_module_context.h>
+#include <zaf/internal/textual/styled_text_slice.h>
+#include <zaf/internal/textual/text_box_module_context.h>
 
 namespace zaf::internal {
 

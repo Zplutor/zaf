@@ -1,6 +1,6 @@
-#include <zaf/control/text_box/internal/text_box_edit_command.h>
-#include <zaf/control/internal/textual_control/text_model.h>
-#include <zaf/control/text_box/internal/text_box_selection_manager.h>
+#include <zaf/internal/textual/text_box_edit_command.h>
+#include <zaf/internal/textual/text_box_selection_manager.h>
+#include <zaf/internal/textual/text_model.h>
 
 namespace zaf::internal {
 
@@ -31,10 +31,10 @@ void TextBoxEditCommand::Execute(const TextBoxModuleContext& context, const Edit
 
     auto selection_option =
         edit_info.is_caret_at_begin ?
-        text_box::SelectionOption::SetCaretToBegin :
-        text_box::SelectionOption::SetCaretToEnd;
+        textual::SelectionOption::SetCaretToBegin :
+        textual::SelectionOption::SetCaretToEnd;
 
-    selection_option |= text_box::SelectionOption::ScrollToCaret;
+    selection_option |= textual::SelectionOption::ScrollToCaret;
 
     context.SelectionManager().SetSelectionRange(
         edit_info.new_selection_range,

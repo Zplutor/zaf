@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/control/internal/textual_control/ranged_text_style.h>
+#include <zaf/internal/textual/ranged_text_style.h>
 
 namespace zaf::internal {
 

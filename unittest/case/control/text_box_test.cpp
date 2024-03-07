@@ -158,14 +158,14 @@ TEST(TextBoxTest, SelectionRange) {
     //Set caret to the beginning of the range.
     text_box->SetSelectionRange(
         zaf::Range{ 2, 3 }, 
-        zaf::text_box::SelectionOption::SetCaretToBegin);
+        zaf::textual::SelectionOption::SetCaretToBegin);
     ASSERT_EQ(text_box->SelectionRange(), zaf::Range(2, 3));
     ASSERT_EQ(text_box->CaretIndex(), 2);
 
     //Set caret to the end of the range.
     text_box->SetSelectionRange(
         zaf::Range{ 2, 3 },
-        zaf::text_box::SelectionOption::SetCaretToEnd);
+        zaf::textual::SelectionOption::SetCaretToEnd);
     ASSERT_EQ(text_box->SelectionRange(), zaf::Range(2, 3));
     ASSERT_EQ(text_box->CaretIndex(), 5);
 

@@ -1,10 +1,10 @@
-#include <zaf/control/text_box/internal/text_box_keyboard_input_handler.h>
+#include <zaf/internal/textual/text_box_keyboard_input_handler.h>
 #include <zaf/clipboard/clipboard.h>
-#include <zaf/control/internal/textual_control/text_model.h>
+#include <zaf/internal/textual/text_model.h>
 #include <zaf/control/text_box.h>
-#include <zaf/control/text_box/internal/text_box_editor.h>
-#include <zaf/control/text_box/internal/text_box_module_context.h>
-#include <zaf/control/text_box/internal/text_box_selection_manager.h>
+#include <zaf/internal/textual/text_box_editor.h>
+#include <zaf/internal/textual/text_box_module_context.h>
+#include <zaf/internal/textual/text_box_selection_manager.h>
 #include <zaf/input/keyboard.h>
 
 namespace zaf::internal {
@@ -184,12 +184,12 @@ void TextBoxKeyboardInputHandler::SetCaretIndexByKey(
 
     auto new_selection_range = Range::FromIndexPair(selection_begin, selection_end);
 
-    auto selection_option = text_box::SelectionOption::ScrollToCaret;
+    auto selection_option = textual::SelectionOption::ScrollToCaret;
     if (new_selection_range.index == caret_index) {
-        selection_option |= text_box::SelectionOption::SetCaretToBegin;
+        selection_option |= textual::SelectionOption::SetCaretToBegin;
     }
     else {
-        selection_option |= text_box::SelectionOption::SetCaretToEnd;
+        selection_option |= textual::SelectionOption::SetCaretToEnd;
     }
 
     Context().SelectionManager().SetSelectionRange(
@@ -213,7 +213,7 @@ void TextBoxKeyboardInputHandler::HandleSelectAll() {
 
     Context().SelectionManager().SetSelectionRange(
         Range::Infinite(), 
-        text_box::SelectionOption::SetCaretToEnd | text_box::SelectionOption::ScrollToCaret, 
+        textual::SelectionOption::SetCaretToEnd | textual::SelectionOption::ScrollToCaret, 
         true);
 }
 

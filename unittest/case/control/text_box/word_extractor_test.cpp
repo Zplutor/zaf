@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include <zaf/control/text_box/word_extractor.h>
+#include <zaf/control/textual/word_extractor.h>
 
 using namespace zaf;
-using namespace zaf::text_box;
+using namespace zaf::textual;
 
 TEST(WordExtractorTest, Default) {
 

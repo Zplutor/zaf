@@ -4,7 +4,7 @@
 #include <string_view>
 #include <zaf/base/range.h>
 
-namespace zaf::text_box {
+namespace zaf::textual {
 
 /**
 A WordExtractor is used to extract a range of the completed word around the index in text.

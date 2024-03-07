@@ -2,7 +2,7 @@
 
 #include <zaf/base/flag_enum.h>
 
-namespace zaf::text_box {
+namespace zaf::textual {
 
 /**
 SelectionOption is used in TextBox's methods to control the behavior when changing the selection

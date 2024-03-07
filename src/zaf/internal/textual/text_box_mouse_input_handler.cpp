@@ -1,9 +1,9 @@
-#include <zaf/control/text_box/internal/text_box_mouse_input_handler.h>
+#include <zaf/internal/textual/text_box_mouse_input_handler.h>
 #include <zaf/base/auto_reset.h>
-#include <zaf/control/internal/textual_control/text_model.h>
+#include <zaf/internal/textual/text_model.h>
 #include <zaf/control/text_box.h>
-#include <zaf/control/text_box/internal/text_box_module_context.h>
-#include <zaf/control/text_box/internal/text_box_selection_manager.h>
+#include <zaf/internal/textual/text_box_module_context.h>
+#include <zaf/internal/textual/text_box_selection_manager.h>
 
 namespace zaf::internal {
 
@@ -81,15 +81,15 @@ void TextBoxMouseInputHandler::SetCaretIndexByMouse(
     }
 
     Range selection_range;
-    text_box::SelectionOption selection_option{ text_box::SelectionOption::ScrollToCaret };
+    textual::SelectionOption selection_option{ textual::SelectionOption::ScrollToCaret };
 
     if (*begin_selecting_index_ < caret_index) {
         selection_range = Range::FromIndexPair(*begin_selecting_index_, caret_index);
-        selection_option |= text_box::SelectionOption::SetCaretToEnd;
+        selection_option |= textual::SelectionOption::SetCaretToEnd;
     }
     else {
         selection_range = Range::FromIndexPair(caret_index , *begin_selecting_index_);
-        selection_option |= text_box::SelectionOption::SetCaretToBegin;
+        selection_option |= textual::SelectionOption::SetCaretToBegin;
     }
 
     auto auto_reset = MakeAutoReset(is_setting_selection_range_, true);

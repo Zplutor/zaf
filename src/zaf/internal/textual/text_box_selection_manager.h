@@ -2,8 +2,8 @@
 
 #include <optional>
 #include <zaf/base/range.h>
-#include <zaf/control/text_box/internal/text_box_module.h>
-#include <zaf/control/text_box/selection_option.h>
+#include <zaf/internal/textual/text_box_module.h>
+#include <zaf/control/textual/selection_option.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/rx/subject.h>
 
@@ -23,7 +23,7 @@ public:
 
     void SetSelectionRange(
         const Range& range,
-        text_box::SelectionOption selection_option,
+        textual::SelectionOption selection_option,
         bool update_caret_x);
 
     std::size_t CaretIndex() const {

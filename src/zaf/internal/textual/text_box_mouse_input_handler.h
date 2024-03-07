@@ -4,7 +4,7 @@
 #include <zaf/base/range.h>
 #include <zaf/control/event/mouse_cursor_changing_info.h>
 #include <zaf/control/event/mouse_event_info.h>
-#include <zaf/control/text_box/internal/text_box_module.h>
+#include <zaf/internal/textual/text_box_module.h>
 #include <zaf/rx/subscription_host.h>
 
 namespace zaf::internal {

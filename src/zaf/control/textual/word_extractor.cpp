@@ -1,6 +1,6 @@
-#include <zaf/control/text_box/word_extractor.h>
+#include <zaf/control/textual/word_extractor.h>
 
-namespace zaf::text_box {
+namespace zaf::textual {
 
 WordExtractor DefaultWordExtractor() noexcept {
     

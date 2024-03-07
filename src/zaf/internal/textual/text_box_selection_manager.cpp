@@ -1,6 +1,6 @@
-#include <zaf/control/text_box/internal/text_box_selection_manager.h>
+#include <zaf/internal/textual/text_box_selection_manager.h>
 #include <zaf/control/text_box.h>
-#include <zaf/control/text_box/internal/text_box_module_context.h>
+#include <zaf/internal/textual/text_box_module_context.h>
 
 namespace zaf::internal {
 
@@ -17,7 +17,7 @@ void TextBoxSelectionManager::Initialize() {
 
 void TextBoxSelectionManager::SetSelectionRange(
     const Range& range, 
-    text_box::SelectionOption selection_option,
+    textual::SelectionOption selection_option,
     bool update_caret_x) {
 
     auto text_length = Context().Owner().TextLength();
@@ -25,14 +25,14 @@ void TextBoxSelectionManager::SetSelectionRange(
     auto end_index = (std::min)(range.EndIndex(), text_length);
     selection_range_ = Range::FromIndexPair(begin_index, end_index);
 
-    if (HasFlag(selection_option, text_box::SelectionOption::SetCaretToBegin)) {
+    if (HasFlag(selection_option, textual::SelectionOption::SetCaretToBegin)) {
         caret_index_ = selection_range_.index;
     }
     else {
         caret_index_ = selection_range_.EndIndex();
     }
 
-    bool scroll_to_caret = HasFlag(selection_option, text_box::SelectionOption::ScrollToCaret);
+    bool scroll_to_caret = HasFlag(selection_option, textual::SelectionOption::ScrollToCaret);
     AfterSetCaretIndex(update_caret_x, scroll_to_caret);
 }
 

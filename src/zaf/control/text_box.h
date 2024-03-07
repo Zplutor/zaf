@@ -3,10 +3,10 @@
 #include <zaf/base/range.h>
 #include <zaf/control/color_picker.h>
 #include <zaf/control/self_scroll_control.h>
-#include <zaf/control/textual_control.h>
 #include <zaf/graphic/text/text_layout.h>
-#include <zaf/control/text_box/selection_option.h>
-#include <zaf/control/text_box/word_extractor.h>
+#include <zaf/control/textual_control.h>
+#include <zaf/control/textual/selection_option.h>
+#include <zaf/control/textual/word_extractor.h>
 
 namespace zaf {
 namespace internal {
@@ -100,7 +100,7 @@ public:
     */
     void SetSelectionRange(
         const Range& range,
-        text_box::SelectionOption selection_option = text_box::SelectionOption::Default);
+        textual::SelectionOption selection_option = textual::SelectionOption::Default);
 
     ColorPicker SelectionBackgroundColorPicker() const;
     void SetSelectionBackgroundColorPicker(ColorPicker picker);
@@ -127,7 +127,7 @@ public:
     */
     void SelectWordAtIndex(
         std::size_t index, 
-        text_box::SelectionOption selection_option = text_box::SelectionOption::Default);
+        textual::SelectionOption selection_option = textual::SelectionOption::Default);
 
     /**
     Gets the word extractor used to determine the word range to be selected.
@@ -135,7 +135,7 @@ public:
     @return 
         The word extractor. It is guaranteed to be not nullptr.
     */
-    const text_box::WordExtractor& WordExtractor() const noexcept;
+    const textual::WordExtractor& WordExtractor() const noexcept;
 
     /**
     Sets the word extractor used to determine the word range to be selected.
@@ -149,7 +149,7 @@ public:
         default behavior of determining the completed word to select. If you want to disable the
         feature of selecting the word on double click, call SetCanDoubleClick() with false.
     */
-    void SetWordExtractor(text_box::WordExtractor extractor) noexcept;
+    void SetWordExtractor(textual::WordExtractor extractor) noexcept;
 
     /**
     Finds the nearest text index at the specified position in the coordinate space of the text box.
@@ -271,7 +271,7 @@ private:
     Event<SelfScrollControlScrollValuesChangeInfo> scroll_values_change_event_;
 
     ColorPicker selection_background_color_picker_;
-    text_box::WordExtractor word_extractor_;
+    textual::WordExtractor word_extractor_;
 };
 
 }
