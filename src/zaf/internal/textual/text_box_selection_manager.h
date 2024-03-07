@@ -9,7 +9,7 @@
 
 namespace zaf::internal {
 
-class TextBoxCaretIndexChangedInfo;
+class TextBoxSelectionChangedInfo;
 
 class TextBoxSelectionManager : public TextBoxModule {
 public:
@@ -34,8 +34,8 @@ public:
         return caret_last_x_;
     }
 
-    Observable<TextBoxCaretIndexChangedInfo> CaretIndexChangedEvent() const {
-        return caret_index_changed_event_.AsObservable();
+    Observable<TextBoxSelectionChangedInfo> SelectionChangedEvent() const {
+        return selection_changed_event_.AsObservable();
     }
 
 private:
@@ -46,13 +46,13 @@ private:
     std::size_t caret_index_{};
     float caret_last_x_{};
 
-    Subject<TextBoxCaretIndexChangedInfo> caret_index_changed_event_;
+    Subject<TextBoxSelectionChangedInfo> selection_changed_event_;
 };
 
 
-class TextBoxCaretIndexChangedInfo {
+class TextBoxSelectionChangedInfo {
 public:
-    TextBoxCaretIndexChangedInfo(bool need_scroll_to_caret, const Rect& char_rect_at_caret) :
+    TextBoxSelectionChangedInfo(bool need_scroll_to_caret, const Rect& char_rect_at_caret) :
         need_scroll_to_caret_(need_scroll_to_caret),
         char_rect_at_caret_(char_rect_at_caret) {
 

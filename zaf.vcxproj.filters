@@ -1150,6 +1150,9 @@
     <ClCompile Include="src\zaf\internal\textual\text_model.cpp">
       <Filter>zaf\internal\textual</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\internal\textual\text_box_inline_object_manager.cpp">
+      <Filter>zaf\internal\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2618,6 +2621,9 @@
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\textual\text_model.h">
+      <Filter>zaf\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\textual\text_box_inline_object_manager.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
   </ItemGroup>

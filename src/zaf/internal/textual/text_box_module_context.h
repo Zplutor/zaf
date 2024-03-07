@@ -8,6 +8,7 @@ namespace zaf {
 namespace internal {
 
 class TextBoxEditor;
+class TextBoxInlineObjectManager;
 class TextBoxMouseInputHandler;
 class TextBoxKeyboardInputHandler;
 class TextBoxSelectionManager;
@@ -15,6 +16,7 @@ class TextBoxSelectionManager;
 class TextBoxModuleContext : NonCopyableNonMovable {
 public:
     explicit TextBoxModuleContext(TextBox* owner);
+    ~TextBoxModuleContext();
 
     void Initialize();
 
@@ -46,12 +48,17 @@ public:
         return *editor_;
     }
 
+    TextBoxInlineObjectManager& InlineObjectManager() const {
+        return *inline_object_manager_;
+    }
+
 private:
     TextBox* owner_{};
     std::unique_ptr<TextBoxSelectionManager> selection_manager_;
     std::unique_ptr<TextBoxMouseInputHandler> mouse_input_handler_;
     std::unique_ptr<TextBoxKeyboardInputHandler> keyboard_input_handler_;
     std::unique_ptr<TextBoxEditor> editor_;
+    std::unique_ptr<TextBoxInlineObjectManager> inline_object_manager_;
 };
 
 }

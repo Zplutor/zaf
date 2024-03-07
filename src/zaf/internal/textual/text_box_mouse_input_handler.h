@@ -22,7 +22,7 @@ public:
 
 private:
     void SetCaretIndexByMouse(std::size_t index, bool begin_selection);
-    void OnCaretIndexChanged();
+    void OnSelectionChanged();
 
 private:
     std::optional<std::size_t> begin_selecting_index_{};

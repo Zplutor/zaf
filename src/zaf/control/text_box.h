@@ -10,7 +10,7 @@
 
 namespace zaf {
 namespace internal {
-class TextBoxCaretIndexChangedInfo;
+class TextBoxSelectionChangedInfo;
 class TextBoxModuleContext;
 }
 
@@ -242,7 +242,7 @@ private:
     HitTestPointResult HitTestAtPosition(const Point& position) const;
 
     void UpdateCaretAtCurrentIndex();
-    void OnCaretIndexChanged(const internal::TextBoxCaretIndexChangedInfo& event_info);
+    void OnSelectionChanged(const internal::TextBoxSelectionChangedInfo& event_info);
     void ShowCaret(const zaf::Rect& char_rect_at_caret);
     void EnsureCaretVisible(const zaf::Rect& char_rect_at_caret);
     

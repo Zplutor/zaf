@@ -15,8 +15,8 @@ TextBoxMouseInputHandler::TextBoxMouseInputHandler(TextBoxModuleContext* context
 
 void TextBoxMouseInputHandler::Initialize() {
 
-    Subscriptions() += Context().SelectionManager().CaretIndexChangedEvent().Subscribe(
-        std::bind(&TextBoxMouseInputHandler::OnCaretIndexChanged, this));
+    Subscriptions() += Context().SelectionManager().SelectionChangedEvent().Subscribe(
+        std::bind(&TextBoxMouseInputHandler::OnSelectionChanged, this));
 }
 
 
@@ -97,7 +97,7 @@ void TextBoxMouseInputHandler::SetCaretIndexByMouse(
 }
 
 
-void TextBoxMouseInputHandler::OnCaretIndexChanged() {
+void TextBoxMouseInputHandler::OnSelectionChanged() {
 
     if (is_setting_selection_range_) {
         return;

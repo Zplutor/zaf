@@ -37,8 +37,8 @@ void TextBox::Initialize() {
     module_context_ = std::make_unique<internal::TextBoxModuleContext>(this);
     module_context_->Initialize();
 
-    Subscriptions() += module_context_->SelectionManager().CaretIndexChangedEvent().Subscribe(
-        std::bind(&TextBox::OnCaretIndexChanged, this, std::placeholders::_1));
+    Subscriptions() += module_context_->SelectionManager().SelectionChangedEvent().Subscribe(
+        std::bind(&TextBox::OnSelectionChanged, this, std::placeholders::_1));
 
     SetCanFocused(true);
     SetCanTabStop(true);
@@ -456,7 +456,7 @@ std::wstring TextBox::SelectedText() const {
 }
 
 
-void TextBox::OnCaretIndexChanged(const internal::TextBoxCaretIndexChangedInfo& event_info) {
+void TextBox::OnSelectionChanged(const internal::TextBoxSelectionChangedInfo& event_info) {
 
     if (event_info.NeedScrollToCaret()) {
         EnsureCaretVisible(event_info.CharRectAtCaret());

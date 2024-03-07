@@ -42,18 +42,19 @@ void TextBoxSelectionManager::AfterSetCaretIndex(bool update_caret_x, bool scrol
     auto hit_test_result = Context().GetTextLayout().HitTestIndex(caret_index_, false);
     const auto& metrics = hit_test_result.Metrics();
 
-    //If content size is empty, the cooridnate of metrics will be less than 0, which is abnormal.
-    if (metrics.Left() < 0 || metrics.Top() < 0) {
-        return;
-    }
-
     if (update_caret_x) {
-        caret_last_x_ = metrics.Left();
+        caret_last_x_ = (std::max)(metrics.Left(), 0.f);
     }
 
-    caret_index_changed_event_.AsObserver().OnNext(TextBoxCaretIndexChangedInfo{
+    Rect char_rect_at_caret;
+    //If content size is empty, the coordinate of metrics will be less than 0, which is abnormal.
+    if (metrics.Left() >= 0 && metrics.Top() >= 0) {
+        char_rect_at_caret = metrics.Rect();
+    }
+
+    selection_changed_event_.AsObserver().OnNext(TextBoxSelectionChangedInfo{
         scroll_to_caret,
-        metrics.Rect() 
+        char_rect_at_caret
     });
 }
 
