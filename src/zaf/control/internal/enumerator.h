@@ -14,7 +14,7 @@ public:
     using reference = T&;
 
 public:
-    explicit WrapIterator(C::iterator inner) : inner_(std::move(inner)) {
+    explicit WrapIterator(C::const_iterator inner) : inner_(std::move(inner)) {
 
     }
 
@@ -36,7 +36,7 @@ public:
     }
 
 private:
-    C::iterator inner_;
+    C::const_iterator inner_;
 };
 
 

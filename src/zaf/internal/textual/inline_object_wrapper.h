@@ -42,6 +42,10 @@ public:
         return object_;
     }
 
+    std::shared_ptr<textual::InlineObject> Detach() {
+        return std::move(object_);
+    }
+
 private:
     void CopyFromOther(const InlineObjectWrapper& other) {
         if (other.object_) {

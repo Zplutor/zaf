@@ -108,6 +108,7 @@ public:
     }
 
     using iterator = Iterator;
+    using const_iterator = Iterator;
 
 private:
     RangeManager range_manager_;
