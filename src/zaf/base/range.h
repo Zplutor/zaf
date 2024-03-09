@@ -107,6 +107,9 @@ public:
     Determines whether the current range fully contains the other range.
     */
     bool Contains(const Range& other) const noexcept {
+        if (other.length == 0) {
+            return Contains(other.index);
+        }
         return (Index() <= other.Index()) && (other.EndIndex() <= EndIndex());
     }
 

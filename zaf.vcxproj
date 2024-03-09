@@ -279,7 +279,7 @@
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
     <ClCompile Include="src\zaf\internal\system_message_window.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
-    <ClCompile Include="src\zaf\internal\textual\ranged_inline_object_collection.cpp" />
+    <ClCompile Include="src\zaf\internal\textual\inline_object_collection.cpp" />
     <ClCompile Include="src\zaf\internal\textual\styled_text.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_editor.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_edit_command.cpp" />
@@ -719,7 +719,8 @@
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
     <ClInclude Include="src\zaf\internal\system_message_window.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
-    <ClInclude Include="src\zaf\internal\textual\ranged_inline_object_collection.h" />
+    <ClInclude Include="src\zaf\internal\textual\inline_object_changed_info.h" />
+    <ClInclude Include="src\zaf\internal\textual\inline_object_collection.h" />
     <ClInclude Include="src\zaf\internal\textual\inline_object_wrapper.h" />
     <ClInclude Include="src\zaf\internal\textual\ranged_text_style.h" />
     <ClInclude Include="src\zaf\internal\textual\styled_text.h" />

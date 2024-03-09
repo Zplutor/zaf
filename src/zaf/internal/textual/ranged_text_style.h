@@ -5,11 +5,11 @@
 #include <zaf/control/internal/enumerator.h>
 #include <zaf/control/internal/range_map.h>
 #include <zaf/graphic/font/font.h>
-#include <zaf/internal/textual/ranged_inline_object_collection.h>
+#include <zaf/internal/textual/inline_object_collection.h>
 
 namespace zaf::internal {
 
-class RangedTextStyle {
+class RangedTextStyle : NonCopyable {
 public:
     using FontMap = RangeMap<zaf::Font>;
     using ColorPickerMap = RangeMap<zaf::ColorPicker>;
@@ -38,18 +38,18 @@ public:
 
     class InlineObjectItem : NonCopyable {
     public:
-        explicit InlineObjectItem(const RangedInlineObjectCollection::ItemList::value_type& item) : 
+        explicit InlineObjectItem(const InlineObjectCollection::ItemList::value_type& item) : 
             inner_(item) { }
-        const Range& Range() const { return inner_.range; }
+        const Range& Range() const { return inner_.Range(); }
         const std::shared_ptr<textual::InlineObject>& InlineObject() const {
-            return inner_.object_wrapper.Object();
+            return inner_.Object();
         }
     private:
-        const RangedInlineObjectCollection::ItemList::value_type& inner_;
+        const InlineObjectCollection::ItemList::value_type& inner_;
     };
 
     using InlineObjectEnumerator = WrapEnumerator<
-        RangedInlineObjectCollection::ItemList,
+        InlineObjectCollection::ItemList,
         InlineObjectItem
     >;
 
@@ -87,20 +87,20 @@ public:
         return inline_objects_.GetInlineObjectAtIndex(index);
     }
 
-    std::vector<std::shared_ptr<textual::InlineObject>> AttachInlineObjectToRange(
+    void AttachInlineObjectToRange(
         std::shared_ptr<textual::InlineObject> object,
         const Range& range) {
 
-        return inline_objects_.Add(range, std::move(object));
+        inline_objects_.Add(range, std::move(object));
     }
 
-    std::vector<std::shared_ptr<textual::InlineObject>> ReplaceSpan(
+    void ReplaceSpan(
         const Range& span_range, 
         std::size_t new_length) {
 
         fonts_.ReplaceSpan(span_range, new_length);
         color_pickers_.ReplaceSpan(span_range, new_length);
-        return inline_objects_.ReplaceSpan(span_range, new_length);
+        inline_objects_.ReplaceSpan(span_range, new_length);
     }
 
     void ClearFonts() {
@@ -111,20 +111,24 @@ public:
         color_pickers_.Clear();
     }
 
-    std::vector<std::shared_ptr<textual::InlineObject>> ClearInlineObjects() {
-        return inline_objects_.Clear();
+    void ClearInlineObjects() {
+        inline_objects_.Clear();
     }
 
-    std::vector<std::shared_ptr<textual::InlineObject>> Clear() {
+    void Clear() {
         fonts_.Clear();
         color_pickers_.Clear();
-        return inline_objects_.Clear();
+        inline_objects_.Clear();
+    }
+
+    Observable<InlineObjectChangedInfo> InlineObjectChangedEvent() const {
+        return inline_objects_.ChangedEvent();
     }
 
 private:
     FontMap fonts_;
     ColorPickerMap color_pickers_;
-    RangedInlineObjectCollection inline_objects_;
+    InlineObjectCollection inline_objects_;
 };
 
 }

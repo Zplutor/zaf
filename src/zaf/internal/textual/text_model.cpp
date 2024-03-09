@@ -3,6 +3,13 @@
 
 namespace zaf::internal {
 
+TextModel::TextModel() {
+
+    Subscriptions() += styled_text_.InlineObjectChangedEvent().Subscribe(
+        inline_object_changed_event_.AsObserver());
+}
+
+
 void TextModel::SetText(std::wstring text) {
 
     auto old_length = styled_text_.Text().length();
@@ -63,7 +70,6 @@ void TextModel::AttachInlineObjectToRange(
     const Range& range) {
 
     styled_text_.AttachInlineObjectToRange(object, range);
-    RaiseInlineObjectAttachedEvent(std::move(object));
     RaiseChangedEvent(TextModelAttribute::InlineObject, range, range.length);
 }
 
@@ -71,11 +77,6 @@ void TextModel::AttachInlineObjectToRange(
 void TextModel::ReplaceStyledTextSlice(const Range& replaced_range, const StyledTextSlice& slice) {
 
     styled_text_.ReplaceSlice(replaced_range, slice);
-
-    for (const auto& each_item : slice.RangedStyle().InlineObjects()) {
-        RaiseInlineObjectAttachedEvent(each_item.InlineObject());
-    }
-
     RaiseChangedEvent(TextModelAttribute::All);
 }
 

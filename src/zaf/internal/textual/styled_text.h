@@ -72,6 +72,10 @@ public:
     std::shared_ptr<textual::InlineObject> GetInlineObjectAtIndex(std::size_t index) const;
     InlineObjectEnumerator InlineObjects() const;
 
+    Observable<InlineObjectChangedInfo> InlineObjectChangedEvent() const {
+        return ranged_style_.InlineObjectChangedEvent();
+    }
+
     StyledTextSlice Slice(const Range& range) const;
     void ReplaceSlice(const Range& slice_range, const StyledTextSlice& new_slice);
 

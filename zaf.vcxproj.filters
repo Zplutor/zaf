@@ -1153,7 +1153,7 @@
     <ClCompile Include="src\zaf\internal\textual\text_box_inline_object_manager.cpp">
       <Filter>zaf\internal\textual</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\ranged_inline_object_collection.cpp">
+    <ClCompile Include="src\zaf\internal\textual\inline_object_collection.cpp">
       <Filter>zaf\internal\textual</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2629,7 +2629,10 @@
     <ClInclude Include="src\zaf\internal\textual\text_box_inline_object_manager.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\ranged_inline_object_collection.h">
+    <ClInclude Include="src\zaf\internal\textual\inline_object_collection.h">
+      <Filter>zaf\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\textual\inline_object_changed_info.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
   </ItemGroup>

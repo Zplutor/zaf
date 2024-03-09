@@ -68,6 +68,11 @@ TEST(RangeTest, ContainsIndex) {
     ASSERT_FALSE(range.Contains(0));
     ASSERT_FALSE(range.Contains(1));
 
+    range = zaf::Range{ 2, 0 };
+    ASSERT_FALSE(range.Contains(1));
+    ASSERT_FALSE(range.Contains(2));
+    ASSERT_FALSE(range.Contains(3));
+
     range = zaf::Range{ 3, 2 };
     ASSERT_FALSE(range.Contains(0));
     ASSERT_FALSE(range.Contains(1));
@@ -82,13 +87,13 @@ TEST(RangeTest, ContainsIndex) {
 TEST(RangeTest, ContainsRange) {
 
     zaf::Range range;
-    ASSERT_TRUE(range.Contains(zaf::Range{}));
+    ASSERT_FALSE(range.Contains(zaf::Range{}));
     ASSERT_FALSE(range.Contains(zaf::Range{ 1, 0 }));
     ASSERT_FALSE(range.Contains(zaf::Range{ 1, 1 }));
     ASSERT_FALSE(range.Contains(zaf::Range{ 2, 1 }));
 
     range = zaf::Range{ 5, 0 };
-    ASSERT_TRUE(range.Contains(zaf::Range{ 5, 0 }));
+    ASSERT_FALSE(range.Contains(zaf::Range{ 5, 0 }));
     ASSERT_FALSE(range.Contains(zaf::Range{ 4, 1 }));
     ASSERT_FALSE(range.Contains(zaf::Range{ 5, 1 }));
 
@@ -101,7 +106,7 @@ TEST(RangeTest, ContainsRange) {
     ASSERT_TRUE(range.Contains(zaf::Range{ 5, 3 }));
     ASSERT_TRUE(range.Contains(zaf::Range{ 6, 2 }));
     ASSERT_TRUE(range.Contains(zaf::Range{ 7, 1 }));
-    ASSERT_TRUE(range.Contains(zaf::Range{ 8, 0 }));
+    ASSERT_FALSE(range.Contains(zaf::Range{ 8, 0 }));
     ASSERT_FALSE(range.Contains(zaf::Range{ 5, 4 }));
     ASSERT_FALSE(range.Contains(zaf::Range{ 5, 5 }));
 }

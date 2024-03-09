@@ -5,8 +5,10 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/none.h>
 #include <zaf/base/range.h>
+#include <zaf/internal/textual/inline_object_changed_info.h>
 #include <zaf/internal/textual/styled_text.h>
 #include <zaf/rx/subject.h>
+#include <zaf/rx/subscription_host.h>
 
 namespace zaf::internal {
 
@@ -20,22 +22,6 @@ enum class TextModelAttribute : std::uint32_t {
 };
 
 ZAF_ENABLE_FLAG_ENUM(TextModelAttribute);
-
-
-class InlineObjectAttachedInfo {
-public:
-    explicit InlineObjectAttachedInfo(std::shared_ptr<textual::InlineObject> inline_object) :
-        inline_object_(std::move(inline_object))  {
-
-    }
-
-    const std::shared_ptr<textual::InlineObject>& InlineObject() const {
-        return inline_object_;
-    }
-
-private:
-    std::shared_ptr<textual::InlineObject> inline_object_;
-};
 
 
 class TextModelChangedInfo {
@@ -107,9 +93,9 @@ private:
 };
 
 
-class TextModel : NonCopyableNonMovable {
+class TextModel : SubscriptionHost, NonCopyableNonMovable {
 public:
-    TextModel() = default;
+    TextModel();
     ~TextModel() = default;
 
     const StyledText& StyledText() const {
@@ -135,8 +121,8 @@ public:
 
     void ReplaceStyledTextSlice(const Range& replaced_range, const StyledTextSlice& slice);
 
-    Observable<InlineObjectAttachedInfo> InlineObjectAttachedEvent() const {
-        return inline_object_attached_event_.AsObservable();
+    Observable<InlineObjectChangedInfo> InlineObjectChangedEvent() const {
+        return inline_object_changed_event_.AsObservable();
     }
 
     Observable<TextModelChangedInfo> TextChangedEvent() const {
@@ -144,12 +130,6 @@ public:
     }
 
 private:
-    void RaiseInlineObjectAttachedEvent(std::shared_ptr<textual::InlineObject> inline_object) {
-        inline_object_attached_event_.AsObserver().OnNext(InlineObjectAttachedInfo{
-            std::move(inline_object) 
-        });
-    }
-
     void RaiseChangedEvent(TextModelAttribute attributes) {
         changed_event_.AsObserver().OnNext(TextModelChangedInfo{ attributes });
     }
@@ -169,7 +149,7 @@ private:
 private:
     internal::StyledText styled_text_;
     Subject<TextModelChangedInfo> changed_event_;
-    Subject<InlineObjectAttachedInfo> inline_object_attached_event_;
+    Subject<InlineObjectChangedInfo> inline_object_changed_event_;
 };
 
 }
