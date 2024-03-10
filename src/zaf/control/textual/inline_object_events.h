@@ -6,9 +6,15 @@ namespace zaf::textual {
 
 class InlineObject;
 
-class MouseCursorChangingInfo : public EventInfo {
+class AttachedInfo : public EventInfo {
 public:
-    explicit MouseCursorChangingInfo(std::shared_ptr<InlineObject> source);
+    explicit AttachedInfo(std::shared_ptr<InlineObject> source);
+};
+
+
+class DetachedInfo : public EventInfo {
+public:
+    explicit DetachedInfo(std::shared_ptr<InlineObject> source);
 };
 
 }

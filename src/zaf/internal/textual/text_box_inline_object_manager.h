@@ -15,16 +15,15 @@ public:
 
     void Initialize() override;
 
-    bool IsInlineObjectSelected(
-        const std::shared_ptr<textual::DynamicInlineObject>& object);
+    bool IsInlineObjectSelected(const textual::DynamicInlineObject& object);
 
 private:
-    std::set<textual::DynamicInlineObject*> FindSelectedInlineObjects() const;
+    std::set<const textual::DynamicInlineObject*> FindSelectedInlineObjects() const;
     void OnTextModelChanged(const TextModelChangedInfo& event_info);
     void ResetCachedSelectedObjects();
 
 private:
-    std::optional<std::set<textual::DynamicInlineObject*>> cached_selected_objects_;
+    std::optional<std::set<const textual::DynamicInlineObject*>> cached_selected_objects_;
 };
 
 }

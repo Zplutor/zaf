@@ -3,8 +3,12 @@
 
 namespace zaf::textual {
 
-MouseCursorChangingInfo::MouseCursorChangingInfo(std::shared_ptr<InlineObject> source) :
-    EventInfo(std::move(source)) {
+AttachedInfo::AttachedInfo(std::shared_ptr<InlineObject> source) : EventInfo(std::move(source)) {
+
+}
+
+
+DetachedInfo::DetachedInfo(std::shared_ptr<InlineObject> source) : EventInfo(std::move(source)) {
 
 }
 

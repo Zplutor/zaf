@@ -253,6 +253,7 @@ ZAF_DEFINE_TYPE_END;
 
 }
 
+
 TEST(TextualControlTest, AttachInlineObjectToRange) {
 
     g_object_count = 0;
@@ -261,31 +262,50 @@ TEST(TextualControlTest, AttachInlineObjectToRange) {
     control->SetText(L"abcd");
 
     auto object = zaf::Create<TestInlineObject>();
-
-    //Null pointer
-    ASSERT_THROW(
-        control->AttachInlineObjectToRange(nullptr, zaf::Range{ 0, 1 }), 
-        std::logic_error);
-
-    //Invalid range
-    ASSERT_THROW(control->AttachInlineObjectToRange(object, zaf::Range{ 0, 5 }), std::logic_error);
-    ASSERT_THROW(control->AttachInlineObjectToRange(object, zaf::Range{ 4, 1 }), std::logic_error);
-
     control->AttachInlineObjectToRange(object, zaf::Range{ 1, 2 });
-
-    //Not allow to attach the inline object which has been attached.
-    ASSERT_THROW(control->AttachInlineObjectToRange(object, zaf::Range{ 3, 1 }), std::logic_error);
 
     auto object2 = zaf::Create<TestInlineObject>();
     control->AttachInlineObjectToRange(object2, zaf::Range{ 3, 1 });
+
     ASSERT_EQ(control->GetInlineObjectAtIndex(0), nullptr);
     ASSERT_EQ(control->GetInlineObjectAtIndex(1), object);
     ASSERT_EQ(control->GetInlineObjectAtIndex(2), object);
     ASSERT_EQ(control->GetInlineObjectAtIndex(3), object2);
     ASSERT_EQ(control->GetInlineObjectAtIndex(4), nullptr);
 
-    //Object will not be copied.
+    //Objects will not be cloned.
     ASSERT_EQ(g_object_count, 2);
+}
+
+
+TEST(TextualControlTest, AttachInlineObjectWithInvalidArguments) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+    control->SetText(L"abcd");
+
+    //Null pointer
+    ASSERT_THROW(
+        control->AttachInlineObjectToRange(nullptr, zaf::Range{ 0, 1 }),
+        std::logic_error);
+
+    auto object = zaf::Create<TestInlineObject>();
+
+    //Invalid range
+    ASSERT_THROW(control->AttachInlineObjectToRange(object, zaf::Range{ 0, 5 }), std::logic_error);
+    ASSERT_THROW(control->AttachInlineObjectToRange(object, zaf::Range{ 4, 1 }), std::logic_error);
+}
+
+
+TEST(TextualControlTest, AttachInlineObjectAlreadyAttached) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+    control->SetText(L"abcd");
+
+    auto object = zaf::Create<TestInlineObject>();
+    control->AttachInlineObjectToRange(object, zaf::Range{ 0, 1 });
+
+    //Not allow to attach an inline object which is already attached.
+    ASSERT_THROW(control->AttachInlineObjectToRange(object, zaf::Range{ 1, 1 }), std::logic_error);
 }
 
 

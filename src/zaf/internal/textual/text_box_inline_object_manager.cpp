@@ -21,20 +21,20 @@ void TextBoxInlineObjectManager::Initialize() {
 
 
 bool TextBoxInlineObjectManager::IsInlineObjectSelected(
-    const std::shared_ptr<textual::DynamicInlineObject>& object) {
+    const textual::DynamicInlineObject& object) {
 
     if (!cached_selected_objects_) {
         cached_selected_objects_ = FindSelectedInlineObjects();
     }
 
-    return cached_selected_objects_->contains(object.get());
+    return cached_selected_objects_->contains(&object);
 }
 
 
-std::set<textual::DynamicInlineObject*> 
+std::set<const textual::DynamicInlineObject*> 
     TextBoxInlineObjectManager::FindSelectedInlineObjects() const {
 
-    std::set<textual::DynamicInlineObject*> result;
+    std::set<const textual::DynamicInlineObject*> result;
 
     const auto& selection_range = Context().SelectionManager().SelectionRange();
 

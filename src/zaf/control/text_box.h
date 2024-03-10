@@ -14,6 +14,10 @@ class TextBoxSelectionChangedInfo;
 class TextBoxModuleContext;
 }
 
+namespace textual {
+class DynamicInlineObject;
+}
+
 class Caret;
 
 class TextBox : public TextualControl, public SelfScrollControl {
@@ -180,9 +184,6 @@ public:
     */
     bool IsPositionInsideText(const Point& position) const;
 
-private:
-    friend class internal::TextBoxModuleContext;
-
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
@@ -229,6 +230,9 @@ protected:
     void HorizontallyScroll(int new_value) override;
 
 private:
+    friend class internal::TextBoxModuleContext;
+    friend class textual::DynamicInlineObject;
+
     void PaintTextBackground(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,

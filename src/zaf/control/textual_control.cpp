@@ -58,6 +58,9 @@ TextualControl::TextualControl() :
 
 TextualControl::~TextualControl() {
 
+    for (const auto& each_object : text_model_->StyledText().InlineObjects()) {
+        each_object.InlineObject()->SetHost(nullptr);
+    }
 }
 
 

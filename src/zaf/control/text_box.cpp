@@ -2,6 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
+#include <zaf/control/textual/dynamic_inline_object.h>
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/internal/textual/text_box_editor.h>
 #include <zaf/internal/textual/text_box_keyboard_input_handler.h>
