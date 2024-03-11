@@ -97,6 +97,9 @@
     <Filter Include="case\control\text_box">
       <UniqueIdentifier>{8ad079e3-5b51-4ad7-9565-25ca151c1268}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\control\textual">
+      <UniqueIdentifier>{2448d6ae-3ce2-46fd-a132-bebe783172d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -499,8 +502,8 @@
     <ClCompile Include="unittest\utility\test_window.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\graphic\text\custom_text_inline_object_test.cpp">
-      <Filter>case\graphic\text</Filter>
+    <ClCompile Include="unittest\case\control\textual\inline_object_test.cpp">
+      <Filter>case\control\textual</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
