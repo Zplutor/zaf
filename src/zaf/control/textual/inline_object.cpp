@@ -7,6 +7,12 @@ namespace zaf::textual {
 ZAF_DEFINE_TYPE(InlineObject)
 ZAF_DEFINE_TYPE_END;
 
+zaf::Size InlineObject::Size() const {
+    auto metrics = this->GetMetrics();
+    return zaf::Size{ metrics.Width(), metrics.Height() };
+}
+
+
 TextInlineObjectMetrics InlineObject::GetMetrics() const {
     return {};
 }

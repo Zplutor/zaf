@@ -4,6 +4,7 @@
 #include <zaf/base/range.h>
 #include <zaf/control/event/mouse_cursor_changing_info.h>
 #include <zaf/control/event/mouse_event_info.h>
+#include <zaf/control/textual/dynamic_inline_object.h>
 #include <zaf/internal/textual/text_box_module.h>
 #include <zaf/rx/subscription_host.h>
 
@@ -24,9 +25,15 @@ private:
     void SetCaretIndexByMouse(std::size_t index, bool begin_selection);
     void OnSelectionChanged();
 
+    void HandleMouseOverInlineObject(const Point& position_in_owner);
+    std::shared_ptr<textual::DynamicInlineObject> FindMouseOverInlineObject(
+        const Point& position_in_owner) const;
+
 private:
     std::optional<std::size_t> begin_selecting_index_{};
     bool is_setting_selection_range_{};
+
+    std::weak_ptr<textual::DynamicInlineObject> mouse_over_object_;
 };
 
 }

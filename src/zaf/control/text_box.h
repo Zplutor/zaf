@@ -12,6 +12,7 @@ namespace zaf {
 namespace internal {
 class TextBoxSelectionChangedInfo;
 class TextBoxModuleContext;
+class TextBoxMouseInputHandler;
 }
 
 namespace textual {
@@ -231,6 +232,7 @@ protected:
 
 private:
     friend class internal::TextBoxModuleContext;
+    friend class internal::TextBoxMouseInputHandler;
     friend class textual::DynamicInlineObject;
 
     void PaintTextBackground(

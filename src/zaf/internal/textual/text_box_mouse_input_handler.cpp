@@ -1,7 +1,9 @@
 #include <zaf/internal/textual/text_box_mouse_input_handler.h>
+#include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
-#include <zaf/internal/textual/text_model.h>
 #include <zaf/control/text_box.h>
+#include <zaf/control/textual/dynamic_inline_object.h>
+#include <zaf/internal/textual/text_model.h>
 #include <zaf/internal/textual/text_box_module_context.h>
 #include <zaf/internal/textual/text_box_selection_manager.h>
 
@@ -23,12 +25,10 @@ void TextBoxMouseInputHandler::Initialize() {
 void TextBoxMouseInputHandler::HandleMouseCursorChanging(
     const MouseCursorChangingInfo& event_info) {
 
-    const auto& text_box = Context().Owner();
-
-    //auto inline_object = Context().TextModel().StyledText().GetInlineObjectAtIndex(index);
-    //if (inline_object) {
-        
-    //}
+    auto object = mouse_over_object_.lock();
+    if (object) {
+        object->OnMouseCursorChanging(textual::MouseCursorChangingInfo{ object });
+    }
 }
 
 
@@ -45,12 +45,50 @@ void TextBoxMouseInputHandler::HandleMouseDown(const MouseDownInfo& event_info) 
 
 void TextBoxMouseInputHandler::HandleMouseMove(const MouseMoveInfo& event_info) {
 
+    HandleMouseOverInlineObject(event_info.PositionAtSource());
+
     if (!begin_selecting_index_) {
         return;
     }
 
     auto new_index = Context().Owner().FindIndexAtPosition(event_info.PositionAtSource());
     SetCaretIndexByMouse(new_index, false);
+}
+
+
+void TextBoxMouseInputHandler::HandleMouseOverInlineObject(const Point& position_in_owner) {
+
+    auto new_object = FindMouseOverInlineObject(position_in_owner);
+    auto old_object = mouse_over_object_.lock();
+    if (old_object == new_object) {
+        return;
+    }
+
+    mouse_over_object_ = new_object;
+
+    if (old_object) {
+        old_object->OnMouseLeave(textual::MouseLeaveInfo{ old_object });
+    }
+
+    if (new_object) {
+        new_object->OnMouseEnter(textual::MouseEnterInfo{ new_object });
+    }
+}
+
+
+std::shared_ptr<textual::DynamicInlineObject> TextBoxMouseInputHandler::FindMouseOverInlineObject(
+    const Point& position_in_owner) const {
+
+    const auto& text_box = Context().Owner();
+
+    auto hit_test_result = text_box.HitTestAtPosition(position_in_owner);
+    if (hit_test_result.Metrics().IsText() || !hit_test_result.IsInside()) {
+        return nullptr;
+    }
+
+    auto text_index = hit_test_result.Metrics().TextIndex();
+    auto inline_object = Context().TextModel().StyledText().GetInlineObjectAtIndex(text_index);
+    return As<textual::DynamicInlineObject>(inline_object);
 }
 
 

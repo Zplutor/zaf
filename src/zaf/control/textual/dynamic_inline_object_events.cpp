@@ -8,4 +8,16 @@ MouseCursorChangingInfo::MouseCursorChangingInfo(std::shared_ptr<DynamicInlineOb
 
 }
 
+
+MouseEnterInfo::MouseEnterInfo(std::shared_ptr<DynamicInlineObject> source) :
+    EventInfo(std::move(source)) {
+
+}
+
+
+MouseLeaveInfo::MouseLeaveInfo(std::shared_ptr<DynamicInlineObject> source) : 
+    EventInfo(std::move(source)) {
+
+}
+
 }

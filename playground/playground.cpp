@@ -58,16 +58,12 @@
 #include <zaf/control/text_box.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/stroke_properties.h>
-#include <zaf/control/textual/inline_object.h>
+#include <zaf/control/textual/dynamic_inline_object.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
-class InlineObject : public zaf::textual::InlineObject {
+class InlineObject : public zaf::textual::DynamicInlineObject {
 public:
-    void Paint(zaf::Canvas& canvas) const override {
-        canvas.DrawRectangle(zaf::Rect{ 0, 0, 100, 30 }, zaf::Color::Red());
-    }
-
     zaf::TextInlineObjectMetrics GetMetrics() const override {
 
         zaf::TextInlineObjectMetrics result;
@@ -75,6 +71,29 @@ public:
         result.SetHeight(30);
         result.SetHeightAboveBaseline(24);
         return result;
+    }
+
+protected:
+    void Paint(zaf::Canvas& canvas) const override {
+
+        canvas.DrawRectangle(
+            zaf::Rect{ {}, this->Size() }, 
+            IsInSelectionRange() ? zaf::Color::Blue() :
+            IsMouseOver() ? zaf::Color::Green() : zaf::Color::Red());
+    }
+
+    void OnMouseEnter(const zaf::textual::MouseEnterInfo& event_info) override {
+
+        __super::OnMouseEnter(event_info);
+
+        NeedRepaint();
+    }
+
+    void OnMouseLeave(const zaf::textual::MouseLeaveInfo& event_info) override {
+
+        __super::OnMouseLeave(event_info);
+
+        NeedRepaint();
     }
 };
 

@@ -10,8 +10,17 @@ namespace zaf::textual {
 ZAF_DEFINE_TYPE(DynamicInlineObject)
 ZAF_DEFINE_TYPE_END;
 
+void DynamicInlineObject::NeedRepaint() {
+
+    auto text_box = As<TextBox>(Host());
+    if (text_box) {
+        text_box->NeedRepaint();
+    }
+}
+
+
 bool DynamicInlineObject::IsMouseOver() const {
-    return false;
+    return is_mouse_over_;
 }
 
 
@@ -25,9 +34,28 @@ bool DynamicInlineObject::IsInSelectionRange() const {
 }
 
 
-void DynamicInlineObject::OnMouseCursorChanging(
-    const textual::MouseCursorChangingInfo& event_info) {
+void DynamicInlineObject::OnDetached(const DetachedInfo& event_info) {
 
+    is_mouse_over_ = false;
+
+    __super::OnDetached(event_info);
+}
+
+
+void DynamicInlineObject::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
+
+}
+
+
+void DynamicInlineObject::OnMouseEnter(const MouseEnterInfo& event_info) {
+
+    is_mouse_over_ = true;
+}
+
+
+void DynamicInlineObject::OnMouseLeave(const MouseLeaveInfo& event_info) {
+
+    is_mouse_over_ = false;
 }
 
 

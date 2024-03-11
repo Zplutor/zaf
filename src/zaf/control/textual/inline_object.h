@@ -3,6 +3,7 @@
 #include <zaf/base/event/event.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/textual/inline_object_events.h>
+#include <zaf/graphic/size.h>
 #include <zaf/object/object.h>
 #include <zaf/graphic/text/text_inline_object_metrics.h>
 
@@ -40,6 +41,8 @@ public:
     std::shared_ptr<TextualControl> Host() const {
         return host_.lock();
     }
+
+    zaf::Size Size() const;
 
     virtual TextInlineObjectMetrics GetMetrics() const;
 

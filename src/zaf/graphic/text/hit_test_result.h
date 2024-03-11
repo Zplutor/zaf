@@ -7,6 +7,10 @@ namespace zaf {
 
 class HitTestMetrics : private DWRITE_HIT_TEST_METRICS {
 public:
+    bool IsText() const {
+        return !!isText;
+    }
+
     std::size_t TextIndex() const {
         return textPosition;
     }

@@ -6,6 +6,7 @@
 namespace zaf {
 namespace internal {
 class TextBoxInlineObjectManager;
+class TextBoxMouseInputHandler;
 }
 
 namespace textual {
@@ -19,12 +20,24 @@ public:
     bool IsInSelectionRange() const;
 
 protected:
-    virtual void OnMouseCursorChanging(const textual::MouseCursorChangingInfo& event_info);
+    void NeedRepaint();
+
+    void OnDetached(const DetachedInfo& event_info) override;
+
+    virtual void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info);
+    virtual void OnMouseEnter(const MouseEnterInfo& event_info);
+    virtual void OnMouseLeave(const MouseLeaveInfo& event_info);
+
     virtual void OnMouseDown();
     virtual void OnMouseUp();
 
 private:
+    friend class internal::TextBoxMouseInputHandler;
+
     internal::TextBoxInlineObjectManager* GetManager() const;
+
+private:
+    bool is_mouse_over_{};
 };
 
 }

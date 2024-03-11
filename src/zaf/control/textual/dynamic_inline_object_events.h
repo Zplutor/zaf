@@ -11,4 +11,16 @@ public:
     explicit MouseCursorChangingInfo(std::shared_ptr<DynamicInlineObject> source);
 };
 
+
+class MouseEnterInfo : public EventInfo {
+public:
+    explicit MouseEnterInfo(std::shared_ptr<DynamicInlineObject> source);
+};
+
+
+class MouseLeaveInfo : public EventInfo {
+public:
+    explicit MouseLeaveInfo(std::shared_ptr<DynamicInlineObject> source);
+};
+
 }
