@@ -2,6 +2,7 @@
 
 #include <zaf/base/non_copyable.h>
 #include <zaf/window/message/message.h>
+#include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
 
@@ -48,6 +49,17 @@ public:
         Thrown if posting the message fails.
     */
     void Post(UINT message_id, WPARAM wparam, LPARAM lparam);
+
+    /**
+    Posts a WM_SETCURSOR message to the window, using information from the specified mouse message.
+
+    @param mouse_message
+        The mouse message containing information used to populate the WM_SETCURSOR message.
+
+    @throw zaf::Error
+        Thrown if the operation fails.
+    */
+    void PostWMSETCURSOR(const MouseMessage& mouse_message);
 
 private:
     HWND window_handle_{};

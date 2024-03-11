@@ -25,7 +25,7 @@ private:
     void SetCaretIndexByMouse(std::size_t index, bool begin_selection);
     void OnSelectionChanged();
 
-    void HandleMouseOverInlineObject(const Point& position_in_owner);
+    void HandleMouseOverInlineObject(const MouseMoveInfo& event_info);
     std::shared_ptr<textual::DynamicInlineObject> FindMouseOverInlineObject(
         const Point& position_in_owner) const;
 

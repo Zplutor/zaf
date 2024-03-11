@@ -42,6 +42,11 @@ void DynamicInlineObject::OnDetached(const DetachedInfo& event_info) {
 }
 
 
+HitTestResult DynamicInlineObject::HitTest(const HitTestInfo& info) {
+    return HitTestResult::Object;
+}
+
+
 void DynamicInlineObject::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 
 }

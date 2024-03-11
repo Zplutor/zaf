@@ -264,7 +264,11 @@ bool TextBox::Redo() {
 void TextBox::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 
     __super::OnMouseCursorChanging(event_info);
+    if (event_info.IsHandled()) {
+        return;
+    }
 
+    module_context_->MouseInputHandler().HandleMouseCursorChanging(event_info);
     if (event_info.IsHandled()) {
         return;
     }

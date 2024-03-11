@@ -4,7 +4,8 @@
 namespace zaf::textual {
 
 MouseCursorChangingInfo::MouseCursorChangingInfo(std::shared_ptr<DynamicInlineObject> source) : 
-    EventInfo(std::move(source)) {
+    EventInfo(std::move(source)),
+    is_handled_(std::make_shared<bool>()) {
 
 }
 

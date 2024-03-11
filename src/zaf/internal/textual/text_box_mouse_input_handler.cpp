@@ -6,6 +6,7 @@
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/internal/textual/text_box_module_context.h>
 #include <zaf/internal/textual/text_box_selection_manager.h>
+#include <zaf/window/window.h>
 
 namespace zaf::internal {
 
@@ -26,8 +27,15 @@ void TextBoxMouseInputHandler::HandleMouseCursorChanging(
     const MouseCursorChangingInfo& event_info) {
 
     auto object = mouse_over_object_.lock();
-    if (object) {
-        object->OnMouseCursorChanging(textual::MouseCursorChangingInfo{ object });
+    if (!object) {
+        return;
+    }
+
+    textual::MouseCursorChangingInfo object_event_info{ object };
+    object->OnMouseCursorChanging(object_event_info);
+
+    if (object_event_info.IsHandled()) {
+        event_info.MarkAsHandled();
     }
 }
 
@@ -45,7 +53,7 @@ void TextBoxMouseInputHandler::HandleMouseDown(const MouseDownInfo& event_info) 
 
 void TextBoxMouseInputHandler::HandleMouseMove(const MouseMoveInfo& event_info) {
 
-    HandleMouseOverInlineObject(event_info.PositionAtSource());
+    HandleMouseOverInlineObject(event_info);
 
     if (!begin_selecting_index_) {
         return;
@@ -56,9 +64,9 @@ void TextBoxMouseInputHandler::HandleMouseMove(const MouseMoveInfo& event_info) 
 }
 
 
-void TextBoxMouseInputHandler::HandleMouseOverInlineObject(const Point& position_in_owner) {
+void TextBoxMouseInputHandler::HandleMouseOverInlineObject(const MouseMoveInfo& event_info) {
 
-    auto new_object = FindMouseOverInlineObject(position_in_owner);
+    auto new_object = FindMouseOverInlineObject(event_info.PositionAtSource());
     auto old_object = mouse_over_object_.lock();
     if (old_object == new_object) {
         return;
@@ -72,6 +80,12 @@ void TextBoxMouseInputHandler::HandleMouseOverInlineObject(const Point& position
 
     if (new_object) {
         new_object->OnMouseEnter(textual::MouseEnterInfo{ new_object });
+
+        //See also Window::SetMouseOverControl()
+        auto window = Context().Owner().Window();
+        if (window) {
+            window->Messager().PostWMSETCURSOR(event_info.Message());
+        }
     }
 }
 
@@ -82,13 +96,24 @@ std::shared_ptr<textual::DynamicInlineObject> TextBoxMouseInputHandler::FindMous
     const auto& text_box = Context().Owner();
 
     auto hit_test_result = text_box.HitTestAtPosition(position_in_owner);
-    if (hit_test_result.Metrics().IsText() || !hit_test_result.IsInside()) {
+    if (hit_test_result.Metrics().IsText()) {
         return nullptr;
     }
 
     auto text_index = hit_test_result.Metrics().TextIndex();
     auto inline_object = Context().TextModel().StyledText().GetInlineObjectAtIndex(text_index);
-    return As<textual::DynamicInlineObject>(inline_object);
+    auto dynamic_inline_object = As<textual::DynamicInlineObject>(inline_object);
+    if (!dynamic_inline_object) {
+        return nullptr;
+    }
+
+    textual::HitTestInfo object_hit_test_info{ hit_test_result.IsInside() };
+    auto object_hit_test_result = dynamic_inline_object->HitTest(object_hit_test_info);
+    if (object_hit_test_result == textual::HitTestResult::None) {
+        return nullptr;
+    }
+
+    return dynamic_inline_object;
 }
 
 

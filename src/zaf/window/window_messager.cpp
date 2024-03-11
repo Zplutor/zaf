@@ -21,4 +21,12 @@ void WindowMessager::Post(UINT message_id, WPARAM wparam, LPARAM lparam) {
     }
 }
 
+
+void WindowMessager::PostWMSETCURSOR(const MouseMessage& mouse_message) {
+    Post(
+        WM_SETCURSOR, 
+        reinterpret_cast<WPARAM>(mouse_message.WindowHandle()),
+        MAKELPARAM(mouse_message.HitTestResult(), mouse_message.ID()));
+}
+
 }

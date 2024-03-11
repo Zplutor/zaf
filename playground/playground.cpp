@@ -82,6 +82,19 @@ protected:
             IsMouseOver() ? zaf::Color::Green() : zaf::Color::Red());
     }
 
+    zaf::textual::HitTestResult HitTest(const zaf::textual::HitTestInfo& info) override {
+        return 
+            info.IsMouseInside() ? 
+            zaf::textual::HitTestResult::Object :
+            zaf::textual::HitTestResult::None;
+    }
+
+    void OnMouseCursorChanging(const zaf::textual::MouseCursorChangingInfo& event_info) override {
+
+        SetCursor(LoadCursor(nullptr, IDC_ARROW));
+        event_info.MarkAsHandled();
+    }
+
     void OnMouseEnter(const zaf::textual::MouseEnterInfo& event_info) override {
 
         __super::OnMouseEnter(event_info);

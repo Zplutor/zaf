@@ -1393,11 +1393,7 @@ void Window::SetMouseOverControl(
         //case the mouse over control cannot change the cursor promptly. So 
         //here, a simulated WM_SETCURSOR is posted to give a change to 
         //change the cursor immediately.
-        PostMessage(
-            Handle(),
-            WM_SETCURSOR,
-            reinterpret_cast<WPARAM>(Handle()),
-            MAKELPARAM(message.HitTestResult(), message.ID()));
+        this->Messager().PostWMSETCURSOR(message);
 
         ChangeControlMouseOverState(mouse_over_control_, true, old_control);
 

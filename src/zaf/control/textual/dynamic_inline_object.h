@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/control/textual/dynamic_inline_object_events.h>
+#include <zaf/control/textual/hit_test.h>
 #include <zaf/control/textual/inline_object.h>
 
 namespace zaf {
@@ -23,6 +24,8 @@ protected:
     void NeedRepaint();
 
     void OnDetached(const DetachedInfo& event_info) override;
+
+    virtual HitTestResult HitTest(const HitTestInfo& info);
 
     virtual void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info);
     virtual void OnMouseEnter(const MouseEnterInfo& event_info);
