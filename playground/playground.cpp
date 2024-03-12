@@ -106,6 +106,13 @@ protected:
 
         NeedRepaint();
     }
+
+    void OnMouseDown(const zaf::textual::MouseDownInfo& event_info) override {
+
+        __super::OnMouseDown(event_info);
+
+        event_info.MarkAsHandled();
+    }
 };
 
 class Window : public zaf::Window {

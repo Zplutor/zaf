@@ -6,6 +6,7 @@
 #include <zaf/input/mouse.h>
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/internal/textual/text_box_editor.h>
+#include <zaf/internal/textual/text_box_hit_test_manager.h>
 #include <zaf/internal/textual/text_box_keyboard_input_handler.h>
 #include <zaf/internal/textual/text_box_module_context.h>
 #include <zaf/internal/textual/text_box_mouse_input_handler.h>
@@ -317,28 +318,14 @@ void TextBox::OnMouseUp(const MouseUpInfo& event_info) {
 
 std::size_t TextBox::FindIndexAtPosition(const Point& position) const {
 
-    auto hit_test_result = HitTestAtPosition(position);
-    std::size_t result = hit_test_result.Metrics().TextIndex();
-    if (hit_test_result.IsTrailingHit()) {
-        ++result;
-    }
-    return result;
+    const auto& hit_test_manager = module_context_->HitTestManager();
+    auto hit_test_result = hit_test_manager.HitTestAtPosition(position);
+    return hit_test_manager.TextIndexFromHitTestResult(hit_test_result);
 }
 
 
 bool TextBox::IsPositionInsideText(const Point& position) const {
-
-    auto hit_test_result = HitTestAtPosition(position);
-    return hit_test_result.IsInside();
-}
-
-
-HitTestPointResult TextBox::HitTestAtPosition(const Point& position) const {
-
-    auto position_in_text_rect = position;
-    position_in_text_rect.SubtractOffset(ContentRect().position);
-    position_in_text_rect.SubtractOffset(text_rect_.position);
-    return GetTextLayout().HitTestPoint(position_in_text_rect);
+    return module_context_->HitTestManager().HitTestAtPosition(position).IsInside();
 }
 
 

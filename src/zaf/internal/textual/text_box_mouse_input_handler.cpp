@@ -1,9 +1,11 @@
 #include <zaf/internal/textual/text_box_mouse_input_handler.h>
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
+#include <zaf/base/log.h>
 #include <zaf/control/text_box.h>
 #include <zaf/control/textual/dynamic_inline_object.h>
 #include <zaf/internal/textual/text_model.h>
+#include <zaf/internal/textual/text_box_hit_test_manager.h>
 #include <zaf/internal/textual/text_box_module_context.h>
 #include <zaf/internal/textual/text_box_selection_manager.h>
 #include <zaf/window/window.h>
@@ -20,6 +22,72 @@ void TextBoxMouseInputHandler::Initialize() {
 
     Subscriptions() += Context().SelectionManager().SelectionChangedEvent().Subscribe(
         std::bind(&TextBoxMouseInputHandler::OnSelectionChanged, this));
+}
+
+
+void TextBoxMouseInputHandler::HandleMouseMove(const MouseMoveInfo& event_info) {
+
+    auto& hit_test_manager = Context().HitTestManager();
+    auto hit_test_result = hit_test_manager.HitTestAtPosition(event_info.PositionAtSource());
+
+    HandleMouseOverInlineObject(hit_test_result, event_info.Message());
+
+    if (!begin_selecting_index_) {
+        return;
+    }
+
+    auto new_index = hit_test_manager.TextIndexFromHitTestResult(hit_test_result);
+    SetCaretIndexByMouse(new_index, false);
+}
+
+
+void TextBoxMouseInputHandler::HandleMouseOverInlineObject(
+    const HitTestPointResult& hit_test_result,
+    const MouseMessage& mouse_message) {
+
+    auto new_object = FindInlineObject(hit_test_result);
+    auto old_object = mouse_over_object_.lock();
+    if (old_object == new_object) {
+        return;
+    }
+
+    mouse_over_object_ = new_object;
+
+    if (old_object) {
+        old_object->OnMouseLeave(textual::MouseLeaveInfo{ old_object });
+    }
+
+    if (new_object) {
+        new_object->OnMouseEnter(textual::MouseEnterInfo{ new_object });
+
+        //See also Window::SetMouseOverControl()
+        auto window = Context().Owner().Window();
+        if (window) {
+            window->Messager().PostWMSETCURSOR(mouse_message);
+        }
+    }
+}
+
+
+std::shared_ptr<textual::DynamicInlineObject> TextBoxMouseInputHandler::FindInlineObject(
+    const HitTestPointResult& hit_test_result) const {
+
+    if (hit_test_result.Metrics().IsText()) {
+        return nullptr;
+    }
+
+    auto text_index = hit_test_result.Metrics().TextIndex();
+    auto inline_object = Context().TextModel().StyledText().GetInlineObjectAtIndex(text_index);
+    auto dynamic_inline_object = As<textual::DynamicInlineObject>(inline_object);
+    if (!dynamic_inline_object) {
+        return nullptr;
+    }
+
+    if (!dynamic_inline_object->HitTest(hit_test_result.IsInside())) {
+        return nullptr;
+    }
+
+    return dynamic_inline_object;
 }
 
 
@@ -46,72 +114,21 @@ void TextBoxMouseInputHandler::HandleMouseDown(const MouseDownInfo& event_info) 
     text_box.SetIsFocused(true);
     text_box.CaptureMouse();
 
-    auto new_index = text_box.FindIndexAtPosition(event_info.PositionAtSource());
-    SetCaretIndexByMouse(new_index, true);
-}
+    auto& hit_test_manager = Context().HitTestManager();
+    auto hit_test_result = hit_test_manager.HitTestAtPosition(event_info.PositionAtSource());
 
+    auto inline_object = FindInlineObject(hit_test_result);
+    if (inline_object) {
 
-void TextBoxMouseInputHandler::HandleMouseMove(const MouseMoveInfo& event_info) {
-
-    HandleMouseOverInlineObject(event_info);
-
-    if (!begin_selecting_index_) {
-        return;
-    }
-
-    auto new_index = Context().Owner().FindIndexAtPosition(event_info.PositionAtSource());
-    SetCaretIndexByMouse(new_index, false);
-}
-
-
-void TextBoxMouseInputHandler::HandleMouseOverInlineObject(const MouseMoveInfo& event_info) {
-
-    auto new_object = FindMouseOverInlineObject(event_info.PositionAtSource());
-    auto old_object = mouse_over_object_.lock();
-    if (old_object == new_object) {
-        return;
-    }
-
-    mouse_over_object_ = new_object;
-
-    if (old_object) {
-        old_object->OnMouseLeave(textual::MouseLeaveInfo{ old_object });
-    }
-
-    if (new_object) {
-        new_object->OnMouseEnter(textual::MouseEnterInfo{ new_object });
-
-        //See also Window::SetMouseOverControl()
-        auto window = Context().Owner().Window();
-        if (window) {
-            window->Messager().PostWMSETCURSOR(event_info.Message());
+        textual::MouseDownInfo event_info{ inline_object };
+        inline_object->OnMouseDown(event_info);
+        if (event_info.IsHandled()) {
+            return;
         }
     }
-}
-
-
-std::shared_ptr<textual::DynamicInlineObject> TextBoxMouseInputHandler::FindMouseOverInlineObject(
-    const Point& position_in_owner) const {
-
-    const auto& text_box = Context().Owner();
-
-    auto hit_test_result = text_box.HitTestAtPosition(position_in_owner);
-    if (hit_test_result.Metrics().IsText()) {
-        return nullptr;
-    }
-
-    auto text_index = hit_test_result.Metrics().TextIndex();
-    auto inline_object = Context().TextModel().StyledText().GetInlineObjectAtIndex(text_index);
-    auto dynamic_inline_object = As<textual::DynamicInlineObject>(inline_object);
-    if (!dynamic_inline_object) {
-        return nullptr;
-    }
-
-    if (!dynamic_inline_object->HitTest(hit_test_result.IsInside())) {
-        return nullptr;
-    }
-
-    return dynamic_inline_object;
+    
+    auto new_index = hit_test_manager.TextIndexFromHitTestResult(hit_test_result);
+    SetCaretIndexByMouse(new_index, true);
 }
 
 

@@ -6,9 +6,21 @@ namespace zaf::textual {
 
 class DynamicInlineObject;
 
-class MouseCursorChangingInfo : public EventInfo {
+class MouseEnterInfo : public EventInfo {
 public:
-    explicit MouseCursorChangingInfo(std::shared_ptr<DynamicInlineObject> source);
+    explicit MouseEnterInfo(std::shared_ptr<DynamicInlineObject> source);
+};
+
+
+class MouseLeaveInfo : public EventInfo {
+public:
+    explicit MouseLeaveInfo(std::shared_ptr<DynamicInlineObject> source);
+};
+
+
+class HandleableEventInfo : public EventInfo {
+public:
+    explicit HandleableEventInfo(std::shared_ptr<DynamicInlineObject> source);
 
     bool IsHandled() const {
         return *is_handled_;
@@ -23,15 +35,21 @@ private:
 };
 
 
-class MouseEnterInfo : public EventInfo {
+class MouseCursorChangingInfo : public HandleableEventInfo {
 public:
-    explicit MouseEnterInfo(std::shared_ptr<DynamicInlineObject> source);
+    using HandleableEventInfo::HandleableEventInfo;
 };
 
 
-class MouseLeaveInfo : public EventInfo {
+class MouseDownInfo : public HandleableEventInfo {
 public:
-    explicit MouseLeaveInfo(std::shared_ptr<DynamicInlineObject> source);
+    using HandleableEventInfo::HandleableEventInfo;
+};
+
+
+class MouseUpInfo : public HandleableEventInfo {
+public:
+    using HandleableEventInfo::HandleableEventInfo;
 };
 
 }

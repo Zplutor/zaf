@@ -8,6 +8,7 @@ namespace zaf {
 namespace internal {
 
 class TextBoxEditor;
+class TextBoxHitTestManager;
 class TextBoxInlineObjectManager;
 class TextBoxMouseInputHandler;
 class TextBoxKeyboardInputHandler;
@@ -32,6 +33,10 @@ public:
         return owner_->GetTextLayout();
     }
 
+    TextBoxHitTestManager& HitTestManager() const {
+        return *hit_test_manager_;
+    }
+
     TextBoxSelectionManager& SelectionManager() const {
         return *selection_manager_;
     }
@@ -54,6 +59,7 @@ public:
 
 private:
     TextBox* owner_{};
+    std::unique_ptr<TextBoxHitTestManager> hit_test_manager_;
     std::unique_ptr<TextBoxSelectionManager> selection_manager_;
     std::unique_ptr<TextBoxMouseInputHandler> mouse_input_handler_;
     std::unique_ptr<TextBoxKeyboardInputHandler> keyboard_input_handler_;

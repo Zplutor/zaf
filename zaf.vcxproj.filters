@@ -1159,6 +1159,9 @@
     <ClCompile Include="src\zaf\control\textual\dynamic_inline_object_events.cpp">
       <Filter>zaf\control\textual</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\internal\textual\text_box_hit_test_manager.cpp">
+      <Filter>zaf\internal\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2646,6 +2649,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\input\cursor.h">
       <Filter>zaf\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\textual\text_box_hit_test_manager.h">
+      <Filter>zaf\internal\textual</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

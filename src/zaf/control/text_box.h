@@ -11,6 +11,7 @@
 namespace zaf {
 namespace internal {
 class TextBoxSelectionChangedInfo;
+class TextBoxHitTestManager;
 class TextBoxModuleContext;
 class TextBoxMouseInputHandler;
 }
@@ -231,8 +232,8 @@ protected:
     void HorizontallyScroll(int new_value) override;
 
 private:
+    friend class internal::TextBoxHitTestManager;
     friend class internal::TextBoxModuleContext;
-    friend class internal::TextBoxMouseInputHandler;
     friend class textual::DynamicInlineObject;
 
     void PaintTextBackground(
@@ -244,8 +245,6 @@ private:
     void PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect);
 
     void UpdateTextRectOnLayout();
-
-    HitTestPointResult HitTestAtPosition(const Point& position) const;
 
     void UpdateCaretAtCurrentIndex();
     void OnSelectionChanged(const internal::TextBoxSelectionChangedInfo& event_info);

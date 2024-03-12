@@ -51,8 +51,8 @@ protected:
     virtual void OnMouseEnter(const MouseEnterInfo& event_info);
     virtual void OnMouseLeave(const MouseLeaveInfo& event_info);
 
-    virtual void OnMouseDown();
-    virtual void OnMouseUp();
+    virtual void OnMouseDown(const MouseDownInfo& event_info);
+    virtual void OnMouseUp(const MouseDownInfo& event_info);
 
 private:
     friend class internal::TextBoxMouseInputHandler;

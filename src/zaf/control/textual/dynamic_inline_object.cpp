@@ -64,12 +64,12 @@ void DynamicInlineObject::OnMouseLeave(const MouseLeaveInfo& event_info) {
 }
 
 
-void DynamicInlineObject::OnMouseDown() {
+void DynamicInlineObject::OnMouseDown(const MouseDownInfo& event_info) {
 
 }
 
 
-void DynamicInlineObject::OnMouseUp() {
+void DynamicInlineObject::OnMouseUp(const MouseDownInfo& event_info) {
 
 }
 
