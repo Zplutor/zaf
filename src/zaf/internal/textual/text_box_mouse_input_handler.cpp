@@ -107,9 +107,7 @@ std::shared_ptr<textual::DynamicInlineObject> TextBoxMouseInputHandler::FindMous
         return nullptr;
     }
 
-    textual::HitTestInfo object_hit_test_info{ hit_test_result.IsInside() };
-    auto object_hit_test_result = dynamic_inline_object->HitTest(object_hit_test_info);
-    if (object_hit_test_result == textual::HitTestResult::None) {
+    if (!dynamic_inline_object->HitTest(hit_test_result.IsInside())) {
         return nullptr;
     }
 

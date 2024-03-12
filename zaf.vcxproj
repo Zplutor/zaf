@@ -610,7 +610,6 @@
     <ClInclude Include="src\zaf\control\split_control.h" />
     <ClInclude Include="src\zaf\control\textual\dynamic_inline_object.h" />
     <ClInclude Include="src\zaf\control\textual\dynamic_inline_object_events.h" />
-    <ClInclude Include="src\zaf\control\textual\hit_test.h" />
     <ClInclude Include="src\zaf\control\textual\inline_object.h" />
     <ClInclude Include="src\zaf\control\textual\inline_object_events.h" />
     <ClInclude Include="src\zaf\control\textual\selection_option.h" />

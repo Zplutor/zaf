@@ -42,8 +42,8 @@ void DynamicInlineObject::OnDetached(const DetachedInfo& event_info) {
 }
 
 
-HitTestResult DynamicInlineObject::HitTest(const HitTestInfo& info) {
-    return HitTestResult::Object;
+bool DynamicInlineObject::HitTest(bool is_mouse_inside) {
+    return true;
 }
 
 

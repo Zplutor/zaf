@@ -82,11 +82,8 @@ protected:
             IsMouseOver() ? zaf::Color::Green() : zaf::Color::Red());
     }
 
-    zaf::textual::HitTestResult HitTest(const zaf::textual::HitTestInfo& info) override {
-        return 
-            info.IsMouseInside() ? 
-            zaf::textual::HitTestResult::Object :
-            zaf::textual::HitTestResult::None;
+    bool HitTest(bool is_mouse_inside) override {
+        return is_mouse_inside;
     }
 
     void OnMouseCursorChanging(const zaf::textual::MouseCursorChangingInfo& event_info) override {

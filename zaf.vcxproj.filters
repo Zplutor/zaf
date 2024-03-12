@@ -2641,8 +2641,5 @@
     <ClInclude Include="src\zaf\control\textual\dynamic_inline_object_events.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\textual\hit_test.h">
-      <Filter>zaf\control\textual</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
