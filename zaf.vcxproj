@@ -713,9 +713,11 @@
     <ClInclude Include="src\zaf\graphic\text\text_trimming.h" />
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h" />
     <ClInclude Include="src\zaf\graphic\matrix.h" />
+    <ClInclude Include="src\zaf\input\cursor.h" />
     <ClInclude Include="src\zaf\input\keyboard.h" />
     <ClInclude Include="src\zaf\input\key_state.h" />
     <ClInclude Include="src\zaf\input\key.h" />
+    <ClInclude Include="src\zaf\input\mouse.h" />
     <ClInclude Include="src\zaf\internal\enumerator.h" />
     <ClInclude Include="src\zaf\internal\message_loop.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />

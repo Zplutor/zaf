@@ -59,6 +59,7 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/control/textual/dynamic_inline_object.h>
+#include <zaf/input/mouse.h>
 
 void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
@@ -88,7 +89,7 @@ protected:
 
     void OnMouseCursorChanging(const zaf::textual::MouseCursorChangingInfo& event_info) override {
 
-        SetCursor(LoadCursor(nullptr, IDC_ARROW));
+        zaf::Mouse::SetCursor(zaf::Cursor::Normal());
         event_info.MarkAsHandled();
     }
 

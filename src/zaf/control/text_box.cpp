@@ -3,6 +3,7 @@
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
 #include <zaf/control/textual/dynamic_inline_object.h>
+#include <zaf/input/mouse.h>
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/internal/textual/text_box_editor.h>
 #include <zaf/internal/textual/text_box_keyboard_input_handler.h>
@@ -273,7 +274,7 @@ void TextBox::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
         return;
     }
 
-    SetCursor(LoadCursor(nullptr, IDC_IBEAM));
+    Mouse::SetCursor(Cursor::IBeam());
     event_info.MarkAsHandled();
 }
 
