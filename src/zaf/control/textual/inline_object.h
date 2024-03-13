@@ -1,11 +1,13 @@
 #pragma once
 
+#include <optional>
 #include <zaf/base/event/event.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/textual/inline_object_events.h>
 #include <zaf/graphic/size.h>
-#include <zaf/object/object.h>
 #include <zaf/graphic/text/text_inline_object_metrics.h>
+#include <zaf/internal/textual/inline_object_attach_info.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 
@@ -13,7 +15,7 @@ class Canvas;
 class TextualControl;
 
 namespace internal {
-class InlineObjectWrapper;
+class InlineObjectCollection;
 class TextInlineObjectBridge;
 }
 
@@ -45,6 +47,15 @@ public:
     zaf::Size Size() const;
     virtual TextInlineObjectMetrics GetMetrics() const;
 
+    /**
+    Gets the range to which the inline object is attached in the host.
+
+    @return
+        A range to which the inline object is attached in the host. If the inline object is not 
+        attached to any host, std::nullopt is returned.
+    */
+    std::optional<Range> RangeInHost() const noexcept;
+
 protected:
     virtual void OnAttached(const AttachedInfo& event_info);
     virtual void OnDetached(const DetachedInfo& event_info);
@@ -53,12 +64,14 @@ protected:
 
 private:
     friend class TextualControl;
-    friend class internal::InlineObjectWrapper;
+    friend class internal::InlineObjectCollection;
     friend class internal::TextInlineObjectBridge;
 
     void SetHost(std::shared_ptr<TextualControl> host);
 
 private:
+    //Accessed by InlineObjectCollection.
+    std::optional<internal::InlineObjectAttachInfo> attach_info_;
     std::weak_ptr<TextualControl> host_;
 
     Event<AttachedInfo> attached_event_;

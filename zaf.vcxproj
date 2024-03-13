@@ -724,9 +724,9 @@
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
     <ClInclude Include="src\zaf\internal\system_message_window.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
+    <ClInclude Include="src\zaf\internal\textual\inline_object_attach_info.h" />
     <ClInclude Include="src\zaf\internal\textual\inline_object_changed_info.h" />
     <ClInclude Include="src\zaf\internal\textual\inline_object_collection.h" />
-    <ClInclude Include="src\zaf\internal\textual\inline_object_wrapper.h" />
     <ClInclude Include="src\zaf\internal\textual\ranged_text_style.h" />
     <ClInclude Include="src\zaf\internal\textual\styled_text.h" />
     <ClInclude Include="src\zaf\internal\textual\styled_text_slice.h" />

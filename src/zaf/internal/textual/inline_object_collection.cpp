@@ -8,6 +8,7 @@ void InlineObjectCollection::Add(
     std::shared_ptr<textual::InlineObject> object) {
 
     ZAF_EXPECT(object);
+    ZAF_EXPECT(!object->attach_info_.has_value());
 
     if (range.length == 0) {
         return;
@@ -20,7 +21,11 @@ void InlineObjectCollection::Add(
 
         //Remove intersect ranges.
         if (iterator->Range().Intersects(range)) {
-            removed_objects.push_back(iterator->Object());
+
+            const auto& removed_object = iterator->Object();
+            removed_object->attach_info_.reset();
+
+            removed_objects.push_back(removed_object);
             iterator = items_.erase(iterator);
             continue;
         }
@@ -33,7 +38,8 @@ void InlineObjectCollection::Add(
         ++iterator;
     }
 
-    items_.emplace(iterator, range, object);
+    object->attach_info_.emplace(range);
+    items_.emplace(iterator, object);
 
     std::vector<std::shared_ptr<textual::InlineObject>> added_objects{ std::move(object) };
 
@@ -58,14 +64,18 @@ void InlineObjectCollection::ReplaceSpan(const Range& span_range, std::size_t ne
             new_index -= span_range.length;
             new_index += new_length;
 
-            *iterator = Item{ Range{ new_index, iterator->Range().length }, iterator->Object() };
+            iterator->Object()->attach_info_->range.index = new_index;
             ++iterator;
             continue;
         }
 
         //Remove intersect ranges.
         if (iterator->Range().Contains(span_range) || iterator->Range().Intersects(span_range)) {
-            removed_objects.push_back(iterator->Object());
+
+            const auto& removed_object = iterator->Object();
+            removed_object->attach_info_.reset();
+
+            removed_objects.push_back(removed_object);
             iterator = items_.erase(iterator);
             continue;
         }
@@ -81,7 +91,10 @@ void InlineObjectCollection::Clear() {
 
     std::vector<std::shared_ptr<textual::InlineObject>> removed_objects;
     for (auto& each_item : items_) {
-        removed_objects.push_back(each_item.Object());
+
+        const auto& object = each_item.Object();
+        object->attach_info_.reset();
+        removed_objects.push_back(object);
     }
 
     items_.clear();

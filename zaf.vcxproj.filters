@@ -2617,9 +2617,6 @@
     <ClInclude Include="src\zaf\internal\textual\text_box_selection_manager.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\inline_object_wrapper.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\internal\textual\ranged_text_style.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
@@ -2651,6 +2648,9 @@
       <Filter>zaf\input</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\textual\text_box_hit_test_manager.h">
+      <Filter>zaf\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\textual\inline_object_attach_info.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
   </ItemGroup>

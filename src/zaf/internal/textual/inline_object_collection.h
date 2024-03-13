@@ -13,14 +13,13 @@ class InlineObjectCollection : NonCopyable {
 public:
     class Item {
     public:
-        Item(const Range& range, std::shared_ptr<textual::InlineObject> object) :
-            range_(range),
+        Item(std::shared_ptr<textual::InlineObject> object) :
             object_(std::move(object)) {
 
         }
 
         const Range& Range() const {
-            return range_;
+            return object_->attach_info_->range;
         }
 
         const std::shared_ptr<textual::InlineObject>& Object() const {
@@ -28,7 +27,6 @@ public:
         }
 
     private:
-        zaf::Range range_;
         std::shared_ptr<textual::InlineObject> object_;
     };
 

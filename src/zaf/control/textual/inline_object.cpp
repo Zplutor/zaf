@@ -18,6 +18,20 @@ TextInlineObjectMetrics InlineObject::GetMetrics() const {
 }
 
 
+std::optional<Range> InlineObject::RangeInHost() const noexcept {
+
+    if (host_.expired()) {
+        return std::nullopt;
+    }
+
+    if (!attach_info_) {
+        return std::nullopt;
+    }
+
+    return attach_info_->range;
+}
+
+
 void InlineObject::OnAttached(const AttachedInfo& event_info) {
     attached_event_.Raise(event_info);
 }
