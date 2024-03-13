@@ -21,4 +21,10 @@ HandleableEventInfo::HandleableEventInfo(std::shared_ptr<DynamicInlineObject> so
 
 }
 
+
+MouseUpInfo::MouseUpInfo(std::shared_ptr<DynamicInlineObject> source) : 
+    EventInfo(std::move(source)) {
+
+}
+
 }

@@ -134,14 +134,20 @@ void TextBoxMouseInputHandler::HandleMouseDown(const MouseDownInfo& event_info) 
 
 void TextBoxMouseInputHandler::HandleMouseUp(const MouseUpInfo& event_info) {
 
-    if (!begin_selecting_index_) {
-        return;
-    }
-
     auto& text_box = Context().Owner();
     text_box.ReleaseMouse();
 
     begin_selecting_index_.reset();
+
+    auto& hit_test_manager = Context().HitTestManager();
+    auto hit_test_result = hit_test_manager.HitTestAtPosition(event_info.PositionAtSource());
+
+    auto inline_object = FindInlineObject(hit_test_result);
+    if (inline_object) {
+
+        textual::MouseUpInfo event_info{ inline_object };
+        inline_object->OnMouseUp(event_info);
+    }
 }
 
 

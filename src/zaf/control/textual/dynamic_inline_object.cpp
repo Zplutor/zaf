@@ -10,9 +10,14 @@ namespace zaf::textual {
 ZAF_DEFINE_TYPE(DynamicInlineObject)
 ZAF_DEFINE_TYPE_END;
 
+std::shared_ptr<TextBox> DynamicInlineObject::Host() const noexcept {
+    return As<TextBox>(__super::Host());
+}
+
+
 void DynamicInlineObject::NeedRepaint() {
 
-    auto text_box = As<TextBox>(Host());
+    auto text_box = Host();
     if (text_box) {
         text_box->NeedRepaint();
     }
@@ -69,14 +74,14 @@ void DynamicInlineObject::OnMouseDown(const MouseDownInfo& event_info) {
 }
 
 
-void DynamicInlineObject::OnMouseUp(const MouseDownInfo& event_info) {
+void DynamicInlineObject::OnMouseUp(const MouseUpInfo& event_info) {
 
 }
 
 
 internal::TextBoxInlineObjectManager* DynamicInlineObject::GetManager() const {
 
-    auto text_box = As<TextBox>(Host());
+    auto text_box = Host();
     if (text_box) {
         return &text_box->module_context_->InlineObjectManager();
     }

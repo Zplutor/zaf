@@ -4,6 +4,9 @@
 #include <zaf/control/textual/inline_object.h>
 
 namespace zaf {
+
+class TextBox;
+
 namespace internal {
 class TextBoxInlineObjectManager;
 class TextBoxMouseInputHandler;
@@ -16,6 +19,8 @@ public:
     ZAF_DECLARE_TYPE;
 
 public:
+    std::shared_ptr<TextBox> Host() const noexcept;
+
     bool IsMouseOver() const;
     bool IsInSelectionRange() const;
 
@@ -52,7 +57,7 @@ protected:
     virtual void OnMouseLeave(const MouseLeaveInfo& event_info);
 
     virtual void OnMouseDown(const MouseDownInfo& event_info);
-    virtual void OnMouseUp(const MouseDownInfo& event_info);
+    virtual void OnMouseUp(const MouseUpInfo& event_info);
 
 private:
     friend class internal::TextBoxMouseInputHandler;

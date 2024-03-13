@@ -30,6 +30,10 @@ public:
 public:
     InlineObject() = default;
 
+    std::shared_ptr<TextualControl> Host() const noexcept {
+        return host_.lock();
+    }
+
     Observable<AttachedInfo> AttachedEvent() const {
         return attached_event_.GetObservable();
     }
@@ -38,12 +42,7 @@ public:
         return detached_event_.GetObservable();
     }
 
-    std::shared_ptr<TextualControl> Host() const {
-        return host_.lock();
-    }
-
     zaf::Size Size() const;
-
     virtual TextInlineObjectMetrics GetMetrics() const;
 
 protected:

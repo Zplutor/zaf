@@ -111,6 +111,8 @@ protected:
 
         __super::OnMouseDown(event_info);
 
+        Host()->SetSelectionRange(zaf::Range{ 0, 3 });
+
         event_info.MarkAsHandled();
     }
 };

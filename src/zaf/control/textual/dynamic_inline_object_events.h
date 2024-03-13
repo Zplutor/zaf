@@ -47,9 +47,9 @@ public:
 };
 
 
-class MouseUpInfo : public HandleableEventInfo {
+class MouseUpInfo : public EventInfo {
 public:
-    using HandleableEventInfo::HandleableEventInfo;
+    explicit MouseUpInfo(std::shared_ptr<DynamicInlineObject> source);
 };
 
 }
