@@ -64,22 +64,28 @@ void DynamicInlineObject::OnMouseCursorChanging(const MouseCursorChangingInfo& e
 void DynamicInlineObject::OnMouseEnter(const MouseEnterInfo& event_info) {
 
     is_mouse_over_ = true;
+
+    mouse_enter_event_.Raise(event_info);
 }
 
 
 void DynamicInlineObject::OnMouseLeave(const MouseLeaveInfo& event_info) {
 
     is_mouse_over_ = false;
+
+    mouse_leave_event_.Raise(event_info);
 }
 
 
 void DynamicInlineObject::OnMouseDown(const MouseDownInfo& event_info) {
 
+    mouse_down_event_.Raise(event_info);
 }
 
 
 void DynamicInlineObject::OnMouseUp(const MouseUpInfo& event_info) {
 
+    mouse_up_event_.Raise(event_info);
 }
 
 }

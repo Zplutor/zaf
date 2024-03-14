@@ -1,26 +1,18 @@
 #pragma once
 
 #include <zaf/base/event/event_info.h>
+#include <zaf/window/message/mouse_message.h>
 
-namespace zaf::textual {
-
+namespace zaf {
+namespace textual {
 class DynamicInlineObject;
+}
 
-class MouseEnterInfo : public EventInfo {
+namespace internal {
+
+class HandleableInlineObjectEventInfo : public EventInfo {
 public:
-    explicit MouseEnterInfo(std::shared_ptr<DynamicInlineObject> source);
-};
-
-
-class MouseLeaveInfo : public EventInfo {
-public:
-    explicit MouseLeaveInfo(std::shared_ptr<DynamicInlineObject> source);
-};
-
-
-class HandleableEventInfo : public EventInfo {
-public:
-    explicit HandleableEventInfo(std::shared_ptr<DynamicInlineObject> source);
+    explicit HandleableInlineObjectEventInfo(std::shared_ptr<textual::DynamicInlineObject> source);
 
     bool IsHandled() const {
         return *is_handled_;
@@ -35,21 +27,50 @@ private:
 };
 
 
-class MouseCursorChangingInfo : public HandleableEventInfo {
+template<int>
+class InlineObjectMouseEventInfo : public HandleableInlineObjectEventInfo {
 public:
-    using HandleableEventInfo::HandleableEventInfo;
+    InlineObjectMouseEventInfo(
+        std::shared_ptr<textual::DynamicInlineObject> source, 
+        const MouseMessage& message)
+        : 
+        HandleableInlineObjectEventInfo(std::move(source)),
+        message_(message.Inner()) {
+
+    }
+
+    MouseMessage Message() const noexcept {
+        return MouseMessage{ message_ };
+    }
+
+private:
+    zaf::Message message_;
+};
+
+}
+
+namespace textual {
+
+class MouseEnterInfo : public EventInfo {
+public:
+    explicit MouseEnterInfo(std::shared_ptr<DynamicInlineObject> source);
 };
 
 
-class MouseDownInfo : public HandleableEventInfo {
+class MouseLeaveInfo : public EventInfo {
 public:
-    using HandleableEventInfo::HandleableEventInfo;
+    explicit MouseLeaveInfo(std::shared_ptr<DynamicInlineObject> source);
 };
 
 
-class MouseUpInfo : public EventInfo {
+class MouseCursorChangingInfo : public internal::HandleableInlineObjectEventInfo {
 public:
-    explicit MouseUpInfo(std::shared_ptr<DynamicInlineObject> source);
+    using HandleableInlineObjectEventInfo::HandleableInlineObjectEventInfo;
 };
 
+
+using MouseDownInfo = internal::InlineObjectMouseEventInfo<__LINE__>;
+using MouseUpInfo = internal::InlineObjectMouseEventInfo<__LINE__>;
+
+}
 }

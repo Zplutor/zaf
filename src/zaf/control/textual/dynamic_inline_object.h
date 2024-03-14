@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/base/event/event.h>
 #include <zaf/control/textual/dynamic_inline_object_events.h>
 #include <zaf/control/textual/inline_object.h>
 
@@ -23,6 +24,22 @@ public:
 
     bool IsMouseOver() const;
     bool IsInSelectionRange() const;
+
+    Observable<MouseEnterInfo> MouseEnterEvent() const {
+        return mouse_enter_event_.GetObservable();
+    }
+
+    Observable<MouseLeaveInfo> MouseLeaveEvent() const {
+        return mouse_leave_event_.GetObservable();
+    }
+
+    Observable<MouseDownInfo> MouseDownEvent() const {
+        return mouse_down_event_.GetObservable();
+    }
+
+    Observable<MouseUpInfo> MouseUpEvent() const {
+        return mouse_up_event_.GetObservable();
+    }
 
 protected:
     void NeedRepaint();
@@ -64,6 +81,11 @@ private:
 
 private:
     bool is_mouse_over_{};
+
+    Event<MouseEnterInfo> mouse_enter_event_;
+    Event<MouseLeaveInfo> mouse_leave_event_;
+    Event<MouseDownInfo> mouse_down_event_;
+    Event<MouseUpInfo> mouse_up_event_;
 };
 
 }

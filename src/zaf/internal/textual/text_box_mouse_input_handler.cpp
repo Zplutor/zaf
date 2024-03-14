@@ -120,9 +120,9 @@ void TextBoxMouseInputHandler::HandleMouseDown(const MouseDownInfo& event_info) 
     auto inline_object = FindInlineObject(hit_test_result);
     if (inline_object) {
 
-        textual::MouseDownInfo event_info{ inline_object };
-        inline_object->OnMouseDown(event_info);
-        if (event_info.IsHandled()) {
+        textual::MouseDownInfo object_event_info{ inline_object, event_info.Message() };
+        inline_object->OnMouseDown(object_event_info);
+        if (object_event_info.IsHandled()) {
             return;
         }
     }
@@ -145,8 +145,8 @@ void TextBoxMouseInputHandler::HandleMouseUp(const MouseUpInfo& event_info) {
     auto inline_object = FindInlineObject(hit_test_result);
     if (inline_object) {
 
-        textual::MouseUpInfo event_info{ inline_object };
-        inline_object->OnMouseUp(event_info);
+        textual::MouseUpInfo object_event_info{ inline_object, event_info.Message() };
+        inline_object->OnMouseUp(object_event_info);
     }
 }
 
