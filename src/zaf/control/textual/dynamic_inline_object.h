@@ -41,6 +41,10 @@ public:
         return mouse_up_event_.GetObservable();
     }
 
+    Observable<DoubleClickInfo> DoubleClickEvent() const {
+        return double_click_event_.GetObservable();
+    }
+
 protected:
     void NeedRepaint();
 
@@ -76,6 +80,8 @@ protected:
     virtual void OnMouseDown(const MouseDownInfo& event_info);
     virtual void OnMouseUp(const MouseUpInfo& event_info);
 
+    virtual void OnDoubleClick(const DoubleClickInfo& event_info);
+
 private:
     friend class internal::TextBoxMouseInputHandler;
 
@@ -86,6 +92,7 @@ private:
     Event<MouseLeaveInfo> mouse_leave_event_;
     Event<MouseDownInfo> mouse_down_event_;
     Event<MouseUpInfo> mouse_up_event_;
+    Event<DoubleClickInfo> double_click_event_;
 };
 
 }

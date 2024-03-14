@@ -195,4 +195,24 @@ void TextBoxMouseInputHandler::OnSelectionChanged() {
     *begin_selecting_index_ = Context().SelectionManager().CaretIndex();
 }
 
+
+void TextBoxMouseInputHandler::HandleDoubleClick(const DoubleClickInfo& event_info) {
+
+    const auto& hit_test_manager = Context().HitTestManager();
+    auto hit_test_result = hit_test_manager.HitTestAtPosition(event_info.Position());
+
+    auto inline_object = FindInlineObject(hit_test_result);
+    if (inline_object) {
+
+        textual::DoubleClickInfo object_event_info{ inline_object };
+        inline_object->OnDoubleClick(object_event_info);
+        if (object_event_info.IsHandled()) {
+            return;
+        }
+    }
+
+    auto text_index = hit_test_manager.TextIndexFromHitTestResult(hit_test_result);
+    Context().Owner().SelectWordAtIndex(text_index);
+}
+
 }

@@ -69,6 +69,12 @@ public:
 };
 
 
+class DoubleClickInfo : public internal::HandleableInlineObjectEventInfo {
+public:
+    using HandleableInlineObjectEventInfo::HandleableInlineObjectEventInfo;
+};
+
+
 using MouseDownInfo = internal::InlineObjectMouseEventInfo<__LINE__>;
 using MouseUpInfo = internal::InlineObjectMouseEventInfo<__LINE__>;
 

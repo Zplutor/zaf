@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <zaf/base/range.h>
+#include <zaf/control/event/double_click_info.h>
 #include <zaf/control/event/mouse_cursor_changing_info.h>
 #include <zaf/control/event/mouse_event_info.h>
 #include <zaf/control/textual/dynamic_inline_object.h>
@@ -21,6 +22,7 @@ public:
     void HandleMouseCursorChanging(const MouseCursorChangingInfo& event_info);
     void HandleMouseDown(const MouseDownInfo& event_info);
     void HandleMouseUp(const MouseUpInfo& event_info);
+    void HandleDoubleClick(const DoubleClickInfo& event_info);
 
 private:
     void SetCaretIndexByMouse(std::size_t index, bool begin_selection);

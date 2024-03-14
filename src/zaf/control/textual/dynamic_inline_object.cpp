@@ -88,4 +88,10 @@ void DynamicInlineObject::OnMouseUp(const MouseUpInfo& event_info) {
     mouse_up_event_.Raise(event_info);
 }
 
+
+void DynamicInlineObject::OnDoubleClick(const DoubleClickInfo& event_info) {
+
+    double_click_event_.Raise(event_info);
+}
+
 }
