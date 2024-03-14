@@ -105,10 +105,16 @@ void InlineObjectCollection::Clear() {
 std::shared_ptr<textual::InlineObject> InlineObjectCollection::GetInlineObjectAtIndex(
     std::size_t index) const {
 
-    for (const auto& each_item : items_) {
-        if (each_item.Range().Contains(index)) {
-            return each_item.Object();
-        }
+    auto iterator = std::lower_bound(
+        items_.begin(), 
+        items_.end(), 
+        index,
+        [](const Item& item, std::size_t index) {
+            return item.Range().EndIndex() <= index;
+        });
+
+    if (iterator != items_.end() && iterator->Range().Contains(index)) {
+        return iterator->Object();
     }
     return nullptr;
 }
