@@ -25,6 +25,7 @@ private:
 private:
     void BackwardCaretIndex(bool expand_selection);
     void ForwardCaretIndex(bool expand_selection);
+    bool TryToMoveCaretToSelectionEdge(bool backward);
     void UpwardCaretIndex(bool expand_selection);
     void DownwardCaretIndex(bool expand_selection);
     void UpdateCaretIndexVertically(bool is_downward, bool expand_selection);

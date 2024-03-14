@@ -49,6 +49,12 @@ void TextBoxKeyboardInputHandler::HandleKeyDown(const KeyDownInfo& event_info) {
 
 void TextBoxKeyboardInputHandler::BackwardCaretIndex(bool expand_selection) {
 
+    if (!expand_selection) {
+        if (TryToMoveCaretToSelectionEdge(true)) {
+            return;
+        }
+    }
+
     std::size_t new_index = Context().SelectionManager().CaretIndex();
     if (new_index > 0) {
 
@@ -57,7 +63,7 @@ void TextBoxKeyboardInputHandler::BackwardCaretIndex(bool expand_selection) {
         if (new_index > 0) {
 
             //Skip CRLF line break.
-            auto text = Context().TextModel().GetText();
+            std::wstring_view text = Context().TextModel().GetText();
             if (text[new_index - 1] == L'\r' && text[new_index] == L'\n') {
 
                 --new_index;
@@ -71,7 +77,13 @@ void TextBoxKeyboardInputHandler::BackwardCaretIndex(bool expand_selection) {
 
 void TextBoxKeyboardInputHandler::ForwardCaretIndex(bool expand_selection) {
 
-    auto text = Context().TextModel().GetText();
+    if (!expand_selection) {
+        if (TryToMoveCaretToSelectionEdge(false)) {
+            return;
+        }
+    }
+
+    std::wstring_view text = Context().TextModel().GetText();
 
     auto caret_index = Context().SelectionManager().CaretIndex();
     std::size_t new_index = caret_index;
@@ -89,6 +101,23 @@ void TextBoxKeyboardInputHandler::ForwardCaretIndex(bool expand_selection) {
     }
 
     SetCaretIndexByKey(new_index, expand_selection, true);
+}
+
+
+bool TextBoxKeyboardInputHandler::TryToMoveCaretToSelectionEdge(bool backward) {
+
+    //Move the caret index to the beginning or the end of the selection if its length is not zero.
+    const auto& selection_range = Context().SelectionManager().SelectionRange();
+    if (selection_range.length == 0) {
+        return false;
+    }
+
+    SetCaretIndexByKey(
+        backward ? selection_range.index : selection_range.EndIndex(),
+        false,
+        true);
+
+    return true;
 }
 
 
