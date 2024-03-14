@@ -9,7 +9,6 @@ namespace internal {
 
 class TextBoxEditor;
 class TextBoxHitTestManager;
-class TextBoxInlineObjectManager;
 class TextBoxMouseInputHandler;
 class TextBoxKeyboardInputHandler;
 class TextBoxSelectionManager;
@@ -53,10 +52,6 @@ public:
         return *editor_;
     }
 
-    TextBoxInlineObjectManager& InlineObjectManager() const {
-        return *inline_object_manager_;
-    }
-
 private:
     TextBox* owner_{};
     std::unique_ptr<TextBoxHitTestManager> hit_test_manager_;
@@ -64,7 +59,6 @@ private:
     std::unique_ptr<TextBoxMouseInputHandler> mouse_input_handler_;
     std::unique_ptr<TextBoxKeyboardInputHandler> keyboard_input_handler_;
     std::unique_ptr<TextBoxEditor> editor_;
-    std::unique_ptr<TextBoxInlineObjectManager> inline_object_manager_;
 };
 
 }

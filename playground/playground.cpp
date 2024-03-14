@@ -111,7 +111,7 @@ protected:
 
         __super::OnMouseDown(event_info);
 
-        Host()->SetSelectionRange(zaf::Range{ 0, 3 });
+        Host()->SetSelectionRange(*this->RangeInHost());
 
         event_info.MarkAsHandled();
     }

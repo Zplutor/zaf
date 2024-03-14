@@ -62,8 +62,6 @@ protected:
 private:
     friend class internal::TextBoxMouseInputHandler;
 
-    internal::TextBoxInlineObjectManager* GetManager() const;
-
 private:
     bool is_mouse_over_{};
 };

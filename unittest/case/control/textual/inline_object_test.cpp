@@ -61,3 +61,22 @@ TEST(InlineObjectTest, Host) {
     ASSERT_EQ(object->Host(), nullptr);
     ASSERT_TRUE(detached_event_called);
 }
+
+
+TEST(InlineObjectTest, RangeInHost) {
+
+    auto object = Create<InlineObject>();
+
+    //There is no range at first.
+    ASSERT_FALSE(object->RangeInHost().has_value());
+
+    auto control = Create<TextualControl>();
+    control->SetText(L"object");
+    control->AttachInlineObjectToRange(object, Range(2, 2));
+    //There is range after attaching.
+    ASSERT_EQ(object->RangeInHost(), Range(2, 2));
+
+    control->SetText(L"");
+    //There is no range after detaching.
+    ASSERT_FALSE(object->RangeInHost().has_value());
+}

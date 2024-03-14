@@ -16,10 +16,6 @@ class TextBoxModuleContext;
 class TextBoxMouseInputHandler;
 }
 
-namespace textual {
-class DynamicInlineObject;
-}
-
 class Caret;
 
 class TextBox : public TextualControl, public SelfScrollControl {
@@ -234,7 +230,6 @@ protected:
 private:
     friend class internal::TextBoxHitTestManager;
     friend class internal::TextBoxModuleContext;
-    friend class textual::DynamicInlineObject;
 
     void PaintTextBackground(
         Canvas& canvas,
