@@ -18,12 +18,15 @@ void TextBoxSelectionManager::Initialize() {
 void TextBoxSelectionManager::SetSelectionRange(
     const Range& range, 
     textual::SelectionOption selection_option,
+    std::optional<std::size_t> anchor_index,
     bool update_caret_x) {
 
-    auto text_length = Context().Owner().TextLength();
-    auto begin_index = (std::min)(range.index, text_length);
-    auto end_index = (std::min)(range.EndIndex(), text_length);
-    selection_range_ = Range::FromIndexPair(begin_index, end_index);
+    ZAF_EXPECT(0 <= range.index && range.EndIndex() <= Context().Owner().TextLength());
+    if (anchor_index) {
+        ZAF_EXPECT(range.index <= *anchor_index && *anchor_index <= range.EndIndex());
+    }
+
+    selection_range_ = range;
 
     if (HasFlag(selection_option, textual::SelectionOption::SetCaretToBegin)) {
         caret_index_ = selection_range_.index;
@@ -31,6 +34,8 @@ void TextBoxSelectionManager::SetSelectionRange(
     else {
         caret_index_ = selection_range_.EndIndex();
     }
+
+    anchor_index_ = anchor_index.value_or(caret_index_);
 
     bool scroll_to_caret = HasFlag(selection_option, textual::SelectionOption::ScrollToCaret);
     AfterSetCaretIndex(update_caret_x, scroll_to_caret);

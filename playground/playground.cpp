@@ -129,7 +129,13 @@ protected:
         auto text_box = zaf::Create<zaf::TextBox>();
         text_box->SetFontSize(20);
         text_box->SetIsEditable(true);
-        text_box->SetText(L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());");
+        text_box->SetText(
+L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n"
+L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n"
+L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n"
+L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n"
+L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n"
+L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n");
         text_box->SetTextColorInRange(zaf::Color::Red(), zaf::Range{ 5, 6 });
 
         text_box->AttachInlineObjectToRange(std::make_shared<InlineObject>(), zaf::Range{ 10, 1 });

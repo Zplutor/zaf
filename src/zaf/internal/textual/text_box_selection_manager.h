@@ -24,10 +24,15 @@ public:
     void SetSelectionRange(
         const Range& range,
         textual::SelectionOption selection_option,
+        std::optional<std::size_t> anchor_index,
         bool update_caret_x);
 
     std::size_t CaretIndex() const {
         return caret_index_;
+    }
+
+    std::size_t AnchorIndex() const {
+        return anchor_index_;
     }
 
     float CaretLastX() const {
@@ -44,6 +49,7 @@ private:
 private:
     Range selection_range_;
     std::size_t caret_index_{};
+    std::size_t anchor_index_{};
     float caret_last_x_{};
 
     Subject<TextBoxSelectionChangedInfo> selection_changed_event_;

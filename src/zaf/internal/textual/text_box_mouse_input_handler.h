@@ -25,7 +25,7 @@ public:
     void HandleDoubleClick(const DoubleClickInfo& event_info);
 
 private:
-    void SetCaretIndexByMouse(std::size_t index, bool begin_selection);
+    void SetSelectionRangeByMouse(std::size_t index);
     void OnSelectionChanged();
 
     void HandleMouseOverInlineObject(

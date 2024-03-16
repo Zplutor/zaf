@@ -39,6 +39,7 @@ void TextBoxEditCommand::Execute(const TextBoxModuleContext& context, const Edit
     context.SelectionManager().SetSelectionRange(
         edit_info.new_selection_range,
         selection_option, 
+        std::nullopt,
         true);
 }
 

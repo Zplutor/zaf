@@ -435,7 +435,11 @@ const Range& TextBox::SelectionRange() const {
 
 
 void TextBox::SetSelectionRange(const Range& range, textual::SelectionOption selection_option) {
-    module_context_->SelectionManager().SetSelectionRange(range, selection_option, true);
+    module_context_->SelectionManager().SetSelectionRange(
+        range, 
+        selection_option, 
+        std::nullopt,
+        true);
 }
 
 

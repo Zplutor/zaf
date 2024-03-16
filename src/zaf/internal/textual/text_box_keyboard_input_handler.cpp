@@ -191,24 +191,17 @@ void TextBoxKeyboardInputHandler::SetCaretIndexByKey(
     bool expand_selection,
     bool update_caret_x) {
 
-    auto old_index = Context().SelectionManager().CaretIndex();
+    auto& selection_manager = Context().SelectionManager();
     auto caret_index = (std::min)(new_index, Context().Owner().TextLength());
 
     std::size_t selection_begin = caret_index;
     std::size_t selection_end = caret_index;
+    std::size_t anchor_index = caret_index;
+
     if (expand_selection) {
-
-        auto selection_range = Context().SelectionManager().SelectionRange();
-        if (old_index == selection_range.Index()) {
-
-            selection_begin = (std::min)(caret_index, selection_range.EndIndex());
-            selection_end = (std::max)(caret_index, selection_range.EndIndex());
-        }
-        else if (old_index == selection_range.EndIndex()) {
-
-            selection_begin = (std::min)(selection_range.Index(), caret_index);
-            selection_end = (std::max)(selection_range.Index(), caret_index);
-        }
+        anchor_index = selection_manager.AnchorIndex();
+        selection_begin = (std::min)(caret_index, anchor_index);
+        selection_end = (std::max)(caret_index, anchor_index);
     }
 
     auto new_selection_range = Range::FromIndexPair(selection_begin, selection_end);
@@ -221,9 +214,10 @@ void TextBoxKeyboardInputHandler::SetCaretIndexByKey(
         selection_option |= textual::SelectionOption::SetCaretToEnd;
     }
 
-    Context().SelectionManager().SetSelectionRange(
+    selection_manager.SetSelectionRange(
         new_selection_range, 
         selection_option, 
+        anchor_index,
         update_caret_x);
 }
 
@@ -241,8 +235,9 @@ void TextBoxKeyboardInputHandler::HandleCopy() {
 void TextBoxKeyboardInputHandler::HandleSelectAll() {
 
     Context().SelectionManager().SetSelectionRange(
-        Range::Infinite(), 
+        Range{ 0, Context().TextModel().GetText().length() },
         textual::SelectionOption::SetCaretToEnd | textual::SelectionOption::ScrollToCaret, 
+        std::nullopt,
         true);
 }
 

@@ -4,6 +4,7 @@
 #include <zaf/base/log.h>
 #include <zaf/control/text_box.h>
 #include <zaf/control/textual/dynamic_inline_object.h>
+#include <zaf/input/keyboard.h>
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/internal/textual/text_box_hit_test_manager.h>
 #include <zaf/internal/textual/text_box_module_context.h>
@@ -37,7 +38,7 @@ void TextBoxMouseInputHandler::HandleMouseMove(const MouseMoveInfo& event_info) 
     }
 
     auto new_index = hit_test_manager.TextIndexFromHitTestResult(hit_test_result);
-    SetCaretIndexByMouse(new_index, false);
+    SetSelectionRangeByMouse(new_index);
 }
 
 
@@ -127,8 +128,14 @@ void TextBoxMouseInputHandler::HandleMouseDown(const MouseDownInfo& event_info) 
         }
     }
     
-    auto new_index = hit_test_manager.TextIndexFromHitTestResult(hit_test_result);
-    SetCaretIndexByMouse(new_index, true);
+    auto mouse_down_index = hit_test_manager.TextIndexFromHitTestResult(hit_test_result);
+    if (Keyboard::IsShiftDown()) {
+        begin_selecting_index_ = Context().SelectionManager().AnchorIndex();
+    }
+    else {
+        begin_selecting_index_ = mouse_down_index;
+    }
+    SetSelectionRangeByMouse(mouse_down_index);
 }
 
 
@@ -151,17 +158,10 @@ void TextBoxMouseInputHandler::HandleMouseUp(const MouseUpInfo& event_info) {
 }
 
 
-void TextBoxMouseInputHandler::SetCaretIndexByMouse(
-    std::size_t caret_index, 
-    bool begin_selection) {
+void TextBoxMouseInputHandler::SetSelectionRangeByMouse(std::size_t caret_index) {
 
-    if (begin_selection) {
-        begin_selecting_index_ = caret_index;
-    }
-    else {
-        if (!begin_selecting_index_) {
-            return;
-        }
+    if (!begin_selecting_index_) {
+        return;
     }
 
     Range selection_range;
@@ -177,7 +177,11 @@ void TextBoxMouseInputHandler::SetCaretIndexByMouse(
     }
 
     auto auto_reset = MakeAutoReset(is_setting_selection_range_, true);
-    Context().SelectionManager().SetSelectionRange(selection_range, selection_option, true);
+    Context().SelectionManager().SetSelectionRange(
+        selection_range, 
+        selection_option, 
+        *begin_selecting_index_,
+        true);
 }
 
 
