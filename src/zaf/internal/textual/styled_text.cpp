@@ -1,4 +1,5 @@
 #include <zaf/internal/textual/styled_text.h>
+#include <zaf/base/as.h>
 
 namespace zaf::internal {
 
@@ -175,8 +176,13 @@ StyledTextSlice StyledText::Slice(const Range& range) const {
         }
 
         if (range.Contains(each_item.Range())) {
+
             Range new_range = each_item.Range();
-            slice_style.AttachInlineObjectToRange(each_item.InlineObject(), new_range);
+
+            auto cloned_object = As<textual::InlineObject>(
+                each_item.InlineObject()->GetType()->CreateInstance());
+
+            slice_style.AttachInlineObjectToRange(cloned_object, new_range);
         }
     }
 
@@ -201,7 +207,11 @@ void StyledText::ReplaceSlice(const Range& slice_range, const StyledTextSlice& n
     }
 
     for (const auto& each_item : ranged_style.InlineObjects()) {
-        ranged_style_.AttachInlineObjectToRange(each_item.InlineObject(), each_item.Range());
+
+        auto cloned_object = As<textual::InlineObject>(
+            each_item.InlineObject()->GetType()->CreateInstance());
+
+        ranged_style_.AttachInlineObjectToRange(cloned_object, each_item.Range());
     }
 }
 

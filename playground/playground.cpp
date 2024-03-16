@@ -65,6 +65,8 @@ void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
 
 class InlineObject : public zaf::textual::DynamicInlineObject {
 public:
+    ZAF_DECLARE_TYPE;
+
     zaf::TextInlineObjectMetrics GetMetrics() const override {
 
         zaf::TextInlineObjectMetrics result;
@@ -116,6 +118,11 @@ protected:
         event_info.MarkAsHandled();
     }
 };
+
+
+ZAF_DEFINE_TYPE(InlineObject);
+ZAF_DEFINE_TYPE_END;
+
 
 class Window : public zaf::Window {
 protected:

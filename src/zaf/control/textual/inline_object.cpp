@@ -1,5 +1,6 @@
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/base/as.h>
+#include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
 
 namespace zaf::textual {
@@ -14,7 +15,12 @@ zaf::Size InlineObject::Size() const {
 
 
 TextInlineObjectMetrics InlineObject::GetMetrics() const {
-    return {};
+
+    TextInlineObjectMetrics result;
+    result.SetWidth(16);
+    result.SetHeight(16);
+    result.SetHeightAboveBaseline(16);
+    return result;
 }
 
 
@@ -44,6 +50,10 @@ void InlineObject::OnDetached(const DetachedInfo& event_info) {
 
 void InlineObject::Paint(Canvas& canvas) const {
 
+    canvas.DrawRectangleFrame(
+        Rect{ Point{}, this->Size() },
+        1.f, 
+        canvas.Renderer().CreateSolidColorBrush(Color::Black()));
 }
 
 
