@@ -435,8 +435,15 @@ const Range& TextBox::SelectionRange() const {
 
 
 void TextBox::SetSelectionRange(const Range& range, textual::SelectionOption selection_option) {
+
+    std::wstring_view text = module_context_->TextModel().GetText();
+
+    auto revised_range = Range::FromIndexPair(
+        (std::min)(range.index, text.length()),
+        (std::min)(range.EndIndex(), text.length()));
+
     module_context_->SelectionManager().SetSelectionRange(
-        range, 
+        revised_range,
         selection_option, 
         std::nullopt,
         true);
