@@ -18,6 +18,7 @@ private:
     class LineInfo {
     public:
         std::size_t line_char_index{};
+        std::size_t line_length{};
         float line_y{};
         float line_height{};
     };
@@ -29,7 +30,10 @@ private:
     void UpwardCaretIndex(bool expand_selection);
     void DownwardCaretIndex(bool expand_selection);
     void UpdateCaretIndexVertically(bool is_downward, bool expand_selection);
-    LineInfo LocateCurrentLineInfo();
+    void MoveCaretIndexToLineHead();
+    void MoveCaretIndexToLineEnd();
+    std::size_t LocateCurrentLineEndIndex() const;
+    LineInfo LocateCurrentLineInfo() const;
     void SetCaretIndexByKey(
         std::size_t new_index,
         bool expand_selection,

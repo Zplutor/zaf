@@ -35,6 +35,12 @@ void TextBoxKeyboardInputHandler::HandleKeyDown(const KeyDownInfo& event_info) {
     else if (virtual_key == Key::Down) {
         DownwardCaretIndex(Keyboard::IsShiftDown());
     }
+    else if (virtual_key == Key::Home) {
+        MoveCaretIndexToLineHead();
+    }
+    else if (virtual_key == Key::End) {
+        MoveCaretIndexToLineEnd();
+    }
     else if (virtual_key == Key::C && Keyboard::IsCtrlDown()) {
         HandleCopy();
     }
@@ -162,7 +168,51 @@ void TextBoxKeyboardInputHandler::UpdateCaretIndexVertically(
 }
 
 
-TextBoxKeyboardInputHandler::LineInfo TextBoxKeyboardInputHandler::LocateCurrentLineInfo() {
+void TextBoxKeyboardInputHandler::MoveCaretIndexToLineHead() {
+
+    auto current_line_info = LocateCurrentLineInfo();
+    SetCaretIndexByKey(current_line_info.line_char_index, Keyboard::IsShiftDown(), true);
+}
+
+
+void TextBoxKeyboardInputHandler::MoveCaretIndexToLineEnd() {
+
+    auto line_end_index = LocateCurrentLineEndIndex();
+    SetCaretIndexByKey(line_end_index, Keyboard::IsShiftDown(), true);
+}
+
+
+std::size_t TextBoxKeyboardInputHandler::LocateCurrentLineEndIndex() const {
+
+    auto line_info = LocateCurrentLineInfo();
+    if (line_info.line_length == 0) {
+        return line_info.line_char_index;
+    }
+
+    std::wstring_view text = Context().TextModel().GetText();
+
+    auto end_index = line_info.line_char_index + line_info.line_length - 1;
+    if (text[end_index] == L'\r') {
+        return end_index;
+    }
+
+    if (text[end_index] == L'\n') {
+
+        if (line_info.line_length == 1) {
+            return end_index;
+        }
+
+        if (text[end_index - 1] == L'\r') {
+            return end_index - 1;
+        }
+        return end_index;
+    }
+
+    return line_info.line_char_index;
+}
+
+
+TextBoxKeyboardInputHandler::LineInfo TextBoxKeyboardInputHandler::LocateCurrentLineInfo() const {
 
     auto line_metrics = Context().GetTextLayout().GetLineMetrics();
     auto caret_index = Context().SelectionManager().CaretIndex();
@@ -171,6 +221,7 @@ TextBoxKeyboardInputHandler::LineInfo TextBoxKeyboardInputHandler::LocateCurrent
 
     for (const auto& each_line : line_metrics) {
 
+        line_info.line_length = each_line.Length();
         line_info.line_height = each_line.Height();
 
         auto line_end_index = line_info.line_char_index + each_line.Length();
