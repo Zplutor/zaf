@@ -1587,7 +1587,7 @@ void RichEdit::HandleTextChangedNotification() {
         reinterpret_cast<LPARAM>(&char_format),
         nullptr);
 
-    text_changed_event_.Raise(rich_edit::TextChangedInfo{ As<RichEdit>(shared_from_this()) });
+    OnTextChanged(rich_edit::TextChangedInfo{ As<RichEdit>(shared_from_this()) });
 }
 
 
@@ -1627,6 +1627,11 @@ bool RichEdit::RaiseTextChangingEvent(const ENPROTECTED& notification_info) {
 
 void RichEdit::OnTextChanging(const rich_edit::TextChangingInfo& event_info) {
     text_changing_event_.Raise(event_info);
+}
+
+
+void RichEdit::OnTextChanged(const rich_edit::TextChangedInfo& event_info) {
+    text_changed_event_.Raise(event_info);
 }
 
 

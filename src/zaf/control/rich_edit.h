@@ -375,6 +375,7 @@ protected:
 
     virtual void OnSelectionChanged(const rich_edit::SelectionChangedInfo& event_info);
     virtual void OnTextChanging(const rich_edit::TextChangingInfo& event_info);
+    virtual void OnTextChanged(const rich_edit::TextChangedInfo& event_info);
 
 private:
     friend class rich_edit::internal::TextHostBridge;
