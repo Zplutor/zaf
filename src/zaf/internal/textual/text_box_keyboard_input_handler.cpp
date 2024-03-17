@@ -36,10 +36,20 @@ void TextBoxKeyboardInputHandler::HandleKeyDown(const KeyDownInfo& event_info) {
         DownwardCaretIndex(Keyboard::IsShiftDown());
     }
     else if (virtual_key == Key::Home) {
-        MoveCaretIndexToLineHead();
+        if (Keyboard::IsCtrlDown()) {
+            MoveCaretIndexToTextHead();
+        }
+        else {
+            MoveCaretIndexToLineHead();
+        }
     }
     else if (virtual_key == Key::End) {
-        MoveCaretIndexToLineEnd();
+        if (Keyboard::IsCtrlDown()) {
+            MoveCaretIndexToTextEnd();
+        }
+        else {
+            MoveCaretIndexToLineEnd();
+        }
     }
     else if (virtual_key == Key::C && Keyboard::IsCtrlDown()) {
         HandleCopy();
@@ -179,6 +189,16 @@ void TextBoxKeyboardInputHandler::MoveCaretIndexToLineEnd() {
 
     auto line_end_index = LocateCurrentLineEndIndex();
     SetCaretIndexByKey(line_end_index, Keyboard::IsShiftDown(), true);
+}
+
+
+void TextBoxKeyboardInputHandler::MoveCaretIndexToTextHead() {
+    SetCaretIndexByKey(0, Keyboard::IsShiftDown(), true);
+}
+
+
+void TextBoxKeyboardInputHandler::MoveCaretIndexToTextEnd() {
+    SetCaretIndexByKey(Context().TextModel().GetText().length(), Keyboard::IsShiftDown(), true);
 }
 
 

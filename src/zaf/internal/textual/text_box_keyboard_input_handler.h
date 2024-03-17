@@ -32,6 +32,8 @@ private:
     void UpdateCaretIndexVertically(bool is_downward, bool expand_selection);
     void MoveCaretIndexToLineHead();
     void MoveCaretIndexToLineEnd();
+    void MoveCaretIndexToTextHead();
+    void MoveCaretIndexToTextEnd();
     std::size_t LocateCurrentLineEndIndex() const;
     LineInfo LocateCurrentLineInfo() const;
     void SetCaretIndexByKey(
