@@ -188,11 +188,11 @@ protected:
     zaf::Rect DetermineTextRect() override;
     void OnTextChanged(const TextChangedInfo& event_info) override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
-    void PaintTextLayout(
+    void PaintTextBack(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
-        const TextLayout& text_layout, 
-        const zaf::Rect& text_layout_rect) override;
+        const TextLayout& text_layout,
+        const zaf::Rect& layout_rect) override;
     void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseMove(const MouseMoveInfo& event_info) override;
@@ -231,7 +231,7 @@ private:
     friend class internal::TextBoxHitTestManager;
     friend class internal::TextBoxModuleContext;
 
-    void PaintTextBackground(
+    void PaintSelection(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
         const TextLayout& text_layout,

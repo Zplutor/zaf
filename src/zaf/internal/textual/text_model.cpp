@@ -52,8 +52,7 @@ void TextModel::SetFontInRange(Font font, const Range& range) {
 void TextModel::SetTextColorPicker(ColorPicker picker) {
 
     styled_text_.SetDefaultTextColorPicker(std::move(picker));
-    styled_text_.ClearRangedTextColorPicker();
-
+    styled_text_.ClearRangedTextColorPickers();
     RaiseChangedEvent(TextModelAttribute::TextColor);
 }
 
@@ -62,6 +61,21 @@ void TextModel::SetTextColorPickerInRange(ColorPicker picker, const Range& range
 
     styled_text_.SetTextColorPickerInRange(std::move(picker), range);
     RaiseChangedEvent(TextModelAttribute::TextColor, range, range.length);
+}
+
+
+void TextModel::SetTextBackColorPicker(ColorPicker picker) {
+
+    styled_text_.SetDefaultTextBackColorPicker(std::move(picker));
+    styled_text_.ClearRangedTextBackColorPickers();
+    RaiseChangedEvent(TextModelAttribute::TextBackColor);
+}
+
+
+void TextModel::SetTextBackColorPickerInRange(ColorPicker picker, const Range& range) {
+
+    styled_text_.SetTextBackColorPickerInRange(std::move(picker), range);
+    RaiseChangedEvent(TextModelAttribute::TextBackColor);
 }
 
 

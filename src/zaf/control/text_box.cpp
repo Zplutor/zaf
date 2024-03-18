@@ -162,20 +162,19 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-void TextBox::PaintTextLayout(
+void TextBox::PaintTextBack(
     Canvas& canvas,
     const zaf::Rect& dirty_rect,
-    const TextLayout& text_layout, 
-    const zaf::Rect& text_layout_rect) {
+    const TextLayout& text_layout,
+    const zaf::Rect& layout_rect) {
 
-    //Paint background before painting text.
-    PaintTextBackground(canvas, dirty_rect, text_layout, text_layout_rect);
+    __super::PaintTextBack(canvas, dirty_rect, text_layout, layout_rect);
 
-    __super::PaintTextLayout(canvas, dirty_rect, text_layout, text_layout_rect);
+    PaintSelection(canvas, dirty_rect, text_layout, layout_rect);
 }
 
 
-void TextBox::PaintTextBackground(
+void TextBox::PaintSelection(
     Canvas& canvas,
     const zaf::Rect& dirty_rect,
     const TextLayout& text_layout,

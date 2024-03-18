@@ -66,17 +66,42 @@ public:
         fonts_.AddRange(range, std::move(font));
     }
 
+    void ClearFonts() {
+        fonts_.Clear();
+    }
+
     ColorPickerEnumerator TextColorPickers() const {
-        return ColorPickerEnumerator{ color_pickers_ };
+        return ColorPickerEnumerator{ text_color_pickers_ };
     }
 
     const ColorPicker* GetTextColorPickerAtIndex(std::size_t index) const {
-        return color_pickers_.GetValueAtIndex(index);
+        return text_color_pickers_.GetValueAtIndex(index);
     }
 
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
         ZAF_EXPECT(color_picker);
-        color_pickers_.AddRange(range, std::move(color_picker));
+        text_color_pickers_.AddRange(range, std::move(color_picker));
+    }
+
+    void ClearTextColorPickers() {
+        text_color_pickers_.Clear();
+    }
+
+    ColorPickerEnumerator TextBackColorPickers() const {
+        return ColorPickerEnumerator{ text_back_color_pickers_ };
+    }
+
+    const ColorPicker* GetTextBackColorPickerAtIndex(std::size_t index) const {
+        return text_back_color_pickers_.GetValueAtIndex(index);
+    }
+
+    void SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range) {
+        ZAF_EXPECT(color_picker);
+        text_back_color_pickers_.AddRange(range, std::move(color_picker));
+    }
+
+    void ClearTextBackColorPickers() {
+        text_back_color_pickers_.Clear();
     }
 
     InlineObjectEnumerator InlineObjects() const {
@@ -94,30 +119,24 @@ public:
         inline_objects_.Add(range, std::move(object));
     }
 
+    void ClearInlineObjects() {
+        inline_objects_.Clear();
+    }
+
     void ReplaceSpan(
         const Range& span_range, 
         std::size_t new_length) {
 
         fonts_.ReplaceSpan(span_range, new_length);
-        color_pickers_.ReplaceSpan(span_range, new_length);
+        text_color_pickers_.ReplaceSpan(span_range, new_length);
+        text_back_color_pickers_.ReplaceSpan(span_range, new_length);
         inline_objects_.ReplaceSpan(span_range, new_length);
-    }
-
-    void ClearFonts() {
-        fonts_.Clear();
-    }
-
-    void ClearTextColorPickers() {
-        color_pickers_.Clear();
-    }
-
-    void ClearInlineObjects() {
-        inline_objects_.Clear();
     }
 
     void Clear() {
         fonts_.Clear();
-        color_pickers_.Clear();
+        text_color_pickers_.Clear();
+        text_back_color_pickers_.Clear();
         inline_objects_.Clear();
     }
 
@@ -127,7 +146,8 @@ public:
 
 private:
     FontMap fonts_;
-    ColorPickerMap color_pickers_;
+    ColorPickerMap text_color_pickers_;
+    ColorPickerMap text_back_color_pickers_;
     InlineObjectCollection inline_objects_;
 };
 

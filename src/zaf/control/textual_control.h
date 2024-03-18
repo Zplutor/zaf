@@ -124,7 +124,7 @@ public:
     const ColorPicker& GetTextColorPickerAtIndex(std::size_t index) const;
 
     /**
-    Sets the specified color picker to the specified range within the existing text.
+    Sets the specified text color picker to the specified range within the existing text.
 
     @param color_picker
         The text color picker to set.
@@ -136,6 +136,67 @@ public:
         Thrown if the range is not entirely within the existing text.
     */
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range);
+
+    /**
+    Gets the default text background color of the textual control in current state.
+    */
+    Color TextBackColor() const;
+
+    /**
+    Sets the default text background color of the textual control and applies the color to all 
+    existing text.
+    */
+    void SetTextBackColor(const Color& color);
+
+    /**
+    Gets the text background color at the specified text index in current state.
+    */
+    Color GetTextBackColorAtIndex(std::size_t index) const;
+
+    /**
+    Sets the specified text background color to the specified range within the existing range.
+
+    @param color
+        The text background color to set.
+
+    @param range
+        The range within the existing text where the text background color will be set.
+
+    @throw std::logic_error
+        Thrown if the range is not entirely within the existing text.
+    */
+    void SetTextBackColorInRange(const Color& color, const Range& range);
+
+    /**
+    Gets the default text background color picker of the textual control.
+    */
+    const ColorPicker& TextBackColorPicker() const;
+
+    /**
+    Sets the default text background color picker of the textual control and applies the color
+    picker to all existing text.
+    */
+    void SetTextBackColorPicker(ColorPicker picker);
+
+    /**
+    Gets the text backgound color picker at the specified text index.
+    */
+    const ColorPicker& GetTextBackColorPickerAtIndex(std::size_t index) const;
+
+    /**
+    Sets the specified text background color picker to the specified range within the existing
+    text.
+
+    @param color_picker
+        The text background color picker to set.
+
+    @param range
+        The range within the existing text where the text background color picker will be set.
+
+    @throw std::logic_error
+        Thrown if the range is not entirely within the existing text.
+    */
+    void SetTextBackColorPickerInRange(ColorPicker picker, const Range& range);
 
     /**
     Gets the default font of the textual control.
@@ -297,7 +358,13 @@ protected:
     void Layout(const zaf::Rect&) override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
-    virtual void PaintTextLayout(
+    virtual void PaintTextBack(
+        Canvas& canvas, 
+        const zaf::Rect& dirty_rect,
+        const TextLayout& text_layout,
+        const zaf::Rect& layout_rect);
+
+    virtual void PaintText(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
         const TextLayout& text_layout,
@@ -331,6 +398,11 @@ protected:
 
 private:
     void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const;
+    void PaintTextBackInRange(
+        Canvas& canvas, 
+        const TextLayout& text_layout, 
+        const Range& range,
+        const ColorPicker& picker);
 
     void OnInlineObjectChanged(const internal::InlineObjectChangedInfo&);
     void OnTextModelChanged(const internal::TextModelChangedInfo&);

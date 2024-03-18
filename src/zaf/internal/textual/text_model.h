@@ -17,7 +17,8 @@ enum class TextModelAttribute : std::uint32_t {
     Text = 1 << 1,
     Font = 1 << 2,
     TextColor = 1 << 3,
-    InlineObject = 1 << 4,
+    TextBackColor = 1 << 4,
+    InlineObject = 1 << 5,
     All = ~None,
 };
 
@@ -83,6 +84,10 @@ public:
         return HasFlag(changed_attributes_, TextModelAttribute::TextColor);
     }
 
+    bool IsTextBackColorChanged() const {
+        return HasFlag(changed_attributes_, TextModelAttribute::TextBackColor);
+    }
+
     bool IsInlineObjectChanged() const {
         return HasFlag(changed_attributes_, TextModelAttribute::InlineObject);
     }
@@ -114,6 +119,9 @@ public:
 
     void SetTextColorPicker(ColorPicker picker);
     void SetTextColorPickerInRange(ColorPicker picker, const Range& range);
+
+    void SetTextBackColorPicker(ColorPicker picker);
+    void SetTextBackColorPickerInRange(ColorPicker picker, const Range& range);
 
     void AttachInlineObjectToRange(
         std::shared_ptr<textual::InlineObject> object,

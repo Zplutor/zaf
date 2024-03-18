@@ -41,9 +41,7 @@ public:
 
     void SetFontInRange(Font font, const Range& range);
     void ClearRangedFonts();
-
     const Font& GetFontAtIndex(std::size_t index) const;
-
     RangedFontEnumerator RangedFonts() const;
 
     const ColorPicker& DefaultTextColorPicker() const {
@@ -56,11 +54,23 @@ public:
     }
 
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range);
-    void ClearRangedTextColorPicker();
-
+    void ClearRangedTextColorPickers();
     const ColorPicker& GetTextColorPickerAtIndex(std::size_t index) const;
-
     RangedColorPickerEnumerator RangedTextColorPicker() const;
+
+    const ColorPicker& DefaultTextBackColorPicker() const {
+        return default_text_color_picker_;
+    }
+
+    void SetDefaultTextBackColorPicker(ColorPicker color_picker) {
+        ZAF_EXPECT(color_picker);
+        default_text_back_color_picker_ = std::move(color_picker);
+    }
+
+    void SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range);
+    void ClearRangedTextBackColorPickers();
+    const ColorPicker& GetTextBackColorPickerAtIndex(std::size_t index) const;
+    RangedColorPickerEnumerator RangedTextBackColorPickers() const;
 
     void AttachInlineObjectToRange(
         std::shared_ptr<textual::InlineObject> object,
@@ -86,6 +96,7 @@ private:
 
     Font default_font_{ Font::Default() };
     ColorPicker default_text_color_picker_{ CreateColorPicker(Color::Black()) };
+    ColorPicker default_text_back_color_picker_{ CreateColorPicker(Color::Transparent()) };
 
     RangedTextStyle ranged_style_;
 };
