@@ -195,7 +195,7 @@ void TextBox::PaintTextBackground(
 
     auto background_color = SelectionBackgroundColor();
     auto brush = canvas.Renderer().CreateSolidColorBrush(background_color);
-    auto text = TextModel().GetText();
+    std::wstring_view text = TextModel().GetText();
 
     for (const auto& metrics : metrics_list) {
 
@@ -452,7 +452,7 @@ void TextBox::SetSelectionRange(const Range& range, textual::SelectionOption sel
 
 std::wstring TextBox::SelectedText() const {
 
-    auto text = TextModel().GetText();
+    std::wstring_view text = TextModel().GetText();
     auto selection_range = this->SelectionRange();
     auto selected_text = text.substr(selection_range.index, selection_range.length);
     return std::wstring{ selected_text };
