@@ -62,6 +62,17 @@ TEST(RangeTest, EndIndex) {
 }
 
 
+TEST(RangeTest, IsEmpty) {
+
+    ASSERT_TRUE(zaf::Range().IsEmpty());
+    ASSERT_TRUE(zaf::Range(1, 0).IsEmpty());
+    ASSERT_TRUE(zaf::Range(10, 0).IsEmpty());
+    ASSERT_FALSE(zaf::Range(0, 1).IsEmpty());
+    ASSERT_FALSE(zaf::Range(1, 1).IsEmpty());
+    ASSERT_FALSE(zaf::Range(10, 2).IsEmpty());
+}
+
+
 TEST(RangeTest, ContainsIndex) {
 
     zaf::Range range;

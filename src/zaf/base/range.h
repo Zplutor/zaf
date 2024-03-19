@@ -97,7 +97,17 @@ public:
     }
 
     /**
-    Determines if the specified index is in the range.
+    Determines whether the current range is empty.
+
+    @return
+        True if the range is empty, meaning it has zero length; otherwise, false.
+    */
+    bool IsEmpty() const noexcept {
+        return length == 0;
+    }
+
+    /**
+    Determines whether the specified index is in the range.
     */
     bool Contains(std::size_t index) const noexcept {
         return (Index() <= index) && (index < EndIndex());
