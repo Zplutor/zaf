@@ -43,7 +43,7 @@ void TextFormat::SetLineSpacing(const LineSpacing& line_spacing) {
     HRESULT hresult = Inner()->SetLineSpacing(
         static_cast<DWRITE_LINE_SPACING_METHOD>(line_spacing.Method()),
         line_spacing.LineHeight(),
-        line_spacing.Baseline());
+        line_spacing.HeightAboveBaseline());
 
     ZAF_THROW_IF_COM_ERROR(hresult);
 }

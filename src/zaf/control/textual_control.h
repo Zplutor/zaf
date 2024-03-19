@@ -199,6 +199,26 @@ public:
     void SetTextBackColorPickerInRange(ColorPicker picker, const Range& range);
 
     /**
+    Gets the padding for the text background.
+    */
+    const Frame& TextBackPadding() const;
+
+    /**
+    Sets the padding for the text background.
+
+    @param padding
+        The padding to be applied to the text background.
+
+    @remark
+        The padding for the text background creates additional spacing around the area of the 
+        background. This can be useful when setting both the text background color and the line 
+        spacing. In such cases, the text background color is painted across the entire vertical 
+        spacing of the line, which may extend beyond the height of the text. By setting the
+        padding, you can adjust the height of the background to better fit the text.
+    */
+    void SetTextBackPadding(const Frame& padding);
+
+    /**
     Gets the default font of the textual control.
     */
     const zaf::Font& Font() const;
@@ -427,6 +447,7 @@ private:
     zaf::WordWrapping word_wrapping_{ WordWrapping::NoWrap };
     zaf::TextTrimming text_trimming_;
     zaf::LineSpacing line_spacing_;
+    Frame text_back_padding_;
     bool ignore_tailing_white_spaces_{};
 
     zaf::Rect text_rect_;

@@ -148,6 +148,9 @@ L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n");
 
         text_box->AttachInlineObjectToRange(std::make_shared<InlineObject>(), zaf::Range{ 10, 1 });
 
+        text_box->SetLineSpacing(zaf::LineSpacing{ zaf::LineSpacingMethod::Uniform, 50, 40 });
+        text_box->SetTextBackPadding(zaf::Frame{ 0, 20, 0, 0 });
+
         this->RootControl()->AddChild(text_box);
 
         auto button = zaf::Create<zaf::Button>();

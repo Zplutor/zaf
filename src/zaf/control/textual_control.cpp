@@ -157,8 +157,7 @@ void TextualControl::PaintTextBackInRange(
     for (const auto& metrics : range_metrics) {
 
         auto rect = metrics.Rect();
-        //rect.position.y += line_gap_;
-        //rect.size.height -= line_gap_;
+        rect.Deflate(text_back_padding_);
         canvas.DrawRectangle(rect, picker(*this));
     }
 }
@@ -294,6 +293,22 @@ const ColorPicker& TextualControl::GetTextBackColorPickerAtIndex(std::size_t ind
 
 void TextualControl::SetTextBackColorPickerInRange(ColorPicker picker, const Range& range) {
     text_model_->SetTextBackColorPickerInRange(std::move(picker), range);
+}
+
+
+const Frame& TextualControl::TextBackPadding() const {
+    return text_back_padding_;
+}
+
+
+void TextualControl::SetTextBackPadding(const Frame& padding) {
+
+    if (text_back_padding_ == padding) {
+        return;
+    }
+
+    text_back_padding_ = padding;
+    NeedRepaint();
 }
 
 
