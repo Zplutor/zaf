@@ -139,9 +139,14 @@ void TextualControl::PaintTextBack(
     const TextLayout& text_layout,
     const zaf::Rect& layout_rect) {
 
+    auto text_back_color_pickers = text_model_->StyledText().RangedTextBackColorPickers();
+    if (text_back_color_pickers.IsEmpty()) {
+        return;
+    }
+
     auto region_guard = canvas.PushRegion(layout_rect, layout_rect);
 
-    for (const auto& each_item : text_model_->StyledText().RangedTextBackColorPickers()) {
+    for (const auto& each_item : text_back_color_pickers) {
         PaintTextBackInRange(canvas, text_layout, each_item.Range(), each_item.ColorPicker());
     }
 }

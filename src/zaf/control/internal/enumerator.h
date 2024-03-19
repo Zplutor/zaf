@@ -50,6 +50,10 @@ public:
 
     }
 
+    bool IsEmpty() const noexcept {
+        return !(inner_.begin() != inner_.end());
+    }
+
     Iterator begin() const {
         return Iterator{ inner_.begin() };
     }
