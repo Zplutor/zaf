@@ -37,6 +37,12 @@ public:
     using ItemList = std::vector<Item>;
 
 public:
+    InlineObjectCollection() noexcept = default;
+    ~InlineObjectCollection();
+
+    InlineObjectCollection(InlineObjectCollection&&) noexcept = default;
+    InlineObjectCollection& operator=(InlineObjectCollection&&) noexcept = default;
+
     void Attach(std::shared_ptr<InlineObject> object, const Range& range);
 
     void ReplaceSpan(const Range& span_range, std::size_t new_length);
@@ -49,6 +55,14 @@ public:
         return items_;
     }
 
+    /**
+    Gets inline object changed event.
+
+    @remark
+        This event is raised when inline objects attached or detached from the current collection.
+        Note that this event won't be raised on destruction even if there are still inline objects
+        in the collection.
+    */
     Observable<InlineObjectChangedInfo> ChangedEvent() const {
         return changed_event_.GetObservable();
     }

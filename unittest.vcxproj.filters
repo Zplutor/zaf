@@ -505,6 +505,9 @@
     <ClCompile Include="unittest\case\control\textual\inline_object_test.cpp">
       <Filter>case\control\textual</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\control\textual\inline_object_collection_test.cpp">
+      <Filter>case\control\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

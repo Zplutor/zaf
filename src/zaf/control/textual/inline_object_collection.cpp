@@ -3,6 +3,16 @@
 
 namespace zaf::textual {
 
+InlineObjectCollection::~InlineObjectCollection() {
+
+    //Clear the attach info of each inline object so that they can be attached to another 
+    //collection again.
+    for (const auto& each_item : items_) {
+        each_item.Object()->attach_info_.reset();
+    }
+}
+
+
 void InlineObjectCollection::Attach(
     std::shared_ptr<InlineObject> object,
     const Range& range) {
