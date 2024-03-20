@@ -1,7 +1,7 @@
-#include <zaf/internal/textual/styled_text.h>
+#include <zaf/control/textual/styled_text.h>
 #include <zaf/base/as.h>
 
-namespace zaf::internal {
+namespace zaf::textual {
 
 StyledText::StyledText() {
 

@@ -223,6 +223,11 @@ void TextualControl::SetTextInRange(std::wstring_view text, const Range& range) 
 }
 
 
+void TextualControl::SetStyledText(textual::StyledText styled_text) {
+    text_model_->SetStyledText(std::move(styled_text));
+}
+
+
 Color TextualControl::TextColor() const {
     return TextColorPicker()(*this);
 }
@@ -485,7 +490,7 @@ Observable<TextChangedInfo> TextualControl::TextChangedEvent() const {
 }
 
 
-void TextualControl::OnInlineObjectChanged(const internal::InlineObjectChangedInfo& event_info) {
+void TextualControl::OnInlineObjectChanged(const textual::InlineObjectChangedInfo& event_info) {
 
     if (!event_info.AttachedObjects().empty()) {
 

@@ -5,8 +5,37 @@ namespace zaf::internal {
 
 TextModel::TextModel() {
 
-    Subscriptions() += styled_text_.InlineObjectChangedEvent().Subscribe(
+    inline_object_sub_ = styled_text_.InlineObjectChangedEvent().Subscribe(
         inline_object_changed_event_.AsObserver());
+}
+
+
+void TextModel::SetStyledText(textual::StyledText styled_text) {
+
+    //Get all inline objects from old styled text.
+    std::vector<std::shared_ptr<textual::InlineObject>> old_inline_objects;
+    for (const auto& each_item : styled_text_.InlineObjects()) {
+        old_inline_objects.push_back(each_item.InlineObject());
+    }
+
+    //Replace the old styled text.
+    inline_object_sub_.Unsubscribe();
+    styled_text_ = std::move(styled_text);
+    inline_object_sub_ = styled_text_.InlineObjectChangedEvent().Subscribe(
+        inline_object_changed_event_.AsObserver());
+
+    //Get all inline objects from new styled text.
+    std::vector<std::shared_ptr<textual::InlineObject>> new_inline_objects;
+    for (const auto& each_item : styled_text_.InlineObjects()) {
+        new_inline_objects.push_back(each_item.InlineObject());
+    }
+
+    //Raise events.
+    inline_object_changed_event_.AsObserver().OnNext(textual::InlineObjectChangedInfo{
+        std::move(new_inline_objects),
+        std::move(old_inline_objects),
+    });
+    RaiseChangedEvent(TextModelAttribute::All);
 }
 
 
@@ -88,7 +117,9 @@ void TextModel::AttachInlineObjectToRange(
 }
 
 
-void TextModel::ReplaceStyledTextSlice(const Range& replaced_range, const StyledTextSlice& slice) {
+void TextModel::ReplaceStyledTextSlice(
+    const Range& replaced_range, const 
+    textual::StyledTextSlice& slice) {
 
     styled_text_.ReplaceSlice(replaced_range, slice);
     RaiseChangedEvent(TextModelAttribute::All);

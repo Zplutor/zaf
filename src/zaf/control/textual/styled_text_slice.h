@@ -1,9 +1,9 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/internal/textual/ranged_text_style.h>
+#include <zaf/control/textual/ranged_text_style.h>
 
-namespace zaf::internal {
+namespace zaf::textual {
 
 class StyledTextSlice : NonCopyable {
 public:
@@ -33,7 +33,7 @@ public:
 private:
     std::size_t slice_index_{};
     std::wstring text_;
-    internal::RangedTextStyle ranged_style_;
+    RangedTextStyle ranged_style_;
 };
 
 }

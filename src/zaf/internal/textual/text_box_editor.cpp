@@ -354,7 +354,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
 
     TextBoxEditCommand::EditInfo do_info{
         replaced_selection_range,
-        StyledTextSlice{ replaced_selection_range.index, std::move(new_text), {} },
+        textual::StyledTextSlice{ replaced_selection_range.index, std::move(new_text), {} },
         new_selection_range,
         false,
     };

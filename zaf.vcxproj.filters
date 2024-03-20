@@ -1144,13 +1144,7 @@
     <ClCompile Include="src\zaf\internal\textual\text_box_selection_manager.cpp">
       <Filter>zaf\internal\textual</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\styled_text.cpp">
-      <Filter>zaf\internal\textual</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\internal\textual\text_model.cpp">
-      <Filter>zaf\internal\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\inline_object_collection.cpp">
       <Filter>zaf\internal\textual</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\textual\dynamic_inline_object_events.cpp">
@@ -1158,6 +1152,12 @@
     </ClCompile>
     <ClCompile Include="src\zaf\internal\textual\text_box_hit_test_manager.cpp">
       <Filter>zaf\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\textual\styled_text.cpp">
+      <Filter>zaf\control\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\textual\inline_object_collection.cpp">
+      <Filter>zaf\control\textual</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2614,22 +2614,7 @@
     <ClInclude Include="src\zaf\internal\textual\text_box_selection_manager.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\ranged_text_style.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\styled_text.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\styled_text_slice.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\internal\textual\text_model.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\inline_object_collection.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\inline_object_changed_info.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual\dynamic_inline_object_events.h">
@@ -2646,6 +2631,21 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\textual\inline_object_attach_info.h">
       <Filter>zaf\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\inline_object_changed_info.h">
+      <Filter>zaf\control\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\ranged_text_style.h">
+      <Filter>zaf\control\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\styled_text.h">
+      <Filter>zaf\control\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\styled_text_slice.h">
+      <Filter>zaf\control\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\inline_object_collection.h">
+      <Filter>zaf\control\textual</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

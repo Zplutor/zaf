@@ -13,7 +13,6 @@
 
 namespace zaf {
 namespace internal {
-class InlineObjectChangedInfo;
 class TextInlineObjectBridge;
 class TextInlineObjectPainter;
 class TextModel;
@@ -22,6 +21,8 @@ class TextModelChangedInfo;
 
 namespace textual {
 class InlineObject;
+class InlineObjectChangedInfo;
+class StyledText;
 }
 
 class TextFormat;
@@ -77,6 +78,8 @@ public:
         TextChangedEvent will be raised after setting the text.
     */
     void SetTextInRange(std::wstring_view text, const Range& range);
+
+    void SetStyledText(textual::StyledText styled_text);
 
     /**
     Gets the default text color of the textual control in current state.
@@ -424,7 +427,7 @@ private:
         const Range& range,
         const ColorPicker& picker);
 
-    void OnInlineObjectChanged(const internal::InlineObjectChangedInfo&);
+    void OnInlineObjectChanged(const textual::InlineObjectChangedInfo&);
     void OnTextModelChanged(const internal::TextModelChangedInfo&);
 
     TextLayout CreateTextLayout() const;

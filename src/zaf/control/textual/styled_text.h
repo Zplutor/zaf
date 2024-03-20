@@ -7,11 +7,11 @@
 #include <zaf/control/color_picker.h>
 #include <zaf/control/internal/enumerator.h>
 #include <zaf/control/internal/range_map.h>
-#include <zaf/internal/textual/styled_text_slice.h>
 #include <zaf/control/textual/inline_object.h>
+#include <zaf/control/textual/styled_text_slice.h>
 #include <zaf/graphic/font/font.h>
 
-namespace zaf::internal {
+namespace zaf::textual {
 
 class StyledText : NonCopyable {
 public:
@@ -73,12 +73,12 @@ public:
     RangedColorPickerEnumerator RangedTextBackColorPickers() const;
 
     void AttachInlineObjectToRange(
-        std::shared_ptr<textual::InlineObject> object,
+        std::shared_ptr<InlineObject> object,
         const Range& range);
 
     void ClearInlineObjects();
 
-    std::shared_ptr<textual::InlineObject> GetInlineObjectAtIndex(std::size_t index) const;
+    std::shared_ptr<InlineObject> GetInlineObjectAtIndex(std::size_t index) const;
     InlineObjectEnumerator InlineObjects() const;
 
     Observable<InlineObjectChangedInfo> InlineObjectChangedEvent() const {

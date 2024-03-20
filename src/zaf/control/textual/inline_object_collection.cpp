@@ -1,11 +1,11 @@
-#include <zaf/internal/textual/inline_object_collection.h>
+#include <zaf/control/textual/inline_object_collection.h>
 #include <zaf/base/error/check.h>
 
-namespace zaf::internal {
+namespace zaf::textual {
 
-void InlineObjectCollection::Add(
-    const Range& range, 
-    std::shared_ptr<textual::InlineObject> object) {
+void InlineObjectCollection::Attach(
+    std::shared_ptr<InlineObject> object,
+    const Range& range) {
 
     ZAF_EXPECT(object);
     ZAF_EXPECT(!object->attach_info_.has_value());

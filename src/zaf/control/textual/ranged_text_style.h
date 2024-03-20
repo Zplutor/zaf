@@ -4,15 +4,15 @@
 #include <zaf/control/color_picker.h>
 #include <zaf/control/internal/enumerator.h>
 #include <zaf/control/internal/range_map.h>
+#include <zaf/control/textual/inline_object_collection.h>
 #include <zaf/graphic/font/font.h>
-#include <zaf/internal/textual/inline_object_collection.h>
 
-namespace zaf::internal {
+namespace zaf::textual {
 
 class RangedTextStyle : NonCopyable {
 public:
-    using FontMap = RangeMap<zaf::Font>;
-    using ColorPickerMap = RangeMap<zaf::ColorPicker>;
+    using FontMap = internal::RangeMap<zaf::Font>;
+    using ColorPickerMap = internal::RangeMap<zaf::ColorPicker>;
 
     class FontItem : NonCopyable {
     public:
@@ -23,7 +23,7 @@ public:
         FontMap::Item inner_;
     };
 
-    using FontEnumerator = WrapEnumerator<FontMap, FontItem>;
+    using FontEnumerator = internal::WrapEnumerator<FontMap, FontItem>;
 
     class ColorPickerItem : NonCopyable {
     public:
@@ -34,21 +34,21 @@ public:
         ColorPickerMap::Item inner_;
     };
 
-    using ColorPickerEnumerator = WrapEnumerator<ColorPickerMap, ColorPickerItem>;
+    using ColorPickerEnumerator = internal::WrapEnumerator<ColorPickerMap, ColorPickerItem>;
 
     class InlineObjectItem : NonCopyable {
     public:
         explicit InlineObjectItem(const InlineObjectCollection::ItemList::value_type& item) : 
             inner_(item) { }
         const Range& Range() const { return inner_.Range(); }
-        const std::shared_ptr<textual::InlineObject>& InlineObject() const {
+        const std::shared_ptr<InlineObject>& InlineObject() const {
             return inner_.Object();
         }
     private:
         const InlineObjectCollection::ItemList::value_type& inner_;
     };
 
-    using InlineObjectEnumerator = WrapEnumerator<
+    using InlineObjectEnumerator = internal::WrapEnumerator<
         InlineObjectCollection::ItemList,
         InlineObjectItem
     >;
@@ -108,15 +108,12 @@ public:
         return InlineObjectEnumerator{ inline_objects_.Items() };
     }
 
-    std::shared_ptr<textual::InlineObject> GetInlineObjectAtIndex(std::size_t index) const {
+    std::shared_ptr<InlineObject> GetInlineObjectAtIndex(std::size_t index) const {
         return inline_objects_.GetInlineObjectAtIndex(index);
     }
 
-    void AttachInlineObjectToRange(
-        std::shared_ptr<textual::InlineObject> object,
-        const Range& range) {
-
-        inline_objects_.Add(range, std::move(object));
+    void AttachInlineObjectToRange(std::shared_ptr<InlineObject> object, const Range& range) {
+        inline_objects_.Attach(std::move(object), range);
     }
 
     void ClearInlineObjects() {

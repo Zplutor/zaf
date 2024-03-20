@@ -5,10 +5,9 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/none.h>
 #include <zaf/base/range.h>
-#include <zaf/internal/textual/inline_object_changed_info.h>
-#include <zaf/internal/textual/styled_text.h>
+#include <zaf/control/textual/inline_object_changed_info.h>
+#include <zaf/control/textual/styled_text.h>
 #include <zaf/rx/subject.h>
-#include <zaf/rx/subscription_host.h>
 
 namespace zaf::internal {
 
@@ -98,14 +97,16 @@ private:
 };
 
 
-class TextModel : SubscriptionHost, NonCopyableNonMovable {
+class TextModel : NonCopyableNonMovable {
 public:
     TextModel();
     ~TextModel() = default;
 
-    const StyledText& StyledText() const {
+    const textual::StyledText& StyledText() const {
         return styled_text_;
     }
+
+    void SetStyledText(textual::StyledText styled_text);
 
     const std::wstring& GetText() const {
         return styled_text_.Text();
@@ -127,9 +128,11 @@ public:
         std::shared_ptr<textual::InlineObject> object,
         const Range& range);
 
-    void ReplaceStyledTextSlice(const Range& replaced_range, const StyledTextSlice& slice);
+    void ReplaceStyledTextSlice(
+        const Range& replaced_range,
+        const textual::StyledTextSlice& slice);
 
-    Observable<InlineObjectChangedInfo> InlineObjectChangedEvent() const {
+    Observable<textual::InlineObjectChangedInfo> InlineObjectChangedEvent() const {
         return inline_object_changed_event_.AsObservable();
     }
 
@@ -155,9 +158,11 @@ private:
     }
 
 private:
-    internal::StyledText styled_text_;
+    textual::StyledText styled_text_;
     Subject<TextModelChangedInfo> changed_event_;
-    Subject<InlineObjectChangedInfo> inline_object_changed_event_;
+
+    Subscription inline_object_sub_;
+    Subject<textual::InlineObjectChangedInfo> inline_object_changed_event_;
 };
 
 }

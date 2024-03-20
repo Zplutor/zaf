@@ -15,11 +15,12 @@ class Canvas;
 class TextualControl;
 
 namespace internal {
-class InlineObjectCollection;
 class TextInlineObjectBridge;
 }
 
 namespace textual {
+
+class InlineObjectCollection;
 
 class InlineObject : 
     public Object, 
@@ -63,8 +64,8 @@ protected:
     virtual void Paint(Canvas& canvas) const;
 
 private:
+    friend class InlineObjectCollection;
     friend class TextualControl;
-    friend class internal::InlineObjectCollection;
     friend class internal::TextInlineObjectBridge;
 
     void SetHost(std::shared_ptr<TextualControl> host);

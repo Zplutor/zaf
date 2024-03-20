@@ -2,7 +2,7 @@
 
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
-#include <zaf/internal/textual/styled_text_slice.h>
+#include <zaf/control/textual/styled_text_slice.h>
 #include <zaf/internal/textual/text_box_module_context.h>
 
 namespace zaf::internal {
@@ -19,7 +19,7 @@ public:
         /**
         The new styled txt slice which will be set to replaced_range.
         */
-        StyledTextSlice styled_text_slice;
+        textual::StyledTextSlice styled_text_slice;
 
         /**
         The selection range which will be set after replacing.
