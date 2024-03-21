@@ -100,6 +100,9 @@
     <Filter Include="case\control\textual">
       <UniqueIdentifier>{2448d6ae-3ce2-46fd-a132-bebe783172d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\base\error">
+      <UniqueIdentifier>{ac709b97-86e9-4251-b213-88400ba7132c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -507,6 +510,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\textual\inline_object_collection_test.cpp">
       <Filter>case\control\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\error\check_test.cpp">
+      <Filter>case\base\error</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
