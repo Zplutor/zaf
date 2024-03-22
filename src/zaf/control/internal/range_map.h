@@ -16,10 +16,6 @@ public:
         return range_manager_.RemoveRange(range);
     }
 
-    void RemoveRangesIntersectWith(const Range& range) {
-        range_manager_.RemoveRangesIntersectWith(range);
-    }
-
     bool InsertSpan(const Range& span_range) {
         return range_manager_.InsertSpan(span_range);
     }

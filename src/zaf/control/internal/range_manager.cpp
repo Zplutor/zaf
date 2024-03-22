@@ -23,23 +23,6 @@ bool RangeManager::RemoveRange(std::size_t index, std::size_t length) {
 }
 
 
-void RangeManager::RemoveRangesIntersectWith(const Range& range) {
-
-    auto iterator = items_.begin();
-    while (iterator != items_.end()) {
-
-        const auto& current_range = iterator->range;
-
-        if (range.EndIndex() <= current_range.index || current_range.EndIndex() <= range.index) {
-            ++iterator;
-        }
-        else {
-            iterator = items_.erase(iterator);
-        }
-    }
-}
-
-
 bool RangeManager::ReplaceRange(const Range& replaced_range, std::optional<std::any> value) {
 
     //Ignore empty ranges.
