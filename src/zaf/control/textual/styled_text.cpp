@@ -20,11 +20,43 @@ void StyledText::SetText(std::wstring text) {
 }
 
 
-void StyledText::SetTextInRange(std::wstring_view text, const Range& range) {
+Range StyledText::SetTextInRange(std::wstring_view text, const Range& range) {
 
     CheckRange(range);
+
     text_.replace(range.index, range.length, text);
     ranged_style_.ReplaceSpan(range, text.length());
+
+    return Range{ range.index, text.length() };
+}
+
+
+Range StyledText::AppendText(std::wstring_view text) {
+    return SetTextInRange(text, Range{ text_.length(), 0 });
+}
+
+
+Range StyledText::AppendText(std::wstring_view text, const TextStyle& style) {
+
+    auto new_range = AppendText(text);
+
+    if (style.Font()) {
+        ranged_style_.SetFontInRange(*style.Font(), new_range);
+    }
+
+    if (style.TextColorPicker()) {
+        ranged_style_.SetTextColorPickerInRange(style.TextColorPicker(), new_range);
+    }
+
+    if (style.TextBackColorPicker()) {
+        ranged_style_.SetTextBackColorPickerInRange(style.TextBackColorPicker(), new_range);
+    }
+
+    if (style.InlineObject()) {
+        ranged_style_.AttachInlineObjectToRange(style.InlineObject(), new_range);
+    }
+
+    return new_range;
 }
 
 
@@ -62,6 +94,22 @@ StyledText::RangedFontEnumerator StyledText::RangedFonts() const {
 }
 
 
+void StyledText::SetDefaultTextColor(const Color& color) {
+    SetDefaultTextColorPicker(CreateColorPicker(color));
+}
+
+
+void StyledText::SetDefaultTextColorPicker(ColorPicker color_picker) {
+    ZAF_EXPECT(color_picker);
+    default_text_color_picker_ = std::move(color_picker);
+}
+
+
+void StyledText::SetTextColorInRange(const Color& color, const Range& range) {
+    SetTextColorPickerInRange(CreateColorPicker(color), range);
+}
+
+
 void StyledText::SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
 
     CheckRange(range);
@@ -88,6 +136,17 @@ const ColorPicker& StyledText::GetTextColorPickerAtIndex(std::size_t index) cons
 
 StyledText::RangedColorPickerEnumerator StyledText::RangedTextColorPicker() const {
     return ranged_style_.TextColorPickers();
+}
+
+
+void StyledText::SetDefaultTextBackColor(const Color& color) {
+    SetDefaultTextBackColorPicker(CreateColorPicker(color));
+}
+
+
+void StyledText::SetDefaultTextBackColorPicker(ColorPicker color_picker) {
+    ZAF_EXPECT(color_picker);
+    default_text_back_color_picker_ = std::move(color_picker);
 }
 
 

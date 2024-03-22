@@ -618,6 +618,7 @@
     <ClInclude Include="src\zaf\control\textual\selection_option.h" />
     <ClInclude Include="src\zaf\control\textual\styled_text.h" />
     <ClInclude Include="src\zaf\control\textual\styled_text_slice.h" />
+    <ClInclude Include="src\zaf\control\textual\text_style.h" />
     <ClInclude Include="src\zaf\control\textual\word_extractor.h" />
     <ClInclude Include="src\zaf\control\textual_control.h" />
     <ClInclude Include="src\zaf\control\rich_edit.h" />

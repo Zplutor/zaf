@@ -514,6 +514,9 @@
     <ClCompile Include="unittest\case\base\error\check_test.cpp">
       <Filter>case\base\error</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\control\textual\styled_text_test.cpp">
+      <Filter>case\control\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
