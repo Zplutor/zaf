@@ -5,7 +5,6 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
 #include <zaf/control/textual/inline_object.h>
-#include <zaf/control/textual/inline_object_changed_info.h>
 
 namespace zaf::textual {
 
@@ -23,7 +22,7 @@ public:
         }
 
         const Range& Range() const {
-            return object_->attach_info_->range;
+            return *object_->attached_range_;
         }
 
         const std::shared_ptr<InlineObject>& Object() const {
@@ -40,9 +39,6 @@ public:
     InlineObjectCollection() noexcept = default;
     ~InlineObjectCollection();
 
-    InlineObjectCollection(InlineObjectCollection&&) noexcept = default;
-    InlineObjectCollection& operator=(InlineObjectCollection&&) noexcept = default;
-
     void Attach(std::shared_ptr<InlineObject> object, const Range& range);
 
     void ReplaceSpan(const Range& span_range, std::size_t new_length);
@@ -55,21 +51,8 @@ public:
         return items_;
     }
 
-    /**
-    Gets inline object changed event.
-
-    @remark
-        This event is raised when inline objects attached or detached from the current collection.
-        Note that this event won't be raised on destruction even if there are still inline objects
-        in the collection.
-    */
-    Observable<InlineObjectChangedInfo> ChangedEvent() const {
-        return changed_event_.GetObservable();
-    }
-
 private:
     ItemList items_;
-    Event<InlineObjectChangedInfo> changed_event_;
 };
 
 }

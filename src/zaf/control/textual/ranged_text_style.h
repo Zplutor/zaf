@@ -9,7 +9,7 @@
 
 namespace zaf::textual {
 
-class RangedTextStyle : NonCopyable {
+class RangedTextStyle {
 public:
     using FontMap = internal::RangeMap<zaf::Font>;
     using ColorPickerMap = internal::RangeMap<zaf::ColorPicker>;
@@ -135,10 +135,6 @@ public:
         text_color_pickers_.Clear();
         text_back_color_pickers_.Clear();
         inline_objects_.Clear();
-    }
-
-    Observable<InlineObjectChangedInfo> InlineObjectChangedEvent() const {
-        return inline_objects_.ChangedEvent();
     }
 
 private:

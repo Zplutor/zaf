@@ -5,24 +5,13 @@ namespace zaf::internal {
 
 TextModel::TextModel() {
 
-    inline_object_sub_ = styled_text_.InlineObjectChangedEvent().Subscribe(
-        inline_object_changed_event_.AsObserver());
 }
 
 
 void TextModel::SetStyledText(textual::StyledText styled_text) {
 
-    //Get all inline objects from old styled text.
-    std::vector<std::shared_ptr<textual::InlineObject>> old_inline_objects;
-    for (const auto& each_item : styled_text_.InlineObjects()) {
-        old_inline_objects.push_back(each_item.InlineObject());
-    }
-
     //Replace the old styled text.
-    inline_object_sub_.Unsubscribe();
     styled_text_ = std::move(styled_text);
-    inline_object_sub_ = styled_text_.InlineObjectChangedEvent().Subscribe(
-        inline_object_changed_event_.AsObserver());
 
     //Get all inline objects from new styled text.
     std::vector<std::shared_ptr<textual::InlineObject>> new_inline_objects;
@@ -31,10 +20,7 @@ void TextModel::SetStyledText(textual::StyledText styled_text) {
     }
 
     //Raise events.
-    inline_object_changed_event_.AsObserver().OnNext(textual::InlineObjectChangedInfo{
-        std::move(new_inline_objects),
-        std::move(old_inline_objects),
-    });
+    RaiseInlineObjectAttachedEvent(std::move(new_inline_objects));
     RaiseChangedEvent(TextModelAttribute::All);
 }
 
@@ -112,14 +98,25 @@ void TextModel::AttachInlineObjectToRange(
     std::shared_ptr<textual::InlineObject> object,
     const Range& range) {
 
+    if (range.IsEmpty()) {
+        return;
+    }
+
     styled_text_.AttachInlineObjectToRange(object, range);
+
+    RaiseInlineObjectAttachedEvent({ std::move(object) });
     RaiseChangedEvent(TextModelAttribute::InlineObject, range, range.length);
 }
 
 
 void TextModel::ReplaceStyledTextSlice(
-    const Range& replaced_range, const 
-    textual::StyledTextSlice& slice) {
+    const Range& replaced_range, 
+    const textual::StyledTextSlice& slice) {
+
+    std::vector<std::shared_ptr<textual::InlineObject>> new_inline_objects;
+    for (const auto& each_item : slice.RangedStyle().InlineObjects()) {
+        new_inline_objects.push_back(each_item.InlineObject());
+    }
 
     styled_text_.ReplaceSlice(replaced_range, slice);
     RaiseChangedEvent(TextModelAttribute::All);

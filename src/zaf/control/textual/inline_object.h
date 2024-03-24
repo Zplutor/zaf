@@ -6,7 +6,6 @@
 #include <zaf/control/textual/inline_object_events.h>
 #include <zaf/graphic/size.h>
 #include <zaf/graphic/text/text_inline_object_metrics.h>
-#include <zaf/internal/textual/inline_object_attach_info.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
@@ -69,10 +68,11 @@ private:
     friend class internal::TextInlineObjectBridge;
 
     void SetHost(std::shared_ptr<TextualControl> host);
+    void Detach();
 
 private:
     //Accessed by InlineObjectCollection.
-    std::optional<internal::InlineObjectAttachInfo> attach_info_;
+    std::optional<Range> attached_range_;
     std::weak_ptr<TextualControl> host_;
 
     Event<AttachedInfo> attached_event_;

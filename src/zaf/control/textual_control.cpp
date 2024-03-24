@@ -77,7 +77,7 @@ void TextualControl::Initialize() {
         }
     });
 
-    Subscriptions() += text_model_->InlineObjectChangedEvent().Subscribe(
+    Subscriptions() += text_model_->InlineObjectAttachedEvent().Subscribe(
         std::bind(&TextualControl::OnInlineObjectChanged, this, std::placeholders::_1));
 
     Subscriptions() += text_model_->TextChangedEvent().Subscribe(

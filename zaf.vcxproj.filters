@@ -2629,11 +2629,8 @@
     <ClInclude Include="src\zaf\internal\textual\text_box_hit_test_manager.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\inline_object_attach_info.h">
+    <ClInclude Include="src\zaf\internal\textual\inline_object_attached_info.h">
       <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\textual\inline_object_changed_info.h">
-      <Filter>zaf\control\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual\ranged_text_style.h">
       <Filter>zaf\control\textual</Filter>

@@ -7,6 +7,7 @@
 #include <zaf/base/range.h>
 #include <zaf/control/textual/inline_object_changed_info.h>
 #include <zaf/control/textual/styled_text.h>
+#include <zaf/internal/textual/inline_object_attached_info.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf::internal {
@@ -132,8 +133,8 @@ public:
         const Range& replaced_range,
         const textual::StyledTextSlice& slice);
 
-    Observable<textual::InlineObjectChangedInfo> InlineObjectChangedEvent() const {
-        return inline_object_changed_event_.AsObservable();
+    Observable<InlineObjectAttachedInfo> InlineObjectAttachedEvent() const {
+        return inline_object_attached_event_.AsObservable();
     }
 
     Observable<TextModelChangedInfo> TextChangedEvent() const {
@@ -141,6 +142,14 @@ public:
     }
 
 private:
+    void RaiseInlineObjectAttachedEvent(
+        std::vector<std::shared_ptr<textual::InlineObject>> objects) {
+
+        inline_object_attached_event_.AsObserver().OnNext(InlineObjectAttachedInfo{
+            std::move(objects),
+        });
+    }
+
     void RaiseChangedEvent(TextModelAttribute attributes) {
         changed_event_.AsObserver().OnNext(TextModelChangedInfo{ attributes });
     }
@@ -159,10 +168,8 @@ private:
 
 private:
     textual::StyledText styled_text_;
+    Subject<InlineObjectAttachedInfo> inline_object_attached_event_;
     Subject<TextModelChangedInfo> changed_event_;
-
-    Subscription inline_object_sub_;
-    Subject<textual::InlineObjectChangedInfo> inline_object_changed_event_;
 };
 
 }

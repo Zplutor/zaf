@@ -5,10 +5,9 @@ namespace zaf::textual {
 
 InlineObjectCollection::~InlineObjectCollection() {
 
-    //Clear the attach info of each inline object so that they can be attached to another 
-    //collection again.
+    //Detach each inline object so that they can be attached to another collection again.
     for (const auto& each_item : items_) {
-        each_item.Object()->attach_info_.reset();
+        each_item.Object()->Detach();
     }
 }
 
@@ -18,13 +17,13 @@ void InlineObjectCollection::Attach(
     const Range& range) {
 
     ZAF_EXPECT(object);
-    ZAF_EXPECT(!object->attach_info_.has_value());
+    ZAF_EXPECT(!object->attached_range_.has_value());
 
-    if (range.length == 0) {
+    if (range.IsEmpty()) {
         return;
     }
 
-    std::vector<std::shared_ptr<textual::InlineObject>> removed_objects;
+    std::vector<std::shared_ptr<textual::InlineObject>> detched_objects;
 
     auto iterator = items_.begin();
     while (iterator != items_.end()) {
@@ -32,10 +31,7 @@ void InlineObjectCollection::Attach(
         //Remove intersect ranges.
         if (iterator->Range().Intersects(range)) {
 
-            const auto& removed_object = iterator->Object();
-            removed_object->attach_info_.reset();
-
-            removed_objects.push_back(removed_object);
+            detched_objects.push_back(iterator->Object());
             iterator = items_.erase(iterator);
             continue;
         }
@@ -48,21 +44,18 @@ void InlineObjectCollection::Attach(
         ++iterator;
     }
 
-    object->attach_info_.emplace(range);
+    object->attached_range_.emplace(range);
     items_.emplace(iterator, object);
 
-    std::vector<std::shared_ptr<textual::InlineObject>> added_objects{ std::move(object) };
-
-    changed_event_.Raise(InlineObjectChangedInfo{ 
-        std::move(added_objects), 
-        std::move(removed_objects) 
-    });
+    for (const auto& each_object : detched_objects) {
+        each_object->Detach();
+    }
 }
 
 
 void InlineObjectCollection::ReplaceSpan(const Range& span_range, std::size_t new_length) {
 
-    std::vector<std::shared_ptr<textual::InlineObject>> removed_objects;
+    std::vector<std::shared_ptr<textual::InlineObject>> detached_objects;
 
     auto iterator = items_.begin();
     while (iterator != items_.end()) {
@@ -74,7 +67,7 @@ void InlineObjectCollection::ReplaceSpan(const Range& span_range, std::size_t ne
             new_index -= span_range.length;
             new_index += new_length;
 
-            iterator->Object()->attach_info_->range.index = new_index;
+            iterator->Object()->attached_range_->index = new_index;
             ++iterator;
             continue;
         }
@@ -82,10 +75,7 @@ void InlineObjectCollection::ReplaceSpan(const Range& span_range, std::size_t ne
         //Remove intersect ranges.
         if (iterator->Range().Contains(span_range) || iterator->Range().Intersects(span_range)) {
 
-            const auto& removed_object = iterator->Object();
-            removed_object->attach_info_.reset();
-
-            removed_objects.push_back(removed_object);
+            detached_objects.push_back(iterator->Object());
             iterator = items_.erase(iterator);
             continue;
         }
@@ -93,22 +83,23 @@ void InlineObjectCollection::ReplaceSpan(const Range& span_range, std::size_t ne
         ++iterator;
     }
 
-    changed_event_.Raise(InlineObjectChangedInfo{ {}, std::move(removed_objects) });
+    for (const auto& each_object : detached_objects) {
+        each_object->Detach();
+    }
 }
 
 
 void InlineObjectCollection::Clear() {
 
-    std::vector<std::shared_ptr<textual::InlineObject>> removed_objects;
+    std::vector<std::shared_ptr<textual::InlineObject>> detached_objects;
     for (auto& each_item : items_) {
-
-        const auto& object = each_item.Object();
-        object->attach_info_.reset();
-        removed_objects.push_back(object);
+        detached_objects.push_back(each_item.Object());
     }
-
     items_.clear();
-    changed_event_.Raise(InlineObjectChangedInfo{ {}, std::move(removed_objects) });
+
+    for (const auto& each_object : detached_objects) {
+        each_object->Detach();
+    }
 }
 
 

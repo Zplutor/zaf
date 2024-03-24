@@ -30,11 +30,11 @@ std::optional<Range> InlineObject::RangeInHost() const noexcept {
         return std::nullopt;
     }
 
-    if (!attach_info_) {
+    if (!attached_range_) {
         return std::nullopt;
     }
 
-    return attach_info_->range;
+    return *attached_range_;
 }
 
 
@@ -59,14 +59,20 @@ void InlineObject::Paint(Canvas& canvas) const {
 
 void InlineObject::SetHost(std::shared_ptr<TextualControl> host) {
 
-    if (host) {
+    ZAF_EXPECT(host);
+    ZAF_EXPECT(attached_range_.has_value());
+    ZAF_EXPECT(host_.expired());
 
-        ZAF_EXPECT(host_.expired());
-        host_ = std::move(host);
-        OnAttached(AttachedInfo{ As<InlineObject>(shared_from_this()) });
-    }
-    else {
+    host_ = std::move(host);
+    OnAttached(AttachedInfo{ As<InlineObject>(shared_from_this()) });
+}
 
+
+void InlineObject::Detach() {
+
+    attached_range_.reset();
+
+    if (!host_.expired()) {
         host_.reset();
         OnDetached(DetachedInfo{ As<InlineObject>(shared_from_this()) });
     }
