@@ -39,6 +39,9 @@ public:
     InlineObjectCollection() noexcept = default;
     ~InlineObjectCollection();
 
+    InlineObjectCollection(InlineObjectCollection&&) = default;
+    InlineObjectCollection& operator=(InlineObjectCollection&&) = default;
+
     void Attach(std::shared_ptr<InlineObject> object, const Range& range);
 
     void ReplaceSpan(const Range& span_range, std::size_t new_length);

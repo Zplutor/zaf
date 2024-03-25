@@ -5,7 +5,6 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/none.h>
 #include <zaf/base/range.h>
-#include <zaf/control/textual/inline_object_changed_info.h>
 #include <zaf/control/textual/styled_text.h>
 #include <zaf/internal/textual/inline_object_attached_info.h>
 #include <zaf/rx/subject.h>

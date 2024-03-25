@@ -4,8 +4,8 @@
 using namespace zaf;
 using namespace zaf::textual;
 
-static_assert(std::is_copy_constructible_v<StyledText>);
-static_assert(std::is_copy_assignable_v<StyledText>);
+static_assert(!std::is_copy_constructible_v<StyledText>);
+static_assert(!std::is_copy_assignable_v<StyledText>);
 static_assert(std::is_move_constructible_v<StyledText>);
 static_assert(std::is_move_assignable_v<StyledText>);
 

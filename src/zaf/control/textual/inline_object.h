@@ -3,6 +3,7 @@
 #include <optional>
 #include <zaf/base/event/event.h>
 #include <zaf/base/non_copyable.h>
+#include <zaf/base/range.h>
 #include <zaf/control/textual/inline_object_events.h>
 #include <zaf/graphic/size.h>
 #include <zaf/graphic/text/text_inline_object_metrics.h>
@@ -73,7 +74,9 @@ private:
 private:
     //Accessed by InlineObjectCollection.
     std::optional<Range> attached_range_;
+
     std::weak_ptr<TextualControl> host_;
+    bool has_set_host_{};
 
     Event<AttachedInfo> attached_event_;
     Event<DetachedInfo> detached_event_;

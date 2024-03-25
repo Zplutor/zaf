@@ -13,6 +13,7 @@
 
 namespace zaf {
 namespace internal {
+class InlineObjectAttachedInfo;
 class TextInlineObjectBridge;
 class TextInlineObjectPainter;
 class TextModel;
@@ -21,7 +22,6 @@ class TextModelChangedInfo;
 
 namespace textual {
 class InlineObject;
-class InlineObjectChangedInfo;
 class StyledText;
 }
 
@@ -427,7 +427,7 @@ private:
         const Range& range,
         const ColorPicker& picker);
 
-    void OnInlineObjectChanged(const textual::InlineObjectChangedInfo&);
+    void OnInlineObjectAttached(const internal::InlineObjectAttachedInfo&);
     void OnTextModelChanged(const internal::TextModelChangedInfo&);
 
     TextLayout CreateTextLayout() const;

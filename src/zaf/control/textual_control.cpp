@@ -58,9 +58,8 @@ TextualControl::TextualControl() :
 
 TextualControl::~TextualControl() {
 
-    for (const auto& each_object : text_model_->StyledText().InlineObjects()) {
-        each_object.InlineObject()->SetHost(nullptr);
-    }
+    //Release text model first to detach inline objects in advance.
+    text_model_.reset();
 }
 
 
@@ -78,7 +77,7 @@ void TextualControl::Initialize() {
     });
 
     Subscriptions() += text_model_->InlineObjectAttachedEvent().Subscribe(
-        std::bind(&TextualControl::OnInlineObjectChanged, this, std::placeholders::_1));
+        std::bind(&TextualControl::OnInlineObjectAttached, this, std::placeholders::_1));
 
     Subscriptions() += text_model_->TextChangedEvent().Subscribe(
         std::bind(&TextualControl::OnTextModelChanged, this, std::placeholders::_1));
@@ -490,18 +489,12 @@ Observable<TextChangedInfo> TextualControl::TextChangedEvent() const {
 }
 
 
-void TextualControl::OnInlineObjectChanged(const textual::InlineObjectChangedInfo& event_info) {
+void TextualControl::OnInlineObjectAttached(const internal::InlineObjectAttachedInfo& event_info) {
 
-    if (!event_info.AttachedObjects().empty()) {
+    auto host = As<TextualControl>(shared_from_this());
 
-        auto host = As<TextualControl>(shared_from_this());
-        for (const auto& each_object : event_info.AttachedObjects()) {
-            each_object->SetHost(host);
-        }
-    }
-
-    for (const auto& each_object : event_info.DetachedObjects()) {
-        each_object->SetHost(nullptr);
+    for (const auto& each_object : event_info.attached_objects) {
+        each_object->SetHost(host);
     }
 }
 
