@@ -17,7 +17,7 @@ class InlineObjectStore : NonCopyable {
 public:
     class Item {
     public:
-        Item(std::shared_ptr<InlineObject> object) : object_(std::move(object)) {
+        explicit Item(std::shared_ptr<InlineObject> object) : object_(std::move(object)) {
 
         }
 
@@ -53,6 +53,8 @@ public:
     const ItemList& Items() const {
         return items_;
     }
+
+    InlineObjectStore Clone() const;
 
 private:
     ItemList items_;

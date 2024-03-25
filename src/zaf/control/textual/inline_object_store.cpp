@@ -45,7 +45,7 @@ void InlineObjectStore::Attach(
     }
 
     object->attached_range_.emplace(range);
-    items_.emplace(iterator, object);
+    items_.emplace(iterator, std::move(object));
 
     for (const auto& each_object : detched_objects) {
         each_object->Detach();
@@ -118,6 +118,22 @@ std::shared_ptr<textual::InlineObject> InlineObjectStore::GetInlineObjectAtIndex
         return iterator->Object();
     }
     return nullptr;
+}
+
+
+InlineObjectStore InlineObjectStore::Clone() const {
+
+    InlineObjectStore result;
+    for (const auto& each_item : items_) {
+
+        const auto& old_object = each_item.Object();
+
+        auto cloned_object = old_object;
+        cloned_object->attached_range_ = old_object->attached_range_;
+
+        result.items_.emplace_back(std::move(cloned_object));
+    }
+    return result;
 }
 
 }

@@ -85,4 +85,9 @@ void InlineObject::Detach() {
     }
 }
 
+
+std::shared_ptr<InlineObject> InlineObject::Clone() const {
+    return As<InlineObject>(this->GetType()->CreateInstance());
+}
+
 }

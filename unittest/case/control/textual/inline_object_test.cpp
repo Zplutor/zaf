@@ -4,6 +4,7 @@
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/creation.h>
 #include <zaf/object/object_type.h>
+#include <zaf/object/type_definition.h>
 
 using namespace zaf;
 using namespace zaf::textual;
@@ -79,4 +80,26 @@ TEST(InlineObjectTest, RangeInHost) {
     control->SetText(L"");
     //There is no range after detaching.
     ASSERT_FALSE(object->RangeInHost().has_value());
+}
+
+
+namespace {
+
+class CustomInlineObject : public InlineObject {
+public:
+    ZAF_DECLARE_TYPE;
+};
+
+ZAF_DEFINE_TYPE(CustomInlineObject)
+ZAF_DEFINE_TYPE_END;
+   
+}
+
+TEST(InlineObjectTest, Clone) {
+
+    auto object = Create<InlineObject>();
+    ASSERT_NE(object->Clone(), nullptr);
+
+    auto custom_object = Create<CustomInlineObject>();
+    ASSERT_NE(As<CustomInlineObject>(custom_object->Clone()), nullptr);
 }

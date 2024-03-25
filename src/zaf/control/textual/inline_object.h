@@ -18,6 +18,10 @@ namespace internal {
 class TextInlineObjectBridge;
 }
 
+namespace test {
+class InlineObjectStoreTest;
+}
+
 namespace textual {
 
 class InlineObjectStore;
@@ -57,6 +61,20 @@ public:
     */
     std::optional<Range> RangeInHost() const noexcept;
 
+    /**
+    Clones the current inline object.
+
+    @remark
+        This method uses the dynamic type information to create the new inline object. Make sure to
+        define dynamic type information using the ZAF_DECLARE_TYPE and ZAF_DEFINE_TYPE macros in 
+        derived classes.
+
+        The new cloned inline object doesn't retain the attachment relation and event 
+        subscriptions. Derived classes can override this method to transfer their own data to the
+        new object.
+    */
+    virtual std::shared_ptr<InlineObject> Clone() const;
+
 protected:
     virtual void OnAttached(const AttachedInfo& event_info);
     virtual void OnDetached(const DetachedInfo& event_info);
@@ -67,6 +85,7 @@ private:
     friend class InlineObjectStore;
     friend class TextualControl;
     friend class internal::TextInlineObjectBridge;
+    friend class test::InlineObjectStoreTest;
 
     void SetHost(std::shared_ptr<TextualControl> host);
     void Detach();
