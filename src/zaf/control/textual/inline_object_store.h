@@ -9,11 +9,11 @@
 namespace zaf::textual {
 
 /**
-A collection that manages the attachment relations between inline objects and ranges.
+Stores and manages the attachment relations between inline objects and ranges.
 
 This is a low level class used in styled text management.
 */
-class InlineObjectCollection : NonCopyable {
+class InlineObjectStore : NonCopyable {
 public:
     class Item {
     public:
@@ -36,11 +36,11 @@ public:
     using ItemList = std::vector<Item>;
 
 public:
-    InlineObjectCollection() noexcept = default;
-    ~InlineObjectCollection();
+    InlineObjectStore() noexcept = default;
+    ~InlineObjectStore();
 
-    InlineObjectCollection(InlineObjectCollection&&) = default;
-    InlineObjectCollection& operator=(InlineObjectCollection&&) = default;
+    InlineObjectStore(InlineObjectStore&&) = default;
+    InlineObjectStore& operator=(InlineObjectStore&&) = default;
 
     void Attach(std::shared_ptr<InlineObject> object, const Range& range);
 

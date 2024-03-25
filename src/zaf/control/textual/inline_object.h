@@ -20,7 +20,7 @@ class TextInlineObjectBridge;
 
 namespace textual {
 
-class InlineObjectCollection;
+class InlineObjectStore;
 
 class InlineObject : 
     public Object, 
@@ -64,7 +64,7 @@ protected:
     virtual void Paint(Canvas& canvas) const;
 
 private:
-    friend class InlineObjectCollection;
+    friend class InlineObjectStore;
     friend class TextualControl;
     friend class internal::TextInlineObjectBridge;
 
@@ -72,7 +72,7 @@ private:
     void Detach();
 
 private:
-    //Accessed by InlineObjectCollection.
+    //Accessed by InlineObjectStore.
     std::optional<Range> attached_range_;
 
     std::weak_ptr<TextualControl> host_;

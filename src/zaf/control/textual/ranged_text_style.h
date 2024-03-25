@@ -4,7 +4,7 @@
 #include <zaf/control/color_picker.h>
 #include <zaf/control/internal/enumerator.h>
 #include <zaf/control/internal/range_map.h>
-#include <zaf/control/textual/inline_object_collection.h>
+#include <zaf/control/textual/inline_object_store.h>
 #include <zaf/graphic/font/font.h>
 
 namespace zaf::textual {
@@ -38,18 +38,18 @@ public:
 
     class InlineObjectItem : NonCopyable {
     public:
-        explicit InlineObjectItem(const InlineObjectCollection::ItemList::value_type& item) : 
+        explicit InlineObjectItem(const InlineObjectStore::ItemList::value_type& item) : 
             inner_(item) { }
         const Range& Range() const { return inner_.Range(); }
         const std::shared_ptr<InlineObject>& InlineObject() const {
             return inner_.Object();
         }
     private:
-        const InlineObjectCollection::ItemList::value_type& inner_;
+        const InlineObjectStore::ItemList::value_type& inner_;
     };
 
     using InlineObjectEnumerator = internal::WrapEnumerator<
-        InlineObjectCollection::ItemList,
+        InlineObjectStore::ItemList,
         InlineObjectItem
     >;
 
@@ -141,7 +141,7 @@ private:
     FontMap fonts_;
     ColorPickerMap text_color_pickers_;
     ColorPickerMap text_back_color_pickers_;
-    InlineObjectCollection inline_objects_;
+    InlineObjectStore inline_objects_;
 };
 
 }

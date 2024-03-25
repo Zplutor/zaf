@@ -1,9 +1,9 @@
-#include <zaf/control/textual/inline_object_collection.h>
+#include <zaf/control/textual/inline_object_store.h>
 #include <zaf/base/error/check.h>
 
 namespace zaf::textual {
 
-InlineObjectCollection::~InlineObjectCollection() {
+InlineObjectStore::~InlineObjectStore() {
 
     //Detach each inline object so that they can be attached to another collection again.
     for (const auto& each_item : items_) {
@@ -12,7 +12,7 @@ InlineObjectCollection::~InlineObjectCollection() {
 }
 
 
-void InlineObjectCollection::Attach(
+void InlineObjectStore::Attach(
     std::shared_ptr<InlineObject> object,
     const Range& range) {
 
@@ -53,7 +53,7 @@ void InlineObjectCollection::Attach(
 }
 
 
-void InlineObjectCollection::ReplaceSpan(const Range& span_range, std::size_t new_length) {
+void InlineObjectStore::ReplaceSpan(const Range& span_range, std::size_t new_length) {
 
     std::vector<std::shared_ptr<textual::InlineObject>> detached_objects;
 
@@ -89,7 +89,7 @@ void InlineObjectCollection::ReplaceSpan(const Range& span_range, std::size_t ne
 }
 
 
-void InlineObjectCollection::Clear() {
+void InlineObjectStore::Clear() {
 
     std::vector<std::shared_ptr<textual::InlineObject>> detached_objects;
     for (auto& each_item : items_) {
@@ -103,7 +103,7 @@ void InlineObjectCollection::Clear() {
 }
 
 
-std::shared_ptr<textual::InlineObject> InlineObjectCollection::GetInlineObjectAtIndex(
+std::shared_ptr<textual::InlineObject> InlineObjectStore::GetInlineObjectAtIndex(
     std::size_t index) const {
 
     auto iterator = std::lower_bound(

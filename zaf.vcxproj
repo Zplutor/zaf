@@ -611,7 +611,7 @@
     <ClInclude Include="src\zaf\control\textual\dynamic_inline_object.h" />
     <ClInclude Include="src\zaf\control\textual\dynamic_inline_object_events.h" />
     <ClInclude Include="src\zaf\control\textual\inline_object.h" />
-    <ClInclude Include="src\zaf\control\textual\inline_object_collection.h" />
+    <ClInclude Include="src\zaf\control\textual\inline_object_store.h" />
     <ClInclude Include="src\zaf\control\textual\inline_object_events.h" />
     <ClInclude Include="src\zaf\control\textual\ranged_text_style.h" />
     <ClInclude Include="src\zaf\control\textual\selection_option.h" />
