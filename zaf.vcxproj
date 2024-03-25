@@ -213,7 +213,7 @@
     <ClCompile Include="src\zaf\control\textual\dynamic_inline_object.cpp" />
     <ClCompile Include="src\zaf\control\textual\dynamic_inline_object_events.cpp" />
     <ClCompile Include="src\zaf\control\textual\inline_object.cpp" />
-    <ClCompile Include="src\zaf\control\textual\inline_object_collection.cpp" />
+    <ClCompile Include="src\zaf\control\textual\inline_object_store.cpp" />
     <ClCompile Include="src\zaf\control\textual\inline_object_events.cpp" />
     <ClCompile Include="src\zaf\control\textual\styled_text.cpp" />
     <ClCompile Include="src\zaf\control\textual\word_extractor.cpp" />

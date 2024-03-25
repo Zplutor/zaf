@@ -1156,7 +1156,7 @@
     <ClCompile Include="src\zaf\control\textual\styled_text.cpp">
       <Filter>zaf\control\textual</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\textual\inline_object_collection.cpp">
+    <ClCompile Include="src\zaf\control\textual\inline_object_store.cpp">
       <Filter>zaf\control\textual</Filter>
     </ClCompile>
   </ItemGroup>
