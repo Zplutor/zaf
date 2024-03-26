@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/range.h>
-#include <zaf/control/internal/range_manager.h>
+#include <zaf/internal/ranged_value_store.h>
 
 namespace zaf::internal {
 
@@ -40,7 +40,7 @@ public:
     }
 
     const Range& operator[](std::size_t index) const {
-        return range_manager_.Items()[index].range;
+        return range_manager_.Items()[index].Range();
     }
 
 public:
@@ -56,7 +56,7 @@ public:
         using reference = Range&;
 
     public:
-        explicit Iterator(RangeManager::ItemList::const_iterator inner) : 
+        explicit Iterator(RangedValueStore::ItemList::const_iterator inner) : 
             inner_(inner) {
 
         }
@@ -71,7 +71,7 @@ public:
         }
 
         const value_type& operator*() const {
-            return inner_->range;
+            return inner_->Range();
         }
 
         bool operator!=(const Iterator& other) const {
@@ -79,7 +79,7 @@ public:
         }
 
     private:
-        RangeManager::ItemList::const_iterator inner_;
+        RangedValueStore::ItemList::const_iterator inner_;
     };
 
     Iterator begin() const {
@@ -91,7 +91,7 @@ public:
     }
 
 private:
-    RangeManager range_manager_;
+    RangedValueStore range_manager_;
 };
 
 }

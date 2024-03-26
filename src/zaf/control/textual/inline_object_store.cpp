@@ -128,7 +128,7 @@ InlineObjectStore InlineObjectStore::Clone() const {
 
         const auto& old_object = each_item.Object();
 
-        auto cloned_object = old_object;
+        auto cloned_object = old_object->Clone();
         cloned_object->attached_range_ = old_object->attached_range_;
 
         result.items_.emplace_back(std::move(cloned_object));

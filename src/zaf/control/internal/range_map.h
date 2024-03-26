@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/control/internal/range_manager.h>
+#include <zaf/internal/ranged_value_store.h>
 
 namespace zaf {
 namespace internal {
@@ -36,7 +36,7 @@ public:
 
         auto item = range_manager_.FindItemContainsIndex(index);
         if (item) {
-            return std::any_cast<ValueType>(&item->value);
+            return std::any_cast<ValueType>(&item->Value());
         }
         return nullptr;
     }
@@ -44,20 +44,20 @@ public:
 public:
     class Item {
     public:
-        explicit Item(const RangeManager::Item& item) : inner_item_(item) {
+        explicit Item(const RangedValueStore::Item& item) : inner_item_(item) {
 
         }
 
         const zaf::Range& Range() const {
-            return inner_item_.range;
+            return inner_item_.Range();
         }
 
         const ValueType& Value() const {
-            return *std::any_cast<ValueType>(&inner_item_.value);
+            return *std::any_cast<ValueType>(&inner_item_.Value());
         }
 
     private:
-        const RangeManager::Item& inner_item_;
+        const RangedValueStore::Item& inner_item_;
     };
 
     class Iterator {
@@ -69,7 +69,7 @@ public:
         using reference = Item&;
 
     public:
-        explicit Iterator(RangeManager::ItemList::const_iterator inner) :
+        explicit Iterator(RangedValueStore::ItemList::const_iterator inner) :
             inner_(inner) {
 
         }
@@ -92,7 +92,7 @@ public:
         }
 
     private:
-        RangeManager::ItemList::const_iterator inner_;
+        RangedValueStore::ItemList::const_iterator inner_;
     };
 
     Iterator begin() const {
@@ -107,7 +107,7 @@ public:
     using const_iterator = Iterator;
 
 private:
-    RangeManager range_manager_;
+    RangedValueStore range_manager_;
 };
 
 }

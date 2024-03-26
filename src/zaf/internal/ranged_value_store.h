@@ -8,12 +8,32 @@
 namespace zaf {
 namespace internal {
 
-class RangeManager {
+/**
+Stores and manages values which are associated with ranges.
+*/
+class RangedValueStore {
 public:
     class Item {
     public:
-        Range range;
-        std::any value;
+        Item(const Range& range, std::any value) : range_(range), value_(std::move(value)) {
+
+        }
+
+        const Range& Range() const {
+            return range_;
+        }
+
+        const std::any& Value() const {
+            return value_;
+        }
+
+        std::any& Value() {
+            return value_;
+        }
+
+    private:
+        zaf::Range range_;
+        std::any value_;
     };
 
     using ItemList = std::vector<Item>;

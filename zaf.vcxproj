@@ -140,7 +140,6 @@
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_single_select_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_variable_item_height_strategy.cpp" />
     <ClCompile Include="src\zaf\control\internal\mouse_event_routing.cpp" />
-    <ClCompile Include="src\zaf\control\internal\range_manager.cpp" />
     <ClCompile Include="src\zaf\control\internal\scroll_box\general_scroll_layouter.cpp" />
     <ClCompile Include="src\zaf\control\internal\scroll_box\scroll_box_layouter.cpp" />
     <ClCompile Include="src\zaf\control\internal\scroll_box\self_scroll_layouter.cpp" />
@@ -281,6 +280,7 @@
     <ClCompile Include="src\zaf\input\keyboard.cpp" />
     <ClCompile Include="src\zaf\internal\message_loop.cpp" />
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
+    <ClCompile Include="src\zaf\internal\ranged_value_store.cpp" />
     <ClCompile Include="src\zaf\internal\system_message_window.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_editor.cpp" />
@@ -523,7 +523,6 @@
     <ClInclude Include="src\zaf\control\internal\list_control\list_control_single_select_strategy.h" />
     <ClInclude Include="src\zaf\control\internal\list_control\list_control_variable_item_height_strategy.h" />
     <ClInclude Include="src\zaf\control\internal\mouse_event_routing.h" />
-    <ClInclude Include="src\zaf\control\internal\range_manager.h" />
     <ClInclude Include="src\zaf\control\internal\range_map.h" />
     <ClInclude Include="src\zaf\control\internal\range_set.h" />
     <ClInclude Include="src\zaf\control\internal\scroll_box\general_scroll_layouter.h" />
@@ -727,6 +726,7 @@
     <ClInclude Include="src\zaf\internal\enumerator.h" />
     <ClInclude Include="src\zaf\internal\message_loop.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
+    <ClInclude Include="src\zaf\internal\ranged_value_store.h" />
     <ClInclude Include="src\zaf\internal\system_message_window.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
     <ClInclude Include="src\zaf\internal\textual\inline_object_attached_info.h" />

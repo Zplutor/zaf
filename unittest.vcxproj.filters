@@ -103,6 +103,9 @@
     <Filter Include="case\base\error">
       <UniqueIdentifier>{ac709b97-86e9-4251-b213-88400ba7132c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\internal">
+      <UniqueIdentifier>{f11ce1e2-6c4b-4a40-9c1f-705761527361}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -216,9 +219,6 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\internal\list_control\list_control_item_selection_manager_test.cpp">
       <Filter>case\control\internal\list_control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\internal\range_manager_test.cpp">
-      <Filter>case\control\internal</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\container\utility\copy_test.cpp">
       <Filter>case\base\container\utility</Filter>
@@ -516,6 +516,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\textual\styled_text_test.cpp">
       <Filter>case\control\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\internal\ranged_value_store_test.cpp">
+      <Filter>case\internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

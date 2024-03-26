@@ -1,15 +1,15 @@
 #include <gtest/gtest.h>
-#include <zaf/control/internal/range_manager.h>
+#include <zaf/internal/ranged_value_store.h>
 
 using namespace zaf::internal;
 
 static bool CheckRanges(
-    const RangeManager& range_manager, 
+    const RangedValueStore& range_manager, 
     const std::initializer_list<std::pair<std::size_t, std::size_t>>& expected_ranges);
 
-TEST(RangeManagerTest, AddRangeWithInvalidRange) {
+TEST(RangedValueStoreTest, AddRangeWithInvalidRange) {
 
-    RangeManager range_manager;
+    RangedValueStore range_manager;
 
     auto test = [&range_manager](std::size_t position, std::size_t length) {
         bool is_succeeded = range_manager.AddRange(position, length);
@@ -22,18 +22,18 @@ TEST(RangeManagerTest, AddRangeWithInvalidRange) {
 }
 
 
-TEST(RangeManagerTest, AddRangeToEmpty) {
+TEST(RangedValueStoreTest, AddRangeToEmpty) {
 
     auto test = [](std::size_t position, std::size_t length) {
 
-        RangeManager range_manager;
+        RangedValueStore range_manager;
         range_manager.AddRange(position, length);
 
         if (range_manager.Items().size() != 1) {
             return false;
         }
 
-        auto range = range_manager.Items()[0].range;
+        auto range = range_manager.Items()[0].Range();
         return (range.index == position) && (range.length == length);
     };
 
@@ -44,14 +44,14 @@ TEST(RangeManagerTest, AddRangeToEmpty) {
 }
 
 
-TEST(RangeManagerTest, AddRangeToNonEmpty) {
+TEST(RangedValueStoreTest, AddRangeToNonEmpty) {
 
     auto test = [](
         std::size_t position,
         std::size_t length, 
         const std::initializer_list<std::pair<std::size_t, std::size_t>>& expected_ranges) {
 
-        RangeManager range_manager;
+        RangedValueStore range_manager;
         range_manager.AddRange(0, 2);
         range_manager.AddRange(5, 1);
         range_manager.AddRange(10, 3);
@@ -76,9 +76,9 @@ TEST(RangeManagerTest, AddRangeToNonEmpty) {
 }
 
 
-TEST(RangeManagerTest, RemoveRangeWithInvalidRange) {
+TEST(RangedValueStoreTest, RemoveRangeWithInvalidRange) {
 
-    RangeManager range_manager;
+    RangedValueStore range_manager;
     range_manager.AddRange(0, 10);
 
     auto test = [&range_manager](std::size_t position, std::size_t length) {
@@ -93,11 +93,11 @@ TEST(RangeManagerTest, RemoveRangeWithInvalidRange) {
 }
 
 
-TEST(RangeManagerTest, RemoveRangeFromEmpty) {
+TEST(RangedValueStoreTest, RemoveRangeFromEmpty) {
 
     auto test = [](std::size_t position, std::size_t length) {
 
-        RangeManager range_manager;
+        RangedValueStore range_manager;
         range_manager.RemoveRange(position, length);
         return range_manager.Items().empty();
     };
@@ -108,14 +108,14 @@ TEST(RangeManagerTest, RemoveRangeFromEmpty) {
 }
 
 
-TEST(RangeManagerTest, RemoveRangeFromNonEmpty) {
+TEST(RangedValueStoreTest, RemoveRangeFromNonEmpty) {
  
     auto test = [](
         std::size_t position, 
         std::size_t length, 
         const std::initializer_list<std::pair<std::size_t, std::size_t>>& expected_ranges) {
 
-        RangeManager range_manager;
+        RangedValueStore range_manager;
         range_manager.AddRange(0, 2);
         range_manager.AddRange(5, 1);
         range_manager.AddRange(10, 3);
@@ -143,9 +143,9 @@ TEST(RangeManagerTest, RemoveRangeFromNonEmpty) {
 }
 
 
-TEST(RangeManagerTest, InsertSpanWithInvalidRange) {
+TEST(RangedValueStoreTest, InsertSpanWithInvalidRange) {
 
-    RangeManager range_manager;
+    RangedValueStore range_manager;
     range_manager.AddRange(0, 10);
 
     auto test = [&range_manager](std::size_t position, std::size_t length) {
@@ -156,7 +156,7 @@ TEST(RangeManagerTest, InsertSpanWithInvalidRange) {
             return false;
         }
 
-        auto range = range_manager.Items()[0].range;
+        auto range = range_manager.Items()[0].Range();
         return (range.index == 0) && (range.length == 10);
     };
 
@@ -167,14 +167,14 @@ TEST(RangeManagerTest, InsertSpanWithInvalidRange) {
 }
 
 
-TEST(RangeManagerTest, InsertSpan) {
+TEST(RangedValueStoreTest, InsertSpan) {
 
     auto test = [](
         std::size_t position,
         std::size_t length, 
         const std::initializer_list<std::pair<std::size_t, std::size_t>>& expected_ranges) {
 
-        RangeManager range_manager;
+        RangedValueStore range_manager;
         range_manager.AddRange(5, 4);
         range_manager.AddRange(20, 4);
 
@@ -194,9 +194,9 @@ TEST(RangeManagerTest, InsertSpan) {
 
 
 
-TEST(RangeManagerTest, EraseSpanWithInvalidRange) {
+TEST(RangedValueStoreTest, EraseSpanWithInvalidRange) {
 
-    RangeManager range_manager;
+    RangedValueStore range_manager;
     range_manager.AddRange(0, 10);
 
     auto test = [&range_manager](std::size_t position, std::size_t length) {
@@ -207,7 +207,7 @@ TEST(RangeManagerTest, EraseSpanWithInvalidRange) {
             return false;
         }
 
-        auto range = range_manager.Items()[0].range;
+        auto range = range_manager.Items()[0].Range();
         return (range.index == 0) && (range.length == 10);
     };
 
@@ -218,14 +218,14 @@ TEST(RangeManagerTest, EraseSpanWithInvalidRange) {
 }
 
 
-TEST(RangeManagerTest, EraseSpan) {
+TEST(RangedValueStoreTest, EraseSpan) {
 
     auto test = [](
         std::size_t position,
         std::size_t length,
         const std::initializer_list<std::pair<std::size_t, std::size_t>>& expected_ranges) {
 
-        RangeManager range_manager;
+        RangedValueStore range_manager;
         range_manager.AddRange(5, 4);
         range_manager.AddRange(20, 4);
 
@@ -254,7 +254,7 @@ TEST(RangeManagerTest, EraseSpan) {
 
 
 static bool CheckRanges(
-    const RangeManager& range_manager,
+    const RangedValueStore& range_manager,
     const std::initializer_list<std::pair<std::size_t, std::size_t>>& expected_ranges) {
 
     if (range_manager.Items().size() != expected_ranges.size()) {
@@ -264,7 +264,7 @@ static bool CheckRanges(
     std::size_t index = 0;
     for (const auto& each_range : expected_ranges) {
 
-        auto actual_range = range_manager.Items()[index].range;
+        auto actual_range = range_manager.Items()[index].Range();
 
         if ((actual_range.index != each_range.first) ||
             (actual_range.length != each_range.second)) {
