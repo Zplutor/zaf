@@ -9,7 +9,7 @@
 
 namespace zaf::textual {
 
-class RangedTextStyle {
+class RangedTextStyle : NonCopyable {
 public:
     using FontMap = internal::RangeMap<zaf::Font>;
     using ColorPickerMap = internal::RangeMap<zaf::ColorPicker>;
@@ -54,6 +54,8 @@ public:
     >;
 
 public:
+    RangedTextStyle() = default;
+
     FontEnumerator Fonts() const {
         return FontEnumerator{ fonts_ };
     }
@@ -136,6 +138,8 @@ public:
         text_back_color_pickers_.Clear();
         inline_objects_.Clear();
     }
+
+    RangedTextStyle Clone() const;
 
 private:
     FontMap fonts_;

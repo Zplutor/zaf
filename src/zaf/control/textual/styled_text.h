@@ -129,6 +129,8 @@ public:
     StyledTextSlice Slice(const Range& range) const;
     void ReplaceSlice(const Range& slice_range, const StyledTextSlice& new_slice);
 
+    StyledText Clone() const;
+
 private:
     void CheckRange(const Range& range) const;
 

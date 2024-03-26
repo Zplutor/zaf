@@ -278,13 +278,9 @@ StyledTextSlice StyledText::Slice(const Range& range) const {
         }
 
         if (range.Contains(each_item.Range())) {
-
-            Range new_range = each_item.Range();
-
-            auto cloned_object = As<textual::InlineObject>(
-                each_item.InlineObject()->GetType()->CreateInstance());
-
-            slice_style.AttachInlineObjectToRange(cloned_object, new_range);
+            slice_style.AttachInlineObjectToRange(
+                each_item.InlineObject()->Clone(),
+                each_item.Range());
         }
     }
 
@@ -313,12 +309,21 @@ void StyledText::ReplaceSlice(const Range& slice_range, const StyledTextSlice& n
     }
 
     for (const auto& each_item : ranged_style.InlineObjects()) {
-
-        auto cloned_object = As<textual::InlineObject>(
-            each_item.InlineObject()->GetType()->CreateInstance());
-
-        ranged_style_.AttachInlineObjectToRange(cloned_object, each_item.Range());
+        ranged_style_.AttachInlineObjectToRange(
+            each_item.InlineObject()->Clone(),
+            each_item.Range());
     }
+}
+
+
+StyledText StyledText::Clone() const {
+
+    StyledText result{ this->text_ };
+    result.default_font_ = this->default_font_;
+    result.default_text_color_picker_ = this->default_text_color_picker_;
+    result.default_text_back_color_picker_ = this->default_text_back_color_picker_;
+    result.ranged_style_ = this->ranged_style_.Clone();
+    return result;
 }
 
 

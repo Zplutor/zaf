@@ -1159,6 +1159,9 @@
     <ClCompile Include="src\zaf\control\textual\inline_object_store.cpp">
       <Filter>zaf\control\textual</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\textual\ranged_text_style.cpp">
+      <Filter>zaf\control\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
