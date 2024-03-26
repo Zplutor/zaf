@@ -1,11 +1,37 @@
 #include <gtest/gtest.h>
 #include <zaf/internal/ranged_value_store.h>
 
+using namespace zaf;
 using namespace zaf::internal;
 
-static bool CheckRanges(
-    const RangedValueStore& range_manager, 
-    const std::initializer_list<std::pair<std::size_t, std::size_t>>& expected_ranges);
+namespace {
+
+bool CheckRanges(
+    const RangedValueStore& range_manager,
+    const std::initializer_list<std::pair<std::size_t, std::size_t>>& expected_ranges) {
+
+    if (range_manager.Items().size() != expected_ranges.size()) {
+        return false;
+    }
+
+    std::size_t index = 0;
+    for (const auto& each_range : expected_ranges) {
+
+        auto actual_range = range_manager.Items()[index].Range();
+
+        if ((actual_range.index != each_range.first) ||
+            (actual_range.length != each_range.second)) {
+            return false;
+        }
+
+        ++index;
+    }
+
+    return true;
+}
+
+}
+
 
 TEST(RangedValueStoreTest, AddRangeWithInvalidRange) {
 
@@ -253,26 +279,99 @@ TEST(RangedValueStoreTest, EraseSpan) {
 }
 
 
-static bool CheckRanges(
-    const RangedValueStore& range_manager,
-    const std::initializer_list<std::pair<std::size_t, std::size_t>>& expected_ranges) {
+TEST(RangedValueStoreTest, FindItemContainsIndex) {
 
-    if (range_manager.Items().size() != expected_ranges.size()) {
-        return false;
+    RangedValueStore store;
+    ASSERT_EQ(store.FindItemContainsIndex(0), nullptr);
+    ASSERT_EQ(store.FindItemContainsIndex(1), nullptr);
+
+    store.AddRange(Range{ 1, 2 }, std::string{ "range1" });
+    store.AddRange(Range{ 5, 1 }, std::string{ "range2" });
+    store.AddRange(Range{ 10, 5 }, std::string{ "range2" });
+
+    //Invalid indexes.
+    auto item = store.FindItemContainsIndex(0);
+    ASSERT_EQ(item, nullptr);
+
+    item = store.FindItemContainsIndex(4);
+    ASSERT_EQ(item, nullptr);
+
+    item = store.FindItemContainsIndex(9);
+    ASSERT_EQ(item, nullptr);
+
+    item = store.FindItemContainsIndex(16);
+    ASSERT_EQ(item, nullptr);
+
+    //The first range
+    item = store.FindItemContainsIndex(1);
+    ASSERT_NE(item, nullptr);
+    ASSERT_EQ(item->Range(), Range(1, 2));
+
+    item = store.FindItemContainsIndex(2);
+    ASSERT_NE(item, nullptr);
+    ASSERT_EQ(item->Range(), Range(1, 2));
+
+    item = store.FindItemContainsIndex(3);
+    ASSERT_EQ(item, nullptr);
+
+    //The second range
+    item = store.FindItemContainsIndex(5);
+    ASSERT_NE(item, nullptr);
+    ASSERT_EQ(item->Range(), Range(5, 1));
+
+    item = store.FindItemContainsIndex(6);
+    ASSERT_EQ(item, nullptr);
+
+    //The third range
+    item = store.FindItemContainsIndex(10);
+    ASSERT_NE(item, nullptr);
+    ASSERT_EQ(item->Range(), Range(10, 5));
+
+    item = store.FindItemContainsIndex(13);
+    ASSERT_NE(item, nullptr);
+    ASSERT_EQ(item->Range(), Range(10, 5));
+
+    item = store.FindItemContainsIndex(15);
+    ASSERT_EQ(item, nullptr);
+}
+
+
+TEST(RangedValueStoreTest, FindItemContainsIndexConst) {
+
+    RangedValueStore store;
+    store.AddRange(Range{ 0, 5 }, {});
+
+    const RangedValueStore& const_store = store;
+    auto item = const_store.FindItemContainsIndex(1);
+    ASSERT_NE(item, nullptr);
+    ASSERT_EQ(item->Range(), Range(0, 5));
+}
+
+
+TEST(RangedValueStoreTest, RangedFor) {
+
+    std::vector<Range> test_ranges{
+        Range{ 0, 1 },
+        Range{ 1, 1 },
+        Range{ 2, 1 },
+    };
+
+    RangedValueStore store;
+    for (const auto& each_range : test_ranges) {
+        store.AddRange(each_range, {});
     }
 
-    std::size_t index = 0;
-    for (const auto& each_range : expected_ranges) {
-
-        auto actual_range = range_manager.Items()[index].Range();
-
-        if ((actual_range.index != each_range.first) ||
-            (actual_range.length != each_range.second)) {
-            return false;
-        }
-
-        ++index;
+    std::vector<Range> ranges;
+    for (auto& item : store) {
+        static_assert(!std::is_const_v<std::remove_reference_t<decltype(item)>>);
+        ranges.push_back(item.Range());
     }
+    ASSERT_EQ(ranges, test_ranges);
 
-    return true;
+    ranges.clear();
+    for (auto& item : (const RangedValueStore&)store) {
+        static_assert(std::is_const_v<std::remove_reference_t<decltype(item)>>);
+        ranges.push_back(item.Range());
+    }
+    ASSERT_EQ(ranges, test_ranges);
 }
