@@ -9,7 +9,7 @@ namespace zaf {
 namespace internal {
 
 /**
-Stores and manages values which are associated with ranges.
+A container stores and manages values which are associated with ranges.
 */
 class RangedValueStore {
 public:

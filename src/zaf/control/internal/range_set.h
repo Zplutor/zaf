@@ -7,47 +7,9 @@ namespace zaf::internal {
 
 class RangeSet {
 public:
-    bool AddRange(const Range& range) {
-        return range_manager_.AddRange(range, {});
-    }
+    using value_type = Range;
 
-    bool RemoveRange(const Range& range) {
-        return range_manager_.RemoveRange(range);
-    }
-
-    bool InsertSpan(const Range& span_range) {
-        return range_manager_.InsertSpan(span_range);
-    }
-
-    bool EraseSpan(const Range& span_range) {
-        return range_manager_.EraseSpan(span_range);
-    }
-
-    void Clear() {
-        range_manager_.Clear();
-    }
-
-    bool ContainsIndex(std::size_t index) const {
-        return !!range_manager_.FindItemContainsIndex(index);
-    }
-
-    bool IsEmpty() const {
-        return range_manager_.Items().empty();
-    }
-
-    std::size_t Count() const {
-        return range_manager_.Items().size();
-    }
-
-    const Range& operator[](std::size_t index) const {
-        return range_manager_.Items()[index].Range();
-    }
-
-public:
-    /**
-    An iterator used to loop over all ranges in the RangeSet.
-    */
-    class Iterator {
+    class iterator {
     public:
         using iterator_category = std::forward_iterator_tag;
         using value_type = Range;
@@ -56,42 +18,81 @@ public:
         using reference = Range&;
 
     public:
-        explicit Iterator(RangedValueStore::ItemList::const_iterator inner) : 
-            inner_(inner) {
+        explicit iterator(RangedValueStore::const_iterator inner) : inner_(inner) {
 
         }
 
-        Iterator& operator++() {
+        iterator& operator++() {
             inner_++;
             return *this;
         }
 
-        Iterator operator++(int) {
-            return Iterator{ ++inner_ };
+        iterator operator++(int) {
+            return iterator{ ++inner_ };
         }
 
         const value_type& operator*() const {
             return inner_->Range();
         }
 
-        bool operator!=(const Iterator& other) const {
+        const value_type* operator->() const {
+            return &inner_->Range();
+        }
+
+        bool operator!=(const iterator& other) const {
             return inner_ != other.inner_;
         }
 
     private:
-        RangedValueStore::ItemList::const_iterator inner_;
+        RangedValueStore::const_iterator inner_;
     };
 
-    Iterator begin() const {
-        return Iterator{ range_manager_.Items().begin() };
+    using const_iterator = iterator;
+
+public:
+    bool AddRange(const Range& range) {
+        return store_.AddRange(range, {});
     }
 
-    Iterator end() const {
-        return Iterator{ range_manager_.Items().end() };
+    bool RemoveRange(const Range& range) {
+        return store_.RemoveRange(range);
+    }
+
+    bool InsertSpan(const Range& span_range) {
+        return store_.InsertSpan(span_range);
+    }
+
+    bool EraseSpan(const Range& span_range) {
+        return store_.EraseSpan(span_range);
+    }
+
+    void Clear() {
+        store_.Clear();
+    }
+
+    bool ContainsIndex(std::size_t index) const noexcept {
+        return !!store_.FindItemContainsIndex(index);
+    }
+
+    bool IsEmpty() const noexcept {
+        return store_.IsEmpty();
+    }
+
+    std::size_t Count() const noexcept {
+        return store_.Count();
+    }
+
+public:
+    iterator begin() const {
+        return iterator{ store_.begin() };
+    }
+
+    iterator end() const {
+        return iterator{ store_.end() };
     }
 
 private:
-    RangedValueStore range_manager_;
+    RangedValueStore store_;
 };
 
 }

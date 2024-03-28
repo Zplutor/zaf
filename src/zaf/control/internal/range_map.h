@@ -96,11 +96,11 @@ public:
     };
 
     Iterator begin() const {
-        return Iterator{ range_manager_.Items().begin() };
+        return Iterator{ range_manager_.begin() };
     }
 
     Iterator end() const {
-        return Iterator{ range_manager_.Items().end() };
+        return Iterator{ range_manager_.end() };
     }
 
     using iterator = Iterator;

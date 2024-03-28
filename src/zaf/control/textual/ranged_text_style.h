@@ -9,6 +9,90 @@
 
 namespace zaf::textual {
 
+template<bool IsConst>
+class BaseRangedItem : NonCopyable {
+private:
+    using InnerItem = std::add_lvalue_reference_t<
+        std::conditional_t<
+        IsConst,
+        std::add_const_t<internal::RangedValueStore::Item>,
+        internal::RangedValueStore::Item
+        >
+    >;
+    static_assert(std::is_reference_v<InnerItem>);
+
+public:
+    explicit BaseRangedItem(InnerItem inner) : inner_(inner) {
+
+    }
+
+    const Range& Range() const {
+        return inner_.Range();
+    }
+
+protected:
+    InnerItem inner_;
+};
+
+
+template<bool IsConst>
+class RangedFontItem : public BaseRangedItem<IsConst> {
+public:
+    using BaseRangedItem<IsConst>::BaseRangedItem;
+
+    const zaf::Font& Font() const {
+        return *std::any_cast<zaf::Font>(&this->inner_.Value());
+    }
+
+    template<bool IsEnable = !IsConst, typename K = std::enable_if_t<IsEnable>>
+    zaf::Font& Font() {
+        return const_cast<zaf::Font&>(static_cast<const RangedFontItem<IsConst>*>(this)->Font());
+    }
+};
+
+
+template<typename I, template<bool> typename T>
+class RangedIterator {
+private:
+    static constexpr bool IsConst = std::is_const_v <
+        std::remove_reference_t<std::iterator_traits<I>::reference>
+    >;
+
+public:
+    using iterator_category = std::forward_iterator_tag;
+    using value_type = T<IsConst>;
+    using difference_type = std::make_signed_t<std::size_t>;
+    using pointer = value_type*;
+    using reference = value_type&;
+
+public:
+    explicit RangedIterator(I inner) :
+        inner_(inner) {
+
+    }
+
+    RangedIterator& operator++() {
+        inner_++;
+        return *this;
+    }
+
+    RangedIterator operator++(int) {
+        return RangedIterator{ ++inner_ };
+    }
+
+    value_type operator*() const {
+        return value_type{ *inner_ };
+    }
+
+    bool operator!=(const RangedIterator& other) const {
+        return inner_ != other.inner_;
+    }
+
+private:
+    I inner_;
+};
+
+
 class RangedTextStyle : NonCopyable {
 public:
     using FontMap = internal::RangeMap<zaf::Font>;

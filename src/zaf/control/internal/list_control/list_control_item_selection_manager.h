@@ -55,7 +55,7 @@ public:
     std::optional<std::size_t> GetFirstSelectedIndex() const {
 
         if (!range_set_.IsEmpty()) {
-            return range_set_[0].index;
+            return range_set_.begin()->index;
         }
         else {
             return std::nullopt;
