@@ -88,6 +88,14 @@ public:
         return items_.end();
     }
 
+    const_iterator cbegin() const noexcept {
+        return items_.cbegin();
+    }
+
+    const_iterator cend() const noexcept {
+        return items_.cend();
+    }
+
 private:
     bool ReplaceRange(const Range& replaced_range, std::optional<std::any> value);
 

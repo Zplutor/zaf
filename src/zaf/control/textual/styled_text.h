@@ -16,7 +16,7 @@ namespace zaf::textual {
 
 class StyledText : NonCopyable {
 public:
-    using RangedFontEnumerator = RangedTextStyle::FontEnumerator;
+    using RangedFontEnumerator = RangedTextStyle::ConstFontEnumerator;
     using RangedColorPickerEnumerator = RangedTextStyle::ColorPickerEnumerator;
     using InlineObjectEnumerator = RangedTextStyle::InlineObjectEnumerator;
 
