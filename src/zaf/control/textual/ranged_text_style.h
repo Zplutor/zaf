@@ -3,10 +3,9 @@
 #include <optional>
 #include <zaf/base/error/check.h>
 #include <zaf/control/color_picker.h>
-#include <zaf/control/internal/enumerator.h>
-#include <zaf/control/internal/range_map.h>
 #include <zaf/control/textual/inline_object_store.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/internal/ranged_value_store.h>
 
 namespace zaf::textual {
 

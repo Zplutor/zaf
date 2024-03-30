@@ -5,8 +5,6 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
 #include <zaf/control/color_picker.h>
-#include <zaf/control/internal/enumerator.h>
-#include <zaf/control/internal/range_map.h>
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/control/textual/styled_text_slice.h>
 #include <zaf/control/textual/text_style.h>

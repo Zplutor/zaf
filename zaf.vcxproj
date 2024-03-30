@@ -503,7 +503,6 @@
     <ClInclude Include="src\zaf\control\internal\combo_box_drop_down_window.h" />
     <ClInclude Include="src\zaf\control\internal\control_event_invoker.h" />
     <ClInclude Include="src\zaf\control\internal\control_updating.h" />
-    <ClInclude Include="src\zaf\control\internal\enumerator.h" />
     <ClInclude Include="src\zaf\control\internal\event_routing_utility.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\image_drawing.h" />
@@ -523,7 +522,6 @@
     <ClInclude Include="src\zaf\control\internal\list_control\list_control_single_select_strategy.h" />
     <ClInclude Include="src\zaf\control\internal\list_control\list_control_variable_item_height_strategy.h" />
     <ClInclude Include="src\zaf\control\internal\mouse_event_routing.h" />
-    <ClInclude Include="src\zaf\control\internal\range_map.h" />
     <ClInclude Include="src\zaf\control\internal\range_set.h" />
     <ClInclude Include="src\zaf\control\internal\scroll_box\general_scroll_layouter.h" />
     <ClInclude Include="src\zaf\control\internal\scroll_box\scroll_box_layouter.h" />

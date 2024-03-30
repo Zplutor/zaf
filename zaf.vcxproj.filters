@@ -1404,9 +1404,6 @@
     <ClInclude Include="src\zaf\graphic\brush\bitmap_brush.h">
       <Filter>zaf\graphic\brush</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\range_map.h">
-      <Filter>zaf\control\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\rounded_rect.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
@@ -2574,9 +2571,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\rich_edit\rich_edit_events.h">
       <Filter>zaf\control\rich_edit</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\enumerator.h">
-      <Filter>zaf\control\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual\inline_object_events.h">
       <Filter>zaf\control\textual</Filter>
