@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <zaf/base/error/check.h>
 #include <zaf/control/color_picker.h>
 #include <zaf/control/internal/enumerator.h>
@@ -10,7 +11,7 @@
 namespace zaf::textual {
 
 template<bool IsConst>
-class BaseRangedItem : NonCopyable {
+class BaseRangedItem : NonCopyableNonMovable {
 private:
     using InnerItem = std::add_lvalue_reference_t<
         std::conditional_t<
@@ -44,9 +45,26 @@ public:
         return *std::any_cast<zaf::Font>(&this->inner_.Value());
     }
 
-    template<bool IsEnabled = !IsConst, typename K = std::enable_if_t<IsEnabled>>
+    template<bool IsEnabled = !IsConst, typename E = std::enable_if_t<IsEnabled>>
     zaf::Font& Font() {
         return const_cast<zaf::Font&>(static_cast<const RangedFontItem<IsConst>*>(this)->Font());
+    }
+};
+
+
+template<bool IsConst>
+class RangedColorPickerItem : public BaseRangedItem<IsConst> {
+public:
+    using BaseRangedItem<IsConst>::BaseRangedItem;
+
+    const zaf::ColorPicker& ColorPicker() const {
+        return *std::any_cast<zaf::ColorPicker>(&this->inner_.Value());
+    }
+
+    template<bool IsEnabled = !IsConst, typename E = std::enable_if_t<IsEnabled>>
+    const zaf::ColorPicker& ColorPicker() {
+        return const_cast<zaf::ColorPicker&>(
+            static_cast<const RangedColorPickerItem<IsConst>*>(this)->ColorPicker());
     }
 };
 
@@ -74,8 +92,14 @@ public:
         return RangedItemIterator{ ++inner_ };
     }
 
-    value_type operator*() const {
-        return value_type{ *inner_ };
+    pointer operator->() const {
+        temp_item_.emplace(*inner_);
+        return &*temp_item_;
+    }
+
+    reference operator*() const {
+        temp_item_.emplace(*inner_);
+        return *temp_item_;
     }
 
     bool operator!=(const RangedItemIterator& other) const {
@@ -84,6 +108,7 @@ public:
 
 private:
     StoreIterator inner_;
+    mutable std::optional<Item> temp_item_;
 };
 
 
@@ -158,35 +183,10 @@ public:
     using FontEnumerator = RangedItemEnumerator<false, RangedFontItem>;
     using ConstFontEnumerator = RangedItemEnumerator<true, RangedFontItem>;
 
-    using ColorPickerMap = internal::RangeMap<zaf::ColorPicker>;
+    using ColorPickerEnumerator = RangedItemEnumerator<false, RangedColorPickerItem>;
+    using ConstColorPickerEnumerator = RangedItemEnumerator<true, RangedColorPickerItem>;
 
-    class ColorPickerItem : NonCopyable {
-    public:
-        explicit ColorPickerItem(const ColorPickerMap::Item& item) : inner_(item) { }
-        const Range& Range() const { return inner_.Range(); }
-        const ColorPicker& ColorPicker() const { return inner_.Value(); }
-    private:
-        ColorPickerMap::Item inner_;
-    };
-
-    using ColorPickerEnumerator = internal::WrapEnumerator<ColorPickerMap, ColorPickerItem>;
-
-    class InlineObjectItem : NonCopyable {
-    public:
-        explicit InlineObjectItem(const InlineObjectStore::ItemList::value_type& item) : 
-            inner_(item) { }
-        const Range& Range() const { return inner_.Range(); }
-        const std::shared_ptr<InlineObject>& InlineObject() const {
-            return inner_.Object();
-        }
-    private:
-        const InlineObjectStore::ItemList::value_type& inner_;
-    };
-
-    using InlineObjectEnumerator = internal::WrapEnumerator<
-        InlineObjectStore::ItemList,
-        InlineObjectItem
-    >;
+    using InlineObjectEnumerator = InlineObjectStore::ItemList;
 
 public:
     RangedTextStyle() = default;
@@ -199,13 +199,7 @@ public:
         return FontEnumerator{ fonts_ };
     }
 
-    const Font* GetFontAtIndex(std::size_t index) const {
-        auto item = fonts_.FindItemContainsIndex(index);
-        if (item) {
-            return std::any_cast<Font>(&item->Value());
-        }
-        return nullptr;
-    }
+    const Font* GetFontAtIndex(std::size_t index) const;
 
     void SetFontInRange(Font font, const Range& range) {
         fonts_.AddRange(range, std::move(font));
@@ -215,13 +209,15 @@ public:
         fonts_.Clear();
     }
 
-    ColorPickerEnumerator TextColorPickers() const {
+    ConstColorPickerEnumerator TextColorPickers() const {
+        return ConstColorPickerEnumerator{ text_color_pickers_ };
+    }
+
+    ColorPickerEnumerator TextColorPickers() {
         return ColorPickerEnumerator{ text_color_pickers_ };
     }
 
-    const ColorPicker* GetTextColorPickerAtIndex(std::size_t index) const {
-        return text_color_pickers_.GetValueAtIndex(index);
-    }
+    const ColorPicker* GetTextColorPickerAtIndex(std::size_t index) const;
 
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
         ZAF_EXPECT(color_picker);
@@ -232,13 +228,15 @@ public:
         text_color_pickers_.Clear();
     }
 
-    ColorPickerEnumerator TextBackColorPickers() const {
+    ConstColorPickerEnumerator TextBackColorPickers() const {
+        return ConstColorPickerEnumerator{ text_back_color_pickers_ };
+    }
+
+    ColorPickerEnumerator TextBackColorPickers() {
         return ColorPickerEnumerator{ text_back_color_pickers_ };
     }
 
-    const ColorPicker* GetTextBackColorPickerAtIndex(std::size_t index) const {
-        return text_back_color_pickers_.GetValueAtIndex(index);
-    }
+    const ColorPicker* GetTextBackColorPickerAtIndex(std::size_t index) const;
 
     void SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range) {
         ZAF_EXPECT(color_picker);
@@ -249,8 +247,8 @@ public:
         text_back_color_pickers_.Clear();
     }
 
-    InlineObjectEnumerator InlineObjects() const {
-        return InlineObjectEnumerator{ inline_objects_.Items() };
+    const InlineObjectEnumerator& InlineObjects() const {
+        return inline_objects_.Items();
     }
 
     std::shared_ptr<InlineObject> GetInlineObjectAtIndex(std::size_t index) const {
@@ -265,29 +263,16 @@ public:
         inline_objects_.Clear();
     }
 
-    void ReplaceSpan(
-        const Range& span_range, 
-        std::size_t new_length) {
+    void ReplaceSpan(const Range& span_range, std::size_t new_length);
 
-        fonts_.ReplaceSpan(span_range, new_length);
-        text_color_pickers_.ReplaceSpan(span_range, new_length);
-        text_back_color_pickers_.ReplaceSpan(span_range, new_length);
-        inline_objects_.ReplaceSpan(span_range, new_length);
-    }
-
-    void Clear() {
-        fonts_.Clear();
-        text_color_pickers_.Clear();
-        text_back_color_pickers_.Clear();
-        inline_objects_.Clear();
-    }
+    void Clear();
 
     RangedTextStyle Clone() const;
 
 private:
     internal::RangedValueStore fonts_;
-    ColorPickerMap text_color_pickers_;
-    ColorPickerMap text_back_color_pickers_;
+    internal::RangedValueStore text_color_pickers_;
+    internal::RangedValueStore text_back_color_pickers_;
     InlineObjectStore inline_objects_;
 };
 

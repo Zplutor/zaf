@@ -89,7 +89,12 @@ const Font& StyledText::GetFontAtIndex(std::size_t index) const {
 }
 
 
-StyledText::RangedFontEnumerator StyledText::RangedFonts() const {
+StyledText::ConstRangedFontEnumerator StyledText::RangedFonts() const {
+    return ranged_style_.Fonts();
+}
+
+
+StyledText::RangedFontEnumerator StyledText::RangedFonts() {
     return ranged_style_.Fonts();
 }
 
@@ -134,7 +139,12 @@ const ColorPicker& StyledText::GetTextColorPickerAtIndex(std::size_t index) cons
 }
 
 
-StyledText::RangedColorPickerEnumerator StyledText::RangedTextColorPicker() const {
+StyledText::ConstRangedColorPickerEnumerator StyledText::RangedTextColorPicker() const {
+    return ranged_style_.TextColorPickers();
+}
+
+
+StyledText::RangedColorPickerEnumerator StyledText::RangedTextColorPicker() {
     return ranged_style_.TextColorPickers();
 }
 
@@ -174,7 +184,12 @@ const ColorPicker& StyledText::GetTextBackColorPickerAtIndex(std::size_t index) 
 }
 
 
-StyledText::RangedColorPickerEnumerator StyledText::RangedTextBackColorPickers() const {
+StyledText::ConstRangedColorPickerEnumerator StyledText::RangedTextBackColorPickers() const {
+    return ranged_style_.TextBackColorPickers();
+}
+
+
+StyledText::RangedColorPickerEnumerator StyledText::RangedTextBackColorPickers() {
     return ranged_style_.TextBackColorPickers();
 }
 
@@ -279,7 +294,7 @@ StyledTextSlice StyledText::Slice(const Range& range) const {
 
         if (range.Contains(each_item.Range())) {
             slice_style.AttachInlineObjectToRange(
-                each_item.InlineObject()->Clone(),
+                each_item.Object()->Clone(),
                 each_item.Range());
         }
     }
@@ -310,7 +325,7 @@ void StyledText::ReplaceSlice(const Range& slice_range, const StyledTextSlice& n
 
     for (const auto& each_item : ranged_style.InlineObjects()) {
         ranged_style_.AttachInlineObjectToRange(
-            each_item.InlineObject()->Clone(),
+            each_item.Object()->Clone(),
             each_item.Range());
     }
 }

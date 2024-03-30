@@ -16,7 +16,7 @@ void TextModel::SetStyledText(textual::StyledText styled_text) {
     //Get all inline objects from new styled text.
     std::vector<std::shared_ptr<textual::InlineObject>> new_inline_objects;
     for (const auto& each_item : styled_text_.InlineObjects()) {
-        new_inline_objects.push_back(each_item.InlineObject());
+        new_inline_objects.push_back(each_item.Object());
     }
 
     //Raise events.
@@ -115,7 +115,7 @@ void TextModel::ReplaceStyledTextSlice(
 
     std::vector<std::shared_ptr<textual::InlineObject>> new_inline_objects;
     for (const auto& each_item : slice.RangedStyle().InlineObjects()) {
-        new_inline_objects.push_back(each_item.InlineObject());
+        new_inline_objects.push_back(each_item.Object());
     }
 
     styled_text_.ReplaceSlice(replaced_range, slice);

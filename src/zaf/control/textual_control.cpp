@@ -594,7 +594,7 @@ TextLayout TextualControl::CreateTextLayout() const {
     }
 
     for (const auto& each_item : text_model_->StyledText().InlineObjects()) {
-        SetInlineObjectToTextLayout(each_item.InlineObject(), each_item.Range(), text_layout);
+        SetInlineObjectToTextLayout(each_item.Object(), each_item.Range(), text_layout);
     }
 
     return text_layout;
