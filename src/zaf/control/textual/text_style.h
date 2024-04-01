@@ -9,8 +9,18 @@ namespace zaf::textual {
 
 class TextStyle {
 public:
-    const std::optional<zaf::Font>& Font() const {
-        return font_;
+    const zaf::Font* Font() const {
+        if (font_) {
+            return &*font_;
+        }
+        return nullptr;
+    }
+
+    zaf::Font* Font() {
+        if (font_) {
+            return &*font_;
+        }
+        return nullptr;
     }
 
     void SetFont(zaf::Font font) {
