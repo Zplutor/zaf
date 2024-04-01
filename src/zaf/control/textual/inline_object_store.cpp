@@ -1,5 +1,5 @@
 #include <zaf/control/textual/inline_object_store.h>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/contract.h>
 
 namespace zaf::textual {
 

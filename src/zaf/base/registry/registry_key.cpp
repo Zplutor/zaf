@@ -1,5 +1,5 @@
 #include <zaf/base/registry/registry_key.h>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/contract.h>
 #include <zaf/base/error/system_error.h>
 #include <zaf/base/string/join.h>
 

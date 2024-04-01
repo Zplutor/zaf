@@ -2644,5 +2644,8 @@
     <ClInclude Include="src\zaf\internal\ranged_value_store.h">
       <Filter>zaf\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\error\contract.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

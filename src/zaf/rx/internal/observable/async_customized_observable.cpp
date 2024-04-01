@@ -1,5 +1,5 @@
 #include <zaf/rx/internal/observable/async_customized_observable.h>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/contract.h>
 #include <zaf/base/error/error.h>
 #include <zaf/rx/internal/inner_observer.h>
 #include <zaf/rx/internal/observable/customized_observable.h>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Windows.h>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/contract.h>
 
 namespace zaf {
 

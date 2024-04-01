@@ -1,6 +1,6 @@
 #include <zaf/clipboard/internal/clipboard_data_registry.h>
 #include <zaf/base/container/utility/find.h>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/contract.h>
 #include <zaf/clipboard/clipboard_data.h>
 #include <zaf/clipboard/drop_files_data.h>
 #include <zaf/clipboard/text_data.h>

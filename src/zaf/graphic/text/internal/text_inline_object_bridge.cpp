@@ -1,5 +1,5 @@
 #include <zaf/graphic/text/internal/text_inline_object_bridge.h>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/contract.h>
 
 namespace zaf::internal {
 

@@ -1,6 +1,7 @@
 #include <zaf/control/check_box.h>
 #include <zaf/base/as.h>
 #include <zaf/base/error/check.h>
+#include <zaf/base/error/contract.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/geometry/geometry_sink.h>
 #include <zaf/graphic/geometry/path_geometry.h>

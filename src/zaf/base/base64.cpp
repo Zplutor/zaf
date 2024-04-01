@@ -1,6 +1,5 @@
 #include <zaf/base/base64.h>
 #include <zaf/base/error/basic_error.h>
-#include <zaf/base/error/check.h>
 
 namespace zaf {
 namespace {

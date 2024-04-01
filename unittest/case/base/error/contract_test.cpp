@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/contract.h>
 
 namespace {
 
@@ -15,8 +15,8 @@ public:
 }
 
 
-TEST(CheckTest, Exception) {
+TEST(CheckTest, PreconditionError) {
 
-    ASSERT_THROW(ZAF_EXPECT(false), std::logic_error);
+    ASSERT_THROW(ZAF_EXPECT(false), zaf::PreconditionError);
     ASSERT_NO_THROW(ZAF_EXPECT(true));
 }

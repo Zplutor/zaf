@@ -1,4 +1,5 @@
 #include <zaf/control/internal/image_box/image_drawing.h>
+#include <zaf/base/error/check.h>
 
 namespace zaf::internal {
 namespace {

@@ -1,7 +1,7 @@
 #include <zaf/control/internal/tree_control/tree_data_manager.h>
 #include <zaf/base/container/utility/contain.h>
 #include <zaf/base/container/utility/find.h>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/contract.h>
 #include <zaf/base/range.h>
 
 namespace zaf::internal {

@@ -1,7 +1,7 @@
 #include <zaf/control/internal/list_control/list_control_implementation.h>
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/contract.h>
 #include <zaf/base/range.h>
 #include <zaf/control/internal/list_control/list_control_extended_multiple_select_strategy.h>
 #include <zaf/control/internal/list_control/list_control_item_height_manager.h>

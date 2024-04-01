@@ -3,6 +3,7 @@
 #include <tom.h>
 #include <cassert>
 #include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/check.h>
 #include <zaf/base/error/system_error.h>
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>

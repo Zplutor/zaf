@@ -1,5 +1,5 @@
 #include <zaf/control/internal/keyboard_event_routing.h>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/contract.h>
 #include <zaf/control/internal/control_event_invoker.h>
 #include <zaf/control/internal/event_routing_utility.h>
 
