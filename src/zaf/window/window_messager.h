@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
+#include <zaf/input/key.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 
@@ -60,6 +61,17 @@ public:
         Thrown if the operation fails.
     */
     void PostWMSETCURSOR(const MouseMessage& mouse_message);
+
+    /**
+    Sends a WM_KEYDOWN message with the specified key to the window.
+
+    @param key
+        The key set to the WPARAM arguemnt of the WM_KEYDOWN message.
+
+    @return
+        The result of the message processing.
+    */
+    LRESULT SendWMKEYDOWN(Key key);
 
 private:
     HWND window_handle_{};

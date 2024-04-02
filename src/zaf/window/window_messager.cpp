@@ -29,4 +29,9 @@ void WindowMessager::PostWMSETCURSOR(const MouseMessage& mouse_message) {
         MAKELPARAM(mouse_message.HitTestResult(), mouse_message.ID()));
 }
 
+
+LRESULT WindowMessager::SendWMKEYDOWN(Key key) {
+    return SendMessage(window_handle_, WM_KEYDOWN, static_cast<WPARAM>(key), 0);
+}
+
 }

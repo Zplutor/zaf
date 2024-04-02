@@ -4,6 +4,8 @@
 #include <zaf/window/window.h>
 #include "utility/test_window.h"
 
+using namespace zaf;
+
 namespace {
 
 void TestWithTextBoxInWindow(
@@ -213,6 +215,84 @@ TEST(TextBoxTest, IsPositionInsideText) {
     ASSERT_FALSE(text_box->IsPositionInsideText(zaf::Point{ 
         preferred_size.width + 1, preferred_size.height + 1
     }));
+}
+
+
+TEST(TextBoxTest, BackwardCaretByLeftKey) {
+
+    TestWithTextBoxInWindow([](TextBox& text_box, Window& window) {
+
+        //Backward in normal text
+        text_box.SetText(L"abc");
+        text_box.SetSelectionRange(Range{ 3, 0 });
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);    
+        ASSERT_EQ(text_box.SelectionRange(), Range(2, 0)); // c
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(1, 0)); // b
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);    
+        ASSERT_EQ(text_box.SelectionRange(), Range(0, 0)); // a
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(0, 0)); // a
+
+        //Backward in empty lines
+        text_box.SetText(L"\r\rH\n\n\r\n\r\n");
+        text_box.SetSelectionRange(Range{ 9, 0 });
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(7, 0)); // \r\n
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(5, 0)); // \r\n
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(4, 0)); // \n
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(3, 0)); // \n
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(2, 0)); // H
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(1, 0)); // \r
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(0, 0)); // \r
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(0, 0)); // \r
+    });
+}
+
+
+TEST(TextBoxTest, ForwardCaretByRightKey) {
+
+    TestWithTextBoxInWindow([](TextBox& text_box, Window& window) {
+
+        //Forward in normal text
+        text_box.SetText(L"abc");
+        text_box.SetSelectionRange(Range{ 0, 0 });
+        window.Messager().SendWMKEYDOWN(zaf::Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(1, 0)); // b
+        window.Messager().SendWMKEYDOWN(zaf::Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(2, 0)); // c
+        window.Messager().SendWMKEYDOWN(zaf::Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(3, 0)); 
+        window.Messager().SendWMKEYDOWN(zaf::Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(3, 0)); 
+
+        //Backward in empty lines
+        text_box.SetText(L"\r\rH\n\n\r\n\r\n");
+        text_box.SetSelectionRange(Range{ 0, 0 });
+        window.Messager().SendWMKEYDOWN(zaf::Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(1, 0)); // \r
+        window.Messager().SendWMKEYDOWN(zaf::Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(2, 0)); // H
+        window.Messager().SendWMKEYDOWN(zaf::Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(3, 0)); // \n
+        window.Messager().SendWMKEYDOWN(zaf::Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(4, 0)); // \n
+        window.Messager().SendWMKEYDOWN(zaf::Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(5, 0)); // \r\n
+        window.Messager().SendWMKEYDOWN(zaf::Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(7, 0)); // \r\n
+        window.Messager().SendWMKEYDOWN(zaf::Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(9, 0));
+        window.Messager().SendWMKEYDOWN(zaf::Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(9, 0));
+    });
 }
 
 
