@@ -1162,6 +1162,9 @@
     <ClCompile Include="src\zaf\internal\ranged_value_store.cpp">
       <Filter>zaf\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\font\font_parser.cpp">
+      <Filter>zaf\graphic\font</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2646,6 +2649,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\contract.h">
       <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\font\font_parser.h">
+      <Filter>zaf\graphic\font</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

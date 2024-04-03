@@ -1,11 +1,13 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/application.h>
 #include <zaf/base/string/to_string.h>
+#include <zaf/graphic/font/font_parser.h>
 #include <zaf/object/type_definition.h>
 
 namespace zaf {
 
 ZAF_DEFINE_TYPE(Font)
+ZAF_DEFINE_TYPE_PARSER(FontParser)
 ZAF_DEFINE_TYPE_PROPERTY(FamilyName)
 ZAF_DEFINE_TYPE_PROPERTY(Size)
 ZAF_DEFINE_TYPE_PROPERTY(Weight)

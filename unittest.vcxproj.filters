@@ -211,9 +211,6 @@
     <ClCompile Include="unittest\case\control\linear_box_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\parsing\parsers\font_parser_test.cpp">
-      <Filter>case\parsing\parsers</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\control\internal\list_control\list_control_item_height_manager_test.cpp">
       <Filter>case\control\internal\list_control</Filter>
     </ClCompile>
@@ -522,6 +519,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\textual\ranged_text_style_test.cpp">
       <Filter>case\control\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\font\font_parser_test.cpp">
+      <Filter>case\graphic\font</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,7 @@ TEST(FontPraserTest, ParseFamilyName) {
     auto xaml = LR"(<Font FamilyName="aaaabb" />)";
     auto font = zaf::CreateObjectFromXaml<zaf::Font>(xaml);
     ASSERT_EQ(font->family_name, L"aaaabb");
+    ASSERT_EQ(font->size, zaf::Font::Default().size);
 }
 
 
@@ -15,6 +16,7 @@ TEST(FontParserTest, ParseSize) {
     auto xaml = LR"(<Font Size="112" />)";
     auto font = zaf::CreateObjectFromXaml<zaf::Font>(xaml);
     ASSERT_EQ(font->size, 112.f);
+    ASSERT_EQ(font->family_name, zaf::Font::Default().family_name);
 }
 
 
