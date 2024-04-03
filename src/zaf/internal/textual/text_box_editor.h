@@ -43,6 +43,7 @@ public:
 
 private:
     std::unique_ptr<TextBoxEditCommand> HandleKey(Key key);
+    std::unique_ptr<TextBoxEditCommand> HandleEnter();
     std::unique_ptr<TextBoxEditCommand> HandleDelete();
     std::unique_ptr<TextBoxEditCommand> HandleBatchDelete();
     std::unique_ptr<TextBoxEditCommand> HandleBatchBackspace();
@@ -51,6 +52,8 @@ private:
 
     std::unique_ptr<TextBoxEditCommand> HandleChar(wchar_t ch);
     std::unique_ptr<TextBoxEditCommand> HandleBackspace();
+
+    std::unique_ptr<TextBoxEditCommand> CreateInsertTextCommand(std::wstring new_text);
 
     std::unique_ptr<TextBoxEditCommand> CreateCommand(
         std::wstring new_text,

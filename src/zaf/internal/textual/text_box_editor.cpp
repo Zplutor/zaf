@@ -13,6 +13,7 @@ namespace {
 bool ShouldIgnoreChar(wchar_t ch) {
 
     //Some control chars in ASCII.
+    //Note: control chars are typically handled in key down event rather than char input event.
     switch (ch) {
     case 1:
     case 2:
@@ -21,7 +22,11 @@ bool ShouldIgnoreChar(wchar_t ch) {
     case 5:
     case 6:
     case 7:
+    case 8:  //Backspace
+    case 10: //LF
     case 11: //VerticalTab. May be supported if vertical text layout is supported.
+    case 12:
+    case 13: //CR
     case 14:
     case 15:
     case 16:
@@ -40,7 +45,7 @@ bool ShouldIgnoreChar(wchar_t ch) {
     case 29:
     case 30:
     case 31:
-    case 127:
+    case 127: //DEL
         return true;
     default:
         return false;
@@ -151,6 +156,10 @@ void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
 
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
 
+    if (key == Key::Enter) {
+        return HandleEnter();
+    }
+
     if (key == Key::Delete) {
         if (Keyboard::IsCtrlDown()) {
             return HandleBatchDelete();
@@ -158,8 +167,11 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
         return HandleDelete();
     }
 
-    if (key == Key::Backspace && Keyboard::IsCtrlDown()) {
-        return HandleBatchBackspace();
+    if (key == Key::Backspace) {
+        if (Keyboard::IsCtrlDown()) {
+            return HandleBatchBackspace();
+        }
+        return HandleBackspace();
     }
 
     if ((key == Key::X) && Keyboard::IsCtrlDown()) {
@@ -181,6 +193,11 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
     }
 
     return nullptr;
+}
+
+
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleEnter() {
+    return CreateInsertTextCommand(L"\r\n");
 }
 
 
@@ -299,17 +316,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleChar(wchar_t ch) {
         return nullptr;
     }
 
-    //Backspace
-    if (ch == '\x8') {
-        return HandleBackspace();
-    }
-
-    const auto& selection_range = Context().SelectionManager().SelectionRange();
-
-    return CreateCommand(
-        std::wstring(1, ch),
-        selection_range,
-        Range{ selection_range.index + 1, 0 });
+    return CreateInsertTextCommand(std::wstring(1, ch));
 }
 
 
@@ -331,6 +338,17 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBackspace() {
         {},
         Range{ selection_range.index - 1, 1 }, 
         Range{ selection_range.index - 1, 0 });
+}
+
+
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateInsertTextCommand(std::wstring new_text) {
+
+    const auto& selection_range = Context().SelectionManager().SelectionRange();
+
+    return CreateCommand(
+        std::move(new_text),
+        selection_range,
+        Range{ selection_range.index + new_text.length(), 0});
 }
 
 
