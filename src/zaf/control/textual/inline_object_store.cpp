@@ -103,19 +103,18 @@ void InlineObjectStore::Clear() {
 }
 
 
-std::shared_ptr<textual::InlineObject> InlineObjectStore::GetInlineObjectAtIndex(
-    std::size_t index) const {
+const InlineObjectStore::Item* InlineObjectStore::FindItemContainsIndex(std::size_t index) const {
 
     auto iterator = std::lower_bound(
-        items_.begin(), 
-        items_.end(), 
+        items_.begin(),
+        items_.end(),
         index,
         [](const Item& item, std::size_t index) {
             return item.Range().EndIndex() <= index;
         });
 
     if (iterator != items_.end() && iterator->Range().Contains(index)) {
-        return iterator->Object();
+        return &*iterator;
     }
     return nullptr;
 }

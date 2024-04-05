@@ -250,9 +250,7 @@ public:
         return inline_objects_.Items();
     }
 
-    std::shared_ptr<InlineObject> GetInlineObjectAtIndex(std::size_t index) const {
-        return inline_objects_.GetInlineObjectAtIndex(index);
-    }
+    std::shared_ptr<InlineObject> GetInlineObjectAtIndex(std::size_t index) const;
 
     void AttachInlineObjectToRange(std::shared_ptr<InlineObject> object, const Range& range) {
         inline_objects_.Attach(std::move(object), range);

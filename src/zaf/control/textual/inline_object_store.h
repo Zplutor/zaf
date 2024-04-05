@@ -48,7 +48,7 @@ public:
 
     void Clear();
 
-    std::shared_ptr<InlineObject> GetInlineObjectAtIndex(std::size_t index) const;
+    const Item* FindItemContainsIndex(std::size_t index) const;
 
     const ItemList& Items() const {
         return items_;

@@ -32,6 +32,16 @@ const ColorPicker* RangedTextStyle::GetTextBackColorPickerAtIndex(std::size_t in
 }
 
 
+std::shared_ptr<InlineObject> RangedTextStyle::GetInlineObjectAtIndex(std::size_t index) const {
+
+    auto item = inline_objects_.FindItemContainsIndex(index);
+    if (item) {
+        return item->Object();
+    }
+    return nullptr;
+}
+
+
 void RangedTextStyle::ReplaceSpan(const Range& span_range, std::size_t new_length) {
 
     fonts_.ReplaceSpan(span_range, new_length);
