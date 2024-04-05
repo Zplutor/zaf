@@ -1,10 +1,12 @@
 #include <gtest/gtest.h>
 #include <zaf/control/text_box.h>
+#include <zaf/control/textual/inline_object.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 #include "utility/test_window.h"
 
 using namespace zaf;
+using namespace zaf::textual;
 
 namespace {
 
@@ -225,11 +227,11 @@ TEST(TextBoxTest, BackwardCaretByLeftKey) {
         //Backward in normal text
         text_box.SetText(L"abc");
         text_box.SetSelectionRange(Range{ 3, 0 });
-        window.Messager().SendWMKEYDOWN(zaf::Key::Left);    
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);
         ASSERT_EQ(text_box.SelectionRange(), Range(2, 0)); // c
         window.Messager().SendWMKEYDOWN(zaf::Key::Left);
         ASSERT_EQ(text_box.SelectionRange(), Range(1, 0)); // b
-        window.Messager().SendWMKEYDOWN(zaf::Key::Left);    
+        window.Messager().SendWMKEYDOWN(zaf::Key::Left);
         ASSERT_EQ(text_box.SelectionRange(), Range(0, 0)); // a
         window.Messager().SendWMKEYDOWN(zaf::Key::Left);
         ASSERT_EQ(text_box.SelectionRange(), Range(0, 0)); // a
@@ -253,6 +255,22 @@ TEST(TextBoxTest, BackwardCaretByLeftKey) {
         ASSERT_EQ(text_box.SelectionRange(), Range(0, 0)); // \r
         window.Messager().SendWMKEYDOWN(zaf::Key::Left);
         ASSERT_EQ(text_box.SelectionRange(), Range(0, 0)); // \r
+
+        //Backward to the beginning of the selection.
+        text_box.SetText(L"selection");
+        text_box.SetSelectionRange(Range{ 3, 3 });
+        window.Messager().SendWMKEYDOWN(Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(3, 0));
+
+        //Backward across inline objects.
+        /*
+        text_box.SetText(L"xxOxxOOxx");
+        text_box.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 2, 1 });
+        text_box.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 5, 2 });
+        text_box.SetSelectionRange(Range{ 7, 0 });
+        window.Messager().SendWMKEYDOWN(Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(3, 0));
+        */
     });
 }
 
@@ -273,7 +291,7 @@ TEST(TextBoxTest, ForwardCaretByRightKey) {
         window.Messager().SendWMKEYDOWN(zaf::Key::Right);
         ASSERT_EQ(text_box.SelectionRange(), Range(3, 0)); 
 
-        //Backward in empty lines
+        //Forward in empty lines
         text_box.SetText(L"\r\rH\n\n\r\n\r\n");
         text_box.SetSelectionRange(Range{ 0, 0 });
         window.Messager().SendWMKEYDOWN(zaf::Key::Right);
@@ -292,6 +310,12 @@ TEST(TextBoxTest, ForwardCaretByRightKey) {
         ASSERT_EQ(text_box.SelectionRange(), Range(9, 0));
         window.Messager().SendWMKEYDOWN(zaf::Key::Right);
         ASSERT_EQ(text_box.SelectionRange(), Range(9, 0));
+
+        //Forward to the end of the selection.
+        text_box.SetText(L"selection");
+        text_box.SetSelectionRange(Range{ 3, 3 });
+        window.Messager().SendWMKEYDOWN(Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(6, 0));
     });
 }
 

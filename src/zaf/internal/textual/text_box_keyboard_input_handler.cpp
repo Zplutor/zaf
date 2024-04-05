@@ -3,6 +3,7 @@
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/control/text_box.h>
 #include <zaf/internal/textual/text_box_editor.h>
+#include <zaf/internal/textual/text_box_index_manager.h>
 #include <zaf/internal/textual/text_box_module_context.h>
 #include <zaf/internal/textual/text_box_selection_manager.h>
 #include <zaf/input/keyboard.h>
@@ -71,21 +72,8 @@ void TextBoxKeyboardInputHandler::BackwardCaretIndex(bool expand_selection) {
         }
     }
 
-    std::size_t new_index = Context().SelectionManager().CaretIndex();
-    if (new_index > 0) {
-
-        --new_index;
-
-        if (new_index > 0) {
-
-            //Skip CRLF line break.
-            std::wstring_view text = Context().TextModel().GetText();
-            if (text[new_index - 1] == L'\r' && text[new_index] == L'\n') {
-
-                --new_index;
-            }
-        }
-    }
+    auto caret_index = Context().SelectionManager().CaretIndex();
+    auto new_index = Context().IndexManager().GetPreviousIndex(caret_index);
 
     SetCaretIndexByKey(new_index, expand_selection, true);
 }
@@ -99,22 +87,8 @@ void TextBoxKeyboardInputHandler::ForwardCaretIndex(bool expand_selection) {
         }
     }
 
-    std::wstring_view text = Context().TextModel().GetText();
-
     auto caret_index = Context().SelectionManager().CaretIndex();
-    std::size_t new_index = caret_index;
-    if (new_index < text.length()) {
-
-        ++new_index;
-
-        if (new_index < text.length()) {
-
-            //Skip CRLF line break.
-            if (text[caret_index] == L'\r' && text[new_index] == L'\n') {
-                ++new_index;
-            }
-        }
-    }
+    auto new_index = Context().IndexManager().GetNextIndex(caret_index);
 
     SetCaretIndexByKey(new_index, expand_selection, true);
 }

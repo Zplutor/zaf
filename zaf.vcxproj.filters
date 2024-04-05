@@ -1165,6 +1165,9 @@
     <ClCompile Include="src\zaf\graphic\font\font_parser.cpp">
       <Filter>zaf\graphic\font</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\internal\textual\text_box_index_manager.cpp">
+      <Filter>zaf\internal\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2652,6 +2655,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\font\font_parser.h">
       <Filter>zaf\graphic\font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\textual\text_box_index_manager.h">
+      <Filter>zaf\internal\textual</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
