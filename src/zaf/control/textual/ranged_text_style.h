@@ -101,7 +101,11 @@ public:
         return *temp_item_;
     }
 
-    bool operator!=(const RangedItemIterator& other) const {
+    bool operator==(const RangedItemIterator& other) const noexcept {
+        return inner_ == other.inner_;
+    }
+
+    bool operator!=(const RangedItemIterator& other) const noexcept {
         return inner_ != other.inner_;
     }
 
@@ -112,7 +116,7 @@ private:
 
 
 template<bool IsConst, template<bool> typename Item>
-class RangedItemEnumerator {
+class RangedItemAccessor {
 private:
     using StoreType = std::conditional_t<
         IsConst,
@@ -140,8 +144,20 @@ public:
         Item<std::is_const_v<std::remove_reference_t<typename StoreConstIterator::reference>>>>;
 
 public:
-    explicit RangedItemEnumerator(StoreType store) noexcept : store_(store) {
+    explicit RangedItemAccessor(StoreType store) noexcept : store_(store) {
 
+    }
+
+    bool IsEmpty() const noexcept {
+        return store_.IsEmpty();
+    }
+
+    iterator FindItemContainsIndex(std::size_t index) {
+        auto inner_iterator = store_.FindItemContainsIndex(index);
+        if (inner_iterator != store_.end()) {
+            return iterator{ inner_iterator };
+        }
+        return this->end();
     }
 
     iterator begin() noexcept {
@@ -168,37 +184,56 @@ public:
         return const_iterator{ store_.end() };
     }
 
-    bool IsEmpty() const noexcept {
-        return store_.IsEmpty();
-    }
-
 private:
     StoreType store_;
 };
 
 
+class InlineObjectAccessor : NonCopyable {
+public:
+    using iterator = InlineObjectStore::ItemList::iterator;
+    using const_iterator = InlineObjectStore::ItemList::const_iterator;
+
+public:
+    explicit InlineObjectAccessor(const InlineObjectStore& store) : store_(store) {
+
+    }
+
+    const_iterator FindItemContainsIndex(std::size_t index) const {
+        return store_.FindItemContainsIndex(index);
+    }
+
+    const_iterator begin() const {
+        return const_iterator{ store_.Items().begin() };
+    }
+
+    const_iterator end() const {
+        return const_iterator{ store_.Items().end() };
+    }
+
+private:
+    const InlineObjectStore& store_;
+};
+
+
 class RangedTextStyle : NonCopyable {
 public:
-    using FontEnumerator = RangedItemEnumerator<false, RangedFontItem>;
-    using ConstFontEnumerator = RangedItemEnumerator<true, RangedFontItem>;
+    using FontAccessor = RangedItemAccessor<false, RangedFontItem>;
+    using ConstFontAccessor = RangedItemAccessor<true, RangedFontItem>;
 
-    using ColorPickerEnumerator = RangedItemEnumerator<false, RangedColorPickerItem>;
-    using ConstColorPickerEnumerator = RangedItemEnumerator<true, RangedColorPickerItem>;
-
-    using InlineObjectEnumerator = InlineObjectStore::ItemList;
+    using ColorPickerAccessor = RangedItemAccessor<false, RangedColorPickerItem>;
+    using ConstColorPickerAccessor = RangedItemAccessor<true, RangedColorPickerItem>;
 
 public:
     RangedTextStyle() = default;
 
-    ConstFontEnumerator Fonts() const {
-        return ConstFontEnumerator{ fonts_ };
+    ConstFontAccessor Fonts() const {
+        return ConstFontAccessor{ fonts_ };
     }
 
-    FontEnumerator Fonts() {
-        return FontEnumerator{ fonts_ };
+    FontAccessor Fonts() {
+        return FontAccessor{ fonts_ };
     }
-
-    const Font* GetFontAtIndex(std::size_t index) const;
 
     void SetFontInRange(Font font, const Range& range) {
         fonts_.AddRange(range, std::move(font));
@@ -208,15 +243,13 @@ public:
         fonts_.Clear();
     }
 
-    ConstColorPickerEnumerator TextColorPickers() const {
-        return ConstColorPickerEnumerator{ text_color_pickers_ };
+    ConstColorPickerAccessor TextColorPickers() const {
+        return ConstColorPickerAccessor{ text_color_pickers_ };
     }
 
-    ColorPickerEnumerator TextColorPickers() {
-        return ColorPickerEnumerator{ text_color_pickers_ };
+    ColorPickerAccessor TextColorPickers() {
+        return ColorPickerAccessor{ text_color_pickers_ };
     }
-
-    const ColorPicker* GetTextColorPickerAtIndex(std::size_t index) const;
 
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
         ZAF_EXPECT(color_picker);
@@ -227,15 +260,13 @@ public:
         text_color_pickers_.Clear();
     }
 
-    ConstColorPickerEnumerator TextBackColorPickers() const {
-        return ConstColorPickerEnumerator{ text_back_color_pickers_ };
+    ConstColorPickerAccessor TextBackColorPickers() const {
+        return ConstColorPickerAccessor{ text_back_color_pickers_ };
     }
 
-    ColorPickerEnumerator TextBackColorPickers() {
-        return ColorPickerEnumerator{ text_back_color_pickers_ };
+    ColorPickerAccessor TextBackColorPickers() {
+        return ColorPickerAccessor{ text_back_color_pickers_ };
     }
-
-    const ColorPicker* GetTextBackColorPickerAtIndex(std::size_t index) const;
 
     void SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range) {
         ZAF_EXPECT(color_picker);
@@ -246,11 +277,9 @@ public:
         text_back_color_pickers_.Clear();
     }
 
-    const InlineObjectEnumerator& InlineObjects() const {
-        return inline_objects_.Items();
+    InlineObjectAccessor InlineObjects() const {
+        return InlineObjectAccessor{ inline_objects_ };
     }
-
-    std::shared_ptr<InlineObject> GetInlineObjectAtIndex(std::size_t index) const;
 
     void AttachInlineObjectToRange(std::shared_ptr<InlineObject> object, const Range& range) {
         inline_objects_.Attach(std::move(object), range);

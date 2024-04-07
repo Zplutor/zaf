@@ -2,46 +2,6 @@
 
 namespace zaf::textual {
 
-const Font* RangedTextStyle::GetFontAtIndex(std::size_t index) const {
-
-    auto item = fonts_.FindItemContainsIndex(index);
-    if (item) {
-        return std::any_cast<Font>(&item->Value());
-    }
-    return nullptr;
-}
-
-
-const ColorPicker* RangedTextStyle::GetTextColorPickerAtIndex(std::size_t index) const {
-
-    auto item = text_color_pickers_.FindItemContainsIndex(index);
-    if (item) {
-        return std::any_cast<ColorPicker>(&item->Value());
-    }
-    return nullptr;
-}
-
-
-const ColorPicker* RangedTextStyle::GetTextBackColorPickerAtIndex(std::size_t index) const {
-
-    auto item = text_back_color_pickers_.FindItemContainsIndex(index);
-    if (item) {
-        return std::any_cast<ColorPicker>(&item->Value());
-    }
-    return nullptr;
-}
-
-
-std::shared_ptr<InlineObject> RangedTextStyle::GetInlineObjectAtIndex(std::size_t index) const {
-
-    auto item = inline_objects_.FindItemContainsIndex(index);
-    if (item) {
-        return item->Object();
-    }
-    return nullptr;
-}
-
-
 void RangedTextStyle::ReplaceSpan(const Range& span_range, std::size_t new_length) {
 
     fonts_.ReplaceSpan(span_range, new_length);

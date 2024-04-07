@@ -81,20 +81,21 @@ const Font& StyledText::GetFontAtIndex(std::size_t index) const {
 
     ZAF_EXPECT(index <= text_.length());
 
-    auto font = ranged_style_.GetFontAtIndex(index);
-    if (font) {
-        return *font;
+    auto fonts = ranged_style_.Fonts();
+    auto iterator = fonts.FindItemContainsIndex(index);
+    if (iterator != fonts.end()) {
+        return iterator->Font();
     }
     return default_font_;
 }
 
 
-StyledText::ConstRangedFontEnumerator StyledText::RangedFonts() const {
+StyledText::ConstRangedFontAccessor StyledText::RangedFonts() const {
     return ranged_style_.Fonts();
 }
 
 
-StyledText::RangedFontEnumerator StyledText::RangedFonts() {
+StyledText::RangedFontAccessor StyledText::RangedFonts() {
     return ranged_style_.Fonts();
 }
 
@@ -131,20 +132,21 @@ const ColorPicker& StyledText::GetTextColorPickerAtIndex(std::size_t index) cons
 
     ZAF_EXPECT(index <= text_.length());
 
-    auto picker = ranged_style_.GetTextColorPickerAtIndex(index);
-    if (picker) {
-        return *picker;
+    auto text_color_pickers = ranged_style_.TextColorPickers();
+    auto iterator = text_color_pickers.FindItemContainsIndex(index);
+    if (iterator != text_color_pickers.end()) {
+        return iterator->ColorPicker();
     }
     return default_text_color_picker_;
 }
 
 
-StyledText::ConstRangedColorPickerEnumerator StyledText::RangedTextColorPicker() const {
+StyledText::ConstRangedColorPickerAccessor StyledText::RangedTextColorPicker() const {
     return ranged_style_.TextColorPickers();
 }
 
 
-StyledText::RangedColorPickerEnumerator StyledText::RangedTextColorPicker() {
+StyledText::RangedColorPickerAccessor StyledText::RangedTextColorPicker() {
     return ranged_style_.TextColorPickers();
 }
 
@@ -176,20 +178,21 @@ const ColorPicker& StyledText::GetTextBackColorPickerAtIndex(std::size_t index) 
 
     ZAF_EXPECT(index <= text_.length());
 
-    auto picker = ranged_style_.GetTextBackColorPickerAtIndex(index);
-    if (picker) {
-        return *picker;
+    auto text_back_color_pickers = ranged_style_.TextBackColorPickers();
+    auto iterator = text_back_color_pickers.FindItemContainsIndex(index);
+    if (iterator != text_back_color_pickers.end()) {
+        return iterator->ColorPicker();
     }
     return default_text_back_color_picker_;
 }
 
 
-StyledText::ConstRangedColorPickerEnumerator StyledText::RangedTextBackColorPickers() const {
+StyledText::ConstRangedColorPickerAccessor StyledText::RangedTextBackColorPickers() const {
     return ranged_style_.TextBackColorPickers();
 }
 
 
-StyledText::RangedColorPickerEnumerator StyledText::RangedTextBackColorPickers() {
+StyledText::RangedColorPickerAccessor StyledText::RangedTextBackColorPickers() {
     return ranged_style_.TextBackColorPickers();
 }
 
@@ -213,15 +216,16 @@ std::shared_ptr<textual::InlineObject> StyledText::GetInlineObjectAtIndex(
 
     ZAF_EXPECT(index <= text_.length());
 
-    auto object = ranged_style_.GetInlineObjectAtIndex(index);
-    if (object) {
-        return object;
+    auto inline_objects = ranged_style_.InlineObjects();
+    auto iterator = inline_objects.FindItemContainsIndex(index);
+    if (iterator != inline_objects.end()) {
+        return iterator->Object();
     }
     return nullptr;
 }
 
 
-StyledText::InlineObjectEnumerator StyledText::InlineObjects() const {
+InlineObjectAccessor StyledText::InlineObjects() const {
     return ranged_style_.InlineObjects();
 }
 

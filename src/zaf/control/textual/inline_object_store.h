@@ -48,7 +48,7 @@ public:
 
     void Clear();
 
-    const Item* FindItemContainsIndex(std::size_t index) const;
+    ItemList::const_iterator FindItemContainsIndex(std::size_t index) const;
 
     const ItemList& Items() const {
         return items_;

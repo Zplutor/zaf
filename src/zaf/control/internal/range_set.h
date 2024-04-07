@@ -71,7 +71,7 @@ public:
     }
 
     bool ContainsIndex(std::size_t index) const noexcept {
-        return !!store_.FindItemContainsIndex(index);
+        return store_.FindItemContainsIndex(index) != store_.end();
     }
 
     bool IsEmpty() const noexcept {

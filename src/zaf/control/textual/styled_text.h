@@ -14,13 +14,11 @@ namespace zaf::textual {
 
 class StyledText : NonCopyable {
 public:
-    using RangedFontEnumerator = RangedTextStyle::FontEnumerator;
-    using ConstRangedFontEnumerator = RangedTextStyle::ConstFontEnumerator;
+    using RangedFontAccessor = RangedTextStyle::FontAccessor;
+    using ConstRangedFontAccessor = RangedTextStyle::ConstFontAccessor;
 
-    using RangedColorPickerEnumerator = RangedTextStyle::ColorPickerEnumerator;
-    using ConstRangedColorPickerEnumerator = RangedTextStyle::ConstColorPickerEnumerator;
-
-    using InlineObjectEnumerator = RangedTextStyle::InlineObjectEnumerator;
+    using RangedColorPickerAccessor = RangedTextStyle::ColorPickerAccessor;
+    using ConstRangedColorPickerAccessor = RangedTextStyle::ConstColorPickerAccessor;
 
 public:
     StyledText();
@@ -94,8 +92,8 @@ public:
     void SetFontInRange(Font font, const Range& range);
     void ClearRangedFonts();
     const Font& GetFontAtIndex(std::size_t index) const;
-    ConstRangedFontEnumerator RangedFonts() const;
-    RangedFontEnumerator RangedFonts();
+    ConstRangedFontAccessor RangedFonts() const;
+    RangedFontAccessor RangedFonts();
 
     const ColorPicker& DefaultTextColorPicker() const {
         return default_text_color_picker_;
@@ -107,8 +105,8 @@ public:
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range);
     void ClearRangedTextColorPickers();
     const ColorPicker& GetTextColorPickerAtIndex(std::size_t index) const;
-    ConstRangedColorPickerEnumerator RangedTextColorPicker() const;
-    RangedColorPickerEnumerator RangedTextColorPicker();
+    ConstRangedColorPickerAccessor RangedTextColorPicker() const;
+    RangedColorPickerAccessor RangedTextColorPicker();
 
     const ColorPicker& DefaultTextBackColorPicker() const {
         return default_text_color_picker_;
@@ -119,8 +117,8 @@ public:
     void SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range);
     void ClearRangedTextBackColorPickers();
     const ColorPicker& GetTextBackColorPickerAtIndex(std::size_t index) const;
-    ConstRangedColorPickerEnumerator RangedTextBackColorPickers() const;
-    RangedColorPickerEnumerator RangedTextBackColorPickers();
+    ConstRangedColorPickerAccessor RangedTextBackColorPickers() const;
+    RangedColorPickerAccessor RangedTextBackColorPickers();
 
     void AttachInlineObjectToRange(
         std::shared_ptr<InlineObject> object,
@@ -129,7 +127,7 @@ public:
     void ClearInlineObjects();
 
     std::shared_ptr<InlineObject> GetInlineObjectAtIndex(std::size_t index) const;
-    InlineObjectEnumerator InlineObjects() const;
+    InlineObjectAccessor InlineObjects() const;
 
     StyledTextSlice Slice(const Range& range) const;
     void ReplaceSlice(const Range& slice_range, const StyledTextSlice& new_slice);
