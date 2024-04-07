@@ -263,14 +263,16 @@ TEST(TextBoxTest, BackwardCaretByLeftKey) {
         ASSERT_EQ(text_box.SelectionRange(), Range(3, 0));
 
         //Backward across inline objects.
-        /*
-        text_box.SetText(L"xxOxxOOxx");
+        text_box.SetText(L"xxOxOOxx");
         text_box.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 2, 1 });
-        text_box.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 5, 2 });
-        text_box.SetSelectionRange(Range{ 7, 0 });
+        text_box.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 4, 2 });
+        text_box.SetSelectionRange(Range{ 6, 0 });
+        window.Messager().SendWMKEYDOWN(Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(4, 0));
         window.Messager().SendWMKEYDOWN(Key::Left);
         ASSERT_EQ(text_box.SelectionRange(), Range(3, 0));
-        */
+        window.Messager().SendWMKEYDOWN(Key::Left);
+        ASSERT_EQ(text_box.SelectionRange(), Range(2, 0));
     });
 }
 
@@ -314,6 +316,18 @@ TEST(TextBoxTest, ForwardCaretByRightKey) {
         //Forward to the end of the selection.
         text_box.SetText(L"selection");
         text_box.SetSelectionRange(Range{ 3, 3 });
+        window.Messager().SendWMKEYDOWN(Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(6, 0));
+
+        //Forward across inline objects.
+        text_box.SetText(L"xxOxOOxx");
+        text_box.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 2, 1 });
+        text_box.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 4, 2 });
+        text_box.SetSelectionRange(Range{ 2, 0 });
+        window.Messager().SendWMKEYDOWN(Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(3, 0));
+        window.Messager().SendWMKEYDOWN(Key::Right);
+        ASSERT_EQ(text_box.SelectionRange(), Range(4, 0));
         window.Messager().SendWMKEYDOWN(Key::Right);
         ASSERT_EQ(text_box.SelectionRange(), Range(6, 0));
     });

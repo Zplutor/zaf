@@ -30,9 +30,19 @@ std::size_t TextBoxIndexManager::GetPreviousIndex(std::size_t index) const {
         return previous_index;
     }
 
-    //Skip CRLF line break.
-    if (text[previous_index - 1] == L'\r' && text[previous_index] == L'\n') {
-        --previous_index;
+    //Move index to the beginning of the inline object if the index is inside an inline object.
+    auto inline_objects = Context().TextModel().StyledText().InlineObjects();
+    auto iterator = inline_objects.FindItemContainsIndex(previous_index);
+    if (iterator != inline_objects.end()) {
+
+        previous_index = iterator->Range().index;
+    }
+    else {
+
+        //Skip CRLF line break.
+        if (text[previous_index - 1] == L'\r' && text[previous_index] == L'\n') {
+            --previous_index;
+        }
     }
 
     return previous_index;
@@ -46,6 +56,14 @@ std::size_t TextBoxIndexManager::GetNextIndex(std::size_t index) const {
 
     if (index == text.length()) {
         return index;
+    }
+
+    //Move index to the end of the inline object if the index is inside an inline object.
+    auto inline_objects = Context().TextModel().StyledText().InlineObjects();
+    auto iterator = inline_objects.FindItemContainsIndex(index);
+    if (iterator != inline_objects.end()) {
+
+        return iterator->Range().EndIndex();
     }
 
     auto next_index = index + 1;
