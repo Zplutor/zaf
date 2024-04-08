@@ -73,7 +73,7 @@ void TextBoxKeyboardInputHandler::BackwardCaretIndex(bool expand_selection) {
     }
 
     auto caret_index = Context().SelectionManager().CaretIndex();
-    auto new_index = Context().IndexManager().GetPreviousIndex(caret_index);
+    auto new_index = Context().IndexManager().GetBackwardIndex(caret_index);
 
     SetCaretIndexByKey(new_index, expand_selection, true);
 }
@@ -88,7 +88,7 @@ void TextBoxKeyboardInputHandler::ForwardCaretIndex(bool expand_selection) {
     }
 
     auto caret_index = Context().SelectionManager().CaretIndex();
-    auto new_index = Context().IndexManager().GetNextIndex(caret_index);
+    auto new_index = Context().IndexManager().GetForwardIndex(caret_index);
 
     SetCaretIndexByKey(new_index, expand_selection, true);
 }

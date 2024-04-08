@@ -13,8 +13,8 @@ public:
 
     void Initialize() override;
 
-    std::size_t GetPreviousIndex(std::size_t index) const;
-    std::size_t GetNextIndex(std::size_t index) const;
+    std::size_t GetBackwardIndex(std::size_t index) const;
+    std::size_t GetForwardIndex(std::size_t index) const;
 };
 
 }

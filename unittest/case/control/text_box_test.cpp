@@ -334,18 +334,133 @@ TEST(TextBoxTest, ForwardCaretByRightKey) {
 }
 
 
-/*
-TEST(TextBoxTest, HandleCtrlBackspace) {
+TEST(TextBoxTest, HandleBackspace) {
 
     TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {
     
-        text_box.SetText(L" abc123 ");
-        text_box.SetSelectionRange(zaf::Range{ 4, 0 });
+        //Backspace on multi-chars selection.
+        text_box.SetText(L"selection");
+        text_box.SetSelectionRange(Range{ 3, 3 });
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"selion");
+        ASSERT_EQ(text_box.SelectionRange(), Range(3, 0));
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"seion");
+        ASSERT_EQ(text_box.SelectionRange(), Range(2, 0));
 
-        window.Messager().Send(WM_KEYDOWN, static_cast<WPARAM>(zaf::Key::Ctrl), 0);
-        window.Messager().Send(WM_KEYDOWN, static_cast<WPARAM>(zaf::Key::Backspace), 0);
-        ASSERT_EQ(text_box.Text(), L" 123 ");
+        //Backspace between lines.
+        text_box.SetText(L"a\rb\nc\r\nd");
+        text_box.SetSelectionRange(zaf::Range{ 8, 0 });
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"a\rb\nc\r\n");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(7, 0));
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"a\rb\nc");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(5, 0));
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"a\rb\n");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(4, 0));
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"a\rb");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(3, 0));
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"a\r");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(2, 0));
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"a");
         ASSERT_EQ(text_box.SelectionRange(), zaf::Range(1, 0));
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+
+        //Backspace between inline objects.
+        text_box.SetText(L"xOxOOx");
+        text_box.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 1, 1 });
+        text_box.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 3, 2 });
+        text_box.SetSelectionRange(Range{ 6, 0 });
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"xOxOO");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(5, 0));
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"xOx");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(3, 0));
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"xO");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(2, 0));
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"x");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(1, 0));
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_EQ(text_box.Text(), L"");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
     });
 }
-*/
+
+
+TEST(TextBoxTest, HandleDelete) {
+
+    TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {
+
+        //Delete on multi-chars selection.
+        text_box.SetText(L"selection");
+        text_box.SetSelectionRange(Range{ 3, 3 });
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"selion");
+        ASSERT_EQ(text_box.SelectionRange(), Range(3, 0));
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"selon");
+        ASSERT_EQ(text_box.SelectionRange(), Range(3, 0));
+
+        //Delete between lines.
+        text_box.SetText(L"a\rb\nc\r\nd");
+        text_box.SetSelectionRange(zaf::Range{ 0, 0 });
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"\rb\nc\r\nd");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"b\nc\r\nd");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"\nc\r\nd");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"c\r\nd");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"\r\nd");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"d");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+
+        //Delete between inline objects.
+        text_box.SetText(L"xOxOOx");
+        text_box.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 1, 1 });
+        text_box.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 3, 2 });
+        text_box.SetSelectionRange(Range{ 0, 0 });
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"OxOOx");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"xOOx");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"OOx");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"x");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+        window.Messager().SendWMKEYDOWN(Key::Delete);
+        ASSERT_EQ(text_box.Text(), L"");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+    });
+}

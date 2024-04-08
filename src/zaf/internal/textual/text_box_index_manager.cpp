@@ -15,7 +15,7 @@ void TextBoxIndexManager::Initialize() {
 }
 
 
-std::size_t TextBoxIndexManager::GetPreviousIndex(std::size_t index) const {
+std::size_t TextBoxIndexManager::GetBackwardIndex(std::size_t index) const {
 
     auto& text_model = Context().TextModel();
     std::wstring_view text = text_model.GetText();
@@ -49,7 +49,7 @@ std::size_t TextBoxIndexManager::GetPreviousIndex(std::size_t index) const {
 }
 
 
-std::size_t TextBoxIndexManager::GetNextIndex(std::size_t index) const {
+std::size_t TextBoxIndexManager::GetForwardIndex(std::size_t index) const {
     
     std::wstring_view text = Context().TextModel().GetText();
     ZAF_EXPECT(index <= text.length());

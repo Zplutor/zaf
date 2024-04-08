@@ -3,6 +3,7 @@
 #include <zaf/base/auto_reset.h>
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/internal/textual/text_model.h>
+#include <zaf/internal/textual/text_box_index_manager.h>
 #include <zaf/internal/textual/text_box_module_context.h>
 #include <zaf/internal/textual/text_box_selection_manager.h>
 #include <zaf/input/keyboard.h>
@@ -210,12 +211,17 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleDelete() {
         return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
     }
 
-    if (selection_range.EndIndex() == Context().Owner().TextLength()) {
+    auto next_index = Context().IndexManager().GetForwardIndex(selection_range.index);
+    if (next_index == selection_range.index) {
+        //Index not changed, no action.
         return nullptr;
     }
 
-    //Remove the current char.
-    return CreateCommand({}, Range{ selection_range.index, 1 }, selection_range);
+    //Remove chars between next index and current selection index.
+    return CreateCommand(
+        {},
+        Range::FromIndexPair(selection_range.index, next_index),
+        Range{ selection_range.index, 0 });
 }
 
 
@@ -329,15 +335,17 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBackspace() {
         return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
     }
 
-    if (selection_range.index == 0) {
+    auto previous_index = Context().IndexManager().GetBackwardIndex(selection_range.index);
+    if (previous_index == selection_range.index) {
+        //Index not changed, no action.
         return nullptr;
     }
 
-    //Remove the previous char.
+    //Remove chars between previous index and current selection index.
     return CreateCommand(
         {},
-        Range{ selection_range.index - 1, 1 }, 
-        Range{ selection_range.index - 1, 0 });
+        Range::FromIndexPair(previous_index, selection_range.index),
+        Range{ previous_index, 0 });
 }
 
 
