@@ -7,6 +7,7 @@
 namespace zaf {
 namespace internal {
 
+class TextBoxCaretManager;
 class TextBoxEditor;
 class TextBoxHitTestManager;
 class TextBoxIndexManager;
@@ -44,6 +45,10 @@ public:
     TextBoxSelectionManager& SelectionManager() const {
         return *selection_manager_;
     }
+
+    TextBoxCaretManager& CaretManager() const {
+        return *caret_manager_;
+    }
     
     TextBoxMouseInputHandler& MouseInputHandler() const {
         return *mouse_input_handler_;
@@ -62,6 +67,7 @@ private:
     std::unique_ptr<TextBoxHitTestManager> hit_test_manager_;
     std::unique_ptr<TextBoxIndexManager> index_manager_;
     std::unique_ptr<TextBoxSelectionManager> selection_manager_;
+    std::unique_ptr<TextBoxCaretManager> caret_manager_;
     std::unique_ptr<TextBoxMouseInputHandler> mouse_input_handler_;
     std::unique_ptr<TextBoxKeyboardInputHandler> keyboard_input_handler_;
     std::unique_ptr<TextBoxEditor> editor_;

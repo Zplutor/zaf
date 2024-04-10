@@ -79,6 +79,8 @@ void TextBoxEditor::SetCanEdit(bool can_edit) {
     if (!can_edit_) {
         ClearCommands();
     }
+
+    can_edit_changed_event_.Raise(can_edit_);
 }
 
 

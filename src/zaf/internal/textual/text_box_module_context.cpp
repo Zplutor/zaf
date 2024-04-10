@@ -1,4 +1,5 @@
 #include <zaf/internal/textual/text_box_module_context.h>
+#include <zaf/internal/textual/text_box_caret_manager.h>
 #include <zaf/internal/textual/text_box_editor.h>
 #include <zaf/internal/textual/text_box_hit_test_manager.h>
 #include <zaf/internal/textual/text_box_index_manager.h>
@@ -13,6 +14,7 @@ TextBoxModuleContext::TextBoxModuleContext(TextBox* owner) :
     hit_test_manager_(std::make_unique<TextBoxHitTestManager>(this)),
     index_manager_(std::make_unique<TextBoxIndexManager>(this)),
     selection_manager_(std::make_unique<TextBoxSelectionManager>(this)),
+    caret_manager_(std::make_unique<TextBoxCaretManager>(this)),
     mouse_input_handler_(std::make_unique<TextBoxMouseInputHandler>(this)),
     keyboard_input_handler_(std::make_unique<TextBoxKeyboardInputHandler>(this)),
     editor_(std::make_unique<TextBoxEditor>(this)) {
@@ -30,6 +32,7 @@ void TextBoxModuleContext::Initialize() {
     hit_test_manager_->Initialize();
     index_manager_->Initialize();
     selection_manager_->Initialize();
+    caret_manager_->Initialize();
     mouse_input_handler_->Initialize();
     keyboard_input_handler_->Initialize();
     editor_->Initialize();

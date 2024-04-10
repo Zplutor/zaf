@@ -24,6 +24,7 @@ private:
     };
 
 private:
+    bool TryToHandleCaretRelatedKeyEvent(Key key);
     void BackwardCaretIndex(bool expand_selection);
     void ForwardCaretIndex(bool expand_selection);
     bool TryToMoveCaretToSelectionEdge(bool backward);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <zaf/base/event/event.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
 #include <zaf/control/event/keyboard_event_info.h>
@@ -21,6 +22,10 @@ public:
     }
 
     void SetCanEdit(bool can_edit);
+
+    Observable<bool> CanEditChangedEvent() const {
+        return can_edit_changed_event_.GetObservable();
+    }
 
     bool AllowUndo() const {
         return allow_undo_;
@@ -69,6 +74,8 @@ private:
 
 private:
     bool can_edit_{};
+    Event<bool> can_edit_changed_event_;
+
     bool allow_undo_{ true };
     bool is_editing_{};
 

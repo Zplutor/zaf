@@ -2,6 +2,7 @@
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/control/text_box.h>
+#include <zaf/internal/textual/text_box_caret_manager.h>
 #include <zaf/internal/textual/text_box_editor.h>
 #include <zaf/internal/textual/text_box_index_manager.h>
 #include <zaf/internal/textual/text_box_module_context.h>
@@ -23,44 +24,71 @@ void TextBoxKeyboardInputHandler::Initialize() {
 
 void TextBoxKeyboardInputHandler::HandleKeyDown(const KeyDownInfo& event_info) {
 
-    auto virtual_key = event_info.Message().Key();
-    if (virtual_key == Key::Left) {
+    auto key = event_info.Message().Key();
+    if (TryToHandleCaretRelatedKeyEvent(key)) {
+        return;
+    }
+
+    if (key == Key::C && Keyboard::IsCtrlDown()) {
+        HandleCopy();
+    }
+    else if (key == Key::A && Keyboard::IsCtrlDown()) {
+        HandleSelectAll();
+    }
+    else {
+        Context().Editor().HandleKeyDown(event_info);
+    }
+}
+
+
+bool TextBoxKeyboardInputHandler::TryToHandleCaretRelatedKeyEvent(Key key) {
+
+    //Ignore these key events if the caret is disabled.
+    if (!Context().CaretManager().IsCaretEnabled()) {
+        return true;
+    }
+
+    if (key == Key::Left) {
         BackwardCaretIndex(Keyboard::IsShiftDown());
+        return true;
     }
-    else if (virtual_key == Key::Right) {
+
+    if (key == Key::Right) {
         ForwardCaretIndex(Keyboard::IsShiftDown());
+        return true;
     }
-    else if (virtual_key == Key::Up) {
+
+    if (key == Key::Up) {
         UpwardCaretIndex(Keyboard::IsShiftDown());
+        return true;
     }
-    else if (virtual_key == Key::Down) {
+
+    if (key == Key::Down) {
         DownwardCaretIndex(Keyboard::IsShiftDown());
+        return true;
     }
-    else if (virtual_key == Key::Home) {
+
+    if (key == Key::Home) {
         if (Keyboard::IsCtrlDown()) {
             MoveCaretIndexToTextHead();
         }
         else {
             MoveCaretIndexToLineHead();
         }
+        return true;
     }
-    else if (virtual_key == Key::End) {
+
+    if (key == Key::End) {
         if (Keyboard::IsCtrlDown()) {
             MoveCaretIndexToTextEnd();
         }
         else {
             MoveCaretIndexToLineEnd();
         }
+        return true;
     }
-    else if (virtual_key == Key::C && Keyboard::IsCtrlDown()) {
-        HandleCopy();
-    }
-    else if (virtual_key == Key::A && Keyboard::IsCtrlDown()) {
-        HandleSelectAll();
-    }
-    else {
-        Context().Editor().HandleKeyDown(event_info);
-    }
+
+    return false;
 }
 
 

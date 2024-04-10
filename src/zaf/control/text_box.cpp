@@ -1,10 +1,10 @@
 #include <zaf/control/text_box.h>
 #include <zaf/base/as.h>
 #include <zaf/base/log.h>
-#include <zaf/control/caret.h>
 #include <zaf/control/textual/dynamic_inline_object.h>
 #include <zaf/input/mouse.h>
 #include <zaf/internal/textual/text_model.h>
+#include <zaf/internal/textual/text_box_caret_manager.h>
 #include <zaf/internal/textual/text_box_editor.h>
 #include <zaf/internal/textual/text_box_hit_test_manager.h>
 #include <zaf/internal/textual/text_box_keyboard_input_handler.h>
@@ -18,6 +18,7 @@ namespace zaf {
 
 ZAF_DEFINE_TYPE(TextBox)
 ZAF_DEFINE_TYPE_PROPERTY(AllowUndo)
+ZAF_DEFINE_TYPE_PROPERTY(IsCaretEnabledWhenNotEditable)
 ZAF_DEFINE_TYPE_PROPERTY(IsEditable)
 ZAF_DEFINE_TYPE_PROPERTY(SelectedText)
 ZAF_DEFINE_TYPE_PROPERTY(SelectionRange)
@@ -47,8 +48,6 @@ void TextBox::Initialize() {
     SetCanTabStop(true);
     SetCanDoubleClick(true);
     SetBackgroundColor(Color::White());
-
-    caret_ = zaf::Create<zaf::Caret>(As<TextBox>(shared_from_this()));
 }
 
 
@@ -59,9 +58,7 @@ void TextBox::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    if (caret_->IsVisible()) {
-        UpdateCaretAtCurrentIndex();
-    }
+    module_context_->CaretManager().MoveCaretToCurrentCaretIndex();
 }
 
 
@@ -158,7 +155,7 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
 
-    PaintCaret(canvas, dirty_rect);
+    module_context_->CaretManager().PaintCaret(canvas, dirty_rect);
 }
 
 
@@ -211,17 +208,6 @@ void TextBox::PaintSelection(
 }
 
 
-void TextBox::PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect) {
-
-    auto content_rect = ContentRect();
-    auto region_guard = canvas.PushRegion(content_rect, dirty_rect);
-
-    auto caret_dirty_rect = dirty_rect;
-    caret_dirty_rect.SubtractOffset(content_rect.position);
-    caret_->Paint(canvas, caret_dirty_rect);
-}
-
-
 bool TextBox::IsEditable() const {
     return module_context_->Editor().CanEdit();
 }
@@ -229,6 +215,16 @@ bool TextBox::IsEditable() const {
 
 void TextBox::SetIsEditable(bool is_editable) {
     module_context_->Editor().SetCanEdit(is_editable);
+}
+
+
+bool TextBox::IsCaretEnabledWhenNotEditable() const {
+    return module_context_->CaretManager().IsCaretEnabledWhenNotEditable();
+}
+
+
+void TextBox::SetIsCaretEnabledWhenNotEditable(bool value) {
+    module_context_->CaretManager().SetIsCaretEnabledWhenNotEditable(value);
 }
 
 
@@ -362,7 +358,7 @@ void TextBox::OnFocusGained(const FocusGainedInfo& event_info) {
 
     __super::OnFocusGained(event_info);
 
-    UpdateCaretAtCurrentIndex();
+    module_context_->CaretManager().ShowCaret();
     event_info.MarkAsHandled();
 
     if (this->SelectionRange().length > 0) {
@@ -375,7 +371,7 @@ void TextBox::OnFocusLost(const FocusLostInfo& event_info) {
 
     __super::OnFocusLost(event_info);
 
-    caret_->SetIsVisible(false);
+    module_context_->CaretManager().HideCaret();
     event_info.MarkAsHandled();
 
     if (this->SelectionRange().length > 0) {
@@ -464,29 +460,7 @@ void TextBox::OnSelectionChanged(const internal::TextBoxSelectionChangedInfo& ev
         EnsureCaretVisible(event_info.CharRectAtCaret());
     }
 
-    ShowCaret(event_info.CharRectAtCaret());
     NeedRepaint();
-}
-
-
-void TextBox::UpdateCaretAtCurrentIndex() {
-
-    auto hit_test_result = GetTextLayout().HitTestIndex(this->CaretIndex(), false);
-    ShowCaret(hit_test_result.Metrics().Rect());
-}
-
-
-void TextBox::ShowCaret(const zaf::Rect& char_rect_at_caret) {
-
-    zaf::Rect caret_rect = char_rect_at_caret;
-    caret_rect.size.width = 1;
-    caret_rect.AddOffset(text_rect_.position);
-
-    caret_->SetRect(ToPixelAligned(caret_rect, this->GetDPI()));
-
-    if (this->IsFocused()) {
-        caret_->SetIsVisible(true);
-    }
 }
 
 
@@ -707,9 +681,7 @@ void TextBox::DoScroll(
 
     UpdateTextRect(text_rect_);
 
-    if (caret_->IsVisible()) {
-        UpdateCaretAtCurrentIndex();
-    }
+    module_context_->CaretManager().MoveCaretToCurrentCaretIndex();
     NeedRepaint();
 }
 

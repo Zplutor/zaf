@@ -284,6 +284,7 @@
     <ClCompile Include="src\zaf\internal\ranged_value_store.cpp" />
     <ClCompile Include="src\zaf\internal\system_message_window.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
+    <ClCompile Include="src\zaf\internal\textual\text_box_caret_manager.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_editor.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_edit_command.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_hit_test_manager.cpp" />
@@ -732,6 +733,7 @@
     <ClInclude Include="src\zaf\internal\system_message_window.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
     <ClInclude Include="src\zaf\internal\textual\inline_object_attached_info.h" />
+    <ClInclude Include="src\zaf\internal\textual\text_box_caret_manager.h" />
     <ClInclude Include="src\zaf\internal\textual\text_box_editor.h" />
     <ClInclude Include="src\zaf\internal\textual\text_box_edit_command.h" />
     <ClInclude Include="src\zaf\internal\textual\text_box_hit_test_manager.h" />

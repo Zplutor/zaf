@@ -10,13 +10,12 @@
 
 namespace zaf {
 namespace internal {
-class TextBoxSelectionChangedInfo;
+class TextBoxCaretManager;
 class TextBoxHitTestManager;
 class TextBoxModuleContext;
 class TextBoxMouseInputHandler;
+class TextBoxSelectionChangedInfo;
 }
-
-class Caret;
 
 class TextBox : public TextualControl, public SelfScrollControl {
 public:
@@ -39,6 +38,19 @@ public:
     Sets whether the text box is editable.
     */
     void SetIsEditable(bool is_editable);
+
+    /**
+    Indicates whether the caret is enabled when the text box is not editable.
+
+    @remark
+        The caret is disabled for a non-editable text box by default.
+    */
+    bool IsCaretEnabledWhenNotEditable() const;
+
+    /**
+    Sets whether the caret is enabled when the text box is not editable.
+    */
+    void SetIsCaretEnabledWhenNotEditable(bool value);
 
     /**
     Indicates whether the text box allows undo operations.
@@ -228,6 +240,7 @@ protected:
     void HorizontallyScroll(int new_value) override;
 
 private:
+    friend class internal::TextBoxCaretManager;
     friend class internal::TextBoxHitTestManager;
     friend class internal::TextBoxModuleContext;
 
@@ -237,13 +250,9 @@ private:
         const TextLayout& text_layout,
         const zaf::Rect& layout_rect);
 
-    void PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect);
-
     void UpdateTextRectOnLayout();
 
-    void UpdateCaretAtCurrentIndex();
     void OnSelectionChanged(const internal::TextBoxSelectionChangedInfo& event_info);
-    void ShowCaret(const zaf::Rect& char_rect_at_caret);
     void EnsureCaretVisible(const zaf::Rect& char_rect_at_caret);
     
     static void GetScrollValues(
@@ -258,8 +267,6 @@ private:
 
 private:
     std::unique_ptr<internal::TextBoxModuleContext> module_context_;
-
-    std::shared_ptr<Caret> caret_;
 
     zaf::Rect text_rect_;
 
