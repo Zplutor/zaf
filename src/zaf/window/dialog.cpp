@@ -106,9 +106,9 @@ void Dialog::OnShow(const ShowInfo& event_info) {
 }
 
 
-void Dialog::OnFocusedControlChanged(const std::shared_ptr<Control>& previous_focused_control) {
+void Dialog::OnFocusedControlChanged(const FocusedControlChangedInfo& event_info) {
 
-    __super::OnFocusedControlChanged(previous_focused_control);
+    __super::OnFocusedControlChanged(event_info);
 
     auto new_focused_button = std::dynamic_pointer_cast<Button>(FocusedControl());
     if (new_focused_button != nullptr) {

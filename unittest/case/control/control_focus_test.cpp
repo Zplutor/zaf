@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include <format>
+#include <zaf/base/as.h>
 #include <zaf/control/control.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
@@ -71,6 +73,79 @@ TEST(ControlTest, IsInFocusedContext) {
     ASSERT_FALSE(parent->IsInFocusedContext());
 
     window->Destroy();
+}
+
+
+TEST(ControlTest, FocusEvents) {
+
+    TestWithWindow([](Window& window) {
+
+        std::vector<std::wstring> event_logs;
+
+        auto focus_gained_handler = [&event_logs](const FocusGainedInfo& event_info) {
+            event_logs.push_back(std::format(
+                L"FocusGained {}",
+                As<Control>(event_info.Source())->Name()));
+        };
+
+        auto focus_lost_handler = [&event_logs](const FocusLostInfo& event_info) {
+            event_logs.push_back(std::format(
+                L"FocusLost {}", 
+                As<Control>(event_info.Source())->Name()));
+        };
+
+        auto focused_changed_handler = [&event_logs](const FocusedControlChangedInfo& event_info) {
+            event_logs.push_back(std::format(L"FocusedControlChanged {}",
+                event_info.PreviousFocusedControl() ? 
+                event_info.PreviousFocusedControl()->Name() :
+                L""));
+        };
+
+        SubscriptionSet subs;
+
+        auto control1 = Create<Control>();
+        control1->SetName(L"Control1");
+        control1->SetCanFocused(true);
+        subs += control1->FocusGainedEvent().Subscribe(focus_gained_handler);
+        subs += control1->FocusLostEvent().Subscribe(focus_lost_handler);
+
+        auto control2 = Create<Control>();
+        control2->SetName(L"Control2");
+        control2->SetCanFocused(true);
+        subs += control2->FocusGainedEvent().Subscribe(focus_gained_handler);
+        subs += control2->FocusLostEvent().Subscribe(focus_lost_handler);
+
+        window.RootControl()->AddChildren({ control1, control2 });
+        subs += window.FocusedControlChangedEvent().Subscribe(focused_changed_handler);
+
+        //Set focus to Control1.
+        event_logs.clear();
+        control1->SetIsFocused(true);
+        std::vector<std::wstring> expected_logs{
+            L"FocusGained Control1",
+            L"FocusedControlChanged "
+        };
+        ASSERT_EQ(event_logs, expected_logs);
+
+        //Switch focus to Control2.
+        event_logs.clear();
+        control2->SetIsFocused(true);
+        expected_logs = {
+            L"FocusLost Control1",
+            L"FocusGained Control2",
+            L"FocusedControlChanged Control1"
+        };
+        ASSERT_EQ(event_logs, expected_logs);
+
+        //Clear focus
+        event_logs.clear();
+        control2->SetIsFocused(false);
+        expected_logs = {
+            L"FocusLost Control2",
+            L"FocusedControlChanged Control2"
+        };
+        ASSERT_EQ(event_logs, expected_logs);
+    });
 }
 
 

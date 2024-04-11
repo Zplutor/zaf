@@ -162,7 +162,10 @@ void Window::Initialize() {
     focused_control_manager_ = std::make_unique<internal::WindowFocusedControlManager>(*this);
     Subscriptions() += focused_control_manager_->FocusedControlChangedEvent().Subscribe(
         [this](const std::shared_ptr<Control>& previous_focused_control) {
-            OnFocusedControlChanged(previous_focused_control);
+            OnFocusedControlChanged(FocusedControlChangedInfo{ 
+                shared_from_this(), 
+                previous_focused_control 
+            });
         });
 
     SetRootControl(Create<Control>());
@@ -1462,6 +1465,16 @@ Observable<MouseCaptureControlChangedInfo> Window::MouseCaptureControlChangedEve
 
 const std::shared_ptr<Control>& Window::FocusedControl() const {
     return focused_control_manager_->FocusedControl();
+}
+
+
+Observable<FocusedControlChangedInfo> Window::FocusedControlChangedEvent() const {
+    return focused_control_changed_event_.GetObservable();
+}
+
+
+void Window::OnFocusedControlChanged(const FocusedControlChangedInfo& event_info) {
+    focused_control_changed_event_.Raise(event_info);
 }
 
 

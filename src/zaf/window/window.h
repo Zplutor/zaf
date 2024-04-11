@@ -15,6 +15,7 @@
 #include <zaf/window/event/activate_event_info.h>
 #include <zaf/window/event/closing_info.h>
 #include <zaf/window/event/destroyed_info.h>
+#include <zaf/window/event/focused_control_changed_info.h>
 #include <zaf/window/event/handle_created_info.h>
 #include <zaf/window/event/message_handled_info.h>
 #include <zaf/window/event/message_received_info.h>
@@ -466,6 +467,8 @@ public:
       */
     const std::shared_ptr<Control>& FocusedControl() const;
 
+    Observable<FocusedControlChangedInfo> FocusedControlChangedEvent() const;
+
     /**
      Get the renderer of the window.
      */
@@ -788,15 +791,16 @@ protected:
     virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
 
     /**
-     This method is called after the focused control changed.
+    Handle focused control changed event. This method is called after the focused control is 
+    changed.
 
-     @param previous_focused_control
-        The previous focused control, may be nullptr.
+    @param event_info
+        Information of the event.
 
-     Derived classes must call the same method of super class.
-     */
-    virtual void OnFocusedControlChanged(
-        const std::shared_ptr<Control>& previous_focused_control) { }
+    The default implementation of this method raises FocusedControlChangedEvent. Derived classes
+    should call the same method of base class.
+    */
+    virtual void OnFocusedControlChanged(const FocusedControlChangedInfo& event_info);
 
     /**
     Handles mouse capture changed event. This method is called after the mouse capture control
@@ -946,6 +950,7 @@ private:
     std::shared_ptr<Control> mouse_over_control_;
     std::shared_ptr<Control> mouse_capture_control_;
     std::unique_ptr<internal::WindowFocusedControlManager> focused_control_manager_;
+    Event<FocusedControlChangedInfo> focused_control_changed_event_;
     std::shared_ptr<TooltipWindow> tooltip_window_;
 
     std::weak_ptr<InspectorWindow> inspector_window_;

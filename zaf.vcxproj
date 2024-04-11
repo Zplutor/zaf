@@ -352,6 +352,7 @@
     <ClCompile Include="src\zaf\rx\timer.cpp" />
     <ClCompile Include="src\zaf\window\activate_option.cpp" />
     <ClCompile Include="src\zaf\window\event\activate_event_info.cpp" />
+    <ClCompile Include="src\zaf\window\event\focused_control_changed_info.cpp" />
     <ClCompile Include="src\zaf\window\event\selected_menu_item_changed_info.cpp" />
     <ClCompile Include="src\zaf\window\event\mouse_capture_control_changed_info.cpp" />
     <ClCompile Include="src\zaf\window\event\root_control_changed_info.cpp" />
@@ -840,6 +841,7 @@
     <ClInclude Include="src\zaf\application_event_infos.h" />
     <ClInclude Include="src\zaf\window\activate_option.h" />
     <ClInclude Include="src\zaf\window\event\activate_event_info.h" />
+    <ClInclude Include="src\zaf\window\event\focused_control_changed_info.h" />
     <ClInclude Include="src\zaf\window\event\selected_menu_item_changed_info.h" />
     <ClInclude Include="src\zaf\window\event\mouse_capture_control_changed_info.h" />
     <ClInclude Include="src\zaf\window\event\root_control_changed_info.h" />

@@ -1,4 +1,5 @@
 #include <zaf/internal/window/window_focused_control_manager.h>
+#include <zaf/base/auto_reset.h>
 #include <zaf/input/keyboard.h>
 #include <zaf/internal/tab_stop_utility.h>
 
@@ -100,9 +101,42 @@ void WindowFocusedControlManager::HandleWindowDestroy() {
 void WindowFocusedControlManager::ChangeFocusedControl(
     const std::shared_ptr<Control>& new_focused_control) {
 
-    auto previous_focused_control = focused_control_;
-    if (previous_focused_control == new_focused_control) {
+    //This method is re-entrant, use change_counter_ to handle re-enterance.
+
+    if (!CheckIfCanChangeFocusedControl(new_focused_control)) {
         return;
+    }
+
+    auto previous_focused_control = focused_control_;
+    {
+        auto auto_reset = MakeAutoReset(change_counter_);
+        change_counter_++;
+
+        focused_control_ = new_focused_control;
+
+        if (previous_focused_control) {
+            ChangeControlFocusState(previous_focused_control, new_focused_control, false);
+        }
+
+        if (focused_control_ == new_focused_control) {
+            if (new_focused_control) {
+                ChangeControlFocusState(new_focused_control, previous_focused_control, true);
+            }
+        }
+    }
+
+    if (change_counter_ == 0) {
+        focused_control_changed_event_.Raise(previous_focused_control);
+    }
+}
+
+
+bool WindowFocusedControlManager::CheckIfCanChangeFocusedControl(
+    const std::shared_ptr<Control>& new_focused_control) const {
+
+    //The same control, not allow to change.
+    if (focused_control_ == new_focused_control) {
+        return false;
     }
 
     if (new_focused_control) {
@@ -110,30 +144,20 @@ void WindowFocusedControlManager::ChangeFocusedControl(
         //Not allow to set focused control if the window has no focus.
         //(But allow to clear focused control)
         if (!window_.IsFocused()) {
-            return;
+            return false;
         }
 
         if (!new_focused_control->IsEnabledInContext()) {
-            return;
+            return false;
         }
 
         //The focused control must be contained in this window
         if (new_focused_control->Window().get() != &window_) {
-            return;
+            return false;
         }
     }
 
-    focused_control_ = new_focused_control;
-
-    if (previous_focused_control) {
-        ChangeControlFocusState(previous_focused_control, new_focused_control, false);
-    }
-
-    if (new_focused_control) {
-        ChangeControlFocusState(new_focused_control, previous_focused_control, true);
-    }
-
-    focused_control_changed_event_.Raise(previous_focused_control);
+    return true;
 }
 
 
