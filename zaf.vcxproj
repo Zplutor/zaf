@@ -295,6 +295,7 @@
     <ClCompile Include="src\zaf\internal\textual\text_box_mouse_input_handler.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_selection_manager.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_model.cpp" />
+    <ClCompile Include="src\zaf\internal\window\window_focused_control_manager.cpp" />
     <ClCompile Include="src\zaf\object\boxing\boolean.cpp" />
     <ClCompile Include="src\zaf\object\boxing\numeric.cpp" />
     <ClCompile Include="src\zaf\object\boxing\string.cpp" />
@@ -745,6 +746,7 @@
     <ClInclude Include="src\zaf\internal\textual\text_box_selection_manager.h" />
     <ClInclude Include="src\zaf\internal\textual\text_model.h" />
     <ClInclude Include="src\zaf\internal\theme.h" />
+    <ClInclude Include="src\zaf\internal\window\window_focused_control_manager.h" />
     <ClInclude Include="src\zaf\object\boxing\boolean.h" />
     <ClInclude Include="src\zaf\object\boxing\boxed_object.h" />
     <ClInclude Include="src\zaf\object\boxing\boxing.h" />

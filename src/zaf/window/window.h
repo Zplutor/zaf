@@ -30,6 +30,7 @@
 namespace zaf {
 namespace internal {
 class InspectorPort;
+class WindowFocusedControlManager;
 }
 
 class HitTestMessage;
@@ -463,9 +464,7 @@ public:
     /**
      Get the control which has input focus in the window.
       */
-    const std::shared_ptr<Control>& FocusedControl() const {
-        return focused_control_;
-    }
+    const std::shared_ptr<Control>& FocusedControl() const;
 
     /**
      Get the renderer of the window.
@@ -827,11 +826,6 @@ private:
         const std::shared_ptr<Control>& capture_control,
         bool is_releasing);
     void CancelMouseCapture();
-    void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
-    void ChangeControlFocusState(
-        const std::shared_ptr<Control>& target_control, 
-        const std::shared_ptr<Control>& changing_control,
-        bool is_focused);
 
     void SetHighlightControl(const std::shared_ptr<Control>& inspected_control);
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
@@ -858,8 +852,6 @@ private:
     void GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const;
     zaf::Size AdjustContentSizeToWindowSize(const zaf::Size& content_size) const;
 
-    bool TryToPreprocessTabKeyMessage(const KeyMessage& message);
-    void SwitchFocusedControlByTabKey(bool backward);
     bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);
 
     LRESULT RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam);
@@ -953,8 +945,7 @@ private:
     std::shared_ptr<Control> root_control_;
     std::shared_ptr<Control> mouse_over_control_;
     std::shared_ptr<Control> mouse_capture_control_;
-    std::shared_ptr<Control> focused_control_;
-    std::weak_ptr<Control> last_focused_control_;
+    std::unique_ptr<internal::WindowFocusedControlManager> focused_control_manager_;
     std::shared_ptr<TooltipWindow> tooltip_window_;
 
     std::weak_ptr<InspectorWindow> inspector_window_;

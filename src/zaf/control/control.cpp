@@ -18,6 +18,7 @@
 #include <zaf/graphic/geometry/rectangle_geometry.h>
 #include <zaf/graphic/image/image.h>
 #include <zaf/internal/theme.h>
+#include <zaf/internal/window/window_focused_control_manager.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 #include <zaf/window/inspector/internal/inspector_port.h>
@@ -1530,9 +1531,12 @@ void Control::SetIsFocused(bool is_focused) {
     }
 
     auto window = Window();
-    if (window != nullptr) {
-        window->SetFocusedControl(is_focused ? shared_from_this() : nullptr);
+    if (!window) {
+        return;
     }
+
+    window->focused_control_manager_->ChangeFocusedControl(
+        is_focused ? shared_from_this() : nullptr);
 }
 
 

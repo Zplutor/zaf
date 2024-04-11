@@ -12,6 +12,7 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
+#include <zaf/internal/window/window_focused_control_manager.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_node_parse_helper.h>
 #include <zaf/object/type_definition.h>
@@ -41,32 +42,6 @@ Point TranslateAbsolutePositionToControlPosition(
     result.x = absolute_position.x - control_absolute_rect->position.x;
     result.y = absolute_position.y - control_absolute_rect->position.y;
     return result;
-}
-
-
-template<typename E>
-void RouteFocusEventGeneric(
-    const std::shared_ptr<Control>& source,
-    const std::shared_ptr<Control>& chaning_control,
-    void (Control::*event_function)(const E&)) {
-
-    auto event_info_state = std::make_shared<internal::FocusEventSharedState>(
-        source, 
-        chaning_control);
-
-    bool original_is_focused = source->IsFocused();
-
-    for (auto sender = source; sender; sender = sender->Parent()) {
-
-        E event_info{ event_info_state, sender };
-        (sender.get()->*event_function)(event_info);
-
-        //Stop routing event if focused control is changed during the routing.
-        if (source->IsFocused() != original_is_focused) {
-            break;
-        }
-    }
-
 }
 
 
@@ -183,6 +158,12 @@ Window::~Window() {
 void Window::Initialize() {
 
     __super::Initialize();
+
+    focused_control_manager_ = std::make_unique<internal::WindowFocusedControlManager>(*this);
+    Subscriptions() += focused_control_manager_->FocusedControlChangedEvent().Subscribe(
+        [this](const std::shared_ptr<Control>& previous_focused_control) {
+            OnFocusedControlChanged(previous_focused_control);
+        });
 
     SetRootControl(Create<Control>());
 }
@@ -373,7 +354,7 @@ void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) con
 
 bool Window::PreprocessMessage(const KeyMessage& message) {
 
-    if (TryToPreprocessTabKeyMessage(message)) {
+    if (focused_control_manager_->TryToPreprocessTabKeyMessage(message)) {
         return true;
     }
 
@@ -382,36 +363,6 @@ bool Window::PreprocessMessage(const KeyMessage& message) {
     }
 
     return false;
-}
-
-
-bool Window::TryToPreprocessTabKeyMessage(const KeyMessage& message) {
-
-    if (message.ID() != WM_KEYDOWN || message.Key() != Key::Tab) {
-        return false;
-    }
-
-    if ((focused_control_) && focused_control_->AcceptKeyMessage(message)) {
-        return false;
-    }
-
-    bool backward = (GetKeyState(VK_SHIFT) >> 15) != 0;
-    SwitchFocusedControlByTabKey(backward);
-    return true;
-}
-
-
-void Window::SwitchFocusedControlByTabKey(bool backward) {
-
-    auto current_focused_control = focused_control_;
-    if (current_focused_control == nullptr) {
-        current_focused_control = root_control_;
-    }
-
-    auto next_focused_control = internal::FindNextTabStopControl(current_focused_control, backward);
-    if (next_focused_control != nullptr) {
-        SetFocusedControl(next_focused_control);
-    }
 }
 
 
@@ -850,11 +801,7 @@ Observable<DeactivatedInfo> Window::DeactivatedEvent() const {
 
 void Window::HandleWMSETFOCUS(const SetFocusMessage& message) {
 
-    if (auto last_focused_control = last_focused_control_.lock()) {
-        last_focused_control_.reset();
-        SetFocusedControl(last_focused_control);
-    }
-
+    focused_control_manager_->HandleWindowSetFocus();
     OnFocusGained(WindowFocusGainedInfo{ shared_from_this(), message.Inner() });
 }
 
@@ -871,9 +818,7 @@ Observable<WindowFocusGainedInfo> Window::FocusGainedEvent() const {
 
 void Window::HandleWMKILLFOCUS(const KillFocusMessage& message) {
 
-    last_focused_control_ = FocusedControl();
-    SetFocusedControl(nullptr);
-
+    focused_control_manager_->HandleWindowKillFocus();
     OnFocusLost(WindowFocusLostInfo{ shared_from_this(), message.Inner() });
 }
 
@@ -1258,8 +1203,10 @@ bool Window::HandleWMSETCURSOR(const Message& message) {
 
 
 bool Window::HandleKeyboardMessage(const Message& message) {
-    if (focused_control_) {
-        return internal::RouteKeyboardEvent(focused_control_, message);
+
+    const auto& focused_control = focused_control_manager_->FocusedControl();
+    if (focused_control) {
+        return internal::RouteKeyboardEvent(focused_control, message);
     }
     return false;
 }
@@ -1322,10 +1269,7 @@ void Window::HandleWMDESTROY() {
 
     CancelMouseCapture();
 
-    if (focused_control_ != nullptr) {
-        focused_control_->SetIsFocusedByWindow(false);
-        focused_control_ = nullptr;
-    }
+    focused_control_manager_->HandleWindowDestroy();
 
     root_control_->ReleaseRendererResources();
 
@@ -1516,66 +1460,8 @@ Observable<MouseCaptureControlChangedInfo> Window::MouseCaptureControlChangedEve
 }
 
 
-void Window::SetFocusedControl(const std::shared_ptr<Control>& new_focused_control) {
-
-    auto previous_focused_control = focused_control_;
-    if (previous_focused_control == new_focused_control) {
-        return;
-    }
-
-    if (new_focused_control) {
-
-        //Not allow to set focused control if the window has no focus.
-        //(But allow to clear focused control)
-        if (!IsFocused()) {
-            return;
-        }
-
-        if (!new_focused_control->IsEnabledInContext()) {
-            return;
-        }
-
-        //The focused control must be contained in this window
-        if (new_focused_control->Window().get() != this) {
-            return;
-        }
-    }
-
-    focused_control_ = new_focused_control;
-
-    if (previous_focused_control) {
-        ChangeControlFocusState(previous_focused_control, new_focused_control, false);
-    }
-
-    if (new_focused_control) {
-        ChangeControlFocusState(new_focused_control, previous_focused_control, true);
-    }
-
-    OnFocusedControlChanged(previous_focused_control);
-}
-
-
-void Window::ChangeControlFocusState(
-    const std::shared_ptr<Control>& target_control, 
-    const std::shared_ptr<Control>& changing_control,
-    bool is_focused) {
-
-    target_control->SetIsFocusedByWindow(is_focused);
-
-    if (is_focused) {
-
-        RouteFocusEventGeneric<FocusGainedInfo>(
-            target_control,
-            changing_control,
-            &Control::OnFocusGained);
-    }
-    else {
-
-        RouteFocusEventGeneric<FocusLostInfo>(
-            target_control, 
-            changing_control,
-            &Control::OnFocusLost);
-    }
+const std::shared_ptr<Control>& Window::FocusedControl() const {
+    return focused_control_manager_->FocusedControl();
 }
 
 

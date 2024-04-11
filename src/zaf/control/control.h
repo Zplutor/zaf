@@ -39,6 +39,7 @@
 namespace zaf {
 namespace internal {
 class ControlEventInvokerBinder;
+class WindowFocusedControlManager;
 class ControlUpdateLock;
 class ControlUpdateState;
 class InspectorPort;
@@ -1006,6 +1007,7 @@ private:
     friend class Caret;
     friend class Window;
     friend class internal::ControlEventInvokerBinder;
+    friend class internal::WindowFocusedControlManager;
 
     void SetWindow(const std::shared_ptr<zaf::Window>& window) {
         window_ = window;

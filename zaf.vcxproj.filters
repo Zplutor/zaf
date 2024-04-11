@@ -190,6 +190,9 @@
     <Filter Include="zaf\internal\textual">
       <UniqueIdentifier>{cc231b1d-56ca-47fa-a826-a017009b9ce9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\internal\window">
+      <UniqueIdentifier>{f8bf1293-ffd0-4207-afb9-0e18153a62ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1170,6 +1173,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\internal\textual\text_box_caret_manager.cpp">
       <Filter>zaf\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\window\window_focused_control_manager.cpp">
+      <Filter>zaf\internal\window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2664,6 +2670,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\textual\text_box_caret_manager.h">
       <Filter>zaf\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\window\window_focused_control_manager.h">
+      <Filter>zaf\internal\window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
