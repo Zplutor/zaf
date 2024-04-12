@@ -29,7 +29,8 @@ public:
 private:
     void SwitchFocusedControlByTabKey(bool backward);
 
-    bool CheckIfCanChangeFocusedControl(const std::shared_ptr<Control>& new_focused_control) const;
+    void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
+    bool CheckIfCanSetFocusedControl(const std::shared_ptr<Control>& new_focused_control) const;
 
     static void ChangeControlFocusState(
         const std::shared_ptr<Control>& target_control,
@@ -40,9 +41,10 @@ private:
 private:
     Window& window_;
 
-    std::size_t change_counter_{};
+    bool is_changing_focused_control_{};
     std::shared_ptr<Control> focused_control_;
     std::weak_ptr<Control> last_focused_control_;
+    std::optional<std::weak_ptr<Control>> pending_focused_control_;
 
     Event<std::shared_ptr<Control>> focused_control_changed_event_;
 };

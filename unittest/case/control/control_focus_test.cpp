@@ -209,6 +209,29 @@ TEST_F(ControlFocusTest, FocusEvents_NoReentrant) {
 
 
 /*
+Special test case: cancel the focus on its focus gained event.
+*/
+TEST_F(ControlFocusTest, CancelFocusOnFocusGained) {
+
+    auto sub = Control1()->FocusGainedEvent().Subscribe([this](const FocusGainedInfo& event_info) {
+        Control1()->SetIsFocused(false);
+    });
+
+    Control1()->SetIsFocused(true);
+
+    ASSERT_FALSE(Control1()->IsFocused());
+    ASSERT_EQ(TestWindow()->FocusedControl(), nullptr);
+
+    ASSERT_TRUE(CheckEventLogs({
+        L"FocusGained Control1",
+        L"FocusedControlChanged ",
+        L"FocusLost Control1",
+        L"FocusedControlChanged Control1",
+    }));
+}
+
+
+/*
 Special test case: set focus back to the original control on its focus lost event.
 */
 TEST_F(ControlFocusTest, SetBackFocusOnFocusLost) {
@@ -232,6 +255,10 @@ TEST_F(ControlFocusTest, SetBackFocusOnFocusLost) {
         L"FocusGained Control1",
         L"FocusedControlChanged ",
         L"FocusLost Control1",
-        L"FocusGained Control1"
+        L"FocusGained Control2",
+        L"FocusedControlChanged Control1",
+        L"FocusLost Control2",
+        L"FocusGained Control1",
+        L"FocusedControlChanged Control2",
     }));
 }

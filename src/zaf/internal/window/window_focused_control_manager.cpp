@@ -101,37 +101,55 @@ void WindowFocusedControlManager::HandleWindowDestroy() {
 void WindowFocusedControlManager::ChangeFocusedControl(
     const std::shared_ptr<Control>& new_focused_control) {
 
-    //This method is re-entrant, use change_counter_ to handle re-enterance.
-
-    if (!CheckIfCanChangeFocusedControl(new_focused_control)) {
+    //This method is re-entrant. If there is already a control that is being set focus, we store 
+    //the last contorl to a pending variable, and set the focus to the pending control after 
+    //current setting is finished.
+    if (is_changing_focused_control_) {
+        pending_focused_control_ = new_focused_control;
         return;
     }
 
-    auto previous_focused_control = focused_control_;
     {
-        auto auto_reset = MakeAutoReset(change_counter_);
-        change_counter_++;
-
-        focused_control_ = new_focused_control;
-
-        if (previous_focused_control) {
-            ChangeControlFocusState(previous_focused_control, new_focused_control, false);
-        }
-
-        if (focused_control_ == new_focused_control) {
-            if (new_focused_control) {
-                ChangeControlFocusState(new_focused_control, previous_focused_control, true);
-            }
-        }
+        auto auto_reset = MakeAutoReset(is_changing_focused_control_, true);
+        SetFocusedControl(new_focused_control);
     }
 
-    if (change_counter_ == 0) {
-        focused_control_changed_event_.Raise(previous_focused_control);
+    //Recursively set focus to the pending control.
+    if (pending_focused_control_) {
+
+        auto pending_focused_control = pending_focused_control_->lock();
+        pending_focused_control_.reset();
+
+        ChangeFocusedControl(pending_focused_control);
     }
 }
 
 
-bool WindowFocusedControlManager::CheckIfCanChangeFocusedControl(
+void WindowFocusedControlManager::SetFocusedControl(
+    const std::shared_ptr<Control>& new_focused_control) {
+
+    if (!CheckIfCanSetFocusedControl(new_focused_control)) {
+        return;
+    }
+
+    auto previous_focused_control = focused_control_;
+    focused_control_ = new_focused_control;
+
+    if (previous_focused_control) {
+        ChangeControlFocusState(previous_focused_control, new_focused_control, false);
+    }
+
+    if (focused_control_ == new_focused_control) {
+        if (new_focused_control) {
+            ChangeControlFocusState(new_focused_control, previous_focused_control, true);
+        }
+    }
+
+    focused_control_changed_event_.Raise(previous_focused_control);
+}
+
+
+bool WindowFocusedControlManager::CheckIfCanSetFocusedControl(
     const std::shared_ptr<Control>& new_focused_control) const {
 
     //The same control, not allow to change.
