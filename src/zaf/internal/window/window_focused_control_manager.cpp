@@ -9,12 +9,12 @@ namespace {
 template<typename E>
 void RouteFocusEventGeneric(
     const std::shared_ptr<Control>& source,
-    const std::shared_ptr<Control>& chaning_control,
+    const std::shared_ptr<Control>& changing_control,
     void (Control::* event_function)(const E&)) {
 
     auto event_info_state = std::make_shared<internal::FocusEventSharedState>(
         source,
-        chaning_control);
+        changing_control);
 
     bool original_is_focused = source->IsFocused();
 

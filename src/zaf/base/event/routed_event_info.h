@@ -10,6 +10,8 @@ public:
 
     }
 
+    virtual ~RoutedEventSharedState() = default;
+
     const std::shared_ptr<Object>& Source() const {
         return source_;
     }
