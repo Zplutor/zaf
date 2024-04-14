@@ -2021,6 +2021,16 @@ Observable<SysCharInputInfo> Control::SysCharInputEvent() const {
 }
 
 
+void Control::OnPreFocusGained(const PreFocusGainedInfo& event_info){
+    pre_focus_gained_event_.Raise(event_info);
+}
+
+
+Observable<PreFocusGainedInfo> Control::PreFocusGainedEvent() const {
+    return pre_focus_gained_event_.GetObservable();
+}
+
+
 void Control::OnFocusGained(const FocusGainedInfo& event_info) {
     focus_gained_event_.Raise(event_info);
 }
@@ -2028,6 +2038,16 @@ void Control::OnFocusGained(const FocusGainedInfo& event_info) {
 
 Observable<FocusGainedInfo> Control::FocusGainedEvent() const {
     return focus_gained_event_.GetObservable();
+}
+
+
+void Control::OnPreFocusLost(const PreFocusLostInfo& event_info) {
+    pre_focus_lost_event_.Raise(event_info);
+}
+
+
+Observable<PreFocusLostInfo> Control::PreFocusLostEvent() const {
+    return pre_focus_lost_event_.GetObservable();
 }
 
 

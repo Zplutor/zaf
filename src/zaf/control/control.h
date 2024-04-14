@@ -784,7 +784,10 @@ public:
     Observable<PositionChangedInfo> PositionChangedEvent() const;
     Observable<SizeChangedInfo> SizeChangedEvent() const;
 
+    Observable<PreFocusGainedInfo> PreFocusGainedEvent() const;
     Observable<FocusGainedInfo> FocusGainedEvent() const;
+
+    Observable<PreFocusLostInfo> PreFocusLostEvent() const;
     Observable<FocusLostInfo> FocusLostEvent() const;
 
     Observable<MouseCursorChangingInfo> MouseCursorChangingEvent() const;
@@ -948,7 +951,10 @@ protected:
     virtual void OnPreSysCharInput(const PreSysCharInputInfo& event_info);
     virtual void OnSysCharInput(const SysCharInputInfo& event_info);
 
+    virtual void OnPreFocusGained(const PreFocusGainedInfo& event_info);
     virtual void OnFocusGained(const FocusGainedInfo& event_info);
+
+    virtual void OnPreFocusLost(const PreFocusLostInfo& event_info);
     virtual void OnFocusLost(const FocusLostInfo& event_info);
 
     /**
@@ -1126,7 +1132,9 @@ private:
     Event<IsVisibleChangedInfo> is_visible_changed_event_;
     Event<IsEnabledChangedInfo> is_enabled_changed_event_;
     Event<IsSelectedChangedInfo> is_selected_changed_event_;
+    Event<PreFocusGainedInfo> pre_focus_gained_event_;
     Event<FocusGainedInfo> focus_gained_event_;
+    Event<PreFocusLostInfo> pre_focus_lost_event_;
     Event<FocusLostInfo> focus_lost_event_;
     Event<MouseCursorChangingInfo> mouse_cursor_changing_event_;
     Event<PreMouseMoveInfo> pre_mouse_move_event_;
