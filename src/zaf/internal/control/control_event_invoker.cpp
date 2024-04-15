@@ -1,4 +1,4 @@
-#include <zaf/control/internal/control_event_invoker.h>
+#include <zaf/internal/control/control_event_invoker.h>
 #include <zaf/base/error/check.h>
 #include <zaf/control/control.h>
 

@@ -3,13 +3,13 @@
 #include <zaf/application.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/error/system_error.h>
-#include <zaf/control/internal/keyboard_event_routing.h>
-#include <zaf/control/internal/mouse_event_routing.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/graphic_factory.h>
+#include <zaf/internal/control/keyboard_event_routing.h>
+#include <zaf/internal/control/mouse_event_routing.h>
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
 #include <zaf/internal/window/window_focused_control_manager.h>

@@ -1,6 +1,6 @@
-#include <zaf/control/internal/mouse_event_routing.h>
-#include <zaf/control/internal/control_event_invoker.h>
-#include <zaf/control/internal/event_routing_utility.h>
+#include <zaf/internal/control/mouse_event_routing.h>
+#include <zaf/internal/control/control_event_invoker.h>
+#include <zaf/internal/control/control_event_router.h>
 
 namespace zaf::internal {
 namespace {
