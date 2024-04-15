@@ -14,10 +14,22 @@ class ControlFocusTest : public testing::Test {
 public:
     static void SetUpTestCase() {
 
+        auto pre_focus_gained_handler = [](const PreFocusGainedInfo& event_info) {
+            event_logs_.push_back(std::format(
+                L"PreFocusGained {}",
+                As<Control>(event_info.Sender())->Name()));
+        };
+
         auto focus_gained_handler = [](const FocusGainedInfo& event_info) {
             event_logs_.push_back(std::format(
                 L"FocusGained {}",
                 As<Control>(event_info.Source())->Name()));
+        };
+
+        auto pre_focus_lost_handler = [](const PreFocusLostInfo& event_info) {
+            event_logs_.push_back(std::format(
+                L"PreFocusLost {}", 
+                As<Control>(event_info.Sender())->Name()));
         };
 
         auto focus_lost_handler = [](const FocusLostInfo& event_info) {
@@ -40,16 +52,24 @@ public:
         control1_ = Create<Control>();
         control1_->SetName(L"Control1");
         control1_->SetCanFocused(true);
+        test_window_->Subscriptions() +=
+            control1_->PreFocusGainedEvent().Subscribe(pre_focus_gained_handler);
         test_window_->Subscriptions() += 
             control1_->FocusGainedEvent().Subscribe(focus_gained_handler);
+        test_window_->Subscriptions() +=
+            control1_->PreFocusLostEvent().Subscribe(pre_focus_lost_handler);
         test_window_->Subscriptions() += 
             control1_->FocusLostEvent().Subscribe(focus_lost_handler);
 
         control2_ = Create<Control>();
         control2_->SetName(L"Control2");
         control2_->SetCanFocused(true);
+        test_window_->Subscriptions() +=
+            control2_->PreFocusGainedEvent().Subscribe(pre_focus_gained_handler);
         test_window_->Subscriptions() += 
             control2_->FocusGainedEvent().Subscribe(focus_gained_handler);
+        test_window_->Subscriptions() +=
+            control2_->PreFocusLostEvent().Subscribe(pre_focus_lost_handler);
         test_window_->Subscriptions() += 
             control2_->FocusLostEvent().Subscribe(focus_lost_handler);
 
@@ -187,6 +207,7 @@ TEST_F(ControlFocusTest, FocusEvents_NoReentrant) {
     //Set focus to Control1.
     Control1()->SetIsFocused(true);
     ASSERT_TRUE(CheckEventLogs({
+        L"PreFocusGained Control1",
         L"FocusGained Control1",
         L"FocusedControlChanged ",
     }));
@@ -194,7 +215,9 @@ TEST_F(ControlFocusTest, FocusEvents_NoReentrant) {
     //Switch focus to Control2.
     Control2()->SetIsFocused(true);
     ASSERT_TRUE(CheckEventLogs({
+        L"PreFocusLost Control1",
         L"FocusLost Control1",
+        L"PreFocusGained Control2",
         L"FocusGained Control2",
         L"FocusedControlChanged Control1"
     }));
@@ -202,6 +225,7 @@ TEST_F(ControlFocusTest, FocusEvents_NoReentrant) {
     //Clear focus
     Control2()->SetIsFocused(false);
     ASSERT_TRUE(CheckEventLogs({
+        L"PreFocusLost Control2",
         L"FocusLost Control2",
         L"FocusedControlChanged Control2"
     }));
@@ -223,8 +247,10 @@ TEST_F(ControlFocusTest, CancelFocusOnFocusGained) {
     ASSERT_EQ(TestWindow()->FocusedControl(), nullptr);
 
     ASSERT_TRUE(CheckEventLogs({
+        L"PreFocusGained Control1",
         L"FocusGained Control1",
         L"FocusedControlChanged ",
+        L"PreFocusLost Control1",
         L"FocusLost Control1",
         L"FocusedControlChanged Control1",
     }));
@@ -252,12 +278,17 @@ TEST_F(ControlFocusTest, SetBackFocusOnFocusLost) {
     ASSERT_EQ(TestWindow()->FocusedControl(), Control1());
 
     ASSERT_TRUE(CheckEventLogs({
+        L"PreFocusGained Control1",
         L"FocusGained Control1",
         L"FocusedControlChanged ",
+        L"PreFocusLost Control1",
         L"FocusLost Control1",
+        L"PreFocusGained Control2",
         L"FocusGained Control2",
         L"FocusedControlChanged Control1",
+        L"PreFocusLost Control2",
         L"FocusLost Control2",
+        L"PreFocusGained Control1",
         L"FocusGained Control1",
         L"FocusedControlChanged Control2",
     }));

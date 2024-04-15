@@ -1,36 +1,10 @@
 #include <zaf/internal/window/window_focused_control_manager.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/input/keyboard.h>
+#include <zaf/internal/control/control_event_router.h>
 #include <zaf/internal/tab_stop_utility.h>
 
 namespace zaf::internal {
-namespace {
-
-template<typename E>
-void RouteFocusEventGeneric(
-    const std::shared_ptr<Control>& source,
-    const std::shared_ptr<Control>& changing_control,
-    void (Control::* event_function)(const E&)) {
-
-    auto event_info_state = std::make_shared<internal::FocusEventSharedState>(
-        source,
-        changing_control);
-
-    bool original_is_focused = source->IsFocused();
-
-    for (auto sender = source; sender; sender = sender->Parent()) {
-
-        E event_info{ event_info_state, sender };
-        (sender.get()->*event_function)(event_info);
-
-        //Stop routing event if focused control is changed during the routing.
-        if (source->IsFocused() != original_is_focused) {
-            break;
-        }
-    }
-}
-
-}
 
 WindowFocusedControlManager::WindowFocusedControlManager(Window& window) : window_(window) {
 
@@ -139,10 +113,8 @@ void WindowFocusedControlManager::SetFocusedControl(
         ChangeControlFocusState(previous_focused_control, new_focused_control, false);
     }
 
-    if (focused_control_ == new_focused_control) {
-        if (new_focused_control) {
-            ChangeControlFocusState(new_focused_control, previous_focused_control, true);
-        }
+    if (new_focused_control) {
+        ChangeControlFocusState(new_focused_control, previous_focused_control, true);
     }
 
     focused_control_changed_event_.Raise(previous_focused_control);
@@ -186,20 +158,37 @@ void WindowFocusedControlManager::ChangeControlFocusState(
 
     target_control->SetIsFocusedByWindow(is_focused);
 
-    if (is_focused) {
+    ControlEventRouter<FocusEventSharedState> router;
 
-        RouteFocusEventGeneric<FocusGainedInfo>(
-            target_control,
-            changing_control,
-            &Control::OnFocusGained);
-    }
-    else {
+    router.SetEventInfoStateCreator([&changing_control](const std::shared_ptr<Control>& source) {
+        return std::make_shared<internal::FocusEventSharedState>(source, changing_control);
+    });
 
-        RouteFocusEventGeneric<FocusLostInfo>(
-            target_control,
-            changing_control,
-            &Control::OnFocusLost);
-    }
+    router.SetTunnelingEventInvoker(
+        is_focused ? 
+        [](const std::shared_ptr<FocusEventSharedState>& state, 
+           const std::shared_ptr<Control>& sender) {
+            sender->OnPreFocusGained(PreFocusGainedInfo{ state, sender });
+        } 
+        :
+        [](const std::shared_ptr<FocusEventSharedState>& state,
+           const std::shared_ptr<Control>& sender) {
+            sender->OnPreFocusLost(PreFocusLostInfo{ state, sender });
+        });
+
+    router.SetBubblingEventInvoker(
+        is_focused ?
+        [](const std::shared_ptr<FocusEventSharedState>& state,
+           const std::shared_ptr<Control>& sender) {
+            sender->OnFocusGained(FocusGainedInfo{ state, sender });
+        }
+        :
+        [](const std::shared_ptr<FocusEventSharedState>& state,
+           const std::shared_ptr<Control>& sender) {
+            sender->OnFocusLost(FocusLostInfo{ state, sender });
+        });
+
+    router.Route(target_control);
 }
 
 }
