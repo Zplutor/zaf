@@ -1018,9 +1018,15 @@ bool Window::RouteMouseEvent(const MouseMessage& message) {
         return false;
     }
 
+    auto event_info_state = std::make_shared<internal::MouseEventSharedState>(
+        event_target_info.control,
+        message.Inner(),
+        event_target_info.position
+    );
+
     //Tunnel the event.
-    bool is_handled = internal::TunnelMouseEvent(event_target_info.control, message);
-    if (!is_handled) {
+    internal::TunnelMouseEvent(event_target_info.control, event_info_state, message);
+    if (!event_info_state->IsHandled()) {
         //Change mouse over control if the event is not handled in tunneling phase.
         if (is_mouse_move()) {
             SetMouseOverControl(event_target_info.control, message);
@@ -1028,11 +1034,13 @@ bool Window::RouteMouseEvent(const MouseMessage& message) {
     }
 
     //Bubble the event.
-    return internal::BubbleMouseEvent(
+    internal::BubbleMouseEvent(
         event_target_info.control, 
         event_target_info.position,
-        message, 
-        is_handled);
+        event_info_state,
+        message);
+
+    return event_info_state->IsHandled();
 }
 
 

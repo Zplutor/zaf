@@ -45,8 +45,8 @@ TEST(ControlMouseEventRoutingTest, RoutingPath) {
 
         ++event_seed;
         ASSERT_EQ(event_seed, 1);
-        ASSERT_TRUE(event_info.Source()->IsEqual(*window->RootControl()));
-        ASSERT_EQ(event_info.PositionAtSource(), zaf::Point(100, 100));
+        ASSERT_TRUE(event_info.Source()->IsEqual(*inner_control));
+        ASSERT_EQ(event_info.PositionAtSource(), zaf::Point(30, 30));
         ASSERT_TRUE(event_info.Sender()->IsEqual(*window->RootControl()));
         ASSERT_EQ(event_info.PositionAtSender(), zaf::Point(100, 100));
     });
@@ -56,8 +56,8 @@ TEST(ControlMouseEventRoutingTest, RoutingPath) {
 
         ++event_seed;
         ASSERT_EQ(event_seed, 2);
-        ASSERT_TRUE(event_info.Source()->IsEqual(*window->RootControl()));
-        ASSERT_EQ(event_info.PositionAtSource(), zaf::Point(100, 100));
+        ASSERT_TRUE(event_info.Source()->IsEqual(*inner_control));
+        ASSERT_EQ(event_info.PositionAtSource(), zaf::Point(30, 30));
         ASSERT_TRUE(event_info.Sender()->IsEqual(*middle_control));
         ASSERT_EQ(event_info.PositionAtSender(), zaf::Point(40, 40));
     });
@@ -67,8 +67,8 @@ TEST(ControlMouseEventRoutingTest, RoutingPath) {
 
         ++event_seed;
         ASSERT_EQ(event_seed, 3);
-        ASSERT_TRUE(event_info.Source()->IsEqual(*window->RootControl()));
-        ASSERT_EQ(event_info.PositionAtSource(), zaf::Point(100, 100));
+        ASSERT_TRUE(event_info.Source()->IsEqual(*inner_control));
+        ASSERT_EQ(event_info.PositionAtSource(), zaf::Point(30, 30));
         ASSERT_TRUE(event_info.Sender()->IsEqual(*inner_control));
         ASSERT_EQ(event_info.PositionAtSender(), zaf::Point(30, 30));
     });

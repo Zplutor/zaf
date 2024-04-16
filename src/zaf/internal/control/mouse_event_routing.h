@@ -14,15 +14,16 @@ MouseEventTargetInfo FindMouseEventTarget(
     const std::shared_ptr<Control>& begin_control,
     const Point& position_at_begin_control);
 
-bool TunnelMouseEvent(
+void TunnelMouseEvent(
     const std::shared_ptr<Control>& event_target, 
+    const std::shared_ptr<MouseEventSharedState>& event_info_state,
     const MouseMessage& message);
 
 
-bool BubbleMouseEvent(
+void BubbleMouseEvent(
     const std::shared_ptr<Control>& event_target,
     const Point& position_at_event_target,
-    const MouseMessage& message,
-    bool is_handled_by_tunneling);
+    const std::shared_ptr<MouseEventSharedState>& event_info_state,
+    const MouseMessage& message);
 
 }

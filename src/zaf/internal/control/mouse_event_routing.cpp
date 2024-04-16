@@ -62,23 +62,19 @@ MouseEventTargetInfo FindMouseEventTarget(
 }
 
 
-bool TunnelMouseEvent(
+void TunnelMouseEvent(
     const std::shared_ptr<Control>& event_target,
+    const std::shared_ptr<MouseEventSharedState>& event_info_state,
     const MouseMessage& message) {
 
     auto tunnel_path = BuildTunnelPath(event_target);
     if (tunnel_path.empty()) {
-        return false;
+        return;
     }
 
     //Event tunneling begins from root control, whose coordinate space is the same as the window.
     //Thus we can use the position of mouse message as the first position.
-    auto position = message.MousePosition();
-
-    auto event_info_state = std::make_shared<MouseEventSharedState>(
-        tunnel_path.front(), //The first control, root control, is the source of tunneling.
-        message.Inner(),
-        position);
+    auto position_at_sender = message.MousePosition();
 
     const auto& event_invoker = ControlEventInvokerBinder::GetPreMouseEventInvoker(message.ID());
 
@@ -86,33 +82,22 @@ bool TunnelMouseEvent(
     for (const auto& each_control : tunnel_path) {
 
         if (parent) {
-            position = each_control->TranslateFromParent(position);
+            position_at_sender = each_control->TranslateFromParent(position_at_sender);
         }
 
         //Invoke event handler.
-        event_invoker(event_info_state, each_control, position);
+        event_invoker(event_info_state, each_control, position_at_sender);
 
         parent = each_control;
     }
-
-    return event_info_state->IsHandled();
 }
 
 
-bool BubbleMouseEvent(
+void BubbleMouseEvent(
     const std::shared_ptr<Control>& event_target,
-    const Point& position_at_event_target, 
-    const MouseMessage& message,
-    bool is_handled_by_tunneling) {
-
-    auto event_info_state = std::make_shared<MouseEventSharedState>(
-        event_target,
-        message.Inner(),
-        position_at_event_target);
-
-    if (is_handled_by_tunneling) {
-        event_info_state->MarkAsHandled();
-    }
+    const Point& position_at_event_target,
+    const std::shared_ptr<MouseEventSharedState>& event_info_state,
+    const MouseMessage& message) {
 
     const auto& event_invoker = ControlEventInvokerBinder::GetMouseEventInvoker(message.ID());
 
@@ -130,8 +115,6 @@ bool BubbleMouseEvent(
         position_at_sender = sender->TranslateToParent(position_at_sender);
         sender = parent;
     }
-
-    return event_info_state->IsHandled();
 }
 
 }
