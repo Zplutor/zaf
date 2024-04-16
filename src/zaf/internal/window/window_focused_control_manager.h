@@ -37,6 +37,20 @@ private:
         const std::shared_ptr<Control>& changing_control,
         bool is_focused);
 
+    static void RouteFocusEvent(
+        const std::shared_ptr<Control>& target_control,
+        const std::shared_ptr<Control>& changing_control,
+        bool is_focused);
+
+    static void TunnelFocusEvent(
+        const std::shared_ptr<Control>& target_control,
+        const std::shared_ptr<FocusEventSharedState>& event_state,
+        bool is_focused);
+
+    static void BubbleFocusEvent(
+        const std::shared_ptr<Control>& target_control,
+        const std::shared_ptr<FocusEventSharedState>& event_state,
+        bool is_focused);
 
 private:
     Window& window_;

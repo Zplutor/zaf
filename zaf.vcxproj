@@ -275,7 +275,7 @@
     <ClCompile Include="src\zaf\graphic\text\word_wrapping.cpp" />
     <ClCompile Include="src\zaf\input\keyboard.cpp" />
     <ClCompile Include="src\zaf\internal\control\control_event_invoker.cpp" />
-    <ClCompile Include="src\zaf\internal\control\control_event_router.cpp" />
+    <ClCompile Include="src\zaf\internal\control\control_event_route_utility.cpp" />
     <ClCompile Include="src\zaf\internal\control\control_focus_event_info_helper.cpp" />
     <ClCompile Include="src\zaf\internal\control\keyboard_event_routing.cpp" />
     <ClCompile Include="src\zaf\internal\control\mouse_event_routing.cpp" />
@@ -725,7 +725,7 @@
     <ClInclude Include="src\zaf\input\key.h" />
     <ClInclude Include="src\zaf\input\mouse.h" />
     <ClInclude Include="src\zaf\internal\control\control_event_invoker.h" />
-    <ClInclude Include="src\zaf\internal\control\control_event_router.h" />
+    <ClInclude Include="src\zaf\internal\control\control_event_route_utility.h" />
     <ClInclude Include="src\zaf\internal\control\control_focus_event_info_helpers.h" />
     <ClInclude Include="src\zaf\internal\control\keyboard_event_routing.h" />
     <ClInclude Include="src\zaf\internal\control\mouse_event_routing.h" />

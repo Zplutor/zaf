@@ -1171,7 +1171,7 @@
     <ClCompile Include="src\zaf\internal\control\control_focus_event_info_helper.cpp">
       <Filter>zaf\internal\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\control\control_event_router.cpp">
+    <ClCompile Include="src\zaf\internal\control\control_event_route_utility.cpp">
       <Filter>zaf\internal\control</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\control\control_event_invoker.cpp">
@@ -2674,7 +2674,7 @@
     <ClInclude Include="src\zaf\internal\control\control_focus_event_info_helpers.h">
       <Filter>zaf\internal\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\control\control_event_router.h">
+    <ClInclude Include="src\zaf\internal\control\control_event_route_utility.h">
       <Filter>zaf\internal\control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\control\control_event_invoker.h">

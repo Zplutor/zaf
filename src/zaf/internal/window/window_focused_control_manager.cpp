@@ -1,7 +1,7 @@
 #include <zaf/internal/window/window_focused_control_manager.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/input/keyboard.h>
-#include <zaf/internal/control/control_event_router.h>
+#include <zaf/internal/control/control_event_route_utility.h>
 #include <zaf/internal/tab_stop_utility.h>
 
 namespace zaf::internal {
@@ -158,25 +158,58 @@ void WindowFocusedControlManager::ChangeControlFocusState(
 
     target_control->SetIsFocusedByWindow(is_focused);
 
-    ControlEventRouter<FocusEventSharedState> router;
+    RouteFocusEvent(target_control, changing_control, is_focused);
+}
 
-    router.SetEventInfoStateCreator([&changing_control](const std::shared_ptr<Control>& source) {
-        return std::make_shared<internal::FocusEventSharedState>(source, changing_control);
-    });
 
-    router.SetTunnelingEventInvoker(
-        is_focused ? 
-        [](const std::shared_ptr<FocusEventSharedState>& state, 
+void WindowFocusedControlManager::RouteFocusEvent(
+    const std::shared_ptr<Control>& target_control,
+    const std::shared_ptr<Control>& changing_control,
+    bool is_focused) {
+
+    auto event_info_state = std::make_shared<FocusEventSharedState>(
+        target_control,
+        changing_control);
+
+    TunnelFocusEvent(target_control, event_info_state, is_focused);
+    BubbleFocusEvent(target_control, event_info_state, is_focused);
+}
+
+
+void WindowFocusedControlManager::TunnelFocusEvent(
+    const std::shared_ptr<Control>& target_control,
+    const std::shared_ptr<FocusEventSharedState>& event_state, 
+    bool is_focused) {
+
+    auto tunnel_path = BuildTunnelPath(target_control);
+    if (tunnel_path.empty()) {
+        return;
+    }
+
+    auto tunnel_event_invoker = 
+        is_focused ?
+        [](const std::shared_ptr<FocusEventSharedState>& state,
            const std::shared_ptr<Control>& sender) {
             sender->OnPreFocusGained(PreFocusGainedInfo{ state, sender });
-        } 
+        }
         :
         [](const std::shared_ptr<FocusEventSharedState>& state,
            const std::shared_ptr<Control>& sender) {
             sender->OnPreFocusLost(PreFocusLostInfo{ state, sender });
-        });
+        };
 
-    router.SetBubblingEventInvoker(
+    for (const auto& each_control : tunnel_path) {
+        tunnel_event_invoker(event_state, each_control);
+    }
+}
+
+
+void WindowFocusedControlManager::BubbleFocusEvent(
+    const std::shared_ptr<Control>& target_control, 
+    const std::shared_ptr<FocusEventSharedState>& event_state, 
+    bool is_focused) {
+
+    auto bubble_event_invoker = 
         is_focused ?
         [](const std::shared_ptr<FocusEventSharedState>& state,
            const std::shared_ptr<Control>& sender) {
@@ -186,9 +219,14 @@ void WindowFocusedControlManager::ChangeControlFocusState(
         [](const std::shared_ptr<FocusEventSharedState>& state,
            const std::shared_ptr<Control>& sender) {
             sender->OnFocusLost(FocusLostInfo{ state, sender });
-        });
+        };
 
-    router.Route(target_control);
+    auto sender = target_control;
+    while (sender) {
+
+        bubble_event_invoker(event_state, sender);
+        sender = sender->Parent();
+    }
 }
 
 }
