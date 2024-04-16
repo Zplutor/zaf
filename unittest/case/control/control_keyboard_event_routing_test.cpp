@@ -40,21 +40,21 @@ TEST(ControlKeyboardEventRoutingTest, RoutingPath) {
 
         ++event_seed;
         ASSERT_EQ(event_seed, 1);
-        ASSERT_EQ(event_info.Source(), window->RootControl());
+        ASSERT_EQ(event_info.Source(), focused);
         ASSERT_EQ(event_info.Sender(), window->RootControl());
     });
 
     subs += parent->PreKeyDownEvent().Subscribe([&](const zaf::PreKeyDownInfo& event_info) {
         ++event_seed;
         ASSERT_EQ(event_seed, 2);
-        ASSERT_EQ(event_info.Source(), window->RootControl());
+        ASSERT_EQ(event_info.Source(), focused);
         ASSERT_EQ(event_info.Sender(), parent);
     });
 
     subs += focused->PreKeyDownEvent().Subscribe([&](const zaf::PreKeyDownInfo& event_info) {
         ++event_seed;
         ASSERT_EQ(event_seed, 3);
-        ASSERT_EQ(event_info.Source(), window->RootControl());
+        ASSERT_EQ(event_info.Source(), focused);
         ASSERT_EQ(event_info.Sender(), focused);
     });
 
