@@ -75,49 +75,53 @@ void WindowFocusedControlManager::HandleWindowDestroy() {
 void WindowFocusedControlManager::ChangeFocusedControl(
     const std::shared_ptr<Control>& new_focused_control) {
 
-    //This method is re-entrant. If there is already a control that is being set focus, we store 
-    //the last contorl to a pending variable, and set the focus to the pending control after 
-    //current setting is finished.
-    if (is_changing_focused_control_) {
-        pending_focused_control_ = new_focused_control;
-        return;
-    }
-
-    {
-        auto auto_reset = MakeAutoReset(is_changing_focused_control_, true);
-        SetFocusedControl(new_focused_control);
-    }
-
-    //Recursively set focus to the pending control.
-    if (pending_focused_control_) {
-
-        auto pending_focused_control = pending_focused_control_->lock();
-        pending_focused_control_.reset();
-
-        ChangeFocusedControl(pending_focused_control);
-    }
-}
-
-
-void WindowFocusedControlManager::SetFocusedControl(
-    const std::shared_ptr<Control>& new_focused_control) {
-
     if (!CheckIfCanSetFocusedControl(new_focused_control)) {
         return;
     }
 
+    //This method is re-entrant, we use a counter to check if there is reentrance.
+    std::optional<AutoReset<std::size_t>> counter_auto_reset;
+    if (change_focus_counter_ == 0) {
+        counter_auto_reset = MakeAutoReset(change_focus_counter_);
+    }
+
+    auto current_counter = ++change_focus_counter_;
+
     auto previous_focused_control = focused_control_;
     focused_control_ = new_focused_control;
 
+    //We must change the focus states of the controls immediately to meet the constraint.
     if (previous_focused_control) {
-        ChangeControlFocusState(previous_focused_control, new_focused_control, false);
+        previous_focused_control->SetIsFocusedByWindow(false);
+    }
+    
+    if (focused_control_) {
+        focused_control_->SetIsFocusedByWindow(true);
     }
 
-    if (new_focused_control) {
-        ChangeControlFocusState(new_focused_control, previous_focused_control, true);
+    //We must use new_focused_control rather than focused_control_ to do event routing, as 
+    //focused_control_ might be changed during event routing.
+    if (previous_focused_control) {
+        RouteFocusEvent(previous_focused_control, new_focused_control, false);
     }
 
-    focused_control_changed_event_.Raise(previous_focused_control);
+    //If a reentrance occurs, new_focused_control is no longer the focused control, don't 
+    //change its focus state.
+    if (current_counter == change_focus_counter_) {
+        if (new_focused_control) {
+            RouteFocusEvent(new_focused_control, previous_focused_control, true);
+        }
+    }
+
+    //Only the first setting raises focused control changed event.
+    if (counter_auto_reset) {
+        counter_auto_reset.reset();
+
+        //Raise the event only if the focused control is actually changed.
+        if (focused_control_ != previous_focused_control) {
+            focused_control_changed_event_.Raise(previous_focused_control);
+        }
+    }
 }
 
 
@@ -151,17 +155,6 @@ bool WindowFocusedControlManager::CheckIfCanSetFocusedControl(
 }
 
 
-void WindowFocusedControlManager::ChangeControlFocusState(
-    const std::shared_ptr<Control>& target_control,
-    const std::shared_ptr<Control>& changing_control,
-    bool is_focused) {
-
-    target_control->SetIsFocusedByWindow(is_focused);
-
-    RouteFocusEvent(target_control, changing_control, is_focused);
-}
-
-
 void WindowFocusedControlManager::RouteFocusEvent(
     const std::shared_ptr<Control>& target_control,
     const std::shared_ptr<Control>& changing_control,
@@ -171,19 +164,20 @@ void WindowFocusedControlManager::RouteFocusEvent(
         target_control,
         changing_control);
 
-    TunnelFocusEvent(target_control, event_info_state, is_focused);
-    BubbleFocusEvent(target_control, event_info_state, is_focused);
+    if (TunnelFocusEvent(target_control, event_info_state, is_focused)) {
+        BubbleFocusEvent(target_control, event_info_state, is_focused);
+    }
 }
 
 
-void WindowFocusedControlManager::TunnelFocusEvent(
+bool WindowFocusedControlManager::TunnelFocusEvent(
     const std::shared_ptr<Control>& target_control,
     const std::shared_ptr<FocusEventSharedState>& event_state, 
     bool is_focused) {
 
     auto tunnel_path = BuildTunnelPath(target_control);
     if (tunnel_path.empty()) {
-        return;
+        return false;
     }
 
     auto tunnel_event_invoker = 
@@ -198,9 +192,19 @@ void WindowFocusedControlManager::TunnelFocusEvent(
             sender->OnPreFocusLost(PreFocusLostInfo{ state, sender });
         };
 
+    bool original_is_focused = target_control->IsFocused();
+
     for (const auto& each_control : tunnel_path) {
+
         tunnel_event_invoker(event_state, each_control);
+
+        //Stop event routing if focus is changed during routing.
+        if (original_is_focused != target_control->IsFocused()) {
+            return false;
+        }
     }
+
+    return true;
 }
 
 
@@ -221,10 +225,18 @@ void WindowFocusedControlManager::BubbleFocusEvent(
             sender->OnFocusLost(FocusLostInfo{ state, sender });
         };
 
+    bool original_is_focused = target_control->IsFocused();
+
     auto sender = target_control;
     while (sender) {
 
         bubble_event_invoker(event_state, sender);
+
+        //Stop event routing if focus is changed during routing.
+        if (original_is_focused != target_control->IsFocused()) {
+            break;
+        }
+
         sender = sender->Parent();
     }
 }

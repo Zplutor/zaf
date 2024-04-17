@@ -29,20 +29,14 @@ public:
 private:
     void SwitchFocusedControlByTabKey(bool backward);
 
-    void SetFocusedControl(const std::shared_ptr<Control>& new_focused_control);
     bool CheckIfCanSetFocusedControl(const std::shared_ptr<Control>& new_focused_control) const;
-
-    static void ChangeControlFocusState(
-        const std::shared_ptr<Control>& target_control,
-        const std::shared_ptr<Control>& changing_control,
-        bool is_focused);
 
     static void RouteFocusEvent(
         const std::shared_ptr<Control>& target_control,
         const std::shared_ptr<Control>& changing_control,
         bool is_focused);
 
-    static void TunnelFocusEvent(
+    static bool TunnelFocusEvent(
         const std::shared_ptr<Control>& target_control,
         const std::shared_ptr<FocusEventSharedState>& event_state,
         bool is_focused);
@@ -55,7 +49,7 @@ private:
 private:
     Window& window_;
 
-    bool is_changing_focused_control_{};
+    std::size_t change_focus_counter_{};
     std::shared_ptr<Control> focused_control_;
     std::weak_ptr<Control> last_focused_control_;
     std::optional<std::weak_ptr<Control>> pending_focused_control_;
