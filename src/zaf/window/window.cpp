@@ -458,11 +458,12 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_GETMINMAXINFO: {
+        auto dpi = this->GetDPI();
         auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.LParam());
-        min_max_info->ptMinTrackSize.x = static_cast<LONG>(MinWidth());
-        min_max_info->ptMinTrackSize.y = static_cast<LONG>(MinHeight());
-        min_max_info->ptMaxTrackSize.x = static_cast<LONG>(MaxWidth());
-        min_max_info->ptMaxTrackSize.y = static_cast<LONG>(MaxHeight());
+        min_max_info->ptMinTrackSize.x = static_cast<LONG>(FromDIPs(MinWidth(), dpi));
+        min_max_info->ptMinTrackSize.y = static_cast<LONG>(FromDIPs(MinHeight(), dpi));
+        min_max_info->ptMaxTrackSize.x = static_cast<LONG>(FromDIPs(MaxWidth(), dpi));
+        min_max_info->ptMaxTrackSize.y = static_cast<LONG>(FromDIPs(MaxHeight(), dpi));
         return 0;
     }
 
@@ -1617,7 +1618,9 @@ float Window::MinWidth() const {
     if (min_width_) {
         return *min_width_;
     }
-    return static_cast<float>(GetSystemMetrics(SM_CXMINTRACK));
+    return static_cast<float>(ToDIPs(
+        static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)),
+        GetDPI()));
 }
 
 
@@ -1640,7 +1643,9 @@ float Window::MaxWidth() const {
     if (max_width_) {
         return *max_width_;
     }
-    return static_cast<float>(GetSystemMetrics(SM_CXMAXTRACK));
+    return static_cast<float>(ToDIPs(
+        static_cast<float>(GetSystemMetrics(SM_CXMAXTRACK)),
+        GetDPI()));
 }
 
 
@@ -1663,7 +1668,9 @@ float Window::MinHeight() const {
     if (min_height_) {
         return *min_height_;
     }
-    return static_cast<float>(GetSystemMetrics(SM_CYMINTRACK));
+    return static_cast<float>(ToDIPs(
+        static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)),
+        GetDPI()));
 }
 
 
@@ -1686,7 +1693,9 @@ float Window::MaxHeight() const {
     if (max_height_) {
         return *max_height_;
     }
-    return static_cast<float>(GetSystemMetrics(SM_CYMAXTRACK));
+    return static_cast<float>(ToDIPs(
+        static_cast<float>(GetSystemMetrics(SM_CYMAXTRACK)), 
+        GetDPI()));
 }
 
 
