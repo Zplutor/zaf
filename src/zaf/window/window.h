@@ -465,7 +465,7 @@ public:
     /**
      Get the control which has input focus in the window.
       */
-    const std::shared_ptr<Control>& FocusedControl() const;
+    std::shared_ptr<Control> FocusedControl() const;
 
     Observable<FocusedControlChangedInfo> FocusedControlChangedEvent() const;
 

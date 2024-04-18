@@ -330,17 +330,90 @@ TEST_F(ControlFocusTest, SetBackFocusOnFocusLost) {
     ASSERT_EQ(TestWindow()->FocusedControl(), Control1());
 
     ASSERT_TRUE(CheckEventLogs({
+        //Set focus to Control1
         L"PreFocusGained Control1 Root",
         L"PreFocusGained Control1 Control1",
         L"FocusGained Control1 Control1",
         L"FocusGained Control1 Root",
         L"FocusedControlChanged ",
+        //Set focus to Control2
         L"PreFocusLost Control1 Root",
         L"PreFocusLost Control1 Control1",
         L"FocusLost Control1 Control1",
+        //Set focus back to Control1, which interrupts the original event routing and starts a new
+        //event routing.
+        L"PreFocusLost Control2 Root",
+        L"PreFocusLost Control2 Control2",
+        L"FocusLost Control2 Control2",
+        L"FocusLost Control2 Root",
         L"PreFocusGained Control1 Root",
         L"PreFocusGained Control1 Control1",
         L"FocusGained Control1 Control1",
         L"FocusGained Control1 Root",
+    }));
+}
+
+
+/**
+Cancel the focus on its focus gained event.
+*/
+TEST_F(ControlFocusTest, CanelFocusOnFoucGained) {
+
+    auto sub = Control1()->FocusGainedEvent().Subscribe([this](const FocusGainedInfo& event_info) {
+        Control1()->SetIsFocused(false);
+    });
+
+    Control1()->SetIsFocused(true);
+
+    ASSERT_FALSE(Control1()->IsFocused());
+    ASSERT_EQ(TestWindow()->FocusedControl(), nullptr);
+
+    ASSERT_TRUE(CheckEventLogs({
+        //Set focus to Control1
+        L"PreFocusGained Control1 Root",
+        L"PreFocusGained Control1 Control1",
+        L"FocusGained Control1 Control1",
+        //Cancel the focus
+        L"PreFocusLost Control1 Root",
+        L"PreFocusLost Control1 Control1",
+        L"FocusLost Control1 Control1",
+        L"FocusLost Control1 Root",
+    }));
+}
+
+
+/**
+Remove the new focused control on other control's focus lost event.
+*/
+TEST_F(ControlFocusTest, RemoveFocusControlOnFocusLost) {
+
+    Control1()->SetIsFocused(true);
+
+    auto sub = Control1()->FocusLostEvent().Subscribe([this](const FocusLostInfo& event_info) {
+        TestWindow()->RootControl()->RemoveChild(Control2());
+    });
+
+    Control2()->SetIsFocused(true);
+
+    ASSERT_FALSE(Control1()->IsFocused());
+    ASSERT_EQ(TestWindow()->FocusedControl(), nullptr);
+
+    ASSERT_TRUE(CheckEventLogs({
+        //Set focus to Control1
+        L"PreFocusGained Control1 Root",
+        L"PreFocusGained Control1 Control1",
+        L"FocusGained Control1 Control1",
+        L"FocusGained Control1 Root",
+        L"FocusedControlChanged ",
+        //Set focus to Control1
+        L"PreFocusLost Control1 Root",
+        L"PreFocusLost Control1 Control1",
+        L"FocusLost Control1 Control1",
+        //Remove Control2 from window
+        L"PreFocusLost Control2 Root",
+        L"PreFocusLost Control2 Control2",
+        L"FocusLost Control2 Control2",
+        L"FocusLost Control2 Root",
+        L"FocusedControlChanged Control1",
     }));
 }

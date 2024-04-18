@@ -1471,7 +1471,7 @@ Observable<MouseCaptureControlChangedInfo> Window::MouseCaptureControlChangedEve
 }
 
 
-const std::shared_ptr<Control>& Window::FocusedControl() const {
+std::shared_ptr<Control> Window::FocusedControl() const {
     return focused_control_manager_->FocusedControl();
 }
 

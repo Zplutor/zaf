@@ -17,7 +17,8 @@ bool WindowFocusedControlManager::TryToPreprocessTabKeyMessage(const KeyMessage&
         return false;
     }
 
-    if ((focused_control_) && focused_control_->AcceptKeyMessage(message)) {
+    auto focused_control = focused_control_.lock();
+    if (focused_control && focused_control->AcceptKeyMessage(message)) {
         return false;
     }
 
@@ -29,7 +30,7 @@ bool WindowFocusedControlManager::TryToPreprocessTabKeyMessage(const KeyMessage&
 
 void WindowFocusedControlManager::SwitchFocusedControlByTabKey(bool backward) {
 
-    auto current_focused_control = focused_control_;
+    auto current_focused_control = focused_control_.lock();
     if (!current_focused_control) {
         current_focused_control = window_.RootControl();
     }
@@ -65,9 +66,10 @@ void WindowFocusedControlManager::HandleWindowKillFocus() {
 
 void WindowFocusedControlManager::HandleWindowDestroy() {
 
-    if (focused_control_) {
-        focused_control_->SetIsFocusedByWindow(false);
-        focused_control_ = nullptr;
+    auto focused_control = focused_control_.lock();
+    if (focused_control) {
+        focused_control->SetIsFocusedByWindow(false);
+        focused_control_.reset();
     }
 }
 
@@ -87,7 +89,7 @@ void WindowFocusedControlManager::ChangeFocusedControl(
 
     auto current_counter = ++change_focus_counter_;
 
-    auto previous_focused_control = focused_control_;
+    auto previous_focused_control = focused_control_.lock();
     focused_control_ = new_focused_control;
 
     //We must change the focus states of the controls immediately to meet the constraint.
@@ -95,21 +97,21 @@ void WindowFocusedControlManager::ChangeFocusedControl(
         previous_focused_control->SetIsFocusedByWindow(false);
     }
     
-    if (focused_control_) {
-        focused_control_->SetIsFocusedByWindow(true);
+    if (new_focused_control) {
+        new_focused_control->SetIsFocusedByWindow(true);
     }
 
     //We must use new_focused_control rather than focused_control_ to do event routing, as 
     //focused_control_ might be changed during event routing.
     if (previous_focused_control) {
-        RouteFocusEvent(previous_focused_control, new_focused_control, false);
+        RouteFocusEvent(previous_focused_control, new_focused_control, false, current_counter);
     }
 
     //If a reentrance occurs, new_focused_control is no longer the focused control, don't 
     //change its focus state.
     if (current_counter == change_focus_counter_) {
         if (new_focused_control) {
-            RouteFocusEvent(new_focused_control, previous_focused_control, true);
+            RouteFocusEvent(new_focused_control, previous_focused_control, true, current_counter);
         }
     }
 
@@ -118,7 +120,7 @@ void WindowFocusedControlManager::ChangeFocusedControl(
         counter_auto_reset.reset();
 
         //Raise the event only if the focused control is actually changed.
-        if (focused_control_ != previous_focused_control) {
+        if (focused_control_.lock() != previous_focused_control) {
             focused_control_changed_event_.Raise(previous_focused_control);
         }
     }
@@ -129,7 +131,7 @@ bool WindowFocusedControlManager::CheckIfCanSetFocusedControl(
     const std::shared_ptr<Control>& new_focused_control) const {
 
     //The same control, not allow to change.
-    if (focused_control_ == new_focused_control) {
+    if (focused_control_.lock() == new_focused_control) {
         return false;
     }
 
@@ -158,26 +160,33 @@ bool WindowFocusedControlManager::CheckIfCanSetFocusedControl(
 void WindowFocusedControlManager::RouteFocusEvent(
     const std::shared_ptr<Control>& target_control,
     const std::shared_ptr<Control>& changing_control,
-    bool is_focused) {
+    bool is_focused,
+    std::size_t current_counter) {
 
     auto event_info_state = std::make_shared<FocusEventSharedState>(
         target_control,
         changing_control);
 
-    if (TunnelFocusEvent(target_control, event_info_state, is_focused)) {
-        BubbleFocusEvent(target_control, event_info_state, is_focused);
+    TunnelFocusEvent(target_control, event_info_state, is_focused, current_counter);
+
+    //Stop event routing if there is reentrance.
+    if (current_counter != change_focus_counter_) {
+        return;
     }
+
+    BubbleFocusEvent(target_control, event_info_state, is_focused, current_counter);
 }
 
 
-bool WindowFocusedControlManager::TunnelFocusEvent(
+void WindowFocusedControlManager::TunnelFocusEvent(
     const std::shared_ptr<Control>& target_control,
     const std::shared_ptr<FocusEventSharedState>& event_state, 
-    bool is_focused) {
+    bool is_focused,
+    std::size_t current_counter) {
 
     auto tunnel_path = BuildTunnelPath(target_control);
     if (tunnel_path.empty()) {
-        return false;
+        return;
     }
 
     auto tunnel_event_invoker = 
@@ -192,26 +201,23 @@ bool WindowFocusedControlManager::TunnelFocusEvent(
             sender->OnPreFocusLost(PreFocusLostInfo{ state, sender });
         };
 
-    bool original_is_focused = target_control->IsFocused();
-
     for (const auto& each_control : tunnel_path) {
 
         tunnel_event_invoker(event_state, each_control);
 
-        //Stop event routing if focus is changed during routing.
-        if (original_is_focused != target_control->IsFocused()) {
-            return false;
+        //Stop event routing if there is reentrance.
+        if (current_counter != change_focus_counter_) {
+            break;
         }
     }
-
-    return true;
 }
 
 
 void WindowFocusedControlManager::BubbleFocusEvent(
     const std::shared_ptr<Control>& target_control, 
     const std::shared_ptr<FocusEventSharedState>& event_state, 
-    bool is_focused) {
+    bool is_focused,
+    std::size_t current_counter) {
 
     auto bubble_event_invoker = 
         is_focused ?
@@ -225,15 +231,13 @@ void WindowFocusedControlManager::BubbleFocusEvent(
             sender->OnFocusLost(FocusLostInfo{ state, sender });
         };
 
-    bool original_is_focused = target_control->IsFocused();
-
     auto sender = target_control;
     while (sender) {
 
         bubble_event_invoker(event_state, sender);
 
-        //Stop event routing if focus is changed during routing.
-        if (original_is_focused != target_control->IsFocused()) {
+        //Stop event routing if there is reentrance.
+        if (current_counter != change_focus_counter_) {
             break;
         }
 

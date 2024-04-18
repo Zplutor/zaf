@@ -11,8 +11,8 @@ class WindowFocusedControlManager : NonCopyable {
 public:
     explicit WindowFocusedControlManager(Window& window);
 
-    const std::shared_ptr<Control>& FocusedControl() const {
-        return focused_control_;
+    std::shared_ptr<Control> FocusedControl() const {
+        return focused_control_.lock();
     }
 
     bool TryToPreprocessTabKeyMessage(const KeyMessage& message);
@@ -31,26 +31,29 @@ private:
 
     bool CheckIfCanSetFocusedControl(const std::shared_ptr<Control>& new_focused_control) const;
 
-    static void RouteFocusEvent(
+    void RouteFocusEvent(
         const std::shared_ptr<Control>& target_control,
         const std::shared_ptr<Control>& changing_control,
-        bool is_focused);
+        bool is_focused,
+        std::size_t current_counter);
 
-    static bool TunnelFocusEvent(
+    void TunnelFocusEvent(
         const std::shared_ptr<Control>& target_control,
         const std::shared_ptr<FocusEventSharedState>& event_state,
-        bool is_focused);
+        bool is_focused,
+        std::size_t current_counter);
 
-    static void BubbleFocusEvent(
+    void BubbleFocusEvent(
         const std::shared_ptr<Control>& target_control,
         const std::shared_ptr<FocusEventSharedState>& event_state,
-        bool is_focused);
+        bool is_focused,
+        std::size_t current_counter);
 
 private:
     Window& window_;
 
     std::size_t change_focus_counter_{};
-    std::shared_ptr<Control> focused_control_;
+    std::weak_ptr<Control> focused_control_;
     std::weak_ptr<Control> last_focused_control_;
     std::optional<std::weak_ptr<Control>> pending_focused_control_;
 
