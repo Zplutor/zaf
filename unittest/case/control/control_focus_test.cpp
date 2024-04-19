@@ -57,6 +57,10 @@ protected:
         return control2_;
     }
 
+    const std::shared_ptr<Control>& Control3() {
+        return control3_;
+    }
+
 private:
     void InitializeControls() {
 
@@ -68,6 +72,11 @@ private:
         control2_->SetName(L"Control2");
         control2_->SetCanFocused(true);
 
+        control3_ = Create<Control>();
+        control3_->SetName(L"Control3");
+        control3_->SetCanFocused(true);
+
+        control1_->AddChild(control3_);
         test_window_->RootControl()->AddChildren({ control1_, control2_ });
     }
 
@@ -101,7 +110,8 @@ private:
                 As<Control>(event_info.Sender())->Name()));
         };
 
-        for (const auto& each_control : { control1_, control2_, test_window_->RootControl() }) {
+        auto controls = { control1_, control2_, control3_, test_window_->RootControl() };
+        for (const auto& each_control : controls) {
 
             Subscriptions() += each_control->PreFocusGainedEvent().Subscribe(
                 pre_focus_gained_handler);
@@ -124,6 +134,7 @@ private:
 
     std::shared_ptr<Control> control1_;
     std::shared_ptr<Control> control2_;
+    std::shared_ptr<Control> control3_;
     std::vector<std::wstring> event_logs_;
 };
 
@@ -414,6 +425,90 @@ TEST_F(ControlFocusTest, RemoveFocusControlOnFocusLost) {
         L"PreFocusLost Control2 Control2",
         L"FocusLost Control2 Control2",
         L"FocusLost Control2 Root",
+        L"FocusedControlChanged Control1",
+    }));
+}
+
+
+TEST_F(ControlFocusTest, RemoveFocusedControl) {
+
+    Control1()->SetIsFocused(true);
+
+    TestWindow()->RootControl()->RemoveChild(Control1());
+
+    ASSERT_FALSE(Control1()->IsFocused());
+    ASSERT_EQ(TestWindow()->FocusedControl(), nullptr);
+
+    ASSERT_TRUE(CheckEventLogs({
+        //Set focus to Control1
+        L"PreFocusGained Control1 Root",
+        L"PreFocusGained Control1 Control1",
+        L"FocusGained Control1 Control1",
+        L"FocusGained Control1 Root",
+        L"FocusedControlChanged ",
+        //Remove Control1
+        L"PreFocusLost Control1 Root",
+        L"PreFocusLost Control1 Control1",
+        L"FocusLost Control1 Control1",
+        L"FocusLost Control1 Root",
+        L"FocusedControlChanged Control1",
+    }));
+}
+
+
+TEST_F(ControlFocusTest, RemoveParentOfFocusedControl) {
+
+    Control3()->SetIsFocused(true);
+
+    //Remove Control1.
+    TestWindow()->RootControl()->RemoveChild(Control1());
+
+    ASSERT_FALSE(Control3()->IsFocused());
+    ASSERT_EQ(TestWindow()->FocusedControl(), nullptr);
+
+    ASSERT_TRUE(CheckEventLogs({
+        //Set focus to Child
+        L"PreFocusGained Control3 Root",
+        L"PreFocusGained Control3 Control1",
+        L"PreFocusGained Control3 Control3",
+        L"FocusGained Control3 Control3",
+        L"FocusGained Control3 Control1",
+        L"FocusGained Control3 Root",
+        L"FocusedControlChanged ",
+        //Remove Control1
+        L"PreFocusLost Control3 Root",
+        L"PreFocusLost Control3 Control1",
+        L"PreFocusLost Control3 Control3",
+        L"FocusLost Control3 Control3",
+        L"FocusLost Control3 Control1",
+        L"FocusLost Control3 Root",
+        L"FocusedControlChanged Control3",
+    }));
+}
+
+
+TEST_F(ControlFocusTest, ChangeRootControl) {
+
+    Control1()->SetIsFocused(true);
+
+    //Sets a different root control, which will remove the focused control.
+    TestWindow()->SetRootControl(Create<Control>());
+
+    ASSERT_FALSE(Control1()->IsFocused());
+    ASSERT_EQ(TestWindow()->FocusedControl(), nullptr);
+
+    ASSERT_TRUE(CheckEventLogs({
+        //Set focus to Control1
+        L"PreFocusGained Control1 Root",
+        L"PreFocusGained Control1 Control1",
+        L"FocusGained Control1 Control1",
+        L"FocusGained Control1 Root",
+        L"FocusedControlChanged ",
+        //Remove Control1
+        L"PreFocusLost Control1 Root",
+        L"PreFocusLost Control1 Control1",
+        L"FocusLost Control1 Control1",
+        L"FocusLost Control1 Root",
         L"FocusedControlChanged Control1",
     }));
 }

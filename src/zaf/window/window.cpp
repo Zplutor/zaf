@@ -1908,6 +1908,12 @@ void Window::SetRootControl(const std::shared_ptr<Control>& control) {
 
     ZAF_EXPECT(!control->Window());
 
+    //Cancel the focused control before changing the root control.
+    auto focused_control = FocusedControl();
+    if (focused_control) {
+        focused_control->SetIsFocused(false);
+    }
+
     auto previous_root_control = root_control_;
     if (previous_root_control) {
 
