@@ -1378,6 +1378,10 @@ void RichEdit::OnWindowChanged(const WindowChangedInfo& event_info) {
             return;
         }
 
+        if (!this->IsFocused()) {
+            return;
+        }
+
         //Forward IME messages to RichEdit.
         const auto& message = event_info.Message();
         switch (message.ID()) {
