@@ -65,6 +65,11 @@ void TextBoxCaretManager::HideCaret() {
 }
 
 
+Rect TextBoxCaretManager::GetCaretRect() const {
+    return caret_->Rect();
+}
+
+
 void TextBoxCaretManager::MoveCaretToCurrentCaretIndex() {
 
     if (caret_->IsVisible()) {

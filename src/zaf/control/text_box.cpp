@@ -2,6 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/base/log.h>
 #include <zaf/control/textual/dynamic_inline_object.h>
+#include <zaf/graphic/dpi.h>
 #include <zaf/input/mouse.h>
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/internal/textual/text_box_caret_manager.h>
@@ -13,6 +14,7 @@
 #include <zaf/internal/textual/text_box_selection_manager.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
+#include <zaf/window/window.h>
 
 namespace zaf {
 
@@ -401,6 +403,92 @@ void TextBox::OnCharInput(const CharInputInfo& event_info) {
 
     module_context_->Editor().HandleCharInput(event_info);
     event_info.MarkAsHandled();
+}
+
+
+void TextBox::OnWindowChanged(const WindowChangedInfo& event_info) {
+
+    __super::OnWindowChanged(event_info);
+
+    ime_message_subscription_.Unsubscribe();
+
+    auto window = Window();
+    if (!window) {
+        return;
+    }
+
+    ime_message_subscription_ = window->MessageReceivedEvent().Subscribe(
+        [this](const MessageReceivedInfo& event_info) {
+
+        if (event_info.IsHandled()) {
+            return;
+        }
+
+        if (!this->IsFocused()) {
+            return;
+        }
+
+        HandleIMEMessage(event_info);
+    });
+}
+
+
+void TextBox::HandleIMEMessage(const MessageReceivedInfo& event_info) {
+
+    switch (event_info.Message().ID()) {
+    case WM_IME_STARTCOMPOSITION: {
+
+        auto imc = ImmGetContext(event_info.Message().WindowHandle());
+
+        auto content_rect_in_window = this->ContentRectInWindow();
+
+        auto caret_rect = module_context_->CaretManager().GetCaretRect();
+        caret_rect.AddOffset(content_rect_in_window->position);
+        caret_rect.position = this->Window()->TranslateToScreen(caret_rect.position);
+
+        //caret_rect = FromDIPs(caret_rect, this->GetDPI());
+
+        COMPOSITIONFORM form{};
+        form.dwStyle = CFS_POINT;
+        form.ptCurrentPos = caret_rect.position.ToPOINT();
+        ImmSetCompositionWindow(imc, &form);
+
+
+        ImmReleaseContext(event_info.Message().WindowHandle(), imc);
+        break;
+    }
+    case WM_IME_ENDCOMPOSITION:
+    case WM_IME_COMPOSITION:
+    case WM_IME_COMPOSITIONFULL:
+    case WM_IME_KEYDOWN:
+    case WM_IME_KEYUP:
+    case WM_IME_CHAR:
+    case WM_IME_CONTROL:
+    case WM_IME_NOTIFY:
+        break;
+    case WM_IME_REQUEST: {
+
+        if (event_info.Message().WParam() == IMR_COMPOSITIONWINDOW) {
+            auto info = (COMPOSITIONFORM*)event_info.Message().LParam();
+            info->dwStyle;
+        }
+        else if (event_info.Message().WParam() == IMR_QUERYCHARPOSITION) {
+            auto info = (IMECHARPOSITION*)event_info.Message().LParam();
+            info->pt.x = 100;
+            info->pt.y = 100;
+            info->cLineHeight = 33;
+            info->rcDocument.right = 200;
+            info->rcDocument.bottom = 200;
+            event_info.MarkAsHandled(TRUE);
+        }
+        break;
+    }
+    case WM_IME_SELECT: {
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 

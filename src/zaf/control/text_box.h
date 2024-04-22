@@ -7,6 +7,7 @@
 #include <zaf/control/textual_control.h>
 #include <zaf/control/textual/selection_option.h>
 #include <zaf/control/textual/word_extractor.h>
+#include <zaf/window/event/message_received_info.h>
 
 namespace zaf {
 namespace internal {
@@ -214,6 +215,7 @@ protected:
     void OnFocusLost(const FocusLostInfo& event_info) override;
     void OnKeyDown(const KeyDownInfo& event_info) override;
     void OnCharInput(const CharInputInfo& event_info) override;
+    void OnWindowChanged(const WindowChangedInfo& event_info) override;
 
     //Methods from SelfScrollControl
     void SetAllowVerticalScroll(bool allow) override;
@@ -265,6 +267,8 @@ private:
         int& page_value);
     void DoScroll(int new_value, float content_length, float text_length, float& text_position);
 
+    void HandleIMEMessage(const MessageReceivedInfo& event_info);
+
 private:
     std::unique_ptr<internal::TextBoxModuleContext> module_context_;
 
@@ -279,6 +283,8 @@ private:
 
     ColorPicker selection_background_color_picker_;
     textual::WordExtractor word_extractor_;
+
+    Subscription ime_message_subscription_;
 };
 
 }

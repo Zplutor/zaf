@@ -25,6 +25,8 @@ public:
     void ShowCaret();
     void HideCaret();
 
+    Rect GetCaretRect() const;
+
     void MoveCaretToCurrentCaretIndex();
 
     void PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect);
