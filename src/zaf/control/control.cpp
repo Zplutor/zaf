@@ -2061,6 +2061,22 @@ Observable<FocusLostInfo> Control::FocusLostEvent() const {
 }
 
 
+void Control::OnIMEStartComposition(const IMEStartCompositionInfo& event_info) {
+
+}
+
+
+void Control::OnIMEComposition(const IMECompositionInfo& event_info) {
+
+}
+
+
+void Control::OnIMEEndComposition(const IMEEndCompositionInfo& event_info) {
+
+
+}
+
+
 float Control::GetDPI() const {
     return GetDPIFromWindow(Window());
 }

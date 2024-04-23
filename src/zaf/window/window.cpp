@@ -593,6 +593,14 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         }
         return std::nullopt;
 
+    case WM_IME_STARTCOMPOSITION:
+    case WM_IME_COMPOSITION:
+    case WM_IME_ENDCOMPOSITION:
+        HandleIMEMessage(message);
+        //For now, we always pass IME messages to the default window procedure even if we handle 
+        //the messages. This may be adjusted once we are more familiar with the IME mechanism.
+        return std::nullopt;
+
     case WM_CLOSE:
         if (!HandleWMCLOSE()) {
             return 0;
@@ -1248,6 +1256,29 @@ void Window::TryToShowTooltipWindow() {
 void Window::HideTooltipWindow() {
     if (tooltip_window_) {
         tooltip_window_->Hide();
+    }
+}
+
+
+void Window::HandleIMEMessage(const Message& message) {
+
+    auto focused_control = this->FocusedControl();
+    if (!focused_control) {
+        return;
+    }
+
+    switch (message.ID()) {
+    case WM_IME_STARTCOMPOSITION:
+        focused_control->OnIMEStartComposition(IMEStartCompositionInfo{ focused_control });
+        break;
+    case WM_IME_ENDCOMPOSITION:
+        focused_control->OnIMEEndComposition(IMEEndCompositionInfo{ focused_control });
+        break;
+    case WM_IME_COMPOSITION:
+        focused_control->OnIMEComposition(IMECompositionInfo{ focused_control, message });
+        break;
+    default:
+        break;
     }
 }
 

@@ -94,6 +94,7 @@
     <ClCompile Include="src\zaf\control\event\click_info.cpp" />
     <ClCompile Include="src\zaf\control\event\combo_box_selection_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\double_click_info.cpp" />
+    <ClCompile Include="src\zaf\control\event\ime_event_infos.cpp" />
     <ClCompile Include="src\zaf\control\event\is_enabled_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\is_selected_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\is_visible_changed_info.cpp" />
@@ -480,6 +481,7 @@
     <ClInclude Include="src\zaf\control\event\combo_box_selection_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\double_click_info.h" />
     <ClInclude Include="src\zaf\control\event\focus_event_info.h" />
+    <ClInclude Include="src\zaf\control\event\ime_event_infos.h" />
     <ClInclude Include="src\zaf\control\event\is_enabled_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\is_selected_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\is_visible_changed_info.h" />
@@ -850,6 +852,7 @@
     <ClInclude Include="src\zaf\window\event\window_size_changed_info.h" />
     <ClInclude Include="src\zaf\window\input_method_context.h" />
     <ClInclude Include="src\zaf\window\internal\popup_menu_controller.h" />
+    <ClInclude Include="src\zaf\window\message\ime_message.h" />
     <ClInclude Include="src\zaf\window\message\set_cursor_message.h" />
     <ClInclude Include="src\zaf\window\popup_menu.h" />
     <ClInclude Include="src\zaf\window\dialog.h" />

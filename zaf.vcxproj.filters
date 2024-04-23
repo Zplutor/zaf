@@ -1186,6 +1186,9 @@
     <ClCompile Include="src\zaf\window\input_method_context.cpp">
       <Filter>zaf\window</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\event\ime_event_infos.cpp">
+      <Filter>zaf\control\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2691,6 +2694,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\input_method_context.h">
       <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\message\ime_message.h">
+      <Filter>zaf\window\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\ime_event_infos.h">
+      <Filter>zaf\control\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

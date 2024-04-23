@@ -12,6 +12,7 @@
 #include <zaf/control/color_picker.h>
 #include <zaf/control/event/double_click_info.h>
 #include <zaf/control/event/focus_event_info.h>
+#include <zaf/control/event/ime_event_infos.h>
 #include <zaf/control/event/is_enabled_changed_info.h>
 #include <zaf/control/event/is_selected_changed_info.h>
 #include <zaf/control/event/is_visible_changed_info.h>
@@ -956,6 +957,10 @@ protected:
 
     virtual void OnPreFocusLost(const PreFocusLostInfo& event_info);
     virtual void OnFocusLost(const FocusLostInfo& event_info);
+
+    virtual void OnIMEStartComposition(const IMEStartCompositionInfo& event_info);
+    virtual void OnIMEComposition(const IMECompositionInfo& event_info);
+    virtual void OnIMEEndComposition(const IMEEndCompositionInfo& event_info);
 
     /**
     Handles rect changed event. This method is called after the rect of the control changed.

@@ -888,6 +888,7 @@ private:
     void TryToShowTooltipWindow();
     void HideTooltipWindow();
     bool HandleWMSETCURSOR(const Message& message);
+    void HandleIMEMessage(const Message& message);
     bool HandleWMCLOSE();
     void HandleWMDESTROY();
     void HandleWMNCDESTROY();
