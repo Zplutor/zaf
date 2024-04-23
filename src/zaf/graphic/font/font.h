@@ -82,6 +82,8 @@ public:
         has_underline = has;
     }
 
+    LOGFONT ToLOGFONT() const;
+
     std::wstring ToString() const override;
 
     friend bool operator==(const Font& font1, const Font& font2) {

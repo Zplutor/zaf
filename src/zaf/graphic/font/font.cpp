@@ -57,6 +57,27 @@ Font Font::FromLOGFONT(const LOGFONT& logfont) {
 }
 
 
+LOGFONT Font::ToLOGFONT() const {
+
+    LOGFONT result{};
+    wcscpy_s(result.lfFaceName, this->family_name.c_str());
+    result.lfWeight = this->weight;
+
+    float y_dpi = Application::Instance().GetSystemDPI();
+    result.lfHeight = static_cast<LONG>(-(this->size * y_dpi / 96));
+
+    if (this->style != FontStyle::Normal) {
+        result.lfItalic = TRUE;
+    }
+
+    if (this->has_underline) {
+        result.lfUnderline = TRUE;
+    }
+
+    return result;
+}
+
+
 std::wstring Font::ToString() const {
     return family_name + L',' + ToWideString(size) + L',' + weight.ToString();
 }

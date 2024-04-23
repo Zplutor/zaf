@@ -14,6 +14,7 @@
 #include <zaf/internal/textual/text_box_selection_manager.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
+#include <zaf/window/input_method_context.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -438,23 +439,13 @@ void TextBox::HandleIMEMessage(const MessageReceivedInfo& event_info) {
     switch (event_info.Message().ID()) {
     case WM_IME_STARTCOMPOSITION: {
 
-        auto imc = ImmGetContext(event_info.Message().WindowHandle());
-
-        auto content_rect_in_window = this->ContentRectInWindow();
+        auto context = InputMethodContext::FromWindowHandle(event_info.Message().WindowHandle());
 
         auto caret_rect = module_context_->CaretManager().GetCaretRect();
-        caret_rect.AddOffset(content_rect_in_window->position);
-        caret_rect.position = this->Window()->TranslateToScreen(caret_rect.position);
+        caret_rect.AddOffset(this->ContentRectInWindow()->position);
+        context.MoveCompositionWindow(caret_rect.position);
 
-        //caret_rect = FromDIPs(caret_rect, this->GetDPI());
-
-        COMPOSITIONFORM form{};
-        form.dwStyle = CFS_POINT;
-        form.ptCurrentPos = caret_rect.position.ToPOINT();
-        ImmSetCompositionWindow(imc, &form);
-
-
-        ImmReleaseContext(event_info.Message().WindowHandle(), imc);
+        context.SetCompositionFont(this->Font());
         break;
     }
     case WM_IME_ENDCOMPOSITION:
@@ -466,23 +457,7 @@ void TextBox::HandleIMEMessage(const MessageReceivedInfo& event_info) {
     case WM_IME_CONTROL:
     case WM_IME_NOTIFY:
         break;
-    case WM_IME_REQUEST: {
-
-        if (event_info.Message().WParam() == IMR_COMPOSITIONWINDOW) {
-            auto info = (COMPOSITIONFORM*)event_info.Message().LParam();
-            info->dwStyle;
-        }
-        else if (event_info.Message().WParam() == IMR_QUERYCHARPOSITION) {
-            auto info = (IMECHARPOSITION*)event_info.Message().LParam();
-            info->pt.x = 100;
-            info->pt.y = 100;
-            info->cLineHeight = 33;
-            info->rcDocument.right = 200;
-            info->rcDocument.bottom = 200;
-            event_info.MarkAsHandled(TRUE);
-        }
-        break;
-    }
+    case WM_IME_REQUEST:
     case WM_IME_SELECT: {
         break;
     }

@@ -1183,6 +1183,9 @@
     <ClCompile Include="src\zaf\internal\control\mouse_event_routing.cpp">
       <Filter>zaf\internal\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\input_method_context.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2685,6 +2688,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\control\mouse_event_routing.h">
       <Filter>zaf\internal\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\input_method_context.h">
+      <Filter>zaf\window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
