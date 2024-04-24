@@ -215,7 +215,8 @@ protected:
     void OnFocusLost(const FocusLostInfo& event_info) override;
     void OnKeyDown(const KeyDownInfo& event_info) override;
     void OnCharInput(const CharInputInfo& event_info) override;
-    void OnWindowChanged(const WindowChangedInfo& event_info) override;
+    void OnIMEStartComposition(const IMEStartCompositionInfo& event_info) override;
+    void OnIMEComposition(const IMECompositionInfo& event_info) override;
 
     //Methods from SelfScrollControl
     void SetAllowVerticalScroll(bool allow) override;
@@ -266,8 +267,6 @@ private:
         int& max_value,
         int& page_value);
     void DoScroll(int new_value, float content_length, float text_length, float& text_position);
-
-    void HandleIMEMessage(const MessageReceivedInfo& event_info);
 
 private:
     std::unique_ptr<internal::TextBoxModuleContext> module_context_;

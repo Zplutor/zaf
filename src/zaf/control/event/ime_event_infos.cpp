@@ -3,8 +3,12 @@
 
 namespace zaf {
 
-IMEStartCompositionInfo::IMEStartCompositionInfo(std::shared_ptr<Control> source) : 
-    EventInfo(std::move(source)) {
+IMEStartCompositionInfo::IMEStartCompositionInfo(
+    std::shared_ptr<Control> source,
+    const zaf::Message& message) 
+    :
+    EventInfo(std::move(source)),
+    message_(message) {
 
 }
 
@@ -19,8 +23,12 @@ IMECompositionInfo::IMECompositionInfo(
 }
 
 
-IMEEndCompositionInfo::IMEEndCompositionInfo(std::shared_ptr<Control> source) : 
-    EventInfo(std::move(source)) {
+IMEEndCompositionInfo::IMEEndCompositionInfo(
+    std::shared_ptr<Control> source,
+    const zaf::Message& message)
+    :
+    EventInfo(std::move(source)),
+    message_(message) {
 
 }
 

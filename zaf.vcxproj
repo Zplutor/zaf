@@ -289,6 +289,7 @@
     <ClCompile Include="src\zaf\internal\textual\text_box_editor.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_edit_command.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_hit_test_manager.cpp" />
+    <ClCompile Include="src\zaf\internal\textual\text_box_ime_manager.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_index_manager.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_keyboard_input_handler.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_module.cpp" />
@@ -743,6 +744,7 @@
     <ClInclude Include="src\zaf\internal\textual\text_box_editor.h" />
     <ClInclude Include="src\zaf\internal\textual\text_box_edit_command.h" />
     <ClInclude Include="src\zaf\internal\textual\text_box_hit_test_manager.h" />
+    <ClInclude Include="src\zaf\internal\textual\text_box_ime_manager.h" />
     <ClInclude Include="src\zaf\internal\textual\text_box_index_manager.h" />
     <ClInclude Include="src\zaf\internal\textual\text_box_keyboard_input_handler.h" />
     <ClInclude Include="src\zaf\internal\textual\text_box_module.h" />

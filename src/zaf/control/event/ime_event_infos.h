@@ -9,7 +9,14 @@ class Control;
 
 class IMEStartCompositionInfo : public EventInfo {
 public:
-    explicit IMEStartCompositionInfo(std::shared_ptr<Control> source);
+    IMEStartCompositionInfo(std::shared_ptr<Control> source, const zaf::Message& message);
+
+    const zaf::Message& Message() const {
+        return message_;
+    }
+
+private:
+    zaf::Message message_;
 };
 
 
@@ -28,7 +35,14 @@ private:
 
 class IMEEndCompositionInfo : public EventInfo {
 public:
-    explicit IMEEndCompositionInfo(std::shared_ptr<Control> source);
+    IMEEndCompositionInfo(std::shared_ptr<Control> source, const Message& message);
+
+    const zaf::Message& Message() const {
+        return message_;
+    }
+
+private:
+    zaf::Message message_;
 };
 
 }

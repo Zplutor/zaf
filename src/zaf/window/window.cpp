@@ -1269,10 +1269,13 @@ void Window::HandleIMEMessage(const Message& message) {
 
     switch (message.ID()) {
     case WM_IME_STARTCOMPOSITION:
-        focused_control->OnIMEStartComposition(IMEStartCompositionInfo{ focused_control });
+        focused_control->OnIMEStartComposition(IMEStartCompositionInfo{ 
+            focused_control,
+            message 
+        });
         break;
     case WM_IME_ENDCOMPOSITION:
-        focused_control->OnIMEEndComposition(IMEEndCompositionInfo{ focused_control });
+        focused_control->OnIMEEndComposition(IMEEndCompositionInfo{ focused_control, message });
         break;
     case WM_IME_COMPOSITION:
         focused_control->OnIMEComposition(IMECompositionInfo{ focused_control, message });

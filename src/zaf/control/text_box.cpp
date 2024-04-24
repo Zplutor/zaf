@@ -8,13 +8,13 @@
 #include <zaf/internal/textual/text_box_caret_manager.h>
 #include <zaf/internal/textual/text_box_editor.h>
 #include <zaf/internal/textual/text_box_hit_test_manager.h>
+#include <zaf/internal/textual/text_box_ime_manager.h>
 #include <zaf/internal/textual/text_box_keyboard_input_handler.h>
 #include <zaf/internal/textual/text_box_module_context.h>
 #include <zaf/internal/textual/text_box_mouse_input_handler.h>
 #include <zaf/internal/textual/text_box_selection_manager.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
-#include <zaf/window/input_method_context.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -407,63 +407,19 @@ void TextBox::OnCharInput(const CharInputInfo& event_info) {
 }
 
 
-void TextBox::OnWindowChanged(const WindowChangedInfo& event_info) {
+void TextBox::OnIMEStartComposition(const IMEStartCompositionInfo& event_info) {
 
-    __super::OnWindowChanged(event_info);
+    __super::OnIMEStartComposition(event_info);
 
-    ime_message_subscription_.Unsubscribe();
-
-    auto window = Window();
-    if (!window) {
-        return;
-    }
-
-    ime_message_subscription_ = window->MessageReceivedEvent().Subscribe(
-        [this](const MessageReceivedInfo& event_info) {
-
-        if (event_info.IsHandled()) {
-            return;
-        }
-
-        if (!this->IsFocused()) {
-            return;
-        }
-
-        HandleIMEMessage(event_info);
-    });
+    module_context_->IMEManager().HandleIMEStartComposition(event_info);
 }
 
 
-void TextBox::HandleIMEMessage(const MessageReceivedInfo& event_info) {
+void TextBox::OnIMEComposition(const IMECompositionInfo& event_info) {
 
-    switch (event_info.Message().ID()) {
-    case WM_IME_STARTCOMPOSITION: {
+    __super::OnIMEComposition(event_info);
 
-        auto context = InputMethodContext::FromWindowHandle(event_info.Message().WindowHandle());
-
-        auto caret_rect = module_context_->CaretManager().GetCaretRect();
-        caret_rect.AddOffset(this->ContentRectInWindow()->position);
-        context.MoveCompositionWindow(caret_rect.position);
-
-        context.SetCompositionFont(this->Font());
-        break;
-    }
-    case WM_IME_ENDCOMPOSITION:
-    case WM_IME_COMPOSITION:
-    case WM_IME_COMPOSITIONFULL:
-    case WM_IME_KEYDOWN:
-    case WM_IME_KEYUP:
-    case WM_IME_CHAR:
-    case WM_IME_CONTROL:
-    case WM_IME_NOTIFY:
-        break;
-    case WM_IME_REQUEST:
-    case WM_IME_SELECT: {
-        break;
-    }
-    default:
-        break;
-    }
+    module_context_->IMEManager().HandleIMEComposition(event_info);
 }
 
 
