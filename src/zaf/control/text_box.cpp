@@ -479,6 +479,9 @@ void TextBox::OnSelectionChanged(const internal::TextBoxSelectionChangedInfo& ev
         EnsureCaretVisible(event_info.CharRectAtCaret());
     }
 
+    //Moving caret should go after scrolling.
+    module_context_->CaretManager().MoveCaretToCharRect(event_info.CharRectAtCaret());
+
     NeedRepaint();
 }
 
