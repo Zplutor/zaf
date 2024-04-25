@@ -19,9 +19,6 @@ void TextBoxCaretManager::Initialize() {
 
     Subscriptions() += Context().Editor().CanEditChangedEvent().Subscribe(
         std::bind(&TextBoxCaretManager::UpdateCaretOnPropertyChanged, this));
-
-    Subscriptions() += Context().SelectionManager().SelectionChangedEvent().Subscribe(
-        std::bind(&TextBoxCaretManager::OnSelectionChanged, this, std::placeholders::_1));
 }
 
 
@@ -79,6 +76,14 @@ void TextBoxCaretManager::MoveCaretToCurrentCaretIndex() {
 }
 
 
+void TextBoxCaretManager::MoveCaretToCharRect(const Rect& char_rect) {
+
+    if (caret_->IsVisible()) {
+        SetCaretRectToCharRect(char_rect);
+    }
+}
+
+
 void TextBoxCaretManager::SetCaretRectToCurrentCaretIndex() {
 
     auto caret_index = Context().SelectionManager().CaretIndex();
@@ -129,14 +134,6 @@ void TextBoxCaretManager::UpdateCaretOnPropertyChanged() {
     }
     else {
         HideCaret();
-    }
-}
-
-
-void TextBoxCaretManager::OnSelectionChanged(const TextBoxSelectionChangedInfo& event_info) {
-
-    if (caret_->IsVisible()) {
-        SetCaretRectToCharRect(event_info.CharRectAtCaret());
     }
 }
 

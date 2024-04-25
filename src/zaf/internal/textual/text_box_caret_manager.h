@@ -28,6 +28,7 @@ public:
     Rect GetCaretRectInContent() const;
 
     void MoveCaretToCurrentCaretIndex();
+    void MoveCaretToCharRect(const Rect& char_rect);
 
     void PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect);
 
@@ -36,7 +37,6 @@ private:
     void SetCaretRectToCurrentCaretIndex();
     void SetCaretRectToCharRect(const Rect& char_rect);
     void UpdateCaretOnPropertyChanged();
-    void OnSelectionChanged(const TextBoxSelectionChangedInfo& event_info);
 
 private:
     std::shared_ptr<Caret> caret_;
