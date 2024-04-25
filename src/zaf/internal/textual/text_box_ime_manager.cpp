@@ -17,19 +17,32 @@ void TextBoxIMEManager::Initialize() {
 
 void TextBoxIMEManager::HandleIMEStartComposition(const IMEStartCompositionInfo& event_info) {
 
+    auto& owner = Context().Owner();
+    if (!owner.IsEditable()) {
+        return;
+    }
+
     auto context = InputMethodContext::FromWindowHandle(event_info.Message().WindowHandle());
-    context.SetCompositionFont(Context().Owner().Font());
+    context.SetCompositionFont(owner.Font());
 }
 
 
 void TextBoxIMEManager::HandleIMEComposition(const IMECompositionInfo& event_info) {
 
-    auto text_layout = Context().GetTextLayout();
+    auto& owner = Context().Owner();
+    if (!owner.IsEditable()) {
+        return;
+    }
+
+    auto owner_content_rect = owner.ContentRectInWindow();
+    if (!owner_content_rect) {
+        return;
+    }
+    
+    auto caret_rect = Context().CaretManager().GetCaretRectInContent();
+    caret_rect.AddOffset(owner_content_rect->position);
 
     auto context = InputMethodContext::FromWindowHandle(event_info.Message().WindowHandle());
-    auto caret_rect = Context().CaretManager().GetCaretRectInContent();
-    caret_rect.AddOffset(Context().Owner().ContentRectInWindow()->position);
-
     context.MoveCompositionWindow(caret_rect.position);
 }
 
