@@ -65,8 +65,9 @@ void TextBoxCaretManager::HideCaret() {
 }
 
 
-Rect TextBoxCaretManager::GetCaretRect() const {
-    return caret_->Rect();
+Rect TextBoxCaretManager::GetCaretRectInContent() const {
+    auto result = caret_->Rect();
+    return result;
 }
 
 
@@ -93,6 +94,17 @@ void TextBoxCaretManager::SetCaretRectToCharRect(const Rect& char_rect_at_caret)
     Rect caret_rect = char_rect_at_caret;
     caret_rect.size.width = 1;
     caret_rect.AddOffset(owner.text_rect_.position);
+
+    //If the caret is at the end of the line, it may exceed the content of owner.
+    //Adjust the rect here to ensure that the caret is display within the content.
+    auto owner_content_width = owner.ContentSize().width;
+    if (caret_rect.Right() > owner_content_width) {
+
+        caret_rect.position.x -= caret_rect.Right() - owner_content_width;
+        if (caret_rect.position.x < 0) {
+            caret_rect.position.x = 0;
+        }
+    }
 
     caret_->SetRect(ToPixelAligned(caret_rect, owner.GetDPI()));
 }

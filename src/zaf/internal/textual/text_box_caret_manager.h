@@ -25,7 +25,7 @@ public:
     void ShowCaret();
     void HideCaret();
 
-    Rect GetCaretRect() const;
+    Rect GetCaretRectInContent() const;
 
     void MoveCaretToCurrentCaretIndex();
 
