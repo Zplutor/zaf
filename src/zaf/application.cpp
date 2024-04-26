@@ -36,7 +36,7 @@ Application::~Application() {
 }
 
 
-void Application::Initialize(const InitializeParameters& parameters) {
+void Application::Initialize(const InitializationOptions& parameters) {
 
     if (is_initialized_) {
         return;

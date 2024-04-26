@@ -33,7 +33,7 @@ class Window;
 class WindowClassRegistry;
 class WindowHolder;
 
-class InitializeParameters {
+class InitializationOptions {
 public:
     std::shared_ptr<ApplicationDelegate> delegate;
     HICON window_icon{};
@@ -65,7 +65,7 @@ public:
      This mehtod must be called before calling Run method. If the initialization
      fails, the application is unable to run, it should be terminated in this case.
      */
-    void Initialize(const InitializeParameters& parameters);
+    void Initialize(const InitializationOptions& parameters);
 
     /**
      Make the application run.

@@ -19,7 +19,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     zaf::Application& application = zaf::Application::Instance();
 
     //Initialize the application.
-    zaf::InitializeParameters initialize_parameters;
+    zaf::InitializationOptions initialize_parameters;
     application.Initialize(initialize_parameters);
 
     //Register the begin run event, do something when the event triggers.
