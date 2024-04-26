@@ -75,9 +75,19 @@ public:
     @param options
         The initialization options.
 
+    @pre 
+        The application runtime is not initialized.
+
+    @throw PreconditionError
+
+    @throw Error
+        Thrown if there are errors during initialization.
+
     @details
-        This mehtod must be called before calling Run method. If the initialization fails, the 
-        application is unable to run, it should be terminated in this case.
+        This method should be called to initialize the runtime at the entry point of the 
+        application, before using any facilities of zaf.
+
+        If initialization fails, the application can not continue to run and should exit.
     */
     void Initialize(const InitializationOptions& options);
 
@@ -134,38 +144,52 @@ public:
     float GetSystemDPI() const;
 
     /**
-     Get the application began run event.
+    Gets the event that will be raised when the application begins to run.
 
-     Startup works can be done in this event, Such as creating and showing the main window.
-     */
-    Observable<BeginRunInfo> BeginRunEvent() {
+    @details
+        Users can perform startup tasks at this event, such as creating and showing the main
+        window.
+
+        This event is raised after ApplicationDelegate::OnBeginRun() is called.
+    */
+    Observable<BeginRunInfo> BeginRunEvent() const {
         return begin_run_event_.AsObservable();
     }
 
     /**
-     Get the application will end run event.
+    Gets the event that will be raised when the application is about to end.
 
-     Cleanup works can be done in this event.
-     */
-    Observable<EndRunInfo> EndRunEvent() {
+    @details
+        Users can perform cleanup tasks at this event.
+
+        This event is raised after ApplicationDelegate::OnEndRun() is called.
+    */
+    Observable<EndRunInfo> EndRunEvent() const {
         return end_run_event_.AsObservable();
     }
 
     /**
-     Get the main window.
-     */
-    std::shared_ptr<Window> GetMainWindow() const {
+    Gets the main window of the application.
+
+    @return
+        The main window of the application. It might be nullptr if no main window is set.
+    */
+    std::shared_ptr<Window> MainWindow() const noexcept {
         return main_window_.lock();
     }
 
     /**
-     Set the main window.
+    Sets the main window for the application.
 
-     The application would terminate after the main window closed.
+    @param window
+        The window to set. It can be nullptr to cancel setting the main window. Despite this
+        parameter being defined as std::shared_ptr, the application won't share ownership of the 
+        window; users must manage the window's lifecyle themselves.
 
-     The main window can be nullptr.
-     */
-    void SetMainWindow(const std::shared_ptr<Window>& window);
+    @details
+        The application will terminate automatically after the main window is destroyed.
+    */
+    void SetMainWindow(std::shared_ptr<Window> window) noexcept;
     
 private:
     friend class Window;

@@ -216,8 +216,8 @@ void Application::UnregisterShownWindow(const std::shared_ptr<WindowHolder>& win
 }
 
 
-void Application::SetMainWindow(const std::shared_ptr<Window>& window) {
-    main_window_ = window;
+void Application::SetMainWindow(std::shared_ptr<Window> window) {
+    main_window_ = std::move(window);
 }
 
 
