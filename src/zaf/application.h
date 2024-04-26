@@ -42,30 +42,44 @@ public:
 };
 
 /**
- Represents the application runtime instance.
+A singleton class representing the zaf runtime, which manages the application's lifecycle, and 
+provides access global shared objects and resources.
 
- Application manages the execution, and maintains global objects.
+@details 
+    Before using any facilities of zaf, users must call Initialize() to initialize the runtime. 
+    Typically, this is done at the entry point of the application. 
 
- There is only one instance of Application, which can use Instance method to get.
- */
+    Users can implement the ApplicationDelegate interface and pass the object into the runtime via 
+    Initialize(). The interface methods will be called at certain times during the application's 
+    lifecyle. Such as when the application begins to run and is about to end.
+
+    After initialization, users can call Run() to start the application running. Users are 
+    responsible for creating and showing windows. This can be done either in the
+    ApplicationDelegate::OnBeginRun() or by subscribing to the BeginRunEvent().
+
+    A window can be set as the main window of the application by calling SetMainWindow(). Once the 
+    main window is destroyed, the application ends automatically. Users also can call Terminate()
+    to end the application manually.
+*/
 class Application : public SubscriptionHost, NonCopyableNonMovable {
 public:
     /**
-     Get the singleton instance.
-     */
+    Gets the singleton instance.
+    */
     static Application& Instance();
 
 public:
     /**
-     Initialize the application.
+    Initializes the application runtime.
 
-     @param parameters
-        Initialization parameters.
+    @param options
+        The initialization options.
 
-     This mehtod must be called before calling Run method. If the initialization
-     fails, the application is unable to run, it should be terminated in this case.
-     */
-    void Initialize(const InitializationOptions& parameters);
+    @details
+        This mehtod must be called before calling Run method. If the initialization fails, the 
+        application is unable to run, it should be terminated in this case.
+    */
+    void Initialize(const InitializationOptions& options);
 
     /**
      Make the application run.
