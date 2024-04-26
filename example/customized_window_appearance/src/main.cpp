@@ -11,7 +11,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     application.Initialize({});
     
     application.Subscriptions() += application.BeginRunEvent().Subscribe(
-        [](const zaf::ApplicationBeginRunInfo&) {
+        [](const zaf::BeginRunInfo&) {
     
             auto window = zaf::Create<zaf::Window>();
 

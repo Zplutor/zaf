@@ -61,7 +61,7 @@
 #include <zaf/control/textual/dynamic_inline_object.h>
 #include <zaf/input/mouse.h>
 
-void BeginRun(const zaf::ApplicationBeginRunInfo& event_info);
+void BeginRun(const zaf::BeginRunInfo& event_info);
 
 class InlineObject : public zaf::textual::DynamicInlineObject {
 public:
@@ -179,7 +179,7 @@ int WINAPI WinMain(
 }
 
 
-void BeginRun(const zaf::ApplicationBeginRunInfo& event_info) {
+void BeginRun(const zaf::BeginRunInfo& event_info) {
 
     auto window = zaf::Create<Window>();
     window->SetSize(zaf::Size{ 1200, 600 });

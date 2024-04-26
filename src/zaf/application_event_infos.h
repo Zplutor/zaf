@@ -2,17 +2,17 @@
 
 namespace zaf {
 
-class ApplicationBeginRunInfo {
+class BeginRunInfo {
 
 };
 
 
-class ApplicationEndRunInfo {
+class EndRunInfo {
 
 };
 
 
-class SessionEndedInfo {
+class SessionEndInfo {
 
 };
 

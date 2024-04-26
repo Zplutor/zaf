@@ -96,10 +96,10 @@ void Application::InitializeSystemMessageWindow() {
     system_message_window_ = Create<internal::SystemMessageWindow>();
 
     Subscriptions() += system_message_window_->SessionEndedEvent().Subscribe(
-        [this](const SessionEndedInfo& event_info) {
+        [this](const SessionEndInfo& event_info) {
     
             if (delegate_) {
-                delegate_->SessionEnded(event_info);
+                delegate_->OnSessionEnd(event_info);
             }
         }
     );
@@ -123,10 +123,10 @@ void Application::Run() {
 
 void Application::NotifyApplicationBeginRun() {
 
-    ApplicationBeginRunInfo event_info;
+    BeginRunInfo event_info;
     
     if (delegate_) {
-        delegate_->ApplicationBeginRun(event_info);
+        delegate_->OnBeginRun(event_info);
     }
 
     auto begin_run_event_observer = begin_run_event_.AsObserver();
@@ -137,10 +137,10 @@ void Application::NotifyApplicationBeginRun() {
 
 void Application::NotifyApplicationEndRun() {
 
-    ApplicationEndRunInfo event_info;
+    EndRunInfo event_info;
 
     if (delegate_) {
-        delegate_->ApplicationEndRun(event_info);
+        delegate_->OnEndRun(event_info);
     }
 
     auto end_run_event_observer = end_run_event_.AsObserver();

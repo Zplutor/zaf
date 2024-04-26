@@ -10,7 +10,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     application.Initialize({});
 
     application.Subscriptions() += application.BeginRunEvent().Subscribe(
-        [](const zaf::ApplicationBeginRunInfo&) {
+        [](const zaf::BeginRunInfo&) {
 
             Service::GetInstance().Initialize();
 

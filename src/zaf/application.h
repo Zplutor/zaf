@@ -124,7 +124,7 @@ public:
 
      Startup works can be done in this event, Such as creating and showing the main window.
      */
-    Observable<ApplicationBeginRunInfo> BeginRunEvent() {
+    Observable<BeginRunInfo> BeginRunEvent() {
         return begin_run_event_.AsObservable();
     }
 
@@ -133,7 +133,7 @@ public:
 
      Cleanup works can be done in this event.
      */
-    Observable<ApplicationEndRunInfo> EndRunEvent() {
+    Observable<EndRunInfo> EndRunEvent() {
         return end_run_event_.AsObservable();
     }
 
@@ -196,8 +196,8 @@ private:
 
     std::shared_ptr<ApplicationDelegate> delegate_;
 
-    Subject<ApplicationBeginRunInfo> begin_run_event_;
-    Subject<ApplicationEndRunInfo> end_run_event_;
+    Subject<BeginRunInfo> begin_run_event_;
+    Subject<EndRunInfo> end_run_event_;
 };
 
 }

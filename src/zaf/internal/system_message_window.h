@@ -12,13 +12,13 @@ class SystemMessageWindow : public SubscriptionHost {
 public:
     SystemMessageWindow();
 
-    Observable<SessionEndedInfo> SessionEndedEvent() {
+    Observable<SessionEndInfo> SessionEndedEvent() {
         return session_ended_subject_.AsObservable();
     }
 
 private:
     InnerMessageOnlyWindow message_only_window_;
-    Subject<SessionEndedInfo> session_ended_subject_;
+    Subject<SessionEndInfo> session_ended_subject_;
 };
 
 }

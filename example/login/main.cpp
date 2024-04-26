@@ -5,7 +5,7 @@
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 
-static void OnBeginRun(const zaf::ApplicationBeginRunInfo&);
+static void OnBeginRun(const zaf::BeginRunInfo&);
 static std::shared_ptr<zaf::Window> CreateMainWindow();
 static std::vector<std::shared_ptr<zaf::Control>> CreateControls();
 static void OnSignInClick(
@@ -31,7 +31,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 }
 
 
-static void OnBeginRun(const zaf::ApplicationBeginRunInfo&) {
+static void OnBeginRun(const zaf::BeginRunInfo&) {
 
     //Create a main window.
     std::shared_ptr<zaf::Window> main_window = CreateMainWindow();

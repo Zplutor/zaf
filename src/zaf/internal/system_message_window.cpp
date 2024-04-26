@@ -8,7 +8,7 @@ SystemMessageWindow::SystemMessageWindow() : message_only_window_(nullptr) {
         [this](const Message& message) {
     
         if (message.ID() == WM_ENDSESSION) {
-            session_ended_subject_.AsObserver().OnNext(SessionEndedInfo{});
+            session_ended_subject_.AsObserver().OnNext(SessionEndInfo{});
         }
     });
 }
