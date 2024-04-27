@@ -76,7 +76,7 @@ public:
         The initialization options.
 
     @pre 
-        The application runtime is not initialized.
+        The application runtime hasn't been initialized.
 
     @throw PreconditionError
         Thrown if the precondition is violated.
@@ -96,7 +96,7 @@ public:
     Runs the application by starting a main message loop.
 
     @pre 
-        Initialize() has been called.
+        The application runtime has been initialized.
 
     @throw PreconditionError
         Thrown if the precondition is violated.
@@ -123,7 +123,15 @@ public:
     */
     void Terminate();
 
-    const std::shared_ptr<ApplicationDelegate>& GetDelegate() const {
+    /**
+    Gets the ApplicationDelegate object that is passed into the application runtime when calling 
+    Initialize().
+
+    @return
+        The ApplicationDelegate object. It might be nullptr if no such object is set when calling 
+        Initialize().
+    */
+    const std::shared_ptr<ApplicationDelegate>& Delegate() const noexcept {
         return delegate_;
     }
 
@@ -135,9 +143,6 @@ public:
         return *resource_factory_;
     }
 
-    /**
-     Get the resource factory.
-     */
     GraphicFactory& GetGraphicFactory() const {
         return *graphic_factory_;
     }
