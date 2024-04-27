@@ -93,23 +93,34 @@ public:
     void Initialize(const InitializationOptions& options);
 
     /**
-     Make the application run.
+    Runs the application by starting a main message loop.
 
-     Before calling this method, Initialize method must be called, and it must succeeds.
+    @pre 
+        Initialize() has been called.
 
-     The application enters a message loop while running, so this method would not return
-     until the message loop ends. 
-     
-     OnBeginRun event is triggered after the running began. OnEndRun event is triggered 
-     before the running end.
+    @throw PreconditionError
+        Thrown if the precondition is violated.
+
+    @throw ...
+        Any exceptions that are thrown by:
+        - ApplicaitonDelegate::OnBeginRun() or subscriptions of BeginRunEvent();
+        - User codes during the handling of the main message loop.
+        - ApplicationDelegate::OnEndRun() or subscriptions of EndRunEvent();
+
+    @details
+        This method will not return until the message loop is end.
+
+        Before the message loop starts, ApplicationDelegate::OnBeginRun() is called, and then
+        BeginRunEvent() is raised. After the message loop ends, ApplicationDelegate::OnEndRun() is 
+        called, and then EndRunEvent() is raised.
+
+        To end the main message loop, users can either close the main window or call Terminate().
      */
     void Run();
 
     /**
-     Terminate the application.
-
-     After calling this method, the message loop ends, and the application exits normally.
-     */
+    Terminates the application by ending the main message loop.
+    */
     void Terminate();
 
     const std::shared_ptr<ApplicationDelegate>& GetDelegate() const {
@@ -150,6 +161,8 @@ public:
     @details
         Users can perform startup tasks at this event, such as creating and showing the main
         window.
+
+        This event should be subscribed before calling Run().
 
         This event is raised after ApplicationDelegate::OnBeginRun() is called.
     */
