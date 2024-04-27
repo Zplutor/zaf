@@ -38,9 +38,7 @@ Application::~Application() {
 
 void Application::Initialize(const InitializationOptions& parameters) {
 
-    if (is_initialized_) {
-        return;
-    }
+    ZAF_EXPECT(!is_initialized_);
 
     rx_runtime_ = std::make_unique<internal::RxRuntime>();
 
@@ -216,7 +214,7 @@ void Application::UnregisterShownWindow(const std::shared_ptr<WindowHolder>& win
 }
 
 
-void Application::SetMainWindow(std::shared_ptr<Window> window) {
+void Application::SetMainWindow(std::shared_ptr<Window> window) noexcept {
     main_window_ = std::move(window);
 }
 

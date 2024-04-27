@@ -79,6 +79,7 @@ public:
         The application runtime is not initialized.
 
     @throw PreconditionError
+        Thrown if the precondition is violated.
 
     @throw Error
         Thrown if there are errors during initialization.
