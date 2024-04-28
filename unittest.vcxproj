@@ -500,6 +500,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)rx_map_test.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="unittest\case\rx\observable_test.cpp" />
+    <ClCompile Include="unittest\case\rx\observer_test.cpp" />
     <ClCompile Include="unittest\case\rx\observe_on_test.cpp" />
     <ClCompile Include="unittest\case\rx\replay_subject_test.cpp" />
     <ClCompile Include="unittest\case\rx\subject_test.cpp" />

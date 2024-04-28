@@ -41,6 +41,11 @@ public:
         inner_->OnError(error);
     }
 
+    template<typename E>
+    void OnError(E error) const {
+        this->OnError(std::make_exception_ptr(std::move(error)));
+    }
+
     void OnCompleted() const {
         inner_->OnCompleted();
     }
