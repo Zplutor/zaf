@@ -80,23 +80,25 @@ TEST(RxDoTest, OnNextOnError) {
     int observed_error_sequence{};
 
     zaf::Subject<int> subject;
-    auto subscription = subject.AsObservable().Do([&](int value) {
-        do_value = value;
-        do_value_sequence = ++call_sequence;
-    },
-    [&](const zaf::Error& error) {
-        do_error_sequence = ++call_sequence;
-    })
-    .Subscribe([&](int value) {
-        observed_value = value;
-        observed_value_sequence = ++call_sequence;
-    }, 
-    [&](const zaf::Error& error) {
-        observed_error_sequence = ++call_sequence;
-    });
+    auto subscription = subject.AsObservable().Do(
+        [&](int value) {
+            do_value = value;
+            do_value_sequence = ++call_sequence;
+        },
+        [&](const std::exception_ptr& error) {
+            do_error_sequence = ++call_sequence;
+        })
+    .Subscribe(
+        [&](int value) {
+            observed_value = value;
+            observed_value_sequence = ++call_sequence;
+        }, 
+        [&](const std::exception_ptr& error) {
+            observed_error_sequence = ++call_sequence;
+        });
 
     subject.AsObserver().OnNext(99);
-    subject.AsObserver().OnError(zaf::Error(std::make_error_code(std::errc::bad_message)));
+    subject.AsObserver().OnError(std::make_exception_ptr(1));
 
     ASSERT_EQ(do_value, 99);
     ASSERT_EQ(observed_value, 99);
@@ -131,7 +133,7 @@ TEST(RxDoTest, OnNextOnErrorOnCompleted) {
             [&](int value) {
                 test_state.do_value = value;
             },
-            [&](const zaf::Error& error) {
+            [&](const std::exception_ptr& error) {
                 test_state.do_error = true;
             },
             [&]() {
@@ -142,7 +144,7 @@ TEST(RxDoTest, OnNextOnErrorOnCompleted) {
             [&](int value) {
                 test_state.observed_value = value;
             },
-            [&](const zaf::Error& error) {
+            [&](const std::exception_ptr& error) {
                 test_state.observed_error = true;
             },
             [&]() {
@@ -156,7 +158,7 @@ TEST(RxDoTest, OnNextOnErrorOnCompleted) {
     {
         auto subject = create_test_subject();
         subject.AsObserver().OnNext(11);
-        subject.AsObserver().OnError(zaf::Error(std::make_error_code(std::errc::bad_message)));
+        subject.AsObserver().OnError(std::make_exception_ptr(2));
 
         ASSERT_EQ(test_state.do_value, 11);
         ASSERT_TRUE(test_state.do_error);

@@ -20,7 +20,7 @@ TEST(RxMapTest, Map) {
         .Subscribe([&](const std::string& value) {
             test_data.result.push_back(value);
         },
-        [&](const zaf::Error&) {
+        [&](const std::exception_ptr&) {
             test_data.error_count++;
         },
         [&]() {
@@ -47,7 +47,7 @@ TEST(RxMapTest, Map) {
         test_data = {};
         auto subject = create_subject();
         subject.AsObserver().OnNext(9);
-        subject.AsObserver().OnError(zaf::Error{ std::make_error_code(std::errc::bad_address) });
+        subject.AsObserver().OnError(std::make_exception_ptr(5));
 
         std::vector<std::string> expected{ "9" };
         ASSERT_EQ(test_data.result, expected);
@@ -78,7 +78,7 @@ TEST(RxMapTest, ErrorInMapper) {
         .Subscribe([&](const std::string& value) {
             test_data.result.push_back(value);
         },
-        [&](const zaf::Error&) {
+        [&](const std::exception_ptr&) {
             test_data.error_count++;
         },
         [&]() {
@@ -105,7 +105,7 @@ TEST(RxMapTest, ErrorInMapper) {
         auto subject = create_subject();
         subject.AsObserver().OnNext(0);
         subject.AsObserver().OnNext(1);
-        subject.AsObserver().OnError(zaf::Error{ std::make_error_code(std::errc::bad_address) });
+        subject.AsObserver().OnError(std::make_exception_ptr(6));
 
         std::vector<std::string> expected{ "0" };
         ASSERT_EQ(test_data.result, expected);

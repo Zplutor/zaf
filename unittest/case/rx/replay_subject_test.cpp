@@ -24,7 +24,7 @@ TEST(RxReplaySubjectTest, Replay) {
     auto subscription = subject.AsObservable().Subscribe([&sequence](int value) {
         sequence.push_back(value);
     },
-    [&has_error](const zaf::Error& error) {
+    [&has_error](const std::exception_ptr& error) {
         has_error = true;
     },
     [&is_completed]() {
@@ -55,7 +55,7 @@ TEST(RxReplaySubjectTest, ReplayError) {
     auto observer = subject.AsObserver();
     observer.OnNext(8);
     observer.OnNext(7);
-    observer.OnError(zaf::Error{ zaf::make_error_code(zaf::BasicErrc::InvalidValue) });
+    observer.OnError(std::make_exception_ptr(9));
 
     std::vector<int> sequence;
     bool has_error{};
@@ -63,7 +63,7 @@ TEST(RxReplaySubjectTest, ReplayError) {
     auto subscription = subject.AsObservable().Subscribe([&sequence](int value) {
         sequence.push_back(value);
     },
-    [&has_error](const zaf::Error& error) {
+    [&has_error](const std::exception_ptr& error) {
         has_error = true;
     },
     [&is_completed]() {

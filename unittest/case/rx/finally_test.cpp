@@ -21,7 +21,7 @@ TEST(RxFinallyTest, Finally) {
         .Subscribe([&](int value) {
             test_state.on_next_value = value;
         },
-        [&](const zaf::Error&) {
+        [&](const std::exception_ptr&) {
             test_state.on_error_called = true;
         },
         [&]() {
@@ -60,7 +60,7 @@ TEST(RxFinallyTest, Finally) {
         auto subject = create_test_subject();
 
         subject.AsObserver().OnNext(3);
-        subject.AsObserver().OnError(zaf::Error(std::make_error_code(std::errc::bad_address)));
+        subject.AsObserver().OnError(std::make_exception_ptr(3));
         ASSERT_EQ(test_state.on_next_value, 3);
         ASSERT_EQ(test_state.on_error_called, true);
         ASSERT_EQ(test_state.on_completed_called, false);

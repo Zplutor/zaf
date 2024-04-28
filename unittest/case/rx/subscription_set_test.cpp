@@ -103,7 +103,7 @@ TEST(RxSubscriptionSetTest, RemoveAfterFinish) {
     set += subject.AsObservable().Subscribe([](std::string) {});
     subject.AsObserver().OnNext("a");
     ASSERT_EQ(set.Count(), 1);
-    subject.AsObserver().OnError(zaf::Error(std::make_error_code(std::errc::address_in_use)));
+    subject.AsObserver().OnError(std::make_exception_ptr(10));
     ASSERT_EQ(set.Count(), 0);
 
     //Remove after OnCompleted

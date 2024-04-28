@@ -93,9 +93,9 @@ public:
         return Observable{ inner_->DoOnTerminated(std::move(action)) };
     }
 
-    Observable Catch(std::function<Observable<T>(const Error&)> handler) {
+    Observable Catch(std::function<Observable<T>(const std::exception_ptr&)> handler) {
         return Observable{ 
-            inner_->Catch([handle = std::move(handler)](const Error& error) {
+            inner_->Catch([handle = std::move(handler)](const std::exception_ptr& error) {
                 return handle(error).Inner();
             })
         };

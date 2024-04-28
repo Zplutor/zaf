@@ -40,13 +40,13 @@ TEST(RxObserveOnTest, ObserveOn) {
         auto observable = subject.AsObservable().ObserveOn(zaf::Scheduler::CreateOnSingleThread());
 
         auto subscription = observable.Subscribe([](int) { },
-        [&](const zaf::Error&) {
+        [&](const std::exception_ptr&) {
             on_error_thread = std::this_thread::get_id();
             std::scoped_lock<std::mutex> lock_guard(lock);
             cv.notify_all();
         });
 
-        subject.AsObserver().OnError(zaf::Error(std::make_error_code(std::errc::bad_address)));
+        subject.AsObserver().OnError(std::make_exception_ptr(8));
         cv.wait(unique_lock);
     }
 

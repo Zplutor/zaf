@@ -18,12 +18,12 @@ TEST(RxDoOnTerminatedTest, OnError) {
     .Subscribe([&](int value) {
         sub_sequence = ++call_sequence;
     },
-    [&](const zaf::Error& error) {
+    [&](const std::exception_ptr& error) {
         sub_error_sequence = ++call_sequence;
     });
 
     subject.AsObserver().OnNext(1);
-    subject.AsObserver().OnError(zaf::Error{ make_error_code(zaf::BasicErrc::InvalidCast) });
+    subject.AsObserver().OnError(std::make_exception_ptr(0));
 
     ASSERT_EQ(sub_sequence, 1);
     ASSERT_EQ(do_sequence, 2);

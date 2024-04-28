@@ -24,7 +24,7 @@ TEST(RxFlatMapTest, FlatMap) {
         .Subscribe([&](const std::string& value) {
             test_data.result.push_back(value);
         },
-        [&](const zaf::Error& error) {
+        [&](const std::exception_ptr& error) {
             test_data.error_count++;
         },
         [&]() {
@@ -51,7 +51,7 @@ TEST(RxFlatMapTest, FlatMap) {
         test_data = {};
         auto subject = create_subject();
         subject.AsObserver().OnNext(2);
-        subject.AsObserver().OnError(zaf::Error{ std::make_error_code(std::errc::bad_message) });
+        subject.AsObserver().OnError(std::make_exception_ptr(4));
 
         std::vector<std::string> expected{ "2" };
         ASSERT_EQ(test_data.result, expected);
@@ -95,20 +95,25 @@ TEST(RxFlatMapTest, AsyncObservable) {
 TEST(RxFlatMapTest, ErrorInMapper) {
 
     int value_count{};
-    std::optional<zaf::Error> error;
+    std::optional<std::string> error;
     int completed_count{};
 
     zaf::Subject<int> subject;
     auto sub = subject.AsObservable().FlatMap<std::string>(
         [](int value) -> zaf::Observable<std::string> {
-            throw zaf::Error{ zaf::make_error_code(zaf::BasicErrc::InvalidValue) };
+            throw std::string("aaa");
         }
     )
     .Subscribe([&](const std::string& value) {
         value_count++;
     },
-    [&](const zaf::Error& err) {
-        error = err;
+    [&](const std::exception_ptr& err) {
+        try {
+            std::rethrow_exception(err);
+        }
+        catch (const std::string& error_value) {
+            error = error_value;
+        }
     },
     [&]() {
         completed_count++;
@@ -118,7 +123,7 @@ TEST(RxFlatMapTest, ErrorInMapper) {
 
     ASSERT_EQ(value_count, 0);
     ASSERT_TRUE(error.has_value());
-    ASSERT_EQ(error->Code(), zaf::BasicErrc::InvalidValue);
+    ASSERT_EQ(error, "aaa");
     ASSERT_EQ(completed_count, 0);
 }
 

@@ -17,6 +17,6 @@ TEST(RxObservableTest, EmptyObserver) {
     {
         auto subscription = subject.AsObservable().Subscribe();
         subject.AsObserver().OnNext(0);
-        subject.AsObserver().OnError(zaf::Error(std::make_error_code(std::errc::bad_address)));
+        subject.AsObserver().OnError(std::make_exception_ptr(7));
     }
 }

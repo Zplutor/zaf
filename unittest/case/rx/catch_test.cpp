@@ -4,12 +4,24 @@
 #include <zaf/rx/creation.h>
 #include <zaf/rx/subject.h>
 
+namespace {
+
+enum class MockError {
+    Unknown,
+    InvalidValue,
+    InvalidCast,
+    Unsupported,
+    NameNotFound,
+};
+
+}
+
 TEST(RxCatchTest, Catch) {
 
     struct TestData {
         std::vector<int> result;
         int error_count{};
-        std::optional<zaf::Error> error;
+        std::optional<MockError> error;
         int completed_count{};
         zaf::Subscription sub;
     } test_data;
@@ -17,31 +29,45 @@ TEST(RxCatchTest, Catch) {
     auto create_subject = [&]() {
 
         zaf::Subject<int> subject;
-        test_data.sub = subject.AsObservable().Catch([](const zaf::Error& error) {
+        test_data.sub = subject.AsObservable().Catch([](const std::exception_ptr& error) {
 
             zaf::ReplaySubject<int> new_subject;
-            if (error.Code() == zaf::BasicErrc::InvalidValue) {
-                new_subject.AsObserver().OnNext(100);
-                new_subject.AsObserver().OnNext(101);
-                new_subject.AsObserver().OnNext(102);
-                new_subject.AsObserver().OnCompleted();
+
+            try {
+                std::rethrow_exception(error);
             }
-            else if (error.Code() == zaf::BasicErrc::InvalidCast) {
-                new_subject.AsObserver().OnError(zaf::Error{ 
-                    zaf::make_error_code(zaf::BasicErrc::Unsupported)
-                });
+            catch (MockError mock_error) {
+
+                if (mock_error == MockError::InvalidValue) {
+                    new_subject.AsObserver().OnNext(100);
+                    new_subject.AsObserver().OnNext(101);
+                    new_subject.AsObserver().OnNext(102);
+                    new_subject.AsObserver().OnCompleted();
+                }
+                else if (mock_error == MockError::InvalidCast) {
+                    new_subject.AsObserver().OnError(
+                        std::make_exception_ptr(MockError::Unsupported));
+                }
+                else {
+                    throw MockError::Unknown;
+                }
             }
-            else {
-                throw zaf::Error{ zaf::make_error_code(zaf::BasicErrc::Unknown) };
-            }
+
             return new_subject.AsObservable();
         })
         .Subscribe([&](int value) {
             test_data.result.push_back(value);
         },
         [&](const std::exception_ptr& error) {
+
             test_data.error_count++;
-            test_data.error = error;
+
+            try {
+                std::rethrow_exception(error);
+            }
+            catch (MockError mock_error) {
+                test_data.error = mock_error;
+            }
         },
         [&]() {
             test_data.completed_count++;
@@ -69,9 +95,7 @@ TEST(RxCatchTest, Catch) {
         auto subject = create_subject();
         subject.AsObserver().OnNext(0);
         subject.AsObserver().OnNext(1);
-        subject.AsObserver().OnError(zaf::Error{ 
-            zaf::make_error_code(zaf::BasicErrc::InvalidValue)
-        });
+        subject.AsObserver().OnError(std::make_exception_ptr(MockError::InvalidValue));
 
         std::vector<int> expected{ 0, 1, 100, 101, 102 };
         ASSERT_EQ(test_data.result, expected);
@@ -84,14 +108,12 @@ TEST(RxCatchTest, Catch) {
         auto subject = create_subject();
         subject.AsObserver().OnNext(0);
         subject.AsObserver().OnNext(1);
-        subject.AsObserver().OnError(zaf::Error{
-            zaf::make_error_code(zaf::BasicErrc::InvalidCast)
-        });
+        subject.AsObserver().OnError(std::make_exception_ptr(MockError::InvalidCast));
 
         std::vector<int> expected{ 0, 1 };
         ASSERT_EQ(test_data.result, expected);
         ASSERT_EQ(test_data.error_count, 1);
-        ASSERT_EQ(test_data.error->Code(), zaf::make_error_code(zaf::BasicErrc::Unsupported));
+        ASSERT_EQ(test_data.error, MockError::Unsupported);
         ASSERT_EQ(test_data.completed_count, 0);
     }
 
@@ -100,14 +122,12 @@ TEST(RxCatchTest, Catch) {
         auto subject = create_subject();
         subject.AsObserver().OnNext(0);
         subject.AsObserver().OnNext(2);
-        subject.AsObserver().OnError(zaf::Error{
-            zaf::make_error_code(zaf::BasicErrc::NameNotFound)
-        });
+        subject.AsObserver().OnError(std::make_exception_ptr(MockError::NameNotFound));
 
         std::vector<int> expected{ 0, 2 };
         ASSERT_EQ(test_data.result, expected);
         ASSERT_EQ(test_data.error_count, 1);
-        ASSERT_EQ(test_data.error->Code(), zaf::make_error_code(zaf::BasicErrc::Unknown));
+        ASSERT_EQ(test_data.error, MockError::Unknown);
         ASSERT_EQ(test_data.completed_count, 0);
     }
 }
@@ -119,7 +139,7 @@ TEST(RxCatchTest, FreeSubscriptionOnCompleted) {
 
     zaf::Subject<int> subject;
     zaf::Subscription sub;
-    sub = subject.AsObservable().Catch([](const zaf::Error& error) {
+    sub = subject.AsObservable().Catch([](const std::exception_ptr& error) {
         return zaf::rx::Just(99);
     })
     .Subscribe([&](int value) {
@@ -132,7 +152,7 @@ TEST(RxCatchTest, FreeSubscriptionOnCompleted) {
     });
 
     subject.AsObserver().OnNext(1);
-    subject.AsObserver().OnError(zaf::Error{ make_error_code(zaf::BasicErrc::InvalidValue) });
+    subject.AsObserver().OnError(std::make_exception_ptr(MockError::InvalidCast));
 
     std::vector<int> expected{ 1, 99 };
     ASSERT_EQ(result, expected);

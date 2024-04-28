@@ -17,7 +17,7 @@ TEST(RxEmptyTest, Normal) {
     auto sub = observable.Subscribe([&](int value) {
         ++on_next_count;
     }, 
-    [&](const zaf::Error&) {
+    [&](const std::exception_ptr&) {
         ++on_error_count;
     },
     [&]() {
@@ -41,7 +41,7 @@ TEST(RxNeverTest, Normal) {
     auto sub = observable.Subscribe([&](int value) {
         ++on_next_count;
     },
-    [&](const zaf::Error&) {
+    [&](const std::exception_ptr&) {
         ++on_error_count;
     },
     [&]() {
@@ -67,8 +67,13 @@ TEST(RxThrowTest, Normal) {
     auto sub = observable.Subscribe([&](int value) {
         ++on_next_count;
     },
-    [&](const zaf::Error& error) {
-        catched_error_code = error.Code();
+    [&](const std::exception_ptr& exception) {
+        try {
+            std::rethrow_exception(exception);
+        }
+        catch (const zaf::Error& error) {
+            catched_error_code = error.Code();
+        }
     },
     [&]() {
         ++on_completed_count;
@@ -150,20 +155,23 @@ TEST(RxCreateTest, NoCancelToken) {
 TEST(RxCreateTest, Error) {
 
     auto observable = zaf::rx::Create<int>([](zaf::Observer<int> observer) {
-
-        throw zaf::Error{ std::make_error_code(std::errc::bad_message), "hello" };
+        throw std::string("hello");
         return zaf::Subscription{};
     });
 
-    std::optional<zaf::Error> result_error;
+    std::optional<std::string> result_error;
     zaf::Application::Instance().Subscriptions() += observable.Subscribe([](int value) {
 
     }, 
-    [&result_error](const zaf::Error& error) {
-        result_error = error;
+    [&result_error](const std::exception_ptr& error) {
+        try {
+            std::rethrow_exception(error);
+        }
+        catch (const std::string& string) {
+            result_error = string;
+        }
     });
 
     ASSERT_TRUE(result_error.has_value());
-    ASSERT_EQ(result_error->Code(), std::errc::bad_message);
-    ASSERT_EQ(result_error->Message(), "hello");
+    ASSERT_EQ(*result_error, "hello");
 }
