@@ -16,12 +16,10 @@ std::shared_ptr<InnerSubscription> CustomizedObservable::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
     try {
-
         return procedure_(observer);
     }
-    catch (const Error& error) {
-
-        observer->OnError(error);
+    catch (...) {
+        observer->OnError(std::current_exception());
         return InnerSubscription::Empty();
     }
 }

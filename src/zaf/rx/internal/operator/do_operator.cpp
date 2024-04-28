@@ -27,7 +27,7 @@ public:
         EmitOnNext(value);
     }
 
-    void OnError(const Error& error) override {
+    void OnError(const std::exception_ptr& error) override {
         do_observer_->OnError(error);
         EmitOnError(error);
     }

@@ -59,7 +59,7 @@ void InnerSubject::OnNext(const std::any& value) {
 }
 
 
-void InnerSubject::OnError(const Error& error) {
+void InnerSubject::OnError(const std::exception_ptr& error) {
 
     auto copied_producers = producers_;
     for (const auto& each_producer : copied_producers) {

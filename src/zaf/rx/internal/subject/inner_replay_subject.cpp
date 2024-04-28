@@ -14,7 +14,7 @@ std::shared_ptr<InnerSubscription> InnerReplaySubject::Subscribe(
             if constexpr (std::is_same_v<ItemType, std::any>) {
                 observer->OnNext(value);
             }
-            else if constexpr (std::is_same_v<ItemType, Error>) {
+            else if constexpr (std::is_same_v<ItemType, std::exception_ptr>) {
                 observer->OnError(value);
             }
             else if constexpr (std::is_same_v<ItemType, None>) {
@@ -36,7 +36,7 @@ void InnerReplaySubject::OnNext(const std::any& value) {
 }
 
 
-void InnerReplaySubject::OnError(const Error& error) {
+void InnerReplaySubject::OnError(const std::exception_ptr& error) {
 
     replay_items_.emplace_back(error);
 

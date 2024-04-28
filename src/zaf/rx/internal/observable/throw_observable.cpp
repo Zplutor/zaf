@@ -12,7 +12,7 @@ ThrowObservable::ThrowObservable(zaf::Error error) : error_(std::move(error)) {
 std::shared_ptr<InnerSubscription> ThrowObservable::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
-    observer->OnError(error_);
+    observer->OnError(std::make_exception_ptr(error_));
     return InnerSubscription::Empty();
 }
 

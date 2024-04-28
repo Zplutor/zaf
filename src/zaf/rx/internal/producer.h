@@ -33,7 +33,7 @@ public:
     /**
     Emits an error to the observer.
     */
-    void EmitOnError(const Error& error);
+    void EmitOnError(const std::exception_ptr& error);
 
     /**
     Emits a completion to the observer.

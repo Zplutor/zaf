@@ -30,7 +30,7 @@ public:
             value));
     }
 
-    void OnError(const Error& error) override {
+    void OnError(const std::exception_ptr& error) override {
 
         scheduler_->Schedule(std::bind(
             &ObserveOnProducer::OnErrorOnScheduler, 
@@ -60,7 +60,7 @@ private:
         }
     }
 
-    void OnErrorOnScheduler(const Error& error) {
+    void OnErrorOnScheduler(const std::exception_ptr& error) {
         if (!is_unsubscribed_.load()) {
             EmitOnError(error);
         }

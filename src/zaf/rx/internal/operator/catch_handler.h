@@ -1,12 +1,12 @@
 #pragma once
 
+#include <exception>
 #include <functional>
-#include <zaf/base/error/error.h>
 
 namespace zaf::internal {
 
 class InnerObservable;
 
-using CatchHandler = std::function<std::shared_ptr<InnerObservable>(const Error&)>;
+using CatchHandler = std::function<std::shared_ptr<InnerObservable>(const std::exception_ptr&)>;
 
 }

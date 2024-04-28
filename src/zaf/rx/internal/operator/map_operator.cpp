@@ -24,16 +24,16 @@ public:
         try {
             mapped_value = mapper_(value);
         }
-        catch (const Error& error) {
+        catch (...) {
             source_subscription_->Unsubscribe();
-            TryToDeliverOnError(error);
+            TryToDeliverOnError(std::current_exception());
             return;
         }
 
         EmitOnNext(mapped_value);
     }
 
-    void OnError(const Error& error) override {
+    void OnError(const std::exception_ptr& error) override {
         TryToDeliverOnError(error);
     }
 
@@ -53,7 +53,7 @@ protected:
     }
 
 private:
-    void TryToDeliverOnError(const Error& error) {
+    void TryToDeliverOnError(const std::exception_ptr& error) {
         if (!IsTerminated()) {
             EmitOnError(error);
         }

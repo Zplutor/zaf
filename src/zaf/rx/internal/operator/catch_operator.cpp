@@ -25,14 +25,14 @@ public:
         EmitOnNext(value);
     }
 
-    void OnError(const Error& error) override {
+    void OnError(const std::exception_ptr& error) override {
 
         std::shared_ptr<InnerObservable> new_observable;
         try {
             new_observable = handler_(error);
         }
-        catch (const zaf::Error& error) {
-            EmitOnError(error);
+        catch (...) {
+            EmitOnError(std::current_exception());
             return;
         }
 
@@ -69,7 +69,7 @@ private:
             [this](const std::any& value) {
                 EmitOnNext(value);
             },
-            [this](const zaf::Error& error) {
+            [this](const std::exception_ptr& error) {
                 EmitOnError(error);
             },
             [this]() {

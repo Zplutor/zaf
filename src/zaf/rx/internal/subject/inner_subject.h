@@ -15,7 +15,7 @@ public:
         const std::shared_ptr<InnerObserver>& observer) override;
 
     void OnNext(const std::any& value) override;
-    void OnError(const Error& error) override;
+    void OnError(const std::exception_ptr& error) override;
     void OnCompleted() override;
 
     //Called by SubjectProducer.

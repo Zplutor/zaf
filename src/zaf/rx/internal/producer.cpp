@@ -16,7 +16,7 @@ void Producer::EmitOnNext(const std::any& any) {
 }
 
 
-void Producer::EmitOnError(const Error& error) {
+void Producer::EmitOnError(const std::exception_ptr& error) {
     auto keep_alive = shared_from_this();
     if (observer_) {
         observer_->OnError(error);

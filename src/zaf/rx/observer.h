@@ -37,7 +37,7 @@ public:
         inner_->OnNext(value);
     }
 
-    void OnError(const Error& error) const {
+    void OnError(const std::exception_ptr& error) const {
         inner_->OnError(error);
     }
 

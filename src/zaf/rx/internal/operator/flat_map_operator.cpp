@@ -31,9 +31,9 @@ public:
         try {
             mapped_observable = mapper_(value);
         }
-        catch (const zaf::Error& error) {
+        catch (...) {
             source_subscription_->Unsubscribe();
-            TryToDeliverOnError(error);
+            TryToDeliverOnError(std::current_exception());
             return;
         }
 
@@ -44,7 +44,7 @@ public:
                     EmitOnNext(value);
                 }
             },
-            [this, sub_id](const zaf::Error& error) {
+            [this, sub_id](const std::exception_ptr& error) {
                 //Observer will be destroyed once the subscription is disposed, hence we keep the 
                 //subscription alive until we have done everything.
                 auto sub = OnMapperSubFinished(sub_id);
@@ -62,7 +62,7 @@ public:
         }
     }
 
-    void OnError(const Error& error) override {
+    void OnError(const std::exception_ptr& error) override {
         TryToDeliverOnError(error);
     }
 
@@ -95,7 +95,7 @@ private:
         return sub;
     }
 
-    void TryToDeliverOnError(const zaf::Error& error) {
+    void TryToDeliverOnError(const std::exception_ptr& error) {
         if (!IsTerminated()) {
             EmitOnError(error);
         }

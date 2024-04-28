@@ -39,7 +39,7 @@ TEST(RxCatchTest, Catch) {
         .Subscribe([&](int value) {
             test_data.result.push_back(value);
         },
-        [&](const zaf::Error& error) {
+        [&](const std::exception_ptr& error) {
             test_data.error_count++;
             test_data.error = error;
         },

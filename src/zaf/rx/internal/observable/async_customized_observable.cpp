@@ -58,11 +58,10 @@ std::shared_ptr<InnerSubscription> AsyncCustomizedObservable::Subscribe(
         const std::shared_ptr<InnerObserver>& observer) {
 
         try {
-
             procedure(observer, cancel_token_source.GetToken());
         }
-        catch (const Error& error) {
-            observer->OnError(error);
+        catch (...) {
+            observer->OnError(std::current_exception());
         }
 
         return InnerSubscription::Empty();

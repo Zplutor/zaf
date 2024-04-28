@@ -22,7 +22,7 @@ public:
         }
     }
 
-    void OnError(const Error& error) override {
+    void OnError(const std::exception_ptr& error) override {
         if (on_error_) {
             on_error_(error);
         }
