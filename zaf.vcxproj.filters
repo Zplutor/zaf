@@ -2707,5 +2707,11 @@
     <ClInclude Include="src\zaf\internal\textual\text_box_ime_manager.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\error\logic_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\runtime_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

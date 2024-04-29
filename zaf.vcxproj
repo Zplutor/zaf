@@ -398,6 +398,8 @@
     <ClInclude Include="src\zaf\base\error\basic_error.h" />
     <ClInclude Include="src\zaf\base\error\check.h" />
     <ClInclude Include="src\zaf\base\error\contract.h" />
+    <ClInclude Include="src\zaf\base\error\logic_error.h" />
+    <ClInclude Include="src\zaf\base\error\runtime_error.h" />
     <ClInclude Include="src\zaf\base\event\event.h" />
     <ClInclude Include="src\zaf\base\event\event_info.h" />
     <ClInclude Include="src\zaf\base\event\routed_event_info.h" />

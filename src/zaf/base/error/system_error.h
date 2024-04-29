@@ -2,9 +2,23 @@
 
 #include <Windows.h>
 #include <system_error>
-#include <zaf/base/error/error.h>
+#include <zaf/base/error/runtime_error.h>
 
 namespace zaf {
+
+class SystemError : public std::system_error, public RuntimeError {
+public:
+    SystemError(const std::error_code& code) : system_error(code) {
+    
+    }
+
+    SystemError(const std::error_code& code, const std::string& message);
+
+    const char* Message() const override {
+        return this->what();
+    }
+};
+
 
 inline std::error_code MakeSystemErrorCode(DWORD code) {
     return std::error_code{ static_cast<int>(code), std::system_category() };

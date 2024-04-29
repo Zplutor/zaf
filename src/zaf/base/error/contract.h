@@ -1,15 +1,25 @@
 #pragma once
 
 #include <stdexcept>
+#include <zaf/base/error/logic_error.h>
 
 namespace zaf {
 
 /**
 Base class for errors related to contract programming violations.
 */
-class ContractError : public std::logic_error {
+class ContractError : public std::logic_error, public LogicError {
+public:
+    const char* Message() const override {
+        return this->what();
+    }
+
 protected:
-    using logic_error::logic_error;
+    ContractError(const char* message, const SourceSite& site) :
+        logic_error(message),
+        LogicError(site) {
+
+    }
 };
 
 
