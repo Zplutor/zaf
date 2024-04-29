@@ -485,6 +485,7 @@
     <ClCompile Include="unittest\case\resource\internal\resource_location_parsing_test.cpp" />
     <ClCompile Include="unittest\case\rx\catch_test.cpp" />
     <ClCompile Include="unittest\case\rx\creation_test.cpp" />
+    <ClCompile Include="unittest\case\rx\do_on_error_test.cpp" />
     <ClCompile Include="unittest\case\rx\do_on_terminated_test.cpp" />
     <ClCompile Include="unittest\case\rx\do_test.cpp" />
     <ClCompile Include="unittest\case\rx\finally_test.cpp" />

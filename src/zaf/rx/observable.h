@@ -79,6 +79,32 @@ public:
         return Observable{ inner_->Do(observer.Inner()) };
     }
 
+    Observable DoOnError(OnError on_error) {
+        return Do(nullptr, std::move(on_error), nullptr);
+    }
+
+    template<typename E>
+    Observable DoOnError(std::function<void(const E&)> handler) {
+        return Do(
+            nullptr, 
+            [handle = std::move(handler)](const std::exception_ptr& exception) {
+                try {
+                    std::rethrow_exception(exception);
+                }
+                catch (const E& error) {
+                    handle(error);
+                }
+                catch (...) {
+
+                }
+            },
+            nullptr);
+    }
+
+    Observable DoOnCompleted(OnCompleted on_completed) {
+        return Do(nullptr, nullptr, std::move(on_completed));
+    }
+
     /**
     Returns an Observable that invokes an action when the current Observable is terminated, either 
     by completion or error.
