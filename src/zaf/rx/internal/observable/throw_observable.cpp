@@ -4,7 +4,7 @@
 
 namespace zaf::internal {
 
-ThrowObservable::ThrowObservable(zaf::Error error) : error_(std::move(error)) {
+ThrowObservable::ThrowObservable(std::exception_ptr error) : error_(std::move(error)) {
 
 }
 
@@ -12,7 +12,7 @@ ThrowObservable::ThrowObservable(zaf::Error error) : error_(std::move(error)) {
 std::shared_ptr<InnerSubscription> ThrowObservable::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
 
-    observer->OnError(std::make_exception_ptr(error_));
+    observer->OnError(error_);
     return InnerSubscription::Empty();
 }
 

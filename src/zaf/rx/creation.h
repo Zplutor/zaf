@@ -33,8 +33,16 @@ Observable<T> Never() {
 Creates an observable that emits no items and terminates with an error.
 */
 template<typename T>
-Observable<T> Throw(zaf::Error error) {
+Observable<T> Throw(std::exception_ptr error) {
     return Observable<T>{ std::make_shared<internal::ThrowObservable>(std::move(error)) };
+}
+
+/**
+Creates an observable that emits no items and terminates with an error.
+*/
+template<typename T, typename E>
+Observable<T> Throw(E error) {
+    return Throw<T>(std::make_exception_ptr(std::move(error)));
 }
 
 

@@ -1,17 +1,17 @@
 #include <zaf/rx/internal/observable/inner_observable.h>
-#include <zaf/base/error/error.h>
+#include <exception>
 
 namespace zaf::internal {
 
 class ThrowObservable : public InnerObservable {
 public:
-    explicit ThrowObservable(zaf::Error error);
+    explicit ThrowObservable(std::exception_ptr error);
 
     std::shared_ptr<InnerSubscription> Subscribe(
         const std::shared_ptr<InnerObserver>& observer) override;
 
 private:
-    zaf::Error error_;
+    std::exception_ptr error_;
 };
 
 }

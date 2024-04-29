@@ -56,12 +56,10 @@ TEST(RxNeverTest, Normal) {
 
 TEST(RxThrowTest, Normal) {
 
-    auto error_code = make_error_code(zaf::BasicErrc::InvalidCast);
-    zaf::Error error{ error_code };
-    auto observable = zaf::rx::Throw<int>(error);
+    auto observable = zaf::rx::Throw<int>(std::make_exception_ptr(std::string("err")));
 
     int on_next_count{};
-    std::error_code catched_error_code;
+    std::string catched_error_string;
     int on_completed_count{};
 
     auto sub = observable.Subscribe([&](int value) {
@@ -71,8 +69,8 @@ TEST(RxThrowTest, Normal) {
         try {
             std::rethrow_exception(exception);
         }
-        catch (const zaf::Error& error) {
-            catched_error_code = error.Code();
+        catch (const std::string& error_string) {
+            catched_error_string = error_string;
         }
     },
     [&]() {
@@ -80,8 +78,30 @@ TEST(RxThrowTest, Normal) {
     });
 
     ASSERT_EQ(on_next_count, 0);
-    ASSERT_EQ(catched_error_code, error_code);
+    ASSERT_EQ(catched_error_string, "err");
     ASSERT_EQ(on_completed_count, 0);
+}
+
+
+//Calls the template error version of Throw().
+TEST(RxThrowTest, Template) {
+
+    auto observable = zaf::rx::Throw<double>(std::logic_error("throw logic error"));
+
+    std::optional<std::logic_error> catched_error;
+
+    auto sub = observable.Subscribe(
+        [](double) {},
+        [&catched_error](const std::exception_ptr& exception) {
+            try {
+                std::rethrow_exception(exception);
+            }
+            catch (const std::logic_error& logic_error) {
+                catched_error = logic_error;
+            }
+        });
+
+    ASSERT_STREQ(catched_error->what(), "throw logic error");
 }
 
 
