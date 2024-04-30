@@ -1,5 +1,5 @@
 #include <zaf/base/string/encoding_conversion.h>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/win32_error.h>
 
 namespace zaf {
 namespace {
@@ -22,7 +22,7 @@ std::wstring InnerFromUTF8String(
         0);
 
     if (required_size == 0) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     std::wstring result;
@@ -37,7 +37,7 @@ std::wstring InnerFromUTF8String(
         required_size);
 
     if (result_size == 0) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     result.resize(result_size);
@@ -63,7 +63,7 @@ std::string ToUTF8String(std::wstring_view wide_string, ToUTF8Flags flags) {
         nullptr);
 
     if (required_size == 0) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     std::string result;
@@ -80,7 +80,7 @@ std::string ToUTF8String(std::wstring_view wide_string, ToUTF8Flags flags) {
         nullptr);
 
     if (result_size == 0) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     result.resize(result_size);

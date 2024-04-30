@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Windows.h>
-#include <zaf/base/error/system_error.h>
 #include <zaf/base/flag_enum.h>
 #include <zaf/base/non_copyable.h>
 

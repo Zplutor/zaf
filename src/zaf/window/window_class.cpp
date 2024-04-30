@@ -1,6 +1,6 @@
 #include <zaf/window/window_class.h>
 #include <zaf/application.h>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/win32_error.h>
 #include <zaf/window/window_class_registry.h>
 
 namespace zaf {
@@ -26,7 +26,7 @@ ATOM WindowClass::GetAtom() {
 
         atom_ = RegisterClassEx(&properties_.Inner());
         if (!atom_) {
-            ZAF_THROW_SYSTEM_ERROR(GetLastError());
+            ZAF_THROW_WIN32_ERROR(GetLastError());
         }
     }
 

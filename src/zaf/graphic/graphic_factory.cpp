@@ -1,7 +1,7 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/application.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/win32_error.h>
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/text/text_format_properties.h>
@@ -39,7 +39,7 @@ WindowRenderer GraphicFactory::CreateWindowRenderer(HWND window_handle) {
 
     RECT window_rect = { 0 };
     if (! GetClientRect(window_handle, &window_rect)) {
-        ZAF_THROW_IF_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_IF_WIN32_ERROR(GetLastError());
     }
 
     D2D1_SIZE_U renderer_size = D2D1::SizeU(

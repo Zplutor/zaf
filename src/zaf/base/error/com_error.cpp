@@ -16,10 +16,14 @@ public:
 
 }
 
-const std::error_category& COMCategory() {
-
+const std::error_category& COMError::Category() {
     static ComErrorCategory category;
     return category;
+}
+
+
+std::error_code COMError::MakeCode(HRESULT hresult) {
+    return std::error_code{ static_cast<int>(hresult), Category() };
 }
 
 }

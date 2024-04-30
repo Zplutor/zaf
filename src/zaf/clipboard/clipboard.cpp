@@ -1,7 +1,7 @@
 #include <zaf/clipboard/clipboard.h>
 #include <strsafe.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/win32_error.h>
 #include <zaf/base/global_mem.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/clipboard/internal/clipboard_data_registry.h>
@@ -15,7 +15,7 @@ public:
 
         BOOL is_succeeded = OpenClipboard(nullptr);
         if (!is_succeeded) {
-            ZAF_THROW_SYSTEM_ERROR(GetLastError());
+            ZAF_THROW_WIN32_ERROR(GetLastError());
         }
     }
 
@@ -32,12 +32,12 @@ std::wstring Clipboard::GetText() {
 
     HANDLE handle = GetClipboardData(CF_UNICODETEXT);
     if (!handle) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     auto pointer = GlobalLock(handle);
     if (!pointer) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     GlobalMemLock lock{ handle, pointer };
@@ -51,7 +51,7 @@ void Clipboard::SetText(std::wstring_view text) {
 
     BOOL is_succeeded = EmptyClipboard();
     if (!is_succeeded) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     {
@@ -59,7 +59,7 @@ void Clipboard::SetText(std::wstring_view text) {
 
         auto data_handle = SetClipboardData(CF_UNICODETEXT, memory.Handle());
         if (!data_handle) {
-            ZAF_THROW_SYSTEM_ERROR(GetLastError());
+            ZAF_THROW_WIN32_ERROR(GetLastError());
         }
 
         //According to offical documentation, the memory shouldn't be freed if SetClipboardData() 

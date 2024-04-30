@@ -1,5 +1,6 @@
 #include <zaf/base/global_mem.h>
 #include <strsafe.h>
+#include <zaf/base/error/win32_error.h>
 
 namespace zaf {
 
@@ -7,7 +8,7 @@ GlobalMem GlobalMem::Alloc(std::size_t size, GlobalMemFlags flags) {
 
     auto handle = GlobalAlloc(static_cast<UINT>(flags), size);
     if (!handle) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
     return GlobalMem{ handle };
 }
@@ -34,7 +35,7 @@ GlobalMemLock GlobalMem::Lock() const {
 
     LPVOID pointer = GlobalLock(handle_);
     if (!pointer) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
     return GlobalMemLock{ handle_, pointer };
 }

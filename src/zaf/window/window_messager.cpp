@@ -1,5 +1,5 @@
 #include <zaf/window/window_messager.h>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/win32_error.h>
 
 namespace zaf {
 
@@ -17,7 +17,7 @@ void WindowMessager::Post(UINT message_id, WPARAM wparam, LPARAM lparam) {
 
     BOOL is_succeeded = PostMessage(window_handle_, message_id, wparam, lparam);
     if (!is_succeeded) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 }
 

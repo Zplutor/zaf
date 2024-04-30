@@ -1,6 +1,7 @@
 #include "test_helper.h"
 #include <fstream>
 #include <string>
+#include <zaf/base/error/win32_error.h>
 #include <zaf/base/handle.h>
 #include <zaf/base/string/replace.h>
 #include <zaf/base/string/split.h>
@@ -116,7 +117,7 @@ void RunZrcb(const std::wstring& arguments) {
         nullptr) };
 
     if (!stdout_handle) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     STARTUPINFO startup_info{};
@@ -140,7 +141,7 @@ void RunZrcb(const std::wstring& arguments) {
         &process_information);
 
     if (!is_succeeded) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     CloseHandle(process_information.hThread);
@@ -151,11 +152,11 @@ void RunZrcb(const std::wstring& arguments) {
     DWORD exit_code{};
     is_succeeded = GetExitCodeProcess(*process_handle, &exit_code);
     if (!is_succeeded) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     if (exit_code != 0) {
-        ZAF_THROW_SYSTEM_ERROR(ERROR_INVALID_FUNCTION);
+        ZAF_THROW_WIN32_ERROR(ERROR_INVALID_FUNCTION);
     }
 }
 

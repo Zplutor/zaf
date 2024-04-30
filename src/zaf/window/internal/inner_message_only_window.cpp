@@ -1,5 +1,5 @@
 #include <zaf/window/internal/inner_message_only_window.h>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/win32_error.h>
 
 namespace zaf::internal {
 namespace {
@@ -27,7 +27,7 @@ InnerMessageOnlyWindow::InnerMessageOnlyWindow(HWND parent_window_handle) {
         nullptr);
 
     if (!handle_) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     SetLastError(ERROR_SUCCESS);
@@ -38,7 +38,7 @@ InnerMessageOnlyWindow::InnerMessageOnlyWindow(HWND parent_window_handle) {
         reinterpret_cast<ULONG_PTR>(this));
 
     if (result == 0) {
-        ZAF_THROW_IF_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_IF_WIN32_ERROR(GetLastError());
     }
 }
 
@@ -61,7 +61,7 @@ void InnerMessageOnlyWindow::RegisterWindowClass() {
 
         ATOM atom = RegisterClassEx(&default_class);
         if (atom == 0) {
-            ZAF_THROW_SYSTEM_ERROR(GetLastError());
+            ZAF_THROW_WIN32_ERROR(GetLastError());
         }
 
         return atom;

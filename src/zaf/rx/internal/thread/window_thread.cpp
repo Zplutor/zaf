@@ -1,5 +1,5 @@
 #include <zaf/rx/internal/thread/window_thread.h>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/win32_error.h>
 
 namespace zaf::internal {
 namespace {
@@ -27,7 +27,7 @@ void WindowThread::RegisterWindowClass() {
 
     ATOM atom = RegisterClassEx(&class_info);
     if (!atom) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 }
 
@@ -68,7 +68,7 @@ WindowThread::WindowThread() {
         0);
 
     if (!window_handle_) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 }
 

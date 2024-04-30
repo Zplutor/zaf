@@ -4,7 +4,7 @@
 #include <cassert>
 #include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/check.h>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/win32_error.h>
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
 #include <zaf/control/rich_edit/embedded_object.h>
@@ -49,7 +49,7 @@ COMPtr<ITextServices2> CreateTextService(ITextHost* text_host) {
 
     HMODULE module_handle = LoadLibrary(L"msftedit.dll");
     if (!module_handle) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     using CreateTextServicesFunction = HRESULT(_stdcall*)(IUnknown*, ITextHost*, IUnknown**);
@@ -57,14 +57,14 @@ COMPtr<ITextServices2> CreateTextService(ITextHost* text_host) {
         GetProcAddress(module_handle, "CreateTextServices"));
 
     if (!create_function) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     auto iid_text_service2 = reinterpret_cast<const IID*>(
         GetProcAddress(module_handle, "IID_ITextServices2"));
 
     if (!iid_text_service2) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     COMPtr<IUnknown> unknown;

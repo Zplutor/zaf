@@ -1,7 +1,7 @@
 #include <zaf/object/object.h>
 #include <zaf/object/object_type.h>
 #include <sstream>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/win32_error.h>
 #include <zaf/creation.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_reader.h>
@@ -51,7 +51,7 @@ void ParseObject(ObjectType& type, Object& object) {
 
     auto root_node = xaml_reader->Read();
     if (root_node->Value() != type.GetName()) {
-        ZAF_THROW_SYSTEM_ERROR(ERROR_INVALID_NAME);
+        ZAF_THROW_WIN32_ERROR(ERROR_INVALID_NAME);
     }
 
     type.GetParser()->ParseFromNode(*root_node, object);

@@ -2,7 +2,6 @@
 
 #include <filesystem>
 #include <zaf/application.h>
-#include <zaf/base/error/system_error.h>
 
 std::filesystem::path GetTemplateDirectoryPath();
 std::filesystem::path GetWorkingDirectoryPath();

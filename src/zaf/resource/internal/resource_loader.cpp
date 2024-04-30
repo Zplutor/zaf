@@ -1,7 +1,7 @@
 #include <zaf/resource/internal/resource_loader.h>
 #include <zaf/base/container/utility/find.h>
 #include <zaf/base/container/utility/map.h>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/win32_error.h>
 #include <zaf/base/string/case_conversion.h>
 
 namespace zaf::internal {
@@ -36,17 +36,17 @@ Stream ResourceLoader::Load(const std::wstring& dll, const std::wstring& name, f
 
     HGLOBAL memory_handle = LoadResource(module, resource_handle);
     if (!memory_handle) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     DWORD resource_size = SizeofResource(module, resource_handle);
     if (resource_size <= 0) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     LPVOID resource_data = LockResource(memory_handle);
     if (!resource_data) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     return Stream::FromMemoryNoCopy(resource_data, resource_size);
@@ -66,7 +66,7 @@ HMODULE ResourceLoader::GetDLLModule(const std::wstring& dll) {
 
     HMODULE module = LoadLibrary(dll.c_str());
     if (!module) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     {
@@ -89,7 +89,7 @@ HRSRC ResourceLoader::FindResouceMatchesDPI(HMODULE module, const std::wstring& 
 
         auto result = FindResource(module, name.c_str(), zaf_resource_type_name);
         if (!result) {
-            ZAF_THROW_SYSTEM_ERROR(GetLastError());
+            ZAF_THROW_WIN32_ERROR(GetLastError());
         }
         return result;
     }
@@ -112,7 +112,7 @@ HRSRC ResourceLoader::FindResouceMatchesDPI(HMODULE module, const std::wstring& 
         }
     }
 
-    ZAF_THROW_SYSTEM_ERROR(GetLastError());
+    ZAF_THROW_WIN32_ERROR(GetLastError());
 }
 
 

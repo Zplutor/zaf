@@ -6,18 +6,18 @@
 
 namespace zaf {
 
-class COMError : public std::system_error, public SystemError {
+class Win32Error : public std::system_error, public SystemError {
 public:
     static const std::error_category& Category();
-    static std::error_code MakeCode(HRESULT hresult);
+    static std::error_code MakeCode(DWORD code);
 
 public:
-    explicit COMError(HRESULT code) :
+    explicit Win32Error(DWORD code) : 
         system_error(std::error_code(static_cast<int>(code), Category())) {
 
     }
 
-    COMError(HRESULT code, const SourceSite& site) :
+    Win32Error(DWORD code, const SourceSite& site) :
         system_error(std::error_code(static_cast<int>(code), Category())),
         SystemError(site) {
 
@@ -33,8 +33,7 @@ public:
 };
 
 
-#define ZAF_THROW_COM_ERROR(hresult) throw zaf::COMError{ hresult, ZAF_SOURCE_SITE()}
-
-#define ZAF_THROW_IF_COM_ERROR(hresult) if (FAILED(hresult)) { ZAF_THROW_COM_ERROR(hresult); }
+#define ZAF_THROW_WIN32_ERROR(error_code) throw zaf::Win32Error{ error_code, ZAF_SOURCE_SITE() }
+#define ZAF_THROW_IF_WIN32_ERROR(error_code) if (error_code) { ZAF_THROW_WIN32_ERROR(error_code); }                            \
 
 }

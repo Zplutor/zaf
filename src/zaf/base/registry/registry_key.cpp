@@ -1,6 +1,6 @@
 #include <zaf/base/registry/registry_key.h>
 #include <zaf/base/error/contract.h>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/win32_error.h>
 #include <zaf/base/string/join.h>
 
 namespace zaf {
@@ -46,7 +46,7 @@ RegistryKey RegistryKey::InnerCreateSubKey(
         &sub_key_handle,
         nullptr);
 
-    ZAF_THROW_IF_SYSTEM_ERROR(result);
+    ZAF_THROW_IF_WIN32_ERROR(result);
     return RegistryKey{ sub_key_handle, new_key_view };
 }
 
@@ -66,7 +66,7 @@ RegistryKey RegistryKey::InnerOpenSubKey(
         static_cast<REGSAM>(rights) | static_cast<REGSAM>(new_key_view),
         &sub_key_handle);
 
-    ZAF_THROW_IF_SYSTEM_ERROR(result);
+    ZAF_THROW_IF_WIN32_ERROR(result);
     return RegistryKey{ sub_key_handle, new_key_view };
 }
 
@@ -83,14 +83,14 @@ void RegistryKey::InnerDeleteSubKey(
         static_cast<REGSAM>(sub_key_view),
         0);
 
-    ZAF_THROW_IF_SYSTEM_ERROR(result);
+    ZAF_THROW_IF_WIN32_ERROR(result);
 }
 
 
 void RegistryKey::DeleteValue(const std::wstring& name) {
 
     LSTATUS result = RegDeleteValue(handle_, name.c_str());
-    ZAF_THROW_IF_SYSTEM_ERROR(result);
+    ZAF_THROW_IF_WIN32_ERROR(result);
 }
 
 
@@ -193,7 +193,7 @@ RegistryValue RegistryKey::InnerGetValue(
             &buffer_size);
     }
 
-    ZAF_THROW_IF_SYSTEM_ERROR(result);
+    ZAF_THROW_IF_WIN32_ERROR(result);
 
     buffer.resize(buffer_size);
 
@@ -285,7 +285,7 @@ void RegistryKey::InnerSetValue(
         reinterpret_cast<const BYTE*>(data),
         data_size);
 
-    ZAF_THROW_IF_SYSTEM_ERROR(result);
+    ZAF_THROW_IF_WIN32_ERROR(result);
 }
 
 

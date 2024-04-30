@@ -2,7 +2,7 @@
 #include <Windowsx.h>
 #include <zaf/application.h>
 #include <zaf/base/auto_reset.h>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/win32_error.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
@@ -668,8 +668,8 @@ void Window::HandleWMPAINT() {
     try {
         renderer_.EndDraw();
     }
-    catch (const Error& error) {
-        if (error.Code() == MakeCOMErrorCode(D2DERR_RECREATE_TARGET)) {
+    catch (const COMError& error) {
+        if (error.Code() == COMError::MakeCode(D2DERR_RECREATE_TARGET)) {
             RecreateRenderer();
         }
     }
@@ -1634,7 +1634,7 @@ zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) c
         static_cast<UINT>(dpi));
 
     if (!is_succeeded) {
-        ZAF_THROW_SYSTEM_ERROR(GetLastError());
+        ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
     auto result = zaf::Size{

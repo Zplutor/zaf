@@ -1192,6 +1192,9 @@
     <ClCompile Include="src\zaf\internal\textual\text_box_ime_manager.cpp">
       <Filter>zaf\internal\textual</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\base\error\win32_error.cpp">
+      <Filter>zaf\base\error</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2711,6 +2714,9 @@
       <Filter>zaf\base\error</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\runtime_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\win32_error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
   </ItemGroup>
