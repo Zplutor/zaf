@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/not_supported_error.h>
 #include <zaf/base/error/error.h>
 #include <zaf/base/stream.h>
-#include "utility/assert.h"
 
 TEST(StreamTest, GetPosition) {
 
@@ -41,7 +40,7 @@ TEST(StreamTest, GetUnderlyingBuffer) {
 
     {
         auto stream = zaf::Stream::FromMemory(memory.data(), memory.size());
-        ASSERT_THROW_ERRC(stream.GetUnderlyingBuffer(), zaf::BasicErrc::Unsupported);
+        ASSERT_THROW(stream.GetUnderlyingBuffer(), zaf::NotSupportedError);
     }
 }
 

@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/control/control.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/graphic/image/uri_image.h>
@@ -390,8 +390,8 @@ TEST(ControlParserTest, ParseChildrenInvalidName) {
     try {
         auto control = CreateControlFromXaml(xaml);
     }
-    catch (const zaf::Error& error) {
-        has_exception = (error.Code() == zaf::BasicErrc::InvalidValue);
+    catch (const zaf::ParseError&) {
+        has_exception = true;
     }
     ASSERT_TRUE(has_exception);
 }

@@ -2,8 +2,8 @@
 #include <atlwin.h>
 #include <tom.h>
 #include <cassert>
-#include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/check.h>
+#include <zaf/base/error/runtime_error.h>
 #include <zaf/base/error/win32_error.h>
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
@@ -1714,8 +1714,8 @@ void RichEdit::SetOLECallback(std::weak_ptr<rich_edit::OLECallback> callback) {
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     if (lresult == 0) {
-        //Fails to set OLE callback due to unknown error.
-        ZAF_THROW_ERRC(BasicErrc::Unknown);
+        //Fails to set OLE callback due to internal error.
+        throw GeneralRuntimeError{ ZAF_SOURCE_SITE() };
     }
 }
 

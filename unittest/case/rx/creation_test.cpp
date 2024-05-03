@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <optional>
 #include <zaf/application.h>
-#include <zaf/base/error/basic_error.h>
 #include <zaf/rx/creation.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/scheduler.h>

@@ -1,5 +1,5 @@
 #include <zaf/base/base64.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/contract.h>
 
 namespace zaf {
 namespace {
@@ -34,7 +34,7 @@ std::uint8_t DecodeChar(wchar_t ch) {
         return 63;
     }
 
-    ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+    throw PreconditionError("", ZAF_SOURCE_SITE());
 }
 
 }
@@ -85,9 +85,7 @@ std::wstring Base64Encode(const void* data, std::size_t size) {
 
 std::vector<std::byte> Base64Decode(std::wstring_view encoded) {
 
-    if (encoded.length() % 4 != 0) {
-        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
-    }
+    ZAF_EXPECT(encoded.length() % 4 == 0);
 
     std::vector<std::byte> result;
 
@@ -124,9 +122,7 @@ std::vector<std::byte> Base64Decode(std::wstring_view encoded) {
     }
 
     for (; current < encoded.end(); ++current) {
-        if (*current != L'=') {
-            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
-        }
+        ZAF_EXPECT(*current == L'=');
     }
 
     return result;

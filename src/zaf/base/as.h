@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <type_traits>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/invalid_type_error.h>
 
 namespace zaf {
 namespace internal {
@@ -38,7 +38,7 @@ struct NonSharedPtrCast {
 
         auto result = dynamic_cast<PointerType>(&value);
         if (!result) {
-            ZAF_THROW_ERRC(BasicErrc::InvalidCast);
+            throw InvalidTypeError{ ZAF_SOURCE_SITE() };
         }
         return *result;
     }

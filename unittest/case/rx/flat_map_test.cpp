@@ -1,7 +1,6 @@
 #include <mutex>
 #include <optional>
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
 #include <zaf/rx/creation.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/subject.h>

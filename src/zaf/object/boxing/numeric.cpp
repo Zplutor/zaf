@@ -1,7 +1,7 @@
 #include <zaf/object/boxing/numeric.h>
 #include <functional>
 #include <zaf/base/as.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/base/string/to_string.h>
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
@@ -25,7 +25,7 @@ public:
 
         auto content_string = GetContentStringFromXamlNode(node);
         if (!content_string) {
-            ZAF_THROW_ERRC(zaf::BasicErrc::InvalidValue);
+            throw ParseError{ ZAF_SOURCE_SITE() };
         }
 
         Parse(*content_string, object);
@@ -39,7 +39,7 @@ private:
             As<T>(object).SetValue(value);
         }
         else {
-            ZAF_THROW_ERRC(zaf::BasicErrc::InvalidValue);
+            throw ParseError{ ZAF_SOURCE_SITE() };
         }
     }
 };

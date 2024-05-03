@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/not_supported_error.h>
 #include <zaf/clipboard/text_data.h>
-#include "utility/assert.h"
 
 using namespace zaf;
 using namespace zaf::clipboard;
@@ -28,7 +27,7 @@ TEST(TextDataTest, SaveToMediumUnsupportedFormat) {
     TextData text_data{ L"TextDataTest" };
     
     Format format{ static_cast<FormatType>(0) };
-    ASSERT_THROW_ERRC(text_data.SaveToMedium(format), BasicErrc::Unsupported);
+    ASSERT_THROW(text_data.SaveToMedium(format), NotSupportedError);
 }
 
 
@@ -55,5 +54,5 @@ TEST(TextDataTest, LoadFromMedium) {
 TEST(TextDataTest, LoadFromMediumUnsupportedFormat) {
 
     TextData text_data;
-    ASSERT_THROW_ERRC(text_data.LoadFromMedium(Format{}, {}), BasicErrc::Unsupported);
+    ASSERT_THROW(text_data.LoadFromMedium(Format{}, {}), NotSupportedError);
 }

@@ -4,7 +4,6 @@
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/define.h>
-#include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/contract.h>
 #include <zaf/control/control_parser.h>
 #include <zaf/control/internal/cached_painting.h>

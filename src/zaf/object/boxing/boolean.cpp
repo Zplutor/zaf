@@ -1,6 +1,6 @@
 #include <zaf/object/boxing/boolean.h>
 #include <zaf/base/as.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_utility.h>
 #include <zaf/object/type_definition.h>
@@ -20,7 +20,7 @@ public:
 
         auto content_string = GetContentStringFromXamlNode(node);
         if (!content_string) {
-            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+            throw ParseError{ ZAF_SOURCE_SITE() };
         }
 
         Parse(*content_string, object);
@@ -38,7 +38,7 @@ private:
             boolean.SetValue(false);
         }
         else {
-            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+            throw ParseError{ ZAF_SOURCE_SITE() };
         }
     }
 };

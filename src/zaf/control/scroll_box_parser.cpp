@@ -1,6 +1,6 @@
 #include <zaf/control/scroll_box_parser.h>
 #include <zaf/base/as.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/control/scroll_box.h>
 #include <zaf/object/parsing/internal/utility.h>
 
@@ -16,12 +16,12 @@ void ScrollBoxParser::ParseContentNodes(
 
     //Multiple content nodes are not allowed.
     if (nodes.size() > 1) {
-        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        throw ParseError{ ZAF_SOURCE_SITE() };
     }
 
     auto scroll_content_control = internal::CreateObjectFromNode<Control>(nodes.front());
     if (!scroll_content_control) {
-        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        throw ParseError{ ZAF_SOURCE_SITE() };
     }
 
     As<ScrollBox>(control).SetScrollContent(scroll_content_control);

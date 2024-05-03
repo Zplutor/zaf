@@ -1,5 +1,6 @@
 #include <zaf/graphic/point.h>
 #include <zaf/base/as.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/base/string/to_string.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/object/parsing/internal/utility.h>
@@ -21,7 +22,7 @@ public:
             point.y);
 
         if (!is_succeeded) {
-            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+            throw ParseError{ ZAF_SOURCE_SITE() };
         }
     }
 };

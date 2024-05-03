@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/invalid_type_error.h>
+#include <zaf/base/error/not_supported_error.h>
 #include <zaf/graphic/image/image.h>
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
 #include <zaf/object/object.h>
 #include <zaf/object/type_definition.h>
-#include "utility/assert.h"
 
 namespace {
 
@@ -123,7 +123,7 @@ TEST(PropertyTest, ReadOnly) {
     ASSERT_NE(value, nullptr);
     ASSERT_EQ(*value, ReadOnlyValue);
 
-    ASSERT_THROW_ERRC(property->SetValue(host, zaf::Box(74)), zaf::BasicErrc::Unsupported);
+    ASSERT_THROW(property->SetValue(host, zaf::Box(74)), zaf::NotSupportedError);
 }
 
 
@@ -140,7 +140,7 @@ TEST(PropertyTest, WriteOnly) {
     property->SetValue(host, zaf::Box(76));
     ASSERT_EQ(host.GetWriteOnlyValue(), 76);
 
-    ASSERT_THROW_ERRC(property->GetValue(host), zaf::BasicErrc::Unsupported);
+    ASSERT_THROW(property->GetValue(host), zaf::NotSupportedError);
 }
 
 
@@ -223,8 +223,8 @@ TEST(PropertyTest, ErrorValueType) {
     {
         auto property = host.GetType()->GetProperty(L"ReadWrite");
         auto frame = zaf::Create<zaf::Frame>();
-        ASSERT_THROW_ERRC(property->GetValue(*frame), zaf::BasicErrc::InvalidCast);
-        ASSERT_THROW_ERRC(property->SetValue(host, frame), zaf::BasicErrc::InvalidCast);
+        ASSERT_THROW(property->GetValue(*frame), zaf::InvalidTypeError);
+        ASSERT_THROW(property->SetValue(host, frame), zaf::InvalidTypeError);
     }
 }
 

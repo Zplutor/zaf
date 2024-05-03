@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/error/basic_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/base/as.h>
 #include <zaf/base/flag_enum.h>
 #include <zaf/base/string/split.h>
@@ -75,7 +75,7 @@ private:
 
         auto value_object = enum_type_->FindValue(text);
         if (!value_object) {
-            ZAF_THROW_ERRC(zaf::BasicErrc::InvalidValue);
+            throw ParseError{ ZAF_SOURCE_SITE() };
         }
 
         return dynamic_cast<const internal::GetBoxType<T>::Type&>(*value_object).Value();

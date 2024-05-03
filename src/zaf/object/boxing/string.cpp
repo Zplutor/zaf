@@ -1,6 +1,6 @@
 #include <zaf/object/boxing/string.h>
 #include <zaf/base/as.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/object/type_definition.h>
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
 #include <zaf/object/boxing/internal/string_conversion_shim.h>
@@ -29,7 +29,7 @@ public:
 
         auto content_string = GetContentStringFromXamlNode(node);
         if (!content_string) {
-            ZAF_THROW_ERRC(zaf::BasicErrc::InvalidValue);
+            throw ParseError{ ZAF_SOURCE_SITE() };
         }
 
         Parse(*content_string, object);

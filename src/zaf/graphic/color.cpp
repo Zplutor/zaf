@@ -1,6 +1,7 @@
 #include <zaf/graphic/color.h>
 #include <optional>
 #include <zaf/base/as.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/base/string/to_string.h>
 #include <zaf/object/parsing/object_parser.h>
@@ -18,7 +19,7 @@ Color DecodeARGB(const std::wstring& argb) {
     if (argb.length() != long_notation_length &&
         argb.length() != short_notation_length) {
 
-        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        throw ParseError{ ZAF_SOURCE_SITE() };
     }
 
     std::wstring a_hex;
@@ -45,22 +46,22 @@ Color DecodeARGB(const std::wstring& argb) {
 
     std::uint8_t temp_a = 0;
     if (!TryToNumeric(a_hex, temp_a, options)) {
-        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        throw ParseError{ ZAF_SOURCE_SITE() };
     }
 
     std::uint8_t temp_r = 0;
     if (!TryToNumeric(r_hex, temp_r, options)) {
-        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        throw ParseError{ ZAF_SOURCE_SITE() };
     }
 
     std::uint8_t temp_g = 0;
     if (!TryToNumeric(g_hex, temp_g, options)) {
-        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        throw ParseError{ ZAF_SOURCE_SITE() };
     }
 
     std::uint8_t temp_b = 0;
     if (!TryToNumeric(b_hex, temp_b, options)) {
-        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        throw ParseError{ ZAF_SOURCE_SITE() };
     }
 
     float max = (std::numeric_limits<std::uint8_t>::max)();
@@ -100,14 +101,14 @@ Color ConvertTextToColor(const std::wstring& text) {
         }
     }
 
-    ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+    throw ParseError{ ZAF_SOURCE_SITE() };
 }
 
 
 Color DecodeColorValue(const std::wstring& value) {
 
     if (value.empty()) {
-        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        throw ParseError{ ZAF_SOURCE_SITE() };
     }
 
     if (value[0] == L'#') {
@@ -135,12 +136,12 @@ public:
         }
 
         if (content_nodes.size() != 1) {
-            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+            throw ParseError{ ZAF_SOURCE_SITE() };
         }
 
         const auto& content_node = content_nodes.front();
         if (content_node->Type() != XamlNodeType::Text) {
-            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+            throw ParseError{ ZAF_SOURCE_SITE() };
         }
 
         As<Color>(object) = DecodeColorValue(content_node->Value());

@@ -1,6 +1,7 @@
 #include <zaf/clipboard/drop_files_data.h>
 #include <ShlObj.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/invalid_data_error.h>
+#include <zaf/base/error/not_supported_error.h>
 #include <zaf/object/type_definition.h>
 
 namespace zaf::clipboard {
@@ -17,18 +18,18 @@ DropFilesData::DropFilesData(std::vector<std::filesystem::path> file_paths) :
 Medium DropFilesData::SaveToMedium(const Format& format) {
 
     if (format.Type() != FormatType::DropFiles || format.MediumType() != MediumType::GlobalMem) {
-        ZAF_THROW_ERRC(BasicErrc::Unsupported);
+        throw NotSupportedError{ ZAF_SOURCE_SITE() };
     }
 
     if (paths_.empty()) {
-        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        throw InvalidDataError{ ZAF_SOURCE_SITE() };
     }
 
     std::wstring paths_buffer;
     for (const auto& each_path : paths_) {
 
         if (!each_path.is_absolute()) {
-            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+            throw InvalidDataError{ ZAF_SOURCE_SITE() };
         }
 
         paths_buffer += each_path;
@@ -57,7 +58,7 @@ Medium DropFilesData::SaveToMedium(const Format& format) {
 void DropFilesData::LoadFromMedium(const Format& format, const Medium& medium) {
 
     if (format.Type() != FormatType::DropFiles || medium.Type() != MediumType::GlobalMem) {
-        ZAF_THROW_ERRC(BasicErrc::Unsupported);
+        throw NotSupportedError{ ZAF_SOURCE_SITE() };
     }
 
     paths_.clear();

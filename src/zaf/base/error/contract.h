@@ -10,15 +10,14 @@ Base class for errors related to contract programming violations.
 */
 class ContractError : public std::logic_error, public LogicError {
 public:
-    const char* Message() const override {
-        return this->what();
-    }
-
-protected:
     ContractError(const char* message, const SourceSite& site) :
         logic_error(message),
         LogicError(site) {
 
+    }
+
+    const char* Message() const noexcept override {
+        return this->what();
     }
 };
 
@@ -43,7 +42,7 @@ Throws a PreconditionError with the specified message.
 */
 [[noreturn]]
 inline void ThrowPreconditionError(const char* message) {
-    throw PreconditionError{ message };
+    throw PreconditionError{ message, ZAF_SOURCE_SITE() };
 }
 
 

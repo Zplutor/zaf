@@ -1,9 +1,9 @@
 #pragma once
 
 #include <memory>
-#include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/contract.h>
 #include <zaf/base/error/error.h>
+#include <zaf/base/error/not_found_error.h>
 #include <zaf/base/non_copyable.h>
 
 namespace zaf {
@@ -76,7 +76,7 @@ private:
             return control;
         }
 
-        ZAF_THROW_ERRC(zaf::BasicErrc::NameNotFound);
+        throw NotFoundError{ ZAF_SOURCE_SITE() };
     }
 
     std::shared_ptr<T> FindControl() const {

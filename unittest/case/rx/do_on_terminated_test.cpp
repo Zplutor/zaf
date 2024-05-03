@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
 #include <zaf/base/error/error.h>
 #include <zaf/rx/subject.h>
 

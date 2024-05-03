@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/invalid_type_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/boxing/string.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_reader.h>
-#include <utility/assert.h>
 
 TEST(StringBoxedTypeTest, StringIsEqual) {
 
@@ -78,7 +78,7 @@ TEST(StringBoxedTypeTest, StringParse) {
     ASSERT_EQ(string.Value(), "");
 
     node = zaf::XamlReader::FromString("<String><Child/></String>")->Read();
-    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, string), zaf::BasicErrc::InvalidValue);
+    ASSERT_THROW(parser->ParseFromNode(*node, string), zaf::ParseError);
 }
 
 
@@ -99,7 +99,7 @@ TEST(StringBoxedTypeTest, WideStringParse) {
     ASSERT_EQ(string.Value(), L"");
 
     node = zaf::XamlReader::FromString("<String><Child/></String>")->Read();
-    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, string), zaf::BasicErrc::InvalidValue);
+    ASSERT_THROW(parser->ParseFromNode(*node, string), zaf::ParseError);
 }
 
 
@@ -108,10 +108,10 @@ TEST(StringBoxedTypeTest, ParseStringToInvalidObject) {
     auto parser = zaf::String::Type->GetParser();
     zaf::Object object;
 
-    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"abc", object), zaf::BasicErrc::InvalidCast);
+    ASSERT_THROW(parser->ParseFromAttribute(L"abc", object), zaf::InvalidTypeError);
 
     auto node = zaf::XamlReader::FromString("<String />")->Read();
-    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, object), zaf::BasicErrc::InvalidCast);
+    ASSERT_THROW(parser->ParseFromNode(*node, object), zaf::InvalidTypeError);
 }
 
 
@@ -120,8 +120,8 @@ TEST(StringBoxedTypeTest, ParseWideStringToInvalidObject) {
     auto parser = zaf::WideString::Type->GetParser();
     zaf::Object object;
 
-    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"abc", object), zaf::BasicErrc::InvalidCast);
+    ASSERT_THROW(parser->ParseFromAttribute(L"abc", object), zaf::InvalidTypeError);
 
     auto node = zaf::XamlReader::FromString("<WideString />")->Read();
-    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, object), zaf::BasicErrc::InvalidCast);
+    ASSERT_THROW(parser->ParseFromNode(*node, object), zaf::InvalidTypeError);
 }

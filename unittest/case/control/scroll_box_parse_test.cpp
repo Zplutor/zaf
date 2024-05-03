@@ -1,10 +1,9 @@
 #include <gtest/gtest.h>
 #include <zaf/base/as.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/control/label.h>
 #include <zaf/control/scroll_box.h>
 #include "case/parsing/parsers/utility.h"
-#include "utility/assert.h"
 
 using namespace zaf;
 
@@ -128,7 +127,7 @@ TEST(ScrollBoxParseTest, ContentNode) {
                 <Label />
             </ScrollBox>
         )";
-        ASSERT_THROW_ERRC(CreateObjectFromXaml<ScrollBox>(xaml), BasicErrc::InvalidValue);
+        ASSERT_THROW(CreateObjectFromXaml<ScrollBox>(xaml), zaf::ParseError);
     }
 
     //Invalid object.
@@ -138,6 +137,6 @@ TEST(ScrollBoxParseTest, ContentNode) {
                 <NoThisObject />
             </ScrollBox>
         )";
-        ASSERT_THROW_ERRC(CreateObjectFromXaml<ScrollBox>(xaml), BasicErrc::InvalidValue);
+        ASSERT_THROW(CreateObjectFromXaml<ScrollBox>(xaml), zaf::ParseError);
     }
 }

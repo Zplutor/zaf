@@ -1,8 +1,8 @@
 #include <zaf/resource/internal/default_uri_loader.h>
 #include <zaf/application.h>
-#include <zaf/base/error/basic_error.h>
 #include <zaf/resource/internal/resource_location_parsing.h>
 #include <zaf/resource/internal/uri_parsing.h>
+#include <zaf/resource/invalid_uri_error.h>
 
 namespace zaf::internal {
 
@@ -22,7 +22,7 @@ Stream DefaultURILoader::Load(const std::wstring& uri, float dpi) {
         return LoadRelativeURI(parse_result.value);
     }
 
-    ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+    throw InvalidURIError{ ZAF_SOURCE_SITE() };
 }
 
 

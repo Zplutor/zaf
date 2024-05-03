@@ -56,8 +56,8 @@
     <ClCompile Include="src\zaf\application.cpp" />
     <ClCompile Include="src\zaf\base\base64.cpp" />
     <ClCompile Include="src\zaf\base\byte_array.cpp" />
-    <ClCompile Include="src\zaf\base\error\basic_error.cpp" />
     <ClCompile Include="src\zaf\base\error\com_error.cpp" />
+    <ClCompile Include="src\zaf\base\error\nt_error.cpp" />
     <ClCompile Include="src\zaf\base\error\win32_error.cpp" />
     <ClCompile Include="src\zaf\base\global_mem.cpp" />
     <ClCompile Include="src\zaf\base\log.cpp" />
@@ -396,10 +396,14 @@
     <ClInclude Include="src\zaf\base\byte_array.h" />
     <ClInclude Include="src\zaf\base\com_object.h" />
     <ClInclude Include="src\zaf\base\container\utility\copy.h" />
-    <ClInclude Include="src\zaf\base\error\basic_error.h" />
     <ClInclude Include="src\zaf\base\error\check.h" />
     <ClInclude Include="src\zaf\base\error\contract.h" />
+    <ClInclude Include="src\zaf\base\error\invalid_data_error.h" />
+    <ClInclude Include="src\zaf\base\error\invalid_type_error.h" />
     <ClInclude Include="src\zaf\base\error\logic_error.h" />
+    <ClInclude Include="src\zaf\base\error\not_found_error.h" />
+    <ClInclude Include="src\zaf\base\error\not_supported_error.h" />
+    <ClInclude Include="src\zaf\base\error\nt_error.h" />
     <ClInclude Include="src\zaf\base\error\runtime_error.h" />
     <ClInclude Include="src\zaf\base\error\win32_error.h" />
     <ClInclude Include="src\zaf\base\event\event.h" />
@@ -788,6 +792,7 @@
     <ClInclude Include="src\zaf\object\parsing\helpers.h" />
     <ClInclude Include="src\zaf\object\parsing\internal\utility.h" />
     <ClInclude Include="src\zaf\object\parsing\object_parser.h" />
+    <ClInclude Include="src\zaf\object\parsing\parse_error.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_node.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_node_builder.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_node_parse_helper.h" />
@@ -800,6 +805,7 @@
     <ClInclude Include="src\zaf\resource\internal\resource_loader.h" />
     <ClInclude Include="src\zaf\resource\internal\resource_location_parsing.h" />
     <ClInclude Include="src\zaf\resource\internal\uri_parsing.h" />
+    <ClInclude Include="src\zaf\resource\invalid_uri_error.h" />
     <ClInclude Include="src\zaf\resource\resource_factory.h" />
     <ClInclude Include="src\zaf\resource\uri_loader.h" />
     <ClInclude Include="src\zaf\rx\cancel.h" />

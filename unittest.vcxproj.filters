@@ -70,9 +70,6 @@
     <Filter Include="case\graphic\font">
       <UniqueIdentifier>{fb8bed71-7a2d-4102-b70d-58f6b2fad825}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utility">
-      <UniqueIdentifier>{f9b12e41-c943-4c77-9372-84ff0bf4bf0b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="case\base\registry">
       <UniqueIdentifier>{4881bfee-e85d-406f-8253-0cc407f40937}</UniqueIdentifier>
     </Filter>
@@ -105,6 +102,9 @@
     </Filter>
     <Filter Include="case\internal">
       <UniqueIdentifier>{f11ce1e2-6c4b-4a40-9c1f-705761527361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility">
+      <UniqueIdentifier>{e5e6c0de-3185-414a-9872-5aef9fc8fd7b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -499,9 +499,6 @@
     <ClCompile Include="unittest\case\graphic\alignment_test.cpp">
       <Filter>case\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\utility\test_window.cpp">
-      <Filter>utility</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\control\textual\inline_object_test.cpp">
       <Filter>case\control\textual</Filter>
     </ClCompile>
@@ -532,6 +529,9 @@
     <ClCompile Include="unittest\case\rx\do_on_error_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\utility\test_window.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
@@ -539,9 +539,6 @@
     </ClInclude>
     <ClInclude Include="unittest\case\parsing\parsers\utility.h">
       <Filter>case\parsing\parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="unittest\utility\assert.h">
-      <Filter>utility</Filter>
     </ClInclude>
     <ClInclude Include="unittest\case\base\registry\registry_test.h">
       <Filter>case\base\registry</Filter>

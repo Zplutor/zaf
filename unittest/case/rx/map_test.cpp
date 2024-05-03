@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
 #include <zaf/rx/subject.h>
 
 TEST(RxMapTest, Map) {
@@ -73,7 +72,7 @@ TEST(RxMapTest, ErrorInMapper) {
             if (value % 2 == 0) {
                 return std::to_string(value);
             }
-            throw zaf::Error{ zaf::make_error_code(zaf::BasicErrc::InvalidValue) };
+            throw std::string();
         })
         .Subscribe([&](const std::string& value) {
             test_data.result.push_back(value);

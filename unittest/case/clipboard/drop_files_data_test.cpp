@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/invalid_data_error.h>
+#include <zaf/base/error/not_supported_error.h>
 #include <zaf/clipboard/drop_files_data.h>
-#include "utility/assert.h"
 
 using namespace zaf;
 using namespace zaf::clipboard;
@@ -32,17 +32,13 @@ TEST(DropFilesDataTest, SaveToMediumWithInvalidValue) {
     //Empty files.
     {
         DropFilesData data;
-        ASSERT_THROW_ERRC(
-            data.SaveToMedium(Format(FormatType::DropFiles)), 
-            BasicErrc::InvalidValue);
+        ASSERT_THROW(data.SaveToMedium(Format(FormatType::DropFiles)), InvalidDataError);
     }
 
     //Not rooted path.
     {
         DropFilesData data{ { L"Windows\\notepad.exe" }};
-        ASSERT_THROW_ERRC(
-            data.SaveToMedium(Format(FormatType::DropFiles)),
-            BasicErrc::InvalidValue);
+        ASSERT_THROW(data.SaveToMedium(Format(FormatType::DropFiles)), InvalidDataError);
     }
 }
 
@@ -51,10 +47,10 @@ TEST(DropFilesDataTest, SaveToMediumWithUnsupportedArguments) {
 
     DropFilesData data{ { L"C:\\Windows\\Notepad.exe" } };
 
-    ASSERT_THROW_ERRC(data.SaveToMedium(Format(FormatType::Text)), BasicErrc::Unsupported);
-    ASSERT_THROW_ERRC(
+    ASSERT_THROW(data.SaveToMedium(Format(FormatType::Text)), NotSupportedError);
+    ASSERT_THROW(
         data.SaveToMedium(Format(FormatType::DropFiles, MediumType::File)), 
-        BasicErrc::Unsupported);
+        NotSupportedError);
 }
 
 
@@ -64,11 +60,11 @@ TEST(DropFilesDataTest, LoadFromMediumWithUnsupportedArguments) {
     auto medium = Medium::FromGlobalMem(std::move(global_mem));
 
     DropFilesData data;
-    ASSERT_THROW_ERRC(
+    ASSERT_THROW(
         data.LoadFromMedium(Format(FormatType::Text), medium),
-        BasicErrc::Unsupported);
+        NotSupportedError);
 
-    ASSERT_THROW_ERRC(
+    ASSERT_THROW(
         data.LoadFromMedium(Format(FormatType::DropFiles, MediumType::GlobalMem), {}),
-        BasicErrc::Unsupported);
+        NotSupportedError);
 }

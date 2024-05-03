@@ -676,9 +676,6 @@
     <ClCompile Include="src\zaf\object\internal\reflection_manager.cpp">
       <Filter>zaf\object\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\error\basic_error.cpp">
-      <Filter>zaf\base\error</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\object\creation.cpp">
       <Filter>zaf\object</Filter>
     </ClCompile>
@@ -1193,6 +1190,9 @@
       <Filter>zaf\internal\textual</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\base\error\win32_error.cpp">
+      <Filter>zaf\base\error</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\base\error\nt_error.cpp">
       <Filter>zaf\base\error</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2035,9 +2035,6 @@
     <ClInclude Include="src\zaf\object\internal\reflection_manager.h">
       <Filter>zaf\object\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\error\basic_error.h">
-      <Filter>zaf\base\error</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\as.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
@@ -2717,6 +2714,27 @@
       <Filter>zaf\base\error</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\win32_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\not_supported_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\nt_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\resource\invalid_uri_error.h">
+      <Filter>zaf\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\invalid_data_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\not_found_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\parsing\parse_error.h">
+      <Filter>zaf\object\parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\invalid_type_error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
   </ItemGroup>

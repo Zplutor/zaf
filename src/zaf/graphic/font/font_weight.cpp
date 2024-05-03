@@ -1,6 +1,6 @@
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/base/as.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_utility.h>
@@ -24,7 +24,7 @@ public:
             Parse(*content_string, object);
         }
         else {
-            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+            throw ParseError{ ZAF_SOURCE_SITE() };
         }
     }
 
@@ -64,7 +64,7 @@ private:
             }
         }
 
-        ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+        throw ParseError{ ZAF_SOURCE_SITE() };
     }
 };
 

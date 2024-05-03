@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 #include <zaf/base/as.h>
-#include <zaf/base/error/basic_error.h>
-#include "utility/assert.h"
 
 namespace {
 
@@ -66,7 +64,7 @@ TEST(CastTest, CastReference) {
     //Failed cast
     {
         Other other;
-        ASSERT_THROW_ERRC(zaf::As<Derived>(other), zaf::BasicErrc::InvalidCast);
+        ASSERT_THROW(zaf::As<Derived>(other), zaf::InvalidTypeError);
     }
 }
 

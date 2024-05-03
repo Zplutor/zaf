@@ -4,7 +4,6 @@
 #include <zaf/control/label.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
-#include "utility/assert.h"
 
 namespace {
 
@@ -129,11 +128,9 @@ TEST(ControlBinderTest, NotFound) {
     auto owner = zaf::Create<zaf::Control>();
 
     zaf::internal::ControlBinder<zaf::Label> binder{ owner.get(), L"not_found" };
-    ASSERT_THROW_ERRC(binder->Name(), zaf::BasicErrc::NameNotFound);
+    ASSERT_THROW(binder->Name(), zaf::NotFoundError);
 
-    ASSERT_THROW_ERRC(
-        static_cast<std::shared_ptr<zaf::Label>>(binder), 
-        zaf::BasicErrc::NameNotFound);
+    ASSERT_THROW(static_cast<std::shared_ptr<zaf::Label>>(binder), zaf::NotFoundError);
 }
 
 

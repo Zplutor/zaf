@@ -1,5 +1,6 @@
 #include <zaf/control/control_parser.h>
 #include <zaf/base/as.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/control/control.h>
 #include <zaf/object/parsing/xaml_node_parse_helper.h>
 
@@ -30,7 +31,7 @@ void ControlParser::ParseContentNodes(
 
         auto child_control = internal::CreateObjectFromNode<Control>(each_node);
         if (!child_control) {
-            ZAF_THROW_ERRC(BasicErrc::InvalidValue);
+            throw ParseError{ ZAF_SOURCE_SITE() };
         }
 
         control.AddChild(child_control);

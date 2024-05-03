@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/control/control.h>
 #include <zaf/object/object.h>
@@ -7,7 +7,6 @@
 #include <zaf/object/parsing/helpers.h>
 #include <zaf/object/parsing/xaml_reader.h>
 #include <zaf/object/type_definition.h>
-#include "utility/assert.h"
 
 namespace {
 
@@ -154,11 +153,11 @@ TEST(ParsingTest, ParseInvalidDynamicNode) {
 
     auto parser = Host::Type->GetParser();
     Host host;
-    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, host), zaf::BasicErrc::InvalidValue);
+    ASSERT_THROW(parser->ParseFromNode(*node, host), zaf::ParseError);
 
     xaml = LR"(<Host><Host.Control></Host.Control></Host>)";
     node = zaf::XamlReader::FromString(xaml)->Read();
-    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, host), zaf::BasicErrc::InvalidValue);
+    ASSERT_THROW(parser->ParseFromNode(*node, host), zaf::ParseError);
 }
 
 

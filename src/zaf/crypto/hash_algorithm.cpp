@@ -1,5 +1,5 @@
 #include <zaf/crypto/hash_algorithm.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/nt_error.h>
 
 namespace zaf::crypto {
 
@@ -14,8 +14,8 @@ HashAlgorithm::HashAlgorithm(void* algorithm_handle) : algorithm_handle_(algorit
         0,
         0);
 
-    if (status != 0) {
-        ZAF_THROW_ERRC(BasicErrc::Unknown);
+    if (!BCRYPT_SUCCESS(status)) {
+        throw NTError{ status, ZAF_SOURCE_SITE() };
     }
 }
 
@@ -63,8 +63,8 @@ void HashAlgorithm::Update(const std::byte* input, std::size_t size) {
         static_cast<ULONG>(size),
         0);
 
-    if (status != 0) {
-        ZAF_THROW_ERRC(BasicErrc::Unknown);
+    if (!BCRYPT_SUCCESS(status)) {
+        throw NTError{ status, ZAF_SOURCE_SITE() };
     }
 }
 
@@ -91,15 +91,15 @@ ByteArray HashAlgorithm::Finish() {
         &output_size,
         0);
 
-    if (status != 0) {
-        ZAF_THROW_ERRC(BasicErrc::Unknown);
+    if (!BCRYPT_SUCCESS(status)) {
+        throw NTError{ status, ZAF_SOURCE_SITE() };
     }
 
     ByteArray hash{ hash_length };
 
     status = BCryptFinishHash(hash_handle_, reinterpret_cast<PUCHAR>(hash.Data()), hash_length, 0);
-    if (status != 0) {
-        ZAF_THROW_ERRC(BasicErrc::Unknown);
+    if (!BCRYPT_SUCCESS(status)) {
+        throw NTError{ status, ZAF_SOURCE_SITE() };
     }
 
     return hash;

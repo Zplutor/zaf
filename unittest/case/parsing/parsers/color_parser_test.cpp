@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/invalid_type_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/graphic/color.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/parsing/xaml_reader.h>
-#include "utility/assert.h"
 #include "utility.h"
 
 TEST(ColorParser, ParseFromAttribute) {
@@ -62,9 +62,7 @@ TEST(ColorParser, ParseInvalidValueInAttribute) {
         auto parser = zaf::Color::Type->GetParser();
         zaf::Object object;
 
-        ASSERT_THROW_ERRC(
-            parser->ParseFromAttribute(each_value, object),
-            zaf::BasicErrc::InvalidValue);
+        ASSERT_THROW(parser->ParseFromAttribute(each_value, object), zaf::ParseError);
     }
 }
 
@@ -99,13 +97,13 @@ TEST(ColorParser, ParseFromNode) {
 
 TEST(ColorParser, ParseInvalidValueInNode) {
 
-    ASSERT_THROW_ERRC(
-        zaf::CreateObjectFromXaml<zaf::Color>(R"(<Color>#abcdef<A/></Color>)"),
-        zaf::BasicErrc::InvalidValue);
+    ASSERT_THROW(
+        zaf::CreateObjectFromXaml<zaf::Color>(R"(<Color>#abcdef<A/></Color>)"), 
+        zaf::ParseError);
 
-    ASSERT_THROW_ERRC(
+    ASSERT_THROW(
         zaf::CreateObjectFromXaml<zaf::Color>(R"(<Color><A/></Color>)"), 
-        zaf::BasicErrc::InvalidValue);
+        zaf::ParseError);
 }
 
 
@@ -114,8 +112,8 @@ TEST(ColorParser, ParseToInvalidObject) {
     auto parser = zaf::Color::Type->GetParser();
     zaf::Object object;
         
-    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"#112233", object), zaf::BasicErrc::InvalidCast);
+    ASSERT_THROW(parser->ParseFromAttribute(L"#112233", object), zaf::InvalidTypeError);
 
     auto xaml_node = zaf::XamlReader::FromString(L"<Color>#ddeeff</Color>")->Read();
-    ASSERT_THROW_ERRC(parser->ParseFromNode(*xaml_node, object), zaf::BasicErrc::InvalidCast);
+    ASSERT_THROW(parser->ParseFromNode(*xaml_node, object), zaf::InvalidTypeError);
 }

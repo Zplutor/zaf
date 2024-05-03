@@ -1,9 +1,8 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/invalid_type_error.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/boxing/string.h>
-#include "utility/assert.h"
 
 using namespace zaf;
 
@@ -104,7 +103,7 @@ TEST(BoxingTest, UnboxReference) {
         ASSERT_EQ(unboxed, "bbbbox");
 
         //Unbox failed
-        ASSERT_THROW_ERRC(Unbox<std::wstring>(*boxed), zaf::BasicErrc::InvalidCast);
+        ASSERT_THROW(Unbox<std::wstring>(*boxed), zaf::InvalidTypeError);
     }
 
     //Const reference 
@@ -117,7 +116,7 @@ TEST(BoxingTest, UnboxReference) {
         ASSERT_EQ(unboxed, "aaabb");
 
         //Unbox failed
-        ASSERT_THROW_ERRC(Unbox<std::wstring>(*boxed), zaf::BasicErrc::InvalidCast);
+        ASSERT_THROW(Unbox<std::wstring>(*boxed), zaf::InvalidTypeError);
     }
 }
 

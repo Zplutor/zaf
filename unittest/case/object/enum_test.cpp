@@ -1,10 +1,9 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/invalid_type_error.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/enum_declaration.h>
 #include <zaf/object/enum_definition.h>
 #include <zaf/object/parsing/xaml_reader.h>
-#include "utility/assert.h"
 
 namespace {
 
@@ -143,9 +142,7 @@ TEST(EnumTest, Parse) {
     parser->ParseFromAttribute(L"Third", enum_object);
     ASSERT_EQ(enum_object.Value(), TestType::Third);
 
-    ASSERT_THROW_ERRC(
-        parser->ParseFromAttribute(L"Fourth", enum_object),
-        zaf::BasicErrc::InvalidValue);
+    ASSERT_THROW(parser->ParseFromAttribute(L"Fourth", enum_object), zaf::ParseError);
 }
 
 
@@ -154,8 +151,8 @@ TEST(EnumTest, ParseToInvalidObject) {
     auto parser = TestTypeEnum::EnumType()->GetParser();
     zaf::Object object;
 
-    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"First", object), zaf::BasicErrc::InvalidCast);
+    ASSERT_THROW(parser->ParseFromAttribute(L"First", object), zaf::InvalidTypeError);
 
     auto node = zaf::XamlReader::FromString("<TestType>Second</TestType>")->Read();
-    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, object), zaf::BasicErrc::InvalidCast);
+    ASSERT_THROW(parser->ParseFromNode(*node, object), zaf::InvalidTypeError);
 }

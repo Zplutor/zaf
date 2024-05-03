@@ -526,7 +526,6 @@
     <ClInclude Include="unittest\case\base\test_object.h" />
     <ClCompile Include="unittest\case\control\layout\layout_case_test.cpp" />
     <ClInclude Include="unittest\case\parsing\parsers\utility.h" />
-    <ClInclude Include="unittest\utility\assert.h" />
     <ClInclude Include="unittest\utility\test_window.h" />
   </ItemGroup>
   <ItemGroup>

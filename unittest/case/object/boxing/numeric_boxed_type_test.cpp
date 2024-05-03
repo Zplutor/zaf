@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/invalid_type_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/boxing/numeric.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_reader.h>
-#include "utility/assert.h"
 
 TEST(NumericBoxedTypeTest, IsEqual) {
 
@@ -46,17 +46,17 @@ TEST(NumericBoxedTypeTest, Parse) {
     parser->ParseFromAttribute(L"11", i32);
     ASSERT_EQ(i32.Value(), 11);
 
-    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"abc", i32), zaf::BasicErrc::InvalidValue);
+    ASSERT_THROW(parser->ParseFromAttribute(L"abc", i32), zaf::ParseError);
 
     auto node = zaf::XamlReader::FromString("<Int32>31</Int32>")->Read();
     parser->ParseFromNode(*node, i32);
     ASSERT_EQ(i32.Value(), 31);
 
     node = zaf::XamlReader::FromString("<Int32></Int32>")->Read();
-    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, i32), zaf::BasicErrc::InvalidValue);
+    ASSERT_THROW(parser->ParseFromNode(*node, i32), zaf::ParseError);
 
     node = zaf::XamlReader::FromString("<Int32>abc</Int32>")->Read();
-    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, i32), zaf::BasicErrc::InvalidValue);
+    ASSERT_THROW(parser->ParseFromNode(*node, i32), zaf::ParseError);
 }
 
 
@@ -65,8 +65,8 @@ TEST(NumericBoxedTypeTest, ParseToInvalidObject) {
     auto parser = zaf::Int32::Type->GetParser();
     zaf::Object object;
 
-    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"33", object), zaf::BasicErrc::InvalidCast);
+    ASSERT_THROW(parser->ParseFromAttribute(L"33", object), zaf::InvalidTypeError);
 
     auto node = zaf::XamlReader::FromString("<Int32>444</Int32>")->Read();
-    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, object), zaf::BasicErrc::InvalidCast);
+    ASSERT_THROW(parser->ParseFromNode(*node, object), zaf::InvalidTypeError);
 }

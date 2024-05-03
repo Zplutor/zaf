@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/basic_error.h>
+#include <zaf/base/error/invalid_type_error.h>
+#include <zaf/object/parsing/parse_error.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/parsing/xaml_reader.h>
-#include "utility/assert.h"
 
 TEST(FrameParserTest, ParseFromAttribute) {
 
@@ -62,12 +62,10 @@ TEST(FrameParserTest, ParseToInvalidObject) {
     auto parser = zaf::Frame::Type->GetParser();
     zaf::Object object;
 
-    ASSERT_THROW_ERRC(
-        parser->ParseFromAttribute(L"1,1,1,1", object), 
-        zaf::BasicErrc::InvalidCast);
+    ASSERT_THROW(parser->ParseFromAttribute(L"1,1,1,1", object), zaf::InvalidTypeError);
 
     auto node = zaf::XamlReader::FromString(L"<Frame>2,2,2,2</Frame>")->Read();
-    ASSERT_THROW_ERRC(parser->ParseFromNode(*node, object), zaf::BasicErrc::InvalidCast);
+    ASSERT_THROW(parser->ParseFromNode(*node, object), zaf::InvalidTypeError);
 }
 
 
@@ -76,5 +74,5 @@ TEST(FrameParserTest, ParseInvalidValue) {
     auto parser = zaf::Frame::Type->GetParser();
     zaf::Frame frame;
 
-    ASSERT_THROW_ERRC(parser->ParseFromAttribute(L"uiok", frame), zaf::BasicErrc::InvalidValue);
+    ASSERT_THROW(parser->ParseFromAttribute(L"uiok", frame), zaf::ParseError);
 }
