@@ -4,19 +4,9 @@
 
 namespace zaf {
 
-class NotSupportedError : public std::runtime_error, public RuntimeError {
+class NotSupportedError : public GeneralRuntimeError {
 public:
-    NotSupportedError() : runtime_error("") {
-
-    }
-
-    explicit NotSupportedError(const SourceSite& site) : runtime_error(""), RuntimeError(site) {
-
-    }
-
-    const char* Message() const noexcept override {
-        return this->what();
-    }
+    using GeneralRuntimeError::GeneralRuntimeError;
 };
 
 }

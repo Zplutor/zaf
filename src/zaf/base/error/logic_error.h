@@ -12,4 +12,18 @@ public:
     using Error::Error;
 };
 
+
+class GeneralLogicError : public std::logic_error, public LogicError {
+public:
+    GeneralLogicError(const char* message, const SourceSite& site) :
+        logic_error(message),
+        LogicError(site) {
+
+    }
+
+    const char* Message() const noexcept override {
+        return this->what();
+    }
+};
+
 }
