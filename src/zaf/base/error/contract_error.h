@@ -24,17 +24,21 @@ public:
 
 
 /**
-Throws a PreconditionError with the specified message.
+Throws a PreconditionError with the specified message and site.
 
 @param message
     The error message to include in the error.
 
-@remark
-    This function is internally used by ZAF_EXPECT() to throw PreconditionError.
+@param site
+    The site where the error occurs.
+
+@details
+    This function is internally used by ZAF_EXPECT() to throw PreconditionError, enabling the use 
+    of ZAF_EXPECT() in destructors without warning.
 */
 [[noreturn]]
-inline void ThrowPreconditionError(const char* message) {
-    throw PreconditionError{ message, ZAF_SOURCE_SITE() };
+inline void ThrowPreconditionError(const char* message, const SourceSite& site) {
+    throw PreconditionError{ message, site };
 }
 
 
@@ -47,9 +51,10 @@ Checks the specified precondition and throws PreconditionError if the condition 
 @throw zaf::PreconditionError
     Thrown if the condition is not met.
 
-@remark
+@details
     This macro is intended to be used for enforcing preconditions in contract programming.
 */
-#define ZAF_EXPECT(precondition) if (!(precondition)) zaf::ThrowPreconditionError(#precondition);
+#define ZAF_EXPECT(precondition) \
+if (!(precondition)) zaf::ThrowPreconditionError(#precondition, ZAF_SOURCE_SITE());
 
 }
