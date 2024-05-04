@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <string>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 
 namespace zaf {
 

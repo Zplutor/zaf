@@ -1,5 +1,5 @@
 #include <zaf/internal/textual/text_model.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 
 namespace zaf::internal {
 

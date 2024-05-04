@@ -1,5 +1,5 @@
 #include <zaf/control/internal/tree_control/tree_node_children_adder.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/control/internal/tree_control/tree_data_manager.h>
 
 namespace zaf::internal {

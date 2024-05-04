@@ -1,5 +1,5 @@
 #include <zaf/internal/textual/text_box_index_manager.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/internal/textual/text_box_module_context.h>
 #include <zaf/internal/textual/text_model.h>
 

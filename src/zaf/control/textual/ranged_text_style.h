@@ -1,7 +1,7 @@
 #pragma once
 
 #include <optional>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/control/color_picker.h>
 #include <zaf/control/textual/inline_object_store.h>
 #include <zaf/graphic/font/font.h>

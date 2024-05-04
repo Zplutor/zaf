@@ -1,5 +1,5 @@
 #include <zaf/base/registry/registry_value.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 
 namespace zaf {
 

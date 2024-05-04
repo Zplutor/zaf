@@ -397,7 +397,7 @@
     <ClInclude Include="src\zaf\base\com_object.h" />
     <ClInclude Include="src\zaf\base\container\utility\copy.h" />
     <ClInclude Include="src\zaf\base\error\check.h" />
-    <ClInclude Include="src\zaf\base\error\contract.h" />
+    <ClInclude Include="src\zaf\base\error\contract_error.h" />
     <ClInclude Include="src\zaf\base\error\invalid_data_error.h" />
     <ClInclude Include="src\zaf\base\error\invalid_type_error.h" />
     <ClInclude Include="src\zaf\base\error\logic_error.h" />

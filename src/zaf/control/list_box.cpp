@@ -1,5 +1,5 @@
 #include <zaf/control/list_box.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/control/list_box_delegate.h>
 #include <zaf/control/list_box_data_source.h>
 #include <zaf/creation.h>

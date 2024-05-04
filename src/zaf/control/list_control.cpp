@@ -1,6 +1,6 @@
 #include <zaf/control/list_control.h>
 #include <algorithm>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/control/internal/list_control/list_control_implementation.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>

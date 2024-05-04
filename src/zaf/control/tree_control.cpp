@@ -1,5 +1,5 @@
 #include <zaf/control/tree_control.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/tree_data_source.h>

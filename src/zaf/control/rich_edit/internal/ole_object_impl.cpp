@@ -1,5 +1,5 @@
 #include <zaf/control/rich_edit/internal/ole_object_impl.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 
 namespace zaf::rich_edit::internal {
 

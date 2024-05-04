@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/object/boxing/internal/get_box_type.h>
 #include <zaf/object/boxing/internal/unboxer.h>
 

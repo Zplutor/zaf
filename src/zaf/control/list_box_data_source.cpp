@@ -1,5 +1,5 @@
 #include <zaf/control/list_box_data_source.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 
 namespace zaf {
 

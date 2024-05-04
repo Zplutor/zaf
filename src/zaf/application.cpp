@@ -3,7 +3,7 @@
 #include <dwrite.h>
 #include <zaf/application_delegate.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/creation.h>
 #include <zaf/crypto/internal/crypto_manager.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>

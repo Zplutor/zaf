@@ -2,7 +2,7 @@
 
 #include <dwrite.h>
 #include <Richedit.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/base/hash.h>
 #include <zaf/object/equality.h>
 #include <zaf/object/object.h>

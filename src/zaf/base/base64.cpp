@@ -1,5 +1,5 @@
 #include <zaf/base/base64.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 
 namespace zaf {
 namespace {

@@ -1,5 +1,5 @@
 #include <zaf/control/spin_button.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/control/internal/triangle_geometry.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>

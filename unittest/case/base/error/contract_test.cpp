@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/contract.h>
+#include <zaf/base/error/contract_error.h>
 
 namespace {
 
