@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/not_supported_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/clipboard/text_data.h>
 
 using namespace zaf;
@@ -27,7 +27,7 @@ TEST(TextDataTest, SaveToMediumUnsupportedFormat) {
     TextData text_data{ L"TextDataTest" };
     
     Format format{ static_cast<FormatType>(0) };
-    ASSERT_THROW(text_data.SaveToMedium(format), NotSupportedError);
+    ASSERT_THROW(text_data.SaveToMedium(format), InvalidOperationError);
 }
 
 
@@ -54,5 +54,5 @@ TEST(TextDataTest, LoadFromMedium) {
 TEST(TextDataTest, LoadFromMediumUnsupportedFormat) {
 
     TextData text_data;
-    ASSERT_THROW(text_data.LoadFromMedium(Format{}, {}), NotSupportedError);
+    ASSERT_THROW(text_data.LoadFromMedium(Format{}, {}), InvalidOperationError);
 }

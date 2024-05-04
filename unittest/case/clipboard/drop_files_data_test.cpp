@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_data_error.h>
-#include <zaf/base/error/not_supported_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/clipboard/drop_files_data.h>
 
 using namespace zaf;
@@ -47,10 +47,10 @@ TEST(DropFilesDataTest, SaveToMediumWithUnsupportedArguments) {
 
     DropFilesData data{ { L"C:\\Windows\\Notepad.exe" } };
 
-    ASSERT_THROW(data.SaveToMedium(Format(FormatType::Text)), NotSupportedError);
+    ASSERT_THROW(data.SaveToMedium(Format(FormatType::Text)), InvalidOperationError);
     ASSERT_THROW(
         data.SaveToMedium(Format(FormatType::DropFiles, MediumType::File)), 
-        NotSupportedError);
+        InvalidOperationError);
 }
 
 
@@ -62,9 +62,9 @@ TEST(DropFilesDataTest, LoadFromMediumWithUnsupportedArguments) {
     DropFilesData data;
     ASSERT_THROW(
         data.LoadFromMedium(Format(FormatType::Text), medium),
-        NotSupportedError);
+        InvalidOperationError);
 
     ASSERT_THROW(
         data.LoadFromMedium(Format(FormatType::DropFiles, MediumType::GlobalMem), {}),
-        NotSupportedError);
+        InvalidOperationError);
 }

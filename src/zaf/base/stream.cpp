@@ -1,7 +1,7 @@
 #include <zaf/base/stream.h>
 #include <Shlwapi.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/base/error/not_supported_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 
 namespace zaf {
 namespace {
@@ -316,7 +316,7 @@ const std::byte* Stream::GetUnderlyingBuffer() const {
         return memory_stream->Data();
     }
 
-    throw NotSupportedError{ ZAF_SOURCE_SITE() };
+    throw InvalidOperationError{ ZAF_SOURCE_SITE() };
 }
 
 

@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/not_supported_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/base/error/error.h>
 #include <zaf/base/stream.h>
 
@@ -40,7 +40,7 @@ TEST(StreamTest, GetUnderlyingBuffer) {
 
     {
         auto stream = zaf::Stream::FromMemory(memory.data(), memory.size());
-        ASSERT_THROW(stream.GetUnderlyingBuffer(), zaf::NotSupportedError);
+        ASSERT_THROW(stream.GetUnderlyingBuffer(), zaf::InvalidOperationError);
     }
 }
 

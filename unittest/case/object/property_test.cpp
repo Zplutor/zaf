@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_type_error.h>
-#include <zaf/base/error/not_supported_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/graphic/image/image.h>
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
@@ -123,7 +123,7 @@ TEST(PropertyTest, ReadOnly) {
     ASSERT_NE(value, nullptr);
     ASSERT_EQ(*value, ReadOnlyValue);
 
-    ASSERT_THROW(property->SetValue(host, zaf::Box(74)), zaf::NotSupportedError);
+    ASSERT_THROW(property->SetValue(host, zaf::Box(74)), zaf::InvalidOperationError);
 }
 
 
@@ -140,7 +140,7 @@ TEST(PropertyTest, WriteOnly) {
     property->SetValue(host, zaf::Box(76));
     ASSERT_EQ(host.GetWriteOnlyValue(), 76);
 
-    ASSERT_THROW(property->GetValue(host), zaf::NotSupportedError);
+    ASSERT_THROW(property->GetValue(host), zaf::InvalidOperationError);
 }
 
 

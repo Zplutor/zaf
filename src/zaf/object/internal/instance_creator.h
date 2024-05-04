@@ -1,7 +1,7 @@
 #pragma once
 
 #include <type_traits>
-#include <zaf/base/error/not_supported_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/base/error/error.h>
 #include <zaf/creation.h>
 #include <zaf/object/object.h>
@@ -19,7 +19,7 @@ public:
 class UnsupportedInstanceCreator {
 public:
     static std::shared_ptr<Object> Create() {
-        throw NotSupportedError{ ZAF_SOURCE_SITE() };
+        throw InvalidOperationError{ ZAF_SOURCE_SITE() };
     }
 };
 

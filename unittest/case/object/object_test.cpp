@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/not_supported_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/type_declaration.h>
 #include <zaf/object/type_definition.h>
@@ -38,5 +38,5 @@ TEST(ObjectTest, CreateInstance) {
     auto default_constructible = std::dynamic_pointer_cast<DefaultConstructible>(instance);
     ASSERT_NE(default_constructible, nullptr);
 
-    ASSERT_THROW(NotDefaultConstructible::Type->CreateInstance(), zaf::NotSupportedError);
+    ASSERT_THROW(NotDefaultConstructible::Type->CreateInstance(), zaf::InvalidOperationError);
 }

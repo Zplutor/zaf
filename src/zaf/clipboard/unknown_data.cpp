@@ -1,5 +1,5 @@
 #include <zaf/clipboard/unknown_data.h>
-#include <zaf/base/error/not_supported_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 
 namespace zaf::clipboard {
 
@@ -9,7 +9,7 @@ clipboard::Medium UnknownData::SaveToMedium(const clipboard::Format& format) {
         return medium_;
     }
 
-    throw NotSupportedError{ ZAF_SOURCE_SITE() };
+    throw InvalidOperationError{ ZAF_SOURCE_SITE() };
 }
 
 

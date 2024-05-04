@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-class NotSupportedError : public GeneralRuntimeError {
+class InvalidOperationError : public GeneralRuntimeError {
 public:
     using GeneralRuntimeError::GeneralRuntimeError;
 };

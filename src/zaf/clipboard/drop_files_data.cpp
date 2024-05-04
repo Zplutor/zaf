@@ -1,7 +1,7 @@
 #include <zaf/clipboard/drop_files_data.h>
 #include <ShlObj.h>
 #include <zaf/base/error/invalid_data_error.h>
-#include <zaf/base/error/not_supported_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/object/type_definition.h>
 
 namespace zaf::clipboard {
@@ -18,7 +18,7 @@ DropFilesData::DropFilesData(std::vector<std::filesystem::path> file_paths) :
 Medium DropFilesData::SaveToMedium(const Format& format) {
 
     if (format.Type() != FormatType::DropFiles || format.MediumType() != MediumType::GlobalMem) {
-        throw NotSupportedError{ ZAF_SOURCE_SITE() };
+        throw InvalidOperationError{ ZAF_SOURCE_SITE() };
     }
 
     if (paths_.empty()) {
@@ -58,7 +58,7 @@ Medium DropFilesData::SaveToMedium(const Format& format) {
 void DropFilesData::LoadFromMedium(const Format& format, const Medium& medium) {
 
     if (format.Type() != FormatType::DropFiles || medium.Type() != MediumType::GlobalMem) {
-        throw NotSupportedError{ ZAF_SOURCE_SITE() };
+        throw InvalidOperationError{ ZAF_SOURCE_SITE() };
     }
 
     paths_.clear();

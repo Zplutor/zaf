@@ -1,5 +1,5 @@
 #include <zaf/clipboard/text_data.h>
-#include <zaf/base/error/not_supported_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/base/global_mem.h>
 #include <zaf/object/type_definition.h>
 
@@ -19,7 +19,7 @@ Medium TextData::SaveToMedium(const Format& format) {
         return Medium::FromGlobalMem(GlobalMem::FromString(text_, GlobalMemFlags::Movable));
     }
 
-    throw NotSupportedError{ ZAF_SOURCE_SITE() };
+    throw InvalidOperationError{ ZAF_SOURCE_SITE() };
 }
 
 
@@ -34,7 +34,7 @@ void TextData::LoadFromMedium(const Format& format, const Medium& medium) {
         return;
     }
 
-    throw NotSupportedError{ ZAF_SOURCE_SITE() };
+    throw InvalidOperationError{ ZAF_SOURCE_SITE() };
 }
 
 }

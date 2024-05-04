@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/as.h>
-#include <zaf/base/error/not_supported_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/internal/property_helper.h>
 #include <zaf/object/internal/property_registrar.h>
@@ -47,7 +47,7 @@ struct PropertyName##Accessor {                                                 
     }                                                                                              \
     template<typename T>                                                                           \
     static std::shared_ptr<zaf::Object> InnerGet(const T& object, ...) {                           \
-        throw zaf::NotSupportedError{ ZAF_SOURCE_SITE() };                                              \
+        throw zaf::InvalidOperationError{ ZAF_SOURCE_SITE() };                                     \
     }                                                                                              \
     template<typename T>                                                                           \
     static void InnerSet(                                                                          \
@@ -60,7 +60,7 @@ struct PropertyName##Accessor {                                                 
     }                                                                                              \
     template<typename T>                                                                           \
     static void InnerSet(T& object, const std::shared_ptr<zaf::Object>& value, ...) {              \
-        throw zaf::NotSupportedError{ ZAF_SOURCE_SITE() };                                              \
+        throw zaf::InvalidOperationError{ ZAF_SOURCE_SITE() };                                     \
     }                                                                                              \
     template<typename T>                                                                           \
     static constexpr GetterValueType<T>* DeduceValueType(std::nullptr_t) {                         \
