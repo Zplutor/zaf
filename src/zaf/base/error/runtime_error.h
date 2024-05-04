@@ -16,11 +16,13 @@ public:
 
 class GeneralRuntimeError : public std::runtime_error, public RuntimeError {
 public:
-    GeneralRuntimeError() : runtime_error("") {
+    explicit GeneralRuntimeError(const SourceSite& site) : runtime_error(""), RuntimeError(site) {
 
     }
 
-    explicit GeneralRuntimeError(const SourceSite& site) : runtime_error(""), RuntimeError(site) {
+    GeneralRuntimeError(const std::string& message, const SourceSite& site) : 
+        runtime_error(message),
+        RuntimeError(site) {
 
     }
 

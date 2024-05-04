@@ -11,19 +11,14 @@ public:
     static std::error_code MakeCode(DWORD code);
 
 public:
-    explicit Win32Error(DWORD code) : 
-        GeneralSystemError(std::error_code(static_cast<int>(code), Category())) {
-
-    }
-
     Win32Error(DWORD code, const SourceSite& site) :
-        GeneralSystemError(std::error_code(static_cast<int>(code), Category())) {
+        GeneralSystemError(std::error_code(static_cast<int>(code), Category()), site) {
 
     }
 };
 
 
 #define ZAF_THROW_WIN32_ERROR(error_code) throw zaf::Win32Error{ error_code, ZAF_SOURCE_SITE() }
-#define ZAF_THROW_IF_WIN32_ERROR(error_code) if (error_code) { ZAF_THROW_WIN32_ERROR(error_code); }                            \
+#define ZAF_THROW_IF_WIN32_ERROR(error_code) if (error_code) { ZAF_THROW_WIN32_ERROR(error_code); }
 
 }

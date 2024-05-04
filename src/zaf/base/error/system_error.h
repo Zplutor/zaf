@@ -15,12 +15,18 @@ public:
 
 class GeneralSystemError : public std::system_error, public SystemError {
 public:
-    explicit GeneralSystemError(const std::error_code& error_code) : system_error(error_code) {
+    GeneralSystemError(const std::error_code& error_code, const SourceSite& site) :
+        system_error(error_code),
+        SystemError(site) {
 
     }
 
-    GeneralSystemError(const std::error_code& error_code, const SourceSite& site) :
-        system_error(error_code),
+    GeneralSystemError(
+        const std::error_code& error_code,
+        const std::string& message,
+        const SourceSite& site) 
+        :
+        system_error(error_code, message),
         SystemError(site) {
 
     }

@@ -9,13 +9,8 @@ public:
     static const std::error_category& Category();
 
 public:
-    explicit NTError(NTSTATUS code) :
-        GeneralSystemError(std::error_code(static_cast<int>(code), Category())) {
-
-    }
-
     NTError(NTSTATUS code, const SourceSite& site) :
-        GeneralSystemError(std::error_code(static_cast<int>(code), Category())) {
+        GeneralSystemError(std::error_code(static_cast<int>(code), Category()), site) {
 
     }
 };

@@ -5,11 +5,10 @@
 namespace zaf {
 
 /**
-Base class for all errors in the zaf library.
+Base class for all exceptions in the zaf library.
 */
 class Error {
 public:
-    Error() = default;
     explicit Error(const SourceSite& site) : site_(site) { }
     virtual ~Error() = default;
 

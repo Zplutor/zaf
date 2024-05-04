@@ -15,7 +15,11 @@ public:
 
 class GeneralLogicError : public std::logic_error, public LogicError {
 public:
-    GeneralLogicError(const char* message, const SourceSite& site) :
+    explicit GeneralLogicError(const SourceSite& site) : logic_error(""), LogicError(site) {
+
+    }
+
+    GeneralLogicError(const std::string& message, const SourceSite& site) :
         logic_error(message),
         LogicError(site) {
 

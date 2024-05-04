@@ -11,13 +11,8 @@ public:
     static std::error_code MakeCode(HRESULT hresult);
 
 public:
-    explicit COMError(HRESULT code) :
-        GeneralSystemError(std::error_code(static_cast<int>(code), Category())) {
-
-    }
-
     COMError(HRESULT code, const SourceSite& site) :
-        GeneralSystemError(std::error_code(static_cast<int>(code), Category())) {
+        GeneralSystemError(std::error_code(static_cast<int>(code), Category()), site) {
 
     }
 };
