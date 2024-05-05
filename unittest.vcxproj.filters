@@ -532,6 +532,12 @@
     <ClCompile Include="unittest\utility\test_window.cpp">
       <Filter>utility</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\error\com_error_test.cpp">
+      <Filter>case\base\error</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\base\error\win32_error_test.cpp">
+      <Filter>case\base\error</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
