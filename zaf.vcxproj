@@ -398,13 +398,13 @@
     <ClInclude Include="src\zaf\base\container\utility\copy.h" />
     <ClInclude Include="src\zaf\base\error\check.h" />
     <ClInclude Include="src\zaf\base\error\contract_error.h" />
+    <ClInclude Include="src\zaf\base\error\base_logic_error.h" />
     <ClInclude Include="src\zaf\base\error\invalid_data_error.h" />
     <ClInclude Include="src\zaf\base\error\invalid_type_error.h" />
-    <ClInclude Include="src\zaf\base\error\logic_error.h" />
     <ClInclude Include="src\zaf\base\error\not_found_error.h" />
     <ClInclude Include="src\zaf\base\error\invalid_operation_error.h" />
     <ClInclude Include="src\zaf\base\error\nt_error.h" />
-    <ClInclude Include="src\zaf\base\error\runtime_error.h" />
+    <ClInclude Include="src\zaf\base\error\base_runtime_error.h" />
     <ClInclude Include="src\zaf\base\error\win32_error.h" />
     <ClInclude Include="src\zaf\base\event\event.h" />
     <ClInclude Include="src\zaf\base\event\event_info.h" />
@@ -434,7 +434,7 @@
     <ClInclude Include="src\zaf\base\direct2d.h" />
     <ClInclude Include="src\zaf\base\error\com_error.h" />
     <ClInclude Include="src\zaf\base\error\error.h" />
-    <ClInclude Include="src\zaf\base\error\system_error.h" />
+    <ClInclude Include="src\zaf\base\error\base_system_error.h" />
     <ClInclude Include="src\zaf\base\flag_enum.h" />
     <ClInclude Include="src\zaf\base\define.h" />
     <ClInclude Include="src\zaf\base\handle.h" />

@@ -38,7 +38,7 @@ TEST(ContractErrorTest, ErrorInfo) {
     }
     catch (const PreconditionError& error) {
         site = error.Site();
-        message = error.Message();
+        message = error.what();
     }
 
     ASSERT_STREQ(site.GetFile(), __FILE__);

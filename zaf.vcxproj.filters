@@ -1654,7 +1654,7 @@
     <ClInclude Include="src\zaf\base\error\error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\error\system_error.h">
+    <ClInclude Include="src\zaf\base\error\base_system_error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\source_site.h">
@@ -2707,10 +2707,7 @@
     <ClInclude Include="src\zaf\internal\textual\text_box_ime_manager.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\error\logic_error.h">
-      <Filter>zaf\base\error</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\error\runtime_error.h">
+    <ClInclude Include="src\zaf\base\error\base_runtime_error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\win32_error.h">
@@ -2735,6 +2732,9 @@
       <Filter>zaf\object\parsing</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\invalid_type_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\base_logic_error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,16 +1,15 @@
 #pragma once
 
-#include <stdexcept>
-#include <zaf/base/error/logic_error.h>
+#include <zaf/base/error/base_logic_error.h>
 
 namespace zaf {
 
 /**
 Base class for errors related to contract programming violations.
 */
-class ContractError : public GeneralLogicError {
+class ContractError : public BaseLogicError {
 public:
-    using GeneralLogicError::GeneralLogicError;
+    using BaseLogicError::BaseLogicError;
 };
 
 

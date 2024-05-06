@@ -1,12 +1,12 @@
 #pragma once
 
-#include <zaf/base/error/runtime_error.h>
+#include <zaf/base/error/base_runtime_error.h>
 
 namespace zaf {
 
-class InvalidTypeError : public GeneralRuntimeError {
+class InvalidTypeError : public BaseRuntimeError {
 public:
-    using GeneralRuntimeError::GeneralRuntimeError;
+    using BaseRuntimeError::BaseRuntimeError;
 };
 
 }

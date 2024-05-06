@@ -1,18 +1,18 @@
 #pragma once
 
 #include <Windows.h>
-#include <zaf/base/error/system_error.h>
+#include <zaf/base/error/base_system_error.h>
 
 namespace zaf {
 
-class COMError : public GeneralSystemError {
+class COMError : public BaseSystemError {
 public:
     static const std::error_category& Category();
     static std::error_code MakeCode(HRESULT hresult);
 
 public:
     COMError(HRESULT code, const SourceSite& site) :
-        GeneralSystemError(std::error_code(static_cast<int>(code), Category()), site) {
+        BaseSystemError(std::error_code(static_cast<int>(code), Category()), site) {
 
     }
 };

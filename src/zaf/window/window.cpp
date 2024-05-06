@@ -669,7 +669,7 @@ void Window::HandleWMPAINT() {
         renderer_.EndDraw();
     }
     catch (const COMError& error) {
-        if (error.Code() == COMError::MakeCode(D2DERR_RECREATE_TARGET)) {
+        if (error.code() == COMError::MakeCode(D2DERR_RECREATE_TARGET)) {
             RecreateRenderer();
         }
     }
