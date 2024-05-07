@@ -29,7 +29,7 @@ TEST(COMErrorTest, ThrowIf) {
     ASSERT_EQ(catched_error->code().category(), COMError::Category());
     ASSERT_EQ(catched_error->code().value(), 0x80000005);
 
-    ASSERT_STREQ(catched_error->Site().GetFile(), __FILE__);
-    ASSERT_EQ(catched_error->Site().GetLine(), prior_line + 1);
+    ASSERT_STREQ(catched_error->Location().GetFile(), __FILE__);
+    ASSERT_EQ(catched_error->Location().GetLine(), prior_line + 1);
 }
 

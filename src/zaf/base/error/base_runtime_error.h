@@ -19,17 +19,17 @@ public:
 
     }
 
-    explicit BaseRuntimeError(const SourceSite& site) : runtime_error(""), Error(site) {
+    explicit BaseRuntimeError(const SourceLocation& site) : runtime_error(""), Error(site) {
 
     }
 
-    BaseRuntimeError(const std::string& message, const SourceSite& site) :
+    BaseRuntimeError(const std::string& message, const SourceLocation& site) :
         runtime_error(message),
         Error(site) {
 
     }
 
-    BaseRuntimeError(const char* message, const SourceSite& site) :
+    BaseRuntimeError(const char* message, const SourceLocation& site) :
         runtime_error(message),
         Error(site) {
 

@@ -34,7 +34,7 @@ std::uint8_t DecodeChar(wchar_t ch) {
         return 63;
     }
 
-    throw PreconditionError("", ZAF_SOURCE_SITE());
+    throw PreconditionError("", ZAF_SOURCE_LOCATION());
 }
 
 }

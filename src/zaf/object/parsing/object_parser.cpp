@@ -114,7 +114,7 @@ std::shared_ptr<Object> ParsePropertyValueFromNode(
 
         const auto& content_nodes = node.GetContentNodes();
         if (content_nodes.size() != 1) {
-            throw ParseError{ ZAF_SOURCE_SITE() };
+            throw ParseError{ ZAF_SOURCE_LOCATION() };
         }
 
         return internal::CreateObjectFromNode<Object>(content_nodes.front());

@@ -24,7 +24,7 @@ public:
             Parse(*content_string, object);
         }
         else {
-            throw ParseError{ ZAF_SOURCE_SITE() };
+            throw ParseError{ ZAF_SOURCE_LOCATION() };
         }
     }
 
@@ -64,7 +64,7 @@ private:
             }
         }
 
-        throw ParseError{ ZAF_SOURCE_SITE() };
+        throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 };
 

@@ -30,7 +30,7 @@ public:
                 0);
 
             if (!BCRYPT_SUCCESS(status)) {
-                throw NTError{ status, ZAF_SOURCE_SITE() };
+                throw NTError{ status, ZAF_SOURCE_LOCATION() };
             }
         });
         return handle_;

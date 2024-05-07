@@ -27,7 +27,7 @@ TEST(ContractErrorTest, PreconditionError) {
 //The site of the error should be the same as where ZAF_EXPECT() is called.
 TEST(ContractErrorTest, ErrorInfo) {
 
-    SourceSite site;
+    SourceLocation site;
     int prior_line{};
 
     std::string message;
@@ -37,7 +37,7 @@ TEST(ContractErrorTest, ErrorInfo) {
         ZAF_EXPECT(1+1<2);
     }
     catch (const PreconditionError& error) {
-        site = error.Site();
+        site = error.Location();
         message = error.what();
     }
 

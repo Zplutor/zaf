@@ -19,17 +19,17 @@ public:
 
     }
 
-    explicit BaseLogicError(const SourceSite& site) : logic_error(""), Error(site) {
+    explicit BaseLogicError(const SourceLocation& site) : logic_error(""), Error(site) {
 
     }
 
-    BaseLogicError(const std::string& message, const SourceSite& site) :
+    BaseLogicError(const std::string& message, const SourceLocation& site) :
         logic_error(message), 
         Error(site) {
 
     }
 
-    BaseLogicError(const char* message, const SourceSite& site) :
+    BaseLogicError(const char* message, const SourceLocation& site) :
         logic_error(message),
         Error(site) {
 

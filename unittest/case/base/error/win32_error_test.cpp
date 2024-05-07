@@ -29,7 +29,7 @@ TEST(Win32ErrorTest, ThrowIf) {
     ASSERT_EQ(catched_error->code().category(), Win32Error::Category());
     ASSERT_EQ(catched_error->code().value(), 5);
 
-    ASSERT_STREQ(catched_error->Site().GetFile(), __FILE__);
-    ASSERT_EQ(catched_error->Site().GetLine(), prior_line + 1);
+    ASSERT_STREQ(catched_error->Location().GetFile(), __FILE__);
+    ASSERT_EQ(catched_error->Location().GetLine(), prior_line + 1);
 }
 

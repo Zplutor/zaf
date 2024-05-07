@@ -20,7 +20,7 @@ public:
             size.height);
 
         if (!is_succeeded) {
-            throw ParseError{ ZAF_SOURCE_SITE() };
+            throw ParseError{ ZAF_SOURCE_LOCATION() };
         }
     }
 };

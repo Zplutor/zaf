@@ -75,7 +75,7 @@ private:
 
         auto value_object = enum_type_->FindValue(text);
         if (!value_object) {
-            throw ParseError{ ZAF_SOURCE_SITE() };
+            throw ParseError{ ZAF_SOURCE_LOCATION() };
         }
 
         return dynamic_cast<const internal::GetBoxType<T>::Type&>(*value_object).Value();

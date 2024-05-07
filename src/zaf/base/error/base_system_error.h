@@ -15,7 +15,7 @@ public:
     BaseSystemError(
         int error_value,
         const std::error_category& category,
-        const SourceSite& site) 
+        const SourceLocation& site) 
         :
         system_error(error_value, category),
         Error(site) {
@@ -36,7 +36,7 @@ public:
 
     }
 
-    BaseSystemError(const std::error_code& error_code, const SourceSite& site) :
+    BaseSystemError(const std::error_code& error_code, const SourceLocation& site) :
         system_error(error_code),
         Error(site) {
 
@@ -45,7 +45,7 @@ public:
     BaseSystemError(
         const std::error_code& error_code,
         const std::string& message,
-        const SourceSite& site) 
+        const SourceLocation& site) 
         :
         system_error(error_code, message),
         Error(site) {
@@ -55,7 +55,7 @@ public:
     BaseSystemError(
         const std::error_code& error_code,
         const char* message,
-        const SourceSite& site) 
+        const SourceLocation& site) 
         :
         system_error(error_code, message),
         Error(site) {

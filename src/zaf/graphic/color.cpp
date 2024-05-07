@@ -19,7 +19,7 @@ Color DecodeARGB(const std::wstring& argb) {
     if (argb.length() != long_notation_length &&
         argb.length() != short_notation_length) {
 
-        throw ParseError{ ZAF_SOURCE_SITE() };
+        throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
     std::wstring a_hex;
@@ -46,22 +46,22 @@ Color DecodeARGB(const std::wstring& argb) {
 
     std::uint8_t temp_a = 0;
     if (!TryToNumeric(a_hex, temp_a, options)) {
-        throw ParseError{ ZAF_SOURCE_SITE() };
+        throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
     std::uint8_t temp_r = 0;
     if (!TryToNumeric(r_hex, temp_r, options)) {
-        throw ParseError{ ZAF_SOURCE_SITE() };
+        throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
     std::uint8_t temp_g = 0;
     if (!TryToNumeric(g_hex, temp_g, options)) {
-        throw ParseError{ ZAF_SOURCE_SITE() };
+        throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
     std::uint8_t temp_b = 0;
     if (!TryToNumeric(b_hex, temp_b, options)) {
-        throw ParseError{ ZAF_SOURCE_SITE() };
+        throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
     float max = (std::numeric_limits<std::uint8_t>::max)();
@@ -101,14 +101,14 @@ Color ConvertTextToColor(const std::wstring& text) {
         }
     }
 
-    throw ParseError{ ZAF_SOURCE_SITE() };
+    throw ParseError{ ZAF_SOURCE_LOCATION() };
 }
 
 
 Color DecodeColorValue(const std::wstring& value) {
 
     if (value.empty()) {
-        throw ParseError{ ZAF_SOURCE_SITE() };
+        throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
     if (value[0] == L'#') {
@@ -136,12 +136,12 @@ public:
         }
 
         if (content_nodes.size() != 1) {
-            throw ParseError{ ZAF_SOURCE_SITE() };
+            throw ParseError{ ZAF_SOURCE_LOCATION() };
         }
 
         const auto& content_node = content_nodes.front();
         if (content_node->Type() != XamlNodeType::Text) {
-            throw ParseError{ ZAF_SOURCE_SITE() };
+            throw ParseError{ ZAF_SOURCE_LOCATION() };
         }
 
         As<Color>(object) = DecodeColorValue(content_node->Value());

@@ -18,18 +18,18 @@ DropFilesData::DropFilesData(std::vector<std::filesystem::path> file_paths) :
 Medium DropFilesData::SaveToMedium(const Format& format) {
 
     if (format.Type() != FormatType::DropFiles || format.MediumType() != MediumType::GlobalMem) {
-        throw InvalidOperationError{ ZAF_SOURCE_SITE() };
+        throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
     }
 
     if (paths_.empty()) {
-        throw InvalidDataError{ ZAF_SOURCE_SITE() };
+        throw InvalidDataError{ ZAF_SOURCE_LOCATION() };
     }
 
     std::wstring paths_buffer;
     for (const auto& each_path : paths_) {
 
         if (!each_path.is_absolute()) {
-            throw InvalidDataError{ ZAF_SOURCE_SITE() };
+            throw InvalidDataError{ ZAF_SOURCE_LOCATION() };
         }
 
         paths_buffer += each_path;
@@ -58,7 +58,7 @@ Medium DropFilesData::SaveToMedium(const Format& format) {
 void DropFilesData::LoadFromMedium(const Format& format, const Medium& medium) {
 
     if (format.Type() != FormatType::DropFiles || medium.Type() != MediumType::GlobalMem) {
-        throw InvalidOperationError{ ZAF_SOURCE_SITE() };
+        throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
     }
 
     paths_.clear();

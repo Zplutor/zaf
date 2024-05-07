@@ -1715,7 +1715,7 @@ void RichEdit::SetOLECallback(std::weak_ptr<rich_edit::OLECallback> callback) {
 
     if (lresult == 0) {
         //Fails to set OLE callback due to internal error.
-        throw UnknownRuntimeError{ ZAF_SOURCE_SITE() };
+        throw UnknownRuntimeError{ ZAF_SOURCE_LOCATION() };
     }
 }
 

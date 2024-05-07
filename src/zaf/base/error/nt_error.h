@@ -14,7 +14,7 @@ public:
 
     }
 
-    NTError(NTSTATUS error_value, const SourceSite& site) :
+    NTError(NTSTATUS error_value, const SourceLocation& site) :
         BaseSystemError(static_cast<int>(error_value), Category(), site) {
 
     }

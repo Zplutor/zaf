@@ -19,7 +19,7 @@ Medium TextData::SaveToMedium(const Format& format) {
         return Medium::FromGlobalMem(GlobalMem::FromString(text_, GlobalMemFlags::Movable));
     }
 
-    throw InvalidOperationError{ ZAF_SOURCE_SITE() };
+    throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
 }
 
 
@@ -34,7 +34,7 @@ void TextData::LoadFromMedium(const Format& format, const Medium& medium) {
         return;
     }
 
-    throw InvalidOperationError{ ZAF_SOURCE_SITE() };
+    throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
 }
 
 }

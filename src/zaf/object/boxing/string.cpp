@@ -29,7 +29,7 @@ public:
 
         auto content_string = GetContentStringFromXamlNode(node);
         if (!content_string) {
-            throw ParseError{ ZAF_SOURCE_SITE() };
+            throw ParseError{ ZAF_SOURCE_LOCATION() };
         }
 
         Parse(*content_string, object);

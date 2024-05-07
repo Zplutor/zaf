@@ -22,7 +22,7 @@ Stream DefaultURILoader::Load(const std::wstring& uri, float dpi) {
         return LoadRelativeURI(parse_result.value);
     }
 
-    throw InvalidURIError{ ZAF_SOURCE_SITE() };
+    throw InvalidURIError{ ZAF_SOURCE_LOCATION() };
 }
 
 

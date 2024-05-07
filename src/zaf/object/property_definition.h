@@ -47,7 +47,7 @@ struct PropertyName##Accessor {                                                 
     }                                                                                              \
     template<typename T>                                                                           \
     static std::shared_ptr<zaf::Object> InnerGet(const T& object, ...) {                           \
-        throw zaf::InvalidOperationError{ ZAF_SOURCE_SITE() };                                     \
+        throw zaf::InvalidOperationError{ ZAF_SOURCE_LOCATION() };                                     \
     }                                                                                              \
     template<typename T>                                                                           \
     static void InnerSet(                                                                          \
@@ -60,7 +60,7 @@ struct PropertyName##Accessor {                                                 
     }                                                                                              \
     template<typename T>                                                                           \
     static void InnerSet(T& object, const std::shared_ptr<zaf::Object>& value, ...) {              \
-        throw zaf::InvalidOperationError{ ZAF_SOURCE_SITE() };                                     \
+        throw zaf::InvalidOperationError{ ZAF_SOURCE_LOCATION() };                                     \
     }                                                                                              \
     template<typename T>                                                                           \
     static constexpr GetterValueType<T>* DeduceValueType(std::nullptr_t) {                         \

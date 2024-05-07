@@ -36,7 +36,7 @@ Throws a PreconditionError with the specified message and site.
     of ZAF_EXPECT() in destructors without warning.
 */
 [[noreturn]]
-inline void ThrowPreconditionError(const char* message, const SourceSite& site) {
+inline void ThrowPreconditionError(const char* message, const SourceLocation& site) {
     throw PreconditionError{ message, site };
 }
 
@@ -54,6 +54,6 @@ Checks the specified precondition and throws PreconditionError if the condition 
     This macro is intended to be used for enforcing preconditions in contract programming.
 */
 #define ZAF_EXPECT(precondition) \
-if (!(precondition)) zaf::ThrowPreconditionError(#precondition, ZAF_SOURCE_SITE());
+if (!(precondition)) zaf::ThrowPreconditionError(#precondition, ZAF_SOURCE_LOCATION());
 
 }

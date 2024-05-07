@@ -9,7 +9,7 @@ clipboard::Medium UnknownData::SaveToMedium(const clipboard::Format& format) {
         return medium_;
     }
 
-    throw InvalidOperationError{ ZAF_SOURCE_SITE() };
+    throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
 }
 
 

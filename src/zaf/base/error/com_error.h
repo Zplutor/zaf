@@ -16,14 +16,14 @@ public:
 
     }
 
-    COMError(HRESULT hresult, const SourceSite& site) :
+    COMError(HRESULT hresult, const SourceLocation& site) :
         BaseSystemError(static_cast<int>(hresult), Category(), site) {
 
     }
 };
 
 
-#define ZAF_THROW_COM_ERROR(hresult) throw zaf::COMError{ hresult, ZAF_SOURCE_SITE() }
+#define ZAF_THROW_COM_ERROR(hresult) throw zaf::COMError{ hresult, ZAF_SOURCE_LOCATION() }
 
 #define ZAF_THROW_IF_COM_ERROR(hresult) if (FAILED(hresult)) { ZAF_THROW_COM_ERROR(hresult); }
 

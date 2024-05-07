@@ -1657,7 +1657,7 @@
     <ClInclude Include="src\zaf\base\error\base_system_error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\source_site.h">
+    <ClInclude Include="src\zaf\base\source_location.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\check.h">

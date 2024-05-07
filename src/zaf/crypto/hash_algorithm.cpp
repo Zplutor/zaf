@@ -15,7 +15,7 @@ HashAlgorithm::HashAlgorithm(void* algorithm_handle) : algorithm_handle_(algorit
         0);
 
     if (!BCRYPT_SUCCESS(status)) {
-        throw NTError{ status, ZAF_SOURCE_SITE() };
+        throw NTError{ status, ZAF_SOURCE_LOCATION() };
     }
 }
 
@@ -64,7 +64,7 @@ void HashAlgorithm::Update(const std::byte* input, std::size_t size) {
         0);
 
     if (!BCRYPT_SUCCESS(status)) {
-        throw NTError{ status, ZAF_SOURCE_SITE() };
+        throw NTError{ status, ZAF_SOURCE_LOCATION() };
     }
 }
 
@@ -92,14 +92,14 @@ ByteArray HashAlgorithm::Finish() {
         0);
 
     if (!BCRYPT_SUCCESS(status)) {
-        throw NTError{ status, ZAF_SOURCE_SITE() };
+        throw NTError{ status, ZAF_SOURCE_LOCATION() };
     }
 
     ByteArray hash{ hash_length };
 
     status = BCryptFinishHash(hash_handle_, reinterpret_cast<PUCHAR>(hash.Data()), hash_length, 0);
     if (!BCRYPT_SUCCESS(status)) {
-        throw NTError{ status, ZAF_SOURCE_SITE() };
+        throw NTError{ status, ZAF_SOURCE_LOCATION() };
     }
 
     return hash;

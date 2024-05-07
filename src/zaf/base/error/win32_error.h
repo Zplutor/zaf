@@ -16,14 +16,14 @@ public:
 
     }
 
-    Win32Error(DWORD error_value, const SourceSite& site) :
+    Win32Error(DWORD error_value, const SourceLocation& site) :
         BaseSystemError(static_cast<int>(error_value), Category(), site) {
 
     }
 };
 
 
-#define ZAF_THROW_WIN32_ERROR(error_code) throw zaf::Win32Error{ error_code, ZAF_SOURCE_SITE() }
+#define ZAF_THROW_WIN32_ERROR(error_code) throw zaf::Win32Error{ error_code, ZAF_SOURCE_LOCATION() }
 #define ZAF_THROW_IF_WIN32_ERROR(error_code) if (error_code) { ZAF_THROW_WIN32_ERROR(error_code); }
 
 }

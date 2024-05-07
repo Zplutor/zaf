@@ -316,7 +316,7 @@ const std::byte* Stream::GetUnderlyingBuffer() const {
         return memory_stream->Data();
     }
 
-    throw InvalidOperationError{ ZAF_SOURCE_SITE() };
+    throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
 }
 
 

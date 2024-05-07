@@ -31,7 +31,7 @@ void ControlParser::ParseContentNodes(
 
         auto child_control = internal::CreateObjectFromNode<Control>(each_node);
         if (!child_control) {
-            throw ParseError{ ZAF_SOURCE_SITE() };
+            throw ParseError{ ZAF_SOURCE_LOCATION() };
         }
 
         control.AddChild(child_control);

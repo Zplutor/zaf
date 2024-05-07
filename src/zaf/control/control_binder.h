@@ -76,7 +76,7 @@ private:
             return control;
         }
 
-        throw NotFoundError{ ZAF_SOURCE_SITE() };
+        throw NotFoundError{ ZAF_SOURCE_LOCATION() };
     }
 
     std::shared_ptr<T> FindControl() const {

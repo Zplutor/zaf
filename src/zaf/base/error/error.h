@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/source_site.h>
+#include <zaf/base/source_location.h>
 
 namespace zaf {
 
@@ -27,7 +27,7 @@ public:
     /**
     Constructs an instance with the specified source location where the error occurs.
     */
-    explicit Error(const SourceSite& site) noexcept : site_(site) { }
+    explicit Error(const SourceLocation& location) noexcept : location_(location) { }
 
     /**
     Gets the source location where the error occurs.
@@ -42,15 +42,15 @@ public:
     @note
         Exceptions thrown by the zaf library are guranteed to have a source location.
     */
-    const SourceSite& Site() const noexcept {
-        return site_;
+    const SourceLocation& Location() const noexcept {
+        return location_;
     }
 
 protected:
     virtual ~Error() = default;
 
 private:
-    SourceSite site_;
+    SourceLocation location_;
 };
 
 }

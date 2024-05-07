@@ -38,7 +38,7 @@ struct NonSharedPtrCast {
 
         auto result = dynamic_cast<PointerType>(&value);
         if (!result) {
-            throw InvalidTypeError{ ZAF_SOURCE_SITE() };
+            throw InvalidTypeError{ ZAF_SOURCE_LOCATION() };
         }
         return *result;
     }

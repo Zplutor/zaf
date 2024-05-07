@@ -16,12 +16,12 @@ void ScrollBoxParser::ParseContentNodes(
 
     //Multiple content nodes are not allowed.
     if (nodes.size() > 1) {
-        throw ParseError{ ZAF_SOURCE_SITE() };
+        throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
     auto scroll_content_control = internal::CreateObjectFromNode<Control>(nodes.front());
     if (!scroll_content_control) {
-        throw ParseError{ ZAF_SOURCE_SITE() };
+        throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
     As<ScrollBox>(control).SetScrollContent(scroll_content_control);
