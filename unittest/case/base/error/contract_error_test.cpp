@@ -41,7 +41,7 @@ TEST(ContractErrorTest, ErrorInfo) {
         message = error.what();
     }
 
-    ASSERT_STREQ(site.GetFile(), __FILE__);
-    ASSERT_EQ(site.GetLine(), prior_line + 1);
+    ASSERT_STREQ(site.File(), __FILE__);
+    ASSERT_EQ(site.Line(), prior_line + 1);
     ASSERT_EQ(message, "1+1<2");
 }
