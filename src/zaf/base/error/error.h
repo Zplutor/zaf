@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file
+Defines class zaf::Error.
+*/
+
 #include <zaf/base/source_location.h>
 
 namespace zaf {

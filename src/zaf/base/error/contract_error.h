@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file 
+Defines classes, functions and macros related to contract programming.
+*/
+
 #include <zaf/base/error/base_logic_error.h>
 
 namespace zaf {
@@ -23,26 +28,26 @@ public:
 
 
 /**
-Throws a PreconditionError with the specified message and site.
+Throws a zaf::PreconditionError with the specified message and source location.
 
 @param message
     The error message to include in the error.
 
-@param site
-    The site where the error occurs.
+@param location
+    The source location where the error occurs.
 
 @details
-    This function is internally used by ZAF_EXPECT() to throw PreconditionError, enabling the use 
-    of ZAF_EXPECT() in destructors without warning.
+    This function is internally used by ZAF_EXPECT() to throw zaf::PreconditionError, enabling the
+    use of ZAF_EXPECT() in destructors without warning.
 */
 [[noreturn]]
-inline void ThrowPreconditionError(const char* message, const SourceLocation& site) {
-    throw PreconditionError{ message, site };
+inline void ThrowPreconditionError(const char* message, const SourceLocation& location) {
+    throw PreconditionError{ message, location };
 }
 
 
 /**
-Checks the specified precondition and throws PreconditionError if the condition is not met.
+Checks the specified precondition and throws zaf::PreconditionError if the condition is not met.
 
 @param precondition
     The condition to check. It must be convertable to bool.
