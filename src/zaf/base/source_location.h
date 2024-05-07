@@ -43,10 +43,10 @@ public:
     }
 
     /**
-    Gets the file name of the source code.
+    Gets the file path of the source code.
 
     @return
-        A null-terminated string of the file name.
+        A null-terminated string of the file path.
 
     @post
         The return value is not null.
