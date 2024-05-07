@@ -15,15 +15,28 @@ public:
 
     }
 
+    explicit BaseLogicError(const char* message) : logic_error(message) {
+
+    }
+
     explicit BaseLogicError(const SourceSite& site) : logic_error(""), Error(site) {
 
     }
 
     BaseLogicError(const std::string& message, const SourceSite& site) :
-        logic_error(""), 
+        logic_error(message), 
         Error(site) {
 
     }
+
+    BaseLogicError(const char* message, const SourceSite& site) :
+        logic_error(message),
+        Error(site) {
+
+    }
+
+protected:
+    ~BaseLogicError() = default;
 };
 
 }

@@ -11,8 +11,13 @@ public:
     static std::error_code MakeCode(DWORD code);
 
 public:
-    Win32Error(DWORD code, const SourceSite& site) :
-        BaseSystemError(std::error_code(static_cast<int>(code), Category()), site) {
+    explicit Win32Error(DWORD error_value) :
+        BaseSystemError(static_cast<int>(error_value), Category()) {
+
+    }
+
+    Win32Error(DWORD error_value, const SourceSite& site) :
+        BaseSystemError(static_cast<int>(error_value), Category(), site) {
 
     }
 };

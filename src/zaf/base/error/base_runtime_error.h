@@ -15,21 +15,28 @@ public:
 
     }
 
+    explicit BaseRuntimeError(const char* message) : runtime_error(message) {
+
+    }
+
     explicit BaseRuntimeError(const SourceSite& site) : runtime_error(""), Error(site) {
 
     }
 
     BaseRuntimeError(const std::string& message, const SourceSite& site) :
-        runtime_error(""),
+        runtime_error(message),
         Error(site) {
 
     }
-};
 
+    BaseRuntimeError(const char* message, const SourceSite& site) :
+        runtime_error(message),
+        Error(site) {
 
-class GeneralRuntimeError : public BaseRuntimeError {
-public:
-    BaseRuntimeError::BaseRuntimeError;
+    }
+
+protected:
+    ~BaseRuntimeError() = default;
 };
 
 }

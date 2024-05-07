@@ -385,6 +385,7 @@
     <ClCompile Include="unittest\case\base\container\utility\sort_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\union_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\unique_test.cpp" />
+    <ClCompile Include="unittest\case\base\error\base_error_test.cpp" />
     <ClCompile Include="unittest\case\base\error\com_error_test.cpp" />
     <ClCompile Include="unittest\case\base\error\contract_error_test.cpp" />
     <ClCompile Include="unittest\case\base\error\win32_error_test.cpp" />

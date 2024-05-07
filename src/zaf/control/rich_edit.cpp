@@ -3,7 +3,7 @@
 #include <tom.h>
 #include <cassert>
 #include <zaf/base/error/check.h>
-#include <zaf/base/error/base_runtime_error.h>
+#include <zaf/base/error/unknown_runtime_error.h>
 #include <zaf/base/error/win32_error.h>
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
@@ -1715,7 +1715,7 @@ void RichEdit::SetOLECallback(std::weak_ptr<rich_edit::OLECallback> callback) {
 
     if (lresult == 0) {
         //Fails to set OLE callback due to internal error.
-        throw GeneralRuntimeError{ ZAF_SOURCE_SITE() };
+        throw UnknownRuntimeError{ ZAF_SOURCE_SITE() };
     }
 }
 

@@ -26,8 +26,8 @@ TEST(COMErrorTest, ThrowIf) {
     }
 
     ASSERT_TRUE(catched_error.has_value());
-    ASSERT_EQ(catched_error->Code().category(), COMError::Category());
-    ASSERT_EQ(catched_error->Code().value(), 0x80000005);
+    ASSERT_EQ(catched_error->code().category(), COMError::Category());
+    ASSERT_EQ(catched_error->code().value(), 0x80000005);
 
     ASSERT_STREQ(catched_error->Site().GetFile(), __FILE__);
     ASSERT_EQ(catched_error->Site().GetLine(), prior_line + 1);

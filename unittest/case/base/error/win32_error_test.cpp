@@ -26,8 +26,8 @@ TEST(Win32ErrorTest, ThrowIf) {
     }
 
     ASSERT_TRUE(catched_error.has_value());
-    ASSERT_EQ(catched_error->Code().category(), Win32Error::Category());
-    ASSERT_EQ(catched_error->Code().value(), 5);
+    ASSERT_EQ(catched_error->code().category(), Win32Error::Category());
+    ASSERT_EQ(catched_error->code().value(), 5);
 
     ASSERT_STREQ(catched_error->Site().GetFile(), __FILE__);
     ASSERT_EQ(catched_error->Site().GetLine(), prior_line + 1);

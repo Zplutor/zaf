@@ -2737,5 +2737,8 @@
     <ClInclude Include="src\zaf\base\error\base_logic_error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\error\unknown_runtime_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

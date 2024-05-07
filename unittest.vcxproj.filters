@@ -538,6 +538,9 @@
     <ClCompile Include="unittest\case\base\error\win32_error_test.cpp">
       <Filter>case\base\error</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\base\error\base_error_test.cpp">
+      <Filter>case\base\error</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
