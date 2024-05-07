@@ -1,8 +1,5 @@
 #pragma once
 
-#include <cstddef>
-#include <zaf/base/error/contract_error.h>
-
 namespace zaf {
 
 /**
@@ -35,7 +32,7 @@ public:
         SourceLocation won't copy the string arguments. Users must ensure the strings are valid 
         during the lifecycle of the instance.
     */
-    SourceLocation(const char* file, std::size_t line, const char* function) noexcept :
+    SourceLocation(const char* file, int line, const char* function) noexcept :
         file_(file ? file : ""), 
         line_(line),
         function_(function ? function : "") {
@@ -61,7 +58,7 @@ public:
     @return
         The line number.
     */
-    std::size_t Line() const noexcept {
+    int Line() const noexcept {
         return line_;
     }
 
@@ -80,7 +77,7 @@ public:
 
 private:
     const char* file_{ "" };
-    std::size_t line_{};
+    int line_{};
     const char* function_{ "" };
 };
 
