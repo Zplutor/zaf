@@ -2,7 +2,7 @@
 
 /**
 @file
-Defines class zaf::BaseLogicError.
+    Defines class zaf::BaseLogicError.
 */
 
 #include <stdexcept>
@@ -24,6 +24,9 @@ way to define concrete exception classes related to logic errors.
         using BaseLogicError::BaseLogicError;
     };
     @endcode
+
+    BaseLogicError is designed for inheritance purposes only, and it is not allow to be 
+    instantiated directly.
 */
 class BaseLogicError : public std::logic_error, public Error {
 public:

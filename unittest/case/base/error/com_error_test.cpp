@@ -6,7 +6,7 @@ using namespace zaf;
 
 TEST(COMErrorTest, Category) {
 
-    ASSERT_STREQ(COMError::Category().name(), "COM");
+    ASSERT_STREQ(COMError::Category().name(), "zaf.COM");
 }
 
 
