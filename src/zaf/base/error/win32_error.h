@@ -2,7 +2,7 @@
 
 /**
 @file
-    Define class zaf::Win32Error.
+    Defines class zaf::Win32Error.
 */
 
 #include <Windows.h>

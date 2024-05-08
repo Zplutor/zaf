@@ -2,7 +2,7 @@
 
 /**
 @file
-    Define class zaf::NTError.
+    Defines class zaf::NTError.
 */
 
 #include <zaf/base/error/base_system_error.h>

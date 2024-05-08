@@ -2,7 +2,7 @@
 
 /**
 @file
-    Define class zaf::COMError.
+    Defines class zaf::COMError.
 */
 
 #include <Windows.h>
