@@ -1,10 +1,22 @@
 #pragma once
 
+/**
+@file
+    Defines class ByteArray.
+*/
+
 #include <cstddef>
 #include <vector>
 
 namespace zaf {
 
+/**
+An array container that stores bytes.
+
+@details 
+    ByteArray uses std::vector<std::byte> as the underlying storage, provides a similiar method set
+    as it and extends more functionalities specifc to a byte array.
+*/
 class ByteArray {
 private:
     using InnerType = std::vector<std::byte>;
@@ -14,7 +26,20 @@ public:
     using const_iterator = InnerType::const_iterator;
 
 public:
-    ByteArray() = default;
+    /**
+    Constructs an empty array.
+    */
+    ByteArray() noexcept = default;
+
+    /**
+    Constructs an array with bytes initialized to 0 and the specified size.
+
+    @param size
+        The size of the array.
+
+    @throw std::bad_alloc
+        Thrown if fails to allocate the required memory.
+    */
     explicit ByteArray(std::size_t size);
 
     ByteArray(const ByteArray&) = default;
@@ -23,15 +48,15 @@ public:
     ByteArray(ByteArray&&) = default;
     ByteArray& operator=(ByteArray&&) = default;
 
-    const std::byte* Data() const {
+    const std::byte* Data() const noexcept {
         return inner_.data();
     }
 
-    std::byte* Data() {
+    std::byte* Data()  noexcept {
         return inner_.data();
     }
 
-    std::size_t Size() const {
+    std::size_t Size() const  noexcept {
         return inner_.size();
     }
 
@@ -47,31 +72,31 @@ public:
         return inner_[index];
     }
 
-    iterator begin() {
+    iterator begin()  noexcept {
         return inner_.begin();
     }
 
-    iterator end() {
+    iterator end() noexcept {
         return inner_.end();
     }
 
-    const_iterator begin() const {
+    const_iterator begin() const noexcept {
         return inner_.begin();
     }
 
-    const_iterator end() const {
+    const_iterator end() const noexcept {
         return inner_.end();
     }
 
-    const_iterator cbegin() const {
+    const_iterator cbegin() const noexcept {
         return inner_.cbegin();
     }
 
-    const_iterator cend() const {
+    const_iterator cend() const noexcept {
         return inner_.cend();
     }
 
-    friend auto operator<=>(const ByteArray&, const ByteArray&) = default;
+    friend auto operator<=>(const ByteArray&, const ByteArray&) noexcept = default;
 
     std::wstring ToHexString() const;
 
