@@ -213,24 +213,24 @@ std::size_t TextBoxKeyboardInputHandler::LocateCurrentLineEndIndex() const {
 
     std::wstring_view text = Context().TextModel().GetText();
 
-    auto end_index = line_info.line_char_index + line_info.line_length - 1;
-    if (text[end_index] == L'\r') {
-        return end_index;
+    auto last_char_index = line_info.line_char_index + line_info.line_length - 1;
+    if (text[last_char_index] == L'\r') {
+        return last_char_index;
     }
 
-    if (text[end_index] == L'\n') {
+    if (text[last_char_index] == L'\n') {
 
         if (line_info.line_length == 1) {
-            return end_index;
+            return last_char_index;
         }
 
-        if (text[end_index - 1] == L'\r') {
-            return end_index - 1;
+        if (text[last_char_index - 1] == L'\r') {
+            return last_char_index - 1;
         }
-        return end_index;
+        return last_char_index;
     }
 
-    return line_info.line_char_index;
+    return line_info.line_char_index + line_info.line_length;
 }
 
 

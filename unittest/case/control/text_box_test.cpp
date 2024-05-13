@@ -464,3 +464,42 @@ TEST(TextBoxTest, HandleDelete) {
         ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
     });
 }
+
+
+TEST(TextBoxTest, HandleEnd) {
+
+    TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {
+
+        //Press END in empty text.
+        text_box.SetText(L"");
+        text_box.SetSelectionRange({});
+        window.Messager().SendWMKEYDOWN(zaf::Key::End);
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
+
+        //Press END in single line text.
+        text_box.SetText(L"single line");
+        text_box.SetSelectionRange({});
+        window.Messager().SendWMKEYDOWN(zaf::Key::End);
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(11, 0));
+
+        text_box.SetSelectionRange(zaf::Range{ 11, 0 });
+        window.Messager().SendWMKEYDOWN(zaf::Key::End);
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(11, 0));
+
+        //Press END in multi line text.
+        text_box.SetText(L"line1\rline2");
+        text_box.SetSelectionRange({});
+        window.Messager().SendWMKEYDOWN(zaf::Key::End);
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(5, 0));
+
+        text_box.SetText(L"line1\nline2");
+        text_box.SetSelectionRange({});
+        window.Messager().SendWMKEYDOWN(zaf::Key::End);
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(5, 0));
+
+        text_box.SetText(L"line1\r\nline2");
+        text_box.SetSelectionRange({});
+        window.Messager().SendWMKEYDOWN(zaf::Key::End);
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(5, 0));
+    });
+}
