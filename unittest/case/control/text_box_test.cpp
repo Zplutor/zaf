@@ -477,11 +477,19 @@ TEST(TextBoxTest, HandleEnd) {
         ASSERT_EQ(text_box.SelectionRange(), zaf::Range(0, 0));
 
         //Press END in single line text.
+        //Caret is at the beginning.
         text_box.SetText(L"single line");
         text_box.SetSelectionRange({});
         window.Messager().SendWMKEYDOWN(zaf::Key::End);
         ASSERT_EQ(text_box.SelectionRange(), zaf::Range(11, 0));
 
+        //Caret is at the middle.
+        text_box.SetText(L"single line");
+        text_box.SetSelectionRange(zaf::Range{ 6, 0 });
+        window.Messager().SendWMKEYDOWN(zaf::Key::End);
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(11, 0));
+
+        //Caret is at the end.
         text_box.SetSelectionRange(zaf::Range{ 11, 0 });
         window.Messager().SendWMKEYDOWN(zaf::Key::End);
         ASSERT_EQ(text_box.SelectionRange(), zaf::Range(11, 0));

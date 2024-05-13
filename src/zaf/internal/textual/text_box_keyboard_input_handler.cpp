@@ -239,23 +239,27 @@ TextBoxKeyboardInputHandler::LineInfo TextBoxKeyboardInputHandler::LocateCurrent
     auto line_metrics = Context().GetTextLayout().GetLineMetrics();
     auto caret_index = Context().SelectionManager().CaretIndex();
 
-    LineInfo line_info;
+    LineInfo current_line_info;
+    float last_line_y{};
+    std::size_t last_line_end_index{};
 
     for (const auto& each_line : line_metrics) {
 
-        line_info.line_length = each_line.Length();
-        line_info.line_height = each_line.Height();
+        current_line_info.line_char_index = last_line_end_index;
+        current_line_info.line_length = each_line.Length();
+        current_line_info.line_y = last_line_y;
+        current_line_info.line_height = each_line.Height();
 
-        auto line_end_index = line_info.line_char_index + each_line.Length();
-        if (line_info.line_char_index <= caret_index && caret_index < line_end_index) {
+        auto line_end_index = current_line_info.line_char_index + each_line.Length();
+        if (current_line_info.line_char_index <= caret_index && caret_index < line_end_index) {
             break;
         }
 
-        line_info.line_y += each_line.Height();
-        line_info.line_char_index = line_end_index;
+        last_line_y += each_line.Height();
+        last_line_end_index = line_end_index;
     }
 
-    return line_info;
+    return current_line_info;
 }
 
 
