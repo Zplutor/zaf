@@ -19,6 +19,18 @@ TEST(ByteArrayTest, Construction) {
 }
 
 
+TEST(ByteArrayTest, Append) {
+
+    zaf::ByteArray byte_array;
+    byte_array.Append(std::byte(1));
+    byte_array.Append(std::byte(2));
+
+    ASSERT_EQ(byte_array.Size(), 2);
+    ASSERT_EQ(byte_array[0], std::byte(1));
+    ASSERT_EQ(byte_array[1], std::byte(2));
+}
+
+
 TEST(ByteArrayTest, BeginEnd) {
 
     zaf::ByteArray byte_array(4);

@@ -1,5 +1,6 @@
 #include <zaf/base/base64.h>
 #include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/invalid_data_error.h>
 
 namespace zaf {
 namespace {
@@ -34,12 +35,14 @@ std::uint8_t DecodeChar(wchar_t ch) {
         return 63;
     }
 
-    throw PreconditionError("", ZAF_SOURCE_LOCATION());
+    throw InvalidDataError{ ZAF_SOURCE_LOCATION() };
 }
 
 }
 
 std::wstring Base64Encode(const void* data, std::size_t size) {
+
+    ZAF_EXPECT(data);
 
     std::wstring result;
     result.reserve(static_cast<std::size_t>(size * 1.4));
@@ -83,11 +86,23 @@ std::wstring Base64Encode(const void* data, std::size_t size) {
 }
 
 
-std::vector<std::byte> Base64Decode(std::wstring_view encoded) {
+std::wstring Base64Encode(const ByteArray& byte_array) {
 
-    ZAF_EXPECT(encoded.length() % 4 == 0);
+    if (byte_array.IsEmpty()) {
+        return {};
+    }
 
-    std::vector<std::byte> result;
+    return Base64Encode(byte_array.Data(), byte_array.Size());
+}
+
+
+ByteArray Base64Decode(std::wstring_view encoded) {
+
+    if (encoded.length() % 4 != 0) {
+        throw InvalidDataError{ ZAF_SOURCE_LOCATION() };
+    }
+
+    ByteArray result;
 
     std::uint8_t pending{};
     int pending_bits{};
@@ -114,7 +129,7 @@ std::vector<std::byte> Base64Decode(std::wstring_view encoded) {
 
             std::uint8_t byte = pending << consume_bits;
             byte |= unit >> (UnitBits - consume_bits);
-            result.push_back(static_cast<std::byte>(byte));
+            result.Append(static_cast<std::byte>(byte));
 
             pending = unit << pending_bits;
             pending >>= pending_bits;
@@ -122,7 +137,9 @@ std::vector<std::byte> Base64Decode(std::wstring_view encoded) {
     }
 
     for (; current < encoded.end(); ++current) {
-        ZAF_EXPECT(*current == L'=');
+        if (*current != L'=') {
+            throw InvalidDataError{ ZAF_SOURCE_LOCATION() };
+        }
     }
 
     return result;

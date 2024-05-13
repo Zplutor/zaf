@@ -56,12 +56,32 @@ public:
         return inner_.data();
     }
 
-    std::size_t Size() const  noexcept {
+    std::size_t Size() const noexcept {
         return inner_.size();
+    }
+
+    /**
+    Indicates whether the array is empty.
+    */
+    bool IsEmpty() const noexcept {
+        return inner_.empty();
     }
 
     void Resize(std::size_t new_size) {
         inner_.resize(new_size);
+    }
+
+    /**
+    Appends the specified byte to the end of the array.
+
+    @param byte
+        The byte to be appended.
+
+    @throw std::bad_alloc
+        Thrown if fails to allocate the required memory.
+    */
+    void Append(std::byte byte) {
+        inner_.push_back(byte);
     }
 
     const std::byte& operator[](std::size_t index) const {
