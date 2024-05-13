@@ -1,69 +1,96 @@
 #pragma once
 
+/**
+@file 
+    Defines the zaf::clipboard::Clipboard class.
+*/
+
 #include <string_view>
 #include <zaf/clipboard/format_type.h>
 #include <zaf/object/object_type.h>
 
 namespace zaf::clipboard {
 
+/**
+Represents the system clipboard.
+
+@details
+    Since the system clipboard is a unique singleton, Clipboard is not allowed to be instantiated,
+    and all of its methods are static.
+*/
 class Clipboard {
 public:
+    /**
+    A deleted default constructor to forbid instantiation.
+    */
     Clipboard() = delete;
 
     /**
-    Gets unicode format text from clipboard.
+    Gets unicode text from the clipboard.
 
     @return
-        A string with unicode format.
+        The unicode text in the clipboard.
 
-    @throw zaf::Error
-        Throws if fails to get unicode format text from clipboard.
+    @throw zaf::Win32Error
+        Thrown if fails to get unicode text from the clipboard.
     */
     static std::wstring GetText();
 
     /**
-    Sets unicode format text to clipboard.
+    Sets the specified unicode text to the clipboard.
 
     @param text
-        The text to be set to clipboard.
+        The text to be set to the clipboard.
 
-    @throw zaf::Error
-        Throws if fails to set text to clipboard.
+    @throw zaf::Win32Error
+        Thrown if fails to set text to the clipboard.
+
+    @details
+        The text will be set as a CF_UNICODETEXT format data.
     */
     static void SetText(std::wstring_view text);
 
     /**
-    Registers type of ClipboardData for specified format type.
+    Registers the specified clipboard data type for the specified format type.
 
     @param format_type
-        The specified format type.
+        The format type to which the clipboard data type will be registered.
 
     @param clipboard_data_type
-        The runtime type of ClipboardData. The class of the type must be default constructible. 
-        When handling clipboard data with the specified format type, CreateInstance() of the type 
-        will be called to create an instance, and then ClipboardData::LoadFromMedium() will be 
-        called to load data.
+        The clipboard data type to be registered, whose class must inherit from ClipboardData and 
+        must be default constructible.
+        
+    @pre
+        clipboard_data_type is not null.
 
-    @throw std::logic_error
-        clipboard_data_type is not a type derives from ClipboardData.
+    @throw zaf::PreconditionError
+        Thrown if the precondition is violated.
 
-    The registered type will be used in clipboard data handling if the format type matches. A 
-    typical situation is DataObject::GetData().
+    @throw zaf::InvalidTypeError
+        Thrown if the class of clipboard_data_type doesn't inherit from ClipboardData.
+
+    @details
+        The registered clipboard data type will be used in clipboard data handling if the format 
+        type matches. A typical situation is when calling clipboard::DataObject::GetData() with a 
+        specified format type, ObjectType::CreateInstance() of the matched clipboard data type 
+        will be called to create an instance, and then clipboard::ClipboardData::LoadFromMedium() 
+        of the instance will be called to load data to the instance.
     */
     static void RegisterClipboardData(FormatType format_type, ObjectType* clipboard_data_type);
 
     /**
-    Gets registered type of clipboard data for specified format type.
+    Gets the registered clipboard data type for the specified format type.
 
     @param format_type
-        The specified format type.
+        The format type to find.
 
     @return
-        Returns the registered type of ClipboardData or nullptr if the specified format type is not
+        The registered clipboard data type. It will be null if no matched clipboard data type is 
         found.
 
-    Standard format types have been registered by default. Using this method can also get the 
-    default clipboard data types for standard format types.
+    @details
+        Standard format types have been registered by default. Using this method can also get the 
+        default clipboard data types for standard format types.
     */
     static ObjectType* GetRegisteredClipboardData(FormatType format_type) noexcept;
 };

@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <gtest/gtest.h>
-#include <zaf/base/error/error.h>
+#include <zaf/base/error/invalid_type_error.h>
+#include <zaf/base/error/win32_error.h>
 #include <zaf/base/global_mem.h>
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/clipboard/drop_files_data.h>
@@ -31,7 +32,7 @@ TEST(ClipboardTest, GetTextFail) {
         auto window_holder = clipboard_window->CreateHandle();
 
         OpenClipboard(clipboard_window->Handle());
-        ASSERT_THROW(Clipboard::GetText(), zaf::Error);
+        ASSERT_THROW(Clipboard::GetText(), zaf::Win32Error);
         CloseClipboard();
     }
 
@@ -44,7 +45,7 @@ TEST(ClipboardTest, GetTextFail) {
         HANDLE data = SetClipboardData(CF_PRIVATEFIRST + 1, memory.Detach());
         ASSERT_NE(data, nullptr);
 
-        ASSERT_THROW(Clipboard::GetText(), zaf::Error);
+        ASSERT_THROW(Clipboard::GetText(), zaf::Win32Error);
         CloseClipboard();
     }
 }
@@ -57,7 +58,7 @@ TEST(ClipboardTest, SetTextFail) {
     auto window_holder = clipboard_window->CreateHandle();
 
     OpenClipboard(clipboard_window->Handle());
-    ASSERT_THROW(Clipboard::SetText(L"asdfaa"), zaf::Error);
+    ASSERT_THROW(Clipboard::SetText(L"asdfaa"), zaf::Win32Error);
     CloseClipboard();
 }
 
@@ -69,16 +70,19 @@ TEST(ClipboardTest, RegisteredClipboardData) {
     auto object_type = Clipboard::GetRegisteredClipboardData(MakePrivateFormatType(1));
     ASSERT_EQ(object_type, TextData::Type);
 
-    //Register type which doesn't derive from ClipboardData.
+    //Register type which doesn't inherit from ClipboardData.
     ASSERT_THROW(
         Clipboard::RegisterClipboardData(MakePrivateFormatType(2), zaf::WideString::Type),
-        std::logic_error
-    );
+        zaf::InvalidTypeError);
 
     ASSERT_THROW(
         Clipboard::RegisterClipboardData(MakePrivateFormatType(3), ClipboardData::Type),
-        std::logic_error
-    );
+        zaf::InvalidTypeError);
+
+    //Register null.
+    ASSERT_THROW(
+        Clipboard::RegisterClipboardData(MakePrivateFormatType(4), nullptr),
+        zaf::PreconditionError);
 }
 
 
