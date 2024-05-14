@@ -2,6 +2,49 @@
 #include <zaf/base/byte_array.h>
 #include <zaf/base/range.h>
 
+TEST(ByteArrayTest, FromMemory) {
+
+    ASSERT_THROW(zaf::ByteArray::FromMemory(nullptr, 0), zaf::PreconditionError);
+
+    std::uint8_t memory[]{ '\x10', '\x11', '\x12' };
+    auto byte_array = zaf::ByteArray::FromMemory(memory, 0);
+    ASSERT_TRUE(byte_array.IsEmpty());
+
+    byte_array = zaf::ByteArray::FromMemory(memory, 2);
+    ASSERT_EQ(byte_array.Size(), 2);
+    ASSERT_EQ(byte_array[0], std::byte('\x10'));
+    ASSERT_EQ(byte_array[1], std::byte('\x11'));
+}
+
+
+TEST(ByteArrayTest, FromString) {
+
+    auto byte_array = zaf::ByteArray::FromString("narrow");
+    ASSERT_EQ(byte_array.Size(), 6);
+    ASSERT_EQ(byte_array[0], std::byte('n'));
+    ASSERT_EQ(byte_array[1], std::byte('a'));
+    ASSERT_EQ(byte_array[2], std::byte('r'));
+    ASSERT_EQ(byte_array[3], std::byte('r'));
+    ASSERT_EQ(byte_array[4], std::byte('o'));
+    ASSERT_EQ(byte_array[5], std::byte('w'));
+}
+
+
+TEST(ByteArrayTest, FromWideString) {
+
+    auto byte_array = zaf::ByteArray::FromString(L"wide");
+    ASSERT_EQ(byte_array.Size(), 8);
+    ASSERT_EQ(byte_array[0], std::byte('w'));
+    ASSERT_EQ(byte_array[1], std::byte());
+    ASSERT_EQ(byte_array[2], std::byte('i'));
+    ASSERT_EQ(byte_array[3], std::byte());
+    ASSERT_EQ(byte_array[4], std::byte('d'));
+    ASSERT_EQ(byte_array[5], std::byte());
+    ASSERT_EQ(byte_array[6], std::byte('e'));
+    ASSERT_EQ(byte_array[7], std::byte());
+}
+
+
 TEST(ByteArrayTest, Construction) {
 
     {
@@ -15,6 +58,15 @@ TEST(ByteArrayTest, Construction) {
         for (auto index : zaf::Range(0, byte_array.Size())) {
             ASSERT_EQ(byte_array[index], std::byte(0));
         }
+    }
+
+    //Initialier list
+    {
+        zaf::ByteArray byte_array{ std::byte(1), std::byte(2), std::byte(3) };
+        ASSERT_EQ(byte_array.Size(), 3);
+        ASSERT_EQ(byte_array[0], std::byte(1));
+        ASSERT_EQ(byte_array[1], std::byte(2));
+        ASSERT_EQ(byte_array[2], std::byte(3));
     }
 }
 

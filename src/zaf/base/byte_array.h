@@ -2,10 +2,11 @@
 
 /**
 @file
-    Defines class ByteArray.
+    Defines the zaf::ByteArray class.
 */
 
 #include <cstddef>
+#include <string>
 #include <vector>
 
 namespace zaf {
@@ -15,7 +16,7 @@ An array container that stores bytes.
 
 @details 
     ByteArray uses std::vector<std::byte> as the underlying storage, provides a similiar method set
-    as it and extends more functionalities specifc to a byte array.
+    as it and extends more functionalities specific to a byte array.
 */
 class ByteArray {
 private:
@@ -24,6 +25,60 @@ private:
 public:
     using iterator = InnerType::iterator;
     using const_iterator = InnerType::const_iterator;
+
+public:
+    /**
+    Creates a ByteArray by copying content from the specified memory.
+
+    @param data
+        A pointer to the memory from which the array will be copied. The memory will be interpreted
+        as a byte sequence.
+
+    @param size
+        The size of the bytes to be copied to the array.
+
+    @pre
+        data is not null.
+
+    @return
+        The new ByteArray whose content is identical to the specified memory.
+
+    @throw std::bad_alloc
+        Thrown if fails to allocate the required memory.
+    */
+    static ByteArray FromMemory(const void* data, std::size_t size);
+
+    /**
+    Creates a ByteArray by copying content from the specified string.
+
+    @param string
+        The string from which the array will be copied. The content of the string will be 
+        interpreted as a byte sequence.
+
+    @return
+        The new ByteArray whose content is identical to the specified string, not including the 
+        null terminator.
+
+    @throw std::bad_alloc
+        Thrown if fails to allocate the required memory.
+    */
+    static ByteArray FromString(std::string_view string);
+
+    /**
+    Creates a ByteArray by copying content from the specified wide string.
+
+    @param string
+        The wide string from which the array will be copied. The content of the string will be
+        interpreted as a byte sequence.
+
+    @return
+        The new ByteArray whose content is identical to the specified string, not including the
+        null terminator.
+
+    @throw std::bad_alloc
+        Thrown if fails to allocate the required memory.
+    */
+    static ByteArray FromString(std::wstring_view string);
 
 public:
     /**
@@ -41,6 +96,17 @@ public:
         Thrown if fails to allocate the required memory.
     */
     explicit ByteArray(std::size_t size);
+
+    /**
+    Constructs an array with the specified byte sequence.
+
+    @param bytes
+        The byte sequence assigned to the array.
+
+    @throw std::bad_alloc
+        Thrown if fails to allocate the required memory.
+    */
+    explicit ByteArray(std::initializer_list<std::byte> bytes);
 
     ByteArray(const ByteArray&) = default;
     ByteArray& operator=(const ByteArray&) = default;
