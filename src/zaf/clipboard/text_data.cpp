@@ -23,9 +23,9 @@ Medium TextData::SaveToMedium(const Format& format) {
 }
 
 
-void TextData::LoadFromMedium(const Format& format, const Medium& medium) {
+void TextData::LoadFromMedium(FormatType format_type, const Medium& medium) {
 
-    if (format.Type() == FormatType::Text && format.MediumType() == MediumType::GlobalMem) {
+    if (format_type == FormatType::Text && medium.Type() == MediumType::GlobalMem) {
 
         medium.VisitGlobalMem([this](const GlobalMem& global_mem) {
             auto lock = global_mem.Lock();

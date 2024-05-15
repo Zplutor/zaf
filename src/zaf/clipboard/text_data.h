@@ -22,7 +22,7 @@ public:
     }
 
     Medium SaveToMedium(const Format& format) override;
-    void LoadFromMedium(const Format& format, const Medium& medium) override;
+    void LoadFromMedium(FormatType format_type, const Medium& medium) override;
 
 private:
     std::wstring text_;

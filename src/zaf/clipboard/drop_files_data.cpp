@@ -55,9 +55,9 @@ Medium DropFilesData::SaveToMedium(const Format& format) {
 }
 
 
-void DropFilesData::LoadFromMedium(const Format& format, const Medium& medium) {
+void DropFilesData::LoadFromMedium(FormatType format_type, const Medium& medium) {
 
-    if (format.Type() != FormatType::DropFiles || medium.Type() != MediumType::GlobalMem) {
+    if (format_type != FormatType::DropFiles || medium.Type() != MediumType::GlobalMem) {
         throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
     }
 

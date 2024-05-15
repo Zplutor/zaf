@@ -14,7 +14,7 @@ TEST(DropFilesDataTest, MediumTransfer) {
         auto medium = source_data.SaveToMedium(Format{ FormatType::DropFiles });
 
         DropFilesData destination_data;
-        destination_data.LoadFromMedium(Format{ FormatType::DropFiles }, medium);
+        destination_data.LoadFromMedium(FormatType::DropFiles, medium);
 
         return destination_data.GetFilePaths() == paths;
     };
@@ -61,10 +61,10 @@ TEST(DropFilesDataTest, LoadFromMediumWithUnsupportedArguments) {
 
     DropFilesData data;
     ASSERT_THROW(
-        data.LoadFromMedium(Format(FormatType::Text), medium),
+        data.LoadFromMedium(FormatType::Text, medium),
         InvalidOperationError);
 
     ASSERT_THROW(
-        data.LoadFromMedium(Format(FormatType::DropFiles, MediumType::GlobalMem), {}),
+        data.LoadFromMedium(FormatType::DropFiles, {}),
         InvalidOperationError);
 }

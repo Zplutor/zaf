@@ -78,14 +78,13 @@ public:
     virtual Medium SaveToMedium(const Format& format) = 0;
 
     /**
-    Loads data from the specified meidum in the specified format.
+    Loads data from the specified meidum in the specified format type.
 
-    @param format
-        The format specifies the format type in which the data will be loaded.
+    @param format_type
+        The format type in which the data will be loaded.
 
     @param medium
-        The medium from which the data will be loaded. The type of the medium is identical to the 
-        medium type of the format.
+        The medium from which the data will be loaded.
 
     @throw zaf::InvalidOperationError
         Thrown if the specified format type or the specified medium type is not supported by the 
@@ -97,7 +96,7 @@ public:
     @throw ...
         Any exceptions thrown by the overriding implementation.
     */
-    virtual void LoadFromMedium(const Format& format, const Medium& medium) = 0;
+    virtual void LoadFromMedium(FormatType format_type, const Medium& medium) = 0;
 };
 
 }

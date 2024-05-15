@@ -12,7 +12,7 @@ clipboard::Medium StyledTextData::SaveToMedium(const clipboard::Format& format) 
 
 
 void StyledTextData::LoadFromMedium(
-    const clipboard::Format& format,
+    clipboard::FormatType format,
     const clipboard::Medium& medium) {
 
 }

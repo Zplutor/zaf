@@ -18,7 +18,9 @@ public:
     ZAF_DECLARE_TYPE;
 
     clipboard::Medium SaveToMedium(const clipboard::Format& format) override;
-    void LoadFromMedium(const clipboard::Format& format, const clipboard::Medium& medium) override;
+    void LoadFromMedium(
+        clipboard::FormatType format_type, 
+        const clipboard::Medium& medium) override;
 
 private:
     StyledText styled_text_;
