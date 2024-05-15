@@ -1195,6 +1195,9 @@
     <ClCompile Include="src\zaf\base\error\nt_error.cpp">
       <Filter>zaf\base\error</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\textual\styled_text_data.cpp">
+      <Filter>zaf\control\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2739,6 +2742,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\unknown_runtime_error.h">
       <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\styled_text_data.h">
+      <Filter>zaf\control\textual</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
