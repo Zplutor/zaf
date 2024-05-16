@@ -69,6 +69,16 @@ void Clipboard::SetText(std::wstring_view text) {
 }
 
 
+DataObject Clipboard::GetDataObject() {
+
+    COMPtr<IDataObject> ptr;
+    HRESULT hresult = OleGetClipboard(ptr.Reset());
+    ZAF_THROW_IF_COM_ERROR(hresult);
+
+    return DataObject{ ptr };
+}
+
+
 void Clipboard::RegisterClipboardData(FormatType format_type, ObjectType* clipboard_data_type) {
     internal::ClipboardDataRegistry::Instance().RegisterType(format_type, clipboard_data_type);
 }
