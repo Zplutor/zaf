@@ -3,9 +3,9 @@
 
 namespace zaf::clipboard {
 
-clipboard::Medium UnknownData::SaveToMedium(const clipboard::Format& format) {
+clipboard::Medium UnknownData::SaveToMedium(const clipboard::DataDescriptor& format) {
 
-    if (format.Type() == format_type_) {
+    if (format.FormatType() == format_type_) {
         return medium_;
     }
 

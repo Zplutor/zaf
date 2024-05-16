@@ -13,9 +13,9 @@ TextData::TextData(std::wstring text) : text_(std::move(text)) {
 }
 
 
-Medium TextData::SaveToMedium(const Format& format) {
+Medium TextData::SaveToMedium(const DataDescriptor& format) {
 
-    if (format.Type() == FormatType::Text && format.MediumType() == MediumType::GlobalMem) {
+    if (format.FormatType() == FormatType::Text && format.MediumTypes() == MediumType::GlobalMem) {
         return Medium::FromGlobalMem(GlobalMem::FromString(text_, GlobalMemFlags::Movable));
     }
 

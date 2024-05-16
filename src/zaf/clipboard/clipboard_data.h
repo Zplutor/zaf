@@ -6,7 +6,7 @@
 */
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/clipboard/format.h>
+#include <zaf/clipboard/data_descriptor.h>
 #include <zaf/clipboard/medium.h>
 #include <zaf/object/object.h>
 
@@ -55,27 +55,42 @@ public:
     virtual ~ClipboardData() = default;
 
     /**
-    Saves the data to a medium in the specified format.
+    Saves the data to a medium according to the specified data descriptor.
 
-    @param format
-        The format specifies the format type in which the data will be saved, and the desired
-        medium type.
+    @param data_descriptor
+        The data descriptor describing the format type in which the data will be saved and the 
+        desired medium types the method returns.
 
     @return
-        The medium containing the data in the specified format. The type of the medium is identical
-        to the medium type of the format.
+        The medium containing the data in the specified format. The type of the medium is one of 
+        the types specified in the data descriptor.
 
     @throw zaf::InvalidOperationError
-        Thrown if the specified format, either its format type or medium type, is not supported by
-        the clipboard data. 
+        Thrown if the data cannot be saved as specified by the data descriptor. This includes but 
+        is not limited to the following situations:
+        - the format type specified in the data descriptor is not compatible with the data;
+        - none of the meidum types specified in the data descriptor are supported by the data.
 
     @throw zaf::InvalidDataError
-        Thrown if the clipboard data itself is invalid.
+        Thrown if the content of the data is invalid.
 
     @throw ...
         Any exceptions thrown by the overriding implementation.
+
+    @details
+        Overriding guide:
+        1. Check if the data is compatible with the format type specified in the data descriptor.
+           If not, throw zaf::InvalidOperationError.
+        2. Choose the most appropriate medium type supported by the data from the medium types 
+           specified in the data descriptor. If none of the types are supported, throw
+           zaf::InvalidOperationError.
+        3. Check other attributes in the FORMATETC structure within the data descriptor as needed,
+           and throw zaf::InvalidOperationError if the check fails. These attributes are not often 
+           used and can be ignored in most cases.
+        4. Write the content of the data to the chosen medium in the specified format type. If the 
+           data is invalid, for example, if the content is empty, throw zaf::InvalidDataError.
     */
-    virtual Medium SaveToMedium(const Format& format) = 0;
+    virtual Medium SaveToMedium(const DataDescriptor& data_descriptor) = 0;
 
     /**
     Loads data from the specified meidum in the specified format type.

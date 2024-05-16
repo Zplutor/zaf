@@ -14,7 +14,7 @@ public:
         return medium_;
     }
 
-    clipboard::Medium SaveToMedium(const clipboard::Format& format) override;
+    clipboard::Medium SaveToMedium(const clipboard::DataDescriptor& format) override;
     void LoadFromMedium(
         clipboard::FormatType format_type, 
         const clipboard::Medium& medium) override;

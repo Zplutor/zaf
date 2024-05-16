@@ -14,7 +14,7 @@ class TestClipboardData : public ClipboardData {
 public:
     ZAF_DECLARE_TYPE;
 
-    Medium SaveToMedium(const Format& format) override {
+    Medium SaveToMedium(const DataDescriptor& format) override {
         return {};
     }
 

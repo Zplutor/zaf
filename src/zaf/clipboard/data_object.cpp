@@ -1,7 +1,7 @@
 #include <zaf/clipboard/data_object.h>
 #include <zaf/base/as.h>
 #include <zaf/clipboard/clipboard.h>
-#include <zaf/clipboard/format.h>
+#include <zaf/clipboard/data_descriptor.h>
 #include <zaf/clipboard/internal/data_object_impl.h>
 #include <zaf/clipboard/drop_files_data.h>
 #include <zaf/clipboard/text_data.h>
@@ -45,8 +45,8 @@ std::shared_ptr<ClipboardData> DataObject::GetData(FormatType format_type) const
 
 void DataObject::InnerGetData(FormatType format_type, ClipboardData& data) const {
 
-    Format format{ format_type };
-    auto format_inner = format.Inner();
+    auto data_descriptor = DataDescriptor::FromFormatType(format_type);
+    auto format_inner = data_descriptor.Inner();
 
     STGMEDIUM medium_inner{};
     HRESULT hresult = Inner()->GetData(&format_inner, &medium_inner);
@@ -71,10 +71,10 @@ void DataObject::SetData(FormatType format_type, std::shared_ptr<ClipboardData> 
 
 void DataObject::InnerSetData(FormatType format_type, ClipboardData& data) {
 
-    Format format{ format_type };
-    auto format_inner = format.Inner();
+    auto data_descriptor = DataDescriptor::FromFormatType(format_type);
+    auto format_inner = data_descriptor.Inner();
 
-    auto medium = data.SaveToMedium(format);
+    auto medium = data.SaveToMedium(data_descriptor);
     auto medium_inner = medium.Inner();
 
     HRESULT hresult = Inner()->SetData(

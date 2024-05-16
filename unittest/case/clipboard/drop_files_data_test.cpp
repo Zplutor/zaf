@@ -11,7 +11,8 @@ TEST(DropFilesDataTest, MediumTransfer) {
     auto test = [](const std::vector<std::filesystem::path>& paths) {
     
         DropFilesData source_data{ paths };
-        auto medium = source_data.SaveToMedium(Format{ FormatType::DropFiles });
+        auto medium = source_data.SaveToMedium(
+            DataDescriptor::FromFormatType(FormatType::DropFiles));
 
         DropFilesData destination_data;
         destination_data.LoadFromMedium(FormatType::DropFiles, medium);
@@ -32,13 +33,17 @@ TEST(DropFilesDataTest, SaveToMediumWithInvalidValue) {
     //Empty files.
     {
         DropFilesData data;
-        ASSERT_THROW(data.SaveToMedium(Format(FormatType::DropFiles)), InvalidDataError);
+        ASSERT_THROW(
+            data.SaveToMedium(DataDescriptor::FromFormatType(FormatType::DropFiles)),
+            InvalidDataError);
     }
 
     //Not rooted path.
     {
         DropFilesData data{ { L"Windows\\notepad.exe" }};
-        ASSERT_THROW(data.SaveToMedium(Format(FormatType::DropFiles)), InvalidDataError);
+        ASSERT_THROW(data.SaveToMedium(
+            DataDescriptor::FromFormatType(FormatType::DropFiles)), 
+            InvalidDataError);
     }
 }
 
@@ -47,9 +52,12 @@ TEST(DropFilesDataTest, SaveToMediumWithUnsupportedArguments) {
 
     DropFilesData data{ { L"C:\\Windows\\Notepad.exe" } };
 
-    ASSERT_THROW(data.SaveToMedium(Format(FormatType::Text)), InvalidOperationError);
+    ASSERT_THROW(data.SaveToMedium(
+        DataDescriptor::FromFormatType(FormatType::Text)),
+        InvalidOperationError);
+
     ASSERT_THROW(
-        data.SaveToMedium(Format(FormatType::DropFiles, MediumType::File)), 
+        data.SaveToMedium(DataDescriptor::FromFormatType(FormatType::DropFiles, MediumType::File)), 
         InvalidOperationError);
 }
 

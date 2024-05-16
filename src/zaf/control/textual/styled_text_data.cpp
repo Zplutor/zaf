@@ -6,7 +6,7 @@ namespace zaf::textual {
 ZAF_DEFINE_TYPE(StyledTextData)
 ZAF_DEFINE_TYPE_END;
 
-clipboard::Medium StyledTextData::SaveToMedium(const clipboard::Format& format) {
+clipboard::Medium StyledTextData::SaveToMedium(const clipboard::DataDescriptor& format) {
     return clipboard::Medium();
 }
 

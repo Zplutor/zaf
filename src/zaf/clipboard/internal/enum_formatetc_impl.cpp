@@ -50,7 +50,7 @@ HRESULT EnumFORMATETCImpl::Next(ULONG celt, FORMATETC* rgelt, ULONG* pceltFetche
     auto end_index = (std::min)(current_index_ + celt, format_items_->size());
     for (; current_index_ < end_index; ++current_index_) {
 
-        rgelt[format_index] = (*format_items_)[current_index_].Format().Inner();
+        rgelt[format_index] = (*format_items_)[current_index_].DataDescriptor().Inner();
         ++format_index;
     }
 

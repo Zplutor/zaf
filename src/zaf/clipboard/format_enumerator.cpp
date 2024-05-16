@@ -8,14 +8,14 @@ FormatEnumerator::FormatEnumerator(COMPtr<IEnumFORMATETC> inner) : COMObject(std
 }
 
 
-std::optional<Format> FormatEnumerator::Next() {
+std::optional<DataDescriptor> FormatEnumerator::Next() {
 
     FORMATETC inner{};
     HRESULT hresult = Inner()->Next(1, &inner, nullptr);
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     if (hresult == S_OK) {
-        return Format{ inner };
+        return DataDescriptor{ inner };
     }
     return std::nullopt;
 }

@@ -1,18 +1,18 @@
 #include <gtest/gtest.h>
-#include <zaf/clipboard/format.h>
+#include <zaf/clipboard/data_descriptor.h>
 
 using namespace zaf::clipboard;
 
 TEST(FormatTest, Equal) {
 
     {
-        Format format1{ FormatType::Text, MediumType::GlobalMem };
-        Format format2{ FormatType::Text, MediumType::GlobalMem };
+        auto format1 = DataDescriptor::FromFormatType(FormatType::Text, MediumType::GlobalMem);
+        auto format2 = DataDescriptor::FromFormatType(FormatType::Text, MediumType::GlobalMem);
         ASSERT_TRUE(format1 == format2);
     }
 
     {
-        Format format1{ FormatType::Text, MediumType::GlobalMem };
+        auto format1 = DataDescriptor::FromFormatType(FormatType::Text, MediumType::GlobalMem);
         FORMATETC format2{};
         format2.cfFormat = CF_UNICODETEXT;
         format2.tymed = TYMED_HGLOBAL;
@@ -26,7 +26,7 @@ TEST(FormatTest, Equal) {
 
 TEST(FormatTest, NotEqual) {
 
-    Format format1{ FormatType::Text, MediumType::GlobalMem };
+    auto format1 = DataDescriptor::FromFormatType(FormatType::Text, MediumType::GlobalMem);
 
     {
         FORMATETC format2 = format1.Inner();

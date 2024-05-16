@@ -18,7 +18,7 @@ public:
         return paths_;
     }
 
-    Medium SaveToMedium(const Format& format) override;
+    Medium SaveToMedium(const DataDescriptor& format) override;
     void LoadFromMedium(FormatType format_type, const Medium& medium) override;
 
 private:

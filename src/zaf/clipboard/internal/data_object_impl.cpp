@@ -78,7 +78,7 @@ HRESULT DataObjectImpl::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium) {
 
     for (const auto& each_item : *format_items_) {
 
-        if (each_item.Format() == *pformatetcIn) {
+        if (each_item.DataDescriptor() == *pformatetcIn) {
 
             auto medium = each_item.Medium();
             *pmedium = medium.Detach();
@@ -107,7 +107,7 @@ HRESULT DataObjectImpl::GetCanonicalFormatEtc(FORMATETC* pformatectIn, FORMATETC
 
 HRESULT DataObjectImpl::SetData(FORMATETC* pformatetc, STGMEDIUM* pmedium, BOOL fRelease) {
 
-    Format format{ *pformatetc };
+    DataDescriptor format{ *pformatetc };
     if (fRelease) {
         format_items_->emplace_back(format, Medium{ *pmedium });
     }

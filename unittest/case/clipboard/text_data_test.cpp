@@ -9,7 +9,7 @@ TEST(TextDataTest, SaveToMedium) {
 
     TextData text_data{ L"TextDataTest" };
 
-    Format format{ FormatType::Text, MediumType::GlobalMem };
+    auto format = DataDescriptor::FromFormatType(FormatType::Text, MediumType::GlobalMem);
     auto medium = text_data.SaveToMedium(format);
     ASSERT_EQ(medium.Type(), MediumType::GlobalMem);
     
@@ -26,7 +26,7 @@ TEST(TextDataTest, SaveToMediumUnsupportedFormat) {
 
     TextData text_data{ L"TextDataTest" };
     
-    Format format{ static_cast<FormatType>(0) };
+    auto format = DataDescriptor::FromFormatType(static_cast<FormatType>(0));
     ASSERT_THROW(text_data.SaveToMedium(format), InvalidOperationError);
 }
 

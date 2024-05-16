@@ -1,20 +1,20 @@
 #pragma once
 
 #include <vector>
-#include <zaf/clipboard/format.h>
+#include <zaf/clipboard/data_descriptor.h>
 #include <zaf/clipboard/medium.h>
 
 namespace zaf::clipboard::internal {
 
 class FormatItem {
 public:
-    FormatItem(const Format& format, Medium medium) :
+    FormatItem(const DataDescriptor& format, Medium medium) :
         format_(format),
         medium_(std::move(medium)) {
 
     }
 
-    const Format& Format() const {
+    const DataDescriptor& DataDescriptor() const {
         return format_;
     }
 
@@ -23,7 +23,7 @@ public:
     }
 
 private:
-    clipboard::Format format_;
+    clipboard::DataDescriptor format_;
     clipboard::Medium medium_;
 };
 
