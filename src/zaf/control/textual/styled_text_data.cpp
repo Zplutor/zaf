@@ -12,8 +12,8 @@ clipboard::Medium StyledTextData::SaveToMedium(const clipboard::DataDescriptor& 
 
 
 void StyledTextData::LoadFromMedium(
-    clipboard::FormatType format,
-    const clipboard::Medium& medium) {
+    const clipboard::Medium& medium,
+    const clipboard::DataDescriptor& data_descriptor) {
 
 }
 

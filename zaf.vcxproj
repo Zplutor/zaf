@@ -458,6 +458,7 @@
     <ClInclude Include="src\zaf\base\timer.h" />
     <ClInclude Include="src\zaf\clipboard\clipboard.h" />
     <ClInclude Include="src\zaf\clipboard\clipboard_data.h" />
+    <ClInclude Include="src\zaf\clipboard\data_aspect.h" />
     <ClInclude Include="src\zaf\clipboard\data_object.h" />
     <ClInclude Include="src\zaf\clipboard\drop_files_data.h" />
     <ClInclude Include="src\zaf\clipboard\data_descriptor.h" />

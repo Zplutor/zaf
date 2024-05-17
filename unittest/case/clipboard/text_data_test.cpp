@@ -45,7 +45,7 @@ TEST(TextDataTest, LoadFromMedium) {
     auto medium = Medium::FromGlobalMem(std::move(global_mem));
 
     TextData text_data;
-    text_data.LoadFromMedium(FormatType::Text, medium);
+    text_data.LoadFromMedium(medium, DataDescriptor::FromFormatType(FormatType::Text));
 
     ASSERT_EQ(text_data.GetText(), TestString);
 }
@@ -54,5 +54,7 @@ TEST(TextDataTest, LoadFromMedium) {
 TEST(TextDataTest, LoadFromMediumUnsupportedFormat) {
 
     TextData text_data;
-    ASSERT_THROW(text_data.LoadFromMedium(FormatType{}, {}), InvalidOperationError);
+    ASSERT_THROW(
+        text_data.LoadFromMedium({}, DataDescriptor::FromFormatType(FormatType::Indeterminate)),
+        InvalidOperationError);
 }

@@ -3,21 +3,21 @@
 
 namespace zaf::clipboard {
 
-clipboard::Medium UnknownData::SaveToMedium(const clipboard::DataDescriptor& format) {
+clipboard::Medium UnknownData::SaveToMedium(const clipboard::DataDescriptor& data_descriptor) {
 
-    if (format.FormatType() == format_type_) {
-        return medium_;
+    if (data_descriptor_ != data_descriptor) {
+        throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
     }
 
-    throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
+    return medium_;
 }
 
 
 void UnknownData::LoadFromMedium(
-    clipboard::FormatType format_type,
-    const clipboard::Medium& medium) {
+    const clipboard::Medium& medium, 
+    const clipboard::DataDescriptor& data_descriptor) {
 
-    format_type_ = format_type;
+    data_descriptor_ = data_descriptor;
     medium_ = medium;
 }
 

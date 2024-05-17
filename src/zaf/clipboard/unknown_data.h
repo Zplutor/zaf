@@ -6,21 +6,22 @@ namespace zaf::clipboard {
 
 class UnknownData : public ClipboardData {
 public:
-    FormatType FormatType() const {
-        return format_type_;
+    const clipboard::DataDescriptor& DataDescriptor() const {
+        return data_descriptor_;
     }
 
     const clipboard::Medium& Medium() const {
         return medium_;
     }
 
-    clipboard::Medium SaveToMedium(const clipboard::DataDescriptor& format) override;
+    clipboard::Medium SaveToMedium(const clipboard::DataDescriptor& data_descriptor) override;
+
     void LoadFromMedium(
-        clipboard::FormatType format_type, 
-        const clipboard::Medium& medium) override;
+        const clipboard::Medium& medium, 
+        const clipboard::DataDescriptor& data_descriptor) override;
 
 private:
-    clipboard::FormatType format_type_{ FormatType::Indeterminate };
+    clipboard::DataDescriptor data_descriptor_;
     clipboard::Medium medium_;
 };
 

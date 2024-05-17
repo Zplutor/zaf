@@ -18,8 +18,8 @@ public:
         return paths_;
     }
 
-    Medium SaveToMedium(const DataDescriptor& format) override;
-    void LoadFromMedium(FormatType format_type, const Medium& medium) override;
+    Medium SaveToMedium(const DataDescriptor& data_descriptor) override;
+    void LoadFromMedium(const Medium& medium, const DataDescriptor& data_descriptor) override;
 
 private:
     std::vector<std::filesystem::path> paths_;

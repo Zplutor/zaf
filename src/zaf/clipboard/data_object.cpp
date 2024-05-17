@@ -52,7 +52,7 @@ void DataObject::InnerGetData(FormatType format_type, ClipboardData& data) const
     HRESULT hresult = Inner()->GetData(&format_inner, &medium_inner);
     ZAF_THROW_IF_COM_ERROR(hresult);
 
-    data.LoadFromMedium(format_type, Medium{ medium_inner });
+    data.LoadFromMedium(Medium{ medium_inner }, data_descriptor);
 }
 
 

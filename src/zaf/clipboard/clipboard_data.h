@@ -58,8 +58,8 @@ public:
     Saves the data to a medium according to the specified data descriptor.
 
     @param data_descriptor
-        The data descriptor describing the format type in which the data will be saved and the 
-        desired medium types the method returns.
+        The data descriptor describing how the data will be saved, including the format type to 
+        save, and the desired medium types the method returns.
 
     @return
         The medium containing the data in the specified format. The type of the medium is one of 
@@ -81,37 +81,61 @@ public:
         Overriding guide:
         1. Check if the data is compatible with the format type specified in the data descriptor.
            If not, throw zaf::InvalidOperationError.
-        2. Choose the most appropriate medium type supported by the data from the medium types 
+        2. Check if the target device specified in the data descriptor is supported by the data. If
+           not, throw zaf::InvalidOperationError. In general, clipboard data that is 
+           device-independent may ignore this attribute.
+        3. Check if the aspect and aspect index specified in the data descriptor are supported by 
+           the data. If not, throw zaf::InvalidOperationError. In general, most clipboard data 
+           support DataAspect::Content only, and the aspect index is ignored.
+        4. Choose the most appropriate medium type supported by the data from the medium types 
            specified in the data descriptor. If none of the types are supported, throw
            zaf::InvalidOperationError.
-        3. Check other attributes in the FORMATETC structure within the data descriptor as needed,
-           and throw zaf::InvalidOperationError if the check fails. These attributes are not often 
-           used and can be ignored in most cases.
-        4. Write the content of the data to the chosen medium in the specified format type. If the 
-           data is invalid, for example, if the content is empty, throw zaf::InvalidDataError.
+        5. Write the content of the data to the chosen medium in the specified format type and 
+           according to other attributes. If the content is invalid, for example, if the content 
+           is empty, throw zaf::InvalidDataError.
     */
     virtual Medium SaveToMedium(const DataDescriptor& data_descriptor) = 0;
 
     /**
-    Loads data from the specified meidum in the specified format type.
-
-    @param format_type
-        The format type in which the data will be loaded.
+    Loads data from the specified medium according to the specified data descriptor.
 
     @param medium
         The medium from which the data will be loaded.
 
+    @param data_descriptor
+        The data descriptor describing how the data will be loaded, such as the format type to 
+        load.
+
     @throw zaf::InvalidOperationError
-        Thrown if the specified format type or the specified medium type is not supported by the 
-        clipboard data. 
+        Thrown if the data cannot be loaded from the medium as specified by the data descriptor.
+        This includes but is not limited to the following situations:
+        - the type of the medium is not supported by the data;
+        - the format type specified in the data descriptor is not compatible with the data.
 
     @throw zaf::InvalidDataError
-        Thrown if the data in the medium is invalid.
+        Thrown if the content to be loaded in the medium is invalid.
 
     @throw ...
         Any exceptions thrown by the overriding implementation.
+
+    @details
+        Overriding guide:
+        1. Check if the data is compatible with the format type specified in the data descriptor.
+           If not, throw zaf::InvalidOperationError.
+        2. Check if the target device specified in the data descriptor is supported by the data. If
+           not, throw zaf::InvalidOperationError. In general, clipboard data that is 
+           device-independent may ignore this attribute.
+        3. Check if the aspect and aspect index specified in the data descriptor are supported by 
+           the data. If not, throw zaf::InvalidOperationError. In general, most clipboard data 
+           support DataAspect::Content only, and the aspect index is ignored.
+        4. Check if the type of the medium is supported by the data. If not, throw 
+           zaf::InvalidOperationError. Note that the medium type specified in the data descriptor
+           is not used when loading data.
+        5. Read the content from the medium in the specified format type and according to other 
+           attributes. If the content in medium is invalid, for example, if the content is empty, 
+           throw zaf::InvalidDataError.
     */
-    virtual void LoadFromMedium(FormatType format_type, const Medium& medium) = 0;
+    virtual void LoadFromMedium(const Medium& medium, const DataDescriptor& data_descriptor) = 0;
 };
 
 }

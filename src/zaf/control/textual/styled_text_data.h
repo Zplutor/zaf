@@ -19,8 +19,8 @@ public:
 
     clipboard::Medium SaveToMedium(const clipboard::DataDescriptor& format) override;
     void LoadFromMedium(
-        clipboard::FormatType format_type, 
-        const clipboard::Medium& medium) override;
+        const clipboard::Medium& medium,
+        const clipboard::DataDescriptor& data_descriptor) override;
 
 private:
     StyledText styled_text_;

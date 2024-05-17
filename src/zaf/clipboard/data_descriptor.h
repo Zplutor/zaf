@@ -6,6 +6,7 @@
 */
 
 #include <objidl.h>
+#include <zaf/clipboard/data_aspect.h>
 #include <zaf/clipboard/format_type.h>
 #include <zaf/clipboard/medium_type.h>
 
@@ -18,9 +19,6 @@ data, such as the format type and the supported medium types.
 @details
     The name of the FORMATETC structure is not descriptive enough and may cause confusion, so it is
     encapsulated and renamed to a more accurate class, DataDescriptor.
-
-    DataDescriptor exposes only the format type and the medium types, even though there are other 
-    attributes in the FORMATETC structure, as the other attributes are not used as often.
 */
 class DataDescriptor {
 public:
@@ -78,6 +76,22 @@ public:
 
     void SetMediumTypes(clipboard::MediumType medium_type) noexcept {
         inner_.tymed = static_cast<DWORD>(medium_type);
+    }
+
+    DataAspect Aspect() const noexcept {
+        return static_cast<DataAspect>(inner_.dwAspect);
+    }
+
+    void SetAspect(DataAspect aspect) {
+        inner_.dwAspect = static_cast<DWORD>(aspect);
+    }
+
+    int AspectIndex() const noexcept {
+        return static_cast<int>(inner_.lindex);
+    }
+
+    void SetAspectIndex(int index) {
+        inner_.lindex = static_cast<LONG>(index);
     }
 
     const FORMATETC& Inner() const noexcept {

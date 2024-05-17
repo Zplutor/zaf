@@ -2746,5 +2746,8 @@
     <ClInclude Include="src\zaf\control\textual\styled_text_data.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\clipboard\data_aspect.h">
+      <Filter>zaf\clipboard</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

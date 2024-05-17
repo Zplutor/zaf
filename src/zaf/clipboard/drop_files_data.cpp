@@ -15,10 +15,17 @@ DropFilesData::DropFilesData(std::vector<std::filesystem::path> file_paths) :
 }
 
 
-Medium DropFilesData::SaveToMedium(const DataDescriptor& format) {
+Medium DropFilesData::SaveToMedium(const DataDescriptor& data_descriptor) {
 
-    if (format.FormatType() != FormatType::DropFiles || 
-        format.MediumTypes() != MediumType::GlobalMem) {
+    if (data_descriptor.FormatType() != FormatType::DropFiles) {
+        throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
+    }
+
+    if (data_descriptor.Aspect() != DataAspect::Content) {
+        throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
+    }
+
+    if (!HasFlag(data_descriptor.MediumTypes(), MediumType::GlobalMem)) {
         throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
     }
 
@@ -56,9 +63,17 @@ Medium DropFilesData::SaveToMedium(const DataDescriptor& format) {
 }
 
 
-void DropFilesData::LoadFromMedium(FormatType format_type, const Medium& medium) {
+void DropFilesData::LoadFromMedium(const Medium& medium, const DataDescriptor& data_descriptor) {
 
-    if (format_type != FormatType::DropFiles || medium.Type() != MediumType::GlobalMem) {
+    if (data_descriptor.FormatType() != FormatType::DropFiles) {
+        throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
+    }
+
+    if (data_descriptor.Aspect() != DataAspect::Content) {
+        throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
+    }
+
+    if (medium.Type() != MediumType::GlobalMem) {
         throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
     }
 

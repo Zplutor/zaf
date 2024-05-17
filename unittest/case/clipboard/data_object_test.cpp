@@ -18,7 +18,7 @@ public:
         return {};
     }
 
-    void LoadFromMedium(FormatType format, const Medium& medium) override {
+    void LoadFromMedium(const Medium& medium, const DataDescriptor& data_descriptor) override {
 
     }
 };

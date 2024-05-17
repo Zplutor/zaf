@@ -21,8 +21,8 @@ public:
         return std::move(text_);
     }
 
-    Medium SaveToMedium(const DataDescriptor& format) override;
-    void LoadFromMedium(FormatType format_type, const Medium& medium) override;
+    Medium SaveToMedium(const DataDescriptor& data_descriptor) override;
+    void LoadFromMedium(const Medium& medium, const DataDescriptor& data_descriptor) override;
 
 private:
     std::wstring text_;
