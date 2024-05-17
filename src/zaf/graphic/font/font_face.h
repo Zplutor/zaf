@@ -17,21 +17,21 @@ public:
     const FontFamily GetFontFamily() const;
 
     int GetWeight() const {
-        return Inner()->GetWeight();
+        return Ptr()->GetWeight();
     }
 
     FontStyle GetStyle() const {
-        return static_cast<FontStyle>(Inner()->GetStyle());
+        return static_cast<FontStyle>(Ptr()->GetStyle());
     }
 
     bool HasCharacter(std::uint32_t unicode_character) const {
         BOOL has_character = FALSE;
-        Inner()->HasCharacter(unicode_character, &has_character);
+        Ptr()->HasCharacter(unicode_character, &has_character);
         return has_character != FALSE;
     }
 
     bool IsSymbolFont() const {
-        return Inner()->IsSymbolFont() != FALSE;
+        return Ptr()->IsSymbolFont() != FALSE;
     }
 };
 

@@ -263,7 +263,7 @@ void RichEdit::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     auto update_rect = FromDIPs(update_area_in_content, this->GetDPI()).ToRECT();
 
     text_service_->TxDrawD2D(
-        canvas.Renderer().Inner().Inner(),
+        canvas.Renderer().Ptr().Inner(),
         &bounds_rect,
         &update_rect,
         TXTVIEW_ACTIVE);
@@ -304,7 +304,7 @@ void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect)
             return;
         }
 
-        auto text_document = ole_interface.Inner().Query<ITextDocument>();
+        auto text_document = ole_interface.Ptr().Query<ITextDocument>();
         if (!text_document) {
             return;
         }
@@ -520,7 +520,7 @@ std::wstring RichEdit::GetTextInRange(const Range& range) const {
     //EM_RANGETEXT returns inconsistent string with other text getting methods, like WCH_EMBEDDING
     //chars will be replaced to spaces. So we use ITextDocument instead.
 
-    auto text_document = this->GetOLEInterface().Inner().Query<ITextDocument>();
+    auto text_document = this->GetOLEInterface().Ptr().Query<ITextDocument>();
     if (!text_document) {
         return {};
     }
@@ -1657,7 +1657,7 @@ void RichEdit::InsertObject(std::shared_ptr<rich_edit::EmbeddedObject> object) {
     auto ole_interface = GetOLEInterface();
 
     COMPtr<IOleClientSite> client_site;
-    HRESULT hresult = ole_interface.Inner()->GetClientSite(client_site.Reset());
+    HRESULT hresult = ole_interface.Ptr()->GetClientSite(client_site.Reset());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     auto ole_object = MakeCOMPtr<rich_edit::internal::OLEObjectImpl>(object);
@@ -1675,7 +1675,7 @@ void RichEdit::InsertObject(std::shared_ptr<rich_edit::EmbeddedObject> object) {
     auto object_size = FromDIPs(object->Size(), this->GetDPI()).ToSIZEL();
     AtlPixelToHiMetric(&object_size, &object_info.sizel);
 
-    hresult = ole_interface.Inner()->InsertObject(&object_info);
+    hresult = ole_interface.Ptr()->InsertObject(&object_info);
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     object->SetHost(As<RichEdit>(shared_from_this()));

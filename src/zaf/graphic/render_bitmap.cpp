@@ -10,9 +10,9 @@ void RenderBitmap::CopyFromRenderer(
 
     D2D1_POINT_2U d2d_to_position = to_position.ToD2D1POINT2U();
     D2D1_RECT_U d2d_renderer_rect = renderer_rect.ToD2D1RECTU();
-    HRESULT result = Inner()->CopyFromRenderTarget(
+    HRESULT result = Ptr()->CopyFromRenderTarget(
         &d2d_to_position, 
-        renderer.Inner().Inner(),
+        renderer.Ptr().Inner(),
         &d2d_renderer_rect);
     ZAF_THROW_IF_COM_ERROR(result);
 }

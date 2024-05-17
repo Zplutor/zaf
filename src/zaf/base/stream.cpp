@@ -264,7 +264,7 @@ Stream Stream::FromFile(const std::filesystem::path& path) {
 std::uint64_t Stream::GetSize() const {
 
     STATSTG state{};
-    HRESULT result = Inner()->Stat(&state, STATFLAG_NONAME);
+    HRESULT result = Ptr()->Stat(&state, STATFLAG_NONAME);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return state.cbSize.QuadPart;
@@ -282,7 +282,7 @@ std::uint64_t Stream::Seek(SeekOrigin origin, std::int64_t offset) {
     move.QuadPart = offset;
 
     ULARGE_INTEGER new_position{};
-    HRESULT result = Inner()->Seek(move, static_cast<DWORD>(origin), &new_position);
+    HRESULT result = Ptr()->Seek(move, static_cast<DWORD>(origin), &new_position);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return new_position.QuadPart;
@@ -292,7 +292,7 @@ std::uint64_t Stream::Seek(SeekOrigin origin, std::int64_t offset) {
 std::uint64_t Stream::Read(std::uint64_t size, void* data) const {
 
     ULONG read_size = 0;
-    HRESULT result = Inner()->Read(data, static_cast<ULONG>(size), &read_size);
+    HRESULT result = Ptr()->Read(data, static_cast<ULONG>(size), &read_size);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return read_size;
@@ -302,7 +302,7 @@ std::uint64_t Stream::Read(std::uint64_t size, void* data) const {
 std::size_t Stream::Write(const void* data, std::size_t size) {
 
     ULONG written_size = 0;
-    HRESULT result = Inner()->Write(data, static_cast<ULONG>(size), &written_size);
+    HRESULT result = Ptr()->Write(data, static_cast<ULONG>(size), &written_size);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return written_size;
@@ -311,7 +311,7 @@ std::size_t Stream::Write(const void* data, std::size_t size) {
 
 const std::byte* Stream::GetUnderlyingBuffer() const {
 
-    auto memory_stream = Inner().Query<NotOwnedMemoryStream>(IID_NotOwnedMemorySteam);
+    auto memory_stream = Ptr().Query<NotOwnedMemoryStream>(IID_NotOwnedMemorySteam);
     if (memory_stream) {
         return memory_stream->Data();
     }

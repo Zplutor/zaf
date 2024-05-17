@@ -12,7 +12,7 @@ DataDescriptorEnumerator::DataDescriptorEnumerator(COMPtr<IEnumFORMATETC> inner)
 std::optional<DataDescriptor> DataDescriptorEnumerator::Next() {
 
     FORMATETC inner{};
-    HRESULT hresult = Inner()->Next(1, &inner, nullptr);
+    HRESULT hresult = Ptr()->Next(1, &inner, nullptr);
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     if (hresult == S_OK) {
@@ -24,7 +24,7 @@ std::optional<DataDescriptor> DataDescriptorEnumerator::Next() {
 
 void DataDescriptorEnumerator::Reset() {
 
-    HRESULT hresult = Inner()->Reset();
+    HRESULT hresult = Ptr()->Reset();
     ZAF_THROW_IF_COM_ERROR(hresult);
 }
 

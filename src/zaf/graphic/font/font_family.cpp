@@ -7,7 +7,7 @@ namespace zaf {
 FontCollection FontFamily::GetFontCollection() const {
 
     COMPtr<IDWriteFontCollection> inner;
-    HRESULT result = Inner()->GetFontCollection(inner.Reset());
+    HRESULT result = Ptr()->GetFontCollection(inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
     return FontCollection(inner);
@@ -17,7 +17,7 @@ FontCollection FontFamily::GetFontCollection() const {
 FontFace FontFamily::GetFont(std::size_t index) const {
 
     COMPtr<IDWriteFont> inner;
-    HRESULT result = Inner()->GetFont(static_cast<UINT32>(index), inner.Reset());
+    HRESULT result = Ptr()->GetFont(static_cast<UINT32>(index), inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
     return FontFace(inner);
@@ -27,7 +27,7 @@ FontFace FontFamily::GetFont(std::size_t index) const {
 LocalizedStrings FontFamily::GetFamilyNames() const {
 
     COMPtr<IDWriteLocalizedStrings> inner;
-    HRESULT result = Inner()->GetFamilyNames(inner.Reset());
+    HRESULT result = Ptr()->GetFamilyNames(inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
     return LocalizedStrings(inner);

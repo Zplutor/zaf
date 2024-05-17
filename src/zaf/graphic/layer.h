@@ -11,7 +11,7 @@ public:
     using COMObject::COMObject;
 
     const Size GetSize() const {
-        return Size::FromD2D1SIZEF(Inner()->GetSize());
+        return Size::FromD2D1SIZEF(Ptr()->GetSize());
     }
 };
 

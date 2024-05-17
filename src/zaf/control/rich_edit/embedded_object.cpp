@@ -12,7 +12,7 @@ Point GetObjectPositionInScreenInPixels(
     const OLEInterface& ole_interface, 
     std::size_t char_index) {
 
-    auto text_document = ole_interface.Inner().Query<ITextDocument>();
+    auto text_document = ole_interface.Ptr().Query<ITextDocument>();
     if (!text_document) {
         return {};
     }

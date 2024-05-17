@@ -132,7 +132,7 @@ TransformedGeometry GraphicFactory::CreateTransformedGeometry(
 
     COMPtr<ID2D1TransformedGeometry> inner;
     HRESULT result = d2d_factory_handle_->CreateTransformedGeometry(
-        geometry.Inner().Inner(),
+        geometry.Ptr().Inner(),
         transform_matrix.ToD2D1MATRIX3X2F(),
         inner.Reset());
 
@@ -161,7 +161,7 @@ TextFormat GraphicFactory::CreateTextFormat(const TextFormatProperties& properti
     COMPtr<IDWriteTextFormat> inner;
     HRESULT result = dwrite_factory_handle_->CreateTextFormat(
         properties.font_family_name.c_str(),
-        properties.font_collection ? properties.font_collection->Inner().Inner() : nullptr,
+        properties.font_collection ? properties.font_collection->Ptr().Inner() : nullptr,
         static_cast<DWRITE_FONT_WEIGHT>(properties.font_weight),
         static_cast<DWRITE_FONT_STYLE>(properties.font_style),
         DWRITE_FONT_STRETCH_NORMAL,
@@ -184,7 +184,7 @@ TextLayout GraphicFactory::CreateTextLayout(
     HRESULT result = dwrite_factory_handle_->CreateTextLayout(
         text.data(),
         static_cast<UINT32>(text.length()),
-        text_format.Inner().Inner(),
+        text_format.Ptr().Inner(),
         layout_size.width,
         layout_size.height,
         inner.Reset()
@@ -210,7 +210,7 @@ TextInlineObject GraphicFactory::CreateEllipsisTrimmingSign(
 
     COMPtr<IDWriteInlineObject> inner;
     HRESULT hresult = dwrite_factory_handle_->CreateEllipsisTrimmingSign(
-        text_format.Inner().Inner(),
+        text_format.Ptr().Inner(),
         inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(hresult);

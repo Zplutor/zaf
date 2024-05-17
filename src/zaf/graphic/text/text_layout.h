@@ -217,7 +217,7 @@ public:
      */
     void SetBrush(const Brush& brush, const Range& range) {
         HRESULT result = Inner()->SetDrawingEffect(
-            brush.Inner().Inner(), 
+            brush.Ptr().Inner(),
             range.ToDWRITETEXTRANGE());
         ZAF_THROW_IF_COM_ERROR(result);
     }

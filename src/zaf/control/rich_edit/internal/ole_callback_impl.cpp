@@ -137,7 +137,7 @@ HRESULT OLECallbackImpl::GetClipboardData(
 
     switch (operation_result) {
     case OperationResult::OK: {
-        auto data_object_ptr = data_object.Inner();
+        auto data_object_ptr = data_object.Ptr();
         *lplpdataobj = data_object_ptr.Detach();
         return S_OK;
     }

@@ -5,14 +5,14 @@ namespace zaf {
 
 void GeometrySink::BeginFigure(const Point& start_position, BeginFigureOption option) {
 
-    Inner()->BeginFigure(
+    Ptr()->BeginFigure(
         ToAlignedD2DPoint(start_position),
         static_cast<D2D1_FIGURE_BEGIN>(option));
 }
 
 
 void GeometrySink::AddLine(const Point& end_point) {
-    Inner()->AddLine(ToAlignedD2DPoint(end_point));
+    Ptr()->AddLine(ToAlignedD2DPoint(end_point));
 }
 
 
@@ -25,12 +25,12 @@ void GeometrySink::AddLines(const std::vector<Point>& points) {
         d2d_points.push_back(ToAlignedD2DPoint(each_point));
     }
 
-    Inner()->AddLines(d2d_points.data(), static_cast<UINT32>(d2d_points.size()));
+    Ptr()->AddLines(d2d_points.data(), static_cast<UINT32>(d2d_points.size()));
 }
 
 
 void GeometrySink::AddArc(const ArcSegment& arc_segment) {
-    Inner()->AddArc(arc_segment.Inner());
+    Ptr()->AddArc(arc_segment.Inner());
 }
 
 

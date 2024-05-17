@@ -29,7 +29,7 @@ public:
         ImageInterpolationMode interpolation_mode) {
 
         HRESULT com_error = Inner()->Initialize(
-            image_source.Inner().Inner(),
+            image_source.Ptr().Inner(),
             static_cast<UINT>(size.width), 
             static_cast<UINT>(size.height),
             static_cast<WICBitmapInterpolationMode>(interpolation_mode));

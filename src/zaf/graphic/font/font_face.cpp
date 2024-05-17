@@ -6,7 +6,7 @@ namespace zaf {
 const FontFamily FontFace::GetFontFamily() const {
 
     COMPtr<IDWriteFontFamily> family_inner;
-    HRESULT result = Inner()->GetFontFamily(family_inner.Reset());
+    HRESULT result = Ptr()->GetFontFamily(family_inner.Reset());
     
     return FontFamily(family_inner);
 }

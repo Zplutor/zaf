@@ -16,7 +16,7 @@ public:
     Gets total count of OLE objects in rich edit.
     */
     std::size_t GetObjectCount() const noexcept {
-        return static_cast<std::size_t>(Inner()->GetObjectCount());
+        return static_cast<std::size_t>(Ptr()->GetObjectCount());
     }
 
     /**

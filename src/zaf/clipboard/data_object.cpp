@@ -18,7 +18,7 @@ DataObject DataObject::Create() {
 DataDescriptorEnumerator DataObject::EnumerateDataDescriptors() const {
 
     COMPtr<IEnumFORMATETC> enumerator_inner;
-    HRESULT hresult = Inner()->EnumFormatEtc(DATADIR_GET, enumerator_inner.Reset());
+    HRESULT hresult = Ptr()->EnumFormatEtc(DATADIR_GET, enumerator_inner.Reset());
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     return DataDescriptorEnumerator{ enumerator_inner };
@@ -47,7 +47,7 @@ void DataObject::InnerGetData(const DataDescriptor& data_descriptor, ClipboardDa
     auto format_inner = data_descriptor.Inner();
 
     STGMEDIUM medium_inner{};
-    HRESULT hresult = Inner()->GetData(&format_inner, &medium_inner);
+    HRESULT hresult = Ptr()->GetData(&format_inner, &medium_inner);
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     data.LoadFromMedium(Medium{ medium_inner }, data_descriptor);
@@ -77,7 +77,7 @@ void DataObject::InnerSetData(const DataDescriptor& data_descriptor, ClipboardDa
 
     auto format_inner = data_descriptor.Inner();
 
-    HRESULT hresult = Inner()->SetData(
+    HRESULT hresult = Ptr()->SetData(
         &format_inner,
         &medium_inner,
         TRUE);

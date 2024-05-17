@@ -27,7 +27,7 @@ BitmapRenderer Renderer::CreateCompatibleRenderer(const CreateCompatibleRenderer
     }
 
     COMPtr<ID2D1BitmapRenderTarget> inner;
-    HRESULT com_error = Inner()->CreateCompatibleRenderTarget(
+    HRESULT com_error = Ptr()->CreateCompatibleRenderTarget(
         d2d_desired_size_pointer, 
         d2d_desired_pixel_size_pointer,
         nullptr,
@@ -42,7 +42,7 @@ BitmapRenderer Renderer::CreateCompatibleRenderer(const CreateCompatibleRenderer
 SolidColorBrush Renderer::CreateSolidColorBrush(const Color& color) {
 
     COMPtr<ID2D1SolidColorBrush> inner;
-    HRESULT result = Inner()->CreateSolidColorBrush(color.ToD2D1COLORF(), inner.Reset());
+    HRESULT result = Ptr()->CreateSolidColorBrush(color.ToD2D1COLORF(), inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
     return SolidColorBrush(inner);
@@ -52,7 +52,7 @@ SolidColorBrush Renderer::CreateSolidColorBrush(const Color& color) {
 BitmapBrush Renderer::CreateBitmapBrush(const RenderBitmap& bitmap) {
 
     COMPtr<ID2D1BitmapBrush> inner;
-    HRESULT result = Inner()->CreateBitmapBrush(bitmap.Inner().Inner(), inner.Reset());
+    HRESULT result = Ptr()->CreateBitmapBrush(bitmap.Ptr().Inner(), inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
     return BitmapBrush(inner);
@@ -64,10 +64,10 @@ Layer Renderer::InnerCreateLayer(const Size* size) {
     COMPtr<ID2D1Layer> layer_inner;
     HRESULT result = 0;
     if (size != nullptr) {
-        Inner()->CreateLayer(size->ToD2D1SIZEF(), layer_inner.Reset());
+        Ptr()->CreateLayer(size->ToD2D1SIZEF(), layer_inner.Reset());
     }
     else {
-        Inner()->CreateLayer(layer_inner.Reset());
+        Ptr()->CreateLayer(layer_inner.Reset());
     }
 
     ZAF_THROW_IF_COM_ERROR(result);
@@ -78,7 +78,7 @@ Layer Renderer::InnerCreateLayer(const Size* size) {
 RenderBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& properties) {
 
     COMPtr<ID2D1Bitmap> inner;
-    HRESULT com_error = Inner()->CreateBitmap(
+    HRESULT com_error = Ptr()->CreateBitmap(
         size.ToD2D1SIZEU(),
         properties.Inner(), 
         inner.Reset());
@@ -90,7 +90,7 @@ RenderBitmap Renderer::CreateBitmap(const Size& size, const BitmapProperties& pr
 
 RenderBitmap Renderer::CreateBitmap(const wic::BitmapSource& image_source) {
 
-    auto wic_image_factory_handle = wic::ImagingFactory::Instance().Inner();
+    auto wic_image_factory_handle = wic::ImagingFactory::Instance().Ptr();
 
     COMPtr<IWICFormatConverter> format_converter;
     HRESULT result = wic_image_factory_handle->CreateFormatConverter(format_converter.Reset());
@@ -98,7 +98,7 @@ RenderBitmap Renderer::CreateBitmap(const wic::BitmapSource& image_source) {
     ZAF_THROW_IF_COM_ERROR(result);
 
     result = format_converter->Initialize(
-        image_source.Inner().Inner(),
+        image_source.Ptr().Inner(),
         GUID_WICPixelFormat32bppPBGRA,
         WICBitmapDitherTypeNone,
         nullptr,
@@ -108,7 +108,7 @@ RenderBitmap Renderer::CreateBitmap(const wic::BitmapSource& image_source) {
     ZAF_THROW_IF_COM_ERROR(result);
 
     COMPtr<ID2D1Bitmap> inner;
-    result = Inner()->CreateBitmapFromWicBitmap(format_converter.Inner(), inner.Reset());
+    result = Ptr()->CreateBitmapFromWicBitmap(format_converter.Inner(), inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
     return RenderBitmap(inner);
@@ -127,8 +127,8 @@ void Renderer::DrawBitmap(
         d2d1_rect = bitmap_rect->ToD2D1RECTF();
     }
 
-    Inner()->DrawBitmap(
-        bitmap.Inner().Inner(),
+    Ptr()->DrawBitmap(
+        bitmap.Ptr().Inner(),
         destination_rect.ToD2D1RECTF(),
         opacity,
         static_cast<D2D1_BITMAP_INTERPOLATION_MODE>(interpolation_mode),
@@ -137,7 +137,7 @@ void Renderer::DrawBitmap(
 
 
 void Renderer::PushLayer(const Layer& layer, const LayerParameters& parameters) {
-    Inner()->PushLayer(parameters.Inner(), layer.Inner().Inner());
+    Ptr()->PushLayer(parameters.Inner(), layer.Ptr().Inner());
 }
 
 

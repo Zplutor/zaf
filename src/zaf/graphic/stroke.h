@@ -35,39 +35,39 @@ public:
     using COMObject::COMObject;
 
     CapStyle GetStartCapStyle() const {
-        return static_cast<CapStyle>(Inner()->GetStartCap());
+        return static_cast<CapStyle>(Ptr()->GetStartCap());
     }
 
     CapStyle GetEndCapStyle() const {
-        return static_cast<CapStyle>(Inner()->GetEndCap());
+        return static_cast<CapStyle>(Ptr()->GetEndCap());
     }
 
     CapStyle GetDashCapStyle() const {
-        return static_cast<CapStyle>(Inner()->GetDashCap());
+        return static_cast<CapStyle>(Ptr()->GetDashCap());
     }
 
     LineJoinStyle GetLineJoinStyle() const {
-        return static_cast<LineJoinStyle>(Inner()->GetLineJoin());
+        return static_cast<LineJoinStyle>(Ptr()->GetLineJoin());
     }
 
     float GetMiterLimit() const {
-        return Inner()->GetMiterLimit();
+        return Ptr()->GetMiterLimit();
     }
 
     DashStyle GetDashStyle() const {
-        return static_cast<DashStyle>(Inner()->GetDashStyle());
+        return static_cast<DashStyle>(Ptr()->GetDashStyle());
     }
 
     float GetDashOffset() const {
-        return Inner()->GetDashOffset();
+        return Ptr()->GetDashOffset();
     }
 
     std::vector<float> GetDashPattern() const {
 
-        auto count = Inner()->GetDashesCount();
+        auto count = Ptr()->GetDashesCount();
 
         std::vector<float> dash_pattern(count);
-        Inner()->GetDashes(dash_pattern.data(), count);
+        Ptr()->GetDashes(dash_pattern.data(), count);
         return dash_pattern;
     }
 };

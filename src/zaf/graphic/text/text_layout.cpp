@@ -232,7 +232,7 @@ std::vector<HitTestMetrics> TextLayout::HitTestRange(const Range& range) const {
 
 void TextLayout::SetInlineObject(const TextInlineObject& object, const Range& range) {
 
-    HRESULT hresult = Inner()->SetInlineObject(object.Inner().Inner(), range.ToDWRITETEXTRANGE());
+    HRESULT hresult = Inner()->SetInlineObject(object.Ptr().Inner(), range.ToDWRITETEXTRANGE());
     ZAF_THROW_IF_COM_ERROR(hresult);
 }
 

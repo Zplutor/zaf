@@ -65,11 +65,11 @@ public:
         CombineMode combine_mode,
         const GeometrySink& sink) {
 
-        HRESULT result = geometry1.Inner()->CombineWithGeometry(
-            geometry2.Inner().Inner(),
+        HRESULT result = geometry1.Ptr()->CombineWithGeometry(
+            geometry2.Ptr().Inner(),
             static_cast<D2D1_COMBINE_MODE>(combine_mode),
             nullptr,
-            sink.Inner().Inner());
+            sink.Ptr().Inner());
 
         ZAF_THROW_IF_COM_ERROR(result);
     }

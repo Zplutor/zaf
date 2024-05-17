@@ -7,7 +7,7 @@ namespace zaf {
 FontFamily FontCollection::GetFontFamily(std::size_t index) const {
 
     COMPtr<IDWriteFontFamily> font_family_inner;
-    HRESULT result = Inner()->GetFontFamily(static_cast<UINT32>(index), font_family_inner.Reset());
+    HRESULT result = Ptr()->GetFontFamily(static_cast<UINT32>(index), font_family_inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
     return FontFamily(font_family_inner);
@@ -18,7 +18,7 @@ FontFamily FontCollection::FindFontFamily(const std::wstring& family_name) const
 
     UINT32 index = 0;
     BOOL is_found = FALSE;
-    HRESULT result = Inner()->FindFamilyName(family_name.c_str(), &index, &is_found);
+    HRESULT result = Ptr()->FindFamilyName(family_name.c_str(), &index, &is_found);
 
     ZAF_THROW_IF_COM_ERROR(result);
 

@@ -7,7 +7,7 @@ namespace zaf::wic {
 ContainerFormat BitmapDecoder::GetContainerFormat() const {
 
     GUID guid = GUID_NULL;
-    HRESULT com_error = Inner()->GetContainerFormat(&guid);
+    HRESULT com_error = Ptr()->GetContainerFormat(&guid);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
     return ToContainerFormat(guid);
@@ -16,7 +16,7 @@ ContainerFormat BitmapDecoder::GetContainerFormat() const {
 
 void BitmapDecoder::CopyPalette(Palette& palette) const {
 
-    HRESULT com_error = Inner()->CopyPalette(palette.Inner().Inner());
+    HRESULT com_error = Ptr()->CopyPalette(palette.Ptr().Inner());
     ZAF_THROW_IF_COM_ERROR(com_error);
 }
 
@@ -24,7 +24,7 @@ void BitmapDecoder::CopyPalette(Palette& palette) const {
 std::size_t BitmapDecoder::GetFrameCount() const {
 
     UINT count = 0;
-    HRESULT result = Inner()->GetFrameCount(&count);
+    HRESULT result = Ptr()->GetFrameCount(&count);
 
     ZAF_THROW_IF_COM_ERROR(result);
     return count;
@@ -34,7 +34,7 @@ std::size_t BitmapDecoder::GetFrameCount() const {
 BitmapDecodeFrame BitmapDecoder::GetFrame(std::size_t index) const {
 
     COMPtr<IWICBitmapFrameDecode> inner;
-    HRESULT result = Inner()->GetFrame(static_cast<UINT>(index), inner.Reset());
+    HRESULT result = Ptr()->GetFrame(static_cast<UINT>(index), inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
     return BitmapDecodeFrame(inner);
@@ -44,7 +44,7 @@ BitmapDecodeFrame BitmapDecoder::GetFrame(std::size_t index) const {
 MetadataQueryReader BitmapDecoder::GetMetadataQuerier() const {
 
     COMPtr<IWICMetadataQueryReader> inner;
-    HRESULT result = Inner()->GetMetadataQueryReader(inner.Reset());
+    HRESULT result = Ptr()->GetMetadataQueryReader(inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
     return MetadataQueryReader(inner);

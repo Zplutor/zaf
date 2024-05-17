@@ -39,6 +39,8 @@ Throws a zaf::PreconditionError with the specified message and source location.
 @details
     This function is internally used by ZAF_EXPECT() to throw zaf::PreconditionError, enabling the
     use of ZAF_EXPECT() in destructors without warning.
+
+@relatesalso PreconditionError
 */
 [[noreturn]]
 inline void ThrowPreconditionError(const char* message, const SourceLocation& location) {

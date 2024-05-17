@@ -13,7 +13,7 @@ void Bitmap::SetResolution(double x, double y) {
 
 void Bitmap::SetPalette(const Palette& palette) {
 
-    HRESULT com_error = Inner()->SetPalette(palette.Inner().Inner());
+    HRESULT com_error = Inner()->SetPalette(palette.Ptr().Inner());
     ZAF_THROW_IF_COM_ERROR(com_error);
 }
 
@@ -33,7 +33,7 @@ Size Bitmap::Lock::GetSize() const {
 
     UINT width = 0;
     UINT height = 0;
-    HRESULT com_error = Inner()->GetSize(&width, &height);
+    HRESULT com_error = Ptr()->GetSize(&width, &height);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
     return Size(static_cast<float>(width), static_cast<float>(height));
@@ -43,7 +43,7 @@ Size Bitmap::Lock::GetSize() const {
 std::uint32_t Bitmap::Lock::GetStride() const {
 
     UINT stride = 0;
-    HRESULT com_error = Inner()->GetStride(&stride);
+    HRESULT com_error = Ptr()->GetStride(&stride);
 
     ZAF_THROW_IF_COM_ERROR(com_error);
     return stride;
@@ -53,7 +53,7 @@ std::uint32_t Bitmap::Lock::GetStride() const {
 void Bitmap::Lock::GetDataPointer(std::uint8_t*& data_pointer, std::size_t& data_size) const {
 
     UINT buffer_size{};
-    HRESULT com_error = Inner()->GetDataPointer(&buffer_size, &data_pointer);
+    HRESULT com_error = Ptr()->GetDataPointer(&buffer_size, &data_pointer);
     ZAF_THROW_IF_COM_ERROR(com_error);
 
     data_size = buffer_size;

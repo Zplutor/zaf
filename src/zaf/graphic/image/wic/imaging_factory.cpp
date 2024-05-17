@@ -14,7 +14,7 @@ BitmapDecoder ImagingFactory::CreateDecoderFromFile(
     const DecoderCreateOptions& options) {
 
     COMPtr<IWICBitmapDecoder> ptr;
-    HRESULT result = Inner()->CreateDecoderFromFilename(
+    HRESULT result = Ptr()->CreateDecoderFromFilename(
         file_path.c_str(),
         nullptr,
         GENERIC_READ,
@@ -31,8 +31,8 @@ BitmapDecoder ImagingFactory::CreateDecoderFromStream(
     const DecoderCreateOptions& options) {
 
     COMPtr<IWICBitmapDecoder> ptr;
-    HRESULT com_error = Inner()->CreateDecoderFromStream(
-        stream.Inner().Inner(),
+    HRESULT com_error = Ptr()->CreateDecoderFromStream(
+        stream.Ptr().Inner(),
         nullptr,
         static_cast<WICDecodeOptions>(options.decode_options),
         ptr.Reset());
@@ -45,7 +45,7 @@ BitmapDecoder ImagingFactory::CreateDecoderFromStream(
 Bitmap ImagingFactory::CreateBitmap(const Size& size, const BitmapCreateOptions& options) {
 
     COMPtr<IWICBitmap> ptr;
-    HRESULT com_error = Inner()->CreateBitmap(
+    HRESULT com_error = Ptr()->CreateBitmap(
         static_cast<UINT>(size.width),
         static_cast<UINT>(size.height),
         ToWICPixelFormatGUID(options.pixel_format),

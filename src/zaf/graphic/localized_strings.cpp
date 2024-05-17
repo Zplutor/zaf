@@ -6,12 +6,12 @@ namespace zaf {
 std::wstring LocalizedStrings::GetLocaleName(std::size_t index) const {
 
     UINT32 length = 0;
-    HRESULT result = Inner()->GetLocaleNameLength(static_cast<UINT32>(index), &length);
+    HRESULT result = Ptr()->GetLocaleNameLength(static_cast<UINT32>(index), &length);
 
     ZAF_THROW_IF_COM_ERROR(result);
 
     std::wstring locale_name(length + 1, 0);
-    result = Inner()->GetLocaleName(
+    result = Ptr()->GetLocaleName(
         static_cast<UINT32>(index),
         &locale_name[0], 
         static_cast<UINT32>(locale_name.length()));
@@ -26,12 +26,12 @@ std::wstring LocalizedStrings::GetLocaleName(std::size_t index) const {
 std::wstring LocalizedStrings::GetString(std::size_t index) const {
 
     UINT32 length = 0;
-    HRESULT result = Inner()->GetStringLength(static_cast<UINT32>(index), &length);
+    HRESULT result = Ptr()->GetStringLength(static_cast<UINT32>(index), &length);
 
     ZAF_THROW_IF_COM_ERROR(result);
 
     std::wstring string(length + 1, 0);
-    result = Inner()->GetString(
+    result = Ptr()->GetString(
         static_cast<UINT32>(index),
         &string[0],
         static_cast<UINT32>(string.length()));
@@ -47,7 +47,7 @@ std::optional<std::size_t> LocalizedStrings::FindLocaleName(const std::wstring& 
 
     UINT32 index = 0;
     BOOL is_existent = FALSE;
-    HRESULT result = Inner()->FindLocaleName(local_name.c_str(), &index, &is_existent);
+    HRESULT result = Ptr()->FindLocaleName(local_name.c_str(), &index, &is_existent);
 
     ZAF_THROW_IF_COM_ERROR(result);
 

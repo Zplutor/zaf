@@ -37,12 +37,12 @@ public:
     float GetDPI() const {
         float x{};
         float y{};
-        Inner()->GetDpi(&x, &y);
+        Ptr()->GetDpi(&x, &y);
         return x;
     }
 
     void SetDPI(float dpi) {
-        Inner()->SetDpi(dpi, dpi);
+        Ptr()->SetDpi(dpi, dpi);
     }
 
     BitmapRenderer CreateCompatibleRenderer(const CreateCompatibleRendererOptions& options);
@@ -64,11 +64,11 @@ public:
     RenderBitmap CreateBitmap(const wic::BitmapSource& image_source);
 
     void BeginDraw() {
-        Inner()->BeginDraw();
+        Ptr()->BeginDraw();
     }
 
     void EndDraw() {
-        HRESULT result = Inner()->EndDraw();
+        HRESULT result = Ptr()->EndDraw();
         ZAF_THROW_IF_COM_ERROR(result);
     }
 
@@ -79,16 +79,16 @@ public:
         float stroke_width,
         const Stroke& stroke) {
 
-        Inner()->DrawLine(
+        Ptr()->DrawLine(
             from_point.ToD2D1POINT2F(),
             to_point.ToD2D1POINT2F(),
-            brush.Inner().Inner(),
+            brush.Ptr().Inner(),
             stroke_width,
-            stroke.Inner().Inner());
+            stroke.Ptr().Inner());
     }
 
     void DrawRectangle(const Rect& rect, const Brush& brush) {
-        Inner()->FillRectangle(rect.ToD2D1RECTF(), brush.Inner().Inner());
+        Ptr()->FillRectangle(rect.ToD2D1RECTF(), brush.Ptr().Inner());
     }
 
     void DrawRectangleFrame(
@@ -97,15 +97,15 @@ public:
         float stroke_width,
         const Stroke& stroke) {
 
-        Inner()->DrawRectangle(
+        Ptr()->DrawRectangle(
             rect.ToD2D1RECTF(),
-            brush.Inner().Inner(),
+            brush.Ptr().Inner(),
             stroke_width,
-            stroke.Inner().Inner());
+            stroke.Ptr().Inner());
     }
 
     void DrawRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush) {
-        Inner()->FillRoundedRectangle(rounded_rect.ToD2D1ROUNDEDRECT(), brush.Inner().Inner());
+        Ptr()->FillRoundedRectangle(rounded_rect.ToD2D1ROUNDEDRECT(), brush.Ptr().Inner());
     }
 
     void DrawRoundedRectangleFrame(
@@ -114,15 +114,15 @@ public:
         float stroke_width,
         const Stroke& stroke) {
 
-        Inner()->DrawRoundedRectangle(
+        Ptr()->DrawRoundedRectangle(
             rounded_rect.ToD2D1ROUNDEDRECT(),
-            brush.Inner().Inner(),
+            brush.Ptr().Inner(),
             stroke_width,
-            stroke.Inner().Inner());
+            stroke.Ptr().Inner());
     }
 
     void DrawEllipse(const Ellipse& ellipse, const Brush& brush) {
-        Inner()->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush.Inner().Inner());
+        Ptr()->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush.Ptr().Inner());
     }
 
     void DrawEllipseFrame(
@@ -131,11 +131,11 @@ public:
         float stroke_width,
         const Stroke& stroke) {
 
-        Inner()->DrawEllipse(
+        Ptr()->DrawEllipse(
             ellipse.ToD2D1ELLIPSE(),
-            brush.Inner().Inner(),
+            brush.Ptr().Inner(),
             stroke_width,
-            stroke.Inner().Inner());
+            stroke.Ptr().Inner());
     }
 
     void DrawGeometry(
@@ -143,10 +143,10 @@ public:
         const Brush& brush,
         const Brush& opacity_brush) {
 
-        Inner()->FillGeometry(
-            geometry.Inner().Inner(),
-            brush.Inner().Inner(),
-            opacity_brush.Inner().Inner());
+        Ptr()->FillGeometry(
+            geometry.Ptr().Inner(),
+            brush.Ptr().Inner(),
+            opacity_brush.Ptr().Inner());
     }
 
     void DrawGeometryFrame(
@@ -155,11 +155,11 @@ public:
         float stroke_width,
         const Stroke& stroke) {
 
-        Inner()->DrawGeometry(
-            geometry.Inner().Inner(),
-            brush.Inner().Inner(),
+        Ptr()->DrawGeometry(
+            geometry.Ptr().Inner(),
+            brush.Ptr().Inner(),
             stroke_width,
-            stroke.Inner().Inner());
+            stroke.Ptr().Inner());
     }
 
     void DrawTextFormat(
@@ -168,12 +168,12 @@ public:
         const Rect& rect,
         const Brush& brush) {
 
-        Inner()->DrawText(
+        Ptr()->DrawText(
             text.c_str(),
             static_cast<UINT32>(text.length()),
-            text_format.Inner().Inner(),
+            text_format.Ptr().Inner(),
             rect.ToD2D1RECTF(),
-            brush.Inner().Inner());
+            brush.Ptr().Inner());
     }
 
     void DrawTextLayout(
@@ -181,10 +181,10 @@ public:
         const Point& position,
         const Brush& brush) {
 
-        Inner()->DrawTextLayout(
+        Ptr()->DrawTextLayout(
             position.ToD2D1POINT2F(), 
             text_layout.Inner().Inner(),
-            brush.Inner().Inner());
+            brush.Ptr().Inner());
     }
 
     void DrawBitmap(
@@ -195,31 +195,31 @@ public:
         const Rect* bitmap_rect);
 
     void PushAxisAlignedClipping(const Rect& rect, AntialiasMode antialias_mode) {
-        Inner()->PushAxisAlignedClip(
+        Ptr()->PushAxisAlignedClip(
             rect.ToD2D1RECTF(), 
             static_cast<D2D1_ANTIALIAS_MODE>(antialias_mode));
     }
 
     void PopAxisAlignedClipping() {
-        Inner()->PopAxisAlignedClip();
+        Ptr()->PopAxisAlignedClip();
     }
 
     void PushLayer(const Layer& layer, const LayerParameters& parameters);
 
     void PopLayer() {
-        Inner()->PopLayer();
+        Ptr()->PopLayer();
     }
 
     void Clear() {
-        Inner()->Clear();
+        Ptr()->Clear();
     }
 
     void Clear(const Color& color) {
-        Inner()->Clear(color.ToD2D1COLORF());
+        Ptr()->Clear(color.ToD2D1COLORF());
     }
 
     void Transform(const TransformMatrix& transform_matrix) {
-        Inner()->SetTransform(transform_matrix.ToD2D1MATRIX3X2F());
+        Ptr()->SetTransform(transform_matrix.ToD2D1MATRIX3X2F());
     }
 
 private:

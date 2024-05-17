@@ -20,7 +20,7 @@ public:
     }
 
     void SetBitmap(const RenderBitmap& bitmap) {
-        Inner()->SetBitmap(bitmap.Inner().Inner());
+        Inner()->SetBitmap(bitmap.Ptr().Inner());
     }
 
     InterpolationMode GetInterpolationMode() const {

@@ -21,7 +21,7 @@ public:
     
     void SetGeometricMask(const Geometry& value) {
         geometric_mask_ = value;
-        inner_.geometricMask = geometric_mask_.Inner().Inner();
+        inner_.geometricMask = geometric_mask_.Ptr().Inner();
     }
 
     void SetMaskTransform(const TransformMatrix& value) {

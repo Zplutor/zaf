@@ -69,13 +69,8 @@ public:
     Sets data in the specified data object to the clipboard.
 
     @param data_object
-        The data object to set to the clipboard.
-
-    @pre 
-        data_object is valid.
-
-    @throw zaf::PreconditionError 
-        Thrown if the precondition is violated.
+        The data object to set to the clipboard. It can be null, in which case the clipboard is 
+        emptied.
 
     @throw zaf::COMError
         Thrown if fails to set the data object.

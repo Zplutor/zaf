@@ -64,7 +64,7 @@ public:
 public:
     wic::Stream CreateStream() {
         COMPtr<IWICStream> ptr;
-        HRESULT com_error = Inner()->CreateStream(ptr.Reset());
+        HRESULT com_error = Ptr()->CreateStream(ptr.Reset());
         ZAF_THROW_IF_COM_ERROR(com_error);
         return wic::Stream{ ptr };
     }
@@ -100,7 +100,7 @@ public:
         const BitmapCreateFromHBITMAPOptions& options) {
 
         COMPtr<IWICBitmap> ptr;
-        HRESULT com_error = Inner()->CreateBitmapFromHBITMAP(
+        HRESULT com_error = Ptr()->CreateBitmapFromHBITMAP(
             bitmap,
             options.palette,
             static_cast<WICBitmapAlphaChannelOption>(options.alpha_channel_option),
@@ -116,7 +116,7 @@ public:
 
     BitmapScaler CreateBitmapScaler() {
         COMPtr<IWICBitmapScaler> ptr;
-        HRESULT com_error = Inner()->CreateBitmapScaler(ptr.Reset());
+        HRESULT com_error = Ptr()->CreateBitmapScaler(ptr.Reset());
         ZAF_THROW_IF_COM_ERROR(com_error);
         return wic::BitmapScaler{ ptr };
     }
@@ -124,7 +124,7 @@ public:
 
     Palette CreatePalette() {
         COMPtr<IWICPalette> ptr;
-        HRESULT com_error = Inner()->CreatePalette(ptr.Reset());
+        HRESULT com_error = Ptr()->CreatePalette(ptr.Reset());
         ZAF_THROW_IF_COM_ERROR(com_error);
         return Palette{ ptr };
     }

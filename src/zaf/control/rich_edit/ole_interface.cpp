@@ -8,7 +8,7 @@ ObjectInfo OLEInterface::GetObjectInfoAt(std::size_t object_index) const {
     REOBJECT inner{};
     inner.cbStruct = sizeof(inner);
 
-    HRESULT hresult = Inner()->GetObject(
+    HRESULT hresult = Ptr()->GetObject(
         static_cast<LONG>(object_index),
         &inner,
         REO_GETOBJ_POLEOBJ);
