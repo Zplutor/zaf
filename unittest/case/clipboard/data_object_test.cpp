@@ -61,9 +61,11 @@ TEST(DataObjectTest, GetUnknownData) {
     auto format_type = MakePrivateFormatType(78);
 
     auto data_object = DataObject::Create();
-    data_object.SetData(format_type, std::make_shared<TestClipboardData>());
+    data_object.SetData(
+        std::make_shared<TestClipboardData>(), 
+        DataDescriptor::FromFormatType(format_type));
 
-    auto got_data = data_object.GetData(format_type);
+    auto got_data = data_object.GetData(DataDescriptor::FromFormatType(format_type));
     ASSERT_NE(got_data, nullptr);
     auto unknown_data = zaf::As<UnknownData>(got_data);
     ASSERT_NE(unknown_data, nullptr);
@@ -76,9 +78,11 @@ TEST(DataObjectTest, GetRegisteredData) {
     Clipboard::RegisterClipboardData(format_type, TestClipboardData::Type);
 
     auto data_object = DataObject::Create();
-    data_object.SetData(format_type, std::make_shared<TestClipboardData>());
+    data_object.SetData(
+        std::make_shared<TestClipboardData>(), 
+        DataDescriptor::FromFormatType(format_type));
 
-    auto got_data = data_object.GetData(format_type);
+    auto got_data = data_object.GetData(DataDescriptor::FromFormatType(format_type));
     ASSERT_NE(got_data, nullptr);
     auto unknown_data = zaf::As<TestClipboardData>(got_data);
     ASSERT_NE(unknown_data, nullptr);

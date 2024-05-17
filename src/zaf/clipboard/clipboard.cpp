@@ -79,6 +79,15 @@ DataObject Clipboard::GetDataObject() {
 }
 
 
+void Clipboard::SetDataObject(const DataObject& data_object) {
+
+    ZAF_EXPECT(data_object.IsValid());
+
+    HRESULT hresult = OleSetClipboard(data_object.Inner().Inner());
+    ZAF_THROW_IF_COM_ERROR(hresult);
+}
+
+
 void Clipboard::RegisterClipboardData(FormatType format_type, ObjectType* clipboard_data_type) {
     internal::ClipboardDataRegistry::Instance().RegisterType(format_type, clipboard_data_type);
 }

@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file
+    Defines the class zaf::clipboard::DataDescriptorEnumerator.
+*/
+
 #include <ObjIdl.h>
 #include <optional>
 #include <zaf/base/com_object.h>
@@ -7,9 +12,9 @@
 
 namespace zaf::clipboard {
 
-class FormatEnumerator : public COMObject<IEnumFORMATETC> {
+class DataDescriptorEnumerator : public COMObject<IEnumFORMATETC> {
 public:
-    explicit FormatEnumerator(COMPtr<IEnumFORMATETC> inner);
+    explicit DataDescriptorEnumerator(COMPtr<IEnumFORMATETC> inner);
 
     std::optional<DataDescriptor> Next();
     void Reset();

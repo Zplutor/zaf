@@ -52,7 +52,7 @@ public:
     static void SetText(std::wstring_view text);
 
     /**
-    Gets a data object containing the content stored in the clipboard.
+    Gets a data object containing the data stored in the clipboard.
 
     @return
         The data object got from the clipboard.
@@ -64,6 +64,26 @@ public:
         This method uses OleGetClipboard() to retrieve the data object.
     */
     static DataObject GetDataObject();
+
+    /**
+    Sets data in the specified data object to the clipboard.
+
+    @param data_object
+        The data object to set to the clipboard.
+
+    @pre 
+        data_object is valid.
+
+    @throw zaf::PreconditionError 
+        Thrown if the precondition is violated.
+
+    @throw zaf::COMError
+        Thrown if fails to set the data object.
+
+    @details
+        This method uses OleSetClipboard() to modify the clipboard.
+    */
+    static void SetDataObject(const DataObject& data_object);
 
     /**
     Registers the specified clipboard data type for the specified format type.

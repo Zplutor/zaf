@@ -1,14 +1,15 @@
-#include <zaf/clipboard/format_enumerator.h>
+#include <zaf/clipboard/data_descriptor_enumerator.h>
 #include <zaf/base/error/com_error.h>
 
 namespace zaf::clipboard {
 
-FormatEnumerator::FormatEnumerator(COMPtr<IEnumFORMATETC> inner) : COMObject(std::move(inner)) {
+DataDescriptorEnumerator::DataDescriptorEnumerator(COMPtr<IEnumFORMATETC> inner) : 
+    COMObject(std::move(inner)) {
 
 }
 
 
-std::optional<DataDescriptor> FormatEnumerator::Next() {
+std::optional<DataDescriptor> DataDescriptorEnumerator::Next() {
 
     FORMATETC inner{};
     HRESULT hresult = Inner()->Next(1, &inner, nullptr);
@@ -21,7 +22,7 @@ std::optional<DataDescriptor> FormatEnumerator::Next() {
 }
 
 
-void FormatEnumerator::Reset() {
+void DataDescriptorEnumerator::Reset() {
 
     HRESULT hresult = Inner()->Reset();
     ZAF_THROW_IF_COM_ERROR(hresult);
