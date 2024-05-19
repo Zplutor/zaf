@@ -63,6 +63,23 @@ TEST(ClipboardTest, SetTextFail) {
 }
 
 
+TEST(ClipboardTest, SetDataObject) {
+
+    auto text = L"SetDataObject" + std::to_wstring(std::time(nullptr));
+
+    auto data_object = DataObject::Create();
+    data_object.SetText(text);
+    Clipboard::SetDataObject(data_object);
+
+    auto text_in_clipboard = Clipboard::GetText();
+    ASSERT_EQ(text_in_clipboard, text);
+
+    //Set a null data object to empty the clipboard.
+    Clipboard::SetDataObject({});
+    ASSERT_THROW(Clipboard::GetText(), zaf::Win32Error);
+}
+
+
 TEST(ClipboardTest, RegisteredClipboardData) {
 
     //Register private format type.

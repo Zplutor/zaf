@@ -44,7 +44,7 @@ void Application::Initialize(const InitializationOptions& parameters) {
 
     resource_factory_.reset(new ResourceFactory(parameters.custom_uri_loader));
 
-    HRESULT result = CoInitialize(nullptr);
+    HRESULT result = OleInitialize(nullptr);
     ZAF_THROW_IF_COM_ERROR(result);
 
     //Create Direct2D factory.

@@ -34,12 +34,25 @@ public:
     COMObject() noexcept = default;
 
     /**
+    Constructs a null instance from a nullptr.
+    */
+    COMObject(std::nullptr_t) noexcept { }
+
+    /**
     Constructs an instance from the specified COMPtr.
 
     @param ptr
         The COMPtr that the instance will own.
     */
     explicit COMObject(COMPtr<I> ptr) noexcept : ptr_(std::move(ptr)) { }
+
+    /**
+    Assigns the COMObject to null.
+    */
+    COMObject& operator=(std::nullptr_t) noexcept {
+        this->ptr_.Reset();
+        return *this;
+    }
 
     /**
     Gets the underlying COMPtr of the COMObject.
