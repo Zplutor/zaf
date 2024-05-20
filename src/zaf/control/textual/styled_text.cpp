@@ -90,7 +90,7 @@ const Font& StyledText::GetFontAtIndex(std::size_t index) const {
 }
 
 
-StyledText::ConstRangedFontAccessor StyledText::RangedFonts() const {
+const StyledText::RangedFontAccessor StyledText::RangedFonts() const {
     return ranged_style_.Fonts();
 }
 
@@ -141,7 +141,7 @@ const ColorPicker& StyledText::GetTextColorPickerAtIndex(std::size_t index) cons
 }
 
 
-StyledText::ConstRangedColorPickerAccessor StyledText::RangedTextColorPicker() const {
+const StyledText::RangedColorPickerAccessor StyledText::RangedTextColorPicker() const {
     return ranged_style_.TextColorPickers();
 }
 
@@ -187,7 +187,7 @@ const ColorPicker& StyledText::GetTextBackColorPickerAtIndex(std::size_t index) 
 }
 
 
-StyledText::ConstRangedColorPickerAccessor StyledText::RangedTextBackColorPickers() const {
+const StyledText::RangedColorPickerAccessor StyledText::RangedTextBackColorPickers() const {
     return ranged_style_.TextBackColorPickers();
 }
 

@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <zaf/base/error/contract_error.h>
+#include <zaf/base/non_copyable.h>
 #include <zaf/control/color_picker.h>
 #include <zaf/control/textual/inline_object_store.h>
 #include <zaf/graphic/font/font.h>
@@ -9,20 +10,9 @@
 
 namespace zaf::textual {
 
-template<bool IsConst>
 class BaseRangedItem : NonCopyableNonMovable {
-private:
-    using InnerItem = std::add_lvalue_reference_t<
-        std::conditional_t<
-            IsConst,
-            std::add_const_t<internal::RangedValueStore::Item>,
-            internal::RangedValueStore::Item
-        >
-    >;
-    static_assert(std::is_reference_v<InnerItem>);
-
 public:
-    explicit BaseRangedItem(InnerItem inner) : inner_(inner) {
+    explicit BaseRangedItem(internal::RangedValueStore::Item& inner) : inner_(inner) {
 
     }
 
@@ -31,39 +21,35 @@ public:
     }
 
 protected:
-    InnerItem inner_;
+    internal::RangedValueStore::Item& inner_;
 };
 
 
-template<bool IsConst>
-class RangedFontItem : public BaseRangedItem<IsConst> {
+class RangedFontItem : public BaseRangedItem {
 public:
-    using BaseRangedItem<IsConst>::BaseRangedItem;
+    using BaseRangedItem::BaseRangedItem;
 
     const zaf::Font& Font() const {
         return *std::any_cast<zaf::Font>(&this->inner_.Value());
     }
 
-    template<bool IsEnabled = !IsConst, typename E = std::enable_if_t<IsEnabled>>
     zaf::Font& Font() {
-        return const_cast<zaf::Font&>(static_cast<const RangedFontItem<IsConst>*>(this)->Font());
+        return const_cast<zaf::Font&>(static_cast<const RangedFontItem*>(this)->Font());
     }
 };
 
 
-template<bool IsConst>
-class RangedColorPickerItem : public BaseRangedItem<IsConst> {
+class RangedColorPickerItem : public BaseRangedItem {
 public:
-    using BaseRangedItem<IsConst>::BaseRangedItem;
+    using BaseRangedItem::BaseRangedItem;
 
     const zaf::ColorPicker& ColorPicker() const {
         return *std::any_cast<zaf::ColorPicker>(&this->inner_.Value());
     }
 
-    template<bool IsEnabled = !IsConst, typename E = std::enable_if_t<IsEnabled>>
     const zaf::ColorPicker& ColorPicker() {
         return const_cast<zaf::ColorPicker&>(
-            static_cast<const RangedColorPickerItem<IsConst>*>(this)->ColorPicker());
+            static_cast<const RangedColorPickerItem*>(this)->ColorPicker());
     }
 };
 
@@ -74,8 +60,16 @@ public:
     using iterator_category = std::forward_iterator_tag;
     using value_type = Item;
     using difference_type = std::make_signed_t<std::size_t>;
-    using pointer = value_type*;
-    using reference = value_type&;
+
+    using pointer = std::conditional_t<
+        std::is_const_v<std::remove_pointer_t<typename StoreIterator::pointer>>,
+        const value_type*, 
+        value_type*>;
+
+    using reference = std::conditional_t<
+        std::is_const_v<std::remove_reference_t<typename StoreIterator::reference>>,
+        const value_type&,
+        value_type&>;
 
 public:
     explicit RangedItemIterator(StoreIterator inner) : inner_(inner) {
@@ -92,12 +86,12 @@ public:
     }
 
     pointer operator->() const {
-        temp_item_.emplace(*inner_);
+        temp_item_.emplace(const_cast<internal::RangedValueStore::Item&>(*inner_));
         return &*temp_item_;
     }
 
     reference operator*() const {
-        temp_item_.emplace(*inner_);
+        temp_item_.emplace(const_cast<internal::RangedValueStore::Item&>(*inner_));
         return *temp_item_;
     }
 
@@ -115,36 +109,15 @@ private:
 };
 
 
-template<bool IsConst, template<bool> typename Item>
-class RangedItemAccessor {
-private:
-    using StoreType = std::conditional_t<
-        IsConst,
-        const internal::RangedValueStore&, 
-        internal::RangedValueStore&>;
-
-    static_assert(std::is_reference_v<StoreType>);
-
-    using StoreIterator = std::conditional_t<
-        IsConst,
-        typename internal::RangedValueStore::const_iterator,
-        typename internal::RangedValueStore::iterator>;
-
-    using StoreConstIterator = typename internal::RangedValueStore::const_iterator;
+template<typename Item>
+class RangedItemAccessor : NonCopyableNonMovable {
+public:
+    using value_type = Item;
+    using iterator = RangedItemIterator<internal::RangedValueStore::iterator, Item>;
+    using const_iterator = RangedItemIterator<internal::RangedValueStore::const_iterator, Item>;
 
 public:
-    using value_type = Item<IsConst>;
-
-    using iterator = RangedItemIterator<
-        StoreIterator, 
-        Item<std::is_const_v<std::remove_reference_t<typename StoreIterator::reference>>>>;
-
-    using const_iterator = RangedItemIterator<
-        StoreConstIterator,
-        Item<std::is_const_v<std::remove_reference_t<typename StoreConstIterator::reference>>>>;
-
-public:
-    explicit RangedItemAccessor(StoreType store) noexcept : store_(store) {
+    explicit RangedItemAccessor(internal::RangedValueStore& store) noexcept : store_(store) {
 
     }
 
@@ -156,6 +129,14 @@ public:
         auto inner_iterator = store_.FindItemContainsIndex(index);
         if (inner_iterator != store_.end()) {
             return iterator{ inner_iterator };
+        }
+        return this->end();
+    }
+
+    const_iterator FindItemContainsIndex(std::size_t index) const {
+        auto inner_iterator = store_.FindItemContainsIndex(index);
+        if (inner_iterator != store_.end()) {
+            return const_iterator{ inner_iterator };
         }
         return this->end();
     }
@@ -185,7 +166,7 @@ public:
     }
 
 private:
-    StoreType store_;
+    internal::RangedValueStore& store_;
 };
 
 
@@ -218,21 +199,18 @@ private:
 
 class RangedTextStyle : NonCopyable {
 public:
-    using FontAccessor = RangedItemAccessor<false, RangedFontItem>;
-    using ConstFontAccessor = RangedItemAccessor<true, RangedFontItem>;
-
-    using ColorPickerAccessor = RangedItemAccessor<false, RangedColorPickerItem>;
-    using ConstColorPickerAccessor = RangedItemAccessor<true, RangedColorPickerItem>;
+    using FontAccessor = RangedItemAccessor<RangedFontItem>;
+    using ColorPickerAccessor = RangedItemAccessor<RangedColorPickerItem>;
 
 public:
     RangedTextStyle() = default;
 
-    ConstFontAccessor Fonts() const {
-        return ConstFontAccessor{ fonts_ };
+    const FontAccessor& Fonts() const {
+        return font_accessor_;
     }
 
-    FontAccessor Fonts() {
-        return FontAccessor{ fonts_ };
+    FontAccessor& Fonts() {
+        return font_accessor_;
     }
 
     void SetFontInRange(Font font, const Range& range) {
@@ -243,12 +221,12 @@ public:
         fonts_.Clear();
     }
 
-    ConstColorPickerAccessor TextColorPickers() const {
-        return ConstColorPickerAccessor{ text_color_pickers_ };
+    const ColorPickerAccessor& TextColorPickers() const {
+        return text_color_picker_accessor_;
     }
 
-    ColorPickerAccessor TextColorPickers() {
-        return ColorPickerAccessor{ text_color_pickers_ };
+    ColorPickerAccessor& TextColorPickers() {
+        return text_color_picker_accessor_;
     }
 
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
@@ -260,12 +238,12 @@ public:
         text_color_pickers_.Clear();
     }
 
-    ConstColorPickerAccessor TextBackColorPickers() const {
-        return ConstColorPickerAccessor{ text_back_color_pickers_ };
+    const ColorPickerAccessor& TextBackColorPickers() const {
+        return text_back_color_picker_accessor_;
     }
 
-    ColorPickerAccessor TextBackColorPickers() {
-        return ColorPickerAccessor{ text_back_color_pickers_ };
+    ColorPickerAccessor& TextBackColorPickers() {
+        return text_back_color_picker_accessor_;
     }
 
     void SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range) {
@@ -297,8 +275,14 @@ public:
 
 private:
     internal::RangedValueStore fonts_;
+    FontAccessor font_accessor_{ fonts_ };
+
     internal::RangedValueStore text_color_pickers_;
+    ColorPickerAccessor text_color_picker_accessor_{ text_color_pickers_ };
+
     internal::RangedValueStore text_back_color_pickers_;
+    ColorPickerAccessor text_back_color_picker_accessor_{ text_back_color_pickers_ };
+
     InlineObjectStore inline_objects_;
 };
 

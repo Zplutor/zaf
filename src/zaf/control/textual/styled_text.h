@@ -15,10 +15,7 @@ namespace zaf::textual {
 class StyledText : NonCopyable {
 public:
     using RangedFontAccessor = RangedTextStyle::FontAccessor;
-    using ConstRangedFontAccessor = RangedTextStyle::ConstFontAccessor;
-
     using RangedColorPickerAccessor = RangedTextStyle::ColorPickerAccessor;
-    using ConstRangedColorPickerAccessor = RangedTextStyle::ConstColorPickerAccessor;
 
 public:
     StyledText();
@@ -92,7 +89,7 @@ public:
     void SetFontInRange(Font font, const Range& range);
     void ClearRangedFonts();
     const Font& GetFontAtIndex(std::size_t index) const;
-    ConstRangedFontAccessor RangedFonts() const;
+    const RangedFontAccessor RangedFonts() const;
     RangedFontAccessor RangedFonts();
 
     const ColorPicker& DefaultTextColorPicker() const {
@@ -105,7 +102,7 @@ public:
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range);
     void ClearRangedTextColorPickers();
     const ColorPicker& GetTextColorPickerAtIndex(std::size_t index) const;
-    ConstRangedColorPickerAccessor RangedTextColorPicker() const;
+    const RangedColorPickerAccessor RangedTextColorPicker() const;
     RangedColorPickerAccessor RangedTextColorPicker();
 
     const ColorPicker& DefaultTextBackColorPicker() const {
@@ -117,7 +114,7 @@ public:
     void SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range);
     void ClearRangedTextBackColorPickers();
     const ColorPicker& GetTextBackColorPickerAtIndex(std::size_t index) const;
-    ConstRangedColorPickerAccessor RangedTextBackColorPickers() const;
+    const RangedColorPickerAccessor RangedTextBackColorPickers() const;
     RangedColorPickerAccessor RangedTextBackColorPickers();
 
     void AttachInlineObjectToRange(
