@@ -232,7 +232,7 @@ InlineObjectAccessor StyledText::InlineObjects() const {
 
 StyledTextSlice StyledText::Slice(const Range& range) const {
 
-    CheckRange(range);
+    ZAF_EXPECT(range.index <= text_.length());
 
     if (range.length == 0) {
         return StyledTextSlice{ range.index, {}, {} };
@@ -332,6 +332,68 @@ void StyledText::ReplaceSlice(const Range& slice_range, const StyledTextSlice& n
             each_item.Object()->Clone(),
             each_item.Range());
     }
+}
+
+
+StyledText StyledText::SubText(const Range& sub_range) const {
+
+    ZAF_EXPECT(sub_range.index <= text_.length());
+
+    StyledText result;
+    result.SetDefaultFont(default_font_);
+    result.SetDefaultTextColorPicker(default_text_color_picker_);
+    result.SetDefaultTextBackColorPicker(default_text_back_color_picker_);
+
+    auto slice = this->Slice(sub_range);
+
+    result.SetText(slice.Text());
+
+    const auto revise_item_range = [&sub_range, &result](const Range& item_range) {
+
+        std::size_t index{};
+        std::size_t length{};
+
+        if (item_range.index < sub_range.index) {
+            index = 0;
+            length = item_range.length - (sub_range.index - item_range.index);
+        }
+        else {
+            index = item_range.index - sub_range.index;
+            length = item_range.length;
+        }
+
+        Range new_range{ index, length };
+        if (new_range.EndIndex() > result.Text().length()) {
+            new_range.length -= new_range.EndIndex() - result.Text().length();
+        }
+        return new_range;
+    };
+    
+    //Fonts
+    for (const auto& each_item : slice.RangedStyle().Fonts()) {
+        result.SetFontInRange(each_item.Font(), revise_item_range(each_item.Range()));
+    }
+
+    //Text color pickers
+    for (const auto& each_item : slice.RangedStyle().TextColorPickers()) {
+        result.SetTextColorPickerInRange(
+            each_item.ColorPicker(), 
+            revise_item_range(each_item.Range()));
+    }
+
+    //Text back color pickers
+    for (const auto& each_item : slice.RangedStyle().TextBackColorPickers()) {
+        result.SetTextBackColorPickerInRange(
+            each_item.ColorPicker(),
+            revise_item_range(each_item.Range()));
+    }
+
+    //Inline objects
+    for (const auto& each_item : slice.RangedStyle().InlineObjects()) {
+        result.AttachInlineObjectToRange(each_item.Object(), revise_item_range(each_item.Range()));
+    }
+
+    return result;
 }
 
 

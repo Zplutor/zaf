@@ -73,6 +73,7 @@
     <ClCompile Include="src\zaf\clipboard\drop_files_data.cpp" />
     <ClCompile Include="src\zaf\clipboard\data_descriptor.cpp" />
     <ClCompile Include="src\zaf\clipboard\data_descriptor_enumerator.cpp" />
+    <ClCompile Include="src\zaf\clipboard\format_type.cpp" />
     <ClCompile Include="src\zaf\clipboard\internal\clipboard_data_registry.cpp" />
     <ClCompile Include="src\zaf\clipboard\internal\enum_formatetc_impl.cpp" />
     <ClCompile Include="src\zaf\clipboard\internal\data_object_impl.cpp" />

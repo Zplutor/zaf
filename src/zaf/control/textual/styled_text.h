@@ -109,7 +109,7 @@ public:
     RangedColorPickerAccessor RangedTextColorPicker();
 
     const ColorPicker& DefaultTextBackColorPicker() const {
-        return default_text_color_picker_;
+        return default_text_back_color_picker_;
     }
 
     void SetDefaultTextBackColor(const Color& color);
@@ -131,6 +131,27 @@ public:
 
     StyledTextSlice Slice(const Range& range) const;
     void ReplaceSlice(const Range& slice_range, const StyledTextSlice& new_slice);
+
+    /**
+    Gets a sub-portion of the styled text.
+
+    @param sub_range
+        The range of the sub-portion within the styled text. The end index may exceed the length of
+        the styled text; in such a case, the sub-portion contains the text up to the end.
+
+    @pre
+        The start index of sub_range does not exceed the length of the style text.
+
+    @return
+        The sub-portion of the styled text.
+
+    @throw zaf::PreconditionError
+        Thrown if the precondition is violated.
+
+    @throw std::bac_alloc
+        Thrown if fails to allocate the required memory.
+    */
+    StyledText SubText(const Range& sub_range) const;
 
     StyledText Clone() const;
 

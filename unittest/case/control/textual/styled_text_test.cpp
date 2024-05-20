@@ -25,3 +25,51 @@ TEST(StyledTextTest, AppendText) {
     ASSERT_EQ(new_range, Range(10, 7));
     ASSERT_EQ(styled_text.Text(), L"StyledText-append");
 }
+
+
+TEST(StyledTextTest, SubTextPreconditionError) {
+
+    //Empty styled text.
+    {
+        StyledText styled_text;
+        ASSERT_THROW(styled_text.SubText(Range{ 1, 0 }), PreconditionError);
+    }
+
+    //Non-empty styled text.
+}
+
+
+TEST(StyledTextTest, SubTextEmptyText) {
+
+    StyledText styled_text;
+    styled_text.SetDefaultFont(Font{ L"default-font" });
+    styled_text.SetDefaultTextColor(Color::Red());
+    styled_text.SetDefaultTextBackColor(Color::Green());
+
+    auto test = [&styled_text](const Range& sub_range) {
+    
+        auto sub_text = styled_text.SubText(sub_range);
+        if (!sub_text.Text().empty()) {
+            return false;
+        }
+
+        if (sub_text.DefaultFont().FamilyName() != L"default-font") {
+            return false;
+        }
+
+        auto text_color = sub_text.DefaultTextColorPicker().target<ConstantColorPicker>();
+        if (text_color->GetColor() != Color::Red()) {
+            return false;
+        }
+
+        auto text_back_color = sub_text.DefaultTextBackColorPicker().target<ConstantColorPicker>();
+        if (text_back_color->GetColor() != Color::Green()) {
+            return false;
+        }
+
+        return true;
+    };
+
+    ASSERT_TRUE(test(Range(0, 0)));
+    ASSERT_TRUE(test(Range(0, 2)));
+}
