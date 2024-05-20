@@ -34,13 +34,13 @@ TEST(DataObjectTest, Construct) {
     //DataObject created with the default constructor is invalid.
     {
         DataObject data_object;
-        ASSERT_FALSE(data_object.IsValid());
+        ASSERT_FALSE(data_object);
     }
 
     //DataObject created with Create() is valid.
     {
         DataObject data_object = DataObject::Create();
-        ASSERT_TRUE(data_object.IsValid());
+        ASSERT_TRUE(data_object);
     }
 }
 
