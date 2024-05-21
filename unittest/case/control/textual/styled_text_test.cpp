@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/control/textual/styled_text.h>
+#include <zaf/creation.h>
 
 using namespace zaf;
 using namespace zaf::textual;
@@ -33,43 +34,63 @@ TEST(StyledTextTest, GetSubTextPreconditionError) {
     {
         StyledText styled_text;
         ASSERT_THROW(styled_text.GetSubText(Range{ 1, 0 }), PreconditionError);
+        ASSERT_NO_THROW(styled_text.GetSubText(Range{ 0, 1 }));
     }
 
     //Non-empty styled text.
+    {
+        StyledText styled_text{ L"123" };
+        ASSERT_THROW(styled_text.GetSubText(Range{ 4, 0 }), PreconditionError);
+        ASSERT_NO_THROW(styled_text.GetSubText(Range{ 3, 2 }));
+    }
 }
 
 
-TEST(StyledTextTest, GetSubTextEmptyText) {
+TEST(StyledTextTest, GetSubText) {
 
-    StyledText styled_text;
+    StyledText styled_text{ L"0123456789" };
     styled_text.SetDefaultFont(Font{ L"default-font" });
     styled_text.SetDefaultTextColor(Color::Red());
     styled_text.SetDefaultTextBackColor(Color::Green());
 
-    auto test = [&styled_text](const Range& sub_range) {
-    
-        auto sub_text = styled_text.GetSubText(sub_range);
-        if (!sub_text.Text().empty()) {
-            return false;
-        }
+    styled_text.SetFontInRange(Font{ L"1" }, Range{ 0, 4 });
+    styled_text.SetTextColorInRange(Color::Yellow(), Range{ 6, 4 });
+    styled_text.SetTextBackColorInRange(Color::Gray(), Range{ 3, 4 });
+    styled_text.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 4, 2 });
 
-        if (sub_text.DefaultFont().FamilyName() != L"default-font") {
-            return false;
-        }
+    {
+        auto sub_text = styled_text.GetSubText(Range::FromIndexPair(2, 7));
+        ASSERT_EQ(sub_text.Text(), L"23456");
+        ASSERT_EQ(sub_text.DefaultFont(), styled_text.DefaultFont());
 
         auto text_color = sub_text.DefaultTextColorPicker().target<ConstantColorPicker>();
-        if (text_color->GetColor() != Color::Red()) {
-            return false;
-        }
+        ASSERT_TRUE(text_color);
+        ASSERT_EQ(text_color->GetColor(), Color::Red());
 
         auto text_back_color = sub_text.DefaultTextBackColorPicker().target<ConstantColorPicker>();
-        if (text_back_color->GetColor() != Color::Green()) {
-            return false;
-        }
+        ASSERT_TRUE(text_back_color);
+        ASSERT_EQ(text_back_color->GetColor(), Color::Green());
 
-        return true;
-    };
+        //Ranged font
+        ASSERT_FALSE(sub_text.RangedFonts().IsEmpty());
+        const auto& font_item = *sub_text.RangedFonts().begin();
+        ASSERT_EQ(font_item.Range(), Range(0, 2));
+        ASSERT_EQ(font_item.Font().family_name, L"1");
 
-    ASSERT_TRUE(test(Range(0, 0)));
-    ASSERT_TRUE(test(Range(0, 2)));
+        //Ranged text color picker
+        ASSERT_FALSE(sub_text.RangedTextColorPicker().IsEmpty());
+        const auto& text_color_item = *sub_text.RangedTextColorPicker().begin();
+        ASSERT_EQ(text_color_item.Range(), Range(4, 1));
+        ASSERT_EQ(
+            text_color_item.ColorPicker().target<ConstantColorPicker>()->GetColor(),
+            Color::Yellow());
+
+        //Ranged text back color picker
+        ASSERT_FALSE(sub_text.RangedTextBackColorPickers().IsEmpty());
+        const auto& text_back_color_item = *sub_text.RangedTextBackColorPickers().begin();
+        ASSERT_EQ(text_back_color_item.Range(), Range(1, 4));
+        ASSERT_EQ(
+            text_back_color_item.ColorPicker().target<ConstantColorPicker>()->GetColor(),
+            Color::Gray());
+    }
 }

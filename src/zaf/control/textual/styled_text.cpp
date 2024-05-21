@@ -162,6 +162,11 @@ void StyledText::SetDefaultTextBackColorPicker(ColorPicker color_picker) {
 }
 
 
+void StyledText::SetTextBackColorInRange(const Color& color, const Range& range) {
+    SetTextBackColorPickerInRange(CreateColorPicker(color), range);
+}
+
+
 void StyledText::SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range) {
 
     CheckRange(range);
@@ -301,30 +306,28 @@ void StyledText::ReplaceSlice(const Range& slice_range, const StyledTextSlice& n
 }
 
 
-StyledText StyledText::GetSubText(const Range& sub_range) const {
+StyledText StyledText::GetSubText(const Range& range) const {
 
-    ZAF_EXPECT(sub_range.index <= text_.length());
+    ZAF_EXPECT(range.index <= text_.length());
 
     StyledText result;
     result.SetDefaultFont(default_font_);
     result.SetDefaultTextColorPicker(default_text_color_picker_);
     result.SetDefaultTextBackColorPicker(default_text_back_color_picker_);
 
-    auto slice = this->Slice(sub_range);
+    result.SetText(text_.substr(range.index, range.length));
 
-    result.SetText(slice.Text());
-
-    const auto revise_item_range = [&sub_range, &result](const Range& item_range) {
+    const auto revise_item_range = [&range, &result](const Range& item_range) {
 
         std::size_t index{};
         std::size_t length{};
 
-        if (item_range.index < sub_range.index) {
+        if (item_range.index < range.index) {
             index = 0;
-            length = item_range.length - (sub_range.index - item_range.index);
+            length = item_range.length - (range.index - item_range.index);
         }
         else {
-            index = item_range.index - sub_range.index;
+            index = item_range.index - range.index;
             length = item_range.length;
         }
 
@@ -336,28 +339,36 @@ StyledText StyledText::GetSubText(const Range& sub_range) const {
     };
     
     //Fonts
-    for (const auto& each_item : slice.RangedStyle().Fonts()) {
-        result.SetFontInRange(each_item.Font(), revise_item_range(each_item.Range()));
-    }
+    ranged_style_.Fonts().VisitItemsInRange(
+        range, 
+        [&revise_item_range, &result](const auto& item) {
+            result.SetFontInRange(item.Font(), revise_item_range(item.Range()));
+        });
 
-    //Text color pickers
-    for (const auto& each_item : slice.RangedStyle().TextColorPickers()) {
-        result.SetTextColorPickerInRange(
-            each_item.ColorPicker(), 
-            revise_item_range(each_item.Range()));
-    }
+    //Ranged text color pickers
+    ranged_style_.TextColorPickers().VisitItemsInRange(
+        range, 
+        [&revise_item_range, &result](const auto& item) {
+            result.SetTextColorPickerInRange(item.ColorPicker(), revise_item_range(item.Range()));
+        });
 
-    //Text back color pickers
-    for (const auto& each_item : slice.RangedStyle().TextBackColorPickers()) {
-        result.SetTextBackColorPickerInRange(
-            each_item.ColorPicker(),
-            revise_item_range(each_item.Range()));
-    }
+    //Ranged background color pickers
+    ranged_style_.TextBackColorPickers().VisitItemsInRange(
+        range,
+        [&revise_item_range, &result](const auto& item) {
+            result.SetTextBackColorPickerInRange(
+                item.ColorPicker(),
+                revise_item_range(item.Range()));
+        });
 
-    //Inline objects
-    for (const auto& each_item : slice.RangedStyle().InlineObjects()) {
-        result.AttachInlineObjectToRange(each_item.Object(), revise_item_range(each_item.Range()));
-    }
+    //Inline objects.
+    ranged_style_.InlineObjects().VisitItemsInRange(
+        range, 
+        [&revise_item_range, &result](const auto& item) {
+            result.AttachInlineObjectToRange(
+                item.Object()->Clone(),
+                revise_item_range(item.Range()));
+        });
 
     return result;
 }

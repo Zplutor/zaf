@@ -111,6 +111,7 @@ public:
 
     void SetDefaultTextBackColor(const Color& color);
     void SetDefaultTextBackColorPicker(ColorPicker color_picker);
+    void SetTextBackColorInRange(const Color& color, const Range& range);
     void SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range);
     void ClearRangedTextBackColorPickers();
     const ColorPicker& GetTextBackColorPickerAtIndex(std::size_t index) const;
@@ -132,12 +133,12 @@ public:
     /**
     Gets a sub-portion of the styled text.
 
-    @param sub_range
+    @param range
         The range of the sub-portion within the styled text. The end index may exceed the length of
         the styled text; in such a case, the sub-portion contains the text up to the end.
 
     @pre
-        The start index of sub_range does not exceed the length of the style text.
+        The start index of range does not exceed the length of the style text.
 
     @return
         The sub-portion of the styled text.
@@ -145,10 +146,10 @@ public:
     @throw zaf::PreconditionError
         Thrown if the precondition is violated.
 
-    @throw std::bac_alloc
+    @throw std::bad_alloc
         Thrown if fails to allocate the required memory.
     */
-    StyledText GetSubText(const Range& sub_range) const;
+    StyledText GetSubText(const Range& range) const;
 
     StyledText Clone() const;
 
