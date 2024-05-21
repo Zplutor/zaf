@@ -244,66 +244,32 @@ StyledTextSlice StyledText::Slice(const Range& range) const {
     RangedTextStyle slice_style;
 
     //Ranged fonts
-    for (const auto& each_item : ranged_style_.Fonts()) {
-
-        if (each_item.Range().index >= range.EndIndex()) {
-            continue;
-        }
-
-        if (each_item.Range().EndIndex() <= range.index) {
-            break;
-        }
-
-        slice_style.SetFontInRange(each_item.Font(), each_item.Range());
-    }
+    ranged_style_.Fonts().VisitItemsInRange(range, [&slice_style](const auto& item) {
+        slice_style.SetFontInRange(item.Font(), item.Range());
+    });
 
     //Ranged text color pickers
-    for (const auto& each_item : ranged_style_.TextColorPickers()) {
-
-        if (each_item.Range().index >= range.EndIndex()) {
-            continue;
-        }
-
-        if (each_item.Range().EndIndex() <= range.index) {
-            break;
-        }
-
-        slice_style.SetTextColorPickerInRange(each_item.ColorPicker(), each_item.Range());
-    }
+    ranged_style_.TextColorPickers().VisitItemsInRange(range, [&slice_style](const auto& item) {
+        slice_style.SetTextColorPickerInRange(item.ColorPicker(), item.Range());
+    });
 
     //Ranged background color pickers
-    for (const auto& each_item : ranged_style_.TextBackColorPickers()) {
-
-        if (each_item.Range().index >= range.EndIndex()) {
-            continue;
-        }
-
-        if (each_item.Range().EndIndex() <= range.index) {
-            break;
-        }
-
-        slice_style.SetTextBackColorPickerInRange(each_item.ColorPicker(), each_item.Range());
-    }
-
+    ranged_style_.TextBackColorPickers().VisitItemsInRange(
+        range, 
+        [&slice_style](const auto& item) {
+            slice_style.SetTextBackColorPickerInRange(item.ColorPicker(), item.Range());
+        });
+        
     //Inline objects.
-    for (const auto& each_item : ranged_style_.InlineObjects()) {
+    ranged_style_.InlineObjects().VisitItemsInRange(range, [&slice_style](const auto& item) {
+        slice_style.AttachInlineObjectToRange(item.Object()->Clone(), item.Range());
+    });
 
-        if (each_item.Range().index >= range.EndIndex()) {
-            continue;
-        }
-
-        if (each_item.Range().EndIndex() <= range.index) {
-            break;
-        }
-
-        if (range.Contains(each_item.Range())) {
-            slice_style.AttachInlineObjectToRange(
-                each_item.Object()->Clone(),
-                each_item.Range());
-        }
-    }
-
-    return StyledTextSlice{ range.index, std::move(slice_text), std::move(slice_style) };
+    return StyledTextSlice{
+        range.index,
+        std::move(slice_text),
+        std::move(slice_style)
+    };
 }
 
 
@@ -335,7 +301,7 @@ void StyledText::ReplaceSlice(const Range& slice_range, const StyledTextSlice& n
 }
 
 
-StyledText StyledText::SubText(const Range& sub_range) const {
+StyledText StyledText::GetSubText(const Range& sub_range) const {
 
     ZAF_EXPECT(sub_range.index <= text_.length());
 

@@ -27,19 +27,19 @@ TEST(StyledTextTest, AppendText) {
 }
 
 
-TEST(StyledTextTest, SubTextPreconditionError) {
+TEST(StyledTextTest, GetSubTextPreconditionError) {
 
     //Empty styled text.
     {
         StyledText styled_text;
-        ASSERT_THROW(styled_text.SubText(Range{ 1, 0 }), PreconditionError);
+        ASSERT_THROW(styled_text.GetSubText(Range{ 1, 0 }), PreconditionError);
     }
 
     //Non-empty styled text.
 }
 
 
-TEST(StyledTextTest, SubTextEmptyText) {
+TEST(StyledTextTest, GetSubTextEmptyText) {
 
     StyledText styled_text;
     styled_text.SetDefaultFont(Font{ L"default-font" });
@@ -48,7 +48,7 @@ TEST(StyledTextTest, SubTextEmptyText) {
 
     auto test = [&styled_text](const Range& sub_range) {
     
-        auto sub_text = styled_text.SubText(sub_range);
+        auto sub_text = styled_text.GetSubText(sub_range);
         if (!sub_text.Text().empty()) {
             return false;
         }

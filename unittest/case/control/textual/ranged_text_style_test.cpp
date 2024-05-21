@@ -246,3 +246,119 @@ TEST(RangedTextStyleText, FindItemContainsIndex) {
         ASSERT_EQ(iterator->Font().family_name, L"bbb");
     }
 }
+
+
+TEST(RangedTextStyleTest, VisitItemsInRange) {
+
+    RangedTextStyle ranged_style;
+    ranged_style.SetFontInRange(Font{ L"1" }, Range{ 0, 2 });
+    ranged_style.SetFontInRange(Font{ L"2" }, Range{ 5, 2 });
+    ranged_style.SetFontInRange(Font{ L"3" }, Range{ 9, 2 });
+    ranged_style.SetFontInRange(Font{ L"4" }, Range{ 12, 2 });
+
+    std::vector<std::wstring> fonts;
+    std::vector<Range> ranges;
+    const auto visitor = [&fonts, &ranges](const RangedFontItem& item) {
+        fonts.push_back(item.Font().family_name);
+        ranges.push_back(item.Range());
+    };
+
+    const auto check_visit_result = [&fonts, &ranges](
+        const std::vector<std::wstring>& expected_fonts,
+        const std::vector<Range>& expected_ranges) {
+        bool result = (fonts == expected_fonts) && (ranges == expected_ranges);
+        fonts.clear();
+        ranges.clear();
+        return result;
+    };
+
+    {
+        ranged_style.Fonts().VisitItemsInRange(Range{ 0, 20 }, visitor);
+        std::vector<std::wstring> expected_fonts{
+            L"1",
+            L"2",
+            L"3",
+            L"4",
+        };
+        std::vector<Range> expected_ranges{
+            Range{ 0, 2 },
+            Range{ 5, 2 },
+            Range{ 9, 2 },
+            Range{ 12, 2 },
+        };
+        ASSERT_TRUE(check_visit_result(expected_fonts, expected_ranges));
+    }
+
+    {
+        ranged_style.Fonts().VisitItemsInRange(Range::FromIndexPair(2, 12), visitor);
+        std::vector<std::wstring> expected_fonts{
+            L"2",
+            L"3",
+        };
+        std::vector<Range> expected_ranges{
+            Range{ 5, 2 },
+            Range{ 9, 2 },
+        };
+        ASSERT_TRUE(check_visit_result(expected_fonts, expected_ranges));
+    }
+
+    {
+        ranged_style.Fonts().VisitItemsInRange(Range::FromIndexPair(10, 13), visitor);
+        std::vector<std::wstring> expected_fonts{
+            L"3",
+            L"4",
+        };
+        std::vector<Range> expected_ranges{
+            Range{ 9, 2 },
+            Range{ 12, 2 },
+        };
+        ASSERT_TRUE(check_visit_result(expected_fonts, expected_ranges));
+    }
+}
+
+
+TEST(RangedTextStyleTest, VisitInlineObjectsInRange) {
+
+    RangedTextStyle ranged_style;
+    ranged_style.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 0, 2 });
+    ranged_style.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 4, 2 });
+    ranged_style.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 8, 2 });
+
+    std::vector<Range> ranges;
+    const auto visitor = [&ranges](const auto& item) {
+        ranges.push_back(item.Range());
+    };
+
+    const auto check_visit_result = [&ranges](const std::vector<Range>& expected_ranges) {
+        bool result = ranges == expected_ranges;
+        ranges.clear();
+        return result;
+    };
+
+    {
+        ranged_style.InlineObjects().VisitItemsInRange(Range{ 0, 10 }, visitor);
+        std::vector<Range> expected_ranges{
+            Range{ 0, 2 },
+            Range{ 4, 2 },
+            Range{ 8, 2 },
+        };
+        ASSERT_TRUE(check_visit_result(expected_ranges));
+    }
+
+    {
+        ranged_style.InlineObjects().VisitItemsInRange(Range{ 4, 2 }, visitor);
+        std::vector<Range> expected_ranges{
+            Range{ 4, 2 },
+        };
+        ASSERT_TRUE(check_visit_result(expected_ranges));
+    }
+
+    //Only the items fully contained by the range will be visited.
+    {
+        ranged_style.InlineObjects().VisitItemsInRange(Range::FromIndexPair(1, 9), visitor);
+        std::vector<Range> expected_ranges{
+            Range{ 4, 2 },
+        };
+        ASSERT_TRUE(check_visit_result(expected_ranges));
+    }
+}

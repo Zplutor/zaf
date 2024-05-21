@@ -148,7 +148,7 @@ public:
     @throw std::bac_alloc
         Thrown if fails to allocate the required memory.
     */
-    StyledText SubText(const Range& sub_range) const;
+    StyledText GetSubText(const Range& sub_range) const;
 
     StyledText Clone() const;
 

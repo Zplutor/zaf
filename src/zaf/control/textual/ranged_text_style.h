@@ -16,6 +16,11 @@ public:
 
     }
 
+    explicit BaseRangedItem(const internal::RangedValueStore::Item& inner) : 
+        inner_(const_cast<internal::RangedValueStore::Item&>(inner)) {
+
+    }
+
     const Range& Range() const {
         return inner_.Range();
     }
@@ -86,12 +91,12 @@ public:
     }
 
     pointer operator->() const {
-        temp_item_.emplace(const_cast<internal::RangedValueStore::Item&>(*inner_));
+        temp_item_.emplace(*inner_);
         return &*temp_item_;
     }
 
     reference operator*() const {
-        temp_item_.emplace(const_cast<internal::RangedValueStore::Item&>(*inner_));
+        temp_item_.emplace(*inner_);
         return *temp_item_;
     }
 
@@ -141,6 +146,24 @@ public:
         return this->end();
     }
 
+    void VisitItemsInRange(
+        const Range& range,
+        const std::function<void(const Item&)>& visitor) const {
+
+        for (const auto& each_item : store_) {
+
+            if (each_item.Range().EndIndex() <= range.index) {
+                continue;
+            }
+
+            if (each_item.Range().index >= range.EndIndex()) {
+                break;
+            }
+
+            visitor(Item{ each_item });
+        }
+    }
+
     iterator begin() noexcept {
         return iterator{ store_.begin() };
     }
@@ -186,6 +209,26 @@ public:
 
     const_iterator FindItemContainsIndex(std::size_t index) const {
         return store_.FindItemContainsIndex(index);
+    }
+
+    void VisitItemsInRange(
+        const Range& range,
+        const std::function<void(const InlineObjectStore::Item&)>& visitor) const {
+
+        for (const auto& each_item : store_.Items()) {
+
+            if (each_item.Range().EndIndex() <= range.index) {
+                continue;
+            }
+
+            if (each_item.Range().index >= range.EndIndex()) {
+                break;
+            }
+
+            if (range.Contains(each_item.Range())) {
+                visitor(each_item);
+            }
+        }
     }
 
     const_iterator begin() const noexcept {
