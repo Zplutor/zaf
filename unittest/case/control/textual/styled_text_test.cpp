@@ -56,7 +56,9 @@ TEST(StyledTextTest, GetSubText) {
     styled_text.SetFontInRange(Font{ L"1" }, Range{ 0, 4 });
     styled_text.SetTextColorInRange(Color::Yellow(), Range{ 6, 4 });
     styled_text.SetTextBackColorInRange(Color::Gray(), Range{ 3, 4 });
-    styled_text.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 4, 2 });
+
+    auto inline_object = Create<InlineObject>();
+    styled_text.AttachInlineObjectToRange(inline_object, Range{ 4, 2 });
 
     {
         auto sub_text = styled_text.GetSubText(Range::FromIndexPair(2, 7));
@@ -92,5 +94,11 @@ TEST(StyledTextTest, GetSubText) {
         ASSERT_EQ(
             text_back_color_item.ColorPicker().target<ConstantColorPicker>()->GetColor(),
             Color::Gray());
+
+        //Inline object
+        ASSERT_FALSE(sub_text.InlineObjects().IsEmpty());
+        ASSERT_EQ(sub_text.InlineObjects().begin()->Range(), Range(2, 2));
+        //The object should be cloned.
+        ASSERT_NE(sub_text.InlineObjects().begin()->Object(), inline_object);
     }
 }
