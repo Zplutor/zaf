@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file
+    Defines the zaf::textual::StyledText class.
+*/
+
 #include <string>
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/non_copyable.h>
@@ -12,19 +17,59 @@
 
 namespace zaf::textual {
 
+/**
+Represents a text with various styles, such as the font, text color, and inline objects.
+
+@details
+    A StyledText has two kinds of styles:
+    - Ranged styles, which apply to a specified sub-range of the text.
+    - Default styles, which apply to all text without ranged styles.
+
+    Copying a StyledText is a high-cost operation, so copying is forbidden. Users can use the
+    Clone() method to copy the StyledText if needed.
+*/
 class StyledText : NonCopyable {
 public:
+    /**
+    A class used to access the ranged fonts in a StyledText.
+    */
     using RangedFontAccessor = RangedTextStyle::FontAccessor;
+
+    /**
+    A class used to access the ranged color pickers in a StyledText.
+    */
     using RangedColorPickerAccessor = RangedTextStyle::ColorPickerAccessor;
 
 public:
-    StyledText();
-    explicit StyledText(std::wstring text);
+    /**
+    Constructs an empty StyledText.
+    */
+    StyledText() noexcept;
 
-    const std::wstring& Text() const {
+    /**
+    Constructs a StyledText with the specified text.
+
+    @param text
+        The text that the StyledText will own.
+    */
+    explicit StyledText(std::wstring text) noexcept;
+
+    /**
+    Gets the text of the StyledText.
+
+    @return
+        The text of the StyledText.
+    */
+    const std::wstring& Text() const noexcept {
         return text_;
     }
 
+    /**
+    Sets the specified text to the StyledText.
+
+    @param text
+        The text to be set.
+    */
     void SetText(std::wstring text);
 
     /**

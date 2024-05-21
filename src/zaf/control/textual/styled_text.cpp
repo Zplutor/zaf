@@ -3,12 +3,12 @@
 
 namespace zaf::textual {
 
-StyledText::StyledText() {
+StyledText::StyledText() noexcept {
 
 }
 
 
-StyledText::StyledText(std::wstring text) : text_(std::move(text)) {
+StyledText::StyledText(std::wstring text) noexcept : text_(std::move(text)) {
 
 }
 
