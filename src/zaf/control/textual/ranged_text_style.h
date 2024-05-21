@@ -130,16 +130,16 @@ public:
         return store_.IsEmpty();
     }
 
-    iterator FindItemContainsIndex(std::size_t index) {
-        auto inner_iterator = store_.FindItemContainsIndex(index);
+    iterator FindItemAtIndex(std::size_t index) {
+        auto inner_iterator = store_.FindItemAtIndex(index);
         if (inner_iterator != store_.end()) {
             return iterator{ inner_iterator };
         }
         return this->end();
     }
 
-    const_iterator FindItemContainsIndex(std::size_t index) const {
-        auto inner_iterator = store_.FindItemContainsIndex(index);
+    const_iterator FindItemAtIndex(std::size_t index) const {
+        auto inner_iterator = store_.FindItemAtIndex(index);
         if (inner_iterator != store_.end()) {
             return const_iterator{ inner_iterator };
         }
@@ -207,8 +207,8 @@ public:
         return store_.Items().empty();
     }
 
-    const_iterator FindItemContainsIndex(std::size_t index) const {
-        return store_.FindItemContainsIndex(index);
+    const_iterator FindItemAtIndex(std::size_t index) const {
+        return store_.FindItemAtIndex(index);
     }
 
     void VisitItemsInRange(

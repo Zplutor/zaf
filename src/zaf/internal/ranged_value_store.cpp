@@ -266,7 +266,7 @@ bool RangedValueStore::ReplaceSpan(const Range& span_range, std::size_t new_leng
 }
 
 
-RangedValueStore::iterator RangedValueStore::FindItemContainsIndex(
+RangedValueStore::iterator RangedValueStore::FindItemAtIndex(
     std::size_t index) noexcept {
 
     auto iterator = std::lower_bound(
@@ -285,11 +285,11 @@ RangedValueStore::iterator RangedValueStore::FindItemContainsIndex(
 }
 
 
-RangedValueStore::const_iterator RangedValueStore::FindItemContainsIndex(
+RangedValueStore::const_iterator RangedValueStore::FindItemAtIndex(
     std::size_t index) const noexcept {
 
     auto mutable_this = const_cast<RangedValueStore*>(this);
-    return mutable_this->FindItemContainsIndex(index);
+    return mutable_this->FindItemAtIndex(index);
 }
 
 }

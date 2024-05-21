@@ -215,7 +215,7 @@ TEST(RangedTextStyleTest, ModifyFontsInEnumeration) {
 }
 
 
-TEST(RangedTextStyleText, FindItemContainsIndex) {
+TEST(RangedTextStyleText, FindItemAtIndex) {
 
     RangedTextStyle ranged_style;
     ranged_style.SetFontInRange(Font{ L"aaaaa" }, Range{ 2, 2 });
@@ -223,9 +223,9 @@ TEST(RangedTextStyleText, FindItemContainsIndex) {
     //Mutable ranged style.
     {
         auto& fonts = ranged_style.Fonts();
-        ASSERT_EQ(fonts.FindItemContainsIndex(1), fonts.end());
+        ASSERT_EQ(fonts.FindItemAtIndex(1), fonts.end());
 
-        auto iterator = fonts.FindItemContainsIndex(2);
+        auto iterator = fonts.FindItemAtIndex(2);
         ASSERT_NE(iterator, fonts.end());
         ASSERT_EQ(iterator->Range(), Range(2, 2));
         ASSERT_EQ(iterator->Font().family_name, L"aaaaa");
@@ -238,9 +238,9 @@ TEST(RangedTextStyleText, FindItemContainsIndex) {
     {
         const RangedTextStyle& const_ranged_style{ ranged_style };
         auto& fonts = const_ranged_style.Fonts();
-        ASSERT_EQ(fonts.FindItemContainsIndex(0), fonts.end());
+        ASSERT_EQ(fonts.FindItemAtIndex(0), fonts.end());
 
-        auto iterator = fonts.FindItemContainsIndex(3);
+        auto iterator = fonts.FindItemAtIndex(3);
         ASSERT_NE(iterator, fonts.end());
         ASSERT_EQ(iterator->Range(), Range(2, 2));
         ASSERT_EQ(iterator->Font().family_name, L"bbb");

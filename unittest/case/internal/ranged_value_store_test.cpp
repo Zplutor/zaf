@@ -279,59 +279,59 @@ TEST(RangedValueStoreTest, EraseSpan) {
 }
 
 
-TEST(RangedValueStoreTest, FindItemContainsIndex) {
+TEST(RangedValueStoreTest, FindItemAtIndex) {
 
     RangedValueStore store;
-    ASSERT_EQ(store.FindItemContainsIndex(0), store.end());
-    ASSERT_EQ(store.FindItemContainsIndex(1), store.end());
+    ASSERT_EQ(store.FindItemAtIndex(0), store.end());
+    ASSERT_EQ(store.FindItemAtIndex(1), store.end());
 
     store.AddRange(Range{ 1, 2 }, std::string{ "range1" });
     store.AddRange(Range{ 5, 1 }, std::string{ "range2" });
     store.AddRange(Range{ 10, 5 }, std::string{ "range2" });
 
     //Invalid indexes.
-    auto item = store.FindItemContainsIndex(0);
+    auto item = store.FindItemAtIndex(0);
     ASSERT_EQ(item, store.end());
 
-    item = store.FindItemContainsIndex(4);
+    item = store.FindItemAtIndex(4);
     ASSERT_EQ(item, store.end());
 
-    item = store.FindItemContainsIndex(9);
+    item = store.FindItemAtIndex(9);
     ASSERT_EQ(item, store.end());
 
-    item = store.FindItemContainsIndex(16);
+    item = store.FindItemAtIndex(16);
     ASSERT_EQ(item, store.end());
 
     //The first range
-    item = store.FindItemContainsIndex(1);
+    item = store.FindItemAtIndex(1);
     ASSERT_NE(item, store.end());
     ASSERT_EQ(item->Range(), Range(1, 2));
 
-    item = store.FindItemContainsIndex(2);
+    item = store.FindItemAtIndex(2);
     ASSERT_NE(item, store.end());
     ASSERT_EQ(item->Range(), Range(1, 2));
 
-    item = store.FindItemContainsIndex(3);
+    item = store.FindItemAtIndex(3);
     ASSERT_EQ(item, store.end());
 
     //The second range
-    item = store.FindItemContainsIndex(5);
+    item = store.FindItemAtIndex(5);
     ASSERT_NE(item, store.end());
     ASSERT_EQ(item->Range(), Range(5, 1));
 
-    item = store.FindItemContainsIndex(6);
+    item = store.FindItemAtIndex(6);
     ASSERT_EQ(item, store.end());
 
     //The third range
-    item = store.FindItemContainsIndex(10);
+    item = store.FindItemAtIndex(10);
     ASSERT_NE(item, store.end());
     ASSERT_EQ(item->Range(), Range(10, 5));
 
-    item = store.FindItemContainsIndex(13);
+    item = store.FindItemAtIndex(13);
     ASSERT_NE(item, store.end());
     ASSERT_EQ(item->Range(), Range(10, 5));
 
-    item = store.FindItemContainsIndex(15);
+    item = store.FindItemAtIndex(15);
     ASSERT_EQ(item, store.end());
 }
 
@@ -342,7 +342,7 @@ TEST(RangedValueStoreTest, FindItemContainsIndexConst) {
     store.AddRange(Range{ 0, 5 }, {});
 
     const RangedValueStore& const_store = store;
-    auto item = const_store.FindItemContainsIndex(1);
+    auto item = const_store.FindItemAtIndex(1);
     ASSERT_NE(item, const_store.end());
     ASSERT_EQ(item->Range(), Range(0, 5));
 }

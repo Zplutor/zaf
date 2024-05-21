@@ -103,7 +103,7 @@ void InlineObjectStore::Clear() {
 }
 
 
-InlineObjectStore::ItemList::const_iterator InlineObjectStore::FindItemContainsIndex(
+InlineObjectStore::ItemList::const_iterator InlineObjectStore::FindItemAtIndex(
     std::size_t index) const {
 
     auto iterator = std::lower_bound(

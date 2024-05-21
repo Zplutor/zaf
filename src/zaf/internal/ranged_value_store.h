@@ -53,8 +53,8 @@ public:
     bool EraseSpan(const Range& span_range);
     bool ReplaceSpan(const Range& span_range, std::size_t new_length);
 
-    iterator FindItemContainsIndex(std::size_t index) noexcept;
-    const_iterator FindItemContainsIndex(std::size_t index) const noexcept;
+    iterator FindItemAtIndex(std::size_t index) noexcept;
+    const_iterator FindItemAtIndex(std::size_t index) const noexcept;
 
     const ItemList& Items() const {
         return items_;
