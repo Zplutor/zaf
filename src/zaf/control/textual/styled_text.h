@@ -89,8 +89,8 @@ public:
     void SetFontInRange(Font font, const Range& range);
     void ClearRangedFonts();
     const Font& GetFontAtIndex(std::size_t index) const;
-    const RangedFontAccessor RangedFonts() const;
-    RangedFontAccessor RangedFonts();
+    const RangedFontAccessor& RangedFonts() const;
+    RangedFontAccessor& RangedFonts();
 
     const ColorPicker& DefaultTextColorPicker() const {
         return default_text_color_picker_;
@@ -102,8 +102,8 @@ public:
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range);
     void ClearRangedTextColorPickers();
     const ColorPicker& GetTextColorPickerAtIndex(std::size_t index) const;
-    const RangedColorPickerAccessor RangedTextColorPicker() const;
-    RangedColorPickerAccessor RangedTextColorPicker();
+    const RangedColorPickerAccessor& RangedTextColorPicker() const;
+    RangedColorPickerAccessor& RangedTextColorPicker();
 
     const ColorPicker& DefaultTextBackColorPicker() const {
         return default_text_back_color_picker_;
@@ -114,8 +114,8 @@ public:
     void SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range);
     void ClearRangedTextBackColorPickers();
     const ColorPicker& GetTextBackColorPickerAtIndex(std::size_t index) const;
-    const RangedColorPickerAccessor RangedTextBackColorPickers() const;
-    RangedColorPickerAccessor RangedTextBackColorPickers();
+    const RangedColorPickerAccessor& RangedTextBackColorPickers() const;
+    RangedColorPickerAccessor& RangedTextBackColorPickers();
 
     void AttachInlineObjectToRange(
         std::shared_ptr<InlineObject> object,
@@ -124,7 +124,7 @@ public:
     void ClearInlineObjects();
 
     std::shared_ptr<InlineObject> GetInlineObjectAtIndex(std::size_t index) const;
-    InlineObjectAccessor InlineObjects() const;
+    const InlineObjectAccessor& InlineObjects() const;
 
     StyledTextSlice Slice(const Range& range) const;
     void ReplaceSlice(const Range& slice_range, const StyledTextSlice& new_slice);

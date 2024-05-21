@@ -1,9 +1,16 @@
 #include <gtest/gtest.h>
+#include <zaf/control/color_picker.h>
 #include <zaf/control/textual/ranged_text_style.h>
+#include <zaf/creation.h>
 
 using namespace zaf;
 using namespace zaf::internal;
 using namespace zaf::textual;
+
+static_assert(!std::is_copy_constructible_v<RangedTextStyle>);
+static_assert(!std::is_copy_assignable_v<RangedTextStyle>);
+static_assert(std::is_move_constructible_v<RangedTextStyle>);
+static_assert(std::is_move_assignable_v<RangedTextStyle>);
 
 static_assert(!std::is_copy_constructible_v<RangedFontItem>);
 static_assert(!std::is_copy_assignable_v<RangedFontItem>);
@@ -57,6 +64,62 @@ TEST(RangedTextStyleTest, RangedTypesCheck) {
         auto iterator = ranged_style.Fonts().begin();
         static_assert(std::is_same_v<decltype(*iterator), const RangedFontItem&>);
     }
+}
+
+
+TEST(RangedTextStyleTest, Move) {
+
+    RangedTextStyle origin;
+    origin.SetFontInRange(Font{ L"move" }, Range{ 2, 2 });
+    origin.SetTextColorPickerInRange(CreateColorPicker(Color::Green()), Range{ 3, 5 });
+    origin.SetTextBackColorPickerInRange(CreateColorPicker(Color::Red()), Range{ 1, 4 });
+    origin.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 10, 1 });
+
+    const auto check_if_style_empty = [](const RangedTextStyle& style) {
+        return 
+            style.Fonts().IsEmpty() &&
+            style.TextColorPickers().IsEmpty() &&
+            style.TextBackColorPickers().IsEmpty() &&
+            style.InlineObjects().IsEmpty();
+    };
+
+    const auto check_if_style_not_empty = [](const RangedTextStyle& style) {
+        if (style.Fonts().IsEmpty() || 
+            style.TextColorPickers().IsEmpty() ||
+            style.TextBackColorPickers().IsEmpty() ||
+            style.InlineObjects().IsEmpty()) {
+            return false;
+        }
+
+        if (style.Fonts().begin()->Range() != Range{ 2, 2 } ||
+            style.Fonts().begin()->Font().family_name != L"move") {
+            return false;
+        }
+
+        if (style.TextColorPickers().begin()->Range() != Range{ 3, 5 }) {
+            return false;
+        }
+
+        if (style.TextBackColorPickers().begin()->Range() != Range{ 1, 4 }) {
+            return false;
+        }
+
+        if (style.InlineObjects().begin()->Range() != Range{ 10, 1 } ||
+            style.InlineObjects().begin()->Object() == nullptr) {
+            return false;
+        }
+
+        return true;
+    };
+
+    RangedTextStyle move_constructed = std::move(origin);
+    ASSERT_TRUE(check_if_style_empty(origin));
+    ASSERT_TRUE(check_if_style_not_empty(move_constructed));
+    
+    RangedTextStyle move_assigned;
+    move_assigned = std::move(move_constructed);
+    ASSERT_TRUE(check_if_style_empty(move_constructed));
+    ASSERT_TRUE(check_if_style_not_empty(move_assigned));
 }
 
 

@@ -31,7 +31,7 @@ std::size_t TextBoxIndexManager::GetBackwardIndex(std::size_t index) const {
     }
 
     //Move index to the beginning of the inline object if the index is inside an inline object.
-    auto inline_objects = Context().TextModel().StyledText().InlineObjects();
+    auto& inline_objects = Context().TextModel().StyledText().InlineObjects();
     auto iterator = inline_objects.FindItemContainsIndex(previous_index);
     if (iterator != inline_objects.end()) {
 
@@ -59,7 +59,7 @@ std::size_t TextBoxIndexManager::GetForwardIndex(std::size_t index) const {
     }
 
     //Move index to the end of the inline object if the index is inside an inline object.
-    auto inline_objects = Context().TextModel().StyledText().InlineObjects();
+    auto& inline_objects = Context().TextModel().StyledText().InlineObjects();
     auto iterator = inline_objects.FindItemContainsIndex(index);
     if (iterator != inline_objects.end()) {
 

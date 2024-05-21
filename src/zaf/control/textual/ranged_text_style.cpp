@@ -1,6 +1,27 @@
+#include "ranged_text_style.h"
+#include "ranged_text_style.h"
 #include <zaf/control/textual/ranged_text_style.h>
 
 namespace zaf::textual {
+
+RangedTextStyle::RangedTextStyle(RangedTextStyle&& other) : 
+    fonts_(std::move(other.fonts_)),
+    text_color_pickers_(std::move(other.text_color_pickers_)),
+    text_back_color_pickers_(std::move(other.text_back_color_pickers_)),
+    inline_objects_(std::move(other.inline_objects_)) {
+
+}
+
+
+RangedTextStyle& RangedTextStyle::operator=(RangedTextStyle&& other) {
+
+    this->fonts_ = std::move(other.fonts_);
+    this->text_color_pickers_ = std::move(other.text_color_pickers_);
+    this->text_back_color_pickers_ = std::move(other.text_back_color_pickers_);
+    this->inline_objects_ = std::move(other.inline_objects_);
+    return *this;
+}
+
 
 void RangedTextStyle::ReplaceSpan(const Range& span_range, std::size_t new_length) {
 

@@ -170,26 +170,38 @@ private:
 };
 
 
-class InlineObjectAccessor : NonCopyable {
+class InlineObjectAccessor : NonCopyableNonMovable {
 public:
     using iterator = InlineObjectStore::ItemList::iterator;
     using const_iterator = InlineObjectStore::ItemList::const_iterator;
 
 public:
-    explicit InlineObjectAccessor(const InlineObjectStore& store) : store_(store) {
+    explicit InlineObjectAccessor(const InlineObjectStore& store) noexcept : store_(store) {
 
+    }
+
+    bool IsEmpty() const noexcept {
+        return store_.Items().empty();
     }
 
     const_iterator FindItemContainsIndex(std::size_t index) const {
         return store_.FindItemContainsIndex(index);
     }
 
-    const_iterator begin() const {
-        return const_iterator{ store_.Items().begin() };
+    const_iterator begin() const noexcept {
+        return store_.Items().begin();
     }
 
-    const_iterator end() const {
-        return const_iterator{ store_.Items().end() };
+    const_iterator end() const noexcept {
+        return store_.Items().end();
+    }
+
+    const_iterator cbegin() const noexcept {
+        return store_.Items().cbegin();
+    }
+
+    const_iterator cend() const noexcept {
+        return store_.Items().cend();
     }
 
 private:
@@ -204,6 +216,9 @@ public:
 
 public:
     RangedTextStyle() = default;
+
+    RangedTextStyle(RangedTextStyle&& other);
+    RangedTextStyle& operator=(RangedTextStyle&& other);
 
     const FontAccessor& Fonts() const {
         return font_accessor_;
@@ -255,8 +270,8 @@ public:
         text_back_color_pickers_.Clear();
     }
 
-    InlineObjectAccessor InlineObjects() const {
-        return InlineObjectAccessor{ inline_objects_ };
+    const InlineObjectAccessor& InlineObjects() const {
+        return inline_object_accessor_;
     }
 
     void AttachInlineObjectToRange(std::shared_ptr<InlineObject> object, const Range& range) {
@@ -284,6 +299,7 @@ private:
     ColorPickerAccessor text_back_color_picker_accessor_{ text_back_color_pickers_ };
 
     InlineObjectStore inline_objects_;
+    InlineObjectAccessor inline_object_accessor_{ inline_objects_ };
 };
 
 }

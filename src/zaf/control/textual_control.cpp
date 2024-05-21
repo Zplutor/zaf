@@ -138,7 +138,7 @@ void TextualControl::PaintTextBack(
     const TextLayout& text_layout,
     const zaf::Rect& layout_rect) {
 
-    auto text_back_color_pickers = text_model_->StyledText().RangedTextBackColorPickers();
+    auto& text_back_color_pickers = text_model_->StyledText().RangedTextBackColorPickers();
     if (text_back_color_pickers.IsEmpty()) {
         return;
     }
