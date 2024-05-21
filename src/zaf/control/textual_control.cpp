@@ -124,7 +124,7 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 void TextualControl::SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const {
 
-    for (const auto& each_item : text_model_->StyledText().RangedTextColorPicker()) {
+    for (const auto& each_item : text_model_->StyledText().RangedTextColorPickers()) {
 
         auto brush = renderer.CreateSolidColorBrush(each_item.ColorPicker()(*this));
         text_layout.SetBrush(brush, each_item.Range());

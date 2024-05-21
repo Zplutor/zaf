@@ -102,8 +102,8 @@ public:
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range);
     void ClearRangedTextColorPickers();
     const ColorPicker& GetTextColorPickerAtIndex(std::size_t index) const;
-    const RangedColorPickerAccessor& RangedTextColorPicker() const;
-    RangedColorPickerAccessor& RangedTextColorPicker();
+    const RangedColorPickerAccessor& RangedTextColorPickers() const;
+    RangedColorPickerAccessor& RangedTextColorPickers();
 
     const ColorPicker& DefaultTextBackColorPicker() const {
         return default_text_back_color_picker_;

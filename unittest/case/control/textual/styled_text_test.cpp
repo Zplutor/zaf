@@ -80,8 +80,8 @@ TEST(StyledTextTest, GetSubText) {
         ASSERT_EQ(font_item.Font().family_name, L"1");
 
         //Ranged text color picker
-        ASSERT_FALSE(sub_text.RangedTextColorPicker().IsEmpty());
-        const auto& text_color_item = *sub_text.RangedTextColorPicker().begin();
+        ASSERT_FALSE(sub_text.RangedTextColorPickers().IsEmpty());
+        const auto& text_color_item = *sub_text.RangedTextColorPickers().begin();
         ASSERT_EQ(text_color_item.Range(), Range(4, 1));
         ASSERT_EQ(
             text_color_item.ColorPicker().target<ConstantColorPicker>()->GetColor(),

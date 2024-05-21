@@ -141,12 +141,12 @@ const ColorPicker& StyledText::GetTextColorPickerAtIndex(std::size_t index) cons
 }
 
 
-const StyledText::RangedColorPickerAccessor& StyledText::RangedTextColorPicker() const {
+const StyledText::RangedColorPickerAccessor& StyledText::RangedTextColorPickers() const {
     return ranged_style_.TextColorPickers();
 }
 
 
-StyledText::RangedColorPickerAccessor& StyledText::RangedTextColorPicker() {
+StyledText::RangedColorPickerAccessor& StyledText::RangedTextColorPickers() {
     return ranged_style_.TextColorPickers();
 }
 
