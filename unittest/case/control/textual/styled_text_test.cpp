@@ -12,10 +12,28 @@ static_assert(std::is_move_assignable_v<StyledText>);
 
 TEST(StyledTextTest, SetTextInRange) {
 
-    StyledText styled_text(L"StyledText");
-    auto new_range = styled_text.SetTextInRange(L"ED-", Range{ 4, 2 });
-    ASSERT_EQ(new_range, Range(4, 3));
-    ASSERT_EQ(styled_text.Text(), L"StylED-Text");
+    StyledText styled_text(L"Styled-Text");
+    styled_text.SetFontInRange(Font{ L"font" }, Range{ 4, 3 });
+    styled_text.SetTextColorInRange(Color::Red(), Range{ 4, 3 });
+    styled_text.SetTextBackColorInRange(Color::Black(), Range{ 4, 3 });
+    styled_text.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 6, 1 });
+
+    auto new_range = styled_text.SetTextInRange(L"ED--", Range{ 4, 3 });
+    ASSERT_EQ(new_range, Range(4, 4));
+    ASSERT_EQ(styled_text.Text(), L"StylED--Text");
+
+    ASSERT_TRUE(styled_text.RangedFonts().IsEmpty());
+    ASSERT_TRUE(styled_text.RangedTextColorPickers().IsEmpty());
+    ASSERT_TRUE(styled_text.RangedTextBackColorPickers().IsEmpty());
+    ASSERT_TRUE(styled_text.InlineObjects().IsEmpty());
+
+    //Throw exception if the index of the range exceeds the length of the text.
+    ASSERT_THROW(styled_text.SetTextInRange(L"tail", Range{ 13, 0 }), PreconditionError);
+
+    //Insert text at the end.
+    new_range = styled_text.SetTextInRange(L"tail", Range{ 12, 10 });
+    ASSERT_EQ(new_range, Range(12, 4));
+    ASSERT_EQ(styled_text.Text(), L"StylED--Texttail");
 }
 
 

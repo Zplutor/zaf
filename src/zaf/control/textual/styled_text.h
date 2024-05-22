@@ -18,15 +18,17 @@
 namespace zaf::textual {
 
 /**
-Represents a text with various styles, such as the font, text color, and inline objects.
+Represents a text with various styles, such as the font, text color, and attached inline objects.
 
 @details
     A StyledText has two kinds of styles:
-    - Ranged styles, which apply to a specified sub-range of the text.
+    - Ranged styles, which apply to a specific sub-range of the text. Ranged styles are bound to
+      the text in the sub-range; adding or removing text in the sub-range will also modify the
+      range of the styles.
     - Default styles, which apply to all text without ranged styles.
 
-    Copying a StyledText is a high-cost operation, so copying is forbidden. Users can use the
-    Clone() method to copy the StyledText if needed.
+    Copying a StyledText is a high-cost operation, so copy construction and copy assignment are 
+    forbidden. Users can use the Clone() method to copy the StyledText explicitly if needed.
 */
 class StyledText : NonCopyable {
 public:
@@ -68,7 +70,14 @@ public:
     Sets the specified text to the StyledText.
 
     @param text
-        The text to be set.
+        The text to set.
+
+    @details
+        Setting a text will remove all ranged styles from the StyledText, even if the new text is
+        equal to the existing text.
+
+    @throw ... 
+        Any exception thrown by the handling of inline object detaching.
     */
     void SetText(std::wstring text);
 
@@ -79,16 +88,31 @@ public:
         The text to set.
 
     @param range
-        The range within the existing text where the new text will be set.
+        The range within the existing text where the new text will be set. The end index of the 
+        range my exceed the length of the existing text; in such a case, the end index will be 
+        revised to the length of the existing text.
 
     @pre 
-        The range is entirely within the existing text.
+        The start index of the range does not exceed the bounds of the existing txt.
 
     @return 
         The range of the new text within the whole text after setting.
 
-    @remark
-        The style of the new text will be set to default.
+    @throw zaf::PreconditionError
+        Thrown if the precondition is violated.
+
+    @throw std::bad_alloc
+        Thrown if memory allocation fails.
+
+    @throw ...
+        Any exception thrown by the handling of inline object detaching.
+
+    @details
+        If the length of the range is 0, the new text will be inserted into to the existing text; 
+        otherwise, the existing text in the range will be replaced with the new text.
+
+        After setting the new text, ranged styles that are within the bounds of the range will be 
+        removed.
     */
     Range SetTextInRange(std::wstring_view text, const Range& range);
 
@@ -101,8 +125,8 @@ public:
     @return 
         The range of the new text within the whole text after appending.
 
-    @remark
-        The style of the new text will be set to default.
+    @throw std::bad_alloc
+        Thrown if memory allocation fails.
     */
     Range AppendText(std::wstring_view text);
 
@@ -118,6 +142,9 @@ public:
 
     @return
         The range of the new text within the whole text after appending.
+
+    @throw std::bad_alloc
+        Thrown if memory allocation fails.
     */
     Range AppendText(std::wstring_view text, const TextStyle& style);
 

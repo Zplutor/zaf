@@ -22,7 +22,7 @@ void StyledText::SetText(std::wstring text) {
 
 Range StyledText::SetTextInRange(std::wstring_view text, const Range& range) {
 
-    CheckRange(range);
+    ZAF_EXPECT(range.index <= text_.length());
 
     text_.replace(range.index, range.length, text);
     ranged_style_.ReplaceSpan(range, text.length());

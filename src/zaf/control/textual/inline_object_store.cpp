@@ -91,14 +91,10 @@ void InlineObjectStore::ReplaceSpan(const Range& span_range, std::size_t new_len
 
 void InlineObjectStore::Clear() {
 
-    std::vector<std::shared_ptr<textual::InlineObject>> detached_objects;
-    for (auto& each_item : items_) {
-        detached_objects.push_back(each_item.Object());
-    }
-    items_.clear();
+    auto items = std::move(items_);
 
-    for (const auto& each_object : detached_objects) {
-        each_object->Detach();
+    for (const auto& each_item : items) {
+        each_item.Object()->Detach();
     }
 }
 
