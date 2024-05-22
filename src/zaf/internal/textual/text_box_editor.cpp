@@ -3,6 +3,8 @@
 #include <zaf/base/auto_reset.h>
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/internal/textual/text_model.h>
+#include <zaf/internal/textual/text_box_clipboard_operation.h>
+#include <zaf/internal/textual/text_box_keyboard_input_handler.h>
 #include <zaf/internal/textual/text_box_index_manager.h>
 #include <zaf/internal/textual/text_box_module_context.h>
 #include <zaf/internal/textual/text_box_selection_manager.h>
@@ -283,19 +285,10 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
 
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleCut() {
 
-    auto selection_range = Context().SelectionManager().SelectionRange();
-    auto text = Context().TextModel().GetText();
-
-    //Copy the selected text to clipboard.
-    auto selected_text = text.substr(selection_range.index, selection_range.length);
-    try {
-        clipboard::Clipboard::SetText(selected_text);
-    }
-    catch (const Error&) {
-
-    }
+    Context().KeyboardInputHandler().HandleCopy();
 
     //Remove the selected text.
+    auto selection_range = Context().SelectionManager().SelectionRange();
     return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
 }
 
@@ -311,7 +304,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandlePaste() {
         Range new_selection_range{ selection_range.index + text.length(), 0 };
         return CreateCommand(text, selection_range, new_selection_range);
     }
-    catch (const zaf::Error&) {
+    catch (...) {
         return nullptr;
     }
 }

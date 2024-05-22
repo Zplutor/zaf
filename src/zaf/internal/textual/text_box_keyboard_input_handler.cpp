@@ -1,8 +1,9 @@
 #include <zaf/internal/textual/text_box_keyboard_input_handler.h>
-#include <zaf/clipboard/clipboard.h>
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/control/text_box.h>
+#include <zaf/creation.h>
 #include <zaf/internal/textual/text_box_caret_manager.h>
+#include <zaf/internal/textual/text_box_clipboard_operation.h>
 #include <zaf/internal/textual/text_box_editor.h>
 #include <zaf/internal/textual/text_box_index_manager.h>
 #include <zaf/internal/textual/text_box_module_context.h>
@@ -301,9 +302,13 @@ void TextBoxKeyboardInputHandler::SetCaretIndexByKey(
 
 void TextBoxKeyboardInputHandler::HandleCopy() {
     try {
-        clipboard::Clipboard::SetText(Context().Owner().SelectedText());
+
+        auto selection_range = Context().SelectionManager().SelectionRange();
+        auto selected_styled_text = Context().TextModel().StyledText().GetSubText(selection_range);
+
+        internal::SaveStyledTextToClipboard(std::move(selected_styled_text));
     }
-    catch (const Error&) {
+    catch (...) {
 
     }
 }

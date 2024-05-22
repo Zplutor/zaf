@@ -13,6 +13,7 @@ public:
     void Initialize() override;
 
     void HandleKeyDown(const KeyDownInfo& event_info);
+    void HandleCopy();
 
 private:
     class LineInfo {
@@ -42,7 +43,6 @@ private:
         bool expand_selection,
         bool update_caret_x);
 
-    void HandleCopy();
     void HandleSelectAll();
 };
 

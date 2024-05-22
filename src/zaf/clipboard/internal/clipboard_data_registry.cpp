@@ -5,6 +5,7 @@
 #include <zaf/clipboard/clipboard_data.h>
 #include <zaf/clipboard/drop_files_data.h>
 #include <zaf/clipboard/text_data.h>
+#include <zaf/control/textual/styled_text_clipboard_data.h>
 
 namespace zaf::clipboard::internal {
 namespace {
@@ -38,6 +39,10 @@ ClipboardDataRegistry::ClipboardDataRegistry() {
     //Register standard format type data.
     registered_types_[FormatType::Text] = TextData::Type;
     registered_types_[FormatType::DropFiles] = DropFilesData::Type;
+
+    //Format type that zaf uses.
+    registered_types_[textual::StyledTextClipboardData::StyledTextFormatType()] =
+        textual::StyledTextClipboardData::Type;
 }
 
 

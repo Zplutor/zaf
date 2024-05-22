@@ -214,7 +214,7 @@
     <ClCompile Include="src\zaf\control\textual\inline_object_events.cpp" />
     <ClCompile Include="src\zaf\control\textual\ranged_text_style.cpp" />
     <ClCompile Include="src\zaf\control\textual\styled_text.cpp" />
-    <ClCompile Include="src\zaf\control\textual\styled_text_data.cpp" />
+    <ClCompile Include="src\zaf\control\textual\styled_text_clipboard_data.cpp" />
     <ClCompile Include="src\zaf\control\textual\word_extractor.cpp" />
     <ClCompile Include="src\zaf\control\textual_control.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit.cpp" />
@@ -289,6 +289,7 @@
     <ClCompile Include="src\zaf\internal\system_message_window.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_caret_manager.cpp" />
+    <ClCompile Include="src\zaf\internal\textual\text_box_clipboard_operation.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_editor.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_edit_command.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_hit_test_manager.cpp" />
@@ -632,7 +633,7 @@
     <ClInclude Include="src\zaf\control\textual\ranged_text_style.h" />
     <ClInclude Include="src\zaf\control\textual\selection_option.h" />
     <ClInclude Include="src\zaf\control\textual\styled_text.h" />
-    <ClInclude Include="src\zaf\control\textual\styled_text_data.h" />
+    <ClInclude Include="src\zaf\control\textual\styled_text_clipboard_data.h" />
     <ClInclude Include="src\zaf\control\textual\styled_text_slice.h" />
     <ClInclude Include="src\zaf\control\textual\text_style.h" />
     <ClInclude Include="src\zaf\control\textual\word_extractor.h" />
@@ -754,6 +755,7 @@
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
     <ClInclude Include="src\zaf\internal\textual\inline_object_attached_info.h" />
     <ClInclude Include="src\zaf\internal\textual\text_box_caret_manager.h" />
+    <ClInclude Include="src\zaf\internal\textual\text_box_clipboard_operation.h" />
     <ClInclude Include="src\zaf\internal\textual\text_box_editor.h" />
     <ClInclude Include="src\zaf\internal\textual\text_box_edit_command.h" />
     <ClInclude Include="src\zaf\internal\textual\text_box_hit_test_manager.h" />
