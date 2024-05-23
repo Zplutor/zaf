@@ -2758,5 +2758,8 @@
     <ClInclude Include="src\zaf\internal\textual\text_box_clipboard_operation.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\default_text_style.h">
+      <Filter>zaf\control\textual</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

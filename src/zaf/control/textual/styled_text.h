@@ -10,6 +10,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
 #include <zaf/control/color_picker.h>
+#include <zaf/control/textual/default_text_style.h>
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/control/textual/styled_text_slice.h>
 #include <zaf/control/textual/text_style.h>
@@ -150,12 +151,20 @@ public:
 
     void ClearText();
 
+    const DefaultTextStyle& DefaultStyle() const {
+        return default_style_;
+    }
+
+    void SetDefaultStyle(DefaultTextStyle default_style) {
+        default_style_ = std::move(default_style);
+    }
+
     const Font& DefaultFont() const {
-        return default_font_;
+        return default_style_.Font();
     }
 
     void SetDefaultFont(Font font) {
-        default_font_ = std::move(font);
+        default_style_.SetFont(std::move(font));
     }
 
     void SetFontInRange(Font font, const Range& range);
@@ -165,11 +174,17 @@ public:
     RangedFontAccessor& RangedFonts();
 
     const ColorPicker& DefaultTextColorPicker() const {
-        return default_text_color_picker_;
+        return default_style_.TextColorPicker();
     }
 
-    void SetDefaultTextColor(const Color& color);
-    void SetDefaultTextColorPicker(ColorPicker color_picker);
+    void SetDefaultTextColor(const Color& color) {
+        default_style_.SetTextColor(color);
+    }
+
+    void SetDefaultTextColorPicker(ColorPicker color_picker) {
+        default_style_.SetTextColorPicker(std::move(color_picker));
+    }
+
     void SetTextColorInRange(const Color& color, const Range& range);
     void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range);
     void ClearRangedTextColorPickers();
@@ -178,11 +193,17 @@ public:
     RangedColorPickerAccessor& RangedTextColorPickers();
 
     const ColorPicker& DefaultTextBackColorPicker() const {
-        return default_text_back_color_picker_;
+        return default_style_.TextBackColorPicker();
     }
 
-    void SetDefaultTextBackColor(const Color& color);
-    void SetDefaultTextBackColorPicker(ColorPicker color_picker);
+    void SetDefaultTextBackColor(const Color& color) {
+        default_style_.SetTextBackColor(color);
+    }
+
+    void SetDefaultTextBackColorPicker(ColorPicker color_picker) {
+        default_style_.SetTextBackColorPicker(std::move(color_picker));
+    }
+
     void SetTextBackColorInRange(const Color& color, const Range& range);
     void SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range);
     void ClearRangedTextBackColorPickers();
@@ -226,15 +247,12 @@ public:
     StyledText Clone() const;
 
 private:
+    void InitializeDefaultStyle();
     void CheckRange(const Range& range) const;
 
 private:
     std::wstring text_;
-
-    Font default_font_{ Font::Default() };
-    ColorPicker default_text_color_picker_{ CreateColorPicker(Color::Black()) };
-    ColorPicker default_text_back_color_picker_{ CreateColorPicker(Color::Transparent()) };
-
+    DefaultTextStyle default_style_;
     RangedTextStyle ranged_style_;
 };
 

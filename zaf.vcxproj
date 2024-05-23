@@ -625,6 +625,7 @@
     <ClInclude Include="src\zaf\control\spin_button.h" />
     <ClInclude Include="src\zaf\control\spin_edit.h" />
     <ClInclude Include="src\zaf\control\split_control.h" />
+    <ClInclude Include="src\zaf\control\textual\default_text_style.h" />
     <ClInclude Include="src\zaf\control\textual\dynamic_inline_object.h" />
     <ClInclude Include="src\zaf\control\textual\dynamic_inline_object_events.h" />
     <ClInclude Include="src\zaf\control\textual\inline_object.h" />
