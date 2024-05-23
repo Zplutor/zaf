@@ -8,6 +8,13 @@ namespace zaf::textual {
 
 class DefaultTextStyle {
 public:
+    DefaultTextStyle() : 
+        font_(zaf::Font::Default()),
+        text_color_picker_(CreateColorPicker(Color::Black())),
+        text_back_color_picker_(CreateColorPicker(Color::Transparent())) {
+
+    }
+
     const zaf::Font& Font() const noexcept {
         return font_;
     }

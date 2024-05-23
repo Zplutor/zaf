@@ -3,21 +3,13 @@
 
 namespace zaf::textual {
 
-StyledText::StyledText() noexcept {
-    InitializeDefaultStyle();
+StyledText::StyledText() {
+
 }
 
 
-StyledText::StyledText(std::wstring text) noexcept : text_(std::move(text)) {
-    InitializeDefaultStyle();
-}
+StyledText::StyledText(std::wstring text) : text_(std::move(text)) {
 
-
-void StyledText::InitializeDefaultStyle() {
-
-    default_style_.SetFont(Font::Default());
-    default_style_.SetTextColor(Color::Black());
-    default_style_.SetTextBackColor(Color::Transparent());
 }
 
 
@@ -286,6 +278,78 @@ void StyledText::ReplaceSlice(const Range& slice_range, const StyledTextSlice& n
             each_item.Object()->Clone(),
             each_item.Range());
     }
+}
+
+
+Range StyledText::SetSliceInRange(const StyledTextSlice& slice, const Range& range) {
+
+    //Text
+    auto new_range = SetTextInRange(slice.Text(), range);
+
+    //Default style
+    const auto& slice_default_style = slice.DefaultStyle();
+    if (slice_default_style.Font() != this->DefaultFont()) {
+        ranged_style_.SetFontInRange(slice_default_style.Font(), new_range);
+    }
+
+    //Default text color picker
+    ranged_style_.SetTextColorPickerInRange(slice_default_style.TextColorPicker(), new_range);
+
+    //Default text back color picker
+    ranged_style_.SetTextBackColorPickerInRange(
+        slice_default_style.TextBackColorPicker(), 
+        new_range);
+
+    const auto revise_item_range = [&slice, &new_range](const Range& item_range) {
+
+        std::size_t index{};
+        std::size_t length{};
+
+        if (item_range.index < slice.Index()) {
+            index = 0;
+            length = item_range.length - (slice.Index() - item_range.index);
+        }
+        else {
+            index = item_range.index - slice.Index();
+            length = item_range.length;
+        }
+
+        Range new_range{ index, length };
+        if (new_range.EndIndex() > slice.Text().length()) {
+            new_range.length -= new_range.EndIndex() - slice.Text().length();
+        }
+
+        new_range.index += new_range.index;
+        return new_range;
+    };
+
+    //Ranged fonts
+    for (const auto& each_item : slice.RangedStyle().Fonts()) {
+        ranged_style_.SetFontInRange(each_item.Font(), revise_item_range(each_item.Range()));
+    }
+    
+    //Ranged text color picker
+    for (const auto& each_item : slice.RangedStyle().TextColorPickers()) {
+        ranged_style_.SetTextColorPickerInRange(
+            each_item.ColorPicker(), 
+            revise_item_range(each_item.Range()));
+    }
+
+    //Ranged text back color picker
+    for (const auto& each_item : slice.RangedStyle().TextBackColorPickers()) {
+        ranged_style_.SetTextBackColorPickerInRange(
+            each_item.ColorPicker(),
+            revise_item_range(each_item.Range()));
+    }
+
+    //Inline objects
+    for (const auto& each_item : slice.RangedStyle().InlineObjects()) {
+        ranged_style_.AttachInlineObjectToRange(
+            each_item.Object()->Clone(),
+            revise_item_range(each_item.Range()));
+    }
+
+    return new_range;
 }
 
 

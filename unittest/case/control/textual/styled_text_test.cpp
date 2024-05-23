@@ -124,6 +124,113 @@ TEST(StyledTextTest, Slice) {
 }
 
 
+TEST(StyledTextTest, SetSliceInRange_Precondition) {
+
+    StyledTextSlice slice{ 0, {}, {}, {} };
+
+    StyledText styled_text;
+    ASSERT_THROW(styled_text.SetSliceInRange(slice, Range{ 1, 0 }), PreconditionError);
+    ASSERT_THROW(styled_text.SetSliceInRange(slice, Range{ 1, 10 }), PreconditionError);
+    ASSERT_NO_THROW(styled_text.SetSliceInRange(slice, Range{ 0, 0 }));
+    ASSERT_NO_THROW(styled_text.SetSliceInRange(slice, Range{ 0, 10 }));
+}
+
+
+TEST(StyledTextTest, SetSliceInRange_Text) {
+
+    auto test = [](
+        const std::wstring& original_text,
+        const std::wstring& slice_text,
+        const Range& range,
+        const std::wstring& expected_result,
+        const Range& returned_range) {
+    
+        StyledText styled_text{ original_text };
+        auto new_range = styled_text.SetSliceInRange(
+            StyledTextSlice{ 0, slice_text, {}, {} },
+            range);
+        return new_range == returned_range && styled_text.Text() == expected_result;
+    };
+
+    ASSERT_TRUE(test(L"", L"", Range(0, 0), L"", Range(0, 0)));
+    ASSERT_TRUE(test(L"", L"", Range(0, 2), L"", Range(0, 0)));
+    ASSERT_TRUE(test(L"", L"1", Range(0, 0), L"1", Range(0, 1)));
+    ASSERT_TRUE(test(L"", L"12", Range(0, 10), L"12", Range(0, 2)));
+
+    ASSERT_TRUE(test(L"01234", L"", Range(0, 0), L"01234", Range(0, 0)));
+    ASSERT_TRUE(test(L"01234", L"", Range(0, 1), L"1234", Range(0, 0)));
+    ASSERT_TRUE(test(L"01234", L"", Range(0, 10), L"", Range(0, 0)));
+    ASSERT_TRUE(test(L"01234", L"", Range(2, 0), L"01234", Range(2, 0)));
+    ASSERT_TRUE(test(L"01234", L"", Range(2, 5), L"01", Range(2, 0)));
+    ASSERT_TRUE(test(L"01234", L"", Range(5, 0), L"01234", Range(5, 0)));
+    ASSERT_TRUE(test(L"01234", L"", Range(5, 5), L"01234", Range(5, 0)));
+    ASSERT_TRUE(test(L"01234", L"", Range(0, 50), L"", Range(0, 0)));
+    ASSERT_TRUE(test(L"01234", L"A", Range(0, 0), L"A01234", Range(0, 1)));
+    ASSERT_TRUE(test(L"01234", L"A", Range(2, 0), L"01A234", Range(2, 1)));
+    ASSERT_TRUE(test(L"01234", L"AB", Range(5, 1), L"01234AB", Range(5, 2)));
+    ASSERT_TRUE(test(L"01234", L"AB", Range(1, 3), L"0AB4", Range(1, 2)));
+}
+
+
+TEST(StyledTextTest, SetSliceInRange_DefaultFont) {
+
+    StyledText styled_text{ L"012345" };
+    styled_text.SetDefaultFont(Font{ L"default" });
+
+    //Ranged fonts won't change if the default fonts are equal.
+    {
+        DefaultTextStyle default_style;
+        default_style.SetFont(Font{ L"default" });
+
+        StyledTextSlice slice{ 0, L"ABC", default_style, {} };
+        styled_text.SetSliceInRange(slice, Range{ 2, 2 });
+        ASSERT_TRUE(styled_text.RangedFonts().IsEmpty());
+    }
+
+    //The default font of slice will be set as a ranged font in the styled text.
+    {
+        DefaultTextStyle default_style;
+        default_style.SetFont(Font{ L"slice" });
+
+        StyledTextSlice slice{ 0, L"ABC", default_style, {} };
+        styled_text.SetSliceInRange(slice, Range{ 2, 2 });
+        ASSERT_FALSE(styled_text.RangedFonts().IsEmpty());
+        ASSERT_EQ(styled_text.RangedFonts().begin()->Range(), Range(2, 3));
+        ASSERT_EQ(styled_text.RangedFonts().begin()->Font().family_name, L"slice");
+    }
+}
+
+
+TEST(StyledTextTest, SetSliceInRange) {
+
+    DefaultTextStyle default_style;
+    default_style.SetFont(Font{ L"f" });
+    default_style.SetTextColor(Color::Blue());
+    default_style.SetTextBackColor(Color::White());
+
+    RangedTextStyle ranged_style;
+    ranged_style.SetFontInRange(Font{ L"r" }, Range{ 0, 6 });
+    ranged_style.SetTextColorPickerInRange(CreateColorPicker(Color::Yellow()), Range{ 5, 3 });
+    ranged_style.SetTextBackColorPickerInRange(CreateColorPicker(Color::Green()), Range{ 2, 7 });
+
+    auto inline_object = Create<InlineObject>();
+    ranged_style.AttachInlineObjectToRange(inline_object, Range{ 5, 1 });
+
+    StyledTextSlice slice{
+        4,
+        L"456",
+        default_style,
+        std::move(ranged_style)
+    };
+
+    {
+        StyledText styled_text;
+        styled_text.SetSliceInRange(slice, Range{ 0, 2 });
+
+    }
+}
+
+
 TEST(StyledTextTest, GetSubTextPreconditionError) {
 
     //Empty styled text.

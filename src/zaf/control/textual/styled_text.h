@@ -47,7 +47,7 @@ public:
     /**
     Constructs an empty StyledText.
     */
-    StyledText() noexcept;
+    StyledText();
 
     /**
     Constructs a StyledText with the specified text.
@@ -55,7 +55,7 @@ public:
     @param text
         The text that the StyledText will own.
     */
-    explicit StyledText(std::wstring text) noexcept;
+    explicit StyledText(std::wstring text);
 
     /**
     Gets the text of the StyledText.
@@ -223,6 +223,8 @@ public:
     StyledTextSlice Slice(const Range& range) const;
     void ReplaceSlice(const Range& slice_range, const StyledTextSlice& new_slice);
 
+    Range SetSliceInRange(const StyledTextSlice& slice, const Range& range);
+
     /**
     Gets a sub-portion of the styled text.
 
@@ -246,8 +248,6 @@ public:
 
     StyledText Clone() const;
 
-private:
-    void InitializeDefaultStyle();
     void CheckRange(const Range& range) const;
 
 private:
