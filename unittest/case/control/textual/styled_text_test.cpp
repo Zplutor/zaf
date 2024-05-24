@@ -174,11 +174,11 @@ TEST(StyledTextTest, SetSliceInRange_Text) {
 
 TEST(StyledTextTest, SetSliceInRange_DefaultFont) {
 
-    StyledText styled_text{ L"012345" };
-    styled_text.SetDefaultFont(Font{ L"default" });
-
     //Ranged fonts won't change if the default fonts are equal.
     {
+        StyledText styled_text{ L"012345" };
+        styled_text.SetDefaultFont(Font{ L"default" });
+
         DefaultTextStyle default_style;
         default_style.SetFont(Font{ L"default" });
 
@@ -189,44 +189,66 @@ TEST(StyledTextTest, SetSliceInRange_DefaultFont) {
 
     //The default font of slice will be set as a ranged font in the styled text.
     {
+        StyledText styled_text{ L"012345" };
+        styled_text.SetDefaultFont(Font{ L"default" });
+
         DefaultTextStyle default_style;
         default_style.SetFont(Font{ L"slice" });
 
         StyledTextSlice slice{ 0, L"ABC", default_style, {} };
         styled_text.SetSliceInRange(slice, Range{ 2, 2 });
-        ASSERT_FALSE(styled_text.RangedFonts().IsEmpty());
+        ASSERT_EQ(styled_text.RangedFonts().Count(), 1);
         ASSERT_EQ(styled_text.RangedFonts().begin()->Range(), Range(2, 3));
         ASSERT_EQ(styled_text.RangedFonts().begin()->Font().family_name, L"slice");
+    }
+
+    //The ranged font will override the default font of the slice.
+    {
+        StyledText styled_text{ L"012345" };
+        styled_text.SetDefaultFont(Font{ L"default" });
+
+        DefaultTextStyle default_style;
+        default_style.SetFont(Font{ L"slice" });
+
+        RangedTextStyle ranged_style;
+        ranged_style.SetFontInRange(Font{ L"ranged" }, Range{ 2, 2 });
+
+        StyledTextSlice slice{ 0, L"ABCD", default_style, std::move(ranged_style) };
+
+        //012345 -> 01ABCD45
+        styled_text.SetSliceInRange(slice, Range{ 2, 2 });
+        ASSERT_EQ(styled_text.RangedFonts().Count(), 2);
+
+        auto iterator = styled_text.RangedFonts().begin();
+        ASSERT_EQ(iterator->Range(), Range(2, 2));
+        ASSERT_EQ(iterator->Font().family_name, L"slice");
+
+        ++iterator;
+        ASSERT_EQ(iterator->Range(), Range(4, 2));
+        ASSERT_EQ(iterator->Font().family_name, L"ranged");
     }
 }
 
 
-TEST(StyledTextTest, SetSliceInRange) {
-
-    DefaultTextStyle default_style;
-    default_style.SetFont(Font{ L"f" });
-    default_style.SetTextColor(Color::Blue());
-    default_style.SetTextBackColor(Color::White());
-
-    RangedTextStyle ranged_style;
-    ranged_style.SetFontInRange(Font{ L"r" }, Range{ 0, 6 });
-    ranged_style.SetTextColorPickerInRange(CreateColorPicker(Color::Yellow()), Range{ 5, 3 });
-    ranged_style.SetTextBackColorPickerInRange(CreateColorPicker(Color::Green()), Range{ 2, 7 });
-
-    auto inline_object = Create<InlineObject>();
-    ranged_style.AttachInlineObjectToRange(inline_object, Range{ 5, 1 });
-
-    StyledTextSlice slice{
-        4,
-        L"456",
-        default_style,
-        std::move(ranged_style)
-    };
+TEST(StyledTextTest, SetSliceInRange_RangedFonts) {
 
     {
-        StyledText styled_text;
-        styled_text.SetSliceInRange(slice, Range{ 0, 2 });
+        RangedTextStyle ranged_style;
+        ranged_style.SetFontInRange(Font{ L"A" }, Range{ 8, 4 });
+        ranged_style.SetFontInRange(Font{ L"B" }, Range{ 12, 5 });
+        StyledTextSlice slice{ 10, L"AABB", {}, std::move(ranged_style) };
 
+        StyledText styled_text{ L"012345" };
+        styled_text.SetSliceInRange(slice, Range{ 3, 2 });
+        ASSERT_EQ(styled_text.RangedFonts().Count(), 2);
+
+        auto iterator = styled_text.RangedFonts().begin();
+        ASSERT_EQ(iterator->Range(), Range(3, 2));
+        ASSERT_EQ(iterator->Font().family_name, L"A");
+
+        ++iterator;
+        ASSERT_EQ(iterator->Range(), Range(5, 2));
+        ASSERT_EQ(iterator->Font().family_name, L"B");
     }
 }
 

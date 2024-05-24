@@ -314,13 +314,13 @@ Range StyledText::SetSliceInRange(const StyledTextSlice& slice, const Range& ran
             length = item_range.length;
         }
 
-        Range new_range{ index, length };
-        if (new_range.EndIndex() > slice.Text().length()) {
-            new_range.length -= new_range.EndIndex() - slice.Text().length();
+        Range revised_range{ index, length };
+        if (revised_range.EndIndex() > slice.Text().length()) {
+            revised_range.length -= revised_range.EndIndex() - slice.Text().length();
         }
 
-        new_range.index += new_range.index;
-        return new_range;
+        revised_range.index += new_range.index;
+        return revised_range;
     };
 
     //Ranged fonts

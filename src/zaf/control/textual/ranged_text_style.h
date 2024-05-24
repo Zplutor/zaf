@@ -126,6 +126,10 @@ public:
 
     }
 
+    std::size_t Count() const noexcept {
+        return store_.Count();
+    }
+
     bool IsEmpty() const noexcept {
         return store_.IsEmpty();
     }
