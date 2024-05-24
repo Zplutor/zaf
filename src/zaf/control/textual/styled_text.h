@@ -57,6 +57,12 @@ public:
     */
     explicit StyledText(std::wstring text);
 
+    explicit StyledText(StyledTextSlice slice);
+
+    std::size_t Length() const noexcept {
+        return text_.length();
+    }
+
     /**
     Gets the text of the StyledText.
 
@@ -221,7 +227,7 @@ public:
     const InlineObjectAccessor& InlineObjects() const;
 
     StyledTextSlice Slice(const Range& range) const;
-
+    void SetSlice(StyledTextSlice slice);
     Range SetSliceInRange(const StyledTextSlice& slice, const Range& range);
 
     /**
@@ -246,6 +252,13 @@ public:
     StyledText GetSubText(const Range& range) const;
 
     StyledText Clone() const;
+
+private:
+    static Range ReviseItemRange(
+        std::size_t slice_index,
+        std::size_t slice_length,
+        std::size_t new_index,
+        const Range& item_range);
 
     void CheckRange(const Range& range) const;
 

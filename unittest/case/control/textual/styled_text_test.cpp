@@ -253,6 +253,32 @@ TEST(StyledTextTest, SetSliceInRange_RangedFonts) {
 }
 
 
+TEST(StyledTextTest, SetSlice) {
+
+    DefaultTextStyle default_style;
+    default_style.SetFont(Font{ L"f" });
+
+    RangedTextStyle ranged_style;
+    ranged_style.SetFontInRange(Font{ L"A" }, Range{ 8, 4 });
+    ranged_style.SetFontInRange(Font{ L"B" }, Range{ 12, 5 });
+    StyledTextSlice slice{ 10, L"AABB", default_style, std::move(ranged_style) };
+
+    StyledText styled_text;
+    styled_text.SetSlice(std::move(slice));
+    ASSERT_EQ(styled_text.Text(), L"AABB");
+    ASSERT_EQ(styled_text.DefaultFont().family_name, L"f");
+    ASSERT_EQ(styled_text.RangedFonts().Count(), 2);
+
+    auto iterator = styled_text.RangedFonts().begin();
+    ASSERT_EQ(iterator->Range(), Range(0, 2));
+    ASSERT_EQ(iterator->Font().family_name, L"A");
+
+    ++iterator;
+    ASSERT_EQ(iterator->Range(), Range(2, 2));
+    ASSERT_EQ(iterator->Font().family_name, L"B");
+}
+
+
 TEST(StyledTextTest, GetSubTextPreconditionError) {
 
     //Empty styled text.

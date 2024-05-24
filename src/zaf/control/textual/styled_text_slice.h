@@ -27,6 +27,10 @@ public:
         return slice_index_;
     }
 
+    std::size_t Length() const noexcept {
+        return text_.length();
+    }
+
     const std::wstring& Text() const noexcept {
         return text_;
     }
@@ -40,6 +44,8 @@ public:
     }
 
 private:
+    friend class StyledText;
+
     std::size_t slice_index_{};
     std::wstring text_;
     DefaultTextStyle default_style_;

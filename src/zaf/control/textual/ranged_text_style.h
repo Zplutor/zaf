@@ -52,7 +52,7 @@ public:
         return *std::any_cast<zaf::ColorPicker>(&this->inner_.Value());
     }
 
-    const zaf::ColorPicker& ColorPicker() {
+    zaf::ColorPicker& ColorPicker() {
         return const_cast<zaf::ColorPicker&>(
             static_cast<const RangedColorPickerItem*>(this)->ColorPicker());
     }

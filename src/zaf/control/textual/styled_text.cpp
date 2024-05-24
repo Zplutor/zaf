@@ -13,6 +13,11 @@ StyledText::StyledText(std::wstring text) : text_(std::move(text)) {
 }
 
 
+StyledText::StyledText(StyledTextSlice slice) {
+    this->SetSlice(std::move(slice));
+}
+
+
 void StyledText::SetText(std::wstring text) {
 
     text_ = std::move(text);
@@ -253,6 +258,49 @@ StyledTextSlice StyledText::Slice(const Range& range) const {
 }
 
 
+void StyledText::SetSlice(StyledTextSlice slice) {
+
+    auto slice_index = slice.Index();
+    auto slice_length = slice.Length();
+    const auto revise_item_range = [slice_index, slice_length](const Range& item_range) {
+        return ReviseItemRange(slice_index, slice_length, 0, item_range);
+    };
+
+    this->text_ = std::move(slice.text_);
+    this->default_style_ = std::move(slice.default_style_);
+
+    this->ranged_style_.Clear();
+
+    //Ranged fonts
+    for (auto& each_item : slice.ranged_style_.Fonts()) {
+        ranged_style_.SetFontInRange(
+            std::move(each_item.Font()),
+            revise_item_range(each_item.Range()));
+    }
+
+    //Ranged text color picker
+    for (auto& each_item : slice.ranged_style_.TextColorPickers()) {
+        ranged_style_.SetTextColorPickerInRange(
+            std::move(each_item.ColorPicker()),
+            revise_item_range(each_item.Range()));
+    }
+
+    //Ranged text back color picker
+    for (auto& each_item : slice.ranged_style_.TextBackColorPickers()) {
+        ranged_style_.SetTextBackColorPickerInRange(
+            std::move(each_item.ColorPicker()),
+            revise_item_range(each_item.Range()));
+    }
+
+    //Inline objects
+    for (auto& each_item : slice.ranged_style_.InlineObjects()) {
+        ranged_style_.AttachInlineObjectToRange(
+            std::move(each_item.Object()),
+            revise_item_range(each_item.Range()));
+    }
+}
+
+
 Range StyledText::SetSliceInRange(const StyledTextSlice& slice, const Range& range) {
 
     //Text
@@ -273,26 +321,7 @@ Range StyledText::SetSliceInRange(const StyledTextSlice& slice, const Range& ran
         new_range);
 
     const auto revise_item_range = [&slice, &new_range](const Range& item_range) {
-
-        std::size_t index{};
-        std::size_t length{};
-
-        if (item_range.index < slice.Index()) {
-            index = 0;
-            length = item_range.length - (slice.Index() - item_range.index);
-        }
-        else {
-            index = item_range.index - slice.Index();
-            length = item_range.length;
-        }
-
-        Range revised_range{ index, length };
-        if (revised_range.EndIndex() > slice.Text().length()) {
-            revised_range.length -= revised_range.EndIndex() - slice.Text().length();
-        }
-
-        revised_range.index += new_range.index;
-        return revised_range;
+        return ReviseItemRange(slice.Index(), slice.Text().length(), new_range.index, item_range);
     };
 
     //Ranged fonts
@@ -387,6 +416,32 @@ StyledText StyledText::GetSubText(const Range& range) const {
                 revise_item_range(item.Range()));
         });
 
+    return result;
+}
+
+
+Range StyledText::ReviseItemRange(
+    std::size_t slice_index,
+    std::size_t slice_length,
+    std::size_t new_index,
+    const Range& item_range) {
+
+    Range result;
+
+    if (item_range.index < slice_index) {
+        result.index = 0;
+        result.length = item_range.length - (slice_index - item_range.index);
+    }
+    else {
+        result.index = item_range.index - slice_index;
+        result.length = item_range.length;
+    }
+
+    if (result.EndIndex() > slice_length) {
+        result.length -= result.EndIndex() - slice_length;
+    }
+
+    result.index += new_index;
     return result;
 }
 
