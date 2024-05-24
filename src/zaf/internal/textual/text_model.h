@@ -144,6 +144,10 @@ private:
     void RaiseInlineObjectAttachedEvent(
         std::vector<std::shared_ptr<textual::InlineObject>> objects) {
 
+        if (objects.empty()) {
+            return;
+        }
+
         inline_object_attached_event_.AsObserver().OnNext(InlineObjectAttachedInfo{
             std::move(objects),
         });

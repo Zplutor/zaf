@@ -221,7 +221,6 @@ public:
     const InlineObjectAccessor& InlineObjects() const;
 
     StyledTextSlice Slice(const Range& range) const;
-    void ReplaceSlice(const Range& slice_range, const StyledTextSlice& new_slice);
 
     Range SetSliceInRange(const StyledTextSlice& slice, const Range& range);
 

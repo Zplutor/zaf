@@ -253,34 +253,6 @@ StyledTextSlice StyledText::Slice(const Range& range) const {
 }
 
 
-void StyledText::ReplaceSlice(const Range& slice_range, const StyledTextSlice& new_slice) {
-
-    CheckRange(slice_range);
-    ZAF_EXPECT(slice_range.index == new_slice.Index());
-
-    SetTextInRange(new_slice.Text(), slice_range);
-
-    const auto& ranged_style = new_slice.RangedStyle();
-    for (const auto& each_item : ranged_style.Fonts()) {
-        ranged_style_.SetFontInRange(each_item.Font(), each_item.Range());
-    }
-
-    for (const auto& each_item : ranged_style.TextColorPickers()) {
-        ranged_style_.SetTextColorPickerInRange(each_item.ColorPicker(), each_item.Range());
-    }
-
-    for (const auto& each_item : ranged_style.TextBackColorPickers()) {
-        ranged_style_.SetTextBackColorPickerInRange(each_item.ColorPicker(), each_item.Range());
-    }
-
-    for (const auto& each_item : ranged_style.InlineObjects()) {
-        ranged_style_.AttachInlineObjectToRange(
-            each_item.Object()->Clone(),
-            each_item.Range());
-    }
-}
-
-
 Range StyledText::SetSliceInRange(const StyledTextSlice& slice, const Range& range) {
 
     //Text
