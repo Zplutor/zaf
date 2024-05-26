@@ -418,6 +418,7 @@
     <ClInclude Include="src\zaf\base\non_copyable.h" />
     <ClInclude Include="src\zaf\base\none.h" />
     <ClInclude Include="src\zaf\base\range.h" />
+    <ClInclude Include="src\zaf\base\range_map.h" />
     <ClInclude Include="src\zaf\base\registry\registry_value.h" />
     <ClInclude Include="src\zaf\base\registry\registry_value_type.h" />
     <ClInclude Include="src\zaf\base\registry\registry_view.h" />

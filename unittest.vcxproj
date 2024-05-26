@@ -396,6 +396,7 @@
     <ClCompile Include="unittest\case\base\hash_test.cpp" />
     <ClCompile Include="unittest\case\base\non_copyable_test.cpp" />
     <ClCompile Include="unittest\case\base\number_test.cpp" />
+    <ClCompile Include="unittest\case\base\range_map_test.cpp" />
     <ClCompile Include="unittest\case\base\range_test.cpp" />
     <ClCompile Include="unittest\case\base\registry\registry_delete_sub_key_test.cpp" />
     <ClCompile Include="unittest\case\base\registry\registry_key_basic_test.cpp" />

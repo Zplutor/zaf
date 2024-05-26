@@ -2761,5 +2761,8 @@
     <ClInclude Include="src\zaf\control\textual\default_text_style.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\range_map.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
