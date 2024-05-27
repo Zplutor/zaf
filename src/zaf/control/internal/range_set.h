@@ -1,11 +1,14 @@
 #pragma once
 
-#include <zaf/base/range.h>
-#include <zaf/internal/ranged_value_store.h>
+#include <zaf/base/none.h>
+#include <zaf/base/range_map.h>
 
 namespace zaf::internal {
 
 class RangeSet {
+private:
+    using UnderlyingStore = RangeMap<None>;
+
 public:
     using value_type = Range;
 
@@ -14,11 +17,11 @@ public:
         using iterator_category = std::forward_iterator_tag;
         using value_type = Range;
         using difference_type = std::make_signed_t<std::size_t>;
-        using pointer = Range*;
-        using reference = Range&;
+        using pointer = const Range*;
+        using reference = const Range&;
 
     public:
-        explicit iterator(RangedValueStore::const_iterator inner) : inner_(inner) {
+        explicit iterator(UnderlyingStore::const_iterator inner) : inner_(inner) {
 
         }
 
@@ -44,26 +47,26 @@ public:
         }
 
     private:
-        RangedValueStore::const_iterator inner_;
+        UnderlyingStore::const_iterator inner_;
     };
 
     using const_iterator = iterator;
 
 public:
-    bool AddRange(const Range& range) {
-        return store_.AddRange(range, {});
+    void AddRange(const Range& range) {
+        store_.AddRange(range, {});
     }
 
-    bool RemoveRange(const Range& range) {
-        return store_.RemoveRange(range);
+    void RemoveRange(const Range& range) {
+        store_.RemoveRange(range);
     }
 
-    bool InsertSpan(const Range& span_range) {
-        return store_.InsertSpan(span_range);
+    void InsertSpan(const Range& span_range) {
+        store_.InsertSpan(span_range);
     }
 
-    bool EraseSpan(const Range& span_range) {
-        return store_.EraseSpan(span_range);
+    void EraseSpan(const Range& span_range) {
+        store_.EraseSpan(span_range);
     }
 
     void Clear() {
@@ -82,7 +85,6 @@ public:
         return store_.Count();
     }
 
-public:
     iterator begin() const {
         return iterator{ store_.begin() };
     }
@@ -92,7 +94,7 @@ public:
     }
 
 private:
-    RangedValueStore store_;
+    UnderlyingStore store_;
 };
 
 }

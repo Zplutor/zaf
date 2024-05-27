@@ -41,11 +41,19 @@ public:
     }
     
     bool AdjustSelectionByAddingIndexes(std::size_t add_index, std::size_t add_count) {
-        return range_set_.InsertSpan(Range{ add_index, add_count });
+        if (add_count > 0) {
+            range_set_.InsertSpan(Range{ add_index, add_count });
+            return true;
+        }
+        return false;
     }
 
     bool AdjustSelectionByRemovingIndexes(std::size_t remove_index, std::size_t remove_count) {
-        return range_set_.EraseSpan(Range{ remove_index, remove_count });
+        if (remove_count > 0) {
+            range_set_.EraseSpan(Range{ remove_index, remove_count });
+            return true;
+        }
+        return false;
     }
 
     bool IsIndexSelected(std::size_t index) const {
