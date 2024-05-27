@@ -356,3 +356,60 @@ TEST(RangeMapTest, EraseSpan) {
 
     ASSERT_TRUE(test(Range(30, 3), { { Range(5, 4), "0" }, { Range(20, 4), "1" } }));
 }
+
+
+TEST(RangeMapTest, FindItemAtIndex) {
+
+    RangeMap<std::string> map;
+    ASSERT_EQ(map.FindItemAtIndex(0), map.end());
+    ASSERT_EQ(map.FindItemAtIndex(1), map.end());
+
+    map.AddRange(Range{ 1, 2 }, std::string{ "range1" });
+    map.AddRange(Range{ 5, 1 }, std::string{ "range2" });
+    map.AddRange(Range{ 10, 5 }, std::string{ "range2" });
+
+    //Invalid indexes.
+    auto item = map.FindItemAtIndex(0);
+    ASSERT_EQ(item, map.end());
+
+    item = map.FindItemAtIndex(4);
+    ASSERT_EQ(item, map.end());
+
+    item = map.FindItemAtIndex(9);
+    ASSERT_EQ(item, map.end());
+
+    item = map.FindItemAtIndex(16);
+    ASSERT_EQ(item, map.end());
+
+    //The first range
+    item = map.FindItemAtIndex(1);
+    ASSERT_NE(item, map.end());
+    ASSERT_EQ(item->Range(), Range(1, 2));
+
+    item = map.FindItemAtIndex(2);
+    ASSERT_NE(item, map.end());
+    ASSERT_EQ(item->Range(), Range(1, 2));
+
+    item = map.FindItemAtIndex(3);
+    ASSERT_EQ(item, map.end());
+
+    //The second range
+    item = map.FindItemAtIndex(5);
+    ASSERT_NE(item, map.end());
+    ASSERT_EQ(item->Range(), Range(5, 1));
+
+    item = map.FindItemAtIndex(6);
+    ASSERT_EQ(item, map.end());
+
+    //The third range
+    item = map.FindItemAtIndex(10);
+    ASSERT_NE(item, map.end());
+    ASSERT_EQ(item->Range(), Range(10, 5));
+
+    item = map.FindItemAtIndex(13);
+    ASSERT_NE(item, map.end());
+    ASSERT_EQ(item->Range(), Range(10, 5));
+
+    item = map.FindItemAtIndex(15);
+    ASSERT_EQ(item, map.end());
+}

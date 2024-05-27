@@ -174,6 +174,28 @@ public:
         items_.clear();
     }
 
+    iterator FindItemAtIndex(std::size_t index) noexcept {
+
+        auto iterator = std::lower_bound(
+            items_.begin(),
+            items_.end(),
+            index,
+            [](const Item& item, std::size_t index) {
+                return item.Range().EndIndex() <= index;
+            });
+
+        if (iterator != items_.end() && iterator->Range().Contains(index)) {
+            return iterator;
+        }
+
+        return items_.end();
+    }
+
+    const_iterator FindItemAtIndex(std::size_t index) const noexcept {
+        auto mutable_this = const_cast<RangeMap<T>*>(this);
+        return mutable_this->FindItemAtIndex(index);
+    }
+
     bool IsEmpty() const noexcept {
         return items_.empty();
     }
