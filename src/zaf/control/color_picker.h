@@ -2,20 +2,72 @@
 
 #include <functional>
 #include <zaf/graphic/color.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 
 class Control;
 
-/**
- The prorotype of color picker.
+using ColorPickerFunction = std::function<Color(const Control&)>;
 
- @param control
-    The control that getting the color.
+class ColorPicker {
+public:
+    ColorPicker() = default;
 
- A color picker is called by controls to get colors.
- */
-typedef std::function<Color(const Control& control)> ColorPicker;
+    ColorPicker(const ColorPicker&) = default;
+    ColorPicker& operator=(const ColorPicker&) = default;
+
+    ColorPicker(ColorPicker&&) = default;
+    ColorPicker& operator=(ColorPicker&&) = default;
+
+    template<
+        typename Callable, 
+        typename = std::enable_if_t<std::is_convertible_v<Callable, ColorPickerFunction>>
+    >
+    ColorPicker(Callable&& function) : function_(std::forward<Callable>(function)) {
+    
+    }
+
+    template<
+        typename Callable,
+        typename = std::enable_if_t<std::is_convertible_v<Callable, ColorPickerFunction>>
+    >
+    ColorPicker& operator=(Callable&& function) {
+        function_ = std::forward<Callable>(function);
+        return *this;
+    }
+
+    Color operator()(const Control& control) const {
+        return function_(control);
+    }
+
+    explicit operator bool() const noexcept {
+        return !!function_;
+    }
+
+private:
+    ColorPickerFunction function_;
+};
+
+
+class ColorPickerObject : public Object {
+public:
+    ZAF_DECLARE_TYPE;
+};
+
+
+class StaticColorPicker : public ColorPickerObject {
+public:
+    ZAF_DECLARE_TYPE;
+
+    Color operator()(const Control&) {
+        return color_;
+    }
+
+private:
+    Color color_;
+};
+
 
 /**
  Represents a color picker that has constant color.
