@@ -284,3 +284,75 @@ TEST(RangeMapTest, RemoveRange) {
         { Range(15, 4), "3" },
     }));
 }
+
+
+TEST(RangeMapTest, InsertSpan) {
+
+    auto test = [](const Range& span, const RangeMap<std::string>::ItemList& expected) {
+
+        RangeMap<std::string> map;
+        map.AddRange(Range{ 5, 4 }, "0");
+        map.AddRange(Range{ 20, 4 }, "1");
+
+        map.InsertSpan(span);
+        return CheckRangeMapResult(map, expected);
+    };
+
+    ASSERT_TRUE(test(Range(0, 0), { { Range(5, 4), "0" }, { Range(20, 4), "1" } }));
+    ASSERT_TRUE(test(Range(6, 0), { { Range(5, 4), "0" }, { Range(20, 4), "1" } }));
+    ASSERT_TRUE(test(Range(10, 0), { { Range(5, 4), "0" }, { Range(20, 4), "1" } }));
+    ASSERT_TRUE(test(Range(22, 0), { { Range(5, 4), "0" }, { Range(20, 4), "1" } }));
+
+    ASSERT_TRUE(test(Range(1, 2), { { Range(7, 4), "0" }, { Range(22, 4), "1" } }));
+    ASSERT_TRUE(test(Range(10, 3), { { Range(5, 4), "0" }, { Range(23, 4), "1" } }));
+
+    ASSERT_TRUE(test(Range(6, 2), { 
+        { Range(5, 1), "0" }, 
+        { Range(8, 3), "0" },
+        { Range(22, 4), "1"}
+    }));
+
+    ASSERT_TRUE(test(Range(22, 2), { 
+        { Range(5, 4), "0" },
+        { Range(20, 2), "1" }, 
+        { Range(24, 2), "1" }
+    }));
+
+    ASSERT_TRUE(test(Range(25, 3), { { Range(5, 4), "0" }, { Range(20, 4), "1" } }));
+}
+
+
+TEST(RangeMapTest, EraseSpan) {
+
+    auto test = [](const Range& span, const RangeMap<std::string>::ItemList& expected) {
+
+        RangeMap<std::string> map;
+        map.AddRange(Range{ 5, 4 }, "0");
+        map.AddRange(Range{ 20, 4 }, "1");
+
+        map.EraseSpan(span);
+        return CheckRangeMapResult(map, expected);
+    };
+
+    ASSERT_TRUE(test(Range(0, 0), { { Range(5, 4), "0" }, { Range(20, 4), "1" } }));
+    ASSERT_TRUE(test(Range(6, 0), { { Range(5, 4), "0" }, { Range(20, 4), "1" } }));
+    ASSERT_TRUE(test(Range(18, 0), { { Range(5, 4), "0" }, { Range(20, 4), "1" } }));
+    ASSERT_TRUE(test(Range(22, 0), { { Range(5, 4), "0" }, { Range(20, 4), "1" } }));
+
+    ASSERT_TRUE(test(Range(0, 2), { { Range(3, 4), "0" }, { Range(18, 4), "1" } }));
+    ASSERT_TRUE(test(Range(10, 3), { { Range(5, 4), "0" }, { Range(17, 4), "1" } }));
+
+    ASSERT_TRUE(test(Range(3, 10), { { Range(10, 4), "1" } }));
+    ASSERT_TRUE(test(Range(3, 30), { }));
+
+    ASSERT_TRUE(test(Range(6, 2), { { Range(5, 2), "0" }, { Range(18, 4), "1" } }));
+    ASSERT_TRUE(test(Range(21, 2), { { Range(5, 4), "0" }, { Range(20, 2), "1" } }));
+
+    ASSERT_TRUE(test(Range(3, 3), { { Range(3, 3), "0" }, { Range(17, 4), "1" } }));
+    ASSERT_TRUE(test(Range(17, 5), { { Range(5, 4), "0" }, { Range(17, 2), "1" } }));
+
+    ASSERT_TRUE(test(Range(7, 3), { { Range(5, 2), "0" }, { Range(17, 4), "1" } }));
+    ASSERT_TRUE(test(Range(23, 5), { { Range(5, 4), "0" }, { Range(20, 3), "1" } }));
+
+    ASSERT_TRUE(test(Range(30, 3), { { Range(5, 4), "0" }, { Range(20, 4), "1" } }));
+}

@@ -48,6 +48,127 @@ public:
     void RemoveRange(const Range& removed_range) {
         ReplaceRange(removed_range, nullptr);
     }
+
+    void InsertSpan(const Range& span_range) {
+        if (!span_range.IsEmpty()) {
+            ReplaceSpan(Range{ span_range.index, 0 }, span_range.length);
+        }
+    }
+
+    void EraseSpan(const Range& span_range) {
+        if (!span_range.IsEmpty()) {
+            ReplaceSpan(span_range, 0);
+        }
+    }
+
+    void ReplaceSpan(const Range& span_range, std::size_t new_length) {
+
+        //Loop over all items to modify ranges.
+        auto iterator = items_.begin();
+        while (iterator != items_.end()) {
+
+            const auto current_range = iterator->Range();
+
+            //The span is replaced before the current range, modify the index of the current range.
+            if (span_range.EndIndex() <= current_range.index) {
+
+                std::size_t new_index = current_range.index;
+                new_index -= span_range.length;
+                new_index += new_length;
+
+                *iterator = Item{
+                    Range{ new_index, current_range.length },
+                    std::move(iterator->Value())
+                };
+
+                ++iterator;
+                continue;
+            }
+
+            //The current range is fully contained by(or equals to) the replaced span, remove the 
+            //current range.
+            if (span_range.Contains(current_range)) {
+
+                iterator = items_.erase(iterator);
+                continue;
+            }
+
+            //The replaced span is a portion of the current range.
+            if ((span_range.index > current_range.index) &&
+                (span_range.EndIndex() < current_range.EndIndex())) {
+
+                //The new length is zero, decline the length of the current range.
+                if (new_length == 0) {
+
+                    *iterator = Item{
+                        Range{ current_range.index, current_range.length - span_range.length },
+                        std::move(iterator->Value())
+                    };
+
+                    ++iterator;
+                }
+                //Otherwise, break the current range.
+                else {
+
+                    //Shorten the length of the head sub range.
+                    *iterator = Item{
+                        Range{ current_range.index, span_range.index - current_range.index },
+                        std::move(iterator->Value())
+                    };
+
+                    //Insert the new tail sub range.
+                    Item tail_item{
+                        Range{
+                            span_range.index + new_length,
+                            current_range.EndIndex() - span_range.EndIndex()
+                        },
+                        iterator->Value()
+                    };
+
+                    ++iterator;
+                    iterator = items_.insert(iterator, std::move(tail_item));
+                    ++iterator;
+                }
+                continue;
+            }
+
+            //The replaced span is overlapped with the head of the current range, modify the index of
+            //the current range.
+            if ((span_range.EndIndex() > current_range.index) &&
+                (span_range.EndIndex() < current_range.EndIndex())) {
+
+                *iterator = Item{
+                    Range{
+                        span_range.index + new_length,
+                        current_range.EndIndex() - span_range.EndIndex()
+                    },
+                    std::move(iterator->Value())
+                };
+
+                ++iterator;
+                continue;
+            }
+
+            //The replaced span is overlapped with the tail of the current range, modify the length of
+            //the current span.
+            if ((span_range.index > current_range.index) &&
+                (span_range.index < current_range.EndIndex())) {
+
+                *iterator = Item{
+                    Range{
+                        current_range.index,
+                        current_range.length - (current_range.EndIndex() - span_range.index)
+                    },
+                    std::move(iterator->Value())
+                };
+
+                ++iterator;
+                continue;
+            }
+
+            ++iterator;
+        }
+    }
     
     void Clear() noexcept {
         items_.clear();
