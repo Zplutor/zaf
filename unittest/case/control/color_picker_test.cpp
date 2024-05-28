@@ -34,28 +34,3 @@ TEST(ColorPickerTest, ConvertFromLambda) {
     }
 }
 
-
-TEST(ColorPickerTest, Equality) {
-
-    //Lambdas
-    {
-        ColorPicker picker1{ [](const Control&) { return Color::Red(); } };
-        ColorPicker picker2{ [](const Control&) { return Color::Red(); } };
-        ASSERT_FALSE(picker1 == picker2);
-    }
-
-    //Lambda and StaticColorPicker
-    {
-        ColorPicker picker1{ [](const Control&) { return Color::Red(); } };
-        ColorPicker picker2{ StaticColorPicker{ Color::Red() } };
-        ASSERT_FALSE(picker1 == picker2);
-        ASSERT_FALSE(picker2 == picker1);
-    }
-
-    //StaticColorPickers
-    {
-        ColorPicker picker1{ StaticColorPicker{ Color::Red() } };
-        ColorPicker picker2{ StaticColorPicker{ Color::Red() } };
-        ASSERT_TRUE(picker1 == picker2);
-    }
-}

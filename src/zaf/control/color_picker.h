@@ -45,40 +45,52 @@ public:
         return !!function_;
     }
 
-    friend bool operator==(const ColorPicker&, const ColorPicker&) noexcept;
-
 private:
     ColorPickerFunction function_;
 };
 
 
-class StaticColorPicker : public Object {
+class ColorPickerObject : public Object {
+public:
+    ZAF_DECLARE_TYPE;
+};
+
+
+class StaticColorPicker : public ColorPickerObject {
 public:
     ZAF_DECLARE_TYPE;
 
-public:
-    explicit StaticColorPicker(const zaf::Color& color) noexcept : color_(color) {
-
-    }
-
-    const zaf::Color& Color() const noexcept {
+    Color operator()(const Control&) {
         return color_;
     }
-
-    zaf::Color operator()(const Control&) {
-        return color_;
-    }
-
-    std::size_t Hash() const override {
-        return color_.Hash();
-    }
-
-    bool IsEqual(const Object& other) const override;
 
 private:
-    zaf::Color color_;
+    Color color_;
 };
 
+
+/**
+ Represents a color picker that has constant color.
+
+ Typically, you should use CreateColorPicker function to create a 
+ constant color picker.
+ */
+class ConstantColorPicker {
+public:
+    ConstantColorPicker() { }
+    ConstantColorPicker(const Color& color) : color_(color) { }
+
+    Color operator()(const Control&) {
+        return GetColor();
+    }
+
+    const Color& GetColor() const {
+        return color_;
+    }
+
+private:
+    Color color_;
+};
 
 /**
  Create a constant color picker that returns the specified color.
