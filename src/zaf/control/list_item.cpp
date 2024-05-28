@@ -28,6 +28,7 @@ void ListItem::Initialize() {
             internal::ControlSelectedInActivedColorRGB);
     });
 
+    /*
     SetTextColorPicker([](const Control& control) {
 
         const auto& item = dynamic_cast<const ListItem&>(control);
@@ -38,6 +39,8 @@ void ListItem::Initialize() {
             return Color::FromRGB(internal::ControlNormalTextColorRGB);
         }
     });
+    */
+    SetTextColor(Color::FromRGB(internal::ControlNormalTextColorRGB));
 }
 
 

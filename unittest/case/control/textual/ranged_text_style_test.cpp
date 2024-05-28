@@ -71,22 +71,22 @@ TEST(RangedTextStyleTest, Move) {
 
     RangedTextStyle origin;
     origin.SetFontInRange(Font{ L"move" }, Range{ 2, 2 });
-    origin.SetTextColorPickerInRange(CreateColorPicker(Color::Green()), Range{ 3, 5 });
-    origin.SetTextBackColorPickerInRange(CreateColorPicker(Color::Red()), Range{ 1, 4 });
+    origin.SetTextColorInRange(Color::Green(), Range{ 3, 5 });
+    origin.SetTextBackColorInRange(Color::Red(), Range{ 1, 4 });
     origin.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 10, 1 });
 
     const auto check_if_style_empty = [](const RangedTextStyle& style) {
         return 
             style.Fonts().IsEmpty() &&
-            style.TextColorPickers().IsEmpty() &&
-            style.TextBackColorPickers().IsEmpty() &&
+            style.TextColors().IsEmpty() &&
+            style.TextBackColors().IsEmpty() &&
             style.InlineObjects().IsEmpty();
     };
 
     const auto check_if_style_not_empty = [](const RangedTextStyle& style) {
         if (style.Fonts().IsEmpty() || 
-            style.TextColorPickers().IsEmpty() ||
-            style.TextBackColorPickers().IsEmpty() ||
+            style.TextColors().IsEmpty() ||
+            style.TextBackColors().IsEmpty() ||
             style.InlineObjects().IsEmpty()) {
             return false;
         }
@@ -96,11 +96,11 @@ TEST(RangedTextStyleTest, Move) {
             return false;
         }
 
-        if (style.TextColorPickers().begin()->Range() != Range{ 3, 5 }) {
+        if (style.TextColors().begin()->Range() != Range{ 3, 5 }) {
             return false;
         }
 
-        if (style.TextBackColorPickers().begin()->Range() != Range{ 1, 4 }) {
+        if (style.TextBackColors().begin()->Range() != Range{ 1, 4 }) {
             return false;
         }
 

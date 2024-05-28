@@ -92,6 +92,7 @@ void ConversationItem::InitializeTitleLabel() {
         200,
         TitleHeight));
 
+    /*
     title_label_->SetTextColorPicker([this](const zaf::Control& control) {
     
         if (IsSelectedInContext()) {
@@ -101,6 +102,8 @@ void ConversationItem::InitializeTitleLabel() {
             return zaf::Color::Black();
         }
     });
+    */
+    title_label_->SetTextColor(zaf::Color::Black());
 
     zaf::Font font;
     font.family_name = L"Î¢ÈíÑÅºÚ";
@@ -121,6 +124,7 @@ void ConversationItem::InitializeDigestLabel() {
         200,
         DigestHeight));
 
+    /*
     digest_label_->SetTextColorPicker([this](const zaf::Control& control) {
     
         if (IsSelectedInContext()) {
@@ -130,6 +134,8 @@ void ConversationItem::InitializeDigestLabel() {
             return zaf::Color::FromRGB(0x979797);
         }
     });
+    */
+    digest_label_->SetTextColor(zaf::Color::FromRGB(0x979797));
 
     zaf::Font font;
     font.family_name = L"Î¢ÈíÑÅºÚ";
@@ -145,6 +151,8 @@ void ConversationItem::InitializeTimeLabel() {
 
     time_label_ = zaf::Create<zaf::Label>();
     time_label_->SetTextAlignment(zaf::TextAlignment::Tailing);
+
+    /*
     time_label_->SetTextColorPicker([this](const Control& control) {
     
         if (IsSelectedInContext()) {
@@ -154,6 +162,8 @@ void ConversationItem::InitializeTimeLabel() {
             return zaf::Color::FromRGB(0xb6b6b6);
         }
     });
+    */
+    time_label_->SetTextColor(zaf::Color::FromRGB(0xb6b6b6));
 
     zaf::Font font;
     font.family_name = L"Î¢ÈíÑÅºÚ";

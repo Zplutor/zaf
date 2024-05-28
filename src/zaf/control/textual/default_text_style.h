@@ -1,7 +1,6 @@
 #pragma once
 
-#include <zaf/base/error/contract_error.h>
-#include <zaf/control/color_picker.h>
+#include <zaf/graphic/color.h>
 #include <zaf/graphic/font/font.h>
 
 namespace zaf::textual {
@@ -10,8 +9,8 @@ class DefaultTextStyle {
 public:
     DefaultTextStyle() : 
         font_(zaf::Font::Default()),
-        text_color_picker_(CreateColorPicker(Color::Black())),
-        text_back_color_picker_(CreateColorPicker(Color::Transparent())) {
+        text_color_(Color::Black()),
+        text_back_color_(Color::Transparent()) {
 
     }
 
@@ -23,36 +22,26 @@ public:
         font_ = std::move(font);
     }
 
-    const ColorPicker& TextColorPicker() const {
-        return text_color_picker_;
+    const Color& TextColor() const noexcept {
+        return text_color_;
     }
 
-    void SetTextColor(const Color& color) {
-        text_color_picker_ = CreateColorPicker(color);
+    void SetTextColor(const Color& color) noexcept {
+        text_color_ = color;
     }
 
-    void SetTextColorPicker(ColorPicker picker) {
-        ZAF_EXPECT(picker);
-        text_color_picker_ = std::move(picker);
+    const Color& TextBackColor() const noexcept {
+        return text_back_color_;
     }
 
-    const ColorPicker& TextBackColorPicker() const noexcept {
-        return text_back_color_picker_;
-    }
-
-    void SetTextBackColor(const Color& color) {
-        text_back_color_picker_ = CreateColorPicker(color);
-    }
-
-    void SetTextBackColorPicker(ColorPicker picker) {
-        ZAF_EXPECT(picker);
-        text_back_color_picker_ = std::move(picker);
+    void SetTextBackColor(const Color& color) noexcept {
+        text_back_color_ = color;
     }
 
 private:
     zaf::Font font_;
-    ColorPicker text_color_picker_;
-    ColorPicker text_back_color_picker_;
+    Color text_color_;
+    Color text_back_color_;
 };
 
 }

@@ -102,6 +102,7 @@ std::shared_ptr<Label> Item::CreateLabel() const {
     result->SetParagraphAlignment(ParagraphAlignment::Center);
     result->SetTextTrimming(TextTrimmingGranularity::Character);
 
+    /*
     result->SetTextColorPicker([this](const Control& control) {
 
         if (control.IsSelectedInContext()) {
@@ -114,6 +115,9 @@ std::shared_ptr<Label> Item::CreateLabel() const {
 
         return Color::FromRGB(zaf::internal::ControlNormalTextColorRGB);
     });
+    */
+    result->SetTextColor(Color::FromRGB(zaf::internal::ControlNormalTextColorRGB));
+
     return result;
 }
 

@@ -67,6 +67,7 @@ void TextualControl::Initialize() {
 
     __super::Initialize();
 
+    /*
     text_model_->SetTextColorPicker([](const Control& control) {
         if (control.IsEnabledInContext()) {
             return Color::FromRGB(internal::ControlNormalTextColorRGB);
@@ -75,6 +76,8 @@ void TextualControl::Initialize() {
             return Color::FromRGB(internal::ControlDisabledTextColorRGB);
         }
     });
+    */
+    text_model_->SetTextColor(Color::FromRGB(internal::ControlNormalTextColorRGB));
 
     Subscriptions() += text_model_->InlineObjectAttachedEvent().Subscribe(
         std::bind(&TextualControl::OnInlineObjectAttached, this, std::placeholders::_1));
@@ -124,9 +127,9 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
 void TextualControl::SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const {
 
-    for (const auto& each_item : text_model_->StyledText().RangedTextColorPickers()) {
+    for (const auto& each_item : text_model_->StyledText().RangedTextColors()) {
 
-        auto brush = renderer.CreateSolidColorBrush(each_item.ColorPicker()(*this));
+        auto brush = renderer.CreateSolidColorBrush(each_item.Color());
         text_layout.SetBrush(brush, each_item.Range());
     }
 }
@@ -138,15 +141,15 @@ void TextualControl::PaintTextBack(
     const TextLayout& text_layout,
     const zaf::Rect& layout_rect) {
 
-    auto& text_back_color_pickers = text_model_->StyledText().RangedTextBackColorPickers();
-    if (text_back_color_pickers.IsEmpty()) {
+    auto& text_back_colors = text_model_->StyledText().RangedTextBackColors();
+    if (text_back_colors.IsEmpty()) {
         return;
     }
 
     auto region_guard = canvas.PushRegion(layout_rect, layout_rect);
 
-    for (const auto& each_item : text_back_color_pickers) {
-        PaintTextBackInRange(canvas, text_layout, each_item.Range(), each_item.ColorPicker());
+    for (const auto& each_item : text_back_colors) {
+        PaintTextBackInRange(canvas, text_layout, each_item.Range(), each_item.Color());
     }
 }
 
@@ -155,14 +158,14 @@ void TextualControl::PaintTextBackInRange(
     Canvas& canvas,
     const TextLayout& text_layout,
     const Range& range,
-    const ColorPicker& picker) {
+    const Color& color) {
 
     auto range_metrics = text_layout.HitTestRange(range);
     for (const auto& metrics : range_metrics) {
 
         auto rect = metrics.Rect();
         rect.Deflate(text_back_padding_);
-        canvas.DrawRectangle(rect, picker(*this));
+        canvas.DrawRectangle(rect, color);
     }
 }
 
@@ -174,7 +177,7 @@ void TextualControl::PaintText(
     const zaf::Rect& layout_rect) {
 
     auto state_guard = canvas.PushState();
-    canvas.SetBrushWithColor(TextColorPicker()(*this));
+    canvas.SetBrushWithColor(TextColor());
     canvas.DrawTextLayout(text_layout, layout_rect.position);
 }
 
@@ -228,80 +231,40 @@ void TextualControl::SetStyledText(textual::StyledText styled_text) {
 
 
 Color TextualControl::TextColor() const {
-    return TextColorPicker()(*this);
+    return text_model_->StyledText().DefaultTextColor();
 }
 
 void TextualControl::SetTextColor(const Color& color) {
-    SetTextColorPicker(CreateColorPicker(color));
+    text_model_->SetTextColor(color);
 }
 
 
 Color TextualControl::GetTextColorAtIndex(std::size_t index) const {
-    return GetTextColorPickerAtIndex(index)(*this);
+    return text_model_->StyledText().GetTextColorAtIndex(index);
 }
 
 
 void TextualControl::SetTextColorInRange(const Color& color, const Range& range) {
-    SetTextColorPickerInRange(CreateColorPicker(color), range);
-}
-
-
-const ColorPicker& TextualControl::TextColorPicker() const {
-    return text_model_->StyledText().DefaultTextColorPicker();
-}
-
-
-void TextualControl::SetTextColorPicker(ColorPicker color_picker) {
-    text_model_->SetTextColorPicker(std::move(color_picker));
-}
-
-
-const ColorPicker& TextualControl::GetTextColorPickerAtIndex(std::size_t index) const {
-    return text_model_->StyledText().GetTextColorPickerAtIndex(index);
-}
-
-
-void TextualControl::SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
-    text_model_->SetTextColorPickerInRange(std::move(color_picker), range);
+    text_model_->SetTextColorInRange(color, range);
 }
 
 
 Color TextualControl::TextBackColor() const {
-    return TextBackColorPicker()(*this);
+    return text_model_->StyledText().DefaultTextBackColor();
 }
 
 void TextualControl::SetTextBackColor(const Color& color) {
-    SetTextBackColorPicker(CreateColorPicker(color));
+    text_model_->SetTextBackColor(color);
 }
 
 
 Color TextualControl::GetTextBackColorAtIndex(std::size_t index) const {
-    return GetTextBackColorPickerAtIndex(index)(*this);
+    return text_model_->StyledText().GetTextBackColorAtIndex(index);
 }
 
 
 void TextualControl::SetTextBackColorInRange(const Color& color, const Range& range) {
-    SetTextBackColorPickerInRange(CreateColorPicker(color), range);
-}
-
-
-const ColorPicker& TextualControl::TextBackColorPicker() const {
-    return text_model_->StyledText().DefaultTextBackColorPicker();
-}
-
-
-void TextualControl::SetTextBackColorPicker(ColorPicker picker) {
-    return text_model_->SetTextBackColorPicker(std::move(picker));
-}
-
-
-const ColorPicker& TextualControl::GetTextBackColorPickerAtIndex(std::size_t index) const {
-    return text_model_->StyledText().GetTextBackColorPickerAtIndex(index);
-}
-
-
-void TextualControl::SetTextBackColorPickerInRange(ColorPicker picker, const Range& range) {
-    text_model_->SetTextBackColorPickerInRange(std::move(picker), range);
+    text_model_->SetTextBackColorInRange(color, range);
 }
 
 

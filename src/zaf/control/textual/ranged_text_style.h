@@ -1,10 +1,9 @@
 #pragma once
 
 #include <optional>
-#include <zaf/base/error/contract_error.h>
 #include <zaf/base/non_copyable.h>
-#include <zaf/control/color_picker.h>
 #include <zaf/control/textual/inline_object_store.h>
+#include <zaf/graphic/color.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/internal/ranged_value_store.h>
 
@@ -44,17 +43,16 @@ public:
 };
 
 
-class RangedColorPickerItem : public BaseRangedItem {
+class RangedColorItem : public BaseRangedItem {
 public:
     using BaseRangedItem::BaseRangedItem;
 
-    const zaf::ColorPicker& ColorPicker() const {
-        return *std::any_cast<zaf::ColorPicker>(&this->inner_.Value());
+    const zaf::Color& Color() const {
+        return *std::any_cast<zaf::Color>(&this->inner_.Value());
     }
 
-    zaf::ColorPicker& ColorPicker() {
-        return const_cast<zaf::ColorPicker&>(
-            static_cast<const RangedColorPickerItem*>(this)->ColorPicker());
+    zaf::Color& Color() {
+        return const_cast<zaf::Color&>(static_cast<const RangedColorItem*>(this)->Color());
     }
 };
 
@@ -259,7 +257,7 @@ private:
 class RangedTextStyle : NonCopyable {
 public:
     using FontAccessor = RangedItemAccessor<RangedFontItem>;
-    using ColorPickerAccessor = RangedItemAccessor<RangedColorPickerItem>;
+    using ColorAccessor = RangedItemAccessor<RangedColorItem>;
 
 public:
     RangedTextStyle() = default;
@@ -283,38 +281,36 @@ public:
         fonts_.Clear();
     }
 
-    const ColorPickerAccessor& TextColorPickers() const {
-        return text_color_picker_accessor_;
+    const ColorAccessor& TextColors() const {
+        return text_color_accessor_;
     }
 
-    ColorPickerAccessor& TextColorPickers() {
-        return text_color_picker_accessor_;
+    ColorAccessor& TextColors() {
+        return text_color_accessor_;
     }
 
-    void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
-        ZAF_EXPECT(color_picker);
-        text_color_pickers_.AddRange(range, std::move(color_picker));
+    void SetTextColorInRange(const Color& color, const Range& range) {
+        text_colors_.AddRange(range, color);
     }
 
-    void ClearTextColorPickers() {
-        text_color_pickers_.Clear();
+    void ClearTextColors() {
+        text_colors_.Clear();
     }
 
-    const ColorPickerAccessor& TextBackColorPickers() const {
-        return text_back_color_picker_accessor_;
+    const ColorAccessor& TextBackColors() const {
+        return text_back_color_accessor_;
     }
 
-    ColorPickerAccessor& TextBackColorPickers() {
-        return text_back_color_picker_accessor_;
+    ColorAccessor& TextBackColors() {
+        return text_back_color_accessor_;
     }
 
-    void SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range) {
-        ZAF_EXPECT(color_picker);
-        text_back_color_pickers_.AddRange(range, std::move(color_picker));
+    void SetTextBackColorInRange(const Color& color, const Range& range) {
+        text_back_colors_.AddRange(range, color);
     }
 
-    void ClearTextBackColorPickers() {
-        text_back_color_pickers_.Clear();
+    void ClearTextBackColors() {
+        text_back_colors_.Clear();
     }
 
     const InlineObjectAccessor& InlineObjects() const {
@@ -339,11 +335,11 @@ private:
     internal::RangedValueStore fonts_;
     FontAccessor font_accessor_{ fonts_ };
 
-    internal::RangedValueStore text_color_pickers_;
-    ColorPickerAccessor text_color_picker_accessor_{ text_color_pickers_ };
+    internal::RangedValueStore text_colors_;
+    ColorAccessor text_color_accessor_{ text_colors_ };
 
-    internal::RangedValueStore text_back_color_pickers_;
-    ColorPickerAccessor text_back_color_picker_accessor_{ text_back_color_pickers_ };
+    internal::RangedValueStore text_back_colors_;
+    ColorAccessor text_back_color_accessor_{ text_back_colors_ };
 
     InlineObjectStore inline_objects_;
     InlineObjectAccessor inline_object_accessor_{ inline_objects_ };

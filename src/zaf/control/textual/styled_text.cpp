@@ -49,12 +49,12 @@ Range StyledText::AppendText(std::wstring_view text, const TextStyle& style) {
         ranged_style_.SetFontInRange(*style.Font(), new_range);
     }
 
-    if (style.TextColorPicker()) {
-        ranged_style_.SetTextColorPickerInRange(style.TextColorPicker(), new_range);
+    if (style.TextColor()) {
+        ranged_style_.SetTextColorInRange(*style.TextColor(), new_range);
     }
 
-    if (style.TextBackColorPicker()) {
-        ranged_style_.SetTextBackColorPickerInRange(style.TextBackColorPicker(), new_range);
+    if (style.TextBackColor()) {
+        ranged_style_.SetTextBackColorInRange(*style.TextBackColor(), new_range);
     }
 
     if (style.InlineObject()) {
@@ -106,82 +106,70 @@ StyledText::RangedFontAccessor& StyledText::RangedFonts() {
 
 
 void StyledText::SetTextColorInRange(const Color& color, const Range& range) {
-    SetTextColorPickerInRange(CreateColorPicker(color), range);
-}
-
-
-void StyledText::SetTextColorPickerInRange(ColorPicker color_picker, const Range& range) {
-
     CheckRange(range);
-    ranged_style_.SetTextColorPickerInRange(std::move(color_picker), range);
+    ranged_style_.SetTextColorInRange(color, range);
 }
 
 
-void StyledText::ClearRangedTextColorPickers() {
-    ranged_style_.ClearTextColorPickers();
+void StyledText::ClearRangedTextColors() {
+    ranged_style_.ClearTextColors();
 }
 
 
-const ColorPicker& StyledText::GetTextColorPickerAtIndex(std::size_t index) const {
+const Color& StyledText::GetTextColorAtIndex(std::size_t index) const {
 
     ZAF_EXPECT(index <= text_.length());
 
-    auto& text_color_pickers = ranged_style_.TextColorPickers();
-    auto iterator = text_color_pickers.FindItemAtIndex(index);
-    if (iterator != text_color_pickers.end()) {
-        return iterator->ColorPicker();
+    auto& text_colors = ranged_style_.TextColors();
+    auto iterator = text_colors.FindItemAtIndex(index);
+    if (iterator != text_colors.end()) {
+        return iterator->Color();
     }
-    return default_style_.TextColorPicker();
+    return default_style_.TextColor();
 }
 
 
-const StyledText::RangedColorPickerAccessor& StyledText::RangedTextColorPickers() const {
-    return ranged_style_.TextColorPickers();
+const StyledText::RangedColorAccessor& StyledText::RangedTextColors() const {
+    return ranged_style_.TextColors();
 }
 
 
-StyledText::RangedColorPickerAccessor& StyledText::RangedTextColorPickers() {
-    return ranged_style_.TextColorPickers();
+StyledText::RangedColorAccessor& StyledText::RangedTextColors() {
+    return ranged_style_.TextColors();
 }
 
 
 void StyledText::SetTextBackColorInRange(const Color& color, const Range& range) {
-    SetTextBackColorPickerInRange(CreateColorPicker(color), range);
-}
-
-
-void StyledText::SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range) {
-
     CheckRange(range);
-    ranged_style_.SetTextBackColorPickerInRange(std::move(color_picker), range);
+    ranged_style_.SetTextBackColorInRange(color, range);
 }
 
 
-void StyledText::ClearRangedTextBackColorPickers() {
-    ranged_style_.ClearTextBackColorPickers();
+void StyledText::ClearRangedTextBackColors() {
+    ranged_style_.ClearTextBackColors();
 }
 
 
-const ColorPicker& StyledText::GetTextBackColorPickerAtIndex(std::size_t index) const {
+const Color& StyledText::GetTextBackColorAtIndex(std::size_t index) const {
 
     ZAF_EXPECT(index <= text_.length());
 
-    auto& text_back_color_pickers = ranged_style_.TextBackColorPickers();
-    auto iterator = text_back_color_pickers.FindItemAtIndex(index);
-    if (iterator != text_back_color_pickers.end()) {
-        return iterator->ColorPicker();
+    auto& text_back_colors = ranged_style_.TextBackColors();
+    auto iterator = text_back_colors.FindItemAtIndex(index);
+    if (iterator != text_back_colors.end()) {
+        return iterator->Color();
     }
-    return default_style_.TextBackColorPicker();
+    return default_style_.TextBackColor();
 }
 
 
-const StyledText::RangedColorPickerAccessor& StyledText::RangedTextBackColorPickers() const {
-    return ranged_style_.TextBackColorPickers();
+const StyledText::RangedColorAccessor& StyledText::RangedTextBackColors() const {
+    return ranged_style_.TextBackColors();
 }
 
 
-StyledText::RangedColorPickerAccessor& StyledText::RangedTextBackColorPickers() {
-    return ranged_style_.TextBackColorPickers();
+StyledText::RangedColorAccessor& StyledText::RangedTextBackColors() {
+    return ranged_style_.TextBackColors();
 }
 
 
@@ -232,16 +220,16 @@ StyledTextSlice StyledText::Slice(const Range& range) const {
         ranged_style.SetFontInRange(item.Font(), item.Range());
     });
 
-    //Ranged text color pickers
-    ranged_style_.TextColorPickers().VisitItemsInRange(range, [&ranged_style](const auto& item) {
-        ranged_style.SetTextColorPickerInRange(item.ColorPicker(), item.Range());
+    //Ranged text color
+    ranged_style_.TextColors().VisitItemsInRange(range, [&ranged_style](const auto& item) {
+        ranged_style.SetTextColorInRange(item.Color(), item.Range());
     });
 
-    //Ranged background color pickers
-    ranged_style_.TextBackColorPickers().VisitItemsInRange(
+    //Ranged background color
+    ranged_style_.TextBackColors().VisitItemsInRange(
         range, 
         [&ranged_style](const auto& item) {
-            ranged_style.SetTextBackColorPickerInRange(item.ColorPicker(), item.Range());
+            ranged_style.SetTextBackColorInRange(item.Color(), item.Range());
         });
         
     //Inline objects.
@@ -279,16 +267,16 @@ void StyledText::SetSlice(StyledTextSlice slice) {
     }
 
     //Ranged text color picker
-    for (auto& each_item : slice.ranged_style_.TextColorPickers()) {
-        ranged_style_.SetTextColorPickerInRange(
-            std::move(each_item.ColorPicker()),
+    for (auto& each_item : slice.ranged_style_.TextColors()) {
+        ranged_style_.SetTextColorInRange(
+            std::move(each_item.Color()),
             revise_item_range(each_item.Range()));
     }
 
     //Ranged text back color picker
-    for (auto& each_item : slice.ranged_style_.TextBackColorPickers()) {
-        ranged_style_.SetTextBackColorPickerInRange(
-            std::move(each_item.ColorPicker()),
+    for (auto& each_item : slice.ranged_style_.TextBackColors()) {
+        ranged_style_.SetTextBackColorInRange(
+            std::move(each_item.Color()),
             revise_item_range(each_item.Range()));
     }
 
@@ -312,13 +300,11 @@ Range StyledText::SetSliceInRange(const StyledTextSlice& slice, const Range& ran
         ranged_style_.SetFontInRange(slice_default_style.Font(), new_range);
     }
 
-    //Default text color picker
-    ranged_style_.SetTextColorPickerInRange(slice_default_style.TextColorPicker(), new_range);
+    //Default text color 
+    ranged_style_.SetTextColorInRange(slice_default_style.TextColor(), new_range);
 
     //Default text back color picker
-    ranged_style_.SetTextBackColorPickerInRange(
-        slice_default_style.TextBackColorPicker(), 
-        new_range);
+    ranged_style_.SetTextBackColorInRange(slice_default_style.TextBackColor(), new_range);
 
     const auto revise_item_range = [&slice, &new_range](const Range& item_range) {
         return ReviseItemRange(slice.Index(), slice.Text().length(), new_range.index, item_range);
@@ -330,16 +316,14 @@ Range StyledText::SetSliceInRange(const StyledTextSlice& slice, const Range& ran
     }
     
     //Ranged text color picker
-    for (const auto& each_item : slice.RangedStyle().TextColorPickers()) {
-        ranged_style_.SetTextColorPickerInRange(
-            each_item.ColorPicker(), 
-            revise_item_range(each_item.Range()));
+    for (const auto& each_item : slice.RangedStyle().TextColors()) {
+        ranged_style_.SetTextColorInRange(each_item.Color(), revise_item_range(each_item.Range()));
     }
 
     //Ranged text back color picker
-    for (const auto& each_item : slice.RangedStyle().TextBackColorPickers()) {
-        ranged_style_.SetTextBackColorPickerInRange(
-            each_item.ColorPicker(),
+    for (const auto& each_item : slice.RangedStyle().TextBackColors()) {
+        ranged_style_.SetTextBackColorInRange(
+            each_item.Color(),
             revise_item_range(each_item.Range()));
     }
 
@@ -392,19 +376,17 @@ StyledText StyledText::GetSubText(const Range& range) const {
         });
 
     //Ranged text color pickers
-    ranged_style_.TextColorPickers().VisitItemsInRange(
+    ranged_style_.TextColors().VisitItemsInRange(
         range, 
         [&revise_item_range, &result](const auto& item) {
-            result.SetTextColorPickerInRange(item.ColorPicker(), revise_item_range(item.Range()));
+            result.SetTextColorInRange(item.Color(), revise_item_range(item.Range()));
         });
 
     //Ranged background color pickers
-    ranged_style_.TextBackColorPickers().VisitItemsInRange(
+    ranged_style_.TextBackColors().VisitItemsInRange(
         range,
         [&revise_item_range, &result](const auto& item) {
-            result.SetTextBackColorPickerInRange(
-                item.ColorPicker(),
-                revise_item_range(item.Range()));
+            result.SetTextBackColorInRange(item.Color(), revise_item_range(item.Range()));
         });
 
     //Inline objects.

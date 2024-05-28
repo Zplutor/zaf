@@ -12,6 +12,7 @@ void InspectControlItem::Initialize() {
 
     __super::Initialize();
 
+    /*
     SetTextColorPicker([this](const Control& item) {
     
         if (this->IsSelectedInContext()) {
@@ -20,6 +21,8 @@ void InspectControlItem::Initialize() {
 
         return control_->IsVisibleInContext() ? Color::Black() : Color::Gray();
     });
+    */
+    SetTextColor(Color::Black());
 }
 
 }

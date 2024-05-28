@@ -118,11 +118,11 @@ public:
     void SetFont(Font font);
     void SetFontInRange(Font font, const Range& range);
 
-    void SetTextColorPicker(ColorPicker picker);
-    void SetTextColorPickerInRange(ColorPicker picker, const Range& range);
+    void SetTextColor(const Color& color);
+    void SetTextColorInRange(const Color& color, const Range& range);
 
-    void SetTextBackColorPicker(ColorPicker picker);
-    void SetTextBackColorPickerInRange(ColorPicker picker, const Range& range);
+    void SetTextBackColor(const Color& color);
+    void SetTextBackColorInRange(const Color& color, const Range& range);
 
     void AttachInlineObjectToRange(
         std::shared_ptr<textual::InlineObject> object,

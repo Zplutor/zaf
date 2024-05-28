@@ -111,36 +111,6 @@ public:
     void SetTextColorInRange(const Color& color, const Range& range);
 
     /**
-    Gets the default text color picker of the textual control.
-    */
-    const ColorPicker& TextColorPicker() const;
-
-    /**
-    Sets the default text color picker of the textual control and applies the color picker to all
-    existing text.
-    */
-    void SetTextColorPicker(ColorPicker color_picker);
-
-    /**
-    Gets the text color picker at the specified text index.
-    */
-    const ColorPicker& GetTextColorPickerAtIndex(std::size_t index) const;
-
-    /**
-    Sets the specified text color picker to the specified range within the existing text.
-
-    @param color_picker
-        The text color picker to set.
-
-    @param range
-        The range within the existing text where the text color picker will be set.
-
-    @throw std::logic_error
-        Thrown if the range is not entirely within the existing text.
-    */
-    void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range);
-
-    /**
     Gets the default text background color of the textual control in current state.
     */
     Color TextBackColor() const;
@@ -169,37 +139,6 @@ public:
         Thrown if the range is not entirely within the existing text.
     */
     void SetTextBackColorInRange(const Color& color, const Range& range);
-
-    /**
-    Gets the default text background color picker of the textual control.
-    */
-    const ColorPicker& TextBackColorPicker() const;
-
-    /**
-    Sets the default text background color picker of the textual control and applies the color
-    picker to all existing text.
-    */
-    void SetTextBackColorPicker(ColorPicker picker);
-
-    /**
-    Gets the text backgound color picker at the specified text index.
-    */
-    const ColorPicker& GetTextBackColorPickerAtIndex(std::size_t index) const;
-
-    /**
-    Sets the specified text background color picker to the specified range within the existing
-    text.
-
-    @param color_picker
-        The text background color picker to set.
-
-    @param range
-        The range within the existing text where the text background color picker will be set.
-
-    @throw std::logic_error
-        Thrown if the range is not entirely within the existing text.
-    */
-    void SetTextBackColorPickerInRange(ColorPicker picker, const Range& range);
 
     /**
     Gets the padding for the text background.
@@ -425,7 +364,7 @@ private:
         Canvas& canvas, 
         const TextLayout& text_layout, 
         const Range& range,
-        const ColorPicker& picker);
+        const Color& color);
 
     void OnInlineObjectAttached(const internal::InlineObjectAttachedInfo&);
     void OnTextModelChanged(const internal::TextModelChangedInfo&);

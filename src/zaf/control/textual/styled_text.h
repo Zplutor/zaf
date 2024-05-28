@@ -9,7 +9,6 @@
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
-#include <zaf/control/color_picker.h>
 #include <zaf/control/textual/default_text_style.h>
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/control/textual/styled_text_slice.h>
@@ -39,9 +38,9 @@ public:
     using RangedFontAccessor = RangedTextStyle::FontAccessor;
 
     /**
-    A class used to access the ranged color pickers in a StyledText.
+    A class used to access the ranged colors in a StyledText.
     */
-    using RangedColorPickerAccessor = RangedTextStyle::ColorPickerAccessor;
+    using RangedColorAccessor = RangedTextStyle::ColorAccessor;
 
 public:
     /**
@@ -179,43 +178,33 @@ public:
     const RangedFontAccessor& RangedFonts() const;
     RangedFontAccessor& RangedFonts();
 
-    const ColorPicker& DefaultTextColorPicker() const {
-        return default_style_.TextColorPicker();
+    const Color& DefaultTextColor() const noexcept {
+        return default_style_.TextColor();
     }
 
     void SetDefaultTextColor(const Color& color) {
         default_style_.SetTextColor(color);
     }
 
-    void SetDefaultTextColorPicker(ColorPicker color_picker) {
-        default_style_.SetTextColorPicker(std::move(color_picker));
-    }
-
     void SetTextColorInRange(const Color& color, const Range& range);
-    void SetTextColorPickerInRange(ColorPicker color_picker, const Range& range);
-    void ClearRangedTextColorPickers();
-    const ColorPicker& GetTextColorPickerAtIndex(std::size_t index) const;
-    const RangedColorPickerAccessor& RangedTextColorPickers() const;
-    RangedColorPickerAccessor& RangedTextColorPickers();
+    void ClearRangedTextColors();
+    const Color& GetTextColorAtIndex(std::size_t index) const;
+    const RangedColorAccessor& RangedTextColors() const;
+    RangedColorAccessor& RangedTextColors();
 
-    const ColorPicker& DefaultTextBackColorPicker() const {
-        return default_style_.TextBackColorPicker();
+    const Color& DefaultTextBackColor() const {
+        return default_style_.TextBackColor();
     }
 
     void SetDefaultTextBackColor(const Color& color) {
         default_style_.SetTextBackColor(color);
     }
 
-    void SetDefaultTextBackColorPicker(ColorPicker color_picker) {
-        default_style_.SetTextBackColorPicker(std::move(color_picker));
-    }
-
     void SetTextBackColorInRange(const Color& color, const Range& range);
-    void SetTextBackColorPickerInRange(ColorPicker color_picker, const Range& range);
-    void ClearRangedTextBackColorPickers();
-    const ColorPicker& GetTextBackColorPickerAtIndex(std::size_t index) const;
-    const RangedColorPickerAccessor& RangedTextBackColorPickers() const;
-    RangedColorPickerAccessor& RangedTextBackColorPickers();
+    void ClearRangedTextBackColors();
+    const Color& GetTextBackColorAtIndex(std::size_t index) const;
+    const RangedColorAccessor& RangedTextBackColors() const;
+    RangedColorAccessor& RangedTextBackColors();
 
     void AttachInlineObjectToRange(
         std::shared_ptr<InlineObject> object,

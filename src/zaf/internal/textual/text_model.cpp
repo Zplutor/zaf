@@ -64,32 +64,32 @@ void TextModel::SetFontInRange(Font font, const Range& range) {
 }
 
 
-void TextModel::SetTextColorPicker(ColorPicker picker) {
+void TextModel::SetTextColor(const Color& color) {
 
-    styled_text_.SetDefaultTextColorPicker(std::move(picker));
-    styled_text_.ClearRangedTextColorPickers();
+    styled_text_.SetDefaultTextColor(color);
+    styled_text_.ClearRangedTextColors();
     RaiseChangedEvent(TextModelAttribute::TextColor);
 }
 
 
-void TextModel::SetTextColorPickerInRange(ColorPicker picker, const Range& range) {
+void TextModel::SetTextColorInRange(const Color& color, const Range& range) {
 
-    styled_text_.SetTextColorPickerInRange(std::move(picker), range);
+    styled_text_.SetTextColorInRange(color, range);
     RaiseChangedEvent(TextModelAttribute::TextColor, range, range.length);
 }
 
 
-void TextModel::SetTextBackColorPicker(ColorPicker picker) {
+void TextModel::SetTextBackColor(const Color& color) {
 
-    styled_text_.SetDefaultTextBackColorPicker(std::move(picker));
-    styled_text_.ClearRangedTextBackColorPickers();
+    styled_text_.SetDefaultTextBackColor(color);
+    styled_text_.ClearRangedTextBackColors();
     RaiseChangedEvent(TextModelAttribute::TextBackColor);
 }
 
 
-void TextModel::SetTextBackColorPickerInRange(ColorPicker picker, const Range& range) {
+void TextModel::SetTextBackColorInRange(const Color& color, const Range& range) {
 
-    styled_text_.SetTextBackColorPickerInRange(std::move(picker), range);
+    styled_text_.SetTextBackColorInRange(color, range);
     RaiseChangedEvent(TextModelAttribute::TextBackColor);
 }
 

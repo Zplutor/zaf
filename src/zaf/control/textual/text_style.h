@@ -1,8 +1,8 @@
 #pragma once
 
 #include <optional>
-#include <zaf/control/color_picker.h>
 #include <zaf/control/textual/inline_object.h>
+#include <zaf/graphic/color.h>
 #include <zaf/graphic/font/font.h>
 
 namespace zaf::textual {
@@ -27,28 +27,26 @@ public:
         font_ = std::move(font);
     }
 
-    const ColorPicker& TextColorPicker() const {
-        return text_color_picker_;
+    const Color* TextColor() const {
+        if (text_color_) {
+            return &*text_color_;
+        }
+        return nullptr;
     }
 
     void SetTextColor(const Color& color) {
-        text_color_picker_ = CreateColorPicker(color);
+        text_color_ = color;
     }
 
-    void SetTextColorPicker(ColorPicker picker) {
-        text_color_picker_ = std::move(picker);
-    }
-
-    const ColorPicker& TextBackColorPicker() const {
-        return text_back_color_picker_;
+    const Color* TextBackColor() const {
+        if (text_back_color_) {
+            return &*text_back_color_;
+        }
+        return nullptr;
     }
 
     void SetTextBackColor(const Color& color) {
-        text_back_color_picker_ = CreateColorPicker(color);
-    }
-
-    void SetTextBackColorPicker(ColorPicker picker) {
-        text_back_color_picker_ = std::move(picker);
+        text_back_color_ = color;
     }
 
     const std::shared_ptr<textual::InlineObject>& InlineObject() const {
@@ -61,8 +59,8 @@ public:
 
 private:
     std::optional<zaf::Font> font_;
-    ColorPicker text_color_picker_;
-    ColorPicker text_back_color_picker_;
+    std::optional<Color> text_color_;
+    std::optional<Color> text_back_color_;
     std::shared_ptr<textual::InlineObject> inline_object_;
 };
 

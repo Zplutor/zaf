@@ -23,8 +23,8 @@ TEST(StyledTextTest, SetTextInRange) {
     ASSERT_EQ(styled_text.Text(), L"StylED--Text");
 
     ASSERT_TRUE(styled_text.RangedFonts().IsEmpty());
-    ASSERT_TRUE(styled_text.RangedTextColorPickers().IsEmpty());
-    ASSERT_TRUE(styled_text.RangedTextBackColorPickers().IsEmpty());
+    ASSERT_TRUE(styled_text.RangedTextColors().IsEmpty());
+    ASSERT_TRUE(styled_text.RangedTextBackColors().IsEmpty());
     ASSERT_TRUE(styled_text.InlineObjects().IsEmpty());
 
     //Throw exception if the index of the range exceeds the length of the text.
@@ -83,15 +83,8 @@ TEST(StyledTextTest, Slice) {
         ASSERT_EQ(slice.Index(), 2);
         ASSERT_EQ(slice.Text(), L"23456");
         ASSERT_EQ(slice.DefaultStyle().Font(), styled_text.DefaultFont());
-
-        auto text_color = slice.DefaultStyle().TextColorPicker().target<ConstantColorPicker>();
-        ASSERT_TRUE(text_color);
-        ASSERT_EQ(text_color->GetColor(), Color::Red());
-
-        auto text_back_color = 
-            slice.DefaultStyle().TextBackColorPicker().target<ConstantColorPicker>();
-        ASSERT_TRUE(text_back_color);
-        ASSERT_EQ(text_back_color->GetColor(), Color::Green());
+        ASSERT_EQ(slice.DefaultStyle().TextColor(), Color::Red());
+        ASSERT_EQ(slice.DefaultStyle().TextBackColor(), Color::Green());
 
         //Ranged font
         ASSERT_FALSE(slice.RangedStyle().Fonts().IsEmpty());
@@ -100,20 +93,16 @@ TEST(StyledTextTest, Slice) {
         ASSERT_EQ(font_item.Font().family_name, L"1");
 
         //Ranged text color picker
-        ASSERT_FALSE(slice.RangedStyle().TextColorPickers().IsEmpty());
-        const auto& text_color_item = *slice.RangedStyle().TextColorPickers().begin();
+        ASSERT_FALSE(slice.RangedStyle().TextColors().IsEmpty());
+        const auto& text_color_item = *slice.RangedStyle().TextColors().begin();
         ASSERT_EQ(text_color_item.Range(), Range(6, 4));
-        ASSERT_EQ(
-            text_color_item.ColorPicker().target<ConstantColorPicker>()->GetColor(),
-            Color::Yellow());
+        ASSERT_EQ(text_color_item.Color(), Color::Yellow());
 
         //Ranged text back color picker
-        ASSERT_FALSE(slice.RangedStyle().TextBackColorPickers().IsEmpty());
-        const auto& text_back_color_item = *slice.RangedStyle().TextBackColorPickers().begin();
+        ASSERT_FALSE(slice.RangedStyle().TextBackColors().IsEmpty());
+        const auto& text_back_color_item = *slice.RangedStyle().TextBackColors().begin();
         ASSERT_EQ(text_back_color_item.Range(), Range(3, 4));
-        ASSERT_EQ(
-            text_back_color_item.ColorPicker().target<ConstantColorPicker>()->GetColor(),
-            Color::Gray());
+        ASSERT_EQ(text_back_color_item.Color(), Color::Gray());
 
         //Inline object
         ASSERT_FALSE(slice.RangedStyle().InlineObjects().IsEmpty());
@@ -315,14 +304,8 @@ TEST(StyledTextTest, GetSubText) {
         auto sub_text = styled_text.GetSubText(Range::FromIndexPair(2, 7));
         ASSERT_EQ(sub_text.Text(), L"23456");
         ASSERT_EQ(sub_text.DefaultFont(), styled_text.DefaultFont());
-
-        auto text_color = sub_text.DefaultTextColorPicker().target<ConstantColorPicker>();
-        ASSERT_TRUE(text_color);
-        ASSERT_EQ(text_color->GetColor(), Color::Red());
-
-        auto text_back_color = sub_text.DefaultTextBackColorPicker().target<ConstantColorPicker>();
-        ASSERT_TRUE(text_back_color);
-        ASSERT_EQ(text_back_color->GetColor(), Color::Green());
+        ASSERT_EQ(sub_text.DefaultTextColor(), Color::Red());
+        ASSERT_EQ(sub_text.DefaultTextBackColor(), Color::Green());
 
         //Ranged font
         ASSERT_FALSE(sub_text.RangedFonts().IsEmpty());
@@ -331,20 +314,16 @@ TEST(StyledTextTest, GetSubText) {
         ASSERT_EQ(font_item.Font().family_name, L"1");
 
         //Ranged text color picker
-        ASSERT_FALSE(sub_text.RangedTextColorPickers().IsEmpty());
-        const auto& text_color_item = *sub_text.RangedTextColorPickers().begin();
+        ASSERT_FALSE(sub_text.RangedTextColors().IsEmpty());
+        const auto& text_color_item = *sub_text.RangedTextColors().begin();
         ASSERT_EQ(text_color_item.Range(), Range(4, 1));
-        ASSERT_EQ(
-            text_color_item.ColorPicker().target<ConstantColorPicker>()->GetColor(),
-            Color::Yellow());
+        ASSERT_EQ(text_color_item.Color(), Color::Yellow());
 
         //Ranged text back color picker
-        ASSERT_FALSE(sub_text.RangedTextBackColorPickers().IsEmpty());
-        const auto& text_back_color_item = *sub_text.RangedTextBackColorPickers().begin();
+        ASSERT_FALSE(sub_text.RangedTextBackColors().IsEmpty());
+        const auto& text_back_color_item = *sub_text.RangedTextBackColors().begin();
         ASSERT_EQ(text_back_color_item.Range(), Range(1, 4));
-        ASSERT_EQ(
-            text_back_color_item.ColorPicker().target<ConstantColorPicker>()->GetColor(),
-            Color::Gray());
+        ASSERT_EQ(text_back_color_item.Color(), Color::Gray());
 
         //Inline object
         ASSERT_FALSE(sub_text.InlineObjects().IsEmpty());
