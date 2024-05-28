@@ -418,7 +418,6 @@
     <ClCompile Include="unittest\case\clipboard\format_test.cpp" />
     <ClCompile Include="unittest\case\clipboard\medium_test.cpp" />
     <ClCompile Include="unittest\case\clipboard\text_data_test.cpp" />
-    <ClCompile Include="unittest\case\control\color_picker_test.cpp" />
     <ClCompile Include="unittest\case\control\control_binder_test.cpp" />
     <ClCompile Include="unittest\case\control\control_focus_test.cpp" />
     <ClCompile Include="unittest\case\control\control_keyboard_event_routing_test.cpp" />
