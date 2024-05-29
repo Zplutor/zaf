@@ -4,7 +4,7 @@
 
 namespace zaf::textual {
 
-RangedTextStyle::RangedTextStyle(RangedTextStyle&& other) : 
+RangedTextStyle::RangedTextStyle(RangedTextStyle&& other) noexcept : 
     fonts_(std::move(other.fonts_)),
     text_colors_(std::move(other.text_colors_)),
     text_back_colors_(std::move(other.text_back_colors_)),
@@ -13,7 +13,7 @@ RangedTextStyle::RangedTextStyle(RangedTextStyle&& other) :
 }
 
 
-RangedTextStyle& RangedTextStyle::operator=(RangedTextStyle&& other) {
+RangedTextStyle& RangedTextStyle::operator=(RangedTextStyle&& other) noexcept {
 
     this->fonts_ = std::move(other.fonts_);
     this->text_colors_ = std::move(other.text_colors_);

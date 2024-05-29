@@ -129,7 +129,7 @@ void TextualControl::SetTextColorsToTextLayout(TextLayout& text_layout, Renderer
 
     for (const auto& each_item : text_model_->StyledText().RangedTextColors()) {
 
-        auto brush = renderer.CreateSolidColorBrush(each_item.Color());
+        auto brush = renderer.CreateSolidColorBrush(each_item.Value());
         text_layout.SetBrush(brush, each_item.Range());
     }
 }
@@ -149,7 +149,7 @@ void TextualControl::PaintTextBack(
     auto region_guard = canvas.PushRegion(layout_rect, layout_rect);
 
     for (const auto& each_item : text_back_colors) {
-        PaintTextBackInRange(canvas, text_layout, each_item.Range(), each_item.Color());
+        PaintTextBackInRange(canvas, text_layout, each_item.Range(), each_item.Value());
     }
 }
 
@@ -553,7 +553,7 @@ TextLayout TextualControl::CreateTextLayout() const {
     }
 
     for (const auto& each_item : text_model_->StyledText().RangedFonts()) {
-        SetFontToTextLayout(each_item.Font(), each_item.Range(), text_layout);
+        SetFontToTextLayout(each_item.Value(), each_item.Range(), text_layout);
     }
 
     for (const auto& each_item : text_model_->StyledText().InlineObjects()) {

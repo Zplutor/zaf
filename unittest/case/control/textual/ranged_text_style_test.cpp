@@ -12,61 +12,6 @@ static_assert(!std::is_copy_assignable_v<RangedTextStyle>);
 static_assert(std::is_move_constructible_v<RangedTextStyle>);
 static_assert(std::is_move_assignable_v<RangedTextStyle>);
 
-static_assert(!std::is_copy_constructible_v<RangedFontItem>);
-static_assert(!std::is_copy_assignable_v<RangedFontItem>);
-static_assert(!std::is_move_constructible_v<RangedFontItem>);
-static_assert(!std::is_move_assignable_v<RangedFontItem>);
-
-TEST(RangedTextStyleTest, RangedTypesCheck) {
-
-    static_assert(std::is_same_v<RangedTextStyle::FontAccessor::value_type, RangedFontItem>);
-
-    static_assert(std::is_same_v<
-        RangedTextStyle::FontAccessor::iterator::value_type,
-        RangedFontItem>);
-
-    //iterator
-    static_assert(std::is_same_v<
-        RangedTextStyle::FontAccessor::iterator::pointer, 
-        RangedFontItem*>);
-
-    static_assert(std::is_same_v<
-        RangedTextStyle::FontAccessor::iterator::reference,
-        RangedFontItem&>);
-
-    //const_iterator
-    static_assert(std::is_same_v<
-        RangedTextStyle::FontAccessor::const_iterator::value_type,
-        RangedFontItem>);
-
-    static_assert(std::is_same_v<
-        RangedTextStyle::FontAccessor::const_iterator::pointer,
-        const RangedFontItem*>);
-
-    static_assert(std::is_same_v<
-        RangedTextStyle::FontAccessor::const_iterator::reference,
-        const RangedFontItem&>);
-
-    {
-        RangedTextStyle ranged_style;
-        auto iterator = ranged_style.Fonts().begin();
-        static_assert(std::is_same_v<decltype(*iterator), RangedFontItem&>);
-    }
-
-    {
-        RangedTextStyle ranged_style;
-        auto iterator = ranged_style.Fonts().cbegin();
-        static_assert(std::is_same_v<decltype(*iterator), const RangedFontItem&>);
-    }
-
-    {
-        const RangedTextStyle ranged_style;
-        auto iterator = ranged_style.Fonts().begin();
-        static_assert(std::is_same_v<decltype(*iterator), const RangedFontItem&>);
-    }
-}
-
-
 TEST(RangedTextStyleTest, Move) {
 
     RangedTextStyle origin;
@@ -92,7 +37,7 @@ TEST(RangedTextStyleTest, Move) {
         }
 
         if (style.Fonts().begin()->Range() != Range{ 2, 2 } ||
-            style.Fonts().begin()->Font().family_name != L"move") {
+            style.Fonts().begin()->Value().family_name != L"move") {
             return false;
         }
 
@@ -148,7 +93,7 @@ TEST(RangedTextStyleTest, EnumerateFonts) {
         std::vector<std::wstring> strings;
         for (const auto& each_item : ranged_style.Fonts()) {
             ranges.push_back(each_item.Range());
-            strings.push_back(each_item.Font().family_name);
+            strings.push_back(each_item.Value().family_name);
         }
         ASSERT_EQ(ranges, expected_ranges);
         ASSERT_EQ(strings, expected_strings);
@@ -164,7 +109,7 @@ TEST(RangedTextStyleTest, EnumerateFonts) {
              ++iterator) {
 
             ranges.push_back(iterator->Range());
-            strings.push_back(iterator->Font().family_name);
+            strings.push_back(iterator->Value().family_name);
         }
 
         ASSERT_EQ(ranges, expected_ranges);
@@ -181,7 +126,7 @@ TEST(RangedTextStyleTest, EnumerateFonts) {
             ++iterator) {
 
             ranges.push_back(iterator->Range());
-            strings.push_back(iterator->Font().family_name);
+            strings.push_back(iterator->Value().family_name);
         }
 
         ASSERT_EQ(ranges, expected_ranges);
@@ -198,12 +143,12 @@ TEST(RangedTextStyleTest, ModifyFontsInEnumeration) {
     ranged_style.SetFontInRange(Font{ L"cc" }, Range{ 10, 3 });
 
     for (auto& each_item : ranged_style.Fonts()) {
-        each_item.Font().family_name += L"!!";
+        each_item.Value().family_name += L"!!";
     }
 
     std::vector<std::wstring> strings;
     for (const auto& each_item : ranged_style.Fonts()) {
-        strings.push_back(each_item.Font().family_name);
+        strings.push_back(each_item.Value().family_name);
     }
 
     std::vector<std::wstring> expected_strings{
@@ -228,10 +173,10 @@ TEST(RangedTextStyleText, FindItemAtIndex) {
         auto iterator = fonts.FindItemAtIndex(2);
         ASSERT_NE(iterator, fonts.end());
         ASSERT_EQ(iterator->Range(), Range(2, 2));
-        ASSERT_EQ(iterator->Font().family_name, L"aaaaa");
+        ASSERT_EQ(iterator->Value().family_name, L"aaaaa");
 
-        iterator->Font().family_name = L"bbb";
-        ASSERT_EQ(fonts.begin()->Font().family_name, L"bbb");
+        iterator->Value().family_name = L"bbb";
+        ASSERT_EQ(fonts.begin()->Value().family_name, L"bbb");
     }
 
     //Const RangedTextStyle.
@@ -243,7 +188,7 @@ TEST(RangedTextStyleText, FindItemAtIndex) {
         auto iterator = fonts.FindItemAtIndex(3);
         ASSERT_NE(iterator, fonts.end());
         ASSERT_EQ(iterator->Range(), Range(2, 2));
-        ASSERT_EQ(iterator->Font().family_name, L"bbb");
+        ASSERT_EQ(iterator->Value().family_name, L"bbb");
     }
 }
 
@@ -258,8 +203,8 @@ TEST(RangedTextStyleTest, VisitItemsInRange) {
 
     std::vector<std::wstring> fonts;
     std::vector<Range> ranges;
-    const auto visitor = [&fonts, &ranges](const RangedFontItem& item) {
-        fonts.push_back(item.Font().family_name);
+    const auto visitor = [&fonts, &ranges](const RangeMap<Font>::Item& item) {
+        fonts.push_back(item.Value().family_name);
         ranges.push_back(item.Range());
     };
 

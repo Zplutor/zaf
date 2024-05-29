@@ -90,19 +90,19 @@ TEST(StyledTextTest, Slice) {
         ASSERT_FALSE(slice.RangedStyle().Fonts().IsEmpty());
         const auto& font_item = *slice.RangedStyle().Fonts().begin();
         ASSERT_EQ(font_item.Range(), Range(0, 4));
-        ASSERT_EQ(font_item.Font().family_name, L"1");
+        ASSERT_EQ(font_item.Value().family_name, L"1");
 
         //Ranged text color picker
         ASSERT_FALSE(slice.RangedStyle().TextColors().IsEmpty());
         const auto& text_color_item = *slice.RangedStyle().TextColors().begin();
         ASSERT_EQ(text_color_item.Range(), Range(6, 4));
-        ASSERT_EQ(text_color_item.Color(), Color::Yellow());
+        ASSERT_EQ(text_color_item.Value(), Color::Yellow());
 
         //Ranged text back color picker
         ASSERT_FALSE(slice.RangedStyle().TextBackColors().IsEmpty());
         const auto& text_back_color_item = *slice.RangedStyle().TextBackColors().begin();
         ASSERT_EQ(text_back_color_item.Range(), Range(3, 4));
-        ASSERT_EQ(text_back_color_item.Color(), Color::Gray());
+        ASSERT_EQ(text_back_color_item.Value(), Color::Gray());
 
         //Inline object
         ASSERT_FALSE(slice.RangedStyle().InlineObjects().IsEmpty());
@@ -188,7 +188,7 @@ TEST(StyledTextTest, SetSliceInRange_DefaultFont) {
         styled_text.SetSliceInRange(slice, Range{ 2, 2 });
         ASSERT_EQ(styled_text.RangedFonts().Count(), 1);
         ASSERT_EQ(styled_text.RangedFonts().begin()->Range(), Range(2, 3));
-        ASSERT_EQ(styled_text.RangedFonts().begin()->Font().family_name, L"slice");
+        ASSERT_EQ(styled_text.RangedFonts().begin()->Value().family_name, L"slice");
     }
 
     //The ranged font will override the default font of the slice.
@@ -210,11 +210,11 @@ TEST(StyledTextTest, SetSliceInRange_DefaultFont) {
 
         auto iterator = styled_text.RangedFonts().begin();
         ASSERT_EQ(iterator->Range(), Range(2, 2));
-        ASSERT_EQ(iterator->Font().family_name, L"slice");
+        ASSERT_EQ(iterator->Value().family_name, L"slice");
 
         ++iterator;
         ASSERT_EQ(iterator->Range(), Range(4, 2));
-        ASSERT_EQ(iterator->Font().family_name, L"ranged");
+        ASSERT_EQ(iterator->Value().family_name, L"ranged");
     }
 }
 
@@ -233,11 +233,11 @@ TEST(StyledTextTest, SetSliceInRange_RangedFonts) {
 
         auto iterator = styled_text.RangedFonts().begin();
         ASSERT_EQ(iterator->Range(), Range(3, 2));
-        ASSERT_EQ(iterator->Font().family_name, L"A");
+        ASSERT_EQ(iterator->Value().family_name, L"A");
 
         ++iterator;
         ASSERT_EQ(iterator->Range(), Range(5, 2));
-        ASSERT_EQ(iterator->Font().family_name, L"B");
+        ASSERT_EQ(iterator->Value().family_name, L"B");
     }
 }
 
@@ -260,11 +260,11 @@ TEST(StyledTextTest, SetSlice) {
 
     auto iterator = styled_text.RangedFonts().begin();
     ASSERT_EQ(iterator->Range(), Range(0, 2));
-    ASSERT_EQ(iterator->Font().family_name, L"A");
+    ASSERT_EQ(iterator->Value().family_name, L"A");
 
     ++iterator;
     ASSERT_EQ(iterator->Range(), Range(2, 2));
-    ASSERT_EQ(iterator->Font().family_name, L"B");
+    ASSERT_EQ(iterator->Value().family_name, L"B");
 }
 
 
@@ -311,19 +311,19 @@ TEST(StyledTextTest, GetSubText) {
         ASSERT_FALSE(sub_text.RangedFonts().IsEmpty());
         const auto& font_item = *sub_text.RangedFonts().begin();
         ASSERT_EQ(font_item.Range(), Range(0, 2));
-        ASSERT_EQ(font_item.Font().family_name, L"1");
+        ASSERT_EQ(font_item.Value().family_name, L"1");
 
         //Ranged text color picker
         ASSERT_FALSE(sub_text.RangedTextColors().IsEmpty());
         const auto& text_color_item = *sub_text.RangedTextColors().begin();
         ASSERT_EQ(text_color_item.Range(), Range(4, 1));
-        ASSERT_EQ(text_color_item.Color(), Color::Yellow());
+        ASSERT_EQ(text_color_item.Value(), Color::Yellow());
 
         //Ranged text back color picker
         ASSERT_FALSE(sub_text.RangedTextBackColors().IsEmpty());
         const auto& text_back_color_item = *sub_text.RangedTextBackColors().begin();
         ASSERT_EQ(text_back_color_item.Range(), Range(1, 4));
-        ASSERT_EQ(text_back_color_item.Color(), Color::Gray());
+        ASSERT_EQ(text_back_color_item.Value(), Color::Gray());
 
         //Inline object
         ASSERT_FALSE(sub_text.InlineObjects().IsEmpty());

@@ -285,7 +285,6 @@
     <ClCompile Include="src\zaf\internal\control\mouse_event_routing.cpp" />
     <ClCompile Include="src\zaf\internal\message_loop.cpp" />
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
-    <ClCompile Include="src\zaf\internal\ranged_value_store.cpp" />
     <ClCompile Include="src\zaf\internal\system_message_window.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_caret_manager.cpp" />
@@ -752,7 +751,6 @@
     <ClInclude Include="src\zaf\internal\enumerator.h" />
     <ClInclude Include="src\zaf\internal\message_loop.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
-    <ClInclude Include="src\zaf\internal\ranged_value_store.h" />
     <ClInclude Include="src\zaf\internal\system_message_window.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
     <ClInclude Include="src\zaf\internal\textual\inline_object_attached_info.h" />
