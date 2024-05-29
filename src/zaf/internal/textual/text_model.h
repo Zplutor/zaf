@@ -130,7 +130,7 @@ public:
 
     void ReplaceStyledTextSlice(
         const Range& replaced_range,
-        const textual::StyledTextSlice& slice);
+        const textual::StyledText& slice);
 
     Observable<InlineObjectAttachedInfo> InlineObjectAttachedEvent() const {
         return inline_object_attached_event_.AsObservable();

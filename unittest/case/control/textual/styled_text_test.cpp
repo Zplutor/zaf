@@ -46,86 +46,19 @@ TEST(StyledTextTest, AppendText) {
 }
 
 
-TEST(StyledTextTest, SlicePrecondition) {
+TEST(StyledTextTest, SetStyledTextInRange_Precondition) {
 
-    //Empty styled text.
-    {
-        StyledText styled_text;
-        ASSERT_THROW(styled_text.Slice(Range{ 1, 0 }), PreconditionError);
-        ASSERT_NO_THROW(styled_text.Slice(Range{ 0, 1 }));
-    }
-
-    //Non-empty styled text.
-    {
-        StyledText styled_text{ L"123" };
-        ASSERT_THROW(styled_text.Slice(Range{ 4, 0 }), PreconditionError);
-        ASSERT_NO_THROW(styled_text.Slice(Range{ 3, 2 }));
-    }
-}
-
-
-TEST(StyledTextTest, Slice) {
-
-    StyledText styled_text{ L"0123456789" };
-    styled_text.SetDefaultFont(Font{ L"default-font" });
-    styled_text.SetDefaultTextColor(Color::Red());
-    styled_text.SetDefaultTextBackColor(Color::Green());
-
-    styled_text.SetFontInRange(Font{ L"1" }, Range{ 0, 4 });
-    styled_text.SetTextColorInRange(Color::Yellow(), Range{ 6, 4 });
-    styled_text.SetTextBackColorInRange(Color::Gray(), Range{ 3, 4 });
-
-    auto inline_object = Create<InlineObject>();
-    styled_text.AttachInlineObjectToRange(inline_object, Range{ 4, 2 });
-
-    {
-        auto slice = styled_text.Slice(Range::FromIndexPair(2, 7));
-        ASSERT_EQ(slice.Index(), 2);
-        ASSERT_EQ(slice.Text(), L"23456");
-        ASSERT_EQ(slice.DefaultStyle().Font(), styled_text.DefaultFont());
-        ASSERT_EQ(slice.DefaultStyle().TextColor(), Color::Red());
-        ASSERT_EQ(slice.DefaultStyle().TextBackColor(), Color::Green());
-
-        //Ranged font
-        ASSERT_FALSE(slice.RangedStyle().Fonts().IsEmpty());
-        const auto& font_item = *slice.RangedStyle().Fonts().begin();
-        ASSERT_EQ(font_item.Range(), Range(0, 4));
-        ASSERT_EQ(font_item.Value().family_name, L"1");
-
-        //Ranged text color picker
-        ASSERT_FALSE(slice.RangedStyle().TextColors().IsEmpty());
-        const auto& text_color_item = *slice.RangedStyle().TextColors().begin();
-        ASSERT_EQ(text_color_item.Range(), Range(6, 4));
-        ASSERT_EQ(text_color_item.Value(), Color::Yellow());
-
-        //Ranged text back color picker
-        ASSERT_FALSE(slice.RangedStyle().TextBackColors().IsEmpty());
-        const auto& text_back_color_item = *slice.RangedStyle().TextBackColors().begin();
-        ASSERT_EQ(text_back_color_item.Range(), Range(3, 4));
-        ASSERT_EQ(text_back_color_item.Value(), Color::Gray());
-
-        //Inline object
-        ASSERT_FALSE(slice.RangedStyle().InlineObjects().IsEmpty());
-        ASSERT_EQ(slice.RangedStyle().InlineObjects().begin()->Range(), Range(4, 2));
-        //The object should be cloned.
-        ASSERT_NE(slice.RangedStyle().InlineObjects().begin()->Object(), inline_object);
-    }
-}
-
-
-TEST(StyledTextTest, SetSliceInRange_Precondition) {
-
-    StyledTextSlice slice{ 0, {}, {}, {} };
+    StyledText slice;
 
     StyledText styled_text;
-    ASSERT_THROW(styled_text.SetSliceInRange(slice, Range{ 1, 0 }), PreconditionError);
-    ASSERT_THROW(styled_text.SetSliceInRange(slice, Range{ 1, 10 }), PreconditionError);
-    ASSERT_NO_THROW(styled_text.SetSliceInRange(slice, Range{ 0, 0 }));
-    ASSERT_NO_THROW(styled_text.SetSliceInRange(slice, Range{ 0, 10 }));
+    ASSERT_THROW(styled_text.SetStyledTextInRange(slice, Range{ 1, 0 }), PreconditionError);
+    ASSERT_THROW(styled_text.SetStyledTextInRange(slice, Range{ 1, 10 }), PreconditionError);
+    ASSERT_NO_THROW(styled_text.SetStyledTextInRange(slice, Range{ 0, 0 }));
+    ASSERT_NO_THROW(styled_text.SetStyledTextInRange(slice, Range{ 0, 10 }));
 }
 
 
-TEST(StyledTextTest, SetSliceInRange_Text) {
+TEST(StyledTextTest, SetStyledTextInRange_Text) {
 
     auto test = [](
         const std::wstring& original_text,
@@ -135,8 +68,8 @@ TEST(StyledTextTest, SetSliceInRange_Text) {
         const Range& returned_range) {
     
         StyledText styled_text{ original_text };
-        auto new_range = styled_text.SetSliceInRange(
-            StyledTextSlice{ 0, slice_text, {}, {} },
+        auto new_range = styled_text.SetStyledTextInRange(
+            StyledText{ slice_text },
             range);
         return new_range == returned_range && styled_text.Text() == expected_result;
     };
@@ -161,31 +94,27 @@ TEST(StyledTextTest, SetSliceInRange_Text) {
 }
 
 
-TEST(StyledTextTest, SetSliceInRange_DefaultFont) {
+TEST(StyledTextTest, SetStyledTextInRange_DefaultFont) {
 
     //Ranged fonts won't change if the default fonts are equal.
     {
+        StyledText slice{ L"ABC" };
+        slice.SetDefaultFont(Font{ L"default" });
+
         StyledText styled_text{ L"012345" };
         styled_text.SetDefaultFont(Font{ L"default" });
-
-        DefaultTextStyle default_style;
-        default_style.SetFont(Font{ L"default" });
-
-        StyledTextSlice slice{ 0, L"ABC", default_style, {} };
-        styled_text.SetSliceInRange(slice, Range{ 2, 2 });
+        styled_text.SetStyledTextInRange(slice, Range{ 2, 2 });
         ASSERT_TRUE(styled_text.RangedFonts().IsEmpty());
     }
 
     //The default font of slice will be set as a ranged font in the styled text.
     {
+        StyledText slice{ L"ABC" }; 
+        slice.SetDefaultFont(Font{ L"slice" });
+
         StyledText styled_text{ L"012345" };
         styled_text.SetDefaultFont(Font{ L"default" });
-
-        DefaultTextStyle default_style;
-        default_style.SetFont(Font{ L"slice" });
-
-        StyledTextSlice slice{ 0, L"ABC", default_style, {} };
-        styled_text.SetSliceInRange(slice, Range{ 2, 2 });
+        styled_text.SetStyledTextInRange(slice, Range{ 2, 2 });
         ASSERT_EQ(styled_text.RangedFonts().Count(), 1);
         ASSERT_EQ(styled_text.RangedFonts().begin()->Range(), Range(2, 3));
         ASSERT_EQ(styled_text.RangedFonts().begin()->Value().family_name, L"slice");
@@ -193,19 +122,14 @@ TEST(StyledTextTest, SetSliceInRange_DefaultFont) {
 
     //The ranged font will override the default font of the slice.
     {
-        StyledText styled_text{ L"012345" };
-        styled_text.SetDefaultFont(Font{ L"default" });
-
-        DefaultTextStyle default_style;
-        default_style.SetFont(Font{ L"slice" });
-
-        RangedTextStyle ranged_style;
-        ranged_style.SetFontInRange(Font{ L"ranged" }, Range{ 2, 2 });
-
-        StyledTextSlice slice{ 0, L"ABCD", default_style, std::move(ranged_style) };
+        StyledText slice{ L"ABCD" };
+        slice.SetDefaultFont(Font{ L"slice" });
+        slice.SetFontInRange(Font{ L"ranged" }, Range{ 2, 2 });
 
         //012345 -> 01ABCD45
-        styled_text.SetSliceInRange(slice, Range{ 2, 2 });
+        StyledText styled_text{ L"012345" };
+        styled_text.SetDefaultFont(Font{ L"default" });
+        styled_text.SetStyledTextInRange(slice, Range{ 2, 2 });
         ASSERT_EQ(styled_text.RangedFonts().Count(), 2);
 
         auto iterator = styled_text.RangedFonts().begin();
@@ -219,16 +143,16 @@ TEST(StyledTextTest, SetSliceInRange_DefaultFont) {
 }
 
 
-TEST(StyledTextTest, SetSliceInRange_RangedFonts) {
+TEST(StyledTextTest, SetStyledTextInRange_RangedFonts) {
 
     {
-        RangedTextStyle ranged_style;
-        ranged_style.SetFontInRange(Font{ L"A" }, Range{ 8, 4 });
-        ranged_style.SetFontInRange(Font{ L"B" }, Range{ 12, 5 });
-        StyledTextSlice slice{ 10, L"AABB", {}, std::move(ranged_style) };
+        StyledText slice{ L"AABB" };
+        slice.SetFontInRange(Font{ L"A" }, Range{ 0, 2 });
+        slice.SetFontInRange(Font{ L"B" }, Range{ 2, 2 });
 
+        // 012345 -> 012AABB5
         StyledText styled_text{ L"012345" };
-        styled_text.SetSliceInRange(slice, Range{ 3, 2 });
+        styled_text.SetStyledTextInRange(slice, Range{ 3, 2 });
         ASSERT_EQ(styled_text.RangedFonts().Count(), 2);
 
         auto iterator = styled_text.RangedFonts().begin();
@@ -239,32 +163,6 @@ TEST(StyledTextTest, SetSliceInRange_RangedFonts) {
         ASSERT_EQ(iterator->Range(), Range(5, 2));
         ASSERT_EQ(iterator->Value().family_name, L"B");
     }
-}
-
-
-TEST(StyledTextTest, SetSlice) {
-
-    DefaultTextStyle default_style;
-    default_style.SetFont(Font{ L"f" });
-
-    RangedTextStyle ranged_style;
-    ranged_style.SetFontInRange(Font{ L"A" }, Range{ 8, 4 });
-    ranged_style.SetFontInRange(Font{ L"B" }, Range{ 12, 5 });
-    StyledTextSlice slice{ 10, L"AABB", default_style, std::move(ranged_style) };
-
-    StyledText styled_text;
-    styled_text.SetSlice(std::move(slice));
-    ASSERT_EQ(styled_text.Text(), L"AABB");
-    ASSERT_EQ(styled_text.DefaultFont().family_name, L"f");
-    ASSERT_EQ(styled_text.RangedFonts().Count(), 2);
-
-    auto iterator = styled_text.RangedFonts().begin();
-    ASSERT_EQ(iterator->Range(), Range(0, 2));
-    ASSERT_EQ(iterator->Value().family_name, L"A");
-
-    ++iterator;
-    ASSERT_EQ(iterator->Range(), Range(2, 2));
-    ASSERT_EQ(iterator->Value().family_name, L"B");
 }
 
 

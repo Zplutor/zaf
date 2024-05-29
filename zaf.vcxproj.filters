@@ -2656,9 +2656,6 @@
     <ClInclude Include="src\zaf\control\textual\styled_text.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\textual\styled_text_slice.h">
-      <Filter>zaf\control\textual</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\textual\inline_object_store.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>

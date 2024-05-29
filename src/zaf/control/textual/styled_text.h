@@ -11,7 +11,7 @@
 #include <zaf/base/range.h>
 #include <zaf/control/textual/default_text_style.h>
 #include <zaf/control/textual/inline_object.h>
-#include <zaf/control/textual/styled_text_slice.h>
+#include <zaf/control/textual/ranged_text_style.h>
 #include <zaf/control/textual/text_style.h>
 #include <zaf/graphic/font/font.h>
 
@@ -55,8 +55,6 @@ public:
         The text that the StyledText will own.
     */
     explicit StyledText(std::wstring text);
-
-    explicit StyledText(StyledTextSlice slice);
 
     std::size_t Length() const noexcept {
         return text_.length();
@@ -215,10 +213,6 @@ public:
     std::shared_ptr<InlineObject> GetInlineObjectAtIndex(std::size_t index) const;
     const InlineObjectAccessor& InlineObjects() const;
 
-    StyledTextSlice Slice(const Range& range) const;
-    void SetSlice(StyledTextSlice slice);
-    Range SetSliceInRange(const StyledTextSlice& slice, const Range& range);
-
     /**
     Gets a sub-portion of the styled text.
 
@@ -240,14 +234,18 @@ public:
     */
     StyledText GetSubText(const Range& range) const;
 
+    Range SetStyledTextInRange(const StyledText& styled_text, const Range& range);
+
     StyledText Clone() const;
 
 private:
-    static Range ReviseItemRange(
-        std::size_t slice_index,
-        std::size_t slice_length,
-        std::size_t new_index,
-        const Range& item_range);
+    static Range ReviseItemRangeForGettingSubText(
+        const Range& item_range, 
+        const Range& sub_text_range);
+
+    static Range ReviseItemRangeForSettingSubText(
+        const Range& item_range,
+        const Range& sub_text_range);
 
     void CheckRange(const Range& range) const;
 

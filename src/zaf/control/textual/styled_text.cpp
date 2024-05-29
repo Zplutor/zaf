@@ -13,11 +13,6 @@ StyledText::StyledText(std::wstring text) : text_(std::move(text)) {
 }
 
 
-StyledText::StyledText(StyledTextSlice slice) {
-    this->SetSlice(std::move(slice));
-}
-
-
 void StyledText::SetText(std::wstring text) {
 
     text_ = std::move(text);
@@ -206,166 +201,18 @@ const InlineObjectAccessor& StyledText::InlineObjects() const {
 }
 
 
-StyledTextSlice StyledText::Slice(const Range& range) const {
-
-    ZAF_EXPECT(range.index <= text_.length());
-
-    //Text
-    auto slice_text = text_.substr(range.index, range.length);
-
-    RangedTextStyle ranged_style;
-
-    //Ranged fonts
-    ranged_style_.Fonts().VisitItemsInRange(range, [&ranged_style](const auto& item) {
-        ranged_style.SetFontInRange(item.Value(), item.Range());
-    });
-
-    //Ranged text color
-    ranged_style_.TextColors().VisitItemsInRange(range, [&ranged_style](const auto& item) {
-        ranged_style.SetTextColorInRange(item.Value(), item.Range());
-    });
-
-    //Ranged background color
-    ranged_style_.TextBackColors().VisitItemsInRange(
-        range, 
-        [&ranged_style](const auto& item) {
-            ranged_style.SetTextBackColorInRange(item.Value(), item.Range());
-        });
-        
-    //Inline objects.
-    ranged_style_.InlineObjects().VisitItemsInRange(range, [&ranged_style](const auto& item) {
-        ranged_style.AttachInlineObjectToRange(item.Object()->Clone(), item.Range());
-    });
-
-    return StyledTextSlice{
-        range.index,
-        std::move(slice_text),
-        default_style_,
-        std::move(ranged_style)
-    };
-}
-
-
-void StyledText::SetSlice(StyledTextSlice slice) {
-
-    auto slice_index = slice.Index();
-    auto slice_length = slice.Length();
-    const auto revise_item_range = [slice_index, slice_length](const Range& item_range) {
-        return ReviseItemRange(slice_index, slice_length, 0, item_range);
-    };
-
-    this->text_ = std::move(slice.text_);
-    this->default_style_ = std::move(slice.default_style_);
-
-    this->ranged_style_.Clear();
-
-    //Ranged fonts
-    for (auto& each_item : slice.ranged_style_.Fonts()) {
-        ranged_style_.SetFontInRange(
-            std::move(each_item.Value()),
-            revise_item_range(each_item.Range()));
-    }
-
-    //Ranged text color picker
-    for (auto& each_item : slice.ranged_style_.TextColors()) {
-        ranged_style_.SetTextColorInRange(
-            std::move(each_item.Value()),
-            revise_item_range(each_item.Range()));
-    }
-
-    //Ranged text back color picker
-    for (auto& each_item : slice.ranged_style_.TextBackColors()) {
-        ranged_style_.SetTextBackColorInRange(
-            std::move(each_item.Value()),
-            revise_item_range(each_item.Range()));
-    }
-
-    //Inline objects
-    for (auto& each_item : slice.ranged_style_.InlineObjects()) {
-        ranged_style_.AttachInlineObjectToRange(
-            std::move(each_item.Object()),
-            revise_item_range(each_item.Range()));
-    }
-}
-
-
-Range StyledText::SetSliceInRange(const StyledTextSlice& slice, const Range& range) {
-
-    //Text
-    auto new_range = SetTextInRange(slice.Text(), range);
-
-    //Default style
-    const auto& slice_default_style = slice.DefaultStyle();
-    if (slice_default_style.Font() != this->DefaultFont()) {
-        ranged_style_.SetFontInRange(slice_default_style.Font(), new_range);
-    }
-
-    //Default text color 
-    ranged_style_.SetTextColorInRange(slice_default_style.TextColor(), new_range);
-
-    //Default text back color picker
-    ranged_style_.SetTextBackColorInRange(slice_default_style.TextBackColor(), new_range);
-
-    const auto revise_item_range = [&slice, &new_range](const Range& item_range) {
-        return ReviseItemRange(slice.Index(), slice.Text().length(), new_range.index, item_range);
-    };
-
-    //Ranged fonts
-    for (const auto& each_item : slice.RangedStyle().Fonts()) {
-        ranged_style_.SetFontInRange(each_item.Value(), revise_item_range(each_item.Range()));
-    }
-    
-    //Ranged text color picker
-    for (const auto& each_item : slice.RangedStyle().TextColors()) {
-        ranged_style_.SetTextColorInRange(each_item.Value(), revise_item_range(each_item.Range()));
-    }
-
-    //Ranged text back color picker
-    for (const auto& each_item : slice.RangedStyle().TextBackColors()) {
-        ranged_style_.SetTextBackColorInRange(
-            each_item.Value(),
-            revise_item_range(each_item.Range()));
-    }
-
-    //Inline objects
-    for (const auto& each_item : slice.RangedStyle().InlineObjects()) {
-        ranged_style_.AttachInlineObjectToRange(
-            each_item.Object()->Clone(),
-            revise_item_range(each_item.Range()));
-    }
-
-    return new_range;
-}
-
-
 StyledText StyledText::GetSubText(const Range& range) const {
 
     ZAF_EXPECT(range.index <= text_.length());
 
     StyledText result;
     result.default_style_ = this->default_style_;
-
-    result.SetText(text_.substr(range.index, range.length));
+    result.text_ = text_.substr(range.index, range.length);
 
     const auto revise_item_range = [&range, &result](const Range& item_range) {
-
-        std::size_t index{};
-        std::size_t length{};
-
-        if (item_range.index < range.index) {
-            index = 0;
-            length = item_range.length - (range.index - item_range.index);
-        }
-        else {
-            index = item_range.index - range.index;
-            length = item_range.length;
-        }
-
-        Range new_range{ index, length };
-        if (new_range.EndIndex() > result.Text().length()) {
-            new_range.length -= new_range.EndIndex() - result.Text().length();
-        }
-        return new_range;
+        return ReviseItemRangeForGettingSubText(
+            item_range,
+            Range{ range.index, result.text_.length() });
     };
     
     //Fonts
@@ -402,28 +249,94 @@ StyledText StyledText::GetSubText(const Range& range) const {
 }
 
 
-Range StyledText::ReviseItemRange(
-    std::size_t slice_index,
-    std::size_t slice_length,
-    std::size_t new_index,
-    const Range& item_range) {
+Range StyledText::SetStyledTextInRange(const StyledText& styled_text, const Range& range) {
 
-    Range result;
+    //Text
+    auto new_range = SetTextInRange(styled_text.Text(), range);
 
-    if (item_range.index < slice_index) {
-        result.index = 0;
-        result.length = item_range.length - (slice_index - item_range.index);
+    //Default style
+    const auto& other_default_style = styled_text.DefaultStyle();
+    if (other_default_style.Font() != this->DefaultFont()) {
+        ranged_style_.SetFontInRange(other_default_style.Font(), new_range);
+    }
+
+    //Default text color 
+    if (other_default_style.TextColor() != this->DefaultTextColor()) {
+        ranged_style_.SetTextColorInRange(other_default_style.TextColor(), new_range);
+    }
+
+    //Default text back color picker
+    if (other_default_style.TextBackColor() != this->DefaultTextBackColor()) {
+        ranged_style_.SetTextBackColorInRange(other_default_style.TextBackColor(), new_range);
+    }
+
+    const auto revise_item_range = [&new_range](const Range& item_range) {
+        return ReviseItemRangeForSettingSubText(item_range, new_range);
+    };
+
+    //Ranged fonts
+    for (const auto& each_item : styled_text.RangedFonts()) {
+        ranged_style_.SetFontInRange(each_item.Value(), revise_item_range(each_item.Range()));
+    }
+
+    //Ranged text color
+    for (const auto& each_item : styled_text.RangedTextColors()) {
+        ranged_style_.SetTextColorInRange(each_item.Value(), revise_item_range(each_item.Range()));
+    }
+
+    //Ranged text back color
+    for (const auto& each_item : styled_text.RangedTextBackColors()) {
+        ranged_style_.SetTextBackColorInRange(
+            each_item.Value(),
+            revise_item_range(each_item.Range()));
+    }
+
+    //Inline objects
+    for (const auto& each_item : styled_text.InlineObjects()) {
+        ranged_style_.AttachInlineObjectToRange(
+            each_item.Object()->Clone(),
+            revise_item_range(each_item.Range()));
+    }
+
+    return new_range;
+}
+
+
+Range StyledText::ReviseItemRangeForGettingSubText(
+    const Range& item_range, 
+    const Range& sub_text_range) {
+
+    std::size_t index{};
+    std::size_t length{};
+
+    if (item_range.index < sub_text_range.index) {
+        index = 0;
+        length = item_range.length - (sub_text_range.index - item_range.index);
     }
     else {
-        result.index = item_range.index - slice_index;
-        result.length = item_range.length;
+        index = item_range.index - sub_text_range.index;
+        length = item_range.length;
     }
 
-    if (result.EndIndex() > slice_length) {
-        result.length -= result.EndIndex() - slice_length;
+    Range new_range{ index, length };
+    if (new_range.EndIndex() > sub_text_range.length) {
+        new_range.length -= new_range.EndIndex() - sub_text_range.length;
+    }
+    return new_range;
+}
+
+
+Range StyledText::ReviseItemRangeForSettingSubText(
+    const Range& item_range,
+    const Range& sub_text_range) {
+
+    Range result = item_range;
+
+    if (result.EndIndex() > sub_text_range.EndIndex()) {
+        result.length -= result.EndIndex() - sub_text_range.EndIndex();
     }
 
-    result.index += new_index;
+    result.index += sub_text_range.index;
     return result;
 }
 

@@ -12,7 +12,7 @@ namespace zaf::textual {
 template<typename T>
 class RangedItemAccessor : NonCopyableNonMovable {
 public:
-    using value_type = T;
+    using value_type = RangeMap<T>::Item;
     using iterator = RangeMap<T>::iterator;
     using const_iterator = RangeMap<T>::const_iterator;
 
@@ -47,7 +47,7 @@ public:
 
     void VisitItemsInRange(
         const Range& range,
-        const std::function<void(const typename RangeMap<T>::Item&)>& visitor) const {
+        const std::function<void(const value_type&)>& visitor) const {
 
         for (const auto& each_item : map_) {
 
