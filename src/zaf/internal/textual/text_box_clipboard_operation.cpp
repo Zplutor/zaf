@@ -1,6 +1,8 @@
 #include <zaf/internal/textual/text_box_clipboard_operation.h>
 #include <zaf/base/as.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/clipboard/clipboard.h>
+#include <zaf/clipboard/text_data.h>
 #include <zaf/control/textual/styled_text_clipboard_data.h>
 #include <zaf/creation.h>
 
@@ -31,12 +33,21 @@ textual::StyledText LoadStyledTextFromClipboard() {
 
     auto data_object = Clipboard::GetDataObject();
 
-    StyledTextClipboardData styled_text_data;
-    data_object.GetData(
-        DataDescriptor::FromFormatType(StyledTextClipboardData::StyledTextFormatType()),
-        styled_text_data);
+    try {
+        StyledTextClipboardData styled_text_data;
+        data_object.GetData(
+            DataDescriptor::FromFormatType(StyledTextClipboardData::StyledTextFormatType()),
+            styled_text_data);
 
-    return styled_text_data.Detach();
+        return styled_text_data.Detach();
+    }
+    catch (...) {
+
+    }
+
+    TextData text_data;
+    data_object.GetData(DataDescriptor::FromFormatType(FormatType::Text), text_data);
+    return StyledText{ text_data.Detach() };
 }
 
 }
