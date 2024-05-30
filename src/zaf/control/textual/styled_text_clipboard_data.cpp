@@ -21,7 +21,7 @@ StyledTextClipboardData::StyledTextClipboardData(StyledText styled_text) :
 }
 
 
-Medium StyledTextClipboardData::SaveToMedium(const DataDescriptor& data_descriptor) {
+Medium StyledTextClipboardData::SaveToMedium(const DataDescriptor& data_descriptor) const {
 
     if (!HasFlag(data_descriptor.MediumTypes(), MediumType::GlobalMem)) {
         throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };

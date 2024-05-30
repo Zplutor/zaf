@@ -23,11 +23,17 @@ public:
     StyledTextClipboardData() = default;
     explicit StyledTextClipboardData(StyledText styled_text);
 
-    clipboard::Medium SaveToMedium(const clipboard::DataDescriptor& data_descriptor) override;
+    clipboard::Medium SaveToMedium(
+        const clipboard::DataDescriptor& data_descriptor) const override;
 
     void LoadFromMedium(
         const clipboard::Medium& medium,
         const clipboard::DataDescriptor& data_descriptor) override;
+
+    [[nodiscard]]
+    StyledText Detach() {
+        return std::move(styled_text_);
+    }
 
 private:
     clipboard::Medium SaveToStyledTextFormat() const;

@@ -18,7 +18,7 @@ TEST(TextDataTest, SaveToMedium) {
         auto lock = global_mem.Lock();
         text = reinterpret_cast<const wchar_t*>(lock.Pointer());
     });
-    ASSERT_EQ(text, text_data.GetText());
+    ASSERT_EQ(text, text_data.Text());
 }
 
 
@@ -47,7 +47,7 @@ TEST(TextDataTest, LoadFromMedium) {
     TextData text_data;
     text_data.LoadFromMedium(medium, DataDescriptor::FromFormatType(FormatType::Text));
 
-    ASSERT_EQ(text_data.GetText(), TestString);
+    ASSERT_EQ(text_data.Text(), TestString);
 }
 
 

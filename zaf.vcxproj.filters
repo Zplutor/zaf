@@ -952,9 +952,6 @@
     <ClCompile Include="src\zaf\clipboard\data_descriptor.cpp">
       <Filter>zaf\clipboard</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\clipboard\unknown_data.cpp">
-      <Filter>zaf\clipboard</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\clipboard\data_descriptor_enumerator.cpp">
       <Filter>zaf\clipboard</Filter>
     </ClCompile>
@@ -2396,9 +2393,6 @@
       <Filter>zaf\clipboard</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\clipboard\text_data.h">
-      <Filter>zaf\clipboard</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\clipboard\unknown_data.h">
       <Filter>zaf\clipboard</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\clipboard\data_descriptor.h">

@@ -13,15 +13,16 @@ public:
     TextData() = default;
     explicit TextData(std::wstring text);
 
-    const std::wstring& GetText() const {
+    const std::wstring& Text() const {
         return text_;
     }
 
-    std::wstring DetachText() {
+    [[nodiscard]]
+    std::wstring Detach() {
         return std::move(text_);
     }
 
-    Medium SaveToMedium(const DataDescriptor& data_descriptor) override;
+    Medium SaveToMedium(const DataDescriptor& data_descriptor) const override;
     void LoadFromMedium(const Medium& medium, const DataDescriptor& data_descriptor) override;
 
 private:

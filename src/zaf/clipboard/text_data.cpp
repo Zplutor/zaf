@@ -13,7 +13,7 @@ TextData::TextData(std::wstring text) : text_(std::move(text)) {
 }
 
 
-Medium TextData::SaveToMedium(const DataDescriptor& data_descriptor) {
+Medium TextData::SaveToMedium(const DataDescriptor& data_descriptor) const {
 
     if (data_descriptor.FormatType() != FormatType::Text) {
         throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };

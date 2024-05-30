@@ -34,15 +34,14 @@ public:
 
     DataDescriptorEnumerator EnumerateDataDescriptors() const;
 
-    std::shared_ptr<ClipboardData> GetData(const DataDescriptor& data_descriptor) const;
-    void SetData(std::shared_ptr<ClipboardData> data, const DataDescriptor& data_descriptor);
+    void GetData(const DataDescriptor& data_descriptor, ClipboardData& data) const;
+    Medium GetData(const DataDescriptor& data_descriptor) const;
+
+    void SetData(const DataDescriptor& data_descriptor, const ClipboardData& data);
+    void SetData(const DataDescriptor& data_descriptor, Medium medium);
 
     std::wstring GetText() const;
     void SetText(std::wstring text);
-
-private:
-    void InnerGetData(const DataDescriptor& data_descriptor, ClipboardData& data) const;
-    void InnerSetData(const DataDescriptor& data_descriptor, ClipboardData& data);
 };
 
 }

@@ -15,7 +15,7 @@ DropFilesData::DropFilesData(std::vector<std::filesystem::path> file_paths) :
 }
 
 
-Medium DropFilesData::SaveToMedium(const DataDescriptor& data_descriptor) {
+Medium DropFilesData::SaveToMedium(const DataDescriptor& data_descriptor) const {
 
     if (data_descriptor.FormatType() != FormatType::DropFiles) {
         throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };

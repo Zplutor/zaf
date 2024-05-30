@@ -94,7 +94,7 @@ public:
            according to other attributes. If the content is invalid, for example, if the content 
            is empty, throw zaf::InvalidDataError.
     */
-    virtual Medium SaveToMedium(const DataDescriptor& data_descriptor) = 0;
+    virtual Medium SaveToMedium(const DataDescriptor& data_descriptor) const = 0;
 
     /**
     Loads data from the specified medium according to the specified data descriptor.

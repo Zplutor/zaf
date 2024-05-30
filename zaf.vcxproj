@@ -80,7 +80,6 @@
     <ClCompile Include="src\zaf\clipboard\internal\medium_wrapping.cpp" />
     <ClCompile Include="src\zaf\clipboard\medium.cpp" />
     <ClCompile Include="src\zaf\clipboard\text_data.cpp" />
-    <ClCompile Include="src\zaf\clipboard\unknown_data.cpp" />
     <ClCompile Include="src\zaf\control\arrow_direction.cpp" />
     <ClCompile Include="src\zaf\control\button.cpp" />
     <ClCompile Include="src\zaf\control\caret.cpp" />
@@ -475,7 +474,6 @@
     <ClInclude Include="src\zaf\clipboard\medium.h" />
     <ClInclude Include="src\zaf\clipboard\medium_type.h" />
     <ClInclude Include="src\zaf\clipboard\text_data.h" />
-    <ClInclude Include="src\zaf\clipboard\unknown_data.h" />
     <ClInclude Include="src\zaf\config.h" />
     <ClInclude Include="src\zaf\control\anchor.h" />
     <ClInclude Include="src\zaf\control\arrow_direction.h" />
