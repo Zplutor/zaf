@@ -6,6 +6,6 @@ namespace zaf::internal {
 
 void SaveStyledTextToClipboard(textual::StyledText styled_text);
 
-textual::StyledText LoadStyledTextFromClipboard();
+std::pair<textual::StyledText, bool> LoadStyledTextFromClipboard();
 
 }

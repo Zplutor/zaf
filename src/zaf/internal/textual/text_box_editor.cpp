@@ -297,12 +297,16 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandlePaste() {
 
     try {
 
-        auto text = zaf::clipboard::Clipboard::GetText();
+        auto [styled_text, is_styled_text] = LoadStyledTextFromClipboard();
+        if (!is_styled_text) {
+            const auto& default_style = Context().TextModel().StyledText().DefaultStyle();
+            styled_text.SetDefaultStyle(default_style);
+        }
 
         //Replace the current selection with the text in clipboard.
         auto selection_range = Context().SelectionManager().SelectionRange();
-        Range new_selection_range{ selection_range.index + text.length(), 0 };
-        return CreateCommand(text, selection_range, new_selection_range);
+        Range new_selection_range{ selection_range.index + styled_text.Length(), 0 };
+        return CreateCommand(std::move(styled_text), selection_range, new_selection_range);
     }
     catch (...) {
         return nullptr;
@@ -348,15 +352,19 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateInsertTextCommand(std::
 
     const auto& selection_range = Context().SelectionManager().SelectionRange();
 
+    textual::StyledText styled_text{ std::move(new_text) };
+    //The default style should be the same as the current styled text.
+    styled_text.SetDefaultStyle(Context().TextModel().StyledText().DefaultStyle());
+
     return CreateCommand(
-        std::move(new_text),
+        std::move(styled_text),
         selection_range,
-        Range{ selection_range.index + new_text.length(), 0});
+        Range{ selection_range.index + styled_text.Length(), 0});
 }
 
 
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
-    std::wstring new_text,
+    textual::StyledText new_text,
     const Range& replaced_selection_range,
     const Range& new_selection_range) const {
 
@@ -368,18 +376,15 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
     auto old_text = styled_text.GetSubText(replaced_selection_range);
 
     TextBoxEditCommand::EditInfo undo_info{
-        Range{ replaced_selection_range.index, new_text.length() },
+        Range{ replaced_selection_range.index, new_text.Length() },
         std::move(old_text),
         old_selection_range,
         old_caret_index == old_selection_range.index,
     };
 
-    textual::StyledText new_text_slice{ std::move(new_text) };
-    new_text_slice.SetDefaultStyle(styled_text.DefaultStyle());
-
     TextBoxEditCommand::EditInfo do_info{
         replaced_selection_range,
-        std::move(new_text_slice),
+        std::move(new_text),
         new_selection_range,
         false,
     };

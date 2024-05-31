@@ -29,7 +29,7 @@ void SaveStyledTextToClipboard(textual::StyledText styled_text) {
 }
 
 
-textual::StyledText LoadStyledTextFromClipboard() {
+std::pair<textual::StyledText, bool> LoadStyledTextFromClipboard() {
 
     auto data_object = Clipboard::GetDataObject();
 
@@ -39,7 +39,7 @@ textual::StyledText LoadStyledTextFromClipboard() {
             DataDescriptor::FromFormatType(StyledTextData::FormatType()),
             styled_text_data);
 
-        return styled_text_data.Detach();
+        return std::make_pair(styled_text_data.Detach(), true);
     }
     catch (...) {
 
@@ -47,7 +47,7 @@ textual::StyledText LoadStyledTextFromClipboard() {
 
     TextData text_data;
     data_object.GetData(DataDescriptor::FromFormatType(FormatType::Text), text_data);
-    return StyledText{ text_data.Detach() };
+    return std::make_pair(StyledText{ text_data.Detach() }, false);
 }
 
 }
