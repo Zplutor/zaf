@@ -1,7 +1,20 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/base/error/error.h>
 #include <zaf/base/stream.h>
+
+using namespace zaf;
+
+TEST(StreamTest, FromMemory_Precondition) {
+    ASSERT_THROW(Stream::FromMemory(nullptr, 1), PreconditionError);
+}
+
+
+TEST(StreamTest, FromMemoryNoCopy_Precondition) {
+    ASSERT_THROW(Stream::FromMemoryNoCopy(nullptr, 1), PreconditionError);
+}
+
 
 TEST(StreamTest, GetPosition) {
 
@@ -36,11 +49,6 @@ TEST(StreamTest, GetUnderlyingBuffer) {
         auto stream = zaf::Stream::FromMemoryNoCopy(memory.data(), memory.size());
         auto buffer = stream.GetUnderlyingBuffer();
         ASSERT_EQ(buffer, reinterpret_cast<const std::byte*>(memory.data()));
-    }
-
-    {
-        auto stream = zaf::Stream::FromMemory(memory.data(), memory.size());
-        ASSERT_THROW(stream.GetUnderlyingBuffer(), zaf::InvalidOperationError);
     }
 }
 

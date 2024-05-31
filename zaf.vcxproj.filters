@@ -2740,5 +2740,11 @@
     <ClInclude Include="src\zaf\base\range_map.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\internal\no_copy_memory_stream.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\byte_array_stream.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
