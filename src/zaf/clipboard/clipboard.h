@@ -79,50 +79,6 @@ public:
         This method uses OleSetClipboard() to modify the clipboard.
     */
     static void SetDataObject(const DataObject& data_object);
-
-    /**
-    Registers the specified clipboard data type for the specified format type.
-
-    @param format_type
-        The format type to which the clipboard data type will be registered.
-
-    @param clipboard_data_type
-        The clipboard data type to be registered, whose class must inherit from ClipboardData and 
-        must be default constructible.
-        
-    @pre
-        clipboard_data_type is not null.
-
-    @throw zaf::PreconditionError
-        Thrown if the precondition is violated.
-
-    @throw zaf::InvalidTypeError
-        Thrown if the class of clipboard_data_type doesn't inherit from ClipboardData.
-
-    @details
-        The registered clipboard data type will be used in clipboard data handling if the format 
-        type matches. A typical situation is when calling clipboard::DataObject::GetData() with a 
-        specified format type, ObjectType::CreateInstance() of the matched clipboard data type 
-        will be called to create an instance, and then clipboard::ClipboardData::LoadFromMedium() 
-        of the instance will be called to load data to the instance.
-    */
-    static void RegisterClipboardData(FormatType format_type, ObjectType* clipboard_data_type);
-
-    /**
-    Gets the registered clipboard data type for the specified format type.
-
-    @param format_type
-        The format type to find.
-
-    @return
-        The registered clipboard data type. It will be null if no matched clipboard data type is 
-        found.
-
-    @details
-        Standard format types have been registered by default. Using this method can also get the 
-        default clipboard data types for standard format types.
-    */
-    static ObjectType* GetRegisteredClipboardData(FormatType format_type) noexcept;
 };
 
 }

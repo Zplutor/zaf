@@ -7,9 +7,6 @@ namespace zaf::clipboard {
 
 class TextData : public ClipboardData {
 public:
-    ZAF_DECLARE_TYPE;
-
-public:
     TextData() = default;
     explicit TextData(std::wstring text);
 

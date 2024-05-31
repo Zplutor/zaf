@@ -6,9 +6,6 @@
 
 namespace zaf::clipboard {
 
-ZAF_DEFINE_TYPE(DropFilesData)
-ZAF_DEFINE_TYPE_END;
-
 DropFilesData::DropFilesData(std::vector<std::filesystem::path> file_paths) : 
     paths_(std::move(file_paths)) {
 

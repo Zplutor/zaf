@@ -1,12 +1,8 @@
 #include <zaf/clipboard/text_data.h>
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/base/global_mem.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf::clipboard {
-
-ZAF_DEFINE_TYPE(TextData)
-ZAF_DEFINE_TYPE_END;
 
 TextData::TextData(std::wstring text) : text_(std::move(text)) {
 

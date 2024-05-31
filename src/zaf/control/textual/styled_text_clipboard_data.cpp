@@ -5,10 +5,6 @@ using namespace zaf::clipboard;
 
 namespace zaf::textual {
 
-ZAF_DEFINE_TYPE(StyledTextClipboardData)
-ZAF_DEFINE_TYPE_END;
-
-
 clipboard::FormatType StyledTextClipboardData::StyledTextFormatType() {
     static FormatType format_type = MakeSharedFormatType(L"zaf.StyledText");
     return format_type;

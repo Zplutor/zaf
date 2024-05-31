@@ -8,9 +8,6 @@ namespace zaf::clipboard {
 
 class DropFilesData : public ClipboardData {
 public:
-    ZAF_DECLARE_TYPE;
-
-public:
     DropFilesData() = default;
     explicit DropFilesData(std::vector<std::filesystem::path> file_paths);
 

@@ -15,8 +15,6 @@ A data format to store StyledText in the clipboard.
 */
 class StyledTextClipboardData : public clipboard::ClipboardData {
 public:
-    ZAF_DECLARE_TYPE;
-
     static clipboard::FormatType StyledTextFormatType();
 
 public:
