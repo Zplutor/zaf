@@ -2,7 +2,7 @@
 
 /**
 @file
-    Defines the class zaf::textual::StyledTextClipboardData;
+    Defines the class zaf::textual::StyledTextData;
 */
 
 #include <zaf/clipboard/clipboard_data.h>
@@ -11,15 +11,15 @@
 namespace zaf::textual {
 
 /**
-A data format to store StyledText in the clipboard.
+A class reads and writes StyledText data in the clipboard.
 */
-class StyledTextClipboardData : public clipboard::ClipboardData {
+class StyledTextData : public clipboard::ClipboardData {
 public:
-    static clipboard::FormatType StyledTextFormatType();
+    static clipboard::FormatType FormatType();
 
 public:
-    StyledTextClipboardData() = default;
-    explicit StyledTextClipboardData(StyledText styled_text);
+    StyledTextData() = default;
+    explicit StyledTextData(StyledText styled_text);
 
     clipboard::Medium SaveToMedium(
         const clipboard::DataDescriptor& data_descriptor) const override;

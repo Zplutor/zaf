@@ -3,7 +3,7 @@
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/clipboard/text_data.h>
-#include <zaf/control/textual/styled_text_clipboard_data.h>
+#include <zaf/control/textual/styled_text_data.h>
 #include <zaf/creation.h>
 
 using namespace zaf::clipboard;
@@ -13,7 +13,7 @@ namespace zaf::internal {
 
 void SaveStyledTextToClipboard(textual::StyledText styled_text) {
 
-    StyledTextClipboardData clipboard_data{ std::move(styled_text) };
+    StyledTextData clipboard_data{ std::move(styled_text) };
 
     auto data_object = DataObject::Create();
 
@@ -22,7 +22,7 @@ void SaveStyledTextToClipboard(textual::StyledText styled_text) {
 
     //StyledText format.
     data_object.SetData(
-        DataDescriptor::FromFormatType(StyledTextClipboardData::StyledTextFormatType()),
+        DataDescriptor::FromFormatType(StyledTextData::FormatType()),
         clipboard_data);
 
     Clipboard::SetDataObject(data_object);
@@ -34,9 +34,9 @@ textual::StyledText LoadStyledTextFromClipboard() {
     auto data_object = Clipboard::GetDataObject();
 
     try {
-        StyledTextClipboardData styled_text_data;
+        StyledTextData styled_text_data;
         data_object.GetData(
-            DataDescriptor::FromFormatType(StyledTextClipboardData::StyledTextFormatType()),
+            DataDescriptor::FromFormatType(StyledTextData::FormatType()),
             styled_text_data);
 
         return styled_text_data.Detach();

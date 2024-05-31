@@ -1,23 +1,23 @@
-#include <zaf/control/textual/styled_text_clipboard_data.h>
-#include <zaf/object/type_definition.h>
+#include <zaf/control/textual/styled_text_data.h>
+#include <zaf/base/error/invalid_operation_error.h>
 
 using namespace zaf::clipboard;
 
 namespace zaf::textual {
 
-clipboard::FormatType StyledTextClipboardData::StyledTextFormatType() {
-    static FormatType format_type = MakeSharedFormatType(L"zaf.StyledText");
+clipboard::FormatType StyledTextData::FormatType() {
+    static clipboard::FormatType format_type = MakeSharedFormatType(L"zaf.StyledText");
     return format_type;
 }
 
 
-StyledTextClipboardData::StyledTextClipboardData(StyledText styled_text) : 
+StyledTextData::StyledTextData(StyledText styled_text) : 
     styled_text_(std::move(styled_text)) {
 
 }
 
 
-Medium StyledTextClipboardData::SaveToMedium(const DataDescriptor& data_descriptor) const {
+Medium StyledTextData::SaveToMedium(const DataDescriptor& data_descriptor) const {
 
     if (!HasFlag(data_descriptor.MediumTypes(), MediumType::GlobalMem)) {
         throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
@@ -30,7 +30,7 @@ Medium StyledTextClipboardData::SaveToMedium(const DataDescriptor& data_descript
     if (data_descriptor.FormatType() == FormatType::Text) {
         return Medium::FromString(styled_text_.Text());
     }
-    else if (data_descriptor.FormatType() == StyledTextFormatType()) {
+    else if (data_descriptor.FormatType() == FormatType()) {
         return SaveToStyledTextFormat();
     }
 
@@ -38,14 +38,14 @@ Medium StyledTextClipboardData::SaveToMedium(const DataDescriptor& data_descript
 }
 
 
-Medium StyledTextClipboardData::SaveToStyledTextFormat() const {
+Medium StyledTextData::SaveToStyledTextFormat() const {
 
     //TODO
     return Medium::FromString(styled_text_.Text());
 }
 
 
-void StyledTextClipboardData::LoadFromMedium(
+void StyledTextData::LoadFromMedium(
     const Medium& medium,
     const DataDescriptor& data_descriptor) {
 
@@ -61,14 +61,14 @@ void StyledTextClipboardData::LoadFromMedium(
 }
 
 
-StyledText StyledTextClipboardData::LoadStyledText(
+StyledText StyledTextData::LoadStyledText(
     const Medium& medium,
     const DataDescriptor& data_descriptor) {
 
     if (data_descriptor.FormatType() == clipboard::FormatType::Text) {
         return StyledText{ medium.ToString() };
     }
-    else if (data_descriptor.FormatType() == StyledTextFormatType()) {
+    else if (data_descriptor.FormatType() == FormatType()) {
         return LoadWithStyledTextFormat(medium);
     }
 
@@ -76,7 +76,7 @@ StyledText StyledTextClipboardData::LoadStyledText(
 }
 
 
-StyledText StyledTextClipboardData::LoadWithStyledTextFormat(const Medium& medium) {
+StyledText StyledTextData::LoadWithStyledTextFormat(const Medium& medium) {
 
     //TODO
     return StyledText{ medium.ToString() };
