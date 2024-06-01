@@ -7,6 +7,7 @@
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/type_definition.h>
+#include <zaf/xml/xml_writer.h>
 
 namespace zaf {
 namespace {
@@ -224,6 +225,17 @@ std::wstring Color::ToString() const {
         ToWideString(g) + L',' + 
         ToWideString(b) + L',' + 
         ToWideString(a);
+}
+
+
+void Color::WriteToXML(XMLWriter& writer) const {
+
+    writer.WriteElementStart(L"Color");
+    writer.WriteAttribute(L"A", std::to_wstring(a));
+    writer.WriteAttribute(L"R", std::to_wstring(r));
+    writer.WriteAttribute(L"G", std::to_wstring(g));
+    writer.WriteAttribute(L"B", std::to_wstring(b));
+    writer.WriteElementEnd();
 }
 
 }

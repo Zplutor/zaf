@@ -6,13 +6,14 @@
 #include <zaf/base/hash.h>
 #include <zaf/object/equality.h>
 #include <zaf/object/object.h>
+#include <zaf/xml/xml_serializable.h>
 
 namespace zaf {
 
 /**
 Describes a range using start index and length.
 */
-class Range : public Object {
+class Range : public Object, public XMLSerializable {
 public:
     ZAF_DECLARE_TYPE;
     ZAF_DECLARE_EQUALITY;
@@ -161,6 +162,8 @@ public:
     }
 
     std::wstring ToString() const override;
+
+    void WriteToXML(XMLWriter& writer) const override;
 
     friend bool operator==(const Range& range1, const Range& range2) {
         return std::tie(range1.index, range1.length) == std::tie(range2.index, range2.length);

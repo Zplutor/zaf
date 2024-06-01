@@ -196,6 +196,9 @@
     <Filter Include="zaf\internal\control">
       <UniqueIdentifier>{43635a42-e37e-4c33-944e-61051166ce27}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\xml">
+      <UniqueIdentifier>{7463fc41-0786-4209-b899-04f9dea24769}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1191,6 +1194,15 @@
     </ClCompile>
     <ClCompile Include="src\zaf\internal\textual\text_box_clipboard_operation.cpp">
       <Filter>zaf\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\xml\xml_writer.cpp">
+      <Filter>zaf\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\xml\xml_serialization.cpp">
+      <Filter>zaf\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\textual\default_text_style.cpp">
+      <Filter>zaf\control\textual</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2745,6 +2757,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\byte_array_stream.h">
       <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\xml\xml_serializable.h">
+      <Filter>zaf\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\xml\xml_serialization.h">
+      <Filter>zaf\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\xml\xml_writer.h">
+      <Filter>zaf\xml</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

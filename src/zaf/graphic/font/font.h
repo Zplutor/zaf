@@ -6,13 +6,14 @@
 #include <zaf/graphic/font/font_style.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/object/object.h>
+#include <zaf/xml/xml_serializable.h>
 
 namespace zaf {
 
 /**
  Describes various properties of a font.
  */
-class Font : public Object {
+class Font : public Object, public XMLSerializable {
 public:
     ZAF_DECLARE_TYPE;
     ZAF_DECLARE_EQUALITY;
@@ -85,6 +86,8 @@ public:
     LOGFONT ToLOGFONT() const;
 
     std::wstring ToString() const override;
+
+    void WriteToXML(XMLWriter& writer) const override;
 
     friend bool operator==(const Font& font1, const Font& font2) {
 

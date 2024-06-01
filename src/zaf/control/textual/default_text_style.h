@@ -2,10 +2,11 @@
 
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/xml/xml_serializable.h>
 
 namespace zaf::textual {
 
-class DefaultTextStyle {
+class DefaultTextStyle : public XMLSerializable {
 public:
     DefaultTextStyle() : 
         font_(zaf::Font::Default()),
@@ -37,6 +38,8 @@ public:
     void SetTextBackColor(const Color& color) noexcept {
         text_back_color_ = color;
     }
+
+    void WriteToXML(XMLWriter& writer) const override;
 
 private:
     zaf::Font font_;

@@ -517,6 +517,7 @@
     <ClCompile Include="unittest\case\window\window_message_routing_test.cpp" />
     <ClCompile Include="unittest\case\window\window_mouse_over_control_test.cpp" />
     <ClCompile Include="unittest\case\window\window_test.cpp" />
+    <ClCompile Include="unittest\case\xml\xml_serialization_test.cpp" />
     <ClCompile Include="unittest\main.cpp" />
     <ClCompile Include="unittest\utility\test_window.cpp" />
   </ItemGroup>

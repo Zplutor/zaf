@@ -3,6 +3,7 @@
 #include <zaf/base/string/to_string.h>
 #include <zaf/graphic/font/font_parser.h>
 #include <zaf/object/type_definition.h>
+#include <zaf/xml/xml_writer.h>
 
 namespace zaf {
 
@@ -80,6 +81,18 @@ LOGFONT Font::ToLOGFONT() const {
 
 std::wstring Font::ToString() const {
     return family_name + L',' + ToWideString(size) + L',' + weight.ToString();
+}
+
+
+void Font::WriteToXML(XMLWriter& writer) const {
+
+    writer.WriteElementStart(L"Font");
+    writer.WriteAttribute(L"FamilyName", family_name);
+    writer.WriteAttribute(L"Size", std::to_wstring(size));
+    writer.WriteAttribute(L"Weight", std::to_wstring(weight));
+    writer.WriteAttribute(L"Style", Box(style)->ToString());
+    writer.WriteAttribute(L"HasUnderline", Box(has_underline)->ToString());
+    writer.WriteElementEnd();
 }
 
 }

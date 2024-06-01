@@ -1,5 +1,7 @@
+#include "styled_text.h"
 #include <zaf/control/textual/styled_text.h>
 #include <zaf/base/as.h>
+#include <zaf/xml/xml_writer.h>
 
 namespace zaf::textual {
 
@@ -355,6 +357,21 @@ void StyledText::CheckRange(const Range& range) const {
     ZAF_EXPECT(
         (range.index <= text_.length()) &&
         (range.EndIndex() <= text_.length()));
+}
+
+
+void StyledText::WriteToXML(XMLWriter& writer) const {
+
+    writer.WriteElementStart(L"StyledText");
+
+    writer.WriteElementStart(L"Text");
+    writer.WriteCDATA(this->Text());
+    writer.WriteElementEnd();
+
+    default_style_.WriteToXML(writer);
+    ranged_style_.WriteToXML(writer);
+
+    writer.WriteElementEnd();
 }
 
 }

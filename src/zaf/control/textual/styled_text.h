@@ -14,6 +14,7 @@
 #include <zaf/control/textual/ranged_text_style.h>
 #include <zaf/control/textual/text_style.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/xml/xml_serializable.h>
 
 namespace zaf::textual {
 
@@ -30,7 +31,7 @@ Represents a text with various styles, such as the font, text color, and attache
     Copying a StyledText is a high-cost operation, so copy construction and copy assignment are 
     forbidden. Users can use the Clone() method to copy the StyledText explicitly if needed.
 */
-class StyledText : NonCopyable {
+class StyledText : public XMLSerializable, NonCopyable {
 public:
     /**
     A class used to access the ranged fonts in a StyledText.
@@ -237,6 +238,8 @@ public:
     Range SetStyledTextInRange(const StyledText& styled_text, const Range& range);
 
     StyledText Clone() const;
+
+    void WriteToXML(XMLWriter& writer) const override;
 
 private:
     static Range ReviseItemRangeForGettingSubText(

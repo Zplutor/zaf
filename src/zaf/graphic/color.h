@@ -6,13 +6,14 @@
 #include <zaf/base/relation_operator.h>
 #include <zaf/object/equality.h>
 #include <zaf/object/object.h>
+#include <zaf/xml/xml_serializable.h>
 
 namespace zaf {
 
 /**
  Describes the red, green, blue, and alpha components of a color.
  */
-class Color : public Object {
+class Color : public Object, public XMLSerializable {
 public:
     ZAF_DECLARE_TYPE
     ZAF_DECLARE_EQUALITY
@@ -172,6 +173,8 @@ public:
     }
 
     std::wstring ToString() const override;
+
+    void WriteToXML(XMLWriter& writer) const override;
 
     float R() const {
         return r;

@@ -6,6 +6,7 @@
 #include <zaf/control/textual/inline_object_store.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/xml/xml_serializable.h>
 
 namespace zaf::textual {
 
@@ -151,7 +152,7 @@ private:
 };
 
 
-class RangedTextStyle : NonCopyable {
+class RangedTextStyle : public XMLSerializable, NonCopyable {
 public:
     using FontAccessor = RangedItemAccessor<Font>;
     using ColorAccessor = RangedItemAccessor<Color>;
@@ -227,6 +228,8 @@ public:
     void Clear();
 
     RangedTextStyle Clone() const;
+
+    void WriteToXML(XMLWriter& writer) const override;
 
 private:
     RangeMap<Font> fonts_;

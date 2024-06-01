@@ -1,8 +1,30 @@
-#include "ranged_text_style.h"
-#include "ranged_text_style.h"
 #include <zaf/control/textual/ranged_text_style.h>
+#include <zaf/xml/xml_writer.h>
 
 namespace zaf::textual {
+namespace {
+
+template<typename T>
+void WriteRangedStyleToXML(
+    const RangeMap<T>& map,
+    const std::wstring& range_element_name, 
+    const std::wstring& item_element_name,
+    XMLWriter& writer) {
+
+    writer.WriteElementStart(range_element_name);
+
+    for (const auto& each_item : map) {
+
+        writer.WriteElementStart(item_element_name);
+        each_item.Range().WriteToXML(writer);
+        each_item.Value().WriteToXML(writer);
+        writer.WriteElementEnd();
+    }
+
+    writer.WriteElementEnd();
+}
+
+}
 
 RangedTextStyle::RangedTextStyle(RangedTextStyle&& other) noexcept : 
     fonts_(std::move(other.fonts_)),
@@ -48,6 +70,16 @@ RangedTextStyle RangedTextStyle::Clone() const {
     result.text_back_colors_ = this->text_back_colors_;
     result.inline_objects_ = this->inline_objects_.Clone();
     return result;
+}
+
+
+void RangedTextStyle::WriteToXML(XMLWriter& writer) const {
+
+    writer.WriteElementStart(L"RangedTextStyle");
+    WriteRangedStyleToXML(fonts_, L"RangedFonts", L"RangedFontItem", writer);
+    WriteRangedStyleToXML(text_colors_, L"RangedTextColors", L"RangedColorItem", writer);
+    WriteRangedStyleToXML(text_back_colors_, L"RangedTextBackColors", L"RangedColorItem", writer);
+    writer.WriteElementEnd();
 }
 
 }

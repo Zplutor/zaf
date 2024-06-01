@@ -103,6 +103,9 @@
     <Filter Include="utility">
       <UniqueIdentifier>{e5e6c0de-3185-414a-9872-5aef9fc8fd7b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\xml">
+      <UniqueIdentifier>{cc46a91c-6dab-4585-9fa8-b1b8d208ed5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -540,6 +543,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\base\range_map_test.cpp">
       <Filter>case\base</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\xml\xml_serialization_test.cpp">
+      <Filter>case\xml</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
