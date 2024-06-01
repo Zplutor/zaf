@@ -12,7 +12,13 @@ constexpr GUID IID_ByteArrayStream = {
 
 class ByteArrayStream : public IStream, NonCopyableNonMovable {
 public:
-    //Constructs a new ByteArrayStream.
+    //Constructs a new ByteArrayStream with initial size.
+    ByteArrayStream(std::size_t size) : byte_array_(std::make_shared<ByteArray>()) {
+        byte_array_->Resize(size);
+    }
+
+
+    //Constructs a new ByteArrayStream copied from the specified memory.
     ByteArrayStream(const void* data, std::size_t size) : 
         byte_array_(std::make_shared<ByteArray>(ByteArray::FromMemory(data, size))) {
 
@@ -256,6 +262,9 @@ public:
     }
 
     const std::byte* Data() const {
+        if (byte_array_->IsEmpty()) {
+            return nullptr;
+        }
         return &(*byte_array_)[0];
     }
 

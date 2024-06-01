@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/com_error.h>
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/base/error/error.h>
@@ -6,17 +7,63 @@
 
 using namespace zaf;
 
-TEST(StreamTest, FromMemory_Precondition) {
+TEST(StreamTest, ByteArrayStream_CreateWithoutCopy) {
+
+    auto stream = Stream::FromMemory(0);
+    ASSERT_TRUE(stream);
+    ASSERT_EQ(stream.GetSize(), 0);
+    ASSERT_EQ(stream.GetPosition(), 0);
+    //The underlying buffer is null if the size is 0.
+    ASSERT_EQ(stream.GetUnderlyingBuffer(), nullptr);
+
+    stream = Stream::FromMemory(1);
+    ASSERT_TRUE(stream);
+    ASSERT_EQ(stream.GetSize(), 1);
+    ASSERT_EQ(stream.GetPosition(), 0);
+    ASSERT_NE(stream.GetUnderlyingBuffer(), nullptr);
+}
+
+
+TEST(StreamTest, ByteArrayStream_CreateWithCopy) {
+
     ASSERT_THROW(Stream::FromMemory(nullptr, 1), PreconditionError);
+
+    auto stream = Stream::FromMemory("0", 0);
+    ASSERT_TRUE(stream);
+    ASSERT_EQ(stream.GetSize(), 0);
+    ASSERT_EQ(stream.GetPosition(), 0);
+    ASSERT_EQ(stream.GetUnderlyingBuffer(), nullptr);
+
+    stream = Stream::FromMemory("123", 1);
+    ASSERT_TRUE(stream);
+    ASSERT_EQ(stream.GetSize(), 1);
+    ASSERT_EQ(stream.GetPosition(), 0);
+    ASSERT_NE(stream.GetUnderlyingBuffer(), nullptr);
 }
 
 
-TEST(StreamTest, FromMemoryNoCopy_Precondition) {
+TEST(StreamTest, NoCopyMemoryStream_Create) {
+
     ASSERT_THROW(Stream::FromMemoryNoCopy(nullptr, 1), PreconditionError);
+
+    auto content = reinterpret_cast<const std::byte*>("01234");
+
+    auto stream = Stream::FromMemoryNoCopy(content, 0);
+    ASSERT_TRUE(stream);
+    ASSERT_EQ(stream.GetSize(), 0);
+    ASSERT_EQ(stream.GetPosition(), 0);
+    //The underlying buffer points to the original content even if the size is zero.
+    ASSERT_EQ(stream.GetUnderlyingBuffer(), content);
+
+    stream = Stream::FromMemoryNoCopy(content, 1);
+    ASSERT_TRUE(stream);
+    ASSERT_EQ(stream.GetSize(), 1);
+    ASSERT_EQ(stream.GetPosition(), 0);
+    ASSERT_EQ(stream.GetUnderlyingBuffer(), content);
 }
 
 
-TEST(StreamTest, GetPosition) {
+TEST(StreamTest, NoCopyMemoryStream_GetPosition) {
 
     std::string memory("StreamTest.GetPosition");
     auto stream = zaf::Stream::FromMemory(memory.data(), memory.size());
@@ -41,19 +88,7 @@ TEST(StreamTest, GetPosition) {
 }
 
 
-TEST(StreamTest, GetUnderlyingBuffer) {
-
-    std::string memory("GetUnderlyingBuffer");
-
-    {
-        auto stream = zaf::Stream::FromMemoryNoCopy(memory.data(), memory.size());
-        auto buffer = stream.GetUnderlyingBuffer();
-        ASSERT_EQ(buffer, reinterpret_cast<const std::byte*>(memory.data()));
-    }
-}
-
-
-TEST(StreamTest, FromMemoryNoCopy_Read) {
+TEST(StreamTest, NoCopyMemoryStream_Read) {
 
     std::string memory{ "FromMemoryNotOwnFunction" };
 
@@ -80,7 +115,7 @@ TEST(StreamTest, FromMemoryNoCopy_Read) {
 }
 
 
-TEST(StreamTest, FromMemoryNoCopy_Seek) {
+TEST(StreamTest, NoCopyMemoryStream_Seek) {
 
     std::string memory{ "FromMemoryNotOwn_Seek" };
     auto stream = zaf::Stream::FromMemoryNoCopy(memory.data(), memory.size());
@@ -121,11 +156,11 @@ TEST(StreamTest, FromMemoryNoCopy_Seek) {
 }
 
 
-TEST(StreamTest, FromMemoryNoCopy_Write) {
+TEST(StreamTest, NoCopyMemoryStream_Write) {
 
     std::string memory{ "FromMemoryNotOwn_Write" };
     auto stream = zaf::Stream::FromMemoryNoCopy(memory.data(), memory.size());
 
-    ASSERT_THROW(stream.Write(L"something", 9), zaf::Error);
+    ASSERT_THROW(stream.Write(L"something", 9), COMError);
     ASSERT_EQ(memory, "FromMemoryNotOwn_Write");
 }

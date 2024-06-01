@@ -7,6 +7,12 @@
 
 namespace zaf {
 
+Stream Stream::FromMemory(std::size_t initial_size) {
+    auto ptr = new internal::ByteArrayStream{ initial_size };
+    return Stream{ ToCOMPtr(ptr) };
+}
+
+
 Stream Stream::FromMemory(const void* data, std::size_t size) {
 
     auto ptr = new internal::ByteArrayStream{ data, size };
@@ -69,7 +75,9 @@ std::size_t Stream::Seek(SeekOrigin origin, std::int64_t offset) {
 }
 
 
-std::size_t Stream::Read(std::uint64_t size, void* data) const {
+std::size_t Stream::Read(std::size_t size, void* data) const {
+
+    ZAF_EXPECT(data);
 
     ULONG read_size = 0;
     HRESULT result = Ptr()->Read(data, static_cast<ULONG>(size), &read_size);
@@ -81,6 +89,8 @@ std::size_t Stream::Read(std::uint64_t size, void* data) const {
 
 std::size_t Stream::Write(const void* data, std::size_t size) {
 
+    ZAF_EXPECT(data);
+
     ULONG written_size = 0;
     HRESULT result = Ptr()->Write(data, static_cast<ULONG>(size), &written_size);
 
@@ -89,7 +99,7 @@ std::size_t Stream::Write(const void* data, std::size_t size) {
 }
 
 
-const std::byte* Stream::GetUnderlyingBuffer() const {
+const std::byte* Stream::GetUnderlyingBuffer() const noexcept {
 
     auto no_copy_stream = Ptr().Query<internal::NoCopyMemoryStream>(
         internal::IID_NoCopyMemoryStream);
@@ -103,7 +113,7 @@ const std::byte* Stream::GetUnderlyingBuffer() const {
         return byte_array_stream->Data();
     }
 
-    throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
+    return nullptr;
 }
 
 
