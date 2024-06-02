@@ -88,6 +88,7 @@ public:
     std::wstring ToString() const override;
 
     void WriteToXML(XMLWriter& writer) const override;
+    void ReadFromXML(XMLReader& reader) override;
 
     friend bool operator==(const Font& font1, const Font& font2) {
 

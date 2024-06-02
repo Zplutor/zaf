@@ -1,3 +1,4 @@
+#include "ranged_text_style.h"
 #include <zaf/control/textual/ranged_text_style.h>
 #include <zaf/xml/xml_writer.h>
 
@@ -80,6 +81,10 @@ void RangedTextStyle::WriteToXML(XMLWriter& writer) const {
     WriteRangedStyleToXML(text_colors_, L"RangedTextColors", L"RangedColorItem", writer);
     WriteRangedStyleToXML(text_back_colors_, L"RangedTextBackColors", L"RangedColorItem", writer);
     writer.WriteElementEnd();
+}
+
+
+void RangedTextStyle::ReadFromXML(XMLReader& reader) {
 }
 
 }

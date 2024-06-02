@@ -374,4 +374,8 @@ void StyledText::WriteToXML(XMLWriter& writer) const {
     writer.WriteElementEnd();
 }
 
+
+void StyledText::ReadFromXML(XMLReader& reader) {
+}
+
 }

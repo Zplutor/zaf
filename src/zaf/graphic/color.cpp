@@ -238,4 +238,9 @@ void Color::WriteToXML(XMLWriter& writer) const {
     writer.WriteElementEnd();
 }
 
+
+void Color::ReadFromXML(XMLReader& reader) {
+
+}
+
 }

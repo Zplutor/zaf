@@ -164,6 +164,7 @@ public:
     std::wstring ToString() const override;
 
     void WriteToXML(XMLWriter& writer) const override;
+    void ReadFromXML(XMLReader& reader) override;
 
     friend bool operator==(const Range& range1, const Range& range2) {
         return std::tie(range1.index, range1.length) == std::tie(range2.index, range2.length);

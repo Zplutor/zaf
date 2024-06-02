@@ -1204,6 +1204,9 @@
     <ClCompile Include="src\zaf\control\textual\default_text_style.cpp">
       <Filter>zaf\control\textual</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\xml\xml_reader.cpp">
+      <Filter>zaf\xml</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2765,6 +2768,15 @@
       <Filter>zaf\xml</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\xml\xml_writer.h">
+      <Filter>zaf\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\xml\xml_reader.h">
+      <Filter>zaf\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\xml\xml_node_type.h">
+      <Filter>zaf\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\xml\xml_error.h">
       <Filter>zaf\xml</Filter>
     </ClInclude>
   </ItemGroup>

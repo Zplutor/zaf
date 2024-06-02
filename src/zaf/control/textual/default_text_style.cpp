@@ -1,3 +1,4 @@
+#include "default_text_style.h"
 #include <zaf/control/textual/default_text_style.h>
 #include <zaf/xml/xml_writer.h>
 
@@ -20,6 +21,10 @@ void DefaultTextStyle::WriteToXML(XMLWriter& writer) const {
     writer.WriteElementEnd();
 
     writer.WriteElementEnd();
+}
+
+
+void DefaultTextStyle::ReadFromXML(XMLReader& reader) {
 }
 
 }

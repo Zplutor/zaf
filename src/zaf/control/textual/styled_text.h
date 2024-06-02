@@ -240,6 +240,7 @@ public:
     StyledText Clone() const;
 
     void WriteToXML(XMLWriter& writer) const override;
+    void ReadFromXML(XMLReader& reader) override;
 
 private:
     static Range ReviseItemRangeForGettingSubText(

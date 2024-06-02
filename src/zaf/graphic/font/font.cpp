@@ -95,4 +95,9 @@ void Font::WriteToXML(XMLWriter& writer) const {
     writer.WriteElementEnd();
 }
 
+
+void Font::ReadFromXML(XMLReader& reader) {
+
+}
+
 }

@@ -10,3 +10,11 @@ TEST(XMLSerializationTest, SerializeObjectToText) {
     StyledText text;
     auto xml_text = XMLSerializeToText(text);
 }
+
+
+TEST(XMLSerializationTest, DeserializeObjectFromText) {
+
+    Range range;
+
+    XMLDeserializeFromText(L"<?xml><Range Index=\"0\" Length=\"1\" / >", range);
+}
