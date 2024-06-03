@@ -1,5 +1,8 @@
 #include <gtest/gtest.h>
 #include <zaf/base/range.h>
+#include <zaf/xml/xml_error.h>
+#include <zaf/xml/xml_reader.h>
+#include <zaf/xml/xml_writer.h>
 
 using namespace zaf;
 
@@ -313,4 +316,49 @@ TEST(RangeTest, Hash) {
     r1 = zaf::Range{ 78, 33 };
     r2 = zaf::Range{ 78, 33 };
     ASSERT_EQ(r1.Hash(), r2.Hash());
+}
+
+
+TEST(RangeTest, WriteToXML) {
+
+    auto stream = Stream::FromMemory(0);
+    XMLWriter writer{ stream };
+
+    Range range{ 10, 50 };
+    ASSERT_NO_THROW(range.WriteToXML(writer));
+
+    writer.Flush();
+
+    std::string_view expected = R"(<Range Index="10" Length="50" />)";
+    std::string_view actual{
+        reinterpret_cast<const char*>(stream.GetUnderlyingBuffer()),
+        stream.GetSize()
+    };
+    ASSERT_EQ(expected, actual);
+}
+
+
+TEST(RangeTest, ReadFromXML) {
+
+    constexpr auto deserialize = [](std::string_view xml) {
+        XMLReader reader{ Stream::FromMemoryNoCopy(xml.data(), xml.size()) };
+        Range range;
+        range.ReadFromXML(reader);
+        return range;
+    };
+
+    {
+        auto range = deserialize(R"(<Range Index="11" Length="51" />)");
+        ASSERT_EQ(range.index, 11);
+        ASSERT_EQ(range.length, 51);
+    }
+
+    {
+        auto range = deserialize(R"(<Range Index="12" Length="52"></Range>)");
+        ASSERT_EQ(range.index, 12);
+        ASSERT_EQ(range.length, 52);
+    }
+
+    ASSERT_THROW(deserialize(R"(<Range Index="1" />)"), XMLError);
+    ASSERT_THROW(deserialize(R"(<Range Length="1" />)"), XMLError);
 }

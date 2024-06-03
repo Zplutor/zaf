@@ -2,6 +2,9 @@
 #include <zaf/control/color_picker.h>
 #include <zaf/control/textual/ranged_text_style.h>
 #include <zaf/creation.h>
+#include <zaf/xml/xml_error.h>
+#include <zaf/xml/xml_reader.h>
+#include <zaf/xml/xml_writer.h>
 
 using namespace zaf;
 using namespace zaf::internal;
@@ -305,5 +308,71 @@ TEST(RangedTextStyleTest, VisitInlineObjectsInRange) {
             Range{ 4, 2 },
         };
         ASSERT_TRUE(check_visit_result(expected_ranges));
+    }
+}
+
+
+TEST(RangedTextStyleTest, WriteToXML) {
+
+    constexpr auto test = [](const RangedTextStyle& style, std::string_view expected) {
+    
+        auto stream = Stream::FromMemory(0);
+        XMLWriter writer{ stream };
+
+        style.WriteToXML(writer);
+        writer.Flush();
+
+        std::string_view actual{
+            reinterpret_cast<const char*>(stream.GetUnderlyingBuffer()),
+            stream.GetSize()
+        };
+        return actual == expected;
+    };
+
+    //Empty
+    {
+        RangedTextStyle style;
+        ASSERT_TRUE(test(
+            style, 
+            "<RangedTextStyle>"
+            "<RangedFonts />"
+            "<RangedTextColors />"
+            "<RangedTextBackColors />"
+            "</RangedTextStyle>"));
+    }
+
+    {
+        RangedTextStyle style;
+        style.SetFontInRange(Font{ L"Ranged", 10.f, 800 }, Range{ 0, 20 });
+        style.SetTextColorInRange(Color{ 1.f, 0, 0, 1.f }, Range{ 2, 5 });
+        style.SetTextBackColorInRange(Color{ 0, 1.f, 0, 0.5f }, Range{ 0, 10 });
+        style.SetTextBackColorInRange(Color{ 0, 0, 1.f, 0.5f }, Range{ 11, 10 });
+        ASSERT_TRUE(test(
+            style,
+            R"(<RangedTextStyle>)"
+            R"(<RangedFonts>)"
+            R"(<RangedFontItem>)"
+            R"(<Range Index="0" Length="20" />)"
+            R"(<Font FamilyName="Ranged" Size="10.000000" Weight="800" )"
+            R"(Style="Normal" HasUnderline="false" />)"
+            R"(</RangedFontItem>)"
+            R"(</RangedFonts>)"
+            R"(<RangedTextColors>)"
+            R"(<RangedColorItem>)"
+            R"(<Range Index="2" Length="5" />)"
+            R"(<Color R="1.000000" G="0.000000" B="1.000000" A="1.000000" />)"
+            R"(</RangedColorItem>)"
+            R"(</RangedTextColors>)"
+            R"(<RangedTextBackColors>)"
+            R"(<RangedColorItem>)"
+            R"(<Range Index="0" Length="10" />)"
+            R"(<Color R="0.000000" G="1.000000" B="0.000000" A="0.500000" />)"
+            R"(</RangedColorItem>)"
+            R"(<RangedColorItem>)"
+            R"(<Range Index="11" Length="10" />)"
+            R"(<Color R="0.000000" G="0.000000" B="1.000000" A="0.500000" />)"
+            R"(</RangedColorItem>)"
+            R"(</RangedTextBackColors>)"
+            R"(</RangedTextStyle>)"));
     }
 }

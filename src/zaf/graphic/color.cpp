@@ -7,6 +7,8 @@
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/type_definition.h>
+#include <zaf/xml/xml_error.h>
+#include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>
 
 namespace zaf {
@@ -231,16 +233,48 @@ std::wstring Color::ToString() const {
 void Color::WriteToXML(XMLWriter& writer) const {
 
     writer.WriteElementStart(L"Color");
-    writer.WriteAttribute(L"A", std::to_wstring(a));
     writer.WriteAttribute(L"R", std::to_wstring(r));
     writer.WriteAttribute(L"G", std::to_wstring(g));
     writer.WriteAttribute(L"B", std::to_wstring(b));
+    writer.WriteAttribute(L"A", std::to_wstring(a));
     writer.WriteElementEnd();
 }
 
 
 void Color::ReadFromXML(XMLReader& reader) {
 
+    struct {
+        std::optional<float> a;
+        std::optional<float> r;
+        std::optional<float> g;
+        std::optional<float> b;
+    } xml_data;
+
+    reader.ReadElementAttributes(L"Color", [&xml_data](const auto& attribute_reader) {
+    
+        auto name = attribute_reader.GetName();
+        if (name == L"A") {
+            xml_data.a = attribute_reader.GetNumber<float>();
+        }
+        else if (name == L"R") {
+            xml_data.r = attribute_reader.GetNumber<float>();
+        }
+        else if (name == L"G") {
+            xml_data.g = attribute_reader.GetNumber<float>();
+        }
+        else if (name == L"B") {
+            xml_data.b = attribute_reader.GetNumber<float>();
+        }
+    });
+
+    if (!xml_data.a || !xml_data.r || !xml_data.g || !xml_data.b) {
+        throw XMLError{ ZAF_SOURCE_LOCATION() };
+    }
+
+    this->a = *xml_data.a;
+    this->r = *xml_data.r;
+    this->g = *xml_data.g;
+    this->b = *xml_data.b;
 }
 
 }

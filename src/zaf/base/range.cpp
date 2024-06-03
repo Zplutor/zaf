@@ -31,22 +31,28 @@ void Range::WriteToXML(XMLWriter& writer) const {
 
 void Range::ReadFromXML(XMLReader& reader) {
 
-    reader.ReadUntilElementStart(L"Range");
+    std::optional<std::size_t> xml_index;
+    std::optional<std::size_t> xml_length;
 
-    for (bool is_end = reader.MoveToFirstAttribute(); 
-         !is_end; 
-         is_end = reader.MoveToNextAttribute()) {
+    reader.ReadElementAttributes(
+        L"Range", 
+        [&xml_index, &xml_length](const auto& attribute_reader) {
+    
+            auto attribute_name = attribute_reader.GetName();
+            if (attribute_name == L"Index") {
+                xml_index = attribute_reader.GetNumber<std::size_t>();
+            }
+            else if (attribute_name == L"Length") {
+                xml_length = attribute_reader.GetNumber<std::size_t>();
+            }
+        });
 
-        auto attribute_name = reader.GetName();
-        if (attribute_name == L"Index") {
-            this->index = ToNumeric<std::size_t>(reader.GetValue().data());
-        }
-        else if (attribute_name == L"Length") {
-            this->length = ToNumeric<std::size_t>(reader.GetValue().data());
-        }
+    if (!xml_index || !xml_length) {
+        throw XMLError{ ZAF_SOURCE_LOCATION() };
     }
 
-    reader.ReadElementEnd();
+    this->index = *xml_index;
+    this->length = *xml_length;
 }
 
 }

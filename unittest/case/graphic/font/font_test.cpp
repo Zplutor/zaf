@@ -1,5 +1,10 @@
 #include <gtest/gtest.h>
 #include <zaf/graphic/font/font.h>
+#include <zaf/xml/xml_error.h>
+#include <zaf/xml/xml_reader.h>
+#include <zaf/xml/xml_writer.h>
+
+using namespace zaf;
 
 TEST(FontTest, Construction) {
 
@@ -149,4 +154,117 @@ TEST(FontTest, ToString) {
     font.has_underline = true;
 
     ASSERT_EQ(font.ToString(), L"consola,23,100");
+}
+
+
+TEST(FontTest, WriteToXML) {
+
+    auto stream = Stream::FromMemory(0);
+    XMLWriter writer{ stream };
+
+    Font font;
+    font.family_name = L"XMLFont";
+    font.size = 20.f;
+    font.weight = 100;
+    font.has_underline = true;
+    font.style = FontStyle::Italic;
+    ASSERT_NO_THROW(font.WriteToXML(writer));
+    writer.Flush();
+
+    std::string_view expected = 
+        "<Font "
+        "FamilyName=\"XMLFont\" "
+        "Size=\"20.000000\" "
+        "Weight=\"100\" "
+        "Style=\"Italic\" "
+        "HasUnderline=\"true\" "
+        "/>";
+
+    std::string_view actual{
+        reinterpret_cast<const char*>(stream.GetUnderlyingBuffer()),
+        stream.GetSize()
+    };
+    ASSERT_EQ(expected, actual);
+}
+
+
+TEST(FontTest, ReadFromXML) {
+
+    constexpr auto deserialize = [](std::string_view xml) {
+        XMLReader reader{ Stream::FromMemoryNoCopy(xml.data(), xml.size()) };
+        Font font;
+        font.ReadFromXML(reader);
+        return font;
+    };
+
+    {
+        auto font = deserialize(
+            R"(<Font )"
+            R"(FamilyName="XMLFont" )"
+            R"(Size="10.000000" )"
+            R"(Weight="200" )"
+            R"(Style="Oblique" )"
+            R"(HasUnderline="true" )"
+            R"(/>)");
+        ASSERT_EQ(font.family_name, L"XMLFont");
+        ASSERT_EQ(font.size, 10.f);
+        ASSERT_EQ(font.weight, 200);
+        ASSERT_EQ(font.style, FontStyle::Oblique);
+        ASSERT_EQ(font.has_underline, true);
+    }
+
+    ASSERT_THROW(
+        deserialize(
+            R"(<Font )"
+            R"(Size="10.000000" )"
+            R"(Weight="200" )"
+            R"(Style="Oblique" )"
+            R"(HasUnderline="true" )"
+            R"(/>)"
+        ),
+        XMLError);
+
+    ASSERT_THROW(
+        deserialize(
+            R"(<Font )"
+            R"(FamilyName="XMLFont" )"
+            R"(Weight="200" )"
+            R"(Style="Oblique" )"
+            R"(HasUnderline="true" )"
+            R"(/>)"
+        ),
+        XMLError);
+
+    ASSERT_THROW(
+        deserialize(
+            R"(<Font )"
+            R"(FamilyName="XMLFont" )"
+            R"(Size="10.000000" )"
+            R"(Style="Oblique" )"
+            R"(HasUnderline="true" )"
+            R"(/>)"
+        ),
+        XMLError);
+
+    ASSERT_THROW(
+        deserialize(
+            R"(<Font )"
+            R"(FamilyName="XMLFont" )"
+            R"(Size="10.000000" )"
+            R"(Weight="200" )"
+            R"(HasUnderline="true" )"
+            R"(/>)"
+        ),
+        XMLError);
+
+    ASSERT_THROW(
+        deserialize(
+            R"(<Font )"
+            R"(FamilyName="XMLFont" )"
+            R"(Size="10.000000" )"
+            R"(Weight="200" )"
+            R"(Style="Oblique" )"
+            R"(/>)"
+        ),
+        XMLError);
 }

@@ -22,6 +22,8 @@ public:
 
     void WriteAttribute(const std::wstring& name, const std::wstring& value);
 
+    void Flush();
+
 private:
     COMPtr<IXmlWriter> inner_;
 };

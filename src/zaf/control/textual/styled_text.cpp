@@ -1,6 +1,7 @@
 #include "styled_text.h"
 #include <zaf/control/textual/styled_text.h>
 #include <zaf/base/as.h>
+#include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>
 
 namespace zaf::textual {
@@ -376,6 +377,17 @@ void StyledText::WriteToXML(XMLWriter& writer) const {
 
 
 void StyledText::ReadFromXML(XMLReader& reader) {
+
+    reader.ReadElementStart(L"StyledText");
+
+    reader.ReadElementStart(L"Text");
+    SetText(std::wstring{ reader.ReadCDATA() });
+    reader.ReadElementEnd();
+
+    default_style_.ReadFromXML(reader);
+    ranged_style_.ReadFromXML(reader);
+
+    reader.ReadElementEnd();
 }
 
 }

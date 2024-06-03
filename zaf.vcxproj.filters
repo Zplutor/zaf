@@ -2779,5 +2779,8 @@
     <ClInclude Include="src\zaf\xml\xml_error.h">
       <Filter>zaf\xml</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\code_page.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

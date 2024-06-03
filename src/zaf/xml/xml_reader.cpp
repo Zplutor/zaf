@@ -1,10 +1,19 @@
 #include <zaf/xml/xml_reader.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/error/contract_error.h>
+
 #include <zaf/xml/xml_error.h>
 
 namespace zaf {
 namespace {
+
+COMPtr<IXmlReader> CreateIXmlReader() {
+    COMPtr<IXmlReader> reader;
+    HRESULT hresult = CreateXmlReader(__uuidof(IXmlReader), reader.ResetAsVoid(), nullptr);
+    ZAF_THROW_IF_COM_ERROR(hresult);
+    return reader;
+}
+
 
 bool IsContentNodeType(XMLNodeType node_type) {
     return
@@ -22,11 +31,38 @@ XMLReader::XMLReader(Stream stream) {
 
     ZAF_EXPECT(stream);
 
-    HRESULT result = CreateXmlReader(__uuidof(IXmlReader), inner_.ResetAsVoid(), nullptr);
-    ZAF_THROW_IF_COM_ERROR(result);
+    inner_ = CreateIXmlReader();
 
-    result = inner_->SetInput(stream.Ptr().Inner());
-    ZAF_THROW_IF_COM_ERROR(result);
+    HRESULT hresult = inner_->SetInput(stream.Ptr().Inner());
+    ZAF_THROW_IF_COM_ERROR(hresult);
+}
+
+
+XMLReader::XMLReader(Stream stream, CodePage code_page) {
+
+    ZAF_EXPECT(stream);
+
+    COMPtr<IXmlReaderInput> input;
+    HRESULT hresult = CreateXmlReaderInputWithEncodingCodePage(
+        stream.Ptr().Inner(),
+        nullptr,
+        static_cast<UINT>(code_page),
+        FALSE,
+        nullptr,
+        input.Reset());
+
+    ZAF_THROW_IF_COM_ERROR(hresult);
+
+    inner_ = CreateIXmlReader();
+    inner_->SetInput(input.Inner());
+}
+
+
+XMLNodeType XMLReader::GetNodeType() const {
+
+    XmlNodeType node_type{};
+    HRESULT hresult = inner_->GetNodeType(&node_type);
+    return static_cast<XMLNodeType>(node_type);
 }
 
 
@@ -54,18 +90,15 @@ std::wstring_view XMLReader::GetValue() const {
 
 bool XMLReader::Read() {
 
-    XmlNodeType node_type{};
-    HRESULT hresult = inner_->Read(&node_type);
+    HRESULT hresult = inner_->Read(nullptr);
     ZAF_THROW_IF_COM_ERROR(hresult);
 
-    if (hresult == S_OK) {
-        current_node_type_ = static_cast<XMLNodeType>(node_type);
-        return true;
-    }
-    else {
-        current_node_type_ = XMLNodeType::None;
-        return false;
-    }
+    return hresult == S_OK;
+}
+
+
+void XMLReader::ReadXMLDeclaration() {
+    ReadNode(XMLNodeType::XMLDeclaration, std::nullopt, true);
 }
 
 
@@ -79,19 +112,54 @@ void XMLReader::ReadElementStart(std::wstring_view element_name) {
 }
 
 
+bool XMLReader::TryReadElementStart(std::wstring_view element_name) {
+    return TryReadNode(XMLNodeType::ElementStart, element_name, true);
+}
+
+
 void XMLReader::ReadElementEnd() {
     ReadNode(XMLNodeType::ElementEnd, std::nullopt, true);
 }
 
 
-void XMLReader::ReadXMLDeclaration() {
-    ReadNode(XMLNodeType::XMLDeclaration, std::nullopt, true);
+void XMLReader::ReadElementAttributes(
+    std::wstring_view element_name,
+    const std::function<void(const XMLAttributeReader&)>& visitor) {
+
+    ZAF_EXPECT(visitor);
+
+    ReadUntilElementStart(element_name);
+
+    if (MoveToFirstAttribute()) {
+        do {
+            visitor(XMLAttributeReader{ *this });
+        } while (MoveToNextAttribute());
+        MoveToElement();
+    }
+
+    BOOL is_empty_element = inner_->IsEmptyElement();
+    Read();
+    if (!is_empty_element) {
+        ReadElementEnd();
+    }
+}
+
+
+std::wstring_view XMLReader::ReadCDATA() {
+
+    ReadUntilContent();
+
+    if (GetNodeType() != XMLNodeType::CDATA) {
+        throw XMLError{ ZAF_SOURCE_LOCATION() };
+    }
+
+    return GetValue();
 }
 
 
 void XMLReader::ReadUntilContent() {
 
-    while (!IsContentNodeType(current_node_type_)) {
+    while (!IsContentNodeType(GetNodeType())) {
         if (!Read()) {
             break;
         }
@@ -104,21 +172,33 @@ void XMLReader::ReadNode(
     std::optional<std::wstring_view> node_name, 
     bool skip) {
 
+    if (!TryReadNode(node_type, node_name, skip)) {
+        throw XMLError{ ZAF_SOURCE_LOCATION() };
+    }
+}
+
+
+bool XMLReader::TryReadNode(
+    XMLNodeType node_type, 
+    std::optional<std::wstring_view> node_name, 
+    bool skip) {
+
     ReadUntilContent();
 
-    if (current_node_type_ != node_type) {
-        throw XMLError{ ZAF_SOURCE_LOCATION() };
+    if (GetNodeType() != node_type) {
+        return false;
     }
 
     if (node_name) {
         if (node_name != GetName()) {
-            throw XMLError{ ZAF_SOURCE_LOCATION() };
+            return false;
         }
     }
 
     if (skip) {
         Read();
     }
+    return true;
 }
 
 
@@ -137,6 +217,13 @@ bool XMLReader::MoveToNextAttribute() {
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     return hresult == S_OK;
+}
+
+
+void XMLReader::MoveToElement() {
+
+    HRESULT hresult = inner_->MoveToElement();
+    ZAF_THROW_IF_COM_ERROR(hresult);
 }
 
 }

@@ -16,5 +16,5 @@ TEST(XMLSerializationTest, DeserializeObjectFromText) {
 
     Range range;
 
-    XMLDeserializeFromText(L"<?xml><Range Index=\"0\" Length=\"1\" / >", range);
+    XMLDeserializeFromText(LR"(<?xml version="1.0" encoding="UTF-8"?><Range Index="0" Length="1"/>)", range);
 }

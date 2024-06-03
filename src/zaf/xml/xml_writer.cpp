@@ -1,3 +1,4 @@
+#include "xml_writer.h"
 #include <zaf/xml/xml_writer.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/error/contract_error.h>
@@ -61,6 +62,13 @@ void XMLWriter::WriteCDATA(const std::wstring& string) {
 void XMLWriter::WriteAttribute(const std::wstring& name, const std::wstring& value) {
 
     HRESULT hresult = inner_->WriteAttributeString(nullptr, name.c_str(), nullptr, value.c_str());
+    ZAF_THROW_IF_COM_ERROR(hresult);
+}
+
+
+void XMLWriter::Flush() {
+
+    HRESULT hresult = inner_->Flush();
     ZAF_THROW_IF_COM_ERROR(hresult);
 }
 

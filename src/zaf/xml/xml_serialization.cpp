@@ -29,7 +29,7 @@ std::wstring XMLSerializeToText(const XMLSerializable& serializable) {
 void XMLDeserializeFromText(std::wstring_view text, XMLSerializable& serializable) {
 
     auto stream = Stream::FromMemoryNoCopy(text.data(), text.length() * sizeof(wchar_t));
-    XMLReader reader{ std::move(stream) };
+    XMLReader reader{ std::move(stream), CodePage::UTF16 };
 
     reader.ReadXMLDeclaration();
     serializable.ReadFromXML(reader);

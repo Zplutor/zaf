@@ -397,6 +397,7 @@
     <ClInclude Include="src\zaf\base\auto_reset.h" />
     <ClInclude Include="src\zaf\base\base64.h" />
     <ClInclude Include="src\zaf\base\byte_array.h" />
+    <ClInclude Include="src\zaf\base\code_page.h" />
     <ClInclude Include="src\zaf\base\com_object.h" />
     <ClInclude Include="src\zaf\base\container\utility\copy.h" />
     <ClInclude Include="src\zaf\base\error\check.h" />

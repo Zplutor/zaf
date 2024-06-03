@@ -1,5 +1,6 @@
 #include "ranged_text_style.h"
 #include <zaf/control/textual/ranged_text_style.h>
+#include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>
 
 namespace zaf::textual {
@@ -23,6 +24,32 @@ void WriteRangedStyleToXML(
     }
 
     writer.WriteElementEnd();
+}
+
+
+template<typename T>
+void ReadRangedStyleFromXML(
+    XMLReader& reader,
+    std::wstring_view range_element_name,
+    std::wstring_view item_element_name,
+    RangeMap<T>& map) {
+
+    reader.ReadElementStart(range_element_name);
+
+    while (reader.TryReadElementStart(item_element_name)) {
+
+        Range range;
+        range.ReadFromXML(reader);
+
+        T value;
+        value.ReadFromXML(reader);
+
+        map.AddRange(range, std::move(value));
+
+        reader.ReadElementEnd();
+    }
+
+    reader.ReadElementEnd();
 }
 
 }
@@ -85,6 +112,14 @@ void RangedTextStyle::WriteToXML(XMLWriter& writer) const {
 
 
 void RangedTextStyle::ReadFromXML(XMLReader& reader) {
+
+    reader.ReadElementStart(L"RangedTextStyle");
+
+    ReadRangedStyleFromXML(reader, L"RangedFonts", L"RangedFontItem", fonts_);
+    ReadRangedStyleFromXML(reader, L"RangedTextColors", L"RangedColorItem", text_colors_);
+    ReadRangedStyleFromXML(reader, L"RangedTextBackColors", L"RangedColorItem", text_back_colors_);
+
+    reader.ReadElementEnd();
 }
 
 }
