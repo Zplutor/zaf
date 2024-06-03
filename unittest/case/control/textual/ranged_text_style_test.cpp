@@ -360,7 +360,7 @@ TEST(RangedTextStyleTest, WriteToXML) {
             R"(<RangedTextColors>)"
             R"(<RangedColorItem>)"
             R"(<Range Index="2" Length="5" />)"
-            R"(<Color R="1.000000" G="0.000000" B="1.000000" A="1.000000" />)"
+            R"(<Color R="1.000000" G="0.000000" B="0.000000" A="1.000000" />)"
             R"(</RangedColorItem>)"
             R"(</RangedTextColors>)"
             R"(<RangedTextBackColors>)"
@@ -374,5 +374,30 @@ TEST(RangedTextStyleTest, WriteToXML) {
             R"(</RangedColorItem>)"
             R"(</RangedTextBackColors>)"
             R"(</RangedTextStyle>)"));
+    }
+}
+
+
+TEST(RangedTextStyleTest, ReadFromXML) {
+
+    constexpr auto deserialize = [](std::string_view xml) {
+        XMLReader reader{ Stream::FromMemoryNoCopy(xml.data(), xml.size()) };
+        RangedTextStyle style;
+        style.ReadFromXML(reader);
+        return style;
+    };
+
+    //Empty styles
+    {
+        auto style = deserialize(
+            "<RangedTextStyle>"
+            "<RangedFonts />"
+            "<RangedTextColors />"
+            "<RangedTextBackColors />"
+            "</RangedTextStyle>");
+
+        ASSERT_TRUE(style.Fonts().IsEmpty());
+        ASSERT_TRUE(style.TextColors().IsEmpty());
+        ASSERT_TRUE(style.TextBackColors().IsEmpty());
     }
 }
