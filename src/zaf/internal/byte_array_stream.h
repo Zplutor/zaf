@@ -271,7 +271,7 @@ public:
 private:
     std::pair<const void*, std::size_t> GetReadInfo(std::size_t expected_read_size) const {
         auto read_size = (std::min)(expected_read_size, byte_array_->Size() - seek_position_);
-        return std::make_pair(&(*byte_array_)[seek_position_], read_size);
+        return std::make_pair(&(*byte_array_)[0] + seek_position_, read_size);
     }
 
 private:

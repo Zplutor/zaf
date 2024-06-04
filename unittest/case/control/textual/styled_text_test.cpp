@@ -1,6 +1,10 @@
 #include <gtest/gtest.h>
+#include <zaf/base/stream.h>
 #include <zaf/control/textual/styled_text.h>
 #include <zaf/creation.h>
+#include <zaf/xml/xml_error.h>
+#include <zaf/xml/xml_reader.h>
+#include <zaf/xml/xml_writer.h>
 
 using namespace zaf;
 using namespace zaf::textual;
@@ -228,5 +232,143 @@ TEST(StyledTextTest, GetSubText) {
         ASSERT_EQ(sub_text.InlineObjects().begin()->Range(), Range(2, 2));
         //The object should be cloned.
         ASSERT_NE(sub_text.InlineObjects().begin()->Object(), inline_object);
+    }
+}
+
+
+TEST(StyledTextTest, WriteToXML) {
+
+    StyledText text;
+    text.SetText(L"StyledText");
+    text.SetDefaultFont(Font{ L"Default", 20.f, 400 });
+    text.SetDefaultTextColor(Color{ 0, 0, 0, 1 });
+    text.SetDefaultTextBackColor(Color{ 1, 1, 1, 0.5 });
+    text.SetFontInRange(Font{ L"Ranged", 10.f, 500 }, Range{ 0, 6 });
+    text.SetTextColorInRange(Color{ 1, 0, 0, 1 }, Range{ 0, 6 });
+    text.SetTextColorInRange(Color{ 0, 1, 0, 1 }, Range{ 6, 4 });
+    text.SetTextBackColorInRange(Color{ 0.5f, 0.5f, 0.5f, 0.5f }, Range{ 6, 4 });
+
+    auto stream = Stream::FromMemory(0);
+    XMLWriter writer{ stream };
+    text.WriteToXML(writer);
+    writer.Flush();
+
+    std::string_view expected =
+        R"(<StyledText>)"
+        R"(<Text><![CDATA[StyledText]]></Text>)"
+        R"(<DefaultTextStyle>)"
+        R"(<Font><Font FamilyName="Default" Size="20.000000" Weight="400" )"
+        R"(Style="Normal" HasUnderline="false" /></Font>)"
+        R"(<TextColor><Color R="0.000000" G="0.000000" B="0.000000" A="1.000000" /></TextColor>)"
+        R"(<TextBackColor><Color R="1.000000" G="1.000000" B="1.000000" A="0.500000" />)"
+        R"(</TextBackColor>)"
+        R"(</DefaultTextStyle>)"
+        R"(<RangedTextStyle>)"
+        R"(<RangedFonts><RangedFontItem>)"
+        R"(<Range Index="0" Length="6" />)"
+        R"(<Font FamilyName="Ranged" Size="10.000000" Weight="500" )"
+        R"(Style="Normal" HasUnderline="false" />)"
+        R"(</RangedFontItem></RangedFonts>)"
+        R"(<RangedTextColors>)"
+        R"(<RangedColorItem>)"
+        R"(<Range Index="0" Length="6" />)"
+        R"(<Color R="1.000000" G="0.000000" B="0.000000" A="1.000000" />)"
+        R"(</RangedColorItem>)"
+        R"(<RangedColorItem>)"
+        R"(<Range Index="6" Length="4" />)"
+        R"(<Color R="0.000000" G="1.000000" B="0.000000" A="1.000000" />)"
+        R"(</RangedColorItem>)"
+        R"(</RangedTextColors>)"
+        R"(<RangedTextBackColors>)"
+        R"(<RangedColorItem>)"
+        R"(<Range Index="6" Length="4" />)"
+        R"(<Color R="0.500000" G="0.500000" B="0.500000" A="0.500000" />)"
+        R"(</RangedColorItem>)"
+        R"(</RangedTextBackColors>)"
+        R"(</RangedTextStyle>)"
+        R"(</StyledText>)";
+
+    std::string_view actual{
+        reinterpret_cast<const char*>(stream.GetUnderlyingBuffer()),
+        stream.GetSize()
+    };
+    ASSERT_EQ(expected, actual);
+}
+
+
+TEST(StyledTextTest, ReadFromXML) {
+
+    constexpr auto deserialize = [](std::string_view xml) {
+        XMLReader reader{ Stream::FromMemoryNoCopy(xml.data(), xml.size()) };
+        StyledText text;
+        text.ReadFromXML(reader);
+        return text;
+    };
+
+    ASSERT_THROW(deserialize("<StyledText />"), XMLError);
+    ASSERT_THROW(deserialize("<StyledText></StyledText>"), XMLError);
+}
+
+
+TEST(StyledTextTest, ReadFromXML_Text) {
+
+    constexpr auto deserialize = [](std::string_view text_xml) {
+
+        std::string xml("<StyledText>");
+        xml += text_xml;
+        xml += R"(
+            <DefaultTextStyle>
+                <Font>
+                    <Font FamilyName="Default" Size="10.000000" Weight="400" 
+                        Style="Normal" HasUnderline="false" />
+                </Font>
+                <TextColor>
+                    <Color R="0.000000" G="0.000000" B="0.000000" A="1.000000" />
+                </TextColor>
+                <TextBackColor>
+                    <Color R="0.000000" G="0.000000" B="0.000000" A="0.100000" />
+                </TextBackColor>
+            </DefaultTextStyle>
+            <RangedTextStyle>
+                <RangedFonts />
+                <RangedTextColors />
+                <RangedTextBackColors />
+            </RangedTextStyle>
+        </StyledText>)";
+
+        XMLReader reader{ Stream::FromMemory(xml.data(), xml.size()) };
+        StyledText text;
+        text.ReadFromXML(reader);
+        return text;
+    };
+
+    //Empty text with self-closing tag.
+    {
+        auto text = deserialize("<Text />");
+        ASSERT_EQ(text.Text(), L"");
+    }
+
+    //Empty text with start and end tags.
+    {
+        auto text = deserialize("<Text></Text>");
+        ASSERT_EQ(text.Text(), L"");
+    }
+
+    //Empty text with CDATA
+    {
+        auto text = deserialize("<Text><![CDATA[]]></Text>");
+        ASSERT_EQ(text.Text(), L"");
+    }
+
+    //Text in tags
+    {
+        auto text = deserialize("<Text>ab&#x20;c</Text>");
+        ASSERT_EQ(text.Text(), L"ab c");
+    }
+
+    //Text in CDATA
+    {
+        auto text = deserialize("<Text><![CDATA[a  b c]]></Text>");
+        ASSERT_EQ(text.Text(), L"a  b c");
     }
 }

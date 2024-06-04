@@ -253,6 +253,8 @@ private:
 
     void CheckRange(const Range& range) const;
 
+    void ReadTextFromXML(XMLReader& reader);
+
 private:
     std::wstring text_;
     DefaultTextStyle default_style_;

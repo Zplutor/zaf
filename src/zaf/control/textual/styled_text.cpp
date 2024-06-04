@@ -1,6 +1,7 @@
 #include "styled_text.h"
 #include <zaf/control/textual/styled_text.h>
 #include <zaf/base/as.h>
+#include <zaf/xml/xml_error.h>
 #include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>
 
@@ -380,18 +381,36 @@ void StyledText::ReadFromXML(XMLReader& reader) {
 
     reader.ReadElementStart(L"StyledText");
 
-    reader.ReadUntilElement(L"Text");
-    if (!reader.IsEmptyElement()) {
-        reader.Read();
-        SetText(reader.ReadCDATA());
-        reader.ReadElementEnd();
-    }
-    else {
-        reader.Read();
-    }
+    ReadTextFromXML(reader);
 
     default_style_.ReadFromXML(reader);
     ranged_style_.ReadFromXML(reader);
+
+    reader.ReadElementEnd();
+}
+
+
+void StyledText::ReadTextFromXML(XMLReader& reader) {
+
+    reader.ReadUntilElement(L"Text");
+    if (reader.IsEmptyElement()) {
+        reader.Read();
+        return;
+    }
+
+    reader.Read();
+
+    switch (reader.GetNodeType()) {
+    case XMLNodeType::Text:
+    case XMLNodeType::CDATA:
+        SetText(std::wstring{ reader.GetValue() });
+        reader.Read();
+        break;
+    case XMLNodeType::ElementEnd:
+        break;
+    default:
+        throw XMLError{ ZAF_SOURCE_LOCATION() };
+    }
 
     reader.ReadElementEnd();
 }

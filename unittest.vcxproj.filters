@@ -550,6 +550,9 @@
     <ClCompile Include="unittest\case\control\textual\default_text_style_test.cpp">
       <Filter>case\control\textual</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\xml\xml_reader_test.cpp">
+      <Filter>case\xml</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
