@@ -34,7 +34,12 @@ void ReadRangedStyleFromXML(
     std::wstring_view item_element_name,
     RangeMap<T>& map) {
 
-    reader.ReadElementStart(range_element_name);
+    reader.ReadUntilElement(range_element_name);
+    bool is_empty = reader.IsEmptyElement();
+    reader.Read();
+    if (is_empty) {
+        return;
+    }
 
     while (reader.TryReadElementStart(item_element_name)) {
 
@@ -48,7 +53,6 @@ void ReadRangedStyleFromXML(
 
         reader.ReadElementEnd();
     }
-
     reader.ReadElementEnd();
 }
 

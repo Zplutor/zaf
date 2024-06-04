@@ -88,6 +88,11 @@ std::wstring_view XMLReader::GetValue() const {
 }
 
 
+bool XMLReader::IsEmptyElement() const noexcept {
+    return !!inner_->IsEmptyElement();
+}
+
+
 bool XMLReader::Read() {
 
     HRESULT hresult = inner_->Read(nullptr);
@@ -102,18 +107,32 @@ void XMLReader::ReadXMLDeclaration() {
 }
 
 
-void XMLReader::ReadUntilElementStart(std::wstring_view element_name) {
+void XMLReader::ReadUntilElement(std::wstring_view element_name) {
     ReadNode(XMLNodeType::ElementStart, element_name, false);
 }
 
 
 void XMLReader::ReadElementStart(std::wstring_view element_name) {
-    ReadNode(XMLNodeType::ElementStart, element_name, true);
+
+    if (!TryReadElementStart(element_name)) {
+        throw XMLError{ ZAF_SOURCE_LOCATION() };
+    }
 }
 
 
 bool XMLReader::TryReadElementStart(std::wstring_view element_name) {
-    return TryReadNode(XMLNodeType::ElementStart, element_name, true);
+
+    auto is_succeeded = TryReadNode(XMLNodeType::ElementStart, element_name, false);
+    if (!is_succeeded) {
+        return false;
+    }
+
+    if (IsEmptyElement()) {
+        return false;
+    }
+
+    Read();
+    return true;
 }
 
 
@@ -128,7 +147,7 @@ void XMLReader::ReadElementAttributes(
 
     ZAF_EXPECT(visitor);
 
-    ReadUntilElementStart(element_name);
+    ReadUntilElement(element_name);
 
     if (MoveToFirstAttribute()) {
         do {
@@ -185,12 +204,14 @@ bool XMLReader::TryReadNode(
 
     ReadUntilContent();
 
-    if (GetNodeType() != node_type) {
+    auto current_node_type = GetNodeType();
+    if (current_node_type != node_type) {
         return false;
     }
 
     if (node_name) {
-        if (node_name != GetName()) {
+        auto current_node_name = GetName();
+        if (current_node_name != node_name) {
             return false;
         }
     }

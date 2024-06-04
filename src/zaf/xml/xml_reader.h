@@ -23,14 +23,16 @@ public:
     std::wstring_view GetName() const;
     std::wstring_view GetValue() const;
 
+    bool IsEmptyElement() const noexcept;
+
     bool Read();
 
     void ReadXMLDeclaration();
 
-    void ReadUntilElementStart(std::wstring_view element_name);
+    void ReadUntilElement(std::wstring_view element_name);
     void ReadElementStart(std::wstring_view element_name);
-    bool TryReadElementStart(std::wstring_view element_name);
     void ReadElementEnd();
+    bool TryReadElementStart(std::wstring_view element_name);
 
     void ReadElementAttributes(
         std::wstring_view element_name,

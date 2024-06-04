@@ -387,6 +387,10 @@ TEST(RangedTextStyleTest, ReadFromXML) {
         return style;
     };
 
+    //Empty object
+    ASSERT_THROW(deserialize("<RangedTextStyle />"), XMLError);
+    ASSERT_THROW(deserialize("<RangedTextStyle></RangedTextStyle>"), XMLError);
+
     //Empty styles
     {
         auto style = deserialize(
@@ -399,5 +403,80 @@ TEST(RangedTextStyleTest, ReadFromXML) {
         ASSERT_TRUE(style.Fonts().IsEmpty());
         ASSERT_TRUE(style.TextColors().IsEmpty());
         ASSERT_TRUE(style.TextBackColors().IsEmpty());
+    }
+
+    //Empty items
+    ASSERT_THROW(
+        deserialize(
+            "<RangedTextStyle>"
+            "<RangedFonts><RangedFontItem /></RangedFonts>"
+            "<RangedTextColors />"
+            "<RangedTextBackColors />"
+            "</RangedTextStyle>"), 
+        XMLError);
+
+    ASSERT_THROW(
+        deserialize(
+            "<RangedTextStyle>"
+            "<RangedFonts />"
+            "<RangedTextColors><RangedColorItem /></RangedTextColors>"
+            "<RangedTextBackColors />"
+            "</RangedTextStyle>"),
+        XMLError);
+
+    ASSERT_THROW(
+        deserialize(
+            "<RangedTextStyle>"
+            "<RangedFonts />"
+            "<RangedTextColors />"
+            "<RangedTextBackColors><RangedColorItem /></RangedTextBackColors>"
+            "</RangedTextStyle>"),
+        XMLError);
+
+    {
+        auto style = deserialize(
+            R"(<RangedTextStyle>)"
+            R"(<RangedFonts>)"
+            R"(<RangedFontItem>)"
+            R"(<Range Index="0" Length="20" />)"
+            R"(<Font FamilyName="Ranged" Size="10.000000" Weight="800" )"
+            R"(Style="Normal" HasUnderline="false" />)"
+            R"(</RangedFontItem>)"
+            R"(</RangedFonts>)"
+            R"(<RangedTextColors>)"
+            R"(<RangedColorItem>)"
+            R"(<Range Index="2" Length="5" />)"
+            R"(<Color R="1.000000" G="0.000000" B="0.000000" A="1.000000" />)"
+            R"(</RangedColorItem>)"
+            R"(</RangedTextColors>)"
+            R"(<RangedTextBackColors>)"
+            R"(<RangedColorItem>)"
+            R"(<Range Index="0" Length="10" />)"
+            R"(<Color R="0.000000" G="1.000000" B="0.000000" A="0.500000" />)"
+            R"(</RangedColorItem>)"
+            R"(<RangedColorItem>)"
+            R"(<Range Index="11" Length="10" />)"
+            R"(<Color R="0.000000" G="0.000000" B="1.000000" A="0.500000" />)"
+            R"(</RangedColorItem>)"
+            R"(</RangedTextBackColors>)"
+            R"(</RangedTextStyle>)");
+
+        ASSERT_EQ(style.Fonts().Count(), 1);
+        auto font_item = style.Fonts().begin();
+        ASSERT_EQ(font_item->Range(), Range(0, 20));
+        ASSERT_EQ(font_item->Value(), Font(L"Ranged", 10.f, 800));
+
+        ASSERT_EQ(style.TextColors().Count(), 1);
+        auto text_color_item = style.TextColors().begin();
+        ASSERT_EQ(text_color_item->Range(), Range(2, 5));
+        ASSERT_EQ(text_color_item->Value(), Color(1.f, 0, 0, 1.f));
+
+        ASSERT_EQ(style.TextBackColors().Count(), 2);
+        auto text_back_color_item = style.TextBackColors().begin();
+        ASSERT_EQ(text_back_color_item->Range(), Range(0, 10));
+        ASSERT_EQ(text_back_color_item->Value(), Color(0, 1.f, 0, 0.5f));
+        ++text_back_color_item;
+        ASSERT_EQ(text_back_color_item->Range(), Range(11, 10));
+        ASSERT_EQ(text_back_color_item->Value(), Color(0, 0, 1.f, 0.5f));
     }
 }
