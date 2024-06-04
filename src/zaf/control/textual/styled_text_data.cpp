@@ -1,5 +1,6 @@
 #include <zaf/control/textual/styled_text_data.h>
 #include <zaf/base/error/invalid_operation_error.h>
+#include <zaf/xml/xml_serialization.h>
 
 using namespace zaf::clipboard;
 
@@ -40,8 +41,15 @@ Medium StyledTextData::SaveToMedium(const DataDescriptor& data_descriptor) const
 
 Medium StyledTextData::SaveToStyledTextFormat() const {
 
-    //TODO
-    return Medium::FromString(styled_text_.Text());
+    auto stream = XMLSerializeToMemoryStream(styled_text_);
+
+    auto global_mem = GlobalMem::Alloc(stream.GetSize(), GlobalMemFlags::Movable);
+    {
+        auto lock = global_mem.Lock();
+        std::memcpy(lock.Pointer(), stream.GetUnderlyingBuffer(), stream.GetSize());
+    }
+
+    return Medium::FromGlobalMem(std::move(global_mem));
 }
 
 
@@ -78,8 +86,15 @@ StyledText StyledTextData::LoadStyledText(
 
 StyledText StyledTextData::LoadWithStyledTextFormat(const Medium& medium) {
 
-    //TODO
-    return StyledText{ medium.ToString() };
+    StyledText result;
+    medium.VisitGlobalMem([&result](const GlobalMem& global_mem) {
+
+        auto lock = global_mem.Lock();
+        auto stream = Stream::FromMemoryNoCopy(lock.Pointer(), global_mem.Size());
+        XMLDeserializeFromStream(stream, result);
+    });
+
+    return result;
 }
 
 }

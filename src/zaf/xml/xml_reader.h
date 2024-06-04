@@ -38,7 +38,7 @@ public:
         std::wstring_view element_name,
         const std::function<void(const XMLAttributeReader&)>& visitor);
 
-    std::wstring_view ReadCDATA();
+    std::wstring ReadCDATA();
 
     bool MoveToFirstAttribute();
     bool MoveToNextAttribute();

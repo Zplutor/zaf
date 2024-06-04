@@ -164,7 +164,7 @@ void XMLReader::ReadElementAttributes(
 }
 
 
-std::wstring_view XMLReader::ReadCDATA() {
+std::wstring XMLReader::ReadCDATA() {
 
     ReadUntilContent();
 
@@ -172,7 +172,9 @@ std::wstring_view XMLReader::ReadCDATA() {
         throw XMLError{ ZAF_SOURCE_LOCATION() };
     }
 
-    return GetValue();
+    std::wstring result{ GetValue() };
+    Read();
+    return result;
 }
 
 

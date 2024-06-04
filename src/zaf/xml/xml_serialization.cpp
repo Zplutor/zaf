@@ -8,13 +8,7 @@ namespace zaf {
 
 std::wstring XMLSerializeToText(const XMLSerializable& serializable) {
 
-    auto stream = Stream::FromMemory(0);
-    {
-        XMLWriter writer{ stream };
-        writer.WriteDocumentStart();
-        serializable.WriteToXML(writer);
-        writer.WriteDocumentEnd();
-    }
+    auto stream = XMLSerializeToMemoryStream(serializable);
 
     auto buffer = stream.GetUnderlyingBuffer();
     if (!buffer) {
@@ -26,10 +20,32 @@ std::wstring XMLSerializeToText(const XMLSerializable& serializable) {
 }
 
 
+Stream XMLSerializeToMemoryStream(const XMLSerializable& serializable) {
+
+    auto stream = Stream::FromMemory(0);
+
+    XMLWriter writer{ stream };
+    writer.WriteDocumentStart();
+    serializable.WriteToXML(writer);
+    writer.WriteDocumentEnd();
+
+    return stream;
+}
+
+
 void XMLDeserializeFromText(std::wstring_view text, XMLSerializable& serializable) {
 
     auto stream = Stream::FromMemoryNoCopy(text.data(), text.length() * sizeof(wchar_t));
     XMLReader reader{ std::move(stream), CodePage::UTF16 };
+
+    reader.ReadXMLDeclaration();
+    serializable.ReadFromXML(reader);
+}
+
+
+void XMLDeserializeFromStream(const Stream& stream, XMLSerializable& serializable) {
+
+    XMLReader reader{ stream };
 
     reader.ReadXMLDeclaration();
     serializable.ReadFromXML(reader);

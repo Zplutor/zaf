@@ -62,6 +62,8 @@ public:
         return *this;
     }
 
+    std::size_t Size() const;
+
     void Reset(HGLOBAL new_handle = nullptr) {
         if (handle_ != new_handle) {
             if (handle_) {

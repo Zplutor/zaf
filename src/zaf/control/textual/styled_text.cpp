@@ -380,9 +380,15 @@ void StyledText::ReadFromXML(XMLReader& reader) {
 
     reader.ReadElementStart(L"StyledText");
 
-    reader.ReadElementStart(L"Text");
-    SetText(std::wstring{ reader.ReadCDATA() });
-    reader.ReadElementEnd();
+    reader.ReadUntilElement(L"Text");
+    if (!reader.IsEmptyElement()) {
+        reader.Read();
+        SetText(reader.ReadCDATA());
+        reader.ReadElementEnd();
+    }
+    else {
+        reader.Read();
+    }
 
     default_style_.ReadFromXML(reader);
     ranged_style_.ReadFromXML(reader);

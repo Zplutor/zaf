@@ -31,6 +31,16 @@ GlobalMem GlobalMem::FromString(std::wstring_view string, GlobalMemFlags flags) 
 }
 
 
+std::size_t GlobalMem::Size() const {
+
+    auto size = GlobalSize(handle_);
+    if (size == 0) {
+        ZAF_THROW_WIN32_ERROR(GetLastError());
+    }
+    return size;
+}
+
+
 GlobalMemLock GlobalMem::Lock() const {
 
     LPVOID pointer = GlobalLock(handle_);
