@@ -2782,5 +2782,11 @@
     <ClInclude Include="src\zaf\base\code_page.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\xml\xml_output_options.h">
+      <Filter>zaf\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\xml\xml_input_options.h">
+      <Filter>zaf\xml</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,18 +1,51 @@
 #include "xml_writer.h"
+#include "xml_writer.h"
 #include <zaf/xml/xml_writer.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/error/contract_error.h>
 
 namespace zaf {
+namespace {
+
+COMPtr<IXmlWriter> CreateIXmlWriter() {
+    COMPtr<IXmlWriter> result;
+    HRESULT hresult = CreateXmlWriter(IID_IXmlWriter, result.ResetAsVoid(), nullptr);
+    ZAF_THROW_IF_COM_ERROR(hresult);
+    return result;
+}
+
+}
 
 XMLWriter::XMLWriter(Stream stream) {
 
     ZAF_EXPECT(stream);
 
-    HRESULT hresult = CreateXmlWriter(IID_IXmlWriter, inner_.ResetAsVoid(), nullptr);
+    inner_ = CreateIXmlWriter();
+
+    HRESULT hresult = inner_->SetOutput(stream.Ptr().Inner());
+    ZAF_THROW_IF_COM_ERROR(hresult);
+}
+
+
+XMLWriter::XMLWriter(Stream stream, const XMLOutputOptions& options) {
+
+    ZAF_EXPECT(stream);
+
+    COMPtr<IXmlWriterOutput> output;
+    HRESULT hresult = CreateXmlWriterOutputWithEncodingCodePage(
+        stream.Ptr().Inner(),
+        nullptr,
+        static_cast<UINT>(options.code_page),
+        output.Reset());
+
     ZAF_THROW_IF_COM_ERROR(hresult);
 
-    hresult = inner_->SetOutput(stream.Ptr().Inner());
+    inner_ = CreateIXmlWriter();
+
+    hresult = inner_->SetProperty(XmlWriterProperty_ByteOrderMark, options.use_bom ? TRUE : FALSE);
+    ZAF_THROW_IF_COM_ERROR(hresult);
+
+    hresult = inner_->SetOutput(output.Inner());
     ZAF_THROW_IF_COM_ERROR(hresult);
 }
 

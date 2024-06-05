@@ -6,46 +6,63 @@
 
 namespace zaf {
 
+void XMLSerialize(
+    const XMLSerializable& serializable,
+    Stream stream,
+    const XMLOutputOptions& options) {
+
+    XMLWriter writer{ std::move(stream), options };
+    writer.WriteDocumentStart();
+    serializable.WriteToXML(writer);
+    writer.WriteDocumentEnd();
+}
+
+
+Stream XMLSerializeToMemoryStream(
+    const XMLSerializable& serializable,
+    const XMLOutputOptions& options) {
+
+    auto stream = Stream::FromMemory(0);
+    XMLSerialize(serializable, stream, options);
+    return stream;
+}
+
+
 std::wstring XMLSerializeToText(const XMLSerializable& serializable) {
 
-    auto stream = XMLSerializeToMemoryStream(serializable);
+    auto stream = XMLSerializeToMemoryStream(serializable, {
+        .code_page = CodePage::UTF16,
+        .use_bom = false 
+    });
 
     auto buffer = stream.GetUnderlyingBuffer();
     if (!buffer) {
         return {};
     }
 
-    std::u8string_view string_view{ reinterpret_cast<const char8_t*>(buffer), stream.GetSize() };
-    return FromUTF8String(string_view);
+    return std::wstring{ 
+        reinterpret_cast<const wchar_t*>(buffer),
+        stream.GetSize() / sizeof(wchar_t) 
+    };
 }
 
 
-Stream XMLSerializeToMemoryStream(const XMLSerializable& serializable) {
+void XMLDeserialize(
+    XMLSerializable& serializable,
+    const Stream& stream,
+    const XMLInputOptions& options) {
 
-    auto stream = Stream::FromMemory(0);
-
-    XMLWriter writer{ stream };
-    writer.WriteDocumentStart();
-    serializable.WriteToXML(writer);
-    writer.WriteDocumentEnd();
-
-    return stream;
-}
-
-
-void XMLDeserializeFromText(std::wstring_view text, XMLSerializable& serializable) {
-
-    auto stream = Stream::FromMemoryNoCopy(text.data(), text.length() * sizeof(wchar_t));
-    XMLReader reader{ std::move(stream), CodePage::UTF16 };
+    XMLReader reader{ stream };
 
     reader.ReadXMLDeclaration();
     serializable.ReadFromXML(reader);
 }
 
 
-void XMLDeserializeFromStream(const Stream& stream, XMLSerializable& serializable) {
+void XMLDeserialize(XMLSerializable& serializable, std::wstring_view text) {
 
-    XMLReader reader{ stream };
+    auto stream = Stream::FromMemoryNoCopy(text.data(), text.length() * sizeof(wchar_t));
+    XMLReader reader{ std::move(stream), { .code_page = CodePage::UTF16 } };
 
     reader.ReadXMLDeclaration();
     serializable.ReadFromXML(reader);

@@ -910,7 +910,9 @@
     <ClInclude Include="src\zaf\window\window_holder.h" />
     <ClInclude Include="src\zaf\window\window_messager.h" />
     <ClInclude Include="src\zaf\xml\xml_error.h" />
+    <ClInclude Include="src\zaf\xml\xml_input_options.h" />
     <ClInclude Include="src\zaf\xml\xml_node_type.h" />
+    <ClInclude Include="src\zaf\xml\xml_output_options.h" />
     <ClInclude Include="src\zaf\xml\xml_reader.h" />
     <ClInclude Include="src\zaf\xml\xml_serializable.h" />
     <ClInclude Include="src\zaf\xml\xml_serialization.h" />

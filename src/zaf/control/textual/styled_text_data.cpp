@@ -41,7 +41,7 @@ Medium StyledTextData::SaveToMedium(const DataDescriptor& data_descriptor) const
 
 Medium StyledTextData::SaveToStyledTextFormat() const {
 
-    auto stream = XMLSerializeToMemoryStream(styled_text_);
+    auto stream = XMLSerializeToMemoryStream(styled_text_, { .code_page = CodePage::UTF8 });
 
     auto global_mem = GlobalMem::Alloc(stream.GetSize(), GlobalMemFlags::Movable);
     {
@@ -91,7 +91,7 @@ StyledText StyledTextData::LoadWithStyledTextFormat(const Medium& medium) {
 
         auto lock = global_mem.Lock();
         auto stream = Stream::FromMemoryNoCopy(lock.Pointer(), global_mem.Size());
-        XMLDeserializeFromStream(stream, result);
+        XMLDeserialize(result, stream, { .code_page = CodePage::UTF8 });
     });
 
     return result;

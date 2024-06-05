@@ -38,7 +38,7 @@ XMLReader::XMLReader(Stream stream) {
 }
 
 
-XMLReader::XMLReader(Stream stream, CodePage code_page) {
+XMLReader::XMLReader(Stream stream, const XMLInputOptions& options) {
 
     ZAF_EXPECT(stream);
 
@@ -46,7 +46,7 @@ XMLReader::XMLReader(Stream stream, CodePage code_page) {
     HRESULT hresult = CreateXmlReaderInputWithEncodingCodePage(
         stream.Ptr().Inner(),
         nullptr,
-        static_cast<UINT>(code_page),
+        static_cast<UINT>(options.code_page),
         FALSE,
         nullptr,
         input.Reset());
@@ -54,7 +54,9 @@ XMLReader::XMLReader(Stream stream, CodePage code_page) {
     ZAF_THROW_IF_COM_ERROR(hresult);
 
     inner_ = CreateIXmlReader();
-    inner_->SetInput(input.Inner());
+
+    hresult = inner_->SetInput(input.Inner());
+    ZAF_THROW_IF_COM_ERROR(hresult);
 }
 
 

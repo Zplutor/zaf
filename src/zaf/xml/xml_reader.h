@@ -2,11 +2,11 @@
 
 #include <xmllite.h>
 #include <functional>
-#include <zaf/base/code_page.h>
 #include <zaf/base/com_ptr.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/stream.h>
 #include <zaf/base/string/to_numeric.h>
+#include <zaf/xml/xml_input_options.h>
 #include <zaf/xml/xml_node_type.h>
 
 namespace zaf {
@@ -21,7 +21,7 @@ public:
 
 public:
     explicit XMLReader(Stream stream);
-    XMLReader(Stream stream, CodePage code_page);
+    XMLReader(Stream stream, const XMLInputOptions& options);
 
     bool Read();
 
