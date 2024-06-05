@@ -43,6 +43,9 @@ public:
     bool TryReadNotEmptyElementStart(std::wstring_view element_name);
 
     ElementInfo ReadUntilElement(std::wstring_view element_name);
+    void ReadUntilNotEmptyElement(std::wstring_view element_name);
+
+    std::wstring GetAttributeValue(const std::wstring& attribute_name) const;
 
     void ReadElementAttributes(
         std::wstring_view element_name,

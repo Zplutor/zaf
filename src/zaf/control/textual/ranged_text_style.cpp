@@ -1,5 +1,8 @@
-#include "ranged_text_style.h"
 #include <zaf/control/textual/ranged_text_style.h>
+#include <zaf/base/as.h>
+#include <zaf/control/textual/ranged_text_style.h>
+#include <zaf/object/creation.h>
+#include <zaf/xml/xml_error.h>
 #include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>
 
@@ -33,6 +36,8 @@ void ReadRangedStyleFromXML(
     std::wstring_view range_element_name,
     std::wstring_view item_element_name,
     RangeMap<T>& map) {
+
+    map.Clear();
 
     auto [is_empty] = reader.ReadElementStart(range_element_name);
     if (is_empty) {
@@ -109,6 +114,29 @@ void RangedTextStyle::WriteToXML(XMLWriter& writer) const {
     WriteRangedStyleToXML(fonts_, L"RangedFonts", L"RangedFontItem", writer);
     WriteRangedStyleToXML(text_colors_, L"RangedTextColors", L"RangedColorItem", writer);
     WriteRangedStyleToXML(text_back_colors_, L"RangedTextBackColors", L"RangedColorItem", writer);
+    WriteInlineObjectsToXML(writer);
+    writer.WriteElementEnd();
+}
+
+
+void RangedTextStyle::WriteInlineObjectsToXML(XMLWriter& writer) const {
+
+    writer.WriteElementStart(L"InlineObjects");
+
+    for (const auto& each_item : InlineObjects()) {
+
+        writer.WriteElementStart(L"InlineObjectItem");
+
+        each_item.Range().WriteToXML(writer);
+
+        writer.WriteElementStart(L"Object");
+        writer.WriteAttribute(L"Type", each_item.Object()->GetType()->GetName());
+        each_item.Object()->WriteToXML(writer);
+        writer.WriteElementEnd();
+
+        writer.WriteElementEnd();
+    }
+
     writer.WriteElementEnd();
 }
 
@@ -116,10 +144,47 @@ void RangedTextStyle::WriteToXML(XMLWriter& writer) const {
 void RangedTextStyle::ReadFromXML(XMLReader& reader) {
 
     reader.ReadNotEmptyElementStart(L"RangedTextStyle");
-
     ReadRangedStyleFromXML(reader, L"RangedFonts", L"RangedFontItem", fonts_);
     ReadRangedStyleFromXML(reader, L"RangedTextColors", L"RangedColorItem", text_colors_);
     ReadRangedStyleFromXML(reader, L"RangedTextBackColors", L"RangedColorItem", text_back_colors_);
+    ReadInlineObjectsFromXML(reader);
+    reader.ReadElementEnd();
+}
+
+
+void RangedTextStyle::ReadInlineObjectsFromXML(XMLReader& reader) {
+
+    inline_objects_.Clear();
+
+    auto [is_empty] = reader.ReadElementStart(L"InlineObjects");
+    if (is_empty) {
+        return;
+    }
+
+    while (reader.TryReadNotEmptyElementStart(L"InlineObjectItem")) {
+
+        Range range;
+        range.ReadFromXML(reader);
+
+        reader.ReadUntilNotEmptyElement(L"Object");
+
+        auto type = reader.GetAttributeValue(L"Type");
+        auto object = As<InlineObject>(CreateObjectByName(type));
+        if (!object) {
+            throw XMLError{ ZAF_SOURCE_LOCATION() };
+        }
+
+        reader.Read();
+        object->ReadFromXML(reader);
+
+        // </Object>
+        reader.ReadElementEnd();
+
+        // </InlineObjectItem>
+        reader.ReadElementEnd();
+
+        this->AttachInlineObjectToRange(std::move(object), range);
+    }
 
     reader.ReadElementEnd();
 }

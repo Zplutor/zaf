@@ -45,6 +45,9 @@ public:
         return double_click_event_.GetObservable();
     }
 
+    void WriteToXML(XMLWriter& writer) const override;
+    void ReadFromXML(XMLReader& reader) override;
+
 protected:
     void NeedRepaint();
 

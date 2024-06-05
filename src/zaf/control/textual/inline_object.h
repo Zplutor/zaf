@@ -8,6 +8,7 @@
 #include <zaf/graphic/size.h>
 #include <zaf/graphic/text/text_inline_object_metrics.h>
 #include <zaf/object/object.h>
+#include <zaf/xml/xml_serializable.h>
 
 namespace zaf {
 
@@ -28,6 +29,7 @@ class InlineObjectStore;
 
 class InlineObject : 
     public Object, 
+    public XMLSerializable,
     public std::enable_shared_from_this<InlineObject>,
     NonCopyableNonMovable {
 
@@ -74,6 +76,9 @@ public:
         new object.
     */
     virtual std::shared_ptr<InlineObject> Clone() const;
+
+    void WriteToXML(XMLWriter& writer) const override;
+    void ReadFromXML(XMLReader& reader) override;
 
 protected:
     virtual void OnAttached(const AttachedInfo& event_info);

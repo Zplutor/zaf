@@ -2,6 +2,8 @@
 #include <zaf/base/as.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/type_definition.h>
+#include <zaf/xml/xml_reader.h>
+#include <zaf/xml/xml_writer.h>
 
 namespace zaf::textual {
 
@@ -88,6 +90,20 @@ void InlineObject::Detach() {
 
 std::shared_ptr<InlineObject> InlineObject::Clone() const {
     return As<InlineObject>(this->GetType()->CreateInstance());
+}
+
+
+void InlineObject::WriteToXML(XMLWriter& writer) const {
+    writer.WriteElementStart(L"InlineObject");
+    writer.WriteElementEnd();
+}
+
+
+void InlineObject::ReadFromXML(XMLReader& reader) {
+    auto [is_empty] = reader.ReadElementStart(L"InlineObject");
+    if (!is_empty) {
+        reader.ReadElementEnd();
+    }
 }
 
 }

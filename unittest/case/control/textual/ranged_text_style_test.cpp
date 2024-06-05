@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
+#include <zaf/base/as.h>
 #include <zaf/control/color_picker.h>
+#include <zaf/control/textual/dynamic_inline_object.h>
 #include <zaf/control/textual/ranged_text_style.h>
 #include <zaf/creation.h>
 #include <zaf/xml/xml_error.h>
@@ -338,6 +340,7 @@ TEST(RangedTextStyleTest, WriteToXML) {
             "<RangedFonts />"
             "<RangedTextColors />"
             "<RangedTextBackColors />"
+            "<InlineObjects />"
             "</RangedTextStyle>"));
     }
 
@@ -347,6 +350,7 @@ TEST(RangedTextStyleTest, WriteToXML) {
         style.SetTextColorInRange(Color{ 1.f, 0, 0, 1.f }, Range{ 2, 5 });
         style.SetTextBackColorInRange(Color{ 0, 1.f, 0, 0.5f }, Range{ 0, 10 });
         style.SetTextBackColorInRange(Color{ 0, 0, 1.f, 0.5f }, Range{ 11, 10 });
+        style.AttachInlineObjectToRange(Create<DynamicInlineObject>(), Range{ 0, 1 });
         ASSERT_TRUE(test(
             style,
             R"(<RangedTextStyle>)"
@@ -373,6 +377,14 @@ TEST(RangedTextStyleTest, WriteToXML) {
             R"(<Color R="0.000000" G="0.000000" B="1.000000" A="0.500000" />)"
             R"(</RangedColorItem>)"
             R"(</RangedTextBackColors>)"
+            R"(<InlineObjects>)"
+            R"(<InlineObjectItem>)"
+            R"(<Range Index="0" Length="1" />)"
+            R"(<Object Type="DynamicInlineObject">)"
+            R"(<DynamicInlineObject />)"
+            R"(</Object>)"
+            R"(</InlineObjectItem>)"
+            R"(</InlineObjects>)"
             R"(</RangedTextStyle>)"));
     }
 }
@@ -398,11 +410,13 @@ TEST(RangedTextStyleTest, ReadFromXML) {
             "<RangedFonts />"
             "<RangedTextColors />"
             "<RangedTextBackColors />"
+            "<InlineObjects />"
             "</RangedTextStyle>");
 
         ASSERT_TRUE(style.Fonts().IsEmpty());
         ASSERT_TRUE(style.TextColors().IsEmpty());
         ASSERT_TRUE(style.TextBackColors().IsEmpty());
+        ASSERT_TRUE(style.InlineObjects().IsEmpty());
     }
 
     //Empty items
@@ -412,6 +426,7 @@ TEST(RangedTextStyleTest, ReadFromXML) {
             "<RangedFonts><RangedFontItem /></RangedFonts>"
             "<RangedTextColors />"
             "<RangedTextBackColors />"
+            "<InlineObjects />"
             "</RangedTextStyle>"), 
         XMLError);
 
@@ -421,6 +436,7 @@ TEST(RangedTextStyleTest, ReadFromXML) {
             "<RangedFonts />"
             "<RangedTextColors><RangedColorItem /></RangedTextColors>"
             "<RangedTextBackColors />"
+            "<InlineObjects />"
             "</RangedTextStyle>"),
         XMLError);
 
@@ -430,6 +446,17 @@ TEST(RangedTextStyleTest, ReadFromXML) {
             "<RangedFonts />"
             "<RangedTextColors />"
             "<RangedTextBackColors><RangedColorItem /></RangedTextBackColors>"
+            "<InlineObjects />"
+            "</RangedTextStyle>"),
+        XMLError);
+
+    ASSERT_THROW(
+        deserialize(
+            "<RangedTextStyle>"
+            "<RangedFonts />"
+            "<RangedTextColors />"
+            "<RangedTextBackColors />"
+            "<InlineObjects><InlineObjectItem /></InlineObjects>"
             "</RangedTextStyle>"),
         XMLError);
 
@@ -459,6 +486,14 @@ TEST(RangedTextStyleTest, ReadFromXML) {
             R"(<Color R="0.000000" G="0.000000" B="1.000000" A="0.500000" />)"
             R"(</RangedColorItem>)"
             R"(</RangedTextBackColors>)"
+            R"(<InlineObjects>)"
+            R"(<InlineObjectItem>)"
+            R"(<Range Index="0" Length="1" />)"
+            R"(<Object Type="DynamicInlineObject">)"
+            R"(<DynamicInlineObject />)"
+            R"(</Object>)"
+            R"(</InlineObjectItem>)"
+            R"(</InlineObjects>)"
             R"(</RangedTextStyle>)");
 
         ASSERT_EQ(style.Fonts().Count(), 1);
@@ -478,5 +513,10 @@ TEST(RangedTextStyleTest, ReadFromXML) {
         ++text_back_color_item;
         ASSERT_EQ(text_back_color_item->Range(), Range(11, 10));
         ASSERT_EQ(text_back_color_item->Value(), Color(0, 0, 1.f, 0.5f));
+
+        ASSERT_EQ(style.InlineObjects().Count(), 1);
+        auto inline_object_item = style.InlineObjects().begin();
+        ASSERT_EQ(inline_object_item->Range(), Range(0, 1));
+        ASSERT_NE(As<DynamicInlineObject>(inline_object_item->Object()), nullptr);
     }
 }

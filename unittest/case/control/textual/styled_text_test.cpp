@@ -285,6 +285,7 @@ TEST(StyledTextTest, WriteToXML) {
         R"(<Color R="0.500000" G="0.500000" B="0.500000" A="0.500000" />)"
         R"(</RangedColorItem>)"
         R"(</RangedTextBackColors>)"
+        R"(<InlineObjects />)"
         R"(</RangedTextStyle>)"
         R"(</StyledText>)";
 
@@ -333,6 +334,7 @@ TEST(StyledTextTest, ReadFromXML_Text) {
                 <RangedFonts />
                 <RangedTextColors />
                 <RangedTextBackColors />
+                <InlineObjects />
             </RangedTextStyle>
         </StyledText>)";
 

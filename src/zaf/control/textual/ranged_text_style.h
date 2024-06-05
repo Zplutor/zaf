@@ -107,6 +107,10 @@ public:
         return store_.Items().empty();
     }
 
+    std::size_t Count() const noexcept {
+        return store_.Items().size();
+    }
+
     const_iterator FindItemAtIndex(std::size_t index) const {
         return store_.FindItemAtIndex(index);
     }
@@ -231,6 +235,10 @@ public:
 
     void WriteToXML(XMLWriter& writer) const override;
     void ReadFromXML(XMLReader& reader) override;
+
+private:
+    void WriteInlineObjectsToXML(XMLWriter& writer) const;
+    void ReadInlineObjectsFromXML(XMLReader& reader);
 
 private:
     RangeMap<Font> fonts_;

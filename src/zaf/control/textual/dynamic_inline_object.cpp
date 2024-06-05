@@ -2,6 +2,8 @@
 #include <zaf/base/as.h>
 #include <zaf/control/text_box.h>
 #include <zaf/object/type_definition.h>
+#include <zaf/xml/xml_reader.h>
+#include <zaf/xml/xml_writer.h>
 
 namespace zaf::textual {
 
@@ -92,6 +94,20 @@ void DynamicInlineObject::OnMouseUp(const MouseUpInfo& event_info) {
 void DynamicInlineObject::OnDoubleClick(const DoubleClickInfo& event_info) {
 
     double_click_event_.Raise(event_info);
+}
+
+
+void DynamicInlineObject::WriteToXML(XMLWriter& writer) const {
+    writer.WriteElementStart(L"DynamicInlineObject");
+    writer.WriteElementEnd();
+}
+
+
+void DynamicInlineObject::ReadFromXML(XMLReader& reader) {
+    auto [is_empty] = reader.ReadElementStart(L"DynamicInlineObject");
+    if (!is_empty) {
+        reader.ReadElementEnd();
+    }
 }
 
 }

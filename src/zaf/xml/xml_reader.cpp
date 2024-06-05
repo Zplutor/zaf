@@ -179,6 +179,29 @@ XMLReader::ElementInfo XMLReader::ReadUntilElement(std::wstring_view element_nam
 }
 
 
+void XMLReader::ReadUntilNotEmptyElement(std::wstring_view element_name) {
+
+    auto info = ReadUntilElement(element_name);
+    if (info.is_empty_element) {
+        throw XMLError{ ZAF_SOURCE_LOCATION() };
+    }
+}
+
+
+std::wstring XMLReader::GetAttributeValue(const std::wstring& attribute_name) const {
+
+    HRESULT hresult = inner_->MoveToAttributeByName(attribute_name.c_str(), nullptr);
+    ZAF_THROW_IF_COM_ERROR(hresult);
+
+    std::wstring value{ GetValue() };
+
+    hresult = inner_->MoveToElement();
+    ZAF_THROW_IF_COM_ERROR(hresult);
+
+    return value;
+}
+
+
 void XMLReader::ReadElementAttributes(
     std::wstring_view element_name,
     const std::function<void(const XMLAttributeReader&)>& visitor) {
