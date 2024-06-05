@@ -63,7 +63,7 @@
 
 void BeginRun(const zaf::BeginRunInfo& event_info);
 
-class InlineObject : public zaf::textual::DynamicInlineObject {
+class MyInlineObject : public zaf::textual::DynamicInlineObject {
 public:
     ZAF_DECLARE_TYPE;
 
@@ -120,7 +120,7 @@ protected:
 };
 
 
-ZAF_DEFINE_TYPE(InlineObject);
+ZAF_DEFINE_TYPE(MyInlineObject);
 ZAF_DEFINE_TYPE_END;
 
 
@@ -146,7 +146,9 @@ L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n");
         text_box->SetTextColorInRange(zaf::Color::Red(), zaf::Range{ 5, 6 });
         text_box->SetTextBackColorInRange(zaf::Color::Yellow(), zaf::Range{ 30, 10 });
 
-        text_box->AttachInlineObjectToRange(std::make_shared<InlineObject>(), zaf::Range{ 10, 5 });
+        text_box->AttachInlineObjectToRange(
+            std::make_shared<MyInlineObject>(), 
+            zaf::Range{ 10, 5 });
 
         text_box->SetLineSpacing(zaf::LineSpacing{ zaf::LineSpacingMethod::Uniform, 50, 40 });
         text_box->SetTextBackPadding(zaf::Frame{ 0, 20, 0, 0 });
