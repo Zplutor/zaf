@@ -15,35 +15,39 @@ class XMLAttributeReader;
 
 class XMLReader : NonCopyable {
 public:
+    struct ElementInfo {
+        bool is_empty_element{};
+    };
+
+public:
     explicit XMLReader(Stream stream);
     XMLReader(Stream stream, CodePage code_page);
 
-    XMLNodeType GetNodeType() const;
+    bool Read();
 
+    XMLNodeType GetNodeType() const;
     std::wstring_view GetName() const;
     std::wstring_view GetValue() const;
-
     bool IsEmptyElement() const noexcept;
 
-    bool Read();
+    bool MoveToFirstAttribute();
+    bool MoveToNextAttribute();
+    void MoveToElement();
 
     void ReadXMLDeclaration();
 
-    void ReadUntilElement(std::wstring_view element_name);
-    void ReadElementStart(std::wstring_view element_name);
+    ElementInfo ReadElementStart(std::wstring_view element_name);
     void ReadElementEnd();
-    bool TryReadElementStart(std::wstring_view element_name);
+
+    void ReadNotEmptyElementStart(std::wstring_view element_name);
+    bool TryReadNotEmptyElementStart(std::wstring_view element_name);
+
+    ElementInfo ReadUntilElement(std::wstring_view element_name);
 
     void ReadElementAttributes(
         std::wstring_view element_name,
         const std::function<void(const XMLAttributeReader&)>& visitor);
 
-    std::wstring ReadCDATA();
-
-    bool MoveToFirstAttribute();
-    bool MoveToNextAttribute();
-    void MoveToElement();
-    
 private:
     void ReadUntilContent();
 

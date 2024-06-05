@@ -379,7 +379,7 @@ void StyledText::WriteToXML(XMLWriter& writer) const {
 
 void StyledText::ReadFromXML(XMLReader& reader) {
 
-    reader.ReadElementStart(L"StyledText");
+    reader.ReadNotEmptyElementStart(L"StyledText");
 
     ReadTextFromXML(reader);
 
@@ -392,13 +392,10 @@ void StyledText::ReadFromXML(XMLReader& reader) {
 
 void StyledText::ReadTextFromXML(XMLReader& reader) {
 
-    reader.ReadUntilElement(L"Text");
-    if (reader.IsEmptyElement()) {
-        reader.Read();
+    auto [is_empty] = reader.ReadElementStart(L"Text");
+    if (is_empty) {
         return;
     }
-
-    reader.Read();
 
     switch (reader.GetNodeType()) {
     case XMLNodeType::Text:

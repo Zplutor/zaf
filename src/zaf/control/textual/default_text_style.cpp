@@ -27,17 +27,17 @@ void DefaultTextStyle::WriteToXML(XMLWriter& writer) const {
 
 void DefaultTextStyle::ReadFromXML(XMLReader& reader) {
 
-    reader.ReadElementStart(L"DefaultTextStyle");
+    reader.ReadNotEmptyElementStart(L"DefaultTextStyle");
 
-    reader.ReadElementStart(L"Font");
+    reader.ReadNotEmptyElementStart(L"Font");
     font_.ReadFromXML(reader);
     reader.ReadElementEnd();
 
-    reader.ReadElementStart(L"TextColor");
+    reader.ReadNotEmptyElementStart(L"TextColor");
     text_color_.ReadFromXML(reader);
     reader.ReadElementEnd();
 
-    reader.ReadElementStart(L"TextBackColor");
+    reader.ReadNotEmptyElementStart(L"TextBackColor");
     text_back_color_.ReadFromXML(reader);
     reader.ReadElementEnd();
 

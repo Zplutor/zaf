@@ -34,14 +34,12 @@ void ReadRangedStyleFromXML(
     std::wstring_view item_element_name,
     RangeMap<T>& map) {
 
-    reader.ReadUntilElement(range_element_name);
-    bool is_empty = reader.IsEmptyElement();
-    reader.Read();
+    auto [is_empty] = reader.ReadElementStart(range_element_name);
     if (is_empty) {
         return;
     }
 
-    while (reader.TryReadElementStart(item_element_name)) {
+    while (reader.TryReadNotEmptyElementStart(item_element_name)) {
 
         Range range;
         range.ReadFromXML(reader);
@@ -117,7 +115,7 @@ void RangedTextStyle::WriteToXML(XMLWriter& writer) const {
 
 void RangedTextStyle::ReadFromXML(XMLReader& reader) {
 
-    reader.ReadElementStart(L"RangedTextStyle");
+    reader.ReadNotEmptyElementStart(L"RangedTextStyle");
 
     ReadRangedStyleFromXML(reader, L"RangedFonts", L"RangedFontItem", fonts_);
     ReadRangedStyleFromXML(reader, L"RangedTextColors", L"RangedColorItem", text_colors_);
