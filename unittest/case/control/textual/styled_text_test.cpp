@@ -300,7 +300,7 @@ TEST(StyledTextTest, WriteToXML) {
 TEST(StyledTextTest, ReadFromXML) {
 
     constexpr auto deserialize = [](std::string_view xml) {
-        XMLReader reader{ Stream::FromMemoryNoCopy(xml.data(), xml.size()) };
+        XMLReader reader{ Stream::CreateOnMemory(xml.data(), xml.size()) };
         StyledText text;
         text.ReadFromXML(reader);
         return text;

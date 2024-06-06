@@ -90,7 +90,7 @@ StyledText StyledTextData::LoadWithStyledTextFormat(const Medium& medium) {
     medium.VisitGlobalMem([&result](const GlobalMem& global_mem) {
 
         auto lock = global_mem.Lock();
-        auto stream = Stream::FromMemoryNoCopy(lock.Pointer(), global_mem.Size());
+        auto stream = Stream::CreateOnMemory(lock.Pointer(), global_mem.Size());
         XMLDeserialize(result, stream, { .code_page = CodePage::UTF8 });
     });
 

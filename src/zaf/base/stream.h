@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file
+    Defines the class zaf::Stream.
+*/
+
 #include <Objidl.h>
 #include <cstddef>
 #include <cstdint>
@@ -17,13 +22,13 @@ enum class SeekOrigin {
 class Stream : public COMObject<IStream> {
 public:
     /**
-    Creates a stream from the memory with the specified initial size.
+    Creates a memory stream with the specified initial size.
 
     @param initial_size
         The initial size of the stream.
 
     @return
-        The new stream. The content of the stream is zero-initialized.
+        The new memory stream. The content of the stream is zero-initialized.
 
     @post
         The returned stream is not null.
@@ -34,7 +39,7 @@ public:
     static Stream FromMemory(std::size_t initial_size);
 
     /**
-    Creates a stream whose data is copied from the specified memory.
+    Creates a memory stream whose data is copied from the specified memory.
 
     @param data
         The pointer to the memory.
@@ -46,7 +51,7 @@ public:
         data is not null.
 
     @return
-        The new stream.
+        The new memory stream.
 
     @post
         The returned stream is not null.
@@ -60,10 +65,11 @@ public:
     static Stream FromMemory(const void* data, std::size_t size);
 
     /**
-    Creates a read-only stream from the specified memory without copy.
+    Creates a read-only stream on the specified memory.
 
     @param data
-        The pointer to the memory.
+        The pointer to the memory. The memory won't be copied into the stream, users should ensure 
+        that the memory is valid during the lifecycle of the stream.
 
     @param size
         The size of the memory.
@@ -71,17 +77,47 @@ public:
     @pre 
         data is not null.
 
+    @return
+        The stream that reads directly from the specified memory.
+
+    @post
+        The returned stream is not null.
+
     @throw zaf::PreconditionError
         Thrown if the precondition is violated.
 
     @throw std::bad_alloc
-        Thrown if memory allocation fails.
-
-    @details
-        Since the memory is not copied into the stream, users should guarantee that the memory is
-        valid during the life cycle of the stream.
+        Thrown if fails to create the stream.
     */
-    static Stream FromMemoryNoCopy(const void* data, std::size_t size);
+    static Stream CreateOnMemory(const void* data, std::size_t size);
+
+    /**
+    Creates a read-write stream on the specified memory.
+
+    @param data
+        The pointer to the memory. The memory won't be copied into the stream, users should ensure 
+        that the memory is valid during the lifecycle of the stream.
+
+    @param size
+        The size of the memory.
+
+    @pre
+        data is not null.
+
+    @return
+        The stream that reads from and writes to the specified memory directly. The length of the
+        stream is fixed.
+
+    @post
+        The returned stream is not null.
+
+    @throw zaf::PreconditionError
+        Thrown if the precondition is violated.
+
+    @throw std::bad_alloc
+        Thrown if fails to create the stream.
+    */
+    static Stream CreateOnMemory(void* data, std::size_t size);
 
     /**
     Creates a read-only stream from file.
@@ -118,6 +154,17 @@ public:
         Thrown if the operation fails.
     */
     std::size_t GetPosition() const;
+
+    /**
+    Indicates whether the stream is writable.
+
+    @return
+        True if the stream is writable; otherwise false.
+
+    @throw zaf::COMError
+        Thrown if the operation fails.
+    */
+    bool CanWrite() const;
 
     std::size_t Seek(SeekOrigin origin, std::int64_t offset);
 
@@ -165,11 +212,11 @@ public:
     Gets the pointer to the underlying buffer that can access all content of the stream.
 
     @return
-        The underlying buffer pointer. May be null if the stream doesn't have such a buffer.
+        The pointer to the underlying buffer. May be null if the stream doesn't have such a buffer,
+        or the size of the stream is zero.
 
     @note
-        Only streams created from memory support getting the underlying buffer. The result may be 
-        null if the size of the stream is zero.
+        Only memory streams support getting the underlying buffer.
     */
     const std::byte* GetUnderlyingBuffer() const noexcept;
 };

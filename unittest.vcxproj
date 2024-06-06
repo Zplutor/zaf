@@ -464,6 +464,8 @@
     <ClCompile Include="unittest\case\graphic\size_parser_test.cpp" />
     <ClCompile Include="unittest\case\graphic\size_test.cpp" />
     <ClCompile Include="unittest\case\graphic\text\text_layout_test.cpp" />
+    <ClCompile Include="unittest\case\io\stream\byte_array_stream_test.cpp" />
+    <ClCompile Include="unittest\case\io\stream\plain_memory_stream_test.cpp" />
     <ClCompile Include="unittest\case\object\boxing\boolean_test.cpp" />
     <ClCompile Include="unittest\case\object\boxing\boxed_object_equality_test.cpp" />
     <ClCompile Include="unittest\case\object\boxing\boxing_test.cpp" />

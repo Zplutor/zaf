@@ -283,6 +283,7 @@
     <ClCompile Include="src\zaf\internal\control\mouse_event_routing.cpp" />
     <ClCompile Include="src\zaf\internal\message_loop.cpp" />
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
+    <ClCompile Include="src\zaf\internal\stream\memory_stream_impl.cpp" />
     <ClCompile Include="src\zaf\internal\system_message_window.cpp" />
     <ClCompile Include="src\zaf\internal\tab_stop_utility.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_box_caret_manager.cpp" />
@@ -742,16 +743,17 @@
     <ClInclude Include="src\zaf\input\key_state.h" />
     <ClInclude Include="src\zaf\input\key.h" />
     <ClInclude Include="src\zaf\input\mouse.h" />
-    <ClInclude Include="src\zaf\internal\byte_array_stream.h" />
     <ClInclude Include="src\zaf\internal\control\control_event_invoker.h" />
     <ClInclude Include="src\zaf\internal\control\control_event_route_utility.h" />
     <ClInclude Include="src\zaf\internal\control\control_focus_event_info_helpers.h" />
     <ClInclude Include="src\zaf\internal\control\keyboard_event_routing.h" />
     <ClInclude Include="src\zaf\internal\control\mouse_event_routing.h" />
     <ClInclude Include="src\zaf\internal\enumerator.h" />
-    <ClInclude Include="src\zaf\internal\no_copy_memory_stream.h" />
     <ClInclude Include="src\zaf\internal\message_loop.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
+    <ClInclude Include="src\zaf\internal\stream\byte_array_stream_core.h" />
+    <ClInclude Include="src\zaf\internal\stream\memory_stream_impl.h" />
+    <ClInclude Include="src\zaf\internal\stream\plain_memory_core.h" />
     <ClInclude Include="src\zaf\internal\system_message_window.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
     <ClInclude Include="src\zaf\internal\textual\inline_object_attached_info.h" />
@@ -770,6 +772,8 @@
     <ClInclude Include="src\zaf\internal\textual\text_model.h" />
     <ClInclude Include="src\zaf\internal\theme.h" />
     <ClInclude Include="src\zaf\internal\window\window_focused_control_manager.h" />
+    <ClInclude Include="src\zaf\io\stream\memory_stream.h" />
+    <ClInclude Include="src\zaf\io\stream\memory_stream_core.h" />
     <ClInclude Include="src\zaf\object\boxing\boolean.h" />
     <ClInclude Include="src\zaf\object\boxing\boxed_object.h" />
     <ClInclude Include="src\zaf\object\boxing\boxing.h" />

@@ -1,33 +1,39 @@
 #include <zaf/base/stream.h>
 #include <Shlwapi.h>
 #include <zaf/base/error/com_error.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/base/error/invalid_operation_error.h>
-#include <zaf/internal/byte_array_stream.h>
-#include <zaf/internal/no_copy_memory_stream.h>
+#include <zaf/internal/stream/byte_array_stream_core.h>
+#include <zaf/internal/stream/memory_stream_impl.h>
+#include <zaf/internal/stream/plain_memory_core.h>
 
 namespace zaf {
 
 Stream Stream::FromMemory(std::size_t initial_size) {
-    auto ptr = new internal::ByteArrayStream{ initial_size };
-    return Stream{ ToCOMPtr(ptr) };
+
+    auto core = std::make_unique<internal::ByteArrayStreamCore>(initial_size);
+    return Stream{ MakeCOMPtr<internal::MemoryStreamImpl>(std::move(core)) };
 }
 
 
 Stream Stream::FromMemory(const void* data, std::size_t size) {
 
-    auto ptr = new internal::ByteArrayStream{ data, size };
-    return Stream{ ToCOMPtr(ptr) };
+    auto core = std::make_unique<internal::ByteArrayStreamCore>(data, size);
+    return Stream{ MakeCOMPtr<internal::MemoryStreamImpl>(std::move(core)) };
 }
 
 
-Stream Stream::FromMemoryNoCopy(const void* data, std::size_t size) {
+Stream Stream::CreateOnMemory(const void* data, std::size_t size) {
 
-    return Stream{ 
-        MakeCOMPtr<internal::NoCopyMemoryStream>(
-            reinterpret_cast<const BYTE*>(data),
-            static_cast<ULONG>(size),
-            0)
-    };
+    auto core = std::make_unique<internal::PlainMemoryStreamCore>(data, size);
+    return Stream{ MakeCOMPtr<internal::MemoryStreamImpl>(std::move(core)) };
+}
+
+
+Stream Stream::CreateOnMemory(void* data, std::size_t size) {
+
+    auto core = std::make_unique<internal::PlainMemoryStreamCore>(data, size);
+    return Stream{ MakeCOMPtr<internal::MemoryStreamImpl>(std::move(core)) };
 }
 
 
@@ -51,7 +57,6 @@ std::size_t Stream::GetSize() const {
 
     STATSTG state{};
     HRESULT result = Ptr()->Stat(&state, STATFLAG_NONAME);
-
     ZAF_THROW_IF_COM_ERROR(result);
     return state.cbSize.QuadPart;
 }
@@ -59,6 +64,16 @@ std::size_t Stream::GetSize() const {
 
 std::size_t Stream::GetPosition() const {
     return const_cast<Stream*>(this)->Seek(SeekOrigin::Current, 0);
+}
+
+
+bool Stream::CanWrite() const {
+
+    STATSTG state{};
+    HRESULT result = Ptr()->Stat(&state, STATFLAG_NONAME);
+    ZAF_THROW_IF_COM_ERROR(result);
+
+    return (state.grfMode == STGM_WRITE) || (state.grfMode == STGM_READWRITE);
 }
 
 
@@ -101,20 +116,11 @@ std::size_t Stream::Write(const void* data, std::size_t size) {
 
 const std::byte* Stream::GetUnderlyingBuffer() const noexcept {
 
-    auto no_copy_stream = Ptr().Query<internal::NoCopyMemoryStream>(
-        internal::IID_NoCopyMemoryStream);
-
-    if (no_copy_stream) {
-        return no_copy_stream->Data();
+    auto memory_stream = Ptr().Query<IMemoryStream>(IID_IMemoryStream);
+    if (memory_stream) {
+        return memory_stream->GetMemory();
     }
-
-    auto byte_array_stream = Ptr().Query<internal::ByteArrayStream>(internal::IID_ByteArrayStream);
-    if (byte_array_stream) {
-        return byte_array_stream->Data();
-    }
-
     return nullptr;
 }
-
 
 }

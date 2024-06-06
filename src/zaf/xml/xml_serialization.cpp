@@ -61,7 +61,7 @@ void XMLDeserialize(
 
 void XMLDeserialize(XMLSerializable& serializable, std::wstring_view text) {
 
-    auto stream = Stream::FromMemoryNoCopy(text.data(), text.length() * sizeof(wchar_t));
+    auto stream = Stream::CreateOnMemory(text.data(), text.length() * sizeof(wchar_t));
     XMLReader reader{ std::move(stream), { .code_page = CodePage::UTF16 } };
 
     reader.ReadXMLDeclaration();

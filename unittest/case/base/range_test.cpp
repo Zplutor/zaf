@@ -341,7 +341,7 @@ TEST(RangeTest, WriteToXML) {
 TEST(RangeTest, ReadFromXML) {
 
     constexpr auto deserialize = [](std::string_view xml) {
-        XMLReader reader{ Stream::FromMemoryNoCopy(xml.data(), xml.size()) };
+        XMLReader reader{ Stream::CreateOnMemory(xml.data(), xml.size()) };
         Range range;
         range.ReadFromXML(reader);
         return range;

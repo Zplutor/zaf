@@ -106,6 +106,12 @@
     <Filter Include="case\xml">
       <UniqueIdentifier>{cc46a91c-6dab-4585-9fa8-b1b8d208ed5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\io">
+      <UniqueIdentifier>{a26040cc-339c-476f-a1b2-91e2b8237ad9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\io\stream">
+      <UniqueIdentifier>{e19dc5ac-99fc-4888-b76e-181ce3775fb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -552,6 +558,12 @@
     </ClCompile>
     <ClCompile Include="unittest\case\xml\xml_reader_test.cpp">
       <Filter>case\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\io\stream\byte_array_stream_test.cpp">
+      <Filter>case\io\stream</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\io\stream\plain_memory_stream_test.cpp">
+      <Filter>case\io\stream</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

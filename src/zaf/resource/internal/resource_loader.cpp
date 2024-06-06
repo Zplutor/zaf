@@ -49,7 +49,7 @@ Stream ResourceLoader::Load(const std::wstring& dll, const std::wstring& name, f
         ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
-    return Stream::FromMemoryNoCopy(resource_data, resource_size);
+    return Stream::CreateOnMemory(resource_data, resource_size);
 }
 
 

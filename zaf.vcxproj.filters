@@ -199,6 +199,15 @@
     <Filter Include="zaf\xml">
       <UniqueIdentifier>{7463fc41-0786-4209-b899-04f9dea24769}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\io">
+      <UniqueIdentifier>{08ffeb0c-9056-4ffb-bf38-e053a490dd21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\io\stream">
+      <UniqueIdentifier>{b1266628-6787-4aae-852f-76c8ec6ef878}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\internal\stream">
+      <UniqueIdentifier>{6df488a8-8dd8-4ae1-8fd8-a7430c8c8be2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1206,6 +1215,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\xml\xml_reader.cpp">
       <Filter>zaf\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\stream\memory_stream_impl.cpp">
+      <Filter>zaf\internal\stream</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2755,12 +2767,6 @@
     <ClInclude Include="src\zaf\base\range_map.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\no_copy_memory_stream.h">
-      <Filter>zaf\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\byte_array_stream.h">
-      <Filter>zaf\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\xml\xml_serializable.h">
       <Filter>zaf\xml</Filter>
     </ClInclude>
@@ -2787,6 +2793,21 @@
     </ClInclude>
     <ClInclude Include="src\zaf\xml\xml_input_options.h">
       <Filter>zaf\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\io\stream\memory_stream_core.h">
+      <Filter>zaf\io\stream</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\stream\byte_array_stream_core.h">
+      <Filter>zaf\internal\stream</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\io\stream\memory_stream.h">
+      <Filter>zaf\io\stream</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\stream\memory_stream_impl.h">
+      <Filter>zaf\internal\stream</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\stream\plain_memory_core.h">
+      <Filter>zaf\internal\stream</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
