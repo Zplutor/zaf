@@ -238,9 +238,6 @@
     <ClCompile Include="unittest\case\resource\internal\resource_location_parsing_test.cpp">
       <Filter>case\resource\internal</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\base\stream_test.cpp">
-      <Filter>case\base</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\control\control_binder_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>

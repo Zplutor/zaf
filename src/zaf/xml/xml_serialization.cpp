@@ -1,5 +1,5 @@
 #include <zaf/xml/xml_serialization.h>
-#include <zaf/base/stream.h>
+#include <zaf/io/stream/stream.h>
 #include <zaf/base/string/encoding_conversion.h>
 #include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>

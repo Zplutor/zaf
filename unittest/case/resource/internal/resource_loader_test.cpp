@@ -2,7 +2,7 @@
 #include <fstream>
 #include <boost/algorithm/hex.hpp>
 #include <boost/uuid/detail/md5.hpp>
-#include <zaf/base/stream.h>
+#include <zaf/io/stream/stream.h>
 #include <zaf/resource/internal/resource_loader.h>
 
 using namespace zaf;

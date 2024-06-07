@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/stream.h>
+#include <zaf/io/stream/stream.h>
 #include <zaf/control/textual/styled_text.h>
 #include <zaf/creation.h>
 #include <zaf/xml/xml_error.h>

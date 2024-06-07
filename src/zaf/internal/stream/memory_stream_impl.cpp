@@ -99,6 +99,11 @@ HRESULT __stdcall MemoryStreamImpl::Write(const void* pv, ULONG cb, ULONG* writt
                 return STG_E_MEDIUMFULL;
             }
         }
+        else {
+            auto new_info = core_->GetInfo();
+            pointer = new_info.first;
+            size = new_info.second;
+        }
     }
 
     std::memcpy(pointer + seek_position_, pv, write_size);

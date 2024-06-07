@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/stream.h>
+#include <zaf/io/stream/stream.h>
 #include <zaf/graphic/image/wic/bitmap_decoder.h>
 
 namespace zaf::internal {

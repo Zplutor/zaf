@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/com_object.h>
-#include <zaf/base/stream.h>
+#include <zaf/io/stream/stream.h>
 
 TEST(COMObjectTest, ConversionFromNullptr) {
 

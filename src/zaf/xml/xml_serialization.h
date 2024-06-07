@@ -6,7 +6,7 @@
 */
 
 #include <zaf/base/code_page.h>
-#include <zaf/base/stream.h>
+#include <zaf/io/stream/stream.h>
 #include <zaf/xml/xml_input_options.h>
 #include <zaf/xml/xml_output_options.h>
 #include <zaf/xml/xml_serializable.h>

@@ -354,9 +354,6 @@
     <ClCompile Include="src\zaf\graphic\ellipse.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\stream.cpp">
-      <Filter>zaf\base</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp">
       <Filter>zaf\base\string</Filter>
     </ClCompile>
@@ -1219,6 +1216,9 @@
     <ClCompile Include="src\zaf\internal\stream\memory_stream_impl.cpp">
       <Filter>zaf\internal\stream</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\io\stream\stream.cpp">
+      <Filter>zaf\io\stream</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1514,9 +1514,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\text_trimming.h">
       <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\stream.h">
-      <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\number.h">
       <Filter>zaf\base</Filter>
@@ -2808,6 +2805,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\stream\plain_memory_core.h">
       <Filter>zaf\internal\stream</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\io\stream\stream.h">
+      <Filter>zaf\io\stream</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

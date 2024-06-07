@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/contract_error.h>
-#include <zaf/base/stream.h>
+#include <zaf/io/stream/stream.h>
 
 using namespace zaf;
 
@@ -40,4 +40,17 @@ TEST(ByteArrayStreamTest, Create_CopyMemory) {
     ASSERT_EQ(stream.GetPosition(), 0);
     ASSERT_TRUE(stream.CanWrite());
     ASSERT_NE(stream.GetUnderlyingBuffer(), nullptr);
+}
+
+
+TEST(ByteArrayStreamTest, Write) {
+
+    auto stream = Stream::FromMemory(0);
+    ASSERT_EQ(stream.Write("01234", 5), 5);
+
+    std::string_view actual{ 
+        reinterpret_cast<const char*>(stream.GetUnderlyingBuffer()), 
+        stream.GetSize()
+    };
+    ASSERT_EQ(actual, "01234");
 }

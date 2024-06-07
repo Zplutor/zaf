@@ -1,4 +1,4 @@
-#include <zaf/base/stream.h>
+#include <zaf/io/stream/stream.h>
 #include <Shlwapi.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/error/contract_error.h>

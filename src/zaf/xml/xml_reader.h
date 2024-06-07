@@ -4,7 +4,7 @@
 #include <functional>
 #include <zaf/base/com_ptr.h>
 #include <zaf/base/non_copyable.h>
-#include <zaf/base/stream.h>
+#include <zaf/io/stream/stream.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/xml/xml_input_options.h>
 #include <zaf/xml/xml_node_type.h>

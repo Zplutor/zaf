@@ -64,7 +64,6 @@
     <ClCompile Include="src\zaf\base\range.cpp" />
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp" />
     <ClCompile Include="src\zaf\base\registry\registry_value.cpp" />
-    <ClCompile Include="src\zaf\base\stream.cpp" />
     <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp" />
     <ClCompile Include="src\zaf\base\timer.cpp" />
     <ClCompile Include="src\zaf\clipboard\clipboard.cpp" />
@@ -300,6 +299,7 @@
     <ClCompile Include="src\zaf\internal\textual\text_box_selection_manager.cpp" />
     <ClCompile Include="src\zaf\internal\textual\text_model.cpp" />
     <ClCompile Include="src\zaf\internal\window\window_focused_control_manager.cpp" />
+    <ClCompile Include="src\zaf\io\stream\stream.cpp" />
     <ClCompile Include="src\zaf\object\boxing\boolean.cpp" />
     <ClCompile Include="src\zaf\object\boxing\numeric.cpp" />
     <ClCompile Include="src\zaf\object\boxing\string.cpp" />
@@ -451,7 +451,6 @@
     <ClInclude Include="src\zaf\base\registry\registry_key.h" />
     <ClInclude Include="src\zaf\base\registry\registry_rights.h" />
     <ClInclude Include="src\zaf\base\relation_operator.h" />
-    <ClInclude Include="src\zaf\base\stream.h" />
     <ClInclude Include="src\zaf\base\string\case_conversion.h" />
     <ClInclude Include="src\zaf\base\string\encoding_conversion.h" />
     <ClInclude Include="src\zaf\base\string\join.h" />
@@ -774,6 +773,7 @@
     <ClInclude Include="src\zaf\internal\window\window_focused_control_manager.h" />
     <ClInclude Include="src\zaf\io\stream\memory_stream.h" />
     <ClInclude Include="src\zaf\io\stream\memory_stream_core.h" />
+    <ClInclude Include="src\zaf\io\stream\stream.h" />
     <ClInclude Include="src\zaf\object\boxing\boolean.h" />
     <ClInclude Include="src\zaf\object\boxing\boxed_object.h" />
     <ClInclude Include="src\zaf\object\boxing\boxing.h" />

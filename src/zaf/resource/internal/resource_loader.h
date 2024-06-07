@@ -2,7 +2,7 @@
 
 #include <map>
 #include <mutex>
-#include <zaf/base/stream.h>
+#include <zaf/io/stream/stream.h>
 
 namespace zaf::internal {
 

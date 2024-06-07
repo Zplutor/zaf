@@ -44,7 +44,7 @@ Stream ResourceLoader::Load(const std::wstring& dll, const std::wstring& name, f
         ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
-    LPVOID resource_data = LockResource(memory_handle);
+    LPCVOID resource_data = LockResource(memory_handle);
     if (!resource_data) {
         ZAF_THROW_WIN32_ERROR(GetLastError());
     }
