@@ -27,8 +27,17 @@ public:
         return can_write_;
     }
 
-    std::pair<std::byte*, std::size_t> GetInfo() noexcept override {
-        return std::make_pair(memory_, size_);
+    HRESULT GetInfo(std::byte** pointer, std::size_t* size) noexcept override {
+
+        if (pointer) {
+            *pointer = memory_;
+        }
+
+        if (size) {
+            *size = size_;
+        }
+
+        return S_OK;
     }
 
     HRESULT Resize(std::size_t new_size) noexcept override {

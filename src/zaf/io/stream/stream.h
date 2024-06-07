@@ -13,12 +13,17 @@
 
 namespace zaf {
 
+class GlobalMem;
+
 enum class SeekOrigin {
     Begin = STREAM_SEEK_SET,
     Current = STREAM_SEEK_CUR,
     End = STREAM_SEEK_END,
 };
 
+/**
+An encapsulation class for the IStream interface.
+*/
 class Stream : public COMObject<IStream> {
 public:
     /**
@@ -118,6 +123,56 @@ public:
         Thrown if fails to create the stream.
     */
     static Stream CreateOnMemory(void* data, std::size_t size);
+
+    /**
+    Creates a read-only stream on the specified GlobalMem object.
+
+    @param global_mem
+        The GlobalMem object on which the stream created. The content of the object won't be copied
+        into the stream, users should ensure that the object is valid during the lifecycle of the
+        stream.
+
+    @pre
+        global_mem is valid.
+
+    @return
+        The stream that reads directly from the specified GlobalMem object.
+
+    @post
+        The returned stream is not null.
+
+    @throw zaf::PreconditionError
+        Thrown if the precondition is violated.
+
+    @throw std::bad_alloc
+        Thrown if fails to create the stream.
+    */
+    static Stream CreateOnGlobalMem(const GlobalMem& global_mem);
+
+    /**
+    Creates a read-write stream on the specified GlobalMem object.
+
+    @param global_mem
+        The GlobalMem object on which the stream created. The content of the object won't be copied
+        into the stream, users should ensure that the object is valid during the lifecycle of the 
+        stream.
+
+    @pre
+        global_mem is valid.
+
+    @return
+        The stream that reads from and writes to the specified GlobalMem object directly.
+
+    @post
+        The returned stream is not null.
+
+    @throw zaf::PreconditionError
+        Thrown if the precondition is violated.
+
+    @throw std::bad_alloc
+        Thrown if fails to create the stream.
+    */
+    static Stream CreateOnGlobalMem(GlobalMem& global_mem);
 
     /**
     Creates a read-only stream from file.

@@ -62,7 +62,12 @@ HRESULT __stdcall MemoryStreamImpl::Read(
         return STG_E_INVALIDPOINTER;
     }
 
-    auto [pointer, size] = core_->GetInfo();
+    std::byte* pointer{};
+    std::size_t size{};
+    HRESULT hresult = core_->GetInfo(&pointer, &size);
+    if (FAILED(hresult)) {
+        return hresult;
+    }
 
     auto read_size =
         (std::min)(static_cast<std::size_t>(expected_read_size), size - seek_position_);
@@ -87,7 +92,13 @@ HRESULT __stdcall MemoryStreamImpl::Write(const void* pv, ULONG cb, ULONG* writt
         return STG_E_INVALIDPOINTER;
     }
 
-    auto [pointer, size] = core_->GetInfo();
+    std::byte* pointer{};
+    std::size_t size{};
+    HRESULT hresult = core_->GetInfo(&pointer, &size);
+    if (FAILED(hresult)) {
+        return hresult;
+    }
+
     ULONG write_size = cb;
 
     std::size_t new_size = seek_position_ + write_size;
@@ -100,9 +111,10 @@ HRESULT __stdcall MemoryStreamImpl::Write(const void* pv, ULONG cb, ULONG* writt
             }
         }
         else {
-            auto new_info = core_->GetInfo();
-            pointer = new_info.first;
-            size = new_info.second;
+            hresult = core_->GetInfo(&pointer, nullptr);
+            if (FAILED(hresult)) {
+                return hresult;
+            }
         }
     }
 
@@ -121,7 +133,11 @@ HRESULT __stdcall MemoryStreamImpl::Seek(
     DWORD origin, 
     ULARGE_INTEGER* new_position) {
 
-    auto [pointer, size] = core_->GetInfo();
+    std::size_t size{};
+    HRESULT hresult = core_->GetInfo(nullptr, &size);
+    if (FAILED(hresult)) {
+        return hresult;
+    }
 
     std::int64_t new_seek_position{};
     if (origin == STREAM_SEEK_SET) {
@@ -179,16 +195,21 @@ HRESULT __stdcall MemoryStreamImpl::CopyTo(
         return S_OK;
     }
 
-    auto [read_pointer, read_size] = core_->GetInfo();
+    std::byte* read_pointer{};
+    std::size_t read_size{};
+    HRESULT hresult = core_->GetInfo(&read_pointer, &read_size);
+    if (FAILED(hresult)) {
+        return hresult;
+    }
 
     ULONG write_size{};
-    HRESULT result = other_stream->Write(
+    hresult = other_stream->Write(
         read_pointer,
         static_cast<ULONG>(read_size),
         &write_size);
 
-    if (FAILED(result)) {
-        return result;
+    if (FAILED(hresult)) {
+        return hresult;
     }
 
     if (actual_read_size) {
@@ -235,7 +256,11 @@ HRESULT __stdcall MemoryStreamImpl::Stat(STATSTG* state, DWORD grfStatFlag) {
         return E_INVALIDARG;
     }
 
-    auto [pointer, size] = core_->GetInfo();
+    std::size_t size{};
+    HRESULT hresult = core_->GetInfo(nullptr, &size);
+    if (FAILED(hresult)) {
+        return hresult;
+    }
 
     state->pwcsName = nullptr;
     state->type = STGTY_LOCKBYTES;
@@ -277,7 +302,13 @@ HRESULT __stdcall MemoryStreamImpl::Clone(IStream** new_stream) {
 
 
 const std::byte* MemoryStreamImpl::GetMemory() {
-    return core_->GetInfo().first;
+
+    std::byte* pointer{};
+    HRESULT hresult = core_->GetInfo(&pointer, nullptr);
+    if (SUCCEEDED(hresult)) {
+        return pointer;
+    }
+    return nullptr;
 }
 
 }

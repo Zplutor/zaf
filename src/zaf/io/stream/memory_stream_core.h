@@ -11,7 +11,7 @@ public:
     virtual ~MemoryStreamCore() = default;
 
     virtual bool CanWrite() noexcept = 0;
-    virtual std::pair<std::byte*, std::size_t> GetInfo() noexcept = 0;
+    virtual HRESULT GetInfo(std::byte** pointer, std::size_t* size) noexcept = 0;
     virtual HRESULT Resize(std::size_t new_size) noexcept = 0;
     virtual std::unique_ptr<MemoryStreamCore> Clone() noexcept = 0;
 };

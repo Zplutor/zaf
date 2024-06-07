@@ -41,6 +41,17 @@ std::size_t GlobalMem::Size() const {
 }
 
 
+void GlobalMem::Resize(std::size_t new_size) {
+
+    auto new_handle = GlobalReAlloc(handle_, new_size, GMEM_ZEROINIT);
+    if (!new_handle) {
+        ZAF_THROW_WIN32_ERROR(GetLastError());
+    }
+
+    handle_ = new_handle;
+}
+
+
 GlobalMemLock GlobalMem::Lock() const {
 
     LPVOID pointer = GlobalLock(handle_);

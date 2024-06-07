@@ -26,8 +26,17 @@ public:
         return true;
     }
 
-    std::pair<std::byte*, std::size_t> GetInfo() noexcept override {
-        return std::make_pair(byte_array_->Data(), byte_array_->Size());
+    HRESULT GetInfo(std::byte** pointer, std::size_t* size) noexcept override {
+
+        if (pointer) {
+            *pointer = byte_array_->Data();
+        }
+
+        if (size) {
+            *size = byte_array_->Size();
+        }
+
+        return S_OK;
     }
 
     HRESULT Resize(std::size_t new_size) noexcept override {

@@ -8,8 +8,8 @@ static_assert(std::is_move_assignable_v<zaf::GlobalMem>);
 
 static_assert(!std::is_copy_constructible_v<zaf::GlobalMemLock>);
 static_assert(!std::is_copy_assignable_v<zaf::GlobalMemLock>);
-static_assert(!std::is_move_constructible_v<zaf::GlobalMemLock>);
-static_assert(!std::is_move_assignable_v<zaf::GlobalMemLock>);
+static_assert(std::is_move_constructible_v<zaf::GlobalMemLock>);
+static_assert(std::is_move_assignable_v<zaf::GlobalMemLock>);
 
 
 TEST(GlobalMemTest, Alloc) {

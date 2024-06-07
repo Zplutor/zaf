@@ -2809,5 +2809,8 @@
     <ClInclude Include="src\zaf\io\stream\stream.h">
       <Filter>zaf\io\stream</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\internal\stream\referenced_global_mem_stream_core.h">
+      <Filter>zaf\internal\stream</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

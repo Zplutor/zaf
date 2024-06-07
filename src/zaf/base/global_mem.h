@@ -15,20 +15,46 @@ enum class GlobalMemFlags {
 ZAF_ENABLE_FLAG_ENUM(GlobalMemFlags);
 
 
-class GlobalMemLock : NonCopyableNonMovable {
+class GlobalMemLock : NonCopyable {
 public:
-    GlobalMemLock(HGLOBAL handle, LPVOID pointer) : handle_(handle), pointer_(pointer) {
+    GlobalMemLock(HGLOBAL handle, LPVOID pointer) noexcept : handle_(handle), pointer_(pointer) {
 
+    }
+
+    GlobalMemLock(GlobalMemLock&& other) noexcept :
+        handle_(other.handle_),
+        pointer_(other.pointer_) {
+
+        other.handle_ = nullptr;
+        other.pointer_ = nullptr;
+    }
+
+    GlobalMemLock& operator=(GlobalMemLock&& other) noexcept {
+        if (this != &other) {
+            Reset();
+            handle_ = other.handle_;
+            pointer_ = other.pointer_;
+            other.handle_ = nullptr;
+            other.pointer_ = nullptr;
+        }
+        return *this;
     }
 
     ~GlobalMemLock() {
-        if (handle_) {
-            GlobalUnlock(handle_);
-        }
+        Reset();
     }
 
-    LPVOID Pointer() const {
+    LPVOID Pointer() const noexcept {
         return pointer_;
+    }
+
+private:
+    void Reset() noexcept {
+        if (handle_) {
+            GlobalUnlock(handle_);
+            handle_ = nullptr;
+            pointer_ = nullptr;
+        }
     }
 
 private:
@@ -43,7 +69,7 @@ public:
     static GlobalMem FromString(std::wstring_view string, GlobalMemFlags flags);
 
 public:
-    explicit GlobalMem(HGLOBAL handle) : handle_(handle) {
+    explicit GlobalMem(HGLOBAL handle) noexcept : handle_(handle) {
 
     }
 
@@ -51,11 +77,11 @@ public:
         Reset();
     }
 
-    GlobalMem(GlobalMem&& other) : handle_(other.Detach()) {
+    GlobalMem(GlobalMem&& other) noexcept : handle_(other.Detach()) {
 
     }
 
-    GlobalMem& operator=(GlobalMem&& other) {
+    GlobalMem& operator=(GlobalMem&& other) noexcept {
         if (this != &other) {
             Reset(other.Detach());
         }
@@ -63,6 +89,8 @@ public:
     }
 
     std::size_t Size() const;
+
+    void Resize(std::size_t new_size);
 
     void Reset(HGLOBAL new_handle = nullptr) {
         if (handle_ != new_handle) {

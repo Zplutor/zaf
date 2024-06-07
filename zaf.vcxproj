@@ -753,6 +753,7 @@
     <ClInclude Include="src\zaf\internal\stream\byte_array_stream_core.h" />
     <ClInclude Include="src\zaf\internal\stream\memory_stream_impl.h" />
     <ClInclude Include="src\zaf\internal\stream\plain_memory_core.h" />
+    <ClInclude Include="src\zaf\internal\stream\referenced_global_mem_stream_core.h" />
     <ClInclude Include="src\zaf\internal\system_message_window.h" />
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h" />
     <ClInclude Include="src\zaf\internal\textual\inline_object_attached_info.h" />

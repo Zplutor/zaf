@@ -6,34 +6,44 @@
 #include <zaf/internal/stream/byte_array_stream_core.h>
 #include <zaf/internal/stream/memory_stream_impl.h>
 #include <zaf/internal/stream/plain_memory_core.h>
+#include <zaf/internal/stream/referenced_global_mem_stream_core.h>
 
 namespace zaf {
+namespace {
+
+Stream MakeMemoryStream(std::unique_ptr<MemoryStreamCore> core) {
+    return Stream{ MakeCOMPtr<internal::MemoryStreamImpl>(std::move(core)) };
+}
+
+}
 
 Stream Stream::FromMemory(std::size_t initial_size) {
-
-    auto core = std::make_unique<internal::ByteArrayStreamCore>(initial_size);
-    return Stream{ MakeCOMPtr<internal::MemoryStreamImpl>(std::move(core)) };
+    return MakeMemoryStream(std::make_unique<internal::ByteArrayStreamCore>(initial_size));
 }
 
 
 Stream Stream::FromMemory(const void* data, std::size_t size) {
-
-    auto core = std::make_unique<internal::ByteArrayStreamCore>(data, size);
-    return Stream{ MakeCOMPtr<internal::MemoryStreamImpl>(std::move(core)) };
+    return MakeMemoryStream(std::make_unique<internal::ByteArrayStreamCore>(data, size));
 }
 
 
 Stream Stream::CreateOnMemory(const void* data, std::size_t size) {
-
-    auto core = std::make_unique<internal::PlainMemoryStreamCore>(data, size);
-    return Stream{ MakeCOMPtr<internal::MemoryStreamImpl>(std::move(core)) };
+    return MakeMemoryStream(std::make_unique<internal::PlainMemoryStreamCore>(data, size));
 }
 
 
 Stream Stream::CreateOnMemory(void* data, std::size_t size) {
+    return MakeMemoryStream(std::make_unique<internal::PlainMemoryStreamCore>(data, size));
+}
 
-    auto core = std::make_unique<internal::PlainMemoryStreamCore>(data, size);
-    return Stream{ MakeCOMPtr<internal::MemoryStreamImpl>(std::move(core)) };
+
+Stream Stream::CreateOnGlobalMem(const GlobalMem& global_mem) {
+    return MakeMemoryStream(std::make_unique<internal::ReferencedGlobalMemStreamCore>(global_mem));
+}
+
+
+Stream Stream::CreateOnGlobalMem(GlobalMem& global_mem) {
+    return MakeMemoryStream(std::make_unique<internal::ReferencedGlobalMemStreamCore>(global_mem));
 }
 
 
