@@ -55,7 +55,7 @@ public:
             if (lock_) {
                 lock_.reset();
             }
-            global_mem_.Resize(new_size);
+            global_mem_.ReAlloc(new_size);
             return S_OK;
         }
         catch (...) {

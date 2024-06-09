@@ -19,7 +19,7 @@ GlobalMem GlobalMem::FromString(std::wstring_view string, GlobalMemFlags flags) 
     auto length_with_null = string.length() + 1;
 
     std::size_t memory_size = length_with_null * sizeof(wchar_t);
-    auto memory = GlobalMem::Alloc(memory_size, GlobalMemFlags::Movable);
+    auto memory = GlobalMem::Alloc(memory_size, flags);
     {
         auto lock = memory.Lock();
         StringCchCopy(
@@ -34,14 +34,15 @@ GlobalMem GlobalMem::FromString(std::wstring_view string, GlobalMemFlags flags) 
 std::size_t GlobalMem::Size() const {
 
     auto size = GlobalSize(handle_);
+    //A discarded memory has zero size, which is not a failure.
     if (size == 0) {
-        ZAF_THROW_WIN32_ERROR(GetLastError());
+        ZAF_THROW_IF_WIN32_ERROR(GetLastError());
     }
     return size;
 }
 
 
-void GlobalMem::Resize(std::size_t new_size) {
+void GlobalMem::ReAlloc(std::size_t new_size) {
 
     auto new_handle = GlobalReAlloc(handle_, new_size, GMEM_ZEROINIT);
     if (!new_handle) {
@@ -49,6 +50,16 @@ void GlobalMem::Resize(std::size_t new_size) {
     }
 
     handle_ = new_handle;
+}
+
+
+bool GlobalMem::IsDiscarded() const {
+    
+    UINT flags = GlobalFlags(handle_);
+    if (flags == GMEM_INVALID_HANDLE) {
+        ZAF_THROW_WIN32_ERROR(GetLastError());
+    }
+    return (flags & GMEM_DISCARDED) != 0;
 }
 
 
