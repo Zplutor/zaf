@@ -49,10 +49,10 @@ std::string CalculateFileMD5(const std::wstring& file) {
 
 std::string CalculateStreamMD5(const Stream& stream) {
 
-    auto buffer = std::make_unique<char[]>(stream.GetSize());
-    stream.Read(stream.GetSize(), buffer.get());
+    auto buffer = std::make_unique<char[]>(stream.Size());
+    stream.Read(stream.Size(), buffer.get());
 
-    return CalculateMD5(buffer.get(), stream.GetSize());
+    return CalculateMD5(buffer.get(), stream.Size());
 }
 
 }

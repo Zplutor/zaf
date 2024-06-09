@@ -43,8 +43,8 @@ TEST(ColorTest, WriteToXML) {
 
     std::string_view expected = R"(<Color R="0.100000" G="0.200000" B="0.300000" A="0.400000" />)";
     std::string_view actual{
-        reinterpret_cast<const char*>(stream.GetUnderlyingBuffer()),
-        stream.GetSize()
+        reinterpret_cast<const char*>(stream.UnderlyingBuffer()),
+        stream.Size()
     };
     ASSERT_EQ(expected, actual);
 }

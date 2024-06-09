@@ -63,7 +63,7 @@ Stream Stream::FromFile(const std::filesystem::path& path) {
 }
 
 
-std::size_t Stream::GetSize() const {
+std::size_t Stream::Size() const {
 
     STATSTG state{};
     HRESULT result = Ptr()->Stat(&state, STATFLAG_NONAME);
@@ -72,7 +72,7 @@ std::size_t Stream::GetSize() const {
 }
 
 
-std::size_t Stream::GetPosition() const {
+std::size_t Stream::Position() const {
     return const_cast<Stream*>(this)->Seek(SeekOrigin::Current, 0);
 }
 
@@ -124,7 +124,7 @@ std::size_t Stream::Write(const void* data, std::size_t size) {
 }
 
 
-const std::byte* Stream::GetUnderlyingBuffer() const noexcept {
+const std::byte* Stream::UnderlyingBuffer() const noexcept {
 
     auto memory_stream = Ptr().Query<IMemoryStream>(IID_IMemoryStream);
     if (memory_stream) {

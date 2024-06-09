@@ -331,8 +331,8 @@ TEST(RangeTest, WriteToXML) {
 
     std::string_view expected = R"(<Range Index="10" Length="50" />)";
     std::string_view actual{
-        reinterpret_cast<const char*>(stream.GetUnderlyingBuffer()),
-        stream.GetSize()
+        reinterpret_cast<const char*>(stream.UnderlyingBuffer()),
+        stream.Size()
     };
     ASSERT_EQ(expected, actual);
 }

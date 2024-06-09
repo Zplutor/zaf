@@ -197,7 +197,7 @@ public:
     @throw zaf::COMError
         Thrown if the operation fails.
     */
-    std::size_t GetSize() const;
+    std::size_t Size() const;
 
     /**
     Gets the current read write position of the stream.
@@ -208,7 +208,7 @@ public:
     @throw zaf::COMError
         Thrown if the operation fails.
     */
-    std::size_t GetPosition() const;
+    std::size_t Position() const;
 
     /**
     Indicates whether the stream is writable.
@@ -273,7 +273,7 @@ public:
     @note
         Only memory streams support getting the underlying buffer.
     */
-    const std::byte* GetUnderlyingBuffer() const noexcept;
+    const std::byte* UnderlyingBuffer() const noexcept;
 };
 
 }

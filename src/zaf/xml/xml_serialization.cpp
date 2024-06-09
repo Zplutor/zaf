@@ -35,14 +35,14 @@ std::wstring XMLSerializeToText(const XMLSerializable& serializable) {
         .use_bom = false 
     });
 
-    auto buffer = stream.GetUnderlyingBuffer();
+    auto buffer = stream.UnderlyingBuffer();
     if (!buffer) {
         return {};
     }
 
     return std::wstring{ 
         reinterpret_cast<const wchar_t*>(buffer),
-        stream.GetSize() / sizeof(wchar_t) 
+        stream.Size() / sizeof(wchar_t) 
     };
 }
 

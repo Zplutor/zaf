@@ -8,18 +8,18 @@ TEST(ByteArrayStreamTest, Create_InitialSize) {
 
     auto stream = Stream::FromMemory(0);
     ASSERT_TRUE(stream);
-    ASSERT_EQ(stream.GetSize(), 0);
-    ASSERT_EQ(stream.GetPosition(), 0);
+    ASSERT_EQ(stream.Size(), 0);
+    ASSERT_EQ(stream.Position(), 0);
     ASSERT_TRUE(stream.CanWrite());
     //The underlying buffer is null if the size is 0.
-    ASSERT_EQ(stream.GetUnderlyingBuffer(), nullptr);
+    ASSERT_EQ(stream.UnderlyingBuffer(), nullptr);
 
     stream = Stream::FromMemory(1);
     ASSERT_TRUE(stream);
-    ASSERT_EQ(stream.GetSize(), 1);
-    ASSERT_EQ(stream.GetPosition(), 0);
+    ASSERT_EQ(stream.Size(), 1);
+    ASSERT_EQ(stream.Position(), 0);
     ASSERT_TRUE(stream.CanWrite());
-    ASSERT_NE(stream.GetUnderlyingBuffer(), nullptr);
+    ASSERT_NE(stream.UnderlyingBuffer(), nullptr);
 }
 
 
@@ -29,17 +29,17 @@ TEST(ByteArrayStreamTest, Create_CopyMemory) {
 
     auto stream = Stream::FromMemory("0", 0);
     ASSERT_TRUE(stream);
-    ASSERT_EQ(stream.GetSize(), 0);
-    ASSERT_EQ(stream.GetPosition(), 0);
+    ASSERT_EQ(stream.Size(), 0);
+    ASSERT_EQ(stream.Position(), 0);
     ASSERT_TRUE(stream.CanWrite());
-    ASSERT_EQ(stream.GetUnderlyingBuffer(), nullptr);
+    ASSERT_EQ(stream.UnderlyingBuffer(), nullptr);
 
     stream = Stream::FromMemory("123", 1);
     ASSERT_TRUE(stream);
-    ASSERT_EQ(stream.GetSize(), 1);
-    ASSERT_EQ(stream.GetPosition(), 0);
+    ASSERT_EQ(stream.Size(), 1);
+    ASSERT_EQ(stream.Position(), 0);
     ASSERT_TRUE(stream.CanWrite());
-    ASSERT_NE(stream.GetUnderlyingBuffer(), nullptr);
+    ASSERT_NE(stream.UnderlyingBuffer(), nullptr);
 }
 
 
@@ -49,8 +49,8 @@ TEST(ByteArrayStreamTest, Write) {
     ASSERT_EQ(stream.Write("01234", 5), 5);
 
     std::string_view actual{ 
-        reinterpret_cast<const char*>(stream.GetUnderlyingBuffer()), 
-        stream.GetSize()
+        reinterpret_cast<const char*>(stream.UnderlyingBuffer()), 
+        stream.Size()
     };
     ASSERT_EQ(actual, "01234");
 }

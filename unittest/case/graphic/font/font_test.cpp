@@ -181,8 +181,8 @@ TEST(FontTest, WriteToXML) {
         "/>";
 
     std::string_view actual{
-        reinterpret_cast<const char*>(stream.GetUnderlyingBuffer()),
-        stream.GetSize()
+        reinterpret_cast<const char*>(stream.UnderlyingBuffer()),
+        stream.Size()
     };
     ASSERT_EQ(expected, actual);
 }
