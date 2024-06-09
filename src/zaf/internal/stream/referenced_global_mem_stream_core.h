@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/base/global_mem.h>
 #include <zaf/io/stream/memory_stream_core.h>
 
@@ -12,12 +13,14 @@ public:
         global_mem_(const_cast<GlobalMem&>(global_mem)),
         can_write_(false) {
 
+        ZAF_EXPECT(global_mem_);
     }
 
     explicit ReferencedGlobalMemStreamCore(GlobalMem& global_mem) :
         global_mem_(global_mem), 
         can_write_(true) {
 
+        ZAF_EXPECT(global_mem_);
     }
 
     bool CanWrite() noexcept override {

@@ -562,6 +562,9 @@
     <ClCompile Include="unittest\case\io\stream\plain_memory_stream_test.cpp">
       <Filter>case\io\stream</Filter>
     </ClCompile>
+    <ClCompile Include="src\unittest\case\io\stream\referenced_global_mem_stream_test.cpp">
+      <Filter>case\io\stream</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

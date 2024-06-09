@@ -133,7 +133,7 @@ public:
         stream.
 
     @pre
-        global_mem is valid.
+        global_mem is not null.
 
     @return
         The stream that reads directly from the specified GlobalMem object.
@@ -158,7 +158,7 @@ public:
         stream.
 
     @pre
-        global_mem is valid.
+        global_mem is not null.
 
     @return
         The stream that reads from and writes to the specified GlobalMem object directly.
