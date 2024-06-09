@@ -15,11 +15,27 @@ namespace zaf {
 
 class GlobalMem;
 
+/**
+The origin from which the offset is applied when seeking within a stream.
+*/
 enum class SeekOrigin {
+
+    /**
+    Seeks relative to the beginning of the stream.
+    */
     Begin = STREAM_SEEK_SET,
+
+    /**
+    Seeks relative to the current position in the stream.
+    */
     Current = STREAM_SEEK_CUR,
+
+    /**
+    Seeks relative to the end of the stream.
+    */
     End = STREAM_SEEK_END,
 };
+
 
 /**
 An encapsulation class for the IStream interface.
@@ -221,6 +237,22 @@ public:
     */
     bool CanWrite() const;
 
+    /**
+    Changes the read write position of the stream.
+
+    @param origin
+        The origin from which the offset is applied.
+ 
+    @param offset
+        The offset, in bytes, to move the position of the stream. A positive value moves the 
+        position forward, while a negative value moves it backward.
+ 
+    @return
+        The new position of the stream, measured in bytes from the beginning.
+
+    @throw zaf::COMError
+        Thrown if fails to change the position.
+    */
     std::size_t Seek(SeekOrigin origin, std::int64_t offset);
 
     /**
