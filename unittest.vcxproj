@@ -366,6 +366,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\unittest\case\control\control_visual_state_test.cpp" />
     <ClCompile Include="src\unittest\case\io\stream\referenced_global_mem_stream_test.cpp" />
     <ClCompile Include="unittest\case\application_test.cpp" />
     <ClCompile Include="unittest\case\base\as_test.cpp" />

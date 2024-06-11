@@ -182,24 +182,35 @@ void Control::OnVisualStateUpdate(const VisualStateUpdateInfo& event_info) {
 void Control::Repaint(
     Canvas& canvas, 
     const zaf::Rect& dirty_rect,
-    bool update_visual_state) {
+    bool parent_update_visual_state) {
 
     //Make sure the control repaints only if it is visible.
     ZAF_EXPECT(IsVisible());
 
-    bool update_visual_state_final = need_update_visual_state_ || update_visual_state;
-    if (update_visual_state_final) {
-        need_update_visual_state_ = false;
-        UpdateVisualState();
-        OnVisualStateUpdate(VisualStateUpdateInfo{ shared_from_this() });
-    }
+    bool need_update_visual_state = HandleUpdateVisualState(parent_update_visual_state);
 
     if (IsCachedPaintingEnabled()) {
         RepaintUsingCachedPainting(canvas, dirty_rect);
     }
     else {
-        RepaintControl(canvas, dirty_rect, false, update_visual_state_final);
+        RepaintControl(canvas, dirty_rect, false, need_update_visual_state);
     }
+}
+
+
+bool Control::HandleUpdateVisualState(bool parent_update_visual_state) {
+
+    bool need_update = need_update_visual_state_ || parent_update_visual_state;
+    if (!need_update) {
+        return false;
+    }
+
+    need_update_visual_state_ = false;
+
+    auto auto_reset = MakeAutoReset(is_updating_visual_state_, true);
+    UpdateVisualState();
+    OnVisualStateUpdate(VisualStateUpdateInfo{ shared_from_this() });
+    return true;
 }
 
 
@@ -377,6 +388,12 @@ void Control::NeedRepaint() {
 
 
 void Control::NeedRepaintRect(const zaf::Rect& rect) {
+
+    //Ignore repaint request when the control is updating visual state, as the visual state is 
+    //updated only before painting.
+    if (is_updating_visual_state_) {
+        return;
+    }
 
     if ((rect.size.width == 0) || (rect.size.height == 0)) {
         return;
@@ -1087,6 +1104,10 @@ void Control::SetParent(const std::shared_ptr<Control>& parent) {
 
     parent_ = parent;
 
+    if (parent) {
+        NeedUpdateVisualState();
+    }
+
     ParentChangedInfo parent_changed_info{ shared_from_this(), previous_parent };
     OnParentChanged(parent_changed_info);
 
@@ -1585,6 +1606,7 @@ void Control::SetIsFocused(bool is_focused) {
 
 void Control::SetIsFocusedByWindow(bool is_focused) {
     is_focused_ = is_focused;
+    NeedUpdateVisualState();
 }
 
 

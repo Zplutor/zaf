@@ -1050,11 +1050,11 @@ private:
     @param dirty_rect
         The rect that needs to be repainted, in the control's coordinate space.
 
-    @param update_visual_state
-        A value indicating that whether needs to update the control's visual state before painting.
+    @param parent_update_visual_state
+        A value indicating whether the parent needs to update its visual state.
     */
-    void Repaint(Canvas& canvas, const zaf::Rect& dirty_rect, bool update_visual_state);
-
+    void Repaint(Canvas& canvas, const zaf::Rect& dirty_rect, bool parent_update_visual_state);
+    bool HandleUpdateVisualState(bool parent_update_visual_state);
     void RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_rect);
     void RepaintControl(
         Canvas& canvas,
@@ -1104,6 +1104,7 @@ private:
     std::unique_ptr<internal::ControlUpdateState> update_state_;
 
     bool need_update_visual_state_{};
+    bool is_updating_visual_state_{};
     bool is_cached_painting_enabled_{};
     BitmapRenderer cached_renderer_;
     zaf::Rect valid_cached_renderer_rect_;
