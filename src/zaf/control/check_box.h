@@ -21,50 +21,22 @@ public:
     /**
      Get the box border color.
      */
-    Color BoxBorderColor() const {
-        return BoxBorderColorPicker()(*this);
-    }
-
-    /**
-     Get the color picker of the box border.
-     */
-    ColorPicker BoxBorderColorPicker() const;
+    Color BoxBorderColor() const;
 
     /**
      Set the box border color.
      */
-    void SetBoxBorderColor(const Color& color) {
-        SetBoxBorderColorPicker(CreateColorPicker(color));
-    }
-
-    /**
-     Set the color picker of the box border.
-     */
-    void SetBoxBorderColorPicker(const ColorPicker& color_picker);
+    void SetBoxBorderColor(const Color& color);
 
     /**
      Get the box background color.
      */
-    Color BoxBackgroundColor() const {
-        return BoxBackgroundColorPicker()(*this);
-    }
-
-    /**
-     Get the color picker of the box background.
-     */
-    ColorPicker BoxBackgroundColorPicker() const;
+    Color BoxBackgroundColor() const;
 
     /**
      Set the box background color.
      */
-    void SetBoxBackgroundColor(const Color& color) {
-        SetBoxBackgroundColorPicker(CreateColorPicker(color));
-    }
-
-    /**
-     Set the color picker of the box background.
-     */
-    void SetBoxBackgroundColorPicker(const ColorPicker& color_picker);
+    void SetBoxBackgroundColor(const Color& color);
 
     /**
      Get a value indicating that whether the check box changes its check state when 
@@ -143,6 +115,7 @@ public:
 protected:
     void Initialize() override;
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
+    void UpdateVisualState() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     zaf::Rect DetermineTextRect() override;
     void OnClick(const ClickInfo& event_info) override;
@@ -155,8 +128,8 @@ private:
     bool can_be_indeterminate_{ false };
     zaf::CheckState check_state_;
 
-    ColorPicker box_background_color_picker_;
-    ColorPicker box_border_color_picker_;
+    Color box_background_color_;
+    Color box_border_color_;
 
     Event<CheckStateChangedInfo> check_state_changed_event_;
 };

@@ -12,19 +12,17 @@ public:
     ArrowDirection Direction() const;
     void SetDirection(ArrowDirection direction);
 
-    ColorPicker ArrowColorPicker() const;
-    void SetArrowColorPicker(ColorPicker picker);
-
     Color ArrowColor() const;
     void SetArrowColor(const Color& color);
 
 protected:
+    void UpdateVisualState() override;
     void Paint(Canvas& canvas, const zaf::Rect&) override;
 
 private:
     ArrowDirection direction_{ ArrowDirection::Up };
 
-    ColorPicker arrow_color_picker_;
+    Color arrow_color_;
 };
 
 }

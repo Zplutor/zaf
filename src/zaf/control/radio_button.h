@@ -46,50 +46,22 @@ public:
     /**
      Get radio border color.
      */
-    Color RadioBorderColor() const {
-        return RadioBorderColorPicker()(*this);
-    }
-
-    /**
-     Get the color picker of radio border.
-     */
-    ColorPicker RadioBorderColorPicker() const;
+    Color RadioBorderColor() const;
 
     /**
      Set radio border color.
      */
-    void SetRadioBorderColor(const Color& color) {
-        SetRadioBorderColorPicker(CreateColorPicker(color));
-    }
-
-    /**
-     Set the color picker of radio border.
-     */
-    void SetRadioBorderColorPicker(const ColorPicker& color_picker);
+    void SetRadioBorderColor(const Color& color);
 
     /**
      Get radio background color.
      */
-    Color RadioBackgroundColor() {
-        return RadioBackgroundColorPicker()(*this);
-    }
-
-    /**
-     Get the color picker of radio background.
-     */
-    ColorPicker RadioBackgroundColorPicker() const;
+    Color RadioBackgroundColor() const;
 
     /**
      Set radio background color.
      */
-    void SetRadioBackgroundColor(const Color& color) {
-        SetRadioBackgroundColorPicker(CreateColorPicker(color));
-    }
-
-    /**
-     Set the color picker of radio background.
-     */
-    void SetRadioBackgroundColorPicker(const ColorPicker& color_picker);
+    void SetRadioBackgroundColor(const Color& color);
 
     /**
      Get the associated group.
@@ -152,6 +124,7 @@ public:
 protected:
     void Initialize() override;
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
+    void UpdateVisualState() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     zaf::Rect DetermineTextRect() override;
     void OnClick(const ClickInfo& event_info) override;
@@ -179,8 +152,8 @@ private:
     bool is_checked_;
     std::shared_ptr<Group> group_;
 
-    ColorPicker radio_background_color_picker_;
-    ColorPicker radio_border_color_picker_;
+    Color radio_background_color_;
+    Color radio_border_color_;
 
     Event<CheckStateChangedInfo> check_state_changed_event_;
 };

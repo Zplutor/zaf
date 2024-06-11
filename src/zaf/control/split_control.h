@@ -149,16 +149,9 @@ public:
         is_horizontal_ = is_horizontal;
     }
 
-    ColorPicker SplitterColorPicker() const;
-    void SetSplitterColorPicker(const ColorPicker& color_picker);
+    Color SplitterColor() const;
 
-    Color SplitterColor() const {
-        return SplitterColorPicker()(*this);
-    }
-
-    void SetSplitterColor(const Color& color) {
-        SetSplitterColorPicker([color](const Control&) { return color; });
-    }
+    void SetSplitterColor(const Color& color);
 
     Observable<SplitBarBeginDragInfo> BeginDragEvent() {
         return begin_drag_event_.AsObservable();
@@ -185,7 +178,7 @@ protected:
 private:
     bool is_horizontal_ = false;
 
-    ColorPicker splitter_color_picker_;
+    Color splitter_color_;
 
     Subject<SplitBarBeginDragInfo> begin_drag_event_;
     Subject<SplitBarDragInfo> drag_event_;

@@ -73,48 +73,37 @@ void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect) {
 }
 
 
-const ColorPicker GetBoxBackgroundColorPicker() {
+Color GetBoxBackgroundColor(const ClickableControl& control) {
 
-    return [](const Control& control) {
+    if (!control.IsEnabledInContext()) {
+        return Color::FromRGB(internal::ControlBackgroundColorRGB);
+    }
 
-        const auto& clickable_control = dynamic_cast<const ClickableControl&>(control);
+    if (control.IsPressed()) {
+        return Color::FromRGB(internal::ButtonPressedBackgroundColorRGB);;
+    }
 
-        if (!clickable_control.IsEnabledInContext()) {
-            return Color::FromRGB(internal::ControlBackgroundColorRGB);
-        }
+    if (control.IsMouseOver()) {
+        return Color::FromRGB(internal::ButtonMouseOverBackgroundColorRGB);
+    }
 
-        if (clickable_control.IsPressed()) {
-            return Color::FromRGB(internal::ButtonPressedBackgroundColorRGB);;
-        }
-
-        if (clickable_control.IsMouseOver()) {
-            return Color::FromRGB(internal::ButtonMouseOverBackgroundColorRGB);
-        }
-
-        return Color::FromRGB(internal::ControlContentColorRGB);
-    };
+    return Color::FromRGB(internal::ControlContentColorRGB);
 }
 
 
-const ColorPicker GetBoxBorderColorPicker() {
+Color GetBoxBorderColor(const ClickableControl& control) {
 
-    return [](const Control& control) {
+    if (!control.IsEnabledInContext()) {
+        return Color::Gray();
+    }
 
-        const auto& clickable_control = dynamic_cast<const ClickableControl&>(control);
+    if (control.IsPressed() ||
+        control.IsMouseOver()) {
+        return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
+    }
 
-        if (!clickable_control.IsEnabledInContext()) {
-            return Color::Gray();
-        }
-
-        if (clickable_control.IsPressed() ||
-            clickable_control.IsMouseOver()) {
-            return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
-        }
-
-        return Color::Black();
-    };
+    return Color::Black();
 }
-
 
 }
 }

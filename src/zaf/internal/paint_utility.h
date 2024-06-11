@@ -8,6 +8,7 @@
 namespace zaf {
 
 class Canvas;
+class ClickableControl;
 class Rect;
 class Stroke;
 class TextLayout;
@@ -26,8 +27,8 @@ void DrawTextWithIcon(
 
 void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect);
 
-const ColorPicker GetBoxBackgroundColorPicker();
-const ColorPicker GetBoxBorderColorPicker();
+Color GetBoxBackgroundColor(const ClickableControl& control);
+Color GetBoxBorderColor(const ClickableControl& control);
 
 }
 }

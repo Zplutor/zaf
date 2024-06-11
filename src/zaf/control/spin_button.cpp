@@ -22,44 +22,36 @@ void SpinButton::SetDirection(ArrowDirection direction) {
 }
 
 
-ColorPicker SpinButton::ArrowColorPicker() const {
-
-    if (arrow_color_picker_) {
-        return arrow_color_picker_;
-    }
-
-    return [](const Control& control) {
-
-        const auto& button = dynamic_cast<const SpinButton&>(control);
-
-        if (!button.IsEnabledInContext()) {
-            return Color::FromRGB(0xc0c0c0);
-        }
-
-        if (button.IsPressed()) {
-            return Color::FromRGB(0x306DD9);
-        }
-
-        if (button.IsMouseOver()) {
-            return Color::FromRGB(0x5080ef);
-        }
-
-        return Color::Black();
-    };
+Color SpinButton::ArrowColor() const {
+    return arrow_color_;
 }
 
-void SpinButton::SetArrowColorPicker(ColorPicker picker) {
-    arrow_color_picker_ = std::move(picker);
+void SpinButton::SetArrowColor(const Color& color) {
+    arrow_color_ = color;
     NeedRepaint();
 }
 
 
-Color SpinButton::ArrowColor() const {
-    return ArrowColorPicker()(*this);
-}
+void SpinButton::UpdateVisualState() {
 
-void SpinButton::SetArrowColor(const Color& color) {
-    SetArrowColorPicker(CreateColorPicker(color));
+    __super::UpdateVisualState();
+
+    SetArrowColor([this]() {
+    
+        if (!IsEnabledInContext()) {
+            return Color::FromRGB(0xc0c0c0);
+        }
+
+        if (IsPressed()) {
+            return Color::FromRGB(0x306DD9);
+        }
+
+        if (IsMouseOver()) {
+            return Color::FromRGB(0x5080ef);
+        }
+
+        return Color::Black();
+    }());
 }
 
 

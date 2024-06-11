@@ -34,28 +34,14 @@ public:
     void SetTextInset(const Frame& inset);
 
     /**
-     Get the color picker of drop down button.
-     */
-    ColorPicker DropDownButtonColorPicker() const;
-
-    /**
-     Set the color picker of drop down button.
-     */
-    void SetDropDownButtonColorPicker(const ColorPicker& color_picker);
-
-    /**
      Get the current color of drop down button.
      */
-    Color DropDownButtonColor() const {
-        return DropDownButtonColorPicker()(*this);
-    }
+    Color DropDownButtonColor() const;
 
     /**
      Set the color of drop down button.
      */
-    void SetDropDownButtonColor(const Color& color) {
-        SetDropDownButtonColorPicker([color](const Control&) { return color; });
-    }
+    void SetDropDownButtonColor(const Color& color);
 
     /**
      Get the width of drop down button.
@@ -284,7 +270,7 @@ private:
     Subscription edit_box_subscription_;
     Frame text_inset_;
 
-    ColorPicker drop_down_button_color_picker_;
+    Color drop_down_button_color_;
     float drop_down_button_width_{ 12 };
     std::size_t min_visible_item_count_{ 1 };
     std::size_t max_visible_item_count_{ (std::numeric_limits<std::size_t>::max)() };

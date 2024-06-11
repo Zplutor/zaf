@@ -49,6 +49,15 @@ zaf::Size RadioButton::CalculatePreferredContentSize(const zaf::Size& max_size) 
 }
 
 
+void RadioButton::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    SetRadioBorderColor(internal::GetBoxBorderColor(*this));
+    SetRadioBackgroundColor(internal::GetBoxBackgroundColor(*this));
+}
+
+
 void RadioButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
@@ -94,36 +103,24 @@ zaf::Rect RadioButton::DetermineTextRect() {
 }
 
 
-ColorPicker RadioButton::RadioBorderColorPicker() const {
-
-    if (radio_border_color_picker_) {
-        return radio_border_color_picker_;
-    }
-
-    return internal::GetBoxBorderColorPicker();
+Color RadioButton::RadioBorderColor() const {
+    return radio_border_color_;
 }
 
 
-void RadioButton::SetRadioBorderColorPicker(const ColorPicker& color_picker) {
-
-    radio_border_color_picker_ = color_picker;
+void RadioButton::SetRadioBorderColor(const Color& color) {
+    radio_border_color_ = color;
     NeedRepaint();
 }
 
 
-ColorPicker RadioButton::RadioBackgroundColorPicker() const {
-
-    if (radio_background_color_picker_) {
-        return radio_background_color_picker_;
-    }
-
-    return internal::GetBoxBackgroundColorPicker();
+Color RadioButton::RadioBackgroundColor() const {
+    return radio_background_color_;
 }
 
 
-void RadioButton::SetRadioBackgroundColorPicker(const ColorPicker& color_picker) {
-
-    radio_background_color_picker_ = color_picker;
+void RadioButton::SetRadioBackgroundColor(const Color& color) {
+    radio_background_color_ = color;
     NeedRepaint();
 }
 

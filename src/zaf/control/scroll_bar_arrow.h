@@ -20,26 +20,12 @@ public:
     /**
      Get arrow color.
      */
-    Color ArrowColor() const {
-        return ArrowColorPicker()(*this);
-    }
-
-    /**
-     Get the color picker of arrow.
-     */
-    ColorPicker ArrowColorPicker() const;
+    Color ArrowColor() const;
 
     /**
      Set arrow color.
      */
-    void SetArrowColor(const Color& color) {
-        SetArrowColorPicker(CreateColorPicker(color));
-    }
-
-    /**
-     Set the color picker of arrow.
-     */
-    void SetArrowColorPicker(const ColorPicker& color_picker);
+    void SetArrowColor(const Color& color);
 
     /**
      Get the arrow's direction.
@@ -70,6 +56,7 @@ public:
 
 protected:
     void Initialize() override;
+    void UpdateVisualState() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     void OnMouseCaptured(const MouseCapturedInfo& event_info) override;
     void OnMouseReleased(const MouseReleasedInfo& event_info) override;
@@ -85,7 +72,7 @@ private:
 private:
     zaf::ArrowDirection arrow_direction_;
 
-    ColorPicker arrow_color_picker_;
+    Color arrow_color_;
 
     Subject<ScrollBarArrowBeginPressInfo> begin_press_event_;
     Subject<ScrollBarArrowEndPressInfo> end_press_event_;

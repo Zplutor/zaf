@@ -130,25 +130,30 @@ void Item::InitializeSplitControl() {
     split_control_->SetFirstPane(name_label_);
     split_control_->SetSecondPane(value_view_);
 
-    split_control_->SplitBar()->SetSplitterColorPicker([this](const Control& control) {
+    Subscriptions() += split_control_->SplitBar()->VisualStateUpdateEvent().Subscribe(
+        [this](const VisualStateUpdateInfo& event_info) {
+    
+        auto split_bar = As<SplitBar>(event_info.Source());
+        split_bar->SetSplitterColor([this, &split_bar]() {
 
-        if (this->IsSelectedInContext()) {
+            if (this->IsSelectedInContext()) {
 
-            auto parent = control.Parent();
-            while (parent) {
+                auto parent = split_bar->Parent();
+                while (parent) {
 
-                auto list_item = As<ListItem>(parent);
-                if (list_item) {
-                    return list_item->BackgroundColor();
+                    auto list_item = As<ListItem>(parent);
+                    if (list_item) {
+                        return list_item->BackgroundColor();
+                    }
+
+                    parent = parent->Parent();
                 }
-
-                parent = parent->Parent();
             }
-        }
 
-        return Color::FromRGB(DelimiterLineColor);
-    }); 
-
+            return Color::FromRGB(DelimiterLineColor);
+        }());
+    });
+    
     Subscriptions() += split_control_->SplitDistanceChangedEvent().Subscribe(
         [this](const SplitDistanceChangedInfo& event_info) {
 

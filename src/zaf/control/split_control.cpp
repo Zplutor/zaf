@@ -403,6 +403,8 @@ SplitBar::SplitBar() {
 void SplitBar::Initialize() {
 
     __super::Initialize();
+
+    SetSplitterColor(Color::Black());
 }
 
 
@@ -431,20 +433,13 @@ void SplitBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-ColorPicker SplitBar::SplitterColorPicker() const {
-
-    if (splitter_color_picker_) {
-        return splitter_color_picker_;
-    }
-
-    return [](const Control&) {
-        return zaf::Color::Black();
-    };
+Color SplitBar::SplitterColor() const {
+    return splitter_color_;
 }
 
 
-void SplitBar::SetSplitterColorPicker(const ColorPicker& color_picker) {
-    splitter_color_picker_ = color_picker;
+void SplitBar::SetSplitterColor(const Color& color) {
+    splitter_color_ = color;
     NeedRepaint();
 }
 

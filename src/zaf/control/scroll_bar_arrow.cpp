@@ -23,6 +23,29 @@ void ScrollBarArrow::Initialize() {
 }
 
 
+void ScrollBarArrow::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    SetArrowColor([this]() {
+
+        if (!IsEnabledInContext()) {
+            return Color::FromRGB(0xc0c0c0);
+        }
+
+        if (IsPressed()) {
+            return Color::FromRGB(0x306DD9);
+        }
+
+        if (IsMouseOver()) {
+            return Color::FromRGB(0x5080ef);
+        }
+
+        return Color::FromRGB(0x808080);
+    }());
+}
+
+
 void ScrollBarArrow::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     __super::Paint(canvas, dirty_rect);
@@ -63,38 +86,13 @@ void ScrollBarArrow::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-ColorPicker ScrollBarArrow::ArrowColorPicker() const {
-
-    if (arrow_color_picker_) {
-        return arrow_color_picker_;
-    }
-    else {
-
-        return [](const Control& control) {
-
-            const auto& arrow = dynamic_cast<const ScrollBarArrow&>(control);
-
-            if (!arrow.IsEnabledInContext()) {
-                return Color::FromRGB(0xc0c0c0);
-            }
-
-            if (arrow.IsPressed()) {
-                return Color::FromRGB(0x306DD9);
-            }
-
-            if (arrow.IsMouseOver()) {
-                return Color::FromRGB(0x5080ef);
-            }
-
-            return Color::FromRGB(0x808080);
-        };
-    }
+Color ScrollBarArrow::ArrowColor() const {
+    return arrow_color_;
 }
 
 
-void ScrollBarArrow::SetArrowColorPicker(const ColorPicker& color_picker) {
-
-    arrow_color_picker_ = color_picker;
+void ScrollBarArrow::SetArrowColor(const Color& color) {
+    arrow_color_ = color;
     NeedRepaint();
 }
 

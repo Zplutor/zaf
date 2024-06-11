@@ -19,26 +19,12 @@ public:
     /**
      Get thumb color.
      */
-    Color ThumbColor() const {
-        return ThumbColorPicker()(*this);
-    }
-
-    /**
-     Get the color picker of thumb.
-     */
-    ColorPicker ThumbColorPicker() const;
+    Color ThumbColor() const;
 
     /**
      Set thumb color.
      */
-    void SetThumbColor(const Color& color) {
-        SetThumbColorPicker(CreateColorPicker(color));
-    }
-
-    /**
-     Set the color picker of thumb.
-     */
-    void SetThumbColorPicker(const ColorPicker& color_picker);
+    void SetThumbColor(const Color& color);
 
     /**
      Get a value indicating that whether the thumb is horizontal.
@@ -85,6 +71,7 @@ public:
 
 protected:
     void Initialize() override;
+    void UpdateVisualState() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect);
     void OnMouseCaptured(const MouseCapturedInfo& event_info) override;
     void OnMouseReleased(const MouseReleasedInfo& event_info) override;
@@ -99,7 +86,7 @@ private:
     bool is_horizontal_{};
     bool is_dragging_{};
 
-    ColorPicker thumb_color_picker_;
+    Color thumb_color_;
 
     Subject<ScrollBarThumbBeginDragInfo> begin_drag_event_;
     Subject<ScrollBarThumbDragInfo> drag_event_;

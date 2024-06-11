@@ -39,7 +39,25 @@ void ScrollBarThumb::SetIsHorizontal(bool is_horizontal) {
     }
 
     SetPadding(padding);
+}
 
+
+void ScrollBarThumb::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    SetThumbColor([this]() {
+
+        if (IsPressed()) {
+            return Color::FromRGB(0x808080);
+        }
+
+        if (IsMouseOver()) {
+            return Color::FromRGB(0xA9A9A9);
+        }
+
+        return Color::FromRGB(0xCECECE);
+    }());
 }
 
 
@@ -58,34 +76,13 @@ void ScrollBarThumb::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-ColorPicker ScrollBarThumb::ThumbColorPicker() const {
-
-    if (thumb_color_picker_) {
-        return thumb_color_picker_;
-    }
-    else {
-
-        return [](const Control& control) {
-
-            const auto& thumb = dynamic_cast<const ScrollBarThumb&>(control);
-
-            if (thumb.IsPressed()) {
-                return Color::FromRGB(0x808080);
-            }
-
-            if (thumb.IsMouseOver()) {
-                return Color::FromRGB(0xA9A9A9);
-            }
-
-            return Color::FromRGB(0xCECECE);
-        };
-    }
+Color ScrollBarThumb::ThumbColor() const {
+    return thumb_color_;
 }
 
 
-void ScrollBarThumb::SetThumbColorPicker(const ColorPicker& color_picker) {
-
-    thumb_color_picker_ = color_picker;
+void ScrollBarThumb::SetThumbColor(const Color& color) {
+    thumb_color_ = color;
     NeedRepaint();
 }
 

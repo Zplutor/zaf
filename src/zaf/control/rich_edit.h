@@ -420,7 +420,6 @@ private:
     CHARFORMATW character_format_;
     PARAFORMAT paragraph_format_;
     zaf::ParagraphAlignment paragraph_alignment_{ zaf::ParagraphAlignment::Near };
-    ColorPicker text_color_picker_;
     DWORD scroll_bar_property_;
     std::optional<float> cached_text_height_;
     Color text_color_;

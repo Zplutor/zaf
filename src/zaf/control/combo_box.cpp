@@ -65,6 +65,8 @@ void ComboBox::Initialize() {
     SetBorder(Frame{ 1 });
     SetTextInset(Frame{ 3, 1, 1, 1 });
 
+    SetDropDownButtonColor(Color::Black());
+
     SetBackgroundColorPicker([](const Control& control) {
 
         if (! control.IsEnabledInContext()) {
@@ -229,18 +231,12 @@ void ComboBox::SetTextInset(const Frame& inset) {
 }
 
 
-ColorPicker ComboBox::DropDownButtonColorPicker() const {
-
-    if (drop_down_button_color_picker_) {
-        return drop_down_button_color_picker_;
-    }
-
-    return [](const Control&) { return Color::Black(); };
+Color ComboBox::DropDownButtonColor() const {
+    return drop_down_button_color_;
 }
 
-void ComboBox::SetDropDownButtonColorPicker(const ColorPicker& color_picker) {
-
-    drop_down_button_color_picker_ = color_picker;
+void ComboBox::SetDropDownButtonColor(const Color& color) {
+    drop_down_button_color_ = color;
     NeedRepaint();
 }
 

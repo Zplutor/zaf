@@ -57,6 +57,15 @@ zaf::Size CheckBox::CalculatePreferredContentSize(const zaf::Size& max_size) con
 }
 
 
+void CheckBox::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    SetBoxBorderColor(internal::GetBoxBorderColor(*this));
+    SetBoxBackgroundColor(internal::GetBoxBackgroundColor(*this));
+}
+
+
 void CheckBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
     
     __super::Paint(canvas, dirty_rect);
@@ -125,36 +134,24 @@ zaf::Rect CheckBox::DetermineTextRect() {
 }
 
 
-ColorPicker CheckBox::BoxBorderColorPicker() const {
-
-    if (box_border_color_picker_) {
-        return box_border_color_picker_;
-    }
-
-    return internal::GetBoxBorderColorPicker();
+Color CheckBox::BoxBorderColor() const {
+    return box_border_color_;
 }
 
 
-void CheckBox::SetBoxBorderColorPicker(const ColorPicker& color_picker) {
-
-    box_border_color_picker_ = color_picker;
+void CheckBox::SetBoxBorderColor(const Color& color) {
+    box_border_color_ = color;
     NeedRepaint();
 }
 
 
-ColorPicker CheckBox::BoxBackgroundColorPicker() const {
-
-    if (box_background_color_picker_) {
-        return box_background_color_picker_;
-    }
-
-    return internal::GetBoxBackgroundColorPicker();
+Color CheckBox::BoxBackgroundColor() const {
+    return box_background_color_;
 }
 
 
-void CheckBox::SetBoxBackgroundColorPicker(const ColorPicker& color_picker) {
-
-    box_background_color_picker_ = color_picker;
+void CheckBox::SetBoxBackgroundColor(const Color& color) {
+    box_background_color_ = color;
     NeedRepaint();
 }
 
