@@ -33,6 +33,9 @@ GlobalMem GlobalMem::FromString(std::wstring_view string, GlobalMemFlags flags) 
 
 std::size_t GlobalMem::Size() const {
 
+    //It's curious that GlobalSize won't set last error to zero for discarded memory.
+    SetLastError(0);
+
     auto size = GlobalSize(handle_);
     //A discarded memory has zero size, which is not a failure.
     if (size == 0) {
