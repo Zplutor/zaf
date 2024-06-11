@@ -12,7 +12,6 @@ TEST(ControlTest, UpdateVisualStateCase) {
     
         auto control = Create<Control>();
         control->SetSize(Size{ 100, 100 });
-        window.RootControl()->AddChild(control);
 
         int update_count{};
         auto sub = control->VisualStateUpdateEvent().Subscribe(
@@ -20,13 +19,19 @@ TEST(ControlTest, UpdateVisualStateCase) {
             ++update_count;
         });
 
-        //Change IsEnabled will raise visual state update event.
+        //Changing parent will raise visual state update event.
+        window.RootControl()->AddChild(control);
+        UpdateWindow(window.Handle());
+        ASSERT_EQ(update_count, 1);
+
+        //Changing IsEnabled will raise visual state update event.
+        update_count = 0;
         control->SetIsEnabled(false);
         control->NeedRepaint();
         UpdateWindow(window.Handle());
         ASSERT_EQ(update_count, 1);
 
-        //Change IsFocused will raise visual state update event.
+        //Changing IsFocused will raise visual state update event.
         control->SetIsEnabled(true);
         control->SetCanFocused(true);
         UpdateWindow(window.Handle());
@@ -36,11 +41,25 @@ TEST(ControlTest, UpdateVisualStateCase) {
         UpdateWindow(window.Handle());
         ASSERT_EQ(update_count, 1);
 
-        //Change IsVisible to true will raise visual state update event.
+        //Changing IsVisible to true will raise visual state update event.
         control->SetIsVisible(false);
         UpdateWindow(window.Handle());
         update_count = 0;
         control->SetIsVisible(true);
+        control->NeedRepaint();
+        UpdateWindow(window.Handle());
+        ASSERT_EQ(update_count, 1);
+
+        //Changing IsSelected will raise visual state update event.
+        update_count = 0;
+        control->SetIsSelected(true);
+        control->NeedRepaint();
+        UpdateWindow(window.Handle());
+        ASSERT_EQ(update_count, 1);
+
+        //Changing mouse over will raise visual state update event.
+        update_count = 0;
+        window.Messager().Send(WM_MOUSEMOVE, 0, 0);
         control->NeedRepaint();
         UpdateWindow(window.Handle());
         ASSERT_EQ(update_count, 1);
