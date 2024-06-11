@@ -67,18 +67,6 @@ void TextualControl::Initialize() {
 
     __super::Initialize();
 
-    /*
-    text_model_->SetTextColorPicker([](const Control& control) {
-        if (control.IsEnabledInContext()) {
-            return Color::FromRGB(internal::ControlNormalTextColorRGB);
-        }
-        else {
-            return Color::FromRGB(internal::ControlDisabledTextColorRGB);
-        }
-    });
-    */
-    text_model_->SetTextColor(Color::FromRGB(internal::ControlNormalTextColorRGB));
-
     Subscriptions() += text_model_->InlineObjectAttachedEvent().Subscribe(
         std::bind(&TextualControl::OnInlineObjectAttached, this, std::placeholders::_1));
 
@@ -93,6 +81,21 @@ void TextualControl::Layout(const zaf::Rect& previous_rect) {
     
     auto text_rect = DetermineTextRect();
     UpdateTextRect(text_rect);
+}
+
+
+void TextualControl::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    text_model_->SetTextColor([this]() {
+        if (IsEnabledInContext()) {
+            return Color::FromRGB(internal::ControlNormalTextColorRGB);
+        }
+        else {
+            return Color::FromRGB(internal::ControlDisabledTextColorRGB);
+        }
+    }());
 }
 
 

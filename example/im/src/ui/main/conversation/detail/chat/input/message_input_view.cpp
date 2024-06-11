@@ -1,7 +1,8 @@
 #include "ui/main/conversation/detail/chat/input/message_input_view.h"
-#include <zaf/window/message/keyboard_message.h>
+#include <zaf/base/as.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
+#include <zaf/window/message/keyboard_message.h>
 #include "logic/service.h"
 
 void MessageInputView::Initialize() {
@@ -24,15 +25,15 @@ void MessageInputView::Initialize() {
     send_button_ = zaf::Create<zaf::Button>();
     send_button_->SetBorder(zaf::Frame(0));
     send_button_->SetBackgroundColor(zaf::Color::Transparent());
-    /*
-    send_button_->SetTextColorPicker([](const Control& control) {
-        return zaf::Color::FromRGB(control.IsMouseOver() ? 0x3986E0 : 0x788894);
-    });
-    */
-    send_button_->SetTextColor(zaf::Color::FromRGB(0x788894));
     send_button_->SetText(L"Send");
     send_button_->SetCanFocused(false);
+    Subscriptions() += send_button_->VisualStateUpdateEvent().Subscribe(
+        [](const zaf::VisualStateUpdateInfo& event_info) {
 
+        auto send_button = zaf::As<zaf::Button>(event_info.Source());
+        auto text_color = zaf::Color::FromRGB(send_button->IsMouseOver() ? 0x3986E0 : 0x788894);
+        send_button->SetTextColor(text_color);
+    });
     Subscriptions() += send_button_->ClickEvent().Subscribe(
         std::bind(&MessageInputView::SendButtonClick, this));
 

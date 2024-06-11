@@ -153,16 +153,6 @@ void RichEdit::Initialize() {
         return Color::White();
     });
 
-    SetTextColorPicker([](const Control& control) {
-        
-        if (control.IsEnabledInContext()) {
-            return Color::Black();
-        }
-        else {
-            return Color::Gray();
-        }
-    });
-
     InitializeTextService();
 }
 
@@ -236,6 +226,17 @@ zaf::Size RichEdit::CalculatePreferredContentSize(const zaf::Size& max_size) con
     zaf::Size result{ static_cast<float>(width), static_cast<float>(height) };
     result = ToDIPs(result, this->GetDPI());
     return result;
+}
+
+
+void RichEdit::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    SetTextColor(
+        IsEnabledInContext() ? 
+        Color::FromRGB(zaf::internal::ControlNormalTextColorRGB) : 
+        Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB));
 }
 
 
@@ -695,35 +696,12 @@ void RichEdit::SetWordWrapping(zaf::WordWrapping word_wrapping) {
 
 
 Color RichEdit::TextColor() const {
-    return TextColorPicker()(*this);
+    return text_color_;
 }
 
 
 void RichEdit::SetTextColor(const Color& color) {
-    SetTextColorPicker(CreateColorPicker(color));
-}
-
-
-ColorPicker RichEdit::TextColorPicker() const {
-
-    if (text_color_picker_) {
-        return text_color_picker_;
-    }
-
-    return [](const Control& control) {
-        if (control.IsEnabledInContext()) {
-            return Color::FromRGB(zaf::internal::ControlNormalTextColorRGB);
-        }
-        else {
-            return Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB);
-        }
-    };
-}
-
-
-void RichEdit::SetTextColorPicker(ColorPicker color_picker) {
-
-    text_color_picker_ = std::move(color_picker);
+    text_color_ = color;
     NeedRepaint();
 }
 

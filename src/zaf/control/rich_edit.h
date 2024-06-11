@@ -69,9 +69,6 @@ public:
     Color TextColor() const;
     void SetTextColor(const Color& color);
 
-    ColorPicker TextColorPicker() const;
-    void SetTextColorPicker(ColorPicker color_picker);
-
     /**
      Get the dimensions of the white space inset around the text.
 
@@ -354,6 +351,7 @@ public:
 
 protected:
     void Initialize() override;
+    void UpdateVisualState() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     void Layout(const zaf::Rect& previous_rect) override;
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;

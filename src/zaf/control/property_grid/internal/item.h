@@ -27,7 +27,7 @@ private:
     void InitializeSubControls();
     void InitializeNameLabel();
     void InitializeValueView();
-    std::shared_ptr<Label> CreateLabel() const;
+    std::shared_ptr<Label> CreateLabel();
     void InitializeSplitControl();
     void SetAbsoluteSplitDistance(float new_distance);
     void SetFirstPaneMinLength(float max_x);

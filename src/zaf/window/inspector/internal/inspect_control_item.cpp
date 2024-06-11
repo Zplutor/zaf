@@ -8,21 +8,18 @@ InspectControlItem::InspectControlItem(const std::shared_ptr<Control>& control) 
 }
 
 
-void InspectControlItem::Initialize() {
+void InspectControlItem::UpdateVisualState() {
 
-    __super::Initialize();
+    __super::UpdateVisualState();
 
-    /*
-    SetTextColorPicker([this](const Control& item) {
-    
+    SetTextColor([this]() {
+
         if (this->IsSelectedInContext()) {
             return Color::White();
         }
 
         return control_->IsVisibleInContext() ? Color::Black() : Color::Gray();
-    });
-    */
-    SetTextColor(Color::Black());
+    }());
 }
 
 }

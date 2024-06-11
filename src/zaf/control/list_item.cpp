@@ -27,20 +27,17 @@ void ListItem::Initialize() {
             internal::ControlSelectedActivedColorRGB :
             internal::ControlSelectedInActivedColorRGB);
     });
+}
 
-    /*
-    SetTextColorPicker([](const Control& control) {
 
-        const auto& item = dynamic_cast<const ListItem&>(control);
-        if (item.IsSelectedInContext()) {
-            return Color::White();
-        }
-        else {
-            return Color::FromRGB(internal::ControlNormalTextColorRGB);
-        }
-    });
-    */
-    SetTextColor(Color::FromRGB(internal::ControlNormalTextColorRGB));
+void ListItem::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    SetTextColor(
+        IsSelectedInContext() ?
+        Color::White() :
+        Color::FromRGB(internal::ControlNormalTextColorRGB));
 }
 
 

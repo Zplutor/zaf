@@ -1219,6 +1219,9 @@
     <ClCompile Include="src\zaf\io\stream\stream.cpp">
       <Filter>zaf\io\stream</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\event\visual_state_update_info.cpp">
+      <Filter>zaf\control\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2811,6 +2814,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\stream\referenced_global_mem_stream_core.h">
       <Filter>zaf\internal\stream</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\event\visual_state_update_info.h">
+      <Filter>zaf\control\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
+#include <zaf/base/as.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/graphic_factory.h>
@@ -92,18 +93,13 @@ void ConversationItem::InitializeTitleLabel() {
         200,
         TitleHeight));
 
-    /*
-    title_label_->SetTextColorPicker([this](const zaf::Control& control) {
+    Subscriptions() += title_label_->VisualStateUpdateEvent().Subscribe(
+        [](const zaf::VisualStateUpdateInfo& event_info) {
     
-        if (IsSelectedInContext()) {
-            return zaf::Color::White();
-        }
-        else {
-            return zaf::Color::Black();
-        }
+        auto label = zaf::As<zaf::Label>(event_info.Source());
+        auto text_color = label->IsSelectedInContext() ? zaf::Color::White() : zaf::Color::Black();
+        label->SetTextColor(text_color);
     });
-    */
-    title_label_->SetTextColor(zaf::Color::Black());
 
     zaf::Font font;
     font.family_name = L"Î¢ÈíÑÅºÚ";
@@ -124,18 +120,16 @@ void ConversationItem::InitializeDigestLabel() {
         200,
         DigestHeight));
 
-    /*
-    digest_label_->SetTextColorPicker([this](const zaf::Control& control) {
+    Subscriptions() += digest_label_->VisualStateUpdateEvent().Subscribe(
+        [this](const zaf::VisualStateUpdateInfo& event_info) {
     
-        if (IsSelectedInContext()) {
-            return zaf::Color::White();
-        }
-        else {
-            return zaf::Color::FromRGB(0x979797);
-        }
+        auto label = zaf::As<zaf::Label>(event_info.Source());
+        auto text_color = 
+            label->IsSelectedInContext() ? 
+            zaf::Color::White() : 
+            zaf::Color::FromRGB(0x979797);
+        label->SetTextColor(text_color);
     });
-    */
-    digest_label_->SetTextColor(zaf::Color::FromRGB(0x979797));
 
     zaf::Font font;
     font.family_name = L"Î¢ÈíÑÅºÚ";
@@ -152,18 +146,16 @@ void ConversationItem::InitializeTimeLabel() {
     time_label_ = zaf::Create<zaf::Label>();
     time_label_->SetTextAlignment(zaf::TextAlignment::Tailing);
 
-    /*
-    time_label_->SetTextColorPicker([this](const Control& control) {
+    Subscriptions() += time_label_->VisualStateUpdateEvent().Subscribe(
+        [](const zaf::VisualStateUpdateInfo& event_info) {
     
-        if (IsSelectedInContext()) {
-            return zaf::Color::White();
-        }
-        else {
-            return zaf::Color::FromRGB(0xb6b6b6);
-        }
+        auto label = zaf::As<zaf::Label>(event_info.Source());
+        auto text_color =
+            label->IsSelectedInContext() ? 
+            zaf::Color::White() :
+            zaf::Color::FromRGB(0xb6b6b6);
+        label->SetTextColor(text_color);
     });
-    */
-    time_label_->SetTextColor(zaf::Color::FromRGB(0xb6b6b6));
 
     zaf::Font font;
     font.family_name = L"Î¢ÈíÑÅºÚ";

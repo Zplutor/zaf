@@ -96,28 +96,29 @@ void Item::InitializeValueView() {
 }
 
 
-std::shared_ptr<Label> Item::CreateLabel() const {
+std::shared_ptr<Label> Item::CreateLabel() {
 
     auto result = Create<Label>();
     result->SetParagraphAlignment(ParagraphAlignment::Center);
     result->SetTextTrimming(TextTrimmingGranularity::Character);
 
-    /*
-    result->SetTextColorPicker([this](const Control& control) {
+    Subscriptions() += result->VisualStateUpdateEvent().Subscribe(
+        [this](const VisualStateUpdateInfo& event_info) {
+    
+        auto label = As<Label>(event_info.Source());
+        label->SetTextColor([this, &label]() {
+        
+            if (label->IsSelectedInContext()) {
+                return Color::White();
+            }
 
-        if (control.IsSelectedInContext()) {
-            return Color::White();
-        }
+            if (data_->IsReadOnly()) {
+                return Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB);
+            }
 
-        if (data_->IsReadOnly()) {
-            return Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB);
-        }
-
-        return Color::FromRGB(zaf::internal::ControlNormalTextColorRGB);
+            return Color::FromRGB(zaf::internal::ControlNormalTextColorRGB);
+        }());
     });
-    */
-    result->SetTextColor(Color::FromRGB(zaf::internal::ControlNormalTextColorRGB));
-
     return result;
 }
 
