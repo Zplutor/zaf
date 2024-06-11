@@ -357,9 +357,6 @@
     <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp">
       <Filter>zaf\base\string</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\color_picker.cpp">
-      <Filter>zaf\control</Filter>
-    </ClCompile>
     <ClCompile Include="src\precompiled.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_trimming.cpp">
       <Filter>zaf\graphic\text</Filter>
@@ -1361,9 +1358,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\anchor_layouter.h">
       <Filter>zaf\control\layout</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\color_picker.h">
-      <Filter>zaf\control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual_control.h">
       <Filter>zaf\control</Filter>

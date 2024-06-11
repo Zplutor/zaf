@@ -8,9 +8,17 @@ void MemberItem::Initialize() {
     __super::Initialize();
 
     SetPadding(zaf::Frame(10, 0, 0, 0));
+    SetTextColor(zaf::Color::Black());
+    SetParagraphAlignment(zaf::ParagraphAlignment::Center);
+}
 
-    SetBackgroundColorPicker([this](const Control&) {
-    
+
+void MemberItem::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    SetBackgroundColor([this]() {
+
         if (IsSelectedInContext()) {
             return zaf::Color::FromRGB(0xAED2F6);
         }
@@ -20,11 +28,7 @@ void MemberItem::Initialize() {
         else {
             return zaf::Color::FromRGB(0xECF0F3);
         }
-    });
-
-    SetTextColor(zaf::Color::Black());
-
-    SetParagraphAlignment(zaf::ParagraphAlignment::Center);
+    }());
 }
 
 

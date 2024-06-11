@@ -1016,40 +1016,24 @@ void Control::SetBackgroundImageLayout(ImageLayout image_layout) {
 }
 
 
-ColorPicker Control::BackgroundColorPicker() const {
-
-    if (background_color_picker_) {
-        return background_color_picker_;
-    }
-
-    return [](const Control&) {
-        return Color::Transparent();
-    };
+Color Control::BackgroundColor() const {
+    return background_color_;
 }
 
 
-void Control::SetBackgroundColorPicker(const ColorPicker& color_picker) {
-
-    background_color_picker_ = color_picker;
+void Control::SetBackgroundColor(const Color& color) {
+    background_color_= color;
     NeedRepaint();
 }
 
 
-ColorPicker Control::BorderColorPicker() const {
-
-    if (border_color_picker_) {
-        return border_color_picker_;
-    }
-
-    return [](const Control&) {
-        return Color::FromRGB(internal::ControlBackgroundColorRGB);
-    };
+Color Control::BorderColor() const {
+    return border_color_;
 }
 
 
-void Control::SetBorderColorPicker(const ColorPicker& color_picker) {
-
-    border_color_picker_ = color_picker;
+void Control::SetBorderColor(const Color& color) {
+    border_color_ = color;
     NeedRepaint();
 }
 

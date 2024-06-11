@@ -83,7 +83,6 @@
     <ClCompile Include="src\zaf\control\check_box.cpp" />
     <ClCompile Include="src\zaf\control\check_state.cpp" />
     <ClCompile Include="src\zaf\control\clickable_control.cpp" />
-    <ClCompile Include="src\zaf\control\color_picker.cpp" />
     <ClCompile Include="src\zaf\control\combo_box.cpp" />
     <ClCompile Include="src\zaf\control\control.cpp" />
     <ClCompile Include="src\zaf\control\control_binder.cpp" />
@@ -485,7 +484,6 @@
     <ClInclude Include="src\zaf\control\check_box.h" />
     <ClInclude Include="src\zaf\control\check_state.h" />
     <ClInclude Include="src\zaf\control\clickable_control.h" />
-    <ClInclude Include="src\zaf\control\color_picker.h" />
     <ClInclude Include="src\zaf\control\combo_box.h" />
     <ClInclude Include="src\zaf\control\control.h" />
     <ClInclude Include="src\zaf\control\control_binder.h" />

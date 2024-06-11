@@ -32,45 +32,46 @@ void Button::Initialize() {
     __super::Initialize();
 
     SetBorder(Frame(1));
+    SetTextAlignment(TextAlignment::Center);
+    SetParagraphAlignment(ParagraphAlignment::Center);
+}
 
-    SetBackgroundColorPicker([](const Control& control) {
-    
-        const auto& button = dynamic_cast<const Button&>(control);
 
-        if (! button.IsEnabledInContext()) {
+void Button::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    SetBackgroundColor([this]() {
+
+        if (!this->IsEnabledInContext()) {
             return Color::FromRGB(0xcccccc);
         }
 
-        if (button.IsPressed()) {
+        if (this->IsPressed()) {
             return Color::FromRGB(internal::ButtonPressedBackgroundColorRGB);
         }
 
-        if (button.IsMouseOver()) {
+        if (this->IsMouseOver()) {
             return Color::FromRGB(internal::ButtonMouseOverBackgroundColorRGB);
         }
 
         return Color::FromRGB(0xe1e1e1);
-    });
+    }());
 
-    SetBorderColorPicker([](const Control& control) {
-    
-        const auto& button = dynamic_cast<const Button&>(control);
+    SetBorderColor([this]() {
 
-        if (! button.IsEnabledInContext()) {
+        if (!this->IsEnabledInContext()) {
             return Color::FromRGB(0xbfbfbf);
         }
 
-        if (button.IsPressed() ||
-            button.IsMouseOver() || 
-            button.IsDefault()) {
+        if (this->IsPressed() ||
+            this->IsMouseOver() ||
+            this->IsDefault()) {
             return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
         }
 
         return Color::FromRGB(0xadadad);
-    });
-
-    SetTextAlignment(TextAlignment::Center);
-    SetParagraphAlignment(ParagraphAlignment::Center);
+    }());
 }
 
 

@@ -2,7 +2,7 @@
 
 #include <functional>
 #include <memory>
-#include <zaf/control/color_picker.h>
+#include <zaf/graphic/color.h>
 #include <zaf/graphic/size.h>
 
 namespace zaf {

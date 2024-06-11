@@ -14,19 +14,6 @@ void ListItem::Initialize() {
 
     SetParagraphAlignment(ParagraphAlignment::Center);
     SetPadding(Frame(2, 0, 2, 0));
-
-    SetBackgroundColorPicker([](const Control& control) {
-
-        const auto& item = dynamic_cast<const ListItem&>(control);
-        if (!item.IsSelectedInContext()) {
-            return Color::Transparent();
-        }
-
-        return Color::FromRGB(
-            item.IsInFocusContext() ?
-            internal::ControlSelectedActivedColorRGB :
-            internal::ControlSelectedInActivedColorRGB);
-    });
 }
 
 
@@ -38,6 +25,18 @@ void ListItem::UpdateVisualState() {
         IsSelectedInContext() ?
         Color::White() :
         Color::FromRGB(internal::ControlNormalTextColorRGB));
+
+    SetBackgroundColor([this]() {
+
+        if (!IsSelectedInContext()) {
+            return Color::Transparent();
+        }
+
+        return Color::FromRGB(
+            IsInFocusContext() ?
+            internal::ControlSelectedActivedColorRGB :
+            internal::ControlSelectedInActivedColorRGB);
+    }());
 }
 
 

@@ -62,9 +62,7 @@ void ScrollBox::Initialize() {
 
     SetBorder(Frame(1));
 
-    SetBorderColorPicker([](const Control&) {
-        return Color::Black();
-    });
+    SetBorderColor(Color::Black());
 
     //The container control should be added before the scroll bars to position the container below 
     //the scroll bars. This ensures that overlay scroll bars are not overlapped by the container.

@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <zaf/base/as.h>
-#include <zaf/control/color_picker.h>
 #include <zaf/control/textual/dynamic_inline_object.h>
 #include <zaf/control/textual/ranged_text_style.h>
 #include <zaf/creation.h>

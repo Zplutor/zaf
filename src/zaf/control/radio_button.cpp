@@ -30,9 +30,7 @@ void RadioButton::Initialize() {
 
     __super::Initialize();
 
-    SetBackgroundColorPicker([](const Control&) {
-        return Color::Transparent();
-    });
+    SetBackgroundColor(Color::Transparent());
 }
 
 

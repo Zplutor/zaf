@@ -15,9 +15,16 @@ void ValueView::Initialize() {
     this->SetBackgroundColor(Color::White());
 
     this->SetBorder(Frame{ 0, 1, 1, 1});
-    this->SetBorderColorPicker([](const Control& control) {
-    
-        auto parent = control.Parent();
+}
+
+
+void ValueView::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    SetBorderColor([this]() {
+
+        auto parent = Parent();
         while (parent) {
 
             auto list_item = As<ListItem>(parent);
@@ -29,7 +36,7 @@ void ValueView::Initialize() {
         }
 
         return Color::White();
-    });
+    }());
 }
 
 

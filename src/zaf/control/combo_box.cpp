@@ -64,29 +64,7 @@ void ComboBox::Initialize() {
 
     SetBorder(Frame{ 1 });
     SetTextInset(Frame{ 3, 1, 1, 1 });
-
     SetDropDownButtonColor(Color::Black());
-
-    SetBackgroundColorPicker([](const Control& control) {
-
-        if (! control.IsEnabledInContext()) {
-            return Color::FromRGB(internal::ControlBackgroundColorRGB);
-        }
-
-        return Color::FromRGB(internal::ControlContentColorRGB);
-    });
-
-    SetBorderColorPicker([](const Control& control) {
-
-        const auto& combo_box = dynamic_cast<const ComboBox&>(control);
-
-        if (combo_box.IsPressed() || combo_box.IsMouseOver()) {
-            return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
-        }
-
-        return Color::Black();
-    });
-
     SetParagraphAlignment(ParagraphAlignment::Center);
 
     drop_down_window_ = Create<internal::ComboBoxDropDownWindow>();
@@ -160,6 +138,30 @@ void ComboBox::Layout(const zaf::Rect& previous_rect) {
 
     auto edit_box_rect = DetermineTextRect();
     edit_box_->SetRect(edit_box_rect);
+}
+
+
+void ComboBox::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    SetBackgroundColor([this]() {
+
+        if (!IsEnabledInContext()) {
+            return Color::FromRGB(internal::ControlBackgroundColorRGB);
+        }
+
+        return Color::FromRGB(internal::ControlContentColorRGB);
+    }());
+
+    SetBorderColor([this]() {
+
+        if (IsPressed() || IsMouseOver()) {
+            return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
+        }
+
+        return Color::Black();
+    }());
 }
 
 
@@ -675,14 +677,17 @@ std::shared_ptr<ListItem> ComboBoxDropDownListBox::DropDownListBoxDelegate::Crea
 
     auto result = __super::CreateItem(item_index, item_data);
 
-    result->SetBackgroundColorPicker([](const Control& control) {
+    result->Subscriptions() += result->VisualStateUpdateEvent().Subscribe(
+        [](const VisualStateUpdateInfo& event_info) {
+
+        auto item = As<ListItem>(event_info.Source());
 
         //Drop down list is always inactive, display active selection color instead of inactive
         //selection color.
-        return 
-            control.IsSelectedInContext() ?
+        item->SetBackgroundColor(
+            item->IsSelectedInContext() ?
             Color::FromRGB(internal::ControlSelectedActivedColorRGB) :
-            Color::Transparent();
+            Color::Transparent());
     });
 
     return result;

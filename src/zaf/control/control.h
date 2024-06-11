@@ -9,7 +9,6 @@
 #include <vector>
 #include <zaf/base/event/event.h>
 #include <zaf/control/anchor.h>
-#include <zaf/control/color_picker.h>
 #include <zaf/control/event/double_click_info.h>
 #include <zaf/control/event/focus_event_info.h>
 #include <zaf/control/event/ime_event_infos.h>
@@ -349,50 +348,22 @@ public:
     /**
      Get background color.
      */
-    Color BackgroundColor() const {
-        return BackgroundColorPicker()(*this);
-    }
-
-    /**
-     Get the color picker of background.
-     */
-    ColorPicker BackgroundColorPicker() const;
+    Color BackgroundColor() const;
 
     /**
      Set background color.
      */
-    void SetBackgroundColor(const Color& color) {
-        SetBackgroundColorPicker(CreateColorPicker(color));
-    }
-
-    /**
-     Set the color picker of background.
-     */
-    void SetBackgroundColorPicker(const ColorPicker& color_picker);
+    void SetBackgroundColor(const Color& color);
 
     /**
      Get border color.
      */
-    Color BorderColor() const {
-        return BorderColorPicker()(*this);
-    }
-
-    /**
-     Get the color picker of border color.
-     */
-    ColorPicker BorderColorPicker() const;
+    Color BorderColor() const;
 
     /**
      Set border color.
      */
-    void SetBorderColor(const Color& color) {
-        SetBorderColorPicker(CreateColorPicker(color));
-    }
-
-    /**
-     Set the color picker of border.
-     */
-    void SetBorderColorPicker(const ColorPicker& color_picker);
+    void SetBorderColor(const Color& color);
 
     /**
      Get the layouter.
@@ -1139,8 +1110,8 @@ private:
     std::uint32_t last_mouse_down_time_{};
     Point last_mouse_down_position_;
 
-    ColorPicker background_color_picker_;
-    ColorPicker border_color_picker_;
+    Color background_color_ = Color::Transparent();
+    Color border_color_ = Color::Black();
     ImageLayout background_image_layout_{ ImageLayout::None };
     ImagePicker background_image_picker_;
 

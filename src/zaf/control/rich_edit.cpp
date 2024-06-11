@@ -137,21 +137,7 @@ void RichEdit::Initialize() {
     SetFont(Font::Default());
     SetTextAlignment(TextAlignment::Leading);
     SetParagraphAlignment(ParagraphAlignment::Near);
-
-    SetBorderColorPicker([](const Control&) {
-        return Color::Black();
-    });
-
-    SetBackgroundColorPicker([](const Control& control) {
-
-        const auto& rich_edit = dynamic_cast<const RichEdit&>(control);
-
-        if (rich_edit.IsReadOnly() || !rich_edit.IsEnabledInContext()) {
-            return Color::FromRGB(0xEEEEEE);;
-        }
-
-        return Color::White();
-    });
+    SetBorderColor(Color::Black());
 
     InitializeTextService();
 }
@@ -237,6 +223,13 @@ void RichEdit::UpdateVisualState() {
         IsEnabledInContext() ? 
         Color::FromRGB(zaf::internal::ControlNormalTextColorRGB) : 
         Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB));
+
+    SetBackgroundColor([this]() {
+        if (IsReadOnly() || !IsEnabledInContext()) {
+            return Color::FromRGB(0xEEEEEE);;
+        }
+        return Color::White();
+    }());
 }
 
 

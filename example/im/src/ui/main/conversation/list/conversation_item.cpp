@@ -41,25 +41,6 @@ void ConversationItem::Initialize() {
     InitializeTitleLabel();
     InitializeDigestLabel(); 
     InitializeTimeLabel();
-
-    SetBackgroundColorPicker([this](const Control& control) {
-
-        auto& item = dynamic_cast<const ConversationItem&>(control);
-
-        if (item.IsSelectedInContext()) {
-            return zaf::Color::FromRGB(0x6495CC);
-        }
-        
-        if (conversation_->is_sticked) {
-            return zaf::Color::FromRGB(0xE8F3FB);
-        }
-
-        if (item.ContainMouse()) {
-            return zaf::Color::FromRGB(0xF3F8FA);
-        }
-
-        return zaf::Color::White();
-    });
 }
 
 
@@ -186,6 +167,29 @@ void ConversationItem::Layout(const zaf::Rect& previous_rect) {
         TitleRightMargin);
 
     digest_label_->SetWidth(current_size.width - digest_label_->Position().x - DigestRightMargin);
+}
+
+
+void ConversationItem::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    SetBackgroundColor([this]() {
+
+        if (IsSelectedInContext()) {
+            return zaf::Color::FromRGB(0x6495CC);
+        }
+
+        if (conversation_->is_sticked) {
+            return zaf::Color::FromRGB(0xE8F3FB);
+        }
+
+        if (ContainMouse()) {
+            return zaf::Color::FromRGB(0xF3F8FA);
+        }
+
+        return zaf::Color::White();
+    }());
 }
 
 
