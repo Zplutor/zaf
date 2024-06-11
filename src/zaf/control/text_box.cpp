@@ -120,15 +120,23 @@ zaf::Rect TextBox::DetermineTextRect() {
 }
 
 
-ColorPicker TextBox::SelectionBackgroundColorPicker() const {
+Color TextBox::SelectionBackgroundColor() const {
+    return selection_background_color_;
+}
 
-    if (selection_background_color_picker_) {
-        return selection_background_color_picker_;
-    }
+void TextBox::SetSelectionBackgroundColor(const Color& color) {
+    selection_background_color_ = color;
+    NeedRepaint();
+}
 
-    return [](const Control& control) {
 
-        if (control.ContainFocus()) {
+void TextBox::UpdateVisualState() {
+
+    __super::UpdateVisualState();
+
+    SetSelectionBackgroundColor([this]() {
+
+        if (this->ContainFocus()) {
             //Use the same color as rich edit.
             auto color = zaf::Color::FromCOLORREF(GetSysColor(COLOR_HIGHLIGHT));
             color.a = 100.f / 255.f;
@@ -136,21 +144,7 @@ ColorPicker TextBox::SelectionBackgroundColorPicker() const {
         }
 
         return Color::FromRGB(0xE4E4E4);
-    };
-}
-
-void TextBox::SetSelectionBackgroundColorPicker(ColorPicker picker) {
-    selection_background_color_picker_ = std::move(picker);
-    NeedRepaint();
-}
-
-
-Color TextBox::SelectionBackgroundColor() const {
-    return SelectionBackgroundColorPicker()(*this);
-}
-
-void TextBox::SetSelectionBackgroundColor(const Color& color) {
-    SetSelectionBackgroundColorPicker(CreateColorPicker(color));
+    }());
 }
 
 

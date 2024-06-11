@@ -1,7 +1,6 @@
 #pragma once
 
 #include <zaf/base/range.h>
-#include <zaf/control/color_picker.h>
 #include <zaf/control/self_scroll_control.h>
 #include <zaf/graphic/text/text_layout.h>
 #include <zaf/control/textual_control.h>
@@ -117,9 +116,6 @@ public:
         const Range& range,
         textual::SelectionOption selection_option = textual::SelectionOption::Default);
 
-    ColorPicker SelectionBackgroundColorPicker() const;
-    void SetSelectionBackgroundColorPicker(ColorPicker picker);
-
     Color SelectionBackgroundColor() const;
     void SetSelectionBackgroundColor(const Color& color);
 
@@ -200,6 +196,7 @@ protected:
     void Layout(const zaf::Rect&) override;
     zaf::Rect DetermineTextRect() override;
     void OnTextChanged(const TextChangedInfo& event_info) override;
+    void UpdateVisualState() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     void PaintTextBack(
         Canvas& canvas,
@@ -280,7 +277,7 @@ private:
     Event<SelfScrollControlScrollBarChangeInfo> scroll_bar_change_event_;
     Event<SelfScrollControlScrollValuesChangeInfo> scroll_values_change_event_;
 
-    ColorPicker selection_background_color_picker_;
+    Color selection_background_color_;
     textual::WordExtractor word_extractor_;
 
     Subscription ime_message_subscription_;
