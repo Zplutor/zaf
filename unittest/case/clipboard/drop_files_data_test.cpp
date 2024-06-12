@@ -11,11 +11,11 @@ TEST(DropFilesDataTest, MediumTransfer) {
     auto test = [](const std::vector<std::filesystem::path>& paths) {
     
         DropFilesData source_data{ paths };
-        auto medium = source_data.SaveToMedium(
+        auto medium = source_data.WriteToMedium(
             DataDescriptor::FromFormatType(FormatType::DropFiles));
 
         DropFilesData destination_data;
-        destination_data.LoadFromMedium(
+        destination_data.ReadFromMedium(
             medium, 
             DataDescriptor::FromFormatType(FormatType::DropFiles));
 
@@ -36,14 +36,14 @@ TEST(DropFilesDataTest, SaveToMediumWithInvalidValue) {
     {
         DropFilesData data;
         ASSERT_THROW(
-            data.SaveToMedium(DataDescriptor::FromFormatType(FormatType::DropFiles)),
+            data.WriteToMedium(DataDescriptor::FromFormatType(FormatType::DropFiles)),
             InvalidDataError);
     }
 
     //Not rooted path.
     {
         DropFilesData data{ { L"Windows\\notepad.exe" }};
-        ASSERT_THROW(data.SaveToMedium(
+        ASSERT_THROW(data.WriteToMedium(
             DataDescriptor::FromFormatType(FormatType::DropFiles)), 
             InvalidDataError);
     }
@@ -54,12 +54,12 @@ TEST(DropFilesDataTest, SaveToMediumWithUnsupportedArguments) {
 
     DropFilesData data{ { L"C:\\Windows\\Notepad.exe" } };
 
-    ASSERT_THROW(data.SaveToMedium(
+    ASSERT_THROW(data.WriteToMedium(
         DataDescriptor::FromFormatType(FormatType::Text)),
         InvalidOperationError);
 
     ASSERT_THROW(
-        data.SaveToMedium(DataDescriptor::FromFormatType(FormatType::DropFiles, MediumType::File)), 
+        data.WriteToMedium(DataDescriptor::FromFormatType(FormatType::DropFiles, MediumType::File)), 
         InvalidOperationError);
 }
 
@@ -71,10 +71,10 @@ TEST(DropFilesDataTest, LoadFromMediumWithUnsupportedArguments) {
 
     DropFilesData data;
     ASSERT_THROW(
-        data.LoadFromMedium(medium, DataDescriptor::FromFormatType(FormatType::Text)),
+        data.ReadFromMedium(medium, DataDescriptor::FromFormatType(FormatType::Text)),
         InvalidOperationError);
 
     ASSERT_THROW(
-        data.LoadFromMedium({}, DataDescriptor::FromFormatType(FormatType::DropFiles)),
+        data.ReadFromMedium({}, DataDescriptor::FromFormatType(FormatType::DropFiles)),
         InvalidOperationError);
 }

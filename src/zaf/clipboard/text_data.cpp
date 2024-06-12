@@ -9,7 +9,7 @@ TextData::TextData(std::wstring text) : text_(std::move(text)) {
 }
 
 
-Medium TextData::SaveToMedium(const DataDescriptor& data_descriptor) const {
+Medium TextData::WriteToMedium(const DataDescriptor& data_descriptor) const {
 
     if (data_descriptor.FormatType() != FormatType::Text) {
         throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
@@ -27,7 +27,7 @@ Medium TextData::SaveToMedium(const DataDescriptor& data_descriptor) const {
 }
 
 
-void TextData::LoadFromMedium(const Medium& medium, const DataDescriptor& data_descriptor) {
+void TextData::ReadFromMedium(const Medium& medium, const DataDescriptor& data_descriptor) {
 
     if (data_descriptor.FormatType() != FormatType::Text) {
         throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };

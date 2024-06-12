@@ -5,12 +5,12 @@
 using namespace zaf;
 using namespace zaf::clipboard;
 
-TEST(TextDataTest, SaveToMedium) {
+TEST(TextDataTest, WriteToMedium) {
 
     TextData text_data{ L"TextDataTest" };
 
     auto format = DataDescriptor::FromFormatType(FormatType::Text, MediumType::GlobalMem);
-    auto medium = text_data.SaveToMedium(format);
+    auto medium = text_data.WriteToMedium(format);
     ASSERT_EQ(medium.Type(), MediumType::GlobalMem);
     
     std::wstring text;
@@ -27,13 +27,13 @@ TEST(TextDataTest, SaveToMediumUnsupportedFormat) {
     TextData text_data{ L"TextDataTest" };
     
     auto format = DataDescriptor::FromFormatType(static_cast<FormatType>(0));
-    ASSERT_THROW(text_data.SaveToMedium(format), InvalidOperationError);
+    ASSERT_THROW(text_data.WriteToMedium(format), InvalidOperationError);
 }
 
 
-TEST(TextDataTest, LoadFromMedium) {
+TEST(TextDataTest, ReadFromMedium) {
 
-    constexpr const wchar_t* TestString = L"LoadFromMedium";
+    constexpr const wchar_t* TestString = L"ReadFromMedium";
 
     auto buffer_size = (std::wcslen(TestString) + 1) * sizeof(wchar_t);
     auto global_mem = GlobalMem::Alloc(buffer_size, GlobalMemFlags::Movable);
@@ -45,7 +45,7 @@ TEST(TextDataTest, LoadFromMedium) {
     auto medium = Medium::FromGlobalMem(std::move(global_mem));
 
     TextData text_data;
-    text_data.LoadFromMedium(medium, DataDescriptor::FromFormatType(FormatType::Text));
+    text_data.ReadFromMedium(medium, DataDescriptor::FromFormatType(FormatType::Text));
 
     ASSERT_EQ(text_data.Text(), TestString);
 }
@@ -55,6 +55,6 @@ TEST(TextDataTest, LoadFromMediumUnsupportedFormat) {
 
     TextData text_data;
     ASSERT_THROW(
-        text_data.LoadFromMedium({}, DataDescriptor::FromFormatType(FormatType::Indeterminate)),
+        text_data.ReadFromMedium({}, DataDescriptor::FromFormatType(FormatType::Indeterminate)),
         InvalidOperationError);
 }

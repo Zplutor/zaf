@@ -21,10 +21,10 @@ public:
     StyledTextData() = default;
     explicit StyledTextData(StyledText styled_text);
 
-    clipboard::Medium SaveToMedium(
+    clipboard::Medium WriteToMedium(
         const clipboard::DataDescriptor& data_descriptor) const override;
 
-    void LoadFromMedium(
+    void ReadFromMedium(
         const clipboard::Medium& medium,
         const clipboard::DataDescriptor& data_descriptor) override;
 
@@ -34,13 +34,13 @@ public:
     }
 
 private:
-    clipboard::Medium SaveToStyledTextFormat() const;
+    clipboard::Medium WriteToStyledTextFormat() const;
 
-    static StyledText LoadStyledText(
+    static StyledText ReadStyledText(
         const clipboard::Medium& medium,
         const clipboard::DataDescriptor& data_descriptor);
 
-    static StyledText LoadWithStyledTextFormat(const clipboard::Medium& medium);
+    static StyledText ReadWithStyledTextFormat(const clipboard::Medium& medium);
 
 private:
     StyledText styled_text_;

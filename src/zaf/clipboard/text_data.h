@@ -19,8 +19,8 @@ public:
         return std::move(text_);
     }
 
-    Medium SaveToMedium(const DataDescriptor& data_descriptor) const override;
-    void LoadFromMedium(const Medium& medium, const DataDescriptor& data_descriptor) override;
+    Medium WriteToMedium(const DataDescriptor& data_descriptor) const override;
+    void ReadFromMedium(const Medium& medium, const DataDescriptor& data_descriptor) override;
 
 private:
     std::wstring text_;

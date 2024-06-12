@@ -18,7 +18,7 @@ StyledTextData::StyledTextData(StyledText styled_text) :
 }
 
 
-Medium StyledTextData::SaveToMedium(const DataDescriptor& data_descriptor) const {
+Medium StyledTextData::WriteToMedium(const DataDescriptor& data_descriptor) const {
 
     if (!HasFlag(data_descriptor.MediumTypes(), MediumType::GlobalMem)) {
         throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
@@ -32,14 +32,14 @@ Medium StyledTextData::SaveToMedium(const DataDescriptor& data_descriptor) const
         return Medium::FromString(styled_text_.Text());
     }
     else if (data_descriptor.FormatType() == FormatType()) {
-        return SaveToStyledTextFormat();
+        return WriteToStyledTextFormat();
     }
 
     throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
 }
 
 
-Medium StyledTextData::SaveToStyledTextFormat() const {
+Medium StyledTextData::WriteToStyledTextFormat() const {
 
     auto global_mem = GlobalMem::Alloc(1, GlobalMemFlags::Movable);
     {
@@ -51,7 +51,7 @@ Medium StyledTextData::SaveToStyledTextFormat() const {
 }
 
 
-void StyledTextData::LoadFromMedium(
+void StyledTextData::ReadFromMedium(
     const Medium& medium,
     const DataDescriptor& data_descriptor) {
 
@@ -63,11 +63,11 @@ void StyledTextData::LoadFromMedium(
         throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
     }
 
-    styled_text_ = LoadStyledText(medium, data_descriptor);
+    styled_text_ = ReadStyledText(medium, data_descriptor);
 }
 
 
-StyledText StyledTextData::LoadStyledText(
+StyledText StyledTextData::ReadStyledText(
     const Medium& medium,
     const DataDescriptor& data_descriptor) {
 
@@ -75,14 +75,14 @@ StyledText StyledTextData::LoadStyledText(
         return StyledText{ medium.ToString() };
     }
     else if (data_descriptor.FormatType() == FormatType()) {
-        return LoadWithStyledTextFormat(medium);
+        return ReadWithStyledTextFormat(medium);
     }
 
     throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
 }
 
 
-StyledText StyledTextData::LoadWithStyledTextFormat(const Medium& medium) {
+StyledText StyledTextData::ReadWithStyledTextFormat(const Medium& medium) {
 
     StyledText result;
     medium.VisitGlobalMem([&result](const GlobalMem& global_mem) {

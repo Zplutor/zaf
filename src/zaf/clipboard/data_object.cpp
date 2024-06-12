@@ -27,7 +27,7 @@ DataDescriptorEnumerator DataObject::EnumerateDataDescriptors() const {
 void DataObject::GetData(const DataDescriptor& data_descriptor, ClipboardData& data) const {
 
     auto medium = GetData(data_descriptor);
-    data.LoadFromMedium(medium, data_descriptor);
+    data.ReadFromMedium(medium, data_descriptor);
 }
 
 
@@ -44,7 +44,7 @@ Medium DataObject::GetData(const DataDescriptor& data_descriptor) const {
 
 
 void DataObject::SetData(const DataDescriptor& data_descriptor, const ClipboardData& data) {
-    SetData(data_descriptor, data.SaveToMedium(data_descriptor));
+    SetData(data_descriptor, data.WriteToMedium(data_descriptor));
 }
 
 
