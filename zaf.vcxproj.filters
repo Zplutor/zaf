@@ -208,6 +208,9 @@
     <Filter Include="zaf\internal\stream">
       <UniqueIdentifier>{6df488a8-8dd8-4ae1-8fd8-a7430c8c8be2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\object\style">
+      <UniqueIdentifier>{6fc84dc4-b426-4c31-a1fb-952fe1f37ece}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1216,8 +1219,17 @@
     <ClCompile Include="src\zaf\io\stream\stream.cpp">
       <Filter>zaf\io\stream</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\event\visual_state_update_info.cpp">
+    <ClCompile Include="src\zaf\control\event\style_update_info.cpp">
       <Filter>zaf\control\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\style\style.cpp">
+      <Filter>zaf\object\style</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\style\sheet.cpp">
+      <Filter>zaf\object\style</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\style\sheet_parser.cpp">
+      <Filter>zaf\object\style</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2809,8 +2821,17 @@
     <ClInclude Include="src\zaf\internal\stream\referenced_global_mem_stream_core.h">
       <Filter>zaf\internal\stream</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\event\visual_state_update_info.h">
+    <ClInclude Include="src\zaf\control\event\style_update_info.h">
       <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\style\style.h">
+      <Filter>zaf\object\style</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\style\sheet.h">
+      <Filter>zaf\object\style</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\style\sheet_parser.h">
+      <Filter>zaf\object\style</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -196,7 +196,7 @@ protected:
     void Layout(const zaf::Rect&) override;
     zaf::Rect DetermineTextRect() override;
     void OnTextChanged(const TextChangedInfo& event_info) override;
-    void UpdateVisualState() override;
+    void UpdateStyle() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     void PaintTextBack(
         Canvas& canvas,

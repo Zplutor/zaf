@@ -141,9 +141,9 @@ void ComboBox::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void ComboBox::UpdateVisualState() {
+void ComboBox::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetBackgroundColor([this]() {
 
@@ -677,8 +677,8 @@ std::shared_ptr<ListItem> ComboBoxDropDownListBox::DropDownListBoxDelegate::Crea
 
     auto result = __super::CreateItem(item_index, item_data);
 
-    result->Subscriptions() += result->VisualStateUpdateEvent().Subscribe(
-        [](const VisualStateUpdateInfo& event_info) {
+    result->Subscriptions() += result->StyleUpdateEvent().Subscribe(
+        [](const StyleUpdateInfo& event_info) {
 
         auto item = As<ListItem>(event_info.Source());
 

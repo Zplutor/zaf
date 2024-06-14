@@ -27,8 +27,8 @@ void MessageInputView::Initialize() {
     send_button_->SetBackgroundColor(zaf::Color::Transparent());
     send_button_->SetText(L"Send");
     send_button_->SetCanFocused(false);
-    Subscriptions() += send_button_->VisualStateUpdateEvent().Subscribe(
-        [](const zaf::VisualStateUpdateInfo& event_info) {
+    Subscriptions() += send_button_->StyleUpdateEvent().Subscribe(
+        [](const zaf::StyleUpdateInfo& event_info) {
 
         auto send_button = zaf::As<zaf::Button>(event_info.Source());
         auto text_color = zaf::Color::FromRGB(send_button->IsMouseOver() ? 0x3986E0 : 0x788894);

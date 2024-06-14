@@ -27,7 +27,7 @@ public:
 
 protected:
     void Initialize() override;
-    void UpdateVisualState() override;
+    void UpdateStyle() override;
 
     void NotifyValueChanged(const std::shared_ptr<Object>& new_value) {
         value_changed_event_.AsObserver().OnNext(new_value);

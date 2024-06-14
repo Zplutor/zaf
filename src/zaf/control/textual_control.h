@@ -318,7 +318,7 @@ public:
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
-    void UpdateVisualState() override;
+    void UpdateStyle() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
     virtual void PaintTextBack(

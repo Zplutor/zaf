@@ -32,9 +32,9 @@ void SpinButton::SetArrowColor(const Color& color) {
 }
 
 
-void SpinButton::UpdateVisualState() {
+void SpinButton::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetArrowColor([this]() {
     

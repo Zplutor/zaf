@@ -215,9 +215,9 @@ zaf::Size RichEdit::CalculatePreferredContentSize(const zaf::Size& max_size) con
 }
 
 
-void RichEdit::UpdateVisualState() {
+void RichEdit::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetTextColor(
         IsEnabledInContext() ? 

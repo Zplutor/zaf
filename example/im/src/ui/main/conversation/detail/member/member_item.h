@@ -13,7 +13,7 @@ public:
     }
 
 protected:
-    void UpdateVisualState() override;
+    void UpdateStyle() override;
     void Paint(zaf::Canvas& canvas, const zaf::Rect&) override;;
 
     zaf::Rect DetermineTextRect() override;

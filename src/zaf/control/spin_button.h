@@ -16,7 +16,7 @@ public:
     void SetArrowColor(const Color& color);
 
 protected:
-    void UpdateVisualState() override;
+    void UpdateStyle() override;
     void Paint(Canvas& canvas, const zaf::Rect&) override;
 
 private:

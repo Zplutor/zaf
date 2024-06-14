@@ -42,9 +42,9 @@ void ScrollBarThumb::SetIsHorizontal(bool is_horizontal) {
 }
 
 
-void ScrollBarThumb::UpdateVisualState() {
+void ScrollBarThumb::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetThumbColor([this]() {
 

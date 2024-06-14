@@ -37,9 +37,9 @@ void Button::Initialize() {
 }
 
 
-void Button::UpdateVisualState() {
+void Button::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetBackgroundColor([this]() {
 

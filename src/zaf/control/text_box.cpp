@@ -130,9 +130,9 @@ void TextBox::SetSelectionBackgroundColor(const Color& color) {
 }
 
 
-void TextBox::UpdateVisualState() {
+void TextBox::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetSelectionBackgroundColor([this]() {
 

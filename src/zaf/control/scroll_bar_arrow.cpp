@@ -23,9 +23,9 @@ void ScrollBarArrow::Initialize() {
 }
 
 
-void ScrollBarArrow::UpdateVisualState() {
+void ScrollBarArrow::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetArrowColor([this]() {
 

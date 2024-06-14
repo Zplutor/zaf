@@ -18,9 +18,9 @@ void ValueView::Initialize() {
 }
 
 
-void ValueView::UpdateVisualState() {
+void ValueView::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetBorderColor([this]() {
 

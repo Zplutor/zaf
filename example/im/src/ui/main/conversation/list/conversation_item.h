@@ -16,7 +16,7 @@ public:
 
 protected:
     void Layout(const zaf::Rect& previous_rect) override;
-    void UpdateVisualState() override;
+    void UpdateStyle() override;
     void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
     void OnMouseEnter(const zaf::MouseEnterInfo& event_info) override {

@@ -14,8 +14,8 @@ TEST(ControlTest, UpdateVisualStateCase) {
         control->SetSize(Size{ 100, 100 });
 
         int update_count{};
-        auto sub = control->VisualStateUpdateEvent().Subscribe(
-            [&update_count](const VisualStateUpdateInfo& event_info) {
+        auto sub = control->StyleUpdateEvent().Subscribe(
+            [&update_count](const StyleUpdateInfo& event_info) {
             ++update_count;
         });
 
@@ -76,8 +76,8 @@ TEST(ControlTest, NoPaintWhenUpdatingVisualState) {
         label->SetIsEnabled(true);
         label->SetTextColor(Color::White());
 
-        auto label_sub = label->VisualStateUpdateEvent().Subscribe(
-            [](const VisualStateUpdateInfo& event_info) {
+        auto label_sub = label->StyleUpdateEvent().Subscribe(
+            [](const StyleUpdateInfo& event_info) {
 
             auto label = As<Label>(event_info.Source());
             //This will make a NeedRepaint call.

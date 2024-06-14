@@ -56,7 +56,7 @@ public:
 
 protected:
     void Initialize() override;
-    void UpdateVisualState() override;
+    void UpdateStyle() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
     void OnMouseCaptured(const MouseCapturedInfo& event_info) override;
     void OnMouseReleased(const MouseReleasedInfo& event_info) override;

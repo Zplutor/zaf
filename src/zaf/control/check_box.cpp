@@ -55,9 +55,9 @@ zaf::Size CheckBox::CalculatePreferredContentSize(const zaf::Size& max_size) con
 }
 
 
-void CheckBox::UpdateVisualState() {
+void CheckBox::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetBoxBorderColor(internal::GetBoxBorderColor(*this));
     SetBoxBackgroundColor(internal::GetBoxBackgroundColor(*this));

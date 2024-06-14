@@ -47,9 +47,9 @@ zaf::Size RadioButton::CalculatePreferredContentSize(const zaf::Size& max_size) 
 }
 
 
-void RadioButton::UpdateVisualState() {
+void RadioButton::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetRadioBorderColor(internal::GetBoxBorderColor(*this));
     SetRadioBackgroundColor(internal::GetBoxBackgroundColor(*this));

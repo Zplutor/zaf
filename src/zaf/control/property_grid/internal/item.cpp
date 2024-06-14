@@ -102,8 +102,8 @@ std::shared_ptr<Label> Item::CreateLabel() {
     result->SetParagraphAlignment(ParagraphAlignment::Center);
     result->SetTextTrimming(TextTrimmingGranularity::Character);
 
-    Subscriptions() += result->VisualStateUpdateEvent().Subscribe(
-        [this](const VisualStateUpdateInfo& event_info) {
+    Subscriptions() += result->StyleUpdateEvent().Subscribe(
+        [this](const StyleUpdateInfo& event_info) {
     
         auto label = As<Label>(event_info.Source());
         label->SetTextColor([this, &label]() {
@@ -130,8 +130,8 @@ void Item::InitializeSplitControl() {
     split_control_->SetFirstPane(name_label_);
     split_control_->SetSecondPane(value_view_);
 
-    Subscriptions() += split_control_->SplitBar()->VisualStateUpdateEvent().Subscribe(
-        [this](const VisualStateUpdateInfo& event_info) {
+    Subscriptions() += split_control_->SplitBar()->StyleUpdateEvent().Subscribe(
+        [this](const StyleUpdateInfo& event_info) {
     
         auto split_bar = As<SplitBar>(event_info.Source());
         split_bar->SetSplitterColor([this, &split_bar]() {

@@ -8,9 +8,9 @@ InspectControlItem::InspectControlItem(const std::shared_ptr<Control>& control) 
 }
 
 
-void InspectControlItem::UpdateVisualState() {
+void InspectControlItem::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetTextColor([this]() {
 

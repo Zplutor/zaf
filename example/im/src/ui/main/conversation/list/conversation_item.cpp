@@ -74,8 +74,8 @@ void ConversationItem::InitializeTitleLabel() {
         200,
         TitleHeight));
 
-    Subscriptions() += title_label_->VisualStateUpdateEvent().Subscribe(
-        [](const zaf::VisualStateUpdateInfo& event_info) {
+    Subscriptions() += title_label_->StyleUpdateEvent().Subscribe(
+        [](const zaf::StyleUpdateInfo& event_info) {
     
         auto label = zaf::As<zaf::Label>(event_info.Source());
         auto text_color = label->IsSelectedInContext() ? zaf::Color::White() : zaf::Color::Black();
@@ -101,8 +101,8 @@ void ConversationItem::InitializeDigestLabel() {
         200,
         DigestHeight));
 
-    Subscriptions() += digest_label_->VisualStateUpdateEvent().Subscribe(
-        [this](const zaf::VisualStateUpdateInfo& event_info) {
+    Subscriptions() += digest_label_->StyleUpdateEvent().Subscribe(
+        [this](const zaf::StyleUpdateInfo& event_info) {
     
         auto label = zaf::As<zaf::Label>(event_info.Source());
         auto text_color = 
@@ -127,8 +127,8 @@ void ConversationItem::InitializeTimeLabel() {
     time_label_ = zaf::Create<zaf::Label>();
     time_label_->SetTextAlignment(zaf::TextAlignment::Tailing);
 
-    Subscriptions() += time_label_->VisualStateUpdateEvent().Subscribe(
-        [](const zaf::VisualStateUpdateInfo& event_info) {
+    Subscriptions() += time_label_->StyleUpdateEvent().Subscribe(
+        [](const zaf::StyleUpdateInfo& event_info) {
     
         auto label = zaf::As<zaf::Label>(event_info.Source());
         auto text_color =
@@ -170,9 +170,9 @@ void ConversationItem::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void ConversationItem::UpdateVisualState() {
+void ConversationItem::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetBackgroundColor([this]() {
 

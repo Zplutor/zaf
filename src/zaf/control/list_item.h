@@ -15,7 +15,7 @@ public:
 
 protected:
     void Initialize() override;
-    void UpdateVisualState() override;
+    void UpdateStyle() override;
     virtual void RecoverFocus();
 
 private:

@@ -13,9 +13,9 @@ void MemberItem::Initialize() {
 }
 
 
-void MemberItem::UpdateVisualState() {
+void MemberItem::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetBackgroundColor([this]() {
 

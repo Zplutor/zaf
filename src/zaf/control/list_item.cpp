@@ -17,9 +17,9 @@ void ListItem::Initialize() {
 }
 
 
-void ListItem::UpdateVisualState() {
+void ListItem::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     SetTextColor(
         IsSelectedInContext() ?

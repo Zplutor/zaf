@@ -23,7 +23,7 @@
 #include <zaf/control/event/mouse_over_event_info.h>
 #include <zaf/control/event/parent_changed_info.h>
 #include <zaf/control/event/rect_changed_info.h>
-#include <zaf/control/event/visual_state_update_info.h>
+#include <zaf/control/event/style_update_info.h>
 #include <zaf/control/event/window_changed_info.h>
 #include <zaf/control/image_layout.h>
 #include <zaf/control/image_picker.h>
@@ -34,6 +34,7 @@
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/object/object.h>
+#include <zaf/object/style/style.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subscription_host.h>
 
@@ -748,7 +749,10 @@ public:
     */
     Point TranslateFromParent(const Point& position) const;
 
-    Observable<VisualStateUpdateInfo> VisualStateUpdateEvent() const;
+    const std::shared_ptr<zaf::Style>& Style() const;
+    void SetStyle(std::shared_ptr<zaf::Style> style);
+
+    Observable<StyleUpdateInfo> StyleUpdateEvent() const;
 
     /**
      Get rect change event.
@@ -810,9 +814,9 @@ protected:
     void InvokeInitialize() override;
     void InvokeParse() override;
 
-    void NeedUpdateVisualState();
-    virtual void UpdateVisualState();
-    virtual void OnVisualStateUpdate(const VisualStateUpdateInfo& event_info);
+    void NeedUpdateStyle();
+    virtual void UpdateStyle();
+    virtual void OnStyleUpdate(const StyleUpdateInfo& event_info);
 
     /**
      Paint the control.
@@ -1021,18 +1025,18 @@ private:
     @param dirty_rect
         The rect that needs to be repainted, in the control's coordinate space.
 
-    @param parent_update_visual_state
-        A value indicating whether the parent needs to update its visual state.
+    @param parent_update_style
+        A value indicating whether the parent needs to update its style.
     */
-    void Repaint(Canvas& canvas, const zaf::Rect& dirty_rect, bool parent_update_visual_state);
-    bool HandleUpdateVisualState(bool parent_update_visual_state);
+    void Repaint(Canvas& canvas, const zaf::Rect& dirty_rect, bool parent_update_style);
+    bool HandleUpdateStyle(bool parent_update_style);
     void RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_rect);
     void RepaintControl(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
         bool need_clear,
-        bool update_visual_state);
-    void RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect, bool update_visual_state);
+        bool update_style);
+    void RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect, bool update_style);
     void RecalculateCachedPaintingRect(const zaf::Rect& repaint_rect);
     void ReleaseCachedPaintingRenderer();
     void DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect);
@@ -1074,8 +1078,8 @@ private:
     std::weak_ptr<internal::ControlUpdateLock> update_lock_;
     std::unique_ptr<internal::ControlUpdateState> update_state_;
 
-    bool need_update_visual_state_{};
-    bool is_updating_visual_state_{};
+    bool need_update_style_{};
+    bool is_updating_style{};
     bool is_cached_painting_enabled_{};
     BitmapRenderer cached_renderer_;
     zaf::Rect valid_cached_renderer_rect_;
@@ -1118,7 +1122,9 @@ private:
     std::wstring name_;
     std::wstring tooltip_;
 
-    Event<VisualStateUpdateInfo> visual_state_update_event_;
+    std::shared_ptr<zaf::Style> style_;
+
+    Event<StyleUpdateInfo> style_update_event_;
     Event<RectChangedInfo> rect_changed_event_;
     Event<PositionChangedInfo> position_changed_event_;
     Event<SizeChangedInfo> size_changed_event_;

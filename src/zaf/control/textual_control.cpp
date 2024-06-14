@@ -84,9 +84,9 @@ void TextualControl::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void TextualControl::UpdateVisualState() {
+void TextualControl::UpdateStyle() {
 
-    __super::UpdateVisualState();
+    __super::UpdateStyle();
 
     text_model_->SetTextColor([this]() {
         if (IsEnabledInContext()) {
