@@ -32,7 +32,7 @@ private:\
             zaf::internal::DeduceUnderlyingValueType<GetterReturnType>::Type\
         >;\
         template<typename T>\
-        static constexpr auto TestSetterMethodType(T*) -> decltype(&T::SetPropertyName);\
+        static constexpr auto TestSetterMethodType(T*) -> decltype(&T::Set##PropertyName);\
         template<typename T>\
         static constexpr void TestSetterMethodType(...);\
         /*The type of the setter method*/ \
@@ -46,7 +46,7 @@ private:\
             zaf::internal::DeduceUnderlyingValueType<SetterArgumentType>::Type\
         >;\
         static_assert(std::is_same_v<std::true_type, std::conditional_t< \
-            std::is_void_v<GetterValueType>&& std::is_void_v<SetterValueType>,\
+            std::is_void_v<GetterValueType> && std::is_void_v<SetterValueType>,\
             std::false_type,\
             std::conditional_t<\
                 std::is_void_v<GetterValueType> || std::is_void_v<SetterValueType>,\
@@ -59,6 +59,7 @@ private:\
             >\
         >>, "invalid property");\
     public: \
+        using SetterRawType = SetterArgumentType;\
         using ValueType = std::conditional_t< \
             !std::is_void_v<GetterValueType>, \
             GetterValueType, \
@@ -83,7 +84,7 @@ private:\
         }\
         template<typename T = Class> \
         void SetValueImpl(zaf::Object& object, const std::shared_ptr<zaf::Object>& value, std::true_type) const {\
-            using Unboxer = typename zaf::internal::GetPropertyUnboxer<std::decay_t<Traits>>::Type;     \
+            using Unboxer = typename zaf::internal::GetPropertyUnboxer<std::decay_t<Traits::SetterRawType>>::Type;     \
             zaf::As<Class>(object).Set##PropertyName(Unboxer::Unbox(value));                  \
         }\
     public:\
@@ -103,7 +104,7 @@ private:\
             return Traits::CanSet;\
         }\
         std::shared_ptr<zaf::Object> GetValue(const zaf::Object& object) const override {\
-            return GetValueImpl(object, std::integral_constant<bool, Traits::CanSet>{});\
+            return GetValueImpl(object, std::integral_constant<bool, Traits::CanGet>{});\
         }\
         void SetValue(\
             zaf::Object& object, \

@@ -5,6 +5,7 @@
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
 #include <zaf/object/object.h>
+#include <zaf/object/property_macros.h>
 #include <zaf/object/type_definition.h>
 
 namespace {
@@ -67,6 +68,17 @@ public:
         image_ = image;
     }
 
+    ZAF_PROPERTY_BEGIN(PropertyHost);
+    //ZAF_PROPERTY(ReadWrite);
+    //ZAF_PROPERTY(ReadOnly);
+    //ZAF_PROPERTY(WriteOnly);
+    //ZAF_PROPERTY(FloatType);
+    //ZAF_PROPERTY(StringType);
+    ZAF_PROPERTY(SizeType);
+    //ZAF_PROPERTY(BoxedObject);
+    //ZAF_PROPERTY(Image);
+    ZAF_PROPERTY_END;
+
 private:
     int read_write_value_{};
     int write_only_value_{};
@@ -86,6 +98,8 @@ ZAF_DEFINE_TYPE_PROPERTY(Image);
 //Un-comment below lines whould cause static assertion.
 //ZAF_DEFINE_TYPE_PROPERTY(RectType) 
 ZAF_DEFINE_TYPE_END
+
+ZAF_PROPERTY_IMPL(PropertyHost);
 
 }
 
