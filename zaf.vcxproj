@@ -815,6 +815,7 @@
     <ClInclude Include="src\zaf\object\parsing\xaml_reader.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_utility.h" />
     <ClInclude Include="src\zaf\object\property_definition.h" />
+    <ClInclude Include="src\zaf\object\property_macros.h" />
     <ClInclude Include="src\zaf\object\style\sheet.h" />
     <ClInclude Include="src\zaf\object\style\sheet_parser.h" />
     <ClInclude Include="src\zaf\object\style\style.h" />

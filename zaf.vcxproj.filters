@@ -2833,5 +2833,8 @@
     <ClInclude Include="src\zaf\object\style\sheet_parser.h">
       <Filter>zaf\object\style</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\object\property_macros.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

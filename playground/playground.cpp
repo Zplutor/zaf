@@ -60,109 +60,34 @@
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/control/textual/dynamic_inline_object.h>
 #include <zaf/input/mouse.h>
+#include <zaf/object/property_macros.h>
 
 void BeginRun(const zaf::BeginRunInfo& event_info);
 
-class MyInlineObject : public zaf::textual::DynamicInlineObject {
+class MyObject : public zaf::Object {
 public:
     ZAF_DECLARE_TYPE;
 
-    zaf::TextInlineObjectMetrics GetMetrics() const override {
-
-        zaf::TextInlineObjectMetrics result;
-        result.SetWidth(100);
-        result.SetHeight(30);
-        result.SetHeightAboveBaseline(24);
-        return result;
+    bool IsVisible() const {
+        return true;
     }
 
-protected:
-    void Paint(zaf::Canvas& canvas) const override {
+    //void SetIsVisible(bool) {
 
-        canvas.DrawRectangle(
-            zaf::Rect{ {}, this->Size() }, 
-            IsInSelectionRange() ? zaf::Color::Blue() :
-            IsMouseOver() ? zaf::Color::Green() : zaf::Color::Red());
-    }
+    //}
 
-    bool HitTest(bool is_mouse_inside) override {
-        return is_mouse_inside;
-    }
-
-    void OnMouseCursorChanging(const zaf::textual::MouseCursorChangingInfo& event_info) override {
-
-        zaf::Mouse::SetCursor(zaf::Cursor::Normal());
-        event_info.MarkAsHandled();
-    }
-
-    void OnMouseEnter(const zaf::textual::MouseEnterInfo& event_info) override {
-
-        __super::OnMouseEnter(event_info);
-
-        NeedRepaint();
-    }
-
-    void OnMouseLeave(const zaf::textual::MouseLeaveInfo& event_info) override {
-
-        __super::OnMouseLeave(event_info);
-
-        NeedRepaint();
-    }
-
-    void OnMouseDown(const zaf::textual::MouseDownInfo& event_info) override {
-
-        __super::OnMouseDown(event_info);
-
-        Host()->SetSelectionRange(*this->RangeInHost());
-
-        event_info.MarkAsHandled();
-    }
+    ZAF_PROPERTY_BEGIN(MyObject);
+    ZAF_PROPERTY(IsVisible);
+    ZAF_PROPERTY_END;
 };
 
-
-ZAF_DEFINE_TYPE(MyInlineObject);
+ZAF_DEFINE_TYPE(MyObject);
 ZAF_DEFINE_TYPE_END;
+
+ZAF_PROPERTY_IMPL(MyObject);
 
 
 class Window : public zaf::Window {
-protected:
-    void AfterParse() override {
-
-        __super::AfterParse();
-
-        this->RootControl()->SetBackgroundColor(zaf::Color::White());
-        this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
-
-        auto text_box = zaf::Create<zaf::TextBox>();
-        text_box->SetFontSize(20);
-        text_box->SetIsEditable(true);
-        text_box->SetText(
-L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n"
-L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n"
-L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n"
-L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n"
-L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n"
-L"this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());\r\n");
-        text_box->SetTextColorInRange(zaf::Color::Red(), zaf::Range{ 5, 6 });
-        text_box->SetTextBackColorInRange(zaf::Color::Yellow(), zaf::Range{ 30, 10 });
-
-        text_box->AttachInlineObjectToRange(
-            std::make_shared<MyInlineObject>(), 
-            zaf::Range{ 10, 5 });
-
-        text_box->SetLineSpacing(zaf::LineSpacing{ zaf::LineSpacingMethod::Uniform, 50, 40 });
-        text_box->SetTextBackPadding(zaf::Frame{ 0, 20, 0, 0 });
-
-        this->RootControl()->AddChild(text_box);
-
-        auto button = zaf::Create<zaf::Button>();
-        button->SetFixedHeight(30);
-        Subscriptions() += button->ClickEvent().Subscribe(std::bind([this, text_box]() {
-            text_box->SetText(L"Text changed.");
-        }));
-
-        this->RootControl()->AddChild(button);
-    }
 };
 
 
