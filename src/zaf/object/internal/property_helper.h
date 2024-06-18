@@ -18,32 +18,10 @@ struct DeduceGetterType<R(T::*)()const> {
 
 
 template<typename T>
-struct DeduceGetterReturnType {
-    using Type = void;
-};
-
-template<typename T, typename R>
-struct DeduceGetterReturnType<R(T::*)()const> {
-    using Type = std::decay_t<R>;
-};
-
-
-template<typename T>
 struct DeduceSetterType { };
 
 template<typename T, typename A>
 struct DeduceSetterType<void(T::*)(A)> {
-    using Type = std::decay_t<A>;
-};
-
-
-template<typename T>
-struct DeduceSetterArgumentType {
-    using Type = void;
-};
-
-template<typename T, typename A>
-struct DeduceSetterArgumentType<void(T::*)(A)> {
     using Type = std::decay_t<A>;
 };
 
