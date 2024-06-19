@@ -3,6 +3,7 @@
 #include <zaf/control/check_state.h>
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/event/check_state_changed_info.h>
+#include <zaf/object/property_macros.h>
 #include <zaf/rx/observable.h>
 
 namespace zaf {
@@ -12,7 +13,8 @@ namespace zaf {
  */
 class CheckBox : public ClickableControl {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_PROPERTY;
 
 public:
     CheckBox();
@@ -133,5 +135,14 @@ private:
 
     Event<CheckStateChangedInfo> check_state_changed_event_;
 };
+
+ZAF_PROPERTY_BEGIN(CheckBox);
+ZAF_PROPERTY(AutoCheck);
+ZAF_PROPERTY(BoxBackgroundColor);
+ZAF_PROPERTY(BoxBorderColor);
+ZAF_PROPERTY(CanBeIndeterminate);
+ZAF_PROPERTY(CheckState);
+ZAF_PROPERTY(IsChecked);
+ZAF_PROPERTY_END
 
 }

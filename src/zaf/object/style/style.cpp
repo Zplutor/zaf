@@ -5,8 +5,10 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(Style);
-ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(Sheet)
 ZAF_DEFINE_TYPE_END;
+
+ZAF_DEFINE_PROPERTY(Style);
+
 
 Style::Style() : sheet_(std::make_shared<zaf::Sheet>()) {
 

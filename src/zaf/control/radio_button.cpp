@@ -9,11 +9,9 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(RadioButton)
-ZAF_DEFINE_TYPE_PROPERTY(AutoCheck)
-ZAF_DEFINE_TYPE_PROPERTY(IsChecked)
-ZAF_DEFINE_TYPE_PROPERTY(RadioBackgroundColor)
-ZAF_DEFINE_TYPE_PROPERTY(RadioBorderColor)
 ZAF_DEFINE_TYPE_END
+
+ZAF_DEFINE_PROPERTY(RadioButton);
 
 
 RadioButton::RadioButton() : is_checked_(true) {

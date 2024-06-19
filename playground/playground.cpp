@@ -67,6 +67,7 @@ void BeginRun(const zaf::BeginRunInfo& event_info);
 class MyObject : public zaf::Object {
 public:
     ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_PROPERTY;
 
     bool IsVisible() const {
         return true;
@@ -75,16 +76,16 @@ public:
     //void SetIsVisible(bool) {
 
     //}
-
-    ZAF_PROPERTY_BEGIN(MyObject);
-    ZAF_PROPERTY(IsVisible);
-    ZAF_PROPERTY_END;
 };
 
 ZAF_DEFINE_TYPE(MyObject);
 ZAF_DEFINE_TYPE_END;
 
-ZAF_PROPERTY_IMPL(MyObject);
+ZAF_PROPERTY_BEGIN(MyObject);
+ZAF_PROPERTY(IsVisible);
+ZAF_PROPERTY_END;
+
+ZAF_DEFINE_PROPERTY(MyObject);
 
 
 class Window : public zaf::Window {
@@ -97,7 +98,6 @@ int WINAPI WinMain(
     LPSTR /* lpCmdLine */,
     int /* nCmdShow */
 ) {
-
     auto& application = zaf::Application::Instance();
     application.Subscriptions() += application.BeginRunEvent().Subscribe(BeginRun);
 

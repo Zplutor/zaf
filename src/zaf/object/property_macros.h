@@ -8,14 +8,18 @@
 #include <zaf/object/internal/property_registrar.h>
 #include <zaf/object/object_property.h>
 
+#define ZAF_DECLARE_PROPERTY \
+class _PropertyMeta; \
+static _PropertyMeta& PropertyMeta();
+
 #define ZAF_PROPERTY_BEGIN(ClassName)                                                             \
-class PropertyMeta : zaf::NonCopyableNonMovable {                                                 \
+class ClassName::_PropertyMeta : zaf::NonCopyableNonMovable {                                                \
 private:                                                                                          \
     using Class = ClassName;                                                                      \
-    static PropertyMeta instance;                                                                 \
-    PropertyMeta() = default;                                                                     \
+    static _PropertyMeta instance;                                                                \
+    _PropertyMeta() = default;                                                                    \
 public:                                                                                           \
-    static PropertyMeta& Instance() { return instance; }
+    static _PropertyMeta& Instance() { return instance; }
 
 
 #define ZAF_PROPERTY(PropertyName)                                                                \
@@ -113,11 +117,11 @@ public:                                                                         
     }();
 
 
-#define ZAF_PROPERTY_END                                                                          \
-};                                                                                                \
-static PropertyMeta& Properties() {                                                               \
-    return PropertyMeta::Instance();                                                              \
-}
+#define ZAF_PROPERTY_END };
 
 
-#define ZAF_PROPERTY_IMPL(ClassName) ClassName::PropertyMeta ClassName::PropertyMeta::instance;
+#define ZAF_DEFINE_PROPERTY(ClassName) \
+ClassName::_PropertyMeta ClassName::_PropertyMeta::instance;\
+ClassName::_PropertyMeta& ClassName::PropertyMeta() { \
+    return ClassName::_PropertyMeta::Instance(); \
+};

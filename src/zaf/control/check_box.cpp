@@ -15,13 +15,9 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(CheckBox)
-ZAF_DEFINE_TYPE_PROPERTY(AutoCheck)
-ZAF_DEFINE_TYPE_PROPERTY(BoxBackgroundColor)
-ZAF_DEFINE_TYPE_PROPERTY(BoxBorderColor)
-ZAF_DEFINE_TYPE_PROPERTY(CanBeIndeterminate)
-ZAF_DEFINE_TYPE_PROPERTY(CheckState)
-ZAF_DEFINE_TYPE_PROPERTY(IsChecked)
 ZAF_DEFINE_TYPE_END
+
+ZAF_DEFINE_PROPERTY(CheckBox);
 
 
 CheckBox::CheckBox() : check_state_(CheckState::Unchecked) {

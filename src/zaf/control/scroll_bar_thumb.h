@@ -11,7 +11,8 @@ namespace zaf {
  */
 class ScrollBarThumb : public ClickableControl {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_PROPERTY;
 
 public:
     ScrollBarThumb();
@@ -92,5 +93,10 @@ private:
     Subject<ScrollBarThumbDragInfo> drag_event_;
     Subject<ScrollBarThumbEndDragInfo> end_drag_event_;
 };
+
+ZAF_PROPERTY_BEGIN(ScrollBarThumb);
+ZAF_PROPERTY(ThumbColor)
+ZAF_PROPERTY(IsHorizontal)
+ZAF_PROPERTY_END;
 
 }

@@ -3,6 +3,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/control.h>
 #include <zaf/object/object.h>
+#include <zaf/object/property_macros.h>
 
 namespace zaf {
 
@@ -11,6 +12,7 @@ class Canvas;
 class Caret : public Object, NonCopyableNonMovable {
 public:
     ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_PROPERTY;
 
     /**
     Construct a caret which belongs to the specified control.
@@ -82,5 +84,12 @@ private:
     Subscription blink_timer_subscription_;
     bool is_blink_on_{};
 };
+
+ZAF_PROPERTY_BEGIN(Caret);
+ZAF_PROPERTY(Rect);
+ZAF_PROPERTY(Position);
+ZAF_PROPERTY(Size);
+ZAF_PROPERTY(IsVisible);
+ZAF_PROPERTY_END;
 
 }

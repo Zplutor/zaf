@@ -1231,6 +1231,9 @@
     <ClCompile Include="src\zaf\object\style\sheet_parser.cpp">
       <Filter>zaf\object\style</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\control_properties.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2835,6 +2838,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\property_macros.h">
       <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\control_properties.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

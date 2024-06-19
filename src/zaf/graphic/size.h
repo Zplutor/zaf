@@ -6,6 +6,7 @@
 #include <zaf/base/relation_operator.h>
 #include <zaf/object/equality.h>
 #include <zaf/object/object.h>
+//#include <zaf/object/property_macros.h>
 
 namespace zaf {
 
@@ -14,8 +15,9 @@ namespace zaf {
  */
 class Size : public Object {
 public:
-    ZAF_DECLARE_TYPE
-    ZAF_DECLARE_EQUALITY
+    ZAF_DECLARE_TYPE;
+    //ZAF_DECLARE_PROPERTY;
+    ZAF_DECLARE_EQUALITY;
 
 public:
     /**
@@ -134,11 +136,17 @@ public:
     float height;
 };
 
+/*
+ZAF_PROPERTY_BEGIN(Size);
+ZAF_PROPERTY(Width);
+ZAF_PROPERTY(Height);
+ZAF_PROPERTY_END;
+*/
+
 
 inline bool operator==(const Size& size1, const Size& size2) {
     return (size1.width == size2.width) && (size1.height == size2.height);
 }
-
 
 inline bool operator<(const Size& size1, const Size& size2) {
 
@@ -152,7 +160,6 @@ inline bool operator<(const Size& size1, const Size& size2) {
 
     return size1.height < size2.height;
 }
-
 
 ZAF_DEFINE_RELATION_OPERATORS(Size);
 

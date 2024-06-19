@@ -9,11 +9,9 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(Caret)
-ZAF_DEFINE_TYPE_PROPERTY(Rect)
-ZAF_DEFINE_TYPE_PROPERTY(Position)
-ZAF_DEFINE_TYPE_PROPERTY(Size)
-ZAF_DEFINE_TYPE_PROPERTY(IsVisible)
 ZAF_DEFINE_TYPE_END
+
+ZAF_DEFINE_PROPERTY(Caret);
 
 
 Caret::Caret(const std::weak_ptr<Control>& owner) : owner_(owner) {

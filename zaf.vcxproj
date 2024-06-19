@@ -87,6 +87,7 @@
     <ClCompile Include="src\zaf\control\control.cpp" />
     <ClCompile Include="src\zaf\control\control_binder.cpp" />
     <ClCompile Include="src\zaf\control\control_parser.cpp" />
+    <ClCompile Include="src\zaf\control\control_properties.cpp" />
     <ClCompile Include="src\zaf\control\event\check_state_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\click_info.cpp" />
     <ClCompile Include="src\zaf\control\event\combo_box_selection_changed_info.cpp" />
@@ -491,6 +492,7 @@
     <ClInclude Include="src\zaf\control\control.h" />
     <ClInclude Include="src\zaf\control\control_binder.h" />
     <ClInclude Include="src\zaf\control\control_parser.h" />
+    <ClInclude Include="src\zaf\control\control_properties.h" />
     <ClInclude Include="src\zaf\control\control_update_guard.h" />
     <ClInclude Include="src\zaf\control\event\check_state_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\click_info.h" />

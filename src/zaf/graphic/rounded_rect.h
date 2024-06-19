@@ -8,8 +8,8 @@ namespace zaf {
 
 class RoundedRect : public Object {
 public:
-    ZAF_DECLARE_TYPE
-    ZAF_DECLARE_EQUALITY
+    ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_EQUALITY;
 
 public:
     static const RoundedRect FromD2D1ROUNDEDRECT(const D2D1_ROUNDED_RECT& d2d1_rounded_rect) {

@@ -5,9 +5,10 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(ScrollBarThumb)
-ZAF_DEFINE_TYPE_PROPERTY(ThumbColor)
-ZAF_DEFINE_TYPE_PROPERTY(IsHorizontal)
 ZAF_DEFINE_TYPE_END
+
+ZAF_DEFINE_PROPERTY(ScrollBarThumb);
+
 
 ScrollBarThumb::ScrollBarThumb() {
 

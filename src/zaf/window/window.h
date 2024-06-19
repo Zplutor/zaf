@@ -10,6 +10,7 @@
 #include <zaf/graphic/renderer/window_renderer.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/object/object.h>
+#include <zaf/object/property_macros.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/window/activate_option.h>
 #include <zaf/window/event/activate_event_info.h>
@@ -56,7 +57,8 @@ class Window :
     NonCopyableNonMovable {
 
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_PROPERTY;
 
 public:
     /**
@@ -974,6 +976,41 @@ private:
     Event<MouseCaptureControlChangedInfo> mouse_capture_control_changed_event_;
 };
 
+ZAF_PROPERTY_BEGIN(Window)
+ZAF_PROPERTY(Owner)
+ZAF_PROPERTY(InitialRectStyle)
+ZAF_PROPERTY(Rect)
+ZAF_PROPERTY(Position)
+ZAF_PROPERTY(Size)
+ZAF_PROPERTY(ContentRect)
+ZAF_PROPERTY(ContentSize)
+ZAF_PROPERTY(ContentWidth)
+ZAF_PROPERTY(ContentHeight)
+ZAF_PROPERTY(MinSize)
+ZAF_PROPERTY(MaxSize)
+ZAF_PROPERTY(Width)
+ZAF_PROPERTY(MinWidth)
+ZAF_PROPERTY(MaxWidth)
+ZAF_PROPERTY(Height)
+ZAF_PROPERTY(MinHeight)
+ZAF_PROPERTY(MaxHeight)
+ZAF_PROPERTY(ActivateOption)
+ZAF_PROPERTY(IsPopup)
+ZAF_PROPERTY(HasBorder)
+ZAF_PROPERTY(HasTitleBar)
+ZAF_PROPERTY(IsSizable)
+ZAF_PROPERTY(HasSystemMenu)
+ZAF_PROPERTY(CanMinimize)
+ZAF_PROPERTY(CanMaximize)
+ZAF_PROPERTY(IsToolWindow)
+ZAF_PROPERTY(IsTopmost)
+ZAF_PROPERTY(Title)
+ZAF_PROPERTY(RootControl)
+ZAF_PROPERTY(MouseCaptureControl)
+ZAF_PROPERTY(MouseOverControl)
+ZAF_PROPERTY(FocusedControl)
+ZAF_PROPERTY(IsVisible)
+ZAF_PROPERTY_END
 
 std::shared_ptr<Window> GetWindowFromHandle(HWND handle);
 

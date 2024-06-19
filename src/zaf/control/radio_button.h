@@ -11,7 +11,8 @@ namespace zaf {
  */
 class RadioButton : public ClickableControl {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_PROPERTY;
 
 public:
     /**
@@ -157,5 +158,12 @@ private:
 
     Event<CheckStateChangedInfo> check_state_changed_event_;
 };
+
+ZAF_PROPERTY_BEGIN(RadioButton);
+ZAF_PROPERTY(AutoCheck)
+ZAF_PROPERTY(IsChecked)
+ZAF_PROPERTY(RadioBackgroundColor)
+ZAF_PROPERTY(RadioBorderColor)
+ZAF_PROPERTY_END;
 
 }

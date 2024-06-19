@@ -5,14 +5,14 @@
 #include <zaf/control/event/scroll_bar_arrow_event_info.h>
 #include <zaf/control/event/scroll_bar_scroll_info.h>
 #include <zaf/control/event/scroll_bar_thumb_event_info.h>
+#include <zaf/control/scroll_bar_arrow.h>
+#include <zaf/control/scroll_bar_thumb.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
 #include <zaf/rx/subscription_set.h>
 
 namespace zaf {
 
-class ScrollBarArrow;
-class ScrollBarThumb;
 class Timer;
 
 /**
@@ -20,7 +20,8 @@ class Timer;
  */
 class ScrollBar : public Control {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_PROPERTY;
 
 public:
     ScrollBar();
@@ -280,5 +281,19 @@ private:
 
     Event<ScrollBarScrollInfo> scroll_event_;
 };
+
+ZAF_PROPERTY_BEGIN(ScrollBar)
+ZAF_PROPERTY(IncrementalArrow)
+ZAF_PROPERTY(DecrementalArrow)
+ZAF_PROPERTY(Thumb)
+ZAF_PROPERTY(IsHorizontal)
+ZAF_PROPERTY(ArrowLength)
+ZAF_PROPERTY(Value)
+ZAF_PROPERTY(MinValue)
+ZAF_PROPERTY(MaxValue)
+ZAF_PROPERTY(SmallChange)
+ZAF_PROPERTY(LargeChange)
+ZAF_PROPERTY(PageSize)
+ZAF_PROPERTY_END
 
 }

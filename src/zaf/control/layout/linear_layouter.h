@@ -5,6 +5,7 @@
 #include <zaf/control/layout/layouter.h>
 #include <zaf/graphic/size.h>
 #include <zaf/object/object.h>
+#include <zaf/object/property_macros.h>
 
 namespace zaf {
 namespace internal {
@@ -14,7 +15,8 @@ class LinearLayoutLengthCalculatItem;
 
 class LinearLayouter : public Layouter {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_PROPERTY;
 
 public:
     LayoutDirection Direction() const {
@@ -79,6 +81,12 @@ private:
     zaf::AxisAlignment axis_alignment_{ AxisAlignment::Start };
     zaf::AxisAlignment cross_axis_alignment_{ AxisAlignment::Start };
 };
+
+ZAF_PROPERTY_BEGIN(LinearLayouter);
+ZAF_PROPERTY(Direction);
+ZAF_PROPERTY(AxisAlignment);
+ZAF_PROPERTY(CrossAxisAlignment);
+ZAF_PROPERTY_END;
 
 
 class HorizontalLayouter : public LinearLayouter {

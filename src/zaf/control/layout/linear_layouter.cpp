@@ -164,10 +164,9 @@ private:
 }
 
 ZAF_DEFINE_TYPE(LinearLayouter)
-ZAF_DEFINE_TYPE_PROPERTY(Direction)
-ZAF_DEFINE_TYPE_PROPERTY(AxisAlignment)
-ZAF_DEFINE_TYPE_PROPERTY(CrossAxisAlignment)
 ZAF_DEFINE_TYPE_END
+
+ZAF_DEFINE_PROPERTY(LinearLayouter);
 
 
 void LinearLayouter::Layout(

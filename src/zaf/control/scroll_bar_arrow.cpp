@@ -6,9 +6,10 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(ScrollBarArrow)
-ZAF_DEFINE_TYPE_PROPERTY(ArrowColor)
-ZAF_DEFINE_TYPE_PROPERTY(ArrowDirection)
 ZAF_DEFINE_TYPE_END
+
+ZAF_DEFINE_PROPERTY(ScrollBarArrow);
+
 
 ScrollBarArrow::ScrollBarArrow() : arrow_direction_(ArrowDirection::Up) {
 

@@ -32,6 +32,7 @@ class Caret;
 class RichEdit : public Control, public SelfScrollControl {
 public:
     ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_PROPERTY;
 
 public:
     RichEdit();
@@ -431,5 +432,24 @@ private:
     Event<SelfScrollControlScrollBarChangeInfo> scroll_bar_change_event_;
     Event<SelfScrollControlScrollValuesChangeInfo> scroll_values_change_event_;
 };
+
+ZAF_PROPERTY_BEGIN(RichEdit)
+ZAF_PROPERTY(AcceptReturn)
+ZAF_PROPERTY(AcceptTab)
+ZAF_PROPERTY(AllowBeep)
+ZAF_PROPERTY(IsReadOnly)
+ZAF_PROPERTY(IsMultiline)
+ZAF_PROPERTY(UsePasswordCharacter)
+ZAF_PROPERTY(Text)
+ZAF_PROPERTY(TextLength)
+ZAF_PROPERTY(TextColor)
+ZAF_PROPERTY(Font)
+ZAF_PROPERTY(FontFamily)
+ZAF_PROPERTY(FontSize)
+ZAF_PROPERTY(FontWeight)
+ZAF_PROPERTY(TextAlignment)
+ZAF_PROPERTY(ParagraphAlignment)
+ZAF_PROPERTY(WordWrapping)
+ZAF_PROPERTY_END;
 
 }

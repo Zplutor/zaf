@@ -18,7 +18,8 @@ class Image;
 
 class ImageBox : public Control {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_PROPERTY;
 
 public:
     ImageBox();
@@ -50,5 +51,11 @@ private:
     zaf::ImageLayout image_layout_{ zaf::ImageLayout::None };
     zaf::InterpolationMode interpolation_mode_{ zaf::InterpolationMode::Linear };
 };
+
+ZAF_PROPERTY_BEGIN(ImageBox)
+ZAF_PROPERTY(ImageLayout)
+ZAF_PROPERTY(InterpolationMode)
+ZAF_PROPERTY(URI)
+ZAF_PROPERTY_END;
 
 }

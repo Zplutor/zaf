@@ -21,7 +21,8 @@ class ComboBoxEditBox;
  */
 class ComboBox : public ClickableControl {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_DECLARE_TYPE;
+    ZAF_DECLARE_PROPERTY;
 
 public:
     ComboBox();
@@ -331,5 +332,15 @@ public:
 public:
     void OnKeyDown(const KeyDownInfo& event_info) override;
 };
+
+
+ZAF_PROPERTY_BEGIN(ComboBox);
+ZAF_PROPERTY(DropDownButtonColor);
+ZAF_PROPERTY(DropDownButtonWidth);
+ZAF_PROPERTY(DropDownListBox);
+ZAF_PROPERTY(EditBox);
+ZAF_PROPERTY(MinVisibleItemCount);
+ZAF_PROPERTY(MaxVisibleItemCount);
+ZAF_PROPERTY_END;
 
 }

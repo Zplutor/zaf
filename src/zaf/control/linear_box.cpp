@@ -4,10 +4,10 @@
 namespace zaf {
 
 ZAF_DEFINE_TYPE(LinearBox)
-ZAF_DEFINE_TYPE_PROPERTY(Direction)
-ZAF_DEFINE_TYPE_PROPERTY(AxisAlignment)
-ZAF_DEFINE_TYPE_PROPERTY(CrossAxisAlignment)
 ZAF_DEFINE_TYPE_END
+
+ZAF_DEFINE_PROPERTY(LinearBox);
+
 
 LinearBox::LinearBox() : layouter_(Create<LinearLayouter>()) {
 
