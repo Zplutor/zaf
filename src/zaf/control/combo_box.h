@@ -334,12 +334,12 @@ public:
 
 
 ZAF_OBJECT_BEGIN(ComboBox);
-ZAF_PROPERTY(DropDownButtonColor);
-ZAF_PROPERTY(DropDownButtonWidth);
-ZAF_PROPERTY(DropDownListBox);
-ZAF_PROPERTY(EditBox);
-ZAF_PROPERTY(MinVisibleItemCount);
-ZAF_PROPERTY(MaxVisibleItemCount);
+ZAF_OBJECT_PROPERTY(DropDownButtonColor);
+ZAF_OBJECT_PROPERTY(DropDownButtonWidth);
+ZAF_OBJECT_PROPERTY(DropDownListBox);
+ZAF_OBJECT_PROPERTY(EditBox);
+ZAF_OBJECT_PROPERTY(MinVisibleItemCount);
+ZAF_OBJECT_PROPERTY(MaxVisibleItemCount);
 ZAF_OBJECT_END;
 
 ZAF_OBJECT_BEGIN(ComboBoxDropDownListBox);

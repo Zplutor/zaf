@@ -79,8 +79,8 @@ private:
 };
 
 ZAF_OBJECT_BEGIN(ScrollBarArrow);
-ZAF_PROPERTY(ArrowColor)
-ZAF_PROPERTY(ArrowDirection)
+ZAF_OBJECT_PROPERTY(ArrowColor)
+ZAF_OBJECT_PROPERTY(ArrowDirection)
 ZAF_OBJECT_END;
 
 }

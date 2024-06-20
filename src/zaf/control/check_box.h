@@ -136,12 +136,12 @@ private:
 };
 
 ZAF_OBJECT_BEGIN(CheckBox);
-ZAF_PROPERTY(AutoCheck);
-ZAF_PROPERTY(BoxBackgroundColor);
-ZAF_PROPERTY(BoxBorderColor);
-ZAF_PROPERTY(CanBeIndeterminate);
-ZAF_PROPERTY(CheckState);
-ZAF_PROPERTY(IsChecked);
+ZAF_OBJECT_PROPERTY(AutoCheck);
+ZAF_OBJECT_PROPERTY(BoxBackgroundColor);
+ZAF_OBJECT_PROPERTY(BoxBorderColor);
+ZAF_OBJECT_PROPERTY(CanBeIndeterminate);
+ZAF_OBJECT_PROPERTY(CheckState);
+ZAF_OBJECT_PROPERTY(IsChecked);
 ZAF_OBJECT_END;
 
 }

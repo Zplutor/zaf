@@ -284,11 +284,11 @@ private:
 };
 
 ZAF_OBJECT_BEGIN(TextBox);
-ZAF_PROPERTY(AllowUndo);
-ZAF_PROPERTY(IsCaretEnabledWhenNotEditable);
-ZAF_PROPERTY(IsEditable);
-ZAF_PROPERTY(SelectedText);
-ZAF_PROPERTY(SelectionRange);
+ZAF_OBJECT_PROPERTY(AllowUndo);
+ZAF_OBJECT_PROPERTY(IsCaretEnabledWhenNotEditable);
+ZAF_OBJECT_PROPERTY(IsEditable);
+ZAF_OBJECT_PROPERTY(SelectedText);
+ZAF_OBJECT_PROPERTY(SelectionRange);
 ZAF_OBJECT_END;
 
 }

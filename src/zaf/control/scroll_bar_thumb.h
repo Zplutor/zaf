@@ -94,8 +94,8 @@ private:
 };
 
 ZAF_OBJECT_BEGIN(ScrollBarThumb);
-ZAF_PROPERTY(ThumbColor)
-ZAF_PROPERTY(IsHorizontal)
+ZAF_OBJECT_PROPERTY(ThumbColor)
+ZAF_OBJECT_PROPERTY(IsHorizontal)
 ZAF_OBJECT_END;
 
 }

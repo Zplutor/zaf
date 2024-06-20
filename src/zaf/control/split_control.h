@@ -187,22 +187,22 @@ private:
 
 
 ZAF_OBJECT_BEGIN(SplitControl);
-ZAF_PROPERTY(IsHorizontalSplit)
-ZAF_PROPERTY(SplitBarThickness)
-ZAF_PROPERTY(SplitDistance)
-ZAF_PROPERTY(FirstPaneMinLength)
-ZAF_PROPERTY(FirstPaneMaxLength)
-ZAF_PROPERTY(SecondPaneMinLength)
-ZAF_PROPERTY(SecondPaneMaxLength)
-ZAF_PROPERTY(SplitBar)
-ZAF_PROPERTY(FirstPane)
-ZAF_PROPERTY(SecondPane)
+ZAF_OBJECT_PROPERTY(IsHorizontalSplit)
+ZAF_OBJECT_PROPERTY(SplitBarThickness)
+ZAF_OBJECT_PROPERTY(SplitDistance)
+ZAF_OBJECT_PROPERTY(FirstPaneMinLength)
+ZAF_OBJECT_PROPERTY(FirstPaneMaxLength)
+ZAF_OBJECT_PROPERTY(SecondPaneMinLength)
+ZAF_OBJECT_PROPERTY(SecondPaneMaxLength)
+ZAF_OBJECT_PROPERTY(SplitBar)
+ZAF_OBJECT_PROPERTY(FirstPane)
+ZAF_OBJECT_PROPERTY(SecondPane)
 ZAF_OBJECT_END;
 
 
 ZAF_OBJECT_BEGIN(SplitBar);
-ZAF_PROPERTY(IsHorizontal)
-ZAF_PROPERTY(SplitterColor)
+ZAF_OBJECT_PROPERTY(IsHorizontal)
+ZAF_OBJECT_PROPERTY(SplitterColor)
 ZAF_OBJECT_END;
 
 }

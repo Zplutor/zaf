@@ -28,7 +28,7 @@ private:
 };
 
 ZAF_OBJECT_BEGIN(Style);
-ZAF_PROPERTY(Sheet);
+ZAF_OBJECT_PROPERTY(Sheet);
 ZAF_OBJECT_END;
 
 }

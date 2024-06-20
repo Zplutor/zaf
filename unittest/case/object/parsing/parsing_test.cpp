@@ -58,7 +58,7 @@ public:
 };
 
 ZAF_OBJECT_BEGIN(Derived);
-ZAF_PROPERTY(DerivedValue);
+ZAF_OBJECT_PROPERTY(DerivedValue);
 ZAF_OBJECT_END;
 ZAF_OBJECT_IMPL(Derived);
 
@@ -143,7 +143,7 @@ private:
 };
 
 ZAF_OBJECT_BEGIN(Host)
-ZAF_PROPERTY(Control);
+ZAF_OBJECT_PROPERTY(Control);
 ZAF_OBJECT_END
 ZAF_OBJECT_IMPL(Host);
 
@@ -184,7 +184,7 @@ public:
 };
 
 ZAF_OBJECT_BEGIN(PropertyNodeBase)
-ZAF_PROPERTY(BaseValue)
+ZAF_OBJECT_PROPERTY(BaseValue)
 ZAF_OBJECT_END
 ZAF_OBJECT_IMPL(PropertyNodeBase)
 
@@ -264,8 +264,8 @@ private:
 };
 
 ZAF_OBJECT_BEGIN(PropertyOrderObject)
-ZAF_PROPERTY(AProperty)
-ZAF_PROPERTY(BProperty)
+ZAF_OBJECT_PROPERTY(AProperty)
+ZAF_OBJECT_PROPERTY(BProperty)
 ZAF_OBJECT_END
 ZAF_OBJECT_IMPL(PropertyOrderObject);
 

@@ -2,27 +2,12 @@
 
 #include <zaf/base/as.h>
 #include <zaf/base/error/invalid_operation_error.h>
-#include <zaf/base/non_copyable.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/internal/property_helper.h>
 #include <zaf/object/internal/property_registrar.h>
 #include <zaf/object/object_property.h>
 
-#define ZAF_DECLARE_PROPERTY \
-class _PropertyMeta; \
-static _PropertyMeta& PropertyMeta();
-
-#define ZAF_PROPERTY_BEGIN(ClassName)                                                             \
-class ClassName::_PropertyMeta : zaf::NonCopyableNonMovable {                                                \
-private:                                                                                          \
-    using Class = ClassName;                                                                      \
-    static _PropertyMeta instance;                                                                \
-    _PropertyMeta() = default;                                                                    \
-public:                                                                                           \
-    static _PropertyMeta& Instance() { return instance; }
-
-
-#define ZAF_PROPERTY(PropertyName)                                                                \
+#define ZAF_OBJECT_PROPERTY(PropertyName)                                                         \
 private:                                                                                          \
     struct PropertyName##Traits {                                                                 \
         template<typename T>                                                                      \
@@ -110,18 +95,8 @@ private:                                                                        
         }                                                                                         \
     };                                                                                            \
 public:                                                                                           \
-    zaf::ObjectProperty* const PropertyName = []() {                                              \
+    zaf::ObjectProperty* const PropertyName##Property = []() {                                    \
         static PropertyName##PropertyType property;                                               \
         zaf::internal::PropertyRegistrar::Register(Class::Type, &property);                       \
         return &property;                                                                         \
     }();
-
-
-#define ZAF_PROPERTY_END };
-
-
-#define ZAF_DEFINE_PROPERTY(ClassName) \
-ClassName::_PropertyMeta ClassName::_PropertyMeta::instance;\
-ClassName::_PropertyMeta& ClassName::PropertyMeta() { \
-    return ClassName::_PropertyMeta::Instance(); \
-};

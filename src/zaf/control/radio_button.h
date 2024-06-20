@@ -159,10 +159,10 @@ private:
 };
 
 ZAF_OBJECT_BEGIN(RadioButton);
-ZAF_PROPERTY(AutoCheck)
-ZAF_PROPERTY(IsChecked)
-ZAF_PROPERTY(RadioBackgroundColor)
-ZAF_PROPERTY(RadioBorderColor)
+ZAF_OBJECT_PROPERTY(AutoCheck)
+ZAF_OBJECT_PROPERTY(IsChecked)
+ZAF_OBJECT_PROPERTY(RadioBackgroundColor)
+ZAF_OBJECT_PROPERTY(RadioBorderColor)
 ZAF_OBJECT_END;
 
 }

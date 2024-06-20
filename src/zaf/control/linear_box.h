@@ -51,9 +51,9 @@ private:
 };
 
 ZAF_OBJECT_BEGIN(LinearBox);
-ZAF_PROPERTY(Direction)
-ZAF_PROPERTY(AxisAlignment)
-ZAF_PROPERTY(CrossAxisAlignment)
+ZAF_OBJECT_PROPERTY(Direction)
+ZAF_OBJECT_PROPERTY(AxisAlignment)
+ZAF_OBJECT_PROPERTY(CrossAxisAlignment)
 ZAF_OBJECT_END;
 
 
