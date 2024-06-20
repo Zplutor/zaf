@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/object/enum_declaration.h>
+#include <zaf/object/enum_support.h>
 
 namespace zaf {
 
@@ -30,7 +31,13 @@ enum class ArrowDirection {
     Down,
 };
 
-ZAF_DECLARE_ENUM(ArrowDirection)
+ZAF_ENUM_BEGIN(ArrowDirection)
+ZAF_ENUM_VALUE(Left)
+ZAF_ENUM_VALUE(Up)
+ZAF_ENUM_VALUE(Right)
+ZAF_ENUM_VALUE(Down)
+ZAF_ENUM_END;
+
 ZAF_ENABLE_ENUM_BOXING(ArrowDirection)
 
 }

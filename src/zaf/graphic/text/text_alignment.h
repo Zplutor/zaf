@@ -4,6 +4,7 @@
 #include <optional>
 #include <string>
 #include <zaf/object/enum_declaration.h>
+#include <zaf/object/enum_support.h>
 
 namespace zaf {
 
@@ -37,7 +38,15 @@ enum class TextAlignment {
     Right = Tailing,
 };
 
-ZAF_DECLARE_ENUM(TextAlignment)
+ZAF_ENUM_BEGIN(TextAlignment)
+ZAF_ENUM_VALUE(Leading)
+ZAF_ENUM_VALUE(Tailing)
+ZAF_ENUM_VALUE(Center)
+ZAF_ENUM_VALUE(Justified)
+ZAF_ENUM_VALUE(Left)
+ZAF_ENUM_VALUE(Right)
+ZAF_ENUM_END;
+
 ZAF_ENABLE_ENUM_BOXING(TextAlignment)
 
 }

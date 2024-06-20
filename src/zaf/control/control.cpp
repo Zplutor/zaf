@@ -5,7 +5,6 @@
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/define.h>
 #include <zaf/base/error/contract_error.h>
-#include <zaf/control/control_parser.h>
 #include <zaf/control/internal/cached_painting.h>
 #include <zaf/control/internal/control_updating.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
@@ -18,7 +17,6 @@
 #include <zaf/graphic/image/image.h>
 #include <zaf/internal/theme.h>
 #include <zaf/internal/window/window_focused_control_manager.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 #include <zaf/window/inspector/internal/inspector_port.h>
 #include <zaf/window/message/message.h>
@@ -43,11 +41,6 @@ constexpr bool DefaultIsEnabled = true;
 constexpr bool DefaultIsVisible = true;
 
 }
-
-
-ZAF_DEFINE_TYPE(Control)
-ZAF_DEFINE_TYPE_PARSER(ControlParser)
-ZAF_DEFINE_TYPE_END
 
 
 Control::Control() : 

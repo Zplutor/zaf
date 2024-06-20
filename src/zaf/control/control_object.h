@@ -1,11 +1,13 @@
 #pragma once
 
 #include <zaf/control/control.h>
+#include <zaf/control/control_parser.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
 
 ZAF_OBJECT_BEGIN(Control);
+ZAF_OBJECT_PARSER(ControlParser);
 ZAF_PROPERTY(Rect);
 ZAF_PROPERTY(Position);
 ZAF_PROPERTY(X);

@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <zaf/graphic/text/text_inline_object.h>
 #include <zaf/object/enum_declaration.h>
+#include <zaf/object/enum_support.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
@@ -14,7 +15,12 @@ enum class TextTrimmingGranularity {
     Word = DWRITE_TRIMMING_GRANULARITY_WORD,
 };
 
-ZAF_DECLARE_ENUM(TextTrimmingGranularity);
+ZAF_ENUM_BEGIN(TextTrimmingGranularity)
+ZAF_ENUM_VALUE(None)
+ZAF_ENUM_VALUE(Character)
+ZAF_ENUM_VALUE(Word)
+ZAF_ENUM_END;
+
 ZAF_ENABLE_ENUM_BOXING(TextTrimmingGranularity);
 
 

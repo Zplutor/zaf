@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <zaf/object/enum_declaration.h>
+#include <zaf/object/enum_support.h>
 
 namespace zaf {
 
@@ -26,7 +27,12 @@ enum class CheckState {
     Indeterminate,
 };
 
-ZAF_DECLARE_ENUM(CheckState)
+ZAF_ENUM_BEGIN(CheckState)
+ZAF_ENUM_VALUE(Unchecked)
+ZAF_ENUM_VALUE(Checked)
+ZAF_ENUM_VALUE(Indeterminate)
+ZAF_ENUM_END;
+
 ZAF_ENABLE_ENUM_BOXING(CheckState)
 
 }

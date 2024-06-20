@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/object/enum_declaration.h>
+#include <zaf/object/enum_support.h>
 
 namespace zaf {
 
@@ -10,7 +11,12 @@ enum class AxisAlignment {
     Center,
 };
 
-ZAF_DECLARE_ENUM(AxisAlignment)
+ZAF_ENUM_BEGIN(AxisAlignment)
+ZAF_ENUM_VALUE(Start)
+ZAF_ENUM_VALUE(End)
+ZAF_ENUM_VALUE(Center)
+ZAF_ENUM_END;
+
 ZAF_ENABLE_ENUM_BOXING(AxisAlignment)
 
 }

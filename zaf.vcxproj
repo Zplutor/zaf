@@ -308,6 +308,7 @@
     <ClCompile Include="src\zaf\internal\window\window_focused_control_manager.cpp" />
     <ClCompile Include="src\zaf\io\stream\stream.cpp" />
     <ClCompile Include="src\zaf\object\boxing\boolean.cpp" />
+    <ClCompile Include="src\zaf\object\boxing\boolean_parser.cpp" />
     <ClCompile Include="src\zaf\object\boxing\numeric.cpp" />
     <ClCompile Include="src\zaf\object\boxing\string.cpp" />
     <ClCompile Include="src\zaf\object\creation.cpp" />
@@ -794,6 +795,7 @@
     <ClInclude Include="src\zaf\io\stream\memory_stream_core.h" />
     <ClInclude Include="src\zaf\io\stream\stream.h" />
     <ClInclude Include="src\zaf\object\boxing\boolean.h" />
+    <ClInclude Include="src\zaf\object\boxing\boolean_parser.h" />
     <ClInclude Include="src\zaf\object\boxing\boxed_object.h" />
     <ClInclude Include="src\zaf\object\boxing\boxing.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent.h" />
@@ -809,6 +811,7 @@
     <ClInclude Include="src\zaf\object\creation.h" />
     <ClInclude Include="src\zaf\object\enum_declaration.h" />
     <ClInclude Include="src\zaf\object\enum_definition.h" />
+    <ClInclude Include="src\zaf\object\enum_support.h" />
     <ClInclude Include="src\zaf\object\enum_type.h" />
     <ClInclude Include="src\zaf\object\equality.h" />
     <ClInclude Include="src\zaf\object\internal\enum_parser.h" />

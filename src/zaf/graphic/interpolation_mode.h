@@ -2,6 +2,7 @@
 
 #include <zaf/base/direct2d.h>
 #include <zaf/object/enum_declaration.h>
+#include <zaf/object/enum_support.h>
 
 namespace zaf {
 
@@ -14,7 +15,15 @@ enum class InterpolationMode {
     HighQualityCubic = D2D1_INTERPOLATION_MODE_HIGH_QUALITY_CUBIC,
 };
 
-ZAF_DECLARE_ENUM(InterpolationMode)
+ZAF_ENUM_BEGIN(InterpolationMode)
+ZAF_ENUM_VALUE(NearestNeighbor)
+ZAF_ENUM_VALUE(Linear)
+ZAF_ENUM_VALUE(Cubic)
+ZAF_ENUM_VALUE(MultiSampleLinear)
+ZAF_ENUM_VALUE(Anisotropic)
+ZAF_ENUM_VALUE(HighQualityCubic)
+ZAF_ENUM_END;
+
 ZAF_ENABLE_ENUM_BOXING(InterpolationMode)
 
 }

@@ -2,7 +2,7 @@
 #include <zaf/base/error/invalid_type_error.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/enum_declaration.h>
-#include <zaf/object/enum_definition.h>
+#include <zaf/object/enum_support.h>
 #include <zaf/object/parsing/xaml_reader.h>
 
 namespace {
@@ -17,16 +17,16 @@ enum class TestType {
     Three = Third,
 };
 
-ZAF_DECLARE_ENUM(TestType)
+ZAF_ENUM_BEGIN(TestType)
+ZAF_ENUM_VALUE(First)
+ZAF_ENUM_VALUE(Second)
+ZAF_ENUM_VALUE(Third)
+ZAF_ENUM_VALUE(One)
+ZAF_ENUM_VALUE(Two)
+ZAF_ENUM_VALUE(Three)
+ZAF_ENUM_END;
 
-ZAF_DEFINE_ENUM(TestType)
-ZAF_DEFINE_ENUM_VALUE(First)
-ZAF_DEFINE_ENUM_VALUE(Second)
-ZAF_DEFINE_ENUM_VALUE(Third)
-ZAF_DEFINE_ENUM_VALUE(One)
-ZAF_DEFINE_ENUM_VALUE(Two)
-ZAF_DEFINE_ENUM_VALUE(Three)
-ZAF_DEFINE_ENUM_END
+ZAF_ENUM_IMPL(TestType);
 
 }
 
@@ -38,13 +38,13 @@ enum class NamespaceTestType {
     Third,
 };
 
-ZAF_DECLARE_ENUM(NamespaceTestType)
+ZAF_ENUM_BEGIN(NamespaceTestType)
+ZAF_ENUM_VALUE(First)
+ZAF_ENUM_VALUE(Second)
+ZAF_ENUM_VALUE(Third)
+ZAF_ENUM_END;
 
-ZAF_DEFINE_ENUM(NamespaceTestType)
-ZAF_DEFINE_ENUM_VALUE(First)
-ZAF_DEFINE_ENUM_VALUE(Second)
-ZAF_DEFINE_ENUM_VALUE(Third)
-ZAF_DEFINE_ENUM_END
+ZAF_ENUM_IMPL(NamespaceTestType);
 
 }
 

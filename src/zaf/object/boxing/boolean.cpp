@@ -1,53 +1,9 @@
 #include <zaf/object/boxing/boolean.h>
-#include <zaf/base/as.h>
-#include <zaf/object/parsing/parse_error.h>
-#include <zaf/object/parsing/object_parser.h>
-#include <zaf/object/parsing/xaml_utility.h>
-#include <zaf/object/type_definition.h>
+#include <zaf/object/boxing/internal/boxed_represent_equal.h>
 
 namespace zaf {
-namespace {
 
-class BooleanParser : public ObjectParser {
-public:
-    void ParseFromAttribute(const std::wstring& value, Object& object) override {
-        Parse(value, object);
-    }
-
-    void ParseFromNode(const XamlNode& node, Object& object) override {
-
-        __super::ParseFromNode(node, object);
-
-        auto content_string = GetContentStringFromXamlNode(node);
-        if (!content_string) {
-            throw ParseError{ ZAF_SOURCE_LOCATION() };
-        }
-
-        Parse(*content_string, object);
-    }
-
-private:
-    void Parse(const std::wstring& string, Object& object) {
-
-        auto& boolean = As<Boolean>(object);
-
-        if (string == L"true") {
-            boolean.SetValue(true);
-        }
-        else if (string == L"false") {
-            boolean.SetValue(false);
-        }
-        else {
-            throw ParseError{ ZAF_SOURCE_LOCATION() };
-        }
-    }
-};
-
-}
-
-ZAF_DEFINE_TYPE(Boolean)
-ZAF_DEFINE_TYPE_PARSER(BooleanParser)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(Boolean);
 
 
 bool Boolean::IsEqual(const Object& other) const {

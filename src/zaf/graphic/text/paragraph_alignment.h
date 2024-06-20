@@ -4,6 +4,7 @@
 #include <optional>
 #include <string>
 #include <zaf/object/enum_declaration.h>
+#include <zaf/object/enum_support.h>
 
 namespace zaf {
 
@@ -32,7 +33,14 @@ enum class ParagraphAlignment {
     Bottom = Far,
 };
 
-ZAF_DECLARE_ENUM(ParagraphAlignment)
+ZAF_ENUM_BEGIN(ParagraphAlignment)
+ZAF_ENUM_VALUE(Near)
+ZAF_ENUM_VALUE(Far)
+ZAF_ENUM_VALUE(Center)
+ZAF_ENUM_VALUE(Top)
+ZAF_ENUM_VALUE(Bottom)
+ZAF_ENUM_END;
+
 ZAF_ENABLE_ENUM_BOXING(ParagraphAlignment)
 
 }

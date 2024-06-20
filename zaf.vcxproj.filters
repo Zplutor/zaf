@@ -1255,6 +1255,9 @@
     <ClCompile Include="src\zaf\graphic\size_parser.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\object\boxing\boolean_parser.cpp">
+      <Filter>zaf\object\boxing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2891,6 +2894,12 @@
       <Filter>zaf\object\boxing</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\object\boxing\string_parser.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\enum_support.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\boolean_parser.h">
       <Filter>zaf\object\boxing</Filter>
     </ClInclude>
   </ItemGroup>
