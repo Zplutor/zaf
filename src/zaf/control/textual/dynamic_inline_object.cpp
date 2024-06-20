@@ -1,7 +1,6 @@
 #include <zaf/control/textual/dynamic_inline_object.h>
 #include <zaf/base/as.h>
 #include <zaf/control/text_box.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>
 

@@ -19,7 +19,6 @@
 #include <zaf/graphic/renderer/renderer.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/internal/theme.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/window/message/keyboard_message.h>

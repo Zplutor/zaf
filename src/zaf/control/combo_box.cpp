@@ -14,7 +14,6 @@
 #include <zaf/graphic/geometry/path_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/window.h>
 

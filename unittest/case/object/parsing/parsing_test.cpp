@@ -6,7 +6,6 @@
 #include <zaf/object/object_type.h>
 #include <zaf/object/parsing/helpers.h>
 #include <zaf/object/parsing/xaml_reader.h>
-#include <zaf/object/type_definition.h>
 
 namespace {
 

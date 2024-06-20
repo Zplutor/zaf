@@ -3,7 +3,6 @@
 #include <zaf/creation.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/control/textual/inline_object.h>
-#include <zaf/object/type_definition.h>
 
 TEST(TextualControlTest, SetText) {
 

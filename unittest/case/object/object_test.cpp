@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_operation_error.h>
+#include <zaf/object/object.h>
 #include <zaf/object/object_type.h>
-#include <zaf/object/type_declaration.h>
-#include <zaf/object/type_definition.h>
 
 namespace {
 

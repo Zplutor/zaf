@@ -34,7 +34,6 @@
 #include <zaf/control/linear_box.h>
 #include <zaf/base/registry/registry.h>
 #include <zaf/base/error/error.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/resource/resource_factory.h>
 #include <zaf/object/boxing/string.h>
 #include <zaf/object/boxing/boxing.h>

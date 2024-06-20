@@ -1,7 +1,6 @@
 #include <zaf/base/range.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/base/string/to_string.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/xml/xml_error.h>
 #include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>

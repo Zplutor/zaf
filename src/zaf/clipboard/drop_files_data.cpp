@@ -2,7 +2,6 @@
 #include <ShlObj.h>
 #include <zaf/base/error/invalid_data_error.h>
 #include <zaf/base/error/invalid_operation_error.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf::clipboard {
 

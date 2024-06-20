@@ -3,7 +3,6 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf {

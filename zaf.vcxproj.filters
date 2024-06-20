@@ -1990,19 +1990,10 @@
     <ClInclude Include="src\zaf\control\internal\control_updating.h">
       <Filter>zaf\control\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\type_declaration.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\object\object_type.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\type_definition.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\object\object_property.h">
-      <Filter>zaf\object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\property_definition.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\object\internal\object_initializer.h">

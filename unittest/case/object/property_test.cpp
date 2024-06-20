@@ -6,7 +6,6 @@
 #include <zaf/graphic/size.h>
 #include <zaf/object/object.h>
 #include <zaf/object/property_support.h>
-#include <zaf/object/type_definition.h>
 
 namespace {
 

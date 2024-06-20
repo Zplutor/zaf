@@ -4,7 +4,6 @@
 #include <string>
 #include <zaf/object/object_support.h>
 #include <zaf/object/object_type.h>
-#include <zaf/object/type_declaration.h>
 
 namespace zaf {
 namespace internal {

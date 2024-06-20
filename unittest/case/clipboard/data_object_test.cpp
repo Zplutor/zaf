@@ -3,7 +3,6 @@
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/clipboard/data_object.h>
 #include <zaf/clipboard/text_data.h>
-#include <zaf/object/type_definition.h>
 
 using namespace zaf::clipboard;
 
