@@ -4,7 +4,6 @@
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/creation.h>
 #include <zaf/object/object_type.h>
-#include <zaf/object/type_definition.h>
 
 using namespace zaf;
 using namespace zaf::textual;
@@ -87,11 +86,13 @@ namespace {
 
 class CustomInlineObject : public InlineObject {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 };
 
-ZAF_DEFINE_TYPE(CustomInlineObject)
-ZAF_DEFINE_TYPE_END;
+ZAF_OBJECT_BEGIN(CustomInlineObject);
+ZAF_OBJECT_END;
+
+ZAF_OBJECT_IMPL(CustomInlineObject);
    
 }
 

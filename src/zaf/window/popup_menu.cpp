@@ -4,7 +4,6 @@
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/dpi.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/window/internal/popup_menu_controller.h>
@@ -12,8 +11,7 @@
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(PopupMenu)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(PopupMenu);
 
 
 void PopupMenu::Initialize() {

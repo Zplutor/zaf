@@ -1,6 +1,8 @@
 #pragma once
 
 #include <zaf/control/control.h>
+#include <zaf/control/scroll_bar.h>
+#include <zaf/control/scroll_box_parser.h>
 #include <zaf/rx/subscription.h>
 
 namespace zaf {
@@ -10,9 +12,7 @@ class ScrollBoxLayouter;
 class SelfScrollLayouter;
 }
 
-class ScrollBar;
 class SelfScrollControl;
-class zaf::Size;
 
 /**
 Represents a container that can scroll its content.
@@ -32,7 +32,7 @@ information, see also SelfScrollControl.
 */
 class ScrollBox : public Control {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     ScrollBox();
@@ -314,5 +314,24 @@ private:
     std::unique_ptr<internal::ScrollBoxLayouter> layouter_;
     Subscription scroll_content_rect_change_subscription_;
 };
+
+ZAF_OBJECT_BEGIN(ScrollBox);
+ZAF_OBJECT_PARSER(ScrollBoxParser)
+ZAF_PROPERTY(AllowVerticalScroll)
+ZAF_PROPERTY(AllowHorizontalScroll)
+ZAF_PROPERTY(AutoScrollBarLargeChange)
+ZAF_PROPERTY(AutoScrollContentHeight)
+ZAF_PROPERTY(AutoScrollContentSize)
+ZAF_PROPERTY(AutoScrollContentWidth)
+ZAF_PROPERTY(AutoHideScrollBars)
+ZAF_PROPERTY(ScrollBarThickness)
+ZAF_PROPERTY(UseOverlayScrollBars)
+ZAF_PROPERTY(HorizontalScrollBar)
+ZAF_PROPERTY(HorizontalScrollBarThickness)
+ZAF_PROPERTY(ScrollBarCorner)
+ZAF_PROPERTY(VerticalScrollBar)
+ZAF_PROPERTY(VerticalScrollBarThickness)
+ZAF_PROPERTY(ScrollContent)
+ZAF_OBJECT_END;
 
 }

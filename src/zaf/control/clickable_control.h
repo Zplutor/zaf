@@ -13,7 +13,7 @@ namespace zaf {
  */
 class ClickableControl : public TextualControl {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     ClickableControl();
@@ -73,5 +73,8 @@ private:
 
     Event<ClickInfo> click_event_;
 };
+
+ZAF_OBJECT_BEGIN(ClickableControl);
+ZAF_OBJECT_END;
 
 }

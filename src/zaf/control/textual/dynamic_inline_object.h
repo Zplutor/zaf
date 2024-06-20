@@ -17,7 +17,7 @@ namespace textual {
 
 class DynamicInlineObject : public InlineObject {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
 public:
     std::shared_ptr<TextBox> Host() const noexcept;
@@ -97,6 +97,9 @@ private:
     Event<MouseUpInfo> mouse_up_event_;
     Event<DoubleClickInfo> double_click_event_;
 };
+
+ZAF_OBJECT_BEGIN(DynamicInlineObject);
+ZAF_OBJECT_END;
 
 }
 }

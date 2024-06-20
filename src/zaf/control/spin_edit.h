@@ -6,10 +6,13 @@ namespace zaf {
 
 class SpinEdit : public RichEdit {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
 protected:
     void Initialize() override;
 };
+
+ZAF_OBJECT_BEGIN(SpinEdit);
+ZAF_OBJECT_END;
 
 }

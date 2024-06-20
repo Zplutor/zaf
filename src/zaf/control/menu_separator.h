@@ -6,7 +6,7 @@ namespace zaf {
 
 class MenuSeparator : public MenuItem {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
 protected:
     void Initialize() override;
@@ -15,5 +15,8 @@ protected:
     zaf::Rect GetSubMenuArrowRect() override;
     zaf::Size CalculatePreferredContentSize(const zaf::Size& bound_size) const override;
 };
+
+ZAF_OBJECT_BEGIN(MenuSeparator);
+ZAF_OBJECT_END;
 
 }

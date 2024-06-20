@@ -4,13 +4,11 @@
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/tree_data_source.h>
 #include <zaf/control/tree_item_container.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(TreeControl)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(TreeControl)
 
 
 TreeControl::TreeControl() :

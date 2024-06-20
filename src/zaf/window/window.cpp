@@ -13,9 +13,6 @@
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
 #include <zaf/internal/window/window_focused_control_manager.h>
-#include <zaf/object/parsing/object_parser.h>
-#include <zaf/object/parsing/xaml_node_parse_helper.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/rx/creation.h>
 #include <zaf/window/inspector/inspector_window.h>
 #include <zaf/window/tooltip_window.h>
@@ -44,45 +41,11 @@ Point TranslateAbsolutePositionToControlPosition(
     return result;
 }
 
-
-class WindowParser : public ObjectParser {
-public:
-    void ParseFromNode(const XamlNode& node, Object& reflection_object) override {
-
-        __super::ParseFromNode(node, reflection_object);
-
-        auto& window = dynamic_cast<Window&>(reflection_object);
-        ParseControls(node, window);
-    }
-
-private:
-    void ParseControls(const XamlNode& node, Window& window) {
-
-        std::vector<std::shared_ptr<Control>> controls;
-
-        for (const auto& each_node : node.GetContentNodes()) {
-
-            auto control = internal::CreateObjectFromNode<Control>(each_node);
-            if (control == nullptr) {
-                continue;
-            }
-
-            controls.push_back(control);
-        }
-
-        if (!controls.empty()) {
-            window.RootControl()->AddChildren(controls);
-        }
-    }
-};
-
 }
 
-ZAF_DEFINE_TYPE(Window)
-ZAF_DEFINE_TYPE_PARSER(WindowParser)
-ZAF_DEFINE_TYPE_END
 
-ZAF_DEFINE_PROPERTY(Window);
+ZAF_OBJECT_IMPL(Window);
+
 
 LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wparam, LPARAM lparam) {
 

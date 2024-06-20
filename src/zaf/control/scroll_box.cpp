@@ -1,15 +1,14 @@
 #include <zaf/control/scroll_box.h>
 #include <zaf/base/as.h>
+#include <zaf/control/control_object.h>
 #include <zaf/control/internal/scroll_box/general_scroll_layouter.h>
 #include <zaf/control/internal/scroll_box/self_scroll_layouter.h>
 #include <zaf/control/rich_edit.h>
 #include <zaf/control/scroll_bar.h>
-#include <zaf/control/scroll_box_parser.h>
 #include <zaf/control/self_scroll_control.h>
 #include <zaf/control/text_box.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -23,25 +22,7 @@ std::shared_ptr<Control> CreateDefaultScrollContentControl() {
 
 }
 
-
-ZAF_DEFINE_TYPE(ScrollBox)
-ZAF_DEFINE_TYPE_PARSER(ScrollBoxParser)
-ZAF_DEFINE_TYPE_PROPERTY(AllowVerticalScroll)
-ZAF_DEFINE_TYPE_PROPERTY(AllowHorizontalScroll)
-ZAF_DEFINE_TYPE_PROPERTY(AutoScrollBarLargeChange)
-ZAF_DEFINE_TYPE_PROPERTY(AutoScrollContentHeight)
-ZAF_DEFINE_TYPE_PROPERTY(AutoScrollContentSize)
-ZAF_DEFINE_TYPE_PROPERTY(AutoScrollContentWidth)
-ZAF_DEFINE_TYPE_PROPERTY(AutoHideScrollBars)
-ZAF_DEFINE_TYPE_PROPERTY(ScrollBarThickness)
-ZAF_DEFINE_TYPE_PROPERTY(UseOverlayScrollBars)
-ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(HorizontalScrollBar)
-ZAF_DEFINE_TYPE_PROPERTY(HorizontalScrollBarThickness)
-ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(ScrollBarCorner)
-ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(VerticalScrollBar)
-ZAF_DEFINE_TYPE_PROPERTY(VerticalScrollBarThickness)
-ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(ScrollContent)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(ScrollBox)
 
 
 ScrollBox::ScrollBox() :

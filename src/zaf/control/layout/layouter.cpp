@@ -1,5 +1,4 @@
 #include <zaf/control/layout/layouter.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf {
 namespace {
@@ -25,9 +24,7 @@ private:
 
 }
 
-
-ZAF_DEFINE_TYPE(Layouter)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(Layouter)
 
 
 void Layouter::Layout(

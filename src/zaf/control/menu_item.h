@@ -9,7 +9,7 @@ class PopupMenu;
 
 class MenuItem : public TextualControl {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
 public:
     void AddSubMenuItem(const std::shared_ptr<MenuItem>& sub_menu_item);
@@ -46,5 +46,8 @@ private:
     Event<SubMenuShowInfo> sub_menu_show_event_;
     Event<SubMenuCloseInfo> sub_menu_close_event_;
 };
+
+ZAF_OBJECT_BEGIN(MenuItem);
+ZAF_OBJECT_END;
 
 }

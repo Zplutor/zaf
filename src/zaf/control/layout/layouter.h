@@ -12,13 +12,16 @@ class Rect;
 
 class Layouter : public Object {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
     virtual void Layout(
         const Control& parent,
         const Rect& parent_old_rect,
         const std::vector<std::shared_ptr<Control>>& children);
 };
+
+ZAF_OBJECT_BEGIN(Layouter);
+ZAF_OBJECT_END;
 
 
 using LayoutFunction = std::function<void(

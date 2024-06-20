@@ -9,7 +9,7 @@ namespace zaf {
  */
 class Label : public TextualControl {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     Label();
@@ -18,5 +18,8 @@ public:
 protected:
     void Initialize() override;
 };
+
+ZAF_OBJECT_BEGIN(Label);
+ZAF_OBJECT_END;
 
 }

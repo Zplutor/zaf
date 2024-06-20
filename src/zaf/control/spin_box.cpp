@@ -2,20 +2,17 @@
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/string/to_numeric.h>
+#include <zaf/control/control_object.h>
 #include <zaf/control/spin_button.h>
 #include <zaf/control/spin_edit.h>
 #include <zaf/creation.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(SpinBox)
-ZAF_DEFINE_TYPE_PROPERTY(MaxValue)
-ZAF_DEFINE_TYPE_PROPERTY(MinValue)
-ZAF_DEFINE_TYPE_PROPERTY(Value)
-ZAF_DEFINE_TYPE_END;
+ZAF_OBJECT_IMPL(SpinBox);
+
 
 void SpinBox::Initialize() {
 

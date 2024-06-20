@@ -8,11 +8,7 @@
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(Range)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_PROPERTY(Range);
-
+ZAF_OBJECT_IMPL(Range);
 ZAF_DEFINE_EQUALITY(Range);
 
 std::wstring Range::ToString() const {

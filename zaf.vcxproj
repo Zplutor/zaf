@@ -87,7 +87,7 @@
     <ClCompile Include="src\zaf\control\control.cpp" />
     <ClCompile Include="src\zaf\control\control_binder.cpp" />
     <ClCompile Include="src\zaf\control\control_parser.cpp" />
-    <ClCompile Include="src\zaf\control\control_properties.cpp" />
+    <ClCompile Include="src\zaf\control\control_object.cpp" />
     <ClCompile Include="src\zaf\control\event\check_state_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\event\click_info.cpp" />
     <ClCompile Include="src\zaf\control\event\combo_box_selection_changed_info.cpp" />
@@ -232,12 +232,16 @@
     <ClCompile Include="src\zaf\graphic\canvas_clipping_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas_region_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas_state_guard.cpp" />
+    <ClCompile Include="src\zaf\graphic\color_parser.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_parser.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_style.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_weight.cpp" />
+    <ClCompile Include="src\zaf\graphic\font\font_weight_parser.cpp" />
+    <ClCompile Include="src\zaf\graphic\frame_parser.cpp" />
     <ClCompile Include="src\zaf\graphic\image\uri_image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\internal\utility.cpp" />
+    <ClCompile Include="src\zaf\graphic\image\uri_image_parser.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\bitmap.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\imaging_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\palette.cpp" />
@@ -247,6 +251,7 @@
     <ClCompile Include="src\zaf\graphic\image\wic\bitmap_decode_frame.cpp" />
     <ClCompile Include="src\zaf\graphic\image\wic\pixel_format.cpp" />
     <ClCompile Include="src\zaf\graphic\interpolation_mode.cpp" />
+    <ClCompile Include="src\zaf\graphic\point_parser.cpp" />
     <ClCompile Include="src\zaf\graphic\render_bitmap.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />
@@ -268,6 +273,7 @@
     <ClCompile Include="src\zaf\graphic\graphic_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\rounded_rect.cpp" />
     <ClCompile Include="src\zaf\graphic\size.cpp" />
+    <ClCompile Include="src\zaf\graphic\size_parser.cpp" />
     <ClCompile Include="src\zaf\graphic\text\internal\text_inline_object_bridge.cpp" />
     <ClCompile Include="src\zaf\graphic\text\paragraph_alignment.cpp" />
     <ClCompile Include="src\zaf\graphic\text\text_alignment.cpp" />
@@ -390,6 +396,7 @@
     <ClCompile Include="src\zaf\window\window_class_registry.cpp" />
     <ClCompile Include="src\zaf\window\window_holder.cpp" />
     <ClCompile Include="src\zaf\window\window_messager.cpp" />
+    <ClCompile Include="src\zaf\window\window_parser.cpp" />
     <ClCompile Include="src\zaf\xml\xml_reader.cpp" />
     <ClCompile Include="src\zaf\xml\xml_serialization.cpp" />
     <ClCompile Include="src\zaf\xml\xml_writer.cpp" />
@@ -492,7 +499,7 @@
     <ClInclude Include="src\zaf\control\control.h" />
     <ClInclude Include="src\zaf\control\control_binder.h" />
     <ClInclude Include="src\zaf\control\control_parser.h" />
-    <ClInclude Include="src\zaf\control\control_properties.h" />
+    <ClInclude Include="src\zaf\control\control_object.h" />
     <ClInclude Include="src\zaf\control\control_update_guard.h" />
     <ClInclude Include="src\zaf\control\event\check_state_changed_info.h" />
     <ClInclude Include="src\zaf\control\event\click_info.h" />
@@ -663,14 +670,18 @@
     <ClInclude Include="src\zaf\graphic\canvas_clipping_guard.h" />
     <ClInclude Include="src\zaf\graphic\canvas_region_guard.h" />
     <ClInclude Include="src\zaf\graphic\canvas_state_guard.h" />
+    <ClInclude Include="src\zaf\graphic\color_parser.h" />
     <ClInclude Include="src\zaf\graphic\dpi.h" />
     <ClInclude Include="src\zaf\graphic\font\font_parser.h" />
+    <ClInclude Include="src\zaf\graphic\font\font_weight_parser.h" />
+    <ClInclude Include="src\zaf\graphic\frame_parser.h" />
     <ClInclude Include="src\zaf\graphic\geometry\arc_segment.h" />
     <ClInclude Include="src\zaf\graphic\geometry\ellipse_geometry.h" />
     <ClInclude Include="src\zaf\graphic\image\uri_image.h" />
     <ClInclude Include="src\zaf\graphic\image\image.h" />
     <ClInclude Include="src\zaf\graphic\image\internal\utility.h" />
     <ClInclude Include="src\zaf\graphic\image\internal\wic_bitmap.h" />
+    <ClInclude Include="src\zaf\graphic\image\uri_image_parser.h" />
     <ClInclude Include="src\zaf\graphic\image\wic\bitmap.h" />
     <ClInclude Include="src\zaf\graphic\image\wic\imaging_factory.h" />
     <ClInclude Include="src\zaf\graphic\image\wic\palette.h" />
@@ -684,6 +695,7 @@
     <ClInclude Include="src\zaf\graphic\image\wic\stream.h" />
     <ClInclude Include="src\zaf\graphic\internal\alignment_info.h" />
     <ClInclude Include="src\zaf\graphic\internal\canvas_region.h" />
+    <ClInclude Include="src\zaf\graphic\point_parser.h" />
     <ClInclude Include="src\zaf\graphic\render_bitmap.h" />
     <ClInclude Include="src\zaf\graphic\bitmap_properties.h" />
     <ClInclude Include="src\zaf\graphic\brush\bitmap_brush.h" />
@@ -724,6 +736,7 @@
     <ClInclude Include="src\zaf\graphic\graphic_factory.h" />
     <ClInclude Include="src\zaf\graphic\rounded_rect.h" />
     <ClInclude Include="src\zaf\graphic\size.h" />
+    <ClInclude Include="src\zaf\graphic\size_parser.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
     <ClInclude Include="src\zaf\graphic\stroke_properties.h" />
     <ClInclude Include="src\zaf\graphic\text\hit_test_result.h" />
@@ -790,7 +803,9 @@
     <ClInclude Include="src\zaf\object\boxing\internal\string_conversion_shim.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\unboxer.h" />
     <ClInclude Include="src\zaf\object\boxing\numeric.h" />
+    <ClInclude Include="src\zaf\object\boxing\numeric_parser.h" />
     <ClInclude Include="src\zaf\object\boxing\string.h" />
+    <ClInclude Include="src\zaf\object\boxing\string_parser.h" />
     <ClInclude Include="src\zaf\object\creation.h" />
     <ClInclude Include="src\zaf\object\enum_declaration.h" />
     <ClInclude Include="src\zaf\object\enum_definition.h" />
@@ -804,6 +819,7 @@
     <ClInclude Include="src\zaf\object\internal\property_registrar.h" />
     <ClInclude Include="src\zaf\object\internal\base_enum_type.h" />
     <ClInclude Include="src\zaf\object\internal\reflection_manager.h" />
+    <ClInclude Include="src\zaf\object\object_support.h" />
     <ClInclude Include="src\zaf\object\object.h" />
     <ClInclude Include="src\zaf\object\object_property.h" />
     <ClInclude Include="src\zaf\object\object_type.h" />
@@ -817,7 +833,7 @@
     <ClInclude Include="src\zaf\object\parsing\xaml_reader.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_utility.h" />
     <ClInclude Include="src\zaf\object\property_definition.h" />
-    <ClInclude Include="src\zaf\object\property_macros.h" />
+    <ClInclude Include="src\zaf\object\property_support.h" />
     <ClInclude Include="src\zaf\object\style\sheet.h" />
     <ClInclude Include="src\zaf\object\style\sheet_parser.h" />
     <ClInclude Include="src\zaf\object\style\style.h" />
@@ -923,6 +939,7 @@
     <ClInclude Include="src\zaf\window\window_class_registry.h" />
     <ClInclude Include="src\zaf\window\window_holder.h" />
     <ClInclude Include="src\zaf\window\window_messager.h" />
+    <ClInclude Include="src\zaf\window\window_parser.h" />
     <ClInclude Include="src\zaf\xml\xml_error.h" />
     <ClInclude Include="src\zaf\xml\xml_input_options.h" />
     <ClInclude Include="src\zaf\xml\xml_node_type.h" />

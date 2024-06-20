@@ -1,17 +1,13 @@
 #include <zaf/control/caret.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(Caret)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_PROPERTY(Caret);
+ZAF_OBJECT_IMPL(Caret);
 
 
 Caret::Caret(const std::weak_ptr<Control>& owner) : owner_(owner) {

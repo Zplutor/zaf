@@ -7,7 +7,7 @@ namespace zaf {
 
 class SpinButton : public zaf::ClickableControl {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
     ArrowDirection Direction() const;
     void SetDirection(ArrowDirection direction);
@@ -24,5 +24,8 @@ private:
 
     Color arrow_color_;
 };
+
+ZAF_OBJECT_BEGIN(SpinButton);
+ZAF_OBJECT_END;
 
 }

@@ -12,28 +12,6 @@
 namespace zaf {
 namespace {
 
-class TheType : public ObjectType {
-public:
-    ObjectType* GetBase() const override {
-        return nullptr;
-    }
-
-    const std::wstring& GetName() const override {
-        static const std::wstring name{ L"Object" };
-        return name;
-    }
-
-    std::shared_ptr<Object> CreateInstance() const override {
-        return Create<Object>();
-    }
-
-    ObjectParser* GetParser() const {
-        static ObjectParser default_parser;
-        return &default_parser;
-    }
-};
-
-
 void ParseObject(ObjectType& type, Object& object) {
 
     auto base_type = type.GetBase();
@@ -57,6 +35,35 @@ void ParseObject(ObjectType& type, Object& object) {
     type.GetParser()->ParseFromNode(*root_node, object);
 }
 
+}
+
+
+Object::StaticType Object::StaticType::instance;
+
+Object::StaticType* Object::StaticType::Instance() {
+    return &instance;
+}
+
+Object::StaticType::StaticType() {
+    zaf::internal::ReflectionManager::Instance().RegisterType(this);
+}
+
+ObjectType* Object::StaticType::GetBase() const {
+    return nullptr;
+}
+
+const std::wstring& Object::StaticType::GetName() const {
+    static std::wstring name{ L"Object" };
+    return name;
+}
+
+std::shared_ptr<Object> Object::StaticType::CreateInstance() const {
+    return Create<Object>();
+}
+
+ObjectParser* Object::StaticType::GetParser() const {
+    static ObjectParser default_parser;
+    return &default_parser;
 }
 
 
@@ -112,11 +119,6 @@ std::wstring Object::ToString() const {
 }
 
 
-ObjectType* const Object::Type = []() {
-
-    static TheType type;
-    zaf::internal::ReflectionManager::Instance().RegisterType(&type);
-    return &type;
-}();
+ObjectType* const Object::Type = StaticType::Instance();
 
 }

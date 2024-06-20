@@ -1,14 +1,10 @@
 #include <zaf/control/scroll_bar_arrow.h>
 #include <zaf/control/internal/triangle_geometry.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(ScrollBarArrow)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_PROPERTY(ScrollBarArrow);
+ZAF_OBJECT_IMPL(ScrollBarArrow);
 
 
 ScrollBarArrow::ScrollBarArrow() : arrow_direction_(ArrowDirection::Up) {

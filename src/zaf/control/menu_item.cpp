@@ -7,7 +7,6 @@
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/window/popup_menu.h>
 
 namespace zaf {
@@ -18,8 +17,8 @@ constexpr float SubMenuArrowMargin = 4.f;
 
 }
 
-ZAF_DEFINE_TYPE(MenuItem)
-ZAF_DEFINE_TYPE_END;
+ZAF_OBJECT_IMPL(MenuItem)
+
 
 void MenuItem::Initialize() {
 

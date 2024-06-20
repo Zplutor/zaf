@@ -8,7 +8,7 @@ namespace zaf {
 
 class RoundedRect : public Object {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY;
 
 public:
@@ -76,6 +76,9 @@ public:
     float x_radius;
     float y_radius;
 };
+
+ZAF_OBJECT_BEGIN(RoundedRect);
+ZAF_OBJECT_END;
 
 
 bool operator==(const RoundedRect& rounded_rect1, const RoundedRect& rounded_rect2);

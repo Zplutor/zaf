@@ -1,22 +1,13 @@
 #include <zaf/graphic/rect.h>
 #include <algorithm>
 #include <limits>
-#include <zaf/object/type_definition.h>
 
 #undef max
 #undef min
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(Rect)
-ZAF_DEFINE_TYPE_PROPERTY(Position)
-ZAF_DEFINE_TYPE_PROPERTY(Size)
-ZAF_DEFINE_TYPE_PROPERTY(Left)
-ZAF_DEFINE_TYPE_PROPERTY(Top)
-ZAF_DEFINE_TYPE_PROPERTY(Right)
-ZAF_DEFINE_TYPE_PROPERTY(Bottom)
-ZAF_DEFINE_TYPE_END
-
+ZAF_OBJECT_IMPL(Rect);
 ZAF_DEFINE_EQUALITY(Rect)
 
 

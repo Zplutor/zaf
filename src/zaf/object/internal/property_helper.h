@@ -1,7 +1,6 @@
 #pragma once
 
 #include <type_traits>
-#include <zaf/graphic/image/uri_image.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/boxing/internal/get_box_type.h>
 #include <zaf/object/object.h>
@@ -33,12 +32,15 @@ struct GetSharedPtrElementType {
 
 template<typename E>
 struct GetSharedPtrElementType<std::shared_ptr<E>> {
-
+    using Type = E;
+    //TODO
+    /*
     using Type = std::conditional_t<
         std::is_same_v<E, zaf::Image>,
         zaf::URIImage, //Use URIImage to handle parsing things of Image.
         E
     >;
+    */
 };
 
 template<typename T>
@@ -60,7 +62,7 @@ struct DeduceUnderlyingValueType {
 
 template<typename T>
 struct IsReflectionType {
-    static constexpr bool Value = &T::Type != &zaf::Object::Type;
+    static constexpr bool Value = true; //TODO
 };
 
 

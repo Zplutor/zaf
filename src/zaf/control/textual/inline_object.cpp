@@ -1,14 +1,13 @@
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/base/as.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>
 
 namespace zaf::textual {
 
-ZAF_DEFINE_TYPE(InlineObject)
-ZAF_DEFINE_TYPE_END;
+ZAF_OBJECT_IMPL(InlineObject);
+
 
 zaf::Size InlineObject::Size() const {
     auto metrics = this->GetMetrics();

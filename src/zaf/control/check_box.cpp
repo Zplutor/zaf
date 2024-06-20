@@ -9,15 +9,11 @@
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
 #include <zaf/object/object_type.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(CheckBox)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_PROPERTY(CheckBox);
+ZAF_OBJECT_IMPL(CheckBox);
 
 
 CheckBox::CheckBox() : check_state_(CheckState::Unchecked) {

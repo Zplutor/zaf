@@ -33,7 +33,7 @@ Represents a control that displays text.
 */
 class TextualControl : public Control {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     TextualControl();
@@ -396,5 +396,19 @@ private:
     zaf::Rect text_rect_;
     mutable TextLayout text_layout_;
 };
+
+ZAF_OBJECT_BEGIN(TextualControl);
+ZAF_PROPERTY(IgnoreTailingWhiteSpaces)
+ZAF_PROPERTY(Text)
+ZAF_PROPERTY(TextLength)
+ZAF_PROPERTY(TextColor)
+ZAF_PROPERTY(Font)
+ZAF_PROPERTY(FontFamily)
+ZAF_PROPERTY(FontSize)
+ZAF_PROPERTY(FontWeight)
+ZAF_PROPERTY(TextAlignment)
+ZAF_PROPERTY(ParagraphAlignment)
+ZAF_PROPERTY(WordWrapping)
+ZAF_OBJECT_END;
 
 }

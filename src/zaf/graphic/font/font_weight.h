@@ -2,6 +2,7 @@
 
 #include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
+#include <zaf/graphic/font/font_weight_parser.h>
 #include <zaf/object/equality.h>
 #include <zaf/object/object.h>
 
@@ -12,7 +13,7 @@ namespace zaf {
  */
 class FontWeight : public Object {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY
 
 public:
@@ -98,6 +99,10 @@ public:
 private:
     int value_{};
 };
+
+ZAF_OBJECT_BEGIN(FontWeight);
+ZAF_OBJECT_PARSER(FontWeightParser);
+ZAF_OBJECT_END;
 
 }
 

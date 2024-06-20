@@ -2,15 +2,13 @@
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/object_type.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(ClickableControl)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(ClickableControl);
 
 
 ClickableControl::ClickableControl() :

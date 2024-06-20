@@ -1,12 +1,8 @@
 #include <zaf/object/style/sheet.h>
-#include <zaf/object/type_definition.h>
-#include <zaf/object/style/sheet_parser.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(Sheet)
-ZAF_DEFINE_TYPE_PARSER(SheetParser);
-ZAF_DEFINE_TYPE_END;
+ZAF_OBJECT_IMPL(Sheet);
 
 
 void Sheet::Add(std::wstring property_name, std::wstring property_value) {

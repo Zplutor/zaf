@@ -60,32 +60,22 @@
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/control/textual/dynamic_inline_object.h>
 #include <zaf/input/mouse.h>
-#include <zaf/object/property_macros.h>
 
 void BeginRun(const zaf::BeginRunInfo& event_info);
 
 class MyObject : public zaf::Object {
 public:
-    ZAF_DECLARE_TYPE;
-    ZAF_DECLARE_PROPERTY;
+    ZAF_OBJECT;
 
+public:
     bool IsVisible() const {
         return true;
     }
-
-    //void SetIsVisible(bool) {
-
-    //}
 };
 
-ZAF_DEFINE_TYPE(MyObject);
-ZAF_DEFINE_TYPE_END;
-
-ZAF_PROPERTY_BEGIN(MyObject);
+ZAF_OBJECT_BEGIN(MyObject);
 ZAF_PROPERTY(IsVisible);
-ZAF_PROPERTY_END;
-
-ZAF_DEFINE_PROPERTY(MyObject);
+ZAF_OBJECT_END;
 
 
 class Window : public zaf::Window {
@@ -98,6 +88,9 @@ int WINAPI WinMain(
     LPSTR /* lpCmdLine */,
     int /* nCmdShow */
 ) {
+
+    MyObject::StaticType::Instance()->IsVisible;
+
     auto& application = zaf::Application::Instance();
     application.Subscriptions() += application.BeginRunEvent().Subscribe(BeginRun);
 

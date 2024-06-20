@@ -19,7 +19,7 @@ class TypeConfigFactory;
 
 class PropertyGrid : public ScrollBox {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
 public:
     PropertyGrid();
@@ -54,7 +54,9 @@ private:
     std::shared_ptr<property_grid::internal::DataSource> data_source_;
     std::shared_ptr<property_grid::internal::Delegate> delegate_;
     std::shared_ptr<internal::TreeControlImplementation> tree_implementation_;
-
 };
+
+ZAF_OBJECT_BEGIN(PropertyGrid);
+ZAF_OBJECT_END;
 
 }

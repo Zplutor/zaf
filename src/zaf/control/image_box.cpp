@@ -1,15 +1,12 @@
 #include <zaf/control/image_box.h>
+#include <zaf/control/control_object.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
 #include <zaf/control/internal/image_box/image_player_factory.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(ImageBox)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_PROPERTY(ImageBox);
+ZAF_OBJECT_IMPL(ImageBox)
 
 
 ImageBox::ImageBox() {

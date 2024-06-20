@@ -1,11 +1,10 @@
 #include <zaf/control/menu_separator.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(MenuSeparator)
-ZAF_DEFINE_TYPE_END;
+ZAF_OBJECT_IMPL(MenuSeparator);
+
 
 void MenuSeparator::Initialize() {
 

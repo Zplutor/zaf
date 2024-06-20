@@ -3,13 +3,14 @@
 #include <zaf/base/hash.h>
 #include <zaf/graphic/point.h>
 #include <zaf/object/equality.h>
+#include <zaf/object/property_support.h>
 
 namespace zaf {
     
 class Ellipse : public Object {
 public:
-    ZAF_DECLARE_TYPE
-    ZAF_DECLARE_EQUALITY
+    ZAF_OBJECT;
+    ZAF_DECLARE_EQUALITY;
 
 public:
     Ellipse() : x_radius(0), y_radius(0) { }
@@ -88,6 +89,12 @@ public:
     float x_radius;
     float y_radius;
 };
+
+ZAF_OBJECT_BEGIN(Ellipse);
+ZAF_PROPERTY(Position);
+ZAF_PROPERTY(XRadius);
+ZAF_PROPERTY(YRadius);
+ZAF_OBJECT_END;
 
 
 bool operator==(const Ellipse& ellipse1, const Ellipse& ellipse2);

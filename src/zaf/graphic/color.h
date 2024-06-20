@@ -4,8 +4,10 @@
 #include <zaf/base/direct2d.h>
 #include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
+#include <zaf/graphic/color_parser.h>
 #include <zaf/object/equality.h>
 #include <zaf/object/object.h>
+#include <zaf/object/property_support.h>
 #include <zaf/xml/xml_serializable.h>
 
 namespace zaf {
@@ -15,8 +17,8 @@ namespace zaf {
  */
 class Color : public Object, public XMLSerializable {
 public:
-    ZAF_DECLARE_TYPE
-    ZAF_DECLARE_EQUALITY
+    ZAF_OBJECT;
+    ZAF_DECLARE_EQUALITY;
 
 public:
     /**
@@ -230,6 +232,14 @@ public:
      */
     float a;
 };
+
+ZAF_OBJECT_BEGIN(Color);
+ZAF_OBJECT_PARSER(ColorParser);
+ZAF_PROPERTY(R);
+ZAF_PROPERTY(G);
+ZAF_PROPERTY(B);
+ZAF_PROPERTY(A);
+ZAF_OBJECT_END;
 
 
 inline bool operator==(const Color& color1, const Color& color2) {

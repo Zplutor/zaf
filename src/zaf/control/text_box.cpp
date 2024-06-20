@@ -14,18 +14,12 @@
 #include <zaf/internal/textual/text_box_mouse_input_handler.h>
 #include <zaf/internal/textual/text_box_selection_manager.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(TextBox)
-ZAF_DEFINE_TYPE_PROPERTY(AllowUndo)
-ZAF_DEFINE_TYPE_PROPERTY(IsCaretEnabledWhenNotEditable)
-ZAF_DEFINE_TYPE_PROPERTY(IsEditable)
-ZAF_DEFINE_TYPE_PROPERTY(SelectedText)
-ZAF_DEFINE_TYPE_PROPERTY(SelectionRange)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(TextBox);
+
 
 TextBox::TextBox() : word_extractor_(textual::DefaultWordExtractor()) {
 

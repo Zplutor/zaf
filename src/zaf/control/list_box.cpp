@@ -1,14 +1,13 @@
 #include <zaf/control/list_box.h>
 #include <zaf/base/error/contract_error.h>
+#include <zaf/control/control_object.h>
 #include <zaf/control/list_box_delegate.h>
 #include <zaf/control/list_box_data_source.h>
 #include <zaf/creation.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(ListBox)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(ListBox);
 
 
 ListBox::ListBox() {

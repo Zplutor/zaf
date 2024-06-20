@@ -18,7 +18,7 @@ class TreeItemContainer;
 
 class TreeControl : public ScrollBox {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     TreeControl();
@@ -76,6 +76,9 @@ private:
     Event<TreeControlItemExpandInfo> item_expand_event_;
     Event<TreeControlItemCollapseInfo> item_collapse_event_;
 };
+
+ZAF_OBJECT_BEGIN(TreeControl);
+ZAF_OBJECT_END;
 
 
 class TreeControlEventInfo {

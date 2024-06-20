@@ -1,6 +1,7 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/timer.h>
+#include <zaf/control/control_object.h>
 #include <zaf/control/scroll_bar_arrow.h>
 #include <zaf/control/scroll_bar_thumb.h>
 #include <zaf/creation.h>
@@ -10,7 +11,6 @@
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -21,10 +21,7 @@ constexpr int kTimerContinuousInterval = 50;
 
 }
 
-ZAF_DEFINE_TYPE(ScrollBar)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_PROPERTY(ScrollBar);
+ZAF_OBJECT_IMPL(ScrollBar);
 
 
 ScrollBar::ScrollBar() : 

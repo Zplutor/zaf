@@ -3,19 +3,23 @@
 #include <cstdint>
 #include <zaf/object/boxing/internal/boxed_represent.h>
 #include <zaf/object/boxing/internal/built_in_box_types.h>
+#include <zaf/object/boxing/numeric_parser.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
 
-#define __ZAF_INTERNAL_DEFINE_NUMERIC_BOXED_TYPE(NumericType, BoxTypeName)                         \
-class BoxTypeName : public Object, public internal::BoxedRepresent<NumericType> {                  \
-public:                                                                                            \
-    ZAF_DECLARE_TYPE                                                                               \
-    using BoxedRepresent<NumericType>::BoxedRepresent;                                             \
-    bool IsEqual(const Object& other) const override;                                              \
-    std::size_t Hash() const override;                                                             \
-    std::wstring ToString() const override;                                                        \
-};                                                                                                 \
+#define __ZAF_INTERNAL_DEFINE_NUMERIC_BOXED_TYPE(NumericType, BoxTypeName)                        \
+class BoxTypeName : public Object, public internal::BoxedRepresent<NumericType> {                 \
+public:                                                                                           \
+    ZAF_OBJECT;                                                                                   \
+    using BoxedRepresent<NumericType>::BoxedRepresent;                                            \
+    bool IsEqual(const Object& other) const override;                                             \
+    std::size_t Hash() const override;                                                            \
+    std::wstring ToString() const override;                                                       \
+};                                                                                                \
+ZAF_OBJECT_BEGIN(BoxTypeName);                                                                    \
+ZAF_OBJECT_PARSER(NumericParser<BoxTypeName>);                                                    \
+ZAF_OBJECT_END;                                                                                   \
 __ZAF_INTERNAL_DEFINE_BUILT_IN_BOXED_TYPE(NumericType, BoxTypeName)
 
 

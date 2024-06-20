@@ -3,9 +3,11 @@
 #include <Windows.h>
 #include <string>
 #include <zaf/base/hash.h>
+#include <zaf/graphic/font/font_parser.h>
 #include <zaf/graphic/font/font_style.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/object/object.h>
+#include <zaf/object/property_support.h>
 #include <zaf/xml/xml_serializable.h>
 
 namespace zaf {
@@ -15,7 +17,7 @@ namespace zaf {
  */
 class Font : public Object, public XMLSerializable {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY;
 
 public:
@@ -160,6 +162,15 @@ public:
 
     bool has_underline{};
 };
+
+ZAF_OBJECT_BEGIN(Font);
+ZAF_OBJECT_PARSER(FontParser);
+ZAF_PROPERTY(FamilyName);
+ZAF_PROPERTY(Size);
+ZAF_PROPERTY(Weight);
+ZAF_PROPERTY(Style);
+ZAF_PROPERTY(HasUnderline);
+ZAF_OBJECT_END;
 
 }
 

@@ -21,8 +21,7 @@ class ComboBoxEditBox;
  */
 class ComboBox : public ClickableControl {
 public:
-    ZAF_DECLARE_TYPE;
-    ZAF_DECLARE_PROPERTY;
+    ZAF_OBJECT;
 
 public:
     ComboBox();
@@ -296,7 +295,7 @@ private:
  */
 class ComboBoxDropDownListBox : public ListBox {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 protected:
     void Initialize() override;
@@ -327,20 +326,26 @@ private:
  */
 class ComboBoxEditBox : public RichEdit {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     void OnKeyDown(const KeyDownInfo& event_info) override;
 };
 
 
-ZAF_PROPERTY_BEGIN(ComboBox);
+ZAF_OBJECT_BEGIN(ComboBox);
 ZAF_PROPERTY(DropDownButtonColor);
 ZAF_PROPERTY(DropDownButtonWidth);
 ZAF_PROPERTY(DropDownListBox);
 ZAF_PROPERTY(EditBox);
 ZAF_PROPERTY(MinVisibleItemCount);
 ZAF_PROPERTY(MaxVisibleItemCount);
-ZAF_PROPERTY_END;
+ZAF_OBJECT_END;
+
+ZAF_OBJECT_BEGIN(ComboBoxDropDownListBox);
+ZAF_OBJECT_END;
+
+ZAF_OBJECT_BEGIN(ComboBoxEditBox);
+ZAF_OBJECT_END;
 
 }

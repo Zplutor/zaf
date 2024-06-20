@@ -7,6 +7,7 @@
 #include <zaf/base/error/win32_error.h>
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
+#include <zaf/control/control_object.h>
 #include <zaf/control/rich_edit/embedded_object.h>
 #include <zaf/control/rich_edit/internal/ole_callback_impl.h>
 #include <zaf/control/rich_edit/internal/ole_helper.h>
@@ -84,11 +85,7 @@ constexpr DWORD kDefaultScrollBarProperty =
 
 }
 
-
-ZAF_DEFINE_TYPE(RichEdit)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_PROPERTY(RichEdit);
+ZAF_OBJECT_IMPL(RichEdit);
 
 
 RichEdit::RichEdit() : 

@@ -7,12 +7,10 @@
 #include <zaf/control/property_grid/internal/split_distance_manager.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
 #include <zaf/control/tree_item_container.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(PropertyGrid)
-ZAF_DEFINE_TYPE_END;
+ZAF_OBJECT_IMPL(PropertyGrid)
 
 
 PropertyGrid::PropertyGrid() : 

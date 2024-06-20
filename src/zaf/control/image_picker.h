@@ -1,11 +1,11 @@
 #pragma once
 
 #include <memory>
+#include <zaf/graphic/image/image.h>
 
 namespace zaf {
 
 class Control;
-class Image;
 
 using ImagePicker = std::function<std::shared_ptr<Image>(const Control& control)>;
 

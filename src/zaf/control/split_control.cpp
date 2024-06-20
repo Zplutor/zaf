@@ -1,39 +1,18 @@
 #include <zaf/control/split_control.h>
 #include <algorithm>
 #include <zaf/base/log.h>
+#include <zaf/control/control_object.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/window/message/mouse_message.h>
 
 #undef min
 #undef max
 
 namespace zaf {
-namespace {
 
-const wchar_t* const kSplitterColorPickerPropertyName = L"SplitterColorPicker";
-
-}
-
-
-ZAF_DEFINE_TYPE(SplitControl)
-ZAF_DEFINE_TYPE_PROPERTY(IsHorizontalSplit)
-ZAF_DEFINE_TYPE_PROPERTY(SplitBarThickness)
-ZAF_DEFINE_TYPE_PROPERTY(SplitDistance)
-ZAF_DEFINE_TYPE_PROPERTY(FirstPaneMinLength)
-ZAF_DEFINE_TYPE_PROPERTY(FirstPaneMaxLength)
-ZAF_DEFINE_TYPE_PROPERTY(SecondPaneMinLength)
-ZAF_DEFINE_TYPE_PROPERTY(SecondPaneMaxLength)
-ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(SplitBar)
-ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(FirstPane)
-ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(SecondPane)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_TYPE(SplitBar)
-ZAF_DEFINE_TYPE_PROPERTY(IsHorizontal)
-ZAF_DEFINE_TYPE_PROPERTY(SplitterColor)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(SplitControl);
+ZAF_OBJECT_IMPL(SplitBar);
 
 
 SplitControl::SplitControl() {

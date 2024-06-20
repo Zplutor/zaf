@@ -1,24 +1,15 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/application.h>
 #include <zaf/base/string/to_string.h>
-#include <zaf/graphic/font/font_parser.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/xml/xml_error.h>
 #include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(Font)
-ZAF_DEFINE_TYPE_PARSER(FontParser)
-ZAF_DEFINE_TYPE_PROPERTY(FamilyName)
-ZAF_DEFINE_TYPE_PROPERTY(Size)
-ZAF_DEFINE_TYPE_PROPERTY(Weight)
-ZAF_DEFINE_TYPE_PROPERTY(Style)
-ZAF_DEFINE_TYPE_PROPERTY(HasUnderline)
-ZAF_DEFINE_TYPE_END
-
+ZAF_OBJECT_IMPL(Font);
 ZAF_DEFINE_EQUALITY(Font);
+
 
 Font Font::Default() {
 

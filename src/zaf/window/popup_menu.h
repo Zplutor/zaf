@@ -15,7 +15,7 @@ Represents a popup menu.
 */
 class PopupMenu : public Window {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
 public:
     /**
@@ -162,5 +162,8 @@ private:
 
     Event<SelectedMenuItemChangedInfo> selected_menu_item_changed_event_;
 };
+
+ZAF_OBJECT_BEGIN(PopupMenu);
+ZAF_OBJECT_END;
 
 }

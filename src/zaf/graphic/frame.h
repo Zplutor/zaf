@@ -5,6 +5,8 @@
 #include <zaf/base/relation_operator.h>
 #include <zaf/object/equality.h>
 #include <zaf/object/object.h>
+#include <zaf/object/property_support.h>
+#include <zaf/graphic/frame_parser.h>
 
 namespace zaf {
 
@@ -13,7 +15,7 @@ namespace zaf {
  */
 class Frame : public Object {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY
 
 public:
@@ -132,6 +134,16 @@ public:
      */
     float bottom;
 };
+
+ZAF_OBJECT_BEGIN(Frame);
+ZAF_OBJECT_PARSER(FrameParser);
+ZAF_PROPERTY(Left)
+ZAF_PROPERTY(Top)
+ZAF_PROPERTY(Right)
+ZAF_PROPERTY(Bottom)
+ZAF_PROPERTY(Width)
+ZAF_PROPERTY(Height)
+ZAF_OBJECT_END;
 
 
 inline bool operator==(const Frame& frame1, const Frame& frame2) {

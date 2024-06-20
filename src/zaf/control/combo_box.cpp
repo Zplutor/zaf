@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <zaf/base/as.h>
 #include <zaf/base/range.h>
+#include <zaf/control/control_object.h>
 #include <zaf/control/button.h>
 #include <zaf/control/internal/combo_box_drop_down_window.h>
 #include <zaf/control/list_control_delegate.h>
@@ -23,16 +24,9 @@
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(ComboBox)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_PROPERTY(ComboBox);
-
-ZAF_DEFINE_TYPE(ComboBoxDropDownListBox)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_TYPE(ComboBoxEditBox)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(ComboBox);
+ZAF_OBJECT_IMPL(ComboBoxDropDownListBox);
+ZAF_OBJECT_IMPL(ComboBoxEditBox);
 
 
 ComboBox::ComboBox() : 

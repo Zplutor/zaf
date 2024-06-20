@@ -34,7 +34,7 @@ class InlineObject :
     NonCopyableNonMovable {
 
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
 public:
     InlineObject() = default;
@@ -68,8 +68,7 @@ public:
 
     @remark
         This method uses the dynamic type information to create the new inline object. Make sure to
-        define dynamic type information using the ZAF_DECLARE_TYPE and ZAF_DEFINE_TYPE macros in 
-        derived classes.
+        define dynamic type information using the ZAF_OBJECT macro in derived classes.
 
         The new cloned inline object doesn't retain the attachment relation and event 
         subscriptions. Derived classes can override this method to transfer their own data to the
@@ -105,6 +104,9 @@ private:
     Event<AttachedInfo> attached_event_;
     Event<DetachedInfo> detached_event_;
 };
+
+ZAF_OBJECT_BEGIN(InlineObject);
+ZAF_OBJECT_END;
 
 }
 }

@@ -26,7 +26,7 @@ public:                                                                         
     }                                                                                           \
     std::shared_ptr<zaf::Object> CreateInstance() const override {                              \
         return zaf::internal::InstanceCreatorSelector<ClassName>::Type::Create();               \
-    }                                                                                                                                                                                         
+    }                                                                                            
 
 #define ZAF_DEFINE_TYPE_PARSER(ParserType)                                                      \
     zaf::ObjectParser* GetParser() const override {                                             \

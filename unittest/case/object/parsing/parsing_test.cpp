@@ -12,7 +12,7 @@ namespace {
 
 class Base : public zaf::Object {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     int base_value{};
@@ -35,14 +35,15 @@ public:
     }
 };
 
-ZAF_DEFINE_TYPE(Base)
-ZAF_DEFINE_TYPE_PARSER(BaseParser)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_BEGIN(Base);
+ZAF_OBJECT_PARSER(BaseParser);
+ZAF_OBJECT_END;
+ZAF_OBJECT_IMPL(Base);
 
 
 class Derived : public Base {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     int DerivedValue() const {
@@ -57,14 +58,15 @@ public:
     int derived_value{};
 };
 
-ZAF_DEFINE_TYPE(Derived)
-ZAF_DEFINE_TYPE_PROPERTY(DerivedValue)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_BEGIN(Derived);
+ZAF_PROPERTY(DerivedValue);
+ZAF_OBJECT_END;
+ZAF_OBJECT_IMPL(Derived);
 
 
 class Derived2 : public Derived {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     int derived_value2{};
@@ -88,9 +90,10 @@ public:
     }
 };
 
-ZAF_DEFINE_TYPE(Derived2)
-ZAF_DEFINE_TYPE_PARSER(Derived2Praser)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_BEGIN(Derived2)
+ZAF_OBJECT_PARSER(Derived2Praser)
+ZAF_OBJECT_END
+ZAF_OBJECT_IMPL(Derived2);
 
 }
 
@@ -126,7 +129,7 @@ namespace {
 
 class Host : public zaf::Object {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
     std::shared_ptr<zaf::Control> Control() const {
         return control_;
@@ -140,9 +143,10 @@ private:
     std::shared_ptr<zaf::Control> control_;
 };
 
-ZAF_DEFINE_TYPE(Host)
-ZAF_DEFINE_TYPE_PROPERTY_DYNAMIC(Control);
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_BEGIN(Host)
+ZAF_PROPERTY(Control);
+ZAF_OBJECT_END
+ZAF_OBJECT_IMPL(Host);
 
 }
 
@@ -165,7 +169,7 @@ namespace {
 
 class PropertyNodeBase : public zaf::Object {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     int BaseValue() const {
@@ -180,17 +184,19 @@ public:
     int base_value{};
 };
 
-ZAF_DEFINE_TYPE(PropertyNodeBase)
-ZAF_DEFINE_TYPE_PROPERTY(BaseValue)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_BEGIN(PropertyNodeBase)
+ZAF_PROPERTY(BaseValue)
+ZAF_OBJECT_END
+ZAF_OBJECT_IMPL(PropertyNodeBase)
 
 class PropertyNodeDerived : public PropertyNodeBase {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 };
 
-ZAF_DEFINE_TYPE(PropertyNodeDerived)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_BEGIN(PropertyNodeDerived)
+ZAF_OBJECT_END
+ZAF_OBJECT_IMPL(PropertyNodeDerived)
 
 }
 
@@ -234,7 +240,7 @@ namespace{
 
 class PropertyOrderObject : public zaf::Object {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
     void SetAProperty(int value) {
         a_property_order_ = ++order_seed_;
@@ -258,10 +264,11 @@ private:
     int b_property_order_{};
 };
 
-ZAF_DEFINE_TYPE(PropertyOrderObject)
-ZAF_DEFINE_TYPE_PROPERTY(AProperty)
-ZAF_DEFINE_TYPE_PROPERTY(BProperty)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_BEGIN(PropertyOrderObject)
+ZAF_PROPERTY(AProperty)
+ZAF_PROPERTY(BProperty)
+ZAF_OBJECT_END
+ZAF_OBJECT_IMPL(PropertyOrderObject);
 
 }
 

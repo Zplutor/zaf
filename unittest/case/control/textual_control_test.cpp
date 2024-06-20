@@ -241,15 +241,17 @@ std::size_t g_object_count{};
 
 class TestInlineObject : public zaf::textual::InlineObject {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
     TestInlineObject() {
         ++g_object_count;
     }
 };
 
-ZAF_DEFINE_TYPE(TestInlineObject);
-ZAF_DEFINE_TYPE_END;
+ZAF_OBJECT_BEGIN(TestInlineObject);
+ZAF_OBJECT_END;
+
+ZAF_OBJECT_IMPL(TestInlineObject);
 
 }
 

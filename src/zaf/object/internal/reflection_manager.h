@@ -1,9 +1,12 @@
 #pragma once
 
 #include <vector>
-#include <zaf/object/object_type.h>
 
-namespace zaf::internal {
+namespace zaf {
+
+class ObjectType;
+
+namespace internal {
 
 class ReflectionManager {
 public:
@@ -24,4 +27,5 @@ private:
     std::vector<ObjectType*> types_;
 };
 
+}
 }

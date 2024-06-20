@@ -11,7 +11,7 @@ class SpinEdit;
 
 class SpinBox : public zaf::Control {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
     int Value() const;
     void SetValue(int value);
@@ -62,5 +62,11 @@ private:
 
     Event<SpinBoxValueChangedInfo> value_changed_event_;
 };
+
+ZAF_OBJECT_BEGIN(SpinBox);
+ZAF_PROPERTY(MaxValue);
+ZAF_PROPERTY(MinValue);
+ZAF_PROPERTY(Value);
+ZAF_OBJECT_END;
 
 }

@@ -2,6 +2,8 @@
 
 #include <memory>
 #include <string>
+#include <zaf/object/object_support.h>
+#include <zaf/object/object_type.h>
 #include <zaf/object/type_declaration.h>
 
 namespace zaf {
@@ -9,9 +11,23 @@ namespace internal {
 class ObjectInitializer;
 }
 
-class ObjectType;
-
 class Object {
+public:
+    class StaticType : public ObjectType {
+    public:
+        static StaticType* Instance();
+
+    public:
+        ObjectType* GetBase() const override;
+        const std::wstring& GetName() const override;
+        std::shared_ptr<Object> CreateInstance() const override;
+        ObjectParser* GetParser() const;
+
+    private:
+        static StaticType instance;
+        StaticType();
+    };
+
 public:
     static ObjectType* const Type;
 

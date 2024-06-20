@@ -5,7 +5,7 @@
 
 namespace zaf {
 
-ZAF_PROPERTY_BEGIN(Control);
+ZAF_OBJECT_BEGIN(Control);
 ZAF_PROPERTY(Rect);
 ZAF_PROPERTY(Position);
 ZAF_PROPERTY(X);
@@ -43,6 +43,6 @@ ZAF_PROPERTY(CanDoubleClick);
 ZAF_PROPERTY(Layouter);
 ZAF_PROPERTY(Style);
 ZAF_PROPERTY(Tooltip);
-ZAF_PROPERTY_END;
+ZAF_OBJECT_END;
 
 }

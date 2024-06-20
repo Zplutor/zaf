@@ -8,10 +8,7 @@
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(RadioButton)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_PROPERTY(RadioButton);
+ZAF_OBJECT_IMPL(RadioButton);
 
 
 RadioButton::RadioButton() : is_checked_(true) {

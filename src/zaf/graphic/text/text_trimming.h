@@ -20,7 +20,7 @@ ZAF_ENABLE_ENUM_BOXING(TextTrimmingGranularity);
 
 class TextTrimming : public Object {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
 public:
     TextTrimmingGranularity Granularity() const {
@@ -67,5 +67,8 @@ private:
     DWRITE_TRIMMING inner_{};
     TextInlineObject sign_;
 };
+
+ZAF_OBJECT_BEGIN(TextTrimming);
+ZAF_OBJECT_END;
 
 }

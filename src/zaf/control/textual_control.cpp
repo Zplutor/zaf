@@ -1,5 +1,6 @@
 #include <zaf/control/textual_control.h>
 #include <zaf/base/as.h>
+#include <zaf/control/control_object.h>
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font/font.h>
@@ -8,7 +9,6 @@
 #include <zaf/graphic/text/internal/text_inline_object_painter.h>
 #include <zaf/graphic/text/text_format_properties.h>
 #include <zaf/internal/theme.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf {
 namespace {
@@ -34,19 +34,7 @@ void SetFontToTextLayout(const Font& font, const Range& range, TextLayout& text_
 
 }
 
-ZAF_DEFINE_TYPE(TextualControl)
-ZAF_DEFINE_TYPE_PROPERTY(IgnoreTailingWhiteSpaces)
-ZAF_DEFINE_TYPE_PROPERTY(Text)
-ZAF_DEFINE_TYPE_PROPERTY(TextLength)
-ZAF_DEFINE_TYPE_PROPERTY(TextColor)
-ZAF_DEFINE_TYPE_PROPERTY(Font)
-ZAF_DEFINE_TYPE_PROPERTY(FontFamily)
-ZAF_DEFINE_TYPE_PROPERTY(FontSize)
-ZAF_DEFINE_TYPE_PROPERTY(FontWeight)
-ZAF_DEFINE_TYPE_PROPERTY(TextAlignment)
-ZAF_DEFINE_TYPE_PROPERTY(ParagraphAlignment)
-ZAF_DEFINE_TYPE_PROPERTY(WordWrapping)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(TextualControl);
 
 
 TextualControl::TextualControl() : 

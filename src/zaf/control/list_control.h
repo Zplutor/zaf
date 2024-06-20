@@ -32,7 +32,7 @@ class ListDataSource;
  */
 class ListControl : public ScrollBox {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     ListControl();
@@ -207,5 +207,8 @@ private:
     Event<ListControlSelectionChangedInfo> selection_changed_event_;
     Event<ListControlItemDoubleClickInfo> item_double_click_event_;
 };
+
+ZAF_OBJECT_BEGIN(ListControl);
+ZAF_OBJECT_END;
 
 }

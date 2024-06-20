@@ -8,6 +8,7 @@
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
+#include <zaf/object/property_support.h>
 
 namespace zaf {
 
@@ -16,7 +17,7 @@ namespace zaf {
  */
 class Rect : public Object {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY
 
 public:
@@ -319,6 +320,15 @@ public:
      */
     zaf::Size size;
 };
+
+ZAF_OBJECT_BEGIN(Rect);
+ZAF_PROPERTY(Position);
+ZAF_PROPERTY(Size);
+ZAF_PROPERTY(Left);
+ZAF_PROPERTY(Top);
+ZAF_PROPERTY(Right);
+ZAF_PROPERTY(Bottom);
+ZAF_OBJECT_END;
 
 
 inline bool operator==(const Rect& rect1, const Rect& rect2) {

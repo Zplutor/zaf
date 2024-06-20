@@ -12,7 +12,7 @@ class ListBoxDelegate;
  */
 class ListBox : public ListControl {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     ListBox();
@@ -48,5 +48,8 @@ private:
 
     float default_item_height_{ 18 };
 };
+
+ZAF_OBJECT_BEGIN(ListBox);
+ZAF_OBJECT_END;
 
 }

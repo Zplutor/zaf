@@ -1231,8 +1231,29 @@
     <ClCompile Include="src\zaf\object\style\sheet_parser.cpp">
       <Filter>zaf\object\style</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\control_properties.cpp">
+    <ClCompile Include="src\zaf\control\control_object.cpp">
       <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\window_parser.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\color_parser.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\font\font_weight_parser.cpp">
+      <Filter>zaf\graphic\font</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\frame_parser.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image\uri_image_parser.cpp">
+      <Filter>zaf\graphic\image</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\point_parser.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\size_parser.cpp">
+      <Filter>zaf\graphic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2836,11 +2857,41 @@
     <ClInclude Include="src\zaf\object\style\sheet_parser.h">
       <Filter>zaf\object\style</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\property_macros.h">
+    <ClInclude Include="src\zaf\object\property_support.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\control_properties.h">
+    <ClInclude Include="src\zaf\control\control_object.h">
       <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\object_support.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\window_parser.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\color_parser.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\font\font_weight_parser.h">
+      <Filter>zaf\graphic\font</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\frame_parser.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image\uri_image_parser.h">
+      <Filter>zaf\graphic\image</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\point_parser.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\size_parser.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\numeric_parser.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\string_parser.h">
+      <Filter>zaf\object\boxing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@ namespace zaf {
  */
 class Button : public ClickableControl {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     Button();
@@ -33,5 +33,8 @@ private:
 private:
     bool is_default_{ false };
 };
+
+ZAF_OBJECT_BEGIN(Button);
+ZAF_OBJECT_END;
 
 }

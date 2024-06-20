@@ -1,11 +1,9 @@
 #include <zaf/control/layout/stretch_layouter.h>
 #include <zaf/control/control.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(StretchLayouter)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(StretchLayouter)
 
 void StretchLayouter::Layout(
     const Control& parent,

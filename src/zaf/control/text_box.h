@@ -19,7 +19,7 @@ class TextBoxSelectionChangedInfo;
 
 class TextBox : public TextualControl, public SelfScrollControl {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
 public:
     TextBox();
@@ -282,5 +282,13 @@ private:
 
     Subscription ime_message_subscription_;
 };
+
+ZAF_OBJECT_BEGIN(TextBox);
+ZAF_PROPERTY(AllowUndo);
+ZAF_PROPERTY(IsCaretEnabledWhenNotEditable);
+ZAF_PROPERTY(IsEditable);
+ZAF_PROPERTY(SelectedText);
+ZAF_PROPERTY(SelectionRange);
+ZAF_OBJECT_END;
 
 }

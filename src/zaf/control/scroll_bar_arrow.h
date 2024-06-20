@@ -12,8 +12,7 @@ namespace zaf {
  */
 class ScrollBarArrow : public ClickableControl {
 public:
-    ZAF_DECLARE_TYPE;
-    ZAF_DECLARE_PROPERTY;
+    ZAF_OBJECT;
 
 public:
     ScrollBarArrow();
@@ -79,9 +78,9 @@ private:
     Subject<ScrollBarArrowEndPressInfo> end_press_event_;
 };
 
-ZAF_PROPERTY_BEGIN(ScrollBarArrow);
+ZAF_OBJECT_BEGIN(ScrollBarArrow);
 ZAF_PROPERTY(ArrowColor)
 ZAF_PROPERTY(ArrowDirection)
-ZAF_PROPERTY_END;
+ZAF_OBJECT_END;
 
 }

@@ -20,8 +20,7 @@ class Timer;
  */
 class ScrollBar : public Control {
 public:
-    ZAF_DECLARE_TYPE;
-    ZAF_DECLARE_PROPERTY;
+    ZAF_OBJECT;
 
 public:
     ScrollBar();
@@ -282,7 +281,7 @@ private:
     Event<ScrollBarScrollInfo> scroll_event_;
 };
 
-ZAF_PROPERTY_BEGIN(ScrollBar)
+ZAF_OBJECT_BEGIN(ScrollBar)
 ZAF_PROPERTY(IncrementalArrow)
 ZAF_PROPERTY(DecrementalArrow)
 ZAF_PROPERTY(Thumb)
@@ -294,6 +293,6 @@ ZAF_PROPERTY(MaxValue)
 ZAF_PROPERTY(SmallChange)
 ZAF_PROPERTY(LargeChange)
 ZAF_PROPERTY(PageSize)
-ZAF_PROPERTY_END
+ZAF_OBJECT_END
 
 }

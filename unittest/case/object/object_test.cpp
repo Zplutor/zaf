@@ -8,24 +8,26 @@ namespace {
 
 class DefaultConstructible : public zaf::Object {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
     DefaultConstructible() = default;
 };
 
-ZAF_DEFINE_TYPE(DefaultConstructible)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_BEGIN(DefaultConstructible);
+ZAF_OBJECT_END;
+ZAF_OBJECT_IMPL(DefaultConstructible);
 
 
 class NotDefaultConstructible : public zaf::Object {
 public:
-    ZAF_DECLARE_TYPE;
+    ZAF_OBJECT;
 
     NotDefaultConstructible(int) { }
 };
 
-ZAF_DEFINE_TYPE(NotDefaultConstructible)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_BEGIN(NotDefaultConstructible);
+ZAF_OBJECT_END;
+ZAF_OBJECT_IMPL(NotDefaultConstructible);
 
 }
 

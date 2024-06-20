@@ -10,7 +10,7 @@
 #include <zaf/graphic/renderer/window_renderer.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/object/object.h>
-#include <zaf/object/property_macros.h>
+#include <zaf/object/property_support.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/window/activate_option.h>
 #include <zaf/window/event/activate_event_info.h>
@@ -28,6 +28,7 @@
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/window_messager.h>
+#include <zaf/window/window_parser.h>
 
 namespace zaf {
 namespace internal {
@@ -48,7 +49,7 @@ enum class HitTestResult;
 /**
  Represents a top-level window.
 
- You shoudl always use Create method to create a window.
+ You should always use Create method to create a window.
  */
 class Window : 
     public Object, 
@@ -57,8 +58,7 @@ class Window :
     NonCopyableNonMovable {
 
 public:
-    ZAF_DECLARE_TYPE;
-    ZAF_DECLARE_PROPERTY;
+    ZAF_OBJECT;
 
 public:
     /**
@@ -976,7 +976,8 @@ private:
     Event<MouseCaptureControlChangedInfo> mouse_capture_control_changed_event_;
 };
 
-ZAF_PROPERTY_BEGIN(Window)
+ZAF_OBJECT_BEGIN(Window)
+ZAF_OBJECT_PARSER(WindowParser)
 ZAF_PROPERTY(Owner)
 ZAF_PROPERTY(InitialRectStyle)
 ZAF_PROPERTY(Rect)
@@ -1010,7 +1011,7 @@ ZAF_PROPERTY(MouseCaptureControl)
 ZAF_PROPERTY(MouseOverControl)
 ZAF_PROPERTY(FocusedControl)
 ZAF_PROPERTY(IsVisible)
-ZAF_PROPERTY_END
+ZAF_OBJECT_END
 
 std::shared_ptr<Window> GetWindowFromHandle(HWND handle);
 

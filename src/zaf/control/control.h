@@ -67,8 +67,7 @@ class Control :
     public std::enable_shared_from_this<Control> {
 
 public:
-    ZAF_DECLARE_TYPE;
-    ZAF_DECLARE_PROPERTY;
+    ZAF_OBJECT;
 
 public:
     Control();

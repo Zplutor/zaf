@@ -4,7 +4,6 @@
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/base/error/error.h>
 #include <zaf/creation.h>
-#include <zaf/object/object.h>
 
 namespace zaf::internal {
 

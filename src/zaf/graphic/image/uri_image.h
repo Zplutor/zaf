@@ -1,13 +1,14 @@
 #pragma once
 
 #include <zaf/graphic/image/image.h>
+#include <zaf/graphic/image/uri_image_parser.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
 
 class URIImage : public Image, public Object {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
 
 public:
     URIImage();
@@ -32,5 +33,9 @@ private:
     float dpi_{};
     std::shared_ptr<Image> image_;
 };
+
+ZAF_OBJECT_BEGIN(URIImage);
+ZAF_OBJECT_PARSER(URIImageParser);
+ZAF_OBJECT_END;
 
 }

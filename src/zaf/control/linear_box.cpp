@@ -1,12 +1,9 @@
 #include <zaf/control/linear_box.h>
-#include <zaf/object/type_definition.h>
+#include <zaf/control/control_object.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(LinearBox)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_PROPERTY(LinearBox);
+ZAF_OBJECT_IMPL(LinearBox)
 
 
 LinearBox::LinearBox() : layouter_(Create<LinearLayouter>()) {
@@ -27,16 +24,14 @@ void LinearBox::Initialize() {
 }
 
 
-ZAF_DEFINE_TYPE(VerticalBox)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(VerticalBox);
 
 VerticalBox::VerticalBox() : LinearBox(Create<VerticalLayouter>()) {
 
 }
 
 
-ZAF_DEFINE_TYPE(HorizontalBox)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(HorizontalBox);
 
 HorizontalBox::HorizontalBox() : LinearBox(Create<HorizontalLayouter>()) {
 

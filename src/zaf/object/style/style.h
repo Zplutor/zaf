@@ -3,15 +3,14 @@
 #include <map>
 #include <string>
 #include <zaf/object/object.h>
-#include <zaf/object/property_macros.h>
+#include <zaf/object/property_support.h>
 #include <zaf/object/style/sheet.h>
 
 namespace zaf {
 
 class Style : public Object, NonCopyableNonMovable {
 public:
-    ZAF_DECLARE_TYPE;
-    ZAF_DECLARE_PROPERTY;
+    ZAF_OBJECT;
 
 public:
     Style();
@@ -28,8 +27,8 @@ private:
     std::shared_ptr<zaf::Sheet> sheet_;
 };
 
-ZAF_PROPERTY_BEGIN(Style);
+ZAF_OBJECT_BEGIN(Style);
 ZAF_PROPERTY(Sheet);
-ZAF_PROPERTY_END;
+ZAF_OBJECT_END;
 
 }

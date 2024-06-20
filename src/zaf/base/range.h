@@ -6,7 +6,7 @@
 #include <zaf/base/hash.h>
 #include <zaf/object/equality.h>
 #include <zaf/object/object.h>
-#include <zaf/object/property_macros.h>
+#include <zaf/object/property_support.h>
 #include <zaf/xml/xml_serializable.h>
 
 namespace zaf {
@@ -16,8 +16,7 @@ Describes a range using start index and length.
 */
 class Range : public Object, public XMLSerializable {
 public:
-    ZAF_DECLARE_TYPE;
-    ZAF_DECLARE_PROPERTY;
+    ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY;
 
     /**
@@ -235,10 +234,10 @@ public:
     }
 };
 
-ZAF_PROPERTY_BEGIN(Range);
+ZAF_OBJECT_BEGIN(Range);
 ZAF_PROPERTY(Index);
 ZAF_PROPERTY(Length);
-ZAF_PROPERTY_END;
+ZAF_OBJECT_END;
 
 }
 

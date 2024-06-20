@@ -1,13 +1,9 @@
 #include <zaf/object/style/style.h>
 #include <zaf/base/error/contract_error.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(Style);
-ZAF_DEFINE_TYPE_END;
-
-ZAF_DEFINE_PROPERTY(Style);
+ZAF_OBJECT_IMPL(Style);
 
 
 Style::Style() : sheet_(std::make_shared<zaf::Sheet>()) {

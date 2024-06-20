@@ -8,13 +8,11 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(ListControl)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(ListControl);
 
 
 ListControl::ListControl() : 

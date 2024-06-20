@@ -1,44 +1,10 @@
 #include <zaf/graphic/image/uri_image.h>
 #include <zaf/application.h>
-#include <zaf/base/as.h>
-#include <zaf/object/parsing/xaml_node_parse_helper.h>
-#include <zaf/object/type_definition.h>
 #include <zaf/resource/resource_factory.h>
 
 namespace zaf {
-namespace {
 
-class URIImageParser : public ObjectParser {
-public:
-    void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override {
-
-        As<URIImage>(object).InitializeWithURI(attribute_value);
-    }
-
-    void ParseFromNode(const XamlNode& node, Object& object) override {
-
-        __super::ParseFromNode(node, object);
-
-        XamlNodeParseHelper helper(node, object.GetType());
-
-        auto uri = helper.GetStringProperty(L"URI");
-        if (uri) {
-            As<URIImage>(object).InitializeWithURI(*uri);
-        }
-
-        auto content_string = helper.GetContentString();
-        if (content_string) {
-            ParseFromAttribute(*content_string, object);
-        }
-    }
-};
-
-}
-
-
-ZAF_DEFINE_TYPE(URIImage)
-ZAF_DEFINE_TYPE_PARSER(URIImageParser)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(URIImage);
 
 
 URIImage::URIImage() : dpi_(Application::Instance().GetSystemDPI()) {

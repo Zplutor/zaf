@@ -4,9 +4,10 @@
 #include <zaf/base/direct2d.h>
 #include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
+#include <zaf/graphic/size_parser.h>
 #include <zaf/object/equality.h>
 #include <zaf/object/object.h>
-//#include <zaf/object/property_macros.h>
+#include <zaf/object/property_support.h>
 
 namespace zaf {
 
@@ -15,8 +16,7 @@ namespace zaf {
  */
 class Size : public Object {
 public:
-    ZAF_DECLARE_TYPE;
-    //ZAF_DECLARE_PROPERTY;
+    ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY;
 
 public:
@@ -136,12 +136,11 @@ public:
     float height;
 };
 
-/*
-ZAF_PROPERTY_BEGIN(Size);
+ZAF_OBJECT_BEGIN(Size);
+ZAF_OBJECT_PARSER(SizeParser);
 ZAF_PROPERTY(Width);
 ZAF_PROPERTY(Height);
-ZAF_PROPERTY_END;
-*/
+ZAF_OBJECT_END;
 
 
 inline bool operator==(const Size& size1, const Size& size2) {

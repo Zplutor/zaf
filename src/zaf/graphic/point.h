@@ -7,6 +7,8 @@
 #include <zaf/base/relation_operator.h>
 #include <zaf/object/equality.h>
 #include <zaf/object/object.h>
+#include <zaf/object/property_support.h>
+#include <zaf/graphic/point_parser.h>
 
 namespace zaf {
 
@@ -15,7 +17,7 @@ namespace zaf {
  */
 class Point : public Object {
 public:
-    ZAF_DECLARE_TYPE
+    ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY
 
 public:
@@ -142,6 +144,12 @@ public:
      */
     float y;
 };
+
+ZAF_OBJECT_BEGIN(Point);
+ZAF_OBJECT_PARSER(PointParser);
+ZAF_PROPERTY(X);
+ZAF_PROPERTY(Y);
+ZAF_OBJECT_END;
 
 
 inline bool operator==(const Point& point1, const Point& point2) {

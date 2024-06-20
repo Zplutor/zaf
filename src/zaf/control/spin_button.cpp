@@ -2,12 +2,11 @@
 #include <zaf/base/error/contract_error.h>
 #include <zaf/control/internal/triangle_geometry.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf {
 
-ZAF_DEFINE_TYPE(SpinButton)
-ZAF_DEFINE_TYPE_END;
+ZAF_OBJECT_IMPL(SpinButton);
+
 
 ArrowDirection SpinButton::Direction() const {
     return direction_;

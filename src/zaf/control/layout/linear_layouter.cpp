@@ -1,7 +1,6 @@
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/control.h>
 #include <zaf/control/layout/internal/linear_layout_length_calculating.h>
-#include <zaf/object/type_definition.h>
 
 namespace zaf {
 namespace {
@@ -163,10 +162,7 @@ private:
 
 }
 
-ZAF_DEFINE_TYPE(LinearLayouter)
-ZAF_DEFINE_TYPE_END
-
-ZAF_DEFINE_PROPERTY(LinearLayouter);
+ZAF_OBJECT_IMPL(LinearLayouter)
 
 
 void LinearLayouter::Layout(
@@ -327,8 +323,7 @@ Rect LinearLayouter::GetChildRect(
 }
 
 
-ZAF_DEFINE_TYPE(HorizontalLayouter)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(HorizontalLayouter)
 
 void HorizontalLayouter::Initialize() {
 
@@ -337,8 +332,7 @@ void HorizontalLayouter::Initialize() {
 }
 
 
-ZAF_DEFINE_TYPE(VerticalLayouter)
-ZAF_DEFINE_TYPE_END
+ZAF_OBJECT_IMPL(VerticalLayouter)
 
 void VerticalLayouter::Initialize() {
 
