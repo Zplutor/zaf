@@ -33,7 +33,7 @@ void EnumValueView::SetAccessMethod(AccessMethod access_method) {
 
 void EnumValueView::SetValue(const std::shared_ptr<Object>& value) {
 
-    auto enum_type = dynamic_cast<EnumType*>(value->GetType());
+    auto enum_type = dynamic_cast<EnumType*>(value->DynamicType());
     ZAF_EXPECT(enum_type);
 
     auto all_enum_values = enum_type->GetAllValues();

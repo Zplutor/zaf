@@ -7,7 +7,7 @@ namespace zaf::property_grid {
 
 void FrameConfig::FilterProperties(PropertyTable& property_table) {
 
-    auto list = property_table.GetList(Frame::Type);
+    auto list = property_table.GetList(Frame::StaticType());
     if (list) {
         list->SortByNames({
             L"Left",

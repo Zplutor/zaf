@@ -7,7 +7,7 @@ namespace zaf::property_grid {
 
 void SizeConfig::FilterProperties(PropertyTable& property_table) {
 
-    auto list = property_table.GetList(Size::Type);
+    auto list = property_table.GetList(Size::StaticType());
     if (list) {
         list->SortByNames({
             L"Width",

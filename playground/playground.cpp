@@ -63,6 +63,11 @@
 void BeginRun(const zaf::BeginRunInfo& event_info);
 
 class Window : public zaf::Window {
+public:
+    static void Method() {
+        auto t =  __super::StaticType();
+
+    }
 };
 
 

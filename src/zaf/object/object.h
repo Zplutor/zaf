@@ -12,9 +12,9 @@ class ObjectInitializer;
 
 class Object {
 public:
-    class StaticType : public ObjectType {
+    class Type : public ObjectType {
     public:
-        static StaticType* Instance();
+        static Type* Instance();
 
     public:
         ObjectType* GetBase() const override;
@@ -23,21 +23,18 @@ public:
         ObjectParser* GetParser() const;
 
     private:
-        static StaticType instance;
-        StaticType();
+        static Type instance;
+        Type();
     };
 
 public:
-    static ObjectType* const Type;
+    static ObjectType* StaticType();
 
 public:
     Object() = default;
     virtual ~Object() = default;
 
-    virtual ObjectType* GetType() const {
-        return Object::Type;
-    }
-
+    virtual ObjectType* DynamicType() const;
     virtual bool IsEqual(const Object& other) const;
     virtual std::size_t Hash() const;
 

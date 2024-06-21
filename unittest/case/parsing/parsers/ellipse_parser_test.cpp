@@ -13,7 +13,7 @@ TEST(EllipseParser, ParseFromNode) {
     auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::Ellipse ellipse;
-    auto parser = zaf::Ellipse::Type->GetParser();
+    auto parser = zaf::Ellipse::StaticType()->GetParser();
     parser->ParseFromNode(*node, ellipse);
     ASSERT_EQ(ellipse, zaf::Ellipse(40, 41, 9, 10));
 

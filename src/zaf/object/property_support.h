@@ -74,7 +74,7 @@ private:                                                                        
             return name;                                                                          \
         }                                                                                         \
         zaf::ObjectType* GetValueType() const override {                                          \
-            return PropertyName##Traits::BoxedType::Type;                                         \
+            return PropertyName##Traits::BoxedType::StaticType();                                 \
         }                                                                                         \
         bool IsValueTypeDynamic() const override {                                                \
             return zaf::internal::IsSharedPtr<PropertyName##Traits::DeclaredType>::Value;         \
@@ -97,6 +97,6 @@ private:                                                                        
 public:                                                                                           \
     zaf::ObjectProperty* const PropertyName##Property = []() {                                    \
         static PropertyName##PropertyType property;                                               \
-        zaf::internal::PropertyRegistrar::Register(Class::Type, &property);                       \
+        zaf::internal::PropertyRegistrar::Register(Class::StaticType(), &property);               \
         return &property;                                                                         \
     }();

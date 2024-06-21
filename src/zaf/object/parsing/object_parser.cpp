@@ -13,7 +13,7 @@ namespace {
 
 ObjectProperty* FindPropertyByAttribute(const Object& object, const std::wstring& property_name) {
 
-    auto type = object.GetType();
+    auto type = object.DynamicType();
     while (type) {
 
         auto property = type->GetProperty(property_name);
@@ -87,11 +87,11 @@ ObjectProperty* FindPropertyByNode(const Object& object, const std::wstring& nod
     const auto& type_name = splitted[0];
     const auto& property_name = splitted[1];
 
-    if (!IsTypeNameMatched(type_name, object.GetType())) {
+    if (!IsTypeNameMatched(type_name, object.DynamicType())) {
         return nullptr;
     }
 
-    auto type = object.GetType();
+    auto type = object.DynamicType();
     while (type) {
 
         auto property = type->GetProperty(property_name);

@@ -13,7 +13,7 @@ void URIImageParser::ParseFromNode(const XamlNode& node, Object& object) {
 
     __super::ParseFromNode(node, object);
 
-    XamlNodeParseHelper helper(node, object.GetType());
+    XamlNodeParseHelper helper(node, object.DynamicType());
 
     auto uri = helper.GetStringProperty(L"URI");
     if (uri) {

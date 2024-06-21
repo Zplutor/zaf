@@ -67,7 +67,7 @@ void ColorValueView::ChangeColorByEdit() {
     try {
 
         auto new_color = Create<Color>();
-        Color::Type->GetParser()->ParseFromAttribute(text, *new_color);
+        Color::StaticType()->GetParser()->ParseFromAttribute(text, *new_color);
 
         if (*new_color == color_square_->Color()) {
             return;

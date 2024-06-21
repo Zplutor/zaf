@@ -12,7 +12,7 @@ void Sheet::Add(std::wstring property_name, std::wstring property_value) {
 
 void Sheet::Apply(Object& object) {
 
-    auto type = object.GetType();
+    auto type = object.DynamicType();
 
     for (const auto& [name, value] : properties_) {
 

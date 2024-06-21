@@ -45,7 +45,7 @@ bool TestBooleanProperty(const std::string& property_name, ValueGetter&& value_g
         return value ? "true" : "false";
     };
 
-    std::string type_name = zaf::ToUTF8String(T::Type->GetName());
+    std::string type_name = zaf::ToUTF8String(T::StaticType()->GetName());
 
     for (auto expected_value : { true, false }) {
 
@@ -80,7 +80,7 @@ bool TestEnumProperty(
     const std::map<E, std::string>& value_map, 
     ValueGetter&& value_getter) {
 
-    std::string type_name = zaf::ToUTF8String(T::Type->GetName());
+    std::string type_name = zaf::ToUTF8String(T::StaticType()->GetName());
 
     for (const auto& each_pair : value_map) {
 
@@ -122,7 +122,7 @@ bool TestFrameProperty(const std::string& property_name, ValueGetter&& value_get
         string_value = attribute_value_stream.str();
     };
 
-    std::string type_name = zaf::ToUTF8String(T::Type->GetName());
+    std::string type_name = zaf::ToUTF8String(T::StaticType()->GetName());
 
     zaf::Frame test_frame;
     std::string frame_value;

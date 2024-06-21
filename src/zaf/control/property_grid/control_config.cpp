@@ -7,7 +7,7 @@ namespace zaf::property_grid {
 
 void ControlConfig::FilterProperties(PropertyTable& property_table) {
 
-    auto list = property_table.GetList(Control::Type);
+    auto list = property_table.GetList(Control::StaticType());
     if (!list) {
         return;
     }

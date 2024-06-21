@@ -38,32 +38,37 @@ void ParseObject(ObjectType& type, Object& object) {
 }
 
 
-Object::StaticType Object::StaticType::instance;
+Object::Type Object::Type::instance;
 
-Object::StaticType* Object::StaticType::Instance() {
+Object::Type* Object::Type::Instance() {
     return &instance;
 }
 
-Object::StaticType::StaticType() {
+Object::Type::Type() {
     zaf::internal::ReflectionManager::Instance().RegisterType(this);
 }
 
-ObjectType* Object::StaticType::GetBase() const {
+ObjectType* Object::Type::GetBase() const {
     return nullptr;
 }
 
-const std::wstring& Object::StaticType::GetName() const {
+const std::wstring& Object::Type::GetName() const {
     static std::wstring name{ L"Object" };
     return name;
 }
 
-std::shared_ptr<Object> Object::StaticType::CreateInstance() const {
+std::shared_ptr<Object> Object::Type::CreateInstance() const {
     return Create<Object>();
 }
 
-ObjectParser* Object::StaticType::GetParser() const {
+ObjectParser* Object::Type::GetParser() const {
     static ObjectParser default_parser;
     return &default_parser;
+}
+
+
+ObjectType* Object::StaticType() {
+    return Type::Instance();
 }
 
 
@@ -86,12 +91,17 @@ void Object::Initialize() {
 
 
 void Object::InvokeParse() {
-    ParseObject(*GetType(), *this);
+    ParseObject(*DynamicType(), *this);
 }
 
 
 void Object::AfterParse() {
 
+}
+
+
+ObjectType* Object::DynamicType() const {
+    return StaticType();
 }
 
 
@@ -117,8 +127,5 @@ std::wstring Object::ToString() const {
 
     return FromUTF8String(stream.str());
 }
-
-
-ObjectType* const Object::Type = StaticType::Instance();
 
 }

@@ -33,11 +33,13 @@ ZAF_OBJECT_IMPL(NotDefaultConstructible);
 
 TEST(ObjectTest, CreateInstance) {
 
-    auto instance = DefaultConstructible::Type->CreateInstance();
+    auto instance = DefaultConstructible::StaticType()->CreateInstance();
     ASSERT_NE(instance, nullptr);
 
     auto default_constructible = std::dynamic_pointer_cast<DefaultConstructible>(instance);
     ASSERT_NE(default_constructible, nullptr);
 
-    ASSERT_THROW(NotDefaultConstructible::Type->CreateInstance(), zaf::InvalidOperationError);
+    ASSERT_THROW(
+        NotDefaultConstructible::StaticType()->CreateInstance(), 
+        zaf::InvalidOperationError);
 }

@@ -38,7 +38,7 @@ std::vector<std::shared_ptr<Data>> Data::LoadChildren() {
     std::vector<ObjectType*> value_type_chain = GetObjectTypeChain(*value_);
     property_grid::PropertyTable property_table = CreatePropertyTable(value_type_chain);
 
-    auto type_config = type_config_factory_->GetConfig(value_->GetType());
+    auto type_config = type_config_factory_->GetConfig(value_->DynamicType());
     type_config->FilterProperties(property_table);
 
     std::vector<std::shared_ptr<Data>> result;
@@ -66,7 +66,7 @@ std::vector<ObjectType*> Data::GetObjectTypeChain(const Object& object) {
 
     std::vector<ObjectType*> type_chain;
 
-    auto type = object.GetType();
+    auto type = object.DynamicType();
     type_chain.push_back(type);
 
     while (type = type->GetBase()) {

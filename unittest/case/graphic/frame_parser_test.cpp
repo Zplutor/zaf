@@ -10,7 +10,7 @@
 TEST(FrameParserTest, ParseFromAttribute) {
 
     zaf::Frame frame;
-    auto parser = zaf::Frame::Type->GetParser();
+    auto parser = zaf::Frame::StaticType()->GetParser();
     parser->ParseFromAttribute(L"4,3,2,1", frame);
     ASSERT_EQ(frame, zaf::Frame(4, 3, 2, 1));
 
@@ -27,7 +27,7 @@ TEST(FrameParserTest, ParseFromNodeWithAttribute) {
     auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::Frame frame;
-    auto parser = zaf::Frame::Type->GetParser();
+    auto parser = zaf::Frame::StaticType()->GetParser();
     parser->ParseFromNode(*node, frame);
     ASSERT_EQ(frame, zaf::Frame(20, 21, 22, 23));
 
@@ -51,7 +51,7 @@ TEST(FrameParserTest, ParseFromNodeWithValue) {
     auto xaml = "<Frame>9,8,7,6</Frame>";
     auto node = zaf::XamlReader::FromString(xaml)->Read();
     zaf::Frame frame;
-    auto parser = zaf::Frame::Type->GetParser();
+    auto parser = zaf::Frame::StaticType()->GetParser();
     parser->ParseFromNode(*node, frame);
     ASSERT_EQ(frame, zaf::Frame(9, 8, 7, 6));
 }
@@ -59,7 +59,7 @@ TEST(FrameParserTest, ParseFromNodeWithValue) {
 
 TEST(FrameParserTest, ParseToInvalidObject) {
 
-    auto parser = zaf::Frame::Type->GetParser();
+    auto parser = zaf::Frame::StaticType()->GetParser();
     zaf::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"1,1,1,1", object), zaf::InvalidTypeError);
@@ -71,7 +71,7 @@ TEST(FrameParserTest, ParseToInvalidObject) {
 
 TEST(FrameParserTest, ParseInvalidValue) {
 
-    auto parser = zaf::Frame::Type->GetParser();
+    auto parser = zaf::Frame::StaticType()->GetParser();
     zaf::Frame frame;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"uiok", frame), zaf::ParseError);

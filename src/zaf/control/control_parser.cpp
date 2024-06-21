@@ -13,7 +13,7 @@ void ControlParser::ParseFromNode(const XamlNode& node, Object& object) {
     auto& control = As<Control>(object);
     auto update_guard = control.BeginUpdate();
 
-    XamlNodeParseHelper helper(node, control.GetType());
+    XamlNodeParseHelper helper(node, control.DynamicType());
     auto tab_index = helper.GetFloatProperty(L"TabIndex");
     if (tab_index) {
         control.SetTabIndex(static_cast<std::size_t>(*tab_index));

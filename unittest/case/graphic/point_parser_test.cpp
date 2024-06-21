@@ -10,7 +10,7 @@
 TEST(PointParserTest, ParseFromAttribute) {
 
     zaf::Point point;
-    point.GetType()->GetParser()->ParseFromAttribute(L"33,44", point);
+    point.DynamicType()->GetParser()->ParseFromAttribute(L"33,44", point);
 
     ASSERT_EQ(point, zaf::Point(33, 44));
 }
@@ -24,7 +24,7 @@ TEST(PointParserTest, ParseFromNode) {
     auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::Point point;
-    auto parser = zaf::Point::Type->GetParser();
+    auto parser = zaf::Point::StaticType()->GetParser();
     parser->ParseFromNode(*node, point);
     ASSERT_EQ(point, zaf::Point(53, 54));
 
@@ -42,7 +42,7 @@ TEST(PointParserTest, ParseFromNode) {
 
 TEST(PointParserTest, ParseToInvalidObject) {
 
-    auto parser = zaf::Point::Type->GetParser();
+    auto parser = zaf::Point::StaticType()->GetParser();
     zaf::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"120,34", object), zaf::InvalidTypeError);
@@ -54,7 +54,7 @@ TEST(PointParserTest, ParseToInvalidObject) {
 
 TEST(PointParserTest, ParseInvalidValue) {
 
-    auto parser = zaf::Point::Type->GetParser();
+    auto parser = zaf::Point::StaticType()->GetParser();
     zaf::Point point;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"dd,cc", point), zaf::ParseError);

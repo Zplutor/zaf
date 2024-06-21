@@ -7,7 +7,7 @@ void TextualControlConfig::FilterProperties(PropertyTable& property_table) {
 
     __super::FilterProperties(property_table);
 
-    auto list = property_table.GetList(TextualControl::Type);
+    auto list = property_table.GetList(TextualControl::StaticType());
     if (!list) {
         return;
     }

@@ -17,7 +17,7 @@ static_assert(!std::is_move_assignable_v<InlineObject>);
 
 //Make sure InlineObject can be created by its type.
 TEST(InlineObjectTest, CreateInstance) {
-    ASSERT_NO_THROW(InlineObject::Type->CreateInstance());
+    ASSERT_NO_THROW(InlineObject::StaticType()->CreateInstance());
 }
 
 

@@ -10,7 +10,7 @@
 TEST(SizeParserTest, ParseFromAttribute) {
 
     zaf::Size size;
-    size.GetType()->GetParser()->ParseFromAttribute(L"100,101", size);
+    size.DynamicType()->GetParser()->ParseFromAttribute(L"100,101", size);
 
     ASSERT_EQ(size, zaf::Size(100, 101));
 }
@@ -24,7 +24,7 @@ TEST(SizeParserTest, ParseFromNode) {
     auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::Size size;
-    auto parser = zaf::Size::Type->GetParser();
+    auto parser = zaf::Size::StaticType()->GetParser();
     parser->ParseFromNode(*node, size);
     ASSERT_EQ(size, zaf::Size(100, 101));
 
@@ -38,7 +38,7 @@ TEST(SizeParserTest, ParseFromNode) {
 
 TEST(SizeParserTest, ParseToInvalidObject) {
 
-    auto parser = zaf::Size::Type->GetParser();
+    auto parser = zaf::Size::StaticType()->GetParser();
     zaf::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"400,400", object), zaf::InvalidTypeError);
@@ -47,7 +47,7 @@ TEST(SizeParserTest, ParseToInvalidObject) {
 
 TEST(SizeParserTest, ParseInvalidValue) {
 
-    auto parser = zaf::Size::Type->GetParser();
+    auto parser = zaf::Size::StaticType()->GetParser();
 
     zaf::Size size;
     ASSERT_THROW(parser->ParseFromAttribute(L"ab,cd", size), zaf::ParseError);

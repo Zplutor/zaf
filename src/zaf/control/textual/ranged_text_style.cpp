@@ -130,7 +130,7 @@ void RangedTextStyle::WriteInlineObjectsToXML(XMLWriter& writer) const {
         each_item.Range().WriteToXML(writer);
 
         writer.WriteElementStart(L"Object");
-        writer.WriteAttribute(L"Type", each_item.Object()->GetType()->GetName());
+        writer.WriteAttribute(L"Type", each_item.Object()->DynamicType()->GetName());
         each_item.Object()->WriteToXML(writer);
         writer.WriteElementEnd();
 

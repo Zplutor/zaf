@@ -5,7 +5,7 @@ namespace zaf::property_grid {
 
 void RectConfig::FilterProperties(PropertyTable& property_table) {
 
-    auto list = property_table.GetList(Rect::Type);
+    auto list = property_table.GetList(Rect::StaticType());
     if (list) {
         list->SortByNames({
             L"Position",

@@ -285,10 +285,6 @@ TEST(WindowParser, ParseHasSystemMenu) {
 
 TEST(WindowParser, ParseRootControl) {
 
-    //Force initialization global objects.
-    zaf::Label::Type->GetName();
-    zaf::Button::Type->GetName();
-
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(R"(<Window RootControl="Label" />)");
     auto label = std::dynamic_pointer_cast<zaf::Label>(window->RootControl());
     ASSERT_NE(label, nullptr);
