@@ -1,8 +1,8 @@
 #pragma once
 
 #include <zaf/object/boxing/boolean_parser.h>
+#include <zaf/object/boxing/custom_boxed_type_utility.h>
 #include <zaf/object/boxing/internal/boxed_represent.h>
-#include <zaf/object/boxing/internal/built_in_box_types.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
@@ -22,6 +22,9 @@ ZAF_OBJECT_BEGIN(Boolean);
 ZAF_OBJECT_PARSER(BooleanParser);
 ZAF_OBJECT_END;
 
-__ZAF_INTERNAL_DEFINE_BUILT_IN_BOXED_TYPE(bool, Boolean)
+template<>
+struct GetCustomBoxedType<bool> {
+    using type = Boolean;
+};
 
 }

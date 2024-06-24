@@ -1,7 +1,7 @@
 #pragma once
 
+#include <zaf/object/boxing/custom_boxed_type_utility.h>
 #include <zaf/object/boxing/internal/boxed_represent.h>
-#include <zaf/object/boxing/internal/built_in_box_types.h>
 #include <zaf/object/enum_type.h>
 #include <zaf/object/object.h>
 
@@ -18,8 +18,14 @@ public:                                                                         
 
 
 #define ZAF_ENABLE_ENUM_BOXING(EnumName) \
-__ZAF_INTERNAL_DEFINE_BUILT_IN_BOXED_TYPE(EnumName, EnumName##Enum)
+template<> \
+struct GetCustomBoxedType<EnumName> { \
+    using type = EnumName##Enum; \
+};
 
 
 #define ZAF_ENABLE_ENUM_BOXING_WITH_NAMESPACE(Namespace, EnumName) \
-__ZAF_INTERNAL_DEFINE_BUILT_IN_BOXED_TYPE(Namespace::EnumName, Namespace::EnumName##Enum)
+template<> \
+struct GetCustomBoxedType<Namespace::EnumName> { \
+    using type = Namespace::EnumName##Enum; \
+};

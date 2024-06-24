@@ -2,7 +2,7 @@
 
 #include <type_traits>
 #include <zaf/base/as.h>
-#include <zaf/object/boxing/internal/get_box_type.h>
+#include <zaf/object/boxing/custom_boxed_type_utility.h>
 #include <zaf/object/object.h>
 
 namespace zaf::internal {
@@ -31,7 +31,7 @@ struct ObjectUnboxer {
 template<typename T>
 struct GeneralUnboxer {
 
-    using BoxedType = typename GetGeneralBoxType<T>::Type;
+    using BoxedType = GetCustomBoxedTypeT<T>;
 
     static const T* TryUnbox(const Object& object) {
 

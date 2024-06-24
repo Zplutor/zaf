@@ -58,7 +58,7 @@ private:                                                                        
     public:                                                                                       \
         using DeclaredType = std::remove_pointer_t<decltype(DeduceDeclaredType<Class>(nullptr))>; \
         using BoxedType = zaf::internal::GetBoxedType<DeclaredType>;                              \
-        static_assert(zaf::IsReflectiveType<BoxedType>,                                           \
+        static_assert(zaf::IsReflectiveTypeV<BoxedType>,                                           \
             "This type of value is not supported by property.");                                  \
         static constexpr bool CanGet = InnerCanGet<Class>(nullptr);                               \
         static constexpr bool CanSet = InnerCanSet<Class>(nullptr);                               \

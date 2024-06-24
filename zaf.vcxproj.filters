@@ -2005,9 +2005,6 @@
     <ClInclude Include="src\zaf\object\internal\property_registrar.h">
       <Filter>zaf\object\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\boxed_object.h">
-      <Filter>zaf\object\boxing</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\object\boxing\boxing.h">
       <Filter>zaf\object\boxing</Filter>
     </ClInclude>
@@ -2021,12 +2018,6 @@
       <Filter>zaf\object\boxing\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent_equal.h">
-      <Filter>zaf\object\boxing\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\internal\built_in_box_types.h">
-      <Filter>zaf\object\boxing\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\internal\get_box_type.h">
       <Filter>zaf\object\boxing\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\object\boxing\internal\unboxer.h">
@@ -2900,6 +2891,9 @@
       <Filter>zaf\object</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\object\boxing\boxed_type_utility.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\custom_boxed_type_utility.h">
       <Filter>zaf\object\boxing</Filter>
     </ClInclude>
   </ItemGroup>

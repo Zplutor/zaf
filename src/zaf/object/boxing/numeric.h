@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <zaf/object/boxing/custom_boxed_type_utility.h>
 #include <zaf/object/boxing/internal/boxed_represent.h>
-#include <zaf/object/boxing/internal/built_in_box_types.h>
 #include <zaf/object/boxing/numeric_parser.h>
 #include <zaf/object/object.h>
 
@@ -20,7 +20,10 @@ public:                                                                         
 ZAF_OBJECT_BEGIN(BoxTypeName);                                                                    \
 ZAF_OBJECT_PARSER(NumericParser<BoxTypeName>);                                                    \
 ZAF_OBJECT_END;                                                                                   \
-__ZAF_INTERNAL_DEFINE_BUILT_IN_BOXED_TYPE(NumericType, BoxTypeName)
+template<>                                                                                        \
+struct GetCustomBoxedType<NumericType> {                                                          \
+    using type = BoxTypeName;                                                                     \
+};
 
 
 __ZAF_INTERNAL_DEFINE_NUMERIC_BOXED_TYPE(char, Char)

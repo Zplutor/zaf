@@ -1,7 +1,7 @@
 #pragma once
 
+#include <zaf/object/boxing/custom_boxed_type_utility.h>
 #include <zaf/object/boxing/internal/boxed_represent.h>
-#include <zaf/object/boxing/internal/built_in_box_types.h>
 #include <zaf/object/boxing/string_parser.h>
 #include <zaf/object/object.h>
 
@@ -25,11 +25,35 @@ __ZAF_INTERNAL_DEFINE_STRING_BOXED_TYPE(std::string, String)
 __ZAF_INTERNAL_DEFINE_STRING_BOXED_TYPE(std::wstring, WideString)
 
 
-__ZAF_INTERNAL_DEFINE_BUILT_IN_BOXED_TYPE(std::string, String)
-__ZAF_INTERNAL_DEFINE_BUILT_IN_BOXED_TYPE(std::wstring, WideString)
-__ZAF_INTERNAL_DEFINE_BUILT_IN_BOXED_TYPE(char*, String)
-__ZAF_INTERNAL_DEFINE_BUILT_IN_BOXED_TYPE(const char*, String)
-__ZAF_INTERNAL_DEFINE_BUILT_IN_BOXED_TYPE(wchar_t*, WideString)
-__ZAF_INTERNAL_DEFINE_BUILT_IN_BOXED_TYPE(const wchar_t*, WideString)
+template<>
+struct GetCustomBoxedType<std::string> {
+    using type = String;
+};
+
+template<>
+struct GetCustomBoxedType<char*> {
+    using type = String;
+};
+
+template<>
+struct GetCustomBoxedType<const char*> {
+    using type = String;
+};
+
+
+template<>
+struct GetCustomBoxedType<std::wstring> {
+    using type = WideString;
+};
+
+template<>
+struct GetCustomBoxedType<wchar_t*> {
+    using type = WideString;
+};
+
+template<>
+struct GetCustomBoxedType<const wchar_t*> {
+    using type = WideString;
+};
 
 }

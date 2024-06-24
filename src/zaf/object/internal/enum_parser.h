@@ -5,7 +5,6 @@
 #include <zaf/base/flag_enum.h>
 #include <zaf/base/string/split.h>
 #include <zaf/base/string/trim.h>
-#include <zaf/object/boxing/internal/get_box_type.h>
 #include <zaf/object/internal/base_enum_type.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_utility.h>

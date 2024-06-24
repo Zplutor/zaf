@@ -2,8 +2,7 @@
 
 #include <type_traits>
 #include <zaf/object/boxing/boolean.h>
-#include <zaf/object/boxing/boxed_object.h>
-#include <zaf/object/boxing/internal/built_in_box_types.h>
+#include <zaf/object/boxing/custom_boxed_type_utility.h>
 #include <zaf/object/boxing/numeric.h>
 #include <zaf/object/boxing/string.h>
 #include <zaf/object/reflective_type_utility.h>
@@ -31,55 +30,21 @@ struct GetSharedPtrElementTypeImpl<std::shared_ptr<E>> {
     using Type = E;
 };
 
-
-template<typename T>
-struct ToBoxedTypeImpl {
-private:
-    using DecayType = std::decay_t<T>;
-
-    static_assert(!IsSharedPtrImpl<DecayType>::Value, "T cannot be a std::shared_ptr.");
-
-public:
-    using Type = std::conditional_t<
-        IsReflectiveType<DecayType>,
-        DecayType,
-        std::conditional_t<
-            HasBuiltInBoxType<T>::Value,
-            typename GetBuiltInBoxType<T>::Type,
-            BoxedObject<T>
-        >
-    >;
-};
-
-
-template<typename T>
-struct ToBoxedInstanceTypeImpl {
-private:
-    using DecayType = std::decay_t<T>;
-
-    struct SharedPtrConverter {
-        using Type = typename ToBoxedTypeImpl<
-            typename GetSharedPtrElementTypeImpl<DecayType>::Type
-        >::Type;
-    };
-
-    struct NonSharedPtrConverter {
-        using Type = typename ToBoxedTypeImpl<DecayType>::Type;
-    };
-
-    using Converter = std::conditional_t<
-        IsSharedPtrImpl<DecayType>::Value, 
-        SharedPtrConverter,
-        NonSharedPtrConverter
-    >;
-
-    using BoxedType = typename Converter::Type;
-
-public:
-    using Type = std::shared_ptr<BoxedType>;
-};
-
 }
+
+
+template<typename T>
+struct ToBoxedType {
+private:
+    using DecayType = std::decay_t<T>;
+
+public:
+    using type = std::conditional_t<
+        IsReflectiveTypeV<DecayType>,
+        DecayType,
+        GetCustomBoxedTypeT<DecayType>
+    >;
+};
 
 /**
 Converts the specified type to a corresponding boxed type, which is a reflective type.
@@ -92,8 +57,35 @@ Converts the specified type to a corresponding boxed type, which is a reflective
     If T is already a boxed type, the return type is the same as T.
 */
 template<typename T>
-using ToBoxedType = typename internal::ToBoxedTypeImpl<T>::Type;
+using ToBoxedTypeT = typename ToBoxedType<T>::type;
 
+
+template<typename T>
+struct ToBoxedInstanceType {
+private:
+    using DecayType = std::decay_t<T>;
+
+    struct SharedPtrConverter {
+        using Type = ToBoxedTypeT<
+            typename internal::GetSharedPtrElementTypeImpl<DecayType>::Type
+        >;
+    };
+
+    struct NonSharedPtrConverter {
+        using Type = ToBoxedTypeT<DecayType>;
+    };
+
+    using Converter = std::conditional_t<
+        internal::IsSharedPtrImpl<DecayType>::Value,
+        SharedPtrConverter,
+        NonSharedPtrConverter
+    >;
+
+    using BoxedType = typename Converter::Type;
+
+public:
+    using type = std::shared_ptr<BoxedType>;
+};
 
 /**
 Converts a specified type to a corresponding boxed instance type, which is a std::shared_ptr to a 
@@ -108,6 +100,6 @@ boxed type.
     std::shared_ptr.
 */
 template<typename T>
-using ToBoxedInstanceType = typename internal::ToBoxedInstanceTypeImpl<T>::Type;
+using ToBoxedInstanceTypeT = typename ToBoxedInstanceType<T>::type;
 
 }

@@ -2,7 +2,6 @@
 
 #include <type_traits>
 #include <zaf/object/boxing/boxing.h>
-#include <zaf/object/boxing/internal/get_box_type.h>
 #include <zaf/object/object.h>
 
 namespace zaf::internal {

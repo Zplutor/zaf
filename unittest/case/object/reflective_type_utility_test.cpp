@@ -5,9 +5,9 @@
 
 using namespace zaf;
 
-static_assert(!IsReflectiveType<int>);
-static_assert(!IsReflectiveType<std::string>);
+static_assert(!IsReflectiveTypeV<int>);
+static_assert(!IsReflectiveTypeV<std::string>);
 
-static_assert(IsReflectiveType<Object>);
-static_assert(IsReflectiveType<Control>);
-static_assert(IsReflectiveType<Window>);
+static_assert(IsReflectiveTypeV<Object>);
+static_assert(IsReflectiveTypeV<Control>);
+static_assert(IsReflectiveTypeV<Window>);

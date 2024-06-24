@@ -7,9 +7,9 @@
 namespace zaf {
 
 template<typename T>
-auto Box(const T& value) {
-    using BoxedInstanceType = ToBoxedInstanceType<T>;
-    return std::make_shared<typename BoxedInstanceType::element_type>(value);
+auto Box(T&& value) {
+    using BoxedInstanceType = ToBoxedInstanceTypeT<T>;
+    return std::make_shared<typename BoxedInstanceType::element_type>(std::forward<T>(value));
 }
 
 

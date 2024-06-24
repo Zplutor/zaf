@@ -797,13 +797,11 @@
     <ClInclude Include="src\zaf\io\stream\stream.h" />
     <ClInclude Include="src\zaf\object\boxing\boolean.h" />
     <ClInclude Include="src\zaf\object\boxing\boolean_parser.h" />
-    <ClInclude Include="src\zaf\object\boxing\boxed_object.h" />
     <ClInclude Include="src\zaf\object\boxing\boxing.h" />
     <ClInclude Include="src\zaf\object\boxing\boxed_type_utility.h" />
+    <ClInclude Include="src\zaf\object\boxing\custom_boxed_type_utility.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent_equal.h" />
-    <ClInclude Include="src\zaf\object\boxing\internal\built_in_box_types.h" />
-    <ClInclude Include="src\zaf\object\boxing\internal\get_box_type.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\string_conversion_shim.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\unboxer.h" />
     <ClInclude Include="src\zaf\object\boxing\numeric.h" />
