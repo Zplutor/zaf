@@ -568,6 +568,12 @@
     <ClCompile Include="src\unittest\case\control\control_visual_state_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\object\reflective_type_utility_test.cpp">
+      <Filter>case\object</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing\boxed_type_utility_test.cpp">
+      <Filter>case\object\boxing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

@@ -8,19 +8,19 @@
 namespace zaf::internal {
 
 template<typename T>
-struct DeduceGetterType { };
+struct DeduceGetterReturnType { };
 
 template<typename T, typename R>
-struct DeduceGetterType<R(T::*)()const> {
+struct DeduceGetterReturnType<R(T::*)()const> {
     using Type = std::decay_t<R>;
 };
 
 
 template<typename T>
-struct DeduceSetterType { };
+struct DeduceSetterArgumentType { };
 
 template<typename T, typename A>
-struct DeduceSetterType<void(T::*)(A)> {
+struct DeduceSetterArgumentType<void(T::*)(A)> {
     using Type = std::decay_t<A>;
 };
 
@@ -45,13 +45,15 @@ struct GetSharedPtrElementType<std::shared_ptr<E>> {
 
 template<typename T>
 struct IsBoxedType {
-    static constexpr bool Value = 
+    static constexpr bool Value =
         std::is_base_of_v<zaf::Object, typename GetSharedPtrElementType<T>::Type>;
 };
 
+/**
+Converts the specified declared type to a boxed type.
+*/
 template<typename T>
-struct DeduceUnderlyingValueType {
-
+struct GetBoxedTypeImpl {
     using Type = std::conditional_t<
         IsBoxedType<T>::Value,
         typename GetSharedPtrElementType<T>::Type,
@@ -59,11 +61,8 @@ struct DeduceUnderlyingValueType {
     >;
 };
 
-
 template<typename T>
-struct IsReflectionType {
-    static constexpr bool Value = true; //TODO
-};
+using GetBoxedType = typename GetBoxedTypeImpl<T>::Type;
 
 
 template<typename T>

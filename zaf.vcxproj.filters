@@ -211,6 +211,9 @@
     <Filter Include="zaf\object\style">
       <UniqueIdentifier>{6fc84dc4-b426-4c31-a1fb-952fe1f37ece}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\internal\object">
+      <UniqueIdentifier>{f22f587a-86b4-42fa-8e2d-e66b8b235d6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1999,9 +2002,6 @@
     <ClInclude Include="src\zaf\object\internal\object_initializer.h">
       <Filter>zaf\object\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\property_helper.h">
-      <Filter>zaf\object\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\object\internal\property_registrar.h">
       <Filter>zaf\object\internal</Filter>
     </ClInclude>
@@ -2891,6 +2891,15 @@
       <Filter>zaf\object</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\object\boxing\boolean_parser.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\object\property_helper.h">
+      <Filter>zaf\internal\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\reflective_type_utility.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\boxed_type_utility.h">
       <Filter>zaf\object\boxing</Filter>
     </ClInclude>
   </ItemGroup>

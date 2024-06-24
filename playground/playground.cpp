@@ -48,7 +48,6 @@
 #include <zaf/rx/cancel.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
-#include <zaf/object/internal/property_helper.h>
 #include <zaf/control/property_grid.h>
 #include <zaf/window/popup_menu.h>
 #include <zaf/control/menu_separator.h>

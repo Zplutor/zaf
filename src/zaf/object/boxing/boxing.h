@@ -1,14 +1,15 @@
 #pragma once
 
 #include <zaf/base/error/contract_error.h>
-#include <zaf/object/boxing/internal/get_box_type.h>
+#include <zaf/object/boxing/boxed_type_utility.h>
 #include <zaf/object/boxing/internal/unboxer.h>
 
 namespace zaf {
 
 template<typename T>
-std::shared_ptr<typename internal::GetBoxType<T>::Type> Box(const T& value) {
-    return std::make_shared<typename internal::GetBoxType<T>::Type>(value);
+auto Box(const T& value) {
+    using BoxedInstanceType = ToBoxedInstanceType<T>;
+    return std::make_shared<typename BoxedInstanceType::element_type>(value);
 }
 
 

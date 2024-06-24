@@ -768,6 +768,7 @@
     <ClInclude Include="src\zaf\internal\control\mouse_event_routing.h" />
     <ClInclude Include="src\zaf\internal\enumerator.h" />
     <ClInclude Include="src\zaf\internal\message_loop.h" />
+    <ClInclude Include="src\zaf\internal\object\property_helper.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
     <ClInclude Include="src\zaf\internal\stream\byte_array_stream_core.h" />
     <ClInclude Include="src\zaf\internal\stream\memory_stream_impl.h" />
@@ -798,6 +799,7 @@
     <ClInclude Include="src\zaf\object\boxing\boolean_parser.h" />
     <ClInclude Include="src\zaf\object\boxing\boxed_object.h" />
     <ClInclude Include="src\zaf\object\boxing\boxing.h" />
+    <ClInclude Include="src\zaf\object\boxing\boxed_type_utility.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent_equal.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\built_in_box_types.h" />
@@ -818,7 +820,6 @@
     <ClInclude Include="src\zaf\object\internal\instance_creator.h" />
     <ClInclude Include="src\zaf\object\internal\is_equal_comparable.h" />
     <ClInclude Include="src\zaf\object\internal\object_initializer.h" />
-    <ClInclude Include="src\zaf\object\internal\property_helper.h" />
     <ClInclude Include="src\zaf\object\internal\property_registrar.h" />
     <ClInclude Include="src\zaf\object\internal\base_enum_type.h" />
     <ClInclude Include="src\zaf\object\internal\reflection_manager.h" />
@@ -836,6 +837,7 @@
     <ClInclude Include="src\zaf\object\parsing\xaml_reader.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_utility.h" />
     <ClInclude Include="src\zaf\object\property_support.h" />
+    <ClInclude Include="src\zaf\object\reflective_type_utility.h" />
     <ClInclude Include="src\zaf\object\style\sheet.h" />
     <ClInclude Include="src\zaf\object\style\sheet_parser.h" />
     <ClInclude Include="src\zaf\object\style\style.h" />

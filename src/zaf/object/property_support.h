@@ -2,20 +2,22 @@
 
 #include <zaf/base/as.h>
 #include <zaf/base/error/invalid_operation_error.h>
+#include <zaf/internal/object/property_helper.h>
 #include <zaf/object/boxing/boxing.h>
-#include <zaf/object/internal/property_helper.h>
 #include <zaf/object/internal/property_registrar.h>
 #include <zaf/object/object_property.h>
+#include <zaf/object/reflective_type_utility.h>
 
 #define ZAF_OBJECT_PROPERTY(PropertyName)                                                         \
 private:                                                                                          \
     struct PropertyName##Traits {                                                                 \
         template<typename T>                                                                      \
         using GetterDeclaredType =                                                                \
-            typename zaf::internal::DeduceGetterType<decltype(&T::PropertyName)>::Type;           \
+            typename zaf::internal::DeduceGetterReturnType<decltype(&T::PropertyName)>::Type;     \
         template<typename T>                                                                      \
         using SetterDeclaredType =                                                                \
-            typename zaf::internal::DeduceSetterType<decltype(&T::Set##PropertyName)>::Type;      \
+            typename zaf::internal::DeduceSetterArgumentType<                                     \
+                decltype(&T::Set##PropertyName)>::Type;                                           \
         template<typename T>                                                                      \
         static constexpr bool InnerCanGet(GetterDeclaredType<T>*) { return true; }                \
         template<typename T>                                                                      \
@@ -55,8 +57,8 @@ private:                                                                        
         }                                                                                         \
     public:                                                                                       \
         using DeclaredType = std::remove_pointer_t<decltype(DeduceDeclaredType<Class>(nullptr))>; \
-        using BoxedType = zaf::internal::DeduceUnderlyingValueType<DeclaredType>::Type;           \
-        static_assert(zaf::internal::IsReflectionType<BoxedType>::Value,                          \
+        using BoxedType = zaf::internal::GetBoxedType<DeclaredType>;                              \
+        static_assert(zaf::IsReflectiveType<BoxedType>,                                           \
             "This type of value is not supported by property.");                                  \
         static constexpr bool CanGet = InnerCanGet<Class>(nullptr);                               \
         static constexpr bool CanSet = InnerCanSet<Class>(nullptr);                               \
