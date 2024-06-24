@@ -2896,5 +2896,11 @@
     <ClInclude Include="src\zaf\object\boxing\custom_boxed_type_utility.h">
       <Filter>zaf\object\boxing</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\object\custom_property_value_type_utility.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\property_value_type_utility.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

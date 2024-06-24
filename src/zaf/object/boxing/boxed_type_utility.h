@@ -38,24 +38,20 @@ struct ToBoxedType {
 private:
     using DecayType = std::decay_t<T>;
 
+    struct ReflectiveTypeSelector {
+        using type = DecayType;
+    };
+
+    struct CustomTypeSelector {
+        using type = typename GetCustomBoxedType<DecayType>::type;
+    };
+
+    using Selector = std::conditional_t<IsReflectiveTypeV<DecayType>, ReflectiveTypeSelector, CustomTypeSelector>;
+
 public:
-    using type = std::conditional_t<
-        IsReflectiveTypeV<DecayType>,
-        DecayType,
-        GetCustomBoxedTypeT<DecayType>
-    >;
+    using type = typename Selector::type;
 };
 
-/**
-Converts the specified type to a corresponding boxed type, which is a reflective type.
-
-@param T
-    The type to convert. It cannot be a std::shared_ptr.
-
-@return
-    The corresponding boxed type, upon which zaf::IsReflectiveType<> will return true.
-    If T is already a boxed type, the return type is the same as T.
-*/
 template<typename T>
 using ToBoxedTypeT = typename ToBoxedType<T>::type;
 
@@ -87,18 +83,6 @@ public:
     using type = std::shared_ptr<BoxedType>;
 };
 
-/**
-Converts a specified type to a corresponding boxed instance type, which is a std::shared_ptr to a 
-boxed type.
-
-@param T
-    The type to convert.
-
-@return
-    The corresponding boxed instance type. If T is already a std::shared_ptr, its element_type will
-    be converted to a boxed type; otherwise, T will be converted to a boxed type wrapped in 
-    std::shared_ptr.
-*/
 template<typename T>
 using ToBoxedInstanceTypeT = typename ToBoxedInstanceType<T>::type;
 

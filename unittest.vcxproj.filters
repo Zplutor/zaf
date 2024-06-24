@@ -574,6 +574,9 @@
     <ClCompile Include="unittest\case\object\boxing\boxed_type_utility_test.cpp">
       <Filter>case\object\boxing</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\object\property_value_type_utility_test.cpp">
+      <Filter>case\object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

@@ -477,6 +477,7 @@
     <ClCompile Include="unittest\case\object\object_test.cpp" />
     <ClCompile Include="unittest\case\object\parsing\parsing_test.cpp" />
     <ClCompile Include="unittest\case\object\property_test.cpp" />
+    <ClCompile Include="unittest\case\object\property_value_type_utility_test.cpp" />
     <ClCompile Include="unittest\case\object\reflective_type_utility_test.cpp" />
     <ClCompile Include="unittest\case\parsers\uri_image_parser_test.cpp" />
     <ClCompile Include="unittest\case\parsing\helpers_test.cpp" />
