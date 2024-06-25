@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/error/contract_error.h>
-#include <zaf/object/boxing/boxed_type_utility.h>
+#include <zaf/object/boxing/boxed_type.h>
 #include <zaf/object/boxing/internal/unboxer.h>
 
 namespace zaf {

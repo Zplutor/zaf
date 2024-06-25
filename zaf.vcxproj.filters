@@ -2887,20 +2887,23 @@
     <ClInclude Include="src\zaf\internal\object\property_helper.h">
       <Filter>zaf\internal\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\reflective_type_utility.h">
+    <ClInclude Include="src\zaf\object\reflective_type.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\boxed_type_utility.h">
+    <ClInclude Include="src\zaf\object\boxing\boxed_type.h">
       <Filter>zaf\object\boxing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\custom_boxed_type_utility.h">
+    <ClInclude Include="src\zaf\object\boxing\custom_boxed_type.h">
       <Filter>zaf\object\boxing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\custom_property_value_type_utility.h">
+    <ClInclude Include="src\zaf\object\custom_property_value_type.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\property_value_type_utility.h">
+    <ClInclude Include="src\zaf\object\property_value_type.h">
       <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\object\shared_ptr_utility.h">
+      <Filter>zaf\internal\object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

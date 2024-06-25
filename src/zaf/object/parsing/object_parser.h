@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <zaf/base/non_copyable.h>
 
 namespace zaf {

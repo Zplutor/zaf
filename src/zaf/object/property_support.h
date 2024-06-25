@@ -6,7 +6,7 @@
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/internal/property_registrar.h>
 #include <zaf/object/object_property.h>
-#include <zaf/object/reflective_type_utility.h>
+#include <zaf/object/property_value_type.h>
 
 #define ZAF_OBJECT_PROPERTY(PropertyName)                                                         \
 private:                                                                                          \
@@ -57,9 +57,7 @@ private:                                                                        
         }                                                                                         \
     public:                                                                                       \
         using DeclaredType = std::remove_pointer_t<decltype(DeduceDeclaredType<Class>(nullptr))>; \
-        using BoxedType = zaf::internal::GetBoxedType<DeclaredType>;                              \
-        static_assert(zaf::IsReflectiveTypeV<BoxedType>,                                           \
-            "This type of value is not supported by property.");                                  \
+        using ValueType = zaf::MakePropertyValueTypeT<DeclaredType>;                              \
         static constexpr bool CanGet = InnerCanGet<Class>(nullptr);                               \
         static constexpr bool CanSet = InnerCanSet<Class>(nullptr);                               \
         static std::shared_ptr<zaf::Object> Get(const zaf::Object& object) {                      \
@@ -76,7 +74,7 @@ private:                                                                        
             return name;                                                                          \
         }                                                                                         \
         zaf::ObjectType* GetValueType() const override {                                          \
-            return PropertyName##Traits::BoxedType::StaticType();                                 \
+            return PropertyName##Traits::ValueType::StaticType();                                 \
         }                                                                                         \
         bool IsValueTypeDynamic() const override {                                                \
             return zaf::internal::IsSharedPtr<PropertyName##Traits::DeclaredType>::Value;         \

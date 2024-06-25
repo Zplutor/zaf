@@ -3,30 +3,10 @@
 #include <memory>
 #include <type_traits>
 #include <zaf/base/error/invalid_type_error.h>
+#include <zaf/internal/object/shared_ptr_utility.h>
 
 namespace zaf {
 namespace internal {
-
-template<typename T>
-struct IsSharedPtr {
-private:
-    template<typename V>
-    static constexpr bool Test(typename std::decay_t<V>::element_type*) {
-        return std::is_same_v<
-            std::shared_ptr<typename std::decay_t<V>::element_type>,
-            std::decay_t<V>
-        >;
-    }
-
-    template<typename V>
-    static constexpr bool Test(...) {
-        return false;
-    }
-
-public:
-    static constexpr bool Value = Test<T>(nullptr);
-};
-
 
 struct NonSharedPtrCast {
 
@@ -57,7 +37,7 @@ struct SharedPtrCast {
 template<typename T>
 struct CastSelector {
     using Type = std::conditional_t<
-        IsSharedPtr<T>::Value, 
+        IsSharedPtrV<T>, 
         SharedPtrCast,
         NonSharedPtrCast
     >;

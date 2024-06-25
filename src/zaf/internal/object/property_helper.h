@@ -25,43 +25,10 @@ struct DeduceSetterArgumentType<void(T::*)(A)> {
 
 
 template<typename T>
-struct GetSharedPtrElementType {
-    using Type = void;
-};
-
-template<typename E>
-struct GetSharedPtrElementType<std::shared_ptr<E>> {
-    using Type = E;
-    //TODO
-    /*
-    using Type = std::conditional_t<
-        std::is_same_v<E, zaf::Image>,
-        zaf::URIImage, //Use URIImage to handle parsing things of Image.
-        E
-    >;
-    */
-};
-
-template<typename T>
 struct IsBoxedType {
     static constexpr bool Value =
         std::is_base_of_v<zaf::Object, typename GetSharedPtrElementType<T>::Type>;
 };
-
-/**
-Converts the specified declared type to a boxed type.
-*/
-template<typename T>
-struct GetBoxedTypeImpl {
-    using Type = std::conditional_t<
-        IsBoxedType<T>::Value,
-        typename GetSharedPtrElementType<T>::Type,
-        typename zaf::internal::GetBoxType<T>::Type
-    >;
-};
-
-template<typename T>
-using GetBoxedType = typename GetBoxedTypeImpl<T>::Type;
 
 
 template<typename T>

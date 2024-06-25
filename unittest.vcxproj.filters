@@ -568,14 +568,17 @@
     <ClCompile Include="src\unittest\case\control\control_visual_state_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\reflective_type_utility_test.cpp">
+    <ClCompile Include="unittest\case\object\reflective_type_test.cpp">
       <Filter>case\object</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\boxing\boxed_type_utility_test.cpp">
+    <ClCompile Include="unittest\case\object\boxing\boxed_type_test.cpp">
       <Filter>case\object\boxing</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\property_value_type_utility_test.cpp">
+    <ClCompile Include="unittest\case\object\property_value_type_test.cpp">
       <Filter>case\object</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\object\boxing\custom_boxed_type_test.cpp">
+      <Filter>case\object\boxing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 
 #include <type_traits>
 #include <zaf/base/as.h>
-#include <zaf/object/boxing/custom_boxed_type_utility.h>
+#include <zaf/object/boxing/custom_boxed_type.h>
 #include <zaf/object/object.h>
 
 namespace zaf::internal {

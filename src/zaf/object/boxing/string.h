@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/object/boxing/custom_boxed_type_utility.h>
+#include <zaf/object/boxing/custom_boxed_type.h>
 #include <zaf/object/boxing/internal/boxed_represent.h>
 #include <zaf/object/boxing/string_parser.h>
 #include <zaf/object/object.h>
