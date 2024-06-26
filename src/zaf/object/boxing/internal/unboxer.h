@@ -4,11 +4,15 @@
 #include <zaf/base/as.h>
 #include <zaf/object/boxing/custom_boxed_type.h>
 #include <zaf/object/object.h>
+#include <zaf/object/reflective_type.h>
 
 namespace zaf::internal {
 
+template<typename T, typename = void>
+struct Unboxer { };
+
 template<typename T>
-struct ObjectUnboxer {
+struct Unboxer<T, std::enable_if_t<IsReflectiveTypeV<std::decay_t<T>>>> {
 
     static const T* TryUnbox(const Object& object) {
         return dynamic_cast<const T*>(&object);
@@ -27,12 +31,12 @@ struct ObjectUnboxer {
     }
 };
 
-
 template<typename T>
-struct GeneralUnboxer {
+struct Unboxer<T, std::enable_if_t<HasCustomBoxedTypeV<std::decay_t<T>>>> {
+private:
+    using BoxedType = GetCustomBoxedTypeT<std::decay_t<T>>;
 
-    using BoxedType = GetCustomBoxedTypeT<T>;
-
+public:
     static const T* TryUnbox(const Object& object) {
 
         auto boxed_object = dynamic_cast<const BoxedType*>(&object);
@@ -58,20 +62,6 @@ struct GeneralUnboxer {
     static T& Unbox(Object& object) {
         return As<BoxedType>(object).Value();
     }
-};
-
-
-template<typename T>
-struct GetUnboxer {
-private:
-    using DecayType = std::decay_t<T>;
-
-public:
-    using Type = std::conditional_t <
-        std::is_base_of_v<Object, DecayType>,
-        ObjectUnboxer<T>,
-        GeneralUnboxer<T>
-    >;
 };
 
 }

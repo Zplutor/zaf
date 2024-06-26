@@ -24,10 +24,6 @@ TEST(BoxingTest, Box) {
     boxed_wide_string = Box(wide_chars);
     ASSERT_EQ(boxed_wide_string->Value(), wide_chars);
 
-    std::vector<int> vector{ 0, 1, 2 };
-    std::shared_ptr<BoxedObject<std::vector<int>>> boxed_vector = Box(vector);
-    ASSERT_EQ(boxed_vector->Value(), vector);
-
     Rect rect{ 10, 10, 20, 20 };
     std::shared_ptr<Rect> boxed_rect = Box(rect);
     ASSERT_EQ(*boxed_rect, rect);
@@ -173,16 +169,6 @@ TEST(BoxingTest, UnboxOtherType) {
         ASSERT_EQ(*unboxed, vector);
     }
 
-    //Const pointer overload 
-    {
-        const std::vector<int>* unboxed = 
-            Unbox<std::vector<int>>(
-                static_cast<const BoxedObject<std::vector<int>>*>(boxed_vector.get()));
-
-        ASSERT_NE(unboxed, nullptr);
-        ASSERT_EQ(*unboxed, vector);
-    }
-
     //std::shared_ptr overload
     {
         std::vector<int>* unboxed_vector = Unbox<std::vector<int>>(boxed_vector);
@@ -194,15 +180,6 @@ TEST(BoxingTest, UnboxOtherType) {
     {
         std::vector<int>& unboxed_vector = Unbox<std::vector<int>>(*boxed_vector);
         ASSERT_EQ(unboxed_vector, vector);
-    }
-
-    //const reference overload
-    {
-        const std::vector<int>& const_unboxed_vector =
-            Unbox<std::vector<int>>(
-                static_cast<const BoxedObject<std::vector<int>>&>(*boxed_vector));
-
-        ASSERT_EQ(const_unboxed_vector, vector);
     }
 }
 

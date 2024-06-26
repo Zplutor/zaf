@@ -27,8 +27,11 @@ private:                                                                        
         template<typename T>                                                                      \
         static constexpr bool InnerCanSet(...) { return false; }                                  \
         template<typename T>                                                                      \
-        static std::shared_ptr<zaf::Object> InnerGet(const T& object, GetterDeclaredType<T>*) {   \
-            return zaf::internal::BoxPropertyValue(object.PropertyName());                        \
+        static std::shared_ptr<zaf::Object> InnerGet(                                             \
+            const T& object,                                                                      \
+            GetterDeclaredType<T>* value_type) {                                                  \
+            using Boxer = zaf::internal::PropertyValueBoxer<std::decay_t<decltype(*value_type)>>; \
+            return Boxer::Box(object.PropertyName());                                             \
         }                                                                                         \
         template<typename T>                                                                      \
         static std::shared_ptr<zaf::Object> InnerGet(const T& object, ...) {                      \
@@ -39,8 +42,8 @@ private:                                                                        
             T& object,                                                                            \
             const std::shared_ptr<zaf::Object>& value,                                            \
             SetterDeclaredType<T>* value_type) {                                                  \
-            using Unboxer = typename zaf::internal::GetPropertyUnboxer<                           \
-                std::decay_t<decltype(*value_type)>>::Type;                                       \
+            using ValueDeclaredType = std::decay_t<decltype(*value_type)>;                        \
+            using Unboxer = zaf::internal::PropertyValueUnboxer<ValueDeclaredType>;               \
             object.Set##PropertyName(Unboxer::Unbox(value));                                      \
         }                                                                                         \
         template<typename T>                                                                      \
@@ -77,7 +80,7 @@ private:                                                                        
             return PropertyName##Traits::ValueType::StaticType();                                 \
         }                                                                                         \
         bool IsValueTypeDynamic() const override {                                                \
-            return zaf::internal::IsSharedPtr<PropertyName##Traits::DeclaredType>::Value;         \
+            return zaf::internal::IsSharedPtrV<PropertyName##Traits::DeclaredType>;               \
         }                                                                                         \
         bool CanGet() const override {                                                            \
             return PropertyName##Traits::CanGet;                                                  \

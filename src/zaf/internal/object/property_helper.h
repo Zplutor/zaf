@@ -2,6 +2,7 @@
 
 #include <type_traits>
 #include <zaf/object/boxing/boxing.h>
+#include <zaf/object/custom_property_value_type.h>
 #include <zaf/object/object.h>
 
 namespace zaf::internal {
@@ -24,58 +25,55 @@ struct DeduceSetterArgumentType<void(T::*)(A)> {
 };
 
 
-template<typename T>
-struct IsBoxedType {
-    static constexpr bool Value =
-        std::is_base_of_v<zaf::Object, typename GetSharedPtrElementType<T>::Type>;
-};
-
+template<typename T, typename = void>
+struct PropertyValueBoxer { };
 
 template<typename T>
-struct BoxedTypeBoxer {
+struct PropertyValueBoxer<T, std::enable_if_t<internal::IsSharedPtrV<T>>> {
     static std::shared_ptr<Object> Box(const T& value) {
-        //Sometimes T::element_type is not a derived class of Object(such as Image),
-        //but the runtime type of value is(such as URIImage),
-        //so we use a dynamic cast here.
-        return std::dynamic_pointer_cast<Object>(value);
+        return value;
     }
 };
 
 template<typename T>
-struct NonBoxedTypeBoxer {
-    static std::shared_ptr<zaf::Object> Box(const T& value) {
+struct PropertyValueBoxer<T, 
+    std::enable_if_t<!internal::IsSharedPtrV<T> && HasBoxedInstanceTypeV<T>>> {
+    static std::shared_ptr<Object> Box(const T& value) {
         return zaf::Box(value);
     }
 };
 
 template<typename T>
-std::shared_ptr<Object> BoxPropertyValue(const T& value) {
-    using Type = std::conditional_t<IsBoxedType<T>::Value, BoxedTypeBoxer<T>, NonBoxedTypeBoxer<T>>;
-    return Type::Box(value);
-}
+struct PropertyValueBoxer<T, std::enable_if_t<HasCustomPropertyValueTypeV<T>>> {
+    static std::shared_ptr<Object> Box(const T& value) {
+        return BoxCustomPropertyValue(value);
+    }
+};
 
+
+template<typename T, typename = void>
+struct PropertyValueUnboxer { };
 
 template<typename T>
-struct BoxedTypeUnboxer {
+struct PropertyValueUnboxer<T, std::enable_if_t<internal::IsSharedPtrV<T>>> {
     static T Unbox(const std::shared_ptr<Object>& value) {
         return std::dynamic_pointer_cast<T::element_type>(value);
     }
 };
 
 template<typename T>
-struct NonBoxedTypeUnboxer {
+struct PropertyValueUnboxer<T, 
+    std::enable_if_t<!internal::IsSharedPtrV<T> && HasBoxedInstanceTypeV<T>>> {
     static const T& Unbox(const std::shared_ptr<Object>& value) {
         return zaf::Unbox<T>(*value);
     }
 };
 
 template<typename T>
-struct GetPropertyUnboxer {
-    using Type = std::conditional_t<
-        IsBoxedType<T>::Value,
-        BoxedTypeUnboxer<T>,
-        NonBoxedTypeUnboxer<T>
-    >;
+struct PropertyValueUnboxer<T, std::enable_if_t<HasCustomPropertyValueTypeV<T>>> {
+    static const T& Unbox(const std::shared_ptr<Object>& value) {
+        return UnboxCustomPropertyValue<T>(value);
+    }
 };
 
 }

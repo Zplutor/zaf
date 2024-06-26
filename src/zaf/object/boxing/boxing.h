@@ -15,25 +15,25 @@ auto Box(T&& value) {
 
 template<typename T>
 const T& Unbox(const Object& object) {
-    return internal::GetUnboxer<T>::Type::Unbox(object);
+    return internal::Unboxer<T>::Unbox(object);
 }
 
 template<typename T>
 T& Unbox(Object& object) {
-    return internal::GetUnboxer<T>::Type::Unbox(object);
+    return internal::Unboxer<T>::Unbox(object);
 }
 
 
 template<typename T>
 const T* Unbox(const Object* object) {
     ZAF_EXPECT(object);
-    return internal::GetUnboxer<T>::Type::TryUnbox(*object);
+    return internal::Unboxer<T>::TryUnbox(*object);
 }
 
 template<typename T>
 T* Unbox(Object* object) {
     ZAF_EXPECT(object);
-    return internal::GetUnboxer<T>::Type::TryUnbox(*object);
+    return internal::Unboxer<T>::TryUnbox(*object);
 }
 
 

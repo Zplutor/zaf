@@ -37,7 +37,7 @@ struct SharedPtrCast {
 template<typename T>
 struct CastSelector {
     using Type = std::conditional_t<
-        IsSharedPtrV<T>, 
+        IsSharedPtrV<std::decay_t<T>>, 
         SharedPtrCast,
         NonSharedPtrCast
     >;
