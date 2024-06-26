@@ -2,6 +2,9 @@
 
 #include <filesystem>
 #include <zaf/graphic/render_bitmap.h>
+#include <zaf/graphic/image/uri_image_parser.h>
+#include <zaf/object/custom_property_value_type.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 namespace wic {
@@ -36,6 +39,54 @@ public:
     virtual std::pair<float, float> GetResolution() = 0;
 
     virtual RenderBitmap CreateRenderBitmap(Renderer& renderer) = 0;
+};
+
+
+class URIImage : public Image, public Object {
+public:
+    ZAF_OBJECT;
+
+public:
+    URIImage();
+
+    void InitializeWithURI(const std::wstring& uri);
+
+    void ChangeDPI(float dpi);
+
+    Size GetPixelSize() override;
+    std::pair<float, float> GetResolution() override;
+    RenderBitmap CreateRenderBitmap(Renderer& renderer) override;
+
+    const std::wstring& GetURI() const {
+        return uri_;
+    }
+
+private:
+    void LoadImageIfNot();
+
+private:
+    std::wstring uri_;
+    float dpi_{};
+    std::shared_ptr<Image> image_;
+};
+
+ZAF_OBJECT_BEGIN(URIImage);
+ZAF_OBJECT_PARSER(URIImageParser);
+ZAF_OBJECT_END;
+
+
+template<>
+struct CustomPropertyValueTypeHandler<std::shared_ptr<Image>> {
+
+    using BoxedType = URIImage;
+
+    static std::shared_ptr<Object> Box(const std::shared_ptr<Image>& image) {
+        return std::dynamic_pointer_cast<URIImage>(image);
+    }
+
+    static std::shared_ptr<Image> Unbox(const std::shared_ptr<Object>& value) {
+        return std::dynamic_pointer_cast<Image>(value);
+    }
 };
 
 }

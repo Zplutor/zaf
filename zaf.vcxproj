@@ -238,7 +238,6 @@
     <ClCompile Include="src\zaf\graphic\font\font_weight.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_weight_parser.cpp" />
     <ClCompile Include="src\zaf\graphic\frame_parser.cpp" />
-    <ClCompile Include="src\zaf\graphic\image\uri_image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\internal\utility.cpp" />
     <ClCompile Include="src\zaf\graphic\image\uri_image_parser.cpp" />
@@ -678,7 +677,6 @@
     <ClInclude Include="src\zaf\graphic\frame_parser.h" />
     <ClInclude Include="src\zaf\graphic\geometry\arc_segment.h" />
     <ClInclude Include="src\zaf\graphic\geometry\ellipse_geometry.h" />
-    <ClInclude Include="src\zaf\graphic\image\uri_image.h" />
     <ClInclude Include="src\zaf\graphic\image\image.h" />
     <ClInclude Include="src\zaf\graphic\image\internal\utility.h" />
     <ClInclude Include="src\zaf\graphic\image\internal\wic_bitmap.h" />

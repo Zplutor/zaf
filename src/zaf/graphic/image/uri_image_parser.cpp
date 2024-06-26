@@ -1,5 +1,5 @@
 #include <zaf/graphic/image/uri_image_parser.h>
-#include <zaf/graphic/image/uri_image.h>
+#include <zaf/graphic/image/image.h>
 #include <zaf/object/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {

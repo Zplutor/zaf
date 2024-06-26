@@ -15,8 +15,8 @@ class CustomObject { };
 namespace zaf {
 
 template<>
-struct GetCustomPropertyValueType<CustomObject> {
-    using type = UInt32;
+struct CustomPropertyValueTypeHandler<CustomObject> {
+    using BoxedType = UInt32;
 };
 
 }

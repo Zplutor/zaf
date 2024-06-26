@@ -2,7 +2,7 @@
 #include <zaf/object/parsing/parse_error.h>
 #include <zaf/control/control.h>
 #include <zaf/control/layout/linear_layouter.h>
-#include <zaf/graphic/image/uri_image.h>
+#include <zaf/graphic/image/image.h>
 #include "utility.h"
 
 namespace {

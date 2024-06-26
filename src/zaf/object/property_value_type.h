@@ -15,7 +15,7 @@ struct MakePropertyValueType<T, std::enable_if_t<HasBoxedInstanceTypeV<T>>> {
 
 template<typename T>
 struct MakePropertyValueType<T, std::enable_if_t<HasCustomPropertyValueTypeV<T>>> {
-    using type = GetCustomPropertyValueTypeT<T>;
+    using type = typename CustomPropertyValueTypeHandler<T>::BoxedType;
 };
 
 template<typename T>

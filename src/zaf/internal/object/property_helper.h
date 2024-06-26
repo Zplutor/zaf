@@ -29,7 +29,8 @@ template<typename T, typename = void>
 struct PropertyValueBoxer { };
 
 template<typename T>
-struct PropertyValueBoxer<T, std::enable_if_t<internal::IsSharedPtrV<T>>> {
+struct PropertyValueBoxer<T, 
+    std::enable_if_t<internal::IsSharedPtrV<T> && HasBoxedInstanceTypeV<T>>> {
     static std::shared_ptr<Object> Box(const T& value) {
         return value;
     }
@@ -46,7 +47,7 @@ struct PropertyValueBoxer<T,
 template<typename T>
 struct PropertyValueBoxer<T, std::enable_if_t<HasCustomPropertyValueTypeV<T>>> {
     static std::shared_ptr<Object> Box(const T& value) {
-        return BoxCustomPropertyValue(value);
+        return CustomPropertyValueTypeHandler<T>::Box(value);
     }
 };
 
@@ -55,7 +56,8 @@ template<typename T, typename = void>
 struct PropertyValueUnboxer { };
 
 template<typename T>
-struct PropertyValueUnboxer<T, std::enable_if_t<internal::IsSharedPtrV<T>>> {
+struct PropertyValueUnboxer<T,
+    std::enable_if_t<internal::IsSharedPtrV<T> && HasBoxedInstanceTypeV<T>>> {
     static T Unbox(const std::shared_ptr<Object>& value) {
         return std::dynamic_pointer_cast<T::element_type>(value);
     }
@@ -71,8 +73,8 @@ struct PropertyValueUnboxer<T,
 
 template<typename T>
 struct PropertyValueUnboxer<T, std::enable_if_t<HasCustomPropertyValueTypeV<T>>> {
-    static const T& Unbox(const std::shared_ptr<Object>& value) {
-        return UnboxCustomPropertyValue<T>(value);
+    static T Unbox(const std::shared_ptr<Object>& value) {
+        return CustomPropertyValueTypeHandler<T>::Unbox(value);
     }
 };
 

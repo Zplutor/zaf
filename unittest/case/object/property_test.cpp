@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_type_error.h>
 #include <zaf/base/error/invalid_operation_error.h>
-#include <zaf/graphic/image/uri_image.h>
+#include <zaf/graphic/image/image.h>
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
 #include <zaf/object/object.h>
