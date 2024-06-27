@@ -11,3 +11,7 @@ static_assert(!IsReflectiveTypeV<std::string>);
 static_assert(IsReflectiveTypeV<Object>);
 static_assert(IsReflectiveTypeV<Control>);
 static_assert(IsReflectiveTypeV<Window>);
+
+static_assert(IsReflectiveTypeV<const Object>);
+static_assert(IsReflectiveTypeV<const Object&>);
+static_assert(!IsReflectiveTypeV<Object*>);

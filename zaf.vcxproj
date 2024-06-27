@@ -798,7 +798,7 @@
     <ClInclude Include="src\zaf\object\boxing\boolean_parser.h" />
     <ClInclude Include="src\zaf\object\boxing\boxing.h" />
     <ClInclude Include="src\zaf\object\boxing\boxed_type.h" />
-    <ClInclude Include="src\zaf\object\boxing\custom_boxed_type.h" />
+    <ClInclude Include="src\zaf\object\boxing\custom_boxing_traits.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent_equal.h" />
     <ClInclude Include="src\zaf\object\boxing\internal\string_conversion_shim.h" />

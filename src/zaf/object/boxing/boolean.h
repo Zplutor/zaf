@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/object/boxing/boolean_parser.h>
-#include <zaf/object/boxing/custom_boxed_type.h>
+#include <zaf/object/boxing/custom_boxing_traits.h>
 #include <zaf/object/boxing/internal/boxed_represent.h>
 #include <zaf/object/object.h>
 
@@ -23,8 +23,17 @@ ZAF_OBJECT_PARSER(BooleanParser);
 ZAF_OBJECT_END;
 
 template<>
-struct GetCustomBoxedType<bool> {
-    using type = Boolean;
+struct CustomBoxingTraits<bool> {
+
+    using BoxedType = Boolean;
+
+    static std::shared_ptr<Boolean> Box(bool value) {
+        return std::make_shared<Boolean>(value);
+    }
+
+    static const bool* Unbox(const Boolean& object) {
+        return &object.Value();
+    }
 };
 
 }

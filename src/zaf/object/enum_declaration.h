@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/object/boxing/custom_boxed_type.h>
+#include <zaf/object/boxing/custom_boxing_traits.h>
 #include <zaf/object/boxing/internal/boxed_represent.h>
 #include <zaf/object/enum_type.h>
 #include <zaf/object/object.h>
@@ -19,13 +19,25 @@ public:                                                                         
 
 #define ZAF_ENABLE_ENUM_BOXING(EnumName) \
 template<> \
-struct GetCustomBoxedType<EnumName> { \
-    using type = EnumName##Enum; \
+struct CustomBoxingTraits<EnumName> { \
+    using BoxedType = EnumName##Enum; \
+    static std::shared_ptr<BoxedType> Box(EnumName value) { \
+        return std::make_shared<BoxedType>(value); \
+    } \
+    static const EnumName* Unbox(const BoxedType& object) {\
+        return &object.Value(); \
+    }\
 };
 
 
 #define ZAF_ENABLE_ENUM_BOXING_WITH_NAMESPACE(Namespace, EnumName) \
 template<> \
-struct GetCustomBoxedType<Namespace::EnumName> { \
-    using type = Namespace::EnumName##Enum; \
+struct CustomBoxingTraits<Namespace::EnumName> { \
+    using BoxedType = EnumName##Enum; \
+    static std::shared_ptr<BoxedType> Box(Namespace::EnumName value) { \
+        return std::make_shared<BoxedType>(value); \
+    } \
+    static const Namespace::EnumName* Unbox(const BoxedType& object) {\
+        return &object.Value(); \
+    }\
 };

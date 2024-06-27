@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/object/boxing/custom_boxed_type.h>
+#include <zaf/object/boxing/custom_boxing_traits.h>
 #include <zaf/object/boxing/internal/boxed_represent.h>
 #include <zaf/object/boxing/string_parser.h>
 #include <zaf/object/object.h>
@@ -26,34 +26,32 @@ __ZAF_INTERNAL_DEFINE_STRING_BOXED_TYPE(std::wstring, WideString)
 
 
 template<>
-struct GetCustomBoxedType<std::string> {
-    using type = String;
+struct CustomBoxingTraits<std::string> {
+
+    using BoxedType = String;
+
+    static std::shared_ptr<String> Box(std::string value) {
+        return std::make_shared<String>(std::move(value));
+    }
+
+    static const std::string* Unbox(const String& object) {
+        return &object.Value();
+    }
 };
 
-template<>
-struct GetCustomBoxedType<char*> {
-    using type = String;
-};
 
 template<>
-struct GetCustomBoxedType<const char*> {
-    using type = String;
-};
+struct CustomBoxingTraits<std::wstring> {
 
+    using BoxedType = WideString;
 
-template<>
-struct GetCustomBoxedType<std::wstring> {
-    using type = WideString;
-};
+    static std::shared_ptr<WideString> Box(std::wstring value) {
+        return std::make_shared<WideString>(std::move(value));
+    }
 
-template<>
-struct GetCustomBoxedType<wchar_t*> {
-    using type = WideString;
-};
-
-template<>
-struct GetCustomBoxedType<const wchar_t*> {
-    using type = WideString;
+    static const std::wstring* Unbox(const WideString& object) {
+        return &object.Value();
+    }
 };
 
 }

@@ -1,9 +1,14 @@
 #pragma once
 
+/**
+@file
+    Defines type utilities related to boxed type.
+*/
+
 #include <type_traits>
 #include <zaf/internal/object/shared_ptr_utility.h>
 #include <zaf/object/boxing/boolean.h>
-#include <zaf/object/boxing/custom_boxed_type.h>
+#include <zaf/object/boxing/custom_boxing_traits.h>
 #include <zaf/object/boxing/numeric.h>
 #include <zaf/object/boxing/string.h>
 #include <zaf/object/reflective_type.h>
@@ -30,7 +35,7 @@ public:
 public:
     static constexpr bool value =
         IsSharedPtrV<DecayType> &&
-        HasCustomBoxedTypeV<GetSharedPtrElementTypeT<DecayType>>;
+        HasCustomBoxingTraitsV<GetSharedPtrElementTypeT<DecayType>>;
 };
 
 } //internal
@@ -45,8 +50,8 @@ struct ToBoxedType<T, std::enable_if_t<IsReflectiveTypeV<std::decay_t<T>>>> {
 };
 
 template<typename T>
-struct ToBoxedType<T, std::enable_if_t<HasCustomBoxedTypeV<std::decay_t<T>>>> {
-    using type = GetCustomBoxedTypeT<std::decay_t<T>>;
+struct ToBoxedType<T, std::enable_if_t<HasCustomBoxingTraitsV<std::decay_t<T>>>> {
+    using type = typename CustomBoxingTraits<std::decay_t<T>>::BoxedType;
 };
 
 template<typename T>
@@ -72,7 +77,7 @@ struct ToBoxedInstanceType<T, std::enable_if_t<IsReflectiveTypeV<std::decay_t<T>
 };
 
 template<typename T>
-struct ToBoxedInstanceType<T, std::enable_if_t<HasCustomBoxedTypeV<std::decay_t<T>>>> {
+struct ToBoxedInstanceType<T, std::enable_if_t<HasCustomBoxingTraitsV<std::decay_t<T>>>> {
     using type = std::shared_ptr<ToBoxedTypeT<T>>;
 };
 

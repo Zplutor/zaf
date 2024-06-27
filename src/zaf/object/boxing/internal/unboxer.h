@@ -2,7 +2,7 @@
 
 #include <type_traits>
 #include <zaf/base/as.h>
-#include <zaf/object/boxing/custom_boxed_type.h>
+#include <zaf/object/boxing/custom_boxing_traits.h>
 #include <zaf/object/object.h>
 #include <zaf/object/reflective_type.h>
 
@@ -32,35 +32,34 @@ struct Unboxer<T, std::enable_if_t<IsReflectiveTypeV<std::decay_t<T>>>> {
 };
 
 template<typename T>
-struct Unboxer<T, std::enable_if_t<HasCustomBoxedTypeV<std::decay_t<T>>>> {
+struct Unboxer<T, std::enable_if_t<HasCustomBoxingTraitsV<std::decay_t<T>>>> {
 private:
-    using BoxedType = GetCustomBoxedTypeT<std::decay_t<T>>;
+    using BoxingTraits = CustomBoxingTraits<std::decay_t<T>>;
+    using BoxedType = typename BoxingTraits::BoxedType;
 
 public:
     static const T* TryUnbox(const Object& object) {
-
         auto boxed_object = dynamic_cast<const BoxedType*>(&object);
         if (boxed_object) {
-            return &boxed_object->Value();
+            return BoxingTraits::Unbox(*boxed_object)
         }
         return nullptr;
     }
 
     static T* TryUnbox(Object& object) {
-
         auto boxed_object = dynamic_cast<BoxedType*>(&object);
         if (boxed_object) {
-            return &boxed_object->Value();
+            return const_cast<T*>(BoxingTraits::Unbox(*boxed_object));
         }
         return nullptr;
     }
 
     static const T& Unbox(const Object& object) {
-        return As<BoxedType>(object).Value();
+        return *BoxingTraits::Unbox(As<BoxedType>(object));
     }
 
     static T& Unbox(Object& object) {
-        return As<BoxedType>(object).Value();
+        return const_cast<T&>(*BoxingTraits::Unbox(As<BoxedType>(object)));
     }
 };
 

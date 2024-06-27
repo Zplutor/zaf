@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <zaf/object/boxing/custom_boxed_type.h>
+#include <zaf/object/boxing/custom_boxing_traits.h>
 #include <zaf/object/boxing/internal/boxed_represent.h>
 #include <zaf/object/boxing/numeric_parser.h>
 #include <zaf/object/object.h>
@@ -21,8 +21,14 @@ ZAF_OBJECT_BEGIN(BoxTypeName);                                                  
 ZAF_OBJECT_PARSER(NumericParser<BoxTypeName>);                                                    \
 ZAF_OBJECT_END;                                                                                   \
 template<>                                                                                        \
-struct GetCustomBoxedType<NumericType> {                                                          \
-    using type = BoxTypeName;                                                                     \
+struct CustomBoxingTraits<NumericType> {                                                          \
+    using BoxedType = BoxTypeName;                                                                \
+    static std::shared_ptr<BoxedType> Box(NumericType value) {                                    \
+        return std::make_shared<BoxedType>(value);                                                \
+    }                                                                                             \
+    static const NumericType* Unbox(const BoxedType& object) {                                    \
+        return &object.Value();                                                                   \
+    }                                                                                             \
 };
 
 
