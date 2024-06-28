@@ -796,6 +796,7 @@
     <ClInclude Include="src\zaf\io\stream\stream.h" />
     <ClInclude Include="src\zaf\object\boxing\boolean.h" />
     <ClInclude Include="src\zaf\object\boxing\boolean_parser.h" />
+    <ClInclude Include="src\zaf\object\boxing\boxing_traits.h" />
     <ClInclude Include="src\zaf\object\boxing\boxing.h" />
     <ClInclude Include="src\zaf\object\boxing\boxed_type.h" />
     <ClInclude Include="src\zaf\object\boxing\custom_boxing_traits.h" />

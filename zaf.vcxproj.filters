@@ -2899,5 +2899,8 @@
     <ClInclude Include="src\zaf\internal\object\shared_ptr_utility.h">
       <Filter>zaf\internal\object</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\object\boxing\boxing_traits.h">
+      <Filter>zaf\object\boxing</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

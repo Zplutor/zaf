@@ -155,12 +155,16 @@ struct ToBoxedInstanceType<T, std::enable_if_t<HasCustomBoxingTraitsV<std::decay
 
 template<typename T>
 struct ToBoxedInstanceType<T, std::enable_if_t<internal::IsSharedPtrToReflectiveType<T>::value>> {
-    using type = std::shared_ptr<std::decay_t<typename T::element_type>>;
+    using type = std::shared_ptr<
+        std::decay_t<typename std::decay_t<T>::element_type>
+    >;
 };
 
 template<typename T>
 struct ToBoxedInstanceType<T, std::enable_if_t<internal::IsSharedPtrToCustomBoxedType<T>::value>> {
-    using type = std::shared_ptr<ToBoxedTypeT<std::decay_t<typename T::element_type>>>;
+    using type = std::shared_ptr<
+        ToBoxedTypeT<std::decay_t<typename std::decay_t<T>::element_type>>
+    >;
 };
 /** @endcond */
 

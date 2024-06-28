@@ -8,17 +8,19 @@ using namespace zaf;
 
 TEST(BoxingTest, Box) {
 
-    std::string string{ "String" };
-    std::shared_ptr<String> boxed_string = Box(string);
-    ASSERT_EQ(boxed_string->Value(), string);
+    //Reflective type
+    {
+        Rect rect{ 10, 10, 20, 20 };
+        std::shared_ptr<Rect> boxed_rect = Box(rect);
+        ASSERT_EQ(*boxed_rect, rect);
+    }
 
-    std::wstring wide_string{ L"WideString" };
-    std::shared_ptr<WideString> boxed_wide_string = Box(wide_string);
-    ASSERT_EQ(boxed_wide_string->Value(), wide_string);
-
-    Rect rect{ 10, 10, 20, 20 };
-    std::shared_ptr<Rect> boxed_rect = Box(rect);
-    ASSERT_EQ(*boxed_rect, rect);
+    //Custom boxing type
+    {
+        std::string string{ "String" };
+        std::shared_ptr<String> boxed_string = Box(string);
+        ASSERT_EQ(boxed_string->Value(), string);
+    }
 }
 
 
