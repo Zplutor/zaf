@@ -41,7 +41,7 @@ public:
     static const T* TryUnbox(const Object& object) {
         auto boxed_object = dynamic_cast<const BoxedType*>(&object);
         if (boxed_object) {
-            return BoxingTraits::Unbox(*boxed_object)
+            return BoxingTraits::Unbox(*boxed_object);
         }
         return nullptr;
     }

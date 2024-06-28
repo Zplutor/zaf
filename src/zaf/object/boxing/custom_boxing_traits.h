@@ -13,7 +13,7 @@ namespace zaf {
 A template for defining custom boxed types and corresponding boxing/unboxing operations for
 non-boxed types.
 
-@tparam T
+@tparam DecayedT
     The non-boxed type for which a custom boxed type is to be defined. It should be a decayed type.
 
 @details
@@ -29,12 +29,12 @@ non-boxed types.
     - A static method named `Box` that is used to box a non-boxed value to a boxed object. The 
       signature of the method should be:
       @code
-      std::shared_ptr<BoxedType> Box(T value);
+      std::shared_ptr<BoxedType> Box(DecayedT value);
       @endcode
     - A static method named `Unbox` that is used to unbox a boxed object to a non-boxed value. The
       signature of the method should be:
       @code
-      const T* Unbox(const BoxedType& object);
+      const DecayedT* Unbox(const BoxedType& object);
       @endcode
       Note that the Unbox() method should return a pointer to the inner member of the boxed object.
 
@@ -83,11 +83,11 @@ non-boxed types.
     }
     @endcode
 */
-template<typename T>
+template<typename DecayedT>
 struct CustomBoxingTraits {
     static_assert(
-        std::is_same_v<T, std::decay_t<T>>, 
-        "The template argument T of zaf::CustomBoxingTraits<> should be a decayed type.");
+        std::is_same_v<DecayedT, std::decay_t<DecayedT>>,
+        "The template argument DecayedT of zaf::CustomBoxingTraits<> should be a decayed type.");
 };
 
 
@@ -95,22 +95,26 @@ struct CustomBoxingTraits {
 A template to check if a CustomBoxingTraits specialization is defined for the specified non-boxed
 type.
 
-@tparam T 
+@tparam DecayedT
     The non-boxed type to check. It should be a decayed type.
 */
-template<typename T, typename = void>
+template<typename DecayedT, typename = void>
 struct HasCustomBoxingTraits : std::false_type { };
 
-template<typename T>
-struct HasCustomBoxingTraits<T, std::void_t<typename CustomBoxingTraits<T>::BoxedType>> : 
-    std::true_type { };
+/** @cond */
+template<typename DecayedT>
+struct HasCustomBoxingTraits<
+    DecayedT, 
+    std::void_t<typename CustomBoxingTraits<DecayedT>::BoxedType>
+> : std::true_type { };
+/** @endcond */
 
 /**
 A helper variable template for HasCustomBoxingTraits.
 
 @relates HasCustomBoxingTraits
 */
-template<typename T>
-constexpr bool HasCustomBoxingTraitsV = HasCustomBoxingTraits<T>::value;
+template<typename DecayedT>
+constexpr bool HasCustomBoxingTraitsV = HasCustomBoxingTraits<DecayedT>::value;
 
 }
