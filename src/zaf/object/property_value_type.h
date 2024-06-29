@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/object/boxing/boxed_type.h>
+#include <zaf/object/boxing/boxing_traits.h>
 #include <zaf/object/custom_property_value_type.h>
 
 namespace zaf {
@@ -9,8 +9,8 @@ template<typename T, typename = void>
 struct MakePropertyValueType { };
 
 template<typename T>
-struct MakePropertyValueType<T, std::enable_if_t<HasBoxedInstanceTypeV<T>>> {
-    using type = typename ToBoxedInstanceTypeT<T>::element_type;
+struct MakePropertyValueType<T, std::enable_if_t<HasBoxingTraitsV<T>>> {
+    using type = typename BoxingTraits<T>::BoxedInstanceType::element_type;
 };
 
 template<typename T>

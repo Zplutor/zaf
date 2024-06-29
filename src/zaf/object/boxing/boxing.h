@@ -3,7 +3,6 @@
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/error/invalid_type_error.h>
 #include <zaf/object/boxing/boxing_traits.h>
-#include <zaf/object/boxing/boxed_type.h>
 
 namespace zaf {
 

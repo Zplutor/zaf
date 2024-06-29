@@ -5,7 +5,7 @@
 #include <zaf/base/flag_enum.h>
 #include <zaf/base/string/split.h>
 #include <zaf/base/string/trim.h>
-#include <zaf/object/boxing/boxed_type.h>
+#include <zaf/object/boxing/boxing_traits.h>
 #include <zaf/object/internal/base_enum_type.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_utility.h>
@@ -42,7 +42,8 @@ private:
     void Parse(const std::wstring& text, Object& object) {
 
         T value = ParseValue(text, nullptr);
-        As<ToBoxedTypeT<T>>(object).SetValue(value);
+
+        As<typename BoxingTraits<T>::BoxedType>(object).SetValue(value);
     }
 
 
@@ -78,7 +79,8 @@ private:
             throw ParseError{ ZAF_SOURCE_LOCATION() };
         }
 
-        return dynamic_cast<const ToBoxedTypeT<T>&>(*value_object).Value();
+        using BoxedType = typename BoxingTraits<T>::BoxedType;
+        return dynamic_cast<const BoxedType&>(*value_object).Value();
     }
 
 private:

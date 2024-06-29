@@ -1,7 +1,6 @@
 #pragma once
 
 #include <zaf/base/as.h>
-#include <zaf/object/boxing/boxed_type.h>
 #include <zaf/object/boxing/custom_boxing_traits.h>
 #include <zaf/object/reflective_type.h>
 
@@ -31,9 +30,9 @@ struct BoxingTraits<T, std::enable_if_t<IsReflectiveTypeV<T>>> {
 
     using BoxedType = std::decay_t<T>;
     using UnboxedType = BoxedType; //The same as boxed type.
-    using InstanceType = std::shared_ptr<BoxedType>;
+    using BoxedInstanceType = std::shared_ptr<BoxedType>;
 
-    static InstanceType Box(T value) {
+    static BoxedInstanceType Box(T value) {
         return std::make_shared<BoxedType>(std::move(value));
     }
 
@@ -48,9 +47,9 @@ struct BoxingTraits<T, std::enable_if_t<HasCustomBoxingTraitsV<std::decay_t<T>>>
 
     using UnboxedType = std::decay_t<T>;
     using BoxedType = typename CustomBoxingTraits<UnboxedType>::BoxedType;
-    using InstanceType = std::shared_ptr<BoxedType>;
+    using BoxedInstanceType = std::shared_ptr<BoxedType>;
 
-    static InstanceType Box(T value) {
+    static BoxedInstanceType Box(T value) {
         return CustomBoxingTraits<UnboxedType>::Box(std::move(value));
     }
 
@@ -62,5 +61,15 @@ struct BoxingTraits<T, std::enable_if_t<HasCustomBoxingTraitsV<std::decay_t<T>>>
         return nullptr;
     }
 };
+
+
+template<typename T, typename = void>
+struct HasBoxingTraits : std::false_type { };
+
+template<typename T>
+struct HasBoxingTraits<T, std::void_t<typename BoxingTraits<T>::BoxedType>> : std::true_type { };
+
+template<typename T>
+constexpr bool HasBoxingTraitsV = HasBoxingTraits<T>::value;
 
 }

@@ -571,9 +571,6 @@
     <ClCompile Include="unittest\case\object\reflective_type_test.cpp">
       <Filter>case\object</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\boxing\boxed_type_test.cpp">
-      <Filter>case\object\boxing</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\object\property_value_type_test.cpp">
       <Filter>case\object</Filter>
     </ClCompile>

@@ -2884,9 +2884,6 @@
     <ClInclude Include="src\zaf\object\reflective_type.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\boxed_type.h">
-      <Filter>zaf\object\boxing</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\object\boxing\custom_boxing_traits.h">
       <Filter>zaf\object\boxing</Filter>
     </ClInclude>
