@@ -6,7 +6,7 @@
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/internal/property_registrar.h>
 #include <zaf/object/object_property.h>
-#include <zaf/object/property_value_type.h>
+#include <zaf/object/property_value_traits.h>
 
 #define ZAF_OBJECT_PROPERTY(PropertyName)                                                         \
 private:                                                                                          \
@@ -30,8 +30,8 @@ private:                                                                        
         static std::shared_ptr<zaf::Object> InnerGet(                                             \
             const T& object,                                                                      \
             GetterDeclaredType<T>* value_type) {                                                  \
-            using Boxer = zaf::internal::PropertyValueBoxer<std::decay_t<decltype(*value_type)>>; \
-            return Boxer::Box(object.PropertyName());                                             \
+            using Traits = zaf::PropertyValueTraits<std::decay_t<decltype(*value_type)>>;         \
+            return Traits::ToBoxedObject(object.PropertyName());                                             \
         }                                                                                         \
         template<typename T>                                                                      \
         static std::shared_ptr<zaf::Object> InnerGet(const T& object, ...) {                      \
@@ -43,8 +43,8 @@ private:                                                                        
             const std::shared_ptr<zaf::Object>& value,                                            \
             SetterDeclaredType<T>* value_type) {                                                  \
             using ValueDeclaredType = std::decay_t<decltype(*value_type)>;                        \
-            using Unboxer = zaf::internal::PropertyValueUnboxer<ValueDeclaredType>;               \
-            object.Set##PropertyName(Unboxer::Unbox(value));                                      \
+            using Traits = zaf::PropertyValueTraits<ValueDeclaredType>;                           \
+            object.Set##PropertyName(Traits::FromBoxedObject(value));                                      \
         }                                                                                         \
         template<typename T>                                                                      \
         static void InnerSet(T& object, const std::shared_ptr<zaf::Object>& value, ...) {         \
@@ -60,7 +60,7 @@ private:                                                                        
         }                                                                                         \
     public:                                                                                       \
         using DeclaredType = std::remove_pointer_t<decltype(DeduceDeclaredType<Class>(nullptr))>; \
-        using ValueType = zaf::MakePropertyValueTypeT<DeclaredType>;                              \
+        using ValueType = typename zaf::PropertyValueTraits<DeclaredType>::BoxedType;             \
         static constexpr bool CanGet = InnerCanGet<Class>(nullptr);                               \
         static constexpr bool CanSet = InnerCanSet<Class>(nullptr);                               \
         static std::shared_ptr<zaf::Object> Get(const zaf::Object& object) {                      \

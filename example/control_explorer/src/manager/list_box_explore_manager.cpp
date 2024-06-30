@@ -17,7 +17,7 @@ std::shared_ptr<zaf::Control> ListBoxExploreManager::CreateExploredControl() {
     };
 
     for (auto each_text : texts) {
-        list_box->AddItem(zaf::Box(each_text));
+        list_box->AddItem(zaf::Box(std::wstring{ each_text }));
     }
 
     return list_box;

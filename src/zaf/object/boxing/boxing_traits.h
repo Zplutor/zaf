@@ -4,6 +4,11 @@
 #include <zaf/object/boxing/custom_boxing_traits.h>
 #include <zaf/object/reflective_type.h>
 
+//Built-in custom boxing types should be included to make them available.
+#include <zaf/object/boxing/boolean.h>
+#include <zaf/object/boxing/numeric.h>
+#include <zaf/object/boxing/string.h>
+
 namespace zaf {
 
 template<typename T>

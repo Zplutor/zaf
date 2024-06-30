@@ -808,7 +808,7 @@
     <ClInclude Include="src\zaf\object\boxing\string.h" />
     <ClInclude Include="src\zaf\object\boxing\string_parser.h" />
     <ClInclude Include="src\zaf\object\creation.h" />
-    <ClInclude Include="src\zaf\object\custom_property_value_type.h" />
+    <ClInclude Include="src\zaf\object\custom_property_value_traits.h" />
     <ClInclude Include="src\zaf\object\enum_declaration.h" />
     <ClInclude Include="src\zaf\object\enum_definition.h" />
     <ClInclude Include="src\zaf\object\enum_support.h" />
@@ -835,7 +835,7 @@
     <ClInclude Include="src\zaf\object\parsing\xaml_reader.h" />
     <ClInclude Include="src\zaf\object\parsing\xaml_utility.h" />
     <ClInclude Include="src\zaf\object\property_support.h" />
-    <ClInclude Include="src\zaf\object\property_value_type.h" />
+    <ClInclude Include="src\zaf\object\property_value_traits.h" />
     <ClInclude Include="src\zaf\object\reflective_type.h" />
     <ClInclude Include="src\zaf\object\style\sheet.h" />
     <ClInclude Include="src\zaf\object\style\sheet_parser.h" />

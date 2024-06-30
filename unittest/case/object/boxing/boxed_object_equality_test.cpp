@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <zaf/base/hash.h>
-#include <zaf/object/boxing/boxed_object.h>
 #include <zaf/object/boxing/boxing.h>
 
 namespace {

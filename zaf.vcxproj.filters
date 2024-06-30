@@ -2887,10 +2887,10 @@
     <ClInclude Include="src\zaf\object\boxing\custom_boxing_traits.h">
       <Filter>zaf\object\boxing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\custom_property_value_type.h">
+    <ClInclude Include="src\zaf\object\custom_property_value_traits.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\property_value_type.h">
+    <ClInclude Include="src\zaf\object\property_value_traits.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\object\shared_ptr_utility.h">

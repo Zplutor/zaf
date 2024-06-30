@@ -69,7 +69,7 @@ void MainWindow::InitializeControlListPanel() {
         std::bind(&MainWindow::ControlListBoxSelectionChange, this));
 
     for (const auto& each_item : kControlNameAndCreators) {
-        control_list_box_->AddItem(zaf::Box(each_item.name));
+        control_list_box_->AddItem(zaf::Box(std::wstring{ each_item.name }));
     }
 
     primary_split_control_->SetFirstPane(control_list_box_);
