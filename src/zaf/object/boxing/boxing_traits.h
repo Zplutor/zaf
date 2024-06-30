@@ -51,17 +51,17 @@ template<typename T>
 struct BoxingTraits<T, std::enable_if_t<HasCustomBoxingTraitsV<std::decay_t<T>>>> {
 
     using UnboxedType = std::decay_t<T>;
-    using BoxedType = typename CustomBoxingTraits<UnboxedType>::BoxedType;
+    using BoxedType = typename zaf__CustomBoxingTraits<UnboxedType>::BoxedType;
     using BoxedInstanceType = std::shared_ptr<BoxedType>;
 
     static BoxedInstanceType Box(T value) {
-        return CustomBoxingTraits<UnboxedType>::Box(std::move(value));
+        return zaf__CustomBoxingTraits<UnboxedType>::Box(std::move(value));
     }
 
     static const UnboxedType* Unbox(const Object& object) {
         auto boxed_object = As<BoxedType>(&object);
         if (boxed_object) {
-            return CustomBoxingTraits<UnboxedType>::Unbox(*boxed_object);
+            return zaf__CustomBoxingTraits<UnboxedType>::Unbox(*boxed_object);
         }
         return nullptr;
     }

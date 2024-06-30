@@ -76,7 +76,7 @@ ZAF_OBJECT_END;
 
 
 template<>
-struct CustomPropertyValueTraits<std::shared_ptr<Image>> {
+struct zaf__CustomPropertyValueTraits<std::shared_ptr<Image>> {
 
     using BoxedType = URIImage;
 

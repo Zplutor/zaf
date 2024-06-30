@@ -6,7 +6,7 @@ namespace zaf {
 
 class EnumType : public ObjectType {
 public:
-    ObjectType* GetBase() const override {
+    ObjectType* BaseType() const override {
         return nullptr;
     }
 

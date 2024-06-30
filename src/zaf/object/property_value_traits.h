@@ -42,7 +42,7 @@ struct PropertyValueTraits<T, std::enable_if_t<IsBoxedInstanceTypeV<T>>> {
 template<typename T>
 struct PropertyValueTraits<T, std::enable_if_t<HasCustomPropertyValueTraitsV<std::decay_t<T>>>> {
 private:
-    using CustomTraits = CustomPropertyValueTraits<std::decay_t<T>>;
+    using CustomTraits = zaf__CustomPropertyValueTraits<std::decay_t<T>>;
 
 public:
     using ValueType = std::decay_t<T>;

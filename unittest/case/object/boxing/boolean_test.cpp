@@ -9,7 +9,7 @@
 
 TEST(BooleanTest, ParseAttribute) {
 
-    auto parser = zaf::Boolean::StaticType()->GetParser();
+    auto parser = zaf::Boolean::StaticType()->Parser();
 
     zaf::Boolean b;
     parser->ParseFromAttribute(L"true", b);
@@ -38,7 +38,7 @@ TEST(BooleanTest, ParseNode) {
 
 TEST(BooleanTest, ParseToInvalidObject) {
 
-    auto parser = zaf::Boolean::StaticType()->GetParser();
+    auto parser = zaf::Boolean::StaticType()->Parser();
     zaf::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"true", object), zaf::InvalidTypeError);

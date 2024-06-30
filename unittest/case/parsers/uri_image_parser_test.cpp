@@ -14,7 +14,7 @@ TEST(URIImageParser, ParseFromAttribute) {
 
     std::wstring uri{ L"file:///C:/image.png" };
 
-    auto parser = URIImage::StaticType()->GetParser();
+    auto parser = URIImage::StaticType()->Parser();
     parser->ParseFromAttribute(uri, *image);
     ASSERT_EQ(image->GetURI(), uri);
 }
@@ -41,7 +41,7 @@ TEST(URIImageParser, ParseFromNode) {
 
 TEST(URIImageParser, ParseToInvalidObject) {
 
-    auto parser = URIImage::StaticType()->GetParser();
+    auto parser = URIImage::StaticType()->Parser();
     zaf::Object object;
 
     ASSERT_THROW(

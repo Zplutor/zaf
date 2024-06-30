@@ -95,10 +95,10 @@ TEST(PropertyTest, ReadWrite) {
     PropertyHost host;
     auto property = host.DynamicType()->GetProperty(L"ReadWrite");
     ASSERT_NE(property, nullptr);
-    ASSERT_EQ(property->GetName(), L"ReadWrite");
+    ASSERT_EQ(property->Name(), L"ReadWrite");
     ASSERT_TRUE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
-    ASSERT_FALSE(property->IsValueTypeDynamic());
+    ASSERT_FALSE(property->IsValueDynamic());
 
     property->SetValue(host, zaf::Box(19));
     auto boxed_value = property->GetValue(host);
@@ -113,10 +113,10 @@ TEST(PropertyTest, ReadOnly) {
     PropertyHost host;
     auto property = host.DynamicType()->GetProperty(L"ReadOnly");
     ASSERT_NE(property, nullptr);
-    ASSERT_EQ(property->GetName(), L"ReadOnly");
+    ASSERT_EQ(property->Name(), L"ReadOnly");
     ASSERT_TRUE(property->CanGet());
     ASSERT_FALSE(property->CanSet());
-    ASSERT_FALSE(property->IsValueTypeDynamic());
+    ASSERT_FALSE(property->IsValueDynamic());
 
     auto boxed_value = property->GetValue(host);
     auto value = zaf::Unbox<int>(boxed_value);
@@ -132,10 +132,10 @@ TEST(PropertyTest, WriteOnly) {
     PropertyHost host;
     auto property = host.DynamicType()->GetProperty(L"WriteOnly");
     ASSERT_NE(property, nullptr);
-    ASSERT_EQ(property->GetName(), L"WriteOnly");
+    ASSERT_EQ(property->Name(), L"WriteOnly");
     ASSERT_FALSE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
-    ASSERT_FALSE(property->IsValueTypeDynamic());
+    ASSERT_FALSE(property->IsValueDynamic());
 
     property->SetValue(host, zaf::Box(76));
     ASSERT_EQ(host.GetWriteOnlyValue(), 76);
@@ -150,8 +150,8 @@ TEST(PropertyTest, NumericType) {
     auto property = host.DynamicType()->GetProperty(L"FloatType");
     ASSERT_NE(property, nullptr);
 
-    auto type = property->GetValueType();
-    ASSERT_EQ(type->GetName(), L"Float");
+    auto type = property->ValueType();
+    ASSERT_EQ(type->Name(), L"Float");
 }
 
 
@@ -161,8 +161,8 @@ TEST(PropertyTest, StringType) {
     auto property = host.DynamicType()->GetProperty(L"StringType");
     ASSERT_NE(property, nullptr);
 
-    auto type = property->GetValueType();
-    ASSERT_EQ(type->GetName(), L"WideString");
+    auto type = property->ValueType();
+    ASSERT_EQ(type->Name(), L"WideString");
 }
 
 
@@ -172,8 +172,8 @@ TEST(PropertyTest, ObjectType) {
     auto property = host.DynamicType()->GetProperty(L"SizeType");
     ASSERT_NE(property, nullptr);
 
-    auto type = property->GetValueType();
-    ASSERT_EQ(type->GetName(), L"Size");
+    auto type = property->ValueType();
+    ASSERT_EQ(type->Name(), L"Size");
 }
 
 
@@ -185,7 +185,7 @@ TEST(PropertyTest, BoxedObject) {
 
     ASSERT_TRUE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
-    ASSERT_TRUE(property->IsValueTypeDynamic());
+    ASSERT_TRUE(property->IsValueDynamic());
 
     auto set_value = zaf::Create<zaf::Point>(9.f, 8.f);
     property->SetValue(host, set_value);
@@ -204,7 +204,7 @@ TEST(PropertyTest, Image) {
 
     ASSERT_TRUE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
-    ASSERT_TRUE(property->IsValueTypeDynamic());
+    ASSERT_TRUE(property->IsValueDynamic());
 
     auto set_value = zaf::Create<zaf::URIImage>();
     property->SetValue(host, set_value);

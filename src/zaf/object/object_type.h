@@ -5,6 +5,7 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <zaf/base/non_copyable.h>
 #include <zaf/object/object_property.h>
 #include <zaf/object/parsing/object_parser.h>
 
@@ -15,37 +16,34 @@ class PropertyRegistrar;
 
 class Object;
 
-class ObjectType {
+class ObjectType : NonCopyableNonMovable {
 public:
     ObjectType() = default;
     virtual ~ObjectType() = default;
-
-    ObjectType(const ObjectType&) = delete;
-    ObjectType& operator=(const ObjectType&) = delete;
 
     /**
      Get base type of the type.
 
      Return nullptr if there is no base type.
      */
-    virtual ObjectType* GetBase() const = 0;
+    virtual ObjectType* BaseType() const = 0;
 
     /**
      Get name of the type.
      */
-    virtual const std::wstring& GetName() const = 0;
+    virtual const std::wstring& Name() const = 0;
 
     /**
      Create an instance of the type.
      */
     virtual std::shared_ptr<Object> CreateInstance() const = 0;
 
-    virtual const std::wstring& GetResourceURI() const;
+    virtual const std::wstring& ResourceURI() const;
 
     /**
      Get the parser for the type.
      */
-    virtual ObjectParser* GetParser() const;
+    virtual ObjectParser* Parser() const;
 
     const std::vector<ObjectProperty*>& GetProperties() const {
         return properties_;

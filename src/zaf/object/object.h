@@ -17,10 +17,10 @@ public:
         static Type* Instance();
 
     public:
-        ObjectType* GetBase() const override;
-        const std::wstring& GetName() const override;
+        ObjectType* BaseType() const override;
+        const std::wstring& Name() const override;
         std::shared_ptr<Object> CreateInstance() const override;
-        ObjectParser* GetParser() const;
+        ObjectParser* Parser() const;
 
     private:
         static Type instance;

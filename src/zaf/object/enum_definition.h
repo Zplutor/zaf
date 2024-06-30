@@ -33,7 +33,7 @@ class TheType : public zaf::internal::BaseEnumType<EnumName> {                  
 public:                                                                                            \
     using Class = EnumName;                                                                        \
     using ObjectClass = EnumName##Enum;                                                            \
-    const std::wstring& GetName() const override {                                                 \
+    const std::wstring& Name() const override {                                                 \
         static const std::wstring name{ L#EnumName };                                              \
         return name;                                                                               \
     }                                                                                              \
@@ -41,7 +41,7 @@ public:                                                                         
         return zaf::Create<EnumName##Enum>();                                                      \
     }                                                                                              \
 protected:                                                                                         \
-    zaf::ObjectParser* GetParser() const override {                                                \
+    zaf::ObjectParser* Parser() const override {                                                \
         static zaf::internal::EnumParser<EnumName> parser(this);                                   \
         return &parser;                                                                            \
     }                                                                                              \

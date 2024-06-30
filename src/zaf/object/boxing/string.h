@@ -26,7 +26,7 @@ __ZAF_INTERNAL_DEFINE_STRING_BOXED_TYPE(std::wstring, WideString)
 
 
 template<>
-struct CustomBoxingTraits<std::string> {
+struct zaf__CustomBoxingTraits<std::string> {
 
     using BoxedType = String;
 
@@ -41,7 +41,7 @@ struct CustomBoxingTraits<std::string> {
 
 
 template<>
-struct CustomBoxingTraits<std::wstring> {
+struct zaf__CustomBoxingTraits<std::wstring> {
 
     using BoxedType = WideString;
 

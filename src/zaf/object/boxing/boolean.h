@@ -23,7 +23,7 @@ ZAF_OBJECT_PARSER(BooleanParser);
 ZAF_OBJECT_END;
 
 template<>
-struct CustomBoxingTraits<bool> {
+struct zaf__CustomBoxingTraits<bool> {
 
     using BoxedType = Boolean;
 

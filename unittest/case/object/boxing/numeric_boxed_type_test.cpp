@@ -42,7 +42,7 @@ TEST(NumericBoxedTypeTest, Parse) {
 
     zaf::Int32 i32;
 
-    auto parser = zaf::Int32::StaticType()->GetParser();
+    auto parser = zaf::Int32::StaticType()->Parser();
     parser->ParseFromAttribute(L"11", i32);
     ASSERT_EQ(i32.Value(), 11);
 
@@ -62,7 +62,7 @@ TEST(NumericBoxedTypeTest, Parse) {
 
 TEST(NumericBoxedTypeTest, ParseToInvalidObject) {
 
-    auto parser = zaf::Int32::StaticType()->GetParser();
+    auto parser = zaf::Int32::StaticType()->Parser();
     zaf::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"33", object), zaf::InvalidTypeError);

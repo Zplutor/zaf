@@ -34,7 +34,7 @@ struct Unboxer<T, std::enable_if_t<IsReflectiveTypeV<std::decay_t<T>>>> {
 template<typename T>
 struct Unboxer<T, std::enable_if_t<HasCustomBoxingTraitsV<std::decay_t<T>>>> {
 private:
-    using BoxingTraits = CustomBoxingTraits<std::decay_t<T>>;
+    using BoxingTraits = zaf__CustomBoxingTraits<std::decay_t<T>>;
     using BoxedType = typename BoxingTraits::BoxedType;
 
 public:

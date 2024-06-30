@@ -66,7 +66,7 @@ std::shared_ptr<TypeConfig> GetObjectTypeConfig(ObjectType* type) {
             return (*getter)();
         }
 
-        current_type = current_type->GetBase();
+        current_type = current_type->BaseType();
     }
 
     return nullptr;

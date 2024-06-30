@@ -37,6 +37,7 @@ public:
 ZAF_OBJECT_BEGIN(Base);
 ZAF_OBJECT_PARSER(BaseParser);
 ZAF_OBJECT_END;
+
 ZAF_OBJECT_IMPL(Base);
 
 
@@ -154,7 +155,7 @@ TEST(ParsingTest, ParseInvalidDynamicNode) {
     auto xaml = LR"(<Host><Host.Control><Child1/><Child2/></Host.Control></Host>)";
     auto node = zaf::XamlReader::FromString(xaml)->Read();
 
-    auto parser = Host::StaticType()->GetParser();
+    auto parser = Host::StaticType()->Parser();
     Host host;
     ASSERT_THROW(parser->ParseFromNode(*node, host), zaf::ParseError);
 
@@ -210,7 +211,7 @@ TEST(ParsingTest, ParsePropertyNode) {
         )";
         auto node = zaf::XamlReader::FromString(xaml)->Read();
 
-        auto parser = PropertyNodeDerived::StaticType()->GetParser();
+        auto parser = PropertyNodeDerived::StaticType()->Parser();
         PropertyNodeDerived object;
         parser->ParseFromNode(*node, object);
 
@@ -226,7 +227,7 @@ TEST(ParsingTest, ParsePropertyNode) {
         )";
         auto node = zaf::XamlReader::FromString(xaml)->Read();
 
-        auto parser = PropertyNodeDerived::StaticType()->GetParser();
+        auto parser = PropertyNodeDerived::StaticType()->Parser();
         PropertyNodeDerived object;
         parser->ParseFromNode(*node, object);
 
@@ -278,7 +279,7 @@ TEST(ParsingTest, ParsePropertyOrder) {
         auto node = zaf::XamlReader::FromString(xaml)->Read();
 
         PropertyOrderObject object;
-        PropertyOrderObject::StaticType()->GetParser()->ParseFromNode(*node, object);
+        PropertyOrderObject::StaticType()->Parser()->ParseFromNode(*node, object);
 
         ASSERT_GT(object.APropertyOrder(), object.BProeprtyOrder());
     }
@@ -293,7 +294,7 @@ TEST(ParsingTest, ParsePropertyOrder) {
         auto node = zaf::XamlReader::FromString(xaml)->Read();
 
         PropertyOrderObject object;
-        PropertyOrderObject::StaticType()->GetParser()->ParseFromNode(*node, object);
+        PropertyOrderObject::StaticType()->Parser()->ParseFromNode(*node, object);
 
         ASSERT_GT(object.APropertyOrder(), object.BProeprtyOrder());
     }

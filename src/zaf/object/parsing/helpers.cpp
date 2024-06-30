@@ -18,7 +18,7 @@ std::shared_ptr<Object> CreateReflectionObjectFromXaml(const std::string& xaml) 
         return {};
     }
 
-    object->DynamicType()->GetParser()->ParseFromNode(*xaml_node, *object);
+    object->DynamicType()->Parser()->ParseFromNode(*xaml_node, *object);
     return object;
 }
 

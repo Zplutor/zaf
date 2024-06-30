@@ -21,9 +21,9 @@ void Sheet::Apply(Object& object) {
             continue;
         }
 
-        auto property_type = property->GetValueType();
+        auto property_type = property->ValueType();
         auto property_value = property_type->CreateInstance();
-        property_type->GetParser()->ParseFromAttribute(value, *property_value);
+        property_type->Parser()->ParseFromAttribute(value, *property_value);
         property->SetValue(object, property_value);
     }
 }

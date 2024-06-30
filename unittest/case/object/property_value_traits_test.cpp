@@ -57,13 +57,9 @@ struct CustomPropertyObject : zaf::Object {
     int value{};
 };
 
-}
-
-namespace zaf {
-
 template<>
-struct CustomPropertyValueTraits<CustomPropertyValue> {
-    
+struct zaf__CustomPropertyValueTraits<CustomPropertyValue> {
+
     using BoxedType = CustomPropertyObject;
 
     static std::shared_ptr<CustomPropertyObject> ToBoxedObject(CustomPropertyValue value) {
@@ -79,6 +75,7 @@ struct CustomPropertyValueTraits<CustomPropertyValue> {
 };
 
 }
+
 
 static_assert(std::is_same_v<
     PropertyValueTraits<CustomPropertyValue>::ValueType, 

@@ -31,7 +31,7 @@ private:                                                                        
             const T& object,                                                                      \
             GetterDeclaredType<T>* value_type) {                                                  \
             using Traits = zaf::PropertyValueTraits<std::decay_t<decltype(*value_type)>>;         \
-            return Traits::ToBoxedObject(object.PropertyName());                                             \
+            return Traits::ToBoxedObject(object.PropertyName());                                  \
         }                                                                                         \
         template<typename T>                                                                      \
         static std::shared_ptr<zaf::Object> InnerGet(const T& object, ...) {                      \
@@ -44,7 +44,7 @@ private:                                                                        
             SetterDeclaredType<T>* value_type) {                                                  \
             using ValueDeclaredType = std::decay_t<decltype(*value_type)>;                        \
             using Traits = zaf::PropertyValueTraits<ValueDeclaredType>;                           \
-            object.Set##PropertyName(Traits::FromBoxedObject(value));                                      \
+            object.Set##PropertyName(Traits::FromBoxedObject(value));                             \
         }                                                                                         \
         template<typename T>                                                                      \
         static void InnerSet(T& object, const std::shared_ptr<zaf::Object>& value, ...) {         \
@@ -72,15 +72,15 @@ private:                                                                        
     };                                                                                            \
     class PropertyName##PropertyType : public zaf::ObjectProperty {                               \
     public:                                                                                       \
-        const std::wstring& GetName() const override {                                            \
+        const std::wstring& Name() const override {                                               \
             static const std::wstring& name{ L#PropertyName };                                    \
             return name;                                                                          \
         }                                                                                         \
-        zaf::ObjectType* GetValueType() const override {                                          \
+        zaf::ObjectType* ValueType() const override {                                             \
             return PropertyName##Traits::ValueType::StaticType();                                 \
         }                                                                                         \
-        bool IsValueTypeDynamic() const override {                                                \
-            return zaf::internal::IsSharedPtrV<PropertyName##Traits::DeclaredType>;               \
+        bool IsValueDynamic() const override {                                                    \
+            return zaf::IsBoxedInstanceTypeV<PropertyName##Traits::DeclaredType>;                 \
         }                                                                                         \
         bool CanGet() const override {                                                            \
             return PropertyName##Traits::CanGet;                                                  \

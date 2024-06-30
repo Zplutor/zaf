@@ -14,7 +14,7 @@ PropertyList::PropertyList(std::vector<ObjectProperty*> inner) : inner_(std::mov
 void PropertyList::EraseByNames(const std::set<std::wstring>& property_names) {
 
     EraseIf(inner_, [&property_names](auto property) {
-        return Contain(property_names, property->GetName());
+        return Contain(property_names, property->Name());
     });
 }
 
@@ -32,7 +32,7 @@ void PropertyList::SortByNames(const std::vector<std::wstring>& property_names) 
         inner_.end(),
         [&prioritized_orders](auto property) {
 
-        return zaf::Contain(prioritized_orders, property->GetName());
+        return zaf::Contain(prioritized_orders, property->Name());
     });
 
     //Sort prioritized properties.
@@ -41,8 +41,8 @@ void PropertyList::SortByNames(const std::vector<std::wstring>& property_names) 
         non_prioritized_iterator,
         [&prioritized_orders](auto property1, auto property2) {
 
-        auto index1 = Find(prioritized_orders, property1->GetName());
-        auto index2 = Find(prioritized_orders, property2->GetName());
+        auto index1 = Find(prioritized_orders, property1->Name());
+        auto index2 = Find(prioritized_orders, property2->Name());
 
         if (index1 && !index2) {
             return true;
@@ -56,7 +56,7 @@ void PropertyList::SortByNames(const std::vector<std::wstring>& property_names) 
             return *index1 < *index2;
         }
 
-        return property1->GetName() < property2->GetName();
+        return property1->Name() < property2->Name();
     });
 }
 

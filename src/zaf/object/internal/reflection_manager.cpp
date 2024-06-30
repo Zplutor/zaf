@@ -18,7 +18,7 @@ void ReflectionManager::RegisterType(ObjectType* type) {
         type, 
         [](auto type1, auto type2) {
     
-        return type1->GetName() < type2->GetName();
+        return type1->Name() < type2->Name();
     });
 
     types_.insert(iterator, type);
@@ -33,14 +33,14 @@ ObjectType* ReflectionManager::GetType(const std::wstring& name) const {
         name,
         [](auto type, const std::wstring& name) {
 
-        return type->GetName() < name;
+        return type->Name() < name;
     });
 
     if (iterator == types_.end()) {
         return nullptr;
     }
 
-    if ((*iterator)->GetName() != name) {
+    if ((*iterator)->Name() != name) {
         return nullptr;
     }
 

@@ -98,7 +98,7 @@ std::optional<float> XamlNodeParseHelper::GetFloatProperty(const std::wstring& p
 std::shared_ptr<XamlNode> XamlNodeParseHelper::GetPropertyNode(
     const std::wstring& property_name) const {
 
-    std::wstring name = object_type_->GetName();
+    std::wstring name = object_type_->Name();
     name.append(1, '.').append(property_name);
     return node_.FindPropertyNode(name);
 }

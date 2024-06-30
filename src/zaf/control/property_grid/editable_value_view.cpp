@@ -65,7 +65,7 @@ void EditableValueView::ChangeValue() {
 
         auto value_type = value_->DynamicType();
         auto new_value = value_type->CreateInstance();
-        value_type->GetParser()->ParseFromAttribute(new_text, *new_value);
+        value_type->Parser()->ParseFromAttribute(new_text, *new_value);
 
         NotifyValueChanged(new_value);
     }

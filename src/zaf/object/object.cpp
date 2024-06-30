@@ -14,12 +14,12 @@ namespace {
 
 void ParseObject(ObjectType& type, Object& object) {
 
-    auto base_type = type.GetBase();
+    auto base_type = type.BaseType();
     if (base_type) {
         ParseObject(*base_type, object);
     }
 
-    const auto& resource_uri = type.GetResourceURI();
+    const auto& resource_uri = type.ResourceURI();
     if (resource_uri.empty()) {
         return;
     }
@@ -28,11 +28,11 @@ void ParseObject(ObjectType& type, Object& object) {
     auto xaml_reader = XamlReader::FromStream(stream);
 
     auto root_node = xaml_reader->Read();
-    if (root_node->Value() != type.GetName()) {
+    if (root_node->Value() != type.Name()) {
         ZAF_THROW_WIN32_ERROR(ERROR_INVALID_NAME);
     }
 
-    type.GetParser()->ParseFromNode(*root_node, object);
+    type.Parser()->ParseFromNode(*root_node, object);
 }
 
 }
@@ -48,11 +48,11 @@ Object::Type::Type() {
     zaf::internal::ReflectionManager::Instance().RegisterType(this);
 }
 
-ObjectType* Object::Type::GetBase() const {
+ObjectType* Object::Type::BaseType() const {
     return nullptr;
 }
 
-const std::wstring& Object::Type::GetName() const {
+const std::wstring& Object::Type::Name() const {
     static std::wstring name{ L"Object" };
     return name;
 }
@@ -61,7 +61,7 @@ std::shared_ptr<Object> Object::Type::CreateInstance() const {
     return Create<Object>();
 }
 
-ObjectParser* Object::Type::GetParser() const {
+ObjectParser* Object::Type::Parser() const {
     static ObjectParser default_parser;
     return &default_parser;
 }

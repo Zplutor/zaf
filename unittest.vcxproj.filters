@@ -259,9 +259,6 @@
     <ClCompile Include="unittest\case\control\layout\layout_case_test.cpp">
       <Filter>case\control\layout</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\boxing\boxed_object_equality_test.cpp">
-      <Filter>case\object\boxing</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\object\boxing\boxing_test.cpp">
       <Filter>case\object\boxing</Filter>
     </ClCompile>

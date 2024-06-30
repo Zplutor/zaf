@@ -65,7 +65,7 @@ TEST(StringBoxedTypeTest, StringParse) {
 
     zaf::String string;
 
-    auto parser = zaf::String::StaticType()->GetParser();
+    auto parser = zaf::String::StaticType()->Parser();
     parser->ParseFromAttribute(L"an attribute", string);
     ASSERT_EQ(string.Value(), "an attribute");
 
@@ -86,7 +86,7 @@ TEST(StringBoxedTypeTest, WideStringParse) {
 
     zaf::WideString string;
 
-    auto parser = zaf::WideString::StaticType()->GetParser();
+    auto parser = zaf::WideString::StaticType()->Parser();
     parser->ParseFromAttribute(L"an attribute", string);
     ASSERT_EQ(string.Value(), L"an attribute");
 
@@ -105,7 +105,7 @@ TEST(StringBoxedTypeTest, WideStringParse) {
 
 TEST(StringBoxedTypeTest, ParseStringToInvalidObject) {
 
-    auto parser = zaf::String::StaticType()->GetParser();
+    auto parser = zaf::String::StaticType()->Parser();
     zaf::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"abc", object), zaf::InvalidTypeError);
@@ -117,7 +117,7 @@ TEST(StringBoxedTypeTest, ParseStringToInvalidObject) {
 
 TEST(StringBoxedTypeTest, ParseWideStringToInvalidObject) {
 
-    auto parser = zaf::WideString::StaticType()->GetParser();
+    auto parser = zaf::WideString::StaticType()->Parser();
     zaf::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"abc", object), zaf::InvalidTypeError);

@@ -21,7 +21,7 @@ ObjectProperty* FindPropertyByAttribute(const Object& object, const std::wstring
             return property;
         }
 
-        type = type->GetBase();
+        type = type->BaseType();
     }
 
     return nullptr;
@@ -32,15 +32,15 @@ std::shared_ptr<Object> ParsePropertyValueFromAttribute(
     const ObjectProperty& property,
     const std::wstring& attribute_value) {
 
-    if (property.IsValueTypeDynamic()) {
+    if (property.IsValueDynamic()) {
 
         return CreateObjectByName(attribute_value);
     }
     else {
 
-        auto value_type = property.GetValueType();
+        auto value_type = property.ValueType();
         auto value = value_type->CreateInstance();
-        value_type->GetParser()->ParseFromAttribute(attribute_value, *value);
+        value_type->Parser()->ParseFromAttribute(attribute_value, *value);
         return value;
     }
 }
@@ -67,11 +67,11 @@ bool IsTypeNameMatched(const std::wstring& type_name, ObjectType* type) {
     auto current_type = type;
     while (current_type) {
 
-        if (current_type->GetName() == type_name) {
+        if (current_type->Name() == type_name) {
             return true;
         }
 
-        current_type = current_type->GetBase();
+        current_type = current_type->BaseType();
     }
     return false;
 }
@@ -99,7 +99,7 @@ ObjectProperty* FindPropertyByNode(const Object& object, const std::wstring& nod
             return property;
         }
 
-        type = type->GetBase();
+        type = type->BaseType();
     }
 
     return nullptr;
@@ -110,7 +110,7 @@ std::shared_ptr<Object> ParsePropertyValueFromNode(
     const ObjectProperty& property,
     const XamlNode& node) {
 
-    if (property.IsValueTypeDynamic()) {
+    if (property.IsValueDynamic()) {
 
         const auto& content_nodes = node.GetContentNodes();
         if (content_nodes.size() != 1) {
@@ -121,9 +121,9 @@ std::shared_ptr<Object> ParsePropertyValueFromNode(
     }
     else {
 
-        auto value_type = property.GetValueType();
+        auto value_type = property.ValueType();
         auto value = value_type->CreateInstance();
-        value_type->GetParser()->ParseFromNode(node, *value);
+        value_type->Parser()->ParseFromNode(node, *value);
         return value;
     }
 }

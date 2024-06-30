@@ -16,7 +16,7 @@ TEST(RoundedRectParser, ParseFromNode) {
     auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::RoundedRect rounded_rect;
-    auto parser = zaf::RoundedRect::StaticType()->GetParser();
+    auto parser = zaf::RoundedRect::StaticType()->Parser();
     parser->ParseFromNode(*node, rounded_rect);
     ASSERT_EQ(rounded_rect, zaf::RoundedRect(zaf::Rect(2, 2, 5, 6), 0.5f, 0.6f));
 

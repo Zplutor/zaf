@@ -28,7 +28,7 @@ std::shared_ptr<TreeItem> Delegate::CreateItem(
     auto data = As<Data>(item_data);
     ZAF_EXPECT(data);
 
-    auto type_config = type_config_factory_->GetConfig(data->Property()->GetValueType());
+    auto type_config = type_config_factory_->GetConfig(data->Property()->ValueType());
     auto value_view = type_config->CreateValueView();
 
     std::weak_ptr<Object> weak_data = data;

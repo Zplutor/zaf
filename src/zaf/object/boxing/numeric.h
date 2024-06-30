@@ -21,7 +21,7 @@ ZAF_OBJECT_BEGIN(BoxTypeName);                                                  
 ZAF_OBJECT_PARSER(NumericParser<BoxTypeName>);                                                    \
 ZAF_OBJECT_END;                                                                                   \
 template<>                                                                                        \
-struct CustomBoxingTraits<NumericType> {                                                          \
+struct zaf__CustomBoxingTraits<NumericType> {                                                          \
     using BoxedType = BoxTypeName;                                                                \
     static std::shared_ptr<BoxedType> Box(NumericType value) {                                    \
         return std::make_shared<BoxedType>(value);                                                \

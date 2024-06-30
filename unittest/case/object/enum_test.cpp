@@ -129,7 +129,7 @@ TEST(EnumTest, GetAllValues) {
 
 TEST(EnumTest, Parse) {
 
-    auto parser = TestTypeEnum::EnumType()->GetParser();
+    auto parser = TestTypeEnum::EnumType()->Parser();
 
     TestTypeEnum enum_object;
 
@@ -148,7 +148,7 @@ TEST(EnumTest, Parse) {
 
 TEST(EnumTest, ParseToInvalidObject) {
 
-    auto parser = TestTypeEnum::EnumType()->GetParser();
+    auto parser = TestTypeEnum::EnumType()->Parser();
     zaf::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"First", object), zaf::InvalidTypeError);

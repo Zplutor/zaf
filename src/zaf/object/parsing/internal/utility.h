@@ -34,7 +34,7 @@ std::shared_ptr<T> CreateObjectFromNode(const std::shared_ptr<XamlNode>& node) {
         return {};
     }
 
-    object->DynamicType()->GetParser()->ParseFromNode(*node, *object);
+    object->DynamicType()->Parser()->ParseFromNode(*node, *object);
     return object;
 }
 

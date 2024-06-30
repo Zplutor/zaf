@@ -26,14 +26,14 @@ private:                                                                        
     Type();                                                                                       \
 public:                                                                                           \
     static Type* Instance() { return &instance; }                                                 \
-    const std::wstring& GetName() const override {                                                \
+    const std::wstring& Name() const override {                                                \
         static const std::wstring name{ L#EnumName };                                             \
         return name;                                                                              \
     }                                                                                             \
     std::shared_ptr<zaf::Object> CreateInstance() const override {                                \
         return zaf::Create<EnumName##Enum>();                                                     \
     }                                                                                             \
-    zaf::ObjectParser* GetParser() const override {                                               \
+    zaf::ObjectParser* Parser() const override {                                               \
         static zaf::internal::EnumParser<EnumName> parser(this);                                  \
         return &parser;                                                                           \
     }                                                                                             \

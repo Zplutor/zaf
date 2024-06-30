@@ -11,7 +11,7 @@ TEST(RectParserTest, ParseFromNode) {
     auto node = zaf::XamlReader::FromString(xaml)->Read();
 
     zaf::Rect rect;
-    auto parser = zaf::Rect::StaticType()->GetParser();
+    auto parser = zaf::Rect::StaticType()->Parser();
     parser->ParseFromNode(*node, rect);
     ASSERT_EQ(rect, zaf::Rect(10, 11, 12, 13));
 

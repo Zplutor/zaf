@@ -25,14 +25,14 @@ public:
         auto property_node = GetPropertyNode(property_name);
         if (property_node) {
             auto object = Create<T>();
-            T::Type->GetParser()->ParseFromNode(*property_node, *object);
+            T::Type->Parser()->ParseFromNode(*property_node, *object);
             return object;
         }
 
         auto attribute = node_.FindAttribute(property_name);
         if (attribute) {
             auto object = Create<T>();
-            T::Type->GetParser()->ParseFromAttribute(attribute->Value(), *object);
+            T::Type->Parser()->ParseFromAttribute(attribute->Value(), *object);
             return object;
         }
 

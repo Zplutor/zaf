@@ -4,14 +4,16 @@
 using namespace zaf;
 
 namespace {
+
 class NoCustomObject { };
 class CustomObject { };
-}
 
 template<>
-struct CustomBoxingTraits<CustomObject> {
+struct zaf__CustomBoxingTraits<CustomObject> {
     using BoxedType = Object;
 };
+
+}
 
 static_assert(!HasCustomBoxingTraitsV<NoCustomObject>);
 static_assert(HasCustomBoxingTraitsV<CustomObject>);

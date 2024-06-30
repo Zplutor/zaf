@@ -3,12 +3,12 @@
 
 namespace zaf {
 
-ObjectParser* ObjectType::GetParser() const {
-    return GetBase()->GetParser();
+ObjectParser* ObjectType::Parser() const {
+    return BaseType()->Parser();
 }
 
 
-const std::wstring& ObjectType::GetResourceURI() const {
+const std::wstring& ObjectType::ResourceURI() const {
     static const std::wstring uri{};
     return uri;
 }
@@ -22,7 +22,7 @@ void ObjectType::RegisterProperty(ObjectProperty* property) {
         property,
         [](auto property1, auto property2) {
 
-        return property1->GetName() < property2->GetName();
+        return property1->Name() < property2->Name();
     });
 
     properties_.insert(iterator, property);
@@ -37,14 +37,14 @@ ObjectProperty* ObjectType::GetProperty(std::wstring_view name) const {
         name, 
         [](auto property, std::wstring_view name) {
     
-        return property->GetName() < name;
+        return property->Name() < name;
     });
 
     if (iterator == properties_.end()) {
         return nullptr;
     }
 
-    if ((*iterator)->GetName() != name) {
+    if ((*iterator)->Name() != name) {
         return nullptr;
     }
 

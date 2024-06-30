@@ -19,7 +19,7 @@ public:                                                                         
 
 #define ZAF_ENABLE_ENUM_BOXING(EnumName) \
 template<> \
-struct CustomBoxingTraits<EnumName> { \
+struct zaf__CustomBoxingTraits<EnumName> { \
     using BoxedType = EnumName##Enum; \
     static std::shared_ptr<BoxedType> Box(EnumName value) { \
         return std::make_shared<BoxedType>(value); \
@@ -32,8 +32,8 @@ struct CustomBoxingTraits<EnumName> { \
 
 #define ZAF_ENABLE_ENUM_BOXING_WITH_NAMESPACE(Namespace, EnumName) \
 template<> \
-struct CustomBoxingTraits<Namespace::EnumName> { \
-    using BoxedType = EnumName##Enum; \
+struct zaf__CustomBoxingTraits<Namespace::EnumName> { \
+    using BoxedType = Namespace::EnumName##Enum; \
     static std::shared_ptr<BoxedType> Box(Namespace::EnumName value) { \
         return std::make_shared<BoxedType>(value); \
     } \

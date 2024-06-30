@@ -69,7 +69,7 @@ std::vector<ObjectType*> Data::GetObjectTypeChain(const Object& object) {
     auto type = object.DynamicType();
     type_chain.push_back(type);
 
-    while (type = type->GetBase()) {
+    while (type = type->BaseType()) {
         type_chain.push_back(type);
     }
 
