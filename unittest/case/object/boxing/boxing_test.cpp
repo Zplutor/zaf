@@ -26,6 +26,20 @@ TEST(BoxingTest, Box) {
 
 TEST(BoxingTest, UnboxPointer) {
 
+    //Null pointer
+    {
+        Object* boxed_object{};
+        auto unboxed_bool = Unbox<bool>(boxed_object);
+        ASSERT_EQ(unboxed_bool, nullptr);
+    }
+
+    //Const null pointer
+    {
+        const Object* boxed_object{};
+        auto unboxed_bool = Unbox<bool>(boxed_object);
+        ASSERT_EQ(unboxed_bool, nullptr);
+    }
+
     //Non-const pointer
     {
         std::shared_ptr<Boolean> boxed = Box(true);
@@ -59,6 +73,13 @@ TEST(BoxingTest, UnboxPointer) {
 
 
 TEST(BoxingTest, UnboxSharedPtr) {
+
+    //null std::shared_ptr
+    {
+        std::shared_ptr<Object> object;
+        auto unboxed_bool = Unbox<bool>(object);
+        ASSERT_EQ(unboxed_bool, nullptr);
+    }
 
     //std::shared_ptr
     {

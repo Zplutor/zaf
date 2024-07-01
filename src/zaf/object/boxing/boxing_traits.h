@@ -36,6 +36,8 @@ public:
 
 /**
 A helper variable template for IsBoxedInstanceType.
+
+@relates IsBoxedInstanceType
 */
 template<typename T>
 constexpr bool IsBoxedInstanceTypeV = IsBoxedInstanceType<T>::value;
@@ -78,10 +80,11 @@ the specified non-boxed type.
       of the method is:
 
       @code
-      const UnboxedType* Unbox(const Object& object);
+      const UnboxedType* Unbox(const Object& object) noexcept;
       @endcode
 
-      Note that the returned pointer points to the inner member of the boxed object.
+      Note that the returned pointer points to the inner member of the boxed object. If unboxing 
+      fails, the method returns null.
 
     This template uses zaf__CustomBoxingTraits to define these members for non-reflective types.
 */
@@ -100,7 +103,7 @@ struct BoxingTraits<T, std::enable_if_t<IsReflectiveTypeV<T>>> {
         return std::make_shared<BoxedType>(std::move(value));
     }
 
-    static const UnboxedType* Unbox(const Object& object) {
+    static const UnboxedType* Unbox(const Object& object) noexcept {
         return As<BoxedType>(&object);
     }
 };
@@ -116,7 +119,7 @@ struct BoxingTraits<T, std::enable_if_t<HasCustomBoxingTraitsV<std::decay_t<T>>>
         return zaf__CustomBoxingTraits<UnboxedType>::Box(std::move(value));
     }
 
-    static const UnboxedType* Unbox(const Object& object) {
+    static const UnboxedType* Unbox(const Object& object) noexcept {
         auto boxed_object = As<BoxedType>(&object);
         if (boxed_object) {
             return zaf__CustomBoxingTraits<UnboxedType>::Unbox(*boxed_object);

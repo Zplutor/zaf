@@ -23,19 +23,26 @@ non-reflective types.
 
     To support boxing and unboxing for a specified non-reflective type, users should define a 
     specialization with the following members:
+
     - A type alias named `BoxedType` that specifies the boxed type for the specified non-reflective 
       type.
+
     - A static method named `Box` that is used to box a non-boxed value to a boxed object. The 
       signature of the method should be:
+
       @code
       std::shared_ptr<BoxedType> Box(DecayedT value);
       @endcode
+
     - A static method named `Unbox` that is used to unbox a boxed object to a non-boxed value. The
       signature of the method should be:
+
       @code
-      const DecayedT* Unbox(const BoxedType& object);
+      const DecayedT* Unbox(const BoxedType& object) noexcept;
       @endcode
+
       Note that the Unbox() method should return a pointer to the inner member of the boxed object.
+      If unboxing fails, the method should return null.
 
     Example for defining a specialization:
     @code
