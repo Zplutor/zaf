@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file
+    Defines type utilities related to the boxing mechanism.
+*/
+
 #include <zaf/base/as.h>
 #include <zaf/object/boxing/custom_boxing_traits.h>
 #include <zaf/object/reflective_type.h>
@@ -11,6 +16,13 @@
 
 namespace zaf {
 
+/**
+A template to check if the specified type is a boxed instance type, which is a std::shared_ptr to a
+reflective type.
+
+@tparma T
+    The type to check.
+*/
 template<typename T>
 struct IsBoxedInstanceType {
 private:
@@ -22,6 +34,9 @@ public:
         IsReflectiveTypeV<internal::GetSharedPtrElementTypeT<DecayType>>;
 };
 
+/**
+A helper variable template for IsBoxedInstanceType.
+*/
 template<typename T>
 constexpr bool IsBoxedInstanceTypeV = IsBoxedInstanceType<T>::value;
 
