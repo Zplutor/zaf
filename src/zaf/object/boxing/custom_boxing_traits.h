@@ -8,21 +8,22 @@
 #include <type_traits>
 
 /**
-A template for defining custom boxed types and corresponding boxing/unboxing operations for
-non-boxed types.
+A template for defining custom boxed types and corresponding boxing/unboxing operations for 
+non-reflective types.
 
 @tparam DecayedT
-    The non-boxed type for which a custom boxed type is to be defined. It should be a decayed type.
+    The non-reflective type for which a custom boxed type is to be defined. It should be a decayed
+    type.
 
 @details
-    This template is used by zaf::Box() and zaf::Unbox() functions to get boxed types and perform 
-    boxing/unboxing for non-boxed types. The primary template doesn't define any members and will 
-    emit a compile error if initiated, indicating that the specified type doesn't support boxing 
-    and unboxing.
+    This template is used by BoxingTraits to get custom boxed types and perform custom 
+    boxing/unboxing for non-reflective types. The primary template doesn't define any members and
+    will emit a compile error if initiated, indicating that the specified non-reflective type 
+    doesn't support boxing and unboxing.
 
-    To support boxing and unboxing for a specified non-boxed type, users should define a 
+    To support boxing and unboxing for a specified non-reflective type, users should define a 
     specialization with the following members:
-    - A type alias named `BoxedType` that specifies the boxed type for the specified non-boxed 
+    - A type alias named `BoxedType` that specifies the boxed type for the specified non-reflective 
       type.
     - A static method named `Box` that is used to box a non-boxed value to a boxed object. The 
       signature of the method should be:
@@ -38,7 +39,7 @@ non-boxed types.
 
     Example for defining a specialization:
     @code
-    //The non-boxed type.
+    //The non-reflective type.
     class MyNonBoxedValue { };
 
     //The corresponding boxed type.
@@ -93,11 +94,10 @@ struct zaf__CustomBoxingTraits {
 namespace zaf {
 
 /**
-A template to check if a zaf__CustomBoxingTraits specialization is defined for the specified 
-non-boxed type.
+A template to check if a zaf__CustomBoxingTraits specialization is defined for the specified type.
 
 @tparam DecayedT
-    The non-boxed type to check. It should be a decayed type.
+    The type to check. It should be a decayed type.
 */
 template<typename DecayedT, typename = void>
 struct HasCustomBoxingTraits : std::false_type { };
