@@ -242,3 +242,75 @@ TEST(BoxingTest, UnboxObjectType) {
         ASSERT_EQ(const_unboxed_rect, rect);
     }
 }
+
+
+TEST(BoxingTest, StringBoxing) {
+
+    {
+        std::string string{ "string" };
+        std::shared_ptr<String> boxed_string = Box(string);
+        ASSERT_EQ(boxed_string->Value(), string);
+    }
+
+    {
+        std::string_view string_view{ "string_view" };
+        std::shared_ptr<String> boxed_string = Box(string_view);
+        ASSERT_EQ(boxed_string->Value(), string_view);
+    }
+
+    {
+        char* char_pointer = const_cast<char*>("char*");
+        std::shared_ptr<String> boxed_string = Box(char_pointer);
+        ASSERT_STREQ(boxed_string->Value().c_str(), char_pointer);
+    }
+
+    {
+        const char* char_pointer = "const char*";
+        std::shared_ptr<String> boxed_string = Box(char_pointer);
+        ASSERT_STREQ(boxed_string->Value().c_str(), char_pointer);
+    }
+}
+
+
+TEST(BoxingTest, StringUnboxing) {
+
+    String boxed_string{ "boxed-string" };
+    std::string& string = Unbox<std::string>(boxed_string);
+    ASSERT_EQ(&string, &boxed_string.Value());
+}
+
+
+TEST(BoxingTest, WideStringBoxing) {
+
+    {
+        std::wstring string{ L"string" };
+        std::shared_ptr<WideString> boxed_string = Box(string);
+        ASSERT_EQ(boxed_string->Value(), string);
+    }
+
+    {
+        std::wstring_view string_view{ L"wstring_view" };
+        std::shared_ptr<WideString> boxed_string = Box(string_view);
+        ASSERT_EQ(boxed_string->Value(), string_view);
+    }
+
+    {
+        wchar_t* char_pointer = const_cast<wchar_t*>(L"wchar_t*");
+        std::shared_ptr<WideString> boxed_string = Box(char_pointer);
+        ASSERT_STREQ(boxed_string->Value().c_str(), char_pointer);
+    }
+
+    {
+        const wchar_t* char_pointer = L"const wchar_t*";
+        std::shared_ptr<WideString> boxed_string = Box(char_pointer);
+        ASSERT_STREQ(boxed_string->Value().c_str(), char_pointer);
+    }
+}
+
+
+TEST(BoxingTest, WideStringUnboxing) {
+
+    WideString boxed_string{ L"boxed-string" };
+    std::wstring& string = Unbox<std::wstring>(boxed_string);
+    ASSERT_EQ(&string, &boxed_string.Value());
+}
