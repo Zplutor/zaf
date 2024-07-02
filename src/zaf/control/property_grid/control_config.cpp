@@ -2,42 +2,45 @@
 #include <zaf/base/container/utility/contain.h>
 #include <zaf/base/container/utility/erase.h>
 #include <zaf/control/control.h>
+#include <zaf/control/control_object.h>
 
 namespace zaf::property_grid {
 
 void ControlConfig::FilterProperties(PropertyTable& property_table) {
 
-    auto list = property_table.GetList(Control::StaticType());
+    auto type = Control::Type::Instance();
+
+    auto list = property_table.GetList(type);
     if (!list) {
         return;
     }
 
-    list->EraseByNames({
-        L"Parent",
-        L"Window",
-        L"X",
-        L"Y",
-        L"Position",
-        L"Size",
-        L"Width",
-        L"Height",
-        L"ContentSize",
+    list->Erase({
+        type->ParentProperty,
+        type->WindowProperty,
+        type->XProperty,
+        type->YProperty,
+        type->PositionProperty,
+        type->SizeProperty,
+        type->WidthProperty,
+        type->HeightProperty,
+        type->ContentSizeProperty,
     });
 
-    list->SortByNames({
-        L"Name",
-        L"AbsoluteRect",
-        L"Rect",
-        L"Border",
-        L"Padding",
-        L"Margin",
-        L"ContentRect",
-        L"MinWidth",
-        L"MaxWidth",
-        L"MinHeight",
-        L"MaxHeight",
-        L"AutoWidth",
-        L"AutoHeight",
+    list->Sort({
+        type->NameProperty,
+        //type->AbsoluteRectProperty,
+        type->RectProperty,
+        type->BorderProperty,
+        type->PaddingProperty,
+        type->MarginProperty,
+        type->ContentRectProperty,
+        type->MinWidthProperty,
+        type->MaxWidthProperty,
+        type->MinHeightProperty,
+        type->MaxHeightProperty,
+        type->AutoWidthProperty,
+        type->AutoHeightProperty,
     });
 }
 

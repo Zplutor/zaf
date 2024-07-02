@@ -7,11 +7,13 @@ namespace zaf::property_grid {
 
 void SizeConfig::FilterProperties(PropertyTable& property_table) {
 
-    auto list = property_table.GetList(Size::StaticType());
+    auto type = Size::Type::Instance();
+
+    auto list = property_table.GetList(type);
     if (list) {
-        list->SortByNames({
-            L"Width",
-            L"Height",
+        list->Sort({
+            type->WidthProperty,
+            type->HeightProperty,
         });
     }
 }

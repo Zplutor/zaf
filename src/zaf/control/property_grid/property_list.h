@@ -9,9 +9,9 @@ class PropertyList {
 public:
     PropertyList(std::vector<ObjectProperty*> inner);
 
-    void EraseByNames(const std::set<std::wstring>& property_names);
+    void Erase(const std::set<ObjectProperty*>& properties);
 
-    void SortByNames(const std::vector<std::wstring>& property_names);
+    void Sort(const std::vector<ObjectProperty*>& priority_properties);
 
     std::vector<ObjectProperty*>& Inner() {
         return inner_;

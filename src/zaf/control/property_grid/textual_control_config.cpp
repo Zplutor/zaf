@@ -7,25 +7,27 @@ void TextualControlConfig::FilterProperties(PropertyTable& property_table) {
 
     __super::FilterProperties(property_table);
 
-    auto list = property_table.GetList(TextualControl::StaticType());
+    auto type = TextualControl::Type::Instance();
+
+    auto list = property_table.GetList(type);
     if (!list) {
         return;
     }
 
-    list->EraseByNames({
-        L"FontFamily",
-        L"FontSize",
-        L"FontWeight",
+    list->Erase({
+        type->FontFamilyProperty,
+        type->FontSizeProperty,
+        type->FontWeightProperty,
     });
 
-    list->SortByNames({
-        L"ParagraphAlignment",
-        L"TextAlignment",
-        L"WordWrapping",
-        L"Font",
-        L"TextColor",
-        L"Text",
-        L"TextLength",
+    list->Sort({
+        type->ParagraphAlignmentProperty,
+        type->TextAlignmentProperty,
+        type->WordWrappingProperty,
+        type->FontProperty,
+        type->TextColorProperty,
+        type->TextProperty,
+        type->TextLengthProperty,
     });
 }
 

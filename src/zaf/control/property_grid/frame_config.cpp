@@ -7,15 +7,17 @@ namespace zaf::property_grid {
 
 void FrameConfig::FilterProperties(PropertyTable& property_table) {
 
-    auto list = property_table.GetList(Frame::StaticType());
+    auto type = Frame::Type::Instance();
+
+    auto list = property_table.GetList(type);
     if (list) {
-        list->SortByNames({
-            L"Left",
-            L"Top",
-            L"Right",
-            L"Bottom",
-            L"Width",
-            L"Height",
+        list->Sort({
+            type->LeftProperty,
+            type->TopProperty,
+            type->RightProperty,
+            type->BottomProperty,
+            type->WidthProperty,
+            type->HeightProperty,
         });
     }
 }
