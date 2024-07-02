@@ -19,10 +19,10 @@ private:                                                                        
     Type();                                                                                       \
 public:                                                                                           \
     static Type* Instance() { return &instance; }                                                 \
-    zaf::ObjectType* BaseType() const override {                                                   \
+    zaf::ObjectType* BaseType() const override {                                                  \
         return ClassName::StaticBaseType();                                                       \
     }                                                                                             \
-    const std::wstring& Name() const override {                                                \
+    const std::wstring& Name() const override {                                                   \
         static const std::wstring name{ L#ClassName };                                            \
         return name;                                                                              \
     }                                                                                             \
@@ -32,14 +32,14 @@ public:                                                                         
 
 
 #define ZAF_OBJECT_PARSER(ParserType)                                                             \
-    zaf::ObjectParser* Parser() const override {                                               \
+    zaf::ObjectParser* Parser() const override {                                                  \
         static ParserType parser;                                                                 \
         return &parser;                                                                           \
     }
 
 
 #define ZAF_OBJECT_RESOURCE_URI(URI)                                                              \
-    const std::wstring& ResourceURI() const override {                                         \
+    const std::wstring& ResourceURI() const override {                                            \
         static const std::wstring uri{ URI };                                                     \
         return uri;                                                                               \
     }                                                                                           
