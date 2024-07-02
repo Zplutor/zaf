@@ -152,7 +152,7 @@ TEST(PropertyValueTraitsTest, CustomPropertyValueBoxing) {
 
     CustomPropertyValue value{ 45 };
     auto boxed_object = Traits::ToBoxedObject(CustomPropertyValue(value));
-    auto custom_boxed_object = As<CustomPropertyValue>(boxed_object);
+    auto custom_boxed_object = As<CustomPropertyObject>(boxed_object);
     ASSERT_NE(custom_boxed_object, nullptr);
     ASSERT_EQ(custom_boxed_object->value, 45);
 

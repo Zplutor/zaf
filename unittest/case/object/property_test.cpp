@@ -204,7 +204,7 @@ TEST(PropertyTest, Image) {
 
     ASSERT_TRUE(property->CanGet());
     ASSERT_TRUE(property->CanSet());
-    ASSERT_TRUE(property->IsValueDynamic());
+    ASSERT_FALSE(property->IsValueDynamic());
 
     auto set_value = zaf::Create<zaf::URIImage>();
     property->SetValue(host, set_value);

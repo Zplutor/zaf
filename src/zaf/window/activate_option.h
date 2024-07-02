@@ -31,6 +31,8 @@ enum class ActivateOption {
     DiscardMouseMessage = 2,
 };
 
+ZAF_ENABLE_FLAG_ENUM(ActivateOption);
+
 ZAF_ENUM_BEGIN(ActivateOption)
 ZAF_ENUM_VALUE(Normal)
 ZAF_ENUM_VALUE(NoActivate)
@@ -38,6 +40,5 @@ ZAF_ENUM_VALUE(DiscardMouseMessage)
 ZAF_ENUM_END;
 
 ZAF_ENABLE_ENUM_BOXING(ActivateOption)
-ZAF_ENABLE_FLAG_ENUM(ActivateOption);
 
 }
