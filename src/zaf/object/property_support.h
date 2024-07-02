@@ -6,7 +6,6 @@
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/internal/property_registrar.h>
 #include <zaf/object/object_property.h>
-#include <zaf/object/property_value_traits.h>
 
 #define ZAF_OBJECT_PROPERTY(PropertyName)                                                         \
 private:                                                                                          \
@@ -27,11 +26,8 @@ private:                                                                        
         template<typename T>                                                                      \
         static constexpr bool InnerCanSet(...) { return false; }                                  \
         template<typename T>                                                                      \
-        static std::shared_ptr<zaf::Object> InnerGet(                                             \
-            const T& object,                                                                      \
-            GetterDeclaredType<T>* value_type) {                                                  \
-            using Traits = zaf::PropertyValueTraits<std::decay_t<decltype(*value_type)>>;         \
-            return Traits::ToBoxedObject(object.PropertyName());                                  \
+        static std::shared_ptr<zaf::Object> InnerGet(const T& object, GetterDeclaredType<T>*) {   \
+            return zaf::internal::BoxPropertyValue(object.PropertyName());                        \
         }                                                                                         \
         template<typename T>                                                                      \
         static std::shared_ptr<zaf::Object> InnerGet(const T& object, ...) {                      \

@@ -1,10 +1,43 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_type_error.h>
+#include <zaf/base/non_copyable.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/boxing/string.h>
 
 using namespace zaf;
+
+namespace {
+
+class NonCopyableValue : NonCopyable {
+public:
+    std::string string{};
+};
+
+class NonCopyableObject {
+public:
+    explicit NonCopyableObject(NonCopyableValue value) : Value(std::move(value))  {
+
+    }
+
+    NonCopyableValue Value;
+};
+
+template<>
+struct zaf__CustomBoxingTraits<NonCopyableValue> {
+
+    using BoxedType = NonCopyableObject;
+
+    static std::shared_ptr<NonCopyableObject> Box(NonCopyableValue value) {
+        return std::make_shared<NonCopyableObject>(std::move(value));
+    }
+
+    static const NonCopyableValue* Unbox(const NonCopyableObject& object) {
+        return &object.Value;
+    }
+};
+
+}
 
 TEST(BoxingTest, Box) {
 
@@ -15,11 +48,50 @@ TEST(BoxingTest, Box) {
         ASSERT_EQ(*boxed_rect, rect);
     }
 
+    //Const reflective type
+    {
+        const Rect rect{ 50, 40, 70, 80 };
+        std::shared_ptr<Rect> boxed_rect = Box(rect);
+        ASSERT_EQ(*boxed_rect, rect);
+    }
+
+    //Reference to const reflective type
+    {
+        const Rect rect{ 50, 40, 70, 80 };
+        const Rect& ref = rect;
+        std::shared_ptr<Rect> boxed_rect = Box(ref);
+        ASSERT_EQ(*boxed_rect, rect);
+    }
+
     //Custom boxing type
     {
         std::string string{ "String" };
         std::shared_ptr<String> boxed_string = Box(string);
         ASSERT_EQ(boxed_string->Value(), string);
+    }
+
+    //Const custom boxing type
+    {
+        const std::string string{ "Const String" };
+        std::shared_ptr<String> boxed_string = Box(string);
+        ASSERT_EQ(boxed_string->Value(), string);
+    }
+
+    //Reference to const custom boxing type
+    {
+        const std::string string{ "Const Reference String" };
+        const std::string& ref = string;
+        std::shared_ptr<String> boxed_string = Box(ref);
+        ASSERT_EQ(boxed_string->Value(), string);
+    }
+
+    //Non copyable value 
+    {
+        NonCopyableValue value;
+        value.string = "non-copyable";
+        std::shared_ptr<NonCopyableObject> object = Box(std::move(value));
+        ASSERT_EQ(object->Value.string, "non-copyable");
+        ASSERT_EQ(value.string, "");
     }
 }
 

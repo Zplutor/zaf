@@ -137,7 +137,7 @@ TEST(PropertyValueTraitsTest, BoxedInstanceBoxing) {
     using Traits = PropertyValueTraits<std::shared_ptr<Size>>;
 
     auto size = std::make_shared<Size>(30.f, 40.f);
-    std::shared_ptr<Object> boxed_object = Traits::ToBoxedObject(size);
+    std::shared_ptr<Object> boxed_object = Traits::ToBoxedObject(std::shared_ptr<Size>(size));
     std::shared_ptr<Size> boxed_size = As<Size>(boxed_object);
     ASSERT_EQ(boxed_size, size);
 
@@ -151,7 +151,7 @@ TEST(PropertyValueTraitsTest, CustomPropertyValueBoxing) {
     using Traits = PropertyValueTraits<CustomPropertyValue>;
 
     CustomPropertyValue value{ 45 };
-    auto boxed_object = Traits::ToBoxedObject(value);
+    auto boxed_object = Traits::ToBoxedObject(CustomPropertyValue(value));
     auto custom_boxed_object = As<CustomPropertyValue>(boxed_object);
     ASSERT_NE(custom_boxed_object, nullptr);
     ASSERT_EQ(custom_boxed_object->value, 45);

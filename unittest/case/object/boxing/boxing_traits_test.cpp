@@ -41,11 +41,16 @@ TEST(BoxingTraitsTest, ReflectiveTypeBoxing) {
     ASSERT_NE(boxed_point, nullptr);
     ASSERT_EQ(boxed_point->x, 11);
     ASSERT_EQ(boxed_point->y, 22);
+}
 
-    const Point* unboxed_point = BoxingTraits<Point>::Unbox(*boxed_point);
-    ASSERT_EQ(unboxed_point, boxed_point.get());
-    ASSERT_EQ(unboxed_point->x, 11);
-    ASSERT_EQ(unboxed_point->y, 22);
+
+TEST(BoxingTraitsTest, ReflectiveTypeUnboxing) {
+
+    Point object{ 10, 20 };
+    const Point* unboxed_point = BoxingTraits<Point>::Unbox(object);
+    ASSERT_EQ(unboxed_point, &object);
+    ASSERT_EQ(unboxed_point->x, 10);
+    ASSERT_EQ(unboxed_point->y, 20);
 }
 
 

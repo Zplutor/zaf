@@ -71,10 +71,14 @@ the specified non-boxed type.
       the method is:
 
       @code
-      BoxedInstanceType Box(T value);
+      BoxedInstanceType Box(T&& value);
       @endcode
 
       Instances of `T` should be movable to enable boxing operation.
+
+      Typically, users should call zaf::Box() rather than calling this method directly for ease of 
+      use, as zaf::Box() will deduce `T` by the non-boxed value correctly and enable perfect
+      forwarding.
 
     - A static method named `Unbox` that unboxes a boxed object to a non-boxed value. The signature 
       of the method is:
@@ -99,8 +103,8 @@ struct BoxingTraits<T, std::enable_if_t<IsReflectiveTypeV<T>>> {
     using UnboxedType = BoxedType; //The same as boxed type.
     using BoxedInstanceType = std::shared_ptr<BoxedType>;
 
-    static BoxedInstanceType Box(T value) {
-        return std::make_shared<BoxedType>(std::move(value));
+    static BoxedInstanceType Box(T&& value) {
+        return std::make_shared<BoxedType>(std::forward<T>(value));
     }
 
     static const UnboxedType* Unbox(const Object& object) noexcept {
@@ -115,8 +119,8 @@ struct BoxingTraits<T, std::enable_if_t<HasCustomBoxingTraitsV<std::decay_t<T>>>
     using BoxedType = typename zaf__CustomBoxingTraits<UnboxedType>::BoxedType;
     using BoxedInstanceType = std::shared_ptr<BoxedType>;
 
-    static BoxedInstanceType Box(T value) {
-        return zaf__CustomBoxingTraits<UnboxedType>::Box(std::move(value));
+    static BoxedInstanceType Box(T&& value) {
+        return zaf__CustomBoxingTraits<UnboxedType>::Box(std::forward<T>(value));
     }
 
     static const UnboxedType* Unbox(const Object& object) noexcept {

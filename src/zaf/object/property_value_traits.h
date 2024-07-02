@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/internal/object/shared_ptr_utility.h>
-#include <zaf/object/boxing/boxing_traits.h>
+#include <zaf/object/boxing/boxing.h>
 #include <zaf/object/custom_property_value_traits.h>
 
 namespace zaf {
@@ -15,12 +15,12 @@ struct PropertyValueTraits<T, std::enable_if_t<HasBoxingTraitsV<T>>> {
     using ValueType = std::decay_t<T>;
     using BoxedType = typename BoxingTraits<T>::BoxedType;
     
-    static std::shared_ptr<Object> ToBoxedObject(ValueType value) {
-        return BoxingTraits<T>::Box(std::move(value));
+    static std::shared_ptr<Object> ToBoxedObject(T&& value) {
+        return zaf::Box(std::forward<T>(value));
     }
 
     static const ValueType& FromBoxedObject(const std::shared_ptr<Object>& object) {
-        return *BoxingTraits<T>::Unbox(*object);
+        return zaf::Unbox<ValueType>(*object);
     }
 };
 
@@ -30,8 +30,8 @@ struct PropertyValueTraits<T, std::enable_if_t<IsBoxedInstanceTypeV<T>>> {
     using ValueType = std::decay_t<T>;
     using BoxedType = typename ValueType::element_type;
 
-    static std::shared_ptr<Object> ToBoxedObject(T value) {
-        return std::move(value);
+    static std::shared_ptr<Object> ToBoxedObject(T&& value) {
+        return std::forward<T>(value);
     }
 
     static T FromBoxedObject(const std::shared_ptr<Object>& object) {
@@ -48,8 +48,8 @@ public:
     using ValueType = std::decay_t<T>;
     using BoxedType = typename CustomTraits::BoxedType;
 
-    static std::shared_ptr<Object> ToBoxedObject(T value) {
-        return CustomTraits::ToBoxedObject(std::move(value));
+    static std::shared_ptr<Object> ToBoxedObject(T&& value) {
+        return CustomTraits::ToBoxedObject(std::forward<T>(value));
     }
 
     static T FromBoxedObject(const std::shared_ptr<Object>& object) {

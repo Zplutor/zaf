@@ -1,6 +1,7 @@
 #pragma once
 
 #include <type_traits>
+#include <zaf/object/property_value_traits.h>
 
 namespace zaf::internal {
 
@@ -20,5 +21,11 @@ template<typename T, typename A>
 struct DeduceSetterArgumentType<void(T::*)(A)> {
     using Type = std::decay_t<A>;
 };
+
+
+template<typename T>
+auto BoxPropertyValue(T&& value) {
+    return PropertyValueTraits<T>::ToBoxedObject(std::forward<T>(value));
+}
 
 }
