@@ -54,9 +54,17 @@ private:                                                                        
         static constexpr SetterDeclaredType<T>* DeduceDeclaredType(...) {                         \
             return nullptr;                                                                       \
         }                                                                                         \
+        /* A workaround to solve the mis-reported intellisense error */                           \
+        template<typename T>                                                                      \
+        static zaf::ObjectType* GetObjectType() {                                                 \
+            return T::StaticType();                                                               \
+        }                                                                                         \
     public:                                                                                       \
         using DeclaredType = std::remove_pointer_t<decltype(DeduceDeclaredType<Class>(nullptr))>; \
-        using ValueType = typename zaf::PropertyValueTraits<DeclaredType>::BoxedType;             \
+        static zaf::ObjectType* GetValueType() {                                                  \
+            using BoxedType = typename zaf::PropertyValueTraits<DeclaredType>::BoxedType;         \
+            return GetObjectType<BoxedType>();                                                    \
+        }                                                                                         \
         static constexpr bool CanGet = InnerCanGet<Class>(nullptr);                               \
         static constexpr bool CanSet = InnerCanSet<Class>(nullptr);                               \
         static std::shared_ptr<zaf::Object> Get(const zaf::Object& object) {                      \
@@ -73,7 +81,7 @@ private:                                                                        
             return name;                                                                          \
         }                                                                                         \
         zaf::ObjectType* ValueType() const override {                                             \
-            return PropertyName##Traits::ValueType::StaticType();                                 \
+            return PropertyName##Traits::GetValueType();                                          \
         }                                                                                         \
         bool IsValueDynamic() const override {                                                    \
             return zaf::IsBoxedInstanceTypeV<PropertyName##Traits::DeclaredType>;                 \
