@@ -112,7 +112,7 @@ void Font::ReadFromXML(XMLReader& reader) {
             xml_data.weight = attribute_reader.GetNumber<int>();
         }
         else if (name == L"Style") {
-            auto style_object = FontStyleEnum::EnumType()->FindValue(attribute_reader.GetString());
+            auto style_object = FontStyleEnum::EnumType()->GetValue(attribute_reader.GetString());
             if (!style_object) {
                 throw XMLError{ ZAF_SOURCE_LOCATION() };
             }

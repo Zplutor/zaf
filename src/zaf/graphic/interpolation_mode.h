@@ -1,7 +1,6 @@
 #pragma once
 
 #include <zaf/base/direct2d.h>
-#include <zaf/object/enum_declaration.h>
 #include <zaf/object/enum_support.h>
 
 namespace zaf {
@@ -16,14 +15,12 @@ enum class InterpolationMode {
 };
 
 ZAF_ENUM_BEGIN(InterpolationMode)
-ZAF_ENUM_VALUE(NearestNeighbor)
-ZAF_ENUM_VALUE(Linear)
-ZAF_ENUM_VALUE(Cubic)
-ZAF_ENUM_VALUE(MultiSampleLinear)
-ZAF_ENUM_VALUE(Anisotropic)
-ZAF_ENUM_VALUE(HighQualityCubic)
+ZAF_ENUM_CONSTANT(NearestNeighbor)
+ZAF_ENUM_CONSTANT(Linear)
+ZAF_ENUM_CONSTANT(Cubic)
+ZAF_ENUM_CONSTANT(MultiSampleLinear)
+ZAF_ENUM_CONSTANT(Anisotropic)
+ZAF_ENUM_CONSTANT(HighQualityCubic)
 ZAF_ENUM_END;
-
-ZAF_ENABLE_ENUM_BOXING(InterpolationMode)
 
 }

@@ -1,9 +1,12 @@
 #pragma once
 
 #include <zaf/creation.h>
+#include <zaf/internal/object/enum_constant_registrar.h>
+#include <zaf/object/boxing/custom_boxing_traits.h>
 #include <zaf/object/boxing/internal/boxed_represent.h>
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
-#include <zaf/object/internal/base_enum_type.h>
+#include <zaf/object/enum_constant.h>
+#include <zaf/object/enum_type.h>
 #include <zaf/object/internal/enum_parser.h>
 #include <zaf/object/internal/reflection_manager.h>
 #include <zaf/object/object.h>
@@ -18,7 +21,17 @@ public:                                                                         
     std::size_t Hash() const override;                                                            \
     std::wstring ToString() const override;                                                       \
 };                                                                                                \
-class EnumName##Enum::Type : public zaf::internal::BaseEnumType<EnumName> {                       \
+template<>                                                                                        \
+struct zaf__CustomBoxingTraits<EnumName> {                                                        \
+    using BoxedType = EnumName##Enum;                                                             \
+    static std::shared_ptr<BoxedType> Box(EnumName value) {                                       \
+        return std::make_shared<BoxedType>(value);                                                \
+    }                                                                                             \
+    static const EnumName* Unbox(const BoxedType& object) {                                       \
+        return &object.Value();                                                                   \
+    }                                                                                             \
+};                                                                                                \
+class EnumName##Enum::Type : public zaf::EnumType {                                               \
 private:                                                                                          \
     using DeclaredType = EnumName;                                                                \
     using Class = EnumName##Enum;                                                                 \
@@ -26,35 +39,48 @@ private:                                                                        
     Type();                                                                                       \
 public:                                                                                           \
     static Type* Instance() { return &instance; }                                                 \
-    const std::wstring& Name() const override {                                                \
+    zaf::ObjectType* BaseType() const override {                                                  \
+        return Class::StaticBaseType();                                                           \
+    }                                                                                             \
+    const std::wstring& Name() const override {                                                   \
         static const std::wstring name{ L#EnumName };                                             \
         return name;                                                                              \
     }                                                                                             \
     std::shared_ptr<zaf::Object> CreateInstance() const override {                                \
         return zaf::Create<EnumName##Enum>();                                                     \
     }                                                                                             \
-    zaf::ObjectParser* Parser() const override {                                               \
+    zaf::ObjectParser* Parser() const override {                                                  \
         static zaf::internal::EnumParser<EnumName> parser(this);                                  \
         return &parser;                                                                           \
-    }                                                                                             \
-protected:                                                                                        \
-    std::shared_ptr<zaf::Object> CreateObject(EnumName value) const override {                    \
-        return zaf::Create<EnumName##Enum>(value);                                                \
-    }                                                                                             \
-    const EnumName* UnboxValue(const zaf::Object& object) const override {                        \
-        auto& enum_object = dynamic_cast<const EnumName##Enum&>(object);                          \
-        return &enum_object.Value();                                                              \
-    }                                                                                             \
-    std::vector<std::pair<std::wstring_view, EnumName>> GenerateMap() const override {            \
-        return std::vector<std::pair<std::wstring_view, EnumName>>{
+    }
 
 
-#define ZAF_ENUM_VALUE(ValueName) { L#ValueName, DeclaredType::ValueName },
+#define ZAF_ENUM_CONSTANT(ConstantName) \
+private: \
+    class ConstantName##ConstantType : public zaf::EnumConstant { \
+    public: \
+        const std::wstring& Name() const override { \
+            static const std::wstring name{ L#ConstantName }; \
+            return name; \
+        } \
+        zaf::ObjectType* ValueType() const override { \
+            return Class::StaticType(); \
+        } \
+        const std::shared_ptr<const Object>& Value() const override { \
+            static const std::shared_ptr<const Object> value = \
+                std::make_shared<Class>(DeclaredType::ConstantName); \
+            return value; \
+        } \
+    }; \
+public:                                                                                           \
+    zaf::EnumConstant* const ConstantName##Constant = []() {                                      \
+        static ConstantName##ConstantType constant;                                               \
+        zaf::internal::EnumConstantRegistrar::Register(Class::EnumType(), &constant);             \
+        return &constant;                                                                         \
+    }();
 
 
 #define ZAF_ENUM_END                                                                              \
-        }; /* initialize list of std::vector*/                                                    \
-    } /* GenerateMap() */                                                                         \
 }; /* Type */
 
 

@@ -6,7 +6,6 @@
 #include <zaf/base/string/split.h>
 #include <zaf/base/string/trim.h>
 #include <zaf/object/boxing/boxing_traits.h>
-#include <zaf/object/internal/base_enum_type.h>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_utility.h>
 
@@ -15,7 +14,7 @@ namespace zaf::internal {
 template<typename T>
 class EnumParser : public ObjectParser {
 public:
-    explicit EnumParser(const BaseEnumType<T>* type) : enum_type_(type) {
+    explicit EnumParser(const EnumType* type) : enum_type_(type) {
 
     }
 
@@ -74,7 +73,7 @@ private:
 
     T ParseSingleValue(const std::wstring& text) {
 
-        auto value_object = enum_type_->FindValue(text);
+        auto value_object = enum_type_->GetValue(text);
         if (!value_object) {
             throw ParseError{ ZAF_SOURCE_LOCATION() };
         }
@@ -84,7 +83,7 @@ private:
     }
 
 private:
-    const BaseEnumType<T>* enum_type_{};
+    const EnumType* enum_type_{};
 };
 
 }

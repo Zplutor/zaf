@@ -1,7 +1,6 @@
 #pragma once
 
 #include <zaf/base/flag_enum.h>
-#include <zaf/object/enum_declaration.h>
 #include <zaf/object/enum_support.h>
 
 namespace zaf {
@@ -34,11 +33,9 @@ enum class ActivateOption {
 ZAF_ENABLE_FLAG_ENUM(ActivateOption);
 
 ZAF_ENUM_BEGIN(ActivateOption)
-ZAF_ENUM_VALUE(Normal)
-ZAF_ENUM_VALUE(NoActivate)
-ZAF_ENUM_VALUE(DiscardMouseMessage)
+ZAF_ENUM_CONSTANT(Normal)
+ZAF_ENUM_CONSTANT(NoActivate)
+ZAF_ENUM_CONSTANT(DiscardMouseMessage)
 ZAF_ENUM_END;
-
-ZAF_ENABLE_ENUM_BOXING(ActivateOption)
 
 }

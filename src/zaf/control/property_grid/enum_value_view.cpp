@@ -36,7 +36,7 @@ void EnumValueView::SetValue(const std::shared_ptr<Object>& value) {
     auto enum_type = dynamic_cast<EnumType*>(value->DynamicType());
     ZAF_EXPECT(enum_type);
 
-    auto all_enum_values = enum_type->GetAllValues();
+    auto all_enum_values = enum_type->Values();
     InitializeComboBoxValues(all_enum_values, value);
 
     Subscriptions() += combo_box_->SelectionChangedEvent().Subscribe(

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <zaf/object/enum_declaration.h>
 #include <zaf/object/enum_support.h>
 
 namespace zaf {
@@ -29,11 +28,9 @@ enum class InitialRectStyle {
 };
 
 ZAF_ENUM_BEGIN(InitialRectStyle)
-ZAF_ENUM_VALUE(CenterInScreen)
-ZAF_ENUM_VALUE(CenterInOwner)
-ZAF_ENUM_VALUE(Custom)
+ZAF_ENUM_CONSTANT(CenterInScreen)
+ZAF_ENUM_CONSTANT(CenterInOwner)
+ZAF_ENUM_CONSTANT(Custom)
 ZAF_ENUM_END;
-
-ZAF_ENABLE_ENUM_BOXING(InitialRectStyle)
 
 }

@@ -311,6 +311,7 @@
     <ClCompile Include="src\zaf\object\boxing\numeric.cpp" />
     <ClCompile Include="src\zaf\object\boxing\string.cpp" />
     <ClCompile Include="src\zaf\object\creation.cpp" />
+    <ClCompile Include="src\zaf\object\enum_type.cpp" />
     <ClCompile Include="src\zaf\object\internal\object_initializer.cpp" />
     <ClCompile Include="src\zaf\object\internal\reflection_manager.cpp" />
     <ClCompile Include="src\zaf\object\object.cpp" />
@@ -766,6 +767,7 @@
     <ClInclude Include="src\zaf\internal\control\mouse_event_routing.h" />
     <ClInclude Include="src\zaf\internal\enumerator.h" />
     <ClInclude Include="src\zaf\internal\message_loop.h" />
+    <ClInclude Include="src\zaf\internal\object\enum_constant_registrar.h" />
     <ClInclude Include="src\zaf\internal\object\property_helper.h" />
     <ClInclude Include="src\zaf\internal\object\shared_ptr_utility.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
@@ -809,17 +811,15 @@
     <ClInclude Include="src\zaf\object\boxing\string_parser.h" />
     <ClInclude Include="src\zaf\object\creation.h" />
     <ClInclude Include="src\zaf\object\custom_property_value_traits.h" />
-    <ClInclude Include="src\zaf\object\enum_declaration.h" />
-    <ClInclude Include="src\zaf\object\enum_definition.h" />
     <ClInclude Include="src\zaf\object\enum_support.h" />
     <ClInclude Include="src\zaf\object\enum_type.h" />
+    <ClInclude Include="src\zaf\object\enum_constant.h" />
     <ClInclude Include="src\zaf\object\equality.h" />
     <ClInclude Include="src\zaf\object\internal\enum_parser.h" />
     <ClInclude Include="src\zaf\object\internal\instance_creator.h" />
     <ClInclude Include="src\zaf\object\internal\is_equal_comparable.h" />
     <ClInclude Include="src\zaf\object\internal\object_initializer.h" />
     <ClInclude Include="src\zaf\object\internal\property_registrar.h" />
-    <ClInclude Include="src\zaf\object\internal\base_enum_type.h" />
     <ClInclude Include="src\zaf\object\internal\reflection_manager.h" />
     <ClInclude Include="src\zaf\object\object_support.h" />
     <ClInclude Include="src\zaf\object\object.h" />
