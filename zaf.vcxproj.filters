@@ -2899,5 +2899,8 @@
     <ClInclude Include="src\zaf\internal\object\enum_constant_registrar.h">
       <Filter>zaf\internal\object</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\object\object_map.h">
+      <Filter>zaf\object</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

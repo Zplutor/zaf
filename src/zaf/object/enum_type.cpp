@@ -1,4 +1,5 @@
 #include <zaf/object/enum_type.h>
+#include <zaf/base/error/contract_error.h>
 
 namespace zaf {
 
@@ -13,7 +14,10 @@ void EnumType::RegisterConstant(EnumConstant* constant) {
         return constant1->Name() < constant2->Name();
     });
 
+    ZAF_EXPECT(iterator == constants_.end() || (*iterator)->Name() != constant->Name());
+
     constants_.insert(iterator, constant);
+    value_map_.try_emplace(constant->Value(), constant);
 }
 
 
@@ -39,8 +43,8 @@ EnumConstant* EnumType::GetConstant(std::wstring_view name) const noexcept {
 std::vector<std::shared_ptr<Object>> EnumType::Values() const {
 
     std::vector<std::shared_ptr<Object>> result;
-    for (auto each_constant : Constants()) {
-        result.push_back(each_constant->Value());
+    for (const auto& each_pair : value_map_) {
+        result.push_back(each_pair.first);
     }
     return result;
 }
@@ -58,11 +62,11 @@ std::shared_ptr<Object> EnumType::GetValue(std::wstring_view name) const noexcep
 
 std::wstring EnumType::GetValueName(const Object& object) const {
 
-    for (auto each_constant : Constants()) {
-        if (each_constant->Value()->IsEqual(object)) {
-            return each_constant->Name();
-        }
+    auto iterator = value_map_.find(object);
+    if (iterator != value_map_.end()) {
+        return iterator->second->Name();
     }
+
     return std::wstring{};
 }
 

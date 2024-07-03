@@ -14,7 +14,7 @@ public:
     virtual const std::wstring& Name() const = 0;
     
     virtual ObjectType* ValueType() const = 0;
-    virtual const std::shared_ptr<const Object>& Value() const = 0;
+    virtual const std::shared_ptr<Object>& Value() const = 0;
 };
 
 }

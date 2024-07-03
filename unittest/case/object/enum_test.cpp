@@ -48,6 +48,22 @@ ZAF_ENUM_IMPL(NamespaceTestType);
 }
 
 
+TEST(EnumTest, EnumConstants) {
+
+    auto type = TestTypeEnum::Type::Instance();
+
+    ASSERT_EQ(type->FirstConstant->Name(), L"First");
+    ASSERT_EQ(type->SecondConstant->Name(), L"Second");
+    ASSERT_EQ(type->ThirdConstant->Name(), L"Third");
+    ASSERT_EQ(type->OneConstant->Name(), L"One");
+    ASSERT_EQ(type->TwoConstant->Name(), L"Two");
+    ASSERT_EQ(type->ThreeConstant->Name(), L"Three");
+
+    ASSERT_EQ(type->FirstConstant->ValueType(), type);
+    ASSERT_TRUE(type->FirstConstant->Value()->IsEqual(*zaf::Box(TestType::First)));
+}
+
+
 TEST(EnumTest, Boxing) {
 
     auto boxed = zaf::Box(TestType::First);

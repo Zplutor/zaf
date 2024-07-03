@@ -821,6 +821,7 @@
     <ClInclude Include="src\zaf\object\internal\object_initializer.h" />
     <ClInclude Include="src\zaf\object\internal\property_registrar.h" />
     <ClInclude Include="src\zaf\object\internal\reflection_manager.h" />
+    <ClInclude Include="src\zaf\object\object_map.h" />
     <ClInclude Include="src\zaf\object\object_support.h" />
     <ClInclude Include="src\zaf\object\object.h" />
     <ClInclude Include="src\zaf\object\object_property.h" />

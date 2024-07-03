@@ -55,23 +55,23 @@ public:                                                                         
     }
 
 
-#define ZAF_ENUM_CONSTANT(ConstantName) \
-private: \
-    class ConstantName##ConstantType : public zaf::EnumConstant { \
-    public: \
-        const std::wstring& Name() const override { \
-            static const std::wstring name{ L#ConstantName }; \
-            return name; \
-        } \
-        zaf::ObjectType* ValueType() const override { \
-            return Class::StaticType(); \
-        } \
-        const std::shared_ptr<const Object>& Value() const override { \
-            static const std::shared_ptr<const Object> value = \
-                std::make_shared<Class>(DeclaredType::ConstantName); \
-            return value; \
-        } \
-    }; \
+#define ZAF_ENUM_CONSTANT(ConstantName)                                                           \
+private:                                                                                          \
+    class ConstantName##ConstantType : public zaf::EnumConstant {                                 \
+    public:                                                                                       \
+        const std::wstring& Name() const override {                                               \
+            static const std::wstring name{ L#ConstantName };                                     \
+            return name;                                                                          \
+        }                                                                                         \
+        zaf::ObjectType* ValueType() const override {                                             \
+            return Class::StaticType();                                                           \
+        }                                                                                         \
+        const std::shared_ptr<Object>& Value() const override {                                   \
+            static const std::shared_ptr<Object> value =                                          \
+                std::make_shared<Class>(DeclaredType::ConstantName);                              \
+            return value;                                                                         \
+        }                                                                                         \
+    };                                                                                            \
 public:                                                                                           \
     zaf::EnumConstant* const ConstantName##Constant = []() {                                      \
         static ConstantName##ConstantType constant;                                               \
