@@ -5,7 +5,7 @@
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/base/flag_enum.h>
+#include <zaf/base/flags_enum.h>
 #include <zaf/graphic/geometry/arc_segment.h>
 #include <zaf/graphic/internal/alignment_info.h>
 #include <zaf/graphic/point.h>
@@ -224,6 +224,6 @@ private:
     std::optional<internal::AlignmentInfo> alignment_info_;
 };
 
-ZAF_ENABLE_FLAG_ENUM(GeometrySink::SegmentFlag);
+ZAF_ENABLE_FLAGS_ENUM(GeometrySink::SegmentFlag);
 
 }

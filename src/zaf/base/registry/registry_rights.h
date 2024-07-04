@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Windows.h>
-#include "zaf/base/flag_enum.h"
+#include "zaf/base/flags_enum.h"
 
 namespace zaf {
 
@@ -11,6 +11,6 @@ enum class RegistryRights : REGSAM {
     Write = KEY_WRITE,
 };
 
-ZAF_ENABLE_FLAG_ENUM(RegistryRights);
+ZAF_ENABLE_FLAGS_ENUM(RegistryRights);
 
 }

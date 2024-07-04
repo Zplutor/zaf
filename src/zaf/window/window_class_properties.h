@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <string>
 #include <string_view>
-#include <zaf/base/flag_enum.h>
+#include <zaf/base/flags_enum.h>
 
 namespace zaf {
 
@@ -13,7 +13,7 @@ enum class WindowClassStyle {
     VerticalRedraw = CS_VREDRAW,
     DropShadow = CS_DROPSHADOW,
 };
-ZAF_ENABLE_FLAG_ENUM(WindowClassStyle);
+ZAF_ENABLE_FLAGS_ENUM(WindowClassStyle);
 
 
 class WindowClassProperties {

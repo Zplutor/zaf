@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/flag_enum.h>
+#include <zaf/base/flags_enum.h>
 
 namespace zaf::textual {
 
@@ -36,6 +36,6 @@ enum class SelectionOption {
     ScrollToCaret = 1 << 1,
 };
 
-ZAF_ENABLE_FLAG_ENUM(SelectionOption);
+ZAF_ENABLE_FLAGS_ENUM(SelectionOption);
 
 }

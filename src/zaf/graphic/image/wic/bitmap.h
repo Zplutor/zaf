@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/flag_enum.h>
+#include <zaf/base/flags_enum.h>
 #include <zaf/graphic/image/wic/bitmap_source.h>
 
 namespace zaf::wic {
@@ -44,6 +44,6 @@ private:
 };
 
 
-ZAF_ENABLE_FLAG_ENUM(Bitmap::LockFlag);
+ZAF_ENABLE_FLAGS_ENUM(Bitmap::LockFlag);
 
 }

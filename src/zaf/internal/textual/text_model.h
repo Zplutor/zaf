@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string_view>
-#include <zaf/base/flag_enum.h>
+#include <zaf/base/flags_enum.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/none.h>
 #include <zaf/base/range.h>
@@ -21,7 +21,7 @@ enum class TextModelAttribute : std::uint32_t {
     All = ~None,
 };
 
-ZAF_ENABLE_FLAG_ENUM(TextModelAttribute);
+ZAF_ENABLE_FLAGS_ENUM(TextModelAttribute);
 
 
 class TextModelChangedInfo {

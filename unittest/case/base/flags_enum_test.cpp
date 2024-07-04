@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/flag_enum.h>
+#include <zaf/base/flags_enum.h>
 
 namespace {
 
@@ -19,19 +19,35 @@ enum class Flag {
     Four = 8,
 };
 
-ZAF_ENABLE_FLAG_ENUM(Flag)
+ZAF_ENABLE_FLAGS_ENUM(Flag)
 
 }
 
-TEST(FlagEnumTest, IsFlagEnum) {
+static_assert(zaf::IsFlagsEnumV<Flag>);
+static_assert(!zaf::IsFlagsEnumV<NonFlag>);
+static_assert(!zaf::IsFlagsEnumV<int>);
 
-    ASSERT_TRUE(zaf::IsFlagEnum<Flag>::Value);
-    ASSERT_FALSE(zaf::IsFlagEnum<NonFlag>::Value);
-    ASSERT_FALSE(zaf::IsFlagEnum<int>::Value);
+
+TEST(FlagsEnumTest, BitwiseOperators) {
+
+    ASSERT_EQ(static_cast<int>(~Flag::One), 0xfffffffe);
+    ASSERT_EQ(static_cast<int>(Flag::One | Flag::Two), 3);
+    ASSERT_EQ(static_cast<Flag>(0xff) & Flag::Four, Flag::Four);
+    ASSERT_EQ(static_cast<Flag>(0xff) ^ Flag::Three, static_cast<Flag>(0xfb));
+
+    Flag value = Flag::Zero;
+    value |= Flag::One;
+    ASSERT_EQ(value, Flag::One);
+
+    value &= Flag::Zero;
+    ASSERT_EQ(value, Flag::Zero);
+
+    value ^= Flag::Two;
+    ASSERT_EQ(value, Flag::Two);
 }
 
 
-TEST(FlagEnumTest, HasFlag) {
+TEST(FlagsEnumTest, HasFlag) {
 
     Flag flag{};
     ASSERT_TRUE(zaf::HasFlag(flag, Flag::Zero));

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/flag_enum.h>
+#include <zaf/base/flags_enum.h>
 
 namespace zaf {
 
@@ -34,6 +34,6 @@ enum class Anchor {
     Bottom = 1 << 3,
 };
 
-ZAF_ENABLE_FLAG_ENUM(Anchor);
+ZAF_ENABLE_FLAGS_ENUM(Anchor);
 
 }

@@ -6,7 +6,7 @@
 */
 
 #include <ObjIdl.h>
-#include <zaf/base/flag_enum.h>
+#include <zaf/base/flags_enum.h>
 
 namespace zaf::clipboard {
 
@@ -16,6 +16,6 @@ enum class MediumType {
     File = TYMED_FILE,
 };
 
-ZAF_ENABLE_FLAG_ENUM(MediumType);
+ZAF_ENABLE_FLAGS_ENUM(MediumType);
 
 }

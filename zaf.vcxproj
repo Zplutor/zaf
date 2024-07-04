@@ -454,7 +454,7 @@
     <ClInclude Include="src\zaf\base\error\com_error.h" />
     <ClInclude Include="src\zaf\base\error\error.h" />
     <ClInclude Include="src\zaf\base\error\base_system_error.h" />
-    <ClInclude Include="src\zaf\base\flag_enum.h" />
+    <ClInclude Include="src\zaf\base\flags_enum.h" />
     <ClInclude Include="src\zaf\base\define.h" />
     <ClInclude Include="src\zaf\base\handle.h" />
     <ClInclude Include="src\zaf\base\log.h" />

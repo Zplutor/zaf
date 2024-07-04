@@ -2,7 +2,7 @@
 
 #include <zaf/object/parsing/parse_error.h>
 #include <zaf/base/as.h>
-#include <zaf/base/flag_enum.h>
+#include <zaf/base/flags_enum.h>
 #include <zaf/base/string/split.h>
 #include <zaf/base/string/trim.h>
 #include <zaf/object/boxing/boxing_traits.h>
@@ -46,7 +46,7 @@ private:
     }
 
 
-    template<typename = std::enable_if_t<IsFlagEnum<T>::Value>>
+    template<typename = std::enable_if_t<IsFlagsEnumV<T>>>
     T ParseValue(const std::wstring& text, T*) {
 
         T result{};

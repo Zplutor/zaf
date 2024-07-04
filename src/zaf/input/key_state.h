@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Windows.h>
-#include <zaf/base/flag_enum.h>
+#include <zaf/base/flags_enum.h>
 
 namespace zaf {
 
@@ -10,6 +10,6 @@ enum class KeyState : SHORT {
     Toggled = 0x1,
 };
 
-ZAF_ENABLE_FLAG_ENUM(KeyState);
+ZAF_ENABLE_FLAGS_ENUM(KeyState);
 
 }

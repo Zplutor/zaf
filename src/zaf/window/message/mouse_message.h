@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/flag_enum.h>
+#include <zaf/base/flags_enum.h>
 #include <zaf/graphic/point.h>
 #include <zaf/window/message/hit_test_result.h>
 #include <zaf/window/message/message_shim.h>
@@ -48,7 +48,7 @@ enum class MouseKey {
     Control = MK_CONTROL,
 };
 
-ZAF_ENABLE_FLAG_ENUM(MouseKey);
+ZAF_ENABLE_FLAGS_ENUM(MouseKey);
 
 
 /**

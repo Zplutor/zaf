@@ -7,7 +7,7 @@
 
 #include <Windows.h>
 #include <zaf/base/error/contract_error.h>
-#include <zaf/base/flag_enum.h>
+#include <zaf/base/flags_enum.h>
 #include <zaf/base/non_copyable.h>
 
 namespace zaf {
@@ -33,7 +33,7 @@ enum class GlobalMemFlags {
     ZeroInit = GMEM_ZEROINIT,
 };
 
-ZAF_ENABLE_FLAG_ENUM(GlobalMemFlags);
+ZAF_ENABLE_FLAGS_ENUM(GlobalMemFlags);
 
 
 /**
