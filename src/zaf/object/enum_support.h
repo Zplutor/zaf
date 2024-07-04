@@ -1,13 +1,15 @@
 #pragma once
 
+#include <zaf/base/flags_enum.h>
 #include <zaf/creation.h>
 #include <zaf/internal/object/enum_constant_registrar.h>
+#include <zaf/internal/object/enum_parser.h>
+#include <zaf/internal/object/enum_value_combiner.h>
 #include <zaf/object/boxing/custom_boxing_traits.h>
 #include <zaf/object/boxing/internal/boxed_represent.h>
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
 #include <zaf/object/enum_constant.h>
 #include <zaf/object/enum_type.h>
-#include <zaf/object/internal/enum_parser.h>
 #include <zaf/object/internal/reflection_manager.h>
 #include <zaf/object/object.h>
 
@@ -50,8 +52,17 @@ public:                                                                         
         return zaf::Create<EnumName##Enum>();                                                     \
     }                                                                                             \
     zaf::ObjectParser* Parser() const override {                                                  \
-        static zaf::internal::EnumParser<EnumName> parser(this);                                  \
+        static zaf::internal::EnumParser parser(this);                                            \
         return &parser;                                                                           \
+    }                                                                                             \
+    void SetValue(Object& result, const Object& value) const override {                           \
+        As<Class>(result).Value() = As<Class>(value).Value();                                     \
+    }                                                                                             \
+    bool IsFlagsEnum() const noexcept override {                                                  \
+        return zaf::IsFlagsEnumV<EnumName>;                                                       \
+    }                                                                                             \
+    void CombineFlagValue(Object& result, const Object& value) const override {                   \
+        zaf::internal::EnumValueCombiner<DeclaredType, Class>::Combine(result, value);            \
     }
 
 

@@ -27,6 +27,23 @@ ZAF_ENUM_END;
 
 ZAF_ENUM_IMPL(TestType);
 
+
+enum class FlagsType {
+    Flag1 = 0x1,
+    Flag2 = 0x2,
+    Flag3 = 0x4,
+};
+
+ZAF_ENABLE_FLAGS_ENUM(FlagsType);
+
+ZAF_ENUM_BEGIN(FlagsType);
+ZAF_ENUM_CONSTANT(Flag1);
+ZAF_ENUM_CONSTANT(Flag2);
+ZAF_ENUM_CONSTANT(Flag3);
+ZAF_ENUM_END;
+
+ZAF_ENUM_IMPL(FlagsType);
+
 }
 
 namespace ns {
@@ -45,6 +62,22 @@ ZAF_ENUM_END;
 
 ZAF_ENUM_IMPL(NamespaceTestType);
 
+}
+
+
+TEST(EnumTest, EnumType) {
+
+    {
+        auto type = TestTypeEnum::EnumType();
+        ASSERT_EQ(type->Name(), L"TestType");
+        ASSERT_FALSE(type->IsFlagsEnum());
+    }
+
+    {
+        auto type = FlagsTypeEnum::EnumType();
+        ASSERT_EQ(type->Name(), L"FlagsType");
+        ASSERT_TRUE(type->IsFlagsEnum());
+    }
 }
 
 
@@ -167,4 +200,63 @@ TEST(EnumTest, ParseToInvalidObject) {
 
     auto node = zaf::XamlReader::FromString("<TestType>Second</TestType>")->Read();
     ASSERT_THROW(parser->ParseFromNode(*node, object), zaf::InvalidTypeError);
+}
+
+
+TEST(EnumTest, SetValue) {
+
+    auto type = TestTypeEnum::Type::Instance();
+
+    {
+        zaf::Object object;
+        ASSERT_THROW(type->SetValue(object, *type->FirstConstant->Value()), zaf::InvalidTypeError);
+        ASSERT_THROW(type->SetValue(*type->CreateInstance(), object), zaf::InvalidTypeError);
+    }
+
+    {
+        auto result = As<TestTypeEnum>(type->CreateInstance());
+        type->SetValue(*result, *type->FirstConstant->Value());
+        ASSERT_EQ(result->Value(), TestType::First);
+
+        type->SetValue(*result, *type->ThirdConstant->Value());
+        ASSERT_EQ(result->Value(), TestType::Third);
+    }
+}
+
+
+TEST(EnumTest, CombineFlagValue) {
+
+    //Not flags enum
+    {
+        auto type = TestTypeEnum::Type::Instance();
+        ASSERT_THROW(
+            type->CombineFlagValue(*type->CreateInstance(), *type->OneConstant->Value()), 
+            zaf::InvalidOperationError);
+    }
+
+    auto type = FlagsTypeEnum::Type::Instance();
+
+    //Invalid types
+    {
+        zaf::Object object;
+        ASSERT_THROW(
+            type->CombineFlagValue(object, *type->Flag1Constant->Value()),
+            zaf::InvalidTypeError);
+
+        ASSERT_THROW(
+            type->CombineFlagValue(*type->CreateInstance(), object), 
+            zaf::InvalidTypeError);
+    }
+
+    {
+        auto result = As<FlagsTypeEnum>(type->CreateInstance());
+        type->CombineFlagValue(*result, *type->Flag1Constant->Value());
+        ASSERT_EQ(result->Value(), FlagsType::Flag1);
+
+        type->CombineFlagValue(*result, *type->Flag2Constant->Value());
+        ASSERT_EQ(result->Value(), FlagsType::Flag1 | FlagsType::Flag2);
+
+        type->CombineFlagValue(*result, *type->Flag3Constant->Value());
+        ASSERT_EQ(result->Value(), FlagsType::Flag1 | FlagsType::Flag2 | FlagsType::Flag3);
+    }
 }

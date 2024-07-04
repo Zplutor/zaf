@@ -1261,6 +1261,9 @@
     <ClCompile Include="src\zaf\object\enum_type.cpp">
       <Filter>zaf\object</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\internal\object\enum_parser.cpp">
+      <Filter>zaf\internal\object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2046,9 +2049,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\parsing\xaml_utility.h">
       <Filter>zaf\object\parsing</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\enum_parser.h">
-      <Filter>zaf\object\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\initial_rect_style.h">
       <Filter>zaf\window</Filter>
@@ -2901,6 +2901,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\object_map.h">
       <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\object\enum_parser.h">
+      <Filter>zaf\internal\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\object\enum_value_combiner.h">
+      <Filter>zaf\internal\object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

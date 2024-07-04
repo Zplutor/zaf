@@ -21,6 +21,11 @@ public:
     std::shared_ptr<Object> GetValue(std::wstring_view name) const noexcept;
     std::wstring GetValueName(const Object& object) const;
 
+    virtual void SetValue(Object& result, const Object& value) const = 0;
+
+    virtual bool IsFlagsEnum() const noexcept = 0;
+    virtual void CombineFlagValue(Object& result, const Object& value) const = 0;
+
 private:
     friend class internal::EnumConstantRegistrar;
 
