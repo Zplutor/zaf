@@ -46,6 +46,36 @@ static_assert(std::is_same_v<
     PropertyValueTraits<std::shared_ptr<const Size>>::BoxedType,
     const Size>);
 
+//Optional to reflective type.
+static_assert(std::is_same_v<
+    PropertyValueTraits<std::optional<Size>>::ValueType, 
+    std::optional<Size>>);
+static_assert(std::is_same_v<
+    PropertyValueTraits<std::optional<Size>&>::ValueType, 
+    std::optional<Size>>);
+static_assert(std::is_same_v<
+    PropertyValueTraits<const std::optional<Size>>::ValueType, 
+    std::optional<Size>>);
+
+static_assert(std::is_same_v<PropertyValueTraits<std::optional<Size>>::BoxedType, Size>);
+static_assert(std::is_same_v<PropertyValueTraits<std::optional<Size>&>::BoxedType, Size>);
+static_assert(std::is_same_v<PropertyValueTraits<const std::optional<Size>>::BoxedType, Size>);
+
+//Optional to custom type.
+static_assert(std::is_same_v<
+    PropertyValueTraits<std::optional<int>>::ValueType, 
+    std::optional<int>>);
+static_assert(std::is_same_v<
+    PropertyValueTraits<std::optional<int>&>::ValueType,
+    std::optional<int>>);
+static_assert(std::is_same_v<
+    PropertyValueTraits<const std::optional<int>>::ValueType,
+    std::optional<int>>);
+
+static_assert(std::is_same_v<PropertyValueTraits<std::optional<int>>::BoxedType, Int32>);
+static_assert(std::is_same_v<PropertyValueTraits<std::optional<int>&>::BoxedType, Int32>);
+static_assert(std::is_same_v<PropertyValueTraits<const std::optional<int>>::BoxedType, Int32>);
+
 //Custom property value.
 namespace {
 
@@ -143,6 +173,40 @@ TEST(PropertyValueTraitsTest, BoxedInstanceBoxing) {
 
     auto unboxed_size = Traits::FromBoxedObject(boxed_object);
     ASSERT_EQ(unboxed_size, size);
+}
+
+
+TEST(PropertyValueTraitsTest, OptionalReflectiveTypeBoxing) {
+
+    using Traits = PropertyValueTraits<std::optional<Size>>;
+
+    ASSERT_EQ(Traits::ToBoxedObject(std::nullopt), nullptr);
+    ASSERT_EQ(Traits::FromBoxedObject(nullptr), std::nullopt);
+
+    auto boxed_size = As<Size>(Traits::ToBoxedObject(Size{ 7.f, 8.f }));
+    ASSERT_NE(boxed_size, nullptr);
+    ASSERT_EQ(*boxed_size, Size(7.f, 8.f));
+
+    auto unboxed_size = Traits::FromBoxedObject(boxed_size);
+    ASSERT_NE(unboxed_size, std::nullopt);
+    ASSERT_EQ(*unboxed_size, Size(7.f, 8.f));
+}
+
+
+TEST(PropertyValueTraitsTest, OptionalCustomTypeBoxing) {
+
+    using Traits = PropertyValueTraits<std::optional<int>>;
+
+    ASSERT_EQ(Traits::ToBoxedObject(std::nullopt), nullptr);
+    ASSERT_EQ(Traits::FromBoxedObject(nullptr), std::nullopt);
+
+    auto boxed_int = As<Int32>(Traits::ToBoxedObject(7788));
+    ASSERT_NE(boxed_int, nullptr);
+    ASSERT_EQ(boxed_int->Value(), 7788);
+
+    auto unboxed_int = Traits::FromBoxedObject(boxed_int);
+    ASSERT_NE(unboxed_int, std::nullopt);
+    ASSERT_EQ(*unboxed_int, 7788);
 }
 
 

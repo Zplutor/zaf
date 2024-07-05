@@ -2908,5 +2908,8 @@
     <ClInclude Include="src\zaf\internal\object\enum_value_combiner.h">
       <Filter>zaf\internal\object</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\internal\object\optional_utility.h">
+      <Filter>zaf\internal\object</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
