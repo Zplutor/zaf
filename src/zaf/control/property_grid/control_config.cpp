@@ -21,6 +21,7 @@ void ControlConfig::FilterProperties(PropertyTable& property_table) {
         type->XProperty,
         type->YProperty,
         type->PositionProperty,
+        type->PositionInWindowProperty,
         type->SizeProperty,
         type->WidthProperty,
         type->HeightProperty,
@@ -29,7 +30,7 @@ void ControlConfig::FilterProperties(PropertyTable& property_table) {
 
     list->Sort({
         type->NameProperty,
-        //type->AbsoluteRectProperty,
+        type->RectInWindowProperty,
         type->RectProperty,
         type->BorderProperty,
         type->PaddingProperty,
