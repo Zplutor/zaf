@@ -16,7 +16,7 @@ non-reflective types.
     type.
 
 @details
-    This template is used by BoxingTraits to get custom boxed types and perform custom 
+    This template is used by zaf::BoxingTraits to get custom boxed types and perform custom 
     boxing/unboxing for non-reflective types. The primary template doesn't define any members and
     will emit a compile error if initiated, indicating that the specified non-reflective type 
     doesn't support boxing and unboxing.
