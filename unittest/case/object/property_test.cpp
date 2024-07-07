@@ -67,11 +67,20 @@ public:
         image_ = image;
     }
 
+    std::optional<int> OptionalValue() const {
+        return optional_value_;
+    }
+
+    void SetOptionalValue(std::optional<int> value) {
+        optional_value_ = value;
+    }
+
 private:
     int read_write_value_{};
     int write_only_value_{};
     std::shared_ptr<zaf::Point> boxed_object_;
     std::shared_ptr<zaf::Image> image_;
+    std::optional<int> optional_value_;
 };
 
 ZAF_OBJECT_BEGIN(PropertyHost)
@@ -83,6 +92,7 @@ ZAF_OBJECT_PROPERTY(StringType);
 ZAF_OBJECT_PROPERTY(SizeType);
 ZAF_OBJECT_PROPERTY(BoxedObject);
 ZAF_OBJECT_PROPERTY(Image);
+ZAF_OBJECT_PROPERTY(OptionalValue);
 ZAF_OBJECT_END
 
 ZAF_OBJECT_IMPL(PropertyHost);
@@ -212,6 +222,37 @@ TEST(PropertyTest, Image) {
     auto value = property->GetValue(host);
     ASSERT_NE(value, nullptr);
     ASSERT_TRUE(value->IsEqual(*set_value));
+}
+
+
+TEST(PropertyTest, OptionalValue) {
+
+    PropertyHost host;
+    auto property = host.DynamicType()->GetProperty(L"OptionalValue");
+    ASSERT_NE(property, nullptr);
+
+    ASSERT_TRUE(property->CanGet());
+    ASSERT_TRUE(property->CanSet());
+    ASSERT_FALSE(property->IsValueDynamic());
+
+    {
+        auto set_value = zaf::Box(34);
+        property->SetValue(host, set_value);
+
+        ASSERT_EQ(host.OptionalValue(), 34);
+
+        auto got_value = property->GetValue(host);
+        ASSERT_NE(got_value, nullptr);
+        ASSERT_TRUE(got_value->IsEqual(*set_value));
+    }
+
+    {
+        property->SetValue(host, nullptr);
+        ASSERT_EQ(host.OptionalValue(), std::nullopt);
+
+        auto got_value = property->GetValue(host);
+        ASSERT_EQ(got_value, nullptr);
+    }
 }
 
 
