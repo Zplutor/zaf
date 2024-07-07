@@ -60,6 +60,8 @@ public:
 
     std::wstring ToString() const override;
 
+    void CloneFrom(const Object& other) override;
+
     const Point& Position() const {
         return position;
     }

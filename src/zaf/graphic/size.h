@@ -108,6 +108,8 @@ public:
 
     std::wstring ToString() const override;
 
+    void CloneFrom(const Object& other) override;
+
     float Width() const {
         return width;
     }

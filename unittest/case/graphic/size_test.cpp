@@ -27,6 +27,17 @@ TEST(SizeTest, ToString) {
 }
 
 
+TEST(SizeTest, CloneFrom) {
+
+    zaf::Size size;
+    ASSERT_THROW(size.CloneFrom({}), zaf::InvalidTypeError);
+
+    size.CloneFrom(zaf::Size{ 70, 60 });
+    ASSERT_EQ(size.width, 70);
+    ASSERT_EQ(size.height, 60);
+}
+
+
 TEST(SizeTest, ToSIZE) {
 
     zaf::Size size{ 98, 89 };

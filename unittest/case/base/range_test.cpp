@@ -319,6 +319,19 @@ TEST(RangeTest, Hash) {
 }
 
 
+TEST(RangeTest, CloneFrom) {
+
+    zaf::Range range;
+
+    //Clone from invalid type.
+    ASSERT_THROW(range.CloneFrom(zaf::Object{}), zaf::InvalidTypeError);
+
+    range.CloneFrom(zaf::Range{ 10, 4 });
+    ASSERT_EQ(range.index, 10);
+    ASSERT_EQ(range.length, 4);
+}
+
+
 TEST(RangeTest, WriteToXML) {
 
     auto stream = Stream::FromMemory(0);

@@ -2911,5 +2911,8 @@
     <ClInclude Include="src\zaf\internal\object\optional_utility.h">
       <Filter>zaf\internal\object</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\ref_ptr.h">
+      <Filter>zaf\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

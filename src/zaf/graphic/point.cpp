@@ -11,4 +11,9 @@ std::wstring Point::ToString() const {
     return ToWideString(x) + L',' + ToWideString(y);
 }
 
+
+void Point::CloneFrom(const Object& other) {
+    *this = As<Point>(other);
+}
+
 }

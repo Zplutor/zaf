@@ -22,6 +22,7 @@ public:                                                                         
     bool IsEqual(const zaf::Object& other) const override;                                        \
     std::size_t Hash() const override;                                                            \
     std::wstring ToString() const override;                                                       \
+    void CloneFrom(const zaf::Object& other) override;                                            \
 };                                                                                                \
 template<>                                                                                        \
 struct zaf__CustomBoxingTraits<EnumName> {                                                        \
@@ -120,4 +121,7 @@ std::wstring EnumName##Enum::ToString() const {                                 
         name = std::to_wstring(value);                                                            \
     }                                                                                             \
     return name;                                                                                  \
+}                                                                                                 \
+void EnumName##Enum::CloneFrom(const zaf::Object& other) {                                        \
+    *this = As<EnumName##Enum>(other);                                                            \
 }

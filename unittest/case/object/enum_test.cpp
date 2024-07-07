@@ -260,3 +260,13 @@ TEST(EnumTest, CombineFlagValue) {
         ASSERT_EQ(result->Value(), FlagsType::Flag1 | FlagsType::Flag2 | FlagsType::Flag3);
     }
 }
+
+
+TEST(EnumTest, CloneFrom) {
+
+    TestTypeEnum test_type;
+    ASSERT_THROW(test_type.CloneFrom({}), zaf::InvalidTypeError);
+
+    test_type.CloneFrom(TestTypeEnum{ TestType::Third });
+    ASSERT_EQ(test_type.Value(), TestType::Third);
+}

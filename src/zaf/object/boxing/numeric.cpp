@@ -20,7 +20,10 @@ std::size_t BoxedTypeName::Hash() const {                                       
 }                                                                                                 \
 std::wstring BoxedTypeName::ToString() const {                                                    \
     return zaf::ToWideString(Value());                                                            \
-}                                                                                                
+}                                                                                                 \
+void BoxedTypeName::CloneFrom(const Object& other) {                                              \
+    *this = As<BoxedTypeName>(other);                                                             \
+}
 
 
 ZAF_INTERNAL_IMPLEMENT_NUMERIC_BOXED_TYPE(Char)

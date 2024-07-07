@@ -103,4 +103,9 @@ std::wstring Rect::ToString() const {
     return L'{' + position.ToString() + L"},{" + size.ToString() + L'}';
 }
 
+
+void Rect::CloneFrom(const Object& other) {
+    *this = As<Rect>(other);
+}
+
 }

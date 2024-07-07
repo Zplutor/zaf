@@ -5,4 +5,9 @@ namespace zaf {
 ZAF_ENUM_IMPL(TextTrimmingGranularity);
 ZAF_OBJECT_IMPL(TextTrimming);
 
+
+void TextTrimming::CloneFrom(const Object& other) {
+    *this = As<TextTrimming>(other);
+}
+
 }

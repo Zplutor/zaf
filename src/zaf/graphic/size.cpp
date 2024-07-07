@@ -11,4 +11,9 @@ std::wstring Size::ToString() const {
     return ToWideString(width) + L',' + ToWideString(height);
 }
 
+
+void Size::CloneFrom(const Object& other) {
+    *this = As<Size>(other);
+}
+
 }

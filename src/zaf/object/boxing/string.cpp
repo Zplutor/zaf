@@ -13,6 +13,9 @@ std::size_t BoxedTypeName::Hash() const  {                                      
 }                                                                                                 \
 std::wstring BoxedTypeName::ToString() const {                                                    \
     return internal::StringConversionShim<std::wstring>::From(Value());                           \
+}                                                                                                 \
+void BoxedTypeName::CloneFrom(const Object& other) {                                              \
+    *this = As<BoxedTypeName>(other);                                                             \
 }
 
 

@@ -81,6 +81,8 @@ public:
 
     std::wstring ToString() const override;
 
+    void CloneFrom(const Object& other) override;
+
     float Left() const {
         return left;
     }

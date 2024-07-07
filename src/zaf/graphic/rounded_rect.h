@@ -47,6 +47,8 @@ public:
 
     std::wstring ToString() const override;
 
+    void CloneFrom(const Object& other) override;
+
     const Rect& Rect() const {
         return rect;
     }

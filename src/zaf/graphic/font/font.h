@@ -89,6 +89,8 @@ public:
 
     std::wstring ToString() const override;
 
+    void CloneFrom(const Object& other) override;
+
     void WriteToXML(XMLWriter& writer) const override;
     void ReadFromXML(XMLReader& reader) override;
 

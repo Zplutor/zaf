@@ -153,3 +153,16 @@ TEST(RectTest, ToString) {
     Rect rect{ 500, 400, 640, 480 };
     ASSERT_EQ(rect.ToString(), L"{500,400},{640,480}");
 }
+
+
+TEST(RectTest, CloneFrom) {
+
+    Rect rect;
+    ASSERT_THROW(rect.CloneFrom({}), InvalidTypeError);
+
+    rect.CloneFrom(Rect{ 1.f, 2.f, 10.f, 12.f });
+    ASSERT_EQ(rect.position.x, 1.f);
+    ASSERT_EQ(rect.position.y, 2.f);
+    ASSERT_EQ(rect.size.width, 10.f);
+    ASSERT_EQ(rect.size.height, 12.f);
+}
