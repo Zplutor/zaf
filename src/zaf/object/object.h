@@ -40,8 +40,6 @@ public:
 
     virtual std::wstring ToString() const;
 
-    virtual void CloneFrom(const Object& other);
-
 protected:
     virtual void InvokeInitialize();
     virtual void Initialize();

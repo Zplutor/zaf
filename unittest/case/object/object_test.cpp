@@ -43,11 +43,3 @@ TEST(ObjectTest, CreateInstance) {
         NotDefaultConstructible::StaticType()->CreateInstance(), 
         zaf::InvalidOperationError);
 }
-
-
-TEST(ObjectTest, CloneFrom) {
-
-    zaf::Object object;
-    //Throws exception by default.
-    ASSERT_THROW(object.CloneFrom({}), zaf::InvalidOperationError);
-}

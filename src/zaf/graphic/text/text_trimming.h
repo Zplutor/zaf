@@ -66,8 +66,6 @@ public:
         return inner_;
     }
 
-    void CloneFrom(const Object& other) override;
-
 private:
     DWRITE_TRIMMING inner_{};
     TextInlineObject sign_;

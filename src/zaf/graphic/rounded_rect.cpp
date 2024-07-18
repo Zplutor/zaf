@@ -13,11 +13,6 @@ std::wstring RoundedRect::ToString() const {
 }
 
 
-void RoundedRect::CloneFrom(const Object& other) {
-    *this = As<RoundedRect>(other);
-}
-
-
 bool operator==(const RoundedRect& rounded_rect1, const RoundedRect& rounded_rect2) {
 
     return

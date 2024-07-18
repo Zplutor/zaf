@@ -15,11 +15,6 @@ std::wstring Ellipse::ToString() const {
 }
 
 
-void Ellipse::CloneFrom(const Object& other) {
-    *this = As<Ellipse>(other);
-}
-
-
 bool operator==(const Ellipse& ellipse1, const Ellipse& ellipse2) {
 
     return 

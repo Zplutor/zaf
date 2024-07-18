@@ -15,11 +15,6 @@ std::wstring Range::ToString() const {
 }
 
 
-void Range::CloneFrom(const Object& other) {
-    *this = As<Range>(other);
-}
-
-
 void Range::WriteToXML(XMLWriter& writer) const {
 
     writer.WriteElementStart(L"Range");

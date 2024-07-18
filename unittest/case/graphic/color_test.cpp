@@ -32,18 +32,6 @@ TEST(ColorTest, ToString) {
 }
 
 
-TEST(ColorTest, CloneFrom) {
-
-    zaf::Color color;
-    ASSERT_THROW(color.CloneFrom({}), zaf::InvalidTypeError);
-
-    color.CloneFrom(zaf::Color{ 0.4f, 0.4f, 0.5f });
-    ASSERT_EQ(color.r, 0.4f);
-    ASSERT_EQ(color.g, 0.4f);
-    ASSERT_EQ(color.b, 0.5f);
-}
-
-
 TEST(ColorTest, WriteToXML) {
 
     auto stream = Stream::FromMemory(0);

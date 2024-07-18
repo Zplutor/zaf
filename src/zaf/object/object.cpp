@@ -1,7 +1,6 @@
 #include <zaf/object/object.h>
 #include <zaf/object/object_type.h>
 #include <sstream>
-#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/base/error/win32_error.h>
 #include <zaf/creation.h>
 #include <zaf/object/parsing/object_parser.h>
@@ -127,11 +126,6 @@ std::wstring Object::ToString() const {
     stream << this << ' ' << typeid(*this).name();
 
     return FromUTF8String(stream.str());
-}
-
-
-void Object::CloneFrom(const Object& object) {
-    throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
 }
 
 }

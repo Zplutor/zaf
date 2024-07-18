@@ -117,8 +117,6 @@ public:
 
     std::wstring ToString() const override;
 
-    void CloneFrom(const Object& other) override;
-
     float X() const {
         return x;
     }

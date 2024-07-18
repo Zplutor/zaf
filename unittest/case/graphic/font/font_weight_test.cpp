@@ -34,16 +34,6 @@ TEST(FontWeightTest, ToString) {
 }
 
 
-TEST(FontWeightTest, CloneFrom) {
-
-    zaf::FontWeight weight;
-    ASSERT_THROW(weight.CloneFrom({}), zaf::InvalidTypeError);
-
-    weight.CloneFrom(zaf::FontWeight{ zaf::FontWeight::Black });
-    ASSERT_EQ(weight, zaf::FontWeight::Black);
-}
-
-
 TEST(FontWeightTest, ParseInvalidAttributeValue) {
 
     auto parser = zaf::FontWeight::StaticType()->Parser();

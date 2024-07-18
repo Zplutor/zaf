@@ -25,16 +25,3 @@ TEST(FrameTest, ToString) {
     zaf::Frame frame{ 7, 3, 99, 11 };
     ASSERT_EQ(frame.ToString(), L"7,3,99,11");
 }
-
-
-TEST(FrameTest, CloneFrom) {
-
-    zaf::Frame frame;
-    ASSERT_THROW(frame.CloneFrom({}), zaf::InvalidTypeError);
-
-    frame.CloneFrom(zaf::Frame{ 10, 20, 20, 40 });
-    ASSERT_EQ(frame.left, 10);
-    ASSERT_EQ(frame.top, 20);
-    ASSERT_EQ(frame.right, 20);
-    ASSERT_EQ(frame.bottom, 40);
-}

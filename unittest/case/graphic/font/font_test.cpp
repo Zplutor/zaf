@@ -157,16 +157,6 @@ TEST(FontTest, ToString) {
 }
 
 
-TEST(FontTest, CloneFrom) {
-
-    zaf::Font font;
-    ASSERT_THROW(font.CloneFrom({}), zaf::InvalidTypeError);
-
-    font.CloneFrom(zaf::Font{ L"clone" });
-    ASSERT_EQ(font.family_name, L"clone");
-}
-
-
 TEST(FontTest, WriteToXML) {
 
     auto stream = Stream::FromMemory(0);

@@ -76,11 +76,6 @@ std::wstring Color::ToString() const {
 }
 
 
-void Color::CloneFrom(const Object& other) {
-    *this = As<Color>(other);
-}
-
-
 void Color::WriteToXML(XMLWriter& writer) const {
 
     writer.WriteElementStart(L"Color");

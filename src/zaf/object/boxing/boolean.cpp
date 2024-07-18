@@ -1,5 +1,4 @@
 #include <zaf/object/boxing/boolean.h>
-#include <zaf/base/as.h>
 #include <zaf/object/boxing/internal/boxed_represent_equal.h>
 
 namespace zaf {
@@ -24,11 +23,6 @@ std::wstring Boolean::ToString() const {
     else {
         return L"false";
     }
-}
-
-
-void Boolean::CloneFrom(const Object& other) {
-    *this = As<Boolean>(other);
 }
 
 }

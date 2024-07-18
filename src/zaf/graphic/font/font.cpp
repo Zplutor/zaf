@@ -77,11 +77,6 @@ std::wstring Font::ToString() const {
 }
 
 
-void Font::CloneFrom(const Object& other) {
-    *this = As<Font>(other);
-}
-
-
 void Font::WriteToXML(XMLWriter& writer) const {
 
     writer.WriteElementStart(L"Font");

@@ -16,7 +16,6 @@ public:
     bool IsEqual(const Object& other) const override;
     std::size_t Hash() const override;
     std::wstring ToString() const override;
-    void CloneFrom(const Object& other) override;
 };
 
 ZAF_OBJECT_BEGIN(Boolean);

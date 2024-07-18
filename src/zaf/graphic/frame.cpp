@@ -15,9 +15,4 @@ std::wstring Frame::ToString() const {
         ToWideString(bottom);
 }
 
-
-void Frame::CloneFrom(const Object& other) {
-    *this = As<Frame>(other);
-}
-
 }
