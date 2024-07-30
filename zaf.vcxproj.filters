@@ -1264,6 +1264,9 @@
     <ClCompile Include="src\zaf\internal\object\enum_parser.cpp">
       <Filter>zaf\internal\object</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\object\style\declaration.cpp">
+      <Filter>zaf\object\style</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2910,6 +2913,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\object\optional_utility.h">
       <Filter>zaf\internal\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\style\declaration.h">
+      <Filter>zaf\object\style</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

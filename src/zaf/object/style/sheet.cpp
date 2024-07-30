@@ -4,27 +4,20 @@ namespace zaf {
 
 ZAF_OBJECT_IMPL(Sheet);
 
-
-void Sheet::Add(std::wstring property_name, std::wstring property_value) {
-    properties_.emplace(std::move(property_name), std::move(property_value));
+void Sheet::AddDeclaration(ObjectProperty* property, std::shared_ptr<Object> value) {
+    declarations_.emplace_back(property, std::move(value));
 }
 
 
-void Sheet::Apply(Object& object) {
+void Sheet::AddDeclaration(std::wstring property_name, std::wstring value) {
+    declarations_.emplace_back(std::move(property_name), std::move(value));
+}
 
-    auto type = object.DynamicType();
 
-    for (const auto& [name, value] : properties_) {
+void Sheet::Apply(Object& object) const {
 
-        auto property = type->GetProperty(name);
-        if (!property) {
-            continue;
-        }
-
-        auto property_type = property->ValueType();
-        auto property_value = property_type->CreateInstance();
-        property_type->Parser()->ParseFromAttribute(value, *property_value);
-        property->SetValue(object, property_value);
+    for (const auto& each_declaration : declarations_) {
+        each_declaration.Apply(object);
     }
 }
 

@@ -14,7 +14,8 @@ public:
     void SetExpandState(ExpandState state);
 
 protected:
-    void Initialize();
+    void Initialize() override;
+    void UpdateStyle() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
 
 private:

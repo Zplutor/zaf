@@ -12,8 +12,6 @@ void ValueView::Initialize() {
     __super::Initialize();
 
     this->SetLayouter(Create<HorizontalLayouter>());
-    this->SetBackgroundColor(Color::White());
-
     this->SetBorder(Frame{ 0, 1, 1, 1});
 }
 
@@ -21,6 +19,8 @@ void ValueView::Initialize() {
 void ValueView::UpdateStyle() {
 
     __super::UpdateStyle();
+
+    SetBackgroundColor(Color::White());
 
     SetBorderColor([this]() {
 

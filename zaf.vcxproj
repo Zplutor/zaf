@@ -324,6 +324,7 @@
     <ClCompile Include="src\zaf\object\parsing\xaml_node_parse_helper.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_reader.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_utility.cpp" />
+    <ClCompile Include="src\zaf\object\style\declaration.cpp" />
     <ClCompile Include="src\zaf\object\style\sheet.cpp" />
     <ClCompile Include="src\zaf\object\style\sheet_parser.cpp" />
     <ClCompile Include="src\zaf\object\style\style.cpp" />
@@ -841,6 +842,7 @@
     <ClInclude Include="src\zaf\object\property_support.h" />
     <ClInclude Include="src\zaf\object\property_value_traits.h" />
     <ClInclude Include="src\zaf\object\reflective_type.h" />
+    <ClInclude Include="src\zaf\object\style\declaration.h" />
     <ClInclude Include="src\zaf\object\style\sheet.h" />
     <ClInclude Include="src\zaf\object\style\sheet_parser.h" />
     <ClInclude Include="src\zaf\object\style\style.h" />
