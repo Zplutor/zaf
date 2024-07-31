@@ -29,8 +29,6 @@ CheckBox::~CheckBox() {
 void CheckBox::Initialize() {
 
     __super::Initialize();
-
-    SetBackgroundColor(Color::Transparent());
 }
 
 
@@ -51,6 +49,7 @@ void CheckBox::UpdateStyle() {
 
     __super::UpdateStyle();
 
+    SetBackgroundColor(Color::Transparent());
     SetBoxBorderColor(internal::GetBoxBorderColor(*this));
     SetBoxBackgroundColor(internal::GetBoxBackgroundColor(*this));
 }

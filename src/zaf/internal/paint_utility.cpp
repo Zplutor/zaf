@@ -67,6 +67,7 @@ void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect) {
     stroke_properties.SetDashCapStyle(Stroke::CapStyle::Square);
     auto stroke = GraphicFactory::Instance().CreateStroke(stroke_properties);
 
+    auto state_guard = canvas.PushState();
     canvas.SetStroke(stroke);
     canvas.SetBrushWithColor(Color::Black());
     canvas.DrawRectangleFrame(rect, 1);
