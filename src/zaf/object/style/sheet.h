@@ -12,13 +12,12 @@ public:
     ZAF_OBJECT;
 
     void AddDeclaration(ObjectProperty* property, std::shared_ptr<Object> value);
-
     void AddDeclaration(std::wstring property_name, std::wstring value);
 
-    void Apply(Object& object) const;
+    void ApplyTo(Object& object) const;
 
 private:
-    std::vector<Declaration> declarations_;
+    DeclarationSet declarations_;
 };
 
 ZAF_OBJECT_BEGIN(Sheet);

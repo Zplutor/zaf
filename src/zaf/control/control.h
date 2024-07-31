@@ -1079,7 +1079,7 @@ private:
     std::unique_ptr<internal::ControlUpdateState> update_state_;
 
     bool need_update_style_{};
-    bool is_updating_style{};
+    bool is_updating_style_{};
     bool is_cached_painting_enabled_{};
     BitmapRenderer cached_renderer_;
     zaf::Rect valid_cached_renderer_rect_;

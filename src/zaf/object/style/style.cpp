@@ -17,8 +17,19 @@ void Style::SetSheet(std::shared_ptr<zaf::Sheet> sheet) {
 }
 
 
-void Style::Apply(Object& object) {
-    sheet_->Apply(object);
+void Style::AddSelector(std::shared_ptr<Selector> selector) {
+    ZAF_EXPECT(selector);
+    selectors_.emplace_back(std::move(selector));
+}
+
+
+void Style::ApplyTo(Object& object) {
+
+    sheet_->ApplyTo(object);
+
+    for (const auto& each_selector : selectors_) {
+        each_selector->ApplyTo(object);
+    }
 }
 
 }

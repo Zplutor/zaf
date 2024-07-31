@@ -15,7 +15,7 @@ void SheetParser::ParseFromNode(const XamlNode& node, Object& object) {
     auto& sheet = As<Sheet>(object);
 
     for (const auto& each_attribute : node.GetAttributes()) {
-        sheet.Add(each_attribute->Name(), each_attribute->Value());
+        sheet.AddDeclaration(each_attribute->Name(), each_attribute->Value());
     }
 }
 

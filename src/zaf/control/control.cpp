@@ -122,9 +122,7 @@ void Control::NeedUpdateStyle() {
 
 
 void Control::UpdateStyle() {
-    if (style_) {
-        style_->Apply(*this);
-    }
+    
 }
 
 
@@ -178,8 +176,11 @@ bool Control::HandleUpdateStyle(bool parent_update_style) {
 
     need_update_style_ = false;
 
-    auto auto_reset = MakeAutoReset(is_updating_style, true);
+    auto auto_reset = MakeAutoReset(is_updating_style_, true);
     UpdateStyle();
+    if (style_) {
+        style_->ApplyTo(*this);
+    }
     OnStyleUpdate(StyleUpdateInfo{ shared_from_this() });
     return true;
 }
@@ -362,7 +363,7 @@ void Control::NeedRepaintRect(const zaf::Rect& rect) {
 
     //Ignore repaint request when the control is updating style, as the style is updated only 
     //before painting.
-    if (is_updating_style) {
+    if (is_updating_style_) {
         return;
     }
 

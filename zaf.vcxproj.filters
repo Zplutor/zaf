@@ -1267,6 +1267,15 @@
     <ClCompile Include="src\zaf\object\style\declaration.cpp">
       <Filter>zaf\object\style</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\object\style\selector.cpp">
+      <Filter>zaf\object\style</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\style\selector_parser.cpp">
+      <Filter>zaf\object\style</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\object\style\style_parser.cpp">
+      <Filter>zaf\object\style</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2915,6 +2924,15 @@
       <Filter>zaf\internal\object</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\object\style\declaration.h">
+      <Filter>zaf\object\style</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\style\selector.h">
+      <Filter>zaf\object\style</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\style\selector_parser.h">
+      <Filter>zaf\object\style</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\style\style_parser.h">
       <Filter>zaf\object\style</Filter>
     </ClInclude>
   </ItemGroup>
